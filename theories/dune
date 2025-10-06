@@ -1,0 +1,15 @@
+(include_subdirs qualified)
+
+(coq.theory
+ (name Cats)
+ (package rocq-categories)
+ (synopsis rocq-cats)
+ ; (modules (Cat))
+ ; (plugins <ocaml_plugins>)
+ ; (flags <coq_flags>)
+ ; (modules_flags <flags_map>)
+ ; (coqdep_flags <coqdep_flags>)
+ ; (coqdoc_flags <coqdoc_flags>)
+ ; (stdlib yes)
+ ; (mode <coq_native_mode>)
+ (theories Stdlib))
