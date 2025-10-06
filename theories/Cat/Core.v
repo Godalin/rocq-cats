@@ -15,16 +15,19 @@ Class Cat (Ob : Type) :=
   ; id {X} : Hom X X
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
 
-  ; axiom_id_l {X Y : Ob} (f : Hom X Y)
+  ; axiom_id_r {X Y : Ob} (f : Hom X Y)
     : comp f id = f
 
-  ; axiom_id_r {X Y : Ob} (f : Hom X Y)
+  ; axiom_id_l {X Y : Ob} (f : Hom X Y)
     : comp id f = f
 
   ; axiom_comp_assoc {X Y Z W}
       (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
     : comp (comp f g) h = comp f (comp g h)
   }.
+
+Notation "'@id' X" := (@id _ _ X)
+  (at level 35) : cat_scope.
 
 Notation "f ∘ g" := (comp f g)
   (at level 41, right associativity) : cat_scope.
@@ -91,7 +94,7 @@ End Iso.
 
 (** Terminal *)
 
-Class HasTerminal {Ob} `{C : Cat Ob} :=
+Class HasTerminal {Ob} `(C : Cat Ob) :=
   { Term : Ob
   ; term_arr {X} : Hom X Term
 
@@ -99,7 +102,18 @@ Class HasTerminal {Ob} `{C : Cat Ob} :=
     : is_unique (λ _, True) (@term_arr X)
   }.
 
-Arguments axiom_comp_assoc {_ _ _ _ _ _ _}.
+Arguments Term {_ _ _}.
+Arguments term_arr {_ _ _ _}.
+Arguments axiom_terminal {_ _ _ _}.
+
+Notation "1" := Term : cat_scope.
+Notation "!" := term_arr : cat_scope.
+Notation "'@!' X" := (@term_arr _ _ _ X)
+  (at level 35) : cat_scope.
+
+(* TODO Hint Resolve for Terminal *)
+
+
 
 Section Terminal.
 Context {Ob} `{Cat Ob}.
@@ -141,27 +155,29 @@ End Terminal.
 Section Terminal.
 Context {Ob} `{HasTerminal Ob}.
 
-Theorem term_arr_comp_eq_term_arr {X Y} {f : Hom X Y}
-  : term_arr ∘ f = term_arr.
+Proposition term_is_terminal
+  : is_terminal 1.
 Proof.
+  intros X. exists !.
   apply axiom_terminal.
-  trivial.
 Qed.
 
-Proposition term_is_terminal
-  : is_terminal Term.
+Proposition term_arr_eq {X} {h : Hom X 1}
+  : h = !.
 Proof.
-  intros X. exists term_arr.
-  apply axiom_terminal.
+  apply axiom_terminal. trivial.
 Qed.
 
 End Terminal.
+
+Hint Resolve term_is_terminal : cat.
+Hint Resolve term_arr_eq : cat.
 
 
 
 (** Product *)
 
-Class HasProduct Ob `{Cat Ob} :=
+Class HasProduct {Ob} `(Cat Ob) :=
   { Prod : Ob → Ob → Ob
   ; pair {X Y Z} (f : Hom Z X) (g : Hom Z Y) : Hom Z (Prod X Y)
   ; π1 {X Y} : Hom (Prod X Y) X
@@ -171,21 +187,88 @@ Class HasProduct Ob `{Cat Ob} :=
     : is_unique (λ h, π1 ∘ h = f ∧ π2 ∘ h = g) (pair f g)
   }.
 
-Notation "'⟨' f ',' g '⟩'" := (pair f g) : cat_scope.
+Arguments Prod {_ _ _} _ _.
+Arguments pair {_ _ _ _ _ _} _ _.
+Arguments π1 {_ _ _ _ _}.
+Arguments π2 {_ _ _ _ _}.
+Arguments axiom_product {_ _ _ _ _} _ _ _.
 
 Infix "×" := Prod
   (at level 41, right associativity) : cat_scope.
+
+Notation "'⟨' f ',' g '⟩'" := (pair f g)
+  (format "'⟨' f ',' g '⟩'") : cat_scope.
+
+Notation "@π1 X Y" := (@π1 _ _ _ X Y)
+  (at level 35).
+
+Notation "@π2 X Y" := (@π2 _ _ _ X Y)
+  (at level 35).
 
 
 
 Section Product.
 Context {Ob} `{Cat Ob}.
 
-Definition is_product {X Y P} (p : Hom P X) (q : Hom P Y) :=
+Definition is_product (X Y P : Ob)
+    (p : Hom P X) (q : Hom P Y) :=
   ∀ Z (f : Hom Z X) (g : Hom Z Y),
     ∃ h : Hom Z P, is_unique (λ h, p ∘ h = f ∧ q ∘ h = g) h.
 
 End Product.
+
+Tactic Notation "elim_product" constr(H) "as" ident(h) :=
+  let Hh1 := fresh "H" h "1" in
+  let Hh2 := fresh "H" h "2" in
+  let Hh_unique := fresh "H" h "_unique" in
+  destruct H as (h & (Hh1 & Hh2) & Hh_unique).
+
+
+
+Section Product.
+Context {Ob} `{HasProduct Ob}.
+
+Theorem prod_is_product {X Y : Ob}
+  : is_product X Y (X × Y) π1 π2.
+Proof.
+  intros Z f g.
+  exists ⟨f,g⟩.
+  apply axiom_product.
+Qed.
+
+Proposition prod_arr_1 {X Y Z}
+    (f : Hom Z X) (g : Hom Z Y)
+  : π1 ∘ ⟨f,g⟩ = f.
+Proof.
+  pose (AP := axiom_product Z f g).
+  destruct AP as [[H1 _] _].
+  auto.
+Qed.
+
+Proposition prod_arr_2 {X Y Z}
+    (f : Hom Z X) (g : Hom Z Y)
+  : π2 ∘ ⟨f,g⟩ = g.
+Proof.
+  elim_unique (axiom_product Z f g) as H.
+  destruct H_sat as [_ H2].
+  auto.
+Qed.
+
+Lemma prod_arr_comp_l {X Y Z W}
+    (f : Hom Z X) (g : Hom Z Y) (h : Hom W Z)
+  : ⟨f,g⟩ ∘ h = ⟨f ∘ h,g ∘ h⟩.
+Proof.
+  apply axiom_product.
+  split.
+  - rewrite <- axiom_comp_assoc, prod_arr_1. auto.
+  - rewrite <- axiom_comp_assoc, prod_arr_2. auto.
+Qed.
+
+End Product.
+
+Hint Resolve prod_is_product : cat.
+Hint Resolve prod_arr_1 : cat.
+Hint Resolve prod_arr_2 : cat.
 
 
 
@@ -195,7 +278,15 @@ Context `{@HasTerminal Ob C}.
 Context `{@HasProduct Ob C}.
 
 Theorem term_prod_id_l {X}
-  : Term × X ≅ X.
-Admitted.
+  : 1 × X ≅ X.
+Proof.
+  exists π2, ⟨!,id⟩; simpl.
+  split.
+  - rewrite prod_arr_comp_l, term_arr_eq, axiom_id_l.
+    symmetry.
+    apply axiom_product.
+    split; cato.
+  - cato.
+Qed.
 
 End Product.
