@@ -2,6 +2,14 @@ From Stdlib Require Import Utf8.
 From Stdlib Require Import Setoid.
 From Cats Require Import Meta.
 
+Declare Scope ob_scope.
+Delimit Scope ob_scope with ob.
+Open Scope ob_scope.
+
+Declare Scope hom_scope.
+Delimit Scope hom_scope with hom.
+Open Scope hom_scope.
+
 Declare Scope cat_scope.
 Delimit Scope cat_scope with cat.
 Open Scope cat_scope.
@@ -27,10 +35,10 @@ Class Cat (Ob : Type) :=
   }.
 
 Notation "'@id' X" := (@id _ _ X)
-  (at level 35) : cat_scope.
+  (at level 35) : hom_scope.
 
-Notation "f ∘ g" := (comp f g)
-  (at level 41, right associativity) : cat_scope.
+Notation "f '∘' g" := (comp f g)
+  (at level 41, right associativity) : hom_scope.
 
 Arguments axiom_id_l {Ob Cat X Y} (f).
 Arguments axiom_id_r {Ob Cat X Y} (f).
@@ -41,6 +49,8 @@ Hint Resolve axiom_id_r : cat.
 
 Ltac cato := auto with cat.
 Ltac cate := eauto with cat.
+
+Bind Scope hom_scope with Hom.
 
 
 
@@ -72,8 +82,10 @@ Arguments is_linv_of {_ _ _} _ _ /.
 Arguments is_rinv_of {_ _ _} _ _ /.
 Arguments is_inv_of {_ _ _} _ _ /.
 
-Infix "≅" := iso
-  (at level 70, no associativity).
+Arguments iso {_ _} _%_ob _%_ob.
+
+Notation "X '≅' Y" := (iso X Y)
+  (at level 70, no associativity) : type_scope.
 
 Tactic Notation "elim_iso" ident(f) :=
   let fi := fresh f "i" in
@@ -88,6 +100,35 @@ Theorem iso_refl {X}
   : X ≅ X.
 Proof. exists id, id. cato. Qed.
 
+Theorem iso_symm {X Y}
+  : X ≅ Y → Y ≅ X.
+Proof.
+  intros [f [fi [H1 H2]]]; simpl in *.
+  exists fi, f. split; cato.
+Qed.
+
+Theorem iso_trans {X Y Z}
+  : X ≅ Y → Y ≅ Z → X ≅ Z.
+Proof.
+  intros [f [fi [Hf Hfi]]] [g [gi [Hg Hgi]]]; simpl in *.
+  exists (g ∘ f), (fi ∘ gi).
+  split; simpl.
+  - rewrite axiom_comp_assoc.
+    rewrite <- (axiom_comp_assoc gi).
+    rewrite Hg, axiom_id_l. auto.
+  - rewrite axiom_comp_assoc.
+    rewrite <- (axiom_comp_assoc f).
+    rewrite Hfi, axiom_id_l. auto.
+Qed.
+
+Global Instance iso_equiv : Equivalence iso.
+Proof.
+  split.
+  - intros x. apply iso_refl.
+  - intros x y. apply iso_symm.
+  - intros x y z. apply iso_trans.
+Qed.
+
 End Iso.
 
 
@@ -96,20 +137,20 @@ End Iso.
 
 Class HasTerminal {Ob} `(C : Cat Ob) :=
   { Term : Ob
-  ; term_arr {X} : Hom X Term
+  ; term {X} : Hom X Term
 
   ; axiom_terminal {X}
-    : is_unique (λ _, True) (@term_arr X)
+    : is_unique (λ _, True) (@term X)
   }.
 
 Arguments Term {_ _ _}.
-Arguments term_arr {_ _ _ _}.
+Arguments term {_ _ _ _}.
 Arguments axiom_terminal {_ _ _ _}.
 
-Notation "1" := Term : cat_scope.
-Notation "!" := term_arr : cat_scope.
-Notation "'@!' X" := (@term_arr _ _ _ X)
-  (at level 35) : cat_scope.
+Notation "'1'" := Term : ob_scope.
+Notation "'!'" := term : hom_scope.
+Notation "'@!' X" := (@term _ _ _ X)
+  (at level 34) : hom_scope.
 
 (* TODO Hint Resolve for Terminal *)
 
@@ -162,7 +203,7 @@ Proof.
   apply axiom_terminal.
 Qed.
 
-Proposition term_arr_eq {X} {h : Hom X 1}
+Proposition term_η {X} {h : Hom X 1}
   : h = !.
 Proof.
   apply axiom_terminal. trivial.
@@ -171,7 +212,7 @@ Qed.
 End Terminal.
 
 Hint Resolve term_is_terminal : cat.
-Hint Resolve term_arr_eq : cat.
+Hint Resolve term_η : cat.
 
 
 
@@ -193,17 +234,17 @@ Arguments π1 {_ _ _ _ _}.
 Arguments π2 {_ _ _ _ _}.
 Arguments axiom_product {_ _ _ _ _} _ _ _.
 
-Infix "×" := Prod
-  (at level 41, right associativity) : cat_scope.
+Notation "X '×' Y" := (Prod X Y)
+  (at level 41, right associativity) : ob_scope.
 
 Notation "'⟨' f ',' g '⟩'" := (pair f g)
-  (format "'⟨' f ',' g '⟩'") : cat_scope.
+  (format "'⟨' f  ','  g '⟩'") : hom_scope.
 
-Notation "@π1 X Y" := (@π1 _ _ _ X Y)
-  (at level 35).
+Notation "'@π1' X Y" := (@π1 _ _ _ X Y)
+  (at level 35) : hom_scope.
 
-Notation "@π2 X Y" := (@π2 _ _ _ X Y)
-  (at level 35).
+Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
+  (at level 35) : hom_scope.
 
 
 
@@ -236,7 +277,7 @@ Proof.
   apply axiom_product.
 Qed.
 
-Proposition prod_arr_1 {X Y Z}
+Proposition prod_β1 {X Y Z}
     (f : Hom Z X) (g : Hom Z Y)
   : π1 ∘ ⟨f,g⟩ = f.
 Proof.
@@ -245,7 +286,7 @@ Proof.
   auto.
 Qed.
 
-Proposition prod_arr_2 {X Y Z}
+Proposition prod_β2 {X Y Z}
     (f : Hom Z X) (g : Hom Z Y)
   : π2 ∘ ⟨f,g⟩ = g.
 Proof.
@@ -254,39 +295,127 @@ Proof.
   auto.
 Qed.
 
-Lemma prod_arr_comp_l {X Y Z W}
+Lemma prod_comp_r {X Y Z W}
     (f : Hom Z X) (g : Hom Z Y) (h : Hom W Z)
-  : ⟨f,g⟩ ∘ h = ⟨f ∘ h,g ∘ h⟩.
+  : ⟨f , g⟩ ∘ h = ⟨f ∘ h,g ∘ h⟩.
 Proof.
   apply axiom_product.
   split.
-  - rewrite <- axiom_comp_assoc, prod_arr_1. auto.
-  - rewrite <- axiom_comp_assoc, prod_arr_2. auto.
+  - rewrite <- axiom_comp_assoc, prod_β1. auto.
+  - rewrite <- axiom_comp_assoc, prod_β2. auto.
+Qed.
+
+Lemma prod_η {X Y Z} (h : Hom Z (X × Y))
+  : h = ⟨ π1 ∘ h , π2 ∘ h ⟩.
+Proof.
+  apply axiom_product; split; cato.
+Qed.
+
+Lemma prod_comm {X Y} : X × Y ≅ Y × X.
+Proof.
+  exists ⟨π2, π1⟩, ⟨π2, π1⟩.
+  simpl. split.
+  - rewrite prod_comp_r.
+    rewrite prod_β1.
+    rewrite prod_β2.
+    symmetry.
+    apply axiom_product.
+    split; cato.
+  - rewrite prod_comp_r.
+    rewrite prod_β1.
+    rewrite prod_β2.
+    symmetry.
+    apply axiom_product.
+    split; cato.
 Qed.
 
 End Product.
 
 Hint Resolve prod_is_product : cat.
-Hint Resolve prod_arr_1 : cat.
-Hint Resolve prod_arr_2 : cat.
+Hint Resolve prod_β1 : cat.
+Hint Resolve prod_β2 : cat.
+
+
+
+Section Cross.
+Context {Ob} `{HasProduct Ob}.
+
+Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
+  : Hom (X × Y) (X' × Y')
+  := ⟨ f ∘ π1 , g ∘ π2 ⟩.
+
+Opaque cross.
+
+End Cross.
+
+Notation "f '×' g" := (cross f g)
+  (at level 41, right associativity) : hom_scope.
+
+
+
+Section Cross.
+Context {Ob} `{HasProduct Ob}.
+
+Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
+  : f × g = ⟨ f ∘ π1 , g ∘ π2 ⟩.
+Proof. auto. Qed.
+
+Lemma prod_comp_l {X Y X' Y' Z}
+    (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
+  : (f' × g') ∘ ⟨f , g⟩ = ⟨f' ∘ f , g' ∘ g⟩.
+Proof.
+  apply axiom_product.
+  split.
+  - rewrite <- axiom_comp_assoc.
+    rewrite cross_η.
+    rewrite prod_β1.
+    rewrite axiom_comp_assoc.
+    rewrite prod_β1.
+    auto.
+  - rewrite <- axiom_comp_assoc.
+    rewrite cross_η.
+    rewrite prod_β2.
+    rewrite axiom_comp_assoc.
+    rewrite prod_β2.
+    auto.
+Qed.
+
+End Cross.
 
 
 
 Section Product.
 Context {Ob} `{C : Cat Ob}.
-Context `{@HasTerminal Ob C}.
-Context `{@HasProduct Ob C}.
+Context `{!HasTerminal C}.
+Context `{!HasProduct C}.
 
 Theorem term_prod_id_l {X}
   : 1 × X ≅ X.
 Proof.
   exists π2, ⟨!,id⟩; simpl.
   split.
-  - rewrite prod_arr_comp_l, term_arr_eq, axiom_id_l.
+  - rewrite prod_comp_r.
+    rewrite term_η.
+    rewrite axiom_id_l.
     symmetry.
     apply axiom_product.
     split; cato.
   - cato.
+Qed.
+
+Theorem term_prod_id_r {X}
+  : X × 1 ≅ X.
+Proof.
+  rewrite prod_comm.
+  apply term_prod_id_l.
+Qed.
+
+Theorem term_1_1 {X}
+  : ((X × 1) × 1)%ob ≅ X.
+Proof.
+  rewrite term_prod_id_r.
+  rewrite term_prod_id_r.
+  reflexivity.
 Qed.
 
 End Product.

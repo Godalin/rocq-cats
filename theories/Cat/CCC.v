@@ -1,4 +1,4 @@
-From Stdlib Require Utf8.
+From Stdlib Require Import Utf8.
 From Cats Require Import Cat.Core.
 Open Scope cat_scope.
 
