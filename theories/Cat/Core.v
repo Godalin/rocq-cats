@@ -18,8 +18,9 @@ Open Scope cat_scope.
 
 (** * Category *)
 
-Class Cat (Ob : Type) :=
-  { Hom : Ob → Ob → Type
+Class Cat (U : Type) :=
+  { Ob : Type
+  ; Hom : Ob → Ob → Type
   ; id {X} : Hom X X
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
 
@@ -40,9 +41,9 @@ Notation "'@id' X" := (@id _ _ X)
 Notation "f '∘' g" := (comp f g)
   (at level 41, right associativity) : hom_scope.
 
-Arguments axiom_id_l {Ob Cat X Y} (f).
-Arguments axiom_id_r {Ob Cat X Y} (f).
-Arguments axiom_comp_assoc {Ob Cat X Y Z W} (f g h).
+Arguments axiom_id_l {_ _ _ _} _.
+Arguments axiom_id_r {_ _ _ _} _.
+Arguments axiom_comp_assoc {_ _ _ _ _ _} _ _ _.
 
 Hint Resolve axiom_id_l : cat.
 Hint Resolve axiom_id_r : cat.
@@ -50,12 +51,13 @@ Hint Resolve axiom_id_r : cat.
 Ltac cato := auto with cat.
 Ltac cate := eauto with cat.
 
+Bind Scope ob_scope with Ob.
 Bind Scope hom_scope with Hom.
 
 
 
 Section Cat.
-Context {Ob} `{Cat Ob}.
+Context {U} `{Cat U}.
 
 Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X) : Prop
   := g ∘ f = id.
@@ -94,7 +96,7 @@ Tactic Notation "elim_iso" ident(f) :=
   intros (f & fi & Hfif & Hffi).
 
 Section Iso.
-Context {Ob} `{Cat Ob}.
+Context {U} `{Cat U}.
 
 Theorem iso_refl {X}
   : X ≅ X.
@@ -135,7 +137,7 @@ End Iso.
 
 (** Terminal *)
 
-Class HasTerminal {Ob} `(C : Cat Ob) :=
+Class HasTerminal {U} `(C : Cat U) :=
   { Term : Ob
   ; term {X} : Hom X Term
 
@@ -157,7 +159,7 @@ Notation "'@!' X" := (@term _ _ _ X)
 
 
 Section Terminal.
-Context {Ob} `{Cat Ob}.
+Context {U} `{Cat U}.
 
 Definition is_terminal T :=
   ∀ X, ∃ h : Hom X T, is_unique' h.
@@ -194,7 +196,7 @@ End Terminal.
 
 
 Section Terminal.
-Context {Ob} `{HasTerminal Ob}.
+Context {U} `{HasTerminal U}.
 
 Proposition term_is_terminal
   : is_terminal 1.
@@ -218,7 +220,7 @@ Hint Resolve term_η : cat.
 
 (** Product *)
 
-Class HasProduct {Ob} `(Cat Ob) :=
+Class HasProduct {U} `(Cat U) :=
   { Prod : Ob → Ob → Ob
   ; pair {X Y Z} (f : Hom Z X) (g : Hom Z Y) : Hom Z (Prod X Y)
   ; π1 {X Y} : Hom (Prod X Y) X
@@ -228,7 +230,7 @@ Class HasProduct {Ob} `(Cat Ob) :=
     : is_unique (λ h, π1 ∘ h = f ∧ π2 ∘ h = g) (pair f g)
   }.
 
-Arguments Prod {_ _ _} _ _.
+Arguments Prod {_ _ _} _%_ob _%_ob.
 Arguments pair {_ _ _ _ _ _} _ _.
 Arguments π1 {_ _ _ _ _}.
 Arguments π2 {_ _ _ _ _}.
@@ -249,7 +251,7 @@ Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
 
 
 Section Product.
-Context {Ob} `{Cat Ob}.
+Context {U} `{Cat U}.
 
 Definition is_product (X Y P : Ob)
     (p : Hom P X) (q : Hom P Y) :=
@@ -267,7 +269,7 @@ Tactic Notation "elim_product" constr(H) "as" ident(h) :=
 
 
 Section Product.
-Context {Ob} `{HasProduct Ob}.
+Context {U} `{HasProduct U}.
 
 Theorem prod_is_product {X Y : Ob}
   : is_product X Y (X × Y) π1 π2.
@@ -338,7 +340,7 @@ Hint Resolve prod_β2 : cat.
 
 
 Section Cross.
-Context {Ob} `{HasProduct Ob}.
+Context {U} `{HasProduct U}.
 
 Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : Hom (X × Y) (X' × Y')
@@ -411,7 +413,7 @@ Proof.
 Qed.
 
 Theorem term_1_1 {X}
-  : ((X × 1) × 1)%ob ≅ X.
+  : (X × 1) × 1 ≅ X.
 Proof.
   rewrite term_prod_id_r.
   rewrite term_prod_id_r.

@@ -5,8 +5,8 @@ Open Scope cat_scope.
 
 (* TODO exp objects *)
 
-Class CCC (Ob : Type) :=
-  { C :: Cat Ob
+Class CCC (U : Type) :=
+  { C :: Cat U
   ; hasTerminal :: HasTerminal C
   ; hasProduct :: HasProduct C
   }.
@@ -14,9 +14,9 @@ Class CCC (Ob : Type) :=
 
 
 Section CCC.
-Context {Ob} `{CCC Ob}.
+Context {U} `{CCC U}.
 
-Example x {X} : 1 × X ≅ X.
+Example idl {X} : 1 × X ≅ X.
 Proof. apply term_prod_id_l. Qed.
 
 End CCC.
