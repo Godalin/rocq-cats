@@ -9,6 +9,7 @@ Class CCC (U : Type) :=
   { C :: Cat U
   ; hasTerminal :: HasTerminal C
   ; hasProduct :: HasProduct C
+  ; hasExponential :: HasExponential hasProduct
   }.
 
 

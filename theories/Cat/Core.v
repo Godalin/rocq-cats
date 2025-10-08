@@ -412,7 +412,7 @@ Proof.
   apply term_prod_id_l.
 Qed.
 
-Theorem term_1_1 {X}
+Example term_1_1 {X}
   : (X × 1) × 1 ≅ X.
 Proof.
   rewrite term_prod_id_r.
@@ -421,3 +421,26 @@ Proof.
 Qed.
 
 End Product.
+
+
+
+(* Exponential *)
+
+Class HasExponential {U} `(HasProduct U) :=
+  { exp : Ob → Ob → Ob
+  ; curry {X Y Z} : Hom (Z × X) Y → Hom Z (exp Y X)
+  ; eval {X Y} : Hom (exp Y X × X) Y
+
+  ; axiom_exponential {X Y Z}
+    : ∀ f : Hom (Z × X) Y,
+      is_unique (λ h, eval ∘ (h × id) = f) (curry f)
+  }.
+
+Notation "X '^' Y" := (exp X Y)
+  (at level 30, right associativity): ob_scope.
+
+Notation "'ƛ' f" := (curry f)
+  (at level 35) : ob_scope.
+
+Notation "@eval X Y" := (@eval _ _ _ _ X Y)
+  (at level 35) : ob_scope.
