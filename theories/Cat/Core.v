@@ -15,8 +15,10 @@ Open Scope cat_scope.
 
 
 (** * Category *)
+Class HomEq@{e} {A : Type@{e}} {R : A → A → Prop} :=
+  { homEq_equiv :: Equivalence R }.
 
-Polymorphic Class Cat@{i j} :=
+Class Cat@{i j} :=
   { Ob : Type@{i}
   ; Hom : Ob → Ob → Type@{j}
   ; id {X} : Hom X X
