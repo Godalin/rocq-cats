@@ -16,7 +16,7 @@ Open Scope cat_scope.
 
 (** * Category *)
 
-Polymorphic Class Cat@{i j} :=
+Class Cat@{i j} :=
   { Ob : Type@{i}
   ; Hom : Ob → Ob → Type@{j}
   ; id {X} : Hom X X
@@ -62,12 +62,12 @@ Bind Scope hom_scope with Hom.
 
 (** Dual Category *)
 
-Program Instance op (C : Cat) : Cat :=
- { Ob := Ob
+Program Definition op (C : Cat) : Cat :=
+ {|Ob := Ob
  ; Hom X Y := Hom Y X
  ; id _ := id
  ; comp _ _ _ f g := comp g f
- }.
+ |}.
 Next Obligation. cato. Qed.
 Next Obligation. cato. Qed.
 Next Obligation.

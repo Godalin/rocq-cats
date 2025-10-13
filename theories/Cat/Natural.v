@@ -3,7 +3,8 @@ From Cats Require Import Cat.Functor.
 
 (** * Natural Transformations *)
 
-Class Nat@{o1 h1 o2 h2} {C : Cat@{o1 h1}} {D : Cat@{o2 h2}}
+Class Nat@{o1 h1 o2 h2}
+  {C : Cat@{o1 h1}} {D : Cat@{o2 h2}}
   (F G : Functor C D) := mkNat
   { nt (X : @Ob C) : (@Hom D) (F .F0 X) (G .F0 X)
 
@@ -15,6 +16,10 @@ Class Nat@{o1 h1 o2 h2} {C : Cat@{o1 h1}} {D : Cat@{o2 h2}}
 Arguments mkNat {_ _ _ _} _ _.
 Arguments nt {_ _ _ _} _ _.
 Arguments axiom_naturalilty {_ _ _ _} _ {_ _} _.
+
+Check Nat.
+
+
 
 Notation "F => G" := (Nat F G)
   (at level 50, no associativity).
