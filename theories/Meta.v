@@ -1,4 +1,8 @@
-From Stdlib Require Import Utf8.
+From Stdlib Require Export Utf8.
+From Stdlib Require Export Setoid.
+
+Global Set Universe Polymorphism.
+Global Set Printing Universes.
 
 (** * Meta: Universal Property *)
 

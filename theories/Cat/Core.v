@@ -1,6 +1,4 @@
-From Stdlib Require Import Utf8.
-From Stdlib Require Import Setoid.
-From Cats Require Import Meta.
+From Cats Require Export Meta.
 
 Declare Scope ob_scope.
 Delimit Scope ob_scope with ob.
@@ -18,9 +16,9 @@ Open Scope cat_scope.
 
 (** * Category *)
 
-Class Cat (U : Type) :=
-  { Ob : Type
-  ; Hom : Ob → Ob → Type
+Polymorphic Class Cat@{i j} :=
+  { Ob : Type@{i}
+  ; Hom : Ob → Ob → Type@{j}
   ; id {X} : Hom X X
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
 
@@ -35,15 +33,21 @@ Class Cat (U : Type) :=
     : comp (comp f g) h = comp f (comp g h)
   }.
 
-Notation "'@id' X" := (@id _ _ X)
+Arguments axiom_id_l {_ _ _} _.
+Arguments axiom_id_r {_ _ _} _.
+Arguments axiom_comp_assoc {_ _ _ _ _} _ _ _.
+
+Notation "@Ob C" := (@Ob C)
+  (at level 35) : type_scope.
+
+Notation "@Hom C" := (@Hom C)
+  (at level 35) : type_scope.
+
+Notation "'@id' X" := (@id _ X)
   (at level 35) : hom_scope.
 
 Notation "f '∘' g" := (comp f g)
   (at level 41, right associativity) : hom_scope.
-
-Arguments axiom_id_l {_ _ _ _} _.
-Arguments axiom_id_r {_ _ _ _} _.
-Arguments axiom_comp_assoc {_ _ _ _ _ _} _ _ _.
 
 Hint Resolve axiom_id_l : cat.
 Hint Resolve axiom_id_r : cat.
@@ -56,8 +60,26 @@ Bind Scope hom_scope with Hom.
 
 
 
+(** Dual Category *)
+
+Program Instance op (C : Cat) : Cat :=
+ { Ob := Ob
+ ; Hom X Y := Hom Y X
+ ; id _ := id
+ ; comp _ _ _ f g := comp g f
+ }.
+Next Obligation. cato. Qed.
+Next Obligation. cato. Qed.
+Next Obligation.
+  symmetry. apply axiom_comp_assoc.
+Qed.
+
+
+
+(** Inversion & Isomorphism *)
+
 Section Cat.
-Context {U} `{Cat U}.
+Context `{Cat}.
 
 Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X) : Prop
   := g ∘ f = id.
@@ -84,7 +106,7 @@ Arguments is_linv_of {_ _ _} _ _ /.
 Arguments is_rinv_of {_ _ _} _ _ /.
 Arguments is_inv_of {_ _ _} _ _ /.
 
-Arguments iso {_ _} _%_ob _%_ob.
+Arguments iso {_} _%_ob _%_ob.
 
 Notation "X '≅' Y" := (iso X Y)
   (at level 70, no associativity) : type_scope.
@@ -96,7 +118,7 @@ Tactic Notation "elim_iso" ident(f) :=
   intros (f & fi & Hfif & Hffi).
 
 Section Iso.
-Context {U} `{Cat U}.
+Context `{Cat}.
 
 Theorem iso_refl {X}
   : X ≅ X.
@@ -137,7 +159,7 @@ End Iso.
 
 (** Terminal *)
 
-Class HasTerminal {U} `(C : Cat U) :=
+Class HasTerminal `(C : Cat) :=
   { Term : Ob
   ; term {X} : Hom X Term
 
@@ -145,9 +167,9 @@ Class HasTerminal {U} `(C : Cat U) :=
     : is_unique (λ _, True) (@term X)
   }.
 
-Arguments Term {_ _ _}.
-Arguments term {_ _ _ _}.
-Arguments axiom_terminal {_ _ _ _}.
+Arguments Term {_ _}.
+Arguments term {_ _ _}.
+Arguments axiom_terminal {_ _ _}.
 
 Notation "'1'" := Term : ob_scope.
 Notation "'!'" := term : hom_scope.
@@ -159,7 +181,7 @@ Notation "'@!' X" := (@term _ _ _ X)
 
 
 Section Terminal.
-Context {U} `{Cat U}.
+Context `{Cat}.
 
 Definition is_terminal T :=
   ∀ X, ∃ h : Hom X T, is_unique' h.
@@ -196,7 +218,7 @@ End Terminal.
 
 
 Section Terminal.
-Context {U} `{HasTerminal U}.
+Context `{C : Cat} `{!HasTerminal C}.
 
 Proposition term_is_terminal
   : is_terminal 1.
@@ -220,7 +242,7 @@ Hint Resolve term_η : cat.
 
 (** Product *)
 
-Class HasProduct {U} `(Cat U) :=
+Class HasProduct `(Cat) :=
   { Prod : Ob → Ob → Ob
   ; pair {X Y Z} (f : Hom Z X) (g : Hom Z Y) : Hom Z (Prod X Y)
   ; π1 {X Y} : Hom (Prod X Y) X
@@ -230,11 +252,11 @@ Class HasProduct {U} `(Cat U) :=
     : is_unique (λ h, π1 ∘ h = f ∧ π2 ∘ h = g) (pair f g)
   }.
 
-Arguments Prod {_ _ _} _%_ob _%_ob.
-Arguments pair {_ _ _ _ _ _} _ _.
-Arguments π1 {_ _ _ _ _}.
-Arguments π2 {_ _ _ _ _}.
-Arguments axiom_product {_ _ _ _ _} _ _ _.
+Arguments Prod {_ _} _%_ob _%_ob.
+Arguments pair {_ _ _ _ _} _ _.
+Arguments π1 {_ _ _ _}.
+Arguments π2 {_ _ _ _}.
+Arguments axiom_product {_ _ _ _} _ _ _.
 
 Notation "X '×' Y" := (Prod X Y)
   (at level 41, right associativity) : ob_scope.
@@ -251,7 +273,7 @@ Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
 
 
 Section Product.
-Context {U} `{Cat U}.
+Context `{Cat}.
 
 Definition is_product (X Y P : Ob)
     (p : Hom P X) (q : Hom P Y) :=
@@ -269,7 +291,7 @@ Tactic Notation "elim_product" constr(H) "as" ident(h) :=
 
 
 Section Product.
-Context {U} `{HasProduct U}.
+Context `{C : Cat} `{!HasProduct C}.
 
 Theorem prod_is_product {X Y : Ob}
   : is_product X Y (X × Y) π1 π2.
@@ -340,7 +362,7 @@ Hint Resolve prod_β2 : cat.
 
 
 Section Cross.
-Context {U} `{HasProduct U}.
+Context `{HasProduct}.
 
 Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : Hom (X × Y) (X' × Y')
@@ -356,7 +378,7 @@ Notation "f '×' g" := (cross f g)
 
 
 Section Cross.
-Context {Ob} `{HasProduct Ob}.
+Context `{HasProduct}.
 
 Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : f × g = ⟨ f ∘ π1 , g ∘ π2 ⟩.
@@ -387,7 +409,7 @@ End Cross.
 
 
 Section Product.
-Context {Ob} `{C : Cat Ob}.
+Context `{C : Cat}.
 Context `{!HasTerminal C}.
 Context `{!HasProduct C}.
 
@@ -426,7 +448,7 @@ End Product.
 
 (* Exponential *)
 
-Class HasExponential {U} `(HasProduct U) :=
+Class HasExponential {C : Cat} `(!HasProduct C) :=
   { exp : Ob → Ob → Ob
   ; curry {X Y Z} : Hom (Z × X) Y → Hom Z (exp Y X)
   ; eval {X Y} : Hom (exp Y X × X) Y
@@ -440,7 +462,7 @@ Notation "X '^' Y" := (exp X Y)
   (at level 30, right associativity): ob_scope.
 
 Notation "'ƛ' f" := (curry f)
-  (at level 35) : ob_scope.
+  (at level 35) : hom_scope.
 
 Notation "@eval X Y" := (@eval _ _ _ _ X Y)
-  (at level 35) : ob_scope.
+  (at level 35) : hom_scope.
