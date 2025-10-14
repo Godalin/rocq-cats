@@ -6,7 +6,7 @@
 
 (name rocq-cats)
 
-(version 0.0)
+(version dev)
 
 (package
  (name rocq-cats)
