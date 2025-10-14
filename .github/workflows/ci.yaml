@@ -14,4 +14,4 @@ jobs:
         with:
           opam_file: "rocq-cats.opam"
           custom_script: |
-            dune build @install
+            dune build
