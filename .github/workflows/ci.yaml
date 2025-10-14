@@ -14,4 +14,7 @@ jobs:
         with:
           opam_file: "rocq-cats.opam"
           custom_script: |
-            dune build
+            opam update -y
+            opam install --confirm-level=unsafe-yes -j 2 rocq-cats --deps-only
+            opam install -y -v -j 2 rocq-cats
+            opam remove -y rocq-cats
