@@ -5,7 +5,7 @@
 (generate_opam_files)
 
 (package
- (name rocq-categories)
+ (name rocq-cats)
  (synopsis "rocq-cats")
  (description "A Rocq package for category theory.")
  (depends rocq-stdlib)

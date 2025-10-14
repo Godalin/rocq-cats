@@ -2,7 +2,7 @@
 
 (coq.theory
  (name Cats)
- (package rocq-categories)
+ (package rocq-cats)
  (synopsis rocq-cats)
  ; (modules (Cat))
  ; (plugins <ocaml_plugins>)
