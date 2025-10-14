@@ -4,7 +4,7 @@ synopsis: "rocq-cats"
 description: "A Rocq package for category theory."
 license: "MIT"
 depends: [
-  "dune" {>= "3.20"}
+  "dune" {>= "3.17"}
   "rocq-stdlib"
   "odoc" {with-doc}
 ]
@@ -22,4 +22,3 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-x-maintenance-intent: ["(latest)"]
