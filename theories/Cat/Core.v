@@ -42,6 +42,7 @@ Class Cat@{i j} :=
     : HomEq (comp (comp f g) h) (comp f (comp g h))
   }.
 
+Arguments HomEq {_ _%_ob _%_ob} _%_hom _%_hom.
 Arguments axiom_id_l {_ _ _} _.
 Arguments axiom_id_r {_ _ _} _.
 Arguments axiom_comp_assoc {_ _ _ _ _} _ _ _.
@@ -478,6 +479,9 @@ Class HasExponential {C : Cat} `(!HasProduct C) :=
   { exp : Ob → Ob → Ob
   ; curry {X Y Z} : Hom (Z × X) Y → Hom Z (exp Y X)
   ; eval {X Y} : Hom (exp Y X × X) Y
+
+  ; axiom_curry_proper {X Y Z}
+    :: Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, exp Y X]) curry
 
   ; axiom_exponential {X Y Z}
     : ∀ f : Hom (Z × X) Y,

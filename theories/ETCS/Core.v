@@ -1,5 +1,3 @@
-From Coq Require Import Utf8.
-From Cats Require Import Meta.
 From Cats Require Import Cat.Core.
 From Cats Require Import ETCS.Nat.
 
