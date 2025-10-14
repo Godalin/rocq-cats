@@ -13,6 +13,3 @@ jobs:
         uses: rocq-community/docker-coq-action@v1.5.2
         with:
           opam_file: "rocq-cats.opam"
-      - name: Build & Test
-        run: |
-          dune build
