@@ -1,4 +1,4 @@
-From Stdlib Require Export Morphisms.
+From Stdlib Require Import SetoidClass.
 From Cats Require Export Meta.
 
 Declare Scope ob_scope.
@@ -55,7 +55,7 @@ Notation "@Hom C" := (@Hom C)
 
 (* Notation "'@HomEq' C" := (@HomEq C)
   (at level 35) : type_scope. *)
-Notation "'@HomEq[' X ',' Y ']'" := (@HomEq _ X Y) : type_scope.
+Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : type_scope.
 
 Infix "≈" := HomEq
   (at level 50, no associativity).
@@ -64,7 +64,7 @@ Notation "'@id' X" := (@id _ X)
   (at level 35) : hom_scope.
 
 Notation "f '∘' g" := (comp f g)
-  (at level 41, right associativity) : hom_scope.
+  (at level 40, left associativity) : hom_scope.
 
 Hint Resolve axiom_id_l : cat.
 Hint Resolve axiom_id_r : cat.
@@ -74,6 +74,20 @@ Ltac cate := eauto with cat; try reflexivity.
 
 Bind Scope ob_scope with Ob.
 Bind Scope hom_scope with Hom.
+
+
+
+Definition comp_pre {C : Cat} {X Y Z : Ob} (f : Hom X Y)
+  := (λ g : Hom Y Z, g ∘ f).
+
+Definition comp_post {C : Cat} {X Y Z : Ob} (f : Hom Y Z)
+  := (λ g : Hom X Y, f ∘ g).
+
+Arguments comp_pre {_ _ _ _} _ _ /.
+Arguments comp_post {_ _ _ _} _ _ /.
+
+Notation "f ^*" := (comp_pre f) (at level 35).
+Notation "f _*" := (comp_post f) (at level 35).
 
 
 
@@ -132,6 +146,9 @@ Arguments is_inv_of {_ _ _} _ _ /.
 Arguments iso {_} _%_ob _%_ob.
 
 Notation "X '≅' Y" := (iso X Y)
+  (at level 70, no associativity) : type_scope.
+
+Notation "X '≅['  C  ']' Y" := (@iso C X Y)
   (at level 70, no associativity) : type_scope.
 
 Tactic Notation "elim_iso" ident(f) :=
@@ -408,8 +425,8 @@ Section Cross.
 Context `{HasProduct}.
 
 Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
-  : f × g = ⟨ f ∘ π1 , g ∘ π2 ⟩.
-Proof. auto. Qed.
+  : f × g ≈ ⟨ f ∘ π1 , g ∘ π2 ⟩.
+Proof. cato. Qed.
 
 Lemma prod_comp_l {X Y X' Y' Z}
     (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
@@ -485,7 +502,7 @@ Class HasExponential {C : Cat} `(!HasProduct C) :=
 
   ; axiom_exponential {X Y Z}
     : ∀ f : Hom (Z × X) Y,
-      is_unique (λ h, eval ∘ (h × id) = f) (curry f)
+      is_unique (λ h, eval ∘ (h × id) ≈ f) (curry f)
   }.
 
 Notation "X '^' Y" := (exp X Y)

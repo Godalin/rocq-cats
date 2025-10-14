@@ -1,8 +1,11 @@
+From Corelib Require Export Morphisms.
+From Corelib Require Export Basics.
 From Stdlib Require Export Utf8.
 From Stdlib Require Export Setoid.
 
+Global Close Scope program_scope.
 Global Set Universe Polymorphism.
-Global Set Printing Universes.
+(* Global Set Printing Universes. *)
 
 (** * Meta: Universal Property *)
 
