@@ -2,6 +2,8 @@
 
 (using coq 0.10)
 
+(name rocq-cats)
+
 (generate_opam_files)
 
 (package
