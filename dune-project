@@ -10,6 +10,16 @@
 
 (version dev)
 
+(authors "Linyu Yang <yly1228@foxmail.com>")
+
+(maintainers "Linyu Yang <yly1228@foxmail.com>")
+
+(homepage https://github.com/Godalin/rocq-cats)
+
+(bug_reports https://github.com/Godalin/rocq-cats)
+
+(license GPL-3.0-or-later)
+
 (package
  (name rocq-cats)
  (synopsis "rocq-cats")
@@ -20,5 +30,4 @@
   (rocq-stdlib
    (>= 9.0))
   (coq
-   (>= 9.0)))
- (license MIT))
+   (>= 9.0))))

@@ -3,7 +3,11 @@ opam-version: "2.0"
 version: "dev"
 synopsis: "rocq-cats"
 description: "A Rocq package for category theory."
-license: "MIT"
+maintainer: ["Linyu Yang <yly1228@foxmail.com>"]
+authors: ["Linyu Yang <yly1228@foxmail.com>"]
+license: "GPL-3.0-or-later"
+homepage: "https://github.com/Godalin/rocq-cats"
+bug-reports: "https://github.com/Godalin/rocq-cats"
 depends: [
   "dune" {>= "3.17"}
   "rocq-prover" {>= "9.0"}
