@@ -6,8 +6,9 @@ description: "A Rocq package for category theory."
 license: "MIT"
 depends: [
   "dune" {>= "3.17"}
-  "rocq-prover"
-  "coq"
+  "rocq-prover" {>= "9.0"}
+  "rocq-stdlib" {>= "9.0"}
+  "coq" {>= "9.0"}
   "odoc" {with-doc}
 ]
 build: [
