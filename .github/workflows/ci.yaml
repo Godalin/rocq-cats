@@ -7,14 +7,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - "rocq/rocq-prover:latest"
+          - "rocq/rocq-prover:dev"
+          - "rocq/rocq-prover:9.1"
+          - "rocq/rocq-prover:9.0"
     steps:
       - uses: actions/checkout@v4
       - name: Install Rocq
-        uses: rocq-community/docker-coq-action@v1.5.2
+        uses: rocq-community/docker-coq-action@v1
         with:
           opam_file: "rocq-cats.opam"
-          coq_version: "9.0"
-          ocaml_version: "default"
-          export: "OPAMWITHTEST" # space-separated list of variables
+          custom_image: ${{ matrix.image }}
+          export: "OPAMWITHTEST"
         env:
           OPAMWITHTEST: "true"

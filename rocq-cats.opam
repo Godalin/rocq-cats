@@ -7,6 +7,7 @@ license: "MIT"
 depends: [
   "dune" {>= "3.17"}
   "rocq-prover"
+  "coq"
   "odoc" {with-doc}
 ]
 build: [

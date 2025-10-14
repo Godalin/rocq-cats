@@ -14,5 +14,5 @@
  (name rocq-cats)
  (synopsis "rocq-cats")
  (description "A Rocq package for category theory.")
- (depends rocq-prover)
+ (depends rocq-prover coq)
  (license MIT))
