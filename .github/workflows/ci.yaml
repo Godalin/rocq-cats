@@ -13,8 +13,8 @@ jobs:
         uses: rocq-community/docker-coq-action@v1.5.2
         with:
           opam_file: "rocq-cats.opam"
-          custom_script: |
-            opam update -y
-            opam install --confirm-level=unsafe-yes -j 2 rocq-cats --deps-only
-            opam install -y -v -j 2 rocq-cats
-            opam remove -y rocq-cats
+          coq_version: "9.0"
+          ocaml_version: "default"
+          export: "OPAMWITHTEST" # space-separated list of variables
+        env:
+          OPAMWITHTEST: "true"

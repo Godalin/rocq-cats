@@ -4,6 +4,8 @@
 
 (generate_opam_files)
 
+(subst disabled)
+
 (name rocq-cats)
 
 (version dev)
@@ -12,5 +14,5 @@
  (name rocq-cats)
  (synopsis "rocq-cats")
  (description "A Rocq package for category theory.")
- (depends rocq-stdlib)
+ (depends rocq-prover)
  (license MIT))

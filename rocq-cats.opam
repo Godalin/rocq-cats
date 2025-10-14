@@ -6,11 +6,10 @@ description: "A Rocq package for category theory."
 license: "MIT"
 depends: [
   "dune" {>= "3.17"}
-  "rocq-stdlib"
+  "rocq-prover"
   "odoc" {with-doc}
 ]
 build: [
-  ["dune" "subst"] {dev}
   [
     "dune"
     "build"
