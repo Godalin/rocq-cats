@@ -6,16 +6,27 @@ Global Set Printing Universes.
 
 (** * Meta: Universal Property *)
 
-Record is_unique {X : Type} (P : X → Prop) (x : X) : Prop :=
-  { this : P x
-  ; that : ∀ y : X, P y → y = x
+(** Hom-set Equality *)
+
+Class IsHomEq {H} (R : H → H → Prop) :=
+  { hom_eq_equiv :: Equivalence R
   }.
 
-Definition is_unique' {X : Type} (x : X) : Prop
+Record is_unique {X : Type} {R : X → X → Prop} `{IsHomEq X R} (P : X → Prop) (x : X) : Prop :=
+  { this : P x
+  ; that : ∀ y : X, P y → R y x
+  }.
+
+
+
+Section Unique.
+Context {X : Type} {R : X → X → Prop} `{IsHomEq X R}.
+
+Definition is_unique' (x : X) : Prop
   := is_unique (λ _, True) x.
 
-Theorem elim_is_unique' {X} {x : X}
-  : is_unique' x ↔ ∀ y : X, y = x.
+Theorem elim_is_unique' {x : X}
+  : is_unique' x ↔ ∀ y : X, R y x.
 Proof. firstorder. Qed.
 
 Tactic Notation "elim_unique" constr(H) "as" ident(Hyp) :=
@@ -31,3 +42,5 @@ Tactic Notation "elim_unique" constr(H) "with" constr(h) :=
   let Heq := fresh "Heq" in
   destruct H as [_ Heq];
   specialize (Heq h).
+
+End Unique.

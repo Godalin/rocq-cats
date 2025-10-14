@@ -1,17 +1,14 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Functor.
-From Stdlib Require Import Logic.EqdepFacts.
 
 (** * Natural Transformations *)
 
-Class Nat@{o1 h1 o2 h2}
-  {C : Cat@{o1 h1}} {D : Cat@{o2 h2}}
-  (F G : Functor C D) := mkNat
-  { nt (X : @Ob C) : (@Hom D) (F .F0 X) (G .F0 X)
+Class Nat {C D : Cat} (F G : Functor C D) := mkNat
+  { nt (X : @Ob C) :> (@Hom D) (F X) (G X)
 
   ; axiom_naturality
     : ∀ X Y : @Ob C, ∀ f : Hom X Y,
-      nt Y ∘ F .F1 f = G .F1 f ∘ nt X
+      nt Y ∘ fmap f ≈ fmap f ∘ nt X
   }.
 
 Arguments mkNat {_ _ _ _} _ _.
@@ -19,7 +16,21 @@ Arguments nt {_ _ _ _} _ _.
 Arguments axiom_naturality {_ _ _ _} _ {_ _} _.
 
 Notation "F => G" := (Nat F G)
+  (at level 50, no associativity) : type_scope.
+
+Definition NatEq {C D : Cat} {F G : Functor C D}
+    (α β : F => G) : Prop
+  := ∀ X, α X ≈ β X.
+
+Infix "≈N" := NatEq
   (at level 50, no associativity).
+
+Program Instance NatEq_Equivalence {C D F G} : Equivalence (@NatEq C D F G).
+Next Obligation. repeat intro. cato. Qed.
+Next Obligation. repeat intro. symmetry. apply H. Qed.
+Next Obligation. repeat intro. transitivity (y X); auto. Qed.
+
+
 
 Program Instance id_nt {C D : Cat} {F : Functor C D} : F => F
   := { nt _ := id }.
@@ -41,15 +52,29 @@ Next Obligation.
   reflexivity.
 Qed.
 
-Notation "α ∙v β" := (comp_nt_v α β)
+Notation idN := id_nt.
+
+Infix "∘Nv" := comp_nt_v
   (at level 51, right associativity).
 
-Program Instance Fct {C D : Cat} : Cat :=
+
+
+(** Functor Category *)
+
+Program Instance Fct (C D : Cat) : Cat :=
   { Ob := Functor C D
   ; Hom F G := F => G
+  ; HomEq _ _ := NatEq
   ; id _ := id_nt
   ; comp _ _ _ := comp_nt_v
   }.
-Next Obligation. Admitted.
-Next Obligation. Admitted.
-Next Obligation. Admitted.
+Next Obligation. split. apply NatEq_Equivalence. Qed.
+Next Obligation.
+  intros a a' Ha b b' Hb O.
+  simpl. rewrite (Ha O), (Hb O). cato.
+Qed.
+Next Obligation. intros O. simpl. cato. Qed.
+Next Obligation. intros O. simpl. cato. Qed.
+Next Obligation. intros O; simpl.
+  rewrite axiom_comp_assoc. cato.
+Qed.

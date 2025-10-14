@@ -1,3 +1,4 @@
+From Stdlib Require Export Morphisms.
 From Cats Require Export Meta.
 
 Declare Scope ob_scope.
@@ -18,19 +19,27 @@ Open Scope cat_scope.
 
 Class Cat@{i j} :=
   { Ob : Type@{i}
+
   ; Hom : Ob → Ob → Type@{j}
+
+  ; HomEq {X Y} : Hom X Y → Hom X Y → Prop
+  ; axiom_hom_eq {X Y} :: IsHomEq (@HomEq X Y)
+
   ; id {X} : Hom X X
+
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
+  ; axiom_comp_proper {X Y Z}
+    :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
 
   ; axiom_id_r {X Y : Ob} (f : Hom X Y)
-    : comp f id = f
+    : HomEq (comp f id) f
 
   ; axiom_id_l {X Y : Ob} (f : Hom X Y)
-    : comp id f = f
+    : HomEq (comp id f) f
 
   ; axiom_comp_assoc {X Y Z W}
       (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
-    : comp (comp f g) h = comp f (comp g h)
+    : HomEq (comp (comp f g) h) (comp f (comp g h))
   }.
 
 Arguments axiom_id_l {_ _ _} _.
@@ -43,6 +52,13 @@ Notation "@Ob C" := (@Ob C)
 Notation "@Hom C" := (@Hom C)
   (at level 35) : type_scope.
 
+(* Notation "'@HomEq' C" := (@HomEq C)
+  (at level 35) : type_scope. *)
+Notation "'@HomEq[' X ',' Y ']'" := (@HomEq _ X Y) : type_scope.
+
+Infix "≈" := HomEq
+  (at level 50, no associativity).
+
 Notation "'@id' X" := (@id _ X)
   (at level 35) : hom_scope.
 
@@ -52,8 +68,8 @@ Notation "f '∘' g" := (comp f g)
 Hint Resolve axiom_id_l : cat.
 Hint Resolve axiom_id_r : cat.
 
-Ltac cato := auto with cat.
-Ltac cate := eauto with cat.
+Ltac cato := auto with cat; try reflexivity.
+Ltac cate := eauto with cat; try reflexivity.
 
 Bind Scope ob_scope with Ob.
 Bind Scope hom_scope with Hom.
@@ -65,9 +81,15 @@ Bind Scope hom_scope with Hom.
 Program Definition op (C : Cat) : Cat :=
  {|Ob := Ob
  ; Hom X Y := Hom Y X
+ ; HomEq _ _ := HomEq
  ; id _ := id
  ; comp _ _ _ f g := comp g f
  |}.
+Next Obligation.
+  intros x x' Hx y y' Hy.
+  rewrite Hx, Hy.
+  reflexivity.
+Qed.
 Next Obligation. cato. Qed.
 Next Obligation. cato. Qed.
 Next Obligation.
@@ -82,10 +104,10 @@ Section Cat.
 Context `{Cat}.
 
 Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X) : Prop
-  := g ∘ f = id.
+  := g ∘ f ≈ id.
 
 Definition is_rinv_of {X Y} (f : Hom X Y) (g : Hom Y X)
-  := f ∘ g = id.
+  := f ∘ g ≈ id.
 
 Definition is_inv_of {X Y} (f : Hom X Y) (g : Hom Y X)
   := is_linv_of f g ∧ is_rinv_of f g.
@@ -164,7 +186,7 @@ Class HasTerminal `(C : Cat) :=
   ; term {X} : Hom X Term
 
   ; axiom_terminal {X}
-    : is_unique (λ _, True) (@term X)
+    : is_unique' (@term X)
   }.
 
 Arguments Term {_ _}.
@@ -193,13 +215,14 @@ Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
 
 Proposition terminal_arr_eq_id {T}
   : is_terminal T
-  → ∀ h : Hom T T, h = id.
+  → ∀ h : Hom T T, h ≈ id.
 Proof.
   intros HT h.
   elim_terminal (HT T) as hu.
   pose (Hid := Hhu_unique id).
   pose (Hh := Hhu_unique h).
   etransitivity; auto.
+  symmetry; auto.
 Qed.
 
 Theorem terminal_unique {T1 T2 : Ob}
@@ -228,7 +251,7 @@ Proof.
 Qed.
 
 Proposition term_η {X} {h : Hom X 1}
-  : h = !.
+  : h ≈ !.
 Proof.
   apply axiom_terminal. trivial.
 Qed.
@@ -248,8 +271,11 @@ Class HasProduct `(Cat) :=
   ; π1 {X Y} : Hom (Prod X Y) X
   ; π2 {X Y} : Hom (Prod X Y) Y
 
+  ; axiom_pair_proper {X Y Z}
+    :: Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,Prod X Y]) pair
+
   ; axiom_product {X Y Z} {f : Hom Z X} {g : Hom Z Y}
-    : is_unique (λ h, π1 ∘ h = f ∧ π2 ∘ h = g) (pair f g)
+    : is_unique (λ h, π1 ∘ h ≈ f ∧ π2 ∘ h ≈ g) (pair f g)
   }.
 
 Arguments Prod {_ _} _%_ob _%_ob.
@@ -278,7 +304,7 @@ Context `{Cat}.
 Definition is_product (X Y P : Ob)
     (p : Hom P X) (q : Hom P Y) :=
   ∀ Z (f : Hom Z X) (g : Hom Z Y),
-    ∃ h : Hom Z P, is_unique (λ h, p ∘ h = f ∧ q ∘ h = g) h.
+    ∃ h : Hom Z P, is_unique (λ h, p ∘ h ≈ f ∧ q ∘ h ≈ g) h.
 
 End Product.
 
@@ -303,7 +329,7 @@ Qed.
 
 Proposition prod_β1 {X Y Z}
     (f : Hom Z X) (g : Hom Z Y)
-  : π1 ∘ ⟨f,g⟩ = f.
+  : π1 ∘ ⟨f,g⟩ ≈ f.
 Proof.
   pose (AP := axiom_product Z f g).
   destruct AP as [[H1 _] _].
@@ -312,25 +338,25 @@ Qed.
 
 Proposition prod_β2 {X Y Z}
     (f : Hom Z X) (g : Hom Z Y)
-  : π2 ∘ ⟨f,g⟩ = g.
+  : π2 ∘ ⟨f,g⟩ ≈ g.
 Proof.
-  elim_unique (axiom_product Z f g) as H.
-  destruct H_sat as [_ H2].
+  pose (AP := axiom_product Z f g).
+  destruct AP as [[_ H2] _].
   auto.
 Qed.
 
 Lemma prod_comp_r {X Y Z W}
     (f : Hom Z X) (g : Hom Z Y) (h : Hom W Z)
-  : ⟨f , g⟩ ∘ h = ⟨f ∘ h,g ∘ h⟩.
+  : ⟨f , g⟩ ∘ h ≈ ⟨f ∘ h,g ∘ h⟩.
 Proof.
   apply axiom_product.
   split.
-  - rewrite <- axiom_comp_assoc, prod_β1. auto.
-  - rewrite <- axiom_comp_assoc, prod_β2. auto.
+  - rewrite <- axiom_comp_assoc, prod_β1. cato.
+  - rewrite <- axiom_comp_assoc, prod_β2. cato.
 Qed.
 
 Lemma prod_η {X Y Z} (h : Hom Z (X × Y))
-  : h = ⟨ π1 ∘ h , π2 ∘ h ⟩.
+  : h ≈ ⟨ π1 ∘ h , π2 ∘ h ⟩.
 Proof.
   apply axiom_product; split; cato.
 Qed.
@@ -386,7 +412,7 @@ Proof. auto. Qed.
 
 Lemma prod_comp_l {X Y X' Y' Z}
     (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
-  : (f' × g') ∘ ⟨f , g⟩ = ⟨f' ∘ f , g' ∘ g⟩.
+  : (f' × g') ∘ ⟨f , g⟩ ≈ ⟨f' ∘ f , g' ∘ g⟩.
 Proof.
   apply axiom_product.
   split.
@@ -395,13 +421,13 @@ Proof.
     rewrite prod_β1.
     rewrite axiom_comp_assoc.
     rewrite prod_β1.
-    auto.
+    cato.
   - rewrite <- axiom_comp_assoc.
     rewrite cross_η.
     rewrite prod_β2.
     rewrite axiom_comp_assoc.
     rewrite prod_β2.
-    auto.
+    cato.
 Qed.
 
 End Cross.
