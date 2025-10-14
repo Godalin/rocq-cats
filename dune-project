@@ -2,9 +2,11 @@
 
 (using coq 0.10)
 
+(generate_opam_files)
+
 (name rocq-cats)
 
-(generate_opam_files)
+(version 0.0)
 
 (package
  (name rocq-cats)
