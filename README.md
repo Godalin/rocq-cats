@@ -5,6 +5,8 @@ A category theory for self study.
 
 ## Key Features
 
+### Category Theory
+
 - Fully Axiom Free / Constructive.
 
 - Modularity with sub-/super- type classes [see here](/theories/Cat/Core.v).
@@ -20,12 +22,22 @@ A category theory for self study.
 - (Weak version of) Yoneda Lemma can be proved with this target category `SetCat` [see here](/theories/Cat/Natural.v).
   - Weak because functoriality / naturality property about related constructions, only the isomorphism(s).
 
+### ETCS
+
+This project aims at building ETCS.
+
 ## TODOs
 
-- [x] Pullbacks and its equivalence forms
+- [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor
-- [ ] ETCS constructions
 - [ ] Univalence Category
 - [ ] Enriched Category
-- [ ] ...
+- [ ] ETCS constructions
+  - [ ] Sub-object
+  - [ ] Relations
+  - [ ] Numbers
+  - [ ] Well Orderings
+  - [ ] AC
+  - [ ] Cardinal Arithmetics
+- [ ] *TBA*
