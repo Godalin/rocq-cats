@@ -17,10 +17,9 @@ Open Scope cat_scope.
 
 (** * Category *)
 
-Class Cat@{i j} :=
-  { Ob : Type@{i}
-
-  ; Hom : Ob → Ob → Type@{j}
+Class Cat@{o h} :=
+  { Ob : Type@{o}
+  ; Hom : Ob → Ob → Type@{h}
 
   ; HomEq {X Y} : Hom X Y → Hom X Y → Prop
   ; axiom_hom_eq {X Y} :: IsHomEq (@HomEq X Y)
@@ -28,6 +27,7 @@ Class Cat@{i j} :=
   ; id {X} : Hom X X
 
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
+
   ; axiom_comp_proper {X Y Z}
     :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
 
@@ -47,18 +47,20 @@ Arguments axiom_id_l {_ _ _} _.
 Arguments axiom_id_r {_ _ _} _.
 Arguments axiom_comp_assoc {_ _ _ _ _} _ _ _.
 
-Notation "@Ob C" := (@Ob C)
-  (at level 35) : type_scope.
+Notation "'@Ob' C" := (@Ob C)
+  (at level 35) : cat_scope.
 
-Notation "@Hom C" := (@Hom C)
-  (at level 35) : type_scope.
+Notation "'@Hom' C" := (@Hom C)
+  (at level 35) : cat_scope.
 
-(* Notation "'@HomEq' C" := (@HomEq C)
-  (at level 35) : type_scope. *)
-Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : type_scope.
+Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : cat_scope.
 
 Infix "≈" := HomEq
-  (at level 50, no associativity).
+  (at level 50, no associativity) : cat_scope.
+
+Notation "f '≈' g '⦂' 'Hom' X Y" := (@HomEq _ X Y f g)
+  (at level 50, no associativity, only printing,
+    format "f  '≈'  g  '⦂'  'Hom'  X  Y") : cat_scope.
 
 Notation "'@id' X" := (@id _ X)
   (at level 35) : hom_scope.
@@ -148,8 +150,9 @@ Arguments iso {_} _%_ob _%_ob.
 Notation "X '≅' Y" := (iso X Y)
   (at level 70, no associativity) : type_scope.
 
-Notation "X '≅['  C  ']' Y" := (@iso C X Y)
-  (at level 70, no associativity) : type_scope.
+Notation "X '≅[' C ']' Y" := (@iso C X Y)
+  (at level 70, no associativity,
+    format "X  ≅[ C ]  Y") : type_scope.
 
 Tactic Notation "elim_iso" ident(f) :=
   let fi := fresh f "i" in
@@ -157,8 +160,10 @@ Tactic Notation "elim_iso" ident(f) :=
   let Hffi := fresh "H" f fi in
   intros (f & fi & Hfif & Hffi).
 
+
+
 Section Iso.
-Context `{Cat}.
+Context `{C : Cat}.
 
 Theorem iso_refl {X}
   : X ≅ X.
@@ -185,7 +190,7 @@ Proof.
     rewrite Hfi, axiom_id_l. auto.
 Qed.
 
-Global Instance iso_equiv : Equivalence iso.
+Global Instance iso_Equivalence : Equivalence iso.
 Proof.
   split.
   - intros x. apply iso_refl.
@@ -221,7 +226,7 @@ Notation "'@!' X" := (@term _ _ _ X)
 
 
 Section Terminal.
-Context `{Cat}.
+Context `{C : Cat}.
 
 Definition is_terminal T :=
   ∀ X, ∃ h : Hom X T, is_unique' h.
@@ -317,7 +322,7 @@ Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
 
 
 Section Product.
-Context `{Cat}.
+Context `{C : Cat}.
 
 Definition is_product (X Y P : Ob)
     (p : Hom P X) (q : Hom P Y) :=
@@ -365,7 +370,7 @@ Qed.
 
 Lemma prod_comp_r {X Y Z W}
     (f : Hom Z X) (g : Hom Z Y) (h : Hom W Z)
-  : ⟨f , g⟩ ∘ h ≈ ⟨f ∘ h,g ∘ h⟩.
+  : ⟨f , g⟩ ∘ h ≈ ⟨f ∘ h , g ∘ h⟩.
 Proof.
   apply axiom_product.
   split.
@@ -406,7 +411,7 @@ Hint Resolve prod_β2 : cat.
 
 
 Section Cross.
-Context `{HasProduct}.
+Context `{C : Cat} `{H : !HasProduct C}.
 
 Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : Hom (X × Y) (X' × Y')
@@ -511,5 +516,5 @@ Notation "X '^' Y" := (exp X Y)
 Notation "'ƛ' f" := (curry f)
   (at level 35) : hom_scope.
 
-Notation "@eval X Y" := (@eval _ _ _ _ X Y)
+Notation "'@eval' X Y" := (@eval _ _ _ _ X Y)
   (at level 35) : hom_scope.
