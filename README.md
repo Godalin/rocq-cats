@@ -22,7 +22,7 @@ A category theory for self study.
 
 ## TODOs
 
-- [ ] Pullbacks and its equivalence forms
+- [x] Pullbacks and its equivalence forms
 - [ ] Limits
 - [ ] Adjoint Functor
 - [ ] ETCS constructions
