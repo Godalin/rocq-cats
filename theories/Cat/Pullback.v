@@ -117,7 +117,7 @@ Section Pullback.
 Context `{C : Cat} `{H : !HasPullback C}.
 Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
-Theorem pullback_trans'
+Theorem pullback_trans
   : is_pullback (f ∘ h) g _
     (pb1 h (pb1 f g)) (pb2 f g ∘ pb2 h (pb1 f g)).
 Proof.
@@ -157,10 +157,45 @@ Proof.
       rewrite axiom_comp_assoc. reflexivity.
 Qed.
 
-Theorem pullback_trans
+Theorem pullback_trans'
   : W ×[h, pb1 f g] (X ×[f,g] Y) ≅ W ×[f ∘ h, g] Y.
 Proof.
-  apply (pullback_unique (pullback_trans') (pb_pullback)).
+  apply (pullback_unique (pullback_trans) (pb_pullback)).
 Qed.
 
 End Pullback.
+
+
+
+Section Product.
+Context `{C : Cat}.
+Context `{HT : !HasTerminal C} `{HPb : !HasPullback C}.
+Context {X Y : Ob}.
+
+(** If a category has a terminal object and all pullbacks,
+    it has all product objects. *)
+
+Theorem pullback_product
+  : is_product X Y (X ×[ ! , ! ] Y) (pb1 ! !) (pb2 ! !).
+Proof. unfold is_product.
+  intros Z p q. exists (pb p q). split.
+  - split. rewrite pb_β1. cato.
+    rewrite term_η. rewrite (term_η (! ∘ _)). cato.
+    rewrite pb_β2. cato.
+    rewrite term_η. rewrite (term_η (! ∘ _)). cato.
+  - intros h [H1 H2].
+    apply pb_η. rewrite term_η.
+    rewrite (term_η (! ∘ _)). cato.
+    split; auto.
+Qed.
+
+Context `{HP : !HasProduct C}.
+
+(** Then it is isomorphic to the product object. *)
+
+Theorem pullback_product'
+  : (X ×[ ! , ! ] Y) ≅ X × Y.
+Proof. apply (product_unique pullback_product prod_product).
+Qed.
+
+End Product.

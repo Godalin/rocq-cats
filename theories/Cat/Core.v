@@ -236,7 +236,7 @@ Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
   destruct H as (h & Hh_unique);
   rewrite elim_is_unique' in Hh_unique.
 
-Proposition terminal_arr_eq_id {T}
+Proposition term_id {T}
   : is_terminal T
   → ∀ h : Hom T T, h ≈ id.
 Proof.
@@ -256,7 +256,7 @@ Proof.
   elim_terminal (HT1 T2) as h1.
   elim_terminal (HT2 T1) as h2.
   exists h2, h1; simpl.
-  constructor; apply terminal_arr_eq_id; auto.
+  constructor; apply term_id; auto.
 Qed.
 
 End Terminal.
@@ -273,7 +273,7 @@ Proof.
   apply axiom_terminal.
 Qed.
 
-Proposition term_η {X} {h : Hom X 1}
+Proposition term_η {X} (h : Hom X 1)
   : h ≈ !.
 Proof.
   apply axiom_terminal. trivial.
@@ -329,20 +329,32 @@ Definition is_product (X Y P : Ob)
   ∀ Z (f : Hom Z X) (g : Hom Z Y),
     ∃ h : Hom Z P, is_unique (λ h, p ∘ h ≈ f ∧ q ∘ h ≈ g) h.
 
-End Product.
-
 Tactic Notation "elim_product" constr(H) "as" ident(h) :=
   let Hh1 := fresh "H" h "1" in
   let Hh2 := fresh "H" h "2" in
   let Hh_unique := fresh "H" h "_unique" in
   destruct H as (h & (Hh1 & Hh2) & Hh_unique).
 
+Context {X Y P Q : Ob}.
+Context {p1 : Hom P X} {p2 : Hom P Y}.
+Context {q1 : Hom Q X} {q2 : Hom Q Y}.
+
+(* TODO *)
+
+Theorem product_unique
+  : is_product X Y P p1 p2
+  → is_product X Y Q q1 q2
+  → P ≅ Q.
+Admitted.
+
+End Product.
+
 
 
 Section Product.
 Context `{C : Cat} `{!HasProduct C}.
 
-Theorem prod_is_product {X Y : Ob}
+Theorem prod_product {X Y : Ob}
   : is_product X Y (X × Y) π1 π2.
 Proof.
   intros Z f g.
@@ -404,7 +416,7 @@ Qed.
 
 End Product.
 
-Hint Resolve prod_is_product : cat.
+Hint Resolve prod_product : cat.
 Hint Resolve prod_β1 : cat.
 Hint Resolve prod_β2 : cat.
 
