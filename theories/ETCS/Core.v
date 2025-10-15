@@ -1,18 +1,38 @@
 From Cats Require Import Cat.Core.
+From Cats Require Import Cat.Pullback.
 From Cats Require Import ETCS.Nat.
+
+
+
+(** Well-Pointed Category *)
+
+Class IsWellPointed (C : Cat) `(!HasTerminal C) :=
+  { axiom_well_pointed {X Y} {f g : Hom X Y}
+    : ¬ f ≈ g → ∃ x : Hom 1 X,
+      ¬ f ∘ x ≈ g ∘ x
+  }.
+
+Class HasAxiomChoice (C : Cat) :=
+  { axiom_choice {X Y} {f : Hom X Y}
+    : (* TODO surjection *) ∃ g, is_rinv_of f g
+  }.
 
 Class ETCS (C : Cat) :=
   { hasTerminal :: HasTerminal C
   ; hasProduct :: HasProduct C
   ; hasExponential :: HasExponential hasProduct
-  ; hasNaturals :: HasNaturals C
+  ; hasPullback :: HasPullback C
+  
+  ; isWellPointed :: IsWellPointed C hasTerminal
+  ; hasAxiomChoice :: HasAxiomChoice C
+  ; hasNNO :: HasNNO C
   }.
 
 
 
 Section ETCS.
-Context {C : Cat} `{!ETCS C}.
+Context {C : Cat} `{E : !ETCS C}.
 
-Check π1 ∘ (id × ƛ id) × id.
+(** Let's do _Set Theory_ (in ETCS) ! *)
 
 End ETCS.
