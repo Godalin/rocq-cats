@@ -2,7 +2,7 @@ From Cats Require Import Cat.Core.
 
 
 
-(** Pullbacks *)
+(** * Pullbacks *)
 
 Class HasPullback `(C : Cat) :=
   { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob

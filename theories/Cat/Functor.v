@@ -2,6 +2,10 @@ From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Set.
 Open Scope cat_scope.
 
+
+
+(** * Functor *)
+
 Record Functor@{o1 h1 o2 h2}
   (C : Cat@{o1 h1})
   (D : Cat@{o2 h2}) :=
@@ -22,7 +26,7 @@ Notation fmap F := (@F1 _ _ F).
 
 
 
-(** Identity Functor *)
+(** ** Identity Functor *)
 
 Program Canonical Structure Id {C : Cat} : Functor C C :=
   {|F0 X := X

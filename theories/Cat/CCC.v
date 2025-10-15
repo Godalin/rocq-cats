@@ -3,7 +3,8 @@ From Cats Require Import Cat.Core.
 Open Scope cat_scope.
 
 
-(* TODO exp objects *)
+
+(** * Cartesian Closed Category *)
 
 Class CCC :=
   { C :: Cat
@@ -11,8 +12,6 @@ Class CCC :=
   ; hasProduct :: HasProduct C
   ; hasExponential :: HasExponential hasProduct
   }.
-
-
 
 Section CCC.
 Context `{CCC}.
