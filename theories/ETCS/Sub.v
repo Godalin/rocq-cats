@@ -6,7 +6,12 @@ From Cats Require Import Cat.Set.
 
 
 
-(** * Sub-object Functor *)
+(** * Sub-object Functor
+
+    The type of all sub-objects of a given object in a category
+    is naturally equipped with a equivalence the [Sub_eq], in our
+    setoid setting, this structure fits well as an contravariant
+    functor. *)
 
 Section Sub.
 Context `{C : Cat} `{H : !HasPullback C}.
@@ -66,34 +71,50 @@ Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
   split. unfold is_factored_through_by in *.
   - exists (pb (pb1 f r) (rs ∘ pb2 f r)).
     simpl. unfold is_factored_through_by.
-    rewrite pb_β1. cato.
-    rewrite <- axiom_comp_assoc, <- Hrs.
-    apply axiom_pb_cond.
+    carw.
+    rewrite <- axiom_comp_assoc, <- Hrs. cato.
   - exists (pb (pb1 f s) (sr ∘ pb2 f s)).
     simpl. unfold is_factored_through_by.
-    rewrite pb_β1. cato.
-    rewrite <- axiom_comp_assoc, <- Hsr.
-    apply axiom_pb_cond.
+    carw.
+    rewrite <- axiom_comp_assoc, <- Hsr. cato.
 Qed.
 Next Obligation. intros f g Hfg s. simpl.
   apply iso_Sub_eq. simpl.
   exists (pb (Sub_fmap g s) (pb2 g s)).
   exists (pb (Sub_fmap f s) (pb2 f s)).
   simpl. repeat split.
-  - rewrite pb_β1. cato. rewrite Hfg. cato.
-  - rewrite pb_β1. cato. rewrite <- Hfg. cato.
-  - admit.
-  - admit.
-Admitted.
+  - carw. rewrite Hfg. cato.
+  - carw. rewrite <- Hfg. cato.
+  - assert (id ≈ pb (pb1 g s) (pb2 g s)).
+    apply pb_η. cato. split; cato.
+    rewrite H0. apply pb_η. cato. split.
+    rewrite <- axiom_comp_assoc. carw.
+    rewrite Hfg. cato. rewrite <- Hfg. cato.
+    rewrite <- axiom_comp_assoc. carw.
+    rewrite Hfg. cato. rewrite <- Hfg. cato.
+  - assert (id ≈ pb (pb1 f s) (pb2 f s)).
+    apply pb_η. cato. split; cato.
+    rewrite H0. apply pb_η. cato. split.
+    rewrite <- axiom_comp_assoc. carw.
+    rewrite <- Hfg. cato. rewrite Hfg. cato.
+    rewrite <- axiom_comp_assoc. carw.
+    rewrite <- Hfg. cato. rewrite Hfg. cato.
+Qed.
 Next Obligation.
   intros s. simpl. apply iso_Sub_eq. simpl.
   exists (pb s id). exists (pb2 id s).
   repeat split.
-  - rewrite pb_β1. cato. cato. cato.
+  - carw.
   - rewrite <- (axiom_id_l (pb1 _ _)). cato.
-  - rewrite pb_β2; repeat cato.
-  - admit.
-Admitted.
+  - carw.
+  - assert (id ≈ pb (pb1 id s) (pb2 id s)).
+    apply pb_η. cato. cato. rewrite H0.
+    apply pb_η. cato. split.
+    rewrite <- axiom_comp_assoc, pb_β1.
+    rewrite <- (axiom_id_l (pb1 _ _ )).
+    symmetry. cato. cato. cato.
+    rewrite <- axiom_comp_assoc. carw.
+Qed.
 Next Obligation.
   intros s. simpl. apply iso_Sub_eq. simpl.
 Admitted.

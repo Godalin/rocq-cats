@@ -116,6 +116,9 @@ End Pullback.
 Hint Resolve pb_β1 : cat.
 Hint Resolve pb_β2 : cat.
 
+Hint Rewrite @pb_β1 : cat.
+Hint Rewrite @pb_β2 : cat.
+
 
 
 Section Pullback.

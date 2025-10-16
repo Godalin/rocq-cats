@@ -87,6 +87,13 @@ Ltac cate := eauto with cat; try reflexivity.
 Hint Resolve axiom_id_l : cat.
 Hint Resolve axiom_id_r : cat.
 
+Ltac carw := autorewrite with cat using try reflexivity.
+
+Hint Rewrite @axiom_id_l : cat.
+Hint Rewrite @axiom_id_r : cat.
+
+
+
 Section CatBasic.
 Context `{Cat} {X Y : Ob}.
 
@@ -457,6 +464,9 @@ End Product.
 Hint Resolve prod_product : cat.
 Hint Resolve prod_β1 : cat.
 Hint Resolve prod_β2 : cat.
+
+Hint Rewrite @prod_β1 : cat.
+Hint Rewrite @prod_β2 : cat.
 
 
 
