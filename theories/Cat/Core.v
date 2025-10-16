@@ -78,7 +78,10 @@ Notation "'@id' X" := (@id _ X)
 Notation "f '∘' g" := (comp f g)
   (at level 40, left associativity) : hom_scope.
 
-Ltac cato := auto with cat; try reflexivity.
+Ltac cato := auto with cat;
+  try reflexivity;
+  repeat (rewrite axiom_id_l || rewrite axiom_id_r).
+
 Ltac cate := eauto with cat; try reflexivity.
 
 Hint Resolve axiom_id_l : cat.

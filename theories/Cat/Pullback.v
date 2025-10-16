@@ -41,6 +41,8 @@ Notation "X '×[' f '→' Z '←' g ']' Y" := (@Pb _ _ X Y Z f g)
 (* Notation "'@pb' f g p1 p2" := (@pb _ _ _ _ _ f g _ p1 p2)
   (at level 30) : hom_scope. *)
 
+Hint Resolve axiom_pb_cond : cat.
+
 
 
 Section Pullback.
@@ -106,10 +108,13 @@ Proof. apply axiom_pb_unique. auto. Qed.
 Theorem pb_β2 : pb2 f g ∘ pb p1 p2 ≈ p2.
 Proof. apply axiom_pb_unique. auto. Qed.
 
-Theorem pb_η {h} : pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2 → h ≈ pb p1 p2.
+Theorem pb_η h : pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2 → h ≈ pb p1 p2.
 Proof. apply axiom_pb_unique. auto. Qed.
 
 End Pullback.
+
+Hint Resolve pb_β1 : cat.
+Hint Resolve pb_β2 : cat.
 
 
 

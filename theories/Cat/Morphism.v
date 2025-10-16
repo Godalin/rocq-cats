@@ -113,7 +113,7 @@ Definition Sub_le Z (i j : Sub Z) : Prop
 Infix "≲Sub" := (Sub_le _)
   (at level 50, no associativity) : cat_scope.
 
-Infix "'≲Sub[' Z  ']'" := (Sub_le Z)
+Infix "≲Sub[ Z  ]" := (Sub_le Z)
   (at level 50, no associativity) : cat_scope.
 
 Definition Sub_eq Z (i j : Sub Z) : Prop
@@ -137,6 +137,8 @@ Next Obligation. destruct H as [g Hg]. destruct H0 as [h Hh].
   rewrite Hg. rewrite Hh. cato.
 Qed.
 
+Program Instance Sub_le_PreOrder {Z} : PreOrder (Sub_le Z).
+
 Program Instance Sub_eq_Reflexive {Z} : Reflexive (Sub_eq Z).
 Next Obligation. split; reflexivity. Qed.
 
@@ -146,7 +148,7 @@ Next Obligation. destruct H. split; auto. Qed.
 Program Instance Sub_eq_Transitive {Z} : Transitive (Sub_eq Z).
 Next Obligation. destruct H, H0. split; transitivity y; auto. Qed.
 
-
+Program Instance Sub_eq_Equivalence {Z} : Equivalence (Sub_eq Z).
 
 Proposition Sub_le_Mono {Z} {i j : Sub Z}
   : i ≲Sub j → ∃ k : i ↣ j, True.
@@ -186,3 +188,23 @@ Proposition epi_epi' {X Y} (f : Hom X Y)
 Proof. firstorder. Qed.
 
 End Morphism.
+
+
+
+Arguments is_factored_through_by {_ _ _ _} _ _ _ /.
+
+Arguments is_factored_through {_ _ _ _} _ _ /.
+
+Arguments sub {_ _} _.
+
+Infix "≲Sub" := (Sub_le _)
+  (at level 50, no associativity) : cat_scope.
+
+Infix "≲Sub[ Z  ]" := (Sub_le Z)
+  (at level 50, no associativity) : cat_scope.
+
+Infix "~Sub" := (Sub_eq _)
+  (at level 50, no associativity) : cat_scope.
+
+Infix "~Sub[ Z  ]" := (Sub_eq Z)
+  (at level 50, no associativity) : cat_scope.
