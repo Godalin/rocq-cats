@@ -47,6 +47,9 @@ Arguments axiom_id_l {_ _ _} _.
 Arguments axiom_id_r {_ _ _} _.
 Arguments axiom_comp_assoc {_ _ _ _ _} _ _ _.
 
+Bind Scope ob_scope with Ob.
+Bind Scope hom_scope with Hom.
+
 Notation "'@Ob' C" := (@Ob C)
   (at level 35) : cat_scope.
 
@@ -58,9 +61,16 @@ Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : cat_scope.
 Infix "≈" := HomEq
   (at level 50, no associativity) : cat_scope.
 
-Notation "f '≈' g '⦂' 'Hom' X Y" := (@HomEq _ X Y f g)
+Notation "f '≈' g '⦂' 'Hom' X ',' Y" := (@HomEq _ X Y f g)
   (at level 50, no associativity, only printing,
-    format "f  '≈'  g  '⦂'  'Hom'  X  Y") : cat_scope.
+    format "f  '≈'  g  '⦂'  'Hom'  X  ','  Y") : cat_scope.
+
+Notation "f '≉' g" := (¬ HomEq f g)
+  (at level 50, no associativity) : cat_scope.
+
+Notation "f '≉' g '⦂' 'Hom' X ',' Y" := (¬ @HomEq _ X Y f g)
+  (at level 50, no associativity, only printing,
+    format "f  '≉'  g  '⦂'  'Hom'  X  ','  Y") : cat_scope.
 
 Notation "'@id' X" := (@id _ X)
   (at level 35) : hom_scope.
@@ -68,21 +78,32 @@ Notation "'@id' X" := (@id _ X)
 Notation "f '∘' g" := (comp f g)
   (at level 40, left associativity) : hom_scope.
 
-Hint Resolve axiom_id_l : cat.
-Hint Resolve axiom_id_r : cat.
-
 Ltac cato := auto with cat; try reflexivity.
 Ltac cate := eauto with cat; try reflexivity.
 
-Bind Scope ob_scope with Ob.
-Bind Scope hom_scope with Hom.
+Hint Resolve axiom_id_l : cat.
+Hint Resolve axiom_id_r : cat.
+
+Section CatBasic.
+Context `{Cat} {X Y : Ob}.
+
+Theorem symm_id_l {x : Hom X Y} : x ≈ id ∘ x.
+Proof. symmetry. cato. Qed.
+
+Theorem symm_id_r {x : Hom X Y} : x ≈ x ∘ id.
+Proof. symmetry. cato. Qed.
+
+End CatBasic.
+
+Hint Resolve symm_id_l : cat.
+Hint Resolve symm_id_r : cat.
 
 
 
-Definition comp_pre {C : Cat} {X Y Z : Ob} (f : Hom X Y)
+Definition comp_pre `{C : Cat} {X Y Z : Ob} (f : Hom X Y)
   := (λ g : Hom Y Z, g ∘ f).
 
-Definition comp_post {C : Cat} {X Y Z : Ob} (f : Hom Y Z)
+Definition comp_post `{C : Cat} {X Y Z : Ob} (f : Hom Y Z)
   := (λ g : Hom X Y, f ∘ g).
 
 Arguments comp_pre {_ _ _ _} _ _ /.
@@ -115,10 +136,24 @@ Qed.
 
 
 
-(** Inversion & Isomorphism *)
-
 Section Cat.
 Context `{Cat}.
+
+
+
+(** ** Composition *)
+
+Proposition comp_l {X Y Z} (f : Hom Y Z) {x y : Hom X Y}
+  : x ≈ y → f ∘ x ≈ f ∘ y.
+Proof. intros Heq. rewrite Heq. cato. Qed.
+
+Proposition comp_r {X Y Z} (f : Hom X Y) {x y : Hom Y Z}
+  : x ≈ y → x ∘ f ≈ y ∘ f.
+Proof. intros Heq. rewrite Heq. cato. Qed.
+
+
+
+(** ** Inversion & Isomorphism *)
 
 Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X) : Prop
   := g ∘ f ≈ id.

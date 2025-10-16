@@ -1,0 +1,188 @@
+From Cats Require Import Cat.Core.
+
+
+
+(** * Morphisms *)
+
+Section Morphism.
+Context `{C : Cat}.
+
+
+
+(** ** Monomorphisms
+
+    In Rocq, law of exclude middle (lem) is not admitted as default,
+    thus the law of contraposition. Since our aim is to build a
+    constructive theory of categories, we provide both versions of
+    the definition of being a [monomorphism]. From the theorem proving
+    perspective, it is best practice to assume the weaker version
+    (i.e., [is_mono']) as input, and producing the stronger version
+    (i.e., [is_mono]) as output.
+    
+    Similar situation for [is_epi] and [is_epi']. *)
+
+Definition is_mono {Y Z} (f : Hom Y Z) : Prop
+  := ∀ X, ∀ x y : Hom X Y, f ∘ x ≈ f ∘ y → x ≈ y.
+
+Definition is_mono' {Y Z} (f : Hom Y Z) : Prop
+  := ∀ X, ∀ x y : Hom X Y, x ≉ y → f ∘ x ≉ f ∘ y.
+
+Proposition mono_mono' {Y Z} (f : Hom Y Z)
+  : is_mono f → is_mono' f.
+Proof. firstorder. Qed.
+
+Proposition mono_id {X} : is_mono (@id X).
+Proof. intros Y x y Heq.
+  rewrite axiom_id_l in Heq.
+  rewrite axiom_id_l in Heq. auto.
+Qed.
+
+Proposition mono_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+  : is_mono f → is_mono g → is_mono (g ∘ f).
+Proof. intros Hf Hg W x y Heq.
+  apply Hf. apply Hg.
+  repeat rewrite <- axiom_comp_assoc. auto.
+Qed.
+
+Proposition mono'_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+  : is_mono' f → is_mono' g → is_mono' (g ∘ f).
+Proof. intros Hf Hg W x y Hneq.
+  repeat rewrite axiom_comp_assoc.
+  apply Hg. apply Hf. auto.
+Qed.
+
+(* TODO mono' version *)
+
+Proposition mono_cancel_l {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+  : is_mono (g ∘ f) → is_mono f.
+Proof. intros Hgf W x y Hf.
+  apply (comp_l g) in Hf. apply Hgf.
+  repeat rewrite axiom_comp_assoc. auto.
+Qed.
+
+Proposition iso_mono {X Y} (f : Hom X Y)
+  : is_iso f → is_mono f.
+Proof. intros [fi [H1 H2]] Z x y H.
+  apply (comp_l fi) in H.
+  repeat rewrite <- axiom_comp_assoc in H.
+  repeat rewrite H1 in H.
+  repeat rewrite axiom_id_l in H. auto.
+Qed.
+
+
+
+Record Mono (X Y : Ob) :=
+  { mor :> Hom X Y
+  ; mor_mono : is_mono mor
+  }.
+
+Notation "X ↣ Y" := (Mono X Y)
+  (at level 35, no associativity) : cat_scope.
+
+Program Canonical Structure Mono_id {X Z} (f : X ↣ Z) :=
+  {|mor := id |}.
+Next Obligation. apply mono_id. Qed.
+
+Program Canonical Structure Mono_comp {X Y Z} (f : Y ↣ Z) (g : X ↣ Y) :=
+  {|mor := f ∘ g |}.
+Next Obligation. apply mono_comp.
+  apply mor_mono. apply mor_mono.
+Qed.
+
+Definition is_factored_through_by {X Y Z}
+    (g : Hom Y Z) (f : Hom X Z) (h : Hom X Y)
+  := f ≈ g ∘ h.
+
+Definition is_factored_through {X Y Z} (g : Hom Y Z) (f : Hom X Z)
+  := ∃ h, is_factored_through_by g f h.
+
+
+
+Record Sub (X : Ob) :=
+  { sub : Ob
+  ; sub_mono :> sub ↣ X
+  }.
+
+Definition object_of_Sub {X Y} (f : X ↣ Y) := X.
+
+Coercion object_of_Sub : Mono >-> Ob.
+
+Definition Sub_le Z (i j : Sub Z) : Prop
+  := is_factored_through j i.
+
+Infix "≲Sub" := (Sub_le _)
+  (at level 50, no associativity) : cat_scope.
+
+Infix "'≲Sub[' Z  ']'" := (Sub_le Z)
+  (at level 50, no associativity) : cat_scope.
+
+Definition Sub_eq Z (i j : Sub Z) : Prop
+  := i ≲Sub j ∧ j ≲Sub i.
+
+Infix "~Sub" := (Sub_eq _)
+  (at level 50, no associativity) : cat_scope.
+
+Infix "~Sub[ Z  ]" := (Sub_eq Z)
+  (at level 50, no associativity) : cat_scope.
+
+Program Instance Sub_le_Reflexive {Z} : Reflexive (Sub_le Z).
+Next Obligation. exists id. cato.
+  unfold is_factored_through_by. cato.
+Qed.
+
+Program Instance Sub_le_Transitive {Z} : Transitive (Sub_le Z).
+Next Obligation. destruct H as [g Hg]. destruct H0 as [h Hh].
+  exists (h ∘ g). unfold is_factored_through_by.
+  rewrite <- axiom_comp_assoc.
+  rewrite Hg. rewrite Hh. cato.
+Qed.
+
+Program Instance Sub_eq_Reflexive {Z} : Reflexive (Sub_eq Z).
+Next Obligation. split; reflexivity. Qed.
+
+Program Instance Sub_eq_Symmetric {Z} : Symmetric (Sub_eq Z).
+Next Obligation. destruct H. split; auto. Qed.
+
+Program Instance Sub_eq_Transitive {Z} : Transitive (Sub_eq Z).
+Next Obligation. destruct H, H0. split; transitivity y; auto. Qed.
+
+
+
+Proposition Sub_le_Mono {Z} {i j : Sub Z}
+  : i ≲Sub j → ∃ k : i ↣ j, True.
+Proof. intros [h H].
+  assert (Hmi : is_mono (j ∘ h)).
+  { intros W x y H1. rewrite <- H in H1.
+    apply sub_mono. auto. }
+  assert (Hmh : is_mono h).
+  { eapply mono_cancel_l. eauto. }
+  exists {| sub := i; sub_mono := {| mor := h; mor_mono := Hmh |} |}.
+  auto.
+Qed.
+
+(* TODO *)
+Proposition iso_Sub_eq {Z} {i j : Sub Z}
+  : i ~Sub j ↔ ∃ h1 h2,
+      is_factored_through_by i j h1
+    ∧ is_factored_through_by j i h2
+    ∧ is_inv_of h1 h2 .
+Proof. split.
+Admitted.
+
+
+
+(** ** Epimorphisms
+
+    Similar situation as [is_mono] and [is_mono']. *)
+
+Definition is_epi {X Y} (f : Hom X Y) : Prop
+  := ∀ Z, ∀ x y : Hom Y Z, x ∘ f ≈ y ∘ f → x ≈ y.
+
+Definition is_epi' {X Y} (f : Hom X Y) : Prop
+  := ∀ Z, ∀ x y : Hom Y Z, x ≉ y → x ∘ f ≉ y ∘ f.
+
+Proposition epi_epi' {X Y} (f : Hom X Y)
+  : is_epi f → is_epi' f.
+Proof. firstorder. Qed.
+
+End Morphism.
