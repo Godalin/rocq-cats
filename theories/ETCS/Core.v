@@ -19,22 +19,29 @@ Class HasAxiomChoice (C : Cat) :=
   }.
 
 Class ETCS (C : Cat) :=
+
+  (** [ETCS] is based on a _elementary topos_ *)
+
   { hasTerminal :: HasTerminal C
   ; hasProduct :: HasProduct C
   ; hasExponential :: HasExponential hasProduct
   ; hasPullback :: HasPullback C
   ; hasSubObjectClassifier
     :: HasSubObjectClassifier C hasTerminal
+
+  (** ... with other three axioms *)
+
   ; isWellPointed :: IsWellPointed C hasTerminal
   ; hasAxiomChoice :: HasAxiomChoice C
-  ; hasNNO :: HasNNO C
+  ; hasNaturalNumbersObject
+    :: HasNaturalNumbersObject C hasTerminal
   }.
 
 
 
 Section ETCS.
-Context {C : Cat} `{E : !ETCS C}.
+Context {C : Cat} `{Theory : !ETCS C}.
 
-(** Let's do _Set Theory_ (in ETCS) ! *)
+(** Let's do _Set Theory_ (in [ETCS]) ! *)
 
 End ETCS.
