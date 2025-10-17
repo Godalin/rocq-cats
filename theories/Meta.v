@@ -15,12 +15,10 @@ Class IsHomEq {H} (R : H → H → Prop) :=
   { hom_eq_equiv :: Equivalence R
   }.
 
-Record is_unique {X : Type} {R : X → X → Prop} `{IsHomEq X R} (P : X → Prop) (x : X) : Prop :=
+Record is_unique {X R} `{IsHomEq X R} (P : X → Prop) (x : X) : Prop :=
   { this : P x
   ; that : ∀ y : X, P y → R y x
   }.
-
-
 
 Section Unique.
 Context {X : Type} {R : X → X → Prop} `{IsHomEq X R}.
@@ -47,3 +45,17 @@ Tactic Notation "elim_unique" constr(H) "with" constr(h) :=
   specialize (Heq h).
 
 End Unique.
+
+(* Notation "'is_universal'' x1 .. xn , C , P" :=
+  (C ∧ (∀ x1, .. (∀ xn, C → P)..))
+  (at level 200, x1 binder, xn binder,
+    only parsing). *)
+
+(* Check λ x y, is_universal' P x y, x = y, h, h x y = x. *)
+
+(* Notation "'is_universal[' x1 .. xn '|' C '&∃!' h 's.t.' P ']'" :=
+  (λ x1, .. (λ xn, is_universal' x1 .. xn, C, (∃ h, (λ h, P) h))..)
+  (at level 200, x1 binder, xn binder, h binder,
+    only parsing). *)
+
+(* Check is_universal[x y | x = y &∃! h s.t. h x y = x]. *)

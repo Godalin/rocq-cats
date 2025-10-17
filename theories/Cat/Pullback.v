@@ -34,12 +34,13 @@ Notation "X '×[' f '→' Z '←' g ']' Y" := (@Pb _ _ X Y Z f g)
   (at level 52, no associativity,
     format "X  '×[' f  '→'  Z  '←'  g ]  Y") : ob_scope.
 
-(* Notation "X '×[' Z ']' Y" := (@Pb _ _ X Y Z _ _)
-  (at level 51, right associativity,
-    format "X  '×[' Z ]  Y") : ob_scope. *)
+Notation "#pb1" := (pb1 _ _) : hom_scope.
+Notation "#pb2" := (pb2 _ _) : hom_scope.
 
-(* Notation "'@pb' f g p1 p2" := (@pb _ _ _ _ _ f g _ p1 p2)
-  (at level 30) : hom_scope. *)
+Notation "@pb1 f g" := (pb1 f g)
+  (at level 52) : hom_scope.
+Notation "@pb2 f g" := (pb2 f g)
+  (at level 52) : hom_scope.
 
 Hint Resolve axiom_pb_cond : cat.
 
@@ -93,10 +94,8 @@ Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
 Theorem pb_pullback
   : is_pullback f g (X ×[f,g] Y) (pb1 f g) (pb2 f g).
 Proof.
-  split.
-  - apply axiom_pb_cond.
-  - intros Q q1 q2. exists (pb q1 q2).
-    apply axiom_pb_unique. auto.
+  split. cato. intros Q q1 q2. exists (pb q1 q2).
+  apply axiom_pb_unique. auto.
 Qed.
 
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
@@ -113,6 +112,7 @@ Proof. apply axiom_pb_unique. auto. Qed.
 
 End Pullback.
 
+Hint Resolve pb_pullback : cat.
 Hint Resolve pb_β1 : cat.
 Hint Resolve pb_β2 : cat.
 
@@ -121,54 +121,46 @@ Hint Rewrite @pb_β2 : cat.
 
 
 
+(** ** Pullback Properties *)
+
 Section Pullback.
 Context `{C : Cat} `{H : !HasPullback C}.
 Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
-Theorem pullback_trans
-  : is_pullback (f ∘ h) g _
-    (pb1 h (pb1 f g)) (pb2 f g ∘ pb2 h (pb1 f g)).
-Proof.
-  unfold is_pullback. split.
-  - rewrite axiom_comp_assoc.
-    rewrite axiom_pb_cond.
-    rewrite <- axiom_comp_assoc.
-    rewrite axiom_pb_cond.
-    rewrite axiom_comp_assoc.
-    reflexivity.
-  - intros Q q1 q2 Hq.
-    set (h1 := pb (h ∘ q1) q2 : Hom Q (X ×[f,g] Y)).
-    set (h2 := pb q1 h1 : Hom Q (W ×[h,pb1 f g] (X ×[f,g] Y))).
-    exists h2.
-    split.
-    + split; unfold h2; unfold h1.
-      rewrite pb_β1. cato.
-      rewrite pb_β1. cato. rewrite <- axiom_comp_assoc. cato.
-      rewrite axiom_comp_assoc.
-      rewrite pb_β2. rewrite pb_β2; cato.
-      rewrite <- axiom_comp_assoc. cato.
-      rewrite pb_β1. cato. rewrite <- axiom_comp_assoc. cato.
-    + intros i [Hi1 Hi2].
-      unfold h2, h1. rewrite <- Hi1, <- Hi2.
-      apply pb_η.
-      rewrite pb_β1. reflexivity.
-      rewrite Hi1. rewrite Hi2.
-      rewrite <- axiom_comp_assoc. apply Hq.
-      split. reflexivity.
-      apply pb_η.
-      rewrite Hi1, Hi2.
-      rewrite <- axiom_comp_assoc. cato.
-      split.
-      rewrite <- axiom_comp_assoc.
-      rewrite <- axiom_comp_assoc.
-      rewrite axiom_pb_cond. reflexivity.
-      rewrite axiom_comp_assoc. reflexivity.
+(** Pullback alone [id]. *)
+
+Theorem pullback_id : is_pullback id g _ g id.
+Proof. split. carw. intros Q q1 q2 H1. exists q2. split.
+  split. rewrite <- H1. carw. carw.
+  intros y. intros [H2 H3]. rewrite <- H3. carw.
 Qed.
 
-Theorem pullback_trans'
+(** Pullback along [_ ∘ _]. *)
+
+Theorem pullback_comp
+  : is_pullback (f ∘ h) g _
+    (pb1 h (pb1 f g)) (pb2 f g ∘ pb2 h (pb1 f g)).
+Proof. split.
+  - cacr. rewrite axiom_pb_cond.
+    cacl. rewrite axiom_pb_cond. cacr.
+  - intros Q q1 q2 Hq.
+    pose (h1 := pb (h ∘ q1) q2 : Hom Q (X ×[f,g] Y)).
+    pose (h2 := pb q1 h1 : Hom Q (W ×[h,pb1 f g] (X ×[f,g] Y))).
+    exists h2. split.
+    + split; unfold h2; unfold h1.
+      carw. cacl. cacr. carw. cacl. carw. cacl.
+    + intros i [Hi1 Hi2].
+      unfold h2, h1. rewrite <- Hi1, <- Hi2.
+      apply pb_η. carw. rewrite Hi1, Hi2.
+      cacl. split. cato. apply pb_η. rewrite Hi1, Hi2.
+      cacl. split. cacl. cacl.
+      rewrite axiom_pb_cond. cato. cacl.
+Qed.
+
+Theorem pullback_comp'
   : W ×[h, pb1 f g] (X ×[f,g] Y) ≅ W ×[f ∘ h, g] Y.
-Proof.
-  apply (pullback_unique (pullback_trans) (pb_pullback)).
+Proof. eapply pullback_unique.
+  apply pullback_comp. cato.
 Qed.
 
 End Pullback.
@@ -184,17 +176,16 @@ Context {X Y : Ob}.
     it has all product objects. *)
 
 Theorem pullback_product
-  : is_product X Y (X ×[ ! , ! ] Y) (pb1 ! !) (pb2 ! !).
-Proof. unfold is_product.
-  intros Z p q. exists (pb p q). split.
-  - split. rewrite pb_β1. cato.
-    rewrite term_η. rewrite (term_η (! ∘ _)). cato.
-    rewrite pb_β2. cato.
-    rewrite term_η. rewrite (term_η (! ∘ _)). cato.
+  : is_product X Y (X ×[!,!] Y) (pb1 ! !) (pb2 ! !).
+Proof. intros Z p q. exists (pb p q). split.
+  - split. carw. rewrite term_comp_l. cato.
+    carw. rewrite term_comp_l. cato. carw.
+    repeat rewrite term_comp_l. cato.
   - intros h [H1 H2].
-    apply pb_η. rewrite term_η.
-    rewrite (term_η (! ∘ _)). cato.
-    split; auto.
+    apply pb_η. carw.
+    rewrite term_comp_l. carw. cato.
+    rewrite term_comp_l. cato.
+    split; cato.
 Qed.
 
 Context `{HP : !HasProduct C}.
@@ -202,8 +193,9 @@ Context `{HP : !HasProduct C}.
 (** Then it is isomorphic to the product object. *)
 
 Theorem pullback_product'
-  : (X ×[ ! , ! ] Y) ≅ X × Y.
-Proof. apply (product_unique pullback_product prod_product).
+  : (X ×[!,!] Y) ≅ X × Y.
+Proof. eapply product_unique.
+  apply pullback_product. cato.
 Qed.
 
 End Product.

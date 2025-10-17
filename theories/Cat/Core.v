@@ -61,16 +61,16 @@ Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : cat_scope.
 Infix "≈" := HomEq
   (at level 50, no associativity) : cat_scope.
 
-Notation "f '≈' g '⦂' 'Hom' X ',' Y" := (@HomEq _ X Y f g)
+Notation "f '≈' g '⦂' 'Hom(' X ',' Y ')'" := (@HomEq _ X Y f g)
   (at level 50, no associativity, only printing,
-    format "f  '≈'  g  '⦂'  'Hom'  X  ','  Y") : cat_scope.
+    format "f  '≈'  g  '⦂'  'Hom(' X  ','  Y )") : cat_scope.
 
 Notation "f '≉' g" := (¬ HomEq f g)
   (at level 50, no associativity) : cat_scope.
 
-Notation "f '≉' g '⦂' 'Hom' X ',' Y" := (¬ @HomEq _ X Y f g)
+Notation "f '≉' g '⦂' 'Hom(' X ',' Y ')'" := (¬ @HomEq _ X Y f g)
   (at level 50, no associativity, only printing,
-    format "f  '≉'  g  '⦂'  'Hom'  X  ','  Y") : cat_scope.
+    format "f  '≉'  g  '⦂'  'Hom(' X  ','  Y )") : cat_scope.
 
 Notation "'@id' X" := (@id _ X)
   (at level 35) : hom_scope.
@@ -78,16 +78,28 @@ Notation "'@id' X" := (@id _ X)
 Notation "f '∘' g" := (comp f g)
   (at level 40, left associativity) : hom_scope.
 
-Ltac cato := auto with cat;
-  try reflexivity;
-  repeat (rewrite axiom_id_l || rewrite axiom_id_r).
+(** Category auto & eauto *)
 
+Ltac cato := auto with cat; try reflexivity.
 Ltac cate := eauto with cat; try reflexivity.
+
+(** Category auto rewriting, eagerly simplifies the goal
+    (with β rules and simple η rules) *)
+
+Ltac carw := autorewrite with cat using try reflexivity.
+
+(** Category association rewriting *)
+
+Ltac rw_assoc_r args := rewrite (axiom_comp_assoc args); cato.
+Ltac rw_assoc_l args := rewrite <- (axiom_comp_assoc args); cato.
+
+Tactic Notation "cacr" := rewrite axiom_comp_assoc; cato.
+Tactic Notation "cacr" constr(t) := rw_assoc_r t.
+Tactic Notation "cacl" := rewrite <- axiom_comp_assoc; cato.
+Tactic Notation "cacl" constr(t) := rw_assoc_l t.
 
 Hint Resolve axiom_id_l : cat.
 Hint Resolve axiom_id_r : cat.
-
-Ltac carw := autorewrite with cat using try reflexivity.
 
 Hint Rewrite @axiom_id_l : cat.
 Hint Rewrite @axiom_id_r : cat.
@@ -266,10 +278,6 @@ Notation "'!'" := term : hom_scope.
 Notation "'@!' X" := (@term _ _ _ X)
   (at level 34) : hom_scope.
 
-(* TODO Hint Resolve for Terminal *)
-
-
-
 Section Terminal.
 Context `{C : Cat}.
 
@@ -311,27 +319,30 @@ End Terminal.
 Section Terminal.
 Context `{C : Cat} `{!HasTerminal C}.
 
-Proposition term_is_terminal
+Proposition term_terminal
   : is_terminal 1.
 Proof.
   intros X. exists !.
   apply axiom_terminal.
 Qed.
 
-Proposition term_η {X} (h : Hom X 1)
-  : h ≈ !.
-Proof.
-  apply axiom_terminal. trivial.
-Qed.
+Proposition term_η {X} (h : Hom X 1) : h ≈ !.
+Proof. apply axiom_terminal. trivial. Qed.
+
+Proposition term_comp_l {X Y} (h : Hom X Y) : ! ∘ h ≈ !.
+Proof. rewrite (term_η (! ∘ _)). cato. Qed.
 
 End Terminal.
 
-Hint Resolve term_is_terminal : cat.
+Hint Resolve term_terminal : cat.
 Hint Resolve term_η : cat.
 
+(* Hint Rewrite @term_η : cat. *)
+(* Hint Rewrite @term_comp_l : cat. *)
 
 
-(** Product *)
+
+(** * Product Object *)
 
 Class HasProduct `(Cat) :=
   { Prod : Ob → Ob → Ob

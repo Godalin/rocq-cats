@@ -112,11 +112,40 @@ Next Obligation.
     apply pb_η. cato. split.
     rewrite <- axiom_comp_assoc, pb_β1.
     rewrite <- (axiom_id_l (pb1 _ _ )).
-    symmetry. cato. cato. cato.
+    symmetry. cato. carw.
     rewrite <- axiom_comp_assoc. carw.
 Qed.
 Next Obligation.
   intros s. simpl. apply iso_Sub_eq. simpl.
+  exists (pb #pb1 (#pb2 ∘ #pb2)).
+  epose (h := pb (f ∘ #pb1) #pb2).
+  exists (pb #pb1 h). unfold h.
+  repeat split.
+  - carw. cacr. rewrite axiom_pb_cond.
+    cacl. cacl. rewrite axiom_pb_cond. cato.
+  - carw. rewrite <- axiom_pb_cond. cacr.
+  - eassert (id ≈ pb _ _).
+    apply pb_η. apply axiom_pb_cond. carw.
+    split; cato. rewrite H0.
+    apply pb_η. cato. split; cacl; carw.
+    cacr. rewrite axiom_pb_cond. cacl.
+    rewrite axiom_pb_cond. cacr.
+    carw. rewrite <- axiom_pb_cond. cacl.
+    (* rewrite <- pb_η.
+    eassert (_ ∘ #pb1 ∘ pb (pb1 f (pb1 g s)) ((pb2 g s) ∘ (pb2 f (pb1 g s))) ≈ (pb2 f (pb1 g s))).
+    { cacr. carw. apply axiom_pb_cond. } *)
+    admit.
+    carw. cacl.
+  - eassert (id ≈ pb _ _).
+    apply pb_η. apply axiom_pb_cond. carw.
+    split; cato. rewrite H0.
+    apply pb_η. cato. split; cacl; carw.
+    cacl. cacl.
+    rewrite <- axiom_pb_cond. cacr.
+    rewrite axiom_pb_cond. cacr.
+    admit.
+    cacl. rewrite <- axiom_pb_cond. cacr.
+    rewrite axiom_pb_cond. cacl.
 Admitted.
 
 End Sub.
