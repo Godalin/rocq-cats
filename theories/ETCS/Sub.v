@@ -102,7 +102,7 @@ End Sub.
 (** * Sub-object Classifier *)
 
 Class HasSubObjectClassifier `(C : Cat)
-    `(!HasTerminal C) `(!HasPullback C) :=
+    `(!HasTerminal C) :=
   { SubObjectClassifier : Ob
   ; truth : Hom 1 SubObjectClassifier
   ; char {X Y} : X ↣ Y → Hom Y SubObjectClassifier

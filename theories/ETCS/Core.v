@@ -24,7 +24,7 @@ Class ETCS (C : Cat) :=
   ; hasExponential :: HasExponential hasProduct
   ; hasPullback :: HasPullback C
   ; hasSubObjectClassifier
-    :: HasSubObjectClassifier C hasTerminal hasPullback
+    :: HasSubObjectClassifier C hasTerminal
   ; isWellPointed :: IsWellPointed C hasTerminal
   ; hasAxiomChoice :: HasAxiomChoice C
   ; hasNNO :: HasNNO C
