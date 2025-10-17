@@ -201,6 +201,9 @@ Next Obligation. simpl. split; cato. Qed.
 Next Obligation. simpl. split; cato. Qed.
 Next Obligation. simpl. cacr; split; cato. Qed.
 
+Infix "×C" := ProdCat
+  (at level 41).
+
 
 
 Section Cat.

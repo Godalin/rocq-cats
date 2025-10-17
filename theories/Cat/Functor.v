@@ -89,3 +89,10 @@ Qed.
 Next Obligation. intros O. simpl. reflexivity. Qed.
 Next Obligation. intros O. simpl. reflexivity. Qed.
 Next Obligation. intros O. simpl. reflexivity. Qed.
+
+
+
+(** ** Hom-Functor *)
+
+Program Canonical Structure HomF {C : Cat}
+  : Functor (op C ×C C) SetCat.
