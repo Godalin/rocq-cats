@@ -1,5 +1,7 @@
-From Stdlib Require Import SetoidClass.
+From Stdlib Require Import Datatypes.
 From Cats Require Export Meta.
+
+Import Notations.
 
 Declare Scope ob_scope.
 Delimit Scope ob_scope with ob.
@@ -158,10 +160,51 @@ Qed.
 
 
 
+(** ** Prod Category *)
+
+Definition ProdEq {X Y Rx Ry} `{IsHomEq X Rx} `{IsHomEq Y Ry}
+    : X * Y → X * Y → Prop
+  := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y2 y2.
+
+Program Instance ProdEq_Equivalence
+    {X Y Rx Ry} `{IsHomEq X Rx} `{IsHomEq Y Ry}
+  : Equivalence ProdEq.
+Next Obligation. intros [x y]. simpl. split; cato. Qed.
+Next Obligation. intros [x1 y1] [x2 y2] [H1 H2].
+  split; symmetry; cato.
+Qed.
+Next Obligation.
+  intros [x1 y1] [x2 y2] [x3 y3] [Hx1 Hy1] [Hx2 Hy2].
+  split; etransitivity; eauto.
+Qed.
+
+Program Definition ProdCat (C D : Cat) : Cat :=
+  {|Ob := @Ob C * @Ob D
+  ; Hom '(Xc, Xd) '(Yc, Yd) := (Hom Xc Yc) * (Hom Xd Yd)
+  ; HomEq '(Xc, Xd) '(Yc, Yd) h1 h2 := ProdEq h1 h2
+  ; id '(Xc, Xd) := (id, id)
+  ; comp '(Xc, Xd) '(Yc, Yd) '(Zc, Zd)
+      '(fc, fd) '(gc, gd) := (fc ∘ gc, fd ∘ gd)
+  |}.
+Next Obligation. split. split.
+  - intros [h1 h2]. simpl. split; cato.
+  - intros [h1 h2] [h3 h4] [H1 H2]. simpl.
+    split; symmetry; cato.
+  - intros [x1 y1] [x2 y2] [x3 y3] [Hx1 Hy1] [Hx2 Hy2].
+    split; etransitivity; eauto.
+Qed.
+Next Obligation. intros [fc fd] [gc gd] [H1c H1d].
+  intros [hc hd] [jc jd] [H2c H2d]. split.
+  rewrite H1c, H2c. reflexivity. reflexivity.
+Qed.
+Next Obligation. simpl. split; cato. Qed.
+Next Obligation. simpl. split; cato. Qed.
+Next Obligation. simpl. cacr; split; cato. Qed.
+
+
+
 Section Cat.
 Context `{Cat}.
-
-
 
 (** ** Composition *)
 

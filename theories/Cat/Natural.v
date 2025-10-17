@@ -114,7 +114,7 @@ Next Obligation.
   intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.
 Qed.
 
-Program Canonical Structure xo_Functor {C : Cat} (X : Ob)
+Program Canonical Structure xoF {C : Cat} (X : Ob)
   : Functor C SetCat :=
   {|F0 := xo X
   ; F1 Y Y' (f : Hom Y Y') := f _*
@@ -122,6 +122,15 @@ Program Canonical Structure xo_Functor {C : Cat} (X : Ob)
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. simpl. cato. Qed.
 Next Obligation. intros x. simpl. apply axiom_comp_assoc. Qed.
+
+Program Canonical Structure yoF {C : Cat} (X : Ob)
+  : Functor (op C) SetCat :=
+  {|F0 := yo X
+  ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
+  |}.
+Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
+Next Obligation. intros f. simpl. cato. Qed.
+Next Obligation. intros x. simpl. cacl. Qed.
 
 
 
@@ -138,14 +147,14 @@ Context `{C : Cat}.
 Context {F : Functor C SetCat}.
 
 Program Canonical Structure yoneda_func {X}
-    : Nat (xo_Functor X) F →r F X
+    : Nat (xoF X) F →r F X
   := {| func α := α X id |}.
 Next Obligation. intros a a' Ha.
   pose (HaX := Ha X id). cato.
 Qed.
 
 Program Canonical Structure yoneda_func_inv {X}
-    : F X →r Nat (xo_Functor X) F
+    : F X →r Nat (xoF X) F
   := {| func (x : F X) := {| nt Y := {| func f :=
         (fmap F f) x |} |} |}.
 Next Obligation.
@@ -165,11 +174,11 @@ Next Obligation.
 Qed.
 
 Theorem yoneda_lemma_iso {X : @Ob C}
-  : Nat (xo_Functor X) F ≅[SetCat] F X.
+  : Nat (xoF X) F ≅[SetCat] F X.
 Proof. exists yoneda_func, yoneda_func_inv.
   split; simpl.
   - intros a Y. simpl. intros f.
-    assert (fmap F f ∘ a X ≈ a Y ∘ fmap (xo_Functor X) f).
+    assert (fmap F f ∘ a X ≈ a Y ∘ fmap (xoF X) f).
     { symmetry. apply axiom_naturality. }
     specialize (H id). rewrite H.
     simpl. rewrite axiom_id_r. cato.
