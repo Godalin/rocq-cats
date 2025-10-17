@@ -100,3 +100,21 @@ End Sub.
 
 
 (** * Sub-object Classifier *)
+
+Class HasSubObjectClassifier `(C : Cat)
+    `(!HasTerminal C) `(!HasPullback C) :=
+  { SubObjectClassifier : Ob
+  ; truth : Hom 1 SubObjectClassifier
+  ; char {X Y} : X ↣ Y → Hom Y SubObjectClassifier
+
+  ; axiom_sub {X Y} {m : Mono X Y}
+    : is_unique (λ c, is_pullback (char m) truth X m !) (char m)
+  }.
+
+Notation Ω := SubObjectClassifier.
+Notation χ := char.
+
+Section SubObjectClassifier.
+Context `{HasSubObjectClassifier}.
+
+End SubObjectClassifier.

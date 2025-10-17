@@ -198,8 +198,10 @@ End Morphism.
 
 
 Arguments is_factored_through {_ _ _ _} _ _ /.
-
 Arguments sub {_ _} _.
+
+Notation "X ↣ Y" := (Mono X Y)
+  (at level 35, no associativity) : cat_scope.
 
 Infix "≲Sub" := (Sub_le _)
   (at level 50, no associativity) : cat_scope.

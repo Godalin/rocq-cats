@@ -1,6 +1,7 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Pullback.
 From Cats Require Import ETCS.Nat.
+From Cats Require Import ETCS.Sub.
 
 
 
@@ -8,8 +9,8 @@ From Cats Require Import ETCS.Nat.
 
 Class IsWellPointed (C : Cat) `(!HasTerminal C) :=
   { axiom_well_pointed {X Y} {f g : Hom X Y}
-    : ¬ f ≈ g → ∃ x : Hom 1 X,
-      ¬ f ∘ x ≈ g ∘ x
+    : f ≉ g → ∃ x : Hom 1 X,
+      f ∘ x ≉ g ∘ x
   }.
 
 Class HasAxiomChoice (C : Cat) :=
@@ -22,7 +23,8 @@ Class ETCS (C : Cat) :=
   ; hasProduct :: HasProduct C
   ; hasExponential :: HasExponential hasProduct
   ; hasPullback :: HasPullback C
-  
+  ; hasSubObjectClassifier
+    :: HasSubObjectClassifier C hasTerminal hasPullback
   ; isWellPointed :: IsWellPointed C hasTerminal
   ; hasAxiomChoice :: HasAxiomChoice C
   ; hasNNO :: HasNNO C
