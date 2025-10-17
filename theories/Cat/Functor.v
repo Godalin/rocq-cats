@@ -28,10 +28,64 @@ Notation fmap F := (@F1 _ _ F).
 
 (** ** Identity Functor *)
 
-Program Canonical Structure Id {C : Cat} : Functor C C :=
+Program Canonical Structure IdF {C : Cat} : Functor C C :=
   {|F0 X := X
   ; F1 _ _ f := f
   |}.
 Next Obligation. intros x y. auto. Qed.
 Next Obligation. reflexivity. Qed.
 Next Obligation. reflexivity. Qed.
+
+Program Canonical Structure CompF {C D E : Cat}
+    (G : Functor D E) (F : Functor C D) :=
+  {|F0 X := (G (F X))
+  ; F1 _ _ f := fmap G (fmap F f)
+  |}.
+Next Obligation. intros f g H.
+  rewrite axiom_fmap_proper. reflexivity.
+  rewrite axiom_fmap_proper. reflexivity. auto.
+Qed.
+Next Obligation.
+  repeat rewrite axiom_functor_id. reflexivity.
+Qed.
+Next Obligation.
+  repeat rewrite axiom_functor_comp. reflexivity.
+Qed.
+
+(** Equality between Functors. *)
+
+Definition FunctorEq {C D : Cat} (F G : Functor C D)
+  := ∀ X, F X = G X.
+
+Instance FunctorEq_Equivalence {C D}
+  : Equivalence (@FunctorEq C D).
+Proof. split.
+  - intros F X. reflexivity.
+  - intros F G H X. symmetry. auto.
+  - intros F G H H1 H2 X. transitivity (G X); auto.
+Qed.
+
+Infix "∘F" := CompF
+  (at level 40) : cat_scope.
+
+Infix "=F" := FunctorEq
+  (at level 50) : cat_scope.
+
+
+
+(** ** Category of small categories *)
+
+Program Instance CatCat : Cat :=
+  { Ob := Cat
+  ; Hom C D := Functor C D
+  ; HomEq _ _ := FunctorEq
+  ; id _ := IdF
+  ; comp _ _ _ := CompF
+  }.
+Next Obligation. split. apply FunctorEq_Equivalence. Qed.
+Next Obligation. intros F F' HF G G' HG O.
+  simpl. rewrite HG. rewrite HF. reflexivity.
+Qed.
+Next Obligation. intros O. simpl. reflexivity. Qed.
+Next Obligation. intros O. simpl. reflexivity. Qed.
+Next Obligation. intros O. simpl. reflexivity. Qed.
