@@ -79,14 +79,21 @@ Record Mono (X Y : Ob) :=
 Notation "X ↣ Y" := (Mono X Y)
   (at level 35, no associativity) : cat_scope.
 
-Program Canonical Structure Mono_id {X Z} (f : X ↣ Z) :=
-  {|mor := id |}.
+Program Canonical Structure Mono_id {X} :=
+  {|mor := @id X |}.
 Next Obligation. apply mono_id. Qed.
 
 Program Canonical Structure Mono_comp {X Y Z} (f : Y ↣ Z) (g : X ↣ Y) :=
   {|mor := f ∘ g |}.
 Next Obligation. apply mono_comp.
   apply mor_mono. apply mor_mono.
+Qed.
+
+Program Canonical Structure Mono_term
+    `{!HasTerminal C} {X} (f : Hom 1 X) :=
+  {|mor := f |}.
+Next Obligation. intros Y x y _.
+  rewrite term_η. rewrite (term_η y). reflexivity.
 Qed.
 
 (* Definition is_factored_through_by {X Y Z}
@@ -119,6 +126,13 @@ Record Sub (X : Ob) :=
 Definition object_of_Sub {X Y} (f : X ↣ Y) := X.
 
 Coercion object_of_Sub : Mono >-> Ob.
+
+Program Canonical Structure id_Sub {X : Ob} : Sub X :=
+  {|sub := X; sub_mono := Mono_id |}.
+
+Program Canonical Structure term_Sub
+    `{!HasTerminal C} {X : Ob} (f : Hom 1 X) : Sub X :=
+  {|sub := 1; sub_mono := f |}.
 
 Definition Sub_le Z (i j : Sub Z) : Prop
   := is_factored_through j i.
@@ -200,8 +214,11 @@ End Morphism.
 Arguments is_factored_through {_ _ _ _} _ _ /.
 Arguments sub {_ _} _.
 
-Notation "X ↣ Y" := (Mono X Y)
+Notation "X '↣' Y" := (Mono X Y)
   (at level 35, no associativity) : cat_scope.
+
+Notation "X '⊆' Z" := (X : Sub Z)
+  (at level 50) : cat_scope.
 
 Infix "≲Sub" := (Sub_le _)
   (at level 50, no associativity) : cat_scope.
