@@ -89,12 +89,25 @@ Next Obligation. apply mono_comp.
   apply mor_mono. apply mor_mono.
 Qed.
 
-Definition is_factored_through_by {X Y Z}
+(* Definition is_factored_through_by {X Y Z}
     (g : Hom Y Z) (f : Hom X Z) (h : Hom X Y)
-  := f ≈ g ∘ h.
+  := f ≈ g ∘ h. *)
 
 Definition is_factored_through {X Y Z} (g : Hom Y Z) (f : Hom X Z)
-  := ∃ h, is_factored_through_by g f h.
+  := ∃ h, f ≈ g ∘ h.
+
+Proposition iso_by_factor {X Y Z} {f : X ↣ Z} {g : Y ↣ Z}
+  : is_factored_through g f → is_factored_through f g
+  → X ≅ Y.
+Proof. intros [h1 H1] [h2 H2].
+  exists h1, h2. split; simpl.
+  assert (f ∘ (h2 ∘ h1) ≈ f ∘ id).
+  { cacl. rewrite <- H2, H1. cato. }
+  eapply mor_mono. eauto.
+  assert (g ∘ (h1 ∘ h2) ≈ g ∘ id).
+  { cacl. rewrite <- H1, H2. cato. }
+  eapply mor_mono. eauto.
+Qed.
 
 
 
@@ -126,13 +139,11 @@ Infix "~Sub[ Z  ]" := (Sub_eq Z)
   (at level 50, no associativity) : cat_scope.
 
 Program Instance Sub_le_Reflexive {Z} : Reflexive (Sub_le Z).
-Next Obligation. exists id. cato.
-  unfold is_factored_through_by. cato.
-Qed.
+Next Obligation. exists id. cato. Qed.
 
 Program Instance Sub_le_Transitive {Z} : Transitive (Sub_le Z).
 Next Obligation. destruct H as [g Hg]. destruct H0 as [h Hh].
-  exists (h ∘ g). unfold is_factored_through_by.
+  exists (h ∘ g).
   rewrite <- axiom_comp_assoc.
   rewrite Hg. rewrite Hh. cato.
 Qed.
@@ -162,14 +173,9 @@ Proof. intros [h H].
   auto.
 Qed.
 
-(* TODO *)
-Proposition iso_Sub_eq {Z} {i j : Sub Z}
-  : i ~Sub j ↔ ∃ h1 h2,
-      is_factored_through_by i j h1
-    ∧ is_factored_through_by j i h2
-    ∧ is_inv_of h1 h2 .
-Proof. split.
-Admitted.
+Proposition iso_by_Sub_eq {Z} {i j : Sub Z}
+  : i ~Sub j → i ≅ j .
+Proof. intros [H1 H2]. eapply iso_by_factor; eauto. Qed.
 
 
 
@@ -190,8 +196,6 @@ Proof. firstorder. Qed.
 End Morphism.
 
 
-
-Arguments is_factored_through_by {_ _ _ _} _ _ _ /.
 
 Arguments is_factored_through {_ _ _ _} _ _ /.
 

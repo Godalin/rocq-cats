@@ -38,9 +38,9 @@ Notation "#pb1" := (pb1 _ _) : hom_scope.
 Notation "#pb2" := (pb2 _ _) : hom_scope.
 
 Notation "@pb1 f g" := (pb1 f g)
-  (at level 52) : hom_scope.
+  (at level 60) : hom_scope.
 Notation "@pb2 f g" := (pb2 f g)
-  (at level 52) : hom_scope.
+  (at level 60) : hom_scope.
 
 Hint Resolve axiom_pb_cond : cat.
 
