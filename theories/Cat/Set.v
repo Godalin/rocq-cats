@@ -18,6 +18,16 @@ Infix "≈S" := (carrier_equiv _)
 
 
 
+(** Hom- [Sets] *)
+
+Program Canonical Structure Hom_SetC
+    {C : Cat} {X Y : Ob} : SetC :=
+  {|carrier := Hom X Y
+  ; carrier_equiv := HomEq
+  |}.
+
+
+
 (** The equivalence relation of function types
     between [SetC] are defined as point-wise equivalent.
     With this definition instead of [eq], the axiom of
@@ -78,6 +88,20 @@ Next Obligation. intros x x' Hx'.
 Qed.
 
 Infix "∘r" := comp_resp (at level 50).
+
+
+(** Hom-Set Functions *)
+
+Program Canonical Structure comp_l_resp {C : Cat}
+    {X Y Z : Ob} {f : Hom Y Z} : FunS_resp (Hom X Y) (Hom X Z) :=
+  {|func := f _* |}.
+
+Program Canonical Structure comp_r_resp {C : Cat}
+    {X Y Z : Ob} {f : Hom X Y} : FunS_resp (Hom Y Z) (Hom X Z) :=
+  {|func := f ^* |}.
+Next Obligation.
+  intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.
+Qed.
 
 
 

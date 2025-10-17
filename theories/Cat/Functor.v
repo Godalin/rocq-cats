@@ -1,6 +1,5 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Set.
-Open Scope cat_scope.
 
 
 
@@ -94,5 +93,44 @@ Next Obligation. intros O. simpl. reflexivity. Qed.
 
 (** ** Hom-Functor *)
 
+Definition yo {C : Cat} (X : Ob) := λ Y, Hom Y X.
+Notation "'Hom(-,'  X ')'" := (yo X).
+
+Definition xo {C : Cat} (X : Ob) := λ Y, Hom X Y.
+Notation "'Hom(' X  ',-)'" := (xo X).
+
+Program Canonical Structure xoF {C : Cat} (X : Ob)
+  : Functor C SetCat :=
+  {|F0 := xo X
+  ; F1 Y Y' (f : Hom Y Y') := f _*
+  |}.
+Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
+Next Obligation. intros f. simpl. cato. Qed.
+Next Obligation. intros x. simpl. apply axiom_comp_assoc. Qed.
+
+Program Canonical Structure yoF {C : Cat} (X : Ob)
+  : Functor (op C) SetCat :=
+  {|F0 := yo X
+  ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
+  |}.
+Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
+Next Obligation. intros f. simpl. cato. Qed.
+Next Obligation. intros x. simpl. cacl. Qed.
+
+Program Canonical Structure bi_comp {C : Cat} {X' X Y Y' : @Ob C}
+    (f : (@Hom op C) X X') (g : Hom Y Y')
+  : (Hom X Y) →r (Hom X' Y')
+  := {|func := λ h, g ∘ h ∘ f |}.
+Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
+
 Program Canonical Structure HomF {C : Cat}
-  : Functor (op C ×C C) SetCat.
+  : Functor (op C ×C C) SetCat :=
+  {|F0 X := (@Hom C) (fst X) (snd X)
+  ; F1 _ _ f := bi_comp (fst f) (snd f)
+  |}.
+Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
+  simpl. intros h. simpl.
+  rewrite Hf, Hg. reflexivity.
+Qed.
+Next Obligation. simpl. intros h. simpl; carw. Qed.
+Next Obligation. simpl. intros g. simpl. repeat cacr. Qed.

@@ -93,45 +93,6 @@ Next Obligation. intros O; simpl.
   rewrite axiom_comp_assoc. cato.
 Qed.
 
-Definition yo {C : Cat} (X : Ob) := λ Y, Hom Y X.
-Notation "'Hom(-,'  X ')'" := (yo X).
-
-Definition xo {C : Cat} (X : Ob) := λ Y, Hom X Y.
-Notation "'Hom(' X  ',-)'" := (xo X).
-
-Program Canonical Structure Hom_SetC
-    {C : Cat} {X Y : Ob} : SetC :=
-  {|carrier := Hom X Y |}.
-
-Program Canonical Structure comp_l_resp {C : Cat}
-    {X Y Z : Ob} {f : Hom Y Z} : FunS_resp (Hom X Y) (Hom X Z) :=
-  {|func := f _* |}.
-
-Program Canonical Structure comp_r_resp {C : Cat}
-    {X Y Z : Ob} {f : Hom X Y} : FunS_resp (Hom Y Z) (Hom X Z) :=
-  {|func := f ^* |}.
-Next Obligation.
-  intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.
-Qed.
-
-Program Canonical Structure xoF {C : Cat} (X : Ob)
-  : Functor C SetCat :=
-  {|F0 := xo X
-  ; F1 Y Y' (f : Hom Y Y') := f _*
-  |}.
-Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
-Next Obligation. intros f. simpl. cato. Qed.
-Next Obligation. intros x. simpl. apply axiom_comp_assoc. Qed.
-
-Program Canonical Structure yoF {C : Cat} (X : Ob)
-  : Functor (op C) SetCat :=
-  {|F0 := yo X
-  ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
-  |}.
-Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
-Next Obligation. intros f. simpl. cato. Qed.
-Next Obligation. intros x. simpl. cacl. Qed.
-
 
 
 (** Yoneda Lemma *)

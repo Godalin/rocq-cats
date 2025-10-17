@@ -164,7 +164,7 @@ Qed.
 
 Definition ProdEq {X Y Rx Ry} `{IsHomEq X Rx} `{IsHomEq Y Ry}
     : X * Y → X * Y → Prop
-  := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y2 y2.
+  := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y1 y2.
 
 Program Instance ProdEq_Equivalence
     {X Y Rx Ry} `{IsHomEq X Rx} `{IsHomEq Y Ry}
@@ -180,11 +180,10 @@ Qed.
 
 Program Definition ProdCat (C D : Cat) : Cat :=
   {|Ob := @Ob C * @Ob D
-  ; Hom '(Xc, Xd) '(Yc, Yd) := (Hom Xc Yc) * (Hom Xd Yd)
-  ; HomEq '(Xc, Xd) '(Yc, Yd) h1 h2 := ProdEq h1 h2
-  ; id '(Xc, Xd) := (id, id)
-  ; comp '(Xc, Xd) '(Yc, Yd) '(Zc, Zd)
-      '(fc, fd) '(gc, gd) := (fc ∘ gc, fd ∘ gd)
+  ; Hom X Y := Hom (fst X) (fst Y) * Hom (snd X) (snd Y)
+  ; HomEq X Y f g := ProdEq f g
+  ; id _ := (id, id)
+  ; comp _ _ _ f g := (fst f ∘ fst g, snd f ∘ snd g)
   |}.
 Next Obligation. split. split.
   - intros [h1 h2]. simpl. split; cato.
@@ -194,12 +193,12 @@ Next Obligation. split. split.
     split; etransitivity; eauto.
 Qed.
 Next Obligation. intros [fc fd] [gc gd] [H1c H1d].
-  intros [hc hd] [jc jd] [H2c H2d]. split.
-  rewrite H1c, H2c. reflexivity. reflexivity.
+  intros [hc hd] [jc jd] [H2c H2d]. split; simpl.
+  rewrite H1c, H2c. reflexivity. rewrite H2d, H1d. reflexivity.
 Qed.
 Next Obligation. simpl. split; cato. Qed.
 Next Obligation. simpl. split; cato. Qed.
-Next Obligation. simpl. cacr; split; cato. Qed.
+Next Obligation. simpl. cacr; split; try cacr; reflexivity. Qed.
 
 Infix "×C" := ProdCat
   (at level 41).
