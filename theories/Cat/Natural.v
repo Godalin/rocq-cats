@@ -41,12 +41,15 @@ Definition is_NatIso_of {C D : Cat} (F G : Functor C D)
 Definition NatIso {C D : Cat} (F G : Functor C D)
   := ∃ α : F => G, is_NatIso_of F G α.
 
+Notation "α '⦂' F '≅N' G" := (is_NatIso_of F G α)
+  (at level 200, no associativity) : cat_scope.
+
 Infix "≅N" := NatIso
-  (at level 50, no associativity).
+  (at level 50, no associativity) : cat_scope.
 
 
 
-Program Instance id_nt {C D : Cat} {F : Functor C D} : F => F
+Program Instance nt_id {C D : Cat} {F : Functor C D} : F => F
   := { nt _ := id }.
 Next Obligation.
   rewrite axiom_id_l.
@@ -54,9 +57,9 @@ Next Obligation.
   reflexivity.
 Qed.
 
-Program Instance comp_nt_v {C D : Cat} {F G H : Functor C D}
+Program Instance nt_comp_v {C D : Cat} {F G H : Functor C D}
     (α : G => H) (β : F => G) : F => H
-  := { nt X := (nt α X) ∘ (nt β X) }.
+  := { nt X := (α X) ∘ (β X) }.
 Next Obligation.
   rewrite axiom_comp_assoc.
   rewrite (axiom_naturality β f).
@@ -66,9 +69,9 @@ Next Obligation.
   reflexivity.
 Qed.
 
-Notation idN := id_nt.
+Notation idN := nt_id.
 
-Infix "∘Nv" := comp_nt_v
+Infix "∘Nv" := nt_comp_v
   (at level 51, right associativity).
 
 
@@ -79,8 +82,8 @@ Program Instance Fct (C D : Cat) : Cat :=
   { Ob := Functor C D
   ; Hom F G := F => G
   ; HomEq _ _ := NatEq
-  ; id _ := id_nt
-  ; comp _ _ _ := comp_nt_v
+  ; id _ := idN
+  ; comp _ _ _ := nt_comp_v
   }.
 Next Obligation.
   intros a a' Ha b b' Hb O.
@@ -104,16 +107,24 @@ Section Representable.
 Context {C : Cat}.
 
 Definition represents (F : Functor C SetCat) (X : @Ob C)
-  := xoF X ≅N F.
+  := Hom( X ,-) ≅N F.
 
-Infix "X '⦂' 'represents' F" := (represents F X)
+Notation "X '⦂' 'represents' F" := (represents F X)
   (at level 50).
 
-Context {F : Functor C SetCat}.
+Definition is_representable (F : Functor C SetCat) : Prop
+  := ∃ X, X ⦂ represents F.
+
+Context {F : Functor C SetCat} {G : Functor (C^op) SetCat}.
 Context {X : @Ob C}.
-Check represents F X.
+
+Proposition represents_self : X ⦂ represents Hom(X,-).
+Proof. exists idN. intros Y. exists id. cato. Qed.
 
 End Representable.
+
+Notation "X '⦂' 'represents' F" := (represents F X)
+  (at level 50).
 
 
 
@@ -130,14 +141,14 @@ Context `{C : Cat}.
 Context {F : Functor C SetCat}.
 
 Program Canonical yoneda_func {X}
-    : Nat (xoF X) F →r F X
+    : Nat Hom(X,-) F →r F X
   := {| func α := α X id |}.
 Next Obligation. intros a a' Ha.
   pose (HaX := Ha X id). cato.
 Qed.
 
 Program Canonical yoneda_func_inv {X}
-    : F X →r Nat (xoF X) F
+    : F X →r Nat Hom(X,-) F
   := {| func (x : F X) := {| nt Y := {| func f :=
         (fmap F f) x |} |} |}.
 Next Obligation.
@@ -157,11 +168,11 @@ Next Obligation.
 Qed.
 
 Theorem yoneda_lemma_iso {X : @Ob C}
-  : Nat (xoF X) F ≅[SetCat] F X.
+  : Nat Hom(X,-) F ≅[SetCat] F X.
 Proof. exists yoneda_func, yoneda_func_inv.
   split; simpl.
   - intros a Y. simpl. intros f.
-    assert (fmap F f ∘ a X ≈ a Y ∘ fmap (xoF X) f).
+    assert (fmap F f ∘ a X ≈ a Y ∘ fmap Hom(X,-) f).
     { symmetry. apply axiom_naturality. }
     specialize (H id). rewrite H.
     simpl. rewrite axiom_id_r. cato.

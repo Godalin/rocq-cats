@@ -92,29 +92,29 @@ Next Obligation. intros O. simpl. reflexivity. Qed.
 
 (** ** Hom-Functor *)
 
-Definition yo {C : Cat} (X : Ob) := λ Y, Hom Y X.
-Notation "'Hom(-,'  X ')'" := (yo X).
+Definition ℎ1 {C : Cat} (X : Ob) := λ Y, Hom X Y.
+Definition ℎ2 {C : Cat} (X : Ob) := λ Y, Hom Y X.
 
-Definition xo {C : Cat} (X : Ob) := λ Y, Hom X Y.
-Notation "'Hom(' X  ',-)'" := (xo X).
-
-Program Canonical xoF {C : Cat} (X : Ob)
-  : Functor C SetCat :=
-  {|F0 := xo X
+Program Definition ℎ1F {C : Cat} (X : Ob) : Functor C SetCat :=
+  {|F0 := ℎ1 X
   ; F1 Y Y' (f : Hom Y Y') := f _*
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. simpl. cato. Qed.
 Next Obligation. intros x. simpl. apply axiom_comp_assoc. Qed.
 
-Program Canonical yoF {C : Cat} (X : Ob)
+Notation "'Hom(' X  ',-)'" := (ℎ1F X).
+
+Program Definition ℎ2F {C : Cat} (X : Ob)
   : Functor (op C) SetCat :=
-  {|F0 := yo X
+  {|F0 := ℎ2 X
   ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. simpl. cato. Qed.
 Next Obligation. intros x. simpl. cacl. Qed.
+
+Notation "'Hom(-,'  X ')'" := (ℎ2F X).
 
 Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
     (f : (@Hom op C) X X') (g : Hom Y Y')
@@ -122,7 +122,7 @@ Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
   := {|func := λ h, g ∘ h ∘ f |}.
 Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
 
-Program Canonical HomF {C : Cat}
+Program Definition HomF {C : Cat}
   : Functor (op C ×C C) SetCat :=
   {|F0 X := (@Hom C) (fst X) (snd X)
   ; F1 _ _ f := bi_comp (fst f) (snd f)

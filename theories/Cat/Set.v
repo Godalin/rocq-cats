@@ -20,8 +20,7 @@ Infix "≈S" := (carrier_equiv _)
 
 (** Hom- [Sets] *)
 
-Program Canonical Structure Hom_SetC
-    {C : Cat} {X Y : Ob} : SetC :=
+Program Canonical Hom_SetC {C : Cat} {X Y : Ob} : SetC :=
   {|carrier := Hom X Y
   ; carrier_equiv := HomEq
   |}.
@@ -60,7 +59,7 @@ Infix "→r" := FunS_resp (at level 99).
     Set of respective functions can be equipped with
     a canonical [SetC] structure. *)
 
-Program Canonical Structure FunS (X Y : SetC) : SetC :=
+Program Canonical FunS (X Y : SetC) : SetC :=
   {|carrier := X →r Y
   ; carrier_equiv := FunEq
   |}.
@@ -92,12 +91,12 @@ Infix "∘r" := comp_resp (at level 50).
 
 (** Hom-Set Functions *)
 
-Program Canonical Structure comp_l_resp {C : Cat}
-    {X Y Z : Ob} {f : Hom Y Z} : FunS_resp (Hom X Y) (Hom X Z) :=
+Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
+    {f : Hom Y Z} : FunS_resp (Hom X Y) (Hom X Z) :=
   {|func := f _* |}.
 
-Program Canonical Structure comp_r_resp {C : Cat}
-    {X Y Z : Ob} {f : Hom X Y} : FunS_resp (Hom Y Z) (Hom X Z) :=
+Program Canonical comp_r_resp {C : Cat} {X Y Z : Ob}
+    {f : Hom X Y} : FunS_resp (Hom Y Z) (Hom X Z) :=
   {|func := f ^* |}.
 Next Obligation.
   intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.

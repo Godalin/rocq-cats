@@ -159,6 +159,11 @@ Qed.
 Notation "C '^op'" := (op C)
   (at level 60).
 
+Definition ob_op {C : Cat} (X : @Ob C) : (@Ob (C ^op))
+  := X.
+
+(* Coercion ob_op : Ob >-> Ob. *)
+
 
 
 (** ** Prod Category *)
