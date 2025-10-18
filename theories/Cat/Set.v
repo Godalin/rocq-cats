@@ -114,15 +114,10 @@ Qed.
 Program Instance SetCat : Cat :=
   {|Ob := SetC
   ; Hom X Y := X →r Y
-  ; HomEq X Y f g := FunEq f g
+  ; HomEq X Y := FunEq
   ; id _ := id_resp
   ; comp _ _ _ := comp_resp
   |}.
-Next Obligation. split. split.
-  - intros f x. cato.
-  - intros f g H x. symmetry. cato.
-  - intros f g h H1 H2 x. transitivity (g x); auto.
-Qed.
 Next Obligation.
   intros f f' Hf g g' Hg x. simpl.
   rewrite (Hg x), (Hf (g' x)). reflexivity.

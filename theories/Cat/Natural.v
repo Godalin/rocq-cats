@@ -73,7 +73,7 @@ Infix "∘Nv" := comp_nt_v
 
 
 
-(** Functor Category *)
+(** ** The Functor Category *)
 
 Program Instance Fct (C D : Cat) : Cat :=
   { Ob := Functor C D
@@ -82,7 +82,6 @@ Program Instance Fct (C D : Cat) : Cat :=
   ; id _ := id_nt
   ; comp _ _ _ := comp_nt_v
   }.
-Next Obligation. split. apply NatEq_Equivalence. Qed.
 Next Obligation.
   intros a a' Ha b b' Hb O.
   simpl. rewrite (Ha O), (Hb O). cato.
@@ -93,9 +92,32 @@ Next Obligation. intros O; simpl.
   rewrite axiom_comp_assoc. cato.
 Qed.
 
+(** ** The Category of Presheaves *)
+
+Definition Psh C := Fct (op C) SetCat.
 
 
-(** Yoneda Lemma *)
+
+(** ** Representable Functor *)
+
+Section Representable.
+Context {C : Cat}.
+
+Definition represents (F : Functor C SetCat) (X : @Ob C)
+  := xoF X ≅N F.
+
+Infix "X '⦂' 'represents' F" := (represents F X)
+  (at level 50).
+
+Context {F : Functor C SetCat}.
+Context {X : @Ob C}.
+Check represents F X.
+
+End Representable.
+
+
+
+(** ** Yoneda Lemma *)
 
 Program Canonical Structure Nat_SetS {C D : Cat}
   (F G : Functor C D) :=

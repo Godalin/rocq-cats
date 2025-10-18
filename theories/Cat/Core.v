@@ -1,6 +1,4 @@
-From Stdlib Require Import Datatypes.
 From Cats Require Export Meta.
-
 Import Notations.
 
 Declare Scope ob_scope.
@@ -24,7 +22,7 @@ Class Cat@{o h} :=
   ; Hom : Ob → Ob → Type@{h}
 
   ; HomEq {X Y} : Hom X Y → Hom X Y → Prop
-  ; axiom_hom_eq {X Y} :: IsHomEq (@HomEq X Y)
+  ; axiom_hom_eq {X Y} :: Equivalence (@HomEq X Y)
 
   ; id {X} : Hom X X
 
@@ -138,7 +136,7 @@ Notation "f _*" := (comp_post f) (at level 35).
 
 
 
-(** Dual Category *)
+(** ** Dual Category *)
 
 Program Definition op (C : Cat) : Cat :=
  {|Ob := Ob
@@ -158,40 +156,20 @@ Next Obligation.
   symmetry. apply axiom_comp_assoc.
 Qed.
 
+Notation "C '^op'" := (op C)
+  (at level 60).
+
 
 
 (** ** Prod Category *)
 
-Definition ProdEq {X Y Rx Ry} `{IsHomEq X Rx} `{IsHomEq Y Ry}
-    : X * Y → X * Y → Prop
-  := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y1 y2.
-
-Program Instance ProdEq_Equivalence
-    {X Y Rx Ry} `{IsHomEq X Rx} `{IsHomEq Y Ry}
-  : Equivalence ProdEq.
-Next Obligation. intros [x y]. simpl. split; cato. Qed.
-Next Obligation. intros [x1 y1] [x2 y2] [H1 H2].
-  split; symmetry; cato.
-Qed.
-Next Obligation.
-  intros [x1 y1] [x2 y2] [x3 y3] [Hx1 Hy1] [Hx2 Hy2].
-  split; etransitivity; eauto.
-Qed.
-
 Program Definition ProdCat (C D : Cat) : Cat :=
   {|Ob := @Ob C * @Ob D
   ; Hom X Y := Hom (fst X) (fst Y) * Hom (snd X) (snd Y)
-  ; HomEq X Y f g := ProdEq f g
+  ; HomEq X Y := ProdEq HomEq HomEq
   ; id _ := (id, id)
   ; comp _ _ _ f g := (fst f ∘ fst g, snd f ∘ snd g)
   |}.
-Next Obligation. split. split.
-  - intros [h1 h2]. simpl. split; cato.
-  - intros [h1 h2] [h3 h4] [H1 H2]. simpl.
-    split; symmetry; cato.
-  - intros [x1 y1] [x2 y2] [x3 y3] [Hx1 Hy1] [Hx2 Hy2].
-    split; etransitivity; eauto.
-Qed.
 Next Obligation. intros [fc fd] [gc gd] [H1c H1d].
   intros [hc hd] [jc jd] [H2c H2d]. split; simpl.
   rewrite H1c, H2c. reflexivity. rewrite H2d, H1d. reflexivity.
@@ -256,6 +234,9 @@ Notation "X '≅[' C ']' Y" := (@iso C X Y)
   (at level 70, no associativity,
     format "X  ≅[ C ]  Y") : type_scope.
 
+Infix "f '⦂' X '≅' Y" := (@is_iso _ X Y f)
+  (at level 50).
+
 Tactic Notation "elim_iso" ident(f) :=
   let fi := fresh f "i" in
   let Hfif := fresh "H" fi f in
@@ -304,7 +285,7 @@ End Iso.
 
 
 
-(** Terminal *)
+(** ** Terminal Objects *)
 
 Class HasTerminal `(C : Cat) :=
   { Term : Ob
@@ -359,6 +340,9 @@ Qed.
 
 End Terminal.
 
+Infix "X '⦂' '≅' '1'" := (is_terminal X)
+  (at level 50).
+
 
 
 Section Terminal.
@@ -387,7 +371,7 @@ Hint Resolve term_η : cat.
 
 
 
-(** * Product Object *)
+(** ** Product Objects *)
 
 Class HasProduct `(Cat) :=
   { Prod : Ob → Ob → Ob
@@ -449,6 +433,10 @@ Theorem product_unique
 Admitted.
 
 End Product.
+
+Notation "P '⦂' '≅' X '×' Y 'with' p1 ',' p2"
+  := (is_product X Y P p1 p2)
+  (at level 50).
 
 
 
@@ -611,7 +599,7 @@ End Product.
 
 
 
-(* Exponential *)
+(** ** Exponential Objects *)
 
 Class HasExponential {C : Cat} `(!HasProduct C) :=
   { exp : Ob → Ob → Ob
@@ -634,3 +622,7 @@ Notation "'ƛ' f" := (curry f)
 
 Notation "'@eval' X Y" := (@eval _ _ _ _ X Y)
   (at level 35) : hom_scope.
+
+(* Notation "E '⦂' '≅' Y '^' X 'with' e"
+  := (is_exponential X Y P p1 p2)
+  (at level 50). *)

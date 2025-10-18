@@ -81,7 +81,6 @@ Program Instance CatCat : Cat :=
   ; id _ := IdF
   ; comp _ _ _ := CompF
   }.
-Next Obligation. split. apply FunctorEq_Equivalence. Qed.
 Next Obligation. intros F F' HF G G' HG O.
   simpl. rewrite HG. rewrite HF. reflexivity.
 Qed.
