@@ -234,7 +234,7 @@ Notation "X '≅[' C ']' Y" := (@iso C X Y)
   (at level 70, no associativity,
     format "X  ≅[ C ]  Y") : type_scope.
 
-Infix "f '⦂' X '≅' Y" := (@is_iso _ X Y f)
+Notation "f '⦂' X '≅' Y" := (@is_iso _ X Y f)
   (at level 50).
 
 Tactic Notation "elim_iso" ident(f) :=

@@ -44,21 +44,9 @@ Tactic Notation "elim_unique" constr(H) "with" constr(h) :=
   destruct H as [_ Heq];
   specialize (Heq h).
 
-(* Notation "'is_universal'' x1 .. xn , C , P" :=
-  (C ∧ (∀ x1, .. (∀ xn, C → P)..))
-  (at level 200, x1 binder, xn binder,
-    only parsing). *)
-
-(* Check λ x y, is_universal' P x y, x = y, h, h x y = x. *)
-
-(* Notation "'is_universal[' x1 .. xn '|' C '&∃!' h 's.t.' P ']'" :=
-  (λ x1, .. (λ xn, is_universal' x1 .. xn, C, (∃ h, (λ h, P) h))..)
-  (at level 200, x1 binder, xn binder, h binder,
-    only parsing). *)
-
-(* Check is_universal[x y | x = y &∃! h s.t. h x y = x]. *)
 
 
+(** ** Equivalence of Prod Types *)
 
 Section ProdEquivalence.
 Context {X Y} (Rx : relation X) (Ry : relation Y).
@@ -66,13 +54,9 @@ Context {X Y} (Rx : relation X) (Ry : relation Y).
 Definition ProdEq : relation (X * Y)
   := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y1 y2.
 
-
-
-(** ** Equivalence of Prod Types *)
-
 Context `{Equivalence X Rx} `{Equivalence Y Ry}.
 
-Program Instance ProdEq_Equivalence : Equivalence ProdEq.
+Global Program Instance ProdEq_Equivalence : Equivalence ProdEq.
 Next Obligation. intros [x y]. simpl. split; reflexivity. Qed.
 Next Obligation. intros [x1 y1] [x2 y2] [H1 H2].
   split; symmetry; auto.
@@ -83,5 +67,3 @@ Next Obligation.
 Qed.
 
 End ProdEquivalence.
-
-Existing Instance ProdEq_Equivalence.
