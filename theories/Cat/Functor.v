@@ -27,7 +27,7 @@ Notation fmap F := (@F1 _ _ F).
 
 (** ** Identity Functor *)
 
-Program Canonical Structure IdF {C : Cat} : Functor C C :=
+Program Canonical IdF {C : Cat} : Functor C C :=
   {|F0 X := X
   ; F1 _ _ f := f
   |}.
@@ -35,7 +35,7 @@ Next Obligation. intros x y. auto. Qed.
 Next Obligation. reflexivity. Qed.
 Next Obligation. reflexivity. Qed.
 
-Program Canonical Structure CompF {C D E : Cat}
+Program Canonical CompF {C D E : Cat}
     (G : Functor D E) (F : Functor C D) :=
   {|F0 X := (G (F X))
   ; F1 _ _ f := fmap G (fmap F f)
@@ -98,7 +98,7 @@ Notation "'Hom(-,'  X ')'" := (yo X).
 Definition xo {C : Cat} (X : Ob) := λ Y, Hom X Y.
 Notation "'Hom(' X  ',-)'" := (xo X).
 
-Program Canonical Structure xoF {C : Cat} (X : Ob)
+Program Canonical xoF {C : Cat} (X : Ob)
   : Functor C SetCat :=
   {|F0 := xo X
   ; F1 Y Y' (f : Hom Y Y') := f _*
@@ -107,7 +107,7 @@ Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. simpl. cato. Qed.
 Next Obligation. intros x. simpl. apply axiom_comp_assoc. Qed.
 
-Program Canonical Structure yoF {C : Cat} (X : Ob)
+Program Canonical yoF {C : Cat} (X : Ob)
   : Functor (op C) SetCat :=
   {|F0 := yo X
   ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
@@ -116,13 +116,13 @@ Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. simpl. cato. Qed.
 Next Obligation. intros x. simpl. cacl. Qed.
 
-Program Canonical Structure bi_comp {C : Cat} {X' X Y Y' : @Ob C}
+Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
     (f : (@Hom op C) X X') (g : Hom Y Y')
   : (Hom X Y) →r (Hom X' Y')
   := {|func := λ h, g ∘ h ∘ f |}.
 Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
 
-Program Canonical Structure HomF {C : Cat}
+Program Canonical HomF {C : Cat}
   : Functor (op C ×C C) SetCat :=
   {|F0 X := (@Hom C) (fst X) (snd X)
   ; F1 _ _ f := bi_comp (fst f) (snd f)

@@ -16,11 +16,8 @@ From Cats Require Import Cat.Set.
 Section Sub.
 Context `{C : Cat} `{H : !HasPullback C}.
 
-Program Canonical Structure SubObject Z : SetC :=
-  {|carrier := Sub Z
-  ; carrier_equiv := Sub_eq Z
-  |}.
-Next Obligation. apply Sub_eq_Equivalence. Qed.
+Program Canonical SubObject Z : SetC :=
+  {|carrier := Sub Z |}.
 
 (** sX ------> sY
     v          v
@@ -63,7 +60,7 @@ Proposition Sub_fmap_Ob {X Y} {f : Hom X Y} {r : Sub Y}
   : sub (Sub_fmap f r) = X ×[f,r] (sub r).
 Proof. simpl. auto. Qed.
 
-Program Canonical Structure SubF : Functor (op C) SetCat :=
+Program Canonical SubF : Functor (op C) SetCat :=
   {|F0 Z := SubObject Z
   ; F1 Y X f := {| func := Sub_fmap f |}
   |}.

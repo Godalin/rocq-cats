@@ -119,7 +119,7 @@ End Representable.
 
 (** ** Yoneda Lemma *)
 
-Program Canonical Structure Nat_SetS {C D : Cat}
+Program Canonical Nat_SetS {C D : Cat}
   (F G : Functor C D) :=
   {|carrier := F => G
   ; carrier_equiv := NatEq
@@ -129,14 +129,14 @@ Section Yoneda.
 Context `{C : Cat}.
 Context {F : Functor C SetCat}.
 
-Program Canonical Structure yoneda_func {X}
+Program Canonical yoneda_func {X}
     : Nat (xoF X) F →r F X
   := {| func α := α X id |}.
 Next Obligation. intros a a' Ha.
   pose (HaX := Ha X id). cato.
 Qed.
 
-Program Canonical Structure yoneda_func_inv {X}
+Program Canonical yoneda_func_inv {X}
     : F X →r Nat (xoF X) F
   := {| func (x : F X) := {| nt Y := {| func f :=
         (fmap F f) x |} |} |}.

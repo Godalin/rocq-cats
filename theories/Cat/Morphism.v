@@ -7,8 +7,6 @@ From Cats Require Import Cat.Core.
 Section Morphism.
 Context `{C : Cat}.
 
-
-
 (** ** Monomorphisms
 
     In Rocq, law of exclude middle (lem) is not admitted as default,
@@ -79,26 +77,20 @@ Record Mono (X Y : Ob) :=
 Notation "X ↣ Y" := (Mono X Y)
   (at level 35, no associativity) : cat_scope.
 
-Program Canonical Structure Mono_id {X} :=
-  {|mor := @id X |}.
+Program Canonical Mono_id {X} := {|mor := @id X |}.
 Next Obligation. apply mono_id. Qed.
 
-Program Canonical Structure Mono_comp {X Y Z} (f : Y ↣ Z) (g : X ↣ Y) :=
-  {|mor := f ∘ g |}.
+Program Canonical Mono_comp {X Y Z} (f : Y ↣ Z) (g : X ↣ Y)
+  := {|mor := f ∘ g |}.
 Next Obligation. apply mono_comp.
   apply mor_mono. apply mor_mono.
 Qed.
 
-Program Canonical Structure Mono_term
-    `{!HasTerminal C} {X} (f : Hom 1 X) :=
-  {|mor := f |}.
+Program Canonical Mono_term `{!HasTerminal C} {X} (f : Hom 1 X) 
+  := {|mor := f |}.
 Next Obligation. intros Y x y _.
   rewrite term_η. rewrite (term_η y). reflexivity.
 Qed.
-
-(* Definition is_factored_through_by {X Y Z}
-    (g : Hom Y Z) (f : Hom X Z) (h : Hom X Y)
-  := f ≈ g ∘ h. *)
 
 Definition is_factored_through {X Y Z} (g : Hom Y Z) (f : Hom X Z)
   := ∃ h, f ≈ g ∘ h.
@@ -118,19 +110,20 @@ Qed.
 
 
 
+(** *** Sub-Objects *)
+
 Record Sub (X : Ob) :=
   { sub : Ob
   ; sub_mono :> sub ↣ X
   }.
 
 Definition object_of_Sub {X Y} (f : X ↣ Y) := X.
-
 Coercion object_of_Sub : Mono >-> Ob.
 
-Program Canonical Structure id_Sub {X : Ob} : Sub X :=
+Program Canonical id_Sub {X : Ob} : Sub X :=
   {|sub := X; sub_mono := Mono_id |}.
 
-Program Canonical Structure term_Sub
+Program Canonical term_Sub
     `{!HasTerminal C} {X : Ob} (f : Hom 1 X) : Sub X :=
   {|sub := 1; sub_mono := f |}.
 
@@ -152,31 +145,39 @@ Infix "~Sub" := (Sub_eq _)
 Infix "~Sub[ Z  ]" := (Sub_eq Z)
   (at level 50, no associativity) : cat_scope.
 
-Program Instance Sub_le_Reflexive {Z} : Reflexive (Sub_le Z).
+Global Program Instance Sub_le_Reflexive {Z}
+  : Reflexive (Sub_le Z).
 Next Obligation. exists id. cato. Qed.
 
-Program Instance Sub_le_Transitive {Z} : Transitive (Sub_le Z).
+Global Program Instance Sub_le_Transitive {Z}
+  : Transitive (Sub_le Z).
 Next Obligation. destruct H as [g Hg]. destruct H0 as [h Hh].
   exists (h ∘ g).
   rewrite <- axiom_comp_assoc.
   rewrite Hg. rewrite Hh. cato.
 Qed.
 
-Program Instance Sub_le_PreOrder {Z} : PreOrder (Sub_le Z).
+Global Program Instance Sub_le_PreOrder {Z} : PreOrder (Sub_le Z).
 
-Program Instance Sub_eq_Reflexive {Z} : Reflexive (Sub_eq Z).
+(** Sub_eq is [Equivalence] *)
+
+Global Program Instance Sub_eq_Reflexive {Z}
+  : Reflexive (Sub_eq Z).
 Next Obligation. split; reflexivity. Qed.
 
-Program Instance Sub_eq_Symmetric {Z} : Symmetric (Sub_eq Z).
+Global Program Instance Sub_eq_Symmetric {Z}
+  : Symmetric (Sub_eq Z).
 Next Obligation. destruct H. split; auto. Qed.
 
-Program Instance Sub_eq_Transitive {Z} : Transitive (Sub_eq Z).
+Global Program Instance Sub_eq_Transitive {Z}
+  : Transitive (Sub_eq Z).
 Next Obligation. destruct H, H0. split; transitivity y; auto. Qed.
 
-Program Instance Sub_eq_Equivalence {Z} : Equivalence (Sub_eq Z).
+Global Program Instance Sub_eq_Equivalence {Z}
+  : Equivalence (Sub_eq Z).
 
 Proposition Sub_le_Mono {Z} {i j : Sub Z}
-  : i ≲Sub j → ∃ k : i ↣ j, True.
+  : i ≲Sub j → ∃ k : Hom i j, is_mono k.
 Proof. intros [h H].
   assert (Hmi : is_mono (j ∘ h)).
   { intros W x y H1. rewrite <- H in H1.
