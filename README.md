@@ -1,7 +1,7 @@
 # ~~Rocq Abstract Nonsense~~ :)
 # Rocq-Cats
 
-A category theory for self study.
+A category theory library for self study.
 
 ## Key Features
 
@@ -34,7 +34,7 @@ This project aims at building ETCS.
 - [ ] Univalence Category
 - [ ] Enriched Category
 - [ ] ETCS constructions
-  - [ ] Sub-object
+  - [x] Sub-object
   - [ ] Relations
   - [ ] Numbers
   - [ ] Well Orderings
