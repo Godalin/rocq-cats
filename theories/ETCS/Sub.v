@@ -53,7 +53,7 @@ Next Obligation.
   split. symmetry. auto.
   assert (sY ∘ (pb2 f sY ∘ x) ≈ sY ∘ (pb2 f sY ∘ y)).
   { rewrite <- Hx, <- Hy. apply comp_l. auto. }
-  apply sub_mono in H0. symmetry. auto.
+  apply sub_mono in X0. symmetry. auto.
 Qed.
 
 Proposition Sub_fmap_Ob {X Y} {f : Hom X Y} {r : Sub Y}
@@ -135,8 +135,8 @@ Proof. unfold is_subobject_classifier. intros HSubOC.
   destruct H1 as [H1 H3].
   assert (H4 : ∃ a, is_pullback (Ω0 ∘ u) Ω0 A id a).
   { exists u. split. cato. intros. exists q1.
-    rewrite axiom_comp_assoc in H.
-    apply sub_mono in H. split; cato.
+    rewrite axiom_comp_assoc in X.
+    apply sub_mono in X. split; cato.
     intros h [H4 H5]. rewrite axiom_id_l in H4. cato. }
   specialize (H2 (Ω0 ∘ u) H4).
   apply (sub_mono _ Ω0).

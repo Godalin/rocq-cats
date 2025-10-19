@@ -9,7 +9,7 @@ From Cats Require Import Cat.Core.
 
 Record SetC :=
   { carrier :> Type
-  ; carrier_equiv : carrier → carrier → Prop
+  ; carrier_equiv : crelation carrier
   ; carrier_setoid :: Equivalence carrier_equiv
   }.
 
@@ -32,7 +32,7 @@ Program Canonical Hom_SetC {C : Cat} {X Y : Ob} : SetC :=
     With this definition instead of [eq], the axiom of
     _functional extensionality_ is not required. *)
 
-Definition  FunEq {X Y : SetC} (f g : X → Y) : Prop
+Definition  FunEq {X Y : SetC} (f g : X → Y)
   := ∀ x : X, f x ≈S g x.
 
 Infix "≈f" := FunEq (at level 50).
@@ -87,6 +87,7 @@ Next Obligation. intros x x' Hx'.
 Qed.
 
 Infix "∘r" := comp_resp (at level 50).
+
 
 
 (** Hom-Set Functions *)

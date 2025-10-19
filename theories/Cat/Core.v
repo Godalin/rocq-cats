@@ -1,5 +1,4 @@
 From Cats Require Export Meta.
-Import Notations.
 
 Declare Scope ob_scope.
 Delimit Scope ob_scope with ob.
@@ -17,11 +16,11 @@ Open Scope cat_scope.
 
 (** * Category *)
 
-Class Cat@{o h} :=
+Class Cat@{o h p|h <= p} :=
   { Ob : Type@{o}
   ; Hom : Ob → Ob → Type@{h}
 
-  ; HomEq {X Y} : Hom X Y → Hom X Y → Prop
+  ; HomEq {X Y} : Hom X Y → Hom X Y → Type@{p}
   ; axiom_hom_eq {X Y} :: Equivalence (@HomEq X Y)
 
   ; id {X} : Hom X X
@@ -181,7 +180,7 @@ Next Obligation. intros [fc fd] [gc gd] [H1c H1d].
 Qed.
 Next Obligation. simpl. split; cato. Qed.
 Next Obligation. simpl. split; cato. Qed.
-Next Obligation. simpl. cacr; split; try cacr; reflexivity. Qed.
+Next Obligation. simpl. split; try cacr; reflexivity. Qed.
 
 Infix "×C" := ProdCat
   (at level 41).
@@ -205,7 +204,7 @@ Proof. intros Heq. rewrite Heq. cato. Qed.
 
 (** ** Inversion & Isomorphism *)
 
-Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X) : Prop
+Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X)
   := g ∘ f ≈ id.
 
 Definition is_rinv_of {X Y} (f : Hom X Y) (g : Hom Y X)
@@ -219,6 +218,10 @@ Definition is_iso {X Y} (f : Hom X Y)
 
 Definition iso X Y
   := ∃ f : Hom X Y, is_iso f.
+
+Theorem is_inv_of_comm {X Y} (f : Hom X Y) (g : Hom Y X)
+  : is_inv_of f g → is_inv_of g f.
+Proof. intros [H1 H2]. split; auto. Qed.
 
 End Cat.
 
@@ -240,7 +243,8 @@ Notation "X '≅[' C ']' Y" := (@iso C X Y)
     format "X  ≅[ C ]  Y") : type_scope.
 
 Notation "f '⦂' X '≅' Y" := (@is_iso _ X Y f)
-  (at level 50).
+  (at level 50, no associativity,
+    X at level 49, Y at level 49).
 
 Tactic Notation "elim_iso" ident(f) :=
   let fi := fresh f "i" in
@@ -345,7 +349,7 @@ Qed.
 
 End Terminal.
 
-Infix "X '⦂' '≅' '1'" := (is_terminal X)
+Notation "X '⦂' '≅' '1'" := (is_terminal X)
   (at level 50).
 
 

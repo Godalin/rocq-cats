@@ -19,10 +19,10 @@ Context `{C : Cat}.
     
     Similar situation for [is_epi] and [is_epi']. *)
 
-Definition is_mono {Y Z} (f : Hom Y Z) : Prop
+Definition is_mono {Y Z} (f : Hom Y Z)
   := ∀ X, ∀ x y : Hom X Y, f ∘ x ≈ f ∘ y → x ≈ y.
 
-Definition is_mono' {Y Z} (f : Hom Y Z) : Prop
+Definition is_mono' {Y Z} (f : Hom Y Z)
   := ∀ X, ∀ x y : Hom X Y, x ≉ y → f ∘ x ≉ f ∘ y.
 
 Proposition mono_mono' {Y Z} (f : Hom Y Z)
@@ -127,7 +127,7 @@ Program Canonical term_Sub
     `{!HasTerminal C} {X : Ob} (f : Hom 1 X) : Sub X :=
   {|sub := 1; sub_mono := f |}.
 
-Definition Sub_le Z (i j : Sub Z) : Prop
+Definition Sub_le Z (i j : Sub Z)
   := is_factored_through j i.
 
 Infix "≲Sub" := (Sub_le _)
@@ -136,7 +136,7 @@ Infix "≲Sub" := (Sub_le _)
 Infix "≲Sub[ Z  ]" := (Sub_le Z)
   (at level 50, no associativity) : cat_scope.
 
-Definition Sub_eq Z (i j : Sub Z) : Prop
+Definition Sub_eq Z (i j : Sub Z)
   := i ≲Sub j ∧ j ≲Sub i.
 
 Infix "~Sub" := (Sub_eq _)
@@ -151,7 +151,7 @@ Next Obligation. exists id. cato. Qed.
 
 Global Program Instance Sub_le_Transitive {Z}
   : Transitive (Sub_le Z).
-Next Obligation. destruct H as [g Hg]. destruct H0 as [h Hh].
+Next Obligation. destruct X as [g Hg]. destruct X0 as [h Hh].
   exists (h ∘ g).
   rewrite <- axiom_comp_assoc.
   rewrite Hg. rewrite Hh. cato.
@@ -167,11 +167,11 @@ Next Obligation. split; reflexivity. Qed.
 
 Global Program Instance Sub_eq_Symmetric {Z}
   : Symmetric (Sub_eq Z).
-Next Obligation. destruct H. split; auto. Qed.
+Next Obligation. destruct X. split; auto. Qed.
 
 Global Program Instance Sub_eq_Transitive {Z}
   : Transitive (Sub_eq Z).
-Next Obligation. destruct H, H0. split; transitivity y; auto. Qed.
+Next Obligation. destruct X, X0. split; transitivity y; auto. Qed.
 
 Global Program Instance Sub_eq_Equivalence {Z}
   : Equivalence (Sub_eq Z).
@@ -198,10 +198,10 @@ Proof. intros [H1 H2]. eapply iso_by_factor; eauto. Qed.
 
     Similar situation as [is_mono] and [is_mono']. *)
 
-Definition is_epi {X Y} (f : Hom X Y) : Prop
+Definition is_epi {X Y} (f : Hom X Y)
   := ∀ Z, ∀ x y : Hom Y Z, x ∘ f ≈ y ∘ f → x ≈ y.
 
-Definition is_epi' {X Y} (f : Hom X Y) : Prop
+Definition is_epi' {X Y} (f : Hom X Y)
   := ∀ Z, ∀ x y : Hom Y Z, x ≉ y → x ∘ f ≉ y ∘ f.
 
 Proposition epi_epi' {X Y} (f : Hom X Y)

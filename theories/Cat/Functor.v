@@ -5,9 +5,7 @@ From Cats Require Import Cat.Set.
 
 (** * Functor *)
 
-Record Functor@{o1 h1 o2 h2}
-  (C : Cat@{o1 h1})
-  (D : Cat@{o2 h2}) :=
+Record Functor (C D : Cat) :=
   { F0 :> @Ob C → @Ob D
   ; F1 {X Y : @Ob C} : Hom X Y → Hom (F0 X) (F0 Y)
 

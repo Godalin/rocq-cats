@@ -21,8 +21,7 @@ Arguments axiom_naturality {_ _ _ _} _ {_ _} _.
 Notation "F => G" := (Nat F G)
   (at level 50, no associativity) : type_scope.
 
-Definition NatEq {C D : Cat} {F G : Functor C D}
-    (α β : F => G) : Prop
+Definition NatEq {C D : Cat} {F G : Functor C D} (α β : F => G)
   := ∀ X, α X ≈ β X.
 
 Infix "≈N" := NatEq
@@ -31,23 +30,42 @@ Infix "≈N" := NatEq
 Program Instance NatEq_Equivalence {C D F G}
   : Equivalence (@NatEq C D F G).
 Next Obligation. repeat intro. cato. Qed.
-Next Obligation. repeat intro. symmetry. apply H. Qed.
-Next Obligation. repeat intro. transitivity (y X); auto. Qed.
+Next Obligation. repeat intro. symmetry. apply X. Qed.
+Next Obligation. repeat intro. transitivity (y X1); auto. Qed.
 
 Definition is_NatIso_of {C D : Cat} (F G : Functor C D)
-    (α : F => G) : Prop
+    (α : F => G) : Type
   := ∀ X, is_iso (α X).
 
 Definition NatIso {C D : Cat} (F G : Functor C D)
   := ∃ α : F => G, is_NatIso_of F G α.
 
 Notation "α '⦂' F '≅N' G" := (is_NatIso_of F G α)
-  (at level 200, no associativity) : cat_scope.
+  (at level 50, no associativity,
+    F at level 49, G at level 49) : cat_scope.
 
 Infix "≅N" := NatIso
   (at level 50, no associativity) : cat_scope.
 
+Program Definition NatIso_inv {C D : Cat} {F G : Functor C D}
+    (α : F => G) (Niso : is_NatIso_of F G α) : G => F
+  := {| nt := λ X, (Niso X).1 |}.
+Next Obligation.
+  pose (Hid := λ X, (Niso X).2).
+  simpl in Hid.
+  rewrite <- axiom_id_r. cacr.
+  rewrite <- (snd (Hid X)).
+  cacl (fmap G f). rewrite <- axiom_naturality.
+  cacl. cacl. rewrite (fst (Hid Y)). carw.
+Qed.
 
+Notation "α '^-1N'" := (NatIso_inv α).
+
+Proposition NatIso_inv_NatIso {C D : Cat} {F G : Functor C D} (α : F => G)
+  (Niso : α ⦂ F ≅N G) : (α ^-1N Niso) ⦂ G ≅N F.
+Proof. intro X. exists (α X). apply is_inv_of_comm.
+  simpl. apply (Niso X).2.
+Qed.
 
 Program Instance nt_id {C D : Cat} {F : Functor C D} : F => F
   := { nt _ := id }.
@@ -95,9 +113,22 @@ Next Obligation. intros O; simpl.
   rewrite axiom_comp_assoc. cato.
 Qed.
 
+Section Fct.
+Context {C D : Cat} {F G : Functor C D}.
+
+Theorem iso_NatIso : F ≅[Fct C D] G ↔ F ≅N G.
+Proof. split.
+  - intros (a & b & H1 & H2); simpl in *.
+    exists a. intros X. exists (b X). simpl. split; cato.
+  - intros [a H]. exists a. exists (a ^-1N H).
+    split; simpl; intro X; apply (H X).2.
+Qed.
+
 (** ** The Category of Presheaves *)
 
 Definition Psh C := Fct (op C) SetCat.
+
+End Fct.
 
 
 
@@ -112,7 +143,7 @@ Definition represents (F : Functor C SetCat) (X : @Ob C)
 Notation "X '⦂' 'represents' F" := (represents F X)
   (at level 50).
 
-Definition is_representable (F : Functor C SetCat) : Prop
+Definition is_representable (F : Functor C SetCat)
   := ∃ X, X ⦂ represents F.
 
 Context {F : Functor C SetCat} {G : Functor (C^op) SetCat}.
@@ -164,7 +195,8 @@ Next Obligation. intros g.
 Qed.
 Next Obligation.
   intros a a' Ha Y. simpl.
-  intros f. rewrite Ha. cato.
+  intros f. simpl in f.
+  rewrite Ha. cato.
 Qed.
 
 Theorem yoneda_lemma_iso {X : @Ob C}
@@ -174,12 +206,12 @@ Proof. exists yoneda_func, yoneda_func_inv.
   - intros a Y. simpl. intros f.
     assert (fmap F f ∘ a X ≈ a Y ∘ fmap Hom(X,-) f).
     { symmetry. apply axiom_naturality. }
-    specialize (H id). rewrite H.
+    specialize (X0 id). rewrite X0.
     simpl. rewrite axiom_id_r. cato.
   - intros x.
     assert (fmap F (@id X) ≈ id_resp).
     { rewrite axiom_functor_id. cato. }
-    specialize (H x). cato.
+    specialize (X0 x). cato.
 Qed.
 
 End Yoneda.

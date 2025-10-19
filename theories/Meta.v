@@ -1,27 +1,61 @@
-From Corelib Require Export Morphisms.
-From Corelib Require Export Basics.
-From Stdlib Require Export Utf8.
+(* From Stdlib Require Export Morphisms.
 From Stdlib Require Export Setoid.
+From Stdlib Require Export Basics. *)
+From Stdlib Require Export CMorphisms.
+From Stdlib Require Export CEquivalence.
 From Stdlib Require Export Datatypes.
+From Stdlib Require Utf8.
 
 Global Close Scope program_scope.
 Global Set Universe Polymorphism.
-(* Global Set Printing Universes. *)
+
+Global Set Warnings "-notation-overridden".
+Global Set Warnings "-notation-incompatible-format".
+
+
+
+(** * Type Notation *)
+
+Module Export TypeLogic.
+Export Utf8.
+
+(* Notation "'∀' x .. y , P" := (forall x, .. (forall y, P)..)
+  (at level 10, x binder, y binder, P at level 200,
+  format "'[ ' '[ ' ∀ x .. y ']' , '/' P ']'") : type_scope. *)
+
+Local Disable Notation "∃ x .. y , P".
+Notation "∃ x .. y , P" := (sigT (λ x, .. (sigT (λ y, P))..))
+  (at level 10, x binder, y binder, P at level 200,
+  format "'[ ' '[ ' ∃  x .. y ']' , '/' P ']'") : type_scope.
+
+Notation "x ∨ y" := (sum x y)
+  (at level 85, right associativity, only parsing) : type_scope.
+Notation "x ∧ y" := (prod x y)
+  (at level 80, right associativity, only parsing) : type_scope.
+
+Notation "x ↔ y" := (iffT x y)
+  (at level 95, no associativity, only parsing): type_scope.
+Notation "¬ x" := (x → Empty_set)
+  (at level 75, right associativity) : type_scope.
+
+Export SigTNotations.
+Export Notations.
+End TypeLogic.
 
 
 
 (** * Meta: Universal Property *)
 
 Record is_unique {X R} `{Equivalence X R}
-    (P : X → Prop) (x : X) : Prop :=
+    (P : X → Type) (x : X) : Type :=
   { this : P x
   ; that : ∀ y : X, P y → R y x
   }.
 
 Section Unique.
-Context {X : Type} {R : X → X → Prop} `{Equivalence X R}.
+Context {X : Type} {R : X → X → Type} `{Equivalence X R}.
 
-Definition is_unique' (x : X) : Prop
+Definition is_unique' (x : X) : Type
   := is_unique (λ _, True) x.
 
 Theorem elim_is_unique' {x : X}
@@ -49,9 +83,9 @@ Tactic Notation "elim_unique" constr(H) "with" constr(h) :=
 (** ** Equivalence of Prod Types *)
 
 Section ProdEquivalence.
-Context {X Y} (Rx : relation X) (Ry : relation Y).
+Context {X Y} (Rx : crelation X) (Ry : crelation Y).
 
-Definition ProdEq : relation (X * Y)
+Definition ProdEq : crelation (X * Y)
   := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y1 y2.
 
 Context `{Equivalence X Rx} `{Equivalence Y Ry}.
