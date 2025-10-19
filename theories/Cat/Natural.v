@@ -124,10 +124,6 @@ Proof. split.
     split; simpl; intro X; apply (H X).2.
 Qed.
 
-(** ** The Category of Presheaves *)
-
-Definition Psh C := Fct (op C) SetCat.
-
 End Fct.
 
 
