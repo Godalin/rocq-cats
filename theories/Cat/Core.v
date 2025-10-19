@@ -379,11 +379,35 @@ Hint Resolve term_η : cat.
 
 (** ** Initial Objects *)
 
-Definition HasInitial (C : Cat)
-  := HasTerminal (op C).
+Class HasInitial (C : Cat)
+  := _initial :: HasTerminal (op C).
 
-Definition is_initial `{C : Cat} (X : Ob)
+Section Initial.
+Context `{C : Cat}.
+
+Definition is_initial (X : Ob)
   := @is_terminal (op C) X.
+
+Context `{!HasInitial C}.
+
+Definition Init : @Ob C := @Term (op C) _.
+
+Definition init {X} : (@Hom C) Init X
+  := @term (op C) _ _.
+
+Notation "0" := Init.
+Notation "¡" := init.
+
+Proposition init_initial
+  : is_initial Init.
+Proof. intro X. exists ¡. split. auto.
+  intros h _. apply term_η.
+Qed.
+
+End Initial.
+
+Notation "0" := Init.
+Notation "¡" := init.
 
 
 

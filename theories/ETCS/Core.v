@@ -9,8 +9,7 @@ From Cats Require Import ETCS.Sub.
 
 Class IsWellPointed (C : Cat) `(!HasTerminal C) :=
   { axiom_well_pointed {X Y} {f g : Hom X Y}
-    : f ≉ g → ∃ x : Hom 1 X,
-      f ∘ x ≉ g ∘ x
+    : ∀ x : Hom 1 X, f ∘ x ≈ g ∘ x → f ≈ g
   }.
 
 Class HasAxiomChoice (C : Cat) :=
@@ -23,6 +22,7 @@ Class ETCS (C : Cat) :=
   (** [ETCS] is based on a _elementary topos_ *)
 
   { hasTerminal :: HasTerminal C
+  ; hasInitial :: HasInitial C
   ; hasProduct :: HasProduct C
   ; hasExponential :: HasExponential hasProduct
   ; hasPullback :: HasPullback C
@@ -39,9 +39,23 @@ Class ETCS (C : Cat) :=
 
 
 
+Declare Scope etcs_scope.
+Open Scope etcs_scope.
+
+Notation "'∅'" := Init.
+
+Notation "'∈' X" := (Hom 1 X)
+  (at level 35) : etcs_scope.
+
 Section ETCS.
-Context {C : Cat} `{Theory : !ETCS C}.
+Context {C : Cat} `{Axioms : !ETCS C}.
 
 (** Let's do _Set Theory_ (in [ETCS]) ! *)
+
+(** ** Empty Set *)
+
+(* Proposition init_no_elem
+  : ∈ 0 → Empty_set.
+Proof. intros x. *)
 
 End ETCS.
