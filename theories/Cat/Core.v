@@ -375,8 +375,15 @@ End Terminal.
 Hint Resolve term_terminal : cat.
 Hint Resolve term_η : cat.
 
-(* Hint Rewrite @term_η : cat. *)
-(* Hint Rewrite @term_comp_l : cat. *)
+
+
+(** ** Initial Objects *)
+
+Definition HasInitial (C : Cat)
+  := HasTerminal (op C).
+
+Definition is_initial `{C : Cat} (X : Ob)
+  := @is_terminal (op C) X.
 
 
 
