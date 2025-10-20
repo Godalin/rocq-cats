@@ -1,5 +1,7 @@
 From Cats Require Import Cat.Core.
 
+
+
 (** * Category of all Sets (Setoids in Rocq) *)
 
 (** ** Sets in category: [SetC], as setoids *)
@@ -172,6 +174,8 @@ Proof. reflexivity. Qed.
 
 
 
+(** Equality on Dependent Pairs should have strict [eq] on the first position. *)
+
 Inductive SigEq' {X : SetC} {Y : X → SetC} (x : X) (y : Y x)
     : ∀ (y : X), (Y y) → Type
   := SigEq_intro : ∀ {y'}, y ≈S y' → SigEq' x y x y'.
@@ -181,15 +185,15 @@ Definition SigEq {X : SetC} {Y : X → SetC} (a b : ∃ x : X, Y x)
 
 Infix "≈ΣS" := SigEq (at level 50).
 
-Program Instance SigEq_Symmetric {X Y} : Symmetric (@SigEq X Y).
-Next Obligation. inversion X0; subst; simpl in *.
-  constructor. simpl. rewrite <- X3. simpl. reflexivity.
-Qed.
-
 From Stdlib Require Import Equality.
 
 Program Instance SigEq_Equivalence {X Y} : Equivalence (@SigEq X Y).
 Next Obligation. intros x. constructor. reflexivity. Qed.
+Next Obligation. intros [x Yx] [y Yy] H.
+  inversion H; subst; simpl in *; subst.
+  dependent destruction H3.
+  constructor. simpl. symmetry. simpl. auto.
+Qed.
 Next Obligation. intros [x Yx] [y Yy] [z Yz] H1 H2.
   inversion H1; simpl in *; subst.
   inversion H2; simpl in *; subst.
