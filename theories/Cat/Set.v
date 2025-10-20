@@ -152,6 +152,26 @@ Program Canonical PiS (X : SetC) (Y : X → SetC) :=
 
 (** *** Dependent Product/Sums *)
 
+(* TODO can we define right family over [SetC]? *)
+
+Record FamS (X : SetC) :=
+  { fam :> X → SetC
+  ; fam_EqToIso {x y : X} : x ≈S y → fam x ≅ fam y
+  }.
+
+Arguments fam_EqToIso {_ _ _ _}.
+
+Definition transpS {X} {Y : FamS X} {x x' : X} (Eq : x ≈S x') (y : Y x) : Y x'
+  := (fam_EqToIso Eq).1 y.
+
+Definition SigEq'' {X : SetC} {Y : FamS X} (a b : ∃ x : X, Y x)
+  := ∃ Eq : a.1 ≈S b.1, transpS Eq a.2 ≈S b.2.
+
+Theorem reflS {X : SetC} {x : X} : x ≈S x.
+Proof. reflexivity. Qed.
+
+
+
 Inductive SigEq' {X : SetC} {Y : X → SetC} (x : X) (y : Y x)
     : ∀ (y : X), (Y y) → Type
   := SigEq_intro : ∀ {y'}, y ≈S y' → SigEq' x y x y'.
