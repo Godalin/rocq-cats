@@ -130,7 +130,7 @@ Class HasSubObjectClassifier `(C : Cat) `(!HasTerminal C) :=
   ; char {X Y} : X ↣ Y → Hom Y SubOC
 
   ; axiom_sub {X Y} {m : Mono X Y}
-    : is_unique (λ c, is_pullback (char m) truth X m !) (char m)
+    : is_unique (λ c, is_pullback c truth X m !) (char m)
   }.
 
 Notation Ω := SubOC.
@@ -169,9 +169,18 @@ Context `{!HasSubObjectClassifier C _}.
 
 Theorem SubOC_subobject_classifier
   : is_subobject_classifier Ω truth.
-Proof. intros A A0. exists (χ A0). split.
-  exists !. apply axiom_sub.
-  intros. apply axiom_sub. apply axiom_sub.
+Proof. intros A A0.
+  destruct (axiom_sub (m := A0)) as [Hchar Hunique].
+  exists (χ A0). split.
+  - exists !. exact Hchar.
+  - intros c [a [Hcomm Hpb]]. apply Hunique. split.
+    + rewrite <- (term_η a). exact Hcomm.
+    + intros Q q1 q2 Hq.
+      destruct (Hpb Q q1 q2 Hq) as [h [[H1 H2] Hu]].
+      exists h. split.
+      * split. exact H1. rewrite <- (term_η a). exact H2.
+      * intros k [Hk1 Hk2]. apply Hu. split.
+        exact Hk1. rewrite (term_η a). exact Hk2.
 Qed.
 
 End SubObjectClassifier.

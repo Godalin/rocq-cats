@@ -4,4 +4,4 @@
 
 (alias
  (name runtest)
- (deps Pullback.vo))
+ (deps Pullback.vo SubobjectClassifier.vo))
