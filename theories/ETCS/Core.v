@@ -1,4 +1,5 @@
 From Cats Require Import Cat.Core.
+From Cats Require Import Cat.Morphism.
 From Cats Require Import Cat.Pullback.
 From Cats Require Import ETCS.Nat.
 From Cats Require Import ETCS.Sub.
@@ -12,9 +13,11 @@ Class IsWellPointed (C : Cat) `(!HasTerminal C) :=
     : (∀ x : Hom 1 X, f ∘ x ≈ g ∘ x) → f ≈ g
   }.
 
+(** Choice for ETCS models: every epimorphism has a right inverse. *)
+
 Class HasAxiomChoice (C : Cat) :=
   { axiom_choice {X Y} {f : Hom X Y}
-    : (* TODO surjection *) ∃ g, is_rinv_of f g
+    : is_epi f → ∃ g, is_rinv_of f g
   }.
 
 Class ETCS (C : Cat) :=
