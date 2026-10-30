@@ -210,7 +210,7 @@ Defined.
 
 Definition ConstFamS (X A : SetC) : FamS X.
 Proof.
-  refine {| fam := fun _ => A; transpS := fun _ _ _ => id_resp (X := A) |};
+  refine {| fam := λ _, A; transpS := λ _ _ _, id_resp (X := A) |};
     intros; reflexivity.
 Defined.
 
@@ -252,6 +252,6 @@ Program Canonical SigS (X : SetC) (Y : FamS X) :=
 
 Definition sig_baseS {X} (Y : FamS X) : SigS X Y →r X.
 Proof.
-  unshelve refine (@Build_FunS_resp (SigS X Y) X (fun a => a.1) _).
+  unshelve refine (@Build_FunS_resp (SigS X Y) X (λ a, a.1) _).
   intros a b [p Hp]. exact p.
 Defined.

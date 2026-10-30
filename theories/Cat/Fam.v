@@ -22,14 +22,14 @@ Proof.
   assert (step : ∀ u : E, f u ≈S x → f u ≈S y).
   { intros u q. transitivity x; assumption. }
   unshelve refine (@Build_FunS_resp (FiberS f x) (FiberS f y)
-    (fun a => existT _ a.1 (step a.1 a.2)) _).
+    (λ a, (a.1; step a.1 a.2)) _).
   intros a b H. exact H.
 Defined.
 
 Definition FiberFamS {E X : SetC} (f : E →r X) : FamS X.
 Proof.
   refine {| fam := FiberS f
-          ; transpS := fun x y p => fiber_transpS f p |}.
+          ; transpS := λ x y p, fiber_transpS f p |}.
   - intros x p v. change (v.1 ≈S v.1). reflexivity.
   - intros x y z p q r v. change (v.1 ≈S v.1). reflexivity.
 Defined.
@@ -42,7 +42,7 @@ Definition fiber_total_projS {E X : SetC} (f : E →r X)
     : SigS X (FiberFamS f) →r E.
 Proof.
   unshelve refine (@Build_FunS_resp (SigS X (FiberFamS f)) E
-    (fun a => a.2.1) _).
+    (λ a, a.2.1) _).
   intros a b [p Hp]. exact Hp.
 Defined.
 
@@ -50,7 +50,7 @@ Definition fiber_total_introS {E X : SetC} (f : E →r X)
     : E →r SigS X (FiberFamS f).
 Proof.
   unshelve refine (@Build_FunS_resp E (SigS X (FiberFamS f))
-    (fun e => existT _ (f e) (existT _ e (reflS (x := f e)))) _).
+    (λ e, (f e; (e; reflS (x := f e)))) _).
   intros e e' H.
   assert (p : f e ≈S f e') by (apply func_proper; exact H).
   exists p. exact H.

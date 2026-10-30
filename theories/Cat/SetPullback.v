@@ -18,14 +18,14 @@ Defined.
 Definition set_pb1 {X Y Z : SetC} (f : X →r Z) (g : Y →r Z)
     : pullback_setoid f g →r X.
 Proof.
-  unshelve refine (@Build_FunS_resp (pullback_setoid f g) X (fun u => u.1) _).
+  unshelve refine (@Build_FunS_resp (pullback_setoid f g) X (λ u, u.1) _).
   intros u v [H1 H2]. exact H1.
 Defined.
 
 Definition set_pb2 {X Y Z : SetC} (f : X →r Z) (g : Y →r Z)
     : pullback_setoid f g →r Y.
 Proof.
-  unshelve refine (@Build_FunS_resp (pullback_setoid f g) Y (fun u => u.2.1) _).
+  unshelve refine (@Build_FunS_resp (pullback_setoid f g) Y (λ u, u.2.1) _).
   intros u v [H1 H2]. exact H2.
 Defined.
 
@@ -34,16 +34,16 @@ Definition set_pb {X Y Z P : SetC} {f : X →r Z} {g : Y →r Z}
     : P →r pullback_setoid f g.
 Proof.
   unshelve refine (@Build_FunS_resp P (pullback_setoid f g)
-    (fun u => existT _ (p1 u) (existT _ (p2 u) (HP u))) _).
+    (λ u, (p1 u; (p2 u; HP u))) _).
   intros u v Huv. split; apply func_proper; exact Huv.
 Defined.
 
 Definition set_pullbacks : HasPullback SetCat.
 Proof.
-  refine {| Pb := fun X Y Z f g => pullback_setoid f g
-          ; pb1 := fun X Y Z f g => set_pb1 f g
-          ; pb2 := fun X Y Z f g => set_pb2 f g
-          ; pb := fun X Y Z f g P p1 p2 HP => set_pb p1 p2 HP |}.
+  refine {| Pb := λ X Y Z f g, pullback_setoid f g
+          ; pb1 := λ X Y Z f g, set_pb1 f g
+          ; pb2 := λ X Y Z f g, set_pb2 f g
+          ; pb := λ X Y Z f g P p1 p2 HP, set_pb p1 p2 HP |}.
   - intros X Y Z f g u. exact u.2.2.
   - intros X Y Z f g P p1 p2 HP. split.
     + split; intros u; reflexivity.

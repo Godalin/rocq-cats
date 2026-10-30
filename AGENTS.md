@@ -51,6 +51,9 @@ changes over framework machinery or repository-wide rewrites.
 - Follow the local notation, universe-polymorphic style, typeclass conventions,
   and short proof patterns. Do not add `Admitted`, `Admit Obligations`, or axioms
   as completed fixes. Existing holes are audit findings, not proof validation.
+- Prefer the existing UTF-8 notation (`λ`, `∀`, `→`, `∃`, `∧`, `≈`, `∘`) and
+  exported dependent-pair/projection notation over ASCII spellings and explicit
+  constructors where unambiguous. Preserve Rocq's required tactic syntax.
 
 ## Working tree and experiments
 
