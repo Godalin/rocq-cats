@@ -464,13 +464,28 @@ Context {X Y P Q : Ob}.
 Context {p1 : Hom P X} {p2 : Hom P Y}.
 Context {q1 : Hom Q X} {q2 : Hom Q Y}.
 
-(* TODO *)
-
 Theorem product_unique
   : is_product X Y P p1 p2
   → is_product X Y Q q1 q2
   → P ≅ Q.
-Admitted.
+Proof.
+  intros HP HQ.
+  destruct (HP Q q1 q2) as [f [[Hf1 Hf2] Hf_unique]].
+  destruct (HQ P p1 p2) as [g [[Hg1 Hg2] Hg_unique]].
+  exists g, f; split; simpl.
+  - destruct (HP P p1 p2) as [h [_ Hh_unique]].
+    assert (Hid : id ≈ h).
+    { apply Hh_unique; split; rewrite axiom_id_r; reflexivity. }
+    rewrite Hid. apply Hh_unique; split; rewrite <- axiom_comp_assoc.
+    + rewrite Hf1, Hg1. reflexivity.
+    + rewrite Hf2, Hg2. reflexivity.
+  - destruct (HQ Q q1 q2) as [h [_ Hh_unique]].
+    assert (Hid : id ≈ h).
+    { apply Hh_unique; split; rewrite axiom_id_r; reflexivity. }
+    rewrite Hid. apply Hh_unique; split; rewrite <- axiom_comp_assoc.
+    + rewrite Hg1, Hf1. reflexivity.
+    + rewrite Hg2, Hf2. reflexivity.
+Qed.
 
 End Product.
 
