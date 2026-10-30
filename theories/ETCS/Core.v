@@ -5,11 +5,11 @@ From Cats Require Import ETCS.Sub.
 
 
 
-(** Well-Pointed Category *)
+(** Well-Pointed Category: equality on all global points detects equality. *)
 
 Class IsWellPointed (C : Cat) `(!HasTerminal C) :=
   { axiom_well_pointed {X Y} {f g : Hom X Y}
-    : ∀ x : Hom 1 X, f ∘ x ≈ g ∘ x → f ≈ g
+    : (∀ x : Hom 1 X, f ∘ x ≈ g ∘ x) → f ≈ g
   }.
 
 Class HasAxiomChoice (C : Cat) :=
