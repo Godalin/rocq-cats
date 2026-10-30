@@ -18,6 +18,8 @@ changes over framework machinery or repository-wide rewrites.
   terminal/initial objects, and exponentials.
 - `theories/Cat/Set.v`: setoids, respectful functions, `SetCat`, and dependent
   set constructions.
+- `theories/Cat/Fam.v`: coherent families of fibers of setoid maps and their
+  total-space isomorphisms.
 - `theories/Cat/SetPullback.v`: constructive chosen pullbacks for `SetCat`.
 - Other `theories/Cat/` modules: functors, natural transformations, presheaves,
   pullbacks, morphism properties, and CCC structure.

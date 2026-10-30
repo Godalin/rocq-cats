@@ -135,7 +135,10 @@ Program Canonical ProdS (X Y : SetC) :=
 
 Infix "×S" := ProdS (at level 40).
 
-(** *** Dependent Functions (Indexed Set Families) *)
+(** *** Raw Dependent Functions
+
+    This pointwise setoid does not require sections to respect equivalent
+    indices. Coherent families and their dependent sums are defined below. *)
 
 Definition PiEq {X : SetC} {Y : X → SetC} : crelation (∀ x : X, Y x)
   := λ f g, ∀ x : X, f x ≈S g x.
@@ -152,57 +155,103 @@ Program Canonical PiS (X : SetC) (Y : X → SetC) :=
   ; carrier_equiv := PiEq
   |}.
 
-(** *** Dependent Product/Sums *)
+(** *** Coherent Families over Setoids
 
-(* TODO can we define right family over [SetC]? *)
+    Transport is a respectful map. The laws compare its action on elements,
+    never equality witnesses themselves. Quantifying over any witnesses of
+    the same base equivalences expresses coherence over a setoid: the composite
+    law accepts any witness r, and witness independence follows from it. *)
 
 Record FamS (X : SetC) :=
   { fam :> X → SetC
-  ; fam_EqToIso {x y : X} : x ≈S y → fam x ≅ fam y
+  ; transpS {x y : X} : x ≈S y → fam x →r fam y
+  ; axiom_transp_id {x} (p : x ≈S x) (v : fam x)
+    : transpS p v ≈S v
+  ; axiom_transp_comp {x y z} (p : x ≈S y) (q : y ≈S z) (r : x ≈S z)
+      (v : fam x)
+    : transpS r v ≈S transpS q (transpS p v)
   }.
 
-Arguments fam_EqToIso {_ _ _ _}.
-
-Definition transpS {X} {Y : FamS X} {x x' : X} (Eq : x ≈S x') (y : Y x) : Y x'
-  := (fam_EqToIso Eq).1 y.
-
-Definition SigEq'' {X : SetC} {Y : FamS X} (a b : ∃ x : X, Y x)
-  := ∃ Eq : a.1 ≈S b.1, transpS Eq a.2 ≈S b.2.
+Arguments transpS {_} _ {_ _} _.
+Arguments axiom_transp_id {_} _ {_} _ _.
+Arguments axiom_transp_comp {_} _ {_ _ _} _ _ _ _.
 
 Theorem reflS {X : SetC} {x : X} : x ≈S x.
 Proof. reflexivity. Qed.
 
+(** Different witnesses induce equivalent maps; no proof irrelevance is used. *)
+Theorem transpS_witness_independent {X} (Y : FamS X) {x y} (p q : x ≈S y)
+  : transpS Y p ≈f transpS Y q.
+Proof.
+  intros v. assert (e : x ≈S x) by reflexivity.
+  transitivity (transpS Y q (transpS Y e v)).
+  - exact (axiom_transp_comp Y e q p v).
+  - apply func_proper. apply axiom_transp_id.
+Qed.
+
+Theorem transpS_inverse {X} (Y : FamS X) {x y}
+    (p : x ≈S y) (q : y ≈S x) (v : Y x)
+  : transpS Y q (transpS Y p v) ≈S v.
+Proof.
+  assert (e : x ≈S x) by reflexivity.
+  transitivity (transpS Y e v).
+  - symmetry. exact (axiom_transp_comp Y p q e v).
+  - apply axiom_transp_id.
+Qed.
+
+(** Fiber isomorphisms are consequences of coherent transport. *)
+Definition fam_EqToIso {X} (Y : FamS X) {x y} (p : x ≈S y)
+  : Y x ≅[SetCat] Y y.
+Proof.
+  assert (q : y ≈S x) by (symmetry; exact p).
+  exists (transpS Y p), (transpS Y q); split; intros v;
+    apply transpS_inverse.
+Defined.
+
+Definition ConstFamS (X A : SetC) : FamS X.
+Proof.
+  refine {| fam := fun _ => A; transpS := fun _ _ _ => id_resp (X := A) |};
+    intros; reflexivity.
+Defined.
 
 
-(** Equality on Dependent Pairs should have strict [eq] on the first position. *)
 
-Inductive SigEq' {X : SetC} {Y : X → SetC} (x : X) (y : Y x)
-    : ∀ (y : X), (Y y) → Type
-  := SigEq_intro : ∀ {y'}, y ≈S y' → SigEq' x y x y'.
+(** *** Dependent Sums
 
-Definition SigEq {X : SetC} {Y : X → SetC} (a b : ∃ x : X, Y x)
-  := SigEq' a.1 a.2 b.1 b.2.
+    Both coordinates are compared by setoid equivalence. The first witness
+    supplies the transport needed to compare the second coordinates. *)
+
+Definition SigEq {X : SetC} {Y : FamS X} (a b : ∃ x : X, Y x)
+  := ∃ p : a.1 ≈S b.1, transpS Y p a.2 ≈S b.2.
 
 Infix "≈ΣS" := SigEq (at level 50).
 
-From Stdlib Require Import Equality.
-
-Program Instance SigEq_Equivalence {X Y} : Equivalence (@SigEq X Y).
-Next Obligation. intros x. constructor. reflexivity. Qed.
-Next Obligation. intros [x Yx] [y Yy] H.
-  inversion H; subst; simpl in *; subst.
-  dependent destruction H3.
-  constructor. simpl. symmetry. simpl. auto.
+Global Instance SigEq_Equivalence {X Y} : Equivalence (@SigEq X Y).
+Proof.
+  split.
+  - intros [x v]. assert (p : x ≈S x) by reflexivity.
+    exists p. apply axiom_transp_id.
+  - intros [x v] [y w] [p Hp].
+    assert (q : y ≈S x) by (symmetry; exact p).
+    exists q. transitivity (transpS Y q (transpS Y p v)).
+    + apply func_proper. symmetry. exact Hp.
+    + apply transpS_inverse.
+  - intros [x v] [y w] [z u] [p Hp] [q Hq].
+    assert (r : x ≈S z) by (transitivity y; assumption).
+    exists r. transitivity (transpS Y q (transpS Y p v)).
+    + exact (axiom_transp_comp Y p q r v).
+    + transitivity (transpS Y q w).
+      * apply func_proper. exact Hp.
+      * exact Hq.
 Qed.
-Next Obligation. intros [x Yx] [y Yy] [z Yz] H1 H2.
-  inversion H1; simpl in *; subst.
-  inversion H2; simpl in *; subst.
-  dependent destruction H4; simpl in *; subst.
-  dependent destruction H6; simpl in *; subst.
-  constructor; simpl. transitivity Yy; cato.
-Qed.
 
-Program Canonical SigS (X : SetC) (Y : X → SetC) :=
+Program Canonical SigS (X : SetC) (Y : FamS X) :=
   {|carrier := ∃ x : X, Y x
   ; carrier_equiv := SigEq
   |}.
+
+Definition sig_baseS {X} (Y : FamS X) : SigS X Y →r X.
+Proof.
+  unshelve refine (@Build_FunS_resp (SigS X Y) X (fun a => a.1) _).
+  intros a b [p Hp]. exact p.
+Defined.
