@@ -44,10 +44,10 @@ Next Obligation.
     rewrite axiom_pb_cond. cato. }
   destruct (axiom_pb_unique Hx) as [[Hx11 Hx12] Hx2].
   specialize (Hx2 y).
-  assert (Hxη : x ≈ pb (pb1 f sY ∘ x) (pb2 f sY ∘ x)).
-  { apply pb_η. auto. split; cato. }
-  assert (Hyη : y ≈ pb (pb1 f sY ∘ y) (pb2 f sY ∘ y)).
-  { apply pb_η. auto. split; cato. }
+  assert (Hxη : x ≈ pb (pb1 f sY ∘ x) (pb2 f sY ∘ x) Hx).
+  { apply pb_η. split; cato. }
+  assert (Hyη : y ≈ pb (pb1 f sY ∘ y) (pb2 f sY ∘ y) Hy).
+  { apply pb_η. split; cato. }
   rewrite <- Hxη in Hx2.
   symmetry. apply Hx2.
   split. symmetry. auto.
@@ -66,30 +66,48 @@ Program Canonical SubF : Functor (op C) SetCat :=
   |}.
 Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
   split.
-  - exists (pb (pb1 f r) (rs ∘ pb2 f r)). simpl. carw.
-    rewrite <- axiom_comp_assoc, <- Hrs. cato.
-  - exists (pb (pb1 f s) (sr ∘ pb2 f s)). simpl. carw.
-    rewrite <- axiom_comp_assoc, <- Hsr. cato.
+  - assert (Hcone : f ∘ pb1 f r ≈ s ∘ (rs ∘ pb2 f r)).
+    { rewrite <- axiom_comp_assoc, <- Hrs. apply axiom_pb_cond. }
+    exists (pb (pb1 f r) (rs ∘ pb2 f r) Hcone).
+    simpl. symmetry. apply pb_β1.
+  - assert (Hcone : f ∘ pb1 f s ≈ r ∘ (sr ∘ pb2 f s)).
+    { rewrite <- axiom_comp_assoc, <- Hsr. apply axiom_pb_cond. }
+    exists (pb (pb1 f s) (sr ∘ pb2 f s) Hcone).
+    simpl. symmetry. apply pb_β1.
 Qed.
 Next Obligation. intros f g Hfg s. simpl. split.
-  exists (pb (Sub_fmap f s) (pb2 f s)). simpl.
-  carw. rewrite <- Hfg. cato.
-  exists (pb (Sub_fmap g s) (pb2 g s)). simpl.
-  carw. rewrite Hfg. cato.
+  - assert (Hcone : g ∘ Sub_fmap f s ≈ s ∘ pb2 f s).
+    { simpl. rewrite <- Hfg. apply axiom_pb_cond. }
+    exists (pb (Sub_fmap f s) (pb2 f s) Hcone).
+    simpl. symmetry. apply pb_β1.
+  - assert (Hcone : f ∘ Sub_fmap g s ≈ s ∘ pb2 g s).
+    { simpl. rewrite Hfg. apply axiom_pb_cond. }
+    exists (pb (Sub_fmap g s) (pb2 g s) Hcone).
+    simpl. symmetry. apply pb_β1.
 Qed.
 Next Obligation.
   intros s. simpl. split.
   exists (pb2 id s). simpl.
   rewrite <- (axiom_id_l (pb1 _ _)). cato.
-  exists (pb s id). simpl. carw.
+  assert (Hcone : id ∘ s ≈ s ∘ id). { carw. }
+  exists (pb s id Hcone). simpl. symmetry. apply pb_β1.
 Qed.
 Next Obligation.
   intros s. simpl. split.
-  - exists (pb #pb1 (pb (f ∘ #pb1) #pb2)). simpl.
-    carw. rewrite <- axiom_pb_cond. cacr.
-  - exists (pb #pb1 (#pb2 ∘ #pb2)). simpl.
-    carw. cacr. rewrite axiom_pb_cond.
-    cacl. cacl. rewrite axiom_pb_cond. cato.
+  - assert (Hinner : g ∘ (f ∘ pb1 (g ∘ f) s) ≈ s ∘ pb2 (g ∘ f) s).
+    { rewrite <- axiom_comp_assoc. apply axiom_pb_cond. }
+    pose (inner := pb (f ∘ pb1 (g ∘ f) s) (pb2 (g ∘ f) s) Hinner).
+    assert (Houter : f ∘ pb1 (g ∘ f) s ≈ pb1 g s ∘ inner).
+    { symmetry. apply pb_β1. }
+    exists (pb (pb1 (g ∘ f) s) inner Houter).
+    simpl. symmetry. apply pb_β1.
+  - assert (Hcone : (g ∘ f) ∘ pb1 f (pb1 g s)
+        ≈ s ∘ (pb2 g s ∘ pb2 f (pb1 g s))).
+    { rewrite axiom_comp_assoc, axiom_pb_cond.
+      rewrite <- axiom_comp_assoc, axiom_pb_cond, axiom_comp_assoc.
+      reflexivity. }
+    exists (pb (pb1 f (pb1 g s)) (pb2 g s ∘ pb2 f (pb1 g s)) Hcone).
+    simpl. symmetry. apply pb_β1.
 Qed.
 
 End Sub.

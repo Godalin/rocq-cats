@@ -8,18 +8,17 @@ Class HasPullback `(C : Cat) :=
   { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
   ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
   ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
-  ; pb {X Y Z} {f : Hom X Z} {g : Hom Y Z} {P} (p1 : Hom P X) (p2 : Hom P Y) : Hom P (Pb f g)
-
-  ; axiom_pb_proper {X Y Z} {f : Hom X Z} {g : Hom Y Z} {P}
-    :: Proper (@HomEq[P, X] ==> @HomEq[P, Y] ==> @HomEq[P, Pb f g]) (pb)
+  ; pb {X Y Z} {f : Hom X Z} {g : Hom Y Z} {P}
+      (p1 : Hom P X) (p2 : Hom P Y)
+      (HP : f ∘ p1 ≈ g ∘ p2) : Hom P (Pb f g)
 
   ; axiom_pb_cond {X Y Z} {f : Hom X Z} {g : Hom Y Z}
     : f ∘ pb1 f g ≈ g ∘ pb2 f g
 
   ; axiom_pb_unique {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-      {P} {p1 : Hom P X} {p2 : Hom P Y}
-    : f ∘ p1 ≈ g ∘ p2
-      → is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2) (pb p1 p2)
+      {P} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
+    : is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2)
+        (pb p1 p2 HP)
   }.
 
 Notation "X '×[' f ',' g ']' Y" := (@Pb _ _ X Y _ f g)
@@ -94,21 +93,37 @@ Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
 Theorem pb_pullback
   : is_pullback f g (X ×[f,g] Y) (pb1 f g) (pb2 f g).
 Proof.
-  split. cato. intros Q q1 q2. exists (pb q1 q2).
-  apply axiom_pb_unique. auto.
+  split. cato. intros Q q1 q2 HQ. exists (pb q1 q2 HQ).
+  apply axiom_pb_unique.
 Qed.
 
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
 Context (HP : f ∘ p1 ≈ g ∘ p2).
 
-Theorem pb_β1 : pb1 f g ∘ pb p1 p2 ≈ p1.
-Proof. apply axiom_pb_unique. auto. Qed.
+Theorem pb_β1 : pb1 f g ∘ pb p1 p2 HP ≈ p1.
+Proof. apply axiom_pb_unique. Qed.
 
-Theorem pb_β2 : pb2 f g ∘ pb p1 p2 ≈ p2.
-Proof. apply axiom_pb_unique. auto. Qed.
+Theorem pb_β2 : pb2 f g ∘ pb p1 p2 HP ≈ p2.
+Proof. apply axiom_pb_unique. Qed.
 
-Theorem pb_η h : pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2 → h ≈ pb p1 p2.
-Proof. apply axiom_pb_unique. auto. Qed.
+Theorem pb_η h
+  : pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2 → h ≈ pb p1 p2 HP.
+Proof. apply axiom_pb_unique. Qed.
+
+(** Respectfulness follows from uniqueness, including independence of the
+    commutativity witness. No equality between witnesses is required. *)
+Theorem pb_proper {q1 : Hom P X} {q2 : Hom P Y}
+    (HQ : f ∘ q1 ≈ g ∘ q2)
+  : p1 ≈ q1 → p2 ≈ q2 → pb p1 p2 HP ≈ pb q1 q2 HQ.
+Proof.
+  intros H1 H2. apply (axiom_pb_unique HQ). split.
+  - rewrite pb_β1. exact H1.
+  - rewrite pb_β2. exact H2.
+Qed.
+
+Corollary pb_witness_independent (HQ : f ∘ p1 ≈ g ∘ p2)
+  : pb p1 p2 HP ≈ pb p1 p2 HQ.
+Proof. apply pb_proper; reflexivity. Qed.
 
 End Pullback.
 
@@ -144,17 +159,22 @@ Proof. split.
   - cacr. rewrite axiom_pb_cond.
     cacl. rewrite axiom_pb_cond. cacr.
   - intros Q q1 q2 Hq.
-    pose (h1 := pb (h ∘ q1) q2 : Hom Q (X ×[f,g] Y)).
-    pose (h2 := pb q1 h1 : Hom Q (W ×[h,pb1 f g] (X ×[f,g] Y))).
+    assert (Hq' : f ∘ (h ∘ q1) ≈ g ∘ q2).
+    { rewrite <- axiom_comp_assoc. exact Hq. }
+    pose (h1 := pb (h ∘ q1) q2 Hq' : Hom Q (X ×[f,g] Y)).
+    assert (Hh1 : h ∘ q1 ≈ pb1 f g ∘ h1).
+    { symmetry. apply pb_β1. }
+    pose (h2 := pb q1 h1 Hh1 : Hom Q (W ×[h,pb1 f g] (X ×[f,g] Y))).
     exists h2. split.
     + split; unfold h2; unfold h1.
-      carw. cacl. cacr. carw. cacl. carw. cacl.
+      apply pb_β1.
+      rewrite axiom_comp_assoc, pb_β2, pb_β2. reflexivity.
     + intros i [Hi1 Hi2].
-      unfold h2, h1. rewrite <- Hi1, <- Hi2.
-      apply pb_η. carw. rewrite Hi1, Hi2.
-      cacl. split. cato. apply pb_η. rewrite Hi1, Hi2.
-      cacl. split. cacl. cacl.
-      rewrite axiom_pb_cond. cato. cacl.
+      unfold h2. apply pb_η. split. exact Hi1.
+      unfold h1. apply pb_η. split.
+      * rewrite <- axiom_comp_assoc, <- axiom_pb_cond.
+        rewrite axiom_comp_assoc, Hi1. reflexivity.
+      * rewrite <- axiom_comp_assoc. exact Hi2.
 Qed.
 
 Theorem pullback_comp'
@@ -177,15 +197,12 @@ Context {X Y : Ob}.
 
 Theorem pullback_product
   : is_product X Y (X ×[!,!] Y) (pb1 ! !) (pb2 ! !).
-Proof. intros Z p q. exists (pb p q). split.
-  - split. carw. rewrite term_comp_l. cato.
-    carw. rewrite term_comp_l. cato. carw.
-    repeat rewrite term_comp_l. cato.
-  - intros h [H1 H2].
-    apply pb_η. carw.
-    rewrite term_comp_l. carw. cato.
-    rewrite term_comp_l. cato.
-    split; cato.
+Proof. intros Z p q.
+  assert (Hpq : ! ∘ p ≈ ! ∘ q).
+  { repeat rewrite term_comp_l. reflexivity. }
+  exists (pb p q Hpq). split.
+  - split; [apply pb_β1 | apply pb_β2].
+  - intros h Hh. apply pb_η. exact Hh.
 Qed.
 
 Context `{HP : !HasProduct C}.
