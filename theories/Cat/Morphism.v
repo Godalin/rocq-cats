@@ -9,24 +9,20 @@ Context `{C : Cat}.
 
 (** ** Monomorphisms
 
-    In Rocq, law of exclude middle (lem) is not admitted as default,
-    thus the law of contraposition. Since our aim is to build a
-    constructive theory of categories, we provide both versions of
-    the definition of being a [monomorphism]. From the theorem proving
-    perspective, it is best practice to assume the weaker version
-    (i.e., [is_mono']) as input, and producing the stronger version
-    (i.e., [is_mono]) as output.
-    
-    Similar situation for [is_epi] and [is_epi']. *)
+    Cancellation implies its contrapositive constructively. The converse
+    does not follow in general without additional assumptions, so the two
+    properties are kept distinct. Use the weakest sufficient assumption.
+
+    Similar definitions are provided for epimorphisms. *)
 
 Definition is_mono {Y Z} (f : Hom Y Z)
   := ∀ X, ∀ x y : Hom X Y, f ∘ x ≈ f ∘ y → x ≈ y.
 
-Definition is_mono' {Y Z} (f : Hom Y Z)
+Definition is_mono_contrapositive {Y Z} (f : Hom Y Z)
   := ∀ X, ∀ x y : Hom X Y, x ≉ y → f ∘ x ≉ f ∘ y.
 
-Proposition mono_mono' {Y Z} (f : Hom Y Z)
-  : is_mono f → is_mono' f.
+Proposition mono_implies_contrapositive {Y Z} (f : Hom Y Z)
+  : is_mono f → is_mono_contrapositive f.
 Proof. firstorder. Qed.
 
 Proposition mono_id {X} : is_mono (@id X).
@@ -42,14 +38,15 @@ Proof. intros Hf Hg W x y Heq.
   repeat rewrite <- axiom_comp_assoc. auto.
 Qed.
 
-Proposition mono'_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
-  : is_mono' f → is_mono' g → is_mono' (g ∘ f).
+Proposition mono_contrapositive_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+  : is_mono_contrapositive f → is_mono_contrapositive g
+    → is_mono_contrapositive (g ∘ f).
 Proof. intros Hf Hg W x y Hneq.
   repeat rewrite axiom_comp_assoc.
   apply Hg. apply Hf. auto.
 Qed.
 
-(* TODO mono' version *)
+(* TODO: contrapositive version of left cancellation. *)
 
 Proposition mono_cancel_l {X Y Z} (f : Hom X Y) (g : Hom Y Z)
   : is_mono (g ∘ f) → is_mono f.
@@ -196,16 +193,16 @@ Proof. intros [H1 H2]. eapply iso_by_factor; eauto. Qed.
 
 (** ** Epimorphisms
 
-    Similar situation as [is_mono] and [is_mono']. *)
+    Cancellation and its contrapositive are distinguished as for monomorphisms. *)
 
 Definition is_epi {X Y} (f : Hom X Y)
   := ∀ Z, ∀ x y : Hom Y Z, x ∘ f ≈ y ∘ f → x ≈ y.
 
-Definition is_epi' {X Y} (f : Hom X Y)
+Definition is_epi_contrapositive {X Y} (f : Hom X Y)
   := ∀ Z, ∀ x y : Hom Y Z, x ≉ y → x ∘ f ≉ y ∘ f.
 
-Proposition epi_epi' {X Y} (f : Hom X Y)
-  : is_epi f → is_epi' f.
+Proposition epi_implies_contrapositive {X Y} (f : Hom X Y)
+  : is_epi f → is_epi_contrapositive f.
 Proof. firstorder. Qed.
 
 End Morphism.

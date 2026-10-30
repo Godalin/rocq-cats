@@ -55,11 +55,12 @@ Record is_unique {X R} `{Equivalence X R}
 Section Unique.
 Context {X : Type} {R : X → X → Type} `{Equivalence X R}.
 
-Definition is_unique' (x : X) : Type
+(** Uniqueness among all elements, up to the ambient equivalence. *)
+Definition is_unique_element (x : X) : Type
   := is_unique (λ _, True) x.
 
-Theorem elim_is_unique' {x : X}
-  : is_unique' x ↔ ∀ y : X, R y x.
+Theorem unique_element_iff {x : X}
+  : is_unique_element x ↔ ∀ y : X, R y x.
 Proof. firstorder. Qed.
 
 End Unique.
@@ -69,7 +70,7 @@ Tactic Notation "elim_unique" constr(H) "as" ident(Hyp) :=
   let Heq := fresh Hyp "_eq" in
   destruct H as [Hsat Heq].
 
-Tactic Notation "elim_unique'" constr(H) "as" ident(Hyp) :=
+Tactic Notation "elim_unique_eq" constr(H) "as" ident(Hyp) :=
   let Heq := fresh Hyp "_eq" in
   destruct H as [_ Heq].
 

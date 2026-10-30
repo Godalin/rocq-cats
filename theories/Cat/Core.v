@@ -301,7 +301,7 @@ Class HasTerminal `(C : Cat) :=
   ; term {X} : Hom X Term
 
   ; axiom_terminal {X}
-    : is_unique' (@term X)
+    : is_unique_element (@term X)
   }.
 
 Arguments Term {_ _}.
@@ -317,12 +317,12 @@ Section Terminal.
 Context `{C : Cat}.
 
 Definition is_terminal T :=
-  ∀ X, ∃ h : Hom X T, is_unique' h.
+  ∀ X, ∃ h : Hom X T, is_unique_element h.
 
 Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
   let Hh_unique := fresh "H" h "_unique" in
   destruct H as (h & Hh_unique);
-  rewrite elim_is_unique' in Hh_unique.
+  rewrite unique_element_iff in Hh_unique.
 
 Proposition term_id {T}
   : is_terminal T

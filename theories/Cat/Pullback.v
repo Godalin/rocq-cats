@@ -177,7 +177,7 @@ Proof. split.
       * rewrite <- axiom_comp_assoc. exact Hi2.
 Qed.
 
-Theorem pullback_comp'
+Theorem pullback_comp_iso
   : W ×[h, pb1 f g] (X ×[f,g] Y) ≅ W ×[f ∘ h, g] Y.
 Proof. eapply pullback_unique.
   apply pullback_comp. cato.
@@ -209,7 +209,7 @@ Context `{HP : !HasProduct C}.
 
 (** Then it is isomorphic to the product object. *)
 
-Theorem pullback_product'
+Theorem pullback_product_iso
   : (X ×[!,!] Y) ≅ X × Y.
 Proof. eapply product_unique.
   apply pullback_product. cato.

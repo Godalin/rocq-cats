@@ -189,7 +189,7 @@ Proof.
   - apply func_proper. apply axiom_transp_id.
 Qed.
 
-Theorem transpS_inverse {X} (Y : FamS X) {x y}
+Theorem transpS_inv {X} (Y : FamS X) {x y}
     (p : x ≈S y) (q : y ≈S x) (v : Y x)
   : transpS Y q (transpS Y p v) ≈S v.
 Proof.
@@ -200,12 +200,12 @@ Proof.
 Qed.
 
 (** Fiber isomorphisms are consequences of coherent transport. *)
-Definition fam_EqToIso {X} (Y : FamS X) {x y} (p : x ≈S y)
+Definition transpS_iso {X} (Y : FamS X) {x y} (p : x ≈S y)
   : Y x ≅[SetCat] Y y.
 Proof.
   assert (q : y ≈S x) by (symmetry; exact p).
   exists (transpS Y p), (transpS Y q); split; intros v;
-    apply transpS_inverse.
+    apply transpS_inv.
 Defined.
 
 Definition ConstFamS (X A : SetC) : FamS X.
@@ -235,7 +235,7 @@ Proof.
     assert (q : y ≈S x) by (symmetry; exact p).
     exists q. transitivity (transpS Y q (transpS Y p v)).
     + apply func_proper. symmetry. exact Hp.
-    + apply transpS_inverse.
+    + apply transpS_inv.
   - intros [x v] [y w] [z u] [p Hp] [q Hq].
     assert (r : x ≈S z) by (transitivity y; assumption).
     exists r. transitivity (transpS Y q (transpS Y p v)).
@@ -250,7 +250,7 @@ Program Canonical SigS (X : SetC) (Y : FamS X) :=
   ; carrier_equiv := SigEq
   |}.
 
-Definition sig_baseS {X} (Y : FamS X) : SigS X Y →r X.
+Definition sig_base_resp {X} (Y : FamS X) : SigS X Y →r X.
 Proof.
   unshelve refine (@Build_FunS_resp (SigS X Y) X (λ a, a.1) _).
   intros a b [p Hp]. exact p.

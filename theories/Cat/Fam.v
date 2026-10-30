@@ -16,7 +16,7 @@ Proof.
   - intros a b c H1 H2. transitivity b.1; assumption.
 Defined.
 
-Definition fiber_transpS {E X : SetC} (f : E →r X)
+Definition fiber_transp_resp {E X : SetC} (f : E →r X)
     {x y : X} (p : x ≈S y) : FiberS f x →r FiberS f y.
 Proof.
   assert (step : ∀ u : E, f u ≈S x → f u ≈S y).
@@ -29,7 +29,7 @@ Defined.
 Definition FiberFamS {E X : SetC} (f : E →r X) : FamS X.
 Proof.
   refine {| fam := FiberS f
-          ; transpS := λ x y p, fiber_transpS f p |}.
+          ; transpS := λ x y p, fiber_transp_resp f p |}.
   - intros x p v. change (v.1 ≈S v.1). reflexivity.
   - intros x y z p q r v. change (v.1 ≈S v.1). reflexivity.
 Defined.
@@ -38,7 +38,7 @@ Defined.
     isomorphism. This also shows that transport-based sum equality identifies
     equivalent representatives without identifying their witness data. *)
 
-Definition fiber_total_projS {E X : SetC} (f : E →r X)
+Definition fiber_total_proj_resp {E X : SetC} (f : E →r X)
     : SigS X (FiberFamS f) →r E.
 Proof.
   unshelve refine (@Build_FunS_resp (SigS X (FiberFamS f)) E
@@ -46,7 +46,7 @@ Proof.
   intros a b [p Hp]. exact Hp.
 Defined.
 
-Definition fiber_total_introS {E X : SetC} (f : E →r X)
+Definition fiber_total_intro_resp {E X : SetC} (f : E →r X)
     : E →r SigS X (FiberFamS f).
 Proof.
   unshelve refine (@Build_FunS_resp E (SigS X (FiberFamS f))
@@ -59,7 +59,7 @@ Defined.
 Theorem fiber_total_iso {E X : SetC} (f : E →r X)
   : SigS X (FiberFamS f) ≅[SetCat] E.
 Proof.
-  exists (fiber_total_projS f), (fiber_total_introS f); split.
+  exists (fiber_total_proj_resp f), (fiber_total_intro_resp f); split.
   - intros [x [e q]]. exists q. change (e ≈S e). reflexivity.
   - intros e. change (e ≈S e). reflexivity.
 Qed.

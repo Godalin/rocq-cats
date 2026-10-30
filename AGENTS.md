@@ -55,6 +55,48 @@ changes over framework machinery or repository-wide rewrites.
   exported dependent-pair/projection notation over ASCII spellings and explicit
   constructors where unambiguous. Preserve Rocq's required tactic syntax.
 
+## Naming conventions
+
+- Use the nearest established mathematical interface as the naming guide.
+  Structures and object-level constructions use capitalized names, such as
+  `Cat`, `Functor`, `HasProduct`, `ProdS`, and `IdF`. Keep the `Has*` convention
+  for chosen structure and `Is*` for property classes.
+- Preserve the mathematical meaning of established abbreviations: `S` means
+  Set, implemented here by setoids; `C` means Cat, as in `SetC`, the sets used
+  as categorical objects. `SetCat` is their category. Use `F` for functors and
+  `N` for natural transformations; lowercase `f` in `≈f` refers to functions.
+  In `nt_comp_v` and `∘Nv`, `v` means vertical composition; `op` means opposite.
+  Follow nearby names rather than imposing one suffix on every declaration;
+  `S` also occurs in operations such as `transpS`, not only in constructions
+  such as `ProdS` and `SigS`.
+- Ordinary operations and helpers use lowercase words separated by underscores.
+  `resp` means respectful (preserving equivalence), also abbreviated by `r` in
+  `→r`. Use `_resp` for respectful-map constructions where it follows the local
+  API, as in `id_resp`, `comp_resp`, and `comp_l_resp`; this does not require
+  renaming every existing set-level map. Distinguish `→r`, a respectful map,
+  from `→S`, the set of such maps with pointwise equivalence.
+  Use `_proper` for a preservation property or its proof, rather than the
+  bundled map. In `_l` and `_r`, the letters mean left and right; `_pre` and
+  `_post` mean precomposition and postcomposition.
+  Preserve a subject's established spelling when extending its API, as in
+  `Sub_fmap`, `NatIso_inv`, and `transpS_inv`.
+- Predicates use `is_*`; equivalence relations use the established `*Eq` pattern.
+  Equivalence and other typeclass witnesses use `<subject>_<Class>`, following
+  `FunEq_Equivalence`; chosen model structures use names such as
+  `SetCat_HasPullback`. The name alone does not register a typeclass instance.
+- Structure laws use `axiom_<operation>_<law>`. Derived results use a subject
+  prefix and a descriptive property, following `product_unique`, `prod_comp_r`,
+  and `yoneda_lemma_iso`. Reuse established endings such as `_id`, `_comp`,
+  `_inv`, `_proper`, `_unique`, `_β1`, and `_η` when they express the result.
+  Prefer descriptive endings such as `_iso` to a prime on a theorem name.
+  Numerical labels follow the local interface: `F0` and `F1` are object and
+  morphism actions, while `π1` and `π2` are the two product projections.
+- Prefer a precise name over an unexplained abbreviation. Existing names may
+  be updated in a focused naming change when their mathematical role becomes
+  clearer; update repository references together. Preserve meaningful local
+  conventions without turning naming work into a repository-wide API rewrite
+  or adding compatibility aliases unless they are needed.
+
 ## Working tree and experiments
 
 - Inspect Git status before edits and preserve user work. Uncommitted files may
