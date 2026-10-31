@@ -57,7 +57,11 @@ This project aims at building ETCS.
   family object, including its base; successive reindexing is `U[f][g]`.
   [FamSection](./theories/Instance/Set/FamSection.v) provides coherent sections,
   their reindexing, the generic element, and total-space pairing with its
-  universal property and β/η laws.
+  universal property and β/η laws; `s ≈s t` compares sections pointwise.
+  [FamSectionMap](./theories/Instance/Set/FamSectionMap.v) connects sections to
+  family morphisms: `φ ▷ s` acts on a section, while `φ ▷[f] s` acts on a section
+  already reindexed along `f`. Equivalent morphisms give equivalent values
+  after transport along their base-map equivalence.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
@@ -108,6 +112,7 @@ Local Existing Instance SetCat_CCC.
   [FamReindex](./theories/Instance/Set/FamReindex.v)).
 - [x] Identity and composition comparisons for family reindexing.
 - [x] Coherent sections, their reindexing, and total-space pairing.
+- [x] Family morphisms acting on sections, with identity and composition laws.
 - [ ] Design a CwF interface, making substitution and comprehension laws
   explicit; use coherent families to develop a setoid model.
 - [x] Pullbacks

@@ -43,6 +43,9 @@ changes over framework machinery or repository-wide rewrites.
 - `theories/Instance/Set/FamSection.v`: coherent dependent sections and their
   pointwise setoid, section reindexing, the generic element, and total-space
   pairing with its universal property and computation laws.
+- `theories/Instance/Set/FamSectionMap.v`: family morphisms acting on sections,
+  including reindexed sections, transport-aware equivalence, and compatibility
+  with identity, composition, reindexing, and total-space pairing.
 - `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
   set-valued Hom-functors, representability, Yoneda, presheaves, and the
   subobject functor.

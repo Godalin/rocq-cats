@@ -18,6 +18,8 @@ Arguments section_proper {_ _} _ {_ _} _.
 Definition SectionEq {X : SetC} {A : FamS X} (s t : SectionS_resp A)
   := ∀ x, s x ≈S t x.
 
+Infix "≈s" := SectionEq (at level 50, no associativity) : cat_scope.
+
 Global Instance SectionEq_Equivalence {X A} : Equivalence (@SectionEq X A).
 Proof.
   split.
