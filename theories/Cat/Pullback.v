@@ -4,22 +4,37 @@ From Cats Require Import Cat.Core.
 
 (** * Pullbacks *)
 
+Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
+  := λ P : Ob, λ p1 : Hom P X, λ p2 : Hom P Y,
+    f ∘ p1 ≈ g ∘ p2 ∧
+      ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
+      → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
+
 Class HasPullback `(C : Cat) :=
   { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
   ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
   ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
-  ; pb {X Y Z} {f : Hom X Z} {g : Hom Y Z} {P}
-      (p1 : Hom P X) (p2 : Hom P Y)
-      (HP : f ∘ p1 ≈ g ∘ p2) : Hom P (Pb f g)
-
-  ; pullback_comm {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-    : f ∘ pb1 f g ≈ g ∘ pb2 f g
-
-  ; pullback_mediator_unique {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-      {P} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
-    : is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2)
-        (pb p1 p2 HP)
+  ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+    : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
   }.
+
+Definition pb {C : Cat} `{!HasPullback C} {X Y Z}
+    {f : Hom X Z} {g : Hom Y Z} {P}
+    (p1 : Hom P X) (p2 : Hom P Y) (HP : f ∘ p1 ≈ g ∘ p2)
+  : Hom P (Pb f g) :=
+  (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).1.
+
+Theorem pullback_comm {C : Cat} `{!HasPullback C}
+    {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+  : f ∘ pb1 f g ≈ g ∘ pb2 f g.
+Proof. exact (fst (pullback_universal (f := f) (g := g))). Qed.
+
+Theorem pullback_mediator_unique {C : Cat} `{!HasPullback C}
+    {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+    {P} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
+  : is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2)
+      (pb p1 p2 HP).
+Proof. exact (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).2. Qed.
 
 Notation "X '×[' f ',' g ']' Y" := (@Pb _ _ X Y _ f g)
   (at level 52, no associativity,
@@ -47,12 +62,6 @@ Hint Resolve pullback_comm : cat.
 
 Section Pullback.
 Context `{C : Cat}.
-
-Definition is_pullback {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
-  := λ P : Ob, λ p1 : Hom P X, λ p2 : Hom P Y,
-    f ∘ p1 ≈ g ∘ p2 ∧
-      ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
-      → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
 
 Theorem pullback_unique {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}
     {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}
@@ -90,13 +99,6 @@ Section Pullback.
 Context `{C : Cat} `{H : !HasPullback C}.
 Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
 
-Theorem pb_pullback
-  : is_pullback f g (X ×[f,g] Y) (pb1 f g) (pb2 f g).
-Proof.
-  split. cato. intros Q q1 q2 HQ. exists (pb q1 q2 HQ).
-  apply pullback_mediator_unique.
-Qed.
-
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
 Context (HP : f ∘ p1 ≈ g ∘ p2).
 
@@ -127,7 +129,7 @@ Proof. apply pb_proper; reflexivity. Qed.
 
 End Pullback.
 
-Hint Resolve pb_pullback : cat.
+Hint Resolve pullback_universal : cat.
 Hint Resolve pb_β1 : cat.
 Hint Resolve pb_β2 : cat.
 
@@ -183,8 +185,8 @@ Context `{H : !HasPullback C}.
 Theorem pullback_comp_iso
   : W ×[h, pb1 f g] (X ×[f,g] Y) ≅ W ×[f ∘ h, g] Y.
 Proof. eapply pullback_unique.
-  - eapply pullback_comp; apply pb_pullback.
-  - apply pb_pullback.
+  - eapply pullback_comp; apply pullback_universal.
+  - apply pullback_universal.
 Qed.
 
 End Pullback.

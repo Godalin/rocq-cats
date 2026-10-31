@@ -42,10 +42,10 @@ Definition SetCat_HasPullback : HasPullback SetCat.
 Proof.
   refine {| Pb := λ X Y Z f g, PbS f g
           ; pb1 := λ X Y Z f g, pb1_resp f g
-          ; pb2 := λ X Y Z f g, pb2_resp f g
-          ; pb := λ X Y Z f g P p1 p2 HP, pb_resp p1 p2 HP |}.
-  - intros X Y Z f g u. exact u.2.2.
-  - intros X Y Z f g P p1 p2 HP. split.
+          ; pb2 := λ X Y Z f g, pb2_resp f g |}.
+  intros X Y Z f g. split.
+  - intros u. exact u.2.2.
+  - intros P p1 p2 HP. exists (pb_resp p1 p2 HP). split.
     + split; intros u; reflexivity.
     + intros k [H1 H2] u. split; [exact (H1 u) | exact (H2 u)].
 Defined.
