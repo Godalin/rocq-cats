@@ -40,6 +40,9 @@ changes over framework machinery or repository-wide rewrites.
 - `theories/Instance/Set/FamReindex.v`: canonical reindexing morphisms and
   the pullback universal property of their total-space squares; explicit
   identity and composition comparison isomorphisms.
+- `theories/Instance/Set/FamSection.v`: coherent dependent sections and their
+  pointwise setoid, section reindexing, the generic element, and total-space
+  pairing with its universal property and computation laws.
 - `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
   set-valued Hom-functors, representability, Yoneda, presheaves, and the
   subobject functor.
@@ -83,6 +86,9 @@ their directory location does not register them as global instances.
 - Prefer the existing UTF-8 notation (`λ`, `∀`, `→`, `∃`, `∧`, `≈`, `∘`) and
   exported dependent-pair/projection notation over ASCII spellings and explicit
   constructors where unambiguous. Preserve Rocq's required tactic syntax.
+- Design useful notation alongside new mathematical definitions and operations,
+  and use it in related definitions and theorem statements. Follow established
+  scope and suffix conventions; check precedence, chaining, and parsing.
 
 ## Naming conventions
 

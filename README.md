@@ -55,6 +55,9 @@ This project aims at building ETCS.
   isomorphisms that act as identities on the base and fibers.
   Write `A[f]S` for reindexing a coherent family and `U[f]` for reindexing a
   family object, including its base; successive reindexing is `U[f][g]`.
+  [FamSection](./theories/Instance/Set/FamSection.v) provides coherent sections,
+  their reindexing, the generic element, and total-space pairing with its
+  universal property and β/η laws.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
@@ -104,6 +107,7 @@ Local Existing Instance SetCat_CCC.
 - [x] Family reindexing and its total-space pullback universal property (see
   [FamReindex](./theories/Instance/Set/FamReindex.v)).
 - [x] Identity and composition comparisons for family reindexing.
+- [x] Coherent sections, their reindexing, and total-space pairing.
 - [ ] Design a CwF interface, making substitution and comprehension laws
   explicit; use coherent families to develop a setoid model.
 - [x] Pullbacks
