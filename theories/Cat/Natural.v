@@ -124,3 +124,46 @@ Proof. split.
 Qed.
 
 End Fct.
+
+(** ** Opposite Natural Transformations
+
+    Components keep their underlying morphisms. Their direction, and the
+    order of vertical composition, are reversed in the opposite category. *)
+
+Program Definition nt_op {C D : Cat} {F G : Functor C D} (α : F => G)
+  : OpF G => OpF F :=
+  {| nt X := α X |}.
+Next Obligation. symmetry. apply nt_naturality. Qed.
+
+Notation "α '^opN'" := (nt_op α) (at level 35) : cat_scope.
+
+Global Instance nt_op_proper {C D : Cat} {F G : Functor C D}
+  : Proper (NatEq ==> NatEq) (@nt_op C D F G).
+Proof. intros α β Hαβ X. exact (Hαβ X). Qed.
+
+Theorem nt_op_id {C D : Cat} {F : Functor C D}
+  : nt_op (idN (F := F)) ≈N idN.
+Proof. intros X. reflexivity. Qed.
+
+Theorem nt_op_comp_v {C D : Cat} {F G H : Functor C D}
+    (β : G => H) (α : F => G)
+  : (β ∘Nv α) ^opN ≈N (α ^opN ∘Nv β ^opN).
+Proof. intros X. reflexivity. Qed.
+
+Program Definition OpFctF {C D : Cat}
+  : Functor ((Fct C D) ^op) (Fct (C ^op) (D ^op)) :=
+  {| F0 := OpF; F1 F G α := nt_op α |}.
+Next Obligation. apply nt_op_id. Qed.
+Next Obligation. apply nt_op_comp_v. Qed.
+
+(** The double-opposite comparison is natural in the category. *)
+Program Definition OpInvolutionN : (OpCatF ∘F OpCatF) => (@IdF CatCat) :=
+  {| nt C := FromDoubleOpF (C := C) |}.
+Next Obligation.
+  exists (λ A, eq_refl). intros A B u. simpl. carw.
+Qed.
+
+Definition op_involution_nat_iso : (OpCatF ∘F OpCatF) ≅N (@IdF CatCat).
+Proof.
+  exists OpInvolutionN. intros C. exact (op_involution C).2.
+Defined.

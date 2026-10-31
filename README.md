@@ -36,6 +36,11 @@ This project aims at building ETCS.
   [Product](./theories/Cat/Product.v),
   [Exponential](./theories/Cat/Exponential.v), and
   [Pullback](./theories/Cat/Pullback.v).
+  [Functor](./theories/Cat/Functor.v) and
+  [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
+  and natural transformations (`α ^opN`); the double-opposite comparison is a
+  natural isomorphism whose component functors act as identities on objects
+  and morphisms.
 - [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
   as sets. [Core](./theories/Instance/Set/Core.v) defines sets, respectful maps,
   and their category; [Product](./theories/Instance/Set/Product.v),
@@ -86,6 +91,9 @@ Local Existing Instance SetCat_CCC.
 
 ## TODOs
 
+- [ ] Continue coherent families: base and total-space functors, with the
+  projection as a natural transformation (see
+  [FamCat](./theories/Instance/Set/FamCat.v)); then design a CwF interface.
 - [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor

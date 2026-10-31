@@ -183,7 +183,9 @@ Notation "C '^op'" := (op C)
 Definition ob_op {C : Cat} (X : @Ob C) : (@Ob (C ^op))
   := X.
 
-(* Coercion ob_op : Ob >-> Ob. *)
+Lemma eq_to_hom_op {C : Cat} {X Y : @Ob C} (p : X = Y)
+  : @eq_to_hom (C ^op) X Y p ≈ eq_to_hom (eq_sym p).
+Proof. destruct p. reflexivity. Qed.
 
 
 

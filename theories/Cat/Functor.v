@@ -186,3 +186,67 @@ Qed.
 Next Obligation.
   exists (λ A, eq_refl). intros A B u. simpl. carw.
 Qed.
+
+
+
+(** ** Opposite Functors
+
+    Taking opposites reverses arrows in both categories. Double opposition
+    is compared by explicit identity-on-objects-and-morphisms functors, without
+    requiring equality of category records or their law proofs. *)
+
+Program Definition OpF {C D : Cat} (F : Functor C D)
+  : Functor (C ^op) (D ^op) :=
+  {| F0 X := F X
+   ; F1 X Y f := fmap F f |}.
+Next Obligation. intros u v Huv. apply functor_fmap_proper. exact Huv. Qed.
+Next Obligation. apply functor_id. Qed.
+Next Obligation. apply functor_comp. Qed.
+
+Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
+
+Global Instance OpF_proper {C D : Cat}
+  : Proper (FunctorEq ==> FunctorEq) (@OpF C D).
+Proof.
+  intros F G [p Hp]. exists p. intros X Y f. simpl.
+  rewrite !eq_to_hom_op.
+  rewrite <- (comp_id_l (fmap F f)).
+  rewrite <- (eq_to_hom_inv_l (p X)).
+  rewrite (comp_assoc _ _ (fmap F f)), (Hp Y X f).
+  rewrite !comp_assoc, eq_to_hom_inv_r.
+  rewrite comp_id_r. reflexivity.
+Qed.
+
+Theorem OpF_id {C : Cat} : OpF (@IdF C) =F (@IdF (C ^op)).
+Proof. exists (λ X, eq_refl). intros X Y f. simpl. carw. Qed.
+
+Theorem OpF_comp {C D E : Cat} (G : Functor D E) (F : Functor C D)
+  : OpF (G ∘F F) =F (OpF G ∘F OpF F).
+Proof. exists (λ X, eq_refl). intros X Y f. simpl. carw. Qed.
+
+Program Definition ToDoubleOpF {C : Cat} : Functor C (C ^op ^op) :=
+  {| F0 X := X; F1 X Y f := f |}.
+Next Obligation. intros f g Hfg. exact Hfg. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
+
+Program Definition FromDoubleOpF {C : Cat} : Functor (C ^op ^op) C :=
+  {| F0 X := X; F1 X Y f := f |}.
+Next Obligation. intros f g Hfg. exact Hfg. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
+
+Definition op_involution (C : Cat) : (C ^op ^op) ≅[CatCat] C.
+Proof.
+  exists FromDoubleOpF, ToDoubleOpF. split;
+    exists (λ X, eq_refl); intros X Y f; simpl; carw.
+Defined.
+
+Theorem OpF_involution {C D : Cat} (F : Functor C D)
+  : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) =F F.
+Proof. exists (λ X, eq_refl). intros X Y f. simpl. carw. Qed.
+
+Program Definition OpCatF : Functor CatCat CatCat :=
+  {| F0 := op; F1 C D F := OpF F |}.
+Next Obligation. apply OpF_id. Qed.
+Next Obligation. apply OpF_comp. Qed.
