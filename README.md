@@ -51,6 +51,10 @@ This project aims at building ETCS.
   functors to `SetCat` and their natural projection.
   [FamReindex](./theories/Instance/Set/FamReindex.v) gives canonical reindexing
   morphisms whose total-space squares satisfy the pullback universal property.
+  Identity and composition of reindexing are compared by explicit family
+  isomorphisms that act as identities on the base and fibers.
+  Write `A[f]S` for reindexing a coherent family and `U[f]` for reindexing a
+  family object, including its base; successive reindexing is `U[f][g]`.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
@@ -99,7 +103,7 @@ Local Existing Instance SetCat_CCC.
   [FamCat](./theories/Instance/Set/FamCat.v)).
 - [x] Family reindexing and its total-space pullback universal property (see
   [FamReindex](./theories/Instance/Set/FamReindex.v)).
-- [ ] Identity and composition comparisons for family reindexing.
+- [x] Identity and composition comparisons for family reindexing.
 - [ ] Design a CwF interface, making substitution and comprehension laws
   explicit; use coherent families to develop a setoid model.
 - [x] Pullbacks

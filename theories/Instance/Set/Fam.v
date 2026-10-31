@@ -91,6 +91,9 @@ Proof.
   - intros x y z p q r a. apply transpS_comp.
 Defined.
 
+Notation "A '[' f ']S'" := (ReindexFamS A f)
+  (at level 8, left associativity, format "A [ f ]S") : cat_scope.
+
 
 
 (** ** Dependent Sums

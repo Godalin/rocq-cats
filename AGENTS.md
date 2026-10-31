@@ -38,7 +38,8 @@ changes over framework machinery or repository-wide rewrites.
   transport-compatible morphisms and transport-aware morphism equivalence;
   base and total-space functors, with projection as a natural transformation.
 - `theories/Instance/Set/FamReindex.v`: canonical reindexing morphisms and
-  the pullback universal property of their total-space squares.
+  the pullback universal property of their total-space squares; explicit
+  identity and composition comparison isomorphisms.
 - `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
   set-valued Hom-functors, representability, Yoneda, presheaves, and the
   subobject functor.
