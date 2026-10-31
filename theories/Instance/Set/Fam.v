@@ -186,4 +186,4 @@ Proof.
   exists (fiber_total_proj_resp f), (fiber_total_intro_resp f); split.
   - intros [x [e q]]. exists q. change (e ≈S e). reflexivity.
   - intros e. change (e ≈S e). reflexivity.
-Qed.
+Defined.

@@ -36,6 +36,8 @@ This project aims at building ETCS.
   [Product](./theories/Cat/Product.v),
   [Exponential](./theories/Cat/Exponential.v), and
   [Pullback](./theories/Cat/Pullback.v).
+  [Slice](./theories/Cat/Slice.v) constructs `C /C X`, with commuting triangles
+  up to morphism equivalence and equality on their underlying arrows.
   [Functor](./theories/Cat/Functor.v) and
   [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
   and natural transformations (`α ^opN`). Functors are compared by natural
@@ -79,6 +81,12 @@ This project aims at building ETCS.
   [FamCat](./theories/Instance/Set/FamCat.v) assembles coherent families and
   transport-compatible maps into a category, with base and total-space
   functors to `SetCat` and their natural projection.
+  [FamFixed](./theories/Instance/Set/FamFixed.v) gives the category `FamSCat X`
+  of families over a fixed base and fiberwise maps `A →Fam B`.
+  [FamSlice](./theories/Instance/Set/FamSlice.v) constructs total-space and
+  fiber functors and proves `FamSCat X ≃C (SetCat /C X)`; see the
+  [families–slices note](./docs/FamiliesAndSlices.md) for the size bounds and
+  compatibility with substitution.
   [FamReindex](./theories/Instance/Set/FamReindex.v) gives canonical reindexing
   morphisms whose total-space squares satisfy the pullback universal property.
   Identity and composition of reindexing are compared by explicit family
