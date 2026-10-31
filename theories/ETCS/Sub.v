@@ -10,18 +10,6 @@ From Cats Require Import Cat.Core Cat.Pullback Cat.Morphism.
     v          v
     X ------> SubOC *)
 
-Class HasSubObjectClassifier `(C : Cat) `(!HasTerminal C) :=
-  { SubOC : Ob
-  ; truth : Hom 1 SubOC
-  ; char {X Y} : X ↣ Y → Hom Y SubOC
-
-  ; classifier_char_unique {X Y} {m : Mono X Y}
-    : is_unique (λ c, is_pullback c truth X m !) (char m)
-  }.
-
-Notation Ω := SubOC.
-Notation χ := char.
-
 Section SubObjectClassifier.
 Context `{C : Cat}.
 
@@ -48,18 +36,31 @@ Proof. unfold is_subobject_classifier. intros HSubOC.
   reflexivity.
 Qed.
 
+End SubObjectClassifier.
 
+Class HasSubObjectClassifier `(C : Cat) `(!HasTerminal C) :=
+  { SubOC : Ob
+  ; truth : Hom 1 SubOC
+  ; classifier_universal : is_subobject_classifier SubOC (term_Sub truth)
+  }.
 
-Context `{!HasTerminal C}.
-Context `{!HasSubObjectClassifier C _}.
+Arguments classifier_universal {_ _ _} _ _.
 
-Theorem SubOC_subobject_classifier
-  : is_subobject_classifier Ω truth.
-Proof. intros A A0.
-  destruct (classifier_char_unique (m := A0)) as [Hchar Hunique].
-  exists (χ A0). split.
-  - exists !. exact Hchar.
-  - intros c [a [Hcomm Hpb]]. apply Hunique. split.
+Definition char {C : Cat} `{HT : !HasTerminal C}
+    `{!HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y) : Hom Y SubOC :=
+  (classifier_universal Y (@Build_Sub C Y X m)).1.
+
+Notation Ω := SubOC.
+Notation χ := char.
+
+Theorem classifier_char_unique {C : Cat} `{HT : !HasTerminal C}
+    `{!HasSubObjectClassifier C HT} {X Y} {m : Mono X Y}
+  : is_unique (λ c, is_pullback c truth X m !) (χ m).
+Proof.
+  destruct (classifier_universal Y (@Build_Sub C Y X m)).2
+    as [[a [Hcomm Hpb]] Hunique].
+  split.
+  - split.
     + rewrite <- (term_η a). exact Hcomm.
     + intros Q q1 q2 Hq.
       destruct (Hpb Q q1 q2 Hq) as [h [[H1 H2] Hu]].
@@ -67,6 +68,5 @@ Proof. intros A A0.
       * split. exact H1. rewrite <- (term_η a). exact H2.
       * intros k [Hk1 Hk2]. apply Hu. split.
         exact Hk1. rewrite (term_η a). exact Hk2.
+  - intros c Hc. apply Hunique. exists !. exact Hc.
 Qed.
-
-End SubObjectClassifier.

@@ -47,6 +47,15 @@ This project aims at building ETCS.
   computational recursion.
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
+Chosen universal constructions share the same design: `is_*` describes a
+specific candidate, and `Has*` stores a chosen candidate with that universal
+property. Mediating maps are extracted from transparent witnesses; their laws,
+uniqueness, and respectfulness follow from the property. This covers products,
+terminal and initial objects, and exponentials in [Core](./theories/Cat/Core.v),
+[pullbacks](./theories/Cat/Pullback.v),
+[natural-numbers objects](./theories/ETCS/Nat.v), and
+[subobject classifiers](./theories/ETCS/Sub.v).
+
 Import the setoid structures that are needed and enable chosen structures explicitly:
 
 ```coq
