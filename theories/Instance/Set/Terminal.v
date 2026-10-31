@@ -10,8 +10,7 @@ Defined.
 
 Definition SetCat_HasTerminal : HasTerminal SetCat.
 Proof.
-  refine {| Term := UnitS
-          ; term := λ X, @Build_FunS_resp X UnitS (λ _, tt)
-              (λ _ _ _, tt) |}.
-  intros X. split. exact I. intros f _ x. exact tt.
+  refine {| Term := UnitS |}. intros X.
+  exists (@Build_FunS_resp X UnitS (λ _, tt) (λ _ _ _, tt)).
+  split. exact I. intros f _ x. exact tt.
 Defined.

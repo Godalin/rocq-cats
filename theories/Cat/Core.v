@@ -318,15 +318,24 @@ End Iso.
 
 (** ** Terminal Objects *)
 
+Definition is_terminal {C : Cat} (T : Ob) :=
+  ∀ X, ∃ h : Hom X T, is_unique_element h.
+
 Class HasTerminal `(C : Cat) :=
   { Term : Ob
-  ; term {X} : Hom X Term
-
-  ; terminal_arrow_unique {X}
-    : is_unique_element (@term X)
+  ; terminal_universal : is_terminal Term
   }.
 
 Arguments Term {_ _}.
+Arguments terminal_universal {_ _} _.
+
+Definition term {C : Cat} `{!HasTerminal C} {X} : Hom X Term :=
+  (terminal_universal X).1.
+
+Theorem terminal_arrow_unique {C : Cat} `{!HasTerminal C} {X}
+  : is_unique_element (@term C _ X).
+Proof. exact (terminal_universal X).2. Qed.
+
 Arguments term {_ _ _}.
 Arguments terminal_arrow_unique {_ _ _}.
 
@@ -337,9 +346,6 @@ Notation "'@!' X" := (@term _ _ _ X)
 
 Section Terminal.
 Context `{C : Cat}.
-
-Definition is_terminal T :=
-  ∀ X, ∃ h : Hom X T, is_unique_element h.
 
 Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
   let Hh_unique := fresh "H" h "_unique" in
@@ -379,13 +385,6 @@ Notation "X '⦂' '≅' '1'" := (is_terminal X)
 Section Terminal.
 Context `{C : Cat} `{!HasTerminal C}.
 
-Proposition term_terminal
-  : is_terminal 1.
-Proof.
-  intros X. exists !.
-  apply terminal_arrow_unique.
-Qed.
-
 Proposition term_η {X} (h : Hom X 1) : h ≈ !.
 Proof. apply terminal_arrow_unique. trivial. Qed.
 
@@ -394,7 +393,7 @@ Proof. rewrite (term_η (! ∘ _)). cato. Qed.
 
 End Terminal.
 
-Hint Resolve term_terminal : cat.
+Hint Resolve terminal_universal : cat.
 Hint Resolve term_η : cat.
 
 
@@ -410,7 +409,7 @@ Context `{C : Cat}.
 Definition is_initial (X : Ob)
   := @is_terminal (op C) X.
 
-Context `{!HasInitial C}.
+Context `{HI : !HasInitial C}.
 
 Definition Init : @Ob C := @Term (op C) _.
 
@@ -420,11 +419,9 @@ Definition init {X} : (@Hom C) Init X
 Notation "0" := Init.
 Notation "¡" := init.
 
-Proposition init_initial
+Proposition initial_universal
   : is_initial Init.
-Proof. intro X. exists ¡. split. auto.
-  intros h _. apply term_η.
-Qed.
+Proof. exact (@terminal_universal (op C) HI). Qed.
 
 End Initial.
 
