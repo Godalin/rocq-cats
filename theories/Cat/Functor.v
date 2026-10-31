@@ -48,6 +48,37 @@ Next Obligation.
   repeat rewrite functor_comp. reflexivity.
 Qed.
 
+(** ** Fixing One Argument of a Functor from a Product Category *)
+
+Section PartialFunctor.
+Context {C D E : Cat}.
+
+(** Vary the first argument, keeping the second fixed. *)
+Program Definition π1F (F : Functor (C ×C D) E) (d : @Ob D) : Functor C E :=
+  {| F0 c := F (c, d)
+   ; F1 X Y f := fmap F (X := (X, d)) (Y := (Y, d)) (f, id) |}.
+Next Obligation.
+  intros u v Huv. apply functor_fmap_proper. split; cato.
+Qed.
+Next Obligation. apply functor_id. Qed.
+Next Obligation.
+  rewrite <- functor_comp. apply functor_fmap_proper. split; cato.
+Qed.
+
+(** Vary the second argument, keeping the first fixed. *)
+Program Definition π2F (F : Functor (C ×C D) E) (c : @Ob C) : Functor D E :=
+  {| F0 d := F (c, d)
+   ; F1 X Y f := fmap F (X := (c, X)) (Y := (c, Y)) (id, f) |}.
+Next Obligation.
+  intros u v Huv. apply functor_fmap_proper. split; cato.
+Qed.
+Next Obligation. apply functor_id. Qed.
+Next Obligation.
+  rewrite <- functor_comp. apply functor_fmap_proper. split; cato.
+Qed.
+
+End PartialFunctor.
+
 (** Equality between Functors.
 
     Object equalities induce the connecting morphisms in the comparison
@@ -84,6 +115,22 @@ Infix "∘F" := CompF
 
 Infix "=F" := FunctorEq
   (at level 50) : cat_scope.
+
+Global Instance π1F_proper {C D E : Cat} (d : @Ob D)
+  : Proper (FunctorEq ==> FunctorEq)
+      (λ F : Functor (C ×C D) E, π1F F d).
+Proof.
+  intros F G [p Hp]. exists (λ c, p (c, d)).
+  intros X Y f. exact (Hp (X, d) (Y, d) (f, id)).
+Qed.
+
+Global Instance π2F_proper {C D E : Cat} (c : @Ob C)
+  : Proper (FunctorEq ==> FunctorEq)
+      (λ F : Functor (C ×C D) E, π2F F c).
+Proof.
+  intros F G [p Hp]. exists (λ d, p (c, d)).
+  intros X Y f. exact (Hp (c, X) (c, Y) (id, f)).
+Qed.
 
 
 
