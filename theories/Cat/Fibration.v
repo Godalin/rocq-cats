@@ -125,11 +125,21 @@ Proof.
   { rewrite <- H, comp_assoc, Hu, comp_id_r. reflexivity. }
   exists (cartesian_factor Hf g ui H'). split.
   - apply (cartesian_cancel Hf).
-    + rewrite functor_comp, !cartesian_factor_base, functor_id. exact Hui.
-    + rewrite <- comp_assoc, !cartesian_factor_comp, comp_id_r. reflexivity.
+    + rewrite functor_comp. transitivity (ui ∘ u).
+      * apply comp_proper; apply cartesian_factor_base.
+      * transitivity (@id (P X)); [exact Hui | symmetry; apply functor_id].
+    + etransitivity; [symmetry; apply comp_assoc |].
+      etransitivity.
+      * apply comp_proper; [apply cartesian_factor_comp | reflexivity].
+      * etransitivity; [apply cartesian_factor_comp | symmetry; apply comp_id_r].
   - apply (cartesian_cancel Hg).
-    + rewrite functor_comp, !cartesian_factor_base, functor_id. exact Hu.
-    + rewrite <- comp_assoc, !cartesian_factor_comp, comp_id_r. reflexivity.
+    + rewrite functor_comp. transitivity (u ∘ ui).
+      * apply comp_proper; apply cartesian_factor_base.
+      * transitivity (@id (P X')); [exact Hu | symmetry; apply functor_id].
+    + etransitivity; [symmetry; apply comp_assoc |].
+      etransitivity.
+      * apply comp_proper; [apply cartesian_factor_comp | reflexivity].
+      * etransitivity; [apply cartesian_factor_comp | symmetry; apply comp_id_r].
 Defined.
 
 Definition cartesian_unique {E B : Cat} {P : Functor E B}
