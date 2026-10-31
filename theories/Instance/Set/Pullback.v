@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Cat.Set Cat.Pullback.
+From Cats Require Import Cat.Core Instance.Set.Core Cat.Pullback.
 
 (** * Pullbacks in the category of setoids
 

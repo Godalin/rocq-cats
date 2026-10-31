@@ -13,7 +13,7 @@ A category theory library for self study.
 
 - `CCC` and `ETCS` theories ([see here](/theories/Cat/CCC.v) and [here](/theories/Cat/CCC.v)) can be build up from this modularity.
 
-- A Fully formalized category of sets `SetCat` [see here](/theories/ETCS/Core.v)
+- A Fully formalized category of sets `SetCat` [see here](./theories/Instance/Set/Core.v)
   - with the following the Rocq features
     - setoid as sets
     - proper function preserving equivalence relations
@@ -25,6 +25,26 @@ A category theory library for self study.
 ### ETCS
 
 This project aims at building ETCS.
+
+## Repository layout
+
+- [Cat](./theories/Cat/): categorical interfaces and general constructions.
+- [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
+  as sets. [Core](./theories/Instance/Set/Core.v) defines sets, respectful maps,
+  and their category; [Product](./theories/Instance/Set/Product.v),
+  [Pullback](./theories/Instance/Set/Pullback.v), and
+  [Fam](./theories/Instance/Set/Fam.v) provide independent extensions.
+- [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
+
+Import the setoid structures that are needed and enable chosen structures explicitly:
+
+```coq
+From Cats Require Import Instance.Set.Core.
+From Cats Require Import Instance.Set.Product Instance.Set.Pullback.
+
+Local Existing Instance SetCat_HasProduct.
+Local Existing Instance SetCat_HasPullback.
+```
 
 ## TODOs
 

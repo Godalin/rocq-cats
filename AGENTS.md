@@ -16,16 +16,24 @@ changes over framework machinery or repository-wide rewrites.
   shared proof helpers.
 - `theories/Cat/Core.v`: categories, morphism equivalence, duality, products,
   terminal/initial objects, and exponentials.
-- `theories/Cat/Set.v`: setoids, respectful functions, `SetCat`, and dependent
-  set constructions.
-- `theories/Cat/Fam.v`: coherent families of fibers of setoid maps and their
-  total-space isomorphisms.
-- `theories/Cat/SetPullback.v`: constructive chosen pullbacks for `SetCat`.
 - Other `theories/Cat/` modules: functors, natural transformations, presheaves,
   pullbacks, morphism properties, and CCC structure.
+- `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.
+- `theories/Instance/Set/Product.v`: setoid products and constructive chosen
+  products for `SetCat`.
+- `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
+- `theories/Instance/Set/Fam.v`: dependent functions, coherent families,
+  dependent sums, fibers, and their total-space isomorphisms.
 - `theories/ETCS/`: subobjects, classifiers, natural numbers, and ETCS axioms.
 - `dune-project` and `theories/dune`: build configuration; the logical namespace
   is `Cats`. `rocq-cats.opam` is generated: edit `dune-project` instead.
+
+Group concrete implementations under `Instance/<base>/`; keep abstract
+interfaces, general constructions, and their typeclass instances with their
+theories. `Instance.Set.Core` depends only on `Cat.Core`; it must not import
+the setoid extensions, functors, or natural transformations. Import extensions
+individually. Chosen product and pullback structures are explicitly enabled;
+their directory location does not register them as global instances.
 
 ## Mathematical conventions
 

@@ -1,6 +1,6 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Functor.
-From Cats Require Import Cat.Set.
+From Cats Require Import Instance.Set.Core.
 
 
 
