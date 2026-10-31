@@ -111,6 +111,14 @@ for `g ≈₁[R X Y] g'` on the left and the inverse comparison for `f ≈₁[R 
 on the right. This makes the change of endpoints explicit instead of
 comparing nonparallel 2-cells directly.
 
+The operation is `cell2_transport p q α`, written `α⟦p, q⟧₂` in
+`bicat_scope`. It preserves `Cell2Eq` and vertical composition. Successive
+transports agree with transport along any witnesses of the composite
+equivalences; transporting back gives the original 2-cell up to `Cell2Eq`.
+Both actions are independent of the chosen witnesses. For a concrete model
+whose cell types unfold to an unrelated type alias, specify the bicategory
+with `(K := ...)` or annotate the 2-cell type to guide elaboration.
+
 This is strictness **relative to the supplied setoid presentation**. It does
 not assert definitional or native equality of representatives, nor construct
 a quotient or a strictification. Taking arbitrary invertible 2-cells as
@@ -122,6 +130,55 @@ The designated setoid equality is the mathematical equality of this library.
 Accordingly the interface remains named `IsStrictTwoCat`: it expresses the
 intended strictness, without adding native equality of representatives as a
 further requirement.
+
+### A concrete obstruction for the arbitrary-`NatIso` candidate
+
+Consider the category with one object, Boolean arrows, identity `false`,
+composition `xorb`, and discrete arrow equivalence. The natural endotransformation
+of its identity functor with component `true` is natural by commutativity of
+`xorb`. It is invertible, with itself as inverse, since `xorb true true = false`.
+Its component differs from the identity component `false`.
+
+Thus `Cell1Eq F G := NatIso F G` with comparison `p.1` cannot supply
+`IsStrictTwoCat CatBicat`: the equality-loop law applied to this witness would
+force `true = false`. A temporary constructive check proves this rejection
+and checks its assumptions. This excludes that specific candidate, not every
+possible strict presentation of `CatBicat`.
+
+The general `Cat` interface does not supply a designated equivalence of its
+objects with coherent comparison maps. Consequently an equality of functor
+actions with such object comparisons is additional structure to design; it
+cannot be obtained simply by taking every available natural isomorphism.
+No replacement by the former native-object-equality `FunctorEq` is made here.
+
+## A locally thin strict model from any category
+
+[ThinBicat.v](../theories/Cat/ThinBicat.v) constructs `ThinBicat C` for any
+ordinary category `C`:
+
+| Level | Data |
+| --- | --- |
+| 0-cells | Objects of `C` |
+| 1-cells | Morphisms of `C` |
+| 2-cells `f ⇒₂ g` | Witnesses of `f ≈ g` in `C` |
+| 2-cell equivalence | `unit` for any pair of parallel witnesses |
+
+Vertical composition uses transitivity of `HomEq`; horizontal composition
+uses `comp_proper`. Associators and unitors are the existing category-law
+witnesses. Every 2-cell is invertible by symmetry of `HomEq`, and parallel
+2-cells are equivalent by the specified relation. This retains their witness
+data without asking for native equality or proof irrelevance.
+
+`ThinBicat_IsStrictTwoCat C` chooses the original `HomEq` as 1-cell equality,
+with each witness itself as the comparison 2-cell. All comparison laws hold
+under the locally thin 2-cell equivalence. Enable this chosen structure
+explicitly when using the abstract transport API.
+
+In particular `ThinBicat SetCat` has setoids as objects, respectful functions
+as 1-cells, and witnesses of pointwise setoid equivalence as 2-cells. These
+can compare maps with different underlying values in equivalent setoid
+representatives. This complements the additive model, whose 2-cells can be
+noninvertible.
 
 ## Categories, functors, and natural transformations
 

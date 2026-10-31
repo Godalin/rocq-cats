@@ -51,7 +51,10 @@ This project aims at building ETCS.
   composition, interchange, and coherent associators/unitors.
   [TwoCategory](./theories/Cat/TwoCategory.v) expresses strictness relative to
   a specified 1-cell equivalence (`f ≈₁[R] g`), with coherent comparison
-  2-cells and strict associators/unitors.
+  2-cells and strict associators/unitors. Write `α⟦p, q⟧₂` for transport of
+  both endpoints of a 2-cell along specified 1-cell equivalences.
+  [ThinBicat](./theories/Cat/ThinBicat.v) gives a locally thin strict model
+  from any category, retaining its morphism-equivalence witnesses as 2-cells.
   [CatBicat](./theories/Cat/CatBicat.v) retains all natural
   transformations as 2-cells and proves pentagon/triangle coherence. `CatCat`
   remains its separate one-dimensional shadow up to natural isomorphism.

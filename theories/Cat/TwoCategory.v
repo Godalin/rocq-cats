@@ -80,4 +80,78 @@ Proof.
     + apply cell1_eq_to_cell2_id.
 Defined.
 
+(** ** Transport of 2-cell Endpoints *)
+
+Definition cell2_transport {X Y} {f f' g g' : Cell1 X Y}
+    (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g') (α : f ⇒₂ g) : f' ⇒₂ g' :=
+  cmp X Y g g' q ∘₂ α ∘₂ cmp X Y f' f (symmetry p).
+
+Local Notation "α '⟦' p ',' q '⟧₂'" := (cell2_transport p q α)
+  (at level 8, left associativity) : bicat_scope.
+
+Global Instance cell2_transport_proper {X Y} {f f' g g' : Cell1 X Y}
+    (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g')
+  : Proper (Cell2Eq ==> Cell2Eq) (cell2_transport p q).
+Proof.
+  intros α β H. unfold cell2_transport.
+  apply comp2_v_proper; [reflexivity |].
+  apply comp2_v_proper; [exact H | reflexivity].
+Qed.
+
+Theorem cell2_transport_witness_independent {X Y} {f f' g g' : Cell1 X Y}
+    (p p' : f ≈₁[R X Y] f') (q q' : g ≈₁[R X Y] g') (α : f ⇒₂ g)
+  : α⟦p, q⟧₂ ≈₂ α⟦p', q'⟧₂.
+Proof.
+  unfold cell2_transport. apply comp2_v_proper.
+  - apply cell1_eq_to_cell2_unique.
+  - apply comp2_v_proper; [reflexivity | apply cell1_eq_to_cell2_unique].
+Qed.
+
+Theorem cell2_transport_id {X Y} {f g : Cell1 X Y}
+    (p : f ≈₁[R X Y] f) (q : g ≈₁[R X Y] g) (α : f ⇒₂ g)
+  : α⟦p, q⟧₂ ≈₂ α.
+Proof.
+  unfold cell2_transport. rewrite !cell1_eq_to_cell2_id.
+  rewrite comp2_v_id_l, comp2_v_id_r. reflexivity.
+Qed.
+
+Theorem cell2_transport_comp {X Y} {f f' f'' g g' g'' : Cell1 X Y}
+    (p : f ≈₁[R X Y] f') (p' : f' ≈₁[R X Y] f'') (r : f ≈₁[R X Y] f'')
+    (q : g ≈₁[R X Y] g') (q' : g' ≈₁[R X Y] g'') (s : g ≈₁[R X Y] g'')
+    (α : f ⇒₂ g) : α⟦p, q⟧₂⟦p', q'⟧₂ ≈₂ α⟦r, s⟧₂.
+Proof.
+  unfold cell2_transport. symmetry.
+  transitivity ((cmp X Y g' g'' q' ∘₂ cmp X Y g g' q) ∘₂
+    α ∘₂ (cmp X Y f' f (symmetry p) ∘₂ cmp X Y f'' f' (symmetry p'))).
+  - apply comp2_v_proper.
+    + apply cell1_eq_to_cell2_comp.
+    + apply comp2_v_proper; [reflexivity | apply cell1_eq_to_cell2_comp].
+  - rewrite !comp2_v_assoc. reflexivity.
+Qed.
+
+Theorem cell2_transport_inv {X Y} {f f' g g' : Cell1 X Y}
+    (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g') (α : f ⇒₂ g)
+  : α⟦p, q⟧₂⟦symmetry p, symmetry q⟧₂ ≈₂ α.
+Proof.
+  transitivity (α⟦reflexivity f, reflexivity g⟧₂).
+  - apply cell2_transport_comp.
+  - apply cell2_transport_id.
+Qed.
+
+Theorem cell2_transport_comp_v {X Y} {f f' g g' h h' : Cell1 X Y}
+    (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g') (r : h ≈₁[R X Y] h')
+    (β : g ⇒₂ h) (α : f ⇒₂ g)
+  : (β ∘₂ α)⟦p, r⟧₂ ≈₂ (β⟦q, r⟧₂ ∘₂ α⟦p, q⟧₂).
+Proof.
+  unfold cell2_transport. symmetry. rewrite !comp2_v_assoc.
+  rewrite <- (comp2_v_assoc (cmp X Y g' g (symmetry q)) (cmp X Y g g' q)
+    (α ∘₂ cmp X Y f' f (symmetry p))).
+  pose proof (fst (cell1_eq_to_cell2_iso q).2) as Hq.
+  change ((cmp X Y g' g (symmetry q) ∘₂ cmp X Y g g' q) ≈₂ 𝟙₂ g) in Hq.
+  rewrite Hq, comp2_v_id_l. reflexivity.
+Qed.
+
 End StrictTwoCat.
+
+Notation "α '⟦' p ',' q '⟧₂'" := (cell2_transport p q α)
+  (at level 8, left associativity) : bicat_scope.
