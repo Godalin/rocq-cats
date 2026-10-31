@@ -86,3 +86,19 @@ Proof. exists yoneda_func, yoneda_func_inv.
 Qed.
 
 End Yoneda.
+
+Theorem yoneda_func_natural_functor {C : Cat} {F G : Functor C SetCat}
+    {X : @Ob C}
+    (β : F => G) (α : Hom(X,-) => F)
+  : yoneda_func (β ∘Nv α) ≈S β X (yoneda_func α).
+Proof. reflexivity. Qed.
+
+Theorem yoneda_func_natural_object {C : Cat} {F : Functor C SetCat}
+    {X Y : @Ob C} (f : Hom X Y)
+    (α : Hom(X,-) => F)
+  : yoneda_func (α ∘Nv f ^*N) ≈S fmap F f (yoneda_func α).
+Proof.
+  pose proof (nt_naturality α f) as Hα.
+  specialize (Hα id). simpl in Hα. rewrite comp_id_r in Hα.
+  simpl. rewrite comp_id_l. exact Hα.
+Qed.

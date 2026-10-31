@@ -19,8 +19,9 @@ A category theory library for self study.
     - proper function preserving equivalence relations
     - canonical structure
   
-- (Weak version of) Yoneda Lemma can be proved with this target category `SetCat` [see here](./theories/Instance/Set/Yoneda.v).
-  - Weak because functoriality / naturality property about related constructions, only the isomorphism(s).
+- The Yoneda lemma is proved as a setoid isomorphism, with naturality equations
+  in the representing object and the set-valued functor
+  [see here](./theories/Instance/Set/Yoneda.v).
 
 ### ETCS
 
