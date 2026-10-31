@@ -21,30 +21,30 @@ Class Cat@{o h p|h <= p} :=
   ; Hom : Ob → Ob → Type@{h}
 
   ; HomEq {X Y} : Hom X Y → Hom X Y → Type@{p}
-  ; axiom_hom_eq {X Y} :: Equivalence (@HomEq X Y)
+  ; HomEq_Equivalence {X Y} :: Equivalence (@HomEq X Y)
 
   ; id {X} : Hom X X
 
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
 
-  ; axiom_comp_proper {X Y Z}
+  ; comp_proper {X Y Z}
     :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
 
-  ; axiom_id_r {X Y : Ob} (f : Hom X Y)
+  ; comp_id_r {X Y : Ob} (f : Hom X Y)
     : HomEq (comp f id) f
 
-  ; axiom_id_l {X Y : Ob} (f : Hom X Y)
+  ; comp_id_l {X Y : Ob} (f : Hom X Y)
     : HomEq (comp id f) f
 
-  ; axiom_comp_assoc {X Y Z W}
+  ; comp_assoc {X Y Z W}
       (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
     : HomEq (comp (comp f g) h) (comp f (comp g h))
   }.
 
 Arguments HomEq {_ _%_ob _%_ob} _%_hom _%_hom.
-Arguments axiom_id_l {_ _ _} _.
-Arguments axiom_id_r {_ _ _} _.
-Arguments axiom_comp_assoc {_ _ _ _ _} _ _ _.
+Arguments comp_id_l {_ _ _} _.
+Arguments comp_id_r {_ _ _} _.
+Arguments comp_assoc {_ _ _ _ _} _ _ _.
 
 Bind Scope ob_scope with Ob.
 Bind Scope hom_scope with Hom.
@@ -89,19 +89,19 @@ Ltac carw := autorewrite with cat using try reflexivity.
 
 (** Category association rewriting *)
 
-Ltac rw_assoc_r args := rewrite (axiom_comp_assoc args); cato.
-Ltac rw_assoc_l args := rewrite <- (axiom_comp_assoc args); cato.
+Ltac rw_assoc_r args := rewrite (comp_assoc args); cato.
+Ltac rw_assoc_l args := rewrite <- (comp_assoc args); cato.
 
-Tactic Notation "cacr" := rewrite axiom_comp_assoc; cato.
+Tactic Notation "cacr" := rewrite comp_assoc; cato.
 Tactic Notation "cacr" constr(t) := rw_assoc_r t.
-Tactic Notation "cacl" := rewrite <- axiom_comp_assoc; cato.
+Tactic Notation "cacl" := rewrite <- comp_assoc; cato.
 Tactic Notation "cacl" constr(t) := rw_assoc_l t.
 
-Hint Resolve axiom_id_l : cat.
-Hint Resolve axiom_id_r : cat.
+Hint Resolve comp_id_l : cat.
+Hint Resolve comp_id_r : cat.
 
-Hint Rewrite @axiom_id_l : cat.
-Hint Rewrite @axiom_id_r : cat.
+Hint Rewrite @comp_id_l : cat.
+Hint Rewrite @comp_id_r : cat.
 
 
 
@@ -118,6 +118,28 @@ End CatBasic.
 
 Hint Resolve symm_id_l : cat.
 Hint Resolve symm_id_r : cat.
+
+
+
+(** ** Morphisms induced by object equality
+
+    These are transported identities. Their laws use equality elimination,
+    without identifying distinct equality witnesses. *)
+
+Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y) : Hom X Y :=
+  match p with eq_refl => id end.
+
+Lemma eq_to_hom_comp {C : Cat} {X Y Z : @Ob C} (p : X = Y) (q : Y = Z)
+  : eq_to_hom (eq_trans p q) ≈ eq_to_hom q ∘ eq_to_hom p.
+Proof. destruct p, q. simpl. symmetry. apply comp_id_l. Qed.
+
+Lemma eq_to_hom_inv_l {C : Cat} {X Y : @Ob C} (p : X = Y)
+  : eq_to_hom (eq_sym p) ∘ eq_to_hom p ≈ id.
+Proof. destruct p. simpl. apply comp_id_l. Qed.
+
+Lemma eq_to_hom_inv_r {C : Cat} {X Y : @Ob C} (p : X = Y)
+  : eq_to_hom p ∘ eq_to_hom (eq_sym p) ≈ id.
+Proof. destruct p. simpl. apply comp_id_l. Qed.
 
 
 
@@ -152,7 +174,7 @@ Qed.
 Next Obligation. cato. Qed.
 Next Obligation. cato. Qed.
 Next Obligation.
-  symmetry. apply axiom_comp_assoc.
+  symmetry. apply comp_assoc.
 Qed.
 
 Notation "C '^op'" := (op C)
@@ -274,12 +296,12 @@ Proof.
   intros [f [fi [Hf Hfi]]] [g [gi [Hg Hgi]]]; simpl in *.
   exists (g ∘ f), (fi ∘ gi).
   split; simpl.
-  - rewrite axiom_comp_assoc.
-    rewrite <- (axiom_comp_assoc gi).
-    rewrite Hg, axiom_id_l. auto.
-  - rewrite axiom_comp_assoc.
-    rewrite <- (axiom_comp_assoc f).
-    rewrite Hfi, axiom_id_l. auto.
+  - rewrite comp_assoc.
+    rewrite <- (comp_assoc gi).
+    rewrite Hg, comp_id_l. auto.
+  - rewrite comp_assoc.
+    rewrite <- (comp_assoc f).
+    rewrite Hfi, comp_id_l. auto.
 Qed.
 
 Global Instance iso_Equivalence : Equivalence iso.
@@ -291,378 +313,3 @@ Proof.
 Qed.
 
 End Iso.
-
-
-
-(** ** Terminal Objects *)
-
-Class HasTerminal `(C : Cat) :=
-  { Term : Ob
-  ; term {X} : Hom X Term
-
-  ; axiom_terminal {X}
-    : is_unique' (@term X)
-  }.
-
-Arguments Term {_ _}.
-Arguments term {_ _ _}.
-Arguments axiom_terminal {_ _ _}.
-
-Notation "'1'" := Term : ob_scope.
-Notation "'!'" := term : hom_scope.
-Notation "'@!' X" := (@term _ _ _ X)
-  (at level 34) : hom_scope.
-
-Section Terminal.
-Context `{C : Cat}.
-
-Definition is_terminal T :=
-  ∀ X, ∃ h : Hom X T, is_unique' h.
-
-Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
-  let Hh_unique := fresh "H" h "_unique" in
-  destruct H as (h & Hh_unique);
-  rewrite elim_is_unique' in Hh_unique.
-
-Proposition term_id {T}
-  : is_terminal T
-  → ∀ h : Hom T T, h ≈ id.
-Proof.
-  intros HT h.
-  elim_terminal (HT T) as hu.
-  pose (Hid := Hhu_unique id).
-  pose (Hh := Hhu_unique h).
-  etransitivity; auto.
-  symmetry; auto.
-Qed.
-
-Theorem terminal_unique {T1 T2 : Ob}
-  : is_terminal T1 → is_terminal T2
-  → T1 ≅ T2.
-Proof.
-  intros HT1 HT2.
-  elim_terminal (HT1 T2) as h1.
-  elim_terminal (HT2 T1) as h2.
-  exists h2, h1; simpl.
-  constructor; apply term_id; auto.
-Qed.
-
-End Terminal.
-
-Notation "X '⦂' '≅' '1'" := (is_terminal X)
-  (at level 50).
-
-
-
-Section Terminal.
-Context `{C : Cat} `{!HasTerminal C}.
-
-Proposition term_terminal
-  : is_terminal 1.
-Proof.
-  intros X. exists !.
-  apply axiom_terminal.
-Qed.
-
-Proposition term_η {X} (h : Hom X 1) : h ≈ !.
-Proof. apply axiom_terminal. trivial. Qed.
-
-Proposition term_comp_l {X Y} (h : Hom X Y) : ! ∘ h ≈ !.
-Proof. rewrite (term_η (! ∘ _)). cato. Qed.
-
-End Terminal.
-
-Hint Resolve term_terminal : cat.
-Hint Resolve term_η : cat.
-
-
-
-(** ** Initial Objects *)
-
-Class HasInitial (C : Cat)
-  := _initial :: HasTerminal (op C).
-
-Section Initial.
-Context `{C : Cat}.
-
-Definition is_initial (X : Ob)
-  := @is_terminal (op C) X.
-
-Context `{!HasInitial C}.
-
-Definition Init : @Ob C := @Term (op C) _.
-
-Definition init {X} : (@Hom C) Init X
-  := @term (op C) _ _.
-
-Notation "0" := Init.
-Notation "¡" := init.
-
-Proposition init_initial
-  : is_initial Init.
-Proof. intro X. exists ¡. split. auto.
-  intros h _. apply term_η.
-Qed.
-
-End Initial.
-
-Notation "0" := Init.
-Notation "¡" := init.
-
-
-
-(** ** Product Objects *)
-
-Class HasProduct `(Cat) :=
-  { Prod : Ob → Ob → Ob
-  ; pair {X Y Z} (f : Hom Z X) (g : Hom Z Y) : Hom Z (Prod X Y)
-  ; π1 {X Y} : Hom (Prod X Y) X
-  ; π2 {X Y} : Hom (Prod X Y) Y
-
-  ; axiom_pair_proper {X Y Z}
-    :: Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,Prod X Y]) pair
-
-  ; axiom_product {X Y Z} {f : Hom Z X} {g : Hom Z Y}
-    : is_unique (λ h, π1 ∘ h ≈ f ∧ π2 ∘ h ≈ g) (pair f g)
-  }.
-
-Arguments Prod {_ _} _%_ob _%_ob.
-Arguments pair {_ _ _ _ _} _ _.
-Arguments π1 {_ _ _ _}.
-Arguments π2 {_ _ _ _}.
-Arguments axiom_product {_ _ _ _} _ _ _.
-
-Notation "X '×' Y" := (Prod X Y)
-  (at level 41, right associativity) : ob_scope.
-
-Notation "'⟨' f ',' g '⟩'" := (pair f g)
-  (format "'⟨' f  ','  g '⟩'") : hom_scope.
-
-Notation "'@π1' X Y" := (@π1 _ _ _ X Y)
-  (at level 35) : hom_scope.
-
-Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
-  (at level 35) : hom_scope.
-
-
-
-Section Product.
-Context `{C : Cat}.
-
-Definition is_product (X Y P : Ob)
-    (p : Hom P X) (q : Hom P Y) :=
-  ∀ Z (f : Hom Z X) (g : Hom Z Y),
-    ∃ h : Hom Z P, is_unique (λ h, p ∘ h ≈ f ∧ q ∘ h ≈ g) h.
-
-Tactic Notation "elim_product" constr(H) "as" ident(h) :=
-  let Hh1 := fresh "H" h "1" in
-  let Hh2 := fresh "H" h "2" in
-  let Hh_unique := fresh "H" h "_unique" in
-  destruct H as (h & (Hh1 & Hh2) & Hh_unique).
-
-Context {X Y P Q : Ob}.
-Context {p1 : Hom P X} {p2 : Hom P Y}.
-Context {q1 : Hom Q X} {q2 : Hom Q Y}.
-
-(* TODO *)
-
-Theorem product_unique
-  : is_product X Y P p1 p2
-  → is_product X Y Q q1 q2
-  → P ≅ Q.
-Admitted.
-
-End Product.
-
-Notation "P '⦂' '≅' X '×' Y 'with' p1 ',' p2"
-  := (is_product X Y P p1 p2)
-  (at level 50).
-
-
-
-Section Product.
-Context `{C : Cat} `{!HasProduct C}.
-
-Theorem prod_product {X Y : Ob}
-  : is_product X Y (X × Y) π1 π2.
-Proof.
-  intros Z f g.
-  exists ⟨f,g⟩.
-  apply axiom_product.
-Qed.
-
-Proposition prod_β1 {X Y Z}
-    (f : Hom Z X) (g : Hom Z Y)
-  : π1 ∘ ⟨f,g⟩ ≈ f.
-Proof.
-  pose (AP := axiom_product Z f g).
-  destruct AP as [[H1 _] _].
-  auto.
-Qed.
-
-Proposition prod_β2 {X Y Z}
-    (f : Hom Z X) (g : Hom Z Y)
-  : π2 ∘ ⟨f,g⟩ ≈ g.
-Proof.
-  pose (AP := axiom_product Z f g).
-  destruct AP as [[_ H2] _].
-  auto.
-Qed.
-
-Lemma prod_comp_r {X Y Z W}
-    (f : Hom Z X) (g : Hom Z Y) (h : Hom W Z)
-  : ⟨f , g⟩ ∘ h ≈ ⟨f ∘ h , g ∘ h⟩.
-Proof.
-  apply axiom_product.
-  split.
-  - rewrite <- axiom_comp_assoc, prod_β1. cato.
-  - rewrite <- axiom_comp_assoc, prod_β2. cato.
-Qed.
-
-Lemma prod_η {X Y Z} (h : Hom Z (X × Y))
-  : h ≈ ⟨ π1 ∘ h , π2 ∘ h ⟩.
-Proof.
-  apply axiom_product; split; cato.
-Qed.
-
-Lemma prod_comm {X Y} : X × Y ≅ Y × X.
-Proof.
-  exists ⟨π2, π1⟩, ⟨π2, π1⟩.
-  simpl. split.
-  - rewrite prod_comp_r.
-    rewrite prod_β1.
-    rewrite prod_β2.
-    symmetry.
-    apply axiom_product.
-    split; cato.
-  - rewrite prod_comp_r.
-    rewrite prod_β1.
-    rewrite prod_β2.
-    symmetry.
-    apply axiom_product.
-    split; cato.
-Qed.
-
-End Product.
-
-Hint Resolve prod_product : cat.
-Hint Resolve prod_β1 : cat.
-Hint Resolve prod_β2 : cat.
-
-Hint Rewrite @prod_β1 : cat.
-Hint Rewrite @prod_β2 : cat.
-
-
-
-Section Cross.
-Context `{C : Cat} `{H : !HasProduct C}.
-
-Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
-  : Hom (X × Y) (X' × Y')
-  := ⟨ f ∘ π1 , g ∘ π2 ⟩.
-
-Opaque cross.
-
-End Cross.
-
-Notation "f '×' g" := (cross f g)
-  (at level 41, right associativity) : hom_scope.
-
-
-
-Section Cross.
-Context `{HasProduct}.
-
-Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
-  : f × g ≈ ⟨ f ∘ π1 , g ∘ π2 ⟩.
-Proof. cato. Qed.
-
-Lemma prod_comp_l {X Y X' Y' Z}
-    (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
-  : (f' × g') ∘ ⟨f , g⟩ ≈ ⟨f' ∘ f , g' ∘ g⟩.
-Proof.
-  apply axiom_product.
-  split.
-  - rewrite <- axiom_comp_assoc.
-    rewrite cross_η.
-    rewrite prod_β1.
-    rewrite axiom_comp_assoc.
-    rewrite prod_β1.
-    cato.
-  - rewrite <- axiom_comp_assoc.
-    rewrite cross_η.
-    rewrite prod_β2.
-    rewrite axiom_comp_assoc.
-    rewrite prod_β2.
-    cato.
-Qed.
-
-End Cross.
-
-
-
-Section Product.
-Context `{C : Cat}.
-Context `{!HasTerminal C}.
-Context `{!HasProduct C}.
-
-Theorem term_prod_id_l {X}
-  : 1 × X ≅ X.
-Proof.
-  exists π2, ⟨!,id⟩; simpl.
-  split.
-  - rewrite prod_comp_r.
-    rewrite term_η.
-    rewrite axiom_id_l.
-    symmetry.
-    apply axiom_product.
-    split; cato.
-  - cato.
-Qed.
-
-Theorem term_prod_id_r {X}
-  : X × 1 ≅ X.
-Proof.
-  rewrite prod_comm.
-  apply term_prod_id_l.
-Qed.
-
-Example term_1_1 {X}
-  : (X × 1) × 1 ≅ X.
-Proof.
-  rewrite term_prod_id_r.
-  rewrite term_prod_id_r.
-  reflexivity.
-Qed.
-
-End Product.
-
-
-
-(** ** Exponential Objects *)
-
-Class HasExponential {C : Cat} `(!HasProduct C) :=
-  { exp : Ob → Ob → Ob
-  ; curry {X Y Z} : Hom (Z × X) Y → Hom Z (exp Y X)
-  ; eval {X Y} : Hom (exp Y X × X) Y
-
-  ; axiom_curry_proper {X Y Z}
-    :: Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, exp Y X]) curry
-
-  ; axiom_exponential {X Y Z}
-    : ∀ f : Hom (Z × X) Y,
-      is_unique (λ h, eval ∘ (h × id) ≈ f) (curry f)
-  }.
-
-Notation "X '^' Y" := (exp X Y)
-  (at level 30, right associativity): ob_scope.
-
-Notation "'ƛ' f" := (curry f)
-  (at level 35) : hom_scope.
-
-Notation "'@eval' X Y" := (@eval _ _ _ _ X Y)
-  (at level 35) : hom_scope.
-
-(* Notation "E '⦂' '≅' Y '^' X 'with' e"
-  := (is_exponential X Y P p1 p2)
-  (at level 50). *)
