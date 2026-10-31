@@ -41,6 +41,8 @@ This project aims at building ETCS.
   and their category; [Product](./theories/Instance/Set/Product.v),
   [Pullback](./theories/Instance/Set/Pullback.v), and
   [Fam](./theories/Instance/Set/Fam.v) provide independent extensions.
+  [FamCat](./theories/Instance/Set/FamCat.v) assembles coherent families and
+  transport-compatible maps into a category.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued

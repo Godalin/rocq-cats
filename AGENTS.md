@@ -34,6 +34,8 @@ changes over framework machinery or repository-wide rewrites.
 - `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
 - `theories/Instance/Set/Fam.v`: dependent functions, coherent families,
   dependent sums, fibers, and their total-space isomorphisms.
+- `theories/Instance/Set/FamCat.v`: the category of coherent families, with
+  transport-compatible morphisms and transport-aware morphism equivalence.
 - `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
   set-valued Hom-functors, representability, Yoneda, presheaves, and the
   subobject functor.
