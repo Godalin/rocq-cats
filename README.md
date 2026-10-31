@@ -41,6 +41,13 @@ This project aims at building ETCS.
   and natural transformations (`α ^opN`); the double-opposite comparison is a
   natural isomorphism whose component functors act as identities on objects
   and morphisms.
+  [Fibration](./theories/Cat/Fibration.v) defines cartesian morphisms by universal
+  factorization, compares lifts over a base isomorphism, and provides chosen
+  cartesian lifts with explicit base-object identifications.
+  [Comprehension](./theories/Cat/Comprehension.v) combines chosen lifts with a
+  total-space functor and a natural projection, requiring cartesian morphisms
+  to give pullback squares. Write `A ^ext[K]` for the extension and `π[K] A`
+  for its display projection.
 - [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
   as sets. [Core](./theories/Instance/Set/Core.v) defines sets, respectful maps,
   and their category; [Product](./theories/Instance/Set/Product.v),
@@ -55,13 +62,23 @@ This project aims at building ETCS.
   isomorphisms that act as identities on the base and fibers.
   Write `A[f]S` for reindexing a coherent family and `U[f]` for reindexing a
   family object, including its base; successive reindexing is `U[f][g]`.
+  [FamFibration](./theories/Instance/Set/FamFibration.v) proves reindexing
+  cartesian for `FamBaseF`. Its chosen structure `FamBaseF_HasCartesianLift`
+  is enabled explicitly; the abstract lift `f ^*[FamBaseF] U` then computes to
+  `U[f]`. The reindexed family morphism `φ⟦f⟧` acts directly on fibers.
   [FamSection](./theories/Instance/Set/FamSection.v) provides coherent sections,
   their reindexing, the generic element, and total-space pairing with its
   universal property and β/η laws; `s ≈s t` compares sections pointwise.
+  Coherent sections are isomorphic to `Sec(p)`, the setoid of right inverses
+  of the total-space projection `p`, whose equality compares the maps.
   [FamSectionMap](./theories/Instance/Set/FamSectionMap.v) connects sections to
   family morphisms: `φ ▷ s` acts on a section, while `φ ▷[f] s` acts on a section
   already reindexed along `f`. Equivalent morphisms give equivalent values
-  after transport along their base-map equivalence.
+  after transport along their base-map equivalence. The action over `f` agrees
+  with the action of `φ⟦f⟧`, using the identity comparison on sections.
+  [FamComprehension](./theories/Instance/Set/FamComprehension.v) assembles these
+  constructions into a comprehension structure and proves the total-space
+  pullback property for every cartesian family morphism.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
@@ -113,6 +130,10 @@ Local Existing Instance SetCat_CCC.
 - [x] Identity and composition comparisons for family reindexing.
 - [x] Coherent sections, their reindexing, and total-space pairing.
 - [x] Family morphisms acting on sections, with identity and composition laws.
+- [x] Cartesian factorization of family reindexing, chosen lifts, and reindexed
+  family morphisms acting on sections.
+- [x] Abstract comprehension, its coherent-family model, and the correspondence
+  between coherent sections and sections of display projections.
 - [ ] Design a CwF interface, making substitution and comprehension laws
   explicit; use coherent families to develop a setoid model.
 - [x] Pullbacks

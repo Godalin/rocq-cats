@@ -20,6 +20,10 @@ changes over framework machinery or repository-wide rewrites.
 - `theories/Cat/Product.v`: binary products, pairing, product morphisms, and
   their interaction with terminal objects.
 - `theories/Cat/Exponential.v`: exponential objects, evaluation, and currying.
+- `theories/Cat/Fibration.v`: cartesian morphisms, universal factorization,
+  comparison of lifts over a base isomorphism, and chosen cartesian lifts.
+- `theories/Cat/Comprehension.v`: chosen lifts, total-space functors, natural
+  display projections, and the property that cartesian morphisms give pullbacks.
 - Other `theories/Cat/` modules: functors, natural transformations, pullbacks,
   morphism properties, and CCC structure.
 - `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.
@@ -40,12 +44,19 @@ changes over framework machinery or repository-wide rewrites.
 - `theories/Instance/Set/FamReindex.v`: canonical reindexing morphisms and
   the pullback universal property of their total-space squares; explicit
   identity and composition comparison isomorphisms.
+- `theories/Instance/Set/FamFibration.v`: cartesian reindexing for the family
+  base functor, explicitly enabled chosen lifts, and reindexed family morphisms.
+- `theories/Instance/Set/FamComprehension.v`: the comprehension structure of
+  coherent families, its pullback property for every cartesian family morphism,
+  and the identification of family terms with sections of display projections.
 - `theories/Instance/Set/FamSection.v`: coherent dependent sections and their
   pointwise setoid, section reindexing, the generic element, and total-space
-  pairing with its universal property and computation laws.
+  pairing with its universal property and computation laws; the setoid of
+  projection sections and its isomorphism with coherent sections.
 - `theories/Instance/Set/FamSectionMap.v`: family morphisms acting on sections,
   including reindexed sections, transport-aware equivalence, and compatibility
-  with identity, composition, reindexing, and total-space pairing.
+  with identity, composition, reindexing, and total-space pairing; the connection
+  between reindexed family morphisms and their action on sections.
 - `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
   set-valued Hom-functors, representability, Yoneda, presheaves, and the
   subobject functor.

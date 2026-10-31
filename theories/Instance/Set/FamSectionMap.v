@@ -1,5 +1,6 @@
 From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.
 From Cats Require Import Instance.Set.FamCat Instance.Set.FamSection.
+From Cats Require Import Instance.Set.FamFibration.
 
 (** * Family Morphisms Acting on Sections *)
 
@@ -75,6 +76,13 @@ Proof. reflexivity. Qed.
 Theorem section_map_comp {U V W : FamC} (ψ : FamF V W) (φ : FamF U V)
     (s : SectionS_resp U)
   : (fam_comp ψ φ ▷ s) ≈s (ψ ▷[famF_base φ] (φ ▷ s)).
+Proof. intros x. reflexivity. Qed.
+
+(** The action over a base map is the ordinary action of the corresponding
+    reindexed family morphism, followed by the identity comparison on sections. *)
+Theorem section_map_reindex_family {X : SetC} {U V : FamC} (φ : FamF U V)
+    (f : X →r famC_base U) (s : SectionS_resp U[f]S)
+  : (φ⟦f⟧ ▷ s) ≈s section_reindex (φ ▷[f] s) (id_resp (X := X)).
 Proof. intros x. reflexivity. Qed.
 
 (** Reindexing and mapping agree on values in the same fiber. The two

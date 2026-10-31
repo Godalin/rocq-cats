@@ -93,6 +93,26 @@ Qed.
 
 End Pullback.
 
+(** Transfer the universal property along an isomorphism of the pullback vertex. *)
+Definition pullback_iso {C : Cat} {X Y Z : @Ob C} {f : Hom X Z} {g : Hom Y Z}
+    {P Q : @Ob C} {p1 : Hom P X} {p2 : Hom P Y}
+    {q1 : Hom Q X} {q2 : Hom Q Y} (i : Hom Q P) (Hi : is_iso i)
+    (H1 : p1 ∘ i ≈ q1) (H2 : p2 ∘ i ≈ q2)
+    (HP : is_pullback f g P p1 p2) : is_pullback f g Q q1 q2.
+Proof.
+  destruct Hi as [ii [Hii Hi]]. destruct HP as [Hcomm Hu]. split.
+  - rewrite <- H1, <- H2, <- !comp_assoc, Hcomm. reflexivity.
+  - intros R r1 r2 Hr. destruct (Hu R r1 r2 Hr) as [h [[Hh1 Hh2] Hh_unique]].
+    exists (ii ∘ h). split.
+    + split.
+      * rewrite <- H1, comp_assoc, <- (comp_assoc i), Hi, comp_id_l. exact Hh1.
+      * rewrite <- H2, comp_assoc, <- (comp_assoc i), Hi, comp_id_l. exact Hh2.
+    + intros k [Hk1 Hk2]. transitivity (ii ∘ (i ∘ k)).
+      * symmetry. rewrite <- comp_assoc, Hii, comp_id_l. reflexivity.
+      * apply comp_l. apply Hh_unique. split;
+          rewrite <- comp_assoc; [rewrite H1 | rewrite H2]; assumption.
+Defined.
+
 
 
 Section Pullback.

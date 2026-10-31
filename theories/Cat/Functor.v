@@ -34,6 +34,14 @@ Definition is_full {C D : Cat} (F : Functor C D) :=
 Definition is_fully_faithful {C D : Cat} (F : Functor C D) :=
   is_full F ∧ is_faithful F.
 
+Definition functor_is_iso {C D : Cat} (F : Functor C D)
+    {X Y : @Ob C} (f : Hom X Y) (Hf : is_iso f) : is_iso (fmap F f).
+Proof.
+  destruct Hf as [fi [Hl Hr]]. exists (fmap F fi). split;
+    unfold is_linv_of, is_rinv_of in *;
+    rewrite <- functor_comp; [rewrite Hl | rewrite Hr]; apply functor_id.
+Defined.
+
 
 
 (** ** Identity Functor *)

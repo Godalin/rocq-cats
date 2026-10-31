@@ -124,3 +124,76 @@ Proof.
   intros x. change (h x ≈ΣS ((h x).1; (h x).2)).
   destruct (h x) as [y a]. reflexivity.
 Qed.
+
+(** ** Sections of Projections
+
+    A categorical section retains a right-inverse witness. Its equality
+    compares the underlying maps, independently of the chosen witnesses. *)
+
+Definition SectionOfEq {X Y : SetC} (p : X →r Y)
+    (s t : ∃ r : Y →r X, (p ∘r r) ≈f id_resp) := s.1 ≈f t.1.
+
+Global Instance SectionOfEq_Equivalence {X Y : SetC} (p : X →r Y)
+  : Equivalence (SectionOfEq p).
+Proof.
+  split.
+  - intros s x. reflexivity.
+  - intros s t H x. symmetry. exact (H x).
+  - intros s t u Hst Htu x. transitivity (t.1 x); [apply Hst | apply Htu].
+Qed.
+
+Definition SectionOfS {X Y : SetC} (p : X →r Y) : SetC :=
+  {| carrier := ∃ s : Y →r X, (p ∘r s) ≈f id_resp
+   ; carrier_equiv := SectionOfEq p
+   ; carrier_setoid := SectionOfEq_Equivalence p |}.
+
+Notation "'Sec(' p ')'" := (SectionOfS p) (format "Sec( p )") : cat_scope.
+
+Definition section_to_projection_resp {X : SetC} (A : FamS X)
+  : SectionS A →r Sec(sig_base_resp A).
+Proof.
+  unshelve refine (@Build_FunS_resp (SectionS A) Sec(sig_base_resp A)
+    (λ s, (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
+      section_pair_β1 A id_resp (section_reindex s id_resp))) _).
+  intros s t H x. exists (reflS (x := x)).
+  transitivity (s x); [apply transpS_id | exact (H x)].
+Defined.
+
+(** The image of a categorical section may lie over a representative only
+    equivalent to its argument. Its right-inverse witness supplies the transport. *)
+Definition section_from_projection {X : SetC} (A : FamS X)
+    (s : Sec(sig_base_resp A)) : SectionS_resp A.
+Proof.
+  refine (@Build_SectionS_resp X A (λ x, transpS A (s.2 x) (s.1 x).2) _).
+  intros x y p. destruct (@func_proper _ _ s.1 x y p) as [q Hq].
+  assert (r : (s.1 x).1 ≈S y).
+  { transitivity x; [exact (s.2 x) | exact p]. }
+  transitivity (transpS A r (s.1 x).2).
+  - symmetry. apply transpS_comp.
+  - transitivity (transpS A (s.2 y) (transpS A q (s.1 x).2)).
+    + apply transpS_comp.
+    + apply func_proper. exact Hq.
+Defined.
+
+Definition section_from_projection_resp {X : SetC} (A : FamS X)
+  : Sec(sig_base_resp A) →r SectionS A.
+Proof.
+  unshelve refine (@Build_FunS_resp Sec(sig_base_resp A) (SectionS A)
+    (section_from_projection A) _).
+  intros s t H x. destruct (H x) as [p Hp].
+  change (transpS A (s.2 x) (s.1 x).2 ≈S transpS A (t.2 x) (t.1 x).2).
+  transitivity (transpS A (t.2 x) (transpS A p (s.1 x).2)).
+  - apply transpS_comp.
+  - apply func_proper. exact Hp.
+Defined.
+
+Definition section_projection_iso {X : SetC} (A : FamS X)
+  : SectionS A ≅[SetCat] Sec(sig_base_resp A).
+Proof.
+  exists (section_to_projection_resp A), (section_from_projection_resp A). split.
+  - intros s x. apply transpS_id.
+  - intros s x.
+    change ((x; transpS A (s.2 x) (s.1 x).2) ≈ΣS s.1 x).
+    assert (p : x ≈S (s.1 x).1) by (symmetry; exact (s.2 x)).
+    exists p. apply transpS_inv.
+Defined.
