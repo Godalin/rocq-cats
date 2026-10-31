@@ -1,4 +1,5 @@
-From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.
+From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.
 
 (** * The Category of Coherent Families *)
 
@@ -128,3 +129,51 @@ Global Instance FamCat : Cat :=
    ; comp_id_r _ _ := fam_comp_id_r
    ; comp_id_l _ _ := fam_comp_id_l
    ; comp_assoc _ _ _ _ := fam_comp_assoc |}.
+
+(** ** Base and Total-Space Functors *)
+
+Definition FamBaseF : Functor FamCat SetCat.
+Proof.
+  refine (@Build_Functor FamCat SetCat famC_base
+    (λ U V f, famF_base f) _ _ _).
+  - intros U V f g [p Hp]. exact p.
+  - intros U x. reflexivity.
+  - intros U V W g f x. reflexivity.
+Defined.
+
+(** A family morphism acts on both coordinates. Its compatibility with
+    transport makes this action respectful of dependent-sum equivalence. *)
+Definition fam_total_resp {U V : FamC} (f : FamF U V)
+  : SigS (famC_base U) U →r SigS (famC_base V) V.
+Proof.
+  unshelve refine (@Build_FunS_resp (SigS (famC_base U) U)
+    (SigS (famC_base V) V)
+    (λ a, (famF_base f a.1; famF_fam f a.1 a.2)) _).
+  intros [x a] [y b] [p Hp].
+  exists (@func_proper _ _ (famF_base f) x y p).
+  transitivity (famF_fam f y (transpS U p a)).
+  - symmetry. apply famF_naturality.
+  - apply func_proper. exact Hp.
+Defined.
+
+Global Instance fam_total_resp_proper {U V : FamC}
+  : Proper (FamFEq ==> FunEq) (@fam_total_resp U V).
+Proof.
+  intros f g [p Hp] [x a]. exists (p x). exact (Hp x a).
+Qed.
+
+Definition FamTotalF : Functor FamCat SetCat.
+Proof.
+  refine (@Build_Functor FamCat SetCat (λ U, SigS (famC_base U) U)
+    (λ U V f, fam_total_resp f) _ _ _).
+  - intros U V f g Hfg. exact (fam_total_resp_proper f g Hfg).
+  - intros U [x a]. reflexivity.
+  - intros U V W g f [x a]. reflexivity.
+Defined.
+
+(** Total-space projection commutes with every family morphism. *)
+Definition FamProjectionN : FamTotalF => FamBaseF.
+Proof.
+  refine (@mkNat FamCat SetCat FamTotalF FamBaseF (λ U, sig_base_resp U) _).
+  intros U V f a. reflexivity.
+Defined.
