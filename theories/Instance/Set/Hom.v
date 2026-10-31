@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Cat.Functor Instance.Set.Core.
+From Cats Require Import Cat.Core Cat.Functor Cat.Natural Instance.Set.Core.
 
 (** * Hom-Functors *)
 
@@ -25,6 +25,50 @@ Next Obligation. intros f. simpl. cato. Qed.
 Next Obligation. intros x. simpl. cacl. Qed.
 
 Notation "'Hom(-,'  X ')'" := (ℎ2F X).
+
+(** Precomposition varies the source of the covariant Hom-functor
+    contravariantly. Its components compare maps pointwise. *)
+Program Definition nt_comp_pre {C : Cat} {X Y : @Ob C} (f : Hom X Y)
+  : Hom(Y,-) => Hom(X,-) :=
+  {| nt Z := comp_r_resp (f := f) (Z := Z) |}.
+Next Obligation. intros h. simpl. apply comp_assoc. Qed.
+
+Notation "f ^*N" := (nt_comp_pre f) (at level 35) : cat_scope.
+
+Global Instance nt_comp_pre_proper {C : Cat} {X Y : @Ob C}
+  : Proper (@HomEq[X, Y] ==> NatEq) (@nt_comp_pre C X Y).
+Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
+
+Theorem nt_comp_pre_id {C : Cat} {X : @Ob C}
+  : (@id X) ^*N ≈N idN.
+Proof. intros Z h. simpl. apply comp_id_r. Qed.
+
+Theorem nt_comp_pre_comp {C : Cat} {X Y Z : @Ob C}
+    (g : Hom Y Z) (f : Hom X Y)
+  : (g ∘ f) ^*N ≈N (f ^*N ∘Nv g ^*N).
+Proof. intros W h. simpl. symmetry. apply comp_assoc. Qed.
+
+(** Postcomposition varies the target of the contravariant Hom-functor
+    covariantly. *)
+Program Definition nt_comp_post {C : Cat} {X Y : @Ob C} (f : Hom X Y)
+  : Hom(-,X) => Hom(-,Y) :=
+  {| nt Z := comp_l_resp (C := C) (f := f) (X := Z) |}.
+Next Obligation. intros h. simpl. symmetry. apply comp_assoc. Qed.
+
+Notation "f _*N" := (nt_comp_post f) (at level 35) : cat_scope.
+
+Global Instance nt_comp_post_proper {C : Cat} {X Y : @Ob C}
+  : Proper (@HomEq[X, Y] ==> NatEq) (@nt_comp_post C X Y).
+Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
+
+Theorem nt_comp_post_id {C : Cat} {X : @Ob C}
+  : (@id X) _*N ≈N idN.
+Proof. intros Z h. simpl. apply comp_id_l. Qed.
+
+Theorem nt_comp_post_comp {C : Cat} {X Y Z : @Ob C}
+    (g : Hom Y Z) (f : Hom X Y)
+  : (g ∘ f) _*N ≈N (g _*N ∘Nv f _*N).
+Proof. intros W h. simpl. apply comp_assoc. Qed.
 
 Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
     (f : (@Hom op C) X X') (g : Hom Y Y')
