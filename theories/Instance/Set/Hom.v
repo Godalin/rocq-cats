@@ -86,7 +86,7 @@ Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
   rewrite Hf, Hg. reflexivity.
 Qed.
 Next Obligation. simpl. intros h. simpl; carw. Qed.
-Next Obligation. simpl. intros g. simpl. repeat cacr. Qed.
+Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat cacr. Qed.
 
 (** * Morphism Maps of Functors
 
@@ -102,7 +102,8 @@ Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Functor C D)
 Proof. split.
   - intros HF X Y.
     pose (Hfull := fst HF). pose (Hfaith := snd HF).
-    unshelve eexists (@Build_FunS_resp _ _ (λ g, (Hfull X Y g).1) _).
+    unshelve notypeclasses refine (({| func := _ |}); _).
+    + exact (λ g, (Hfull X Y g).1).
     + intros g h Hgh. apply (Hfaith X Y).
       transitivity g. exact (Hfull X Y g).2.
       transitivity h. exact Hgh. symmetry. exact (Hfull X Y h).2.

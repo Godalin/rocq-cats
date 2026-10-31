@@ -28,35 +28,33 @@ Notation "C '≃C' D" := (C ≅[CatCat] D)
 Definition op_involution (C : Cat) : C ^op ^op ≃C C.
 Proof.
   exists FromDoubleOpF, ToDoubleOpF. split.
-  - unshelve refine ((@mkNat (C ^op ^op) (C ^op ^op)
-      (ToDoubleOpF ∘F FromDoubleOpF) IdF (λ X, id) _); _).
+  - unshelve notypeclasses refine (({| nt := _ |}); _).
+    + exact (λ X, id).
     + intros X Y f. simpl. carw.
     + intros X. exists id. split; apply comp_id_l.
-  - unshelve refine ((@mkNat C C
-      (FromDoubleOpF ∘F ToDoubleOpF) IdF (λ X, id) _); _).
+  - unshelve notypeclasses refine (({| nt := _ |}); _).
+    + exact (λ X, id).
     + intros X Y f. simpl. carw.
     + intros X. exists id. split; apply comp_id_l.
 Defined.
 
-Definition OpCatF : Functor CatCat CatCat.
-Proof.
-  refine (@Build_Functor CatCat CatCat op (λ C D F, OpF F)
-    (λ C D, @OpF_proper C D) _ _).
-  - intros C. apply OpF_id.
-  - intros C D E G F. apply OpF_comp.
-Defined.
+Program Definition OpCatF : Functor CatCat CatCat :=
+  {| F0 := op
+   ; F1 C D F := OpF F
+   ; functor_fmap_proper C D := @OpF_proper C D
+   |}.
+Next Obligation. apply OpF_id. Defined.
+Next Obligation. apply OpF_comp. Defined.
 
 (** The double-opposite comparison is natural in the category. Its
     naturality compares functors by natural isomorphism. *)
-Definition OpInvolutionN : (OpCatF ∘F OpCatF) => (@IdF CatCat).
-Proof.
-  refine (@mkNat CatCat CatCat (OpCatF ∘F OpCatF) IdF
-    (λ C, FromDoubleOpF (C := C)) _).
-  intros C D F.
-  unshelve refine ((@mkNat (C ^op ^op) D
-    (FromDoubleOpF ∘F OpF (OpF F)) (F ∘F FromDoubleOpF) (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
+Program Definition OpInvolutionN : (OpCatF ∘F OpCatF) => (@IdF CatCat) :=
+  {| nt C := FromDoubleOpF (C := C) |}.
+Next Obligation.
+  unshelve notypeclasses refine (({| nt := _ |}); _).
+  - exact (λ X, id).
+  - intros A B g. simpl. carw.
+  - intros A. exists id. split; apply comp_id_l.
 Defined.
 
 Definition op_involution_nat_iso : (OpCatF ∘F OpCatF) ≅N (@IdF CatCat).

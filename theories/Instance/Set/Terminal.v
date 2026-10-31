@@ -2,15 +2,19 @@ From Cats Require Import Cat.Core Cat.Terminal Instance.Set.Core.
 
 (** * A Terminal Setoid *)
 
-Definition UnitS@{u r} : SetC@{u r}.
-Proof.
-  refine {| carrier := unit; carrier_equiv := λ _ _, unit |}.
+Program Definition UnitS@{u r} : SetC@{u r} :=
+  {| carrier := unit; carrier_equiv := λ _ _, unit |}.
+Next Obligation.
   split; red; intros; exact tt.
 Defined.
 
-Definition SetCat_HasTerminal : HasTerminal SetCat.
-Proof.
-  refine {| Term := UnitS |}. intros X.
-  exists (@Build_FunS_resp X UnitS (λ _, tt) (λ _ _ _, tt)).
+Program Definition SetCat_HasTerminal : HasTerminal SetCat :=
+  {| Term := UnitS |}.
+Next Obligation.
+  intros X. assert (h : X →r UnitS).
+  { unshelve notypeclasses refine {| func := _ |}.
+    - exact (λ _, tt).
+    - intros x y p. exact tt. }
+  exists h.
   split. exact I. intros f _ x. exact tt.
 Defined.

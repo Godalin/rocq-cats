@@ -75,21 +75,18 @@ Proof.
     apply transpS_inv.
 Defined.
 
-Definition ConstFamS (X A : SetC) : FamS X.
-Proof.
-  refine {| fam := λ _, A; transpS := λ _ _ _, id_resp (X := A) |};
-    intros; reflexivity.
-Defined.
+Program Definition ConstFamS (X A : SetC) : FamS X :=
+  {| fam _ := A; transpS _ _ _ := id_resp (X := A) |}.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
 
 (** Reindexing keeps the fiber over the image and transports along the
     image of the base equivalence. Coherence follows from the original family. *)
-Definition ReindexFamS {X Y : SetC} (A : FamS Y) (f : X →r Y) : FamS X.
-Proof.
-  refine {| fam := λ x, A (f x)
-          ; transpS := λ x y p, transpS A (@func_proper _ _ f x y p) |}.
-  - intros x p a. apply transpS_id.
-  - intros x y z p q r a. apply transpS_comp.
-Defined.
+Program Definition ReindexFamS {X Y : SetC} (A : FamS Y) (f : X →r Y) : FamS X :=
+  {| fam x := A (f x)
+   ; transpS x y p := transpS A (@func_proper _ _ f x y p) |}.
+Next Obligation. apply transpS_id. Defined.
+Next Obligation. apply transpS_comp. Defined.
 
 Notation "A '[' f ']S'" := (ReindexFamS A f)
   (at level 8, left associativity, format "A [ f ]S") : cat_scope.
@@ -130,9 +127,9 @@ Program Canonical SigS (X : SetC) (Y : FamS X) :=
   ; carrier_equiv := SigEq
   |}.
 
-Definition sig_base_resp {X} (Y : FamS X) : SigS X Y →r X.
-Proof.
-  unshelve refine (@Build_FunS_resp (SigS X Y) X (λ a, a.1) _).
+Program Definition sig_base_resp {X} (Y : FamS X) : SigS X Y →r X :=
+  {| func a := a.1 |}.
+Next Obligation.
   intros a b [p Hp]. exact p.
 Defined.
 
@@ -142,51 +139,42 @@ Defined.
     Membership witnesses are retained as data; fiber equality compares only
     their underlying elements. *)
 
-Definition FiberS {E X : SetC} (f : E →r X) (x : X) : SetC.
-Proof.
-  refine {| carrier := ∃ u : E, f u ≈S x
-          ; carrier_equiv a b := a.1 ≈S b.1 |}.
+Program Definition FiberS {E X : SetC} (f : E →r X) (x : X) : SetC :=
+  {| carrier := ∃ u : E, f u ≈S x
+   ; carrier_equiv a b := a.1 ≈S b.1 |}.
+Next Obligation.
   split.
   - intros a. reflexivity.
   - intros a b H. symmetry. exact H.
   - intros a b c H1 H2. transitivity b.1; assumption.
 Defined.
 
-Definition fiber_transp_resp {E X : SetC} (f : E →r X)
-    {x y : X} (p : x ≈S y) : FiberS f x →r FiberS f y.
-Proof.
-  assert (step : ∀ u : E, f u ≈S x → f u ≈S y).
-  { intros u q. transitivity x; assumption. }
-  unshelve refine (@Build_FunS_resp (FiberS f x) (FiberS f y)
-    (λ a, (a.1; step a.1 a.2)) _).
-  intros a b H. exact H.
-Defined.
+Program Definition fiber_transp_resp {E X : SetC} (f : E →r X)
+    {x y : X} (p : x ≈S y) : FiberS f x →r FiberS f y :=
+  {| func a := (a.1; _) |}.
+Next Obligation. transitivity x; [exact a.2 | exact p]. Defined.
+Next Obligation. intros a b H. exact H. Defined.
 
-Definition FiberFamS {E X : SetC} (f : E →r X) : FamS X.
-Proof.
-  refine {| fam := FiberS f
-          ; transpS := λ x y p, fiber_transp_resp f p |}.
-  - intros x p v. change (v.1 ≈S v.1). reflexivity.
-  - intros x y z p q r v. change (v.1 ≈S v.1). reflexivity.
-Defined.
+Program Definition FiberFamS {E X : SetC} (f : E →r X) : FamS X :=
+  {| fam := FiberS f
+   ; transpS x y p := fiber_transp_resp f p |}.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
 
 (** The total space recovers the domain of the original map, up to setoid
     isomorphism. This also shows that transport-based sum equality identifies
     equivalent representatives without identifying their witness data. *)
 
-Definition fiber_total_proj_resp {E X : SetC} (f : E →r X)
-    : SigS X (FiberFamS f) →r E.
-Proof.
-  unshelve refine (@Build_FunS_resp (SigS X (FiberFamS f)) E
-    (λ a, a.2.1) _).
+Program Definition fiber_total_proj_resp {E X : SetC} (f : E →r X)
+    : SigS X (FiberFamS f) →r E := {| func a := a.2.1 |}.
+Next Obligation.
   intros a b [p Hp]. exact Hp.
 Defined.
 
-Definition fiber_total_intro_resp {E X : SetC} (f : E →r X)
-    : E →r SigS X (FiberFamS f).
-Proof.
-  unshelve refine (@Build_FunS_resp E (SigS X (FiberFamS f))
-    (λ e, (f e; (e; reflS (x := f e)))) _).
+Program Definition fiber_total_intro_resp {E X : SetC} (f : E →r X)
+    : E →r SigS X (FiberFamS f) :=
+  {| func e := (f e; (e; reflS (x := f e))) |}.
+Next Obligation.
   intros e e' H.
   assert (p : f e ≈S f e') by (apply func_proper; exact H).
   exists p. exact H.

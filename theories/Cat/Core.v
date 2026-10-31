@@ -171,8 +171,8 @@ Next Obligation.
   rewrite Hx, Hy.
   reflexivity.
 Qed.
-Next Obligation. cato. Qed.
-Next Obligation. cato. Qed.
+Next Obligation. apply comp_id_l. Qed.
+Next Obligation. apply comp_id_r. Qed.
 Next Obligation.
   symmetry. apply comp_assoc.
 Qed.
@@ -202,9 +202,9 @@ Next Obligation. intros [fc fd] [gc gd] [H1c H1d].
   intros [hc hd] [jc jd] [H2c H2d]. split; simpl.
   rewrite H1c, H2c. reflexivity. rewrite H2d, H1d. reflexivity.
 Qed.
-Next Obligation. simpl. split; cato. Qed.
-Next Obligation. simpl. split; cato. Qed.
-Next Obligation. simpl. split; try cacr; reflexivity. Qed.
+Next Obligation. destruct f. simpl. split; apply comp_id_r. Qed.
+Next Obligation. destruct f. simpl. split; apply comp_id_l. Qed.
+Next Obligation. destruct f, g, h. simpl. split; apply comp_assoc. Qed.
 
 Infix "×C" := ProdCat
   (at level 41).

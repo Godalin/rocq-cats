@@ -7,23 +7,27 @@ From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory.
     need not be Rocq-equal. We therefore retain the canonical associators and
     unitors and verify bicategory coherence, without claiming native strictness. *)
 
-Definition CatBicat : Bicat.
-Proof.
-  refine (@Build_Bicat Cat Fct (λ C, @IdF C) CompNF
-    (λ W X Y Z H G F, (@CompF_assoc W X Y Z H G F).1) _
-    (λ X Y F, (@CompF_id_l X Y F).1) _
-    (λ X Y F, (@CompF_id_r X Y F).1) _ _ _ _ _ _).
-  - intros W X Y Z H G F.
-    exact (NatIso_is_iso (CompF_assoc H G F).1 (CompF_assoc H G F).2).
-  - intros X Y F. exact (NatIso_is_iso (CompF_id_l F).1 (CompF_id_l F).2).
-  - intros X Y F. exact (NatIso_is_iso (CompF_id_r F).1 (CompF_id_r F).2).
-  - intros A B C D H H' G G' F F' γ β α X. cbn.
-    rewrite comp_id_l, comp_id_r, functor_comp, comp_assoc. reflexivity.
-  - intros A B F G α X. cbn. carw.
-  - intros A B F G α X. cbn. rewrite functor_id. carw.
-  - intros A B C D E K H G F X. cbn. repeat rewrite functor_id. carw.
-  - intros A B C G F X. cbn. repeat rewrite functor_id. carw.
+Program Definition CatBicat : Bicat :=
+  {| ObB := Cat
+   ; HomCat := Fct
+   ; id1 C := @IdF C
+   ; comp1F := CompNF
+   ; associator W X Y Z H G F := (@CompF_assoc W X Y Z H G F).1
+   ; left_unitor X Y F := (@CompF_id_l X Y F).1
+   ; right_unitor X Y F := (@CompF_id_r X Y F).1
+   |}.
+Next Obligation.
+  apply NatIso_is_iso. exact (CompF_assoc _ _ _).2.
 Defined.
+Next Obligation. apply NatIso_is_iso. exact (CompF_id_l _).2. Defined.
+Next Obligation. apply NatIso_is_iso. exact (CompF_id_r _).2. Defined.
+Next Obligation.
+  intros A. cbn. rewrite comp_id_l, comp_id_r, functor_comp, comp_assoc. reflexivity.
+Defined.
+Next Obligation. intros A. cbn. carw. Defined.
+Next Obligation. intros A. cbn. rewrite functor_id. carw. Defined.
+Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
+Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
 
 Theorem cat_whisker_l {C D E : Cat} (G : Functor D E)
     {F F' : Functor C D} (α : F => F')

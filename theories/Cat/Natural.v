@@ -140,7 +140,7 @@ Defined.
 
 Definition nt_id_NatIso {C D : Cat} (F : Functor C D)
   : idN ⦂ F ≅N F.
-Proof. intros X. exists id. split; apply comp_id_l. Defined.
+Proof. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
 Definition nt_comp_v_NatIso {C D : Cat} {F G H : Functor C D}
     (β : G => H) (α : F => G) (Hβ : β ⦂ G ≅N H) (Hα : α ⦂ F ≅N G)
@@ -248,16 +248,17 @@ Proof.
 Qed.
 
 (** Horizontal composition is a functor on the two hom-categories. *)
-Definition CompNF (C D E : Cat) : Functor (Fct D E ×C Fct C D) (Fct C E).
-Proof.
-  unshelve refine (@Build_Functor (Fct D E ×C Fct C D) (Fct C E)
-    (λ p, fst p ∘F snd p) (λ p q α, fst α ∘Nh snd α) _ _ _).
-  - intros [G F] [G' F'] [β α] [β' α'] [Hβ Hα].
-    exact (nt_comp_h_proper β β' Hβ α α' Hα).
-  - intros [G F]. apply nt_comp_h_id.
-  - intros [G0 F0] [G1 F1] [G2 F2] [β2 α2] [β1 α1].
-    apply nt_comp_h_interchange.
+Program Definition CompNF (C D E : Cat)
+  : Functor (Fct D E ×C Fct C D) (Fct C E) :=
+  {| F0 p := fst p ∘F snd p
+   ; F1 p q α := fst α ∘Nh snd α
+   |}.
+Next Obligation.
+  intros [β α] [β' α'] [Hβ Hα].
+  exact (nt_comp_h_proper β β' Hβ α α' Hα).
 Defined.
+Next Obligation. apply nt_comp_h_id. Defined.
+Next Obligation. apply nt_comp_h_interchange. Defined.
 
 Definition nt_comp_h_NatIso {C D E : Cat}
     {G G' : Functor D E} {F F' : Functor C D}
@@ -280,7 +281,8 @@ Global Instance π1F_proper {C D E : Cat} (d : @Ob D)
   : Proper (NatIso ==> NatIso) (λ F : Functor (C ×C D) E, π1F F d).
 Proof.
   intros F G [α Hα].
-  unshelve refine ((@mkNat C E (π1F F d) (π1F G d) (λ c, α (c, d)) _); _).
+  unshelve notypeclasses refine (({| nt := _ |}); _).
+  - exact (λ c, α (c, d)).
   - intros X Y f. exact (nt_naturality α (X := (X, d)) (Y := (Y, d)) (f, id)).
   - intros X. exact (Hα (X, d)).
 Defined.
@@ -289,36 +291,29 @@ Global Instance π2F_proper {C D E : Cat} (c : @Ob C)
   : Proper (NatIso ==> NatIso) (λ F : Functor (C ×C D) E, π2F F c).
 Proof.
   intros F G [α Hα].
-  unshelve refine ((@mkNat D E (π2F F c) (π2F G c) (λ d, α (c, d)) _); _).
+  unshelve notypeclasses refine (({| nt := _ |}); _).
+  - exact (λ d, α (c, d)).
   - intros X Y f. exact (nt_naturality α (X := (c, X)) (Y := (c, Y)) (id, f)).
   - intros X. exact (Hα (c, X)).
 Defined.
 
 (** The comparison components for the functor laws are identities, even
     when the functor records have different proof fields. *)
-Definition CompF_id_l {C D : Cat} (F : Functor C D) : IdF ∘F F ≅N F.
-Proof.
-  unshelve refine ((@mkNat C D (IdF ∘F F) F (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
-Defined.
+Program Definition CompF_id_l {C D : Cat} (F : Functor C D) : IdF ∘F F ≅N F :=
+  ({| nt X := id |}; _).
+Next Obligation. simpl. carw. Defined.
+Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
-Definition CompF_id_r {C D : Cat} (F : Functor C D) : F ∘F IdF ≅N F.
-Proof.
-  unshelve refine ((@mkNat C D (F ∘F IdF) F (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
-Defined.
+Program Definition CompF_id_r {C D : Cat} (F : Functor C D) : F ∘F IdF ≅N F :=
+  ({| nt X := id |}; _).
+Next Obligation. simpl. carw. Defined.
+Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
-Definition CompF_assoc {B C D E : Cat}
+Program Definition CompF_assoc {B C D E : Cat}
     (H : Functor D E) (G : Functor C D) (F : Functor B C)
-  : (H ∘F G) ∘F F ≅N H ∘F (G ∘F F).
-Proof.
-  unshelve refine ((@mkNat B E ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
-    (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
-Defined.
+  : (H ∘F G) ∘F F ≅N H ∘F (G ∘F F) := ({| nt X := id |}; _).
+Next Obligation. simpl. carw. Defined.
+Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
 (** ** Opposite Natural Transformations
 
@@ -364,27 +359,18 @@ Proof.
   intros F G [α Hα]. symmetry. exists (α ^opN). exact (nt_op_NatIso α Hα).
 Defined.
 
-Definition OpF_id {C : Cat} : OpF (@IdF C) ≅N (@IdF (C ^op)).
-Proof.
-  unshelve refine ((@mkNat (C ^op) (C ^op) (OpF IdF) IdF (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
-Defined.
+Program Definition OpF_id {C : Cat} : OpF (@IdF C) ≅N (@IdF (C ^op)) :=
+  ({| nt X := id |}; _).
+Next Obligation. simpl. carw. Defined.
+Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
-Definition OpF_comp {C D E : Cat} (G : Functor D E) (F : Functor C D)
-  : OpF (G ∘F F) ≅N (OpF G ∘F OpF F).
-Proof.
-  unshelve refine ((@mkNat (C ^op) (E ^op) (OpF (G ∘F F)) (OpF G ∘F OpF F)
-    (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
-Defined.
+Program Definition OpF_comp {C D E : Cat} (G : Functor D E) (F : Functor C D)
+  : OpF (G ∘F F) ≅N (OpF G ∘F OpF F) := ({| nt X := id |}; _).
+Next Obligation. simpl. carw. Defined.
+Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
-Definition OpF_involution {C D : Cat} (F : Functor C D)
-  : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) ≅N F.
-Proof.
-  unshelve refine ((@mkNat C D (FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF)) F
-    (λ X, id) _); _).
-  - intros X Y f. simpl. carw.
-  - intros X. exists id. split; apply comp_id_l.
-Defined.
+Program Definition OpF_involution {C D : Cat} (F : Functor C D)
+  : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) ≅N F :=
+  ({| nt X := id |}; _).
+Next Obligation. simpl. carw. Defined.
+Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.

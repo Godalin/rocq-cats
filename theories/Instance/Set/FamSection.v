@@ -33,18 +33,14 @@ Program Canonical SectionS {X : SetC} (A : FamS X) : SetC :=
 
 (** ** Reindexing Sections *)
 
-Definition section_reindex {X Y : SetC} {A : FamS Y}
-    (s : SectionS_resp A) (f : X →r Y) : SectionS_resp A[f]S.
-Proof.
-  refine (@Build_SectionS_resp X A[f]S (λ x, s (f x)) _).
-  intros x y p. exact (section_proper s (@func_proper _ _ f x y p)).
-Defined.
+Program Definition section_reindex {X Y : SetC} {A : FamS Y}
+    (s : SectionS_resp A) (f : X →r Y) : SectionS_resp A[f]S :=
+  {| section x := s (f x) |}.
+Next Obligation. exact (section_proper s (@func_proper _ _ f x y p)). Defined.
 
-Definition section_reindex_resp {X Y : SetC} (A : FamS Y) (f : X →r Y)
-  : SectionS A →r SectionS A[f]S.
-Proof.
-  unshelve refine (@Build_FunS_resp (SectionS A) (SectionS A[f]S)
-    (λ s, section_reindex s f) _).
+Program Definition section_reindex_resp {X Y : SetC} (A : FamS Y) (f : X →r Y)
+  : SectionS A →r SectionS A[f]S := {| func s := section_reindex s f |}.
+Next Obligation.
   intros s t H x. exact (H (f x)).
 Defined.
 
@@ -65,24 +61,20 @@ Proof. reflexivity. Qed.
     reindexed along its projection. A base map and a section of its reindexed
     family determine a unique map into the total space. *)
 
-Definition section_of_total {X Y : SetC} (A : FamS Y) (h : X →r SigS Y A)
-  : SectionS_resp A[sig_base_resp A ∘r h]S.
-Proof.
-  refine (@Build_SectionS_resp X A[sig_base_resp A ∘r h]S (λ x, (h x).2) _).
-  intros x y q. destruct (@func_proper _ _ h x y q) as [p Hp].
-  change (transpS A (@func_proper _ _ (sig_base_resp A ∘r h) x y q)
+Program Definition section_of_total {X Y : SetC} (A : FamS Y) (h : X →r SigS Y A)
+  : SectionS_resp A[sig_base_resp A ∘r h]S := {| section x := (h x).2 |}.
+Next Obligation.
+  destruct (@func_proper _ _ h x y p) as [q Hq].
+  change (transpS A (@func_proper _ _ (sig_base_resp A ∘r h) x y p)
     (h x).2 ≈S (h y).2).
-  transitivity (transpS A p (h x).2).
+  transitivity (transpS A q (h x).2).
   - apply transpS_witness_independent.
-  - exact Hp.
+  - exact Hq.
 Defined.
 
-Definition section_var {X : SetC} (A : FamS X)
-  : SectionS_resp A[sig_base_resp A]S.
-Proof.
-  refine (@Build_SectionS_resp (SigS X A) A[sig_base_resp A]S (λ a, a.2) _).
-  intros a b [p Hp]. exact Hp.
-Defined.
+Program Definition section_var {X : SetC} (A : FamS X)
+  : SectionS_resp A[sig_base_resp A]S := {| section a := a.2 |}.
+Next Obligation. destruct p as [q Hq]. exact Hq. Defined.
 
 Definition section_pair_universal {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S)
@@ -90,7 +82,8 @@ Definition section_pair_universal {X Y : SetC} (A : FamS Y) (f : X →r Y)
       is_unique (λ h : X →r SigS Y A, ∃ p : sig_base_resp A ∘ h ≈ f,
         ∀ x, transpS A (p x) (h x).2 ≈S s x) h.
 Proof.
-  unshelve eexists (@Build_FunS_resp X (SigS Y A) (λ x, (f x; s x)) _).
+  unshelve notypeclasses refine (({| func := _ |}); _).
+  - exact (λ x, (f x; s x)).
   - intros x y p. exists (@func_proper _ _ f x y p). exact (section_proper s p).
   - split.
     + exists (λ x, reflS (x := f x)). intros x. apply transpS_id.
@@ -149,23 +142,22 @@ Definition SectionOfS {X Y : SetC} (p : X →r Y) : SetC :=
 
 Notation "'Sec(' p ')'" := (SectionOfS p) (format "Sec( p )") : cat_scope.
 
-Definition section_to_projection_resp {X : SetC} (A : FamS X)
-  : SectionS A →r Sec(sig_base_resp A).
-Proof.
-  unshelve refine (@Build_FunS_resp (SectionS A) Sec(sig_base_resp A)
-    (λ s, (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
-      section_pair_β1 A id_resp (section_reindex s id_resp))) _).
+Program Definition section_to_projection_resp {X : SetC} (A : FamS X)
+  : SectionS A →r Sec(sig_base_resp A) :=
+  {| func s := (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
+      section_pair_β1 A id_resp (section_reindex s id_resp)) |}.
+Next Obligation.
   intros s t H x. exists (reflS (x := x)).
   transitivity (s x); [apply transpS_id | exact (H x)].
 Defined.
 
 (** The image of a categorical section may lie over a representative only
     equivalent to its argument. Its right-inverse witness supplies the transport. *)
-Definition section_from_projection {X : SetC} (A : FamS X)
-    (s : Sec(sig_base_resp A)) : SectionS_resp A.
-Proof.
-  refine (@Build_SectionS_resp X A (λ x, transpS A (s.2 x) (s.1 x).2) _).
-  intros x y p. destruct (@func_proper _ _ s.1 x y p) as [q Hq].
+Program Definition section_from_projection {X : SetC} (A : FamS X)
+    (s : Sec(sig_base_resp A)) : SectionS_resp A :=
+  {| section x := transpS A (s.2 x) (s.1 x).2 |}.
+Next Obligation.
+  destruct (@func_proper _ _ s.1 x y p) as [q Hq].
   assert (r : (s.1 x).1 ≈S y).
   { transitivity x; [exact (s.2 x) | exact p]. }
   transitivity (transpS A r (s.1 x).2).
@@ -175,11 +167,9 @@ Proof.
     + apply func_proper. exact Hq.
 Defined.
 
-Definition section_from_projection_resp {X : SetC} (A : FamS X)
-  : Sec(sig_base_resp A) →r SectionS A.
-Proof.
-  unshelve refine (@Build_FunS_resp Sec(sig_base_resp A) (SectionS A)
-    (section_from_projection A) _).
+Program Definition section_from_projection_resp {X : SetC} (A : FamS X)
+  : Sec(sig_base_resp A) →r SectionS A := {| func := section_from_projection A |}.
+Next Obligation.
   intros s t H x. destruct (H x) as [p Hp].
   change (transpS A (s.2 x) (s.1 x).2 ≈S transpS A (t.2 x) (t.1 x).2).
   transitivity (transpS A (t.2 x) (transpS A p (s.1 x).2)).

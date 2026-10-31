@@ -48,7 +48,7 @@ Arguments classifier_universal {_ _ _} _ _.
 
 Definition char {C : Cat} `{HT : !HasTerminal C}
     `{!HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y) : Hom Y SubOC :=
-  (classifier_universal Y (@Build_Sub C Y X m)).1.
+  (classifier_universal Y {| sub := X; sub_mono := m |}).1.
 
 Notation Ω := SubOC.
 Notation χ := char.
@@ -57,7 +57,7 @@ Theorem classifier_char_unique {C : Cat} `{HT : !HasTerminal C}
     `{!HasSubObjectClassifier C HT} {X Y} {m : Mono X Y}
   : is_unique (λ c, is_pullback c truth X m !) (χ m).
 Proof.
-  destruct (classifier_universal Y (@Build_Sub C Y X m)).2
+  destruct (classifier_universal Y {| sub := X; sub_mono := m |}).2
     as [[a [Hcomm Hpb]] Hunique].
   split.
   - split.

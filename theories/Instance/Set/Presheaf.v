@@ -24,10 +24,8 @@ Next Obligation. apply nt_comp_post_comp. Qed.
 Theorem embedding_hom_iso {X Y : @Ob C}
   : @is_iso SetCat _ _ (fmap_resp Embedding (X := X) (Y := Y)).
 Proof.
-  unshelve eexists (@Build_FunS_resp
-    (Hom_SetC (C := Psh C) (X := Embedding X) (Y := Embedding Y))
-    (Hom_SetC (C := C) (X := X) (Y := Y))
-    (λ α, α X id) _).
+  unshelve notypeclasses refine (({| func := _ |}); _).
+  - exact (λ α, α X id).
   - intros α β Hαβ. exact (Hαβ X id).
   - split.
     + intros f. change (f ∘ id ≈ f). apply comp_id_r.

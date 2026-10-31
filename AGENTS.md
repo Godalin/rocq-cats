@@ -119,6 +119,18 @@ their directory location does not register them as global instances.
 - For category-like interfaces, bundle structural data and laws in one `Class`,
   following `Cat` and `Bicat`. Do not introduce a separate `*Data` record merely
   to stage the declaration; keep derived operations as definitions.
+- Construct structures with `Program Definition` (or the established
+  `Program Canonical`/`Program Instance` form): state the data in a record
+  literal with named fields, then prove the remaining laws in `Next Obligation`.
+  Keep computational witnesses transparent with `Defined`, especially inverse
+  maps, transport and universal mediators. Complete record literals need no
+  obligations. In proofs that extract data in stages, use named record fields
+  with `refine` instead; avoid positional `Build_*`/`mkNat` applications unless
+  a concrete elaboration limitation requires them.
+- The default obligation tactic is `cats_obligation` from `Meta`: introduce
+  parameters and simplify the goal and context with `cbn`, without solving
+  them. Prove laws explicitly; do not restore the Stdlib's automatic destruction
+  of dependent witnesses merely to shorten obligation proofs.
 - Prefer the existing UTF-8 notation (`λ`, `∀`, `→`, `∃`, `∧`, `≈`, `∘`) and
   exported dependent-pair/projection notation over ASCII spellings and explicit
   constructors where unambiguous. Preserve Rocq's required tactic syntax.

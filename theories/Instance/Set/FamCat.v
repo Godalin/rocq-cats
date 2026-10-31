@@ -52,19 +52,17 @@ Qed.
 
 (** ** Identity and Composition *)
 
-Definition fam_id {U : FamC} : FamF U U.
-Proof.
-  refine (@Build_FamF U U (id_resp (X := famC_base U))
-    (λ x, id_resp (X := U x)) _).
-  intros x y p a. simpl. apply transpS_witness_independent.
-Defined.
+Program Definition fam_id {U : FamC} : FamF U U :=
+  {| famF_base := id_resp (X := famC_base U)
+   ; famF_fam x := id_resp (X := U x) |}.
+Next Obligation. simpl. apply transpS_witness_independent. Defined.
 
-Definition fam_comp {U V W : FamC} (g : FamF V W) (f : FamF U V)
-  : FamF U W.
-Proof.
-  refine (@Build_FamF U W (famF_base g ∘r famF_base f)
-    (λ x, famF_fam g (famF_base f x) ∘r famF_fam f x) _).
-  intros x y p a. simpl.
+Program Definition fam_comp {U V W : FamC} (g : FamF V W) (f : FamF U V)
+  : FamF U W :=
+  {| famF_base := famF_base g ∘r famF_base f
+   ; famF_fam x := famF_fam g (famF_base f x) ∘r famF_fam f x |}.
+Next Obligation.
+  simpl.
   pose (q := @func_proper _ _ (famF_base f) x y p).
   transitivity (famF_fam g (famF_base f y)
     (transpS V q (famF_fam f x a))).
@@ -132,23 +130,19 @@ Global Instance FamCat : Cat :=
 
 (** ** Base and Total-Space Functors *)
 
-Definition FamBaseF : Functor FamCat SetCat.
-Proof.
-  refine (@Build_Functor FamCat SetCat famC_base
-    (λ U V f, famF_base f) _ _ _).
-  - intros U V f g [p Hp]. exact p.
-  - intros U x. reflexivity.
-  - intros U V W g f x. reflexivity.
-Defined.
+Program Definition FamBaseF : Functor FamCat SetCat :=
+  {| F0 := famC_base
+   ; F1 U V f := famF_base f |}.
+Next Obligation. intros f g [p Hp]. exact p. Defined.
+Next Obligation. intros x. reflexivity. Defined.
+Next Obligation. intros x. reflexivity. Defined.
 
 (** A family morphism acts on both coordinates. Its compatibility with
     transport makes this action respectful of dependent-sum equivalence. *)
-Definition fam_total_resp {U V : FamC} (f : FamF U V)
-  : SigS (famC_base U) U →r SigS (famC_base V) V.
-Proof.
-  unshelve refine (@Build_FunS_resp (SigS (famC_base U) U)
-    (SigS (famC_base V) V)
-    (λ a, (famF_base f a.1; famF_fam f a.1 a.2)) _).
+Program Definition fam_total_resp {U V : FamC} (f : FamF U V)
+  : SigS (famC_base U) U →r SigS (famC_base V) V :=
+  {| func a := (famF_base f a.1; famF_fam f a.1 a.2) |}.
+Next Obligation.
   intros [x a] [y b] [p Hp].
   exists (@func_proper _ _ (famF_base f) x y p).
   transitivity (famF_fam f y (transpS U p a)).
@@ -162,18 +156,14 @@ Proof.
   intros f g [p Hp] [x a]. exists (p x). exact (Hp x a).
 Qed.
 
-Definition FamTotalF : Functor FamCat SetCat.
-Proof.
-  refine (@Build_Functor FamCat SetCat (λ U, SigS (famC_base U) U)
-    (λ U V f, fam_total_resp f) _ _ _).
-  - intros U V f g Hfg. exact (fam_total_resp_proper f g Hfg).
-  - intros U [x a]. reflexivity.
-  - intros U V W g f [x a]. reflexivity.
-Defined.
+Program Definition FamTotalF : Functor FamCat SetCat :=
+  {| F0 U := SigS (famC_base U) U
+   ; F1 U V f := fam_total_resp f |}.
+Next Obligation. intros f g Hfg. exact (fam_total_resp_proper f g Hfg). Defined.
+Next Obligation. intros [x a]. reflexivity. Defined.
+Next Obligation. intros [x a]. reflexivity. Defined.
 
 (** Total-space projection commutes with every family morphism. *)
-Definition FamProjectionN : FamTotalF => FamBaseF.
-Proof.
-  refine (@mkNat FamCat SetCat FamTotalF FamBaseF (λ U, sig_base_resp U) _).
-  intros U V f a. reflexivity.
-Defined.
+Program Definition FamProjectionN : FamTotalF => FamBaseF :=
+  {| nt U := sig_base_resp U |}.
+Next Obligation. intros a. reflexivity. Defined.

@@ -10,38 +10,42 @@ Local Open Scope nat_scope.
     2-cells are not invertible, so this example is not locally a groupoid.
     The singleton 1-cell setoid gives a strict presentation. *)
 
-Definition NatHomCat : Cat.
-Proof.
-  refine (@Build_Cat unit (λ _ _, nat) (λ _ _, eq) (λ _ _, eq_equivalence)
-    (λ _, 0) (λ _ _ _ m n, m + n)
-    (λ _ _ _ a a' Ha b b' Hb, f_equal2 Nat.add Ha Hb) _ _ _).
-  - intros X Y n. apply Nat.add_0_r.
-  - intros X Y n. reflexivity.
-  - intros W X Y Z a b c. lia.
-Defined.
+Program Definition NatHomCat : Cat :=
+  {| Ob := unit
+   ; Hom _ _ := nat
+   ; HomEq _ _ := eq
+   ; id _ := 0
+   ; comp _ _ _ m n := m + n
+   |}.
+Next Obligation. lia. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. lia. Defined.
 
-Definition nat_horizontalF : Functor (NatHomCat ×C NatHomCat) NatHomCat.
-Proof.
-  unshelve refine (@Build_Functor (NatHomCat ×C NatHomCat) NatHomCat
-    (λ _, tt) (λ _ _ p, fst p + snd p) _ _ _).
-  - intros X Y [a b] [a' b'] [Ha Hb]. cbn in *. now subst.
-  - intros X. reflexivity.
-  - intros X Y Z [a b] [c d]. cbn. lia.
-Defined.
+Program Definition nat_horizontalF : Functor (NatHomCat ×C NatHomCat) NatHomCat :=
+  {| F0 _ := tt
+   ; F1 _ _ p := fst p + snd p
+   |}.
+Next Obligation. intros [a b] [a' b'] [Ha Hb]. cbn in *. now subst. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. destruct f, g. cbn. lia. Defined.
 
-Definition NatBicat : Bicat.
-Proof.
-  refine (@Build_Bicat unit (λ _ _, NatHomCat) (λ _, tt) (λ _ _ _, nat_horizontalF)
-    (λ _ _ _ _ _ _ _, 0) _ (λ _ _ _, 0) _ (λ _ _ _, 0) _ _ _ _ _ _).
-  - intros W X Y Z h g f. exists 0. split; reflexivity.
-  - intros X Y f. exists 0. split; reflexivity.
-  - intros X Y f. exists 0. split; reflexivity.
-  - intros W X Y Z h h' g g' f f' γ β α. cbn. lia.
-  - intros X Y f g α. cbn. lia.
-  - intros X Y f g α. cbn. lia.
-  - intros V W X Y Z k h g f. reflexivity.
-  - intros X Y Z g f. reflexivity.
-Defined.
+Program Definition NatBicat : Bicat :=
+  {| ObB := unit
+   ; HomCat _ _ := NatHomCat
+   ; id1 _ := tt
+   ; comp1F _ _ _ := nat_horizontalF
+   ; associator _ _ _ _ _ _ _ := 0
+   ; left_unitor _ _ _ := 0
+   ; right_unitor _ _ _ := 0
+   |}.
+Next Obligation. exists 0. split; reflexivity. Defined.
+Next Obligation. exists 0. split; reflexivity. Defined.
+Next Obligation. exists 0. split; reflexivity. Defined.
+Next Obligation. cbn. lia. Defined.
+Next Obligation. cbn. lia. Defined.
+Next Obligation. cbn. lia. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
 
 Definition NatCell1Eq (X Y : ObB NatBicat)
     (f g : @Cell1 NatBicat X Y) := unit.
@@ -49,20 +53,20 @@ Definition NatCell1Eq (X Y : ObB NatBicat)
 Definition nat_cell1_eq_to_cell2 X Y (f g : @Cell1 NatBicat X Y)
     (_ : NatCell1Eq X Y f g) : @Cell2 NatBicat X Y f g := 0.
 
-Definition NatBicat_IsStrictTwoCat
-  : IsStrictTwoCat NatBicat NatCell1Eq nat_cell1_eq_to_cell2.
-Proof.
-  unshelve refine (@Build_IsStrictTwoCat NatBicat NatCell1Eq nat_cell1_eq_to_cell2
-    _ _ _ _ _ (λ _ _ _, tt) (λ _ _ _, tt) (λ _ _ _ _ _ _ _, tt) _ _ _).
-  - intros X Y. split; red; intros; exact tt.
-  - intros X Y Z g g' p f f' q. exact tt.
-  - intros X Y f p. reflexivity.
-  - intros X Y f g h p q r. reflexivity.
-  - intros X Y Z g g' f f' p q r. reflexivity.
-  - intros X Y f. reflexivity.
-  - intros X Y f. reflexivity.
-  - intros W X Y Z h g f. reflexivity.
-Defined.
+Program Definition NatBicat_IsStrictTwoCat
+  : IsStrictTwoCat NatBicat NatCell1Eq nat_cell1_eq_to_cell2 :=
+  {| comp1_id_l _ _ _ := tt
+   ; comp1_id_r _ _ _ := tt
+   ; comp1_assoc _ _ _ _ _ _ _ := tt
+   |}.
+Next Obligation. split; red; intros; exact tt. Defined.
+Next Obligation. intros g g' p f f' q. exact tt. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
 
 Theorem nat_2cell_not_iso (n : nat) : 0 < n → ¬ @is_iso NatHomCat tt tt n.
 Proof.

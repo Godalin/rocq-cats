@@ -12,6 +12,11 @@ Global Set Universe Polymorphism.
 Global Set Warnings "-notation-overridden".
 Global Set Warnings "-notation-incompatible-format".
 
+(** Keep obligation contexts close to the declared fields, including
+    dependent pairs. Mathematical laws are proved explicitly below the data. *)
+Ltac cats_obligation := intros; cbn in *.
+Global Obligation Tactic := cats_obligation.
+
 
 
 (** * Type Notation *)

@@ -4,12 +4,9 @@ From Cats Require Import Instance.Set.FamFibration.
 
 (** * Family Morphisms Acting on Sections *)
 
-Definition section_map {U V : FamC} (φ : FamF U V) (s : SectionS_resp U)
-  : SectionS_resp V[famF_base φ]S.
-Proof.
-  refine (@Build_SectionS_resp (famC_base U) V[famF_base φ]S
-    (λ x, famF_fam φ x (s x)) _).
-  intros x y p.
+Program Definition section_map {U V : FamC} (φ : FamF U V) (s : SectionS_resp U)
+  : SectionS_resp V[famF_base φ]S := {| section x := famF_fam φ x (s x) |}.
+Next Obligation.
   change (transpS V (@func_proper _ _ (famF_base φ) x y p)
     (famF_fam φ x (s x)) ≈S famF_fam φ y (s y)).
   transitivity (famF_fam φ y (transpS U p (s x))).
@@ -25,18 +22,15 @@ Proof. intros s t H x. apply func_proper. exact (H x). Qed.
 
 Definition section_map_resp {U V : FamC} (φ : FamF U V)
   : SectionS U →r SectionS V[famF_base φ]S :=
-  @Build_FunS_resp (SectionS U) (SectionS V[famF_base φ]S)
-    (section_map φ) (section_map_proper φ).
+  {| func := section_map φ; func_proper := section_map_proper φ |}.
 
 (** A section over an arbitrary map into the source family can also be
     mapped fiberwise. The output lies over the composite base map. *)
-Definition section_map_over {X : SetC} {U V : FamC} (φ : FamF U V)
+Program Definition section_map_over {X : SetC} {U V : FamC} (φ : FamF U V)
     (f : X →r famC_base U) (s : SectionS_resp U[f]S)
-  : SectionS_resp V[famF_base φ ∘r f]S.
-Proof.
-  refine (@Build_SectionS_resp X V[famF_base φ ∘r f]S
-    (λ x, famF_fam φ (f x) (s x)) _).
-  intros x y p.
+  : SectionS_resp V[famF_base φ ∘r f]S :=
+  {| section x := famF_fam φ (f x) (s x) |}.
+Next Obligation.
   change (transpS V (@func_proper _ _ (famF_base φ ∘r f) x y p)
     (famF_fam φ (f x) (s x)) ≈S famF_fam φ (f y) (s y)).
   pose (q := @func_proper _ _ f x y p).

@@ -10,13 +10,10 @@ Notation "U '[' f ']'" := (ReindexFamC U f)
   (at level 8, left associativity, format "U [ f ]") : cat_scope.
 
 (** The canonical family morphism lies over [f] and is the identity on fibers. *)
-Definition fam_reindex {X : SetC} (U : FamC) (f : X →r famC_base U)
-  : FamF U[f] U.
-Proof.
-  refine (@Build_FamF U[f] U f
-    (λ x, id_resp (X := U (f x))) _).
-  intros x y p a. reflexivity.
-Defined.
+Program Definition fam_reindex {X : SetC} (U : FamC) (f : X →r famC_base U)
+  : FamF U[f] U :=
+  {| famF_base := f; famF_fam x := id_resp (X := U (f x)) |}.
+Next Obligation. reflexivity. Defined.
 
 (** ** Identity and Composition Comparisons
 
@@ -28,29 +25,29 @@ Definition fam_reindex_id_iso (U : FamC)
   : U[id_resp (X := famC_base U)] ≅[FamCat] U.
 Proof.
   exists (fam_reindex U (id_resp (X := famC_base U))).
-  unshelve eexists (@Build_FamF U U[id_resp (X := famC_base U)]
-    (id_resp (X := famC_base U)) (λ x, id_resp (X := U x)) _).
+  unshelve notypeclasses refine (({| famF_base := _; famF_fam := _ |}); _).
+  - exact (id_resp (X := famC_base U)).
+  - exact (λ x, id_resp (X := U x)).
   - intros x y p a. simpl. apply transpS_witness_independent.
   - split; exists (λ x, reflS (x := x)); intros x a; apply transpS_id.
 Defined.
 
 (** Iterated reindexing compares to reindexing along the composite. *)
-Definition fam_reindex_comp {X Y : SetC} (U : FamC)
+Program Definition fam_reindex_comp {X Y : SetC} (U : FamC)
     (f : X →r famC_base U) (g : Y →r X)
-  : FamF U[f][g] U[f ∘r g].
-Proof.
-  refine (@Build_FamF U[f][g] U[f ∘r g] (id_resp (X := Y))
-    (λ x, id_resp (X := U (f (g x)))) _).
-  intros x y p a. simpl. apply transpS_witness_independent.
-Defined.
+  : FamF U[f][g] U[f ∘r g] :=
+  {| famF_base := id_resp (X := Y)
+   ; famF_fam x := id_resp (X := U (f (g x))) |}.
+Next Obligation. simpl. apply transpS_witness_independent. Defined.
 
 Definition fam_reindex_comp_iso {X Y : SetC} (U : FamC)
     (f : X →r famC_base U) (g : Y →r X)
   : U[f][g] ≅[FamCat] U[f ∘r g].
 Proof.
   exists (fam_reindex_comp U f g).
-  unshelve eexists (@Build_FamF U[f ∘r g] U[f][g] (id_resp (X := Y))
-    (λ x, id_resp (X := U (f (g x)))) _).
+  unshelve notypeclasses refine (({| famF_base := _; famF_fam := _ |}); _).
+  - exact (id_resp (X := Y)).
+  - exact (λ x, id_resp (X := U (f (g x)))).
   - intros x y p a. simpl. apply transpS_witness_independent.
   - split; exists (λ x, reflS (x := x)); intros x a; apply transpS_id.
 Defined.
@@ -68,15 +65,13 @@ Qed.
 
 (** A cone commuting up to setoid equivalence supplies the transport needed
     to put its second coordinate in the reindexed fiber. *)
-Definition fam_reindex_pair_resp {X Q : SetC} (U : FamC)
+Program Definition fam_reindex_pair_resp {X Q : SetC} (U : FamC)
     (f : X →r famC_base U) (q1 : Q →r X) (q2 : Q →r SigS (famC_base U) U)
     (Hq : f ∘ q1 ≈ sig_base_resp U ∘ q2)
-  : Q →r SigS X U[f]S.
-Proof.
-  assert (q : ∀ z, (q2 z).1 ≈S f (q1 z)).
-  { intros z. symmetry. exact (Hq z). }
-  unshelve refine (@Build_FunS_resp Q (SigS X U[f]S)
-    (λ z, (q1 z; transpS U (q z) (q2 z).2)) _).
+  : Q →r SigS X U[f]S :=
+  {| func z := (q1 z; transpS U (symmetry (Hq z)) (q2 z).2) |}.
+Next Obligation.
+  pose (q := λ z, symmetry (Hq z)).
   intros z z' p.
   destruct (@func_proper _ _ q2 z z' p) as [r Hr].
   exists (@func_proper _ _ q1 z z' p).

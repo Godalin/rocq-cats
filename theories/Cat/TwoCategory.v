@@ -4,7 +4,7 @@ From Cats Require Export Cat.Bicategory.
 Local Open Scope bicat_scope.
 
 Notation "f '≈₁[' R ']' g" := (R f g)
-  (at level 50, no associativity) : bicat_scope.
+  (at level 50, no associativity, only parsing) : bicat_scope.
 
 (** * Strictness relative to a 1-cell setoid
 

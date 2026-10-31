@@ -3,33 +3,32 @@ From Cats Require Import Instance.Set.Core Instance.Set.Terminal.
 
 (** * A Natural-Numbers Object in Setoids *)
 
-Definition NatS@{u r} : SetC@{u r}.
-Proof.
-  refine {| carrier := nat; carrier_equiv := @eq nat |}.
+Program Definition NatS@{u r} : SetC@{u r} :=
+  {| carrier := nat; carrier_equiv := @eq nat |}.
+Next Obligation.
   split; red; intros; congruence.
 Defined.
 
-Definition zero_resp@{u r +} : UnitS@{u r} →r NatS@{u r} :=
-  @Build_FunS_resp UnitS@{u r} NatS@{u r}
-    (λ _, O) (λ _ _ _, eq_refl O).
+Program Definition zero_resp@{u r +} : UnitS@{u r} →r NatS@{u r} :=
+  {| func _ := O |}.
+Next Obligation. intros x y p. reflexivity. Defined.
 
-Definition succ_resp@{u r +} : NatS@{u r} →r NatS@{u r} :=
-  @Build_FunS_resp NatS@{u r} NatS@{u r} S (λ n m p, f_equal S p).
+Program Definition succ_resp@{u r +} : NatS@{u r} →r NatS@{u r} :=
+  {| func := S |}.
+Next Obligation. intros n m p. destruct p. reflexivity. Defined.
 
-Definition nat_rec_resp@{u r +} {X : SetC@{u r}}
-    (z : UnitS@{u r} →r X) (s : X →r X) : NatS@{u r} →r X.
-Proof.
-  unshelve refine (@Build_FunS_resp NatS@{u r} X
-    (fix iter (n : nat) : X :=
-      match n with O => z tt | S m => s (iter m) end) _).
+Program Definition nat_rec_resp@{u r +} {X : SetC@{u r}}
+    (z : UnitS@{u r} →r X) (s : X →r X) : NatS@{u r} →r X :=
+  {| func := fix iter (n : nat) : X :=
+      match n with O => z tt | S m => s (iter m) end |}.
+Next Obligation.
   intros n m p. destruct p. reflexivity.
 Defined.
 
-Definition SetCat_HasNaturalNumbersObject@{u r +}
-  : HasNaturalNumbersObject SetCat@{_ _ _ _ _ u r} SetCat_HasTerminal.
-Proof.
-  refine (@Build_HasNaturalNumbersObject SetCat SetCat_HasTerminal
-    NatS zero_resp succ_resp _).
+Program Definition SetCat_HasNaturalNumbersObject@{u r +}
+  : HasNaturalNumbersObject SetCat@{_ _ _ _ _ u r} SetCat_HasTerminal :=
+  {| NNO := NatS; zero := zero_resp; succ := succ_resp |}.
+Next Obligation.
   intros X z s. exists (nat_rec_resp z s). split.
   - split.
     + intros []. reflexivity.
