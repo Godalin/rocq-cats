@@ -121,6 +121,28 @@ Hint Resolve symm_id_r : cat.
 
 
 
+(** ** Morphisms induced by object equality
+
+    These are transported identities. Their laws use equality elimination,
+    without identifying distinct equality witnesses. *)
+
+Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y) : Hom X Y :=
+  match p with eq_refl => id end.
+
+Lemma eq_to_hom_comp {C : Cat} {X Y Z : @Ob C} (p : X = Y) (q : Y = Z)
+  : eq_to_hom (eq_trans p q) ≈ eq_to_hom q ∘ eq_to_hom p.
+Proof. destruct p, q. simpl. symmetry. apply axiom_id_l. Qed.
+
+Lemma eq_to_hom_inv_l {C : Cat} {X Y : @Ob C} (p : X = Y)
+  : eq_to_hom (eq_sym p) ∘ eq_to_hom p ≈ id.
+Proof. destruct p. simpl. apply axiom_id_l. Qed.
+
+Lemma eq_to_hom_inv_r {C : Cat} {X Y : @Ob C} (p : X = Y)
+  : eq_to_hom p ∘ eq_to_hom (eq_sym p) ≈ id.
+Proof. destruct p. simpl. apply axiom_id_l. Qed.
+
+
+
 Definition comp_pre `{C : Cat} {X Y Z : Ob} (f : Hom X Y)
   := (λ g : Hom Y Z, g ∘ f).
 
