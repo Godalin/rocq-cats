@@ -12,7 +12,7 @@ containing objects, hom-categories, composition, and coherence:
 | --- | --- | --- |
 | 0-cells | `ObB` | No object equality is added |
 | 1-cells from `X` to `Y` | Objects of `HomCat X Y` | Isomorphisms are explicit 2-cell data |
-| 2-cells from `f` to `g` | Morphisms of `HomCat X Y` | `CellEq`, the hom-category's `HomEq` |
+| 2-cells from `f` to `g` | Morphisms of `HomCat X Y` | `Cell2Eq`, the hom-category's `HomEq` |
 
 Identity 1-cells are chosen. Composition is a functor
 `HomCat Y Z × HomCat X Y → HomCat X Z`. Thus vertical composition comes from
@@ -26,7 +26,7 @@ Parentheses distinguish vertical and horizontal composition in mixed expressions
 
 The same class contains specified invertible associators and left/right
 unitors, their naturality, and the pentagon and triangle equations. These equations use
-`CellEq`. Merely allowing 1-cells to be isomorphic would not provide this data
+`Cell2Eq`. Merely allowing 1-cells to be isomorphic would not provide this data
 or these coherence proofs.
 
 The cell types and composition operations are derived fields, not additional
@@ -39,20 +39,50 @@ equalities of 1-cells. Strictness relative to a specified 1-cell setoid is
 provided separately below; it is not inferred merely from invertibility of
 the comparison cells.
 
-All structures are universe-polymorphic, but the four conceptual levels do
-not currently have four independent size levels. Inspection of the generated
-types shows that the existing `Functor` and `ProdCat` interfaces accept
-categories whose `Hom` and `HomEq` levels coincide. Consequently `Bicat`
-has `HomCat : ObB → ObB → Cat@{h t t}`: 2-cells and their equivalence witnesses
-share a universe. The concrete `CatBicat` also uses a common size bound
-for its 1-cells and 2-cells. Auxiliary universes and their upper-bound
-constraints are inferred; the object universe of the category model is
-strictly above the represented categories' component levels.
+## Universe audit
 
-This is an explicit inherited size restriction, not a resizing theorem.
-Removing it requires a separate audit of the existing polymorphic relation,
-product-category and functor interfaces. It is not repaired by declaring a
-universe of all categories at its own level.
+The four cell/equality sizes are independent. The earlier coupling came from
+`Cat@{o h p | h <= p}`: when a bare `Cat` was instantiated with fresh
+universes, Rocq's minimization identified `h` with its bound `p`. Even
+`Definition keep_cat (C : Cat) := C` acquired the restricted argument type
+`Cat@{o h h}`. This was not a restriction intrinsic to `Functor`, `ProdCat`
+or two-dimensional composition. See the reference manual's
+[minimization and explicit universes](https://docs.rocq-prover.org/master/refman/addendum/universe-polymorphism.html#minimization).
+
+`Cat@{o h p +}` now leaves morphisms in `Type@{h}` and their equivalence
+witnesses in `Type@{p}`, with larger auxiliary universes for law witnesses.
+The inferred signature on Rocq 9.0.1 is `Cat@{o h p l q}`, with
+`h <= q`, `p <= q`, and `q <= l` (and their redundant consequences).
+There is no required inequality between `h` and `p`. `Functor`, `ProdCat`
+and `Fct` consequently retain separate morphism and equality sizes without
+changes to their mathematical fields. Their auxiliary upper bounds remain.
+
+`Bicat@{o h t p +}` explicitly names the universes of 0-cells, 1-cells,
+2-cells, and 2-cell equality witnesses. The actual inferred instance is
+`Bicat@{o h t p a b l}`, with:
+
+```text
+ObB      : Type@{o}
+Cell1    : ObB → ObB → Type@{h}
+Cell2    : Cell1 X Y → Cell1 X Y → Type@{t}
+Cell2Eq  : Cell2 f g → Cell2 f g → Type@{p}
+HomCat   : ObB → ObB → Cat@{h t p l l}
+
+p < a <= b,   t <= b,   t <= l,   p <= l
+```
+
+The generated constraints also retain the product/projection bounds
+`h, t <= projections.u0, projections.u1` and `p <= prod.u1`; these are
+upper bounds from the existing product machinery, not equations between
+the four cell levels. The `CatBicat` signature likewise no longer equates
+its 1-cell, 2-cell and equality universes. Its category-object universe
+still lies strictly above the sizes of the represented categories.
+
+Temporary checks instantiate identity functors, product categories and
+functor categories with both `h < p` and `p < h`; a transparent natural-number
+category also has independently specified `h` and `p`. The bicategory
+interface accepts both `o < h < t < p` and the reversed ordering. No resizing
+axiom or universe containing itself is used.
 
 ## Strictness relative to a 1-cell setoid
 
@@ -88,6 +118,11 @@ equality witnesses with their underlying maps as comparisons does not in
 general satisfy the interface: a nonidentity automorphism would violate the
 equality-loop law. No such structure for `CatBicat` is claimed here.
 
+The designated setoid equality is the mathematical equality of this library.
+Accordingly the interface remains named `IsStrictTwoCat`: it expresses the
+intended strictness, without adding native equality of representatives as a
+further requirement.
+
 ## Categories, functors, and natural transformations
 
 [Natural.v](../theories/Cat/Natural.v) provides horizontal composition `β ∘Nh α`
@@ -118,11 +153,26 @@ boundary, not a theorem that an axiom-free
 strict presentation is impossible. An alternative presentation or a further
 explicit extensionality result would need a separate investigation.
 
-The existing [CatCat.v](../theories/Cat/CatCat.v) is a separate one-dimensional
-shadow: functors are arrows and natural isomorphisms are their equivalence
-witnesses. Its object isomorphisms are equivalences with chosen quasi-inverses.
-It does not replace `CatBicat` or its noninvertible 2-cells. A general shadow
-construction for arbitrary bicategories is left for later.
+## The one-dimensional shadow
+
+[BicatHomotopy.v](../theories/Cat/BicatHomotopy.v) defines
+`BicatHomotopyCat K`. Its objects and arrows are the 0-cells and 1-cells of
+`K`; arrow equivalence is isomorphism in the corresponding hom-category.
+Horizontal composition preserves this relation because `comp1F` preserves
+isomorphisms. The chosen unitors and associator supply the ordinary category
+laws. No quotient type or strictness hypothesis is required.
+
+For `CatBicat`, `cat_bicat_homotopy_eq` transparently converts between that
+arrow equivalence and `NatIso`. The functors `ToCatCatF` and `FromCatCatF`
+act as identities on categories and functors, and
+`cat_bicat_homotopy_equiv` supplies chosen quasi-inverses and natural
+isomorphisms for their composites. Their comparison requires no equality of
+the full category records.
+
+Thus the existing [CatCat.v](../theories/Cat/CatCat.v) has precisely the
+intended equality of the general shadow. Its object isomorphisms are
+equivalences with chosen quasi-inverses. All noninvertible natural
+transformations remain accessible in `CatBicat`.
 
 ## An additive example with noninvertible 2-cells
 

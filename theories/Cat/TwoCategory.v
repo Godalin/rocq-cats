@@ -8,7 +8,7 @@ Notation "f '≈₁[' R ']' g" := (R f g)
 
 (** * Strictness relative to a 1-cell setoid
 
-    [CellEq] compares parallel 2-cells, not their endpoints. Strictness
+    [Cell2Eq] compares parallel 2-cells, not their endpoints. Strictness
     therefore specifies a separate equivalence of 1-cells, with coherent
     comparison 2-cells. Every equality loop must act as an identity; the
     comparison cannot be an arbitrary chosen isomorphism.

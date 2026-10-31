@@ -55,6 +55,8 @@ This project aims at building ETCS.
   [CatBicat](./theories/Cat/CatBicat.v) retains all natural
   transformations as 2-cells and proves pentagon/triangle coherence. `CatCat`
   remains its separate one-dimensional shadow up to natural isomorphism.
+  [BicatHomotopy](./theories/Cat/BicatHomotopy.v) constructs this shadow for any
+  bicategory; the shadow of `CatBicat` is explicitly equivalent to `CatCat`.
   [The design note](./docs/TwoCategories.md) explains the levels of equality
   in this bicategory presentation. The small
   [natural-number model](./theories/Instance/Nat/TwoCat.v) has

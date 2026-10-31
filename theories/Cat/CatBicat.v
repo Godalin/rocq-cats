@@ -1,4 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory.
+From Cats Require Import Cat.CatCat Cat.BicatHomotopy.
 
 (** * Categories, Functors and All Natural Transformations
 
@@ -41,3 +42,45 @@ Proof.
   intros X. change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).
   rewrite functor_id. apply comp_id_r.
 Qed.
+
+(** ** Comparison with the Existing Category of Categories *)
+
+Definition cat_bicat_homotopy_eq {C D : Cat} (F G : Functor C D)
+  : @Cats.Cat.Core.HomEq (BicatHomotopyCat CatBicat) C D F G ↔ F ≅N G.
+Proof.
+  split; intros H.
+  - exact (H.1; is_iso_NatIso H.1 H.2).
+  - exact (H.1; NatIso_is_iso H.1 H.2).
+Defined.
+
+Program Definition ToCatCatF : Functor (BicatHomotopyCat CatBicat) CatCat :=
+  {| F0 C := C
+   ; F1 C D F := F
+   ; functor_fmap_proper C D F G H := fst (cat_bicat_homotopy_eq F G) H
+   |}.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+
+Program Definition FromCatCatF : Functor CatCat (BicatHomotopyCat CatBicat) :=
+  {| F0 C := C
+   ; F1 C D F := F
+   ; functor_fmap_proper C D F G H := snd (cat_bicat_homotopy_eq F G) H
+   |}.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+
+Definition cat_bicat_homotopy_equiv : BicatHomotopyCat CatBicat ≃C CatCat.
+Proof.
+  exists ToCatCatF, FromCatCatF. split.
+  - unshelve notypeclasses refine (({| nt := _ |}); _).
+    + exact (λ C, @IdF C).
+    + intros C D F. apply (snd (cat_bicat_homotopy_eq _ _)).
+      transitivity F; [apply CompF_id_l | symmetry; apply CompF_id_r].
+    + intros C. exists (@IdF C). split;
+        apply (snd (cat_bicat_homotopy_eq _ _)); apply CompF_id_l.
+  - unshelve notypeclasses refine (({| nt := _ |}); _).
+    + exact (λ C, @IdF C).
+    + intros C D F.
+      transitivity F; [apply CompF_id_l | symmetry; apply CompF_id_r].
+    + intros C. exists (@IdF C). split; apply CompF_id_l.
+Defined.

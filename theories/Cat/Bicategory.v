@@ -8,19 +8,19 @@ Local Open Scope bicat_scope.
 
     Objects, hom-categories, composition and coherence form one structure.
     The intermediate operations are derived fields, not additional choices.
-    The current [Functor]/[ProdCat] interfaces require 2-cells and their
-    equivalence witnesses to share a universe; that restriction is inherited.
+    The four named universes are for 0-cells, 1-cells, 2-cells and their
+    equivalence witnesses. Law witnesses use auxiliary upper-bound universes.
     No equality of 1-cells is implicit in this structure. *)
 
-Class Bicat :=
-  { ObB : Type
-  ; HomCat : ObB → ObB → Cat
+Class Bicat@{o h t p +} :=
+  { ObB : Type@{o}
+  ; HomCat : ObB → ObB → Cat@{h t p _ _}
   ; id1 (X : ObB) : @Ob (HomCat X X)
   ; comp1F (X Y Z : ObB) : Functor (HomCat Y Z ×C HomCat X Y) (HomCat X Z)
 
   ; Cell1 (X Y : ObB) := @Ob (HomCat X Y)
   ; Cell2 {X Y : ObB} (f g : Cell1 X Y) := (@Hom (HomCat X Y)) f g
-  ; CellEq {X Y} {f g : Cell1 X Y} (α β : Cell2 f g)
+  ; Cell2Eq {X Y} {f g : Cell1 X Y} (α β : Cell2 f g)
       := @Cats.Cat.Core.HomEq (HomCat X Y) f g α β
   ; comp1 {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y) : Cell1 X Z
       := comp1F X Y Z (g, f)
@@ -41,19 +41,19 @@ Class Bicat :=
   ; right_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (right_unitor f)
   ; associator_naturality {W X Y Z} {h h' : Cell1 Y Z} {g g' : Cell1 X Y}
       {f f' : Cell1 W X} (γ : Cell2 h h') (β : Cell2 g g') (α : Cell2 f f')
-      : CellEq (associator h' g' f' ∘ comp2_h (comp2_h γ β) α)
+      : Cell2Eq (associator h' g' f' ∘ comp2_h (comp2_h γ β) α)
           (comp2_h γ (comp2_h β α) ∘ associator h g f)
   ; left_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
-      : CellEq (left_unitor g ∘ comp2_h (id2 (id1 Y)) α) (α ∘ left_unitor f)
+      : Cell2Eq (left_unitor g ∘ comp2_h (id2 (id1 Y)) α) (α ∘ left_unitor f)
   ; right_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
-      : CellEq (right_unitor g ∘ comp2_h α (id2 (id1 X))) (α ∘ right_unitor f)
+      : Cell2Eq (right_unitor g ∘ comp2_h α (id2 (id1 X))) (α ∘ right_unitor f)
   ; bicat_pentagon {V W X Y Z} (k : Cell1 Y Z) (h : Cell1 X Y)
       (g : Cell1 W X) (f : Cell1 V W)
-      : CellEq (associator k h (comp1 g f) ∘ associator (comp1 k h) g f)
+      : Cell2Eq (associator k h (comp1 g f) ∘ associator (comp1 k h) g f)
           (comp2_h (id2 k) (associator h g f) ∘
             (associator k (comp1 h g) f ∘ comp2_h (associator k h g) (id2 f)))
   ; bicat_triangle {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y)
-      : CellEq (comp2_h (id2 g) (left_unitor f) ∘ associator g (id1 Y) f)
+      : Cell2Eq (comp2_h (id2 g) (left_unitor f) ∘ associator g (id1 Y) f)
           (comp2_h (right_unitor g) (id2 f))
   }.
 
@@ -63,7 +63,7 @@ Arguments id1 {_} _.
 Arguments comp1F {_} _ _ _.
 Arguments Cell1 {_} _ _.
 Arguments Cell2 {_ _ _} _ _.
-Arguments CellEq {_ _ _ _ _} _ _.
+Arguments Cell2Eq {_ _ _ _ _} _ _.
 Arguments comp1 {_ _ _ _} _ _.
 Arguments id2 {_ _ _} _.
 Arguments comp2_v {_ _ _ _ _ _} _ _.
@@ -73,25 +73,25 @@ Arguments left_unitor {_ _ _} _.
 Arguments right_unitor {_ _ _} _.
 
 Notation "f '⇒₂' g" := (Cell2 f g) (at level 50, no associativity) : bicat_scope.
-Infix "≈₂" := CellEq (at level 50, no associativity) : bicat_scope.
+Infix "≈₂" := Cell2Eq (at level 50, no associativity) : bicat_scope.
 Infix "∘₁" := comp1 (at level 40, left associativity) : bicat_scope.
 Infix "∘₂" := comp2_v (at level 51, right associativity) : bicat_scope.
 Infix "⋆" := comp2_h (at level 48, left associativity) : bicat_scope.
 Notation "'𝟙₁' X" := (id1 X) (at level 35) : bicat_scope.
 Notation "'𝟙₂' f" := (id2 f) (at level 35) : bicat_scope.
 
-Global Instance CellEq_Equivalence {K : Bicat} {X Y : ObB K}
-    {f g : Cell1 X Y} : Equivalence (@CellEq K X Y f g).
+Global Instance Cell2Eq_Equivalence {K : Bicat} {X Y : ObB K}
+    {f g : Cell1 X Y} : Equivalence (@Cell2Eq K X Y f g).
 Proof. exact (@HomEq_Equivalence (HomCat X Y) f g). Qed.
 
 Global Instance comp2_v_proper {K : Bicat} {X Y : ObB K}
     {f g h : Cell1 X Y}
-  : Proper (CellEq ==> CellEq ==> CellEq) (@comp2_v K X Y f g h).
+  : Proper (Cell2Eq ==> Cell2Eq ==> Cell2Eq) (@comp2_v K X Y f g h).
 Proof. exact (@comp_proper (HomCat X Y) f g h). Qed.
 
 Global Instance comp2_h_proper {K : Bicat} {X Y Z : ObB K}
     {g g' : Cell1 Y Z} {f f' : Cell1 X Y}
-  : Proper (CellEq ==> CellEq ==> CellEq) (@comp2_h K X Y Z g g' f f').
+  : Proper (Cell2Eq ==> Cell2Eq ==> Cell2Eq) (@comp2_h K X Y Z g g' f f').
 Proof.
   intros β β' Hβ α α' Hα.
   exact (@functor_fmap_proper _ _ (comp1F X Y Z) (g, f) (g', f')
@@ -135,12 +135,12 @@ Infix "▷" := whisker_r (at level 40, left associativity) : bicat_scope.
 
 Global Instance whisker_l_proper {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) {f f' : Cell1 X Y}
-  : Proper (CellEq ==> CellEq) (@whisker_l K X Y Z g f f').
+  : Proper (Cell2Eq ==> Cell2Eq) (@whisker_l K X Y Z g f f').
 Proof. intros α β H. apply comp2_h_proper; [reflexivity | exact H]. Qed.
 
 Global Instance whisker_r_proper {K : Bicat} {X Y Z : ObB K}
     {g g' : Cell1 Y Z} (f : Cell1 X Y)
-  : Proper (CellEq ==> CellEq) (λ β : g ⇒₂ g', β ▷ f).
+  : Proper (Cell2Eq ==> Cell2Eq) (λ β : g ⇒₂ g', β ▷ f).
 Proof. intros α β H. apply comp2_h_proper; [exact H | reflexivity]. Qed.
 
 Theorem whisker_l_id {K : Bicat} {X Y Z : ObB K}

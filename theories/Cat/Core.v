@@ -16,7 +16,9 @@ Open Scope cat_scope.
 
 (** * Category *)
 
-Class Cat@{o h p|h <= p} :=
+(** Morphisms and their equivalence witnesses have independent sizes.
+    Equivalence/properness laws may live in larger auxiliary universes. *)
+Class Cat@{o h p +} :=
   { Ob : Type@{o}
   ; Hom : Ob → Ob → Type@{h}
 

@@ -133,6 +133,15 @@ Proof.
   - exact (snd (Hα X).2).
 Defined.
 
+(** An inverse in the functor category gives component inverses directly. *)
+Definition is_iso_NatIso {C D : Cat} {F G : Functor C D}
+    (α : F => G) (Hα : @is_iso (Fct C D) F G α) : α ⦂ F ≅N G.
+Proof.
+  intros X. exists (Hα.1 X). split.
+  - exact ((fst Hα.2) X).
+  - exact ((snd Hα.2) X).
+Defined.
+
 (** ** Functors Compared by Natural Isomorphism
 
     The comparison retains its natural transformation and component inverses.

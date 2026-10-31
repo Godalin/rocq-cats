@@ -33,8 +33,11 @@ changes over framework machinery or repository-wide rewrites.
   interchange, and coherent associators/unitors.
 - `theories/Cat/TwoCategory.v`: strictness relative to an explicit 1-cell
   equivalence, with coherent comparison 2-cells and strict coherence maps.
+- `theories/Cat/BicatHomotopy.v`: the one-dimensional shadow of a bicategory,
+  comparing parallel 1-cells by invertible 2-cells.
 - `theories/Cat/CatBicat.v`: categories, functors, and all natural transformations
-  as a bicategory presentation, with pentagon and triangle coherence.
+  as a bicategory presentation, with pentagon and triangle coherence; its
+  homotopy category is explicitly equivalent to `CatCat`.
 - `theories/Instance/Nat/TwoCat.v`: an additive bicategory with one object, one
   1-cell, and additive natural-number 2-cells, including noninvertible ones;
   its strictness uses the singleton 1-cell setoid.
@@ -113,6 +116,10 @@ their directory location does not register them as global instances.
   natural transformations. Do not infer strict 1-cell equality from invertible
   2-cells. Specify associators/unitors and their coherence when needed; see
   [the two-dimensional design note](docs/TwoCategories.md).
+- Preserve independent universe levels for cells and equivalence witnesses.
+  Put size bounds needed by equivalence/properness laws in auxiliary universes,
+  rather than imposing inequalities that minimize cell and equality levels
+  to the same universe. Check inferred types with genuinely distinct levels.
 - Follow the local notation, universe-polymorphic style, typeclass conventions,
   and short proof patterns. Do not add `Admitted`, `Admit Obligations`, or axioms
   as completed fixes. Existing holes are audit findings, not proof validation.
