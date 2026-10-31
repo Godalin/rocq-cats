@@ -1,4 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
+From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
+From Cats Require Import Instance.Set.FamSliceReindex.
 
 (** Guard against identifying morphism and equivalence-witness universes
     when a construction instantiates a bare [Cat]. Test both orderings. *)
@@ -34,3 +36,13 @@ Context (K : Bicat@{o h t p a b l}).
 Definition independent_hom (X Y : ObB K) : Cat@{h t p l l} := HomCat X Y.
 Definition independent_cells (X Y : ObB K) : Type@{h} := Cell1 X Y.
 End BicategoryLevels.
+
+(** The chosen pullback instance formerly collapsed these two levels. *)
+Section SetoidPullbackLevels.
+Universe u p.
+Constraint p < u.
+Context (X Y : SetC@{u p}) (f : X →r Y).
+Definition distinct_setoid_pullbacks : HasPullback (SetCat@{_ _ _ _ _ u p})
+  := SetCat_HasPullback.
+Definition distinct_sum_reindex := fam_sum_reindex_nat_iso f.
+End SetoidPullbackLevels.

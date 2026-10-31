@@ -58,6 +58,20 @@ Notation "@pb2 f g" := (pb2 f g)
 
 Hint Resolve pullback_comm : cat.
 
+(** Two arrows into a pullback agree when both projections agree. *)
+Theorem pullback_hom_ext {C : Cat} {X Y Z P Q : @Ob C}
+    {f : Hom X Z} {g : Hom Y Z} {p1 : Hom P X} {p2 : Hom P Y}
+    (HP : is_pullback f g P p1 p2) (u v : Hom Q P)
+    (H1 : p1 ∘ u ≈ p1 ∘ v) (H2 : p2 ∘ u ≈ p2 ∘ v) : u ≈ v.
+Proof.
+  assert (Hv : f ∘ (p1 ∘ v) ≈ g ∘ (p2 ∘ v)).
+  { rewrite <- !comp_assoc, (fst HP). reflexivity. }
+  destruct (snd HP Q (p1 ∘ v) (p2 ∘ v) Hv) as [w [_ Hw]].
+  transitivity w.
+  - apply Hw. split; assumption.
+  - symmetry. apply Hw. split; reflexivity.
+Qed.
+
 
 
 Section Pullback.
@@ -170,7 +184,7 @@ Theorem pullback_id : is_pullback id g _ g id.
 Proof. split. carw. intros Q q1 q2 H1. exists q2. split.
   split. rewrite <- H1. carw. carw.
   intros y. intros [H2 H3]. rewrite <- H3. carw.
-Qed.
+Defined.
 
 (** Pasting two pullback squares along their common edge. *)
 
@@ -198,7 +212,7 @@ Proof.
       * rewrite <- comp_assoc, <- HQ.
         rewrite comp_assoc, Hi1. reflexivity.
       * rewrite <- comp_assoc. exact Hi2.
-Qed.
+Defined.
 
 Context `{H : !HasPullback C}.
 

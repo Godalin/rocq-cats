@@ -38,6 +38,8 @@ This project aims at building ETCS.
   [Pullback](./theories/Cat/Pullback.v).
   [Slice](./theories/Cat/Slice.v) constructs `C /C X`, with commuting triangles
   up to morphism equivalence and equality on their underlying arrows.
+  [SliceReindex](./theories/Cat/SliceReindex.v) gives pullback functors on slices,
+  with specified natural identity and composition comparisons; write `A[f]C`.
   [Functor](./theories/Cat/Functor.v) and
   [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
   and natural transformations (`α ^opN`). Functors are compared by natural
@@ -87,6 +89,9 @@ This project aims at building ETCS.
   fiber functors and proves `FamSCat X ≃C (SetCat /C X)`; see the
   [families–slices note](./docs/FamiliesAndSlices.md) for the size bounds and
   compatibility with substitution.
+  [FamSliceReindex](./theories/Instance/Set/FamSliceReindex.v) proves that taking
+  total spaces commutes with reindexing up to a specified natural isomorphism,
+  compatible with the identity and composition comparisons on both sides.
   [FamReindex](./theories/Instance/Set/FamReindex.v) gives canonical reindexing
   morphisms whose total-space squares satisfy the pullback universal property.
   Identity and composition of reindexing are compared by explicit family

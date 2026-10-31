@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Cat.Functor.
+From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
 From Cats Require Import Instance.Set.Core Instance.Set.Fam Instance.Set.FamCat.
 
 (** * Coherent Families over a Fixed Setoid
@@ -59,6 +59,7 @@ Next Obligation.
 Defined.
 Next Obligation. intros x a. reflexivity. Defined.
 Next Obligation. intros x a. reflexivity. Defined.
+
 Next Obligation. intros x a. reflexivity. Defined.
 
 (** Relate fixed-base maps to the existing category of all families. *)
@@ -105,3 +106,51 @@ Program Definition FamReindexF {X Y : SetC} (f : X →r Y)
 Next Obligation. intros φ ψ H x a. exact (H (f x) a). Defined.
 Next Obligation. intros x a. reflexivity. Defined.
 Next Obligation. intros x a. reflexivity. Defined.
+
+(** Identity and composite substitution retain the same fiber values;
+    their transport witnesses are compared by coherence. *)
+Program Definition fam_map_reindex_id {X : SetC} (A : FamS X)
+  : A →Fam A[id_resp]S := {| fam_map x := id_resp |}.
+Next Obligation. apply transpS_witness_independent. Defined.
+
+Definition fam_map_reindex_id_iso {X : SetC} (A : FamS X)
+  : @is_iso (FamSCat X) _ _ (fam_map_reindex_id A).
+Proof.
+  unshelve notypeclasses refine (({| fam_map := _ |}); _).
+  - exact (λ x, id_resp).
+  - intros x y p a. cbn. apply transpS_witness_independent.
+  - split; intros x a; reflexivity.
+Defined.
+
+Program Definition FamReindexIdN (X : SetC)
+  : (@IdF (FamSCat X)) => (FamReindexF (id_resp (X := X))) :=
+  {| nt := fam_map_reindex_id |}.
+Next Obligation. intros x a. reflexivity. Defined.
+
+Definition fam_reindex_id_nat_iso (X : SetC)
+  : (@IdF (FamSCat X)) ≅N (FamReindexF (id_resp (X := X))) :=
+  (FamReindexIdN X; fam_map_reindex_id_iso).
+
+Program Definition fam_map_reindex_comp {X Y Z : SetC}
+    (f : Y →r Z) (g : X →r Y) (A : FamS Z)
+  : A[f]S[g]S →Fam A[f ∘r g]S := {| fam_map x := id_resp |}.
+Next Obligation. apply transpS_witness_independent. Defined.
+
+Definition fam_map_reindex_comp_iso {X Y Z : SetC}
+    (f : Y →r Z) (g : X →r Y) (A : FamS Z)
+  : @is_iso (FamSCat X) _ _ (fam_map_reindex_comp f g A).
+Proof.
+  unshelve notypeclasses refine (({| fam_map := _ |}); _).
+  - exact (λ x, id_resp).
+  - intros x y p a. cbn. apply transpS_witness_independent.
+  - split; intros x a; reflexivity.
+Defined.
+
+Program Definition FamReindexCompN {X Y Z : SetC} (f : Y →r Z) (g : X →r Y)
+  : (FamReindexF g ∘F FamReindexF f) => (FamReindexF (f ∘r g)) :=
+  {| nt := fam_map_reindex_comp f g |}.
+Next Obligation. intros x a. reflexivity. Defined.
+
+Definition fam_reindex_comp_nat_iso {X Y Z : SetC} (f : Y →r Z) (g : X →r Y)
+  : (FamReindexF g ∘F FamReindexF f) ≅N (FamReindexF (f ∘r g)) :=
+  (FamReindexCompN f g; fam_map_reindex_comp_iso f g).

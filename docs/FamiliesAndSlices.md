@@ -62,11 +62,52 @@ before applying this equivalence.
 The general slice construction does not impose that bound on its original
 category's morphism equivalence.
 
-Substitution agrees with the existing total-space pullback: apply
+Substitution uses the existing total-space pullback: apply
 `fam_reindex_pullback (FixedFamC A) f` from
 [FamReindex](../theories/Instance/Set/FamReindex.v). Its square has vertices
 `SigS X A[f]S`, `SigS Y A`, `X`, and `Y`, and its universal mediator is already
-available. This requires no new choice of pullbacks. Identity/composition
-comparisons remain isomorphisms; the equivalence does not assert a strict CwF
-or the global fibred equivalence proposed in
+available. This requires no new choice of pullbacks.
+
+## Natural substitution comparisons
+
+[SliceReindex](../theories/Cat/SliceReindex.v) constructs `SliceReindexF f`
+for any category with explicitly enabled chosen pullbacks. Write `A[f]C`
+for its object action. Morphisms are universal mediators; `pb_β1`, `pb_β2`
+and uniqueness prove their functoriality and independence from triangle
+witnesses. `slice_reindex_lift_iso` compares any pullback cone with the chosen
+one in the slice. Its inverse is the mediator of the supplied cone.
+
+The natural isomorphisms `slice_reindex_id_nat_iso` and
+`slice_reindex_comp_nat_iso` compare identity substitution with pullback along
+the identity, and iterated pullback with pullback along a composite. The latter
+uses the existing pullback-pasting property. Their family counterparts are
+`fam_reindex_id_nat_iso` and `fam_reindex_comp_nat_iso` in `FamFixed`.
+The identity comparison points from the identity functor to reindexing;
+the composition comparison points from iterated reindexing to the composite.
+
+[FamSliceReindex](../theories/Instance/Set/FamSliceReindex.v) uses the existing
+family pullback and `slice_reindex_lift_iso` to construct
+`fam_sum_reindex_nat_iso f`:
+
+```text
+FamSumF X ∘F FamReindexF f ≅N SliceReindexF f ∘F FamSumF Y.
+```
+
+This checks naturality on fiberwise maps, not only objectwise pullbacks.
+`fam_sum_reindex_id` states that the sum comparison after the family identity
+comparison equals the slice identity comparison. `fam_sum_reindex_comp` states
+that the two paths from the sum of an iterated reindexing to the pullback along
+the composite agree: either first compare the families and then take the sum
+comparison, or take the two sum comparisons and then compare the pullbacks.
+Both equations use the slice's underlying-map equivalence.
+
+The chosen `SetCat_HasPullback` explicitly keeps carrier and equality levels
+separate, with the same `p <= u` bound. The regression check in
+[Universes](../tests/Universes.v) includes `p < u` for this instance and the
+natural sum comparison. Inverse mediators and the identity/pasting universal
+properties remain transparent.
+
+The inverse fiber comparison and the full unit/associativity coherence of the
+indexed equivalence remain follow-up work. These results do not assert a
+strict CwF or the global fibred equivalence proposed in
 [issue #13](https://github.com/Godalin/rocq-cats/issues/13).

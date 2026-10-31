@@ -34,7 +34,8 @@ Next Obligation.
   intros u v Huv. split; apply func_proper; exact Huv.
 Defined.
 
-Program Definition SetCat_HasPullback : HasPullback SetCat :=
+Program Definition SetCat_HasPullback@{u p +}
+  : HasPullback (SetCat@{_ _ _ _ _ u p}) :=
   {| Pb X Y Z f g := PbS f g
    ; pb1 X Y Z f g := pb1_resp f g
    ; pb2 X Y Z f g := pb2_resp f g |}.
