@@ -43,6 +43,8 @@ This project aims at building ETCS.
   [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map
   exponentials; [CCC](./theories/Instance/Set/CCC.v) assembles the cartesian
   closed structure without additional axioms.
+  [Nat](./theories/Instance/Set/Nat.v) provides a natural-numbers object with
+  computational recursion.
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Import the setoid structures that are needed and enable chosen structures explicitly:

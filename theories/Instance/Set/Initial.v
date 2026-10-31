@@ -2,7 +2,7 @@ From Cats Require Import Cat.Core Instance.Set.Core.
 
 (** * An Initial Setoid *)
 
-Definition EmptyS : SetC.
+Definition EmptyS@{u r} : SetC@{u r}.
 Proof.
   refine {| carrier := Empty_set; carrier_equiv := λ _ _, unit |}.
   split; red; intros; exact tt.

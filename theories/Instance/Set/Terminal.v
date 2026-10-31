@@ -2,7 +2,7 @@ From Cats Require Import Cat.Core Instance.Set.Core.
 
 (** * A Terminal Setoid *)
 
-Definition UnitS : SetC.
+Definition UnitS@{u r} : SetC@{u r}.
 Proof.
   refine {| carrier := unit; carrier_equiv := λ _ _, unit |}.
   split; red; intros; exact tt.

@@ -25,6 +25,8 @@ changes over framework machinery or repository-wide rewrites.
   products for `SetCat`.
 - `theories/Instance/Set/Exponential.v` and `CCC.v`: respectful-map
   exponentials and the assembled cartesian closed setoid category.
+- `theories/Instance/Set/Nat.v`: the discrete natural-number setoid and its
+  natural-numbers-object structure with computational recursion.
 - `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
 - `theories/Instance/Set/Fam.v`: dependent functions, coherent families,
   dependent sums, fibers, and their total-space isomorphisms.
