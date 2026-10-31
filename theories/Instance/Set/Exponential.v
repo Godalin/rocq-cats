@@ -27,10 +27,8 @@ Local Existing Instance SetCat_HasProduct.
 Definition SetCat_HasExponential : @HasExponential SetCat SetCat_HasProduct.
 Proof.
   refine (@Build_HasExponential SetCat SetCat_HasProduct
-    (λ Y X, FunS X Y) (@curry_resp)
-    (λ X Y, eval_resp (X := X) (Y := Y)) _ _).
-  - intros X Y Z f g Hfg z x. exact (Hfg (z, x)).
-  - intros X Y Z f. split.
-    + rewrite cross_η. intros [z x]. reflexivity.
-    + intros h Hh z x. rewrite cross_η in Hh. exact (Hh (z, x)).
+    (λ Y X, FunS X Y) (λ X Y, eval_resp (X := X) (Y := Y)) _).
+  intros X Y Z f. exists (curry_resp f). split.
+  - rewrite cross_η. intros [z x]. reflexivity.
+  - intros h Hh z x. rewrite cross_η in Hh. exact (Hh (z, x)).
 Defined.
