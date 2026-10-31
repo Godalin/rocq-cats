@@ -20,6 +20,20 @@ Record Functor (C D : Cat) :=
 
 Notation fmap F := (@F1 _ _ F).
 
+(** ** Faithful and Full Functors
+
+    Comparisons use the source and target categories' morphism equivalences.
+    Fullness retains a preimage witness in [Type] for each target morphism. *)
+
+Definition is_faithful {C D : Cat} (F : Functor C D) :=
+  ∀ X Y (f g : Hom X Y), fmap F f ≈ fmap F g → f ≈ g.
+
+Definition is_full {C D : Cat} (F : Functor C D) :=
+  ∀ X Y (g : Hom (F X) (F Y)), ∃ f : Hom X Y, fmap F f ≈ g.
+
+Definition is_fully_faithful {C D : Cat} (F : Functor C D) :=
+  is_full F ∧ is_faithful F.
+
 
 
 (** ** Identity Functor *)
