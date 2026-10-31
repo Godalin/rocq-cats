@@ -38,6 +38,8 @@ This project aims at building ETCS.
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
   constructions.
+  [Terminal](./theories/Instance/Set/Terminal.v) and
+  [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Import the setoid structures that are needed and enable chosen structures explicitly:

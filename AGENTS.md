@@ -19,6 +19,8 @@ changes over framework machinery or repository-wide rewrites.
 - Other `theories/Cat/` modules: functors, natural transformations, pullbacks,
   morphism properties, and CCC structure.
 - `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.
+- `theories/Instance/Set/Terminal.v` and `Initial.v`: unit and empty setoids
+  with their chosen terminal and initial structures.
 - `theories/Instance/Set/Product.v`: setoid products and constructive chosen
   products for `SetCat`.
 - `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
@@ -35,7 +37,7 @@ Group concrete implementations under `Instance/<base>/`; keep abstract
 interfaces, general constructions, and their typeclass instances with their
 theories. `Instance.Set.Core` depends only on `Cat.Core`; it must not import
 the setoid extensions, functors, or natural transformations. Import extensions
-individually. Chosen product and pullback structures are explicitly enabled;
+individually. Chosen structures are explicitly enabled;
 their directory location does not register them as global instances.
 
 ## Mathematical conventions

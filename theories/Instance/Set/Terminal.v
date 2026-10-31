@@ -1,0 +1,17 @@
+From Cats Require Import Cat.Core Instance.Set.Core.
+
+(** * A Terminal Setoid *)
+
+Definition UnitS : SetC.
+Proof.
+  refine {| carrier := unit; carrier_equiv := λ _ _, unit |}.
+  split; red; intros; exact tt.
+Defined.
+
+Definition SetCat_HasTerminal : HasTerminal SetCat.
+Proof.
+  refine {| Term := UnitS
+          ; term := λ X, @Build_FunS_resp X UnitS (λ _, tt)
+              (λ _ _ _, tt) |}.
+  intros X. split. exact I. intros f _ x. exact tt.
+Defined.
