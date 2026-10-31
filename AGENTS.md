@@ -24,8 +24,18 @@ changes over framework machinery or repository-wide rewrites.
   comparison of lifts over a base isomorphism, and chosen cartesian lifts.
 - `theories/Cat/Comprehension.v`: chosen lifts, total-space functors, natural
   display projections, and the property that cartesian morphisms give pullbacks.
-- Other `theories/Cat/` modules: functors, natural transformations, pullbacks,
-  morphism properties, and CCC structure.
+- `theories/Cat/Functor.v`: functors, composition, fixing arguments, and opposites.
+- `theories/Cat/Natural.v`: natural transformations, natural isomorphisms as
+  functor equivalence, whiskering, and preservation of these comparisons.
+- `theories/Cat/CatCat.v`: categories with functors as arrows and natural
+  isomorphism as arrow equivalence; category equivalence and opposite categories.
+- `theories/Cat/Bicategory.v`: hom-categories, horizontal composition,
+  interchange, and coherent associators/unitors.
+- `theories/Cat/CatBicat.v`: categories, functors, and all natural transformations
+  as a bicategory presentation, with pentagon and triangle coherence.
+- `theories/Instance/Nat/TwoCat.v`: an additive bicategory with one object, one
+  1-cell, and additive natural-number 2-cells, including noninvertible ones.
+- Other `theories/Cat/` modules: pullbacks, morphism properties, and CCC structure.
 - `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.
 - `theories/Instance/Set/Terminal.v` and `Initial.v`: unit and empty setoids
   with their chosen terminal and initial structures.
@@ -88,15 +98,24 @@ their directory location does not register them as global instances.
   proof usability and computation on one interface before broader migration.
   Keep witnesses used to extract mediating maps transparent so that model
   implementations retain their computation rules.
-- Treat equality and coherence as mathematical design decisions. Functor
-  comparison must account for morphism action and dependent transports.
+- Treat equality and coherence as mathematical design decisions. Compare
+  functors by natural isomorphism, retaining component isomorphisms and
+  naturality rather than requiring Rocq equality of their object values.
   Pointwise equality of natural-transformation components does not require
   equality of their naturality proofs. Setoid-indexed families need coherent
   transport; arbitrary isomorphisms between fibers are insufficient. Distinguish
   strict substitution equations from laws up to equivalence or isomorphism.
+- Keep levels of higher structure explicit. `CatCat` with `NatIso` as `HomEq`
+  is a one-dimensional shadow; the hom-categories in `CatBicat` retain all
+  natural transformations. Do not infer strict 1-cell equality from invertible
+  2-cells. Specify associators/unitors and their coherence when needed; see
+  [the two-dimensional design note](docs/TwoCategories.md).
 - Follow the local notation, universe-polymorphic style, typeclass conventions,
   and short proof patterns. Do not add `Admitted`, `Admit Obligations`, or axioms
   as completed fixes. Existing holes are audit findings, not proof validation.
+- For category-like interfaces, bundle structural data and laws in one `Class`,
+  following `Cat` and `Bicat`. Do not introduce a separate `*Data` record merely
+  to stage the declaration; keep derived operations as definitions.
 - Prefer the existing UTF-8 notation (`λ`, `∀`, `→`, `∃`, `∧`, `≈`, `∘`) and
   exported dependent-pair/projection notation over ASCII spellings and explicit
   constructors where unambiguous. Preserve Rocq's required tactic syntax.
@@ -131,8 +150,9 @@ their directory location does not register them as global instances.
   `Sub_fmap`, `NatIso_inv`, and `transpS_inv`.
 - Predicates use `is_*`; equivalence relations use the established `*Eq` pattern.
   Equivalence and other typeclass witnesses use `<subject>_<Class>`, following
-  `FunEq_Equivalence`; chosen model structures use names such as
-  `SetCat_HasPullback`. The name alone does not register a typeclass instance.
+  `FunEq_Equivalence` and `NatIso_Equivalence`; chosen model structures use names
+  such as `SetCat_HasPullback`. The name alone does not register a typeclass
+  instance.
 - Structure laws and derived results use a mathematical subject prefix and a
   descriptive property, following `comp_assoc`, `functor_comp`, `transpS_id`,
   `product_universal`, `product_pair_unique`, and `yoneda_lemma_iso`.

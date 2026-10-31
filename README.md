@@ -38,9 +38,24 @@ This project aims at building ETCS.
   [Pullback](./theories/Cat/Pullback.v).
   [Functor](./theories/Cat/Functor.v) and
   [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
-  and natural transformations (`α ^opN`); the double-opposite comparison is a
-  natural isomorphism whose component functors act as identities on objects
-  and morphisms.
+  and natural transformations (`α ^opN`). Functors are compared by natural
+  isomorphism (`F ≅N G`), without requiring equality of their object values.
+  Whiskering is written `G ∘Nl α` and `β ∘Nr F`; composition, fixing arguments,
+  and taking opposites preserve natural isomorphisms.
+  [CatCat](./theories/Cat/CatCat.v) provides the category of categories with
+  this morphism equivalence. Write `C ≃C D` for an equivalence with chosen
+  quasi-inverse functors and natural isomorphisms for the two composites.
+  The double-opposite comparison is a natural isomorphism whose component
+  functors act as identities on objects and morphisms.
+  [Bicategory](./theories/Cat/Bicategory.v) introduces hom-categories, horizontal
+  composition, interchange, and coherent associators/unitors.
+  [CatBicat](./theories/Cat/CatBicat.v) retains all natural
+  transformations as 2-cells and proves pentagon/triangle coherence. `CatCat`
+  remains its separate one-dimensional shadow up to natural isomorphism.
+  [The design note](./docs/TwoCategories.md) explains the levels of equality
+  in this bicategory presentation. The small
+  [natural-number model](./theories/Instance/Nat/TwoCat.v) has
+  noninvertible 2-cells.
   [Fibration](./theories/Cat/Fibration.v) defines cartesian morphisms by universal
   factorization, compares lifts over a base isomorphism, and provides chosen
   cartesian lifts with explicit base-object identifications.
