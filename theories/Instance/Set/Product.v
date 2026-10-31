@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Instance.Set.Core.
+From Cats Require Import Cat.Core Cat.Product Instance.Set.Core.
 
 (** * Products in the Category of Setoids *)
 

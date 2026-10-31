@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core.
+From Cats Require Import Cat.Core Cat.Terminal Cat.Product.
 
 
 

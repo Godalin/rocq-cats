@@ -1,4 +1,5 @@
-From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Product.
+From Cats Require Import Cat.Core Cat.Product Cat.Exponential.
+From Cats Require Import Instance.Set.Core Instance.Set.Product.
 
 (** * Exponentials of Setoids
 

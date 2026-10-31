@@ -1,5 +1,5 @@
 From Stdlib Require Import Utf8.
-From Cats Require Import Cat.Core.
+From Cats Require Import Cat.Core Cat.Terminal Cat.Product Cat.Exponential.
 Open Scope cat_scope.
 
 

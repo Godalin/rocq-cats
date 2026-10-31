@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Cat.Pullback Cat.Morphism.
+From Cats Require Import Cat.Core Cat.Terminal Cat.Pullback Cat.Morphism.
 
 (** * Sub-object Classifier
 

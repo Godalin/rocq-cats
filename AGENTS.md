@@ -14,8 +14,12 @@ changes over framework machinery or repository-wide rewrites.
 
 - `theories/Meta.v`: Type-valued logic, equivalence relations, uniqueness, and
   shared proof helpers.
-- `theories/Cat/Core.v`: categories, morphism equivalence, duality, products,
-  terminal/initial objects, and exponentials.
+- `theories/Cat/Core.v`: categories, morphism equivalence, object-equality
+  transports, duality, product categories, and isomorphisms.
+- `theories/Cat/Terminal.v`: terminal objects and their dual initial objects.
+- `theories/Cat/Product.v`: binary products, pairing, product morphisms, and
+  their interaction with terminal objects.
+- `theories/Cat/Exponential.v`: exponential objects, evaluation, and currying.
 - Other `theories/Cat/` modules: functors, natural transformations, pullbacks,
   morphism properties, and CCC structure.
 - `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.

@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Instance.Set.Core.
+From Cats Require Import Cat.Core Cat.Terminal Instance.Set.Core.
 
 (** * An Initial Setoid *)
 

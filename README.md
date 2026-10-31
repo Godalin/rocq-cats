@@ -29,6 +29,12 @@ This project aims at building ETCS.
 ## Repository layout
 
 - [Cat](./theories/Cat/): categorical interfaces and general constructions.
+  [Core](./theories/Cat/Core.v) contains categories, duality, product categories,
+  and isomorphisms. Universal constructions are provided separately by
+  [Terminal](./theories/Cat/Terminal.v) (including initial objects),
+  [Product](./theories/Cat/Product.v),
+  [Exponential](./theories/Cat/Exponential.v), and
+  [Pullback](./theories/Cat/Pullback.v).
 - [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
   as sets. [Core](./theories/Instance/Set/Core.v) defines sets, respectful maps,
   and their category; [Product](./theories/Instance/Set/Product.v),
@@ -50,8 +56,10 @@ This project aims at building ETCS.
 Chosen universal constructions share the same design: `is_*` describes a
 specific candidate, and `Has*` stores a chosen candidate with that universal
 property. Mediating maps are extracted from transparent witnesses; their laws,
-uniqueness, and respectfulness follow from the property. This covers products,
-terminal and initial objects, and exponentials in [Core](./theories/Cat/Core.v),
+uniqueness, and respectfulness follow from the property. This covers
+[products](./theories/Cat/Product.v),
+[terminal and initial objects](./theories/Cat/Terminal.v),
+[exponentials](./theories/Cat/Exponential.v),
 [pullbacks](./theories/Cat/Pullback.v),
 [natural-numbers objects](./theories/ETCS/Nat.v), and
 [subobject classifiers](./theories/ETCS/Sub.v).
