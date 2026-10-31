@@ -87,3 +87,33 @@ Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
 Qed.
 Next Obligation. simpl. intros h. simpl; carw. Qed.
 Next Obligation. simpl. intros g. simpl. repeat cacr. Qed.
+
+(** * Morphism Maps of Functors
+
+    Full faithfulness makes this specific map an isomorphism of setoids. *)
+
+Program Canonical fmap_resp {C D : Cat} (F : Functor C D) {X Y : @Ob C}
+  : Hom X Y →r Hom (F X) (F Y) :=
+  {| func := fmap F (X := X) (Y := Y) |}.
+
+Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Functor C D)
+  : is_fully_faithful F ↔
+      ∀ X Y, @is_iso SetCat _ _ (fmap_resp F (X := X) (Y := Y)).
+Proof. split.
+  - intros HF X Y.
+    pose (Hfull := fst HF). pose (Hfaith := snd HF).
+    unshelve eexists (@Build_FunS_resp _ _ (λ g, (Hfull X Y g).1) _).
+    + intros g h Hgh. apply (Hfaith X Y).
+      transitivity g. exact (Hfull X Y g).2.
+      transitivity h. exact Hgh. symmetry. exact (Hfull X Y h).2.
+    + split.
+      * intros f. apply (Hfaith X Y). exact (Hfull X Y (fmap F f)).2.
+      * intros g. exact (Hfull X Y g).2.
+  - intros Hiso. split.
+    + intros X Y g. exists ((Hiso X Y).1 g).
+      exact (snd ((Hiso X Y).2) g).
+    + intros X Y f g Hfg. destruct (Hiso X Y) as [i [Hl Hr]].
+      transitivity (i (fmap F f)). symmetry. exact (Hl f).
+      transitivity (i (fmap F g)). apply func_proper. exact Hfg.
+      exact (Hl g).
+Defined.
