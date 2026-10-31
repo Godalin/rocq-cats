@@ -139,7 +139,7 @@ Hint Rewrite @pb_β2 : cat.
 (** ** Pullback Properties *)
 
 Section Pullback.
-Context `{C : Cat} `{H : !HasPullback C}.
+Context `{C : Cat}.
 Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
 (** Pullback alone [id]. *)
@@ -150,37 +150,41 @@ Proof. split. carw. intros Q q1 q2 H1. exists q2. split.
   intros y. intros [H2 H3]. rewrite <- H3. carw.
 Qed.
 
-(** Pullback along [_ ∘ _]. *)
+(** Pasting two pullback squares along their common edge. *)
 
-Theorem pullback_comp
-  : is_pullback (f ∘ h) g _
-    (pb1 h (pb1 f g)) (pb2 f g ∘ pb2 h (pb1 f g)).
-Proof. split.
-  - cacr. rewrite axiom_pb_cond.
-    cacl. rewrite axiom_pb_cond. cacr.
-  - intros Q q1 q2 Hq.
-    assert (Hq' : f ∘ (h ∘ q1) ≈ g ∘ q2).
-    { rewrite <- axiom_comp_assoc. exact Hq. }
-    pose (h1 := pb (h ∘ q1) q2 Hq' : Hom Q (X ×[f,g] Y)).
-    assert (Hh1 : h ∘ q1 ≈ pb1 f g ∘ h1).
-    { symmetry. apply pb_β1. }
-    pose (h2 := pb q1 h1 Hh1 : Hom Q (W ×[h,pb1 f g] (X ×[f,g] Y))).
-    exists h2. split.
-    + split; unfold h2; unfold h1.
-      apply pb_β1.
-      rewrite axiom_comp_assoc, pb_β2, pb_β2. reflexivity.
+Theorem pullback_comp {P Q : Ob}
+    {p1 : Hom P X} {p2 : Hom P Y} {q1 : Hom Q W} {q2 : Hom Q P}
+  : is_pullback f g P p1 p2
+  → is_pullback h p1 Q q1 q2
+  → is_pullback (f ∘ h) g Q q1 (p2 ∘ q2).
+Proof.
+  intros [HP HPu] [HQ HQu]. split.
+  - rewrite axiom_comp_assoc, HQ.
+    rewrite <- axiom_comp_assoc, HP, axiom_comp_assoc. reflexivity.
+  - intros R r1 r2 Hr.
+    assert (Hr' : f ∘ (h ∘ r1) ≈ g ∘ r2).
+    { rewrite <- axiom_comp_assoc. exact Hr. }
+    destruct (HPu R (h ∘ r1) r2 Hr') as [u [[Hu1 Hu2] Hu_unique]].
+    assert (Hcone : h ∘ r1 ≈ p1 ∘ u) by (symmetry; exact Hu1).
+    destruct (HQu R r1 u Hcone) as [v [[Hv1 Hv2] Hv_unique]].
+    exists v. split.
+    + split. exact Hv1.
+      rewrite axiom_comp_assoc, Hv2. exact Hu2.
     + intros i [Hi1 Hi2].
-      unfold h2. apply pb_η. split. exact Hi1.
-      unfold h1. apply pb_η. split.
-      * rewrite <- axiom_comp_assoc, <- axiom_pb_cond.
+      apply Hv_unique. split. exact Hi1.
+      apply Hu_unique. split.
+      * rewrite <- axiom_comp_assoc, <- HQ.
         rewrite axiom_comp_assoc, Hi1. reflexivity.
       * rewrite <- axiom_comp_assoc. exact Hi2.
 Qed.
 
+Context `{H : !HasPullback C}.
+
 Theorem pullback_comp_iso
   : W ×[h, pb1 f g] (X ×[f,g] Y) ≅ W ×[f ∘ h, g] Y.
 Proof. eapply pullback_unique.
-  apply pullback_comp. cato.
+  - eapply pullback_comp; apply pb_pullback.
+  - apply pb_pullback.
 Qed.
 
 End Pullback.
