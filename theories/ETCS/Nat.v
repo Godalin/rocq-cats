@@ -10,10 +10,10 @@ Class HasNaturalNumbersObject `(C : Cat) `(!HasTerminal C) :=
   ; succ : Hom NNO NNO
   ; rec {X} : Hom 1 X → Hom X X → Hom NNO X
 
-  ; axiom_rec_proper {X}
+  ; nno_rec_proper {X}
     :: Proper (@HomEq[1, X] ==> @HomEq[X, X] ==> @HomEq[NNO, X]) rec
 
-  ; axiom_nno {X}
+  ; nno_rec_unique {X}
     : ∀ z : Hom 1 X, ∀ s : Hom X X,
         is_unique (λ f, f ∘ zero ≈ z ∧ f ∘ succ ≈ s ∘ f)
           (rec z s)

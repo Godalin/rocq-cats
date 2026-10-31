@@ -17,6 +17,6 @@ Context {X Y : @Ob C} (m : X ↣ Y).
 
 (** The selected square is not evidence that an arbitrary candidate classifies m. *)
 Fail Definition arbitrary_candidate_unique (c : Hom Y Ω) : c ≈ χ m :=
-  that _ _ (axiom_sub (m := m)) c (this _ _ (axiom_sub (m := m))).
+  that _ _ (classifier_char_unique (m := m)) c (this _ _ (classifier_char_unique (m := m))).
 
 End Classifier.

@@ -27,22 +27,22 @@ Proof. firstorder. Qed.
 
 Proposition mono_id {X} : is_mono (@id X).
 Proof. intros Y x y Heq.
-  rewrite axiom_id_l in Heq.
-  rewrite axiom_id_l in Heq. auto.
+  rewrite comp_id_l in Heq.
+  rewrite comp_id_l in Heq. auto.
 Qed.
 
 Proposition mono_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
   : is_mono f → is_mono g → is_mono (g ∘ f).
 Proof. intros Hf Hg W x y Heq.
   apply Hf. apply Hg.
-  repeat rewrite <- axiom_comp_assoc. auto.
+  repeat rewrite <- comp_assoc. auto.
 Qed.
 
 Proposition mono_contrapositive_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
   : is_mono_contrapositive f → is_mono_contrapositive g
     → is_mono_contrapositive (g ∘ f).
 Proof. intros Hf Hg W x y Hneq.
-  repeat rewrite axiom_comp_assoc.
+  repeat rewrite comp_assoc.
   apply Hg. apply Hf. auto.
 Qed.
 
@@ -52,16 +52,16 @@ Proposition mono_cancel_l {X Y Z} (f : Hom X Y) (g : Hom Y Z)
   : is_mono (g ∘ f) → is_mono f.
 Proof. intros Hgf W x y Hf.
   apply (comp_l g) in Hf. apply Hgf.
-  repeat rewrite axiom_comp_assoc. auto.
+  repeat rewrite comp_assoc. auto.
 Qed.
 
 Proposition iso_mono {X Y} (f : Hom X Y)
   : is_iso f → is_mono f.
 Proof. intros [fi [H1 H2]] Z x y H.
   apply (comp_l fi) in H.
-  repeat rewrite <- axiom_comp_assoc in H.
+  repeat rewrite <- comp_assoc in H.
   repeat rewrite H1 in H.
-  repeat rewrite axiom_id_l in H. auto.
+  repeat rewrite comp_id_l in H. auto.
 Qed.
 
 
@@ -150,7 +150,7 @@ Global Program Instance Sub_le_Transitive {Z}
   : Transitive (Sub_le Z).
 Next Obligation. destruct X as [g Hg]. destruct X0 as [h Hh].
   exists (h ∘ g).
-  rewrite <- axiom_comp_assoc.
+  rewrite <- comp_assoc.
   rewrite Hg. rewrite Hh. cato.
 Qed.
 

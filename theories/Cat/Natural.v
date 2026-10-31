@@ -9,14 +9,14 @@ From Cats Require Import Cat.Set.
 Class Nat {C D : Cat} (F G : Functor C D) := mkNat
   { nt (X : @Ob C) :> (@Hom D) (F X) (G X)
 
-  ; axiom_naturality
+  ; nt_naturality
     : ∀ X Y : @Ob C, ∀ f : Hom X Y,
       nt Y ∘ fmap F f ≈ fmap G f ∘ nt X
   }.
 
 Arguments mkNat {_ _ _ _} _ _.
 Arguments nt {_ _ _ _} _ _.
-Arguments axiom_naturality {_ _ _ _} _ {_ _} _.
+Arguments nt_naturality {_ _ _ _} _ {_ _} _.
 
 Notation "F => G" := (Nat F G)
   (at level 50, no associativity) : type_scope.
@@ -53,9 +53,9 @@ Program Definition NatIso_inv {C D : Cat} {F G : Functor C D}
 Next Obligation.
   pose (Hid := λ X, (Niso X).2).
   simpl in Hid.
-  rewrite <- axiom_id_r. cacr.
+  rewrite <- comp_id_r. cacr.
   rewrite <- (snd (Hid X)).
-  cacl (fmap G f). rewrite <- axiom_naturality.
+  cacl (fmap G f). rewrite <- nt_naturality.
   cacl. cacl. rewrite (fst (Hid Y)). carw.
 Qed.
 
@@ -70,8 +70,8 @@ Qed.
 Program Instance nt_id {C D : Cat} {F : Functor C D} : F => F
   := { nt _ := id }.
 Next Obligation.
-  rewrite axiom_id_l.
-  rewrite axiom_id_r.
+  rewrite comp_id_l.
+  rewrite comp_id_r.
   reflexivity.
 Qed.
 
@@ -79,11 +79,11 @@ Program Instance nt_comp_v {C D : Cat} {F G H : Functor C D}
     (α : G => H) (β : F => G) : F => H
   := { nt X := (α X) ∘ (β X) }.
 Next Obligation.
-  rewrite axiom_comp_assoc.
-  rewrite (axiom_naturality β f).
-  rewrite <- (axiom_comp_assoc) at 1.
-  rewrite (axiom_naturality α f).
-  rewrite axiom_comp_assoc.
+  rewrite comp_assoc.
+  rewrite (nt_naturality β f).
+  rewrite <- (comp_assoc) at 1.
+  rewrite (nt_naturality α f).
+  rewrite comp_assoc.
   reflexivity.
 Qed.
 
@@ -110,7 +110,7 @@ Qed.
 Next Obligation. intros O. simpl. cato. Qed.
 Next Obligation. intros O. simpl. cato. Qed.
 Next Obligation. intros O; simpl.
-  rewrite axiom_comp_assoc. cato.
+  rewrite comp_assoc. cato.
 Qed.
 
 Section Fct.
@@ -186,7 +186,7 @@ Next Obligation.
 Qed.
 Next Obligation. intros g.
   assert (H : fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g).
-  { rewrite axiom_functor_comp. cato. }
+  { rewrite functor_comp. cato. }
   specialize (H x). cato.
 Qed.
 Next Obligation.
@@ -201,12 +201,12 @@ Proof. exists yoneda_func, yoneda_func_inv.
   split; simpl.
   - intros a Y. simpl. intros f.
     assert (fmap F f ∘ a X ≈ a Y ∘ fmap Hom(X,-) f).
-    { symmetry. apply axiom_naturality. }
+    { symmetry. apply nt_naturality. }
     specialize (X0 id). rewrite X0.
-    simpl. rewrite axiom_id_r. cato.
+    simpl. rewrite comp_id_r. cato.
   - intros x.
     assert (fmap F (@id X) ≈ id_resp).
-    { rewrite axiom_functor_id. cato. }
+    { rewrite functor_id. cato. }
     specialize (X0 x). cato.
 Qed.
 

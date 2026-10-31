@@ -135,6 +135,29 @@ Program Canonical ProdS (X Y : SetC) :=
 
 Infix "×S" := ProdS (at level 40).
 
+(** Chosen products with computational mediators, extracted from their
+    universal property. Equality is pointwise setoid equivalence. *)
+Definition SetCat_HasProduct : HasProduct SetCat.
+Proof.
+  unshelve refine
+    {| Prod := ProdS
+     ; π1 := λ X Y, @Build_FunS_resp (ProdS X Y) X fst _
+     ; π2 := λ X Y, @Build_FunS_resp (ProdS X Y) Y snd _ |}.
+  - intros [x y] [x' y'] [H1 H2]. exact H1.
+  - intros [x y] [x' y'] [H1 H2]. exact H2.
+  - intros X Y Z f g.
+    unshelve refine ((@Build_FunS_resp Z (ProdS X Y)
+      (λ z, (f z, g z)) _); _).
+    + intros z z' Hz. split; apply func_proper; exact Hz.
+    + split.
+      * split; intros z; reflexivity.
+      * intros k [H1 H2] z.
+        specialize (H1 z). specialize (H2 z).
+        change (fst (k z) ≈S f z) in H1.
+        change (snd (k z) ≈S g z) in H2.
+        destruct (k z) as [x y]. split; assumption.
+Defined.
+
 (** *** Raw Dependent Functions
 
     This pointwise setoid does not require sections to respect equivalent
@@ -165,16 +188,16 @@ Program Canonical PiS (X : SetC) (Y : X → SetC) :=
 Record FamS (X : SetC) :=
   { fam :> X → SetC
   ; transpS {x y : X} : x ≈S y → fam x →r fam y
-  ; axiom_transp_id {x} (p : x ≈S x) (v : fam x)
+  ; transpS_id {x} (p : x ≈S x) (v : fam x)
     : transpS p v ≈S v
-  ; axiom_transp_comp {x y z} (p : x ≈S y) (q : y ≈S z) (r : x ≈S z)
+  ; transpS_comp {x y z} (p : x ≈S y) (q : y ≈S z) (r : x ≈S z)
       (v : fam x)
     : transpS r v ≈S transpS q (transpS p v)
   }.
 
 Arguments transpS {_} _ {_ _} _.
-Arguments axiom_transp_id {_} _ {_} _ _.
-Arguments axiom_transp_comp {_} _ {_ _ _} _ _ _ _.
+Arguments transpS_id {_} _ {_} _ _.
+Arguments transpS_comp {_} _ {_ _ _} _ _ _ _.
 
 Theorem reflS {X : SetC} {x : X} : x ≈S x.
 Proof. reflexivity. Qed.
@@ -185,8 +208,8 @@ Theorem transpS_witness_independent {X} (Y : FamS X) {x y} (p q : x ≈S y)
 Proof.
   intros v. assert (e : x ≈S x) by reflexivity.
   transitivity (transpS Y q (transpS Y e v)).
-  - exact (axiom_transp_comp Y e q p v).
-  - apply func_proper. apply axiom_transp_id.
+  - exact (transpS_comp Y e q p v).
+  - apply func_proper. apply transpS_id.
 Qed.
 
 Theorem transpS_inv {X} (Y : FamS X) {x y}
@@ -195,8 +218,8 @@ Theorem transpS_inv {X} (Y : FamS X) {x y}
 Proof.
   assert (e : x ≈S x) by reflexivity.
   transitivity (transpS Y e v).
-  - symmetry. exact (axiom_transp_comp Y p q e v).
-  - apply axiom_transp_id.
+  - symmetry. exact (transpS_comp Y p q e v).
+  - apply transpS_id.
 Qed.
 
 (** Fiber isomorphisms are consequences of coherent transport. *)
@@ -230,7 +253,7 @@ Global Instance SigEq_Equivalence {X Y} : Equivalence (@SigEq X Y).
 Proof.
   split.
   - intros [x v]. assert (p : x ≈S x) by reflexivity.
-    exists p. apply axiom_transp_id.
+    exists p. apply transpS_id.
   - intros [x v] [y w] [p Hp].
     assert (q : y ≈S x) by (symmetry; exact p).
     exists q. transitivity (transpS Y q (transpS Y p v)).
@@ -239,7 +262,7 @@ Proof.
   - intros [x v] [y w] [z u] [p Hp] [q Hq].
     assert (r : x ≈S z) by (transitivity y; assumption).
     exists r. transitivity (transpS Y q (transpS Y p v)).
-    + exact (axiom_transp_comp Y p q r v).
+    + exact (transpS_comp Y p q r v).
     + transitivity (transpS Y q w).
       * apply func_proper. exact Hp.
       * exact Hq.

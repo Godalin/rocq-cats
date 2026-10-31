@@ -12,10 +12,10 @@ Class HasPullback `(C : Cat) :=
       (p1 : Hom P X) (p2 : Hom P Y)
       (HP : f ∘ p1 ≈ g ∘ p2) : Hom P (Pb f g)
 
-  ; axiom_pb_cond {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+  ; pullback_comm {X Y Z} {f : Hom X Z} {g : Hom Y Z}
     : f ∘ pb1 f g ≈ g ∘ pb2 f g
 
-  ; axiom_pb_unique {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+  ; pullback_mediator_unique {X Y Z} {f : Hom X Z} {g : Hom Y Z}
       {P} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
     : is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2)
         (pb p1 p2 HP)
@@ -41,7 +41,7 @@ Notation "@pb1 f g" := (pb1 f g)
 Notation "@pb2 f g" := (pb2 f g)
   (at level 60) : hom_scope.
 
-Hint Resolve axiom_pb_cond : cat.
+Hint Resolve pullback_comm : cat.
 
 
 
@@ -66,17 +66,17 @@ Proof.
   exists h2, h1; split; simpl.
   - destruct (HP' P p1 p2 HP) as [hPu [_ HPu]].
     assert (HPuEq1 : id ≈ hPu).
-    { apply HPu; split; rewrite axiom_id_r; reflexivity. }
+    { apply HPu; split; rewrite comp_id_r; reflexivity. }
     assert (HPuEq2 : h1 ∘ h2 ≈ hPu).
-    { apply HPu; split; rewrite <-axiom_comp_assoc.
+    { apply HPu; split; rewrite <-comp_assoc.
       - rewrite Hh11, Hh21. cato.
       - rewrite Hh12, Hh22. cato. }
     rewrite HPuEq1. cato.
   - destruct (HQ' Q q1 q2 HQ) as [hQu [_ HQu]].
     assert (HQuEq1 : id ≈ hQu).
-    { apply HQu; split; rewrite axiom_id_r; reflexivity. }
+    { apply HQu; split; rewrite comp_id_r; reflexivity. }
     assert (HQuEq2 : h2 ∘ h1 ≈ hQu).
-    { apply HQu; split; rewrite <-axiom_comp_assoc.
+    { apply HQu; split; rewrite <-comp_assoc.
       - rewrite Hh21, Hh11. cato.
       - rewrite Hh22, Hh12. cato. }
     rewrite HQuEq1. cato.
@@ -94,21 +94,21 @@ Theorem pb_pullback
   : is_pullback f g (X ×[f,g] Y) (pb1 f g) (pb2 f g).
 Proof.
   split. cato. intros Q q1 q2 HQ. exists (pb q1 q2 HQ).
-  apply axiom_pb_unique.
+  apply pullback_mediator_unique.
 Qed.
 
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
 Context (HP : f ∘ p1 ≈ g ∘ p2).
 
 Theorem pb_β1 : pb1 f g ∘ pb p1 p2 HP ≈ p1.
-Proof. apply axiom_pb_unique. Qed.
+Proof. apply pullback_mediator_unique. Qed.
 
 Theorem pb_β2 : pb2 f g ∘ pb p1 p2 HP ≈ p2.
-Proof. apply axiom_pb_unique. Qed.
+Proof. apply pullback_mediator_unique. Qed.
 
 Theorem pb_η h
   : pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2 → h ≈ pb p1 p2 HP.
-Proof. apply axiom_pb_unique. Qed.
+Proof. apply pullback_mediator_unique. Qed.
 
 (** Respectfulness follows from uniqueness, including independence of the
     commutativity witness. No equality between witnesses is required. *)
@@ -116,7 +116,7 @@ Theorem pb_proper {q1 : Hom P X} {q2 : Hom P Y}
     (HQ : f ∘ q1 ≈ g ∘ q2)
   : p1 ≈ q1 → p2 ≈ q2 → pb p1 p2 HP ≈ pb q1 q2 HQ.
 Proof.
-  intros H1 H2. apply (axiom_pb_unique HQ). split.
+  intros H1 H2. apply (pullback_mediator_unique HQ). split.
   - rewrite pb_β1. exact H1.
   - rewrite pb_β2. exact H2.
 Qed.
@@ -159,23 +159,23 @@ Theorem pullback_comp {P Q : Ob}
   → is_pullback (f ∘ h) g Q q1 (p2 ∘ q2).
 Proof.
   intros [HP HPu] [HQ HQu]. split.
-  - rewrite axiom_comp_assoc, HQ.
-    rewrite <- axiom_comp_assoc, HP, axiom_comp_assoc. reflexivity.
+  - rewrite comp_assoc, HQ.
+    rewrite <- comp_assoc, HP, comp_assoc. reflexivity.
   - intros R r1 r2 Hr.
     assert (Hr' : f ∘ (h ∘ r1) ≈ g ∘ r2).
-    { rewrite <- axiom_comp_assoc. exact Hr. }
+    { rewrite <- comp_assoc. exact Hr. }
     destruct (HPu R (h ∘ r1) r2 Hr') as [u [[Hu1 Hu2] Hu_unique]].
     assert (Hcone : h ∘ r1 ≈ p1 ∘ u) by (symmetry; exact Hu1).
     destruct (HQu R r1 u Hcone) as [v [[Hv1 Hv2] Hv_unique]].
     exists v. split.
     + split. exact Hv1.
-      rewrite axiom_comp_assoc, Hv2. exact Hu2.
+      rewrite comp_assoc, Hv2. exact Hu2.
     + intros i [Hi1 Hi2].
       apply Hv_unique. split. exact Hi1.
       apply Hu_unique. split.
-      * rewrite <- axiom_comp_assoc, <- HQ.
-        rewrite axiom_comp_assoc, Hi1. reflexivity.
-      * rewrite <- axiom_comp_assoc. exact Hi2.
+      * rewrite <- comp_assoc, <- HQ.
+        rewrite comp_assoc, Hi1. reflexivity.
+      * rewrite <- comp_assoc. exact Hi2.
 Qed.
 
 Context `{H : !HasPullback C}.

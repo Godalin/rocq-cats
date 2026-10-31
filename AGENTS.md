@@ -42,6 +42,8 @@ changes over framework machinery or repository-wide rewrites.
   chosen constructions. General theorems should use the weakest sufficient
   assumptions. Prefer a shared universal-property definition, but evaluate
   proof usability and computation on one interface before broader migration.
+  Keep witnesses used to extract mediating maps transparent so that model
+  implementations retain their computation rules.
 - Treat equality and coherence as mathematical design decisions. Functor
   comparison must account for morphism action and dependent transports.
   Pointwise equality of natural-transformation components does not require
@@ -84,9 +86,16 @@ changes over framework machinery or repository-wide rewrites.
   Equivalence and other typeclass witnesses use `<subject>_<Class>`, following
   `FunEq_Equivalence`; chosen model structures use names such as
   `SetCat_HasPullback`. The name alone does not register a typeclass instance.
-- Structure laws use `axiom_<operation>_<law>`. Derived results use a subject
-  prefix and a descriptive property, following `product_unique`, `prod_comp_r`,
-  and `yoneda_lemma_iso`. Reuse established endings such as `_id`, `_comp`,
+- Structure laws and derived results use a mathematical subject prefix and a
+  descriptive property, following `comp_assoc`, `functor_comp`, `transpS_id`,
+  `product_universal`, `product_pair_unique`, and `yoneda_lemma_iso`.
+  Do not distinguish fields from proved lemmas by an `axiom_` prefix; their
+  declarations determine their logical role. Use `_universal` for a full
+  universal property and specify the mediator when naming its uniqueness,
+  as in `product_pair_unique`, to distinguish it from object uniqueness
+  up to isomorphism (`product_unique`). Keep related product results under
+  `product_`, such as `product_comp_r` and `product_β1`.
+  Reuse established endings such as `_id`, `_comp`,
   `_inv`, `_proper`, `_unique`, `_β1`, and `_η` when they express the result.
   Prefer descriptive endings such as `_iso` to a prime on a theorem name.
   Numerical labels follow the local interface: `F0` and `F1` are object and

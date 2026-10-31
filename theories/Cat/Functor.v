@@ -9,13 +9,13 @@ Record Functor (C D : Cat) :=
   { F0 :> @Ob C → @Ob D
   ; F1 {X Y : @Ob C} : Hom X Y → Hom (F0 X) (F0 Y)
 
-  ; axiom_fmap_proper {X Y}
+  ; functor_fmap_proper {X Y}
     :: Proper (@HomEq[X, Y] ==> @HomEq[F0 X, F0 Y]) F1
 
-  ; axiom_functor_id {X}
+  ; functor_id {X}
     : F1 (@id X) ≈ @id (F0 X)
 
-  ; axiom_functor_comp {X Y Z} (f : Hom Y Z) (g : Hom X Y)
+  ; functor_comp {X Y Z} (f : Hom Y Z) (g : Hom X Y)
     : F1 (f ∘ g) ≈ F1 f ∘ F1 g
   }.
 
@@ -39,14 +39,14 @@ Program Canonical CompF {C D E : Cat}
   ; F1 _ _ f := fmap G (fmap F f)
   |}.
 Next Obligation. intros f g H.
-  rewrite axiom_fmap_proper. reflexivity.
-  rewrite axiom_fmap_proper. reflexivity. auto.
+  rewrite functor_fmap_proper. reflexivity.
+  rewrite functor_fmap_proper. reflexivity. auto.
 Qed.
 Next Obligation.
-  repeat rewrite axiom_functor_id. reflexivity.
+  repeat rewrite functor_id. reflexivity.
 Qed.
 Next Obligation.
-  repeat rewrite axiom_functor_comp. reflexivity.
+  repeat rewrite functor_comp. reflexivity.
 Qed.
 
 (** Equality between Functors.
@@ -66,18 +66,18 @@ Instance FunctorEq_Equivalence {C D}
 Proof. split.
   - intros F. exists (λ X, eq_refl (F X)). intros X Y f. simpl. carw.
   - intros F G [p Hp]. exists (λ X, eq_sym (p X)). intros X Y f.
-    rewrite <- (axiom_id_r (fmap G f)).
+    rewrite <- (comp_id_r (fmap G f)).
     rewrite <- (eq_to_hom_inv_r (p X)).
-    rewrite <- (axiom_comp_assoc (fmap G f)).
+    rewrite <- (comp_assoc (fmap G f)).
     rewrite <- Hp.
-    repeat rewrite <- axiom_comp_assoc.
-    rewrite eq_to_hom_inv_l, axiom_id_l. reflexivity.
+    repeat rewrite <- comp_assoc.
+    rewrite eq_to_hom_inv_l, comp_id_l. reflexivity.
   - intros F G H [p Hp] [q Hq].
     exists (λ X, eq_trans (p X) (q X)). intros X Y f.
     rewrite !eq_to_hom_comp.
-    rewrite axiom_comp_assoc, Hp.
-    rewrite <- axiom_comp_assoc, Hq.
-    rewrite axiom_comp_assoc. reflexivity.
+    rewrite comp_assoc, Hp.
+    rewrite <- comp_assoc, Hq.
+    rewrite comp_assoc. reflexivity.
 Qed.
 
 Infix "∘F" := CompF
@@ -91,7 +91,7 @@ Infix "=F" := FunctorEq
 Lemma fmap_eq_to_hom {C D : Cat} (F : Functor C D)
     {X Y : @Ob C} (p : X = Y)
   : fmap F (eq_to_hom p) ≈ eq_to_hom (f_equal F p).
-Proof. destruct p. simpl. apply axiom_functor_id. Qed.
+Proof. destruct p. simpl. apply functor_id. Qed.
 
 Global Instance CompF_proper {C D E : Cat}
   : Proper (FunctorEq ==> FunctorEq ==> FunctorEq) (@CompF C D E).
@@ -100,10 +100,10 @@ Proof.
   exists (λ X, eq_trans (f_equal G (p X)) (q (F' X))).
   intros X Y f. simpl.
   rewrite !eq_to_hom_comp, <- !fmap_eq_to_hom.
-  rewrite axiom_comp_assoc, <- axiom_functor_comp.
-  rewrite Hp, axiom_functor_comp.
-  rewrite <- axiom_comp_assoc, Hq.
-  rewrite axiom_comp_assoc. reflexivity.
+  rewrite comp_assoc, <- functor_comp.
+  rewrite Hp, functor_comp.
+  rewrite <- comp_assoc, Hq.
+  rewrite comp_assoc. reflexivity.
 Qed.
 
 
@@ -140,7 +140,7 @@ Program Definition ℎ1F {C : Cat} (X : Ob) : Functor C SetCat :=
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. simpl. cato. Qed.
-Next Obligation. intros x. simpl. apply axiom_comp_assoc. Qed.
+Next Obligation. intros x. simpl. apply comp_assoc. Qed.
 
 Notation "'Hom(' X  ',-)'" := (ℎ1F X).
 
