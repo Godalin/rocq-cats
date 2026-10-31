@@ -1,5 +1,5 @@
 From Stdlib Require Import Arith.PeanoNat Lia.
-From Cats Require Import Cat.Core Cat.Functor Cat.Bicategory.
+From Cats Require Import Cat.Core Cat.Functor Cat.TwoCategory.
 
 Local Open Scope nat_scope.
 
@@ -7,7 +7,8 @@ Local Open Scope nat_scope.
 
     There is one 0-cell and one 1-cell. The 2-cells are natural numbers;
     both compositions add them. Commutativity supplies interchange. Positive
-    2-cells are not invertible, so this example is not locally a groupoid. *)
+    2-cells are not invertible, so this example is not locally a groupoid.
+    The singleton 1-cell setoid gives a strict presentation. *)
 
 Definition NatHomCat : Cat.
 Proof.
@@ -40,6 +41,27 @@ Proof.
   - intros X Y f g α. cbn. lia.
   - intros V W X Y Z k h g f. reflexivity.
   - intros X Y Z g f. reflexivity.
+Defined.
+
+Definition NatCell1Eq (X Y : ObB NatBicat)
+    (f g : @Cell1 NatBicat X Y) := unit.
+
+Definition nat_cell1_eq_to_cell2 X Y (f g : @Cell1 NatBicat X Y)
+    (_ : NatCell1Eq X Y f g) : @Cell2 NatBicat X Y f g := 0.
+
+Definition NatBicat_IsStrictTwoCat
+  : IsStrictTwoCat NatBicat NatCell1Eq nat_cell1_eq_to_cell2.
+Proof.
+  unshelve refine (@Build_IsStrictTwoCat NatBicat NatCell1Eq nat_cell1_eq_to_cell2
+    _ _ _ _ _ (λ _ _ _, tt) (λ _ _ _, tt) (λ _ _ _ _ _ _ _, tt) _ _ _).
+  - intros X Y. split; red; intros; exact tt.
+  - intros X Y Z g g' p f f' q. exact tt.
+  - intros X Y f p. reflexivity.
+  - intros X Y f g h p q r. reflexivity.
+  - intros X Y Z g g' f f' p q r. reflexivity.
+  - intros X Y f. reflexivity.
+  - intros X Y f. reflexivity.
+  - intros W X Y Z h g f. reflexivity.
 Defined.
 
 Theorem nat_2cell_not_iso (n : nat) : 0 < n → ¬ @is_iso NatHomCat tt tt n.

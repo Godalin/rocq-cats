@@ -35,8 +35,9 @@ definitions and are enabled explicitly, for example with
 `Local Existing Instance CatBicat`.
 
 The interface uses explicit associators and unitors rather than native Rocq
-equalities of 1-cells. A separate notion of strictness is left for future
-design; it is not inferred merely from invertibility of the comparison cells.
+equalities of 1-cells. Strictness relative to a specified 1-cell setoid is
+provided separately below; it is not inferred merely from invertibility of
+the comparison cells.
 
 All structures are universe-polymorphic, but the four conceptual levels do
 not currently have four independent size levels. Inspection of the generated
@@ -52,6 +53,40 @@ This is an explicit inherited size restriction, not a resizing theorem.
 Removing it requires a separate audit of the existing polymorphic relation,
 product-category and functor interfaces. It is not repaired by declaring a
 universe of all categories at its own level.
+
+## Strictness relative to a 1-cell setoid
+
+[TwoCategory.v](../theories/Cat/TwoCategory.v) defines `IsStrictTwoCat K R cmp`
+for a bicategory `K`, a specified `Type`-valued relation `R` on parallel
+1-cells, and comparison 2-cells `cmp p : f ⇒₂ g` for `p : f ≈₁[R X Y] g`.
+The class requires:
+
+- `R` is an equivalence, and composition of 1-cells respects it.
+- Every equality loop acts as an identity 2-cell. Comparisons respect vertical
+  and horizontal composition, independently of the chosen relation witnesses.
+- Composition is associative and unital under `R`.
+- The bicategory's specified associators and unitors agree, under `≈₂`, with
+  the comparisons induced by those associativity and unit witnesses.
+
+Thus the 1-cell laws use `≈₁[R X Y]`, and the comparison laws use `≈₂`. There is
+no native equality of 1-cells in this interface. The derived theorem
+`cell1_eq_to_cell2_unique` identifies the actions of any two witnesses of the
+same relation, without identifying the witnesses themselves.
+`cell1_eq_to_cell2_iso` constructs the inverse comparison from the symmetry
+witness; its inverse map remains computational.
+
+The comparisons provide transport between representatives: a 2-cell
+`α : f ⇒₂ g` can be moved to `f' ⇒₂ g'` by composing with the comparison
+for `g ≈₁[R X Y] g'` on the left and the inverse comparison for `f ≈₁[R X Y] f'`
+on the right. This makes the change of endpoints explicit instead of
+comparing nonparallel 2-cells directly.
+
+This is strictness **relative to the supplied setoid presentation**. It does
+not assert definitional or native equality of representatives, nor construct
+a quotient or a strictification. Taking arbitrary invertible 2-cells as
+equality witnesses with their underlying maps as comparisons does not in
+general satisfy the interface: a nonidentity automorphism would violate the
+equality-loop law. No such structure for `CatBicat` is claimed here.
 
 ## Categories, functors, and natural transformations
 
@@ -96,6 +131,13 @@ construction for arbitrary bicategories is left for later.
 commutativity gives interchange. The theorem `nat_2cell_not_iso` shows that
 positive 2-cells are not invertible, so the example does not restrict its
 hom-category to a groupoid.
+
+`NatCell1Eq` is the singleton relation on its 1-cells, and
+`nat_cell1_eq_to_cell2` sends every witness to the 2-cell `0`.
+`NatBicat_IsStrictTwoCat` proves strictness for this presentation: both
+composition laws for comparisons reduce to `0 + 0 = 0`, and the chosen
+associators and unitors are also `0`. The structure is enabled explicitly,
+like the other model structures.
 
 ## What this experiment establishes
 

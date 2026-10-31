@@ -31,10 +31,13 @@ changes over framework machinery or repository-wide rewrites.
   isomorphism as arrow equivalence; category equivalence and opposite categories.
 - `theories/Cat/Bicategory.v`: hom-categories, horizontal composition,
   interchange, and coherent associators/unitors.
+- `theories/Cat/TwoCategory.v`: strictness relative to an explicit 1-cell
+  equivalence, with coherent comparison 2-cells and strict coherence maps.
 - `theories/Cat/CatBicat.v`: categories, functors, and all natural transformations
   as a bicategory presentation, with pentagon and triangle coherence.
 - `theories/Instance/Nat/TwoCat.v`: an additive bicategory with one object, one
-  1-cell, and additive natural-number 2-cells, including noninvertible ones.
+  1-cell, and additive natural-number 2-cells, including noninvertible ones;
+  its strictness uses the singleton 1-cell setoid.
 - Other `theories/Cat/` modules: pullbacks, morphism properties, and CCC structure.
 - `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.
 - `theories/Instance/Set/Terminal.v` and `Initial.v`: unit and empty setoids

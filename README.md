@@ -49,13 +49,16 @@ This project aims at building ETCS.
   functors act as identities on objects and morphisms.
   [Bicategory](./theories/Cat/Bicategory.v) introduces hom-categories, horizontal
   composition, interchange, and coherent associators/unitors.
+  [TwoCategory](./theories/Cat/TwoCategory.v) expresses strictness relative to
+  a specified 1-cell equivalence (`f ≈₁[R] g`), with coherent comparison
+  2-cells and strict associators/unitors.
   [CatBicat](./theories/Cat/CatBicat.v) retains all natural
   transformations as 2-cells and proves pentagon/triangle coherence. `CatCat`
   remains its separate one-dimensional shadow up to natural isomorphism.
   [The design note](./docs/TwoCategories.md) explains the levels of equality
   in this bicategory presentation. The small
   [natural-number model](./theories/Instance/Nat/TwoCat.v) has
-  noninvertible 2-cells.
+  noninvertible 2-cells and satisfies this setoid strictness interface.
   [Fibration](./theories/Cat/Fibration.v) defines cartesian morphisms by universal
   factorization, compares lifts over a base isomorphism, and provides chosen
   cartesian lifts with explicit base-object identifications.
