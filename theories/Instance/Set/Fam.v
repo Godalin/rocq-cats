@@ -81,6 +81,16 @@ Proof.
     intros; reflexivity.
 Defined.
 
+(** Reindexing keeps the fiber over the image and transports along the
+    image of the base equivalence. Coherence follows from the original family. *)
+Definition ReindexFamS {X Y : SetC} (A : FamS Y) (f : X →r Y) : FamS X.
+Proof.
+  refine {| fam := λ x, A (f x)
+          ; transpS := λ x y p, transpS A (@func_proper _ _ f x y p) |}.
+  - intros x p a. apply transpS_id.
+  - intros x y z p q r a. apply transpS_comp.
+Defined.
+
 
 
 (** ** Dependent Sums

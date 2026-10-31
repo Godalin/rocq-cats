@@ -49,6 +49,8 @@ This project aims at building ETCS.
   [FamCat](./theories/Instance/Set/FamCat.v) assembles coherent families and
   transport-compatible maps into a category, with base and total-space
   functors to `SetCat` and their natural projection.
+  [FamReindex](./theories/Instance/Set/FamReindex.v) gives canonical reindexing
+  morphisms whose total-space squares satisfy the pullback universal property.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
@@ -95,6 +97,9 @@ Local Existing Instance SetCat_CCC.
 - [x] Coherent families: base and total-space functors, with the
   projection as a natural transformation (see
   [FamCat](./theories/Instance/Set/FamCat.v)).
+- [x] Family reindexing and its total-space pullback universal property (see
+  [FamReindex](./theories/Instance/Set/FamReindex.v)).
+- [ ] Identity and composition comparisons for family reindexing.
 - [ ] Design a CwF interface, making substitution and comprehension laws
   explicit; use coherent families to develop a setoid model.
 - [x] Pullbacks

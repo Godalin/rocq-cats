@@ -33,10 +33,12 @@ changes over framework machinery or repository-wide rewrites.
   natural-numbers-object structure with computational recursion.
 - `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
 - `theories/Instance/Set/Fam.v`: dependent functions, coherent families,
-  dependent sums, fibers, and their total-space isomorphisms.
+  reindexing, dependent sums, fibers, and their total-space isomorphisms.
 - `theories/Instance/Set/FamCat.v`: the category of coherent families, with
   transport-compatible morphisms and transport-aware morphism equivalence;
   base and total-space functors, with projection as a natural transformation.
+- `theories/Instance/Set/FamReindex.v`: canonical reindexing morphisms and
+  the pullback universal property of their total-space squares.
 - `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
   set-valued Hom-functors, representability, Yoneda, presheaves, and the
   subobject functor.
