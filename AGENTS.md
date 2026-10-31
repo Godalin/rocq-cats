@@ -23,6 +23,8 @@ changes over framework machinery or repository-wide rewrites.
   with their chosen terminal and initial structures.
 - `theories/Instance/Set/Product.v`: setoid products and constructive chosen
   products for `SetCat`.
+- `theories/Instance/Set/Exponential.v` and `CCC.v`: respectful-map
+  exponentials and the assembled cartesian closed setoid category.
 - `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
 - `theories/Instance/Set/Fam.v`: dependent functions, coherent families,
   dependent sums, fibers, and their total-space isomorphisms.

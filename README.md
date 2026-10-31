@@ -40,6 +40,9 @@ This project aims at building ETCS.
   constructions.
   [Terminal](./theories/Instance/Set/Terminal.v) and
   [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
+  [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map
+  exponentials; [CCC](./theories/Instance/Set/CCC.v) assembles the cartesian
+  closed structure without additional axioms.
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Import the setoid structures that are needed and enable chosen structures explicitly:
@@ -50,6 +53,13 @@ From Cats Require Import Instance.Set.Product Instance.Set.Pullback.
 
 Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasPullback.
+```
+
+The complete cartesian closed structure can also be enabled as a bundle:
+
+```coq
+From Cats Require Import Instance.Set.CCC.
+Local Existing Instance SetCat_CCC.
 ```
 
 ## TODOs
