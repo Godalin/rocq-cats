@@ -19,7 +19,7 @@ A category theory library for self study.
     - proper function preserving equivalence relations
     - canonical structure
   
-- (Weak version of) Yoneda Lemma can be proved with this target category `SetCat` [see here](/theories/Cat/Natural.v).
+- (Weak version of) Yoneda Lemma can be proved with this target category `SetCat` [see here](./theories/Instance/Set/Yoneda.v).
   - Weak because functoriality / naturality property about related constructions, only the isomorphism(s).
 
 ### ETCS
@@ -34,6 +34,10 @@ This project aims at building ETCS.
   and their category; [Product](./theories/Instance/Set/Product.v),
   [Pullback](./theories/Instance/Set/Pullback.v), and
   [Fam](./theories/Instance/Set/Fam.v) provide independent extensions.
+  [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
+  [Presheaf](./theories/Instance/Set/Presheaf.v), and
+  [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
+  constructions.
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Import the setoid structures that are needed and enable chosen structures explicitly:

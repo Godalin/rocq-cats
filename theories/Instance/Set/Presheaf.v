@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Functor.
 From Cats Require Import Cat.Natural.
-From Cats Require Import Instance.Set.Core.
+From Cats Require Import Instance.Set.Core Instance.Set.Hom.
 
 
 

@@ -16,14 +16,17 @@ changes over framework machinery or repository-wide rewrites.
   shared proof helpers.
 - `theories/Cat/Core.v`: categories, morphism equivalence, duality, products,
   terminal/initial objects, and exponentials.
-- Other `theories/Cat/` modules: functors, natural transformations, presheaves,
-  pullbacks, morphism properties, and CCC structure.
+- Other `theories/Cat/` modules: functors, natural transformations, pullbacks,
+  morphism properties, and CCC structure.
 - `theories/Instance/Set/Core.v`: setoids, respectful functions, and `SetCat`.
 - `theories/Instance/Set/Product.v`: setoid products and constructive chosen
   products for `SetCat`.
 - `theories/Instance/Set/Pullback.v`: constructive chosen pullbacks for `SetCat`.
 - `theories/Instance/Set/Fam.v`: dependent functions, coherent families,
   dependent sums, fibers, and their total-space isomorphisms.
+- `theories/Instance/Set/Hom.v`, `Yoneda.v`, `Presheaf.v`, and `Subobject.v`:
+  set-valued Hom-functors, representability, Yoneda, presheaves, and the
+  subobject functor.
 - `theories/ETCS/`: subobjects, classifiers, natural numbers, and ETCS axioms.
 - `dune-project` and `theories/dune`: build configuration; the logical namespace
   is `Cats`. `rocq-cats.opam` is generated: edit `dune-project` instead.
