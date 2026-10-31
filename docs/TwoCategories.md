@@ -78,11 +78,13 @@ the four cell levels. The `CatBicat` signature likewise no longer equates
 its 1-cell, 2-cell and equality universes. Its category-object universe
 still lies strictly above the sizes of the represented categories.
 
-Temporary checks instantiate identity functors, product categories and
-functor categories with both `h < p` and `p < h`; a transparent natural-number
-category also has independently specified `h` and `p`. The bicategory
-interface accepts both `o < h < t < p` and the reversed ordering. No resizing
-axiom or universe containing itself is used.
+[The universe regression check](../tests/Universes.v) instantiates identity
+functors, product categories, functor categories, and the thin construction
+with both `h < p` and `p < h`. The thin model has distinct 1-cell, 2-cell and
+2-cell-equality levels `Set < h < p`; bicategory projections are also checked
+at `o < h < t < p`. Temporary checks additionally cover the reversed bicategory
+ordering and a transparent natural-number category with independently specified
+`h` and `p`. No resizing axiom or universe containing itself is used.
 
 ## Strictness relative to a 1-cell setoid
 
@@ -112,7 +114,11 @@ on the right. This makes the change of endpoints explicit instead of
 comparing nonparallel 2-cells directly.
 
 The operation is `cell2_transport p q α`, written `α⟦p, q⟧₂` in
-`bicat_scope`. It preserves `Cell2Eq` and vertical composition. Successive
+`bicat_scope`. It preserves `Cell2Eq` and vertical composition. The theorem
+`cell2_transport_comp_h` also identifies transport of a horizontal composite
+with the horizontal composite of the separately transported cells; its endpoint
+witnesses come from `comp1_proper`. This follows from the existing horizontal
+comparison law and interchange, without adding strictness fields. Successive
 transports agree with transport along any witnesses of the composite
 equivalences; transporting back gives the original 2-cell up to `Cell2Eq`.
 Both actions are independent of the chosen witnesses. For a concrete model
@@ -173,6 +179,17 @@ data without asking for native equality or proof irrelevance.
 with each witness itself as the comparison 2-cell. All comparison laws hold
 under the locally thin 2-cell equivalence. Enable this chosen structure
 explicitly when using the abstract transport API.
+
+The transparent conversion `thin_hom_iso_eq` identifies isomorphisms in
+`ThinHomCat C X Y` with the original `HomEq`. Its forward direction extracts
+the 2-cell witness; its reverse direction uses symmetry for the inverse.
+`FromThinHomotopyF C` and `ToThinHomotopyF C` act as identities on objects and
+arrows. Their composites have identity-component natural isomorphisms to the
+identity functors, giving `thin_bicat_homotopy_equiv C`:
+
+```text
+BicatHomotopyCat (ThinBicat C) ≃C C.
+```
 
 In particular `ThinBicat SetCat` has setoids as objects, respectful functions
 as 1-cells, and witnesses of pointwise setoid equivalence as 2-cells. These
@@ -254,7 +271,21 @@ comparison remains a `Type`-valued equivalence relation. Its witnesses are not
 provided with a 3-category's compositions and coherence, so this experiment
 does not establish a general framework for arbitrary higher categories.
 
-Validation uses full-library compilation and temporary computation, notation,
-and assumption checks; no routine permanent tests or `Print Assumptions`
-commands are added to the library. Compatibility with the supported Rocq
-versions is checked by the CI matrix.
+Validation uses full-library compilation, the focused universe regression,
+and temporary computation and assumption checks. No routine `Print Assumptions`
+commands are added to compiled sources. After `dune build @all @runtest`, the
+foundational assumption check can be reproduced in the project environment:
+
+```sh
+rocq top -quiet -Q _build/default/theories Cats <<'EOF'
+From Cats Require Import Cat.TwoCategory Cat.BicatHomotopy Cat.ThinBicat Cat.CatBicat.
+Print Assumptions ThinBicat_IsStrictTwoCat.
+Print Assumptions BicatHomotopyCat.
+Print Assumptions cat_bicat_homotopy_equiv.
+Print Assumptions thin_bicat_homotopy_equiv.
+Print Assumptions cell2_transport_comp_v.
+Print Assumptions cell2_transport_comp_h.
+EOF
+```
+
+Compatibility with the supported Rocq versions is checked by the CI matrix.

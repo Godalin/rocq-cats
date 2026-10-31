@@ -151,6 +151,25 @@ Proof.
   rewrite Hq, comp2_v_id_l. reflexivity.
 Qed.
 
+Theorem cell2_transport_comp_h {X Y Z}
+    {f0 f0' f1 f1' : Cell1 X Y} {g0 g0' g1 g1' : Cell1 Y Z}
+    (p0 : f0 ≈₁[R X Y] f0') (p1 : f1 ≈₁[R X Y] f1')
+    (q0 : g0 ≈₁[R Y Z] g0') (q1 : g1 ≈₁[R Y Z] g1')
+    (β : g0 ⇒₂ g1) (α : f0 ⇒₂ f1)
+  : (β ⋆ α)⟦comp1_proper X Y Z _ _ q0 _ _ p0,
+      comp1_proper X Y Z _ _ q1 _ _ p1⟧₂ ≈₂
+      (β⟦q0, q1⟧₂ ⋆ α⟦p0, p1⟧₂).
+Proof.
+  unfold cell2_transport.
+  transitivity ((cmp Y Z g1 g1' q1 ⋆ cmp X Y f1 f1' p1) ∘₂
+    (β ⋆ α) ∘₂ (cmp Y Z g0' g0 (symmetry q0) ⋆
+      cmp X Y f0' f0 (symmetry p0))).
+  - apply comp2_v_proper.
+    + apply cell1_eq_to_cell2_hcomp.
+    + apply comp2_v_proper; [reflexivity | apply cell1_eq_to_cell2_hcomp].
+  - rewrite <- !comp2_interchange. reflexivity.
+Qed.
+
 End StrictTwoCat.
 
 Notation "α '⟦' p ',' q '⟧₂'" := (cell2_transport p q α)
