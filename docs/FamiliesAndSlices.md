@@ -129,7 +129,50 @@ Two equations connect the sum and fiber comparisons to the existing round trips:
   comparison, and the reindexed family round trip agrees with the direct
   family round trip. This uses transport witness independence.
 
-The full unit/associativity coherence of the indexed equivalence remains
-follow-up work. These results do not assert a
-strict CwF or the global fibred equivalence proposed in
-[issue #13](https://github.com/Godalin/rocq-cats/issues/13).
+## Coherent indexed equivalence
+
+Equivalent base maps act by specified natural isomorphisms. For `H : f ≈f g`,
+`fam_reindex_equiv_nat_iso H` compares family reindexing along `f` and `g`;
+its component `A⟦H⟧Fam` sends `a` to `transpS A (H x) a` over `x`.
+For an arbitrary category with chosen pullbacks,
+`slice_reindex_equiv_nat_iso H` gives the corresponding slice comparison
+`A⟦H⟧C`. Its mediator preserves both pullback coordinates up to `HomEq`.
+Both reindexing functors are `Proper` into natural isomorphism.
+
+The `*_reindex_equiv_witness_independent`, `*_reindex_equiv_id` and
+`*_reindex_equiv_comp` laws say that these comparisons are independent of
+the equivalence witness and preserve identity and composition of equivalences,
+up to natural-transformation equivalence. The `*_reindex_comp_equiv` laws
+make the substitution composition comparison natural in both base maps.
+
+Write `A⟨f, g⟩Fam` and `A⟨f, g⟩C` for the specified comparisons from
+iterated substitution to substitution along the composite. The laws
+`fam_reindex_unit_l`, `fam_reindex_unit_r`, `fam_reindex_assoc`, and their
+`slice_` counterparts establish both unit diagrams and the associativity
+diagram. They explicitly align the final base maps by equivalence: for
+example, the two paths for three substitutions are compared after applying
+the comparison for `(f ∘ g) ∘ h ≈ f ∘ (g ∘ h)`. Any witness may be used.
+The slice proofs follow from pullback uniqueness; the family proofs follow
+from transport coherence. No equality of records or witnesses is required.
+
+The family--slice comparisons preserve this entire structure componentwise:
+
+| Structure | Total-space direction | Fiber direction |
+| --- | --- | --- |
+| Equivalent base maps | `fam_sum_reindex_equiv` | `slice_fam_reindex_equiv` |
+| Identity substitution | `fam_sum_reindex_id` | `slice_fam_reindex_id` |
+| Composite substitution | `fam_sum_reindex_comp` | `slice_fam_reindex_comp` |
+
+Together with the two round-trip compatibility equations above, these laws
+give the chosen indexed equivalence between `FamSCat(-)` and `SetCat/(-)`:
+the equivalences in each fiber, the substitution comparisons in both
+directions, and the coherent round trips. The presentation uses the existing
+functors and natural transformations, with explicit component equations;
+no separate general indexed-category interface is needed for this result.
+
+This completes the indexed comparison for the chosen setoid-family model.
+The global fibred equivalence via an arrow category, the general Grothendieck
+construction, and strictification are separate projects in
+[issue #13](https://github.com/Godalin/rocq-cats/issues/13). In particular,
+these comparison isomorphisms do not assert the strict substitution laws of
+a traditional CwF.

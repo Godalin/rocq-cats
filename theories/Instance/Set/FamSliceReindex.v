@@ -45,7 +45,7 @@ Proof. intros [x a]. split; reflexivity. Qed.
 Theorem fam_sum_reindex_comp@{u +} {X Y Z : SetC@{u _}}
     (f : Y →r Z) (g : X →r Y) (A : FamS Z)
   : slice_map (fam_sum_reindex (f ∘r g) A ∘/C
-      fam_sum_map (fam_map_reindex_comp f g A)) ≈f
+      fam_sum_map A⟨f, g⟩Fam) ≈f
     slice_map (slice_reindex_comp (C := SetCat) f g (FamSumOb A) ∘/C
       slice_reindex_map (C := SetCat) g (fam_sum_reindex f A) ∘/C
       fam_sum_reindex g A[f]S).
@@ -131,3 +131,38 @@ Theorem slice_fam_reindex_total_fiber@{u +} {X Y : SetC@{u _}}
 Proof.
   intros x [[y a] q]. cbn. apply transpS_witness_independent.
 Qed.
+
+(** ** Coherent Indexed Equivalence
+
+    Both directions respect equivalent base maps. Together with the unit
+    and composition equations, the round-trip equations above give the
+    comparison data and coherence componentwise. *)
+Theorem fam_sum_reindex_equiv@{u +} {X Y : SetC@{u _}} {f g : X →r Y}
+    (H : f ≈f g) (A : FamS Y)
+  : slice_map (slice_reindex_equiv (C := SetCat) H (FamSumOb A) ∘/C
+      fam_sum_reindex f A) ≈f
+    slice_map (fam_sum_reindex g A ∘/C fam_sum_map A⟦H⟧Fam).
+Proof.
+  intros [x a]. split; [reflexivity | exists (H x); reflexivity].
+Qed.
+
+Theorem slice_fam_reindex_equiv@{u +} {X Y : SetC@{u _}} {f g : X →r Y}
+    (H : f ≈f g) (A : SliceOb SetCat Y)
+  : slice_fiber_reindex g A ∘Fam (FiberFamS (slice_arrow A))⟦H⟧Fam ≈Fam
+    slice_fiber_map A⟦H⟧C ∘Fam slice_fiber_reindex f A.
+Proof. intros x [a p]. split; reflexivity. Qed.
+
+Theorem slice_fam_reindex_id@{u +} {X : SetC@{u _}} (A : SliceOb SetCat X)
+  : slice_fiber_reindex id_resp A ∘Fam
+      fam_map_reindex_id (FiberFamS (slice_arrow A)) ≈Fam
+    slice_fiber_map (slice_reindex_id (C := SetCat) A).
+Proof. intros x [a p]. split; [symmetry; exact p | reflexivity]. Qed.
+
+Theorem slice_fam_reindex_comp@{u +} {X Y Z : SetC@{u _}}
+    (f : Y →r Z) (g : X →r Y) (A : SliceOb SetCat Z)
+  : slice_fiber_reindex (f ∘r g) A ∘Fam
+      (FiberFamS (slice_arrow A))⟨f, g⟩Fam ≈Fam
+    slice_fiber_map A⟨f, g⟩C ∘Fam
+      slice_fiber_reindex g (SliceReindexOb (C := SetCat) f A) ∘Fam
+      fam_map_reindex g (slice_fiber_reindex f A).
+Proof. intros x [a p]. split; reflexivity. Qed.
