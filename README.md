@@ -50,6 +50,10 @@ This project aims at building ETCS.
   retaining right-inverse witnesses and comparing the section maps.
   [SliceReindex](./theories/Cat/SliceReindex.v) gives pullback functors on slices,
   with specified natural identity and composition comparisons; write `A[f]C`.
+  [SliceArrow](./theories/Cat/SliceArrow.v) embeds slice maps as squares over the
+  identity. Write `A^Arr` for the arrow object. Slice reindexing, including its
+  unit/composition comparisons, agrees with codomain cartesian factorization
+  for the same chosen pullbacks; `SliceReindexSquareN f` packages the natural squares.
   [Functor](./theories/Cat/Functor.v) and
   [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
   and natural transformations (`α ^opN`). Functors are compared by natural

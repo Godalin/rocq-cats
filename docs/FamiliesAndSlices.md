@@ -68,6 +68,63 @@ Substitution uses the existing total-space pullback: apply
 `SigS X A[f]S`, `SigS Y A`, `X`, and `Y`, and its universal mediator is already
 available. This requires no new choice of pullbacks.
 
+## Slices and the codomain lifts
+
+[SliceArrow](../theories/Cat/SliceArrow.v) provides the faithful functor
+`SliceArrowF C X : Functor (C /C X) (Arr C)`.
+Its object action `A^Arr` retains the domain, base X and projection of A.
+`slice_to_square h` has top edge `slice_map h` and bottom edge id.
+Conversely, `square_to_slice f H` accepts a square between such objects
+with `H : arrow_bottom f ≈ id`; it retains the top edge as a slice map.
+The two round trips compare only maps, without comparing H or the triangle witnesses.
+This identifies slice maps with squares over the identity. The inclusion into
+all of `Arr C` is faithful; fullness is restricted to these vertical squares.
+Square equality is written `f ≈Arr g` and compares both edges.
+
+With the same explicitly enabled `HasPullback C`, the source of
+`slice_reindex_square f A` computes both as `(A[f]C)^Arr` and as `A^Arr[f]Arr`.
+This is the existing `arrow_reindex` from
+[ArrowFibration](../theories/Cat/ArrowFibration.v), so the square is cartesian
+for the codomain functor. No equality of objects or extra pullback choice is added.
+
+The natural transformation `SliceReindexSquareN f` collects these squares:
+
+```text
+SliceArrowF C X ∘F SliceReindexF f => SliceArrowF C Y.
+```
+
+Naturality is the second projection law of `slice_reindex_map`.
+`slice_reindex_map_cartesian_factor` proves that this reindexed slice map,
+viewed as a square over id, is the cartesian factor of the square obtained
+by composing the original map with the reindexing square.
+The two existing comparison maps satisfy:
+
+```text
+q_id(A) ∘Arr slice_to_square (slice_reindex_id A) ≈Arr id
+
+q_(f∘g)(A) ∘Arr slice_to_square A⟨f,g⟩C
+  ≈Arr q_f(A) ∘Arr q_g(A[f]C)
+```
+
+Here `q_f(A)` denotes `slice_reindex_square f A` in the displayed formulas.
+`slice_reindex_id_cartesian_factor` and
+`slice_reindex_comp_cartesian_factor` identify those comparisons with the
+unique cartesian factors over id. The proofs reuse pullback projection laws
+and cartesian uniqueness. Their isomorphism witnesses already exist in the
+slice and are preserved by `SliceArrowF`; the slice coherence diagrams below
+remain valid after applying that functor.
+
+The bridge preserves independent hom-carrier/equality levels. Six definitions
+in the existing [universe regressions](../tests/Universes.v) check faithfulness,
+the natural reindexing squares and the composition-factor comparison in both
+size orderings. A temporary Boolean setoid instance checks actual computation
+of all three factors, nontrivial triangle witnesses, vertical squares whose
+bottom edge is equivalent to but represented differently from id, and chained
+`A[f]C^Arr[g]Arr` notation. It also gives a counterexample to unrestricted
+fullness of the inclusion. All 21 temporary construction/model assumption checks
+report no additional axioms. The fixture and assumption output are kept outside
+the compiled sources; no new permanent example module is added.
+
 ## Natural substitution comparisons
 
 [SliceReindex](../theories/Cat/SliceReindex.v) constructs `SliceReindexF f`

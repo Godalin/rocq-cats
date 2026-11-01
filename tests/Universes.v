@@ -5,6 +5,7 @@ From Cats Require Import DTT.ContextPullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import Cat.Arrow Cat.Section DTT.ContextSection.
 From Cats Require Import Cat.ArrowFibration.
+From Cats Require Import Cat.SliceArrow.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
 From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.CwF.
@@ -53,6 +54,12 @@ Definition high_eq_arrow_cartesian := @arrow_cartesian_iff_pullback C.
 Definition low_eq_arrow_cartesian := @arrow_cartesian_iff_pullback D.
 Definition high_eq_arrow_lifts := pullbacks_iff_arrow_cartesian_lifts C.
 Definition low_eq_arrow_lifts := pullbacks_iff_arrow_cartesian_lifts D.
+Definition high_eq_slice_arrow_faithful := @slice_arrow_faithful C.
+Definition low_eq_slice_arrow_faithful := @slice_arrow_faithful D.
+Definition high_eq_slice_codomain_reindex := @SliceReindexSquareN C.
+Definition low_eq_slice_codomain_reindex := @SliceReindexSquareN D.
+Definition high_eq_slice_codomain_comp := @slice_reindex_comp_cartesian_factor C.
+Definition low_eq_slice_codomain_comp := @slice_reindex_comp_cartesian_factor D.
 Definition high_eq_thin : Bicat@{o h p Set _ _ _} := ThinBicat C.
 Definition low_eq_thin := ThinBicat D.
 End CategoryLevels.

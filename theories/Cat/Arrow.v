@@ -37,6 +37,8 @@ Next Obligation. rewrite comp_id_r. exact H. Defined.
 Definition ArrowHomEq {C : Cat} {A B : ArrowOb C} (f g : ArrowHom A B) :=
   arrow_top f ≈ arrow_top g ∧ arrow_bottom f ≈ arrow_bottom g.
 
+Infix "≈Arr" := ArrowHomEq (at level 50, no associativity) : cat_scope.
+
 Global Instance ArrowHomEq_Equivalence {C : Cat} {A B : ArrowOb C}
   : Equivalence (@ArrowHomEq C A B).
 Proof.
