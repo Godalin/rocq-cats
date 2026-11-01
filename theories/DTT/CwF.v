@@ -54,6 +54,17 @@ Theorem tm_conv_witness_independent {Γ : @Ob C} {A B : Ty Γ}
     (e d : A ≈S B) : tm_conv e ≈f tm_conv d.
 Proof. apply transpS_witness_independent. Qed.
 
+Theorem tm_conv_inj {Γ : @Ob C} {A B : Ty Γ} (e : A ≈S B) (t u : Tm Γ A)
+  : tm_conv e t ≈S tm_conv e u → t ≈S u.
+Proof.
+  intros H. pose (d := symmetry e).
+  transitivity (tm_conv d (tm_conv e t)).
+  - symmetry. apply transpS_inv.
+  - transitivity (tm_conv d (tm_conv e u)).
+    + apply func_proper. exact H.
+    + apply transpS_inv.
+Qed.
+
 Theorem tm_sub_conv {Γ Δ : @Ob C} (σ : Hom Δ Γ)
     {A B : Ty Γ} (e : A ≈S B) (t : Tm Γ A)
   : tm_sub σ (tm_conv e t) ≈S

@@ -1,6 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
 From Cats Require Import DTT.CwF DTT.ContextExtension DTT.ContextConversion.
+From Cats Require Import DTT.ContextPullback.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
 From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.CwF.
@@ -115,4 +116,6 @@ Definition high_eq_representation := @context_extension_nat_iso C T HC.
 Definition low_eq_representation := @context_extension_nat_iso D U HU.
 Definition high_eq_context_conversion := @context_conv_iso C T HC.
 Definition low_eq_context_conversion := @context_conv_iso D U HU.
+Definition high_eq_display_pullback := @context_lift_pullback C T HC.
+Definition low_eq_display_pullback := @context_lift_pullback D U HU.
 End ContextRepresentationLevels.

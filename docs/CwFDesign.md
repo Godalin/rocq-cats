@@ -228,6 +228,41 @@ e^Ext[T] := ⟨p_A; e[p_A]Eq[T] ▸[T] q_A⟩[T,B]
 类型仍使用指定的严格相等；扩张对象之间则提供保持投影与变量的同构。
 证明仅要求 `HasContextExtension T`，继续复用已有配对泛性质和表示定理的配对复合律。
 
+### 替换提升与显示投影的拉回
+
+[ContextPullback](../theories/DTT/ContextPullback.v) 定义替换提升：
+
+```text
+σ^+[T,A] : Δ ▹[T] A[σ]Ty[T] → Γ ▹[T] A
+σ^+[T,A] := ⟨σ ∘ p_A[σ]; κ_A,σ,p_A[σ] ▸ q_A[σ]⟩[T,A]
+```
+
+`context_lift_proj` 和 `context_lift_var` 给出投影与泛变量的定律，
+`context_lift_pair` 说明提升将配对送到复合替换及经转换的项。
+沿前面定义的扩张同构对齐源对象后，有：
+
+```text
+σ ≈ σ' ⇒ σ^+[T,A] ≈ σ'^+[T,A] ∘ (ε_A,H)^Ext[T]
+id^+[T,A] ≈ (ι_A)^Ext[T]
+σ^+[T,A] ∘ τ^+[T,A[σ]] ≈ (σ ∘ τ)^+[T,A] ∘ (κ_A,σ,τ)^Ext[T]
+```
+
+`context_lift_pullback T σ A` 证明完整的拉回泛性质：
+
+```text
+is_pullback σ p_A (Δ ▹[T] A[σ]Ty[T]) p_A[σ] σ^+[T,A]
+```
+
+对 `u : Θ → Δ`、`v : Θ → Γ.A` 及 `H : σ ∘ u ≈ p_A ∘ v`，
+中介态射将 `q_A[v]` 沿 H 的反向比较转到 `A[σ ∘ u]`，
+再沿 κ 的逆向转换转到 `(A[σ])[u]`，最后与 u 配对。
+`context_lift_factor` 从透明的泛性质见证提取该态射，提供两个投影律、
+唯一性、对两条锥腿相等的尊重性，以及对 H 的见证独立性。
+唯一性复用配对与类型转换的单射性；这些性质均由已有相干性和表示同构导出。
+
+本构造只需要 `HasContextExtension T`，没有增加 `HasPullback C` 假设，
+也没有为 C 注册所有拉回的选定结构。这里只构造显示投影沿任意替换的拉回。
+
 ## 6. 最外层 Class 的形状
 
 已实现的签名如下：
@@ -335,6 +370,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - [DTT/CwF.v](../theories/DTT/CwF.v)：已实现的 CwF 抽象接口和派生结构律。
 - [DTT/ContextExtension.v](../theories/DTT/ContextExtension.v)：配对数据预层、表示广集同构及自然性。
 - [DTT/ContextConversion.v](../theories/DTT/ContextConversion.v)：沿类型相等的扩张同构及其相干性。
+- [DTT/ContextPullback.v](../theories/DTT/ContextPullback.v)：替换提升、相干性及显示投影的拉回泛性质。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 
@@ -350,6 +386,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - 构造完整的 Code/El 模型，并复用抽象接口的 β/η 和唯一性定律。
 - 构造配对数据的广集与预层，证明上下文扩张的表示同构及其自然性，导出配对复合律。
 - 沿指定类型相等构造保持投影与变量的扩张同构，证明见证独立、单位、复合及配对相容性。
+- 构造替换提升，沿扩张同构证明相等、单位与复合相容性，以及显示投影的拉回泛性质。
 
 从 CwF 构造一般显示映射/comprehension 结构及其比较仍是后续工作。
 
@@ -390,6 +427,11 @@ Code/El 模型另用一个布尔实例检查：代码有两个等价的代表，
 不同代码代表之间的扩张转换翻转纤维值，对称转换翻转回来，
 并检查自相等、不同相等见证及配对/复合相容性。
 已有的宇宙回归也检查两种大小排列下的扩张同构，未新增永久的布尔实例。
+显示投影拉回的 24 项临时公理检查也均无额外假设。
+布尔实例的锥满足广集相等，但底边替换与右边投影给出不同的代码代表；
+中介态射可计算地完成非平凡纤维转换，并验证两条投影律、唯一性及锥相等见证独立性。
+同一临时检查确认只启用 CwF 模型时不会选出 `HasPullback SetCat`。
+常驻宇宙回归增加了两个方向的显示投影拉回检查，较大的实例仍留在仓库外。
 
 恢复并调整基础层引用后，在 Rocq 9.0.1、Dune 3.21.0 下，
 `dune build @all @runtest @install` 通过。

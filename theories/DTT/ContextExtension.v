@@ -146,6 +146,31 @@ Proof.
     + apply context_pair_β2.
 Defined.
 
+(** Pairing reflects equality of terms over the same base substitution. *)
+Theorem context_pair_inj {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
+    (t u : Tm T Δ A[σ]Ty[T])
+  : ⟨σ; t⟩[T, A] ≈ ⟨σ; u⟩[T, A] → t ≈S u.
+Proof.
+  intros H. pose (Hβ := snd (context_extension_iso A Δ).2.2).
+  assert (Hd : ((σ; t) : ContextPairS T A Δ) ≈S (σ; u)).
+  { transitivity (context_unpair_resp A Δ ⟨σ; t⟩[T, A]).
+    - symmetry. exact (Hβ (σ; t)).
+    - transitivity (context_unpair_resp A Δ ⟨σ; u⟩[T, A]).
+      + apply func_proper. exact H.
+      + exact (Hβ (σ; u)). }
+  destruct Hd as [Hσ Ht].
+  transitivity (ty_sub_equiv T Hσ A ▸[T] t).
+  - symmetry. apply tm_conv_id.
+  - exact Ht.
+Qed.
+
+(** Eta with an arbitrary equivalent base map, retaining its witness. *)
+Theorem context_pair_η_base {Γ Δ : @Ob C} (A : Ty T Γ)
+    (h : Hom Δ (Γ ▹[T] A)) (σ : Hom Δ Γ) (H : context_proj T A ∘ h ≈ σ)
+  : h ≈ ⟨σ; ty_sub_comm T A (context_proj T A) h H
+      ▸[T] (context_var T A)[h]Tm[T]⟩[T, A].
+Proof. apply context_pair_unique. exists H. reflexivity. Qed.
+
 (** The representing map evaluates the generic pair along a substitution. *)
 Program Definition context_extensionN {Γ : @Ob C} (A : Ty T Γ)
   : Hom(-, Γ ▹[T] A) => ContextPairF T A :=

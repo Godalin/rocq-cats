@@ -145,7 +145,9 @@ This project aims at building ETCS.
   compatibility with substitution.
   [ContextConversion](./theories/DTT/ContextConversion.v) derives context-extension
   isomorphisms along designated type equality, preserving projections and
-  converted generic terms. See the [design note](./docs/CwFDesign.md).
+  converted generic terms. [ContextPullback](./theories/DTT/ContextPullback.v)
+  constructs coherent substitution lifts and pullbacks of display projections
+  from the extension universal property. See the [design note](./docs/CwFDesign.md).
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Chosen universal constructions share the same design: `is_*` describes a
@@ -195,6 +197,7 @@ Local Existing Instance SetCat_CCC.
 - [x] Instantiate CwF using a coherent Code/El family of sets.
 - [x] Context-extension representability and its substitution naturality.
 - [x] Context-extension isomorphisms induced by designated type equality.
+- [x] Coherent substitution lifts and pullbacks of context-extension projections.
 - [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor
