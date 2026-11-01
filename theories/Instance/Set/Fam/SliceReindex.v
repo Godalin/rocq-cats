@@ -1,8 +1,8 @@
 From Cats Require Import Cat.Core Cat.Slice Cat.SliceReindex Cat.Pullback.
 From Cats Require Import Cat.Functor Cat.Natural.
 From Cats Require Import Instance.Set.Core Instance.Set.Pullback.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.FamReindex.
-From Cats Require Import Instance.Set.FamFixed Instance.Set.FamSlice.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.Fam.Reindex.
+From Cats Require Import Instance.Set.Fam.Fixed Instance.Set.Fam.Slice.
 
 (** * Total Spaces Commute with Substitution
 

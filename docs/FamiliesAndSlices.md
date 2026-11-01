@@ -15,7 +15,7 @@ consists of `h : E → D` and a witness `q ∘ h ≈ p`. Morphism equivalence us
 the original `HomEq` on `h`, without comparing the triangle witnesses.
 `SliceDomF` forgets the projection to `X`.
 
-[FamFixed](../theories/Instance/Set/FamFixed.v) defines `FamSCat X`. Its
+[FamFixed](../theories/Instance/Set/Fam/Fixed.v) defines `FamSCat X`. Its
 objects are the existing coherent families `FamS X`. A map `A →Fam B` is
 a family of respectful maps `φ_x : A x →r B x` commuting with transport.
 The relation `φ ≈Fam ψ` compares their values pointwise. `FamFixedF X`
@@ -24,7 +24,7 @@ identity base map. `FamReindexF f` extends substitution to these fiberwise maps.
 
 ## The equivalence
 
-[FamSlice](../theories/Instance/Set/FamSlice.v) provides both functors:
+[FamSlice](../theories/Instance/Set/Fam/Slice.v) provides both functors:
 
 - `FamSumF X` sends `A` to its total-space projection `SigS X A → X`, and
   sends `φ` to `(x,a) ↦ (x,φ_x a)`. Its map on total spaces reuses the
@@ -64,7 +64,7 @@ category's morphism equivalence.
 
 Substitution uses the existing total-space pullback: apply
 `fam_reindex_pullback (FixedFamC A) f` from
-[FamReindex](../theories/Instance/Set/FamReindex.v). Its square has vertices
+[FamReindex](../theories/Instance/Set/Fam/Reindex.v). Its square has vertices
 `SigS X A[f]S`, `SigS Y A`, `X`, and `Y`, and its universal mediator is already
 available. This requires no new choice of pullbacks.
 
@@ -142,7 +142,7 @@ uses the existing pullback-pasting property. Their family counterparts are
 The identity comparison points from the identity functor to reindexing;
 the composition comparison points from iterated reindexing to the composite.
 
-[FamSliceReindex](../theories/Instance/Set/FamSliceReindex.v) uses the existing
+[FamSliceReindex](../theories/Instance/Set/Fam/SliceReindex.v) uses the existing
 family pullback and `slice_reindex_lift_iso` to construct
 `fam_sum_reindex_nat_iso f`:
 

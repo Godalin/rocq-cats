@@ -98,42 +98,42 @@ This project aims at building ETCS.
   as sets. [Core](./theories/Instance/Set/Core.v) defines their category `SetCat`;
   [Product](./theories/Instance/Set/Product.v),
   [Pullback](./theories/Instance/Set/Pullback.v), and
-  [Fam](./theories/Instance/Set/Fam.v) provide independent extensions.
-  [FamCat](./theories/Instance/Set/FamCat.v) assembles coherent families and
+  [Fam](./theories/Instance/Set/Fam/Core.v) provide independent extensions.
+  [FamCat](./theories/Instance/Set/Fam/Cat.v) assembles coherent families and
   transport-compatible maps into a category, with base and total-space
   functors to `SetCat` and their natural projection.
-  [FamFixed](./theories/Instance/Set/FamFixed.v) gives the category `FamSCat X`
+  [FamFixed](./theories/Instance/Set/Fam/Fixed.v) gives the category `FamSCat X`
   of families over a fixed base and fiberwise maps `A →Fam B`.
-  [FamSlice](./theories/Instance/Set/FamSlice.v) constructs total-space and
+  [FamSlice](./theories/Instance/Set/Fam/Slice.v) constructs total-space and
   fiber functors and proves `FamSCat X ≃C (SetCat /C X)`; see the
   [families–slices note](./docs/FamiliesAndSlices.md) for the size bounds and
   compatibility with substitution.
-  [FamSliceReindex](./theories/Instance/Set/FamSliceReindex.v) proves that taking
+  [FamSliceReindex](./theories/Instance/Set/Fam/SliceReindex.v) proves that taking
   total spaces commutes with reindexing up to a specified natural isomorphism,
   compatible with the identity and composition comparisons on both sides.
   It also compares fiber formation with reindexing, compatibly with the sum
   comparison and the two round-trip natural isomorphisms.
-  [FamReindex](./theories/Instance/Set/FamReindex.v) gives canonical reindexing
+  [FamReindex](./theories/Instance/Set/Fam/Reindex.v) gives canonical reindexing
   morphisms whose total-space squares satisfy the pullback universal property.
   Identity and composition of reindexing are compared by explicit family
   isomorphisms that act as identities on the base and fibers.
   Write `A[f]S` for reindexing a coherent family and `U[f]` for reindexing a
   family object, including its base; successive reindexing is `U[f][g]`.
-  [FamFibration](./theories/Instance/Set/FamFibration.v) proves reindexing
+  [FamFibration](./theories/Instance/Set/Fam/Fibration.v) proves reindexing
   cartesian for `FamBaseF`. Its chosen structure `FamBaseF_HasCartesianLift`
   is enabled explicitly; the abstract lift `f ^*[FamBaseF] U` then computes to
   `U[f]`. The reindexed family morphism `φ⟦f⟧` acts directly on fibers.
-  [FamSection](./theories/Instance/Set/FamSection.v) provides coherent sections,
+  [FamSection](./theories/Instance/Set/Fam/Section.v) provides coherent sections,
   their reindexing, the generic element, and total-space pairing with its
   universal property and β/η laws; `s ≈s t` compares sections pointwise.
   Coherent sections are isomorphic to `Sec(p)`, the setoid of right inverses
   of the total-space projection `p`, whose equality compares the maps.
-  [FamSectionMap](./theories/Instance/Set/FamSectionMap.v) connects sections to
+  [FamSectionMap](./theories/Instance/Set/Fam/SectionMap.v) connects sections to
   family morphisms: `φ ▷ s` acts on a section, while `φ ▷[f] s` acts on a section
   already reindexed along `f`. Equivalent morphisms give equivalent values
   after transport along their base-map equivalence. The action over `f` agrees
   with the action of `φ⟦f⟧`, using the identity comparison on sections.
-  [FamComprehension](./theories/Instance/Set/FamComprehension.v) assembles these
+  [FamComprehension](./theories/Instance/Set/Fam/Comprehension.v) assembles these
   constructions into a comprehension structure and proves the total-space
   pullback property for every cartesian family morphism.
   [Hom](./theories/Instance/Set/Hom.v), [Yoneda](./theories/Instance/Set/Yoneda.v),
@@ -153,24 +153,24 @@ This project aims at building ETCS.
 - [DTT](./theories/DTT/): dependent type theory interfaces.
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
-  universal property. [ContextExtension](./theories/DTT/ContextExtension.v)
+  universal property. [ContextExtension](./theories/DTT/Context/Extension.v)
   derives their representing-set isomorphisms, naturality and pairing
   compatibility with substitution.
-  [ContextRepresentation](./theories/DTT/ContextRepresentation.v) recovers context
+  [ContextRepresentation](./theories/DTT/Context/Representation.v) recovers context
   extensions from chosen representations of the pair presheaves, compares both
   round trips, and assembles a CwF when a terminal context is chosen.
   The [recovery design](./docs/CwFRecovery.md) separates this criterion from the
   additional data needed to recover types and coherent terms from comprehension.
-  [ContextConversion](./theories/DTT/ContextConversion.v) derives context-extension
+  [ContextConversion](./theories/DTT/Context/Conversion.v) derives context-extension
   isomorphisms along designated type equality, preserving projections and
-  converted generic terms. [ContextPullback](./theories/DTT/ContextPullback.v)
+  converted generic terms. [ContextPullback](./theories/DTT/Context/Pullback.v)
   constructs coherent substitution lifts and pullbacks of display projections
   from the extension universal property.
   [Comprehension](./theories/DTT/Comprehension.v) forms the total category of
   types with commuting display squares and constructs its comprehension
   structure; cartesian arrows are precisely the pullback squares, and its
   functor to the arrow category is fully faithful.
-  [ContextSection](./theories/DTT/ContextSection.v) identifies terms with sections
+  [ContextSection](./theories/DTT/Context/Section.v) identifies terms with sections
   of display projections, compatibly with pairing and substitution.
   Write `t^Sec[T,A]` and `s^Tm[T,A]` for the two directions.
   See the [design note](./docs/CwFDesign.md).
@@ -208,9 +208,9 @@ Local Existing Instance SetCat_CCC.
 
 - [x] Coherent families: base and total-space functors, with the
   projection as a natural transformation (see
-  [FamCat](./theories/Instance/Set/FamCat.v)).
+  [FamCat](./theories/Instance/Set/Fam/Cat.v)).
 - [x] Family reindexing and its total-space pullback universal property (see
-  [FamReindex](./theories/Instance/Set/FamReindex.v)).
+  [FamReindex](./theories/Instance/Set/Fam/Reindex.v)).
 - [x] Identity and composition comparisons for family reindexing.
 - [x] Coherent sections, their reindexing, and total-space pairing.
 - [x] Family morphisms acting on sections, with identity and composition laws.

@@ -1,6 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural DTT.CwF.
-From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam
-  Instance.Set.FamCat.
+From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Context Extensions Represent Substitutions with a Term *)
 

@@ -1,7 +1,7 @@
-From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.
-From Cats Require Import Instance.Set.FamCat Instance.Set.FamSection.
-From Cats Require Import Instance.Set.FamFibration.
-From Cats Require Import Instance.Set.FamFixed.
+From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.Core.
+From Cats Require Import Instance.Set.Fam.Cat Instance.Set.Fam.Section.
+From Cats Require Import Instance.Set.Fam.Fibration.
+From Cats Require Import Instance.Set.Fam.Fixed.
 
 (** * Family Morphisms Acting on Sections *)
 

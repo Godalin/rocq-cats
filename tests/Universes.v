@@ -1,15 +1,15 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
-From Cats Require Import DTT.CwF DTT.ContextExtension DTT.ContextConversion.
-From Cats Require Import DTT.ContextRepresentation.
-From Cats Require Import DTT.ContextPullback.
+From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
+From Cats Require Import DTT.Context.Representation.
+From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
-From Cats Require Import Cat.Arrow Cat.Section DTT.ContextSection.
+From Cats Require Import Cat.Arrow Cat.Section DTT.Context.Section.
 From Cats Require Import Cat.ArrowFibration.
 From Cats Require Import Cat.SliceArrow.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
-From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.CwF.
+From Cats Require Import Instance.Set.Fam.Slice Instance.Set.Fam.SliceReindex.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.CwF.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
 Section SetLevels.

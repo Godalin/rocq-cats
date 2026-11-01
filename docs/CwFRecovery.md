@@ -2,7 +2,7 @@
 
 本轮先完成一个精确的反向准则：**固定族值预层 T 时，选定上下文扩张与
 选定配对预层表示可互相构造。**
-[ContextRepresentation](../theories/DTT/ContextRepresentation.v) 已实现该结果。
+[ContextRepresentation](../theories/DTT/Context/Representation.v) 已实现该结果。
 从一般 comprehension 提取 T 的部分另行设计，边界如下。
 
 ## 1. 现有 comprehension 提供什么
@@ -32,7 +32,7 @@ ContextPairF T A Δ = Σ (σ : Hom Δ Γ), Tm T Δ A[σ]Ty[T]
 ```
 
 依赖和的相等保留 `H : σ ≈ σ'`，并在沿 H 转换后比较项。
-重索引及其相干性复用 [ContextExtension](../theories/DTT/ContextExtension.v)。
+重索引及其相干性复用 [ContextExtension](../theories/DTT/Context/Extension.v)。
 
 新的选定结构为：
 

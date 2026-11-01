@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core Cat.Slice Cat.Functor Cat.Natural Cat.CatCat.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam Instance.Set.FamFixed.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Fixed.
 
 (** * Coherent Families and Slices
 

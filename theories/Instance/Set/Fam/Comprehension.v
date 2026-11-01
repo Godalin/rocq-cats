@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Pullback
   Cat.Fibration Cat.Comprehension.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam Instance.Set.FamCat
-  Instance.Set.FamReindex Instance.Set.FamFibration Instance.Set.FamSection.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat
+  Instance.Set.Fam.Reindex Instance.Set.Fam.Fibration Instance.Set.Fam.Section.
 
 (** * Comprehension of Coherent Families
 

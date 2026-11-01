@@ -1,6 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Pullback.
-From Cats Require Import DTT.CwF DTT.ContextExtension DTT.ContextConversion.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat.
+From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 
 (** * Substitution Lifts and Pullbacks of Display Projections *)
 

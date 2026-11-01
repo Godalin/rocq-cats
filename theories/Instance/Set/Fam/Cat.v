@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core.
 
 (** * The Category of Coherent Families *)
 

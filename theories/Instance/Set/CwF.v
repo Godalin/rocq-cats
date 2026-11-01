@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Terminal DTT.CwF.
 From Cats Require Import Instance.Set.Core Instance.Set.Terminal.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.FamFixed.
-From Cats Require Import Instance.Set.FamSection Instance.Set.FamSectionMap.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.Fam.Fixed.
+From Cats Require Import Instance.Set.Fam.Section Instance.Set.Fam.SectionMap.
 
 (** * A CwF from Type Codes and Their Decoding Family
 

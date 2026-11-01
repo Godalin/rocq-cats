@@ -1,5 +1,5 @@
-From Cats Require Import Cat.Core Cat.Functor DTT.CwF DTT.ContextExtension.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat.
+From Cats Require Import Cat.Core Cat.Functor DTT.CwF DTT.Context.Extension.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 
 (** * Context Extensions along Designated Type Equality *)
 

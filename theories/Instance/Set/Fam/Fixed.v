@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam Instance.Set.FamCat.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 
 (** * Coherent Families over a Fixed Setoid
 

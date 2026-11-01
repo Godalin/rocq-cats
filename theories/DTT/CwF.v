@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Terminal.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 
 (** * Categories with Families
 

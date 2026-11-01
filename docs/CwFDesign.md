@@ -53,7 +53,7 @@ Tm Γ A := SectionS A
 并同时保留现有 `FamS` 的转换相干性。这里的冲突是转换的作用，
 并非要求底层见证只有一个，也不是要引入 UIP。
 
-现有 [FamSCat](../theories/Instance/Set/FamFixed.v) 保留任意类型态射和同构。
+现有 [FamSCat](../theories/Instance/Set/Fam/Fixed.v) 保留任意类型态射和同构。
 给类型指定相等时，还须保证它在项上的作用满足相干传输律。
 这不改变用自然同构比较函子的规范，也不限制保留类型自同构作为额外的语义结构。
 
@@ -65,7 +65,7 @@ Tm Γ A := SectionS A
 T : Functor (C^op) FamCat
 ```
 
-这里的 [FamCat](../theories/Instance/Set/FamCat.v) 已有广集索引、相干的纤维族、
+这里的 [FamCat](../theories/Instance/Set/Fam/Cat.v) 已有广集索引、相干的纤维族、
 尊重等价的态射，以及带传输的态射等价，正好可以复用。
 
 | 派生概念 | 从 T 得到的内容 |
@@ -83,7 +83,7 @@ T : Functor (C^op) FamCat
 
 抽象接口复用现有的集合、相干族及族态射 API。
 基础集合与尊重映射由 `Cat.Core` 导出的 `Set.Morphism` 提供，不再直接导入
-`Instance.Set.Core`。仍复用 `Instance.Set.Fam` 和 `Instance.Set.FamCat`
+`Instance.Set.Core`。仍复用 `Instance.Set.Fam.Core` 和 `Instance.Set.Fam.Cat`
 组织类型与项；这里的族范畴是元层结构，不要求上下文范畴 C 等于 `SetCat`。
 公开记号显式标注 T，因为不能仅凭函子在某个对象处的取值唯一推断函子。
 下文数学公式省略这些标签。
@@ -123,7 +123,7 @@ e,d : A ≈Ty B               ⇒ e ▸ t ≈Tm d ▸ t
 对 `e : A ≈Ty B`，两种顺序“先转换再替换”与“先替换再沿 e[σ] 转换”等价。
 这是族态射的自然性，不另加公理。
 
-T 的函子律使用 [FamFEq](../theories/Instance/Set/FamCat.v)。
+T 的函子律使用 [FamFEq](../theories/Instance/Set/Fam/Cat.v)。
 其中保留的基底等价正好提供上述 ι、κ、ε。若函子复合律给出相反方向，
 使用该等价的对称见证。传输的见证独立性保证不同复合路径给出相同的转换作用，
 无需要求这些见证原生相等。
@@ -183,7 +183,7 @@ HomSet_C(Δ, Γ ▹ A) ≅S Σ (σ : Hom Δ Γ), Tm Δ A[σ]Ty
 右侧重索引定义为 `(σ,t)[τ] := (σ ∘ τ, κ_A,σ,τ ▸ t[τ])`；
 它的函子律及表示的自然性作为派生定理证明，不作为额外的选择字段。
 
-这些构造已在 [ContextExtension](../theories/DTT/ContextExtension.v) 实现：
+这些构造已在 [ContextExtension](../theories/DTT/Context/Extension.v) 实现：
 
 - `SubstitutionTerms T A Δ` 通过 `σ ↦ A[σ]` 拉回项族；
   `ContextPairS T A Δ` 是这个族的依赖和，复用已有的带传输相等。
@@ -206,7 +206,7 @@ context_pair_comp:
 表示定理只要求 `HasContextExtension T`，不要求终对象或额外 CwF 公理。
 
 类型相等诱导扩张上下文的指定同构，保持投影及经转换的变量。
-[ContextConversion](../theories/DTT/ContextConversion.v) 已实现这部分派生构造。
+[ContextConversion](../theories/DTT/Context/Conversion.v) 已实现这部分派生构造。
 对 `e : A ≈S B`，定义透明态射：
 
 ```text
@@ -230,7 +230,7 @@ e^Ext[T] := ⟨p_A; e[p_A]Eq[T] ▸[T] q_A⟩[T,B]
 
 ### 替换提升与显示投影的拉回
 
-[ContextPullback](../theories/DTT/ContextPullback.v) 定义替换提升：
+[ContextPullback](../theories/DTT/Context/Pullback.v) 定义替换提升：
 
 ```text
 σ^+[T,A] : Δ ▹[T] A[σ]Ty[T] → Γ ▹[T] A
@@ -353,7 +353,7 @@ arrow_cartesian_iff_pullback f:
 元素为 `s : Hom Γ E` 及 `p ∘ s ≈ id`，相等仅比较 s。
 原来的集合族截面模块复用并导出这个定义，保留原有 `Sec(p)` 记号。
 
-[ContextSection](../theories/DTT/ContextSection.v) 从上下文扩张泛性质导出：
+[ContextSection](../theories/DTT/Context/Section.v) 从上下文扩张泛性质导出：
 
 ```text
 context_term_section_iso T A:
@@ -436,9 +436,9 @@ q (γ,a)    := a
 ```
 
 项及变量的尊重性证明使用传输相干性。
-实现复用 [FamSection](../theories/Instance/Set/FamSection.v) 的截面重索引、
+实现复用 [FamSection](../theories/Instance/Set/Fam/Section.v) 的截面重索引、
 泛变量及配对泛性质，沿解码复合比较对齐 `El[A][σ]` 与 `El[A ∘ σ]`。
-为此，[FamSectionMap](../theories/Instance/Set/FamSectionMap.v) 增加了通用操作
+为此，[FamSectionMap](../theories/Instance/Set/Fam/SectionMap.v) 增加了通用操作
 `section_fam_map_resp`，将固定基底族态射作用于截面，记作 `φ ▷Fam s`。
 
 [模型文件](../theories/Instance/Set/CwF.v) 提供：
@@ -484,12 +484,12 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 文件安排：
 
 - [DTT/CwF.v](../theories/DTT/CwF.v)：已实现的 CwF 抽象接口和派生结构律。
-- [DTT/ContextExtension.v](../theories/DTT/ContextExtension.v)：配对数据预层、表示广集同构及自然性。
-- [DTT/ContextRepresentation.v](../theories/DTT/ContextRepresentation.v)：从选定表示反向恢复上下文扩张及 CwF，并比较双向往返。
-- [DTT/ContextConversion.v](../theories/DTT/ContextConversion.v)：沿类型相等的扩张同构及其相干性。
-- [DTT/ContextPullback.v](../theories/DTT/ContextPullback.v)：替换提升、相干性及显示投影的拉回泛性质。
+- [DTT/Context/Extension.v](../theories/DTT/Context/Extension.v)：配对数据预层、表示广集同构及自然性。
+- [DTT/Context/Representation.v](../theories/DTT/Context/Representation.v)：从选定表示反向恢复上下文扩张及 CwF，并比较双向往返。
+- [DTT/Context/Conversion.v](../theories/DTT/Context/Conversion.v)：沿类型相等的扩张同构及其相干性。
+- [DTT/Context/Pullback.v](../theories/DTT/Context/Pullback.v)：替换提升、相干性及显示投影的拉回泛性质。
 - [DTT/Comprehension.v](../theories/DTT/Comprehension.v)：显示映射形式的类型总范畴及对应的 comprehension 结构。
-- [DTT/ContextSection.v](../theories/DTT/ContextSection.v)：项与显示投影截面的广集同构及替换相容性。
+- [DTT/Context/Section.v](../theories/DTT/Context/Section.v)：项与显示投影截面的广集同构及替换相容性。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 

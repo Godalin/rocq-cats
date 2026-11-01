@@ -1,6 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Fibration.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam Instance.Set.FamCat
-  Instance.Set.FamReindex.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat
+  Instance.Set.Fam.Reindex.
 
 (** * Cartesian Lifts of Coherent Families *)
 

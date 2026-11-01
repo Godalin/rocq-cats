@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Terminal.
-From Cats Require Import DTT.CwF DTT.ContextExtension.
-From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam
-  Instance.Set.FamCat.
+From Cats Require Import DTT.CwF DTT.Context.Extension.
+From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Recovering Context Extensions from Representations
 

@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Pullback
   Cat.Fibration Cat.Comprehension Cat.Arrow.
-From Cats Require Import DTT.CwF DTT.ContextPullback.
-From Cats Require Import Instance.Set.Fam Instance.Set.FamCat.
+From Cats Require Import DTT.CwF DTT.Context.Pullback.
+From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 
 (** * Comprehension from a CwF
 

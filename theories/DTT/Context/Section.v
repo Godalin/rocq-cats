@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Section.
-From Cats Require Import DTT.CwF DTT.ContextExtension.
-From Cats Require Import DTT.ContextPullback.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam Instance.Set.FamCat.
+From Cats Require Import DTT.CwF DTT.Context.Extension.
+From Cats Require Import DTT.Context.Pullback.
+From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 
 (** * Terms as Sections of Context Projections *)
 

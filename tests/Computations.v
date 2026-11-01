@@ -1,6 +1,6 @@
 From Cats Require Import Cat.Core DTT.CwF.
-From Cats Require Import Instance.Set.Core Instance.Set.Terminal Instance.Set.Fam.
-From Cats Require Import Instance.Set.FamSection Instance.Set.CwF.
+From Cats Require Import Instance.Set.Core Instance.Set.Terminal Instance.Set.Fam.Core.
+From Cats Require Import Instance.Set.Fam.Section Instance.Set.CwF.
 
 Module CodeConversion.
 

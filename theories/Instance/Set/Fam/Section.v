@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.
+From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.Core.
 From Cats Require Export Cat.Section.
 
 (** * Coherent Sections of Families
