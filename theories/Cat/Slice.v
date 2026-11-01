@@ -32,6 +32,9 @@ Next Obligation.
   rewrite <- comp_assoc, (slice_comm g). apply slice_comm.
 Defined.
 
+Infix "∘/C" := slice_comp
+  (at level 40, left associativity) : cat_scope.
+
 Program Definition Slice (C : Cat) (X : @Ob C) : Cat :=
   {| Ob := SliceOb C X
    ; Hom := SliceHom

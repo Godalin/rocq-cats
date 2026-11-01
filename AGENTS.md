@@ -25,8 +25,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 ## Code and naming
 
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
-  Design notation alongside new operations; prefer UTF-8 and exported pair/
-  projection notation. Check scopes, precedence, and chaining.
+  Design shared, exported notation alongside new operations; avoid local
+  notation aliases. Prefer UTF-8 and pair/projection notation. Check scopes,
+  precedence, and chaining.
 - Use `Program Definition`/`Program Instance`/`Program Canonical` with named
   record fields for data, then explicit `Next Obligation` proofs. The default
   `cats_obligation` only introduces parameters and runs `cbn`; do not restore

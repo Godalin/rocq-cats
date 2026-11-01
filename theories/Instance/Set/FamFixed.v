@@ -44,6 +44,9 @@ Next Obligation.
   rewrite (fam_map_naturality f p), (fam_map_naturality g p). reflexivity.
 Defined.
 
+Infix "∘Fam" := fam_map_comp
+  (at level 40, left associativity) : cat_scope.
+
 Program Definition FamSCat (X : SetC) : Cat :=
   {| Ob := FamS X
    ; Hom := FamMap
