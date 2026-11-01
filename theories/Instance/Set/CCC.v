@@ -4,8 +4,7 @@ From Cats Require Import Instance.Set.Product Instance.Set.Exponential.
 
 (** * The Cartesian Closed Category of Setoids *)
 
-Definition SetCat_CCC : CCC :=
-  {| C := SetCat
-   ; hasTerminal := SetCat_HasTerminal
+Program Definition SetCat_CCC : CCC SetCat :=
+  {| hasTerminal := SetCat_HasTerminal
    ; hasProduct := SetCat_HasProduct
    ; hasExponential := SetCat_HasExponential |}.

@@ -131,7 +131,7 @@ This project aims at building ETCS.
   [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
   [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map
   exponentials; [CCC](./theories/Instance/Set/CCC.v) assembles the cartesian
-  closed structure without additional axioms.
+  closed structure `SetCat_CCC : CCC SetCat` without additional axioms.
   [Nat](./theories/Instance/Set/Nat.v) provides a natural-numbers object with
   computational recursion.
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
