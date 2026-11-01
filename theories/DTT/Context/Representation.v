@@ -2,6 +2,7 @@ From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Terminal.
 From Cats Require Import DTT.CwF DTT.Context.Extension.
 From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam.Core
   Instance.Set.Fam.Cat.
+From Cats Require Import Instance.Set.Representable.
 
 (** * Recovering Context Extensions from Representations
 
@@ -30,42 +31,34 @@ Proof.
 Defined.
 
 Definition context_representation_generic {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : Hom(-, E) ≅N ContextPairF T A) : ContextPairS T A E := R.1 E id.
+    (R : E ⦂ represents_op ContextPairF T A) : ContextPairS T A E :=
+  representation_op_generic R.
 
 (** Naturality determines every component from the generic pair. *)
 Theorem context_representation_at {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : Hom(-, E) ≅N ContextPairF T A) {Δ : @Ob C} (h : Hom Δ E)
+    (R : E ⦂ represents_op ContextPairF T A) {Δ : @Ob C} (h : Hom Δ E)
   : R.1 Δ h ≈S (context_representation_generic A R)[h]Pair[T, A].
-Proof.
-  transitivity (R.1 Δ (id ∘ h)).
-  - apply func_proper. symmetry. apply comp_id_l.
-  - exact (nt_naturality R.1 h id).
-Defined.
+Proof. exact (representation_op_at R h). Defined.
 
 Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : Hom(-, E) ≅N ContextPairF T A)
+    (R : E ⦂ represents_op ContextPairF T A)
   : is_context_extension T A E (context_representation_generic A R).1
       (context_representation_generic A R).2.
 Proof.
-  intros Δ σ t. pose (h := (R.2 Δ).1 (σ; t)).
+  intros Δ σ t.
+  destruct (representation_op_universal R Δ (σ; t)) as [h Hh].
   exists h. refine {| this := _; that := _ |}.
   - apply (fst (context_pair_data_iff A _ _ σ t h)).
-    transitivity (R.1 Δ h).
-    + symmetry. apply context_representation_at.
-    + exact (snd (R.2 Δ).2 (σ; t)).
+    exact (@this _ _ _ _ _ Hh).
   - intros k Hk.
-    transitivity ((R.2 Δ).1 (R.1 Δ k)).
-    + symmetry. exact (fst (R.2 Δ).2 k).
-    + apply func_proper.
-      transitivity (context_representation_generic A R)[k]Pair[T, A].
-      * apply context_representation_at.
-      * exact (snd (context_pair_data_iff A _ _ σ t k) Hk).
+    apply (@that _ _ _ _ _ Hh).
+    exact (snd (context_pair_data_iff A _ _ σ t k) Hk).
 Defined.
 
 Class HasContextRepresentation :=
   { ContextRep {Γ : @Ob C} (A : Ty T Γ) : @Ob C
   ; context_representation {Γ : @Ob C} (A : Ty T Γ)
-    : Hom(-, ContextRep A) ≅N ContextPairF T A
+    : ContextRep A ⦂ represents_op ContextPairF T A
   }.
 
 (** Both conversions are explicit choices, never selected by import. *)

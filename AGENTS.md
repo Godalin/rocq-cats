@@ -6,6 +6,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Mathematical design
 
+- For each new construction, check whether a reusable general theory applies.
+  Reuse it, or extract shared arguments when useful, before specializing;
+  avoid duplicating universal-property proofs in individual models.
 - Preserve Type-valued relations and computational witnesses; do not replace
   them with Prop-only interfaces or introduce unproved assumptions.
 - Sets mean setoids; strict laws use their specified equality. Rocq's `eq`

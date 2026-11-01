@@ -60,6 +60,28 @@ pair(σ,t) := (R_Δ)⁻¹(σ,t)
 分量同构的两条逆律因此给出完整的扩张泛性质及唯一性。
 `context_extension_of_representation` 保留上述中介态射为透明计算见证。
 
+这部分现已复用 [Representable](../theories/Instance/Set/Representable.v)
+中的一般理论。`is_universal_element F u` 要求任意 y 都唯一写成 `F(f)(u)`；
+`represents_iff_universal_element` 与反变版本
+`represents_op_iff_universal_element` 将它与自然同构表示互相构造。
+`representation_op_generic` 给出上述 (p,q)，
+`representation_op_at` 给出自然性公式，
+`representation_op_universal` 给出完整的唯一中介性质。
+CwF 层只通过 `context_pair_data_iff` 将它对接到含类型转换的配对条件，
+不再单独重复证明通用元素的泛性质。
+
+一般理论还给出 `representation_iso` / `representation_op_iso`：
+两个表示对象有选定同构，且在保持通用元素的态射中唯一。
+这不要求任意两个对象同构都相等，也不比较表示记录或逆见证的原生相等。
+表示与通用元素之间的往返按自然变换相等及广集相等比较。
+
+[Yoneda](../theories/Instance/Set/Yoneda.v) 的两条互逆定律独立于同构的
+集合层级包装。自然变换集可能比 F 的值更大，故 `yoneda_lemma_iso`
+现在使用基础 [LiftS](../theories/Set/Core.v)（记号 `↑S`）将两端装入足够大的
+共同集合范畴。`lift_resp`（`f^↑S`）保留原映射的逐点计算。
+提升分别包装载体与相等见证，投影 `lower` 可直接计算；只有向上的大小约束，
+不使用 resizing，也不将原来的相等换成原生相等。
+
 反向复用已有的 `context_extension_nat_iso`。两个选定构造为：
 
 ```text
@@ -166,7 +188,7 @@ A[σ]TyF[P]    e[σ]EqF[P]
 不能无条件把它放回更小的预设项层级，也不引入 resizing。
 
 本轮在 Rocq 9.0.1 / Dune 3.21.0 下完成完整构建。
-18 项临时构造／模型假设检查均无额外公理。
+表示准则首次实现时，18 项临时构造／模型假设检查均无额外公理。
 布尔 Code/El 实例检查恢复后的投影、变量、配对及非平凡类型转换可直接计算，
 并用一个逐点取反项的非平凡自然自同构改变表示：恢复的泛变量和配对确实随之改变，
 确认反向构造使用了传入的表示。还检查两方向的选定结构需显式启用。
@@ -176,4 +198,10 @@ A[σ]TyF[P]    e[σ]EqF[P]
 均无额外公理；布尔实例中，两种相等见证的非平凡转换、逆映射、替换提升
 和拉回中介都可直接计算。临时检查还确认选定结构不会被自动启用，
 且小类型预层可配合两种较大的上下文 hom／相等层级。
+
+一般可表性整理增加六项永久宇宙检查：协变和反变的通用元素准则、
+表示对象同构，以及两种 hom／相等大小排列下的 Yoneda 同构。
+55 项临时假设检查覆盖一般理论及 CwF 专用构造，均无额外公理，
+并重跑原有的布尔模型和非平凡表示，确认泛变量、中介及双向映射仍能直接计算。
+还检查对象宇宙大于 hom／相等宇宙，以及提升后的载体／相等层级分别较大的情形。
 具体提交的多版本 CI 状态记录在 [#13](https://github.com/Godalin/rocq-cats/issues/13)。

@@ -140,6 +140,9 @@ This project aims at building ETCS.
   [Presheaf](./theories/Instance/Set/Presheaf.v), and
   [Subobject](./theories/Instance/Set/Subobject.v) contain the set-valued
   constructions.
+  [Representable](./theories/Instance/Set/Representable.v) relates covariant and
+  contravariant representations to universal elements over any category,
+  with transparent mediators and unique comparisons preserving the generic element.
   [Terminal](./theories/Instance/Set/Terminal.v) and
   [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
   [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map

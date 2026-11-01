@@ -21,7 +21,7 @@ Context {F : Functor C SetCat} {G : Functor (C^op) SetCat}.
 Context {X : @Ob C}.
 
 Proposition represents_self : X ⦂ represents Hom(X,-).
-Proof. exists idN. intros Y. exists id. cato. Qed.
+Proof. exists idN. intros Y. exists id. cato. Defined.
 
 End Representable.
 
@@ -70,20 +70,29 @@ Next Obligation.
   exact (@func_proper _ _ (fmap F f) a a' Ha).
 Qed.
 
-Theorem yoneda_lemma_iso {X : @Ob C}
-  : Nat Hom(X,-) F ≅[SetCat] F X.
-Proof. exists yoneda_func, yoneda_func_inv.
-  split; simpl.
-  - intros a Y. simpl. intros f.
-    assert (fmap F f ∘ a X ≈ a Y ∘ fmap Hom(X,-) f).
-    { symmetry. apply nt_naturality. }
-    specialize (X0 id). rewrite X0.
-    simpl. rewrite comp_id_r. cato.
-  - intros x.
-    assert (fmap F (@id X) ≈ id_resp).
-    { rewrite functor_id. cato. }
-    specialize (X0 x). cato.
+Theorem yoneda_func_inv_func {X : @Ob C} (α : Hom(X,-) => F)
+  : yoneda_func_inv (yoneda_func α) ≈N α.
+Proof.
+  intros Y f.
+  assert (fmap F f ∘ α X ≈ α Y ∘ fmap Hom(X,-) f).
+  { symmetry. apply nt_naturality. }
+  specialize (X0 id). rewrite X0.
+  simpl. rewrite comp_id_r. cato.
 Qed.
+
+Theorem yoneda_func_func_inv {X : @Ob C} (x : F X)
+  : yoneda_func (yoneda_func_inv x) ≈S x.
+Proof. exact (functor_id C SetCat F x). Defined.
+
+(** Natural transformations can be larger than values of F. Lift both sets
+    into a common ambient category without identifying their native sizes. *)
+Definition yoneda_lemma_iso@{n e +} {X : @Ob C}
+  : LiftS@{_ _ n e} (Nat_SetS Hom(X,-) F) ≅[SetCat] LiftS@{_ _ n e} (F X).
+Proof.
+  exists (yoneda_func^↑S), (yoneda_func_inv^↑S). split.
+  - intros [α]. refine {| lower := _ |}. apply yoneda_func_inv_func.
+  - intros [x]. refine {| lower := _ |}. apply yoneda_func_func_inv.
+Defined.
 
 End Yoneda.
 

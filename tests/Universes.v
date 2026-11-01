@@ -11,6 +11,7 @@ From Cats Require Import Cat.SliceArrow.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.Fam.Slice Instance.Set.Fam.SliceReindex.
 From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.CwF.
+From Cats Require Import Instance.Set.Yoneda Instance.Set.Representable.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
 Section SetLevels.
@@ -82,6 +83,25 @@ Definition independent_hom (X Y : ObB K) : Cat@{h t p l l} := HomCat X Y.
 Definition independent_hom_reverse (X Y : ObB L) : Cat@{h p t l l} := HomCat X Y.
 Definition independent_cells (X Y : ObB K) : Type@{h} := Cell1 X Y.
 End BicategoryLevels.
+
+(** Representability and the Yoneda isomorphism retain both hom/equality
+    orderings; the isomorphism uses a large enough ambient set category. *)
+Section RepresentableLevels.
+Universe o h p l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (F : Functor C SetCat@{h p _ _ _ _ _}).
+Context (P : Functor (D^op) SetCat@{p h _ _ _ _ _}).
+
+Definition high_eq_universal_elements := @represents_iff_universal_element C F.
+Definition low_eq_universal_elements := @represents_op_iff_universal_element D P.
+Definition high_eq_representing_objects := @representation_iso C F.
+Definition low_eq_representing_objects := @representation_op_iso D P.
+Definition high_eq_yoneda := @yoneda_lemma_iso C F.
+Definition low_eq_yoneda := @yoneda_lemma_iso (D^op) P.
+End RepresentableLevels.
 
 (** The chosen pullback instance formerly collapsed these two levels. *)
 Section SetoidPullbackLevels.

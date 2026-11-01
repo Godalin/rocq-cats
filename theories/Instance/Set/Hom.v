@@ -26,6 +26,13 @@ Next Obligation. intros x. symmetry. exact (@comp_assoc C _ _ _ _ x g f). Qed.
 
 Notation "'Hom(-,'  X ')'" := (ℎ2F X).
 
+(** Covariant Hom in the opposite category is contravariant Hom in C.
+    Compare the functors explicitly, without equating their law fields. *)
+Program Definition hom_op_nat_iso {C : Cat} (X : @Ob C)
+  : @ℎ1F (C^op) X ≅N Hom(-,X) := ({| nt Y := id_resp |}; _).
+Next Obligation. intros h. reflexivity. Defined.
+Next Obligation. intros Y. exists id_resp. split; intros h; reflexivity. Defined.
+
 (** Precomposition varies the source of the covariant Hom-functor
     contravariantly. Its components compare maps pointwise. *)
 Program Definition nt_comp_pre {C : Cat} {X Y : @Ob C} (f : Hom X Y)

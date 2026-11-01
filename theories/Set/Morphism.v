@@ -21,6 +21,15 @@ Record FunS_resp (X Y : SetC) :=
 
 Infix "→r" := FunS_resp (at level 99).
 
+Program Definition lift_resp@{v q +} {X Y : SetC} (f : X →r Y)
+  : LiftS@{_ _ v q} X →r LiftS@{_ _ v q} Y :=
+  {| func x := {| lower := f (lower x) |} |}.
+Next Obligation.
+  intros [x] [y] [H]. exact {| lower := @func_proper _ _ f x y H |}.
+Defined.
+
+Notation "f '^↑S'" := (lift_resp f) (at level 35) : set_scope.
+
 Program Canonical FunS (X Y : SetC) : SetC :=
   {| carrier := X →r Y
    ; carrier_equiv := FunEq |}.
@@ -31,6 +40,12 @@ Next Obligation. split.
 Defined.
 
 Infix "→S" := FunS (at level 99).
+
+Global Instance lift_resp_proper@{v q +} {X Y : SetC}
+  : Proper (carrier_equiv (X →S Y) ==>
+      carrier_equiv (LiftS@{_ _ v q} X →S LiftS@{_ _ v q} Y))
+      (λ f, (f^↑S : LiftS@{_ _ v q} X →r LiftS@{_ _ v q} Y)).
+Proof. intros f g H [x]. exact {| lower := H x |}. Defined.
 
 Program Definition id_resp {X} : X →r X :=
   {| func (x : X) := x |}.
