@@ -303,8 +303,51 @@ context_map_cartesian_iff_pullback:
 构造仅要求 `HasContextExtension T`，不需要终对象或所有拉回。
 
 这一步固定了从 CwF 得到 comprehension 的一个具体呈现。
-它到箭头范畴的函子及全忠实性的独立形式化、反向构造 CwF，
-以及与其他态射约定或 split 结构的比较仍需分别证明。
+[Arrow](../theories/Cat/Arrow.v) 定义任意范畴的箭头范畴 `Arr C`：
+对象为态射，态射为交换方块，相等比较方块的两条边。
+`ArrowDomF C` 和 `ArrowCodF C` 分别取定义域和陪域。
+通用构造 `NatArrowF α` 将自然变换组织为到箭头范畴的函子。
+因此，每个已有 comprehension 都有 `ComprehensionF K := NatArrowF (projectionN K)`；
+其两条边分别来自扩张函子和基底函子。
+
+`CwFComprehensionF T` 是上述构造在 `CwFComprehension T` 的实例。
+`context_map_from_arrow T` 从方块的两条边及交换见证透明地恢复总范畴态射，
+`cwf_comprehension_fully_faithful T` 据此证明全忠实性。
+这依赖当前总范畴使用所有显示交换方块作为态射的约定；
+不是对任意 `Comprehension K` 新增全忠实性假设，也不自动证明其他呈现的全忠实性。
+反向构造 CwF，以及与其他态射约定或 split 结构的比较仍需分别证明。
+
+### 项与投影截面
+
+[Section](../theories/Cat/Section.v) 将已有的 `Sec(p)` 广集推广到任意范畴：
+元素为 `s : Hom Γ E` 及 `p ∘ s ≈ id`，相等仅比较 s。
+原来的集合族截面模块复用并导出这个定义，保留原有 `Sec(p)` 记号。
+
+[ContextSection](../theories/DTT/ContextSection.v) 从上下文扩张泛性质导出：
+
+```text
+context_term_section_iso T A:
+  Tm T Γ A ≅[SetCat] Sec(context_proj T A)
+```
+
+正向映射 `t^Sec[T,A]` 将 t 沿 `ty_sub_id` 的逆向转换到 `A[id]` 后与 id 配对。
+逆向映射 `s^Tm[T,A]` 取 `q_A[s]`，依次沿替换复合、截面的右逆见证及
+替换单位比较转换回 A。截面的基底代表只需满足指定相等，不能假定原生相等。
+两个操作都是尊重指定相等的透明映射，其 β/η 律不比较右逆证明。
+
+它们还满足配对及替换相容性：
+
+```text
+term_section_pair:
+  (t^Sec[T,A]).1 ∘ σ ≈ ⟨σ; t[σ]Tm[T]⟩[T,A]
+
+term_section_sub:
+  σ^+[T,A] ∘ (t[σ]Tm[T]^Sec[T,A[σ]Ty[T]]).1
+  ≈ (t^Sec[T,A]).1 ∘ σ
+```
+
+这些结果只要求 `HasContextExtension T`，不要求终对象。
+任意 comprehension 的反向项接口仍需单独陈述假设；本定理处理已有的 CwF 项族。
 
 ## 6. 最外层 Class 的形状
 
@@ -415,6 +458,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - [DTT/ContextConversion.v](../theories/DTT/ContextConversion.v)：沿类型相等的扩张同构及其相干性。
 - [DTT/ContextPullback.v](../theories/DTT/ContextPullback.v)：替换提升、相干性及显示投影的拉回泛性质。
 - [DTT/Comprehension.v](../theories/DTT/Comprehension.v)：显示映射形式的类型总范畴及对应的 comprehension 结构。
+- [DTT/ContextSection.v](../theories/DTT/ContextSection.v)：项与显示投影截面的广集同构及替换相容性。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 
@@ -432,8 +476,10 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - 沿指定类型相等构造保持投影与变量的扩张同构，证明见证独立、单位、复合及配对相容性。
 - 构造替换提升，沿扩张同构证明相等、单位与复合相容性，以及显示投影的拉回泛性质。
 - 以显示交换方块为态射构造类型总范畴，组装对应的 comprehension，并证明笛卡尔态射恰对应拉回方块。
+- 构造到箭头范畴的 comprehension 函子，证明当前 CwF 显示方块呈现的全忠实性。
+- 推广任意范畴的截面广集，证明 CwF 项与显示投影截面的同构、配对及替换相容性。
 
-到箭头范畴的全忠实函子、反向构造 CwF 及不同 comprehension 呈现之间的比较仍是后续工作。
+反向构造 CwF 及不同 comprehension 呈现之间的比较仍是后续工作。
 
 任意 comprehension 到 CwF 的转换、split replacement、
 以及 Σ/Π/Id 的支持分别陈述附加假设后再开展。
@@ -485,6 +531,13 @@ Comprehension 构造及其临时实例的 23 项公理检查均无额外假设�
 由于交换见证保留为数据，总范畴的态射载体需要容纳原态射及其相等见证；
 其相等关系仍在原 `HomEq` 层级，不合并原范畴的两个层级。
 另外的临时检查将类型和项固定在 `SetC@{Set Set}`，也能在更大的上下文态射层级上实例化 comprehension。
+箭头范畴、全忠实性及项截面同构另有 24 项临时公理检查，均无额外假设。
+布尔实例验证交换方块的证明见证不影响相等、全性提取的原像可直接计算、
+复合与项/截面记号可连续使用，以及新截面操作与原集合族操作一致。
+一个截面故意返回不同但等价的基底代表，其逆向项映射确实通过非平凡转换恢复原代表的纤维值。
+这些检查仍留在仓库外；常驻宇宙回归检查两个大小方向的箭头 hom、截面广集、
+CwF 全忠实性及项截面同构。箭头和截面保留 Type 值交换/右逆见证，
+故它们的载体容纳这些见证，相等仍使用原态射相等层级。
 
 恢复并调整基础层引用后，在 Rocq 9.0.1、Dune 3.21.0 下，
 `dune build @all @runtest @install` 通过。

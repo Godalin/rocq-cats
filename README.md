@@ -44,6 +44,10 @@ This project aims at building ETCS.
   [Pullback](./theories/Cat/Pullback.v).
   [Slice](./theories/Cat/Slice.v) constructs `C /C X`, with commuting triangles
   up to morphism equivalence and equality on their underlying arrows.
+  [Arrow](./theories/Cat/Arrow.v) constructs `Arr C`, with commuting squares,
+  domain/codomain functors, and the functor induced by a natural transformation.
+  [Section](./theories/Cat/Section.v) defines `Sec(p)` for any category,
+  retaining right-inverse witnesses and comparing the section maps.
   [SliceReindex](./theories/Cat/SliceReindex.v) gives pullback functors on slices,
   with specified natural identity and composition comparisons; write `A[f]C`.
   [Functor](./theories/Cat/Functor.v) and
@@ -80,7 +84,8 @@ This project aims at building ETCS.
   [Comprehension](./theories/Cat/Comprehension.v) combines chosen lifts with a
   total-space functor and a natural projection, requiring cartesian morphisms
   to give pullback squares. Write `A ^ext[K]` for the extension and `π[K] A`
-  for its display projection.
+  for its display projection. `ComprehensionF K` is its functor to the arrow category;
+  fullness and faithfulness are separate properties.
 - [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
   as sets. [Core](./theories/Instance/Set/Core.v) defines their category `SetCat`;
   [Product](./theories/Instance/Set/Product.v),
@@ -150,7 +155,11 @@ This project aims at building ETCS.
   from the extension universal property.
   [Comprehension](./theories/DTT/Comprehension.v) forms the total category of
   types with commuting display squares and constructs its comprehension
-  structure; cartesian arrows are precisely the pullback squares.
+  structure; cartesian arrows are precisely the pullback squares, and its
+  functor to the arrow category is fully faithful.
+  [ContextSection](./theories/DTT/ContextSection.v) identifies terms with sections
+  of display projections, compatibly with pairing and substitution.
+  Write `t^Sec[T,A]` and `s^Tm[T,A]` for the two directions.
   See the [design note](./docs/CwFDesign.md).
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 

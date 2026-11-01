@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Pullback
-  Cat.Fibration Cat.Comprehension.
+  Cat.Fibration Cat.Comprehension Cat.Arrow.
 From Cats Require Import DTT.CwF DTT.ContextPullback.
 From Cats Require Import Instance.Set.Fam Instance.Set.FamCat.
 
@@ -188,3 +188,24 @@ Proof.
 Defined.
 
 End ContextComprehension.
+
+Section FullComprehension.
+Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+
+Definition CwFComprehensionF : Functor (ContextTypeCat T) (Arr C) :=
+  ComprehensionF (CwFComprehension T).
+
+Program Definition context_map_from_arrow {X Y : ContextType T}
+    (f : Hom (CwFComprehensionF X) (CwFComprehensionF Y)) : ContextMap T X Y :=
+  {| context_map_base := arrow_bottom f
+   ; context_map_ext := arrow_top f
+   ; context_map_comm := arrow_comm f |}.
+
+Theorem cwf_comprehension_fully_faithful : is_fully_faithful CwFComprehensionF.
+Proof.
+  split.
+  - intros X Y f. exists (context_map_from_arrow f). split; reflexivity.
+  - intros X Y f g [He Hb]. split; assumption.
+Defined.
+
+End FullComprehension.

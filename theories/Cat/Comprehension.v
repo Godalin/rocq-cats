@@ -1,4 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Fibration Cat.Pullback.
+From Cats Require Import Cat.Arrow.
 
 (** * Comprehension
 
@@ -30,3 +31,8 @@ Theorem comprehension_comm {E B : Cat} {P : Functor E B} (K : Comprehension P)
     {X Y : @Ob E} (f : Hom X Y)
   : π[K] Y ∘ fmap (ExtF K) f ≈ fmap P f ∘ π[K] X.
 Proof. apply nt_naturality. Qed.
+
+(** The arrow-category presentation is available for every comprehension.
+    Fullness and faithfulness are separate properties, not fields of [K]. *)
+Definition ComprehensionF {E B : Cat} {P : Functor E B} (K : Comprehension P)
+  : Functor E (Arr B) := NatArrowF (projectionN K).

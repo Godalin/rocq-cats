@@ -1,4 +1,5 @@
 From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.
+From Cats Require Export Cat.Section.
 
 (** * Coherent Sections of Families
 
@@ -122,25 +123,6 @@ Qed.
 
     A categorical section retains a right-inverse witness. Its equality
     compares the underlying maps, independently of the chosen witnesses. *)
-
-Definition SectionOfEq {X Y : SetC} (p : X →r Y)
-    (s t : ∃ r : Y →r X, (p ∘r r) ≈f id_resp) := s.1 ≈f t.1.
-
-Global Instance SectionOfEq_Equivalence {X Y : SetC} (p : X →r Y)
-  : Equivalence (SectionOfEq p).
-Proof.
-  split.
-  - intros s x. reflexivity.
-  - intros s t H x. symmetry. exact (H x).
-  - intros s t u Hst Htu x. transitivity (t.1 x); [apply Hst | apply Htu].
-Qed.
-
-Definition SectionOfS {X Y : SetC} (p : X →r Y) : SetC :=
-  {| carrier := ∃ s : Y →r X, (p ∘r s) ≈f id_resp
-   ; carrier_equiv := SectionOfEq p
-   ; carrier_setoid := SectionOfEq_Equivalence p |}.
-
-Notation "'Sec(' p ')'" := (SectionOfS p) (format "Sec( p )") : cat_scope.
 
 Program Definition section_to_projection_resp {X : SetC} (A : FamS X)
   : SectionS A →r Sec(sig_base_resp A) :=
