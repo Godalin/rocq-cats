@@ -9,10 +9,9 @@ license: "GPL-3.0-or-later"
 homepage: "https://github.com/Godalin/rocq-cats"
 bug-reports: "https://github.com/Godalin/rocq-cats"
 depends: [
-  "dune" {>= "3.17"}
+  "dune" {>= "3.23"}
   "rocq-prover" {>= "9.0"}
   "rocq-stdlib" {>= "9.0"}
-  "coq" {>= "9.0"}
   "odoc" {with-doc}
 ]
 build: [
@@ -28,3 +27,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
+x-maintenance-intent: ["(latest)"]

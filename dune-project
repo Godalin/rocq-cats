@@ -1,6 +1,6 @@
-(lang dune 3.17)
+(lang dune 3.23)
 
-(using coq 0.10)
+(using rocq 0.11)
 
 (generate_opam_files)
 
@@ -28,6 +28,4 @@
   (rocq-prover
    (>= 9.0))
   (rocq-stdlib
-   (>= 9.0))
-  (coq
    (>= 9.0))))

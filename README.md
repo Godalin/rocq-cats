@@ -27,6 +27,23 @@ A category theory library for self study.
 
 This project aims at building ETCS.
 
+## Building
+
+Requires Rocq / Stdlib 9.0 or later and Dune 3.23 or later. The project uses
+the Rocq build language; [Dune 3.23](https://github.com/ocaml/dune/releases/tag/3.23.0)
+fixes configuration discovery for Rocq 9.0.
+With these tools available, run `dune build @all @runtest @install`.
+
+For the local `rocq-env` opam switch, [shell.nix](./shell.nix) supplies a pinned
+Dune 3.23.1 independently of the switch's packages:
+
+```sh
+opam exec --switch=rocq-env -- nix-shell --run 'dune build @all @runtest @install'
+```
+
+The shell inherits Rocq and OCaml from the caller; it does not install a
+Rocq toolchain. The local VS Code build task uses this same environment.
+
 ## Repository layout
 
 - [Set](./theories/Set/): foundational sets with designated Type-valued equality.

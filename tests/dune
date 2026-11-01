@@ -1,4 +1,4 @@
-(coq.theory
+(rocq.theory
  (name CatsTests)
  (theories Cats Stdlib))
 
