@@ -8,6 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         image:
           - "rocq/rocq-prover:latest"
@@ -22,5 +23,10 @@ jobs:
           opam_file: "rocq-cats.opam"
           custom_image: ${{ matrix.image }}
           export: "OPAMWITHTEST"
+          before_install: |
+            opam pin remove --no-action --yes dune
+          before_script: |
+            rocq --version
+            dune --version
         env:
           OPAMWITHTEST: "true"
