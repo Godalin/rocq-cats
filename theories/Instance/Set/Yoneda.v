@@ -74,11 +74,9 @@ Theorem yoneda_func_inv_func {X : @Ob C} (α : Hom(X,-) => F)
   : yoneda_func_inv (yoneda_func α) ≈N α.
 Proof.
   intros Y f.
-  assert (fmap F f ∘ α X ≈ α Y ∘ fmap Hom(X,-) f).
-  { symmetry. apply nt_naturality. }
-  specialize (X0 id). rewrite X0.
-  simpl. rewrite comp_id_r. cato.
-Qed.
+  exact (transitivity (symmetry (nt_naturality α f id))
+    (@func_proper _ _ (α Y) (f ∘ id) f (comp_id_r f))).
+Defined.
 
 Theorem yoneda_func_func_inv {X : @Ob C} (x : F X)
   : yoneda_func (yoneda_func_inv x) ≈S x.
