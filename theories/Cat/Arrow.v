@@ -25,6 +25,15 @@ Arguments arrow_top {_ _ _} _.
 Arguments arrow_bottom {_ _ _} _.
 Arguments arrow_comm {_ _ _} _.
 
+Program Definition IdentityArrow {C : Cat} (X : @Ob C) : ArrowOb C :=
+  {| arrow_dom := X; arrow_cod := X; arrow_map := id |}.
+
+Program Definition arrow_from_identity {C : Cat} (B : ArrowOb C) {X : @Ob C}
+    (u : Hom X (arrow_cod B)) (v : Hom X (arrow_dom B))
+    (H : arrow_map B ∘ v ≈ u) : ArrowHom (IdentityArrow X) B :=
+  {| arrow_top := v; arrow_bottom := u |}.
+Next Obligation. rewrite comp_id_r. exact H. Defined.
+
 Definition ArrowHomEq {C : Cat} {A B : ArrowOb C} (f g : ArrowHom A B) :=
   arrow_top f ≈ arrow_top g ∧ arrow_bottom f ≈ arrow_bottom g.
 

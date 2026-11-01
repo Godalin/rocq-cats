@@ -4,6 +4,7 @@ From Cats Require Import DTT.CwF DTT.ContextExtension DTT.ContextConversion.
 From Cats Require Import DTT.ContextPullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import Cat.Arrow Cat.Section DTT.ContextSection.
+From Cats Require Import Cat.ArrowFibration.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
 From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.CwF.
@@ -48,6 +49,10 @@ Definition low_eq_arrow_hom (X Y : ArrowOb D) : SetC@{p h}
   := @HomSet (Arr D) X Y.
 Definition high_eq_sections (X Y : @Ob C) (f : Hom X Y) : SetC@{p p} := Sec(f).
 Definition low_eq_sections (X Y : @Ob D) (f : Hom X Y) : SetC@{p h} := Sec(f).
+Definition high_eq_arrow_cartesian := @arrow_cartesian_iff_pullback C.
+Definition low_eq_arrow_cartesian := @arrow_cartesian_iff_pullback D.
+Definition high_eq_arrow_lifts := pullbacks_iff_arrow_cartesian_lifts C.
+Definition low_eq_arrow_lifts := pullbacks_iff_arrow_cartesian_lifts D.
 Definition high_eq_thin : Bicat@{o h p Set _ _ _} := ThinBicat C.
 Definition low_eq_thin := ThinBicat D.
 End CategoryLevels.

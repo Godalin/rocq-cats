@@ -317,6 +317,36 @@ context_map_cartesian_iff_pullback:
 不是对任意 `Comprehension K` 新增全忠实性假设，也不自动证明其他呈现的全忠实性。
 反向构造 CwF，以及与其他态射约定或 split 结构的比较仍需分别证明。
 
+### 陪域函子的笛卡尔态射
+
+[ArrowFibration](../theories/Cat/ArrowFibration.v) 将前述显示方块判别推广到任意箭头：
+
+```text
+arrow_cartesian_iff_pullback f:
+  f ⦂ cartesian(ArrowCodF C)
+  ↔ is_pullback (arrow_bottom f) (arrow_map B)
+      (arrow_dom A) (arrow_map A) (arrow_top f)
+```
+
+这不要求 C 已有所有拉回。正向证明将任意锥编码为从 `IdentityArrow Q`
+出发的方块，再由笛卡尔分解提取唯一的顶边；反向直接使用拉回中介态射。
+中介态射和两方向的泛性质见证均保持透明。
+
+给定 `HasPullback C`，`ArrowReindexOb B σ`（记作 `B[σ]Arr`）
+以 `Pb σ (arrow_map B)` 为定义域、以 σ 的定义域为陪域。
+`arrow_reindex B σ` 的两条边为 `pb2` 和 σ。
+`ArrowCodF_HasCartesianLift` 将其组织成选定笛卡尔提升。
+
+反向的 `ArrowCodF_HasPullback` 接受任意选定陪域提升。
+若提升对象为 L，其携带的基底对象识别为 `e : arrow_cod L = X`，
+恢复的第一投影是 `eq_to_hom e ∘ arrow_map L`，第二投影是提升的顶边。
+通用引理 `pullback_base_iso` 沿这个识别诱导的同构转移拉回泛性质，
+不比较 e 与其他识别见证，也不要求 e 为反身见证。
+
+`pullbacks_iff_arrow_cartesian_lifts C` 打包这两个构造，表明两种选定结构可互相构造；
+它不要求选择的对象或证明字段相等，也不额外要求重索引严格分裂。
+两个方向都作为普通定义提供，需显式启用，不由导入模块自动注册实例。
+
 ### 项与投影截面
 
 [Section](../theories/Cat/Section.v) 将已有的 `Sec(p)` 广集推广到任意范畴：
@@ -538,6 +568,12 @@ Comprehension 构造及其临时实例的 23 项公理检查均无额外假设�
 这些检查仍留在仓库外；常驻宇宙回归检查两个大小方向的箭头 hom、截面广集、
 CwF 全忠实性及项截面同构。箭头和截面保留 Type 值交换/右逆见证，
 故它们的载体容纳这些见证，相等仍使用原态射相等层级。
+一般箭头笛卡尔判别及选定结构转换另有 22 项临时公理检查，均无额外假设。
+广集实例验证：只满足指定相等、代表值不同的交换锥也能给出可计算的笛卡尔因子；
+反向判别及往返恢复的拉回中介态射可以直接归约；不同交换见证不影响中介态射的指定相等。
+还验证了不可逆的布尔压缩方块既非笛卡尔也非拉回、非恒等基底同构确实改变第一投影，
+以及两种选定结构必须显式启用。
+这些实例与公理输出仍保留在仓库外。常驻宇宙回归只增加两个方向的一般判别与选定结构转换检查。
 
 恢复并调整基础层引用后，在 Rocq 9.0.1、Dune 3.21.0 下，
 `dune build @all @runtest @install` 通过。

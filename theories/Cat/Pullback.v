@@ -127,6 +127,32 @@ Proof.
           rewrite <- comp_assoc; [rewrite H1 | rewrite H2]; assumption.
 Defined.
 
+(** Change one base object along an isomorphism, keeping the pullback vertex.
+    The first projection is composed with the specified isomorphism. *)
+Definition pullback_base_iso {C : Cat} {X X' Y Z P : @Ob C}
+    {f : Hom X Z} {g : Hom Y Z} {h : Hom X' Z}
+    {p1 : Hom P X'} {p2 : Hom P Y}
+    (i : Hom X' X) (Hi : is_iso i) (H : h ≈ f ∘ i)
+    (HP : is_pullback h g P p1 p2)
+  : is_pullback f g P (i ∘ p1) p2.
+Proof.
+  destruct Hi as [ii [Hii Hi]]. destruct HP as [Hcomm Hu]. split.
+  - rewrite <- comp_assoc, <- H. exact Hcomm.
+  - intros Q q1 q2 Hq.
+    assert (Hcone : h ∘ (ii ∘ q1) ≈ g ∘ q2).
+    { rewrite H, comp_assoc, <- (comp_assoc i), Hi, comp_id_l. exact Hq. }
+    destruct (Hu Q (ii ∘ q1) q2 Hcone) as [k [[Hk1 Hk2] Hku]].
+    exists k. refine {| this := _; that := _ |}.
+    + split.
+      * rewrite comp_assoc, Hk1, <- comp_assoc, Hi, comp_id_l. reflexivity.
+      * exact Hk2.
+    + intros l [Hl1 Hl2]. apply Hku. split.
+      * transitivity (ii ∘ ((i ∘ p1) ∘ l)).
+        -- rewrite <- !comp_assoc, Hii, comp_id_l. reflexivity.
+        -- rewrite Hl1. reflexivity.
+      * exact Hl2.
+Defined.
+
 
 
 Section Pullback.

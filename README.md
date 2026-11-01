@@ -81,6 +81,10 @@ This project aims at building ETCS.
   [Fibration](./theories/Cat/Fibration.v) defines cartesian morphisms by universal
   factorization, compares lifts over a base isomorphism, and provides chosen
   cartesian lifts with explicit base-object identifications.
+  [ArrowFibration](./theories/Cat/ArrowFibration.v) proves that cartesian arrows
+  of the codomain functor are precisely pullback squares. Chosen pullbacks and
+  chosen codomain lifts yield one another by explicit constructions; write
+  `B[σ]Arr` for the pullback arrow object. Both choices require explicit activation.
   [Comprehension](./theories/Cat/Comprehension.v) combines chosen lifts with a
   total-space functor and a natural projection, requiring cartesian morphisms
   to give pullback squares. Write `A ^ext[K]` for the extension and `π[K] A`
