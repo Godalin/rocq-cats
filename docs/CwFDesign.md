@@ -263,6 +263,49 @@ is_pullback σ p_A (Δ ▹[T] A[σ]Ty[T]) p_A[σ] σ^+[T,A]
 本构造只需要 `HasContextExtension T`，没有增加 `HasPullback C` 假设，
 也没有为 C 注册所有拉回的选定结构。这里只构造显示投影沿任意替换的拉回。
 
+### 显示映射形式的类型总范畴与 comprehension
+
+[DTT/Comprehension](../theories/DTT/Comprehension.v) 使用以下明确的态射表示：
+
+```text
+ContextType T := Σ Γ, Ty T Γ
+ContextMap T (Γ,A) (Δ,B) :=
+  σ : Hom Γ Δ
+  h : Hom (Γ ▹[T] A) (Δ ▹[T] B)
+  p_B ∘ h ≈ σ ∘ p_A
+```
+
+态射相等逐项比较 σ 和 h，不比较交换证明。复合为两条映射分别复合，
+记作 `g ∘Ctx[T] f`，形成 `ContextTypeCat T`。
+这里允许任意满足交换条件的扩张映射，包括不可逆映射。
+原来的类型严格相等仍由 `Ty T Γ` 指定，不从这些态射或同构反向定义。
+
+`CwFBaseF T` 取基底 Γ 和 σ，`CwFExtF T` 取扩张 Γ.A 和 h，
+`CwFProjectionN T` 由各个 p_A 组成。
+对 Y=(Δ,B) 和 σ:Γ→Δ，`Y[σ]Ctx[T]` 表示 `(Γ,B[σ])`，
+`context_type_reindex T Y σ` 的两条映射是 σ 和 `σ^+[T,B]`。
+
+`context_map_pullback_cartesian` 从显示方块的拉回泛性质构造笛卡尔分解。
+上一节的显示拉回使上述重索引态射成为笛卡尔态射。
+反向证明将任意笛卡尔态射与这个选定提升比较，得到总范畴中的同构，
+再通过扩张函子及拉回的同构不变性转移泛性质。因此有完整判别：
+
+```text
+context_map_cartesian_iff_pullback:
+  f ⦂ cartesian(CwFBaseF T)
+  ↔ is_pullback σ p_B (Γ ▹[T] A) p_A h
+```
+
+`CwFComprehension T` 将选择的提升、扩张函子、投影自然变换和该泛性质
+组装为已有的 `Comprehension (CwFBaseF T)`。
+`CwFBaseF_HasCartesianLift T` 及结构包中的提升都需显式启用；
+基底对象的识别由构造的第一投影直接给出反身识别。
+构造仅要求 `HasContextExtension T`，不需要终对象或所有拉回。
+
+这一步固定了从 CwF 得到 comprehension 的一个具体呈现。
+它到箭头范畴的函子及全忠实性的独立形式化、反向构造 CwF，
+以及与其他态射约定或 split 结构的比较仍需分别证明。
+
 ## 6. 最外层 Class 的形状
 
 已实现的签名如下：
@@ -371,6 +414,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - [DTT/ContextExtension.v](../theories/DTT/ContextExtension.v)：配对数据预层、表示广集同构及自然性。
 - [DTT/ContextConversion.v](../theories/DTT/ContextConversion.v)：沿类型相等的扩张同构及其相干性。
 - [DTT/ContextPullback.v](../theories/DTT/ContextPullback.v)：替换提升、相干性及显示投影的拉回泛性质。
+- [DTT/Comprehension.v](../theories/DTT/Comprehension.v)：显示映射形式的类型总范畴及对应的 comprehension 结构。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 
@@ -387,8 +431,9 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - 构造配对数据的广集与预层，证明上下文扩张的表示同构及其自然性，导出配对复合律。
 - 沿指定类型相等构造保持投影与变量的扩张同构，证明见证独立、单位、复合及配对相容性。
 - 构造替换提升，沿扩张同构证明相等、单位与复合相容性，以及显示投影的拉回泛性质。
+- 以显示交换方块为态射构造类型总范畴，组装对应的 comprehension，并证明笛卡尔态射恰对应拉回方块。
 
-从 CwF 构造一般显示映射/comprehension 结构及其比较仍是后续工作。
+到箭头范畴的全忠实函子、反向构造 CwF 及不同 comprehension 呈现之间的比较仍是后续工作。
 
 任意 comprehension 到 CwF 的转换、split replacement、
 以及 Σ/Π/Id 的支持分别陈述附加假设后再开展。
@@ -432,6 +477,14 @@ Code/El 模型另用一个布尔实例检查：代码有两个等价的代表，
 中介态射可计算地完成非平凡纤维转换，并验证两条投影律、唯一性及锥相等见证独立性。
 同一临时检查确认只启用 CwF 模型时不会选出 `HasPullback SetCat`。
 常驻宇宙回归增加了两个方向的显示投影拉回检查，较大的实例仍留在仓库外。
+Comprehension 构造及其临时实例的 23 项公理检查均无额外假设。
+临时实例验证笛卡尔分解的非平凡纤维转换、交换证明见证独立、
+不可逆的显示映射及其非笛卡尔性、复合记号连续使用，以及选择结构的显式启用。
+这些实例仍留在仓库外。
+常驻宇宙检查覆盖类型总范畴的 hom 广集及 comprehension 在两种大小排列下的实例化。
+由于交换见证保留为数据，总范畴的态射载体需要容纳原态射及其相等见证；
+其相等关系仍在原 `HomEq` 层级，不合并原范畴的两个层级。
+另外的临时检查将类型和项固定在 `SetC@{Set Set}`，也能在更大的上下文态射层级上实例化 comprehension。
 
 恢复并调整基础层引用后，在 Rocq 9.0.1、Dune 3.21.0 下，
 `dune build @all @runtest @install` 通过。

@@ -147,7 +147,11 @@ This project aims at building ETCS.
   isomorphisms along designated type equality, preserving projections and
   converted generic terms. [ContextPullback](./theories/DTT/ContextPullback.v)
   constructs coherent substitution lifts and pullbacks of display projections
-  from the extension universal property. See the [design note](./docs/CwFDesign.md).
+  from the extension universal property.
+  [Comprehension](./theories/DTT/Comprehension.v) forms the total category of
+  types with commuting display squares and constructs its comprehension
+  structure; cartesian arrows are precisely the pullback squares.
+  See the [design note](./docs/CwFDesign.md).
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Chosen universal constructions share the same design: `is_*` describes a
@@ -198,6 +202,7 @@ Local Existing Instance SetCat_CCC.
 - [x] Context-extension representability and its substitution naturality.
 - [x] Context-extension isomorphisms induced by designated type equality.
 - [x] Coherent substitution lifts and pullbacks of context-extension projections.
+- [x] A CwF comprehension structure with display-square morphisms and a cartesian/pullback characterization.
 - [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor
