@@ -5,7 +5,7 @@ From Cats Require Import Cat.Core.
 Definition is_terminal {C : Cat} (T : Ob) :=
   ∀ X, ∃ h : Hom X T, is_unique_element h.
 
-Class HasTerminal `(C : Cat) :=
+Class HasTerminal (C : Cat) :=
   { Term : Ob
   ; terminal_universal : is_terminal Term
   }.
@@ -13,10 +13,10 @@ Class HasTerminal `(C : Cat) :=
 Arguments Term {_ _}.
 Arguments terminal_universal {_ _} _.
 
-Definition term {C : Cat} `{!HasTerminal C} {X} : Hom X Term :=
+Definition term {C : Cat} `{HT : !HasTerminal C} {X} : Hom X Term :=
   (terminal_universal X).1.
 
-Theorem terminal_arrow_unique {C : Cat} `{!HasTerminal C} {X}
+Theorem terminal_arrow_unique {C : Cat} `{HT : !HasTerminal C} {X}
   : is_unique_element (@term C _ X).
 Proof. exact (terminal_universal X).2. Qed.
 
@@ -29,7 +29,7 @@ Notation "'@!' X" := (@term _ _ _ X)
   (at level 34) : hom_scope.
 
 Section Terminal.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
   let Hh_unique := fresh "H" h "_unique" in
@@ -66,7 +66,7 @@ Notation "X '⦂' '≅' '1'" := (is_terminal X)
 
 
 Section Terminal.
-Context `{C : Cat} `{!HasTerminal C}.
+Context {C : Cat} `{HT : !HasTerminal C}.
 
 Proposition term_η {X} (h : Hom X 1) : h ≈ !.
 Proof. apply terminal_arrow_unique. trivial. Qed.
@@ -87,7 +87,7 @@ Class HasInitial (C : Cat)
   := _initial :: HasTerminal (op C).
 
 Section Initial.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Definition is_initial (X : Ob)
   := @is_terminal (op C) X.

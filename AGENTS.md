@@ -30,6 +30,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   Design shared, exported notation alongside new operations; avoid local
   notation aliases. Prefer UTF-8 and pair/projection notation. Check scopes,
   precedence, and chaining.
+- Category extensions take a named category parameter. Declare chosen
+  dependencies by name; use named `!Has*` constraints in clients. Bundle
+  inherited structures with `has*`/`is*` fields and `::`.
 - Use `Program Definition`/`Program Instance`/`Program Canonical` with named
   record fields for data, then explicit `Next Obligation` proofs. The default
   `cats_obligation` only introduces parameters and runs `cbn`; do not restore

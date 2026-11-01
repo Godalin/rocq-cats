@@ -11,7 +11,7 @@ From Cats Require Import Cat.Core Cat.Terminal Cat.Pullback Cat.Morphism.
     X ------> SubOC *)
 
 Section SubObjectClassifier.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Definition is_subobject_classifier (Ω : Ob) (Ω0 : Sub Ω)
   := ∀ A (A0 : Sub A), ∃ χ,
@@ -38,7 +38,7 @@ Qed.
 
 End SubObjectClassifier.
 
-Class HasSubObjectClassifier `(C : Cat) `(!HasTerminal C) :=
+Class HasSubObjectClassifier (C : Cat) (HT : HasTerminal C) :=
   { SubOC : Ob
   ; truth : Hom 1 SubOC
   ; classifier_universal : is_subobject_classifier SubOC (term_Sub truth)
@@ -47,14 +47,14 @@ Class HasSubObjectClassifier `(C : Cat) `(!HasTerminal C) :=
 Arguments classifier_universal {_ _ _} _ _.
 
 Definition char {C : Cat} `{HT : !HasTerminal C}
-    `{!HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y) : Hom Y SubOC :=
+    `{HSC : !HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y) : Hom Y SubOC :=
   (classifier_universal Y {| sub := X; sub_mono := m |}).1.
 
 Notation Ω := SubOC.
 Notation χ := char.
 
 Theorem classifier_char_unique {C : Cat} `{HT : !HasTerminal C}
-    `{!HasSubObjectClassifier C HT} {X Y} {m : Mono X Y}
+    `{HSC : !HasSubObjectClassifier C HT} {X Y} {m : Mono X Y}
   : is_unique (λ c, is_pullback c truth X m !) (χ m).
 Proof.
   destruct (classifier_universal Y {| sub := X; sub_mono := m |}).2

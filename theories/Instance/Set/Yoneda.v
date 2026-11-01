@@ -39,7 +39,7 @@ Program Canonical Nat_SetS {C D : Cat}
   |} .
 
 Section Yoneda.
-Context `{C : Cat}.
+Context {C : Cat}.
 Context {F : Functor C SetCat}.
 
 Program Canonical yoneda_func {X}

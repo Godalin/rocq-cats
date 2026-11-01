@@ -5,7 +5,7 @@ From Cats Require Import Cat.Core Cat.Terminal.
 (** * Morphisms *)
 
 Section Morphism.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 (** ** Monomorphisms
 
@@ -83,7 +83,7 @@ Next Obligation. apply mono_comp.
   apply mor_mono. apply mor_mono.
 Qed.
 
-Program Canonical Mono_term `{!HasTerminal C} {X} (f : Hom 1 X) 
+Program Canonical Mono_term `{HT : !HasTerminal C} {X} (f : Hom 1 X)
   := {|mor := f |}.
 Next Obligation. intros Y x y _.
   rewrite term_η. rewrite (term_η y). reflexivity.
@@ -121,7 +121,7 @@ Program Canonical id_Sub {X : Ob} : Sub X :=
   {|sub := X; sub_mono := Mono_id |}.
 
 Program Canonical term_Sub
-    `{!HasTerminal C} {X : Ob} (f : Hom 1 X) : Sub X :=
+    `{HT : !HasTerminal C} {X : Ob} (f : Hom 1 X) : Sub X :=
   {|sub := 1; sub_mono := f |}.
 
 Definition Sub_le Z (i j : Sub Z)

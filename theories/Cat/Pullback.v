@@ -10,7 +10,7 @@ Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
       ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
       → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
 
-Class HasPullback `(C : Cat) :=
+Class HasPullback (C : Cat) :=
   { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
   ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
   ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
@@ -18,18 +18,18 @@ Class HasPullback `(C : Cat) :=
     : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
   }.
 
-Definition pb {C : Cat} `{!HasPullback C} {X Y Z}
+Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z}
     {f : Hom X Z} {g : Hom Y Z} {P}
     (p1 : Hom P X) (p2 : Hom P Y) (HP : f ∘ p1 ≈ g ∘ p2)
   : Hom P (Pb f g) :=
   (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).1.
 
-Theorem pullback_comm {C : Cat} `{!HasPullback C}
+Theorem pullback_comm {C : Cat} `{HPb : !HasPullback C}
     {X Y Z} {f : Hom X Z} {g : Hom Y Z}
   : f ∘ pb1 f g ≈ g ∘ pb2 f g.
 Proof. exact (fst (pullback_universal (f := f) (g := g))). Qed.
 
-Theorem pullback_mediator_unique {C : Cat} `{!HasPullback C}
+Theorem pullback_mediator_unique {C : Cat} `{HPb : !HasPullback C}
     {X Y Z} {f : Hom X Z} {g : Hom Y Z}
     {P} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
   : is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2)
@@ -75,7 +75,7 @@ Qed.
 
 
 Section Pullback.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Theorem pullback_unique {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}
     {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}
@@ -130,7 +130,7 @@ Defined.
 
 
 Section Pullback.
-Context `{C : Cat} `{H : !HasPullback C}.
+Context {C : Cat} `{H : !HasPullback C}.
 Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
 
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
@@ -175,7 +175,7 @@ Hint Rewrite @pb_β2 : cat.
 (** ** Pullback Properties *)
 
 Section Pullback.
-Context `{C : Cat}.
+Context {C : Cat}.
 Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
 (** Pullback alone [id]. *)
@@ -228,7 +228,7 @@ End Pullback.
 
 
 Section Product.
-Context `{C : Cat}.
+Context {C : Cat}.
 Context `{HT : !HasTerminal C} `{HPb : !HasPullback C}.
 Context {X Y : Ob}.
 

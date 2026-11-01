@@ -7,7 +7,7 @@ Definition is_product {C : Cat} (X Y P : Ob)
   ∀ Z (f : Hom Z X) (g : Hom Z Y),
     ∃ h : Hom Z P, is_unique (λ h, p ∘ h ≈ f ∧ q ∘ h ≈ g) h.
 
-Class HasProduct `(Cat) :=
+Class HasProduct (C : Cat) :=
   { Prod : Ob → Ob → Ob
   ; π1 {X Y} : Hom (Prod X Y) X
   ; π2 {X Y} : Hom (Prod X Y) Y
@@ -21,20 +21,20 @@ Arguments π2 {_ _ _ _}.
 Arguments product_universal {_ _ _ _} _ _ _.
 
 (** The Type-valued universal property supplies the chosen mediator. *)
-Definition pair {C : Cat} `{!HasProduct C} {X Y Z}
+Definition pair {C : Cat} `{HP : !HasProduct C} {X Y Z}
     (f : Hom Z X) (g : Hom Z Y) : Hom Z (Prod X Y) :=
   (product_universal Z f g).1.
 
 Arguments pair {_ _ _ _ _} _ _.
 
-Theorem product_pair_unique {C : Cat} `{!HasProduct C} {X Y Z}
+Theorem product_pair_unique {C : Cat} `{HP : !HasProduct C} {X Y Z}
     {f : Hom Z X} {g : Hom Z Y}
   : is_unique (λ h, π1 ∘ h ≈ f ∧ π2 ∘ h ≈ g) (pair f g).
 Proof. exact (product_universal Z f g).2. Qed.
 
 Arguments product_pair_unique {_ _ _ _} _ _ _.
 
-Global Instance product_pair_proper {C : Cat} `{!HasProduct C} {X Y Z}
+Global Instance product_pair_proper {C : Cat} `{HP : !HasProduct C} {X Y Z}
   : Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,Prod X Y]) pair.
 Proof.
   intros f f' Hf g g' Hg.
@@ -59,7 +59,7 @@ Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
 
 
 Section Product.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Tactic Notation "elim_product" constr(H) "as" ident(h) :=
   let Hh1 := fresh "H" h "1" in
@@ -103,7 +103,7 @@ Notation "P '⦂' '≅' X '×' Y 'with' p1 ',' p2"
 
 
 Section Product.
-Context `{C : Cat} `{!HasProduct C}.
+Context {C : Cat} `{HP : !HasProduct C}.
 
 Proposition product_β1 {X Y Z}
     (f : Hom Z X) (g : Hom Z Y)
@@ -169,7 +169,7 @@ Hint Rewrite @product_β2 : cat.
 
 
 Section Cross.
-Context `{C : Cat} `{H : !HasProduct C}.
+Context {C : Cat} `{H : !HasProduct C}.
 
 Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : Hom (X × Y) (X' × Y')
@@ -185,7 +185,7 @@ Notation "f '×' g" := (cross f g)
 
 
 Section Cross.
-Context `{HasProduct}.
+Context {C : Cat} `{HP : !HasProduct C}.
 
 Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : f × g ≈ ⟨ f ∘ π1 , g ∘ π2 ⟩.
@@ -216,9 +216,9 @@ End Cross.
 
 
 Section Product.
-Context `{C : Cat}.
-Context `{!HasTerminal C}.
-Context `{!HasProduct C}.
+Context {C : Cat}.
+Context `{HT : !HasTerminal C}.
+Context `{HP : !HasProduct C}.
 
 Theorem term_prod_id_l {X}
   : 1 × X ≅ X.

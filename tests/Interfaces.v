@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core Cat.Terminal Cat.Pullback Cat.Morphism ETCS.Sub.
 
 Section Pullback.
-Context `{C : Cat} `{HP : !HasPullback C}.
+Context {C : Cat} `{HP : !HasPullback C}.
 Context {X Y Z P : @Ob C} (f : Hom X Z) (g : Hom Y Z).
 Context (p1 : Hom P X) (p2 : Hom P Y).
 
@@ -12,7 +12,7 @@ Fail Definition mediator_without_commutativity : Hom P (Pb f g) :=
 End Pullback.
 
 Section Classifier.
-Context `{C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjectClassifier C HT}.
+Context {C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjectClassifier C HT}.
 Context {X Y : @Ob C} (m : X ↣ Y).
 
 (** The selected square is not evidence that an arbitrary candidate classifies m. *)

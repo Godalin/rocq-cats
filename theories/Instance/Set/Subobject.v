@@ -14,7 +14,7 @@ From Cats Require Import Instance.Set.Core.
     functor. *)
 
 Section Sub.
-Context `{C : Cat} `{H : !HasPullback C}.
+Context {C : Cat} `{H : !HasPullback C}.
 
 Program Canonical SubObject Z : SetC :=
   {|carrier := Sub Z |}.

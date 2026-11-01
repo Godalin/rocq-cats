@@ -8,7 +8,7 @@ From Cats Require Import ETCS.Sub.
 
 (** Well-Pointed Category: equality on all global points detects equality. *)
 
-Class IsWellPointed (C : Cat) `(!HasTerminal C) :=
+Class IsWellPointed (C : Cat) (HT : HasTerminal C) :=
   { well_pointed_ext {X Y} {f g : Hom X Y}
     : (∀ x : Hom 1 X, f ∘ x ≈ g ∘ x) → f ≈ g
   }.

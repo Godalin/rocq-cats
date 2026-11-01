@@ -10,7 +10,7 @@ From Cats Require Import Instance.Set.Core Instance.Set.Hom.
 Definition Psh C := Fct (op C) SetCat.
 
 Section Psh.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Program Canonical Embedding : Functor C (Psh C) :=
   {|F0 := ℎ2F

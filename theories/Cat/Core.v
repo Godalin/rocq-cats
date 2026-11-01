@@ -116,7 +116,7 @@ Hint Rewrite @comp_id_r : cat.
 
 
 Section CatBasic.
-Context `{Cat} {X Y : Ob}.
+Context {C : Cat} {X Y : Ob}.
 
 Theorem symm_id_l {x : Hom X Y} : x ≈ id ∘ x.
 Proof. symmetry. cato. Qed.
@@ -235,7 +235,7 @@ Infix "×C" := ProdCat
 
 
 Section Cat.
-Context `{Cat}.
+Context {C : Cat}.
 
 (** ** Composition *)
 
@@ -302,7 +302,7 @@ Tactic Notation "elim_iso" ident(f) :=
 
 
 Section Iso.
-Context `{C : Cat}.
+Context {C : Cat}.
 
 Theorem iso_refl {X}
   : X ≅ X.
