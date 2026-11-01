@@ -60,6 +60,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   use a named stash including relevant untracked files, verify it, and report
   restoration instructions. Do not automatically reapply or discard it.
   Distinguish committed-baseline findings from experimental code.
+- Keep related issues current after meaningful changes, commits, and CI results:
+  update checklists, link evidence, and note remaining work. Distinguish
+  committed tests from temporary checks; close issues once acceptance criteria
+  are met.
 - Tools come from the initialized Nix login environment. Check tool resolution
   and versions before diagnosing failures; do not install dependencies or
   change global shell settings to bypass an unloaded environment.
