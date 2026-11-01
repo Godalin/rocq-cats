@@ -142,7 +142,10 @@ This project aims at building ETCS.
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/ContextExtension.v)
   derives their representing-set isomorphisms, naturality and pairing
-  compatibility with substitution. See the [design note](./docs/CwFDesign.md).
+  compatibility with substitution.
+  [ContextConversion](./theories/DTT/ContextConversion.v) derives context-extension
+  isomorphisms along designated type equality, preserving projections and
+  converted generic terms. See the [design note](./docs/CwFDesign.md).
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Chosen universal constructions share the same design: `is_*` describes a
@@ -191,6 +194,7 @@ Local Existing Instance SetCat_CCC.
   context extensions, and pairing β/η laws.
 - [x] Instantiate CwF using a coherent Code/El family of sets.
 - [x] Context-extension representability and its substitution naturality.
+- [x] Context-extension isomorphisms induced by designated type equality.
 - [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor

@@ -19,6 +19,9 @@ Definition ty_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ) : Ty Γ →r Ty Δ :=
 Definition tm_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ) {A : Ty Γ}
   : Tm Γ A →r Tm Δ (ty_sub σ A) := famF_fam (fmap T σ) A.
 
+Definition ty_eq_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ) {A B : Ty Γ} (e : A ≈S B)
+  : ty_sub σ A ≈S ty_sub σ B := @func_proper _ _ (ty_sub σ) _ _ e.
+
 Definition tm_conv {Γ : @Ob C} {A B : Ty Γ} (e : A ≈S B)
   : Tm Γ A →r Tm Γ B := transpS (Tm Γ) e.
 
@@ -54,7 +57,7 @@ Proof. apply transpS_witness_independent. Qed.
 Theorem tm_sub_conv {Γ Δ : @Ob C} (σ : Hom Δ Γ)
     {A B : Ty Γ} (e : A ≈S B) (t : Tm Γ A)
   : tm_sub σ (tm_conv e t) ≈S
-    tm_conv (@func_proper _ _ (ty_sub σ) _ _ e) (tm_sub σ t).
+    tm_conv (ty_eq_sub σ e) (tm_sub σ t).
 Proof. exact (famF_naturality (fmap T σ) e t). Qed.
 
 Theorem tm_sub_id {Γ : @Ob C} {A : Ty Γ} (t : Tm Γ A)
@@ -79,6 +82,8 @@ Notation "A '[' σ ']Ty[' T ']'" := (ty_sub T σ A)
   (at level 8, left associativity, format "A [ σ ]Ty[ T ]") : cat_scope.
 Notation "t '[' σ ']Tm[' T ']'" := (tm_sub T σ t)
   (at level 8, left associativity, format "t [ σ ]Tm[ T ]") : cat_scope.
+Notation "e '[' σ ']Eq[' T ']'" := (ty_eq_sub T σ e)
+  (at level 8, left associativity, format "e [ σ ]Eq[ T ]") : cat_scope.
 Notation "e '▸[' T ']' t" := (tm_conv T e t)
   (at level 40, left associativity, format "e  ▸[ T ]  t") : cat_scope.
 
