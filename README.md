@@ -151,6 +151,10 @@ This project aims at building ETCS.
   coherent decoding family. Types are code-valued maps and terms are coherent
   sections; context extension uses their dependent sum.
 - [DTT](./theories/DTT/): dependent type theory interfaces.
+  [Display](./theories/DTT/Display.v) specifies coherent display maps over a
+  type presheaf, with designated-equality conversion and chosen display pullbacks.
+  [Context/Display](./theories/DTT/Context/Display.v) constructs this choice from
+  context extensions, without requiring a terminal object or arbitrary pullbacks.
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)

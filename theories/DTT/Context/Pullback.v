@@ -103,6 +103,23 @@ Proof.
   symmetry. apply tm_conv_comp.
 Qed.
 
+Theorem context_lift_conv {Γ Δ : @Ob C} (σ : Hom Δ Γ) {A B : Ty T Γ} (e : A ≈S B)
+  : σ^+[T, B] ∘ e[σ]Eq[T]^Ext[T] ≈ e^Ext[T] ∘ σ^+[T, A].
+Proof.
+  pose (p := context_proj T A[σ]Ty[T]).
+  pose (q := context_var T A[σ]Ty[T]).
+  transitivity ⟨σ ∘ p;
+    ty_sub_comp T σ p B ▸[T] (e[σ]Eq[T][p]Eq[T] ▸[T] q)⟩[T, B].
+  - apply context_lift_pair.
+  - transitivity ⟨σ ∘ p;
+      e[σ ∘ p]Eq[T] ▸[T] (ty_sub_comp T σ p A ▸[T] q)⟩[T, B].
+    + apply context_pair_proper.
+      transitivity (transitivity e[σ]Eq[T][p]Eq[T] (ty_sub_comp T σ p B) ▸[T] q).
+      * symmetry. apply tm_conv_comp.
+      * apply tm_conv_comp.
+    + symmetry. apply context_conv_pair.
+Qed.
+
 Theorem context_lift_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ) (A : Ty T Γ)
   : σ^+[T, A] ∘ τ^+[T, A[σ]Ty[T]] ≈
     (σ ∘ τ)^+[T, A] ∘ (ty_sub_comp T σ τ A)^Ext[T].

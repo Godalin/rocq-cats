@@ -2,6 +2,7 @@ From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.Thi
 From Cats Require Import Cat.CCC.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
+From Cats Require Import DTT.Display DTT.Context.Display.
 From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import Cat.Arrow Cat.Section DTT.Context.Section.
@@ -139,6 +140,14 @@ Definition high_eq_context_conversion := @context_conv_iso C T HC.
 Definition low_eq_context_conversion := @context_conv_iso D U HU.
 Definition high_eq_display_pullback := @context_lift_pullback C T HC.
 Definition low_eq_display_pullback := @context_lift_pullback D U HU.
+Definition high_eq_coherent_display : HasDisplay C (FamBaseF ∘F T)
+  := @ContextExtension_HasDisplay C T HC.
+Definition low_eq_coherent_display : HasDisplay D (FamBaseF ∘F U)
+  := @ContextExtension_HasDisplay D U HU.
+Definition high_eq_display_conversion := @display_conv_iso C (FamBaseF ∘F T)
+  high_eq_coherent_display.
+Definition low_eq_display_conversion := @display_conv_iso D (FamBaseF ∘F U)
+  low_eq_coherent_display.
 Definition high_eq_context_maps (X Y : ContextType T) : SetC@{p p}
   := @HomSet (ContextTypeCat T) X Y.
 Definition low_eq_context_maps (X Y : ContextType U) : SetC@{p h}

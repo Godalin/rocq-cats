@@ -83,9 +83,10 @@ context_extension_iff_representation T:
 不要求结构记录、证明字段或自然同构的逆见证原生相等。
 这些结论中的类型、项和替换都来自同一个 T。
 
-## 3. 下一阶段：从显示映射得到这样的 T 和表示
+## 3. 显示映射接口与下一阶段的截面构造
 
-一个可以落实的充分输入如下。它不要求 C 存在所有拉回。
+[Display](../theories/DTT/Display.v) 已将以下输入实现为单个
+`HasDisplay C P` 类。它不要求 C 存在所有拉回，也不要求终对象或预先给定项。
 
 首先选择类型预层 `TyF : Functor (C^op) SetCat`，并对每个 A 选择
 显示映射 `p_A : E_A → Γ`。类型相等 `e : A ≈S B` 作用为指定的
@@ -124,8 +125,37 @@ K 的泛性质随后可提供显示拉回。它不会自动提供代码分类及
 后续实现若能从更小的输入推出上述相干图，就应把它们作为派生定理。
 本阶段不为尚未使用的通用 split-fibration 接口预设额外字段。
 
-这个显示映射方案是下一阶段的充分条件设计，尚未实现。
-已证明的必要充分性是第 2 节固定 T 后的表示准则。
+### 已实现的接口及其 CwF 实例
+
+`Display P A` 与 `display_proj P A` 选择显示对象和投影。
+`display_conv P e` 选择类型相等的垂直作用，字段只要求它保持投影、
+自相等作用为恒等，以及任意复合相等见证的作用等于复合的作用。
+`display_conv_witness_independent`、`display_conv_inv` 和
+`display_conv_iso` 从这些定律导出，不另存见证独立公理或逆映射。
+
+`display_lift P σ A` 选择替换提升；`display_lift_universal` 使用已有的
+`is_pullback` 保存完整泛性质。单位、复合、基底相等和类型相等的四张
+相干图分别对应 `display_lift_id`、`display_lift_comp`、
+`display_lift_equiv` 和 `display_lift_conv`。
+`type_sub_id`、`type_sub_comp`、`type_sub_equiv` 直接取自类型预层的函子律。
+共用记号为：
+
+```text
+A[σ]TyF[P]    e[σ]EqF[P]
+Γ ▹D[P] A    e^D[P]    σ^D[P,A]
+```
+
+[Context/Display](../theories/DTT/Context/Display.v) 给出普通定义
+`ContextExtension_HasDisplay`：对任意族值预层 T 和选定上下文扩张，
+其类型预层为 `FamBaseF ∘F T`，显示对象、投影、转换与提升复用原有构造。
+[Context/Pullback](../theories/DTT/Context/Pullback.v) 补充
+`context_lift_conv`，证明类型相等与替换提升相容。
+两种预层表达方式可能产生不同的相等见证，实例使用已有的见证独立性对齐，
+不比较见证本身。该选定显示结构须显式启用，不注册为全局实例。
+
+接口及上述正向构造已实现；由截面构造族值预层及配对预层表示仍是下一步。
+因此，此处尚未声称从任意 comprehension 恢复 CwF。
+已证明的必要充分性仍是第 2 节固定 T 后的表示准则。
 
 ## 4. 宇宙与验证
 
@@ -141,4 +171,9 @@ K 的泛性质随后可提供显示拉回。它不会自动提供代码分类及
 并用一个逐点取反项的非平凡自然自同构改变表示：恢复的泛变量和配对确实随之改变，
 确认反向构造使用了传入的表示。还检查两方向的选定结构需显式启用。
 这些实例及假设输出保留在仓库外；没有新增永久布尔测试模块。
+显示映射接口的后续验证也复用同一原则：在已有宇宙检查中增加四项，
+覆盖两种大小排列下的选定显示结构及派生同构。21 项新的临时假设检查
+均无额外公理；布尔实例中，两种相等见证的非平凡转换、逆映射、替换提升
+和拉回中介都可直接计算。临时检查还确认选定结构不会被自动启用，
+且小类型预层可配合两种较大的上下文 hom／相等层级。
 具体提交的多版本 CI 状态记录在 [#13](https://github.com/Godalin/rocq-cats/issues/13)。
