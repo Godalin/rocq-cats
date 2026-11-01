@@ -110,7 +110,7 @@ context_extension_iff_representation T:
 不要求结构记录、证明字段或自然同构的逆见证原生相等。
 这些结论中的类型、项和替换都来自同一个 T。
 
-## 3. 显示映射接口与下一阶段的截面构造
+## 3. 显示映射接口与截面项预层
 
 [Display](../theories/DTT/Display.v) 已将以下输入实现为单个
 `HasDisplay C P` 类。它不要求 C 存在所有拉回，也不要求终对象或预先给定项。
@@ -180,7 +180,40 @@ A[σ]TyF[P]    e[σ]EqF[P]
 两种预层表达方式可能产生不同的相等见证，实例使用已有的见证独立性对齐，
 不比较见证本身。该选定显示结构须显式启用，不注册为全局实例。
 
-接口及上述正向构造已实现；由截面构造族值预层及配对预层表示仍是下一步。
+### 已实现的截面项及其替换
+
+[一般截面操作](../theories/Cat/Section.v) 只使用任意范畴中的交换三角形
+或给定拉回方块。`section_of_map_resp f H`（`f ▷Sec[H] s`）将截面 s
+送到 f ∘ s，并证明尊重截面及底层映射的相等、恒等和复合定律。
+H 是保持投影的见证；定律不比较它或右逆见证的原生相等。
+`section_of_pullback_resp HP`（`s[HP]Sec`）分解锥 `(id, s ∘ σ)`，
+保存中介态射和右逆见证。`section_of_pullback_β` 给出顶边方程，
+`section_of_pullback_unique` 刻画这个截面的唯一性。
+构造和 β 见证均透明，不要求 `HasPullback C`。
+
+[Display/Section](../theories/DTT/Display/Section.v) 复用这些操作：
+
+```text
+DisplayTerms P Γ A := Sec(display_proj P A)
+DisplayTyTm P Γ   := (P Γ, DisplayTerms P Γ)
+DisplayTyTmF P    : Functor (C^op) FamCat
+
+e ▸D[P] s      := e^D[P] ▷Sec[display_conv_proj e] s
+s[σ]TmD[P]     := s[display_lift_universal σ A]Sec
+```
+
+类型 A 由截面的类型推断。`display_term_sub_β` 给出
+`σ^D[P,A] ∘ s[σ]TmD[P].1 ≈ s.1 ∘ σ`。
+`display_term_sub_conv`、`display_term_sub_id`、`display_term_sub_comp`
+和 `display_term_sub_equiv` 分别由四张显示相干图及拉回唯一性推出。
+这些定律组成 `display_sub_fam` 和最终的 `DisplayTyTmF P`，
+不增加项转换或替换公理，也不预先假设上下文扩张。
+其类型广集及类型替换保持为 P 的原有数据。
+构造只需显式启用输入的 `HasDisplay C P`，不选择其他结构。
+
+接口、正向构造及反向截面项预层现已实现。
+**下一步仍是证明显示对象表示这个新预层的配对数据**，
+再复用第 2 节的表示准则恢复上下文扩张；终对象仍须独立选择。
 因此，此处尚未声称从任意 comprehension 恢复 CwF。
 已证明的必要充分性仍是第 2 节固定 T 后的表示准则。
 
@@ -189,8 +222,13 @@ A[σ]TyF[P]    e[σ]EqF[P]
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
 现有 [Universes.v](../tests/Universes.v) 新增四项检查，覆盖两种大小排列下的
 双向结构转换及 `RepresentedCwF`。
-未来以全部截面作为项时，截面载体要容纳态射及其右逆见证；
+以全部截面作为项时，截面载体要容纳态射及其右逆见证；
 不能无条件把它放回更小的预设项层级，也不引入 resizing。
+截面构造现已显式分离载体层级 s 与范畴定律的辅助层级 l：
+只需 hom 层级和相等见证层级均不高于 s，不要求 l 不高于 s。
+若 hom 与相等见证分别处于 h、p，截面相等仍处于 p；
+两种大小排列分别容许 `Sec(p_A) : SetC@{p p}` 和 `SetC@{h p}`。
+`DisplayTerms` 和最终组装的函子保留这一区分。
 
 本轮在 Rocq 9.0.1 / Dune 3.21.0 下完成完整构建。
 表示准则首次实现时，18 项临时构造／模型假设检查均无额外公理。
@@ -212,3 +250,14 @@ A[σ]TyF[P]    e[σ]EqF[P]
 一个带布尔相等见证的临时单对象模型直接归约 `representation_at` 返回的见证；
 为此，Yoneda 的求值互逆律使用透明的自然性和尊重性组合，避免不透明证明阻断计算。
 具体提交的多版本 CI 状态记录在 [#13](https://github.com/Godalin/rocq-cats/issues/13)。
+
+截面项预层这一轮在已有宇宙检查中增加四项，覆盖最终函子的两种
+hom／相等大小排列，并要求项载体可小于范畴定律的辅助层级。
+临时检查还覆盖小类型预层配合较大的上下文 hom、相等及对象层级，
+并确认输入的显示结构须显式启用。
+布尔 Code/El 显示模型验证两种相等见证的非平凡转换、逆转换、
+连续替换，以及组装后的 CwF 项接口操作均能直接归约。
+通用截面操作的计算、共享记号的作用域及连续使用也在临时检查中验证。
+33 项新的临时 `Print Assumptions` 检查均无额外公理。
+这些计算实例和假设输出不加入永久测试；完整构建使用
+Rocq 9.0.1 / Dune 3.21.0，CI 状态另在 issue 中记录。

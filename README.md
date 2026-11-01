@@ -47,7 +47,9 @@ This project aims at building ETCS.
   [Arrow](./theories/Cat/Arrow.v) constructs `Arr C`, with commuting squares,
   domain/codomain functors, and the functor induced by a natural transformation.
   [Section](./theories/Cat/Section.v) defines `Sec(p)` for any category,
-  retaining right-inverse witnesses and comparing the section maps.
+  retaining right-inverse witnesses and comparing the section maps. It maps
+  sections along commuting maps over a base (`f ▷Sec[H] s`) and pulls them
+  back along a given universal square (`s[HP]Sec`).
   [SliceReindex](./theories/Cat/SliceReindex.v) gives pullback functors on slices,
   with specified natural identity and composition comparisons; write `A[f]C`.
   [SliceArrow](./theories/Cat/SliceArrow.v) embeds slice maps as squares over the
@@ -160,6 +162,10 @@ This project aims at building ETCS.
   type presheaf, with designated-equality conversion and chosen display pullbacks.
   [Context/Display](./theories/DTT/Context/Display.v) constructs this choice from
   context extensions, without requiring a terminal object or arbitrary pullbacks.
+  [Display/Section](./theories/DTT/Display/Section.v) constructs `DisplayTyTmF P`
+  in the reverse direction: terms are sections of the display projections,
+  conversion is `e ▸D[P] s`, and substitution is `s[σ]TmD[P]`.
+  Representing its pair presheaves remains a separate step.
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)

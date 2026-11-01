@@ -490,6 +490,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - [DTT/Context/Pullback.v](../theories/DTT/Context/Pullback.v)：替换提升、相干性及显示投影的拉回泛性质。
 - [DTT/Comprehension.v](../theories/DTT/Comprehension.v)：显示映射形式的类型总范畴及对应的 comprehension 结构。
 - [DTT/Context/Section.v](../theories/DTT/Context/Section.v)：项与显示投影截面的广集同构及替换相容性。
+- [DTT/Display/Section.v](../theories/DTT/Display/Section.v)：从相干显示映射构造截面项族及类型—项函子，不预设 CwF。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 
@@ -513,7 +514,8 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 固定族值预层 T 后，已可从配对预层的选定表示反向构造上下文扩张及 CwF，
 并证明投影、变量、配对及表示的往返相容性。
 [反向构造设计](./CwFRecovery.md) 区分这个已实现的必要充分准则，
-以及下一阶段从显示映射和拉回数据构造 T 与表示所需的相干性。
+以及从显示映射和拉回数据恢复的路线。截面项及其族值预层 T 已实现，
+下一步是证明显示对象表示它的配对预层，并据此恢复上下文扩张。
 从任意 comprehension 提取这些输入及不同呈现之间的比较仍是后续工作。
 
 任意 comprehension 到 CwF 的转换、split replacement、

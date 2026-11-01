@@ -3,6 +3,7 @@ From Cats Require Import Cat.CCC.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
+From Cats Require Import DTT.Display.Section.
 From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import Cat.Arrow Cat.Section DTT.Context.Section.
@@ -168,6 +169,14 @@ Definition high_eq_display_conversion := @display_conv_iso C (FamBaseF ∘F T)
   high_eq_coherent_display.
 Definition low_eq_display_conversion := @display_conv_iso D (FamBaseF ∘F U)
   low_eq_coherent_display.
+Definition high_eq_display_presheaf := @DisplayTyTmF C (FamBaseF ∘F T)
+  high_eq_coherent_display.
+Definition low_eq_display_presheaf := @DisplayTyTmF D (FamBaseF ∘F U)
+  low_eq_coherent_display.
+Definition high_eq_display_terms (Γ : @Ob C) (A : Ty T Γ) : SetC@{p p}
+  := Tm high_eq_display_presheaf Γ A.
+Definition low_eq_display_terms (Γ : @Ob D) (A : Ty U Γ) : SetC@{p h}
+  := Tm low_eq_display_presheaf Γ A.
 Definition high_eq_context_maps (X Y : ContextType T) : SetC@{p p}
   := @HomSet (ContextTypeCat T) X Y.
 Definition low_eq_context_maps (X Y : ContextType U) : SetC@{p h}
