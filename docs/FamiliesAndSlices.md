@@ -107,7 +107,29 @@ separate, with the same `p <= u` bound. The regression check in
 natural sum comparison. Inverse mediators and the identity/pasting universal
 properties remain transparent.
 
-The inverse fiber comparison and the full unit/associativity coherence of the
-indexed equivalence remain follow-up work. These results do not assert a
+The same module constructs `slice_fam_reindex_nat_iso f` in the other direction:
+
+```text
+FamReindexF f ∘F SliceFamF Y ≅N SliceFamF X ∘F SliceReindexF f.
+```
+
+Over `x`, an element `(a,r : q a ≈S f x)` is sent to the pullback point
+`(x,(a,r⁻¹))`, with reflexive membership over `x`. In the inverse direction,
+a point `(y,(a,s))` over an equivalent `x` keeps `a` and combines `s⁻¹`
+with the image of `y ≈S x` under `f`. The specified inverse remains
+computational, and neither direction compares membership proofs.
+
+Two equations connect the sum and fiber comparisons to the existing round trips:
+
+- `slice_fam_reindex_fiber_total`: either compare the sum first and pull back
+  the slice round trip, or take the sum of the fiber comparison and then
+  apply the slice round trip. Both paths give the same map in the slice.
+- `slice_fam_reindex_total_fiber`: start with fibers of the sum of a reindexed
+  family. Taking the fiber image of the sum comparison, the inverse fiber
+  comparison, and the reindexed family round trip agrees with the direct
+  family round trip. This uses transport witness independence.
+
+The full unit/associativity coherence of the indexed equivalence remains
+follow-up work. These results do not assert a
 strict CwF or the global fibred equivalence proposed in
 [issue #13](https://github.com/Godalin/rocq-cats/issues/13).

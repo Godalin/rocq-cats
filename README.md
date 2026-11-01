@@ -92,6 +92,8 @@ This project aims at building ETCS.
   [FamSliceReindex](./theories/Instance/Set/FamSliceReindex.v) proves that taking
   total spaces commutes with reindexing up to a specified natural isomorphism,
   compatible with the identity and composition comparisons on both sides.
+  It also compares fiber formation with reindexing, compatibly with the sum
+  comparison and the two round-trip natural isomorphisms.
   [FamReindex](./theories/Instance/Set/FamReindex.v) gives canonical reindexing
   morphisms whose total-space squares satisfy the pullback universal property.
   Identity and composition of reindexing are compared by explicit family
