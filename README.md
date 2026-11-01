@@ -134,6 +134,9 @@ This project aims at building ETCS.
   closed structure `SetCat_CCC : CCC SetCat` without additional axioms.
   [Nat](./theories/Instance/Set/Nat.v) provides a natural-numbers object with
   computational recursion.
+  [CwF](./theories/Instance/Set/CwF.v) constructs `SetCwF El` from a chosen
+  coherent decoding family. Types are code-valued maps and terms are coherent
+  sections; context extension uses their dependent sum.
 - [DTT](./theories/DTT/): dependent type theory interfaces.
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
@@ -184,7 +187,7 @@ Local Existing Instance SetCat_CCC.
   between coherent sections and sections of display projections.
 - [x] Abstract CwF interface with designated equality, coherent substitution,
   context extensions, and pairing β/η laws.
-- [ ] Instantiate CwF using a coherent Code/El family of sets.
+- [x] Instantiate CwF using a coherent Code/El family of sets.
 - [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor

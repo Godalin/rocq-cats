@@ -4,4 +4,4 @@
 
 (alias
  (name runtest)
- (deps Interfaces.vo Universes.vo))
+ (deps Interfaces.vo Universes.vo Computations.vo))

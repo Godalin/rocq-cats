@@ -10,9 +10,9 @@ Definition FunEq {X Y : SetC} (f g : X → Y) := ∀ x : X, f x ≈S g x.
 Infix "≈f" := FunEq (at level 50).
 
 Program Instance FunEq_Equivalence {X Y} : Equivalence (@FunEq X Y).
-Next Obligation. intros f x. reflexivity. Qed.
-Next Obligation. intros f g H x. symmetry. apply H. Qed.
-Next Obligation. intros f g h H1 H2 x. transitivity (g x); auto. Qed.
+Next Obligation. intros f x. reflexivity. Defined.
+Next Obligation. intros f g H x. symmetry. apply H. Defined.
+Next Obligation. intros f g h H1 H2 x. transitivity (g x); auto. Defined.
 
 Record FunS_resp (X Y : SetC) :=
   { func :> carrier X → carrier Y
@@ -28,17 +28,17 @@ Next Obligation. split.
   - intros f x. reflexivity.
   - intros f g H x. symmetry. apply H.
   - intros f g h H1 H2 x. transitivity (g x); auto.
-Qed.
+Defined.
 
 Infix "→S" := FunS (at level 99).
 
 Program Definition id_resp {X} : X →r X :=
   {| func (x : X) := x |}.
-Next Obligation. intros x x' Hx. exact Hx. Qed.
+Next Obligation. intros x x' Hx. exact Hx. Defined.
 
 Program Definition comp_resp {X Y Z} (f : Y →r Z) (g : X →r Y) : X →r Z :=
   {| func (x : X) := f (g x) |}.
-Next Obligation. intros x x' Hx. rewrite Hx. reflexivity. Qed.
+Next Obligation. intros x x' Hx. rewrite Hx. reflexivity. Defined.
 
 Infix "∘r" := comp_resp (at level 50).
 

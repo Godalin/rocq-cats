@@ -1,8 +1,23 @@
 From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.
 From Cats Require Import Instance.Set.FamCat Instance.Set.FamSection.
 From Cats Require Import Instance.Set.FamFibration.
+From Cats Require Import Instance.Set.FamFixed.
 
 (** * Family Morphisms Acting on Sections *)
+
+(** A fiberwise map over a fixed base acts on coherent sections. *)
+Program Definition section_fam_map_resp {X : SetC} {A B : FamS X} (φ : A →Fam B)
+  : SectionS A →r SectionS B :=
+  {| func s := {| section x := fam_map φ x (s x) |} |}.
+Next Obligation.
+  transitivity (fam_map φ y (transpS A p (s x))).
+  - symmetry. apply fam_map_naturality.
+  - apply func_proper. apply section_proper.
+Defined.
+Next Obligation. intros s t H x. apply func_proper. exact (H x). Defined.
+
+Infix "▷Fam" := section_fam_map_resp
+  (at level 40, left associativity) : cat_scope.
 
 Program Definition section_map {U V : FamC} (φ : FamF U V) (s : SectionS_resp U)
   : SectionS_resp V[famF_base φ]S := {| section x := famF_fam φ x (s x) |}.

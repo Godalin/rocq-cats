@@ -48,7 +48,7 @@ Proof.
     + transitivity (transpS V (q x) (famF_fam g x a)).
       * apply func_proper. exact (Hp x a).
       * exact (Hq x a).
-Qed.
+Defined.
 
 (** ** Identity and Composition *)
 

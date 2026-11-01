@@ -3,6 +3,7 @@ From Cats Require Import Cat.CCC.
 From Cats Require Import DTT.CwF.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
+From Cats Require Import Instance.Set.Fam Instance.Set.CwF.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
 Section SetLevels.
@@ -69,3 +70,21 @@ Definition distinct_setoid_pullbacks : HasPullback (SetCat@{u p _ _ _ _ _})
 Definition distinct_sum_reindex := fam_sum_reindex_nat_iso f.
 Definition distinct_fam_slice_equivalence := fam_slice_equiv X.
 End SetoidPullbackLevels.
+
+(** Codes can be larger than contexts. Decoded fibers determine the two
+    context levels, which remain independent in either ordering. *)
+Section CodeModelLevels.
+Universe u p c q l.
+Constraint Set < u.
+Constraint u < p.
+Constraint p < c.
+Constraint c < q.
+Constraint q < l.
+Context (Code : SetC@{c q}) (Code' : SetC@{q c}).
+Context (El : FamS@{c q l u p} Code) (El' : FamS@{c q l p u} Code).
+Context (El'' : FamS@{q c l u p} Code').
+
+Definition high_eq_code_model : CwF (SetCat@{u p _ _ _ _ _}) := SetCwF El.
+Definition low_eq_code_model : CwF (SetCat@{p u _ _ _ _ _}) := SetCwF El'.
+Definition reverse_code_model : CwF (SetCat@{u p _ _ _ _ _}) := SetCwF El''.
+End CodeModelLevels.
