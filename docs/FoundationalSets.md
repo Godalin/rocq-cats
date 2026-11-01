@@ -113,6 +113,13 @@ signatures and foundational `Print Assumptions` output. They are not extra
 permanent model or test modules.
 
 Locally, `dune build @all @runtest @install` passes with Rocq 9.0.1,
-OCaml 5.3.0 and Dune 3.21.0. The foundational checks introduce no additional
-axioms. The supported-version CI matrix still needs to run on the migration;
-local validation does not establish that matrix's result.
+OCaml 5.3.0 and Dune 3.21.0. The 39 temporary assumption checks of the set
+foundation, migrated categorical constructions and CwF-oriented interface
+report no additional axioms.
+
+For migration commit
+[`b167881`](https://github.com/Godalin/rocq-cats/commit/b1678816d55bfabe4ba7b2ce5efb60a6fe5045f8),
+[CI run 41279743771](https://github.com/Godalin/rocq-cats/actions/runs/41279743771)
+completed successfully for all four images: `rocq/rocq-prover:9.0`, `9.1`,
+`latest` and `dev`. This records the result for that commit; it does not
+predict CI results for later changes.
