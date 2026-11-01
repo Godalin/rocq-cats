@@ -156,6 +156,11 @@ This project aims at building ETCS.
   universal property. [ContextExtension](./theories/DTT/ContextExtension.v)
   derives their representing-set isomorphisms, naturality and pairing
   compatibility with substitution.
+  [ContextRepresentation](./theories/DTT/ContextRepresentation.v) recovers context
+  extensions from chosen representations of the pair presheaves, compares both
+  round trips, and assembles a CwF when a terminal context is chosen.
+  The [recovery design](./docs/CwFRecovery.md) separates this criterion from the
+  additional data needed to recover types and coherent terms from comprehension.
   [ContextConversion](./theories/DTT/ContextConversion.v) derives context-extension
   isomorphisms along designated type equality, preserving projections and
   converted generic terms. [ContextPullback](./theories/DTT/ContextPullback.v)

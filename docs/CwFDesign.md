@@ -485,6 +485,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 
 - [DTT/CwF.v](../theories/DTT/CwF.v)：已实现的 CwF 抽象接口和派生结构律。
 - [DTT/ContextExtension.v](../theories/DTT/ContextExtension.v)：配对数据预层、表示广集同构及自然性。
+- [DTT/ContextRepresentation.v](../theories/DTT/ContextRepresentation.v)：从选定表示反向恢复上下文扩张及 CwF，并比较双向往返。
 - [DTT/ContextConversion.v](../theories/DTT/ContextConversion.v)：沿类型相等的扩张同构及其相干性。
 - [DTT/ContextPullback.v](../theories/DTT/ContextPullback.v)：替换提升、相干性及显示投影的拉回泛性质。
 - [DTT/Comprehension.v](../theories/DTT/Comprehension.v)：显示映射形式的类型总范畴及对应的 comprehension 结构。
@@ -509,7 +510,11 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - 构造到箭头范畴的 comprehension 函子，证明当前 CwF 显示方块呈现的全忠实性。
 - 推广任意范畴的截面广集，证明 CwF 项与显示投影截面的同构、配对及替换相容性。
 
-反向构造 CwF 及不同 comprehension 呈现之间的比较仍是后续工作。
+固定族值预层 T 后，已可从配对预层的选定表示反向构造上下文扩张及 CwF，
+并证明投影、变量、配对及表示的往返相容性。
+[反向构造设计](./CwFRecovery.md) 区分这个已实现的必要充分准则，
+以及下一阶段从显示映射和拉回数据构造 T 与表示所需的相干性。
+从任意 comprehension 提取这些输入及不同呈现之间的比较仍是后续工作。
 
 任意 comprehension 到 CwF 的转换、split replacement、
 以及 Σ/Π/Id 的支持分别陈述附加假设后再开展。

@@ -1,6 +1,7 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
 From Cats Require Import DTT.CwF DTT.ContextExtension DTT.ContextConversion.
+From Cats Require Import DTT.ContextRepresentation.
 From Cats Require Import DTT.ContextPullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import Cat.Arrow Cat.Section DTT.ContextSection.
@@ -148,4 +149,8 @@ Definition high_eq_full_comprehension := @cwf_comprehension_fully_faithful C T H
 Definition low_eq_full_comprehension := @cwf_comprehension_fully_faithful D U HU.
 Definition high_eq_term_sections := @context_term_section_iso C T HC.
 Definition low_eq_term_sections := @context_term_section_iso D U HU.
+Definition high_eq_context_representations := @context_extension_iff_representation C T.
+Definition low_eq_context_representations := @context_extension_iff_representation D U.
+Definition high_eq_represented_cwf := @RepresentedCwF C T.
+Definition low_eq_represented_cwf := @RepresentedCwF D U.
 End ContextRepresentationLevels.
