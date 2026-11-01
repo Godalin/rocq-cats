@@ -1,9 +1,9 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
-From Cats Require Import DTT.CwF.
+From Cats Require Import DTT.CwF DTT.ContextExtension.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
-From Cats Require Import Instance.Set.Fam Instance.Set.CwF.
+From Cats Require Import Instance.Set.Fam Instance.Set.FamCat Instance.Set.CwF.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
 Section SetLevels.
@@ -88,3 +88,29 @@ Definition high_eq_code_model : CwF (SetCat@{u p _ _ _ _ _}) := SetCwF El.
 Definition low_eq_code_model : CwF (SetCat@{p u _ _ _ _ _}) := SetCwF El'.
 Definition reverse_code_model : CwF (SetCat@{u p _ _ _ _ _}) := SetCwF El''.
 End CodeModelLevels.
+
+(** Representation must not identify hom, term or equality-witness levels. *)
+Section ContextRepresentationLevels.
+Universe o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Functor (C^op) FamCat) (U : Functor (D^op) FamCat).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+
+Definition high_eq_rep_types (Γ : @Ob C) : SetC@{a c} := Ty T Γ.
+Definition high_eq_rep_terms (Γ : @Ob C) (A : Ty T Γ) : SetC@{b d} := Tm T Γ A.
+Definition low_eq_rep_types (Γ : @Ob D) : SetC@{c a} := Ty U Γ.
+Definition low_eq_rep_terms (Γ : @Ob D) (A : Ty U Γ) : SetC@{d b} := Tm U Γ A.
+Definition high_eq_context_pairs (Γ Δ : @Ob C) (A : Ty T Γ) : SetC@{b d}
+  := ContextPairS T A Δ.
+Definition low_eq_context_pairs (Γ Δ : @Ob D) (A : Ty U Γ) : SetC@{d b}
+  := ContextPairS U A Δ.
+Definition high_eq_representation := @context_extension_nat_iso C T HC.
+Definition low_eq_representation := @context_extension_nat_iso D U HU.
+End ContextRepresentationLevels.

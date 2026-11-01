@@ -140,7 +140,9 @@ This project aims at building ETCS.
 - [DTT](./theories/DTT/): dependent type theory interfaces.
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
-  universal property. See the [design note](./docs/CwFDesign.md).
+  universal property. [ContextExtension](./theories/DTT/ContextExtension.v)
+  derives their representing-set isomorphisms, naturality and pairing
+  compatibility with substitution. See the [design note](./docs/CwFDesign.md).
 - [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
 
 Chosen universal constructions share the same design: `is_*` describes a
@@ -188,6 +190,7 @@ Local Existing Instance SetCat_CCC.
 - [x] Abstract CwF interface with designated equality, coherent substitution,
   context extensions, and pairing β/η laws.
 - [x] Instantiate CwF using a coherent Code/El family of sets.
+- [x] Context-extension representability and its substitution naturality.
 - [x] Pullbacks
 - [ ] Limits
 - [ ] Adjoint Functor
