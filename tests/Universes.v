@@ -1,5 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
+From Cats Require Import DTT.CwF.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.FamSlice Instance.Set.FamSliceReindex.
 
@@ -35,6 +36,8 @@ Definition high_eq_functors := Fct C C.
 Definition low_eq_functors := Fct D D.
 Definition high_eq_ccc := CCC C.
 Definition low_eq_ccc := CCC D.
+Definition high_eq_cwf := CwF C.
+Definition low_eq_cwf := CwF D.
 Definition high_eq_thin : Bicat@{o h p Set _ _ _} := ThinBicat C.
 Definition low_eq_thin := ThinBicat D.
 End CategoryLevels.
