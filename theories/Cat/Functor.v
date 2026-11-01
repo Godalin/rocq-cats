@@ -120,9 +120,11 @@ Program Definition OpF {C D : Cat} (F : Functor C D)
   : Functor (C ^op) (D ^op) :=
   {| F0 X := F X
    ; F1 X Y f := fmap F f |}.
-Next Obligation. intros u v Huv. apply functor_fmap_proper. exact Huv. Qed.
-Next Obligation. apply functor_id. Qed.
-Next Obligation. apply functor_comp. Qed.
+Next Obligation.
+  intros u v Huv. exact (@functor_fmap_proper C D F Y X u v Huv).
+Qed.
+Next Obligation. exact (@functor_id C D F X). Qed.
+Next Obligation. exact (@functor_comp C D F Z Y X g f). Qed.
 
 Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
 

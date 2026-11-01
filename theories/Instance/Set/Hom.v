@@ -2,16 +2,16 @@ From Cats Require Import Cat.Core Cat.Functor Cat.Natural Instance.Set.Core.
 
 (** * Hom-Functors *)
 
-Definition ℎ1 {C : Cat} (X : Ob) := λ Y, Hom X Y.
-Definition ℎ2 {C : Cat} (X : Ob) := λ Y, Hom Y X.
+Definition ℎ1 {C : Cat} (X : Ob) := λ Y, HomSet X Y.
+Definition ℎ2 {C : Cat} (X : Ob) := λ Y, HomSet Y X.
 
 Program Definition ℎ1F {C : Cat} (X : Ob) : Functor C SetCat :=
   {|F0 := ℎ1 X
   ; F1 Y Y' (f : Hom Y Y') := f _*
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
-Next Obligation. intros f. simpl. cato. Qed.
-Next Obligation. intros x. simpl. apply comp_assoc. Qed.
+Next Obligation. intros f. exact (@comp_id_l C _ _ f). Qed.
+Next Obligation. intros x. exact (@comp_assoc C _ _ _ _ f g x). Qed.
 
 Notation "'Hom(' X  ',-)'" := (ℎ1F X).
 
@@ -21,8 +21,8 @@ Program Definition ℎ2F {C : Cat} (X : Ob)
   ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
-Next Obligation. intros f. simpl. cato. Qed.
-Next Obligation. intros x. simpl. cacl. Qed.
+Next Obligation. intros f. exact (@comp_id_r C _ _ f). Qed.
+Next Obligation. intros x. symmetry. exact (@comp_assoc C _ _ _ _ x g f). Qed.
 
 Notation "'Hom(-,'  X ')'" := (ℎ2F X).
 
@@ -72,13 +72,13 @@ Proof. intros W h. simpl. apply comp_assoc. Qed.
 
 Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
     (f : (@Hom op C) X X') (g : Hom Y Y')
-  : (Hom X Y) →r (Hom X' Y')
+  : HomSet X Y →r HomSet X' Y'
   := {|func := λ h, g ∘ h ∘ f |}.
 Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
 
 Program Definition HomF {C : Cat}
   : Functor (op C ×C C) SetCat :=
-  {|F0 X := (@Hom C) (fst X) (snd X)
+  {|F0 X := (@HomSet C) (fst X) (snd X)
   ; F1 _ _ f := bi_comp (fst f) (snd f)
   |}.
 Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
@@ -93,7 +93,7 @@ Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat ca
     Full faithfulness makes this specific map an isomorphism of setoids. *)
 
 Program Canonical fmap_resp {C D : Cat} (F : Functor C D) {X Y : @Ob C}
-  : Hom X Y →r Hom (F X) (F Y) :=
+  : HomSet X Y →r HomSet (F X) (F Y) :=
   {| func := fmap F (X := X) (Y := Y) |}.
 
 Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Functor C D)

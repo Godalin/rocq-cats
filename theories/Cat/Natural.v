@@ -97,8 +97,10 @@ Infix "∘Nv" := nt_comp_v
 
 Program Instance Fct (C D : Cat) : Cat :=
   { Ob := Functor C D
-  ; Hom F G := F => G
-  ; HomEq _ _ := NatEq
+  ; HomSet F G :=
+      {| carrier := F => G
+       ; carrier_equiv := NatEq
+       ; carrier_setoid := NatEq_Equivalence |}
   ; id _ := idN
   ; comp _ _ _ := nt_comp_v
   }.
@@ -332,7 +334,7 @@ Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 Program Definition nt_op {C D : Cat} {F G : Functor C D} (α : F => G)
   : OpF G => OpF F :=
   {| nt X := α X |}.
-Next Obligation. symmetry. apply nt_naturality. Qed.
+Next Obligation. symmetry. exact (nt_naturality α f). Qed.
 
 Notation "α '^opN'" := (nt_op α) (at level 35) : cat_scope.
 
@@ -371,12 +373,17 @@ Defined.
 Program Definition OpF_id {C : Cat} : OpF (@IdF C) ≅N (@IdF (C ^op)) :=
   ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
-Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
+Next Obligation.
+  intros X. exists id. split; exact (@comp_id_l C X X (@Cats.Cat.Core.id C X)).
+Defined.
 
 Program Definition OpF_comp {C D E : Cat} (G : Functor D E) (F : Functor C D)
   : OpF (G ∘F F) ≅N (OpF G ∘F OpF F) := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
-Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
+Next Obligation.
+  intros X. exists id. split;
+    exact (@comp_id_l E (G (F X)) (G (F X)) (@Cats.Cat.Core.id E (G (F X)))).
+Defined.
 
 Program Definition OpF_involution {C D : Cat} (F : Functor C D)
   : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) ≅N F :=

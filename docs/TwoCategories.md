@@ -51,6 +51,8 @@ or two-dimensional composition. See the reference manual's
 
 `Cat@{o h p +}` now leaves morphisms in `Type@{h}` and their equivalence
 witnesses in `Type@{p}`, with larger auxiliary universes for law witnesses.
+The homs are now bundled as `HomSet X Y : SetC@{h p}`; `Hom` and `HomEq`
+are derived. See [the foundational set layer](./FoundationalSets.md).
 The inferred signature on Rocq 9.0.1 is `Cat@{o h p l q}`, with
 `h <= q`, `p <= q`, and `q <= l` (and their redundant consequences).
 There is no required inequality between `h` and `p`. `Functor`, `ProdCat`
@@ -82,9 +84,8 @@ still lies strictly above the sizes of the represented categories.
 functors, product categories, functor categories, and the thin construction
 with both `h < p` and `p < h`. The thin model has distinct 1-cell, 2-cell and
 2-cell-equality levels `Set < h < p`; bicategory projections are also checked
-at `o < h < t < p`. Temporary checks additionally cover the reversed bicategory
-ordering and a transparent natural-number category with independently specified
-`h` and `p`. No resizing axiom or universe containing itself is used.
+at `o < h < t < p` and with the 2-cell and equality levels reversed.
+No resizing axiom or universe containing itself is used.
 
 ## Strictness relative to a 1-cell setoid
 

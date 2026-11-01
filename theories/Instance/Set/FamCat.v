@@ -118,9 +118,10 @@ Qed.
 
 Global Instance FamCat : Cat :=
   {| Ob := FamC
-   ; Hom := FamF
-   ; HomEq _ _ := FamFEq
-   ; HomEq_Equivalence _ _ := FamFEq_Equivalence
+   ; HomSet U V :=
+       {| carrier := FamF U V
+        ; carrier_equiv := FamFEq
+        ; carrier_setoid := FamFEq_Equivalence |}
    ; id _ := fam_id
    ; comp _ _ _ := fam_comp
    ; comp_proper _ _ _ := fam_comp_proper

@@ -12,8 +12,10 @@ Local Open Scope nat_scope.
 
 Program Definition NatHomCat : Cat :=
   {| Ob := unit
-   ; Hom _ _ := nat
-   ; HomEq _ _ := eq
+   ; HomSet _ _ :=
+       {| carrier := nat
+        ; carrier_equiv := eq
+        ; carrier_setoid := eq_equivalence |}
    ; id _ := 0
    ; comp _ _ _ m n := m + n
    |}.

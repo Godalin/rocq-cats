@@ -8,9 +8,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 - Preserve Type-valued relations and computational witnesses; do not replace
   them with Prop-only interfaces or introduce unproved assumptions.
-- Use categorical/setoid equivalence and prove operations respectful (`Proper`).
-  Compare functors by natural isomorphism. Do not require equality of functions
-  or proof fields when the mathematical interface only needs equivalence.
+- Sets mean setoids; strict laws use their specified equality. Rocq's `eq`
+  is one concrete choice (e.g. for `nat`). Use categorical/setoid equality and
+  prove operations respectful (`Proper`). Compare functors by natural isomorphism.
+  Do not require equality of functions or proof fields when the mathematical
+  interface only needs equivalence.
 - Families require coherent transport. Distinguish strict equations from laws
   up to equivalence/isomorphism, and invertible higher cells from strict equality.
   Specify the coherence needed by each construction.
@@ -50,8 +52,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Organization and workflow
 
-- Abstract interfaces and general constructions belong with their theories;
-  concrete models belong under `Instance/<base>/`. Keep `Instance.Set.Core`
+- Foundational sets and respectful maps belong under `Set/`, without category
+  dependencies. Abstract interfaces and general constructions belong with their
+  theories; concrete models belong under `Instance/<base>/`. Keep `Instance.Set.Core`
   dependent only on `Cat.Core`; import extensions individually.
 - Inspect Git status and preserve user work. When asked to save experiments,
   use a named stash including relevant untracked files, verify it, and report

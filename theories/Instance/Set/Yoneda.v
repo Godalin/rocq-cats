@@ -67,7 +67,7 @@ Qed.
 Next Obligation.
   intros a a' Ha Y. simpl.
   intros f. simpl in f.
-  rewrite Ha. cato.
+  exact (@func_proper _ _ (fmap F f) a a' Ha).
 Qed.
 
 Theorem yoneda_lemma_iso {X : @Ob C}

@@ -35,7 +35,7 @@ Next Obligation.
 Defined.
 
 Program Definition SetCat_HasPullback@{u p +}
-  : HasPullback (SetCat@{_ _ _ _ _ u p}) :=
+  : HasPullback (SetCat@{u p _ _ _ _ _}) :=
   {| Pb X Y Z f g := PbS f g
    ; pb1 X Y Z f g := pb1_resp f g
    ; pb2 X Y Z f g := pb2_resp f g |}.

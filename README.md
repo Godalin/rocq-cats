@@ -29,9 +29,15 @@ This project aims at building ETCS.
 
 ## Repository layout
 
+- [Set](./theories/Set/): foundational sets with designated Type-valued equality.
+  [Core](./theories/Set/Core.v) defines `SetC`;
+  [Morphism](./theories/Set/Morphism.v) defines respectful maps and function sets.
+  This layer does not depend on categories; see the
+  [foundation and migration note](./docs/FoundationalSets.md).
 - [Cat](./theories/Cat/): categorical interfaces and general constructions.
   [Core](./theories/Cat/Core.v) contains categories, duality, product categories,
-  and isomorphisms. Universal constructions are provided separately by
+  and isomorphisms. Each hom is a `HomSet : SetC`; `Hom` and `HomEq` are derived.
+  Universal constructions are provided separately by
   [Terminal](./theories/Cat/Terminal.v) (including initial objects),
   [Product](./theories/Cat/Product.v),
   [Exponential](./theories/Cat/Exponential.v), and
@@ -76,8 +82,8 @@ This project aims at building ETCS.
   to give pullback squares. Write `A ^ext[K]` for the extension and `π[K] A`
   for its display projection.
 - [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
-  as sets. [Core](./theories/Instance/Set/Core.v) defines sets, respectful maps,
-  and their category; [Product](./theories/Instance/Set/Product.v),
+  as sets. [Core](./theories/Instance/Set/Core.v) defines their category `SetCat`;
+  [Product](./theories/Instance/Set/Product.v),
   [Pullback](./theories/Instance/Set/Pullback.v), and
   [Fam](./theories/Instance/Set/Fam.v) provide independent extensions.
   [FamCat](./theories/Instance/Set/FamCat.v) assembles coherent families and

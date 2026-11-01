@@ -9,8 +9,10 @@ Local Open Scope bicat_scope.
 
 Program Definition BicatHomotopyCat (K : Bicat) : Cat :=
   {| Ob := ObB K
-   ; Hom := @Cell1 K
-   ; HomEq X Y := @iso (HomCat X Y)
+   ; HomSet X Y :=
+       {| carrier := Cell1 X Y
+        ; carrier_equiv := @iso (HomCat X Y)
+        ; carrier_setoid := iso_Equivalence |}
    ; id X := 𝟙₁ X
    ; comp X Y Z g f := g ∘₁ f
    |}.

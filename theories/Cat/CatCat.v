@@ -10,9 +10,10 @@ From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
 
 Global Instance CatCat : Cat :=
   {| Ob := Cat
-   ; Hom := Functor
-   ; HomEq _ _ := NatIso
-   ; HomEq_Equivalence _ _ := NatIso_Equivalence
+   ; HomSet C D :=
+       {| carrier := Functor C D
+        ; carrier_equiv := NatIso
+        ; carrier_setoid := NatIso_Equivalence |}
    ; id _ := IdF
    ; comp _ _ _ := CompF
    ; comp_proper _ _ _ := CompF_proper

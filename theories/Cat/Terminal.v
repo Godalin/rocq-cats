@@ -44,8 +44,7 @@ Proof.
   elim_terminal (HT T) as hu.
   pose (Hid := Hhu_unique id).
   pose (Hh := Hhu_unique h).
-  etransitivity; auto.
-  symmetry; auto.
+  transitivity hu; [exact Hh | symmetry; exact Hid].
 Qed.
 
 Theorem terminal_unique {T1 T2 : Ob}

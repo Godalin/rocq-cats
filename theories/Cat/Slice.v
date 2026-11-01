@@ -37,8 +37,9 @@ Infix "∘/C" := slice_comp
 
 Program Definition Slice (C : Cat) (X : @Ob C) : Cat :=
   {| Ob := SliceOb C X
-   ; Hom := SliceHom
-   ; HomEq A B f g := slice_map f ≈ slice_map g
+   ; HomSet A B :=
+       {| carrier := SliceHom A B
+        ; carrier_equiv f g := slice_map f ≈ slice_map g |}
    ; id := slice_id
    ; comp A B D := slice_comp
    |}.

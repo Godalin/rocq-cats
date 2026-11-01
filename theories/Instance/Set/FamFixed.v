@@ -49,8 +49,10 @@ Infix "∘Fam" := fam_map_comp
 
 Program Definition FamSCat (X : SetC) : Cat :=
   {| Ob := FamS X
-   ; Hom := FamMap
-   ; HomEq A B := FamMapEq
+   ; HomSet A B :=
+       {| carrier := A →Fam B
+        ; carrier_equiv := FamMapEq
+        ; carrier_setoid := FamMapEq_Equivalence |}
    ; id := fam_map_id
    ; comp A B D := fam_map_comp
    |}.

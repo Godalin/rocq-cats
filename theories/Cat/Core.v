@@ -1,4 +1,4 @@
-From Cats Require Export Meta.
+From Cats.Set Require Export Morphism.
 
 Declare Scope ob_scope.
 Delimit Scope ob_scope with ob.
@@ -20,10 +20,10 @@ Open Scope cat_scope.
     Equivalence/properness laws may live in larger auxiliary universes. *)
 Class Cat@{o h p +} :=
   { Ob : Type@{o}
-  ; Hom : Ob → Ob → Type@{h}
-
+  ; HomSet : Ob → Ob → SetC@{h p}
+  ; Hom (X Y : Ob) : Type@{h} := carrier (HomSet X Y)
   ; HomEq {X Y} : Hom X Y → Hom X Y → Type@{p}
-  ; HomEq_Equivalence {X Y} :: Equivalence (@HomEq X Y)
+    := carrier_equiv (HomSet X Y)
 
   ; id {X} : Hom X X
 
@@ -42,6 +42,14 @@ Class Cat@{o h p +} :=
       (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
     : HomEq (comp (comp f g) h) (comp f (comp g h))
   }.
+
+(** Equality and its laws come from the hom-set, not from an independent
+    relation field. [Hom] and [HomEq] are computed fields, so they retain
+    the existing coercion interfaces without adding constructor arguments. *)
+Global Instance HomEq_Equivalence {C : Cat} {X Y : @Ob C}
+  : Equivalence (@HomEq C X Y) := carrier_setoid (HomSet X Y).
+
+Definition Hom_SetC {C : Cat} {X Y : @Ob C} : SetC := HomSet X Y.
 
 Arguments HomEq {_ _%_ob _%_ob} _%_hom _%_hom.
 Arguments comp_id_l {_ _ _} _.
@@ -157,14 +165,25 @@ Arguments comp_post {_ _ _ _} _ _ /.
 Notation "f ^*" := (comp_pre f) (at level 35).
 Notation "f _*" := (comp_post f) (at level 35).
 
+(** Composition acts respectfully on either hom-set. *)
+Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
+    {f : Hom Y Z} : HomSet X Y →r HomSet X Z :=
+  {| func := f _* |}.
+
+Program Canonical comp_r_resp {C : Cat} {X Y Z : Ob}
+    {f : Hom X Y} : HomSet Y Z →r HomSet X Z :=
+  {| func := f ^* |}.
+Next Obligation.
+  intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.
+Qed.
+
 
 
 (** ** Dual Category *)
 
 Program Definition op (C : Cat) : Cat :=
  {|Ob := Ob
- ; Hom X Y := Hom Y X
- ; HomEq _ _ := HomEq
+ ; HomSet X Y := HomSet Y X
  ; id _ := id
  ; comp _ _ _ f g := comp g f
  |}.
@@ -195,8 +214,10 @@ Proof. destruct p. reflexivity. Qed.
 
 Program Definition ProdCat (C D : Cat) : Cat :=
   {|Ob := @Ob C * @Ob D
-  ; Hom X Y := Hom (fst X) (fst Y) * Hom (snd X) (snd Y)
-  ; HomEq X Y := ProdEq HomEq HomEq
+  ; HomSet X Y :=
+      {| carrier := Hom (fst X) (fst Y) * Hom (snd X) (snd Y)
+       ; carrier_equiv := ProdEq HomEq HomEq
+       ; carrier_setoid := ProdEq_Equivalence _ _ |}
   ; id _ := (id, id)
   ; comp _ _ _ f g := (fst f ∘ fst g, snd f ∘ snd g)
   |}.

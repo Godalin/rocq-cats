@@ -62,7 +62,7 @@ Proof. simpl. auto. Qed.
 
 Program Canonical SubF : Functor (op C) SetCat :=
   {|F0 Z := SubObject Z
-  ; F1 Y X f := {| func := Sub_fmap f |}
+  ; F1 Y X (f : (@Hom C) X Y) := {| func := Sub_fmap f |}
   |}.
 Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
   split.
@@ -75,7 +75,8 @@ Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
     exists (pb (pb1 f s) (sr ∘ pb2 f s) Hcone).
     simpl. symmetry. apply pb_β1.
 Qed.
-Next Obligation. intros f g Hfg s. simpl. split.
+Next Obligation.
+  intros f g Hfg s. change ((@Hom C) Y X) in f, g. simpl. split.
   - assert (Hcone : g ∘ Sub_fmap f s ≈ s ∘ pb2 f s).
     { simpl. rewrite <- Hfg. apply pullback_comm. }
     exists (pb (Sub_fmap f s) (pb2 f s) Hcone).
@@ -93,6 +94,7 @@ Next Obligation.
   exists (pb s id Hcone). simpl. symmetry. apply pb_β1.
 Qed.
 Next Obligation.
+  change ((@Hom C) Z Y) in f. change ((@Hom C) Y X) in g.
   intros s. simpl. split.
   - assert (Hinner : g ∘ (f ∘ pb1 (g ∘ f) s) ≈ s ∘ pb2 (g ∘ f) s).
     { rewrite <- comp_assoc. apply pullback_comm. }

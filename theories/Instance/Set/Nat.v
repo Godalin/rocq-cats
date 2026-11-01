@@ -26,7 +26,7 @@ Next Obligation.
 Defined.
 
 Program Definition SetCat_HasNaturalNumbersObject@{u r +}
-  : HasNaturalNumbersObject SetCat@{_ _ _ _ _ u r} SetCat_HasTerminal :=
+  : HasNaturalNumbersObject SetCat@{u r _ _ _ _ _} SetCat_HasTerminal :=
   {| NNO := NatS; zero := zero_resp; succ := succ_resp |}.
 Next Obligation.
   intros X z s. exists (nat_rec_resp z s). split.

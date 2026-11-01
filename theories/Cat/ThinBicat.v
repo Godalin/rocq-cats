@@ -9,8 +9,9 @@ From Cats Require Import Cat.Natural Cat.CatCat Cat.BicatHomotopy.
 
 Program Definition ThinHomCat (C : Cat) (X Y : @Ob C) : Cat :=
   {| Ob := Hom X Y
-   ; Hom f g := f ≈ g
-   ; HomEq _ _ _ _ := unit
+   ; HomSet f g :=
+       {| carrier := f ≈ g
+        ; carrier_equiv _ _ := unit |}
    ; id f := reflexivity f
    ; comp f g h β α := transitivity α β
    |}.
