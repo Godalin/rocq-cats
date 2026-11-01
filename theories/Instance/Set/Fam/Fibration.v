@@ -27,7 +27,7 @@ Defined.
 (** Reindexing is universal among family morphisms above a specified base
     factor. Uniqueness retains base equivalence and compares fibers by transport. *)
 Definition fam_reindex_cartesian {X : SetC} (U : FamC) (f : X →r famC_base U)
-  : fam_reindex U f ⦂ cartesian(FamBaseF).
+  : fam_reindex U f ⦂ Cart(FamBaseF).
 Proof.
   intros V g u H. exists (fam_reindex_factor U f g u H). split.
   - split.

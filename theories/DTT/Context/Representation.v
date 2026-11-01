@@ -31,17 +31,17 @@ Proof.
 Defined.
 
 Definition context_representation_generic {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : E ⦂ represents_op ContextPairF T A) : ContextPairS T A E :=
+    (R : E ⦂ Repᵒᵖ ContextPairF T A) : ContextPairS T A E :=
   representation_op_generic R.
 
 (** Naturality determines every component from the generic pair. *)
 Theorem context_representation_at {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : E ⦂ represents_op ContextPairF T A) {Δ : @Ob C} (h : Hom Δ E)
+    (R : E ⦂ Repᵒᵖ ContextPairF T A) {Δ : @Ob C} (h : Hom Δ E)
   : R.1 Δ h ≈S (context_representation_generic A R)[h]Pair[T, A].
 Proof. exact (representation_op_at R h). Defined.
 
 Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : E ⦂ represents_op ContextPairF T A)
+    (R : E ⦂ Repᵒᵖ ContextPairF T A)
   : is_context_extension T A E (context_representation_generic A R).1
       (context_representation_generic A R).2.
 Proof.
@@ -58,7 +58,7 @@ Defined.
 Class HasContextRepresentation :=
   { ContextRep {Γ : @Ob C} (A : Ty T Γ) : @Ob C
   ; context_representation {Γ : @Ob C} (A : Ty T Γ)
-    : ContextRep A ⦂ represents_op ContextPairF T A
+    : ContextRep A ⦂ Repᵒᵖ ContextPairF T A
   }.
 
 (** Both conversions are explicit choices, never selected by import. *)

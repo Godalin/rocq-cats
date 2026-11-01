@@ -11,17 +11,18 @@ Definition is_cartesian {E B : Cat} (P : Functor E B)
     fmap P f ∘ u ≈ fmap P g
     → ∃ h : Hom Z X, is_unique (λ h : Hom Z X, fmap P h ≈ u ∧ f ∘ h ≈ g) h.
 
-Notation "f '⦂' 'cartesian(' P ')'" := (is_cartesian P f)
-  (at level 50, no associativity, format "f  ⦂  cartesian( P )") : cat_scope.
+Notation "f '⦂' 'Cart(' P ')'" := (is_cartesian P f)
+  (at level 50, no associativity,
+    format "f  ⦂  Cart( P )") : cat_scope.
 
 Definition cartesian_factor {E B : Cat} {P : Functor E B}
-    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ cartesian(P))
+    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g) : Hom Z X :=
   (Hf Z g u H).1.
 
 Theorem cartesian_factor_unique {E B : Cat} {P : Functor E B}
-    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ cartesian(P))
+    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
   : is_unique (λ h : Hom Z X, fmap P h ≈ u ∧ f ∘ h ≈ g)
@@ -29,21 +30,21 @@ Theorem cartesian_factor_unique {E B : Cat} {P : Functor E B}
 Proof. exact (Hf Z g u H).2. Qed.
 
 Theorem cartesian_factor_base {E B : Cat} {P : Functor E B}
-    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ cartesian(P))
+    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
   : fmap P (cartesian_factor Hf g u H) ≈ u.
 Proof. exact (fst (this _ _ (cartesian_factor_unique Hf g u H))). Qed.
 
 Theorem cartesian_factor_comp {E B : Cat} {P : Functor E B}
-    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ cartesian(P))
+    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
   : f ∘ cartesian_factor Hf g u H ≈ g.
 Proof. exact (snd (this _ _ (cartesian_factor_unique Hf g u H))). Qed.
 
 Theorem cartesian_factor_proper {E B : Cat} {P : Functor E B}
-    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ cartesian(P))
+    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} {g g' : Hom Z Y} {u u' : Hom (P Z) (P X)}
     (H : fmap P f ∘ u ≈ fmap P g) (H' : fmap P f ∘ u' ≈ fmap P g')
   : g ≈ g' → u ≈ u'
@@ -56,7 +57,7 @@ Qed.
 
 Definition cartesian_proper {E B : Cat} {P : Functor E B}
     {X Y : @Ob E} {f f' : Hom X Y} (Hff' : f ≈ f')
-    (Hf : f ⦂ cartesian(P)) : f' ⦂ cartesian(P).
+    (Hf : f ⦂ Cart(P)) : f' ⦂ Cart(P).
 Proof.
   intros Z g u H.
   assert (H' : fmap P f ∘ u ≈ fmap P g) by (rewrite Hff'; exact H).
@@ -68,7 +69,7 @@ Proof.
 Defined.
 
 Definition cartesian_id {E B : Cat} (P : Functor E B) (X : @Ob E)
-  : (@id X) ⦂ cartesian(P).
+  : (@id X) ⦂ Cart(P).
 Proof.
   intros Z g u H. rewrite functor_id, comp_id_l in H.
   exists g. split.
@@ -78,8 +79,8 @@ Defined.
 
 Definition cartesian_comp {E B : Cat} {P : Functor E B}
     {X Y W : @Ob E} {f : Hom X Y} {g : Hom Y W}
-    (Hg : g ⦂ cartesian(P)) (Hf : f ⦂ cartesian(P))
-  : (g ∘ f) ⦂ cartesian(P).
+    (Hg : g ⦂ Cart(P)) (Hf : f ⦂ Cart(P))
+  : (g ∘ f) ⦂ Cart(P).
 Proof.
   intros Z q u H.
   assert (Hgq : fmap P g ∘ (fmap P f ∘ u) ≈ fmap P q).
@@ -98,7 +99,7 @@ Defined.
 (** Equality of both the base factors and their composites determines the
     mediating morphism. This is the cancellation supplied by cartesianness. *)
 Theorem cartesian_cancel {E B : Cat} {P : Functor E B}
-    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ cartesian(P))
+    {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} {h k : Hom Z X}
   : fmap P h ≈ fmap P k → f ∘ h ≈ f ∘ k → h ≈ k.
 Proof.
@@ -115,7 +116,7 @@ Qed.
     The comparison in the base is supplied as data, without identifying objects. *)
 Definition cartesian_factor_is_iso {E B : Cat} {P : Functor E B}
     {X X' Y : @Ob E} {f : Hom X Y} {g : Hom X' Y}
-    (Hf : f ⦂ cartesian(P)) (Hg : g ⦂ cartesian(P))
+    (Hf : f ⦂ Cart(P)) (Hg : g ⦂ Cart(P))
     (u : Hom (P X) (P X')) (Hu : is_iso u)
     (H : fmap P g ∘ u ≈ fmap P f)
   : is_iso (cartesian_factor Hg f u H).
@@ -144,7 +145,7 @@ Defined.
 
 Definition cartesian_unique {E B : Cat} {P : Functor E B}
     {X X' Y : @Ob E} {f : Hom X Y} {g : Hom X' Y}
-    (Hf : f ⦂ cartesian(P)) (Hg : g ⦂ cartesian(P))
+    (Hf : f ⦂ Cart(P)) (Hg : g ⦂ Cart(P))
     (u : Hom (P X) (P X')) (Hu : is_iso u)
     (H : fmap P g ∘ u ≈ fmap P f) : X ≅ X' :=
   (cartesian_factor Hg f u H; cartesian_factor_is_iso Hf Hg u Hu H).
@@ -161,7 +162,7 @@ Class HasCartesianLift {E B : Cat} (P : Functor E B) :=
   ; cartesian_lift_comm {Y X} (f : Hom X (P Y))
     : fmap P (cartesian_lift f) ≈ f ∘ eq_to_hom (cartesian_lift_base f)
   ; cartesian_lift_universal {Y X} (f : Hom X (P Y))
-    : cartesian_lift f ⦂ cartesian(P)
+    : cartesian_lift f ⦂ Cart(P)
   }.
 
 Arguments CartesianLift {_ _ _ _ _ _} _.

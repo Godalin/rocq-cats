@@ -117,7 +117,7 @@ Next Obligation. apply context_lift_proj. Defined.
 Definition context_map_pullback_cartesian {X Y : ContextType T} (f : ContextMap T X Y)
     (HP : is_pullback (context_map_base f) (context_proj T Y.2)
       (X.1 ▹[T] X.2) (context_proj T X.2) (context_map_ext f))
-  : f ⦂ cartesian(CwFBaseF T).
+  : f ⦂ Cart(CwFBaseF T).
 Proof.
   intros Z g u H.
   assert (Hcone : context_map_base f ∘ (u ∘ context_proj T Z.2) ≈
@@ -138,7 +138,7 @@ Proof.
 Defined.
 
 Definition context_type_reindex_cartesian (Y : ContextType T) {Γ : @Ob C}
-    (σ : Hom Γ Y.1) : context_type_reindex Y σ ⦂ cartesian(CwFBaseF T) :=
+    (σ : Hom Γ Y.1) : context_type_reindex Y σ ⦂ Cart(CwFBaseF T) :=
   context_map_pullback_cartesian (context_type_reindex Y σ) (context_lift_pullback T σ Y.2).
 
 (** Enable the chosen lifts explicitly; their base identification is reflexive. *)
@@ -178,7 +178,7 @@ Program Definition CwFComprehension : Comprehension (CwFBaseF T) :=
    ; comprehension_universal := cwf_comprehension_universal |}.
 
 Theorem context_map_cartesian_iff_pullback {X Y : ContextType T} (f : ContextMap T X Y)
-  : f ⦂ cartesian(CwFBaseF T) ↔
+  : f ⦂ Cart(CwFBaseF T) ↔
     is_pullback (context_map_base f) (context_proj T Y.2)
       (X.1 ▹[T] X.2) (context_proj T X.2) (context_map_ext f).
 Proof.

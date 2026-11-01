@@ -32,7 +32,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
   Design shared, exported notation alongside new operations; avoid local
   notation aliases. Prefer UTF-8 and pair/projection notation. Check scopes,
-  precedence, and chaining.
+  precedence, and chaining. Use compact property/structure tags after `⦂`.
 - Category extensions take a named category parameter. Declare chosen
   dependencies by name; use named `!Has*` constraints in clients. Bundle
   inherited structures with `has*`/`is*` fields and `::`.

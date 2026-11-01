@@ -61,7 +61,7 @@ pair(σ,t) := (R_Δ)⁻¹(σ,t)
 `context_extension_of_representation` 保留上述中介态射为透明计算见证。
 
 这部分现已复用 [Representable](../theories/Instance/Set/Representable.v)
-中的一般理论。`is_universal_element F u` 要求任意 y 都唯一写成 `F(f)(u)`；
+中的一般理论。`u ⦂ Univ(F)` 要求任意 y 都唯一写成 `F(f)(u)`；
 `represents_iff_universal_element` 与反变版本
 `represents_op_iff_universal_element` 将它与自然同构表示互相构造。
 `representation_op_generic` 给出上述 (p,q)，
@@ -74,6 +74,11 @@ CwF 层只通过 `context_pair_data_iff` 将它对接到含类型转换的配对
 两个表示对象有选定同构，且在保持通用元素的态射中唯一。
 这不要求任意两个对象同构都相等，也不比较表示记录或逆见证的原生相等。
 表示与通用元素之间的往返按自然变换相等及广集相等比较。
+
+`⦂` 统一表示指定数据具有右侧的性质或结构。表示记号为
+`X ⦂ Rep F`（协变）和 `X ⦂ Repᵒᵖ P`（反变）；
+通用元素写为 `u ⦂ Univ(F)`，笛卡尔态射写为 `f ⦂ Cart(P)`。
+这些是作用于原有定义的共享记号，均属于 `cat_scope`。
 
 [Yoneda](../theories/Instance/Set/Yoneda.v) 的两条互逆定律独立于同构的
 集合层级包装。自然变换集可能比 F 的值更大，故 `yoneda_lemma_iso`

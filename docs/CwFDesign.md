@@ -292,7 +292,7 @@ ContextMap T (Γ,A) (Δ,B) :=
 
 ```text
 context_map_cartesian_iff_pullback:
-  f ⦂ cartesian(CwFBaseF T)
+  f ⦂ Cart(CwFBaseF T)
   ↔ is_pullback σ p_B (Γ ▹[T] A) p_A h
 ```
 
@@ -323,7 +323,7 @@ context_map_cartesian_iff_pullback:
 
 ```text
 arrow_cartesian_iff_pullback f:
-  f ⦂ cartesian(ArrowCodF C)
+  f ⦂ Cart(ArrowCodF C)
   ↔ is_pullback (arrow_bottom f) (arrow_map B)
       (arrow_dom A) (arrow_map A) (arrow_top f)
 ```

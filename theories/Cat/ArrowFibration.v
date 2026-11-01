@@ -8,7 +8,7 @@ Context {C : Cat}.
 Definition arrow_pullback_cartesian {A B : ArrowOb C} (f : ArrowHom A B)
     (HP : is_pullback (arrow_bottom f) (arrow_map B)
       (arrow_dom A) (arrow_map A) (arrow_top f))
-  : f ⦂ cartesian(ArrowCodF C).
+  : f ⦂ Cart(ArrowCodF C).
 Proof.
   intros D g u H.
   assert (Hcone : arrow_bottom f ∘ (u ∘ arrow_map D) ≈
@@ -30,7 +30,7 @@ Defined.
 
 (** Test cartesianness on the identity arrow of each cone's vertex. *)
 Definition arrow_cartesian_pullback {A B : ArrowOb C} (f : ArrowHom A B)
-    (Hf : f ⦂ cartesian(ArrowCodF C))
+    (Hf : f ⦂ Cart(ArrowCodF C))
   : is_pullback (arrow_bottom f) (arrow_map B)
       (arrow_dom A) (arrow_map A) (arrow_top f).
 Proof.
@@ -51,7 +51,7 @@ Proof.
 Defined.
 
 Theorem arrow_cartesian_iff_pullback {A B : ArrowOb C} (f : ArrowHom A B)
-  : f ⦂ cartesian(ArrowCodF C) ↔
+  : f ⦂ Cart(ArrowCodF C) ↔
     is_pullback (arrow_bottom f) (arrow_map B)
       (arrow_dom A) (arrow_map A) (arrow_top f).
 Proof. split; [apply arrow_cartesian_pullback | apply arrow_pullback_cartesian]. Defined.
@@ -75,7 +75,7 @@ Program Definition arrow_reindex (B : ArrowOb C) {X : @Ob C}
 Next Obligation. symmetry. apply pullback_comm. Defined.
 
 Definition arrow_reindex_cartesian (B : ArrowOb C) {X : @Ob C}
-    (σ : Hom X (arrow_cod B)) : arrow_reindex B σ ⦂ cartesian(ArrowCodF C) :=
+    (σ : Hom X (arrow_cod B)) : arrow_reindex B σ ⦂ Cart(ArrowCodF C) :=
   arrow_pullback_cartesian (arrow_reindex B σ) pullback_universal.
 
 (** This choice is enabled explicitly, not registered by import. *)

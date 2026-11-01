@@ -5,28 +5,17 @@ From Cats Require Import Instance.Set.Core Instance.Set.Hom.
 
 (** ** Representable Functor *)
 
-Section Representable.
-Context {C : Cat}.
-
-Definition represents (F : Functor C SetCat) (X : @Ob C)
+Definition represents {C : Cat} (F : Functor C SetCat) (X : @Ob C)
   := Hom( X ,-) ≅N F.
 
-Notation "X '⦂' 'represents' F" := (represents F X)
-  (at level 50).
+Notation "X '⦂' 'Rep' F" := (represents F X)
+  (at level 50, no associativity, format "X  ⦂  Rep  F") : cat_scope.
 
-Definition is_representable (F : Functor C SetCat)
-  := ∃ X, X ⦂ represents F.
+Definition is_representable {C : Cat} (F : Functor C SetCat)
+  := ∃ X, X ⦂ Rep F.
 
-Context {F : Functor C SetCat} {G : Functor (C^op) SetCat}.
-Context {X : @Ob C}.
-
-Proposition represents_self : X ⦂ represents Hom(X,-).
+Proposition represents_self {C : Cat} {X : @Ob C} : X ⦂ Rep Hom(X,-).
 Proof. exists idN. intros Y. exists id. cato. Defined.
-
-End Representable.
-
-Notation "X '⦂' 'represents' F" := (represents F X)
-  (at level 50).
 
 
 

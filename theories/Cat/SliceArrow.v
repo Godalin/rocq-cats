@@ -48,7 +48,7 @@ Definition slice_reindex_square {X Y : @Ob C} (f : Hom X Y) (A : SliceOb C Y)
   : ArrowHom (A[f]C)^Arr A^Arr := arrow_reindex A^Arr f.
 
 Definition slice_reindex_square_cartesian {X Y : @Ob C} (f : Hom X Y)
-    (A : SliceOb C Y) : slice_reindex_square f A ⦂ cartesian(ArrowCodF C) :=
+    (A : SliceOb C Y) : slice_reindex_square f A ⦂ Cart(ArrowCodF C) :=
   arrow_reindex_cartesian A^Arr f.
 
 Program Definition SliceReindexSquareN {X Y : @Ob C} (f : Hom X Y)

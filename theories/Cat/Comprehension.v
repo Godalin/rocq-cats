@@ -7,7 +7,7 @@ From Cats Require Import Cat.Arrow.
     to pullback squares. This property is separate from the choice of lifts. *)
 
 Definition is_comprehension {E B : Cat} {P T : Functor E B} (π : T => P) :=
-  ∀ X Y (f : Hom X Y), f ⦂ cartesian(P)
+  ∀ X Y (f : Hom X Y), f ⦂ Cart(P)
     → is_pullback (fmap P f) (π Y) (T X) (π X) (fmap T f).
 
 Record Comprehension {E B : Cat} (P : Functor E B) :=

@@ -143,6 +143,8 @@ This project aims at building ETCS.
   [Representable](./theories/Instance/Set/Representable.v) relates covariant and
   contravariant representations to universal elements over any category,
   with transparent mediators and unique comparisons preserving the generic element.
+  Write `X ⦂ Rep F`, `X ⦂ Repᵒᵖ P` and `u ⦂ Univ(F)` for these structures;
+  cartesian morphisms use the same annotation style, `f ⦂ Cart(P)`.
   [Terminal](./theories/Instance/Set/Terminal.v) and
   [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
   [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map
