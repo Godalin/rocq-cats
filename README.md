@@ -236,6 +236,18 @@ From Cats Require Import Instance.Set.CCC.
 Local Existing Instance SetCat_CCC.
 ```
 
+The [CCC/STLC research note](./docs/CCCAndSTLC.md) explains the interpretation
+of simple types, contexts, substitution and βη equations in an arbitrary CCC.
+The reusable [exponential laws](./theories/Cat/Exponential.v) and
+[hom-setoid correspondence](./theories/Instance/Set/ExponentialHom.v) are implemented;
+the general [adjunction theory](./theories/Cat/Adjunction.v) starts with natural
+hom isomorphisms and derives unit/counit and composition, including `(-) × A ⊣ (-)^A`.
+The [limit theory](./docs/Limits.md) derives limit functors, the diagonal
+adjunction and preservation of limits by right adjoints from universal properties.
+STLC syntax, its interpretation and the free-CCC completeness theorem remain
+tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
+[#20](https://github.com/Godalin/rocq-cats/issues/20).
+
 ## TODOs
 
 - [x] Coherent families: base and total-space functors, with the
@@ -258,8 +270,8 @@ Local Existing Instance SetCat_CCC.
 - [x] Coherent substitution lifts and pullbacks of context-extension projections.
 - [x] A CwF comprehension structure with display-square morphisms and a cartesian/pullback characterization.
 - [x] Pullbacks
-- [ ] Limits
-- [ ] Adjoint Functor
+- [x] Limits: cones, universal properties, limit functors and diagonal adjunctions
+- [x] Adjunctions: unit/counit, natural hom correspondence, and composition
 - [ ] Univalence Category
 - [ ] Enriched Category
 - [ ] ETCS constructions

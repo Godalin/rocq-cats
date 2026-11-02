@@ -2,6 +2,7 @@ From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.Thi
 From Cats Require Import Cat.CCC.
 From Cats Require Import Cat.Product Cat.Exponential Instance.Set.ExponentialHom.
 From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
+From Cats Require Import Cat.Diagram Cat.Limit Cat.Limit.Adjunction Cat.Limit.Preservation.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -132,6 +133,33 @@ Definition low_eq_adjunction_hom
   : @NatIso _ SetCat@{e n _ _ _ _ _} (LeftHomF F) (RightHomF G)
   := adjunction_hom_nat_iso A.
 End AdjunctionLevels.
+
+(** Large diagram shapes may raise cone and law levels, without identifying
+    the target category's native hom and equality-witness levels. *)
+Section LimitLevels.
+Universe o h p n l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < n.
+Constraint n < l.
+Context (J : Cat@{n h p l l}).
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context `{HC : !HasLimitsOfShape C J} `{HD : !HasLimitsOfShape D J}.
+
+Definition high_eq_limit_functor := @LimitF J C HC.
+Definition low_eq_limit_functor := @LimitF J D HD.
+Definition high_eq_limit_adjunction := @LimitAdjunction J C HC.
+Definition low_eq_limit_adjunction := @LimitAdjunction J D HD.
+Definition high_eq_limit_converse := limits_iff_diagonal_right_adjoint J C.
+Definition low_eq_limit_converse := limits_iff_diagonal_right_adjoint J D.
+Definition high_eq_cone_category (K : Functor J C) := ConeCat K.
+Definition low_eq_cone_category (K : Functor J D) := ConeCat K.
+
+Context (F : Functor C D) (G : Functor D C) (A : F ⊣ G).
+Context (K : Functor J D) (L : @Ob D) (κ : L ⇒Δ K) (Hκ : is_limit κ).
+Definition mixed_right_adjoint_limit : is_limit (MapCone G κ)
+  := right_adjoint_preserves_limit A Hκ.
+End LimitLevels.
 
 (** The same hom-category must retain distinct 1-cell, 2-cell and
     2-cell-equivalence levels through the bicategory projections. *)

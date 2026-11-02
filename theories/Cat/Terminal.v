@@ -56,7 +56,7 @@ Proof.
   elim_terminal (HT2 T1) as h2.
   exists h2, h1; simpl.
   constructor; apply term_id; auto.
-Qed.
+Defined.
 
 End Terminal.
 
