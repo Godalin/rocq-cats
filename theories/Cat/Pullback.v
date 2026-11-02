@@ -269,7 +269,7 @@ Proof. intros Z p q.
   exists (pb p q Hpq). split.
   - split; [apply pb_β1 | apply pb_β2].
   - intros h Hh. apply pb_η. exact Hh.
-Qed.
+Defined.
 
 Context `{HP : !HasProduct C}.
 

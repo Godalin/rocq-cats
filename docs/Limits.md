@@ -57,6 +57,32 @@ eq⟨q,H⟩             由 H : f ∘ q ≈ g ∘ q 得到的唯一中介
 对象唯一性 `equalizer_unique` 在极限对应模块中复用 `limit_unique`。
 选定结构转换均须显式启用，不通过导入注册全局模型结构。
 
+## 有限极限的两套基础数据
+
+[Limit.Finite](../theories/Cat/Limit/Finite.v) 提供三项显式构造：
+
+- `PullbackProduct`：终对象和拉回给出二元积，即沿 `X → 1 ← Y` 拉回。
+- `ProductEqualizerPullback`：二元积和等化子给出拉回；对
+  `f : X → Z`、`g : Y → Z`，取 `f ∘ π1` 与 `g ∘ π2` 在 `X × Y` 中的等化子。
+- `ProductPullbackEqualizer`：二元积和拉回给出等化子，即将
+  `⟨f,g⟩ : X → Y × Y` 与对角箭头 `⟨id,id⟩ : Y → Y × Y` 拉回。
+
+`PullbackEqualizer` 先使用派生的积，再执行第三项构造，因而只要求终对象和拉回。
+候选证明 `product_equalizer_pullback` 与 `pullback_equalizer` 接受候选泛性质，
+不要求将相应的等化子或拉回注册为全局选定结构。
+积的构造复用已有 `pullback_product`；该证明现在透明，以便提取中介并直接计算。
+
+`finite_limit_bases` 将这些构造组织为 Type 值的双向转换：
+
+```text
+(HasTerminal C ∧ HasPullback C)
+  ↔ (HasTerminal C ∧ HasProduct C ∧ HasEqualizer C)
+```
+
+两个方向保留给定终对象；不要求往返后的结构记录相等。
+这一步比较两套基础数据，尚未定义一般有限形状的接口，
+也尚未形式化由这些数据构造任意有限图式极限的定理。
+
 ## 泛性质与选定结构
 
 [Limit](../theories/Cat/Limit.v) 区分候选与选定极限：

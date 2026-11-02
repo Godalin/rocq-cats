@@ -6,6 +6,7 @@ From Cats Require Import Cat.Diagram Cat.Limit Cat.Limit.Adjunction Cat.Limit.Pr
 From Cats Require Import Graph.Morphism Graph.Path Cat.Free Cat.Diagram.Shape.
 From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
 From Cats Require Import Cat.Terminal Cat.Equalizer Cat.Limit.Terminal Cat.Limit.Equalizer.
+From Cats Require Import Cat.Limit.Finite.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -212,6 +213,14 @@ Definition high_eq_terminal_from_limits := @EmptyLimitsTerminal C (TerminalLimit
 Definition low_eq_terminal_from_limits := @EmptyLimitsTerminal D (TerminalLimits (C := D)).
 Definition high_eq_equalizer_from_limits := @ParallelLimitsEqualizer C (EqualizerLimits (C := C)).
 Definition low_eq_equalizer_from_limits := @ParallelLimitsEqualizer D (EqualizerLimits (C := D)).
+Definition high_eq_products_from_pullbacks : HasProduct C := @PullbackProduct C HTC HPC.
+Definition low_eq_products_from_pullbacks : HasProduct D := @PullbackProduct D HTD HPD.
+Definition high_eq_equalizers_from_pullbacks : HasEqualizer C := @PullbackEqualizer C HTC HPC.
+Definition low_eq_equalizers_from_pullbacks : HasEqualizer D := @PullbackEqualizer D HTD HPD.
+Definition high_eq_pullbacks_from_equalizers : HasPullback C := @ProductEqualizerPullback C HC HEC.
+Definition low_eq_pullbacks_from_equalizers : HasPullback D := @ProductEqualizerPullback D HD HED.
+Definition high_eq_finite_limit_bases := finite_limit_bases C.
+Definition low_eq_finite_limit_bases := finite_limit_bases D.
 End ShapedLimitLevels.
 
 (** Small index categories do not identify the target category's native

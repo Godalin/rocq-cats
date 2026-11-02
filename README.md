@@ -256,6 +256,9 @@ spans, parallel pairs, commuting squares, walking isomorphisms and finite ordina
 Empty and parallel-pair limits are identified with terminal objects and
 equalizers; all four shape correspondences derive right-adjoint preservation
 from the general limit theorem.
+The [finite-limit basis constructions](./theories/Cat/Limit/Finite.v) convert
+terminal objects and pullbacks to terminal objects, binary products and
+equalizers, and conversely, with explicit chosen structures.
 STLC syntax, its interpretation and the free-CCC completeness theorem remain
 tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
 [#20](https://github.com/Godalin/rocq-cats/issues/20).
