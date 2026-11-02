@@ -24,6 +24,39 @@ ConstF J X : Functor J C
 [Limit.Product](../theories/Cat/Limit/Product.v) 和
 [Limit.Pullback](../theories/Cat/Limit/Pullback.v)。
 
+[Limit.Terminal](../theories/Cat/Limit/Terminal.v) 和
+[Limit.Equalizer](../theories/Cat/Limit/Equalizer.v) 补齐空图式和平行箭头的对应：
+
+| 形状 | 专用泛性质 | 选定结构的双向构造 |
+| --- | --- | --- |
+| 空范畴 | 终对象 | `TerminalLimits` / `EmptyLimitsTerminal` |
+| 两点离散范畴 | 二元积 | `ProductLimits` / `PairLimitsProduct` |
+| 平行箭头 | 等化子 | `EqualizerLimits` / `ParallelLimitsEqualizer` |
+| 余跨度 | 拉回 | `PullbackLimits` / `CospanLimitsPullback` |
+
+这些对应适用于该形状的任意图式，不只适用于指定构造器产生的图式。
+`EmptyCone` 构造空图式上的锥；`ParallelConeOver` 从一条等化两条生成箭头的
+态射构造锥，另一条腿由复合决定。
+
+## 等化子接口
+
+[Equalizer](../theories/Cat/Equalizer.v) 区分候选性质与选定结构：
+
+```text
+e ⦂ Eq(f,g) := is_equalizer f g E e
+HasEqualizer C
+Eq[f,g]             选定等化子对象
+ιeq[f,g]            到 f、g 的公共定义域的态射
+eq⟨q,H⟩             由 H : f ∘ q ≈ g ∘ q 得到的唯一中介
+```
+
+候选泛性质同时包含交换性和 Type 值的唯一中介。
+`equalizer_β`、`equalizer_η`、`equalizer_proper` 与 `equalizer_comp`
+由泛性质导出，比较中介时不比较交换性见证。
+`equalizer_hom_ext` 给出等化子箭头的消去性质；
+对象唯一性 `equalizer_unique` 在极限对应模块中复用 `limit_unique`。
+选定结构转换均须显式启用，不通过导入注册全局模型结构。
+
 ## 泛性质与选定结构
 
 [Limit](../theories/Cat/Limit.v) 区分候选与选定极限：
@@ -88,6 +121,11 @@ HasLimitsOfShape C J
 证明将输入锥的每条腿沿 Hom 同构反向转置，使用原极限的泛性质，
 再正向转置中介。锥的自然性、分解与唯一性均复用一般伴随和极限定律。
 它只要求给定图式已有极限，不要求两个范畴具有所有该形状的极限。
+
+形状对应模块据此导出 `right_adjoint_preserves_terminal`、
+`right_adjoint_preserves_product`、`right_adjoint_preserves_equalizer` 和
+`right_adjoint_preserves_pullback`。这些结论以候选泛性质为输入，
+无需在两侧选择新的终对象、积、等化子或拉回。
 
 ## 大小与验证边界
 

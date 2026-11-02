@@ -5,6 +5,7 @@ From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
 From Cats Require Import Cat.Diagram Cat.Limit Cat.Limit.Adjunction Cat.Limit.Preservation.
 From Cats Require Import Graph.Morphism Graph.Path Cat.Free Cat.Diagram.Shape.
 From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
+From Cats Require Import Cat.Terminal Cat.Equalizer Cat.Limit.Terminal Cat.Limit.Equalizer.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -196,11 +197,21 @@ Constraint p < l.
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 Context `{HC : !HasProduct C} `{HD : !HasProduct D}.
 Context `{HPC : !HasPullback C} `{HPD : !HasPullback D}.
+Context `{HTC : !HasTerminal C} `{HTD : !HasTerminal D}.
+Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
 
 Definition high_eq_product_diagonal := @LimitAdjunction PairShape C (ProductLimits (C := C)).
 Definition low_eq_product_diagonal := @LimitAdjunction PairShape D (ProductLimits (C := D)).
 Definition high_eq_pullback_diagonal := @LimitAdjunction CospanShape C (PullbackLimits (C := C)).
 Definition low_eq_pullback_diagonal := @LimitAdjunction CospanShape D (PullbackLimits (C := D)).
+Definition high_eq_empty_diagonal := @LimitAdjunction EmptyShape C (TerminalLimits (C := C)).
+Definition low_eq_empty_diagonal := @LimitAdjunction EmptyShape D (TerminalLimits (C := D)).
+Definition high_eq_equalizer_diagonal := @LimitAdjunction ParallelShape C (EqualizerLimits (C := C)).
+Definition low_eq_equalizer_diagonal := @LimitAdjunction ParallelShape D (EqualizerLimits (C := D)).
+Definition high_eq_terminal_from_limits := @EmptyLimitsTerminal C (TerminalLimits (C := C)).
+Definition low_eq_terminal_from_limits := @EmptyLimitsTerminal D (TerminalLimits (C := D)).
+Definition high_eq_equalizer_from_limits := @ParallelLimitsEqualizer C (EqualizerLimits (C := C)).
+Definition low_eq_equalizer_from_limits := @ParallelLimitsEqualizer D (EqualizerLimits (C := D)).
 End ShapedLimitLevels.
 
 (** Small index categories do not identify the target category's native

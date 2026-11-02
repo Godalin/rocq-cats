@@ -253,6 +253,9 @@ The [graph and free-category constructions](./docs/Graphs.md) generate diagram
 shapes and identify binary products and pullbacks with their corresponding limits.
 The [small-category catalogue](./docs/SmallCategories.md) also provides arrows,
 spans, parallel pairs, commuting squares, walking isomorphisms and finite ordinals.
+Empty and parallel-pair limits are identified with terminal objects and
+equalizers; all four shape correspondences derive right-adjoint preservation
+from the general limit theorem.
 STLC syntax, its interpretation and the free-CCC completeness theorem remain
 tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
 [#20](https://github.com/Godalin/rocq-cats/issues/20).

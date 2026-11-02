@@ -33,5 +33,8 @@ Notation "'⟨' p ',' q '⟩Cone'" := (PairCone p q) : cat_scope.
 Definition EmptyDiagram (C : Cat) : Functor EmptyShape C :=
   DiscreteF (λ x : Empty_set, match x with end).
 
+Definition EmptyCone {C : Cat} {D : Functor EmptyShape C} (X : @Ob C)
+  : X ⇒Δ D := DiscreteCone (λ x : Empty_set, match x with end).
+
 Definition PointDiagram {C : Cat} (X : @Ob C) : Functor PointShape C :=
   DiscreteF (λ _ : unit, X).

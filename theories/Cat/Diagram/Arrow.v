@@ -78,17 +78,26 @@ Proof.
   - intros b. exists id. split; apply comp_id_l.
 Defined.
 
-Definition ParallelCone {C : Cat} {X Y P : @Ob C} {f g : Hom X Y}
-    (p : Hom P X) (H : f ∘ p ≈ g ∘ p) : P ⇒Δ ⟨f ⇉ g⟩D.
+Definition ParallelConeOver {C : Cat} {D : Functor ParallelShape C} {P : @Ob C}
+    (p : Hom P (D false))
+    (H : fmap D (path_edge parallel_l) ∘ p ≈ fmap D (path_edge parallel_r) ∘ p)
+  : P ⇒Δ D.
 Proof.
-  refine (@FreeCone ParallelGraph C (ParallelDiagram f g) P
-    (λ b, if b as v return Hom P (if v then Y else X) then f ∘ p else p) _).
+  refine (@FreeCone ParallelGraph C D P
+    (λ b, if b as v return Hom P (D v)
+      then fmap D (path_edge parallel_l) ∘ p else p) _).
   intros x y e. destruct x, y; cbn in *; try solve [destruct e].
   destruct e; [symmetry; exact H | reflexivity].
 Defined.
 
-Lemma parallel_cone_comm {C : Cat} {X Y P : @Ob C} {f g : Hom X Y}
-    (κ : P ⇒Δ ⟨f ⇉ g⟩D) : f ∘ κ false ≈ g ∘ κ false.
+Definition ParallelCone {C : Cat} {X Y P : @Ob C} {f g : Hom X Y}
+    (p : Hom P X) (H : f ∘ p ≈ g ∘ p) : P ⇒Δ ⟨f ⇉ g⟩D :=
+  @ParallelConeOver C (ParallelDiagram f g) P p H.
+
+Lemma parallel_cone_comm {C : Cat} {D : Functor ParallelShape C} {P : @Ob C}
+    (κ : P ⇒Δ D)
+  : fmap D (path_edge parallel_l) ∘ κ false ≈
+      fmap D (path_edge parallel_r) ∘ κ false.
 Proof.
   transitivity (κ true).
   - exact (free_cone_edge κ parallel_l).
