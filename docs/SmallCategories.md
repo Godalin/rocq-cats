@@ -28,9 +28,10 @@
 | `[Ord n]` | n+1 个对象，从 0 到 n，按顺序有箭头 | 有限可复合链 |
 | `CodiscreteCat V` | 任意两个对象之间恰有一个箭头代表 | 余离散群胚 |
 
-`OrdinalOb n` 是用有限和构造的 n 个位置；`ordinal_first` 与
-`ordinal_next` 构造位置，`ordinal_rank` 计算从零开始的编号。
-`DiscreteCat (OrdinalOb n)` 给出 n 个离散对象。
+集合基础层的 [Fin n](../theories/Set/Finite.v) 是用有限和构造的 n 个位置；
+`fin_first` 与 `fin_next` 构造位置，`fin_rank` 计算从零开始的编号。
+具体广集 `FinS n` 使用这些有限位置的原生相等。
+`DiscreteCat (Fin n)` 给出 n 个离散对象。
 `ordinal_from_first` 提供有限链中从第一个对象出发的箭头。
 
 另有 [NatOrderCat](../theories/Instance/Nat/Order.v)，是按通常顺序排列的

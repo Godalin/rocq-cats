@@ -53,6 +53,5 @@ Qed.
 
 End IndexedProduct.
 
-Notation "'πΠ[' D ']' i" := (indexed_proj (D := D) i)
-  (at level 35, i at level 35) : hom_scope.
+Notation "'πΠ[' D ']'" := (indexed_proj (D := D)) : hom_scope.
 Notation "'Π⟨' κ '⟩'" := (indexed_pair κ) : hom_scope.

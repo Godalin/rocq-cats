@@ -8,6 +8,7 @@ From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
 From Cats Require Import Cat.Terminal Cat.Equalizer Cat.Limit.Terminal Cat.Limit.Equalizer.
 From Cats Require Import Cat.Limit.Finite.
 From Cats Require Import Cat.Product.Indexed Cat.Limit.Construction.
+From Cats Require Import Cat.Product.Finite.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -33,6 +34,8 @@ Definition high_eq_set_id : X →r X := id_resp.
 Definition low_eq_set_id : Y →r Y := id_resp.
 Definition high_eq_sets := SetCat@{u p _ _ _ _ _}.
 Definition low_eq_sets := SetCat@{p u _ _ _ _ _}.
+Definition high_eq_finite_positions (n : nat) : SetC@{u p} := FinS n.
+Definition low_eq_finite_positions (n : nat) : SetC@{p u} := FinS n.
 End SetLevels.
 
 (** Guard against identifying morphism and equivalence-witness universes
@@ -222,6 +225,8 @@ Definition high_eq_pullbacks_from_equalizers : HasPullback C := @ProductEqualize
 Definition low_eq_pullbacks_from_equalizers : HasPullback D := @ProductEqualizerPullback D HD HED.
 Definition high_eq_finite_limit_bases := finite_limit_bases C.
 Definition low_eq_finite_limit_bases := finite_limit_bases D.
+Definition high_eq_finite_products (n : nat) := @FiniteProductLimits C HTC HC n.
+Definition low_eq_finite_products (n : nat) := @FiniteProductLimits D HTD HD n.
 End ShapedLimitLevels.
 
 (** The two product indices can be larger than the target homs. The general

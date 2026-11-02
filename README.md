@@ -262,6 +262,9 @@ equalizers, and conversely, with explicit chosen structures.
 The [general limit construction](./theories/Cat/Limit/Construction.v) uses
 the equalizer of two maps between object-indexed and arrow-indexed products;
 indexed products reuse discrete limits directly.
+The [finite product construction](./theories/Cat/Product/Finite.v) derives
+limits of finite discrete diagrams from terminal objects and binary products,
+using shared [finite positions](./theories/Set/Finite.v).
 STLC syntax, its interpretation and the free-CCC completeness theorem remain
 tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
 [#20](https://github.com/Godalin/rocq-cats/issues/20).

@@ -126,7 +126,31 @@ DiagramTargets D a = D (arrow_cod a)       a : ArrowOb J
 无需另选相干的极限映射。
 
 公式本身不要求 J 有限；能否选出上述两个积由 C 的结构和大小界决定。
-有限情形仍需补上有限索引设施，以及从终对象和二元积构造相应索引积的步骤。
+有限位置及其索引积见下节；任意有限形状还需提供其对象、箭头索引与有限位置的对应。
+
+## 从终对象和二元积构造有限积
+
+[Set.Finite](../theories/Set/Finite.v) 提供有限位置 `Fin n`：零项是空类型，
+后继项是 `unit + Fin n`。它不含算术界或证明字段，
+具体广集 `FinS n` 选择原生相等；这一约定只针对这类具体有限数据。
+`fin_first`、`fin_next`、`fin_rank` 也供有限序数范畴复用。
+
+[Product.Finite](../theories/Cat/Product/Finite.v) 在选定终对象和二元积下递归构造：
+
+```text
+FiniteProduct D = 1                                       n = 0
+FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
+```
+
+`finite_product_proj` 递归投影到相应分量，`finite_product_pair` 递归配对态射族。
+它们的 β 律和投影消去性质用于构造 `FiniteProductLimit D`，
+适用于 `DiscreteCat (Fin n)` 上的任意图式。
+`FiniteProductLimits n` 将结果组织为该形状的全部选定极限；必须显式启用。
+此后可直接使用 `Π[D]`、`πΠ[D] i`、`Π⟨κ⟩` 以及已有 η、相等与复合相容性定律，
+不再增加有限积的独立结构字段。
+
+递归对象、投影、配对及泛性质中的中介均保持透明，便于直接计算。
+这一步提供有限位置索引的积；任意有限形状的表示及其与一般极限公式的连接仍待后续完成。
 
 ## 泛性质与选定结构
 
