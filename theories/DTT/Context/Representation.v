@@ -1,6 +1,15 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Terminal.
-From Cats Require Import DTT.CwF DTT.Context.Extension.
-From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam.Core
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Terminal.
+From Cats Require Import
+  DTT.CwF
+  DTT.Context.Extension.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Hom
+  Instance.Set.Fam.Core
   Instance.Set.Fam.Cat.
 From Cats Require Import Instance.Set.Representable.
 
@@ -31,8 +40,9 @@ Proof.
 Defined.
 
 Definition context_representation_generic {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
-    (R : E ⦂ Repᵒᵖ ContextPairF T A) : ContextPairS T A E :=
-  representation_op_generic R.
+    (R : E ⦂ Repᵒᵖ ContextPairF T A)
+  : ContextPairS T A E
+  := representation_op_generic R.
 
 (** Naturality determines every component from the generic pair. *)
 Theorem context_representation_at {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
@@ -40,7 +50,8 @@ Theorem context_representation_at {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
   : R.1 Δ h ≈S (context_representation_generic A R)[h]Pair[T, A].
 Proof. exact (representation_op_at R h). Defined.
 
-Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
+Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ)
+    {E : @Ob C}
     (R : E ⦂ Repᵒᵖ ContextPairF T A)
   : is_context_extension T A E (context_representation_generic A R).1
       (context_representation_generic A R).2.
@@ -55,25 +66,27 @@ Proof.
     exact (snd (context_pair_data_iff A _ _ σ t k) Hk).
 Defined.
 
-Class HasContextRepresentation :=
-  { ContextRep {Γ : @Ob C} (A : Ty T Γ) : @Ob C
-  ; context_representation {Γ : @Ob C} (A : Ty T Γ)
-    : ContextRep A ⦂ Repᵒᵖ ContextPairF T A
-  }.
+Class HasContextRepresentation
+  := { ContextRep {Γ : @Ob C} (A : Ty T Γ) : @Ob C
+     ; context_representation {Γ : @Ob C} (A : Ty T Γ)
+       : ContextRep A ⦂ Repᵒᵖ ContextPairF T A
+     }.
 
 (** Both conversions are explicit choices, never selected by import. *)
 Program Definition ContextRepresentation_HasContextExtension
-    `{HR : !HasContextRepresentation} : HasContextExtension T :=
-  {| Ext Γ := ContextRep
-   ; context_proj Γ A := (context_representation_generic A (context_representation A)).1
-   ; context_var Γ A := (context_representation_generic A (context_representation A)).2
-   ; context_extension_universal Γ A :=
-       context_extension_of_representation A (context_representation A) |}.
+    `{HR : !HasContextRepresentation}
+  : HasContextExtension T
+  := {| Ext Γ := ContextRep
+      ; context_proj Γ A := (context_representation_generic A (context_representation A)).1
+      ; context_var Γ A := (context_representation_generic A (context_representation A)).2
+      ; context_extension_universal Γ A :=
+          context_extension_of_representation A (context_representation A) |}.
 
 Program Definition ContextExtension_HasContextRepresentation
-    `{HC : !HasContextExtension T} : HasContextRepresentation :=
-  {| ContextRep Γ := Ext T
-   ; context_representation Γ := context_extension_nat_iso T |}.
+    `{HC : !HasContextExtension T}
+  : HasContextRepresentation
+  := {| ContextRep Γ := Ext T
+      ; context_representation Γ := context_extension_nat_iso T |}.
 
 Theorem context_extension_iff_representation
   : HasContextExtension T ↔ HasContextRepresentation.
@@ -83,16 +96,19 @@ Proof.
   - intros HR. exact (@ContextRepresentation_HasContextExtension HR).
 Defined.
 
-Program Definition RepresentedCwF `{HT : !HasTerminal C} `{HR : !HasContextRepresentation}
-  : CwF C :=
-  {| hasTerminal := HT
-   ; TyTmF := T
-   ; hasContextExtension := ContextRepresentation_HasContextExtension |}.
+Program Definition RepresentedCwF `{HT : !HasTerminal C}
+    `{HR : !HasContextRepresentation}
+  : CwF C
+  := {| hasTerminal := HT
+      ; TyTmF := T
+      ; hasContextExtension := ContextRepresentation_HasContextExtension |}.
 
 Section ExtensionRoundTrip.
 Context `{HC : !HasContextExtension T}.
-Let HR := ContextExtension_HasContextRepresentation.
-Let HC' := @ContextRepresentation_HasContextExtension HR.
+Let HR
+  := ContextExtension_HasContextRepresentation.
+Let HC'
+  := @ContextRepresentation_HasContextExtension HR.
 
 Theorem context_representation_proj_round_trip {Γ : @Ob C} (A : Ty T Γ)
   : @context_proj C T HC' Γ A ≈ @context_proj C T HC Γ A.

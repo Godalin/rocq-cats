@@ -1,5 +1,10 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
-From Cats Require Export Cat.Limit Cat.Diagram.Discrete.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
+From Cats Require Export
+  Cat.Limit
+  Cat.Diagram.Discrete.
 
 (** * Indexed Products as Discrete Limits
 
@@ -11,10 +16,13 @@ Section IndexedProduct.
 Context {C : Cat} {I : Type} {D : I → @Ob C}
     `{HP : !HasLimit C (DiscreteF D)}.
 
-Definition indexed_proj (i : I) : Hom Π[D] (D i) := πlim[DiscreteF D] i.
+Definition indexed_proj (i : I)
+  : Hom Π[D] (D i)
+  := πlim[DiscreteF D] i.
 
-Definition indexed_pair {X : @Ob C} (κ : ∀ i, Hom X (D i)) : Hom X Π[D] :=
-  @limit_lift (DiscreteCat I) C (DiscreteF D) HP X
+Definition indexed_pair {X : @Ob C} (κ : ∀ i, Hom X (D i))
+  : Hom X Π[D]
+  := @limit_lift (DiscreteCat I) C (DiscreteF D) HP X
     (@DiscreteCone C I (DiscreteF D) X κ).
 
 Lemma indexed_product_β {X : @Ob C} (κ : ∀ i, Hom X (D i)) (i : I)
@@ -45,7 +53,8 @@ Proof.
 Qed.
 
 Theorem indexed_product_hom_ext {X : @Ob C} (f g : Hom X Π[D])
-    (H : ∀ i, indexed_proj i ∘ f ≈ indexed_proj i ∘ g) : f ≈ g.
+    (H : ∀ i, indexed_proj i ∘ f ≈ indexed_proj i ∘ g)
+  : f ≈ g.
 Proof.
   rewrite <- (indexed_product_η f), <- (indexed_product_η g).
   apply indexed_pair_proper. exact H.

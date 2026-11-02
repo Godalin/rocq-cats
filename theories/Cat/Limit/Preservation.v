@@ -1,5 +1,11 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Adjunction.
-From Cats Require Import Cat.Diagram Cat.Limit.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Adjunction.
+From Cats Require Import
+  Cat.Diagram
+  Cat.Limit.
 
 (** * Right Adjoints Preserve Limits
 
@@ -9,8 +15,9 @@ Section RightAdjointLimits.
 Context {C D J : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
 
 Program Definition UnadjunctCone {K : Functor J D} {X : @Ob C}
-    (κ : X ⇒Δ (G ∘F K)) : F X ⇒Δ K :=
-  {| nt j := (κ j)^♭[A] |}.
+    (κ : X ⇒Δ (G ∘F K))
+  : F X ⇒Δ K
+  := {| nt j := (κ j)^♭[A] |}.
 Next Obligation.
   rewrite comp_id_r, <- (unadjunct_comp_l A (fmap K f) (κ X0)).
   apply (unadjunct_proper A).
@@ -19,7 +26,8 @@ Next Obligation.
 Qed.
 
 Definition right_adjoint_preserves_limit {K : Functor J D} {L : @Ob D}
-    {κ : L ⇒Δ K} (Hκ : is_limit κ) : is_limit (MapCone G κ).
+    {κ : L ⇒Δ K} (Hκ : is_limit κ)
+  : is_limit (MapCone G κ).
 Proof.
   intros X μ. destruct (Hκ (F X) (UnadjunctCone μ)) as [f Hf].
   exists (f^♯[A]). refine {| this := _; that := _ |}.

@@ -1,13 +1,16 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
 
 (** * Uncurrying a Functor-Valued Functor
 
     The outer functor's naturality is precisely what allows the two
     independent variables to commute. *)
 Program Definition UncurryF {A B C : Cat} (F : Functor A (Fct B C))
-  : Functor (A ×C B) C :=
-  {| F0 p := F (fst p) (snd p)
-   ; F1 X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X) |}.
+  : Functor (A ×C B) C
+  := {| F0 p := F (fst p) (snd p)
+      ; F1 X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X) |}.
 Next Obligation.
   intros [u v] [u' v'] [Hu Hv]. cbn in *.
   apply comp_proper.
@@ -34,8 +37,9 @@ Defined.
 Notation "F '^uncF'" := (UncurryF F) (at level 35) : cat_scope.
 
 Program Definition UncurryN {A B C : Cat} {F G : Functor A (Fct B C)}
-    (α : F ⇒ G) : F^uncF ⇒ G^uncF :=
-  {| nt p := α (fst p) (snd p) |}.
+    (α : F ⇒ G)
+  : F^uncF ⇒ G^uncF
+  := {| nt p := α (fst p) (snd p) |}.
 Next Obligation.
   destruct X as [a b], Y as [a' b'], f as [u v]. cbn.
   pose proof (nt_naturality α u b) as Hu. cbn in Hu.

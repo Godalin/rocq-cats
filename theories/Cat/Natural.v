@@ -5,7 +5,8 @@ From Cats Require Import Cat.Functor.
 
 (** * Natural Transformations *)
 
-Class Nat {C D : Cat} (F G : Functor C D) := mkNat
+Class Nat {C D : Cat} (F G : Functor C D)
+  := mkNat
   { nt (X : @Ob C) :> (@Hom D) (F X) (G X)
 
   ; nt_naturality
@@ -33,7 +34,8 @@ Next Obligation. repeat intro. symmetry. apply X. Qed.
 Next Obligation. repeat intro. transitivity (y X1); auto. Qed.
 
 Definition is_NatIso_of {C D : Cat} (F G : Functor C D)
-    (α : F ⇒ G) : Type
+    (α : F ⇒ G)
+  : Type
   := ∀ X, is_iso (α X).
 
 Definition NatIso {C D : Cat} (F G : Functor C D)
@@ -47,7 +49,8 @@ Infix "≅N" := NatIso
   (at level 50, no associativity) : cat_scope.
 
 Program Definition NatIso_inv {C D : Cat} {F G : Functor C D}
-    (α : F ⇒ G) (Niso : is_NatIso_of F G α) : G ⇒ F
+    (α : F ⇒ G) (Niso : is_NatIso_of F G α)
+  : G ⇒ F
   := {| nt := λ X, (Niso X).1 |}.
 Next Obligation.
   pose (Hid := λ X, (Niso X).2).
@@ -61,12 +64,14 @@ Qed.
 Notation "α '^-1N'" := (NatIso_inv α).
 
 Proposition NatIso_inv_NatIso {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
-  (Niso : α ⦂ F ≅N G) : (α ^-1N Niso) ⦂ G ≅N F.
+    (Niso : α ⦂ F ≅N G)
+  : (α ^-1N Niso) ⦂ G ≅N F.
 Proof. intro X. exists (α X). apply is_inv_of_comm.
   simpl. apply (Niso X).2.
 Defined.
 
-Program Instance nt_id {C D : Cat} {F : Functor C D} : F ⇒ F
+Program Instance nt_id {C D : Cat} {F : Functor C D}
+  : F ⇒ F
   := { nt _ := id }.
 Next Obligation.
   rewrite comp_id_l.
@@ -75,7 +80,8 @@ Next Obligation.
 Qed.
 
 Program Instance nt_comp_v {C D : Cat} {F G H : Functor C D}
-    (α : G ⇒ H) (β : F ⇒ G) : F ⇒ H
+    (α : G ⇒ H) (β : F ⇒ G)
+  : F ⇒ H
   := { nt X := (α X) ∘ (β X) }.
 Next Obligation.
   rewrite comp_assoc.
@@ -95,8 +101,9 @@ Infix "∘Nv" := nt_comp_v
 
 (** ** The Functor Category *)
 
-Program Instance Fct (C D : Cat) : Cat :=
-  { Ob := Functor C D
+Program Instance Fct (C D : Cat)
+  : Cat
+  := { Ob := Functor C D
   ; HomSet F G :=
       {| carrier := F ⇒ G
        ; carrier_equiv := NatEq
@@ -117,7 +124,8 @@ Qed.
 Section Fct.
 Context {C D : Cat} {F G : Functor C D}.
 
-Theorem iso_NatIso : F ≅[Fct C D] G ↔ F ≅N G.
+Theorem iso_NatIso
+  : F ≅[Fct C D] G ↔ F ≅N G.
 Proof. split.
   - intros (a & b & H1 & H2); simpl in *.
     exists a. intros X. exists (b X). simpl. split; cato.
@@ -128,7 +136,8 @@ Qed.
 End Fct.
 
 Definition NatIso_is_iso {C D : Cat} {F G : Functor C D}
-    (α : F ⇒ G) (Hα : α ⦂ F ≅N G) : @is_iso (Fct C D) F G α.
+    (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
+  : @is_iso (Fct C D) F G α.
 Proof.
   exists (α ^-1N Hα). split; intros X.
   - exact (fst (Hα X).2).
@@ -137,7 +146,8 @@ Defined.
 
 (** An inverse in the functor category gives component inverses directly. *)
 Definition is_iso_NatIso {C D : Cat} {F G : Functor C D}
-    (α : F ⇒ G) (Hα : @is_iso (Fct C D) F G α) : α ⦂ F ≅N G.
+    (α : F ⇒ G) (Hα : @is_iso (Fct C D) F G α)
+  : α ⦂ F ≅N G.
 Proof.
   intros X. exists (Hα.1 X). split.
   - exact ((fst Hα.2) X).
@@ -164,7 +174,8 @@ Proof.
     exact (snd (Hβ X).2).
 Defined.
 
-Global Instance NatIso_Equivalence {C D : Cat} : Equivalence (@NatIso C D).
+Global Instance NatIso_Equivalence {C D : Cat}
+  : Equivalence (@NatIso C D).
 Proof.
   split.
   - intros F. exists idN. apply nt_id_NatIso.
@@ -176,8 +187,9 @@ Defined.
 (** Whiskering applies a functor to a natural transformation, or evaluates
     that transformation after another functor. *)
 Program Definition nt_whisker_l {C D E : Cat} (G : Functor D E)
-    {F F' : Functor C D} (α : F ⇒ F') : (G ∘F F) ⇒ (G ∘F F') :=
-  {| nt X := fmap G (α X) |}.
+    {F F' : Functor C D} (α : F ⇒ F')
+  : (G ∘F F) ⇒ (G ∘F F')
+  := {| nt X := fmap G (α X) |}.
 Next Obligation.
   rewrite <- (@functor_comp D E G _ _ _ (α Y) (fmap F f)),
     <- (@functor_comp D E G _ _ _ (fmap F' f) (α X)).
@@ -185,8 +197,9 @@ Next Obligation.
 Qed.
 
 Program Definition nt_whisker_r {C D E : Cat} {G G' : Functor D E}
-    (β : G ⇒ G') (F : Functor C D) : (G ∘F F) ⇒ (G' ∘F F) :=
-  {| nt X := β (F X) |}.
+    (β : G ⇒ G') (F : Functor C D)
+  : (G ∘F F) ⇒ (G' ∘F F)
+  := {| nt X := β (F X) |}.
 Next Obligation. apply nt_naturality. Qed.
 
 Infix "∘Nl" := nt_whisker_l (at level 51, right associativity) : cat_scope.
@@ -218,8 +231,9 @@ Proof. intros X. exact (Hβ (F X)). Defined.
 (** ** Horizontal Composition *)
 
 Definition nt_comp_h {C D E : Cat} {G G' : Functor D E} {F F' : Functor C D}
-    (β : G ⇒ G') (α : F ⇒ F') : (G ∘F F) ⇒ (G' ∘F F') :=
-  (β ∘Nr F') ∘Nv (G ∘Nl α).
+    (β : G ⇒ G') (α : F ⇒ F')
+  : (G ∘F F) ⇒ (G' ∘F F')
+  := (β ∘Nr F') ∘Nv (G ∘Nl α).
 
 Infix "∘Nh" := nt_comp_h (at level 50, left associativity) : cat_scope.
 
@@ -260,10 +274,10 @@ Qed.
 
 (** Horizontal composition is a functor on the two hom-categories. *)
 Program Definition CompNF (C D E : Cat)
-  : Functor (Fct D E ×C Fct C D) (Fct C E) :=
-  {| F0 p := fst p ∘F snd p
-   ; F1 p q α := fst α ∘Nh snd α
-   |}.
+  : Functor (Fct D E ×C Fct C D) (Fct C E)
+  := {| F0 p := fst p ∘F snd p
+      ; F1 p q α := fst α ∘Nh snd α
+      |}.
 Next Obligation.
   intros [β α] [β' α'] [Hβ Hα].
   exact (nt_comp_h_proper β β' Hβ α α' Hα).
@@ -310,19 +324,22 @@ Defined.
 
 (** The comparison components for the functor laws are identities, even
     when the functor records have different proof fields. *)
-Program Definition CompF_id_l {C D : Cat} (F : Functor C D) : IdF ∘F F ≅N F :=
-  ({| nt X := id |}; _).
+Program Definition CompF_id_l {C D : Cat} (F : Functor C D)
+  : IdF ∘F F ≅N F
+  := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
-Program Definition CompF_id_r {C D : Cat} (F : Functor C D) : F ∘F IdF ≅N F :=
-  ({| nt X := id |}; _).
+Program Definition CompF_id_r {C D : Cat} (F : Functor C D)
+  : F ∘F IdF ≅N F
+  := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
 Program Definition CompF_assoc {B C D E : Cat}
     (H : Functor D E) (G : Functor C D) (F : Functor B C)
-  : (H ∘F G) ∘F F ≅N H ∘F (G ∘F F) := ({| nt X := id |}; _).
+  : (H ∘F G) ∘F F ≅N H ∘F (G ∘F F)
+  := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
@@ -332,8 +349,8 @@ Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
     order of vertical composition, are reversed in the opposite category. *)
 
 Program Definition nt_op {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
-  : OpF G ⇒ OpF F :=
-  {| nt X := α X |}.
+  : OpF G ⇒ OpF F
+  := {| nt X := α X |}.
 Next Obligation. symmetry. exact (nt_naturality α f). Qed.
 
 Notation "α '^opN'" := (nt_op α) (at level 35) : cat_scope.
@@ -352,33 +369,37 @@ Theorem nt_op_comp_v {C D : Cat} {F G H : Functor C D}
 Proof. intros X. reflexivity. Qed.
 
 Program Definition OpFctF {C D : Cat}
-  : Functor ((Fct C D) ^op) (Fct (C ^op) (D ^op)) :=
-  {| F0 := OpF; F1 F G α := nt_op α |}.
+  : Functor ((Fct C D) ^op) (Fct (C ^op) (D ^op))
+  := {| F0 := OpF; F1 F G α := nt_op α |}.
 Next Obligation. apply nt_op_id. Qed.
 Next Obligation. apply nt_op_comp_v. Qed.
 
 Definition nt_op_NatIso {C D : Cat} {F G : Functor C D}
-    (α : F ⇒ G) (Hα : α ⦂ F ≅N G) : α ^opN ⦂ OpF G ≅N OpF F.
+    (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
+  : α ^opN ⦂ OpF G ≅N OpF F.
 Proof.
   intros X. exists (Hα X).1. split.
   - exact (snd (Hα X).2).
   - exact (fst (Hα X).2).
 Defined.
 
-Global Instance OpF_proper {C D : Cat} : Proper (NatIso ==> NatIso) (@OpF C D).
+Global Instance OpF_proper {C D : Cat}
+  : Proper (NatIso ==> NatIso) (@OpF C D).
 Proof.
   intros F G [α Hα]. symmetry. exists (α ^opN). exact (nt_op_NatIso α Hα).
 Defined.
 
-Program Definition OpF_id {C : Cat} : OpF (@IdF C) ≅N (@IdF (C ^op)) :=
-  ({| nt X := id |}; _).
+Program Definition OpF_id {C : Cat}
+  : OpF (@IdF C) ≅N (@IdF (C ^op))
+  := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation.
   intros X. exists id. split; exact (@comp_id_l C X X (@Cats.Cat.Core.id C X)).
 Defined.
 
 Program Definition OpF_comp {C D E : Cat} (G : Functor D E) (F : Functor C D)
-  : OpF (G ∘F F) ≅N (OpF G ∘F OpF F) := ({| nt X := id |}; _).
+  : OpF (G ∘F F) ≅N (OpF G ∘F OpF F)
+  := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation.
   intros X. exists id. split;
@@ -386,7 +407,7 @@ Next Obligation.
 Defined.
 
 Program Definition OpF_involution {C D : Cat} (F : Functor C D)
-  : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) ≅N F :=
-  ({| nt X := id |}; _).
+  : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) ≅N F
+  := ({| nt X := id |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.

@@ -1,4 +1,7 @@
-From Cats Require Import Cat.Core Cat.Terminal Cat.Product.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal
+  Cat.Product.
 
 
 
@@ -10,19 +13,19 @@ Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
       ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
       → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
 
-Class HasPullback (C : Cat) :=
-  { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
-  ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
-  ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
-  ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-    : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
-  }.
+Class HasPullback (C : Cat)
+  := { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
+     ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
+     ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
+     ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+       : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
+     }.
 
 Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z}
     {f : Hom X Z} {g : Hom Y Z} {P}
     (p1 : Hom P X) (p2 : Hom P Y) (HP : f ∘ p1 ≈ g ∘ p2)
-  : Hom P (Pb f g) :=
-  (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).1.
+  : Hom P (Pb f g)
+  := (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).1.
 
 Theorem pullback_comm {C : Cat} `{HPb : !HasPullback C}
     {X Y Z} {f : Hom X Z} {g : Hom Y Z}
@@ -62,7 +65,8 @@ Hint Resolve pullback_comm : cat.
 Theorem pullback_hom_ext {C : Cat} {X Y Z P Q : @Ob C}
     {f : Hom X Z} {g : Hom Y Z} {p1 : Hom P X} {p2 : Hom P Y}
     (HP : is_pullback f g P p1 p2) (u v : Hom Q P)
-    (H1 : p1 ∘ u ≈ p1 ∘ v) (H2 : p2 ∘ u ≈ p2 ∘ v) : u ≈ v.
+    (H1 : p1 ∘ u ≈ p1 ∘ v) (H2 : p2 ∘ u ≈ p2 ∘ v)
+  : u ≈ v.
 Proof.
   assert (Hv : f ∘ (p1 ∘ v) ≈ g ∘ (p2 ∘ v)).
   { rewrite <- !comp_assoc, (fst HP). reflexivity. }
@@ -112,7 +116,8 @@ Definition pullback_iso {C : Cat} {X Y Z : @Ob C} {f : Hom X Z} {g : Hom Y Z}
     {P Q : @Ob C} {p1 : Hom P X} {p2 : Hom P Y}
     {q1 : Hom Q X} {q2 : Hom Q Y} (i : Hom Q P) (Hi : is_iso i)
     (H1 : p1 ∘ i ≈ q1) (H2 : p2 ∘ i ≈ q2)
-    (HP : is_pullback f g P p1 p2) : is_pullback f g Q q1 q2.
+    (HP : is_pullback f g P p1 p2)
+  : is_pullback f g Q q1 q2.
 Proof.
   destruct Hi as [ii [Hii Hi]]. destruct HP as [Hcomm Hu]. split.
   - rewrite <- H1, <- H2, <- !comp_assoc, Hcomm. reflexivity.
@@ -162,10 +167,12 @@ Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
 Context (HP : f ∘ p1 ≈ g ∘ p2).
 
-Theorem pb_β1 : pb1 f g ∘ pb p1 p2 HP ≈ p1.
+Theorem pb_β1
+  : pb1 f g ∘ pb p1 p2 HP ≈ p1.
 Proof. apply pullback_mediator_unique. Qed.
 
-Theorem pb_β2 : pb2 f g ∘ pb p1 p2 HP ≈ p2.
+Theorem pb_β2
+  : pb2 f g ∘ pb p1 p2 HP ≈ p2.
 Proof. apply pullback_mediator_unique. Qed.
 
 Theorem pb_η h
@@ -206,7 +213,8 @@ Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
 (** Pullback alone [id]. *)
 
-Theorem pullback_id : is_pullback id g _ g id.
+Theorem pullback_id
+  : is_pullback id g _ g id.
 Proof. split. carw. intros Q q1 q2 H1. exists q2. split.
   split. rewrite <- H1. carw. carw.
   intros y. intros [H2 H3]. rewrite <- H3. carw.

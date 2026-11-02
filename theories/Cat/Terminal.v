@@ -2,19 +2,20 @@ From Cats Require Import Cat.Core.
 
 (** * Terminal Objects *)
 
-Definition is_terminal {C : Cat} (T : Ob) :=
-  ∀ X, ∃ h : Hom X T, is_unique_element h.
+Definition is_terminal {C : Cat} (T : Ob)
+  := ∀ X, ∃ h : Hom X T, is_unique_element h.
 
-Class HasTerminal (C : Cat) :=
-  { Term : Ob
-  ; terminal_universal : is_terminal Term
-  }.
+Class HasTerminal (C : Cat)
+  := { Term : Ob
+     ; terminal_universal : is_terminal Term
+     }.
 
 Arguments Term {_ _}.
 Arguments terminal_universal {_ _} _.
 
-Definition term {C : Cat} `{HT : !HasTerminal C} {X} : Hom X Term :=
-  (terminal_universal X).1.
+Definition term {C : Cat} `{HT : !HasTerminal C} {X}
+  : Hom X Term
+  := (terminal_universal X).1.
 
 Theorem terminal_arrow_unique {C : Cat} `{HT : !HasTerminal C} {X}
   : is_unique_element (@term C _ X).
@@ -68,10 +69,12 @@ Notation "X '⦂' '≅' '1'" := (is_terminal X)
 Section Terminal.
 Context {C : Cat} `{HT : !HasTerminal C}.
 
-Proposition term_η {X} (h : Hom X 1) : h ≈ !.
+Proposition term_η {X} (h : Hom X 1)
+  : h ≈ !.
 Proof. apply terminal_arrow_unique. trivial. Qed.
 
-Proposition term_comp_l {X Y} (h : Hom X Y) : ! ∘ h ≈ !.
+Proposition term_comp_l {X Y} (h : Hom X Y)
+  : ! ∘ h ≈ !.
 Proof. rewrite (term_η (! ∘ _)). cato. Qed.
 
 End Terminal.
@@ -94,9 +97,12 @@ Definition is_initial (X : Ob)
 
 Context `{HI : !HasInitial C}.
 
-Definition Init : @Ob C := @Term (op C) _.
+Definition Init
+  : @Ob C
+  := @Term (op C) _.
 
-Definition init {X} : (@Hom C) Init X
+Definition init {X}
+  : (@Hom C) Init X
   := @term (op C) _ _.
 
 Notation "0" := Init.

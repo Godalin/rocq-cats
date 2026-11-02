@@ -1,5 +1,10 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
-From Cats Require Import Instance.Set.Core Instance.Set.Hom.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Hom.
 
 (** * Representable Set-Valued Functors and the Yoneda Lemma *)
 
@@ -14,7 +19,8 @@ Notation "X '⦂' 'Rep' F" := (represents F X)
 Definition is_representable {C : Cat} (F : Functor C SetCat)
   := ∃ X, X ⦂ Rep F.
 
-Proposition represents_self {C : Cat} {X : @Ob C} : X ⦂ Rep Hom(X,-).
+Proposition represents_self {C : Cat} {X : @Ob C}
+  : X ⦂ Rep Hom(X,-).
 Proof. exists idN. intros Y. exists id. cato. Defined.
 
 
@@ -22,24 +28,24 @@ Proof. exists idN. intros Y. exists id. cato. Defined.
 (** ** Yoneda Lemma *)
 
 Program Canonical Nat_SetS {C D : Cat}
-  (F G : Functor C D) :=
-  {|carrier := F ⇒ G
-  ; carrier_equiv := NatEq
-  |} .
+  (F G : Functor C D)
+  := {|carrier := F ⇒ G
+     ; carrier_equiv := NatEq
+     |} .
 
 Section Yoneda.
 Context {C : Cat}.
 Context {F : Functor C SetCat}.
 
 Program Canonical yoneda_func {X}
-    : Nat Hom(X,-) F →r F X
+  : Nat Hom(X,-) F →r F X
   := {| func α := α X id |}.
 Next Obligation. intros a a' Ha.
   pose (HaX := Ha X id). cato.
 Qed.
 
 Program Canonical yoneda_func_inv {X}
-    : F X →r Nat Hom(X,-) F
+  : F X →r Nat Hom(X,-) F
   := {| func (x : F X) := {| nt Y := {| func f :=
         (fmap F f) x |} |} |}.
 Next Obligation.

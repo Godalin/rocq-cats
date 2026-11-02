@@ -1,15 +1,22 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Instance.Set.Core.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Instance.Set.Core.
 From Cats Require Import Instance.Set.Lift.
 
 (** * Hom-Functors *)
 
-Definition ℎ1 {C : Cat} (X : Ob) := λ Y, HomSet X Y.
-Definition ℎ2 {C : Cat} (X : Ob) := λ Y, HomSet Y X.
+Definition ℎ1 {C : Cat} (X : Ob)
+  := λ Y, HomSet X Y.
+Definition ℎ2 {C : Cat} (X : Ob)
+  := λ Y, HomSet Y X.
 
-Program Definition ℎ1F {C : Cat} (X : Ob) : Functor C SetCat :=
-  {|F0 := ℎ1 X
-  ; F1 Y Y' (f : Hom Y Y') := f _*
-  |}.
+Program Definition ℎ1F {C : Cat} (X : Ob)
+  : Functor C SetCat
+  := {|F0 := ℎ1 X
+     ; F1 Y Y' (f : Hom Y Y') := f _*
+     |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. exact (@comp_id_l C _ _ f). Qed.
 Next Obligation. intros x. exact (@comp_assoc C _ _ _ _ f g x). Qed.
@@ -17,10 +24,10 @@ Next Obligation. intros x. exact (@comp_assoc C _ _ _ _ f g x). Qed.
 Notation "'Hom(' X  ',-)'" := (ℎ1F X).
 
 Program Definition ℎ2F {C : Cat} (X : Ob)
-  : Functor (op C) SetCat :=
-  {|F0 := ℎ2 X
-  ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
-  |}.
+  : Functor (op C) SetCat
+  := {|F0 := ℎ2 X
+     ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
+     |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. exact (@comp_id_r C _ _ f). Qed.
 Next Obligation. intros x. symmetry. exact (@comp_assoc C _ _ _ _ x g f). Qed.
@@ -30,15 +37,16 @@ Notation "'Hom(-,'  X ')'" := (ℎ2F X).
 (** Covariant Hom in the opposite category is contravariant Hom in C.
     Compare the functors explicitly, without equating their law fields. *)
 Program Definition hom_op_nat_iso {C : Cat} (X : @Ob C)
-  : @ℎ1F (C^op) X ≅N Hom(-,X) := ({| nt Y := id_resp |}; _).
+  : @ℎ1F (C^op) X ≅N Hom(-,X)
+  := ({| nt Y := id_resp |}; _).
 Next Obligation. intros h. reflexivity. Defined.
 Next Obligation. intros Y. exists id_resp. split; intros h; reflexivity. Defined.
 
 (** Precomposition varies the source of the covariant Hom-functor
     contravariantly. Its components compare maps pointwise. *)
 Program Definition nt_comp_pre {C : Cat} {X Y : @Ob C} (f : Hom X Y)
-  : Hom(Y,-) ⇒ Hom(X,-) :=
-  {| nt Z := comp_r_resp (f := f) (Z := Z) |}.
+  : Hom(Y,-) ⇒ Hom(X,-)
+  := {| nt Z := comp_r_resp (f := f) (Z := Z) |}.
 Next Obligation. intros h. simpl. apply comp_assoc. Qed.
 
 Notation "f ^*N" := (nt_comp_pre f) (at level 35) : cat_scope.
@@ -59,8 +67,8 @@ Proof. intros W h. simpl. symmetry. apply comp_assoc. Qed.
 (** Postcomposition varies the target of the contravariant Hom-functor
     covariantly. *)
 Program Definition nt_comp_post {C : Cat} {X Y : @Ob C} (f : Hom X Y)
-  : Hom(-,X) ⇒ Hom(-,Y) :=
-  {| nt Z := comp_l_resp (C := C) (f := f) (X := Z) |}.
+  : Hom(-,X) ⇒ Hom(-,Y)
+  := {| nt Z := comp_l_resp (C := C) (f := f) (X := Z) |}.
 Next Obligation. intros h. simpl. symmetry. apply comp_assoc. Qed.
 
 Notation "f _*N" := (nt_comp_post f) (at level 35) : cat_scope.
@@ -85,10 +93,10 @@ Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
 Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
 
 Program Definition HomF {C : Cat}
-  : Functor (op C ×C C) SetCat :=
-  {|F0 X := (@HomSet C) (fst X) (snd X)
-  ; F1 _ _ f := bi_comp (fst f) (snd f)
-  |}.
+  : Functor (op C ×C C) SetCat
+  := {|F0 X := (@HomSet C) (fst X) (snd X)
+     ; F1 _ _ f := bi_comp (fst f) (snd f)
+     |}.
 Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
   simpl. intros h. simpl.
   rewrite Hf, Hg. reflexivity.
@@ -100,20 +108,20 @@ Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat ca
     raises carrier and equality universes independently. Functoriality is
     inherited from HomF and composition, rather than reproved here. *)
 Definition LeftHomF@{u p +} {C D : Cat} (F : Functor C D)
-  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _} :=
-  LiftF ∘F (HomF ∘F (OpF F ×F IdF)).
+  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _}
+  := LiftF ∘F (HomF ∘F (OpF F ×F IdF)).
 
 Definition RightHomF@{u p +} {C D : Cat} (G : Functor D C)
-  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _} :=
-  LiftF ∘F (HomF ∘F (IdF ×F G)).
+  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _}
+  := LiftF ∘F (HomF ∘F (IdF ×F G)).
 
 (** * Morphism Maps of Functors
 
     Full faithfulness makes this specific map an isomorphism of setoids. *)
 
 Program Canonical fmap_resp {C D : Cat} (F : Functor C D) {X Y : @Ob C}
-  : HomSet X Y →r HomSet (F X) (F Y) :=
-  {| func := fmap F (X := X) (Y := Y) |}.
+  : HomSet X Y →r HomSet (F X) (F Y)
+  := {| func := fmap F (X := X) (Y := Y) |}.
 
 Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Functor C D)
   : is_fully_faithful F ↔

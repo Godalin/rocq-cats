@@ -52,16 +52,18 @@ End TypeLogic.
 (** * Meta: Universal Property *)
 
 Record is_unique {X R} `{Equivalence X R}
-    (P : X → Type) (x : X) : Type :=
-  { this : P x
-  ; that : ∀ y : X, P y → R y x
-  }.
+    (P : X → Type) (x : X)
+  : Type
+  := { this : P x
+     ; that : ∀ y : X, P y → R y x
+     }.
 
 Section Unique.
 Context {X : Type} {R : X → X → Type} `{Equivalence X R}.
 
 (** Uniqueness among all elements, up to the ambient equivalence. *)
-Definition is_unique_element (x : X) : Type
+Definition is_unique_element (x : X)
+  : Type
   := is_unique (λ _, True) x.
 
 Theorem unique_element_iff {x : X}
@@ -91,12 +93,14 @@ Tactic Notation "elim_unique" constr(H) "with" constr(h) :=
 Section ProdEquivalence.
 Context {X Y} (Rx : crelation X) (Ry : crelation Y).
 
-Definition ProdEq : crelation (X * Y)
+Definition ProdEq
+  : crelation (X * Y)
   := λ '(x1, y1) '(x2, y2), Rx x1 x2 ∧ Ry y1 y2.
 
 Context `{Equivalence X Rx} `{Equivalence Y Ry}.
 
-Global Program Instance ProdEq_Equivalence : Equivalence ProdEq.
+Global Program Instance ProdEq_Equivalence
+  : Equivalence ProdEq.
 Next Obligation. intros [x y]. simpl. split; reflexivity. Qed.
 Next Obligation. intros [x1 y1] [x2 y2] [H1 H2].
   split; symmetry; auto.

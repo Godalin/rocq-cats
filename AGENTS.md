@@ -29,6 +29,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Code and naming
 
+- Put each required module on its own line; in grouped `Require Import` or
+  `Require Export`, place the module list below the command. Keep lines near
+  80 characters where practical. Wrap long declarations by parameter groups,
+  indenting continued parameters four spaces. In declaration headers, always
+  start the result-type `:` and definition-body `:=` on separate new lines,
+  each indented two spaces, even for short declarations. Start the body on
+  the same line immediately after `:=`, rather than inserting a newline.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
   Design shared, exported notation alongside new operations; avoid local
   notation aliases. Prefer UTF-8 and pair/projection notation. Check scopes,

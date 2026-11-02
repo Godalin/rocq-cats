@@ -1,7 +1,15 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Section.
-From Cats Require Import DTT.CwF DTT.Context.Extension.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Section.
+From Cats Require Import
+  DTT.CwF
+  DTT.Context.Extension.
 From Cats Require Import DTT.Context.Pullback.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Terms as Sections of Context Projections *)
 
@@ -9,17 +17,17 @@ Section ContextSections.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 Program Definition term_to_section_resp {Γ : @Ob C} (A : Ty T Γ)
-  : Tm T Γ A →r Sec(context_proj T A) :=
-  {| func t := (⟨id; symmetry (ty_sub_id T A) ▸[T] t⟩[T, A];
-      context_pair_β1 T A id (symmetry (ty_sub_id T A) ▸[T] t)) |}.
+  : Tm T Γ A →r Sec(context_proj T A)
+  := {| func t := (⟨id; symmetry (ty_sub_id T A) ▸[T] t⟩[T, A];
+         context_pair_β1 T A id (symmetry (ty_sub_id T A) ▸[T] t)) |}.
 Next Obligation.
   intros t u H. apply context_pair_proper. apply func_proper. exact H.
 Defined.
 
 Program Definition section_to_term_resp {Γ : @Ob C} (A : Ty T Γ)
-  : Sec(context_proj T A) →r Tm T Γ A :=
-  {| func s := transitivity (ty_sub_comm T A (context_proj T A) s.1 s.2)
-      (ty_sub_id T A) ▸[T] (context_var T A)[s.1]Tm[T] |}.
+  : Sec(context_proj T A) →r Tm T Γ A
+  := {| func s := transitivity (ty_sub_comm T A (context_proj T A) s.1 s.2)
+         (ty_sub_id T A) ▸[T] (context_var T A)[s.1]Tm[T] |}.
 Next Obligation.
   intros s t H.
   transitivity (transitivity (ty_sub_comm T A (context_proj T A) t.1 t.2)

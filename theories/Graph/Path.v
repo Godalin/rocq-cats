@@ -5,10 +5,11 @@ From Cats Require Export Graph.Core.
     Parenthesized concatenations avoid eliminating equalities of dependent
     endpoints. Unit and associativity equations belong to the specified
     path equivalence, together with the graph's edge equivalences. *)
-Inductive Path (G : Graph) : @Vertex G → @Vertex G → Type :=
-  | path_id (x : @Vertex G) : Path G x x
-  | path_edge {x y} : Edge x y → Path G x y
-  | path_comp {x y z} : Path G y z → Path G x y → Path G x z.
+Inductive Path (G : Graph)
+  : @Vertex G → @Vertex G → Type
+  := | path_id (x : @Vertex G) : Path G x x
+     | path_edge {x y} : Edge x y → Path G x y
+     | path_comp {x y z} : Path G y z → Path G x y → Path G x z.
 
 Arguments path_id {_} _.
 Arguments path_edge {_ _ _} _.
@@ -20,18 +21,19 @@ Notation "'εG' x" := (path_id x) (at level 35) : graph_scope.
 Notation "'ιG' e" := (path_edge e) (at level 35) : graph_scope.
 Infix "∘P" := path_comp (at level 40, left associativity) : graph_scope.
 
-Inductive PathEq {G : Graph} : ∀ {x y}, Path G x y → Path G x y → Type :=
-  | path_refl {x y} (f : Path G x y) : PathEq f f
-  | path_sym {x y} {f g : Path G x y} : PathEq f g → PathEq g f
-  | path_trans {x y} {f g h : Path G x y} : PathEq f g → PathEq g h → PathEq f h
-  | path_edge_equiv {x y} {e f : Edge x y}
-      : e ≈S f → PathEq (path_edge e) (path_edge f)
-  | path_comp_equiv {x y z} {g g' : Path G y z} {f f' : Path G x y}
-      : PathEq g g' → PathEq f f' → PathEq (path_comp g f) (path_comp g' f')
-  | path_id_r {x y} (f : Path G x y) : PathEq (path_comp f (path_id x)) f
-  | path_id_l {x y} (f : Path G x y) : PathEq (path_comp (path_id y) f) f
-  | path_assoc {w x y z} (h : Path G y z) (g : Path G x y) (f : Path G w x)
-      : PathEq (path_comp (path_comp h g) f) (path_comp h (path_comp g f)).
+Inductive PathEq {G : Graph}
+  : ∀ {x y}, Path G x y → Path G x y → Type
+  := | path_refl {x y} (f : Path G x y) : PathEq f f
+     | path_sym {x y} {f g : Path G x y} : PathEq f g → PathEq g f
+     | path_trans {x y} {f g h : Path G x y} : PathEq f g → PathEq g h → PathEq f h
+     | path_edge_equiv {x y} {e f : Edge x y}
+         : e ≈S f → PathEq (path_edge e) (path_edge f)
+     | path_comp_equiv {x y z} {g g' : Path G y z} {f f' : Path G x y}
+         : PathEq g g' → PathEq f f' → PathEq (path_comp g f) (path_comp g' f')
+     | path_id_r {x y} (f : Path G x y) : PathEq (path_comp f (path_id x)) f
+     | path_id_l {x y} (f : Path G x y) : PathEq (path_comp (path_id y) f) f
+     | path_assoc {w x y z} (h : Path G y z) (g : Path G x y) (f : Path G w x)
+         : PathEq (path_comp (path_comp h g) f) (path_comp h (path_comp g f)).
 
 Infix "≈P" := PathEq (at level 50, no associativity) : graph_scope.
 
@@ -52,5 +54,6 @@ Global Instance path_comp_proper {G : Graph} {x y z : @Vertex G}
   : Proper (PathEq ==> PathEq ==> PathEq) (@path_comp G x y z).
 Proof. intros g g' H f f' K. exact (path_comp_equiv H K). Defined.
 
-Program Definition PathS (G : Graph) (x y : @Vertex G) : SetC :=
-  {| carrier := Path G x y; carrier_equiv := PathEq |}.
+Program Definition PathS (G : Graph) (x y : @Vertex G)
+  : SetC
+  := {| carrier := Path G x y; carrier_equiv := PathEq |}.

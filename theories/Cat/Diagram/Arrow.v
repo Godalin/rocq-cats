@@ -1,11 +1,16 @@
-From Cats Require Export Cat.Shape Cat.Diagram.Free.
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
+From Cats Require Export
+  Cat.Shape
+  Cat.Diagram.Free.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
 
 (** * The Walking Arrow *)
 Program Definition ArrowDiagram {C : Cat} {X Y : @Ob C} (f : Hom X Y)
-  : Functor ArrowShape C :=
-  {| F0 b := if b then Y else X
-   ; F1 x y e := _ |}.
+  : Functor ArrowShape C
+  := {| F0 b := if b then Y else X
+      ; F1 x y e := _ |}.
 Next Obligation.
   destruct x, y; cbn in *; destruct e.
   - exact id.
@@ -22,8 +27,9 @@ Notation "'⟨' f '⟩D'" := (ArrowDiagram f) : cat_scope.
 
 Program Definition ArrowN {C : Cat} {F G : Functor ArrowShape C}
     (a : Hom (F false) (G false)) (b : Hom (F true) (G true))
-    (H : b ∘ fmap F arrow_step ≈ fmap G arrow_step ∘ a) : F ⇒ G :=
-  {| nt x := if x as v return Hom (F v) (G v) then b else a |}.
+    (H : b ∘ fmap F arrow_step ≈ fmap G arrow_step ∘ a)
+  : F ⇒ G
+  := {| nt x := if x as v return Hom (F v) (G v) then b else a |}.
 Next Obligation.
   destruct X, Y; cbn in *; destruct f.
   - change (b ∘ fmap F (@Cat.Core.id ArrowShape true) ≈
@@ -45,14 +51,14 @@ Proof.
 Defined.
 
 Definition ArrowCone {C : Cat} {X Y P : @Ob C} (f : Hom X Y) (p : Hom P X)
-  : P ⇒Δ ⟨f⟩D :=
-  @ArrowN C (ConstF ArrowShape P) (ArrowDiagram f) p (f ∘ p) (comp_id_r _).
+  : P ⇒Δ ⟨f⟩D
+  := @ArrowN C (ConstF ArrowShape P) (ArrowDiagram f) p (f ∘ p) (comp_id_r _).
 
 (** * Parallel Pairs *)
 Program Definition ParallelGraphMap {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
-  : ParallelGraph →G UnderlyingGraph C :=
-  {| vertex_map b := if b then Y else X
-   ; edge_map x y := {| func e := _ |} |}.
+  : ParallelGraph →G UnderlyingGraph C
+  := {| vertex_map b := if b then Y else X
+      ; edge_map x y := {| func e := _ |} |}.
 Next Obligation.
   destruct x, y; cbn in *; try solve [destruct e].
   exact (if e then g else f).
@@ -63,7 +69,8 @@ Next Obligation.
 Defined.
 
 Definition ParallelDiagram {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
-  : Functor ParallelShape C := FreeF (ParallelGraphMap f g).
+  : Functor ParallelShape C
+  := FreeF (ParallelGraphMap f g).
 
 Notation "'⟨' f '⇉' g '⟩D'" := (ParallelDiagram f g) : cat_scope.
 
@@ -91,8 +98,9 @@ Proof.
 Defined.
 
 Definition ParallelCone {C : Cat} {X Y P : @Ob C} {f g : Hom X Y}
-    (p : Hom P X) (H : f ∘ p ≈ g ∘ p) : P ⇒Δ ⟨f ⇉ g⟩D :=
-  @ParallelConeOver C (ParallelDiagram f g) P p H.
+    (p : Hom P X) (H : f ∘ p ≈ g ∘ p)
+  : P ⇒Δ ⟨f ⇉ g⟩D
+  := @ParallelConeOver C (ParallelDiagram f g) P p H.
 
 Lemma parallel_cone_comm {C : Cat} {D : Functor ParallelShape C} {P : @Ob C}
     (κ : P ⇒Δ D)
@@ -106,8 +114,8 @@ Qed.
 
 (** * The Walking Isomorphism *)
 Program Definition IsoDiagram {C : Cat} {X Y : @Ob C} (i : X ≅[C] Y)
-  : Functor IsoShape C :=
-  {| F0 b := if b then Y else X; F1 x y e := _ |}.
+  : Functor IsoShape C
+  := {| F0 b := if b then Y else X; F1 x y e := _ |}.
 Next Obligation.
   destruct x, y.
   - exact id.

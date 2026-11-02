@@ -1,18 +1,24 @@
-From Cats Require Import Cat.Core Cat.Pullback.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat.
+From Cats Require Import
+  Cat.Core
+  Cat.Pullback.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Reindexing Coherent Families *)
 
-Definition ReindexFamC {X : SetC} (U : FamC) (f : X →r famC_base U) : FamC :=
-  {| famC_base := X; famC_fam := U[f]S |}.
+Definition ReindexFamC {X : SetC} (U : FamC) (f : X →r famC_base U)
+  : FamC
+  := {| famC_base := X; famC_fam := U[f]S |}.
 
 Notation "U '[' f ']'" := (ReindexFamC U f)
   (at level 8, left associativity, format "U [ f ]") : cat_scope.
 
 (** The canonical family morphism lies over [f] and is the identity on fibers. *)
 Program Definition fam_reindex {X : SetC} (U : FamC) (f : X →r famC_base U)
-  : FamF U[f] U :=
-  {| famF_base := f; famF_fam x := id_resp (X := U (f x)) |}.
+  : FamF U[f] U
+  := {| famF_base := f; famF_fam x := id_resp (X := U (f x)) |}.
 Next Obligation. reflexivity. Defined.
 
 (** ** Identity and Composition Comparisons
@@ -35,9 +41,9 @@ Defined.
 (** Iterated reindexing compares to reindexing along the composite. *)
 Program Definition fam_reindex_comp {X Y : SetC} (U : FamC)
     (f : X →r famC_base U) (g : Y →r X)
-  : FamF U[f][g] U[f ∘r g] :=
-  {| famF_base := id_resp (X := Y)
-   ; famF_fam x := id_resp (X := U (f (g x))) |}.
+  : FamF U[f][g] U[f ∘r g]
+  := {| famF_base := id_resp (X := Y)
+      ; famF_fam x := id_resp (X := U (f (g x))) |}.
 Next Obligation. simpl. apply transpS_witness_independent. Defined.
 
 Definition fam_reindex_comp_iso {X Y : SetC} (U : FamC)
@@ -68,8 +74,8 @@ Qed.
 Program Definition fam_reindex_pair_resp {X Q : SetC} (U : FamC)
     (f : X →r famC_base U) (q1 : Q →r X) (q2 : Q →r SigS (famC_base U) U)
     (Hq : f ∘ q1 ≈ sig_base_resp U ∘ q2)
-  : Q →r SigS X U[f]S :=
-  {| func z := (q1 z; transpS U (symmetry (Hq z)) (q2 z).2) |}.
+  : Q →r SigS X U[f]S
+  := {| func z := (q1 z; transpS U (symmetry (Hq z)) (q2 z).2) |}.
 Next Obligation.
   pose (q := λ z, symmetry (Hq z)).
   intros z z' p.

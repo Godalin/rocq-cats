@@ -1,4 +1,9 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Arrow Cat.Pullback Cat.Fibration.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Arrow
+  Cat.Pullback
+  Cat.Fibration.
 
 (** * Cartesian Squares and Pullbacks *)
 
@@ -64,25 +69,29 @@ Section PullbackLifts.
 Context {C : Cat} `{HPb : !HasPullback C}.
 
 Program Definition ArrowReindexOb (B : ArrowOb C) {X : @Ob C}
-    (σ : Hom X (arrow_cod B)) : ArrowOb C :=
-  {| arrow_dom := Pb σ (arrow_map B)
-   ; arrow_cod := X
-   ; arrow_map := pb1 σ (arrow_map B) |}.
+    (σ : Hom X (arrow_cod B))
+  : ArrowOb C
+  := {| arrow_dom := Pb σ (arrow_map B)
+      ; arrow_cod := X
+      ; arrow_map := pb1 σ (arrow_map B) |}.
 
 Program Definition arrow_reindex (B : ArrowOb C) {X : @Ob C}
-    (σ : Hom X (arrow_cod B)) : ArrowHom (ArrowReindexOb B σ) B :=
-  {| arrow_top := pb2 σ (arrow_map B); arrow_bottom := σ |}.
+    (σ : Hom X (arrow_cod B))
+  : ArrowHom (ArrowReindexOb B σ) B
+  := {| arrow_top := pb2 σ (arrow_map B); arrow_bottom := σ |}.
 Next Obligation. symmetry. apply pullback_comm. Defined.
 
 Definition arrow_reindex_cartesian (B : ArrowOb C) {X : @Ob C}
-    (σ : Hom X (arrow_cod B)) : arrow_reindex B σ ⦂ Cart(ArrowCodF C) :=
-  arrow_pullback_cartesian (arrow_reindex B σ) pullback_universal.
+    (σ : Hom X (arrow_cod B))
+  : arrow_reindex B σ ⦂ Cart(ArrowCodF C)
+  := arrow_pullback_cartesian (arrow_reindex B σ) pullback_universal.
 
 (** This choice is enabled explicitly, not registered by import. *)
-Program Definition ArrowCodF_HasCartesianLift : HasCartesianLift (ArrowCodF C) :=
-  {| CartesianLift B X σ := ArrowReindexOb B σ
-   ; cartesian_lift_base B X σ := eq_refl
-   ; cartesian_lift B X σ := arrow_reindex B σ |}.
+Program Definition ArrowCodF_HasCartesianLift
+  : HasCartesianLift (ArrowCodF C)
+  := {| CartesianLift B X σ := ArrowReindexOb B σ
+      ; cartesian_lift_base B X σ := eq_refl
+      ; cartesian_lift B X σ := arrow_reindex B σ |}.
 Next Obligation. symmetry. apply comp_id_r. Defined.
 Next Obligation. apply arrow_reindex_cartesian. Defined.
 
@@ -96,18 +105,19 @@ Notation "B '[' σ ']Arr'" := (ArrowReindexOb B σ)
 Section LiftPullbacks.
 Context {C : Cat} `{HL : !HasCartesianLift (ArrowCodF C)}.
 
-Definition ArrowPullback {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z) : ArrowOb C :=
-  f^*[ArrowCodF C] {| arrow_dom := Y; arrow_cod := Z; arrow_map := g |}.
+Definition ArrowPullback {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
+  : ArrowOb C
+  := f^*[ArrowCodF C] {| arrow_dom := Y; arrow_cod := Z; arrow_map := g |}.
 
 Definition arrow_pullback_pr1 {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
-  : Hom (arrow_dom (ArrowPullback f g)) X :=
-  eq_to_hom (cartesian_lift_base (P := ArrowCodF C)
+  : Hom (arrow_dom (ArrowPullback f g)) X
+  := eq_to_hom (cartesian_lift_base (P := ArrowCodF C)
       (Y := {| arrow_dom := Y; arrow_cod := Z; arrow_map := g |}) f)
     ∘ arrow_map (ArrowPullback f g).
 
 Definition arrow_pullback_pr2 {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
-  : Hom (arrow_dom (ArrowPullback f g)) Y :=
-  arrow_top (cartesian_lift (P := ArrowCodF C)
+  : Hom (arrow_dom (ArrowPullback f g)) Y
+  := arrow_top (cartesian_lift (P := ArrowCodF C)
     (Y := {| arrow_dom := Y; arrow_cod := Z; arrow_map := g |}) f).
 
 Definition arrow_pullback_universal {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
@@ -126,11 +136,12 @@ Proof.
 Defined.
 
 (** The recovered pullback structure is also an explicit choice. *)
-Program Definition ArrowCodF_HasPullback : HasPullback C :=
-  {| Pb X Y Z f g := arrow_dom (ArrowPullback f g)
-   ; pb1 X Y Z := arrow_pullback_pr1
-   ; pb2 X Y Z := arrow_pullback_pr2
-   ; pullback_universal X Y Z := arrow_pullback_universal |}.
+Program Definition ArrowCodF_HasPullback
+  : HasPullback C
+  := {| Pb X Y Z f g := arrow_dom (ArrowPullback f g)
+      ; pb1 X Y Z := arrow_pullback_pr1
+      ; pb2 X Y Z := arrow_pullback_pr2
+      ; pullback_universal X Y Z := arrow_pullback_universal |}.
 
 End LiftPullbacks.
 

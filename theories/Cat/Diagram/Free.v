@@ -1,5 +1,10 @@
-From Cats Require Export Cat.Free Cat.Diagram.
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
+From Cats Require Export
+  Cat.Free
+  Cat.Diagram.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
 
 (** * Cones Specified on Generators *)
 Definition FreeCone {G : Graph} {C : Cat} {D : Functor (FreeCat G) C}

@@ -1,21 +1,26 @@
 From Stdlib Require Import Utf8.
-From Cats Require Import Cat.Core Cat.Terminal Cat.Product Cat.Exponential.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal
+  Cat.Product
+  Cat.Exponential.
 Open Scope cat_scope.
 
 
 
 (** * Cartesian Closed Category *)
 
-Class CCC (C : Cat) :=
-  { hasTerminal :: HasTerminal C
-  ; hasProduct :: HasProduct C
-  ; hasExponential :: HasExponential hasProduct
-  }.
+Class CCC (C : Cat)
+  := { hasTerminal :: HasTerminal C
+     ; hasProduct :: HasProduct C
+     ; hasExponential :: HasExponential hasProduct
+     }.
 
 Section CCC.
 Context {C : Cat} `{HCCC : !CCC C}.
 
-Example idl {X} : 1 × X ≅ X.
+Example idl {X}
+  : 1 × X ≅ X.
 Proof. apply term_prod_id_l. Qed.
 
 End CCC.

@@ -19,35 +19,35 @@ Notation "f '≈₁[' R ']' g" := (R f g)
 Class IsStrictTwoCat (K : Bicat)
     (Cell1Eq : ∀ X Y : ObB K, crelation (Cell1 X Y))
     (cell1_eq_to_cell2 : ∀ X Y (f g : Cell1 X Y),
-      f ≈₁[Cell1Eq X Y] g → f ⇒₂ g) :=
-  { Cell1Eq_Equivalence X Y :: Equivalence (Cell1Eq X Y)
-  ; comp1_proper X Y Z
-      :: Proper (Cell1Eq Y Z ==> Cell1Eq X Y ==> Cell1Eq X Z)
-          (@comp1 K X Y Z)
-  ; cell1_eq_to_cell2_id X Y (f : Cell1 X Y) (p : f ≈₁[Cell1Eq X Y] f)
-      : cell1_eq_to_cell2 X Y f f p ≈₂ 𝟙₂ f
-  ; cell1_eq_to_cell2_comp X Y (f g h : Cell1 X Y)
-      (p : f ≈₁[Cell1Eq X Y] g) (q : g ≈₁[Cell1Eq X Y] h)
-      (r : f ≈₁[Cell1Eq X Y] h)
-      : cell1_eq_to_cell2 X Y f h r ≈₂
-          (cell1_eq_to_cell2 X Y g h q ∘₂ cell1_eq_to_cell2 X Y f g p)
-  ; cell1_eq_to_cell2_hcomp X Y Z (g g' : Cell1 Y Z) (f f' : Cell1 X Y)
-      (p : g ≈₁[Cell1Eq Y Z] g') (q : f ≈₁[Cell1Eq X Y] f')
-      (r : (g ∘₁ f) ≈₁[Cell1Eq X Z] (g' ∘₁ f'))
-      : cell1_eq_to_cell2 X Z (g ∘₁ f) (g' ∘₁ f') r ≈₂
-          (cell1_eq_to_cell2 Y Z g g' p ⋆ cell1_eq_to_cell2 X Y f f' q)
-  ; comp1_id_l X Y (f : Cell1 X Y) : (𝟙₁ Y ∘₁ f) ≈₁[Cell1Eq X Y] f
-  ; comp1_id_r X Y (f : Cell1 X Y) : (f ∘₁ 𝟙₁ X) ≈₁[Cell1Eq X Y] f
-  ; comp1_assoc W X Y Z (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
-      : ((h ∘₁ g) ∘₁ f) ≈₁[Cell1Eq W Z] (h ∘₁ (g ∘₁ f))
-  ; left_unitor_strict X Y (f : Cell1 X Y)
-      : left_unitor f ≈₂ cell1_eq_to_cell2 X Y _ _ (comp1_id_l X Y f)
-  ; right_unitor_strict X Y (f : Cell1 X Y)
-      : right_unitor f ≈₂ cell1_eq_to_cell2 X Y _ _ (comp1_id_r X Y f)
-  ; associator_strict W X Y Z (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
-      : associator h g f ≈₂
-          cell1_eq_to_cell2 W Z _ _ (comp1_assoc W X Y Z h g f)
-  }.
+      f ≈₁[Cell1Eq X Y] g → f ⇒₂ g)
+  := { Cell1Eq_Equivalence X Y :: Equivalence (Cell1Eq X Y)
+     ; comp1_proper X Y Z
+         :: Proper (Cell1Eq Y Z ==> Cell1Eq X Y ==> Cell1Eq X Z)
+             (@comp1 K X Y Z)
+     ; cell1_eq_to_cell2_id X Y (f : Cell1 X Y) (p : f ≈₁[Cell1Eq X Y] f)
+         : cell1_eq_to_cell2 X Y f f p ≈₂ 𝟙₂ f
+     ; cell1_eq_to_cell2_comp X Y (f g h : Cell1 X Y)
+         (p : f ≈₁[Cell1Eq X Y] g) (q : g ≈₁[Cell1Eq X Y] h)
+         (r : f ≈₁[Cell1Eq X Y] h)
+         : cell1_eq_to_cell2 X Y f h r ≈₂
+             (cell1_eq_to_cell2 X Y g h q ∘₂ cell1_eq_to_cell2 X Y f g p)
+     ; cell1_eq_to_cell2_hcomp X Y Z (g g' : Cell1 Y Z) (f f' : Cell1 X Y)
+         (p : g ≈₁[Cell1Eq Y Z] g') (q : f ≈₁[Cell1Eq X Y] f')
+         (r : (g ∘₁ f) ≈₁[Cell1Eq X Z] (g' ∘₁ f'))
+         : cell1_eq_to_cell2 X Z (g ∘₁ f) (g' ∘₁ f') r ≈₂
+             (cell1_eq_to_cell2 Y Z g g' p ⋆ cell1_eq_to_cell2 X Y f f' q)
+     ; comp1_id_l X Y (f : Cell1 X Y) : (𝟙₁ Y ∘₁ f) ≈₁[Cell1Eq X Y] f
+     ; comp1_id_r X Y (f : Cell1 X Y) : (f ∘₁ 𝟙₁ X) ≈₁[Cell1Eq X Y] f
+     ; comp1_assoc W X Y Z (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
+         : ((h ∘₁ g) ∘₁ f) ≈₁[Cell1Eq W Z] (h ∘₁ (g ∘₁ f))
+     ; left_unitor_strict X Y (f : Cell1 X Y)
+         : left_unitor f ≈₂ cell1_eq_to_cell2 X Y _ _ (comp1_id_l X Y f)
+     ; right_unitor_strict X Y (f : Cell1 X Y)
+         : right_unitor f ≈₂ cell1_eq_to_cell2 X Y _ _ (comp1_id_r X Y f)
+     ; associator_strict W X Y Z (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
+         : associator h g f ≈₂
+             cell1_eq_to_cell2 W Z _ _ (comp1_assoc W X Y Z h g f)
+     }.
 
 Section StrictTwoCat.
 Context {K : Bicat}
@@ -58,7 +58,8 @@ Local Existing Instance S.
 
 (** Equality witnesses need not be equal. Only their action is equivalent. *)
 Theorem cell1_eq_to_cell2_unique {X Y} {f g : Cell1 X Y}
-    (p q : f ≈₁[R X Y] g) : cmp X Y f g p ≈₂ cmp X Y f g q.
+    (p q : f ≈₁[R X Y] g)
+  : cmp X Y f g p ≈₂ cmp X Y f g q.
 Proof.
   transitivity (cmp X Y f g q ∘₂ cmp X Y f f (reflexivity f)).
   - apply cell1_eq_to_cell2_comp.
@@ -68,7 +69,8 @@ Proof.
 Qed.
 
 Definition cell1_eq_to_cell2_iso {X Y} {f g : Cell1 X Y}
-    (p : f ≈₁[R X Y] g) : is_iso (cmp X Y f g p).
+    (p : f ≈₁[R X Y] g)
+  : is_iso (cmp X Y f g p).
 Proof.
   exists (cmp X Y g f (symmetry p)). split;
     unfold is_linv_of, is_rinv_of.
@@ -83,8 +85,9 @@ Defined.
 (** ** Transport of 2-cell Endpoints *)
 
 Definition cell2_transport {X Y} {f f' g g' : Cell1 X Y}
-    (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g') (α : f ⇒₂ g) : f' ⇒₂ g' :=
-  cmp X Y g g' q ∘₂ α ∘₂ cmp X Y f' f (symmetry p).
+    (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g') (α : f ⇒₂ g)
+  : f' ⇒₂ g'
+  := cmp X Y g g' q ∘₂ α ∘₂ cmp X Y f' f (symmetry p).
 
 Local Notation "α '⟦' p ',' q '⟧₂'" := (cell2_transport p q α)
   (at level 8, left associativity) : bicat_scope.
@@ -118,7 +121,8 @@ Qed.
 Theorem cell2_transport_comp {X Y} {f f' f'' g g' g'' : Cell1 X Y}
     (p : f ≈₁[R X Y] f') (p' : f' ≈₁[R X Y] f'') (r : f ≈₁[R X Y] f'')
     (q : g ≈₁[R X Y] g') (q' : g' ≈₁[R X Y] g'') (s : g ≈₁[R X Y] g'')
-    (α : f ⇒₂ g) : α⟦p, q⟧₂⟦p', q'⟧₂ ≈₂ α⟦r, s⟧₂.
+    (α : f ⇒₂ g)
+  : α⟦p, q⟧₂⟦p', q'⟧₂ ≈₂ α⟦r, s⟧₂.
 Proof.
   unfold cell2_transport. symmetry.
   transitivity ((cmp X Y g' g'' q' ∘₂ cmp X Y g g' q) ∘₂

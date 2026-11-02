@@ -1,4 +1,9 @@
-From Cats Require Import Cat.Core Cat.Functor DTT.Display DTT.CwF DTT.Context.Pullback.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  DTT.Display
+  DTT.CwF
+  DTT.Context.Pullback.
 From Cats Require Import DTT.Context.Conversion.
 From Cats Require Import Instance.Set.Fam.Cat.
 
@@ -10,11 +15,12 @@ From Cats Require Import Instance.Set.Fam.Cat.
 Section ContextDisplay.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
-Program Definition ContextExtension_HasDisplay : HasDisplay C (FamBaseF ∘F T) :=
-  {| Display Γ A := Γ ▹[T] A
-   ; display_proj Γ A := context_proj T A
-   ; display_conv Γ A B e := e^Ext[T]
-   ; display_lift Γ Δ σ A := σ^+[T, A] |}.
+Program Definition ContextExtension_HasDisplay
+  : HasDisplay C (FamBaseF ∘F T)
+  := {| Display Γ A := Γ ▹[T] A
+      ; display_proj Γ A := context_proj T A
+      ; display_conv Γ A B e := e^Ext[T]
+      ; display_lift Γ Δ σ A := σ^+[T, A] |}.
 Next Obligation. apply context_conv_proj. Defined.
 Next Obligation. apply context_conv_id. Qed.
 Next Obligation. apply context_conv_comp. Qed.

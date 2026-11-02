@@ -1,4 +1,8 @@
-From Cats Require Import Cat.Core Cat.Terminal Cat.Pullback Cat.Morphism.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal
+  Cat.Pullback
+  Cat.Morphism.
 
 (** * Sub-object Classifier
 
@@ -38,17 +42,18 @@ Qed.
 
 End SubObjectClassifier.
 
-Class HasSubObjectClassifier (C : Cat) (HT : HasTerminal C) :=
-  { SubOC : Ob
-  ; truth : Hom 1 SubOC
-  ; classifier_universal : is_subobject_classifier SubOC (term_Sub truth)
-  }.
+Class HasSubObjectClassifier (C : Cat) (HT : HasTerminal C)
+  := { SubOC : Ob
+     ; truth : Hom 1 SubOC
+     ; classifier_universal : is_subobject_classifier SubOC (term_Sub truth)
+     }.
 
 Arguments classifier_universal {_ _ _} _ _.
 
 Definition char {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y) : Hom Y SubOC :=
-  (classifier_universal Y {| sub := X; sub_mono := m |}).1.
+    `{HSC : !HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y)
+  : Hom Y SubOC
+  := (classifier_universal Y {| sub := X; sub_mono := m |}).1.
 
 Notation Ω := SubOC.
 Notation χ := char.

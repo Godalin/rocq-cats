@@ -1,14 +1,22 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Fibration.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Fibration.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat
   Instance.Set.Fam.Reindex.
 
 (** * Cartesian Lifts of Coherent Families *)
 
-Program Definition fam_reindex_factor {X : SetC} (U : FamC) (f : X →r famC_base U)
+Program Definition fam_reindex_factor {X : SetC} (U : FamC)
+    (f : X →r famC_base U)
     {V : FamC} (g : FamF V U) (u : famC_base V →r X)
-    (H : (f ∘r u) ≈f famF_base g) : FamF V U[f] :=
-  {| famF_base := u
-   ; famF_fam x := transpS U (symmetry (H x)) ∘r famF_fam g x |}.
+    (H : (f ∘r u) ≈f famF_base g)
+  : FamF V U[f]
+  := {| famF_base := u
+      ; famF_fam x := transpS U (symmetry (H x)) ∘r famF_fam g x |}.
 Next Obligation.
   pose (q := λ x, symmetry (H x)).
   change (transpS U (q y) (famF_fam g y (transpS V p a)) ≈S
@@ -42,10 +50,11 @@ Defined.
 
 (** This chosen structure is enabled explicitly by clients. Its base-object
     identification is reflexive, and its underlying arrow is [fam_reindex]. *)
-Program Definition FamBaseF_HasCartesianLift : HasCartesianLift FamBaseF :=
-  {| CartesianLift U X f := U[f]
-   ; cartesian_lift_base U X f := eq_refl
-   ; cartesian_lift U X f := fam_reindex U f |}.
+Program Definition FamBaseF_HasCartesianLift
+  : HasCartesianLift FamBaseF
+  := {| CartesianLift U X f := U[f]
+      ; cartesian_lift_base U X f := eq_refl
+      ; cartesian_lift U X f := fam_reindex U f |}.
 Next Obligation. intros x. reflexivity. Defined.
 Next Obligation. apply fam_reindex_cartesian. Defined.
 
@@ -54,9 +63,10 @@ Next Obligation. apply fam_reindex_cartesian. Defined.
     The direct construction preserves the computation on fibers. Its
     universal characterization agrees with the abstract cartesian factor. *)
 Program Definition fam_reindex_map {X : SetC} {U V : FamC} (φ : FamF U V)
-    (f : X →r famC_base U) : FamF U[f] V[famF_base φ ∘r f] :=
-  {| famF_base := id_resp (X := X)
-   ; famF_fam x := famF_fam φ (f x) |}.
+    (f : X →r famC_base U)
+  : FamF U[f] V[famF_base φ ∘r f]
+  := {| famF_base := id_resp (X := X)
+      ; famF_fam x := famF_fam φ (f x) |}.
 Next Obligation.
   change (famF_fam φ (f y) (transpS U (@func_proper _ _ f x y p) a) ≈S
     transpS V (@func_proper _ _ (famF_base φ ∘r f) x y

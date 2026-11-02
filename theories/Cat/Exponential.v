@@ -1,24 +1,29 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Adjunction Cat.Product.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Adjunction
+  Cat.Product.
 
 (** * Exponential Objects *)
 
 Definition is_exponential {C : Cat} `{HP : !HasProduct C}
-    (X Y E : Ob) (ev : Hom (E × X) Y) :=
-  ∀ Z (f : Hom (Z × X) Y),
+    (X Y E : Ob) (ev : Hom (E × X) Y)
+  := ∀ Z (f : Hom (Z × X) Y),
     ∃ h : Hom Z E, is_unique (λ h, ev ∘ (h × id) ≈ f) h.
 
-Class HasExponential {C : Cat} (HP : HasProduct C) :=
-  { exp : Ob → Ob → Ob
-  ; eval {X Y} : Hom (exp Y X × X) Y
+Class HasExponential {C : Cat} (HP : HasProduct C)
+  := { exp : Ob → Ob → Ob
+     ; eval {X Y} : Hom (exp Y X × X) Y
 
-  ; exponential_universal {X Y} : is_exponential X Y (exp Y X) eval
-  }.
+     ; exponential_universal {X Y} : is_exponential X Y (exp Y X) eval
+     }.
 
 Arguments exponential_universal {_ _ _ _ _} _ _.
 
 Definition curry {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
-    {X Y Z} (f : Hom (Z × X) Y) : Hom Z (exp Y X) :=
-  (exponential_universal Z f).1.
+    {X Y Z} (f : Hom (Z × X) Y)
+  : Hom Z (exp Y X)
+  := (exponential_universal Z f).1.
 
 Theorem exponential_curry_unique {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
@@ -52,8 +57,9 @@ Notation "'@eval' X Y" := (@eval _ _ _ _ X Y)
 Section Exponential.
 Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
-Definition uncurry {X Y Z} (g : Hom Z (Y ^ X)) : Hom (Z × X) Y :=
-  eval ∘ (g × id).
+Definition uncurry {X Y Z} (g : Hom Z (Y ^ X))
+  : Hom (Z × X) Y
+  := eval ∘ (g × id).
 
 Global Instance exponential_uncurry_proper {X Y Z}
   : Proper (@HomEq[Z, Y ^ X] ==> @HomEq[Z × X, Y]) uncurry.
@@ -70,10 +76,12 @@ Proof. symmetry. apply (exponential_curry_unique (uncurry g)). reflexivity. Qed.
 (** The two respectful maps and the inverse laws give the hom-setoid
     correspondence. They retain their computational witness functions. *)
 Program Definition exponential_curry_resp {X Y Z}
-  : HomSet (Z × X) Y →r HomSet Z (Y ^ X) := {| func := curry |}.
+  : HomSet (Z × X) Y →r HomSet Z (Y ^ X)
+  := {| func := curry |}.
 
 Program Definition exponential_uncurry_resp {X Y Z}
-  : HomSet Z (Y ^ X) →r HomSet (Z × X) Y := {| func := uncurry |}.
+  : HomSet Z (Y ^ X) →r HomSet (Z × X) Y
+  := {| func := uncurry |}.
 
 Lemma exponential_uncurry_comp_r {X Y Z W}
     (g : Hom Z (Y ^ X)) (σ : Hom W Z)
@@ -92,8 +100,9 @@ Proof.
 Qed.
 
 (** Covariant action on the result type, with the argument object fixed. *)
-Definition exponential_map {X Y Y'} (f : Hom Y Y') : Hom (Y ^ X) (Y' ^ X) :=
-  curry (f ∘ eval).
+Definition exponential_map {X Y Y'} (f : Hom Y Y')
+  : Hom (Y ^ X) (Y' ^ X)
+  := curry (f ∘ eval).
 
 Global Instance exponential_map_proper {X Y Y'}
   : Proper (@HomEq[Y, Y'] ==> @HomEq[Y ^ X, Y' ^ X]) exponential_map.
@@ -116,7 +125,8 @@ Proof.
   rewrite exponential_uncurry_comp_l, exponential_β. reflexivity.
 Qed.
 
-Lemma exponential_map_id {X Y} : exponential_map (@id Y) ≈ @id (Y ^ X).
+Lemma exponential_map_id {X Y}
+  : exponential_map (@id Y) ≈ @id (Y ^ X).
 Proof.
   unfold exponential_map. rewrite comp_id_l.
   transitivity (curry (uncurry (@id (Y ^ X)))).
@@ -134,8 +144,9 @@ Qed.
 
 (** Application is evaluation in a shared context. These are the equations
     needed for function beta/eta and semantic simultaneous substitution. *)
-Definition app {X Y Z} (f : Hom Z (Y ^ X)) (a : Hom Z X) : Hom Z Y :=
-  eval ∘ ⟨f, a⟩.
+Definition app {X Y Z} (f : Hom Z (Y ^ X)) (a : Hom Z X)
+  : Hom Z Y
+  := eval ∘ ⟨f, a⟩.
 
 Global Instance exponential_app_proper {X Y Z}
   : Proper (@HomEq[Z, Y ^ X] ==> @HomEq[Z, X] ==> @HomEq[Z, Y]) app.
@@ -168,9 +179,9 @@ End Exponential.
 
 Program Definition ExponentialF {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} (X : @Ob C)
-  : Functor C C :=
-  {| F0 Y := Y ^ X
-   ; F1 Y Y' f := exponential_map f |}.
+  : Functor C C
+  := {| F0 Y := Y ^ X
+      ; F1 Y Y' f := exponential_map f |}.
 Next Obligation. apply exponential_map_id. Qed.
 Next Obligation. apply exponential_map_comp. Qed.
 

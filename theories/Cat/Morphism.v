@@ -1,4 +1,6 @@
-From Cats Require Import Cat.Core Cat.Terminal.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal.
 
 
 
@@ -25,7 +27,8 @@ Proposition mono_implies_contrapositive {Y Z} (f : Hom Y Z)
   : is_mono f → is_mono_contrapositive f.
 Proof. firstorder. Qed.
 
-Proposition mono_id {X} : is_mono (@id X).
+Proposition mono_id {X}
+  : is_mono (@id X).
 Proof. intros Y x y Heq.
   rewrite comp_id_l in Heq.
   rewrite comp_id_l in Heq. auto.
@@ -66,15 +69,16 @@ Qed.
 
 
 
-Record Mono (X Y : Ob) :=
-  { mor :> Hom X Y
-  ; mor_mono : is_mono mor
-  }.
+Record Mono (X Y : Ob)
+  := { mor :> Hom X Y
+     ; mor_mono : is_mono mor
+     }.
 
 Notation "X ↣ Y" := (Mono X Y)
   (at level 35, no associativity) : cat_scope.
 
-Program Canonical Mono_id {X} := {|mor := @id X |}.
+Program Canonical Mono_id {X}
+  := {|mor := @id X |}.
 Next Obligation. apply mono_id. Qed.
 
 Program Canonical Mono_comp {X Y Z} (f : Y ↣ Z) (g : X ↣ Y)
@@ -109,20 +113,23 @@ Qed.
 
 (** *** Sub-Objects *)
 
-Record Sub (X : Ob) :=
-  { sub : Ob
-  ; sub_mono :> sub ↣ X
-  }.
+Record Sub (X : Ob)
+  := { sub : Ob
+     ; sub_mono :> sub ↣ X
+     }.
 
-Definition object_of_Sub {X Y} (f : X ↣ Y) := X.
+Definition object_of_Sub {X Y} (f : X ↣ Y)
+  := X.
 Coercion object_of_Sub : Mono >-> Ob.
 
-Program Canonical id_Sub {X : Ob} : Sub X :=
-  {|sub := X; sub_mono := Mono_id |}.
+Program Canonical id_Sub {X : Ob}
+  : Sub X
+  := {|sub := X; sub_mono := Mono_id |}.
 
 Program Canonical term_Sub
-    `{HT : !HasTerminal C} {X : Ob} (f : Hom 1 X) : Sub X :=
-  {|sub := 1; sub_mono := f |}.
+    `{HT : !HasTerminal C} {X : Ob} (f : Hom 1 X)
+  : Sub X
+  := {|sub := 1; sub_mono := f |}.
 
 Definition Sub_le Z (i j : Sub Z)
   := is_factored_through j i.
@@ -154,7 +161,8 @@ Next Obligation. destruct X as [g Hg]. destruct X0 as [h Hh].
   rewrite Hg. rewrite Hh. cato.
 Qed.
 
-Global Program Instance Sub_le_PreOrder {Z} : PreOrder (Sub_le Z).
+Global Program Instance Sub_le_PreOrder {Z}
+  : PreOrder (Sub_le Z).
 
 (** Sub_eq is [Equivalence] *)
 

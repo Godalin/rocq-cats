@@ -1,5 +1,11 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Adjunction.
-From Cats Require Import Cat.Diagram Cat.Limit.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Adjunction.
+From Cats Require Import
+  Cat.Diagram
+  Cat.Limit.
 
 (** * Limits as Right Adjoints to the Diagonal
 
@@ -9,15 +15,16 @@ Section ChosenLimits.
 Context {J C : Cat} `{HL : !HasLimitsOfShape C J}.
 
 Program Definition limit_lift_resp {X : @Ob C} {D : Functor J C}
-  : @HomSet (Fct J C) (ConstF J X) D →r HomSet X (lim D) :=
-  {| func := limit_lift |}.
+  : @HomSet (Fct J C) (ConstF J X) D →r HomSet X (lim D)
+  := {| func := limit_lift |}.
 
 Program Definition limit_cone_resp {X : @Ob C} {D : Functor J C}
-  : HomSet X (lim D) →r @HomSet (Fct J C) (ConstF J X) D :=
-  {| func f := πlim[D] ∘Cone f |}.
+  : HomSet X (lim D) →r @HomSet (Fct J C) (ConstF J X) D
+  := {| func f := πlim[D] ∘Cone f |}.
 Next Obligation. intros f g H j. cbn. rewrite H. reflexivity. Defined.
 
-Definition LimitAdjunction : Δ[J,C] ⊣ LimitF.
+Definition LimitAdjunction
+  : Δ[J,C] ⊣ LimitF.
 Proof.
   refine (AdjunctionFromHom Δ[J,C] LimitF
     (λ X D, limit_lift_resp) (λ X D, limit_cone_resp) _ _ _ _).
@@ -36,9 +43,10 @@ End ChosenLimits.
 Section DiagonalAdjunction.
 Context {J C : Cat} {R : Functor (Fct J C) C} (A : Δ[J,C] ⊣ R).
 
-Program Definition DiagonalAdjunctionLimit (D : Functor J C) : HasLimit C D :=
-  {| Lim := R D
-   ; limit_cone := adjunction_counit A D |}.
+Program Definition DiagonalAdjunctionLimit (D : Functor J C)
+  : HasLimit C D
+  := {| Lim := R D
+      ; limit_cone := adjunction_counit A D |}.
 Next Obligation.
   intros X κ. exists (κ^♯[A]). refine {| this := _; that := _ |}.
   - intros j.
@@ -50,8 +58,9 @@ Next Obligation.
     + exact (symmetry (unadjunct_counit A f)).
 Defined.
 
-Program Definition DiagonalAdjunctionLimits : HasLimitsOfShape C J :=
-  {| hasLimit := DiagonalAdjunctionLimit |}.
+Program Definition DiagonalAdjunctionLimits
+  : HasLimitsOfShape C J
+  := {| hasLimit := DiagonalAdjunctionLimit |}.
 
 End DiagonalAdjunction.
 

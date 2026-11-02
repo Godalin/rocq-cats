@@ -1,6 +1,14 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Pullback.
-From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
-From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Pullback.
+From Cats Require Import
+  DTT.CwF
+  DTT.Context.Extension
+  DTT.Context.Conversion.
+From Cats Require Import
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Substitution Lifts and Pullbacks of Display Projections *)
 
@@ -8,8 +16,8 @@ Section ContextLiftMap.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 Definition context_lift {Γ Δ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
-  : Hom (Δ ▹[T] A[σ]Ty[T]) (Γ ▹[T] A) :=
-  ⟨σ ∘ context_proj T A[σ]Ty[T];
+  : Hom (Δ ▹[T] A[σ]Ty[T]) (Γ ▹[T] A)
+  := ⟨σ ∘ context_proj T A[σ]Ty[T];
     ty_sub_comp T σ (context_proj T A[σ]Ty[T]) A
       ▸[T] context_var T A[σ]Ty[T]⟩[T, A].
 
@@ -22,8 +30,8 @@ Section ContextLift.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 Definition context_lift_proj {Γ Δ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
-  : context_proj T A ∘ σ^+[T, A] ≈ σ ∘ context_proj T A[σ]Ty[T] :=
-  context_pair_β1 T A (σ ∘ context_proj T A[σ]Ty[T])
+  : context_proj T A ∘ σ^+[T, A] ≈ σ ∘ context_proj T A[σ]Ty[T]
+  := context_pair_β1 T A (σ ∘ context_proj T A[σ]Ty[T])
     (ty_sub_comp T σ (context_proj T A[σ]Ty[T]) A ▸[T] context_var T A[σ]Ty[T]).
 
 Theorem context_lift_var {Γ Δ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
@@ -82,7 +90,8 @@ Qed.
 
 (** The comparison maps align the sources of lifts of equal, identity,
     and composite substitutions. All equations use the specified hom equality. *)
-Theorem context_lift_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ') (A : Ty T Γ)
+Theorem context_lift_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ')
+    (A : Ty T Γ)
   : σ^+[T, A] ≈ σ'^+[T, A] ∘ (ty_sub_equiv T H A)^Ext[T].
 Proof.
   pose (p := context_proj T A[σ]Ty[T]). pose (q := context_var T A[σ]Ty[T]).
@@ -103,7 +112,8 @@ Proof.
   symmetry. apply tm_conv_comp.
 Qed.
 
-Theorem context_lift_conv {Γ Δ : @Ob C} (σ : Hom Δ Γ) {A B : Ty T Γ} (e : A ≈S B)
+Theorem context_lift_conv {Γ Δ : @Ob C} (σ : Hom Δ Γ) {A B : Ty T Γ}
+    (e : A ≈S B)
   : σ^+[T, B] ∘ e[σ]Eq[T]^Ext[T] ≈ e^Ext[T] ∘ σ^+[T, A].
 Proof.
   pose (p := context_proj T A[σ]Ty[T]).
@@ -120,7 +130,8 @@ Proof.
     + symmetry. apply context_conv_pair.
 Qed.
 
-Theorem context_lift_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ) (A : Ty T Γ)
+Theorem context_lift_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ)
+    (A : Ty T Γ)
   : σ^+[T, A] ∘ τ^+[T, A[σ]Ty[T]] ≈
     (σ ∘ τ)^+[T, A] ∘ (ty_sub_comp T σ τ A)^Ext[T].
 Proof.
@@ -181,8 +192,9 @@ Defined.
 
 Definition context_lift_factor {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A))
-    (H : σ ∘ u ≈ context_proj T A ∘ v) : Hom Θ (Δ ▹[T] A[σ]Ty[T]) :=
-  (snd (context_lift_pullback σ A) Θ u v H).1.
+    (H : σ ∘ u ≈ context_proj T A ∘ v)
+  : Hom Θ (Δ ▹[T] A[σ]Ty[T])
+  := (snd (context_lift_pullback σ A) Θ u v H).1.
 
 Theorem context_lift_factor_unique {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A)) (H : σ ∘ u ≈ context_proj T A ∘ v)
@@ -192,8 +204,8 @@ Proof. exact (snd (context_lift_pullback σ A) Θ u v H).2. Defined.
 
 Definition context_lift_factor_β1 {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A)) (H : σ ∘ u ≈ context_proj T A ∘ v)
-  : context_proj T A[σ]Ty[T] ∘ context_lift_factor σ A u v H ≈ u :=
-  fst (@this _ _ _ _ _ (context_lift_factor_unique σ A u v H)).
+  : context_proj T A[σ]Ty[T] ∘ context_lift_factor σ A u v H ≈ u
+  := fst (@this _ _ _ _ _ (context_lift_factor_unique σ A u v H)).
 
 Theorem context_lift_factor_β2 {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A)) (H : σ ∘ u ≈ context_proj T A ∘ v)
@@ -213,7 +225,8 @@ Qed.
 Theorem context_lift_factor_proper {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u u' : Hom Θ Δ) (v v' : Hom Θ (Γ ▹[T] A))
     (H : σ ∘ u ≈ context_proj T A ∘ v) (H' : σ ∘ u' ≈ context_proj T A ∘ v')
-  : u ≈ u' → v ≈ v' → context_lift_factor σ A u v H ≈ context_lift_factor σ A u' v' H'.
+  : u ≈ u' → v ≈ v' →
+      context_lift_factor σ A u v H ≈ context_lift_factor σ A u' v' H'.
 Proof.
   intros Hu Hv. apply context_lift_factor_η.
   - transitivity u; [apply context_lift_factor_β1 | exact Hu].

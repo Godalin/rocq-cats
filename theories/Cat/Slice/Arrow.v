@@ -1,33 +1,47 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Slice Cat.Slice.Reindex.
-From Cats Require Import Cat.Arrow Cat.Arrow.Fibration Cat.Pullback Cat.Fibration.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Slice
+  Cat.Slice.Reindex.
+From Cats Require Import
+  Cat.Arrow
+  Cat.Arrow.Fibration
+  Cat.Pullback
+  Cat.Fibration.
 
 (** * Slices and Codomain Lifts
 
     A slice map is a square over the identity. The same chosen pullback
     supplies slice reindexing and the corresponding codomain lift. *)
 
-Program Definition SliceArrowOb {C : Cat} {X : @Ob C} (A : SliceOb C X) : ArrowOb C :=
-  {| arrow_dom := slice_dom A; arrow_cod := X; arrow_map := slice_arrow A |}.
+Program Definition SliceArrowOb {C : Cat} {X : @Ob C} (A : SliceOb C X)
+  : ArrowOb C
+  := {| arrow_dom := slice_dom A; arrow_cod := X; arrow_map := slice_arrow A |}.
 
 Notation "A '^Arr'" := (SliceArrowOb A) (at level 8, left associativity) : cat_scope.
 
 Program Definition slice_to_square {C : Cat} {X : @Ob C} {A B : SliceOb C X}
-    (h : SliceHom A B) : ArrowHom A^Arr B^Arr :=
-  {| arrow_top := slice_map h; arrow_bottom := id |}.
+    (h : SliceHom A B)
+  : ArrowHom A^Arr B^Arr
+  := {| arrow_top := slice_map h; arrow_bottom := id |}.
 Next Obligation. rewrite comp_id_l. apply slice_comm. Defined.
 
-Program Definition SliceArrowF (C : Cat) (X : @Ob C) : Functor (C /C X) (Arr C) :=
-  {| F0 := SliceArrowOb; F1 A B := slice_to_square |}.
+Program Definition SliceArrowF (C : Cat) (X : @Ob C)
+  : Functor (C /C X) (Arr C)
+  := {| F0 := SliceArrowOb; F1 A B := slice_to_square |}.
 Next Obligation. intros h k H. split; [exact H | reflexivity]. Defined.
 Next Obligation. split; reflexivity. Defined.
 Next Obligation. split; [reflexivity | symmetry; apply comp_id_l]. Defined.
 
-Theorem slice_arrow_faithful {C : Cat} (X : @Ob C) : is_faithful (SliceArrowF C X).
+Theorem slice_arrow_faithful {C : Cat} (X : @Ob C)
+  : is_faithful (SliceArrowF C X).
 Proof. intros A B h k H. exact (fst H). Defined.
 
 Program Definition square_to_slice {C : Cat} {X : @Ob C} {A B : SliceOb C X}
-    (f : ArrowHom A^Arr B^Arr) (H : arrow_bottom f ≈ id) : SliceHom A B :=
-  {| slice_map := arrow_top f |}.
+    (f : ArrowHom A^Arr B^Arr) (H : arrow_bottom f ≈ id)
+  : SliceHom A B
+  := {| slice_map := arrow_top f |}.
 Next Obligation. rewrite (arrow_comm f), H, comp_id_l. reflexivity. Defined.
 
 Theorem slice_square_round_trip {C : Cat} {X : @Ob C} {A B : SliceOb C X}
@@ -45,15 +59,17 @@ Context {C : Cat} `{HP : !HasPullback C}.
 
 (** The source type checks by computation: (A[f]C)^Arr is A^Arr[f]Arr. *)
 Definition slice_reindex_square {X Y : @Ob C} (f : Hom X Y) (A : SliceOb C Y)
-  : ArrowHom (A[f]C)^Arr A^Arr := arrow_reindex A^Arr f.
+  : ArrowHom (A[f]C)^Arr A^Arr
+  := arrow_reindex A^Arr f.
 
 Definition slice_reindex_square_cartesian {X Y : @Ob C} (f : Hom X Y)
-    (A : SliceOb C Y) : slice_reindex_square f A ⦂ Cart(ArrowCodF C) :=
-  arrow_reindex_cartesian A^Arr f.
+    (A : SliceOb C Y)
+  : slice_reindex_square f A ⦂ Cart(ArrowCodF C)
+  := arrow_reindex_cartesian A^Arr f.
 
 Program Definition SliceReindexSquareN {X Y : @Ob C} (f : Hom X Y)
-  : (SliceArrowF C X ∘F SliceReindexF f) ⇒ SliceArrowF C Y :=
-  {| nt := slice_reindex_square f |}.
+  : (SliceArrowF C X ∘F SliceReindexF f) ⇒ SliceArrowF C Y
+  := {| nt := slice_reindex_square f |}.
 Next Obligation.
   split.
   - apply slice_reindex_map_β2.
@@ -76,7 +92,8 @@ Qed.
 
 (** The existing unit and composition comparisons are the cartesian comparisons. *)
 Theorem slice_reindex_square_id {X : @Ob C} (A : SliceOb C X)
-  : slice_reindex_square id A ∘Arr slice_to_square (slice_reindex_id A) ≈Arr arrow_id A^Arr.
+  : slice_reindex_square id A ∘Arr slice_to_square (slice_reindex_id A)
+      ≈Arr arrow_id A^Arr.
 Proof.
   split.
   - apply slice_reindex_lift_β2.

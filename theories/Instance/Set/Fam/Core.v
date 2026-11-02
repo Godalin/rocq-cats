@@ -1,4 +1,6 @@
-From Cats Require Import Cat.Core Instance.Set.Core.
+From Cats Require Import
+  Cat.Core
+  Instance.Set.Core.
 
 (** * Dependent Sets and Coherent Families *)
 
@@ -7,20 +9,22 @@ From Cats Require Import Cat.Core Instance.Set.Core.
     This pointwise setoid does not require sections to respect equivalent
     indices. Coherent families and their dependent sums are defined below. *)
 
-Definition PiEq {X : SetC} {Y : X → SetC} : crelation (∀ x : X, Y x)
+Definition PiEq {X : SetC} {Y : X → SetC}
+  : crelation (∀ x : X, Y x)
   := λ f g, ∀ x : X, f x ≈S g x.
 
 Infix "≈ΠS" := PiEq (at level 50).
 
-Program Instance PiEq_Equivalence {X Y} : Equivalence (@PiEq X Y).
+Program Instance PiEq_Equivalence {X Y}
+  : Equivalence (@PiEq X Y).
 Next Obligation. intros f x. reflexivity. Qed.
 Next Obligation. intros f g H x. symmetry. auto. Qed.
 Next Obligation. intros f g h H1 H2 x. transitivity (g x); auto. Qed.
 
-Program Canonical PiS (X : SetC) (Y : X → SetC) :=
-  {|carrier := ∀ x : X, Y x
-  ; carrier_equiv := PiEq
-  |}.
+Program Canonical PiS (X : SetC) (Y : X → SetC)
+  := {|carrier := ∀ x : X, Y x
+     ; carrier_equiv := PiEq
+     |}.
 
 (** ** Coherent Families over Setoids
 
@@ -29,21 +33,22 @@ Program Canonical PiS (X : SetC) (Y : X → SetC) :=
     the same base equivalences expresses coherence over a setoid: the composite
     law accepts any witness r, and witness independence follows from it. *)
 
-Record FamS (X : SetC) :=
-  { fam :> X → SetC
-  ; transpS {x y : X} : x ≈S y → fam x →r fam y
-  ; transpS_id {x} (p : x ≈S x) (v : fam x)
-    : transpS p v ≈S v
-  ; transpS_comp {x y z} (p : x ≈S y) (q : y ≈S z) (r : x ≈S z)
-      (v : fam x)
-    : transpS r v ≈S transpS q (transpS p v)
-  }.
+Record FamS (X : SetC)
+  := { fam :> X → SetC
+     ; transpS {x y : X} : x ≈S y → fam x →r fam y
+     ; transpS_id {x} (p : x ≈S x) (v : fam x)
+       : transpS p v ≈S v
+     ; transpS_comp {x y z} (p : x ≈S y) (q : y ≈S z) (r : x ≈S z)
+         (v : fam x)
+       : transpS r v ≈S transpS q (transpS p v)
+     }.
 
 Arguments transpS {_} _ {_ _} _.
 Arguments transpS_id {_} _ {_} _ _.
 Arguments transpS_comp {_} _ {_ _ _} _ _ _ _.
 
-Theorem reflS {X : SetC} {x : X} : x ≈S x.
+Theorem reflS {X : SetC} {x : X}
+  : x ≈S x.
 Proof. reflexivity. Qed.
 
 (** Different witnesses induce equivalent maps; no proof irrelevance is used. *)
@@ -75,16 +80,18 @@ Proof.
     apply transpS_inv.
 Defined.
 
-Program Definition ConstFamS (X A : SetC) : FamS X :=
-  {| fam _ := A; transpS _ _ _ := id_resp (X := A) |}.
+Program Definition ConstFamS (X A : SetC)
+  : FamS X
+  := {| fam _ := A; transpS _ _ _ := id_resp (X := A) |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
 (** Reindexing keeps the fiber over the image and transports along the
     image of the base equivalence. Coherence follows from the original family. *)
-Program Definition ReindexFamS {X Y : SetC} (A : FamS Y) (f : X →r Y) : FamS X :=
-  {| fam x := A (f x)
-   ; transpS x y p := transpS A (@func_proper _ _ f x y p) |}.
+Program Definition ReindexFamS {X Y : SetC} (A : FamS Y) (f : X →r Y)
+  : FamS X
+  := {| fam x := A (f x)
+      ; transpS x y p := transpS A (@func_proper _ _ f x y p) |}.
 Next Obligation. apply transpS_id. Defined.
 Next Obligation. apply transpS_comp. Defined.
 
@@ -103,7 +110,8 @@ Definition SigEq {X : SetC} {Y : FamS X} (a b : ∃ x : X, Y x)
 
 Infix "≈ΣS" := SigEq (at level 50).
 
-Global Instance SigEq_Equivalence {X Y} : Equivalence (@SigEq X Y).
+Global Instance SigEq_Equivalence {X Y}
+  : Equivalence (@SigEq X Y).
 Proof.
   split.
   - intros [x v]. assert (p : x ≈S x) by reflexivity.
@@ -122,13 +130,14 @@ Proof.
       * exact Hq.
 Qed.
 
-Program Canonical SigS (X : SetC) (Y : FamS X) :=
-  {|carrier := ∃ x : X, Y x
-  ; carrier_equiv := SigEq
-  |}.
+Program Canonical SigS (X : SetC) (Y : FamS X)
+  := {|carrier := ∃ x : X, Y x
+     ; carrier_equiv := SigEq
+     |}.
 
-Program Definition sig_base_resp {X} (Y : FamS X) : SigS X Y →r X :=
-  {| func a := a.1 |}.
+Program Definition sig_base_resp {X} (Y : FamS X)
+  : SigS X Y →r X
+  := {| func a := a.1 |}.
 Next Obligation.
   intros a b [p Hp]. exact p.
 Defined.
@@ -139,9 +148,10 @@ Defined.
     Membership witnesses are retained as data; fiber equality compares only
     their underlying elements. *)
 
-Program Definition FiberS {E X : SetC} (f : E →r X) (x : X) : SetC :=
-  {| carrier := ∃ u : E, f u ≈S x
-   ; carrier_equiv a b := a.1 ≈S b.1 |}.
+Program Definition FiberS {E X : SetC} (f : E →r X) (x : X)
+  : SetC
+  := {| carrier := ∃ u : E, f u ≈S x
+      ; carrier_equiv a b := a.1 ≈S b.1 |}.
 Next Obligation.
   split.
   - intros a. reflexivity.
@@ -150,14 +160,16 @@ Next Obligation.
 Defined.
 
 Program Definition fiber_transp_resp {E X : SetC} (f : E →r X)
-    {x y : X} (p : x ≈S y) : FiberS f x →r FiberS f y :=
-  {| func a := (a.1; _) |}.
+    {x y : X} (p : x ≈S y)
+  : FiberS f x →r FiberS f y
+  := {| func a := (a.1; _) |}.
 Next Obligation. transitivity x; [exact a.2 | exact p]. Defined.
 Next Obligation. intros a b H. exact H. Defined.
 
-Program Definition FiberFamS {E X : SetC} (f : E →r X) : FamS X :=
-  {| fam := FiberS f
-   ; transpS x y p := fiber_transp_resp f p |}.
+Program Definition FiberFamS {E X : SetC} (f : E →r X)
+  : FamS X
+  := {| fam := FiberS f
+      ; transpS x y p := fiber_transp_resp f p |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
@@ -166,14 +178,15 @@ Next Obligation. reflexivity. Defined.
     equivalent representatives without identifying their witness data. *)
 
 Program Definition fiber_total_proj_resp {E X : SetC} (f : E →r X)
-    : SigS X (FiberFamS f) →r E := {| func a := a.2.1 |}.
+  : SigS X (FiberFamS f) →r E
+  := {| func a := a.2.1 |}.
 Next Obligation.
   intros a b [p Hp]. exact Hp.
 Defined.
 
 Program Definition fiber_total_intro_resp {E X : SetC} (f : E →r X)
-    : E →r SigS X (FiberFamS f) :=
-  {| func e := (f e; (e; reflS (x := f e))) |}.
+  : E →r SigS X (FiberFamS f)
+  := {| func e := (f e; (e; reflS (x := f e))) |}.
 Next Obligation.
   intros e e' H.
   assert (p : f e ≈S f e') by (apply func_proper; exact H).

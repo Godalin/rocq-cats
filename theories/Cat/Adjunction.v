@@ -1,5 +1,10 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
-From Cats Require Import Instance.Set.Core Instance.Set.Hom.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Hom.
 
 (** * Adjunctions by Natural Hom Isomorphisms
 
@@ -8,9 +13,9 @@ From Cats Require Import Instance.Set.Core Instance.Set.Hom.
     derived by NatIso_inv. The ambient set levels are independent upper
     bounds, not identifications of the two categories' native hom levels. *)
 
-Class Adjunction@{u p +} {C D : Cat} (F : Functor C D) (G : Functor D C) :=
-  { adjunction_hom : @NatIso _ SetCat@{u p _ _ _ _ _}
-      (LeftHomF F) (RightHomF G) }.
+Class Adjunction@{u p +} {C D : Cat} (F : Functor C D) (G : Functor D C)
+  := { adjunction_hom : @NatIso _ SetCat@{u p _ _ _ _ _}
+         (LeftHomF F) (RightHomF G) }.
 
 Arguments adjunction_hom {_ _ _ _} _.
 Infix "⊣" := Adjunction (at level 50, no associativity) : cat_scope.
@@ -19,8 +24,8 @@ Section Transposition.
 Context {C D : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
 
 Program Definition adjunct_resp@{s +} {X Y}
-  : FunS_resp@{s _ _ _ _ _} (HomSet (F X) Y) (HomSet X (G Y)) :=
-  {| func f := lower ((adjunction_hom A).1 (X, Y) {| lower := f |}) |}.
+  : FunS_resp@{s _ _ _ _ _} (HomSet (F X) Y) (HomSet X (G Y))
+  := {| func f := lower ((adjunction_hom A).1 (X, Y) {| lower := f |}) |}.
 Next Obligation.
   intros f g H.
   exact (lower (@func_proper _ _ ((adjunction_hom A).1 (X, Y))
@@ -28,16 +33,20 @@ Next Obligation.
 Defined.
 
 Program Definition unadjunct_resp@{s +} {X Y}
-  : FunS_resp@{s _ _ _ _ _} (HomSet X (G Y)) (HomSet (F X) Y) :=
-  {| func g := lower (((adjunction_hom A).2 (X, Y)).1 {| lower := g |}) |}.
+  : FunS_resp@{s _ _ _ _ _} (HomSet X (G Y)) (HomSet (F X) Y)
+  := {| func g := lower (((adjunction_hom A).2 (X, Y)).1 {| lower := g |}) |}.
 Next Obligation.
   intros f g H.
   exact (lower (@func_proper _ _ ((adjunction_hom A).2 (X, Y)).1
     {| lower := f |} {| lower := g |} {| lower := H |})).
 Defined.
 
-Definition adjunct {X Y} (f : Hom (F X) Y) : Hom X (G Y) := adjunct_resp f.
-Definition unadjunct {X Y} (g : Hom X (G Y)) : Hom (F X) Y := unadjunct_resp g.
+Definition adjunct {X Y} (f : Hom (F X) Y)
+  : Hom X (G Y)
+  := adjunct_resp f.
+Definition unadjunct {X Y} (g : Hom X (G Y))
+  : Hom (F X) Y
+  := unadjunct_resp g.
 
 Global Instance adjunct_proper {X Y}
   : Proper (@HomEq[F X, Y] ==> @HomEq[X, G Y]) adjunct.
@@ -127,15 +136,17 @@ Qed.
 
 (** Unit and counit are transposed identities, with naturality inherited
     from the hom correspondence. They are not additional chosen fields. *)
-Program Definition adjunction_unit : IdF ⇒ G ∘F F :=
-  {| nt X := adjunct id |}.
+Program Definition adjunction_unit
+  : IdF ⇒ G ∘F F
+  := {| nt X := adjunct id |}.
 Next Obligation.
   rewrite <- (adjunct_comp_r id f), comp_id_l.
   rewrite <- (adjunct_comp_l (fmap F f) id), comp_id_r. reflexivity.
 Qed.
 
-Program Definition adjunction_counit : F ∘F G ⇒ IdF :=
-  {| nt Y := unadjunct id |}.
+Program Definition adjunction_counit
+  : F ∘F G ⇒ IdF
+  := {| nt Y := unadjunct id |}.
 Next Obligation.
   rewrite <- (unadjunct_comp_r (@id (G Y)) (fmap G f)), comp_id_l.
   rewrite <- (unadjunct_comp_l f (@id (G X))), comp_id_r. reflexivity.
@@ -208,8 +219,9 @@ Context (hom_comp_r : ∀ X X' Y (f : Hom (F X) Y) (h : Hom X' X),
 Context (hom_comp_l : ∀ X Y Y' (k : Hom Y Y') (f : Hom (F X) Y),
   φ X Y' (k ∘ f) ≈ fmap G k ∘ φ X Y f).
 
-Program Definition HomAdjunctN : LeftHomF F ⇒ RightHomF G :=
-  {| nt X := (φ (fst X) (snd X))^↑S |}.
+Program Definition HomAdjunctN
+  : LeftHomF F ⇒ RightHomF G
+  := {| nt X := (φ (fst X) (snd X))^↑S |}.
 Next Obligation.
   intros [h]. constructor.
   change (φ (fst Y) (snd Y) (snd f ∘ h ∘ fmap F (fst f)) ≈
@@ -217,7 +229,8 @@ Next Obligation.
   rewrite hom_comp_r, hom_comp_l. reflexivity.
 Defined.
 
-Definition AdjunctionFromHom : F ⊣ G.
+Definition AdjunctionFromHom
+  : F ⊣ G.
 Proof.
   refine {| adjunction_hom := (HomAdjunctN; _) |}.
   intros [X Y]. exists ((ψ X Y)^↑S). split; intros [f]; constructor;
@@ -234,7 +247,8 @@ Proof. reflexivity. Qed.
 
 End HomCorrespondence.
 
-Definition IdAdjunction (C : Cat) : (@IdF C) ⊣ IdF.
+Definition IdAdjunction (C : Cat)
+  : (@IdF C) ⊣ IdF.
 Proof.
   refine (AdjunctionFromHom IdF IdF (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _);
     intros; reflexivity.

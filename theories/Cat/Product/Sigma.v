@@ -1,4 +1,7 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
 From Cats Require Export Cat.Product.Indexed.
 
 (** * Products over Dependent Sums of Indices *)
@@ -9,23 +12,28 @@ Context (HI : ∀ i, HasLimitsOfShape C (DiscreteCat (J i))).
 Context (D : Functor (DiscreteCat (∃ i, J i)) C).
 
 Local Instance sigma_fiber_HasLimit (i : I)
-  : HasLimit C (DiscreteF (λ j : J i, D (i; j))) :=
-  @hasLimit C _ (HI i) (DiscreteF (λ j : J i, D (i; j))).
+  : HasLimit C (DiscreteF (λ j : J i, D (i; j)))
+  := @hasLimit C _ (HI i) (DiscreteF (λ j : J i, D (i; j))).
 
-Definition SigmaProducts (i : I) : @Ob C := Π[λ j : J i, D (i; j)].
+Definition SigmaProducts (i : I)
+  : @Ob C
+  := Π[λ j : J i, D (i; j)].
 
-Local Instance sigma_outer_HasLimit : HasLimit C (DiscreteF SigmaProducts) :=
-  @hasLimit C _ HO (DiscreteF SigmaProducts).
+Local Instance sigma_outer_HasLimit
+  : HasLimit C (DiscreteF SigmaProducts)
+  := @hasLimit C _ HO (DiscreteF SigmaProducts).
 
-Definition sigma_product_proj (a : ∃ i, J i) : Hom Π[SigmaProducts] (D a).
+Definition sigma_product_proj (a : ∃ i, J i)
+  : Hom Π[SigmaProducts] (D a).
 Proof.
   destruct a as [i j].
   exact (πΠ[λ j : J i, D (i; j)] j ∘ πΠ[SigmaProducts] i).
 Defined.
 
-Program Definition SigmaProductLimit : HasLimit C D :=
-  {| Lim := Π[SigmaProducts]
-   ; limit_cone := @DiscreteCone C (∃ i, J i) D _ sigma_product_proj |}.
+Program Definition SigmaProductLimit
+  : HasLimit C D
+  := {| Lim := Π[SigmaProducts]
+      ; limit_cone := @DiscreteCone C (∃ i, J i) D _ sigma_product_proj |}.
 Next Obligation.
   intros X μ.
   pose (p := indexed_pair (D := SigmaProducts)
@@ -54,5 +62,5 @@ End SigmaProducts.
 Program Definition SigmaProductLimits {C : Cat} {I : Type} (J : I → Type)
     `{HO : !HasLimitsOfShape C (DiscreteCat I)}
     (HI : ∀ i, HasLimitsOfShape C (DiscreteCat (J i)))
-  : HasLimitsOfShape C (DiscreteCat (∃ i, J i)) :=
-  {| hasLimit D := SigmaProductLimit J HI D |}.
+  : HasLimitsOfShape C (DiscreteCat (∃ i, J i))
+  := {| hasLimit D := SigmaProductLimit J HI D |}.

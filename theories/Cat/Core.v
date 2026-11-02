@@ -18,38 +18,41 @@ Open Scope cat_scope.
 
 (** Morphisms and their equivalence witnesses have independent sizes.
     Equivalence/properness laws may live in larger auxiliary universes. *)
-Class Cat@{o h p +} :=
-  { Ob : Type@{o}
-  ; HomSet : Ob → Ob → SetC@{h p}
-  ; Hom (X Y : Ob) : Type@{h} := carrier (HomSet X Y)
-  ; HomEq {X Y} : Hom X Y → Hom X Y → Type@{p}
-    := carrier_equiv (HomSet X Y)
+Class Cat@{o h p +}
+  := { Ob : Type@{o}
+     ; HomSet : Ob → Ob → SetC@{h p}
+     ; Hom (X Y : Ob) : Type@{h} := carrier (HomSet X Y)
+     ; HomEq {X Y} : Hom X Y → Hom X Y → Type@{p}
+     := carrier_equiv (HomSet X Y)
 
-  ; id {X} : Hom X X
+     ; id {X} : Hom X X
 
-  ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
+     ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
 
-  ; comp_proper {X Y Z}
-    :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
+     ; comp_proper {X Y Z}
+       :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
 
-  ; comp_id_r {X Y : Ob} (f : Hom X Y)
-    : HomEq (comp f id) f
+     ; comp_id_r {X Y : Ob} (f : Hom X Y)
+       : HomEq (comp f id) f
 
-  ; comp_id_l {X Y : Ob} (f : Hom X Y)
-    : HomEq (comp id f) f
+     ; comp_id_l {X Y : Ob} (f : Hom X Y)
+       : HomEq (comp id f) f
 
-  ; comp_assoc {X Y Z W}
-      (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
-    : HomEq (comp (comp f g) h) (comp f (comp g h))
-  }.
+     ; comp_assoc {X Y Z W}
+         (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
+       : HomEq (comp (comp f g) h) (comp f (comp g h))
+     }.
 
 (** Equality and its laws come from the hom-set, not from an independent
     relation field. [Hom] and [HomEq] are computed fields, so they retain
     the existing coercion interfaces without adding constructor arguments. *)
 Global Instance HomEq_Equivalence {C : Cat} {X Y : @Ob C}
-  : Equivalence (@HomEq C X Y) := carrier_setoid (HomSet X Y).
+  : Equivalence (@HomEq C X Y)
+  := carrier_setoid (HomSet X Y).
 
-Definition Hom_SetC {C : Cat} {X Y : @Ob C} : SetC := HomSet X Y.
+Definition Hom_SetC {C : Cat} {X Y : @Ob C}
+  : SetC
+  := HomSet X Y.
 
 Arguments HomEq {_ _%_ob _%_ob} _%_hom _%_hom.
 Arguments comp_id_l {_ _ _} _.
@@ -118,10 +121,12 @@ Hint Rewrite @comp_id_r : cat.
 Section CatBasic.
 Context {C : Cat} {X Y : Ob}.
 
-Theorem symm_id_l {x : Hom X Y} : x ≈ id ∘ x.
+Theorem symm_id_l {x : Hom X Y}
+  : x ≈ id ∘ x.
 Proof. symmetry. cato. Qed.
 
-Theorem symm_id_r {x : Hom X Y} : x ≈ x ∘ id.
+Theorem symm_id_r {x : Hom X Y}
+  : x ≈ x ∘ id.
 Proof. symmetry. cato. Qed.
 
 End CatBasic.
@@ -136,8 +141,9 @@ Hint Resolve symm_id_r : cat.
     These are transported identities. Their laws use equality elimination,
     without identifying distinct equality witnesses. *)
 
-Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y) : Hom X Y :=
-  match p with eq_refl => id end.
+Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y)
+  : Hom X Y
+  := match p with eq_refl => id end.
 
 Lemma eq_to_hom_comp {C : Cat} {X Y Z : @Ob C} (p : X = Y) (q : Y = Z)
   : eq_to_hom (eq_trans p q) ≈ eq_to_hom q ∘ eq_to_hom p.
@@ -167,12 +173,14 @@ Notation "f _*" := (comp_post f) (at level 35).
 
 (** Composition acts respectfully on either hom-set. *)
 Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
-    {f : Hom Y Z} : HomSet X Y →r HomSet X Z :=
-  {| func := f _* |}.
+    {f : Hom Y Z}
+  : HomSet X Y →r HomSet X Z
+  := {| func := f _* |}.
 
 Program Canonical comp_r_resp {C : Cat} {X Y Z : Ob}
-    {f : Hom X Y} : HomSet Y Z →r HomSet X Z :=
-  {| func := f ^* |}.
+    {f : Hom X Y}
+  : HomSet Y Z →r HomSet X Z
+  := {| func := f ^* |}.
 Next Obligation.
   intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.
 Qed.
@@ -181,12 +189,13 @@ Qed.
 
 (** ** Dual Category *)
 
-Program Definition op (C : Cat) : Cat :=
- {|Ob := Ob
- ; HomSet X Y := HomSet Y X
- ; id _ := id
- ; comp _ _ _ f g := comp g f
- |}.
+Program Definition op (C : Cat)
+  : Cat
+  := {|Ob := Ob
+    ; HomSet X Y := HomSet Y X
+    ; id _ := id
+    ; comp _ _ _ f g := comp g f
+    |}.
 Next Obligation.
   intros x x' Hx y y' Hy.
   rewrite Hx, Hy.
@@ -201,7 +210,8 @@ Qed.
 Notation "C '^op'" := (op C)
   (at level 60).
 
-Definition ob_op {C : Cat} (X : @Ob C) : (@Ob (C ^op))
+Definition ob_op {C : Cat} (X : @Ob C)
+  : (@Ob (C ^op))
   := X.
 
 Lemma eq_to_hom_op {C : Cat} {X Y : @Ob C} (p : X = Y)
@@ -212,15 +222,16 @@ Proof. destruct p. reflexivity. Qed.
 
 (** ** Prod Category *)
 
-Program Definition ProdCat (C D : Cat) : Cat :=
-  {|Ob := @Ob C * @Ob D
-  ; HomSet X Y :=
-      {| carrier := Hom (fst X) (fst Y) * Hom (snd X) (snd Y)
-       ; carrier_equiv := ProdEq HomEq HomEq
-       ; carrier_setoid := ProdEq_Equivalence _ _ |}
-  ; id _ := (id, id)
-  ; comp _ _ _ f g := (fst f ∘ fst g, snd f ∘ snd g)
-  |}.
+Program Definition ProdCat (C D : Cat)
+  : Cat
+  := {|Ob := @Ob C * @Ob D
+     ; HomSet X Y :=
+         {| carrier := Hom (fst X) (fst Y) * Hom (snd X) (snd Y)
+          ; carrier_equiv := ProdEq HomEq HomEq
+          ; carrier_setoid := ProdEq_Equivalence _ _ |}
+     ; id _ := (id, id)
+     ; comp _ _ _ f g := (fst f ∘ fst g, snd f ∘ snd g)
+     |}.
 Next Obligation. intros [fc fd] [gc gd] [H1c H1d].
   intros [hc hd] [jc jd] [H2c H2d]. split; simpl.
   rewrite H1c, H2c. reflexivity. rewrite H2d, H1d. reflexivity.
@@ -329,7 +340,8 @@ Proof.
     rewrite Hfi, comp_id_l. auto.
 Qed.
 
-Global Instance iso_Equivalence : Equivalence iso.
+Global Instance iso_Equivalence
+  : Equivalence iso.
 Proof.
   split.
   - intros x. apply iso_refl.

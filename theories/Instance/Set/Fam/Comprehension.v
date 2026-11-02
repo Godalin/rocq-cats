@@ -1,14 +1,25 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Pullback
-  Cat.Fibration Cat.Comprehension.
-From Cats Require Import Instance.Set.Core Instance.Set.Fam.Core Instance.Set.Fam.Cat
-  Instance.Set.Fam.Reindex Instance.Set.Fam.Fibration Instance.Set.Fam.Section.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Pullback
+  Cat.Fibration
+  Cat.Comprehension.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat
+  Instance.Set.Fam.Reindex
+  Instance.Set.Fam.Fibration
+  Instance.Set.Fam.Section.
 
 (** * Comprehension of Coherent Families
 
     Every cartesian family morphism gives a pullback of total spaces. It
     factors through the canonical reindexing by an isomorphism over the identity. *)
 
-Definition fam_comprehension_universal : is_comprehension FamProjectionN.
+Definition fam_comprehension_universal
+  : is_comprehension FamProjectionN.
 Proof.
   intros U V φ Hφ.
   pose (f := famF_base φ).
@@ -33,14 +44,15 @@ Proof.
   - apply fam_reindex_pullback.
 Defined.
 
-Definition FamComprehension : Comprehension FamBaseF :=
-  {| comprehension_lifts := FamBaseF_HasCartesianLift
-   ; ExtF := FamTotalF
-   ; projectionN := FamProjectionN
-   ; comprehension_universal := fam_comprehension_universal |}.
+Definition FamComprehension
+  : Comprehension FamBaseF
+  := {| comprehension_lifts := FamBaseF_HasCartesianLift
+      ; ExtF := FamTotalF
+      ; projectionN := FamProjectionN
+      ; comprehension_universal := fam_comprehension_universal |}.
 
 (** Terms of the family are exactly sections of its display projection,
     with equality comparing the maps rather than their right-inverse proofs. *)
 Definition fam_comprehension_section_iso (U : FamC)
-  : SectionS U ≅[SetCat] Sec(π[FamComprehension] U) :=
-  section_projection_iso U.
+  : SectionS U ≅[SetCat] Sec(π[FamComprehension] U)
+  := section_projection_iso U.

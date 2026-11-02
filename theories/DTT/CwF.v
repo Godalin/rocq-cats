@@ -1,5 +1,10 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Terminal.
-From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Terminal.
+From Cats Require Import
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Categories with Families
 
@@ -10,36 +15,47 @@ From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
 Section TypesAndTerms.
 Context {C : Cat} (T : Functor (C^op) FamCat).
 
-Definition Ty (Γ : @Ob C) : SetC := famC_base (T Γ).
-Definition Tm (Γ : @Ob C) : FamS (Ty Γ) := famC_fam (T Γ).
+Definition Ty (Γ : @Ob C)
+  : SetC
+  := famC_base (T Γ).
+Definition Tm (Γ : @Ob C)
+  : FamS (Ty Γ)
+  := famC_fam (T Γ).
 
-Definition ty_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ) : Ty Γ →r Ty Δ :=
-  famF_base (fmap T σ).
+Definition ty_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ)
+  : Ty Γ →r Ty Δ
+  := famF_base (fmap T σ).
 
 Definition tm_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ) {A : Ty Γ}
-  : Tm Γ A →r Tm Δ (ty_sub σ A) := famF_fam (fmap T σ) A.
+  : Tm Γ A →r Tm Δ (ty_sub σ A)
+  := famF_fam (fmap T σ) A.
 
 Definition ty_eq_sub {Δ Γ : @Ob C} (σ : Hom Δ Γ) {A B : Ty Γ} (e : A ≈S B)
-  : ty_sub σ A ≈S ty_sub σ B := @func_proper _ _ (ty_sub σ) _ _ e.
+  : ty_sub σ A ≈S ty_sub σ B
+  := @func_proper _ _ (ty_sub σ) _ _ e.
 
 Definition tm_conv {Γ : @Ob C} {A B : Ty Γ} (e : A ≈S B)
-  : Tm Γ A →r Tm Γ B := transpS (Tm Γ) e.
+  : Tm Γ A →r Tm Γ B
+  := transpS (Tm Γ) e.
 
-Definition ty_sub_id {Γ : @Ob C} (A : Ty Γ) : ty_sub id A ≈S A :=
-  (functor_id (C^op) FamCat T).1 A.
+Definition ty_sub_id {Γ : @Ob C} (A : Ty Γ)
+  : ty_sub id A ≈S A
+  := (functor_id (C^op) FamCat T).1 A.
 
 Definition ty_sub_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ)
-    (A : Ty Γ) : ty_sub τ (ty_sub σ A) ≈S ty_sub (σ ∘ τ) A :=
-  (symmetry (functor_comp (C^op) FamCat T τ σ)).1 A.
+    (A : Ty Γ)
+  : ty_sub τ (ty_sub σ A) ≈S ty_sub (σ ∘ τ) A
+  := (symmetry (functor_comp (C^op) FamCat T τ σ)).1 A.
 
 Definition ty_sub_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ')
-    (A : Ty Γ) : ty_sub σ A ≈S ty_sub σ' A :=
-  (@functor_fmap_proper (C^op) FamCat T Γ Δ σ σ' H).1 A.
+    (A : Ty Γ)
+  : ty_sub σ A ≈S ty_sub σ' A
+  := (@functor_fmap_proper (C^op) FamCat T Γ Δ σ σ' H).1 A.
 
 Definition ty_sub_comm {Γ Δ Θ : @Ob C} (A : Ty Γ)
     (σ : Hom Δ Γ) (τ : Hom Θ Δ) {ρ : Hom Θ Γ} (H : σ ∘ τ ≈ ρ)
-  : ty_sub τ (ty_sub σ A) ≈S ty_sub ρ A :=
-  transitivity (ty_sub_comp σ τ A) (ty_sub_equiv H A).
+  : ty_sub τ (ty_sub σ A) ≈S ty_sub ρ A
+  := transitivity (ty_sub_comp σ τ A) (ty_sub_equiv H A).
 
 Theorem tm_conv_id {Γ : @Ob C} {A : Ty Γ} (e : A ≈S A) (t : Tm Γ A)
   : tm_conv e t ≈S t.
@@ -51,7 +67,8 @@ Theorem tm_conv_comp {Γ : @Ob C} {A B D : Ty Γ}
 Proof. apply transpS_comp. Qed.
 
 Theorem tm_conv_witness_independent {Γ : @Ob C} {A B : Ty Γ}
-    (e d : A ≈S B) : tm_conv e ≈f tm_conv d.
+    (e d : A ≈S B)
+  : tm_conv e ≈f tm_conv d.
 Proof. apply transpS_witness_independent. Qed.
 
 Theorem tm_conv_inj {Γ : @Ob C} {A B : Ty Γ} (e : A ≈S B) (t u : Tm Γ A)
@@ -107,27 +124,28 @@ Context {C : Cat} (T : Functor (C^op) FamCat).
 
 Definition is_context_pair {Γ E Δ : @Ob C} (A : Ty T Γ) (p : Hom E Γ)
     (q : Tm T E A[p]Ty[T]) (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T])
-    (h : Hom Δ E) :=
-  ∃ H : p ∘ h ≈ σ, ty_sub_comm T A p h H ▸[T] q[h]Tm[T] ≈S t.
+    (h : Hom Δ E)
+  := ∃ H : p ∘ h ≈ σ, ty_sub_comm T A p h H ▸[T] q[h]Tm[T] ≈S t.
 
 Definition is_context_extension {Γ : @Ob C} (A : Ty T Γ) (E : @Ob C)
-    (p : Hom E Γ) (q : Tm T E A[p]Ty[T]) :=
-  ∀ Δ (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T]),
+    (p : Hom E Γ) (q : Tm T E A[p]Ty[T])
+  := ∀ Δ (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T]),
     ∃ h : Hom Δ E, is_unique (is_context_pair A p q σ t) h.
 
-Class HasContextExtension :=
-  { Ext {Γ : @Ob C} (A : Ty T Γ) : @Ob C
-  ; context_proj {Γ : @Ob C} (A : Ty T Γ) : Hom (Ext A) Γ
-  ; context_var {Γ : @Ob C} (A : Ty T Γ) : Tm T (Ext A) A[context_proj A]Ty[T]
-  ; context_extension_universal {Γ : @Ob C} (A : Ty T Γ)
-    : is_context_extension A (Ext A) (context_proj A) (context_var A)
-  }.
+Class HasContextExtension
+  := { Ext {Γ : @Ob C} (A : Ty T Γ) : @Ob C
+     ; context_proj {Γ : @Ob C} (A : Ty T Γ) : Hom (Ext A) Γ
+     ; context_var {Γ : @Ob C} (A : Ty T Γ) : Tm T (Ext A) A[context_proj A]Ty[T]
+     ; context_extension_universal {Γ : @Ob C} (A : Ty T Γ)
+       : is_context_extension A (Ext A) (context_proj A) (context_var A)
+     }.
 
 Context `{HC : !HasContextExtension}.
 
 Definition context_pair {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
-    (t : Tm T Δ A[σ]Ty[T]) : Hom Δ (Ext A) :=
-  (context_extension_universal A Δ σ t).1.
+    (t : Tm T Δ A[σ]Ty[T])
+  : Hom Δ (Ext A)
+  := (context_extension_universal A Δ σ t).1.
 
 Theorem context_pair_universal {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
     (t : Tm T Δ A[σ]Ty[T])
@@ -136,13 +154,15 @@ Theorem context_pair_universal {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
 Proof. exact (context_extension_universal A Δ σ t).2. Defined.
 
 Definition context_pair_β1 {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
-    (t : Tm T Δ A[σ]Ty[T]) : context_proj A ∘ context_pair A σ t ≈ σ :=
-  (@this _ _ _ _ _ (context_pair_universal A σ t)).1.
+    (t : Tm T Δ A[σ]Ty[T])
+  : context_proj A ∘ context_pair A σ t ≈ σ
+  := (@this _ _ _ _ _ (context_pair_universal A σ t)).1.
 
 Theorem context_pair_β2 {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
     (t : Tm T Δ A[σ]Ty[T])
   : ty_sub_comm T A (context_proj A) (context_pair A σ t)
-      (context_pair_β1 A σ t) ▸[T] (context_var A)[context_pair A σ t]Tm[T] ≈S t.
+      (context_pair_β1 A σ t) ▸[T]
+        (context_var A)[context_pair A σ t]Tm[T] ≈S t.
 Proof. exact (@this _ _ _ _ _ (context_pair_universal A σ t)).2. Qed.
 
 Theorem context_pair_unique {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
@@ -201,10 +221,10 @@ Notation "'⟨' σ ';' t '⟩[' T ',' A ']'" := (context_pair T A σ t)
 
 (** Like [CCC] and [ETCS], an enabled bundle supplies its substructures.
     Concrete CwF models still have to be enabled explicitly. *)
-Class CwF (C : Cat) :=
-  { hasTerminal :: HasTerminal C
-  ; TyTmF : Functor (C^op) FamCat
-  ; hasContextExtension :: HasContextExtension TyTmF
-  }.
+Class CwF (C : Cat)
+  := { hasTerminal :: HasTerminal C
+     ; TyTmF : Functor (C^op) FamCat
+     ; hasContextExtension :: HasContextExtension TyTmF
+     }.
 
 Arguments TyTmF {_} _.

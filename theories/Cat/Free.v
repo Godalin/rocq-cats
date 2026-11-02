@@ -1,24 +1,32 @@
-From Cats Require Export Graph.Morphism Graph.Path Cat.Core.
-From Cats Require Import Cat.Functor Cat.Natural.
+From Cats Require Export
+  Graph.Morphism
+  Graph.Path
+  Cat.Core.
+From Cats Require Import
+  Cat.Functor
+  Cat.Natural.
 
 (** * Free Categories on Graphs *)
-Program Definition FreeCat (G : Graph) : Cat :=
-  {| Ob := @Vertex G
-   ; HomSet := PathS G
-   ; id x := path_id x
-   ; comp x y z := path_comp |}.
+Program Definition FreeCat (G : Graph)
+  : Cat
+  := {| Ob := @Vertex G
+      ; HomSet := PathS G
+      ; id x := path_id x
+      ; comp x y z := path_comp |}.
 Next Obligation. apply path_id_r. Defined.
 Next Obligation. apply path_id_l. Defined.
 Next Obligation. apply path_assoc. Defined.
 
-Program Definition UnderlyingGraph (C : Cat) : Graph :=
-  {| Vertex := @Ob C; EdgeSet := @HomSet C |}.
+Program Definition UnderlyingGraph (C : Cat)
+  : Graph
+  := {| Vertex := @Ob C; EdgeSet := @HomSet C |}.
 
 Section Interpretation.
 Context {G : Graph} {C : Cat} (D : G →G UnderlyingGraph C).
 
-Fixpoint path_eval {x y} (f : Path G x y) : Hom (D x) (D y) :=
-  match f with
+Fixpoint path_eval {x y} (f : Path G x y)
+  : Hom (D x) (D y)
+  := match f with
   | path_id _ => id
   | path_edge e => edge_map D e
   | path_comp g f => path_eval g ∘ path_eval f
@@ -38,8 +46,9 @@ Proof.
   - apply comp_assoc.
 Defined.
 
-Program Definition FreeF : Functor (FreeCat G) C :=
-  {| F0 := vertex_map D; F1 x y := path_eval |}.
+Program Definition FreeF
+  : Functor (FreeCat G) C
+  := {| F0 := vertex_map D; F1 x y := path_eval |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
@@ -53,9 +62,10 @@ Proof. reflexivity. Qed.
 (** A functor is determined on paths by its action on generating edges.
     Object functions are fixed; comparisons below use hom equivalence. *)
 Program Definition RestrictGraph {G : Graph} {C : Cat}
-    (F : Functor (FreeCat G) C) : G →G UnderlyingGraph C :=
-  {| vertex_map := F
-   ; edge_map x y := {| func e := fmap F (path_edge e) |} |}.
+    (F : Functor (FreeCat G) C)
+  : G →G UnderlyingGraph C
+  := {| vertex_map := F
+      ; edge_map x y := {| func e := fmap F (path_edge e) |} |}.
 Next Obligation. intros e f H. apply functor_fmap_proper. apply path_edge_equiv. exact H. Qed.
 
 Lemma free_extend_η {G : Graph} {C : Cat} (F : Functor (FreeCat G) C)
@@ -75,7 +85,8 @@ Program Definition FreeN {G : Graph} {C : Cat}
     (α : ∀ x, Hom (F x) (H x))
     (Hα : ∀ x y (e : Edge x y),
       α y ∘ fmap F (path_edge e) ≈ fmap H (path_edge e) ∘ α x)
-  : F ⇒ H := {| nt := α |}.
+  : F ⇒ H
+  := {| nt := α |}.
 Next Obligation.
   induction f; cbn.
   - rewrite !functor_id. rewrite comp_id_r, comp_id_l. reflexivity.

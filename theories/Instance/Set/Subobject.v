@@ -16,8 +16,9 @@ From Cats Require Import Instance.Set.Core.
 Section Sub.
 Context {C : Cat} `{H : !HasPullback C}.
 
-Program Canonical SubObject Z : SetC :=
-  {|carrier := Sub Z |}.
+Program Canonical SubObject Z
+  : SetC
+  := {|carrier := Sub Z |}.
 
 (** sX ------> sY
     v          v
@@ -28,10 +29,11 @@ Program Canonical SubObject Z : SetC :=
     X ---f---> Y *)
 
 Program Definition Sub_fmap {X Y : Ob}
-    (f : Hom X Y) (sY : Sub Y) : Sub X :=
-  {|sub := Pb f sY
-  ; sub_mono := {| mor := pb1 f sY |}
-  |}.
+    (f : Hom X Y) (sY : Sub Y)
+  : Sub X
+  := {|sub := Pb f sY
+     ; sub_mono := {| mor := pb1 f sY |}
+     |}.
 Next Obligation.
   intros W x y H1.
   assert (Hx : f ∘ (pb1 f sY ∘ x) ≈ sY ∘ (pb2 f sY ∘ x)).
@@ -60,10 +62,11 @@ Proposition Sub_fmap_Ob {X Y} {f : Hom X Y} {r : Sub Y}
   : sub (Sub_fmap f r) = X ×[f,r] (sub r).
 Proof. simpl. auto. Qed.
 
-Program Canonical SubF : Functor (op C) SetCat :=
-  {|F0 Z := SubObject Z
-  ; F1 Y X (f : (@Hom C) X Y) := {| func := Sub_fmap f |}
-  |}.
+Program Canonical SubF
+  : Functor (op C) SetCat
+  := {|F0 Z := SubObject Z
+     ; F1 Y X (f : (@Hom C) X Y) := {| func := Sub_fmap f |}
+     |}.
 Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
   split.
   - assert (Hcone : f ∘ pb1 f r ≈ s ∘ (rs ∘ pb2 f r)).

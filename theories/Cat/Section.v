@@ -1,11 +1,14 @@
-From Cats Require Import Cat.Core Cat.Pullback.
+From Cats Require Import
+  Cat.Core
+  Cat.Pullback.
 
 (** * Sections of a Morphism
 
     Right-inverse witnesses are retained; equality compares the maps. *)
 
 Definition SectionOfEq {C : Cat} {X Y : @Ob C} (p : Hom X Y)
-    (s t : ∃ s : Hom Y X, p ∘ s ≈ id) := s.1 ≈ t.1.
+    (s t : ∃ s : Hom Y X, p ∘ s ≈ id)
+  := s.1 ≈ t.1.
 
 Global Instance SectionOfEq_Equivalence@{s l +}
     {C : Cat@{_ _ _ l l}} {X Y : @Ob C} (p : Hom X Y)
@@ -20,19 +23,21 @@ Defined.
 (** The section carrier contains a map and its right-inverse witness. Its
     size [s] is independent of the category-law bound [l]. *)
 Definition SectionOfS@{s l +} {C : Cat@{_ _ _ l l}}
-    {X Y : @Ob C} (p : Hom X Y) : SetC@{s _} :=
-  {| carrier := ∃ s : Hom Y X, p ∘ s ≈ id
-   ; carrier_equiv := SectionOfEq p
-   ; carrier_setoid := SectionOfEq_Equivalence p |}.
+    {X Y : @Ob C} (p : Hom X Y)
+  : SetC@{s _}
+  := {| carrier := ∃ s : Hom Y X, p ∘ s ≈ id
+      ; carrier_equiv := SectionOfEq p
+      ; carrier_setoid := SectionOfEq_Equivalence p |}.
 
 Notation "'Sec(' p ')'" := (SectionOfS p) (format "Sec( p )") : cat_scope.
 
 (** ** Maps over a Fixed Base *)
 
-Program Definition section_of_map_resp@{s l +} {C : Cat@{_ _ _ l l}} {E F Γ : @Ob C}
+Program Definition section_of_map_resp@{s l +} {C : Cat@{_ _ _ l l}}
+    {E F Γ : @Ob C}
     {p : Hom E Γ} {q : Hom F Γ} (f : Hom E F) (H : q ∘ f ≈ p)
-  : SectionOfS@{s l _ _ _} p →r SectionOfS@{s l _ _ _} q :=
-  {| func s := (f ∘ s.1; _) |}.
+  : SectionOfS@{s l _ _ _} p →r SectionOfS@{s l _ _ _} q
+  := {| func s := (f ∘ s.1; _) |}.
 Next Obligation. rewrite <- comp_assoc, H. exact s.2. Defined.
 Next Obligation. intros s t Hst. cbn. apply comp_l. exact Hst. Defined.
 
@@ -47,7 +52,8 @@ Theorem section_of_map_equiv {C : Cat} {E F Γ : @Ob C}
 Proof. exact (comp_proper f g Hfg s.1 t.1 Hst). Qed.
 
 Theorem section_of_map_id {C : Cat} {E Γ : @Ob C} {p : Hom E Γ}
-    (H : p ∘ id ≈ p) (s : Sec(p)) : id ▷Sec[H] s ≈S s.
+    (H : p ∘ id ≈ p) (s : Sec(p))
+  : id ▷Sec[H] s ≈S s.
 Proof. apply comp_id_l. Qed.
 
 Theorem section_of_map_comp {C : Cat} {E F G Γ : @Ob C}
@@ -68,25 +74,26 @@ Context {C : Cat} {Γ Δ E D : @Ob C}
     {σ : Hom Δ Γ} {p : Hom E Γ} {q : Hom D Δ} {l : Hom D E}
     (HP : is_pullback σ p D q l).
 
-Definition section_of_pullback_cone (s : Sec(p)) : σ ∘ id ≈ p ∘ (s.1 ∘ σ).
+Definition section_of_pullback_cone (s : Sec(p))
+  : σ ∘ id ≈ p ∘ (s.1 ∘ σ).
 Proof. rewrite <- comp_assoc, s.2, comp_id_l. apply comp_id_r. Defined.
 
 Program Definition section_of_pullback@{s +} (t : SectionOfS@{s _ _ _ _} p)
-  : SectionOfS@{s _ _ _ _} q :=
-  ((snd HP Δ id (t.1 ∘ σ) (section_of_pullback_cone t)).1; _).
+  : SectionOfS@{s _ _ _ _} q
+  := ((snd HP Δ id (t.1 ∘ σ) (section_of_pullback_cone t)).1; _).
 Next Obligation.
   exact (fst (@this _ _ _ _ _
     (snd HP Δ id (t.1 ∘ σ) (section_of_pullback_cone t)).2)).
 Defined.
 
 Definition section_of_pullback_β (s : Sec(p))
-  : l ∘ (section_of_pullback s).1 ≈ s.1 ∘ σ :=
-  snd (@this _ _ _ _ _
+  : l ∘ (section_of_pullback s).1 ≈ s.1 ∘ σ
+  := snd (@this _ _ _ _ _
     (snd HP Δ id (s.1 ∘ σ) (section_of_pullback_cone s)).2).
 
 Program Definition section_of_pullback_resp@{s +}
-  : SectionOfS@{s _ _ _ _} p →r SectionOfS@{s _ _ _ _} q :=
-  {| func := section_of_pullback |}.
+  : SectionOfS@{s _ _ _ _} p →r SectionOfS@{s _ _ _ _} q
+  := {| func := section_of_pullback |}.
 Next Obligation.
   intros s t Hst. apply (pullback_hom_ext HP).
   - transitivity (@id Δ); [exact (section_of_pullback s).2 |
@@ -105,7 +112,8 @@ Context {C : Cat} {Γ Δ E D : @Ob C}
     (HP : is_pullback σ p D q l).
 
 Theorem section_of_pullback_unique (s : Sec(p)) (t : Sec(q))
-    (H : l ∘ t.1 ≈ s.1 ∘ σ) : t ≈S s[HP]Sec.
+    (H : l ∘ t.1 ≈ s.1 ∘ σ)
+  : t ≈S s[HP]Sec.
 Proof.
   apply (pullback_hom_ext HP).
   - transitivity (@id Δ); [exact t.2 | symmetry; exact s[HP]Sec.2].

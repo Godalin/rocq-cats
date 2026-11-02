@@ -1,5 +1,12 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Product Cat.Exponential.
-From Cats Require Import Instance.Set.Core Instance.Set.Adjunction.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Product
+  Cat.Exponential.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Adjunction.
 
 (** * Exponential Hom-Setoid Correspondence
 
@@ -21,7 +28,7 @@ Defined.
 
 Definition exponential_hom_nat_iso@{u p +} (X : @Ob C)
   : @NatIso _ SetCat@{u p _ _ _ _ _}
-      (LeftHomF (-× X)) (RightHomF (-^ X)) :=
-  adjunction_hom_nat_iso (ProductExponentialAdjunction X).
+      (LeftHomF (-× X)) (RightHomF (-^ X))
+  := adjunction_hom_nat_iso (ProductExponentialAdjunction X).
 
 End ExponentialHom.

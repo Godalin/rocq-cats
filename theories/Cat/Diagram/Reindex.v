@@ -1,10 +1,15 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Diagram.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Diagram.
 
 (** * Changing the Shape of a Cone *)
 
 Program Definition RestrictCone {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X} (κ : X ⇒Δ D) : X ⇒Δ (D ∘F Q) :=
-  {| nt i := κ (Q i) |}.
+    {D : Functor J C} {X} (κ : X ⇒Δ D)
+  : X ⇒Δ (D ∘F Q)
+  := {| nt i := κ (Q i) |}.
 Next Obligation.
   rewrite comp_id_r. apply cone_naturality.
 Qed.
@@ -40,8 +45,8 @@ Context (HF : is_full Q) (HQ : is_essentially_surjective Q).
 Context {D : Functor J C}.
 
 Definition cone_extend_leg {X} (κ : X ⇒Δ (D ∘F Q)) (j : @Ob J)
-  : Hom X (D j) :=
-  fmap D (HQ j).2.1 ∘ κ (HQ j).1.
+  : Hom X (D j)
+  := fmap D (HQ j).2.1 ∘ κ (HQ j).1.
 
 (** Any arrow to [j] gives the same extended leg. Its preimage is used only
     in the proof; the computed leg uses the chosen object isomorphism. *)
@@ -60,8 +65,9 @@ Proof.
   reflexivity.
 Qed.
 
-Program Definition ExtendCone {X} (κ : X ⇒Δ (D ∘F Q)) : X ⇒Δ D :=
-  {| nt j := cone_extend_leg κ j |}.
+Program Definition ExtendCone {X} (κ : X ⇒Δ (D ∘F Q))
+  : X ⇒Δ D
+  := {| nt j := cone_extend_leg κ j |}.
 Next Obligation.
   rewrite comp_id_r. unfold cone_extend_leg at 2.
   rewrite <- comp_assoc, <- functor_comp.

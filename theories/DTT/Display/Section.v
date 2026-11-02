@@ -1,6 +1,13 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Pullback Cat.Section DTT.Display.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Pullback
+  Cat.Section
+  DTT.Display.
 From Cats Require Import Instance.Set.Core.
-From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
+From Cats Require Import
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Terms as Sections of Coherent Display Maps
 
@@ -13,12 +20,13 @@ Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
 
 Definition display_term_conv_resp@{s +} {Γ : @Ob C} {A B : P Γ} (e : A ≈S B)
   : SectionOfS@{s _ _ _ _} (display_proj P A) →r
-    SectionOfS@{s _ _ _ _} (display_proj P B) :=
-  section_of_map_resp (e^D[P]) (display_conv_proj e).
+    SectionOfS@{s _ _ _ _} (display_proj P B)
+  := section_of_map_resp (e^D[P]) (display_conv_proj e).
 
-Program Definition DisplayTerms@{s +} (Γ : @Ob C) : FamS@{_ _ _ s _} (P Γ) :=
-  {| fam A := Sec(display_proj P A)
-   ; transpS A B e := display_term_conv_resp e |}.
+Program Definition DisplayTerms@{s +} (Γ : @Ob C)
+  : FamS@{_ _ _ s _} (P Γ)
+  := {| fam A := Sec(display_proj P A)
+      ; transpS A B e := display_term_conv_resp e |}.
 Next Obligation.
   change (p^D[P] ∘ v.1 ≈ v.1).
   rewrite display_conv_id. apply comp_id_l.
@@ -28,12 +36,13 @@ Next Obligation.
   rewrite (display_conv_comp p q r). apply comp_assoc.
 Qed.
 
-Program Definition DisplayTyTm (Γ : @Ob C) : FamC :=
-  {| famC_base := P Γ; famC_fam := DisplayTerms Γ |}.
+Program Definition DisplayTyTm (Γ : @Ob C)
+  : FamC
+  := {| famC_base := P Γ; famC_fam := DisplayTerms Γ |}.
 
 Definition display_term_sub_resp {Γ Δ : @Ob C} (σ : Hom Δ Γ) {A : P Γ}
-  : DisplayTerms Γ A →r DisplayTerms Δ A[σ]TyF[P] :=
-  section_of_pullback_resp (display_lift_universal σ A).
+  : DisplayTerms Γ A →r DisplayTerms Δ A[σ]TyF[P]
+  := section_of_pullback_resp (display_lift_universal σ A).
 
 End DisplayTerms.
 
@@ -47,8 +56,8 @@ Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
 
 Definition display_term_sub_β {Γ Δ : @Ob C} (σ : Hom Δ Γ) (A : P Γ)
     (s : DisplayTerms P Γ A)
-  : σ^D[P, A] ∘ s[σ]TmD[P].1 ≈ s.1 ∘ σ :=
-  section_of_pullback_β (display_lift_universal σ A) s.
+  : σ^D[P, A] ∘ s[σ]TmD[P].1 ≈ s.1 ∘ σ
+  := section_of_pullback_β (display_lift_universal σ A) s.
 
 Theorem display_term_sub_conv {Γ Δ : @Ob C} (σ : Hom Δ Γ)
     {A B : P Γ} (e : A ≈S B) (s : DisplayTerms P Γ A)
@@ -91,14 +100,15 @@ Proof.
 Qed.
 
 Program Definition display_sub_fam {Γ Δ : @Ob C} (σ : Hom Δ Γ)
-  : FamF (DisplayTyTm P Γ) (DisplayTyTm P Δ) :=
-  {| famF_base := type_sub P σ
-   ; famF_fam A := display_term_sub_resp P σ (A := A) |}.
+  : FamF (DisplayTyTm P Γ) (DisplayTyTm P Δ)
+  := {| famF_base := type_sub P σ
+      ; famF_fam A := display_term_sub_resp P σ (A := A) |}.
 Next Obligation. apply display_term_sub_conv. Qed.
 
-Program Definition DisplayTyTmF : Functor (C^op) FamCat :=
-  {| F0 := DisplayTyTm P
-   ; F1 Γ Δ σ := display_sub_fam σ |}.
+Program Definition DisplayTyTmF
+  : Functor (C^op) FamCat
+  := {| F0 := DisplayTyTm P
+      ; F1 Γ Δ σ := display_sub_fam σ |}.
 Next Obligation.
   intros σ σ' H. exists (λ A, type_sub_equiv P H A).
   intros A s. apply display_term_sub_equiv.

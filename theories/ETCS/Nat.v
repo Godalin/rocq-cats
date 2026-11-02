@@ -1,28 +1,31 @@
-From Cats Require Import Cat.Core Cat.Terminal.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal.
 
 
 
 (** Natural-Numbers Object *)
 
 Definition is_natural_numbers_object {C : Cat} `{HT : !HasTerminal C}
-    (N : Ob) (z : Hom 1 N) (s : Hom N N) :=
-  ∀ X (z' : Hom 1 X) (s' : Hom X X),
+    (N : Ob) (z : Hom 1 N) (s : Hom N N)
+  := ∀ X (z' : Hom 1 X) (s' : Hom X X),
     ∃ r : Hom N X,
       is_unique (λ r, r ∘ z ≈ z' ∧ r ∘ s ≈ s' ∘ r) r.
 
-Class HasNaturalNumbersObject (C : Cat) (HT : HasTerminal C) :=
-  { NNO : Ob
-  ; zero : Hom 1 NNO
-  ; succ : Hom NNO NNO
-  ; nno_universal : is_natural_numbers_object NNO zero succ
-  }.
+Class HasNaturalNumbersObject (C : Cat) (HT : HasTerminal C)
+  := { NNO : Ob
+     ; zero : Hom 1 NNO
+     ; succ : Hom NNO NNO
+     ; nno_universal : is_natural_numbers_object NNO zero succ
+     }.
 
 Arguments nno_universal {_ _ _} _ _ _.
 
 Definition rec {C : Cat} `{HT : !HasTerminal C}
     `{HNNO : !HasNaturalNumbersObject C HT} {X}
-    (z : Hom 1 X) (s : Hom X X) : Hom NNO X :=
-  (nno_universal X z s).1.
+    (z : Hom 1 X) (s : Hom X X)
+  : Hom NNO X
+  := (nno_universal X z s).1.
 
 Theorem nno_rec_unique {C : Cat} `{HT : !HasTerminal C}
     `{HNNO : !HasNaturalNumbersObject C HT} {X} (z : Hom 1 X) (s : Hom X X)

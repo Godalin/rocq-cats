@@ -1,19 +1,24 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Diagram Cat.Terminal.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Diagram
+  Cat.Terminal.
 
 (** * Limits of Diagrams
 
     The candidate property retains a unique mediator for every cone.
     Chosen limits are separate, as for products and pullbacks. *)
-Definition is_limit {J C : Cat} {D : Functor J C} {L : @Ob C} (κ : L ⇒Δ D) :=
-  ∀ X (μ : X ⇒Δ D), ∃ h : Hom X L, is_unique (λ h, κ ∘Cone h ≈N μ) h.
+Definition is_limit {J C : Cat} {D : Functor J C} {L : @Ob C} (κ : L ⇒Δ D)
+  := ∀ X (μ : X ⇒Δ D), ∃ h : Hom X L, is_unique (λ h, κ ∘Cone h ≈N μ) h.
 
 Notation "κ '⦂' 'Lim(' D ')'" := (@is_limit _ _ D _ κ)
   (at level 50, no associativity) : cat_scope.
 
-Class HasLimit (C : Cat) {J : Cat} (D : Functor J C) :=
-  { Lim : @Ob C
-  ; limit_cone : Lim ⇒Δ D
-  ; limit_universal : is_limit limit_cone }.
+Class HasLimit (C : Cat) {J : Cat} (D : Functor J C)
+  := { Lim : @Ob C
+     ; limit_cone : Lim ⇒Δ D
+     ; limit_universal : is_limit limit_cone }.
 
 Arguments Lim {_ _} _ {_}.
 Arguments limit_cone {_ _} _ {_}.
@@ -24,8 +29,9 @@ Notation "'πlim[' D ']'" := (limit_cone D) : hom_scope.
 Section ChosenLimit.
 Context {J C : Cat} {D : Functor J C} `{HL : !HasLimit C D}.
 
-Definition limit_lift {X} (κ : X ⇒Δ D) : Hom X (lim D) :=
-  (limit_universal D X κ).1.
+Definition limit_lift {X} (κ : X ⇒Δ D)
+  : Hom X (lim D)
+  := (limit_universal D X κ).1.
 
 Theorem limit_lift_unique {X} (κ : X ⇒Δ D)
   : is_unique (λ h, πlim[D] ∘Cone h ≈N κ) (limit_lift κ).
@@ -59,7 +65,8 @@ Notation "'lim⟨' κ '⟩'" := (limit_lift κ) (at level 35) : hom_scope.
 (** A limiting cone is exactly a terminal object of the cone category.
     Consequently object uniqueness reuses the general terminal-object theorem. *)
 Definition limit_terminal {J C : Cat} {D : Functor J C} {L : @Ob C}
-    {κ : L ⇒Δ D} (Hκ : is_limit κ) : @is_terminal (ConeCat D) (L; κ).
+    {κ : L ⇒Δ D} (Hκ : is_limit κ)
+  : @is_terminal (ConeCat D) (L; κ).
 Proof.
   intros [X μ]. destruct (Hκ X μ) as [f Hf].
   exists (f; @this _ _ _ _ _ Hf).
@@ -68,7 +75,8 @@ Proof.
 Defined.
 
 Definition terminal_limit {J C : Cat} {D : Functor J C} {L : @Ob C}
-    {κ : L ⇒Δ D} (Hκ : @is_terminal (ConeCat D) (L; κ)) : is_limit κ.
+    {κ : L ⇒Δ D} (Hκ : @is_terminal (ConeCat D) (L; κ))
+  : is_limit κ.
 Proof.
   intros X μ. destruct (Hκ (X; μ)) as [f Hf].
   exists f.1. refine {| this := f.2; that := _ |}.
@@ -76,7 +84,8 @@ Proof.
 Defined.
 
 Theorem limit_iff_terminal {J C : Cat} {D : Functor J C} {L : @Ob C}
-    (κ : L ⇒Δ D) : is_limit κ ↔ @is_terminal (ConeCat D) (L; κ).
+    (κ : L ⇒Δ D)
+  : is_limit κ ↔ @is_terminal (ConeCat D) (L; κ).
 Proof. split; [apply limit_terminal | apply terminal_limit]. Defined.
 
 Definition limit_unique {J C : Cat} {D : Functor J C} {L M : @Ob C}
@@ -88,14 +97,15 @@ Proof.
   exact (functor_is_iso (ConeApexF D) i.1 i.2).
 Defined.
 
-Class HasLimitsOfShape (C J : Cat) :=
-  { hasLimit (D : Functor J C) :: HasLimit C D }.
+Class HasLimitsOfShape (C J : Cat)
+  := { hasLimit (D : Functor J C) :: HasLimit C D }.
 
 Section LimitFunctor.
 Context {J C : Cat} `{HL : !HasLimitsOfShape C J}.
 
-Definition limit_map {D E : Functor J C} (α : D ⇒ E) : Hom (lim D) (lim E) :=
-  lim⟨ α ∘Nv πlim[D] ⟩.
+Definition limit_map {D E : Functor J C} (α : D ⇒ E)
+  : Hom (lim D) (lim E)
+  := lim⟨ α ∘Nv πlim[D] ⟩.
 
 Lemma limit_map_comm {D E : Functor J C} (α : D ⇒ E)
   : πlim[E] ∘Cone limit_map α ≈N (α ∘Nv πlim[D]).
@@ -111,7 +121,8 @@ Proof.
   intros α β H. apply limit_lift_proper. intros j. cbn. rewrite (H j). reflexivity.
 Qed.
 
-Lemma limit_map_id {D : Functor J C} : limit_map (idN (F := D)) ≈ id.
+Lemma limit_map_id {D : Functor J C}
+  : limit_map (idN (F := D)) ≈ id.
 Proof.
   unfold limit_map. rewrite <- (limit_η (@id (lim D))).
   apply limit_lift_proper. intros j. cbn. carw.
@@ -129,8 +140,9 @@ Proof.
   symmetry. apply comp_assoc.
 Qed.
 
-Program Definition LimitF : Functor (Fct J C) C :=
-  {| F0 D := lim D; F1 D E α := limit_map α |}.
+Program Definition LimitF
+  : Functor (Fct J C) C
+  := {| F0 D := lim D; F1 D E α := limit_map α |}.
 Next Obligation. apply limit_map_id. Qed.
 Next Obligation. apply limit_map_comp. Qed.
 

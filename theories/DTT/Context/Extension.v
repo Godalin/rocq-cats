@@ -1,5 +1,12 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural DTT.CwF.
-From Cats Require Import Instance.Set.Core Instance.Set.Hom Instance.Set.Fam.Core
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  DTT.CwF.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Hom
+  Instance.Set.Fam.Core
   Instance.Set.Fam.Cat.
 
 (** * Context Extensions Represent Substitutions with a Term *)
@@ -8,18 +15,22 @@ Section ContextPairs.
 Context {C : Cat} (T : Functor (C^op) FamCat).
 
 Program Definition ty_sub_at_resp {Γ Δ : @Ob C} (A : Ty T Γ)
-  : HomSet Δ Γ →r Ty T Δ := {| func σ := A[σ]Ty[T] |}.
+  : HomSet Δ Γ →r Ty T Δ
+  := {| func σ := A[σ]Ty[T] |}.
 Next Obligation. intros σ σ' H. exact (ty_sub_equiv T H A). Defined.
 
 Definition SubstitutionTerms {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
-  : FamS (HomSet Δ Γ) := (Tm T Δ)[ty_sub_at_resp A]S.
+  : FamS (HomSet Δ Γ)
+  := (Tm T Δ)[ty_sub_at_resp A]S.
 
-Definition ContextPairS {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C) : SetC :=
-  SigS (HomSet Δ Γ) (SubstitutionTerms A Δ).
+Definition ContextPairS {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
+  : SetC
+  := SigS (HomSet Δ Γ) (SubstitutionTerms A Δ).
 
 Program Definition context_pair_sub_resp {Γ Δ Θ : @Ob C} (A : Ty T Γ)
-    (τ : Hom Θ Δ) : ContextPairS A Δ →r ContextPairS A Θ :=
-  {| func x := (x.1 ∘ τ; ty_sub_comp T x.1 τ A ▸[T] x.2[τ]Tm[T]) |}.
+    (τ : Hom Θ Δ)
+  : ContextPairS A Δ →r ContextPairS A Θ
+  := {| func x := (x.1 ∘ τ; ty_sub_comp T x.1 τ A ▸[T] x.2[τ]Tm[T]) |}.
 Next Obligation.
   intros [σ t] [σ' u] [H Ht].
   pose (Hτ := @comp_proper C _ _ _ σ σ' H τ τ (reflexivity τ)).
@@ -104,9 +115,9 @@ Proof.
 Defined.
 
 Program Definition ContextPairF {Γ : @Ob C} (A : Ty T Γ)
-  : Functor (C^op) SetCat :=
-  {| F0 := ContextPairS T A
-   ; F1 Δ Θ τ := context_pair_sub_resp T A τ |}.
+  : Functor (C^op) SetCat
+  := {| F0 := ContextPairS T A
+      ; F1 Δ Θ τ := context_pair_sub_resp T A τ |}.
 Next Obligation. intros τ τ' H x. exact (context_pair_sub_proper A τ τ' H x). Defined.
 Next Obligation. intros x. apply context_pair_sub_id. Defined.
 Next Obligation. intros x. apply context_pair_sub_comp. Defined.
@@ -117,15 +128,15 @@ Section ContextRepresentation.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 Program Definition context_pair_resp {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
-  : ContextPairS T A Δ →r HomSet Δ (Γ ▹[T] A) :=
-  {| func x := ⟨x.1; x.2⟩[T, A] |}.
+  : ContextPairS T A Δ →r HomSet Δ (Γ ▹[T] A)
+  := {| func x := ⟨x.1; x.2⟩[T, A] |}.
 Next Obligation.
   intros [σ t] [σ' u] [H Ht]. apply (context_pair_equiv T A H). exact Ht.
 Defined.
 
 Program Definition context_unpair_resp {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
-  : HomSet Δ (Γ ▹[T] A) →r ContextPairS T A Δ :=
-  {| func h := (context_proj T A; context_var T A)[h]Pair[T, A] |}.
+  : HomSet Δ (Γ ▹[T] A) →r ContextPairS T A Δ
+  := {| func h := (context_proj T A; context_var T A)[h]Pair[T, A] |}.
 Next Obligation.
   intros h h' H. exact (context_pair_sub_proper T A h h' H
     (context_proj T A; context_var T A)).
@@ -173,8 +184,8 @@ Proof. apply context_pair_unique. exists H. reflexivity. Qed.
 
 (** The representing map evaluates the generic pair along a substitution. *)
 Program Definition context_extensionN {Γ : @Ob C} (A : Ty T Γ)
-  : Hom(-, Γ ▹[T] A) ⇒ ContextPairF T A :=
-  {| nt Δ := context_unpair_resp A Δ |}.
+  : Hom(-, Γ ▹[T] A) ⇒ ContextPairF T A
+  := {| nt Δ := context_unpair_resp A Δ |}.
 Next Obligation.
   intros h. change ((context_proj T A; context_var T A)[h ∘ f]Pair[T, A]
     ≈S (context_proj T A; context_var T A)[h]Pair[T, A][f]Pair[T, A]).
@@ -189,8 +200,8 @@ Proof.
 Defined.
 
 Definition context_pairN {Γ : @Ob C} (A : Ty T Γ)
-  : ContextPairF T A ⇒ Hom(-, Γ ▹[T] A) :=
-  (context_extensionN A) ^-1N (context_extension_nat_iso A).2.
+  : ContextPairF T A ⇒ Hom(-, Γ ▹[T] A)
+  := (context_extensionN A) ^-1N (context_extension_nat_iso A).2.
 
 Theorem context_pair_comp {Γ Δ Θ : @Ob C} (A : Ty T Γ)
     (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T]) (τ : Hom Θ Δ)

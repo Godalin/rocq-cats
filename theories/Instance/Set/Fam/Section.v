@@ -1,4 +1,7 @@
-From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.Core.
+From Cats Require Import
+  Cat.Core
+  Instance.Set.Core
+  Instance.Set.Fam.Core.
 From Cats Require Export Cat.Section.
 
 (** * Coherent Sections of Families
@@ -7,11 +10,11 @@ From Cats Require Export Cat.Section.
     through the family's transport. Section equality compares these elements
     pointwise, without comparing the proofs of respectfulness. *)
 
-Record SectionS_resp {X : SetC} (A : FamS X) :=
-  { section :> ∀ x : X, A x
-  ; section_proper {x y : X} (p : x ≈S y)
-    : transpS A p (section x) ≈S section y
-  }.
+Record SectionS_resp {X : SetC} (A : FamS X)
+  := { section :> ∀ x : X, A x
+     ; section_proper {x y : X} (p : x ≈S y)
+       : transpS A p (section x) ≈S section y
+     }.
 
 Arguments section {_ _} _ _.
 Arguments section_proper {_ _} _ {_ _} _.
@@ -21,7 +24,8 @@ Definition SectionEq {X : SetC} {A : FamS X} (s t : SectionS_resp A)
 
 Infix "≈s" := SectionEq (at level 50, no associativity) : cat_scope.
 
-Global Instance SectionEq_Equivalence {X A} : Equivalence (@SectionEq X A).
+Global Instance SectionEq_Equivalence {X A}
+  : Equivalence (@SectionEq X A).
 Proof.
   split.
   - intros s x. reflexivity.
@@ -29,18 +33,21 @@ Proof.
   - intros s t u Hst Htu x. transitivity (t x); [apply Hst | apply Htu].
 Qed.
 
-Program Canonical SectionS {X : SetC} (A : FamS X) : SetC :=
-  {| carrier := SectionS_resp A; carrier_equiv := SectionEq |}.
+Program Canonical SectionS {X : SetC} (A : FamS X)
+  : SetC
+  := {| carrier := SectionS_resp A; carrier_equiv := SectionEq |}.
 
 (** ** Reindexing Sections *)
 
 Program Definition section_reindex {X Y : SetC} {A : FamS Y}
-    (s : SectionS_resp A) (f : X →r Y) : SectionS_resp A[f]S :=
-  {| section x := s (f x) |}.
+    (s : SectionS_resp A) (f : X →r Y)
+  : SectionS_resp A[f]S
+  := {| section x := s (f x) |}.
 Next Obligation. exact (section_proper s (@func_proper _ _ f x y p)). Defined.
 
 Program Definition section_reindex_resp {X Y : SetC} (A : FamS Y) (f : X →r Y)
-  : SectionS A →r SectionS A[f]S := {| func s := section_reindex s f |}.
+  : SectionS A →r SectionS A[f]S
+  := {| func s := section_reindex s f |}.
 Next Obligation.
   intros s t H x. exact (H (f x)).
 Defined.
@@ -62,8 +69,10 @@ Proof. reflexivity. Qed.
     reindexed along its projection. A base map and a section of its reindexed
     family determine a unique map into the total space. *)
 
-Program Definition section_of_total {X Y : SetC} (A : FamS Y) (h : X →r SigS Y A)
-  : SectionS_resp A[sig_base_resp A ∘r h]S := {| section x := (h x).2 |}.
+Program Definition section_of_total {X Y : SetC} (A : FamS Y)
+    (h : X →r SigS Y A)
+  : SectionS_resp A[sig_base_resp A ∘r h]S
+  := {| section x := (h x).2 |}.
 Next Obligation.
   destruct (@func_proper _ _ h x y p) as [q Hq].
   change (transpS A (@func_proper _ _ (sig_base_resp A ∘r h) x y p)
@@ -74,7 +83,8 @@ Next Obligation.
 Defined.
 
 Program Definition section_var {X : SetC} (A : FamS X)
-  : SectionS_resp A[sig_base_resp A]S := {| section a := a.2 |}.
+  : SectionS_resp A[sig_base_resp A]S
+  := {| section a := a.2 |}.
 Next Obligation. destruct p as [q Hq]. exact Hq. Defined.
 
 Definition section_pair_universal {X Y : SetC} (A : FamS Y) (f : X →r Y)
@@ -92,8 +102,9 @@ Proof.
 Defined.
 
 Definition section_pair_resp {X Y : SetC} (A : FamS Y) (f : X →r Y)
-    (s : SectionS_resp A[f]S) : X →r SigS Y A :=
-  (section_pair_universal A f s).1.
+    (s : SectionS_resp A[f]S)
+  : X →r SigS Y A
+  := (section_pair_universal A f s).1.
 
 Global Instance section_pair_proper {X Y : SetC} (A : FamS Y) (f : X →r Y)
   : Proper (SectionEq ==> FunEq) (section_pair_resp A f).
@@ -125,9 +136,9 @@ Qed.
     compares the underlying maps, independently of the chosen witnesses. *)
 
 Program Definition section_to_projection_resp {X : SetC} (A : FamS X)
-  : SectionS A →r Sec(sig_base_resp A) :=
-  {| func s := (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
-      section_pair_β1 A id_resp (section_reindex s id_resp)) |}.
+  : SectionS A →r Sec(sig_base_resp A)
+  := {| func s := (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
+         section_pair_β1 A id_resp (section_reindex s id_resp)) |}.
 Next Obligation.
   intros s t H x. exists (reflS (x := x)).
   transitivity (s x); [apply transpS_id | exact (H x)].
@@ -136,8 +147,9 @@ Defined.
 (** The image of a categorical section may lie over a representative only
     equivalent to its argument. Its right-inverse witness supplies the transport. *)
 Program Definition section_from_projection {X : SetC} (A : FamS X)
-    (s : Sec(sig_base_resp A)) : SectionS_resp A :=
-  {| section x := transpS A (s.2 x) (s.1 x).2 |}.
+    (s : Sec(sig_base_resp A))
+  : SectionS_resp A
+  := {| section x := transpS A (s.2 x) (s.1 x).2 |}.
 Next Obligation.
   destruct (@func_proper _ _ s.1 x y p) as [q Hq].
   assert (r : (s.1 x).1 ≈S y).
@@ -150,7 +162,8 @@ Next Obligation.
 Defined.
 
 Program Definition section_from_projection_resp {X : SetC} (A : FamS X)
-  : Sec(sig_base_resp A) →r SectionS A := {| func := section_from_projection A |}.
+  : Sec(sig_base_resp A) →r SectionS A
+  := {| func := section_from_projection A |}.
 Next Obligation.
   intros s t H x. destruct (H x) as [p Hp].
   change (transpS A (s.2 x) (s.1 x).2 ≈S transpS A (t.2 x) (t.1 x).2).

@@ -1,9 +1,15 @@
-From Cats Require Export Cat.Shape Cat.Diagram.Free.
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
+From Cats Require Export
+  Cat.Shape
+  Cat.Diagram.Free.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural.
 
 (** * Cospan Diagrams *)
-Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVertex) : @Ob C :=
-  match v with
+Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVertex)
+  : @Ob C
+  := match v with
   | cospan_left => X
   | cospan_right => Y
   | cospan_tip => Z
@@ -11,8 +17,8 @@ Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVertex) : @Ob C :=
 
 Program Definition cospan_edge_resp {C : Cat} {X Y Z : @Ob C}
     (f : Hom X Z) (g : Hom Y Z) (x y : CospanVertex)
-  : @EdgeSet CospanGraph x y →r HomSet (CospanOb X Y Z x) (CospanOb X Y Z y) :=
-  {| func e := _ |}.
+  : @EdgeSet CospanGraph x y →r HomSet (CospanOb X Y Z x) (CospanOb X Y Z y)
+  := {| func e := _ |}.
 Next Obligation.
   destruct x, y; cbn in *; destruct e; assumption.
 Defined.
@@ -21,11 +27,13 @@ Next Obligation.
 Defined.
 
 Program Definition CospanGraphMap {C : Cat} {X Y Z : @Ob C}
-    (f : Hom X Z) (g : Hom Y Z) : CospanGraph →G UnderlyingGraph C :=
-  {| vertex_map := CospanOb X Y Z; edge_map x y := cospan_edge_resp f g x y |}.
+    (f : Hom X Z) (g : Hom Y Z)
+  : CospanGraph →G UnderlyingGraph C
+  := {| vertex_map := CospanOb X Y Z; edge_map x y := cospan_edge_resp f g x y |}.
 
 Definition CospanDiagram {C : Cat} {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
-  : Functor CospanShape C := FreeF (CospanGraphMap f g).
+  : Functor CospanShape C
+  := FreeF (CospanGraphMap f g).
 
 Notation "'⟨' f '→←' g '⟩D'" := (CospanDiagram f g) : cat_scope.
 
@@ -47,8 +55,9 @@ Defined.
 
 Definition CospanCone {C : Cat} {X Y Z P : @Ob C}
     {f : Hom X Z} {g : Hom Y Z} (p : Hom P X) (q : Hom P Y)
-    (H : f ∘ p ≈ g ∘ q) : P ⇒Δ ⟨f →← g⟩D :=
-  @CospanConeOver C (CospanDiagram f g) P p q H.
+    (H : f ∘ p ≈ g ∘ q)
+  : P ⇒Δ ⟨f →← g⟩D
+  := @CospanConeOver C (CospanDiagram f g) P p q H.
 
 Lemma cospan_cone_comm {C : Cat} {D : Functor CospanShape C} {P : @Ob C}
     (κ : P ⇒Δ D)
@@ -62,6 +71,7 @@ Qed.
 
 (** * Spans by Duality *)
 Definition SpanDiagram {C : Cat} {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
-  : Functor SpanShape C := FromDoubleOpF ∘F OpF (CospanDiagram (C := C^op) f g).
+  : Functor SpanShape C
+  := FromDoubleOpF ∘F OpF (CospanDiagram (C := C^op) f g).
 
 Notation "'⟨' f '←→' g '⟩D'" := (SpanDiagram f g) : cat_scope.

@@ -1,5 +1,11 @@
-From Cats Require Import Cat.Core Cat.Functor DTT.CwF DTT.Context.Extension.
-From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  DTT.CwF
+  DTT.Context.Extension.
+From Cats Require Import
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat.
 
 (** * Context Extensions along Designated Type Equality *)
 
@@ -29,8 +35,8 @@ Section ContextConversionMap.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 Definition context_conv {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
-  : Hom (Γ ▹[T] A) (Γ ▹[T] B) :=
-  ⟨context_proj T A; e[context_proj T A]Eq[T] ▸[T] context_var T A⟩[T, B].
+  : Hom (Γ ▹[T] A) (Γ ▹[T] B)
+  := ⟨context_proj T A; e[context_proj T A]Eq[T] ▸[T] context_var T A⟩[T, B].
 
 End ContextConversionMap.
 
@@ -41,8 +47,8 @@ Section ContextConversion.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 Definition context_conv_proj {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
-  : context_proj T B ∘ e^Ext[T] ≈ context_proj T A :=
-  context_pair_β1 T B (context_proj T A)
+  : context_proj T B ∘ e^Ext[T] ≈ context_proj T A
+  := context_pair_β1 T B (context_proj T A)
     (e[context_proj T A]Eq[T] ▸[T] context_var T A).
 
 Theorem context_conv_var {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
@@ -52,7 +58,8 @@ Theorem context_conv_var {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
 Proof. apply context_pair_β2. Qed.
 
 Theorem context_conv_witness_independent {Γ : @Ob C} {A B : Ty T Γ}
-    (e d : A ≈S B) : e^Ext[T] ≈ d^Ext[T].
+    (e d : A ≈S B)
+  : e^Ext[T] ≈ d^Ext[T].
 Proof. apply context_pair_proper. apply tm_conv_witness_independent. Qed.
 
 Theorem context_conv_pair {Γ Δ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
@@ -99,7 +106,8 @@ Proof.
 Qed.
 
 Theorem context_conv_inv {Γ : @Ob C} {A B : Ty T Γ}
-    (e : A ≈S B) (d : B ≈S A) : d^Ext[T] ∘ e^Ext[T] ≈ id.
+    (e : A ≈S B) (d : B ≈S A)
+  : d^Ext[T] ∘ e^Ext[T] ≈ id.
 Proof.
   transitivity ((reflexivity A)^Ext[T]).
   - symmetry. apply context_conv_comp.
@@ -111,6 +119,7 @@ Definition context_conv_is_iso {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
 Proof. exists ((symmetry e)^Ext[T]). split; apply context_conv_inv. Defined.
 
 Definition context_conv_iso {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
-  : (Γ ▹[T] A) ≅[C] (Γ ▹[T] B) := (e^Ext[T]; context_conv_is_iso e).
+  : (Γ ▹[T] A) ≅[C] (Γ ▹[T] B)
+  := (e^Ext[T]; context_conv_is_iso e).
 
 End ContextConversion.

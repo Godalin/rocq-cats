@@ -1,19 +1,22 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Terminal.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Terminal.
 
 (** * Product Objects *)
 
 Definition is_product {C : Cat} (X Y P : Ob)
-    (p : Hom P X) (q : Hom P Y) :=
-  ∀ Z (f : Hom Z X) (g : Hom Z Y),
+    (p : Hom P X) (q : Hom P Y)
+  := ∀ Z (f : Hom Z X) (g : Hom Z Y),
     ∃ h : Hom Z P, is_unique (λ h, p ∘ h ≈ f ∧ q ∘ h ≈ g) h.
 
-Class HasProduct (C : Cat) :=
-  { Prod : Ob → Ob → Ob
-  ; π1 {X Y} : Hom (Prod X Y) X
-  ; π2 {X Y} : Hom (Prod X Y) Y
+Class HasProduct (C : Cat)
+  := { Prod : Ob → Ob → Ob
+     ; π1 {X Y} : Hom (Prod X Y) X
+     ; π2 {X Y} : Hom (Prod X Y) Y
 
-  ; product_universal {X Y} : is_product X Y (Prod X Y) π1 π2
-  }.
+     ; product_universal {X Y} : is_product X Y (Prod X Y) π1 π2
+     }.
 
 Arguments Prod {_ _} _%_ob _%_ob.
 Arguments π1 {_ _ _ _}.
@@ -22,8 +25,9 @@ Arguments product_universal {_ _ _ _} _ _ _.
 
 (** The Type-valued universal property supplies the chosen mediator. *)
 Definition pair {C : Cat} `{HP : !HasProduct C} {X Y Z}
-    (f : Hom Z X) (g : Hom Z Y) : Hom Z (Prod X Y) :=
-  (product_universal Z f g).1.
+    (f : Hom Z X) (g : Hom Z Y)
+  : Hom Z (Prod X Y)
+  := (product_universal Z f g).1.
 
 Arguments pair {_ _ _ _ _} _ _.
 
@@ -139,7 +143,8 @@ Proof.
   apply product_pair_unique; split; cato.
 Qed.
 
-Lemma product_comm {X Y} : X × Y ≅ Y × X.
+Lemma product_comm {X Y}
+  : X × Y ≅ Y × X.
 Proof.
   exists ⟨π2, π1⟩, ⟨π2, π1⟩.
   simpl. split.
@@ -198,7 +203,8 @@ Proof.
   intros f f' Hf g g' Hg. rewrite !cross_η, Hf, Hg. reflexivity.
 Qed.
 
-Lemma cross_id {X Y} : (@id X) × (@id Y) ≈ id.
+Lemma cross_id {X Y}
+  : (@id X) × (@id Y) ≈ id.
 Proof.
   rewrite cross_η, !comp_id_l. symmetry.
   apply product_pair_unique. split; apply comp_id_r.
@@ -276,9 +282,9 @@ End Product.
 
 (** The chosen product is functorial in both arguments. *)
 Program Definition ProductF {C : Cat} `{HP : !HasProduct C}
-  : Functor (C ×C C) C :=
-  {| F0 p := (fst p × snd p)%ob
-   ; F1 X Y f := (fst f × snd f)%hom |}.
+  : Functor (C ×C C) C
+  := {| F0 p := (fst p × snd p)%ob
+      ; F1 X Y f := (fst f × snd f)%hom |}.
 Next Obligation.
   intros [f g] [f' g'] [Hf Hg]. apply cross_proper; assumption.
 Qed.
@@ -286,6 +292,7 @@ Next Obligation. apply cross_id. Qed.
 Next Obligation. apply cross_comp. Qed.
 
 Definition ProductRF {C : Cat} `{HP : !HasProduct C} (X : @Ob C)
-  : Functor C C := π1F ProductF X.
+  : Functor C C
+  := π1F ProductF X.
 
 Notation "'(-×' X ')'" := (ProductRF X) : cat_scope.

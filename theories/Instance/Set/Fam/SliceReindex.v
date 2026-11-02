@@ -1,8 +1,21 @@
-From Cats Require Import Cat.Core Cat.Slice Cat.Slice.Reindex Cat.Pullback.
-From Cats Require Import Cat.Functor Cat.Natural.
-From Cats Require Import Instance.Set.Core Instance.Set.Pullback.
-From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.Fam.Reindex.
-From Cats Require Import Instance.Set.Fam.Fixed Instance.Set.Fam.Slice.
+From Cats Require Import
+  Cat.Core
+  Cat.Slice
+  Cat.Slice.Reindex
+  Cat.Pullback.
+From Cats Require Import
+  Cat.Functor
+  Cat.Natural.
+From Cats Require Import
+  Instance.Set.Core
+  Instance.Set.Pullback.
+From Cats Require Import
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Cat
+  Instance.Set.Fam.Reindex.
+From Cats Require Import
+  Instance.Set.Fam.Fixed
+  Instance.Set.Fam.Slice.
 
 (** * Total Spaces Commute with Substitution
 
@@ -14,31 +27,35 @@ Local Existing Instance SetCat_HasPullback.
 (** Naming the carrier universe prevents minimization from identifying it
     with the inferred equivalence-witness universe. *)
 Definition fam_sum_reindex@{u +} {X Y : SetC@{u _}} (f : X →r Y) (A : FamS Y)
-  : SliceHom (FamSumOb A[f]S) (FamSumOb A)[f]C :=
-  slice_reindex_lift f (FamSumOb A) (B := FamSumOb A[f]S)
+  : SliceHom (FamSumOb A[f]S) (FamSumOb A)[f]C
+  := slice_reindex_lift f (FamSumOb A) (B := FamSumOb A[f]S)
     (fam_total_resp (fam_reindex (FixedFamC A) f))
     (fst (fam_reindex_pullback (FixedFamC A) f)).
 
-Definition fam_sum_reindex_iso@{u +} {X Y : SetC@{u _}} (f : X →r Y) (A : FamS Y)
-  : @is_iso (SetCat /C X) _ _ (fam_sum_reindex f A) :=
-  slice_reindex_lift_iso f (FamSumOb A) (B := FamSumOb A[f]S)
+Definition fam_sum_reindex_iso@{u +} {X Y : SetC@{u _}} (f : X →r Y)
+    (A : FamS Y)
+  : @is_iso (SetCat /C X) _ _ (fam_sum_reindex f A)
+  := slice_reindex_lift_iso f (FamSumOb A) (B := FamSumOb A[f]S)
     (fam_total_resp (fam_reindex (FixedFamC A) f))
     (fst (fam_reindex_pullback (FixedFamC A) f))
     (fam_reindex_pullback (FixedFamC A) f).
 
 Program Definition FamSumReindexN@{u +} {X Y : SetC@{u _}} (f : X →r Y)
-  : (FamSumF X ∘F FamReindexF f) ⇒ (SliceReindexF (C := SetCat) f ∘F FamSumF Y) :=
-  {| nt := fam_sum_reindex f |}.
+  : (FamSumF X ∘F FamReindexF f)
+      ⇒ (SliceReindexF (C := SetCat) f ∘F FamSumF Y)
+  := {| nt := fam_sum_reindex f |}.
 Next Obligation. intros [x a]. split; reflexivity. Defined.
 
 Definition fam_sum_reindex_nat_iso@{u +} {X Y : SetC@{u _}} (f : X →r Y)
-  : (FamSumF X ∘F FamReindexF f) ≅N (SliceReindexF (C := SetCat) f ∘F FamSumF Y) :=
-  (FamSumReindexN f; fam_sum_reindex_iso f).
+  : (FamSumF X ∘F FamReindexF f)
+      ≅N (SliceReindexF (C := SetCat) f ∘F FamSumF Y)
+  := (FamSumReindexN f; fam_sum_reindex_iso f).
 
 (** The natural comparison commutes with the chosen identity and composite
     substitution comparisons. These are equations of maps in the slice. *)
 Theorem fam_sum_reindex_id@{u +} {X : SetC@{u _}} (A : FamS X)
-  : slice_map (fam_sum_reindex id_resp A ∘/C fam_sum_map (fam_map_reindex_id A)) ≈f
+  : slice_map
+      (fam_sum_reindex id_resp A ∘/C fam_sum_map (fam_map_reindex_id A)) ≈f
       slice_map (slice_reindex_id (C := SetCat) (FamSumOb A)).
 Proof. intros [x a]. split; reflexivity. Qed.
 
@@ -59,15 +76,15 @@ Proof. intros [x a]. split; reflexivity. Qed.
 Program Definition slice_fiber_reindex_resp@{u +} {X Y : SetC@{u _}}
     (f : X →r Y) (A : SliceOb SetCat Y) (x : X)
   : (FiberFamS (slice_arrow A))[f]S x →r
-      FiberS (slice_arrow (C := SetCat) A[f]C) x :=
-  {| func a := ((x; (a.1; symmetry a.2)); reflS (x := x)) |}.
+      FiberS (slice_arrow (C := SetCat) A[f]C) x
+  := {| func a := ((x; (a.1; symmetry a.2)); reflS (x := x)) |}.
 Next Obligation. intros a b H. split; [reflexivity | exact H]. Defined.
 
 Program Definition slice_fiber_reindex@{u +} {X Y : SetC@{u _}}
     (f : X →r Y) (A : SliceOb SetCat Y)
   : (FiberFamS (slice_arrow A))[f]S →Fam
-      FiberFamS (slice_arrow (C := SetCat) A[f]C) :=
-  {| fam_map := slice_fiber_reindex_resp f A |}.
+      FiberFamS (slice_arrow (C := SetCat) A[f]C)
+  := {| fam_map := slice_fiber_reindex_resp f A |}.
 Next Obligation. split; [symmetry; exact p | reflexivity]. Defined.
 
 (** A pullback point need only have an equivalent first coordinate.
@@ -75,8 +92,8 @@ Next Obligation. split; [symmetry; exact p | reflexivity]. Defined.
 Program Definition slice_fiber_reindex_inv_resp@{u +} {X Y : SetC@{u _}}
     (f : X →r Y) (A : SliceOb SetCat Y) (x : X)
   : FiberS (slice_arrow (C := SetCat) A[f]C) x →r
-      (FiberFamS (slice_arrow A))[f]S x :=
-  {| func a := (a.1.2.1; _) |}.
+      (FiberFamS (slice_arrow A))[f]S x
+  := {| func a := (a.1.2.1; _) |}.
 Next Obligation.
   transitivity (f a.1.1).
   - symmetry. exact a.1.2.2.
@@ -87,8 +104,8 @@ Next Obligation. intros a b H. exact (snd H). Defined.
 Program Definition slice_fiber_reindex_inv@{u +} {X Y : SetC@{u _}}
     (f : X →r Y) (A : SliceOb SetCat Y)
   : FiberFamS (slice_arrow (C := SetCat) A[f]C) →Fam
-      (FiberFamS (slice_arrow A))[f]S :=
-  {| fam_map := slice_fiber_reindex_inv_resp f A |}.
+      (FiberFamS (slice_arrow A))[f]S
+  := {| fam_map := slice_fiber_reindex_inv_resp f A |}.
 Next Obligation. reflexivity. Defined.
 
 Definition slice_fiber_reindex_iso@{u +} {X Y : SetC@{u _}}
@@ -101,13 +118,15 @@ Proof.
 Defined.
 
 Program Definition SliceFamReindexN@{u +} {X Y : SetC@{u _}} (f : X →r Y)
-  : (FamReindexF f ∘F SliceFamF Y) ⇒ (SliceFamF X ∘F SliceReindexF (C := SetCat) f) :=
-  {| nt := slice_fiber_reindex f |}.
+  : (FamReindexF f ∘F SliceFamF Y)
+      ⇒ (SliceFamF X ∘F SliceReindexF (C := SetCat) f)
+  := {| nt := slice_fiber_reindex f |}.
 Next Obligation. intros x a. split; reflexivity. Defined.
 
 Definition slice_fam_reindex_nat_iso@{u +} {X Y : SetC@{u _}} (f : X →r Y)
-  : (FamReindexF f ∘F SliceFamF Y) ≅N (SliceFamF X ∘F SliceReindexF (C := SetCat) f) :=
-  (SliceFamReindexN f; slice_fiber_reindex_iso f).
+  : (FamReindexF f ∘F SliceFamF Y)
+      ≅N (SliceFamF X ∘F SliceReindexF (C := SetCat) f)
+  := (SliceFamReindexN f; slice_fiber_reindex_iso f).
 
 (** ** Compatibility with the Two Round-trip Comparisons
 

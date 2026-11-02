@@ -1,5 +1,10 @@
-From Cats Require Import Cat.Core Instance.Set.Core Instance.Set.Fam.Core.
-From Cats Require Import Instance.Set.Fam.Cat Instance.Set.Fam.Section.
+From Cats Require Import
+  Cat.Core
+  Instance.Set.Core
+  Instance.Set.Fam.Core.
+From Cats Require Import
+  Instance.Set.Fam.Cat
+  Instance.Set.Fam.Section.
 From Cats Require Import Instance.Set.Fam.Fibration.
 From Cats Require Import Instance.Set.Fam.Fixed.
 
@@ -7,8 +12,8 @@ From Cats Require Import Instance.Set.Fam.Fixed.
 
 (** A fiberwise map over a fixed base acts on coherent sections. *)
 Program Definition section_fam_map_resp {X : SetC} {A B : FamS X} (φ : A →Fam B)
-  : SectionS A →r SectionS B :=
-  {| func s := {| section x := fam_map φ x (s x) |} |}.
+  : SectionS A →r SectionS B
+  := {| func s := {| section x := fam_map φ x (s x) |} |}.
 Next Obligation.
   transitivity (fam_map φ y (transpS A p (s x))).
   - symmetry. apply fam_map_naturality.
@@ -20,7 +25,8 @@ Infix "▷Fam" := section_fam_map_resp
   (at level 40, left associativity) : cat_scope.
 
 Program Definition section_map {U V : FamC} (φ : FamF U V) (s : SectionS_resp U)
-  : SectionS_resp V[famF_base φ]S := {| section x := famF_fam φ x (s x) |}.
+  : SectionS_resp V[famF_base φ]S
+  := {| section x := famF_fam φ x (s x) |}.
 Next Obligation.
   change (transpS V (@func_proper _ _ (famF_base φ) x y p)
     (famF_fam φ x (s x)) ≈S famF_fam φ y (s y)).
@@ -36,15 +42,15 @@ Global Instance section_map_proper {U V : FamC} (φ : FamF U V)
 Proof. intros s t H x. apply func_proper. exact (H x). Qed.
 
 Definition section_map_resp {U V : FamC} (φ : FamF U V)
-  : SectionS U →r SectionS V[famF_base φ]S :=
-  {| func := section_map φ; func_proper := section_map_proper φ |}.
+  : SectionS U →r SectionS V[famF_base φ]S
+  := {| func := section_map φ; func_proper := section_map_proper φ |}.
 
 (** A section over an arbitrary map into the source family can also be
     mapped fiberwise. The output lies over the composite base map. *)
 Program Definition section_map_over {X : SetC} {U V : FamC} (φ : FamF U V)
     (f : X →r famC_base U) (s : SectionS_resp U[f]S)
-  : SectionS_resp V[famF_base φ ∘r f]S :=
-  {| section x := famF_fam φ (f x) (s x) |}.
+  : SectionS_resp V[famF_base φ ∘r f]S
+  := {| section x := famF_fam φ (f x) (s x) |}.
 Next Obligation.
   change (transpS V (@func_proper _ _ (famF_base φ ∘r f) x y p)
     (famF_fam φ (f x) (s x)) ≈S famF_fam φ (f y) (s y)).

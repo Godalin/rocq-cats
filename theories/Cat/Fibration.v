@@ -1,4 +1,6 @@
-From Cats Require Import Cat.Core Cat.Functor.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor.
 
 (** * Cartesian Morphisms
 
@@ -6,8 +8,8 @@ From Cats Require Import Cat.Core Cat.Functor.
     morphism. Both the triangle and uniqueness use morphism equivalence. *)
 
 Definition is_cartesian {E B : Cat} (P : Functor E B)
-    {X Y : @Ob E} (f : Hom X Y) :=
-  ∀ Z (g : Hom Z Y) (u : Hom (P Z) (P X)),
+    {X Y : @Ob E} (f : Hom X Y)
+  := ∀ Z (g : Hom Z Y) (u : Hom (P Z) (P X)),
     fmap P f ∘ u ≈ fmap P g
     → ∃ h : Hom Z X, is_unique (λ h : Hom Z X, fmap P h ≈ u ∧ f ∘ h ≈ g) h.
 
@@ -18,8 +20,9 @@ Notation "f '⦂' 'Cart(' P ')'" := (is_cartesian P f)
 Definition cartesian_factor {E B : Cat} {P : Functor E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
-    (H : fmap P f ∘ u ≈ fmap P g) : Hom Z X :=
-  (Hf Z g u H).1.
+    (H : fmap P f ∘ u ≈ fmap P g)
+  : Hom Z X
+  := (Hf Z g u H).1.
 
 Theorem cartesian_factor_unique {E B : Cat} {P : Functor E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
@@ -57,7 +60,8 @@ Qed.
 
 Definition cartesian_proper {E B : Cat} {P : Functor E B}
     {X Y : @Ob E} {f f' : Hom X Y} (Hff' : f ≈ f')
-    (Hf : f ⦂ Cart(P)) : f' ⦂ Cart(P).
+    (Hf : f ⦂ Cart(P))
+  : f' ⦂ Cart(P).
 Proof.
   intros Z g u H.
   assert (H' : fmap P f ∘ u ≈ fmap P g) by (rewrite Hff'; exact H).
@@ -147,23 +151,24 @@ Definition cartesian_unique {E B : Cat} {P : Functor E B}
     {X X' Y : @Ob E} {f : Hom X Y} {g : Hom X' Y}
     (Hf : f ⦂ Cart(P)) (Hg : g ⦂ Cart(P))
     (u : Hom (P X) (P X')) (Hu : is_iso u)
-    (H : fmap P g ∘ u ≈ fmap P f) : X ≅ X' :=
-  (cartesian_factor Hg f u H; cartesian_factor_is_iso Hf Hg u Hu H).
+    (H : fmap P g ∘ u ≈ fmap P f)
+  : X ≅ X'
+  := (cartesian_factor Hg f u H; cartesian_factor_is_iso Hf Hg u Hu H).
 
 (** ** Chosen Cartesian Lifts
 
     The base-object identification is explicit data. No equality between its
     witnesses and no strict identity or composition law for lifts is assumed. *)
 
-Class HasCartesianLift {E B : Cat} (P : Functor E B) :=
-  { CartesianLift {Y : @Ob E} {X : @Ob B} (f : Hom X (P Y)) : @Ob E
-  ; cartesian_lift_base {Y X} (f : Hom X (P Y)) : P (CartesianLift f) = X
-  ; cartesian_lift {Y X} (f : Hom X (P Y)) : Hom (CartesianLift f) Y
-  ; cartesian_lift_comm {Y X} (f : Hom X (P Y))
-    : fmap P (cartesian_lift f) ≈ f ∘ eq_to_hom (cartesian_lift_base f)
-  ; cartesian_lift_universal {Y X} (f : Hom X (P Y))
-    : cartesian_lift f ⦂ Cart(P)
-  }.
+Class HasCartesianLift {E B : Cat} (P : Functor E B)
+  := { CartesianLift {Y : @Ob E} {X : @Ob B} (f : Hom X (P Y)) : @Ob E
+     ; cartesian_lift_base {Y X} (f : Hom X (P Y)) : P (CartesianLift f) = X
+     ; cartesian_lift {Y X} (f : Hom X (P Y)) : Hom (CartesianLift f) Y
+     ; cartesian_lift_comm {Y X} (f : Hom X (P Y))
+       : fmap P (cartesian_lift f) ≈ f ∘ eq_to_hom (cartesian_lift_base f)
+     ; cartesian_lift_universal {Y X} (f : Hom X (P Y))
+       : cartesian_lift f ⦂ Cart(P)
+     }.
 
 Arguments CartesianLift {_ _ _ _ _ _} _.
 Arguments cartesian_lift_base {_ _ _ _ _ _} _.

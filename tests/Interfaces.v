@@ -1,4 +1,9 @@
-From Cats Require Import Cat.Core Cat.Terminal Cat.Pullback Cat.Morphism ETCS.Sub.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal
+  Cat.Pullback
+  Cat.Morphism
+  ETCS.Sub.
 
 Section Pullback.
 Context {C : Cat} `{HP : !HasPullback C}.

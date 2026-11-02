@@ -1,4 +1,9 @@
-From Cats Require Import Cat.Core Cat.Terminal Cat.Product Cat.Equalizer Cat.Pullback.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal
+  Cat.Product
+  Cat.Equalizer
+  Cat.Pullback.
 
 (** * Two Bases for Finite Limits
 
@@ -25,24 +30,27 @@ Proof.
 Defined.
 
 Program Definition ProductEqualizerPullback {C : Cat}
-    `{HP : !HasProduct C} `{HE : !HasEqualizer C} : HasPullback C :=
-  {| Pb X Y Z f g := Eq[f ∘ π1, g ∘ π2]
-   ; pb1 X Y Z f g := π1 ∘ ιeq[f ∘ π1, g ∘ π2]
-   ; pb2 X Y Z f g := π2 ∘ ιeq[f ∘ π1, g ∘ π2] |}.
+    `{HP : !HasProduct C} `{HE : !HasEqualizer C}
+  : HasPullback C
+  := {| Pb X Y Z f g := Eq[f ∘ π1, g ∘ π2]
+      ; pb1 X Y Z f g := π1 ∘ ιeq[f ∘ π1, g ∘ π2]
+      ; pb2 X Y Z f g := π2 ∘ ιeq[f ∘ π1, g ∘ π2] |}.
 Next Obligation. apply product_equalizer_pullback. exact equalizer_universal. Defined.
 
 (** Products from pullbacks over the chosen terminal object. *)
 Program Definition PullbackProduct {C : Cat}
-    `{HT : !HasTerminal C} `{HPb : !HasPullback C} : HasProduct C :=
-  {| Prod X Y := X ×[!, !] Y
-   ; π1 X Y := pb1 ! !
-   ; π2 X Y := pb2 ! ! |}.
+    `{HT : !HasTerminal C} `{HPb : !HasPullback C}
+  : HasProduct C
+  := {| Prod X Y := X ×[!, !] Y
+      ; π1 X Y := pb1 ! !
+      ; π2 X Y := pb2 ! ! |}.
 Next Obligation. apply pullback_product. Defined.
 
 (** Pull back the diagonal of Y along the pair of parallel arrows. *)
 Definition pullback_equalizer {C : Cat} `{HP : !HasProduct C}
     {X Y E : @Ob C} {f g : Hom X Y} {e : Hom E X} {d : Hom E Y}
-    (HPb : is_pullback ⟨f, g⟩ ⟨id, id⟩ E e d) : is_equalizer f g E e.
+    (HPb : is_pullback ⟨f, g⟩ ⟨id, id⟩ E e d)
+  : is_equalizer f g E e.
 Proof.
   assert (Hf : f ∘ e ≈ d).
   { transitivity (π1 ∘ (⟨f, g⟩ ∘ e)).
@@ -65,16 +73,18 @@ Proof.
 Defined.
 
 Program Definition ProductPullbackEqualizer {C : Cat}
-    `{HP : !HasProduct C} `{HPb : !HasPullback C} : HasEqualizer C :=
-  {| EqObj X Y f g := Pb ⟨f, g⟩ ⟨id, id⟩
-   ; eqι X Y f g := pb1 ⟨f, g⟩ ⟨id, id⟩ |}.
+    `{HP : !HasProduct C} `{HPb : !HasPullback C}
+  : HasEqualizer C
+  := {| EqObj X Y f g := Pb ⟨f, g⟩ ⟨id, id⟩
+      ; eqι X Y f g := pb1 ⟨f, g⟩ ⟨id, id⟩ |}.
 Next Obligation. apply (pullback_equalizer (d := pb2 _ _)). exact pullback_universal. Defined.
 
 (** No independent product structure is required when terminal objects and
     pullbacks are already selected. *)
 Definition PullbackEqualizer {C : Cat}
-    `{HT : !HasTerminal C} `{HPb : !HasPullback C} : HasEqualizer C :=
-  @ProductPullbackEqualizer C (@PullbackProduct C HT HPb) HPb.
+    `{HT : !HasTerminal C} `{HPb : !HasPullback C}
+  : HasEqualizer C
+  := @ProductPullbackEqualizer C (@PullbackProduct C HT HPb) HPb.
 
 (** These Type-valued implications convert chosen data. They assert no
     equality of records or of the choices made by a round trip. *)

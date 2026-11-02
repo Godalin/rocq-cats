@@ -1,4 +1,8 @@
-From Cats Require Import Cat.Core Cat.Terminal Cat.Product Cat.Exponential.
+From Cats Require Import
+  Cat.Core
+  Cat.Terminal
+  Cat.Product
+  Cat.Exponential.
 From Cats Require Import Cat.Morphism.
 From Cats Require Import Cat.Pullback.
 From Cats Require Import ETCS.Nat.
@@ -8,21 +12,20 @@ From Cats Require Import ETCS.Sub.
 
 (** Well-Pointed Category: equality on all global points detects equality. *)
 
-Class IsWellPointed (C : Cat) (HT : HasTerminal C) :=
-  { well_pointed_ext {X Y} {f g : Hom X Y}
-    : (∀ x : Hom 1 X, f ∘ x ≈ g ∘ x) → f ≈ g
-  }.
+Class IsWellPointed (C : Cat) (HT : HasTerminal C)
+  := { well_pointed_ext {X Y} {f g : Hom X Y}
+       : (∀ x : Hom 1 X, f ∘ x ≈ g ∘ x) → f ≈ g
+     }.
 
 (** Choice for ETCS models: every epimorphism has a right inverse. *)
 
-Class HasAxiomChoice (C : Cat) :=
-  { choice_split_epi {X Y} {f : Hom X Y}
-    : is_epi f → ∃ g, is_rinv_of f g
-  }.
+Class HasAxiomChoice (C : Cat)
+  := { choice_split_epi {X Y} {f : Hom X Y}
+       : is_epi f → ∃ g, is_rinv_of f g
+     }.
 
-Class ETCS (C : Cat) :=
-
-  (** [ETCS] is based on a _elementary topos_ *)
+Class ETCS (C : Cat)
+  := (** [ETCS] is based on a _elementary topos_ *)
 
   { hasTerminal :: HasTerminal C
   ; hasInitial :: HasInitial C

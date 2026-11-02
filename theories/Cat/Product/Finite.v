@@ -1,4 +1,9 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Terminal Cat.Product.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Terminal
+  Cat.Product.
 From Cats.Set Require Export Finite.
 From Cats Require Export Cat.Product.Indexed.
 
@@ -6,8 +11,9 @@ From Cats Require Export Cat.Product.Indexed.
 Section FiniteProducts.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 
-Fixpoint FiniteProduct {n : nat} (D : Fin n → @Ob C) : @Ob C :=
-  match n as m return (Fin m → @Ob C) → @Ob C with
+Fixpoint FiniteProduct {n : nat} (D : Fin n → @Ob C)
+  : @Ob C
+  := match n as m return (Fin m → @Ob C) → @Ob C with
   | O => λ _, 1
   | S m => λ D, (D fin_first × FiniteProduct (λ i : Fin m, D (fin_next i)))%ob
   end D.
@@ -22,8 +28,9 @@ Proof.
 Defined.
 
 Fixpoint finite_product_pair {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
-    (κ : ∀ i, Hom X (D i)) : Hom X (FiniteProduct D) :=
-  match n as m return ∀ D : Fin m → @Ob C,
+    (κ : ∀ i, Hom X (D i))
+  : Hom X (FiniteProduct D)
+  := match n as m return ∀ D : Fin m → @Ob C,
       (∀ i, Hom X (D i)) → Hom X (FiniteProduct D) with
   | O => λ D κ, !
   | S m => λ D κ, ⟨κ fin_first,
@@ -43,7 +50,8 @@ Qed.
 
 Theorem finite_product_hom_ext {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
     (f g : Hom X (FiniteProduct D))
-    (H : ∀ i, finite_product_proj D i ∘ f ≈ finite_product_proj D i ∘ g) : f ≈ g.
+    (H : ∀ i, finite_product_proj D i ∘ f ≈ finite_product_proj D i ∘ g)
+  : f ≈ g.
 Proof.
   induction n as [|n IH] in D, f, g, H |- *.
   - transitivity (@term C HT X); [apply term_η | symmetry; apply term_η].
@@ -55,10 +63,11 @@ Qed.
 
 (** The result is the existing indexed-product structure. The construction
     works for every functor on the finite discrete shape. *)
-Program Definition FiniteProductLimit {n : nat} (D : Functor (DiscreteCat (Fin n)) C)
-  : HasLimit C D :=
-  {| Lim := FiniteProduct (λ i, D i)
-   ; limit_cone := @DiscreteCone C (Fin n) D _ (finite_product_proj (λ i, D i)) |}.
+Program Definition FiniteProductLimit {n : nat}
+    (D : Functor (DiscreteCat (Fin n)) C)
+  : HasLimit C D
+  := {| Lim := FiniteProduct (λ i, D i)
+      ; limit_cone := @DiscreteCone C (Fin n) D _ (finite_product_proj (λ i, D i)) |}.
 Next Obligation.
   intros X μ. exists (finite_product_pair (λ i, D i) (λ i, μ i)).
   refine {| this := _; that := _ |}.
@@ -68,9 +77,11 @@ Next Obligation.
 Defined.
 
 Program Definition FiniteProductLimits (n : nat)
-  : HasLimitsOfShape C (DiscreteCat (Fin n)) := {| hasLimit := FiniteProductLimit |}.
+  : HasLimitsOfShape C (DiscreteCat (Fin n))
+  := {| hasLimit := FiniteProductLimit |}.
 
-Global Instance finite_product_pair_proper {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
+Global Instance finite_product_pair_proper {n : nat} (D : Fin n → @Ob C)
+    {X : @Ob C}
   : Proper ((λ κ μ : ∀ i, Hom X (D i), ∀ i, κ i ≈ μ i) ==>
       @HomEq C X (FiniteProduct D)) (finite_product_pair D).
 Proof.

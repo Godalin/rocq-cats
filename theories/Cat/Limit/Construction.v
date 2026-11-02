@@ -1,4 +1,9 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Arrow Cat.Equalizer.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor
+  Cat.Natural
+  Cat.Arrow
+  Cat.Equalizer.
 From Cats Require Export Cat.Product.Indexed.
 
 (** * Constructing Limits from Products and Equalizers
@@ -6,21 +11,26 @@ From Cats Require Export Cat.Product.Indexed.
     Only two particular products are needed: one over the objects and one
     over the arrows of the index category. Their size bounds remain explicit
     in the chosen product assumptions. *)
-Definition DiagramObjects {J C : Cat} (D : Functor J C) (j : @Ob J) : @Ob C := D j.
-Definition DiagramTargets {J C : Cat} (D : Functor J C) (a : ArrowOb J) : @Ob C :=
-  D (arrow_cod a).
+Definition DiagramObjects {J C : Cat} (D : Functor J C) (j : @Ob J)
+  : @Ob C
+  := D j.
+Definition DiagramTargets {J C : Cat} (D : Functor J C) (a : ArrowOb J)
+  : @Ob C
+  := D (arrow_cod a).
 
 (** The shared universal-property argument only needs that cone families
     equalize the constraints and that the proposed legs factor through the
     object product. Different presentations may supply these constraints. *)
 Definition product_cone_equalizer_limit {J C : Cat} (D : Functor J C)
     `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}
-    {Q E : @Ob C} {s t : Hom Π[DiagramObjects D] Q} {e : Hom E Π[DiagramObjects D]}
+    {Q E : @Ob C} {s t : Hom Π[DiagramObjects D] Q}
+    {e : Hom E Π[DiagramObjects D]}
     (κ : E ⇒Δ D) (Hκ : ∀ j, κ j ≈ πΠ[DiagramObjects D] j ∘ e)
     (Hcones : ∀ X (μ : X ⇒Δ D),
       s ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j) ≈
       t ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j))
-    (HE : is_equalizer s t E e) : is_limit κ.
+    (HE : is_equalizer s t E e)
+  : is_limit κ.
 Proof.
   intros X μ.
   pose (p := indexed_pair (D := DiagramObjects D) (λ j, μ j)).
@@ -42,11 +52,13 @@ Context {J C : Cat} (D : Functor J C).
 Context `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}.
 Context `{HA : !HasLimit C (DiscreteF (DiagramTargets D))}.
 
-Definition diagram_product_source : Hom Π[DiagramObjects D] Π[DiagramTargets D] :=
-  Π⟨λ a, fmap D (arrow_map a) ∘ πΠ[DiagramObjects D] (arrow_dom a)⟩.
+Definition diagram_product_source
+  : Hom Π[DiagramObjects D] Π[DiagramTargets D]
+  := Π⟨λ a, fmap D (arrow_map a) ∘ πΠ[DiagramObjects D] (arrow_dom a)⟩.
 
-Definition diagram_product_target : Hom Π[DiagramObjects D] Π[DiagramTargets D] :=
-  Π⟨λ a, πΠ[DiagramObjects D] (arrow_cod a)⟩.
+Definition diagram_product_target
+  : Hom Π[DiagramObjects D] Π[DiagramTargets D]
+  := Π⟨λ a, πΠ[DiagramObjects D] (arrow_cod a)⟩.
 
 Lemma diagram_product_comm {E : @Ob C} (e : Hom E Π[DiagramObjects D])
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
@@ -60,9 +72,11 @@ Proof.
     unfold diagram_product_target. rewrite indexed_product_β. reflexivity.
 Qed.
 
-Program Definition ProductsEqualizerCone {E : @Ob C} (e : Hom E Π[DiagramObjects D])
-    (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e) : E ⇒Δ D :=
-  {| nt j := πΠ[DiagramObjects D] j ∘ e |}.
+Program Definition ProductsEqualizerCone {E : @Ob C}
+    (e : Hom E Π[DiagramObjects D])
+    (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
+  : E ⇒Δ D
+  := {| nt j := πΠ[DiagramObjects D] j ∘ e |}.
 Next Obligation.
   rewrite comp_id_r. symmetry. apply diagram_product_comm. exact H.
 Qed.
@@ -84,10 +98,11 @@ Proof.
     + symmetry. apply (indexed_product_β (D := DiagramObjects D)).
 Defined.
 
-Program Definition ProductsEqualizerLimit `{HE : !HasEqualizer C} : HasLimit C D :=
-  {| Lim := Eq[diagram_product_source, diagram_product_target]
-   ; limit_cone := ProductsEqualizerCone
-       ιeq[diagram_product_source, diagram_product_target] equalizer_comm |}.
+Program Definition ProductsEqualizerLimit `{HE : !HasEqualizer C}
+  : HasLimit C D
+  := {| Lim := Eq[diagram_product_source, diagram_product_target]
+      ; limit_cone := ProductsEqualizerCone
+          ιeq[diagram_product_source, diagram_product_target] equalizer_comm |}.
 Next Obligation. apply products_equalizer_limit. exact equalizer_universal. Defined.
 
 End ProductsEqualizer.
@@ -97,5 +112,6 @@ End ProductsEqualizer.
 Program Definition IndexedProductsEqualizerLimits {J C : Cat}
     `{HO : !HasLimitsOfShape C (DiscreteCat (@Ob J))}
     `{HA : !HasLimitsOfShape C (DiscreteCat (ArrowOb J))}
-    `{HE : !HasEqualizer C} : HasLimitsOfShape C J :=
-  {| hasLimit D := ProductsEqualizerLimit D |}.
+    `{HE : !HasEqualizer C}
+  : HasLimitsOfShape C J
+  := {| hasLimit D := ProductsEqualizerLimit D |}.
