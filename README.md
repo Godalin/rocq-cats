@@ -244,6 +244,8 @@ the general [adjunction theory](./theories/Cat/Adjunction.v) starts with natural
 hom isomorphisms and derives unit/counit and composition, including `(-) × A ⊣ (-)^A`.
 The [limit theory](./docs/Limits.md) derives limit functors, the diagonal
 adjunction and preservation of limits by right adjoints from universal properties.
+The [graph and free-category constructions](./docs/Graphs.md) generate diagram
+shapes and identify binary products and pullbacks with their corresponding limits.
 STLC syntax, its interpretation and the free-CCC completeness theorem remain
 tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
 [#20](https://github.com/Godalin/rocq-cats/issues/20).

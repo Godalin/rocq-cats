@@ -18,6 +18,12 @@ ConstF J X : Functor J C
 相等只比较指定的底层态射相等。见证保留在 Type 中，不比较见证本身。
 `MapCone F κ` 将函子作用于锥的各条腿。
 
+[图与自由范畴](./Graphs.md) 提供形状的生成设施：由顶点及生成边构造自由范畴，
+再将边赋值延拓成图式。二元积对应两点离散形状，拉回对应余跨度形状；
+它们与既有专用泛性质及选定结构的双向对应分别位于
+[Limit.Product](../theories/Cat/Limit/Product.v) 和
+[Limit.Pullback](../theories/Cat/Limit/Pullback.v)。
+
 ## 泛性质与选定结构
 
 [Limit](../theories/Cat/Limit.v) 区分候选与选定极限：

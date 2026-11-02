@@ -3,6 +3,8 @@ From Cats Require Import Cat.CCC.
 From Cats Require Import Cat.Product Cat.Exponential Instance.Set.ExponentialHom.
 From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
 From Cats Require Import Cat.Diagram Cat.Limit Cat.Limit.Adjunction Cat.Limit.Preservation.
+From Cats Require Import Graph.Morphism Graph.Path Cat.Free Cat.Diagram.Shape.
+From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -160,6 +162,46 @@ Context (K : Functor J D) (L : @Ob D) (κ : L ⇒Δ K) (Hκ : is_limit κ).
 Definition mixed_right_adjoint_limit : is_limit (MapCone G κ)
   := right_adjoint_preserves_limit A Hκ.
 End LimitLevels.
+
+(** Graph edges retain independent carrier and equality levels. Paths must
+    contain intermediate vertices; their generated equality also contains
+    the original edge witnesses. Raising carriers does not force witnesses up. *)
+Section GraphLevels.
+Universe o e p n l.
+Constraint o < e.
+Constraint e < p.
+Constraint p < n.
+Constraint n < l.
+Context (G : Graph@{o e p}) (H : Graph@{o p e}) (K : Graph@{n e p}).
+
+Definition high_eq_graph_path (x y : @Vertex G) : Type@{e} := Path G x y.
+Definition low_eq_graph_path (x y : @Vertex H) : Type@{p} := Path H x y.
+Definition high_eq_free : Cat@{o e p l l} := FreeCat G.
+Definition raised_carrier_free : Cat@{o n p l l} := FreeCat G.
+Definition large_vertex_free : Cat@{n n n l l} := FreeCat K.
+
+Context (C : Cat@{o e p l l}) (D : Cat@{o p e l l}).
+Context (R : G →G UnderlyingGraph C) (S : G →G UnderlyingGraph D).
+Definition high_eq_free_interpretation : Functor (FreeCat G) C := FreeF R.
+Definition low_eq_free_interpretation : Functor (FreeCat G) D := FreeF S.
+End GraphLevels.
+
+(** Shape comparisons and their diagonal adjunctions must work in either
+    ordering of the target category's native hom and equality levels. *)
+Section ShapedLimitLevels.
+Universe o h p l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context `{HC : !HasProduct C} `{HD : !HasProduct D}.
+Context `{HPC : !HasPullback C} `{HPD : !HasPullback D}.
+
+Definition high_eq_product_diagonal := @LimitAdjunction PairShape C (ProductLimits (C := C)).
+Definition low_eq_product_diagonal := @LimitAdjunction PairShape D (ProductLimits (C := D)).
+Definition high_eq_pullback_diagonal := @LimitAdjunction CospanShape C (PullbackLimits (C := C)).
+Definition low_eq_pullback_diagonal := @LimitAdjunction CospanShape D (PullbackLimits (C := D)).
+End ShapedLimitLevels.
 
 (** The same hom-category must retain distinct 1-cell, 2-cell and
     2-cell-equivalence levels through the bicategory projections. *)
