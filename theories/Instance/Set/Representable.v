@@ -9,8 +9,12 @@ From Cats Require Import
 
 (** * Representations and Universal Elements
 
-    The source category is arbitrary. All equalities and uniqueness laws
-    use the specified hom/setoid equality; mediators remain transparent. *)
+    The source category is arbitrary. All equalities and uniqueness laws use
+    the specified hom/setoid equality; mediators remain transparent. *)
+
+(** * 表示与泛元素
+
+    源范畴任意，全部相等和唯一性使用指定 Hom 或广集相等，中介保持透明。 *)
 
 Definition is_universal_element {C : Cat} (F : Functor C SetCat)
     {X : @Ob C} (u : F X)
@@ -23,6 +27,11 @@ Notation "u '⦂' 'Univ(' F ')'" := (is_universal_element F u)
 Section UniversalElements.
 Context {C : Cat} (F : Functor C SetCat).
 
+(** A universal element detects equality of arrows through its functorial
+    images. *)
+
+(** 泛元素通过函子像检测箭头相等。 *)
+
 Theorem universal_element_hom_ext {X Y : @Ob C} {u : F X}
     (Hu : u ⦂ Univ(F)) (f g : Hom X Y)
   : fmap F f u ≈S fmap F g u → f ≈ g.
@@ -33,14 +42,24 @@ Proof.
   - symmetry. apply (@that _ _ _ _ _ Hh). reflexivity.
 Qed.
 
+(** Send a value to its unique representing arrow. *)
+
+(** 将值送到其唯一表示箭头。 *)
+
 Program Definition universal_element_inverse_resp {X : @Ob C} {u : F X}
     (Hu : u ⦂ Univ(F)) (Y : @Ob C)
   : F Y →r HomSet X Y
-  := {| func y := (Hu Y y).1 |}.
+  :=
+  {|func y := (Hu Y y).1
+  |}.
 Next Obligation.
   intros y z H. apply (@that _ _ _ _ _ (Hu Y z).2).
   transitivity y; [exact (@this _ _ _ _ _ (Hu Y y).2) | exact H].
 Defined.
+
+(** A universal element gives a natural representation by a hom functor. *)
+
+(** 泛元素给出由 Hom 函子表示的自然表示。 *)
 
 Definition universal_element_representation {X : @Ob C} {u : F X}
     (Hu : u ⦂ Univ(F))
@@ -51,6 +70,10 @@ Proof.
   - intros f. symmetry. apply (@that _ _ _ _ _ (Hu Y (fmap F f u)).2). reflexivity.
   - intros y. exact (@this _ _ _ _ _ (Hu Y y).2).
 Defined.
+
+(** Two universal elements for one functor have isomorphic carrier objects. *)
+
+(** 同一函子的两个泛元素具有同构的承载对象。 *)
 
 Definition universal_element_iso {X Y : @Ob C} {u : F X} {v : F Y}
     (Hu : u ⦂ Univ(F)) (Hv : v ⦂ Univ(F))
@@ -80,9 +103,17 @@ End UniversalElements.
 Section Representations.
 Context {C : Cat} {F : Functor C SetCat}.
 
+(** The value of the representing transformation at the identity arrow. *)
+
+(** 表示自然变换在恒等箭头处的值。 *)
+
 Definition representation_generic {X : @Ob C} (R : X ⦂ Rep F)
   : F X
   := yoneda_func R.1.
+
+(** Every representation component is the image of its generic element. *)
+
+(** 表示的每个分量都是其泛元素的像。 *)
 
 Theorem representation_at {X Y : @Ob C} (R : X ⦂ Rep F) (f : Hom X Y)
   : R.1 Y f ≈S fmap F f (representation_generic R).
@@ -90,10 +121,16 @@ Proof.
   symmetry. exact (yoneda_func_inv_func R.1 Y f).
 Defined.
 
+(** The generic element extracted from a representation is universal. *)
+
+(** 从表示提取的泛元素满足泛性质。 *)
+
 Definition representation_universal {X : @Ob C} (R : X ⦂ Rep F)
   : representation_generic R ⦂ Univ(F).
 Proof.
-  intros Y y. exists ((R.2 Y).1 y). refine {| this := _; that := _ |}.
+  intros Y y. exists ((R.2 Y).1 y). refine {|this := _
+                                           ; that := _
+                                           |}.
   - transitivity (R.1 Y ((R.2 Y).1 y)).
     + symmetry. apply representation_at.
     + exact (snd (R.2 Y).2 y).
@@ -104,6 +141,11 @@ Proof.
       * exact Hf.
 Defined.
 
+(** An object represents a functor exactly when it carries a universal
+    element. *)
+
+(** 对象表示函子，当且仅当它承载该函子的泛元素。 *)
+
 Theorem represents_iff_universal_element (X : @Ob C)
   : (X ⦂ Rep F) ↔ ∃ u : F X, u ⦂ Univ(F).
 Proof.
@@ -112,14 +154,29 @@ Proof.
   - intros [u Hu]. exact (universal_element_representation F Hu).
 Defined.
 
+(** Recovering a representation from its generic element preserves its natural
+    map. *)
+
+(** 由泛元素恢复表示后保持原自然映射。 *)
+
 Theorem representation_round_trip {X : @Ob C} (R : X ⦂ Rep F)
   : (universal_element_representation F (representation_universal R)).1 ≈N R.1.
 Proof. intros Y f. symmetry. apply representation_at. Qed.
+
+(** The representation constructed from a universal element retains that
+    element. *)
+
+(** 由泛元素构造的表示保留原泛元素。 *)
 
 Theorem universal_element_generic {X : @Ob C} {u : F X}
     (Hu : u ⦂ Univ(F))
   : representation_generic (universal_element_representation F Hu) ≈S u.
 Proof. exact (functor_id C SetCat F u). Defined.
+
+(** Two representations of a functor induce an isomorphism of representing
+    objects. *)
+
+(** 同一函子的两个表示诱导表示对象之间的同构。 *)
 
 Definition representation_iso {X Y : @Ob C}
     (R : X ⦂ Rep F) (S : Y ⦂ Rep F)
@@ -128,6 +185,9 @@ Definition representation_iso {X Y : @Ob C}
 
 (** The comparison is unique among maps preserving the universal element,
     rather than among all isomorphisms between the two objects. *)
+
+(** 比较在保持泛元素的映射中唯一，不声称两个对象之间的所有同构都相同。 *)
+
 Theorem representation_iso_universal {X Y : @Ob C}
     (R : X ⦂ Rep F) (S : Y ⦂ Rep F)
   : is_unique
@@ -139,8 +199,13 @@ End Representations.
 
 (** ** Contravariant Representations
 
-    Use the covariant theory in C^op, with the explicit Hom comparison.
-    No duplicate universal-property proof or equality of functors is needed. *)
+    Use the covariant theory in C^op, with the explicit Hom comparison. No
+    duplicate universal-property proof or equality of functors is needed. *)
+
+(** ** 反变表示
+
+    通过显式 Hom 比较使用反范畴上的协变理论，不重复证明泛性质，也不要求函子原
+    生相等。 *)
 
 Definition represents_op {C : Cat} (P : Functor (C^op) SetCat) (X : @Ob C)
   := Hom(-,X) ≅N P.
@@ -148,11 +213,20 @@ Definition represents_op {C : Cat} (P : Functor (C^op) SetCat) (X : @Ob C)
 Notation "X '⦂' 'Repᵒᵖ' P" := (represents_op P X)
   (at level 50, no associativity, format "X  ⦂  Repᵒᵖ  P") : cat_scope.
 
+(** Retain an object and its representation of a contravariant functor. *)
+
+(** 保留反变函子的表示对象及表示数据。 *)
+
 Definition is_representable_op {C : Cat} (P : Functor (C^op) SetCat)
   := ∃ X, X ⦂ Repᵒᵖ P.
 
 Section PresheafRepresentations.
 Context {C : Cat} {P : Functor (C^op) SetCat}.
+
+(** Convert a contravariant representation to the covariant theory on the
+    opposite category. *)
+
+(** 将反变表示转为反范畴上的协变表示。 *)
 
 Program Definition represents_op_covariant {X : @Ob C} (R : X ⦂ Repᵒᵖ P)
   : @represents (C^op) P X
@@ -161,22 +235,46 @@ Next Obligation.
   exact (nt_comp_v_NatIso R.1 (hom_op_nat_iso X).1 R.2 (hom_op_nat_iso X).2).
 Defined.
 
+(** Extract the generic element from a contravariant representation. *)
+
+(** 从反变表示提取泛元素。 *)
+
 Definition representation_op_generic {X : @Ob C} (R : X ⦂ Repᵒᵖ P)
   : P X
   := representation_generic (represents_op_covariant R).
+
+(** A contravariant representation component is substitution of its generic
+    element. *)
+
+(** 反变表示的分量就是其泛元素的替换。 *)
 
 Theorem representation_op_at {X Y : @Ob C} (R : X ⦂ Repᵒᵖ P) (f : Hom Y X)
   : R.1 Y f ≈S fmap P f (representation_op_generic R).
 Proof. exact (representation_at (represents_op_covariant R) f). Defined.
 
+(** The generic element of a contravariant representation is universal in the
+    opposite category. *)
+
+(** 反变表示的泛元素在反范畴中满足泛性质。 *)
+
 Definition representation_op_universal {X : @Ob C} (R : X ⦂ Repᵒᵖ P)
   : representation_op_generic R ⦂ Univ(P)
   := representation_universal (represents_op_covariant R).
+
+(** A universal element in the opposite category supplies a contravariant
+    representation. *)
+
+(** 反范畴中的泛元素给出反变表示。 *)
 
 Definition universal_element_representation_op {X : @Ob C} {u : P X}
     (Hu : u ⦂ Univ(P))
   : X ⦂ Repᵒᵖ P
   := transitivity (symmetry (hom_op_nat_iso X)) (universal_element_representation P Hu).
+
+(** Contravariant representation is equivalent to a universal element in the
+    opposite category. *)
+
+(** 反变表示等价于反范畴中的泛元素。 *)
 
 Theorem represents_op_iff_universal_element (X : @Ob C)
   : (X ⦂ Repᵒᵖ P) ↔ ∃ u : P X, u ⦂ Univ(P).
@@ -186,15 +284,28 @@ Proof.
   - intros [u Hu]. exact (universal_element_representation_op Hu).
 Defined.
 
+(** The contravariant representation round trip preserves the natural map. *)
+
+(** 反变表示的往返构造保持原自然映射。 *)
+
 Theorem representation_op_round_trip {X : @Ob C} (R : X ⦂ Repᵒᵖ P)
   : (universal_element_representation_op (representation_op_universal R)).1
       ≈N R.1.
 Proof. intros Y f. symmetry. apply representation_op_at. Qed.
 
+(** The contravariant representation retains the universal element used to
+    construct it. *)
+
+(** 反变表示保留构造它所用的泛元素。 *)
+
 Theorem universal_element_op_generic {X : @Ob C} {u : P X}
     (Hu : u ⦂ Univ(P))
   : representation_op_generic (universal_element_representation_op Hu) ≈S u.
 Proof. exact (functor_id (C^op) SetCat P u). Defined.
+
+(** Two contravariant representations have isomorphic representing objects. *)
+
+(** 两个反变表示具有同构的表示对象。 *)
 
 Definition representation_op_iso {X Y : @Ob C}
     (R : X ⦂ Repᵒᵖ P) (S : Y ⦂ Repᵒᵖ P)
@@ -203,6 +314,11 @@ Proof.
   pose (I := representation_iso (represents_op_covariant R) (represents_op_covariant S)).
   exists I.2.1, I.1. split; [exact (fst I.2.2) | exact (snd I.2.2)].
 Defined.
+
+(** The comparison of contravariant representations is uniquely determined by
+    their generic elements. *)
+
+(** 反变表示间的比较由其泛元素唯一确定。 *)
 
 Theorem representation_op_iso_universal {X Y : @Ob C}
     (R : X ⦂ Repᵒᵖ P) (S : Y ⦂ Repᵒᵖ P)

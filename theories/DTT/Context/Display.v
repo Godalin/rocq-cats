@@ -12,15 +12,26 @@ From Cats Require Import Instance.Set.Fam.Cat.
     Forget terms in the existing family-valued presheaf. The chosen display
     structure must be enabled explicitly; no terminal object is needed. *)
 
+(** * 由上下文扩张构造相干显示映射
+
+    忘却已有族值预层中的项即可；显示结构须显式启用，不需要终对象。 *)
+
 Section ContextDisplay.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** Forget terms to obtain coherent display maps from chosen context
+    extensions. *)
+
+(** 忘却项，由选定上下文扩张得到相干显示映射。 *)
+
 Program Definition ContextExtension_HasDisplay
   : HasDisplay C (FamBaseF ∘F T)
-  := {| Display Γ A := Γ ▹[T] A
-      ; display_proj Γ A := context_proj T A
-      ; display_conv Γ A B e := e^Ext[T]
-      ; display_lift Γ Δ σ A := σ^+[T, A] |}.
+  :=
+  {|Display Γ A := Γ ▹[T] A
+  ; display_proj Γ A := context_proj T A
+  ; display_conv Γ A B e := e^Ext[T]
+  ; display_lift Γ Δ σ A := σ^+[T, A]
+  |}.
 Next Obligation. apply context_conv_proj. Defined.
 Next Obligation. apply context_conv_id. Qed.
 Next Obligation. apply context_conv_comp. Qed.

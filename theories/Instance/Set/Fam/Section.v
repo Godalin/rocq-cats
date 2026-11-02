@@ -10,19 +10,33 @@ From Cats Require Export Cat.Section.
     through the family's transport. Section equality compares these elements
     pointwise, without comparing the proofs of respectfulness. *)
 
+(** * 族的相干截面
+
+    截面在每个纤维中选择元素，并通过族运输保留基底相等。截面相等逐点比较元素，
+    不比较保相等证明。 *)
+
 Record SectionS_resp {X : SetC} (A : FamS X)
-  := { section :> ∀ x : X, A x
-     ; section_proper {x y : X} (p : x ≈S y)
-       : transpS A p (section x) ≈S section y
-     }.
+  :=
+  { section :> ∀ x : X, A x
+  ; section_proper {x y : X} (p : x ≈S y)
+    : transpS A p (section x) ≈S section y
+  }.
 
 Arguments section {_ _} _ _.
 Arguments section_proper {_ _} _ {_ _} _.
+
+(** Coherent sections are equal when their values are fiberwise equal. *)
+
+(** 相干截面相等，当且仅当其值逐纤维相等。 *)
 
 Definition SectionEq {X : SetC} {A : FamS X} (s t : SectionS_resp A)
   := ∀ x, s x ≈S t x.
 
 Infix "≈s" := SectionEq (at level 50, no associativity) : cat_scope.
+
+(** [SectionEq] is an equivalence relation. *)
+
+(** [SectionEq] 是等价关系。 *)
 
 Global Instance SectionEq_Equivalence {X A}
   : Equivalence (@SectionEq X A).
@@ -33,30 +47,58 @@ Proof.
   - intros s t u Hst Htu x. transitivity (t x); [apply Hst | apply Htu].
 Qed.
 
+(** The setoid of coherent sections with pointwise equality. *)
+
+(** 以逐点相等比较相干截面的广集。 *)
+
 Program Canonical SectionS {X : SetC} (A : FamS X)
   : SetC
-  := {| carrier := SectionS_resp A; carrier_equiv := SectionEq |}.
+  :=
+  {|carrier := SectionS_resp A
+  ; carrier_equiv := SectionEq
+  |}.
 
 (** ** Reindexing Sections *)
+
+(** ** 截面的重索引 *)
+
+(** Precompose a coherent section with a respectful base map. *)
+
+(** 将相干截面与保相等基底映射预合成。 *)
 
 Program Definition section_reindex {X Y : SetC} {A : FamS Y}
     (s : SectionS_resp A) (f : X →r Y)
   : SectionS_resp A[f]S
-  := {| section x := s (f x) |}.
+  :=
+  {|section x := s (f x)
+  |}.
 Next Obligation. exact (section_proper s (@func_proper _ _ f x y p)). Defined.
+
+(** Section reindexing as a respectful map between section setoids. *)
+
+(** 截面重索引作为截面广集间的保相等映射。 *)
 
 Program Definition section_reindex_resp {X Y : SetC} (A : FamS Y) (f : X →r Y)
   : SectionS A →r SectionS A[f]S
-  := {| func s := section_reindex s f |}.
+  :=
+  {|func s := section_reindex s f
+  |}.
 Next Obligation.
   intros s t H x. exact (H (f x)).
 Defined.
 
 (** These laws compare values in the same fiber. They do not assert equality
     of the differently indexed family records or their coherence proofs. *)
+
+(** 这些定律在同一纤维内比较值，不声称不同索引的族记录或相干性证明原生相等。 *)
+
 Theorem section_reindex_id {X : SetC} {A : FamS X} (s : SectionS_resp A) (x : X)
   : section_reindex s (id_resp (X := X)) x ≈S s x.
 Proof. reflexivity. Qed.
+
+(** Compatibility with composition for [section_reindex]. *)
+
+(** [section_reindex] 与复合的相容性。 *)
 
 Theorem section_reindex_comp {X Y Z : SetC} {A : FamS Z}
     (s : SectionS_resp A) (f : Y →r Z) (g : X →r Y) (x : X)
@@ -69,10 +111,17 @@ Proof. reflexivity. Qed.
     reindexed along its projection. A base map and a section of its reindexed
     family determine a unique map into the total space. *)
 
+(** ** 泛元素与配对
+
+    在全空间上，第二坐标是沿投影重索引族的截面。基底映射与其重索引族的截面唯一
+    确定指向全空间的映射。 *)
+
 Program Definition section_of_total {X Y : SetC} (A : FamS Y)
     (h : X →r SigS Y A)
   : SectionS_resp A[sig_base_resp A ∘r h]S
-  := {| section x := (h x).2 |}.
+  :=
+  {|section x := (h x).2
+  |}.
 Next Obligation.
   destruct (@func_proper _ _ h x y p) as [q Hq].
   change (transpS A (@func_proper _ _ (sig_base_resp A ∘r h) x y p)
@@ -82,10 +131,21 @@ Next Obligation.
   - exact Hq.
 Defined.
 
+(** The second projection is the generic section over the total space. *)
+
+(** 第二投影是全空间上的泛截面。 *)
+
 Program Definition section_var {X : SetC} (A : FamS X)
   : SectionS_resp A[sig_base_resp A]S
-  := {| section a := a.2 |}.
+  :=
+  {|section a := a.2
+  |}.
 Next Obligation. destruct p as [q Hq]. exact Hq. Defined.
+
+(** A base map and a reindexed section determine a unique map into the total
+    space. *)
+
+(** 基底映射与重索引截面唯一确定指向全空间的映射。 *)
 
 Definition section_pair_universal {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S)
@@ -93,7 +153,8 @@ Definition section_pair_universal {X Y : SetC} (A : FamS Y) (f : X →r Y)
       is_unique (λ h : X →r SigS Y A, ∃ p : sig_base_resp A ∘ h ≈ f,
         ∀ x, transpS A (p x) (h x).2 ≈S s x) h.
 Proof.
-  unshelve notypeclasses refine (({| func := _ |}); _).
+  unshelve notypeclasses refine (({|func := _
+                                  |}); _).
   - exact (λ x, (f x; s x)).
   - intros x y p. exists (@func_proper _ _ f x y p). exact (section_proper s p).
   - split.
@@ -101,10 +162,19 @@ Proof.
     + intros h [p Hp] x. exists (p x). exact (Hp x).
 Defined.
 
+(** The respectful total-space map obtained by pairing a base map and a
+    section. *)
+
+(** 配对基底映射与截面得到的保相等全空间映射。 *)
+
 Definition section_pair_resp {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S)
   : X →r SigS Y A
   := (section_pair_universal A f s).1.
+
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance section_pair_proper {X Y : SetC} (A : FamS Y) (f : X →r Y)
   : Proper (SectionEq ==> FunEq) (section_pair_resp A f).
@@ -113,15 +183,28 @@ Proof.
   transitivity (s x); [apply transpS_id | exact (H x)].
 Qed.
 
+(** The first projection of section pairing recovers its base map. *)
+
+(** 截面配对的第一投影恢复基底映射。 *)
+
 Theorem section_pair_β1 {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S)
   : sig_base_resp A ∘ section_pair_resp A f s ≈ f.
 Proof. intros x. reflexivity. Qed.
 
+(** After aligning the base projection, section pairing recovers its section
+    value. *)
+
+(** 对齐基底投影后，截面配对恢复截面的值。 *)
+
 Theorem section_pair_β2 {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S) (x : X)
   : section_var A (section_pair_resp A f s x) ≈S s x.
 Proof. reflexivity. Qed.
+
+(** A total-space map is recovered from its base projection and fiber section. *)
+
+(** 全空间映射由基底投影与纤维截面恢复。 *)
 
 Theorem section_pair_η {X Y : SetC} (A : FamS Y) (h : X →r SigS Y A)
   : h ≈ section_pair_resp A (sig_base_resp A ∘r h) (section_of_total A h).
@@ -135,21 +218,33 @@ Qed.
     A categorical section retains a right-inverse witness. Its equality
     compares the underlying maps, independently of the chosen witnesses. *)
 
+(** ** 投影的截面
+
+    范畴截面保留右逆见证，其相等只比较底层映射，与所选见证无关。 *)
+
 Program Definition section_to_projection_resp {X : SetC} (A : FamS X)
   : SectionS A →r Sec(sig_base_resp A)
-  := {| func s := (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
-         section_pair_β1 A id_resp (section_reindex s id_resp)) |}.
+  :=
+  {|func s := (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
+     section_pair_β1 A id_resp (section_reindex s id_resp))
+  |}.
 Next Obligation.
   intros s t H x. exists (reflS (x := x)).
   transitivity (s x); [apply transpS_id | exact (H x)].
 Defined.
 
 (** The image of a categorical section may lie over a representative only
-    equivalent to its argument. Its right-inverse witness supplies the transport. *)
+    equivalent to its argument. Its right-inverse witness supplies the
+    transport. *)
+
+(** 范畴截面的像可能仅落在与参数等价的基底代表上，其右逆见证提供所需运输。 *)
+
 Program Definition section_from_projection {X : SetC} (A : FamS X)
     (s : Sec(sig_base_resp A))
   : SectionS_resp A
-  := {| section x := transpS A (s.2 x) (s.1 x).2 |}.
+  :=
+  {|section x := transpS A (s.2 x) (s.1 x).2
+  |}.
 Next Obligation.
   destruct (@func_proper _ _ s.1 x y p) as [q Hq].
   assert (r : (s.1 x).1 ≈S y).
@@ -161,9 +256,16 @@ Next Obligation.
     + apply func_proper. exact Hq.
 Defined.
 
+(** Recover a coherent fiber section from a categorical section of the total
+    projection. *)
+
+(** 从全空间投影的范畴截面恢复相干纤维截面。 *)
+
 Program Definition section_from_projection_resp {X : SetC} (A : FamS X)
   : Sec(sig_base_resp A) →r SectionS A
-  := {| func := section_from_projection A |}.
+  :=
+  {|func := section_from_projection A
+  |}.
 Next Obligation.
   intros s t H x. destruct (H x) as [p Hp].
   change (transpS A (s.2 x) (s.1 x).2 ≈S transpS A (t.2 x) (t.1 x).2).
@@ -171,6 +273,11 @@ Next Obligation.
   - apply transpS_comp.
   - apply func_proper. exact Hp.
 Defined.
+
+(** Coherent sections are isomorphic to categorical sections of the total
+    projection. *)
+
+(** 相干截面同构于全空间投影的范畴截面。 *)
 
 Definition section_projection_iso {X : SetC} (A : FamS X)
   : SectionS A ≅[SetCat] Sec(sig_base_resp A).

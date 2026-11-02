@@ -11,26 +11,50 @@ From Cats Require Import
 
 (** * Context Extensions Represent Substitutions with a Term *)
 
+(** * 上下文扩张表示带项的替换 *)
+
 Section ContextPairs.
 Context {C : Cat} (T : Functor (C^op) FamCat).
 
+(** For a fixed type, substitution is respectful in the base arrow. *)
+
+(** 固定类型后，替换对基底箭头保相等。 *)
+
 Program Definition ty_sub_at_resp {Γ Δ : @Ob C} (A : Ty T Γ)
   : HomSet Δ Γ →r Ty T Δ
-  := {| func σ := A[σ]Ty[T] |}.
+  :=
+  {|func σ := A[σ]Ty[T]
+  |}.
 Next Obligation. intros σ σ' H. exact (ty_sub_equiv T H A). Defined.
+
+(** Terms over the family of types obtained by varying a base substitution. *)
+
+(** 随基底替换变化所得类型族上的项。 *)
 
 Definition SubstitutionTerms {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
   : FamS (HomSet Δ Γ)
   := (Tm T Δ)[ty_sub_at_resp A]S.
 
+(** The dependent-sum setoid of substitutions paired with a term of the
+    substituted type. *)
+
+(** 替换及其替换类型中的项组成的依赖和广集。 *)
+
 Definition ContextPairS {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
   : SetC
   := SigS (HomSet Δ Γ) (SubstitutionTerms A Δ).
 
+(** Reindex a substitution-term pair, converting its term by composition
+    coherence. *)
+
+(** 重索引替换与项的配对，并通过复合相干性转换项。 *)
+
 Program Definition context_pair_sub_resp {Γ Δ Θ : @Ob C} (A : Ty T Γ)
     (τ : Hom Θ Δ)
   : ContextPairS A Δ →r ContextPairS A Θ
-  := {| func x := (x.1 ∘ τ; ty_sub_comp T x.1 τ A ▸[T] x.2[τ]Tm[T]) |}.
+  :=
+  {|func x := (x.1 ∘ τ; ty_sub_comp T x.1 τ A ▸[T] x.2[τ]Tm[T])
+  |}.
 Next Obligation.
   intros [σ t] [σ' u] [H Ht].
   pose (Hτ := @comp_proper C _ _ _ σ σ' H τ τ (reflexivity τ)).
@@ -57,6 +81,10 @@ Notation "x '[' τ ']Pair[' T ',' A ']'" := (context_pair_sub_resp T A τ x)
 Section ContextPairPresheaf.
 Context {C : Cat} (T : Functor (C^op) FamCat).
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance context_pair_sub_proper {Γ Δ Θ : @Ob C} (A : Ty T Γ)
   : Proper (HomEq ==> FunEq) (context_pair_sub_resp T A (Δ := Δ) (Θ := Θ)).
 Proof.
@@ -75,6 +103,11 @@ Proof.
   - apply func_proper. apply tm_sub_equiv.
 Defined.
 
+(** Identity substitution preserves substitution-term pairs up to designated
+    equality. *)
+
+(** 恒等替换在指定相等下保持替换与项的配对。 *)
+
 Theorem context_pair_sub_id {Γ Δ : @Ob C} (A : Ty T Γ) (x : ContextPairS T A Δ)
   : x[id]Pair[T, A] ≈S x.
 Proof.
@@ -85,6 +118,11 @@ Proof.
   - symmetry. apply tm_conv_comp.
   - apply tm_sub_id.
 Defined.
+
+(** Successive substitutions of a pair agree with substitution by their
+    composite. *)
+
+(** 配对的连续替换等于沿复合的替换。 *)
 
 Theorem context_pair_sub_comp {Γ Δ Θ Ξ : @Ob C} (A : Ty T Γ)
     (τ : Hom Θ Δ) (υ : Hom Ξ Θ) (x : ContextPairS T A Δ)
@@ -114,10 +152,16 @@ Proof.
       * apply func_proper. symmetry. apply tm_sub_conv.
 Defined.
 
+(** The presheaf of substitutions equipped with a term. *)
+
+(** 带项替换所组成的预层。 *)
+
 Program Definition ContextPairF {Γ : @Ob C} (A : Ty T Γ)
   : Functor (C^op) SetCat
-  := {| F0 := ContextPairS T A
-      ; F1 Δ Θ τ := context_pair_sub_resp T A τ |}.
+  :=
+  {|F0 := ContextPairS T A
+  ; F1 Δ Θ τ := context_pair_sub_resp T A τ
+  |}.
 Next Obligation. intros τ τ' H x. exact (context_pair_sub_proper A τ τ' H x). Defined.
 Next Obligation. intros x. apply context_pair_sub_id. Defined.
 Next Obligation. intros x. apply context_pair_sub_comp. Defined.
@@ -127,20 +171,38 @@ End ContextPairPresheaf.
 Section ContextRepresentation.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** Pairing as a respectful map from substitution-term data to context arrows. *)
+
+(** 配对作为从替换与项数据到上下文箭头的保相等映射。 *)
+
 Program Definition context_pair_resp {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
   : ContextPairS T A Δ →r HomSet Δ (Γ ▹[T] A)
-  := {| func x := ⟨x.1; x.2⟩[T, A] |}.
+  :=
+  {|func x := ⟨x.1
+  ; x.2⟩[T, A]
+  |}.
 Next Obligation.
   intros [σ t] [σ' u] [H Ht]. apply (context_pair_equiv T A H). exact Ht.
 Defined.
 
+(** Recover substitution-term data from a context-extension arrow. *)
+
+(** 从上下文扩张箭头恢复替换与项的数据。 *)
+
 Program Definition context_unpair_resp {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
   : HomSet Δ (Γ ▹[T] A) →r ContextPairS T A Δ
-  := {| func h := (context_proj T A; context_var T A)[h]Pair[T, A] |}.
+  :=
+  {|func h := (context_proj T A; context_var T A)[h]Pair[T, A]
+  |}.
 Next Obligation.
   intros h h' H. exact (context_pair_sub_proper T A h h' H
     (context_proj T A; context_var T A)).
 Defined.
+
+(** Context-extension arrows are isomorphic to substitution-term data as
+    setoids. *)
+
+(** 上下文扩张箭头广集同构于替换与项的数据广集。 *)
 
 Definition context_extension_iso {Γ : @Ob C} (A : Ty T Γ) (Δ : @Ob C)
   : HomSet Δ (Γ ▹[T] A) ≅[SetCat] ContextPairS T A Δ.
@@ -158,6 +220,9 @@ Proof.
 Defined.
 
 (** Pairing reflects equality of terms over the same base substitution. *)
+
+(** 固定基底替换时，配对反映项相等。 *)
+
 Theorem context_pair_inj {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
     (t u : Tm T Δ A[σ]Ty[T])
   : ⟨σ; t⟩[T, A] ≈ ⟨σ; u⟩[T, A] → t ≈S u.
@@ -176,6 +241,9 @@ Proof.
 Qed.
 
 (** Eta with an arbitrary equivalent base map, retaining its witness. *)
+
+(** 对任意等价基底映射的 η 律保留其相等见证。 *)
+
 Theorem context_pair_η_base {Γ Δ : @Ob C} (A : Ty T Γ)
     (h : Hom Δ (Γ ▹[T] A)) (σ : Hom Δ Γ) (H : context_proj T A ∘ h ≈ σ)
   : h ≈ ⟨σ; ty_sub_comm T A (context_proj T A) h H
@@ -183,14 +251,23 @@ Theorem context_pair_η_base {Γ Δ : @Ob C} (A : Ty T Γ)
 Proof. apply context_pair_unique. exists H. reflexivity. Qed.
 
 (** The representing map evaluates the generic pair along a substitution. *)
+
+(** 表示映射沿替换求值泛配对。 *)
+
 Program Definition context_extensionN {Γ : @Ob C} (A : Ty T Γ)
   : Hom(-, Γ ▹[T] A) ⇒ ContextPairF T A
-  := {| nt Δ := context_unpair_resp A Δ |}.
+  :=
+  {|nt Δ := context_unpair_resp A Δ
+  |}.
 Next Obligation.
   intros h. change ((context_proj T A; context_var T A)[h ∘ f]Pair[T, A]
     ≈S (context_proj T A; context_var T A)[h]Pair[T, A][f]Pair[T, A]).
   apply context_pair_sub_comp.
 Defined.
+
+(** The context-extension representation is natural in the source context. *)
+
+(** 上下文扩张的表示在源上下文上自然。 *)
 
 Definition context_extension_nat_iso {Γ : @Ob C} (A : Ty T Γ)
   : Hom(-, Γ ▹[T] A) ≅N ContextPairF T A.
@@ -199,9 +276,18 @@ Proof.
   exists (context_pair_resp A Δ). exact (context_extension_iso A Δ).2.2.
 Defined.
 
+(** Pairing is the inverse natural transformation of the extension
+    representation. *)
+
+(** 配对是扩张表示的逆自然变换。 *)
+
 Definition context_pairN {Γ : @Ob C} (A : Ty T Γ)
   : ContextPairF T A ⇒ Hom(-, Γ ▹[T] A)
   := (context_extensionN A) ^-1N (context_extension_nat_iso A).2.
+
+(** Compatibility with composition for [context_pair]. *)
+
+(** [context_pair] 与复合的相容性。 *)
 
 Theorem context_pair_comp {Γ Δ Θ : @Ob C} (A : Ty T Γ)
     (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T]) (τ : Hom Θ Δ)

@@ -13,21 +13,35 @@ From Cats Require Import
 
 (** * Terms as Sections of Context Projections *)
 
+(** * 项作为上下文投影的截面 *)
+
 Section ContextSections.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** Pair a term with identity to obtain a section of the context projection. *)
+
+(** 将项与恒等配对，得到上下文投影的截面。 *)
+
 Program Definition term_to_section_resp {Γ : @Ob C} (A : Ty T Γ)
   : Tm T Γ A →r Sec(context_proj T A)
-  := {| func t := (⟨id; symmetry (ty_sub_id T A) ▸[T] t⟩[T, A];
-         context_pair_β1 T A id (symmetry (ty_sub_id T A) ▸[T] t)) |}.
+  :=
+  {|func t := (⟨id; symmetry (ty_sub_id T A) ▸[T] t⟩[T, A];
+     context_pair_β1 T A id (symmetry (ty_sub_id T A) ▸[T] t))
+  |}.
 Next Obligation.
   intros t u H. apply context_pair_proper. apply func_proper. exact H.
 Defined.
 
+(** Evaluate the generic variable on a section to recover a term. *)
+
+(** 沿截面求值泛变量，恢复项。 *)
+
 Program Definition section_to_term_resp {Γ : @Ob C} (A : Ty T Γ)
   : Sec(context_proj T A) →r Tm T Γ A
-  := {| func s := transitivity (ty_sub_comm T A (context_proj T A) s.1 s.2)
-         (ty_sub_id T A) ▸[T] (context_var T A)[s.1]Tm[T] |}.
+  :=
+  {|func s := transitivity (ty_sub_comm T A (context_proj T A) s.1 s.2)
+     (ty_sub_id T A) ▸[T] (context_var T A)[s.1]Tm[T]
+  |}.
 Next Obligation.
   intros s t H.
   transitivity (transitivity (ty_sub_comm T A (context_proj T A) t.1 t.2)
@@ -48,6 +62,10 @@ Notation "s '^Tm[' T ',' A ']'" := (section_to_term_resp T A s)
 Section ContextSectionLaws.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** Extracting a term from its induced section recovers the term. *)
+
+(** 从诱导截面提取项，恢复原项。 *)
+
 Theorem term_section_β {Γ : @Ob C} (A : Ty T Γ) (t : Tm T Γ A)
   : t^Sec[T, A]^Tm[T, A] ≈S t.
 Proof.
@@ -65,6 +83,10 @@ Proof.
       * apply tm_conv_id.
 Defined.
 
+(** The section induced by the extracted term equals the original section. *)
+
+(** 由提取项诱导的截面等于原截面。 *)
+
 Theorem term_section_η {Γ : @Ob C} (A : Ty T Γ) (s : Sec(context_proj T A))
   : s^Tm[T, A]^Sec[T, A] ≈S s.
 Proof.
@@ -77,6 +99,10 @@ Proof.
   - symmetry. apply context_pair_η_base.
 Defined.
 
+(** Terms are isomorphic as a setoid to sections of their context projection. *)
+
+(** 项广集同构于对应上下文投影的截面广集。 *)
+
 Definition context_term_section_iso {Γ : @Ob C} (A : Ty T Γ)
   : Tm T Γ A ≅[SetCat] Sec(context_proj T A).
 Proof.
@@ -86,6 +112,9 @@ Proof.
 Defined.
 
 (** Pairing is the substituted section. *)
+
+(** 配对就是替换后的截面。 *)
+
 Theorem term_section_pair {Γ Δ : @Ob C} (A : Ty T Γ) (t : Tm T Γ A)
     (σ : Hom Δ Γ)
   : (t^Sec[T, A]).1 ∘ σ ≈ ⟨σ; t[σ]Tm[T]⟩[T, A].
@@ -110,6 +139,9 @@ Proof.
 Qed.
 
 (** Substitution of terms agrees with pullback of their sections. *)
+
+(** 项的替换与对应截面的拉回一致。 *)
+
 Theorem term_section_sub {Γ Δ : @Ob C} (A : Ty T Γ) (t : Tm T Γ A)
     (σ : Hom Δ Γ)
   : σ^+[T, A] ∘ (t[σ]Tm[T]^Sec[T, A[σ]Ty[T]]).1 ≈ (t^Sec[T, A]).1 ∘ σ.

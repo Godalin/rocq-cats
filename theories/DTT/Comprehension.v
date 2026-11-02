@@ -15,9 +15,14 @@ From Cats Require Import
 
 (** * Comprehension from a CwF
 
-    Objects are contexts with a type. Morphisms are commuting squares of
-    their display projections, retaining both maps and the commutativity
-    witness. Equality compares the maps, not the witness. *)
+    Objects are contexts with a type. Morphisms are commuting squares of their
+    display projections, retaining both maps and the commutativity witness.
+    Equality compares the maps, not the witness. *)
+
+(** * 由带族范畴构造理解结构
+
+    对象是上下文与类型的配对，态射是显示投影之间的交换方形，保留两条边及交换性
+    见证；相等比较映射，不比较见证。 *)
 
 Definition ContextType {C : Cat} (T : Functor (C^op) FamCat)
   := ∃ Γ : @Ob C, Ty T Γ.
@@ -25,19 +30,32 @@ Definition ContextType {C : Cat} (T : Functor (C^op) FamCat)
 Section ContextMaps.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** A commuting square between context-extension projections. *)
+
+(** 上下文扩张投影之间的交换方形。 *)
+
 Record ContextMap (X Y : ContextType T)
-  := { context_map_base : Hom X.1 Y.1
-     ; context_map_ext : Hom (X.1 ▹[T] X.2) (Y.1 ▹[T] Y.2)
-     ; context_map_comm : context_proj T Y.2 ∘ context_map_ext ≈
-         context_map_base ∘ context_proj T X.2
-     }.
+  :=
+  { context_map_base : Hom X.1 Y.1
+  ; context_map_ext : Hom (X.1 ▹[T] X.2) (Y.1 ▹[T] Y.2)
+  ; context_map_comm : context_proj T Y.2 ∘ context_map_ext ≈
+      context_map_base ∘ context_proj T X.2
+  }.
 
 Arguments context_map_base {_ _} _.
 Arguments context_map_ext {_ _} _.
 Arguments context_map_comm {_ _} _.
 
+(** Compare the base and extension arrows of context maps. *)
+
+(** 比较上下文映射的基底箭头与扩张箭头。 *)
+
 Definition ContextMapEq {X Y : ContextType T} (f g : ContextMap X Y)
   := context_map_base f ≈ context_map_base g ∧ context_map_ext f ≈ context_map_ext g.
+
+(** [ContextMapEq] is an equivalence relation. *)
+
+(** [ContextMapEq] 是等价关系。 *)
 
 Global Instance ContextMapEq_Equivalence {X Y : ContextType T}
   : Equivalence (@ContextMapEq X Y).
@@ -50,16 +68,29 @@ Proof.
     + transitivity (context_map_ext g); assumption.
 Defined.
 
+(** The identity square between a context extension and itself. *)
+
+(** 上下文扩张到自身的恒等方形。 *)
+
 Program Definition context_map_id (X : ContextType T)
   : ContextMap X X
-  := {| context_map_base := id; context_map_ext := id |}.
+  :=
+  {|context_map_base := id
+  ; context_map_ext := id
+  |}.
 Next Obligation. rewrite comp_id_r, comp_id_l. reflexivity. Defined.
+
+(** Compose the base and extension sides of context maps. *)
+
+(** 复合上下文映射的基底侧边与扩张侧边。 *)
 
 Program Definition context_map_comp {X Y Z : ContextType T}
     (g : ContextMap Y Z) (f : ContextMap X Y)
   : ContextMap X Z
-  := {| context_map_base := context_map_base g ∘ context_map_base f
-      ; context_map_ext := context_map_ext g ∘ context_map_ext f |}.
+  :=
+  {|context_map_base := context_map_base g ∘ context_map_base f
+  ; context_map_ext := context_map_ext g ∘ context_map_ext f
+  |}.
 Next Obligation.
   rewrite <- comp_assoc, (context_map_comm g), comp_assoc, (context_map_comm f),
     <- comp_assoc. reflexivity.
@@ -77,15 +108,22 @@ Notation "g '∘Ctx[' T ']' f" := (context_map_comp T g f)
 Section ContextCategory.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** The category of context-type pairs and commuting display squares. *)
+
+(** 上下文与类型的配对及显示交换方形构成的范畴。 *)
+
 Program Definition ContextTypeCat
   : Cat
-  := {| Ob := ContextType T
-      ; HomSet X Y :=
-          {| carrier := ContextMap T X Y
-           ; carrier_equiv := ContextMapEq T
-           ; carrier_setoid := ContextMapEq_Equivalence T |}
-      ; id := context_map_id T
-      ; comp X Y Z := context_map_comp T |}.
+  :=
+  {|Ob := ContextType T
+  ; HomSet X Y :=
+      {|carrier := ContextMap T X Y
+      ; carrier_equiv := ContextMapEq T
+      ; carrier_setoid := ContextMapEq_Equivalence T
+      |}
+  ; id := context_map_id T
+  ; comp X Y Z := context_map_comp T
+  |}.
 Next Obligation.
   intros g g' [Hb He] f f' [Kb Ke]. split; apply comp_proper; assumption.
 Defined.
@@ -93,26 +131,51 @@ Next Obligation. split; apply comp_id_r. Defined.
 Next Obligation. split; apply comp_id_l. Defined.
 Next Obligation. split; apply comp_assoc. Defined.
 
+(** Forget a context-type pair to its base context. *)
+
+(** 将上下文与类型的配对忘却为基底上下文。 *)
+
 Program Definition CwFBaseF
   : Functor ContextTypeCat C
-  := {| F0 X := X.1; F1 X Y := context_map_base |}.
+  :=
+  {|F0 X := X.1
+  ; F1 X Y := context_map_base
+  |}.
 Next Obligation. intros f g H. exact (fst H). Defined.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
+(** Send a context-type pair to its context extension. *)
+
+(** 将上下文与类型的配对送到其上下文扩张。 *)
+
 Program Definition CwFExtF
   : Functor ContextTypeCat C
-  := {| F0 X := X.1 ▹[T] X.2; F1 X Y := context_map_ext |}.
+  :=
+  {|F0 X := X.1 ▹[T] X.2
+  ; F1 X Y := context_map_ext
+  |}.
 Next Obligation. intros f g H. exact (snd H). Defined.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
+(** Context-extension projections form a natural transformation to the base
+    functor. *)
+
+(** 上下文扩张投影组成到基底函子的自然变换。 *)
+
 Program Definition CwFProjectionN
   : CwFExtF ⇒ CwFBaseF
-  := {| nt X := context_proj T X.2 |}.
+  :=
+  {|nt X := context_proj T X.2
+  |}.
 Next Obligation. apply context_map_comm. Defined.
 
 End ContextCategory.
+
+(** Substitute the type component of a context-type pair. *)
+
+(** 替换上下文与类型配对中的类型分量。 *)
 
 Definition ReindexContextType {C : Cat} (T : Functor (C^op) FamCat)
     (Y : ContextType T) {Γ : @Ob C} (σ : Hom Γ Y.1)
@@ -125,13 +188,23 @@ Notation "Y '[' σ ']Ctx[' T ']'" := (ReindexContextType T Y σ)
 Section ContextComprehension.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** The canonical display square over a context substitution. *)
+
+(** 上下文替换上的标准显示方形。 *)
+
 Program Definition context_type_reindex (Y : ContextType T) {Γ : @Ob C}
     (σ : Hom Γ Y.1)
   : ContextMap T Y[σ]Ctx[T] Y
-  := {| context_map_base := σ; context_map_ext := σ^+[T, Y.2] |}.
+  :=
+  {|context_map_base := σ
+  ; context_map_ext := σ^+[T, Y.2]
+  |}.
 Next Obligation. apply context_lift_proj. Defined.
 
 (** A pullback display square is cartesian in the total category. *)
+
+(** 拉回显示方形在全范畴中是笛卡尔态射。 *)
+
 Definition context_map_pullback_cartesian {X Y : ContextType T}
     (f : ContextMap T X Y)
     (HP : is_pullback (context_map_base f) (context_proj T Y.2)
@@ -144,9 +217,14 @@ Proof.
   { rewrite <- comp_assoc, H. symmetry. apply context_map_comm. }
   destruct (snd HP (Z.1 ▹[T] Z.2) (u ∘ context_proj T Z.2) (context_map_ext g) Hcone)
     as [h [[Hbase Hext] Hunique]].
-  pose (k := ({| context_map_base := u; context_map_ext := h; context_map_comm := Hbase |}
+  pose (k := ({|context_map_base := u
+              ; context_map_ext := h
+              ; context_map_comm := Hbase
+              |}
     : ContextMap T Z X)).
-  exists k. refine {| this := _; that := _ |}.
+  exists k. refine {|this := _
+                   ; that := _
+                   |}.
   - split; [reflexivity | split; assumption].
   - intros l [Hlbase [_ Hlext]]. split; [exact Hlbase |].
     apply Hunique. split.
@@ -156,21 +234,34 @@ Proof.
     + exact Hlext.
 Defined.
 
+(** Canonical substitution squares are cartesian for the context-base functor. *)
+
+(** 标准替换方形对上下文基底函子是笛卡尔的。 *)
+
 Definition context_type_reindex_cartesian (Y : ContextType T) {Γ : @Ob C}
     (σ : Hom Γ Y.1)
   : context_type_reindex Y σ ⦂ Cart(CwFBaseF T)
   := context_map_pullback_cartesian (context_type_reindex Y σ) (context_lift_pullback T σ Y.2).
 
-(** Enable the chosen lifts explicitly; their base identification is reflexive. *)
+(** Enable the chosen lifts explicitly; their base identification is
+    reflexive. *)
+
+(** 选定提升须显式启用，其基底识别是自反见证。 *)
+
 Program Definition CwFBaseF_HasCartesianLift
   : HasCartesianLift (CwFBaseF T)
-  := {| CartesianLift Y Γ σ := Y[σ]Ctx[T]
-      ; cartesian_lift_base Y Γ σ := eq_refl
-      ; cartesian_lift Y Γ σ := context_type_reindex Y σ |}.
+  :=
+  {|CartesianLift Y Γ σ := Y[σ]Ctx[T]
+  ; cartesian_lift_base Y Γ σ := eq_refl
+  ; cartesian_lift Y Γ σ := context_type_reindex Y σ
+  |}.
 Next Obligation. symmetry. apply comp_id_r. Defined.
 Next Obligation. apply context_type_reindex_cartesian. Defined.
 
 (** Any cartesian square is isomorphic to the chosen display pullback. *)
+
+(** 任意笛卡尔方形都同构于选定显示拉回。 *)
+
 Definition cwf_comprehension_universal
   : is_comprehension (CwFProjectionN T).
 Proof.
@@ -193,12 +284,22 @@ Proof.
   - apply context_lift_pullback.
 Defined.
 
+(** Chosen context extensions determine a comprehension structure. *)
+
+(** 选定上下文扩张确定理解结构。 *)
+
 Program Definition CwFComprehension
   : Comprehension (CwFBaseF T)
-  := {| comprehension_lifts := CwFBaseF_HasCartesianLift
-      ; ExtF := CwFExtF T
-      ; projectionN := CwFProjectionN T
-      ; comprehension_universal := cwf_comprehension_universal |}.
+  :=
+  {|comprehension_lifts := CwFBaseF_HasCartesianLift
+  ; ExtF := CwFExtF T
+  ; projectionN := CwFProjectionN T
+  ; comprehension_universal := cwf_comprehension_universal
+  |}.
+
+(** A context map is cartesian exactly when its display square is a pullback. *)
+
+(** 上下文映射是笛卡尔的，当且仅当其显示方形为拉回。 *)
 
 Theorem context_map_cartesian_iff_pullback {X Y : ContextType T}
     (f : ContextMap T X Y)
@@ -216,16 +317,30 @@ End ContextComprehension.
 Section FullComprehension.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
+(** Present the CwF comprehension as a functor to the arrow category. *)
+
+(** 将带族范畴的理解结构表示为到箭头范畴的函子。 *)
+
 Definition CwFComprehensionF
   : Functor (ContextTypeCat T) (Arr C)
   := ComprehensionF (CwFComprehension T).
 
+(** A square between context projections determines a context map. *)
+
+(** 上下文投影间的方形确定上下文映射。 *)
+
 Program Definition context_map_from_arrow {X Y : ContextType T}
     (f : Hom (CwFComprehensionF X) (CwFComprehensionF Y))
   : ContextMap T X Y
-  := {| context_map_base := arrow_bottom f
-      ; context_map_ext := arrow_top f
-      ; context_map_comm := arrow_comm f |}.
+  :=
+  {|context_map_base := arrow_bottom f
+  ; context_map_ext := arrow_top f
+  ; context_map_comm := arrow_comm f
+  |}.
+
+(** The CwF comprehension embedding into the arrow category is fully faithful. *)
+
+(** 带族范畴理解结构到箭头范畴的嵌入全忠实。 *)
 
 Theorem cwf_comprehension_fully_faithful
   : is_fully_faithful CwFComprehensionF.

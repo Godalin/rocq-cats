@@ -8,17 +8,32 @@ From Cats Require Import
 
 (** * Reindexing Coherent Families *)
 
+(** * 相干族的重索引 *)
+
+(** Bundle the family pulled back to the new base setoid. *)
+
+(** 将拉回到新基底广集上的族组合为族对象。 *)
+
 Definition ReindexFamC {X : SetC} (U : FamC) (f : X →r famC_base U)
   : FamC
-  := {| famC_base := X; famC_fam := U[f]S |}.
+  :=
+  {|famC_base := X
+  ; famC_fam := U[f]S
+  |}.
 
 Notation "U '[' f ']'" := (ReindexFamC U f)
   (at level 8, left associativity, format "U [ f ]") : cat_scope.
 
 (** The canonical family morphism lies over [f] and is the identity on fibers. *)
+
+(** 标准族态射位于 [f] 之上，并在纤维上为恒等。 *)
+
 Program Definition fam_reindex {X : SetC} (U : FamC) (f : X →r famC_base U)
   : FamF U[f] U
-  := {| famF_base := f; famF_fam x := id_resp (X := U (f x)) |}.
+  :=
+  {|famF_base := f
+  ; famF_fam x := id_resp (X := U (f x))
+  |}.
 Next Obligation. reflexivity. Defined.
 
 (** ** Identity and Composition Comparisons
@@ -27,11 +42,18 @@ Next Obligation. reflexivity. Defined.
     transport witnesses and coherence proofs. Comparisons use explicit family
     isomorphisms; no equality of those witnesses or proofs is required. *)
 
+(** ** 恒等与复合比较
+
+    纤维类型按预期计算，但族记录还包含运输见证与相干证明。比较使用显式族同构，
+    不要求这些见证或证明原生相等。 *)
+
 Definition fam_reindex_id_iso (U : FamC)
   : U[id_resp (X := famC_base U)] ≅[FamCat] U.
 Proof.
   exists (fam_reindex U (id_resp (X := famC_base U))).
-  unshelve notypeclasses refine (({| famF_base := _; famF_fam := _ |}); _).
+  unshelve notypeclasses refine (({|famF_base := _
+                                  ; famF_fam := _
+                                  |}); _).
   - exact (id_resp (X := famC_base U)).
   - exact (λ x, id_resp (X := U x)).
   - intros x y p a. simpl. apply transpS_witness_independent.
@@ -39,19 +61,30 @@ Proof.
 Defined.
 
 (** Iterated reindexing compares to reindexing along the composite. *)
+
+(** 迭代重索引与沿复合映射重索引比较。 *)
+
 Program Definition fam_reindex_comp {X Y : SetC} (U : FamC)
     (f : X →r famC_base U) (g : Y →r X)
   : FamF U[f][g] U[f ∘r g]
-  := {| famF_base := id_resp (X := Y)
-      ; famF_fam x := id_resp (X := U (f (g x))) |}.
+  :=
+  {|famF_base := id_resp (X := Y)
+  ; famF_fam x := id_resp (X := U (f (g x)))
+  |}.
 Next Obligation. simpl. apply transpS_witness_independent. Defined.
+
+(** Iterated and composite reindexing are isomorphic as bundled families. *)
+
+(** 迭代重索引与复合重索引作为组合族彼此同构。 *)
 
 Definition fam_reindex_comp_iso {X Y : SetC} (U : FamC)
     (f : X →r famC_base U) (g : Y →r X)
   : U[f][g] ≅[FamCat] U[f ∘r g].
 Proof.
   exists (fam_reindex_comp U f g).
-  unshelve notypeclasses refine (({| famF_base := _; famF_fam := _ |}); _).
+  unshelve notypeclasses refine (({|famF_base := _
+                                  ; famF_fam := _
+                                  |}); _).
   - exact (id_resp (X := Y)).
   - exact (λ x, id_resp (X := U (f (g x)))).
   - intros x y p a. simpl. apply transpS_witness_independent.
@@ -59,6 +92,9 @@ Proof.
 Defined.
 
 (** The comparison preserves the canonical morphism into the original family. *)
+
+(** 比较保持指向原族的标准态射。 *)
+
 Theorem fam_reindex_comp_comm {X Y : SetC} (U : FamC)
     (f : X →r famC_base U) (g : Y →r X)
   : FamFEq (fam_comp (fam_reindex U (f ∘r g)) (fam_reindex_comp U f g))
@@ -69,13 +105,20 @@ Qed.
 
 (** ** Total-Space Pullbacks *)
 
-(** A cone commuting up to setoid equivalence supplies the transport needed
-    to put its second coordinate in the reindexed fiber. *)
+(** ** 全空间拉回 *)
+
+(** A cone commuting up to setoid equivalence supplies the transport needed to
+    put its second coordinate in the reindexed fiber. *)
+
+(** 按广集相等交换的锥提供所需运输，使第二坐标落入重索引纤维。 *)
+
 Program Definition fam_reindex_pair_resp {X Q : SetC} (U : FamC)
     (f : X →r famC_base U) (q1 : Q →r X) (q2 : Q →r SigS (famC_base U) U)
     (Hq : f ∘ q1 ≈ sig_base_resp U ∘ q2)
   : Q →r SigS X U[f]S
-  := {| func z := (q1 z; transpS U (symmetry (Hq z)) (q2 z).2) |}.
+  :=
+  {|func z := (q1 z; transpS U (symmetry (Hq z)) (q2 z).2)
+  |}.
 Next Obligation.
   pose (q := λ z, symmetry (Hq z)).
   intros z z' p.
@@ -94,6 +137,9 @@ Defined.
 
 (** The total-space square of the canonical morphism is a pullback. The
     mediator is transparent; uniqueness uses dependent-sum equivalence. *)
+
+(** 标准态射的全空间方形是拉回；中介透明，唯一性使用依赖和相等。 *)
+
 Definition fam_reindex_pullback {X : SetC} (U : FamC) (f : X →r famC_base U)
   : @is_pullback SetCat _ _ _ f (sig_base_resp U)
       (SigS X U[f]S) (sig_base_resp U[f]S)

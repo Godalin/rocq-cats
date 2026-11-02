@@ -8,10 +8,20 @@ From Cats Require Import
     Carrier and equality witnesses are raised independently. This is an
     explicit wrapper, not a resizing principle. *)
 
+(** * 提升环境集合宇宙
+
+    载体与相等见证独立提升，这是显式包装，不是大小重设原理。 *)
+
 Program Definition LiftF@{u p +}
   : Functor SetCat SetCat@{u p _ _ _ _ _}
-  := {| F0 X := LiftS@{_ _ u p} X
-      ; F1 X Y f := f^↑S
-      ; functor_fmap_proper X Y f g H x := {| lower := H (lower x) |} |}.
-Next Obligation. intros [x]. exact {| lower := reflexivity x |}. Defined.
-Next Obligation. intros [x]. exact {| lower := reflexivity (f (g x)) |}. Defined.
+  :=
+  {|F0 X := LiftS@{_ _ u p} X
+  ; F1 X Y f := f^↑S
+  ; functor_fmap_proper X Y f g H x :=
+      {|lower := H (lower x)
+      |}
+  |}.
+Next Obligation. intros [x]. exact {|lower := reflexivity x
+                                   |}. Defined.
+Next Obligation. intros [x]. exact {|lower := reflexivity (f (g x))
+                                   |}. Defined.

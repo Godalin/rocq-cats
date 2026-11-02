@@ -8,56 +8,63 @@ Local Open Scope bicat_scope.
 
 (** * Bicategories
 
-    Objects, hom-categories, composition and coherence form one structure.
-    The intermediate operations are derived fields, not additional choices.
-    The four named universes are for 0-cells, 1-cells, 2-cells and their
+    Objects, hom-categories, composition and coherence form one structure. The
+    intermediate operations are derived fields, not additional choices. The
+    four named universes are for 0-cells, 1-cells, 2-cells and their
     equivalence witnesses. Law witnesses use auxiliary upper-bound universes.
     No equality of 1-cells is implicit in this structure. *)
 
+(** * 双范畴
+
+    对象、Hom 范畴、复合与相干律组成一个结构；中间运算是派生字段，不是额外选择。
+    四个指定宇宙分别容纳零胞、一胞、二胞及其等价见证，定律使用辅助上界宇宙。此
+    结构不隐含一胞相等。 *)
+
 Class Bicat@{o h t p +}
-  := { ObB : Type@{o}
-     ; HomCat : ObB → ObB → Cat@{h t p _ _}
-     ; id1 (X : ObB) : @Ob (HomCat X X)
-     ; comp1F (X Y Z : ObB) : Functor (HomCat Y Z ×C HomCat X Y) (HomCat X Z)
+  :=
+  { ObB : Type@{o}
+  ; HomCat : ObB → ObB → Cat@{h t p _ _}
+  ; id1 (X : ObB) : @Ob (HomCat X X)
+  ; comp1F (X Y Z : ObB) : Functor (HomCat Y Z ×C HomCat X Y) (HomCat X Z)
 
-     ; Cell1 (X Y : ObB) := @Ob (HomCat X Y)
-     ; Cell2 {X Y : ObB} (f g : Cell1 X Y) := (@Hom (HomCat X Y)) f g
-     ; Cell2Eq {X Y} {f g : Cell1 X Y} (α β : Cell2 f g)
-     := @Cats.Cat.Core.HomEq (HomCat X Y) f g α β
-     ; comp1 {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y) : Cell1 X Z
-     := comp1F X Y Z (g, f)
-     ; id2 {X Y} (f : Cell1 X Y) : Cell2 f f := id
-     ; comp2_v {X Y} {f g h : Cell1 X Y} (β : Cell2 g h) (α : Cell2 f g)
-         : Cell2 f h := β ∘ α
-     ; comp2_h {X Y Z} {g g' : Cell1 Y Z} {f f' : Cell1 X Y}
-         (β : Cell2 g g') (α : Cell2 f f') : Cell2 (comp1 g f) (comp1 g' f')
-     := fmap (comp1F X Y Z) (X := (g, f)) (Y := (g', f')) (β, α)
+  ; Cell1 (X Y : ObB) := @Ob (HomCat X Y)
+  ; Cell2 {X Y : ObB} (f g : Cell1 X Y) := (@Hom (HomCat X Y)) f g
+  ; Cell2Eq {X Y} {f g : Cell1 X Y} (α β : Cell2 f g)
+  := @Cats.Cat.Core.HomEq (HomCat X Y) f g α β
+  ; comp1 {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y) : Cell1 X Z
+  := comp1F X Y Z (g, f)
+  ; id2 {X Y} (f : Cell1 X Y) : Cell2 f f := id
+  ; comp2_v {X Y} {f g h : Cell1 X Y} (β : Cell2 g h) (α : Cell2 f g)
+      : Cell2 f h := β ∘ α
+  ; comp2_h {X Y Z} {g g' : Cell1 Y Z} {f f' : Cell1 X Y}
+      (β : Cell2 g g') (α : Cell2 f f') : Cell2 (comp1 g f) (comp1 g' f')
+  := fmap (comp1F X Y Z) (X := (g, f)) (Y := (g', f')) (β, α)
 
-     ; associator {W X Y Z : ObB} (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
-         : Cell2 (comp1 (comp1 h g) f) (comp1 h (comp1 g f))
-     ; associator_iso {W X Y Z} (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
-         : is_iso (associator h g f)
-     ; left_unitor {X Y : ObB} (f : Cell1 X Y) : Cell2 (comp1 (id1 Y) f) f
-     ; left_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (left_unitor f)
-     ; right_unitor {X Y : ObB} (f : Cell1 X Y) : Cell2 (comp1 f (id1 X)) f
-     ; right_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (right_unitor f)
-     ; associator_naturality {W X Y Z} {h h' : Cell1 Y Z} {g g' : Cell1 X Y}
-         {f f' : Cell1 W X} (γ : Cell2 h h') (β : Cell2 g g') (α : Cell2 f f')
-         : Cell2Eq (associator h' g' f' ∘ comp2_h (comp2_h γ β) α)
-             (comp2_h γ (comp2_h β α) ∘ associator h g f)
-     ; left_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
-         : Cell2Eq (left_unitor g ∘ comp2_h (id2 (id1 Y)) α) (α ∘ left_unitor f)
-     ; right_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
-         : Cell2Eq (right_unitor g ∘ comp2_h α (id2 (id1 X))) (α ∘ right_unitor f)
-     ; bicat_pentagon {V W X Y Z} (k : Cell1 Y Z) (h : Cell1 X Y)
-         (g : Cell1 W X) (f : Cell1 V W)
-         : Cell2Eq (associator k h (comp1 g f) ∘ associator (comp1 k h) g f)
-             (comp2_h (id2 k) (associator h g f) ∘
-               (associator k (comp1 h g) f ∘ comp2_h (associator k h g) (id2 f)))
-     ; bicat_triangle {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y)
-         : Cell2Eq (comp2_h (id2 g) (left_unitor f) ∘ associator g (id1 Y) f)
-             (comp2_h (right_unitor g) (id2 f))
-     }.
+  ; associator {W X Y Z : ObB} (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
+      : Cell2 (comp1 (comp1 h g) f) (comp1 h (comp1 g f))
+  ; associator_iso {W X Y Z} (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
+      : is_iso (associator h g f)
+  ; left_unitor {X Y : ObB} (f : Cell1 X Y) : Cell2 (comp1 (id1 Y) f) f
+  ; left_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (left_unitor f)
+  ; right_unitor {X Y : ObB} (f : Cell1 X Y) : Cell2 (comp1 f (id1 X)) f
+  ; right_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (right_unitor f)
+  ; associator_naturality {W X Y Z} {h h' : Cell1 Y Z} {g g' : Cell1 X Y}
+      {f f' : Cell1 W X} (γ : Cell2 h h') (β : Cell2 g g') (α : Cell2 f f')
+      : Cell2Eq (associator h' g' f' ∘ comp2_h (comp2_h γ β) α)
+          (comp2_h γ (comp2_h β α) ∘ associator h g f)
+  ; left_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
+      : Cell2Eq (left_unitor g ∘ comp2_h (id2 (id1 Y)) α) (α ∘ left_unitor f)
+  ; right_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
+      : Cell2Eq (right_unitor g ∘ comp2_h α (id2 (id1 X))) (α ∘ right_unitor f)
+  ; bicat_pentagon {V W X Y Z} (k : Cell1 Y Z) (h : Cell1 X Y)
+      (g : Cell1 W X) (f : Cell1 V W)
+      : Cell2Eq (associator k h (comp1 g f) ∘ associator (comp1 k h) g f)
+          (comp2_h (id2 k) (associator h g f) ∘
+            (associator k (comp1 h g) f ∘ comp2_h (associator k h g) (id2 f)))
+  ; bicat_triangle {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y)
+      : Cell2Eq (comp2_h (id2 g) (left_unitor f) ∘ associator g (id1 Y) f)
+          (comp2_h (right_unitor g) (id2 f))
+  }.
 
 Arguments ObB _ : clear implicits.
 Arguments HomCat {_} _ _.
@@ -82,15 +89,27 @@ Infix "⋆" := comp2_h (at level 48, left associativity) : bicat_scope.
 Notation "'𝟙₁' X" := (id1 X) (at level 35) : bicat_scope.
 Notation "'𝟙₂' f" := (id2 f) (at level 35) : bicat_scope.
 
+(** [Cell2Eq] is an equivalence relation. *)
+
+(** [Cell2Eq] 是等价关系。 *)
+
 Global Instance Cell2Eq_Equivalence {K : Bicat} {X Y : ObB K}
     {f g : Cell1 X Y}
   : Equivalence (@Cell2Eq K X Y f g).
 Proof. exact (@HomEq_Equivalence (HomCat X Y) f g). Qed.
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance comp2_v_proper {K : Bicat} {X Y : ObB K}
     {f g h : Cell1 X Y}
   : Proper (Cell2Eq ==> Cell2Eq ==> Cell2Eq) (@comp2_v K X Y f g h).
 Proof. exact (@comp_proper (HomCat X Y) f g h). Qed.
+
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance comp2_h_proper {K : Bicat} {X Y Z : ObB K}
     {g g' : Cell1 Y Z} {f f' : Cell1 X Y}
@@ -101,25 +120,46 @@ Proof.
     (β, α) (β', α') (Hβ, Hα)).
 Qed.
 
+(** An identity two-cell is a left unit for vertical composition. *)
+
+(** 恒等二胞是垂直复合的左单位。 *)
+
 Theorem comp2_v_id_l {K : Bicat} {X Y : ObB K} {f g : Cell1 X Y}
     (α : f ⇒₂ g)
   : (𝟙₂ g ∘₂ α) ≈₂ α.
 Proof. exact (comp_id_l α). Qed.
+
+(** An identity two-cell is a right unit for vertical composition. *)
+
+(** 恒等二胞是垂直复合的右单位。 *)
 
 Theorem comp2_v_id_r {K : Bicat} {X Y : ObB K} {f g : Cell1 X Y}
     (α : f ⇒₂ g)
   : (α ∘₂ 𝟙₂ f) ≈₂ α.
 Proof. exact (comp_id_r α). Qed.
 
+(** Vertical composition of two-cells is associative. *)
+
+(** 二胞的垂直复合满足结合律。 *)
+
 Theorem comp2_v_assoc {K : Bicat} {X Y : ObB K} {f g h k : Cell1 X Y}
     (γ : h ⇒₂ k) (β : g ⇒₂ h) (α : f ⇒₂ g)
   : ((γ ∘₂ β) ∘₂ α) ≈₂ (γ ∘₂ (β ∘₂ α)).
 Proof. exact (comp_assoc γ β α). Qed.
 
+(** Horizontal composition of identity two-cells is the composite's identity. *)
+
+(** 恒等二胞的水平复合是复合一胞的恒等二胞。 *)
+
 Theorem comp2_h_id {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) (f : Cell1 X Y)
   : (𝟙₂ g ⋆ 𝟙₂ f) ≈₂ 𝟙₂ (g ∘₁ f).
 Proof. exact (@functor_id _ _ (comp1F X Y Z) (g, f)). Qed.
+
+(** Horizontal composition commutes with vertical composition of two-cell
+    pairs. *)
+
+(** 水平复合与二胞对的垂直复合交换。 *)
 
 Theorem comp2_interchange {K : Bicat} {X Y Z : ObB K}
     {g0 g1 g2 : Cell1 Y Z} {f0 f1 f2 : Cell1 X Y}
@@ -130,9 +170,19 @@ Proof.
     (β2, α2) (β1, α1)).
 Qed.
 
+(** Compose a two-cell horizontally with the identity on a fixed left
+    one-cell. *)
+
+(** 将二胞与固定左侧一胞的恒等二胞水平复合。 *)
+
 Definition whisker_l {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) {f f' : Cell1 X Y} (α : f ⇒₂ f')
   := 𝟙₂ g ⋆ α.
+(** Compose a two-cell horizontally with the identity on a fixed right
+    one-cell. *)
+
+(** 将二胞与固定右侧一胞的恒等二胞水平复合。 *)
+
 Definition whisker_r {K : Bicat} {X Y Z : ObB K}
     {g g' : Cell1 Y Z} (β : g ⇒₂ g') (f : Cell1 X Y)
   := β ⋆ 𝟙₂ f.
@@ -140,25 +190,45 @@ Definition whisker_r {K : Bicat} {X Y Z : ObB K}
 Infix "◁" := whisker_l (at level 40, left associativity) : bicat_scope.
 Infix "▷" := whisker_r (at level 40, left associativity) : bicat_scope.
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance whisker_l_proper {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) {f f' : Cell1 X Y}
   : Proper (Cell2Eq ==> Cell2Eq) (@whisker_l K X Y Z g f f').
 Proof. intros α β H. apply comp2_h_proper; [reflexivity | exact H]. Qed.
+
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance whisker_r_proper {K : Bicat} {X Y Z : ObB K}
     {g g' : Cell1 Y Z} (f : Cell1 X Y)
   : Proper (Cell2Eq ==> Cell2Eq) (λ β : g ⇒₂ g', β ▷ f).
 Proof. intros α β H. apply comp2_h_proper; [exact H | reflexivity]. Qed.
 
+(** Compatibility with identities for [whisker_l]. *)
+
+(** [whisker_l] 与恒等的相容性。 *)
+
 Theorem whisker_l_id {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) (f : Cell1 X Y)
   : (g ◁ 𝟙₂ f) ≈₂ 𝟙₂ (g ∘₁ f).
 Proof. apply comp2_h_id. Qed.
 
+(** Compatibility with identities for [whisker_r]. *)
+
+(** [whisker_r] 与恒等的相容性。 *)
+
 Theorem whisker_r_id {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) (f : Cell1 X Y)
   : (𝟙₂ g ▷ f) ≈₂ 𝟙₂ (g ∘₁ f).
 Proof. apply comp2_h_id. Qed.
+
+(** Compatibility with composition for [whisker_l]. *)
+
+(** [whisker_l] 与复合的相容性。 *)
 
 Theorem whisker_l_comp {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) {f0 f1 f2 : Cell1 X Y} (β : f1 ⇒₂ f2) (α : f0 ⇒₂ f1)
@@ -168,6 +238,10 @@ Proof.
   - apply comp2_h_proper; [symmetry; apply comp2_v_id_l | reflexivity].
   - apply comp2_interchange.
 Qed.
+
+(** Compatibility with composition for [whisker_r]. *)
+
+(** [whisker_r] 与复合的相容性。 *)
 
 Theorem whisker_r_comp {K : Bicat} {X Y Z : ObB K}
     {g0 g1 g2 : Cell1 Y Z} (β : g1 ⇒₂ g2) (α : g0 ⇒₂ g1) (f : Cell1 X Y)

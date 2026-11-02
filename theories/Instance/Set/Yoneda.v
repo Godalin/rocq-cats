@@ -8,7 +8,15 @@ From Cats Require Import
 
 (** * Representable Set-Valued Functors and the Yoneda Lemma *)
 
+(** * 可表集合值函子与 Yoneda 引理 *)
+
 (** ** Representable Functor *)
+
+(** ** 可表函子 *)
+
+(** A representation is a natural isomorphism from the covariant hom functor. *)
+
+(** 表示是从协变 Hom 函子出发的自然同构。 *)
 
 Definition represents {C : Cat} (F : Functor C SetCat) (X : @Ob C)
   := Hom( X ,-) ≅N F.
@@ -16,8 +24,16 @@ Definition represents {C : Cat} (F : Functor C SetCat) (X : @Ob C)
 Notation "X '⦂' 'Rep' F" := (represents F X)
   (at level 50, no associativity, format "X  ⦂  Rep  F") : cat_scope.
 
+(** Retain a representing object and its natural isomorphism. *)
+
+(** 保留表示对象及其自然同构。 *)
+
 Definition is_representable {C : Cat} (F : Functor C SetCat)
   := ∃ X, X ⦂ Rep F.
+
+(** A covariant hom functor is represented by its source object. *)
+
+(** 协变 Hom 函子由其源对象表示。 *)
 
 Proposition represents_self {C : Cat} {X : @Ob C}
   : X ⦂ Rep Hom(X,-).
@@ -27,27 +43,51 @@ Proof. exists idN. intros Y. exists id. cato. Defined.
 
 (** ** Yoneda Lemma *)
 
+(** ** Yoneda 引理 *)
+
+(** The setoid of natural transformations with pointwise component equality. *)
+
+(** 以逐点分量相等比较自然变换的广集。 *)
+
 Program Canonical Nat_SetS {C D : Cat}
   (F G : Functor C D)
-  := {|carrier := F ⇒ G
-     ; carrier_equiv := NatEq
-     |} .
+  :=
+  {|carrier := F ⇒ G
+  ; carrier_equiv := NatEq
+  |} .
 
 Section Yoneda.
 Context {C : Cat}.
 Context {F : Functor C SetCat}.
 
+(** Evaluate a natural transformation from a representable at the identity. *)
+
+(** 在恒等处求值从可表函子出发的自然变换。 *)
+
 Program Canonical yoneda_func {X}
   : Nat Hom(X,-) F →r F X
-  := {| func α := α X id |}.
+  :=
+  {|func α := α X id
+  |}.
 Next Obligation. intros a a' Ha.
   pose (HaX := Ha X id). cato.
 Qed.
 
+(** Send an element to the transformation obtained by applying the functor to
+    arrows. *)
+
+(** 将元素送到通过函子作用于箭头得到的自然变换。 *)
+
 Program Canonical yoneda_func_inv {X}
   : F X →r Nat Hom(X,-) F
-  := {| func (x : F X) := {| nt Y := {| func f :=
-        (fmap F f) x |} |} |}.
+  :=
+  {|func (x : F X) :=
+     {|nt Y :=
+    {|func f :=
+  (fmap F f) x
+    |}
+     |}
+  |}.
 Next Obligation.
   intros f f' Hf.
   assert (H : fmap F f ≈ fmap F f').
@@ -65,6 +105,11 @@ Next Obligation.
   exact (@func_proper _ _ (fmap F f) a a' Ha).
 Qed.
 
+(** Reconstruction from identity evaluation recovers the natural
+    transformation. *)
+
+(** 由恒等处求值重构后恢复原自然变换。 *)
+
 Theorem yoneda_func_inv_func {X : @Ob C} (α : Hom(X,-) ⇒ F)
   : yoneda_func_inv (yoneda_func α) ≈N α.
 Proof.
@@ -73,27 +118,45 @@ Proof.
     (@func_proper _ _ (α Y) (f ∘ id) f (comp_id_r f))).
 Defined.
 
+(** Evaluating the reconstructed transformation recovers the original element. *)
+
+(** 求值重构的自然变换后恢复原元素。 *)
+
 Theorem yoneda_func_func_inv {X : @Ob C} (x : F X)
   : yoneda_func (yoneda_func_inv x) ≈S x.
 Proof. exact (functor_id C SetCat F x). Defined.
 
 (** Natural transformations can be larger than values of F. Lift both sets
     into a common ambient category without identifying their native sizes. *)
+
+(** 自然变换的大小可能超过 F 的值；把两个广集提升到共同环境范畴，不等同它们原
+    有的大小。 *)
+
 Definition yoneda_lemma_iso@{n e +} {X : @Ob C}
   : LiftS@{_ _ n e} (Nat_SetS Hom(X,-) F) ≅[SetCat] LiftS@{_ _ n e} (F X).
 Proof.
   exists (yoneda_func^↑S), (yoneda_func_inv^↑S). split.
-  - intros [α]. refine {| lower := _ |}. apply yoneda_func_inv_func.
-  - intros [x]. refine {| lower := _ |}. apply yoneda_func_func_inv.
+  - intros [α]. refine {|lower := _
+                       |}. apply yoneda_func_inv_func.
+  - intros [x]. refine {|lower := _
+                       |}. apply yoneda_func_func_inv.
 Defined.
 
 End Yoneda.
+
+(** Yoneda evaluation commutes with a transformation of the target functor. *)
+
+(** Yoneda 求值与目标函子的自然变换交换。 *)
 
 Theorem yoneda_func_natural_functor {C : Cat} {F G : Functor C SetCat}
     {X : @Ob C}
     (β : F ⇒ G) (α : Hom(X,-) ⇒ F)
   : yoneda_func (β ∘Nv α) ≈S β X (yoneda_func α).
 Proof. reflexivity. Qed.
+
+(** Yoneda evaluation is natural in the representing object. *)
+
+(** Yoneda 求值在表示对象上自然。 *)
 
 Theorem yoneda_func_natural_object {C : Cat} {F : Functor C SetCat}
     {X Y : @Ob C} (f : Hom X Y)

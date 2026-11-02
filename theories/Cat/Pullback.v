@@ -7,19 +7,34 @@ From Cats Require Import
 
 (** * Pullbacks *)
 
+(** * 拉回 *)
+
+(** A commuting square with a unique mediator for each commuting cone. *)
+
+(** 对每个交换锥具有唯一中介的候选交换方形。 *)
+
 Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
   := λ P : Ob, λ p1 : Hom P X, λ p2 : Hom P Y,
     f ∘ p1 ≈ g ∘ p2 ∧
       ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
       → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
 
+(** Chosen pullbacks for cospans, with both projections and universality. *)
+
+(** 为余跨度选择拉回、两个投影与泛性质。 *)
+
 Class HasPullback (C : Cat)
-  := { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
-     ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
-     ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
-     ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-       : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
-     }.
+  :=
+  { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
+  ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
+  ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
+  ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+    : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
+  }.
+
+(** The universal mediator into a selected pullback. *)
+
+(** 指向选定拉回的泛中介。 *)
 
 Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z}
     {f : Hom X Z} {g : Hom Y Z} {P}
@@ -27,10 +42,18 @@ Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z}
   : Hom P (Pb f g)
   := (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).1.
 
+(** The selected pullback square commutes. *)
+
+(** 选定拉回方形交换。 *)
+
 Theorem pullback_comm {C : Cat} `{HPb : !HasPullback C}
     {X Y Z} {f : Hom X Z} {g : Hom Y Z}
   : f ∘ pb1 f g ≈ g ∘ pb2 f g.
 Proof. exact (fst (pullback_universal (f := f) (g := g))). Qed.
+
+(** The pullback mediator is unique with its prescribed projections. *)
+
+(** 拉回中介在给定两个投影下唯一。 *)
 
 Theorem pullback_mediator_unique {C : Cat} `{HPb : !HasPullback C}
     {X Y Z} {f : Hom X Z} {g : Hom Y Z}
@@ -62,6 +85,9 @@ Notation "@pb2 f g" := (pb2 f g)
 Hint Resolve pullback_comm : cat.
 
 (** Two arrows into a pullback agree when both projections agree. *)
+
+(** 指向拉回的两条态射在两个投影下都相等时，它们相等。 *)
+
 Theorem pullback_hom_ext {C : Cat} {X Y Z P Q : @Ob C}
     {f : Hom X Z} {g : Hom Y Z} {p1 : Hom P X} {p2 : Hom P Y}
     (HP : is_pullback f g P p1 p2) (u v : Hom Q P)
@@ -80,6 +106,10 @@ Qed.
 
 Section Pullback.
 Context {C : Cat}.
+
+(** Two pullbacks of the same cospan are isomorphic. *)
+
+(** 同一余跨度的两个拉回同构。 *)
 
 Theorem pullback_unique {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}
     {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}
@@ -111,7 +141,11 @@ Qed.
 
 End Pullback.
 
-(** Transfer the universal property along an isomorphism of the pullback vertex. *)
+(** Transfer the universal property along an isomorphism of the pullback
+    vertex. *)
+
+(** 沿拉回顶点的同构传递泛性质。 *)
+
 Definition pullback_iso {C : Cat} {X Y Z : @Ob C} {f : Hom X Z} {g : Hom Y Z}
     {P Q : @Ob C} {p1 : Hom P X} {p2 : Hom P Y}
     {q1 : Hom Q X} {q2 : Hom Q Y} (i : Hom Q P) (Hi : is_iso i)
@@ -134,6 +168,9 @@ Defined.
 
 (** Change one base object along an isomorphism, keeping the pullback vertex.
     The first projection is composed with the specified isomorphism. *)
+
+(** 沿同构改变一个基底对象并保留拉回顶点，第一个投影与给定同构复合。 *)
+
 Definition pullback_base_iso {C : Cat} {X X' Y Z P : @Ob C}
     {f : Hom X Z} {g : Hom Y Z} {h : Hom X' Z}
     {p1 : Hom P X'} {p2 : Hom P Y}
@@ -147,7 +184,9 @@ Proof.
     assert (Hcone : h ∘ (ii ∘ q1) ≈ g ∘ q2).
     { rewrite H, comp_assoc, <- (comp_assoc i), Hi, comp_id_l. exact Hq. }
     destruct (Hu Q (ii ∘ q1) q2 Hcone) as [k [[Hk1 Hk2] Hku]].
-    exists k. refine {| this := _; that := _ |}.
+    exists k. refine {|this := _
+                     ; that := _
+                     |}.
     + split.
       * rewrite comp_assoc, Hk1, <- comp_assoc, Hi, comp_id_l. reflexivity.
       * exact Hk2.
@@ -167,13 +206,25 @@ Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
 Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
 Context (HP : f ∘ p1 ≈ g ∘ p2).
 
+(** The first projection of the pullback mediator is the prescribed arrow. *)
+
+(** 拉回中介的第一投影是给定箭头。 *)
+
 Theorem pb_β1
   : pb1 f g ∘ pb p1 p2 HP ≈ p1.
 Proof. apply pullback_mediator_unique. Qed.
 
+(** The second projection of the pullback mediator is the prescribed arrow. *)
+
+(** 拉回中介的第二投影是给定箭头。 *)
+
 Theorem pb_β2
   : pb2 f g ∘ pb p1 p2 HP ≈ p2.
 Proof. apply pullback_mediator_unique. Qed.
+
+(** A map into a pullback is recovered from its two projections. *)
+
+(** 指向拉回的映射由两个投影恢复。 *)
 
 Theorem pb_η h
   : pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2 → h ≈ pb p1 p2 HP.
@@ -181,6 +232,9 @@ Proof. apply pullback_mediator_unique. Qed.
 
 (** Respectfulness follows from uniqueness, including independence of the
     commutativity witness. No equality between witnesses is required. *)
+
+(** 相容性由唯一性导出，包含对交换性见证的独立性；不要求见证本身相等。 *)
+
 Theorem pb_proper {q1 : Hom P X} {q2 : Hom P Y}
     (HQ : f ∘ q1 ≈ g ∘ q2)
   : p1 ≈ q1 → p2 ≈ q2 → pb p1 p2 HP ≈ pb q1 q2 HQ.
@@ -189,6 +243,10 @@ Proof.
   - rewrite pb_β1. exact H1.
   - rewrite pb_β2. exact H2.
 Qed.
+
+(** Changing equality witnesses leaves the resulting action equal. *)
+
+(** 改变相等见证后，所得作用仍然相等。 *)
 
 Corollary pb_witness_independent (HQ : f ∘ p1 ≈ g ∘ p2)
   : pb p1 p2 HP ≈ pb p1 p2 HQ.
@@ -207,11 +265,15 @@ Hint Rewrite @pb_β2 : cat.
 
 (** ** Pullback Properties *)
 
+(** ** 拉回的性质 *)
+
 Section Pullback.
 Context {C : Cat}.
 Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
 (** Pullback alone [id]. *)
+
+(** 沿恒等态射 [id] 拉回。 *)
 
 Theorem pullback_id
   : is_pullback id g _ g id.
@@ -221,6 +283,8 @@ Proof. split. carw. intros Q q1 q2 H1. exists q2. split.
 Defined.
 
 (** Pasting two pullback squares along their common edge. *)
+
+(** 沿公共边粘合两个拉回方形。 *)
 
 Theorem pullback_comp {P Q : Ob}
     {p1 : Hom P X} {p2 : Hom P Y} {q1 : Hom Q W} {q2 : Hom Q P}
@@ -250,6 +314,10 @@ Defined.
 
 Context `{H : !HasPullback C}.
 
+(** Compare an iterated chosen pullback with the pullback of the composite. *)
+
+(** 将迭代选定拉回与复合映射的拉回比较。 *)
+
 Theorem pullback_comp_iso
   : W ×[h, pb1 f g] (X ×[f,g] Y) ≅ W ×[f ∘ h, g] Y.
 Proof. eapply pullback_unique.
@@ -266,8 +334,10 @@ Context {C : Cat}.
 Context `{HT : !HasTerminal C} `{HPb : !HasPullback C}.
 Context {X Y : Ob}.
 
-(** If a category has a terminal object and all pullbacks,
-    it has all product objects. *)
+(** If a category has a terminal object and all pullbacks, it has all product
+    objects. *)
+
+(** 具有终对象和所有拉回的范畴具有所有二元积。 *)
 
 Theorem pullback_product
   : is_product X Y (X ×[!,!] Y) (pb1 ! !) (pb2 ! !).
@@ -282,6 +352,8 @@ Defined.
 Context `{HP : !HasProduct C}.
 
 (** Then it is isomorphic to the product object. *)
+
+(** 该对象因而同构于选定积。 *)
 
 Theorem pullback_product_iso
   : (X ×[!,!] Y) ≅ X × Y.

@@ -29,13 +29,23 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Code and naming
 
+- Write source documentation in coqdoc syntax: `(** ... *)`, `[term]` for
+  code, and coqdoc headings, lists and blocks rather than Markdown. In every
+  documentation item use separate comment blocks, English first and Chinese
+  second. Document each definition and public lemma where practical,
+  explaining its mathematical role and important assumptions; keep routine
+  laws concise. Leave a blank line after every source comment before the
+  following declaration or text.
 - Put each required module on its own line; in grouped `Require Import` or
   `Require Export`, place the module list below the command. Keep lines near
   80 characters where practical. Wrap long declarations by parameter groups,
   indenting continued parameters four spaces. In declaration headers, always
   start the result-type `:` and definition-body `:=` on separate new lines,
   each indented two spaces, even for short declarations. Start the body on
-  the same line immediately after `:=`, rather than inserting a newline.
+  the same line immediately after `:=`, except that a record body beginning
+  with `{ ... }` or `{| ... |}` starts on the next line.
+  For `{| ... |}` literals, place the first field immediately after `{|`;
+  align each following `;` and the closing `|}` with the opening `{`.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
   Design shared, exported notation alongside new operations; avoid local
   notation aliases. Prefer UTF-8 and pair/projection notation. Check scopes,

@@ -10,10 +10,19 @@ From Cats Require Import Instance.Set.Fam.Fixed.
 
 (** * Family Morphisms Acting on Sections *)
 
+(** * 族态射作用于截面 *)
+
 (** A fiberwise map over a fixed base acts on coherent sections. *)
+
+(** 固定基底上的逐纤维映射作用于相干截面。 *)
+
 Program Definition section_fam_map_resp {X : SetC} {A B : FamS X} (φ : A →Fam B)
   : SectionS A →r SectionS B
-  := {| func s := {| section x := fam_map φ x (s x) |} |}.
+  :=
+  {|func s :=
+     {|section x := fam_map φ x (s x)
+     |}
+  |}.
 Next Obligation.
   transitivity (fam_map φ y (transpS A p (s x))).
   - symmetry. apply fam_map_naturality.
@@ -24,9 +33,15 @@ Next Obligation. intros s t H x. apply func_proper. exact (H x). Defined.
 Infix "▷Fam" := section_fam_map_resp
   (at level 40, left associativity) : cat_scope.
 
+(** Apply a fixed-base family morphism to every value of a section. *)
+
+(** 将固定基底族态射作用于截面的每个值。 *)
+
 Program Definition section_map {U V : FamC} (φ : FamF U V) (s : SectionS_resp U)
   : SectionS_resp V[famF_base φ]S
-  := {| section x := famF_fam φ x (s x) |}.
+  :=
+  {|section x := famF_fam φ x (s x)
+  |}.
 Next Obligation.
   change (transpS V (@func_proper _ _ (famF_base φ) x y p)
     (famF_fam φ x (s x)) ≈S famF_fam φ y (s y)).
@@ -37,20 +52,36 @@ Defined.
 
 Infix "▷" := section_map (at level 40, left associativity) : cat_scope.
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance section_map_proper {U V : FamC} (φ : FamF U V)
   : Proper (SectionEq ==> SectionEq) (section_map φ).
 Proof. intros s t H x. apply func_proper. exact (H x). Qed.
 
+(** A family morphism acts respectfully on the setoid of coherent sections. *)
+
+(** 族态射保相等地作用于相干截面广集。 *)
+
 Definition section_map_resp {U V : FamC} (φ : FamF U V)
   : SectionS U →r SectionS V[famF_base φ]S
-  := {| func := section_map φ; func_proper := section_map_proper φ |}.
+  :=
+  {|func := section_map φ
+  ; func_proper := section_map_proper φ
+  |}.
 
-(** A section over an arbitrary map into the source family can also be
-    mapped fiberwise. The output lies over the composite base map. *)
+(** A section over an arbitrary map into the source family can also be mapped
+    fiberwise. The output lies over the composite base map. *)
+
+(** 沿任意指向源族的基底映射的截面也可逐纤维映射，输出位于复合基底映射之上。 *)
+
 Program Definition section_map_over {X : SetC} {U V : FamC} (φ : FamF U V)
     (f : X →r famC_base U) (s : SectionS_resp U[f]S)
   : SectionS_resp V[famF_base φ ∘r f]S
-  := {| section x := famF_fam φ (f x) (s x) |}.
+  :=
+  {|section x := famF_fam φ (f x) (s x)
+  |}.
 Next Obligation.
   change (transpS V (@func_proper _ _ (famF_base φ ∘r f) x y p)
     (famF_fam φ (f x) (s x)) ≈S famF_fam φ (f y) (s y)).
@@ -66,13 +97,20 @@ Defined.
 Notation "φ '▷[' f ']' s" := (section_map_over φ f s)
   (at level 40, left associativity, format "φ  ▷[ f ]  s") : cat_scope.
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance section_map_over_proper {X : SetC} {U V : FamC}
     (φ : FamF U V) (f : X →r famC_base U)
   : Proper (SectionEq ==> SectionEq) (section_map_over φ f).
 Proof. intros s t H x. apply func_proper. exact (H x). Qed.
 
-(** Equivalent family morphisms may have different base representatives.
-    Their images are compared after transport along the retained base witness. *)
+(** Equivalent family morphisms may have different base representatives. Their
+    images are compared after transport along the retained base witness. *)
+
+(** 等价族态射可能使用不同基底代表，其像沿保留的基底见证运输后比较。 *)
+
 Theorem section_map_equiv {U V : FamC} {φ ψ : FamF U V}
     (Hφψ : FamFEq φ ψ) {s t : SectionS_resp U} (Hst : s ≈s t)
   : ∃ p : famF_base φ ≈f famF_base ψ,
@@ -84,9 +122,17 @@ Proof.
   - apply func_proper. exact (Hst x).
 Qed.
 
+(** Compatibility with identities for [section_map]. *)
+
+(** [section_map] 与恒等的相容性。 *)
+
 Theorem section_map_id {U : FamC} (s : SectionS_resp U) (x : famC_base U)
   : (fam_id ▷ s) x ≈S s x.
 Proof. reflexivity. Qed.
+
+(** Compatibility with composition for [section_map]. *)
+
+(** [section_map] 与复合的相容性。 *)
 
 Theorem section_map_comp {U V W : FamC} (ψ : FamF V W) (φ : FamF U V)
     (s : SectionS_resp U)
@@ -94,7 +140,11 @@ Theorem section_map_comp {U V W : FamC} (ψ : FamF V W) (φ : FamF U V)
 Proof. intros x. reflexivity. Qed.
 
 (** The action over a base map is the ordinary action of the corresponding
-    reindexed family morphism, followed by the identity comparison on sections. *)
+    reindexed family morphism, followed by the identity comparison on
+    sections. *)
+
+(** 基底映射上的作用等于相应重索引族态射的普通作用，再接截面的恒等比较。 *)
+
 Theorem section_map_reindex_family {X : SetC} {U V : FamC} (φ : FamF U V)
     (f : X →r famC_base U) (s : SectionS_resp U[f]S)
   : (φ⟦f⟧ ▷ s) ≈s section_reindex (φ ▷[f] s) (id_resp (X := X)).
@@ -102,12 +152,18 @@ Proof. intros x. reflexivity. Qed.
 
 (** Reindexing and mapping agree on values in the same fiber. The two
     reindexed family records are related by the composition comparison. *)
+
+(** 重索引与映射在同一纤维中给出相同值，两个重索引族记录由复合比较关联。 *)
+
 Theorem section_map_reindex {X : SetC} {U V : FamC} (φ : FamF U V)
     (s : SectionS_resp U) (f : X →r famC_base U) (x : X)
   : (φ ▷[f] (section_reindex s f)) x ≈S section_reindex (φ ▷ s) f x.
 Proof. reflexivity. Qed.
 
 (** Acting on a section commutes with its map into the total space. *)
+
+(** 截面上的作用与其指向全空间的配对映射交换。 *)
+
 Theorem section_map_pair {U V : FamC} (φ : FamF U V) (s : SectionS_resp U)
   : (fam_total_resp φ ∘r section_pair_resp U (id_resp (X := famC_base U))
       (section_reindex s (id_resp (X := famC_base U))))

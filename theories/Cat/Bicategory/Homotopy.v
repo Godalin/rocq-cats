@@ -10,16 +10,22 @@ Local Open Scope bicat_scope.
     Retain the objects and 1-cells, comparing parallel 1-cells by an
     invertible 2-cell. No quotient of representatives is constructed. *)
 
+(** * 双范畴的一维影子
+
+    保留对象与一胞，用可逆二胞比较平行一胞，不构造代表元的商类型。 *)
+
 Program Definition BicatHomotopyCat (K : Bicat)
   : Cat
-  := {| Ob := ObB K
-      ; HomSet X Y :=
-          {| carrier := Cell1 X Y
-           ; carrier_equiv := @iso (HomCat X Y)
-           ; carrier_setoid := iso_Equivalence |}
-      ; id X := 𝟙₁ X
-      ; comp X Y Z g f := g ∘₁ f
-      |}.
+  :=
+  {|Ob := ObB K
+  ; HomSet X Y :=
+      {|carrier := Cell1 X Y
+      ; carrier_equiv := @iso (HomCat X Y)
+      ; carrier_setoid := iso_Equivalence
+      |}
+  ; id X := 𝟙₁ X
+  ; comp X Y Z g f := g ∘₁ f
+  |}.
 Next Obligation.
   intros g g' Hg f f' Hf.
   exists (Hg.1 ⋆ Hf.1).

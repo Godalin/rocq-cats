@@ -8,18 +8,31 @@ From Cats Require Import
 
 (** * The Category of Coherent Families *)
 
+(** * 相干族的范畴 *)
+
+(** A base setoid together with a coherent family over it. *)
+
+(** 基底广集及其上的相干族。 *)
+
 Record FamC
-  := { famC_base : SetC
-     ; famC_fam :> FamS famC_base
-     }.
+  :=
+  { famC_base : SetC
+  ; famC_fam :> FamS famC_base
+  }.
+
+(** A respectful base map with fiberwise maps commuting with coherent
+    transport. *)
+
+(** 保相等基底映射及与相干运输交换的逐纤维映射。 *)
 
 Record FamF (U V : FamC)
-  := { famF_base :> famC_base U →r famC_base V
-     ; famF_fam (x : famC_base U) : U x →r V (famF_base x)
-     ; famF_naturality {x y : famC_base U} (p : x ≈S y) (a : U x)
-       : famF_fam y (transpS U p a) ≈S
-           transpS V (@func_proper _ _ famF_base x y p) (famF_fam x a)
-     }.
+  :=
+  { famF_base :> famC_base U →r famC_base V
+  ; famF_fam (x : famC_base U) : U x →r V (famF_base x)
+  ; famF_naturality {x y : famC_base U} (p : x ≈S y) (a : U x)
+    : famF_fam y (transpS U p a) ≈S
+        transpS V (@func_proper _ _ famF_base x y p) (famF_fam x a)
+  }.
 
 Arguments famF_base {_ _} _.
 Arguments famF_fam {_ _} _ _.
@@ -27,10 +40,17 @@ Arguments famF_naturality {_ _} _ {_ _} _ _.
 
 (** Base maps are compared pointwise. Their witnesses transport the fiber
     outputs into the same fiber; law proofs are not compared. *)
+
+(** 基底映射逐点比较，其见证把纤维输出运输到同一纤维；不比较定律证明。 *)
+
 Definition FamFEq {U V : FamC} (f g : FamF U V)
   := ∃ p : famF_base f ≈f famF_base g,
     ∀ x (a : U x),
       transpS V (p x) (famF_fam f x a) ≈S famF_fam g x a.
+
+(** [FamFEq] is an equivalence relation. *)
+
+(** [FamFEq] 是等价关系。 *)
 
 Global Instance FamFEq_Equivalence {U V}
   : Equivalence (@FamFEq U V).
@@ -58,16 +78,31 @@ Defined.
 
 (** ** Identity and Composition *)
 
+(** ** 恒等与复合 *)
+
+(** The identity base map and identity fiber maps form the identity family
+    morphism. *)
+
+(** 恒等基底映射与恒等纤维映射组成恒等族态射。 *)
+
 Program Definition fam_id {U : FamC}
   : FamF U U
-  := {| famF_base := id_resp (X := famC_base U)
-      ; famF_fam x := id_resp (X := U x) |}.
+  :=
+  {|famF_base := id_resp (X := famC_base U)
+  ; famF_fam x := id_resp (X := U x)
+  |}.
 Next Obligation. simpl. apply transpS_witness_independent. Defined.
+
+(** Compose base maps and the corresponding fiber maps of family morphisms. *)
+
+(** 复合族态射的基底映射及对应纤维映射。 *)
 
 Program Definition fam_comp {U V W : FamC} (g : FamF V W) (f : FamF U V)
   : FamF U W
-  := {| famF_base := famF_base g ∘r famF_base f
-      ; famF_fam x := famF_fam g (famF_base f x) ∘r famF_fam f x |}.
+  :=
+  {|famF_base := famF_base g ∘r famF_base f
+  ; famF_fam x := famF_fam g (famF_base f x) ∘r famF_fam f x
+  |}.
 Next Obligation.
   simpl.
   pose (q := @func_proper _ _ (famF_base f) x y p).
@@ -77,6 +112,10 @@ Next Obligation.
   - etransitivity. apply famF_naturality.
     apply transpS_witness_independent.
 Defined.
+
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance fam_comp_proper {U V W}
   : Proper (FamFEq ==> FamFEq ==> FamFEq) (@fam_comp U V W).
@@ -102,6 +141,10 @@ Proof.
       * exact (@func_proper _ _ (famF_fam g' (famF_base f' x)) _ _ (Hp x a)).
 Qed.
 
+(** Right identity law for [fam_comp]. *)
+
+(** [fam_comp] 右单位律。 *)
+
 Theorem fam_comp_id_r {U V} (f : FamF U V)
   : FamFEq (fam_comp f fam_id) f.
 Proof.
@@ -109,12 +152,20 @@ Proof.
   intros x a. apply transpS_id.
 Qed.
 
+(** Left identity law for [fam_comp]. *)
+
+(** [fam_comp] 左单位律。 *)
+
 Theorem fam_comp_id_l {U V} (f : FamF U V)
   : FamFEq (fam_comp fam_id f) f.
 Proof.
   exists (λ x, reflS (x := famF_base f x)).
   intros x a. apply transpS_id.
 Qed.
+
+(** Associativity law for [fam_comp]. *)
+
+(** [fam_comp] 结合律。 *)
 
 Theorem fam_comp_assoc {U V W Z} (h : FamF W Z) (g : FamF V W) (f : FamF U V)
   : FamFEq (fam_comp (fam_comp h g) f) (fam_comp h (fam_comp g f)).
@@ -125,35 +176,57 @@ Qed.
 
 (** ** Category Structure *)
 
+(** ** 范畴结构 *)
+
+(** The category of coherent setoid families and family morphisms. *)
+
+(** 相干广集族及族态射组成的范畴。 *)
+
 Global Instance FamCat
   : Cat
-  := {| Ob := FamC
-      ; HomSet U V :=
-          {| carrier := FamF U V
-           ; carrier_equiv := FamFEq
-           ; carrier_setoid := FamFEq_Equivalence |}
-      ; id _ := fam_id
-      ; comp _ _ _ := fam_comp
-      ; comp_proper _ _ _ := fam_comp_proper
-      ; comp_id_r _ _ := fam_comp_id_r
-      ; comp_id_l _ _ := fam_comp_id_l
-      ; comp_assoc _ _ _ _ := fam_comp_assoc |}.
+  :=
+  {|Ob := FamC
+  ; HomSet U V :=
+      {|carrier := FamF U V
+      ; carrier_equiv := FamFEq
+      ; carrier_setoid := FamFEq_Equivalence
+      |}
+  ; id _ := fam_id
+  ; comp _ _ _ := fam_comp
+  ; comp_proper _ _ _ := fam_comp_proper
+  ; comp_id_r _ _ := fam_comp_id_r
+  ; comp_id_l _ _ := fam_comp_id_l
+  ; comp_assoc _ _ _ _ := fam_comp_assoc
+  |}.
 
 (** ** Base and Total-Space Functors *)
 
+(** ** 基底与全空间函子 *)
+
+(** Forget a coherent family to its base setoid. *)
+
+(** 将相干族忘却为基底广集。 *)
+
 Program Definition FamBaseF
   : Functor FamCat SetCat
-  := {| F0 := famC_base
-      ; F1 U V f := famF_base f |}.
+  :=
+  {|F0 := famC_base
+  ; F1 U V f := famF_base f
+  |}.
 Next Obligation. intros f g [p Hp]. exact p. Defined.
 Next Obligation. intros x. reflexivity. Defined.
 Next Obligation. intros x. reflexivity. Defined.
 
 (** A family morphism acts on both coordinates. Its compatibility with
     transport makes this action respectful of dependent-sum equivalence. *)
+
+(** 族态射同时作用于两个坐标；与运输的相容性保证其保留依赖和相等。 *)
+
 Program Definition fam_total_resp {U V : FamC} (f : FamF U V)
   : SigS (famC_base U) U →r SigS (famC_base V) V
-  := {| func a := (famF_base f a.1; famF_fam f a.1 a.2) |}.
+  :=
+  {|func a := (famF_base f a.1; famF_fam f a.1 a.2)
+  |}.
 Next Obligation.
   intros [x a] [y b] [p Hp].
   exists (@func_proper _ _ (famF_base f) x y p).
@@ -162,22 +235,37 @@ Next Obligation.
   - apply func_proper. exact Hp.
 Defined.
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance fam_total_resp_proper {U V : FamC}
   : Proper (FamFEq ==> FunEq) (@fam_total_resp U V).
 Proof.
   intros f g [p Hp] [x a]. exists (p x). exact (Hp x a).
 Qed.
 
+(** Send each coherent family to its dependent-sum total space. *)
+
+(** 将相干族送到依赖和全空间。 *)
+
 Program Definition FamTotalF
   : Functor FamCat SetCat
-  := {| F0 U := SigS (famC_base U) U
-      ; F1 U V f := fam_total_resp f |}.
+  :=
+  {|F0 U := SigS (famC_base U) U
+  ; F1 U V f := fam_total_resp f
+  |}.
 Next Obligation. intros f g Hfg. exact (fam_total_resp_proper f g Hfg). Defined.
 Next Obligation. intros [x a]. reflexivity. Defined.
 Next Obligation. intros [x a]. reflexivity. Defined.
 
 (** Total-space projection commutes with every family morphism. *)
+
+(** 全空间投影与每个族态射交换。 *)
+
 Program Definition FamProjectionN
   : FamTotalF ⇒ FamBaseF
-  := {| nt U := sig_base_resp U |}.
+  :=
+  {|nt U := sig_base_resp U
+  |}.
 Next Obligation. intros a. reflexivity. Defined.

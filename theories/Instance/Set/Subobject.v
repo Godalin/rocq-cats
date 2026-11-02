@@ -8,32 +8,52 @@ From Cats Require Import Instance.Set.Core.
 
 (** * Sub-object Functor
 
-    The type of all sub-objects of a given object in a category
-    is naturally equipped with a equivalence the [Sub_eq], in our
-    setoid setting, this structure fits well as an contravariant
-    functor. *)
+    The type of all sub-objects of a given object in a category is naturally
+    equipped with a equivalence the [Sub_eq], in our setoid setting, this
+    structure fits well as an contravariant functor. *)
+
+(** * 子对象函子
+
+    范畴中给定对象的子对象类型自然带有等价关系 [Sub_eq]；在广集基础下，该结构
+    组成反变函子。 *)
 
 Section Sub.
 Context {C : Cat} `{H : !HasPullback C}.
 
+(** The setoid of subobjects with mutual-factorization equality. *)
+
+(** 以相互分解为相等的子对象广集。 *)
+
 Program Canonical SubObject Z
   : SetC
-  := {|carrier := Sub Z |}.
+  :=
+  {|carrier := Sub Z
+  |}.
 
-(** sX ------> sY
+(** Pull back the displayed subobject along the base map.
+
+<<
+sX ------> sY
     v          v
     |          |
     |          s
     |          |
     v          v
-    X ---f---> Y *)
+    X ---f---> Y
+>>
+*)
+
+(** 将 Y 的子对象 s 沿 f 拉回，得到 X 的子对象及其指向 s 的比较映射。 *)
 
 Program Definition Sub_fmap {X Y : Ob}
     (f : Hom X Y) (sY : Sub Y)
   : Sub X
-  := {|sub := Pb f sY
-     ; sub_mono := {| mor := pb1 f sY |}
-     |}.
+  :=
+  {|sub := Pb f sY
+  ; sub_mono :=
+      {|mor := pb1 f sY
+      |}
+  |}.
 Next Obligation.
   intros W x y H1.
   assert (Hx : f ∘ (pb1 f sY ∘ x) ≈ sY ∘ (pb2 f sY ∘ x)).
@@ -58,15 +78,27 @@ Next Obligation.
   apply sub_mono in X0. symmetry. auto.
 Qed.
 
+(** The chosen inverse-image subobject has the selected pullback as its
+    domain. *)
+
+(** 选定逆像子对象以指定拉回作为定义域。 *)
+
 Proposition Sub_fmap_Ob {X Y} {f : Hom X Y} {r : Sub Y}
   : sub (Sub_fmap f r) = X ×[f,r] (sub r).
 Proof. simpl. auto. Qed.
 
+(** Subobject inverse image is a contravariant setoid-valued functor. *)
+
+(** 子对象逆像是反变广集值函子。 *)
+
 Program Canonical SubF
   : Functor (op C) SetCat
-  := {|F0 Z := SubObject Z
-     ; F1 Y X (f : (@Hom C) X Y) := {| func := Sub_fmap f |}
-     |}.
+  :=
+  {|F0 Z := SubObject Z
+  ; F1 Y X (f : (@Hom C) X Y) :=
+      {|func := Sub_fmap f
+      |}
+  |}.
 Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
   split.
   - assert (Hcone : f ∘ pb1 f r ≈ s ∘ (rs ∘ pb2 f r)).

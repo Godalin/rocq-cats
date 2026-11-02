@@ -16,7 +16,12 @@ From Cats Require Import
 (** * Comprehension of Coherent Families
 
     Every cartesian family morphism gives a pullback of total spaces. It
-    factors through the canonical reindexing by an isomorphism over the identity. *)
+    factors through the canonical reindexing by an isomorphism over the
+    identity. *)
+
+(** * 相干族的理解结构
+
+    每个笛卡尔族态射给出全空间的拉回；它通过恒等基底上的同构分解为标准重索引。 *)
 
 Definition fam_comprehension_universal
   : is_comprehension FamProjectionN.
@@ -44,15 +49,25 @@ Proof.
   - apply fam_reindex_pullback.
 Defined.
 
+(** The base and total-space functors of families form a comprehension
+    structure. *)
+
+(** 族的基底函子与全空间函子组成理解结构。 *)
+
 Definition FamComprehension
   : Comprehension FamBaseF
-  := {| comprehension_lifts := FamBaseF_HasCartesianLift
-      ; ExtF := FamTotalF
-      ; projectionN := FamProjectionN
-      ; comprehension_universal := fam_comprehension_universal |}.
+  :=
+  {|comprehension_lifts := FamBaseF_HasCartesianLift
+  ; ExtF := FamTotalF
+  ; projectionN := FamProjectionN
+  ; comprehension_universal := fam_comprehension_universal
+  |}.
 
-(** Terms of the family are exactly sections of its display projection,
-    with equality comparing the maps rather than their right-inverse proofs. *)
+(** Terms of the family are exactly sections of its display projection, with
+    equality comparing the maps rather than their right-inverse proofs. *)
+
+(** 族的项恰好是其显示投影的截面；相等比较映射，不比较右逆证明。 *)
+
 Definition fam_comprehension_section_iso (U : FamC)
   : SectionS U ≅[SetCat] Sec(π[FamComprehension] U)
   := section_projection_iso U.

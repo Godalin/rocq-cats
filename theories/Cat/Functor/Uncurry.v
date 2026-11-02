@@ -7,10 +7,17 @@ From Cats Require Import
 
     The outer functor's naturality is precisely what allows the two
     independent variables to commute. *)
+
+(** * 函子值函子的去柯里化
+
+    外层函子的自然性恰好保证两个独立变量的作用交换。 *)
+
 Program Definition UncurryF {A B C : Cat} (F : Functor A (Fct B C))
   : Functor (A ×C B) C
-  := {| F0 p := F (fst p) (snd p)
-      ; F1 X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X) |}.
+  :=
+  {|F0 p := F (fst p) (snd p)
+  ; F1 X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X)
+  |}.
 Next Obligation.
   intros [u v] [u' v'] [Hu Hv]. cbn in *.
   apply comp_proper.
@@ -36,10 +43,16 @@ Defined.
 
 Notation "F '^uncF'" := (UncurryF F) (at level 35) : cat_scope.
 
+(** Uncurry a natural transformation between functor-valued functors. *)
+
+(** 对函子值函子之间的自然变换去柯里化。 *)
+
 Program Definition UncurryN {A B C : Cat} {F G : Functor A (Fct B C)}
     (α : F ⇒ G)
   : F^uncF ⇒ G^uncF
-  := {| nt p := α (fst p) (snd p) |}.
+  :=
+  {|nt p := α (fst p) (snd p)
+  |}.
 Next Obligation.
   destruct X as [a b], Y as [a' b'], f as [u v]. cbn.
   pose proof (nt_naturality α u b) as Hu. cbn in Hu.
@@ -56,9 +69,17 @@ Defined.
 
 Notation "α '^uncN'" := (UncurryN α) (at level 35) : cat_scope.
 
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
+
 Global Instance UncurryN_proper {A B C : Cat} {F G : Functor A (Fct B C)}
   : Proper (NatEq ==> NatEq) (@UncurryN A B C F G).
 Proof. intros α β H [a b]. exact (H a b). Defined.
+
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance UncurryF_proper {A B C : Cat}
   : Proper (NatIso ==> NatIso) (@UncurryF A B C).

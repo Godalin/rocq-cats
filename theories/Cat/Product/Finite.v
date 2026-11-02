@@ -8,8 +8,16 @@ From Cats.Set Require Export Finite.
 From Cats Require Export Cat.Product.Indexed.
 
 (** * Finite Products from Terminal Objects and Binary Products *)
+
+(** * 由终对象和二元积构造有限积 *)
+
 Section FiniteProducts.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
+
+(** Recursively form a finite product, using the terminal object for the empty
+    family. *)
+
+(** 递归构造有限积，空族使用终对象。 *)
 
 Fixpoint FiniteProduct {n : nat} (D : Fin n → @Ob C)
   : @Ob C
@@ -17,6 +25,10 @@ Fixpoint FiniteProduct {n : nat} (D : Fin n → @Ob C)
   | O => λ _, 1
   | S m => λ D, (D fin_first × FiniteProduct (λ i : Fin m, D (fin_next i)))%ob
   end D.
+
+(** Project recursively to the specified finite position. *)
+
+(** 递归投影到指定有限位置。 *)
 
 Fixpoint finite_product_proj {n : nat} (D : Fin n → @Ob C) (i : Fin n)
   : Hom (FiniteProduct D) (D i).
@@ -26,6 +38,10 @@ Proof.
   - exact π1.
   - exact (@finite_product_proj n (λ j : Fin n, D (fin_next j)) i ∘ π2).
 Defined.
+
+(** Assemble a finite family of arrows by recursive binary pairing. *)
+
+(** 通过递归二元配对组装有限箭头族。 *)
 
 Fixpoint finite_product_pair {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
     (κ : ∀ i, Hom X (D i))
@@ -37,6 +53,10 @@ Fixpoint finite_product_pair {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
       finite_product_pair (λ i : Fin m, D (fin_next i)) (λ i, κ (fin_next i))⟩
   end D κ.
 
+(** A finite product projection recovers the corresponding pairing component. *)
+
+(** 有限积投影恢复配对的对应分量。 *)
+
 Lemma finite_product_β {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
     (κ : ∀ i, Hom X (D i)) (i : Fin n)
   : finite_product_proj D i ∘ finite_product_pair D κ ≈ κ i.
@@ -47,6 +67,10 @@ Proof.
   - rewrite comp_assoc, product_β2.
     exact (IH (λ j, D (fin_next j)) (λ j, κ (fin_next j)) i).
 Qed.
+
+(** Finite product projections detect equality of arrows into the product. *)
+
+(** 有限积投影检测指向该积的箭头相等。 *)
 
 Theorem finite_product_hom_ext {n : nat} (D : Fin n → @Ob C) {X : @Ob C}
     (f g : Hom X (FiniteProduct D))
@@ -63,22 +87,39 @@ Qed.
 
 (** The result is the existing indexed-product structure. The construction
     works for every functor on the finite discrete shape. *)
+
+(** 结果使用已有索引积结构，适用于有限离散形状上的任意函子。 *)
+
 Program Definition FiniteProductLimit {n : nat}
     (D : Functor (DiscreteCat (Fin n)) C)
   : HasLimit C D
-  := {| Lim := FiniteProduct (λ i, D i)
-      ; limit_cone := @DiscreteCone C (Fin n) D _ (finite_product_proj (λ i, D i)) |}.
+  :=
+  {|Lim := FiniteProduct (λ i, D i)
+  ; limit_cone := @DiscreteCone C (Fin n) D _ (finite_product_proj (λ i, D i))
+  |}.
 Next Obligation.
   intros X μ. exists (finite_product_pair (λ i, D i) (λ i, μ i)).
-  refine {| this := _; that := _ |}.
+  refine {|this := _
+         ; that := _
+         |}.
   - intros i. apply finite_product_β.
   - intros k Hk. apply finite_product_hom_ext. intros i.
     transitivity (μ i); [exact (Hk i) | symmetry; apply finite_product_β].
 Defined.
 
+(** Choose limits of all diagrams on the given finite discrete shape. *)
+
+(** 选择给定有限离散形状上全部图式的极限。 *)
+
 Program Definition FiniteProductLimits (n : nat)
   : HasLimitsOfShape C (DiscreteCat (Fin n))
-  := {| hasLimit := FiniteProductLimit |}.
+  :=
+  {|hasLimit := FiniteProductLimit
+  |}.
+
+(** The operation respects the specified equivalences of its arguments. *)
+
+(** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance finite_product_pair_proper {n : nat} (D : Fin n → @Ob C)
     {X : @Ob C}

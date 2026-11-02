@@ -5,26 +5,42 @@ From Cats Require Import
 
 (** * Products in the Category of Setoids *)
 
+(** * 广集范畴中的积 *)
+
+(** The product setoid with componentwise equality. *)
+
+(** 具有逐分量相等的乘积广集。 *)
+
 Program Canonical ProdS (X Y : SetC)
-  := {|carrier := X * Y
-     ; carrier_equiv := ProdEq [≈S] [≈S]
-     |}.
+  :=
+  {|carrier := X * Y
+  ; carrier_equiv := ProdEq [≈S] [≈S]
+  |}.
 
 Infix "×S" := ProdS (at level 40).
 
 (** Chosen products with computational mediators, extracted from their
     universal property. Equality is pointwise setoid equivalence. *)
+
+(** 从泛性质提取可计算中介，构造选定积；相等使用逐点指定相等。 *)
+
 Program Definition SetCat_HasProduct
   : HasProduct SetCat
-  := {| Prod := ProdS
-      ; π1 X Y := {| func := fst |}
-      ; π2 X Y := {| func := snd |}
-      |}.
+  :=
+  {|Prod := ProdS
+  ; π1 X Y :=
+      {|func := fst
+      |}
+  ; π2 X Y :=
+      {|func := snd
+      |}
+  |}.
 Next Obligation. intros [x y] [x' y'] [H1 H2]. exact H1. Defined.
 Next Obligation. intros [x y] [x' y'] [H1 H2]. exact H2. Defined.
 Next Obligation.
   intros Z f g.
-  unshelve notypeclasses refine (({| func := _ |}); _).
+  unshelve notypeclasses refine (({|func := _
+                                  |}); _).
   - exact (λ z, (f z, g z)).
   - intros z z' Hz. split; apply func_proper; exact Hz.
   - split.

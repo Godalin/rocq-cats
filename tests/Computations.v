@@ -13,28 +13,43 @@ Module CodeConversion.
 
 Program Definition Codes
   : SetC
-  := {| carrier := unit; carrier_equiv _ _ := unit |}.
+  :=
+  {|carrier := unit
+  ; carrier_equiv _ _ := unit
+  |}.
 Next Obligation. split; red; intros; exact tt. Defined.
 Program Definition Values
   : SetC
-  := {| carrier := bool; carrier_equiv := eq |}.
+  :=
+  {|carrier := bool
+  ; carrier_equiv := eq
+  |}.
 
 (** Conversion examines its equality witness, so opacity in the family or
     function equivalence operations would prevent this computation. *)
+
+(** 转换检查相等见证；族或函数相等运算不透明时，此计算将无法归约。 *)
+
 Program Definition Decode
   : FamS Codes
-  := {| fam _ := Values
-      ; transpS x y p := match p with tt => id_resp end |}.
+  :=
+  {|fam _ := Values
+  ; transpS x y p := match p with tt => id_resp end
+  |}.
 Next Obligation. destruct p. reflexivity. Defined.
 Next Obligation. destruct p, q, r. reflexivity. Defined.
 
 Program Definition A
   : UnitS →r Codes
-  := {| func _ := tt |}.
+  :=
+  {|func _ := tt
+  |}.
 Next Obligation. intros x y p. exact tt. Defined.
 Program Definition t
   : SectionS Decode[A]S
-  := {| section _ := false |}.
+  :=
+  {|section _ := false
+  |}.
 Next Obligation. reflexivity. Defined.
 
 Definition T

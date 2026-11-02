@@ -72,6 +72,9 @@ From Cats Require Import
   Instance.Set.Representable.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
+
+(** 基础广集及其范畴接受载体与相等见证的两种大小排列。 *)
+
 Section SetLevels.
 Universe u p.
 Constraint Set < u.
@@ -98,6 +101,9 @@ End SetLevels.
 
 (** Guard against identifying morphism and equivalence-witness universes
     when a construction instantiates a bare [Cat]. Test both orderings. *)
+
+(** 构造实例化一般 [Cat] 时，不得等同态射与相等见证宇宙；两种排列均需检查。 *)
+
 Section CategoryLevels.
 Universe o h p l.
 Constraint Set < h.
@@ -172,6 +178,9 @@ End CategoryLevels.
 
 (** Transposition must preserve hom/equality levels in either ordering.
     The ambient set category for the correspondence must not identify them. *)
+
+(** 转置必须保留 Hom 与相等层级的两种排列，所用环境集合范畴不得将它们等同。 *)
+
 Section ExponentialLevels.
 Universe o h p l.
 Constraint Set < h.
@@ -215,6 +224,9 @@ End ExponentialLevels.
 (** An adjunction can relate categories whose two hom levels are reversed.
     Its natural hom isomorphism uses a larger ambient set category, with
     either ordering of carrier and equality-witness levels. *)
+
+(** 伴随可关联 Hom 两个层级顺序相反的范畴；自然 Hom 同构使用更大的环境集合范畴，并接受载体与相等见证的两种排列。 *)
+
 Section AdjunctionLevels.
 Universe o h p n e l.
 Constraint Set < h.
@@ -244,6 +256,9 @@ End AdjunctionLevels.
 
 (** Large diagram shapes may raise cone and law levels, without identifying
     the target category's native hom and equality-witness levels. *)
+
+(** 大图式形状可提高锥与定律的层级，但不得等同目标范畴原生的 Hom 及相等见证层级。 *)
+
 Section LimitLevels.
 Universe o h p n l.
 Constraint Set < h.
@@ -280,6 +295,9 @@ End LimitLevels.
 
 (** Shape changes may reverse the shape hom/equality ordering and lower its
     object level. Neither ordering of the target's native hom levels changes. *)
+
+(** 形状变换可反转形状的 Hom 与相等大小顺序并降低对象层级，目标范畴原生两种 Hom 层级的排列均不改变。 *)
+
 Section ReindexedLimitLevels.
 Universe o h p n m l.
 Constraint Set < h.
@@ -323,6 +341,9 @@ End ReindexedLimitLevels.
 (** Graph edges retain independent carrier and equality levels. Paths must
     contain intermediate vertices; their generated equality also contains
     the original edge witnesses. Raising carriers does not force witnesses up. *)
+
+(** 图的边载体与相等层级独立；路径包含中间顶点，其生成相等也包含原边见证。提高载体不得强制提高见证。 *)
+
 Section GraphLevels.
 Universe o e p n l.
 Constraint o < e.
@@ -385,6 +406,9 @@ End GraphLevels.
 
 (** Shape comparisons and their diagonal adjunctions must work in either
     ordering of the target category's native hom and equality levels. *)
+
+(** 形状比较及其对角伴随必须适用于目标范畴原生 Hom 与相等层级的两种排列。 *)
+
 Section ShapedLimitLevels.
 Universe o h p l.
 Constraint Set < h.
@@ -454,6 +478,9 @@ End ShapedLimitLevels.
 
 (** The two product indices can be larger than the target homs. The general
     equalizer formula must preserve both native hom/equality orderings. *)
+
+(** 两个积索引的大小可以超过目标 Hom；一般等化子公式必须保留 Hom 与相等的两种大小排列。 *)
+
 Section ProductEqualizerConstructionLevels.
 Universe o h p n l.
 Constraint Set < h.
@@ -480,6 +507,9 @@ End ProductEqualizerConstructionLevels.
 
 (** Small index categories do not identify the target category's native
     hom and equality-witness levels, including diagrams with relations. *)
+
+(** 小索引范畴不得等同目标范畴原生 Hom 与相等层级，包括带关系的图式。 *)
+
 Section SmallShapeLevels.
 Universe o h p l.
 Constraint Set < h.
@@ -520,6 +550,9 @@ End SmallShapeLevels.
 
 (** The same hom-category must retain distinct 1-cell, 2-cell and
     2-cell-equivalence levels through the bicategory projections. *)
+
+(** 同一 Hom 范畴必须通过双范畴投影保留独立的一胞、二胞及二胞相等层级。 *)
+
 Section BicategoryLevels.
 Universe o h t p a b l.
 Constraint o < h.
@@ -543,6 +576,9 @@ End BicategoryLevels.
 
 (** Representability and the Yoneda isomorphism retain both hom/equality
     orderings; the isomorphism uses a large enough ambient set category. *)
+
+(** 可表性与 Yoneda 同构保留 Hom 与相等的两种排列；同构使用足够大的环境集合范畴。 *)
+
 Section RepresentableLevels.
 Universe o h p l.
 Constraint Set < h.
@@ -567,6 +603,9 @@ Definition low_eq_yoneda
 End RepresentableLevels.
 
 (** The chosen pullback instance formerly collapsed these two levels. *)
+
+(** 选定拉回实例曾错误合并这两个层级。 *)
+
 Section SetoidPullbackLevels.
 Universe u p.
 Constraint p < u.
@@ -582,6 +621,9 @@ End SetoidPullbackLevels.
 
 (** Codes can be larger than contexts. Decoded fibers determine the two
     context levels, which remain independent in either ordering. *)
+
+(** 代码可大于上下文；解码纤维决定两个上下文层级，它们在两种排列下都保持独立。 *)
+
 Section CodeModelLevels.
 Universe u p c q l.
 Constraint Set < u.
@@ -605,6 +647,9 @@ Definition reverse_code_model
 End CodeModelLevels.
 
 (** Representation must not identify hom, term or equality-witness levels. *)
+
+(** 表示不得等同 Hom、项或相等见证层级。 *)
+
 Section ContextRepresentationLevels.
 Universe o h p a b c d l.
 Constraint Set < h.
