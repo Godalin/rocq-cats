@@ -105,6 +105,21 @@ End PartialFunctor.
 Infix "∘F" := CompF
   (at level 40) : cat_scope.
 
+(** Independent functors act componentwise on a product category. *)
+Program Definition ProdF {C D E K : Cat} (F : Functor C D) (G : Functor E K)
+  : Functor (C ×C E) (D ×C K) :=
+  {| F0 p := (F (fst p), G (snd p))
+   ; F1 X Y f := (fmap F (fst f), fmap G (snd f)) |}.
+Next Obligation.
+  intros [f g] [f' g'] [Hf Hg]. split; cbn.
+  - exact (@functor_fmap_proper _ _ F _ _ f f' Hf).
+  - exact (@functor_fmap_proper _ _ G _ _ g g' Hg).
+Qed.
+Next Obligation. split; apply functor_id. Qed.
+Next Obligation. split; apply functor_comp. Qed.
+
+Infix "×F" := ProdF (at level 41) : cat_scope.
+
 Lemma fmap_eq_to_hom {C D : Cat} (F : Functor C D)
     {X Y : @Ob C} (p : X = Y)
   : fmap F (eq_to_hom p) ≈ eq_to_hom (f_equal F p).

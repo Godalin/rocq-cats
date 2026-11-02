@@ -1,4 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Instance.Set.Core.
+From Cats Require Import Instance.Set.Lift.
 
 (** * Hom-Functors *)
 
@@ -94,6 +95,17 @@ Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
 Qed.
 Next Obligation. simpl. intros h. simpl; carw. Qed.
 Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat cacr. Qed.
+
+(** Hom on either side of a pair of functors. A common ambient set category
+    raises carrier and equality universes independently. Functoriality is
+    inherited from HomF and composition, rather than reproved here. *)
+Definition LeftHomF@{u p +} {C D : Cat} (F : Functor C D)
+  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _} :=
+  LiftF ∘F (HomF ∘F (OpF F ×F IdF)).
+
+Definition RightHomF@{u p +} {C D : Cat} (G : Functor D C)
+  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _} :=
+  LiftF ∘F (HomF ∘F (IdF ×F G)).
 
 (** * Morphism Maps of Functors
 

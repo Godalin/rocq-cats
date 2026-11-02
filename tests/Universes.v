@@ -1,5 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
+From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -67,6 +68,33 @@ Definition low_eq_slice_codomain_comp := @slice_reindex_comp_cartesian_factor D.
 Definition high_eq_thin : Bicat@{o h p Set _ _ _} := ThinBicat C.
 Definition low_eq_thin := ThinBicat D.
 End CategoryLevels.
+
+(** An adjunction can relate categories whose two hom levels are reversed.
+    Its natural hom isomorphism uses a larger ambient set category, with
+    either ordering of carrier and equality-witness levels. *)
+Section AdjunctionLevels.
+Universe o h p n e l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < n.
+Constraint n < e.
+Constraint e < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (F : Functor C D) (G : Functor D C) (A : F ⊣ G).
+
+Definition mixed_adjunct (X : @Ob C) (Y : @Ob D)
+  : HomSet (F X) Y →r HomSet X (G Y) := adjunct_resp A.
+Definition mixed_unadjunct (X : @Ob C) (Y : @Ob D)
+  : HomSet X (G Y) →r HomSet (F X) Y := unadjunct_resp A.
+Definition mixed_adjunction_comp : (F ∘F IdF) ⊣ (IdF ∘F G)
+  := CompAdjunction A (IdAdjunction C).
+Definition high_eq_adjunction_hom
+  : @NatIso _ SetCat@{n e _ _ _ _ _} (LeftHomF F) (RightHomF G)
+  := adjunction_hom_nat_iso A.
+Definition low_eq_adjunction_hom
+  : @NatIso _ SetCat@{e n _ _ _ _ _} (LeftHomF F) (RightHomF G)
+  := adjunction_hom_nat_iso A.
+End AdjunctionLevels.
 
 (** The same hom-category must retain distinct 1-cell, 2-cell and
     2-cell-equivalence levels through the bicategory projections. *)

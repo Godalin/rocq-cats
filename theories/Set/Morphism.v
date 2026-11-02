@@ -21,7 +21,10 @@ Record FunS_resp (X Y : SetC) :=
 
 Infix "→r" := FunS_resp (at level 99).
 
-Program Definition lift_resp@{v q +} {X Y : SetC} (f : X →r Y)
+(** The input map's Proper carrier bound [s] is independent of the target
+    carrier level [v]; lifting a native hom-map must not identify them. *)
+Program Definition lift_resp@{v q s +} {X Y : SetC}
+    (f : FunS_resp@{s _ _ _ _ _} X Y)
   : LiftS@{_ _ v q} X →r LiftS@{_ _ v q} Y :=
   {| func x := {| lower := f (lower x) |} |}.
 Next Obligation.
