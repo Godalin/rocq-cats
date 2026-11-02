@@ -1,7 +1,8 @@
 From Cats Require Export
   Cat.Shape.Discrete
   Cat.Shape.Order
-  Cat.Shape.Ordinal.
+  Cat.Shape.Ordinal
+  Cat.Shape.Finite.
 From Cats Require Export Graph.Shape.
 
 (** * Free Cospan and Span Shapes *)

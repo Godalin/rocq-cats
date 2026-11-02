@@ -1,4 +1,5 @@
 From Cats.Set Require Export Core.
+From Cats.Set Require Import Morphism.
 
 (** * Finite Positions
 
@@ -56,3 +57,41 @@ Next Obligation.
   - intros x y H. symmetry. exact H.
   - intros x y z H K. transitivity y; assumption.
 Defined.
+
+(** ** Finite Covers
+
+    A finite list of representatives covers the specified equality. Repeated
+    representatives are allowed; neither decidable equality nor a choice
+    principle is required. *)
+
+(** ** 有限覆盖
+
+    有限代表族按指定相等覆盖广集。允许重复代表，不要求可判定相等或选择公理。 *)
+
+(** A chosen respectful enumeration and a representative for every element. *)
+
+(** 选定的保相等枚举，以及每个元素的代表及相等见证。 *)
+
+Class HasFiniteCover (X : SetC)
+  :=
+  { finite_count : nat
+  ; finite_enum : FinS finite_count →r X
+  ; finite_cover (x : X) : ∃ i, finite_enum i ≈S x
+  }.
+
+Arguments finite_count {_} {_}.
+Arguments finite_enum {_} {_}.
+Arguments finite_cover {_} {_} _.
+
+(** Finite positions are covered by their identity enumeration. Enable this
+    chosen structure explicitly. *)
+
+(** 有限位置由恒等枚举覆盖；此选定结构须显式启用。 *)
+
+Program Definition FinitePositionsCover (n : nat)
+  : HasFiniteCover (FinS n)
+  :=
+  {|finite_count := n
+  ; finite_enum := id_resp
+  |}.
+Next Obligation. exists x. reflexivity. Defined.

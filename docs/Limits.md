@@ -80,8 +80,8 @@ eq⟨q,H⟩             由 H : f ∘ q ≈ g ∘ q 得到的唯一中介
 ```
 
 两个方向保留给定终对象；不要求往返后的结构记录相等。
-这一步比较两套基础数据，尚未定义一般有限形状的接口，
-也尚未形式化由这些数据构造任意有限图式极限的定理。
+同一模块现在还从这两套基础数据构造任意带有限 Hom 覆盖形状的极限，
+并进一步处理只要求有限生成的形状，见下文。
 
 ## 由按索引的积与等化子构造极限
 
@@ -126,7 +126,8 @@ DiagramTargets D a = D (arrow_cod a)       a : ArrowOb J
 无需另选相干的极限映射。
 
 公式本身不要求 J 有限；能否选出上述两个积由 C 的结构和大小界决定。
-有限位置及其索引积见下节；任意有限形状还需提供其对象、箭头索引与有限位置的对应。
+有限位置及其索引积见下节；一般有限形状通过有限覆盖及生成图接入，
+不要求对象或箭头载体与有限位置原生相等。
 
 ## 从终对象和二元积构造有限积
 
@@ -150,7 +151,8 @@ FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
 不再增加有限积的独立结构字段。
 
 递归对象、投影、配对及泛性质中的中介均保持透明，便于直接计算。
-有限生成图通过下一节的构造接入这些积；一般有限范畴的表示仍待后续完成。
+有限生成图通过下一节的构造接入这些积；带有限 Hom 覆盖的范畴则通过
+`FiniteHomGenerators` 给出相应生成图及其解释函子。
 
 ## 只按生成边取积的极限构造
 
@@ -188,7 +190,7 @@ EdgeSet x y = FinS (k x y)
 `FiniteGraphLimit k D` 是单个图式的便利入口；这些结构均须显式启用。
 
 这一步处理有限生成图的自由范畴，包括含循环、路径无限的情形。
-额外路径关系、一般有限范畴的表示仍待后续完成；沿表示传递极限复用下一节的通用理论。
+下文用满且本质满的解释函子将结果传到目标形状，允许目标中存在额外路径方程。
 
 ## 沿满且本质满函子传递极限
 
@@ -221,9 +223,58 @@ extend_limit HF HQ        : is_limit μ → is_limit (ExtendCone HF HQ μ)
 `ReindexedLimits HF HQ` 从 I 形状的选定极限得到 J 形状的选定极限。
 它们保留原来的极限对象与中介，延拓锥腿，且须显式启用。
 
-这给有限生成图呈示提供了通用的最后一步：待构造满且本质满的表示函子后，
-就可将自由图式的极限传到所表示的形状，而无需重新证明中介唯一性。
-当前尚未定义带路径关系的图呈示或一般有限范畴的表示数据。
+有限生成形状现在直接携带这样的解释函子；有限 Hom 覆盖也可构造它。
+因此可以将自由图式的极限传到目标形状，无需重新证明中介唯一性。
+
+## 有限覆盖、有限生成形状与有限极限
+
+[Set.Finite](../theories/Set/Finite.v) 中的 `HasFiniteCover X` 保存有限个位置、
+保相等枚举 `finite_enum : FinS n →r X`，以及每个元素的选定原像：
+
+```text
+finite_cover x : ∃ i, finite_enum i ≈S x
+```
+
+这允许重复代表，也允许 X 的载体具有无限多个但按指定相等等价的代表。
+覆盖按库的严格相等成立；不要求原生相等、可判定相等或选择公理。
+`FinitePositionsCover n` 由恒等枚举覆盖 `FinS n`，须显式启用。
+
+[Shape.Finite](../theories/Cat/Shape/Finite.v) 区分两种选定数据：
+
+- `HasFiniteGenerators J`：有限顶点及有限生成边，连同满且本质满的路径解释
+  `generator_functor : FreeCat (FiniteGraph k) → J`。
+- `HasFiniteHomCover J`：有限对象代表、每个对象到代表的选定同构，
+  以及代表对象之间各个 Hom 广集的 `HasFiniteCover`。
+
+对象覆盖的同构方向是 `finite_object i ≅ X`；不选择骨架，也不要求每个对象
+与某个代表原生相等。覆盖数据中的存在见证均保留在 Type 中。
+
+`FiniteHomGraphMap` 将每个 Hom 代表解释为一条生成边；`FiniteHomF`
+复用 `FreeF` 延拓到路径。`finite_hom_full` 为任意箭头选择一条单边路径作为原像，
+相等见证直接来自有限覆盖；`finite_hom_essentially_surjective` 复用对象覆盖。
+`FiniteHomGenerators` 将两者组装成 `HasFiniteGenerators J`。
+
+有限生成不要求 Hom 集合有限：`FiniteGraphGenerators k` 以恒等函子给出有限图
+自由范畴的生成数据，包括有循环的情形。这里没有保存有限条路径关系，也不声称
+给出通常意义下的有限关系呈示；目标范畴已经规定全部路径解释的相等。
+
+[Limit.Finite](../theories/Cat/Limit/Finite.v) 复用 `FiniteGraphLimits` 和
+`ReindexedLimits`，给出：
+
+```text
+GeneratedLimits : HasFiniteGenerators J → HasLimitsOfShape C J
+FiniteLimits    : HasFiniteHomCover J   → HasLimitsOfShape C J
+FiniteLimit D   : HasLimit C D
+```
+
+前两行省略了已有的终对象、二元积、等化子及形状参数；实际接口使用命名的
+`!Has*` 约束。`PullbackFiniteLimits` 通过 `PullbackProduct` 和
+`PullbackEqualizer` 使选定终对象与拉回也足以构造这些有限形状的极限。
+所有选定结构均须显式启用，极限中介保持透明；极限函子和对角伴随直接复用
+`LimitF` 与 `LimitAdjunction`。
+
+该定理对每个给定形状及覆盖数据分别成立，不在一个小宇宙内收集所有有限范畴。
+无需构造路径商、比较证明字段、增加选择公理，或合并形状与目标范畴的宇宙。
 
 ## 泛性质与选定结构
 

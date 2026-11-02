@@ -1,9 +1,14 @@
 From Cats Require Import
   Cat.Core
+  Cat.Functor
   Cat.Terminal
   Cat.Product
   Cat.Equalizer
   Cat.Pullback.
+From Cats Require Export Cat.Shape.Finite.
+From Cats Require Import
+  Cat.Limit.Graph.Finite
+  Cat.Limit.Reindex.
 
 (** * Two Bases for Finite Limits
 
@@ -134,3 +139,61 @@ Proof.
     exact (HT, (@PullbackProduct C HT HPb, @PullbackEqualizer C HT HPb)).
   - intros [HT [HP HE]]. exact (HT, @ProductEqualizerPullback C HP HE).
 Defined.
+
+(** ** Limits of Finitely Generated and Finite Shapes
+
+    Restrict to a finite generating graph, form its limit by products and an
+    equalizer, then extend its cone. The existing shape-transfer theorem
+    supplies the universal property without a new uniqueness proof. *)
+
+(** ** 有限生成形状与有限形状的极限
+
+    先限制到有限生成图，用积与等化子构造极限，再延拓锥。已有形状传递定理给出
+    泛性质，无需重新证明唯一性。 *)
+
+Section FiniteShapeLimits.
+Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
+Context `{HE : !HasEqualizer C}.
+
+(** Choose all limits of a shape equipped with finite generators. The shape
+    may have infinitely many arrows or additional path equations. *)
+
+(** 为带有限生成元的形状选择全部极限；形状可以有无限多条箭头或额外路径方程。 *)
+
+Definition GeneratedLimits {J : Cat} `{HG : !HasFiniteGenerators J}
+  : HasLimitsOfShape C J
+  := @ReindexedLimits _ J C generator_functor generator_full
+    generator_essentially_surjective (FiniteGraphLimits generator_edges).
+
+(** Finite object representatives and finite hom covers suffice for every
+    diagram of that shape to have a selected limit. Enable it explicitly. *)
+
+(** 有限对象代表与有限 Hom 覆盖足以为该形状的每个图式选择极限；须显式启用。 *)
+
+Definition FiniteLimits {J : Cat} `{HJ : !HasFiniteHomCover J}
+  : HasLimitsOfShape C J
+  := @GeneratedLimits J FiniteHomGenerators.
+
+(** Select the limit of one finite-shape diagram. All its mediator laws and
+    the associated limit functor come from the general limit interface. *)
+
+(** 选择单个有限形状图式的极限；中介定律及相应极限函子均来自一般极限接口。 *)
+
+Definition FiniteLimit {J : Cat} `{HJ : !HasFiniteHomCover J}
+    (D : Functor J C)
+  : HasLimit C D
+  := @hasLimit C J FiniteLimits D.
+
+End FiniteShapeLimits.
+
+(** Terminal objects and pullbacks give the same finite-shape existence
+    theorem through the already established conversion of bases. *)
+
+(** 终对象与拉回通过已有基础结构转换给出同样的有限形状极限存在定理。 *)
+
+Definition PullbackFiniteLimits {C J : Cat}
+    `{HT : !HasTerminal C} `{HPb : !HasPullback C}
+    `{HJ : !HasFiniteHomCover J}
+  : HasLimitsOfShape C J
+  := @FiniteLimits C HT (@PullbackProduct C HT HPb)
+    (@PullbackEqualizer C HT HPb) J HJ.

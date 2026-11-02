@@ -97,6 +97,12 @@ Definition high_eq_finite_positions (n : nat)
 Definition low_eq_finite_positions (n : nat)
   : SetC@{p u}
   := FinS n.
+Definition high_eq_finite_cover (n : nat)
+  : HasFiniteCover (FinS@{u p _} n)
+  := FinitePositionsCover n.
+Definition low_eq_finite_cover (n : nat)
+  : HasFiniteCover (FinS@{p u _} n)
+  := FinitePositionsCover n.
 End SetLevels.
 
 (** Guard against identifying morphism and equivalence-witness universes
@@ -337,6 +343,60 @@ Definition low_eq_reindexed_limit
   : HasLimit D K'
   := ReindexedLimit HF HQ K'.
 End ReindexedLimitLevels.
+
+(** Finite covers do not identify the shape's object, hom or equality levels
+    with those of the target category, in either hom/equality ordering. *)
+
+(** 有限覆盖不合并形状与目标范畴的对象、Hom 或相等层级；两种 Hom 与相等大小排列
+    均须保持独立。 *)
+
+Section FiniteShapeLevels.
+Universe o h p n m l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < n.
+Constraint n < m.
+Constraint m < l.
+Context (J : Cat@{n p h l l}) (K : Cat@{m h p l l}).
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context `{HJ : !HasFiniteHomCover J} `{HK : !HasFiniteHomCover K}.
+Context `{HGC : !HasFiniteGenerators J} `{HGD : !HasFiniteGenerators K}.
+Context `{HTC : !HasTerminal C} `{HTD : !HasTerminal D}.
+Context `{HPC : !HasProduct C} `{HPD : !HasProduct D}.
+Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
+Context `{HPbC : !HasPullback C} `{HPbD : !HasPullback D}.
+
+Definition high_eq_finite_hom_generators
+  : HasFiniteGenerators J
+  := FiniteHomGenerators.
+Definition low_eq_finite_hom_generators
+  : HasFiniteGenerators K
+  := FiniteHomGenerators.
+Definition high_eq_generated_limits
+  : HasLimitsOfShape C J
+  := GeneratedLimits.
+Definition low_eq_generated_limits
+  : HasLimitsOfShape D K
+  := GeneratedLimits.
+Definition high_eq_finite_limits
+  : HasLimitsOfShape C J
+  := FiniteLimits.
+Definition low_eq_finite_limits
+  : HasLimitsOfShape D K
+  := FiniteLimits.
+Definition high_eq_finite_limit (F : Functor J C)
+  : HasLimit C F
+  := FiniteLimit F.
+Definition low_eq_finite_limit (F : Functor K D)
+  : HasLimit D F
+  := FiniteLimit F.
+Definition high_eq_pullback_finite_limits
+  : HasLimitsOfShape C J
+  := PullbackFiniteLimits.
+Definition low_eq_pullback_finite_limits
+  : HasLimitsOfShape D K
+  := PullbackFiniteLimits.
+End FiniteShapeLevels.
 
 (** Graph edges retain independent carrier and equality levels. Paths must
     contain intermediate vertices; their generated equality also contains
