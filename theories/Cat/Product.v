@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Cat.Terminal.
+From Cats Require Import Cat.Core Cat.Functor Cat.Terminal.
 
 (** * Product Objects *)
 
@@ -191,6 +191,29 @@ Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
   : f × g ≈ ⟨ f ∘ π1 , g ∘ π2 ⟩.
 Proof. cato. Qed.
 
+Global Instance cross_proper {X Y X' Y'}
+  : Proper (@HomEq[X, X'] ==> @HomEq[Y, Y'] ==>
+      @HomEq[X × Y, X' × Y']) cross.
+Proof.
+  intros f f' Hf g g' Hg. rewrite !cross_η, Hf, Hg. reflexivity.
+Qed.
+
+Lemma cross_id {X Y} : (@id X) × (@id Y) ≈ id.
+Proof.
+  rewrite cross_η, !comp_id_l. symmetry.
+  apply product_pair_unique. split; apply comp_id_r.
+Qed.
+
+Lemma cross_comp {X Y X' Y' X'' Y''}
+    (f' : Hom X' X'') (g' : Hom Y' Y'')
+    (f : Hom X X') (g : Hom Y Y')
+  : (f' ∘ f) × (g' ∘ g) ≈ (f' × g') ∘ (f × g).
+Proof.
+  rewrite !cross_η, product_comp_r.
+  rewrite !comp_assoc, product_β1, product_β2.
+  reflexivity.
+Qed.
+
 Lemma product_comp_l {X Y X' Y' Z}
     (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
   : (f' × g') ∘ ⟨f , g⟩ ≈ ⟨f' ∘ f , g' ∘ g⟩.
@@ -250,3 +273,19 @@ Proof.
 Qed.
 
 End Product.
+
+(** The chosen product is functorial in both arguments. *)
+Program Definition ProductF {C : Cat} `{HP : !HasProduct C}
+  : Functor (C ×C C) C :=
+  {| F0 p := (fst p × snd p)%ob
+   ; F1 X Y f := (fst f × snd f)%hom |}.
+Next Obligation.
+  intros [f g] [f' g'] [Hf Hg]. apply cross_proper; assumption.
+Qed.
+Next Obligation. apply cross_id. Qed.
+Next Obligation. apply cross_comp. Qed.
+
+Definition ProductRF {C : Cat} `{HP : !HasProduct C} (X : @Ob C)
+  : Functor C C := π1F ProductF X.
+
+Notation "'(-×' X ')'" := (ProductRF X) : cat_scope.

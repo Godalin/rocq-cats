@@ -1,5 +1,6 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
 From Cats Require Import Cat.CCC.
+From Cats Require Import Cat.Product Cat.Exponential Instance.Set.ExponentialHom.
 From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
@@ -68,6 +69,42 @@ Definition low_eq_slice_codomain_comp := @slice_reindex_comp_cartesian_factor D.
 Definition high_eq_thin : Bicat@{o h p Set _ _ _} := ThinBicat C.
 Definition low_eq_thin := ThinBicat D.
 End CategoryLevels.
+
+(** Transposition must preserve hom/equality levels in either ordering.
+    The ambient set category for the correspondence must not identify them. *)
+Section ExponentialLevels.
+Universe o h p l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context `{HC : !CCC C} `{HD : !CCC D}.
+
+Definition high_eq_curry (X Y Z : @Ob C)
+  : HomSet (Z × X) Y →r HomSet Z (Y ^ X) := exponential_curry_resp.
+Definition low_eq_curry (X Y Z : @Ob D)
+  : HomSet (Z × X) Y →r HomSet Z (Y ^ X) := exponential_curry_resp.
+Definition high_eq_uncurry (X Y Z : @Ob C)
+  : HomSet Z (Y ^ X) →r HomSet (Z × X) Y := exponential_uncurry_resp.
+Definition low_eq_uncurry (X Y Z : @Ob D)
+  : HomSet Z (Y ^ X) →r HomSet (Z × X) Y := exponential_uncurry_resp.
+Definition high_eq_exponential_hom (X Y Z : @Ob C)
+  : HomSet (Z × X) Y ≅[SetCat@{h p _ _ _ _ _}] HomSet Z (Y ^ X)
+  := exponential_hom_iso.
+Definition low_eq_exponential_hom (X Y Z : @Ob D)
+  : HomSet (Z × X) Y ≅[SetCat@{p h _ _ _ _ _}] HomSet Z (Y ^ X)
+  := exponential_hom_iso.
+Definition high_eq_exponential_adjunction (X : @Ob C) : (-× X) ⊣ (-^ X)
+  := ProductExponentialAdjunction X.
+Definition low_eq_exponential_adjunction (X : @Ob D) : (-× X) ⊣ (-^ X)
+  := ProductExponentialAdjunction X.
+Definition high_eq_exponential_nat (X : @Ob C)
+  : @NatIso _ SetCat@{h p _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
+  := exponential_hom_nat_iso X.
+Definition low_eq_exponential_nat (X : @Ob D)
+  : @NatIso _ SetCat@{p h _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
+  := exponential_hom_nat_iso X.
+End ExponentialLevels.
 
 (** An adjunction can relate categories whose two hom levels are reversed.
     Its natural hom isomorphism uses a larger ambient set category, with
