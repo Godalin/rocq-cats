@@ -1,4 +1,4 @@
-From Cats Require Import Cat.Core Cat.Slice Cat.SliceReindex Cat.Pullback.
+From Cats Require Import Cat.Core Cat.Slice Cat.Slice.Reindex Cat.Pullback.
 From Cats Require Import Cat.Functor Cat.Natural.
 From Cats Require Import Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.Fam.Reindex.

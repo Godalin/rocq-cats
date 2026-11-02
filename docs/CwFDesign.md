@@ -319,7 +319,7 @@ context_map_cartesian_iff_pullback:
 
 ### 陪域函子的笛卡尔态射
 
-[ArrowFibration](../theories/Cat/ArrowFibration.v) 将前述显示方块判别推广到任意箭头：
+[Arrow.Fibration](../theories/Cat/Arrow/Fibration.v) 将前述显示方块判别推广到任意箭头：
 
 ```text
 arrow_cartesian_iff_pullback f:

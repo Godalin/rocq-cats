@@ -52,6 +52,11 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   This layer does not depend on categories; see the
   [foundation and migration note](./docs/FoundationalSets.md).
 - [Cat](./theories/Cat/): categorical interfaces and general constructions.
+  Topic extensions are grouped under [Arrow/](./theories/Cat/Arrow/),
+  [Slice/](./theories/Cat/Slice/) and [Bicategory/](./theories/Cat/Bicategory/),
+  alongside their core modules. [Shape/](./theories/Cat/Shape/) contains index
+  categories; [Diagram.Shape](./theories/Cat/Diagram/Shape.v) collects diagram
+  constructors grouped by mathematical subject.
   [Core](./theories/Cat/Core.v) contains categories, duality, product categories,
   and isomorphisms. Each hom is a `HomSet : SetC`; `Hom` and `HomEq` are derived.
   Universal constructions are provided separately by
@@ -67,9 +72,9 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   retaining right-inverse witnesses and comparing the section maps. It maps
   sections along commuting maps over a base (`f ▷Sec[H] s`) and pulls them
   back along a given universal square (`s[HP]Sec`).
-  [SliceReindex](./theories/Cat/SliceReindex.v) gives pullback functors on slices,
+  [Slice.Reindex](./theories/Cat/Slice/Reindex.v) gives pullback functors on slices,
   with specified natural identity and composition comparisons; write `A[f]C`.
-  [SliceArrow](./theories/Cat/SliceArrow.v) embeds slice maps as squares over the
+  [Slice.Arrow](./theories/Cat/Slice/Arrow.v) embeds slice maps as squares over the
   identity. Write `A^Arr` for the arrow object. Slice reindexing, including its
   unit/composition comparisons, agrees with codomain cartesian factorization
   for the same chosen pullbacks; `SliceReindexSquareN f` packages the natural squares.
@@ -86,16 +91,16 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   functors act as identities on objects and morphisms.
   [Bicategory](./theories/Cat/Bicategory.v) introduces hom-categories, horizontal
   composition, interchange, and coherent associators/unitors.
-  [TwoCategory](./theories/Cat/TwoCategory.v) expresses strictness relative to
+  [Bicategory.Strict](./theories/Cat/Bicategory/Strict.v) expresses strictness relative to
   a specified 1-cell equivalence (`f ≈₁[R] g`), with coherent comparison
   2-cells and strict associators/unitors. Write `α⟦p, q⟧₂` for transport of
   both endpoints of a 2-cell along specified 1-cell equivalences.
-  [ThinBicat](./theories/Cat/ThinBicat.v) gives a locally thin strict model
+  [Bicategory.Thin](./theories/Cat/Bicategory/Thin.v) gives a locally thin strict model
   from any category, retaining its morphism-equivalence witnesses as 2-cells.
-  [CatBicat](./theories/Cat/CatBicat.v) retains all natural
+  [Bicategory.Cat](./theories/Cat/Bicategory/Cat.v) retains all natural
   transformations as 2-cells and proves pentagon/triangle coherence. `CatCat`
   remains its separate one-dimensional shadow up to natural isomorphism.
-  [BicatHomotopy](./theories/Cat/BicatHomotopy.v) constructs this shadow for any
+  [Bicategory.Homotopy](./theories/Cat/Bicategory/Homotopy.v) constructs this shadow for any
   bicategory; the shadow of `CatBicat` is explicitly equivalent to `CatCat`.
   [The design note](./docs/TwoCategories.md) explains the levels of equality
   in this bicategory presentation. The small
@@ -104,7 +109,7 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   [Fibration](./theories/Cat/Fibration.v) defines cartesian morphisms by universal
   factorization, compares lifts over a base isomorphism, and provides chosen
   cartesian lifts with explicit base-object identifications.
-  [ArrowFibration](./theories/Cat/ArrowFibration.v) proves that cartesian arrows
+  [Arrow.Fibration](./theories/Cat/Arrow/Fibration.v) proves that cartesian arrows
   of the codomain functor are precisely pullback squares. Chosen pullbacks and
   chosen codomain lifts yield one another by explicit constructions; write
   `B[σ]Arr` for the pullback arrow object. Both choices require explicit activation.

@@ -89,7 +89,7 @@ No resizing axiom or universe containing itself is used.
 
 ## Strictness relative to a 1-cell setoid
 
-[TwoCategory.v](../theories/Cat/TwoCategory.v) defines `IsStrictTwoCat K R cmp`
+[Strict.v](../theories/Cat/Bicategory/Strict.v) defines `IsStrictTwoCat K R cmp`
 for a bicategory `K`, a specified `Type`-valued relation `R` on parallel
 1-cells, and comparison 2-cells `cmp p : f ⇒₂ g` for `p : f ≈₁[R X Y] g`.
 The class requires:
@@ -160,7 +160,7 @@ No replacement by the former native-object-equality `FunctorEq` is made here.
 
 ## A locally thin strict model from any category
 
-[ThinBicat.v](../theories/Cat/ThinBicat.v) constructs `ThinBicat C` for any
+[Thin.v](../theories/Cat/Bicategory/Thin.v) constructs `ThinBicat C` for any
 ordinary category `C`:
 
 | Level | Data |
@@ -211,7 +211,7 @@ It proves interchange and packages composition as `CompNF`, a functor on the
 two functor categories. Horizontal composition also preserves natural
 isomorphisms, with computational inverse witnesses.
 
-[CatBicat.v](../theories/Cat/CatBicat.v) instantiates `Bicat` with `Cat`,
+[Cat.v](../theories/Cat/Bicategory/Cat.v) instantiates `Bicat` with `Cat`,
 `Fct C D`, `IdF`, and `CompNF`. The same structure supplies the canonical identity-
 component associators and unitors and proves all coherence laws. All natural
 transformations are 2-cells, including noninvertible ones; parallel 2-cells
@@ -230,7 +230,7 @@ explicit extensionality result would need a separate investigation.
 
 ## The one-dimensional shadow
 
-[BicatHomotopy.v](../theories/Cat/BicatHomotopy.v) defines
+[Homotopy.v](../theories/Cat/Bicategory/Homotopy.v) defines
 `BicatHomotopyCat K`. Its objects and arrows are the 0-cells and 1-cells of
 `K`; arrow equivalence is isomorphism in the corresponding hom-category.
 Horizontal composition preserves this relation because `comp1F` preserves
@@ -279,7 +279,7 @@ foundational assumption check can be reproduced in the project environment:
 
 ```sh
 rocq top -quiet -Q _build/default/theories Cats <<'EOF'
-From Cats Require Import Cat.TwoCategory Cat.BicatHomotopy Cat.ThinBicat Cat.CatBicat.
+From Cats Require Import Cat.Bicategory.Strict Cat.Bicategory.Homotopy Cat.Bicategory.Thin Cat.Bicategory.Cat.
 Print Assumptions ThinBicat_IsStrictTwoCat.
 Print Assumptions BicatHomotopyCat.
 Print Assumptions cat_bicat_homotopy_equiv.

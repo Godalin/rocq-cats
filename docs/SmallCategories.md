@@ -1,8 +1,15 @@
 # 常用小范畴与图式
 
 统一导入 [Cat.Shape](../theories/Cat/Shape.v) 可使用形状范畴；
-导入 [Cat.Diagram.Small](../theories/Cat/Diagram/Small.v) 还可使用常用图式与记号。
+导入 [Cat.Diagram.Shape](../theories/Cat/Diagram/Shape.v) 还可使用常用图式与记号。
 已有二元积、余跨度图式及其极限对应保持可用。
+
+图式按数学主题分组，也可以单独导入：
+
+- [Cat.Diagram.Discrete](../theories/Cat/Diagram/Discrete.v)：离散、空、单点和二元图式。
+- [Cat.Diagram.Span](../theories/Cat/Diagram/Span.v)：跨度、余跨度及其锥。
+- [Cat.Diagram.Arrow](../theories/Cat/Diagram/Arrow.v)：单箭头、平行箭头和同构图式。
+- [Cat.Diagram.Square](../theories/Cat/Diagram/Square.v)：交换方形图式。
 
 ## 目录与构造
 

@@ -70,7 +70,7 @@ available. This requires no new choice of pullbacks.
 
 ## Slices and the codomain lifts
 
-[SliceArrow](../theories/Cat/SliceArrow.v) provides the faithful functor
+[Slice.Arrow](../theories/Cat/Slice/Arrow.v) provides the faithful functor
 `SliceArrowF C X : Functor (C /C X) (Arr C)`.
 Its object action `A^Arr` retains the domain, base X and projection of A.
 `slice_to_square h` has top edge `slice_map h` and bottom edge id.
@@ -84,7 +84,7 @@ Square equality is written `f ≈Arr g` and compares both edges.
 With the same explicitly enabled `HasPullback C`, the source of
 `slice_reindex_square f A` computes both as `(A[f]C)^Arr` and as `A^Arr[f]Arr`.
 This is the existing `arrow_reindex` from
-[ArrowFibration](../theories/Cat/ArrowFibration.v), so the square is cartesian
+[Arrow.Fibration](../theories/Cat/Arrow/Fibration.v), so the square is cartesian
 for the codomain functor. No equality of objects or extra pullback choice is added.
 
 The natural transformation `SliceReindexSquareN f` collects these squares:
@@ -127,7 +127,7 @@ the compiled sources; no new permanent example module is added.
 
 ## Natural substitution comparisons
 
-[SliceReindex](../theories/Cat/SliceReindex.v) constructs `SliceReindexF f`
+[Slice.Reindex](../theories/Cat/Slice/Reindex.v) constructs `SliceReindexF f`
 for any category with explicitly enabled chosen pullbacks. Write `A[f]C`
 for its object action. Morphisms are universal mediators; `pb_β1`, `pb_β2`
 and uniqueness prove their functoriality and independence from triangle

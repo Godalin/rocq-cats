@@ -1,5 +1,5 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Slice Cat.SliceReindex.
-From Cats Require Import Cat.Arrow Cat.ArrowFibration Cat.Pullback Cat.Fibration.
+From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Slice Cat.Slice.Reindex.
+From Cats Require Import Cat.Arrow Cat.Arrow.Fibration Cat.Pullback Cat.Fibration.
 
 (** * Slices and Codomain Lifts
 

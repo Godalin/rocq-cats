@@ -1,12 +1,5 @@
-From Cats Require Export Cat.Diagram.Shape.
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Functor.Uncurry.
-
-(** * Empty and Single-Object Diagrams *)
-Definition EmptyDiagram (C : Cat) : Functor EmptyShape C :=
-  DiscreteF (λ x : Empty_set, match x with end).
-
-Definition PointDiagram {C : Cat} (X : @Ob C) : Functor PointShape C :=
-  DiscreteF (λ _ : unit, X).
+From Cats Require Export Cat.Shape Cat.Diagram.Free.
+From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
 
 (** * The Walking Arrow *)
 Program Definition ArrowDiagram {C : Cat} {X Y : @Ob C} (f : Hom X Y)
@@ -55,12 +48,6 @@ Definition ArrowCone {C : Cat} {X Y P : @Ob C} (f : Hom X Y) (p : Hom P X)
   : P ⇒Δ ⟨f⟩D :=
   @ArrowN C (ConstF ArrowShape P) (ArrowDiagram f) p (f ∘ p) (comp_id_r _).
 
-(** * Spans by Duality *)
-Definition SpanDiagram {C : Cat} {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
-  : Functor SpanShape C := FromDoubleOpF ∘F OpF (CospanDiagram (C := C^op) f g).
-
-Notation "'⟨' f '←→' g '⟩D'" := (SpanDiagram f g) : cat_scope.
-
 (** * Parallel Pairs *)
 Program Definition ParallelGraphMap {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
   : ParallelGraph →G UnderlyingGraph C :=
@@ -107,38 +94,6 @@ Proof.
   - exact (free_cone_edge κ parallel_l).
   - symmetry. exact (free_cone_edge κ parallel_r).
 Qed.
-
-(** * Commuting Squares
-
-    The square is a product of walking arrows. Uncurrying packages its
-    commuting equation as the naturality of a transformation of arrows. *)
-Definition SquareDiagram {C : Cat} {A B D E : @Ob C}
-    (f : Hom A B) (g : Hom A D) (h : Hom B E) (k : Hom D E)
-    (H : h ∘ f ≈ k ∘ g) : Functor SquareShape C :=
-  (ArrowDiagram (C := Fct ArrowShape C)
-    (@ArrowN C (ArrowDiagram f) (ArrowDiagram k) g h H))^uncF.
-
-Notation "'⟨' f ',' g ';' h ',' k '|' H '⟩□'" := (SquareDiagram f g h k H) : cat_scope.
-
-Lemma square_diagram_top {C : Cat} {A B D E : @Ob C}
-    (f : Hom A B) (g : Hom A D) (h : Hom B E) (k : Hom D E)
-    (H : h ∘ f ≈ k ∘ g) : fmap (SquareDiagram f g h k H) square_top ≈ f.
-Proof. cbn. apply comp_id_r. Qed.
-
-Lemma square_diagram_left {C : Cat} {A B D E : @Ob C}
-    (f : Hom A B) (g : Hom A D) (h : Hom B E) (k : Hom D E)
-    (H : h ∘ f ≈ k ∘ g) : fmap (SquareDiagram f g h k H) square_left ≈ g.
-Proof. cbn. apply comp_id_l. Qed.
-
-Lemma square_diagram_right {C : Cat} {A B D E : @Ob C}
-    (f : Hom A B) (g : Hom A D) (h : Hom B E) (k : Hom D E)
-    (H : h ∘ f ≈ k ∘ g) : fmap (SquareDiagram f g h k H) square_right ≈ h.
-Proof. cbn. apply comp_id_l. Qed.
-
-Lemma square_diagram_bottom {C : Cat} {A B D E : @Ob C}
-    (f : Hom A B) (g : Hom A D) (h : Hom B E) (k : Hom D E)
-    (H : h ∘ f ≈ k ∘ g) : fmap (SquareDiagram f g h k H) square_bottom ≈ k.
-Proof. cbn. apply comp_id_r. Qed.
 
 (** * The Walking Isomorphism *)
 Program Definition IsoDiagram {C : Cat} {X Y : @Ob C} (i : X ≅[C] Y)

@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory.
-From Cats Require Import Cat.CatCat Cat.BicatHomotopy.
+From Cats Require Import Cat.CatCat Cat.Bicategory.Homotopy.
 
 (** * Categories, Functors and All Natural Transformations
 

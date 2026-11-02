@@ -1,5 +1,5 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.TwoCategory.
-From Cats Require Import Cat.Natural Cat.CatCat Cat.BicatHomotopy.
+From Cats Require Import Cat.Core Cat.Functor Cat.Bicategory.Strict.
+From Cats Require Import Cat.Natural Cat.CatCat Cat.Bicategory.Homotopy.
 
 (** * A Locally Thin Bicategory from a Category
 

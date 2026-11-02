@@ -1,5 +1,5 @@
 From Stdlib Require Import Arith.PeanoNat Lia.
-From Cats Require Import Cat.Core Cat.Functor Cat.TwoCategory.
+From Cats Require Import Cat.Core Cat.Functor Cat.Bicategory.Strict.
 
 Local Open Scope nat_scope.
 

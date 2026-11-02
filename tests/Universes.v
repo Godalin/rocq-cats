@@ -1,10 +1,9 @@
-From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.ThinBicat.
+From Cats Require Import Cat.Core Cat.Functor Cat.Natural Cat.Bicategory Cat.Bicategory.Thin.
 From Cats Require Import Cat.CCC.
 From Cats Require Import Cat.Product Cat.Exponential Instance.Set.ExponentialHom.
 From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
 From Cats Require Import Cat.Diagram Cat.Limit Cat.Limit.Adjunction Cat.Limit.Preservation.
 From Cats Require Import Graph.Morphism Graph.Path Cat.Free Cat.Diagram.Shape.
-From Cats Require Import Cat.Diagram.Small.
 From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
@@ -13,8 +12,8 @@ From Cats Require Import DTT.Display.Section.
 From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import Cat.Arrow Cat.Section DTT.Context.Section.
-From Cats Require Import Cat.ArrowFibration.
-From Cats Require Import Cat.SliceArrow.
+From Cats Require Import Cat.Arrow.Fibration.
+From Cats Require Import Cat.Slice.Arrow.
 From Cats Require Import Cat.Pullback Instance.Set.Core Instance.Set.Pullback.
 From Cats Require Import Instance.Set.Fam.Slice Instance.Set.Fam.SliceReindex.
 From Cats Require Import Instance.Set.Fam.Core Instance.Set.Fam.Cat Instance.Set.CwF.
