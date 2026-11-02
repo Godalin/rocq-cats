@@ -7,6 +7,7 @@ From Cats Require Import Graph.Morphism Graph.Path Cat.Free Cat.Diagram.Shape.
 From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
 From Cats Require Import Cat.Terminal Cat.Equalizer Cat.Limit.Terminal Cat.Limit.Equalizer.
 From Cats Require Import Cat.Limit.Finite.
+From Cats Require Import Cat.Product.Indexed Cat.Limit.Construction.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -222,6 +223,28 @@ Definition low_eq_pullbacks_from_equalizers : HasPullback D := @ProductEqualizer
 Definition high_eq_finite_limit_bases := finite_limit_bases C.
 Definition low_eq_finite_limit_bases := finite_limit_bases D.
 End ShapedLimitLevels.
+
+(** The two product indices can be larger than the target homs. The general
+    equalizer formula must preserve both native hom/equality orderings. *)
+Section ProductEqualizerConstructionLevels.
+Universe o h p n l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < n.
+Constraint n < l.
+Context (J : Cat@{n h p l l}).
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
+Context `{HOC : !HasLimitsOfShape C (DiscreteCat (@Ob J))}.
+Context `{HAC : !HasLimitsOfShape C (DiscreteCat (ArrowOb J))}.
+Context `{HOD : !HasLimitsOfShape D (DiscreteCat (@Ob J))}.
+Context `{HAD : !HasLimitsOfShape D (DiscreteCat (ArrowOb J))}.
+
+Definition high_eq_product_equalizer_limits := @IndexedProductsEqualizerLimits J C HOC HAC HEC.
+Definition low_eq_product_equalizer_limits := @IndexedProductsEqualizerLimits J D HOD HAD HED.
+Definition high_eq_product_equalizer_limit (K : Functor J C) := ProductsEqualizerLimit K.
+Definition low_eq_product_equalizer_limit (K : Functor J D) := ProductsEqualizerLimit K.
+End ProductEqualizerConstructionLevels.
 
 (** Small index categories do not identify the target category's native
     hom and equality-witness levels, including diagrams with relations. *)

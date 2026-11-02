@@ -83,6 +83,51 @@ eq⟨q,H⟩             由 H : f ∘ q ≈ g ∘ q 得到的唯一中介
 这一步比较两套基础数据，尚未定义一般有限形状的接口，
 也尚未形式化由这些数据构造任意有限图式极限的定理。
 
+## 由按索引的积与等化子构造极限
+
+[Product.Indexed](../theories/Cat/Product/Indexed.v) 将按索引的积直接表示为
+离散图式的极限。给定 `D : I → Ob C`，选定结构就是
+`HasLimit C (DiscreteF D)`，不引入另一套积公理：
+
+```text
+Π[D]          积对象
+πΠ[D] i       第 i 个投影
+Π⟨κ⟩          由一族态射 κ 配出的中介
+```
+
+β/η、逐点相等的 respectfulness、预合成律及由投影判断态射相等的定理
+均复用离散极限的泛性质。索引是离散图式的对象类型；
+相等的态射族按逐点指定相等比较，无需函数外延相等公理。
+
+[Limit.Construction](../theories/Cat/Limit/Construction.v) 对任意图式
+`D : J → C` 使用两族对象：
+
+```text
+DiagramObjects D j = D j
+DiagramTargets D a = D (arrow_cod a)       a : ArrowOb J
+```
+
+设两族积已选定，记其为 P、Q。两条 `P → Q` 的态射由以下分量定义：
+
+```text
+πa ∘ diagram_product_source D ≈ fmap D (arrow_map a) ∘ πdom(a)
+πa ∘ diagram_product_target D ≈ πcod(a)
+```
+
+`ProductsEqualizerLimit D` 取这两条态射的等化子，
+再将等化子箭头与 P 的各投影复合，得到 D 的极限锥。
+候选证明 `products_equalizer_limit` 只要求这两个特定积与一个候选等化子；
+不存在对所有大小的积的隐含假设。
+箭头索引复用已有 `ArrowOb J`，不比较箭头对象记录或相等见证。
+
+`IndexedProductsEqualizerLimits` 从对象索引、箭头索引两类离散图式的全部
+选定极限，以及选定等化子，构造 `HasLimitsOfShape C J`。
+所得极限函子及对角伴随可以直接调用既有 `LimitF` 和 `LimitAdjunction`，
+无需另选相干的极限映射。
+
+公式本身不要求 J 有限；能否选出上述两个积由 C 的结构和大小界决定。
+有限情形仍需补上有限索引设施，以及从终对象和二元积构造相应索引积的步骤。
+
 ## 泛性质与选定结构
 
 [Limit](../theories/Cat/Limit.v) 区分候选与选定极限：
