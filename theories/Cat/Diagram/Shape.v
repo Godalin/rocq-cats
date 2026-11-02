@@ -1,9 +1,7 @@
-From Cats Require Export Graph.Shape Cat.Diagram.Free.
+From Cats Require Export Cat.Shape Cat.Diagram.Free.
 From Cats Require Import Cat.Core Cat.Functor Cat.Natural.
 
 (** * Discrete Diagrams *)
-Definition DiscreteCat (V : Type) := FreeCat (DiscreteGraph V).
-
 Program Definition DiscreteGraphMap {C : Cat} {V : Type} (D : V → @Ob C)
   : DiscreteGraph V →G UnderlyingGraph C :=
   {| vertex_map := D
@@ -18,8 +16,6 @@ Definition DiscreteCone {C : Cat} {V : Type} {D : Functor (DiscreteCat V) C}
 Proof. refine (FreeCone κ _). intros x y []. Defined.
 
 (** False is the left endpoint and true is the right endpoint. *)
-Definition PairShape := DiscreteCat bool.
-
 Definition PairDiagram {C : Cat} (X Y : @Ob C) : Functor PairShape C :=
   DiscreteF (λ b : bool, if b then Y else X).
 
@@ -34,8 +30,6 @@ Definition PairCone {C : Cat} {X Y P : @Ob C} (p : Hom P X) (q : Hom P Y)
 Notation "'⟨' p ',' q '⟩Cone'" := (PairCone p q) : cat_scope.
 
 (** * Cospan Diagrams *)
-Definition CospanShape := FreeCat CospanGraph.
-
 Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVertex) : @Ob C :=
   match v with
   | cospan_left => X

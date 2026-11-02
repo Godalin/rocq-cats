@@ -4,6 +4,7 @@ From Cats Require Import Cat.Product Cat.Exponential Instance.Set.ExponentialHom
 From Cats Require Import Cat.Adjunction Instance.Set.Adjunction.
 From Cats Require Import Cat.Diagram Cat.Limit Cat.Limit.Adjunction Cat.Limit.Preservation.
 From Cats Require Import Graph.Morphism Graph.Path Cat.Free Cat.Diagram.Shape.
+From Cats Require Import Cat.Diagram.Small.
 From Cats Require Import Cat.Limit.Product Cat.Limit.Pullback.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
@@ -202,6 +203,34 @@ Definition low_eq_product_diagonal := @LimitAdjunction PairShape D (ProductLimit
 Definition high_eq_pullback_diagonal := @LimitAdjunction CospanShape C (PullbackLimits (C := C)).
 Definition low_eq_pullback_diagonal := @LimitAdjunction CospanShape D (PullbackLimits (C := D)).
 End ShapedLimitLevels.
+
+(** Small index categories do not identify the target category's native
+    hom and equality-witness levels, including diagrams with relations. *)
+Section SmallShapeLevels.
+Universe o h p l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (X Y Z W : @Ob C) (X' Y' Z' W' : @Ob D).
+Context (f : Hom X Y) (g : Hom X Z) (r : Hom Y W) (s : Hom Z W).
+Context (f' : Hom X' Y') (g' : Hom X' Z') (r' : Hom Y' W') (s' : Hom Z' W').
+Context (H : r ∘ f ≈ s ∘ g) (H' : r' ∘ f' ≈ s' ∘ g').
+
+Definition high_eq_arrow_shape := ArrowDiagram f.
+Definition low_eq_arrow_shape := ArrowDiagram f'.
+Definition high_eq_span_shape := SpanDiagram f g.
+Definition low_eq_span_shape := SpanDiagram f' g'.
+Definition high_eq_parallel_shape := ParallelDiagram (r ∘ f) (s ∘ g).
+Definition low_eq_parallel_shape := ParallelDiagram (r' ∘ f') (s' ∘ g').
+Definition high_eq_square_shape := SquareDiagram f g r s H.
+Definition low_eq_square_shape := SquareDiagram f' g' r' s' H'.
+Definition high_eq_iso_shape (i : X ≅[C] Y) := IsoDiagram i.
+Definition low_eq_iso_shape (i : X' ≅[D] Y') := IsoDiagram i.
+
+Context (V : Type@{o}) (R : V → V → Type@{h}) `{HR : !PreOrder R}.
+Definition small_eq_preorder : Cat@{o h Set l l} := PreorderCat R.
+End SmallShapeLevels.
 
 (** The same hom-category must retain distinct 1-cell, 2-cell and
     2-cell-equivalence levels through the bicategory projections. *)
