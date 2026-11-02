@@ -265,6 +265,10 @@ indexed products reuse discrete limits directly.
 The [finite product construction](./theories/Cat/Product/Finite.v) derives
 limits of finite discrete diagrams from terminal objects and binary products,
 using shared [finite positions](./theories/Set/Finite.v).
+The [generator-based construction](./theories/Cat/Limit/Graph.v) needs products
+only over vertices and generating edges. Its
+[finite-graph specialization](./theories/Cat/Limit/Graph/Finite.v) derives limits
+from terminal objects, binary products and equalizers, including shapes with cycles.
 STLC syntax, its interpretation and the free-CCC completeness theorem remain
 tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
 [#20](https://github.com/Godalin/rocq-cats/issues/20).

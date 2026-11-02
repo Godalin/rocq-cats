@@ -150,7 +150,45 @@ FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
 不再增加有限积的独立结构字段。
 
 递归对象、投影、配对及泛性质中的中介均保持透明，便于直接计算。
-这一步提供有限位置索引的积；任意有限形状的表示及其与一般极限公式的连接仍待后续完成。
+有限生成图通过下一节的构造接入这些积；一般有限范畴的表示仍待后续完成。
+
+## 只按生成边取积的极限构造
+
+[GraphEdges](../theories/Graph/Core.v) 将生成边索引为依赖和
+`∃ x, ∃ y, Edge x y`，保留边的端点和载体数据。
+[Limit.Graph](../theories/Cat/Limit/Graph.v) 对任意
+`D : FreeCat G → C` 使用顶点积 P 和生成边目标积 Q，
+定义两条 `P → Q` 的态射，其分量分别是
+`fmap D (ιG e) ∘ πx` 与 `πy`。
+两者的等化子给出锥腿；生成边交换性通过 `FreeCone` 延伸到所有路径。
+
+`graph_products_equalizer_limit` 与全态射版本共用
+`product_cone_equalizer_limit` 的完整中介／唯一性论证。
+`GraphProductsEqualizerLimit` 选择单个图式的极限，
+`GraphProductsEqualizerLimits` 则给出整个自由形状的选定极限。
+这里不要求路径集合有限，也不比较边代表或交换性见证的原生相等。
+
+[Product.Sigma](../theories/Cat/Product/Sigma.v) 将依赖和索引的积
+构造为外层索引积与各纤维索引积的嵌套积，提供 `SigmaProductLimit` 和
+`SigmaProductLimits`。这是一般的索引构造，不要求索引有限。
+
+[Graph.Finite](../theories/Graph/Finite.v) 以邻接计数表示有限生成图：
+
+```text
+k : Fin n → Fin n → nat
+Vertex (FiniteGraph k) = Fin n
+EdgeSet x y = FinS (k x y)
+```
+
+每对端点的平行生成边使用有限位置标签，不携带端点相等证明字段。
+[Limit.Graph.Finite](../theories/Cat/Limit/Graph/Finite.v) 用三层嵌套有限积
+处理起点、终点和边标签，得到 `FiniteGraphEdgeProducts`。
+因此，在选定终对象、二元积、等化子下，`FiniteGraphLimits k`
+构造 `HasLimitsOfShape C (FreeCat (FiniteGraph k))`。
+`FiniteGraphLimit k D` 是单个图式的便利入口；这些结构均须显式启用。
+
+这一步处理有限生成图的自由范畴，包括含循环、路径无限的情形。
+额外路径关系、一般有限范畴的表示及沿表示传递极限仍待后续完成。
 
 ## 泛性质与选定结构
 

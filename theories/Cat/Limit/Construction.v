@@ -10,6 +10,33 @@ Definition DiagramObjects {J C : Cat} (D : Functor J C) (j : @Ob J) : @Ob C := D
 Definition DiagramTargets {J C : Cat} (D : Functor J C) (a : ArrowOb J) : @Ob C :=
   D (arrow_cod a).
 
+(** The shared universal-property argument only needs that cone families
+    equalize the constraints and that the proposed legs factor through the
+    object product. Different presentations may supply these constraints. *)
+Definition product_cone_equalizer_limit {J C : Cat} (D : Functor J C)
+    `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}
+    {Q E : @Ob C} {s t : Hom Π[DiagramObjects D] Q} {e : Hom E Π[DiagramObjects D]}
+    (κ : E ⇒Δ D) (Hκ : ∀ j, κ j ≈ πΠ[DiagramObjects D] j ∘ e)
+    (Hcones : ∀ X (μ : X ⇒Δ D),
+      s ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j) ≈
+      t ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j))
+    (HE : is_equalizer s t E e) : is_limit κ.
+Proof.
+  intros X μ.
+  pose (p := indexed_pair (D := DiagramObjects D) (λ j, μ j)).
+  destruct (snd HE X p (Hcones X μ)) as [h Hh].
+  exists h. refine {| this := _; that := _ |}.
+  - intros j.
+    change (κ j ∘ h ≈ μ j).
+    rewrite (Hκ j), comp_assoc, (@this _ _ _ _ _ Hh).
+    unfold p. apply (indexed_product_β (D := DiagramObjects D)).
+  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+    apply indexed_product_hom_ext. intros j.
+    rewrite <- comp_assoc, <- (Hκ j). transitivity (μ j).
+    + exact (Hk j).
+    + unfold p. symmetry. apply (indexed_product_β (D := DiagramObjects D)).
+Defined.
+
 Section ProductsEqualizer.
 Context {J C : Cat} (D : Functor J C).
 Context `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}.
@@ -45,29 +72,16 @@ Definition products_equalizer_limit {E : @Ob C} {e : Hom E Π[DiagramObjects D]}
     (HE : is_equalizer diagram_product_source diagram_product_target E e)
   : is_limit (ProductsEqualizerCone e H).
 Proof.
-  intros X μ.
-  pose (p := indexed_pair (D := DiagramObjects D) (λ j, μ j)).
-  assert (Hp : diagram_product_source ∘ p ≈ diagram_product_target ∘ p).
-  { apply indexed_product_hom_ext. intros a.
+  refine (product_cone_equalizer_limit D (ProductsEqualizerCone e H) _ _ HE).
+  - intros j. reflexivity.
+  - intros X μ. apply indexed_product_hom_ext. intros a.
     unfold diagram_product_source, diagram_product_target.
-    rewrite <- !comp_assoc, !indexed_product_β, comp_assoc.
-    unfold p. rewrite !indexed_product_β.
+    rewrite <- !comp_assoc, !indexed_product_β, comp_assoc, !indexed_product_β.
     pose proof (nt_naturality μ (arrow_map a)) as Hμ.
     cbn in Hμ. rewrite comp_id_r in Hμ.
     transitivity (μ (arrow_cod a)).
-    - symmetry. exact Hμ.
-    - symmetry. apply (indexed_product_β (D := DiagramObjects D)). }
-  destruct (snd HE X p Hp) as [h Hh].
-  exists h. refine {| this := _; that := _ |}.
-  - intros j.
-    change ((πΠ[DiagramObjects D] j ∘ e) ∘ h ≈ μ j).
-    rewrite comp_assoc, (@this _ _ _ _ _ Hh).
-    unfold p. apply (indexed_product_β (D := DiagramObjects D)).
-  - intros k Hk. apply (@that _ _ _ _ _ Hh).
-    apply indexed_product_hom_ext. intros j.
-    rewrite <- comp_assoc. transitivity (μ j).
-    + exact (Hk j).
-    + unfold p. symmetry. apply (indexed_product_β (D := DiagramObjects D)).
+    + symmetry. exact Hμ.
+    + symmetry. apply (indexed_product_β (D := DiagramObjects D)).
 Defined.
 
 Program Definition ProductsEqualizerLimit `{HE : !HasEqualizer C} : HasLimit C D :=

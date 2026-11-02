@@ -9,6 +9,7 @@ From Cats Require Import Cat.Terminal Cat.Equalizer Cat.Limit.Terminal Cat.Limit
 From Cats Require Import Cat.Limit.Finite.
 From Cats Require Import Cat.Product.Indexed Cat.Limit.Construction.
 From Cats Require Import Cat.Product.Finite.
+From Cats Require Import Cat.Limit.Graph.Finite.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -190,6 +191,28 @@ Context (C : Cat@{o e p l l}) (D : Cat@{o p e l l}).
 Context (R : G →G UnderlyingGraph C) (S : G →G UnderlyingGraph D).
 Definition high_eq_free_interpretation : Functor (FreeCat G) C := FreeF R.
 Definition low_eq_free_interpretation : Functor (FreeCat G) D := FreeF S.
+
+Definition high_eq_finite_graph {n : nat} (k : Fin n → Fin n → nat) : Graph@{o e p}
+  := FiniteGraph k.
+Definition low_eq_finite_graph {n : nat} (k : Fin n → Fin n → nat) : Graph@{o p e}
+  := FiniteGraph k.
+
+Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
+Context `{HOC : !HasLimitsOfShape C (DiscreteCat (@Vertex G))}.
+Context `{HGC : !HasLimitsOfShape C (DiscreteCat (GraphEdges G))}.
+Context `{HOD : !HasLimitsOfShape D (DiscreteCat (@Vertex G))}.
+Context `{HGD : !HasLimitsOfShape D (DiscreteCat (GraphEdges G))}.
+Definition high_eq_graph_generated_limits := @GraphProductsEqualizerLimits G C HOC HGC HEC.
+Definition low_eq_graph_generated_limits := @GraphProductsEqualizerLimits G D HOD HGD HED.
+
+Context (HFC : ∀ x : @Vertex G,
+  HasLimitsOfShape C (DiscreteCat (∃ y : @Vertex G, Edge x y))).
+Context (HFD : ∀ x : @Vertex G,
+  HasLimitsOfShape D (DiscreteCat (∃ y : @Vertex G, Edge x y))).
+Definition high_eq_sigma_edge_products :=
+  @SigmaProductLimits C (@Vertex G) (λ x, ∃ y : @Vertex G, Edge x y) HOC HFC.
+Definition low_eq_sigma_edge_products :=
+  @SigmaProductLimits D (@Vertex G) (λ x, ∃ y : @Vertex G, Edge x y) HOD HFD.
 End GraphLevels.
 
 (** Shape comparisons and their diagonal adjunctions must work in either
@@ -227,6 +250,10 @@ Definition high_eq_finite_limit_bases := finite_limit_bases C.
 Definition low_eq_finite_limit_bases := finite_limit_bases D.
 Definition high_eq_finite_products (n : nat) := @FiniteProductLimits C HTC HC n.
 Definition low_eq_finite_products (n : nat) := @FiniteProductLimits D HTD HD n.
+Definition high_eq_finite_graph_limits {n : nat} (k : Fin n → Fin n → nat) :=
+  @FiniteGraphLimits C HTC HC HEC n k.
+Definition low_eq_finite_graph_limits {n : nat} (k : Fin n → Fin n → nat) :=
+  @FiniteGraphLimits D HTD HD HED n k.
 End ShapedLimitLevels.
 
 (** The two product indices can be larger than the target homs. The general

@@ -8,6 +8,9 @@ Class Graph@{o e p +} :=
 
 Definition Edge {G : Graph} (x y : @Vertex G) := carrier (EdgeSet x y).
 
+(** A total index for generators, retaining their dependent endpoints. *)
+Definition GraphEdges (G : Graph) := ∃ x : @Vertex G, ∃ y : @Vertex G, Edge x y.
+
 Declare Scope graph_scope.
 Delimit Scope graph_scope with graph.
 Open Scope graph_scope.
