@@ -188,7 +188,42 @@ EdgeSet x y = FinS (k x y)
 `FiniteGraphLimit k D` 是单个图式的便利入口；这些结构均须显式启用。
 
 这一步处理有限生成图的自由范畴，包括含循环、路径无限的情形。
-额外路径关系、一般有限范畴的表示及沿表示传递极限仍待后续完成。
+额外路径关系、一般有限范畴的表示仍待后续完成；沿表示传递极限复用下一节的通用理论。
+
+## 沿满且本质满函子传递极限
+
+设 `Q : Functor I J`。`is_full Q` 为每条像对象之间的态射保留一个原像；
+`is_essentially_surjective Q` 为每个 j 保留代表 i 及同构 `Q i ≅ j`。
+这两种存在都是 Type 值的选取数据，不需要选择公理或对象的原生相等。
+
+[Diagram.Reindex](../theories/Cat/Diagram/Reindex.v) 提供锥的形状限制：
+
+```text
+κ ∘Δ Q : X ⇒Δ (D ∘F Q)       （κ : X ⇒Δ D）
+ExtendCone HF HQ μ : X ⇒Δ D   （μ : X ⇒Δ (D ∘F Q)）
+```
+
+延拓在 j 处的锥腿是 `fmap D e ∘ μ i`，其中 `e : Q i ≅ j` 是选定同构。
+满性用于证明该锥腿与所有 J 中的态射相容；不需要 Q 忠实。
+`cone_extend_restrict` 和 `cone_restrict_extend` 证明双向往返按自然变换相等恢复，
+`cone_extend_comp` 和 `cone_restrict_comp` 处理顶点态射的预合成。
+
+[Limit.Reindex](../theories/Cat/Limit/Reindex.v) 据此给出：
+
+```text
+limit_iff_restrict HF HQ κ : is_limit κ ↔ is_limit (κ ∘Δ Q)
+extend_limit HF HQ        : is_limit μ → is_limit (ExtendCone HF HQ μ)
+```
+
+其中从限制锥的极限恢复原锥的 `limit_of_restrict` 只要求本质满；
+反向的 `restrict_limit` 还需要满性，因为它须处理限制图式上的任意锥。
+`ReindexedLimit HF HQ D` 从 `HasLimit C (D ∘F Q)` 选择 D 的极限；
+`ReindexedLimits HF HQ` 从 I 形状的选定极限得到 J 形状的选定极限。
+它们保留原来的极限对象与中介，延拓锥腿，且须显式启用。
+
+这给有限生成图呈示提供了通用的最后一步：待构造满且本质满的表示函子后，
+就可将自由图式的极限传到所表示的形状，而无需重新证明中介唯一性。
+当前尚未定义带路径关系的图呈示或一般有限范畴的表示数据。
 
 ## 泛性质与选定结构
 
@@ -267,7 +302,8 @@ HasLimitsOfShape C J
 Hom 自然同构使用共同广集宇宙的显式提升，不使用 resizing。
 
 [宇宙回归](../tests/Universes.v) 同时检查两种 hom／相等见证大小排列，
-以及对象宇宙大于两者的图式形状。具体模型的可用极限与大小界须逐一建立，
+以及对象宇宙大于两者的图式形状。形状传递还检查源、目标形状的对象大小不同、
+hom／相等见证大小顺序相反的情形。具体模型的可用极限与大小界须逐一建立，
 这里没有断言任意范畴具有极限，也未将任意 Type 值交换见证降到 Prop。
 
 本轮构建与临时假设／计算检查结果记录到相关 issue。

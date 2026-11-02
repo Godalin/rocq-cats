@@ -269,6 +269,9 @@ The [generator-based construction](./theories/Cat/Limit/Graph.v) needs products
 only over vertices and generating edges. Its
 [finite-graph specialization](./theories/Cat/Limit/Graph/Finite.v) derives limits
 from terminal objects, binary products and equalizers, including shapes with cycles.
+The [shape-transfer theorem](./theories/Cat/Limit/Reindex.v) transfers limits
+along full, essentially surjective functors, using object isomorphisms and
+specified hom equality without requiring faithfulness.
 STLC syntax, its interpretation and the free-CCC completeness theorem remain
 tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
 [#20](https://github.com/Godalin/rocq-cats/issues/20).

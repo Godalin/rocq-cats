@@ -10,6 +10,7 @@ From Cats Require Import Cat.Limit.Finite.
 From Cats Require Import Cat.Product.Indexed Cat.Limit.Construction.
 From Cats Require Import Cat.Product.Finite.
 From Cats Require Import Cat.Limit.Graph.Finite.
+From Cats Require Import Cat.Diagram.Reindex Cat.Limit.Reindex.
 From Cats Require Import DTT.CwF DTT.Context.Extension DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import DTT.Display DTT.Context.Display.
@@ -169,6 +170,34 @@ Context (K : Functor J D) (L : @Ob D) (κ : L ⇒Δ K) (Hκ : is_limit κ).
 Definition mixed_right_adjoint_limit : is_limit (MapCone G κ)
   := right_adjoint_preserves_limit A Hκ.
 End LimitLevels.
+
+(** Shape changes may reverse the shape hom/equality ordering and lower its
+    object level. Neither ordering of the target's native hom levels changes. *)
+Section ReindexedLimitLevels.
+Universe o h p n m l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < n.
+Constraint n < m.
+Constraint m < l.
+Context (I : Cat@{m p h l l}) (J : Cat@{n h p l l}).
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (Q : Functor I J) (HF : is_full Q) (HQ : is_essentially_surjective Q).
+Context (K : Functor J C) (K' : Functor J D).
+Context (X : @Ob C) (X' : @Ob D).
+Context (κ : X ⇒Δ (K ∘F Q)) (κ' : X' ⇒Δ (K' ∘F Q)).
+
+Definition high_eq_extend_cone : X ⇒Δ K := ExtendCone HF HQ κ.
+Definition low_eq_extend_cone : X' ⇒Δ K' := ExtendCone HF HQ κ'.
+Definition high_eq_restrict_limit := limit_iff_restrict HF HQ (ExtendCone HF HQ κ).
+Definition low_eq_restrict_limit := limit_iff_restrict HF HQ (ExtendCone HF HQ κ').
+
+Context `{HC : !HasLimitsOfShape C I} `{HD : !HasLimitsOfShape D I}.
+Definition high_eq_reindexed_limits : HasLimitsOfShape C J := ReindexedLimits HF HQ.
+Definition low_eq_reindexed_limits : HasLimitsOfShape D J := ReindexedLimits HF HQ.
+Definition high_eq_reindexed_limit : HasLimit C K := ReindexedLimit HF HQ K.
+Definition low_eq_reindexed_limit : HasLimit D K' := ReindexedLimit HF HQ K'.
+End ReindexedLimitLevels.
 
 (** Graph edges retain independent carrier and equality levels. Paths must
     contain intermediate vertices; their generated equality also contains

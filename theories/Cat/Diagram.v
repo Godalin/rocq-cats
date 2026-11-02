@@ -22,6 +22,14 @@ Definition Cone {J C : Cat} (D : Functor J C) (X : @Ob C) := ConstF J X ⇒ D.
 Notation "X '⇒Δ' D" := (Cone D X)
   (at level 50, no associativity) : cat_scope.
 
+Lemma cone_naturality {J C : Cat} {D : Functor J C} {X}
+    (κ : X ⇒Δ D) {i j : @Ob J} (f : Hom i j)
+  : κ j ≈ fmap D f ∘ κ i.
+Proof.
+  pose proof (nt_naturality κ f) as H. cbn in H.
+  rewrite comp_id_r in H. exact H.
+Qed.
+
 Definition cone_comp {J C : Cat} {D : Functor J C} {X Y : @Ob C}
     (κ : X ⇒Δ D) (f : Hom Y X) : Y ⇒Δ D :=
   κ ∘Nv fmap (DiagonalF J C) f.

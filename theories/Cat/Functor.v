@@ -34,6 +34,11 @@ Definition is_full {C D : Cat} (F : Functor C D) :=
 Definition is_fully_faithful {C D : Cat} (F : Functor C D) :=
   is_full F ∧ is_faithful F.
 
+(** Essential surjectivity retains an object representative and an isomorphism,
+    rather than an equality of objects or a truncated existence statement. *)
+Definition is_essentially_surjective {C D : Cat} (F : Functor C D) :=
+  ∀ Y : @Ob D, ∃ X : @Ob C, F X ≅ Y.
+
 Definition functor_is_iso {C D : Cat} (F : Functor C D)
     {X Y : @Ob C} (f : Hom X Y) (Hf : is_iso f) : is_iso (fmap F f).
 Proof.
