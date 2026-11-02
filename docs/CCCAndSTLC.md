@@ -3,7 +3,7 @@
 本笔记对应 [#20](https://github.com/Godalin/rocq-cats/issues/20)，
 语法、语法范畴和自由 CCC 的实现归 [#9](https://github.com/Godalin/rocq-cats/issues/9)。
 目标是逐步证明 STLC 的 βη 等式在所有 CCC 模型中可靠且完备。
-当前增量补齐指数对象的基本计算律和通用伴随理论；
+当前已补齐指数对象的基本计算律、通用伴随理论及指数双函子；
 下文的完整语法解释与完备性仍是设计。
 
 ## 1. 已有基础与本次增量
@@ -49,7 +49,52 @@ exponential_hom_iso:
 也不启用 `SetCat_CCC`。上面的两条 `curry_comp` 定律分别给出 Z 的逆变
 和 Y 的协变自然性方程；`exponential_hom_nat_iso` 通过通用伴随理论
 将它们打包为双函子之间的自然同构，必要时显式提升到共同的广集宇宙。
-X 在这个伴随问题中固定；让 X 也变化的指数双函子是另一个可复用增量。
+X 在这个伴随问题中固定；让 X 也变化的指数双函子见下一节。
+
+### 指数双函子
+
+[Exponential.Functor](../theories/Cat/Exponential/Functor.v) 从同一个指数泛性质
+导出参数反变、结果协变的作用。给定 `u : Hom X' X`、`v : Hom Y Y'`：
+
+```text
+v ^ u : Hom (Y ^ X) (Y' ^ X')
+v ^ u := ƛ (v ∘ eval ∘ (id × u))
+
+exponential_dimap_eval:
+  eval ∘ ((v ^ u) × id) ≈ v ∘ eval ∘ (id × u)
+
+exponential_dimap_comp:
+  (v' ∘ v) ^ (u ∘ u') ≈ (v' ^ u') ∘ (v ^ u)
+```
+
+对象与态射上的 `^` 分别位于 `ob_scope` 和 `hom_scope`，都右结合。
+在广集模型中，`v ^ u` 将保相等映射 g 送到 `v ∘ g ∘ u`；在一般范畴中，
+上面的求值方程刻画同一构造。respectfulness、单位律和复合律均由已有
+柯里化、积的函子性及指数 βη 导出，不新增结构字段或假设。
+
+`exponential_curry_dimap`、`exponential_uncurry_dimap` 和
+`exponential_app_dimap` 分别给出柯里化、反柯里化及应用的相容性：
+
+```text
+ƛ (v ∘ f ∘ (id × u)) ≈ (v ^ u) ∘ ƛ f
+uncurry ((v ^ u) ∘ g) ≈ v ∘ uncurry g ∘ (id × u)
+app ((v ^ u) ∘ g) a ≈ v ∘ app g (u ∘ a)
+```
+
+只需选定积与指数，不要求终对象或完整 CCC。已有的上下文预合成律处理上下文
+参数的变化，本节处理函数参数类型与结果类型的变化。
+
+```text
+ExponentialBiF          : Functor (C^op ×C C) C
+ExponentialBiF (X, Y)   = Y ^ X
+(-^-)                  表示 ExponentialBiF
+ExponentialContraF Y   : Functor (C^op) C
+(Y ^-)                 表示 ExponentialContraF Y
+```
+
+反变截面直接使用通用的 `π1F`。固定参数对象得到的 `π2F (-^-) X`
+与原有的 `(-^ X)` 通过 `exponential_fixed_nat_iso X` 比较，分量均为恒等态射；
+这不要求函子记录或定律字段原生相等。原有 `ExponentialF` 与积－指数伴随接口保留。
 
 ## 2. 从类型、上下文和项得到态射
 
@@ -240,12 +285,16 @@ C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
 在两种载体／相等见证宇宙排列下均可实例化；通用伴随还连接 hom 大小排列
 相反的两个范畴，并允许共同目标广集的两个宇宙按任一方向严格分离。
 这项检查也覆盖广集映射提升时输入映射的 `Proper` 辅助宇宙独立于目标载体宇宙。
+指数双函子、反变截面与固定参数的自然同构也在两种 Hom／相等见证宇宙排列下
+检查，永久回归仅补充这六项接口检查。
 
 本地验证使用 `rocq-env` 的 Rocq 9.0.1、OCaml 5.3.0，以及项目 Nix shell
 提供的 Dune 3.23.1。`dune build @all @runtest @install` 通过。
 78 项临时 `Print Assumptions`（原有指数／积 21 项、伴随及提升 27 项、
 Hom 定义与极限增量 30 项）
 均报告无额外假设。
+本次双函子的 13 个构造与证明另经临时 `Print Assumptions` 检查，
+也均无额外假设，输出未加入编译源码。
 
 临时广集实例以布尔对为载体、只比较第一分量，且每个相等保留额外布尔见证。
 检查了不同但等价的映射代表、转置及其逆的直接计算、提升后自然同构的
@@ -253,5 +302,8 @@ Hom 定义与极限增量 30 项）
 以及具体 CCC 与伴随需显式启用。转置记号也检查了连续书写。
 极限增量另检查了单对象图式中的中介计算、右伴随保持极限所得中介的计算，
 以及从锥范畴终对象唯一性提取的极限比较同构的正逆映射计算。
+双函子增量继续使用具有额外布尔相等见证的广集，验证参数、结果变换及不同但
+等价的映射代表，双函子与反变截面的态射计算、柯里化／反柯里化／应用的计算、
+固定参数比较同构的正逆映射，以及指数记号的作用域、复合和右结合。
 这些临时实例与公理输出保留在仓库外，未加入常驻测试。
-本地结果不代表多版本 CI；提交与 CI 状态另在 #20 同步。
+本地结果不代表多版本 CI；提交进度与剩余数学工作另在 #20 同步。

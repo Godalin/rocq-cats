@@ -8,6 +8,7 @@ From Cats Require Import Cat.CCC.
 From Cats Require Import
   Cat.Product
   Cat.Exponential
+  Cat.Exponential.Functor
   Instance.Set.ExponentialHom.
 From Cats Require Import
   Cat.Adjunction
@@ -225,6 +226,24 @@ Definition high_eq_exponential_nat (X : @Ob C)
 Definition low_eq_exponential_nat (X : @Ob D)
   : @NatIso _ SetCat@{p h _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
   := exponential_hom_nat_iso X.
+Definition high_eq_exponential_bifunctor
+  : Functor (C^op ×C C) C
+  := (-^-).
+Definition low_eq_exponential_bifunctor
+  : Functor (D^op ×C D) D
+  := (-^-).
+Definition high_eq_contravariant_exponential (Y : @Ob C)
+  : Functor (C^op) C
+  := (Y ^-).
+Definition low_eq_contravariant_exponential (Y : @Ob D)
+  : Functor (D^op) D
+  := (Y ^-).
+Definition high_eq_fixed_exponential (X : @Ob C)
+  : π2F (-^-) X ≅N (-^ X)
+  := exponential_fixed_nat_iso X.
+Definition low_eq_fixed_exponential (X : @Ob D)
+  : π2F (-^-) X ≅N (-^ X)
+  := exponential_fixed_nat_iso X.
 End ExponentialLevels.
 
 (** An adjunction can relate categories whose two hom levels are reversed.
