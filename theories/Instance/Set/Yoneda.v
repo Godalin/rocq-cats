@@ -23,7 +23,7 @@ Proof. exists idN. intros Y. exists id. cato. Defined.
 
 Program Canonical Nat_SetS {C D : Cat}
   (F G : Functor C D) :=
-  {|carrier := F => G
+  {|carrier := F ⇒ G
   ; carrier_equiv := NatEq
   |} .
 
@@ -59,7 +59,7 @@ Next Obligation.
   exact (@func_proper _ _ (fmap F f) a a' Ha).
 Qed.
 
-Theorem yoneda_func_inv_func {X : @Ob C} (α : Hom(X,-) => F)
+Theorem yoneda_func_inv_func {X : @Ob C} (α : Hom(X,-) ⇒ F)
   : yoneda_func_inv (yoneda_func α) ≈N α.
 Proof.
   intros Y f.
@@ -85,13 +85,13 @@ End Yoneda.
 
 Theorem yoneda_func_natural_functor {C : Cat} {F G : Functor C SetCat}
     {X : @Ob C}
-    (β : F => G) (α : Hom(X,-) => F)
+    (β : F ⇒ G) (α : Hom(X,-) ⇒ F)
   : yoneda_func (β ∘Nv α) ≈S β X (yoneda_func α).
 Proof. reflexivity. Qed.
 
 Theorem yoneda_func_natural_object {C : Cat} {F : Functor C SetCat}
     {X Y : @Ob C} (f : Hom X Y)
-    (α : Hom(X,-) => F)
+    (α : Hom(X,-) ⇒ F)
   : yoneda_func (α ∘Nv f ^*N) ≈S fmap F f (yoneda_func α).
 Proof.
   pose proof (nt_naturality α f) as Hα.

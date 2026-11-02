@@ -52,7 +52,7 @@ Definition slice_reindex_square_cartesian {X Y : @Ob C} (f : Hom X Y)
   arrow_reindex_cartesian A^Arr f.
 
 Program Definition SliceReindexSquareN {X Y : @Ob C} (f : Hom X Y)
-  : (SliceArrowF C X ∘F SliceReindexF f) => SliceArrowF C Y :=
+  : (SliceArrowF C X ∘F SliceReindexF f) ⇒ SliceArrowF C Y :=
   {| nt := slice_reindex_square f |}.
 Next Obligation.
   split.

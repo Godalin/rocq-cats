@@ -8,7 +8,7 @@
 D : Functor J C
 ConstF J X : Functor J C
 Δ[J,C] : Functor C (Fct J C)
-κ : X ⇒Δ D := ConstF J X => D
+κ : X ⇒Δ D := ConstF J X ⇒ D
 κ ∘Cone f : Y ⇒Δ D       （f : Hom Y X）
 ```
 
@@ -41,7 +41,7 @@ HasLimitsOfShape C J
 
 ## 极限函子和对角伴随
 
-选择 `HasLimitsOfShape C J` 后，对自然变换 `α : D => E` 定义：
+选择 `HasLimitsOfShape C J` 后，对自然变换 `α : D ⇒ E` 定义：
 
 ```text
 limit_map α := lim⟨ α ∘Nv πlim[D] ⟩

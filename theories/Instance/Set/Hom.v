@@ -37,7 +37,7 @@ Next Obligation. intros Y. exists id_resp. split; intros h; reflexivity. Defined
 (** Precomposition varies the source of the covariant Hom-functor
     contravariantly. Its components compare maps pointwise. *)
 Program Definition nt_comp_pre {C : Cat} {X Y : @Ob C} (f : Hom X Y)
-  : Hom(Y,-) => Hom(X,-) :=
+  : Hom(Y,-) ⇒ Hom(X,-) :=
   {| nt Z := comp_r_resp (f := f) (Z := Z) |}.
 Next Obligation. intros h. simpl. apply comp_assoc. Qed.
 
@@ -59,7 +59,7 @@ Proof. intros W h. simpl. symmetry. apply comp_assoc. Qed.
 (** Postcomposition varies the target of the contravariant Hom-functor
     covariantly. *)
 Program Definition nt_comp_post {C : Cat} {X Y : @Ob C} (f : Hom X Y)
-  : Hom(-,X) => Hom(-,Y) :=
+  : Hom(-,X) ⇒ Hom(-,Y) :=
   {| nt Z := comp_l_resp (C := C) (f := f) (X := Z) |}.
 Next Obligation. intros h. simpl. symmetry. apply comp_assoc. Qed.
 

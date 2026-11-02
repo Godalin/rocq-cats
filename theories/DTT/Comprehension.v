@@ -92,7 +92,7 @@ Next Obligation. intros f g H. exact (snd H). Defined.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
-Program Definition CwFProjectionN : CwFExtF => CwFBaseF :=
+Program Definition CwFProjectionN : CwFExtF ⇒ CwFBaseF :=
   {| nt X := context_proj T X.2 |}.
 Next Obligation. apply context_map_comm. Defined.
 

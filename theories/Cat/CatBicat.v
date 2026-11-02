@@ -31,12 +31,12 @@ Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
 Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
 
 Theorem cat_whisker_l {C D E : Cat} (G : Functor D E)
-    {F F' : Functor C D} (α : F => F')
+    {F F' : Functor C D} (α : F ⇒ F')
   : whisker_l (K := CatBicat) G α ≈N (G ∘Nl α).
 Proof. intros X. exact (comp_id_l (fmap G (α X))). Qed.
 
 Theorem cat_whisker_r {C D E : Cat} {G G' : Functor D E}
-    (β : G => G') (F : Functor C D)
+    (β : G ⇒ G') (F : Functor C D)
   : whisker_r (K := CatBicat) β F ≈N (β ∘Nr F).
 Proof.
   intros X. change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).

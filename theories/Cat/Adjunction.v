@@ -127,14 +127,14 @@ Qed.
 
 (** Unit and counit are transposed identities, with naturality inherited
     from the hom correspondence. They are not additional chosen fields. *)
-Program Definition adjunction_unit : IdF => G ∘F F :=
+Program Definition adjunction_unit : IdF ⇒ G ∘F F :=
   {| nt X := adjunct id |}.
 Next Obligation.
   rewrite <- (adjunct_comp_r id f), comp_id_l.
   rewrite <- (adjunct_comp_l (fmap F f) id), comp_id_r. reflexivity.
 Qed.
 
-Program Definition adjunction_counit : F ∘F G => IdF :=
+Program Definition adjunction_counit : F ∘F G ⇒ IdF :=
   {| nt Y := unadjunct id |}.
 Next Obligation.
   rewrite <- (unadjunct_comp_r (@id (G Y)) (fmap G f)), comp_id_l.
@@ -208,7 +208,7 @@ Context (hom_comp_r : ∀ X X' Y (f : Hom (F X) Y) (h : Hom X' X),
 Context (hom_comp_l : ∀ X Y Y' (k : Hom Y Y') (f : Hom (F X) Y),
   φ X Y' (k ∘ f) ≈ fmap G k ∘ φ X Y f).
 
-Program Definition HomAdjunctN : LeftHomF F => RightHomF G :=
+Program Definition HomAdjunctN : LeftHomF F ⇒ RightHomF G :=
   {| nt X := (φ (fst X) (snd X))^↑S |}.
 Next Obligation.
   intros [h]. constructor.

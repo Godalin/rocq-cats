@@ -49,7 +49,7 @@ Next Obligation. apply OpF_comp. Defined.
 
 (** The double-opposite comparison is natural in the category. Its
     naturality compares functors by natural isomorphism. *)
-Program Definition OpInvolutionN : (OpCatF ∘F OpCatF) => (@IdF CatCat) :=
+Program Definition OpInvolutionN : (OpCatF ∘F OpCatF) ⇒ (@IdF CatCat) :=
   {| nt C := FromDoubleOpF (C := C) |}.
 Next Obligation.
   unshelve notypeclasses refine (({| nt := _ |}); _).

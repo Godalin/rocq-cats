@@ -67,7 +67,7 @@ Proof.
 Defined.
 
 Program Definition FamFiberTotalN@{u p +} (X : SetC@{u p})
-  : (FamSumF X ∘F SliceFamF X) => (@IdF (SetCat /C X)) :=
+  : (FamSumF X ∘F SliceFamF X) ⇒ (@IdF (SetCat /C X)) :=
   {| nt := fiber_total_slice |}.
 Next Obligation. intros a. reflexivity. Defined.
 
@@ -117,7 +117,7 @@ Proof.
 Defined.
 
 Program Definition FamTotalFiberN@{u p +} (X : SetC@{u p})
-  : (SliceFamF X ∘F FamSumF X) => (@IdF (FamSCat X)) :=
+  : (SliceFamF X ∘F FamSumF X) ⇒ (@IdF (FamSCat X)) :=
   {| nt := total_fiber_elim |}.
 Next Obligation.
   intros x [[y a] p]. cbn.

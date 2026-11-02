@@ -165,6 +165,6 @@ Next Obligation. intros [x a]. reflexivity. Defined.
 Next Obligation. intros [x a]. reflexivity. Defined.
 
 (** Total-space projection commutes with every family morphism. *)
-Program Definition FamProjectionN : FamTotalF => FamBaseF :=
+Program Definition FamProjectionN : FamTotalF ⇒ FamBaseF :=
   {| nt U := sig_base_resp U |}.
 Next Obligation. intros a. reflexivity. Defined.

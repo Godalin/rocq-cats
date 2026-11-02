@@ -93,7 +93,7 @@ Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
 (** A natural transformation is a functor into the arrow category. *)
-Program Definition NatArrowF {C D : Cat} {F G : Functor C D} (α : F => G)
+Program Definition NatArrowF {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
   : Functor C (Arr D) :=
   {| F0 X := {| arrow_dom := F X; arrow_cod := G X; arrow_map := α X |}
    ; F1 X Y f :=

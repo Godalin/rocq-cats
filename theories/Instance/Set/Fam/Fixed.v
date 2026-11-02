@@ -128,7 +128,7 @@ Proof.
 Defined.
 
 Program Definition FamReindexIdN (X : SetC)
-  : (@IdF (FamSCat X)) => (FamReindexF (id_resp (X := X))) :=
+  : (@IdF (FamSCat X)) ⇒ (FamReindexF (id_resp (X := X))) :=
   {| nt := fam_map_reindex_id |}.
 Next Obligation. intros x a. reflexivity. Defined.
 
@@ -155,7 +155,7 @@ Proof.
 Defined.
 
 Program Definition FamReindexCompN {X Y Z : SetC} (f : Y →r Z) (g : X →r Y)
-  : (FamReindexF g ∘F FamReindexF f) => (FamReindexF (f ∘r g)) :=
+  : (FamReindexF g ∘F FamReindexF f) ⇒ (FamReindexF (f ∘r g)) :=
   {| nt := fam_map_reindex_comp f g |}.
 Next Obligation. intros x a. reflexivity. Defined.
 
@@ -192,7 +192,7 @@ Proof.
 Defined.
 
 Program Definition FamReindexEqN {X Y : SetC} {f g : X →r Y} (H : f ≈f g)
-  : FamReindexF f => FamReindexF g := {| nt := fam_map_reindex_equiv H |}.
+  : FamReindexF f ⇒ FamReindexF g := {| nt := fam_map_reindex_equiv H |}.
 Next Obligation.
   intros x a. cbn. symmetry. exact (fam_map_naturality f0 (H x) a).
 Defined.

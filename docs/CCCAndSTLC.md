@@ -161,8 +161,8 @@ adjunction_hom A : LeftHomF F ≅N RightHomF G
 它们的自然性、两条三角恒等式和唯一分解性质全部导出：
 
 ```text
-η : IdF => G ∘F F
-ε : F ∘F G => IdF
+η : IdF ⇒ G ∘F F
+ε : F ∘F G ⇒ IdF
 ε(F X) ∘ fmap F (η X) ≈ id
 fmap G (ε Y) ∘ η(G Y) ≈ id
 ```

@@ -90,7 +90,7 @@ for the codomain functor. No equality of objects or extra pullback choice is add
 The natural transformation `SliceReindexSquareN f` collects these squares:
 
 ```text
-SliceArrowF C X ∘F SliceReindexF f => SliceArrowF C Y.
+SliceArrowF C X ∘F SliceReindexF f ⇒ SliceArrowF C Y.
 ```
 
 Naturality is the second projection law of `slice_reindex_map`.

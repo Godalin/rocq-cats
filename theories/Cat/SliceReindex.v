@@ -103,7 +103,7 @@ Definition slice_reindex_id_iso {X : @Ob C} (A : SliceOb C X)
   slice_reindex_lift_iso id A (B := A) id _ pullback_id.
 
 Program Definition SliceReindexIdN (X : @Ob C)
-  : (@IdF (C /C X)) => (SliceReindexF (@id X)) :=
+  : (@IdF (C /C X)) ⇒ (SliceReindexF (@id X)) :=
   {| nt := slice_reindex_id |}.
 Next Obligation.
   apply (pullback_hom_ext (pullback_universal (f := @id X) (g := slice_arrow Y))).
@@ -142,7 +142,7 @@ Definition slice_reindex_comp_iso {X Y Z : @Ob C}
 
 Program Definition SliceReindexCompN {X Y Z : @Ob C} (f : Hom Y Z) (g : Hom X Y)
   : (SliceReindexF g ∘F SliceReindexF f)
-      => (SliceReindexF (f ∘ g)) :=
+      ⇒ (SliceReindexF (f ∘ g)) :=
   {| nt := slice_reindex_comp f g |}.
 Next Obligation.
   apply (pullback_hom_ext (pullback_universal (f := f ∘ g) (g := slice_arrow Y0))).
@@ -192,7 +192,7 @@ Proof.
 Defined.
 
 Program Definition SliceReindexEqN {X Y : @Ob C} {f g : Hom X Y} (H : f ≈ g)
-  : SliceReindexF f => SliceReindexF g := {| nt := slice_reindex_equiv H |}.
+  : SliceReindexF f ⇒ SliceReindexF g := {| nt := slice_reindex_equiv H |}.
 Next Obligation.
   apply (pullback_hom_ext (pullback_universal (f := g) (g := slice_arrow Y0)));
     repeat first [rewrite <- comp_assoc | rewrite pb_β1 | rewrite pb_β2].

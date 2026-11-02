@@ -173,7 +173,7 @@ Proof. apply context_pair_unique. exists H. reflexivity. Qed.
 
 (** The representing map evaluates the generic pair along a substitution. *)
 Program Definition context_extensionN {Γ : @Ob C} (A : Ty T Γ)
-  : Hom(-, Γ ▹[T] A) => ContextPairF T A :=
+  : Hom(-, Γ ▹[T] A) ⇒ ContextPairF T A :=
   {| nt Δ := context_unpair_resp A Δ |}.
 Next Obligation.
   intros h. change ((context_proj T A; context_var T A)[h ∘ f]Pair[T, A]
@@ -189,7 +189,7 @@ Proof.
 Defined.
 
 Definition context_pairN {Γ : @Ob C} (A : Ty T Γ)
-  : ContextPairF T A => Hom(-, Γ ▹[T] A) :=
+  : ContextPairF T A ⇒ Hom(-, Γ ▹[T] A) :=
   (context_extensionN A) ^-1N (context_extension_nat_iso A).2.
 
 Theorem context_pair_comp {Γ Δ Θ : @Ob C} (A : Ty T Γ)

@@ -27,7 +27,7 @@ Definition fam_sum_reindex_iso@{u +} {X Y : SetC@{u _}} (f : X →r Y) (A : FamS
     (fam_reindex_pullback (FixedFamC A) f).
 
 Program Definition FamSumReindexN@{u +} {X Y : SetC@{u _}} (f : X →r Y)
-  : (FamSumF X ∘F FamReindexF f) => (SliceReindexF (C := SetCat) f ∘F FamSumF Y) :=
+  : (FamSumF X ∘F FamReindexF f) ⇒ (SliceReindexF (C := SetCat) f ∘F FamSumF Y) :=
   {| nt := fam_sum_reindex f |}.
 Next Obligation. intros [x a]. split; reflexivity. Defined.
 
@@ -101,7 +101,7 @@ Proof.
 Defined.
 
 Program Definition SliceFamReindexN@{u +} {X Y : SetC@{u _}} (f : X →r Y)
-  : (FamReindexF f ∘F SliceFamF Y) => (SliceFamF X ∘F SliceReindexF (C := SetCat) f) :=
+  : (FamReindexF f ∘F SliceFamF Y) ⇒ (SliceFamF X ∘F SliceReindexF (C := SetCat) f) :=
   {| nt := slice_fiber_reindex f |}.
 Next Obligation. intros x a. split; reflexivity. Defined.
 

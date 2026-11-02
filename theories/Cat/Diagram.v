@@ -18,7 +18,7 @@ Next Obligation. intros j. reflexivity. Qed.
 
 Notation "'Δ[' J ',' C ']'" := (DiagonalF J C) : cat_scope.
 
-Definition Cone {J C : Cat} (D : Functor J C) (X : @Ob C) := ConstF J X => D.
+Definition Cone {J C : Cat} (D : Functor J C) (X : @Ob C) := ConstF J X ⇒ D.
 Notation "X '⇒Δ' D" := (Cone D X)
   (at level 50, no associativity) : cat_scope.
 

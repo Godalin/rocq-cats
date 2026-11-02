@@ -94,14 +94,14 @@ Class HasLimitsOfShape (C J : Cat) :=
 Section LimitFunctor.
 Context {J C : Cat} `{HL : !HasLimitsOfShape C J}.
 
-Definition limit_map {D E : Functor J C} (α : D => E) : Hom (lim D) (lim E) :=
+Definition limit_map {D E : Functor J C} (α : D ⇒ E) : Hom (lim D) (lim E) :=
   lim⟨ α ∘Nv πlim[D] ⟩.
 
-Lemma limit_map_comm {D E : Functor J C} (α : D => E)
+Lemma limit_map_comm {D E : Functor J C} (α : D ⇒ E)
   : πlim[E] ∘Cone limit_map α ≈N (α ∘Nv πlim[D]).
 Proof. apply limit_β. Qed.
 
-Lemma limit_map_β {D E : Functor J C} (α : D => E) (j : @Ob J)
+Lemma limit_map_β {D E : Functor J C} (α : D ⇒ E) (j : @Ob J)
   : πlim[E] j ∘ limit_map α ≈ α j ∘ πlim[D] j.
 Proof. exact (limit_map_comm α j). Qed.
 
@@ -117,7 +117,7 @@ Proof.
   apply limit_lift_proper. intros j. cbn. carw.
 Qed.
 
-Lemma limit_map_comp {D E K : Functor J C} (β : E => K) (α : D => E)
+Lemma limit_map_comp {D E K : Functor J C} (β : E ⇒ K) (α : D ⇒ E)
   : limit_map (β ∘Nv α) ≈ limit_map β ∘ limit_map α.
 Proof.
   symmetry. apply limit_lift_unique. intros j.
@@ -134,7 +134,7 @@ Program Definition LimitF : Functor (Fct J C) C :=
 Next Obligation. apply limit_map_id. Qed.
 Next Obligation. apply limit_map_comp. Qed.
 
-Lemma limit_lift_map {D E : Functor J C} (α : D => E) {X} (κ : X ⇒Δ D)
+Lemma limit_lift_map {D E : Functor J C} (α : D ⇒ E) {X} (κ : X ⇒Δ D)
   : lim⟨ α ∘Nv κ ⟩ ≈ limit_map α ∘ lim⟨ κ ⟩.
 Proof.
   symmetry. apply limit_lift_unique. intros j.
