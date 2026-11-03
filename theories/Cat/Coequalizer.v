@@ -26,48 +26,57 @@ Class HasCoequalizer (C : Cat)
   { hasOpEqualizer :: HasEqualizer (C^op)
   }.
 
-Section Coequalizer.
-Context {C : Cat} `{HC : !HasCoequalizer C}.
-
 (** The selected coequalizer object is its opposite equalizer object. *)
 
 (** 选定余等化子对象就是反范畴中的等化子对象。 *)
 
-Definition CoeqObj {X Y} (f g : Hom X Y)
+Definition CoeqObj {C : Cat} `{HC : !HasCoequalizer C} {X Y}
+    (f g : Hom X Y)
   : @Ob C
   := @EqObj (C^op) (@hasOpEqualizer C HC) Y X f g.
+
+Notation "'Coeq[' f ',' g ']'" := (CoeqObj f g) : ob_scope.
 
 (** The coequalizer projection is the opposite equalizer inclusion. *)
 
 (** 余等化子投影就是反范畴中的等化子包含箭头。 *)
 
-Definition coeqπ {X Y} (f g : Hom X Y)
-  : Hom Y (CoeqObj f g)
+Definition coeqπ {C : Cat} `{HC : !HasCoequalizer C} {X Y}
+    (f g : Hom X Y)
+  : Hom Y Coeq[f,g]
   := @eqι (C^op) (@hasOpEqualizer C HC) Y X f g.
+
+Notation "'πcoeq[' f ',' g ']'" := (coeqπ f g) : hom_scope.
 
 (** The full universal property is inherited without additional data. *)
 
 (** 完整泛性质直接继承，不增加数据。 *)
 
-Definition coequalizer_universal {X Y} {f g : Hom X Y}
-  : is_coequalizer f g (CoeqObj f g) (coeqπ f g)
+Definition coequalizer_universal {C : Cat} `{HC : !HasCoequalizer C}
+    {X Y} {f g : Hom X Y}
+  : is_coequalizer f g Coeq[f,g] πcoeq[f,g]
   := @equalizer_universal (C^op) (@hasOpEqualizer C HC) Y X f g.
 
 (** Factor a coequalizing arrow using the original equalizer mediator. *)
 
 (** 使用原等化子中介分解余等化箭头。 *)
 
-Definition coequalize {X Y Q} {f g : Hom X Y} (q : Hom Y Q)
-    (H : q ∘ f ≈ q ∘ g)
-  : Hom (CoeqObj f g) Q
+Definition coequalize {C : Cat} `{HC : !HasCoequalizer C}
+    {X Y Q} {f g : Hom X Y} (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
+  : Hom Coeq[f,g] Q
   := @equalize (C^op) (@hasOpEqualizer C HC) Y X Q f g q H.
+
+Notation "'coeq⟨' q ',' H '⟩'" := (coequalize q H) : hom_scope.
+
+Section Coequalizer.
+Context {C : Cat} `{HC : !HasCoequalizer C}.
 
 (** The chosen projection coequalizes the pair. *)
 
 (** 选定投影余等化给定平行箭头对。 *)
 
 Theorem coequalizer_comm {X Y} {f g : Hom X Y}
-  : coeqπ f g ∘ f ≈ coeqπ f g ∘ g.
+  : πcoeq[f,g] ∘ f ≈ πcoeq[f,g] ∘ g.
 Proof. exact (@equalizer_comm (C^op) (@hasOpEqualizer C HC) Y X f g). Qed.
 
 (** The factor is unique with its specified projection composite. *)
@@ -76,7 +85,7 @@ Proof. exact (@equalizer_comm (C^op) (@hasOpEqualizer C HC) Y X f g). Qed.
 
 Theorem coequalizer_mediator_unique {X Y Q} {f g : Hom X Y}
     (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
-  : is_unique (λ h, h ∘ coeqπ f g ≈ q) (coequalize q H).
+  : is_unique (λ h, h ∘ πcoeq[f,g] ≈ q) coeq⟨q,H⟩.
 Proof.
   exact (@equalizer_mediator_unique (C^op) (@hasOpEqualizer C HC)
     Y X Q f g q H).
@@ -88,7 +97,7 @@ Qed.
 
 Theorem coequalizer_β {X Y Q} {f g : Hom X Y}
     (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
-  : coequalize q H ∘ coeqπ f g ≈ q.
+  : coeq⟨q,H⟩ ∘ πcoeq[f,g] ≈ q.
 Proof. exact (@equalizer_β (C^op) (@hasOpEqualizer C HC) Y X Q f g q H). Qed.
 
 (** Respectfulness does not compare the commutativity witnesses. *)
@@ -97,7 +106,7 @@ Proof. exact (@equalizer_β (C^op) (@hasOpEqualizer C HC) Y X Q f g q H). Qed.
 
 Theorem coequalizer_proper {X Y Q} {f g : Hom X Y} {q q' : Hom Y Q}
     (H : q ∘ f ≈ q ∘ g) (H' : q' ∘ f ≈ q' ∘ g) (Hq : q ≈ q')
-  : coequalize q H ≈ coequalize q' H'.
+  : coeq⟨q,H⟩ ≈ coeq⟨q',H'⟩.
 Proof.
   exact (@equalizer_proper (C^op) (@hasOpEqualizer C HC)
     Y X Q f g q q' H H' Hq).
@@ -110,7 +119,7 @@ Qed.
 Theorem coequalizer_comp {X Y Q R} {f g : Hom X Y} (q : Hom Y Q)
     (H : q ∘ f ≈ q ∘ g) (k : Hom Q R)
     (Hk : (k ∘ q) ∘ f ≈ (k ∘ q) ∘ g)
-  : coequalize (k ∘ q) Hk ≈ k ∘ coequalize q H.
+  : coeq⟨k ∘ q,Hk⟩ ≈ k ∘ coeq⟨q,H⟩.
 Proof.
   exact (@equalizer_comp (C^op) (@hasOpEqualizer C HC)
     Y X Q R f g q H k Hk).
@@ -121,16 +130,12 @@ Qed.
 (** 分解投影复合后恢复原分解。 *)
 
 Theorem coequalizer_η {X Y Q} {f g : Hom X Y}
-    (h : Hom (CoeqObj f g) Q)
-    (H : (h ∘ coeqπ f g) ∘ f ≈ (h ∘ coeqπ f g) ∘ g)
-  : coequalize (h ∘ coeqπ f g) H ≈ h.
+    (h : Hom Coeq[f,g] Q)
+    (H : (h ∘ πcoeq[f,g]) ∘ f ≈ (h ∘ πcoeq[f,g]) ∘ g)
+  : coeq⟨h ∘ πcoeq[f,g],H⟩ ≈ h.
 Proof. exact (@equalizer_η (C^op) (@hasOpEqualizer C HC) Y X Q f g h H). Qed.
 
 End Coequalizer.
-
-Notation "'Coeq[' f ',' g ']'" := (CoeqObj f g) : ob_scope.
-Notation "'πcoeq[' f ',' g ']'" := (coeqπ f g) : hom_scope.
-Notation "'coeq⟨' q ',' H '⟩'" := (coequalize q H) : hom_scope.
 
 (** Cancellation follows directly from opposite equalizer cancellation. *)
 

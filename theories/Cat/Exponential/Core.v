@@ -31,14 +31,20 @@ Class HasExponential {C : Cat} (HP : HasProduct C)
 
 Arguments exponential_universal {_ _ _ _ _} _ _.
 
+Notation "X '^' Y" := (exp X Y)
+  (at level 30, right associativity): ob_scope.
+
 (** Transpose a map out of a product into the chosen exponential. *)
 
 (** 将从积出发的映射转置到选定指数中。 *)
 
 Definition curry {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
     {X Y Z} (f : Hom (Z × X) Y)
-  : Hom Z (exp Y X)
+  : Hom Z (Y ^ X)
   := (exponential_universal Z f).1.
+
+Notation "'ƛ' f" := (curry f)
+  (at level 35) : hom_scope.
 
 (** Currying is the unique transpose with the prescribed evaluation. *)
 
@@ -47,7 +53,7 @@ Definition curry {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
 Theorem exponential_curry_unique {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
     (f : Hom (Z × X) Y)
-  : is_unique (λ h, eval ∘ (h × id) ≈ f) (curry f).
+  : is_unique (λ h, eval ∘ (h × id) ≈ f) (ƛ f).
 Proof. exact (exponential_universal Z f).2. Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -56,18 +62,12 @@ Proof. exact (exponential_universal Z f).2. Qed.
 
 Global Instance exponential_curry_proper {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
-  : Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, exp Y X]) curry.
+  : Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, Y ^ X]) curry.
 Proof.
   intros f g Hfg.
   destruct (exponential_curry_unique f) as [Hf _].
   apply (exponential_curry_unique g). transitivity f; assumption.
 Qed.
-
-Notation "X '^' Y" := (exp X Y)
-  (at level 30, right associativity): ob_scope.
-
-Notation "'ƛ' f" := (curry f)
-  (at level 35) : hom_scope.
 
 Notation "'@eval' X Y" := (@eval _ _ _ _ X Y)
   (at level 35) : hom_scope.
@@ -105,7 +105,7 @@ Proof. intros f g Hfg. unfold uncurry. rewrite Hfg. reflexivity. Qed.
 (** 先柯里化再反柯里化恢复原映射。 *)
 
 Theorem exponential_β {X Y Z} (f : Hom (Z × X) Y)
-  : uncurry (curry f) ≈ f.
+  : uncurry (ƛ f) ≈ f.
 Proof. exact (@this _ _ _ _ _ (exponential_curry_unique f)). Qed.
 
 (** Currying after uncurrying recovers the exponential-valued map. *)
@@ -113,7 +113,7 @@ Proof. exact (@this _ _ _ _ _ (exponential_curry_unique f)). Qed.
 (** 先反柯里化再柯里化恢复指数值映射。 *)
 
 Theorem exponential_η {X Y Z} (g : Hom Z (Y ^ X))
-  : curry (uncurry g) ≈ g.
+  : ƛ (uncurry g) ≈ g.
 Proof. symmetry. apply (exponential_curry_unique (uncurry g)). reflexivity. Qed.
 
 (** The two respectful maps and the inverse laws give the hom-setoid
@@ -154,10 +154,10 @@ Qed.
 
 Lemma exponential_curry_comp_r {X Y Z W}
     (f : Hom (Z × X) Y) (σ : Hom W Z)
-  : curry (f ∘ (σ × id)) ≈ curry f ∘ σ.
+  : ƛ (f ∘ (σ × id)) ≈ (ƛ f) ∘ σ.
 Proof.
   symmetry. apply exponential_curry_unique.
-  change (uncurry (curry f ∘ σ) ≈ f ∘ (σ × id)).
+  change (uncurry ((ƛ f) ∘ σ) ≈ f ∘ (σ × id)).
   rewrite exponential_uncurry_comp_r, exponential_β. reflexivity.
 Qed.
 
@@ -167,7 +167,7 @@ Qed.
 
 Definition exponential_map {X Y Y'} (f : Hom Y Y')
   : Hom (Y ^ X) (Y' ^ X)
-  := curry (f ∘ eval).
+  := ƛ (f ∘ eval).
 
 (** The operation respects the specified equivalences of its arguments. *)
 
@@ -195,10 +195,10 @@ Qed.
 
 Lemma exponential_curry_comp_l {X Y Y' Z}
     (f : Hom Y Y') (g : Hom (Z × X) Y)
-  : curry (f ∘ g) ≈ exponential_map f ∘ curry g.
+  : ƛ (f ∘ g) ≈ exponential_map f ∘ (ƛ g).
 Proof.
   symmetry. apply exponential_curry_unique.
-  change (uncurry (exponential_map f ∘ curry g) ≈ f ∘ g).
+  change (uncurry (exponential_map f ∘ (ƛ g)) ≈ f ∘ g).
   rewrite exponential_uncurry_comp_l, exponential_β. reflexivity.
 Qed.
 
@@ -210,7 +210,7 @@ Lemma exponential_map_id {X Y}
   : exponential_map (@id Y) ≈ @id (Y ^ X).
 Proof.
   unfold exponential_map. rewrite comp_id_l.
-  transitivity (curry (uncurry (@id (Y ^ X)))).
+  transitivity (ƛ (uncurry (@id (Y ^ X)))).
   - apply exponential_curry_proper. unfold uncurry.
     rewrite cross_id, comp_id_r. reflexivity.
   - apply exponential_η.
@@ -259,7 +259,7 @@ Proof. unfold app. rewrite comp_assoc, product_comp_r. reflexivity. Qed.
 (** 柯里化映射的应用按替换计算。 *)
 
 Lemma exponential_app_β {X Y Z} (f : Hom (Z × X) Y) (a : Hom Z X)
-  : app (curry f) a ≈ f ∘ ⟨id, a⟩.
+  : app (ƛ f) a ≈ f ∘ ⟨id, a⟩.
 Proof.
   rewrite <- (exponential_β f) at 2. unfold app, uncurry.
   rewrite comp_assoc, product_comp_l, comp_id_r, comp_id_l. reflexivity.
@@ -270,9 +270,9 @@ Qed.
 (** 函数由其应用的抽象恢复。 *)
 
 Lemma exponential_app_η {X Y Z} (f : Hom Z (Y ^ X))
-  : curry (app (f ∘ π1) π2) ≈ f.
+  : ƛ (app (f ∘ π1) π2) ≈ f.
 Proof.
-  transitivity (curry (uncurry f)).
+  transitivity (ƛ (uncurry f)).
   - apply exponential_curry_proper. unfold app, uncurry.
     rewrite cross_η, comp_id_l. reflexivity.
   - apply exponential_η.
@@ -344,7 +344,7 @@ Proof. apply unadjunct_from_hom. Qed.
 
 Lemma exponential_curry_eval {C : Cat} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} {X Y : @Ob C}
-  : curry (@Cats.Cat.Exponential.Core.eval C HP HE X Y) ≈ id.
+  : ƛ (@Cats.Cat.Exponential.Core.eval C HP HE X Y) ≈ id.
 Proof.
   symmetry. apply exponential_curry_unique.
   rewrite cross_id, comp_id_r. reflexivity.

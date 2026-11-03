@@ -36,23 +36,26 @@ Arguments limit_universal {_ _} _ {_} _ _.
 Notation "'lim' D" := (Lim D) (at level 35) : ob_scope.
 Notation "'πlim[' D ']'" := (limit_cone D) : hom_scope.
 
-Section ChosenLimit.
-Context {J C : Cat} {D : Functor J C} `{HL : !HasLimit C D}.
-
 (** The unique mediator from a cone to the selected limiting cone. *)
 
 (** 从锥到选定极限锥的唯一中介。 *)
 
-Definition limit_lift {X} (κ : X ⇒Δ D)
+Definition limit_lift {J C : Cat} {D : Functor J C}
+    `{HL : !HasLimit C D} {X} (κ : X ⇒Δ D)
   : Hom X (lim D)
   := (limit_universal D X κ).1.
+
+Notation "'lim⟨' κ '⟩'" := (limit_lift κ) (at level 35) : hom_scope.
+
+Section ChosenLimit.
+Context {J C : Cat} {D : Functor J C} `{HL : !HasLimit C D}.
 
 (** The selected mediator factors the cone and is unique up to hom equality. *)
 
 (** 选定中介分解锥，并在 Hom 相等下唯一。 *)
 
 Theorem limit_lift_unique {X} (κ : X ⇒Δ D)
-  : is_unique (λ h, πlim[D] ∘Cone h ≈N κ) (limit_lift κ).
+  : is_unique (λ h, πlim[D] ∘Cone h ≈N κ) (lim⟨κ⟩).
 Proof. exact (limit_universal D X κ).2. Defined.
 
 (** The limiting cone composed with its mediator recovers the input cone. *)
@@ -60,7 +63,7 @@ Proof. exact (limit_universal D X κ).2. Defined.
 (** 极限锥与中介复合后恢复输入锥。 *)
 
 Theorem limit_β {X} (κ : X ⇒Δ D)
-  : πlim[D] ∘Cone limit_lift κ ≈N κ.
+  : πlim[D] ∘Cone lim⟨κ⟩ ≈N κ.
 Proof. exact (@this _ _ _ _ _ (limit_lift_unique κ)). Qed.
 
 (** The mediator of a cone obtained by precomposition recovers that map. *)
@@ -68,7 +71,7 @@ Proof. exact (@this _ _ _ _ _ (limit_lift_unique κ)). Qed.
 (** 通过预合成得到的锥，其中介恢复原映射。 *)
 
 Theorem limit_η {X} (f : Hom X (lim D))
-  : limit_lift (πlim[D] ∘Cone f) ≈ f.
+  : lim⟨πlim[D] ∘Cone f⟩ ≈ f.
 Proof. symmetry. apply limit_lift_unique. reflexivity. Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -76,7 +79,7 @@ Proof. symmetry. apply limit_lift_unique. reflexivity. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance limit_lift_proper {X}
-  : Proper (NatEq ==> @HomEq[X, lim D]) (@limit_lift X).
+  : Proper (NatEq ==> @HomEq[X, lim D]) (@limit_lift J C D HL X).
 Proof.
   intros κ μ H. apply limit_lift_unique. rewrite limit_β. exact H.
 Qed.
@@ -86,15 +89,13 @@ Qed.
 (** [limit_lift] 与复合的相容性。 *)
 
 Lemma limit_lift_comp {X Y} (κ : X ⇒Δ D) (f : Hom Y X)
-  : limit_lift (κ ∘Cone f) ≈ limit_lift κ ∘ f.
+  : lim⟨κ ∘Cone f⟩ ≈ lim⟨κ⟩ ∘ f.
 Proof.
   symmetry. apply limit_lift_unique.
   rewrite <- cone_comp_assoc, limit_β. reflexivity.
 Qed.
 
 End ChosenLimit.
-
-Notation "'lim⟨' κ '⟩'" := (limit_lift κ) (at level 35) : hom_scope.
 
 (** A limiting cone is exactly a terminal object of the cone category.
     Consequently object uniqueness reuses the general terminal-object theorem. *)

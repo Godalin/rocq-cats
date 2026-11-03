@@ -80,16 +80,22 @@ Definition Colim {J C : Cat} (D : Functor J C) `{HC : !HasColimit C D}
   : @Ob C
   := lim (D^opF).
 
+Arguments Colim {_ _} _ {_}.
+Notation "'colim' D" := (Colim D) (at level 35) : ob_scope.
+
 (** The injections are the original opposite-limit cone legs. *)
 
 (** 注入就是原来的反范畴极限锥腿。 *)
 
 Definition colimit_cocone {J C : Cat} (D : Functor J C)
     `{HC : !HasColimit C D}
-  : D ⇒∇ Colim D
+  : D ⇒∇ colim D
   :=
   {|op_cone := πlim[D^opF]
   |}.
+
+Arguments colimit_cocone {_ _} _ {_}.
+Notation "'ιcolim[' D ']'" := (colimit_cocone D) : hom_scope.
 
 (** Universality is inherited without rebuilding mediator witnesses. *)
 
@@ -97,33 +103,32 @@ Definition colimit_cocone {J C : Cat} (D : Functor J C)
 
 Definition colimit_universal {J C : Cat} (D : Functor J C)
     `{HC : !HasColimit C D}
-  : is_colimit (colimit_cocone D)
+  : is_colimit ιcolim[D]
   := limit_universal (D^opF).
 
-Arguments Colim {_ _} _ {_}.
-Arguments colimit_cocone {_ _} _ {_}.
 Arguments colimit_universal {_ _} _ {_} _ _.
-
-Notation "'colim' D" := (Colim D) (at level 35) : ob_scope.
-Notation "'ιcolim[' D ']'" := (colimit_cocone D) : hom_scope.
-
-Section ChosenColimit.
-Context {J C : Cat} {D : Functor J C} `{HC : !HasColimit C D}.
 
 (** Descending is lifting into the selected opposite limit. *)
 
 (** 下降映射就是指向选定反范畴极限的提升映射。 *)
 
-Definition colimit_desc {X} (κ : D ⇒∇ X)
+Definition colimit_desc {J C : Cat} {D : Functor J C}
+    `{HC : !HasColimit C D} {X} (κ : D ⇒∇ X)
   : Hom (colim D) X
-  := limit_lift (op_cone κ).
+  := lim⟨op_cone κ⟩.
+
+Notation "'colim⟨' κ '⟩'" := (colimit_desc κ)
+  (at level 35) : hom_scope.
+
+Section ChosenColimit.
+Context {J C : Cat} {D : Functor J C} `{HC : !HasColimit C D}.
 
 (** Mediator uniqueness is inherited from the opposite limit. *)
 
 (** 中介唯一性继承自反范畴极限。 *)
 
 Theorem colimit_desc_unique {X} (κ : D ⇒∇ X)
-  : is_unique (λ h, h ∘Cocone ιcolim[D] ≈N κ) (colimit_desc κ).
+  : is_unique (λ h, h ∘Cocone ιcolim[D] ≈N κ) (colim⟨κ⟩).
 Proof. exact (limit_lift_unique (op_cone κ)). Defined.
 
 (** The injection equation is the original limit beta law. *)
@@ -131,7 +136,7 @@ Proof. exact (limit_lift_unique (op_cone κ)). Defined.
 (** 注入方程就是原来的极限 β 律。 *)
 
 Theorem colimit_β {X} (κ : D ⇒∇ X)
-  : colimit_desc κ ∘Cocone ιcolim[D] ≈N κ.
+  : colim⟨κ⟩ ∘Cocone ιcolim[D] ≈N κ.
 Proof. exact (limit_β (op_cone κ)). Qed.
 
 (** The colimit eta law is the opposite limit eta law. *)
@@ -139,7 +144,7 @@ Proof. exact (limit_β (op_cone κ)). Qed.
 (** 余极限 η 律就是反范畴极限 η 律。 *)
 
 Theorem colimit_η {X} (f : Hom (colim D) X)
-  : colimit_desc (f ∘Cocone ιcolim[D]) ≈ f.
+  : colim⟨f ∘Cocone ιcolim[D]⟩ ≈ f.
 Proof.
   exact (@limit_η (J^op) (C^op) (D^opF) (@hasOpLimit C J D HC) X f).
 Qed.
@@ -150,7 +155,7 @@ Qed.
 
 Global Instance colimit_desc_proper {X}
   : Proper ((λ κ μ : D ⇒∇ X, κ ≈N μ) ==> @HomEq[colim D, X])
-      (@colimit_desc X).
+      (@colimit_desc J C D HC X).
 Proof.
   intros κ μ H.
   exact (@limit_lift_proper (J^op) (C^op) (D^opF) _ X
@@ -162,13 +167,10 @@ Qed.
 (** 后合成律就是将原来的预合成律读回 [C]。 *)
 
 Lemma colimit_desc_comp {X Y} (f : Hom X Y) (κ : D ⇒∇ X)
-  : colimit_desc (f ∘Cocone κ) ≈ f ∘ colimit_desc κ.
+  : colim⟨f ∘Cocone κ⟩ ≈ f ∘ colim⟨κ⟩.
 Proof. exact (limit_lift_comp (op_cone κ) f). Qed.
 
 End ChosenColimit.
-
-Notation "'colim⟨' κ '⟩'" := (colimit_desc κ)
-  (at level 35) : hom_scope.
 
 (** The initial-object characterization is the original terminal-object
     characterization in the opposite cone category. *)

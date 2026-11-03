@@ -34,16 +34,22 @@ Arguments π1 {_ _ _ _}.
 Arguments π2 {_ _ _ _}.
 Arguments product_universal {_ _ _ _} _ _ _.
 
+Notation "X '×' Y" := (Prod X Y)
+  (at level 41, right associativity) : ob_scope.
+
 (** The Type-valued universal property supplies the chosen mediator. *)
 
 (** Type 值泛性质给出选定中介。 *)
 
 Definition pair {C : Cat} `{HP : !HasProduct C} {X Y Z}
     (f : Hom Z X) (g : Hom Z Y)
-  : Hom Z (Prod X Y)
+  : Hom Z (X × Y)
   := (product_universal Z f g).1.
 
 Arguments pair {_ _ _ _ _} _ _.
+
+Notation "'⟨' f ',' g '⟩'" := (pair f g)
+  (format "'⟨' f  ','  g '⟩'") : hom_scope.
 
 (** Pairing is the unique arrow with the given two projections. *)
 
@@ -51,7 +57,7 @@ Arguments pair {_ _ _ _ _} _ _.
 
 Theorem product_pair_unique {C : Cat} `{HP : !HasProduct C} {X Y Z}
     {f : Hom Z X} {g : Hom Z Y}
-  : is_unique (λ h, π1 ∘ h ≈ f ∧ π2 ∘ h ≈ g) (pair f g).
+  : is_unique (λ h, π1 ∘ h ≈ f ∧ π2 ∘ h ≈ g) ⟨f,g⟩.
 Proof. exact (product_universal Z f g).2. Qed.
 
 Arguments product_pair_unique {_ _ _ _} _ _ _.
@@ -61,7 +67,7 @@ Arguments product_pair_unique {_ _ _ _} _ _ _.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance product_pair_proper {C : Cat} `{HP : !HasProduct C} {X Y Z}
-  : Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,Prod X Y]) pair.
+  : Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,X × Y]) pair.
 Proof.
   intros f f' Hf g g' Hg.
   destruct (product_pair_unique Z f g) as [[H1 H2] _].
@@ -69,12 +75,6 @@ Proof.
   - transitivity f; assumption.
   - transitivity g; assumption.
 Qed.
-
-Notation "X '×' Y" := (Prod X Y)
-  (at level 41, right associativity) : ob_scope.
-
-Notation "'⟨' f ',' g '⟩'" := (pair f g)
-  (format "'⟨' f  ','  g '⟩'") : hom_scope.
 
 Notation "'@π1' X Y" := (@π1 _ _ _ X Y)
   (at level 35) : hom_scope.
