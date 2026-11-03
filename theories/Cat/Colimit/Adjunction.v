@@ -4,53 +4,66 @@ From Cats Require Import
   Cat.Natural
   Cat.Adjunction
   Cat.Diagram.Dual
+  Cat.Limit.Core
+  Cat.Limit.Adjunction
+  Cat.Limit.Transport
   Cat.Colimit.Core.
 
-(** * Colimits as Left Adjoints to the Diagonal *)
+(** * Colimit Adjunctions through Opposite Limit Adjunctions *)
 
-(** * 余极限作为对角函子的左伴随 *)
+(** * 通过反范畴极限伴随提供余极限伴随 *)
 
 Section ChosenColimits.
 Context {J C : Cat} `{HC : !HasColimitsOfShape C J}.
+Let A
+  := @LimitAdjunction (J^op) (C^op) _.
 
-(** Postcompose the selected injections as a respectful hom-setoid map. *)
+(** The forward hom map is the original limit adjunction's inverse map,
+    read through the ordinary natural-transformation interface. *)
 
-(** 将选定注入后合成，得到保相等的 Hom 广集映射。 *)
+(** 正向 Hom 映射就是原极限伴随的逆映射，经通常自然变换接口读出。 *)
 
 Program Definition colimit_cocone_resp {D : Functor J C} {X : @Ob C}
   : HomSet (colim D) X →r @HomSet (Fct J C) D (ConstF J X)
   :=
-  {|func f := f ∘Cocone ιcolim[D]
+  {|func f := CoconeN {|op_cone := unadjunct A f|}
   |}.
-Next Obligation. intros f g H j. cbn. rewrite H. reflexivity. Defined.
+Next Obligation.
+  intros f g H j. exact (unadjunct_proper A f g H j).
+Defined.
 
-(** Extract the universal descending arrow as a respectful hom map. *)
+(** The inverse hom map is the original forward limit-adjunction map. *)
 
-(** 将提取泛下降箭头组织为保相等 Hom 映射。 *)
+(** 逆向 Hom 映射就是原极限伴随的正向映射。 *)
 
 Program Definition colimit_desc_resp {D : Functor J C} {X : @Ob C}
   : @HomSet (Fct J C) D (ConstF J X) →r HomSet (colim D) X
   :=
-  {|func := colimit_desc
+  {|func κ := adjunct A (op_cone (CoconeOfN κ))
   |}.
+Next Obligation.
+  intros κ μ H.
+  exact (adjunct_proper A (op_cone (CoconeOfN κ))
+    (op_cone (CoconeOfN μ)) (λ j, H j)).
+Defined.
 
-(** The selected-colimit functor is left adjoint to the diagonal. Its hom
-    naturality follows from the universal mediator laws. *)
+(** Assemble the ordinary adjunction interface from the existing opposite
+    limit adjunction. All inverse and naturality laws are inherited. *)
 
-(** 选定余极限函子左伴随于对角函子；Hom 自然性来自泛中介定律。 *)
+(** 从已有反范畴极限伴随组装通常的伴随接口；互逆律与自然性全部继承。 *)
 
 Definition ColimitAdjunction
   : ColimitF ⊣ Δ[J,C].
 Proof.
   refine (AdjunctionFromHom ColimitF Δ[J,C]
     (λ D X, colimit_cocone_resp) (λ D X, colimit_desc_resp) _ _ _ _).
-  - intros D X f. apply colimit_η.
-  - intros D X κ. apply colimit_β.
-  - intros D E X f α j.
-    change ((f ∘ colimit_map α) ∘ ιcolim[E] j ≈
-      (f ∘ ιcolim[D] j) ∘ α j).
-    rewrite comp_assoc, (colimit_map_β α j). symmetry. apply comp_assoc.
-  - intros D X Y k f j. cbn. apply comp_assoc.
+  - intros D X f.
+    transitivity (adjunct A (unadjunct A f)).
+    + apply (adjunct_proper A). intros j. reflexivity.
+    + exact (adjunction_η A f).
+  - intros D X κ j. exact (adjunction_β A (op_cone (CoconeOfN κ)) j).
+  - intros D E X f α j. exact (unadjunct_comp_l A (α^opN) f j).
+  - intros D X Y k f j. exact (unadjunct_comp_r A f k j).
 Defined.
 
 End ChosenColimits.
@@ -58,45 +71,47 @@ End ChosenColimits.
 Section DiagonalAdjunction.
 Context {J C : Cat} {L : Functor (Fct J C) C} (A : L ⊣ Δ[J,C]).
 
-(** The unit of a diagonal adjunction supplies a chosen colimit cocone. *)
+(** The existing unit universal property supplies the opposite limit
+    directly; no separate colimit uniqueness proof is needed. *)
 
-(** 对角伴随的单位给出选定余极限余锥。 *)
+(** 已有单位泛性质直接给出反范畴极限，无须另证余极限中介唯一性。 *)
 
 Program Definition DiagonalAdjunctionColimit (D : Functor J C)
   : HasColimit C D
   :=
-  {|Colim := L D
-  ; colimit_cocone := adjunction_unit A D
+  {|hasOpLimit :=
+      {|Lim := L D
+      ; limit_cone := op_cone (CoconeOfN (adjunction_unit A D))
+      |}
   |}.
 Next Obligation.
-  apply (snd (colimit_universal_iff (adjunction_unit A D))).
-  intros X κ. exists (κ^♭[A]). refine {|this := _
-                                      ; that := _
-                                      |}.
-  - intros j.
-    exact (transitivity (symmetry (adjunct_unit A (κ^♭[A]) j))
-      (adjunction_η A κ j)).
-  - intros f H. apply (fst (adjunct_iff A f κ)).
-    rewrite adjunct_unit. exact H.
+  intros X μ.
+  exists ((CoconeN {|op_cone := μ|})^♭[A]).
+  exact (adjunction_unit_universal A (CoconeN {|op_cone := μ|})).
 Defined.
 
-(** A left adjoint to the diagonal supplies all colimits of this shape.
-    Selected structures are enabled only by explicit use of this constructor. *)
+(** Read any opposite-shape diagram in the original categories, use the
+    same unit construction, then transport its limit back along [OpUnopF]. *)
 
-(** 对角函子的左伴随给出该形状的全部余极限；选定结构仅通过显式构造启用。 *)
+(** 将任意反形状图式读回原范畴，使用同一单位构造，再沿 [OpUnopF] 将极限送回。 *)
 
 Program Definition DiagonalAdjunctionColimits
   : HasColimitsOfShape C J
   :=
-  {|hasColimit := DiagonalAdjunctionColimit
+  {|hasOpLimits :=
+      {|hasLimit K :=
+          let HC := DiagonalAdjunctionColimit (K^unopF) in
+          TransportedLimit (OpUnopF K).1 (OpUnopF K).2
+            (HL := @hasOpLimit C J (K^unopF) HC)
+      |}
   |}.
 
 End DiagonalAdjunction.
 
-(** Chosen colimits of a shape and a chosen left adjoint to its diagonal
-    construct each other, without equality of chosen structure records. *)
+(** Opposite-shape chosen limits and a left adjoint to the ordinary diagonal
+    construct each other, without equality of chosen records. *)
 
-(** 某形状的选定余极限与其对角函子的选定左伴随相互构造，不比较选定结构记录。 *)
+(** 反形状选定极限与通常对角函子的左伴随相互构造，不比较选定记录的相等。 *)
 
 Theorem colimits_iff_diagonal_left_adjoint (J C : Cat)
   : HasColimitsOfShape C J ↔ ∃ L : Functor (Fct J C) C, L ⊣ Δ[J,C].

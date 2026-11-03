@@ -621,3 +621,18 @@ Program Definition OpF_involution {C D : Cat} (F : Functor C D)
       |}; _).
 Next Obligation. simpl. carw. Defined.
 Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
+
+(** Opposing a functor read in the original categories recovers the given
+    functor by an identity-component natural isomorphism. *)
+
+(** 将读回原范畴的函子再取反，通过恒等分量自然同构恢复给定函子。 *)
+
+Program Definition OpUnopF {C D : Cat} (F : Functor (C^op) (D^op))
+  : (F^unopF)^opF ≅N F
+  := ({|nt X := id
+      |}; _).
+Next Obligation. cbn. carw. Defined.
+Next Obligation.
+  intros X. exists id. split;
+    exact (@comp_id_l (D^op) (F X) (F X) (@Cat.Core.id (D^op) (F X))).
+Defined.

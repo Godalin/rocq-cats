@@ -53,3 +53,19 @@ Proof.
     change (κ j ∘ g ≈ (Hα j).1 ∘ ((α j ∘ κ j) ∘ g)).
     rewrite <- !comp_assoc, (fst (Hα j).2), comp_id_l. reflexivity.
 Defined.
+
+(** Transport a selected limit along an invertible diagram transformation,
+    keeping its selected apex and mediator data. *)
+
+(** 沿可逆图式自然变换运输选定极限，保留其选定顶点及中介数据。 *)
+
+Program Definition TransportedLimit {J C : Cat} {D E : Functor J C}
+    (α : D ⇒ E) (Hα : α ⦂ D ≅N E) `{HL : !HasLimit C D}
+  : HasLimit C E
+  :=
+  {|Lim := lim D
+  ; limit_cone := α ∘Nv πlim[D]
+  |}.
+Next Obligation.
+  exact (limit_transport α Hα (limit_universal D)).
+Defined.

@@ -220,6 +220,24 @@ Next Obligation. exact (@functor_comp C D F Z Y X g f). Qed.
 
 Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
 
+(** Read a functor between opposite categories in the original categories.
+    This keeps the underlying maps, without comparing category records. *)
+
+(** 将反范畴之间的函子读作原范畴之间的函子，保留底层映射，不比较范畴记录。 *)
+
+Program Definition UnopF {C D : Cat} (F : Functor (C^op) (D^op))
+  : Functor C D
+  :=
+  {|F0 X := F X
+  ; F1 X Y f := fmap F f
+  ; functor_fmap_proper X Y f g H :=
+      @functor_fmap_proper (C^op) (D^op) F Y X f g H
+  |}.
+Next Obligation. exact (@functor_id (C^op) (D^op) F X). Qed.
+Next Obligation. exact (@functor_comp (C^op) (D^op) F Z Y X g f). Qed.
+
+Notation "F '^unopF'" := (UnopF F) (at level 35) : cat_scope.
+
 (** The identity action from a category to its double opposite. *)
 
 (** 从范畴到其双重反范畴的恒等作用。 *)

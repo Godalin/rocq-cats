@@ -9,6 +9,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - For each new construction, check whether a reusable general theory applies.
   Reuse it, or extract shared arguments when useful, before specializing;
   avoid duplicating universal-property proofs in individual models.
+- Define dual constructions through the original theory on opposite categories,
+  then expose ordinary names, notation and laws as wrappers. Keep one underlying
+  construction; do not independently rebuild its dual and prove a comparison.
 - Preserve Type-valued relations and computational witnesses; do not replace
   them with Prop-only interfaces or introduce unproved assumptions.
 - Sets mean setoids; strict laws use their specified equality. Rocq's `eq`

@@ -5,246 +5,201 @@ From Cats Require Import
   Cat.Functor.Core
   Cat.Natural.
 
-(** * Cocones and Opposite Cones *)
+(** * Cocones as Opposite Cones *)
 
-(** * 余锥与反范畴中的锥 *)
+(** * 余锥直接取反范畴中的锥 *)
 
-(** A cocone is a natural transformation into a constant diagram. *)
+(** A cocone is the original cone construction on the opposite diagram.
+    Its components are arrows from diagram objects to the apex in [C]. *)
 
-(** 余锥是指向常图式的自然变换。 *)
+(** 余锥直接使用反图式上的原锥构造；其分量在 [C] 中从图式对象指向顶点。 *)
 
-Definition Cocone {J C : Cat} (D : Functor J C) (X : @Ob C)
-  := D ⇒ ConstF J X.
+Record Cocone {J C : Cat} (D : Functor J C) (X : @Ob C)
+  :=
+  { op_cone : @Cone (J^op) (C^op) (D^opF) X
+  }.
+
+Arguments op_cone {_ _ _ _} _.
+
+(** The ordinary natural-transformation interface reads the stored opposite
+    legs in [C]; its naturality is inherited from the cone. *)
+
+(** 通常的自然变换接口将存储的反锥腿读回 [C]，自然性直接继承自锥。 *)
+
+Program Definition CoconeN {J C : Cat} {D : Functor J C} {X : @Ob C}
+    (κ : Cocone D X)
+  : D ⇒ ConstF J X
+  :=
+  {|nt j := op_cone κ j
+  |}.
+Next Obligation.
+  rewrite comp_id_l. symmetry.
+  exact (@cone_naturality (J^op) (C^op) (D^opF) X (op_cone κ) Y X0 f).
+Qed.
+
+Coercion CoconeN : Cocone >-> Nat.
 
 Notation "D '⇒∇' X" := (Cocone D X)
   (at level 50, no associativity) : cat_scope.
 
-(** A cocone leg factors through the next leg along a diagram arrow. *)
+(** The ordinary cocone equation is opposite-cone naturality. *)
 
-(** 沿图式箭头，余锥腿经过下一条余锥腿分解。 *)
+(** 通常的余锥方程就是反锥的自然性。 *)
 
 Lemma cocone_naturality {J C : Cat} {D : Functor J C} {X}
     (κ : D ⇒∇ X) {i j : @Ob J} (f : Hom i j)
   : κ j ∘ fmap D f ≈ κ i.
 Proof.
-  pose proof (nt_naturality κ f) as H. cbn in H.
-  rewrite comp_id_l in H. exact H.
+  symmetry.
+  exact (@cone_naturality (J^op) (C^op) (D^opF) X (op_cone κ) j i f).
 Qed.
 
-(** Postcompose every leg with an apex map. *)
+(** Postcomposition is cone precomposition in the opposite category. *)
 
-(** 将每条余锥腿与顶点映射后合成。 *)
+(** 后合成就是反范畴中锥的预合成。 *)
 
 Definition cocone_comp {J C : Cat} {D : Functor J C} {X Y : @Ob C}
     (f : Hom X Y) (κ : D ⇒∇ X)
   : D ⇒∇ Y
-  := fmap (DiagonalF J C) f ∘Nv κ.
+  :=
+  {|op_cone := op_cone κ ∘Cone f
+  |}.
 
 Infix "∘Cocone" := cocone_comp
   (at level 40, left associativity) : cat_scope.
 
-(** Postcomposition respects hom equality and pointwise cocone equality. *)
+(** Respectfulness is inherited from cone precomposition. *)
 
-(** 后合成保持 Hom 相等及余锥的逐点相等。 *)
+(** 保相等性继承自锥的预合成。 *)
 
 Global Instance cocone_comp_proper {J C : Cat} {D : Functor J C}
     {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==> NatEq ==> NatEq)
+  : Proper (@HomEq[X, Y] ==>
+      (λ κ μ : D ⇒∇ X, κ ≈N μ) ==>
+      (λ κ μ : D ⇒∇ Y, κ ≈N μ))
       (@cocone_comp J C D X Y).
 Proof.
-  intros f g H κ μ K j. cbn. rewrite H, (K j). reflexivity.
+  intros f g H κ μ K.
+  exact (@cone_comp_proper (J^op) (C^op) (D^opF) X Y
+    (op_cone κ) (op_cone μ) K f g H).
 Qed.
 
-(** Postcomposing by an identity leaves a cocone unchanged. *)
+(** The cocone identity law is the cone identity law. *)
 
-(** 与恒等后合成不改变余锥。 *)
+(** 余锥的恒等律就是锥的恒等律。 *)
 
 Lemma cocone_comp_id {J C : Cat} {D : Functor J C} {X}
     (κ : D ⇒∇ X)
   : id ∘Cocone κ ≈N κ.
-Proof. intros j. apply comp_id_l. Qed.
+Proof. exact (cone_comp_id (op_cone κ)). Qed.
 
-(** Postcomposition of cocones is associative. *)
+(** Cocone associativity reverses the two apex maps. *)
 
-(** 余锥的后合成满足结合律。 *)
+(** 余锥结合律反转两个顶点映射的次序。 *)
 
 Lemma cocone_comp_assoc {J C : Cat} {D : Functor J C} {X Y Z}
     (g : Hom Y Z) (f : Hom X Y) (κ : D ⇒∇ X)
   : g ∘Cocone (f ∘Cocone κ) ≈N (g ∘ f) ∘Cocone κ.
-Proof. intros j. symmetry. apply comp_assoc. Qed.
+Proof. exact (cone_comp_assoc (op_cone κ) f g). Qed.
 
-(** Apply a functor to every cocone leg and its apex. *)
+(** Precompose a cocone by a diagram transformation using its opposite
+    transformation and the original vertical composition. *)
 
-(** 将函子作用于每条余锥腿及其顶点。 *)
+(** 用图式自然变换预合成余锥，底层使用其反变换及原来的垂直复合。 *)
 
-Program Definition MapCocone {J C E : Cat} (F : Functor C E)
+Definition cocone_precompose {J C : Cat} {D E : Functor J C} {X : @Ob C}
+    (κ : E ⇒∇ X) (α : D ⇒ E)
+  : D ⇒∇ X
+  :=
+  {|op_cone := α^opN ∘Nv op_cone κ
+  |}.
+
+Infix "∘∇" := cocone_precompose
+  (at level 51, right associativity) : cat_scope.
+
+(** The diagram-action interface respects the same pointwise equalities. *)
+
+(** 图式作用接口保持同样的逐点相等。 *)
+
+Global Instance cocone_precompose_proper {J C : Cat}
+    {D E : Functor J C} {X : @Ob C}
+  : Proper ((λ κ μ : E ⇒∇ X, κ ≈N μ) ==> NatEq ==>
+      (λ κ μ : D ⇒∇ X, κ ≈N μ)) (@cocone_precompose J C D E X).
+Proof.
+  intros κ μ H α β K j. cbn. rewrite (H j), (K j). reflexivity.
+Qed.
+
+(** Functor images use [MapCone] on opposites, followed by the existing
+    comparison between opposition and composition. *)
+
+(** 函子像使用反范畴中的 [MapCone]，再沿取反与复合的已有比较转换图式。 *)
+
+Definition MapCocone {J C E : Cat} (F : Functor C E)
     {D : Functor J C} {X : @Ob C} (κ : D ⇒∇ X)
   : (F ∘F D) ⇒∇ F X
   :=
-  {|nt j := fmap F (κ j)
+  {|op_cone := ((OpF_comp F D).1 ^-1N (OpF_comp F D).2) ∘Nv
+      MapCone (F^opF) (op_cone κ)
   |}.
-Next Obligation.
-  rewrite comp_id_l, <- (functor_comp C E F).
-  apply functor_fmap_proper. apply cocone_naturality.
-Qed.
 
-(** Reverse a cocone into a cone on the opposite diagram. The legs retain
-    their underlying arrows; no equality of functor records is required. *)
+(** Supply ordinary natural-transformation components to the opposite-cone
+    representation, without a second cocone record. *)
 
-(** 将余锥反转为反图式上的锥。锥腿保留底层箭头，不要求函子记录相等。 *)
+(** 将通常自然变换的分量送入反锥表示，不另设第二种余锥记录。 *)
 
-Program Definition CoconeOp {J C : Cat} {D : Functor J C} {X : @Ob C}
-    (κ : D ⇒∇ X)
-  : X ⇒Δ D^opF
-  :=
-  {|nt j := κ j
-  |}.
-Next Obligation.
-  rewrite comp_id_l. symmetry.
-  exact (@cocone_naturality J C D X κ Y X0 f).
-Qed.
-
-(** Recover a cocone from a cone on the opposite diagram. *)
-
-(** 从反图式上的锥恢复余锥。 *)
-
-Program Definition CoconeUnop {J C : Cat} {D : Functor J C}
-    {X : @Ob C} (κ : X ⇒Δ D^opF)
+Program Definition CoconeOfN {J C : Cat} {D : Functor J C} {X : @Ob C}
+    (κ : D ⇒ ConstF J X)
   : D ⇒∇ X
   :=
-  {|nt j := κ j
+  {|op_cone :=
+      {|nt j := κ j
+      |}
   |}.
 Next Obligation.
-  rewrite comp_id_l. symmetry.
-  exact (@cone_naturality (J^op) (C^op) (D^opF) X κ Y X0 f).
+  pose proof (nt_naturality κ f) as H. cbn in H.
+  rewrite comp_id_l in H. rewrite comp_id_l. symmetry. exact H.
 Qed.
 
-(** Reversing a cone gives a cocone on the opposite diagram. *)
+(** Reading a cone on the double-opposite diagram only rebuilds naturality
+    at the required endpoints; its component arrows stay unchanged. *)
 
-(** 反转锥得到反图式上的余锥。 *)
+(** 将锥读入双重反图式时只在相应端点重组自然性，分量箭头保持不变。 *)
 
 Program Definition ConeOp {J C : Cat} {D : Functor J C} {X : @Ob C}
     (κ : X ⇒Δ D)
   : D^opF ⇒∇ X
   :=
-  {|nt j := κ j
+  {|op_cone :=
+      {|nt j := κ j
+      |}
   |}.
-Next Obligation.
-  rewrite comp_id_r. symmetry.
-  exact (@cone_naturality J C D X κ Y X0 f).
-Qed.
+Next Obligation. exact (nt_naturality κ f). Qed.
 
-(** Recover an original cone from a cocone on the opposite diagram. *)
+(** Recover the original cone presentation from the double-opposite one. *)
 
-(** 从反图式上的余锥恢复原来的锥。 *)
+(** 从双重反图式的锥表示恢复原来的锥表示。 *)
 
-Program Definition ConeUnop {J C : Cat} {D : Functor J C}
-    {X : @Ob C} (κ : D^opF ⇒∇ X)
+Program Definition ConeUnop {J C : Cat} {D : Functor J C} {X : @Ob C}
+    (κ : D^opF ⇒∇ X)
   : X ⇒Δ D
   :=
   {|nt j := κ j
   |}.
-Next Obligation.
-  rewrite comp_id_r. symmetry.
-  exact (@cocone_naturality (J^op) (C^op) (D^opF) X κ Y X0 f).
-Qed.
+Next Obligation. exact (nt_naturality (op_cone κ) f). Qed.
 
-(** Reversing cocones preserves their pointwise equality. *)
+(** Cocone objects and morphisms are supplied by the opposite cone category. *)
 
-(** 反转余锥保持其逐点相等。 *)
-
-Global Instance cocone_op_proper {J C : Cat} {D : Functor J C} {X}
-  : Proper (NatEq ==> NatEq) (@CoconeOp J C D X).
-Proof. intros κ μ H j. exact (H j). Qed.
-
-(** Recovering cocones preserves their pointwise equality. *)
-
-(** 恢复余锥保持其逐点相等。 *)
-
-Global Instance cocone_unop_proper {J C : Cat} {D : Functor J C} {X}
-  : Proper (NatEq ==> NatEq) (@CoconeUnop J C D X).
-Proof. intros κ μ H j. exact (H j). Qed.
-
-(** Reversing cones preserves their pointwise equality. *)
-
-(** 反转锥保持其逐点相等。 *)
-
-Global Instance cone_op_proper {J C : Cat} {D : Functor J C} {X}
-  : Proper (NatEq ==> NatEq) (@ConeOp J C D X).
-Proof. intros κ μ H j. exact (H j). Qed.
-
-(** Recovering cones preserves their pointwise equality. *)
-
-(** 恢复锥保持其逐点相等。 *)
-
-Global Instance cone_unop_proper {J C : Cat} {D : Functor J C} {X}
-  : Proper (NatEq ==> NatEq) (@ConeUnop J C D X).
-Proof. intros κ μ H j. exact (H j). Qed.
-
-(** The two conversions cancel componentwise, without comparing proof fields. *)
-
-(** 两种转换逐分量抵消，不比较证明字段。 *)
-
-Lemma cocone_unop_op {J C : Cat} {D : Functor J C} {X}
-    (κ : D ⇒∇ X)
-  : CoconeUnop (CoconeOp κ) ≈N κ.
-Proof. intros j. reflexivity. Qed.
-
-(** The reverse round trip also preserves all legs. *)
-
-(** 反向往返也保持所有锥腿。 *)
-
-Lemma cocone_op_unop {J C : Cat} {D : Functor J C} {X : @Ob C}
-    (κ : X ⇒Δ D^opF)
-  : CoconeOp (CoconeUnop κ) ≈N κ.
-Proof. intros j. reflexivity. Qed.
-
-(** The two cone conversions cancel on the original diagram. *)
-
-(** 两种锥转换在原图式上抵消。 *)
-
-Lemma cone_unop_op {J C : Cat} {D : Functor J C} {X}
-    (κ : X ⇒Δ D)
-  : ConeUnop (ConeOp κ) ≈N κ.
-Proof. intros j. reflexivity. Qed.
-
-(** The reverse cone round trip preserves all legs as well. *)
-
-(** 反向的锥往返同样保持所有锥腿。 *)
-
-Lemma cone_op_unop {J C : Cat} {D : Functor J C} {X : @Ob C}
-    (κ : D^opF ⇒∇ X)
-  : ConeOp (ConeUnop κ) ≈N κ.
-Proof. intros j. reflexivity. Qed.
-
-(** Reversing cocone postcomposition gives cone precomposition. *)
-
-(** 反转余锥后合成得到锥的预合成。 *)
-
-Lemma cocone_op_comp {J C : Cat} {D : Functor J C} {X Y : @Ob C}
-    (f : Hom X Y) (κ : D ⇒∇ X)
-  : CoconeOp (f ∘Cocone κ) ≈N CoconeOp κ ∘Cone f.
-Proof. intros j. reflexivity. Qed.
-
-(** Cocones form the opposite of the cone category of the opposite diagram.
-    Its morphisms point from the source apex to the target apex in [C]. *)
-
-(** 余锥构成反图式的锥范畴之反范畴；态射在 [C] 中从源顶点指向目标顶点。 *)
+(** 余锥对象及态射直接由反锥范畴给出。 *)
 
 Definition CoconeCat {J C : Cat} (D : Functor J C)
   : Cat
   := (ConeCat (D^opF))^op.
 
-(** Forget a cocone and its morphism to their apex and apex map in [C]. *)
+(** The apex functor is the opposite of the original apex functor, read
+    back in [C]. *)
 
-(** 将余锥及其态射忘却为 [C] 中的顶点及顶点映射。 *)
+(** 顶点函子为原顶点函子取反后读回 [C] 的结果。 *)
 
-Program Definition CoconeApexF {J C : Cat} (D : Functor J C)
+Definition CoconeApexF {J C : Cat} (D : Functor J C)
   : Functor (CoconeCat D) C
-  :=
-  {|F0 κ := κ.1
-  ; F1 κ μ f := f.1
-  |}.
-Next Obligation. intros f g H. exact H. Qed.
-Next Obligation. reflexivity. Qed.
-Next Obligation. reflexivity. Qed.
+  := FromDoubleOpF ∘F (ConeApexF (D^opF))^opF.
