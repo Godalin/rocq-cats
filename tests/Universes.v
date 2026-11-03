@@ -23,6 +23,11 @@ From Cats Require Import
   Cat.Limit.Adjunction
   Cat.Limit.Preservation.
 From Cats Require Import
+  Cat.Diagram.Dual
+  Cat.Colimit.Core
+  Cat.Colimit.Adjunction
+  Cat.Colimit.Preservation.
+From Cats Require Import
   Graph.Morphism
   Graph.Path
   Cat.Free
@@ -321,6 +326,49 @@ Definition mixed_right_adjoint_limit
   : is_limit (MapCone G κ)
   := right_adjoint_preserves_limit A Hκ.
 End LimitLevels.
+
+(** Duality and colimit adjunctions preserve independent target hom/equality
+    levels, even when the diagram objects live at a higher level. *)
+
+(** 即使图式对象处于更高层级，对偶与余极限伴随仍保持目标 Hom 及相等层级独立。 *)
+
+Section ColimitLevels.
+Universe o h p n l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < n.
+Constraint n < l.
+Context (J : Cat@{n h p l l}).
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+
+Definition high_eq_colimit_adjunction
+  : HasColimitsOfShape C J ↔
+      ∃ L : Functor (Fct J C) C, L ⊣ Δ[J,C]
+  := colimits_iff_diagonal_left_adjoint J C.
+
+Definition low_eq_colimit_adjunction
+  : HasColimitsOfShape D J ↔
+      ∃ L : Functor (Fct J D) D, L ⊣ Δ[J,D]
+  := colimits_iff_diagonal_left_adjoint J D.
+
+Definition high_eq_limit_duality (K : Functor J C) {L}
+    (κ : L ⇒Δ K)
+  : is_limit κ ↔ is_colimit (ConeOp κ)
+  := limit_iff_op_colimit κ.
+
+Definition low_eq_limit_duality (K : Functor J D) {L}
+    (κ : L ⇒Δ K)
+  : is_limit κ ↔ is_colimit (ConeOp κ)
+  := limit_iff_op_colimit κ.
+
+Context (F : Functor C D) (G : Functor D C) (A : F ⊣ G).
+Context (K : Functor J C) (L : @Ob C) (κ : K ⇒∇ L).
+
+Definition mixed_left_adjoint_colimit (Hκ : is_colimit κ)
+  : is_colimit (MapCocone F κ)
+  := left_adjoint_preserves_colimit A Hκ.
+
+End ColimitLevels.
 
 (** Shape changes may reverse the shape hom/equality ordering and lower its
     object level. Neither ordering of the target's native hom levels changes. *)

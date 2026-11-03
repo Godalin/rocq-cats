@@ -84,6 +84,12 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   isomorphism (`F ≅N G`), without requiring equality of their object values.
   Whiskering is written `G ∘Nl α` and `β ∘Nr F`; composition, fixing arguments,
   and taking opposites preserve natural isomorphisms.
+  [Diagram.Dual](./theories/Cat/Diagram/Dual.v) provides cocones `D ⇒∇ X`
+  and their correspondence with opposite cones.
+  [Colimit](./theories/Cat/Colimit/Core.v) reuses opposite limits, with
+  [diagonal adjunctions](./theories/Cat/Colimit/Adjunction.v) and
+  [left-adjoint preservation](./theories/Cat/Colimit/Preservation.v);
+  see the [duality guide](./docs/Duality.md).
   [CatCat](./theories/Cat/CatCat.v) provides the category of categories with
   this morphism equivalence. Write `C ≃C D` for an equivalence with chosen
   quasi-inverse functors and natural isomorphisms for the two composites.
