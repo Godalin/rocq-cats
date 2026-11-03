@@ -118,7 +118,7 @@ Program Definition CatCatHom@{o h p l m n +}
   ; F1 X Y f := fmap F f
   |}.
 Next Obligation.
-  intros f g H. exact (@functor_fmap_proper C D F X Y f g H).
+  apply (@functor_fmap_proper C D F).
 Qed.
 Next Obligation. exact (@functor_id C D F X). Qed.
 Next Obligation. exact (@functor_comp C D F X Y Z f g). Qed.
