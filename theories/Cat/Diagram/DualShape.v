@@ -1,0 +1,71 @@
+From Cats Require Export
+  Cat.Diagram.Dual
+  Cat.Diagram.Discrete
+  Cat.Diagram.Arrow.
+From Cats Require Import
+  Cat.Core
+  Cat.Functor.Core
+  Cat.Natural.
+
+(** * Ordinary Diagrams for Dual Universal Constructions *)
+
+(** * 对偶泛构造的通常图式 *)
+
+(** The empty diagram of opposite shape is the dual of the original empty
+    diagram in the opposite category. *)
+
+(** 反空形状的图式就是原反范畴空图式的对偶。 *)
+
+Definition EmptyCodiagram (C : Cat)
+  : Functor (EmptyShape^op) C
+  := DualDiagram (EmptyDiagram (C^op)).
+
+(** The empty cocone is the original empty cone read in the dual interface. *)
+
+(** 空余锥就是将原空锥读入对偶接口。 *)
+
+Definition EmptyCocone {C : Cat} (X : @Ob C)
+  : EmptyCodiagram C ⇒∇ X
+  := DualCone (@EmptyCone (C^op) (EmptyDiagram (C^op)) X).
+
+(** A pair of objects gives the dual of the original discrete-pair diagram.
+    False remains the first object and true the second. *)
+
+(** 对象对给出原离散二点图式的对偶；[false] 仍为第一对象，[true] 为第二对象。 *)
+
+Definition PairCodiagram {C : Cat} (X Y : @Ob C)
+  : Functor (PairShape^op) C
+  := DualDiagram (@PairDiagram (C^op) X Y).
+
+Notation "'⟨' X ',' Y '⟩CoD'" := (PairCodiagram X Y) : cat_scope.
+
+(** Two arrows to a common codomain form a cocone through opposite pairing. *)
+
+(** 两条同余域箭头通过反范畴配对构成余锥。 *)
+
+Definition PairCocone {C : Cat} {X Y S : @Ob C}
+    (i : Hom X S) (j : Hom Y S)
+  : ⟨X, Y⟩CoD ⇒∇ S
+  := DualCone (@PairCone (C^op) X Y S i j).
+
+Notation "'⟨' i ',' j '⟩Cocone'" := (PairCocone i j) : cat_scope.
+
+(** Reverse the original parallel diagram in the opposite category. The
+    source is [true] and the common target is [false]. *)
+
+(** 反转原反范畴中的平行箭头图式；[true] 是源，[false] 是共同目标。 *)
+
+Definition ParallelCodiagram {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
+  : Functor (ParallelShape^op) C
+  := DualDiagram (@ParallelDiagram (C^op) Y X f g).
+
+Notation "'⟨' f '⇉' g '⟩CoD'" := (ParallelCodiagram f g) : cat_scope.
+
+(** A coequalizing arrow supplies the original opposite parallel cone. *)
+
+(** 余等化箭头给出原反范畴中的平行箭头锥。 *)
+
+Definition ParallelCocone {C : Cat} {X Y Q : @Ob C} {f g : Hom X Y}
+    (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
+  : ⟨f ⇉ g⟩CoD ⇒∇ Q
+  := DualCone (@ParallelCone (C^op) Y X Q f g q H).

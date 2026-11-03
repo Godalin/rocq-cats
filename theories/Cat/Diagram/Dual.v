@@ -175,6 +175,30 @@ Program Definition ConeOp {J C : Cat} {D : Functor J C} {X : @Ob C}
   |}.
 Next Obligation. exact (nt_naturality κ f). Qed.
 
+(** Read an opposite-target diagram as an ordinary diagram of opposite
+    shape, retaining its object and arrow maps. *)
+
+(** 将反目标范畴中的图式读作反形状的通常图式，保留其对象及箭头映射。 *)
+
+Definition DualDiagram {J C : Cat} (D : Functor J (C^op))
+  : Functor (J^op) C
+  := FromDoubleOpF ∘F D^opF.
+
+(** Read its original cone as a cocone. Only the naturality endpoints are
+    adapted; component arrows and all computational witnesses are retained. *)
+
+(** 将其原锥读作余锥；仅适配自然性端点，保留分量箭头及所有计算见证。 *)
+
+Program Definition DualCone {J C : Cat} {D : Functor J (C^op)} {X}
+    (κ : X ⇒Δ D)
+  : DualDiagram D ⇒∇ X
+  :=
+  {|op_cone :=
+      {|nt j := κ j
+      |}
+  |}.
+Next Obligation. exact (nt_naturality κ f). Qed.
+
 (** Recover the original cone presentation from the double-opposite one. *)
 
 (** 从双重反图式的锥表示恢复原来的锥表示。 *)

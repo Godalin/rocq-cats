@@ -28,6 +28,12 @@ From Cats Require Import
   Cat.Colimit.Adjunction
   Cat.Colimit.Preservation.
 From Cats Require Import
+  Cat.Coproduct
+  Cat.Coequalizer
+  Cat.Colimit.Initial
+  Cat.Colimit.Coproduct
+  Cat.Colimit.Coequalizer.
+From Cats Require Import
   Graph.Morphism
   Graph.Path
   Cat.Free
@@ -369,6 +375,51 @@ Definition mixed_left_adjoint_colimit (Hκ : is_colimit κ)
   := left_adjoint_preserves_colimit A Hκ.
 
 End ColimitLevels.
+
+(** Named dual structures and both shape conversions preserve independent
+    hom-carrier and equality-witness levels. *)
+
+(** 命名对偶结构及双向形状转换保持 Hom 载体与相等见证层级独立。 *)
+
+Section NamedColimitLevels.
+Universes o h p l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+
+Definition high_eq_named_colimits
+    (HI : HasInitial C) (HP : HasCoproduct C) (HE : HasCoequalizer C)
+  : HasColimitsOfShape C (EmptyShape^op) ∧
+      HasColimitsOfShape C (PairShape^op) ∧
+      HasColimitsOfShape C (ParallelShape^op)
+  := (@InitialColimits C HI,
+      (@CoproductColimits C HP, @CoequalizerColimits C HE)).
+
+Definition low_eq_named_colimits
+    (HI : HasInitial D) (HP : HasCoproduct D) (HE : HasCoequalizer D)
+  : HasColimitsOfShape D (EmptyShape^op) ∧
+      HasColimitsOfShape D (PairShape^op) ∧
+      HasColimitsOfShape D (ParallelShape^op)
+  := (@InitialColimits D HI,
+      (@CoproductColimits D HP, @CoequalizerColimits D HE)).
+
+Definition high_eq_named_colimits_recovery
+    (HI : HasColimitsOfShape C (EmptyShape^op))
+    (HP : HasColimitsOfShape C (PairShape^op))
+    (HE : HasColimitsOfShape C (ParallelShape^op))
+  : HasInitial C ∧ HasCoproduct C ∧ HasCoequalizer C
+  := (@EmptyColimitsInitial C HI,
+      (@PairColimitsCoproduct C HP, @ParallelColimitsCoequalizer C HE)).
+
+Definition low_eq_named_colimits_recovery
+    (HI : HasColimitsOfShape D (EmptyShape^op))
+    (HP : HasColimitsOfShape D (PairShape^op))
+    (HE : HasColimitsOfShape D (ParallelShape^op))
+  : HasInitial D ∧ HasCoproduct D ∧ HasCoequalizer D
+  := (@EmptyColimitsInitial D HI,
+      (@PairColimitsCoproduct D HP, @ParallelColimitsCoequalizer D HE)).
+End NamedColimitLevels.
 
 (** Shape changes may reverse the shape hom/equality ordering and lower its
     object level. Neither ordering of the target's native hom levels changes. *)

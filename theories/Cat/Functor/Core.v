@@ -265,3 +265,35 @@ Program Definition FromDoubleOpF {C : Cat}
 Next Obligation. intros f g Hfg. exact Hfg. Qed.
 Next Obligation. reflexivity. Qed.
 Next Obligation. reflexivity. Qed.
+
+(** The double-opposite inclusion is full, with the same arrow as preimage. *)
+
+(** 双重反范畴嵌入是满的，箭头的原像就是它本身。 *)
+
+Definition to_double_op_full {C : Cat}
+  : is_full (@ToDoubleOpF C).
+Proof. intros X Y f. exists f. reflexivity. Defined.
+
+(** Every double-opposite object is represented by itself. *)
+
+(** 每个双重反范畴对象以自身为代表。 *)
+
+Definition to_double_op_essentially_surjective {C : Cat}
+  : is_essentially_surjective (@ToDoubleOpF C).
+Proof. intro X. exists X. exact (@iso_refl (C^op^op) X). Defined.
+
+(** Removing double opposition is full with the identity preimage map. *)
+
+(** 去除双重取反是满的，原像映射为恒等。 *)
+
+Definition from_double_op_full {C : Cat}
+  : is_full (@FromDoubleOpF C).
+Proof. intros X Y f. exists f. reflexivity. Defined.
+
+(** Removing double opposition is essentially surjective on objects. *)
+
+(** 去除双重取反在对象上本质满。 *)
+
+Definition from_double_op_essentially_surjective {C : Cat}
+  : is_essentially_surjective (@FromDoubleOpF C).
+Proof. intro X. exists X. exact (@iso_refl C X). Defined.

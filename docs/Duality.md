@@ -108,6 +108,72 @@ assumption is only that the specified source cocone is colimiting.
 `OpAdjunction` 与 `right_adjoint_preserves_limit` 直接用于存储的锥，
 再使用 `MapCocone` 中同一个复合比较；输入只要求指定源余锥为余极限。
 
+## Named constructions and their shapes
+
+## 命名构造及其形状
+
+[Terminal](../theories/Cat/Terminal.v),
+[Coproduct](../theories/Cat/Coproduct.v) and
+[Coequalizer](../theories/Cat/Coequalizer.v) expose `HasInitial`,
+`HasCoproduct` and `HasCoequalizer`. Each contains just the selected terminal,
+product or equalizer structure on `C^op`. Their candidate `is_*` properties
+are the original properties on `C^op`. Ordinary maps `¡`, `ι1`, `ι2`,
+`⦗f,g⦘`, `πcoeq[f,g]` and `coeq⟨q,H⟩` read the original maps directly.
+Objects are written `0`, `X ⊔ Y` and `Coeq[f,g]`.
+
+[Terminal](../theories/Cat/Terminal.v)、
+[Coproduct](../theories/Cat/Coproduct.v) 与
+[Coequalizer](../theories/Cat/Coequalizer.v) 提供 `HasInitial`、
+`HasCoproduct` 与 `HasCoequalizer`，各自仅包含 `C^op` 上选定的终对象、积或
+等化子结构；候选 `is_*` 性质就是 `C^op` 上的原性质。通常映射 `¡`、`ι1`、
+`ι2`、`⦗f,g⦘`、`πcoeq[f,g]` 与 `coeq⟨q,H⟩` 直接读取原映射；
+对象写作 `0`、`X ⊔ Y` 与 `Coeq[f,g]`。
+
+Mediator uniqueness, β/η, respectfulness and composition laws reuse the
+original laws. In particular, coequalizer respectfulness compares arrows
+without comparing their commutativity witnesses. Initial-object model
+construction now supplies its original opposite-terminal data through the
+named field `hasOpTerminal`; importing it still makes no model choice.
+
+中介唯一性、β/η、保相等性及复合律均复用原定律。尤其是余等化子的保相等性
+比较箭头而不比较交换性见证。始对象模型现在通过具名字段 `hasOpTerminal`
+提供原反范畴终对象数据；导入仍不会自动选择具体模型结构。
+
+| Construction / 构造 | Colimit shape / 余极限形状 | Characterization / 刻画 |
+| --- | --- | --- |
+| Initial / 始对象 | `EmptyShape^op` | [`initial_iff_empty_colimit`](../theories/Cat/Colimit/Initial.v) |
+| Binary coproduct / 二元余积 | `PairShape^op` | [`coproduct_iff_colimit`](../theories/Cat/Colimit/Coproduct.v) |
+| Coequalizer / 余等化子 | `ParallelShape^op` | [`coequalizer_iff_colimit`](../theories/Cat/Colimit/Coequalizer.v) |
+
+The opposite of a discrete pair is still discrete. In the opposite parallel
+shape, the arrows run from `true` to `false`, so the coequalizer projection
+is the cocone's `false` component. [Diagram.DualShape](../theories/Cat/Diagram/DualShape.v)
+offers `EmptyCodiagram`, `⟨X,Y⟩CoD`, `⟨f ⇉ g⟩CoD` and the corresponding
+`EmptyCocone`, `PairCocone`, `ParallelCocone`, obtained from the original
+diagrams and cones through the shared `DualDiagram`/`DualCone` adapters.
+
+离散二点形状取反后仍然离散。反平行箭头形状中的箭头从 `true` 指向 `false`，
+所以余等化子投影为余锥的 `false` 分量。
+[Diagram.DualShape](../theories/Cat/Diagram/DualShape.v) 提供
+`EmptyCodiagram`、`⟨X,Y⟩CoD`、`⟨f ⇉ g⟩CoD` 及对应的
+`EmptyCocone`、`PairCocone`、`ParallelCocone`，均由原图式及锥经共用的
+`DualDiagram`／`DualCone` 适配得到。
+
+[Colimit.Shape](../theories/Cat/Colimit/Shape.v) restricts the stored
+double-opposite cone along `ToDoubleOpF`. This functor is full and essentially
+surjective with identity preimages and representative isomorphisms. The
+existing limit reindexing theorem then permits direct use of the original
+terminal/product/equalizer limit characterizations. Selected structures
+convert in both directions through the same reindexing theory; there is no
+claim that round-trip selected records are equal. Left-adjoint preservation
+likewise applies original right-adjoint preservation to `OpAdjunction`.
+
+[Colimit.Shape](../theories/Cat/Colimit/Shape.v) 沿 `ToDoubleOpF` 限制
+存储的双重反锥。该函子以恒等原像和恒等代表同构具有满性及本质满性，因而已有
+极限重索引定理允许直接使用原终对象／积／等化子的极限刻画。选定结构的双向
+转换也经过同一重索引理论，不声称往返后的选定记录相等。左伴随保持性同样将
+原右伴随保持定理用于 `OpAdjunction`。
+
 ## Validation and remaining work
 
 ## 验证与后续工作
@@ -115,16 +181,34 @@ assumption is only that the specified source cocone is colimiting.
 Equalities use the designated setoid relations. Witnesses remain Type-valued
 and computational maps transparent. The existing five permanent checks in
 [Universes](../tests/Universes.v) cover independent hom/equality levels,
-larger shapes and mixed-category preservation. Concrete computations and
-assumption audits remain temporary.
+larger shapes and mixed-category preservation. Four additional permanent
+checks cover the named structure/shape conversions in both directions and
+both hom/equality orderings. Concrete computations and assumption audits
+remain temporary.
 
 相等使用指定广集关系，见证保留在 Type 中，计算映射保持透明。
 [Universes](../tests/Universes.v) 中已有五项永久检查覆盖独立 Hom／相等层级、
-更大的形状及混合范畴保持性；具体计算与公理审计仍作为临时检查。
+更大的形状及混合范畴保持性；另外四项永久检查覆盖命名结构／形状的双向转换
+及两种 Hom／相等大小排列。具体计算与公理审计仍作为临时检查。
 
-Named coproduct, coequalizer and pushout interfaces and finite-colimit
-constructions remain future work. They should wrap the original product,
-equalizer, pullback and finite-limit constructions on opposite categories.
+The named initial/coproduct/coequalizer modules have been checked locally
+with Rocq 9.0.1, OCaml 5.3.0 and Nix Dune 3.23.1. Full build, test and install
+targets pass. Twenty-seven temporary assumption checks have no additional
+assumptions. Temporary computations use distinct representatives and
+extra Type-valued equality witnesses, including a parallel pair with
+different raw outputs coequalized by specified setoid equality; its cocone
+and colimit mediator reduce directly. Direct backend identity checks also
+confirm that copairing and coequalizer factors are the original maps.
 
-命名的余积、余等化子、推出接口及有限余极限构造仍为后续工作；
-它们应包装反范畴中原来的积、等化子、拉回及有限极限构造。
+命名始对象／余积／余等化子模块已在 Rocq 9.0.1、OCaml 5.3.0 与
+Nix Dune 3.23.1 下完成本地检查；完整构建、测试及安装目标通过。
+27 项临时公理检查均无额外假设。临时计算使用不同代表及额外 Type 值相等见证，
+其中一对具有不同原始输出的平行箭头按指定广集相等被余等化，其余锥与余极限
+中介均可直接归约；底层数据的直接同一性检查也确认余配对及余等化子分解就是原映射。
+
+Named pushout interfaces and finite-colimit constructions remain future
+work. They should wrap original pullback and finite-limit constructions on
+opposite categories.
+
+命名推出接口及有限余极限构造仍为后续工作；
+它们应包装反范畴中原来的拉回及有限极限构造。

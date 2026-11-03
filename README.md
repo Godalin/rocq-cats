@@ -89,6 +89,12 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   [Colimit](./theories/Cat/Colimit/Core.v) reuses opposite limits, with
   [diagonal adjunctions](./theories/Cat/Colimit/Adjunction.v) and
   [left-adjoint preservation](./theories/Cat/Colimit/Preservation.v);
+  [initial objects](./theories/Cat/Colimit/Initial.v),
+  [coproducts](./theories/Cat/Colimit/Coproduct.v) and
+  [coequalizers](./theories/Cat/Colimit/Coequalizer.v) have corresponding
+  colimit characterizations and explicit conversions of chosen structures.
+  Write `X ⊔ Y`, `⦗f,g⦘`, `Coeq[f,g]` and `πcoeq[f,g]` for the ordinary
+  interfaces to opposite products and equalizers;
   see the [duality guide](./docs/Duality.md).
   [CatCat](./theories/Cat/CatCat.v) provides the category of categories with
   this morphism equivalence. Write `C ≃C D` for an equivalence with chosen
