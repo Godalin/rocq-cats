@@ -1,7 +1,8 @@
 From Cats Require Export Cat.Exponential.Core.
 From Cats Require Import
   Cat.Core
-  Cat.Product.Core.
+  Cat.Product.Core
+  Cat.Exponential.Functor.
 
 (** * Transport of Exponential Objects
 
@@ -73,3 +74,36 @@ Proof.
 Defined.
 
 End ExponentialTransport.
+
+(** Isomorphisms of arguments and results induce an exponential isomorphism. *)
+
+(** 参数与结果的同构诱导指数同构。 *)
+
+Definition exponential_iso {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y X' Y' : @Ob C}
+    (i : X ≅ X') (j : Y ≅ Y')
+  : (Y ^ X) ≅ (Y' ^ X').
+Proof.
+  exists (j.1 ^ i.2.1)%hom, (j.2.1 ^ i.1)%hom. split;
+    unfold is_linv_of, is_rinv_of;
+    rewrite <- exponential_dimap_comp;
+    [rewrite (fst i.2.2), (fst j.2.2) |
+     rewrite (snd i.2.2), (snd j.2.2)]; apply exponential_dimap_id.
+Defined.
+
+(** The induced exponential isomorphism intertwines the two evaluations. *)
+
+(** 诱导的指数同构使两侧求值相容。 *)
+
+Lemma exponential_iso_eval {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y X' Y' : @Ob C}
+    (i : X ≅ X') (j : Y ≅ Y')
+  : eval ∘ ((exponential_iso i j).1 × i.1) ≈ j.1 ∘ eval.
+Proof.
+  change (eval ∘ ((j.1 ^ i.2.1) × i.1)%hom ≈ j.1 ∘ eval).
+  transitivity ((eval ∘ ((j.1 ^ i.2.1) × id)%hom) ∘ (id × i.1)%hom).
+  - rewrite comp_assoc, <- cross_comp, comp_id_l, comp_id_r. reflexivity.
+  - rewrite exponential_dimap_eval, comp_assoc,
+      <- cross_comp, (fst i.2.2), comp_id_l, cross_id, comp_id_r.
+    reflexivity.
+Qed.

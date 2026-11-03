@@ -79,11 +79,8 @@ Theorem terminal_unique {T1 T2 : Ob}
   : is_terminal T1 → is_terminal T2
   → T1 ≅ T2.
 Proof.
-  intros HT1 HT2.
-  elim_terminal (HT1 T2) as h1.
-  elim_terminal (HT2 T1) as h2.
-  exists h2, h1; simpl.
-  constructor; apply term_id; auto.
+  intros HT1 HT2. exists (HT2 T1).1, (HT1 T2).1.
+  split; apply term_id; assumption.
 Defined.
 
 End Terminal.

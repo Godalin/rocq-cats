@@ -1,10 +1,9 @@
-From Cats Require Import STLC.CCC.
-From Cats Require Import STLC.Interpretation.
-From Cats Require Import STLC.Quotation.
+From Cats Require Import STLC.Completeness.
 
 From Cats Require Import
   Cat.Core
   Cat.Functor.Core
+  Cat.Functor.Closed
   Cat.Natural
   Cat.Bicategory.Core
   Cat.Bicategory.Thin.
@@ -908,6 +907,11 @@ Definition separated_syntactic_ccc
 Definition separated_type_syntactic_ccc
   : CCC (TyCat@{b e l} B)
   := TyCat_CCC B.
+
+Definition separated_stlc_completeness (Γ : Ctx B) (A : STLC.Syntax.Ty B)
+    (t u : STLC.Syntax.Tm Γ A)
+  : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u
+  := tm_soundness_iff_completeness t u.
 End STLCCategoryLevels.
 
 (** Semantic interpretation preserves separated syntax levels and permits
@@ -933,4 +937,13 @@ Definition high_eq_stlc_interpretation
 Definition low_eq_stlc_interpretation
   : Functor (CtxCat@{b e l} B) D
   := InterpretF J.
+
+Context (F : Functor (TyCat@{b e l} B) C)
+    (HF : IsCCCF F (TyCat_CCC B) HC).
+Local Existing Instance HF.
+Context (β : ∀ b, I b ≅[C] F (ty_base b)).
+
+Definition separated_stlc_model_comparison
+  : TypeInterpretF I ≅N F
+  := type_interpretation_nat_iso F I β.
 End STLCInterpretationLevels.

@@ -488,24 +488,49 @@ CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境�
 载体与相等见证的大小也无固定顺序；永久回归只保留这两种排列的函子接口。
 
 `tm_interp_sound` 证明每个 βη 推导在所有这些模型中成立。不使用函数原生
-相等，不附加选择、证明无关性或外延公理。规范解释还原、完备性及保持结构的
-自由泛性质仍需另证，不能由可靠性或解释函子的存在直接推出。
+相等，不附加选择、证明无关性或外延公理。规范解释还原与完备性见下节；保持基类型比较的自然变换唯一性及自由性质的
+最终组装仍需完成，不能由可靠性或解释函子的存在直接推出。
+
+### 保持结构的函子与解释比较
+
+[Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 的 `IsCartesianF`
+要求像终对象和像积满足完整泛性质。[Functor.Closed](../theories/Cat/Functor/Closed.v)
+的 `IsCCCF` 再要求规范指数比较可逆。积的比较、逆比较及其自然性均由泛性质
+导出；指数比较由像求值转置而得。它们不要求选定对象或函子记录原生相等。
+`functor_pair`、`functor_curry` 与 `functor_eval` 给出通常的保持方程。
+
+[STLC.TypeInterpretation](../theories/STLC/TypeInterpretation.v) 构造类型呈现上的
+`TypeInterpretF`，并证明 `TypeInterpretF_IsCCCF`。单变量直接在其类型对象上
+解释，避免添加终对象因子。
+[STLC.Comparison](../theories/STLC/Comparison.v) 对任意 `IsCCCF` 函子 F 和指定
+基类型同构 `I b ≅ F (ty_base b)`，递归构造 `type_compare` 与 `context_compare`。
+`type_compare_eval_term` 按项归纳证明变量环境比较与每个项相容；由字面求值
+还原，得到 `type_interpretation_nat_iso : TypeInterpretF I ≅N F`。
+`context_compare_term` 同时把普通上下文解释与打包后的项表示联系起来。
+
+一般同构复合、取逆及积／终对象唯一性的见证现在先通过投影构造箭头，再处理
+互逆律，保证对未知输入见证也能提取数据。类型比较在 `b < e < l` 和两种目标
+Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一个自然同构接口。
 
 ## 6. 完备性与验证边界
 
-最终要证明的等价是：
+[STLC.Completeness](../theories/STLC/Completeness.v) 已证明以下等价：
 
 ```text
 Γ ⊢ t ≡βη u : A
   ↔ 对所有合适大小的 CCC C 及签名解释 I，⟦t⟧C,I ≈ ⟦u⟧C,I
 ```
 
-正向是可靠性。反向将 C 取为语法 CCC，并证明其规范解释与原项的 βη 类一致。
+`tm_soundness_iff_completeness` 正向使用可靠性；反向取类型语法 CCC，
+由 `context_compare_term` 和 `quote_tm_faithful` 证明
+`tm_interp_canonical_reflect`：递归规范解释反映原项的 βη 相等。
 关键是语法模型的态射相等恰好是选定的 βη，不能意外加入更强的相等。
 这个反向论证不以强正规化或可判定相等为前提；自由映射性质需另行证明。
 只在 `SetCat` 模型中相等不能直接使用此论证，因为量化中必须包含语法模型。
 
 形式陈述时采用宇宙多态的一族定理，明确模型大小界并容纳语法 CCC；
+`TmModelEq` 量化 `Cat@{b b e l l}` 以及该界内任意选定 CCC 与基类型解释。
+此共同界明确包含语法模型；一般可靠性仍适用于其他大小排列的模型。
 不假设能在一个小宇宙内收集所有 CCC，也不通过 resizing 合并大小。
 态射载体、相等见证以及定律辅助宇宙保持独立。
 

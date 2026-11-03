@@ -1,6 +1,7 @@
 From Cats Require Export
   Cat.Core
-  Cat.Functor.Core.
+  Cat.Functor.Core
+  Cat.Natural.
 
 (** * Categories Induced by an Object Map *)
 
@@ -39,3 +40,77 @@ Program Definition InducedInclusionF {C : Cat} (O : Type) (j : O → @Ob C)
 Next Obligation. intros f g H. exact H. Qed.
 Next Obligation. reflexivity. Qed.
 Next Obligation. reflexivity. Qed.
+
+(** * Representatives for an Induced Category *)
+
+(** * 诱导范畴的对象代表 *)
+
+Section Representatives.
+Context {C : Cat} (O : Type) (j : O → @Ob C)
+    (r : @Ob C → O) (ε : ∀ X, j (r X) ≅ X).
+
+(** Chosen representatives define a quasi-inverse to the inclusion. *)
+
+(** 选定对象代表给出嵌入的拟逆函子。 *)
+
+Program Definition InducedRepresentativesF
+  : Functor C (InducedCat O j)
+  :=
+  {|F0 := r
+  ; F1 X Y f := ((ε Y).2.1 ∘ f ∘ (ε X).1)%hom
+  |}.
+Next Obligation. intros f g H. rewrite H. reflexivity. Qed.
+Next Obligation. rewrite comp_id_r. exact (fst (ε X).2.2). Qed.
+Next Obligation.
+  rewrite !comp_assoc, <- (comp_assoc (ε Y).1),
+    (snd (ε Y).2.2), comp_id_l. reflexivity.
+Qed.
+
+(** The representative isomorphisms are natural in the ambient category. *)
+
+(** 代表同构在环境范畴中自然。 *)
+
+Program Definition InducedCounitN
+  : (InducedInclusionF O j ∘F InducedRepresentativesF) ⇒ (@IdF C)
+  :=
+  {|nt X := (ε X).1
+  |}.
+Next Obligation.
+  rewrite <- !comp_assoc, (snd (ε Y).2.2), comp_id_l. reflexivity.
+Qed.
+
+(** Inclusion followed by representation is naturally isomorphic to identity. *)
+
+(** 嵌入与代表的复合自然同构于恒等。 *)
+
+Definition induced_counit_nat_iso
+  : (InducedInclusionF O j ∘F InducedRepresentativesF) ≅N (@IdF C).
+Proof. exists InducedCounitN. intros X. exact (ε X).2. Defined.
+
+(** The same comparisons give the other composite. *)
+
+(** 同一组比较给出另一个复合的自然变换。 *)
+
+Program Definition InducedUnitN
+  : (InducedRepresentativesF ∘F InducedInclusionF O j) ⇒
+      (@IdF (InducedCat O j))
+  :=
+  {|nt X := (ε (j X)).1
+  |}.
+Next Obligation.
+  change ((ε (j Y)).1 ∘ ((ε (j Y)).2.1 ∘ f ∘ (ε (j X)).1) ≈
+    f ∘ (ε (j X)).1)%cat.
+  rewrite <- !comp_assoc, (snd (ε (j Y)).2.2), comp_id_l. reflexivity.
+Qed.
+
+(** These two natural isomorphisms exhibit an equivalence, with no choice
+    principle beyond the explicitly supplied representatives. *)
+
+(** 两个自然同构给出范畴等价；只使用显式提供的代表，不附加选择原理。 *)
+
+Definition induced_unit_nat_iso
+  : (InducedRepresentativesF ∘F InducedInclusionF O j) ≅N
+      (@IdF (InducedCat O j)).
+Proof. exists InducedUnitN. intros X. exact (ε (j X)).2. Defined.
+
+End Representatives.

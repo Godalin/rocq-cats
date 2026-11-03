@@ -107,9 +107,10 @@ Theorem product_unique
   → P ≅ Q.
 Proof.
   intros HP HQ.
+  exists (HQ P p1 p2).1, (HP Q q1 q2).1.
   destruct (HP Q q1 q2) as [f [[Hf1 Hf2] Hf_unique]].
   destruct (HQ P p1 p2) as [g [[Hg1 Hg2] Hg_unique]].
-  exists g, f; split; simpl.
+  split; simpl.
   - destruct (HP P p1 p2) as [h [_ Hh_unique]].
     assert (Hid : id ≈ h).
     { apply Hh_unique; split; rewrite comp_id_r; reflexivity. }
@@ -122,7 +123,7 @@ Proof.
     rewrite Hid. apply Hh_unique; split; rewrite <- comp_assoc.
     + rewrite Hg1, Hf1. reflexivity.
     + rewrite Hg2, Hf2. reflexivity.
-Qed.
+Defined.
 
 End Product.
 

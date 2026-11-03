@@ -337,3 +337,28 @@ Theorem exponential_unadjunct {C : Cat}
     (g : Hom Z (Y ^ X))
   : g^♭[ProductExponentialAdjunction X] ≈ uncurry g.
 Proof. apply unadjunct_from_hom. Qed.
+
+(** Transposing evaluation gives the identity on the exponential. *)
+
+(** 求值的转置等于指数对象上的恒等。 *)
+
+Lemma exponential_curry_eval {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y : @Ob C}
+  : curry (@Cats.Cat.Exponential.Core.eval C HP HE X Y) ≈ id.
+Proof.
+  symmetry. apply exponential_curry_unique.
+  rewrite cross_id, comp_id_r. reflexivity.
+Qed.
+
+(** Exponential-valued arrows are determined by their evaluations. *)
+
+(** 指向指数的箭头由其求值确定。 *)
+
+Lemma exponential_ext {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y Z : @Ob C}
+    (f g : Hom Z (Y ^ X)) (H : uncurry f ≈ uncurry g)
+  : f ≈ g.
+Proof.
+  rewrite <- (exponential_η f), <- (exponential_η g).
+  apply exponential_curry_proper. exact H.
+Qed.

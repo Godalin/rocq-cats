@@ -81,7 +81,8 @@ Fixpoint syntax_eval {Γ A} (t : Tm Γ A) {X} (ρ : TyEnv X Γ)
 Lemma type_curry_compute {X A U : Ty B}
     (f : (@Hom (TyCat@{b e l} B)) (ty_prod X A) U)
   : (@curry (TyCat@{b e l} B) (TyCat_HasProduct B)
-      (TyCat_HasExponential B) A U X f) (ty_arr A U) var_zero = tm_lam ((f U var_zero)[type_pair_sub X A]).
+      (TyCat_HasExponential B) A U X f) (ty_arr A U) var_zero
+      = tm_lam ((f U var_zero)[type_pair_sub X A]).
 Proof. reflexivity. Qed.
 
 (** Literal evaluation returns the original term after its assigned terms
@@ -153,4 +154,90 @@ Proof.
     + apply subst_ext. intros V [x | x]; [destruct x | destruct x].
       reflexivity.
     + apply subst_id.
+Defined.
+
+(** Canonical projections for the nested product representing a context. *)
+
+(** 表示上下文的嵌套积的规范投影。 *)
+
+Fixpoint packed_env@{b e l +} {B : Type@{b}} (Γ : Ctx B)
+  : TyEnv@{b e l _} (CtxTy Γ) Γ
+  := match Γ with
+  | ctx_empty => λ A x, match x with end
+  | ctx_snoc Γ A => ty_env_lift (packed_env Γ)
+  end.
+
+(** The literal projections agree with unpacking the product variable. *)
+
+(** 字面投影与拆包积变量一致。 *)
+
+Lemma packed_env_unpack@{b e l +} {B : Type@{b}} (Γ : Ctx B)
+  : ∀ A x, TmEq@{b e _} (packed_env@{b e l _} Γ A x A var_zero)
+      (ctx_unpack Γ (tm_var var_zero) A x).
+Proof.
+  induction Γ as [|Γ IH A]; intros U x; [destruct x |].
+  destruct x as [x | x]; [|destruct x; reflexivity].
+  pose (p := @tm_fst B (ctx_snoc ctx_empty (ty_prod (CtxTy Γ) A))
+    (CtxTy Γ) A (tm_var var_zero)).
+  change (TmEq ((packed_env@{b e l _} Γ U x U var_zero)[
+    sub_empty ▻Sub p])
+    (ctx_unpack Γ (p) U x)).
+  transitivity ((ctx_unpack Γ (tm_var var_zero) U x)[
+    sub_empty ▻Sub p]).
+  - apply tm_eq_subst. apply IH.
+  - apply tm_eq_of_eq.
+    exact (ctx_unpack_subst Γ (tm_var var_zero)
+      (sub_empty ▻Sub p) U x).
+Defined.
+
+(** A term becomes an arrow from the context's product type. *)
+
+(** 项成为从上下文积类型出发的箭头。 *)
+
+Definition quote_tm {B : Type} {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : Sub (ctx_snoc ctx_empty (CtxTy Γ)) (ctx_snoc ctx_empty A)
+  := sub_empty ▻Sub t[ctx_unpack Γ (tm_var var_zero)].
+
+(** The canonical literal environment gives the packed-context quotation. *)
+
+(** 规范字面环境给出打包上下文中的项表示。 *)
+
+Theorem syntax_eval_packed@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : SubTmEq@{b e _} (syntax_eval t (packed_env@{b e l _} Γ)) (quote_tm t).
+Proof.
+  intros U [x | x]; [destruct x | destruct x].
+  etransitivity; [apply syntax_eval_quote |].
+  apply subst_tm_ext. intros V x. apply packed_env_unpack.
+Defined.
+
+(** Quotation reflects equality, by substituting the packed identity context. *)
+
+(** 将打包后的恒等上下文代入，证明项表示反映相等。 *)
+
+Theorem quote_tm_faithful@{b e +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
+    (H : SubTmEq@{b e _} (quote_tm t) (quote_tm u))
+  : TmEq@{b e _} t u.
+Proof.
+  specialize (H A var_zero). unfold quote_tm in H; cbn in H.
+  pose proof (tm_eq_subst H Γ (ctx_pack_sub Γ)) as K.
+  rewrite !subst_comp in K.
+  assert (Ht : TmEq@{b e _} t
+    t[sub_comp (ctx_unpack Γ (tm_var var_zero)) (ctx_pack_sub Γ)]).
+  { transitivity t[sub_id]; [symmetry; apply tm_eq_of_eq; apply subst_id |].
+    apply subst_tm_ext. symmetry.
+    transitivity (ctx_unpack Γ (ctx_pack sub_id)).
+    - apply sub_tm_eq_of_eq. apply ctx_unpack_subst.
+    - apply ctx_pack_β. }
+  transitivity t[sub_comp (ctx_unpack Γ (tm_var var_zero)) (ctx_pack_sub Γ)];
+    [exact Ht |].
+  transitivity u[sub_comp (ctx_unpack Γ (tm_var var_zero)) (ctx_pack_sub Γ)];
+    [exact K |].
+  transitivity u[sub_id].
+  - apply subst_tm_ext.
+    transitivity (ctx_unpack Γ (ctx_pack sub_id)).
+    + apply sub_tm_eq_of_eq. apply ctx_unpack_subst.
+    + apply ctx_pack_β.
+  - apply tm_eq_of_eq. apply subst_id.
 Defined.

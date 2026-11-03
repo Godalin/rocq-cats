@@ -445,7 +445,7 @@ Context {C : Cat}.
 
 Theorem iso_refl {X}
   : X ≅ X.
-Proof. exists id, id. cato. Qed.
+Proof. exists id, id. cato. Defined.
 
 (** Reverse an object isomorphism, keeping the swapped witness arrows
     computational. *)
@@ -455,8 +455,8 @@ Proof. exists id, id. cato. Qed.
 Theorem iso_symm {X Y}
   : X ≅ Y → Y ≅ X.
 Proof.
-  intros [f [fi [H1 H2]]]; simpl in *.
-  exists fi, f. split; cato.
+  intros i. exists i.2.1, i.1.
+  destruct i as [f [fi [H1 H2]]]; cbn. split; assumption.
 Defined.
 
 (** Compose object isomorphisms. *)
@@ -466,8 +466,8 @@ Defined.
 Theorem iso_trans {X Y Z}
   : X ≅ Y → Y ≅ Z → X ≅ Z.
 Proof.
-  intros [f [fi [Hf Hfi]]] [g [gi [Hg Hgi]]]; simpl in *.
-  exists (g ∘ f), (fi ∘ gi).
+  intros i j. exists (j.1 ∘ i.1), (i.2.1 ∘ j.2.1).
+  destruct i as [f [fi [Hf Hfi]]], j as [g [gi [Hg Hgi]]]; cbn.
   split; simpl.
   - rewrite comp_assoc.
     rewrite <- (comp_assoc gi).
@@ -475,7 +475,7 @@ Proof.
   - rewrite comp_assoc.
     rewrite <- (comp_assoc f).
     rewrite Hfi, comp_id_l. auto.
-Qed.
+Defined.
 
 (** [iso] is an equivalence relation. *)
 
