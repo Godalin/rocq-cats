@@ -2,7 +2,7 @@
 
 ## 图式与锥
 
-[Diagram](../theories/Cat/Diagram.v) 复用函子和自然变换：
+[Diagram](../theories/Cat/Diagram/Core.v) 复用函子和自然变换：
 
 ```text
 D : Functor J C
@@ -158,7 +158,7 @@ FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
 
 [GraphEdges](../theories/Graph/Core.v) 将生成边索引为依赖和
 `∃ x, ∃ y, Edge x y`，保留边的端点和载体数据。
-[Limit.Graph](../theories/Cat/Limit/Graph.v) 对任意
+[Limit.Graph](../theories/Cat/Limit/Graph/Core.v) 对任意
 `D : FreeCat G → C` 使用顶点积 P 和生成边目标积 Q，
 定义两条 `P → Q` 的态射，其分量分别是
 `fmap D (ιG e) ∘ πx` 与 `πy`。
@@ -278,7 +278,7 @@ FiniteLimit D   : HasLimit C D
 
 ## 泛性质与选定结构
 
-[Limit](../theories/Cat/Limit.v) 区分候选与选定极限：
+[Limit](../theories/Cat/Limit/Core.v) 区分候选与选定极限：
 
 ```text
 κ ⦂ Lim(D) := is_limit κ

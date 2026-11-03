@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Arrow
+  Cat.Arrow.Core
   Cat.Equalizer.
 From Cats Require Export Cat.Product.Indexed.
 

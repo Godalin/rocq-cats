@@ -1,7 +1,7 @@
 From Cats Require Export Cat.Diagram.Arrow.
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
   Cat.Functor.Uncurry.
 

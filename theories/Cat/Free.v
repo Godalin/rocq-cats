@@ -3,7 +3,7 @@ From Cats Require Export
   Graph.Path
   Cat.Core.
 From Cats Require Import
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 
 (** * Free Categories on Graphs *)

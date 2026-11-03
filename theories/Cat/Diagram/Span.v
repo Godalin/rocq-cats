@@ -1,9 +1,9 @@
 From Cats Require Export
-  Cat.Shape
+  Cat.Shape.Core
   Cat.Diagram.Free.
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 
 (** * Cospan Diagrams *)

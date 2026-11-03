@@ -1,10 +1,10 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
   Cat.Fibration
   Cat.Pullback.
-From Cats Require Import Cat.Arrow.
+From Cats Require Import Cat.Arrow.Core.
 
 (** * Comprehension
 

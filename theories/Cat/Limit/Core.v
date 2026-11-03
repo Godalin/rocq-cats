@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Diagram
+  Cat.Diagram.Core
   Cat.Terminal.
 
 (** * Limits of Diagrams

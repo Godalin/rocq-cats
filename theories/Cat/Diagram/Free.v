@@ -1,9 +1,9 @@
 From Cats Require Export
   Cat.Free
-  Cat.Diagram.
+  Cat.Diagram.Core.
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 
 (** * Cones Specified on Generators *)

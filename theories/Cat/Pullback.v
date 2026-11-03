@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
   Cat.Terminal
-  Cat.Product.
+  Cat.Product.Core.
 
 
 

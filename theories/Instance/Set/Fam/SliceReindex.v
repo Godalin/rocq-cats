@@ -1,10 +1,10 @@
 From Cats Require Import
   Cat.Core
-  Cat.Slice
+  Cat.Slice.Core
   Cat.Slice.Reindex
   Cat.Pullback.
 From Cats Require Import
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 From Cats Require Import
   Instance.Set.Core

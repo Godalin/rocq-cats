@@ -2,8 +2,8 @@ From Stdlib Require Import Utf8.
 From Cats Require Import
   Cat.Core
   Cat.Terminal
-  Cat.Product
-  Cat.Exponential.
+  Cat.Product.Core
+  Cat.Exponential.Core.
 Open Scope cat_scope.
 
 

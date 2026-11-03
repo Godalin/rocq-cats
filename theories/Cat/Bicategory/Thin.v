@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Bicategory.Strict.
 From Cats Require Import
   Cat.Natural

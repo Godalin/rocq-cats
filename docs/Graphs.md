@@ -79,7 +79,7 @@ respectfulness 对路径相等的生成规则归纳证明。
 ## 大小与验证
 
 [有限生成图](../theories/Graph/Finite.v) 通过邻接计数选择有限顶点与有限边标签。
-[生成边极限构造](../theories/Cat/Limit/Graph.v) 只对顶点和生成边取积，
+[生成边极限构造](../theories/Cat/Limit/Graph/Core.v) 只对顶点和生成边取积，
 不枚举所有路径；[有限版本](../theories/Cat/Limit/Graph/Finite.v) 从终对象、
 二元积和等化子得到这些自由图式的选定极限。
 其中总边索引的依赖和通过一般的

@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
   Cat.Terminal
-  Cat.Product
-  Cat.Exponential.
+  Cat.Product.Core
+  Cat.Exponential.Core.
 From Cats Require Import Cat.Morphism.
 From Cats Require Import Cat.Pullback.
 From Cats Require Import ETCS.Nat.

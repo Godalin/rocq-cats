@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
-  Cat.Arrow
+  Cat.Functor.Core
+  Cat.Arrow.Core
   Cat.Pullback
   Cat.Fibration.
 

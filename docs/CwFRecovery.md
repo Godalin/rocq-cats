@@ -112,7 +112,7 @@ context_extension_iff_representation T:
 
 ## 3. 显示映射接口与截面项预层
 
-[Display](../theories/DTT/Display.v) 已将以下输入实现为单个
+[Display](../theories/DTT/Display/Core.v) 已将以下输入实现为单个
 `HasDisplay C P` 类。它不要求 C 存在所有拉回，也不要求终对象或预先给定项。
 
 首先选择类型预层 `TyF : Functor (C^op) SetCat`，并对每个 A 选择

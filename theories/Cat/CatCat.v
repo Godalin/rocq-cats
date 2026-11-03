@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 
 (** * Categories and Functors up to Natural Isomorphism

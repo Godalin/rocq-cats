@@ -3,8 +3,8 @@ From Cats Require Export
   STLC.Packing.
 From Cats Require Import
   Cat.Core
-  Cat.Product
-  Cat.Exponential
+  Cat.Product.Core
+  Cat.Exponential.Core
   Cat.Exponential.Transport.
 
 (** * Exponentials in the Syntactic Context Category

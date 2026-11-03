@@ -3,7 +3,7 @@ From Cats Require Export
   Cat.Diagram.Free.
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 
 (** * Discrete Diagrams *)

@@ -3,7 +3,7 @@ From Stdlib Require Import
   Lia.
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Bicategory.Strict.
 
 Local Open Scope nat_scope.

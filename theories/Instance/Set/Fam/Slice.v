@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
-  Cat.Slice
-  Cat.Functor
+  Cat.Slice.Core
+  Cat.Functor.Core
   Cat.Natural
   Cat.CatCat.
 From Cats Require Import

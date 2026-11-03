@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor.
+  Cat.Functor.Core.
 
 Declare Scope bicat_scope.
 Delimit Scope bicat_scope with bicat.

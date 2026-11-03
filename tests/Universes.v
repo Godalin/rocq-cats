@@ -1,22 +1,22 @@
 From Cats Require Import STLC.CCC.
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Bicategory
+  Cat.Bicategory.Core
   Cat.Bicategory.Thin.
 From Cats Require Import Cat.CCC.
 From Cats Require Import
-  Cat.Product
-  Cat.Exponential
+  Cat.Product.Core
+  Cat.Exponential.Core
   Cat.Exponential.Functor
   Instance.Set.ExponentialHom.
 From Cats Require Import
   Cat.Adjunction
   Instance.Set.Adjunction.
 From Cats Require Import
-  Cat.Diagram
-  Cat.Limit
+  Cat.Diagram.Core
+  Cat.Limit.Core
   Cat.Limit.Adjunction
   Cat.Limit.Preservation.
 From Cats Require Import
@@ -47,13 +47,13 @@ From Cats Require Import
   DTT.Context.Conversion.
 From Cats Require Import DTT.Context.Representation.
 From Cats Require Import
-  DTT.Display
+  DTT.Display.Core
   DTT.Context.Display.
 From Cats Require Import DTT.Display.Section.
 From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import
-  Cat.Arrow
+  Cat.Arrow.Core
   Cat.Section
   DTT.Context.Section.
 From Cats Require Import Cat.Arrow.Fibration.

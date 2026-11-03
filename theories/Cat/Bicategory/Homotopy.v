@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
-  Cat.Bicategory.
+  Cat.Functor.Core
+  Cat.Bicategory.Core.
 
 Local Open Scope bicat_scope.
 

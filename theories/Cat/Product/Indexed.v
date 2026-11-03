@@ -1,9 +1,9 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 From Cats Require Export
-  Cat.Limit
+  Cat.Limit.Core
   Cat.Diagram.Discrete.
 
 (** * Indexed Products as Discrete Limits

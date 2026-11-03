@@ -1,11 +1,11 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
   Cat.Pullback
   Cat.Fibration
   Cat.Comprehension
-  Cat.Arrow.
+  Cat.Arrow.Core.
 From Cats Require Import
   DTT.CwF
   DTT.Context.Pullback.

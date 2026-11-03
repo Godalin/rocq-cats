@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Terminal
-  Cat.Product
+  Cat.Product.Core
   Cat.Equalizer
   Cat.Pullback.
 From Cats Require Export Cat.Shape.Finite.

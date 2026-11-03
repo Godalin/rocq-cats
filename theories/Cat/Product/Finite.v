@@ -1,9 +1,9 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
   Cat.Terminal
-  Cat.Product.
+  Cat.Product.Core.
 From Cats.Set Require Export Finite.
 From Cats Require Export Cat.Product.Indexed.
 

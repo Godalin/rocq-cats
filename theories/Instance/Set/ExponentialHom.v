@@ -1,9 +1,9 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Product
-  Cat.Exponential.
+  Cat.Product.Core
+  Cat.Exponential.Core.
 From Cats Require Import
   Instance.Set.Core
   Instance.Set.Adjunction.

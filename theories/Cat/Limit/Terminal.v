@@ -1,9 +1,9 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
   Cat.Terminal
-  Cat.Limit.
+  Cat.Limit.Core.
 From Cats Require Import
   Cat.Adjunction
   Cat.Limit.Preservation.

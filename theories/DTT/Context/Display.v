@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
-  DTT.Display
+  Cat.Functor.Core
+  DTT.Display.Core
   DTT.CwF
   DTT.Context.Pullback.
 From Cats Require Import DTT.Context.Conversion.

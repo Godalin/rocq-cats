@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Adjunction
-  Cat.Product.
+  Cat.Product.Core.
 
 (** * Exponential Objects *)
 

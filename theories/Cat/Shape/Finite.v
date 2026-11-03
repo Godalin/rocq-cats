@@ -3,7 +3,7 @@ From Cats Require Export
   Graph.Finite.
 From Cats Require Import
   Cat.Core
-  Cat.Functor.
+  Cat.Functor.Core.
 
 (** * Finitely Generated Shapes and Finite Hom Covers
 

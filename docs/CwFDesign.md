@@ -303,7 +303,7 @@ context_map_cartesian_iff_pullback:
 构造仅要求 `HasContextExtension T`，不需要终对象或所有拉回。
 
 这一步固定了从 CwF 得到 comprehension 的一个具体呈现。
-[Arrow](../theories/Cat/Arrow.v) 定义任意范畴的箭头范畴 `Arr C`：
+[Arrow](../theories/Cat/Arrow/Core.v) 定义任意范畴的箭头范畴 `Arr C`：
 对象为态射，态射为交换方块，相等比较方块的两条边。
 `ArrowDomF C` 和 `ArrowCodF C` 分别取定义域和陪域。
 通用构造 `NatArrowF α` 将自然变换组织为到箭头范畴的函子。

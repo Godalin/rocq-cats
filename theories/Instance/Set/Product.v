@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  Cat.Product
+  Cat.Product.Core
   Instance.Set.Core.
 
 (** * Products in the Category of Setoids *)

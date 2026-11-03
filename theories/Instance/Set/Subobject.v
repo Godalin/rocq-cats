@@ -1,7 +1,7 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Pullback.
 From Cats Require Import Cat.Morphism.
-From Cats Require Import Cat.Functor.
+From Cats Require Import Cat.Functor.Core.
 From Cats Require Import Instance.Set.Core.
 
 

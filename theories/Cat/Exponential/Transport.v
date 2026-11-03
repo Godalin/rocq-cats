@@ -1,7 +1,7 @@
-From Cats Require Export Cat.Exponential.
+From Cats Require Export Cat.Exponential.Core.
 From Cats Require Import
   Cat.Core
-  Cat.Product.
+  Cat.Product.Core.
 
 (** * Transport of Exponential Objects
 

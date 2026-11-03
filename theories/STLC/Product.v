@@ -1,6 +1,6 @@
 From Cats Require Export STLC.Category.
 From Cats Require Export STLC.Context.
-From Cats Require Import Cat.Product.
+From Cats Require Import Cat.Product.Core.
 
 (** * Products of Syntactic Contexts
 

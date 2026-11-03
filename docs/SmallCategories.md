@@ -1,6 +1,6 @@
 # 常用小范畴与图式
 
-统一导入 [Cat.Shape](../theories/Cat/Shape.v) 可使用形状范畴；
+统一导入 [Cat.Shape.Core](../theories/Cat/Shape/Core.v) 可使用形状范畴；
 导入 [Cat.Diagram.Shape](../theories/Cat/Diagram/Shape.v) 还可使用常用图式与记号。
 已有二元积、余跨度图式及其极限对应保持可用。
 

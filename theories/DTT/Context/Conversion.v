@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   DTT.CwF
   DTT.Context.Extension.
 From Cats Require Import

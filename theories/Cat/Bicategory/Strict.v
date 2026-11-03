@@ -1,5 +1,5 @@
 From Cats Require Import Cat.Core.
-From Cats Require Export Cat.Bicategory.
+From Cats Require Export Cat.Bicategory.Core.
 
 Local Open Scope bicat_scope.
 

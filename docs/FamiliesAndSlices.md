@@ -9,7 +9,7 @@ FamSCat X ≃C (SetCat /C X).
 
 ## The two categories
 
-[Slice](../theories/Cat/Slice.v) is defined for any category `C`. An object
+[Slice](../theories/Cat/Slice/Core.v) is defined for any category `C`. An object
 of `C /C X` is an arrow `p : E → X`. A morphism from `p` to `q : D → X`
 consists of `h : E → D` and a witness `q ∘ h ≈ p`. Morphism equivalence uses
 the original `HomEq` on `h`, without comparing the triangle witnesses.

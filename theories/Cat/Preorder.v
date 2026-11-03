@@ -1,5 +1,5 @@
 From Cats Require Export Cat.Core.
-From Cats Require Import Cat.Functor.
+From Cats Require Import Cat.Functor.Core.
 
 (** * Categories from Type-Valued Preorders
 

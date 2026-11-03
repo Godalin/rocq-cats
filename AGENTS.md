@@ -82,6 +82,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   dependencies. Abstract interfaces and general constructions belong with their
   theories; concrete models belong under `Instance/<base>/`. Keep `Instance.Set.Core`
   dependent only on `Cat.Core`; import extensions individually.
+- When a theory has a subdirectory for extensions, keep its foundational module
+  in `<Theory>/Core.v`, rather than a same-name file beside the directory.
 - Inspect Git status and preserve user work. When asked to save experiments,
   use a named stash including relevant untracked files, verify it, and report
   restoration instructions. Do not automatically reapply or discard it.

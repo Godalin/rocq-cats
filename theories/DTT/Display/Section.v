@@ -1,9 +1,9 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Pullback
   Cat.Section
-  DTT.Display.
+  DTT.Display.Core.
 From Cats Require Import Instance.Set.Core.
 From Cats Require Import
   Instance.Set.Fam.Core

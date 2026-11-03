@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
-  Cat.Slice
+  Cat.Slice.Core
   Cat.Pullback
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural.
 
 (** * Base Change in Slice Categories

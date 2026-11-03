@@ -61,12 +61,12 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   and isomorphisms. Each hom is a `HomSet : SetC`; `Hom` and `HomEq` are derived.
   Universal constructions are provided separately by
   [Terminal](./theories/Cat/Terminal.v) (including initial objects),
-  [Product](./theories/Cat/Product.v),
-  [Exponential](./theories/Cat/Exponential.v), and
+  [Product](./theories/Cat/Product/Core.v),
+  [Exponential](./theories/Cat/Exponential/Core.v), and
   [Pullback](./theories/Cat/Pullback.v).
-  [Slice](./theories/Cat/Slice.v) constructs `C /C X`, with commuting triangles
+  [Slice](./theories/Cat/Slice/Core.v) constructs `C /C X`, with commuting triangles
   up to morphism equivalence and equality on their underlying arrows.
-  [Arrow](./theories/Cat/Arrow.v) constructs `Arr C`, with commuting squares,
+  [Arrow](./theories/Cat/Arrow/Core.v) constructs `Arr C`, with commuting squares,
   domain/codomain functors, and the functor induced by a natural transformation.
   [Section](./theories/Cat/Section.v) defines `Sec(p)` for any category,
   retaining right-inverse witnesses and comparing the section maps. It maps
@@ -78,7 +78,7 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   identity. Write `A^Arr` for the arrow object. Slice reindexing, including its
   unit/composition comparisons, agrees with codomain cartesian factorization
   for the same chosen pullbacks; `SliceReindexSquareN f` packages the natural squares.
-  [Functor](./theories/Cat/Functor.v) and
+  [Functor](./theories/Cat/Functor/Core.v) and
   [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
   and natural transformations (`α ^opN`). Functors are compared by natural
   isomorphism (`F ≅N G`), without requiring equality of their object values.
@@ -89,7 +89,7 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   quasi-inverse functors and natural isomorphisms for the two composites.
   The double-opposite comparison is a natural isomorphism whose component
   functors act as identities on objects and morphisms.
-  [Bicategory](./theories/Cat/Bicategory.v) introduces hom-categories, horizontal
+  [Bicategory](./theories/Cat/Bicategory/Core.v) introduces hom-categories, horizontal
   composition, interchange, and coherent associators/unitors.
   [Bicategory.Strict](./theories/Cat/Bicategory/Strict.v) expresses strictness relative to
   a specified 1-cell equivalence (`f ≈₁[R] g`), with coherent comparison
@@ -180,7 +180,7 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   coherent decoding family. Types are code-valued maps and terms are coherent
   sections; context extension uses their dependent sum.
 - [DTT](./theories/DTT/): dependent type theory interfaces.
-  [Display](./theories/DTT/Display.v) specifies coherent display maps over a
+  [Display](./theories/DTT/Display/Core.v) specifies coherent display maps over a
   type presheaf, with designated-equality conversion and chosen display pullbacks.
   [Context/Display](./theories/DTT/Context/Display.v) constructs this choice from
   context extensions, without requiring a terminal object or arbitrary pullbacks.
@@ -217,9 +217,9 @@ Chosen universal constructions share the same design: `is_*` describes a
 specific candidate, and `Has*` stores a chosen candidate with that universal
 property. Mediating maps are extracted from transparent witnesses; their laws,
 uniqueness, and respectfulness follow from the property. This covers
-[products](./theories/Cat/Product.v),
+[products](./theories/Cat/Product/Core.v),
 [terminal and initial objects](./theories/Cat/Terminal.v),
-[exponentials](./theories/Cat/Exponential.v),
+[exponentials](./theories/Cat/Exponential/Core.v),
 [pullbacks](./theories/Cat/Pullback.v),
 [natural-numbers objects](./theories/ETCS/Nat.v), and
 [subobject classifiers](./theories/ETCS/Sub.v).
@@ -243,7 +243,7 @@ Local Existing Instance SetCat_CCC.
 
 The [CCC/STLC research note](./docs/CCCAndSTLC.md) explains the interpretation
 of simple types, contexts, substitution and βη equations in an arbitrary CCC.
-The reusable [exponential laws](./theories/Cat/Exponential.v) and
+The reusable [exponential laws](./theories/Cat/Exponential/Core.v) and
 [hom-setoid correspondence](./theories/Instance/Set/ExponentialHom.v) are implemented;
 the general [adjunction theory](./theories/Cat/Adjunction.v) starts with natural
 hom isomorphisms and derives unit/counit and composition, including `(-) × A ⊣ (-)^A`.
@@ -265,7 +265,7 @@ indexed products reuse discrete limits directly.
 The [finite product construction](./theories/Cat/Product/Finite.v) derives
 limits of finite discrete diagrams from terminal objects and binary products,
 using shared [finite positions](./theories/Set/Finite.v).
-The [generator-based construction](./theories/Cat/Limit/Graph.v) needs products
+The [generator-based construction](./theories/Cat/Limit/Graph/Core.v) needs products
 only over vertices and generating edges. Its
 [finite-graph specialization](./theories/Cat/Limit/Graph/Finite.v) derives limits
 from terminal objects, binary products and equalizers, including shapes with cycles.

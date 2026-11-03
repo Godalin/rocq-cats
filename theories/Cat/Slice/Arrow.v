@@ -1,11 +1,11 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Slice
+  Cat.Slice.Core
   Cat.Slice.Reindex.
 From Cats Require Import
-  Cat.Arrow
+  Cat.Arrow.Core
   Cat.Arrow.Fibration
   Cat.Pullback
   Cat.Fibration.

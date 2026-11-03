@@ -15,13 +15,13 @@ Type 值 βη 相等，以及具备终对象、二元积和指数对象的上下
 这些结构都从 Type 值泛性质提取中介态射。
 态射相等是 `HomSet` 指定的 `HomEq`，无需比较函数或证明字段的 Rocq 相等。
 
-[Product](../theories/Cat/Product.v) 已有 `product_β1`、`product_β2`、
+[Product](../theories/Cat/Product/Core.v) 已有 `product_β1`、`product_β2`、
 `product_η` 以及配对的复合律 `product_comp_r`、`product_comp_l`。
 [Terminal](../theories/Cat/Terminal.v) 已有终对象箭头唯一性 `term_η`
 和替换相容性 `term_comp_l`。本次补充 `cross_proper`、`cross_id`、`cross_comp`，
 使 `f × g` 的相等、单位与复合行为可直接使用。
 
-[Exponential](../theories/Cat/Exponential.v) 本次提供：
+[Exponential](../theories/Cat/Exponential/Core.v) 本次提供：
 
 ```text
 uncurry g := eval ∘ (g × id)

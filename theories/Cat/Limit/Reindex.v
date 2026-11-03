@@ -1,11 +1,11 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Diagram.
+  Cat.Diagram.Core.
 From Cats Require Import
   Cat.Diagram.Reindex
-  Cat.Limit.
+  Cat.Limit.Core.
 
 (** * Limits along Full, Essentially Surjective Functors *)
 

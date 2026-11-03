@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Instance.Set.Core.
 
 (** * Raising the Ambient Set Universes

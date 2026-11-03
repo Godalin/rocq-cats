@@ -1,8 +1,8 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
-  Cat.Bicategory.
+  Cat.Bicategory.Core.
 From Cats Require Import
   Cat.CatCat
   Cat.Bicategory.Homotopy.

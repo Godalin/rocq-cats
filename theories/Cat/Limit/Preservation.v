@@ -1,11 +1,11 @@
 From Cats Require Import
   Cat.Core
-  Cat.Functor
+  Cat.Functor.Core
   Cat.Natural
   Cat.Adjunction.
 From Cats Require Import
-  Cat.Diagram
-  Cat.Limit.
+  Cat.Diagram.Core
+  Cat.Limit.Core.
 
 (** * Right Adjoints Preserve Limits
 

@@ -5,7 +5,7 @@ It retains all 2-cells and specifies their composition and coherence explicitly.
 
 ## The interface
 
-[Bicategory.v](../theories/Cat/Bicategory.v) defines a single class `Bicat`,
+[Bicategory.v](../theories/Cat/Bicategory/Core.v) defines a single class `Bicat`,
 containing objects, hom-categories, composition, and coherence:
 
 | Level | Data | Comparison |
