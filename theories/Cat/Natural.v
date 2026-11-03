@@ -513,7 +513,7 @@ Next Obligation. intros X. exists id. split; cbn; apply comp_id_l. Defined.
     分量保留底层态射，但其方向和垂直复合的次序在反范畴中反转。 *)
 
 Program Definition nt_op {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
-  : OpF G ⇒ OpF F
+  : G^opF ⇒ F^opF
   :=
   {|nt X := α X
   |}.
@@ -534,7 +534,7 @@ Proof. intros α β Hαβ X. exact (Hαβ X). Qed.
 (** [nt_op] 与恒等的相容性。 *)
 
 Theorem nt_op_id {C D : Cat} {F : Functor C D}
-  : nt_op (idN (F := F)) ≈N idN.
+  : (idN (F := F))^opN ≈N idN.
 Proof. intros X. reflexivity. Qed.
 
 (** Compatibility with vertical composition for [nt_op]. *)
@@ -554,8 +554,8 @@ Proof. intros X. reflexivity. Qed.
 Program Definition OpFctF {C D : Cat}
   : Functor ((Fct C D) ^op) (Fct (C ^op) (D ^op))
   :=
-  {|F0 := OpF
-  ; F1 F G α := nt_op α
+  {|F0 F := F^opF
+  ; F1 F G α := α^opN
   |}.
 Next Obligation. apply nt_op_id. Qed.
 Next Obligation. apply nt_op_comp_v. Qed.
@@ -566,7 +566,7 @@ Next Obligation. apply nt_op_comp_v. Qed.
 
 Definition nt_op_NatIso {C D : Cat} {F G : Functor C D}
     (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
-  : α ^opN ⦂ OpF G ≅N OpF F.
+  : α ^opN ⦂ G^opF ≅N F^opF.
 Proof.
   intros X. exists (Hα X).1. split.
   - exact (snd (Hα X).2).
@@ -588,7 +588,7 @@ Defined.
 (** [OpF] 与恒等的相容性。 *)
 
 Program Definition OpF_id {C : Cat}
-  : OpF (@IdF C) ≅N (@IdF (C ^op))
+  : (@IdF C)^opF ≅N (@IdF (C ^op))
   := ({|nt X := id
       |}; _).
 Next Obligation. simpl. carw. Defined.
@@ -601,7 +601,7 @@ Defined.
 (** [OpF] 与复合的相容性。 *)
 
 Program Definition OpF_comp {C D E : Cat} (G : Functor D E) (F : Functor C D)
-  : OpF (G ∘F F) ≅N (OpF G ∘F OpF F)
+  : (G ∘F F)^opF ≅N (G^opF ∘F F^opF)
   := ({|nt X := id
       |}; _).
 Next Obligation. simpl. carw. Defined.
@@ -616,7 +616,7 @@ Defined.
 (** 通过自然同构比较双重取反与原函子。 *)
 
 Program Definition OpF_involution {C D : Cat} (F : Functor C D)
-  : FromDoubleOpF ∘F (OpF (OpF F) ∘F ToDoubleOpF) ≅N F
+  : FromDoubleOpF ∘F (F^opF^opF ∘F ToDoubleOpF) ≅N F
   := ({|nt X := id
       |}; _).
 Next Obligation. simpl. carw. Defined.

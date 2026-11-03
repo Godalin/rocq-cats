@@ -183,7 +183,7 @@ Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat ca
 
 Definition LeftHomF@{u p +} {C D : Cat} (F : Functor C D)
   : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _}
-  := LiftF ∘F (HomF ∘F (OpF F ×F IdF)).
+  := LiftF ∘F (HomF ∘F (F^opF ×F IdF)).
 
 (** The hom functor on the right side of an adjunction correspondence. *)
 

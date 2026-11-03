@@ -115,6 +115,6 @@ Qed.
 
 Definition SpanDiagram {C : Cat} {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
   : Functor SpanShape C
-  := FromDoubleOpF ∘F OpF (CospanDiagram (C := C^op) f g).
+  := FromDoubleOpF ∘F (CospanDiagram (C := C^op) f g)^opF.
 
 Notation "'⟨' f '←→' g '⟩D'" := (SpanDiagram f g) : cat_scope.

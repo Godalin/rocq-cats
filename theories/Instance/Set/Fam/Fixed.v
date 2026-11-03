@@ -274,7 +274,7 @@ Defined.
 Program Definition FamReindexCompN {X Y Z : SetC} (f : Y →r Z) (g : X →r Y)
   : (FamReindexF g ∘F FamReindexF f) ⇒ (FamReindexF (f ∘r g))
   :=
-  {|nt := fam_map_reindex_comp f g
+  {|nt A := A⟨f,g⟩Fam
   |}.
 Next Obligation. intros x a. reflexivity. Defined.
 

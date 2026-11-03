@@ -84,7 +84,7 @@ Program Definition PullbackDiagramLimit {C : Cat} `{HP : !HasPullback C}
     {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
   : HasLimit C ⟨f →← g⟩D
   :=
-  {|Lim := Pb f g
+  {|Lim := X ×[f,g] Y
   ; limit_cone := CospanCone (pb1 f g) (pb2 f g) pullback_comm
   |}.
 Next Obligation.
@@ -99,7 +99,9 @@ Program Definition PullbackLimits {C : Cat} `{HP : !HasPullback C}
   : HasLimitsOfShape C CospanShape
   :=
   {|hasLimit D :=
-      {|Lim := Pb (fmap D (path_edge cospan_l)) (fmap D (path_edge cospan_r))
+      {|Lim := D cospan_left
+          ×[fmap D (path_edge cospan_l), fmap D (path_edge cospan_r)]
+          D cospan_right
       ; limit_cone := @CospanConeOver C D _
           (pb1 _ _) (pb2 _ _) pullback_comm
       |}

@@ -32,15 +32,15 @@ Context {C D : Cat} (F : Functor C D)
 
 Definition functor_exponential_comparison (X Y : @Ob C)
   : Hom (F ((Y ^ X)%ob)) (F Y ^ F X)
-  := curry (fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X).
+  := ƛ (fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X).
 
 (** Currying is preserved through the canonical comparisons. *)
 
 (** 柯里化通过规范比较得到保持。 *)
 
 Lemma functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
-  : functor_exponential_comparison X Y ∘ fmap F (curry f) ≈
-      curry (fmap F f ∘ functor_product_inv F Z X).
+  : functor_exponential_comparison X Y ∘ fmap F (ƛ f) ≈
+      ƛ (fmap F f ∘ functor_product_inv F Z X).
 Proof.
   unfold functor_exponential_comparison.
   rewrite <- exponential_curry_comp_r. apply exponential_curry_proper.

@@ -141,15 +141,15 @@ Lemma type_compare_curry {Z A U : Ty B} {X : @Ob C}
     (g : Hom (X × TyI I A) (TyI I U)) (z : Hom X (F Z))
     (H : (type_compare U).1 ∘ g ≈ fmap F f ∘
       functor_product_inv F Z A ∘ (z × (type_compare A).1))
-  : (type_compare (ty_arr A U)).1 ∘ curry g ≈
+  : (type_compare (ty_arr A U)).1 ∘ (ƛ g) ≈
       fmap F (@curry (TyCat@{b e l} B) (TyCat_HasProduct B)
         (TyCat_HasExponential B) A U Z f) ∘ z.
 Proof.
   apply (iso_mono (functor_exponential_comparison F A U)
     (@functor_exponential _ _ F _ _ HF A U)).
   rewrite <- !comp_assoc, type_compare_function, functor_curry.
-  change (( (type_compare U).1 ^ (type_compare A).2.1)%hom ∘ curry g ≈
-    curry (fmap F f ∘ functor_product_inv F Z A) ∘ z).
+  change (( (type_compare U).1 ^ (type_compare A).2.1)%hom ∘ (ƛ g) ≈
+    (ƛ (fmap F f ∘ functor_product_inv F Z A)) ∘ z).
   rewrite <- exponential_curry_dimap, <- exponential_curry_comp_r.
   apply exponential_curry_proper.
   rewrite H, !comp_assoc, <- cross_comp,

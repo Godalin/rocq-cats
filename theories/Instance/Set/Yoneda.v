@@ -65,7 +65,7 @@ Context {F : Functor C SetCat}.
 (** 在恒等处求值从可表函子出发的自然变换。 *)
 
 Program Canonical yoneda_func {X}
-  : Nat Hom(X,-) F →r F X
+  : (Hom(X,-) ⇒ F) →r F X
   :=
   {|func α := α X id
   |}.
@@ -79,7 +79,7 @@ Qed.
 (** 将元素送到通过函子作用于箭头得到的自然变换。 *)
 
 Program Canonical yoneda_func_inv {X}
-  : F X →r Nat Hom(X,-) F
+  : F X →r (Hom(X,-) ⇒ F)
   :=
   {|func (x : F X) :=
      {|nt Y :=

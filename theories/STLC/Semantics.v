@@ -134,7 +134,7 @@ Proof.
   - rewrite IHt1, IHt2, product_comp_r. reflexivity.
   - rewrite IHt, comp_assoc. reflexivity.
   - rewrite IHt, comp_assoc. reflexivity.
-  - transitivity (curry (tm_eval t (env_lift ρ) ∘ (f × id))).
+  - transitivity (ƛ (tm_eval t (env_lift ρ) ∘ (f × id))).
     + apply exponential_curry_proper.
       transitivity (tm_eval t (env_comp (env_lift ρ) (f × id))).
       * apply tm_eval_ext. intros V [x | x]; cbn.
@@ -223,7 +223,8 @@ Proof.
       * destruct x. unfold env_lift, env_extend, env_comp; cbn.
           rewrite product_β2. reflexivity.
   - rewrite tm_eval_rename.
-    change (curry (app (tm_eval t (env_comp ρ (π1 (X := X) (Y := TyI A)))) π2) ≈ tm_eval t ρ).
+    change (ƛ (app (tm_eval t (env_comp ρ
+      (π1 (X := X) (Y := TyI A)))) π2) ≈ tm_eval t ρ).
     rewrite tm_eval_comp. apply exponential_app_η.
 Qed.
 

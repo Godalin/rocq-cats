@@ -69,7 +69,7 @@ Program Definition OpCatF
   : Functor CatCat CatCat
   :=
   {|F0 := op
-  ; F1 C D F := OpF F
+  ; F1 C D F := F^opF
   ; functor_fmap_proper C D := @OpF_proper C D
   |}.
 Next Obligation. apply OpF_id. Defined.

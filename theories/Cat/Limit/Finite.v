@@ -110,7 +110,7 @@ Program Definition ProductPullbackEqualizer {C : Cat}
     `{HP : !HasProduct C} `{HPb : !HasPullback C}
   : HasEqualizer C
   :=
-  {|EqObj X Y f g := Pb ⟨f, g⟩ ⟨id, id⟩
+  {|EqObj X Y f g := X ×[⟨f,g⟩,⟨id,id⟩] Y
   ; eqι X Y f g := pb1 ⟨f, g⟩ ⟨id, id⟩
   |}.
 Next Obligation. apply (pullback_equalizer (d := pb2 _ _)). exact pullback_universal. Defined.

@@ -83,7 +83,7 @@ Program Definition EqualizerDiagramLimit {C : Cat} `{HE : !HasEqualizer C}
   : HasLimit C D
   :=
   {|Lim := Eq[fmap D (path_edge parallel_l), fmap D (path_edge parallel_r)]
-  ; limit_cone := ParallelConeOver (eqι _ _) equalizer_comm
+  ; limit_cone := ParallelConeOver ιeq[_,_] equalizer_comm
   |}.
 Next Obligation. apply equalizer_limit. exact equalizer_universal. Defined.
 

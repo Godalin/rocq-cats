@@ -15,7 +15,7 @@ From Cats Require Import
     指数由保相等映射组成，相等按逐点指定相等比较。 *)
 
 Program Definition eval_resp {X Y : SetC}
-  : ProdS (FunS X Y) X →r Y
+  : (X →S Y) ×S X →r Y
   :=
   {|func p := (fst p) (snd p)
   |}.
@@ -28,8 +28,8 @@ Defined.
 
 (** 对广集乘积上的保相等映射柯里化。 *)
 
-Program Definition curry_resp {X Y Z : SetC} (f : ProdS Z X →r Y)
-  : Z →r FunS X Y
+Program Definition curry_resp {X Y Z : SetC} (f : Z ×S X →r Y)
+  : Z →r (X →S Y)
   :=
   {|func z :=
      {|func x := f (z, x)
@@ -52,7 +52,7 @@ Local Existing Instance SetCat_HasProduct.
 Program Definition SetCat_HasExponential
   : @HasExponential SetCat SetCat_HasProduct
   :=
-  {|exp Y X := FunS X Y
+  {|exp Y X := X →S Y
   ; eval X Y := eval_resp (X := X) (Y := Y)
   |}.
 Next Obligation.
