@@ -66,10 +66,9 @@ Program Definition cone_extend_resp {I J C : Cat} {Q : Functor I J}
 
 (** 顶点自然性恰为已有的限制与预合成相容律；限制本身不要求满性或本质满性。 *)
 
-Program Definition ConeRestrictN@{u p +} {I J C : Cat}
+Program Definition ConeRestrictN {I J C : Cat}
     (Q : Functor I J) (D : Functor J C)
-  : @Nat (C^op) SetCat@{u p _ _ _ _ _}
-      (ConeF D) (ConeF (D ∘F Q))
+  : Cone(-,D) ⇒ Cone(-,D ∘F Q)
   :=
   {|nt X := (cone_restrict_resp Q)^↑S
   |}.
@@ -85,10 +84,9 @@ Qed.
 (** 满且本质满的限制是自然广集同构；逆分量为原延拓映射，两条互逆方程就是已有的
     [NatEq] 往返定律。 *)
 
-Definition cone_reindex_nat_iso@{u p +} {I J C : Cat} {Q : Functor I J}
+Definition cone_reindex_nat_iso {I J C : Cat} {Q : Functor I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q) (D : Functor J C)
-  : @NatIso (C^op) SetCat@{u p _ _ _ _ _}
-      (ConeF D) (ConeF (D ∘F Q)).
+  : Cone(-,D) ≅N Cone(-,D ∘F Q).
 Proof.
   exists (ConeRestrictN Q D). intros X.
   exists ((cone_extend_resp HF HQ)^↑S). split.
@@ -115,10 +113,9 @@ Definition cone_reindex_iso@{u p +} {I J C : Cat} {Q : Functor I J}
 
 (** 逆方向自然性由一般逆自然变换定理导出，分量使用选定延拓映射。 *)
 
-Definition ConeExtendN@{u p +} {I J C : Cat} {Q : Functor I J}
+Definition ConeExtendN {I J C : Cat} {Q : Functor I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q) (D : Functor J C)
-  : @Nat (C^op) SetCat@{u p _ _ _ _ _}
-      (ConeF (D ∘F Q)) (ConeF D)
+  : Cone(-,D ∘F Q) ⇒ Cone(-,D)
   := (ConeRestrictN Q D)^-1N (cone_reindex_nat_iso HF HQ D).2.
 
 (** Every finitely generated shape has the same cone presheaf as its chosen
@@ -127,8 +124,7 @@ Definition ConeExtendN@{u p +} {I J C : Cat} {Q : Functor I J}
 
 (** 有限生成形状与其选定生成图解释具有自然同构的锥预层；不要求忠实性或关系列表。 *)
 
-Definition generated_cone_nat_iso@{u p +} {J C : Cat}
+Definition generated_cone_nat_iso {J C : Cat}
     `{HG : !HasFiniteGenerators J} (D : Functor J C)
-  : @NatIso (C^op) SetCat@{u p _ _ _ _ _}
-      (ConeF D) (ConeF (D ∘F generator_functor))
+  : Cone(-,D) ≅N Cone(-,D ∘F generator_functor)
   := cone_reindex_nat_iso generator_full generator_essentially_surjective D.
