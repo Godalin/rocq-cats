@@ -1,4 +1,4 @@
-From Cats Require Import STLC.Set.
+From Cats Require Import STLC.Product.
 From Cats Require Import
   Cat.Core
   Cat.Functor
@@ -873,3 +873,26 @@ Definition high_eq_syntactic_assignment
   : SubS@{b e} Δ Γ →r TmS@{b e} Δ A
   := tm_subst_assignment_resp t.
 End STLCEqualityLevels.
+
+(** Contexts, beta/eta witnesses and category laws admit three strictly
+    increasing levels. Chosen terminal and product structures preserve them. *)
+
+(** 上下文、βη 见证及范畴律允许三个严格递增的层级，选定终对象与积保持这些
+    层级。 *)
+
+Section STLCCategoryLevels.
+Universe b e l.
+Constraint b < e.
+Constraint e < l.
+Context (B : Type@{b}).
+
+Definition separated_syntactic_category
+  : Cat@{b b e l l}
+  := CtxCat B.
+Definition separated_syntactic_terminal
+  : HasTerminal separated_syntactic_category
+  := CtxCat_HasTerminal B.
+Definition separated_syntactic_products
+  : HasProduct separated_syntactic_category
+  := CtxCat_HasProduct B.
+End STLCCategoryLevels.
