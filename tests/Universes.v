@@ -1,4 +1,6 @@
 From Cats Require Import STLC.CCC.
+From Cats Require Import STLC.Interpretation.
+
 From Cats Require Import
   Cat.Core
   Cat.Functor.Core
@@ -903,3 +905,28 @@ Definition separated_syntactic_ccc
   : CCC separated_syntactic_category
   := CtxCat_CCC B.
 End STLCCategoryLevels.
+
+(** Semantic interpretation preserves separated syntax levels and permits
+    either ordering of target hom carriers and equality witnesses. *)
+
+(** 语义解释保持语法层级分离，并允许目标 Hom 载体与相等见证的两种大小排列。 *)
+
+Section STLCInterpretationLevels.
+Universes b e l o h p a.
+Constraint b < e.
+Constraint e < l.
+Constraint h < p.
+Constraint p < a.
+Context (B : Type@{b}) (C : Cat@{o h p a a})
+    (D : Cat@{o p h a a}) (HC : CCC C) (HD : CCC D).
+Local Existing Instance HC.
+Local Existing Instance HD.
+Context (I : B → @Ob C) (J : B → @Ob D).
+
+Definition high_eq_stlc_interpretation
+  : Functor (CtxCat@{b e l} B) C
+  := InterpretF I.
+Definition low_eq_stlc_interpretation
+  : Functor (CtxCat@{b e l} B) D
+  := InterpretF J.
+End STLCInterpretationLevels.
