@@ -101,11 +101,10 @@ Defined.
 
 (** 固定顶点同构就是自然同构的分量；提升仅将两侧原生锥广集放到共同大小上界。 *)
 
-Definition cone_reindex_iso@{u p +} {I J C : Cat} {Q : Functor I J}
+Definition cone_reindex_iso {I J C : Cat} {Q : Functor I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
     (D : Functor J C) (X : @Ob C)
-  : LiftS@{_ _ u p} (ConeS D X) ≅[SetCat]
-      LiftS@{_ _ u p} (ConeS (D ∘F Q) X)
+  : ↑S (ConeS D X) ≅[SetCat] ↑S (ConeS (D ∘F Q) X)
   := ((ConeRestrictN Q D) X; (cone_reindex_nat_iso HF HQ D).2 X).
 
 (** Inverse naturality follows from the general inverse-transformation

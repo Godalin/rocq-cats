@@ -50,6 +50,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   For `{| ... |}` literals, place the first field immediately after `{|`;
   align each following `;` and the closing `|}` with the opening `{`.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
+  Prefer existing public mathematical notation throughout declarations,
+  construction bodies and proofs; use underlying names and explicit arguments
+  where notation cannot express the needed information or resolve ambiguity.
   Design shared, exported notation alongside new operations; avoid local
   notation aliases. Prefer UTF-8 and pair/projection notation. Check scopes,
   precedence, and chaining. Use compact property/structure tags after `⦂`.
