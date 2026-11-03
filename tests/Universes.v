@@ -1,5 +1,6 @@
 From Cats Require Import STLC.CCC.
 From Cats Require Import STLC.Interpretation.
+From Cats Require Import STLC.Quotation.
 
 From Cats Require Import
   Cat.Core
@@ -904,6 +905,9 @@ Definition separated_syntactic_packing (Γ : Ctx B)
 Definition separated_syntactic_ccc
   : CCC separated_syntactic_category
   := CtxCat_CCC B.
+Definition separated_type_syntactic_ccc
+  : CCC (TyCat@{b e l} B)
+  := TyCat_CCC B.
 End STLCCategoryLevels.
 
 (** Semantic interpretation preserves separated syntax levels and permits

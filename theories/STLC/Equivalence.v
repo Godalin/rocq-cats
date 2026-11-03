@@ -323,3 +323,22 @@ Proof.
   intros t u H. unfold sub_single. apply sub_extend_tm_proper;
     [reflexivity | exact H].
 Defined.
+
+(** Associativity of substitution in the specified beta/eta equality. *)
+
+(** 替换在指定 βη 相等下的结合律。 *)
+
+Definition sub_comp_tm_assoc@{b e +} {B : Type@{b}}
+    {Γ Δ Θ Ξ : Ctx B} (σ : Sub Δ Γ) (τ : Sub Θ Δ) (ν : Sub Ξ Θ)
+  : SubTmEq@{b e _} (sub_comp (sub_comp σ τ) ν)
+      (sub_comp σ (sub_comp τ ν)).
+Proof. apply sub_tm_eq_of_eq. apply sub_comp_assoc. Defined.
+
+(** The identity assignment is a right identity for beta/eta substitution. *)
+
+(** 恒等赋值是 βη 替换的右单位。 *)
+
+Definition sub_comp_tm_id_r@{b e +} {B : Type@{b}}
+    {Γ Δ : Ctx B} (σ : Sub Δ Γ)
+  : SubTmEq@{b e _} (sub_comp σ sub_id) σ.
+Proof. apply sub_tm_eq_of_eq. apply sub_comp_id_r. Defined.

@@ -450,8 +450,19 @@ f 的最新输入。函数 β 及原始替换律 `rename_lift_single` 给出求�
 直接计算，包含空上下文与多变量上下文；整体结构仍允许 `b < e < l`。
 
 至此语法 CCC 已构造；任意 CCC 中的解释、语义替换与可靠性也已实现如下。
-另一种以类型为对象、单变量项为态射的呈现尚未构造，不能提前声称已证明
-两种呈现的等价。
+[STLC.TypeCategory](../theories/STLC/TypeCategory.v) 另构造类型呈现 `TyCat B`：
+对象是简单类型，Hom 是单变量上下文间的替换，指定相等仍为逐点 βη。
+范畴数据复用一般的 [InducedCat](../theories/Cat/Induced.v)；选定终对象、积与
+指数分别是语法单位、积与函数类型。`singleton_product` 对任意源上下文证明
+积类型的泛性质；函数类型沿 `type_pair_iso` 的积比较继承已有的
+`singleton_exponential`，没有重复证明函数 η。
+
+[STLC.Quotation](../theories/STLC/Quotation.v) 的 `syntax_eval` 按字面类型的
+CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境中的各个项；
+绑定情形显式处理积编码与弱化。`syntax_eval_retract` 因而在恒等环境中恢复每条
+单变量箭头。这是规范模型还原的核心，不把递归类型解释与恒等函数判为原生相等。
+类型呈现的完整 CCC 也在 `b < e < l` 下保留一项永久接口回归。
+两种呈现之间的显式范畴等价及模型比较会另外组装。
 
 对每个模型的递归解释可直接采用其选定结构。
 但整个自由泛性质仍需规定保持结构的函子、基类型上的比较、以及相容的自然同构。
