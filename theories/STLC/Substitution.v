@@ -389,3 +389,42 @@ Proof. intros t u H. destruct H. intros U x. reflexivity. Qed.
 
 Notation "t '[' u '/]'" := (subst t (sub_single u))
   (at level 8, left associativity) : stlc_tm_scope.
+
+(** Renaming commutes with replacing the newest variable, provided the
+    renaming is lifted on the body. *)
+
+(** 重命名与最新变量的代入交换，其中项体上的重命名须提升。 *)
+
+Lemma rename_single {B : Type} {Γ Δ : Ctx B} {A U : Ty B}
+    (t : Tm (Γ ▻ A) U) (u : Tm Γ A) (ρ : Ren Δ Γ)
+  : t[u/]⟨ρ⟩ = t⟨ρ^↑Ren⟩[u⟨ρ⟩/].
+Proof.
+  rewrite rename_subst, subst_rename. apply subst_ext.
+  intros V [x | x]; cbn; [reflexivity | destruct x; reflexivity].
+Qed.
+
+(** A lifted substitution followed by newest-variable replacement agrees
+    pointwise with replacement followed by the original substitution. *)
+
+(** 提升替换后再代入最新变量，与先代入再作原替换逐点一致。 *)
+
+Lemma sub_lift_single {B : Type} {Γ Δ : Ctx B} {A : Ty B}
+    (σ : Sub Δ Γ) (u : Tm Γ A)
+  : σ^↑Sub ∘Sub sub_single u[σ] ≈Sub sub_single u ∘Sub σ.
+Proof.
+  intros U [x | x]; cbn.
+  - rewrite subst_rename. change ((σ U x)[idSub] = σ U x).
+    apply subst_id.
+  - destruct x. reflexivity.
+Qed.
+
+(** Simultaneous substitution commutes with newest-variable replacement. *)
+
+(** 同时替换与最新变量的代入交换。 *)
+
+Lemma subst_single {B : Type} {Γ Δ : Ctx B} {A U : Ty B}
+    (t : Tm (Γ ▻ A) U) (u : Tm Γ A) (σ : Sub Δ Γ)
+  : t[u/][σ] = t[σ^↑Sub][u[σ]/].
+Proof.
+  rewrite !subst_comp. apply subst_ext. symmetry. apply sub_lift_single.
+Qed.

@@ -1,4 +1,4 @@
-From Cats Require Import STLC.Substitution.
+From Cats Require Import STLC.Set.
 From Cats Require Import
   Cat.Core
   Cat.Functor
@@ -844,3 +844,32 @@ Definition universe_polymorphic_substitution
   : STLC.Syntax.Tm Δ A
   := subst t σ.
 End STLCSyntaxLevels.
+
+(** Beta/eta witnesses can live strictly above the raw syntax. These interfaces
+    must preserve that level when packaging sets and respectful operations. *)
+
+(** βη 见证可严格高于原始语法；打包广集与保相等操作时必须保持该层级。 *)
+
+Section STLCEqualityLevels.
+Universe b e.
+Constraint b < e.
+Context (B : Type@{b}) (Γ Δ : Ctx B) (A : STLC.Syntax.Ty B).
+Context (t : STLC.Syntax.Tm Γ A) (ρ : Ren Δ Γ)
+    (σ : STLC.Substitution.Sub Δ Γ).
+
+Definition high_eq_syntactic_terms
+  : SetC@{b e}
+  := TmS Γ A.
+Definition high_eq_syntactic_substitutions
+  : SetC@{b e}
+  := SubS Δ Γ.
+Definition high_eq_syntactic_renaming
+  : TmS@{b e} Γ A →r TmS@{b e} Δ A
+  := tm_rename_resp ρ.
+Definition high_eq_syntactic_substitution
+  : TmS@{b e} Γ A →r TmS@{b e} Δ A
+  := tm_subst_resp σ.
+Definition high_eq_syntactic_assignment
+  : SubS@{b e} Δ Γ →r TmS@{b e} Δ A
+  := tm_subst_assignment_resp t.
+End STLCEqualityLevels.
