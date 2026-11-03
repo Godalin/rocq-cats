@@ -1,3 +1,4 @@
+From Cats Require Import STLC.Substitution.
 From Cats Require Import
   Cat.Core
   Cat.Functor
@@ -823,3 +824,23 @@ Definition high_eq_represented_cwf
 Definition low_eq_represented_cwf
   := @RepresentedCwF D U.
 End ContextRepresentationLevels.
+
+(** Raw syntax accepts arbitrary signature levels. An inferred extra universe
+    on variable markers must not restrict rename/substitution clients. *)
+
+(** 原始语法允许任意签名层级；变量标记上多余的推断宇宙不得限制重命名或替换的
+    使用者。 *)
+
+Section STLCSyntaxLevels.
+Universe b.
+Context (B : Type@{b}) (Γ Δ : Ctx B) (A : STLC.Syntax.Ty B).
+Context (t : STLC.Syntax.Tm Γ A) (ρ : Ren Δ Γ)
+    (σ : STLC.Substitution.Sub Δ Γ).
+
+Definition universe_polymorphic_rename
+  : STLC.Syntax.Tm Δ A
+  := rename t ρ.
+Definition universe_polymorphic_substitution
+  : STLC.Syntax.Tm Δ A
+  := subst t σ.
+End STLCSyntaxLevels.
