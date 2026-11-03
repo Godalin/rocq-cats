@@ -284,6 +284,9 @@ from terminal objects, binary products and equalizers, including shapes with cyc
 The [shape-transfer theorem](./theories/Cat/Limit/Reindex.v) transfers limits
 along full, essentially surjective functors, using object isomorphisms and
 specified hom equality without requiring faithfulness.
+The [cone presheaf comparison](./theories/Cat/Diagram/Presheaf.v) packages
+restriction and extension as an explicit natural setoid isomorphism in the
+apex, with a specialization to chosen finite generators.
 [STLC.Free](./theories/STLC/Free.v) provides the completed syntax/semantics result:
 interpretation in arbitrary CCCs, semantic substitution, βη soundness and
 completeness at a common bound containing the syntax model. Its free-CCC

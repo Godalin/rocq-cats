@@ -54,6 +54,7 @@ From Cats Require Import Cat.Product.Finite.
 From Cats Require Import Cat.Limit.Graph.Finite.
 From Cats Require Import
   Cat.Diagram.Reindex
+  Cat.Diagram.Presheaf
   Cat.Limit.Reindex.
 From Cats Require Import
   DTT.CwF
@@ -464,6 +465,33 @@ Definition high_eq_reindexed_limit
 Definition low_eq_reindexed_limit
   : HasLimit D K'
   := ReindexedLimit HF HQ K'.
+
+(** Cone comparisons share ambient bounds without identifying either shape's
+    native levels; the ambient carrier/equality ordering can also vary. *)
+
+(** 锥比较共享环境上界而不合并两侧形状的原生层级；环境载体与相等的大小顺序也可变化。 *)
+
+Universes a b.
+Constraint l < a.
+Constraint a < b.
+
+Definition high_eq_cone_comparison
+  : @NatIso (C^op) SetCat@{a b _ _ _ _ _}
+      (ConeF K) (ConeF (K ∘F Q))
+  := cone_reindex_nat_iso HF HQ K.
+
+Definition low_eq_cone_comparison
+  : @NatIso (D^op) SetCat@{b a _ _ _ _ _}
+      (ConeF K') (ConeF (K' ∘F Q))
+  := cone_reindex_nat_iso HF HQ K'.
+
+Definition high_eq_restricted_limit (HL : HasLimit C K)
+  : HasLimit C (K ∘F Q)
+  := @RestrictedLimit I J C Q HF HQ K HL.
+
+Definition low_eq_restricted_limit (HL : HasLimit D K')
+  : HasLimit D (K' ∘F Q)
+  := @RestrictedLimit I J D Q HF HQ K' HL.
 End ReindexedLimitLevels.
 
 (** Finite covers do not identify the shape's object, hom or equality levels

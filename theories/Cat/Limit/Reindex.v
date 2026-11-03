@@ -99,6 +99,21 @@ Program Definition ReindexedLimit {I J C : Cat} {Q : Functor I J}
   |}.
 Next Obligation. apply extend_limit. apply limit_universal. Defined.
 
+(** Restrict a selected limit in the other direction, keeping its apex and
+    using the original restriction theorem for its universal property. *)
+
+(** 反向限制选定极限，保留顶点，并用原限制定理给出泛性质。 *)
+
+Program Definition RestrictedLimit {I J C : Cat} {Q : Functor I J}
+    (HF : is_full Q) (HQ : is_essentially_surjective Q)
+    (D : Functor J C) `{HL : !HasLimit C D}
+  : HasLimit C (D ∘F Q)
+  :=
+  {|Lim := lim D
+  ; limit_cone := πlim[D] ∘Δ Q
+  |}.
+Next Obligation. apply (restrict_limit HF HQ). apply limit_universal. Defined.
+
 (** Transfer selected limits of a whole shape along a full, essentially
     surjective functor. *)
 

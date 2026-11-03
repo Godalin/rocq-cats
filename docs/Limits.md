@@ -226,6 +226,75 @@ extend_limit HF HQ        : is_limit μ → is_limit (ExtendCone HF HQ μ)
 有限生成形状现在直接携带这样的解释函子；有限 Hom 覆盖也可构造它。
 因此可以将自由图式的极限传到目标形状，无需重新证明中介唯一性。
 
+## Cone reindexing as a natural isomorphism
+
+## 锥重索引的自然同构
+
+[Diagram.Presheaf](../theories/Cat/Diagram/Presheaf.v) packages the existing
+restriction and extension laws. `ConeS D X` is the native hom-setoid
+`HomSet (ConstF J X) D` in `Fct J C`, with `NatEq` equality. The cone presheaf
+`Cone(-,D)` is the contravariant hom functor at `D`, precomposed with the
+opposite diagonal functor and followed by `LiftF`. Functor laws therefore
+come from the existing Hom and composition theory.
+
+[Diagram.Presheaf](../theories/Cat/Diagram/Presheaf.v) 包装已有的限制及延拓定律。
+`ConeS D X` 是 `Fct J C` 中的原生 `HomSet (ConstF J X) D`，相等为 `NatEq`。
+锥预层 `Cone(-,D)` 由以 D 为目标的反变 Hom 函子预合成反对角函子、再复合
+`LiftF` 得到；函子律因此直接来自已有 Hom 及复合理论。
+
+```text
+ConeRestrictN Q D : Cone(-,D) ⇒ Cone(-,D ∘F Q)
+cone_reindex_nat_iso HF HQ D : Cone(-,D) ≅N Cone(-,D ∘F Q)
+ConeExtendN HF HQ D : Cone(-,D ∘F Q) ⇒ Cone(-,D)
+
+cone_reindex_iso HF HQ D X
+  : ↑S (ConeS D X) ≅[SetCat] ↑S (ConeS (D ∘F Q) X)
+```
+
+Restriction requires no property of `Q`; the isomorphism requires its
+fullness `HF` and essential-surjectivity witness `HQ`. Its component maps are
+the lifted `RestrictCone Q` and `ExtendCone HF HQ`. Inverse equations reuse
+`cone_extend_restrict` and `cone_restrict_extend`. Apex naturality is
+`cone_restrict_comp`; the inverse transformation's naturality is derived
+by `NatIso_inv`. All comparisons use specified equality, including when
+the apex morphisms have distinct equivalent representatives.
+
+限制不要求 Q 具有任何额外性质；同构需要满性 HF 及本质满性见证 HQ。分量映射为
+提升后的 `RestrictCone Q` 与 `ExtendCone HF HQ`，互逆方程复用
+`cone_extend_restrict` 和 `cone_restrict_extend`。顶点自然性就是
+`cone_restrict_comp`；逆变换的自然性由 `NatIso_inv` 导出。全部比较使用指定相等，
+也适用于顶点态射具有不同但等价代表的情形。
+
+The two shape categories can have different sizes. The lifts place their
+cone sets in a common ambient set category, with independent bounds for
+carriers and equality witnesses. They do not resize or identify the native
+shape or target universes. The actual cone components remain available
+through `lower`; no new notion of cones is introduced.
+
+两侧形状范畴的大小可以不同；提升把锥广集放入共同环境集合范畴，并对载体与相等
+见证保留独立上界，不作大小重设，也不合并形状或目标范畴的原生宇宙。
+实际锥分量通过 `lower` 读取，没有引入新的锥概念。
+
+For `HG : HasFiniteGenerators J`, `generated_cone_nat_iso D` specializes the
+comparison to `generator_functor`. Equations on generating edges suffice
+to build a cone on the restricted diagram by `FreeCone`, and extension gives
+a cone on `D`. Here `D` is already a functor on `J`: its respectfulness
+already handles the extra path equations. This does not make an arbitrary
+assignment of graph edges descend to `J`.
+
+对于 `HG : HasFiniteGenerators J`，`generated_cone_nat_iso D` 将比较特化到
+`generator_functor`。生成边上的方程足以通过 `FreeCone` 构造限制图式上的锥，
+再延拓为 D 上的锥。这里 D 已经是 J 上的函子，其保相等性已经处理额外路径方程；
+这一结论不会使任意的图边赋值自动下降为 J 上的图式。
+
+`RestrictedLimit HF HQ D` complements `ReindexedLimit` by restricting an
+already selected limit. Both retain the supplied apex and use the existing
+universal-property theorems; neither promises equality of chosen records
+after a round trip.
+
+`RestrictedLimit HF HQ D` 通过限制已有选定极限补齐 `ReindexedLimit` 的反向入口。
+两者均保留给定顶点并使用已有泛性质定理，不要求选定记录往返后相等。
+
 ## 有限覆盖、有限生成形状与有限极限
 
 [Set.Finite](../theories/Set/Finite.v) 中的 `HasFiniteCover X` 保存有限个位置、

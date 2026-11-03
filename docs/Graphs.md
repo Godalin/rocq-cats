@@ -109,3 +109,32 @@ respectfulness 对路径相等的生成规则归纳证明。
 对满且本质满的 `Q : I → J`，可将 `D ∘F Q` 的极限传到 D。
 因此后续只需为图呈示构造相应的 Q 及其满性、本质满性；
 不要求 Q 忠实，允许不同路径解释为同一态射。
+
+## A natural cone comparison for nonfree shapes
+
+## 非自由形状的自然锥比较
+
+[Diagram.Presheaf](../theories/Cat/Diagram/Presheaf.v) makes that transfer
+explicit as `cone_reindex_nat_iso HF HQ D`. It compares the cone presheaves
+of `D` and `D ∘F Q`, naturally in the apex. The fixed-apex component is
+`cone_reindex_iso HF HQ D X`; see [Limits](./Limits.md) for size bounds and
+the `generated_cone_nat_iso` specialization to finite generators.
+
+[Diagram.Presheaf](../theories/Cat/Diagram/Presheaf.v) 将这一传递显式包装为
+`cone_reindex_nat_iso HF HQ D`，比较 D 与 `D ∘F Q` 的锥预层，并对顶点自然。
+固定顶点分量为 `cone_reindex_iso HF HQ D X`；大小上界及有限生成特化
+`generated_cone_nat_iso` 见 [Limits](./Limits.md)。
+
+The [cone interface regressions](../tests/Cones.v) include a finite free
+shape and the nonfree `SquareShape`. For the square, `SquareEvaluation`
+evaluates paths in `UnderlyingGraph SquareShape`. It is full because every
+arrow has a one-edge preimage, and essentially surjective because its object
+map is the identity. The upper/right and left/lower routes remain inequivalent
+free paths, as witnessed by counting the top edge, but their images agree by
+`square_comm`. The cone comparison applies despite this failure of faithfulness.
+
+[锥接口回归](../tests/Cones.v) 包括有限自由形状及非自由的 `SquareShape`。
+方形例子中，`SquareEvaluation` 对 `UnderlyingGraph SquareShape` 上的路径求值。
+每条箭头有单边原像，故它是满的；对象映射为恒等，故它本质满。上边再右边、左边再
+下边这两条自由路径由上边计数区分，仍不等价，但其像由 `square_comm` 相等。
+锥比较因此确实允许解释函子不忠实。
