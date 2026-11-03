@@ -1,6 +1,4 @@
-From Cats Require Import
-  STLC.Product
-  STLC.Packing.
+From Cats Require Import STLC.CCC.
 From Cats Require Import
   Cat.Core
   Cat.Functor
@@ -877,11 +875,11 @@ Definition high_eq_syntactic_assignment
 End STLCEqualityLevels.
 
 (** Contexts, beta/eta witnesses and category laws admit three strictly
-    increasing levels. Chosen terminal/product structures and context packing
-    isomorphisms preserve them. *)
+    increasing levels. Chosen terminal/product/CCC structures and context
+    packing isomorphisms preserve them. *)
 
-(** 上下文、βη 见证及范畴律允许三个严格递增的层级，选定终对象、积及上下文
-    打包同构保持这些层级。 *)
+(** 上下文、βη 见证及范畴律允许三个严格递增的层级，选定终对象、积、CCC 及
+    上下文打包同构保持这些层级。 *)
 
 Section STLCCategoryLevels.
 Universe b e l.
@@ -901,4 +899,7 @@ Definition separated_syntactic_products
 Definition separated_syntactic_packing (Γ : Ctx B)
   : Γ ≅[separated_syntactic_category] ctx_snoc ctx_empty (CtxTy Γ)
   := ctx_pack_iso Γ.
+Definition separated_syntactic_ccc
+  : CCC separated_syntactic_category
+  := CtxCat_CCC B.
 End STLCCategoryLevels.

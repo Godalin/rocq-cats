@@ -447,16 +447,17 @@ Theorem iso_refl {X}
   : X ≅ X.
 Proof. exists id, id. cato. Qed.
 
-(** Reverse an object isomorphism. *)
+(** Reverse an object isomorphism, keeping the swapped witness arrows
+    computational. *)
 
-(** 反转对象同构。 *)
+(** 反转对象同构，保持交换后的见证箭头可计算。 *)
 
 Theorem iso_symm {X Y}
   : X ≅ Y → Y ≅ X.
 Proof.
   intros [f [fi [H1 H2]]]; simpl in *.
   exists fi, f. split; cato.
-Qed.
+Defined.
 
 (** Compose object isomorphisms. *)
 

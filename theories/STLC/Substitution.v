@@ -428,3 +428,18 @@ Lemma subst_single {B : Type} {Γ Δ : Ctx B} {A U : Ty B}
 Proof.
   rewrite !subst_comp. apply subst_ext. symmetry. apply sub_lift_single.
 Qed.
+
+(** Weakening below the newest binder, then replacing that binder by the old
+    newest variable, recovers the original body. *)
+
+(** 在最新绑定变量之下弱化，再用原最新变量代入该绑定变量，恢复原项体。 *)
+
+Lemma rename_lift_single {B : Type} {Γ : Ctx B} {A U : Ty B}
+    (t : Tm (Γ ▻ A) U)
+  : t⟨(@ren_weaken B Γ A)^↑Ren⟩[# var_zero/] = t.
+Proof.
+  rewrite subst_rename. transitivity (t[idSub]).
+  - apply subst_ext. intros V [x | x]; cbn;
+      [reflexivity | destruct x; reflexivity].
+  - apply subst_id.
+Qed.

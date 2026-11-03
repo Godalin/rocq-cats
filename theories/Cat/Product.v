@@ -286,6 +286,16 @@ Proof.
   reflexivity.
 Qed.
 
+(** Independent actions on the two factors commute. *)
+
+(** 两个因子上的独立作用彼此交换。 *)
+
+Lemma cross_exchange {X X' Y Y'} (f : Hom X X') (g : Hom Y Y')
+  : (id × g) ∘ (f × id) ≈ (f × id) ∘ (id × g).
+Proof.
+  rewrite <- !cross_comp, !comp_id_l, !comp_id_r. reflexivity.
+Qed.
+
 (** Postcomposition by a product map acts on both pairing components. *)
 
 (** 积映射的后合成分别作用于配对的两个分量。 *)
