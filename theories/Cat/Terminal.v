@@ -126,7 +126,9 @@ Hint Resolve term_η : cat.
 (** 通过反范畴的终性表示的选定始对象。 *)
 
 Class HasInitial (C : Cat)
-  := _initial :: HasTerminal (op C).
+  :=
+  { hasOpTerminal :: HasTerminal (C^op)
+  }.
 
 Section Initial.
 Context {C : Cat}.
@@ -146,7 +148,7 @@ Context `{HI : !HasInitial C}.
 
 Definition Init
   : @Ob C
-  := @Term (op C) _.
+  := @Term (C^op) (@hasOpTerminal C HI).
 
 (** The universal arrow from the selected initial object. *)
 
@@ -154,20 +156,55 @@ Definition Init
 
 Definition init {X}
   : (@Hom C) Init X
-  := @term (op C) _ _.
-
-Notation "0" := Init.
-Notation "¡" := init.
+  := @term (C^op) (@hasOpTerminal C HI) X.
 
 (** The selected initial object satisfies its universal property. *)
 
 (** 选定始对象满足其泛性质。 *)
 
-Proposition initial_universal
+Definition initial_universal
   : is_initial Init.
-Proof. exact (@terminal_universal (op C) HI). Qed.
+Proof. exact (@terminal_universal (C^op) (@hasOpTerminal C HI)). Defined.
+
+(** Initial-arrow uniqueness is terminal-arrow uniqueness in the opposite
+    category. *)
+
+(** 始箭头唯一性就是反范畴中的终箭头唯一性。 *)
+
+Theorem initial_arrow_unique {X}
+  : is_unique_element (@init X).
+Proof. exact (@terminal_arrow_unique (C^op) (@hasOpTerminal C HI) X). Qed.
+
+(** Every arrow from the selected initial object is its universal arrow. *)
+
+(** 从选定始对象出发的任意箭头等于其泛箭头。 *)
+
+Theorem init_η {X} (f : Hom Init X)
+  : f ≈ init.
+Proof. exact (@term_η (C^op) (@hasOpTerminal C HI) X f). Qed.
+
+(** Postcomposition of an initial arrow is the initial arrow. *)
+
+(** 始箭头后合成后仍为始箭头。 *)
+
+Theorem init_comp_r {X Y} (f : Hom X Y)
+  : f ∘ init ≈ init.
+Proof. exact (@term_comp_l (C^op) (@hasOpTerminal C HI) Y X f). Qed.
 
 End Initial.
 
-Notation "0" := Init.
-Notation "¡" := init.
+Notation "0" := Init : ob_scope.
+Notation "¡" := init : hom_scope.
+
+(** Any two initial objects are isomorphic by opposite terminal uniqueness. *)
+
+(** 由反范畴中的终对象唯一性，任意两个始对象同构。 *)
+
+Definition initial_unique {C : Cat} {X Y : @Ob C}
+    (HX : is_initial X) (HY : is_initial Y)
+  : X ≅[C] Y.
+Proof.
+  pose (i := @terminal_unique (C^op) Y X HY HX).
+  exists i.1, i.2.1. split;
+    [exact (snd i.2.2) | exact (fst i.2.2)].
+Defined.

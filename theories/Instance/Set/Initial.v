@@ -28,7 +28,9 @@ Defined.
 Program Definition SetCat_HasInitial
   : HasInitial SetCat
   :=
-  {|Term := EmptyS
+  {|hasOpTerminal :=
+      {|Term := EmptyS
+      |}
   |}.
 Next Obligation.
   intros X. assert (h : EmptyS →r X).
