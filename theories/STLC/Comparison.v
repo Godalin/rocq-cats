@@ -330,6 +330,3 @@ Proof.
 Qed.
 
 End Comparison.
-
-
-

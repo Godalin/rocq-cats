@@ -107,3 +107,22 @@ Proof.
       <- cross_comp, (fst i.2.2), comp_id_l, cross_id, comp_id_r.
     reflexivity.
 Qed.
+
+(** Evaluation after an invertible change of input still determines a map
+    into an exponential. *)
+
+(** 输入作可逆变换之后，求值仍能确定指向指数的箭头。 *)
+
+Lemma exponential_ext_iso {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X X' Y Z : @Ob C} (i : X' ≅ X)
+    {f g : Hom Z (Y ^ X)}
+    (H : eval ∘ (f × i.1) ≈ eval ∘ (g × i.1))
+  : f ≈ g.
+Proof.
+  apply exponential_ext.
+  assert (K : (eval ∘ (f × i.1)) ∘ (id × i.2.1) ≈
+    (eval ∘ (g × i.1)) ∘ (id × i.2.1)).
+  { apply comp_proper; [exact H | reflexivity]. }
+  rewrite !comp_assoc, <- !cross_comp, !comp_id_r, (snd i.2.2) in K.
+  exact K.
+Qed.

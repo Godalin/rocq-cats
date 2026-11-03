@@ -102,3 +102,23 @@ Definition op_involution_nat_iso
 Proof.
   exists OpInvolutionN. intros C. exact (op_involution C).2.
 Defined.
+
+(** Repackage a functor at the common law bounds used by [CatCat], keeping
+    its object and morphism maps. Pointwise laws do not identify the input
+    functor's auxiliary proof universes with those common bounds. *)
+
+(** 在 [CatCat] 使用的共同定律界上重新组装函子，保留其对象及态射映射。逐点
+    定律不把原函子的辅助证明宇宙与共同大小界合并。 *)
+
+Program Definition CatCatHom@{o h p l m n +}
+    {C D : Cat@{o h p l l}} (F : Functor@{o h p l m n o h p l} C D)
+  : (@Hom CatCat) C D
+  :=
+  {|F0 X := F X
+  ; F1 X Y f := fmap F f
+  |}.
+Next Obligation.
+  intros f g H. exact (@functor_fmap_proper C D F X Y f g H).
+Qed.
+Next Obligation. exact (@functor_id C D F X). Qed.
+Next Obligation. exact (@functor_comp C D F X Y Z f g). Qed.

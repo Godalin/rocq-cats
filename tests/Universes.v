@@ -1,7 +1,8 @@
-From Cats Require Import STLC.Completeness.
+From Cats Require Import STLC.Free.
 
 From Cats Require Import
   Cat.Core
+  Cat.CatCat
   Cat.Functor.Core
   Cat.Functor.Closed
   Cat.Natural
@@ -912,6 +913,10 @@ Definition separated_stlc_completeness (Γ : Ctx B) (A : STLC.Syntax.Ty B)
     (t u : STLC.Syntax.Tm Γ A)
   : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u
   := tm_soundness_iff_completeness t u.
+
+Definition separated_stlc_presentations
+  : (TyCat@{b e l} B) ≅[CatCat] (CtxCat@{b e l} B)
+  := ContextCategoryEquivalence B.
 End STLCCategoryLevels.
 
 (** Semantic interpretation preserves separated syntax levels and permits
@@ -946,4 +951,10 @@ Context (β : ∀ b, I b ≅[C] F (ty_base b)).
 Definition separated_stlc_model_comparison
   : TypeInterpretF I ≅N F
   := type_interpretation_nat_iso F I β.
+
+Definition separated_stlc_free_extension
+  : ∃ α : TypeInterpretF I ≅N F,
+      is_unique (λ η : TypeInterpretF I ⇒ F,
+        ∀ b, η (ty_base b) ≈ (β b).1) α.1
+  := type_interpretation_universal F I β.
 End STLCInterpretationLevels.

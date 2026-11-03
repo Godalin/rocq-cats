@@ -272,9 +272,14 @@ from terminal objects, binary products and equalizers, including shapes with cyc
 The [shape-transfer theorem](./theories/Cat/Limit/Reindex.v) transfers limits
 along full, essentially surjective functors, using object isomorphisms and
 specified hom equality without requiring faithfulness.
-STLC syntax, its interpretation and the free-CCC completeness theorem remain
-tracked in [#9](https://github.com/Godalin/rocq-cats/issues/9) and
-[#20](https://github.com/Godalin/rocq-cats/issues/20).
+[STLC.Free](./theories/STLC/Free.v) provides the completed syntax/semantics result:
+interpretation in arbitrary CCCs, semantic substitution, βη soundness and
+completeness at a common bound containing the syntax model. Its free-CCC
+universal property extends specified base-type isomorphisms to unique natural
+transformations, with invertible canonical extensions.
+[ContextEquivalence](./theories/STLC/ContextEquivalence.v) identifies the context
+and type presentations. See [#9](https://github.com/Godalin/rocq-cats/issues/9)
+and [#20](https://github.com/Godalin/rocq-cats/issues/20) for acceptance records.
 
 ## TODOs
 

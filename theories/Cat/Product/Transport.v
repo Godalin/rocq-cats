@@ -38,3 +38,17 @@ Proof.
     [rewrite (fst i.2.2), (fst j.2.2) |
      rewrite (snd i.2.2), (snd j.2.2)]; apply cross_id.
 Defined.
+
+(** Arrows into any candidate product are determined by both projections. *)
+
+(** 指向任意候选积的箭头由两个投影共同确定。 *)
+
+Lemma product_cone_ext {C : Cat} {X Y P Z : @Ob C}
+    {p : Hom P X} {q : Hom P Y} (HP : is_product X Y P p q)
+    {f g : Hom Z P} (H1 : p ∘ f ≈ p ∘ g) (H2 : q ∘ f ≈ q ∘ g)
+  : f ≈ g.
+Proof.
+  transitivity (HP Z (p ∘ g) (q ∘ g)).1.
+  - apply (HP Z (p ∘ g) (q ∘ g)).2. split; assumption.
+  - symmetry. apply (HP Z (p ∘ g) (q ∘ g)).2. split; reflexivity.
+Qed.

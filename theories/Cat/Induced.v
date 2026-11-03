@@ -114,3 +114,16 @@ Definition induced_unit_nat_iso
 Proof. exists InducedUnitN. intros X. exact (ε (j X)).2. Defined.
 
 End Representatives.
+
+(** The induced inclusion is full and faithful, with identity preimages. *)
+
+(** 诱导嵌入全忠实，原像直接取原箭头。 *)
+
+Definition induced_inclusion_fully_faithful {C : Cat}
+    (O : Type) (j : O → @Ob C)
+  : is_fully_faithful (InducedInclusionF O j).
+Proof.
+  split.
+  - intros X Y f. exists f. reflexivity.
+  - intros X Y f g H. exact H.
+Defined.
