@@ -404,6 +404,64 @@ Proof. reflexivity. Qed.
 
 End HomCorrespondence.
 
+(** Taking opposites exchanges the adjoints. The forward hom map is the
+    original inverse correspondence; its naturality is already derived. *)
+
+(** 取反交换左右伴随；正向 Hom 映射为原来的逆对应，其自然性已经导出。 *)
+
+Definition OpAdjunction {C D : Cat}
+    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+  : G^opF ⊣ F^opF.
+Proof.
+  refine (AdjunctionFromHom (G^opF) (F^opF)
+    (λ X Y, unadjunct_resp A (X := Y) (Y := X))
+    (λ X Y, adjunct_resp A (X := Y) (Y := X)) _ _ _ _).
+  - intros X Y f. exact (@adjunction_η C D F G A Y X f).
+  - intros X Y g. exact (@adjunction_β C D F G A Y X g).
+  - intros X X' Y f h.
+    exact (@unadjunct_comp_l C D F G A Y X X' h f).
+  - intros X Y Y' k f.
+    exact (@unadjunct_comp_r C D F G A Y Y' X f k).
+Defined.
+
+(** The forward transpose of the opposite adjunction is the original
+    inverse transpose, including its computational arrow data. *)
+
+(** 反伴随的正向转置是原伴随的逆向转置，并保留可计算箭头数据。 *)
+
+Lemma adjunct_op {C D : Cat} {F : Functor C D} {G : Functor D C}
+    (A : F ⊣ G) {X Y} (f : Hom X (G Y))
+  : f^♯[OpAdjunction A] ≈ f^♭[A].
+Proof. reflexivity. Qed.
+
+(** The inverse transpose of the opposite adjunction is the original
+    forward transpose. *)
+
+(** 反伴随的逆向转置是原伴随的正向转置。 *)
+
+Lemma unadjunct_op {C D : Cat} {F : Functor C D} {G : Functor D C}
+    (A : F ⊣ G) {X Y} (f : Hom (F X) Y)
+  : f^♭[OpAdjunction A] ≈ f^♯[A].
+Proof. reflexivity. Qed.
+
+(** The opposite adjunction's unit is the original counit at each object. *)
+
+(** 反伴随的单位逐对象为原伴随的余单位。 *)
+
+Lemma adjunction_op_unit {C D : Cat} {F : Functor C D} {G : Functor D C}
+    (A : F ⊣ G) (Y : @Ob D)
+  : adjunction_unit (OpAdjunction A) Y ≈ adjunction_counit A Y.
+Proof. reflexivity. Qed.
+
+(** The opposite adjunction's counit is the original unit at each object. *)
+
+(** 反伴随的余单位逐对象为原伴随的单位。 *)
+
+Lemma adjunction_op_counit {C D : Cat} {F : Functor C D} {G : Functor D C}
+    (A : F ⊣ G) (X : @Ob C)
+  : adjunction_counit (OpAdjunction A) X ≈ adjunction_unit A X.
+Proof. reflexivity. Qed.
+
 (** The identity functor is adjoint to itself. *)
 
 (** 恒等函子自伴随。 *)
