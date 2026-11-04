@@ -137,7 +137,7 @@ Proof.
       - rewrite Hh21, Hh11. cato.
       - rewrite Hh22, Hh12. cato. }
     rewrite HQuEq1. cato.
-Qed.
+Defined.
 
 End Pullback.
 

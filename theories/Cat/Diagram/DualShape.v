@@ -1,7 +1,8 @@
 From Cats Require Export
   Cat.Diagram.Dual
   Cat.Diagram.Discrete
-  Cat.Diagram.Arrow.
+  Cat.Diagram.Arrow
+  Cat.Diagram.Span.
 From Cats Require Import
   Cat.Core
   Cat.Functor.Core
@@ -69,3 +70,14 @@ Definition ParallelCocone {C : Cat} {X Y Q : @Ob C} {f g : Hom X Y}
     (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
   : ⟨f ⇉ g⟩CoD ⇒∇ Q
   := DualCone (@ParallelCone (C^op) Y X Q f g q H).
+
+(** A commuting pair of maps out of a span is the dual of the original
+    cospan cone, retaining both leg maps. *)
+
+(** 从跨度出发的交换映射对就是原余跨度锥的对偶，保留两条腿的映射。 *)
+
+Definition SpanCocone {C : Cat} {X Y Z P : @Ob C}
+    {f : Hom Z X} {g : Hom Z Y} (i : Hom X P) (j : Hom Y P)
+    (H : i ∘ f ≈ j ∘ g)
+  : ⟨f ←→ g⟩D ⇒∇ P
+  := DualCone (@CospanCone (C^op) X Y Z P f g i j H).
