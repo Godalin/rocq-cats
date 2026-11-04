@@ -1,4 +1,7 @@
 From Cats Require Import Cat.Preorder.
+From Stdlib Require Import
+  Arith.PeanoNat
+  Lia.
 
 (** * A Computational Order on Natural Numbers
 
@@ -53,3 +56,28 @@ Program Instance NatLe_PreOrder
 
 Definition NatOrderCat
   := PreorderCat NatLe.
+
+(** Computational order implies the usual arithmetic inequality. *)
+
+(** 可计算顺序推出通常的算术不等式。 *)
+
+Lemma nat_le_to_le {n m : nat} (H : NatLe n m)
+  : n ≤ m.
+Proof.
+  revert m H. induction n; intros [|m] H; cbn in H; try lia.
+  - destruct H.
+  - specialize (IHn m H). lia.
+Qed.
+
+(** Recover a Type-valued order witness by recursion on the numbers.
+    The arithmetic proof is used only to eliminate an impossible case. *)
+
+(** 在自然数上递归恢复 Type 值顺序见证，算术证明只用于消去不可能的情形。 *)
+
+Definition nat_le_of_le {n m : nat} (H : n ≤ m)
+  : NatLe n m.
+Proof.
+  revert m H. induction n; intros [|m] H; cbn; try exact tt.
+  - exfalso. lia.
+  - apply IHn. lia.
+Defined.
