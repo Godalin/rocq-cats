@@ -1,3 +1,5 @@
+From Cats.Set Require Export
+  Pi.
 From Cats Require Import
   Cat.Core
   Instance.Set.Core.
@@ -5,41 +7,6 @@ From Cats Require Import
 (** * Dependent Sets and Coherent Families *)
 
 (** * 依赖集合与相干族 *)
-
-(** ** Raw Dependent Functions
-
-    This pointwise setoid does not require sections to respect equivalent
-    indices. Coherent families and their dependent sums are defined below. *)
-
-(** ** 原始依赖函数
-
-    此逐点广集不要求截面保留等价索引；相干族及其依赖和在下文定义。 *)
-
-Definition PiEq {X : SetC} {Y : X → SetC}
-  : crelation (∀ x : X, Y x)
-  := λ f g, ∀ x : X, f x ≈S g x.
-
-Infix "≈ΠS" := PiEq (at level 50).
-
-(** [PiEq] is an equivalence relation. *)
-
-(** [PiEq] 是等价关系。 *)
-
-Program Instance PiEq_Equivalence {X Y}
-  : Equivalence (@PiEq X Y).
-Next Obligation. intros f x. reflexivity. Qed.
-Next Obligation. intros f g H x. symmetry. auto. Qed.
-Next Obligation. intros f g h H1 H2 x. transitivity (g x); auto. Qed.
-
-(** Raw dependent functions form a setoid with pointwise fiber equality. *)
-
-(** 原始依赖函数按逐点纤维相等组成广集。 *)
-
-Program Canonical PiS (X : SetC) (Y : X → SetC)
-  :=
-  {|carrier := ∀ x : X, Y x
-  ; carrier_equiv := PiEq
-  |}.
 
 (** ** Coherent Families over Setoids
 
