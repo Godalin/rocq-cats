@@ -69,8 +69,14 @@ A category theory library for self study.
   The proved groupoid boundary is significant: two n-simplices are equal
   exactly when their first vertices are isomorphic. Thus all same-degree
   simplices of a one-object groupoid are equal in this construction.
-  A nerve retaining distinctions between group loops remains a separate
-  design task; ordinary nerve and Kan results are not asserted here.
+  The [monoid arrow-chain nerve](./theories/Instance/Set/Simplicial/Monoid.v)
+  now supplies this distinction for single-object categories: its n-simplices
+  are n-tuples with pointwise setoid equality, and restriction composes
+  consecutive arrow segments. The reusable
+  [segment subdivision theory](./theories/Algebra/Monoid/Chain.v) proves its
+  functor laws. Its [boolean model](./theories/Instance/Bool/Nerve.v) has
+  distinct identity and nontrivial loops, and proves that their images in the
+  diagram nerve become equal. General-category nerve and Kan theory remain open.
 
 ### ETCS
 

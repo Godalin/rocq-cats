@@ -1,7 +1,9 @@
 From Cats Require Import STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core
-  Instance.Set.Simplicial.Nerve.
+  Instance.Set.Simplicial.Nerve
+  Instance.Set.Simplicial.Monoid
+  Instance.Set.Lift.
 From Cats Require Import
   Cat.Groupoid.Core
   Cat.Groupoid.Functor
@@ -1616,3 +1618,35 @@ Definition high_eq_large_diagram_nerve
   : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
   := N≅(D).
 End NerveLevels.
+
+(** Native monoid nerves retain either ordering of carrier and equality
+    levels. Their diagram comparisons raise both sides explicitly, with
+    either ordering also permitted at the common ambient sizes. *)
+
+(** 原生幺半群 nerve 保留载体与相等层级的两种次序；图式比较显式提升两侧，
+    共同环境大小也允许两种次序。 *)
+
+Section MonoidNerveLevels.
+Universes u p c e.
+Constraint u < p.
+Constraint p < c.
+Constraint c < e.
+Context (M : SetC@{u p}) (N : SetC@{p u})
+    `{HM : !Monoid M} `{HN : !Monoid N}.
+
+Definition high_eq_monoid_nerve
+  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  := Nₘ(M).
+
+Definition low_eq_monoid_nerve
+  : Functor (Δ^op) SetCat@{p u _ _ _ _ _}
+  := Nₘ(N).
+
+Definition high_eq_monoid_comparison
+  : (LiftF ∘F Nₘ(M) : Functor (Δ^op) SetCat@{c e _ _ _ _ _}) ⇒ N≅(B(M))
+  := MonoidDiagramN.
+
+Definition low_eq_monoid_comparison
+  : (LiftF ∘F Nₘ(N) : Functor (Δ^op) SetCat@{e c _ _ _ _ _}) ⇒ N≅(B(N))
+  := MonoidDiagramN.
+End MonoidNerveLevels.

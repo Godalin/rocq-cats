@@ -10,6 +10,7 @@ From Cats Require Import
   Instance.Set.Fam.Section
   Instance.Set.CwF
   Instance.Bool.Action
+  Instance.Bool.Nerve
   Instance.Set.Simplicial.Nerve.
 
 Module CodeConversion.
@@ -121,4 +122,14 @@ Proof. reflexivity. Qed.
 Example nerve_identity_inverse_computes
   : ((lower (functor_id _ _ (N≅([Ord 1%nat]))
       ⟨@IdF [Ord 1%nat]⟩N)).2 fin_first).1 = tt.
+Proof. reflexivity. Qed.
+
+(** The equality of comparison images retains the nontrivial boolean
+    inverse component through chain products and the groupoid boundary. *)
+
+(** 比较像的相等经过箭头链段积与群胚边界后，仍保留非平凡布尔逆分量的计算。 *)
+
+Example monoid_nerve_comparison_inverse_computes
+  : ((lower bool_nerve_comparison_identifies_loops).2
+      (fin_next fin_first)).1 = true.
 Proof. reflexivity. Qed.
