@@ -235,3 +235,20 @@ Proof. split.
       transitivity (i (fmap F g)). apply func_proper. exact Hfg.
       exact (Hl g).
 Defined.
+
+(** Isomorphisms of source and target induce a native hom-setoid
+    isomorphism. This is the action of the existing Hom bifunctor. *)
+
+(** 源及目标的同构诱导原生 Hom 广集同构；这是已有 Hom 双函子的作用。 *)
+
+Definition hom_iso {C : Cat} {X X' Y Y' : @Ob C}
+    (i : X' ≅ X) (j : Y ≅ Y')
+  : HomSet X Y ≅[SetCat] HomSet X' Y'.
+Proof.
+  refine (bi_comp i.1 j.1; _).
+  apply (@functor_is_iso (C^op ×C C) SetCat HomF
+    (X, Y) (X', Y') (i.1, j.1)).
+  exists (i.2.1, j.2.1). split; split;
+    [exact (snd i.2.2) | exact (fst j.2.2) |
+     exact (fst i.2.2) | exact (snd j.2.2)].
+Defined.

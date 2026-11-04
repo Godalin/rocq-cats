@@ -362,3 +362,53 @@ Proof.
   rewrite <- (exponential_η f), <- (exponential_η g).
   apply exponential_curry_proper. exact H.
 Qed.
+
+(** Currying converts equations in either direction without new witnesses. *)
+
+(** 柯里化无需新见证即可双向转换等式。 *)
+
+Lemma exponential_curry_iff {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y Z : @Ob C}
+    (f : Hom (Z × X) Y) (g : Hom Z (Y ^ X))
+  : ƛ f ≈ g ↔ f ≈ uncurry g.
+Proof.
+  split; intros H.
+  - rewrite <- H, exponential_β. reflexivity.
+  - rewrite H, exponential_η. reflexivity.
+Qed.
+
+(** Equality of transposes is equivalent to equality of the original arrows. *)
+
+(** 转置相等当且仅当原箭头相等。 *)
+
+Lemma exponential_curry_eq_iff {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y Z : @Ob C}
+    (f g : Hom (Z × X) Y)
+  : ƛ f ≈ ƛ g ↔ f ≈ g.
+Proof.
+  split; intros H.
+  - rewrite <- (exponential_β f), <- (exponential_β g), H. reflexivity.
+  - rewrite H. reflexivity.
+Qed.
+
+(** Uncurrying is application to the two context projections. *)
+
+(** 反柯里化是在两个上下文投影上的应用。 *)
+
+Lemma exponential_uncurry_app {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y Z : @Ob C}
+    (f : Hom Z (Y ^ X))
+  : uncurry f ≈ app (f ∘ π1) π2.
+Proof. unfold uncurry, app. rewrite cross_η, comp_id_l. reflexivity. Qed.
+
+(** Uncurrying detects exactly the original hom equations. *)
+
+(** 反柯里化恰好检测原有 Hom 等式。 *)
+
+Lemma exponential_uncurry_eq_iff {C : Cat} `{HP : !HasProduct C}
+    `{HE : !HasExponential HP} {X Y Z : @Ob C}
+    (f g : Hom Z (Y ^ X))
+  : uncurry f ≈ uncurry g ↔ f ≈ g.
+Proof.
+  split; intros H; [apply exponential_ext; exact H | rewrite H; reflexivity].
+Qed.
