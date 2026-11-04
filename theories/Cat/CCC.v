@@ -23,17 +23,3 @@ Class CCC (C : Cat)
   ; hasProduct :: HasProduct C
   ; hasExponential :: HasExponential hasProduct
   }.
-
-Section CCC.
-Context {C : Cat} `{HCCC : !CCC C}.
-
-(** The product of the terminal object with an object is isomorphic to that
-    object. *)
-
-(** 终对象与任意对象的积同构于该对象。 *)
-
-Example idl {X}
-  : 1 × X ≅ X.
-Proof. apply term_prod_id_l. Qed.
-
-End CCC.

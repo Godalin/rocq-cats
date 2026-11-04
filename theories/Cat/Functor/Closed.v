@@ -1,6 +1,7 @@
 From Cats Require Export Cat.Functor.Cartesian.
 From Cats Require Import
   Cat.Core
+  Cat.Isomorphism
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
@@ -98,3 +99,67 @@ Next Obligation.
   exists id. split; unfold is_linv_of, is_rinv_of;
     [rewrite comp_id_l | rewrite comp_id_r]; exact H.
 Defined.
+
+(** ** Composition of Cartesian Closed Functors *)
+
+(** ** 笛卡尔闭函子的复合 *)
+
+Section ClosedFunctorComposition.
+Context {C D E : Cat} (F : Functor C D) (G : Functor D E)
+    (HC : CCC C) (HD : CCC D) (HE : CCC E)
+    (HF : IsCCCF F HC HD) (HG : IsCCCF G HD HE).
+Local Existing Instance HC.
+Local Existing Instance HD.
+Local Existing Instance HE.
+Local Existing Instance HF.
+Local Existing Instance HG.
+
+(** The canonical comparison of a composite is the composite of the
+    canonical comparisons, under specified hom equality. *)
+
+(** 复合函子的规范比较在指定 Hom 相等下为规范比较的复合。 *)
+
+Lemma functor_exponential_comparison_comp (X Y : @Ob C)
+  : functor_exponential_comparison (G ∘F F)
+      (HF := CompF_IsCartesianF F G) X Y ≈
+      functor_exponential_comparison G (F X) (F Y) ∘
+        fmap G (functor_exponential_comparison F X Y).
+Proof.
+  apply exponential_ext.
+  unfold functor_exponential_comparison at 1 2.
+  rewrite exponential_β, exponential_uncurry_comp_r, exponential_β,
+    functor_product_inv_comp.
+  change (fmap G (fmap F eval) ∘
+    (fmap G (functor_product_inv F ((Y ^ X)%ob) X) ∘
+      functor_product_inv G (F ((Y ^ X)%ob)) (F X)) ≈
+    (fmap G eval ∘ functor_product_inv G ((F Y ^ F X)%ob) (F X)) ∘
+      (fmap G (functor_exponential_comparison F X Y) × id)).
+  transitivity (fmap G (fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X) ∘
+    functor_product_inv G (F ((Y ^ X)%ob)) (F X)).
+  - rewrite functor_comp, comp_assoc. reflexivity.
+  - rewrite <- (functor_eval F X Y), functor_comp, !comp_assoc.
+    apply comp_proper; [reflexivity |].
+    pose proof (functor_product_inv_natural G
+      (functor_exponential_comparison F X Y)
+      (@Cats.Cat.Core.id D (F X))) as H.
+    rewrite functor_id in H. exact H.
+Qed.
+
+(** Chosen CCC-preservation proofs compose; no global instance is enabled. *)
+
+(** 选定的 CCC 保持证明可以复合，不启用全局实例。 *)
+
+Program Definition CompF_IsCCCF
+  : IsCCCF (G ∘F F) HC HE
+  :=
+  {|isCartesianF := CompF_IsCartesianF F G
+  |}.
+Next Obligation.
+  refine (is_iso_equiv (symmetry (functor_exponential_comparison_comp X Y)) _).
+  apply is_iso_comp.
+  - apply (@functor_is_iso D E G).
+    exact (@functor_exponential C D F HC HD HF X Y).
+  - exact (@functor_exponential D E G HD HE HG (F X) (F Y)).
+Defined.
+
+End ClosedFunctorComposition.
