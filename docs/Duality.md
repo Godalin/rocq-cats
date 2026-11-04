@@ -2,6 +2,13 @@
 
 # 对偶构造及其通常接口
 
+Concrete setoid models now instantiate the complete constructor layer,
+including coproducts, coequalizers, pushouts and indexed/diagram colimits.
+See [SetModels](./SetModels.md) for explicit choices and model universe bounds.
+
+具体广集模型现已实例化完整构造层，包括余积、余等化子、推出及指标／图式余极限。
+显式选择及模型宇宙界见 [SetModels](./SetModels.md)。
+
 ## One underlying construction
 
 ## 只保留一份底层构造

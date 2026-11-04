@@ -94,6 +94,101 @@ From Cats Require Import
 From Cats Require Import
   Instance.Set.Yoneda
   Instance.Set.Representable.
+From Cats Require Import
+  Instance.Set.Coproduct
+  Instance.Set.Coequalizer
+  Instance.Set.Equalizer
+  Instance.Set.Limit
+  Instance.Set.Colimit
+  Instance.Set.Pushout.
+
+(** Concrete setoid models retain independent levels where possible. The
+    chosen equalizers need [p ≤ u], while generated coequalizers need [u ≤ p].
+    These bounds belong to these models, not the abstract interfaces. *)
+
+(** 具体广集模型在可行时保持层级独立。选定等化子需要 [p ≤ u]，生成余等化子
+    需要 [u ≤ p]；这些界属于当前模型，而非抽象接口。 *)
+
+Section ConcreteSetModelLevels.
+Universes u p s.
+Constraint Set < u.
+Constraint u < p.
+Constraint p < s.
+
+Definition high_eq_set_coproducts
+  : HasCoproduct (SetCat@{u p _ _ _ _ _})
+  := SetCat_HasCoproduct.
+Definition low_eq_set_coproducts
+  : HasCoproduct (SetCat@{p u _ _ _ _ _})
+  := SetCat_HasCoproduct.
+
+Definition high_eq_set_finite_products (n : nat)
+  : HasLimitsOfShape (SetCat@{u p _ _ _ _ _}) (DiscreteCat (Fin n))
+  := SetCat_FiniteProductLimits n.
+Definition low_eq_set_finite_products (n : nat)
+  : HasLimitsOfShape (SetCat@{p u _ _ _ _ _}) (DiscreteCat (Fin n))
+  := SetCat_FiniteProductLimits n.
+Definition high_eq_set_finite_coproducts (n : nat)
+  : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) (DiscreteCat (Fin n))
+  := SetCat_FiniteCoproductColimits n.
+Definition low_eq_set_finite_coproducts (n : nat)
+  : HasColimitsOfShape (SetCat@{p u _ _ _ _ _}) (DiscreteCat (Fin n))
+  := SetCat_FiniteCoproductColimits n.
+
+Definition high_eq_set_pushouts
+  : HasPushout (SetCat@{u p _ _ _ _ _})
+  := SetCat_HasPushout.
+Definition low_eq_set_equalizers
+  : HasEqualizer (SetCat@{p u _ _ _ _ _})
+  := SetCat_HasEqualizer.
+
+Fail Definition incompatible_set_coequalizers
+  : HasCoequalizer (SetCat@{p u _ _ _ _ _})
+  := SetCat_HasCoequalizer.
+Fail Definition incompatible_set_equalizers
+  : HasEqualizer (SetCat@{u p _ _ _ _ _})
+  := SetCat_HasEqualizer.
+
+Context (J : Cat@{u u s _ _}) (G : Graph@{u u s}).
+
+(** Large relation witnesses in the shape do not enlarge the indexing
+    carrier required by either model. *)
+
+(** 形状中的大关系见证不会增大两种模型所需的索引载体。 *)
+
+Definition high_eq_set_diagram_colimits
+  : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) J
+  := SetCat_HasColimitsOfShape J.
+Definition low_eq_set_diagram_limits
+  : HasLimitsOfShape (SetCat@{p u _ _ _ _ _}) J
+  := SetCat_HasLimitsOfShape J.
+Definition high_eq_set_graph_colimits
+  : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) (FreeCat G)
+  := SetCat_GraphColimits G.
+Definition low_eq_set_graph_limits
+  : HasLimitsOfShape (SetCat@{p u _ _ _ _ _}) (FreeCat G)
+  := SetCat_GraphLimits G.
+
+Context (K : Cat@{s s s _ _}) (HK : HasFiniteHomCover K)
+    (HG : HasFiniteGenerators K).
+
+(** Finite covers and generators bypass the larger raw shape carriers. *)
+
+(** 有限覆盖及生成元允许绕过形状原始载体的更大层级。 *)
+
+Definition high_eq_set_finite_colimits
+  : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) K
+  := @SetCat_FiniteColimits K HK.
+Definition low_eq_set_finite_limits
+  : HasLimitsOfShape (SetCat@{p u _ _ _ _ _}) K
+  := @SetCat_FiniteLimits K HK.
+Definition high_eq_set_generated_colimits
+  : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) K
+  := @SetCat_GeneratedColimits K HG.
+Definition low_eq_set_generated_limits
+  : HasLimitsOfShape (SetCat@{p u _ _ _ _ _}) K
+  := @SetCat_GeneratedLimits K HG.
+End ConcreteSetModelLevels.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
 

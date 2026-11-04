@@ -23,6 +23,11 @@ A category theory library for self study.
   in the representing object and the set-valued functor
   [see here](./theories/Instance/Set/Yoneda.v).
 
+- Explicit setoid models cover binary/indexed products and coproducts,
+  equalizers/coequalizers, pullbacks/pushouts and finite, finitely generated,
+  graph-generated and size-bounded general diagram limits/colimits.
+  See [the models and their universe bounds](./docs/SetModels.md).
+
 ### ETCS
 
 This project aims at building ETCS.

@@ -4,6 +4,32 @@ From Cats Require Import
   Cat.Pullback
   Cat.Morphism
   ETCS.Sub.
+From Cats Require Import
+  Instance.Set.Core
+  Cat.Coproduct.Core
+  Cat.Coequalizer
+  Cat.Equalizer
+  Cat.Pushout
+  Instance.Set.Limit
+  Instance.Set.Colimit
+  Instance.Set.Pushout.
+
+(** Importing concrete models alone must not silently choose structures. *)
+
+(** 仅导入具体模型不得隐式选择结构。 *)
+
+Fail Definition unchosen_set_coproducts
+  : HasCoproduct SetCat
+  := ltac:(typeclasses eauto).
+Fail Definition unchosen_set_coequalizers
+  : HasCoequalizer SetCat
+  := ltac:(typeclasses eauto).
+Fail Definition unchosen_set_equalizers
+  : HasEqualizer SetCat
+  := ltac:(typeclasses eauto).
+Fail Definition unchosen_set_pushouts
+  : HasPushout SetCat
+  := ltac:(typeclasses eauto).
 
 Section Pullback.
 Context {C : Cat} `{HP : !HasPullback C}.
