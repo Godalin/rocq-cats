@@ -228,9 +228,126 @@ All selected structures remain opt-in.
 不要求往返后选定记录相等，也不从 `C` 的有限极限推出其有限余极限。
 所有选定结构仍须显式启用。
 
-## Validation and remaining work
+## Indexed coproducts and general colimit constructors
 
-## 验证与后续工作
+## 指标余积与一般余极限构造
+
+[Coproduct.Indexed](../theories/Cat/Coproduct/Indexed.v) uses the existing
+`HasColimit C (DiscreteF D)` as its chosen structure. Write `∐[D]` for the
+object, `ι∐[D] i` for an injection and `∐⟨κ⟩` for copairing. The β/η,
+respectfulness, composition and arrow-extensionality laws reuse colimit laws.
+`IndexedCoproductOpProduct` reads a single coproduct as an opposite indexed
+product, retaining its apex definitionally. Discrete self-duality and the
+identity-component comparison of discrete diagrams only adapt its diagram.
+
+[Coproduct.Indexed](../theories/Cat/Coproduct/Indexed.v) 使用已有
+`HasColimit C (DiscreteF D)` 作为选定结构。对象记为 `∐[D]`，注入记为
+`ι∐[D] i`，余配对记为 `∐⟨κ⟩`；β/η、保相等性、复合及箭头外延律复用余极限定律。
+`IndexedCoproductOpProduct` 将单个余积读作反指标积，定义上保留顶点；
+离散自对偶及离散图式的恒等分量比较只负责适配其图式。
+
+[Coproduct.Finite](../theories/Cat/Coproduct/Finite.v) exposes the original
+recursive opposite finite product, including its injections and copairing;
+the empty family uses the selected initial object.
+[Coproduct.Sigma](../theories/Cat/Coproduct/Sigma.v) reads the original nested
+sigma-product construction as a coproduct over a dependent sum of indices.
+[Coproduct.Transport](../theories/Cat/Coproduct/Transport.v) inherits change
+of injections, isomorphisms of summands and detection of arrow equality from
+the original product transport theory. The foundational module is now
+[Coproduct.Core](../theories/Cat/Coproduct/Core.v).
+
+[Coproduct.Finite](../theories/Cat/Coproduct/Finite.v) 提供原递归反有限积的
+通常接口，包括注入及余配对；空族使用选定始对象。
+[Coproduct.Sigma](../theories/Cat/Coproduct/Sigma.v) 将原嵌套依赖和积构造
+读作依赖和索引上的余积。
+[Coproduct.Transport](../theories/Cat/Coproduct/Transport.v) 从原积运输理论
+继承注入替换、加数同构及箭头相等检测。基础模块现为
+[Coproduct.Core](../theories/Cat/Coproduct/Core.v)。
+
+[Colimit.Construction](../theories/Cat/Colimit/Construction.v) requires only
+two particular coproducts for an individual diagram, plus coequalizers:
+the coproduct over its objects and the coproduct over the sources of its
+arrows. For an arrow `f : i → j`, the two maps send its source summand by
+the injection at `i` or by `D(f)` followed by the injection at `j`.
+Their coequalizer is the original product/equalizer limit in the opposite
+category. Ordinary constraint maps, candidate cocones and their colimit
+property are wrappers of the original constraint maps, cones and theorem.
+The uniform version asks for choices over those two discrete index types.
+
+[Colimit.Construction](../theories/Cat/Colimit/Construction.v) 对单个图式
+仅要求两个特定余积及余等化子：对象余积与箭头源对象余积。对箭头
+`f : i → j`，两条映射分别用 `i` 处注入，或用 `D(f)` 后接 `j` 处注入。
+其余等化子就是反范畴中的原积／等化子极限；通常约束映射、候选余锥及其余极限
+性质均包装原约束映射、锥与定理。一致版本要求为这两个离散索引类型选择余积。
+
+Internally, source summands are indexed by `ArrowOb (J^op)`; its `arrow_cod`
+is the source in `J`. This reverses dependent endpoint data directly, without
+an equality of arrow records or an additional quotient. Likewise,
+[Colimit.Graph.Core](../theories/Cat/Colimit/Graph/Core.v) indexes coproducts
+only by vertices and reversed generators, using `OpFreeF` to transfer the
+original graph limit to the opposite free shape.
+
+内部以 `ArrowOb (J^op)` 索引源加数，其中的 `arrow_cod` 就是 `J` 中的源。
+这样直接反转依赖端点数据，不要求箭头记录相等，也不构造额外的商。
+同样，[Colimit.Graph.Core](../theories/Cat/Colimit/Graph/Core.v) 只按顶点
+与反向生成边索引余积，用 `OpFreeF` 将原图极限传递到反自由形状。
+
+## Finite shapes, transport and reindexing
+
+## 有限形状、运输与重索引
+
+[Graph.Opposite](../theories/Graph/Opposite.v) defines `G^opG`, path reversal
+`p^opP` and reading back `p^unopP`, with respectful round trips by specified
+path equality. [Free](../theories/Cat/Free.v) supplies the full, essentially
+surjective comparison of `FreeCat (G^opG)` and `(FreeCat G)^op`, in both
+directions. No equality of graph or category records is required.
+
+[Graph.Opposite](../theories/Graph/Opposite.v) 定义 `G^opG`、路径反转
+`p^opP` 与读回 `p^unopP`，并按指定路径相等给出保相等往返律。
+[Free](../theories/Cat/Free.v) 提供 `FreeCat (G^opG)` 与
+`(FreeCat G)^op` 之间双向满且本质满的比较，不要求图或范畴记录相等。
+
+[Shape.Finite](../theories/Cat/Shape/Finite.v) reverses finite hom covers
+and finite generating graphs through `OpFiniteHomCover` and
+`OpFiniteGenerators`. [Colimit.Finite](../theories/Cat/Colimit/Finite.v)
+then wraps the original opposite `FiniteLimits` and `GeneratedLimits`.
+Both initial+coproducts+coequalizers and initial+pushouts supply colimits
+for finite **and finitely generated** shapes.
+[Colimit.Graph.Finite](../theories/Cat/Colimit/Graph/Finite.v) supplies the
+finite-free-graph interface and coproducts over its total generator index.
+Cycles and additional path equations remain allowed; finite generation
+does not assert a finite hom cover or a finite presentation.
+
+[Shape.Finite](../theories/Cat/Shape/Finite.v) 通过 `OpFiniteHomCover` 与
+`OpFiniteGenerators` 反转有限 Hom 覆盖及有限生成图。
+[Colimit.Finite](../theories/Cat/Colimit/Finite.v) 据此包装原反
+`FiniteLimits` 与 `GeneratedLimits`。始对象＋余积＋余等化子和始对象＋推出
+两套基础都给出有限及**有限生成**形状的余极限。
+[Colimit.Graph.Finite](../theories/Cat/Colimit/Graph/Finite.v) 提供有限自由图
+接口及其总生成边索引上的余积。仍允许环与额外路径方程；有限生成不声称具有
+有限 Hom 覆盖或有限展示。
+
+[Colimit.Transport](../theories/Cat/Colimit/Transport.v) uses original limit
+transport for equal cocones and invertible diagram transformations.
+[Colimit.Reindex](../theories/Cat/Colimit/Reindex.v) transfers colimits along
+full, essentially surjective shape functors, with selected structures in both
+directions. Detection alone requires essential surjectivity.
+[Diagram.Reindex](../theories/Cat/Diagram/Reindex.v) exposes `κ ∘∇F Q` and
+`ExtendCocone`, respectfulness and pointwise round trips through the original
+opposite cone operations. Composition comparisons use natural isomorphisms,
+not equality of functor records.
+
+[Colimit.Transport](../theories/Cat/Colimit/Transport.v) 通过原极限运输
+处理相等余锥及可逆图式变换。
+[Colimit.Reindex](../theories/Cat/Colimit/Reindex.v) 沿满且本质满的形状函子
+传递余极限，选定结构提供双向转换；仅检测余极限时只需本质满。
+[Diagram.Reindex](../theories/Cat/Diagram/Reindex.v) 通过原反锥操作提供
+`κ ∘∇F Q`、`ExtendCocone`、保相等性及逐点往返律；复合比较使用自然同构，
+不要求函子记录相等。
+
+## Validation and scope
+
+## 验证与范围
 
 Equalities use the designated setoid relations. Witnesses remain Type-valued
 and computational maps transparent. The existing five permanent checks in
@@ -275,9 +392,27 @@ adapter.
 相等见证检查推出中介，并直接验证它就是原拉回中介；
 通过共用形状适配得到的选定跨度余极限中介也能归约到预期坐标。
 
-General finite/generated-shape colimit constructors and indexed coproduct
-interfaces remain future work. They should wrap the original opposite
-finite-limit and indexed-product theories rather than duplicate their proofs.
+The completed constructor layer passes the same full local build, test and
+install targets. Eight additional permanent universe checks cover both size
+orderings for finite/generated, general-diagram, graph-generated and reindexed
+colimits. Seventy-six temporary assumption checks have no additional assumptions.
+Temporary computations include finite/indexed copairing, general and graph
+colimit mediators, a cyclic generating graph whose edge changes raw setoid
+representatives, path reversal, and preservation of a selected indexed apex.
+Dependent-index coproducts, transported colimits and reindexed colimits also
+reduce to the expected injection/mediator composites.
 
-一般有限／有限生成形状的余极限构造及指标余积接口仍为后续工作，
-应包装反范畴中的原有限极限及指标积理论，而不重复其证明。
+补齐后的构造层通过同一工具链的完整本地构建、测试及安装目标。另有八项永久
+宇宙检查，覆盖有限／有限生成、一般图式、图生成及重索引余极限的两种大小排列。
+76 项临时公理检查均无额外假设。临时计算包括有限／指标余配对、一般与图生成
+余极限中介、边会改变原始广集代表的含环生成图、路径反转及选定指标顶点的保留。
+依赖和索引余积、运输后及重索引后的余极限也能将注入／中介复合归约到预期结果。
+
+This completes the named, indexed, finite/generated and product/equalizer-based
+duality milestone in issue #22. It does not assert that finite limits of a
+category give its finite colimits. General Kan extensions and unrelated
+categorical structures require separately scoped developments.
+
+至此完成 #22 中命名构造、指标构造、有限／有限生成及积／等化子构造的对偶里程碑。
+这不声称一个范畴的有限极限给出其有限余极限；一般 Kan 扩张及其他范畴结构仍需
+独立界定开发范围。

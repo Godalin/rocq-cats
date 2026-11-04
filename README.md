@@ -99,7 +99,16 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   `X ⊔[f,g] Y`, `ιpo1[f,g]`, `ιpo2[f,g]` and `po⟨i,j,H⟩`.
   The [finite-colimit bases](./theories/Cat/Colimit/Finite.v) convert between
   initial objects with pushouts and initial objects with coproducts and
-  coequalizers;
+  coequalizers, and construct colimits of finite or finitely generated shapes.
+  [Indexed coproducts](./theories/Cat/Coproduct/Indexed.v) use `∐[D]`,
+  `ι∐[D]` and `∐⟨κ⟩`, with
+  [finite](./theories/Cat/Coproduct/Finite.v) and
+  [dependent-index](./theories/Cat/Coproduct/Sigma.v) constructions.
+  [General diagram colimits](./theories/Cat/Colimit/Construction.v) and
+  [generator-based colimits](./theories/Cat/Colimit/Graph/Core.v) reuse the
+  opposite product/equalizer theory. Colimits also support
+  [transport](./theories/Cat/Colimit/Transport.v) and
+  [shape reindexing](./theories/Cat/Colimit/Reindex.v);
   see the [duality guide](./docs/Duality.md).
   [CatCat](./theories/Cat/CatCat.v) provides the category of categories with
   this morphism equivalence. Write `C ≃C D` for an equivalence with chosen

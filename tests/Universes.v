@@ -35,7 +35,11 @@ From Cats Require Import
   Cat.Colimit.Coequalizer
   Cat.Pushout
   Cat.Colimit.Pushout
-  Cat.Colimit.Finite.
+  Cat.Colimit.Finite
+  Cat.Colimit.Construction
+  Cat.Colimit.Graph.Finite
+  Cat.Colimit.Reindex
+  Cat.Colimit.Transport.
 From Cats Require Import
   Graph.Morphism
   Graph.Path
@@ -521,6 +525,23 @@ Definition high_eq_restricted_limit (HL : HasLimit C K)
 Definition low_eq_restricted_limit (HL : HasLimit D K')
   : HasLimit D (K' ∘F Q)
   := @RestrictedLimit I J D Q HF HQ K' HL.
+(** Both directions of colimit shape transfer retain the target's independent
+    hom/equality levels. *)
+
+(** 余极限形状传递的两个方向保留目标独立的 Hom／相等层级。 *)
+
+Definition high_eq_colimit_shape_transfer
+    (HC : HasColimit C K) (HR : HasColimit C (K ∘F Q))
+  : HasColimit C K ∧ HasColimit C (K ∘F Q)
+  := (@ReindexedColimit I J C Q HF HQ K HR,
+      @RestrictedColimit I J C Q HF HQ K HC).
+
+Definition low_eq_colimit_shape_transfer
+    (HC : HasColimit D K') (HR : HasColimit D (K' ∘F Q))
+  : HasColimit D K' ∧ HasColimit D (K' ∘F Q)
+  := (@ReindexedColimit I J D Q HF HQ K' HR,
+      @RestrictedColimit I J D Q HF HQ K' HC).
+
 End ReindexedLimitLevels.
 
 (** Finite covers do not identify the shape's object, hom or equality levels
@@ -575,6 +596,28 @@ Definition high_eq_pullback_finite_limits
 Definition low_eq_pullback_finite_limits
   : HasLimitsOfShape D K
   := PullbackFiniteLimits.
+(** Opposite finite witnesses and both bases supply colimits without
+    identifying shape or target universes. *)
+
+(** 反有限见证与两套基础给出余极限，而不合并形状或目标宇宙。 *)
+
+Context `{HIC : !HasInitial C} `{HID : !HasInitial D}.
+Context `{HCC : !HasCoproduct C} `{HCD : !HasCoproduct D}.
+Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
+Context `{HPCo : !HasPushout C} `{HPDo : !HasPushout D}.
+
+Definition high_eq_constructed_finite_colimits
+  : HasColimitsOfShape C J ∧ HasColimitsOfShape C J ∧
+      HasColimitsOfShape C J ∧ HasColimitsOfShape C J
+  := (GeneratedColimits,
+      (FiniteColimits, (PushoutFiniteColimits, PushoutGeneratedColimits))).
+
+Definition low_eq_constructed_finite_colimits
+  : HasColimitsOfShape D K ∧ HasColimitsOfShape D K ∧
+      HasColimitsOfShape D K ∧ HasColimitsOfShape D K
+  := (GeneratedColimits,
+      (FiniteColimits, (PushoutFiniteColimits, PushoutGeneratedColimits))).
+
 End FiniteShapeLevels.
 
 (** Graph edges retain independent carrier and equality levels. Paths must
@@ -641,7 +684,27 @@ Definition high_eq_sigma_edge_products
   := @SigmaProductLimits C (@Vertex G) (λ x, ∃ y : @Vertex G, Edge x y) HOC HFC.
 Definition low_eq_sigma_edge_products
   := @SigmaProductLimits D (@Vertex G) (λ x, ∃ y : @Vertex G, Edge x y) HOD HFD.
+(** Opposite graph colimits need only vertex and generator-source coproducts,
+    while preserving either ordering of target hom and equality levels. *)
+
+(** 反图余极限仅需顶点与生成边源对象余积，并保持目标 Hom 与相等的两种大小顺序。 *)
+
+Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
+Context `{HCO : !HasColimitsOfShape C (DiscreteCat (@Vertex G))}.
+Context `{HCG : !HasColimitsOfShape C (DiscreteCat (GraphEdges (G^opG)))}.
+Context `{HDO : !HasColimitsOfShape D (DiscreteCat (@Vertex G))}.
+Context `{HDG : !HasColimitsOfShape D (DiscreteCat (GraphEdges (G^opG)))}.
+
+Definition high_eq_graph_colimits
+  : HasColimitsOfShape C (FreeCat G)
+  := GraphCoproductsCoequalizerColimits.
+
+Definition low_eq_graph_colimits
+  : HasColimitsOfShape D (FreeCat G)
+  := GraphCoproductsCoequalizerColimits.
+
 End GraphLevels.
+
 
 (** Shape comparisons and their diagonal adjunctions must work in either
     ordering of the target category's native hom and equality levels. *)
@@ -742,6 +805,25 @@ Definition high_eq_product_equalizer_limit (K : Functor J C)
   := ProductsEqualizerLimit K.
 Definition low_eq_product_equalizer_limit (K : Functor J D)
   := ProductsEqualizerLimit K.
+(** The dual constructor needs only its two discrete coproduct choices;
+    these large indices do not constrain the target hom/equality order. *)
+
+(** 对偶构造仅需两个离散余积选择；这些大索引不约束目标 Hom／相等的大小顺序。 *)
+
+Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
+Context `{HCO : !HasColimitsOfShape C (DiscreteCat (@Ob J))}.
+Context `{HCA : !HasColimitsOfShape C (DiscreteCat (ArrowOb (J^op)))}.
+Context `{HDO : !HasColimitsOfShape D (DiscreteCat (@Ob J))}.
+Context `{HDA : !HasColimitsOfShape D (DiscreteCat (ArrowOb (J^op)))}.
+
+Definition high_eq_coproduct_coequalizer_colimits
+  : HasColimitsOfShape C J
+  := IndexedCoproductsCoequalizerColimits.
+
+Definition low_eq_coproduct_coequalizer_colimits
+  : HasColimitsOfShape D J
+  := IndexedCoproductsCoequalizerColimits.
+
 End ProductEqualizerConstructionLevels.
 
 (** Small index categories do not identify the target category's native

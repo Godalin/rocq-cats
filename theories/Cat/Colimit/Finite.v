@@ -6,6 +6,9 @@ From Cats Require Import
   Cat.Pushout
   Cat.Pullback
   Cat.Limit.Finite.
+From Cats Require Import
+  Cat.Functor.Core
+  Cat.Colimit.Core.
 
 (** * Two Bases for Finite Colimits *)
 
@@ -119,3 +122,68 @@ Proof.
       as [HT HP].
     exact (HI, {|hasOpPullback := HP|}).
 Defined.
+
+(** Finite generators suffice for all colimits of the shape. Reverse their
+    graph and use the original opposite generated-limit structure. *)
+
+(** 有限生成元足以给出该形状的全部余极限；反转生成图后使用原反范畴生成极限。 *)
+
+Program Definition GeneratedColimits {C J : Cat}
+    `{HI : !HasInitial C} `{HC : !HasCoproduct C}
+    `{HE : !HasCoequalizer C} `{HJ : !HasFiniteGenerators J}
+  : HasColimitsOfShape C J
+  :=
+  {|hasOpLimits := @GeneratedLimits (C^op) (@hasOpTerminal C HI)
+      (@hasOpProduct C HC) (@hasOpEqualizer C HE) (J^op)
+      (@OpFiniteGenerators J HJ)
+  |}.
+
+(** Finite object and hom covers give colimits with the original opposite
+    finite-limit constructor. Both size levels remain explicit in the shape. *)
+
+(** 有限对象与 Hom 覆盖通过原反范畴有限极限构造给出余极限；形状保留两个大小层级。 *)
+
+Program Definition FiniteColimits {C J : Cat}
+    `{HI : !HasInitial C} `{HC : !HasCoproduct C}
+    `{HE : !HasCoequalizer C} `{HJ : !HasFiniteHomCover J}
+  : HasColimitsOfShape C J
+  :=
+  {|hasOpLimits := @FiniteLimits (C^op) (@hasOpTerminal C HI)
+      (@hasOpProduct C HC) (@hasOpEqualizer C HE) (J^op)
+      (@OpFiniteHomCover J HJ)
+  |}.
+
+(** Choose one finite-shape colimit, inheriting its mediator and functor laws. *)
+
+(** 选择单个有限形状余极限，继承其中介及函子定律。 *)
+
+Definition FiniteColimit {C J : Cat}
+    `{HI : !HasInitial C} `{HC : !HasCoproduct C}
+    `{HE : !HasCoequalizer C} `{HJ : !HasFiniteHomCover J}
+    (D : Functor J C)
+  : HasColimit C D
+  := @hasColimit J C (@FiniteColimits C J HI HC HE HJ) D.
+
+(** Initial objects and pushouts give all finite-shape colimits through
+    the existing conversion of finite bases. *)
+
+(** 始对象与推出通过已有有限基础转换给出全部有限形状余极限。 *)
+
+Definition PushoutFiniteColimits {C J : Cat}
+    `{HI : !HasInitial C} `{HP : !HasPushout C}
+    `{HJ : !HasFiniteHomCover J}
+  : HasColimitsOfShape C J
+  := @FiniteColimits C J HI (@PushoutCoproduct C HI HP)
+      (@PushoutCoequalizer C HI HP) HJ.
+
+(** Initial objects and pushouts also suffice for finitely generated shapes,
+    even when cycles generate infinitely many arrows. *)
+
+(** 始对象与推出也足以处理有限生成形状，即使环生成无限多条箭头。 *)
+
+Definition PushoutGeneratedColimits {C J : Cat}
+    `{HI : !HasInitial C} `{HP : !HasPushout C}
+    `{HJ : !HasFiniteGenerators J}
+  : HasColimitsOfShape C J
+  := @GeneratedColimits C J HI (@PushoutCoproduct C HI HP)
+      (@PushoutCoequalizer C HI HP) HJ.
