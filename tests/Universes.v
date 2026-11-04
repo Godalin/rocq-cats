@@ -1,6 +1,7 @@
 From Cats Require Import STLC.Free.
 From Cats Require Import
-  Cat.Shape.Simplex.Core.
+  Cat.Shape.Simplex.Core
+  Instance.Set.Simplicial.Standard.
 From Cats Require Import
   Cat.Groupoid.Core
   Cat.Groupoid.Functor
@@ -1549,3 +1550,31 @@ End ActionSliceLevels.
 Definition small_simplex_category
   : Cat@{Set Set Set Set Set}
   := SimplexCat.
+
+(** Standard simplices and their Yoneda correspondence admit either ordering
+    of the carrier and equality levels of the simplicial set's values. *)
+
+(** 标准单形及其 Yoneda 对应允许单纯集合值的载体与相等层级采用任一大小次序。 *)
+
+Section SimplicialLevels.
+Universes u p.
+Constraint u < p.
+Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (Y : Functor (Δ^op) SetCat@{p u _ _ _ _ _}).
+
+Definition high_eq_standard_simplex (n : nat)
+  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  := Δ[n].
+
+Definition low_eq_standard_simplex (n : nat)
+  : Functor (Δ^op) SetCat@{p u _ _ _ _ _}
+  := Δ[n].
+
+Definition high_eq_simplex_yoneda (n : nat)
+  : LiftS (Nat_SetS Δ[n] X) ≅[SetCat] LiftS (X n)
+  := simplex_element_iso n.
+
+Definition low_eq_simplex_yoneda (n : nat)
+  : LiftS (Nat_SetS Δ[n] Y) ≅[SetCat] LiftS (Y n)
+  := simplex_element_iso n.
+End SimplicialLevels.

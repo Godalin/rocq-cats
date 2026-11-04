@@ -53,6 +53,14 @@ A category theory library for self study.
   equality of its arrows is equivalent to pointwise equality of positions.
   [Cofaces and codegeneracies](./theories/Cat/Shape/Simplex/Operators.v) use
   bounded finite indices and satisfy the simplicial identities.
+  [Simplicial setoids](./theories/Instance/Set/Simplicial/Core.v) reuse the
+  presheaf category; their
+  [faces and degeneracies](./theories/Instance/Set/Simplicial/Operators.v)
+  inherit these identities by restriction.
+  [Standard simplices](./theories/Instance/Set/Simplicial/Standard.v) form a
+  fully faithful Yoneda embedding, with maps from the standard n-simplex
+  corresponding naturally to n-simplices. Explicit universe lifts keep small
+  simplex operators compatible with larger setoid values.
 
 ### ETCS
 

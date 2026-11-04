@@ -9,7 +9,8 @@ From Cats Require Import
 From Cats Require Import
   Instance.Set.Fam.Section
   Instance.Set.CwF
-  Instance.Bool.Action.
+  Instance.Bool.Action
+  Instance.Set.Simplicial.Standard.
 
 Module CodeConversion.
 
@@ -87,4 +88,16 @@ Proof. reflexivity. Qed.
 
 Example simplex_inverse_comparison_computes
   : ((codegeneracy_coface_id (n := 0%nat) fin_first).2 fin_first).1 = tt.
+Proof. reflexivity. Qed.
+
+(** Yoneda reconstruction through a standard simplex and a coface retains
+    the concrete finite-position computation, including the size wrappers. *)
+
+(** 经由标准单形和余面的 Yoneda 重构保留具体有限位置计算，包括大小包装。 *)
+
+Example simplex_yoneda_reconstruction_computes
+  : fin_rank (lower
+      (⟦simplex_generic 1%nat⟧Δ[Δ[1%nat]; 1%nat] 0%nat
+        {|lower := δ[0%nat; fin_first]
+        |}) fin_first) = 1%nat.
 Proof. reflexivity. Qed.
