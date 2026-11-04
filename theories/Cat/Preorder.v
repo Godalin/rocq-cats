@@ -43,6 +43,18 @@ Next Obligation. repeat intro; exact tt. Defined.
 Next Obligation. exact tt. Defined.
 Next Obligation. exact tt. Defined.
 
+(** Forget symmetry to view an equivalence relation as a preorder. *)
+
+(** 忘去对称性，将等价关系视为预序。 *)
+
+Program Definition equivalence_preorder {X : Type} (R : crelation X)
+    `{HR : !Equivalence R}
+  : PreOrder R
+  :=
+  {|PreOrder_Reflexive := Equivalence_Reflexive
+  ; PreOrder_Transitive := Equivalence_Transitive
+  |}.
+
 (** Pull a preorder back along an ordinary function. *)
 
 (** 沿普通函数拉回预序。 *)

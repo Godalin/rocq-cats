@@ -1,4 +1,7 @@
 From Cats Require Export Cat.Preorder.
+From Cats Require Import
+  Cat.Groupoid.Core
+  Cat.Groupoid.Preorder.
 
 (** * The Walking Arrow and Commuting Square *)
 
@@ -97,3 +100,11 @@ Definition IsoShape
 Definition walking_iso
   : false ≅[IsoShape] true
   := codiscrete_iso false true.
+
+(** The walking isomorphism has an explicitly enabled groupoid structure. *)
+
+(** 步行同构形状具有显式启用的群胚结构。 *)
+
+Definition IsoShape_IsGroupoid
+  : IsoShape ⦂ Gpd
+  := CodiscreteCat_IsGroupoid bool.

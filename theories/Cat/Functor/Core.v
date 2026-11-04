@@ -77,6 +77,21 @@ Proof.
     [rewrite (fst Hf.2) | rewrite (snd Hf.2)]; apply functor_id.
 Defined.
 
+(** A fully faithful functor reflects invertibility. Fullness supplies an
+    inverse preimage, and faithfulness reflects its two inverse equations. *)
+
+(** 全忠实函子反映可逆性：满性提供逆的原像，忠实性反映两条互逆方程。 *)
+
+Definition functor_reflects_iso {C D : Cat} (F : Functor C D)
+    (HF : is_fully_faithful F) {X Y : @Ob C} (f : Hom X Y)
+    (Hf : is_iso (fmap F f))
+  : is_iso f.
+Proof.
+  destruct (fst HF Y X Hf.1) as [g Hg].
+  exists g. split; apply (snd HF); rewrite functor_comp, Hg, functor_id;
+    [exact (fst Hf.2) | exact (snd Hf.2)].
+Defined.
+
 
 
 (** ** Identity Functor *)

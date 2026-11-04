@@ -1,4 +1,8 @@
 From Cats Require Import STLC.Free.
+From Cats Require Import
+  Cat.Groupoid.Core
+  Cat.Groupoid.Functor
+  Instance.Set.Groupoid.
 
 From Cats Require Import
   Cat.Core
@@ -1370,3 +1374,62 @@ Definition separated_stlc_free_extension
         ∀ b, η (ty_base b) ≈ (β b).1) α.1
   := type_interpretation_universal F I β.
 End STLCInterpretationLevels.
+
+(** Groupoid inverses, opposition, products and functor categories preserve
+    either ordering of hom carriers and equality witnesses. *)
+
+(** 群胚取逆、反范畴、积与函子范畴保持 Hom 载体与相等见证的两种大小排列。 *)
+
+Section GroupoidLevels.
+Universes o h p l.
+Constraint h < p.
+Constraint p < l.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l})
+    (HC : IsGroupoid C) (HD : IsGroupoid D).
+Local Existing Instance HC.
+Local Existing Instance HD.
+
+Definition high_eq_groupoid_inverse {X Y : @Ob C} (f : Hom X Y)
+  : Hom Y X
+  := f⁻¹.
+
+Definition low_eq_groupoid_inverse_functor
+  : Functor (D^op) D
+  := InvF D.
+
+Definition high_eq_opposite_groupoid
+  : C^op ⦂ Gpd
+  := op_IsGroupoid C.
+
+Definition mixed_groupoid_product
+  : (C ×C D) ⦂ Gpd
+  := ProdCat_IsGroupoid C D.
+
+Definition low_eq_functor_groupoid
+  : Fct C D ⦂ Gpd
+  := Fct_IsGroupoid C D.
+End GroupoidLevels.
+
+(** Setoid elements and their equality witnesses remain independent in the
+    equality groupoid; its equality between parallel arrows is small. *)
+
+(** 相等群胚保持广集元素与其相等见证的大小独立，平行箭头间的相等使用小类型。 *)
+
+Section EqualityGroupoidLevels.
+Universes u p l.
+Constraint u < p.
+Constraint p < l.
+Context (X : SetC@{u p}) (Y : SetC@{p u}).
+
+Definition high_witness_equality_groupoid
+  : Cat@{u p Set l l}
+  := EqGpd X.
+
+Definition low_witness_equality_groupoid
+  : Cat@{p u Set l l}
+  := EqGpd Y.
+
+Definition separated_equality_groupoid_structure
+  : high_witness_equality_groupoid ⦂ Gpd
+  := EqGpd_IsGroupoid X.
+End EqualityGroupoidLevels.

@@ -8,6 +8,21 @@ From Cats Require Export
 Section IsomorphismEquations.
 Context {C : Cat}.
 
+(** A left inverse and a right inverse of the same arrow are equal.
+    In particular, two inverse choices agree without comparing their laws. *)
+
+(** 同一箭头的左逆与右逆相等；特别地，两个逆的选择一致，无需比较定律见证。 *)
+
+Lemma inverse_unique {X Y : @Ob C} (f : Hom X Y) (g h : Hom Y X)
+    (Hg : is_linv_of f g) (Hh : is_rinv_of f h)
+  : g ≈ h.
+Proof.
+  unfold is_linv_of, is_rinv_of in *.
+  transitivity (g ∘ (f ∘ h)).
+  - rewrite Hh, comp_id_r. reflexivity.
+  - rewrite <- comp_assoc, Hg, comp_id_l. reflexivity.
+Qed.
+
 (** Equal arrows share an inverse without comparing inverse witnesses. *)
 
 (** 相等箭头共用同一个逆，不比较逆的见证。 *)

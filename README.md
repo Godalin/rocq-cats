@@ -32,6 +32,12 @@ A category theory library for self study.
   isomorphisms and their naturality, limit preservation, cartesian closed functor
   composition, internal hom equations and native hom-setoid correspondences.
 
+- [Groupoids](./theories/Cat/Groupoid/Core.v) extend existing categories by
+  invertibility of every arrow. Inverse coherence is derived from uniqueness;
+  [functor and equivalence laws](./theories/Cat/Groupoid/Functor.v) and the
+  [thin equality groupoid of a setoid](./theories/Instance/Set/Groupoid.v)
+  retain specified equality and independent carrier/witness universes.
+
 ### ETCS
 
 This project aims at building ETCS.
