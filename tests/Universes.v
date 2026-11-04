@@ -4,6 +4,11 @@ From Cats Require Import
   Cat.Groupoid.Functor
   Instance.Set.Groupoid.
 From Cats Require Import
+  Cat.Slice.Core
+  Instance.Set.Fam.Fixed
+  Instance.Set.Fam.Groupoid
+  Instance.Set.Fam.GroupoidSlice.
+From Cats Require Import
   Algebra.Group.Category
   Algebra.Monoid.Action.
 
@@ -1486,3 +1491,50 @@ Definition low_eq_endomorphism_group
   := EndGroup (HC := low_eq_group_category_structure)
       low_eq_group_category tt.
 End GroupDeloopingLevels.
+
+(** Family-action equivalence allows base carrier and equality levels above
+    both fiber levels, in either ordering. Auxiliary law bounds remain large. *)
+
+(** 族与作用的等价允许基底载体及相等层级高于两个纤维层级，并允许各自大小
+    次序互换；定律上界保持在更大的辅助宇宙中。 *)
+
+Section FamilyActionLevels.
+Universes u p b e l.
+Constraint u < p.
+Constraint p < b.
+Constraint b < e.
+Constraint e < l.
+Context (X : SetC@{b e}) (Y : SetC@{e b}).
+
+Definition high_eq_family_action_equivalence
+  : FamSCat X ≃C Fct (EqGpd X) SetCat@{u p _ l _ _ _}
+  := fam_action_equiv X.
+
+Definition low_eq_family_action_equivalence
+  : FamSCat X ≃C Fct (EqGpd X) SetCat@{p u _ l _ _ _}
+  := fam_action_equiv X.
+
+Definition reversed_base_family_action_equivalence
+  : FamSCat Y ≃C Fct (EqGpd Y) SetCat@{u p _ l _ _ _}
+  := fam_action_equiv Y.
+
+Definition reversed_base_low_eq_family_action_equivalence
+  : FamSCat Y ≃C Fct (EqGpd Y) SetCat@{p u _ l _ _ _}
+  := fam_action_equiv Y.
+End FamilyActionLevels.
+
+(** The action-slice specialization retains the family-slice size bound,
+    while admitting a strictly smaller base-equality universe. *)
+
+(** 作用与切片的特化保留族与切片的大小条件，并允许基底相等宇宙严格较小。 *)
+
+Section ActionSliceLevels.
+Universes u p.
+Constraint p < u.
+Context (X : SetC@{u p}).
+
+Definition distinct_action_slice_equivalence
+  : Fct (EqGpd X) SetCat@{u p _ _ _ _ _} ≃C
+      (SetCat@{u p _ _ _ _ _} /C X)
+  := action_slice_equiv X.
+End ActionSliceLevels.

@@ -42,6 +42,11 @@ A category theory library for self study.
   The [boolean xor group and its action](./theories/Instance/Bool/Action.v)
   provide a non-thin example whose nonidentity loop swaps boolean elements;
   its regular action reuses the covariant Hom functor.
+  [Coherent families are equivalent to equality-groupoid actions](./theories/Instance/Set/Fam/Groupoid.v),
+  with reindexing corresponding to precomposition. Composing this comparison
+  with Family-Slice gives an
+  [equivalence between actions and slices](./theories/Instance/Set/Fam/GroupoidSlice.v)
+  under the existing Family-Slice size bound.
 
 ### ETCS
 
