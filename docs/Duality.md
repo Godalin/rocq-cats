@@ -113,7 +113,7 @@ assumption is only that the specified source cocone is colimiting.
 ## 命名构造及其形状
 
 [Terminal](../theories/Cat/Terminal.v),
-[Coproduct](../theories/Cat/Coproduct.v) and
+[Coproduct](../theories/Cat/Coproduct/Core.v) and
 [Coequalizer](../theories/Cat/Coequalizer.v) expose `HasInitial`,
 `HasCoproduct` and `HasCoequalizer`. Each contains just the selected terminal,
 product or equalizer structure on `C^op`. Their candidate `is_*` properties
@@ -122,7 +122,7 @@ are the original properties on `C^op`. Ordinary maps `¡`, `ι1`, `ι2`,
 Objects are written `0`, `X ⊔ Y` and `Coeq[f,g]`.
 
 [Terminal](../theories/Cat/Terminal.v)、
-[Coproduct](../theories/Cat/Coproduct.v) 与
+[Coproduct](../theories/Cat/Coproduct/Core.v) 与
 [Coequalizer](../theories/Cat/Coequalizer.v) 提供 `HasInitial`、
 `HasCoproduct` 与 `HasCoequalizer`，各自仅包含 `C^op` 上选定的终对象、积或
 等化子结构；候选 `is_*` 性质就是 `C^op` 上的原性质。通常映射 `¡`、`ι1`、

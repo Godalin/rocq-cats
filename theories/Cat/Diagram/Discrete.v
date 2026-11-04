@@ -32,6 +32,20 @@ Definition DiscreteF {C : Cat} {V : Type} (D : V → @Ob C)
   : Functor (DiscreteCat V) C
   := FreeF (DiscreteGraphMap D).
 
+(** Every discrete diagram is naturally isomorphic to the canonical diagram
+    on its object family. The comparison has identity components. *)
+
+(** 每个离散图式都自然同构于其对象族的规范图式；比较的分量为恒等。 *)
+
+Definition discrete_functor_nat_iso {C : Cat} {I : Type}
+    (D : Functor (DiscreteCat I) C)
+  : DiscreteF (λ i, D i) ≅N D.
+Proof.
+  exists (@FreeN (DiscreteGraph I) C (DiscreteF (λ i, D i)) D
+    (λ _, id) (λ x y e, match e with end)).
+  intros i. exists id. split; apply comp_id_l.
+Defined.
+
 (** An arbitrary family of legs gives a cone on a discrete diagram. *)
 
 (** 任意锥腿族给出离散图式上的锥。 *)

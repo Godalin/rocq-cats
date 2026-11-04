@@ -2,7 +2,7 @@ From Cats Require Import
   Cat.Core
   Cat.Functor.Core
   Cat.Natural
-  Cat.Coproduct
+  Cat.Coproduct.Core
   Cat.Adjunction
   Cat.Diagram.Dual
   Cat.Colimit.Core

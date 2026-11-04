@@ -3,10 +3,23 @@ From Cats Require Export
   Cat.Diagram.Discrete
   Cat.Diagram.Arrow
   Cat.Diagram.Span.
+
 From Cats Require Import
   Cat.Core
   Cat.Functor.Core
   Cat.Natural.
+
+(** A family of outgoing legs on a discrete diagram needs no generating
+    naturality equations. *)
+
+(** 离散图式上的出发锥腿族不需要生成边自然性方程。 *)
+
+Definition DiscreteCocone {C : Cat} {I : Type}
+    {D : Functor (DiscreteCat I) C} {X : @Ob C}
+    (κ : ∀ i, Hom (D i) X)
+  : D ⇒∇ X
+  := CoconeOfN (@FreeN (DiscreteGraph I) C D
+      (ConstF (DiscreteCat I) X) κ (λ x y e, match e with end)).
 
 (** * Ordinary Diagrams for Dual Universal Constructions *)
 

@@ -28,7 +28,7 @@ From Cats Require Import
   Cat.Colimit.Adjunction
   Cat.Colimit.Preservation.
 From Cats Require Import
-  Cat.Coproduct
+  Cat.Coproduct.Core
   Cat.Coequalizer
   Cat.Colimit.Initial
   Cat.Colimit.Coproduct

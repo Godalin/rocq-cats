@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
   Cat.Terminal
-  Cat.Coproduct
+  Cat.Coproduct.Core
   Cat.Coequalizer
   Cat.Pushout
   Cat.Pullback
