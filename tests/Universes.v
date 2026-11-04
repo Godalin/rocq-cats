@@ -32,7 +32,10 @@ From Cats Require Import
   Cat.Coequalizer
   Cat.Colimit.Initial
   Cat.Colimit.Coproduct
-  Cat.Colimit.Coequalizer.
+  Cat.Colimit.Coequalizer
+  Cat.Pushout
+  Cat.Colimit.Pushout
+  Cat.Colimit.Finite.
 From Cats Require Import
   Graph.Morphism
   Graph.Path
@@ -391,35 +394,61 @@ Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 
 Definition high_eq_named_colimits
     (HI : HasInitial C) (HP : HasCoproduct C) (HE : HasCoequalizer C)
+    (HQ : HasPushout C)
   : HasColimitsOfShape C (EmptyShape^op) ∧
       HasColimitsOfShape C (PairShape^op) ∧
-      HasColimitsOfShape C (ParallelShape^op)
+      HasColimitsOfShape C (ParallelShape^op) ∧
+      HasColimitsOfShape C SpanShape
   := (@InitialColimits C HI,
-      (@CoproductColimits C HP, @CoequalizerColimits C HE)).
+      (@CoproductColimits C HP,
+        (@CoequalizerColimits C HE, @PushoutColimits C HQ))).
 
 Definition low_eq_named_colimits
     (HI : HasInitial D) (HP : HasCoproduct D) (HE : HasCoequalizer D)
+    (HQ : HasPushout D)
   : HasColimitsOfShape D (EmptyShape^op) ∧
       HasColimitsOfShape D (PairShape^op) ∧
-      HasColimitsOfShape D (ParallelShape^op)
+      HasColimitsOfShape D (ParallelShape^op) ∧
+      HasColimitsOfShape D SpanShape
   := (@InitialColimits D HI,
-      (@CoproductColimits D HP, @CoequalizerColimits D HE)).
+      (@CoproductColimits D HP,
+        (@CoequalizerColimits D HE, @PushoutColimits D HQ))).
 
 Definition high_eq_named_colimits_recovery
     (HI : HasColimitsOfShape C (EmptyShape^op))
     (HP : HasColimitsOfShape C (PairShape^op))
     (HE : HasColimitsOfShape C (ParallelShape^op))
-  : HasInitial C ∧ HasCoproduct C ∧ HasCoequalizer C
+    (HQ : HasColimitsOfShape C SpanShape)
+  : HasInitial C ∧ HasCoproduct C ∧ HasCoequalizer C ∧ HasPushout C
   := (@EmptyColimitsInitial C HI,
-      (@PairColimitsCoproduct C HP, @ParallelColimitsCoequalizer C HE)).
+      (@PairColimitsCoproduct C HP,
+        (@ParallelColimitsCoequalizer C HE, @SpanColimitsPushout C HQ))).
 
 Definition low_eq_named_colimits_recovery
     (HI : HasColimitsOfShape D (EmptyShape^op))
     (HP : HasColimitsOfShape D (PairShape^op))
     (HE : HasColimitsOfShape D (ParallelShape^op))
-  : HasInitial D ∧ HasCoproduct D ∧ HasCoequalizer D
+    (HQ : HasColimitsOfShape D SpanShape)
+  : HasInitial D ∧ HasCoproduct D ∧ HasCoequalizer D ∧ HasPushout D
   := (@EmptyColimitsInitial D HI,
-      (@PairColimitsCoproduct D HP, @ParallelColimitsCoequalizer D HE)).
+      (@PairColimitsCoproduct D HP,
+        (@ParallelColimitsCoequalizer D HE, @SpanColimitsPushout D HQ))).
+
+(** Both finite-colimit basis conversions retain independent hom/equality
+    levels, in either size ordering. *)
+
+(** 两种有限余极限基础的双向转换保持 Hom／相等层级独立，兼容两种大小顺序。 *)
+
+Definition high_eq_finite_colimit_bases
+  : (HasInitial C ∧ HasPushout C)
+      ↔ (HasInitial C ∧ HasCoproduct C ∧ HasCoequalizer C)
+  := finite_colimit_bases C.
+
+Definition low_eq_finite_colimit_bases
+  : (HasInitial D ∧ HasPushout D)
+      ↔ (HasInitial D ∧ HasCoproduct D ∧ HasCoequalizer D)
+  := finite_colimit_bases D.
+
 End NamedColimitLevels.
 
 (** Shape changes may reverse the shape hom/equality ordering and lower its

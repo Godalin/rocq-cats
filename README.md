@@ -90,11 +90,16 @@ Rocq toolchain. The local VS Code build task uses this same environment.
   [diagonal adjunctions](./theories/Cat/Colimit/Adjunction.v) and
   [left-adjoint preservation](./theories/Cat/Colimit/Preservation.v);
   [initial objects](./theories/Cat/Colimit/Initial.v),
-  [coproducts](./theories/Cat/Colimit/Coproduct.v) and
-  [coequalizers](./theories/Cat/Colimit/Coequalizer.v) have corresponding
+  [coproducts](./theories/Cat/Colimit/Coproduct.v),
+  [coequalizers](./theories/Cat/Colimit/Coequalizer.v) and
+  [pushouts](./theories/Cat/Colimit/Pushout.v) have corresponding
   colimit characterizations and explicit conversions of chosen structures.
   Write `X ⊔ Y`, `⦗f,g⦘`, `Coeq[f,g]` and `πcoeq[f,g]` for the ordinary
-  interfaces to opposite products and equalizers;
+  interfaces to opposite products and equalizers. Pushouts use
+  `X ⊔[f,g] Y`, `ιpo1[f,g]`, `ιpo2[f,g]` and `po⟨i,j,H⟩`.
+  The [finite-colimit bases](./theories/Cat/Colimit/Finite.v) convert between
+  initial objects with pushouts and initial objects with coproducts and
+  coequalizers;
   see the [duality guide](./docs/Duality.md).
   [CatCat](./theories/Cat/CatCat.v) provides the category of categories with
   this morphism equivalence. Write `C ≃C D` for an equivalence with chosen

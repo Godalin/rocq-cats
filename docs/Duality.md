@@ -144,6 +144,7 @@ named field `hasOpTerminal`; importing it still makes no model choice.
 | Initial / 始对象 | `EmptyShape^op` | [`initial_iff_empty_colimit`](../theories/Cat/Colimit/Initial.v) |
 | Binary coproduct / 二元余积 | `PairShape^op` | [`coproduct_iff_colimit`](../theories/Cat/Colimit/Coproduct.v) |
 | Coequalizer / 余等化子 | `ParallelShape^op` | [`coequalizer_iff_colimit`](../theories/Cat/Colimit/Coequalizer.v) |
+| Pushout / 推出 | `SpanShape` | [`pushout_iff_colimit`](../theories/Cat/Colimit/Pushout.v) |
 
 The opposite of a discrete pair is still discrete. In the opposite parallel
 shape, the arrows run from `true` to `false`, so the coequalizer projection
@@ -174,6 +175,59 @@ likewise applies original right-adjoint preservation to `OpAdjunction`.
 转换也经过同一重索引理论，不声称往返后的选定记录相等。左伴随保持性同样将
 原右伴随保持定理用于 `OpAdjunction`。
 
+## Pushouts and finite-colimit bases
+
+## 推出与有限余极限基础
+
+[Pushout](../theories/Cat/Pushout.v) stores only
+`hasOpPullback : HasPullback (C^op)`. The ordinary object `X ⊔[f,g] Y`,
+injections `ιpo1[f,g]`, `ιpo2[f,g]` and mediator `po⟨i,j,H⟩` are the original
+opposite pullback data. Its universal property, β/η, respectfulness, witness
+independence, uniqueness and square pasting reuse the original theorems.
+Pullback uniqueness is transparent so that its inherited isomorphism arrows
+remain computational.
+
+[Pushout](../theories/Cat/Pushout.v) 只存储
+`hasOpPullback : HasPullback (C^op)`。通常对象 `X ⊔[f,g] Y`、注入
+`ιpo1[f,g]`、`ιpo2[f,g]` 及中介 `po⟨i,j,H⟩` 就是原反范畴拉回数据。
+泛性质、β/η、保相等性、见证独立性、唯一性及方形粘合均复用原定理。
+拉回唯一性保持透明，使继承的同构箭头仍可计算。
+
+[Colimit.Pushout](../theories/Cat/Colimit/Pushout.v) characterizes arbitrary
+span cocones, converts chosen pushouts and span colimits in both directions,
+and exposes left-adjoint preservation. `SpanShape` is `CospanShape^op`;
+`SpanCocone i j H` uses the shared `DualCone` adapter. These constructions
+reuse the same shape-reindexing bridge as the other named colimits.
+
+[Colimit.Pushout](../theories/Cat/Colimit/Pushout.v) 刻画任意跨度余锥，
+双向转换选定推出与跨度余极限，并提供左伴随保持性。
+`SpanShape` 就是 `CospanShape^op`；`SpanCocone i j H` 使用共用的
+`DualCone` 适配，构造复用其他命名余极限的同一形状重索引桥梁。
+
+[Colimit.Finite](../theories/Cat/Colimit/Finite.v) reads the original
+finite-limit constructions in the opposite category:
+
+[Colimit.Finite](../theories/Cat/Colimit/Finite.v) 在反范畴中读取原有限极限构造：
+
+- Coproducts and coequalizers give pushouts (`CoproductCoequalizerPushout`).
+- Initial objects and pushouts give coproducts (`PushoutCoproduct`).
+- Coproducts and pushouts give coequalizers (`CoproductPushoutCoequalizer`),
+  hence initial objects and pushouts suffice (`PushoutCoequalizer`).
+
+- 余积与余等化子给出推出（`CoproductCoequalizerPushout`）。
+- 始对象与推出给出余积（`PushoutCoproduct`）。
+- 余积与推出给出余等化子（`CoproductPushoutCoequalizer`），
+  因而始对象与推出已经足够（`PushoutCoequalizer`）。
+
+`finite_colimit_bases` converts these two bases in both directions, retaining
+the supplied initial structure. It asserts neither equality of selected
+records after round trips nor finite colimits from finite limits of `C`.
+All selected structures remain opt-in.
+
+`finite_colimit_bases` 双向转换这两套基础，保留给定始对象结构；
+不要求往返后选定记录相等，也不从 `C` 的有限极限推出其有限余极限。
+所有选定结构仍须显式启用。
+
 ## Validation and remaining work
 
 ## 验证与后续工作
@@ -183,13 +237,15 @@ and computational maps transparent. The existing five permanent checks in
 [Universes](../tests/Universes.v) cover independent hom/equality levels,
 larger shapes and mixed-category preservation. Four additional permanent
 checks cover the named structure/shape conversions in both directions and
-both hom/equality orderings. Concrete computations and assumption audits
-remain temporary.
+both hom/equality orderings, now including pushouts. Two checks cover the
+finite-colimit basis conversions in the same orderings. Concrete computations
+and assumption audits remain temporary.
 
 相等使用指定广集关系，见证保留在 Type 中，计算映射保持透明。
 [Universes](../tests/Universes.v) 中已有五项永久检查覆盖独立 Hom／相等层级、
 更大的形状及混合范畴保持性；另外四项永久检查覆盖命名结构／形状的双向转换
-及两种 Hom／相等大小排列。具体计算与公理审计仍作为临时检查。
+及两种 Hom／相等大小排列，现也包含推出；两项检查覆盖相同排列下的有限余极限
+基础转换。具体计算与公理审计仍作为临时检查。
 
 The named initial/coproduct/coequalizer modules have been checked locally
 with Rocq 9.0.1, OCaml 5.3.0 and Nix Dune 3.23.1. Full build, test and install
@@ -206,9 +262,22 @@ Nix Dune 3.23.1 下完成本地检查；完整构建、测试及安装目标通�
 其中一对具有不同原始输出的平行箭头按指定广集相等被余等化，其余锥与余极限
 中介均可直接归约；底层数据的直接同一性检查也确认余配对及余等化子分解就是原映射。
 
-Named pushout interfaces and finite-colimit constructions remain future
-work. They should wrap original pullback and finite-limit constructions on
-opposite categories.
+The pushout and finite-basis additions pass the same full local build, test
+and install targets. Twenty-four temporary assumption checks have no additional
+assumptions. Temporary computations check pushout mediators with distinct
+setoid representatives and extra Type-valued equality witnesses, plus direct
+identity with the original pullback mediator. The selected span-colimit
+mediator also reduces to the expected coordinates through the shared shape
+adapter.
 
-命名推出接口及有限余极限构造仍为后续工作；
-它们应包装反范畴中原来的拉回及有限极限构造。
+推出与有限基础增补也通过同一工具链的完整本地构建、测试及安装目标；
+24 项临时公理检查均无额外假设。临时计算使用不同广集代表及额外 Type 值
+相等见证检查推出中介，并直接验证它就是原拉回中介；
+通过共用形状适配得到的选定跨度余极限中介也能归约到预期坐标。
+
+General finite/generated-shape colimit constructors and indexed coproduct
+interfaces remain future work. They should wrap the original opposite
+finite-limit and indexed-product theories rather than duplicate their proofs.
+
+一般有限／有限生成形状的余极限构造及指标余积接口仍为后续工作，
+应包装反范畴中的原有限极限及指标积理论，而不重复其证明。
