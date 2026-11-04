@@ -5,6 +5,8 @@ From Cats Require Import
   Cat.Product.Core
   Cat.Exponential.Core.
 From Cats Require Import
+  Cat.Exponential.Currying.
+From Cats Require Import
   Instance.Set.Core
   Instance.Set.Adjunction.
 
@@ -47,3 +49,42 @@ Definition exponential_hom_nat_iso@{u p +} (X : @Ob C)
   := adjunction_hom_nat_iso (ProductExponentialAdjunction X).
 
 End ExponentialHom.
+
+(** Flattening as a respectful map of native hom-setoids. *)
+
+(** 展平作为原生 Hom 广集的保相等映射。 *)
+
+Program Definition exponential_flatten_resp {C : Cat}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP}
+    {A B Y Z : @Ob C}
+  : HomSet Z ((Y ^ A) ^ B) →r HomSet Z (Y ^ (A × B))
+  :=
+  {|func := exponential_flatten
+  |}.
+
+(** Expanding as a respectful map of native hom-setoids. *)
+
+(** 展开作为原生 Hom 广集的保相等映射。 *)
+
+Program Definition exponential_expand_resp {C : Cat}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP}
+    {A B Y Z : @Ob C}
+  : HomSet Z (Y ^ (A × B)) →r HomSet Z ((Y ^ A) ^ B)
+  :=
+  {|func := exponential_expand
+  |}.
+
+(** The iterated exponential identity acts as an isomorphism on each
+    native hom-setoid. Its context naturality is [exponential_flatten_comp]. *)
+
+(** 迭代指数恒等在每个原生 Hom 广集上作为同构作用，其上下文自然性为
+    [exponential_flatten_comp]。 *)
+
+Definition exponential_iterated_hom_iso {C : Cat}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP}
+    (A B Y Z : @Ob C)
+  : HomSet Z ((Y ^ A) ^ B) ≅[SetCat] HomSet Z (Y ^ (A × B)).
+Proof.
+  exists exponential_flatten_resp, exponential_expand_resp. split;
+    intros f; [apply exponential_flatten_β | apply exponential_flatten_η].
+Defined.
