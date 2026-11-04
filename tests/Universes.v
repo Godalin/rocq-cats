@@ -3,6 +3,9 @@ From Cats Require Import
   Cat.Groupoid.Core
   Cat.Groupoid.Functor
   Instance.Set.Groupoid.
+From Cats Require Import
+  Algebra.Group.Category
+  Algebra.Monoid.Action.
 
 From Cats Require Import
   Cat.Core
@@ -1433,3 +1436,53 @@ Definition separated_equality_groupoid_structure
   : high_witness_equality_groupoid ⦂ Gpd
   := EqGpd_IsGroupoid X.
 End EqualityGroupoidLevels.
+
+(** Delooping and the regular action preserve independent carrier and
+    equality-witness sizes, in both orders. Law bounds are auxiliary. *)
+
+(** 单对象群胚与正则作用保持载体与相等见证两种次序下的大小独立，定律上界
+    使用辅助宇宙。 *)
+
+Section GroupDeloopingLevels.
+Universes u p l.
+Constraint u < p.
+Constraint p < l.
+Context (X : SetC@{u p}) (Y : SetC@{p u})
+    (GX : Group@{u p l} X) (GY : Group@{p u l} Y).
+Local Existing Instance GX.
+Local Existing Instance GY.
+
+Definition high_eq_group_category
+  : Cat@{Set u p l l}
+  := B(X).
+
+Definition low_eq_group_category
+  : Cat@{Set p u l l}
+  := B(Y).
+
+Definition high_eq_group_category_structure
+  : high_eq_group_category ⦂ Gpd
+  := MonoidCat_IsGroupoid X.
+
+Definition low_eq_group_category_structure
+  : low_eq_group_category ⦂ Gpd
+  := MonoidCat_IsGroupoid Y.
+
+Definition high_eq_regular_action
+  : Functor high_eq_group_category SetCat@{u p _ _ _ _ _}
+  := RegularActionF X.
+
+Definition low_eq_regular_action
+  : Functor low_eq_group_category SetCat@{p u _ _ _ _ _}
+  := RegularActionF Y.
+
+Definition high_eq_endomorphism_group
+  : Group X
+  := EndGroup (HC := high_eq_group_category_structure)
+      high_eq_group_category tt.
+
+Definition low_eq_endomorphism_group
+  : Group Y
+  := EndGroup (HC := low_eq_group_category_structure)
+      low_eq_group_category tt.
+End GroupDeloopingLevels.

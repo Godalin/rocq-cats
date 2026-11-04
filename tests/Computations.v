@@ -7,7 +7,8 @@ From Cats Require Import
   Instance.Set.Fam.Core.
 From Cats Require Import
   Instance.Set.Fam.Section
-  Instance.Set.CwF.
+  Instance.Set.CwF
+  Instance.Bool.Action.
 
 Module CodeConversion.
 
@@ -60,3 +61,12 @@ Example composition_conversion_computes
 Proof. reflexivity. Qed.
 
 End CodeConversion.
+
+(** Extracting an action inverse through the generic groupoid and functor
+    constructions must retain the concrete boolean computation. *)
+
+(** 通过通用群胚与函子构造提取作用的逆时，须保留具体布尔计算行为。 *)
+
+Example boolean_action_inverse_computes
+  : bool_action_loop_iso.1 false = true.
+Proof. reflexivity. Qed.

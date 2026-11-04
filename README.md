@@ -37,6 +37,11 @@ A category theory library for self study.
   [functor and equivalence laws](./theories/Cat/Groupoid/Functor.v) and the
   [thin equality groupoid of a setoid](./theories/Instance/Set/Groupoid.v)
   retain specified equality and independent carrier/witness universes.
+  [Setoid groups](./theories/Algebra/Group/Core.v) give
+  [single-object groupoids](./theories/Algebra/Group/Category.v).
+  The [boolean xor group and its action](./theories/Instance/Bool/Action.v)
+  provide a non-thin example whose nonidentity loop swaps boolean elements;
+  its regular action reuses the covariant Hom functor.
 
 ### ETCS
 
@@ -61,6 +66,9 @@ Rocq toolchain. The local VS Code build task uses this same environment.
 
 ## Repository layout
 
+- [Algebra](./theories/Algebra/): setoid monoids and groups, their single-object
+  categorical interpretations, endomorphism structures, and regular actions.
+  The algebraic core modules depend on foundational sets, not categories.
 - [Set](./theories/Set/): foundational sets with designated Type-valued equality.
   [Core](./theories/Set/Core.v) defines `SetC`;
   [Morphism](./theories/Set/Morphism.v) defines respectful maps and function sets.
