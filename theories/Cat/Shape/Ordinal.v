@@ -3,7 +3,8 @@ From Cats Require Export Cat.Preorder.
 From Cats Require Import Instance.Nat.Order.
 From Cats Require Import
   Cat.Functor.Core
-  Cat.Natural.
+  Cat.Natural
+  Cat.Terminal.
 From Stdlib Require Import
   Arith.PeanoNat
   Lia.
@@ -31,6 +32,21 @@ Notation "'[Ord' n ']'" := (OrdinalShape n) : cat_scope.
 Definition ordinal_from_first {n : nat} (i : Ordinal n)
   : (@Hom (OrdinalShape n)) fin_first i
   := tt.
+
+(** The least ordinal position is initial; its universal arrows are the
+    already specified arrows from the first position. *)
+
+(** 序数的最小位置是始对象，其泛箭头沿用从首位置出发的既有箭头。 *)
+
+Definition ordinal_first_initial (n : nat)
+  : @is_initial [Ord n] fin_first.
+Proof.
+  intros i. exists (ordinal_from_first i).
+  refine {|this := I
+          ; that := _
+          |}.
+  intros f H. exact tt.
+Defined.
 
 (** Construct a finite-ordinal functor from a rank-monotone map. Arithmetic
     inequalities are converted back to computational Type-valued arrows. *)

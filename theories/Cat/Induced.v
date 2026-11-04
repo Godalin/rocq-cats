@@ -27,9 +27,10 @@ Next Obligation. apply comp_id_r. Qed.
 Next Obligation. apply comp_id_l. Qed.
 Next Obligation. apply comp_assoc. Qed.
 
-(** The inclusion acts identically on every hom-set. *)
+(** The inclusion acts identically on every hom-set. Its laws remain
+    transparent when equality contains computational inverse data. *)
 
-(** 嵌入在每个 Hom 广集上恒等作用。 *)
+(** 嵌入在每个 Hom 广集上恒等作用；相等包含可计算逆数据时，其定律仍保持透明。 *)
 
 Program Definition InducedInclusionF {C : Cat} (O : Type) (j : O → @Ob C)
   : Functor (InducedCat O j) C
@@ -37,9 +38,9 @@ Program Definition InducedInclusionF {C : Cat} (O : Type) (j : O → @Ob C)
   {|F0 := j
   ; F1 X Y f := f
   |}.
-Next Obligation. intros f g H. exact H. Qed.
-Next Obligation. reflexivity. Qed.
-Next Obligation. reflexivity. Qed.
+Next Obligation. intros f g H. exact H. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
 
 (** * Representatives for an Induced Category *)
 

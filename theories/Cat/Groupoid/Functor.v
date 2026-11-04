@@ -2,8 +2,10 @@ From Cats Require Export
   Cat.Groupoid.Core.
 From Cats Require Import
   Cat.CatCat
+  Cat.Diagram.Initial
   Cat.Functor.Core
-  Cat.Natural.
+  Cat.Natural
+  Cat.Terminal.
 
 (** * Functors and Groupoids *)
 
@@ -104,3 +106,18 @@ Definition equivalence_IsGroupoid {C D : Cat} (e : C ≃C D)
     `{HC : !IsGroupoid C}
   : D ⦂ Gpd
   := retract_IsGroupoid e.2.1 e.1 (snd e.2.2).
+
+(** A diagram in a groupoid with an initial source position is naturally
+    isomorphic to the constant diagram at that position. Its components
+    are images of the universal arrows, so their inverses are constructive. *)
+
+(** 定义域有始位置的群胚值图式自然同构于该位置处的常图式。比较分量是泛箭头
+    的像，因而其逆可构造。 *)
+
+Definition groupoid_initial_diagram_iso {J C : Cat}
+    `{HC : !IsGroupoid C} {j : @Ob J}
+    (Hj : is_initial j) (F : Functor J C)
+  : ConstF J (F j) ≅N F.
+Proof.
+  exists (InitialCone Hj F). intros k. apply groupoid_iso.
+Defined.
