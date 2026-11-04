@@ -220,6 +220,29 @@ Next Obligation. exact (@functor_comp C D F Z Y X g f). Qed.
 
 Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
 
+(** Taking opposites preserves chosen arrow preimages. *)
+
+(** 取反保留选定的箭头原像。 *)
+
+Definition functor_op_full {C D : Cat} {F : Functor C D}
+    (HF : is_full F)
+  : is_full (F^opF)
+  := λ X Y f, HF Y X f.
+
+(** Inverting the representative isomorphism gives essential surjectivity
+    in the opposite category, with the same object representatives. *)
+
+(** 反转代表同构给出反范畴中的本质满性，并保留原对象代表。 *)
+
+Definition functor_op_essentially_surjective {C D : Cat}
+    {F : Functor C D} (HF : is_essentially_surjective F)
+  : is_essentially_surjective (F^opF).
+Proof.
+  intros Y. destruct (HF Y) as [X e].
+  exists X, e.2.1, e.1. split;
+    [exact (fst e.2.2) | exact (snd e.2.2)].
+Defined.
+
 (** Read a functor between opposite categories in the original categories.
     This keeps the underlying maps, without comparing category records. *)
 

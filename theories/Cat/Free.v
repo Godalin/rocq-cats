@@ -1,6 +1,7 @@
 From Cats Require Export
   Graph.Morphism
   Graph.Path
+  Graph.Opposite
   Cat.Core.
 From Cats Require Import
   Cat.Functor.Core
@@ -162,3 +163,62 @@ Proof.
     (λ x y e, transitivity (comp_id_l _) (symmetry (comp_id_r _)))).
   intros x. exists id. split; apply comp_id_l.
 Defined.
+
+(** Reversed paths identify the free category on the opposite graph with
+    the opposite free category, without equality of category records. *)
+
+(** 反向路径将反图的自由范畴与自由范畴的反范畴相比较，无需范畴记录相等。 *)
+
+Program Definition OpFreeF (G : Graph)
+  : Functor (FreeCat (G^opG)) ((FreeCat G)^op)
+  :=
+  {|F0 x := x
+  ; F1 x y := path_unop
+  |}.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+
+(** Every opposite free arrow has its reversed path as a chosen preimage. *)
+
+(** 每条反自由箭头都以其反向路径为选定原像。 *)
+
+Definition op_free_full (G : Graph)
+  : is_full (OpFreeF G).
+Proof. intros x y p. exists (path_op p). apply path_unop_op. Defined.
+
+(** The comparison is identity on vertices, hence essentially surjective. *)
+
+(** 比较在顶点上为恒等，因而本质满。 *)
+
+Definition op_free_essentially_surjective (G : Graph)
+  : is_essentially_surjective (OpFreeF G).
+Proof. intros x. exists x, id, id. split; apply comp_id_l. Defined.
+
+(** The inverse comparison reverses the original paths. *)
+
+(** 逆向比较反转原路径。 *)
+
+Program Definition UnopFreeF (G : Graph)
+  : Functor ((FreeCat G)^op) (FreeCat (G^opG))
+  :=
+  {|F0 x := x
+  ; F1 x y := path_op
+  |}.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+
+(** Reading back paths supplies the inverse comparison's chosen preimages. *)
+
+(** 将路径读回，给出逆向比较的选定原像。 *)
+
+Definition unop_free_full (G : Graph)
+  : is_full (UnopFreeF G).
+Proof. intros x y p. exists (path_unop p). apply path_op_unop. Defined.
+
+(** The inverse comparison also keeps all vertices. *)
+
+(** 逆向比较也保留全部顶点。 *)
+
+Definition unop_free_essentially_surjective (G : Graph)
+  : is_essentially_surjective (UnopFreeF G).
+Proof. intros x. exists x, id, id. split; apply comp_id_l. Defined.

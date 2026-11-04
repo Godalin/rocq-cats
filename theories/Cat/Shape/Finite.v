@@ -142,3 +142,50 @@ Program Definition FiniteHomGenerators
   |}.
 
 End FiniteHomGenerators.
+
+(** Opposite hom covers exchange their endpoints and reverse the chosen
+    representative isomorphisms. No new enumerations are selected. *)
+
+(** 反 Hom 覆盖交换端点并反转选定代表同构，不另选枚举。 *)
+
+Program Definition OpFiniteHomCover {J : Cat}
+    `{HJ : !HasFiniteHomCover J}
+  : HasFiniteHomCover (J^op)
+  :=
+  {|finite_object_count := @finite_object_count J HJ
+  ; finite_object := @finite_object J HJ
+  ; hasFiniteHom i j := @hasFiniteHom J HJ j i
+  |}.
+Next Obligation.
+  destruct (@finite_object_cover J HJ X) as [i e].
+  exists i, e.2.1, e.1. split;
+    [exact (fst e.2.2) | exact (snd e.2.2)].
+Defined.
+
+(** Reverse each finite generating edge, then interpret reversed paths by
+    the opposite original interpretation. This also covers cyclic graphs
+    and target categories with extra path equations. *)
+
+(** 反转每条有限生成边，再用原解释的反函子解释反路径；同样适用于含环图及
+    带额外路径方程的目标范畴。 *)
+
+Program Definition OpFiniteGenerators {J : Cat}
+    `{HJ : !HasFiniteGenerators J}
+  : HasFiniteGenerators (J^op)
+  :=
+  {|generator_count := @generator_count J HJ
+  ; generator_edges i j := @generator_edges J HJ j i
+  ; generator_functor := (@generator_functor J HJ)^opF
+      ∘F OpFreeF (FiniteGraph (@generator_edges J HJ))
+  |}.
+Next Obligation.
+  intros i j f.
+  destruct (functor_op_full (@generator_full J HJ) i j f) as [p Hp].
+  destruct (op_free_full (FiniteGraph (@generator_edges J HJ)) i j p)
+    as [q Hq].
+  exists q. cbn. rewrite Hq. exact Hp.
+Defined.
+Next Obligation.
+  exact (functor_op_essentially_surjective
+    (@generator_essentially_surjective J HJ)).
+Defined.
