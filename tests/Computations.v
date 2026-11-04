@@ -1,5 +1,6 @@
 From Cats Require Import
   Cat.Core
+  Cat.Shape.Simplex.Operators
   DTT.CwF.
 From Cats Require Import
   Instance.Set.Core
@@ -69,4 +70,21 @@ End CodeConversion.
 
 Example boolean_action_inverse_computes
   : bool_action_loop_iso.1 false = true.
+Proof. reflexivity. Qed.
+
+(** Simplex generators and inverse comparison components retain their finite
+    computations through the induced-category and natural-isomorphism layers. *)
+
+(** 单纯生成映射及比较的逆分量通过诱导范畴与自然同构层后仍保留有限计算行为。 *)
+
+Example coface_position_computes
+  : fin_rank (δ[0%nat; fin_first] fin_first) = 1%nat.
+Proof. reflexivity. Qed.
+
+Example codegeneracy_position_computes
+  : σ[0%nat; fin_first] (fin_next fin_first) = fin_first.
+Proof. reflexivity. Qed.
+
+Example simplex_inverse_comparison_computes
+  : ((codegeneracy_coface_id (n := 0%nat) fin_first).2 fin_first).1 = tt.
 Proof. reflexivity. Qed.

@@ -1,5 +1,7 @@
 From Cats Require Import STLC.Free.
 From Cats Require Import
+  Cat.Shape.Simplex.Core.
+From Cats Require Import
   Cat.Groupoid.Core
   Cat.Groupoid.Functor
   Instance.Set.Groupoid.
@@ -1538,3 +1540,12 @@ Definition distinct_action_slice_equivalence
       (SetCat@{u p _ _ _ _ _} /C X)
   := action_slice_equiv X.
 End ActionSliceLevels.
+
+(** Interpreting finite ordinals in the category of categories does not raise
+    the simplex category's object, arrow, equality or law universes. *)
+
+(** 在范畴之范畴中解释有限序数，不提升单纯范畴的对象、箭头、相等或定律宇宙。 *)
+
+Definition small_simplex_category
+  : Cat@{Set Set Set Set Set}
+  := SimplexCat.

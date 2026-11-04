@@ -48,6 +48,12 @@ A category theory library for self study.
   [equivalence between actions and slices](./theories/Instance/Set/Fam/GroupoidSlice.v)
   under the existing Family-Slice size bound.
 
+- The [simplex category](./theories/Cat/Shape/Simplex/Core.v) reuses finite
+  ordinal categories and the induced-category construction. Natural-isomorphism
+  equality of its arrows is equivalent to pointwise equality of positions.
+  [Cofaces and codegeneracies](./theories/Cat/Shape/Simplex/Operators.v) use
+  bounded finite indices and satisfy the simplicial identities.
+
 ### ETCS
 
 This project aims at building ETCS.
