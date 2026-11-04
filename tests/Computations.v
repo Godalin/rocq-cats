@@ -10,7 +10,7 @@ From Cats Require Import
   Instance.Set.Fam.Section
   Instance.Set.CwF
   Instance.Bool.Action
-  Instance.Set.Simplicial.Standard.
+  Instance.Set.Simplicial.Nerve.
 
 Module CodeConversion.
 
@@ -100,4 +100,25 @@ Example simplex_yoneda_reconstruction_computes
       (⟦simplex_generic 1%nat⟧Δ[Δ[1%nat]; 1%nat] 0%nat
         {|lower := δ[0%nat; fin_first]
         |}) fin_first) = 1%nat.
+Proof. reflexivity. Qed.
+
+(** A face followed by the inverse standard-nerve comparison keeps its
+    finite-position computation through both general constructions. *)
+
+(** 面后接标准单形与 nerve 比较的逆映射，经过两个一般构造后仍保持有限位置计算。 *)
+
+Example standard_nerve_inverse_face_computes
+  : fin_rank (lower (((standard_nerve_iso 1%nat).2 0%nat).1
+      (d[N≅([Ord 1%nat]); 0%nat; fin_first]
+        ⟨@IdF [Ord 1%nat]⟩N)) fin_first) = 1%nat.
+Proof. reflexivity. Qed.
+
+(** The identity-law comparison retains its inverse through the general
+    induced inclusion and probe-presheaf construction. *)
+
+(** 恒等律的比较经过一般诱导嵌入和探测预层构造后，仍保留其逆的计算。 *)
+
+Example nerve_identity_inverse_computes
+  : ((lower (functor_id _ _ (N≅([Ord 1%nat]))
+      ⟨@IdF [Ord 1%nat]⟩N)).2 fin_first).1 = tt.
 Proof. reflexivity. Qed.

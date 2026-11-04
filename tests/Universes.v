@@ -1,7 +1,7 @@
 From Cats Require Import STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core
-  Instance.Set.Simplicial.Standard.
+  Instance.Set.Simplicial.Nerve.
 From Cats Require Import
   Cat.Groupoid.Core
   Cat.Groupoid.Functor
@@ -1577,4 +1577,42 @@ Definition high_eq_simplex_yoneda (n : nat)
 Definition low_eq_simplex_yoneda (n : nat)
   : LiftS (Nat_SetS Δ[n] Y) ≅[SetCat] LiftS (Y n)
   := simplex_element_iso n.
+
+(** Standard-simplex comparisons retain both orderings after passing through
+    the general category-probe construction. *)
+
+(** 标准单形比较经过一般范畴探测构造后，仍保留两种大小次序。 *)
+
+Definition high_eq_standard_nerve (n : nat)
+  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅([Ord n])
+  := standard_nerve_iso n.
+
+Definition low_eq_standard_nerve (n : nat)
+  : (Δ[n] : Functor (Δ^op) SetCat@{p u _ _ _ _ _}) ≅N N≅([Ord n])
+  := standard_nerve_iso n.
 End SimplicialLevels.
+
+(** Small ordinal probes accept larger categories with independent object,
+    arrow and equality sizes. Value equality need not dominate object size,
+    and can also be raised above the value carrier. *)
+
+(** 小序数探测接受对象、箭头及相等大小独立的较大范畴；值相等不必高于对象大小，
+    也可以提升到值载体之上。 *)
+
+Section NerveLevels.
+Universes e h o l u p.
+Constraint e < h.
+Constraint h < o.
+Constraint o < l.
+Constraint l < u.
+Constraint u < p.
+Context (C : Cat@{o h e l l}) (D : Cat@{e h o l l}).
+
+Definition low_eq_large_diagram_nerve
+  : Functor (Δ^op) SetCat@{u h _ _ _ _ _}
+  := N≅(C).
+
+Definition high_eq_large_diagram_nerve
+  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  := N≅(D).
+End NerveLevels.

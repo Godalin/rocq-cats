@@ -61,6 +61,16 @@ A category theory library for self study.
   fully faithful Yoneda embedding, with maps from the standard n-simplex
   corresponding naturally to n-simplices. Explicit universe lifts keep small
   simplex operators compatible with larger setoid values.
+  The [diagram nerve](./theories/Instance/Set/Simplicial/Nerve.v), written
+  `N≅(C)`, specializes a general
+  [category-probe presheaf](./theories/Instance/Set/Functor.v).
+  Its simplices are finite-ordinal diagrams compared by natural isomorphism;
+  the nerve of a finite ordinal is naturally isomorphic to its standard simplex.
+  The proved groupoid boundary is significant: two n-simplices are equal
+  exactly when their first vertices are isomorphic. Thus all same-degree
+  simplices of a one-object groupoid are equal in this construction.
+  A nerve retaining distinctions between group loops remains a separate
+  design task; ordinary nerve and Kan results are not asserted here.
 
 ### ETCS
 
