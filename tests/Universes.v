@@ -101,6 +101,12 @@ From Cats Require Import
   Instance.Set.Limit
   Instance.Set.Colimit
   Instance.Set.Pushout.
+From Cats Require Import
+  Cat.Exponential.Laws
+  Cat.Exponential.InternalHom
+  Cat.Limit.Exponential
+  Instance.Set.Product
+  Instance.Set.ProductHom.
 
 (** Concrete setoid models retain independent levels where possible. The
     chosen equalizers need [p ≤ u], while generated coequalizers need [u ≤ p].
@@ -362,6 +368,79 @@ Definition high_eq_fixed_exponential (X : @Ob C)
 Definition low_eq_fixed_exponential (X : @Ob D)
   : π2F (-^-) X ≅N (-^ X)
   := exponential_fixed_nat_iso X.
+(** Structural isomorphisms keep the two hom/equality orderings distinct. *)
+
+(** 结构同构保持两种 Hom／相等层级排列的分离。 *)
+
+Definition high_eq_exponential_laws (X Y Z : @Ob C)
+  : (((X × Y) ^ Z) ≅ ((X ^ Z) × (Y ^ Z))) ∧
+      (((Y ^ X) ^ Z) ≅ (Y ^ (X × Z))) ∧ ((Y ^ 1) ≅ Y) ∧ ((1 ^ X) ≅ 1)
+  := (exponential_product_iso Z X Y,
+      (exponential_iterated_iso X Z Y,
+        (exponential_unit_iso Y, exponential_terminal_iso X))).
+Definition low_eq_exponential_laws (X Y Z : @Ob D)
+  : (((X × Y) ^ Z) ≅ ((X ^ Z) × (Y ^ Z))) ∧
+      (((Y ^ X) ^ Z) ≅ (Y ^ (X × Z))) ∧ ((Y ^ 1) ≅ Y) ∧ ((1 ^ X) ≅ 1)
+  := (exponential_product_iso Z X Y,
+      (exponential_iterated_iso X Z Y,
+        (exponential_unit_iso Y, exponential_terminal_iso X))).
+Definition high_eq_product_hom (X Y Z : @Ob C)
+  : HomSet Z (X × Y) ≅[SetCat@{h p _ _ _ _ _}]
+      (HomSet Z X ×S HomSet Z Y)
+  := product_hom_iso X Y Z.
+Definition low_eq_product_hom (X Y Z : @Ob D)
+  : HomSet Z (X × Y) ≅[SetCat@{p h _ _ _ _ _}]
+      (HomSet Z X ×S HomSet Z Y)
+  := product_hom_iso X Y Z.
+Definition high_eq_iterated_hom (X Y Z W : @Ob C)
+  : HomSet W ((Y ^ X) ^ Z) ≅[SetCat@{h p _ _ _ _ _}]
+      HomSet W (Y ^ (X × Z))
+  := exponential_iterated_hom_iso X Z Y W.
+Definition low_eq_iterated_hom (X Y Z W : @Ob D)
+  : HomSet W ((Y ^ X) ^ Z) ≅[SetCat@{p h _ _ _ _ _}]
+      HomSet W (Y ^ (X × Z))
+  := exponential_iterated_hom_iso X Z Y W.
+
+(** Public notation survives section closure and imports. *)
+
+(** 公共记号在节结束并导入后仍然可用。 *)
+
+Definition high_eq_internal_unit (X Y Z : @Ob C) (f : Hom Z (Y ^ X))
+  : idᴱ[Y] ∘ᴱ f ≈ f
+  := exponential_comp_id_l f.
+Definition low_eq_double_curry (A B Y Z : @Ob D)
+    (f : Hom (Z × (A × B)) Y)
+  : (ƛ₂ f)^♭₂ ≈ f
+  := exponential_curry_twice_β f.
+
+Context (F : Functor C D) (G : Functor D C)
+    (HF : IsCCCF F HC HD) (HG : IsCCCF G HD HC).
+
+(** CCC-preservation composition permits different hom/equality orderings
+    in its intermediate category. *)
+
+(** CCC 保持性的复合允许中间范畴具有不同的 Hom／相等层级排列。 *)
+
+Definition mixed_levels_closed_composite
+  : IsCCCF (G ∘F F) HC HC
+  := CompF_IsCCCF F G HC HD HC HF HG.
+
+Universe s.
+Constraint l < s.
+Context (J : Cat@{s s s _ _}).
+
+(** Limit preservation does not impose an indexing bound on the shape. *)
+
+(** 极限保持性不对形状施加索引大小界。 *)
+
+Definition high_eq_exponential_limit (A : @Ob C)
+    (K : Functor J C) (L : @Ob C) (κ : L ⇒Δ K) (H : is_limit κ)
+  : is_limit (MapCone (-^ A) κ)
+  := exponential_preserves_limit A H.
+Definition low_eq_exponential_limit (A : @Ob D)
+    (K : Functor J D) (L : @Ob D) (κ : L ⇒Δ K) (H : is_limit κ)
+  : is_limit (MapCone (-^ A) κ)
+  := exponential_preserves_limit A H.
 End ExponentialLevels.
 
 (** An adjunction can relate categories whose two hom levels are reversed.

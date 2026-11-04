@@ -28,6 +28,10 @@ A category theory library for self study.
   graph-generated and size-bounded general diagram limits/colimits.
   See [the models and their universe bounds](./docs/SetModels.md).
 
+- [CCC structural theory](./docs/CCCStructure.md) provides canonical exponential
+  isomorphisms and their naturality, limit preservation, cartesian closed functor
+  composition, internal hom equations and native hom-setoid correspondences.
+
 ### ETCS
 
 This project aims at building ETCS.
