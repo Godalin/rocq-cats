@@ -1,5 +1,5 @@
 From Cats Require Export
-  Instance.Set.Simplicial.Monoid.
+  Instance.Set.Simplicial.MonoidVertex.
 From Cats Require Import
   Instance.Bool.Action
   Instance.Bool.Group
@@ -87,3 +87,36 @@ Proof.
   apply (snd (nerve_groupoid_eq_iff (HC := BoolGroupoid_IsGroupoid) _ _)).
   apply iso_refl.
 Defined.
+
+(** The general vertex nerve also retains the distinction between boolean
+    loops, using identity transport on its singleton object set. *)
+
+(** 一般顶点 nerve 在单元素对象集合上使用恒等运输，同样保留布尔环路的区别。 *)
+
+Definition BoolVertexNerve
+  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  := Nᵥ(MonoidObjectsF BoolS).
+
+(** The tuple interpretation is a map into the general construction. *)
+
+(** 元组解释给出进入一般构造的映射。 *)
+
+Definition BoolVertexComparison
+  : (LiftF ∘F BoolNerve : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
+      BoolVertexNerve
+  := MonoidVertexN.
+
+(** The two loops stay unequal before forgetting the specified vertex
+    comparison. This follows from the general reflection theorem. *)
+
+(** 忘却指定顶点比较之前，两条环路保持不等；此结论直接来自一般反映定理。 *)
+
+Lemma bool_vertex_loop_not_id
+  : ¬ (BoolVertexComparison 1 {|lower := bool_nerve_loop
+                              |} ≈S
+      BoolVertexComparison 1 {|lower := bool_nerve_id
+                              |}).
+Proof.
+  intros H. apply bool_nerve_loop_not_id.
+  exact (monoid_vertex_reflects bool_nerve_loop bool_nerve_id H).
+Qed.

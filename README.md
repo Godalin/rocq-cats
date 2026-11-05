@@ -76,7 +76,18 @@ A category theory library for self study.
   [segment subdivision theory](./theories/Algebra/Monoid/Chain.v) proves its
   functor laws. Its [boolean model](./theories/Instance/Bool/Nerve.v) has
   distinct identity and nontrivial loops, and proves that their images in the
-  diagram nerve become equal. General-category nerve and Kan theory remain open.
+  diagram nerve become equal.
+  The [vertex nerve](./theories/Instance/Set/Simplicial/Vertex.v), `Nᵥ(T)`,
+  extends this distinction to categories equipped with an object setoid and
+  a coherent object action `T : EqGpd(X) → C`. Its
+  [labelled diagrams](./theories/Instance/Set/VertexDiagram.v) compare vertices
+  by the specified setoid equality and arrows by squares with the prescribed
+  transports. Consecutive arrows suffice to check simplex equality.
+  The [singleton comparison](./theories/Instance/Set/Simplicial/MonoidVertex.v)
+  is a natural isomorphism with the original monoid nerve; forgetting vertex
+  comparisons recovers the earlier map to the diagram nerve. A bare category
+  does not itself select this extra object equality and transport data.
+  Full-faithfulness, coskeletality and Kan theory remain open.
 
 ### ETCS
 

@@ -10,6 +10,7 @@ From Cats Require Import
   Instance.Set.Fam.Section
   Instance.Set.CwF
   Instance.Bool.Action
+  Instance.Bool.Group
   Instance.Bool.Nerve
   Instance.Set.Simplicial.Nerve.
 
@@ -132,4 +133,15 @@ Proof. reflexivity. Qed.
 Example monoid_nerve_comparison_inverse_computes
   : ((lower bool_nerve_comparison_identifies_loops).2
       (fin_next fin_first)).1 = true.
+Proof. reflexivity. Qed.
+
+(** The inverse singleton comparison extracts the original loop after the
+    general vertex-nerve construction, including its explicit size wrappers. *)
+
+(** 单对象比较的逆经过一般顶点 nerve 及显式大小包装，仍提取出原来的环路。 *)
+
+Example vertex_nerve_monoid_inverse_computes
+  : lower (((monoid_vertex_iso (M := BoolS)).2 1%nat).1
+      (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
+                                  |})) fin_first = true.
 Proof. reflexivity. Qed.
