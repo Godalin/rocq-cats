@@ -234,6 +234,18 @@ Definition chain_reindex {C : Cat} {m n : nat}
 Notation "c '[' Q ']Ch'" := (chain_reindex Q c)
   (at level 8, left associativity, format "c [ Q ]Ch") : cat_scope.
 
+(** A single arrow forms a chain with its two specified endpoints. *)
+
+(** 单条箭头及其两个指定端点组成箭头链。 *)
+
+Program Definition ArrowChain {C : Cat} {A B : @Ob C} (f : Hom A B)
+  : Chain C 1
+  :=
+  {|chain_vertex i := match i with inl _ => A | inr _ => B end
+  ; chain_edge i := _
+  |}.
+Next Obligation. destruct i as [[] | []]. exact f. Defined.
+
 (** Two consecutive arrows form the spine of a triangle. The composite
     edge is supplied by the general chain interpretation. *)
 

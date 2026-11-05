@@ -1,5 +1,7 @@
 From Cats Require Export
-  Instance.Set.Simplicial.Vertex.
+  Cat.Chain
+  Instance.Set.Simplicial.Vertex
+  Instance.Set.VertexRelabel.
 
 Local Open Scope nat_scope.
 
@@ -11,50 +13,6 @@ Local Open Scope nat_scope.
 (** * 边与端点运输
 
     沿指定对象运输调整箭头的端点；一维单形的比较使用两个端点上的这些运输。 *)
-
-Section Rebase.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
-
-(** Change both endpoints by precomposition and inverse postcomposition. *)
-
-(** 通过预合成及与逆的后合成，调整两个端点。 *)
-
-Program Definition vertex_rebase_resp {A B A' B' : X}
-    (p : A ≈S A') (q : B ≈S B')
-  : (@HomSet (VertexCat T) A' B') →r (@HomSet (VertexCat T) A B)
-  :=
-  {|func f := T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob
-  |}.
-Next Obligation. intros f g H. rewrite H. reflexivity. Defined.
-
-(** The rebased arrow forms the required transport square. *)
-
-(** 调整后的箭头满足所需运输方块。 *)
-
-Lemma vertex_rebase_square {A B A' B' : X}
-    (p : A ≈S A') (q : B ≈S B') (f : (@Hom (VertexCat T)) A' B')
-  : T⟦q⟧Ob ∘ vertex_rebase_resp p q f ≈ f ∘ T⟦p⟧Ob.
-Proof.
-  change (T⟦q⟧Ob ∘ (T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob) ≈ f ∘ T⟦p⟧Ob).
-  rewrite <- !comp_assoc, vertex_transport_inv, comp_id_l. reflexivity.
-Defined.
-
-(** Reflexive endpoint changes preserve the original arrow. *)
-
-(** 自反端点调整保持原箭头。 *)
-
-Lemma vertex_rebase_id {A B : X} (p : A ≈S A) (q : B ≈S B)
-    (f : (@Hom (VertexCat T)) A B)
-  : vertex_rebase_resp p q f ≈ f.
-Proof.
-  change (T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob ≈ f).
-  rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
-Defined.
-
-End Rebase.
-
-Notation "T '⟦' p ';' f ';' q '⟧Ar'" := (vertex_rebase_resp T p q f)
-  (at level 8, left associativity) : hom_scope.
 
 (** An endpoint comparison and its single edge square determine equality
     of one-simplices. No groupoid assumption is needed. *)
@@ -96,3 +54,36 @@ Proof.
   apply (vertex_edge_comparison x y e0 e1).
   rewrite H. apply vertex_rebase_square.
 Defined.
+
+(** An arrow gives a one-simplex with exactly its specified endpoints. *)
+
+(** 箭头给出端点恰为其指定端点的一维单形。 *)
+
+Program Definition edge_simplex_resp@{u p +} {X : SetC} {C : Cat}
+    (T : Functor (EqGpd X) C) (A B : X)
+  : (@HomSet (VertexCat T) A B) →r
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1
+  :=
+  {|func f := ⟨⟦ArrowChain f⟧Ch⟩ᵥ
+  |}.
+Next Obligation.
+  intros f g H. apply (vertex_edge_comparison _ _
+    (reflexivity (A : X)) (reflexivity (B : X))).
+  rewrite !vertex_transport_id, comp_id_l, comp_id_r.
+  change (id ∘ f ≈ id ∘ g). rewrite !comp_id_l. exact H.
+Defined.
+
+Notation "'△₁[' T ';' A ';' B ']'" := (edge_simplex_resp T A B)
+  : hom_scope.
+
+(** The arrow of the constructed simplex is the original arrow. *)
+
+(** 构造单形中的箭头等于原箭头。 *)
+
+Lemma edge_simplex_arrow@{u p +} {X : SetC} {C : Cat}
+    {T : Functor (EqGpd X) C} {A B : X}
+    (f : (@Hom (VertexCat T)) A B)
+  : fmap (lower ((△₁[T; A; B] : _ →r
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1) f))
+      (ordinal_step fin_first) ≈ f.
+Proof. change (id ∘ f ≈ f). apply comp_id_l. Defined.

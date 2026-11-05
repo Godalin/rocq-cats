@@ -43,6 +43,35 @@ Proof.
   - apply functor_id.
 Defined.
 
+(** Constant restrictions compare by their single vertex. Their arrows
+    become identities even when the order witnesses are different. *)
+
+(** 常值限制按唯一顶点比较；即使顺序见证不同，其箭头也都成为恒等。 *)
+
+Definition vertex_constant_precomp_eq {X : SetC} {C : Cat}
+    (T : Functor (EqGpd X) C) {m n k : nat}
+    (F : Functor [Ord n] (VertexCat T))
+    (G : Functor [Ord k] (VertexCat T))
+    (u : Functor [Ord m] [Ord n]) (v : Functor [Ord m] [Ord k])
+    (a : Ordinal n) (b : Ordinal k)
+    (Hu : ∀ i, u i = a) (Hv : ∀ i, v i = b)
+    (e : (F a : X) ≈S G b)
+  : VertexDiagramEq T (F ∘F u) (G ∘F v).
+Proof.
+  assert (d : ∀ i, (F (u i) : X) ≈S G (v i)).
+  { intros i. rewrite (Hu i), (Hv i). exact e. }
+  exists d. intros i j f.
+  change (T⟦d j⟧Ob ∘ fmap F (fmap u f) ≈
+    fmap G (fmap v f) ∘ T⟦d i⟧Ob).
+  generalize (d i), (d j), (fmap u f), (fmap v f).
+  rewrite (Hu i), (Hu j), (Hv i), (Hv j).
+  intros p q g h.
+  rewrite (@functor_fmap_proper _ _ F a a g id tt),
+    (@functor_fmap_proper _ _ G b b h id tt),
+    !functor_id, comp_id_l, comp_id_r.
+  apply vertex_transport_witness_independent.
+Defined.
+
 (** Restriction of labelled ordinal diagrams is a simplicial setoid.
     Native diagram and equality sizes are raised separately to the chosen
     value sizes; this is an ordinary size inclusion, not resizing. *)

@@ -1,5 +1,5 @@
 From Cats Require Import
-  Instance.Set.Simplicial.Filling.
+  Instance.Set.Simplicial.Outer.
 From Cats Require Import
   Cat.Core
   Cat.Shape.Simplex.Operators
@@ -229,4 +229,20 @@ Example actual_outer_horn2_filler_computes
       (HC := VertexCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid)) fin_first in
     fmap (lower (@horn_fill _ _ _ HF (x↾Λ[Nᵥ(T); 2%nat; fin_first])).1)
       (ordinal_step (fin_next fin_first)) = true.
+Proof. reflexivity. Qed.
+
+(** Matching descent computes the prescribed long edge before any filler
+    or inverse is supplied. *)
+
+(** 在给出任何填充或逆之前，匹配下降即可计算指定长边。 *)
+
+Example actual_outer_horn2_descent_computes
+  : let T := MonoidObjectsF BoolS (HM := BoolS_Monoid) in
+    let h := (OuterHorn2N T (A := tt) (B := tt) (D := tt) true false :
+      HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat fin_first) in
+    fmap (lower (h 1%nat
+      {|lower := (δ[1%nat; fin_next fin_first];
+          horn_face_member fin_first (fin_next fin_first)
+            (λ E, HornFaceComputation.retained_first_face (eq_sym E)))
+      |})) (ordinal_step fin_first) = false.
 Proof. reflexivity. Qed.

@@ -117,8 +117,11 @@ A category theory library for self study.
   aligns shared endpoint labels by their specified transports and transfers
   local fillings to arbitrary actual horn maps. Every category has inner
   two-horn fillers; a groupoid on the selected objects gives all three kinds.
-  The converse from actual outer fillings and the full Kan criterion remain
-  to be proved.
+  [Actual outer horn filling](./theories/Instance/Set/Simplicial/Outer.v)
+  conversely recovers right division and groupoid structure: even the first
+  outer two-horn family suffices. Consequently chosen Kan filling implies a
+  groupoid on the selected objects. The all-dimensional forward Kan
+  construction remains to be proved.
 
 ### ETCS
 
