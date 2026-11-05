@@ -110,6 +110,17 @@ Definition BoolVertexNerve_HasKanFillers
       (HC := VertexCat_IsGroupoid (MonoidObjectsF BoolS)
         (HC := BoolGroupoid_IsGroupoid)).
 
+(** Every compatible boolean-nerve boundary above dimension two has a
+    unique filler, while the one-dimensional loops remain distinct. *)
+
+(** 布尔 nerve 中每个高于二维的相容边界具有唯一填充，一维环路仍保持区别。 *)
+
+Definition BoolVertexNerve_IsCoskeletal
+  : BoolVertexNerve ⦂ Cosk[2]
+  := vertex_groupoid_IsCoskeletal (MonoidObjectsF BoolS)
+      (HC := VertexCat_IsGroupoid (MonoidObjectsF BoolS)
+        (HC := BoolGroupoid_IsGroupoid)).
+
 (** The tuple interpretation is a map into the general construction. *)
 
 (** 元组解释给出进入一般构造的映射。 *)

@@ -87,7 +87,8 @@ A category theory library for self study.
   is a natural isomorphism with the original monoid nerve; forgetting vertex
   comparisons recovers the earlier map to the diagram nerve. A bare category
   does not itself select this extra object equality and transport data.
-  Full-faithfulness, coskeletality and Kan theory remain open.
+  Full faithfulness and coskeletality for arbitrary selected categories remain
+  separate targets; the groupoid Kan theorem is described below.
   The [spine correspondence](./theories/Instance/Set/Simplicial/Spine.v)
   identifies every degree of the vertex nerve with the
   [setoid of composable chains](./theories/Instance/Set/VertexChain.v).
@@ -130,9 +131,16 @@ A category theory library for self study.
   The same star comparison proves the full universal property: every actual
   horn in dimension at least two has a unique filler in the specified equality.
   The [boolean vertex nerve](./theories/Instance/Bool/Nerve.v) is a concrete
-  all-dimensional Kan model retaining two distinct loops. Full faithfulness,
-  coskeletality and examples with nontrivial higher homotopy remain separate
-  goals; ordinary groupoid nerves do not provide the latter.
+  all-dimensional Kan model retaining two distinct loops.
+  [Unique boundary filling](./theories/Instance/Set/Simplicial/Coskeletal.v)
+  follows generally from unique horn filling in adjacent dimensions. This
+  makes groupoid vertex nerves **2-coskeletal**: every compatible boundary in
+  dimension at least three has a unique filler. Boundary restriction is a
+  setoid isomorphism after ordinary inclusion into common value sizes.
+  See the [checked tutorial](./book/Coskeletal.v).
+  Full faithfulness, arbitrary-category coskeletality and examples with
+  nontrivial higher homotopy remain separate goals; ordinary groupoid nerves
+  do not provide the latter.
 
 ### ETCS
 

@@ -1768,6 +1768,18 @@ Definition low_eq_vertex_kan
 Definition high_eq_vertex_kan
   : HasKanFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
   := vertex_groupoid_HasKanFillers S (HC := VertexCat_IsGroupoid S).
+
+(** Unique boundary filling keeps either ordering of native value sizes. *)
+
+(** 唯一边界填充保留原生值大小的两种次序。 *)
+
+Definition low_eq_vertex_coskeletal
+  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) ⦂ Cosk[2%nat]
+  := vertex_groupoid_IsCoskeletal T (HC := VertexCat_IsGroupoid T).
+
+Definition high_eq_vertex_coskeletal
+  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2%nat]
+  := vertex_groupoid_IsCoskeletal S (HC := VertexCat_IsGroupoid S).
 End VertexNerveLevels.
 
 (** Boundary and horn carriers retain factorization witnesses, while their
@@ -1824,4 +1836,21 @@ Definition high_eq_matching (n : nat) (i : Ordinal (S n))
   : LiftS@{_ _ v q} (HornMatchingS Y n i) ≅[SetCat]
       LiftS@{_ _ v q} (HornS Y (S n) i)
   := horn_matching_iso (X := Y) n i.
+
+(** Boundary restriction becomes an isomorphism only after the ordinary
+    inclusion into common sizes; coskeletal filling itself stays native. *)
+
+(** 边界限制经通常嵌入进入共同大小后成为同构；余骨架填充本身保留原生大小。 *)
+
+Context `{HX : !IsCoskeletal X 2%nat} `{HY : !IsCoskeletal Y 2%nat}.
+
+Definition low_eq_coskeletal_boundary (n : nat)
+  : LiftS@{_ _ v q} (X (S (2 + n))) ≅[SetCat]
+      LiftS@{_ _ v q} (BoundaryS X (S (2 + n)))
+  := coskeletal_boundary_iso n.
+
+Definition high_eq_coskeletal_boundary (n : nat)
+  : LiftS@{_ _ v q} (Y (S (2 + n))) ≅[SetCat]
+      LiftS@{_ _ v q} (BoundaryS Y (S (2 + n)))
+  := coskeletal_boundary_iso n.
 End SimplicialMatchingLevels.

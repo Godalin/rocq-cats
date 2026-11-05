@@ -1,6 +1,7 @@
 From Cats Require Export
   Instance.Set.Simplicial.Outer
-  Instance.Set.Simplicial.Star.
+  Instance.Set.Simplicial.Star
+  Instance.Set.Simplicial.Coskeletal.
 
 Local Open Scope nat_scope.
 
@@ -342,3 +343,23 @@ Proof.
   - intros H. exact (@vertex_kan_IsGroupoid _ _ T H).
   - intros H. exact (@vertex_groupoid_HasKanFillers _ _ T H).
 Defined.
+
+(** A groupoid vertex nerve is 2-coskeletal: every boundary in dimension
+    at least three has a unique filler. Adjacent unique horn fillings give
+    this through the general boundary theorem, without further transports. *)
+
+(** 群胚顶点 nerve 是 2 余骨架的：每个至少三维的边界都有唯一填充。此结论通过
+    一般边界定理由相邻维度的唯一 horn 填充导出，无需新增运输论证。 *)
+
+Program Definition vertex_groupoid_IsCoskeletal@{u p +}
+    {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
+    `{HC : !IsGroupoid (VertexCat T)}
+  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2]
+  :=
+  {|coskeletal_boundary_universal n b :=
+      boundary_from_horns_universal (S n)
+        (λ h, (HornStarSimplex T n fin_first h;
+          horn_star_universal T n fin_first h))
+        (λ h, (HornStarSimplex T (S n) fin_first h;
+          horn_star_universal T (S n) fin_first h)) b
+  |}.

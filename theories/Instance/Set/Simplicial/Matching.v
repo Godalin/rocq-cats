@@ -3,15 +3,91 @@ From Cats Require Export
   Instance.Set.Sieve.Matching.
 
 Local Open Scope nat_scope.
+Local Open Scope ordinal_scope.
 
-(** * Compatible Faces of a Horn
+(** * Compatible Boundary and Horn Faces
 
     The generated-sieve matching correspondence specializes uniformly to
-    horns. Face indices and overlap factorizations remain explicit data. *)
+    boundaries and horns. Face indices and overlap factorizations remain
+    explicit data. *)
 
-(** * horn 的相容面
+(** * 边界与 horn 的相容面
 
-    生成筛的匹配对应统一特化到 horn；面索引及交叠分解均保留为显式数据。 *)
+    生成筛的匹配对应统一特化到边界与 horn；面索引及交叠分解均保留为显式数据。 *)
+
+(** A boundary matching datum gives all faces and their overlap equations. *)
+
+(** 边界匹配数据给出全部面及其交叠方程。 *)
+
+Definition BoundaryMatchingS@{u p +}
+    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat)
+  : SetC
+  := @SieveMatchingS Δ (S n) (Ordinal (S n))
+      (λ _, n) (λ j, δ[n; j]) X.
+
+(** Evaluate a boundary map at its generic face. *)
+
+(** 在泛面处求值边界映射。 *)
+
+Program Definition boundary_face_resp@{u p +}
+    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {n : nat} (j : Ordinal (S n))
+  : BoundaryS X (S n) →r X n
+  :=
+  {|func b := b n {|lower := (δ[n; j]; boundary_face_member j)
+                  |}
+  |}.
+Next Obligation. intros b c E. apply E. Defined.
+
+Notation "'face∂[' j ']'" := (boundary_face_resp j) : hom_scope.
+
+(** Boundary maps are equal exactly when their generic faces are equal. *)
+
+(** 边界映射相等，当且仅当其泛面相等。 *)
+
+Definition boundary_map_eq_iff@{u p +}
+    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    (b c : BoundaryS X (S n))
+  : b ≈S c ↔ ∀ j, face∂[j] b ≈S face∂[j] c
+  := @generated_sieve_map_eq Δ (S n) (Ordinal (S n))
+      (λ _, n) (λ j, δ[n; j]) X b c.
+
+(** Restrict a boundary's faces along any equal pair of common factors. *)
+
+(** 沿任意相等的共同因子对限制边界的面。 *)
+
+Definition boundary_face_overlap@{u p +}
+    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {n : nat} (b : BoundaryS X (S n)) (j k : Ordinal (S n))
+    {m : nat} (f g : (@Hom Δ) m n)
+    (E : δ[n; j] ∘ f ≈ δ[n; k] ∘ g)
+  : X[f]Δ (face∂[j] b) ≈S X[g]Δ (face∂[k] b)
+  := @matching_overlap Δ (S n) (Ordinal (S n))
+      (λ _, n) (λ j, δ[n; j]) X
+      (@SieveMatchingOfN Δ (S n) (Ordinal (S n))
+        (λ _, n) (λ j, δ[n; j]) X b) m j k f g E.
+
+(** All face intersections satisfy the usual shifted face equation. *)
+
+(** 全部面交满足通常的移位面方程。 *)
+
+Definition boundary_face_comp@{u p +}
+    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {n : nat} (b : BoundaryS X (S (S n)))
+    (i j : Ordinal (S n)) (H : fin_rank i ≤ fin_rank j)
+  : d[X; n; j] (face∂[i↑] b) ≈S d[X; n; i] (face∂[j⁺] b)
+  := boundary_face_overlap b _ _ _ _ (coface_comp i j H).
+
+(** Generated-sieve descent gives the full boundary matching isomorphism. *)
+
+(** 生成筛下降给出完整的边界匹配同构。 *)
+
+Definition boundary_matching_iso@{u p v q +}
+    {X : Functor (Δ^op) SetCat@{v q _ _ _ _ _}} (n : nat)
+  : LiftS@{_ _ u p} (BoundaryMatchingS X n) ≅[SetCat]
+      LiftS@{_ _ u p} (BoundaryS X (S n))
+  := @sieve_matching_iso Δ (S n) (Ordinal (S n))
+      (λ _, n) (λ j, δ[n; j]) X.
 
 (** Matching values on all retained faces, with every overlap equation. *)
 
@@ -40,6 +116,21 @@ Program Definition horn_face_resp@{u p +}
 Next Obligation. intros h k E. apply E. Defined.
 
 Notation "'face[' i ';' j ';' H ']'" := (horn_face_resp i j H) : hom_scope.
+
+(** Passing from a boundary to a horn retains each permitted face. *)
+
+(** 从边界转到 horn 保留每个容许的面。 *)
+
+Lemma boundary_horn_face@{u p +}
+    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {n : nat} (i j : Ordinal (S n)) (H : ¬ j = i)
+    (b : BoundaryS X (S n))
+  : face[i; j; H] (boundary_horn_resp (S n) i b) ≈S face∂[j] b.
+Proof.
+  apply (@func_proper _ _ (b n)).
+  exact {|lower := reflexivity δ[n; j]
+         |}.
+Defined.
 
 (** Different retained-face proofs give equal values, without equating the
     proofs. They represent the same underlying coface in the sieve. *)
