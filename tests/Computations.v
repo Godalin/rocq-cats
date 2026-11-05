@@ -13,6 +13,7 @@ From Cats Require Import
   Instance.Bool.Group
   Instance.Bool.Nerve
   Instance.Set.Simplicial.Spine
+  Instance.Set.Simplicial.Horn2
   Instance.Set.Simplicial.Nerve.
 
 Module CodeConversion.
@@ -159,3 +160,37 @@ Example vertex_spine_inverse_computes
       (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
                                   |})))) (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.
+
+Module LocalHornComputation.
+
+(** The dual outer filler retains its missing earlier arrow through
+    reversal, inverse restriction, and spine realization. *)
+
+(** 对偶外填充经过反转、限制取逆及脊实现，仍保留缺失先行箭头的计算。 *)
+
+Definition T
+  := MonoidObjectsF BoolS (HM := BoolS_Monoid).
+
+Local Instance chosen_groupoid
+  : VertexCat T ⦂ Gpd
+  := VertexCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid).
+
+Example local_horn2_dual_computes
+  : fmap (lower ((fill₂[T; tt; tt; tt; fin_next (fin_next fin_first)] :
+      _ →r (Nᵥ(T) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat)
+        (false, true))) (ordinal_step fin_first) = true.
+Proof. reflexivity. Qed.
+
+(** Recovering a groupoid from the second outer filling structure keeps
+    its inverse computational, independently of the division equations. *)
+
+(** 从第二类外填充恢复群胚后，其逆仍可计算，不受除法方程证明的阻碍。 *)
+
+Example outer_horn2_recovered_inverse_computes
+  : @groupoid_inv BoolGroupoid
+      (@horn2_2_IsGroupoid BoolGroupoid
+        (@horn2_HasFillers BoolGroupoid BoolGroupoid_IsGroupoid
+          (fin_next (fin_next fin_first)))) tt tt true = true.
+Proof. reflexivity. Qed.
+
+End LocalHornComputation.

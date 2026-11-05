@@ -94,6 +94,14 @@ A category theory library for self study.
   Both reconstruction and its uniqueness follow from the
   [general finite-chain interpretation](./theories/Cat/Chain.v);
   simplex restriction corresponds to composing the image intervals of a chain.
+  [Local two-dimensional horns](./theories/Instance/Set/Simplicial/Horn2.v)
+  fix three vertices and retain two triangle edges. Inner horns have unique
+  fillers in every category; both outer restrictions are isomorphisms in a
+  groupoid, and the resulting realized two-simplices are unique under the
+  specified equality. Conversely, chosen outer fillers characterize groupoids
+  through the [general division criterion](./theories/Cat/Groupoid/Division.v).
+  These are local fixed-vertex results; general horn objects and the full Kan
+  criterion remain to be constructed.
 
 ### ETCS
 

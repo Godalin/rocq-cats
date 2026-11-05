@@ -4,6 +4,7 @@ From Cats Require Import
   Instance.Set.Simplicial.Nerve
   Instance.Set.Simplicial.Monoid
   Instance.Set.Simplicial.Spine
+  Instance.Set.Simplicial.Horn2
   Instance.Set.Lift.
 From Cats Require Import
   Cat.Groupoid.Core
@@ -1712,4 +1713,31 @@ Definition high_eq_vertex_spine (n : nat)
   : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
       LiftS (VertexChainS S n)
   := vertex_spine_iso S n.
+
+(** Local horn isomorphisms retain native hom and equality sizes. Their
+    realized fillers also admit either ordering of the ambient value sizes. *)
+
+(** 局部 horn 同构保留原生 Hom 及相等大小；实现填充也允许环境值大小的两种次序。 *)
+
+Context `{HC : !IsGroupoid C} `{HD : !IsGroupoid D}.
+
+Definition low_eq_outer_horn (A B E : @Ob C)
+  : TriangleS C A B E ≅[SetCat] Horn2S C A B E fin_first
+  := horn2_0_iso.
+
+Definition high_eq_outer_horn (A B E : @Ob D)
+  : TriangleS D A B E ≅[SetCat]
+      Horn2S D A B E (fin_next (fin_next fin_first))
+  := horn2_2_iso.
+
+Definition low_eq_local_horn (A B E : X)
+  : Horn2S (VertexCat T) A B E fin_first →r
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat
+  := @local_horn2_resp _ _ T (VertexCat_IsGroupoid T) A B E fin_first.
+
+Definition high_eq_local_horn (A B E : Y)
+  : Horn2S (VertexCat S) A B E (fin_next (fin_next fin_first)) →r
+      (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat
+  := @local_horn2_resp _ _ S (VertexCat_IsGroupoid S)
+      A B E (fin_next (fin_next fin_first)).
 End VertexNerveLevels.

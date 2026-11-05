@@ -233,3 +233,25 @@ Definition chain_reindex {C : Cat} {m n : nat}
 
 Notation "c '[' Q ']Ch'" := (chain_reindex Q c)
   (at level 8, left associativity, format "c [ Q ]Ch") : cat_scope.
+
+(** Two consecutive arrows form the spine of a triangle. The composite
+    edge is supplied by the general chain interpretation. *)
+
+(** 两条相邻箭头构成三角形的脊；复合边由一般箭头链解释提供。 *)
+
+Program Definition PairChain {C : Cat} {A B D : @Ob C}
+    (f : Hom A B) (g : Hom B D)
+  : Chain C 2
+  :=
+  {|chain_vertex i := match i with
+      | inl _ => A
+      | inr (inl _) => B
+      | inr (inr _) => D
+      end
+  ; chain_edge i := _
+  |}.
+Next Obligation.
+  destruct i as [[] | [[] | []]]; [exact f | exact g].
+Defined.
+
+Notation "'⟨' f ',' g '⟩Ch'" := (PairChain f g) : cat_scope.
