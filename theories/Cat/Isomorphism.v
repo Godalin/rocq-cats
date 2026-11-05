@@ -97,3 +97,44 @@ Proof.
 Qed.
 
 End IsomorphismEquations.
+
+(** An isomorphism read in the opposite keeps its two arrows and reverses
+    the inverse equations. *)
+
+(** 在反范畴中读取同构，保留两条箭头并反转互逆方程。 *)
+
+Definition iso_op {C : Cat} {X Y : @Ob C} (i : X ≅ Y)
+  : Y ≅[C^op] X.
+Proof.
+  exists i.1, i.2.1. split; [exact (snd i.2.2) | exact (fst i.2.2)].
+Defined.
+
+Notation "i '^opI'" := (iso_op i) (at level 35) : cat_scope.
+
+(** Postcomposition by an isomorphism has a unique solution for every
+    target arrow. Its mediator is inverse composition. *)
+
+(** 与同构后复合的方程对每条目标箭头均有唯一解，中介为与逆的复合。 *)
+
+Definition iso_postcomp_universal {C : Cat} {X Y Z : @Ob C}
+    (i : X ≅ Y) (f : Hom Z Y)
+  : is_unique (R := @HomEq C Z X)
+      (λ g, i.1 ∘ g ≈ f) (i.2.1 ∘ f).
+Proof.
+  refine {|this := _
+          ; that := _
+          |}.
+  - apply (snd (iso_move_l i _ f)). reflexivity.
+  - intros g H. exact (fst (iso_move_l i g f) H).
+Defined.
+
+(** Precomposition has the dual universal solution, obtained from the same
+    construction in the opposite category. *)
+
+(** 预复合具有对偶的泛解，由反范畴中的同一构造得到。 *)
+
+Definition iso_precomp_universal {C : Cat} {X Y Z : @Ob C}
+    (i : X ≅ Y) (f : Hom X Z)
+  : is_unique (R := @HomEq C Y Z)
+      (λ g, g ∘ i.1 ≈ f) (f ∘ i.2.1)
+  := @iso_postcomp_universal (C^op) Y X Z (i^opI) f.
