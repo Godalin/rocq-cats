@@ -3,6 +3,7 @@ From Cats Require Import
   Cat.Shape.Simplex.Core
   Instance.Set.Simplicial.Nerve
   Instance.Set.Simplicial.Monoid
+  Instance.Set.Simplicial.Vertex
   Instance.Set.Lift.
 From Cats Require Import
   Cat.Groupoid.Core
@@ -1650,3 +1651,38 @@ Definition low_eq_monoid_comparison
   : (LiftF ∘F Nₘ(N) : Functor (Δ^op) SetCat@{e c _ _ _ _ _}) ⇒ N≅(B(N))
   := MonoidDiagramN.
 End MonoidNerveLevels.
+
+(** Vertex labels and ambient homs retain independent carrier/equality sizes.
+    In particular, value equality need not dominate the vertex carrier.
+    Both orderings also survive the forgetful diagram comparison. *)
+
+(** 顶点标签与环境 Hom 保留独立的载体和相等大小；特别地，值相等不必高于顶点
+    载体。两种大小次序在忘却到图式 nerve 的比较中同样保留。 *)
+
+Section VertexNerveLevels.
+Universes e h o l u p.
+Constraint e < h.
+Constraint h < o.
+Constraint o < l.
+Constraint l < u.
+Constraint u < p.
+Context (X : SetC@{o e}) (Y : SetC@{e o})
+    (C : Cat@{o h e l l}) (D : Cat@{e h o l l})
+    (T : Functor (EqGpd X) C) (S : Functor (EqGpd Y) D).
+
+Definition low_eq_vertex_nerve
+  : Functor (Δ^op) SetCat@{u h _ _ _ _ _}
+  := Nᵥ(T).
+
+Definition high_eq_vertex_nerve
+  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  := Nᵥ(S).
+
+Definition low_eq_vertex_diagram_comparison
+  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) ⇒ N≅(C)
+  := VertexDiagramN T.
+
+Definition high_eq_vertex_diagram_comparison
+  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
+  := VertexDiagramN S.
+End VertexNerveLevels.
