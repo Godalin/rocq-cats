@@ -12,6 +12,7 @@ From Cats Require Import
   Instance.Bool.Action
   Instance.Bool.Group
   Instance.Bool.Nerve
+  Instance.Set.Simplicial.Spine
   Instance.Set.Simplicial.Nerve.
 
 Module CodeConversion.
@@ -144,4 +145,17 @@ Example vertex_nerve_monoid_inverse_computes
   : lower (((monoid_vertex_iso (M := BoolS)).2 1%nat).1
       (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
                                   |})) fin_first = true.
+Proof. reflexivity. Qed.
+
+(** The chosen spine inverse reconstructs the original arrow by interval
+    evaluation, without an opaque extension witness. *)
+
+(** 选定的脊逆映射通过区间求值重构原箭头，不经过不透明的延拓见证。 *)
+
+Example vertex_spine_inverse_computes
+  : let e := vertex_spine_iso
+      (MonoidObjectsF BoolS (HM := BoolS_Monoid)) 1%nat in
+    fmap (lower (e.2.1 (e.1
+      (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
+                                  |})))) (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.

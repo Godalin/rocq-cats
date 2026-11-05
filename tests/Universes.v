@@ -3,7 +3,7 @@ From Cats Require Import
   Cat.Shape.Simplex.Core
   Instance.Set.Simplicial.Nerve
   Instance.Set.Simplicial.Monoid
-  Instance.Set.Simplicial.Vertex
+  Instance.Set.Simplicial.Spine
   Instance.Set.Lift.
 From Cats Require Import
   Cat.Groupoid.Core
@@ -1685,4 +1685,31 @@ Definition low_eq_vertex_diagram_comparison
 Definition high_eq_vertex_diagram_comparison
   : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
   := VertexDiagramN S.
+
+(** Chain data need not carry the larger diagram-law universe. Equality
+    remains independent of the native vertex and arrow carriers. *)
+
+(** 链数据不必携带较大的图式定律宇宙；相等仍独立于原生顶点及箭头载体。 *)
+
+Definition low_eq_vertex_chains (n : nat)
+  : SetC@{o e}
+  := VertexChainS T n.
+
+Definition high_eq_vertex_chains (n : nat)
+  : SetC@{h o}
+  := VertexChainS S n.
+
+(** The spine isomorphism also admits both orderings of value sizes. *)
+
+(** 脊同构同样允许值大小的两种次序。 *)
+
+Definition low_eq_vertex_spine (n : nat)
+  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) n ≅[SetCat]
+      LiftS (VertexChainS T n)
+  := vertex_spine_iso T n.
+
+Definition high_eq_vertex_spine (n : nat)
+  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
+      LiftS (VertexChainS S n)
+  := vertex_spine_iso S n.
 End VertexNerveLevels.

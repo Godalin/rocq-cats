@@ -88,6 +88,12 @@ A category theory library for self study.
   comparisons recovers the earlier map to the diagram nerve. A bare category
   does not itself select this extra object equality and transport data.
   Full-faithfulness, coskeletality and Kan theory remain open.
+  The [spine correspondence](./theories/Instance/Set/Simplicial/Spine.v)
+  identifies every degree of the vertex nerve with the
+  [setoid of composable chains](./theories/Instance/Set/VertexChain.v).
+  Both reconstruction and its uniqueness follow from the
+  [general finite-chain interpretation](./theories/Cat/Chain.v);
+  simplex restriction corresponds to composing the image intervals of a chain.
 
 ### ETCS
 
