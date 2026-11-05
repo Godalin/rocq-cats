@@ -120,6 +120,18 @@ Proof.
     + exact (fin_next (@fin_skip n i x)).
 Defined.
 
+(** The inserted position is absent from the image of a skip map. *)
+
+(** 跳过映射的像不包含所插入的位置。 *)
+
+Lemma fin_skip_avoids {n : nat} (i : Fin (S n)) (x : Fin n)
+  : ¬ fin_skip i x = i.
+Proof.
+  induction n as [| n IH] in i, x |- *; [destruct x |].
+  destruct i as [[] | i], x as [[] | x]; cbn; try discriminate.
+  intros H. apply (IH i x). now injection H.
+Defined.
+
 (** Identify the indicated position with its immediate successor. *)
 
 (** 将指定位置与其紧邻后继合并。 *)
