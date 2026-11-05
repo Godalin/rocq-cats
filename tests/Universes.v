@@ -1,5 +1,5 @@
 From Cats Require Import
-  Instance.Set.Simplicial.Filling
+  Instance.Set.Simplicial.Kan
   STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core
@@ -1755,6 +1755,19 @@ Definition low_eq_actual_horn (i : Ordinal 2%nat)
 Definition high_eq_actual_horn (i : Ordinal 2%nat)
   : HasHornFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat i
   := vertex_groupoid_horn2_HasFillers S (HC := VertexCat_IsGroupoid S) i.
+
+(** The all-dimensional Kan structures retain both strict orderings of
+    value carrier and equality universes. *)
+
+(** 全维 Kan 结构保留值载体与相等宇宙的两种严格次序。 *)
+
+Definition low_eq_vertex_kan
+  : HasKanFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _})
+  := vertex_groupoid_HasKanFillers T (HC := VertexCat_IsGroupoid T).
+
+Definition high_eq_vertex_kan
+  : HasKanFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+  := vertex_groupoid_HasKanFillers S (HC := VertexCat_IsGroupoid S).
 End VertexNerveLevels.
 
 (** Boundary and horn carriers retain factorization witnesses, while their

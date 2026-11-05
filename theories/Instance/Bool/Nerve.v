@@ -4,6 +4,7 @@ From Cats Require Import
   Instance.Bool.Action
   Instance.Bool.Group
   Instance.Set.Lift
+  Instance.Set.Simplicial.Kan
   Instance.Set.Simplicial.Nerve.
 
 Local Open Scope nat_scope.
@@ -96,6 +97,18 @@ Defined.
 Definition BoolVertexNerve
   : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Nᵥ(MonoidObjectsF BoolS).
+
+(** The vertex nerve of the xor group has chosen fillers in every
+    positive dimension, while retaining its distinct loops. Enable this
+    structure explicitly. *)
+
+(** 异或群的顶点 nerve 在全部正维具有选定填充，并保留不同环路；须显式启用此结构。 *)
+
+Definition BoolVertexNerve_HasKanFillers
+  : HasKanFillers BoolVertexNerve
+  := vertex_groupoid_HasKanFillers (MonoidObjectsF BoolS)
+      (HC := VertexCat_IsGroupoid (MonoidObjectsF BoolS)
+        (HC := BoolGroupoid_IsGroupoid)).
 
 (** The tuple interpretation is a map into the general construction. *)
 

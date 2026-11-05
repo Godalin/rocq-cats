@@ -119,9 +119,20 @@ A category theory library for self study.
   two-horn fillers; a groupoid on the selected objects gives all three kinds.
   [Actual outer horn filling](./theories/Instance/Set/Simplicial/Outer.v)
   conversely recovers right division and groupoid structure: even the first
-  outer two-horn family suffices. Consequently chosen Kan filling implies a
-  groupoid on the selected objects. The all-dimensional forward Kan
-  construction remains to be proved.
+  outer two-horn family suffices.
+  [Groupoid stars](./theories/Cat/Groupoid/Star.v) describe ordinal diagrams
+  by radial transitions from a common centre; [face overlaps](./theories/Instance/Set/Simplicial/Star.v)
+  compare these transitions using the specified vertex transport.
+  [Kan filling](./theories/Instance/Set/Simplicial/Kan.v) then glues a common
+  star in every dimension at least two, and fills one-horns by identity edges.
+  Thus `HasKanFillers (Nᵥ(T))` is equivalent to `IsGroupoid (VertexCat T)`,
+  with explicit witnesses in both directions and no choice axiom.
+  The same star comparison proves the full universal property: every actual
+  horn in dimension at least two has a unique filler in the specified equality.
+  The [boolean vertex nerve](./theories/Instance/Bool/Nerve.v) is a concrete
+  all-dimensional Kan model retaining two distinct loops. Full faithfulness,
+  coskeletality and examples with nontrivial higher homotopy remain separate
+  goals; ordinary groupoid nerves do not provide the latter.
 
 ### ETCS
 
