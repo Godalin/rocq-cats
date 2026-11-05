@@ -1,6 +1,6 @@
 From Cats Require Export
   Instance.Set.Simplicial.Standard
-  Instance.Set.Sieve.
+  Instance.Set.Sieve.Core.
 From Cats Require Import
   Cat.Morphism.
 
