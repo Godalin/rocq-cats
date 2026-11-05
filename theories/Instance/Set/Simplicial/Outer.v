@@ -39,45 +39,39 @@ Next Obligation.
   - refine {|lower := vertex_ordinal_precomp_eq T f0 h0 _
         (⟦ArrowChain h⟧Ch)
             |}.
-    intros z. pose proof (fst (simplex_eq_iff _ _) E z) as Ez.
-    change (@fin_skip 2 (fin_next fin_first) (f0 z) =
-      @fin_skip 2 (fin_next fin_first) (h0 z)) in Ez.
-    destruct (f0 z) as [[] | [[] | []]], (h0 z) as [[] | [[] | []]];
-      try reflexivity; discriminate.
+    intros z. exact (@fin_skip_injective 2 (fin_next fin_first)
+      (f0 z) (h0 z) (fst (simplex_eq_iff _ _) E z)).
   - refine {|lower := vertex_constant_precomp_eq T _ _ f0 h0
         fin_first fin_first _ _ (reflexivity (A : X))
             |}.
     + intros z. pose proof (fst (simplex_eq_iff _ _) E z) as Ez.
-      change (@fin_skip 2 (fin_next fin_first) (f0 z) =
-        @fin_skip 2 (fin_next (fin_next fin_first)) (h0 z)) in Ez.
+      change (δ[1; fin_next fin_first] (f0 z) =
+        δ[1; fin_next (fin_next fin_first)] (h0 z)) in Ez.
       destruct (f0 z) as [[] | [[] | []]], (h0 z) as [[] | [[] | []]];
         try reflexivity; discriminate.
     + intros z. pose proof (fst (simplex_eq_iff _ _) E z) as Ez.
-      change (@fin_skip 2 (fin_next fin_first) (f0 z) =
-        @fin_skip 2 (fin_next (fin_next fin_first)) (h0 z)) in Ez.
+      change (δ[1; fin_next fin_first] (f0 z) =
+        δ[1; fin_next (fin_next fin_first)] (h0 z)) in Ez.
       destruct (f0 z) as [[] | [[] | []]], (h0 z) as [[] | [[] | []]];
         try reflexivity; discriminate.
   - refine {|lower := vertex_constant_precomp_eq T _ _ f0 h0
         fin_first fin_first _ _ (reflexivity (A : X))
             |}.
     + intros z. pose proof (fst (simplex_eq_iff _ _) E z) as Ez.
-      change (@fin_skip 2 (fin_next (fin_next fin_first)) (f0 z) =
-        @fin_skip 2 (fin_next fin_first) (h0 z)) in Ez.
+      change (δ[1; fin_next (fin_next fin_first)] (f0 z) =
+        δ[1; fin_next fin_first] (h0 z)) in Ez.
       destruct (f0 z) as [[] | [[] | []]], (h0 z) as [[] | [[] | []]];
         try reflexivity; discriminate.
     + intros z. pose proof (fst (simplex_eq_iff _ _) E z) as Ez.
-      change (@fin_skip 2 (fin_next (fin_next fin_first)) (f0 z) =
-        @fin_skip 2 (fin_next fin_first) (h0 z)) in Ez.
+      change (δ[1; fin_next (fin_next fin_first)] (f0 z) =
+        δ[1; fin_next fin_first] (h0 z)) in Ez.
       destruct (f0 z) as [[] | [[] | []]], (h0 z) as [[] | [[] | []]];
         try reflexivity; discriminate.
   - refine {|lower := vertex_ordinal_precomp_eq T f0 h0 _
         (⟦ArrowChain f⟧Ch)
             |}.
-    intros z. pose proof (fst (simplex_eq_iff _ _) E z) as Ez.
-    change (@fin_skip 2 (fin_next (fin_next fin_first)) (f0 z) =
-      @fin_skip 2 (fin_next (fin_next fin_first)) (h0 z)) in Ez.
-    destruct (f0 z) as [[] | [[] | []]], (h0 z) as [[] | [[] | []]];
-      try reflexivity; discriminate.
+    intros z. exact (@fin_skip_injective 2 (fin_next (fin_next fin_first))
+      (f0 z) (h0 z) (fst (simplex_eq_iff _ _) E z)).
 Defined.
 
 (** Descent realizes the outer horn without requiring a missing edge. *)

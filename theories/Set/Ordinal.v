@@ -132,6 +132,62 @@ Proof.
   intros H. apply (IH i x). now injection H.
 Defined.
 
+(** A skip map identifies no two finite positions. *)
+
+(** 跳过映射不会等同两个不同的有限位置。 *)
+
+Lemma fin_skip_injective {n : nat} (i : Fin (S n)) (x y : Fin n)
+    (H : fin_skip i x = fin_skip i y)
+  : x = y.
+Proof.
+  induction n as [|n IH] in i, x, y, H |- *; [destruct x |].
+  destruct i as [[] | i].
+  - change (fin_next x = fin_next y) in H. now injection H.
+  - destruct x as [[] | x], y as [[] | y]; cbn in H;
+      try discriminate; [reflexivity |].
+    f_equal. apply (IH i). injection H. intros E. exact E.
+Qed.
+
+(** Every position other than the omitted one has a computational
+    preimage. Only this concrete finite type uses native equality. *)
+
+(** 除省略位置外，每个位置都有可计算原像；此处原生相等只用于具体有限类型。 *)
+
+Fixpoint fin_unskip {n : nat} (i x : Fin (S n))
+    (H : ¬ x = i)
+  : ∃ y : Fin n, fin_skip i y = x.
+Proof.
+  destruct n as [|n].
+  - destruct i as [[] | []], x as [[] | []]. destruct (H eq_refl).
+  - destruct i as [[] | i], x as [[] | x].
+    + destruct (H eq_refl).
+    + exists x. reflexivity.
+    + exists fin_first. reflexivity.
+    + assert (K : ¬ x = i) by (intros E; apply H; now f_equal).
+      destruct (@fin_unskip n i x K) as [y E].
+      exists (fin_next y). change (fin_next (fin_skip i y) = fin_next x).
+      now rewrite E.
+Defined.
+
+(** Among at least three positions one can avoid any given pair. This is
+    a finite computation, not a choice principle. *)
+
+(** 至少三个位置中总能避开任意指定的一对；这是有限计算，不使用选择原理。 *)
+
+Definition fin_avoid_pair {n : nat} (i j : Fin (S (S (S n))))
+  : ∃ k : Fin (S (S (S n))), (¬ k = i) ∧ (¬ k = j).
+Proof.
+  destruct i as [[] | i], j as [[] | j].
+  - exists (fin_next fin_first). split; discriminate.
+  - destruct j as [[] | j].
+    + exists (fin_next (fin_next fin_first)). split; discriminate.
+    + exists (fin_next fin_first). split; discriminate.
+  - destruct i as [[] | i].
+    + exists (fin_next (fin_next fin_first)). split; discriminate.
+    + exists (fin_next fin_first). split; discriminate.
+  - exists fin_first. split; discriminate.
+Defined.
+
 (** Identify the indicated position with its immediate successor. *)
 
 (** 将指定位置与其紧邻后继合并。 *)
@@ -240,6 +296,19 @@ Local Ltac ordinal_arith :=
 Lemma skip_rank_monotone (i x y : nat) (H : x ≤ y)
   : skip_rank i x ≤ skip_rank i y.
 Proof. ordinal_arith. Qed.
+
+(** Insertion also reflects the order of positions. *)
+
+(** 插入同样反映位置间的顺序。 *)
+
+Lemma fin_skip_order_reflect {n : nat} (i : Fin (S n)) (x y : Fin n)
+    (H : fin_rank (fin_skip i x) ≤ fin_rank (fin_skip i y))
+  : fin_rank x ≤ fin_rank y.
+Proof.
+  rewrite !fin_skip_rank in H. unfold skip_rank in H.
+  destruct (Nat.ltb_spec0 (fin_rank x) (fin_rank i));
+    destruct (Nat.ltb_spec0 (fin_rank y) (fin_rank i)); lia.
+Qed.
 
 (** Merging preserves the natural-number order. *)
 
