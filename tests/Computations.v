@@ -1,4 +1,6 @@
 From Cats Require Import
+  Instance.Set.Simplicial.Horn2.
+From Cats Require Import
   Cat.Core
   Cat.Shape.Simplex.Operators
   DTT.CwF.
@@ -13,7 +15,6 @@ From Cats Require Import
   Instance.Bool.Group
   Instance.Bool.Nerve
   Instance.Set.Simplicial.Spine
-  Instance.Set.Simplicial.Horn2
   Instance.Set.Simplicial.Nerve.
 
 Module CodeConversion.
@@ -194,3 +195,23 @@ Example outer_horn2_recovered_inverse_computes
 Proof. reflexivity. Qed.
 
 End LocalHornComputation.
+
+Module HornFaceComputation.
+
+(** A retained coface followed by actual horn inclusion still computes
+    its finite vertex, independently of the stored membership witness. *)
+
+(** 保留的余面后接实际 horn 包含，仍计算出有限顶点，不受存储的隶属见证影响。 *)
+
+Definition retained_first_face
+  : ¬ (fin_first : Ordinal 2%nat) = fin_next fin_first.
+Proof. discriminate. Defined.
+
+Example horn_face_inclusion_computes
+  : fin_rank (lower (ιΛ[2%nat; fin_next fin_first] 0%nat
+      (HornFaceN (fin_next fin_first) fin_first retained_first_face
+        0%nat {|lower := δ[0%nat; fin_next fin_first]
+               |})) fin_first) = 1%nat.
+Proof. reflexivity. Qed.
+
+End HornFaceComputation.

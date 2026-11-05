@@ -100,8 +100,16 @@ A category theory library for self study.
   groupoid, and the resulting realized two-simplices are unique under the
   specified equality. Conversely, chosen outer fillers characterize groupoids
   through the [general division criterion](./theories/Cat/Groupoid/Division.v).
-  These are local fixed-vertex results; general horn objects and the full Kan
-  criterion remain to be constructed.
+  [Boundaries and horns](./theories/Instance/Set/Simplicial/Boundary.v)
+  are actual subpresheaves of standard simplices, constructed uniformly from
+  [generated sieves](./theories/Cat/Sieve.v). Their inclusions are monic;
+  membership retains a face factorization, while equality compares only the
+  underlying simplex operator. The [general sieve theory](./theories/Instance/Set/Sieve.v)
+  proves generator extensionality and the Yoneda extension correspondence.
+  [Horn maps and fillers](./theories/Instance/Set/Simplicial/Horn.v) use these
+  interfaces; local retained-edge equality already implies equality of the
+  entire realized horn map. Recovering local data from arbitrary horn maps
+  and the full Kan criterion remain to be proved.
 
 ### ETCS
 

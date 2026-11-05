@@ -1,5 +1,6 @@
 From Cats Require Export
   Cat.Groupoid.Division
+  Instance.Set.Simplicial.Horn
   Instance.Set.Simplicial.Spine.
 From Cats Require Import
   Cat.Groupoid.Functor
@@ -463,4 +464,79 @@ Proof.
       (@inner_horn2_iso (VertexCat T) A B D) △₂[T; A; B; D] h).
   - exact (iso_fiber_image_universal
       (@horn2_2_iso (VertexCat T) HC A B D) △₂[T; A; B; D] h).
+Defined.
+
+(** Equality of a triangle face follows from equality of its sole edge.
+    The two endpoint labels are fixed, and reflexive transports are identities. *)
+
+(** 实现三角形的面只有一条边，其相等蕴含整个面的相等；两个端点标签固定，
+    自反运输作用为恒等。 *)
+
+Lemma triangle_face_edge_eq@{u p +} {X : SetC} {C : Cat}
+    {T : Functor (EqGpd X) C} {A B D : X}
+    (p q : TriangleS (VertexCat T) A B D) (j : Ordinal 2)
+    (H : fmap (lower (d[Nᵥ(T); 1; j]
+      ((△₂[T; A; B; D] : _ →r
+        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
+        (ordinal_step fin_first) ≈
+      fmap (lower (d[Nᵥ(T); 1; j] (△₂[T; A; B; D] q)))
+        (ordinal_step fin_first))
+  : d[Nᵥ(T); 1; j] (△₂[T; A; B; D] p) ≈S
+      d[Nᵥ(T); 1; j] (△₂[T; A; B; D] q).
+Proof.
+  apply (snd (vertex_simplex_eq_steps _ _)).
+  exists (λ k, reflexivity (lower (d[Nᵥ(T); 1; j]
+    (△₂[T; A; B; D] p)) k : X)).
+  intros [[] | []]. rewrite !vertex_transport_id, comp_id_l, comp_id_r.
+  exact H.
+Defined.
+
+(** Equal local horn restrictions give equal retained one-dimensional faces.
+    This uses the specified vertex equality and requires no groupoid. *)
+
+(** 相等的局部 horn 限制给出相等的保留一维面；使用指定顶点相等，不要求群胚。 *)
+
+Lemma triangle_retained_face_eq@{u p +} {X : SetC} {C : Cat}
+    {T : Functor (EqGpd X) C} {A B D : X}
+    (p q : TriangleS (VertexCat T) A B D) (i j : Ordinal 2)
+    (Hj : ¬ j = i) (H : ρ₂[VertexCat T; A; B; D; i] p ≈S
+      ρ₂[VertexCat T; A; B; D; i] q)
+  : d[Nᵥ(T); 1; j]
+      ((△₂[T; A; B; D] : _ →r
+        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p) ≈S
+      d[Nᵥ(T); 1; j] (△₂[T; A; B; D] q).
+Proof.
+  destruct p as [f g], q as [f' g'].
+  apply (triangle_face_edge_eq (f, g) (f', g') j).
+  destruct i as [[] | [[] | [[] | []]]];
+    destruct j as [[] | [[] | [[] | []]]];
+    try (destruct (Hj eq_refl)).
+  - rewrite !triangle_face_1. exact (snd H).
+  - rewrite !triangle_face_2. exact (fst H).
+  - rewrite !triangle_face_0. exact (snd H).
+  - rewrite !triangle_face_2. exact (fst H).
+  - rewrite !triangle_face_0. exact (fst H).
+  - rewrite !triangle_face_1. exact (snd H).
+Defined.
+
+(** Local equality of the retained edges implies equality of the entire maps
+    from the actual horn. The general generator criterion propagates the
+    face equations to every degree and every factorization. *)
+
+(** 保留边的局部相等蕴含从实际 horn 出发的整个映射相等；一般生成元判等将面方程
+    传播到每个维度及每种分解。 *)
+
+Lemma triangle_horn_restrict_eq@{u p +} {X : SetC} {C : Cat}
+    {T : Functor (EqGpd X) C} {A B D : X}
+    (p q : TriangleS (VertexCat T) A B D) (i : Ordinal 2)
+    (H : ρ₂[VertexCat T; A; B; D; i] p ≈S
+      ρ₂[VertexCat T; A; B; D; i] q)
+  : ((△₂[T; A; B; D] : _ →r
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)↾Λ[Nᵥ(T); 2; i]
+      ≈N (△₂[T; A; B; D] q)↾Λ[Nᵥ(T); 2; i].
+Proof.
+  apply (snd (@generated_sieve_map_eq Δ 2
+    (∃ j : Ordinal 2, ¬ j = i) (λ _, 1) (λ j, δ[1; j.1])
+    (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) _ _)).
+  intros [j Hj]. exact (triangle_retained_face_eq p q i j Hj H).
 Defined.

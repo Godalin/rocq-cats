@@ -1741,3 +1741,34 @@ Definition high_eq_local_horn (A B E : Y)
   := @local_horn2_resp _ _ S (VertexCat_IsGroupoid S)
       A B E (fin_next (fin_next fin_first)).
 End VertexNerveLevels.
+
+(** Boundary and horn carriers retain factorization witnesses, while their
+    specified equality may lie strictly below or above the value carrier. *)
+
+(** 边界与 horn 载体保留分解见证，而指定相等可以严格低于或高于值载体。 *)
+
+Section SimplicialBoundaryLevels.
+Universes e u p.
+Constraint e < u.
+Constraint u < p.
+
+Definition low_eq_boundary (n : nat)
+  : Functor (Δ^op) SetCat@{u e _ _ _ _ _}
+  := ∂Δ[n].
+
+Definition high_eq_horn (n : nat) (i : Ordinal n)
+  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  := Λ[n; i].
+
+Definition low_eq_horn_restriction
+    (X : Functor (Δ^op) SetCat@{u e _ _ _ _ _})
+    (n : nat) (i : Ordinal n)
+  : X n →r HornS X n i
+  := horn_restrict_resp i.
+
+Definition high_eq_horn_matching
+    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (n : nat) (i : Ordinal n)
+  : SetC
+  := HornS X n i.
+End SimplicialBoundaryLevels.
