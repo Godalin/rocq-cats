@@ -145,3 +145,86 @@ Definition ordinal_functor_rebuild_iso {n m : nat}
     (F : Functor [Ord n] [Ord m])
   : OrdinalF F (ordinal_functor_monotone F) ≅N F.
 Proof. apply ordinal_functor_rank_iso. intros x. reflexivity. Defined.
+
+(** The arrow between consecutive positions of a finite ordinal. *)
+
+(** 有限序数中相邻位置之间的箭头。 *)
+
+Definition ordinal_step {n : nat} (i : Fin@{Set} n)
+  : (@Hom [Ord n]) (fin_weaken i) (fin_next i).
+Proof.
+  apply nat_le_of_le. rewrite fin_weaken_rank. cbn. lia.
+Defined.
+
+(** Naturality on consecutive arrows implies naturality on every interval.
+    This is the generating-arrow principle for ordinal diagrams, valid in
+    any category with its specified hom equality. *)
+
+(** 相邻箭头上的自然性蕴涵每个区间上的自然性。这是序数图式的生成箭头原理，
+    对任意带指定 Hom 相等的范畴成立。 *)
+
+Lemma ordinal_naturality_steps {C : Cat} {n : nat}
+    (F G : Functor [Ord n] C) (α : ∀ i, Hom (F i) (G i))
+    (H : ∀ i : Fin@{Set} n,
+      α (fin_next i) ∘ fmap F (ordinal_step i) ≈
+        fmap G (ordinal_step i) ∘ α (fin_weaken i))
+  : ∀ i j (f : (@Hom [Ord n]) i j),
+      α j ∘ fmap F f ≈ fmap G f ∘ α i.
+Proof.
+  assert (Hid : ∀ {m} (P Q : Functor [Ord m] C)
+      (β : ∀ i, Hom (P i) (Q i)) i (f : (@Hom [Ord m]) i i),
+      β i ∘ fmap P f ≈ fmap Q f ∘ β i).
+  { intros m P Q β i f.
+    rewrite (@functor_fmap_proper _ _ P i i f
+      (@Cats.Cat.Core.id [Ord m] i) tt),
+      (@functor_fmap_proper _ _ Q i i f
+      (@Cats.Cat.Core.id [Ord m] i) tt),
+      !functor_id, comp_id_l, comp_id_r. reflexivity. }
+  induction n as [|n IH] in F, G, α, H |- *.
+  - intros [[] | []] [[] | []] f. apply Hid.
+  - assert (Hnext : ∀ i j : Ordinal n,
+        fin_rank i ≤ fin_rank j →
+          fin_rank (fin_next i) ≤ fin_rank (fin_next j)).
+    { cbn. intros. lia. }
+    pose (Q := OrdinalF (@fin_next (S n)) Hnext).
+    assert (Htail : ∀ i j (f : (@Hom [Ord n]) i j),
+      α (fin_next j) ∘ fmap F (fmap Q f) ≈
+        fmap G (fmap Q f) ∘ α (fin_next i)).
+    { apply (IH (F ∘F Q) (G ∘F Q)). intros i.
+      change (α (fin_next (fin_next i)) ∘
+        fmap F (fmap Q (ordinal_step i)) ≈
+        fmap G (fmap Q (ordinal_step i)) ∘
+          α (fin_next (fin_weaken i))).
+      rewrite (@functor_fmap_proper _ _ F _ _
+        (fmap Q (ordinal_step i)) (ordinal_step (fin_next i)) tt),
+        (@functor_fmap_proper _ _ G _ _
+        (fmap Q (ordinal_step i)) (ordinal_step (fin_next i)) tt).
+      exact (H (fin_next i)). }
+    intros [[] | i] [[] | j] f.
+    + apply Hid.
+    + pose (a := ordinal_step (@fin_first n)).
+      pose (b := fmap Q (ordinal_from_first j)).
+      transitivity (α (fin_next j) ∘ (fmap F b ∘ fmap F a)).
+      * apply comp_proper; [reflexivity |].
+        transitivity (fmap F (b ∘ a)).
+        -- apply functor_fmap_proper. exact tt.
+        -- exact (@functor_comp _ _ F _ _ _ b a).
+      * transitivity ((α (fin_next j) ∘ fmap F b) ∘ fmap F a).
+        { symmetry. apply comp_assoc. }
+        transitivity ((fmap G b ∘ α (fin_next fin_first)) ∘ fmap F a).
+        { apply comp_proper; [exact (Htail fin_first j _) | reflexivity]. }
+        transitivity (fmap G b ∘ (α (fin_next fin_first) ∘ fmap F a)).
+        { apply comp_assoc. }
+        transitivity (fmap G b ∘ (fmap G a ∘ α fin_first)).
+        { apply comp_proper; [reflexivity | exact (H fin_first)]. }
+        transitivity ((fmap G b ∘ fmap G a) ∘ α fin_first).
+        { symmetry. apply comp_assoc. }
+        apply comp_proper; [|reflexivity]. symmetry.
+        transitivity (fmap G (b ∘ a)).
+        -- apply functor_fmap_proper. exact tt.
+        -- exact (@functor_comp _ _ G _ _ _ b a).
+    + destruct f.
+    + rewrite (@functor_fmap_proper _ _ F _ _ f (fmap Q f) tt),
+        (@functor_fmap_proper _ _ G _ _ f (fmap Q f) tt).
+      exact (Htail i j f).
+Defined.
