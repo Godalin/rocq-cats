@@ -1,0 +1,7 @@
+(rocq.theory
+ (name CatsBook)
+ (theories Cats Stdlib))
+
+(alias
+ (name runtest)
+ (deps Limits.vo))

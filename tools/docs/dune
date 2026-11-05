@@ -1,0 +1,18 @@
+(library
+ (name docs_filter)
+ (modules filter))
+
+(executable
+ (name docs)
+ (modules docs)
+ (libraries docs_filter unix str))
+
+(test
+ (name filter_test)
+ (modules filter_test)
+ (libraries docs_filter))
+
+(test
+ (name export_test)
+ (modules export_test)
+ (libraries docs_filter unix))

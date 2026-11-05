@@ -1,0 +1,280 @@
+open Docs_filter
+
+let read path =
+  let ic = open_in_bin path in
+  Fun.protect ~finally:(fun () -> close_in ic)
+    (fun () -> really_input_string ic (in_channel_length ic))
+
+let rec mkdir path =
+  if not (Sys.file_exists path) then begin
+    mkdir (Filename.dirname path); Unix.mkdir path 0o755
+  end
+
+let write path text =
+  mkdir (Filename.dirname path);
+  let oc = open_out_bin path in
+  Fun.protect ~finally:(fun () -> close_out oc) (fun () -> output_string oc text)
+
+let suffix ending s = Filename.check_suffix s ending
+
+let rec files dir =
+  Sys.readdir dir |> Array.to_list |> List.sort String.compare
+  |> List.concat_map (fun name ->
+    let path = Filename.concat dir name in
+    if Sys.is_directory path then files path else [path])
+
+let replace text pattern replacement =
+  Str.global_replace (Str.regexp_string pattern) replacement text
+
+let html text =
+  List.fold_left (fun s (a, b) -> replace s a b) text
+    ["&", "&amp;"; "<", "&lt;"; ">", "&gt;"; "\"", "&quot;"]
+
+let run program args =
+  if List.length args > 12 then
+    Printf.printf "+ %s (%d arguments)\n%!" program (List.length args)
+  else Printf.printf "+ %s\n%!"
+    (String.concat " " (List.map Filename.quote (program :: args)));
+  let pid = Unix.create_process program (Array.of_list (program :: args))
+    Unix.stdin Unix.stdout Unix.stderr in
+  match snd (Unix.waitpid [] pid) with
+  | Unix.WEXITED 0 -> ()
+  | _ -> failwith (program ^ " failed")
+
+type source = { path : string; name : string }
+
+let module_name path =
+  let stem = Filename.chop_extension path in
+  let prefix, offset =
+    if Filter.starts path 0 "theories/" then "Cats.", 9 else "CatsBook.", 5
+  in
+  prefix ^ String.map (function '/' -> '.' | c -> c)
+    (String.sub stem offset (String.length stem - offset))
+
+let metadata root source =
+  Filename.concat root ("_build/default/" ^ Filename.chop_extension source.path ^ ".glob")
+
+(* A sample includes referenced library modules, so its links stay local. *)
+
+(* 示例集包含被引用的库模块，保证引用仍指向本地页面。 *)
+
+let select root sample sources =
+  if not sample then sources
+  else
+    let selected = Hashtbl.create 32 in
+    let reference = Str.regexp "^R[^ ]+ \\([^ ]+\\) " in
+    let rec visit name =
+      if not (Hashtbl.mem selected name) then
+        match List.find_opt (fun s -> s.name = name) sources with
+        | None -> ()
+        | Some s ->
+            Hashtbl.add selected name ();
+            read (metadata root s) |> String.split_on_char '\n'
+            |> List.iter (fun line ->
+              if Str.string_match reference line 0 then
+                visit (Str.matched_group 1 line))
+    in
+    List.iter visit ["Cats.Cat.Limit.Core"; "Cats.Cat.Limit.Adjunction";
+      "CatsBook.Limits"];
+    List.filter (fun s -> Hashtbl.mem selected s.name) sources
+
+let page language title body =
+  "<!doctype html><html lang=\"" ^ language ^ "\"><head><meta charset=\"utf-8\">"
+  ^ "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+  ^ "<title>" ^ html title ^ "</title><link rel=\"stylesheet\" href=\"site.css\">"
+  ^ "</head><body><main>" ^ body ^ "</main></body></html>\n"
+
+let nav language other filename source =
+  let home, symbols, contents, raw =
+    if language = "en" then "Contents", "Symbols", "Module outline", "Source"
+    else "目录", "符号索引", "模块提纲", "源码"
+  in
+  "<nav class=\"site-nav\"><a href=\"index.html\">" ^ home
+  ^ "</a><a href=\"symbols.html\">" ^ symbols
+  ^ "</a><a href=\"toc.html\">" ^ contents
+  ^ "</a><a href=\"../" ^ other ^ "/" ^ filename ^ "\" lang=\"" ^ other ^ "\">"
+  ^ (if other = "zh" then "中文" else "English")
+  ^ "</a>" ^ (match source with None -> "" | Some path ->
+    "<a href=\"../source/" ^ path ^ "\">" ^ raw ^ "</a>") ^ "</nav>"
+
+let decorate dir language other sources =
+  files dir |> List.filter (suffix ".html") |> List.iter (fun path ->
+    let filename = Filename.basename path in
+    let source = List.find_opt (fun s -> s.name ^ ".html" = filename) sources in
+    let body = read path in
+    let body = replace body "<html " ("<html lang=\"" ^ language ^ "\" ") in
+    let body = replace body "<head>"
+      "<head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" in
+    let body = replace body "</head>"
+      "<link rel=\"stylesheet\" href=\"site.css\"></head>" in
+    let body = replace body "<body>" ("<body>" ^ nav language other filename
+      (Option.map (fun s -> s.path) source)) in
+    write path body)
+
+let index dir language sources =
+  let zh = language = "zh" in
+  let list book =
+    sources |> List.filter (fun s -> Filter.starts s.path 0 "book/" = book)
+    |> List.map (fun s -> "<li><a href=\"" ^ s.name ^ ".html\"><code>"
+      ^ s.name ^ "</code></a></li>") |> String.concat "\n"
+  in
+  let title = if zh then "Rocq-Cats：教程与参考手册" else "Rocq-Cats: tutorials and reference" in
+  write (dir ^ "/index.html") (page language title
+    ("<nav class=\"site-nav\"><a href=\"../"
+    ^ (if zh then "en" else "zh") ^ "/index.html\">"
+    ^ (if zh then "English" else "中文") ^ "</a></nav><h1>" ^ title ^ "</h1><p>"
+    ^ (if zh then "同一套双语源码，共享经过 Rocq 检查的定义、定理与示例。"
+       else "One bilingual source tree, with shared definitions, theorems and examples checked by Rocq.")
+    ^ "</p><h2>" ^ (if zh then "教程" else "Tutorials") ^ "</h2><ul>" ^ list true
+    ^ "</ul><h2>" ^ (if zh then "API 参考手册" else "API reference")
+    ^ "</h2><p><a href=\"symbols.html\">"
+    ^ (if zh then "按符号检索" else "Browse symbols")
+    ^ "</a> · <a href=\"toc.html\">"
+    ^ (if zh then "按模块提纲浏览" else "Browse module outlines")
+    ^ "</a></p><ul class=\"modules\">" ^ list false ^ "</ul>"))
+
+let attributes name text =
+  let regexp = Str.regexp (name ^ "=\"\\([^\"]*\\)\"") in
+  let rec loop pos acc =
+    try
+      ignore (Str.search_forward regexp text pos);
+      let value = Str.matched_group 1 text and last = Str.match_end () in
+      loop last (value :: acc)
+    with Not_found -> List.rev acc
+  in
+  loop 0 []
+
+let decode s =
+  let b = Buffer.create (String.length s) in
+  let rec loop i =
+    if i < String.length s then
+      if s.[i] = '%' && i + 2 < String.length s then
+        match int_of_string_opt ("0x" ^ String.sub s (i + 1) 2) with
+        | Some n -> Buffer.add_char b (Char.chr n); loop (i + 3)
+        | None -> Buffer.add_char b s.[i]; loop (i + 1)
+      else (Buffer.add_char b s.[i]; loop (i + 1))
+  in
+  loop 0; Buffer.contents b
+
+(* Rocq 9.0 may print named record constructors as plain variables without
+   anchors. Add an anchor at that visible constructor, using glob references
+   to distinguish constructors from ordinary identifiers. *)
+
+(* Rocq 9.0 有时把具名记录构造器显示为无锚点变量；根据 glob 引用识别构造器，
+   在其实际显示位置补锚点，不将普通标识符当作构造器。 *)
+
+let constructor_anchors root output sources =
+  let constructors = Hashtbl.create 16 in
+  List.iter (fun source ->
+    read (metadata root source) |> String.split_on_char '\n' |> List.iter (fun line ->
+      match Str.split (Str.regexp "[ \t]+") line with
+      | position :: name :: section :: symbol :: ["constr"]
+        when Filter.starts position 0 "R" ->
+          let id = if section = "<>" then symbol else section ^ "." ^ symbol in
+          Hashtbl.replace constructors (name, id) ()
+      | _ -> ())) sources;
+  List.iter (fun tag -> List.iter (fun source ->
+    let path = output ^ "/" ^ tag ^ "/" ^ source.name ^ ".html" in
+    let text = ref (read path) in
+    Hashtbl.iter (fun (name, id) () ->
+      if name = source.name && not (List.mem id (attributes "id" !text)) then
+        let token = "<span class=\"id\" title=\"var\">" ^ html id ^ "</span>" in
+        text := Str.replace_first (Str.regexp_string token)
+          ("<span id=\"" ^ html id ^ "\" class=\"id\" title=\"constructor\">"
+            ^ html id ^ "</span>") !text) constructors;
+    write path !text) sources) ["en"; "zh"]
+
+(* Check both destination files and fragments, including Unicode symbols. *)
+
+(* 同时检查目标文件及片段，涵盖 Unicode 符号。 *)
+
+let check_links output =
+  let pages = files output |> List.filter (suffix ".html") in
+  let cache = Hashtbl.create 64 in
+  let anchors path =
+    match Hashtbl.find_opt cache path with
+    | Some result -> result
+    | None ->
+        let text = read path in
+        let result = attributes "id" text @ attributes "name" text |> List.map decode in
+        Hashtbl.add cache path result; result
+  in
+  let errors = ref [] in
+  List.iter (fun path ->
+    attributes "href" (read path) |> List.iter (fun href ->
+      if not (Str.string_match (Str.regexp "^[A-Za-z][A-Za-z0-9+.-]*:") href 0) then begin
+        let file, fragment = match String.index_opt href '#' with
+          | None -> href, ""
+          | Some i -> String.sub href 0 i,
+              String.sub href (i + 1) (String.length href - i - 1)
+        in
+        let target = if file = "" then path
+          else Filename.concat (Filename.dirname path) (decode file) in
+        if not (Sys.file_exists target) then
+          errors := (path ^ ": missing " ^ href) :: !errors
+        else if fragment <> "" && suffix ".html" target
+          && not (List.mem (decode fragment) (anchors target)) then
+          errors := (path ^ ": missing anchor " ^ href) :: !errors
+      end)) pages;
+  if !errors <> [] then failwith (String.concat "\n" (List.rev !errors));
+  Printf.printf "Checked local links and anchors in %d HTML pages.\n%!" (List.length pages)
+
+let build root sample strict =
+  Sys.chdir root;
+  run "dune" ["build"; "@all"];
+  let sources = ["theories"; "book"] |> List.concat_map files
+    |> List.filter (suffix ".v")
+    |> List.map (fun path -> { path; name = module_name path })
+    |> select root sample in
+  let output = root ^ (if sample then "/_build/docs-sample" else "/_build/docs") in
+  mkdir output;
+  let warnings = ref [] in
+  List.iter (fun s -> write (output ^ "/source/" ^ s.path) (read s.path)) sources;
+  List.iter (fun (language, tag, other) ->
+    let inputs = output ^ "/.inputs/" ^ tag in
+    let paths = List.map (fun s ->
+      let original = read s.path in
+      let filtered, messages = Filter.filter language original in
+      if tag = "en" then List.iter (fun (m : Filter.diagnostic) ->
+        warnings := Printf.sprintf "%s:%d: %s" s.path m.line m.message :: !warnings) messages;
+      let path = inputs ^ "/" ^ s.path in
+      write path filtered;
+      write (Filename.chop_extension path ^ ".glob")
+        (Filter.glob ~original ~filtered (read (metadata root s)));
+      path) sources in
+    let dir = output ^ "/" ^ tag in
+    mkdir dir;
+    run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
+      "-R"; inputs ^ "/theories"; "Cats"; "-R"; inputs ^ "/book"; "CatsBook";
+      "-d"; dir] @ paths);
+    write (dir ^ "/symbols.html")
+      (replace (read (dir ^ "/index.html")) "\"index.html#" "\"symbols.html#");
+    decorate dir tag other sources;
+    write (dir ^ "/site.css") (read "tools/docs/site.css");
+    index dir tag sources)
+    [Filter.En, "en", "zh"; Filter.Zh, "zh", "en"];
+  write (output ^ "/index.html")
+    (page "en" "Rocq-Cats" "<h1>Rocq-Cats</h1><p><a href=\"en/index.html\" lang=\"en\">English</a> · <a href=\"zh/index.html\" lang=\"zh\">中文</a></p>");
+  write (output ^ "/site.css") (read "tools/docs/site.css");
+  let messages = List.rev !warnings in
+  write (output ^ "/warnings.txt") (String.concat "\n" messages ^ "\n");
+  List.iter prerr_endline messages;
+  constructor_anchors root output sources;
+  check_links output;
+  Printf.printf "Generated %d modules in each language: %s/index.html\n%!"
+    (List.length sources) output;
+  if strict && messages <> [] then failwith "unclassified or unpaired documentation"
+
+let () =
+  try
+    let sample = ref false and strict = ref false and root = ref (Sys.getcwd ()) in
+    Arg.parse ["--sample", Arg.Set sample, "Build the limit chapter and its dependencies";
+      "--strict", Arg.Set strict, "Reject language-classification diagnostics";
+      "--root", Arg.Set_string root, "Repository root"]
+      (function "build" -> () | s -> raise (Arg.Bad ("unknown command: " ^ s)))
+      "dune exec tools/docs/docs.exe -- build [--sample] [--strict]";
+    let root = Unix.realpath !root in
+    build root !sample !strict
+  with
+  | Failure message | Invalid_argument message -> prerr_endline message; exit 1
+  | Sys_error message -> prerr_endline message; exit 1

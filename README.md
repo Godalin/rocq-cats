@@ -155,6 +155,19 @@ opam exec --switch=rocq-env -- nix-shell --run 'dune build @all @runtest @instal
 The shell inherits Rocq and OCaml from the caller; it does not install a
 Rocq toolchain. The local VS Code build task uses this same environment.
 
+## Documentation
+
+Run `dune exec tools/docs/docs.exe -- build --strict` to generate separate
+English and Chinese HTML references and the checked tutorial from one bilingual
+source tree. Open `_build/docs/index.html`; use `--sample` for the limit chapter
+and its dependencies. See the [documentation guide](./docs/Documentation.md)
+and the first [tutorial chapter](./book/Limits.v).
+
+运行 `dune exec tools/docs/docs.exe -- build --strict`，从同一双语源码生成独立的
+中英文 HTML 参考手册与经过检查的教程。入口为 `_build/docs/index.html`；
+添加 `--sample` 只生成极限章节及其依赖。详见[文档指南](./docs/Documentation.md)
+及首个[教程章节](./book/Limits.v)。
+
 ## Repository layout
 
 - [Algebra](./theories/Algebra/): setoid monoids and groups, their single-object
