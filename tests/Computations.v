@@ -1,5 +1,5 @@
 From Cats Require Import
-  Instance.Set.Simplicial.Horn2.
+  Instance.Set.Simplicial.Filling.
 From Cats Require Import
   Cat.Core
   Cat.Shape.Simplex.Operators
@@ -215,3 +215,18 @@ Example horn_face_inclusion_computes
 Proof. reflexivity. Qed.
 
 End HornFaceComputation.
+
+(** An actual outer horn is reconstructed, filled locally, and realized
+    again without blocking the computation of its missing edge. *)
+
+(** 实际外 horn 经重构、局部填充及再次实现后，缺失边的计算仍不受阻碍。 *)
+
+Example actual_outer_horn2_filler_computes
+  : let T := MonoidObjectsF BoolS (HM := BoolS_Monoid) in
+    let x := (△₂[T; tt; tt; tt] : _ →r
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat) (true, true) in
+    let HF := vertex_groupoid_horn2_HasFillers T
+      (HC := VertexCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid)) fin_first in
+    fmap (lower (@horn_fill _ _ _ HF (x↾Λ[Nᵥ(T); 2%nat; fin_first])).1)
+      (ordinal_step (fin_next fin_first)) = true.
+Proof. reflexivity. Qed.

@@ -104,12 +104,21 @@ A category theory library for self study.
   are actual subpresheaves of standard simplices, constructed uniformly from
   [generated sieves](./theories/Cat/Sieve.v). Their inclusions are monic;
   membership retains a face factorization, while equality compares only the
-  underlying simplex operator. The [general sieve theory](./theories/Instance/Set/Sieve.v)
+  underlying simplex operator. The [general sieve theory](./theories/Instance/Set/Sieve/Core.v)
   proves generator extensionality and the Yoneda extension correspondence.
+  Its [matching theorem](./theories/Instance/Set/Sieve/Matching.v) identifies
+  maps from a generated sieve with generator values compatible on every
+  overlap, including a transparent unique descent and a setoid isomorphism.
   [Horn maps and fillers](./theories/Instance/Set/Simplicial/Horn.v) use these
   interfaces; local retained-edge equality already implies equality of the
-  entire realized horn map. Recovering local data from arbitrary horn maps
-  and the full Kan criterion remain to be proved.
+  entire realized horn map. [Compatible horn faces](./theories/Instance/Set/Simplicial/Matching.v)
+  recover the corresponding matching values and all overlap equations.
+  [Two-dimensional reconstruction](./theories/Instance/Set/Simplicial/Filling.v)
+  aligns shared endpoint labels by their specified transports and transfers
+  local fillings to arbitrary actual horn maps. Every category has inner
+  two-horn fillers; a groupoid on the selected objects gives all three kinds.
+  The converse from actual outer fillings and the full Kan criterion remain
+  to be proved.
 
 ### ETCS
 

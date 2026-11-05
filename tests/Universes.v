@@ -1,4 +1,6 @@
-From Cats Require Import STLC.Free.
+From Cats Require Import
+  Instance.Set.Simplicial.Filling
+  STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core
   Instance.Set.Simplicial.Nerve
@@ -1740,6 +1742,19 @@ Definition high_eq_local_horn (A B E : Y)
       (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat
   := @local_horn2_resp _ _ S (VertexCat_IsGroupoid S)
       A B E (fin_next (fin_next fin_first)).
+
+(** Actual horn maps admit the selected groupoid fillings at either
+    ordering of carrier and equality sizes. *)
+
+(** 两种载体与相等大小次序下，实际 horn 映射均容许选定群胚填充。 *)
+
+Definition low_eq_actual_horn (i : Ordinal 2%nat)
+  : HasHornFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat i
+  := vertex_groupoid_horn2_HasFillers T (HC := VertexCat_IsGroupoid T) i.
+
+Definition high_eq_actual_horn (i : Ordinal 2%nat)
+  : HasHornFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat i
+  := vertex_groupoid_horn2_HasFillers S (HC := VertexCat_IsGroupoid S) i.
 End VertexNerveLevels.
 
 (** Boundary and horn carriers retain factorization witnesses, while their
@@ -1772,3 +1787,28 @@ Definition high_eq_horn_matching
   : SetC
   := HornS X n i.
 End SimplicialBoundaryLevels.
+
+(** Matching isomorphisms lift their native data into common sizes while
+    allowing either ordering of the presheaf's own value sizes. *)
+
+(** 匹配同构将原生数据提升到共同大小，同时允许预层自身值大小的两种次序。 *)
+
+Section SimplicialMatchingLevels.
+Universes e u p v q.
+Constraint e < u.
+Constraint u < p.
+Constraint p < v.
+Constraint v < q.
+Context (X : Functor (Δ^op) SetCat@{u e _ _ _ _ _})
+    (Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}).
+
+Definition low_eq_matching (n : nat) (i : Ordinal (S n))
+  : LiftS@{_ _ v q} (HornMatchingS X n i) ≅[SetCat]
+      LiftS@{_ _ v q} (HornS X (S n) i)
+  := horn_matching_iso (X := X) n i.
+
+Definition high_eq_matching (n : nat) (i : Ordinal (S n))
+  : LiftS@{_ _ v q} (HornMatchingS Y n i) ≅[SetCat]
+      LiftS@{_ _ v q} (HornS Y (S n) i)
+  := horn_matching_iso (X := Y) n i.
+End SimplicialMatchingLevels.
