@@ -168,6 +168,15 @@ and the first [tutorial chapter](./book/Limits.v).
 添加 `--sample` 只生成极限章节及其依赖。详见[文档指南](./docs/Documentation.md)
 及首个[教程章节](./book/Limits.v)。
 
+For separate English/Chinese tutorial PDFs, run
+`dune exec tools/docs/docs.exe -- pdf --book --strict` with XeLaTeX available.
+Outputs are under `_build/docs-pdf/book/`. Use `pdf --sample` or `pdf` to include
+API references; see the guide for font dependencies and checks.
+
+运行 `dune exec tools/docs/docs.exe -- pdf --book --strict` 可导出独立的中英文
+教程 PDF，需要已有 XeLaTeX 环境，输出位于 `_build/docs-pdf/book/`。使用
+`pdf --sample` 或 `pdf` 包含 API 参考手册；字体依赖和检查方式见上述指南。
+
 ## Repository layout
 
 - [Algebra](./theories/Algebra/): setoid monoids and groups, their single-object

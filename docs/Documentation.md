@@ -151,6 +151,84 @@ languages; mathematical chapter order need not follow library dependency order.
 将可执行示例直接写入章节。Dune 会发现 `book/` 中的新章节，完整导出自动包含
 这些章节。两种语言共享源码顺序；数学章节顺序不必沿库的依赖顺序排列。
 
+## PDF export / PDF 导出
+
+PDF is a separate, optional target. To export just the checked tutorial in
+both languages:
+
+PDF 是独立的可选目标。只导出经过检查的双语教程：
+
+```sh
+dune exec tools/docs/docs.exe -- pdf --book --strict
+```
+
+The outputs are `_build/docs-pdf/book/en/rocq-cats-en.pdf` and
+`_build/docs-pdf/book/zh/rocq-cats-zh.pdf`. Use `pdf --sample --strict` for
+the limits chapter plus its API dependencies, or `pdf --strict` for the full
+reference and tutorials. These write separate `sample/` and `full/` directories
+under `_build/docs-pdf/`, with the same language/file layout. The full reference
+is several hundred pages; `--book` is the smaller reading edition.
+
+输出为 `_build/docs-pdf/book/en/rocq-cats-en.pdf` 和
+`_build/docs-pdf/book/zh/rocq-cats-zh.pdf`。使用 `pdf --sample --strict` 导出
+极限章节及其 API 依赖，或使用 `pdf --strict` 导出全库参考手册和教程。它们分别
+写入 `_build/docs-pdf/` 下独立的 `sample/` 和 `full/` 目录，语言及文件布局相同。
+全库参考手册有数百页；`--book` 是较短的教程阅读版。
+
+The same Nix/opam wrapper applies, for example:
+
+同样可以通过本地 Nix/opam 环境运行：
+
+```sh
+opam exec --switch=rocq-env -- nix-shell --run \
+  'dune exec tools/docs/docs.exe -- pdf --book --strict'
+```
+
+PDF additionally requires XeLaTeX and TeX Live packages for CTeX/Fandol,
+DejaVu, STIX Two Math, fontspec, geometry, hyperref, bookmark, fvextra,
+newunicodechar. The tested setup is TeX Live 2025, XeTeX
+0.999997. Fonts are selected by TeX font filenames, avoiding OS-specific
+font names. These tools were already supplied by the local Nix profile;
+ordinary HTML export and tests do not require TeX. No automatic dependency
+installation occurs.
+
+PDF 另外需要 XeLaTeX 及 TeX Live 中的 CTeX/Fandol、DejaVu、STIX Two Math、
+fontspec、geometry、hyperref、bookmark、fvextra 和 newunicodechar。
+已验证的版本为 TeX Live 2025、XeTeX 0.999997。通过 TeX 字体文件名选择字体，
+避免依赖操作系统专用字体名称。本地工具来自已有 Nix 配置；普通 HTML 导出和
+测试无需 TeX。工具不会自动安装依赖。
+
+The exporter runs coqdoc's LaTeX backend on the same filtered sources and
+metadata, then XeLaTeX twice for contents and references. It retains
+declarations and hides proofs, just like HTML. Generated TeX, filtered inputs,
+source copies, the coqdoc stylesheet and logs remain beside the PDFs.
+Inspect `xelatex-output.log` for a compiler failure and `rocq-cats-en.log` or
+`rocq-cats-zh.log` for detailed layout diagnostics. An input digest invalidates
+only the generated `.aux`, `.toc` and `.out` files when content or presentation
+changes, so old contents macros cannot leak into the next build.
+
+导出器对相同的过滤源码和元数据运行 coqdoc 的 LaTeX 后端，再运行两次 XeLaTeX
+生成目录和引用。与 HTML 一样，它保留声明并隐藏证明。生成的 TeX、过滤输入、
+源码副本、coqdoc 样式和日志均保存在 PDF 附近。编译失败时查看
+`xelatex-output.log`；详细排版诊断位于 `rocq-cats-en.log` 或
+`rocq-cats-zh.log`。输入校验值在内容或排版变化时，仅使生成的 `.aux`、`.toc` 和
+`.out` 文件失效，避免旧目录中的宏残留到下一次构建。
+
+Presentation adjustments are confined to generated LaTeX: repeated code
+blank lines are compacted, tutorial headings are promoted, long module names
+can wrap, and Unicode symbols fall back to STIX when the current font lacks
+a glyph. Missing glyphs, overflowing boxes, undefined references, duplicate
+labels and broken bookmark strings fail the export. The regular test suite
+covers these presentation checks without requiring a TeX installation.
+This is a coqdoc reading edition, not a semantic translation of arbitrary
+Rocq formulas into conventional mathematical notation.
+
+排版调整仅作用于生成的 LaTeX：合并代码中的连续空行、提升教程标题层级、允许
+长模块名换行，并在当前字体缺字时为 Unicode 符号使用 STIX 回退。缺字、版面
+溢出、未定义引用、重复标签和损坏的书签字符串都会使导出失败。普通测试覆盖
+这些排版检查，无需安装 TeX。这是 coqdoc 阅读版，不会将任意 Rocq 公式进行
+语义转换后重写为传统数学记号。
+
 ## Validation and scope / 验证与范围
 
 Locally validated with Rocq/coqdoc 9.0.1, OCaml 5.3.0 and Dune 3.23.1. The tool
@@ -163,17 +241,18 @@ those remote results.
 OCaml 标准库（`Unix`、`Str`，要求 OCaml 4.14 或更新版本）及已有 Rocq 工具链。
 项目工作流在既有 Rocq 版本矩阵中加入严格示例导出；本地通过不代表远端结果。
 
-Run `dune runtest tools/docs` for filtering, metadata and actual coqdoc export
-regressions, including language separation and proof hiding.
+Run `dune runtest tools/docs` for filtering, metadata, PDF presentation helpers
+and actual coqdoc export regressions, including language separation and proof hiding.
 The generator checks output links and anchors on every export.
 
-使用 `dune runtest tools/docs` 运行过滤、元数据与实际 coqdoc 导出回归，涵盖语言
-分离和证明隐藏。生成器在每次导出时检查输出链接及锚点。
+使用 `dune runtest tools/docs` 运行过滤、元数据、PDF 排版辅助函数与实际 coqdoc
+导出回归，涵盖语言分离和证明隐藏。HTML 生成器在每次导出时检查输出链接及锚点。
 
 Future options include Alectryon/Sphinx for interactive proof states and richer
-book layout, and a separately configured Unicode-capable LaTeX/PDF pipeline.
+book layout, beyond the current coqdoc HTML and Unicode LaTeX/PDF pipeline.
 Automatic conversion of arbitrary Rocq propositions to textbook mathematics
 is a separate project.
 
-后续可加入 Alectryon/Sphinx 的交互证明状态和更丰富的教材排版，以及独立配置的
-Unicode LaTeX/PDF 导出。将任意 Rocq 命题自动转换为教材数学排版是另一项工作。
+后续可在现有 coqdoc HTML 和 Unicode LaTeX/PDF 导出基础上，加入 Alectryon/Sphinx
+的交互证明状态和更丰富的教材排版。将任意 Rocq 命题自动转换为教材数学排版是
+另一项工作。

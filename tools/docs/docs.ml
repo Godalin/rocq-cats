@@ -1,4 +1,5 @@
 open Docs_filter
+open Docs_pdf
 
 let read path =
   let ic = open_in_bin path in
@@ -30,16 +31,21 @@ let html text =
   List.fold_left (fun s (a, b) -> replace s a b) text
     ["&", "&amp;"; "<", "&lt;"; ">", "&gt;"; "\"", "&quot;"]
 
-let run program args =
+let run ?log program args =
   if List.length args > 12 then
     Printf.printf "+ %s (%d arguments)\n%!" program (List.length args)
   else Printf.printf "+ %s\n%!"
     (String.concat " " (List.map Filename.quote (program :: args)));
-  let pid = Unix.create_process program (Array.of_list (program :: args))
-    Unix.stdin Unix.stdout Unix.stderr in
+  let output = match log with None -> Unix.stdout | Some path ->
+    Unix.openfile path [Unix.O_WRONLY; Unix.O_CREAT; Unix.O_TRUNC] 0o644 in
+  let pid = Fun.protect
+    ~finally:(fun () -> if log <> None then Unix.close output)
+    (fun () -> Unix.create_process program (Array.of_list (program :: args))
+      Unix.stdin output (if log = None then Unix.stderr else output)) in
   match snd (Unix.waitpid [] pid) with
   | Unix.WEXITED 0 -> ()
-  | _ -> failwith (program ^ " failed")
+  | _ -> failwith (program ^ " failed" ^
+      match log with None -> "" | Some path -> "; inspect " ^ path)
 
 type source = { path : string; name : string }
 
@@ -219,19 +225,72 @@ let check_links output =
   if !errors <> [] then failwith (String.concat "\n" (List.rev !errors));
   Printf.printf "Checked local links and anchors in %d HTML pages.\n%!" (List.length pages)
 
-let build root sample strict =
+let pdf root output tag book paths =
+  let dir = output ^ "/" ^ tag in
+  mkdir dir;
+  run "coqdoc" (["--latex"; "--utf8"; "--gallina"; "--body-only";
+    "--no-index"; "--no-lib-name";
+    "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
+    "-R"; output ^ "/.inputs/" ^ tag ^ "/book"; "CatsBook";
+    "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
+  let body = Pdf.compact (read (dir ^ "/body.tex")) in
+  write (dir ^ "/body.tex") body;
+  let symbols = Pdf.symbols body in
+  write (dir ^ "/symbols.tex") symbols;
+  let zh = tag = "zh" in
+  let title = if book then (if zh then "范畴论教程" else "Category Theory Tutorials")
+    else (if zh then "理论参考手册与教程" else "Theory Reference and Tutorials") in
+  let template = read (root ^ "/tools/docs/pdf-template.tex") in
+  let setup = (if zh then
+      "\\renewcommand{\\contentsname}{目录}"
+    else "\\renewcommand{\\contentsname}{Contents}")
+    ^ (if book then
+      "\n\\renewcommand{\\coqlibrary}[3]{\\hypertarget{coq:#1}{}}\n"
+      ^ "\\let\\subsubsection\\subsection\n\\let\\subsection\\section\n"
+      ^ "\\let\\section\\chapter" else "") in
+  let document = template
+    |> fun s -> replace s "@@SETUP@@" setup
+    |> fun s -> replace s "@@TITLE@@" title
+    |> fun s -> replace s "@@LANGUAGE@@" (if zh then "中文版" else "English Edition")
+    |> fun s -> replace s "@@DESCRIPTION@@"
+      (if zh then "来自同一双语源码；定义、定理与示例经过 Rocq 检查。"
+       else "From one bilingual source tree. Definitions, theorems and examples checked by Rocq.") in
+  let filename = "rocq-cats-" ^ tag in
+  let digest = Digest.to_hex (Digest.string (document ^ body ^ symbols)) in
+  let stamp = dir ^ "/inputs.digest" in
+  if not (Sys.file_exists stamp && read stamp = digest) then
+    List.iter (fun ending ->
+      let path = dir ^ "/" ^ filename ^ ending in
+      if Sys.file_exists path then Sys.remove path) [".aux"; ".toc"; ".out"];
+  write (dir ^ "/" ^ filename ^ ".tex") document;
+  Fun.protect ~finally:(fun () -> Sys.chdir root) (fun () ->
+    Sys.chdir dir;
+    for _ = 1 to 2 do
+      run ~log:(dir ^ "/xelatex-output.log") "xelatex"
+        ["-interaction=nonstopmode"; "-halt-on-error";
+        "-file-line-error"; "-no-shell-escape"; filename ^ ".tex"]
+    done);
+  Pdf.check_log (read (dir ^ "/" ^ filename ^ ".log"));
+  write stamp digest;
+  Printf.printf "Validated PDF: %s/%s.pdf\n%!" dir filename
+
+let build root sample strict format book =
   Sys.chdir root;
   run "dune" ["build"; "@all"];
   let sources = ["theories"; "book"] |> List.concat_map files
     |> List.filter (suffix ".v")
     |> List.map (fun path -> { path; name = module_name path })
-    |> select root sample in
-  let output = root ^ (if sample then "/_build/docs-sample" else "/_build/docs") in
+    |> select root sample
+    |> List.filter (fun s -> not book || Filter.starts s.path 0 "book/") in
+  let output = root ^ (if format = "pdf" then "/_build/docs-pdf/"
+      ^ (if book then "book" else if sample then "sample" else "full")
+    else if sample then "/_build/docs-sample" else "/_build/docs") in
   mkdir output;
   let warnings = ref [] in
   List.iter (fun s -> write (output ^ "/source/" ^ s.path) (read s.path)) sources;
   List.iter (fun (language, tag, other) ->
     let inputs = output ^ "/.inputs/" ^ tag in
+    List.iter (fun directory -> mkdir (inputs ^ "/" ^ directory)) ["theories"; "book"];
     let paths = List.map (fun s ->
       let original = read s.path in
       let filtered, messages = Filter.filter language original in
@@ -242,6 +301,7 @@ let build root sample strict =
       write (Filename.chop_extension path ^ ".glob")
         (Filter.glob ~original ~filtered (read (metadata root s)));
       path) sources in
+    if format = "pdf" then pdf root output tag book paths else begin
     let dir = output ^ "/" ^ tag in
     mkdir dir;
     run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
@@ -251,30 +311,41 @@ let build root sample strict =
       (replace (read (dir ^ "/index.html")) "\"index.html#" "\"symbols.html#");
     decorate dir tag other sources;
     write (dir ^ "/site.css") (read "tools/docs/site.css");
-    index dir tag sources)
+    index dir tag sources end)
     [Filter.En, "en", "zh"; Filter.Zh, "zh", "en"];
+  if format = "html" then begin
   write (output ^ "/index.html")
     (page "en" "Rocq-Cats" "<h1>Rocq-Cats</h1><p><a href=\"en/index.html\" lang=\"en\">English</a> · <a href=\"zh/index.html\" lang=\"zh\">中文</a></p>");
-  write (output ^ "/site.css") (read "tools/docs/site.css");
+  write (output ^ "/site.css") (read "tools/docs/site.css") end;
   let messages = List.rev !warnings in
   write (output ^ "/warnings.txt") (String.concat "\n" messages ^ "\n");
   List.iter prerr_endline messages;
-  constructor_anchors root output sources;
-  check_links output;
-  Printf.printf "Generated %d modules in each language: %s/index.html\n%!"
-    (List.length sources) output;
+  if format = "html" then begin
+    constructor_anchors root output sources;
+    check_links output
+  end;
+  Printf.printf "Generated %s for %d modules in each language: %s\n%!"
+    format (List.length sources) output;
   if strict && messages <> [] then failwith "unclassified or unpaired documentation"
 
 let () =
   try
-    let sample = ref false and strict = ref false and root = ref (Sys.getcwd ()) in
+    let sample = ref false and strict = ref false and book = ref false
+      and format = ref "html" and root = ref (Sys.getcwd ()) in
     Arg.parse ["--sample", Arg.Set sample, "Build the limit chapter and its dependencies";
       "--strict", Arg.Set strict, "Reject language-classification diagnostics";
+      "--book", Arg.Set book, "Export only the shared tutorial chapters (PDF)";
       "--root", Arg.Set_string root, "Repository root"]
-      (function "build" -> () | s -> raise (Arg.Bad ("unknown command: " ^ s)))
-      "dune exec tools/docs/docs.exe -- build [--sample] [--strict]";
+      (function "build" -> () | "pdf" -> format := "pdf"
+        | s -> raise (Arg.Bad ("unknown command: " ^ s)))
+      "dune exec tools/docs/docs.exe -- (build|pdf) [--sample|--book] [--strict]";
+    if !book && (!format <> "pdf" || !sample) then
+      invalid_arg "--book requires pdf and cannot be combined with --sample";
     let root = Unix.realpath !root in
-    build root !sample !strict
+    build root !sample !strict !format !book
   with
   | Failure message | Invalid_argument message -> prerr_endline message; exit 1
   | Sys_error message -> prerr_endline message; exit 1
+  | Unix.Unix_error (error, command, path) ->
+      Printf.eprintf "%s: %s %s\n" (Unix.error_message error) command path;
+      exit 1

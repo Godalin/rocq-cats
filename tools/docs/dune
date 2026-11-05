@@ -2,10 +2,20 @@
  (name docs_filter)
  (modules filter))
 
+(library
+ (name docs_pdf)
+ (modules pdf)
+ (libraries docs_filter))
+
 (executable
  (name docs)
  (modules docs)
- (libraries docs_filter unix str))
+ (libraries docs_filter docs_pdf unix str))
+
+(test
+ (name pdf_test)
+ (modules pdf_test)
+ (libraries docs_pdf))
 
 (test
  (name filter_test)

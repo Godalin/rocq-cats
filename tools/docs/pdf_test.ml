@@ -1,0 +1,33 @@
+open Docs_pdf.Pdf
+
+let check message condition = if not condition then failwith message
+
+let contains text token =
+  let n = String.length token in
+  let rec loop i = i + n <= String.length text
+    && (String.sub text i n = token || loop (i + 1)) in
+  loop 0
+
+let () =
+  let body = "\\begin{coqdoccode}\n\\coqdocemptyline\n\n\\coqdocemptyline\n"
+    ^ "Definition kept.\n\\coqdocemptyline\n\\end{coqdoccode}\n"
+    ^ "\\begin{verbatim}\n\\coqdocemptyline\n\\coqdocemptyline\n\\end{verbatim}" in
+  let result = compact body in
+  check "masked source whitespace was not compacted"
+    (not (contains result "\\coqdocemptyline\n\n\\coqdocemptyline"));
+  check "declaration was changed" (contains result "Definition kept.");
+  check "verbatim content was changed"
+    (contains result "\\begin{verbatim}\n\\coqdocemptyline\n\\coqdocemptyline");
+  let mappings = symbols "×C ⇒ ∀ κ ⦂ ∞ 中文，全角。 ×C" in
+  List.iter (fun token -> check ("missing Unicode mapping " ^ token)
+    (contains mappings token)) ["{D7}"; "{21D2}"; "{2982}"; "{221E}"];
+  check "CJK punctuation must use CTeX" (not (contains mappings "中文"));
+  check "fullwidth punctuation must use CTeX" (not (contains mappings "，"));
+  List.iter (fun log ->
+    check "a broken PDF log was accepted"
+      (try check_log log; false with Failure _ -> true))
+    ["Missing character: U+2982"; "Overfull \\hbox (1pt too wide)";
+     "Overfull \\vbox"; "There were undefined references";
+     "multiply defined"; "Token not allowed in a PDF string"];
+  check_log "Underfull \\hbox: a loose line, not clipped content";
+  print_endline "PDF presentation: whitespace, Unicode and log validation passed."
