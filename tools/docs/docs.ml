@@ -90,10 +90,9 @@ let reading_order root sources =
     let imports = Order.imports (read (metadata root s))
       |> List.filter_map (Hashtbl.find_opt by_name) in
     Hashtbl.add dependencies s.path imports) sources;
-  let main, foundation = Order.arrange
-    ~dependencies:(Hashtbl.find dependencies) (List.map (fun s -> s.path) sources) in
-  List.map (Hashtbl.find by_path) main,
-  List.map (Hashtbl.find by_path) foundation
+  Order.arrange ~dependencies:(Hashtbl.find dependencies)
+    (List.map (fun s -> s.path) sources)
+  |> List.map (Hashtbl.find by_path)
 
 let decorate dir language other sources =
   files dir |> List.filter (suffix ".html") |> List.iter (fun path ->
@@ -201,7 +200,7 @@ let check_links output =
   if !errors <> [] then failwith (String.concat "\n" (List.rev !errors));
   Printf.printf "Checked local links and anchors in %d HTML pages.\n%!" (List.length pages)
 
-let pdf root output tag foundation paths =
+let pdf root output tag paths =
   let dir = output ^ "/" ^ tag in
   mkdir dir;
   run "coqdoc" (["--latex"; "--utf8"; "--gallina"; "--body-only";
@@ -211,14 +210,6 @@ let pdf root output tag foundation paths =
     "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
   let zh = tag = "zh" in
   let body = Pdf.compact (read (dir ^ "/body.tex")) in
-  let body = match foundation with
-    | [] -> body
-    | first :: _ ->
-        let marker = "\\coqlibrary{" ^ first.name ^ "}" in
-        let title = if zh then "广集基础" else "Setoid Foundations" in
-        replace body marker
-          ("\\part*{" ^ title ^ "}\n\\addcontentsline{toc}{part}{"
-            ^ title ^ "}\n" ^ marker) in
   write (dir ^ "/body.tex") body;
   let symbols = Pdf.symbols body in
   write (dir ^ "/symbols.tex") symbols;
@@ -264,8 +255,7 @@ let build root strict format =
     |> preferences "docs/chapters" in
   let sources = List.map (fun path -> { path; name = module_name path }) paths in
   run "dune" ["build"; "@all"];
-  let main, foundation = reading_order root sources in
-  let sources = main @ foundation in
+  let sources = reading_order root sources in
   let output = root ^ (if format = "pdf" then "/_build/docs-pdf" else "/_build/docs") in
   mkdir output;
   write (output ^ "/reading-order.txt")
@@ -285,7 +275,7 @@ let build root strict format =
       write (Filename.chop_extension path ^ ".glob")
         (Filter.glob ~original ~filtered (read (metadata root s)));
       path) sources in
-    if format = "pdf" then pdf root output tag foundation paths else begin
+    if format = "pdf" then pdf root output tag paths else begin
       let dir = output ^ "/" ^ tag in
       mkdir dir;
       Sys.readdir dir |> Array.iter (fun name ->

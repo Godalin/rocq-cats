@@ -25,15 +25,12 @@ let () =
     | "Client" -> ["Helper"; "Core"]
     | "Helper" -> ["Core"]
     | _ -> [] in
-  let main, foundations = arrange ~dependencies
+  let ordered = arrange ~dependencies
     ["Core"; "Client"; "Independent"; "Helper"; "Set"; "Meta"; "New"] in
-  check "entry point or dependency priority lost"
-    (main = ["Core"; "Helper"; "Client"; "Independent"; "New"]);
-  check "entry prerequisites were lost or not topological"
-    (foundations = ["Meta"; "Set"]);
-  let main, foundations = arrange ~dependencies:(fun _ -> []) ["Only"] in
-  check "independent entry acquired spurious foundations"
-    (main = ["Only"] && foundations = []);
+  check "dependencies or manual preferences lost"
+    (ordered = ["Meta"; "Set"; "Core"; "Helper"; "Client"; "Independent"; "New"]);
+  check "independent module changed"
+    (arrange ~dependencies:(fun _ -> []) ["Only"] = ["Only"]);
   check "dependency cycle accepted"
     (rejects (fun () -> arrange
       ~dependencies:(function "A" -> ["B"] | "B" -> ["A"] | _ -> [])

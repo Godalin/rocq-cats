@@ -37,45 +37,23 @@ let imports text =
     | _ -> None)
   |> List.sort_uniq String.compare
 
-(* An introductory module precedes its low-level prerequisites in the book.
-   Those prerequisites form a final, internally topological foundation part.
-   Every other dependency precedes its client; DFS expands prerequisites of
-   a preferred module before choosing a lower-priority, independent module. *)
+(* Every dependency precedes its client. DFS expands prerequisites of a
+   preferred module before choosing a lower-priority, independent module. *)
 
-(* 入口模块在书中先于其底层前提；这些前提放入末尾内部按拓扑排序的基础部分。
-   其他依赖均先于使用者；深度优先遍历先补齐偏好模块的依赖，再选择低优先级模块。 *)
+(* 所有依赖均先于使用者；深度优先遍历先补齐偏好模块的依赖，再选择低优先级模块。 *)
 
 let arrange ~dependencies paths =
-  match paths with
-  | [] -> [], []
-  | entry :: _ ->
-      let available = Hashtbl.create (List.length paths) in
-      List.iter (fun path -> Hashtbl.add available path ()) paths;
-      let deps path = dependencies path |> List.filter (Hashtbl.mem available) in
-      let foundational = Hashtbl.create 8 in
-      let rec collect path =
-        List.iter (fun dependency ->
-          if dependency = entry then failwith ("cyclic imports at " ^ entry);
-          if not (Hashtbl.mem foundational dependency) then begin
-            Hashtbl.add foundational dependency (); collect dependency
-          end) (deps path)
-      in
-      collect entry;
-      let sort members =
-        let states = Hashtbl.create (List.length members) in
-        List.iter (fun path -> Hashtbl.add states path 0) members;
-        let result = ref [] in
-        let rec visit path =
-          match Hashtbl.find_opt states path with
-          | None | Some 2 -> ()
-          | Some 1 -> failwith ("cyclic imports at " ^ path)
-          | Some _ ->
-              Hashtbl.replace states path 1;
-              List.iter visit (deps path);
-              Hashtbl.replace states path 2;
-              result := path :: !result
-        in
-        List.iter visit members; List.rev !result
-      in
-      let foundation, main = List.partition (Hashtbl.mem foundational) paths in
-      sort main, sort foundation
+  let states = Hashtbl.create (List.length paths) in
+  List.iter (fun path -> Hashtbl.add states path 0) paths;
+  let result = ref [] in
+  let rec visit path =
+    match Hashtbl.find_opt states path with
+    | None | Some 2 -> ()
+    | Some 1 -> failwith ("cyclic imports at " ^ path)
+    | Some _ ->
+        Hashtbl.replace states path 1;
+        List.iter visit (dependencies path);
+        Hashtbl.replace states path 2;
+        result := path :: !result
+  in
+  List.iter visit paths; List.rev !result

@@ -98,17 +98,14 @@ an individual file from that directory without repeating the file.
 依赖优先于手工偏好。未知或重复条目会报错；可以先列目录内的某个文件，再列
 整个目录，导出不会重复该文件。
 
-The first selected module is the reading entry point, currently `Cat.Core`.
-Its transitive prerequisites (`Meta`, `Set.Core`, `Set.Morphism`) are collected
-in a final **Setoid Foundations** part, in their own topological order. This
-is the explicit reading-order exception that allows the book to open with
-categories; all other imports precede their clients. The generated
-`reading-order.txt` records the complete order next to each export.
+All imports precede their clients, without entry-point exceptions. The initial
+sequence `Meta`, `Set.Core`, `Set.Morphism`, `Cat.Core` follows automatically
+from dependencies; no manual list is needed for these foundations. The
+generated `reading-order.txt` records the complete order next to each export.
 
-首先选中的模块是阅读入口，目前为 `Cat.Core`。它的传递前提（`Meta`、`Set.Core`、
-`Set.Morphism`）集中放入书末的“广集基础”部分，内部仍按拓扑顺序排列。
-这是使正文从范畴开始的明确阅读例外，其余导入均先于使用者。每份导出目录中的
-`reading-order.txt` 记录完整顺序。
+所有导入均先于使用者，不设置阅读入口例外。开头的 `Meta`、`Set.Core`、
+`Set.Morphism`、`Cat.Core` 顺序由依赖自动得到，这些基础无需手工指定。
+每份导出目录中的 `reading-order.txt` 记录完整顺序。
 
 Reference existing declarations in coqdoc brackets instead of duplicating proofs.
 The tutorial starts with [Basics.v](../book/Basics.v), following one Boolean
