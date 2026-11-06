@@ -67,11 +67,16 @@ Use adjacent, separate coqdoc blocks, English first and Chinese second:
 Code, examples and proofs are shared. Add executable examples directly to a
 chapter; Dune compiles them and the exporter discovers the chapter automatically.
 Reference existing declarations in coqdoc brackets instead of duplicating proofs.
-See [Limits.v](../book/Limits.v) and [Coskeletal.v](../book/Coskeletal.v).
+Start with [Basics.v](../book/Basics.v), which follows one Boolean example
+from categories through functors, natural transformations and products to
+limits. Continue with [Limits.v](../book/Limits.v) for the general theory and
+[Coskeletal.v](../book/Coskeletal.v) for a simplicial application.
 
 代码、示例与证明共享。将可执行示例直接加入章节，Dune 负责其编译，导出器自动
-发现章节。通过 coqdoc 括号引用已有声明，无需复制证明。参见
-[Limits.v](../book/Limits.v) 和 [Coskeletal.v](../book/Coskeletal.v)。
+发现章节。通过 coqdoc 括号引用已有声明，无需复制证明。可先阅读
+[Basics.v](../book/Basics.v)，用同一个布尔例子串起范畴、函子、自然变换、积与极限；
+再阅读 [Limits.v](../book/Limits.v) 的一般理论，以及
+[Coskeletal.v](../book/Coskeletal.v) 的单纯应用。
 
 The lexer handles strings and nested comments, preserves every byte position and
 newline, and updates only generated `.glob` copies after checking the source

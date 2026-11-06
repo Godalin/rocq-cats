@@ -4,4 +4,4 @@
 
 (alias
  (name runtest)
- (deps Limits.vo Coskeletal.vo))
+ (deps Basics.vo Limits.vo Coskeletal.vo))
