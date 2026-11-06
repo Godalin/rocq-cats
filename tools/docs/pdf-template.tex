@@ -1,18 +1,11 @@
-% Shared, reproducible fonts are resolved by TeX Live, not by OS font names.
-% 共享可复现字体由 TeX Live 定位，不依赖操作系统字体名称。
+% JuliaMono Nerd Font must be installed; CTeX supplies Chinese glyphs.
+% 需安装 JuliaMono Nerd Font；中文字形由 CTeX 提供。
 \documentclass[UTF8,fontset=fandol,scheme=plain,11pt,oneside]{ctexrep}
 \usepackage[a4paper,margin=25mm,headheight=15pt]{geometry}
 \usepackage{fontspec}
-\setmainfont{DejaVuSerif.ttf}[
-  BoldFont=DejaVuSerif-Bold.ttf,ItalicFont=DejaVuSerif-Italic.ttf,
-  BoldItalicFont=DejaVuSerif-BoldItalic.ttf]
-\setsansfont{DejaVuSans.ttf}[
-  BoldFont=DejaVuSans-Bold.ttf,ItalicFont=DejaVuSans-Oblique.ttf,
-  BoldItalicFont=DejaVuSans-BoldOblique.ttf]
-\setmonofont{DejaVuSansMono.ttf}[
-  Scale=MatchLowercase,BoldFont=DejaVuSansMono-Bold.ttf,
-  ItalicFont=DejaVuSansMono-Oblique.ttf,
-  BoldItalicFont=DejaVuSansMono-BoldOblique.ttf]
+\setmainfont{JuliaMono Nerd Font}
+\setsansfont{JuliaMono Nerd Font}
+\setmonofont{JuliaMono Nerd Font}[Scale=MatchLowercase]
 \newfontfamily\catsSymbols{STIXTwoMath-Regular.otf}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}

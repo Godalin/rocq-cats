@@ -43,16 +43,21 @@ opam exec --switch=rocq-env -- nix-shell --run \
 ```
 
 PDF uses coqdoc LaTeX output followed by two XeLaTeX passes, with
-`-no-shell-escape`. TeX Live must provide CTeX/Fandol, DejaVu, STIX Two Math,
+`-no-shell-escape`. Install JuliaMono Nerd Font for Latin prose, headings and
+code, including its bold, italic and bold italic faces. XeLaTeX resolves it by
+the installed family name `JuliaMono Nerd Font`. TeX Live must provide
+CTeX/Fandol for Chinese, STIX Two Math for fallback symbols,
 fontspec, geometry, amsmath/amssymb, hyperref, bookmark, fvextra, newunicodechar
-and tikz-cd. Fonts use TeX filenames rather than OS-specific names. The tool
-does not install dependencies. Locally checked: Rocq/coqdoc 9.0.1, OCaml 5.3.0,
+and tikz-cd. The tool does not install dependencies.
+Locally checked: Rocq/coqdoc 9.0.1, OCaml 5.3.0,
 Dune 3.23.1, TeX Live 2025 / XeTeX 0.999997.
 
 PDF 使用 coqdoc 的 LaTeX 输出，再以 `-no-shell-escape` 运行两次 XeLaTeX。
-TeX Live 需提供 CTeX/Fandol、DejaVu、STIX Two Math、fontspec、geometry、
+西文正文、标题和代码使用 JuliaMono Nerd Font，需安装其常规、粗体、斜体及粗斜体。
+XeLaTeX 按已安装的字体家族名称 `JuliaMono Nerd Font` 定位。
+TeX Live 需提供中文字体 CTeX/Fandol、备用符号字体 STIX Two Math、fontspec、geometry、
 amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
-字体使用 TeX 文件名，不依赖操作系统专用名称；工具不会安装依赖。本地验证版本：
+工具不会安装依赖。本地验证版本：
 Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、TeX Live 2025 / XeTeX 0.999997。
 
 ## Authoring / 写作
