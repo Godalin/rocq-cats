@@ -4,4 +4,4 @@
 
 (alias
  (name runtest)
- (deps Basics.vo))
+ (deps Basics.vo STLC.vo))
