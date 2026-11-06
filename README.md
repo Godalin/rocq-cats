@@ -164,9 +164,12 @@ Rocq toolchain. The local VS Code build task uses this same environment.
 
 ## Documentation
 
-For English/Chinese tutorial PDFs with native commutative diagrams, run
-`dune exec tools/docs/docs.exe -- pdf --book --strict` with XeLaTeX available.
-Outputs are under `_build/docs-pdf/book/`; omit `--book` for the full reference.
+For English/Chinese full-library PDFs with tutorials and native diagrams, run
+`dune exec tools/docs/docs.exe -- pdf --strict` with XeLaTeX available.
+Outputs are under `_build/docs-pdf/{en,zh}/`, with the project logo on the cover.
+Modules are discovered automatically and ordered by imports plus partial
+editorial preferences. The text begins with `Cat.Core`; its low-level setoid
+prerequisites form a final foundation part.
 Both languages share the same compiled Rocq chapters and TikZ-cd sources.
 Start with the [Boolean worked example](./book/Basics.v): categories, functors,
 natural transformations, products and limits. Continue with the
@@ -175,9 +178,11 @@ CCC semantics and the existing completeness and free-CCC results.
 The cover uses the [project logo](./docs/branding/rocq-cats.svg).
 See the [documentation guide](./docs/Documentation.md).
 
-运行 `dune exec tools/docs/docs.exe -- pdf --book --strict` 可导出独立的中英文
-教程 PDF 及原生交换图，需要已有 XeLaTeX 环境，输出位于 `_build/docs-pdf/book/`。
-省略 `--book` 可导出全库参考手册。两种语言共享经过编译的 Rocq 章节和 TikZ-cd
+运行 `dune exec tools/docs/docs.exe -- pdf --strict` 可导出包含教程和原生交换图的
+中英文全库 PDF，需要已有 XeLaTeX 环境。输出位于 `_build/docs-pdf/{en,zh}/`，
+封面包含项目 Logo。模块自动发现，按导入依赖与局部手工偏好排序；正文从
+`Cat.Core` 开始，其底层广集前提集中放在书末基础部分。
+两种语言共享经过编译的 Rocq 章节和 TikZ-cd
 图源。可从[布尔贯穿示例](./book/Basics.v)开始，依次学习范畴、函子、自然变换、积与
 极限。随后阅读 [STLC 章节](./book/STLC.v)，学习带类型项、替换、βη 相等、CCC
 语义，以及已有的完备性与自由 CCC 结论。封面使用[项目 Logo](./docs/branding/rocq-cats.svg)。

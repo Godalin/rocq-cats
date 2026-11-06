@@ -1,5 +1,6 @@
 open Docs_filter
 open Docs_pdf
+module Order = Docs_order.Order
 
 let read path =
   let ic = open_in_bin path in
@@ -49,29 +50,24 @@ let run ?log program args =
 
 type source = { path : string; name : string }
 
-(* Tutorial chapters follow an editorial reading order, shared by all exports.
-   Require every chapter exactly once, so additions cannot be silently omitted. *)
+(* Local lists only express preferences; unlisted sources remain included. *)
 
-(* 教程章节按手工阅读顺序编排，所有导出共享；每章必须恰好列出一次，避免遗漏新增章节。 *)
+(* 局部清单只表达阅读偏好，未列出的源码仍自动纳入。 *)
 
-let order_chapters sources =
-  let theories, chapters = List.partition
-    (fun s -> Filter.starts s.path 0 "theories/") sources in
-  let order = read "book/chapters" |> String.split_on_char '\n'
-    |> List.map String.trim |> List.filter (fun s -> s <> "")
-    |> List.map (Filename.concat "book") in
-  let rec arrange remaining = function
-    | [] ->
-        if remaining <> [] then failwith ("book/chapters: unlisted chapters: "
-          ^ String.concat ", " (List.map (fun s -> s.path) remaining));
-        []
-    | path :: rest ->
-        match List.find_opt (fun s -> s.path = path) remaining with
-        | None -> failwith ("book/chapters: unknown or repeated chapter: " ^ path)
-        | Some source -> source :: arrange
-            (List.filter (fun s -> s.path <> path) remaining) rest
-  in
-  theories @ arrange chapters order
+let preferences file paths =
+  Order.prefer (Order.entries (read file)) paths
+
+let rec source_files dir =
+  let paths = Sys.readdir dir |> Array.to_list |> List.sort String.compare
+    |> List.concat_map (fun name ->
+      let path = Filename.concat dir name in
+      if Sys.is_directory path then source_files path
+      else if suffix ".v" path then [path] else []) in
+  let config = dir ^ "/chapters" in
+  if Sys.file_exists config then
+    Order.prefer (Order.entries (read config)
+      |> List.map (Filename.concat dir)) paths
+  else paths
 
 let module_name path =
   let stem = Filename.chop_extension path in
@@ -83,6 +79,21 @@ let module_name path =
 
 let metadata root source =
   Filename.concat root ("_build/default/" ^ Filename.chop_extension source.path ^ ".glob")
+
+let reading_order root sources =
+  let by_name = Hashtbl.create (List.length sources) in
+  let by_path = Hashtbl.create (List.length sources) in
+  List.iter (fun s ->
+    Hashtbl.add by_name s.name s.path; Hashtbl.add by_path s.path s) sources;
+  let dependencies = Hashtbl.create (List.length sources) in
+  List.iter (fun s ->
+    let imports = Order.imports (read (metadata root s))
+      |> List.filter_map (Hashtbl.find_opt by_name) in
+    Hashtbl.add dependencies s.path imports) sources;
+  let main, foundation = Order.arrange
+    ~dependencies:(Hashtbl.find dependencies) (List.map (fun s -> s.path) sources) in
+  List.map (Hashtbl.find by_path) main,
+  List.map (Hashtbl.find by_path) foundation
 
 let decorate dir language other sources =
   files dir |> List.filter (suffix ".html") |> List.iter (fun path ->
@@ -190,7 +201,7 @@ let check_links output =
   if !errors <> [] then failwith (String.concat "\n" (List.rev !errors));
   Printf.printf "Checked local links and anchors in %d HTML pages.\n%!" (List.length pages)
 
-let pdf root output tag book paths =
+let pdf root output tag foundation paths =
   let dir = output ^ "/" ^ tag in
   mkdir dir;
   run "coqdoc" (["--latex"; "--utf8"; "--gallina"; "--body-only";
@@ -198,28 +209,28 @@ let pdf root output tag book paths =
     "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
     "-R"; output ^ "/.inputs/" ^ tag ^ "/book"; "CatsBook";
     "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
+  let zh = tag = "zh" in
   let body = Pdf.compact (read (dir ^ "/body.tex")) in
+  let body = match foundation with
+    | [] -> body
+    | first :: _ ->
+        let marker = "\\coqlibrary{" ^ first.name ^ "}" in
+        let title = if zh then "广集基础" else "Setoid Foundations" in
+        replace body marker
+          ("\\part*{" ^ title ^ "}\n\\addcontentsline{toc}{part}{"
+            ^ title ^ "}\n" ^ marker) in
   write (dir ^ "/body.tex") body;
   let symbols = Pdf.symbols body in
   write (dir ^ "/symbols.tex") symbols;
-  let zh = tag = "zh" in
-  let title = if book then (if zh then "范畴论教程" else "Category Theory Tutorials")
-    else (if zh then "理论参考手册与教程" else "Theory Reference and Tutorials") in
-  let logo = if book then read (root ^ "/docs/branding/rocq-cats-preview.png")
-    else "" in
-  if book then write (dir ^ "/rocq-cats-logo.png") logo;
-  let brand = if book then
-      "\\begin{center}\\includegraphics[width=.94\\textwidth]"
-      ^ "{rocq-cats-logo.png}\\end{center}"
-    else "{\\sffamily\\Huge\\color{catsBlue} Rocq-Cats\\par}" in
+  let title = if zh then "理论参考手册与教程" else "Theory Reference and Tutorials" in
+  let logo = read (root ^ "/docs/branding/rocq-cats-preview.png") in
+  write (dir ^ "/rocq-cats-logo.png") logo;
+  let brand = "\\begin{center}\\includegraphics[width=.94\\textwidth]"
+    ^ "{rocq-cats-logo.png}\\end{center}" in
   let template = read (root ^ "/tools/docs/pdf-template.tex") in
   let setup = (if zh then
       "\\renewcommand{\\contentsname}{目录}"
-    else "\\renewcommand{\\contentsname}{Contents}")
-    ^ (if book then
-      "\n\\renewcommand{\\coqlibrary}[3]{\\hypertarget{coq:#1}{}}\n"
-      ^ "\\let\\subsubsection\\subsection\n\\let\\subsection\\section\n"
-      ^ "\\let\\section\\chapter" else "") in
+    else "\\renewcommand{\\contentsname}{Contents}") in
   let document = template
     |> fun s -> replace s "@@SETUP@@" setup
     |> fun s -> replace s "@@BRAND@@" brand
@@ -247,17 +258,18 @@ let pdf root output tag book paths =
   write stamp digest;
   Printf.printf "Validated PDF: %s/%s.pdf\n%!" dir filename
 
-let build root strict format book =
+let build root strict format =
   Sys.chdir root;
-  let sources = ["theories"; "book"] |> List.concat_map files
-    |> List.filter (suffix ".v")
-    |> List.map (fun path -> { path; name = module_name path })
-    |> order_chapters
-    |> List.filter (fun s -> not book || Filter.starts s.path 0 "book/") in
+  let paths = ["theories"; "book"] |> List.concat_map source_files
+    |> preferences "docs/chapters" in
+  let sources = List.map (fun path -> { path; name = module_name path }) paths in
   run "dune" ["build"; "@all"];
-  let output = root ^ (if format = "pdf" then "/_build/docs-pdf/"
-      ^ (if book then "book" else "full") else "/_build/docs") in
+  let main, foundation = reading_order root sources in
+  let sources = main @ foundation in
+  let output = root ^ (if format = "pdf" then "/_build/docs-pdf" else "/_build/docs") in
   mkdir output;
+  write (output ^ "/reading-order.txt")
+    (String.concat "\n" (List.map (fun s -> s.name) sources) ^ "\n");
   let warnings = ref [] in
   List.iter (fun s -> write (output ^ "/source/" ^ s.path) (read s.path)) sources;
   List.iter (fun (language, tag, other) ->
@@ -273,7 +285,7 @@ let build root strict format book =
       write (Filename.chop_extension path ^ ".glob")
         (Filter.glob ~original ~filtered (read (metadata root s)));
       path) sources in
-    if format = "pdf" then pdf root output tag book paths else begin
+    if format = "pdf" then pdf root output tag foundation paths else begin
       let dir = output ^ "/" ^ tag in
       mkdir dir;
       Sys.readdir dir |> Array.iter (fun name ->
@@ -309,14 +321,12 @@ let build root strict format book =
 
 let () =
   try
-    let strict = ref false and book = ref false and format = ref "html" in
-    Arg.parse ["--strict", Arg.Set strict, "Reject language-classification diagnostics";
-      "--book", Arg.Set book, "Export only the shared tutorial chapters (PDF)"]
+    let strict = ref false and format = ref "html" in
+    Arg.parse ["--strict", Arg.Set strict, "Reject language-classification diagnostics"]
       (function "build" -> () | "pdf" -> format := "pdf"
         | s -> raise (Arg.Bad ("unknown command: " ^ s)))
-      "dune exec tools/docs/docs.exe -- (build|pdf) [--book] [--strict]";
-    if !book && !format <> "pdf" then invalid_arg "--book requires pdf";
-    build (Unix.realpath (Sys.getcwd ())) !strict !format !book
+      "dune exec tools/docs/docs.exe -- (build|pdf) [--strict]";
+    build (Unix.realpath (Sys.getcwd ())) !strict !format
   with
   | Failure message | Invalid_argument message -> prerr_endline message; exit 1
   | Sys_error message -> prerr_endline message; exit 1

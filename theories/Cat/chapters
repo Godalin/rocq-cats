@@ -1,0 +1,13 @@
+Core.v
+Morphism.v
+Isomorphism.v
+Functor/Core.v
+Natural.v
+Terminal.v
+Product/Core.v
+Exponential/Core.v
+CCC.v
+Diagram
+Limit
+Colimit
+Groupoid

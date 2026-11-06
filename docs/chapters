@@ -1,0 +1,11 @@
+theories/Cat/Core.v
+theories/Cat
+book
+theories/STLC
+theories/DTT
+theories/ETCS
+theories/Graph
+theories/Algebra
+theories/Instance
+theories/Set
+theories/Meta.v

@@ -7,15 +7,24 @@
  (modules pdf)
  (libraries docs_filter))
 
+(library
+ (name docs_order)
+ (modules order))
+
 (executable
  (name docs)
  (modules docs)
- (libraries docs_filter docs_pdf unix str))
+ (libraries docs_filter docs_pdf docs_order unix str))
 
 (test
  (name pdf_test)
  (modules pdf_test)
  (libraries docs_pdf))
+
+(test
+ (name order_test)
+ (modules order_test)
+ (libraries docs_order))
 
 (test
  (name filter_test)
@@ -25,4 +34,4 @@
 (test
  (name export_test)
  (modules export_test)
- (libraries docs_filter unix))
+ (libraries docs_filter docs_order unix))

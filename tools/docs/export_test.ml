@@ -45,6 +45,8 @@ let () =
   write original source;
   run "coqc" ["-q"; original];
   let metadata = read (dir ^ "/Fixture.glob") in
+  if not (List.mem "Stdlib.Strings.String" (Docs_order.Order.imports metadata)) then
+    failwith "compiled import metadata was not recognized";
   List.iter (fun (language, tag, present, absent) ->
     let output = dir ^ "/" ^ tag in
     Unix.mkdir output 0o700;

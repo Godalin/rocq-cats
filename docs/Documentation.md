@@ -4,13 +4,15 @@
 
 The current priority is PDF for personal study. One bilingual Rocq source tree
 supplies both languages: reference modules in [theories/](../theories/) and
-the checked tutorial chapters in [book/](../book/). Examples compile with
-the library. The tutorial PDF cover uses the accepted
+the checked tutorial chapters in [book/](../book/). One PDF per language
+contains the entire library and its tutorials. Examples compile with
+the library. The full-library PDF cover uses the accepted
 [Rocq-Cats logo](./branding/rocq-cats.svg).
 
 当前优先支持个人学习用的 PDF。一套双语 Rocq 源码提供两种语言：参考模块位于
-[theories/](../theories/)，经过检查的教程章节位于 [book/](../book/)。示例与库一起编译，
-教程 PDF 封面使用已确认的 [Rocq-Cats Logo](./branding/rocq-cats.svg)。
+[theories/](../theories/)，经过检查的教程章节位于 [book/](../book/)。每种语言的一本
+PDF 包含全库与教程。示例与库一起编译，封面使用已确认的
+[Rocq-Cats Logo](./branding/rocq-cats.svg)。
 
 ## Build / 构建
 
@@ -19,18 +21,18 @@ Run from the repository root with the initialized project toolchain:
 在仓库根目录中，使用已初始化的项目工具环境运行：
 
 ```sh
-dune exec tools/docs/docs.exe -- pdf --book --strict
+dune exec tools/docs/docs.exe -- pdf --strict
 ```
 
 The English and Chinese PDFs are written to
-`_build/docs-pdf/book/en/rocq-cats-en.pdf` and
-`_build/docs-pdf/book/zh/rocq-cats-zh.pdf`. Omit `--book` for the full theory
-reference and tutorials, under `_build/docs-pdf/full/` with the same layout.
+`_build/docs-pdf/en/rocq-cats-en.pdf` and
+`_build/docs-pdf/zh/rocq-cats-zh.pdf`. There is a single full-library export;
+tutorials are included, rather than exported as a second book.
 Each export first runs `dune build @all` and never edits tracked Rocq sources.
 
-英文和中文 PDF 分别写入 `_build/docs-pdf/book/en/rocq-cats-en.pdf` 和
-`_build/docs-pdf/book/zh/rocq-cats-zh.pdf`。省略 `--book` 可导出完整理论参考和教程，
-输出位于 `_build/docs-pdf/full/`，布局相同。每次导出先运行 `dune build @all`，
+英文和中文 PDF 分别写入 `_build/docs-pdf/en/rocq-cats-en.pdf` 和
+`_build/docs-pdf/zh/rocq-cats-zh.pdf`。只有一个全库导出入口，教程直接编入同一本书。
+每次导出先运行 `dune build @all`，
 不会修改受版本管理的 Rocq 源码。
 
 For the local Nix/opam environment:
@@ -39,7 +41,7 @@ For the local Nix/opam environment:
 
 ```sh
 opam exec --switch=rocq-env -- nix-shell --run \
-  'dune exec tools/docs/docs.exe -- pdf --book --strict'
+  'dune exec tools/docs/docs.exe -- pdf --strict'
 ```
 
 PDF uses coqdoc LaTeX output followed by two XeLaTeX passes, with
@@ -73,11 +75,41 @@ Use adjacent, separate coqdoc blocks, English first and Chinese second:
 ```
 
 Code, examples and proofs are shared. Add executable examples directly to a
-chapter; Dune compiles them. Maintain the reading order explicitly in
-[book/chapters](../book/chapters), one filename per line. Both languages and
-all export formats use that order for tutorials, rather than filename order.
-Every chapter must appear exactly once; missing, repeated or unknown entries
-stop the export. Currently read category basics first, then STLC.
+chapter; Dune compiles them. Every module and tutorial is discovered
+automatically. The exporter uses library imports from the compiled `.glob`
+metadata to produce a dependency-first reading order, shared by PDF and HTML.
+
+代码、示例与证明共享。将可执行示例直接加入章节，Dune 负责其编译。所有模块和
+教程均自动发现，导出器读取编译生成的 `.glob` 导入记录，按依赖优先编排阅读顺序，
+PDF 与 HTML 共享这份顺序。
+
+[docs/chapters](./chapters) expresses overall preferences;
+[theories/Cat/chapters](../theories/Cat/chapters) and
+[book/chapters](../book/chapters) refine local order. Each optional `chapters`
+file lists relative filenames or directories, one per line. Lists are partial:
+unlisted modules are still included. Dependencies take precedence over these
+preferences. Unknown or repeated entries fail; a directory entry can follow
+an individual file from that directory without repeating the file.
+
+[docs/chapters](./chapters) 表达整体偏好；
+[theories/Cat/chapters](../theories/Cat/chapters) 与
+[book/chapters](../book/chapters) 调整局部顺序。任意目录中可选的 `chapters` 文件
+按行列出相对文件名或目录，只需列出要调整的部分，未列出的模块仍自动纳入。
+依赖优先于手工偏好。未知或重复条目会报错；可以先列目录内的某个文件，再列
+整个目录，导出不会重复该文件。
+
+The first selected module is the reading entry point, currently `Cat.Core`.
+Its transitive prerequisites (`Meta`, `Set.Core`, `Set.Morphism`) are collected
+in a final **Setoid Foundations** part, in their own topological order. This
+is the explicit reading-order exception that allows the book to open with
+categories; all other imports precede their clients. The generated
+`reading-order.txt` records the complete order next to each export.
+
+首先选中的模块是阅读入口，目前为 `Cat.Core`。它的传递前提（`Meta`、`Set.Core`、
+`Set.Morphism`）集中放入书末的“广集基础”部分，内部仍按拓扑顺序排列。
+这是使正文从范畴开始的明确阅读例外，其余导入均先于使用者。每份导出目录中的
+`reading-order.txt` 记录完整顺序。
+
 Reference existing declarations in coqdoc brackets instead of duplicating proofs.
 The tutorial starts with [Basics.v](../book/Basics.v), following one Boolean
 example from categories through functors, natural transformations and products
@@ -89,10 +121,6 @@ is the editable logo source; its
 [PNG preview](./branding/rocq-cats-preview.png) is copied into the PDF output
 for the cover, with no additional image-conversion dependency.
 
-代码、示例与证明共享。将可执行示例直接加入章节，Dune 负责其编译。在
-[book/chapters](../book/chapters) 中手工维护阅读顺序，每行一个文件名；两种语言
-及所有格式的教程导出均按此顺序编排，不使用文件名字母顺序。每章必须恰好出现
-一次，遗漏、重复或未知条目都会使导出失败。目前先读范畴基础，再读 STLC。
 通过 coqdoc 括号引用已有声明，无需复制证明。教程从
 [Basics.v](../book/Basics.v) 开始，用同一个布尔例子串起范畴、函子、自然变换、积与极限。
 [STLC.v](../book/STLC.v) 继续讲解带类型语法、替换、βη 相等与 CCC 语义，再介绍
