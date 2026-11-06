@@ -28,6 +28,6 @@ jobs:
           before_script: |
             rocq --version
             dune --version
-            dune exec tools/docs/docs.exe -- build --sample --strict
+            dune exec tools/docs/docs.exe -- build --strict
         env:
           OPAMWITHTEST: "true"

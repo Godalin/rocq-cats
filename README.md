@@ -165,25 +165,23 @@ Rocq toolchain. The local VS Code build task uses this same environment.
 
 ## Documentation
 
-Run `dune exec tools/docs/docs.exe -- build --strict` to generate separate
-English and Chinese HTML references and the checked tutorial from one bilingual
-source tree. Open `_build/docs/index.html`; use `--sample` for the limit chapter
-and its dependencies. See the [documentation guide](./docs/Documentation.md)
-and the first [tutorial chapter](./book/Limits.v).
-
-运行 `dune exec tools/docs/docs.exe -- build --strict`，从同一双语源码生成独立的
-中英文 HTML 参考手册与经过检查的教程。入口为 `_build/docs/index.html`；
-添加 `--sample` 只生成极限章节及其依赖。详见[文档指南](./docs/Documentation.md)
-及首个[教程章节](./book/Limits.v)。
-
-For separate English/Chinese tutorial PDFs, run
+For English/Chinese tutorial PDFs with native commutative diagrams, run
 `dune exec tools/docs/docs.exe -- pdf --book --strict` with XeLaTeX available.
-Outputs are under `_build/docs-pdf/book/`. Use `pdf --sample` or `pdf` to include
-API references; see the guide for font dependencies and checks.
+Outputs are under `_build/docs-pdf/book/`; omit `--book` for the full reference.
+Both languages share the same compiled Rocq chapters and TikZ-cd sources.
+See the [documentation guide](./docs/Documentation.md) and
+[limits tutorial](./book/Limits.v).
 
 运行 `dune exec tools/docs/docs.exe -- pdf --book --strict` 可导出独立的中英文
-教程 PDF，需要已有 XeLaTeX 环境，输出位于 `_build/docs-pdf/book/`。使用
-`pdf --sample` 或 `pdf` 包含 API 参考手册；字体依赖和检查方式见上述指南。
+教程 PDF 及原生交换图，需要已有 XeLaTeX 环境，输出位于 `_build/docs-pdf/book/`。
+省略 `--book` 可导出全库参考手册。两种语言共享经过编译的 Rocq 章节和 TikZ-cd
+图源，详见[文档指南](./docs/Documentation.md)与[极限教程](./book/Limits.v)。
+
+Basic HTML remains available through
+`dune exec tools/docs/docs.exe -- build --strict`, at `_build/docs/index.html`.
+
+基础 HTML 仍可通过 `dune exec tools/docs/docs.exe -- build --strict` 导出，
+入口为 `_build/docs/index.html`。
 
 ## Repository layout
 

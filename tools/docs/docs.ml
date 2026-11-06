@@ -60,84 +60,25 @@ let module_name path =
 let metadata root source =
   Filename.concat root ("_build/default/" ^ Filename.chop_extension source.path ^ ".glob")
 
-(* A sample includes referenced library modules, so its links stay local. *)
-
-(* 示例集包含被引用的库模块，保证引用仍指向本地页面。 *)
-
-let select root sample sources =
-  if not sample then sources
-  else
-    let selected = Hashtbl.create 32 in
-    let reference = Str.regexp "^R[^ ]+ \\([^ ]+\\) " in
-    let rec visit name =
-      if not (Hashtbl.mem selected name) then
-        match List.find_opt (fun s -> s.name = name) sources with
-        | None -> ()
-        | Some s ->
-            Hashtbl.add selected name ();
-            read (metadata root s) |> String.split_on_char '\n'
-            |> List.iter (fun line ->
-              if Str.string_match reference line 0 then
-                visit (Str.matched_group 1 line))
-    in
-    List.iter visit ["Cats.Cat.Limit.Core"; "Cats.Cat.Limit.Adjunction";
-      "CatsBook.Limits"];
-    List.filter (fun s -> Hashtbl.mem selected s.name) sources
-
-let page language title body =
-  "<!doctype html><html lang=\"" ^ language ^ "\"><head><meta charset=\"utf-8\">"
-  ^ "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
-  ^ "<title>" ^ html title ^ "</title><link rel=\"stylesheet\" href=\"site.css\">"
-  ^ "</head><body><main>" ^ body ^ "</main></body></html>\n"
-
-let nav language other filename source =
-  let home, symbols, contents, raw =
-    if language = "en" then "Contents", "Symbols", "Module outline", "Source"
-    else "目录", "符号索引", "模块提纲", "源码"
-  in
-  "<nav class=\"site-nav\"><a href=\"index.html\">" ^ home
-  ^ "</a><a href=\"symbols.html\">" ^ symbols
-  ^ "</a><a href=\"toc.html\">" ^ contents
-  ^ "</a><a href=\"../" ^ other ^ "/" ^ filename ^ "\" lang=\"" ^ other ^ "\">"
-  ^ (if other = "zh" then "中文" else "English")
-  ^ "</a>" ^ (match source with None -> "" | Some path ->
-    "<a href=\"../source/" ^ path ^ "\">" ^ raw ^ "</a>") ^ "</nav>"
-
 let decorate dir language other sources =
   files dir |> List.filter (suffix ".html") |> List.iter (fun path ->
     let filename = Filename.basename path in
     let source = List.find_opt (fun s -> s.name ^ ".html" = filename) sources in
+    let link href title =
+      "<a href=\"" ^ html href ^ "\">" ^ html title ^ "</a>" in
+    let nav = "<nav>"
+      ^ link "index.html" (if language = "zh" then "索引" else "Index") ^ " · "
+      ^ link "toc.html" (if language = "zh" then "目录" else "Contents") ^ " · "
+      ^ link ("../" ^ other ^ "/" ^ filename)
+          (if other = "zh" then "中文" else "English")
+      ^ (match source with None -> "" | Some s -> " · "
+          ^ link ("../source/" ^ s.path) (if language = "zh" then "源码" else "Source"))
+      ^ "</nav>" in
     let body = read path in
     let body = replace body "<html " ("<html lang=\"" ^ language ^ "\" ") in
-    let body = replace body "<head>"
-      "<head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" in
-    let body = replace body "</head>"
-      "<link rel=\"stylesheet\" href=\"site.css\"></head>" in
-    let body = replace body "<body>" ("<body>" ^ nav language other filename
-      (Option.map (fun s -> s.path) source)) in
-    write path body)
+    write path (replace body "<body>" ("<body>" ^ nav)))
 
-let index dir language sources =
-  let zh = language = "zh" in
-  let list book =
-    sources |> List.filter (fun s -> Filter.starts s.path 0 "book/" = book)
-    |> List.map (fun s -> "<li><a href=\"" ^ s.name ^ ".html\"><code>"
-      ^ s.name ^ "</code></a></li>") |> String.concat "\n"
-  in
-  let title = if zh then "Rocq-Cats：教程与参考手册" else "Rocq-Cats: tutorials and reference" in
-  write (dir ^ "/index.html") (page language title
-    ("<nav class=\"site-nav\"><a href=\"../"
-    ^ (if zh then "en" else "zh") ^ "/index.html\">"
-    ^ (if zh then "English" else "中文") ^ "</a></nav><h1>" ^ title ^ "</h1><p>"
-    ^ (if zh then "同一套双语源码，共享经过 Rocq 检查的定义、定理与示例。"
-       else "One bilingual source tree, with shared definitions, theorems and examples checked by Rocq.")
-    ^ "</p><h2>" ^ (if zh then "教程" else "Tutorials") ^ "</h2><ul>" ^ list true
-    ^ "</ul><h2>" ^ (if zh then "API 参考手册" else "API reference")
-    ^ "</h2><p><a href=\"symbols.html\">"
-    ^ (if zh then "按符号检索" else "Browse symbols")
-    ^ "</a> · <a href=\"toc.html\">"
-    ^ (if zh then "按模块提纲浏览" else "Browse module outlines")
-    ^ "</a></p><ul class=\"modules\">" ^ list false ^ "</ul>"))
+let remove path = if Sys.file_exists path then Sys.remove path
 
 let attributes name text =
   let regexp = Str.regexp (name ^ "=\"\\([^\"]*\\)\"") in
@@ -274,17 +215,15 @@ let pdf root output tag book paths =
   write stamp digest;
   Printf.printf "Validated PDF: %s/%s.pdf\n%!" dir filename
 
-let build root sample strict format book =
+let build root strict format book =
   Sys.chdir root;
   run "dune" ["build"; "@all"];
   let sources = ["theories"; "book"] |> List.concat_map files
     |> List.filter (suffix ".v")
     |> List.map (fun path -> { path; name = module_name path })
-    |> select root sample
     |> List.filter (fun s -> not book || Filter.starts s.path 0 "book/") in
   let output = root ^ (if format = "pdf" then "/_build/docs-pdf/"
-      ^ (if book then "book" else if sample then "sample" else "full")
-    else if sample then "/_build/docs-sample" else "/_build/docs") in
+      ^ (if book then "book" else "full") else "/_build/docs") in
   mkdir output;
   let warnings = ref [] in
   List.iter (fun s -> write (output ^ "/source/" ^ s.path) (read s.path)) sources;
@@ -302,21 +241,23 @@ let build root sample strict format book =
         (Filter.glob ~original ~filtered (read (metadata root s)));
       path) sources in
     if format = "pdf" then pdf root output tag book paths else begin
-    let dir = output ^ "/" ^ tag in
-    mkdir dir;
-    run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
-      "-R"; inputs ^ "/theories"; "Cats"; "-R"; inputs ^ "/book"; "CatsBook";
-      "-d"; dir] @ paths);
-    write (dir ^ "/symbols.html")
-      (replace (read (dir ^ "/index.html")) "\"index.html#" "\"symbols.html#");
-    decorate dir tag other sources;
-    write (dir ^ "/site.css") (read "tools/docs/site.css");
-    index dir tag sources end)
+      let dir = output ^ "/" ^ tag in
+      mkdir dir;
+      run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
+        "-R"; inputs ^ "/theories"; "Cats"; "-R"; inputs ^ "/book"; "CatsBook";
+        "-d"; dir] @ paths);
+      List.iter (fun name -> remove (dir ^ "/" ^ name)) ["symbols.html"; "site.css"];
+      decorate dir tag other sources
+    end)
     [Filter.En, "en", "zh"; Filter.Zh, "zh", "en"];
   if format = "html" then begin
-  write (output ^ "/index.html")
-    (page "en" "Rocq-Cats" "<h1>Rocq-Cats</h1><p><a href=\"en/index.html\" lang=\"en\">English</a> · <a href=\"zh/index.html\" lang=\"zh\">中文</a></p>");
-  write (output ^ "/site.css") (read "tools/docs/site.css") end;
+    write (output ^ "/index.html")
+      ("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+      ^ "<title>Rocq-Cats</title></head><body><h1>Rocq-Cats</h1>"
+      ^ "<a href=\"en/index.html\">English</a> · "
+      ^ "<a href=\"zh/index.html\">中文</a></body></html>\n");
+    remove (output ^ "/site.css")
+  end;
   let messages = List.rev !warnings in
   write (output ^ "/warnings.txt") (String.concat "\n" messages ^ "\n");
   List.iter prerr_endline messages;
@@ -330,19 +271,14 @@ let build root sample strict format book =
 
 let () =
   try
-    let sample = ref false and strict = ref false and book = ref false
-      and format = ref "html" and root = ref (Sys.getcwd ()) in
-    Arg.parse ["--sample", Arg.Set sample, "Build the limit chapter and its dependencies";
-      "--strict", Arg.Set strict, "Reject language-classification diagnostics";
-      "--book", Arg.Set book, "Export only the shared tutorial chapters (PDF)";
-      "--root", Arg.Set_string root, "Repository root"]
+    let strict = ref false and book = ref false and format = ref "html" in
+    Arg.parse ["--strict", Arg.Set strict, "Reject language-classification diagnostics";
+      "--book", Arg.Set book, "Export only the shared tutorial chapters (PDF)"]
       (function "build" -> () | "pdf" -> format := "pdf"
         | s -> raise (Arg.Bad ("unknown command: " ^ s)))
-      "dune exec tools/docs/docs.exe -- (build|pdf) [--sample|--book] [--strict]";
-    if !book && (!format <> "pdf" || !sample) then
-      invalid_arg "--book requires pdf and cannot be combined with --sample";
-    let root = Unix.realpath !root in
-    build root !sample !strict !format !book
+      "dune exec tools/docs/docs.exe -- (build|pdf) [--book] [--strict]";
+    if !book && !format <> "pdf" then invalid_arg "--book requires pdf";
+    build (Unix.realpath (Sys.getcwd ())) !strict !format !book
   with
   | Failure message | Invalid_argument message -> prerr_endline message; exit 1
   | Sys_error message -> prerr_endline message; exit 1
