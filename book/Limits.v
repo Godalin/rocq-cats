@@ -24,9 +24,11 @@ From Cats Require Import
   Cat.Natural
   Cat.Diagram.Core
   Cat.Terminal
+  Cat.Pullback
   Cat.Adjunction
   Cat.Limit.Core
-  Cat.Limit.Adjunction.
+  Cat.Limit.Adjunction
+  Cat.Limit.Pullback.
 
 (** ** 1. A cone is a compatible family of arrows
 
@@ -35,15 +37,7 @@ From Cats Require Import
     Along every shape arrow [a : Hom i j], compatibility says
     [κ j ≈ fmap D a ∘ κ i].
 
-    Think of the apex as one source looking at the entire diagram:
-
-<<
-              X
-          κ i | \ κ j
-              v  v
-             D i → D j
->>
-
+    The triangle below commutes in the specified hom-setoid equality.
     This compatibility is exactly naturality of a transformation from the
     constant diagram at [X]. Consequently [X ⇒Δ D] is already a natural
     transformation type, and [cone_naturality] supplies the triangle equation. *)
@@ -54,17 +48,20 @@ From Cats Require Import
     位置 [j] 给出箭头 [κ j : Hom X (D j)]。沿每条形状箭头 [a : Hom i j]，
     相容性要求 [κ j ≈ fmap D a ∘ κ i]。
 
-    可以将顶点看成同时观察整个图式的一个源：
-
-<<
-              X
-          κ i | \ κ j
-              v  v
-             D i → D j
->>
-
-    这恰好是从 [X] 上的常图式出发的自然变换的自然性。因此，[X ⇒Δ D] 已经是
+    下方三角图在指定 Hom 广集相等下交换。这恰好是从 [X] 上的常图式出发的
+    自然变换的自然性。因此，[X ⇒Δ D] 已经是
     自然变换类型，[cone_naturality] 则给出三角形方程。 *)
+
+(** @lang both
+%
+\[
+\begin{tikzcd}[column sep=large, row sep=large]
+  & X \arrow[dl, "\kappa_i"'] \arrow[dr, "\kappa_j"] & \\
+  D(i) \arrow[rr, "D(a)"'] & & D(j)
+\end{tikzcd}
+\]
+%
+*)
 
 Check @Cone.
 Check @cone_naturality.
@@ -206,13 +203,71 @@ Check @limit_cone_resp.
 Check @LimitAdjunction.
 Check @limits_iff_diagonal_right_adjoint.
 
+(** A map of diagrams [α : D ⇒ E] respects every shape arrow [a : Hom i j].
+    The naturality square explains the diagram-transformation side of the
+    adjunction's naturality. Its equation is [nt_naturality α a]. *)
+
+(** 图式映射 [α : D ⇒ E] 与每条形状箭头 [a : Hom i j] 相容。自然性方块解释
+    伴随自然性中图式变换的一侧，其方程为 [nt_naturality α a]。 *)
+
+(** @lang both
+%
+\[
+\begin{tikzcd}[column sep=large, row sep=large]
+  D(i) \arrow[r, "D(a)"] \arrow[d, "\alpha_i"']
+    & D(j) \arrow[d, "\alpha_j"] \\
+  E(i) \arrow[r, "E(a)"'] & E(j)
+\end{tikzcd}
+\]
+%
+*)
+
+Check @nt_naturality.
+
+(** ** 6. Pullbacks as a concrete shape
+
+    A cospan [f : Hom A Z], [g : Hom B Z] gives a familiar instance of the
+    same universal property. In the diagram below, [P] is its pullback.
+    If [f ∘ u ≈ g ∘ v], the dashed mediator is unique with
+    [p₁ ∘ h ≈ u] and [p₂ ∘ h ≈ v]. The equations again use specified equality.
+
+    [pullback_iff_limit] identifies this property with being a limit of the
+    cospan diagram. The library's [pb] and [pullback_mediator_unique] provide
+    the mediator and its two projection equations together with uniqueness. *)
+
+(** ** 6. 拉回作为具体形状
+
+    余跨度 [f : Hom A Z]、[g : Hom B Z] 给出同一泛性质的熟悉实例。下图中 [P]
+    是其拉回。若 [f ∘ u ≈ g ∘ v]，则虚线中介在满足 [p₁ ∘ h ≈ u] 和
+    [p₂ ∘ h ≈ v] 的箭头中唯一，方程仍使用指定相等。
+
+    [pullback_iff_limit] 将此性质等同于余跨度图式的极限性质。库中的 [pb] 和
+    [pullback_mediator_unique] 给出中介、两个投影方程及唯一性。 *)
+
+(** @lang both
+%
+\[
+\begin{tikzcd}[column sep=large, row sep=large]
+  Q \arrow[drr, bend left=15, "v"]
+    \arrow[ddr, bend right=15, "u"']
+    \arrow[dr, dashed, "h" description] & & \\
+  & P \arrow[r, "p_2"] \arrow[d, "p_1"'] & B \arrow[d, "g"] \\
+  & A \arrow[r, "f"'] & Z
+\end{tikzcd}
+\]
+%
+*)
+
+Check @pullback_iff_limit.
+Check @pullback_mediator_unique.
+
 (** ** What to try next
 
     Specialize the shape to two discrete objects and identify the two cone
-    legs with product projections. Then try the cospan shape for pullbacks.
-    The shape changes, while the same mediator and beta/eta interface remains. *)
+    legs with product projections. Derive their projection equations from
+    [limit_β], reusing the same mediator interface. *)
 
 (** ** 接下来可以尝试什么
 
-    将形状特化为两个离散对象，把两条锥腿识别为积投影；再尝试用余跨度形状得到
-    拉回。形状改变了，中介和 β/η 接口仍然是同一套。 *)
+    将形状特化为两个离散对象，把两条锥腿识别为积投影，并从 [limit_β] 导出
+    投影方程，复用同一套中介接口。 *)

@@ -32,6 +32,8 @@ let () =
     "From Stdlib Require Import String.\nOpen Scope string_scope.\n"
     ^ "(** * English tutorial heading\n\nRead [中文 token] and [⇒]. *)\n\n"
     ^ "(** * 中文教程标题\n\n阅读 [English token] 和 [⇒]。 *)\n\n"
+    ^ "(** @lang both\n%\\begin{tikzcd} A \\arrow[r, \"f\"] & B"
+    ^ "\\end{tikzcd}%\n*)\n\n"
     ^ "Definition quoted := \"(** fake documentation *) \"\"quoted\"\"\".\n"
     ^ "(* outer (* nested *) comment *)\n"
     ^ "(** printing ⇒ %\\Rightarrow% #&rArr;# *)\n"
@@ -53,10 +55,21 @@ let () =
     run "coqdoc" ["--utf8"; "--gallina"; "--no-externals"; "--no-index";
       "--no-lib-name"; "-o"; output ^ "/page.html"; output ^ "/Fixture.v"];
     let page = read (output ^ "/page.html") in
+    if contains page "\\begin{tikzcd}" then
+      failwith "PDF-only diagram leaked into HTML";
     List.iter (fun name -> if not (contains page name) then failwith ("missing " ^ name))
       [present; "visible_sample"; "verified_example"; "quoted"];
     List.iter (fun name -> if contains page name then failwith ("unexpected " ^ name))
-      [absent; "hidden_support"; "reflexivity"])
+      [absent; "hidden_support"; "reflexivity"];
+    run "coqdoc" ["--latex"; "--utf8"; "--gallina"; "--body-only";
+      "--no-index"; "-d"; output; "-o"; output ^ "/page.tex"; output ^ "/Fixture.v"];
+    let latex = read (output ^ "/page.tex") in
+    List.iter (fun token -> if not (contains latex token) then
+      failwith ("missing LaTeX " ^ token))
+      [present; "visible"; "\\begin{tikzcd}"; "\\arrow[r, \"f\"]"];
+    List.iter (fun token -> if contains latex token then
+      failwith ("unexpected LaTeX " ^ token))
+      [absent; "@lang"; "hidden\\_support"; "reflexivity"])
     [En, "en", "English tutorial heading", "中文教程标题";
      Zh, "zh", "中文教程标题", "English tutorial heading"];
-  print_endline "Documentation export: compiled UTF-8 fixture, language separation and proof hiding passed."
+  print_endline "Documentation export: language separation, proof hiding and shared LaTeX passed."

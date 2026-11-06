@@ -30,6 +30,8 @@ let () =
     ^ "(** printing ⇒ %\\Rightarrow% #&rArr;# *)\n"
     ^ "(* begin hide *)\nDefinition hidden := tt.\n(* end hide *)\n"
     ^ "(** [OnlyCode] << quoted 中文 >> $English$ *)\n"
+    ^ "(** @lang both\n%\\begin{tikzcd} A \\arrow[r, \"f\"] & B"
+    ^ "\\end{tikzcd}%\n*)\n"
   in
   let en, warnings = filter En source in
   let zh, _ = filter Zh source in
@@ -40,6 +42,7 @@ let () =
   check "English prose leaked" (not (contains zh "English heading"));
   List.iter (fun s ->
     check "printing directive lost" (contains s "printing ⇒");
+    check "shared LaTeX diagram lost" (contains s "\\begin{tikzcd}");
     check "proof visibility lost" (contains s "(* begin hide *)");
     check "neutral code block lost" (contains s "[OnlyCode]")) [en; zh];
   position_laws source en; position_laws source zh;
