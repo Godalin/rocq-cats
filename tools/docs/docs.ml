@@ -49,6 +49,30 @@ let run ?log program args =
 
 type source = { path : string; name : string }
 
+(* Tutorial chapters follow an editorial reading order, shared by all exports.
+   Require every chapter exactly once, so additions cannot be silently omitted. *)
+
+(* 教程章节按手工阅读顺序编排，所有导出共享；每章必须恰好列出一次，避免遗漏新增章节。 *)
+
+let order_chapters sources =
+  let theories, chapters = List.partition
+    (fun s -> Filter.starts s.path 0 "theories/") sources in
+  let order = read "book/chapters" |> String.split_on_char '\n'
+    |> List.map String.trim |> List.filter (fun s -> s <> "")
+    |> List.map (Filename.concat "book") in
+  let rec arrange remaining = function
+    | [] ->
+        if remaining <> [] then failwith ("book/chapters: unlisted chapters: "
+          ^ String.concat ", " (List.map (fun s -> s.path) remaining));
+        []
+    | path :: rest ->
+        match List.find_opt (fun s -> s.path = path) remaining with
+        | None -> failwith ("book/chapters: unknown or repeated chapter: " ^ path)
+        | Some source -> source :: arrange
+            (List.filter (fun s -> s.path <> path) remaining) rest
+  in
+  theories @ arrange chapters order
+
 let module_name path =
   let stem = Filename.chop_extension path in
   let prefix, offset =
@@ -225,11 +249,12 @@ let pdf root output tag book paths =
 
 let build root strict format book =
   Sys.chdir root;
-  run "dune" ["build"; "@all"];
   let sources = ["theories"; "book"] |> List.concat_map files
     |> List.filter (suffix ".v")
     |> List.map (fun path -> { path; name = module_name path })
+    |> order_chapters
     |> List.filter (fun s -> not book || Filter.starts s.path 0 "book/") in
+  run "dune" ["build"; "@all"];
   let output = root ^ (if format = "pdf" then "/_build/docs-pdf/"
       ^ (if book then "book" else "full") else "/_build/docs") in
   mkdir output;

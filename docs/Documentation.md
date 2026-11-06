@@ -73,7 +73,11 @@ Use adjacent, separate coqdoc blocks, English first and Chinese second:
 ```
 
 Code, examples and proofs are shared. Add executable examples directly to a
-chapter; Dune compiles them and the exporter discovers the chapter automatically.
+chapter; Dune compiles them. Maintain the reading order explicitly in
+[book/chapters](../book/chapters), one filename per line. Both languages and
+all export formats use that order for tutorials, rather than filename order.
+Every chapter must appear exactly once; missing, repeated or unknown entries
+stop the export. Currently read category basics first, then STLC.
 Reference existing declarations in coqdoc brackets instead of duplicating proofs.
 The tutorial starts with [Basics.v](../book/Basics.v), following one Boolean
 example from categories through functors, natural transformations and products
@@ -85,8 +89,11 @@ is the editable logo source; its
 [PNG preview](./branding/rocq-cats-preview.png) is copied into the PDF output
 for the cover, with no additional image-conversion dependency.
 
-代码、示例与证明共享。将可执行示例直接加入章节，Dune 负责其编译，导出器自动
-发现章节。通过 coqdoc 括号引用已有声明，无需复制证明。教程从
+代码、示例与证明共享。将可执行示例直接加入章节，Dune 负责其编译。在
+[book/chapters](../book/chapters) 中手工维护阅读顺序，每行一个文件名；两种语言
+及所有格式的教程导出均按此顺序编排，不使用文件名字母顺序。每章必须恰好出现
+一次，遗漏、重复或未知条目都会使导出失败。目前先读范畴基础，再读 STLC。
+通过 coqdoc 括号引用已有声明，无需复制证明。教程从
 [Basics.v](../book/Basics.v) 开始，用同一个布尔例子串起范畴、函子、自然变换、积与极限。
 [STLC.v](../book/STLC.v) 继续讲解带类型语法、替换、βη 相等与 CCC 语义，再介绍
 已有的语法范畴、等式完备性与自由泛性质；示例复用库中的定义与定理。
