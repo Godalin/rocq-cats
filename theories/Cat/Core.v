@@ -14,14 +14,64 @@ Open Scope cat_scope.
 
 
 
-(** * Category *)
+(** * Categories over the Foundational Sets
 
-(** * 范畴 *)
+    A category has a type of objects and, for each pair [X], [Y], a set
+    [HomSet X Y] of morphisms. Here set means exactly the foundational
+    [SetC]: a carrier with a specified, Type-valued equivalence relation.
+    Thus category theory uses the same equality foundation as sets and
+    respectful maps; it does not introduce a parallel notion of equality.
 
-(** Morphisms and their equivalence witnesses have independent sizes.
-    Equivalence/properness laws may live in larger auxiliary universes. *)
+    [Hom X Y] reads the carrier of this set, and [HomEq] reads its equality.
+    These are computed fields, not additional data to choose. The notation
+    [f ≈ g] is precisely the specified set equality on parallel morphisms.
+    Identity and associativity are strict laws in this equality.
 
-(** 态射与其相等见证的大小独立；等价律和相容性定律可以位于更大的辅助宇宙。 *)
+    Objects form a type [Ob]; this interface does not equip them with a
+    specified set equality. Equality of parallel morphisms, native equality
+    of objects, and object isomorphism therefore have different roles.
+    In particular, an isomorphism need not be a native object equality. *)
+
+(** * 基于基础广集的范畴
+
+    范畴具有一个对象类型，并为每对对象 [X]、[Y] 指定态射集合 [HomSet X Y]。
+    这里的集合就是基础层的广集 [SetC]：载体及 Type 值指定等价关系。因此，
+    范畴论与集合、保相等映射共用同一套相等基础，不另设平行的相等机制。
+
+    [Hom X Y] 读取这个集合的载体，[HomEq] 读取其相等。它们是计算字段，不是
+    另外选取的数据。记号 [f ≈ g] 就是平行态射所在广集的指定相等，单位律和
+    结合律都是这个相等下的严格定律。
+
+    对象组成类型 [Ob]，本接口不为其配备指定的广集相等。因此，平行态射相等、
+    对象原生相等及对象同构各有不同作用；特别地，对象同构不必是原生相等。 *)
+
+(** The data fields select hom-sets, identities and composition.
+    [comp_proper] requires composition to preserve both input equalities;
+    the remaining fields supply its unit and associativity laws. A model
+    must construct all these witnesses. Class law fields are requirements
+    on a structure, not globally asserted axioms.
+
+    In [Cat@{o h p}], [o] is the object level, [h] the hom carrier level,
+    and [p] the hom-equality witness level. Morphisms and their equality
+    witnesses have independent sizes. Equivalence and properness laws may
+    inhabit larger auxiliary universes, without forcing these levels equal.
+
+    For example, the later category [SetCat] chooses the respectful-function
+    set [X →S Y] as [HomSet X Y]. Its arrows are respectful maps and its
+    equations are pointwise set equality. General results here already
+    operate on hom-sets directly, without importing that concrete model. *)
+
+(** 数据字段选定 Hom 广集、恒等态射与复合；[comp_proper] 要求复合保持两侧输入
+    的相等，其余字段给出单位律和结合律。模型必须构造全部见证；类的定律字段
+    是结构应满足的要求，不是全局断言的公理。
+
+    在 [Cat@{o h p}] 中，[o] 是对象层级，[h] 是 Hom 载体层级，[p] 是 Hom 相等
+    见证层级。态射与其相等见证的大小独立，等价律及保相等定律可位于更大的
+    辅助宇宙，不迫使这些层级相等。
+
+    例如，后面的集合范畴 [SetCat] 以保相等函数广集 [X →S Y] 为 [HomSet X Y]；
+    它的箭头是保相等映射，方程就是逐点集合相等。此处的一般理论已能直接操作
+    Hom 广集，不必导入这个具体模型。 *)
 
 Class Cat@{o h p +}
   :=
@@ -49,20 +99,24 @@ Class Cat@{o h p +}
     : HomEq (comp (comp f g) h) (comp f (comp g h))
   }.
 
-(** Equality and its laws come from the hom-set, not from an independent
-    relation field. [Hom] and [HomEq] are computed fields, so they retain the
-    existing coercion interfaces without adding constructor arguments. *)
+(** Reflexivity, symmetry and transitivity come directly from the hom-set.
+    A category need not provide a second equivalence structure for [HomEq].
+    This instance lets setoid reasoning and rewriting use the equality
+    already supplied by [HomSet]. *)
 
-(** 相等及其定律来自 Hom 广集，不另设关系字段。[Hom] 与 [HomEq] 是计算字段，保
-    留已有强制转换接口而不增加构造参数。 *)
+(** 自反、对称与传递律直接来自 Hom 广集，范畴无须为 [HomEq] 再提供一套等价
+    结构。这个实例使广集推理和重写直接使用 [HomSet] 已有的相等。 *)
 
 Global Instance HomEq_Equivalence {C : Cat} {X Y : @Ob C}
   : Equivalence (@HomEq C X Y)
   := carrier_setoid (HomSet X Y).
 
-(** The specified hom-setoid between two objects. *)
+(** Read the specified set between two fixed objects. This transparent
+    alias preserves both its carrier and its equality. Merely viewing homs
+    as sets needs no additional category of sets or choice of equality. *)
 
-(** 两个对象间指定的 Hom 广集。 *)
+(** 读取两个固定对象之间的指定集合。这个透明别名保留其载体及相等，将 Hom
+    视为集合不需要额外的集合范畴，也无须重新选择相等。 *)
 
 Definition Hom_SetC {C : Cat} {X Y : @Ob C}
   : SetC
@@ -83,6 +137,15 @@ Notation "'@Hom' C" := (@Hom C)
   (at level 35) : cat_scope.
 
 Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : cat_scope.
+
+(** [f ≈ g] compares parallel arrows using their hom-set equality, the
+    same relation that [≈S] reads from [HomSet]. Composition [f ∘ g]
+    applies [g] first. The [Proper] field makes replacement of equal
+    arrows in compositions valid. *)
+
+(** [f ≈ g] 使用所在 Hom 广集的相等比较平行箭头，与 [≈S] 从 [HomSet] 读取的
+    关系相同。复合 [f ∘ g] 先应用 [g]；[Proper] 字段保证可以在复合中替换
+    相等箭头。 *)
 
 Infix "≈" := HomEq
   (at level 50, no associativity) : cat_scope.
@@ -166,12 +229,23 @@ Hint Resolve symm_id_r : cat.
 
 (** ** Morphisms induced by object equality
 
-    These are transported identities. Their laws use equality elimination,
-    without identifying distinct equality witnesses. *)
+    Since [Ob] is a Rocq type, a native equality [p : X = Y] allows the
+    identity at [X] to be transported to an arrow [X → Y]. Equality
+    elimination constructs this arrow and proves its laws; no uniqueness
+    of identity proofs or identification of distinct witnesses is needed.
+
+    These lemmas concern native object equality only. They do not turn
+    arbitrary object isomorphisms into native equalities. Their conclusions
+    still use the specified equality of the appropriate hom-set. *)
 
 (** ** 由对象原生相等诱导的态射
 
-    这些态射是运输后的恒等态射；定律通过相等消去证明，不要求不同相等见证一致。 *)
+    [Ob] 是 Rocq 类型，因此原生相等 [p : X = Y] 允许将 [X] 的恒等态射运输为
+    [X → Y] 的箭头。相等消去即可构造箭头并证明定律，无须恒等证明唯一性，也
+    不要求不同相等见证一致。
+
+    这些引理只处理对象的原生相等，不将任意对象同构转为原生相等；结论中的
+    态射方程仍使用对应 Hom 广集的指定相等。 *)
 
 Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y)
   : Hom X Y
@@ -225,9 +299,14 @@ Arguments comp_post {_ _ _ _} _ _ /.
 Notation "f ^*" := (comp_pre f) (at level 35).
 Notation "f _*" := (comp_post f) (at level 35).
 
-(** Composition acts respectfully on either hom-set. *)
+(** Postcomposition by a fixed [f : Hom Y Z], bundled as a respectful
+    map [HomSet X Y →r HomSet X Z]. Its preservation proof comes from
+    [comp_proper]. This exposes the set-level action of any category's
+    composition, before constructing a Hom functor into a category of sets. *)
 
-(** 固定任一侧的复合都是 Hom 广集之间的保相等映射。 *)
+(** 固定 [f : Hom Y Z] 后的后合成，打包为保相等映射
+    [HomSet X Y →r HomSet X Z]。其保相等证明来自 [comp_proper]。这在构造以
+    集合范畴为目标的 Hom 函子之前，就给出了任意范畴复合的集合层作用。 *)
 
 Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
     {f : Hom Y Z}
@@ -236,9 +315,13 @@ Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
   {|func := f _*
   |}.
 
-(** Precomposition as a respectful map of hom-setoids. *)
+(** Precomposition by a fixed [f : Hom X Y], as a respectful map
+    [HomSet Y Z →r HomSet X Z]. The direction reverses the varying source
+    object, as needed by contravariant Hom constructions. *)
 
-(** 预合成作为 Hom 广集间的保相等映射。 *)
+(** 固定 [f : Hom X Y] 后的预合成，作为保相等映射
+    [HomSet Y Z →r HomSet X Z]。它反转变动来源对象的方向，为反变 Hom 构造
+    提供所需作用。 *)
 
 Program Canonical comp_r_resp {C : Cat} {X Y Z : Ob}
     {f : Hom X Y}
@@ -256,9 +339,19 @@ Qed.
 
 (** ** 对偶范畴 *)
 
-(** Reverse homs and composition to form the opposite category. *)
+(** Reverse homs and composition to form [C^op]. Each hom-set is exactly
+    an existing hom-set with its endpoints exchanged, so its carrier and
+    specified equality are reused. Unit laws exchange sides; associativity
+    follows by symmetry. No new equality or additional assumption is needed.
 
-(** 反转 Hom 与复合，构造反范畴。 *)
+    Later dual constructions reuse the original theory on this opposite
+    category and expose ordinary names for the resulting operations. *)
+
+(** 反转 Hom 与复合，构造 [C^op]。每个 Hom 广集就是交换端点后的原 Hom 广集，
+    载体及指定相等直接复用。单位律交换两侧，结合律由对称性得到，无须新的
+    相等或额外假设。
+
+    后续对偶构造在这个反范畴上复用原理论，再以通常名称提供所得运算。 *)
 
 Program Definition op (C : Cat)
   : Cat
@@ -304,9 +397,15 @@ Proof. destruct p. reflexivity. Qed.
 
 (** ** 乘积范畴 *)
 
-(** The componentwise product of two categories. *)
+(** The componentwise product of two categories. Objects and morphisms
+    are pairs; equality of morphisms is [ProdEq HomEq HomEq], a pair of
+    component equality witnesses. Identity, composition and their laws are
+    computed componentwise. This needs neither native equality of the
+    component arrows nor equality of their law proofs. *)
 
-(** 两个范畴的逐分量乘积。 *)
+(** 两个范畴的逐分量乘积。对象及态射都是对，态射相等为
+    [ProdEq HomEq HomEq]，即一对分量相等见证。恒等、复合及其定律逐分量构造，
+    不需要分量箭头的原生相等，也不比较其定律证明是否相等。 *)
 
 Program Definition ProdCat (C D : Cat)
   : Cat
@@ -383,16 +482,30 @@ Definition is_rinv_of {X Y} (f : Hom X Y) (g : Hom Y X)
 Definition is_inv_of {X Y} (f : Hom X Y) (g : Hom Y X)
   := is_linv_of f g ∧ is_rinv_of f g.
 
-(** An arrow with a chosen inverse and both inverse equations. *)
+(** An arrow with a chosen inverse and both inverse equations. The
+    existential notation is Type-valued: a witness of [is_iso f] stores
+    an actual inverse, rather than only asserting its existence in [Prop].
+    Both inverse equations use the specified hom-set equality. *)
 
-(** 带选定逆及两条互逆方程的箭头。 *)
+(** 带选定逆及两条互逆方程的箭头。存在记号取值于 [Type]：[is_iso f] 的见证
+    保存实际的逆，不只是 [Prop] 中的存在断言。两条互逆方程均使用 Hom 广集
+    的指定相等。 *)
 
 Definition is_iso {X Y} (f : Hom X Y)
   := ∃ g, is_inv_of f g.
 
-(** An isomorphism retains its forward arrow, inverse and inverse laws. *)
+(** An isomorphism retains its forward arrow, inverse and inverse laws.
+    For [i : X ≅ Y], [i.1] is the forward arrow, [i.2.1] its inverse,
+    and [i.2.2] the inverse equations. Reading the inverse is projection
+    of supplied data and requires no choice axiom.
 
-(** 同构保留正向箭头、逆及互逆定律。 *)
+    This compares objects by invertible arrows, without asserting native
+    object equality or forming a quotient of the object type. *)
+
+(** 同构保留正向箭头、逆及互逆定律。对于 [i : X ≅ Y]，[i.1] 是正向箭头，
+    [i.2.1] 是逆，[i.2.2] 是互逆方程。取逆只是投影已有数据，不需要选择公理。
+
+    这里通过可逆箭头比较对象，不断言对象原生相等，也不构造对象类型的商。 *)
 
 Definition iso X Y
   := ∃ f : Hom X Y, is_iso f.
@@ -459,9 +572,12 @@ Proof.
   destruct i as [f [fi [H1 H2]]]; cbn. split; assumption.
 Defined.
 
-(** Compose object isomorphisms. *)
+(** Compose object isomorphisms. Forward arrows compose in order and
+    inverse arrows in reverse order. The transparent proof retains these
+    computed arrows; the inverse equations follow from the category laws. *)
 
-(** 复合对象同构。 *)
+(** 复合对象同构：正向箭头顺序复合，逆箭头逆序复合。透明证明保留这些计算
+    得到的箭头，互逆方程由范畴定律推出。 *)
 
 Theorem iso_trans {X Y Z}
   : X ≅ Y → Y ≅ Z → X ≅ Z.

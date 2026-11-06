@@ -1,3 +1,35 @@
+(** * Constructive Foundations
+
+    This library develops category theory inside Rocq's type theory. Its
+    foundational constructions provide data and proofs without adding
+    excluded middle, choice, function extensionality, proof irrelevance or
+    uniqueness of identity proofs as axioms. This is the meaning of the
+    library's axiom-free aim; Rocq's underlying logic and universe rules
+    remain the foundation in which the constructions are checked.
+
+    A mathematical set will be represented by a carrier with a specified
+    equivalence relation, called a setoid. That relation is the set's
+    equality throughout the library. Operations must preserve it, and their
+    laws use it. Rocq's native equality can serve as the specified relation
+    of a concrete set, but is not imposed on all sets.
+
+    This module supplies the logical vocabulary used before sets and
+    categories are defined. The following modules introduce [SetC], maps
+    preserving its equality, and categories whose homs are such sets. *)
+
+(** * 构造性基础
+
+    本库在 Rocq 的类型论内部发展范畴论。基础构造给出数据及证明，不额外引入
+    排中律、选择公理、函数外延性、证明无关性或恒等证明唯一性公理。这就是本库
+    的无公理主旨：构造仍然在 Rocq 的底层逻辑与宇宙规则中接受检查。
+
+    本库用载体与指定的等价关系表示数学上的集合，称为广集。这个指定关系就是
+    全库使用的集合相等，运算须保持它，定律也按它陈述。Rocq 原生相等可以成为
+    某个具体集合的指定关系，但不作为所有集合必须采用的相等。
+
+    本模块提供定义集合与范畴之前所需的逻辑语言。后续模块依次介绍广集 [SetC]、
+    保持其相等的映射，以及以这种集合为 Hom 的范畴。 *)
+
 (* From Stdlib Require Export Morphisms.
 From Stdlib Require Export Setoid.
 From Stdlib Require Export Basics. *)
@@ -14,18 +46,41 @@ Global Set Warnings "-notation-overridden".
 Global Set Warnings "-notation-incompatible-format".
 
 (** Keep obligation contexts close to the declared fields, including dependent
-    pairs. Mathematical laws are proved explicitly below the data. *)
+    pairs. Mathematical laws are proved explicitly below the data. Declaring
+    a class field for a law does not assert a global axiom: constructing a
+    model requires supplying that field's proof. General results then take
+    the structure and its laws as explicit parameters. *)
 
-(** 义务上下文紧贴声明字段，保留依赖对；数学定律在数据之后显式证明。 *)
+(** 义务上下文紧贴声明字段，保留依赖对；数学定律在数据之后显式证明。将定律
+    声明为类的字段不等于引入全局公理：构造模型时必须提供相应证明，一般结论
+    则以结构及其定律作为显式参数。 *)
 
 Ltac cats_obligation := intros; cbn in *.
 Global Obligation Tactic := cats_obligation.
 
 
 
-(** * Type Notation *)
+(** * Type Notation
 
-(** * Type 值逻辑记号 *)
+    Logical notation here retains constructive witnesses in [Type]. An
+    inhabitant of [∃ x, P x] contains both a value and evidence of [P x];
+    its first projection retrieves the value. Likewise, [P ∧ Q] is a pair,
+    [P ∨ Q] records a chosen alternative, and [P ↔ Q] provides both maps.
+    Negation is a map into [Empty_set].
+
+    This convention lets a universal property return a mediator that later
+    definitions can compute with. Extracting a stored witness is projection
+    of existing data, so it needs no choice principle. It must be
+    distinguished from extracting data from a Prop-only existence proof. *)
+
+(** * Type 值逻辑记号
+
+    此处的逻辑记号在 [Type] 中保留构造见证。[∃ x, P x] 的元素同时包含一个值
+    及 [P x] 的证据，第一投影可以取出这个值。同样，[P ∧ Q] 是一对数据，
+    [P ∨ Q] 记录所选的分支，[P ↔ Q] 给出双向映射；否定是到 [Empty_set] 的映射。
+
+    这个约定使泛性质能够返回供后续定义计算的中介。取出已保存的见证只是投影
+    已有数据，不需要选择原理；这与从仅有 Prop 存在性的证明中提取数据不同。 *)
 
 Module Export TypeLogic.
 Export Utf8.
@@ -59,10 +114,21 @@ End TypeLogic.
 
 (** * 元层泛性质 *)
 
-(** A selected solution of a predicate, with every other solution equivalent
-    to it. *)
+(** A selected solution [x] of [P], unique under the supplied relation [R].
+    The field [this] proves [P x]; [that] sends every other solution [y]
+    to a witness of [R y x]. No equality between proofs of [P] is requested.
 
-(** 谓词的选定解，以及任意其他解与其等价的见证。 *)
+    Full unique existence is expressed by [∃ x, is_unique P x]. The outer
+    dependent pair selects the solution, while [is_unique] states its
+    property and uniqueness. For a categorical universal property, [x]
+    will typically be an arrow and [R] its specified hom equality. *)
+
+(** [P] 的选定解 [x] 在给定关系 [R] 下唯一。字段 [this] 证明 [P x]，[that]
+    为任意另一个解 [y] 给出 [R y x] 的见证，不要求比较 [P] 的证明是否相等。
+
+    完整的唯一存在写作 [∃ x, is_unique P x]：外层依赖对选取解，[is_unique]
+    陈述其性质与唯一性。用于范畴泛性质时，[x] 通常是态射，[R] 则为指定的
+    Hom 相等。 *)
 
 Record is_unique {X R} `{Equivalence X R}
     (P : X → Type) (x : X)
@@ -75,9 +141,12 @@ Record is_unique {X R} `{Equivalence X R}
 Section Unique.
 Context {X : Type} {R : X → X → Type} `{Equivalence X R}.
 
-(** Uniqueness among all elements, up to the ambient equivalence. *)
+(** Uniqueness among all elements under [R], using the always-satisfied
+    predicate. The result says that every element is equivalent to [x],
+    not that their carrier representations are natively equal. *)
 
-(** 在环境等价意义下，元素在全部元素中唯一。 *)
+(** 以恒成立的谓词表达元素在全体元素中的 [R] 唯一性：每个元素都与 [x] 等价，
+    无需其载体表示在原生相等意义下相同。 *)
 
 Definition is_unique_element (x : X)
   : Type
@@ -117,9 +186,14 @@ Tactic Notation "elim_unique" constr(H) "with" constr(h) :=
 Section ProdEquivalence.
 Context {X Y} (Rx : crelation X) (Ry : crelation Y).
 
-(** Compare the two components using their respective equivalence relations. *)
+(** Compare a pair componentwise, using [Rx] for the first component and
+    [Ry] for the second. A witness consists of the two component witnesses.
+    This construction later supplies the hom equality of product categories,
+    without native equality of pairs or equality of witness fields. *)
 
-(** 分别使用两个分量自身的等价关系进行比较。 *)
+(** 逐分量比较有序对，第一分量使用 [Rx]，第二分量使用 [Ry]；关系见证就是
+    两个分量见证组成的一对。后面乘积范畴的 Hom 相等复用此构造，不要求有序对
+    的原生相等，也不比较见证字段。 *)
 
 Definition ProdEq
   : crelation (X * Y)
