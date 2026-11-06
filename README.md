@@ -137,7 +137,6 @@ A category theory library for self study.
   makes groupoid vertex nerves **2-coskeletal**: every compatible boundary in
   dimension at least three has a unique filler. Boundary restriction is a
   setoid isomorphism after ordinary inclusion into common value sizes.
-  See the [checked tutorial](./book/Coskeletal.v).
   Full faithfulness, arbitrary-category coskeletality and examples with
   nontrivial higher homotopy remain separate goals; ordinary groupoid nerves
   do not provide the latter.
@@ -170,15 +169,16 @@ For English/Chinese tutorial PDFs with native commutative diagrams, run
 Outputs are under `_build/docs-pdf/book/`; omit `--book` for the full reference.
 Both languages share the same compiled Rocq chapters and TikZ-cd sources.
 Start with the [Boolean worked example](./book/Basics.v): categories, functors,
-natural transformations, products and limits. See the
-[documentation guide](./docs/Documentation.md) and
-[limits tutorial](./book/Limits.v) for more.
+natural transformations, products and limits. The reading edition keeps this
+single introductory chapter and uses the [project logo](./docs/branding/rocq-cats.svg)
+on its cover. See the [documentation guide](./docs/Documentation.md).
 
 运行 `dune exec tools/docs/docs.exe -- pdf --book --strict` 可导出独立的中英文
 教程 PDF 及原生交换图，需要已有 XeLaTeX 环境，输出位于 `_build/docs-pdf/book/`。
 省略 `--book` 可导出全库参考手册。两种语言共享经过编译的 Rocq 章节和 TikZ-cd
 图源。可从[布尔贯穿示例](./book/Basics.v)开始，依次学习范畴、函子、自然变换、积与
-极限；详见[文档指南](./docs/Documentation.md)与[极限教程](./book/Limits.v)。
+极限。阅读版仅保留这个入门章节，封面使用[项目 Logo](./docs/branding/rocq-cats.svg)。
+详见[文档指南](./docs/Documentation.md)。
 
 Basic HTML remains available through
 `dune exec tools/docs/docs.exe -- build --strict`, at `_build/docs/index.html`.

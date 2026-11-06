@@ -181,6 +181,13 @@ let pdf root output tag book paths =
   let zh = tag = "zh" in
   let title = if book then (if zh then "范畴论教程" else "Category Theory Tutorials")
     else (if zh then "理论参考手册与教程" else "Theory Reference and Tutorials") in
+  let logo = if book then read (root ^ "/docs/branding/rocq-cats-preview.png")
+    else "" in
+  if book then write (dir ^ "/rocq-cats-logo.png") logo;
+  let brand = if book then
+      "\\begin{center}\\includegraphics[width=.94\\textwidth]"
+      ^ "{rocq-cats-logo.png}\\end{center}"
+    else "{\\sffamily\\Huge\\color{catsBlue} Rocq-Cats\\par}" in
   let template = read (root ^ "/tools/docs/pdf-template.tex") in
   let setup = (if zh then
       "\\renewcommand{\\contentsname}{目录}"
@@ -191,13 +198,14 @@ let pdf root output tag book paths =
       ^ "\\let\\section\\chapter" else "") in
   let document = template
     |> fun s -> replace s "@@SETUP@@" setup
+    |> fun s -> replace s "@@BRAND@@" brand
     |> fun s -> replace s "@@TITLE@@" title
     |> fun s -> replace s "@@LANGUAGE@@" (if zh then "中文版" else "English Edition")
     |> fun s -> replace s "@@DESCRIPTION@@"
       (if zh then "来自同一双语源码；定义、定理与示例经过 Rocq 检查。"
        else "From one bilingual source tree. Definitions, theorems and examples checked by Rocq.") in
   let filename = "rocq-cats-" ^ tag in
-  let digest = Digest.to_hex (Digest.string (document ^ body ^ symbols)) in
+  let digest = Digest.to_hex (Digest.string (document ^ body ^ symbols ^ logo)) in
   let stamp = dir ^ "/inputs.digest" in
   if not (Sys.file_exists stamp && read stamp = digest) then
     List.iter (fun ending ->
@@ -243,6 +251,11 @@ let build root strict format book =
     if format = "pdf" then pdf root output tag book paths else begin
       let dir = output ^ "/" ^ tag in
       mkdir dir;
+      Sys.readdir dir |> Array.iter (fun name ->
+        if suffix ".html" name
+          && (Filter.starts name 0 "Cats." || Filter.starts name 0 "CatsBook.")
+          && not (List.exists (fun s -> s.name ^ ".html" = name) sources)
+        then remove (dir ^ "/" ^ name));
       run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
         "-R"; inputs ^ "/theories"; "Cats"; "-R"; inputs ^ "/book"; "CatsBook";
         "-d"; dir] @ paths);

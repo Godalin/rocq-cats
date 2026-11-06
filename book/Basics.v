@@ -3,14 +3,13 @@
     We will organize the same data in five successive ways: a category, a
     diagram functor, a natural transformation, a product and a limit. The
     concrete question is simple: how can we record a Boolean value together
-    with its negation? Every definition and example below is checked by Rocq.
-    The later limits chapter develops the general theory behind this example. *)
+    with its negation? Every definition and example below is checked by Rocq. *)
 
 (** * 从范畴到极限：一个贯穿始终的布尔例子
 
     我们用五种逐步发展的结构组织同一份数据：范畴、图式函子、自然变换、积与极限。
     具体问题很简单：如何同时记录一个布尔值及其取反？下文的每个定义与示例都由
-    Rocq 检查。后面的极限章节进一步介绍本例背后的一般理论。 *)
+    Rocq 检查。 *)
 
 From Stdlib Require Import
   Bool.
@@ -57,9 +56,10 @@ Program Definition negation_resp
   {|func := negb
   |}.
 
-(** Negating twice is the identity arrow, checked on the two input values. *)
+(** Negating twice is the identity arrow. This equality compares the output
+    at each input; the proof checks the two Boolean values. *)
 
-(** 取反两次就是恒等箭头，通过检查两个输入值证明。 *)
+(** 取反两次是恒等箭头。相等逐点比较输出，证明检查两个布尔输入。 *)
 
 Example negation_twice
   : negation_resp ∘ negation_resp ≈ id.
