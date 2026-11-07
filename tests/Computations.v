@@ -16,6 +16,37 @@ From Cats Require Import
   Instance.Bool.Nerve
   Instance.Set.Simplicial.Spine
   Instance.Set.Simplicial.Nerve.
+From Cats Require Import
+  Cat.Adjunction
+  Cat.Monad.Adjunction
+  Instance.Set.Monoid.
+
+(** Concrete monoid multiplication and adjunction-induced monad operations
+    must compute through the general monoidal interfaces. *)
+
+(** 具体幺半群乘法及伴随诱导的 Monad 运算须能穿过一般幺半接口计算。 *)
+
+Module MonoidalComputations.
+
+Definition BoolObject
+  := SetMonoidObject BoolS_Monoid.
+
+Example monoid_object_mul_computes
+  : monoid_object_mul BoolObject (true, false) = true.
+Proof. reflexivity. Qed.
+
+Definition IdentityFromAdjunction
+  := AdjunctionMonad (IdAdjunction SetCat).
+
+Example adjunction_monad_unit_computes
+  : monad_unit IdentityFromAdjunction BoolS true = true.
+Proof. reflexivity. Qed.
+
+Example adjunction_monad_mul_computes
+  : monad_mul IdentityFromAdjunction BoolS false = false.
+Proof. reflexivity. Qed.
+
+End MonoidalComputations.
 
 Module CodeConversion.
 

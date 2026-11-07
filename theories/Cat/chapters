@@ -6,6 +6,8 @@ Terminal.v
 Product/Core.v
 Exponential/Core.v
 CCC.v
+Monoidal
+Monad
 Diagram
 Limit
 Colimit

@@ -1854,3 +1854,38 @@ Definition high_eq_coskeletal_boundary (n : nat)
       LiftS@{_ _ v q} (BoundaryS Y (S (2 + n)))
   := coskeletal_boundary_iso n.
 End SimplicialMatchingLevels.
+
+From Cats Require Import
+  Cat.Monad.Core.
+
+(** Monoid and monad hom equalities retain either ordering of the native
+    morphism and equality levels. Stored law witnesses may enlarge the
+    hom carrier, but must not force its equality level upward. *)
+
+(** 幺半群及 Monad 的 Hom 相等保留原生态射与相等层级的两种次序。保存定律
+    见证可以增大 Hom 载体，但不能迫使其相等层级上升。 *)
+
+Section MonoidalLevels.
+Universes o e h p.
+Constraint o < e.
+Constraint e < h.
+Constraint h < p.
+Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
+    (MC0 : MonoidalCategory C0) (MC1 : MonoidalCategory C1).
+
+Definition low_eq_monoid_category
+  : Cat@{_ _ e _ _}
+  := MonoidCat MC0.
+
+Definition high_eq_monoid_category
+  : Cat@{_ _ p _ _}
+  := MonoidCat MC1.
+
+Definition low_eq_monad_category
+  : Cat@{_ _ e _ _}
+  := MonadCat C0.
+
+Definition high_eq_monad_category
+  : Cat@{_ _ p _ _}
+  := MonadCat C1.
+End MonoidalLevels.

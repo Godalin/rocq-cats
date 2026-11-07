@@ -57,3 +57,14 @@ Fail Definition arbitrary_candidate_unique (c : Hom Y Ω) : c ≈ χ m :=
   that _ _ (classifier_char_unique (m := m)) c (this _ _ (classifier_char_unique (m := m))).
 
 End Classifier.
+
+From Cats Require Import
+  Instance.Set.Monoid.
+
+(** Importing a cartesian model must not choose a default monoidal structure. *)
+
+(** 导入笛卡尔模型不得自动选定默认幺半结构。 *)
+
+Fail Definition unchosen_set_monoidal
+  : MonoidalCategory SetCat
+  := ltac:(typeclasses eauto).
