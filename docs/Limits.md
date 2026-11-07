@@ -90,9 +90,9 @@ eq⟨q,H⟩             由 H : f ∘ q ≈ g ∘ q 得到的唯一中介
 `HasLimit C (DiscreteF D)`，不引入另一套积公理：
 
 ```text
-Π[D]          积对象
-πΠ[D] i       第 i 个投影
-Π⟨κ⟩          由一族态射 κ 配出的中介
+∏[D]          积对象
+π∏[D] i       第 i 个投影
+∏⟨κ⟩          由一族态射 κ 配出的中介
 ```
 
 β/η、逐点相等的 respectfulness、预合成律及由投影判断态射相等的定理
@@ -147,7 +147,7 @@ FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
 它们的 β 律和投影消去性质用于构造 `FiniteProductLimit D`，
 适用于 `DiscreteCat (Fin n)` 上的任意图式。
 `FiniteProductLimits n` 将结果组织为该形状的全部选定极限；必须显式启用。
-此后可直接使用 `Π[D]`、`πΠ[D] i`、`Π⟨κ⟩` 以及已有 η、相等与复合相容性定律，
+此后可直接使用 `∏[D]`、`π∏[D] i`、`∏⟨κ⟩` 以及已有 η、相等与复合相容性定律，
 不再增加有限积的独立结构字段。
 
 递归对象、投影、配对及泛性质中的中介均保持透明，便于直接计算。

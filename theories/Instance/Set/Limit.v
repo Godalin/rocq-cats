@@ -29,7 +29,7 @@ Program Definition SetCat_IndexedProductLimit@{i u p +} {I : Type@{i}}
     (D : Functor (DiscreteCat I) (SetCat@{u p _ _ _ _ _}))
   : HasLimit SetCat D
   :=
-  {|Lim := ΠS[λ i, D i]
+  {|Lim := ∏S[λ i, D i]
   ; limit_cone := @DiscreteCone SetCat I D _ (pi_proj_resp (λ i, D i))
   |}.
 Next Obligation.

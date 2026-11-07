@@ -28,7 +28,7 @@ Local Instance sigma_fiber_HasLimit (i : I)
 
 Definition SigmaProducts (i : I)
   : @Ob C
-  := Π[λ j : J i, D (i; j)].
+  := ∏[λ j : J i, D (i; j)].
 
 (** Use the chosen product of the fiber-product objects. *)
 
@@ -43,10 +43,10 @@ Local Instance sigma_outer_HasLimit
 (** 从嵌套积投影到依赖和索引的分量。 *)
 
 Definition sigma_product_proj (a : ∃ i, J i)
-  : Hom Π[SigmaProducts] (D a).
+  : Hom ∏[SigmaProducts] (D a).
 Proof.
   destruct a as [i j].
-  exact (πΠ[λ j : J i, D (i; j)] j ∘ πΠ[SigmaProducts] i).
+  exact (π∏[λ j : J i, D (i; j)] j ∘ π∏[SigmaProducts] i).
 Defined.
 
 (** Nested products satisfy the dependent-sum indexed-product property. *)
@@ -56,7 +56,7 @@ Defined.
 Program Definition SigmaProductLimit
   : HasLimit C D
   :=
-  {|Lim := Π[SigmaProducts]
+  {|Lim := ∏[SigmaProducts]
   ; limit_cone := @DiscreteCone C (∃ i, J i) D _ sigma_product_proj
   |}.
 Next Obligation.
@@ -66,7 +66,7 @@ Next Obligation.
   assert (Hp : ∀ a, sigma_product_proj a ∘ p ≈ μ a).
   { intros [i j]. unfold sigma_product_proj, p.
     cbn beta iota zeta. rewrite comp_assoc.
-    transitivity (πΠ[λ j : J i, D (i; j)] j ∘
+    transitivity (π∏[λ j : J i, D (i; j)] j ∘
       indexed_pair (D := λ j : J i, D (i; j)) (λ j, μ (i; j))).
     - apply comp_l.
       exact (indexed_product_β (D := SigmaProducts)

@@ -15,7 +15,7 @@ From Cats Require Export
 
     选定结构是 [HasLimit C (DiscreteF D)]；不重复保存泛性质、中介或相干律。 *)
 
-Notation "'Π[' D ']'" := (Lim (DiscreteF D)) : ob_scope.
+Notation "'∏[' D ']'" := (Lim (DiscreteF D)) : ob_scope.
 
 Section IndexedProduct.
 Context {C : Cat} {I : Type} {D : I → @Ob C}
@@ -27,7 +27,7 @@ Context {C : Cat} {I : Type} {D : I → @Ob C}
 (** 从离散极限锥提取的索引积投影。 *)
 
 Definition indexed_proj (i : I)
-  : Hom Π[D] (D i)
+  : Hom ∏[D] (D i)
   := πlim[DiscreteF D] i.
 
 (** The universal arrow assembling an indexed family of components. *)
@@ -35,7 +35,7 @@ Definition indexed_proj (i : I)
 (** 组装索引分量族的泛箭头。 *)
 
 Definition indexed_pair {X : @Ob C} (κ : ∀ i, Hom X (D i))
-  : Hom X Π[D]
+  : Hom X ∏[D]
   := @limit_lift (DiscreteCat I) C (DiscreteF D) HP X
     (@DiscreteCone C I (DiscreteF D) X κ).
 
@@ -54,7 +54,7 @@ Qed.
 
 (** 指向索引积的箭头由全部投影恢复。 *)
 
-Lemma indexed_product_η {X : @Ob C} (f : Hom X Π[D])
+Lemma indexed_product_η {X : @Ob C} (f : Hom X ∏[D])
   : indexed_pair (λ i, indexed_proj i ∘ f) ≈ f.
 Proof.
   transitivity (lim⟨πlim[DiscreteF D] ∘Cone f⟩).
@@ -68,7 +68,7 @@ Qed.
 
 Global Instance indexed_pair_proper {X : @Ob C}
   : Proper ((λ κ μ : ∀ i, Hom X (D i), ∀ i, κ i ≈ μ i) ==>
-      @HomEq C X Π[D]) indexed_pair.
+      @HomEq C X ∏[D]) indexed_pair.
 Proof. intros κ μ H. apply limit_lift_proper. exact H. Qed.
 
 (** Precomposition of indexed pairing acts componentwise. *)
@@ -86,7 +86,7 @@ Qed.
 
 (** 全部索引投影共同检测积值箭头相等。 *)
 
-Theorem indexed_product_hom_ext {X : @Ob C} (f g : Hom X Π[D])
+Theorem indexed_product_hom_ext {X : @Ob C} (f g : Hom X ∏[D])
     (H : ∀ i, indexed_proj i ∘ f ≈ indexed_proj i ∘ g)
   : f ≈ g.
 Proof.
@@ -96,5 +96,5 @@ Qed.
 
 End IndexedProduct.
 
-Notation "'πΠ[' D ']'" := (indexed_proj (D := D)) : hom_scope.
-Notation "'Π⟨' κ '⟩'" := (indexed_pair κ) : hom_scope.
+Notation "'π∏[' D ']'" := (indexed_proj (D := D)) : hom_scope.
+Notation "'∏⟨' κ '⟩'" := (indexed_pair κ) : hom_scope.

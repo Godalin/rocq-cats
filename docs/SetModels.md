@@ -50,14 +50,14 @@ The chosen structure supplies the original opposite equalizer fields.
 ## 指标及图式模型
 
 [Pi](../theories/Set/Pi.v) supplies raw dependent functions with pointwise
-equality, `ΠS[D]`. This construction was extracted from
+equality, `∏S[D]`. This construction was extracted from
 [Fam.Core](../theories/Instance/Set/Fam/Core.v); its index can now be any
 type, and it has no category dependency. These raw functions do not impose
 coherent-section laws. [IndexedSum](../theories/Set/IndexedSum.v) supplies
 `∐S[D]`, using a dependent-sum carrier and equality generated within each fiber.
 No equality of transport or derivation witnesses is required.
 
-[Pi](../theories/Set/Pi.v) 提供带逐点相等的原始依赖函数 `ΠS[D]`。
+[Pi](../theories/Set/Pi.v) 提供带逐点相等的原始依赖函数 `∏S[D]`。
 该构造从 [Fam.Core](../theories/Instance/Set/Fam/Core.v) 提取出来，索引现在可以为
 任意类型，且不依赖范畴；这些原始函数不要求相干截面定律。
 [IndexedSum](../theories/Set/IndexedSum.v) 提供 `∐S[D]`，载体为依赖和，相等由

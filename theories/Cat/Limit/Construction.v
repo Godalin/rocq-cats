@@ -37,9 +37,9 @@ Definition DiagramTargets {J C : Cat} (D : Functor J C) (a : ArrowOb J)
 
 Definition product_cone_equalizer_limit {J C : Cat} (D : Functor J C)
     `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}
-    {Q E : @Ob C} {s t : Hom Π[DiagramObjects D] Q}
-    {e : Hom E Π[DiagramObjects D]}
-    (κ : E ⇒Δ D) (Hκ : ∀ j, κ j ≈ πΠ[DiagramObjects D] j ∘ e)
+    {Q E : @Ob C} {s t : Hom ∏[DiagramObjects D] Q}
+    {e : Hom E ∏[DiagramObjects D]}
+    (κ : E ⇒Δ D) (Hκ : ∀ j, κ j ≈ π∏[DiagramObjects D] j ∘ e)
     (Hcones : ∀ X (μ : X ⇒Δ D),
       s ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j) ≈
       t ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j))
@@ -74,31 +74,31 @@ Context `{HA : !HasLimit C (DiscreteF (DiagramTargets D))}.
 (** 约束映射的分量先取源投影，再应用图式箭头。 *)
 
 Definition diagram_product_source
-  : Hom Π[DiagramObjects D] Π[DiagramTargets D]
-  := Π⟨λ a, fmap D (arrow_map a) ∘ πΠ[DiagramObjects D] (arrow_dom a)⟩.
+  : Hom ∏[DiagramObjects D] ∏[DiagramTargets D]
+  := ∏⟨λ a, fmap D (arrow_map a) ∘ π∏[DiagramObjects D] (arrow_dom a)⟩.
 
 (** The constraint map whose components are target projections. *)
 
 (** 以目标投影为各分量的约束映射。 *)
 
 Definition diagram_product_target
-  : Hom Π[DiagramObjects D] Π[DiagramTargets D]
-  := Π⟨λ a, πΠ[DiagramObjects D] (arrow_cod a)⟩.
+  : Hom ∏[DiagramObjects D] ∏[DiagramTargets D]
+  := ∏⟨λ a, π∏[DiagramObjects D] (arrow_cod a)⟩.
 
 (** Equalizing the two product constraints makes the proposed legs commute. *)
 
 (** 等化两个积约束后，候选锥腿交换。 *)
 
-Lemma diagram_product_comm {E : @Ob C} (e : Hom E Π[DiagramObjects D])
+Lemma diagram_product_comm {E : @Ob C} (e : Hom E ∏[DiagramObjects D])
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
     {i j : @Ob J} (f : Hom i j)
-  : fmap D f ∘ (πΠ[DiagramObjects D] i ∘ e) ≈ πΠ[DiagramObjects D] j ∘ e.
+  : fmap D f ∘ (π∏[DiagramObjects D] i ∘ e) ≈ π∏[DiagramObjects D] j ∘ e.
 Proof.
   pose (a := ({|arrow_dom := i
               ; arrow_cod := j
               ; arrow_map := f
               |} : ArrowOb J)).
-  transitivity ((πΠ[DiagramTargets D] a ∘ diagram_product_source) ∘ e).
+  transitivity ((π∏[DiagramTargets D] a ∘ diagram_product_source) ∘ e).
   - unfold diagram_product_source. rewrite indexed_product_β, comp_assoc. reflexivity.
   - rewrite comp_assoc, H, <- comp_assoc.
     unfold diagram_product_target. rewrite indexed_product_β. reflexivity.
@@ -110,11 +110,11 @@ Qed.
 (** 将等化子包含箭头与对象积投影复合得到的锥。 *)
 
 Program Definition ProductsEqualizerCone {E : @Ob C}
-    (e : Hom E Π[DiagramObjects D])
+    (e : Hom E ∏[DiagramObjects D])
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
   : E ⇒Δ D
   :=
-  {|nt j := πΠ[DiagramObjects D] j ∘ e
+  {|nt j := π∏[DiagramObjects D] j ∘ e
   |}.
 Next Obligation.
   rewrite comp_id_r. symmetry. apply diagram_product_comm. exact H.
@@ -124,7 +124,7 @@ Qed.
 
 (** 两个积约束的等化子具有极限性质。 *)
 
-Definition products_equalizer_limit {E : @Ob C} {e : Hom E Π[DiagramObjects D]}
+Definition products_equalizer_limit {E : @Ob C} {e : Hom E ∏[DiagramObjects D]}
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
     (HE : is_equalizer diagram_product_source diagram_product_target E e)
   : is_limit (ProductsEqualizerCone e H).

@@ -14,7 +14,7 @@ Definition PiEq {I : Type} {D : I → SetC} (f g : ∀ i, D i)
   : Type
   := ∀ i, f i ≈S g i.
 
-Infix "≈ΠS" := PiEq (at level 50) : set_scope.
+Infix "≈∏S" := PiEq (at level 50) : set_scope.
 
 (** The fiber equivalences give pointwise function equivalence. *)
 
@@ -41,14 +41,14 @@ Program Canonical PiS (I : Type) (D : I → SetC)
   ; carrier_equiv := PiEq
   |}.
 
-Notation "'ΠS[' D ']'" := (PiS _ D) : set_scope.
+Notation "'∏S[' D ']'" := (PiS _ D) : set_scope.
 
 (** Evaluate a dependent function at one index. *)
 
 (** 在一个索引处计算依赖函数。 *)
 
 Program Definition pi_proj_resp {I : Type} (D : I → SetC) (i : I)
-  : ΠS[D] →r D i
+  : ∏S[D] →r D i
   :=
   {|func f := f i
   |}.
@@ -60,7 +60,7 @@ Next Obligation. intros f g H. exact (H i). Defined.
 
 Program Definition pi_pair_resp {I : Type} {D : I → SetC} {X : SetC}
     (κ : ∀ i, X →r D i)
-  : X →r ΠS[D]
+  : X →r ∏S[D]
   :=
   {|func x i := κ i x
   |}.

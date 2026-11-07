@@ -59,6 +59,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   Use `→` and `⇒` for ordinary arrows; extend them with `-` when needed,
   rather than using alternative long-arrow Unicode characters. Distinct
   symbols may express distinct meanings, such as `↣` for monomorphisms.
+  Use `∏`/`∐` for indexed products/coproducts; reserve `Π` for Pi-types.
 - Category extensions take a named category parameter. Declare chosen
   dependencies by name; use named `!Has*` constraints in clients. Bundle
   inherited structures with `has*`/`is*` fields and `::`.
