@@ -1856,7 +1856,7 @@ Definition high_eq_coskeletal_boundary (n : nat)
 End SimplicialMatchingLevels.
 
 From Cats Require Import
-  Cat.Monad.Core.
+  Cat.Monad.Monoid.
 
 (** Monoid and monad hom equalities retain either ordering of the native
     morphism and equality levels. Stored law witnesses may enlarge the
@@ -1888,4 +1888,16 @@ Definition low_eq_monad_category
 Definition high_eq_monad_category
   : Cat@{_ _ p _ _}
   := MonadCat C1.
+
+(** The correspondence also instantiates at both strict universe orders. *)
+
+(** 对应也可在两种严格宇宙次序下实例化。 *)
+
+Definition low_eq_monad_monoid_equiv
+  : low_eq_monad_category ≃C MonoidCat (EndofunctorMonoidal C0)
+  := monad_monoid_equiv C0.
+
+Definition high_eq_monad_monoid_equiv
+  : high_eq_monad_category ≃C MonoidCat (EndofunctorMonoidal C1)
+  := monad_monoid_equiv C1.
 End MonoidalLevels.

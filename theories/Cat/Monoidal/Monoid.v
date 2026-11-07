@@ -17,6 +17,24 @@ Local Open Scope monoidal_scope.
     乘法使用选定张量，不默认为范畴积。全部图表使用指定 Hom 相等，并显式保留
     结合子和单位子。载体及运算作为数据保存，不要求定律见证相等。 *)
 
+(** The monoid laws for fixed carrier, unit and multiplication. This
+    predicate compares presentations without quantifying over packages
+    whose data could differ. *)
+
+(** 固定载体、单位和乘法上的幺半群定律；此谓词可比较不同呈现，而不必量化
+    数据可能不同的完整结构包。 *)
+
+Definition is_monoid_object {C : Cat} (MC : MonoidalCategory C)
+    (A : @Ob C) (e : Hom (I⊗[MC]) A) (m : Hom (A ⊗ A) A)
+  : Type
+  := (m ∘ (e ⊗m id) ≈ λ⊗[A]) ∧
+      (m ∘ (id ⊗m e) ≈ ρ⊗[A]) ∧
+      (m ∘ (m ⊗m id) ≈ m ∘ (id ⊗m m) ∘ α⊗[A; A; A]).
+
+(** A chosen carrier and operations satisfying the monoid diagrams. *)
+
+(** 满足幺半群交换图表的选定载体及运算。 *)
+
 Class MonoidObject {C : Cat} (MC : MonoidalCategory C)
   :=
   { MonoidCarrier : @Ob C
@@ -40,6 +58,17 @@ Arguments monoid_object_mul {_ _} _.
 Arguments monoid_object_unit_l {_ _} _.
 Arguments monoid_object_unit_r {_ _} _.
 Arguments monoid_object_assoc {_ _} _.
+
+(** Extract the fixed-data law predicate from a chosen monoid object. *)
+
+(** 从选定幺半群对象中提取固定数据上的定律谓词。 *)
+
+Definition monoid_object_laws {C : Cat} {MC : MonoidalCategory C}
+    (A : MonoidObject MC)
+  : is_monoid_object MC (MonoidCarrier A)
+      (monoid_object_unit A) (monoid_object_mul A)
+  := (monoid_object_unit_l A,
+      (monoid_object_unit_r A, monoid_object_assoc A)).
 
 Notation "'e[' A ']'" := (monoid_object_unit A) : monoidal_scope.
 Notation "'m[' A ']'" := (monoid_object_mul A) : monoidal_scope.

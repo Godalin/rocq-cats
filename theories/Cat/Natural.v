@@ -172,6 +172,17 @@ Next Obligation. intros O; simpl.
   rewrite comp_assoc. cato.
 Qed.
 
+(** Vertical composition preserves equality of natural transformations. *)
+
+(** 垂直复合保持自然变换的相等。 *)
+
+Global Instance nt_comp_v_proper {C D : Cat} {F G H : Functor C D}
+  : Proper (NatEq ==> NatEq ==> NatEq) (@nt_comp_v C D F G H).
+Proof.
+  intros α α' Eα β β' Eβ X.
+  exact (comp_proper (α X) (α' X) (Eα X) (β X) (β' X) (Eβ X)).
+Qed.
+
 Section Fct.
 Context {C D : Cat} {F G : Functor C D}.
 

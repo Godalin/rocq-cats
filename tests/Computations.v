@@ -19,6 +19,7 @@ From Cats Require Import
 From Cats Require Import
   Cat.Adjunction
   Cat.Monad.Adjunction
+  Cat.Monad.Monoid
   Instance.Set.Monoid.
 
 (** Concrete monoid multiplication and adjunction-induced monad operations
@@ -44,6 +45,17 @@ Proof. reflexivity. Qed.
 
 Example adjunction_monad_mul_computes
   : monad_mul IdentityFromAdjunction BoolS false = false.
+Proof. reflexivity. Qed.
+
+(** Converting through the categorical characterization preserves both
+    computations, independently of the reconstructed law witnesses. *)
+
+(** 经过范畴刻画的转换保持两个运算的计算，不依赖重新构造的定律见证。 *)
+
+Example monad_monoid_roundtrip_computes
+  : (monad_unit (MonoidMonad (MonadMonoid IdentityFromAdjunction)) BoolS true,
+      monad_mul (MonoidMonad (MonadMonoid IdentityFromAdjunction)) BoolS false)
+      = (true, false).
 Proof. reflexivity. Qed.
 
 End MonoidalComputations.
