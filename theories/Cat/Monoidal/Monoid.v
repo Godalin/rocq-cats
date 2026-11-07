@@ -1,0 +1,163 @@
+From Cats.Set Require Import
+  Subset.
+From Cats Require Export
+  Cat.Monoidal.Core.
+
+Local Open Scope monoidal_scope.
+
+(** * Monoid Objects
+
+    Multiplication uses the selected tensor, not an implicit categorical
+    product. All diagrams use designated hom equality and explicitly retain
+    the associator and unitors. The carrier and operations are stored data;
+    no equality of the law witnesses is requested. *)
+
+(** * 幺半群对象
+
+    乘法使用选定张量，不默认为范畴积。全部图表使用指定 Hom 相等，并显式保留
+    结合子和单位子。载体及运算作为数据保存，不要求定律见证相等。 *)
+
+Class MonoidObject {C : Cat} (MC : MonoidalCategory C)
+  :=
+  { MonoidCarrier : @Ob C
+  ; monoid_object_unit : Hom (I⊗[MC]) MonoidCarrier
+  ; monoid_object_mul : Hom (MonoidCarrier ⊗ MonoidCarrier) MonoidCarrier
+  ; monoid_object_unit_l
+    : monoid_object_mul ∘ (monoid_object_unit ⊗m id) ≈
+        λ⊗[MonoidCarrier]
+  ; monoid_object_unit_r
+    : monoid_object_mul ∘ (id ⊗m monoid_object_unit) ≈
+        ρ⊗[MonoidCarrier]
+  ; monoid_object_assoc
+    : monoid_object_mul ∘ (monoid_object_mul ⊗m id) ≈
+        monoid_object_mul ∘ (id ⊗m monoid_object_mul) ∘
+          α⊗[MonoidCarrier; MonoidCarrier; MonoidCarrier]
+  }.
+
+Arguments MonoidCarrier {_ _} _.
+Arguments monoid_object_unit {_ _} _.
+Arguments monoid_object_mul {_ _} _.
+Arguments monoid_object_unit_l {_ _} _.
+Arguments monoid_object_unit_r {_ _} _.
+Arguments monoid_object_assoc {_ _} _.
+
+Notation "'e[' A ']'" := (monoid_object_unit A) : monoidal_scope.
+Notation "'m[' A ']'" := (monoid_object_mul A) : monoidal_scope.
+
+Section MonoidMorphisms.
+Context {C : Cat} {MC : MonoidalCategory C}.
+
+(** A homomorphism preserves the unit and multiplication. The commuting
+    diagrams are Type-valued evidence, not an equality of structure records. *)
+
+(** 同态保持单位和乘法；交换图表是 Type 值证据，不是结构记录的相等。 *)
+
+Definition is_monoid_hom (A B : MonoidObject MC)
+    (f : Hom (MonoidCarrier A) (MonoidCarrier B))
+  : Type
+  := f ∘ e[A] ≈ e[B] ∧ f ∘ m[A] ≈ m[B] ∘ (f ⊗m f).
+
+(** Equal arrows satisfy the same homomorphism diagrams. *)
+
+(** 相等箭头满足相同的同态交换方程。 *)
+
+Lemma monoid_hom_equiv (A B : MonoidObject MC)
+    (f g : Hom (MonoidCarrier A) (MonoidCarrier B))
+    (E : f ≈ g)
+  : is_monoid_hom A B f ↔ is_monoid_hom A B g.
+Proof.
+  split; intros [Hu Hm]; split.
+  - rewrite <- E. exact Hu.
+  - rewrite <- E. exact Hm.
+  - rewrite E. exact Hu.
+  - rewrite E. exact Hm.
+Qed.
+
+(** Homomorphisms form a subset of the underlying hom-set. Their equality
+    compares the arrows only; preservation witnesses remain stored and are
+    not identified by proof irrelevance. *)
+
+(** 同态组成底层 Hom 广集的子集，相等只比较箭头；保持性见证仍然保存，并未
+    通过证明无关性将它们等同。 *)
+
+Definition MonoidHomS (A B : MonoidObject MC)
+  : SetC
+  := SubsetS (HomSet (MonoidCarrier A) (MonoidCarrier B))
+      (is_monoid_hom A B).
+
+(** The identity arrow preserves both operations. *)
+
+(** 恒等箭头保持两个运算。 *)
+
+Definition monoid_hom_id (A : MonoidObject MC)
+  : MonoidHomS A A.
+Proof.
+  exists id. split; [apply comp_id_l |].
+  rewrite tensor_map_id, comp_id_r. apply comp_id_l.
+Defined.
+
+(** Composition preserves the operations by tensor bifunctoriality. *)
+
+(** 由张量双函子性，复合保持两个运算。 *)
+
+Definition monoid_hom_comp {A B D : MonoidObject MC}
+    (g : MonoidHomS B D) (f : MonoidHomS A B)
+  : MonoidHomS A D.
+Proof.
+  exists (g.1 ∘ f.1). destruct f as [f [Hfe Hfm]], g as [g [Hge Hgm]].
+  cbn. split.
+  - rewrite comp_assoc, Hfe. exact Hge.
+  - rewrite comp_assoc, Hfm, <- comp_assoc, Hgm, comp_assoc.
+    rewrite <- tensor_map_comp. reflexivity.
+Defined.
+
+End MonoidMorphisms.
+
+Section MonoidCategories.
+Context {C : Cat}.
+
+(** The category of monoid objects and operation-preserving arrows.
+    Its hom equality inherits that of [C], without comparing proof fields. *)
+
+(** 幺半群对象及保持运算箭头组成的范畴；Hom 相等继承自 [C]，不比较证明字段。 *)
+
+Program Definition MonoidCat (MC : MonoidalCategory C)
+  : Cat
+  :=
+  {|Ob := MonoidObject MC
+  ; HomSet := MonoidHomS
+  ; id := monoid_hom_id
+  ; comp _ _ _ := monoid_hom_comp
+  |}.
+Next Obligation.
+  intros [g Hg] [g' Hg'] Eg [f Hf] [f' Hf'] Ef.
+  exact (comp_proper g g' Eg f f' Ef).
+Defined.
+Next Obligation. exact (comp_id_r f.1). Defined.
+Next Obligation. exact (comp_id_l f.1). Defined.
+Next Obligation. exact (comp_assoc f.1 g.1 h.1). Defined.
+
+(** Forget a monoid's operations and a homomorphism's preservation proofs. *)
+
+(** 忘却幺半群的运算及同态的保持性证明。 *)
+
+Program Definition MonoidForgetF (MC : MonoidalCategory C)
+  : Functor (MonoidCat MC) C
+  :=
+  {|F0 := MonoidCarrier
+  ; F1 A B f := f.1
+  |}.
+Next Obligation. intros f g H. exact H. Defined.
+Next Obligation. reflexivity. Defined.
+Next Obligation. reflexivity. Defined.
+
+(** Forgetting a homomorphism is faithful because equality already compares
+    only its underlying arrow. *)
+
+(** 同态的相等本就只比较底层箭头，因此忘却函子忠实。 *)
+
+Lemma monoid_forget_faithful (MC : MonoidalCategory C)
+  : is_faithful (MonoidForgetF MC).
+Proof. intros A B f g H. exact H. Qed.
+
+End MonoidCategories.
