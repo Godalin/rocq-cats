@@ -360,15 +360,16 @@ Notation "'⟨' σ ';' t '⟩[' T ',' A ']'" := (context_pair T A σ t)
   (at level 0, format "⟨ σ ;  t ⟩[ T ,  A ]") : cat_scope.
 
 (** Like [CCC] and [ETCS], an enabled bundle supplies its substructures.
-    Concrete CwF models still have to be enabled explicitly. *)
+    Concrete CwF models still have to be enabled explicitly. Coercion exposes
+    the type-and-term functor without selecting a model. *)
 
 (** 与 [CCC]、[ETCS] 一样，启用组合结构后可使用其子结构；具体带族范畴模型仍须
-    显式启用。 *)
+    显式启用。强制转换暴露类型与项函子，不会自动选取模型。 *)
 
 Class CwF (C : Cat)
   :=
   { hasTerminal :: HasTerminal C
-  ; TyTmF : Functor (C^op) FamCat
+  ; TyTmF :> Functor (C^op) FamCat
   ; hasContextExtension :: HasContextExtension TyTmF
   }.
 

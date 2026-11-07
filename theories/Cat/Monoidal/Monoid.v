@@ -31,13 +31,14 @@ Definition is_monoid_object {C : Cat} (MC : MonoidalCategory C)
       (m ∘ (id ⊗m e) ≈ ρ⊗[A]) ∧
       (m ∘ (m ⊗m id) ≈ m ∘ (id ⊗m m) ∘ α⊗[A; A; A]).
 
-(** A chosen carrier and operations satisfying the monoid diagrams. *)
+(** A chosen carrier and operations satisfying the monoid diagrams.
+    Coercion exposes the carrier object in the ambient category. *)
 
-(** 满足幺半群交换图表的选定载体及运算。 *)
+(** 满足幺半群交换图表的选定载体及运算；强制转换暴露所在范畴中的载体对象。 *)
 
 Class MonoidObject {C : Cat} (MC : MonoidalCategory C)
   :=
-  { MonoidCarrier : @Ob C
+  { MonoidCarrier :> @Ob C
   ; monoid_object_unit : Hom (I⊗[MC]) MonoidCarrier
   ; monoid_object_mul : Hom (MonoidCarrier ⊗ MonoidCarrier) MonoidCarrier
   ; monoid_object_unit_l

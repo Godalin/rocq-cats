@@ -20,13 +20,14 @@ Record SliceOb (C : Cat) (X : @Ob C)
 Arguments slice_dom {_ _} _.
 Arguments slice_arrow {_ _} _.
 
-(** An arrow commuting with the two maps into the fixed base. *)
+(** An arrow commuting with the two maps into the fixed base.
+    Coercion exposes its underlying arrow in the ambient category. *)
 
-(** 与两个指向固定基底的映射交换的箭头。 *)
+(** 与两个指向固定基底的映射交换的箭头；强制转换暴露所在范畴中的底层箭头。 *)
 
 Record SliceHom {C : Cat} {X : @Ob C} (A B : SliceOb C X)
   :=
-  { slice_map : Hom (slice_dom A) (slice_dom B)
+  { slice_map :> Hom (slice_dom A) (slice_dom B)
   ; slice_comm : slice_arrow B ∘ slice_map ≈ slice_arrow A
   }.
 

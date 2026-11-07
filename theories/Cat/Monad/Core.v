@@ -8,7 +8,8 @@ From Cats Require Export
     A monad is an endofunctor with natural unit and multiplication satisfying
     three componentwise equations. The specified hom-set equality is the
     strict equality used by these laws. Naturality is already part of the
-    transformations; no equality of functor records is requested.
+    transformations; no equality of functor records is requested. Coercion
+    exposes the underlying endofunctor, allowing [M X] and [fmap M f].
 
     The monoid characterization is proved in [monad_monoid_laws]. *)
 
@@ -16,7 +17,8 @@ From Cats Require Export
 
     Monad 是带有自然单位和乘法的自函子，满足三条逐分量方程。指定 Hom 广集
     相等就是这些定律使用的严格相等。自然变换已经包含自然性，不要求函子记录
-    的相等。独立的幺半群对象刻画见 [monad_monoid_laws]。 *)
+    的相等。强制转换暴露底层自函子，可直接写 [M X] 和 [fmap M f]。
+    独立的幺半群对象刻画见 [monad_monoid_laws]。 *)
 
 (** The usual axioms for fixed data. All three witnesses live in [Type],
     and naturality is supplied by [η] and [μ]. *)
@@ -38,7 +40,7 @@ Definition is_monad {C : Cat} (T : Functor C C)
 
 Class Monad (C : Cat)
   :=
-  { MonadF : Functor C C
+  { MonadF :> Functor C C
   ; monad_unit : IdF ⇒ MonadF
   ; monad_mul : MonadF ∘F MonadF ⇒ MonadF
   ; monad_axioms : is_monad MonadF monad_unit monad_mul

@@ -68,3 +68,25 @@ From Cats Require Import
 Fail Definition unchosen_set_monoidal
   : MonoidalCategory SetCat
   := ltac:(typeclasses eauto).
+
+From Cats Require Import
+  Cat.Functor.Core
+  Instance.Set.Fam.Core
+  Instance.Set.Fam.Fixed
+  Instance.Set.Sieve.Matching.
+
+(** Canonical projections infer the specified set equality from the carrier
+    types, without an explicit set annotation or comparison of law fields. *)
+
+(** 典范投影从载体类型推断指定广集相等，无须显式标注广集或比较定律字段。 *)
+
+Definition inferred_family_map_equality {X : SetC} {A B : FamS X}
+    (f g : A →Fam B)
+  : Type
+  := f ≈S g.
+
+Definition inferred_matching_equality {C : Cat} {A : @Ob C}
+    {I : Type} {D : I → @Ob C} (g : ∀ i, Hom (D i) A)
+    (P : Functor (C^op) SetCat) (a b : SieveMatching g P)
+  : Type
+  := a ≈S b.

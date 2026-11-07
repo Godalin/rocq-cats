@@ -10,15 +10,17 @@ From Cats Require Import
 (** * Coherent Families over a Fixed Setoid
 
     Morphisms stay in each fiber and commute with transport. Their equality
-    compares values, without comparing respectfulness or coherence proofs. *)
+    compares values, without comparing respectfulness or coherence proofs.
+    Coercion lets a fiber map be applied directly as [f x a]. *)
 
 (** * 固定广集上的相干族
 
-    态射逐纤维作用并与运输交换；相等比较值，不比较保相等或相干性证明。 *)
+    态射逐纤维作用并与运输交换；相等比较值，不比较保相等或相干性证明。
+    强制转换使逐纤维映射可直接写为 [f x a]。 *)
 
 Record FamMap {X : SetC} (A B : FamS X)
   :=
-  { fam_map (x : X) : A x →r B x
+  { fam_map (x : X) :> A x →r B x
   ; fam_map_naturality {x y : X} (p : x ≈S y) (a : A x)
     : fam_map y (transpS A p a) ≈S transpS B p (fam_map x a)
   }.
@@ -33,7 +35,7 @@ Infix "→Fam" := FamMap (at level 99) : cat_scope.
 (** 同一基底上纤维映射的逐点相等。 *)
 
 Definition FamMapEq {X : SetC} {A B : FamS X} (f g : A →Fam B)
-  := ∀ x, fam_map f x ≈f fam_map g x.
+  := ∀ x, f x ≈f g x.
 
 Infix "≈Fam" := FamMapEq (at level 50) : cat_scope.
 
@@ -47,10 +49,26 @@ Proof.
   split.
   - intros f x a. reflexivity.
   - intros f g H x a. symmetry. exact (H x a).
-  - intros f g h Hfg Hgh x a. transitivity (fam_map g x a).
+  - intros f g h Hfg Hgh x a. transitivity (g x a).
     + exact (Hfg x a).
     + exact (Hgh x a).
 Qed.
+
+(** The canonical set of fixed-base family maps has pointwise equality.
+    Its carrier projection lets Rocq infer this set from a [FamMap] type. *)
+
+(** 固定基底族映射的典范广集采用逐点相等；载体投影使 Rocq 可从 [FamMap]
+    类型推断这个广集。 *)
+
+Program Canonical FamMapS {X : SetC} (A B : FamS X)
+  : SetC
+  :=
+  {|carrier := A →Fam B
+  ; carrier_equiv := FamMapEq
+  ; carrier_setoid := FamMapEq_Equivalence
+  |}.
+
+Infix "→FamS" := FamMapS (at level 99) : cat_scope.
 
 (** The identity fiberwise map over a fixed base. *)
 
@@ -71,7 +89,7 @@ Program Definition fam_map_comp {X : SetC} {A B D : FamS X}
     (g : B →Fam D) (f : A →Fam B)
   : A →Fam D
   :=
-  {|fam_map x := fam_map g x ∘r fam_map f x
+  {|fam_map x := g x ∘r f x
   |}.
 Next Obligation.
   rewrite (fam_map_naturality f p), (fam_map_naturality g p). reflexivity.
@@ -88,19 +106,15 @@ Program Definition FamSCat (X : SetC)
   : Cat
   :=
   {|Ob := FamS X
-  ; HomSet A B :=
-      {|carrier := A →Fam B
-      ; carrier_equiv := FamMapEq
-      ; carrier_setoid := FamMapEq_Equivalence
-      |}
+  ; HomSet A B := A →FamS B
   ; id := fam_map_id
   ; comp A B D := fam_map_comp
   |}.
 Next Obligation.
   intros g g' Hg f f' Hf x a. cbn.
-  transitivity (fam_map g x (fam_map f' x a)).
+  transitivity (g x (f' x a)).
   - apply func_proper. exact (Hf x a).
-  - exact (Hg x (fam_map f' x a)).
+  - exact (Hg x (f' x a)).
 Defined.
 Next Obligation. intros x a. reflexivity. Defined.
 Next Obligation. intros x a. reflexivity. Defined.
@@ -126,10 +140,10 @@ Program Definition fam_map_to_fam {X : SetC} {A B : FamS X} (f : A →Fam B)
   : FamF (FixedFamC A) (FixedFamC B)
   :=
   {|famF_base := id_resp
-  ; famF_fam := fam_map f
+  ; famF_fam := f
   |}.
 Next Obligation.
-  transitivity (transpS B p (fam_map f x a)).
+  transitivity (transpS B p (f x a)).
   - apply fam_map_naturality.
   - apply transpS_witness_independent.
 Defined.
@@ -146,7 +160,7 @@ Program Definition FamFixedF (X : SetC)
   |}.
 Next Obligation.
   intros f g H. exists (λ x, reflS (x := x)). intros x a.
-  transitivity (fam_map f x a); [apply transpS_id | exact (H x a)].
+  transitivity (f x a); [apply transpS_id | exact (H x a)].
 Defined.
 Next Obligation.
   exists (λ x, reflS (x := x)). intros x a. apply transpS_id.
@@ -171,7 +185,7 @@ Program Definition fam_map_reindex {X Y : SetC} {A B : FamS Y}
     (f : X →r Y) (φ : A →Fam B)
   : A[f]S →Fam B[f]S
   :=
-  {|fam_map x := fam_map φ (f x)
+  {|fam_map x := φ (f x)
   |}.
 Next Obligation. apply fam_map_naturality. Defined.
 

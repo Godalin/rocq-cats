@@ -24,7 +24,7 @@ Context {C : Cat}.
 
 (** 乘法保持性使用水平复合，而非范畴积；这里只处理固定基底态射。 *)
 
-Definition is_monad_hom (M N : Monad C) (α : T[M] ⇒ T[N])
+Definition is_monad_hom (M N : Monad C) (α : M ⇒ N)
   : Type
   := (α ∘Nv η[M]) ≈N η[N] ∧
       (α ∘Nv μ[M]) ≈N (μ[N] ∘Nv (α ∘Nh α)).
@@ -33,7 +33,7 @@ Definition is_monad_hom (M N : Monad C) (α : T[M] ⇒ T[N])
 
 (** 相等自然变换满足相同的保持定律。 *)
 
-Lemma monad_hom_equiv (M N : Monad C) (α β : T[M] ⇒ T[N])
+Lemma monad_hom_equiv (M N : Monad C) (α β : M ⇒ N)
     (E : α ≈N β)
   : is_monad_hom M N α ↔ is_monad_hom M N β.
 Proof.
@@ -50,7 +50,7 @@ Qed.
 
 Definition MonadHomS (M N : Monad C)
   : SetC
-  := SubsetS (@HomSet (Fct C C) T[M] T[N]) (is_monad_hom M N).
+  := SubsetS (@HomSet (Fct C C) M N) (is_monad_hom M N).
 
 (** The identity transformation preserves the operations. *)
 

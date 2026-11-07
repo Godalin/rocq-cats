@@ -20,13 +20,14 @@ Context {C : Cat} {A : @Ob C} {I : Type} {D : I → @Ob C}
     (g : ∀ i, Hom (D i) A)
     (P : Functor (C^op) SetCat@{v q _ _ _ _ _}).
 
-(** Matching values satisfy the restriction equation on every overlap. *)
+(** Matching values satisfy the restriction equation on every overlap.
+    Coercion evaluates the matching data at a generator as [a i]. *)
 
-(** 匹配值在每个交叠上满足限制方程。 *)
+(** 匹配值在每个交叠上满足限制方程；强制转换以 [a i] 在生成元处求值。 *)
 
 Record SieveMatching
   :=
-  { matching_value (i : I) : P (D i)
+  { matching_value (i : I) :> P (D i)
   ; matching_overlap (X : @Ob C) (i j : I)
       (f : Hom X (D i)) (h : Hom X (D j))
       (E : g i ∘ f ≈ g j ∘ h)
@@ -39,7 +40,7 @@ Record SieveMatching
 
 Definition MatchingEq (a b : SieveMatching)
   : Type
-  := ∀ i, matching_value a i ≈S matching_value b i.
+  := ∀ i, a i ≈S b i.
 
 (** Pointwise value equality supplies the equivalence laws. *)
 
@@ -51,14 +52,15 @@ Proof.
   split.
   - intros a i. reflexivity.
   - intros a b H i. symmetry. apply H.
-  - intros a b c H K i. transitivity (matching_value b i); [apply H | apply K].
+  - intros a b c H K i. transitivity (b i); [apply H | apply K].
 Defined.
 
-(** The matching setoid retains all overlap data in its carrier. *)
+(** The canonical matching setoid retains all overlap data in its carrier;
+    its projection supports inference from the matching-data type. *)
 
-(** 匹配广集在载体中保留全部交叠数据。 *)
+(** 典范匹配广集在载体中保留全部交叠数据，其投影支持从匹配数据类型反推广集。 *)
 
-Program Definition SieveMatchingS
+Program Canonical SieveMatchingS
   : SetC
   :=
   {|carrier := SieveMatching
@@ -74,7 +76,7 @@ Program Definition SieveMatchingN (a : SieveMatching)
   :=
   {|nt X :=
       {|func x := match (lower x).2 with
-          | (i; (h; _)) => fmap P h (matching_value a i)
+          | (i; (h; _)) => fmap P h (a i)
           end
       |}
   |}.
@@ -86,7 +88,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   intros [[a0 [i [h E]]]].
-  exact (functor_comp _ _ P f h (matching_value a i)).
+  exact (functor_comp _ _ P f h (a i)).
 Defined.
 
 (** Restrict a sieve map to its generating members. Naturality and
@@ -146,7 +148,7 @@ Next Obligation. intros α β H i. exact (H _ _). Defined.
 
 Lemma matching_descend_β (a : SieveMatching)
   : MatchingEq (SieveMatchingOfN (SieveMatchingN a)) a.
-Proof. intros i. exact (functor_id _ _ P (matching_value a i)). Defined.
+Proof. intros i. exact (functor_id _ _ P (a i)). Defined.
 
 (** Descending the generator values recovers the entire map. *)
 
@@ -179,7 +181,7 @@ Proof.
   - exact (matching_descend_β a).
   - intros α H.
     apply (snd (generated_sieve_map_eq g α (SieveMatchingN a))).
-    intros i. transitivity (matching_value a i).
+    intros i. transitivity (a i).
     + exact (H i).
     + symmetry. exact (matching_descend_β a i).
 Defined.

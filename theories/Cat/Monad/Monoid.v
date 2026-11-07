@@ -75,7 +75,7 @@ Defined.
 Program Definition MonadMonoid {C : Cat} (M : Monad C)
   : MonoidObject (EndofunctorMonoidal C)
   :=
-  {|MonoidCarrier := T[M]
+  {|MonoidCarrier := M
   ; monoid_object_unit := η[M]
   ; monoid_object_mul := μ[M]
   |}.
@@ -109,7 +109,7 @@ Program Definition MonoidMonad {C : Cat}
 (** 两个独立陈述的保持性谓词在同一自然变换上一致；双向映射均保留见证。 *)
 
 Theorem monad_monoid_hom {C : Cat} (M N : Monad C)
-    (α : T[M] ⇒ T[N])
+    (α : M ⇒ N)
   : is_monad_hom M N α ↔ is_monoid_hom (MonadMonoid M) (MonadMonoid N) α.
 Proof. split; intros H; exact H. Defined.
 

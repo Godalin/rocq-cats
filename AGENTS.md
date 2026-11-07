@@ -62,6 +62,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Category extensions take a named category parameter. Declare chosen
   dependencies by name; use named `!Has*` constraints in clients. Bundle
   inherited structures with `has*`/`is*` fields and `::`.
+- Expose a unique underlying function, functor or carrier with `:>` and use
+  that coercion in clients. Keep competing views explicit; avoid ambiguous
+  coercion paths. `::` registers inherited instances, not coercions.
+- Prefer `Canonical Structure` or `Program Canonical` for canonical record
+  values whose projections support parameter inference. Define interfaces
+  with `Record`/`Class`; keep registrations unambiguous and retain explicit
+  enabling of chosen model structures.
 - Use `Program Definition`/`Program Instance`/`Program Canonical` with named
   record fields for data, then explicit `Next Obligation` proofs. The default
   `cats_obligation` only introduces parameters and runs `cbn`; do not restore
