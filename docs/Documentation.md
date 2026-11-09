@@ -106,7 +106,7 @@ and the selected proof in an `in` block. The source annotation
 `- (* .unfold .all *)` selects each focused branch: Alectryon's native LaTeX
 backend inserts its current goal after the bullet, then continues with the
 branch's tactics in the same code frame. The preceding `split` stays input-only,
-following the [focused-state requirements](./ExportRequirements.md#focused-proof-states--聚焦后的证明状态).
+following the [focused-state requirements](./ExportRequirements.md#focused-proof-states).
 Source comments select
 presentation only; no `Show` commands, transcript parsing or handwritten
 goals are needed. See the upstream [output-control documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents).
@@ -115,7 +115,7 @@ goals are needed. See the upstream [output-control documentation](https://github
 `none` 块中执行原始教程上下文，在 `in` 块中执行选定证明。源码注解
 `- (* .unfold .all *)` 标记每个聚焦后的分支：Alectryon 原生 LaTeX 后端在
 bullet 后插入该分支的当前目标，再在同一个代码框中继续该分支的 tactic。
-之前的 `split` 仅显示代码，遵循[聚焦状态约束](./ExportRequirements.md#focused-proof-states--聚焦后的证明状态)。
+之前的 `split` 仅显示代码，遵循[聚焦状态约束](./ExportRequirements.md#focused-proof-states)。
 注释只控制展示，
 无需插入 `Show`、解析终端输出或手写目标。详见上游的
 [输出控制文档](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)。
