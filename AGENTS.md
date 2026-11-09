@@ -118,3 +118,21 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Do not edit generated `_build/` files or `rocq-cats.opam` (edit `dune-project`).
   Avoid cleaning without evidence of stale artifacts. Report actual checks,
   toolchain, and remaining limitations; local success does not establish CI.
+
+## Parallel worktrees
+
+- Keep `typeprop` as the integration branch. Start each bounded task from the
+  current integrated baseline, on its own short branch and worktree; keep each
+  session in its assigned worktree rather than switching another session's branch.
+- Agree on shared interfaces before parallel implementation. Assign shared
+  foundational changes, global renames and reorganizations to one task, and
+  integrate them before dependent work adopts them.
+- Keep `_build/` and generated outputs separate per worktree. Reuse the initialized
+  toolchain without modifying shared Nix/opam environments during parallel work.
+  Branches, remotes and stash are shared Git state, not private to each worktree.
+- Validate each task and its dependents, then integrate completed branches one at
+  a time. Prefer fast-forward merges when possible; do not rewrite shared history
+  or duplicate the same changes across branches with repeated cherry-picks.
+- Write bilingual documentation with the code. Run full-library validation and
+  export both reading editions after each integrated batch, rather than after
+  every intermediate task commit.
