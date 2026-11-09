@@ -130,9 +130,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Keep `_build/` and generated outputs separate per worktree. Reuse the initialized
   toolchain without modifying shared Nix/opam environments during parallel work.
   Branches, remotes and stash are shared Git state, not private to each worktree.
-- Validate each task and its dependents, then integrate completed branches one at
-  a time. Prefer fast-forward merges when possible; do not rewrite shared history
-  or duplicate the same changes across branches with repeated cherry-picks.
+- Integrate completed branches one at a time: rebase the task branch onto the
+  latest `typeprop`, validate it and its dependents, then fast-forward `typeprop`.
+  Do not create merge commits or rewrite `typeprop`. Coordinate rebases of
+  published task branches with dependent sessions; use `--force-with-lease`
+  when pushing rewritten task history. Avoid repeated cherry-picks of the same
+  changes across branches.
 - Write bilingual documentation with the code. Run full-library validation and
   export both reading editions after each integrated batch, rather than after
   every intermediate task commit.
