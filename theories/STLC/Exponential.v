@@ -16,7 +16,58 @@ From Cats Require Import
 
     函数 βη 先给出单变量上下文的泛性质；上下文打包再将其运输到任意上下文。 *)
 
+(** ** Abstraction as the unique mediator
+
+    For singleton contexts, a map with one extra input is represented by
+    an open term. Lambda abstraction constructs its function-valued
+    mediator. Function beta proves that evaluation returns the original
+    map, and function eta shows that any mediator with this evaluation
+    behavior is beta/eta equal to the chosen one.
+
+    For arbitrary contexts [Γ] and [Δ], [CtxExp Δ Γ] stores one function
+    from [CtxTy Γ] to [CtxTy Δ]. Evaluation packs the argument block,
+    applies that function and unpacks the result. Rather than repeating
+    the singleton proof, the general exponential transport theorem carries
+    its universal property along the packing isomorphisms. The equality
+    needed for uniqueness remains pointwise beta/eta throughout. *)
+
+(** ** 抽象是唯一的中介
+
+    对单变量上下文，多一个输入的映射由开放项表示。λ 抽象构造函数值中介，
+    函数 β 证明求值恢复原映射，函数 η 则说明：具有同样求值行为的任意中介
+    都与所选中介 βη 相等。
+
+    对任意上下文 [Γ] 与 [Δ]，[CtxExp Δ Γ] 存储一个从 [CtxTy Γ] 到
+    [CtxTy Δ] 的函数。求值先打包参数块，再应用函数，最后拆包结果。
+    实现没有重复单变量证明，而是沿打包同构使用一般指数运输定理传递泛性质。
+    全程的唯一性都使用逐点 βη 相等。 *)
+
 Local Open Scope stlc_ty_scope.
+(** ** What beta and eta contribute separately
+
+    An exponential must solve the problem of arrows with an extra argument,
+    not merely provide a function-type object. Given such an arrow,
+    abstraction supplies its curry. Applying that curry to the extra input
+    recovers the original arrow by function beta. If a second candidate
+    has the same evaluation behavior, function eta expresses it as the
+    abstraction of that behavior and proves it equal to the first candidate.
+
+    Thus beta establishes the mediator equation and eta establishes
+    mediator uniqueness. The transport theorem then moves this full
+    property along packing isomorphisms; it does not only transport an
+    evaluation operation. This is the reusable categorical argument behind
+    exponentials for arbitrary context blocks. *)
+
+(** ** β 与 η 分别贡献什么
+
+    指数必须解决带一个额外参数的箭头问题，不能只提供函数类型对象。给定
+    这样的箭头，抽象构造其 curry；将 curry 应用于额外输入，函数 β 恢复原
+    箭头。若第二个候选具有相同求值行为，函数 η 把它写成该行为的抽象，从而
+    证明它与第一个候选相等。
+
+    因此，β 建立中介方程，η 建立中介唯一性。运输定理随后沿打包同构移动这个
+    完整性质，而不只运输求值操作。这就是任意上下文块的指数所复用的范畴论证。 *)
+
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_var_scope.
 Local Open Scope stlc_tm_scope.

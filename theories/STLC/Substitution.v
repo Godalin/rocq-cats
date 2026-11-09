@@ -11,6 +11,35 @@ From Cats Require Export STLC.Renaming.
     [Sub Δ Γ] 为 Γ 的每个变量赋一个 Δ 中的项。提升时先弱化已赋的项，并保持
     最新变量。以下定律使用原始结构相等，并逐点比较映射。 *)
 
+(** ** Substitution is a simultaneous environment of syntax
+
+    [Sub Δ Γ] asks how to produce every variable of [Γ] as a term in [Δ].
+    A term [t] using [Γ] can then be evaluated in this syntactic environment,
+    yielding [t[σ]] in [Δ]. Renaming is the special case where every assigned
+    term is a variable. The empty assignment has no components; extension
+    adds the term assigned to the newest variable.
+
+    For [σ : Sub Δ Γ] and [τ : Sub Θ Δ], [σ ∘Sub τ] assigns
+    [(σ A x)[τ]] to [x]. The law [subst_comp] thus describes ordinary
+    composition of context arrows. The binding case depends on [sub_lift]:
+    old assigned terms are weakened, and the new variable is preserved.
+    The structural laws in this module are the raw algebra later reused
+    by beta/eta congruence and the syntactic category. They do not presume
+    equality of assignment functions or beta/eta equality of raw trees. *)
+
+(** ** 替换是由语法组成的同时环境
+
+    [Sub Δ Γ] 说明如何把 [Γ] 中每个变量表示为 [Δ] 中的项。于是，一个使用
+    [Γ] 的项 [t] 可以在这个语法环境中求值，得到 [Δ] 中的 [t[σ]]。
+    当每个所赋的项都是变量时，就得到重命名。空赋值没有分量；扩张则为最新
+    变量增加一个所赋的项。
+
+    若 [σ : Sub Δ Γ]、[τ : Sub Θ Δ]，则 [σ ∘Sub τ] 为 [x] 赋予
+    [(σ A x)[τ]]。[subst_comp] 因此刻画通常的上下文箭头复合。
+    绑定情形依赖 [sub_lift]：旧赋值先弱化，新变量保持自身。这里的结构律是
+    后续 βη 同余与语法范畴共同复用的原始代数，不预设赋值函数相等，也不把
+    原始树的相等改成 βη 相等。 *)
+
 Declare Scope stlc_sub_scope.
 Delimit Scope stlc_sub_scope with sub.
 Local Open Scope stlc_ctx_scope.
@@ -89,9 +118,19 @@ Global Instance RenSub_proper {B : Type} {Γ Δ : Ctx B}
   : Proper (RenEq ==> SubEq) (@RenSub B Γ Δ).
 Proof. intros ρ τ H A x. unfold RenSub. now rewrite H. Qed.
 
-(** Lift a substitution under one binder using the established weakening. *)
+(** Lift a substitution under one binder using the established weakening.
+    For [σ : Sub Δ Γ], the result maps [Δ ▻ A] to [Γ ▻ A]. An old
+    variable receives its assigned term weakened into [Δ ▻ A]; the fresh
+    variable receives itself. Thus, replacing a free [x] by [u] in the
+    informal expression [λ y, x] produces a lambda with weakened [u] as
+    body. It never turns [u] into the new [y]. De Bruijn positions avoid
+    name collisions, while this lifting operation prevents capture. *)
 
-(** 使用已有弱化将替换提升到一个绑定变量之下。 *)
+(** 使用已有弱化将替换提升到一个绑定变量之下。若 [σ : Sub Δ Γ]，结果从
+    [Δ ▻ A] 映到 [Γ ▻ A]。旧变量获得其赋值在 [Δ ▻ A] 中的弱化，新变量
+    获得自身。因此，在非形式表达式 [λ y, x] 中用 [u] 替换自由变量 [x]，
+    会得到以弱化后的 [u] 为项体的 λ，不会把 [u] 变成新变量 [y]。
+    de Bruijn 位置避免名字冲突，而提升操作负责防止捕获。 *)
 
 Definition sub_lift {B : Type} {Γ Δ : Ctx B} {A : Ty B} (σ : Sub Δ Γ)
   : Sub (Δ ▻ A) (Γ ▻ A)
@@ -269,9 +308,20 @@ Proof.
   - reflexivity.
 Qed.
 
-(** Successive term substitutions agree with simultaneous composition. *)
+(** Successive term substitutions agree with simultaneous composition.
+    The first substitution builds the [Γ]-inputs from [Δ]; the second
+    builds the [Δ]-inputs from [Θ]. Consequently their composite builds
+    [Γ] from [Θ], in the order of ordinary categorical composition.
+    Although the action on terms changes context in the other direction,
+    no arrow has been reversed: it is precomposition of a term with its
+    input assignment. The proof's lambda case reduces to [sub_lift_comp],
+    which in turn uses [subst_weaken] for old variables. *)
 
-(** 连续项替换与同时替换的复合一致。 *)
+(** 连续项替换与同时替换的复合一致。第一次替换用 [Δ] 构造 [Γ] 的输入，
+    第二次用 [Θ] 构造 [Δ] 的输入，所以复合用 [Θ] 构造 [Γ]，次序正是通常的
+    范畴复合。虽然对项的作用沿另一方向更换上下文，但没有倒转箭头：它是让项
+    沿输入赋值预合成。证明的 λ 情形归结为 [sub_lift_comp]，后者在旧变量处
+    使用 [subst_weaken]。 *)
 
 Lemma subst_comp {B : Type} {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   : ∀ Δ Θ (σ : Sub Δ Γ) (τ : Sub Θ Δ), t[σ][τ] = t[σ ∘Sub τ].

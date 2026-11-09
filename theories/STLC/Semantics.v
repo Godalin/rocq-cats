@@ -18,6 +18,36 @@ From Cats Require Import
     签名为每个基类型标签指定对象。环境可从任意对象出发，以逐点指定 Hom 相等
     比较；因此替换定律不依赖于选定的上下文表示。 *)
 
+(** ** From syntax operations to CCC operations
+
+    Choose [C], its CCC structure and an object for each base label. Each
+    variable becomes an arrow out of one shared source [X]. Pairing uses
+    product pairing, projections use composition, abstraction uses curry,
+    and application uses evaluation with paired arguments. Under a binder,
+    [env_lift] changes the source to [X × TyI I A].
+
+    The structural lemmas are proved before equational soundness. They
+    describe reindexing the source, renaming variables and substituting
+    terms. The beta cases of [tm_eval_sound] then use these lemmas to match
+    syntactic substitution with categorical evaluation; the eta cases use
+    the target universal properties. The specialized [tm_interp_sound]
+    chooses the projection environment of [CtxI]. This direction applies
+    to arbitrary CCC models; its converse will use the syntactic model.
+    No step requires equality of semantic functions or chosen proof fields. *)
+
+(** ** 从语法操作到 CCC 操作
+
+    选定 [C]、其 CCC 结构以及每个基类型标签对应的对象。每个变量变成从共同
+    源对象 [X] 出发的箭头。配对使用积配对，投影使用复合，抽象使用 curry，
+    应用使用带配对参数的求值。绑定之下，[env_lift] 把源改为
+    [X × TyI I A]。
+
+    先于等式可靠性证明的结构引理分别处理源的预合成、变量重命名和项替换。
+    [tm_eval_sound] 的 β 情形借助这些引理，把语法替换与范畴求值接起来；
+    η 情形使用目标泛性质。[tm_interp_sound] 再选取 [CtxI] 的投影环境。
+    这个方向适用于任意 CCC 模型，反方向随后才需要语法模型。全程不要求语义
+    函数相等，也不要求选定结构的证明字段相等。 *)
+
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
@@ -38,9 +68,15 @@ Fixpoint TyI (A : Ty B)
   | ty_arr A U => (TyI U ^ TyI A)%ob
   end.
 
-(** An environment supplies a morphism for every typed variable. *)
+(** An environment supplies a morphism for every typed variable. The common
+    source [X] represents the input available to the whole computation;
+    different variables may depend on that same input in different ways.
+    For an interpreted context one may choose its projection environment,
+    but keeping [X] arbitrary is essential for reindexing and binder proofs. *)
 
-(** 环境为每个带类型变量提供一条态射。 *)
+(** 环境为每个带类型变量提供一条态射。共同源 [X] 表示整个计算可用的输入，
+    不同变量可以按不同方式依赖同一输入。对解释后的上下文可以选取其投影环境，
+    但保留任意 [X] 对预合成及绑定证明至关重要。 *)
 
 Definition Env (X : @Ob C) (Γ : Ctx B)
   : Type
@@ -120,9 +156,17 @@ Proof.
   - apply exponential_app_proper; auto.
 Qed.
 
-(** Evaluation commutes with reindexing the environment. *)
+(** Evaluation commutes with reindexing the environment. This is the first
+    of three structural steps: precomposition changes the shared source,
+    [tm_eval_rename] selects the variable assignments, and [tm_eval_subst]
+    evaluates each assigned term. In the lambda case the source change is
+    [f × id], keeping the newly bound input while changing the old inputs.
+    Curry's compatibility with precomposition closes that case. *)
 
-(** 求值与环境的预合成交换。 *)
+(** 求值与环境的预合成交换。这是三步结构论证的第一步：预合成改变共享源，
+    [tm_eval_rename] 选取变量赋值，[tm_eval_subst] 求值各个所赋项。
+    λ 情形的源变换为 [f × id]，它保留新绑定输入，只改变旧输入，再由 curry
+    与预合成的相容性完成证明。 *)
 
 Lemma tm_eval_comp {Γ A} (t : Tm Γ A)
   : ∀ X Y (ρ : Env X Γ) (f : Hom Y X),
@@ -193,9 +237,19 @@ Proof.
   - rewrite IHt1, IHt2. reflexivity.
 Qed.
 
-(** Every generated beta/eta equation is valid in every CCC environment. *)
+(** Every generated beta/eta equation is valid in every CCC environment.
+    Induction follows the equational derivation, not an evaluation strategy.
+    Congruence uses respectful categorical operations. Function beta uses
+    [tm_eval_subst] to relate syntactic substitution to evaluation; eta uses
+    the target universal properties to identify arrows from their observable
+    behavior. Only after this general proof do [CtxI] and [ctx_env] select
+    the source and environment for ordinary term interpretation. *)
 
-(** 每条生成的 βη 方程都在任意 CCC 环境中成立。 *)
+(** 每条生成的 βη 方程都在任意 CCC 环境中成立。归纳沿等式推导展开，不沿
+    某个求值策略展开。同余使用范畴操作的保相等性；函数 β 用 [tm_eval_subst]
+    将语法替换同求值联系起来；η 使用目标泛性质，按箭头的消去行为识别箭头。
+    完成这个一般证明之后，才由 [CtxI] 与 [ctx_env] 为通常的项解释选取源和
+    环境。 *)
 
 Theorem tm_eval_sound {Γ A} {t u : Tm Γ A} (H : TmEq@{b e _} t u)
   : ∀ X (ρ : Env X Γ), tm_eval t ρ ≈ tm_eval u ρ.

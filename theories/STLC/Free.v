@@ -25,6 +25,36 @@ From Cats Require Import
     基类型赋值扩张为 CCC 函子。基类型处指定的比较扩张为唯一自然变换，规范扩张
     可逆。仅比较变换分量，不比较自然性或互逆律的证明。 *)
 
+(** ** Interpreting the whole language canonically
+
+    The free property fixes [C], its chosen CCC structure, a base assignment
+    [I], a CCC-preserving functor [F] and isomorphisms from [I] to the base
+    images of [F]. [type_interpretation_universal] returns the canonical
+    natural isomorphism and a uniqueness witness for natural transformations
+    extending those same base components. The choices in this statement
+    matter: it does not assert that all interpretations are equal outright.
+
+    For uniqueness, unit uses terminality, products use naturality at the
+    projections, and function types use naturality at evaluation plus
+    invertible exponential comparisons. Induction on types forces each
+    component. Naturality itself supplies the needed compatibility; the
+    candidate transformations need no extra structure-preservation fields.
+    This universal property complements model completeness, which tests
+    particular equations rather than whole interpretation functors. *)
+
+(** ** 规范地解释整个语言
+
+    自由性质固定 [C]、其选定 CCC 结构、基类型赋值 [I]、保持 CCC 结构的函子
+    [F]，以及从 [I] 到 [F] 的基类型像的同构。
+    [type_interpretation_universal] 返回规范自然同构，并为扩张同样基类型分量
+    的自然变换给出唯一性见证。这些固定选择属于陈述的一部分，并不断言所有
+    解释直接相等。
+
+    唯一性的单位情形使用终对象性质，积情形使用投影处的自然性，函数情形使用
+    求值处的自然性与可逆指数比较。对类型归纳便确定每个分量。自然性本身提供
+    需要的相容性，候选变换无须附加保持结构的字段。这个泛性质补充模型完备性；
+    后者检验具体等式，而非整个解释函子。 *)
+
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
@@ -107,6 +137,32 @@ Proof.
   - rewrite Ev, H, <- Ev,
       comp_assoc, <- cross_comp, comp_id_l. reflexivity.
 Qed.
+
+(** ** Why naturality determines the extension
+
+    For products, naturality at the two projections fixes both components;
+    product uniqueness fixes the whole arrow. For function types, naturality
+    at evaluation fixes the behavior after an argument is supplied.
+    [type_functor_exponential_ext] detects equality from that behavior,
+    using the invertible argument comparison. The terminal case has only
+    one arrow. These three facts make induction on types possible.
+
+    The conclusion concerns every natural transformation with the specified
+    base components. It does not first assume that the transformation
+    preserves the chosen CCC operations: naturality already forces the
+    needed equations. Uniqueness is pointwise hom equality, so neither
+    naturality proofs nor functor records need be equal. *)
+
+(** ** 为什么自然性确定扩张
+
+    对积，两个投影处的自然性固定两个分量，再由积唯一性固定整条箭头。对函数
+    类型，求值处的自然性固定提供参数之后的行为；
+    [type_functor_exponential_ext] 借助可逆的参数比较，从该行为检测相等。
+    终对象情形只有一条箭头。这三点使对类型的归纳成为可能。
+
+    结论覆盖全部具有指定基类型分量的自然变换，无须预先假设变换保持选定 CCC
+    操作，自然性已经强制所需方程。唯一性是逐点 Hom 相等，因此不需要自然性
+    证明相等，也不需要函子记录相等。 *)
 
 (** Every natural transformation extending the specified base comparison is
     the canonical one. Product and evaluation naturality force all components. *)
