@@ -180,7 +180,8 @@ natural transformations, products and limits. Continue with the
 [STLC chapter](./book/STLC.v): typed terms, substitution, beta/eta equality,
 CCC semantics and the existing completeness and free-CCC results.
 The cover uses the [project logo](./docs/branding/rocq-cats.svg).
-See the [documentation guide](./docs/Documentation.md).
+See the [documentation guide](./docs/Documentation.md) and the shared
+[website and book export requirements](./docs/ExportRequirements.md).
 
 运行 `dune exec tools/docs/docs.exe -- pdf --strict` 可导出包含教程和原生交换图的
 中英文全库 PDF，需要已有 XeLaTeX 环境。输出位于 `_build/docs-pdf/{en,zh}/`，
@@ -190,7 +191,8 @@ See the [documentation guide](./docs/Documentation.md).
 图源。可从[布尔贯穿示例](./book/Basics.v)开始，依次学习范畴、函子、自然变换、积与
 极限。随后阅读 [STLC 章节](./book/STLC.v)，学习带类型项、替换、βη 相等、CCC
 语义，以及已有的完备性与自由 CCC 结论。封面使用[项目 Logo](./docs/branding/rocq-cats.svg)。
-详见[文档指南](./docs/Documentation.md)。
+详见[文档指南](./docs/Documentation.md)及统一的
+[网页与书籍导出约束](./docs/ExportRequirements.md)。
 
 Basic HTML remains available through
 `dune exec tools/docs/docs.exe -- build --strict`, at `_build/docs/index.html`.

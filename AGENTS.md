@@ -92,6 +92,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Organization and workflow
 
+- For website and book export work, follow
+  [the export requirements](docs/ExportRequirements.md). Keep future export
+  presentation conventions in that file; use the documentation guide for
+  commands, dependencies and implementation status.
 - Foundational sets and respectful maps belong under `Set/`, without category
   dependencies. Abstract interfaces and general constructions belong with their
   theories; concrete models belong under `Instance/<base>/`. Keep `Instance.Set.Core`

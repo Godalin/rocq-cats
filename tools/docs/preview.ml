@@ -81,8 +81,8 @@ let body ~zh source =
   ^ "{\\sffamily\\small\\color{catsMuted}Cats.Cat.Core}\\par\n"
   ^ titled "Class" "Cat" (code source "\\coqdockw{Class}")
   ^ "\\section{" ^ tr "A proof from the tutorial" "教程中的一个证明" ^ "}\n"
-  ^ tr "The goals after split appear at that step, before the remaining tactics.\n"
-       "split 后的目标直接显示在这一步，之后继续剩余的证明策略。\n"
+  ^ tr "Each bullet focuses one branch and shows its current goal before exact.\n"
+       "每个 bullet 聚焦一个分支，在 exact 前显示该分支的当前目标。\n"
   ^ titled "Example / Proof" "boolean\\_limit\\_pair"
        "\\input{proof.tex}"
 

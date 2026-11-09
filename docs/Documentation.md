@@ -2,6 +2,13 @@
 
 # 双语阅读版
 
+Presentation conventions for websites and books are maintained in
+[ExportRequirements.md](./ExportRequirements.md). This guide records build
+procedures and implementation status.
+
+网页与书籍的展示规范统一维护在
+[ExportRequirements.md](./ExportRequirements.md)，本指南记录构建方法与实现进度。
+
 The current priority is PDF for personal study. One bilingual Rocq source tree
 supplies both languages: reference modules in [theories/](../theories/) and
 the checked tutorial chapters in [book/](../book/). One PDF per language
@@ -96,16 +103,20 @@ titlesec、fancyhdr 和 TeX Gyre 字体。第二页的大段空白是刻意安�
 Only this command invokes **Alectryon 2.0.0 with the VsRocq driver**. Its native
 LaTeX frontend executes the original tutorial context in a hidden `none` block
 and the selected proof in an `in` block. The source annotation
-`split. (* .unfold .all *)` selects the important step: Alectryon's native
-LaTeX backend inserts the real goals immediately after `split`, then continues
-with the remaining tactics in the same code frame. Source comments select
+`- (* .unfold .all *)` selects each focused branch: Alectryon's native LaTeX
+backend inserts its current goal after the bullet, then continues with the
+branch's tactics in the same code frame. The preceding `split` stays input-only,
+following the [focused-state requirements](./ExportRequirements.md#focused-proof-states--聚焦后的证明状态).
+Source comments select
 presentation only; no `Show` commands, transcript parsing or handwritten
 goals are needed. See the upstream [output-control documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents).
 
 只有此命令会调用 **Alectryon 2.0.0 和 VsRocq 驱动**。其原生 LaTeX 前端在隐藏的
 `none` 块中执行原始教程上下文，在 `in` 块中执行选定证明。源码注解
-`split. (* .unfold .all *)` 标记重要步骤：Alectryon 原生 LaTeX 后端直接在
-`split` 后插入真实目标，再在同一个代码框中继续剩余 tactic。注释只控制展示，
+`- (* .unfold .all *)` 标记每个聚焦后的分支：Alectryon 原生 LaTeX 后端在
+bullet 后插入该分支的当前目标，再在同一个代码框中继续该分支的 tactic。
+之前的 `split` 仅显示代码，遵循[聚焦状态约束](./ExportRequirements.md#focused-proof-states--聚焦后的证明状态)。
+注释只控制展示，
 无需插入 `Show`、解析终端输出或手写目标。详见上游的
 [输出控制文档](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)。
 

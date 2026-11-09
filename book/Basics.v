@@ -250,9 +250,11 @@ Local Existing Instance BooleanLimit.
 Example boolean_limit_pair {Q : SetC} (μ : Q ⇒Δ BooleanDiagram)
   : lim⟨μ⟩ ≈ ⟨μ false, μ true⟩.
 Proof.
-  apply product_pair_unique. split. (* .unfold .all *)
-  - exact (limit_β μ false).
-  - exact (limit_β μ true).
+  apply product_pair_unique. split.
+  - (* .unfold .all *)
+    exact (limit_β μ false).
+  - (* .unfold .all *)
+    exact (limit_β μ true).
 Qed.
 
 (** Our original cone therefore has exactly the earlier concrete map. *)
