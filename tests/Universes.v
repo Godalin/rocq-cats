@@ -1,5 +1,6 @@
 From Cats Require Import
   Instance.Set.Simplicial.Vertex.Kan
+  STLC.Completeness.Inhabitation
   STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core
@@ -1346,6 +1347,18 @@ Definition separated_stlc_completeness (Γ : Ctx B) (A : STLC.Syntax.Ty B)
     (t u : STLC.Syntax.Tm Γ A)
   : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u
   := tm_soundness_iff_completeness t u.
+
+(** Inhabitation uses the same separated model bounds and retains a chosen
+    morphism for every model, with both directions living in [Type]. *)
+
+(** 可居留性使用相同的分离模型大小界，并为每个模型保留选定态射；
+    两个方向都位于 [Type] 中。 *)
+
+Definition separated_stlc_inhabitation (Γ : Ctx B) (A : STLC.Syntax.Ty B)
+  : STLC.Syntax.Tm Γ A ↔
+      ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
+      (@Hom C) (@CtxI B C HC I Γ) (@TyI B C HC I A)
+  := tm_inhabitation_soundness_iff_completeness Γ A.
 
 Definition separated_stlc_presentations
   : (TyCat@{b e l} B) ≅[CatCat] (CtxCat@{b e l} B)

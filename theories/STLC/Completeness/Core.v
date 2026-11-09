@@ -4,16 +4,18 @@ From Cats Require Import
   Cat.CCC
   Cat.Functor.Closed.
 
-(** * Equational Soundness and Completeness
+(** * The Canonical Syntactic Model
 
-    Soundness above applies to arbitrary model sizes. Completeness needs only
-    a common universe bound containing the syntactic CCC; this avoids any
-    universe of all categories or resizing principle. *)
+    Recursive interpretation in the syntactic CCC reflects beta/eta equality
+    and recovers terms from semantic morphisms. The existing comparison
+    isomorphisms supply the common foundation for equational and inhabitation
+    completeness at a universe bound containing the syntactic model. *)
 
-(** * 等式可靠性与完备性
+(** * 规范语法模型
 
-    前面的可靠性适用于任意模型大小。完备性只需要包含语法 CCC 的共同宇宙界，
-    不构造所有范畴的宇宙，也不使用大小重设原理。 *)
+    语法 CCC 中的递归解释反映 βη 相等，并能从语义态射恢复项。
+    已有的比较同构为等式与可居留性完备性提供共同基础；
+    所用宇宙界包含该语法模型。 *)
 
 Local Open Scope cat_scope.
 Local Open Scope stlc_sub_scope.
@@ -67,36 +69,24 @@ Proof.
   - rewrite Hq, sub_comp_tm_assoc, Hz, sub_comp_tm_id_r. reflexivity.
 Qed.
 
-End CanonicalModel.
+(** A morphism in the recursive syntactic model supplies a term. The
+    comparison isomorphisms turn it into a singleton-context substitution;
+    its newest component is then substituted back into the original context. *)
 
-(** Validity in all CCC models at a common bound. The object/hom bound is b,
-    equality witnesses live at e, and category laws at l. Larger or differently
-    arranged model universes remain covered separately by soundness. *)
+(** 递归语法模型中的态射给出一个项。比较同构将它转为单变量上下文替换，
+    再将最新分量代回原上下文。 *)
 
-(** 共同大小界内全部 CCC 模型的有效性：对象与 Hom 载体界为 b，相等见证界为 e，
-    范畴律界为 l。更大或采用其他大小排列的模型仍由一般可靠性定理覆盖。 *)
-
-Definition TmModelEq@{b e l +} {B : Type@{b}}
-    {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
-  : Type
-  := ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
-      @HomEq C _ _ (@tm_interp B C HC I Γ A t)
-        (@tm_interp B C HC I Γ A u).
-
-Notation "t '≈CCC' u" := (TmModelEq t u)
-  (at level 50, no associativity) : stlc_tm_scope.
-
-(** The syntactic model supplies the reverse implication; no normalization,
-    decidability, choice, proof irrelevance or extensionality axiom is used. *)
-
-(** 语法模型给出反方向；不使用正规化、可判定性、选择、证明无关性或外延公理。 *)
-
-Theorem tm_soundness_iff_completeness@{b e l +} {B : Type@{b}}
-    {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
-  : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u.
+Definition tm_interp_canonical_inhabited {Γ : Ctx B} {A : Ty B}
+    (f : Hom (CtxI (HC := canonical_ccc) (@ty_base B) Γ)
+      (TyI (HC := canonical_ccc) (@ty_base B) A))
+  : Tm Γ A.
 Proof.
-  split.
-  - intros H C HC I. exact (@tm_interp_sound B C HC I Γ A t u H).
-  - intros H. apply tm_interp_canonical_reflect.
-    exact (H (TyCat@{b e l} B) (TyCat_CCC B) (@ty_base B)).
+  pose (z := @context_compare B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β Γ).
+  pose (a := @type_compare B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β A).
+  pose (σ := a.1 ∘ f ∘ z.2.1).
+  exact (subst (σ A var_zero) (ctx_pack_sub Γ)).
 Defined.
+
+End CanonicalModel.

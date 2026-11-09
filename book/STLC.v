@@ -20,6 +20,7 @@ From Cats Require Import
   Cat.Core
   Cat.CCC
   Cat.Functor.Core
+  STLC.Completeness.Inhabitation
   STLC.Free
   Instance.Bool.Group
   Instance.Set.Core
@@ -372,3 +373,39 @@ Example equations_in_all_models {B : Type} {Γ : Ctx B} {A : Ty B}
     (t u : Tm Γ A)
   : t ≈βη u ↔ t ≈CCC u.
 Proof. apply tm_soundness_iff_completeness. Defined.
+
+(** ** 9. Inhabitation in every model
+
+    Inhabitation asks for a term [Tm Γ A], rather than an equation between
+    two given terms. [TmModelInhabited Γ A] supplies a morphism from [CtxI I Γ]
+    to [TyI I A] for every chosen CCC and base interpretation at the same
+    common universe bound as [TmModelEq]. This is witness-carrying data in
+    [Type]: it does not merely assert nonemptiness in one model.
+
+    [tm_inhabitation_soundness] interprets a term in each model. Conversely,
+    [tm_inhabitation_completeness] specializes the family to [TyCat B], uses
+    the canonical context and type isomorphisms, and extracts a term from
+    the resulting substitution. [tm_inhabitation_soundness_iff_completeness]
+    bundles these two maps without asserting equality of their witnesses.
+
+    Under Curry--Howard--Lambek this is provability completeness for truth,
+    conjunction and implication. It does not require normalization or a
+    decision procedure, nor reconstruct a typing derivation for a given
+    untyped term: the syntax is already intrinsically typed. *)
+
+(** ** 9. 所有模型中的可居留性
+
+    可居留性要求一个项 [Tm Γ A]，而非两个给定项之间的等式。
+    [TmModelInhabited Γ A] 在与 [TmModelEq] 相同的共同宇宙界内，为每个
+    选定 CCC 及基类型解释给出从 [CtxI I Γ] 到 [TyI I A] 的态射。
+    这是 [Type] 中携带见证的数据，并非仅断言某个模型中的非空性。
+
+    [tm_inhabitation_soundness] 在每个模型中解释一个项。反向的
+    [tm_inhabitation_completeness] 将见证族实例化为 [TyCat B]，使用规范
+    上下文与类型同构，再从所得替换中提取项。
+    [tm_inhabitation_soundness_iff_completeness] 打包这两个映射，
+    不断言见证相等。
+
+    在 Curry--Howard--Lambek 对应下，这是真、合取与蕴含片段的可证性
+    完备性。它无须正规化或判定过程，也不为给定无类型项恢复类型推导；
+    这里的语法本来就是内在带类型的。 *)

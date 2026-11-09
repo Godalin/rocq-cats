@@ -543,7 +543,7 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 
 ## 6. 完备性与验证边界
 
-[STLC.Completeness](../theories/STLC/Completeness.v) 已证明以下等价：
+[STLC.Completeness.Equational](../theories/STLC/Completeness/Equational.v) 已证明以下等价：
 
 ```text
 Γ ⊢ t ≡βη u : A
@@ -562,6 +562,91 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 此共同界明确包含语法模型；一般可靠性仍适用于其他大小排列的模型。
 不假设能在一个小宇宙内收集所有 CCC，也不通过 resizing 合并大小。
 态射载体、相等见证以及定律辅助宇宙保持独立。
+
+### 6.1. Inhabitation / provability completeness
+
+[STLC.Completeness.Inhabitation](../theories/STLC/Completeness/Inhabitation.v)
+defines `TmModelInhabited Γ A`, which supplies a morphism `CtxI I Γ → TyI I A` for
+every CCC and base interpretation at exactly the common universe bounds of
+`TmModelEq`. It is a uniform family of witnesses in `Type`, not a Prop-only
+nonemptiness assertion. The two constructive directions are
+`tm_inhabitation_soundness` and `tm_inhabitation_completeness`, bundled by
+`tm_inhabitation_soundness_iff_completeness`:
+
+```text
+Tm Γ A ↔ ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → Ob C),
+            Hom_C (CtxI I Γ) (TyI I A)
+```
+
+Soundness evaluates the term with `tm_interp`. Completeness instantiates
+the family with `TyCat B`, `TyCat_CCC B` and `ty_base`. The existing
+`type_compare` and inverse `context_compare` maps for `IdF` turn the chosen
+semantic morphism into a literal arrow `CtxTy Γ → A`. This arrow is a
+singleton-context substitution; taking its `var_zero` component and
+substituting `ctx_pack_sub Γ` gives a term in the original context.
+
+This is inhabitation completeness for the truth, conjunction and implication
+fragment under Curry–Howard–Lambek. It complements equational completeness;
+the bundled maps assert neither equality of witnesses nor inverse laws.
+No untyped syntax, normalization, decidable equality, or additional axiom
+is required.
+
+### 6.1. 可居留性／可证性完备性
+
+`TmModelInhabited Γ A` 在与 `TmModelEq` 完全相同的共同宇宙界内，为每个
+CCC 及基类型解释给出态射 `CtxI I Γ → TyI I A`。它是 `Type` 中统一给出的
+见证族，并非只有 Prop 非空性的断言。`tm_inhabitation_soundness` 与
+`tm_inhabitation_completeness` 给出两个构造方向，
+`tm_inhabitation_soundness_iff_completeness` 将它们打包。
+
+可靠性通过 `tm_interp` 解释项。完备性将见证族实例化为 `TyCat B`、
+`TyCat_CCC B` 和 `ty_base`。对 `IdF` 使用已有的 `type_compare` 与
+`context_compare` 的逆，将语义态射转为字面箭头 `CtxTy Γ → A`。
+该箭头是单变量上下文替换；取其 `var_zero` 分量，再代入 `ctx_pack_sub Γ`，
+便得到原上下文中的项。
+
+这是 Curry–Howard–Lambek 对应下真、合取、蕴含片段的可居留性完备性，
+补充已有的等式完备性。打包的映射不断言见证相等或互逆律，
+不需要无类型语法、正规化、可判定相等或任何额外公理。
+
+### 6.2. Module organization / 模块组织
+
+[Completeness.Core](../theories/STLC/Completeness/Core.v) provides reflection
+and term recovery in the canonical syntactic model. The sibling modules
+[Equational](../theories/STLC/Completeness/Equational.v) and
+[Inhabitation](../theories/STLC/Completeness/Inhabitation.v) each export this
+shared foundation and state their own model-validity definitions and
+completeness results. Neither depends on the other. `STLC.Free` exports the
+equational theory; clients of inhabitation import its module explicitly.
+
+[Completeness.Core](../theories/STLC/Completeness/Core.v) 提供规范语法模型中的
+相等反映与项恢复。同目录的
+[Equational](../theories/STLC/Completeness/Equational.v) 与
+[Inhabitation](../theories/STLC/Completeness/Inhabitation.v) 分别导出这份共同基础，
+并各自陈述模型有效性及完备性结论，彼此不依赖。`STLC.Free` 导出等式理论，
+可居留性客户端显式导入其模块。
+
+### 6.3. Validation / 验证
+
+The inhabitation addition passes `dune build @all @runtest @install` with
+Rocq 9.0.1, OCaml 5.3.0 and Dune 3.23.1. Its retained interface regression
+`separated_stlc_inhabitation` requires `b < e < l`. Temporary
+`Print Assumptions` checks of the five new definitions and that regression
+report no additional axioms; their output is not part of the compiled sources.
+
+可居留性增量在 Rocq 9.0.1、OCaml 5.3.0 与 Dune 3.23.1 下通过
+`dune build @all @runtest @install`。保留的接口回归
+`separated_stlc_inhabitation` 要求 `b < e < l`。对五项新增定义及该回归的
+临时 `Print Assumptions` 检查均无额外公理，输出未加入编译源码。
+
+After the module split, the full validation passes again. Temporary
+standalone-import checks confirm that either completeness theory can be
+loaded without the other's validity interface. Nine focused assumption
+checks, including the moved equational results, report no additional axioms.
+
+模块拆分后，完整验证再次通过。临时独立导入检查确认两种完备性理论均可单独
+加载，不引入另一种理论的有效性接口。包含迁移后的等式结论在内，九项针对性
+公理检查均无额外假设。
 
 常驻回归见 [Universes](../tests/Universes.v)：指数转置、伴随与自然 hom 同构
 在两种载体／相等见证宇宙排列下均可实例化；通用伴随还连接 hom 大小排列
