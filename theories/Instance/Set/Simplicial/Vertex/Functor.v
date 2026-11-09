@@ -55,10 +55,10 @@ Proof.
   exact (vertex_diagram_postcomp_proper F G H P).
 Defined.
 
-(** The forward map for the future full-faithfulness comparison is a
-    respectful map between the native hom-setoids. No inverse is claimed. *)
+(** The forward map is respectful between the native hom-setoids.
+    The inverse and both round-trip laws are defined in [Reconstruction]. *)
 
-(** 后续全忠实比较的前向映射是原生态射广集间的保相等映射；此处尚未断言其逆。 *)
+(** 前向映射保持原生态射广集的相等。逆及两侧往返律在 [Reconstruction] 中定义。 *)
 
 Program Definition vertex_nerve_resp@{u p +} {X Y : SetC} {C D : Cat}
     (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)

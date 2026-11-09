@@ -1,5 +1,5 @@
 From Cats Require Import
-  Instance.Set.Simplicial.Vertex.Functor
+  Instance.Set.Simplicial.Vertex.Reconstruction
   Instance.Set.Simplicial.Vertex.Kan
   STLC.Inhabitation
   STLC.Free.
@@ -1708,12 +1708,14 @@ End MonoidNerveLevels.
     载体。两种大小次序在忘却到图式 nerve 的比较中同样保留。 *)
 
 Section VertexNerveLevels.
-Universes e h o l u p.
+Universes e h o l u p v q.
 Constraint e < h.
 Constraint h < o.
 Constraint o < l.
 Constraint l < u.
 Constraint u < p.
+Constraint p < v.
+Constraint v < q.
 Context (X : SetC@{o e}) (Y : SetC@{e o})
     (C : Cat@{o h e l l}) (D : Cat@{e h o l l})
     (T : Functor (EqGpd X) C) (S : Functor (EqGpd Y) D).
@@ -1745,6 +1747,43 @@ Definition high_eq_vertex_functor_map
   : VertexFunctorS T S →r Nat_SetS
       (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S))
   := vertex_nerve_resp T S.
+
+(** Reconstruction returns to the native hom-setoid even when the nerve
+    equality universe lies below or above its carrier universe. *)
+
+(** 无论 nerve 相等宇宙低于或高于载体宇宙，重构均返回原生态射广集。 *)
+
+Definition low_eq_vertex_functor_inverse
+  : Nat_SetS (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)) →r
+      VertexFunctorS T S
+  := vertex_nerve_inv_resp T S.
+
+Definition high_eq_vertex_functor_inverse
+  : Nat_SetS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)) →r
+      VertexFunctorS T S
+  := vertex_nerve_inv_resp T S.
+
+Definition reverse_vertex_functor_inverse
+  : Nat_SetS (Nᵥ(S) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(T)) →r
+      VertexFunctorS S T
+  := vertex_nerve_inv_resp S T.
+
+(** The hom isomorphism uses ordinary common lifts, with common equality
+    below or above the common carrier, without resizing native sizes. *)
+
+(** 态射同构使用通常的共同提升，共同相等可低于或高于共同载体，不调整原生大小。 *)
+
+Definition low_eq_vertex_hom_isomorphism
+  : LiftS@{_ _ v p} (VertexFunctorS T S) ≅[SetCat]
+      LiftS@{_ _ v p} (Nat_SetS
+        (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)))
+  := vertex_nerve_hom_iso T S.
+
+Definition high_eq_vertex_hom_isomorphism
+  : LiftS@{_ _ v q} (VertexFunctorS T S) ≅[SetCat]
+      LiftS@{_ _ v q} (Nat_SetS
+        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)))
+  := vertex_nerve_hom_iso T S.
 
 Definition low_eq_vertex_nerve
   : Functor (Δ^op) SetCat@{u h _ _ _ _ _}

@@ -13,7 +13,7 @@
     经过检查的例子说明了这一点。 *)
 
 From Cats Require Import
-  Instance.Set.Simplicial.Vertex.Functor
+  Instance.Set.Simplicial.Vertex.Reconstruction
   Instance.Bool.Group
   Cat.Core
   Cat.Functor.Core
@@ -83,11 +83,11 @@ Proof. intros [e H]. discriminate (e false). Defined.
 
     Postcomposition by the two functors produces different simplicial
     maps. This prevents using arbitrary natural-isomorphism equality on
-    the source hom-setoid of a proposed full-faithfulness theorem. *)
+    the source hom-setoid of the full-faithfulness theorem. *)
 
 (** ** 3. 零维检测所保留的区别
 
-    两个函子的后复合产生不同的单纯映射。因此拟议的全忠实定理不能在源态射广集
+    两个函子的后复合产生不同的单纯映射。因此全忠实定理不能在源态射广集
     上使用任意自然同构相等。 *)
 
 Example constant_nerve_maps_distinct
@@ -101,10 +101,40 @@ Proof.
   discriminate e.
 Defined.
 
-(** The accepted source comparison is [VertexFunctorEq], and
-    [vertex_nerve_resp] is its respectful forward map to simplicial maps.
-    A full-faithfulness theorem still needs the inverse reconstruction
-    and both round-trip laws in their specified equalities. *)
+(** ** 4. Every simplicial map reconstructs a transport-preserving functor
 
-(** 所选源比较为 [VertexFunctorEq]，[vertex_nerve_resp] 是它到单纯映射的保相等
-    前向映射。全忠实定理仍须反向重构，以及两侧指定相等下的往返律。 *)
+    [VertexNerveInvF] extracts objects in degree zero and arrows in degree
+    one. Naturality aligns endpoints by specified transport; degeneracies
+    give identities and triangles give composition. The following result
+    applies to any simplicial map, rather than only one built from a functor. *)
+
+(** ** 4. 每个单纯映射重构为保运输函子
+
+    [VertexNerveInvF] 从零维提取对象、从一维提取箭头。自然性通过指定运输对齐
+    端点，退化给出恒等，三角形给出复合。以下结论适用于任意单纯映射，而不只
+    适用于已经由函子构造的映射。 *)
+
+Example every_boolean_nerve_map_reconstructs
+    (α : (Nᵥ(BooleanLabels) :
+      Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(BooleanLabels))
+  : VertexNerveN (VertexNerveInvF α) ≈N α.
+Proof. exact (vertex_nerve_β α). Defined.
+
+(** The other round trip uses [VertexFunctorEq]. It does not identify the
+    distinct constant functors above. *)
+
+(** 另一侧往返使用 [VertexFunctorEq]，不会识别上面两个不同的常值函子。 *)
+
+Example boolean_vertex_functor_round_trip (F : BooleanLabels →ᵥ BooleanLabels)
+  : VertexFunctorEq (VertexNerveInvF (VertexNerveN F :
+      (Nᵥ(BooleanLabels) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)) F.
+Proof. exact (vertex_nerve_η F). Defined.
+
+(** [vertex_nerve_hom_iso] bundles both respectful maps and round trips as
+    a setoid isomorphism after ordinary common size lifts. This is full
+    faithfulness for specified object presentations and their prescribed
+    transport comparisons; arbitrary natural isomorphisms remain coarser. *)
+
+(** [vertex_nerve_hom_iso] 在通常的共同大小提升后，将两个保相等映射及往返律
+    捆绑为广集同构。这是指定对象呈现及其指定运输比较的全忠实性；任意自然
+    同构仍然更粗。 *)

@@ -90,7 +90,11 @@ A category theory library for self study.
   gives a respectful map to simplicial maps, preserving identity and composition.
   A [checked example](./book/VertexFunctor.v) shows why arbitrary natural
   isomorphisms are too coarse for this comparison: distinct constant labels
-  remain visible in degree zero. Inverse reconstruction remains to be proved.
+  remain visible in degree zero.
+  [Reconstruction](./theories/Instance/Set/Simplicial/Vertex/Reconstruction.v)
+  recovers a transport-preserving functor from every simplicial map. Both
+  round trips hold in their specified equalities, giving a hom-setoid
+  isomorphism after ordinary common size lifts, without groupoid assumptions.
   The [singleton comparison](./theories/Instance/Set/Simplicial/Vertex/Monoid.v)
   is a natural isomorphism with the original monoid nerve; forgetting vertex
   comparisons recovers the earlier map to the diagram nerve. A bare category

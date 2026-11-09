@@ -1,4 +1,5 @@
 From Cats Require Import
+  Instance.Set.Simplicial.Vertex.Reconstruction
   Instance.Set.Simplicial.Vertex.Coskeletal
   Instance.Set.Simplicial.Vertex.Outer.
 From Cats Require Import
@@ -288,6 +289,17 @@ Example vertex_nerve_monoid_inverse_computes
   : lower (((monoid_vertex_iso (M := BoolS)).2 1%nat).1
       (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
                                   |})) fin_first = true.
+Proof. reflexivity. Qed.
+
+(** Reconstruction computes on a nonidentity boolean loop, through the
+    naturality witnesses and endpoint transports of the general inverse. *)
+
+(** 重构在非恒等布尔环路上穿过一般逆的自然性见证及端点运输进行计算。 *)
+
+Example vertex_functor_reconstruction_computes
+  : fmap (VertexNerveInvF
+      (idN : BoolVertexNerve ⇒ BoolVertexNerve))
+      (true : (@Hom (VertexCat (MonoidObjectsF BoolS))) tt tt) = true.
 Proof. reflexivity. Qed.
 
 (** The chosen spine inverse reconstructs the original arrow by interval

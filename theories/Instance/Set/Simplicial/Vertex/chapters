@@ -1,6 +1,8 @@
 Core.v
+Point.v
 Functor.v
 Edge.v
+Reconstruction.v
 Spine.v
 Monoid.v
 Horn2.v
