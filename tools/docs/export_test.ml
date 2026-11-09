@@ -40,9 +40,13 @@ let () =
     ^ "Definition visible_sample := tt.\n"
     ^ "(* begin hide *)\nDefinition hidden_support := tt.\n(* end hide *)\n"
     ^ "Example verified_example : visible_sample = tt.\n"
-    ^ "Proof. reflexivity. Qed.\n"
+    ^ "Proof. reflexivity. (* .unfold .all *) Qed.\n"
   in
   write original source;
+  let annotated = Docs_pdf.Preview.proof_input ~name:"verified_example" source in
+  if not (contains annotated "\\begin{alectryon}{coq}{none}")
+    || not (contains annotated "reflexivity. (* .unfold .all *) Qed.") then
+    failwith "native Alectryon input changed the proof or its annotations";
   run "coqc" ["-q"; original];
   let metadata = read (dir ^ "/Fixture.glob") in
   if not (List.mem "Stdlib.Strings.String" (Docs_order.Order.imports metadata)) then

@@ -6,6 +6,8 @@
   BoldItalicFont=texgyrepagella-bolditalic.otf]
 \setsansfont{texgyreheros-regular.otf}[BoldFont=texgyreheros-bold.otf]
 \usepackage[most]{tcolorbox}
+\usepackage{alectryon}
+\usepackage{pygments}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \definecolor{catsBlue}{HTML}{263B53}
@@ -68,8 +70,10 @@
 \renewenvironment{coqdoccomment}{\begingroup\color{catsMuted}\ttfamily(*}
   {*)\endgroup}
 \renewcommand{\coqdocemptyline}{\par\vspace{3pt}}
-% A separate, related style is reserved for genuine extracted proof states.
-% 为真实提取的证明状态预留相近但可区分的样式。
-\newenvironment{catsproofstate}[1]
-  {\begin{tcolorbox}[cats code,colback=white,title={#1}]\small\ttfamily}
-  {\end{tcolorbox}}
+% Use Alectryon's documented wrapper; its native goals stay between sentences.
+% 使用 Alectryon 文档提供的外层环境；原生目标保持在语句之间。
+\renewenvironment{alectryon@env}
+  {\begin{catscode}{\catsCodeTitle}{\catsCodeKind}}
+  {\end{catscode}}
+\colorlet{alectryon@tango@medium@aluminium}{catsBorder}
+\colorlet{alectryon@tango@light@aluminium}{white}

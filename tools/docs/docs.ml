@@ -219,9 +219,11 @@ let pdf ?(design = false) root output tag paths =
   write (dir ^ "/body.tex") body;
   if design then begin
     write (dir ^ "/targets.tex") (Preview.targets body);
-    write (dir ^ "/proof-state.txt") (read (output ^ "/proof-state.txt"))
+    List.iter (fun name -> write (dir ^ "/" ^ name) (read (output ^ "/" ^ name)))
+      ["proof.tex"; "alectryon.sty"; "pygments.sty"]
   end;
-  let symbols = Pdf.symbols body in
+  let proof = if design then read (dir ^ "/proof.tex") else "" in
+  let symbols = Pdf.symbols (body ^ proof) in
   write (dir ^ "/symbols.tex") symbols;
   let title = if zh then "理论参考手册与教程" else "Theory Reference and Tutorials" in
   let logo = read (root ^ "/docs/branding/rocq-cats-preview.png") in
@@ -244,8 +246,10 @@ let pdf ?(design = false) root output tag paths =
       (if zh then "来自同一双语源码；定义、定理与示例经过 Rocq 检查。"
        else "From one bilingual source tree. Definitions, theorems and examples checked by Rocq.") in
   let filename = "rocq-cats-" ^ tag in
-  let state = if design then read (dir ^ "/proof-state.txt") else "" in
-  let digest = Digest.to_hex (Digest.string (document ^ body ^ symbols ^ logo ^ state)) in
+  let assets = if design then
+    read (dir ^ "/alectryon.sty") ^ read (dir ^ "/pygments.sty") else "" in
+  let digest = Digest.to_hex
+    (Digest.string (document ^ body ^ symbols ^ logo ^ proof ^ assets)) in
   let stamp = dir ^ "/inputs.digest" in
   if not (Sys.file_exists stamp && read stamp = digest) then
     List.iter (fun ending ->
@@ -276,13 +280,19 @@ let build root strict format =
     | _ -> "/_build/docs") in
   mkdir output;
   if format = "design" then begin
-    let replay = output ^ "/proof-replay.v" in
-    write replay (Preview.replay (read "book/Basics.v"));
-    let transcript = output ^ "/proof-replay.log" in
-    run ~log:transcript "coqtop" ["-quiet"; "-batch";
-      "-R"; root ^ "/_build/default/theories"; "Cats";
-      "-R"; root ^ "/_build/default/book"; "CatsBook"; "-l"; replay];
-    write (output ^ "/proof-state.txt") (Preview.state (read transcript))
+    let input = output ^ "/proof-input.tex" in
+    write input (Preview.proof_input ~name:"boolean_limit_pair" (read "book/Basics.v"));
+    let local = root ^ "/_build/docs-alectryon/bin/alectryon" in
+    let program = if Sys.file_exists local then local else "alectryon" in
+    run ~log:(output ^ "/alectryon.log") program
+      ["--frontend"; "latex"; "--backend"; "latex";
+       "--coq-driver"; "vsrocq"; "--latex-dialect"; "xelatex";
+       "--pygments-style"; "friendly_grayscale";
+       "--rocq-arg=-set"; "--rocq-arg=Printing Width=60";
+       "--copy-assets"; "copy";
+       "-R"; root ^ "/_build/default/theories"; "Cats";
+       "-R"; root ^ "/_build/default/book"; "CatsBook";
+       "-o"; output ^ "/proof.tex"; input]
   end;
   write (output ^ "/reading-order.txt")
     (String.concat "\n" (List.map (fun s -> s.name) sources) ^ "\n");

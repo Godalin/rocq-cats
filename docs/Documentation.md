@@ -93,37 +93,62 @@ Fandol，符号沿用现有备用字体。可选主题集中在
 titlesec、fancyhdr 和 TeX Gyre 字体。第二页的大段空白是刻意安排的分页压力场景，
 使真实范畴接口跨页，以检查续标题和断片。不会为排版改写理论源码。
 
-Only this command replays the original `Basics` tutorial with `coqtop -batch`,
-inserting an observational `Show` after `boolean_limit_pair`'s `split`.
-The state panel displays the captured Rocq output verbatim, with links from
-the proof and back. The annotated replay, transcript and extracted state are
-kept in `_build/docs-design/`; each invocation regenerates them after building
-the library, avoiding stale state caches. coqdoc still reads the uninstrumented
-language-filtered inputs and their position-preserving glob copies. Internal
-links between included declarations remain active; references to omitted
-modules and external libraries are plain text in this bounded specimen.
+Only this command invokes **Alectryon 2.0.0 with the VsRocq driver**. Its native
+LaTeX frontend executes the original tutorial context in a hidden `none` block
+and the selected proof in an `in` block. The source annotation
+`split. (* .unfold .all *)` selects the important step: Alectryon's native
+LaTeX backend inserts the real goals immediately after `split`, then continues
+with the remaining tactics in the same code frame. Source comments select
+presentation only; no `Show` commands, transcript parsing or handwritten
+goals are needed. See the upstream [output-control documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents).
 
-只有此命令会用 `coqtop -batch` 重放原始 `Basics` 教程，在
-`boolean_limit_pair` 的 `split` 后插入观察性的 `Show`。状态框原样显示捕获的
-Rocq 输出，并提供证明与状态之间的往返链接。加注重放副本、完整输出和提取状态
-保存在 `_build/docs-design/`；每次命令都先构建库再重新生成，避免过期缓存。
-coqdoc 仍读取未加注、经过语言过滤的输入及保持位置的 glob 副本。小样内声明之间
-的链接保持可用；未纳入的模块和外部库引用在这份有限小样中显示为普通文本。
+只有此命令会调用 **Alectryon 2.0.0 和 VsRocq 驱动**。其原生 LaTeX 前端在隐藏的
+`none` 块中执行原始教程上下文，在 `in` 块中执行选定证明。源码注解
+`split. (* .unfold .all *)` 标记重要步骤：Alectryon 原生 LaTeX 后端直接在
+`split` 后插入真实目标，再在同一个代码框中继续剩余 tactic。注释只控制展示，
+无需插入 `Show`、解析终端输出或手写目标。详见上游的
+[输出控制文档](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)。
 
-This is an initial typography and navigation prototype for
+Install the optional Python dependency on PATH, or in an isolated worktree-local
+environment; the exporter automatically finds the latter. The initialized opam
+environment must supply `vsrocqtop` compatible with the project's Rocq version.
+The build never installs dependencies or changes a shared environment.
+
+可将可选 Python 依赖安装到 PATH，或安装到独立的 worktree 本地环境；导出器会
+自动找到后者。已初始化的 opam 环境须提供与项目 Rocq 版本相容的 `vsrocqtop`。
+构建本身不会安装依赖或修改共享环境。
+
+```sh
+uv venv --no-python-downloads _build/docs-alectryon
+uv pip install --python _build/docs-alectryon/bin/python 'alectryon==2.0.0'
+```
+
+The generated native input, LaTeX proof, upstream style assets and diagnostic
+log stay under `_build/docs-design/`. Each invocation rebuilds the library
+and regenerates proof states without a cache. Only the documented Alectryon
+wrapper and theme colors are customized; its generated goals are not rewritten.
+coqdoc still processes the original language-filtered inputs and their
+position-preserving glob copies for the surrounding reference fragments.
+Internal links between included declarations remain active; references to
+omitted modules and external libraries are plain text in this bounded specimen.
+
+生成的原生输入、LaTeX 证明、上游样式资源和诊断日志保存在 `_build/docs-design/`。
+每次命令先构建库，再不经缓存地重新生成证明状态。只定制 Alectryon 文档提供的
+外层环境及主题颜色，不改写其生成的目标。周围参考片段仍由 coqdoc 处理原始的
+语言过滤输入及保持位置的 glob 副本。小样内声明之间的链接保持可用；未纳入的
+模块和外部库引用在这份有限小样中显示为普通文本。
+
+This is an initial typography and inline-state prototype for
 [#31](https://github.com/Godalin/rocq-cats/issues/31), not a global theme rollout.
 The ordinary `pdf --strict` export, approved cover and full reading order are
-unchanged and require neither Alectryon nor proof replay. Alectryon is not
-installed in the checked environment; its current upstream supports standalone
-use with a Rocq driver (see its [README](https://github.com/cpitclaudel/alectryon)).
-Integration with that driver, selected-step extraction beyond this single
-sample, viewer interaction checks and optional PDF layers remain follow-ups.
+unchanged and require neither Alectryon nor proof replay. There is no Sphinx
+build step. Selection beyond this single sample, dedicated proof-detail pages
+and optional PDF layers remain follow-ups.
 
-这是 [#31](https://github.com/Godalin/rocq-cats/issues/31) 的首轮字体与导航原型，
+这是 [#31](https://github.com/Godalin/rocq-cats/issues/31) 的首轮字体与行间状态原型，
 尚未将主题推广到全库。常规 `pdf --strict` 导出、已确认的封面和完整阅读顺序保持
-原样，不依赖 Alectryon 或证明重放。已检查的环境未安装 Alectryon；上游当前支持
-配合 Rocq 驱动独立使用，见其 [README](https://github.com/cpitclaudel/alectryon)。
-驱动集成、超出本例的选定步骤提取、阅读器交互检查及可选 PDF 图层仍待后续推进。
+原样，不依赖 Alectryon 或证明重放，也没有 Sphinx 构建步骤。超出本例的步骤选择、
+独立证明详情页及可选 PDF 图层仍待后续推进。
 
 ## Authoring / 写作
 

@@ -31,29 +31,18 @@ let titled title kind block =
   ^ "\\renewcommand{\\catsCodeTitle}{" ^ title ^ "}\n"
   ^ "\\renewcommand{\\catsCodeKind}{" ^ kind ^ "}\n" ^ block ^ "\n"
 
-(* Recheck the original tutorial, inserting only an observational Show command.
-   The annotated copy is never used by coqdoc or its source references. *)
+(* Feed the original tutorial context and selected proof to Alectryon's native
+   LaTeX frontend. Sentence annotations in the source select visible states. *)
 
-(* 重查原始教程，只插入观察性的 Show 命令。
-   coqdoc 及其源码引用不使用这个加注副本。 *)
+(* 将原始教程上下文及选定证明交给 Alectryon 原生 LaTeX 前端。
+   源码中的语句注解选定要显示的状态。 *)
 
-let replay source =
-  let start = find source "Example boolean_limit_pair" 0 in
-  let step = "apply product_pair_unique. split." in
-  let offset = find source step start + String.length step in
-  let ending = find source "Qed." start in
-  if offset >= ending then failwith "design proof step is outside its proof";
-  "Set Printing Width 72.\n" ^ String.sub source 0 offset
-  ^ "\n  idtac \"CATS_STATE_BEGIN\". Show. idtac \"CATS_STATE_END\".\n"
-  ^ String.sub source offset (String.length source - offset)
-
-let state transcript =
-  let marker = "CATS_STATE_BEGIN\n" in
-  let excerpt = between transcript marker "CATS_STATE_END" in
-  let result = String.sub excerpt (String.length marker)
-    (String.length excerpt - String.length marker) |> String.trim in
-  if result = "" then failwith "Rocq returned an empty proof state";
-  result ^ "\n"
+let proof_input ~name source =
+  let start = find source ("Example " ^ name) 0 in
+  let ending = find source "Qed." start + String.length "Qed." in
+  "\\begin{alectryon}{coq}{none}\n" ^ String.sub source 0 start
+  ^ "\n\\end{alectryon}\n\\begin{alectryon}{coq}{in}\n"
+  ^ String.sub source start (ending - start) ^ "\n\\end{alectryon}\n"
 
 (* Only declarations included in the specimen are valid local destinations. *)
 
@@ -92,19 +81,10 @@ let body ~zh source =
   ^ "{\\sffamily\\small\\color{catsMuted}Cats.Cat.Core}\\par\n"
   ^ titled "Class" "Cat" (code source "\\coqdockw{Class}")
   ^ "\\section{" ^ tr "A proof from the tutorial" "教程中的一个证明" ^ "}\n"
-  ^ tr "The following script is taken directly from the compiled tutorial.\n"
-       "下面的脚本直接取自已编译的教程。\n"
-  ^ "\\hypertarget{design-proof-step}{}\n"
+  ^ tr "The goals after split appear at that step, before the remaining tactics.\n"
+       "split 后的目标直接显示在这一步，之后继续剩余的证明策略。\n"
   ^ titled "Example / Proof" "boolean\\_limit\\_pair"
-       (code source "{boolean\\_limit\\_pair}")
-  ^ "\\hyperlink{design-proof-state}{"
-  ^ tr "After split: inspect the goals" "split 后：查看目标" ^ "}\\par\n"
-  ^ "\\hypertarget{design-proof-state}{}\n"
-  ^ "\\begin{catsproofstate}{" ^ tr "Proof state / Step 1" "证明状态 / 第 1 步"
-  ^ "}\n\\VerbatimInput[fontsize=\\footnotesize,breaklines=true,"
-  ^ "breakanywhere=true]{proof-state.txt}\n\\end{catsproofstate}\n"
-  ^ "\\hyperlink{design-proof-step}{" ^ tr "Return to the proof" "返回证明"
-  ^ "}\\par\n"
+       "\\input{proof.tex}"
 
 let document template =
   (* titlesec must precede hyperref so section bookmarks keep their anchors. *)
