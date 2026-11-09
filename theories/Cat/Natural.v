@@ -211,8 +211,10 @@ Definition NatIso_is_iso {C D : Cat} {F G : Functor C D}
   : @is_iso (Fct C D) F G α.
 Proof.
   exists (α ^-1N Hα). split; intros X.
-  - exact (fst (Hα X).2).
-  - exact (snd (Hα X).2).
+  - (* .unfold .all *)
+    exact (fst (Hα X).2).
+  - (* .unfold .all *)
+    exact (snd (Hα X).2).
 Defined.
 
 (** An inverse in the functor category gives component inverses directly. *)

@@ -71,11 +71,8 @@ let rec source_files dir =
 
 let module_name path =
   let stem = Filename.chop_extension path in
-  let prefix, offset =
-    if Filter.starts path 0 "theories/" then "Cats.", 9 else "CatsBook.", 5
-  in
-  prefix ^ String.map (function '/' -> '.' | c -> c)
-    (String.sub stem offset (String.length stem - offset))
+  "Cats." ^ String.map (function '/' -> '.' | c -> c)
+    (String.sub stem 9 (String.length stem - 9))
 
 let metadata root source =
   Filename.concat root ("_build/default/" ^ Filename.chop_extension source.path ^ ".glob")
@@ -203,18 +200,14 @@ let check_links output =
 let pdf ?(design = false) root output tag paths =
   let dir = output ^ "/" ^ tag in
   mkdir dir;
-  let paths = if design then List.filter (fun path ->
-    suffix "/theories/Cat/Core.v" path || suffix "/book/Basics.v" path) paths
-    else paths in
-  run "coqdoc" (["--latex"; "--utf8"; "--body-only";
+  run "coqdoc" (["--latex"; "--utf8"; "--body-only"; "--gallina";
     "--no-index"; "--no-lib-name";
     "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
-    "-R"; output ^ "/.inputs/" ^ tag ^ "/book"; "CatsBook";
-    "-d"; dir; "-o"; dir ^ "/body.tex"]
-    @ (if design then [] else ["--gallina"]) @ paths);
+    "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
   let zh = tag = "zh" in
   let body = read (dir ^ "/body.tex") in
-  let body = if design then Preview.body ~zh body else body in
+  let body = if design then Preview.body
+    ~proof_anchor:"Cats.Cat.Natural.NatIso is iso" body else body in
   let body = Pdf.compact body in
   write (dir ^ "/body.tex") body;
   if design then begin
@@ -225,7 +218,9 @@ let pdf ?(design = false) root output tag paths =
   let proof = if design then read (dir ^ "/proof.tex") else "" in
   let symbols = Pdf.symbols (body ^ proof) in
   write (dir ^ "/symbols.tex") symbols;
-  let title = if zh then "理论参考手册与教程" else "Theory Reference and Tutorials" in
+  let title = if design then
+      (if zh then "抽象范畴、函子与自然变换" else "Categories, Functors and Natural Transformations")
+    else (if zh then "全库理论参考手册" else "Full-Library Theory Reference") in
   let logo = read (root ^ "/docs/branding/rocq-cats-preview.png") in
   write (dir ^ "/rocq-cats-logo.png") logo;
   let brand = "\\begin{center}\\includegraphics[width=.94\\textwidth]"
@@ -269,11 +264,14 @@ let pdf ?(design = false) root output tag paths =
 
 let build root strict format =
   Sys.chdir root;
-  let paths = ["theories"; "book"] |> List.concat_map source_files
+  let paths = source_files "theories"
     |> preferences "docs/chapters" in
   let sources = List.map (fun path -> { path; name = module_name path }) paths in
   run "dune" ["build"; "@all"];
   let sources = reading_order root sources in
+  let sources = if format = "design" then
+    let names = Preview.modules (List.map (fun s -> s.name) sources) in
+    List.filter (fun s -> List.mem s.name names) sources else sources in
   let output = root ^ (match format with
     | "pdf" -> "/_build/docs-pdf"
     | "design" -> "/_build/docs-design"
@@ -281,7 +279,8 @@ let build root strict format =
   mkdir output;
   if format = "design" then begin
     let input = output ^ "/proof-input.tex" in
-    write input (Preview.proof_input ~name:"boolean_limit_pair" (read "book/Basics.v"));
+    write input (Preview.proof_input ~kind:"Definition" ~ending:"Defined."
+      ~name:"NatIso_is_iso" (read "theories/Cat/Natural.v"));
     let local = root ^ "/_build/docs-alectryon/bin/alectryon" in
     let program = if Sys.file_exists local then local else "alectryon" in
     run ~log:(output ^ "/alectryon.log") program
@@ -291,7 +290,6 @@ let build root strict format =
        "--rocq-arg=-set"; "--rocq-arg=Printing Width=60";
        "--copy-assets"; "copy";
        "-R"; root ^ "/_build/default/theories"; "Cats";
-       "-R"; root ^ "/_build/default/book"; "CatsBook";
        "-o"; output ^ "/proof.tex"; input]
   end;
   write (output ^ "/reading-order.txt")
@@ -300,7 +298,7 @@ let build root strict format =
   List.iter (fun s -> write (output ^ "/source/" ^ s.path) (read s.path)) sources;
   List.iter (fun (language, tag, other) ->
     let inputs = output ^ "/.inputs/" ^ tag in
-    List.iter (fun directory -> mkdir (inputs ^ "/" ^ directory)) ["theories"; "book"];
+    mkdir (inputs ^ "/theories");
     let paths = List.map (fun s ->
       let original = read s.path in
       let filtered, messages = Filter.filter language original in
@@ -317,11 +315,11 @@ let build root strict format =
       mkdir dir;
       Sys.readdir dir |> Array.iter (fun name ->
         if suffix ".html" name
-          && (Filter.starts name 0 "Cats." || Filter.starts name 0 "CatsBook.")
+          && Filter.starts name 0 "Cats"
           && not (List.exists (fun s -> s.name ^ ".html" = name) sources)
         then remove (dir ^ "/" ^ name));
       run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
-        "-R"; inputs ^ "/theories"; "Cats"; "-R"; inputs ^ "/book"; "CatsBook";
+        "-R"; inputs ^ "/theories"; "Cats";
         "-d"; dir] @ paths);
       List.iter (fun name -> remove (dir ^ "/" ^ name)) ["symbols.html"; "site.css"];
       decorate dir tag other sources
@@ -343,8 +341,8 @@ let build root strict format =
     check_links output
   end;
   if format = "design" then
-    Printf.printf "Generated a bilingual design specimen from Cat.Core and Basics: %s\n%!"
-      output
+    Printf.printf "Generated a bilingual preview from Cat.Core through Cat.Natural (%d complete modules): %s\n%!"
+      (List.length sources) output
   else Printf.printf "Generated %s for %d modules in each language: %s\n%!"
       format (List.length sources) output;
   if strict && messages <> [] then failwith "unclassified or unpaired documentation"

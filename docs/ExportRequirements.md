@@ -13,6 +13,10 @@ and exported reading editions remain bilingual.
 
 ## Shared source and native facilities
 
+- Compile and export the entire theory library directly; do not maintain a
+  separate tutorial source tree. The preview is the continuous range of complete
+  modules in shared reading order from `Cats.Cat.Core` through
+  `Cats.Cat.Natural`, inclusive, without fragment selection or a fixed page count.
 - Generate both languages from the same compiled Rocq sources and bilingual
   coqdoc comments. Preserve mathematical meaning, specified equality, notation,
   source positions and references. Do not duplicate proofs to suit a renderer.
@@ -50,16 +54,16 @@ their focused states using its native output controls.
 
 ```coq
 Proof.
-  apply product_pair_unique. split.
+  exists (α ^-1N Hα). split; intros X.
   - (* .unfold .all *)
-    exact (limit_β μ false).
+    exact (fst (Hα X).2).
   - (* .unfold .all *)
-    exact (limit_β μ true).
-Qed.
+    exact (snd (Hα X).2).
+Defined.
 ```
 
 See the [native annotation documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)
-and the checked example in [Basics.v](../book/Basics.v).
+and `NatIso_is_iso` in [Natural.v](../theories/Cat/Natural.v).
 
 ## Readability and verification
 

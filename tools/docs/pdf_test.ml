@@ -9,6 +9,15 @@ let contains text token =
   loop 0
 
 let () =
+  let range = ["Cats.Cat.Core"; "Cats.Cat.Terminal";
+    "Cats.Cat.Functor.Core"; "Cats.Cat.Natural"] in
+  check "preview lost a complete intervening module or included outside modules"
+    (Docs_pdf.Preview.modules ("Cats.Meta" :: range @ ["Cats.Cat.Product.Core"])
+      = range);
+  List.iter (fun names ->
+    check "a missing preview boundary was silently accepted"
+      (try ignore (Docs_pdf.Preview.modules names); false with Failure _ -> true))
+    [["Cats.Cat.Core"]; ["Cats.Cat.Natural"]];
   let body = "\\begin{coqdoccode}\n\\coqdocemptyline\n\n\\coqdocemptyline\n"
     ^ "Definition kept.\n\\coqdocemptyline\n\\end{coqdoccode}\n"
     ^ "\\begin{verbatim}\n\\coqdocemptyline\n\\coqdocemptyline\n\\end{verbatim}" in

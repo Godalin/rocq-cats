@@ -2,166 +2,123 @@
 
 # 双语阅读版
 
-Presentation conventions for websites and books are maintained in
+Presentation conventions are maintained in
 [ExportRequirements.md](./ExportRequirements.md). This guide records build
-procedures and implementation status.
+procedures and implementation status. Reading editions come directly from all
+modules under [theories/](../theories/), using one compiled bilingual source tree.
 
-网页与书籍的展示规范统一维护在
-[ExportRequirements.md](./ExportRequirements.md)，本指南记录构建方法与实现进度。
+展示规范统一维护在 [ExportRequirements.md](./ExportRequirements.md)，本指南记录
+构建方法与实现进度。阅读版直接来自 [theories/](../theories/) 下的全部模块，
+使用同一份经过编译的双语源码。
 
-The current priority is PDF for personal study. One bilingual Rocq source tree
-supplies both languages: reference modules in [theories/](../theories/) and
-the checked tutorial chapters in [book/](../book/). One PDF per language
-contains the entire library and its tutorials. Examples compile with
-the library. The full-library PDF cover uses the accepted
-[Rocq-Cats logo](./branding/rocq-cats.svg).
+## Full-library export / 全库导出
 
-当前优先支持个人学习用的 PDF。一套双语 Rocq 源码提供两种语言：参考模块位于
-[theories/](../theories/)，经过检查的教程章节位于 [book/](../book/)。每种语言的一本
-PDF 包含全库与教程。示例与库一起编译，封面使用已确认的
-[Rocq-Cats Logo](./branding/rocq-cats.svg)。
+Run from the repository root in the initialized project environment:
 
-## Build / 构建
-
-Run from the repository root with the initialized project toolchain:
-
-在仓库根目录中，使用已初始化的项目工具环境运行：
+在仓库根目录中，使用已初始化的项目环境运行：
 
 ```sh
 dune exec tools/docs/docs.exe -- pdf --strict
 ```
 
-The English and Chinese PDFs are written to
-`_build/docs-pdf/en/rocq-cats-en.pdf` and
-`_build/docs-pdf/zh/rocq-cats-zh.pdf`. There is a single full-library export;
-tutorials are included, rather than exported as a second book.
-Each export first runs `dune build @all` and never edits tracked Rocq sources.
+The PDFs are `_build/docs-pdf/en/rocq-cats-en.pdf` and
+`_build/docs-pdf/zh/rocq-cats-zh.pdf`. All theory modules are discovered
+and ordered automatically. Each export first runs `dune build @all`, and never
+edits tracked Rocq sources. For the local Nix/opam environment:
 
-英文和中文 PDF 分别写入 `_build/docs-pdf/en/rocq-cats-en.pdf` 和
-`_build/docs-pdf/zh/rocq-cats-zh.pdf`。只有一个全库导出入口，教程直接编入同一本书。
-每次导出先运行 `dune build @all`，
-不会修改受版本管理的 Rocq 源码。
-
-For the local Nix/opam environment:
-
-本地 Nix/opam 环境使用：
+PDF 位于 `_build/docs-pdf/en/rocq-cats-en.pdf` 与
+`_build/docs-pdf/zh/rocq-cats-zh.pdf`。所有理论模块均自动发现和排序，每次导出先
+运行 `dune build @all`，不修改受版本管理的 Rocq 源码。本地 Nix/opam 环境使用：
 
 ```sh
 opam exec --switch=rocq-env -- nix-shell --run \
   'dune exec tools/docs/docs.exe -- pdf --strict'
 ```
 
-PDF uses coqdoc LaTeX output followed by two XeLaTeX passes, with
-`-no-shell-escape`. Install JuliaMono Nerd Font for Latin prose, headings and
-code, including its bold, italic and bold italic faces. XeLaTeX resolves it by
-the installed family name `JuliaMono Nerd Font`. TeX Live must provide
-CTeX/Fandol for Chinese, STIX Two Math for fallback symbols,
-fontspec, geometry, amsmath/amssymb, hyperref, bookmark, fvextra, newunicodechar
-and tikz-cd. The tool does not install dependencies.
-Locally checked: Rocq/coqdoc 9.0.1, OCaml 5.3.0,
-Dune 3.23.1, TeX Live 2025 / XeTeX 0.999997.
+PDF uses coqdoc LaTeX followed by two XeLaTeX passes with `-no-shell-escape`.
+The ordinary edition uses JuliaMono Nerd Font, including bold and italic faces,
+CTeX/Fandol for Chinese and STIX Two Math for fallback symbols. TeX Live must
+provide fontspec, geometry, amsmath/amssymb, hyperref, bookmark, fvextra,
+newunicodechar and tikz-cd. The tool does not install dependencies.
+Locally checked: Rocq/coqdoc 9.0.1, OCaml 5.3.0, Dune 3.23.1, TeX Live 2025.
 
-PDF 使用 coqdoc 的 LaTeX 输出，再以 `-no-shell-escape` 运行两次 XeLaTeX。
-西文正文、标题和代码使用 JuliaMono Nerd Font，需安装其常规、粗体、斜体及粗斜体。
-XeLaTeX 按已安装的字体家族名称 `JuliaMono Nerd Font` 定位。
-TeX Live 需提供中文字体 CTeX/Fandol、备用符号字体 STIX Two Math、fontspec、geometry、
+PDF 使用 coqdoc LaTeX 输出，再以 `-no-shell-escape` 运行两次 XeLaTeX。
+常规阅读版使用 JuliaMono Nerd Font 及其粗体和斜体，中文使用 CTeX/Fandol，
+备用符号字体为 STIX Two Math。TeX Live 须提供 fontspec、geometry、
 amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
-工具不会安装依赖。本地验证版本：
-Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、TeX Live 2025 / XeTeX 0.999997。
+工具不安装依赖。本地验证：Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、
+TeX Live 2025。
 
-## Textbook design specimen / 教材设计小样
+## Complete abstract-category preview / 完整抽象范畴预览
 
-The optional design command builds a three-page specimen in each language:
+The preview uses the same build, language filtering and reading order:
 
-可选的设计命令为每种语言生成三页小样：
+预览使用相同的构建、语言过滤及阅读顺序：
 
 ```sh
 dune exec tools/docs/docs.exe -- design --strict
 ```
 
 Outputs are `_build/docs-design/en/rocq-cats-en.pdf` and
-`_build/docs-design/zh/rocq-cats-zh.pdf`. The specimen selects real coqdoc
-fragments from `Cat.Core` and `Basics` after ordinary bilingual filtering and
-compiled-reference processing. It compares TeX Gyre Pagella prose with the
-ordinary edition's JuliaMono treatment, retaining JuliaMono for every code
-token, Fandol for Chinese and the existing symbol fallback. The opt-in theme
-is centralized in [pdf-textbook.tex](../tools/docs/pdf-textbook.tex); it needs
-TeX Live's tcolorbox, titlesec, fancyhdr and TeX Gyre fonts. The large gap on
-page two deliberately positions the real category interface across a page
-boundary to inspect continuation titles and fragments. No theory source is
-rewritten for layout.
+`_build/docs-design/zh/rocq-cats-zh.pdf`. The preview contains every complete
+module from `Cats.Cat.Core` through `Cats.Cat.Natural` in shared reading order,
+inclusive: currently Core, Terminal, Morphism, Isomorphism, Functor.Core and
+Natural. All their coqdoc prose and public declarations are preserved, without
+fragment selection or a fixed page count. Earlier prerequisites are still
+compiled. Its `reading-order.txt` records only included modules.
 
 输出为 `_build/docs-design/en/rocq-cats-en.pdf` 与
-`_build/docs-design/zh/rocq-cats-zh.pdf`。小样在常规双语过滤与编译引用处理后，
-选取 `Cat.Core` 和 `Basics` 的真实 coqdoc 片段。西文正文试用 TeX Gyre Pagella，
-以便与常规阅读版的 JuliaMono 正文比较；全部代码标记保留 JuliaMono，中文使用
-Fandol，符号沿用现有备用字体。可选主题集中在
-[pdf-textbook.tex](../tools/docs/pdf-textbook.tex)，需 TeX Live 的 tcolorbox、
-titlesec、fancyhdr 和 TeX Gyre 字体。第二页的大段空白是刻意安排的分页压力场景，
-使真实范畴接口跨页，以检查续标题和断片。不会为排版改写理论源码。
+`_build/docs-design/zh/rocq-cats-zh.pdf`。预览包含共享阅读顺序中从
+`Cats.Cat.Core` 到 `Cats.Cat.Natural` 两端在内的所有完整模块，目前为 Core、
+Terminal、Morphism、Isomorphism、Functor.Core 和 Natural。保留全部 coqdoc
+正文与公开声明，不拼接选段或限制页数。此前的基础依赖仍随全库编译；预览的
+`reading-order.txt` 只记录实际纳入的模块。
 
-Only this command invokes **Alectryon 2.0.0 with the VsRocq driver**. Its native
-LaTeX frontend executes the original tutorial context in a hidden `none` block
-and the selected proof in an `in` block. The source annotation
-`- (* .unfold .all *)` selects each focused branch: Alectryon's native LaTeX
-backend inserts its current goal after the bullet, then continues with the
-branch's tactics in the same code frame. The preceding `split` stays input-only,
-following the [focused-state requirements](./ExportRequirements.md#focused-proof-states).
-Source comments select
-presentation only; no `Show` commands, transcript parsing or handwritten
-goals are needed. See the upstream [output-control documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents).
+The optional theme is centralized in
+[pdf-textbook.tex](../tools/docs/pdf-textbook.tex): Pagella prose, JuliaMono
+code, Fandol Chinese, quiet blue accents and breakable code frames. It needs
+TeX Live's tcolorbox, titlesec, fancyhdr and TeX Gyre fonts. Cover and contents
+reuse the full-library template. Source is never rewritten for layout.
+References outside the preview are plain text; included declarations stay linked.
 
-只有此命令会调用 **Alectryon 2.0.0 和 VsRocq 驱动**。其原生 LaTeX 前端在隐藏的
-`none` 块中执行原始教程上下文，在 `in` 块中执行选定证明。源码注解
-`- (* .unfold .all *)` 标记每个聚焦后的分支：Alectryon 原生 LaTeX 后端在
-bullet 后插入该分支的当前目标，再在同一个代码框中继续该分支的 tactic。
-之前的 `split` 仅显示代码，遵循[聚焦状态约束](./ExportRequirements.md#focused-proof-states)。
-注释只控制展示，
-无需插入 `Show`、解析终端输出或手写目标。详见上游的
-[输出控制文档](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)。
+可选主题集中在 [pdf-textbook.tex](../tools/docs/pdf-textbook.tex)：Pagella
+正文、JuliaMono 代码、Fandol 中文、克制的蓝色和可跨页代码框，需 TeX Live 的
+tcolorbox、titlesec、fancyhdr 及 TeX Gyre 字体。封面和目录复用全库模板，不为
+排版改写源码。预览范围以外的声明引用显示为普通文本，范围内的链接保持可用。
 
-Install the optional Python dependency on PATH, or in an isolated worktree-local
-environment; the exporter automatically finds the latter. The initialized opam
-environment must supply `vsrocqtop` compatible with the project's Rocq version.
-The build never installs dependencies or changes a shared environment.
+Only `design` invokes **Alectryon 2.0.0 with the VsRocq driver**, processing the
+original context and proof of `NatIso_is_iso` from
+[Natural.v](../theories/Cat/Natural.v). Native LaTeX replaces that declaration's
+code block at its original position; other proofs use ordinary coqdoc hiding.
+Native focus-bullet annotations show only each branch's current goal, following
+[the focused-state requirements](./ExportRequirements.md#focused-proof-states).
+There is no diagnostic-command injection, transcript parsing, handwritten goal
+or Sphinx build. Generated input, proof, style assets and logs stay in the output
+directory and are refreshed each time, without a proof cache.
 
-可将可选 Python 依赖安装到 PATH，或安装到独立的 worktree 本地环境；导出器会
-自动找到后者。已初始化的 opam 环境须提供与项目 Rocq 版本相容的 `vsrocqtop`。
-构建本身不会安装依赖或修改共享环境。
+只有 `design` 调用 **Alectryon 2.0.0 和 VsRocq 驱动**，处理
+[Natural.v](../theories/Cat/Natural.v) 中 `NatIso_is_iso` 的原始上下文与证明。
+原生 LaTeX 在原位置替换这一声明的代码框，其他证明继续由 coqdoc 常规隐藏。
+focus bullet 上的原生注解只显示各分支的当前目标，遵循
+[聚焦状态约束](./ExportRequirements.md#focused-proof-states)。不注入诊断命令、
+解析终端输出、手写目标或运行 Sphinx。生成的输入、证明、样式及日志保存在输出
+目录，每次重新生成，不使用证明缓存。
+
+Install Alectryon on PATH or in this isolated worktree-local environment, which
+the exporter finds automatically. The initialized opam environment must supply
+compatible `vsrocqtop`. Export never installs dependencies or modifies shared
+environments. Ordinary full-library PDF and HTML remain independent of Alectryon.
+
+可将 Alectryon 安装到 PATH，或以下独立 worktree 本地环境，导出器会自动找到。
+已初始化的 opam 环境须提供相容的 `vsrocqtop`。导出过程不安装依赖或修改共享
+环境；常规全库 PDF 与 HTML 不依赖 Alectryon。
 
 ```sh
 uv venv --no-python-downloads _build/docs-alectryon
 uv pip install --python _build/docs-alectryon/bin/python 'alectryon==2.0.0'
 ```
 
-The generated native input, LaTeX proof, upstream style assets and diagnostic
-log stay under `_build/docs-design/`. Each invocation rebuilds the library
-and regenerates proof states without a cache. Only the documented Alectryon
-wrapper and theme colors are customized; its generated goals are not rewritten.
-coqdoc still processes the original language-filtered inputs and their
-position-preserving glob copies for the surrounding reference fragments.
-Internal links between included declarations remain active; references to
-omitted modules and external libraries are plain text in this bounded specimen.
-
-生成的原生输入、LaTeX 证明、上游样式资源和诊断日志保存在 `_build/docs-design/`。
-每次命令先构建库，再不经缓存地重新生成证明状态。只定制 Alectryon 文档提供的
-外层环境及主题颜色，不改写其生成的目标。周围参考片段仍由 coqdoc 处理原始的
-语言过滤输入及保持位置的 glob 副本。小样内声明之间的链接保持可用；未纳入的
-模块和外部库引用在这份有限小样中显示为普通文本。
-
-This is an initial typography and inline-state prototype for
-[#31](https://github.com/Godalin/rocq-cats/issues/31), not a global theme rollout.
-The ordinary `pdf --strict` export, approved cover and full reading order are
-unchanged and require neither Alectryon nor proof replay. There is no Sphinx
-build step. Selection beyond this single sample, dedicated proof-detail pages
-and optional PDF layers remain follow-ups.
-
-这是 [#31](https://github.com/Godalin/rocq-cats/issues/31) 的首轮字体与行间状态原型，
-尚未将主题推广到全库。常规 `pdf --strict` 导出、已确认的封面和完整阅读顺序保持
-原样，不依赖 Alectryon 或证明重放，也没有 Sphinx 构建步骤。超出本例的步骤选择、
-独立证明详情页及可选 PDF 图层仍待后续推进。
-
-## Authoring / 写作
+## Authoring and order / 写作与排序
 
 Use adjacent, separate coqdoc blocks, English first and Chinese second:
 
@@ -173,127 +130,69 @@ Use adjacent, separate coqdoc blocks, English first and Chinese second:
 (** 泛中介。 *)
 ```
 
-Code, examples and proofs are shared. Add executable examples directly to a
-chapter; Dune compiles them. Every module and tutorial is discovered
-automatically. The exporter uses library imports from the compiled `.glob`
-metadata to produce a dependency-first reading order, shared by PDF and HTML.
+Library imports from compiled `.glob` metadata determine dependency-first
+reading order, shared by PDF and HTML. [docs/chapters](./chapters) gives overall
+preferences; local lists such as
+[theories/Cat/chapters](../theories/Cat/chapters) refine order. Each optional list
+names relative files or directories, one per line. Lists are partial: unlisted
+modules stay included; dependencies take precedence. Unknown or repeated entries
+fail. A directory may follow an individual file from it without repeating it.
+The initial Meta → Set.Core → Set.Morphism → Cat.Core order is automatic.
+Each export records its complete order in `reading-order.txt`.
 
-代码、示例与证明共享。将可执行示例直接加入章节，Dune 负责其编译。所有模块和
-教程均自动发现，导出器读取编译生成的 `.glob` 导入记录，按依赖优先编排阅读顺序，
-PDF 与 HTML 共享这份顺序。
+编译 `.glob` 元数据中的导入记录决定依赖优先的阅读顺序，PDF 与 HTML 共用。
+[docs/chapters](./chapters) 给整体偏好，
+[theories/Cat/chapters](../theories/Cat/chapters) 等局部清单细化顺序。可选清单每行
+列一个相对文件或目录，只需列出要调整的部分；未列模块仍纳入，依赖优先于偏好。
+未知或重复条目会失败，先列目录内文件再列该目录不会重复文件。开头的
+Meta → Set.Core → Set.Morphism → Cat.Core 自动得到；每次导出将完整顺序记录在
+`reading-order.txt`。
 
-[docs/chapters](./chapters) expresses overall preferences;
-[theories/Cat/chapters](../theories/Cat/chapters) and
-[book/chapters](../book/chapters) refine local order. Each optional `chapters`
-file lists relative filenames or directories, one per line. Lists are partial:
-unlisted modules are still included. Dependencies take precedence over these
-preferences. Unknown or repeated entries fail; a directory entry can follow
-an individual file from that directory without repeating the file.
+Reference existing declarations in coqdoc brackets. The lexer handles nested
+comments and strings, preserves byte positions and newlines, and updates only
+generated `.glob` copies after checking source digests. Printing and visibility
+directives remain intact. Ambiguous or unpaired prose goes in `warnings.txt`;
+`--strict` rejects it. Use `@lang en`, `@lang zh` or `@lang both` when needed.
 
-[docs/chapters](./chapters) 表达整体偏好；
-[theories/Cat/chapters](../theories/Cat/chapters) 与
-[book/chapters](../book/chapters) 调整局部顺序。任意目录中可选的 `chapters` 文件
-按行列出相对文件名或目录，只需列出要调整的部分，未列出的模块仍自动纳入。
-依赖优先于手工偏好。未知或重复条目会报错；可以先列目录内的某个文件，再列
-整个目录，导出不会重复该文件。
+通过 coqdoc 括号引用已有声明。词法过滤器识别嵌套注释和字符串，保留字节位置与
+换行；检查源码校验值后，只更新生成的 `.glob` 副本。打印与显隐指令保持原样。
+歧义或未配对文字记录在 `warnings.txt`，`--strict` 将其视为失败。必要时使用
+`@lang en`、`@lang zh` 或 `@lang both`。
 
-All imports precede their clients, without entry-point exceptions. The initial
-sequence `Meta`, `Set.Core`, `Set.Morphism`, `Cat.Core` follows automatically
-from dependencies; no manual list is needed for these foundations. The
-generated `reading-order.txt` records the complete order next to each export.
+The cover uses the accepted [logo](./branding/rocq-cats.svg); its
+[PNG preview](./branding/rocq-cats-preview.png) is copied without conversion.
 
-所有导入均先于使用者，不设置阅读入口例外。开头的 `Meta`、`Set.Core`、
-`Set.Morphism`、`Cat.Core` 顺序由依赖自动得到，这些基础无需手工指定。
-每份导出目录中的 `reading-order.txt` 记录完整顺序。
+封面使用已确认的 [Logo](./branding/rocq-cats.svg)，直接复制其
+[PNG 预览](./branding/rocq-cats-preview.png)，无需转换工具。
 
-Reference existing declarations in coqdoc brackets instead of duplicating proofs.
-The tutorial starts with [Basics.v](../book/Basics.v), following one Boolean
-example from categories through functors, natural transformations and products
-to limits. [STLC.v](../book/STLC.v) continues with typed syntax, substitution,
-beta/eta equality and CCC semantics, then explains the existing syntactic
-categories, equational completeness and free universal property. Its examples
-reuse library definitions and theorems. The [SVG](./branding/rocq-cats.svg)
-is the editable logo source; its
-[PNG preview](./branding/rocq-cats-preview.png) is copied into the PDF output
-for the cover, with no additional image-conversion dependency.
+## Diagrams and checks / 交换图与检查
 
-通过 coqdoc 括号引用已有声明，无需复制证明。教程从
-[Basics.v](../book/Basics.v) 开始，用同一个布尔例子串起范畴、函子、自然变换、积与极限。
-[STLC.v](../book/STLC.v) 继续讲解带类型语法、替换、βη 相等与 CCC 语义，再介绍
-已有的语法范畴、等式完备性与自由泛性质；示例复用库中的定义与定理。
-[SVG](./branding/rocq-cats.svg) 是可编辑 Logo 源文件；封面直接使用复制到 PDF
-输出目录的 [PNG 预览](./branding/rocq-cats-preview.png)，不增加图片转换依赖。
+Shared coqdoc LaTeX islands can contain native TikZ-cd, already loaded by the
+preamble. Avoid TeX percent comments inside the island because percent signs
+are coqdoc delimiters. HTML omits these PDF-only islands.
 
-The lexer handles strings and nested comments, preserves every byte position and
-newline, and updates only generated `.glob` copies after checking the source
-digest. Printing/visibility directives remain intact. Ambiguous or unpaired
-prose is reported in `warnings.txt`; `--strict` rejects it. Explicit `@lang en`,
-`@lang zh` or `@lang both` markers are available when pairing does not apply.
+共享 coqdoc LaTeX 片段可直接包含 TikZ-cd，模板已加载该包。片段内避免 TeX 百分号
+注释，因为百分号是 coqdoc 分隔符。HTML 后端忽略这些 PDF 专用片段。
 
-词法过滤器识别字符串和嵌套注释，保留每个字节位置及换行，检查源码校验值后仅
-更新生成的 `.glob` 副本。打印和显隐指令保持原样。歧义或未配对的文字记录到
-`warnings.txt`，`--strict` 将其视为失败。不适用翻译配对时，可显式使用
-`@lang en`、`@lang zh` 或 `@lang both` 标记。
-
-## Commutative diagrams / 交换图
-
-Write native TikZ-cd in a shared coqdoc LaTeX island. Mathematical labels use
-ordinary LaTeX; the preamble already loads tikz-cd. Keep the island free of TeX
-percent comments, since percent signs delimit the coqdoc island.
-
-在共享 coqdoc LaTeX 片段中直接写 TikZ-cd，数学标签使用普通 LaTeX；模板已加载
-tikz-cd。片段中避免 TeX 百分号注释，因为百分号用于界定 coqdoc 片段。
-
-```coq
-(** @lang both
-%
-\[
-\begin{tikzcd}
-  A \arrow[r, "f"] & B
-\end{tikzcd}
-\]
-%
-*)
-```
-
-Both language PDFs use this same diagram source. The introductory chapter
-contains a product diagram with its unique mediator.
-The existing HTML backend omits these PDF-only LaTeX islands;
-the surrounding bilingual explanations and equations remain readable.
-
-两种语言的 PDF 使用同一份图源。入门章节包含带唯一中介的积图式。
-已有 HTML 后端忽略这些 PDF 专用 LaTeX 片段，周围的双语说明
-和方程仍可阅读。
-
-## Checks and output / 检查与输出
-
-`--gallina` hides proofs while retaining declarations and data. Generated TeX,
-filtered inputs, original source copies and logs stay under the output directory.
-Missing glyphs, overfull boxes, invalid references and broken bookmark strings
-fail PDF export. Inspect `xelatex-output.log` for compiler errors and the
-language-specific `.log` for layout diagnostics. Changed inputs invalidate only
-the generated TeX auxiliary files. This is a coqdoc reading edition, not semantic
-conversion of arbitrary Rocq formulas into conventional mathematics.
-
-`--gallina` 隐藏证明，保留声明及数据。生成的 TeX、过滤输入、原始源码副本和日志
-均位于输出目录下。缺字、版面溢出、无效引用及损坏书签会使 PDF 导出失败。编译
-错误见 `xelatex-output.log`，排版诊断见对应语种的 `.log`。输入变化时仅使生成的
-TeX 辅助文件失效。这是 coqdoc 阅读版，不会对任意 Rocq 公式进行语义转换。
-
-Run `dune runtest tools/docs` for lexical/position checks, PDF presentation
-helpers and actual coqdoc HTML/LaTeX export tests. They require no TeX renderer.
-For visual review, render selected PDF pages with MuPDF, for example
+`--gallina` hides proofs while retaining declarations and data. Missing glyphs,
+overfull boxes, invalid references and damaged bookmark strings fail PDF export.
+Inspect `xelatex-output.log` for compiler errors and each language's `.log` for
+layout diagnostics. All generated files stay under the output directory.
+Run `dune runtest tools/docs` for lexical, position, reading-order and real
+coqdoc export tests. For visual review, use
 `mutool draw -r 120 -o page-%d.png document.pdf`.
 
-运行 `dune runtest tools/docs` 检查词法、位置、PDF 排版辅助函数和实际 coqdoc
-HTML/LaTeX 导出，无需 TeX 渲染器。视觉检查可使用 MuPDF，例如
+`--gallina` 隐藏证明并保留声明和数据。缺字、版面溢出、无效引用及损坏书签会
+使 PDF 导出失败。编译错误见 `xelatex-output.log`，排版诊断见各语言的 `.log`。
+全部生成文件位于输出目录。`dune runtest tools/docs` 检查词法、位置、阅读顺序
+及实际 coqdoc 导出；视觉检查可用
 `mutool draw -r 120 -o page-%d.png document.pdf`。
 
-Basic HTML export remains available with
+Basic HTML remains available with
 `dune exec tools/docs/docs.exe -- build --strict`, opening `_build/docs/index.html`.
-It uses coqdoc's own stylesheet,
-index and contents, plus language/source links and checked local destinations.
+It retains coqdoc styling, indices and contents, language/source links and checked
+local destinations. Native proof-state integration currently targets the PDF preview.
 
-基础 HTML 仍可通过 `dune exec tools/docs/docs.exe -- build --strict` 导出，入口为
-`_build/docs/index.html`，使用 coqdoc 自带样式、索引和目录，保留语言与源码链接，
-并检查本地跳转目标。
+基础 HTML 通过 `dune exec tools/docs/docs.exe -- build --strict` 导出，入口为
+`_build/docs/index.html`。保留 coqdoc 样式、索引、目录、语言和源码链接，并检查
+本地目标。原生证明状态集成目前作用于 PDF 预览。

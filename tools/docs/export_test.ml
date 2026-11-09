@@ -70,27 +70,27 @@ let () =
     run "coqdoc" ["--latex"; "--utf8"; "--gallina"; "--body-only";
       "--no-index"; "-d"; output; "-o"; output ^ "/page.tex"; output ^ "/Fixture.v"];
     let latex = read (output ^ "/page.tex") in
+    let presented = Docs_pdf.Preview.body latex in
+    let rec declarations text =
+      let opening = "\\coqdef{" in
+      try
+        let start = Str.search_forward (Str.regexp_string opening) text 0 in
+        let ending = String.index_from text start '}' + 1 in
+        String.sub text start (ending - start)
+          :: declarations (String.sub text ending (String.length text - ending))
+      with Not_found -> []
+    in
+    if declarations presented <> declarations latex then
+      failwith "complete-module preview lost or reordered declarations";
+    if not (contains presented present) then
+      failwith "complete-module preview lost source documentation";
     List.iter (fun token -> if not (contains latex token) then
       failwith ("missing LaTeX " ^ token))
       [present; "visible"; "\\begin{tikzcd}"; "\\arrow[r, \"f\"]"];
     List.iter (fun token -> if contains latex token then
       failwith ("unexpected LaTeX " ^ token))
       [absent; "@lang"; "hidden\\_support"; "reflexivity"];
-    (* A design specimen must select the complete, unchanged linked block,
-       including the proof that ordinary reference export hides. *)
-
-    (* 设计小样必须选取完整且未改写的链接代码块，
-       包括常规参考导出隐藏的证明。 *)
-
-    run "coqdoc" ["--latex"; "--utf8"; "--body-only"; "--no-index";
-      "-d"; output; "-o"; output ^ "/proof.tex"; output ^ "/Fixture.v"];
-    let proof = Docs_pdf.Preview.code (read (output ^ "/proof.tex"))
-      "{verified\\_example}" in
-    List.iter (fun token -> if not (contains proof token) then
-      failwith ("missing proof specimen token " ^ token))
-      ["\\begin{coqdoccode}"; "\\coqdockw{Proof}"; "reflexivity";
-       "\\end{coqdoccode}"];
-    if not (contains (Docs_pdf.Preview.targets proof) "catsTarget@Fixture.") then
+    if not (contains (Docs_pdf.Preview.targets presented) "catsTarget@Fixture.") then
       failwith "specimen declaration destinations were not retained")
     [En, "en", "English tutorial heading", "中文教程标题";
      Zh, "zh", "中文教程标题", "English tutorial heading"];

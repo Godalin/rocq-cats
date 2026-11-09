@@ -1,28 +1,25 @@
-(* Select unchanged coqdoc fragments, after bilingual filtering and linking.
-   This bounded design specimen never changes full-library discovery. *)
+(* Preview a continuous range of complete modules in library reading order.
+   Formatting follows bilingual filtering and compiled-reference processing. *)
 
-(* 在双语过滤与链接后选取未改写的 coqdoc 片段。
-   这个范围受限的设计小样不改变全库模块发现。 *)
+(* 按全库阅读顺序预览连续的完整模块。
+   排版在双语过滤及编译引用处理后进行。 *)
 
 let find text token offset =
   try Str.search_forward (Str.regexp_string token) text offset
   with Not_found -> failwith ("PDF design specimen: missing " ^ token)
 
-let between text first last =
-  let start = find text first 0 in
-  let stop = find text last (start + String.length first) in
-  String.sub text start (stop - start)
-
-let code body token =
-  let opening = "\\begin{coqdoccode}" and closing = "\\end{coqdoccode}" in
-  let rec loop offset =
-    let start = find body opening offset in
-    let stop = find body closing start + String.length closing in
-    let block = String.sub body start (stop - start) in
-    if (try ignore (find block token 0); true with Failure _ -> false)
-    then block else loop stop
+let modules names =
+  let rec collect = function
+    | [] -> failwith "preview reading order is missing Cats.Cat.Natural"
+    | name :: rest -> name ::
+        if name = "Cats.Cat.Natural" then [] else collect rest
   in
-  loop 0
+  let rec start = function
+    | [] -> failwith "preview reading order is missing Cats.Cat.Core"
+    | ("Cats.Cat.Core" :: _ as remaining) -> collect remaining
+    | _ :: rest -> start rest
+  in
+  start names
 
 let titled title kind block =
   (if title = "Theorem" then
@@ -31,15 +28,15 @@ let titled title kind block =
   ^ "\\renewcommand{\\catsCodeTitle}{" ^ title ^ "}\n"
   ^ "\\renewcommand{\\catsCodeKind}{" ^ kind ^ "}\n" ^ block ^ "\n"
 
-(* Feed the original tutorial context and selected proof to Alectryon's native
+(* Feed the original module context and selected proof to Alectryon's native
    LaTeX frontend. Sentence annotations in the source select visible states. *)
 
-(* 将原始教程上下文及选定证明交给 Alectryon 原生 LaTeX 前端。
+(* 将原始模块上下文及选定证明交给 Alectryon 原生 LaTeX 前端。
    源码中的语句注解选定要显示的状态。 *)
 
-let proof_input ~name source =
-  let start = find source ("Example " ^ name) 0 in
-  let ending = find source "Qed." start + String.length "Qed." in
+let proof_input ?(kind = "Example") ?(ending = "Qed.") ~name source =
+  let start = find source (kind ^ " " ^ name) 0 in
+  let ending = find source ending start + String.length ending in
   "\\begin{alectryon}{coq}{none}\n" ^ String.sub source 0 start
   ^ "\n\\end{alectryon}\n\\begin{alectryon}{coq}{in}\n"
   ^ String.sub source start (ending - start) ^ "\n\\end{alectryon}\n"
@@ -60,31 +57,54 @@ let targets body =
   in
   loop 0
 
-let body ~zh source =
-  let tr en cn = if zh then cn else en in
-  let product_heading = tr
-    "\\subsection{4. A product records both observations universally}"
-    "\\subsection{4. 积以泛的方式记录两份观察}" in
-  let narrative = between source product_heading "\\begin{coqdoccode}" in
-  let diagram = between source "\\begin{tikzcd}" "\\end{tikzcd}"
-    ^ "\\end{tikzcd}" in
-  "\\chapter{" ^ tr "Products and their universal property" "积与泛性质" ^ "}\n"
-  ^ "{\\sffamily\\small\\color{catsMuted}CatsBook.Basics}\\par\n"
-  ^ narrative
-  ^ titled "Definition" "BooleanPair" (code source "{BooleanPair}")
-  ^ "\\[" ^ diagram ^ "\\]\n"
-  ^ "\\chapter{" ^ tr "Structures and laws" "结构与定律" ^ "}\n"
-  ^ tr "The same specified equality governs identities and composition.\n"
-       "恒等与复合的定律使用同一个指定相等。\n"
-  ^ titled "Theorem" "symm\\_id\\_l" (code source "{symm\\_id\\_l}")
-  ^ "\\vspace*{.32\\textheight}\n"
-  ^ "{\\sffamily\\small\\color{catsMuted}Cats.Cat.Core}\\par\n"
-  ^ titled "Class" "Cat" (code source "\\coqdockw{Class}")
-  ^ "\\section{" ^ tr "A proof from the tutorial" "教程中的一个证明" ^ "}\n"
-  ^ tr "Each bullet focuses one branch and shows its current goal before exact.\n"
-       "每个 bullet 聚焦一个分支，在 exact 前显示该分支的当前目标。\n"
-  ^ titled "Example / Proof" "boolean\\_limit\\_pair"
-       "\\input{proof.tex}"
+(* Preserve all prose and declarations, decorating only complete code blocks.
+   One selected proof is rendered in place by Alectryon. *)
+
+(* 保留全部正文与声明，只为完整代码块添加样式。
+   一个选定证明在原位置由 Alectryon 渲染。 *)
+
+let body ?proof_anchor source =
+  let opening = "\\begin{coqdoccode}" and closing = "\\end{coqdoccode}" in
+  let capture pattern group block default =
+    try ignore (Str.search_forward (Str.regexp pattern) block 0);
+      Str.matched_group group block
+    with Not_found -> default
+  in
+  let decorate block =
+    let contents = String.sub block (String.length opening)
+      (String.length block - String.length opening - String.length closing) in
+    let blank = Str.global_replace
+      (Str.regexp "\\\\coqdocemptyline\\|\\\\coqdocnoindent") "" contents
+      |> String.trim in
+    if blank = "" then ""
+    else
+      let name = capture "\\\\coqdef{[^}]*}{\\([^}]*\\)}" 1 block "" in
+      match proof_anchor with
+      | Some anchor when (try ignore (find block ("\\coqdef{" ^ anchor ^ "}") 0);
+          true with Failure _ -> false) ->
+          "\\coqdef{" ^ anchor ^ "}{}{}\n"
+          ^ titled "Definition / Proof" name "\\input{proof.tex}"
+      | _ ->
+          let kind = capture "\\\\coqdockw{\\([^}]*\\)}" 1 block "Rocq" in
+          let kind = if List.mem kind
+            ["Class"; "Record"; "Definition"; "Program Definition";
+             "Lemma"; "Theorem"; "Proposition"; "Corollary";
+             "Instance"; "Program Instance"; "Global Instance"]
+            then kind else "Rocq" in
+          titled kind name block
+  in
+  let buffer = Buffer.create (String.length source) in
+  let rec loop offset =
+    match Str.search_forward (Str.regexp_string opening) source offset with
+    | start ->
+        Buffer.add_substring buffer source offset (start - offset);
+        let stop = find source closing start + String.length closing in
+        Buffer.add_string buffer (decorate (String.sub source start (stop - start)));
+        loop stop
+    | exception Not_found ->
+        Buffer.add_substring buffer source offset (String.length source - offset)
+  in
+  loop 0; Buffer.contents buffer
 
 let document template =
   (* titlesec must precede hyperref so section bookmarks keep their anchors. *)
@@ -94,11 +114,8 @@ let document template =
   let template = Str.global_substitute
     (Str.regexp_string "\\usepackage{hyperref}")
     (fun _ -> "\\usepackage{titlesec}\n\\usepackage{hyperref}") template in
-  let start = find template "\\begin{document}" 0 in
-  String.sub template 0 start
-  ^ "\\begin{document}\n\\pagenumbering{arabic}\n"
-  ^ "\\renewcommand{\\coqref}[2]{\\ifcsname catsTarget@#1\\endcsname"
-  ^ "\\hyperlink{coq:#1}{#2}\\else#2\\fi}\n"
-  ^ "\\renewcommand{\\coqexternalref}[3]{#3}\n"
-  ^ "\\input{targets.tex}\n"
-  ^ "\\input{body.tex}\n\\end{document}\n"
+  Str.global_substitute (Str.regexp_string "\\begin{document}")
+    (fun _ -> "\\begin{document}\n"
+      ^ "\\renewcommand{\\coqref}[2]{\\ifcsname catsTarget@#1\\endcsname"
+      ^ "\\hyperlink{coq:#1}{#2}\\else#2\\fi}\n"
+      ^ "\\renewcommand{\\coqexternalref}[3]{#3}\n\\input{targets.tex}\n") template

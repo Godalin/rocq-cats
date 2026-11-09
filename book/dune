@@ -1,7 +1,0 @@
-(rocq.theory
- (name CatsBook)
- (theories Cats Stdlib))
-
-(alias
- (name runtest)
- (deps Basics.vo STLC.vo Coskeletal.vo))
