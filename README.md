@@ -83,6 +83,14 @@ A category theory library for self study.
   [labelled diagrams](./theories/Instance/Set/Vertex/Core.v) compare vertices
   by the specified setoid equality and arrows by squares with the prescribed
   transports. Consecutive arrows suffice to check simplex equality.
+  [Transport-preserving functors](./theories/Instance/Set/Vertex/Functor.v),
+  written `T →ᵥ U`, preserve object equality and the specified transports.
+  Their prescribed-component natural isomorphisms form a hom-setoid;
+  [postcomposition](./theories/Instance/Set/Simplicial/Vertex/Functor.v)
+  gives a respectful map to simplicial maps, preserving identity and composition.
+  A [checked example](./book/VertexFunctor.v) shows why arbitrary natural
+  isomorphisms are too coarse for this comparison: distinct constant labels
+  remain visible in degree zero. Inverse reconstruction remains to be proved.
   The [singleton comparison](./theories/Instance/Set/Simplicial/Vertex/Monoid.v)
   is a natural isomorphism with the original monoid nerve; forgetting vertex
   comparisons recovers the earlier map to the diagram nerve. A bare category

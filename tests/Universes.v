@@ -1,4 +1,5 @@
 From Cats Require Import
+  Instance.Set.Simplicial.Vertex.Functor
   Instance.Set.Simplicial.Vertex.Kan
   STLC.Inhabitation
   STLC.Free.
@@ -1716,6 +1717,34 @@ Constraint u < p.
 Context (X : SetC@{o e}) (Y : SetC@{e o})
     (C : Cat@{o h e l l}) (D : Cat@{e h o l l})
     (T : Functor (EqGpd X) C) (S : Functor (EqGpd Y) D).
+
+(** Transport-preserving functors keep hom-comparison sizes independent
+    of stored functor laws, even when source and target sizes are exchanged. *)
+
+(** 保运输函子使态射比较大小独立于所保存的函子定律；交换源与目标大小后亦如此。 *)
+
+Definition forward_vertex_functor_set
+  : SetC@{l o}
+  := VertexFunctorS T S.
+
+Definition reverse_vertex_functor_set
+  : SetC@{l h}
+  := VertexFunctorS S T.
+
+(** The nerve map admits common value equality strictly below or above
+    its value carrier, with independent native source and target homs. *)
+
+(** nerve 映射允许共同值相等严格低于或高于值载体，且原生源与目标 Hom 大小独立。 *)
+
+Definition low_eq_vertex_functor_map
+  : VertexFunctorS T S →r Nat_SetS
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S))
+  := vertex_nerve_resp T S.
+
+Definition high_eq_vertex_functor_map
+  : VertexFunctorS T S →r Nat_SetS
+      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S))
+  := vertex_nerve_resp T S.
 
 Definition low_eq_vertex_nerve
   : Functor (Δ^op) SetCat@{u h _ _ _ _ _}
