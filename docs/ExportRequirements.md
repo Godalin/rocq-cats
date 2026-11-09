@@ -27,6 +27,18 @@ and exported reading editions remain bilingual.
 - Keep proof-state extraction optional and targeted. Ordinary reference exports
   must remain independently buildable; export must not modify shared toolchains.
 
+## Interface explanations
+
+- Place field explanations inside the corresponding interface declaration,
+  immediately beside the fields they describe. Interleave code and explanation
+  in declaration order, rather than collecting a field catalogue before or
+  after the whole interface.
+- Keep introductory prose for the mathematical context and overall purpose.
+  Explain each field's role, endpoints and relevant laws at its actual use site.
+- Use ordinary bilingual coqdoc blocks within the declaration, English first
+  and Chinese second. Preserve their native positions in both website and book
+  exports; do not duplicate the interface or reconstruct it for presentation.
+
 ## Focused proof states
 
 When displaying proof states and a tactic creates multiple goals, **display the

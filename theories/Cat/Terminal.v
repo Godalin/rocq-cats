@@ -18,21 +18,28 @@ From Cats Require Import Cat.Core.
 Definition is_terminal {C : Cat} (T : Ob)
   := ∀ X, ∃ h : Hom X T, is_unique_element h.
 
-(** A chosen terminal-object structure has two fields: [Term] selects the
-    object, and [terminal_universal] supplies its universal property.
-    Clients name a [HasTerminal C] instance when they need this choice.
-    The operation [term] below projects its arrow at [X], written [!], and
-    the object is written [1]. Reading these arrows uses the supplied
-    witness directly, without an additional choice principle. *)
+(** Clients name a [HasTerminal C] instance when they need a chosen
+    terminal object. The operation [term] below projects its arrow at [X],
+    written [!], and the object is written [1]. Reading these arrows uses
+    the supplied witness directly, without an additional choice principle. *)
 
-(** 选定终对象结构有两个字段：[Term] 选出对象，[terminal_universal] 给出其
-    泛性质。使用者在需要这个选择时指定 [HasTerminal C] 实例。下文的 [term]
-    投影其在 [X] 处的箭头，记为 [!]；对象记为 [1]。读取这些箭头直接使用
-    已提供的见证，不需要额外的选择原理。 *)
+(** 使用者在需要选定终对象时指定 [HasTerminal C] 实例。下文的 [term] 投影
+    其在 [X] 处的箭头，记为 [!]；对象记为 [1]。读取这些箭头直接使用已提供的
+    见证，不需要额外的选择原理。 *)
 
 Class HasTerminal (C : Cat)
   :=
+  (** [Term] selects the terminal object. *)
+
+  (** [Term] 选出终对象。 *)
+
   { Term : Ob
+  (** [terminal_universal] supplies a universal arrow to [Term] from every
+      object, together with its uniqueness under hom equality. *)
+
+  (** [terminal_universal] 为每个对象提供指向 [Term] 的泛箭头，
+      以及 Hom 相等下的唯一性。 *)
+
   ; terminal_universal : is_terminal Term
   }.
 

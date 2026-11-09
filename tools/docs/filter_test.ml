@@ -16,7 +16,7 @@ let position_laws source filtered =
       check "newline moved" (filtered.[i] = c)) source;
   let erased s =
     let out = Bytes.of_string s in
-    List.iter (fun b -> blank out b.first b.last) (blocks s);
+    List.iter (fun b -> blank out b.first b.last) (blocks source);
     Bytes.to_string out
   in
   check "code or ordinary comments changed" (erased source = erased filtered)

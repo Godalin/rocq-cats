@@ -38,6 +38,17 @@ let () =
     ^ "(* outer (* nested *) comment *)\n"
     ^ "(** printing ⇒ %\\Rightarrow% #&rArr;# *)\n"
     ^ "Definition visible_sample := tt.\n"
+    ^ "Record DocumentedInterface := {\n"
+    ^ "  (** FieldCarrier selects the carrier of the interface, retaining its"
+    ^ " computational data rather than merely asserting that some carrier"
+    ^ " exists. *)\n\n"
+    ^ "  (** 字段载体选定接口的载体，保留可计算的数据，而不只是断言存在某个载体；"
+    ^ "这段较长的说明仍应由原生注释机制隐藏，不应变成声明内部的空白缩进。 *)\n\n"
+    ^ "  interface_carrier : Type;\n"
+    ^ "  (** FieldIdentity acts on the selected carrier. *)\n\n"
+    ^ "  (** 字段恒等作用于选定载体。 *)\n\n"
+    ^ "  interface_identity : interface_carrier -> interface_carrier\n"
+    ^ "}.\n"
     ^ "(* begin hide *)\nDefinition hidden_support := tt.\n(* end hide *)\n"
     ^ "Example verified_example : visible_sample = tt.\n"
     ^ "Proof. reflexivity. (* .unfold .all *) Qed.\n"
@@ -70,6 +81,36 @@ let () =
     run "coqdoc" ["--latex"; "--utf8"; "--gallina"; "--body-only";
       "--no-index"; "-d"; output; "-o"; output ^ "/page.tex"; output ^ "/Fixture.v"];
     let latex = read (output ^ "/page.tex") in
+    (* Suppressed field prose must not turn into wide blank indentation. *)
+
+    (* 被隐藏的字段正文不得变成很宽的空白缩进。 *)
+
+    let indentation = Str.regexp "\\\\coqdocindent{\\([0-9.]+\\)em}" in
+    let rec check_indentation offset =
+      match Str.search_forward indentation latex offset with
+      | _ ->
+          let width = float_of_string (Str.matched_group 1 latex) in
+          let ending = Str.match_end () in
+          if width > 4. then
+            failwith "hidden interface prose became visible indentation";
+          check_indentation ending
+      | exception Not_found -> ()
+    in
+    check_indentation 0;
+    let carrier_prose, identity_prose = match language with
+      | En -> "FieldCarrier", "FieldIdentity"
+      | Zh -> "字段载体", "字段恒等" in
+    let after text offset token =
+      try Str.search_forward (Str.regexp_string token) text offset
+        + String.length token
+      with Not_found -> failwith ("missing interleaved field documentation: " ^ token)
+    in
+    List.iter (fun (text, carrier, identity) ->
+      ignore (List.fold_left (after text) 0
+        ["DocumentedInterface"; carrier_prose; carrier;
+         identity_prose; identity]))
+      [page, "interface_carrier", "interface_identity";
+       latex, "interface\\_carrier", "interface\\_identity"];
     let presented = Docs_pdf.Preview.body latex in
     let rec declarations text =
       let opening = "\\coqdef{" in

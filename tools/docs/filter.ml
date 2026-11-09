@@ -67,6 +67,18 @@ let blank out first last =
       Bytes.set out i ' '
   done
 
+(** Hide prose as an ordinary comment, preserving every byte position.
+    Bare padding inside a declaration becomes visible indentation in coqdoc;
+    native comment delimiters let coqdoc skip that padding instead. *)
+
+(** 将隐藏正文保留为普通注释，保持全部字节位置。声明内部的纯空白填充会被
+    coqdoc 输出为可见缩进；保留原生注释定界符使其直接跳过这些填充。 *)
+
+let suppress out b =
+  blank out b.first b.last;
+  Bytes.blit_string "(*" 0 out b.first 2;
+  Bytes.blit_string "*)" 0 out (b.last - 2) 2
+
 let cjk u =
   (u >= 0x3400 && u <= 0x9fff)
   || (u >= 0xf900 && u <= 0xfaff)
@@ -148,7 +160,7 @@ let filter language source =
   in
   let keep b kind =
     match language, kind with
-    | En, Chinese | Zh, English -> blank out b.first b.last
+    | En, Chinese | Zh, English -> suppress out b
     | _ -> ()
   in
   let explicit b =
