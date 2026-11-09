@@ -45,11 +45,36 @@ Open Scope cat_scope.
     对象组成类型 [Ob]，本接口不为其配备指定的广集相等。因此，平行态射相等、
     对象原生相等及对象同构各有不同作用；特别地，对象同构不必是原生相等。 *)
 
-(** The data fields select hom-sets, identities and composition.
-    [comp_proper] requires composition to preserve both input equalities;
-    the remaining fields supply its unit and associativity laws. A model
-    must construct all these witnesses. Class law fields are requirements
-    on a structure, not globally asserted axioms.
+(** ** Reading the Category Interface
+
+    The fields below separate the objects and arrows from the operations
+    and their laws:
+
+    - [Ob] is the type of objects. A term [X : @Ob C] is an object of [C].
+    - [HomSet X Y] is the set of arrows from [X] to [Y], including its
+      specified equivalence relation and equivalence laws.
+    - [Hom X Y] is the carrier of that set: the type of individual arrows.
+      It is computed from [HomSet], rather than supplied separately.
+    - [HomEq f g] is the specified equality of parallel arrows, written
+      [f ≈ g] below. It is also computed from [HomSet]. Its witnesses live
+      in [Type], so the interface retains their data.
+    - [id] selects an identity arrow for each object. The object argument
+      is implicit; [@id X] below makes the intended object explicit.
+    - [comp] composes a [g : Hom X Y] with an [f : Hom Y Z], producing
+      [f ∘ g : Hom X Z]. The right-hand arrow acts first.
+    - [comp_proper] makes composition respectful in both arguments:
+      [f ≈ f'] and [g ≈ g'] imply [f ∘ g ≈ f' ∘ g']. The [::] registers
+      this field as an inherited instance for setoid rewriting.
+    - [comp_id_r] states [f ∘ id ≈ f], using the identity at the source.
+    - [comp_id_l] states [id ∘ f ≈ f], using the identity at the target.
+    - [comp_assoc] states [(f ∘ g) ∘ h ≈ f ∘ (g ∘ h)]. It permits
+      regrouping a composable chain without changing its order.
+
+    A model must construct all these witnesses. Class law fields are
+    requirements on a structure, not globally asserted axioms. For example,
+    replacing a factor in a composite uses [comp_proper], while removing an
+    identity uses one of the unit laws. The equivalence laws needed to join
+    such steps already belong to [HomSet].
 
     In [Cat@{o h p}], [o] is the object level, [h] the hom carrier level,
     and [p] the hom-equality witness level. Morphisms and their equality
@@ -61,9 +86,30 @@ Open Scope cat_scope.
     equations are pointwise set equality. General results here already
     operate on hom-sets directly, without importing that concrete model. *)
 
-(** 数据字段选定 Hom 广集、恒等态射与复合；[comp_proper] 要求复合保持两侧输入
-    的相等，其余字段给出单位律和结合律。模型必须构造全部见证；类的定律字段
-    是结构应满足的要求，不是全局断言的公理。
+(** ** 范畴接口逐项解读
+
+    以下字段依次给出对象与箭头、运算及其定律：
+
+    - [Ob] 是对象类型。[X : @Ob C] 表示 [C] 的一个对象。
+    - [HomSet X Y] 是从 [X] 到 [Y] 的箭头广集，包含指定等价关系及其等价律。
+    - [Hom X Y] 是该广集的载体，即单条箭头所属的类型。它由 [HomSet] 计算
+      得到，无须单独提供。
+    - [HomEq f g] 是平行箭头的指定相等，下文记为 [f ≈ g]，同样由 [HomSet]
+      计算得到。相等见证位于 [Type]，接口保留其数据。
+    - [id] 为每个对象选定恒等箭头。对象参数隐含传入；下文的 [@id X] 显式
+      指定这个对象。
+    - [comp] 将 [g : Hom X Y] 与 [f : Hom Y Z] 复合，得到
+      [f ∘ g : Hom X Z]，右侧箭头先作用。
+    - [comp_proper] 要求复合对两个参数都保相等：由 [f ≈ f'] 和 [g ≈ g']
+      得到 [f ∘ g ≈ f' ∘ g']。[::] 将此字段注册为继承实例，供广集重写使用。
+    - [comp_id_r] 给出 [f ∘ id ≈ f]，其中恒等箭头位于源对象。
+    - [comp_id_l] 给出 [id ∘ f ≈ f]，其中恒等箭头位于目标对象。
+    - [comp_assoc] 给出 [(f ∘ g) ∘ h ≈ f ∘ (g ∘ h)]，允许改变可复合箭头链
+      的括号，而不改变箭头顺序。
+
+    模型必须构造全部见证；类的定律字段是结构应满足的要求，不是全局断言的
+    公理。例如，替换复合中的因子使用 [comp_proper]，去掉恒等箭头使用相应的
+    单位律；串接这些推理步骤所需的等价律已由 [HomSet] 提供。
 
     在 [Cat@{o h p}] 中，[o] 是对象层级，[h] 是 Hom 载体层级，[p] 是 Hom 相等
     见证层级。态射与其相等见证的大小独立，等价律及保相等定律可位于更大的

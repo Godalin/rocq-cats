@@ -5,6 +5,17 @@ From Cats Require Export
 
 (** * 通过同构处理等式 *)
 
+(** An isomorphism lets an equation be solved by composing with its
+    inverse. The lemmas here package three common steps: identifying
+    inverse choices, cancelling an invertible factor, and moving that
+    factor across an equation. All conclusions use the category's specified
+    hom equality. They neither identify isomorphic objects by native
+    equality nor compare the witnesses of inverse laws. *)
+
+(** 同构允许通过复合其逆来求解等式。本模块整理三类常用步骤：证明逆的选择
+    相等、消去可逆因子、将该因子移到等式另一边。所有结论都使用范畴指定的
+    Hom 相等，既不以原生相等识别同构对象，也不比较互逆定律的见证。 *)
+
 Section IsomorphismEquations.
 Context {C : Cat}.
 

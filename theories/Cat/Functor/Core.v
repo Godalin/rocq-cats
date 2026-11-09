@@ -6,9 +6,39 @@ From Cats Require Import Cat.Core.
 
 (** * 函子 *)
 
-(** Object and respectful morphism maps preserving identity and composition. *)
+(** A functor transports objects and arrows from [C] to [D], preserving
+    the category operations. Its fields have the following roles:
 
-(** 保持恒等与复合的对象映射及保相等态射映射。 *)
+    - [F0] maps objects. The [:>] coercion lets us write its value as [F X].
+    - [F1] maps an arrow [f : Hom X Y] to an arrow from [F X] to [F Y].
+      Below, [fmap F f] names this action. Its endpoints depend on [F0].
+    - [functor_fmap_proper] sends equal source arrows to equal target
+      arrows. Source and target use their own specified hom equalities;
+      these need not be native equality or the same relation.
+    - [functor_id] states [fmap F (@id X) ≈ @id (F X)].
+    - [functor_comp] states
+      [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]. Thus a path can be
+      composed before or after applying the functor, with equal results.
+
+    The preservation laws compare parallel arrows in [D]. They do not
+    require native equality of functions or of law witnesses. Respecting
+    hom equality is part of every functor; reflecting that equality is the
+    additional faithfulness property introduced below. *)
+
+(** 函子将 [C] 的对象和箭头送入 [D]，并保持范畴运算。各字段的作用如下：
+
+    - [F0] 映射对象。[:>] 强制转换使其值可直接记为 [F X]。
+    - [F1] 将 [f : Hom X Y] 映为从 [F X] 到 [F Y] 的箭头，下文用
+      [fmap F f] 表示这个作用。像箭头的端点由 [F0] 决定。
+    - [functor_fmap_proper] 将源范畴中相等的箭头送到目标范畴中相等的箭头。
+      两侧使用各自指定的 Hom 相等，不必是原生相等，也不必是同一个关系。
+    - [functor_id] 给出 [fmap F (@id X) ≈ @id (F X)]。
+    - [functor_comp] 给出
+      [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]：先复合再映射，与先映射再复合，
+      得到相等的箭头。
+
+    保持定律比较的是 [D] 中的平行箭头，不要求函数或定律见证的原生相等。
+    每个函子都必须保持 Hom 相等；反映这种相等则是下文另行定义的忠实性。 *)
 
 Record Functor (C D : Cat)
   :=

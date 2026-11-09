@@ -4,16 +4,31 @@ From Cats Require Import Cat.Core.
 
 (** * 终对象 *)
 
-(** Every object has a unique arrow to this candidate object. *)
+(** A candidate [T] is terminal when every object [X] has a unique arrow
+    to [T]. For each [X], the witness supplies an actual [h : Hom X T]
+    together with uniqueness under specified hom equality. The existential
+    lives in [Type], so this property retains a usable arrow. It tests a
+    given object; it does not select an object of the category. *)
 
-(** 每个对象到候选对象都有唯一箭头。 *)
+(** 若每个对象 [X] 到候选对象 [T] 都有唯一箭头，则 [T] 为终对象。每个 [X]
+    处的见证提供实际的 [h : Hom X T]，以及指定 Hom 相等下的唯一性。存在类型
+    位于 [Type]，因而保留可使用的箭头。这个性质检验给定对象，不负责从范畴
+    中选出对象。 *)
 
 Definition is_terminal {C : Cat} (T : Ob)
   := ∀ X, ∃ h : Hom X T, is_unique_element h.
 
-(** A selected terminal object with its Type-valued universal property. *)
+(** A chosen terminal-object structure has two fields: [Term] selects the
+    object, and [terminal_universal] supplies its universal property.
+    Clients name a [HasTerminal C] instance when they need this choice.
+    The operation [term] below projects its arrow at [X], written [!], and
+    the object is written [1]. Reading these arrows uses the supplied
+    witness directly, without an additional choice principle. *)
 
-(** 选定终对象及其 Type 值泛性质。 *)
+(** 选定终对象结构有两个字段：[Term] 选出对象，[terminal_universal] 给出其
+    泛性质。使用者在需要这个选择时指定 [HasTerminal C] 实例。下文的 [term]
+    投影其在 [X] 处的箭头，记为 [!]；对象记为 [1]。读取这些箭头直接使用
+    已提供的见证，不需要额外的选择原理。 *)
 
 Class HasTerminal (C : Cat)
   :=

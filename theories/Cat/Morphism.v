@@ -13,6 +13,11 @@ Context {C : Cat}.
 
 (** ** Monomorphisms
 
+    An arrow [f : Hom Y Z] is monic when it can be cancelled on the left
+    of a composite: [f ∘ x ≈ f ∘ y] implies [x ≈ y]. The test arrows
+    [x] and [y] may start at any common object [X]. This describes
+    distinguishability by arrows, without requiring elements of objects.
+
     Cancellation implies its contrapositive constructively. The converse does
     not follow in general without additional assumptions, so the two
     properties are kept distinct. Use the weakest sufficient assumption.
@@ -20,6 +25,10 @@ Context {C : Cat}.
     Similar definitions are provided for epimorphisms. *)
 
 (** ** 单态射
+
+    若 [f : Hom Y Z] 可从复合的左侧消去，即 [f ∘ x ≈ f ∘ y] 推出 [x ≈ y]，
+    则称 [f] 为单态射。测试箭头 [x]、[y] 可以从任意共同对象 [X] 出发。
+    这个定义用箭头描述可区分性，不要求对象具有元素。
 
     消去性质构造性地推出其逆否形式；一般情况下，反方向需要额外假设，故两种性质
     分开并使用最弱的充分假设。满态射也有类似定义。 *)

@@ -7,9 +7,34 @@ From Cats Require Import Cat.Functor.Core.
 
 (** * 自然变换 *)
 
-(** A family of components commuting with every source morphism. *)
+(** Given functors [F] and [G] from [C] to [D], a natural transformation
+    compares their object images by arrows in [D]. It consists of two fields:
 
-(** 与每条源态射交换的分量族，即自然变换。 *)
+    - [nt X] is the component from [F X] to [G X]. The [:>] coercion lets
+      a transformation [α] act as a component family, written [α X].
+    - [nt_naturality] requires
+      [α Y ∘ fmap F f ≈ fmap G f ∘ α X] for every [f : Hom X Y].
+      Both sides go from [F X] to [G Y]: one first follows [F] along [f]
+      and then changes to [G]; the other first changes to [G] and then
+      follows [G] along [f]. The two paths agree in [D]'s hom equality.
+
+    An arbitrary component family need not satisfy this commuting-square
+    law. Naturality is the compatibility that allows components to describe
+    one transformation between functors. The components need not be
+    invertible, and their endpoints need not be equal objects. *)
+
+(** 给定从 [C] 到 [D] 的函子 [F]、[G]，自然变换用 [D] 中的箭头比较它们的
+    对象像，由两个字段组成：
+
+    - [nt X] 是从 [F X] 到 [G X] 的分量。[:>] 强制转换使自然变换 [α] 可直接
+      作为分量族使用，记作 [α X]。
+    - [nt_naturality] 要求每条 [f : Hom X Y] 都满足
+      [α Y ∘ fmap F f ≈ fmap G f ∘ α X]。两侧都是从 [F X] 到 [G Y] 的箭头：
+      一条路径先沿 [F] 映射的 [f] 前进，再切换到 [G]；另一条先切换到 [G]，
+      再沿 [G] 映射的 [f] 前进。两条路径在 [D] 的 Hom 相等下相等。
+
+    任意分量族未必满足这个交换方块定律。自然性使各分量相容，组成函子之间
+    的同一个变换。分量无须可逆，其两端也无须是相等的对象。 *)
 
 Class Nat {C D : Cat} (F G : Functor C D)
   := mkNat
@@ -27,9 +52,15 @@ Arguments nt_naturality {_ _ _ _} _ {_ _} _.
 Notation "F ⇒ G" := (Nat F G)
   (at level 50, no associativity) : type_scope.
 
-(** Pointwise hom equality of natural transformations. *)
+(** Two transformations with fixed endpoints are equal when every pair of
+    corresponding components is equal in [D]. This is written [α ≈N β].
+    No native equality of the component functions or naturality witnesses
+    is required. Hom equivalence laws therefore suffice to prove that
+    [NatEq] is an equivalence relation. *)
 
-(** 自然变换的逐点 Hom 相等。 *)
+(** 固定两端函子后，两个自然变换相等是指对应分量在 [D] 中逐点相等，记作
+    [α ≈N β]。不要求分量函数或自然性见证的原生相等，因此仅用 Hom 等价律
+    就能证明 [NatEq] 是等价关系。 *)
 
 Definition NatEq {C D : Cat} {F G : Functor C D} (α β : F ⇒ G)
   := ∀ X, α X ≈ β X.
@@ -56,9 +87,17 @@ Definition is_NatIso_of {C D : Cat} (F G : Functor C D)
   : Type
   := ∀ X, is_iso (α X).
 
-(** A natural transformation together with chosen component inverses. *)
+(** A natural isomorphism retains a transformation and, at each object,
+    an inverse arrow with both inverse laws. The Type-valued existential
+    stores these data. The inverse components form a natural transformation:
+    their naturality is derived below, rather than supplied as another field.
+    Thus [F ≅N G] compares functors by compatible isomorphisms of their images,
+    without requiring equality of their object maps or law fields. *)
 
-(** 带有各分量选定逆的自然变换。 *)
+(** 自然同构保留一个自然变换，以及每个对象处分量的逆箭头和两条互逆定律。
+    Type 值存在类型保存这些数据。逆分量也组成自然变换；其自然性由下文导出，
+    无须作为额外字段提供。因此 [F ≅N G] 通过对象像之间相容的同构比较函子，
+    不要求对象映射或定律字段相等。 *)
 
 Definition NatIso {C D : Cat} (F G : Functor C D)
   := ∃ α : F ⇒ G, is_NatIso_of F G α.
@@ -117,9 +156,14 @@ Next Obligation.
   reflexivity.
 Qed.
 
-(** Vertical composition of natural transformations. *)
+(** Compose [β : F ⇒ G] followed by [α : G ⇒ H] at each object, giving
+    the component [α X ∘ β X]. Naturality follows by applying the two
+    naturality laws in sequence. This is vertical composition, written
+    [α ∘Nv β]; it keeps the source and target categories fixed. *)
 
-(** 自然变换的垂直复合。 *)
+(** 将 [β : F ⇒ G] 与随后作用的 [α : G ⇒ H] 逐点复合，得到分量
+    [α X ∘ β X]。依次使用两者的自然性即可证明复合的自然性。这称为垂直复合，
+    记为 [α ∘Nv β]；整个过程保持源范畴和目标范畴不变。 *)
 
 Program Instance nt_comp_v {C D : Cat} {F G H : Functor C D}
     (α : G ⇒ H) (β : F ⇒ G)
@@ -146,9 +190,27 @@ Infix "∘Nv" := nt_comp_v
 
 (** ** 函子范畴 *)
 
-(** The functor category, whose morphisms are natural transformations. *)
+(** The category [Fct C D] assembles the preceding interfaces:
 
-(** 以自然变换为态射的函子范畴。 *)
+    - Objects are functors from [C] to [D].
+    - The hom-set from [F] to [G] has natural transformations as its
+      carrier and pointwise equality [NatEq] as its specified relation.
+    - Identities are [idN]; composition is vertical composition.
+
+    Its unit and associativity laws hold componentwise by the laws of [D].
+    In particular, equality of arrows here compares transformations,
+    while isomorphism of objects compares functors. The later equivalence
+    with componentwise natural isomorphism connects these two descriptions. *)
+
+(** 函子范畴 [Fct C D] 将前面的接口组合起来：
+
+    - 对象是从 [C] 到 [D] 的函子。
+    - 从 [F] 到 [G] 的 Hom 广集以自然变换为载体，以逐点相等 [NatEq] 为指定关系。
+    - 恒等箭头是 [idN]，复合是垂直复合。
+
+    单位律和结合律逐分量由 [D] 的对应定律得到。特别地，这里的箭头相等比较
+    自然变换，对象同构则比较函子。下文证明它与逐分量定义的自然同构等价，
+    从而连接这两种描述。 *)
 
 Program Instance Fct (C D : Cat)
   : Cat
