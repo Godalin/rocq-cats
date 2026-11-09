@@ -543,7 +543,7 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 
 ## 6. 完备性与验证边界
 
-[STLC.Completeness](../theories/STLC/Completeness.v) 已证明以下等价：
+[STLC.Equational](../theories/STLC/Equational.v) 已证明以下等价：
 
 ```text
 Γ ⊢ t ≡βη u : A
@@ -591,7 +591,7 @@ the bundled maps assert neither equality of witnesses nor inverse laws.
 No untyped syntax, normalization, decidable equality, or additional axiom
 is required.
 
-The flat modules [Completeness](../theories/STLC/Completeness.v) and
+The flat modules [Equational](../theories/STLC/Equational.v) and
 [Inhabitation](../theories/STLC/Inhabitation.v) share the syntactic CCC and
 comparison theory; each states soundness and completeness for its own goal.
 
@@ -613,7 +613,7 @@ CCC 及基类型解释给出态射 `CtxI I Γ → TyI I A`。它是 `Type` 中�
 补充已有的等式完备性。打包的映射不断言见证相等或互逆律，
 不需要无类型语法、正规化、可判定相等或任何额外公理。
 
-平铺的 [Completeness](../theories/STLC/Completeness.v) 与
+平铺的 [Equational](../theories/STLC/Equational.v) 与
 [Inhabitation](../theories/STLC/Inhabitation.v) 共享语法 CCC 与比较理论，
 各自陈述对应目标的可靠性与完备性。
 
