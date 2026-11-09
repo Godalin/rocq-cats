@@ -565,7 +565,7 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 
 ### 6.1. Inhabitation / provability completeness
 
-[STLC.Completeness](../theories/STLC/Completeness.v)
+[STLC.Inhabitation](../theories/STLC/Inhabitation.v)
 defines `TmModelInhabited Γ A`, which supplies a morphism `CtxI I Γ → TyI I A` for
 every CCC and base interpretation at exactly the common universe bounds of
 `TmModelEq`. It is a uniform family of witnesses in `Type`, not a Prop-only
@@ -591,6 +591,10 @@ the bundled maps assert neither equality of witnesses nor inverse laws.
 No untyped syntax, normalization, decidable equality, or additional axiom
 is required.
 
+The flat modules [Completeness](../theories/STLC/Completeness.v) and
+[Inhabitation](../theories/STLC/Inhabitation.v) share the syntactic CCC and
+comparison theory; each states soundness and completeness for its own goal.
+
 ### 6.1. 可居留性／可证性完备性
 
 `TmModelInhabited Γ A` 在与 `TmModelEq` 完全相同的共同宇宙界内，为每个
@@ -608,6 +612,10 @@ CCC 及基类型解释给出态射 `CtxI I Γ → TyI I A`。它是 `Type` 中�
 这是 Curry–Howard–Lambek 对应下真、合取、蕴含片段的可居留性完备性，
 补充已有的等式完备性。打包的映射不断言见证相等或互逆律，
 不需要无类型语法、正规化、可判定相等或任何额外公理。
+
+平铺的 [Completeness](../theories/STLC/Completeness.v) 与
+[Inhabitation](../theories/STLC/Inhabitation.v) 共享语法 CCC 与比较理论，
+各自陈述对应目标的可靠性与完备性。
 
 ### 6.2. Validation / 验证
 

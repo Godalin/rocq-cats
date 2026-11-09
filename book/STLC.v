@@ -20,6 +20,7 @@ From Cats Require Import
   Cat.Core
   Cat.CCC
   Cat.Functor.Core
+  STLC.Inhabitation
   STLC.Free
   Instance.Bool.Group
   Instance.Set.Core
