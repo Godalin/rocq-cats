@@ -138,3 +138,41 @@ free paths, as witnessed by counting the top edge, but their images agree by
 每条箭头有单边原像，故它是满的；对象映射为恒等，故它本质满。上边再右边、左边再
 下边这两条自由路径由上边计数区分，仍不等价，但其像由 `square_comm` 相等。
 锥比较因此确实允许解释函子不忠实。
+
+## Free diagrams and comma-initiality / 自由图式与逗号始性
+
+For a fixed graph `G` and target category `C`,
+[GeneratorDiagramCat](../theories/Cat/Diagram/Generator.v) has graph
+interpretations as objects and generator-natural vertex arrows as morphisms.
+Its hom equality compares those arrows pointwise. It does not compare vertex
+functions or commuting-square witnesses by Rocq equality.
+
+固定图 `G` 及目标范畴 `C` 后，
+[GeneratorDiagramCat](../theories/Cat/Diagram/Generator.v) 以图解释为对象，
+以在生成边上自然的顶点箭头族为态射。Hom 相等逐点比较箭头，不使用 Rocq
+相等比较顶点函数或交换方形见证。
+
+Restriction gives a functor from `Fct (FreeCat G) C` to this category.
+`GeneratorUnit` has the direct universal-arrow property, proved with the
+existing `FreeN` path-extension theorem. `GeneratorFreeObjects` packages it
+as initiality in a structured-arrow category. The general `FreeAdjunction`
+then constructs `GeneratorFreeAdjunction`; its unit and counit are invertible,
+yielding `generator_diagram_equiv`.
+
+限制给出从 `Fct (FreeCat G) C` 到此范畴的函子。`GeneratorUnit` 具有直接
+泛箭头性质，证明复用已有 `FreeN` 路径延拓定理。`GeneratorFreeObjects` 将其
+包装为结构箭头范畴中的始性，再由一般 `FreeAdjunction` 构造
+`GeneratorFreeAdjunction`；单位与余单位均可逆，得到
+`generator_diagram_equiv`。
+
+This is an ordinary adjunction between two categories of diagrams, with all
+natural transformations retained as morphisms. It is the selected alternative
+case study for #34, not a global `FreeCat ⊣ UnderlyingGraph` in `CatCat`.
+The latter's equality remains natural isomorphism. No new strict category of
+all categories or graphs is introduced; that distinct ambient construction
+would need its own object-map equality and transport design.
+
+这是两个图式范畴之间的普通伴随，全部自然变换仍作为态射保留。它是 #34 选用的
+替代实例，不是在 `CatCat` 中声称全局 `FreeCat ⊣ UnderlyingGraph`。
+后者的相等仍为自然同构。这里不引入全范畴或全图的严格范畴；那一独立的环境
+构造需要另行设计对象映射的相等及运输。

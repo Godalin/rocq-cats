@@ -314,3 +314,18 @@ Example free_monad_multiplication_computes
 Proof. reflexivity. Qed.
 
 End FreeObjectComputations.
+
+From Cats Require Import
+  Cat.Diagram.Generator
+  Cat.Diagram.Core.
+
+(** A concrete free-diagram counit computes through the general chosen
+    comma-initial construction, rather than only through a direct path map. *)
+
+(** 具体自由图式余单位可穿过一般选定逗号始性构造计算，而不仅是直接路径映射。 *)
+
+Example generator_counit_computes
+  : adjunction_counit
+      (GeneratorFreeAdjunction (DiscreteGraph unit) SetCat)
+      (@ConstF (FreeCat (DiscreteGraph unit)) SetCat BoolS) tt true = true.
+Proof. reflexivity. Qed.
