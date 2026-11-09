@@ -1,17 +1,17 @@
-From Cats Require Export STLC.Completeness.Core.
+From Cats Require Export STLC.CanonicalModel.
 From Cats Require Import
   Cat.Core
   Cat.CCC.
 
 Local Open Scope cat_scope.
 
-(** * Inhabitation Soundness and Completeness
+(** * The Inhabitation Theory of STLC
 
     Validity here carries a morphism for each CCC model at the common
     bound used for equational validity. It is a uniform family of witnesses
     in [Type], rather than mere nonemptiness in one model. *)
 
-(** * 可居留性的可靠性与完备性
+(** * STLC 的可居留性理论
 
     这里的有效性在与等式有效性相同的共同大小界内，为每个 CCC 模型携带
     一条态射。它是 [Type] 中统一给出的见证族，而非某个模型中的单纯非空性。 *)

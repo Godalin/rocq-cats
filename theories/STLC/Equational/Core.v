@@ -1,17 +1,22 @@
-From Cats Require Export STLC.Completeness.Core.
+From Cats Require Export STLC.CanonicalModel.
 From Cats Require Import
   Cat.Core
   Cat.CCC.
 
-(** * Equational Soundness and Completeness
+(** * The Equational Theory of STLC
 
-    Soundness above applies to arbitrary model sizes. Completeness needs only
-    a common universe bound containing the syntactic CCC; this avoids any
-    universe of all categories or resizing principle. *)
+    The goal is beta/eta equality of typed terms and validity of equations
+    in CCC models.
 
-(** * 等式可靠性与完备性
+    Semantic soundness applies to arbitrary model sizes. Completeness uses a
+    common universe bound containing the syntactic CCC, without a universe
+    of all categories or a resizing principle. *)
 
-    前面的可靠性适用于任意模型大小。完备性只需要包含语法 CCC 的共同宇宙界，
+(** * STLC 的等式理论
+
+    目标是带类型项的 βη 相等，以及等式在 CCC 模型中的有效性。
+
+    语义可靠性适用于任意模型大小。完备性只需要包含语法 CCC 的共同宇宙界，
     不构造所有范畴的宇宙，也不使用大小重设原理。 *)
 
 Local Open Scope cat_scope.

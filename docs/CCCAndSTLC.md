@@ -541,9 +541,9 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 选定对象具有 Rocq 原生相等。强正规化、可判定相等、项常量签名扩展均不属于
 当前自由 CCC／等式完备性结果的前提或验收内容。
 
-## 6. 完备性与验证边界
+## 6. 两种语义目标与验证边界
 
-[STLC.Completeness.Equational](../theories/STLC/Completeness/Equational.v) 已证明以下等价：
+[STLC.Equational.Core](../theories/STLC/Equational/Core.v) 已证明以下等价：
 
 ```text
 Γ ⊢ t ≡βη u : A
@@ -565,7 +565,7 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 
 ### 6.1. Inhabitation / provability completeness
 
-[STLC.Completeness.Inhabitation](../theories/STLC/Completeness/Inhabitation.v)
+[STLC.Inhabitation.Core](../theories/STLC/Inhabitation/Core.v)
 defines `TmModelInhabited Γ A`, which supplies a morphism `CtxI I Γ → TyI I A` for
 every CCC and base interpretation at exactly the common universe bounds of
 `TmModelEq`. It is a uniform family of witnesses in `Type`, not a Prop-only
@@ -609,21 +609,24 @@ CCC 及基类型解释给出态射 `CtxI I Γ → TyI I A`。它是 `Type` 中�
 补充已有的等式完备性。打包的映射不断言见证相等或互逆律，
 不需要无类型语法、正规化、可判定相等或任何额外公理。
 
-### 6.2. Module organization / 模块组织
+### 6.2. Organization by goal / 按目标组织
 
-[Completeness.Core](../theories/STLC/Completeness/Core.v) provides reflection
-and term recovery in the canonical syntactic model. The sibling modules
-[Equational](../theories/STLC/Completeness/Equational.v) and
-[Inhabitation](../theories/STLC/Completeness/Inhabitation.v) each export this
-shared foundation and state their own model-validity definitions and
-completeness results. Neither depends on the other. `STLC.Free` exports the
+[Equational.Core](../theories/STLC/Equational/Core.v) asks when two terms
+are equal, while [Inhabitation.Core](../theories/STLC/Inhabitation/Core.v)
+asks when a type has a term in a context. Each goal module contains its
+model-validity interface and both soundness and completeness results.
+[CanonicalModel](../theories/STLC/CanonicalModel.v) provides their common
+canonical-model reflection and term recovery. The syntax, substitution,
+semantics and categorical constructions remain shared STLC foundations.
+The two goal modules do not import each other. `STLC.Free` exports the
 equational theory; clients of inhabitation import its module explicitly.
 
-[Completeness.Core](../theories/STLC/Completeness/Core.v) 提供规范语法模型中的
-相等反映与项恢复。同目录的
-[Equational](../theories/STLC/Completeness/Equational.v) 与
-[Inhabitation](../theories/STLC/Completeness/Inhabitation.v) 分别导出这份共同基础，
-并各自陈述模型有效性及完备性结论，彼此不依赖。`STLC.Free` 导出等式理论，
+[Equational.Core](../theories/STLC/Equational/Core.v) 研究两个项何时相等，
+[Inhabitation.Core](../theories/STLC/Inhabitation/Core.v) 研究一个类型何时在
+上下文中有项。每个目标模块都包含自己的模型有效性接口、可靠性与完备性结论。
+[CanonicalModel](../theories/STLC/CanonicalModel.v) 提供共享的规范模型相等反映
+与项恢复。语法、替换、语义及范畴构造保留为 STLC 的公共基础。
+两个目标模块彼此不导入。`STLC.Free` 导出等式理论，
 可居留性客户端显式导入其模块。
 
 ### 6.3. Validation / 验证

@@ -8,13 +8,13 @@ From Cats Require Import
 
     Recursive interpretation in the syntactic CCC reflects beta/eta equality
     and recovers terms from semantic morphisms. The existing comparison
-    isomorphisms supply the common foundation for equational and inhabitation
-    completeness at a universe bound containing the syntactic model. *)
+    isomorphisms supply the common foundation for the equational and
+    inhabitation theories at a universe bound containing the syntactic model. *)
 
 (** * 规范语法模型
 
     语法 CCC 中的递归解释反映 βη 相等，并能从语义态射恢复项。
-    已有的比较同构为等式与可居留性完备性提供共同基础；
+    已有的比较同构为等式理论与可居留性理论提供共同基础；
     所用宇宙界包含该语法模型。 *)
 
 Local Open Scope cat_scope.

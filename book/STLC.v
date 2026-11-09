@@ -20,7 +20,7 @@ From Cats Require Import
   Cat.Core
   Cat.CCC
   Cat.Functor.Core
-  STLC.Completeness.Inhabitation
+  STLC.Inhabitation.Core
   STLC.Free
   Instance.Bool.Group
   Instance.Set.Core
@@ -332,7 +332,7 @@ Definition BooleanInterpretation
   : Functor (TyCat unit) SetCat
   := TypeInterpretF BooleanBase.
 
-(** ** 8. Completeness and the free universal property
+(** ** 8. Equational theory and the free universal property
 
     Soundness holds in every CCC model. Conversely, at a common universe
     bound containing the syntactic model, equality in all CCC models implies
@@ -353,7 +353,7 @@ Definition BooleanInterpretation
     use the syntactic model and universal properties; they do not supply a
     normalization algorithm or a decision procedure for beta/eta equality. *)
 
-(** ** 8. 完备性与自由泛性质
+(** ** 8. 等式理论与自由泛性质
 
     可靠性在每个 CCC 模型中成立。反过来，在包含语法模型的共同宇宙界内，若
     两项在全部 CCC 模型中相等，则它们 βη 相等。[tm_soundness_iff_completeness]
