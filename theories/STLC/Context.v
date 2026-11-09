@@ -9,32 +9,6 @@ From Cats Require Export STLC.Equivalence.
 
     连接按顺序追加第二个上下文；两个变量嵌入及赋值配对独立于项相等的选择。 *)
 
-(** ** Context blocks and their components
-
-    [Γ ++Ctx Δ] keeps the variables of [Γ] followed by those of [Δ].
-    The two renamings select the left and right blocks; [sub_append] fills
-    both blocks using one common source context. Its projection laws say
-    that selecting either block returns the assignment used to build it.
-    Its reconstruction law says that the two selected blocks determine an
-    assignment into the concatenation.
-
-    These decomposition equations are structural and pointwise. The
-    beta/eta properness instance separately shows that assignment pairing
-    also respects the specified equational relation. The product module
-    combines these two ingredients to prove a categorical universal
-    property with uniqueness in hom equality. *)
-
-(** ** 上下文块及其分量
-
-    [Γ ++Ctx Δ] 保留 [Γ] 的变量，再接上 [Δ] 的变量。两条重命名分别选取
-    左右两块；[sub_append] 用同一个源上下文填充两块。投影律说明：选取任意
-    一块，就恢复构造它时使用的赋值。重建律说明：这两块的限制决定了指向连接
-    上下文的赋值。
-
-    这些分解方程使用逐点结构相等。βη 保相等实例另外说明：赋值配对也保持
-    指定的等式关系。积模块结合这两部分，证明在 Hom 相等意义下唯一的范畴
-    泛性质。 *)
-
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_tm_scope.
 Local Open Scope stlc_ren_scope.

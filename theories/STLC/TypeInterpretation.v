@@ -15,33 +15,6 @@ From Cats Require Import
 
 (** * 类型呈现的解释 *)
 
-(** ** Removing an irrelevant terminal factor
-
-    Recursive context interpretation sends a singleton context to a product
-    of the terminal object with its variable type. For the type presentation
-    we instead evaluate its single-variable component using [single_env],
-    whose variable assignment is the identity on [TyI I A]. The arrow map
-    [type_interp] therefore has source [TyI I A] directly.
-
-    Substitution compatibility proves the functor laws, and equational
-    soundness proves respectfulness. The chosen literal unit, product and
-    function objects interpret as the corresponding target constructions.
-    Preservation is nevertheless stated through the standard canonical
-    comparisons of [IsCCCF]. This supplies the common interface used for
-    arbitrary structure-preserving functors, without identifying records
-    or all their chosen objects by native equality. *)
-
-(** ** 消除无关的终对象因子
-
-    递归上下文解释把单变量上下文送到终对象与变量类型的积。类型呈现则使用
-    [single_env] 求值其单变量分量，变量赋值为 [TyI I A] 上的恒等箭头。
-    因此，箭头映射 [type_interp] 直接以 [TyI I A] 为源。
-
-    替换相容性证明函子律，等式可靠性证明保相等性。所选的字面单位、积和函数
-    对象解释为目标的相应构造；保持性仍通过 [IsCCCF] 的标准规范比较陈述。
-    这给任意保持结构函子提供统一接口，无须把记录或其全部选定对象判为原生
-    相等。 *)
-
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 

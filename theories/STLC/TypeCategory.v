@@ -15,32 +15,6 @@ From Cats Require Import
 
     对象为简单类型，箭头为单变量上下文替换；积与指数直接表示语法构造器。 *)
 
-(** ** A presentation with literal type constructors
-
-    [CtxCat] is convenient for multiple inputs, but its objects are lists
-    of types. [TyCat] restricts it along singleton contexts, using the
-    general induced-category construction. Thus an arrow from [A] to [U]
-    is a substitution from the singleton context of [A] to that of [U];
-    its newest component is an open term of type [U] with one [A]-input.
-
-    The chosen objects can now be the literal types [⊤], [A × U] and
-    [A ⇒ U]. Product mediators pair the newest components, and function
-    objects inherit the previously proved exponential property after
-    comparing a pair of variables with one product variable. This changes
-    presentation without constructing a new equational relation or
-    repeating the function-eta uniqueness proof. *)
-
-(** ** 以字面类型构造器呈现
-
-    [CtxCat] 便于处理多输入，但其对象是类型列表。[TyCat] 沿单变量上下文
-    使用通用的诱导范畴构造进行限制。因此，从 [A] 到 [U] 的箭头就是从 [A]
-    的单变量上下文到 [U] 的单变量上下文的替换；其最新分量是一个具有单个
-    [A] 输入、结果类型为 [U] 的开放项。
-
-    这样，选定对象就能使用字面类型 [⊤]、[A × U] 和 [A ⇒ U]。积中介配对
-    最新分量；函数对象先比较两个变量与一个积变量，再继承已有的指数泛性质。
-    这改变了呈现方式，没有另造等式关系，也没有重复函数 η 的唯一性证明。 *)
-
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_var_scope.

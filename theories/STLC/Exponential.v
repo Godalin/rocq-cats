@@ -16,32 +16,6 @@ From Cats Require Import
 
     函数 βη 先给出单变量上下文的泛性质；上下文打包再将其运输到任意上下文。 *)
 
-(** ** Abstraction as the unique mediator
-
-    For singleton contexts, a map with one extra input is represented by
-    an open term. Lambda abstraction constructs its function-valued
-    mediator. Function beta proves that evaluation returns the original
-    map, and function eta shows that any mediator with this evaluation
-    behavior is beta/eta equal to the chosen one.
-
-    For arbitrary contexts [Γ] and [Δ], [CtxExp Δ Γ] stores one function
-    from [CtxTy Γ] to [CtxTy Δ]. Evaluation packs the argument block,
-    applies that function and unpacks the result. Rather than repeating
-    the singleton proof, the general exponential transport theorem carries
-    its universal property along the packing isomorphisms. The equality
-    needed for uniqueness remains pointwise beta/eta throughout. *)
-
-(** ** 抽象是唯一的中介
-
-    对单变量上下文，多一个输入的映射由开放项表示。λ 抽象构造函数值中介，
-    函数 β 证明求值恢复原映射，函数 η 则说明：具有同样求值行为的任意中介
-    都与所选中介 βη 相等。
-
-    对任意上下文 [Γ] 与 [Δ]，[CtxExp Δ Γ] 存储一个从 [CtxTy Γ] 到
-    [CtxTy Δ] 的函数。求值先打包参数块，再应用函数，最后拆包结果。
-    实现没有重复单变量证明，而是沿打包同构使用一般指数运输定理传递泛性质。
-    全程的唯一性都使用逐点 βη 相等。 *)
-
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_var_scope.

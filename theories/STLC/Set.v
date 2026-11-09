@@ -10,31 +10,6 @@ From Cats.Set Require Export Morphism.
 
     项使用 βη 相等；替换逐点比较所赋项，保留推导而不构造商类型。 *)
 
-(** ** Keeping syntax while changing its specified equality
-
-    [TmS Γ A] keeps [Tm Γ A] as its carrier and chooses [TmEq] as its
-    equality. [SubS Δ Γ] likewise keeps simultaneous assignments and uses
-    pointwise beta/eta equality. There is no quotient carrier and no need
-    to choose representatives of equivalence classes.
-
-    A respectful map must send equal inputs to equal outputs. The maps
-    below package renaming, substitution and evaluation at a fixed term
-    with exactly these preservation laws. Their function fields still
-    compute on raw syntax. Distinguishing carrier data from equality
-    witnesses is why the carrier universe [b] and witness universe [e]
-    remain separate in these setoids and their maps. *)
-
-(** ** 保留语法载体，指定另一种相等
-
-    [TmS Γ A] 以 [Tm Γ A] 为载体，选取 [TmEq] 作为相等。[SubS Δ Γ]
-    同样保留同时赋值，以逐点 βη 关系比较。这里没有商载体，也无须为等价类
-    选择代表元。
-
-    保相等映射必须把相等输入送到相等输出。下面的映射用恰好的保持律封装
-    重命名、替换以及对固定项的赋值作用；函数字段仍然对原始语法计算。
-    区分载体数据与相等见证，正是这些广集和映射保持载体宇宙 [b] 与见证宇宙
-    [e] 分离的原因。 *)
-
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_tm_scope.
 Local Open Scope stlc_ren_scope.

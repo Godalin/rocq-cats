@@ -18,36 +18,6 @@ From Cats Require Import
     签名为每个基类型标签指定对象。环境可从任意对象出发，以逐点指定 Hom 相等
     比较；因此替换定律不依赖于选定的上下文表示。 *)
 
-(** ** From syntax operations to CCC operations
-
-    Choose [C], its CCC structure and an object for each base label. Each
-    variable becomes an arrow out of one shared source [X]. Pairing uses
-    product pairing, projections use composition, abstraction uses curry,
-    and application uses evaluation with paired arguments. Under a binder,
-    [env_lift] changes the source to [X × TyI I A].
-
-    The structural lemmas are proved before equational soundness. They
-    describe reindexing the source, renaming variables and substituting
-    terms. The beta cases of [tm_eval_sound] then use these lemmas to match
-    syntactic substitution with categorical evaluation; the eta cases use
-    the target universal properties. The specialized [tm_interp_sound]
-    chooses the projection environment of [CtxI]. This direction applies
-    to arbitrary CCC models; its converse will use the syntactic model.
-    No step requires equality of semantic functions or chosen proof fields. *)
-
-(** ** 从语法操作到 CCC 操作
-
-    选定 [C]、其 CCC 结构以及每个基类型标签对应的对象。每个变量变成从共同
-    源对象 [X] 出发的箭头。配对使用积配对，投影使用复合，抽象使用 curry，
-    应用使用带配对参数的求值。绑定之下，[env_lift] 把源改为
-    [X × TyI I A]。
-
-    先于等式可靠性证明的结构引理分别处理源的预合成、变量重命名和项替换。
-    [tm_eval_sound] 的 β 情形借助这些引理，把语法替换与范畴求值接起来；
-    η 情形使用目标泛性质。[tm_interp_sound] 再选取 [CtxI] 的投影环境。
-    这个方向适用于任意 CCC 模型，反方向随后才需要语法模型。全程不要求语义
-    函数相等，也不要求选定结构的证明字段相等。 *)
-
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 

@@ -14,35 +14,6 @@
     恒等与复制两个例子，从语法走到广集语义，再介绍已有的语法 CCC、可靠性、
     完备性与自由泛性质。 *)
 
-(** ** Reading route and prerequisites
-
-    We assume familiarity with objects, arrows, composition, products and
-    the idea of a universal property. Lambda syntax and its Rocq encoding
-    are introduced here. Read the chapter in three passes:
-
-    - Sections 1--4 explain what terms, substitution and equations mean.
-    - Sections 5--7 interpret those operations and build the syntactic CCC.
-    - Sections 8--9 explain two completeness arguments and the free property.
-
-    Keep three questions separate. Which expressions can be constructed?
-    When do two expressions count as equal? Why does every CCC provide an
-    interpretation? The same small identity and duplication terms connect
-    these questions. Bracketed names refer to checked library definitions;
-    the chapter explains their purpose before using their statements. *)
-
-(** ** 阅读路线与预备知识
-
-    本章假定读者知道对象、箭头、复合、积以及泛性质的大意；λ 语法及其 Rocq
-    编码将在这里介绍。可以分三遍阅读：
-
-    - 第 1--4 节理解项、替换与等式的含义。
-    - 第 5--7 节解释这些操作，并构造语法 CCC。
-    - 第 8--9 节理解两个完备性论证及自由泛性质。
-
-    阅读时区分三个问题：哪些表达式可以构造？两个表达式何时视为相等？
-    为什么每个 CCC 都能解释这些表达式？恒等与复制这两个小例子贯穿三个问题。
-    方括号中的名称指向已检查的库定义；本章先解释用途，再使用其陈述。 *)
-
 From Stdlib Require Import
   Bool.
 From Cats Require Import
@@ -96,32 +67,6 @@ Local Open Scope stlc_sem_scope.
     我们只选择一个基类型标签 [tt]。[Atom] 是语法中的基类型，稍后将它解释为
     [BoolS]。这个标签本身并不会给语法添加布尔常量。 *)
 
-(** *** Reading a typing judgement
-
-    The traditional judgement [Γ ⊢ t : A] is represented by a value
-    [t : Tm Γ A]. The two indices say which variables are available and what
-    the result type is. For example, the constructor for application takes
-    [Tm Γ (A ⇒ U)] and [Tm Γ A] and returns [Tm Γ U]. A mismatched argument
-    cannot be supplied to that constructor. This is what intrinsic typing
-    means; it is not an algorithm that assigns types to an untyped input.
-
-    Context order records binding position, not an order on semantic values.
-    In [∅ ▻ A ▻ U], the two variables remain distinct even when [A] and [U]
-    happen to be the same type. The newest marker and the older-variable
-    injection distinguish them. No comparison or decidable equality of
-    base labels is needed to look up a variable. *)
-
-(** *** 如何阅读类型判断
-
-    通常的判断 [Γ ⊢ t : A] 在这里由一个值 [t : Tm Γ A] 表示。两个索引分别
-    说明可用哪些变量，以及结果是什么类型。例如，应用构造器接收
-    [Tm Γ (A ⇒ U)] 和 [Tm Γ A]，返回 [Tm Γ U]；无法给它提供类型不匹配的
-    实参。这就是内在类型化，不是为一个无类型输入推断类型的算法。
-
-    上下文顺序记录绑定位置，而不是语义值之间的次序。在 [∅ ▻ A ▻ U] 中，
-    即使 [A] 与 [U] 恰好是同一类型，两个变量仍然不同。最新变量标记和旧变量
-    注入区分了它们。变量查找不需要比较基类型标签，也不要求标签相等可判定。 *)
-
 Definition Atom
   : Ty unit
   := ty_base tt.
@@ -155,18 +100,6 @@ Definition IdentityTerm {B : Type} {Γ : Ctx B} (A : Ty B)
 Definition DuplicateTerm {B : Type} (A : Ty B)
   : Tm (∅ ▻ A) (A × A)
   := ⟨# 𝟘, # 𝟘⟩.
-
-(** Binding twice shows how positions replace variable names. This term
-    represents [λ x : A, λ y : U, x]. In the inner body, [𝟘] is [y], so
-    [↑v 𝟘] selects [x]. There is no name that could accidentally be captured. *)
-
-(** 连续绑定两次可以看出位置如何代替变量名。下面的项表示
-    [λ x : A, λ y : U, x]。在内层项体中，[𝟘] 是 [y]，所以 [↑v 𝟘]
-    选择 [x]；这里没有可能被意外捕获的变量名。 *)
-
-Definition KeepOlderTerm {B : Type} {Γ : Ctx B} (A U : Ty B)
-  : Tm Γ (A ⇒ (U ⇒ A))
-  := ƛ (ƛ (# (↑v 𝟘))).
 
 (** ** 3. Substitution assigns terms to variables
 
@@ -203,61 +136,6 @@ Definition DuplicateSub {B : Type} (A : Ty B)
 
 Example duplicate_sub_older {B : Type} (A : Ty B)
   : (# (↑v 𝟘))[DuplicateSub A] ≈βη # 𝟘.
-Proof. reflexivity. Qed.
-
-(** *** Why the substitution arrow points this way
-
-    A substitution [σ : Sub Δ Γ] is an arrow from [Δ] to [Γ], but its
-    arguments are variables of [Γ]. Think of [Δ] as the available inputs
-    and [Γ] as a list of requested outputs: [σ] builds every requested
-    output from those inputs. A term in [Γ] can then use those outputs,
-    giving a term in [Δ]. This is the same direction as categorical
-    precomposition, not a reversal introduced by the implementation.
-
-    For [τ : Sub Θ Δ], the composite [σ ∘Sub τ] first supplies the inputs of
-    [Δ] using [Θ], then supplies the outputs of [Γ]. At a variable [x] its
-    component is [(σ A x)[τ]]. Consequently [t[σ][τ] = t[σ ∘Sub τ]]. The
-    equation is structural for terms; substitutions themselves are compared
-    pointwise because equality of their assignment functions is unnecessary.
-
-    Binder lifting has two duties. It leaves the new variable available as
-    itself, and weakens every old assigned term into the extended source
-    context. The next example replaces a free variable by [u] underneath a
-    fresh binder; the result contains weakened [u], not the fresh variable. *)
-
-(** *** 为什么替换箭头采用这个方向
-
-    替换 [σ : Sub Δ Γ] 是从 [Δ] 到 [Γ] 的箭头，但其参数是 [Γ] 的变量。
-    可以把 [Δ] 看作可用输入，把 [Γ] 看作所需输出的清单：[σ] 用输入构造每个
-    所需输出。随后，一个原本使用 [Γ] 的项就能使用这些输出，成为 [Δ] 中的项。
-    这正是范畴预合成的方向，并非实现额外引入的一次方向颠倒。
-
-    若 [τ : Sub Θ Δ]，复合 [σ ∘Sub τ] 先从 [Θ] 提供 [Δ] 的输入，再提供
-    [Γ] 的输出。在变量 [x] 处，其分量是 [(σ A x)[τ]]。因此
-    [t[σ][τ] = t[σ ∘Sub τ]]。对项，这是结构等式；对替换，只需逐点比较，
-    无须要求两个赋值函数本身相等。
-
-    进入绑定时，替换提升有两项职责：新变量仍映为自身，旧变量所赋的项则先
-    弱化到扩张后的源上下文。下例在一个新绑定之下用 [u] 替换自由变量；结果
-    包含弱化后的 [u]，不会变成刚引入的变量。 *)
-
-(** Ignore a fresh input and return the older free variable. *)
-
-(** 忽略新输入，返回较旧的自由变量。 *)
-
-Definition IgnoreFreshTerm {B : Type} (A U : Ty B)
-  : Tm (∅ ▻ A) (U ⇒ A)
-  := ƛ (# (↑v 𝟘)).
-
-(** Substitution under a binder weakens the assigned term. This equality
-    computes on raw syntax, before introducing beta/eta equations. *)
-
-(** 绑定之下的替换会弱化所赋的项。这个相等直接由原始语法计算得到，尚未使用
-    βη 方程。 *)
-
-Example ignore_fresh_substitution {B : Type} {Γ : Ctx B} {A U : Ty B}
-    (u : Tm Γ A)
-  : (IgnoreFreshTerm A U)[sub_empty ▻Sub u] = ƛ (u⟨wkRen⟩).
 Proof. reflexivity. Qed.
 
 (** ** 4. Beta and eta are the specified equality of terms
@@ -314,42 +192,6 @@ Example function_η {B : Type} {Γ : Ctx B} {A U : Ty B}
   : ƛ (t⟨wkRen⟩ · # 𝟘) ≈βη t.
 Proof. apply tm_eq_function_η. Qed.
 
-(** *** Four comparisons that must not be confused
-
-    Structural equality compares syntax trees. For example, an application
-    of identity to a variable has an application node, whereas the variable
-    alone has a variable node. They are different trees even though
-    [identity_β] equates them by beta/eta.
-
-    Beta/eta equality compares terms according to the language's equations.
-    It is generated symmetrically and transitively, so an equational proof
-    need not be a sequence of reductions in one chosen direction. Keeping
-    this relation in [Type] retains a derivation; it does not assert that
-    two derivations of the same equation are equal.
-
-    Semantic hom equality belongs to a chosen model and is preserved by
-    interpretation. At a different level, object isomorphism and natural
-    isomorphism compare categorical presentations and functors. In
-    particular, packing a context gives an isomorphism, not an equality of
-    context syntax, and the free property compares functors by natural
-    isomorphism, not equality of their records. Each comparison is used at
-    the level where its laws are available. *)
-
-(** *** 四种不能混淆的比较
-
-    结构相等比较语法树。例如，恒等函数应用于变量时，最外层是应用节点；单独
-    的变量最外层则是变量节点。它们是不同的树，但 [identity_β] 证明它们 βη
-    相等。
-
-    βη 相等按语言的方程比较项。它由对称性和传递性等规则生成，因此一个等式
-    证明不必是沿某个指定方向逐步归约的序列。把关系保留在 [Type] 中会保留
-    推导本身，并不断言同一等式的两个推导相等。
-
-    语义 Hom 相等属于选定模型，解释保持这种相等。再高一层，对象同构与自然
-    同构比较范畴呈现和函子。特别地，打包上下文给出的是同构，不是上下文语法
-    相等；自由性质通过自然同构比较函子，不比较函子记录的原生相等。
-    每种比较都在其相应定律适用的层次使用。 *)
-
 (** ** 5. A CCC interprets syntax as arrows
 
     A cartesian closed category (CCC) has a chosen terminal object, binary
@@ -383,66 +225,6 @@ Proof. apply tm_eq_function_η. Qed.
     可靠性 [tm_interp_sound] 将 βη 推导送到指定的 Hom 相等。替换成为预合成，
     下例直接使用 [tm_interp_subst] 表达这一点。这些是适用于任意 CCC 的一般
     结论，而非仅对布尔例子成立的事实。 *)
-
-(** *** Why evaluation first uses an arbitrary environment
-
-    [Env I X Γ] gives one arrow [X → TyI I A] for each variable of [Γ] of
-    type [A]. All variables share the input object [X]. Evaluating a term
-    combines these arrows. A pair uses two arrows with that same source;
-    under a lambda the source becomes [X × TyI I A], with old assignments
-    reindexed by the first projection and the fresh input supplied by the
-    second projection.
-
-    This arbitrary-source formulation makes induction under a binder
-    possible. Only afterwards do we choose [X = CtxI I Γ] and the projection
-    environment [ctx_env I Γ] to define ordinary term interpretation.
-    Restricting the evaluator to that one environment at the outset would
-    obscure reindexing and substitution.
-
-    Three structural lemmas explain how the machinery fits together:
-
-    - [tm_eval_comp] changes the shared input by precomposition.
-    - [tm_eval_rename] selects variable assignments along a renaming.
-    - [tm_eval_subst] evaluates the terms supplied by a substitution.
-
-    [env_tuple] packages an environment into a context arrow. Its projection
-    and reconstruction laws identify semantic substitution with categorical
-    composition. The following triangle commutes in specified hom equality;
-    here [GΔ], [GΓ] and [AI] abbreviate the interpreted contexts and type. *)
-
-(** *** 为什么先在任意环境中求值
-
-    [Env I X Γ] 为 [Γ] 中每个类型为 [A] 的变量提供一条
-    [X → TyI I A] 箭头。所有变量共享输入对象 [X]，项求值组合这些箭头。
-    配对使用同一个源对象出发的两条箭头；进入 λ 时，源变成
-    [X × TyI I A]，旧赋值沿第一投影预合成，新输入由第二投影提供。
-
-    先允许任意源对象，才能在绑定之下顺利归纳。随后才选择
-    [X = CtxI I Γ] 以及投影环境 [ctx_env I Γ]，得到通常的项解释。
-    若一开始就把求值器限制为这一个环境，预合成与替换的作用便不容易看清。
-
-    三条结构引理说明各部分如何衔接：
-
-    - [tm_eval_comp] 用预合成更换共享输入。
-    - [tm_eval_rename] 沿重命名选取变量赋值。
-    - [tm_eval_subst] 求值替换所提供的项。
-
-    [env_tuple] 把环境打包为上下文箭头。其投影与重建定律把语义替换同范畴
-    复合联系起来。下方三角形在指定 Hom 相等下交换，其中 [GΔ]、[GΓ] 和 [AI]
-    分别简记上下文与类型的解释对象。 *)
-
-(** @lang both
-%
-\[
-\begin{tikzcd}[column sep=large]
-G_\Delta \arrow[r, "{\lVert\sigma\rVert}"]
-  \arrow[dr, swap, "{\lVert t[\sigma]\rVert}"]
-  & G_\Gamma \arrow[d, "{\lVert t\rVert}"] \\
-  & A_I
-\end{tikzcd}
-\]
-%
-*)
 
 Section CategoricalSemantics.
 
@@ -550,46 +332,6 @@ Definition BooleanInterpretation
   : Functor (TyCat unit) SetCat
   := TypeInterpretF BooleanBase.
 
-(** *** Why beta and eta become universal properties
-
-    A product is more than an object with two projections. It must provide
-    a pair mediator for any two arrows with a common source, and that
-    mediator must be unique in hom equality. In syntax, the two product
-    beta equations verify its projections; product eta proves uniqueness
-    by rebuilding any proposed mediator from those projections.
-
-    The same pattern explains exponentials. Abstraction constructs the
-    mediator, function beta verifies evaluation, and function eta proves
-    uniqueness. The implementation first proves this for singleton
-    contexts, then transports the property using general exponential
-    transport. Thus a proof about arbitrary contexts reuses the existing
-    universal property instead of reproving binder equations.
-
-    The two presentations solve different representation problems.
-    [CtxCat B] makes multiple inputs and substitution composition direct.
-    [TyCat B] makes unit, product and function types literally the chosen
-    objects, which simplifies the free property. For [Γ = ∅ ▻ A ▻ U],
-    [CtxTy Γ] is [(⊤ × A) × U]. This object is not syntactically [A × U].
-    Packing and unpacking explain the isomorphisms that remove such
-    representation differences. The comparison is categorical equivalence,
-    not a claim that the two lists of objects are equal. *)
-
-(** *** 为什么 β 与 η 给出泛性质
-
-    积不只是带有两个投影的对象。对于任何同源的两条箭头，它必须给出配对中介，
-    且中介在 Hom 相等意义下唯一。在语法中，两条积 β 方程检查中介的投影；
-    积 η 则把任意候选中介从投影重建出来，从而证明唯一性。
-
-    指数对象也遵循这个模式：抽象构造中介，函数 β 检查求值，函数 η 证明
-    唯一性。实现先在单变量上下文上证明这一点，再使用通用的指数泛性质运输。
-    因此，任意上下文的证明复用已有泛性质，无须重新证明绑定方程。
-
-    两种呈现解决不同的表示问题。[CtxCat B] 使多输入与替换复合直接可见；
-    [TyCat B] 让单位、积与函数类型本身就是选定对象，便于陈述自由性质。
-    若 [Γ = ∅ ▻ A ▻ U]，则 [CtxTy Γ] 是 [(⊤ × A) × U]，它并不是语法上的
-    [A × U]。打包、拆包所给出的同构解释了如何消除这些表示差异。两个呈现
-    之间是范畴等价，而不是对象清单相等。 *)
-
 (** ** 8. Completeness and the free universal property
 
     Soundness holds in every CCC model. Conversely, at a common universe
@@ -632,76 +374,6 @@ Example equations_in_all_models {B : Type} {Γ : Ctx B} {A : Ty B}
   : t ≈βη u ↔ t ≈CCC u.
 Proof. apply tm_soundness_iff_completeness. Defined.
 
-(** *** Following the equational completeness proof
-
-    Start with two terms [t] and [u] already in the same [Tm Γ A], and assume
-    their interpretations are equal in every model at the common bound.
-    Choose the particular model [TyCat B] with its syntactic CCC structure
-    and the base assignment [ty_base]. The hypothesis now gives one hom
-    equality in that category.
-
-    A recursive interpretation back into syntax need not be literally the
-    identity on types or contexts. [type_compare] and [context_compare]
-    supply canonical isomorphisms. The law [context_compare_term] relates
-    the interpreted term to [quote_tm t], the arrow whose input is the
-    packed context. Apply this law to both terms and use the assumed hom
-    equality. Cancelling the context isomorphism yields equal quoted
-    arrows. Finally [quote_tm_faithful] substitutes the packed identity
-    environment back in and recovers [t ≈βη u].
-
-    The proof therefore has a concrete chain: all-model validity, equality
-    in the syntactic model, equality of quoted arrows, syntactic equality.
-    It does not search for normal forms. A single model can identify more
-    arrows than the syntax does; the all-model premise is what permits
-    choosing the classifying syntactic model. *)
-
-(** *** 顺着等式完备性的证明阅读
-
-    从已经同属 [Tm Γ A] 的两个项 [t]、[u] 出发，假设它们在共同大小界内的
-    每个模型中解释相等。选取特殊模型 [TyCat B]，配上语法 CCC 结构和基类型
-    赋值 [ty_base]，便得到该范畴中的一条 Hom 相等。
-
-    把语法递归解释回语法时，类型和上下文解释不一定按原生相等就是恒等函数。
-    [type_compare] 和 [context_compare] 提供规范同构。
-    [context_compare_term] 把解释项同 [quote_tm t] 联系起来；后者是以打包
-    上下文为输入的箭头。对两个项分别使用这条定律，再使用假设的 Hom 相等，
-    消去上下文同构，就得到语法还原后的箭头相等。最后
-    [quote_tm_faithful] 代回打包的恒等环境，恢复 [t ≈βη u]。
-
-    因此，证明有一条具体链条：全部模型有效性、语法模型中的相等、语法还原
-    箭头的相等、语法相等。它不搜索正规形。一个单独模型可能比语法识别更多
-    箭头；全部模型的前提使我们能够选择这个分类用的语法模型。 *)
-
-(** *** What the free property adds
-
-    Completeness tests equations. The free property instead compares ways
-    of interpreting the entire language. Fix the target CCC, a base
-    assignment [I], a structure-preserving functor [F] out of [TyCat B], and
-    specified base isomorphisms [β]. The canonical comparison extends [β]
-    to every type and is natural with respect to every syntactic arrow.
-
-    Uniqueness is also relative to these data. Product projections force
-    the product components of any candidate natural transformation.
-    Evaluation, together with an invertible argument comparison, forces
-    its function components. Unit uses terminality. Induction on types
-    therefore proves uniqueness in pointwise hom equality. The theorem
-    compares all natural transformations with the required base components;
-    it does not ask for a second collection of structure-preservation
-    fields on those transformations. The canonical transformation is
-    invertible, so the result is a natural isomorphism of functors. *)
-
-(** *** 自由性质还说明了什么
-
-    完备性检验等式；自由性质则比较解释整个语言的不同方式。固定目标 CCC、
-    基类型赋值 [I]、从 [TyCat B] 出发的保持结构函子 [F]，以及指定基类型
-    同构 [β]。规范比较把 [β] 扩张到所有类型，并且对每条语法箭头都自然。
-
-    唯一性也相对于这些固定数据。积投影确定任意候选自然变换在积类型处的
-    分量；求值与可逆的参数比较确定函数类型分量；单位类型使用终对象性质。
-    对类型归纳便得到逐点 Hom 相等意义下的唯一性。定理覆盖所有具有指定基类型
-    分量的自然变换，无须再为这些变换附加一套保持结构的字段。规范变换可逆，
-    因而最终得到函子之间的自然同构。 *)
-
 (** ** 9. Inhabitation in every model
 
     Inhabitation asks for a term [Tm Γ A], rather than an equation between
@@ -737,150 +409,3 @@ Proof. apply tm_soundness_iff_completeness. Defined.
     在 Curry--Howard--Lambek 对应下，这是真、合取与蕴含片段的可证性
     完备性。它无须正规化或判定过程，也不为给定无类型项恢复类型推导；
     这里的语法本来就是内在带类型的。 *)
-
-(** *** Following inhabitation completeness all the way to a term
-
-    The input is a family [H : TmModelInhabited Γ A]. Apply [H] to the
-    syntactic CCC and [ty_base], obtaining [h : Hom (CtxI ty_base Γ)
-    (TyI ty_base A)]. This is an actual arrow, not a Prop-only assertion
-    that some arrow exists.
-
-    In that category let [z] be the context comparison and [a] the type
-    comparison. Their forward arrows have targets [CtxTy Γ] and [A].
-    Compose [h] with [a] on its output and with the inverse of [z] on its
-    input. This gives [σ : Hom (CtxTy Γ) A]. The square below records the
-    same construction; [GΓ] and [AI] denote the recursively interpreted
-    objects inside the syntactic model.
-
-    A literal arrow [CtxTy Γ → A] is a substitution from the singleton
-    context of [CtxTy Γ] to the singleton context of [A]. Its component
-    [σ A var_zero] is therefore a term with one packed-context variable.
-    Substitute [ctx_pack_sub Γ] to obtain a term in [Γ]. This is precisely
-    what [tm_interp_canonical_inhabited] computes. No raw untyped syntax,
-    type inference or normalization step is hidden in this extraction. *)
-
-(** *** 把可居留性完备性的证明一直读到具体的项
-
-    输入是见证族 [H : TmModelInhabited Γ A]。把 [H] 用于语法 CCC 与
-    [ty_base]，得到 [h : Hom (CtxI ty_base Γ) (TyI ty_base A)]。
-    它是一条实际箭头，不是只在 Prop 中断言某条箭头存在。
-
-    在该范畴中，令 [z] 为上下文比较，[a] 为类型比较。二者的正向箭头分别
-    以 [CtxTy Γ] 和 [A] 为目标。在 [h] 的输出端复合 [a]，输入端复合 [z]
-    的逆，得到 [σ : Hom (CtxTy Γ) A]。下方交换方形表达相同构造；[GΓ] 和
-    [AI] 表示语法模型内部递归解释得到的对象。
-
-    字面箭头 [CtxTy Γ → A] 就是从 [CtxTy Γ] 的单变量上下文到 [A] 的单变量
-    上下文的替换。因此其分量 [σ A var_zero] 是一个只有打包上下文变量的项。
-    再代入 [ctx_pack_sub Γ]，就得到原上下文 [Γ] 中的项。这正是
-    [tm_interp_canonical_inhabited] 所计算的内容。提取过程中没有隐藏的无类型
-    语法、类型推断或正规化步骤。 *)
-
-(** @lang both
-%
-\[
-\begin{tikzcd}[column sep=large]
-G_\Gamma \arrow[r, "h"] \arrow[d, swap, "z", "\cong"']
-  & A_I \arrow[d, "a", "\cong"'] \\
-\mathrm{CtxTy}(\Gamma) \arrow[r, swap, "\sigma"] & A
-\end{tikzcd}
-\qquad \sigma = a \circ h \circ z^{-1}.
-\]
-%
-*)
-
-(** *** Constructive quantifiers and size bounds
-
-    The model premise is a function that accepts [C], a chosen [CCC C] and
-    [I], and returns a morphism. It does not mean choosing a model where a
-    morphism happens to exist. Nor is it a function returning only a
-    Prop-level nonemptiness proof: that weaker statement would not in
-    general allow extraction of a term in [Type].
-
-    The displayed [↔] is [iffT], a pair of constructive functions. It
-    asserts neither equality of the two types nor inverse laws for the two
-    maps. In particular, an arbitrary family of semantic witnesses is not
-    asserted to equal the re-interpretation of the extracted term.
-
-    The common model bound is [Cat@{b b e l l}]: raw objects and arrows
-    have bound [b], hom-equality witnesses have bound [e], and category-law
-    proofs use [l]. The syntactic model fits when these levels satisfy its
-    constraints; regression checks allow [b < e < l]. Quantification over
-    these models lives in a suitably larger inferred universe. General
-    semantic soundness also works for target sizes outside this common
-    arrangement. Neither completeness result adds resizing, choice,
-    proof irrelevance or function extensionality. *)
-
-(** *** 构造性量词与大小界
-
-    模型前提是一个函数：它接受 [C]、选定的 [CCC C] 和 [I]，返回一条态射。
-    它并不是选择一个恰好存在态射的模型，也不是只返回 Prop 层非空性证明的
-    函数；后一个更弱的陈述通常不能用来提取 [Type] 中的项。
-
-    这里的 [↔] 是 [iffT]，即一对构造性函数。它不断言两个类型相等，也不断言
-    这两个映射满足互逆律。特别地，并未断言任意语义见证族等于提取项的重新
-    解释。
-
-    共同模型界是 [Cat@{b b e l l}]：原始对象和箭头的界为 [b]，Hom 相等见证
-    的界为 [e]，范畴律证明使用 [l]。当层级满足语法模型的约束时，该模型就
-    包含在此界内；回归检查允许 [b < e < l]。对这些模型的量化位于适当的、更大
-    的推断宇宙中。一般语义可靠性还适用于这组共同大小排列之外的目标模型。
-    两个完备性结果都没有加入大小重设、选择、证明无关性或函数外延公理。 *)
-
-(** The closed identity term supplies a uniform semantic inhabitant. The
-    proof uses the public soundness map; the model family keeps its arrows. *)
-
-(** 闭恒等项给出统一的语义居留见证。证明直接使用公开的可靠性映射，模型族
-    保留具体箭头。 *)
-
-Example identity_in_every_model {B : Type} (A : Ty B)
-  : TmModelInhabited ∅ (A ⇒ A).
-Proof. apply tm_inhabitation_soundness. exact (IdentityTerm A). Defined.
-
-(** ** 10. Reading the reference modules
-
-    Follow these groups in order, returning to the tutorial examples when
-    a construction becomes abstract:
-
-    - [STLC.Syntax], [STLC.Renaming] and [STLC.Substitution] give the raw
-      language and binding operations.
-    - [STLC.Equivalence], [STLC.Set] and [STLC.Category] add beta/eta
-      derivations, setoids and the context category.
-    - [STLC.Context] and [STLC.Product] explain the chosen context product.
-    - [STLC.Packing], [STLC.Exponential] and [STLC.CCC] construct function
-      contexts and their universal property.
-    - [STLC.TypeCategory] and [STLC.ContextEquivalence] compare presentations.
-    - [STLC.Semantics] and [STLC.Interpretation] explain evaluation,
-      substitution and the context interpretation functor.
-    - [STLC.TypeInterpretation] interprets the type presentation.
-    - [STLC.Quotation] and [STLC.Comparison] supply canonical comparisons.
-    - [STLC.Equational], [STLC.Inhabitation] and [STLC.Free] state the two
-      model-validity goals and the free universal property.
-
-    A useful check while reading a proof is to ask what its equality means,
-    whether its context arrow is a substitution or a semantic map, and
-    whether it needs a chosen structure or only a universal property.
-    These questions explain most of the explicit parameters in the code. *)
-
-(** ** 10. 阅读参考模块
-
-    可以依次阅读以下几组模块。当构造变得抽象时，回到教程中的例子对照：
-
-    - [STLC.Syntax]、[STLC.Renaming] 与 [STLC.Substitution] 给出原始语言
-      与绑定操作。
-    - [STLC.Equivalence]、[STLC.Set] 与 [STLC.Category] 加入 βη 推导、
-      广集与上下文范畴。
-    - [STLC.Context] 和 [STLC.Product] 解释选定的上下文积。
-    - [STLC.Packing]、[STLC.Exponential] 与 [STLC.CCC] 构造函数上下文
-      及其泛性质。
-    - [STLC.TypeCategory] 和 [STLC.ContextEquivalence] 比较两种呈现。
-    - [STLC.Semantics] 和 [STLC.Interpretation] 解释求值、替换与上下文
-      解释函子。
-    - [STLC.TypeInterpretation] 解释类型呈现。
-    - [STLC.Quotation] 和 [STLC.Comparison] 提供规范比较。
-    - [STLC.Equational]、[STLC.Inhabitation] 与 [STLC.Free] 陈述两种模型
-      有效性目标以及自由泛性质。
-
-    阅读证明时可以检查：这里的相等是什么意思？上下文箭头是替换还是语义映射？
-    需要的是选定结构，还是仅需一个泛性质？这些问题能解释代码中大部分显式
-    参数的作用。 *)

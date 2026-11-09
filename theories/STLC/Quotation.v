@@ -14,34 +14,6 @@ From Cats Require Import
 
     此处类型按字面解释；辅助求值器不要求递归类型解释与恒等函数原生相等。 *)
 
-(** ** Re-entering syntax through literal evaluation
-
-    The syntactic CCC has raw types as objects, but a recursive
-    interpretation into it can still build nontrivial context and object
-    representations. The auxiliary evaluator [syntax_eval] instead uses
-    the literal type presentation. [syntax_eval_quote] identifies its
-    action with syntactic substitution up to beta/eta; the lambda case
-    accounts for the encoding of a pair of variables as one product.
-
-    [quote_tm] represents a general-context term as an arrow from its
-    packed type. To prove [quote_tm_faithful], take the newest component
-    of an equality of such arrows and substitute [ctx_pack_sub Γ] back
-    in. Packing beta removes the detour. This recovers an equation of
-    original terms; it is not a normal-form computation or a selection
-    of canonical beta/eta representatives. *)
-
-(** ** 通过字面求值重新进入语法
-
-    语法 CCC 以原始类型为对象，但递归解释回该模型时，仍可能构造非平凡的
-    上下文与对象表示。辅助求值器 [syntax_eval] 改用字面类型呈现。
-    [syntax_eval_quote] 证明其作用在 βη 意义下就是语法替换；λ 情形处理
-    把一对变量编码为一个积变量的步骤。
-
-    [quote_tm] 把一般上下文中的项表示为从打包类型出发的箭头。
-    [quote_tm_faithful] 从这些箭头的相等取出最新分量，再代回
-    [ctx_pack_sub Γ]，用打包 β 消除绕行，恢复原项的等式。
-    这不是计算正规形，也不是为 βη 等价类选择规范代表。 *)
-
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 Local Open Scope stlc_ctx_scope.

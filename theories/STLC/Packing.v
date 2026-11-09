@@ -11,33 +11,6 @@ From Cats Require Export STLC.Category.
     上下文由其嵌套积类型表示。打包同时赋值与拆包积类型项在 βη 意义下互逆；
     它们的替换律是逐点结构方程，不要求赋值函数相等。 *)
 
-(** ** One variable can carry an entire context
-
-    [CtxTy Γ] records the shape of a context as a nested product type.
-    Empty contributes [⊤], and extension contributes a product. In
-    particular a two-variable context packs as [(⊤ × A) × U], retaining
-    its chosen shape rather than identifying product association or units
-    by structural equality.
-
-    [ctx_pack] assembles all assigned terms, while [ctx_unpack] obtains
-    assignments by projections. Their beta/eta laws use product beta and
-    unit/product eta, so the round trips use [TmEq] and [SubTmEq], not
-    equality of assignment functions. Applying these operations to the
-    identity environment and to the single packed variable produces
-    [ctx_pack_iso]. Its computational forward and inverse substitutions
-    are later used by exponentials, quotation and completeness. *)
-
-(** ** 用一个变量承载整个上下文
-
-    [CtxTy Γ] 用嵌套积类型记录上下文形状：空上下文贡献 [⊤]，扩张贡献积。
-    特别地，双变量上下文打包为 [(⊤ × A) × U]，保留选定形状，不以结构相等
-    识别积的结合方式或单位因子。
-
-    [ctx_pack] 组装所有所赋项，[ctx_unpack] 用投影获得各项赋值。其 βη 律
-    使用积 β 以及单位和积 η，因此往返比较使用 [TmEq] 与 [SubTmEq]，
-    不要求赋值函数相等。把这些操作用于恒等环境和单个打包变量，就得到
-    [ctx_pack_iso]。其可计算的正反向替换随后用于指数、语法还原和完备性。 *)
-
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_tm_scope.

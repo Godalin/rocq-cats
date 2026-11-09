@@ -11,32 +11,6 @@ From Cats Require Export STLC.Syntax.
     [Ren Δ Γ] 将 Γ 的变量映到 Δ，与上下文态射 Δ → Γ 的方向一致。映射按逐点
     结构相等比较，不要求函数相等或基类型标签具有额外性质。 *)
 
-(** ** A change of available inputs
-
-    Read [Ren Δ Γ] as a context arrow from [Δ] to [Γ]: for each variable
-    requested by [Γ], it selects an available variable in [Δ]. Applying it
-    to a term therefore changes that term's context from [Γ] to [Δ]. This
-    orientation will be the orientation of syntactic substitution and
-    categorical composition as well.
-
-    Weakening adds an unused newest input. Lifting a renaming under a binder
-    has a different role: it weakens all selected old variables and maps the
-    freshly bound variable to itself. Structural induction proves the
-    identity and composition laws of these actions. Equality of renamings
-    is pointwise [RenEq], which is enough to prove equality of renamed terms
-    without asserting equality of functions. *)
-
-(** ** 更换可用输入
-
-    将 [Ren Δ Γ] 读作从 [Δ] 到 [Γ] 的上下文箭头：它为 [Γ] 所需的每个变量
-    选取 [Δ] 中的一个可用变量。因此，作用于项时，上下文从 [Γ] 变为 [Δ]。
-    后续的语法替换与范畴复合也采用相同方向。
-
-    弱化增加一个暂不使用的最新输入。绑定之下的重命名提升则有另一项职责：
-    所选旧变量全部弱化，新绑定变量映为自身。这些作用的单位律和复合律通过
-    结构归纳证明。重命名以逐点 [RenEq] 比较，足以推出重命名后项的相等，
-    无须断言两个函数本身相等。 *)
-
 Declare Scope stlc_ren_scope.
 Delimit Scope stlc_ren_scope with ren.
 Local Open Scope stlc_ctx_scope.
