@@ -1,4 +1,7 @@
 Core.v
 Monoid.v
+Functor.v
+Constant.v
+Transport.v
 Cartesian.v
 Endomorphism.v

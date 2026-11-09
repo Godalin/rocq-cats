@@ -61,6 +61,70 @@ Proof. reflexivity. Qed.
 
 End MonoidalComputations.
 
+From Cats Require Import
+  Cat.Monoidal.Constant
+  Cat.Monoidal.Transport
+  Instance.Set.Product.
+
+(** A constant Boolean-xor lax functor exercises genuinely noninvertible
+    comparisons. Transported operations must still compute through the
+    general monoid construction, including its stored law witnesses. *)
+
+(** 布尔异或常值 lax 函子检验真正不可逆的比较；传输后的运算仍须穿过一般
+    幺半群构造及其保存的定律见证直接计算。 *)
+
+Module LaxMonoidalComputations.
+Local Open Scope monoidal_scope.
+
+Definition BoolObject
+  := SetMonoidObject BoolS_Monoid.
+
+Definition BoolConstantLax
+  := ConstF_LaxMonoidalFunctor SetCartesianMonoidal BoolObject.
+
+Definition BoolConstantImage
+  := LaxMonoidObject BoolConstantLax BoolObject.
+
+(** The bundled structure acts directly as a functor, through its unique
+    underlying-functor coercion and without changing computation. *)
+
+(** 打包结构通过唯一的底层函子强制转换直接作为函子使用，计算行为保持不变。 *)
+
+Example constant_lax_fmap_computes
+  : fmap BoolConstantLax (@Cats.Cat.Core.id SetCat BoolS) true = true.
+Proof. reflexivity. Qed.
+
+Example constant_lax_unit_not_iso
+  : ¬ is_iso φ₀[BoolConstantLax].
+Proof.
+  intros [g [_ H]]. specialize (H true). discriminate H.
+Qed.
+
+Example constant_lax_tensor_not_iso
+  : ¬ is_iso φ₂[BoolConstantLax; BoolS; BoolS].
+Proof.
+  intros [g [H _]].
+  change (BoolS →r (BoolS ×S BoolS)) in g.
+  change (∀ p : bool * bool,
+    ProdEq eq eq (g (xorb (fst p) (snd p))) p) in H.
+  pose proof (H (false, false)) as Hf.
+  pose proof (H (true, true)) as Ht.
+  cbn in Hf, Ht. destruct (g false) as [b c].
+  cbn in Hf, Ht.
+  destruct Hf as [Hf _], Ht as [Ht _].
+  rewrite Hf in Ht. discriminate Ht.
+Qed.
+
+Example transported_constant_unit_computes
+  : monoid_object_unit BoolConstantImage tt = false.
+Proof. reflexivity. Qed.
+
+Example transported_constant_mul_computes
+  : monoid_object_mul BoolConstantImage (true, true) = false.
+Proof. reflexivity. Qed.
+
+End LaxMonoidalComputations.
+
 Module CodeConversion.
 
 Program Definition Codes

@@ -85,6 +85,19 @@ Fail Definition unchosen_set_monoidal
   := ltac:(typeclasses eauto).
 
 From Cats Require Import
+  Cat.Monoidal.Constant.
+
+(** Bundling the underlying functor must not register a chosen lax structure
+    for the concrete model. Clients choose identity or constant explicitly. *)
+
+(** 打包底层函子不得为具体模型注册选定 lax 结构；恒等及常值结构由客户端
+    显式选择。 *)
+
+Fail Definition unchosen_set_lax_monoidal
+  : LaxMonoidalFunctor SetCartesianMonoidal SetCartesianMonoidal
+  := ltac:(typeclasses eauto).
+
+From Cats Require Import
   Cat.Functor.Core
   Instance.Set.Fam.Core
   Instance.Set.Fam.Fixed

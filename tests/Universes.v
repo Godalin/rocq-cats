@@ -1972,3 +1972,59 @@ Definition mixed_free_carrier_representation
       (FreeHomF V X : Functor E SetCat@{v q _ _ _ _ _})
   := universal_arrow_representation V (free_universal V X).
 End FreeRepresentationLevels.
+
+From Cats Require Import
+  Cat.Monoidal.Constant
+  Cat.Monoidal.Transport.
+
+(** Lax transport works in both directions between categories whose hom
+    equalities have opposite strict size orders relative to their carriers.
+    The target equality must retain its own size after mapping monoids. *)
+
+(** Lax 传输在 Hom 相等与载体具有相反严格大小次序的范畴之间双向成立；
+    映射幺半群后，目标相等须保留自身大小。 *)
+
+Section LaxMonoidalLevels.
+Universes o e h p.
+Constraint o < e.
+Constraint e < h.
+Constraint h < p.
+Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
+    (MC0 : MonoidalCategory C0) (MC1 : MonoidalCategory C1)
+    (L01 : LaxMonoidalFunctor MC0 MC1)
+    (L10 : LaxMonoidalFunctor MC1 MC0).
+
+(** Coercion recovers the underlying functor at either native equality size. *)
+
+(** 强制转换在两种原生相等大小下均恢复底层函子。 *)
+
+Definition low_eq_lax_underlying
+  : Functor C1 C0
+  := L10.
+
+Definition high_eq_lax_underlying
+  : Functor C0 C1
+  := L01.
+
+Definition low_eq_lax_monoid_functor
+  : Functor (MonoidCat MC1) (MonoidCat MC0)
+  := LaxMonoidF L10.
+
+Definition high_eq_lax_monoid_functor
+  : Functor (MonoidCat MC0) (MonoidCat MC1)
+  := LaxMonoidF L01.
+
+Definition low_eq_lax_monoid_map {A B : MonoidObject MC1}
+    (f g : (@Hom (MonoidCat MC1)) A B)
+  : Type@{e}
+  := fmap low_eq_lax_monoid_functor f ≈ fmap low_eq_lax_monoid_functor g.
+
+Definition high_eq_lax_monoid_map {A B : MonoidObject MC0}
+    (f g : (@Hom (MonoidCat MC0)) A B)
+  : Type@{p}
+  := fmap high_eq_lax_monoid_functor f ≈ fmap high_eq_lax_monoid_functor g.
+
+Definition mixed_constant_lax (A : MonoidObject MC0)
+  : LaxMonoidalFunctor MC1 MC0
+  := ConstF_LaxMonoidalFunctor MC1 A.
+End LaxMonoidalLevels.

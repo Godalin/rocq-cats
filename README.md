@@ -198,6 +198,25 @@ Basic HTML remains available through
 基础 HTML 仍可通过 `dune exec tools/docs/docs.exe -- build --strict` 导出，
 入口为 `_build/docs/index.html`。
 
+The Monad–Applicative–Arrow work starts with a
+[source-pinned audit and coverage matrix](./docs/ComputationAudit.md).
+The [bundled lax monoidal interface](./theories/Cat/Monoidal/Functor.v) supports
+[constant examples](./theories/Cat/Monoidal/Constant.v) and
+[monoid-object transport](./theories/Cat/Monoidal/Transport.v), including
+the induced functor on monoid homomorphisms. The direct computation
+interfaces and their comparison diagram remain future milestones.
+See the [interface survey](./docs/BundledInterfaces.md) for other candidates
+for bundling and the fixed-data interfaces that should remain separate.
+
+Monad–Applicative–Arrow 工作从
+[固定源码版本的审计及覆盖矩阵](./docs/ComputationAudit.md)开始。
+[打包的 lax monoidal 接口](./theories/Cat/Monoidal/Functor.v)支持
+[常值实例](./theories/Cat/Monoidal/Constant.v)及
+[幺半群对象传输](./theories/Cat/Monoidal/Transport.v)，包括同态上的诱导函子。
+直接计算接口及其比较图仍是后续里程碑。
+其他打包候选与应独立保留的固定数据接口见
+[接口调查](./docs/BundledInterfaces.md)。
+
 ## Repository layout
 
 - [Algebra](./theories/Algebra/): setoid monoids and groups, their single-object
