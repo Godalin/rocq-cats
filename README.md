@@ -213,6 +213,12 @@ interfaces and their comparison diagram remain future milestones.
 See the [interface survey](./docs/BundledInterfaces.md) for other candidates
 for bundling and the fixed-data interfaces that should remain separate.
 
+The [cartesian](./theories/Cat/Functor/Cartesian.v) and
+[CCC functor bundles](./theories/Cat/Functor/Closed.v) extend this approach
+through one inheritance chain. Their preservation adapters, identity and
+composition constructors reuse the existing fixed-functor theory. See
+[CCC structure](./docs/CCCStructure.md) for the interfaces and assumptions.
+
 Monad–Applicative–Arrow 工作从
 [固定源码版本的审计及覆盖矩阵](./docs/ComputationAudit.md)开始。
 [打包的 lax monoidal 接口](./theories/Cat/Monoidal/Functor.v)支持
@@ -221,6 +227,11 @@ Monad–Applicative–Arrow 工作从
 直接计算接口及其比较图仍是后续里程碑。
 其他打包候选与应独立保留的固定数据接口见
 [接口调查](./docs/BundledInterfaces.md)。
+
+[笛卡尔](./theories/Cat/Functor/Cartesian.v)及
+[CCC 函子包](./theories/Cat/Functor/Closed.v)通过单一继承链延续这一做法；
+保持性适配器、恒等及复合构造复用已有固定函子理论。接口及假设详见
+[CCC 结构说明](./docs/CCCStructure.md)。
 
 ## Repository layout
 

@@ -157,6 +157,38 @@ proofs remain explicitly enabled.
 可逆性随后给出 `CompF_IsCCCF`。终比较的复合已由终箭头唯一性保证。
 所有选定结构及保持证明仍须显式启用。
 
+## Bundled preservation
+
+## 打包保持性
+
+[CartesianFunctor](../theories/Cat/Functor/Cartesian.v) stores one underlying
+`Functor` and its `IsCartesianF` evidence for named source terminal and product
+structures. No chosen target products are needed until an operation uses them.
+[CCCFunctor](../theories/Cat/Functor/Closed.v) adds invertibility of the canonical
+exponential comparison to that same cartesian bundle. Its unique coercion chain
+is `CCCFunctor → CartesianFunctor → Functor`; the derived `CCCFunctor_IsCCCF`
+instance reuses the stored cartesian witnesses.
+
+[CartesianFunctor](../theories/Cat/Functor/Cartesian.v) 保存一个底层 `Functor`
+及其相对于具名来源终对象和积结构的 `IsCartesianF` 证据；仅在运算实际需要时
+才引入目标选定积。[CCCFunctor](../theories/Cat/Functor/Closed.v) 在同一个
+笛卡尔包上增加规范指数比较的可逆性。唯一强制转换链为
+`CCCFunctor → CartesianFunctor → Functor`；派生实例 `CCCFunctor_IsCCCF`
+复用保存的笛卡尔见证。
+
+`CartesianFunctorFromPreservation` and `CCCFunctorFromPreservation` package
+existing evidence transparently. `IdCartesianF`, `CompCartesianF`, `IdCCCF`
+and `CompCCCF` reuse the identity and composition theorems above. Clients can
+write `F X`, `fmap F f` and apply the existing comparison/curry laws directly.
+The fixed-functor interfaces remain available to general theorems and STLC
+clients; constructors do not register chosen model functors globally.
+
+`CartesianFunctorFromPreservation` 及 `CCCFunctorFromPreservation` 透明地
+打包已有证据。`IdCartesianF`、`CompCartesianF`、`IdCCCF`、`CompCCCF` 复用
+上述恒等和复合定理。客户端可直接写 `F X`、`fmap F f` 并应用已有比较／
+柯里化定律。固定函子接口继续服务于一般定理和 STLC 客户端；构造器不会全局
+注册选定模型函子。
+
 ## Internal hom equations
 
 ## 内部 Hom 等式
@@ -201,6 +233,18 @@ These are local results.
 新增 11 项永久检查覆盖上述接口。临时审计覆盖 155 项声明，均无额外假设。
 14 项临时计算在相等见证为布尔值的广集上，检查实际比较箭头、参数顺序、原生
 Hom 映射及内部复合。13 个 coqdoc 页面生成并解析通过。这些结果属于本地验证。
+
+The bundled-functor follow-up also passes the full build, test and install
+targets with the same toolchain. Added interface, computation and universe
+regressions cover inheritance, explicit selection, transparent composite
+inverses and separated STLC interpretation adapters. Its seven new adapters,
+identity/composition constructors and inherited instance are closed under the
+global context. Strict bilingual HTML export checked 507 pages.
+
+打包函子后续工作也在同一工具链下通过完整构建、测试及安装目标。新增接口、
+计算及宇宙回归覆盖继承、显式选择、透明的复合逆及分离层级的 STLC 解释适配。
+七项新增适配器、恒等／复合构造及继承实例均无额外假设；严格双语 HTML 导出
+检查了 507 页。
 
 The independent follow-ups in #23 are transfer of chosen CCC structures across
 arbitrary category equivalences and packaging self-enrichment through the general

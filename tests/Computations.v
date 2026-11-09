@@ -125,6 +125,39 @@ Proof. reflexivity. Qed.
 
 End LaxMonoidalComputations.
 
+From Cats Require Import
+  Cat.Functor.Closed
+  Cat.CCC
+  Instance.Set.CCC.
+
+(** The inherited CCC evidence must keep product mediators and exponential
+    inverses computational, including after bundled composition. *)
+
+(** 继承的 CCC 证据须保持积中介及指数逆的可计算性，包括打包复合之后。 *)
+
+Module BundledCCCComputations.
+Local Existing Instance SetCat_CCC.
+
+Definition IdentityCCC
+  := IdCCCF SetCat SetCat_CCC.
+Definition CompositeCCC
+  := CompCCCF IdentityCCC IdentityCCC.
+
+Example bundled_ccc_fmap_computes
+  : fmap CompositeCCC (@Cats.Cat.Core.id SetCat BoolS) true = true.
+Proof. reflexivity. Qed.
+
+Example bundled_ccc_product_inverse_computes
+  : functor_product_inv CompositeCCC BoolS BoolS (true, false)
+      = (true, false).
+Proof. reflexivity. Qed.
+
+Example bundled_ccc_exponential_inverse_computes
+  : (@functor_exponential _ _ CompositeCCC SetCat_CCC SetCat_CCC
+      (CCCFunctor_IsCCCF CompositeCCC) BoolS BoolS).1 id_resp true = true.
+Proof. reflexivity. Qed.
+End BundledCCCComputations.
+
 Module CodeConversion.
 
 Program Definition Codes

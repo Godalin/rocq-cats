@@ -447,6 +447,25 @@ Definition mixed_levels_closed_composite
   : IsCCCF (G ∘F F) HC HC
   := CompF_IsCCCF F G HC HD HC HF HG.
 
+(** Bundling and composing preserve both strict hom/equality orderings. *)
+
+(** 打包及复合保持 Hom／相等层级的两种严格排列。 *)
+
+Definition high_eq_bundled_closed_functor
+  : CCCFunctor HC HD
+  := CCCFunctorFromPreservation F HF.
+Definition low_eq_bundled_closed_functor
+  : CCCFunctor HD HC
+  := CCCFunctorFromPreservation G HG.
+Definition mixed_levels_bundled_closed_composite
+  : CCCFunctor HC HC
+  := CompCCCF low_eq_bundled_closed_functor high_eq_bundled_closed_functor.
+Definition mixed_levels_bundled_cartesian_composite
+  : @CartesianFunctor C C (@Cats.Cat.CCC.hasTerminal C HC)
+      (@Cats.Cat.CCC.hasProduct C HC)
+  := CompCartesianF (CCCF low_eq_bundled_closed_functor)
+      (CCCF high_eq_bundled_closed_functor).
+
 Universe s.
 Constraint l < s.
 Context (J : Cat@{s s s _ _}).
@@ -1388,6 +1407,18 @@ Definition high_eq_stlc_interpretation
 Definition low_eq_stlc_interpretation
   : Functor (CtxCat@{b e l} B) D
   := InterpretF J.
+
+(** Existing interpretation preservation packages without changing its
+    syntax levels or requiring migration of the fixed-functor clients. *)
+
+(** 已有解释保持性可直接打包，不改变语法层级，也不要求迁移固定函子客户端。 *)
+
+Definition high_eq_bundled_type_interpretation
+  : CCCFunctor (TyCat_CCC B) HC
+  := CCCFunctorFromPreservation (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
+Definition low_eq_bundled_type_interpretation
+  : CCCFunctor (TyCat_CCC B) HD
+  := CCCFunctorFromPreservation (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
 
 Context (F : Functor (TyCat@{b e l} B) C)
     (HF : IsCCCF F (TyCat_CCC B) HC).

@@ -163,3 +163,78 @@ Next Obligation.
 Defined.
 
 End ClosedFunctorComposition.
+
+(** ** Bundled Cartesian Closed Functors *)
+
+(** ** 打包的笛卡尔闭函子 *)
+
+(** A CCC functor extends one cartesian functor with invertibility of the
+    canonical exponential comparison. The coercion chain passes through
+    [CartesianFunctor] to [Functor], storing neither a second functor nor
+    another choice of cartesian preservation witnesses. *)
+
+(** CCC 函子为一个笛卡尔函子增加规范指数比较的可逆性；强制转换经
+    [CartesianFunctor] 到达 [Functor]，不另存函子或另一份笛卡尔保持性见证。 *)
+
+Class CCCFunctor {C D : Cat} (HC : CCC C) (HD : CCC D)
+  :=
+  { CCCF :> @CartesianFunctor C D
+      (@hasTerminal C HC) (@hasProduct C HC)
+  ; ccc_functor_exponential (X Y : @Ob C)
+    : is_iso (@functor_exponential_comparison C D CCCF
+        (@hasTerminal C HC) (@hasProduct C HC) (@hasExponential C HC)
+        (@hasProduct D HD) (@hasExponential D HD)
+        (cartesian_isCartesianF CCCF) X Y)
+  }.
+
+Arguments CCCF {_ _ _ _} _.
+Arguments ccc_functor_exponential {_ _ _ _} _ _ _.
+
+(** Recover the fixed-functor presentation from the stored data. This
+    generic inherited instance needs an explicit bundled functor; it does
+    not choose a concrete model. Cartesian evidence is shared definitionally. *)
+
+(** 从保存的数据恢复固定函子呈现。这个通用继承实例需要显式的打包函子，
+    不选取具体模型；笛卡尔证据在定义上共享。 *)
+
+Program Instance CCCFunctor_IsCCCF {C D : Cat} {HC : CCC C} {HD : CCC D}
+    (F : CCCFunctor HC HD)
+  : IsCCCF F HC HD
+  :=
+  {|isCartesianF := cartesian_isCartesianF (CCCF F)
+  ; functor_exponential := ccc_functor_exponential F
+  |}.
+
+(** Bundle existing CCC-preservation evidence without changing the
+    underlying functor, its product mediators or its exponential inverses. *)
+
+(** 打包已有 CCC 保持性证据，不改变底层函子、积中介或指数比较的逆。 *)
+
+Program Definition CCCFunctorFromPreservation {C D : Cat}
+    {HC : CCC C} {HD : CCC D} (F : Functor C D) (HF : IsCCCF F HC HD)
+  : CCCFunctor HC HD
+  :=
+  {|CCCF := CartesianFunctorFromPreservation F (@isCartesianF _ _ F HC HD HF)
+  ; ccc_functor_exponential := @functor_exponential _ _ F HC HD HF
+  |}.
+
+(** The bundled identity uses the existing CCC-preservation theorem. *)
+
+(** 打包的恒等函子使用已有 CCC 保持性定理。 *)
+
+Program Definition IdCCCF (C : Cat) (HC : CCC C)
+  : CCCFunctor HC HC
+  := CCCFunctorFromPreservation IdF (IdF_IsCCCF C HC).
+
+(** Compose bundled CCC functors using the established comparison and
+    preservation proofs; the underlying functor is ordinary composition. *)
+
+(** 用已确立的比较及保持性证明复合打包 CCC 函子；底层函子仍为普通复合。 *)
+
+Program Definition CompCCCF {C D E : Cat}
+    {HC : CCC C} {HD : CCC D} {HE : CCC E}
+    (G : CCCFunctor HD HE) (F : CCCFunctor HC HD)
+  : CCCFunctor HC HE
+  := CCCFunctorFromPreservation (G ∘F F)
+      (CompF_IsCCCF F G HC HD HE
+        (CCCFunctor_IsCCCF F) (CCCFunctor_IsCCCF G)).

@@ -3,14 +3,14 @@
 # 打包接口与底层视图
 
 The lax monoidal interface now bundles its underlying functor and structure
-in one class, exposing a single coercion to `Functor`. A library-wide survey
-finds two close follow-up candidates: bundled cartesian and cartesian closed
-functors. Existing fixed-data preservation interfaces remain useful for
-general theorems and should accompany those bundles.
+in one class, exposing a single coercion to `Functor`. The first follow-up
+from the library-wide survey now adds bundled cartesian and cartesian closed
+functors. Existing fixed-data preservation interfaces remain available for
+general theorems alongside those bundles.
 
 Lax monoidal 接口现已将底层函子及结构打包在同一个类中，只提供一条到
-`Functor` 的强制转换。全库调查发现两个紧邻的后续候选：打包的笛卡尔函子及
-笛卡尔闭函子。已有固定数据保持性接口适合一般定理，应与打包接口共存。
+`Functor` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
+笛卡尔闭函子。已有固定数据保持性接口继续与打包接口共存，服务于一般定理。
 
 ## Scope and decision rule
 
@@ -50,9 +50,9 @@ those witnesses or assert proof irrelevance.
 中的计算见证，例如积保持性包含泛中介，可逆性包含逆。称其为固定数据接口，
 不意味着丢弃这些见证或假定证明无关性。
 
-## Implemented in this task
+## Implemented bundles
 
-## 本次已实现
+## 已实现的打包接口
 
 [LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v) now stores
 `LaxMonoidalF :> Functor C D`, the unit comparison, natural tensorator and
@@ -79,6 +79,33 @@ directly, so no such independent choice is needed.
 需要补充其与基底函子的相容数据；当前构造直接确定运算和箭头作用，不需要
 这项独立选择。
 
+The 2026-11-10 follow-up, based on integrated commit
+`b7455f5869a76862c0388967f31719058789fc47`, implements the first two survey
+candidates. [CartesianFunctor](../theories/Cat/Functor/Cartesian.v) stores one
+`Functor` with inherited `IsCartesianF` evidence. It requires only the named
+source terminal/products. [CCCFunctor](../theories/Cat/Functor/Closed.v) adds
+exponential comparison invertibility, with the single coercion chain
+`CCCFunctor → CartesianFunctor → Functor`. Its derived `IsCCCF` instance
+shares the stored cartesian evidence. Preservation adapters, identity and
+composition constructors reuse the existing proofs and computational witnesses.
+
+2026-11-10 的后续工作基于集成提交
+`b7455f5869a76862c0388967f31719058789fc47`，实现了调查中的前两个候选。
+[CartesianFunctor](../theories/Cat/Functor/Cartesian.v) 保存一个 `Functor`
+及继承的 `IsCartesianF` 证据，仅要求具名来源终对象／积。
+[CCCFunctor](../theories/Cat/Functor/Closed.v) 增加指数比较可逆性，唯一强制
+转换链为 `CCCFunctor → CartesianFunctor → Functor`；派生的 `IsCCCF` 实例
+共享保存的笛卡尔证据。保持性适配器、恒等和复合构造复用已有证明及计算见证。
+
+General theorems keep accepting fixed `F` and preservation evidence. STLC
+interpretations can therefore be packaged without changing their universal
+properties; their broad migration remains a separate task. No second direct
+CCC-to-functor coercion or globally chosen concrete functor is introduced.
+
+一般定理继续接受固定 `F` 及保持性证据，因此 STLC 解释可直接打包，无须改变
+通用性质；其全面迁移仍是独立任务。不引入第二条 CCC 到函子的直接强制转换，
+也不全局选定具体函子。
+
 ## Existing bundles that already fit
 
 ## 已符合原则的打包接口
@@ -101,22 +128,14 @@ directly, so no such independent choice is needed.
 
 | Candidate / 候选 | Current boundary / 当前边界 | Proposed treatment / 建议处理 | Main clients and risk / 主要客户端及风险 |
 | --- | --- | --- | --- |
-| [IsCartesianF](../theories/Cat/Functor/Cartesian.v) | Structure preservation for a fixed `F`, named source terminal and products / 固定 `F`、具名来源终对象和积的保持性 | Add a `CartesianFunctor` bundle with one `Functor` field and inherited `IsCartesianF`; retain the fixed-functor interface / 新增单一底层函子及继承保持性的打包接口，保留原固定函子接口 | [CCC functors](../theories/Cat/Functor/Closed.v), [exponential preservation](../theories/Cat/Limit/Exponential.v), [STLC interpretation](../theories/STLC/TypeInterpretation.v); keep target product choices optional until a comparison uses them / 比较构造实际需要时才引入目标积选择 |
-| [IsCCCF](../theories/Cat/Functor/Closed.v) | Fixed functor, source/target CCC structures, inherited cartesian preservation and invertible exponential comparison / 固定函子及两侧 CCC，继承笛卡尔保持性并要求指数比较可逆 | Add a `CCCFunctor` bundle; a single inheritance chain through `CartesianFunctor` can share the functor and cartesian evidence / 可经 `CartesianFunctor` 形成单链继承，共享函子及笛卡尔证据 | [STLC.Free](../theories/STLC/Free.v), [Comparison](../theories/STLC/Comparison.v), [universe regressions](../tests/Universes.v); avoid storing a second functor or duplicate cartesian choices / 避免另存函子及重复的笛卡尔选择 |
 | [iso](../theories/Cat/Core.v), [NatIso](../theories/Cat/Natural.v) | Sigma bundles with `.1`/`.2` projections; unique forward arrow/transformation / 通过 `.1`、`.2` 访问的依赖和，具有明确正向箭头／自然变换 | Consider named records with a forward-map coercion while retaining `is_iso` and `is_NatIso_of` / 可考虑具名前向映射的记录，同时保留固定映射上的可逆性接口 | Foundation-wide migration, including [CatCat equivalence](../theories/Cat/CatCat.v) and [representations](../theories/Instance/Set/Representable.v); separate prerequisite task, not a local rename / 牵涉范畴等价及表示，须作为独立前置任务 |
 | [SectionOfS](../theories/Cat/Section.v) | Setoid carrier is a map plus its right-inverse witness / 广集载体为映射及其右逆见证 | Optional named bundled section with an arrow coercion; reuse current equality / 可增加具名截面记录及箭头强制转换，复用当前相等 | [family sections](../theories/Instance/Set/Fam/Section.v); lower priority until repeated projection access motivates it / 待重复投影使用显现需求后处理 |
 | [Comprehension](../theories/Cat/Comprehension.v) | Fixed projection `P`, additional `ExtF`, natural projection and cartesian/pullback preservation / 固定投影 `P`，另含 `ExtF`、自然投影及保持性 | Decide which mathematical view is primary before adding a coercion / 添加强制转换前先确定主要数学视图 | `P`, `ExtF` and derived `ComprehensionF : E → Arr B` have different roles; no automatic choice between them / 三个函子职责不同，不能自动替选 |
 
-The first two candidates are the closest continuation of this task. Their
-existing identity/composition preservation proofs should build the bundled
-constructors. General lemmas can keep accepting `F` with explicit preservation
-evidence, so clients do not need to repackage a functor merely to apply a
-theorem. If CCC functors inherit through cartesian functors, do not also add
-a second direct coercion to `Functor`.
+The cartesian and CCC candidates are implemented above. The remaining
+candidates require separate interface decisions and clients.
 
-前两个候选最适合紧接本次工作。已有恒等／复合保持性证明应直接用于打包构造；
-一般引理仍可接受 `F` 及显式保持性证据，避免仅为应用定理而重新打包函子。
-若 CCC 函子经笛卡尔函子继承，就不再添加第二条直达 `Functor` 的强制转换。
+笛卡尔及 CCC 候选已在上文实现。剩余候选需要独立的接口决策及客户端。
 
 ## Fixed-data and relational interfaces to retain
 
@@ -140,9 +159,9 @@ a second direct coercion to `Functor`.
 ## 迁移次序及验证
 
 1. The bundled lax monoidal change is implemented in the current task.
-2. Add cartesian functor bundles, reusing fixed-data preservation theorems;
-   then add CCC bundles on top, sharing the inherited data. Agree on the
-   shared interface before migrating STLC clients.
+2. Cartesian and CCC bundles now reuse fixed-data preservation theorems and
+   share inherited data. Migrate STLC clients in their owning task after
+   integrating this interface prerequisite.
 3. Treat named isomorphism records as a separate foundation task. Update
    natural isomorphisms, category equivalences, representations and dependent
    clients together; compare underlying maps without equality of proof fields.
@@ -150,8 +169,8 @@ a second direct coercion to `Functor`.
    and a clearly selected primary view.
 
 1. 打包 lax monoidal 的修改已在当前任务实现。
-2. 复用固定数据保持定理添加笛卡尔函子包，再在其上添加共享继承数据的 CCC
-   函子包；迁移 STLC 客户端前先约定共享接口。
+2. 笛卡尔和 CCC 函子包现已复用固定数据保持定理并共享继承数据；集成此接口
+   前置任务后，再由 STLC 所属任务迁移其客户端。
 3. 具名同构记录单独作为基础任务，联动更新自然同构、范畴等价、表示及依赖
    客户端；比较底层映射，不要求证明字段相等。
 4. 截面／理解结构的可选打包待具体客户端及主要视图明确后再处理。
@@ -175,10 +194,27 @@ Strict HTML export generated 248 modules in each language and checked links
 and anchors in 501 pages. Temporary assumption checks for the identity and
 constant lax structures, tensorator naturality, monoid transport, homomorphism
 transport and the induced functor all reported `Closed under the global context`.
-These are local checks of the uncommitted task work.
+These were local checks of the lax task, subsequently integrated as
+`b7455f5869a76862c0388967f31719058789fc47`.
 
 当前打包 lax 迁移已在现有 `rocq-env`／Nix 环境下，用 Rocq 9.0.1、Dune 3.23.1
 通过 `dune build @all @runtest @install`。严格 HTML 导出为每种语言生成 248 个
 模块，并检查 501 页的链接和锚点。恒等及常值 lax 结构、tensorator 自然性、
 幺半群传输、同态传输及诱导函子的临时公理检查均报告
-`Closed under the global context`。这些是尚未提交的任务工作的本地检查。
+`Closed under the global context`。这些是 lax 任务的本地检查，之后已作为
+`b7455f5869a76862c0388967f31719058789fc47` 集成。
+
+The cartesian/CCC follow-up passed the same full build, test and install
+targets with that toolchain. Retained regressions check inherited inference,
+explicit model selection, transparent composite product/exponential inverses,
+mixed-level composition and STLC interpretation adapters. Strict bilingual HTML
+export generated 251 modules per language and checked 507 pages. Temporary
+`Print Assumptions` checks of all seven adapters, identity/composition
+constructors and the inherited instance reported `Closed under the global
+context`. These are local results on the task branch.
+
+笛卡尔／CCC 后续工作在同一工具链下通过相同的全库、测试及安装目标。保留的
+回归检查覆盖继承推断、显式模型选择、复合后透明的积／指数逆、不同层级复合及
+STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块，并检查 507 页。
+全部七项适配器、恒等／复合构造及继承实例的临时 `Print Assumptions` 检查
+均报告 `Closed under the global context`。这些是任务分支的本地结果。

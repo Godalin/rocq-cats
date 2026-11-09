@@ -219,3 +219,63 @@ Proof.
       (snd (functor_product_inv_β F X Y)).
     exact (snd (functor_product_inv_β G (F X) (F Y))).
 Qed.
+
+(** ** Bundled Cartesian Functors *)
+
+(** ** 打包的笛卡尔函子 *)
+
+(** A functor together with preservation of the named source terminal and
+    products. The target need not have globally chosen products. The unique
+    coercion exposes the underlying functor; inherited preservation evidence
+    remains available to the fixed-functor theorems above. *)
+
+(** 函子及其对具名来源终对象和积的保持性；不要求目标具有全局选定的积。
+    唯一强制转换暴露底层函子，继承的保持性证据可用于上述固定函子定理。 *)
+
+Class CartesianFunctor {C D : Cat}
+    (TC : HasTerminal C) (PC : HasProduct C)
+  :=
+  { CartesianF :> Functor C D
+  ; cartesian_isCartesianF :: IsCartesianF CartesianF TC PC
+  }.
+
+Arguments CartesianF {_ _ _ _} _.
+Arguments cartesian_isCartesianF {_ _ _ _} _.
+
+(** Bundle an existing functor and its preservation evidence, retaining
+    exactly their original computational data. *)
+
+(** 打包已有函子及其保持性证据，保留原有计算数据。 *)
+
+Program Definition CartesianFunctorFromPreservation {C D : Cat}
+    {TC : HasTerminal C} {PC : HasProduct C}
+    (F : Functor C D) (HF : IsCartesianF F TC PC)
+  : @CartesianFunctor C D TC PC
+  :=
+  {|CartesianF := F
+  ; cartesian_isCartesianF := HF
+  |}.
+
+(** The bundled identity reuses the existing preservation proof. Chosen
+    functors are constructed explicitly, not selected by import. *)
+
+(** 打包的恒等函子复用已有保持性证明；选定函子显式构造，不在导入时选取。 *)
+
+Program Definition IdCartesianF (C : Cat)
+    (TC : HasTerminal C) (PC : HasProduct C)
+  : @CartesianFunctor C C TC PC
+  := CartesianFunctorFromPreservation IdF (IdF_IsCartesianF C TC PC).
+
+(** Composition needs only the chosen source structures of its two factors.
+    Its preservation evidence is the existing generic composition theorem. *)
+
+(** 复合只需要两个因子的选定来源结构，保持性证据复用已有通用复合定理。 *)
+
+Program Definition CompCartesianF {C D E : Cat}
+    {TC : HasTerminal C} {PC : HasProduct C}
+    {TD : HasTerminal D} {PD : HasProduct D}
+    (G : @CartesianFunctor D E TD PD) (F : @CartesianFunctor C D TC PC)
+  : @CartesianFunctor C E TC PC
+  := CartesianFunctorFromPreservation (G ∘F F)
+      (@CompF_IsCartesianF C D E F G TC PC TD PD
+        (cartesian_isCartesianF F) (cartesian_isCartesianF G)).
