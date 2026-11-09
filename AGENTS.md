@@ -124,9 +124,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Keep `typeprop` as the integration branch. Start each bounded task from the
   current integrated baseline, on its own short branch and worktree; keep each
   session in its assigned worktree rather than switching another session's branch.
-- Agree on shared interfaces before parallel implementation. Assign shared
-  foundational changes, global renames and reorganizations to one task, and
-  integrate them before dependent work adopts them.
+- Agree on shared interfaces before parallel implementation. Assign each shared
+  foundation to one prerequisite task; integrate it independently, without waiting
+  for the rest of that feature. Create dependent task branches only after the
+  prerequisite is validated and integrated into `typeprop`; do not implement the
+  same foundation twice. If a dependency is discovered on an existing branch,
+  pause dependent changes, then rebase onto the updated `typeprop` before resuming.
+  Give global renames and reorganizations one owner and integrate them first.
 - Keep `_build/` and generated outputs separate per worktree. Reuse the initialized
   toolchain without modifying shared Nix/opam environments during parallel work.
   Branches, remotes and stash are shared Git state, not private to each worktree.
