@@ -23,6 +23,35 @@ From Cats Require Import
 
     以规范对象同构比较 CCC 函子与递归解释，不使用函子记录原生相等。 *)
 
+(** ** Comparing choices through canonical isomorphisms
+
+    Fix a CCC functor [F] out of [TyCat B], an assignment [I] and specified
+    base isomorphisms [β]. The comparison at a type has direction
+    [TyI I A ≅ F A]. At unit it uses terminal uniqueness; at a product it
+    combines the factor comparisons with the functor's product comparison;
+    at a function it uses the exponential's contravariant argument action.
+    The inverse argument comparison is essential to that last direction.
+
+    Naturality is proved by first evaluating a term in two related
+    environments. The induction keeps a map between their source objects,
+    so the binding step can use the product and curry comparison laws.
+    Literal quotation then yields the natural comparison at every arrow.
+    [context_compare_term] records the corresponding equation for a term
+    with a packed source. The equational and inhabitation arguments later
+    instantiate these same constructions with the identity functor. *)
+
+(** ** 通过规范同构比较不同选择
+
+    固定从 [TyCat B] 出发的 CCC 函子 [F]、赋值 [I] 和指定基类型同构 [β]。
+    类型处的比较方向是 [TyI I A ≅ F A]。单位情形使用终对象唯一性；积情形
+    结合因子比较与函子的积比较；函数情形使用指数在参数上的反变作用。
+    最后一种方向必须使用参数比较的逆。
+
+    自然性先通过两个相关环境中的项求值证明。归纳中保留环境源对象之间的一条
+    映射，绑定步骤因而能使用积与 curry 的比较定律。随后借助字面语法还原，
+    得到每条箭头处的自然比较。[context_compare_term] 记录了项在打包源上的
+    相应方程。等式与可居留性论证都将同一组构造实例化到恒等函子上。 *)
+
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 

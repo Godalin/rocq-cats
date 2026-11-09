@@ -11,6 +11,35 @@ From Cats Require Export STLC.Renaming.
     [Sub Δ Γ] 为 Γ 的每个变量赋一个 Δ 中的项。提升时先弱化已赋的项，并保持
     最新变量。以下定律使用原始结构相等，并逐点比较映射。 *)
 
+(** ** Substitution is a simultaneous environment of syntax
+
+    [Sub Δ Γ] asks how to produce every variable of [Γ] as a term in [Δ].
+    A term [t] using [Γ] can then be evaluated in this syntactic environment,
+    yielding [t[σ]] in [Δ]. Renaming is the special case where every assigned
+    term is a variable. The empty assignment has no components; extension
+    adds the term assigned to the newest variable.
+
+    For [σ : Sub Δ Γ] and [τ : Sub Θ Δ], [σ ∘Sub τ] assigns
+    [(σ A x)[τ]] to [x]. The law [subst_comp] thus describes ordinary
+    composition of context arrows. The binding case depends on [sub_lift]:
+    old assigned terms are weakened, and the new variable is preserved.
+    The structural laws in this module are the raw algebra later reused
+    by beta/eta congruence and the syntactic category. They do not presume
+    equality of assignment functions or beta/eta equality of raw trees. *)
+
+(** ** 替换是由语法组成的同时环境
+
+    [Sub Δ Γ] 说明如何把 [Γ] 中每个变量表示为 [Δ] 中的项。于是，一个使用
+    [Γ] 的项 [t] 可以在这个语法环境中求值，得到 [Δ] 中的 [t[σ]]。
+    当每个所赋的项都是变量时，就得到重命名。空赋值没有分量；扩张则为最新
+    变量增加一个所赋的项。
+
+    若 [σ : Sub Δ Γ]、[τ : Sub Θ Δ]，则 [σ ∘Sub τ] 为 [x] 赋予
+    [(σ A x)[τ]]。[subst_comp] 因此刻画通常的上下文箭头复合。
+    绑定情形依赖 [sub_lift]：旧赋值先弱化，新变量保持自身。这里的结构律是
+    后续 βη 同余与语法范畴共同复用的原始代数，不预设赋值函数相等，也不把
+    原始树的相等改成 βη 相等。 *)
+
 Declare Scope stlc_sub_scope.
 Delimit Scope stlc_sub_scope with sub.
 Local Open Scope stlc_ctx_scope.

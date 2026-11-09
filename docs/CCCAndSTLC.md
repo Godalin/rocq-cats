@@ -1,706 +1,488 @@
-# CCC 与简单类型 λ 演算的指称语义
+# Understanding the STLC theory
 
-本笔记对应 [#20](https://github.com/Godalin/rocq-cats/issues/20)，
-语法、语法范畴和自由 CCC 的实现归 [#9](https://github.com/Godalin/rocq-cats/issues/9)。
-STLC 的 βη 可靠性、共同宇宙界内的模型完备性及自由 CCC 泛性质均已实现。
-签名由基类型标签组成，不含项常量。内在类型化语法支持单位、积和函数，
-使用保留推导的 Type 值 βη 相等。
+# 理解 STLC 理论
 
-库同时提供上下文／替换呈现 `CtxCat B` 与类型／单变量项呈现 `TyCat B`，
-并证明二者的显式范畴等价。自由泛性质在类型呈现上陈述：任意基类型赋值
-扩张为保持 CCC 结构的函子，指定的基类型同构唯一扩张为自然变换，且该变换
-可逆。完备性使用递归语法模型的解释还原；不依赖正规化或可判定相等。
-一般可靠性仍适用于其他模型大小及 Hom／相等见证的两种大小排列。
+This guide explains the mathematical route through the flat STLC modules.
+Read the [checked tutorial](../book/STLC.v) first if lambda syntax or intrinsic
+typing is new to you. It follows identity and duplication through the whole
+construction. The source modules provide local explanations of the definitions
+and the proof dependencies; this guide connects those explanations.
 
-## 1. 已有基础与本次增量
+本指南说明平铺 STLC 模块之间的数学路线。若第一次接触 λ 语法或内在类型化，
+先读[经过编译检查的教程](../book/STLC.v)：它用恒等与复制贯穿整个构造。
+源码模块解释各个定义及证明依赖，本指南负责把这些局部解释连起来。
 
-[CCC](../theories/Cat/CCC.v) 已组合选定的终对象、二元积和指数对象。
-这些结构都从 Type 值泛性质提取中介态射。
-态射相等是 `HomSet` 指定的 `HomEq`，无需比较函数或证明字段的 Rocq 相等。
+## 1. What is being constructed? / 构造的是什么？
 
-[Product](../theories/Cat/Product/Core.v) 已有 `product_β1`、`product_β2`、
-`product_η` 以及配对的复合律 `product_comp_r`、`product_comp_l`。
-[Terminal](../theories/Cat/Terminal.v) 已有终对象箭头唯一性 `term_η`
-和替换相容性 `term_comp_l`。本次补充 `cross_proper`、`cross_id`、`cross_comp`，
-使 `f × g` 的相等、单位与复合行为可直接使用。
+The language has base-type labels, unit, binary products and function types,
+with no primitive term constants. Three results share one implementation:
 
-[Exponential](../theories/Cat/Exponential/Core.v) 本次提供：
+- **Equational completeness:** two given terms are beta/eta equal exactly
+  when they are equal in every CCC model at a common universe bound.
+- **Inhabitation completeness:** a context and type have a term exactly when
+  a uniform family supplies the corresponding morphism in every such model.
+- **The free CCC property:** a base assignment extends to a structure-preserving
+  interpretation, canonical up to a specified natural isomorphism and uniqueness.
 
-```text
-uncurry g := eval ∘ (g × id)
-exponential_β: uncurry (curry f) ≈ f
-exponential_η: curry (uncurry g) ≈ g
+The two completeness statements provide constructive maps between Types.
+They do not assert equality of proof objects or a decision procedure.
 
-exponential_curry_comp_r:
-  curry (f ∘ (σ × id)) ≈ curry f ∘ σ
+语言具有基类型标签、单位、二元积与函数类型，没有原始项常量。
+同一套实现支持三个结论：
 
-exponential_map k := curry (k ∘ eval)
-exponential_curry_comp_l:
-  curry (k ∘ f) ≈ exponential_map k ∘ curry f
+- **等式完备性：**两个给定项 βη 相等，当且仅当它们在共同宇宙界内的每个
+  CCC 模型中解释相等。
+- **可居留性完备性：**上下文与类型具有一个项，当且仅当一个统一见证族能在
+  每个这样的模型中提供相应态射。
+- **自由 CCC 性质：**基类型赋值扩张为保持结构的解释；指定的自然同构与
+  唯一性说明这种扩张的规范性。
+
+两个完备性陈述给出 Types 之间的构造性映射，不断言证明对象相等，也不提供
+判定过程。
+
+## 2. Reading map / 阅读地图
+
+The diagram is a conceptual dependency map. The table below names the actual
+files. The reference reading editions additionally respect every source import.
+
+下图是概念依赖图，后表列出实际文件。参考阅读版还会遵守全部源码导入依赖。
+
+```mermaid
+flowchart TD
+  R[Typed syntax and substitution] --> E[Beta/eta equations]
+  E --> C[Syntactic CCC]
+  E --> S[Semantics in a chosen CCC]
+  C --> P[Quotation and canonical comparisons]
+  S --> P
+  P --> Q[Equational completeness]
+  P --> H[Inhabitation completeness]
+  P --> F[Free universal property]
 ```
 
-`curry`、`uncurry`、`exponential_map` 均尊重指定相等；
-`exponential_map` 还满足单位与复合律。
-这些结果只需要选定的积与指数对象，无需终对象或完整 CCC。
+| Stage / 阶段 | Modules / 模块 | Question / 问题 |
+| --- | --- | --- |
+| Raw language / 原始语言 | [Syntax](../theories/STLC/Syntax.v), [Renaming](../theories/STLC/Renaming.v), [Substitution](../theories/STLC/Substitution.v) | What can be built and substituted? / 能构造、替换什么？ |
+| Equations / 等式 | [Equivalence](../theories/STLC/Equivalence.v), [Set](../theories/STLC/Set.v) | Which terms count as equal? / 项按什么关系相等？ |
+| Context category / 上下文范畴 | [Category](../theories/STLC/Category.v), [Context](../theories/STLC/Context.v), [Product](../theories/STLC/Product.v) | Why are substitutions arrows and concatenations products? / 为什么替换是箭头、连接是积？ |
+| Syntactic CCC / 语法 CCC | [Packing](../theories/STLC/Packing.v), [Exponential](../theories/STLC/Exponential.v), [CCC](../theories/STLC/CCC.v) | Why do function types have the full exponential property? / 为什么函数类型满足完整指数泛性质？ |
+| Presentations / 呈现 | [TypeCategory](../theories/STLC/TypeCategory.v), [ContextEquivalence](../theories/STLC/ContextEquivalence.v) | How can types replace contexts as objects? / 如何改用类型作为对象？ |
+| Interpretation / 解释 | [Semantics](../theories/STLC/Semantics.v), [Interpretation](../theories/STLC/Interpretation.v), [TypeInterpretation](../theories/STLC/TypeInterpretation.v) | How does syntax become a CCC functor? / 语法如何成为 CCC 函子？ |
+| Comparison / 比较 | [Quotation](../theories/STLC/Quotation.v), [Comparison](../theories/STLC/Comparison.v) | How are recursive and literal representations related? / 递归表示与字面表示如何联系？ |
+| Goal entries / 目标入口 | [Equational](../theories/STLC/Equational.v), [Inhabitation](../theories/STLC/Inhabitation.v), [Free](../theories/STLC/Free.v) | What do all-model validity and the free property guarantee? / 全部模型有效性和自由性质保证什么？ |
 
-[ExponentialHom](../theories/Instance/Set/ExponentialHom.v) 将这两个尊重映射
-及 βη 打包为任意源范畴 C 的广集同构：
+The flat organization is intentional. The two goal entries share the same
+syntax, category and comparison constructions. Inhabitation imports the
+comparison theory directly; it does not need the universal equation-validity
+interface from the equational entry.
 
-```text
-exponential_hom_iso:
-  HomSet (Z × X) Y ≅[SetCat] HomSet Z (Y ^ X)
-```
+平铺组织是有意保留的。两个目标入口共享语法、范畴与比较构造。
+可居留性直接导入比较理论，无须使用等式入口中“全部模型的等式有效性”接口。
 
-此处 `SetCat` 只用于表达 hom 广集之间的同构，不选择 C 为集合模型，
-也不启用 `SetCat_CCC`。上面的两条 `curry_comp` 定律分别给出 Z 的逆变
-和 Y 的协变自然性方程；`exponential_hom_nat_iso` 通过通用伴随理论
-将它们打包为双函子之间的自然同构，必要时显式提升到共同的广集宇宙。
-X 在这个伴随问题中固定；让 X 也变化的指数双函子见下一节。
+## 3. Reading the syntax / 阅读语法
 
-### 指数的同构运输与双函子
+The judgement `Γ ⊢ t : A` is represented by a value `t : Tm Γ A`.
+The context and result type are indices of the term datatype. Application
+therefore requires an argument with the function's declared input type;
+abstraction requires its body in a context extended by the input type.
+Ill-typed applications
+cannot be supplied to these constructors. This is **intrinsic typing**, not
+inference of types for an independently given untyped expression.
 
-[Exponential.Transport](../theories/Cat/Exponential/Transport.v) 先提供两个一般
-泛性质运输定理：`exponential_eval_equiv` 沿指定相等更换求值箭头，
-`exponential_transport` 则对参数反变、对结果协变地沿同构运输。给定
-`i : X' ≅ X`、`j : Y ≅ Y'` 和原求值 `ev : Hom (E × X) Y`，新求值为
-`j.1 ∘ ev ∘ (id × i.1)`，表示对象仍为 E。中介从原泛性质提取；输入变换写成
-显式配对，避免通用积映射的封装阻挡具体模型的直接计算。
-同构取逆 `iso_symm` 也保持透明，使端点变换的正反向箭头可直接计算。
+判断 `Γ ⊢ t : A` 由一个值 `t : Tm Γ A` 表示。上下文与结果类型是项数据类型
+的索引，因此应用要求实参具有函数声明的输入类型，抽象则要求项体位于按输入
+类型扩张的上下文中。无法给这些构造器提供类型错误的应用。这是**内在类型化**，不是为一个
+独立给定的无类型表达式推断类型。
 
+In `∅ ▻ A ▻ U`, `𝟘` is the newest variable of type `U`, while `↑v 𝟘` is
+the older variable of type `A`. They remain different positions even if
+`A` and `U` coincide. Variables are implemented by an ordinary sum of older
+positions and a small indexed marker for the newest binding. Consequently,
+lookup and binder lifting do not need decidable equality of base labels.
+Parenthesize nested function types explicitly, for example `A ⇒ (U ⇒ A)`.
 
-[Exponential.Functor](../theories/Cat/Exponential/Functor.v) 从同一个指数泛性质
-导出参数反变、结果协变的作用。给定 `u : Hom X' X`、`v : Hom Y Y'`：
+在 `∅ ▻ A ▻ U` 中，`𝟘` 是类型为 `U` 的最新变量，`↑v 𝟘` 是类型为 `A`
+的旧变量。即使 `A`、`U` 相同，它们仍是不同位置。变量由旧位置与最新绑定的
+小型索引标记组成普通和类型，所以查找及绑定提升不需要基类型标签相等可判定。
+嵌套函数类型应显式加括号，例如 `A ⇒ (U ⇒ A)`。
 
-```text
-v ^ u : Hom (Y ^ X) (Y' ^ X')
-v ^ u := ƛ (v ∘ eval ∘ (id × u))
+A base label describes a type, not an element of it. Interpreting one label
+by the Boolean setoid does not add Boolean constants or negation to the syntax.
+The tutorial's Boolean example evaluates terms built from variables and the
+unit/product/function constructors.
 
-exponential_dimap_eval:
-  eval ∘ ((v ^ u) × id) ≈ v ∘ eval ∘ (id × u)
+基类型标签描述一个类型，不是该类型中的元素。把某个标签解释为布尔广集，
+并不会给语法加入布尔常量或取反操作。教程中的布尔例子求值的仍是由变量及
+单位、积、函数构造器组成的项。
 
-exponential_dimap_comp:
-  (v' ∘ v) ^ (u ∘ u') ≈ (v' ^ u') ∘ (v ^ u)
-```
+## 4. Substitution and binding / 替换与绑定
 
-对象与态射上的 `^` 分别位于 `ob_scope` 和 `hom_scope`，都右结合。
-在广集模型中，`v ^ u` 将保相等映射 g 送到 `v ∘ g ∘ u`；在一般范畴中，
-上面的求值方程刻画同一构造。respectfulness、单位律和复合律均由已有
-柯里化、积的函子性及指数 βη 导出，不新增结构字段或假设。
+A substitution `σ : Sub Δ Γ` builds every variable requested by `Γ` from
+inputs available in `Δ`. Its categorical direction is `Δ → Γ`. Its action
+on terms goes from `Tm Γ A` to `Tm Δ A`, because the term can use those
+constructed components as its inputs. This is precisely precomposition.
+A renaming is the special case that assigns only variable terms.
 
-`exponential_curry_dimap`、`exponential_uncurry_dimap` 和
-`exponential_app_dimap` 分别给出柯里化、反柯里化及应用的相容性：
-
-```text
-ƛ (v ∘ f ∘ (id × u)) ≈ (v ^ u) ∘ ƛ f
-uncurry ((v ^ u) ∘ g) ≈ v ∘ uncurry g ∘ (id × u)
-app ((v ^ u) ∘ g) a ≈ v ∘ app g (u ∘ a)
-```
-
-只需选定积与指数，不要求终对象或完整 CCC。已有的上下文预合成律处理上下文
-参数的变化，本节处理函数参数类型与结果类型的变化。
-
-```text
-ExponentialBiF          : Functor (C^op ×C C) C
-ExponentialBiF (X, Y)   = Y ^ X
-(-^-)                  表示 ExponentialBiF
-ExponentialContraF Y   : Functor (C^op) C
-(Y ^-)                 表示 ExponentialContraF Y
-```
-
-反变截面直接使用通用的 `π1F`。固定参数对象得到的 `π2F (-^-) X`
-与原有的 `(-^ X)` 通过 `exponential_fixed_nat_iso X` 比较，分量均为恒等态射；
-这不要求函子记录或定律字段原生相等。原有 `ExponentialF` 与积－指数伴随接口保留。
-
-## 2. 从类型、上下文和项得到态射
-
-#9 的第一阶段已选择任意基类型标签 B，暂不加入项常量。
-[STLC.Syntax](../theories/STLC/Syntax.v) 实现：
+替换 `σ : Sub Δ Γ` 用 `Δ` 中可用的输入构造 `Γ` 所需的每个变量，范畴方向
+是 `Δ → Γ`。它对项的作用从 `Tm Γ A` 到 `Tm Δ A`，因为原项可以把构造好的
+分量作为输入。这正是预合成。重命名是只赋予变量项的特殊替换。
 
 ```text
-A ::= base b | 1 | A × A | A → A
+σ : Sub Δ Γ       τ : Sub Θ Δ
+σ ∘Sub τ : Sub Θ Γ
+(σ ∘Sub τ) A x = (σ A x)[τ]
+t[σ][τ] = t[σ ∘Sub τ]
 ```
 
-这是 #9 和 #20 共用的一套原始语法。`Ty B` 包含上述类型，`Ctx B` 为后接列表，
-`Var Γ A` 为带类型 de Bruijn 变量，`Tm Γ A` 为内在类型化项。
-空上下文记为 `∅`，扩张记为 `Γ ▻ A`；最新变量为 `𝟘`，旧变量嵌入为 `↑v x`。
-项记号为 `# x`、`⋆`、`⟨t,u⟩`、`π₁ t`、`π₂ t`、`ƛ t`、`f · a`，
-分别位于专用的类型、上下文、变量和项作用域。
+Under a lambda, the old assignments and the fresh binding have different
+roles. Every old assigned term is weakened into the extended source context;
+the fresh variable maps to itself. For the informal term `λ y, x`, replacing
+its free `x` by a term `u` produces a lambda whose body is weakened `u`.
+It does not replace `x` by the new bound variable. The tutorial checks this
+calculation on raw syntax in `ignore_fresh_substitution`.
 
-`NewVar A U` 是只在声明类型处生成的最新变量标记。`Var` 沿上下文递归为
-“旧变量或新标记”的和；提升直接消去这个和，不需要依赖相等证明的消去技巧。
-变量位置是小型数据，基类型标签 B 可以位于任意宇宙；项的大小由签名决定。
+进入 λ 后，旧赋值与新绑定具有不同角色：每个旧赋值项先弱化到扩张后的源
+上下文，新变量映为自身。对非形式记法 `λ y, x`，用项 `u` 替换自由变量 `x`，
+结果的 λ 项体是弱化后的 `u`，不会变成新绑定变量。教程中的
+`ignore_fresh_substitution` 在原始语法上检查了这一步计算。
 
-这里原始构造器语法以 Rocq `eq` 作为其具体结构相等，与自然数等具体数据的选择
-一致；它不承担 STLC 的 βη 相等。[STLC.Equivalence](../theories/STLC/Equivalence.v)
-另定义 Type 值 βη 关系，供语法范畴比较态射。原始替换与 βη 替换相等均逐点
-比较，不要求函数相等。
+The substitution laws compare assignments pointwise. That is enough to prove
+structural equalities of substituted terms and, later, category laws. No step
+requires equality of the functions implementing two assignments.
 
-以后加入类型为 A 的闭常量 c 时，
-签名解释额外选择 `I(c) : Hom 1 ⟦A⟧`；在上下文中以 `I(c) ∘ !` 解释。
+替换定律逐点比较赋值，已经足以证明替换后项的结构相等，以及后续范畴律。
+不需要证明实现两个赋值的函数相等。
 
-给定任意 `C : Cat`、显式的 `CCC C` 及基类型解释 `I : B → Ob C`，
-后续语义解释按下表定义；本轮还没有实现这些解释函数：
+## 5. Which equality? / 使用哪一种相等？
 
-| 语法 | 解释 |
+| Comparison / 比较 | Meaning / 含义 | Typical use / 用途 |
+| --- | --- | --- |
+| Raw `eq` / 原始 `eq` | The same syntax tree / 同一棵语法树 | Structural substitution calculations / 结构替换计算 |
+| `TmEq`, `SubTmEq` | Beta/eta derivations, pointwise for assignments / βη 推导，赋值逐点比较 | Syntactic hom equality / 语法 Hom 相等 |
+| `HomEq` | The equality specified by the target category / 目标范畴指定的相等 | Semantic soundness / 语义可靠性 |
+| Object or natural isomorphism / 对象同构或自然同构 | Explicit invertible categorical comparison / 显式可逆的范畴比较 | Packing, presentation equivalence, free interpretation / 打包、呈现等价、自由解释 |
+
+`TmEq` includes reflexivity, symmetry, transitivity, constructor congruence,
+and the unit/product/function equations. Beta checks elimination after
+introduction. Eta reconstructs an element from its elimination behavior.
+Their symmetric closure is an equational theory, not a chosen evaluation
+strategy. Distinct raw trees can therefore be beta/eta equal.
+
+`TmEq` 包含自反、对称、传递、构造器同余及单位、积、函数方程。β 检查引入
+后的消去，η 根据消去行为重建元素。对称闭包给出等式理论，而不是选定的求值
+策略。因此，不同原始树可以 βη 相等。
+
+`TmS Γ A` retains raw terms as its carrier and chooses `TmEq` as equality.
+It is a setoid, not a quotient datatype. Derivations remain Type-valued data,
+and no equality of derivations is imposed. `Proper` proofs show that an
+operation preserves the specified relation; they are the permission to replace
+inputs by equal ones when composing respectful maps and functors.
+
+`TmS Γ A` 保留原始项作为载体，选择 `TmEq` 为相等。它是广集，不是商数据
+类型。推导保留为 Type 值数据，也未对推导施加相等。`Proper` 证明操作保持
+指定关系，使组合保相等映射与函子时能够替换相等的输入。
+
+## 6. Interpreting terms in a CCC / 在 CCC 中解释项
+
+Choose a category `C`, explicit chosen structure `HC : CCC C`, and base
+assignment `I : B → Ob C`. These are parameters of the interpretation.
+A CCC is used through its terminal, product and exponential universal
+properties; `SetCat` is one concrete model, not the definition of semantics.
+
+选定范畴 `C`、显式结构 `HC : CCC C` 和基类型赋值 `I : B → Ob C`。
+这些都是解释的参数。使用 CCC 时依赖其终对象、积和指数泛性质；`SetCat`
+只是一个具体模型，并非语义的定义。
+
+| Syntax / 语法 | Interpretation / 解释 |
 | --- | --- |
-| 基类型 b | I(b) |
-| 单位类型 1 | 选定终对象 1 |
-| 积类型 A × B | ⟦A⟧ × ⟦B⟧ |
-| 函数类型 A → B | ⟦B⟧ ^ ⟦A⟧ |
-| 空上下文 ∅ | 1 |
-| 上下文 Γ ▻ A | ⟦Γ⟧ × ⟦A⟧ |
-| 判断 Γ ⊢ t : A | 态射 ⟦t⟧ : Hom ⟦Γ⟧ ⟦A⟧ |
+| `⊤` | Chosen terminal object / 选定终对象 |
+| `A × U` | Product of the two interpreted types / 两个解释类型的积 |
+| `A ⇒ U` | `(TyI I U ^ TyI I A)` / 相应指数对象 |
+| Empty context / 空上下文 | Terminal object / 终对象 |
+| Context extension / 上下文扩张 | Product with the new interpreted type / 与新解释类型取积 |
+| Pair, projection / 配对、投影 | Pairing, composition with projections / 配对、与投影复合 |
+| Lambda, application / λ、应用 | Curry, evaluation / 转置、求值 |
 
-上下文递归按上表括号化。`1 × A ≅ A` 是同构，不把它当作对象的原生相等。
-最新变量解释为 `π2`，旧变量的解释沿 `π1` 复合。
-单位项解释为 `!`，配对解释为 `⟨⟦t⟧, ⟦u⟧⟩`，投影解释为沿 `π1`/`π2` 复合。
+`Env I X Γ` gives each variable an arrow out of a common object `X`.
+The evaluator first works for arbitrary `X`; under a binder it uses
+`X × TyI I A`, reindexes old assignments by the first projection, and uses
+the second projection for the fresh variable. This generality is what makes
+the substitution and binder proofs line up.
 
-函数项的解释由指数泛性质决定：
+`Env I X Γ` 为每个变量提供一条从共同对象 `X` 出发的箭头。求值器先允许任意
+`X`；进入绑定时使用 `X × TyI I A`，旧赋值沿第一投影预合成，新变量使用
+第二投影。这份一般性使替换和绑定的证明能够衔接。
 
-```text
-⟦λ t⟧   := curry ⟦t⟧
-⟦f a⟧   := app ⟦f⟧ ⟦a⟧
-app f a := eval ∘ ⟨f, a⟩
-```
+The canonical projection environment specializes evaluation to `tm_interp`.
+`env_tuple` then assembles variable assignments into a map to the nested
+context product. Its beta and eta laws give semantic substitution:
 
-例如 `λx. x` 的闭项解释为 `curry π2 : Hom 1 (⟦A⟧ ^ ⟦A⟧)`。
-应用 `f` 和参数 `a` 都使用同一个环境；配对将环境提供给两者，
-`eval` 再执行函数。这不要求 C 的对象具有可取出的“元素”。
-
-## 3. 替换是语义证明的主线
-
-[STLC.Renaming](../theories/STLC/Renaming.v) 和
-[STLC.Substitution](../theories/STLC/Substitution.v) 已建立：
+规范投影环境把求值特化为 `tm_interp`。`env_tuple` 再将变量赋值组成指向
+嵌套上下文积的映射，其 βη 律给出语义替换：
 
 ```text
-Ren Δ Γ = ∀ A, Var Γ A → Var Δ A
-Sub Δ Γ = ∀ A, Var Γ A → Tm Δ A
-
-t⟨ρ⟩          重命名
-t[σ]           同时替换
-t[u/]          只将最新变量替换为 u
-ρ^↑Ren         将重命名提升到绑定变量之下
-σ^↑Sub         将替换提升到绑定变量之下
-σ ▻Sub u       为最新变量追加项赋值
+tm_interp I (t[σ]) ≈ tm_interp I t ∘ sub_interp I σ
 ```
 
-这里 `Sub Δ Γ` 与上下文态射 Δ → Γ 同向，但变量赋值从 Γ 指向 Δ。
-复合方向与范畴记号一致：`σ ∘Sub τ` 对每个 `σ A x` 继续作用 τ。
-已有的 `RenEq`／`SubEq` 比较原始赋值的逐点结构相等。
+Equational soundness is proved by induction on a beta/eta derivation.
+Its beta cases use substitution compatibility; eta uses the target universal
+properties. This proof is needed before assembling interpretation functors,
+so it lives in [Semantics](../theories/STLC/Semantics.v), while the all-model
+equational entry lives in [Equational](../theories/STLC/Equational.v).
+Both results are exposed by the equational entry.
 
-已证明重命名与替换的单位、复合、respectfulness、绑定提升相容性，
-以及重命名／替换的混合律、弱化相容性和替换扩张 β/η：
+等式可靠性对 βη 推导归纳。β 情形使用替换相容性，η 情形使用目标泛性质。
+构造解释函子之前就需要此证明，因此它位于
+[Semantics](../theories/STLC/Semantics.v)，全部模型的等式入口则位于
+[Equational](../theories/STLC/Equational.v)。等式入口公开这两部分结果。
+
+The constructions reuse [products](../theories/Cat/Product/Core.v),
+[exponentials](../theories/Cat/Exponential/Core.v),
+[exponential transport](../theories/Cat/Exponential/Transport.v), and
+[CCC-functor comparisons](../theories/Cat/Functor/Closed.v). Their general
+universal-property proofs are not duplicated for each syntax presentation.
+
+这些构造复用一般的[积](../theories/Cat/Product/Core.v)、
+[指数](../theories/Cat/Exponential/Core.v)、
+[指数运输](../theories/Cat/Exponential/Transport.v)与
+[CCC 函子比较](../theories/Cat/Functor/Closed.v)，不会为各个语法呈现重复证明
+一般泛性质。
+
+## 7. Why syntax is itself a CCC / 为什么语法自身是 CCC
+
+In `CtxCat B`, objects are contexts and arrows are simultaneous substitutions.
+Hom equality is pointwise beta/eta. Empty context is terminal because it has
+no components to fill. Concatenation is product because assignments split into
+left and right blocks and can be reconstructed from those blocks.
+
+在 `CtxCat B` 中，对象是上下文，箭头是同时替换，Hom 相等为逐点 βη。
+空上下文没有待填分量，因而是终对象。赋值可以拆成左右两块，并由两块重建，
+因而连接给出积。
+
+For exponentials, abstraction constructs a mediator, function beta verifies
+its evaluation equation, and function eta proves uniqueness. First do this
+for singleton inputs and outputs. Then encode a whole context by its packed
+type and transport the exponential property along the packing isomorphisms.
+This separates the essential function argument from representation bookkeeping.
+
+对指数而言，抽象构造中介，函数 β 检查求值方程，函数 η 证明唯一性。
+先对单变量输入和输出完成证明，再用打包类型编码整个上下文，沿打包同构运输
+指数泛性质。这把函数的核心论证与表示细节分开。
 
 ```text
-t⟨idRen⟩ = t                 t[idSub] = t
-t⟨ρ⟩⟨τ⟩ = t⟨ρ ∘Ren τ⟩       t[σ][τ] = t[σ ∘Sub τ]
-t[RenSub ρ] = t⟨ρ⟩
-(σ ▻Sub u) A var_zero = u
+CtxTy ∅ = ⊤
+CtxTy (Γ ▻ A) = CtxTy Γ × A
+Γ ≅[CtxCat B] (∅ ▻ CtxTy Γ)
 ```
 
-提升替换时，旧赋值先弱化到扩张上下文，最新变量保持为变量项。
-在单层或多层抽象之下代入开放项时，不会将项中的自由变量捕获为新绑定的变量。
-空上下文赋值及其逐点唯一性也已给出。这些都是可复用的语法定律，保留在理论模块。
+`TyCat B` uses types as objects and singleton-context substitutions as arrows.
+Its unit, products and functions are the literal type constructors. It is an
+induced category, not a second implementation of substitution composition.
+`ContextCategoryEquivalence` compares it with `CtxCat B` by functors and
+natural isomorphisms. The different object presentations are not required
+to be equal.
 
-同时替换 `σ : Sub Δ Γ` 解释成 `Hom ⟦Δ⟧ ⟦Γ⟧`，
-将每个变量的解释配成上下文的嵌套积。空替换解释为 `!`，
-替换扩张解释为配对；恒等与复合最终由终对象和积的唯一性保证。
-关键定理是：
+`TyCat B` 以类型为对象、单变量上下文替换为箭头，其单位、积和函数直接使用
+字面类型构造器。它是诱导范畴，不是第二套替换复合实现。
+`ContextCategoryEquivalence` 用函子与自然同构将其同 `CtxCat B` 比较，
+不要求不同的对象呈现相等。
+
+## 8. Quotation and comparison / 语法还原与比较
+
+A recursively interpreted type inside `TyCat B` need not be definitionally
+the original type. Chosen terminal/product representations and the source
+context shape must still be accounted for. An equality of their underlying
+functions would be stronger than the mathematics needs.
+
+在 `TyCat B` 内递归解释类型，所得结果不必按定义相等就是原类型。选定的
+终对象、积表示以及源上下文形状仍须处理。要求底层函数相等，会强于数学本身
+所需要的比较。
+
+There are two complementary tools:
+
+- `quote_tm` represents a term by a literal arrow `CtxTy Γ → A`.
+  Its faithfulness is proved by extracting a component and substituting the
+  packed identity environment back in. Quotation is not normalization.
+- `type_compare` and `context_compare` compare recursive interpretation with
+  any CCC-preserving functor `F`, relative to specified base isomorphisms.
+  The comparison for a function type uses inverse transport in its argument.
+
+有两组互补工具：
+
+- `quote_tm` 把项表示为字面箭头 `CtxTy Γ → A`。从箭头相等取出分量，再代回
+  打包的恒等环境，便证明其忠实性。语法还原不是正规化。
+- `type_compare`、`context_compare` 相对于指定基类型同构，将递归解释与
+  任意保持 CCC 结构的函子 `F` 比较。函数类型的比较在参数处使用逆向运输。
+
+Their central compatibility law is:
+
+二者衔接的核心定律是：
 
 ```text
-⟦t[σ]⟧ ≈ ⟦t⟧ ∘ ⟦σ⟧
+type_compare(A).1 ∘ tm_interp I t
+  ≈ fmap F (quote_tm t) ∘ context_compare(Γ).1
 ```
 
-绑定变量下的提升 `σ⁺ : Δ,A ⇒ Γ,A` 解释为 `⟦σ⟧ × id`。
-因此 λ 分支所需的等式恰好是 `exponential_curry_comp_r`。
-应用分支由已有的新定理 `exponential_app_comp` 给出：
+The statement first compares evaluation in related environments; specialization
+then gives the displayed equation. Using the identity functor yields the
+canonical-model comparisons needed by both completeness arguments.
+
+先比较相关环境中的求值，再特化便得到上面的方程。使用恒等函子，就得到
+两个完备性论证共同使用的规范模型比较。
+
+## 9. Two goals, four directions / 两个目标、四个方向
+
+| Goal / 目标 | Soundness / 可靠性 | Completeness / 完备性 |
+| --- | --- | --- |
+| Equations / 等式 | A beta/eta derivation gives equal interpretations in each model / βη 推导给出每个模型中的解释相等 | Equality in every model gives a beta/eta derivation / 全部模型中的解释相等给出 βη 推导 |
+| Inhabitation / 可居留性 | A term gives a semantic morphism in each model / 项给出每个模型中的语义态射 | A uniform semantic morphism family gives a term / 统一语义态射族给出项 |
+
+The equational problem starts with `t` and `u`. The inhabitation problem starts
+only with `Γ` and `A`. In both cases, “every model” is essential: a particular
+model can forget distinctions, and a morphism in one particular model is not
+a uniform family of morphisms across the models.
+
+等式问题从 `t`、`u` 出发，可居留性问题只从 `Γ`、`A` 出发。两者中的“每个
+模型”都很关键：一个特定模型可能忘记某些区别，在一个特定模型中的态射也不等于
+跨模型的统一态射族。
+
+### 9.1. Equational completeness / 等式完备性
+
+1. Specialize all-model equality to `TyCat B`, its chosen CCC, and `ty_base`.
+2. Use the comparison equation for both terms to get equality of quoted arrows
+   after a common context comparison.
+3. Cancel that context isomorphism by its inverse.
+4. Apply `quote_tm_faithful` to recover `TmEq t u`.
+
+This is the proof of `tm_interp_canonical_reflect`, used by
+`tm_soundness_iff_completeness`. It constructs an equational derivation and
+never searches for a normal form.
+
+1. 把全部模型的相等实例化为 `TyCat B`、其选定 CCC 以及 `ty_base`。
+2. 对两个项使用比较方程，得到语法还原箭头在同一个上下文比较之后的相等。
+3. 用逆箭头消去该上下文同构。
+4. 使用 `quote_tm_faithful`，恢复 `TmEq t u`。
+
+这就是 `tm_soundness_iff_completeness` 所使用的
+`tm_interp_canonical_reflect` 的证明。它构造等式推导，不搜索正规形。
+
+### 9.2. Inhabitation completeness / 可居留性完备性
+
+The premise `H : TmModelInhabited Γ A` is a function returning a morphism for
+any model, chosen CCC structure and base assignment at the common bound.
+Specialize it to the syntactic CCC, obtaining `h`. Inside this model, let
+`z` be the context comparison and `a` the type comparison:
+
+前提 `H : TmModelInhabited Γ A` 是一个函数，在共同大小界内对任意模型、选定
+CCC 结构与基类型赋值返回态射。把它实例化为语法 CCC，得到 `h`。在该模型内部，
+令 `z` 为上下文比较，`a` 为类型比较：
 
 ```text
-app f a ∘ σ ≈ app (f ∘ σ) (a ∘ σ)
+h : CtxI ty_base Γ → TyI ty_base A
+z : CtxI ty_base Γ ≅ CtxTy Γ
+a : TyI ty_base A ≅ A
+σ := a.1 ∘ h ∘ z.2.1 : CtxTy Γ → A
+result := (σ A var_zero)[ctx_pack_sub Γ] : Tm Γ A
 ```
 
-变量、重命名、同时替换及其组合，以及 βη 相等的替换稳定性均已完成。
-`tm_eval_subst` 与 `tm_interp_subst` 已证明一般语义替换定律，
-各条 βη 规则复用这些引理处理变量绑定。
+The last step uses the literal meaning of a `TyCat` arrow: it is a substitution
+between singleton contexts. Selecting its newest component gives a term with
+one packed-context input. Substituting the packed identity environment restores
+the original context. Every step projects or composes existing data.
 
-## 4. βη 可靠性如何归约到泛性质
+最后一步使用 `TyCat` 箭头的字面含义：它是两个单变量上下文间的替换。
+取最新分量，就得到只有一个打包上下文输入的项；再代入打包的恒等环境，恢复
+原上下文。每一步都只是投影或复合已有数据。
 
-函数 β 对应本次的 `exponential_app_β`：
+## 10. The free property / 自由性质
 
-```text
-app (curry f) a ≈ f ∘ ⟨id, a⟩
+Fix a target CCC, base assignment `I`, CCC functor `F`, and specified
+isomorphisms `β b : I b ≅ F (ty_base b)`. Recursive interpretation gives
+`TypeInterpretF I`. The theorem `type_interpretation_universal` gives its
+natural isomorphism to `F`, unique among natural transformations with those
+same base components.
+
+固定目标 CCC、基类型赋值 `I`、CCC 函子 `F` 及指定同构
+`β b : I b ≅ F (ty_base b)`。递归解释给出 `TypeInterpretF I`。
+`type_interpretation_universal` 给出它到 `F` 的自然同构，并在具有同样基类型
+分量的自然变换中证明唯一性。
+
+Uniqueness follows the type constructors. Unit uses terminality; the product
+components are forced by projection naturality; function components are forced
+by evaluation naturality and the invertible argument comparison. Candidate
+natural transformations need no extra preservation fields. The theorem compares
+their components by hom equality, not their naturality proofs or functor records.
+
+唯一性沿类型构造器展开：单位使用终对象性质；投影自然性确定积分量；求值
+自然性与可逆参数比较确定函数分量。候选自然变换无须附加保持结构的字段。
+定理按 Hom 相等比较分量，不比较自然性证明或函子记录。
+
+## 11. Witnesses and universes / 见证与宇宙
+
+`TmModelInhabited` returns actual morphisms. Replacing that with Prop-level
+nonemptiness changes the interface: it does not generally permit extracting
+a term in Type. There is also a distinction between merely having a witness
+family and requiring equations relating its choices across different models;
+the current interface asks only for the family.
+
+`TmModelInhabited` 返回实际态射。将其改成 Prop 层非空性会改变接口：通常不能
+从中提取 Type 中的项。拥有见证族，与要求该族在不同模型的选择之间满足方程，
+也是不同的要求；当前接口只要求见证族。
+
+The library's `↔` is `iffT`, a pair of maps between Types. It does not assert
+that the maps are inverse, that the Types are equal, or that arbitrary model
+witnesses equal the interpretation of the extracted term.
+
+库中的 `↔` 是 `iffT`，即 Types 之间的一对映射。它不断言映射互逆、Types 相等，
+也不断言任意模型见证等于提取项的解释。
+
+At the common bound `Cat@{b b e l l}`, objects and hom carriers have bound `b`,
+hom equality witnesses have bound `e`, and category laws use auxiliary `l`.
+The syntactic model fits its required constraints, including separated levels
+`b < e < l`. Quantifying over these model records lives in a suitably larger
+universe, not in an assumed small universe containing all categories.
+General soundness allows other model-size arrangements as well.
+
+在共同界 `Cat@{b b e l l}` 中，对象和 Hom 载体的界为 `b`，Hom 相等见证的
+界为 `e`，范畴律使用辅助宇宙 `l`。语法模型符合所需约束，包括分离层级
+`b < e < l`。对模型记录的量化位于适当的更大宇宙，不是假定存在一个包含所有
+范畴的小宇宙。一般可靠性还允许其他模型大小排列。
+
+## 12. Boundaries and checks / 边界与检查
+
+These results do not supply normalization, decidable beta/eta equality,
+inhabitation search, type inference for raw untyped terms, or a syntax with
+primitive constants. Those are separate constructions. No function
+extensionality, proof irrelevance, UIP, choice, resizing or quotient axiom
+is introduced by the present proofs.
+
+这些结果不提供正规化、βη 相等判定、可居留性搜索、无类型原始项的类型推断，
+也不提供带原始常量的语法。这些属于独立构造。现有证明没有引入函数外延、
+证明无关性、UIP、选择、大小重设或商公理。
+
+The tutorial examples compile with the library. The retained universe regression
+in [Universes](../tests/Universes.v) checks the goal interfaces with separated
+levels. Focused `Print Assumptions` commands are temporary audits rather than
+compiled reference material. Build and validate with the initialized toolchain:
+
+教程例子与库一起编译。[Universes](../tests/Universes.v) 中保留的宇宙回归检查
+目标接口的分离层级。针对性的 `Print Assumptions` 是临时审计，不是编译进库的
+参考材料。使用已初始化的工具链构建与验证：
+
+```sh
+opam exec --switch=rocq-env -- nix-shell --run \
+  'dune build @all @runtest @install'
 ```
 
-右侧正是把最新变量替换为 a、其余环境保持不变的解释。
-函数 η 的范畴形式由 `exponential_app_η` 给出：
-
-```text
-curry (app (f ∘ π1) π2) ≈ f
-```
-
-这里 `f ∘ π1` 是将 f 弱化到扩张上下文。积 βη 使用 `product_β1`、
-`product_β2`、`product_η`；单位 η 使用 `term_η`。
-所有构造的合同性用 `Proper` 证明，等式的对称、传递用指定关系的等价律。
-
-### 已实现的语法等式接口
-
-[STLC.Equivalence](../theories/STLC/Equivalence.v) 的 `TmEq`，记为 `t ≈βη u`，
-由反身、对称、传递、各项构造器同余，以及单位 η、积 β₁/β₂/η、函数 β/η
-生成。它是有限推导的 Type 值关系，没有商类型，也不比较推导见证。
-
-替换稳定性不是额外生成规则：`tm_eq_rename` 与 `tm_eq_subst` 从生成规则归纳
-证明。函数 β 分支复用原始单变量代入交换律 `rename_single`／`subst_single`；
-函数 η 分支复用弱化相容性。这样以后对 βη 推导的归纳只需处理基本等式规则。
-
-`SubTmEq`（`σ ≈SubTm τ`）逐点比较 βη 相等的赋值；原始 `SubEq` 仍表示逐点
-结构相等。`subst_tm_ext` 证明逐点更换为 βη 相等的赋值保持替换结果；
-`subst_tm_proper` 将它与项本身的替换稳定性合并。绑定提升、替换复合、扩张和
-单变量代入均保持这套相等，各项构造器也具有对应的 `Proper` 实例。
-
-[STLC.Set](../theories/STLC/Set.v) 将项和同时替换分别封装为 `TmS Γ A`、
-`SubS Δ Γ`。`tm_rename_resp`、`tm_subst_resp` 和 `tm_subst_assignment_resp`
-分别打包重命名、固定替换的项作用，以及固定项的赋值作用。载体仍是原始项／
-替换；映射按原有递归定义计算，不执行 βη 正规化。
-
-签名和项载体位于 b，相等推导可位于任意 e ≥ b；特别允许 b < e。
-这里 b ≤ e 是这项具体构造的大小要求：Type 值传递规则保留一个中间项。
-广集基础没有因此增加全局大小约束。相等见证与定律证明使用的辅助宇宙也不必
-等于项载体宇宙。`TmS`、`SubS` 及上述保相等映射均保留这个选择。
-
-`tm_eval_sound` 按这些生成规则归纳，`tm_interp_sound` 给出通常的上下文版本；
-它们将范畴 βη 定律与全部具体语法生成规则正式联系起来。
-
-## 5. 通用伴随、语法 CCC 与自由性质
-
-[Adjunction](../theories/Cat/Adjunction.v) 以一个 `Class` 保存两侧 Hom
-函子之间的自然同构：
-
-```text
-A : F ⊣ G
-adjunction_hom A : LeftHomF F ≅N RightHomF G
-```
-
-这两个函子在 [Hom](../theories/Instance/Set/Hom.v) 中由已有 `HomF`、
-函子乘积与复合构造，函子律直接复用。它们的值分别是提升后的
-`HomSet (F X) Y` 与 `HomSet X (G Y)`。
-原始字段只保存自然同构，不额外保存转置、单位、余单位或三角恒等式。
-
-`adjunct A f`（记号 `f^♯[A]`）从正向分量提取，
-`unadjunct A g`（记号 `g^♭[A]`）从分量逆提取。
-它们尊重 hom 指定的相等，满足互逆的 `adjunction_β` / `adjunction_η`。
-正向自然性从原始自然变换得到，逆向自然性复用 `NatIso_inv`；
-不要求分别证明两组自然性。
-
-单位、余单位是转置的恒等态射：`η X := id^♯[A]`、`ε Y := id^♭[A]`。
-它们的自然性、两条三角恒等式和唯一分解性质全部导出：
-
-```text
-η : IdF ⇒ G ∘F F
-ε : F ∘F G ⇒ IdF
-ε(F X) ∘ fmap F (η X) ≈ id
-fmap G (ε Y) ∘ η(G Y) ≈ id
-```
-
-`adjunct_unit` / `unadjunct_counit` 进一步导出熟悉的公式
-`f^♯[A] ≈ fmap G f ∘ η X`、`g^♭[A] ≈ ε Y ∘ fmap F g`。
-这些结论对任意两个范畴成立，不将源范畴特化为集合范畴或 CCC。
-
-`AdjunctionFromHom` 是构造这个自然同构的便利接口：接受两个互逆的
-尊重映射，以及正向映射在源对象和目标对象上的自然性。
-任意逐点同构并不自动自然；这部分证据必须提供一次。
-如果已有自然同构，则直接填入 `adjunction_hom`，不用通过这个便利接口重证。
-`adjunct_from_hom` / `unadjunct_from_hom` 说明所得转置与原映射逐点相等。
-`IdAdjunction` 和 `CompAdjunction` 分别给出恒等伴随与伴随复合；
-复合复用 hom 对应的构造，不重复证明单位／余单位的长复合等式。
-
-[Set.Adjunction](../theories/Instance/Set/Adjunction.v) 允许将已有伴随的
-同构重新放入合适的共同广集宇宙：
-
-```text
-adjunction_hom_nat_iso:
-  LeftHomF F ≅N RightHomF G
-
-LeftHomF F (X,Y)  = ↑S HomSet (F X) Y
-RightHomF G (X,Y) = ↑S HomSet X (G Y)
-```
-
-两边是 `C^op ×C D` 上的函子。共同目标 `SetCat` 的载体宇宙分别容纳
-C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
-不要求两个源 hom 具有相同大小，也不要求载体与相等见证大小相同。
-提升由 `LiftT` 包装和投影计算，不使用 resizing。
-
-固定 X 后，`ProductRF X`（记号 `(-× X)`）与 `ExponentialF X`
-（记号 `(-^ X)`）的态射作用分别为 `σ × id` 和 `exponential_map`。
-`ProductF` 还给出两个参数同时变化的积双函子。
-`ProductExponentialAdjunction X` 将 `curry` / `uncurry` 实例化为通用伴随：
-
-```text
-(-) × X ⊣ (-)^X
-```
-
-`exponential_adjunct` / `exponential_unadjunct` 将通用转置与原有
-`curry` / `uncurry` 对齐。这里仅需要积与指数对象，无需终对象；
-具体广集模型及其选定 CCC 仍须显式启用。
-
-### 已实现的上下文语法范畴
-
-[STLC.Category](../theories/STLC/Category.v) 选择上下文及同时替换作为语法范畴
-`CtxCat B` 的对象与态射：
-
-```text
-Ob                  = Ctx B
-HomSet Δ Γ          = SubS Δ Γ
-id                  = idSub
-σ ∘ τ               = σ ∘Sub τ
-σ ≈ τ               = σ ≈SubTm τ
-```
-
-因此 Hom 相等恰好是已定义的逐点 βη 相等，未加入更强的关系。复合的
-respectfulness 来自 `sub_comp_tm_proper`，单位与结合律来自原始替换定律，
-再逐点嵌入 βη 相等。`CtxCat_HasTerminal` 选择空上下文，唯一态射为 `sub_empty`。
-
-[STLC.Context](../theories/STLC/Context.v) 定义上下文连接 `Γ ++Ctx Δ`、两侧变量
-嵌入 `ren_append_l`／`ren_append_r`，以及赋值配对 `⟨σ,τ⟩Sub`。配对沿第二个
-上下文递归扩张；沿两侧嵌入限制后分别恢复 σ、τ，任意赋值也由这两个限制恢复。
-这些分解律使用原始逐点结构相等，不比较函数。配对同时保持原始相等和 βη 相等。
-
-[STLC.Product](../theories/STLC/Product.v) 用这些操作证明完整的积泛性质
-`ctx_append_product`，再打包为 `CtxCat_HasProduct`：
-
-```text
-Γ × Δ              = Γ ++Ctx Δ
-π1                 = RenSub (ren_append_l Γ Δ)
-π2                 = RenSub (ren_append_r Γ Δ)
-⟨σ,τ⟩              = ⟨σ,τ⟩Sub
-Γ × (∅ ▻ A)        = Γ ▻ A
-```
-
-最后一行是具体上下文数据的直接计算；泛性质中的唯一性仍使用 βη 相等。
-中介从透明泛性质提取，保持赋值查找的直接计算。两个选定结构均须显式启用，
-不会因导入而全局注册。有限积由已有的
-[Cat.Product.Finite](../theories/Cat/Product/Finite.v) 通用构造直接获得，
-无需在语法模型中重复证明。
-
-范畴可在 `b < e < l` 下实例化：b 为上下文／替换载体层级，e 为 βη 见证层级，
-l 为范畴定律辅助层级。构造支持 `b ≤ e ≤ l`，不把这三个层级强制合并。
-
-### 上下文的积类型表示
-
-[STLC.Packing](../theories/STLC/Packing.v) 将上下文编码为积类型 `CtxTy Γ`，
-记为 `⟦Γ⟧Ty`：
-
-```text
-⟦∅⟧Ty       = ⊤
-⟦Γ ▻ A⟧Ty   = ⟦Γ⟧Ty × A
-```
-
-先在任意源上下文 Δ 上构造一组可复用转换：
-
-```text
-⌜σ⌝          : Tm Δ ⟦Γ⟧Ty       （σ : Sub Δ Γ）
-⌞t⌟[Γ]       : Sub Δ Γ           （t : Tm Δ ⟦Γ⟧Ty）
-
-ctx_pack_β:  ⌞⌜σ⌝⌟[Γ] ≈SubTm σ
-ctx_pack_η:  ⌜⌞t⌟[Γ]⌝ ≈βη t
-```
-
-`ctx_pack` 将赋值递归配成嵌套积，`ctx_unpack` 沿积投影逐次恢复赋值。
-β 使用积 β 方程及已有替换扩张 η；η 使用单位 η 和积 η。它们保持指定的
-βη 相等，并打包为 `ctx_pack_resp`／`ctx_unpack_resp` 两个保相等映射。
-项仍然是原始语法，投影和配对按构造器计算，η 方程由 βη 推导给出。
-
-替换相容性先在原始语法层证明：
-
-```text
-ctx_pack_subst:    ⌜σ⌝[τ] = ⌜σ ∘Sub τ⌝
-ctx_unpack_subst:  (⌞t⌟[Γ]) ∘Sub σ ≈Sub ⌞t[σ]⌟[Γ]
-```
-
-第二条逐点比较赋值，没有要求函数相等。于是打包恒等赋值、拆包单个变量即可
-得到两条替换 `ctx_pack_sub Γ`／`ctx_unpack_sub Γ`；它们的互逆律复用上述
-通用转换及替换相容性，不为这个特例另证一套投影计算。
-
-`ctx_pack_iso Γ` 最终给出已有范畴同构接口中的
-
-```text
-Γ ≅[CtxCat B] (∅ ▻ ⟦Γ⟧Ty).
-```
-
-同构的正反向替换保持透明，取出后可直接计算变量赋值；其宇宙也允许
-`b < e < l`。这为后续通过函数类型构造任意上下文之间的指数对象提供桥梁。
-
-### 语法指数对象与 CCC
-
-[STLC.Exponential](../theories/STLC/Exponential.v) 先证明单变量上下文的指数
-泛性质：参数为 `∅ ▻ A`，结果为 `∅ ▻ U`，表示对象为 `∅ ▻ (A ⇒ U)`。
-`singleton_eval` 应用函数变量于参数变量，`singleton_curry`（`ƛSub f`）抽象
-f 的最新输入。函数 β 及原始替换律 `rename_lift_single` 给出求值方程，
-函数 η 给出转置唯一性，形成完整的 `singleton_exponential`。
-
-对任意上下文，`CtxExp Δ Γ`（`Δ ^Ctx Γ`）定义为
-
-```text
-Δ ^Ctx Γ = ∅ ▻ (⟦Γ⟧Ty ⇒ ⟦Δ⟧Ty).
-```
-
-`ctx_eval Γ Δ` 打包参数块、执行单变量求值、再拆包结果。其数据使用透明的
-替换复合与赋值配对。`ctx_exponential` 利用上下文打包同构及上述一般运输定理
-得到完整泛性质，没有为任意上下文重复证明函数 βη 或唯一性。
-
-`CtxCat_HasExponential` 将这些数据组装为相对于既有连接积的选定指数结构。
-[STLC.CCC](../theories/STLC/CCC.v) 再以 `CtxCat_CCC` 组合选定终对象、积和指数。
-它们都须显式启用；导入不会全局选择模型结构。求值和从泛性质提取的转置均可
-直接计算，包含空上下文与多变量上下文；整体结构仍允许 `b < e < l`。
-
-至此语法 CCC 已构造；任意 CCC 中的解释、语义替换与可靠性也已实现如下。
-[STLC.TypeCategory](../theories/STLC/TypeCategory.v) 另构造类型呈现 `TyCat B`：
-对象是简单类型，Hom 是单变量上下文间的替换，指定相等仍为逐点 βη。
-范畴数据复用一般的 [InducedCat](../theories/Cat/Induced.v)；选定终对象、积与
-指数分别是语法单位、积与函数类型。`singleton_product` 对任意源上下文证明
-积类型的泛性质；函数类型沿 `type_pair_iso` 的积比较继承已有的
-`singleton_exponential`，没有重复证明函数 η。
-
-[STLC.Quotation](../theories/STLC/Quotation.v) 的 `syntax_eval` 按字面类型的
-CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境中的各个项；
-绑定情形显式处理积编码与弱化。`syntax_eval_retract` 因而在恒等环境中恢复每条
-单变量箭头。这是规范模型还原的核心，不把递归类型解释与恒等函数判为原生相等。
-类型呈现的完整 CCC 也在 `b < e < l` 下保留一项永久接口回归。
-[STLC.ContextEquivalence](../theories/STLC/ContextEquivalence.v) 用 `SingletonF` 与
-`PackF` 给出两个方向的函子；两个复合均自然同构于恒等，最终打包为
-`ContextCategoryEquivalence : TyCat B ≃C CtxCat B`。一般的代表／嵌入论证复用
-`InducedRepresentativesF`，未在语法模型中重证范畴律。
-`CatCatHom` 逐点重新组装函子的定律字段，使两个方向可使用 `CatCat` 的共同
-证明宇宙，同时保持对象、态射映射和 `b < e < l` 分层。
-
-### 任意 CCC 中的解释与可靠性
-
-[STLC.Semantics](../theories/STLC/Semantics.v) 为任意选定 CCC 及基类型解释
-`I : B → Ob C` 定义 `TyI`、`CtxI` 与 `tm_interp`。类型按终对象、积和指数递归
-解释，上下文从终对象开始迭代取积。共享记号为 `⟦A⟧Ty[I]`、`⟦Γ⟧Ctx[I]`、
-`⟦t⟧Tm[I]`，位于 `stlc_sem_scope`。
-
-证明先对任意源对象 X 上的环境 `Env I X Γ` 进行。`tm_eval_comp`、
-`tm_eval_rename` 与 `tm_eval_subst` 分别处理预合成、重命名和同时替换，
-绑定情形使用积投影与指数转置的自然性。`tm_eval_sound` 按 βη 推导归纳，
-其函数 β/η 分别复用一般的 `exponential_app_β`／`exponential_app_η`。
-
-[STLC.Interpretation](../theories/STLC/Interpretation.v) 用 `env_tuple` 表示环境，
-以 β/η 给出投影与元组的互逆行为。于是 `sub_interp` 把同时替换解释为上下文
-之间的态射，`tm_interp_subst` 证明语法替换恰好表示预合成，`InterpretF` 将其
-组装为 `CtxCat B → C` 的函子。源 βη 见证可以严格高于语法载体，目标 Hom
-载体与相等见证的大小也无固定顺序；永久回归只保留这两种排列的函子接口。
-
-`tm_interp_sound` 证明每个 βη 推导在所有这些模型中成立。不使用函数原生
-相等，不附加选择、证明无关性或外延公理。规范解释还原与完备性见下节；
-自由性质由下面的独立自然变换唯一性定理完成。
-
-### 保持结构的函子与解释比较
-
-[Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 的 `IsCartesianF`
-要求像终对象和像积满足完整泛性质。[Functor.Closed](../theories/Cat/Functor/Closed.v)
-的 `IsCCCF` 再要求规范指数比较可逆。积的比较、逆比较及其自然性均由泛性质
-导出；指数比较由像求值转置而得。它们不要求选定对象或函子记录原生相等。
-`functor_pair`、`functor_curry` 与 `functor_eval` 给出通常的保持方程。
-
-[STLC.TypeInterpretation](../theories/STLC/TypeInterpretation.v) 构造类型呈现上的
-`TypeInterpretF`，并证明 `TypeInterpretF_IsCCCF`。单变量直接在其类型对象上
-解释，避免添加终对象因子。
-[STLC.Comparison](../theories/STLC/Comparison.v) 对任意 `IsCCCF` 函子 F 和指定
-基类型同构 `I b ≅ F (ty_base b)`，递归构造 `type_compare` 与 `context_compare`。
-`type_compare_eval_term` 按项归纳证明变量环境比较与每个项相容；由字面求值
-还原，得到 `type_interpretation_nat_iso : TypeInterpretF I ≅N F`。
-`context_compare_term` 同时把普通上下文解释与打包后的项表示联系起来。
-
-一般同构复合、取逆及积／终对象唯一性的见证现在先通过投影构造箭头，再处理
-互逆律，保证对未知输入见证也能提取数据。类型比较在 `b < e < l` 和两种目标
-Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一个自然同构接口。
-
-### 自由 CCC 的完整扩张性质
-
-[STLC.Free](../theories/STLC/Free.v) 为统一入口。给定任意 CCC C 和
-`I : B → Ob C`，`TypeInterpretF I` 是选定的 CCC 函子，且其基类型对象就是 I。
-对任意其他 `IsCCCF` 函子 F 与基类型同构 `β b : I b ≅ F (ty_base b)`，
-`type_interpretation_universal` 返回：
-
-```text
-∃ α : TypeInterpretF I ≅N F,
-  is_unique
-    (λ η : TypeInterpretF I ⇒ F,
-       ∀ b, η (ty_base b) ≈ (β b).1)
-    α.1
-```
-
-`type_comparison_unique` 证明唯一性：投影自然性决定积分量，求值自然性与
-可逆参数比较决定函数类型分量；再对类型结构归纳。唯一性覆盖所有符合基类型
-条件的自然变换，无须额外给它们附加保持积／指数的字段。
-比较的是自然变换的逐点指定相等，不是自然性证明、逆律见证或函子记录的相等。
-这给出固定基类型比较后的构造性唯一扩张，同时保留比较与逆映射的数据。
-
-这里的自由陈述以类型呈现为源；上下文呈现已有上述显式等价，并保留其直接的
-嵌套积解释 `InterpretF`。选定结构的保持使用 `IsCCCF` 的规范可逆比较，未要求
-选定对象具有 Rocq 原生相等。强正规化、可判定相等、项常量签名扩展均不属于
-当前自由 CCC／等式完备性结果的前提或验收内容。
-
-## 6. 完备性与验证边界
-
-[STLC.Equational](../theories/STLC/Equational.v) 已证明以下等价：
-
-```text
-Γ ⊢ t ≡βη u : A
-  ↔ 对所有合适大小的 CCC C 及签名解释 I，⟦t⟧C,I ≈ ⟦u⟧C,I
-```
-
-`tm_soundness_iff_completeness` 正向使用可靠性；反向取类型语法 CCC，
-由 `context_compare_term` 和 `quote_tm_faithful` 证明
-`tm_interp_canonical_reflect`：递归规范解释反映原项的 βη 相等。
-关键是语法模型的态射相等恰好是选定的 βη，不能意外加入更强的相等。
-这个反向论证不以强正规化或可判定相等为前提；自由映射性质需另行证明。
-只在 `SetCat` 模型中相等不能直接使用此论证，因为量化中必须包含语法模型。
-
-形式陈述时采用宇宙多态的一族定理，明确模型大小界并容纳语法 CCC；
-`TmModelEq` 量化 `Cat@{b b e l l}` 以及该界内任意选定 CCC 与基类型解释。
-此共同界明确包含语法模型；一般可靠性仍适用于其他大小排列的模型。
-不假设能在一个小宇宙内收集所有 CCC，也不通过 resizing 合并大小。
-态射载体、相等见证以及定律辅助宇宙保持独立。
-
-### 6.1. Inhabitation / provability completeness
-
-[STLC.Inhabitation](../theories/STLC/Inhabitation.v)
-defines `TmModelInhabited Γ A`, which supplies a morphism `CtxI I Γ → TyI I A` for
-every CCC and base interpretation at exactly the common universe bounds of
-`TmModelEq`. It is a uniform family of witnesses in `Type`, not a Prop-only
-nonemptiness assertion. The two constructive directions are
-`tm_inhabitation_soundness` and `tm_inhabitation_completeness`, bundled by
-`tm_inhabitation_soundness_iff_completeness`:
-
-```text
-Tm Γ A ↔ ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → Ob C),
-            Hom_C (CtxI I Γ) (TyI I A)
-```
-
-Soundness evaluates the term with `tm_interp`. Completeness instantiates
-the family with `TyCat B`, `TyCat_CCC B` and `ty_base`. The existing
-`type_compare` and inverse `context_compare` maps for `IdF` turn the chosen
-semantic morphism into a literal arrow `CtxTy Γ → A`. This arrow is a
-singleton-context substitution; taking its `var_zero` component and
-substituting `ctx_pack_sub Γ` gives a term in the original context.
-
-This is inhabitation completeness for the truth, conjunction and implication
-fragment under Curry–Howard–Lambek. It complements equational completeness;
-the bundled maps assert neither equality of witnesses nor inverse laws.
-No untyped syntax, normalization, decidable equality, or additional axiom
-is required.
-
-The flat modules [Equational](../theories/STLC/Equational.v) and
-[Inhabitation](../theories/STLC/Inhabitation.v) share the syntactic CCC and
-comparison theory; each states soundness and completeness for its own goal.
-
-### 6.1. 可居留性／可证性完备性
-
-`TmModelInhabited Γ A` 在与 `TmModelEq` 完全相同的共同宇宙界内，为每个
-CCC 及基类型解释给出态射 `CtxI I Γ → TyI I A`。它是 `Type` 中统一给出的
-见证族，并非只有 Prop 非空性的断言。`tm_inhabitation_soundness` 与
-`tm_inhabitation_completeness` 给出两个构造方向，
-`tm_inhabitation_soundness_iff_completeness` 将它们打包。
-
-可靠性通过 `tm_interp` 解释项。完备性将见证族实例化为 `TyCat B`、
-`TyCat_CCC B` 和 `ty_base`。对 `IdF` 使用已有的 `type_compare` 与
-`context_compare` 的逆，将语义态射转为字面箭头 `CtxTy Γ → A`。
-该箭头是单变量上下文替换；取其 `var_zero` 分量，再代入 `ctx_pack_sub Γ`，
-便得到原上下文中的项。
-
-这是 Curry–Howard–Lambek 对应下真、合取、蕴含片段的可居留性完备性，
-补充已有的等式完备性。打包的映射不断言见证相等或互逆律，
-不需要无类型语法、正规化、可判定相等或任何额外公理。
-
-平铺的 [Equational](../theories/STLC/Equational.v) 与
-[Inhabitation](../theories/STLC/Inhabitation.v) 共享语法 CCC 与比较理论，
-各自陈述对应目标的可靠性与完备性。
-
-### 6.2. Validation / 验证
-
-The inhabitation addition passes `dune build @all @runtest @install` with
-Rocq 9.0.1, OCaml 5.3.0 and Dune 3.23.1. Its retained interface regression
-`separated_stlc_inhabitation` requires `b < e < l`. Temporary
-`Print Assumptions` checks of the five new definitions and that regression
-report no additional axioms; their output is not part of the compiled sources.
-
-可居留性增量在 Rocq 9.0.1、OCaml 5.3.0 与 Dune 3.23.1 下通过
-`dune build @all @runtest @install`。保留的接口回归
-`separated_stlc_inhabitation` 要求 `b < e < l`。对五项新增定义及该回归的
-临时 `Print Assumptions` 检查均无额外公理，输出未加入编译源码。
-
-常驻回归见 [Universes](../tests/Universes.v)：指数转置、伴随与自然 hom 同构
-在两种载体／相等见证宇宙排列下均可实例化；通用伴随还连接 hom 大小排列
-相反的两个范畴，并允许共同目标广集的两个宇宙按任一方向严格分离。
-这项检查也覆盖广集映射提升时输入映射的 `Proper` 辅助宇宙独立于目标载体宇宙。
-指数双函子、反变截面与固定参数的自然同构也在两种 Hom／相等见证宇宙排列下
-检查，永久回归仅补充这六项接口检查。
-
-本地验证使用 `rocq-env` 的 Rocq 9.0.1、OCaml 5.3.0，以及项目 Nix shell
-提供的 Dune 3.23.1。`dune build @all @runtest @install` 通过。
-78 项临时 `Print Assumptions`（原有指数／积 21 项、伴随及提升 27 项、
-Hom 定义与极限增量 30 项）
-均报告无额外假设。
-本次双函子的 13 个构造与证明另经临时 `Print Assumptions` 检查，
-也均无额外假设，输出未加入编译源码。
-STLC 原始语法另检查了 18 项关键定律与构造，包括绑定提升、混合替换、复合及
-扩张 η，均无额外假设。原始语法永久回归包含两项任意签名宇宙下的重命名／替换接口，
-防止变量标记的多余宇宙参数限制任意项的实例化。
-βη 增量另检查了 29 项定义与证明，覆盖生成关系、两类等价关系、重命名／替换
-稳定性、`Proper` 实例、广集封装及三条原始代入交换律，均无额外假设。
-新增的五项永久宇宙接口检查要求 b < e，覆盖项／替换广集及三种保相等映射，
-防止宇宙推断意外压缩相等见证层级。
-上下文范畴增量另对 13 项构造与证明作临时 `Print Assumptions` 检查，均无额外
-假设。再增加三项永久接口回归，要求 `b < e < l`，覆盖范畴及选定终对象／积，
-防止直接填入 `Proper` 证明时把相等见证层级与定律层级意外合并。
-上下文打包增量另有 14 项临时公理检查，覆盖两类转换、βη、替换相容性、
-保相等映射及上下文同构，均无额外假设。永久测试只追加一项打包同构的
-`b < e < l` 接口检查。
-语法 CCC 增量另对 14 项定义与证明作临时公理检查，包括一般同构／求值相等
-运输、积因子交换、原始替换辅助律、透明同构取逆及语法指数构造，均无额外
-假设。永久测试只追加一项完整语法 CCC 的 `b < e < l` 接口回归。
-
-临时广集实例以布尔对为载体、只比较第一分量，且每个相等保留额外布尔见证。
-检查了不同但等价的映射代表、转置及其逆的直接计算、提升后自然同构的
-正逆映射计算、伴随复合的转置计算、βη 与三角恒等式，
-以及具体 CCC 与伴随需显式启用。转置记号也检查了连续书写。
-极限增量另检查了单对象图式中的中介计算、右伴随保持极限所得中介的计算，
-以及从锥范畴终对象唯一性提取的极限比较同构的正逆映射计算。
-双函子增量继续使用具有额外布尔相等见证的广集，验证参数、结果变换及不同但
-等价的映射代表，双函子与反变截面的态射计算、柯里化／反柯里化／应用的计算、
-固定参数比较同构的正逆映射，以及指数记号的作用域、复合和右结合。
-语法增量临时检查了开放项在单层与双层绑定下的捕获避免、同时交换、连续替换、
-弱化、最新／旧变量的赋值计算、越界变量的拒绝，以及与范畴／DTT 模块共同导入
-时的记号兼容性。
-βη 增量临时检查了所有基本 βη 方程、β/η 在重命名及替换后的稳定性、
-βη 相等但结构不等的项及替换、绑定下逐点更换赋值、项与赋值同时改变的
-respectfulness、保相等映射的变量查找计算，以及同层宇宙实例。
-另以推导见证上的布尔观察区分反身推导与其对称推导，检查 Type 值数据可消去；
-这不为见证额外定义相等，也不声称所有等式证明都可完整归约。
-上下文范畴增量临时检查了指定 Hom 相等恰为逐点 βη 相等、恒等／复合与两侧
-投影／配对的变量查找计算、空因子及嵌套连接、配对的 βη respectfulness 和
-唯一性，以及扩张为单变量积的计算。还检查了选定结构须显式启用、通用有限积
-接口的复用及同层宇宙实例。
-上下文打包增量临时检查了空上下文和双变量上下文的积类型、嵌套配对与逐次
-投影的直接计算，βη 相等赋值的保相等转换，两个往返及替换相容性。同构中
-取出的正反向替换也检查了直接计算；同层宇宙及两种保相等映射的高见证宇宙
-接口另经临时实例化检查。还验证了单变量例子中 η 两端结构不同，以确认
-往返确实使用了指定的 βη 相等。
-语法 CCC 增量临时检查了指数对象、求值及转置的直接计算，单变量、空参数、
-空结果和多变量上下文，求值／转置的 βη 互逆律及转置 respectfulness，
-以及模型结构须显式启用。一般指数运输在 Hom 载体与相等见证大小的两种
-严格排列下均已实例化；同层语法 CCC 也已检查。
-具体广集运输另使用布尔对、仅比较第一分量且保留额外布尔相等见证，验证了
-互逆箭头的不同原始代表、同构取逆箭头的直接计算，以及运输后中介的直接
-计算。这些早期实例检查之外，现在另有一般语义可靠性与完备性定理。
-这些临时实例与公理输出保留在仓库外，未加入常驻测试。
-本地结果不代表多版本 CI；提交进度与剩余数学工作另在 #20 同步。
-
-本轮收束新增七项永久宇宙接口：语义函子的两种目标大小排列、类型 CCC、
-自然比较、完整完备性、自由扩张与两种呈现的范畴等价。它们复用理论中的证明，
-不复制数学定律。全部源层级允许 `b < e < l`。
-临时检查另外覆盖更换目标大小排列、同构和积中介在未知见证上的箭头提取、
-基类型比较及其逆的直接计算，以及带额外布尔相等见证的布尔对广集模型中的
-恒等、捕获避免、应用计算与 β 可靠性。核心构造和最终定理的临时公理审计均
-无额外假设；这些实例和 `Print Assumptions` 输出保留在仓库外。
+Use the [reading-edition guide](./Documentation.md) to export both languages.
+The milestone records are [#9](https://github.com/Godalin/rocq-cats/issues/9),
+[#20](https://github.com/Godalin/rocq-cats/issues/20), and
+[#32](https://github.com/Godalin/rocq-cats/issues/32). Reduction and normalization
+remain the independent directions [#24](https://github.com/Godalin/rocq-cats/issues/24)
+and [#25](https://github.com/Godalin/rocq-cats/issues/25).
+
+按[阅读版指南](./Documentation.md)导出两种语言。里程碑记录见
+[#9](https://github.com/Godalin/rocq-cats/issues/9)、
+[#20](https://github.com/Godalin/rocq-cats/issues/20) 和
+[#32](https://github.com/Godalin/rocq-cats/issues/32)。归约与正规化仍是独立方向
+[#24](https://github.com/Godalin/rocq-cats/issues/24) 和
+[#25](https://github.com/Godalin/rocq-cats/issues/25)。

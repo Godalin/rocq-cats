@@ -13,6 +13,32 @@ From Cats Require Import Cat.Product.Core.
     连接表示成对的同时替换；特别地，扩张一个类型就是与其单变量上下文取积。
     泛中介按变量赋值配对直接计算。 *)
 
+(** ** From tuple operations to a universal product
+
+    Given [σ : Sub Θ Γ] and [τ : Sub Θ Δ], their pairing fills the
+    concatenated context from [Θ]. The structural projection laws give
+    the two beta equations. For uniqueness, restrict a proposed mediator
+    to each block, replace those restrictions using the given hom
+    equalities, and reconstruct the whole assignment by the structural
+    eta law. This also explains why pairing must be respectful.
+
+    Thus a syntactic product is chosen context concatenation, not the
+    product-type constructor applied to contexts. Extension by [A] is
+    concatenation with its singleton context. The universal property
+    connects this concrete representation to the general category theory
+    of products, which later supplies product maps and transport. *)
+
+(** ** 从元组操作得到泛积
+
+    给定 [σ : Sub Θ Γ] 与 [τ : Sub Θ Δ]，配对用 [Θ] 填充连接上下文。
+    结构投影律给出两条 β 方程。证明唯一性时，把候选中介分别限制到两块，
+    用给定的 Hom 相等替换这些限制，再由结构 η 律重建整个赋值。
+    这也解释了为什么配对必须保持相等。
+
+    因此，语法积选取的是上下文连接，不是把积类型构造器作用于上下文。
+    扩张类型 [A] 就是连接其单变量上下文。泛性质把这个具体表示接到一般的
+    范畴积理论，后者再提供积映射与运输。 *)
+
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_sub_scope.
 

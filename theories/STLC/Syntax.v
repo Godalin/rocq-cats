@@ -11,6 +11,34 @@ From Cats Require Export Meta.
     签名由基类型标签组成，暂不含项常量。上下文为有限后接列表。原始语法以原生
     相等作为具体的结构相等；βη 相等是另外的接口。 *)
 
+(** ** Judgements as indexed data
+
+    A value of [Tm Γ A] represents a derivation that an expression has type
+    [A] with the variables listed in [Γ]. The application constructor
+    requires a function and an argument in the same context, with matching
+    argument types; abstraction extends that context by exactly one type.
+    These are typing rules encoded in constructors, not propositions to
+    establish after building an untyped tree.
+
+    [Var] uses context positions. In [∅ ▻ A ▻ U], [var_zero] selects the
+    newest variable and [var_succ var_zero] the older one. Equal declaration
+    types do not identify the two positions. [NewVar] records only the new
+    binding, which lets renaming and substitution lift under binders without
+    deciding equality of labels or transporting arbitrary equality proofs.
+    The signature currently has type labels but no primitive term constants. *)
+
+(** ** 将判断表示为带索引数据
+
+    一个 [Tm Γ A] 的值表示：某表达式在 [Γ] 列出的变量下具有类型 [A]。
+    应用构造器要求函数和实参位于同一上下文，并且实参类型匹配；抽象则恰好
+    扩张一个类型。这些是编码在构造器中的类型规则，无须先构造无类型树再证明
+    类型正确性。
+
+    [Var] 使用上下文位置。在 [∅ ▻ A ▻ U] 中，[var_zero] 选择最新变量，
+    [var_succ var_zero] 选择较旧变量。两个声明即使类型相等，位置仍然不同。
+    [NewVar] 只记录新绑定，使重命名和替换进入绑定时，无须判定标签相等或运输
+    任意相等证明。当前签名只有类型标签，没有原始项常量。 *)
+
 Declare Scope stlc_ty_scope.
 Delimit Scope stlc_ty_scope with sty.
 Declare Scope stlc_ctx_scope.

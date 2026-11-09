@@ -15,6 +15,44 @@ From Cats Require Import
     有效性在共同大小界 [Cat@{b b e l l}] 内为每个 CCC 模型携带选定态射。
     反方向复用语法 CCC 与规范比较同构，所有见证均保留在 [Type] 中。 *)
 
+(** ** The data returned by the two directions
+
+    This entry asks for a term in a context, not an equation of two terms
+    already supplied. Soundness maps a term to its interpretation in each
+    model. The input to completeness is a function of the model, its
+    chosen CCC structure and its base assignment, returning an actual
+    morphism. No coherence between different models is demanded of this
+    family, and no equality on such families is added.
+
+    Apply the family to [TyCat B]. The type comparison postcomposes its
+    morphism and the inverse context comparison precomposes it, obtaining
+    a literal arrow [CtxTy Γ → A]. Its singleton-context substitution has
+    a newest component, a term with one packed-context variable. Substituting
+    [ctx_pack_sub Γ] changes that source back to [Γ]. This extraction
+    explains both the constructivity of completeness and why a Prop-only
+    nonemptiness premise would be a different interface.
+
+    The displayed Type-valued equivalence bundles two maps. It supplies
+    neither equality of types nor inverse laws on witnesses. It concerns
+    existence of an intrinsically typed term, not typing a given untyped
+    expression and not deciding whether such a term exists. *)
+
+(** ** 两个方向返回什么数据
+
+    此入口要求上下文中的一个项，不是两个已给定项之间的等式。可靠性把项送到
+    各模型中的解释。完备性的输入是一个函数：接受模型、选定 CCC 结构与基类型
+    赋值，返回实际态射。不要求这个族在不同模型之间满足额外相干性，也不为
+    这些族另加相等。
+
+    将该族用于 [TyCat B]。在所得态射之后复合类型比较，在其之前复合上下文
+    比较的逆，得到字面箭头 [CtxTy Γ → A]。其单变量上下文替换的最新分量
+    就是只有一个打包上下文变量的项。再代入 [ctx_pack_sub Γ]，将源改回 [Γ]。
+    这既解释了完备性的构造性，也说明仅有 Prop 层非空性前提会是另一种接口。
+
+    所陈述的 Type 值等价打包两个映射，不提供类型相等或见证上的互逆律。
+    它涉及内在带类型项的存在，不为给定无类型表达式赋型，也不判定这样的项
+    是否存在。 *)
+
 Local Open Scope cat_scope.
 
 Section CanonicalInhabitation.

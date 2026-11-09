@@ -110,18 +110,23 @@ generated `reading-order.txt` records the complete order next to each export.
 Reference existing declarations in coqdoc brackets instead of duplicating proofs.
 The tutorial starts with [Basics.v](../book/Basics.v), following one Boolean
 example from categories through functors, natural transformations and products
-to limits. [STLC.v](../book/STLC.v) continues with typed syntax, substitution,
-beta/eta equality and CCC semantics, then explains the existing syntactic
-categories, equational completeness and free universal property. Its examples
-reuse library definitions and theorems. The [SVG](./branding/rocq-cats.svg)
+to limits. [STLC.v](../book/STLC.v) continues with typed syntax,
+capture-avoiding substitution, beta/eta equality and CCC semantics. It explains
+why beta/eta gives the syntactic CCC, follows both completeness proofs to their
+outputs, and distinguishes these results from the free universal property.
+Its examples reuse library definitions and theorems.
+The [theory guide](./CCCAndSTLC.md) connects the flat source modules and their
+mathematical roles. The [SVG](./branding/rocq-cats.svg)
 is the editable logo source; its
 [PNG preview](./branding/rocq-cats-preview.png) is copied into the PDF output
 for the cover, with no additional image-conversion dependency.
 
 通过 coqdoc 括号引用已有声明，无需复制证明。教程从
 [Basics.v](../book/Basics.v) 开始，用同一个布尔例子串起范畴、函子、自然变换、积与极限。
-[STLC.v](../book/STLC.v) 继续讲解带类型语法、替换、βη 相等与 CCC 语义，再介绍
-已有的语法范畴、等式完备性与自由泛性质；示例复用库中的定义与定理。
+[STLC.v](../book/STLC.v) 继续讲解带类型语法、捕获避免替换、βη 相等与 CCC
+语义，解释 βη 如何给出语法 CCC，逐步追踪两个完备性证明的输出，并与自由
+泛性质作区分；示例复用库中的定义与定理。
+[理论指南](./CCCAndSTLC.md) 将平铺源码模块及其数学职责连起来。
 [SVG](./branding/rocq-cats.svg) 是可编辑 Logo 源文件；封面直接使用复制到 PDF
 输出目录的 [PNG 预览](./branding/rocq-cats-preview.png)，不增加图片转换依赖。
 

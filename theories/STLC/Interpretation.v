@@ -12,6 +12,34 @@ From Cats Require Import
 
 (** * 上下文解释与语义替换 *)
 
+(** ** Why interpreting substitutions needs a tuple map
+
+    An interpreted context is a nested product. [env_tuple] turns one arrow
+    for each variable into an arrow to that product. Its beta law recovers
+    each component; its eta law reconstructs a map from those components.
+    These laws justify treating environments and context arrows as two
+    presentations of the same semantic data up to specified equality.
+
+    [sub_interp] tuples the interpretations of all terms assigned by a
+    substitution. The term substitution theorem becomes precomposition
+    with this arrow. Identity and composition then follow from the raw
+    substitution algebra and tuple laws. A further soundness argument
+    shows that beta/eta equal assignments have equal denotations, which is
+    the respectfulness required to assemble [InterpretF] on the syntactic
+    hom-setoids. Its arrow map is concrete data, not a choice from a
+    Prop-only existence statement. *)
+
+(** ** 为什么解释替换需要元组映射
+
+    上下文的解释是嵌套积。[env_tuple] 把每个变量的一条箭头组成指向该积的
+    箭头。β 律恢复各分量，η 律由这些分量重建映射。因此，环境与上下文箭头
+    是同一语义数据的两种表示，并按指定相等联系。
+
+    [sub_interp] 将替换所赋各项的解释组成元组，项替换定理就变成沿该箭头
+    预合成。单位与复合随后由原始替换代数及元组定律推出。另用可靠性证明
+    βη 相等赋值具有相等解释，得到组装 [InterpretF] 时所需的 Hom 广集
+    保相等性。其箭头映射是具体数据，不是从 Prop 层存在性中进行选择。 *)
+
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 

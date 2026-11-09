@@ -177,8 +177,10 @@ editorial preferences. Dependencies always come first: the text starts with
 Both languages share the same compiled Rocq chapters and TikZ-cd sources.
 Start with the [Boolean worked example](./book/Basics.v): categories, functors,
 natural transformations, products and limits. Continue with the
-[STLC chapter](./book/STLC.v): typed terms, substitution, beta/eta equality,
-CCC semantics and the existing completeness and free-CCC results.
+[STLC chapter](./book/STLC.v): typed terms, capture-avoiding substitution,
+beta/eta equality, CCC semantics, and step-by-step proofs of both completeness
+goals and the free property. The [STLC theory guide](./docs/CCCAndSTLC.md)
+provides a module map and explains the equality and universe conventions.
 The cover uses the [project logo](./docs/branding/rocq-cats.svg).
 See the [documentation guide](./docs/Documentation.md).
 
@@ -188,8 +190,10 @@ See the [documentation guide](./docs/Documentation.md).
 先于使用者，自动从 `Meta`、`Set.Core`、`Set.Morphism` 展开到 `Cat.Core`。
 两种语言共享经过编译的 Rocq 章节和 TikZ-cd
 图源。可从[布尔贯穿示例](./book/Basics.v)开始，依次学习范畴、函子、自然变换、积与
-极限。随后阅读 [STLC 章节](./book/STLC.v)，学习带类型项、替换、βη 相等、CCC
-语义，以及已有的完备性与自由 CCC 结论。封面使用[项目 Logo](./docs/branding/rocq-cats.svg)。
+极限。随后阅读 [STLC 章节](./book/STLC.v)，学习带类型项、捕获避免替换、βη
+相等、CCC 语义，以及两个完备性目标与自由性质的逐步论证。
+[STLC 理论指南](./docs/CCCAndSTLC.md) 提供模块地图，解释相等与宇宙约定。
+封面使用[项目 Logo](./docs/branding/rocq-cats.svg)。
 详见[文档指南](./docs/Documentation.md)。
 
 Basic HTML remains available through
