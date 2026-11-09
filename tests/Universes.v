@@ -1934,3 +1934,39 @@ Definition mixed_free_monad
   : Monad A
   := FreeMonad U.
 End CommaFreeLevels.
+
+From Cats Require Import
+  Cat.FreeObject.Representable.
+
+(** Pointwise representation lifts each native hom family independently.
+    Source hom equality and representing hom equality are strictly different. *)
+
+(** 逐点表示独立提升各原生 Hom 族；源 Hom 相等与表示 Hom 相等严格不同。 *)
+
+Section FreeRepresentationLevels.
+Universes o e h p v q.
+Constraint o < e.
+Constraint e < h.
+Constraint h < p.
+Constraint p < v.
+Constraint v < q.
+Context (C : Cat@{o h e _ _}) (D : Cat@{o h p _ _})
+    (U : Functor D C) `{HF : !HasFreeObjects U} (X : @Ob C).
+
+Definition mixed_free_representation
+  : FreeOb U X ⦂ Rep↑
+      (FreeHomF U X : Functor D SetCat@{v q _ _ _ _ _})
+  := universal_arrow_representation U (free_universal U X).
+
+(** A second model separates the native hom carriers as well. *)
+
+(** 第二个模型也使原生 Hom 载体处于不同层级。 *)
+
+Context (E : Cat@{o p h _ _}) (V : Functor E C)
+    `{HV : !HasFreeObjects V}.
+
+Definition mixed_free_carrier_representation
+  : FreeOb V X ⦂ Rep↑
+      (FreeHomF V X : Functor E SetCat@{v q _ _ _ _ _})
+  := universal_arrow_representation V (free_universal V X).
+End FreeRepresentationLevels.

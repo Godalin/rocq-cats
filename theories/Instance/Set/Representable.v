@@ -5,6 +5,7 @@ From Cats Require Import
 From Cats Require Import
   Instance.Set.Core
   Instance.Set.Hom
+  Instance.Set.Lift
   Instance.Set.Yoneda.
 
 (** * Representations and Universal Elements
@@ -328,3 +329,146 @@ Theorem representation_op_iso_universal {X Y : @Ob C}
 Proof. exact (representation_op_universal S X (representation_op_generic R)).2. Defined.
 
 End PresheafRepresentations.
+
+(** ** Representations at a Common Ambient Size
+
+    The representing category and the values need not have the same native
+    hom universes. Lift only the hom functor, retaining the original equality
+    inside its wrapper. No resizing or equality of native sizes is required. *)
+
+(** ** 共同环境大小中的表示
+
+    表示范畴与函子值不必具有相同的原生 Hom 宇宙。只提升 Hom 函子，在包装内
+    保留原指定相等；不要求大小重设或原生宇宙相同。 *)
+
+Definition represents_lifted@{u p +} {C : Cat}
+    (F : Functor C SetCat@{u p _ _ _ _ _}) (X : @Ob C)
+  : Type
+  := (LiftF ∘F Hom(X,-)) ≅N F.
+
+Notation "X '⦂' 'Rep↑' F" := (represents_lifted F X)
+  (at level 50, no associativity, format "X  ⦂  Rep↑  F") : cat_scope.
+
+Section LiftedRepresentations.
+Universe u p.
+Context {C : Cat} (F : Functor C SetCat@{u p _ _ _ _ _}).
+
+(** Reuse presheaf Yoneda on the opposite category for the covariant
+    lifted hom functor. Only its endpoints are repackaged. *)
+
+(** 在反范畴上复用预层 Yoneda，得到协变提升 Hom 函子的构造，只重新包装端点。 *)
+
+Program Definition LiftedYonedaN {X : @Ob C} (x : F X)
+  : (LiftF ∘F Hom(X,-)) ⇒ F
+  :=
+  {|nt Y := presheaf_yoneda_inv_resp (C := C^op)
+      (P := F ∘F FromDoubleOpF) x Y
+  |}.
+Next Obligation.
+  exact (nt_naturality (presheaf_yoneda_inv_resp (C := C^op)
+    (P := F ∘F FromDoubleOpF) x) f).
+Defined.
+
+(** A universal element represents the functor by lifted native hom-sets.
+    Its inverse is the existing unique mediator, wrapped at the ambient size. *)
+
+(** 泛元素通过提升后的原生 Hom 广集表示函子；其逆为已有唯一中介在环境大小
+    中的包装。 *)
+
+Program Definition universal_element_lifted_inverse_resp
+    {X : @Ob C} {x : F X} (Hx : x ⦂ Univ(F)) (Y : @Ob C)
+  : F Y →r LiftS@{_ _ u p} (HomSet X Y)
+  :=
+  {|func y := {|lower := (Hx Y y).1
+               |}
+  |}.
+Next Obligation.
+  intros y z E. refine {|lower := _
+                       |}.
+  exact (@func_proper _ _ (universal_element_inverse_resp F Hx Y) y z E).
+Defined.
+
+(** Assemble the lifted representation from its two respectful maps. *)
+
+(** 由两个保相等映射组装提升表示。 *)
+
+Definition universal_element_lifted_representation {X : @Ob C} {x : F X}
+    (Hx : x ⦂ Univ(F))
+  : X ⦂ Rep↑ F.
+Proof.
+  exists (LiftedYonedaN x). intros Y.
+  exists (universal_element_lifted_inverse_resp Hx Y). split.
+  - intros [f]. refine {|lower := _
+                        |}.
+    symmetry. apply (@that _ _ _ _ _ (Hx Y (fmap F f x)).2).
+    reflexivity.
+  - intros y. exact (@this _ _ _ _ _ (Hx Y y).2).
+Defined.
+
+(** Evaluate a lifted representation at the wrapped identity. *)
+
+(** 在包装的恒等箭头处求值提升表示。 *)
+
+Definition lifted_representation_generic {X : @Ob C} (R : X ⦂ Rep↑ F)
+  : F X
+  := R.1 X {|lower := id
+            |}.
+
+(** Naturality determines each component from its generic element. *)
+
+(** 自然性从泛元素确定每个分量。 *)
+
+Lemma lifted_representation_at {X Y : @Ob C} (R : X ⦂ Rep↑ F)
+    (f : Hom X Y)
+  : R.1 Y {|lower := f
+            |} ≈S fmap F f (lifted_representation_generic R).
+Proof.
+  transitivity (R.1 Y {|lower := f ∘ id
+                       |}).
+  - apply func_proper. exact {|lower := symmetry (comp_id_r f)
+                             |}.
+  - exact (nt_naturality R.1 f {|lower := id
+                               |}).
+Defined.
+
+(** The generic element is universal without identifying native hom sizes. *)
+
+(** 泛元素满足泛性质，无需等同原生 Hom 大小。 *)
+
+Definition lifted_representation_universal {X : @Ob C} (R : X ⦂ Rep↑ F)
+  : lifted_representation_generic R ⦂ Univ(F).
+Proof.
+  intros Y y. exists (lower ((R.2 Y).1 y)).
+  refine {|this := _
+          ; that := _
+          |}.
+  - transitivity (R.1 Y ((R.2 Y).1 y)).
+    + destruct ((R.2 Y).1 y) as [f].
+      symmetry. apply lifted_representation_at.
+    + exact (snd (R.2 Y).2 y).
+  - intros f Hf.
+    pose proof (fst (R.2 Y).2 {|lower := f
+                              |}) as E.
+    transitivity (lower ((R.2 Y).1 (R.1 Y {|lower := f
+                                          |}))).
+    + exact (symmetry (lower E)).
+    + apply (λ E, lower (@func_proper _ _ ((R.2 Y).1) _ _ E)).
+      transitivity (fmap F f (lifted_representation_generic R)).
+      * apply lifted_representation_at.
+      * exact Hf.
+Defined.
+
+(** Lifted representation and a universal element carry equivalent data. *)
+
+(** 提升表示与泛元素携带等价的数据。 *)
+
+Theorem represents_lifted_iff_universal_element (X : @Ob C)
+  : (X ⦂ Rep↑ F) ↔ ∃ x : F X, x ⦂ Univ(F).
+Proof.
+  split.
+  - intros R. exists (lifted_representation_generic R).
+    apply lifted_representation_universal.
+  - intros [x Hx]. exact (universal_element_lifted_representation Hx).
+Defined.
+
+End LiftedRepresentations.

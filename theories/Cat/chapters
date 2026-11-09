@@ -8,6 +8,8 @@ Exponential/Core.v
 CCC.v
 Monoidal
 Monad
+Comma
+FreeObject
 Diagram
 Limit
 Colimit
