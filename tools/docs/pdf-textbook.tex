@@ -34,6 +34,8 @@
 \fancypagestyle{plain}{\fancyhf{}
   \fancyfoot[R]{\sffamily\small\color{catsBlue}\thepage}
   \renewcommand{\headrulewidth}{0pt}}
+% Unstarred break padding keeps continued frames within the page height.
+% 不带星号的跨页留白保持代码框位于页面高度以内，不自动扩大页面。
 \tcbset{cats code/.style={enhanced jigsaw,breakable,
   colback=catsPaper,colframe=catsBorder,coltext=catsInk,
   boxrule=.5pt,arc=5pt,outer arc=5pt,
@@ -42,7 +44,7 @@
   colbacktitle=catsPaper,coltitle=catsBlue,
   fonttitle=\sffamily\footnotesize\bfseries,
   titlerule=.4pt,toptitle=5pt,bottomtitle=5pt,
-  pad at break*=5pt,lines before break=3}}
+  pad at break=5pt,lines before break=3}}
 \tcbset{cats semantic/.style={},
   cats theorem/.style={colback=white,
     borderline west={1pt}{0pt}{catsBlue}}}

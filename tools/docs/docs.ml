@@ -205,10 +205,9 @@ let pdf ?(design = false) root output tag paths =
     "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
     "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
   let zh = tag = "zh" in
-  let body = read (dir ^ "/body.tex") in
+  let body = Pdf.compact (read (dir ^ "/body.tex")) in
   let body = if design then Preview.body
     ~proof_anchor:"Cats.Cat.Natural.NatIso is iso" body else body in
-  let body = Pdf.compact body in
   write (dir ^ "/body.tex") body;
   if design then begin
     write (dir ^ "/targets.tex") (Preview.targets body);

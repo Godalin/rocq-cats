@@ -49,6 +49,13 @@ amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
 工具不安装依赖。本地验证：Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、
 TeX Live 2025。
 
+Both PDF modes normalize coqdoc's native blank-row and indentation markers
+before layout and optional code-frame decoration, following the
+[code-fragment spacing requirements](./ExportRequirements.md#interface-explanations).
+
+两种 PDF 模式都在排版和可选代码框装饰之前，统一处理 coqdoc 的原生空行与
+缩进标记，遵循[代码片段间距要求](./ExportRequirements.md#interface-explanations)。
+
 ## Complete abstract-category preview / 完整抽象范畴预览
 
 The preview uses the same build, language filtering and reading order:

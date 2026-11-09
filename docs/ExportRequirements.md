@@ -38,6 +38,9 @@ and exported reading editions remain bilingual.
 - Use ordinary bilingual coqdoc blocks within the declaration, English first
   and Chinese second. Preserve their native positions in both website and book
   exports; do not duplicate the interface or reconstruct it for presentation.
+- Code fragments must not retain leading or trailing blank rows from hidden
+  translations or documentation boundaries. Keep nonempty rows' indentation
+  and at most one intentional blank row between them; omit empty code frames.
 
 ## Focused proof states
 

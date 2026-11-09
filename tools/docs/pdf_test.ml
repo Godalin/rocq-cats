@@ -27,6 +27,23 @@ let () =
   check "declaration was changed" (contains result "Definition kept.");
   check "verbatim content was changed"
     (contains result "\\begin{verbatim}\n\\coqdocemptyline\n\\coqdocemptyline");
+  let field = "\\begin{coqdoccode}\n\\coqdocnoindent\n\\coqdoceol\n"
+    ^ "\\coqdocindent{1.00em}\n\\coqdoceol\n\\coqdocemptyline\n"
+    ^ "\\coqdocindent{1.00em}\n; field : Type\\coqdoceol\n"
+    ^ "\\coqdocnoindent\n\\coqdoceol\n\\coqdocemptyline\n"
+    ^ "\\coqdocindent{2.00em}\n:= value\\coqdoceol\n"
+    ^ "\\coqdocindent{1.00em}\n\\coqdoceol\n\\end{coqdoccode}" in
+  let compact_field = compact field in
+  check "field padding survived or nonempty indentation changed"
+    (compact_field = "\\begin{coqdoccode}\n\\coqdocindent{1.00em}\n"
+      ^ "; field : Type\\coqdoceol\n\\coqdocemptyline\n"
+      ^ "\\coqdocindent{2.00em}\n:= value\\coqdoceol\n"
+      ^ "\\end{coqdoccode}");
+  check "blank code still produces an empty frame"
+    (compact ("\\begin{coqdoccode}\n\\coqdocindent{1.00em}\n"
+      ^ "\\coqdoceol\n\\end{coqdoccode}") = "");
+  check "code compaction is not idempotent"
+    (compact compact_field = compact_field);
   let mappings = symbols "×C ⇒ ∀ κ ⦂ ∞ 中文，全角。 ×C" in
   List.iter (fun token -> check ("missing Unicode mapping " ^ token)
     (contains mappings token)) ["{D7}"; "{21D2}"; "{2982}"; "{221E}"];

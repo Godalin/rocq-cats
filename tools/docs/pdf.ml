@@ -4,19 +4,43 @@
 (* PDF 排版调整仅作用于 coqdoc 处理共享编译源码后的结果，不改变源码位置或数学声明。 *)
 
 let compact body =
-  let lines = String.split_on_char '\n' body in
-  let rec loop code empty = function
-    | [] -> []
+  let indentation = Str.regexp "^\\\\coqdocindent{[0-9.]+em}$" in
+  let is_indent line = line = "\\coqdocnoindent"
+    || Str.string_match indentation line 0 in
+  (* Coqdoc emits an empty row as an indentation prefix followed by eol,
+     as well as using emptyline. Keep the prefix of each nonempty row. *)
+
+  (* coqdoc 既用 emptyline，也用缩进前缀与 eol 表示空行。
+     压缩时保留每个非空行的缩进前缀。 *)
+
+  let rec code seen gap indent acc = function
+    | [] -> List.rev acc
     | line :: rest ->
         let trimmed = String.trim line in
-        if trimmed = "\\begin{coqdoccode}" then line :: loop true false rest
-        else if trimmed = "\\end{coqdoccode}" then line :: loop false false rest
-        else if code && trimmed = "\\coqdocemptyline" then
-          if empty then loop code true rest else line :: loop code true rest
-        else if trimmed = "" then line :: loop code empty rest
-        else line :: loop code false rest
+        if is_indent trimmed then code seen gap (Some line) acc rest
+        else if trimmed = "\\coqdoceol" || trimmed = "\\coqdocemptyline" then
+          code seen true None acc rest
+        else if trimmed = "" then code seen gap indent acc rest
+        else
+          let acc = if seen && gap then "\\coqdocemptyline" :: acc else acc in
+          let acc = match indent with None -> acc | Some line -> line :: acc in
+          code true false None (line :: acc) rest
   in
-  String.concat "\n" (loop false false lines)
+  let rec block acc = function
+    | [] -> invalid_arg "unterminated coqdoc code environment"
+    | line :: rest when String.trim line = "\\end{coqdoccode}" ->
+        code false false None [] (List.rev acc), line, rest
+    | line :: rest -> block (line :: acc) rest
+  in
+  let rec loop = function
+    | [] -> []
+    | line :: rest when String.trim line = "\\begin{coqdoccode}" ->
+        let contents, ending, rest = block [] rest in
+        if contents = [] then loop rest
+        else line :: contents @ (ending :: loop rest)
+    | line :: rest -> line :: loop rest
+  in
+  String.concat "\n" (loop (String.split_on_char '\n' body))
 
 let symbols body =
   let found = Hashtbl.create 128 in

@@ -111,7 +111,7 @@ let () =
          identity_prose; identity]))
       [page, "interface_carrier", "interface_identity";
        latex, "interface\\_carrier", "interface\\_identity"];
-    let presented = Docs_pdf.Preview.body latex in
+    let presented = Docs_pdf.Preview.body (Docs_pdf.Pdf.compact latex) in
     let rec declarations text =
       let opening = "\\coqdef{" in
       try
