@@ -14,6 +14,21 @@ From Cats Require Import
   Instance.Set.Colimit
   Instance.Set.Pushout.
 
+From Cats Require Import
+  Instance.Set.Simplicial.Vertex.Coskeletal.
+
+(** Coskeletal vertex-nerve structures also require explicit enabling. *)
+
+(** 顶点 nerve 的余骨架结构同样需要显式启用。 *)
+
+Section VertexCoskeletalChoice.
+Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+
+Fail Definition unchosen_vertex_coskeletal
+  : Nᵥ(T) ⦂ Cosk[2%nat]
+  := ltac:(typeclasses eauto).
+End VertexCoskeletalChoice.
+
 (** Importing concrete models alone must not silently choose structures. *)
 
 (** 仅导入具体模型不得隐式选择结构。 *)

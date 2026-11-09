@@ -1,7 +1,7 @@
 From Cats Require Export
   Cat.Chain
-  Instance.Set.Simplicial.Vertex
-  Instance.Set.VertexRelabel.
+  Instance.Set.Simplicial.Vertex.Core
+  Instance.Set.Vertex.Relabel.
 
 Local Open Scope nat_scope.
 

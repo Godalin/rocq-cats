@@ -77,25 +77,25 @@ A category theory library for self study.
   functor laws. Its [boolean model](./theories/Instance/Bool/Nerve.v) has
   distinct identity and nontrivial loops, and proves that their images in the
   diagram nerve become equal.
-  The [vertex nerve](./theories/Instance/Set/Simplicial/Vertex.v), `Nᵥ(T)`,
+  The [vertex nerve](./theories/Instance/Set/Simplicial/Vertex/Core.v), `Nᵥ(T)`,
   extends this distinction to categories equipped with an object setoid and
   a coherent object action `T : EqGpd(X) → C`. Its
-  [labelled diagrams](./theories/Instance/Set/VertexDiagram.v) compare vertices
+  [labelled diagrams](./theories/Instance/Set/Vertex/Core.v) compare vertices
   by the specified setoid equality and arrows by squares with the prescribed
   transports. Consecutive arrows suffice to check simplex equality.
-  The [singleton comparison](./theories/Instance/Set/Simplicial/MonoidVertex.v)
+  The [singleton comparison](./theories/Instance/Set/Simplicial/Vertex/Monoid.v)
   is a natural isomorphism with the original monoid nerve; forgetting vertex
   comparisons recovers the earlier map to the diagram nerve. A bare category
   does not itself select this extra object equality and transport data.
-  Full faithfulness and coskeletality for arbitrary selected categories remain
-  separate targets; the groupoid Kan theorem is described below.
-  The [spine correspondence](./theories/Instance/Set/Simplicial/Spine.v)
+  Full faithfulness remains a separate target; coskeletality for arbitrary
+  selected categories and the groupoid Kan theorem are described below.
+  The [spine correspondence](./theories/Instance/Set/Simplicial/Vertex/Spine.v)
   identifies every degree of the vertex nerve with the
-  [setoid of composable chains](./theories/Instance/Set/VertexChain.v).
+  [setoid of composable chains](./theories/Instance/Set/Vertex/Chain.v).
   Both reconstruction and its uniqueness follow from the
   [general finite-chain interpretation](./theories/Cat/Chain.v);
   simplex restriction corresponds to composing the image intervals of a chain.
-  [Local two-dimensional horns](./theories/Instance/Set/Simplicial/Horn2.v)
+  [Local two-dimensional horns](./theories/Instance/Set/Simplicial/Vertex/Horn2.v)
   fix three vertices and retain two triangle edges. Inner horns have unique
   fillers in every category; both outer restrictions are isomorphisms in a
   groupoid, and the resulting realized two-simplices are unique under the
@@ -114,17 +114,17 @@ A category theory library for self study.
   interfaces; local retained-edge equality already implies equality of the
   entire realized horn map. [Compatible horn faces](./theories/Instance/Set/Simplicial/Matching.v)
   recover the corresponding matching values and all overlap equations.
-  [Two-dimensional reconstruction](./theories/Instance/Set/Simplicial/Filling.v)
+  [Two-dimensional reconstruction](./theories/Instance/Set/Simplicial/Vertex/Filling.v)
   aligns shared endpoint labels by their specified transports and transfers
   local fillings to arbitrary actual horn maps. Every category has inner
   two-horn fillers; a groupoid on the selected objects gives all three kinds.
-  [Actual outer horn filling](./theories/Instance/Set/Simplicial/Outer.v)
+  [Actual outer horn filling](./theories/Instance/Set/Simplicial/Vertex/Outer.v)
   conversely recovers right division and groupoid structure: even the first
   outer two-horn family suffices.
   [Groupoid stars](./theories/Cat/Groupoid/Star.v) describe ordinal diagrams
-  by radial transitions from a common centre; [face overlaps](./theories/Instance/Set/Simplicial/Star.v)
+  by radial transitions from a common centre; [face overlaps](./theories/Instance/Set/Simplicial/Vertex/Star.v)
   compare these transitions using the specified vertex transport.
-  [Kan filling](./theories/Instance/Set/Simplicial/Kan.v) then glues a common
+  [Kan filling](./theories/Instance/Set/Simplicial/Vertex/Kan.v) then glues a common
   star in every dimension at least two, and fills one-horns by identity edges.
   Thus `HasKanFillers (Nᵥ(T))` is equivalent to `IsGroupoid (VertexCat T)`,
   with explicit witnesses in both directions and no choice axiom.
@@ -132,14 +132,18 @@ A category theory library for self study.
   horn in dimension at least two has a unique filler in the specified equality.
   The [boolean vertex nerve](./theories/Instance/Bool/Nerve.v) is a concrete
   all-dimensional Kan model retaining two distinct loops.
-  [Unique boundary filling](./theories/Instance/Set/Simplicial/Coskeletal.v)
-  follows generally from unique horn filling in adjacent dimensions. This
-  makes groupoid vertex nerves **2-coskeletal**: every compatible boundary in
-  dimension at least three has a unique filler. Boundary restriction is a
-  setoid isomorphism after ordinary inclusion into common value sizes.
-  Full faithfulness, arbitrary-category coskeletality and examples with
-  nontrivial higher homotopy remain separate goals; ordinary groupoid nerves
-  do not provide the latter.
+  [Coskeletality](./theories/Instance/Set/Simplicial/Vertex/Coskeletal.v) holds
+  for **every selected category**: its vertex nerve is **2-coskeletal**,
+  so every compatible boundary in dimension at least three has a unique
+  filler. General [sieve descent](./theories/Instance/Set/Simplicial/Vertex/Sieve.v)
+  reconstructs a simplex from any sieve containing all vertices, edges and
+  triangles; triangles supply composition without requiring inverses.
+  Boundary restriction is a setoid isomorphism after ordinary inclusion into
+  common value sizes. Independently, the
+  [adjacent-horn theorem](./theories/Instance/Set/Simplicial/Coskeletal.v)
+  derives unique boundary filling from unique horn filling in adjacent
+  dimensions. Full faithfulness and examples with nontrivial higher homotopy
+  remain separate goals; ordinary groupoid nerves do not provide the latter.
 
 ### ETCS
 

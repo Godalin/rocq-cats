@@ -1,5 +1,5 @@
 From Cats Require Export
-  Instance.Set.Simplicial.Filling.
+  Instance.Set.Simplicial.Vertex.Filling.
 
 Local Open Scope nat_scope.
 

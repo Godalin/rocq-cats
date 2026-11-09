@@ -3,6 +3,8 @@ From Cats Require Export
   Instance.Set.Sieve.Core.
 From Cats Require Import
   Cat.Morphism.
+From Stdlib Require Import
+  Lia.
 
 Local Open Scope nat_scope.
 
@@ -169,6 +171,44 @@ Definition boundary_face_member {n : nat} (i : Ordinal (S n))
   : δ[n; i] ∈Sv BoundarySieve (S n)
   := @generated_sieve_member Δ (S n) (Ordinal (S n)) (λ _, n)
       (λ j, δ[n; j]) i.
+
+(** Any omitted position supplies computational boundary membership. *)
+
+(** 任意省略位置都提供可计算的边界隶属见证。 *)
+
+Definition boundary_member_of_omission {m n : nat}
+    (i : Ordinal (S n)) (f : (@Hom Δ) m (S n))
+    (H : ∀ a, ¬ f a = i)
+  : f ∈Sv BoundarySieve (S n).
+Proof.
+  exists i, (CofacePreimageF i f H).
+  symmetry. apply coface_preimage_β.
+Defined.
+
+(** Above dimension two, every vertex, edge and triangle is in the
+    boundary, including degenerate simplices. *)
+
+(** 严格高于二维时，全部顶点、边与三角形均属于边界，包括退化单形。 *)
+
+Definition boundary_low_member (n m : nat) (H : m ≤ 2)
+    (f : (@Hom Δ) m (S (S (S n))))
+  : f ∈Sv BoundarySieve (S (S (S n))).
+Proof.
+  destruct m as [| [| [|m]]]; [| | | exfalso; lia].
+  - destruct (fin_avoid_triple (f fin_first) (f fin_first) (f fin_first))
+      as [i [Hi _]].
+    apply (boundary_member_of_omission i f).
+    intros [[] | []] E. apply Hi. symmetry. exact E.
+  - destruct (fin_avoid_triple (f fin_first) (f (fin_next fin_first))
+      (f (fin_next fin_first))) as [i [Hi [Hj _]]].
+    apply (boundary_member_of_omission i f).
+    intros [[] | [[] | []]] E; [apply Hi | apply Hj]; symmetry; exact E.
+  - destruct (fin_avoid_triple (f fin_first) (f (fin_next fin_first))
+      (f (fin_next (fin_next fin_first)))) as [i [Hi [Hj Hk]]].
+    apply (boundary_member_of_omission i f).
+    intros [[] | [[] | [[] | []]]] E;
+      [apply Hi | apply Hj | apply Hk]; symmetry; exact E.
+Defined.
 
 (** A retained face has a canonical horn membership witness. *)
 

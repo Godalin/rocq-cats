@@ -1,7 +1,7 @@
 From Cats Require Export
   Cat.Groupoid.Star
   Instance.Set.Simplicial.Matching
-  Instance.Set.Simplicial.Edge.
+  Instance.Set.Simplicial.Vertex.Edge.
 From Cats Require Import
   Cat.Diagram.Core
   Instance.Nat.Order.

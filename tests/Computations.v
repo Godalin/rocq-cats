@@ -1,5 +1,6 @@
 From Cats Require Import
-  Instance.Set.Simplicial.Outer.
+  Instance.Set.Simplicial.Vertex.Coskeletal
+  Instance.Set.Simplicial.Vertex.Outer.
 From Cats Require Import
   Cat.Core
   Cat.Shape.Simplex.Operators
@@ -14,7 +15,7 @@ From Cats Require Import
   Instance.Bool.Action
   Instance.Bool.Group
   Instance.Bool.Nerve
-  Instance.Set.Simplicial.Spine
+  Instance.Set.Simplicial.Vertex.Spine
   Instance.Set.Simplicial.Nerve.
 From Cats Require Import
   Cat.Adjunction
@@ -288,6 +289,20 @@ Example actual_outer_horn2_descent_computes
           horn_face_member fin_first (fin_next fin_first)
             (λ E, HornFaceComputation.retained_first_face (eq_sym E)))
       |})) (ordinal_step fin_first) = false.
+Proof. reflexivity. Qed.
+
+(** General boundary descent preserves a nontrivial arrow through sieve
+    membership, chosen labels and endpoint transport. *)
+
+(** 一般边界下降穿过筛隶属、选定标签及端点运输后，仍保留非平凡箭头的计算。 *)
+
+Example vertex_boundary_filler_computes
+  : let x := BoolVertexComparison 3%nat
+      {|lower := (true ∷S false ∷S true ∷S []S : BoolS ^S 3%nat)
+      |} in
+    fmap (lower (@coskeletal_fill_resp BoolVertexNerve 2%nat
+      BoolVertexNerve_IsCoskeletal 0%nat
+      (x↾∂[BoolVertexNerve; 3%nat]))) (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.
 
 From Cats Require Import

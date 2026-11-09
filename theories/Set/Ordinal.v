@@ -188,6 +188,38 @@ Proof.
   - exists fin_first. split; discriminate.
 Defined.
 
+(** Among at least four positions one can avoid any three specified
+    positions. The construction reduces to pair avoidance in the tail. *)
+
+(** 至少四个位置中可避开任意三个指定位置；构造归结为尾部的成对避开。 *)
+
+Definition fin_avoid_triple {n : nat} (i j k : Fin (S (S (S (S n)))))
+  : ∃ a : Fin (S (S (S (S n)))),
+      (¬ a = i) ∧ (¬ a = j) ∧ (¬ a = k).
+Proof.
+  destruct i as [[] | i], j as [[] | j], k as [[] | k].
+  - exists (fin_next fin_first). repeat split; discriminate.
+  - destruct (fin_avoid_pair k k) as [a [Ha _]].
+    exists (fin_next a). repeat split; try discriminate.
+    intros H. apply Ha. now injection H.
+  - destruct (fin_avoid_pair j j) as [a [Ha _]].
+    exists (fin_next a). repeat split; try discriminate.
+    intros H. apply Ha. now injection H.
+  - destruct (fin_avoid_pair j k) as [a [Hj Hk]].
+    exists (fin_next a). repeat split; try discriminate;
+      intros H; [apply Hj | apply Hk]; now injection H.
+  - destruct (fin_avoid_pair i i) as [a [Ha _]].
+    exists (fin_next a). repeat split; try discriminate.
+    intros H. apply Ha. now injection H.
+  - destruct (fin_avoid_pair i k) as [a [Hi Hk]].
+    exists (fin_next a). repeat split; try discriminate;
+      intros H; [apply Hi | apply Hk]; now injection H.
+  - destruct (fin_avoid_pair i j) as [a [Hi Hj]].
+    exists (fin_next a). repeat split; try discriminate;
+      intros H; [apply Hi | apply Hj]; now injection H.
+  - exists fin_first. repeat split; discriminate.
+Defined.
+
 (** Identify the indicated position with its immediate successor. *)
 
 (** 将指定位置与其紧邻后继合并。 *)

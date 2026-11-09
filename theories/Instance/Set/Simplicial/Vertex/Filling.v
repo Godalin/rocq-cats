@@ -1,7 +1,7 @@
 From Cats Require Export
-  Instance.Set.Simplicial.Horn2
+  Instance.Set.Simplicial.Vertex.Horn2
   Instance.Set.Simplicial.Matching
-  Instance.Set.Simplicial.Edge.
+  Instance.Set.Simplicial.Vertex.Edge.
 
 Local Open Scope nat_scope.
 

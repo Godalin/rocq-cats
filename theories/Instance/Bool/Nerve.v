@@ -1,10 +1,10 @@
 From Cats Require Export
-  Instance.Set.Simplicial.MonoidVertex.
+  Instance.Set.Simplicial.Vertex.Monoid.
 From Cats Require Import
   Instance.Bool.Action
   Instance.Bool.Group
   Instance.Set.Lift
-  Instance.Set.Simplicial.Kan
+  Instance.Set.Simplicial.Vertex.Kan
   Instance.Set.Simplicial.Nerve.
 
 Local Open Scope nat_scope.
@@ -117,9 +117,7 @@ Definition BoolVertexNerve_HasKanFillers
 
 Definition BoolVertexNerve_IsCoskeletal
   : BoolVertexNerve ⦂ Cosk[2]
-  := vertex_groupoid_IsCoskeletal (MonoidObjectsF BoolS)
-      (HC := VertexCat_IsGroupoid (MonoidObjectsF BoolS)
-        (HC := BoolGroupoid_IsGroupoid)).
+  := vertex_IsCoskeletal (MonoidObjectsF BoolS).
 
 (** The tuple interpretation is a map into the general construction. *)
 

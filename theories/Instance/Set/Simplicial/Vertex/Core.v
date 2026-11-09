@@ -1,5 +1,5 @@
 From Cats Require Export
-  Instance.Set.VertexDiagram
+  Instance.Set.Vertex.Core
   Instance.Set.Simplicial.Operators.
 From Cats Require Import
   Instance.Set.Lift

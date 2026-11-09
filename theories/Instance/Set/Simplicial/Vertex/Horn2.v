@@ -1,7 +1,7 @@
 From Cats Require Export
   Cat.Groupoid.Division
   Instance.Set.Simplicial.Horn
-  Instance.Set.Simplicial.Spine.
+  Instance.Set.Simplicial.Vertex.Spine.
 From Cats Require Import
   Cat.Groupoid.Functor
   Instance.Set.Isomorphism

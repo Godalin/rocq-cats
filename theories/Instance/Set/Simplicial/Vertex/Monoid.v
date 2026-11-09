@@ -1,6 +1,6 @@
 From Cats Require Export
   Instance.Set.Simplicial.Monoid
-  Instance.Set.Simplicial.Vertex.
+  Instance.Set.Simplicial.Vertex.Core.
 From Cats Require Import
   Cat.Diagram.Core
   Instance.Nat.Order

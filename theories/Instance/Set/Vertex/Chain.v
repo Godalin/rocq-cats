@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Chain
-  Instance.Set.VertexDiagram.
+  Instance.Set.Vertex.Core.
 
 Local Open Scope nat_scope.
 

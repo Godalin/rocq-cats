@@ -34,6 +34,39 @@ Defined.
 Notation "'δ[' i ']'" := (Coface i) : hom_scope.
 Notation "'δ[' n ';' i ']'" := (@Coface n i) : hom_scope.
 
+(** An operator omitting a position factors through its coface. The
+    preimage is computed pointwise, without choosing inverse functions. *)
+
+(** 省略一个位置的算子经过相应余面分解；原像逐点计算，不选择逆函数。 *)
+
+Program Definition CofacePreimageF {m n : nat}
+    (i : Ordinal (S n)) (f : (@Hom Δ) m (S n))
+    (H : ∀ a, ¬ f a = i)
+  : (@Hom Δ) m n
+  := @OrdinalF m n (λ a, (@fin_unskip (S n) i (f a) (H a)).1) _.
+Next Obligation.
+  apply (@fin_skip_order_reflect (S n) i).
+  change (fin_rank (@fin_skip (S n) i
+      (@fin_unskip (S n) i (f x) (H x)).1) ≤
+    fin_rank (@fin_skip (S n) i
+      (@fin_unskip (S n) i (f y) (H y)).1)).
+  rewrite !(@fin_unskip (S n) _ _ _).2.
+  exact (ordinal_functor_monotone f x y H0).
+Defined.
+
+(** Composing the preimage with the coface recovers the operator. *)
+
+(** 原像后接余面恢复原算子。 *)
+
+Lemma coface_preimage_β {m n : nat}
+    (i : Ordinal (S n)) (f : (@Hom Δ) m (S n))
+    (H : ∀ a, ¬ f a = i)
+  : δ[n; i] ∘ CofacePreimageF i f H ≈ f.
+Proof.
+  apply (snd (simplex_eq_iff _ _)). intros a.
+  exact (@fin_unskip (S n) i (f a) (H a)).2.
+Defined.
+
 (** A codegeneracy identifies adjacent positions. *)
 
 (** 余退化合并相邻位置。 *)

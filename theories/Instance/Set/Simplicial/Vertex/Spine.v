@@ -1,6 +1,6 @@
 From Cats Require Export
-  Instance.Set.VertexChain
-  Instance.Set.Simplicial.Vertex.
+  Instance.Set.Vertex.Chain
+  Instance.Set.Simplicial.Vertex.Core.
 From Cats Require Import
   Instance.Set.Lift.
 

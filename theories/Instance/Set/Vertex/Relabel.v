@@ -1,5 +1,5 @@
 From Cats Require Export
-  Instance.Set.VertexDiagram.
+  Instance.Set.Vertex.Core.
 
 (** * Relabelling Diagrams by Specified Equality *)
 
@@ -76,6 +76,27 @@ Proof.
       (T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob)).
   rewrite !comp_assoc, <- (comp_assoc T⟦q⟧Ob T⟦symmetry q⟧Ob),
     vertex_transport_inv, comp_id_l. reflexivity.
+Defined.
+
+(** A transport square compares arrows after relabelling both to the same
+    endpoints. Parallel transport witnesses need not be equal. *)
+
+(** 运输方块使调整到相同端点的箭头相等，不要求平行运输见证相等。 *)
+
+Lemma vertex_rebase_eq {A B A' B' A'' B'' : X}
+    (p : A ≈S A') (q : B ≈S B')
+    (r : A ≈S A'') (s : B ≈S B'')
+    (e : A' ≈S A'') (d : B' ≈S B'')
+    (f : (@Hom (VertexCat T)) A' B')
+    (g : (@Hom (VertexCat T)) A'' B'')
+    (H : T⟦d⟧Ob ∘ f ≈ g ∘ T⟦e⟧Ob)
+  : vertex_rebase_resp p q f ≈ vertex_rebase_resp r s g.
+Proof.
+  apply vertex_rebase_of_square.
+  rewrite (vertex_transport_comp T q d s), comp_assoc,
+    vertex_rebase_square, <- comp_assoc, H, comp_assoc.
+  apply comp_proper; [reflexivity |].
+  symmetry. apply vertex_transport_comp.
 Defined.
 
 (** Any diagram can be relabelled along specified vertex equalities.

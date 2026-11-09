@@ -1,12 +1,12 @@
 From Cats Require Import
-  Instance.Set.Simplicial.Kan
+  Instance.Set.Simplicial.Vertex.Kan
   STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core
   Instance.Set.Simplicial.Nerve
   Instance.Set.Simplicial.Monoid
-  Instance.Set.Simplicial.Spine
-  Instance.Set.Simplicial.Horn2
+  Instance.Set.Simplicial.Vertex.Spine
+  Instance.Set.Simplicial.Vertex.Horn2
   Instance.Set.Lift.
 From Cats Require Import
   Cat.Groupoid.Core
@@ -1716,6 +1716,19 @@ Definition high_eq_vertex_spine (n : nat)
       LiftS (VertexChainS S n)
   := vertex_spine_iso S n.
 
+(** Arbitrary category nerves admit unique boundary filling at both strict
+    universe orders, without assuming either category is a groupoid. *)
+
+(** 任意范畴 nerve 在两种严格宇宙次序下均具有唯一边界填充，无需群胚假设。 *)
+
+Definition low_eq_vertex_coskeletal
+  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) ⦂ Cosk[2%nat]
+  := vertex_IsCoskeletal T.
+
+Definition high_eq_vertex_coskeletal
+  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2%nat]
+  := vertex_IsCoskeletal S.
+
 (** Local horn isomorphisms retain native hom and equality sizes. Their
     realized fillers also admit either ordering of the ambient value sizes. *)
 
@@ -1769,17 +1782,6 @@ Definition high_eq_vertex_kan
   : HasKanFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
   := vertex_groupoid_HasKanFillers S (HC := VertexCat_IsGroupoid S).
 
-(** Unique boundary filling keeps either ordering of native value sizes. *)
-
-(** 唯一边界填充保留原生值大小的两种次序。 *)
-
-Definition low_eq_vertex_coskeletal
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) ⦂ Cosk[2%nat]
-  := vertex_groupoid_IsCoskeletal T (HC := VertexCat_IsGroupoid T).
-
-Definition high_eq_vertex_coskeletal
-  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2%nat]
-  := vertex_groupoid_IsCoskeletal S (HC := VertexCat_IsGroupoid S).
 End VertexNerveLevels.
 
 (** Boundary and horn carriers retain factorization witnesses, while their
