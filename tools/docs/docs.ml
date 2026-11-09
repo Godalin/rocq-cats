@@ -200,17 +200,27 @@ let check_links output =
   if !errors <> [] then failwith (String.concat "\n" (List.rev !errors));
   Printf.printf "Checked local links and anchors in %d HTML pages.\n%!" (List.length pages)
 
-let pdf root output tag paths =
+let pdf ?(design = false) root output tag paths =
   let dir = output ^ "/" ^ tag in
   mkdir dir;
-  run "coqdoc" (["--latex"; "--utf8"; "--gallina"; "--body-only";
+  let paths = if design then List.filter (fun path ->
+    suffix "/theories/Cat/Core.v" path || suffix "/book/Basics.v" path) paths
+    else paths in
+  run "coqdoc" (["--latex"; "--utf8"; "--body-only";
     "--no-index"; "--no-lib-name";
     "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
     "-R"; output ^ "/.inputs/" ^ tag ^ "/book"; "CatsBook";
-    "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
+    "-d"; dir; "-o"; dir ^ "/body.tex"]
+    @ (if design then [] else ["--gallina"]) @ paths);
   let zh = tag = "zh" in
-  let body = Pdf.compact (read (dir ^ "/body.tex")) in
+  let body = read (dir ^ "/body.tex") in
+  let body = if design then Preview.body ~zh body else body in
+  let body = Pdf.compact body in
   write (dir ^ "/body.tex") body;
+  if design then begin
+    write (dir ^ "/targets.tex") (Preview.targets body);
+    write (dir ^ "/proof-state.txt") (read (output ^ "/proof-state.txt"))
+  end;
   let symbols = Pdf.symbols body in
   write (dir ^ "/symbols.tex") symbols;
   let title = if zh then "理论参考手册与教程" else "Theory Reference and Tutorials" in
@@ -219,9 +229,12 @@ let pdf root output tag paths =
   let brand = "\\begin{center}\\includegraphics[width=.94\\textwidth]"
     ^ "{rocq-cats-logo.png}\\end{center}" in
   let template = read (root ^ "/tools/docs/pdf-template.tex") in
-  let setup = (if zh then
+  let theme = if design then read (root ^ "/tools/docs/pdf-textbook.tex") else "" in
+  let setup = theme ^ (if design && zh then
+    "\n\\renewcommand{\\catsContinued}{续}" else "") ^ "\n" ^ (if zh then
       "\\renewcommand{\\contentsname}{目录}"
     else "\\renewcommand{\\contentsname}{Contents}") in
+  let template = if design then Preview.document template else template in
   let document = template
     |> fun s -> replace s "@@SETUP@@" setup
     |> fun s -> replace s "@@BRAND@@" brand
@@ -231,7 +244,8 @@ let pdf root output tag paths =
       (if zh then "来自同一双语源码；定义、定理与示例经过 Rocq 检查。"
        else "From one bilingual source tree. Definitions, theorems and examples checked by Rocq.") in
   let filename = "rocq-cats-" ^ tag in
-  let digest = Digest.to_hex (Digest.string (document ^ body ^ symbols ^ logo)) in
+  let state = if design then read (dir ^ "/proof-state.txt") else "" in
+  let digest = Digest.to_hex (Digest.string (document ^ body ^ symbols ^ logo ^ state)) in
   let stamp = dir ^ "/inputs.digest" in
   if not (Sys.file_exists stamp && read stamp = digest) then
     List.iter (fun ending ->
@@ -256,8 +270,20 @@ let build root strict format =
   let sources = List.map (fun path -> { path; name = module_name path }) paths in
   run "dune" ["build"; "@all"];
   let sources = reading_order root sources in
-  let output = root ^ (if format = "pdf" then "/_build/docs-pdf" else "/_build/docs") in
+  let output = root ^ (match format with
+    | "pdf" -> "/_build/docs-pdf"
+    | "design" -> "/_build/docs-design"
+    | _ -> "/_build/docs") in
   mkdir output;
+  if format = "design" then begin
+    let replay = output ^ "/proof-replay.v" in
+    write replay (Preview.replay (read "book/Basics.v"));
+    let transcript = output ^ "/proof-replay.log" in
+    run ~log:transcript "coqtop" ["-quiet"; "-batch";
+      "-R"; root ^ "/_build/default/theories"; "Cats";
+      "-R"; root ^ "/_build/default/book"; "CatsBook"; "-l"; replay];
+    write (output ^ "/proof-state.txt") (Preview.state (read transcript))
+  end;
   write (output ^ "/reading-order.txt")
     (String.concat "\n" (List.map (fun s -> s.name) sources) ^ "\n");
   let warnings = ref [] in
@@ -275,7 +301,8 @@ let build root strict format =
       write (Filename.chop_extension path ^ ".glob")
         (Filter.glob ~original ~filtered (read (metadata root s)));
       path) sources in
-    if format = "pdf" then pdf root output tag paths else begin
+    if format = "pdf" || format = "design" then
+      pdf ~design:(format = "design") root output tag paths else begin
       let dir = output ^ "/" ^ tag in
       mkdir dir;
       Sys.readdir dir |> Array.iter (fun name ->
@@ -305,8 +332,11 @@ let build root strict format =
     constructor_anchors root output sources;
     check_links output
   end;
-  Printf.printf "Generated %s for %d modules in each language: %s\n%!"
-    format (List.length sources) output;
+  if format = "design" then
+    Printf.printf "Generated a bilingual design specimen from Cat.Core and Basics: %s\n%!"
+      output
+  else Printf.printf "Generated %s for %d modules in each language: %s\n%!"
+      format (List.length sources) output;
   if strict && messages <> [] then failwith "unclassified or unpaired documentation"
 
 let () =
@@ -314,8 +344,9 @@ let () =
     let strict = ref false and format = ref "html" in
     Arg.parse ["--strict", Arg.Set strict, "Reject language-classification diagnostics"]
       (function "build" -> () | "pdf" -> format := "pdf"
+        | "design" -> format := "design"
         | s -> raise (Arg.Bad ("unknown command: " ^ s)))
-      "dune exec tools/docs/docs.exe -- (build|pdf) [--strict]";
+      "dune exec tools/docs/docs.exe -- (build|pdf|design) [--strict]";
     build (Unix.realpath (Sys.getcwd ())) !strict !format
   with
   | Failure message | Invalid_argument message -> prerr_endline message; exit 1

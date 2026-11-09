@@ -71,7 +71,23 @@ let () =
       [present; "visible"; "\\begin{tikzcd}"; "\\arrow[r, \"f\"]"];
     List.iter (fun token -> if contains latex token then
       failwith ("unexpected LaTeX " ^ token))
-      [absent; "@lang"; "hidden\\_support"; "reflexivity"])
+      [absent; "@lang"; "hidden\\_support"; "reflexivity"];
+    (* A design specimen must select the complete, unchanged linked block,
+       including the proof that ordinary reference export hides. *)
+
+    (* 设计小样必须选取完整且未改写的链接代码块，
+       包括常规参考导出隐藏的证明。 *)
+
+    run "coqdoc" ["--latex"; "--utf8"; "--body-only"; "--no-index";
+      "-d"; output; "-o"; output ^ "/proof.tex"; output ^ "/Fixture.v"];
+    let proof = Docs_pdf.Preview.code (read (output ^ "/proof.tex"))
+      "{verified\\_example}" in
+    List.iter (fun token -> if not (contains proof token) then
+      failwith ("missing proof specimen token " ^ token))
+      ["\\begin{coqdoccode}"; "\\coqdockw{Proof}"; "reflexivity";
+       "\\end{coqdoccode}"];
+    if not (contains (Docs_pdf.Preview.targets proof) "catsTarget@Fixture.") then
+      failwith "specimen declaration destinations were not retained")
     [En, "en", "English tutorial heading", "中文教程标题";
      Zh, "zh", "中文教程标题", "English tutorial heading"];
   print_endline "Documentation export: language separation, proof hiding and shared LaTeX passed."

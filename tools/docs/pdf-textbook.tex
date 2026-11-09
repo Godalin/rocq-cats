@@ -1,0 +1,75 @@
+% An opt-in textbook theme; the ordinary reading edition stays independent.
+% 可选的教材主题；常规阅读版保持独立。
+\setmainfont{texgyrepagella-regular.otf}[
+  BoldFont=texgyrepagella-bold.otf,
+  ItalicFont=texgyrepagella-italic.otf,
+  BoldItalicFont=texgyrepagella-bolditalic.otf]
+\setsansfont{texgyreheros-regular.otf}[BoldFont=texgyreheros-bold.otf]
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\definecolor{catsBlue}{HTML}{263B53}
+\definecolor{catsInk}{HTML}{253342}
+\definecolor{catsMuted}{HTML}{647487}
+\definecolor{catsPaper}{HTML}{F7F9FC}
+\definecolor{catsBorder}{HTML}{DCE4ED}
+\geometry{left=22mm,right=22mm,top=23mm,bottom=23mm,headheight=16pt}
+\linespread{1.08}
+\setlength{\parskip}{.6em plus .1em minus .1em}
+\titleformat{\chapter}[display]
+  {\color{catsBlue}\normalfont\LARGE\bfseries}
+  {\sffamily\small ROCQ-CATS}{6pt}{}
+\titlespacing*{\chapter}{0pt}{0pt}{16pt}
+\titleformat{\section}{\color{catsBlue}\Large\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\color{catsBlue}\large\bfseries}{}{0pt}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\color{catsMuted}Rocq-Cats}
+\fancyhead[R]{\sffamily\footnotesize\color{catsMuted}\nouppercase{\leftmark}}
+\fancyfoot[R]{\sffamily\small\color{catsBlue}\thepage}
+\renewcommand{\headrulewidth}{.3pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancypagestyle{plain}{\fancyhf{}
+  \fancyfoot[R]{\sffamily\small\color{catsBlue}\thepage}
+  \renewcommand{\headrulewidth}{0pt}}
+\tcbset{cats code/.style={enhanced jigsaw,breakable,
+  colback=catsPaper,colframe=catsBorder,coltext=catsInk,
+  boxrule=.5pt,arc=5pt,outer arc=5pt,
+  left=9pt,right=9pt,top=7pt,bottom=7pt,
+  before skip=9pt,after skip=9pt,
+  colbacktitle=catsPaper,coltitle=catsBlue,
+  fonttitle=\sffamily\footnotesize\bfseries,
+  titlerule=.4pt,toptitle=5pt,bottomtitle=5pt,
+  pad at break*=5pt,lines before break=3}}
+\tcbset{cats semantic/.style={},
+  cats theorem/.style={colback=white,
+    borderline west={1pt}{0pt}{catsBlue}}}
+\newcommand{\catsCodeTitle}{Rocq}
+\newcommand{\catsCodeKind}{code}
+\newcommand{\catsContinued}{continued}
+\newenvironment{catscode}[2]{%
+  \begin{tcolorbox}[cats code,cats semantic,
+    title={#1\hfill\normalfont\scriptsize\ttfamily #2},
+    title after break={#1\ (\catsContinued)\hfill
+      \normalfont\scriptsize\ttfamily #2}]
+  \small\ttfamily\raggedright\setlength{\parskip}{0pt}
+  \setlength{\baselineskip}{12pt}\color{catsInk}}
+  {\end{tcolorbox}}
+\renewenvironment{coqdoccode}
+  {\begin{catscode}{\catsCodeTitle}{\catsCodeKind}}
+  {\end{catscode}}
+\renewcommand{\coqdockw}[1]{\textcolor{catsBlue}{\textbf{#1}}}
+\renewcommand{\coqdocvar}[1]{\texttt{#1}}
+\renewcommand{\coqdoccst}[1]{\texttt{#1}}
+\renewcommand{\coqdocmod}[1]{\texttt{#1}}
+\renewcommand{\coqdocax}[1]{\texttt{#1}}
+\renewcommand{\coqdocind}[1]{\texttt{#1}}
+\renewcommand{\coqdocconstr}[1]{\texttt{#1}}
+\renewenvironment{coqdoccomment}{\begingroup\color{catsMuted}\ttfamily(*}
+  {*)\endgroup}
+\renewcommand{\coqdocemptyline}{\par\vspace{3pt}}
+% A separate, related style is reserved for genuine extracted proof states.
+% 为真实提取的证明状态预留相近但可区分的样式。
+\newenvironment{catsproofstate}[1]
+  {\begin{tcolorbox}[cats code,colback=white,title={#1}]\small\ttfamily}
+  {\end{tcolorbox}}

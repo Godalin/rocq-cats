@@ -4,8 +4,8 @@
 
 (library
  (name docs_pdf)
- (modules pdf)
- (libraries docs_filter))
+ (modules pdf preview)
+ (libraries docs_filter str))
 
 (library
  (name docs_order)
@@ -34,4 +34,4 @@
 (test
  (name export_test)
  (modules export_test)
- (libraries docs_filter docs_order unix))
+ (libraries docs_filter docs_order docs_pdf unix))

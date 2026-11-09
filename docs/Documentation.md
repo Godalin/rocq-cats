@@ -62,6 +62,69 @@ amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
 工具不会安装依赖。本地验证版本：
 Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、TeX Live 2025 / XeTeX 0.999997。
 
+## Textbook design specimen / 教材设计小样
+
+The optional design command builds a three-page specimen in each language:
+
+可选的设计命令为每种语言生成三页小样：
+
+```sh
+dune exec tools/docs/docs.exe -- design --strict
+```
+
+Outputs are `_build/docs-design/en/rocq-cats-en.pdf` and
+`_build/docs-design/zh/rocq-cats-zh.pdf`. The specimen selects real coqdoc
+fragments from `Cat.Core` and `Basics` after ordinary bilingual filtering and
+compiled-reference processing. It compares TeX Gyre Pagella prose with the
+ordinary edition's JuliaMono treatment, retaining JuliaMono for every code
+token, Fandol for Chinese and the existing symbol fallback. The opt-in theme
+is centralized in [pdf-textbook.tex](../tools/docs/pdf-textbook.tex); it needs
+TeX Live's tcolorbox, titlesec, fancyhdr and TeX Gyre fonts. The large gap on
+page two deliberately positions the real category interface across a page
+boundary to inspect continuation titles and fragments. No theory source is
+rewritten for layout.
+
+输出为 `_build/docs-design/en/rocq-cats-en.pdf` 与
+`_build/docs-design/zh/rocq-cats-zh.pdf`。小样在常规双语过滤与编译引用处理后，
+选取 `Cat.Core` 和 `Basics` 的真实 coqdoc 片段。西文正文试用 TeX Gyre Pagella，
+以便与常规阅读版的 JuliaMono 正文比较；全部代码标记保留 JuliaMono，中文使用
+Fandol，符号沿用现有备用字体。可选主题集中在
+[pdf-textbook.tex](../tools/docs/pdf-textbook.tex)，需 TeX Live 的 tcolorbox、
+titlesec、fancyhdr 和 TeX Gyre 字体。第二页的大段空白是刻意安排的分页压力场景，
+使真实范畴接口跨页，以检查续标题和断片。不会为排版改写理论源码。
+
+Only this command replays the original `Basics` tutorial with `coqtop -batch`,
+inserting an observational `Show` after `boolean_limit_pair`'s `split`.
+The state panel displays the captured Rocq output verbatim, with links from
+the proof and back. The annotated replay, transcript and extracted state are
+kept in `_build/docs-design/`; each invocation regenerates them after building
+the library, avoiding stale state caches. coqdoc still reads the uninstrumented
+language-filtered inputs and their position-preserving glob copies. Internal
+links between included declarations remain active; references to omitted
+modules and external libraries are plain text in this bounded specimen.
+
+只有此命令会用 `coqtop -batch` 重放原始 `Basics` 教程，在
+`boolean_limit_pair` 的 `split` 后插入观察性的 `Show`。状态框原样显示捕获的
+Rocq 输出，并提供证明与状态之间的往返链接。加注重放副本、完整输出和提取状态
+保存在 `_build/docs-design/`；每次命令都先构建库再重新生成，避免过期缓存。
+coqdoc 仍读取未加注、经过语言过滤的输入及保持位置的 glob 副本。小样内声明之间
+的链接保持可用；未纳入的模块和外部库引用在这份有限小样中显示为普通文本。
+
+This is an initial typography and navigation prototype for
+[#31](https://github.com/Godalin/rocq-cats/issues/31), not a global theme rollout.
+The ordinary `pdf --strict` export, approved cover and full reading order are
+unchanged and require neither Alectryon nor proof replay. Alectryon is not
+installed in the checked environment; its current upstream supports standalone
+use with a Rocq driver (see its [README](https://github.com/cpitclaudel/alectryon)).
+Integration with that driver, selected-step extraction beyond this single
+sample, viewer interaction checks and optional PDF layers remain follow-ups.
+
+这是 [#31](https://github.com/Godalin/rocq-cats/issues/31) 的首轮字体与导航原型，
+尚未将主题推广到全库。常规 `pdf --strict` 导出、已确认的封面和完整阅读顺序保持
+原样，不依赖 Alectryon 或证明重放。已检查的环境未安装 Alectryon；上游当前支持
+配合 Rocq 驱动独立使用，见其 [README](https://github.com/cpitclaudel/alectryon)。
+驱动集成、超出本例的选定步骤提取、阅读器交互检查及可选 PDF 图层仍待后续推进。
+
 ## Authoring / 写作
 
 Use adjacent, separate coqdoc blocks, English first and Chinese second:
