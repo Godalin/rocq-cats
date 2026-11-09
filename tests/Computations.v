@@ -289,3 +289,28 @@ Example actual_outer_horn2_descent_computes
             (λ E, HornFaceComputation.retained_first_face (eq_sym E)))
       |})) (ordinal_step fin_first) = false.
 Proof. reflexivity. Qed.
+
+From Cats Require Import
+  Cat.FreeObject.Adjunction.
+
+(** Passing through comma initiality, free extension, and the induced monad
+    must preserve the computation of actual arrows. *)
+
+(** 穿过逗号始性、自由延拓及诱导 Monad 后，实际箭头仍须保持可计算。 *)
+
+Module FreeObjectComputations.
+
+Definition FreeIdentity
+  : HasFreeObjects (@IdF SetCat)
+  := AdjunctionFreeObjects (IdAdjunction SetCat).
+
+Example free_extension_computes
+  : @free_object_extend SetCat SetCat IdF FreeIdentity BoolS BoolS
+      id_resp true = true.
+Proof. reflexivity. Qed.
+
+Example free_monad_multiplication_computes
+  : monad_mul (@FreeMonad SetCat SetCat IdF FreeIdentity) BoolS true = true.
+Proof. reflexivity. Qed.
+
+End FreeObjectComputations.

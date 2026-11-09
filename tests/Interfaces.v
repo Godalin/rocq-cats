@@ -90,3 +90,14 @@ Definition inferred_matching_equality {C : Cat} {A : @Ob C}
     (P : Functor (C^op) SetCat) (a b : SieveMatching g P)
   : Type
   := a ≈S b.
+
+From Cats Require Import
+  Cat.FreeObject.Adjunction.
+
+(** The general theorem does not install a chosen free-object structure. *)
+
+(** 一般定理不自动注册选定自由对象结构。 *)
+
+Fail Definition unchosen_free_objects
+  : HasFreeObjects (@IdF SetCat)
+  := ltac:(typeclasses eauto).

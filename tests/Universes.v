@@ -1901,3 +1901,36 @@ Definition high_eq_monad_monoid_equiv
   : high_eq_monad_category ≃C MonoidCat (EndofunctorMonoidal C1)
   := monad_monoid_equiv C1.
 End MonoidalLevels.
+
+From Cats Require Import
+  Cat.Comma.Arrow
+  Cat.Comma.Slice
+  Cat.FreeObject.Adjunction.
+
+(** Square witnesses may live above side-map equalities; neither comma
+    equality nor the free-object adjunction identifies native hom sizes. *)
+
+(** 方形见证可以高于侧边相等；逗号相等及自由对象伴随均不等同原生 Hom 大小。 *)
+
+Section CommaFreeLevels.
+Universes o e h p.
+Constraint o < e.
+Constraint e < h.
+Constraint h < p.
+Context (A B : Cat@{o h e _ _}) (D : Cat@{o h p _ _})
+    (F : Functor A D) (G : Functor B D).
+
+Definition comma_low_side_equality
+  : Cat@{_ _ e _ _}
+  := F ↓C G.
+
+Context (U : Functor D A) `{HF : !HasFreeObjects U}.
+
+Definition mixed_free_adjunction
+  : FreeFunctor U ⊣ U
+  := FreeAdjunction U.
+
+Definition mixed_free_monad
+  : Monad A
+  := FreeMonad U.
+End CommaFreeLevels.
