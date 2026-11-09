@@ -1,6 +1,5 @@
 From Cats Require Import
   Instance.Set.Simplicial.Vertex.Kan
-  STLC.Inhabitation.Core
   STLC.Free.
 From Cats Require Import
   Cat.Shape.Simplex.Core

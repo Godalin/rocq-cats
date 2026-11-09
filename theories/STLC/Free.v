@@ -1,5 +1,5 @@
 From Cats Require Export
-  STLC.Equational.Core
+  STLC.Completeness
   STLC.ContextEquivalence.
 From Cats Require Import
   Cat.Core

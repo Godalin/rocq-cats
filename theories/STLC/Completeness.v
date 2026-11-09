@@ -1,0 +1,175 @@
+From Cats Require Export STLC.Comparison.
+From Cats Require Import
+  Cat.Core
+  Cat.CCC
+  Cat.Functor.Closed.
+
+(** * Equational Soundness and Completeness
+
+    Soundness above applies to arbitrary model sizes. Completeness needs only
+    a common universe bound containing the syntactic CCC; this avoids any
+    universe of all categories or resizing principle. *)
+
+(** * 等式可靠性与完备性
+
+    前面的可靠性适用于任意模型大小。完备性只需要包含语法 CCC 的共同宇宙界，
+    不构造所有范畴的宇宙，也不使用大小重设原理。 *)
+
+Local Open Scope cat_scope.
+Local Open Scope stlc_sub_scope.
+
+Section CanonicalModel.
+Universes b e l.
+Context {B : Type@{b}}.
+Let C
+  : Cat
+  := TyCat@{b e l} B.
+Local Instance canonical_ccc
+  : CCC C
+  := TyCat_CCC B.
+Local Instance canonical_identity
+  : IsCCCF (@IdF C) canonical_ccc canonical_ccc
+  := IdF_IsCCCF C canonical_ccc.
+Let β (b : B)
+  : ty_base b ≅[C] ty_base b
+  := iso_refl.
+
+(** Equality in the recursive syntactic interpretation reflects precisely
+    beta/eta equality. Context and type comparison maps are isomorphisms. *)
+
+(** 递归语法解释中的相等恰好反映 βη 相等；上下文与类型比较均为同构。 *)
+
+Theorem tm_interp_canonical_reflect {Γ : Ctx B} {A : Ty B}
+    {t u : Tm Γ A}
+    (H : tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) t ≈
+      tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) u)
+  : TmEq@{b e _} t u.
+Proof.
+  pose (z := @context_compare B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β Γ).
+  pose proof (@context_compare_term B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β Γ A t) as Ht.
+  pose proof (@context_compare_term B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β Γ A u) as Hu.
+  assert (Hq : SubTmEq@{b e _} (quote_tm t ∘Sub z.1)
+    (quote_tm u ∘Sub z.1)).
+  { transitivity (sub_comp
+      (@type_compare B C canonical_ccc (@IdF C)
+        canonical_identity (@ty_base B) β A).1
+      (tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) t)).
+    - symmetry. exact Ht.
+    - rewrite H. exact Hu. }
+  assert (Hz : SubTmEq@{b e _} (z.1 ∘Sub z.2.1) sub_id).
+  { exact (snd z.2.2). }
+  apply quote_tm_faithful.
+  transitivity ((quote_tm t ∘Sub z.1) ∘Sub z.2.1).
+  - symmetry. rewrite sub_comp_tm_assoc, Hz, sub_comp_tm_id_r. reflexivity.
+  - rewrite Hq, sub_comp_tm_assoc, Hz, sub_comp_tm_id_r. reflexivity.
+Qed.
+
+(** A morphism in the recursive syntactic model supplies a term. The
+    comparison isomorphisms turn it into a singleton-context substitution;
+    its newest component is then substituted back into the original context. *)
+
+(** 递归语法模型中的态射给出一个项。比较同构将它转为单变量上下文替换，
+    再将最新分量代回原上下文。 *)
+
+Definition tm_interp_canonical_inhabited {Γ : Ctx B} {A : Ty B}
+    (f : Hom (CtxI (HC := canonical_ccc) (@ty_base B) Γ)
+      (TyI (HC := canonical_ccc) (@ty_base B) A))
+  : Tm Γ A.
+Proof.
+  pose (z := @context_compare B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β Γ).
+  pose (a := @type_compare B C canonical_ccc (@IdF C)
+    canonical_identity (@ty_base B) β A).
+  pose (σ := a.1 ∘ f ∘ z.2.1).
+  exact (subst (σ A var_zero) (ctx_pack_sub Γ)).
+Defined.
+
+End CanonicalModel.
+
+(** Validity in all CCC models at a common bound. The object/hom bound is b,
+    equality witnesses live at e, and category laws at l. Larger or differently
+    arranged model universes remain covered separately by soundness. *)
+
+(** 共同大小界内全部 CCC 模型的有效性：对象与 Hom 载体界为 b，相等见证界为 e，
+    范畴律界为 l。更大或采用其他大小排列的模型仍由一般可靠性定理覆盖。 *)
+
+Definition TmModelEq@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
+  : Type
+  := ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
+      @HomEq C _ _ (@tm_interp B C HC I Γ A t)
+        (@tm_interp B C HC I Γ A u).
+
+Notation "t '≈CCC' u" := (TmModelEq t u)
+  (at level 50, no associativity) : stlc_tm_scope.
+
+(** The syntactic model supplies the reverse implication; no normalization,
+    decidability, choice, proof irrelevance or extensionality axiom is used. *)
+
+(** 语法模型给出反方向；不使用正规化、可判定性、选择、证明无关性或外延公理。 *)
+
+Theorem tm_soundness_iff_completeness@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
+  : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u.
+Proof.
+  split.
+  - intros H C HC I. exact (@tm_interp_sound B C HC I Γ A t u H).
+  - intros H. apply tm_interp_canonical_reflect.
+    exact (H (TyCat@{b e l} B) (TyCat_CCC B) (@ty_base B)).
+Defined.
+
+(** * Inhabitation Soundness and Completeness
+
+    Validity here carries a morphism for each CCC model at the same common
+    bound as [TmModelEq]. It is a uniform family of witnesses
+    in [Type], rather than mere nonemptiness in one model. *)
+
+(** * 可居留性的可靠性与完备性
+
+    这里的有效性在与 [TmModelEq] 相同的共同大小界内，为每个 CCC 模型携带
+    一条态射。它是 [Type] 中统一给出的见证族，而非某个模型中的单纯非空性。 *)
+
+Definition TmModelInhabited@{b e l +} {B : Type@{b}}
+    (Γ : Ctx B) (A : Ty B)
+  : Type
+  := ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
+      (@Hom C) (@CtxI B C HC I Γ) (@TyI B C HC I A).
+
+(** Interpret an intrinsically typed term in each chosen CCC model. *)
+
+(** 在每个选定 CCC 模型中解释一个内在带类型的项。 *)
+
+Definition tm_inhabitation_soundness@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : TmModelInhabited@{b e l _ _ _ _} Γ A
+  := λ C HC I, @tm_interp B C HC I Γ A t.
+
+(** Instantiate the model family with the syntactic CCC and recover a term
+    using the canonical comparison maps. No normalization or choice is needed. *)
+
+(** 将模型族实例化为语法 CCC，再由规范比较映射恢复一个项；
+    无须正规化或选择原理。 *)
+
+Definition tm_inhabitation_completeness@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B}
+    (H : TmModelInhabited@{b e l _ _ _ _} Γ A)
+  : Tm Γ A
+  := tm_interp_canonical_inhabited
+      (H (TyCat@{b e l} B) (TyCat_CCC B) (@ty_base B)).
+
+(** This Type-valued equivalence bundles the two constructive maps; it makes
+    no claim that terms or families of semantic witnesses are equal. Under
+    Curry--Howard--Lambek it expresses provability completeness for unit,
+    conjunction and implication, separately from beta/eta equality. *)
+
+(** 此 Type 值等价打包两个构造性映射，不断言项或语义见证族相等。
+    在 Curry--Howard--Lambek 对应下，它表达单位、合取与蕴含片段的可证性
+    完备性，与 βη 等式完备性分开陈述。 *)
+
+Definition tm_inhabitation_soundness_iff_completeness@{b e l +}
+    {B : Type@{b}} (Γ : Ctx B) (A : Ty B)
+  : Tm Γ A ↔ TmModelInhabited@{b e l _ _ _ _} Γ A
+  := (tm_inhabitation_soundness, tm_inhabitation_completeness).
