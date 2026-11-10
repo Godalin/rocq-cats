@@ -75,6 +75,60 @@ Defined.
 
 End ExponentialTransport.
 
+(** Transport the representing object along a specified isomorphism;
+    the evaluation square determines the transported universal property. *)
+
+(** 沿指定同构运输表示对象；求值交换方形确定运输后的泛性质。 *)
+
+Definition exponential_apex_iso {C : Cat} `{HP : !HasProduct C}
+    {X Y E E' : @Ob C} {ev : Hom (E × X) Y}
+    (HE : is_exponential X Y E ev) (i : E ≅ E')
+    (ev' : Hom (E' × X) Y) (H : ev' ∘ (i.1 × id) ≈ ev)
+  : is_exponential X Y E' ev'.
+Proof.
+  intros Z f. destruct (HE Z f) as [h [Hh Hu]].
+  exists (i.1 ∘ h). refine {|this := _
+                          ; that := _
+                          |}.
+  - rewrite <- (comp_id_l (@Cats.Cat.Core.id C X)), cross_comp,
+      <- comp_assoc, H. exact Hh.
+  - intros k Hk.
+    assert (K : i.2.1 ∘ k ≈ h).
+    { apply Hu. rewrite <- H, comp_assoc, <- cross_comp,
+        <- (comp_assoc i.1 i.2.1 k), (snd i.2.2), !comp_id_l.
+      exact Hk. }
+    rewrite <- K, <- comp_assoc, (snd i.2.2), comp_id_l. reflexivity.
+Defined.
+
+(** Two candidates representing the same exponential problem are
+    isomorphic through their universal transposes. *)
+
+(** 表示同一指数问题的两个候选通过泛转置同构。 *)
+
+Definition exponential_unique {C : Cat} `{HP : !HasProduct C}
+    {X Y E E' : @Ob C} {ev : Hom (E × X) Y}
+    {ev' : Hom (E' × X) Y} (HE : is_exponential X Y E ev)
+    (HE' : is_exponential X Y E' ev')
+  : E ≅ E'.
+Proof.
+  pose proof (@this _ _ _ _ _ (HE' E ev).2) as Hf.
+  pose proof (@this _ _ _ _ _ (HE E' ev').2) as Hg.
+  exists (HE' E ev).1, (HE E' ev').1.
+  split; unfold is_linv_of, is_rinv_of.
+  - transitivity (HE E ev).1.
+    + apply (HE E ev).2.
+      rewrite <- (comp_id_l (@Cats.Cat.Core.id C X)), cross_comp,
+        <- comp_assoc, Hg. exact Hf.
+    + symmetry. apply (HE E ev).2. rewrite cross_id, comp_id_r.
+      reflexivity.
+  - transitivity (HE' E' ev').1.
+    + apply (HE' E' ev').2.
+      rewrite <- (comp_id_l (@Cats.Cat.Core.id C X)), cross_comp,
+        <- comp_assoc, Hf. exact Hg.
+    + symmetry. apply (HE' E' ev').2. rewrite cross_id, comp_id_r.
+      reflexivity.
+Defined.
+
 (** Isomorphisms of arguments and results induce an exponential isomorphism. *)
 
 (** 参数与结果的同构诱导指数同构。 *)

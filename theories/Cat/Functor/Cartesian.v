@@ -3,7 +3,8 @@ From Cats Require Import
   Cat.Core
   Cat.Terminal
   Cat.Product.Core
-  Cat.Product.Transport.
+  Cat.Product.Transport
+  Cat.Functor.Product.
 
 (** * Functors Preserving Finite Products
 
@@ -43,7 +44,7 @@ Context {C D : Cat} (F : Functor C D)
 Definition functor_product_iso (X Y : @Ob C)
   : F ((X × Y)%ob) ≅ (F X × F Y)%ob.
 Proof.
-  exact (product_unique (functor_product X Y) (@product_universal D PD (F X) (F Y))).
+  exact (PreservedProductIso F (λ X Y, functor_product X Y) X Y).
 Defined.
 
 (** The inverse comparison is the mediator of the preserved product. *)
@@ -52,7 +53,7 @@ Defined.
 
 Definition functor_product_inv (X Y : @Ob C)
   : Hom (F X × F Y)%ob (F ((X × Y)%ob))
-  := (functor_product X Y _ π1 π2).1.
+  := preserved_product_inv F (λ X Y, functor_product X Y) X Y.
 
 (** Both projections of the inverse comparison compute. *)
 
@@ -61,7 +62,9 @@ Definition functor_product_inv (X Y : @Ob C)
 Lemma functor_product_inv_β (X Y : @Ob C)
   : (fmap F π1 ∘ functor_product_inv X Y ≈ π1) ∧
     (fmap F π2 ∘ functor_product_inv X Y ≈ π2).
-Proof. exact (@this _ _ _ _ _ (functor_product X Y _ π1 π2).2). Qed.
+Proof.
+  exact (preserved_product_inv_β F (λ X Y, functor_product X Y) X Y).
+Qed.
 
 (** Pairing is preserved through the product comparison. *)
 
@@ -89,19 +92,7 @@ Lemma functor_product_inv_natural {X Y X' Y' : @Ob C}
   : fmap F (f × g) ∘ functor_product_inv X Y ≈
       functor_product_inv X' Y' ∘ (fmap F f × fmap F g).
 Proof.
-  transitivity ((functor_product X' Y' _
-    (fmap F f ∘ π1) (fmap F g ∘ π2)).1).
-  - apply (functor_product X' Y' _ _ _).2. split;
-      rewrite <- comp_assoc, <- functor_comp, cross_η;
-      [rewrite product_β1 | rewrite product_β2];
-      rewrite functor_comp, comp_assoc;
-      [rewrite (fst (functor_product_inv_β X Y)) |
-       rewrite (snd (functor_product_inv_β X Y))]; reflexivity.
-  - symmetry. apply (functor_product X' Y' _ _ _).2. split;
-      rewrite <- comp_assoc;
-      [rewrite (fst (functor_product_inv_β X' Y')), cross_η, product_β1 |
-       rewrite (snd (functor_product_inv_β X' Y')), cross_η, product_β2];
-      reflexivity.
+  exact (preserved_product_inv_natural F (λ X Y, functor_product X Y) f g).
 Qed.
 
 End CartesianFunctor.
