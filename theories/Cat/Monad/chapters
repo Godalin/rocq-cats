@@ -7,3 +7,4 @@ Applicative.v
 Category.v
 Monoid.v
 Adjunction.v
+KleisliAdjunction.v

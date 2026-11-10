@@ -414,7 +414,8 @@ unchanged; it is not asserted faithful. `KleisliExtendF` sends objects to
 their Monad images and computations to their extensions. Their composite
 is compared with the original endofunctor by `KleisliCompositeIso`, whose
 components are identities. This is a comparison of endofunctors, without
-equating function or law records or asserting a whole Monad round trip.
+equating function or law records. This initial comparison concerns only
+endofunctors; the full Monad recovery is delivered below.
 The public `g ∘K[M] f` notation names the same composition as the category;
 pure-input and pure-output equations recover ordinary substitution and
 result mapping.
@@ -422,7 +423,8 @@ result mapping.
 `KleisliPureF` 将通常箭头送为纯计算，对象不变，不断言它忠实。
 `KleisliExtendF` 将对象送为 Monad 像，将计算送为其扩张。两者的复合通过
 分量为恒等的 `KleisliCompositeIso` 与原自函子比较；这里只比较自函子，不等同
-函数或定律记录，也不声称完整 Monad 往返。公开记号 `g ∘K[M] f` 就是此范畴
+函数或定律记录。此初始比较只涉及自函子；完整 Monad 恢复见下文。
+公开记号 `g ∘K[M] f` 就是此范畴
 的复合；纯输入和纯输出方程分别恢复通常代入和结果映射。
 
 Temporary checks cover both strict hom/equality universe orders with
@@ -450,6 +452,71 @@ inspected in both languages. Batch PDF export remains with integration.
 本切片使用同一 `rocq-cats` switch 通过全库构建、测试及安装；严格双语 HTML
 为每种语言导出 270 个模块，检查 545 页，并核查两种语言中新模块的说明及公开
 构造。批次 PDF 仍由集成会话统一导出。
+
+## Kleisli adjunction and recovery of the Monad
+
+## Kleisli 伴随及 Monad 的恢复
+
+[KleisliAdjunction](../theories/Cat/Monad/KleisliAdjunction.v) reuses the
+general `AdjunctionFromHom` construction with identity respectful maps:
+the two hom-sets are the very same base hom-set. Their inverse equations
+are reflexivity, source naturality is pure substitution, and target
+naturality is Kleisli composition. Forward and inverse transposition
+preserve the underlying computation. The unit is the original Monad unit;
+the counit at `X` is the base identity on `M X`, viewed as a Kleisli arrow
+from `M X` to `X`. Both triangle laws are inherited from the general
+adjunction theory. Only an ordinary Monad is supplied.
+
+[KleisliAdjunction](../theories/Cat/Monad/KleisliAdjunction.v) 以恒等保相等
+映射复用一般 `AdjunctionFromHom` 构造：两侧 Hom 广集就是同一个基底 Hom
+广集。互逆方程由自反性给出，来源自然性为纯值代入，目标自然性为 Kleisli
+复合。正逆转置保留底层计算。单位为原 Monad 单位；`X` 处余单位为 `M X`
+上的基底恒等，视为从 `M X` 到 `X` 的 Kleisli 箭头。两条三角律均继承自一般
+伴随理论；输入只需普通 Monad。
+
+`KleisliMonad` uses the existing `AdjunctionMonad`, without a second proof
+of its Monad laws. Its unit agrees with the original unit by computation;
+its multiplication agrees in designated Hom equality, using preservation
+of identities by the original functor. The previous identity-component
+functor isomorphism and its inverse preserve unit and multiplication.
+`KleisliMonadTo` and `KleisliMonadFrom` package these as fixed-base Monad
+morphisms; `KleisliMonadIso` is their actual isomorphism in the existing
+`MonadCat C`. This compares complete Monad structures without equality of
+functor functions, category records or law witnesses. It does not assert
+an equivalence between all adjunctions and all Monads.
+
+`KleisliMonad` 使用已有 `AdjunctionMonad`，不重新证明其 Monad 定律。单位通过
+计算与原单位一致，乘法使用原函子保持恒等的定律，在指定 Hom 相等下与原乘法
+一致。此前分量为恒等的函子同构及其逆均保持单位和乘法；`KleisliMonadTo` 与
+`KleisliMonadFrom` 将其打包为固定基底 Monad 态射，`KleisliMonadIso` 是它们在
+已有 `MonadCat C` 中的实际同构。这比较完整 Monad 结构，不要求函子函数、
+范畴记录或定律见证相等，也不断言全部伴随与全部 Monad 之间的等价。
+
+Temporary checks cover both strict hom/equality universe orders and a
+case with objects strictly larger than both, the recovery isomorphism,
+operation rewriting, preservation by both Monad morphisms and transpose
+rewriting. Six transparent state computations cover recovered return,
+mapping, multiplication, counit and both comparison maps. All 52 assumption
+checks for this slice are closed under the global context. Abstract probes
+import only this module and confirm that strength and product interfaces
+are unavailable. No permanent tests or concrete model proofs were added;
+computational Arrow and Freyd remain separate work.
+
+临时检查覆盖 Hom／相等宇宙的两种严格次序、对象严格大于两者的情形、恢复
+同构、运算重写、双向 Monad 态射的保持性及转置重写。六项透明状态计算覆盖
+恢复后的返回、映射、乘法、余单位及正反比较映射。本切片 52 项公理检查均无
+额外假设；抽象检查仅导入本模块，并确认强度及积接口不可用。没有新增永久
+测试或具体模型证明；计算 Arrow 和 Freyd 仍为后续工作。
+
+This slice passed full-library build/tests/install with `rocq-cats`
+(Rocq/Stdlib 9.2, Dune 3.23.1). Strict bilingual HTML generated 271 modules
+per language and checked links and anchors in 547 pages; the new module's
+explanations were inspected in both languages. Batch PDF export remains
+with integration.
+
+本切片使用 `rocq-cats`（Rocq／Stdlib 9.2、Dune 3.23.1）通过全库构建、测试
+及安装；严格双语 HTML 为每种语言导出 271 个模块，检查 547 页的链接及锚点，
+并核查两种语言中新模块的说明。批次 PDF 仍由集成会话统一导出。
 
 ## First implementation boundary
 
