@@ -114,11 +114,11 @@ Program Definition ReaderPureN (R : SetC)
   |}.
 Next Obligation. intros x r. reflexivity. Defined.
 
-(** Explicitly choose the lawful reader Applicative. *)
+(** Explicitly choose the lawful reader Applicative [ReaderA]. *)
 
-(** 显式选择带定律的 Reader Applicative。 *)
+(** 显式选择带定律的 Reader Applicative [ReaderA]。 *)
 
-Program Definition ReaderApplicative (R : SetC)
+Program Definition ReaderA (R : SetC)
   : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
   :=
   {|ApplicativeLax := ReaderLax R

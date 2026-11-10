@@ -166,3 +166,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Write bilingual documentation with the code. Run full-library validation and
   export both reading editions after each integrated batch, rather than after
   every intermediate task commit.
+
+## Learnings
+
+- Name concrete Applicative values with an `A` suffix, such as `ReaderA`.
+  Keep `Applicative` as the interface class name; underlying functor values
+  retain the `F` suffix.
