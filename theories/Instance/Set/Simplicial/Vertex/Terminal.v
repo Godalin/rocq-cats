@@ -19,12 +19,15 @@ Local Open Scope nat_scope.
     单元素呈现的 nerve 在指定自然同构下等于常值单元素单纯广集。
     其逆在每个维度保留实际的常值图式。 *)
 
+Section TerminalSizes.
+Universes x e o h q l a b.
+
 (** The comparison takes the unique value in each dimension. *)
 
 (** 比较在每个维度取唯一值。 *)
 
 Program Definition VertexNerveTerminalN@{u p +}
-  : (Nᵥ(VertexTerminalObjectsF) :
+  : (Nᵥ(VertexTerminalObjectsF@{x e o h q l a b}) :
       Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p}
   :=
@@ -41,11 +44,12 @@ Next Obligation. intros x. exact tt. Defined.
 
 Program Definition VertexNerveTerminalInvN@{u p +}
   : ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p} ⇒
-      (Nᵥ(VertexTerminalObjectsF) :
+      (Nᵥ(VertexTerminalObjectsF@{x e o h q l a b}) :
         Functor (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|nt n :=
-      {|func x := ⟨ConstF [Ord n] (C := VertexCat VertexTerminalObjectsF) tt⟩ᵥ
+      {|func x := ⟨ConstF [Ord n]
+          (C := VertexCat VertexTerminalObjectsF@{x e o h q l a b}) tt⟩ᵥ
       |}
   |}.
 Next Obligation.
@@ -63,7 +67,7 @@ Defined.
 (** 两侧往返均使用指定相等，与两个共同值大小相互独立；不识别函子记录或见证。 *)
 
 Definition vertex_nerve_terminal_iso@{u p +}
-  : (Nᵥ(VertexTerminalObjectsF) :
+  : (Nᵥ(VertexTerminalObjectsF@{x e o h q l a b}) :
       Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p}.
 Proof.
@@ -86,3 +90,5 @@ Lemma vertex_nerve_terminal_natural@{u p +}
       (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       (VertexNerveTerminalN ∘Nv VertexNerveN (VertexTerminalF T)).
 Proof. intros n x. exact tt. Defined.
+
+End TerminalSizes.

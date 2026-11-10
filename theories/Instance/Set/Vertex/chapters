@@ -5,3 +5,4 @@ Terminal.v
 Relabel.v
 Chain.v
 Category.v
+FiniteProducts.v

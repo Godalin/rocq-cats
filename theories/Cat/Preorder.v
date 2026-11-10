@@ -10,8 +10,14 @@ From Cats Require Import Cat.Functor.Core.
 
     关系见证作为态射，平行见证均等价；由此指定薄范畴，不用原生相等识别见证。 *)
 
-Program Definition PreorderCat {X : Type} (R : crelation X) `{HR : !PreOrder R}
-  : Cat
+(** The hom-equality and law bounds can be chosen independently of relation
+    witnesses. Parallel arrows still have the singleton equality. *)
+
+(** Hom 相等与定律界可独立于关系见证选取；平行箭头仍使用单元素相等。 *)
+
+Program Definition PreorderCatAt@{x r p l} {X : Type@{x}}
+    (R : crelation@{x r} X) `{HR : !PreOrder R}
+  : Cat@{x r p l l}
   :=
   {|Ob := X
   ; HomSet x y :=
@@ -26,6 +32,15 @@ Next Obligation. repeat intro; exact tt. Defined.
 Next Obligation. exact tt. Defined.
 Next Obligation. exact tt. Defined.
 Next Obligation. exact tt. Defined.
+
+(** The usual thin category uses the smallest hom-equality universe. *)
+
+(** 通常的薄范畴使用最小的 Hom 相等宇宙。 *)
+
+Definition PreorderCat@{x r l} {X : Type@{x}}
+    (R : crelation@{x r} X) `{HR : !PreOrder R}
+  : Cat@{x r Set l l}
+  := @PreorderCatAt@{x r Set l} X R HR.
 
 (** A relation-preserving function induces a functor of preorder categories. *)
 
@@ -73,8 +88,8 @@ Next Obligation. intros x y z H K. exact (transitivity H K). Defined.
 
 (** 处处有见证的关系是预序。 *)
 
-Program Definition codiscrete_preorder (X : Type)
-  : PreOrder (λ _ _ : X, unit)
+Program Definition codiscrete_preorder@{x h} (X : Type@{x})
+  : PreOrder@{x h} (λ _ _ : X, unit)
   :=
   {|PreOrder_Reflexive := _
   ; PreOrder_Transitive := _
@@ -83,13 +98,14 @@ Next Obligation. intros x. exact tt. Defined.
 Next Obligation. repeat intro; exact tt. Defined.
 
 (** The category with exactly one morphism up to equivalence between any two
-    objects. *)
+    objects. Its object, arrow, equality and law sizes may be chosen separately. *)
 
-(** 任意两对象间在等价下恰有一条态射的范畴。 *)
+(** 任意两对象间在等价下恰有一条态射的范畴；对象、箭头、相等及定律大小
+    可分别选取。 *)
 
-Definition CodiscreteCat (X : Type)
-  : Cat
-  := @PreorderCat X (λ _ _, unit) (codiscrete_preorder X).
+Definition CodiscreteCat@{x h p l} (X : Type@{x})
+  : Cat@{x h p l l}
+  := @PreorderCatAt X (λ _ _, unit) (codiscrete_preorder X).
 
 (** Any two objects of a codiscrete category are isomorphic. *)
 

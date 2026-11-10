@@ -107,6 +107,21 @@ Defined.
 
 End Terminal.
 
+(** Transport terminality along an isomorphism, retaining the transported
+    universal arrow and its inverse-based uniqueness proof. *)
+
+(** 沿同构运输终性，保留运输后的泛箭头及由逆给出的唯一性证明。 *)
+
+Definition terminal_iso {C : Cat} {T U : @Ob C}
+    (HT : is_terminal T) (i : T ≅ U)
+  : is_terminal U.
+Proof.
+  intros X. destruct (HT X) as [h Hh]. exists (i.1 ∘ h).
+  split; [exact I |]. intros k _.
+  assert (H : i.2.1 ∘ k ≈ h) by (apply Hh; exact I).
+  rewrite <- H, <- comp_assoc, (snd i.2.2), comp_id_l. reflexivity.
+Defined.
+
 Notation "X '⦂' '≅' '1'" := (is_terminal X)
   (at level 50).
 

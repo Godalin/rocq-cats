@@ -100,6 +100,12 @@ A category theory library for self study.
   [bundled vertex nerve](./theories/Instance/Set/Simplicial/Vertex/Category.v)
   is a fully faithful functor from this category to simplicial setoids,
   retaining the computable reconstruction as its fullness witness.
+  [Chosen finite products](./theories/Instance/Set/Vertex/FiniteProducts.v)
+  equip the presentation category explicitly. The
+  [cartesian nerve](./theories/Instance/Set/Simplicial/Vertex/Cartesian.v)
+  bundles preservation of their full universal properties, using the existing
+  natural comparisons and the general
+  [pointwise finite products](./theories/Cat/Functor/FiniteProducts.v).
   The [singleton comparison](./theories/Instance/Set/Simplicial/Vertex/Monoid.v)
   is a natural isomorphism with the original monoid nerve; forgetting vertex
   comparisons recovers the earlier map to the diagram nerve. A bare category
