@@ -55,7 +55,9 @@ Proof.
     rewrite comp_id_l. apply Hv.
   - change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id).
-    rewrite !functor_id, !comp_id_l, !comp_id_r. apply Ha.
+    rewrite (@functor_id C C T (T X)), (@functor_id C C T (T (T X))).
+    rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
+      (comp_id_r (μ X ∘ fmap T (μ X))). apply Ha.
   - specialize (Hu X).
     change (μ X ∘ (η (T X) ∘ id) ≈ id) in Hu.
     rewrite comp_id_r in Hu. exact Hu.
@@ -65,7 +67,9 @@ Proof.
   - specialize (Ha X).
     change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id) in Ha.
-    rewrite !functor_id, !comp_id_l, !comp_id_r in Ha. exact Ha.
+    rewrite (@functor_id C C T (T X)), (@functor_id C C T (T (T X))) in Ha.
+    rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
+      (comp_id_r (μ X ∘ fmap T (μ X))) in Ha. exact Ha.
 Defined.
 
 (** Regard an ordinary monad as a monoid, reusing the fixed-data theorem. *)

@@ -18,10 +18,8 @@ Program Definition NatS@{u r}
   :=
   {|carrier := nat
   ; carrier_equiv := @eq nat
+  ; carrier_setoid := ltac:(split; red; intros; congruence)
   |}.
-Next Obligation.
-  split; red; intros; congruence.
-Defined.
 
 (** Zero as a respectful map from the terminal setoid. *)
 

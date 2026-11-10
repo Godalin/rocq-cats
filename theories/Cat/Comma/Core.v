@@ -103,7 +103,9 @@ Program Definition comma_comp {X Y Z : CommaOb}
   ; comma_right := comma_right g ∘ comma_right f
   |}.
 Next Obligation.
-  rewrite !functor_comp, comp_assoc, (comma_comm f), <- comp_assoc,
+  rewrite (@functor_comp B C G _ _ _ (comma_right g) (comma_right f)),
+    (@functor_comp A C F _ _ _ (comma_left g) (comma_left f)).
+  rewrite comp_assoc, (comma_comm f), <- comp_assoc,
     (comma_comm g), comp_assoc. reflexivity.
 Defined.
 
