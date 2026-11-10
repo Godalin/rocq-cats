@@ -1,4 +1,6 @@
 Core.v
+Extension.v
+Strength.v
 Category.v
 Monoid.v
 Adjunction.v

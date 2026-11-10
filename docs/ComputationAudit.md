@@ -232,16 +232,17 @@ shared contexts, so rewriting it and pure preservation transfers the four
 classical laws from `ApplicationA`. These are coherent operation presentations:
 no claim is made that four equations on global values alone supply all the
 naturality/coherence data in an arbitrary CCC. These particular conversions
-need no additional tensorial strength. Strength of a general functor,
-Monad-to-Applicative sequencing and computational Arrow remain unimplemented.
+need no additional tensorial strength. The general tensorial-strength
+foundation is described below; Monad-to-Applicative sequencing and
+computational Arrow remain separate work.
 No Day convolution or extra model construction is introduced.
 
 全部转换通过计算保留底层函子，并按适用情形使用指定 Hom 相等保持纯值、二元
 提升、应用、tensorator 及单位。应用保持也对任意共同上下文成立，重写该比较及
 纯值保持即可从 `ApplicationA` 运输四条经典定律。这是相干运算呈现：不主张仅
 四条全局值方程就在任意 CCC 中提供全部自然性及相干数据。这些具体转换不额外
-要求张量强度；一般函子的强度、Monad 到 Applicative 的顺序组合和计算 Arrow
-仍未实现。没有引入 Day 卷积或额外模型构造。
+要求张量强度；一般张量强度基础见下文，Monad 到 Applicative 的顺序组合及
+计算 Arrow 仍为后续工作。没有引入 Day 卷积或额外模型构造。
 
 Validation uses the existing `rocq-cats` switch. Full-library build, tests
 and installation passed. Temporary checks cover both strict hom/equality
@@ -262,6 +263,48 @@ Hom／相等宇宙的两种严格次序、打包运算内部的重写、模型�
 `Closed under the global context`。严格双语 HTML 为每种语言导出 262 个模块，
 并检查 529 页的链接及锚点；新增接口说明已在两种语言中核查。检查没有新增永久
 测试源码或共享测试别名，批次 PDF 导出仍由集成会话负责。
+
+## Tensorial-strength foundation
+
+## 张量强度基础
+
+[HasStrength](../theories/Cat/Monoidal/Strength.v) chooses a natural map
+carrying an ordinary left tensor context through an effectful right input,
+with unit and associator coherence. Its base is a named monoidal structure,
+not necessarily cartesian. It is distinct from an invertible tensorator.
+[StrongMonad](../theories/Cat/Monad/Strength.v) retains the existing ordinary
+Monad as its unique underlying view and adds this chosen strength together
+with compatibility with monad unit and multiplication. No commutativity,
+closedness or implicit model selection is required.
+
+[HasStrength](../theories/Cat/Monoidal/Strength.v) 选取自然映射，将左侧通常
+张量上下文穿过右侧带效应输入，满足单位及结合子相干律。基底是具名幺半结构，
+不必是笛卡尔结构；它不同于可逆 tensorator。
+[StrongMonad](../theories/Cat/Monad/Strength.v) 保留已有普通 Monad 为唯一
+底层视图，增加此选定强度及其与 Monad 单位、乘法的相容性。不要求交换性、
+闭结构或隐式选定模型。
+
+[Kleisli extension](../theories/Cat/Monad/Extension.v) and its unit,
+substitution and associativity laws reuse the existing Monad operations.
+Contextual extension in the strength module then transports an ordinary
+tensor context through an effectful argument. Its associativity theorem
+reassociates nested contexts and keeps effect order. This foundation is
+independently reusable; the finite-product Applicative conversion is the
+next part of this serial phase, rather than an extra field assumed here.
+
+[Kleisli 扩张](../theories/Cat/Monad/Extension.v) 及其单位、代入和结合律
+复用已有 Monad 运算。强度模块中的上下文扩张继而将通常张量上下文穿过带效应
+参数；其结合律重排嵌套上下文括号，保留效应次序。此基础可独立复用；有限积上
+的 Applicative 转换是本串行阶段的下一部分，并未作为额外字段假定。
+
+The existing `rocq-cats` switch passed the full build/test/install targets.
+Temporary checks instantiated both strict hom/equality universe orders and
+all 18 foundation assumption checks were closed under the global context.
+No permanent tests or shared environment changes were added.
+
+已有 `rocq-cats` switch 通过全库构建、测试和安装。临时检查实例化了 Hom／相等
+宇宙的两种严格次序，18 项基础公理检查均无额外假设。没有新增永久测试或改动
+共享环境。
 
 ## First implementation boundary
 
