@@ -172,3 +172,5 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Name concrete Applicative values with an `A` suffix, such as `ReaderA`.
   Keep `Applicative` as the interface class name; underlying functor values
   retain the `F` suffix.
+- Name concrete model modules after the model, such as `Instance/Set/Reader.v`.
+  Keep shared interface theory in its theory modules, such as `Cat/Applicative/`.

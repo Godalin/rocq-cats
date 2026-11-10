@@ -144,7 +144,7 @@ retain Type-valued witnesses; they do not equate functor or law records.
 上下文变化；映射律中的纯函数及交换律中的纯参数是拉入上下文的固定全局值。
 等式使用指定 Hom 相等并保留 Type 值见证，不比较函子或定律记录的原生相等。
 
-The explicitly selected [ReaderA](../theories/Instance/Set/Applicative.v)
+The explicitly selected [ReaderA](../theories/Instance/Set/Reader.v)
 uses respectful maps, constant functions and pointwise pairing. Postcomposition
 reuses the foundational composition laws. Its environment equality level is
 separate, and a small environment permits the ambient carrier universe to be
@@ -152,7 +152,7 @@ strictly larger than the equality universe. Temporary checks instantiate the
 abstract interface and application at both strict hom/equality universe
 orders and check transparent Reader pure/map/pair/application computation.
 
-显式选择的 [ReaderA](../theories/Instance/Set/Applicative.v) 使用保相等映射、
+显式选择的 [ReaderA](../theories/Instance/Set/Reader.v) 使用保相等映射、
 常值函数及逐点配对，后合成复用基础复合定律。环境相等层级单独保留，小环境
 允许所在广集载体宇宙严格大于相等宇宙。临时检查在 Hom／相等宇宙的两种严格
 次序下实例化抽象接口及应用，并检查 Reader 纯值、映射、配对及应用的透明计算。
