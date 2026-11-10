@@ -96,8 +96,9 @@ Arguments rtc_cons {_ _ _ _ _} _ _.
 
 (** 与范畴预合成共用已有的优先级，使关系与范畴模块能够同时导入。 *)
 
-#[warnings="-postfix-notation-not-level-1"]
+Local Set Warnings "-postfix-notation-not-level-1".
 Notation "R '^*'" := (ReflTransClosure R) (at level 35) : relation_scope.
+Local Set Warnings "+postfix-notation-not-level-1".
 
 (** A single edge is a path with an empty tail. *)
 
