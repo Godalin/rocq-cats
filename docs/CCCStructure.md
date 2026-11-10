@@ -189,6 +189,84 @@ clients; constructors do not register chosen model functors globally.
 柯里化定律。固定函子接口继续服务于一般定理和 STLC 客户端；构造器不会全局
 注册选定模型函子。
 
+## Transport across specified equivalences
+
+## 沿指定等价运输
+
+[Equivalence.CCC](../theories/Cat/Equivalence/CCC.v) explicitly constructs
+`EquivalenceCCC e HC` for a specified `e : C ≃C D` and `HC : CCC C`.
+It also exposes the general `QuasiInverseCCC F G u v HC`, where
+`u : G ∘F F ≅N IdF` and `v : F ∘F G ≅N IdF`. The latter preserves
+independent native hom/equality universes of the two categories. The supplied
+isomorphisms need not satisfy triangle equations; no additional choice,
+function equality or proof-field equality is assumed.
+
+[Equivalence.CCC](../theories/Cat/Equivalence/CCC.v) 对指定的
+`e : C ≃C D` 及 `HC : CCC C` 显式构造 `EquivalenceCCC e HC`，并提供一般
+版本 `QuasiInverseCCC F G u v HC`，其中 `u : G ∘F F ≅N IdF`、
+`v : F ∘F G ≅N IdF`。一般版本保持两侧原生 Hom／相等宇宙独立。
+给定同构无须满足三角方程，也不假设额外选择、函数相等或证明字段相等。
+
+The construction has reusable prerequisites rather than model-specific proofs:
+
+构造通过可复用前置理论完成，不依赖具体模型证明：
+
+1. [Equivalence.Core](../theories/Cat/Equivalence/Core.v) derives full
+   faithfulness and specified object representatives from the quasi-inverse
+   isomorphisms. [Equivalence.Adjunction](../theories/Cat/Equivalence/Adjunction.v)
+   builds both adjunction directions from actual full preimages.
+2. [Limit.Equivalence](../theories/Cat/Limit/Equivalence.v) reuses right-adjoint
+   limit preservation and diagram-isomorphism transport for every specified
+   shape; fully faithful reflection needs no essential surjectivity.
+   [Equivalence.Cartesian](../theories/Cat/Equivalence/Cartesian.v) specializes
+   this to empty and pair-shaped limits, choosing terminal objects and products
+   independently.
+3. [Functor.Product](../theories/Cat/Functor/Product.v) extracts product
+   comparison maps and naturality without terminal assumptions; the existing
+   cartesian-functor interface delegates to it.
+   [Exponential.Preservation](../theories/Cat/Exponential/Preservation.v)
+   reflects exponential candidates under fully faithful product-preserving
+   functors, and preserves them when essential surjectivity is also specified.
+
+1. [Equivalence.Core](../theories/Cat/Equivalence/Core.v) 从拟逆同构导出全忠实性
+   及指定对象代表；[Equivalence.Adjunction](../theories/Cat/Equivalence/Adjunction.v)
+   由实际满性原像构造两个方向的伴随。
+2. [Limit.Equivalence](../theories/Cat/Limit/Equivalence.v) 对任意指定形状复用
+   右伴随极限保持性及图式同构运输；全忠实反映不要求本质满性。
+   [Equivalence.Cartesian](../theories/Cat/Equivalence/Cartesian.v) 将其特化为
+   空形状及对象对形状的极限，分别选择终对象及积。
+3. [Functor.Product](../theories/Cat/Functor/Product.v) 抽取不要求终对象的积比较
+   及自然性，原笛卡尔函子接口委托它实现。
+   [Exponential.Preservation](../theories/Cat/Exponential/Preservation.v) 在
+   全忠实且保持积的函子下反映指数候选；加入指定本质满性后也保持指数。
+
+The transported choices have these underlying objects:
+
+运输选择具有以下底层对象：
+
+```text
+T_D       := F T_C
+X ×_D Y   := F (G X ×_C G Y)
+Y ^_D X   := F (G Y ^_C G X)
+```
+
+For `E := G Y ^ G X`, evaluation is lifted through the fully faithful `G`.
+Its image is source evaluation after `u E` and the forward product comparison.
+The exponential universal property follows by changing its representing object
+along `u E`, then reflecting it through `G`. All mediators remain transparent.
+`EquivalenceCCCF e HC` and `EquivalenceInverseCCCF e HC` bundle the two
+preserving functors. More generally `QuasiInverseIsCCCF` preserves any specified
+CCC choices on both sides: exponential candidate uniqueness makes the usual
+canonical comparison invertible. Existing product-comparison, evaluation and
+curry laws apply directly to these bundles.
+
+令 `E := G Y ^ G X`，求值通过全忠实 `G` 提升；其像为来源求值与 `u E` 及正向
+积比较的复合。指数泛性质先沿 `u E` 更换表示对象，再经 `G` 反映得到；所有
+中介保持透明。`EquivalenceCCCF e HC` 及 `EquivalenceInverseCCCF e HC` 打包
+两个保持函子。更一般的 `QuasiInverseIsCCCF` 保持两侧任意指定 CCC 选择：
+指数候选唯一性使通常的规范比较可逆。已有积比较、求值及柯里化定律可直接用于
+这些函子包。
+
 ## Internal hom equations
 
 ## 内部 Hom 等式
@@ -246,10 +324,43 @@ global context. Strict bilingual HTML export checked 507 pages.
 七项新增适配器、恒等／复合构造及继承实例均无额外假设；严格双语 HTML 导出
 检查了 507 页。
 
-The independent follow-ups in #23 are transfer of chosen CCC structures across
-arbitrary category equivalences and packaging self-enrichment through the general
-interface of #10. The basic exponential, preservation, composition and internal
-hom equations above are available without those developments.
+The specified-equivalence transfer passed
+`opam exec --switch=rocq-cats -- dune build @all @runtest @install tests/CCCTransport.vo`
+with Rocq/Stdlib 9.2.0, OCaml 5.3.0 and Dune 3.23.1.
+The dedicated [CCCTransport regressions](../tests/CCCTransport.v) retain explicit
+selection, both strict hom/equality universe orders, and transparent product,
+evaluation, curry and inverse-comparison computations through double opposition.
+The shared test files and alias are unchanged; the dedicated target is included
+by `@all` and can also be built explicitly as above.
 
-#23 中独立的后续工作为沿任意范畴等价运输选定 CCC 结构，以及通过 #10 的一般
-接口组织自富集。上述基础指数、保持性、复合及内部 Hom 方程已可独立使用。
+指定等价运输已在 Rocq/Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1 下通过
+`opam exec --switch=rocq-cats -- dune build @all @runtest @install tests/CCCTransport.vo`。
+专用 [CCCTransport 回归](../tests/CCCTransport.v) 保留显式选择、两种严格
+Hom／相等宇宙排列，以及经过双重反范畴的积、求值、柯里化和比较逆计算。
+共享测试文件及别名未改；专用目标由 `@all` 包含，也可按上文显式构建。
+
+All 58 temporary assumption checks are closed under the global context.
+Temporary checks also cover larger indexing categories, quasi-inverse data
+whose original triangle fails, and a redundant-object presentation of setoids
+with Boolean equality witnesses. In the last check the chosen representative
+has a different object tag, while evaluation, curry and inverse comparisons
+compute. Strict bilingual HTML export produced 263 modules per language and
+checked links/anchors in 531 pages. These are local task results; audit scripts
+are not compiled regression sources, and batch PDFs are left to integration.
+
+全部 58 项临时公理检查均无额外假设。临时检查还覆盖更大的索引范畴、原始三角律
+不成立的拟逆数据，以及相等见证为布尔值的广集的重复对象呈现；后者的选定代表
+具有不同对象标签，求值、柯里化及比较逆仍计算。严格双语 HTML 导出为每种语言
+生成 263 个模块，并检查 531 页的链接及锚点。这些是任务本地结果；审计脚本
+不是编译回归源码，批次 PDF 留待集成阶段导出。
+
+The specified-equivalence transfer is implemented on `ccc-equivalence-23`,
+based on integrated `a7c849423f6f03193c82d5f6bb20230acf63d0a0`. Its general
+foundation was delivered separately in `c7007e9`. The remaining independent
+follow-up in #23 is packaging self-enrichment through the general interface
+of #10. STLC client migration remains a separate task.
+
+指定等价运输已在 `ccc-equivalence-23` 上实现，基于集成版本
+`a7c849423f6f03193c82d5f6bb20230acf63d0a0`；一般基础已作为 `c7007e9` 独立交付。
+#23 剩余的独立后续工作是通过 #10 的一般接口组织自富集。STLC 客户端迁移仍是
+独立任务。
