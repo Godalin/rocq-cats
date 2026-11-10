@@ -1,6 +1,7 @@
 Core.v
 Monoid.v
 Functor.v
+Lifting.v
 Constant.v
 Transport.v
 Cartesian.v

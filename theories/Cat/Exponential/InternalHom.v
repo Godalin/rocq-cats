@@ -145,6 +145,27 @@ Lemma internal_comp_eq (X Y Z : @Ob C)
   : internal_comp X Y Z ≈ (π1 ∘ᴱ π2).
 Proof. unfold exponential_comp. rewrite product_pair_η, comp_id_r. reflexivity. Qed.
 
+(** Evaluating internal composition is successive evaluation, with the
+    selected product associator accounting for the three inputs. *)
+
+(** 内部复合的求值是连续求值，选定的积结合子处理三个输入的括号。 *)
+
+Lemma internal_comp_eval (X Y Z : @Ob C)
+  : (eval (X := X) (Y := Z)) ∘ (internal_comp X Y Z × id) ≈
+      (eval (X := Y) (Y := Z)) ∘ (id × (eval (X := X) (Y := Y))) ∘
+        (@product_assoc C HP (Z ^ Y) (Y ^ X) X).1.
+Proof.
+  change (uncurry (internal_comp X Y Z) ≈
+    (eval (X := Y) (Y := Z)) ∘ (id × (eval (X := X) (Y := Y))) ∘
+      (@product_assoc C HP (Z ^ Y) (Y ^ X) X).1).
+  unfold internal_comp. rewrite exponential_β.
+  unfold app, product_assoc. cbn [projT1].
+  repeat first [rewrite cross_η | rewrite product_comp_r |
+    rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
+    rewrite comp_id_l | rewrite comp_id_r].
+  reflexivity.
+Qed.
+
 (** The internal composition diagram explicitly includes the associator. *)
 
 (** 内部复合图显式包含结合同构。 *)
