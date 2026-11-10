@@ -200,7 +200,7 @@ let check_links output =
 let pdf ?(design = false) root output tag paths =
   let dir = output ^ "/" ^ tag in
   mkdir dir;
-  run "coqdoc" (["--latex"; "--utf8"; "--body-only"; "--gallina";
+  run "rocq" (["doc"; "--latex"; "--utf8"; "--body-only"; "--gallina";
     "--no-index"; "--no-lib-name";
     "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
     "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
@@ -317,7 +317,7 @@ let build root strict format =
           && Filter.starts name 0 "Cats"
           && not (List.exists (fun s -> s.name ^ ".html" = name) sources)
         then remove (dir ^ "/" ^ name));
-      run "coqdoc" (["--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
+      run "rocq" (["doc"; "--html"; "--utf8"; "--gallina"; "--toc"; "--no-lib-name";
         "-R"; inputs ^ "/theories"; "Cats";
         "-d"; dir] @ paths);
       List.iter (fun name -> remove (dir ^ "/" ^ name)) ["symbols.html"; "site.css"];

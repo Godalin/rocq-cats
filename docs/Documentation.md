@@ -49,6 +49,13 @@ amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
 工具不安装依赖。本地验证：Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、
 TeX Live 2025。
 
+The exporter and its compiled-source regression use `rocq compile` and
+`rocq doc`, available since Rocq 9.0; legacy `coqc`/`coqdoc` executable aliases
+are not required.
+
+导出器及其编译源码回归使用 Rocq 9.0 起提供的 `rocq compile` 和 `rocq doc`，
+不要求旧的 `coqc`/`coqdoc` 可执行文件别名。
+
 Both PDF modes normalize coqdoc's native blank-row and indentation markers
 before layout and optional code-frame decoration, following the
 [code-fragment spacing requirements](./ExportRequirements.md#interface-explanations).

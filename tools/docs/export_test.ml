@@ -58,7 +58,7 @@ let () =
   if not (contains annotated "\\begin{alectryon}{coq}{none}")
     || not (contains annotated "reflexivity. (* .unfold .all *) Qed.") then
     failwith "native Alectryon input changed the proof or its annotations";
-  run "coqc" ["-q"; original];
+  run "rocq" ["compile"; "-q"; original];
   let metadata = read (dir ^ "/Fixture.glob") in
   if not (List.mem "Stdlib.Strings.String" (Docs_order.Order.imports metadata)) then
     failwith "compiled import metadata was not recognized";
@@ -69,7 +69,7 @@ let () =
     if messages <> [] then failwith "unexpected fixture language diagnostics";
     write (output ^ "/Fixture.v") filtered;
     write (output ^ "/Fixture.glob") (glob ~original:source ~filtered metadata);
-    run "coqdoc" ["--utf8"; "--gallina"; "--no-externals"; "--no-index";
+    run "rocq" ["doc"; "--utf8"; "--gallina"; "--no-externals"; "--no-index";
       "--no-lib-name"; "-o"; output ^ "/page.html"; output ^ "/Fixture.v"];
     let page = read (output ^ "/page.html") in
     if contains page "\\begin{tikzcd}" then
@@ -78,7 +78,7 @@ let () =
       [present; "visible_sample"; "verified_example"; "quoted"];
     List.iter (fun name -> if contains page name then failwith ("unexpected " ^ name))
       [absent; "hidden_support"; "reflexivity"];
-    run "coqdoc" ["--latex"; "--utf8"; "--gallina"; "--body-only";
+    run "rocq" ["doc"; "--latex"; "--utf8"; "--gallina"; "--body-only";
       "--no-index"; "-d"; output; "-o"; output ^ "/page.tex"; output ^ "/Fixture.v"];
     let latex = read (output ^ "/page.tex") in
     (* Suppressed field prose must not turn into wide blank indentation. *)
