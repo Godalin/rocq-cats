@@ -28,6 +28,15 @@ jobs:
           before_script: |
             rocq --version
             dune --version
-            dune exec tools/docs/docs.exe -- build --strict
+          after_script: |
+            startGroup "Validate checkout and bilingual documentation"
+              # The checkout belongs to the runner, not the container user.
+              sudo chown -R "$(id -u):$(id -g)" "$WORKDIR"
+              dune build -j 2 @all @runtest @install
+              dune exec tools/docs/docs.exe -- build --strict
+            endGroup
         env:
           OPAMWITHTEST: "true"
+      - name: Restore workspace ownership
+        if: ${{ always() }}
+        run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
