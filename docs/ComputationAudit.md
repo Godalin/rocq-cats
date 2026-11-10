@@ -93,6 +93,99 @@ be translated to this library's chosen orientation.
 | Applicative as a Day monoid | Correct Day tensor, unit, coherence and size/existence conditions; strength when required | Direct lax/operation interfaces precede any new coend theory | Wiegley's Day ingredients; mathlib's selected Kan-extension formulation | Build the actual correspondence and law preservation; a module named Day is insufficient |
 | Arrow as a strong profunctor monoid | Strong profunctors, chosen composition/coends, unit and associativity coherence | No computational Arrow interface in this baseline; [Cat/Arrow](../theories/Cat/Arrow/Core.v) is the ordinary arrow category | Wiegley's profunctor composition and weakened Freyd presentation | Strong promonads, full Arrow/Freyd correspondence and exact typed equational statements remain |
 
+## Lawful Applicative slice
+
+## 带定律的 Applicative 切片
+
+The serial continuation after `1495819` adds
+[Applicative](../theories/Cat/Applicative/Core.v) over a named category,
+terminal object and binary products. It stores one cartesian lax monoidal
+endofunctor and a natural pure map. Its two additional laws identify the pure
+terminal component with the lax unit and identify the pure product component
+with tensorial combination of pure components. Thus the pure map is monoidal.
+No exponential structure is required by this interface. The unique coercion
+chain is `Applicative → LaxMonoidalFunctor → Functor → object function`;
+arrow maps retain `fmap`, and concrete choices remain explicit.
+
+`1495819` 之后的串行后续工作增加
+[Applicative](../theories/Cat/Applicative/Core.v)，依赖具名范畴、终对象及二元积。
+它保存一个笛卡尔 lax 幺半自函子及自然纯值映射。两条新增定律分别将纯终值分量
+与 lax 单位关联，将纯积分量与两个纯分量的张量组合关联，因此纯值映射是幺半的。
+基础接口不要求指数结构。唯一强制转换链为
+`Applicative → LaxMonoidalFunctor → Functor → object function`；
+态射映射保留 `fmap`，具体选择继续显式启用。
+
+[Binary lifting](../theories/Cat/Monoidal/Lifting.v) is first developed for
+arbitrary lax monoidal functors and operations. Naturality, unary-map
+substitution and preservation of general associativity diagrams do not use
+pure values or exponentials. This supplies the reusable argument behind
+Applicative composition. The shared
+[internal composition evaluation lemma](../theories/Cat/Exponential/InternalHom.v)
+comes from the existing exponential beta law and product associator.
+
+[二元提升](../theories/Cat/Monoidal/Lifting.v) 首先针对任意 lax 幺半函子及运算
+发展。自然性、一元映射代入及一般结合图的保持均不使用纯值或指数，提供了
+Applicative 复合律背后的通用论证。共享的
+[内部复合求值引理](../theories/Cat/Exponential/InternalHom.v) 来自已有指数 β 律
+及积结合子。
+
+With chosen exponentials, [application](../theories/Cat/Applicative/Closed.v)
+is lifted evaluation. The proved classical laws are identity, homomorphism,
+interchange and composition, including the curried pure composition followed
+by three applications. All allow a shared arbitrary context. Homomorphism
+allows both pure inputs to vary in that context; the pure function in the
+mapping law and the pure argument in interchange are fixed global values
+pulled back into the context. The equations use designated hom equality and
+retain Type-valued witnesses; they do not equate functor or law records.
+
+选定指数后，[应用](../theories/Cat/Applicative/Closed.v) 定义为提升后的求值。
+已证明恒等、同态、交换和复合四条经典定律；复合律包含纯柯里化复合函数之后
+连续三次应用的完整形式。全部允许任意共同上下文。同态律允许两个纯输入均随
+上下文变化；映射律中的纯函数及交换律中的纯参数是拉入上下文的固定全局值。
+等式使用指定 Hom 相等并保留 Type 值见证，不比较函子或定律记录的原生相等。
+
+The explicitly selected [Reader model](../theories/Instance/Set/Applicative.v)
+uses respectful maps, constant functions and pointwise pairing. Postcomposition
+reuses the foundational composition laws. Its environment equality level is
+separate, and a small environment permits the ambient carrier universe to be
+strictly larger than the equality universe. Temporary checks instantiate the
+abstract interface and application at both strict hom/equality universe
+orders and check transparent Reader pure/map/pair/application computation.
+
+显式选择的 [Reader 模型](../theories/Instance/Set/Applicative.v) 使用保相等映射、
+常值函数及逐点配对，后合成复用基础复合定律。环境相等层级单独保留，小环境
+允许所在广集载体宇宙严格大于相等宇宙。临时检查在 Hom／相等宇宙的两种严格
+次序下实例化抽象接口及应用，并检查 Reader 纯值、映射、配对及应用的透明计算。
+
+This is a sufficient lawful Applicative presentation, not a claim that an
+arbitrary cartesian lax endofunctor determines a natural pure map. A reverse
+construction from an independently axiomatized operation interface, tensorial
+strength and its compatibility laws, Monad conversion and computational Arrow
+remain separate milestones. The Reader model does not impose size bounds on
+the abstract interface. No general coend or Day convolution construction is
+introduced by this slice.
+
+这是一种充分的带定律 Applicative 呈现，不主张任意笛卡尔 lax 自函子都确定
+自然纯值映射。从独立运算公理接口反向构造、张量强度及其相容律、Monad 转换和
+计算 Arrow 仍为独立里程碑。Reader 模型的大小界不施加给抽象接口。此切片不引入
+一般余端或 Day 卷积构造。
+
+The existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1) passed
+`dune build @all @runtest @install`. Twenty-nine temporary assumption checks
+for lifting, pure/application laws, internal composition, the Reader model
+and its computations all reported `Closed under the global context`.
+Strict bilingual HTML export generated 260 modules per language and checked
+links and anchors in 525 pages. New interface explanations were inspected in
+both languages. No permanent test source or shared test alias was added;
+batch PDF export remains with the integration session.
+
+已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）通过
+`dune build @all @runtest @install`。提升、纯值／应用定律、内部复合、Reader
+模型及其计算的 29 项临时公理检查均报告 `Closed under the global context`。
+严格双语 HTML 为每种语言导出 260 个模块，并检查 525 页的链接及锚点。
+新增接口说明已在两种语言中核查。没有新增永久测试源码或共享测试别名，
+批次 PDF 导出仍由集成会话负责。
+
 ## First implementation boundary
 
 ## 首个实现边界
@@ -107,9 +200,10 @@ be translated to this library's chosen orientation.
 3. Check a genuinely noninvertible lax structure, independent hom/equality
    universe orders, and foundational assumptions. Keep temporary checks
    distinct from retained interface regressions.
-4. Subsequent slices add lawful cartesian Applicative and computational
-   Arrow interfaces, coherent tensorial strength for the existing Monad,
-   and the direct conversion diagram. These remain open in #35.
+4. The lawful Applicative slice above is implemented. Subsequent slices add
+   the independent operation-presentation comparison, computational Arrow,
+   coherent tensorial strength for the existing Monad and the direct
+   conversion diagram. These remain open in #35.
 
 1. 打包指定幺半结构之间的函子及其 lax 结构：单位映射、自然 tensorator、
    结合律和两条单位律。不要求可逆、张量强度或闭／笛卡尔基底。
@@ -117,8 +211,8 @@ be translated to this library's chosen orientation.
    用 `fmap F` 映射同态，并封装为已有幺半群对象范畴之间的函子。
 3. 检查真正不可逆的 lax 结构、独立的 Hom／相等宇宙次序，以及基础公理。
    区分临时检查与保留的接口回归。
-4. 后续切片再添加带定律的笛卡尔 Applicative 与计算 Arrow、已有 Monad 的
-   相干张量强度及直接转换图；#35 的这些部分仍未完成。
+4. 上述带定律 Applicative 切片已实现。后续再添加独立运算呈现的比较、计算
+   Arrow、已有 Monad 的相干张量强度及直接转换图；这些仍为 #35 的待办。
 
 The implemented interface is
 [LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v), bundling

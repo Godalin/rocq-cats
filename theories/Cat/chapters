@@ -8,6 +8,7 @@ Homotopy/Core.v
 Exponential/Core.v
 CCC.v
 Monoidal
+Applicative
 Monad
 Comma
 FreeObject

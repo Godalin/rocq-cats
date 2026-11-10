@@ -303,6 +303,20 @@ PDF export remains with the integration batch.
 生成 256 个模块并检查 517 页；新增字段及载体使用说明已在两种语言中核查。
 PDF 仍由集成批次统一导出。
 
+The next serial slice implements
+[Applicative](../theories/Cat/Applicative/Core.v) with the single chain
+`Applicative → LaxMonoidalFunctor → Functor → object function`, preserving
+the selected parent functor and `fmap`. Its pure operation is a natural
+transformation with unit/product compatibility, rather than a competing
+function coercion. See the [computation audit](./ComputationAudit.md#lawful-applicative-slice)
+for the proved laws, Reader model, size checks and remaining boundaries.
+
+下一串行切片实现了 [Applicative](../theories/Cat/Applicative/Core.v)，唯一转换链
+为 `Applicative → LaxMonoidalFunctor → Functor → object function`，保留
+选定父函子和 `fmap`。纯值运算是满足单位／积相容律的自然变换，不增加竞争的
+函数强制转换。已证定律、Reader 模型、大小检查及剩余边界见
+[计算模型审计](./ComputationAudit.md#lawful-applicative-slice)。
+
 ## Follow-up candidates
 
 ## 后续候选
