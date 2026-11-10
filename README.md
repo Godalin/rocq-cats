@@ -95,12 +95,17 @@ A category theory library for self study.
   recovers a transport-preserving functor from every simplicial map. Both
   round trips hold in their specified equalities, giving a hom-setoid
   isomorphism after ordinary common size lifts, without groupoid assumptions.
+  [Specified object presentations](./theories/Instance/Set/Vertex/Category.v)
+  and their transport-preserving functors form a category. The
+  [bundled vertex nerve](./theories/Instance/Set/Simplicial/Vertex/Category.v)
+  is a fully faithful functor from this category to simplicial setoids,
+  retaining the computable reconstruction as its fullness witness.
   The [singleton comparison](./theories/Instance/Set/Simplicial/Vertex/Monoid.v)
   is a natural isomorphism with the original monoid nerve; forgetting vertex
   comparisons recovers the earlier map to the diagram nerve. A bare category
   does not itself select this extra object equality and transport data.
-  Full faithfulness remains a separate target; coskeletality for arbitrary
-  selected categories and the groupoid Kan theorem are described below.
+  Coskeletality for arbitrary selected categories and the groupoid Kan theorem
+  are described below.
   The [spine correspondence](./theories/Instance/Set/Simplicial/Vertex/Spine.v)
   identifies every degree of the vertex nerve with the
   [setoid of composable chains](./theories/Instance/Set/Vertex/Chain.v).
