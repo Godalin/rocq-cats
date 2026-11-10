@@ -165,8 +165,14 @@ A category theory library for self study.
   common value sizes. Independently, the
   [adjacent-horn theorem](./theories/Instance/Set/Simplicial/Coskeletal.v)
   derives unique boundary filling from unique horn filling in adjacent
-  dimensions. Full faithfulness and examples with nontrivial higher homotopy
-  remain separate goals; ordinary groupoid nerves do not provide the latter.
+  dimensions. [Elementary simplicial homotopy](./theories/Instance/Set/Simplicial/Homotopy/Core.v)
+  now uses the standard interval `Δ[1]`, with explicit endpoint restrictions,
+  constant homotopies and compatibility with precomposition, postcomposition
+  and horizontal composition. It specializes the reusable
+  [product-interval theory](./theories/Cat/Homotopy/Core.v). Its two interval
+  point maps are homotopic and remain distinct under natural equality.
+  Symmetry and transitivity are not assumed for arbitrary simplicial setoids.
+  Examples with nontrivial higher homotopy remain a separate goal.
 
 ### ETCS
 
