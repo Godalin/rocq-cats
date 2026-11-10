@@ -15,24 +15,27 @@ Local Open Scope monad_scope.
     对象取自基底范畴；到 [Y] 的箭头是到 [M Y] 的通常箭头，相等恰为已有
     Hom 广集相等。构造只需普通 Monad 定律，不使用强度、积或闭结构。 *)
 
-Section Kleisli.
-Context {C : Cat} (M : Monad C).
-
 (** Run the second argument first, then extend the first to its result. *)
 
 (** 先运行第二个参数，再将第一个参数扩张到所得结果。 *)
 
-Definition kleisli_comp {X Y Z : @Ob C}
+Definition kleisli_comp {C : Cat} (M : Monad C) {X Y Z : @Ob C}
     (g : Hom Y (M Z)) (f : Hom X (M Y))
   : Hom X (M Z)
   := kleisli_extend M g ∘ f.
+
+Notation "g '∘K[' M ']' f" := (kleisli_comp M g f)
+  (at level 40, left associativity) : monad_scope.
+
+Section Kleisli.
+Context {C : Cat} (M : Monad C).
 
 (** Kleisli composition respects both specified arrow equalities. *)
 
 (** Kleisli 复合保持两个参数的指定箭头相等。 *)
 
 Global Instance kleisli_comp_proper {X Y Z : @Ob C}
-  : Proper (HomEq ==> HomEq ==> HomEq) (@kleisli_comp X Y Z).
+  : Proper (HomEq ==> HomEq ==> HomEq) (@kleisli_comp C M X Y Z).
 Proof.
   intros g g' Hg f f' Hf. unfold kleisli_comp. rewrite Hg, Hf. reflexivity.
 Qed.
@@ -42,7 +45,7 @@ Qed.
 (** Monad 单位是 Kleisli 复合的右恒等。 *)
 
 Lemma kleisli_comp_id_r {X Y : @Ob C} (f : Hom X (M Y))
-  : kleisli_comp f (η[M] X) ≈ f.
+  : f ∘K[M] η[M] X ≈ f.
 Proof. apply kleisli_extend_pure. Qed.
 
 (** The monad unit is also a left identity. *)
@@ -50,7 +53,7 @@ Proof. apply kleisli_extend_pure. Qed.
 (** Monad 单位也是左恒等。 *)
 
 Lemma kleisli_comp_id_l {X Y : @Ob C} (f : Hom X (M Y))
-  : kleisli_comp (η[M] Y) f ≈ f.
+  : η[M] Y ∘K[M] f ≈ f.
 Proof.
   unfold kleisli_comp. rewrite kleisli_extend_unit, comp_id_l. reflexivity.
 Qed.
@@ -61,8 +64,7 @@ Qed.
 
 Lemma kleisli_comp_assoc {W X Y Z : @Ob C}
     (h : Hom Y (M Z)) (g : Hom X (M Y)) (f : Hom W (M X))
-  : kleisli_comp (kleisli_comp h g) f ≈
-      kleisli_comp h (kleisli_comp g f).
+  : (h ∘K[M] g) ∘K[M] f ≈ h ∘K[M] (g ∘K[M] f).
 Proof.
   unfold kleisli_comp. rewrite kleisli_extend_assoc. apply comp_assoc.
 Qed.
@@ -78,7 +80,7 @@ Program Definition KleisliCat
   {|Ob := @Ob C
   ; HomSet X Y := @HomSet C X (M Y)
   ; id X := η[M] X
-  ; comp _ _ _ := kleisli_comp
+  ; comp _ _ _ g f := g ∘K[M] f
   ; comp_proper X Y Z := @kleisli_comp_proper X Y Z
   |}.
 Next Obligation. apply kleisli_comp_id_r. Defined.
@@ -91,7 +93,7 @@ Next Obligation. apply kleisli_comp_assoc. Defined.
 
 Lemma kleisli_comp_pure_r {X Y Z : @Ob C}
     (g : Hom Y (M Z)) (f : Hom X Y)
-  : kleisli_comp g (return[M; f]) ≈ g ∘ f.
+  : g ∘K[M] return[M; f] ≈ g ∘ f.
 Proof.
   unfold kleisli_comp, monad_return.
   rewrite <- comp_assoc, kleisli_extend_pure. reflexivity.
@@ -103,7 +105,7 @@ Qed.
 
 Lemma kleisli_comp_pure_l {X Y Z : @Ob C}
     (g : Hom Y Z) (f : Hom X (M Y))
-  : kleisli_comp (return[M; g]) f ≈ fmap M g ∘ f.
+  : return[M; g] ∘K[M] f ≈ fmap M g ∘ f.
 Proof.
   unfold kleisli_comp, monad_return.
   rewrite kleisli_extend_pre, kleisli_extend_unit, comp_id_l. reflexivity.
@@ -123,7 +125,7 @@ Program Definition KleisliPureF
   |}.
 Next Obligation. exact (monad_return_id M X). Defined.
 Next Obligation.
-  change (return[M; f ∘ g] ≈ kleisli_comp (return[M; f]) (return[M; g])).
+  change (return[M; f ∘ g] ≈ return[M; f] ∘K[M] return[M; g]).
   rewrite kleisli_comp_pure_r, monad_return_comp. reflexivity.
 Defined.
 
@@ -161,6 +163,3 @@ Defined.
 Next Obligation. intros X. exists id. split; apply comp_id_l. Defined.
 
 End Kleisli.
-
-Notation "g '∘K[' M ']' f" := (kleisli_comp M g f)
-  (at level 40, left associativity) : monad_scope.
