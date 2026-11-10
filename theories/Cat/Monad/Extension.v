@@ -15,6 +15,51 @@ Local Open Scope monad_scope.
 Section Extension.
 Context {C : Cat} (M : Monad C).
 
+(** Return an ordinary contextual value. The explicit arrow endpoints
+    also keep rewriting independent of identity-functor packaging. *)
+
+(** 返回通常上下文值；显式态射端点也使重写不依赖恒等函子的包装。 *)
+
+Definition monad_return {W X : @Ob C} (x : Hom W X)
+  : Hom W (M X)
+  := η[M] X ∘ x.
+
+(** Return respects contextual-value equality. *)
+
+(** 返回保持上下文值相等。 *)
+
+Global Instance monad_return_proper {W X : @Ob C}
+  : Proper (HomEq ==> HomEq) (@monad_return W X).
+Proof. intros x y H. unfold monad_return. rewrite H. reflexivity. Qed.
+
+(** Return commutes with ordinary context substitution. *)
+
+(** 返回与通常上下文代入交换。 *)
+
+Lemma monad_return_comp {W V X : @Ob C} (x : Hom W X) (σ : Hom V W)
+  : monad_return x ∘ σ ≈ monad_return (x ∘ σ).
+Proof. unfold monad_return. apply comp_assoc. Qed.
+
+(** Mapping a returned value keeps it returned. *)
+
+(** 映射返回值，保持其返回形式。 *)
+
+Lemma monad_return_map {W X Y : @Ob C} (f : Hom X Y) (x : Hom W X)
+  : fmap M f ∘ monad_return x ≈ monad_return (f ∘ x).
+Proof.
+  unfold monad_return.
+  rewrite <- comp_assoc, <- (nt_naturality (η[M]) f), comp_assoc.
+  reflexivity.
+Qed.
+
+(** Return on identity recovers the unit component. *)
+
+(** 返回恒等箭头，恢复单位分量。 *)
+
+Lemma monad_return_id (X : @Ob C)
+  : monad_return (@id X) ≈ η[M] X.
+Proof. unfold monad_return. apply comp_id_r. Qed.
+
 (** Extend a computation from ordinary inputs to monadic inputs. *)
 
 (** 将通常输入上的计算扩张到 Monad 输入。 *)
@@ -89,3 +134,5 @@ Proof.
 Qed.
 
 End Extension.
+
+Notation "'return[' M ';' x ']'" := (monad_return M x) : monad_scope.

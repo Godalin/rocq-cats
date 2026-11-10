@@ -174,3 +174,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   retain the `F` suffix.
 - Name concrete model modules after the model, such as `Instance/Set/Reader.v`.
   Keep shared interface theory in its theory modules, such as `Cat/Applicative/`.
+- For sequencing laws, use contextual equations such as `monad_pair_pre`
+  before unfolding computations stored as ordinary context. Unrestricted
+  unfolding can copy entire computations during substitution. Keep any
+  proof-only opacity local, restore transparency before exposing clients,
+  and verify concrete reductions after import.
+- Pin ambient carrier/equality levels in concrete model transformations as
+  well as their underlying functors, as in `StatePureN`. Inferred downstream
+  signatures can otherwise identify levels which the functor kept separate;
+  probe the completed structure at strict levels.

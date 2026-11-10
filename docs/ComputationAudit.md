@@ -233,16 +233,16 @@ classical laws from `ApplicationA`. These are coherent operation presentations:
 no claim is made that four equations on global values alone supply all the
 naturality/coherence data in an arbitrary CCC. These particular conversions
 need no additional tensorial strength. The general tensorial-strength
-foundation is described below; Monad-to-Applicative sequencing and
-computational Arrow remain separate work.
+foundation and strong-monad conversion are described below; computational
+Arrow remains separate work.
 No Day convolution or extra model construction is introduced.
 
 全部转换通过计算保留底层函子，并按适用情形使用指定 Hom 相等保持纯值、二元
 提升、应用、tensorator 及单位。应用保持也对任意共同上下文成立，重写该比较及
 纯值保持即可从 `ApplicationA` 运输四条经典定律。这是相干运算呈现：不主张仅
 四条全局值方程就在任意 CCC 中提供全部自然性及相干数据。这些具体转换不额外
-要求张量强度；一般张量强度基础见下文，Monad 到 Applicative 的顺序组合及
-计算 Arrow 仍为后续工作。没有引入 Day 卷积或额外模型构造。
+要求张量强度；一般张量强度基础及强 Monad 的顺序转换见下文，计算 Arrow
+仍为后续工作。没有引入 Day 卷积或额外模型构造。
 
 Validation uses the existing `rocq-cats` switch. Full-library build, tests
 and installation passed. Temporary checks cover both strict hom/equality
@@ -289,22 +289,108 @@ substitution and associativity laws reuse the existing Monad operations.
 Contextual extension in the strength module then transports an ordinary
 tensor context through an effectful argument. Its associativity theorem
 reassociates nested contexts and keeps effect order. This foundation is
-independently reusable; the finite-product Applicative conversion is the
-next part of this serial phase, rather than an extra field assumed here.
+independently reusable; the finite-product Applicative conversion below is
+derived from these laws, rather than assumed as an extra field here.
 
 [Kleisli 扩张](../theories/Cat/Monad/Extension.v) 及其单位、代入和结合律
 复用已有 Monad 运算。强度模块中的上下文扩张继而将通常张量上下文穿过带效应
-参数；其结合律重排嵌套上下文括号，保留效应次序。此基础可独立复用；有限积上
-的 Applicative 转换是本串行阶段的下一部分，并未作为额外字段假定。
+参数；其结合律重排嵌套上下文括号，保留效应次序。此基础可独立复用；下文
+有限积上的 Applicative 转换由这些定律导出，并未作为额外字段假定。
 
-The existing `rocq-cats` switch passed the full build/test/install targets.
-Temporary checks instantiated both strict hom/equality universe orders and
-all 18 foundation assumption checks were closed under the global context.
+The initial foundation slice passed the full build/test/install targets
+with the existing `rocq-cats` switch. Temporary checks instantiated both
+strict hom/equality universe orders and all 18 initial foundation assumption
+checks were closed under the global context.
 No permanent tests or shared environment changes were added.
 
-已有 `rocq-cats` switch 通过全库构建、测试和安装。临时检查实例化了 Hom／相等
-宇宙的两种严格次序，18 项基础公理检查均无额外假设。没有新增永久测试或改动
+初始基础切片在已有 `rocq-cats` switch 下通过全库构建、测试和安装。临时检查
+实例化了 Hom／相等宇宙的两种严格次序，最初 18 项基础公理检查均无额外假设。没有新增永久测试或改动
 共享环境。
+
+## Strong Monad to ordered Applicative
+
+## 强 Monad 到有序 Applicative
+
+[Contextual binding](../theories/Cat/Monad/Context.v) specializes the general
+strength extension to named finite products. Its endpoints expose those
+products directly, and its equations cover equality, context substitution,
+pure substitution, return, ordinary mapping and associative sequencing.
+[Cartesian strength projection](../theories/Cat/Monoidal/CartesianStrength.v)
+uses only strength naturality and its unit law to discard an ordinary
+context without changing the effectful input.
+
+[上下文绑定](../theories/Cat/Monad/Context.v) 将一般强度扩张特化到具名有限积，
+端点直接暴露这些积。方程覆盖相等、上下文代入、纯值代入、返回、通常映射及
+顺序组合的结合律。[笛卡尔强度投影](../theories/Cat/Monoidal/CartesianStrength.v)
+仅用强度自然性及其单位律，证明丢弃通常上下文不改变带效应输入。
+
+[MonadA](../theories/Cat/Monad/Applicative.v) takes a `StrongMonad` over the
+cartesian monoidal structure determined by the named terminal object and
+products. It retains the underlying functor by computation and uses the
+original monad unit as its natural pure map. Binary combination binds the
+left computation, then the right, then returns their pair. Naturality,
+both unit laws, associativity and pure-product compatibility are proved
+from the binding laws. The contextual pairing equation `monad_pair_pre`
+keeps computations stored in an ordinary context abstract during the proof;
+all temporary proof opacity is restored. No strength for an arbitrary
+functor, commutativity, exponential objects or invertible tensorator is
+assumed. With chosen exponentials, the existing application construction
+and four classical laws apply directly to `MonadA`.
+
+[MonadA](../theories/Cat/Monad/Applicative.v) 输入具名终对象及积所确定的笛卡尔
+幺半结构上的 `StrongMonad`，通过计算保留底层函子，以原 Monad 单位作为自然
+纯值映射。二元组合先绑定左计算，再绑定右计算，最后返回配对。自然性、左右
+单位律、结合律及纯积相容律均由绑定定律证明。上下文配对方程 `monad_pair_pre`
+在证明中保持存于通常上下文的计算抽象，全部临时证明不透明性均已恢复。不假定
+任意函子具有强度，不要求交换性、指数对象或可逆 tensorator。选定指数后，已有
+应用构造及四条经典定律可直接用于 `MonadA`。
+
+The explicit [State model](../theories/Instance/Set/State.v) supplies the
+ordinary `StateM`, coherent `StateStrength` and `StateStrongM`; `StateA`
+is derived solely by the general conversion. No second set of model-specific
+Applicative laws is proved. State and ambient equality/carrier levels remain
+separate, subject to the actual function-space/product size bounds.
+Explicit ambient universe parameters prevent the natural transformations
+from unnecessarily identifying the ambient carrier and equality levels.
+Importing the model does not select a monad, strength or Applicative instance.
+
+显式[状态模型](../theories/Instance/Set/State.v) 提供普通 `StateM`、相干
+`StateStrength` 及 `StateStrongM`；`StateA` 完全由一般转换导出，没有重复证明
+模型专用的 Applicative 定律。状态及所在广集的载体／相等层级保持独立，保留
+函数空间／积所需的真实大小界。显式所在宇宙参数避免自然变换的类型推断无谓地
+合并所在载体及相等层级。导入模型不会自动选择 Monad、强度或 Applicative 实例。
+
+Temporary checks instantiate the abstract conversion and its application
+at both strict hom/equality universe orders, compare underlying functors by
+identity natural isomorphisms, and check state models with both strict state
+carrier/equality orders and a larger ambient carrier. Seven transparent
+Boolean-state computations cover pure, mapping, two pairing orders, repeated
+state transitions, application and an application-interface round trip.
+Toggling state before reading yields a different returned Boolean from
+reading before toggling, witnessing the specified order. All 148 temporary
+assumption checks, including the previous Applicative slice, are closed
+under the global context. No permanent tests or shared test aliases were
+added. Kleisli categories, computational Arrow/Freyd, comparison with those
+Arrows and Day/profunctor characterizations remain separate work.
+
+临时检查在 Hom／相等宇宙的两种严格次序下实例化抽象转换及其应用，以恒等
+自然同构比较底层函子，并在状态载体／相等的两种严格次序及更大的所在载体下
+检查模型。七项布尔状态透明计算覆盖纯值、映射、两种配对顺序、重复状态转移、
+应用及应用接口往返。先翻转再读取，与先读取再翻转返回不同布尔值，检验了指定
+次序。包括前一 Applicative 切片在内，148 项临时公理检查均无额外假设。没有新增
+永久测试或共享测试别名。Kleisli 范畴、计算 Arrow／Freyd、与这些 Arrow 的比较及
+Day／profunctor 刻画仍为后续工作。
+
+The final phase passed `dune build @all @runtest @install` using the existing
+`rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1). Strict bilingual HTML
+export generated 269 modules per language and checked links and anchors in
+543 pages; the new explanations were inspected in both languages. Batch PDF
+export remains with the integration session.
+
+最终阶段在已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）下通过
+`dune build @all @runtest @install`。严格双语 HTML 为每种语言导出 269 个模块，
+检查 543 页的链接及锚点；新增说明已在两种语言中核查。批次 PDF 仍由集成会话
+统一导出。
 
 ## First implementation boundary
 
@@ -320,10 +406,10 @@ No permanent tests or shared environment changes were added.
 3. Check a genuinely noninvertible lax structure, independent hom/equality
    universe orders, and foundational assumptions. Keep temporary checks
    distinct from retained interface regressions.
-4. The lawful Applicative and coherent operation-presentation comparison
-   above are implemented. Subsequent slices add computational Arrow, coherent
-   tensorial strength for the existing Monad and the direct conversion diagram.
-   These remain open in #35.
+4. Lawful Applicative, coherent operation comparison, tensorial strength and
+   the ordered strong-Monad conversion above are implemented. Subsequent
+   slices add computational Arrow and its direct comparison diagram. These
+   remain open in #35.
 
 1. 打包指定幺半结构之间的函子及其 lax 结构：单位映射、自然 tensorator、
    结合律和两条单位律。不要求可逆、张量强度或闭／笛卡尔基底。
@@ -331,8 +417,8 @@ No permanent tests or shared environment changes were added.
    用 `fmap F` 映射同态，并封装为已有幺半群对象范畴之间的函子。
 3. 检查真正不可逆的 lax 结构、独立的 Hom／相等宇宙次序，以及基础公理。
    区分临时检查与保留的接口回归。
-4. 上述带定律 Applicative 及相干运算呈现的比较已实现。后续再添加计算 Arrow、
-   已有 Monad 的相干张量强度及直接转换图；这些仍为 #35 的待办。
+4. 上述带定律 Applicative、相干运算比较、张量强度及强 Monad 的有序转换已实现。
+   后续再添加计算 Arrow 及其直接比较图；这些仍为 #35 的待办。
 
 The implemented interface is
 [LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v), bundling

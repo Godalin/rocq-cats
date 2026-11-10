@@ -6,4 +6,5 @@ Lifting.v
 Constant.v
 Transport.v
 Cartesian.v
+CartesianStrength.v
 Endomorphism.v

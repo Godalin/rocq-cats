@@ -331,6 +331,22 @@ coercion to the structural Applicative is registered.
 转换保留同一底层函子，使用指定相等比较所给运算，不注册到结构式 Applicative
 的竞争强制转换。
 
+The strength phase adds [StrongMonad](../theories/Cat/Monad/Strength.v)
+with the unique chain `StrongMonad → Monad → Functor → object function`.
+Its `hasStrength` field inherits a chosen structure on that same functor;
+no second functor view is introduced. The
+[MonadA conversion](../theories/Cat/Monad/Applicative.v) is an explicit
+construction, preserving the parent functor and `fmap`, rather than another
+coercion path. The [State model](../theories/Instance/Set/State.v) likewise
+provides explicitly selected values.
+
+强度阶段增加 [StrongMonad](../theories/Cat/Monad/Strength.v)，唯一转换链为
+`StrongMonad → Monad → Functor → object function`。`hasStrength` 字段继承同一
+函子上的选定结构，不增加第二个函子视图。
+[MonadA 转换](../theories/Cat/Monad/Applicative.v) 为显式构造，保留父函子及
+`fmap`，不增加竞争的强制转换路径；[状态模型](../theories/Instance/Set/State.v)
+同样只提供须显式选定的值。
+
 ## Follow-up candidates
 
 ## 后续候选
