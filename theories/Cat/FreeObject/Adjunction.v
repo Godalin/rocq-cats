@@ -186,7 +186,13 @@ Program Definition FreeFunctorChoiceN {C D : Cat} (U : Functor D C)
   |}.
 Next Obligation.
   apply (universal_arrow_hom_unique U (@free_universal C D U K X)).
-  rewrite !functor_comp, !comp_assoc.
+  rewrite (@functor_comp D C U _ _ _
+    (free_object_choice_iso U K L Y).1.1
+    (fmap (@FreeFunctor C D U K) f)).
+  rewrite (@functor_comp D C U _ _ _
+    (fmap (@FreeFunctor C D U L) f)
+    (free_object_choice_iso U K L X).1.1).
+  rewrite !comp_assoc.
   rewrite (@free_functor_unit C D U K X Y f),
     (free_object_choice_iso U K L X).2.
   rewrite <- comp_assoc, (free_object_choice_iso U K L Y).2.
