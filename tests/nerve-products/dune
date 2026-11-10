@@ -1,0 +1,7 @@
+(rocq.theory
+ (name CatsNerveProductsTests)
+ (theories Cats Stdlib))
+
+(alias
+ (name runtest)
+ (deps Universes.vo Computations.vo))

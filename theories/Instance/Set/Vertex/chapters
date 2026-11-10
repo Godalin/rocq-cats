@@ -1,4 +1,6 @@
 Core.v
 Functor.v
+Product.v
+Terminal.v
 Relabel.v
 Chain.v
