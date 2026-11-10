@@ -14,11 +14,24 @@ Local Open Scope monoid_scope.
 
 Class Group (G : SetC)
   :=
+  (** Reuse the selected monoid both as an inherited instance and as the
+      unique underlying view; its setoid view then recovers [G]. *)
+
+  (** 选定幺半群同时作为继承实例和唯一底层视图，其广集视图继而恢复 [G]。 *)
+
   { hasMonoid :: Monoid G
   ; group_inv : G → G
   ; group_inv_l x : group_inv x ⋅ x ≈S 1
   ; group_inv_r x : x ⋅ group_inv x ≈S 1
   }.
+
+(** Register the existing parent projection, retaining its instance role.
+    The single chain through [Monoid] reaches [SetC] and its carrier type. *)
+
+(** 将已有父结构投影注册为强制转换，并保留其实例职责；唯一转换链经 [Monoid]
+    到达 [SetC] 及其载体类型。 *)
+
+Coercion hasMonoid : Group >-> Monoid.
 
 Notation "x '⁻¹'" := (group_inv x)
   (at level 9) : monoid_scope.

@@ -178,7 +178,7 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
 | [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v) | Both have a named category; neither has a category coercion or a stored CCC parent in ETCS / 均有具名范畴，尚无范畴强制转换；ETCS 未保存 CCC 父结构 | Candidates for computed category views; an ETCS-to-CCC adapter must share existing choices rather than duplicate them / 可考虑计算性范畴视图；ETCS 到 CCC 须复用已有选择，不能重复存储 |
-| [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `hasMonoid ::` is instance inheritance; neither structure exposes a setoid view / 群继承幺半群实例，两者均未暴露广集视图 | A future single chain can reuse `hasMonoid`, then a computed monoid-to-setoid view; avoid also adding a direct group-to-setoid path / 后续可复用父实例，再接幺半群到广集的计算视图，避免额外增加群到广集的直接路径 |
+| [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `Group → Monoid → SetC → Type`; the parent remains an inherited instance / 群经幺半群、广集到载体类型，父结构仍是继承实例 | Implemented in the computational-model continuation below, reusing the stored parent and named setoid / 已在下述计算模型后续工作中实现，复用保存的父结构及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
 | [HasLimitsOfShape](../theories/Cat/Limit/Core.v), [HasFiniteHomCover](../theories/Cat/Shape/Finite.v), [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | Inherited structures depend on diagrams, endpoints or horn indices / 继承结构依赖图式、端点或 horn 索引 | Use instance inheritance; no single uniform carrier conversion is needed / 使用实例继承，无须统一载体转换 |
@@ -207,14 +207,14 @@ lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以
 强制转换图按声明的目标匹配；依赖目标能归约为某个具体记录，不会自动增加
 一条新的图边。
 
-The implemented scope is only the monoidal category view. CCC/ETCS and
-group/monoid views are follow-up candidates, not changes included here.
+The first change implements the monoidal category view; the continuation
+below adds group/monoid views. CCC/ETCS views remain follow-up candidates.
 `Cat` has no coercion to its object type, and `Functor` still uses its
 object function as its sole function coercion; arrow mapping stays `fmap`.
 
-此次仅实现幺半结构的底层范畴视图。CCC／ETCS 和群／幺半群视图属于后续候选，
-没有一并修改。`Cat` 没有到对象类型的强制转换；`Functor` 仍以对象函数为
-唯一函数强制转换，态射映射保留 `fmap`。
+首项修改实现幺半结构的底层范畴视图；下述后续工作增加群／幺半群视图。
+CCC／ETCS 视图仍属于后续候选。`Cat` 没有到对象类型的强制转换；`Functor`
+仍以对象函数为唯一函数强制转换，态射映射保留 `fmap`。
 
 This follow-up passed `dune build @all @runtest @install` using
 `opam exec --switch=rocq-cats`, Rocq/Stdlib 9.2.0, OCaml 5.3.0 and
@@ -234,6 +234,74 @@ OCaml 5.3.0、Dune 3.23.1 下通过 `dune build @all @runtest @install`。
 严格双语 HTML 导出每种语言 256 个模块，检查了 517 页的链接及锚点；新增
 字段旁的说明已在两种语言中核查。无需增加永久测试或修改共享工具链。
 PDF 留待下一集成批次统一导出。以上为本地验证结果，不代表 CI 状态。
+
+## Computational-model continuation
+
+## 计算模型接口后续工作
+
+The continuation on `monoidal-cat-view`, following `3a47f38`, applies the
+same design to the algebraic foundations of the computational models.
+[Monoid M](../theories/Algebra/Monoid/Core.v) has the computed field
+`MonoidS :> SetC := M`. [Group G](../theories/Algebra/Group/Core.v) registers
+its existing `hasMonoid` projection as a coercion, keeping its `::` instance
+registration. The unique chain is `Group → Monoid → SetC → Type`.
+Constructor arguments and the chosen algebraic operations are unchanged.
+At this point the library has 26 field coercions and three explicit
+coercion commands; module and class/record counts remain unchanged.
+
+`monoidal-cat-view` 在 `3a47f38` 之后的后续工作，将同样的设计应用到计算
+模型的代数基础。[Monoid M](../theories/Algebra/Monoid/Core.v) 增加计算字段
+`MonoidS :> SetC := M`；[Group G](../theories/Algebra/Group/Core.v) 将已有
+`hasMonoid` 投影注册为强制转换，同时保留其 `::` 实例注册。唯一转换链为
+`Group → Monoid → SetC → Type`。构造器参数和选定代数运算均保持原样。
+此时全库共有 26 个字段强制转换、三个显式强制转换命令，模块及类／记录数不变。
+
+Given `HG : Group G`, clients can pass `HG` where `Monoid G` or `SetC`
+is expected and bind `x : HG` as an element of the original setoid. For
+example, `SetMonoidObject HG` builds the internal monoid object using the
+same selected operations. The [lax transport](../theories/Cat/Monoidal/Transport.v)
+now uses `L A` and `Hom A B` through the existing monoid-carrier view.
+Its tensorator notation keeps explicit carrier projections: constructing
+a pair before checking its dependent endpoint does not distribute
+coercions into both pair components.
+
+给定 `HG : Group G`，客户端可在要求 `Monoid G` 或 `SetC` 的位置传入
+`HG`，也可用 `x : HG` 绑定原广集的元素。例如 `SetMonoidObject HG` 使用
+同一组选定运算构造内部幺半群对象。[Lax 运输](../theories/Cat/Monoidal/Transport.v)
+现通过已有载体视图直接使用 `L A` 和 `Hom A B`。Tensorator 记号保留显式载体
+投影：先构造成对输入、再检查其依赖端点，不会把强制转换分配到两个分量中。
+
+Monad and lax monoidal functors already have their unique underlying
+functor chains. Their arrow maps still use `fmap`. Recovering a Monad from
+an endofunctor-monoid presentation keeps the explicit `MonoidCarrier`
+projection, as required by the dependent-target boundary above. Single-object
+category interpretations and Monad/monoid correspondence maps remain derived
+constructions. This continuation does not select concrete instances globally
+or add Applicative, computational Arrow or tensorial-strength interfaces.
+
+Monad 和 lax 幺半函子已有唯一的底层函子转换链，态射映射继续使用 `fmap`。
+从自函子幺半群呈现恢复 Monad 的适配器仍须按上文的依赖目标边界，显式使用
+`MonoidCarrier`。单对象范畴解释及 Monad／幺半群对应映射保留为派生构造。
+此后续工作不会全局选定具体实例，也不新增 Applicative、计算 Arrow 或张量强度接口。
+
+The existing `rocq-cats` switch passed `dune build @all @runtest @install`
+after these changes. Temporary checks cover both strict carrier/equality
+universe orders, inherited instance search, two structures on the same
+setoid, direct group-to-monoid model adapters and transparent Boolean-xor
+operations through lax transport. Eleven temporary `Print Assumptions`
+checks reported `Closed under the global context`. The checks add no
+permanent test sources or shared test aliases. Strict bilingual HTML
+export again generated 256 modules per language and checked 517 pages;
+the added field and carrier-use explanations were checked in both languages.
+PDF export remains with the integration batch.
+
+修改后在已有 `rocq-cats` switch 下通过 `dune build @all @runtest @install`。
+临时检查覆盖载体／相等宇宙的两种严格次序、继承实例搜索、同一广集上的两个
+结构、群到幺半群模型的直接适配，以及经 lax 运输后布尔异或运算的透明计算。
+十一项临时 `Print Assumptions` 检查均报告 `Closed under the global context`。
+检查没有新增永久测试源码或共享测试别名。严格双语 HTML 导出再次为每种语言
+生成 256 个模块并检查 517 页；新增字段及载体使用说明已在两种语言中核查。
+PDF 仍由集成批次统一导出。
 
 ## Follow-up candidates
 

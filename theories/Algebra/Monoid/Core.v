@@ -12,7 +12,13 @@ From Cats.Set Require Export
 
 Class Monoid (M : SetC)
   :=
-  { monoid_unit : M
+  (** The underlying setoid is computed from the named parameter, without
+      storing another carrier or choosing its algebraic structure. *)
+
+  (** 底层广集由具名参数计算得到，不另存载体，也不自动选取其代数结构。 *)
+
+  { MonoidS :> SetC := M
+  ; monoid_unit : M
   ; monoid_mul : M → M → M
   ; monoid_mul_proper
     :: Proper (carrier_equiv M ==> carrier_equiv M ==> carrier_equiv M)
@@ -22,6 +28,8 @@ Class Monoid (M : SetC)
   ; monoid_assoc x y z
     : monoid_mul (monoid_mul x y) z ≈S monoid_mul x (monoid_mul y z)
   }.
+
+Arguments MonoidS {_} _.
 
 Declare Scope monoid_scope.
 Delimit Scope monoid_scope with monoid.
