@@ -88,7 +88,7 @@ A category theory library for self study.
   Their prescribed-component natural isomorphisms form a hom-setoid;
   [postcomposition](./theories/Instance/Set/Simplicial/Vertex/Functor.v)
   gives a respectful map to simplicial maps, preserving identity and composition.
-  A [checked example](./book/VertexFunctor.v) shows why arbitrary natural
+  A [checked example](./theories/Instance/Bool/Nerve.v) shows why arbitrary natural
   isomorphisms are too coarse for this comparison: distinct constant labels
   remain visible in degree zero.
   [Reconstruction](./theories/Instance/Set/Simplicial/Vertex/Reconstruction.v)
