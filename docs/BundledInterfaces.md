@@ -122,6 +122,119 @@ CCC-to-functor coercion or globally chosen concrete functor is introduced.
 | [Mono and Sub](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Underlying arrow / 底层箭头 | Already bundled; `Mono` also has an explicit domain-object view, which should be considered during any future coercion changes / 已打包；`Mono` 还有显式定义域对象视图，未来修改强制转换时须一并考虑 |
 | [Cone](../theories/Cat/Diagram/Core.v), [Cocone](../theories/Cat/Diagram/Dual.v) | Natural transformation / 自然变换 | Cone is a specialization of `Nat`; cocone exposes the ordinary view through `CoconeN` and reuses opposite-cone data / 锥特化 `Nat`，余锥通过 `CoconeN` 暴露通常视图并复用反锥数据 |
 
+## Named parameter views and hierarchy audit
+
+## 具名参数视图及层级调查
+
+The `monoidal-cat-view` follow-up starts from integrated commit
+`a7c849423f6f03193c82d5f6bb20230acf63d0a0`. Its fresh inventory covers all
+256 theory modules, 52 `Class` declarations, 27 `Record` declarations,
+24 existing field coercions and two explicit `Coercion` commands. The
+monoidal change adds one field coercion. This inventory excludes the
+unintegrated `ccc-equivalence-23` task and supplements the historical
+survey above. All declared interfaces were classified; inheritance fields
+and the source of each coercion were inspected. Proof bodies were not
+audited individually.
+
+`monoidal-cat-view` 后续任务从集成提交
+`a7c849423f6f03193c82d5f6bb20230acf63d0a0` 开始，重新扫描全部 256 个
+理论模块、52 个 `Class`、27 个 `Record`、已有的 24 个字段强制转换及两个
+显式 `Coercion` 命令；此次幺半修改新增一个字段强制转换。调查不包含尚未集成的
+`ccc-equivalence-23` 任务，并补充上文的历史调查。所有声明的接口均已分类，
+继承字段和每个强制转换的来源均已核查；没有逐一审计证明体。
+
+[MonoidalCategory C](../theories/Cat/Monoidal/Core.v) now has the computed
+field `MonoidalC :> Cat := C`. It exposes the supplied category without
+storing another one or changing any constructor argument. Clients can write
+`Functor MC MD`, `@Ob MC` and `Functor (MC ×C MC) MC`. Tensor, associators,
+unitors and their laws still use the named category and selected structure.
+Two monoidal structures on the same category remain distinct choices;
+recovering their category does not identify their tensor data. The conversion
+does not enable any concrete monoidal instance.
+
+[MonoidalCategory C](../theories/Cat/Monoidal/Core.v) 现通过计算字段
+`MonoidalC :> Cat := C` 暴露给定范畴，不另存一个范畴，也不改变构造器参数。
+客户端可写 `Functor MC MD`、`@Ob MC`、`Functor (MC ×C MC) MC`。张量、
+结合子、单位子及其定律仍使用具名范畴和选定结构。同一范畴上的两个幺半结构
+仍是不同选择，恢复底层范畴不等于识别其张量数据，也不会启用任何具体幺半实例。
+
+A computed view of an existing parameter is compatible with a fixed-data
+interface. It is different from replacing that interface by an unindexed
+bundle. However, its usefulness and the whole coercion graph still need
+checking: `::` supplies instance search, whereas `:>` inserts a conversion
+in a term. Neither mechanism should choose a model's structure by import.
+
+为已有参数提供计算视图，与保留固定数据接口相容，不需要将其替换为无索引的
+结构包。不过，仍须检查实际用途和整张强制转换图：`::` 服务于实例搜索，
+`:>` 才会在项中插入转换。两种机制都不应因导入模块而替模型选定结构。
+
+| Family / 接口族 | Current chain or boundary / 当前链或边界 | Decision / 结论 |
+| --- | --- | --- |
+| [CCCFunctor](../theories/Cat/Functor/Closed.v) | `CCCFunctor → CartesianFunctor → Functor → object function` / 经笛卡尔函子和普通函子到对象函数 | Already complete; no direct bypass / 已完整，不增加直接旁路 |
+| [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v), [Monad](../theories/Cat/Monad/Core.v), [VertexFunctor](../theories/Instance/Set/Vertex/Functor.v) | Each goes through its unique `Functor` to the object function / 各自经唯一底层函子到对象函数 | Keep `fmap` for arrows; the respectful vertex-map adapter stays explicit / 态射保留 `fmap`，保相等顶点映射的适配器保持显式 |
+| [CwF](../theories/DTT/CwF.v) | `CwF → Functor → object function`; an image is a [FamC](../theories/Instance/Set/Fam/Cat.v) / 函子像为相干族 | Its selected primary view is the type-and-term functor; adding a category view needs a separate interface decision / 主要视图已选为类型与项函子，增加范畴视图须另行决定 |
+| [FamC and FamF](../theories/Instance/Set/Fam/Cat.v), [FamS](../theories/Instance/Set/Fam/Core.v) | `FamC → FamS → fiber function`; `FamF → FunS_resp → base function`; fibers go through `SetC → Type` / 相干族到纤维函数，相干族态射到基底函数，纤维经广集到类型 | Already chainable; the fiber action of a family morphism remains explicit / 已可连续使用，族态射的纤维作用保持显式 |
+| [Cocone](../theories/Cat/Diagram/Dual.v), [Nat](../theories/Cat/Natural.v) | `Cocone → Nat → component function` / 余锥经自然变换到分量函数 | Already complete; keep the opposite-cone construction underneath / 已完整，底层保留反范畴上的锥构造 |
+| [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
+| [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
+| [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v) | Both have a named category; neither has a category coercion or a stored CCC parent in ETCS / 均有具名范畴，尚无范畴强制转换；ETCS 未保存 CCC 父结构 | Candidates for computed category views; an ETCS-to-CCC adapter must share existing choices rather than duplicate them / 可考虑计算性范畴视图；ETCS 到 CCC 须复用已有选择，不能重复存储 |
+| [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `hasMonoid ::` is instance inheritance; neither structure exposes a setoid view / 群继承幺半群实例，两者均未暴露广集视图 | A future single chain can reuse `hasMonoid`, then a computed monoid-to-setoid view; avoid also adding a direct group-to-setoid path / 后续可复用父实例，再接幺半群到广集的计算视图，避免额外增加群到广集的直接路径 |
+| [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
+| [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
+| [HasLimitsOfShape](../theories/Cat/Limit/Core.v), [HasFiniteHomCover](../theories/Cat/Shape/Finite.v), [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | Inherited structures depend on diagrams, endpoints or horn indices / 继承结构依赖图式、端点或 horn 索引 | Use instance inheritance; no single uniform carrier conversion is needed / 使用实例继承，无须统一载体转换 |
+| [Closure](../theories/Set/Closure/Core.v), respectful maps, [GraphMap](../theories/Graph/Morphism.v), [GeneratorNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v), sections and matching families | Already expose their operation or component function / 已暴露运算或分量函数 | Keep their existing unique functional view / 保留已有唯一函数视图 |
+| Remaining `Has*`/preservation interfaces, [Adjunction](../theories/Cat/Adjunction.v), [Comprehension](../theories/Cat/Comprehension.v), [Sieve](../theories/Cat/Sieve.v) | Operations, relations or multiple views on fixed data / 固定数据上的运算、关系或多个视图 | Retain explicit parameters as detailed below; no blanket category/functor coercions / 按下文保留显式参数，不统一增加范畴或函子转换 |
+| [ArrowOb](../theories/Cat/Arrow/Core.v), [CommaOb](../theories/Cat/Comma/Core.v), [SliceOb](../theories/Cat/Slice/Core.v), commuting-square records, [Horn2Presentation](../theories/Instance/Set/Simplicial/Vertex/Filling.v), [is_unique](../theories/Meta.v), [LiftT](../theories/Set/Core.v) | Multiple endpoints or witness/presentation records / 多个端点或见证、呈现记录 | No new hierarchy edge justified / 不据此新增层级边 |
+| [Cat](../theories/Cat/Core.v), [Graph](../theories/Graph/Core.v), [Bicat](../theories/Cat/Bicategory/Core.v) | Foundational structures, not an existing inheritance chain / 基础结构，尚非继承链 | Keep object/vertex types and derived underlying categories explicit / 对象、顶点类型及派生底层范畴保持显式 |
+
+Temporary elaboration checks confirmed `Functor MC MD`, coexistence of two
+structures on one category, unchanged lax object/arrow use, both strict
+hom/equality universe orders, and transparent identities in setoid and
+endofunctor models. They also checked existing family/CwF chains: with the
+relevant interface modules imported, `U x : Type`, `f x : famC_base V` and
+`(T X) a : Type` elaborate directly. For
+`A : MonoidObject SetCartesianMonoidal`, `A : @Ob SetCat` works, but
+`A : SetC` and `A : Type` do not; `MonoidCarrier A : Type` does.
+The coercion graph matches declared targets, so reduction of a dependent
+target to a concrete record does not automatically add another graph edge.
+
+临时 elaboration 检查确认了 `Functor MC MD`、同一范畴上两个结构共存、
+lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以及广集和自函子
+模型的恒等运算保持透明。相干族和 CwF 的已有链也已检查：导入相关接口模块后，
+`U x : Type`、`f x : famC_base V` 和 `(T X) a : Type` 均可直接使用。
+对 `A : MonoidObject SetCartesianMonoidal`，`A : @Ob SetCat` 可用，
+但 `A : SetC`、`A : Type` 不可用，显式 `MonoidCarrier A : Type` 可用。
+强制转换图按声明的目标匹配；依赖目标能归约为某个具体记录，不会自动增加
+一条新的图边。
+
+The implemented scope is only the monoidal category view. CCC/ETCS and
+group/monoid views are follow-up candidates, not changes included here.
+`Cat` has no coercion to its object type, and `Functor` still uses its
+object function as its sole function coercion; arrow mapping stays `fmap`.
+
+此次仅实现幺半结构的底层范畴视图。CCC／ETCS 和群／幺半群视图属于后续候选，
+没有一并修改。`Cat` 没有到对象类型的强制转换；`Functor` 仍以对象函数为
+唯一函数强制转换，态射映射保留 `fmap`。
+
+This follow-up passed `dune build @all @runtest @install` using
+`opam exec --switch=rocq-cats`, Rocq/Stdlib 9.2.0, OCaml 5.3.0 and
+Dune 3.23.1. Eight temporary `Print Assumptions` checks, covering the view,
+ordinary and tensor functors, composition preservation, both equality
+levels and concrete identity computation, reported `Closed under the
+global context`. Strict bilingual HTML export generated 256 modules per
+language and checked links and anchors in 517 pages; the new field's
+adjacent explanations were checked in both editions. No permanent test
+or shared toolchain change was needed. PDF export belongs to the next
+integration batch. These are local results, not a CI-status claim.
+
+此次后续工作使用 `opam exec --switch=rocq-cats`，在 Rocq／Stdlib 9.2.0、
+OCaml 5.3.0、Dune 3.23.1 下通过 `dune build @all @runtest @install`。
+八项临时 `Print Assumptions` 检查覆盖底层视图、普通及张量函子、复合保持、
+两种相等层级及具体恒等计算，均报告 `Closed under the global context`。
+严格双语 HTML 导出每种语言 256 个模块，检查了 517 页的链接及锚点；新增
+字段旁的说明已在两种语言中核查。无需增加永久测试或修改共享工具链。
+PDF 留待下一集成批次统一导出。以上为本地验证结果，不代表 CI 状态。
+
 ## Follow-up candidates
 
 ## 后续候选

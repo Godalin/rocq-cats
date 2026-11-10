@@ -63,6 +63,8 @@ Defined.
 (** A monoidal structure on the named category [C]. The natural
     isomorphisms retain their inverse components. The intermediate tensor
     and coherence components are computed fields, not additional choices.
+    The coercion to [Cat] computes to the named [C]; it stores no second
+    category and does not choose a monoidal structure for [C].
 
     Pentagon and triangle are equations of arrows with fixed endpoints.
     Neither the tensor unit nor the tensor is required to be terminal or
@@ -70,14 +72,20 @@ Defined.
     independently from the underlying category and natural isomorphisms. *)
 
 (** 指定范畴 [C] 上的幺半结构。自然同构保留各分量的逆，中间张量运算及相干
-    分量都是计算字段，不是额外选取。
+    分量都是计算字段，不是额外选取。到 [Cat] 的强制转换直接计算为具名的
+    [C]，不保存第二个范畴，也不会为 [C] 自动选取幺半结构。
 
     五边形与三角形是固定端点的态射方程，不要求张量单位为终对象，也不要求
     张量为积。载体、相等及定律的大小由底层范畴和自然同构分别推导。 *)
 
 Class MonoidalCategory (C : Cat)
   :=
-  { tensorF : Functor (C ×C C) C
+  (** The unique underlying category view is the supplied parameter. *)
+
+  (** 唯一的底层范畴视图就是给定参数。 *)
+
+  { MonoidalC :> Cat := C
+  ; tensorF : Functor (C ×C C) C
   ; TensorUnit : @Ob C
   ; monoidal_associator : TensorLeftF tensorF ≅N TensorRightF tensorF
   ; monoidal_left_unitor : π2F tensorF TensorUnit ≅N IdF
@@ -104,6 +112,7 @@ Class MonoidalCategory (C : Cat)
         tensor_map (tensor_unit_r X) id
   }.
 
+Arguments MonoidalC {_} _.
 Arguments tensorF {_} _.
 Arguments TensorUnit {_} _.
 Arguments tensor {_ _} _ _.
