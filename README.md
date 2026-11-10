@@ -206,6 +206,8 @@ ordered by imports plus partial editorial preferences. Dependencies always come
 first, starting with `Meta`, `Set.Core`, `Set.Morphism` and `Cat.Core`.
 Outputs are under `_build/docs-pdf/{en,zh}/`, with the
 [project logo](./docs/branding/rocq-cats.svg) on the cover.
+The approved textbook presentation is the default for both complete reading
+editions; further visual-design iteration is paused.
 `dune exec tools/docs/docs.exe -- design --strict` previews complete modules
 from the abstract category definition through natural transformations.
 See the [documentation guide](./docs/Documentation.md) and shared
@@ -216,6 +218,7 @@ See the [documentation guide](./docs/Documentation.md) and shared
 依赖与局部阅读偏好排序；依赖始终在先，自动从 `Meta`、`Set.Core`、
 `Set.Morphism` 和 `Cat.Core` 开始。输出位于 `_build/docs-pdf/{en,zh}/`，
 封面使用[项目 Logo](./docs/branding/rocq-cats.svg)。
+两种完整阅读版默认采用已批准的教材样式；后续视觉设计迭代暂时暂停。
 `dune exec tools/docs/docs.exe -- design --strict` 预览从抽象范畴定义到自然变换
 结束的完整模块。详见[文档指南](./docs/Documentation.md)及统一的
 [导出约束](./docs/ExportRequirements.md)。

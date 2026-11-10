@@ -44,6 +44,14 @@ let () =
       ^ "\\coqdoceol\n\\end{coqdoccode}") = "");
   check "code compaction is not idempotent"
     (compact compact_field = compact_field);
+  let template = "\\usepackage{hyperref}\n\\begin{document}" in
+  let full = document template in
+  check "shared theme loads titlesec too late"
+    (contains full "\\usepackage{titlesec}\n\\usepackage{hyperref}");
+  check "complete editions unexpectedly restrict references"
+    (not (contains full "targets.tex"));
+  check "excerpts lost their restricted destinations"
+    (contains (document ~restrict_references:true template) "targets.tex");
   let mappings = symbols "×C ⇒ ∀ κ ⦂ ∞ 中文，全角。 ×C" in
   List.iter (fun token -> check ("missing Unicode mapping " ^ token)
     (contains mappings token)) ["{D7}"; "{21D2}"; "{2982}"; "{221E}"];

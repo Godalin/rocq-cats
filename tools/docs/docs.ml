@@ -206,11 +206,11 @@ let pdf ?(design = false) root output tag paths =
     "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);
   let zh = tag = "zh" in
   let body = Pdf.compact (read (dir ^ "/body.tex")) in
-  let body = if design then Preview.body
-    ~proof_anchor:"Cats.Cat.Natural.NatIso is iso" body else body in
+  let body = if design then Pdf.decorate
+    ~proof_anchor:"Cats.Cat.Natural.NatIso is iso" body else Pdf.decorate body in
   write (dir ^ "/body.tex") body;
   if design then begin
-    write (dir ^ "/targets.tex") (Preview.targets body);
+    write (dir ^ "/targets.tex") (Pdf.targets body);
     List.iter (fun name -> write (dir ^ "/" ^ name) (read (output ^ "/" ^ name)))
       ["proof.tex"; "alectryon.sty"; "pygments.sty"]
   end;
@@ -225,12 +225,13 @@ let pdf ?(design = false) root output tag paths =
   let brand = "\\begin{center}\\includegraphics[width=.94\\textwidth]"
     ^ "{rocq-cats-logo.png}\\end{center}" in
   let template = read (root ^ "/tools/docs/pdf-template.tex") in
-  let theme = if design then read (root ^ "/tools/docs/pdf-textbook.tex") else "" in
-  let setup = theme ^ (if design && zh then
+  let theme = read (root ^ "/tools/docs/pdf-textbook.tex") in
+  let proof_theme = if design then read (root ^ "/tools/docs/pdf-proof.tex") else "" in
+  let setup = theme ^ proof_theme ^ (if zh then
     "\n\\renewcommand{\\catsContinued}{续}" else "") ^ "\n" ^ (if zh then
       "\\renewcommand{\\contentsname}{目录}"
     else "\\renewcommand{\\contentsname}{Contents}") in
-  let template = if design then Preview.document template else template in
+  let template = Pdf.document ~restrict_references:design template in
   let document = template
     |> fun s -> replace s "@@SETUP@@" setup
     |> fun s -> replace s "@@BRAND@@" brand

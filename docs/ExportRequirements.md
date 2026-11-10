@@ -11,6 +11,20 @@ claim that every backend already implements it.
 Maintain this requirements file in English. Reader-facing source documentation
 and exported reading editions remain bilingual.
 
+## Approved visual baseline
+
+Further visual-design iteration is paused at the user-approved presentation.
+Apply that presentation by default to the complete English and Chinese PDF
+reading editions: approved branding, Pagella prose, JuliaMono code, Fandol
+Chinese, restrained blue accents and breakable code frames. The abstract preview
+uses the same theme and code-frame implementation; it is a bounded view of the
+library, not a separate visual edition. Keep this baseline until the user resumes
+visual-design work.
+
+Native proof-state extraction remains optional and separate from the shared
+theme. A full-library reading edition must not require Alectryon merely to use
+the approved typography and code frames.
+
 ## Shared source and native facilities
 
 - Compile and export the entire theory library directly; do not maintain a

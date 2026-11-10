@@ -1,13 +1,11 @@
-% An opt-in textbook theme; the ordinary reading edition stays independent.
-% 可选的教材主题；常规阅读版保持独立。
+% Approved shared presentation for the full library and abstract preview.
+% 全库阅读版与抽象范畴预览共用的已批准展示样式。
 \setmainfont{texgyrepagella-regular.otf}[
   BoldFont=texgyrepagella-bold.otf,
   ItalicFont=texgyrepagella-italic.otf,
   BoldItalicFont=texgyrepagella-bolditalic.otf]
 \setsansfont{texgyreheros-regular.otf}[BoldFont=texgyreheros-bold.otf]
 \usepackage[most]{tcolorbox}
-\usepackage{alectryon}
-\usepackage{pygments}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \definecolor{catsBlue}{HTML}{263B53}
@@ -18,6 +16,9 @@
 \geometry{left=22mm,right=22mm,top=23mm,bottom=23mm,headheight=16pt}
 \linespread{1.08}
 \setlength{\parskip}{.6em plus .1em minus .1em}
+% Allow intact inline identifiers to move to the next line in justified prose.
+% 两端对齐的正文允许完整的行内标识符移至下一行。
+\setlength{\emergencystretch}{10em}
 \titleformat{\chapter}[display]
   {\color{catsBlue}\normalfont\LARGE\bfseries}
   {\sffamily\small ROCQ-CATS}{6pt}{}
@@ -72,10 +73,3 @@
 \renewenvironment{coqdoccomment}{\begingroup\color{catsMuted}\ttfamily(*}
   {*)\endgroup}
 \renewcommand{\coqdocemptyline}{\par\vspace{3pt}}
-% Use Alectryon's documented wrapper; its native goals stay between sentences.
-% 使用 Alectryon 文档提供的外层环境；原生目标保持在语句之间。
-\renewenvironment{alectryon@env}
-  {\begin{catscode}{\catsCodeTitle}{\catsCodeKind}}
-  {\end{catscode}}
-\colorlet{alectryon@tango@medium@aluminium}{catsBorder}
-\colorlet{alectryon@tango@light@aluminium}{white}

@@ -111,7 +111,11 @@ let () =
          identity_prose; identity]))
       [page, "interface_carrier", "interface_identity";
        latex, "interface\\_carrier", "interface\\_identity"];
-    let presented = Docs_pdf.Preview.body (Docs_pdf.Pdf.compact latex) in
+    let presented = Docs_pdf.Pdf.decorate (Docs_pdf.Pdf.compact latex) in
+    if not (contains presented "\\renewcommand{\\catsCodeTitle}{") then
+      failwith "complete PDF lost shared interface frames";
+    if contains presented "\\input{proof.tex}" then
+      failwith "complete PDF unexpectedly requires native proof assets";
     let rec declarations text =
       let opening = "\\coqdef{" in
       try
@@ -131,7 +135,7 @@ let () =
     List.iter (fun token -> if contains latex token then
       failwith ("unexpected LaTeX " ^ token))
       [absent; "@lang"; "hidden\\_support"; "reflexivity"];
-    if not (contains (Docs_pdf.Preview.targets presented) "catsTarget@Fixture.") then
+    if not (contains (Docs_pdf.Pdf.targets presented) "catsTarget@Fixture.") then
       failwith "specimen declaration destinations were not retained")
     [En, "en", "English tutorial heading", "中文教程标题";
      Zh, "zh", "中文教程标题", "English tutorial heading"];

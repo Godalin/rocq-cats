@@ -1,0 +1,11 @@
+% Optional native proof-state presentation, using the shared code frame.
+% 可选的原生证明状态展示，复用共用代码框。
+\usepackage{alectryon}
+\usepackage{pygments}
+% Use Alectryon's documented wrapper; its native goals stay between sentences.
+% 使用 Alectryon 文档提供的外层环境；原生目标保持在语句之间。
+\renewenvironment{alectryon@env}
+  {\begin{catscode}{\catsCodeTitle}{\catsCodeKind}}
+  {\end{catscode}}
+\colorlet{alectryon@tango@medium@aluminium}{catsBorder}
+\colorlet{alectryon@tango@light@aluminium}{white}

@@ -35,18 +35,26 @@ opam exec --switch=rocq-cats -- dune exec tools/docs/docs.exe -- pdf --strict
 ```
 
 PDF uses coqdoc LaTeX followed by two XeLaTeX passes with `-no-shell-escape`.
-The ordinary edition uses JuliaMono Nerd Font, including bold and italic faces,
-CTeX/Fandol for Chinese and STIX Two Math for fallback symbols. TeX Live must
-provide fontspec, geometry, amsmath/amssymb, hyperref, bookmark, fvextra,
-newunicodechar and tikz-cd. The tool does not install dependencies.
-Locally checked: Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1, TeX Live 2025.
+The complete reading editions and abstract preview share the approved theme in
+[pdf-textbook.tex](../tools/docs/pdf-textbook.tex): Pagella prose, JuliaMono
+code, Fandol Chinese, quiet blue accents and breakable code frames. It is the
+default full-library presentation; further visual-design iteration is paused.
+Install JuliaMono Nerd Font with its bold and italic faces; STIX Two Math
+supplies fallback symbols.
+TeX Live must provide fontspec, geometry, amsmath/amssymb, hyperref, bookmark,
+fvextra, newunicodechar, tikz-cd, tcolorbox, titlesec, fancyhdr and TeX Gyre fonts.
+The tool does not install dependencies. Locally checked: Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1, TeX Live 2025.
 
 PDF 使用 coqdoc LaTeX 输出，再以 `-no-shell-escape` 运行两次 XeLaTeX。
-常规阅读版使用 JuliaMono Nerd Font 及其粗体和斜体，中文使用 CTeX/Fandol，
-备用符号字体为 STIX Two Math。TeX Live 须提供 fontspec、geometry、
-amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
-工具不安装依赖。本地验证：Rocq/Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1、
-TeX Live 2025。
+完整阅读版与抽象范畴预览共用 [pdf-textbook.tex](../tools/docs/pdf-textbook.tex)
+中已批准的主题：Pagella 正文、JuliaMono 代码、Fandol 中文、克制的蓝色和可跨页
+代码框。这是全库导出的默认样式；后续视觉设计迭代暂时暂停。
+需安装 JuliaMono Nerd Font 及其粗体和斜体；备用符号使用 STIX Two Math。
+TeX Live 须提供
+fontspec、geometry、amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar、
+tikz-cd、tcolorbox、titlesec、fancyhdr 及 TeX Gyre 字体。工具不安装依赖。
+本地验证：Rocq/Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1、TeX Live 2025。
 
 The exporter and its compiled-source regression use `rocq compile` and
 `rocq doc`, available since Rocq 9.0; legacy `coqc`/`coqdoc` executable aliases
@@ -56,10 +64,10 @@ are not required.
 不要求旧的 `coqc`/`coqdoc` 可执行文件别名。
 
 Both PDF modes normalize coqdoc's native blank-row and indentation markers
-before layout and optional code-frame decoration, following the
+before layout and shared code-frame decoration, following the
 [code-fragment spacing requirements](./ExportRequirements.md#interface-explanations).
 
-两种 PDF 模式都在排版和可选代码框装饰之前，统一处理 coqdoc 的原生空行与
+两种 PDF 模式都在排版和共用代码框装饰之前，统一处理 coqdoc 的原生空行与
 缩进标记，遵循[代码片段间距要求](./ExportRequirements.md#interface-explanations)。
 
 ## Complete abstract-category preview / 完整抽象范畴预览
@@ -87,17 +95,17 @@ Terminal、Morphism、Isomorphism、Functor.Core 和 Natural。保留全部 coqd
 正文与公开声明，不拼接选段或限制页数。此前的基础依赖仍随全库编译；预览的
 `reading-order.txt` 只记录实际纳入的模块。
 
-The optional theme is centralized in
-[pdf-textbook.tex](../tools/docs/pdf-textbook.tex): Pagella prose, JuliaMono
-code, Fandol Chinese, quiet blue accents and breakable code frames. It needs
-TeX Live's tcolorbox, titlesec, fancyhdr and TeX Gyre fonts. Cover and contents
-reuse the full-library template. Source is never rewritten for layout.
-References outside the preview are plain text; included declarations stay linked.
+The preview uses the full-library theme and shared code-frame decoration.
+Cover and contents reuse the full-library template. Source is never rewritten
+for layout. References outside the preview are plain text; included declarations
+stay linked. The optional native-proof styling is isolated in
+[pdf-proof.tex](../tools/docs/pdf-proof.tex), so the complete PDF needs no
+Alectryon installation or proof-style assets.
 
-可选主题集中在 [pdf-textbook.tex](../tools/docs/pdf-textbook.tex)：Pagella
-正文、JuliaMono 代码、Fandol 中文、克制的蓝色和可跨页代码框，需 TeX Live 的
-tcolorbox、titlesec、fancyhdr 及 TeX Gyre 字体。封面和目录复用全库模板，不为
-排版改写源码。预览范围以外的声明引用显示为普通文本，范围内的链接保持可用。
+预览使用全库主题及共用代码框装饰，封面和目录复用全库模板，不为排版改写源码。
+预览范围以外的声明引用显示为普通文本，范围内的链接保持可用。可选的原生证明
+样式独立保存在 [pdf-proof.tex](../tools/docs/pdf-proof.tex)，因此完整 PDF 不要求
+安装 Alectryon 或提供证明样式资源。
 
 Only `design` invokes **Alectryon 2.0.0 with the VsRocq driver**, processing the
 original context and proof of `NatIso_is_iso` from
