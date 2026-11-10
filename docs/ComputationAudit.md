@@ -370,16 +370,17 @@ Toggling state before reading yields a different returned Boolean from
 reading before toggling, witnessing the specified order. All 148 temporary
 assumption checks, including the previous Applicative slice, are closed
 under the global context. No permanent tests or shared test aliases were
-added. Kleisli categories, computational Arrow/Freyd, comparison with those
-Arrows and Day/profunctor characterizations remain separate work.
+added. The ordinary Kleisli category is delivered in the next slice below;
+computational Arrow/Freyd, comparison with those Arrows and Day/profunctor
+characterizations remain separate work.
 
 临时检查在 Hom／相等宇宙的两种严格次序下实例化抽象转换及其应用，以恒等
 自然同构比较底层函子，并在状态载体／相等的两种严格次序及更大的所在载体下
 检查模型。七项布尔状态透明计算覆盖纯值、映射、两种配对顺序、重复状态转移、
 应用及应用接口往返。先翻转再读取，与先读取再翻转返回不同布尔值，检验了指定
 次序。包括前一 Applicative 切片在内，148 项临时公理检查均无额外假设。没有新增
-永久测试或共享测试别名。Kleisli 范畴、计算 Arrow／Freyd、与这些 Arrow 的比较及
-Day／profunctor 刻画仍为后续工作。
+永久测试或共享测试别名。普通 Kleisli 范畴在下方的下一切片交付；计算
+Arrow／Freyd、与这些 Arrow 的比较及 Day／profunctor 刻画仍为后续工作。
 
 The final phase passed `dune build @all @runtest @install` using the existing
 `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1). Strict bilingual HTML
@@ -391,6 +392,64 @@ export remains with the integration session.
 `dune build @all @runtest @install`。严格双语 HTML 为每种语言导出 269 个模块，
 检查 543 页的链接及锚点；新增说明已在两种语言中核查。批次 PDF 仍由集成会话
 统一导出。
+
+## Ordinary Kleisli category
+
+## 普通 Kleisli 范畴
+
+[KleisliCat](../theories/Cat/Monad/Kleisli.v) takes only the existing
+`Monad C`. It keeps the objects of `C`, reuses `HomSet X (M Y)` with its
+specified Type-valued equality, chooses the monad unit as identity and
+composes by Kleisli extension. Respectfulness, both unit laws and
+associativity reuse the existing extension theory. No strength, products,
+terminal object, exponentials or commutativity are needed.
+
+[KleisliCat](../theories/Cat/Monad/Kleisli.v) 只输入已有 `Monad C`，保留 `C`
+的对象，复用 `HomSet X (M Y)` 及其指定 Type 值相等，以 Monad 单位为恒等，
+用 Kleisli 扩张复合。保相等性、左右单位律及结合律复用已有扩张理论；不要求
+强度、积、终对象、指数或交换性。
+
+`KleisliPureF` sends ordinary arrows to pure computations and keeps objects
+unchanged; it is not asserted faithful. `KleisliExtendF` sends objects to
+their Monad images and computations to their extensions. Their composite
+is compared with the original endofunctor by `KleisliCompositeIso`, whose
+components are identities. This is a comparison of endofunctors, without
+equating function or law records or asserting a whole Monad round trip.
+The public `g ∘K[M] f` notation names the same composition as the category;
+pure-input and pure-output equations recover ordinary substitution and
+result mapping.
+
+`KleisliPureF` 将通常箭头送为纯计算，对象不变，不断言它忠实。
+`KleisliExtendF` 将对象送为 Monad 像，将计算送为其扩张。两者的复合通过
+分量为恒等的 `KleisliCompositeIso` 与原自函子比较；这里只比较自函子，不等同
+函数或定律记录，也不声称完整 Monad 往返。公开记号 `g ∘K[M] f` 就是此范畴
+的复合；纯输入和纯输出方程分别恢复通常代入和结果映射。
+
+Temporary checks cover both strict hom/equality universe orders with
+arbitrary ordinary monads, inherited equality in both directions, rewriting
+through composition, both functors and their natural isomorphism. Six
+transparent state computations exercise sequencing, repeated transitions,
+pure input/output and extension through the functor. All 34 assumption
+checks for this slice are closed under the global context. The abstract
+checks import only the Kleisli module and confirm strength interfaces are
+unavailable. No permanent tests or model-specific category proofs were
+added. Computational Arrow, its strength operations and Freyd remain later
+work.
+
+临时检查对任意普通 Monad 覆盖 Hom／相等宇宙的两种严格次序、双向继承相等、
+复合重写、两个函子及其自然同构。六项透明状态计算检验顺序组合、重复转移、
+纯输入／输出及函子扩张；本切片 34 项公理检查均无额外假设。抽象检查仅导入
+Kleisli 模块，并确认强度接口不可用。没有新增永久测试或模型专用的范畴证明。
+计算 Arrow、其强度运算及 Freyd 仍为后续工作。
+
+This slice passed full-library build/tests/install with the same `rocq-cats`
+switch. Strict bilingual HTML generated 270 modules per language and checked
+545 pages; the new module's explanations and public constructions were
+inspected in both languages. Batch PDF export remains with integration.
+
+本切片使用同一 `rocq-cats` switch 通过全库构建、测试及安装；严格双语 HTML
+为每种语言导出 270 个模块，检查 545 页，并核查两种语言中新模块的说明及公开
+构造。批次 PDF 仍由集成会话统一导出。
 
 ## First implementation boundary
 

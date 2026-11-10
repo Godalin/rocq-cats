@@ -1,5 +1,6 @@
 Core.v
 Extension.v
+Kleisli.v
 Strength.v
 Context.v
 Applicative.v
