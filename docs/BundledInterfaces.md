@@ -317,6 +317,20 @@ for the proved laws, Reader model, size checks and remaining boundaries.
 函数强制转换。已证定律、Reader 模型、大小检查及剩余边界见
 [计算模型审计](./ComputationAudit.md#lawful-applicative-slice)。
 
+The operation-comparison slice adds
+[ApplicativeOps](../theories/Cat/Applicative/Operations.v) and
+[ApplicativeAp](../theories/Cat/Applicative/Application.v). Each has a single
+`Functor → object function` view, preserving `fmap`; pure and application
+stay explicit operations. Their conversions retain that same functor and
+compare the supplied operations by designated equality. No competing
+coercion to the structural Applicative is registered.
+
+运算比较切片增加 [ApplicativeOps](../theories/Cat/Applicative/Operations.v)
+及 [ApplicativeAp](../theories/Cat/Applicative/Application.v)，两者均只有
+`Functor → object function` 视图，保留 `fmap`；纯值及应用仍为显式运算。
+转换保留同一底层函子，使用指定相等比较所给运算，不注册到结构式 Applicative
+的竞争强制转换。
+
 ## Follow-up candidates
 
 ## 后续候选
