@@ -90,14 +90,21 @@ Inductive ReflTransClosure@{a r p} {A : Type@{a}}
 
 Arguments rtc_refl {_ _} _.
 Arguments rtc_cons {_ _ _ _ _} _ _.
-Notation "R '^*'" := (ReflTransClosure R) (at level 1) : relation_scope.
+
+(** Share the established precedence of categorical precomposition so
+    relation and category modules can be imported together. *)
+
+(** 与范畴预合成共用已有的优先级，使关系与范畴模块能够同时导入。 *)
+
+#[warnings="-postfix-notation-not-level-1"]
+Notation "R '^*'" := (ReflTransClosure R) (at level 35) : relation_scope.
 
 (** A single edge is a path with an empty tail. *)
 
 (** 单条边就是尾部为空的路径。 *)
 
 Definition rtc_step {A : Type} {R : crelation A} {x y : A} (p : R x y)
-  : R^* x y
+  : (R^*) x y
   := rtc_cons p (rtc_refl y).
 
 (** Concatenation traverses the first path and retains the second as its
@@ -106,8 +113,8 @@ Definition rtc_step {A : Type} {R : crelation A} {x y : A} (p : R x y)
 (** 连接遍历第一条路径，将第二条保留为新尾部；见证保持透明。 *)
 
 Definition rtc_trans {A : Type} {R : crelation A} {x y z : A}
-    (p : R^* x y) (q : R^* y z)
-  : R^* x z.
+    (p : (R^*) x y) (q : (R^*) y z)
+  : (R^*) x z.
 Proof.
   induction p as [x | x y w h p ih].
   - exact q.
@@ -136,7 +143,7 @@ Global Program Instance ReflTransClosure_PreOrder {A : Type}
 Definition rtc_preserves {A B : Type} {R : crelation A} {S : crelation B}
     `{HS : !PreOrder S} (f : A → B)
     (h : ∀ x y, R x y → S (f x) (f y))
-    {x y : A} (p : R^* x y)
+    {x y : A} (p : (R^*) x y)
   : S (f x) (f y).
 Proof.
   induction p as [x | x y z p q ih].
