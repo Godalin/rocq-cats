@@ -238,8 +238,8 @@ Defined.
 (** 路径闭包的闭关系恰好是预序。压平空路径得到反身性，压平两条边的路径得到
     传递性。 *)
 
-Definition rtc_closed {A : Type} (R : crelation A)
-  : is_closed (ReflexiveTransitiveClosure A) R ↔ PreOrder R.
+Definition rtc_closed@{a r +} {A : Type@{a}} (R : A → A → Type@{r})
+  : is_closed (ReflexiveTransitiveClosure@{a r _} A) R ↔ PreOrder R.
 Proof.
   split.
   - intros h.

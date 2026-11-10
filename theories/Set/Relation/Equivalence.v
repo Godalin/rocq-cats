@@ -65,9 +65,9 @@ Notation "R '^±*'" := (EquivalenceClosure _ R)
 
 (** 生成路径构成预序，且因边对称而对称；这个性质不识别不同路径。 *)
 
-Global Program Instance EquivalenceClosure_Equivalence {A : Type}
-    (R : crelation A)
-  : Equivalence (R^±*)
+Global Program Instance EquivalenceClosure_Equivalence@{a r +}
+    {A : Type@{a}} (R : A → A → Type@{r})
+  : Equivalence (EquivalenceClosure@{a r _} A R)
   :=
   {|Equivalence_Reflexive := rtc_refl
   ; Equivalence_Symmetric := ReflTransClosure_Symmetric (R^±)
@@ -81,8 +81,9 @@ Global Program Instance EquivalenceClosure_Equivalence {A : Type}
 (** 复合的闭关系恰好是等价关系。复用一般的同时闭性定理，再将两个分量谓词
     分别解释为对称性与预序结构。 *)
 
-Definition equivalence_closure_closed {A : Type} (R : crelation A)
-  : is_closed (EquivalenceClosure A) R ↔ Equivalence R.
+Definition equivalence_closure_closed@{a r +}
+    {A : Type@{a}} (R : A → A → Type@{r})
+  : is_closed (EquivalenceClosure@{a r _} A) R ↔ Equivalence R.
 Proof.
   pose (hc := @composite_closure_closed _ _ (RelationInclusionPreorder A)
     (SymmetricClosure A) (ReflexiveTransitiveClosure A)
@@ -115,6 +116,28 @@ Definition equivalence_closure_universal {A : Type} (R S : crelation A)
   : R^±* ⊆R S ↔ R ⊆R S
   := @closure_universal _ _ (RelationInclusionPreorder A)
       (EquivalenceClosure A) R S (snd (equivalence_closure_closed S) HS).
+
+(** Map generated paths along a function into an equivalence target.
+    The source and target carriers and witness levels can differ. *)
+
+(** 沿函数将生成路径映入等价目标，源、目标的载体与见证层级可以不同。 *)
+
+Definition equivalence_closure_preserves@{a b r s +}
+    {A : Type@{a}} {B : Type@{b}}
+    {R : A → A → Type@{r}} {S : B → B → Type@{s}}
+    `{HS : !Equivalence S}
+    (f : A → B) (h : ∀ x y, R x y → S (f x) (f y))
+    {x y : A} (p : EquivalenceClosure@{a r _} A R x y)
+  : S (f x) (f y).
+Proof.
+  refine (@rtc_preserves@{a b r r s} A B (R^±) S
+    {|PreOrder_Reflexive := @Equivalence_Reflexive _ S HS
+    ; PreOrder_Transitive := @Equivalence_Transitive _ S HS
+    |} f _ x y p).
+  intros u v q.
+  exact (@sym_closure_preserves A B R S
+    (@Equivalence_Symmetric _ S HS) f h u v q).
+Defined.
 
 (** Equivalence closure is monotone by its generic closure structure. *)
 
