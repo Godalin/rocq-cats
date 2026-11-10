@@ -110,9 +110,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   update checklists, link evidence, and note remaining work. Distinguish
   committed tests from temporary checks; close issues once acceptance criteria
   are met. Keep CI status out of issue comments.
-- Tools come from the initialized Nix login environment. Check tool resolution
-  and versions before diagnosing failures; do not install dependencies or
-  change global shell settings to bypass an unloaded environment.
+- Use the project opam switch `rocq-cats` with Rocq/Stdlib 9.2 and Dune 3.23.1:
+  `opam exec --switch=rocq-cats -- <command>`. Check tool resolution and versions
+  before diagnosing failures. Do not change global shell settings or upgrade
+  shared environments without explicit authorization.
 - Build with the existing VS Code task or `dune build`. Compile affected modules
   and dependents; broaden validation after interface changes. Inspect
   `Print Assumptions` for foundational proofs or suspected hidden axioms.
@@ -141,7 +142,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   prerequisite issue links in the relevant issue so ownership and waiting tasks
   are explicit.
 - Keep `_build/` and generated outputs separate per worktree. Reuse the initialized
-  toolchain without modifying shared Nix/opam environments during parallel work.
+  toolchain without modifying shared opam environments during parallel work.
   Branches, remotes and stash are shared Git state, not private to each worktree.
 - Integrate completed branches one at a time: rebase the task branch onto the
   latest `typeprop`, validate it and its dependents, then fast-forward `typeprop`.

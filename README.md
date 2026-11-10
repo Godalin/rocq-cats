@@ -156,15 +156,23 @@ the Rocq build language; [Dune 3.23](https://github.com/ocaml/dune/releases/tag/
 fixes configuration discovery for Rocq 9.0.
 With these tools available, run `dune build @all @runtest @install`.
 
-For the local `rocq-env` opam switch, [shell.nix](./shell.nix) supplies a pinned
-Dune 3.23.1 independently of the switch's packages:
+Local development uses the `rocq-cats` opam switch with Rocq/Stdlib 9.2.0 and
+Dune 3.23.1. CI checks Rocq 9.0, 9.1 and 9.2. After creating an OCaml switch
+(or selecting an existing one), install the project tools:
 
 ```sh
-opam exec --switch=rocq-env -- nix-shell --run 'dune build @all @runtest @install'
+opam install --switch=rocq-cats rocq-core.9.2.0 rocq-stdlib.9.2.0 dune.3.23.1
+opam exec --switch=rocq-cats -- dune build @all @runtest @install
 ```
 
-The shell inherits Rocq and OCaml from the caller; it does not install a
-Rocq toolchain. The local VS Code build task uses this same environment.
+Run all project commands through this switch, without changing the global
+opam selection. For VS Code, point `vsrocq.path` at this switch's `vsrocqtop`
+and install a `vsrocq-language-server` matching the VsRocq extension version.
+
+本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq/Stdlib 9.2.0 和
+Dune 3.23.1；CI 覆盖 Rocq 9.0、9.1、9.2。所有项目命令均通过上述 switch
+运行，无须更改全局 opam 选择。VS Code 的 `vsrocq.path` 应指向该 switch
+中的 `vsrocqtop`，并使用与 VsRocq 扩展版本匹配的 `vsrocq-language-server`。
 
 ## Documentation
 

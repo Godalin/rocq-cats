@@ -24,15 +24,14 @@ dune exec tools/docs/docs.exe -- pdf --strict
 The PDFs are `_build/docs-pdf/en/rocq-cats-en.pdf` and
 `_build/docs-pdf/zh/rocq-cats-zh.pdf`. All theory modules are discovered
 and ordered automatically. Each export first runs `dune build @all`, and never
-edits tracked Rocq sources. For the local Nix/opam environment:
+edits tracked Rocq sources. Use the project opam switch locally:
 
 PDF 位于 `_build/docs-pdf/en/rocq-cats-en.pdf` 与
 `_build/docs-pdf/zh/rocq-cats-zh.pdf`。所有理论模块均自动发现和排序，每次导出先
-运行 `dune build @all`，不修改受版本管理的 Rocq 源码。本地 Nix/opam 环境使用：
+运行 `dune build @all`，不修改受版本管理的 Rocq 源码。本地使用项目 opam switch：
 
 ```sh
-opam exec --switch=rocq-env -- nix-shell --run \
-  'dune exec tools/docs/docs.exe -- pdf --strict'
+opam exec --switch=rocq-cats -- dune exec tools/docs/docs.exe -- pdf --strict
 ```
 
 PDF uses coqdoc LaTeX followed by two XeLaTeX passes with `-no-shell-escape`.
@@ -40,13 +39,13 @@ The ordinary edition uses JuliaMono Nerd Font, including bold and italic faces,
 CTeX/Fandol for Chinese and STIX Two Math for fallback symbols. TeX Live must
 provide fontspec, geometry, amsmath/amssymb, hyperref, bookmark, fvextra,
 newunicodechar and tikz-cd. The tool does not install dependencies.
-Locally checked: Rocq/coqdoc 9.0.1, OCaml 5.3.0, Dune 3.23.1, TeX Live 2025.
+Locally checked: Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1, TeX Live 2025.
 
 PDF 使用 coqdoc LaTeX 输出，再以 `-no-shell-escape` 运行两次 XeLaTeX。
 常规阅读版使用 JuliaMono Nerd Font 及其粗体和斜体，中文使用 CTeX/Fandol，
 备用符号字体为 STIX Two Math。TeX Live 须提供 fontspec、geometry、
 amsmath/amssymb、hyperref、bookmark、fvextra、newunicodechar 和 tikz-cd。
-工具不安装依赖。本地验证：Rocq/coqdoc 9.0.1、OCaml 5.3.0、Dune 3.23.1、
+工具不安装依赖。本地验证：Rocq/Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1、
 TeX Live 2025。
 
 The exporter and its compiled-source regression use `rocq compile` and
