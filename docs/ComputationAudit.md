@@ -161,13 +161,13 @@ This is a sufficient lawful Applicative presentation, not a claim that an
 arbitrary cartesian lax endofunctor determines a natural pure map. The reverse
 construction from coherent operation interfaces is described below. Tensorial
 strength and its compatibility laws, Monad conversion and computational Arrow
-remain separate milestones. The Reader model does not impose size bounds on
-the abstract interface. No general coend or Day convolution construction is
-introduced by this slice.
+are delivered in the later slices below. The Reader model does not impose
+size bounds on the abstract interface. No general coend or Day convolution
+construction is introduced by this slice.
 
 这是一种充分的带定律 Applicative 呈现，不主张任意笛卡尔 lax 自函子都确定
 自然纯值映射。下文给出从相干运算接口的反向构造；张量强度及其相容律、Monad
-转换和计算 Arrow 仍为独立里程碑。Reader 模型的大小界不施加给抽象接口。
+转换和计算 Arrow 在下方的后续切片交付。Reader 模型的大小界不施加给抽象接口。
 此切片不引入一般余端或 Day 卷积构造。
 
 The existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1) passed
@@ -233,16 +233,16 @@ classical laws from `ApplicationA`. These are coherent operation presentations:
 no claim is made that four equations on global values alone supply all the
 naturality/coherence data in an arbitrary CCC. These particular conversions
 need no additional tensorial strength. The general tensorial-strength
-foundation and strong-monad conversion are described below; computational
-Arrow remains separate work.
+foundation, strong-monad conversion and computational Arrow are described
+below.
 No Day convolution or extra model construction is introduced.
 
 全部转换通过计算保留底层函子，并按适用情形使用指定 Hom 相等保持纯值、二元
 提升、应用、tensorator 及单位。应用保持也对任意共同上下文成立，重写该比较及
 纯值保持即可从 `ApplicationA` 运输四条经典定律。这是相干运算呈现：不主张仅
 四条全局值方程就在任意 CCC 中提供全部自然性及相干数据。这些具体转换不额外
-要求张量强度；一般张量强度基础及强 Monad 的顺序转换见下文，计算 Arrow
-仍为后续工作。没有引入 Day 卷积或额外模型构造。
+要求张量强度；一般张量强度基础、强 Monad 的顺序转换及计算 Arrow 见下文。
+没有引入 Day 卷积或额外模型构造。
 
 Validation uses the existing `rocq-cats` switch. Full-library build, tests
 and installation passed. Temporary checks cover both strict hom/equality
@@ -371,8 +371,8 @@ reading before toggling, witnessing the specified order. All 148 temporary
 assumption checks, including the previous Applicative slice, are closed
 under the global context. No permanent tests or shared test aliases were
 added. The ordinary Kleisli category is delivered in the next slice below;
-computational Arrow/Freyd, comparison with those Arrows and Day/profunctor
-characterizations remain separate work.
+the strong-Monad Arrow comparison is delivered below. Freyd and
+Day/profunctor characterizations remain separate work.
 
 临时检查在 Hom／相等宇宙的两种严格次序下实例化抽象转换及其应用，以恒等
 自然同构比较底层函子，并在状态载体／相等的两种严格次序及更大的所在载体下
@@ -380,7 +380,7 @@ characterizations remain separate work.
 应用及应用接口往返。先翻转再读取，与先读取再翻转返回不同布尔值，检验了指定
 次序。包括前一 Applicative 切片在内，148 项临时公理检查均无额外假设。没有新增
 永久测试或共享测试别名。普通 Kleisli 范畴在下方的下一切片交付；计算
-Arrow／Freyd、与这些 Arrow 的比较及 Day／profunctor 刻画仍为后续工作。
+Arrow 及其强 Monad 比较见下文；Freyd 及 Day／profunctor 刻画仍为后续工作。
 
 The final phase passed `dune build @all @runtest @install` using the existing
 `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1). Strict bilingual HTML
@@ -435,14 +435,14 @@ pure input/output and extension through the functor. All 34 assumption
 checks for this slice are closed under the global context. The abstract
 checks import only the Kleisli module and confirm strength interfaces are
 unavailable. No permanent tests or model-specific category proofs were
-added. Computational Arrow, its strength operations and Freyd remain later
-work.
+added. Computational Arrow and its strength operations are delivered below;
+Freyd remains later work.
 
 临时检查对任意普通 Monad 覆盖 Hom／相等宇宙的两种严格次序、双向继承相等、
 复合重写、两个函子及其自然同构。六项透明状态计算检验顺序组合、重复转移、
 纯输入／输出及函子扩张；本切片 34 项公理检查均无额外假设。抽象检查仅导入
 Kleisli 模块，并确认强度接口不可用。没有新增永久测试或模型专用的范畴证明。
-计算 Arrow、其强度运算及 Freyd 仍为后续工作。
+计算 Arrow 及其强度运算见下文，Freyd 仍为后续工作。
 
 This slice passed full-library build/tests/install with the same `rocq-cats`
 switch. Strict bilingual HTML generated 270 modules per language and checked
@@ -500,13 +500,13 @@ mapping, multiplication, counit and both comparison maps. All 52 assumption
 checks for this slice are closed under the global context. Abstract probes
 import only this module and confirm that strength and product interfaces
 are unavailable. No permanent tests or concrete model proofs were added;
-computational Arrow and Freyd remain separate work.
+computational Arrow is delivered below and Freyd remains separate work.
 
 临时检查覆盖 Hom／相等宇宙的两种严格次序、对象严格大于两者的情形、恢复
 同构、运算重写、双向 Monad 态射的保持性及转置重写。六项透明状态计算覆盖
 恢复后的返回、映射、乘法、余单位及正反比较映射。本切片 52 项公理检查均无
 额外假设；抽象检查仅导入本模块，并确认强度及积接口不可用。没有新增永久
-测试或具体模型证明；计算 Arrow 和 Freyd 仍为后续工作。
+测试或具体模型证明；计算 Arrow 见下文，Freyd 仍为后续工作。
 
 This slice passed full-library build/tests/install with `rocq-cats`
 (Rocq/Stdlib 9.2, Dune 3.23.1). Strict bilingual HTML generated 271 modules
@@ -543,13 +543,13 @@ uses the chosen tensorial strength of an ordinary strong Monad, retaining
 its existing Kleisli category and pure functor. These are explicit models.
 The construction reuses strength compatibility and coherence rather than
 proving laws separately in each concrete model. The Haskell-style cartesian
-operations and ordered Applicative comparison form the next slice.
+operations and ordered Applicative comparison are delivered below.
 
 [PureArrow](../theories/Cat/Computational/Arrow/Pure.v) 使用通常左张量；
 [KleisliArrow](../theories/Cat/Computational/Arrow/Kleisli.v) 使用普通强 Monad
 的选定张量强度，保留已有 Kleisli 范畴及纯函子。两者都是显式模型。构造复用
 强度相容性及相干性，不为每个具体模型重复证明定律。Haskell 风格笛卡尔运算
-及有序 Applicative 比较是下一切片。
+及有序 Applicative 比较见下文。
 
 The independent foundation passed full-library build/tests/install with
 the existing `rocq-cats` switch. All 26 temporary assumption checks are
@@ -561,6 +561,86 @@ tests were added.
 独立基础在已有 `rocq-cats` switch 下通过全库构建、测试及安装。26 项临时公理
 检查均无额外假设；覆盖 Hom／相等的两种严格次序、基底与计算范畴的独立大小
 及固定上下文函子。仅导入此基础不提供积接口，没有新增永久测试。
+
+## Cartesian Arrow operations and ordered comparison
+
+## 笛卡尔 Arrow 运算及有序比较
+
+[Cartesian Arrow operations](../theories/Cat/Computational/Arrow/Cartesian.v)
+specialize the monoidal action to the named finite-product structure.
+`second` is that existing action; `first` is derived by pure exchanges.
+The pure identity/composition laws and the five classical `first` laws
+(pure arrows, sequencing, projection, context naturality and associativity)
+are proved, matching the seven basic laws in the official
+[Control.Arrow documentation](https://hackage-content.haskell.org/package/base-4.20.0.0/docs/Control-Arrow.html#t:Arrow).
+In particular, projection is derived from monoidal unit coherence and
+naturality into the terminal context; it is not a new axiom. Ordered split
+and fanout use context action and pure duplication; no joint bifunctoriality
+or interchange of two effects is asserted. `Proper` supports rewriting all
+these operations in the designated computation equality.
+
+[笛卡尔 Arrow 运算](../theories/Cat/Computational/Arrow/Cartesian.v) 将幺半
+作用特化到具名有限积结构；`second` 就是已有作用，`first` 通过纯交换导出。
+纯恒等／复合定律及五条经典 `first` 定律（纯箭头、顺序组合、投影、上下文
+自然性及结合律）均已证明，对应官方文档的七条基本定律。特别地，投影由幺半
+单位相干及到终上下文的自然性导出，不是新公理。有序分开组合及扇出使用上下文
+作用及纯复制，不断言联合双函子性或两个效应的交换；`Proper` 支持按指定计算
+相等重写这些运算。
+
+[The comparison](../theories/Cat/Computational/Arrow/Applicative.v) uses
+one chosen strong Monad. It rewrites Kleisli `first` and `second` by
+contextual binding, proves split equals the previous `monad_pair` after
+the two input computations, and proves fanout equals Applicative pairing
+in every shared ordinary context. Specializing to computation-valued inputs
+recovers exactly the tensorator of `MonadA`; pure lifting uses the same
+return. This is a comparison of these constructions, not a conversion of
+arbitrary Arrows into Applicatives. Two reusable binding equations and the
+existing sequencing simplifier now live in `Cat.Monad.Context`; the old
+Applicative proof uses the same simplifier without changing its operations.
+All proof-only opacity is local and restored.
+
+[比较模块](../theories/Cat/Computational/Arrow/Applicative.v) 使用同一个选定
+强 Monad，将 Kleisli 的 `first`／`second` 改写为上下文绑定，证明分开组合等于
+此前的 `monad_pair` 在两个输入计算之后作用，并证明任意共同通常上下文中的
+扇出等于 Applicative 配对。特化为计算值输入后，恰好恢复 `MonadA` 的 tensorator；
+纯提升使用同一返回。这里只比较这些构造，不把任意 Arrow 转为 Applicative。
+两条可复用绑定方程及已有顺序化简策略现归于 `Cat.Monad.Context`；旧 Applicative
+证明使用同一策略，运算保持不变。全部证明专用不透明性均为局部且已恢复。
+
+The explicit [StateArrow](../theories/Instance/Set/State.v) reuses
+`StateStrongM` and the general Kleisli construction, with no model-specific
+Arrow law proofs or global chosen-instance registration. Temporary checks
+cover both strict base/computation hom-equality orders, both strict state
+carrier/equality orders, all seven basic laws, operation rewriting and
+comparison. Eight transparent state computations exercise pure, first,
+second, split, fanout, reversed input order, repeated transitions and nested
+context reassociation. The 68 cartesian/model assumption checks and 26
+monoidal-foundation checks are all closed under the global context. All
+148 earlier Applicative checks were rerun successfully after extracting the
+shared simplifier. No permanent tests or shared test aliases were added.
+Freyd, static Arrow, ArrowApply/Choice/Loop and Day/profunctor results remain
+outside this slice; batch PDF export remains with integration.
+
+显式 [StateArrow](../theories/Instance/Set/State.v) 复用 `StateStrongM` 及一般
+Kleisli 构造，没有模型专用 Arrow 定律证明或全局选定实例注册。临时检查覆盖
+基底／计算 Hom 相等的两种严格次序、状态载体／相等的两种严格次序、全部七条
+基本定律、运算重写及比较。八项透明状态计算检验纯值、first、second、分开
+组合、扇出、反向输入次序、重复转移及嵌套上下文重排。68 项笛卡尔／模型公理
+检查与 26 项幺半基础检查均无额外假设；抽出共享化简策略后，原 148 项
+Applicative 检查也全部重跑通过。没有新增永久测试或共享测试别名。Freyd、
+静态 Arrow、ArrowApply／Choice／Loop 及 Day／profunctor 结果不在本切片范围内；
+批次 PDF 仍由集成会话统一导出。
+
+The final phase passed `dune build @all @runtest @install` with the existing
+`rocq-cats` switch (Rocq/Stdlib 9.2, Dune 3.23.1). Strict bilingual HTML
+export generated 276 modules per language and checked links and anchors in
+557 pages; the new monoidal/cartesian/comparison explanations and State
+model were inspected in both languages.
+
+最终阶段在已有 `rocq-cats` switch（Rocq／Stdlib 9.2、Dune 3.23.1）下通过
+`dune build @all @runtest @install`；严格双语 HTML 为每种语言生成 276 个模块，
+检查 557 页的链接及锚点，并核查两种语言中新增的幺半／笛卡尔／比较说明及
+状态模型。
 
 ## First implementation boundary
 
@@ -577,9 +657,9 @@ tests were added.
    universe orders, and foundational assumptions. Keep temporary checks
    distinct from retained interface regressions.
 4. Lawful Applicative, coherent operation comparison, tensorial strength and
-   the ordered strong-Monad conversion above are implemented. Subsequent
-   slices add computational Arrow and its direct comparison diagram. These
-   remain open in #35.
+   the ordered strong-Monad conversion, computational Arrow and its ordered
+   pairing comparison above are implemented. Freyd, static-arrow and deeper
+   representation results remain open in #35.
 
 1. 打包指定幺半结构之间的函子及其 lax 结构：单位映射、自然 tensorator、
    结合律和两条单位律。不要求可逆、张量强度或闭／笛卡尔基底。
@@ -587,8 +667,9 @@ tests were added.
    用 `fmap F` 映射同态，并封装为已有幺半群对象范畴之间的函子。
 3. 检查真正不可逆的 lax 结构、独立的 Hom／相等宇宙次序，以及基础公理。
    区分临时检查与保留的接口回归。
-4. 上述带定律 Applicative、相干运算比较、张量强度及强 Monad 的有序转换已实现。
-   后续再添加计算 Arrow 及其直接比较图；这些仍为 #35 的待办。
+4. 上述带定律 Applicative、相干运算比较、张量强度、强 Monad 有序转换、计算
+   Arrow 及其有序配对比较已实现。Freyd、静态 Arrow 及更深表示结果仍为 #35
+   的待办。
 
 The implemented interface is
 [LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v), bundling

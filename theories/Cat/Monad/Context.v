@@ -239,8 +239,90 @@ Proof.
           product_comp_l, comp_id_l, comp_id_r. reflexivity.
 Qed.
 
+(** A continuation that discards the ordinary context is plain Kleisli
+    extension. This connects contextual and noncontextual sequencing. *)
+
+(** 丢弃通常上下文的后续计算就是普通 Kleisli 扩张，关联上下文与无上下文组合。 *)
+
+Lemma context_bind_discard {W X Y : @Ob C}
+    (u : Hom W (M X)) (k : Hom X (M Y))
+  : context_bind u (k ∘ π2) ≈ kleisli_extend M k ∘ u.
+Proof.
+  unfold context_bind, context_extend, strong_extend.
+  rewrite kleisli_extend_pre,
+    (comp_assoc (kleisli_extend M k) (fmap M π2)
+      st[hasStrength M; W; X]),
+    (cartesian_strength_projection (hasStrength M) W X),
+    comp_assoc, product_β2. reflexivity.
+Qed.
+
+(** Returning an ordinary context map together with the bound value is
+    strength applied to their ordinary pairing. *)
+
+(** 将通常上下文映射与绑定值一同返回，就是将强度作用于两者的通常配对。 *)
+
+Lemma context_bind_pair {W V X : @Ob C}
+    (u : Hom W (M X)) (σ : Hom W V)
+  : context_bind u (return[M; ⟨σ ∘ π1, π2⟩]) ≈
+      st[hasStrength M; V; X] ∘ ⟨σ, u⟩.
+Proof.
+  unfold context_bind, monad_return. rewrite context_extend_return.
+  transitivity ((fmap M (σ × @id X) ∘
+    st[hasStrength M; W; X]) ∘ ⟨id, u⟩).
+  - apply comp_proper; [| reflexivity].
+    apply comp_proper; [| reflexivity].
+    apply functor_fmap_proper. rewrite cross_η, comp_id_l. reflexivity.
+  - rewrite <- (strength_natural (hasStrength M) σ (@id X)), functor_id,
+      comp_assoc.
+    change (st[hasStrength M; V; X] ∘
+      ((σ × @id (M X)) ∘ ⟨id, u⟩) ≈
+      st[hasStrength M; V; X] ∘ ⟨σ, u⟩).
+    rewrite product_comp_l, comp_id_r, comp_id_l. reflexivity.
+Qed.
+
 End Context.
 
 Arguments context_bind {_ _ _} _ {_ _ _} _ _.
 Notation "'bind[' M ';' u ';' k ']'" := (context_bind M u k)
   : monad_scope.
+
+(** Normalize only by proved binding, return and product equations.
+    No rule exchanges two effectful computations. *)
+
+(** 仅用已证的绑定、返回及积方程规范化；没有规则交换两个带效应计算。 *)
+
+Ltac monad_context_simpl M :=
+  repeat match goal with
+  | |- context_bind M ?u ?k ≈ context_bind M ?u ?h =>
+      apply (context_bind_proper M); [reflexivity |]
+  | |- monad_return ?N ?x ≈ monad_return ?N ?y =>
+      apply (monad_return_proper N)
+  | |- context [id ∘ ?f] => rewrite (comp_id_l f)
+  | |- context [?f ∘ id] => rewrite (comp_id_r f)
+  | |- context [(?f ∘ ?g) ∘ ?h] => rewrite (comp_assoc f g h)
+  | |- context [π1 ∘ ⟨?f, ?g⟩] => rewrite (product_β1 f g)
+  | |- context [π2 ∘ ⟨?f, ?g⟩] => rewrite (product_β2 f g)
+  | |- context [π1 ∘ (⟨?f, ?g⟩ ∘ ?h)] =>
+      rewrite <- (comp_assoc π1 ⟨f, g⟩ h), (product_β1 f g)
+  | |- context [π2 ∘ (⟨?f, ?g⟩ ∘ ?h)] =>
+      rewrite <- (comp_assoc π2 ⟨f, g⟩ h), (product_β2 f g)
+  | |- context [@cross _ _ _ _ _ _ ?f ?g] => rewrite (cross_η f g)
+  | |- context [⟨?f, ?g⟩ ∘ ?h] => rewrite (product_comp_r f g h)
+  | |- context [⟨π1, π2⟩] => rewrite product_pair_η
+  | |- context [context_bind M ?u ?k ∘ ?σ] =>
+      rewrite (context_bind_comp M u k σ)
+  | |- context [fmap ?F ?f ∘ context_bind M ?u ?k] =>
+      rewrite (context_bind_post M u k f)
+  | |- context [context_bind M (context_bind M ?u ?k) ?h] =>
+      rewrite (context_bind_assoc M u k h)
+  | |- context [context_bind M (monad_return ?N ?x) ?k] =>
+      rewrite (context_bind_return M x k)
+  | |- context [context_bind M (fmap ?F ?f ∘ ?u) ?k] =>
+      rewrite (context_bind_fmap M u f k)
+  | |- context [context_bind M ?u (monad_return ?N π2)] =>
+      rewrite (context_bind_return_unit M u)
+  | |- context [monad_return ?N ?x ∘ ?σ] =>
+      rewrite (monad_return_comp N x σ)
+  | |- context [fmap ?F ?f ∘ monad_return ?N ?x] =>
+      rewrite (monad_return_map N f x)
+  end.

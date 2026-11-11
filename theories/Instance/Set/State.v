@@ -1,5 +1,6 @@
 From Cats Require Import
   Cat.Monad.Applicative
+  Cat.Computational.Arrow.Kleisli
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
@@ -224,3 +225,13 @@ Definition StateA@{r e u p +} (R : SetC@{r e})
   : Applicative (SetCat@{u p _ _ _ _ _})
       SetCat_HasTerminal SetCat_HasProduct
   := MonadA (StateStrongM R).
+
+(** Derive the state Arrow from the same chosen strong Monad. Its
+    context action is inherited from the general monoidal construction. *)
+
+(** 从同一个选定强 Monad 导出状态 Arrow，上下文作用继承自一般幺半构造。 *)
+
+Definition StateArrow@{r e u p +} (R : SetC@{r e})
+  : Arrow (SetCat@{u p _ _ _ _ _}) (KleisliCat (StateM R))
+      SetCartesianMonoidal
+  := KleisliArrow (StateStrongM R).

@@ -39,47 +39,6 @@ Definition monad_pair {X Y : @Ob C}
 
 Local Opaque context_bind monad_return.
 
-(** Normalize only by proved binding, return and product equations.
-    No rule exchanges two effectful computations. *)
-
-(** 仅用已证的绑定、返回及积方程规范化；没有规则交换两个带效应计算。 *)
-
-Local Ltac normalize_sequencing :=
-  repeat match goal with
-  | |- context_bind M ?u ?k ≈ context_bind M ?u ?h =>
-      apply (context_bind_proper M); [reflexivity |]
-  | |- monad_return ?N ?x ≈ monad_return ?N ?y =>
-      apply (monad_return_proper N)
-  | |- context [id ∘ ?f] => rewrite (comp_id_l f)
-  | |- context [?f ∘ id] => rewrite (comp_id_r f)
-  | |- context [(?f ∘ ?g) ∘ ?h] => rewrite (comp_assoc f g h)
-  | |- context [π1 ∘ ⟨?f, ?g⟩] => rewrite (product_β1 f g)
-  | |- context [π2 ∘ ⟨?f, ?g⟩] => rewrite (product_β2 f g)
-  | |- context [π1 ∘ (⟨?f, ?g⟩ ∘ ?h)] =>
-      rewrite <- (comp_assoc π1 ⟨f, g⟩ h), (product_β1 f g)
-  | |- context [π2 ∘ (⟨?f, ?g⟩ ∘ ?h)] =>
-      rewrite <- (comp_assoc π2 ⟨f, g⟩ h), (product_β2 f g)
-  | |- context [@cross _ _ _ _ _ _ ?f ?g] => rewrite (cross_η f g)
-  | |- context [⟨?f, ?g⟩ ∘ ?h] => rewrite (product_comp_r f g h)
-  | |- context [⟨π1, π2⟩] => rewrite product_pair_η
-  | |- context [context_bind M ?u ?k ∘ ?σ] =>
-      rewrite (context_bind_comp M u k σ)
-  | |- context [fmap ?F ?f ∘ context_bind M ?u ?k] =>
-      rewrite (context_bind_post M u k f)
-  | |- context [context_bind M (context_bind M ?u ?k) ?h] =>
-      rewrite (context_bind_assoc M u k h)
-  | |- context [context_bind M (monad_return ?N ?x) ?k] =>
-      rewrite (context_bind_return M x k)
-  | |- context [context_bind M (fmap ?F ?f ∘ ?u) ?k] =>
-      rewrite (context_bind_fmap M u f k)
-  | |- context [context_bind M ?u (monad_return ?N π2)] =>
-      rewrite (context_bind_return_unit M u)
-  | |- context [monad_return ?N ?x ∘ ?σ] =>
-      rewrite (monad_return_comp N x σ)
-  | |- context [fmap ?F ?f ∘ monad_return ?N ?x] =>
-      rewrite (monad_return_map N f x)
-  end.
-
 (** Ordered pairing is natural in both ordinary result types. *)
 
 (** 有序配对在两个通常结果类型上自然。 *)
@@ -90,7 +49,7 @@ Lemma monad_pair_natural {X X' Y Y' : @Ob C}
       fmap M (f × g) ∘ monad_pair.
 Proof.
   unfold monad_pair.
-  normalize_sequencing. reflexivity.
+  monad_context_simpl M. reflexivity.
 Qed.
 
 (** Pairing in a shared context runs the first projection before the second.
@@ -103,11 +62,11 @@ Qed.
 Lemma monad_pair_pre {W X Y : @Ob C} (p : Hom W (M X × M Y))
   : monad_pair ∘ p ≈ bind[M; π1 ∘ p;
       bind[M; π2 ∘ p ∘ π1; return[M; ⟨π2 ∘ π1, π2⟩]]].
-Proof. unfold monad_pair. normalize_sequencing. reflexivity. Qed.
+Proof. unfold monad_pair. monad_context_simpl M. reflexivity. Qed.
 
 Local Ltac normalize_pairing :=
   repeat first
-    [ progress normalize_sequencing
+    [ progress monad_context_simpl M
     | match goal with
       | |- context [context_bind M ((@monad_pair ?A ?B) ∘ ?p) ?k] =>
           rewrite (monad_pair_pre (X := A) (Y := B) p)
@@ -143,12 +102,12 @@ Program Definition MonadLax
 Next Obligation.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
     (monad_return M (@id 1) × id) ≈ π2).
-  unfold monad_pair. normalize_sequencing. reflexivity.
+  unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 Next Obligation.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
     (id × monad_return M (@id 1)) ≈ π1).
-  unfold monad_pair. normalize_sequencing. reflexivity.
+  unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 Local Opaque monad_pair.
 Next Obligation.
@@ -162,7 +121,7 @@ Next Obligation.
       ((@id (M X) × @monad_pair Y Z) ∘
         (@product_assoc C HP (M X) (M Y) (M Z)).1)).
   unfold product_assoc. cbn. normalize_pairing.
-  unfold product_assoc. cbn. normalize_sequencing. reflexivity.
+  unfold product_assoc. cbn. monad_context_simpl M. reflexivity.
 Defined.
 
 Local Transparent monad_pair.
@@ -182,7 +141,7 @@ Next Obligation.
   change (η[M] (X × Y)%ob ≈ monad_pair ∘ (η[M] X × η[M] Y)).
   rewrite <- (monad_return_id M (X × Y)%ob),
     <- (monad_return_id M X), <- (monad_return_id M Y).
-  unfold monad_pair. normalize_sequencing. reflexivity.
+  unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 
 (** The induced pure operation is precisely the monad unit. *)

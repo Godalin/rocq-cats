@@ -1,3 +1,5 @@
 Core.v
 Pure.v
 Kleisli.v
+Cartesian.v
+Applicative.v

@@ -183,3 +183,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   well as their underlying functors, as in `StatePureN`. Inferred downstream
   signatures can otherwise identify levels which the functor kept separate;
   probe the completed structure at strict levels.
+- Separate ordinary monoidal context action from its cartesian operations,
+  as in `Computational.Arrow.Core` and `Cartesian`. Introduce products,
+  exchange, projection and duplication only at the layer that uses them;
+  carrying a tensor context does not require symmetry or effect interchange.
+- Put fixed context parameters before the morphism in respectful operations,
+  as in `arrow_context A Z f`. This exposes an ordinary partial application
+  for `Proper`; a dependent context argument after the morphism can make
+  rewriting search for unsupported `forall_relation` instances.

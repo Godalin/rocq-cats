@@ -347,6 +347,21 @@ provides explicitly selected values.
 `fmap`，不增加竞争的强制转换路径；[状态模型](../theories/Instance/Set/State.v)
 同样只提供须显式选定的值。
 
+The computational [Arrow](../theories/Cat/Computational/Arrow/Core.v)
+adds the unique `Arrow → Functor → object function` view, with the source
+monoidal structure and target category named separately. `ComputationCat`
+is an explicit reindexing of that target, not another coercion. Cartesian
+first/second/split/fanout are derived operations. The concrete
+[StateArrow](../theories/Instance/Set/State.v) is explicitly selected and
+retains independent ambient carrier/equality levels.
+
+计算 [Arrow](../theories/Cat/Computational/Arrow/Core.v) 增加唯一的
+`Arrow → Functor → object function` 视图，分别具名指定来源幺半结构及目标
+范畴。`ComputationCat` 是目标的显式重索引，不增加强制转换；笛卡尔
+first／second／分开组合／扇出均为导出运算。具体
+[StateArrow](../theories/Instance/Set/State.v) 须显式选择，保留独立的所在载体／
+相等层级。
+
 ## Follow-up candidates
 
 ## 后续候选
