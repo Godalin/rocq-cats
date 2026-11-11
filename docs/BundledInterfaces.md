@@ -177,7 +177,8 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [Cocone](../theories/Cat/Diagram/Dual.v), [Nat](../theories/Cat/Natural.v) | `Cocone → Nat → component function` / 余锥经自然变换到分量函数 | Already complete; keep the opposite-cone construction underneath / 已完整，底层保留反范畴上的锥构造 |
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
-| [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v) | Both have a named category; neither has a category coercion or a stored CCC parent in ETCS / 均有具名范畴，尚无范畴强制转换；ETCS 未保存 CCC 父结构 | Candidates for computed category views; an ETCS-to-CCC adapter must share existing choices rather than duplicate them / 可考虑计算性范畴视图；ETCS 到 CCC 须复用已有选择，不能重复存储 |
+| [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCategory → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
+| [ETCS](../theories/ETCS/Core.v) | Named category, without a category coercion or stored CCC parent / 具名范畴，尚无范畴强制转换或保存的 CCC 父结构 | A future adapter must share existing choices rather than duplicate them / 未来适配器须共享已有选择，不重复保存 |
 | [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `Group → Monoid → SetC → Type`; the parent remains an inherited instance / 群经幺半群、广集到载体类型，父结构仍是继承实例 | Implemented in the computational-model continuation below, reusing the stored parent and named setoid / 已在下述计算模型后续工作中实现，复用保存的父结构及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
@@ -208,12 +209,14 @@ lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以
 一条新的图边。
 
 The first change implements the monoidal category view; the continuation
-below adds group/monoid views. CCC/ETCS views remain follow-up candidates.
+below adds group/monoid views and the cumulative cartesian/CCC hierarchy.
+An ETCS category view remains a follow-up candidate.
 `Cat` has no coercion to its object type, and `Functor` still uses its
 object function as its sole function coercion; arrow mapping stays `fmap`.
 
-首项修改实现幺半结构的底层范畴视图；下述后续工作增加群／幺半群视图。
-CCC／ETCS 视图仍属于后续候选。`Cat` 没有到对象类型的强制转换；`Functor`
+首项修改实现幺半结构的底层范畴视图；下述后续工作增加群／幺半群视图及
+笛卡尔／CCC 累次层级。ETCS 范畴视图仍属于后续候选。
+`Cat` 没有到对象类型的强制转换；`Functor`
 仍以对象函数为唯一函数强制转换，态射映射保留 `fmap`。
 
 This follow-up passed `dune build @all @runtest @install` using
@@ -234,6 +237,106 @@ OCaml 5.3.0、Dune 3.23.1 下通过 `dune build @all @runtest @install`。
 严格双语 HTML 导出每种语言 256 个模块，检查了 517 页的链接及锚点；新增
 字段旁的说明已在两种语言中核查。无需增加永久测试或修改共享工具链。
 PDF 留待下一集成批次统一导出。以上为本地验证结果，不代表 CI 状态。
+
+## Cumulative cartesian and CCC hierarchy
+
+## 笛卡尔与 CCC 的累次层级
+
+[CartesianCategory C](../theories/Cat/Cartesian/Core.v) stores the selected
+terminal object and binary products, including their computational universal
+properties. Its computed field `CartesianC :> Cat := C` exposes the named
+category. [CCC C](../theories/Cat/CCC.v) then stores one
+`hasCartesian :: CartesianCategory C` parent and exponentials relative to
+that parent's products. Registering the parent projection as a coercion
+gives the unique chain `CCC → CartesianCategory → Cat`; there is no direct
+CCC-to-category bypass and no repeated terminal/product data.
+
+[CartesianCategory C](../theories/Cat/Cartesian/Core.v) 保存选定终对象和
+二元积，包含其可计算泛性质。计算字段 `CartesianC :> Cat := C` 暴露具名
+范畴。[CCC C](../theories/Cat/CCC.v) 再保存一个
+`hasCartesian :: CartesianCategory C` 父结构及相对于其积的指数。将父投影
+注册为强制转换，得到唯一链 `CCC → CartesianCategory → Cat`；不添加
+CCC 直接到普通范畴的旁路，也不重复保存终对象或积。
+
+The following client illustrates both mechanisms. Expected types insert
+the successive coercions, while `Local Existing Instance HC` makes the
+same stored choices available to instance search. `::` registers the
+parent instance; the explicit `Coercion` registration gives it the
+conversion role that a `:>` field would provide.
+
+下面的客户端同时展示两种机制：期望类型插入逐层强制转换，
+`Local Existing Instance HC` 则将同一份保存选择提供给实例搜索。
+`::` 注册父结构实例；显式 `Coercion` 注册赋予它与 `:>` 字段相同的转换职责。
+
+```coq
+From Cats Require Import
+  Cat.Core
+  Cat.Functor.Core
+  Cat.Terminal
+  Cat.Product.Core
+  Cat.CCC.
+
+Section CumulativeViews.
+Context {C : Cat} (HC : CCC C).
+Local Existing Instance HC.
+
+Definition cartesian_view
+  : CartesianCategory C
+  := HC.
+Definition category_view
+  : Cat
+  := HC.
+Definition identity_view
+  : Functor HC HC
+  := IdF.
+Definition inherited_terminal
+  : HasTerminal HC
+  := ltac:(typeclasses eauto).
+Definition inherited_product
+  : HasProduct HC
+  := ltac:(typeclasses eauto).
+End CumulativeViews.
+```
+
+The [setoid](../theories/Instance/Set/Cartesian.v),
+[context syntax](../theories/STLC/CCC.v) and
+[type syntax](../theories/STLC/TypeCategory.v) models expose explicit
+cartesian bundles, reused by their existing CCC bundles. Importing them
+does not choose a concrete instance. The
+[cartesian monoidal construction](../theories/Cat/Monoidal/Cartesian.v)
+still derives from the selected terminal and products when requested;
+it is not another stored parent or coercion path. General product and
+exponential theorems retain their weaker original hypotheses.
+
+[广集](../theories/Instance/Set/Cartesian.v)、
+[上下文语法](../theories/STLC/CCC.v)及
+[类型语法](../theories/STLC/TypeCategory.v)模型暴露显式笛卡尔包，由原有
+CCC 包复用。导入时不自动选取具体实例。
+[笛卡尔幺半构造](../theories/Cat/Monoidal/Cartesian.v)仍在需要时由选定
+终对象与积派生，不是另一份保存的父结构或强制转换路径。一般积与指数定理
+保留原有的较弱前提。
+
+This hierarchy change passed the full build, test and install targets with
+the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1). Forty-four
+temporary `Print Assumptions` checks reported `Closed under the global
+context`. They cover the coercion chain and inherited choices, both strict
+hom/equality universe orders, the three model assemblies, and six concrete
+setoid reductions. Negative checks confirm that import alone selects no
+model and that the cartesian bundle supplies no exponential instance.
+The existing universe test only updates two fully qualified projection
+names to their new parent module. No permanent test or shared alias was
+added. Strict bilingual HTML generated 278 modules per language and checked
+561 pages; all six new or updated source pages were checked in both
+languages. PDF export remains with the integration batch.
+
+此次层级修改在已有 `rocq-cats` switch 下，以 Rocq／Stdlib 9.2.0、Dune 3.23.1
+通过全库构建、测试及安装。四十四项临时 `Print Assumptions` 检查均报告
+`Closed under the global context`，覆盖转换链与继承选择、Hom／相等宇宙的
+两种严格次序、三个模型装配及六项具体广集归约。反向检查确认导入本身不选取
+模型，笛卡尔包也不提供指数实例。原有宇宙测试仅将两个全限定投影名更新到
+新父模块，没有新增永久测试或共享别名。严格双语 HTML 每种语言生成 278 个
+模块，检查 561 页；六个新增或更新的源码页面均已检查英中文正文。
+PDF 仍由集成批次统一导出。
 
 ## Computational-model continuation
 

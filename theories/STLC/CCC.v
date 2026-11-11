@@ -29,15 +29,25 @@ From Cats Require Import Cat.CCC.
     表示具有原生相等的对象。使用时须显式启用模型结构，与使用具体广集模型
     时的要求一致。 *)
 
-(** Assemble the chosen empty context, concatenation products and packed
-    function contexts. This model structure must be enabled explicitly. *)
+(** Bundle the chosen empty context and concatenation products without
+    requiring exponentials. Enable this model structure explicitly. *)
 
-(** 组合选定的空上下文、连接积及打包函数上下文；该模型结构须显式启用。 *)
+(** 不要求指数，打包选定空上下文及连接积；此模型结构须显式启用。 *)
+
+Program Definition CtxCat_Cartesian@{b e l +} (B : Type@{b})
+  : CartesianCategory (CtxCat@{b e l} B)
+  :=
+  {|hasTerminal := CtxCat_HasTerminal B
+  ; hasProduct := CtxCat_HasProduct B
+  |}.
+
+(** Add the packed function contexts to the same finite-product choices. *)
+
+(** 为相同有限积选择增加打包函数上下文。 *)
 
 Program Definition CtxCat_CCC@{b e l +} (B : Type@{b})
   : CCC (CtxCat@{b e l} B)
   :=
-  {|hasTerminal := CtxCat_HasTerminal B
-  ; hasProduct := CtxCat_HasProduct B
+  {|hasCartesian := CtxCat_Cartesian B
   ; hasExponential := CtxCat_HasExponential B
   |}.

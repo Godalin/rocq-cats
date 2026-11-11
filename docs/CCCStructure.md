@@ -5,14 +5,18 @@
 The first structural milestone of [#23](https://github.com/Godalin/rocq-cats/issues/23)
 connects exponential identities, their hom-setoid computations, limit preservation,
 cartesian closed functor composition and internal composition. The selected
-[CCC interface](../theories/Cat/CCC.v) remains the small assembly of terminal,
-product and exponential structures. Individual theorems use weaker assumptions
-where possible.
+[CCC interface](../theories/Cat/CCC.v) extends a chosen
+[cartesian structure](../theories/Cat/Cartesian/Core.v) by exponentials for
+its inherited products. The unique underlying-view chain is
+`CCC → CartesianCategory → Cat`. Individual theorems use weaker assumptions
+where possible; extracting this parent does not add hypotheses to them.
 
 [#23](https://github.com/Godalin/rocq-cats/issues/23) 的首个结构里程碑连接指数恒等、
 Hom 广集计算、极限保持性、笛卡尔闭函子复合及内部复合。
-[CCC 接口](../theories/Cat/CCC.v) 仍然只是终对象、积和指数结构的小型组合；
-各个定理在可行时使用更弱的假设。
+[CCC 接口](../theories/Cat/CCC.v) 为选定的
+[笛卡尔结构](../theories/Cat/Cartesian/Core.v) 增加相对于继承积的指数，
+唯一底层视图链为 `CCC → CartesianCategory → Cat`。各个定理在可行时仍使用
+更弱的假设；抽取父结构不为它们增加前提。
 
 ## Classical isomorphisms
 

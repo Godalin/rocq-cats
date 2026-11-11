@@ -222,14 +222,25 @@ Program Definition TyCat_HasExponential@{b e l +} (B : Type@{b})
   ; exponential_universal A U := type_exponential A U
   |}.
 
-(** The type presentation is a CCC with the literal syntax constructors. *)
+(** The type presentation has the selected unit and product type
+    constructors. Enable this cartesian model structure explicitly. *)
 
-(** 类型呈现以语法构造器本身形成 CCC。 *)
+(** 类型呈现具有选定的单位类型与积类型构造器；此笛卡尔模型须显式启用。 *)
+
+Program Definition TyCat_Cartesian@{b e l +} (B : Type@{b})
+  : CartesianCategory (TyCat@{b e l} B)
+  :=
+  {|hasTerminal := TyCat_HasTerminal B
+  ; hasProduct := TyCat_HasProduct B
+  |}.
+
+(** The type presentation extends those same products by function types. *)
+
+(** 类型呈现沿用相同积并增加函数类型。 *)
 
 Program Definition TyCat_CCC@{b e l +} (B : Type@{b})
   : CCC (TyCat@{b e l} B)
   :=
-  {|hasTerminal := TyCat_HasTerminal B
-  ; hasProduct := TyCat_HasProduct B
+  {|hasCartesian := TyCat_Cartesian B
   ; hasExponential := TyCat_HasExponential B
   |}.

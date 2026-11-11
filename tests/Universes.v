@@ -462,8 +462,8 @@ Definition mixed_levels_bundled_closed_composite
   : CCCFunctor HC HC
   := CompCCCF low_eq_bundled_closed_functor high_eq_bundled_closed_functor.
 Definition mixed_levels_bundled_cartesian_composite
-  : @CartesianFunctor C C (@Cats.Cat.CCC.hasTerminal C HC)
-      (@Cats.Cat.CCC.hasProduct C HC)
+  : @CartesianFunctor C C (@Cats.Cat.Cartesian.Core.hasTerminal C HC)
+      (@Cats.Cat.Cartesian.Core.hasProduct C HC)
   := CompCartesianF (CCCF low_eq_bundled_closed_functor)
       (CCCF high_eq_bundled_closed_functor).
 
