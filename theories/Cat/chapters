@@ -10,6 +10,7 @@ CCC.v
 Monoidal
 Applicative
 Monad
+Computational
 Comma
 FreeObject
 Diagram

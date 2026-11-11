@@ -518,6 +518,50 @@ with integration.
 及安装；严格双语 HTML 为每种语言导出 271 个模块，检查 547 页的链接及锚点，
 并核查两种语言中新模块的说明。批次 PDF 仍由集成会话统一导出。
 
+## Arrow foundation over a monoidal base
+
+## 幺半基底上的 Arrow 基础
+
+[Arrow](../theories/Cat/Computational/Arrow/Core.v) now takes a named
+monoidal base and a computation category, with a pure-arrow functor as
+its unique underlying view. Its left-context action preserves pure maps
+and composition, is natural in the ordinary context, and satisfies unit
+and associator coherence. It assumes neither products nor symmetry nor
+interchange of two effects. Computations live between images of the pure
+functor; the existing `InducedCat` gives a presentation indexed by base
+objects, and `ContextF` packages the action at a fixed context as a functor.
+
+[Arrow](../theories/Cat/Computational/Arrow/Core.v) 输入具名幺半基底及计算范畴，
+以纯箭头函子为唯一底层视图。左上下文作用保持纯映射及复合，在通常上下文中
+自然，满足单位及结合子相干。不假定积、对称性或两个效应的交换律。计算位于
+纯函子像之间；已有 `InducedCat` 给出以基底对象索引的呈现，`ContextF` 将固定
+上下文的作用打包为函子。
+
+[PureArrow](../theories/Cat/Computational/Arrow/Pure.v) uses ordinary left
+tensoring. [KleisliArrow](../theories/Cat/Computational/Arrow/Kleisli.v)
+uses the chosen tensorial strength of an ordinary strong Monad, retaining
+its existing Kleisli category and pure functor. These are explicit models.
+The construction reuses strength compatibility and coherence rather than
+proving laws separately in each concrete model. The Haskell-style cartesian
+operations and ordered Applicative comparison form the next slice.
+
+[PureArrow](../theories/Cat/Computational/Arrow/Pure.v) 使用通常左张量；
+[KleisliArrow](../theories/Cat/Computational/Arrow/Kleisli.v) 使用普通强 Monad
+的选定张量强度，保留已有 Kleisli 范畴及纯函子。两者都是显式模型。构造复用
+强度相容性及相干性，不为每个具体模型重复证明定律。Haskell 风格笛卡尔运算
+及有序 Applicative 比较是下一切片。
+
+The independent foundation passed full-library build/tests/install with
+the existing `rocq-cats` switch. All 26 temporary assumption checks are
+closed under the global context. Probes cover both strict hom/equality
+orders, independent base/computation sizes and the fixed-context functor;
+importing the foundation alone supplies no product interface. No permanent
+tests were added.
+
+独立基础在已有 `rocq-cats` switch 下通过全库构建、测试及安装。26 项临时公理
+检查均无额外假设；覆盖 Hom／相等的两种严格次序、基底与计算范畴的独立大小
+及固定上下文函子。仅导入此基础不提供积接口，没有新增永久测试。
+
 ## First implementation boundary
 
 ## 首个实现边界
