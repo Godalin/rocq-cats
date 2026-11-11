@@ -246,27 +246,28 @@ PDF 留待下一集成批次统一导出。以上为本地验证结果，不代�
 terminal object and binary products, including their computational universal
 properties. Its computed field `CartesianC :> Cat := C` exposes the named
 category. [CCC C](../theories/Cat/CCC.v) then stores one
-`hasCartesian :: CartesianCat C` parent and exponentials relative to
-that parent's products. Registering the parent projection as a coercion
-gives the unique chain `CCC → CartesianCat → Cat`; there is no direct
+`CCCC :> CartesianCat C` parent and exponentials relative to
+that parent's products. The parent field directly supplies
+the unique chain `CCC → CartesianCat → Cat`; there is no direct
 CCC-to-category bypass and no repeated terminal/product data.
 
 [CartesianCat C](../theories/Cat/Cartesian/Core.v) 保存选定终对象和
 二元积，包含其可计算泛性质。计算字段 `CartesianC :> Cat := C` 暴露具名
 范畴。[CCC C](../theories/Cat/CCC.v) 再保存一个
-`hasCartesian :: CartesianCat C` 父结构及相对于其积的指数。将父投影
-注册为强制转换，得到唯一链 `CCC → CartesianCat → Cat`；不添加
+`CCCC :> CartesianCat C` 父结构及相对于其积的指数。父字段直接
+给出唯一链 `CCC → CartesianCat → Cat`；不添加
 CCC 直接到普通范畴的旁路，也不重复保存终对象或积。
 
 The following client illustrates both mechanisms. Expected types insert
 the successive coercions, while `Local Existing Instance HC` makes the
-same stored choices available to instance search. `::` registers the
-parent instance; the explicit `Coercion` registration gives it the
-conversion role that a `:>` field would provide.
+same stored choices available to instance search. `:>` supplies the
+conversion; `Existing Instance CCCC` additionally registers the same
+parent for instance search, without choosing another cartesian structure.
 
 下面的客户端同时展示两种机制：期望类型插入逐层强制转换，
 `Local Existing Instance HC` 则将同一份保存选择提供给实例搜索。
-`::` 注册父结构实例；显式 `Coercion` 注册赋予它与 `:>` 字段相同的转换职责。
+`:>` 提供转换；`Existing Instance CCCC` 另外将同一父结构注册给实例搜索，
+不另选一个笛卡尔结构。
 
 ```coq
 From Cats Require Import

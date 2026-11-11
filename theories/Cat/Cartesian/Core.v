@@ -23,11 +23,13 @@ Class CartesianCat (C : Cat)
   (** 唯一范畴视图直接计算为给定参数，不另存一个范畴。 *)
 
   { CartesianC :> Cat := C
+
   (** Select the terminal object and its full universal property. *)
 
   (** 选定终对象及其完整泛性质。 *)
 
   ; hasTerminal :: HasTerminal C
+
   (** Select binary products, projections and universal mediators. *)
 
   (** 选定二元积、投影与泛中介。 *)

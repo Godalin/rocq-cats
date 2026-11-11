@@ -48,6 +48,6 @@ Program Definition CtxCat_Cartesian@{b e l +} (B : Type@{b})
 Program Definition CtxCat_CCC@{b e l +} (B : Type@{b})
   : CCC (CtxCat@{b e l} B)
   :=
-  {|hasCartesian := CtxCat_Cartesian B
+  {|CCCC := CtxCat_Cartesian B
   ; hasExponential := CtxCat_HasExponential B
   |}.

@@ -19,23 +19,27 @@ From Cats Require Import
 
 Class CCC (C : Cat)
   :=
-  (** Share the selected finite products with every weaker client. *)
+  (** The unique underlying view shares the selected finite products
+      with every weaker client. *)
 
-  (** 与所有较弱的客户端共享选定有限积。 *)
+  (** 唯一底层视图与所有较弱的客户端共享选定有限积。 *)
 
-  { hasCartesian :: CartesianCat C
+  { CCCC :> CartesianCat C
+
   (** Exponentials use exactly the inherited choice of binary products. *)
 
   (** 指数恰好使用继承的二元积选择。 *)
 
-  ; hasExponential :: HasExponential hasProduct
+  ; hasExponential :: HasExponential (@hasProduct C CCCC)
   }.
 
-(** Register the parent projection as a coercion while retaining its
-    instance role. The unique chain is [CCC] to [CartesianCat] to
-    [Cat]; it computes to the named category [C]. *)
+Arguments CCCC {_} _.
 
-(** 将父结构投影同时注册为强制转换，并保留其实例职责。唯一转换链为 [CCC]
-    经 [CartesianCat] 到 [Cat]，直接计算为具名范畴 [C]。 *)
+(** Also expose the same parent to instance search. The [:>] field
+    already supplies the unique coercion chain through [CartesianCat]
+    to [Cat]; instance registration selects no additional structure. *)
 
-Coercion hasCartesian : CCC >-> CartesianCat.
+(** 同时将同一父结构提供给实例搜索。[:>] 字段已给出经 [CartesianCat]
+    到 [Cat] 的唯一强制转换链；实例注册不再选择任何额外结构。 *)
+
+#[export] Existing Instance CCCC.

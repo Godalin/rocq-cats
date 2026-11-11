@@ -18,6 +18,6 @@ From Cats Require Import
 Program Definition SetCat_CCC
   : CCC SetCat
   :=
-  {|hasCartesian := SetCat_Cartesian
+  {|CCCC := SetCat_Cartesian
   ; hasExponential := SetCat_HasExponential
   |}.

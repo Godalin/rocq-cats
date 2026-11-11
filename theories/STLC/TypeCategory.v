@@ -241,6 +241,6 @@ Program Definition TyCat_Cartesian@{b e l +} (B : Type@{b})
 Program Definition TyCat_CCC@{b e l +} (B : Type@{b})
   : CCC (TyCat@{b e l} B)
   :=
-  {|hasCartesian := TyCat_Cartesian B
+  {|CCCC := TyCat_Cartesian B
   ; hasExponential := TyCat_HasExponential B
   |}.

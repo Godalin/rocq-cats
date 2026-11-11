@@ -191,3 +191,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   as in `arrow_context A Z f`. This exposes an ordinary partial application
   for `Proper`; a dependent context argument after the morphism can make
   rewriting search for unsupported `forall_relation` instances.
+- Declare the unique underlying view with `:>` and name it by its
+  mathematical kind, such as `CCCC :> CartesianCat C`, rather than `has*`.
+  If that view is also an inherited class, register the same projection with
+  `#[export] Existing Instance CCCC`; `:>` alone does not register an instance.
+  Leave a blank line between a record field and the next documentation block.
