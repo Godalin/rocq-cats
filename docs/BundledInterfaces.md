@@ -3,11 +3,13 @@
 # 打包接口与底层视图
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
-classifies all 87 class/record interfaces at baseline `5d87331`, including
-the structural naming and inheritance findings after the CCC changes.
+started with all 87 class/record interfaces at baseline `5d87331`. Its
+inventory now includes 89 interfaces after Magma/Semigroup extraction,
+alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-分类全部 87 个类／记录接口，并记录 CCC 修改后的结构命名与继承问题。
+起初分类全部 87 个类／记录接口；清单现包含抽取原群／半群后的 89 个接口，
+并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
 in one class, exposing a single coercion to `Functor`. The first follow-up
@@ -186,7 +188,7 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
 | [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
 | [ETCS](../theories/ETCS/Core.v) | `ETCS → CCC → CartesianCat → Cat` | One `ETCSC` parent shares all inherited choices; terminal-dependent fields use that same terminal / 唯一 `ETCSC` 父结构共享继承选择，依赖终对象的字段使用同一终对象 |
-| [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `Group → Monoid → SetC → Type`; the parent remains an inherited instance / 群经幺半群、广集到载体类型，父结构仍是继承实例 | Implemented in the computational-model continuation below, reusing the stored parent and named setoid / 已在下述计算模型后续工作中实现，复用保存的父结构及具名广集 |
+| [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v), [Semigroup](../theories/Algebra/Semigroup/Core.v), [Magma](../theories/Algebra/Magma/Core.v) | `Group → Monoid → Semigroup → Magma → SetC → Type`; each parent is an inherited instance / 群经幺半群、半群、原群、广集到载体类型，各父结构均为继承实例 | Implemented in the algebra hierarchy slice below, sharing one multiplication and named setoid / 已在下述代数层级批次中实现，共享唯一乘法及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
 | [HasLimitsOfShape](../theories/Cat/Limit/Core.v), [HasFiniteHomCover](../theories/Cat/Shape/Finite.v), [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | Inherited structures depend on diagrams, endpoints or horn indices / 继承结构依赖图式、端点或 horn 索引 | Use instance inheritance; no single uniform carrier conversion is needed / 使用实例继承，无须统一载体转换 |
@@ -352,22 +354,30 @@ PDF 仍由集成批次统一导出。
 
 The continuation on `monoidal-cat-view`, following `3a47f38`, applies the
 same design to the algebraic foundations of the computational models.
-[Monoid M](../theories/Algebra/Monoid/Core.v) has the computed field
-`MonoidS :> SetC := M`. The first hierarchy-normalization slice now makes
+[Monoid M](../theories/Algebra/Monoid/Core.v) originally had the computed
+field `MonoidS :> SetC := M`. The algebra slice below moves that view to
+[Magma](../theories/Algebra/Magma/Core.v) as `MagmaS :> SetC := M`, and
+stores the intermediate parents as `MonoidSG :> Semigroup M` and
+`SemigroupM :> Magma M`. The first hierarchy-normalization slice makes
 [Group G](../theories/Algebra/Group/Core.v) expose its parent directly as
 `GroupM :> Monoid G`, with `Existing Instance GroupM` for inherited search.
-The unique chain remains `Group → Monoid → SetC → Type`; the chosen
+The unique chain is now `Group → Monoid → Semigroup → Magma → SetC → Type`;
+the chosen
 algebraic operations and carrier are shared. The original continuation had
 26 field coercions and three explicit coercion commands; the current
 hierarchy uses the direct parent field instead of the separate group
 coercion command.
 
 `monoidal-cat-view` 在 `3a47f38` 之后的后续工作，将同样的设计应用到计算
-模型的代数基础。[Monoid M](../theories/Algebra/Monoid/Core.v) 具有计算字段
-`MonoidS :> SetC := M`。首批层级规范化现使
+模型的代数基础。[Monoid M](../theories/Algebra/Monoid/Core.v) 最初具有计算字段
+`MonoidS :> SetC := M`。下述代数批次将此视图移至
+[Magma](../theories/Algebra/Magma/Core.v)，名为 `MagmaS :> SetC := M`，
+并以 `MonoidSG :> Semigroup M`、`SemigroupM :> Magma M` 保存中间父结构。
+首批层级规范化使
 [Group G](../theories/Algebra/Group/Core.v) 直接以 `GroupM :> Monoid G`
 暴露父结构，并通过 `Existing Instance GroupM` 支持继承搜索。唯一链仍为
-`Group → Monoid → SetC → Type`，共享选定代数运算及载体。最初的后续工作有
+`Group → Monoid → Semigroup → Magma → SetC → Type`，共享选定代数运算及
+载体。最初的后续工作有
 26 个字段强制转换、三个显式转换命令；当前层级以直接父字段替换群的单独
 转换命令。
 
@@ -580,21 +590,23 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-spellings after the first hierarchy-normalization slice; the counts are
-unchanged. It inventories every declaration, checks their parameter/field
+hierarchy slices and now covers 283 modules, 62 classes and 27 records.
+It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
 such as `Cone`, `iso`, `NatIso`, `is_monad`, `is_monoid_object` and
 `HasLeftDivision`. It does not audit every proof body. The algebra hierarchy
-example from the discussion was a temporary example; no Magma or Semigroup
-interface has been added to the library.
+example from the discussion was temporary; the final algebra slice below
+implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表名称跟随首批层级规范化后的拼写，数量保持不变。清单覆盖
+类及 27 个记录。下表跟随层级批次更新，现覆盖 283 个模块、62 个类及 27 个
+记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
-讨论中的代数层级属于临时示例；库里尚未加入 Magma 或半群接口。
+讨论中的代数层级起初属于临时示例；下述最后一个代数批次将原群与半群及其
+实际客户端加入库中。
 
 ### Naming by interface role
 
@@ -650,8 +662,8 @@ and opposite-based dual constructions.
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
 | `Cat/` | 140 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
-| `Algebra/` | 7 | Monoid/group cores depend on sets; categories/actions add category dependencies / 幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
-| `Instance/` | 78 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
+| `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
 | `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
@@ -671,7 +683,9 @@ selected setoid terminal/product/CCC models remain separate.
 ```mermaid
 flowchart LR
   Group -->|GroupM| Monoid
-  Monoid -->|MonoidS, computed| SetC
+  Monoid -->|MonoidSG| Semigroup
+  Semigroup -->|SemigroupM| Magma
+  Magma -->|MagmaS, computed| SetC
   SetC -->|carrier| Type
   ETCS -->|ETCSC| CCC
   CCC -->|CCCC| CartesianCat
@@ -711,7 +725,7 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 | 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
 | 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | Implemented in the first slice; the named category, selected tensor and `MonoidalC` view are retained / 首批已实施，保留具名范畴、选定张量及 `MonoidalC` 视图 |
 | 3 | [ETCS](../theories/ETCS/Core.v) now stores `ETCSC :> CCC C` / ETCS 现保存唯一 CCC 父结构 | Implemented in the ETCS slice; classifier, well-pointedness and NNO use its inherited terminal, with no concrete ETCS bundle assembly to migrate / ETCS 批次已实施，分类子、良点性与自然数对象使用继承终对象；现无完整具体 ETCS 装配需要迁移 |
-| 4 | [Monoid](../theories/Algebra/Monoid/Core.v) directly stores multiplication and associativity / 幺半群直接保存乘法及结合律 | Magma and Semigroup are absent intermediate theories. Extract them with useful weak clients; the temporary discussion example is not an implementation / Magma 与半群是尚缺的中间理论，可结合实际较弱客户端抽取；临时讨论示例不是现有实现 |
+| 4 | [Monoid](../theories/Algebra/Monoid/Core.v) inherits [Semigroup](../theories/Algebra/Semigroup/Core.v), which inherits [Magma](../theories/Algebra/Magma/Core.v) / 幺半群继承半群，半群继承原群 | Implemented in the algebra slice with weaker multiplication maps, composition laws, Boolean and endomorphism models / 代数批次已实施，包含较弱前提的乘法映射、复合律、布尔及自态射模型 |
 | 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/ETCS/Core.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
 | 6 | [IsGroupoid](../theories/Cat/Groupoid/Core.v) is an inverse-witness interface on a fixed category / 是固定范畴上的逆见证接口 | Keep its current fixed-data role unless choosing a public `GroupoidCat` entry; any such migration must preserve inverses and setoid laws / 若要改为公共 `GroupoidCat` 入口，须联动保留逆及广集定律；当前固定数据职责有其用途 |
 | 7 | [CwF](../theories/DTT/CwF.v), [Comprehension](../theories/Cat/Comprehension.v), and [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) have different primary views/coherence data / 各自有不同主要视图或相干数据 | Keep CwF's type-and-term functor view; choose a comprehension view only with a client; strictness stays relative to specified 1-cell equality and comparison / 保留 CwF 的类型与项函子视图，理解结构的视图结合客户端决定，严格性保留指定一胞相等及比较 |
@@ -775,7 +789,9 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | Interface / 接口 | Declaration / 声明 | Role / 职责 |
 | --- | --- | --- |
 | [Group](../theories/Algebra/Group/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [Magma](../theories/Algebra/Magma/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [Semigroup](../theories/Algebra/Semigroup/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Adjunction](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [ApplicativeAp](../theories/Cat/Applicative/Application.v) | `Class` | Computational structures / 计算结构 |
 | [Applicative](../theories/Cat/Applicative/Core.v) | `Class` | Computational structures / 计算结构 |
@@ -983,3 +999,91 @@ session. Magma/Semigroup extraction remains a separate subsequent task.
 严格双语 HTML 每种语言生成 278 个模块，检查 561 页的链接与锚点，并核对
 两种语言的 ETCS 接口页面。批次 PDF 导出及 `typeprop` 集成仍由集成会话
 负责。Magma／半群抽取仍是单独的后续任务。
+
+## Algebra hierarchy slice
+
+## 代数层级批次
+
+The user-approved serial continuation starts from `c3fa956` on
+`monoidal-cat-view`. [Magma](../theories/Algebra/Magma/Core.v) now stores
+one respectful multiplication and computes `MagmaS :> SetC := M`.
+[Semigroup](../theories/Algebra/Semigroup/Core.v) stores
+`SemigroupM :> Magma S` and adds associativity.
+[Monoid](../theories/Algebra/Monoid/Core.v) stores
+`MonoidSG :> Semigroup M` and adds only a two-sided unit; `SG` names the
+semigroup parent distinctly from the setoid suffix `S`. Both parent
+projections are exported as inherited instances. The group parent stays
+`GroupM :> Monoid G`. Multiplication, its preservation proof and the
+carrier are never duplicated along this chain.
+
+用户授权的串行后续从 `monoidal-cat-view` 上的 `c3fa956` 开始。
+[Magma](../theories/Algebra/Magma/Core.v) 现保存唯一保相等乘法，并计算
+`MagmaS :> SetC := M`；[Semigroup](../theories/Algebra/Semigroup/Core.v)
+保存 `SemigroupM :> Magma S` 并增加结合律；
+[Monoid](../theories/Algebra/Monoid/Core.v) 保存
+`MonoidSG :> Semigroup M`，只增加双侧单位元。`SG` 区分半群父结构与广集
+后缀 `S`。两个父投影均导出为继承实例；群父结构仍为
+`GroupM :> Monoid G`。沿此链不重复保存乘法、保相等证明或载体。
+
+The moved operations are `magma_mul`, `magma_mul_proper`,
+`magma_mul_l_resp` and `magma_mul_r_resp`; associativity is now
+`semigroup_assoc`. Left/right multiplication maps need only a magma and
+respect their fixed factors pointwise. The semigroup layer proves their
+composition and left/right commutation laws without assuming a unit or
+commutative multiplication. Existing `monoid_scope` clients retain their
+multiplication/unit notation; `magma_scope` exposes the same operation
+without requiring a monoid. No compatibility aliases retain the former
+stronger operation names.
+
+移动后的运算名为 `magma_mul`、`magma_mul_proper`、`magma_mul_l_resp` 与
+`magma_mul_r_resp`，结合律现名为 `semigroup_assoc`。左／右乘映射只需要
+原群，并逐点保持固定因子的相等。半群层证明它们的复合与左右交换律，不要求
+单位元或乘法交换律。已有 `monoid_scope` 客户端保留乘法／单位元记号，
+`magma_scope` 则在不要求幺半群的情况下提供同一运算。不为原先带较强结构
+名称的运算保留兼容别名。
+
+The Boolean model explicitly builds magma, semigroup, monoid and group in
+that order. [EndMagma](../theories/Algebra/Magma/Category.v) and
+[EndSemigroup](../theories/Algebra/Semigroup/Category.v) isolate respectful
+composition and associativity; `EndMonoid` adds identities to that same
+parent. Single-object categories, group laws and chain proofs consume the
+weaker operation/law fields. [Set magma multiplication](../theories/Instance/Set/Magma.v)
+packages the product-input map with only a named magma; `SetMonoidObject`
+reuses it. Concrete structures are still explicitly enabled.
+
+布尔模型按原群、半群、幺半群、群的次序显式构造。
+[EndMagma](../theories/Algebra/Magma/Category.v) 与
+[EndSemigroup](../theories/Algebra/Semigroup/Category.v) 分别抽出保相等复合
+与结合律，`EndMonoid` 为同一父结构增加恒等箭头。单对象范畴、群定律及箭头
+链证明使用较弱运算／定律字段。
+[广集原群乘法](../theories/Instance/Set/Magma.v) 只需具名原群，即将乘积输入的
+映射打包；`SetMonoidObject` 复用此构造。具体结构仍须显式启用。
+
+With the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
+Dune 3.23.1), `dune build @all @runtest @install` passed, including the
+unchanged concrete computation regressions. All 89 temporary
+`Print Assumptions` checks reported `Closed under the global context`.
+They cover the entire inheritance chain, both strict carrier/equality
+and hom/equality universe orders, multiple choices on one carrier, non-native setoid
+equality, transparent Boolean/model/endomorphism computations and
+negative checks against implicit concrete choices. Explicit nonassociative
+and unit-free examples validate the weaker interfaces.
+
+使用已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1），`dune build @all @runtest @install` 通过，包含保持原样的具体
+计算回归。89 项临时 `Print Assumptions` 检查均报告
+`Closed under the global context`，覆盖完整继承链、载体／相等及 Hom／相等的
+两种严格宇宙次序、同一载体的多套选择、非原生广集相等、布尔／模型／自态射透明计算，
+以及防止隐式选定具体结构的否定检查。显式非结合与无单位元示例验证较弱接口。
+
+Strict bilingual HTML generated 283 modules per language and checked
+links and anchors in 571 pages. Seven new or changed interface/model pages
+were inspected in both languages. The inventory covers all 89 declarations
+exactly once (62 classes and 27 records); all 29 `Has*` classes are retained.
+No permanent tests or existing test files were changed. Batch PDF export
+and `typeprop` integration remain with the integration session.
+
+严格双语 HTML 每种语言生成 283 个模块，检查 571 页的链接及锚点，并核对七个
+新增或修改接口／模型页面的英中文。清单恰好覆盖全部 89 个声明一次（62 个类
+及 27 个记录），保留全部 29 个 `Has*` 类。没有新增永久测试，也没有修改旧测试
+文件。批次 PDF 导出及 `typeprop` 集成仍由集成会话负责。

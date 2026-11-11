@@ -54,7 +54,7 @@ Proof.
   - reflexivity.
   - destruct i as [[] | i], j as [[] | j]; cbn [monoid_segment].
     + reflexivity.
-    + apply monoid_mul_proper.
+    + apply magma_mul_proper.
       * apply IH. apply tuple_tail_proper. exact H.
       * exact (H fin_first).
     + reflexivity.
@@ -107,7 +107,7 @@ Proof.
     + symmetry. apply monoid_unit_l.
     + symmetry. apply monoid_unit_r.
     + rewrite (IH (tuple_tail xs) fin_first j k).
-      * apply monoid_assoc.
+      * apply semigroup_assoc.
       * cbn. lia.
       * cbn. lia.
     + apply IH; cbn in *; lia.

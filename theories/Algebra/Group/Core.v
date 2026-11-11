@@ -33,11 +33,11 @@ Class Group (G : SetC)
 Arguments GroupM {_} _.
 
 (** Expose the same parent to instance search. The [:>] field already
-    supplies the unique chain through [Monoid] to [SetC] and its carrier;
-    this registration selects no further monoid. *)
+    supplies the unique chain through [Monoid], [Semigroup] and [Magma]
+    to [SetC] and its carrier; this registration selects no further monoid. *)
 
-(** 将同一父结构提供给实例搜索。[:>] 字段已给出经 [Monoid] 到 [SetC] 及其
-    载体的唯一转换链；此注册不再选择其他幺半群。 *)
+(** 将同一父结构提供给实例搜索。[:>] 字段已给出经 [Monoid]、[Semigroup]、
+    [Magma] 到 [SetC] 及其载体的唯一转换链；此注册不再选择其他幺半群。 *)
 
 #[export] Existing Instance GroupM.
 
@@ -100,7 +100,7 @@ Lemma group_inv_mul (x y : G)
   : (x ⋅ y)⁻¹ ≈S y⁻¹ ⋅ x⁻¹.
 Proof.
   symmetry. apply group_inv_unique.
-  rewrite monoid_assoc, <- (monoid_assoc x⁻¹), group_inv_l, monoid_unit_l.
+  rewrite semigroup_assoc, <- (semigroup_assoc x⁻¹), group_inv_l, monoid_unit_l.
   apply group_inv_l.
 Qed.
 

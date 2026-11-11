@@ -1,5 +1,6 @@
 From Cats Require Import
   Algebra.Monoid.Core
+  Instance.Set.Magma
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
@@ -48,20 +49,6 @@ Program Definition set_monoid_unit_resp
   |}.
 Next Obligation. intros x y H. reflexivity. Defined.
 
-(** The binary operation gives a respectful map from the product set. *)
-
-(** 二元运算给出从乘积集合出发的保相等映射。 *)
-
-Program Definition set_monoid_mul_resp
-  : M ×S M →r M
-  :=
-  {|func p := monoid_mul (fst p) (snd p)
-  |}.
-Next Obligation.
-  intros [x y] [x' y'] [Hx Hy].
-  exact (@monoid_mul_proper M HM x x' Hx y y' Hy).
-Defined.
-
 (** The existing algebra laws verify the internal diagrams. This does not
     duplicate the separate comparison with one-object categories. *)
 
@@ -72,21 +59,21 @@ Program Definition SetMonoidObject
   :=
   {|MonoidCarrier := M
   ; monoid_object_unit := set_monoid_unit_resp
-  ; monoid_object_mul := set_monoid_mul_resp
+  ; monoid_object_mul := set_magma_mul_resp HM
   |}.
 Next Obligation.
-  change (set_monoid_mul_resp ∘ (set_monoid_unit_resp × id) ≈ π2).
+  change (set_magma_mul_resp HM ∘ (set_monoid_unit_resp × id) ≈ π2).
   rewrite cross_η. intros [u x]. exact (monoid_unit_l x).
 Defined.
 Next Obligation.
-  change (set_monoid_mul_resp ∘ (id × set_monoid_unit_resp) ≈ π1).
+  change (set_magma_mul_resp HM ∘ (id × set_monoid_unit_resp) ≈ π1).
   rewrite cross_η. intros [x u]. exact (monoid_unit_r x).
 Defined.
 Next Obligation.
-  change (set_monoid_mul_resp ∘ (set_monoid_mul_resp × id) ≈
-    set_monoid_mul_resp ∘ (id × set_monoid_mul_resp) ∘
+  change (set_magma_mul_resp HM ∘ (set_magma_mul_resp HM × id) ≈
+    set_magma_mul_resp HM ∘ (id × set_magma_mul_resp HM) ∘
       (@product_assoc SetCat SetCat_HasProduct M M M).1).
-  rewrite !cross_η. intros [[x y] z]. exact (monoid_assoc x y z).
+  rewrite !cross_η. intros [[x y] z]. exact (semigroup_assoc x y z).
 Defined.
 
 End SetMonoid.

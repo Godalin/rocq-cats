@@ -1,5 +1,6 @@
 From Cats Require Export
-  Algebra.Monoid.Core.
+  Algebra.Monoid.Core
+  Algebra.Semigroup.Category.
 From Cats Require Import
   Cat.Core.
 
@@ -23,26 +24,26 @@ Program Definition MonoidCat (M : SetC) `{HM : !Monoid M}
   ; HomSet _ _ := M
   ; id _ := 1
   ; comp _ _ _ g f := g ⋅ f
-  ; comp_proper _ _ _ := monoid_mul_proper
+  ; comp_proper _ _ _ := magma_mul_proper
   ; comp_id_r _ _ := monoid_unit_r
   ; comp_id_l _ _ := monoid_unit_l
-  ; comp_assoc _ _ _ _ := monoid_assoc
+  ; comp_assoc _ _ _ _ := semigroup_assoc
   |}.
 
 Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
 
-(** Endomorphisms of any specified object form a monoid. This provides the
-    reverse construction in particular for a specified singleton category. *)
+(** Identities extend the existing endomorphism semigroup to a monoid.
+    This provides the reverse construction in particular for a specified
+    singleton category, without storing composition a second time. *)
 
-(** 任意指定对象的自态射构成幺半群；特别地，这给出指定单对象范畴的反向构造。 *)
+(** 恒等箭头将已有自态射半群扩展为幺半群；特别地，这给出指定单对象范畴的
+    反向构造，不重复保存复合。 *)
 
 Program Definition EndMonoid (C : Cat) (X : @Ob C)
   : Monoid (HomSet X X)
   :=
-  {|monoid_unit := @id X
-  ; monoid_mul g f := g ∘ f
-  ; monoid_mul_proper := comp_proper
+  {|MonoidSG := EndSemigroup C X
+  ; monoid_unit := @id X
   ; monoid_unit_l := comp_id_l
   ; monoid_unit_r := comp_id_r
-  ; monoid_assoc := comp_assoc
   |}.

@@ -38,7 +38,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `HasProduct C` provides a chosen product for every pair of objects.
   These interfaces retain Type-valued computational witnesses.
 - Keep a named ambient setoid/category as a parameter. At the first layer,
-  expose it with a computed field such as `MonoidS :> SetC := M` or
+  expose it with a computed field such as `MagmaS :> SetC := M` or
   `CartesianC :> Cat := C`, without storing another carrier or category.
 - Store each immediate parent once. When it is the unique underlying view,
   declare it with `:>` and a kind-based name such as `GroupM` or `CCCC`.

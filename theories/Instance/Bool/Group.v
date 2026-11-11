@@ -23,19 +23,39 @@ Program Definition BoolS
   ; carrier_setoid := eq_equivalence
   |}.
 
-(** The xor monoid, explicitly selected rather than globally registered. *)
+(** The xor magma, explicitly selected rather than globally registered. *)
 
-(** 异或幺半群须显式选择，不全局注册。 *)
+(** 异或原群须显式选择，不全局注册。 *)
+
+Program Definition BoolS_Magma
+  : Magma BoolS
+  :=
+  {|magma_mul := xorb
+  |}.
+
+(** Associativity extends that same operation to a semigroup. *)
+
+(** 结合律将同一运算扩展为半群。 *)
+
+Program Definition BoolS_Semigroup
+  : Semigroup BoolS
+  :=
+  {|SemigroupM := BoolS_Magma
+  |}.
+Next Obligation. destruct x, y, z; reflexivity. Defined.
+
+(** The xor monoid adds its unit to the selected semigroup. *)
+
+(** 异或幺半群为选定半群增加单位元。 *)
 
 Program Definition BoolS_Monoid
   : Monoid BoolS
   :=
-  {|monoid_unit := false
-  ; monoid_mul := xorb
+  {|MonoidSG := BoolS_Semigroup
+  ; monoid_unit := false
   |}.
 Next Obligation. destruct x; reflexivity. Defined.
 Next Obligation. destruct x; reflexivity. Defined.
-Next Obligation. destruct x, y, z; reflexivity. Defined.
 
 (** Inversion is the identity function, extending the same selected monoid. *)
 
