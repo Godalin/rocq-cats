@@ -23,7 +23,7 @@ Local Open Scope monoidal_scope.
 
 Section LaxMonoidTransport.
 Context {C D : Cat}
-    {MC : MonoidalCategory C} {MD : MonoidalCategory D}
+    {MC : MonoidalCat C} {MD : MonoidalCat D}
     (L : LaxMonoidalFunctor MC MD).
 Local Existing Instance MD.
 

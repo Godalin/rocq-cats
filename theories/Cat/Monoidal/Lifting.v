@@ -15,7 +15,7 @@ Local Open Scope monoidal_scope.
 
 Section Lifting.
 Context {C D : Cat}
-    {MC : MonoidalCategory C} {MD : MonoidalCategory D}
+    {MC : MonoidalCat C} {MD : MonoidalCat D}
     (L : LaxMonoidalFunctor MC MD).
 
 (** Combine two images, then apply the image of the operation. *)

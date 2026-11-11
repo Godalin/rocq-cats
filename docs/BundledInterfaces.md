@@ -150,7 +150,7 @@ audited individually.
 `ccc-equivalence-23` 任务，并补充上文的历史调查。所有声明的接口均已分类，
 继承字段和每个强制转换的来源均已核查；没有逐一审计证明体。
 
-[MonoidalCategory C](../theories/Cat/Monoidal/Core.v) now has the computed
+[MonoidalCat C](../theories/Cat/Monoidal/Core.v) now has the computed
 field `MonoidalC :> Cat := C`. It exposes the supplied category without
 storing another one or changing any constructor argument. Clients can write
 `Functor MC MD`, `@Ob MC` and `Functor (MC ×C MC) MC`. Tensor, associators,
@@ -159,7 +159,7 @@ Two monoidal structures on the same category remain distinct choices;
 recovering their category does not identify their tensor data. The conversion
 does not enable any concrete monoidal instance.
 
-[MonoidalCategory C](../theories/Cat/Monoidal/Core.v) 现通过计算字段
+[MonoidalCat C](../theories/Cat/Monoidal/Core.v) 现通过计算字段
 `MonoidalC :> Cat := C` 暴露给定范畴，不另存一个范畴，也不改变构造器参数。
 客户端可写 `Functor MC MD`、`@Ob MC`、`Functor (MC ×C MC) MC`。张量、
 结合子、单位子及其定律仍使用具名范畴和选定结构。同一范畴上的两个幺半结构
@@ -353,19 +353,23 @@ PDF 仍由集成批次统一导出。
 The continuation on `monoidal-cat-view`, following `3a47f38`, applies the
 same design to the algebraic foundations of the computational models.
 [Monoid M](../theories/Algebra/Monoid/Core.v) has the computed field
-`MonoidS :> SetC := M`. [Group G](../theories/Algebra/Group/Core.v) registers
-its existing `hasMonoid` projection as a coercion, keeping its `::` instance
-registration. The unique chain is `Group → Monoid → SetC → Type`.
-Constructor arguments and the chosen algebraic operations are unchanged.
-At this point the library has 26 field coercions and three explicit
-coercion commands; module and class/record counts remain unchanged.
+`MonoidS :> SetC := M`. The first hierarchy-normalization slice now makes
+[Group G](../theories/Algebra/Group/Core.v) expose its parent directly as
+`GroupM :> Monoid G`, with `Existing Instance GroupM` for inherited search.
+The unique chain remains `Group → Monoid → SetC → Type`; the chosen
+algebraic operations and carrier are shared. The original continuation had
+26 field coercions and three explicit coercion commands; the current
+hierarchy uses the direct parent field instead of the separate group
+coercion command.
 
 `monoidal-cat-view` 在 `3a47f38` 之后的后续工作，将同样的设计应用到计算
-模型的代数基础。[Monoid M](../theories/Algebra/Monoid/Core.v) 增加计算字段
-`MonoidS :> SetC := M`；[Group G](../theories/Algebra/Group/Core.v) 将已有
-`hasMonoid` 投影注册为强制转换，同时保留其 `::` 实例注册。唯一转换链为
-`Group → Monoid → SetC → Type`。构造器参数和选定代数运算均保持原样。
-此时全库共有 26 个字段强制转换、三个显式强制转换命令，模块及类／记录数不变。
+模型的代数基础。[Monoid M](../theories/Algebra/Monoid/Core.v) 具有计算字段
+`MonoidS :> SetC := M`。首批层级规范化现使
+[Group G](../theories/Algebra/Group/Core.v) 直接以 `GroupM :> Monoid G`
+暴露父结构，并通过 `Existing Instance GroupM` 支持继承搜索。唯一链仍为
+`Group → Monoid → SetC → Type`，共享选定代数运算及载体。最初的后续工作有
+26 个字段强制转换、三个显式转换命令；当前层级以直接父字段替换群的单独
+转换命令。
 
 Given `HG : Group G`, clients can pass `HG` where `Monoid G` or `SetC`
 is expected and bind `x : HG` as an element of the original setoid. For
@@ -498,8 +502,8 @@ candidates require separate interface decisions and clients.
 | [Adjunction F G](../theories/Cat/Adjunction.v) | Relates two specified functors; keep left/right views explicit / 关联两个指定函子，左右视图应显式访问 |
 | [HasCartesianLift P](../theories/Cat/Fibration.v), [HasFreeObjects U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
 | [HasDisplay](../theories/DTT/Display/Core.v), [HasContextExtension and CwF](../theories/DTT/CwF.v), [HasContextRepresentation](../theories/DTT/Context/Representation.v) | Describe interchangeable presentations over a fixed presheaf/family functor; CwF already supplies the complete bundled object / 描述固定预层／族函子上的可互换呈现，完整打包对象已有 CwF |
-| [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `Group` inherits its monoid with `::`; [SetMonoidObject](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
-| [MonoidalCategory](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
+| [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `GroupM :>` and its instance registration share one monoid; [SetMonoidObject](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
+| [MonoidalCat](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
 | `HasTerminal`, products, coproducts, exponentials, (co)equalizers, pullbacks/pushouts, [HasLimit and HasLimitsOfShape](../theories/Cat/Limit/Core.v), [colimit interfaces](../theories/Cat/Colimit/Core.v) | Choose constructions for fixed categories/diagrams; their derived functors remain derived / 为固定范畴／图式选择构造，其诱导函子仍是派生构造 |
 | [HasFiniteCover](../theories/Set/Finite.v), [finite generators/covers](../theories/Cat/Shape/Finite.v), [horn fillers](../theories/Instance/Set/Simplicial/Horn.v), [two-horn fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v), [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | Additional evidence or choices for fixed sets/categories/simplicial objects / 固定集合、范畴或单纯对象上的额外证据或选择 |
 | [ArrowHom](../theories/Cat/Arrow/Core.v), [CommaHom](../theories/Cat/Comma/Core.v), [ContextMap](../theories/DTT/Comprehension.v) | A commuting square retains two distinct side maps; choosing one as its universal arrow view would hide part of its structure / 交换方形保留两条不同侧边，任取一条作为通用底层箭头会遮蔽其结构 |
@@ -574,18 +578,21 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 ## 全库结构与命名审计
 
-This audit reads baseline `5d87331` on `monoidal-cat-view`: 278 theory
-modules, 60 classes and 27 records. It inventories every declaration,
-checks their parameter/field roles and coercion declarations, and inspects
+The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
+theory modules, 60 classes and 27 records. The inventory below follows the
+spellings after the first hierarchy-normalization slice; the counts are
+unchanged. It inventories every declaration, checks their parameter/field
+roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
 such as `Cone`, `iso`, `NatIso`, `is_monad`, `is_monoid_object` and
 `HasLeftDivision`. It does not audit every proof body. The algebra hierarchy
 example from the discussion was a temporary example; no Magma or Semigroup
 interface has been added to the library.
 
-本次审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。清单覆盖每个声明，核对参数／字段职责、强制转换声明及主要
-继承客户端；也检查通过定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
+原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
+类及 27 个记录。下表名称跟随首批层级规范化后的拼写，数量保持不变。清单覆盖
+每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
+定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
 讨论中的代数层级属于临时示例；库里尚未加入 Magma 或半群接口。
 
@@ -620,16 +627,18 @@ present related mathematics with different API roles.
 也不能据此假定证明无关性。公共结构包与固定数据上的接口可以表达相关数学，
 同时承担不同的 API 职责。
 
-This audit records the structural-name rule and the candidates below. It
-makes no mathematical-source rename. Extending prefix removal to the 29
-chosen-construction classes is a separate naming-scope decision: names
-must reflect whether the interface chooses one object, an indexed family,
-or a compatible operation, and the dual constructions must stay shared.
+The approved convention retains `Has*` for construction availability and
+its selected witnesses. `HasProduct C` is the appropriate name for products
+provided for every object pair. Complete structures and their primary
+parent views use direct structural names. The first application below
+changes the group parent and the monoidal category name; all 29 `Has*`
+class names remain unchanged, together with their computational content
+and opposite-based dual constructions.
 
-本次审计记录结构直接命名的规则及下述候选，没有修改数学源码。是否进一步
-为全部 29 个选定构造类去掉前缀，属于另一项命名范围决定：名称需要表达接口
-选择的是单个对象、带索引的构造族，还是相容运算，并保持对偶构造共用底层
-实现。
+已确认的规范保留 `Has*` 表达相应构造的可用性及选定见证。`HasProduct C`
+为每对对象提供积，名称合理。完整结构及其主要父视图直接使用结构名。
+下述首批实施修改群父结构及幺半范畴名称；全部 29 个 `Has*` 类名、计算内容
+以及基于反范畴的对偶构造均保持原样。
 
 ### Existing layers and primary views
 
@@ -661,12 +670,12 @@ selected setoid terminal/product/CCC models remain separate.
 
 ```mermaid
 flowchart LR
-  Group -->|hasMonoid, current| Monoid
+  Group -->|GroupM| Monoid
   Monoid -->|MonoidS, computed| SetC
   SetC -->|carrier| Type
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
-  MonoidalCategory -->|MonoidalC, computed| Cat
+  MonoidalCat -->|MonoidalC, computed| Cat
   StrongMonad -->|StrongMonadM| Monad
   Monad -->|MonadF| Functor
   CCCFunctor -->|CCCF| CartesianFunctor
@@ -698,11 +707,11 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 
 | Priority / 次序 | Evidence / 证据 | Proposed treatment / 建议处理 |
 | --- | --- | --- |
-| 1 | [Group](../theories/Algebra/Group/Core.v) stores its primary monoid as `hasMonoid ::` and adds a separate coercion / 群将主要幺半群视图写成 `hasMonoid ::` 再单独注册转换 | Use `GroupM :> Monoid G`, explicitly register that parent for instance search, and update model constructors and clients together / 使用 `GroupM :> Monoid G`，显式注册父实例，并同步模型构造及客户端 |
-| 2 | [MonoidalCategory](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) use different category suffixes / 两者的范畴名称后缀不一致 | Consider the public name `MonoidalCat` in one bounded rename; keep its existing named category and `MonoidalC` view / 可单独统一为 `MonoidalCat`，保留具名范畴及 `MonoidalC` 视图 |
+| 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
+| 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | Implemented in the first slice; the named category, selected tensor and `MonoidalC` view are retained / 首批已实施，保留具名范畴、选定张量及 `MonoidalC` 视图 |
 | 3 | [ETCS](../theories/ETCS/Core.v) repeats terminal, product and exponential fields instead of storing a CCC parent / ETCS 重复保存终对象、积与指数字段，没有 CCC 父结构 | Store one explicit CCC parent and index classifier, well-pointedness and NNO by its inherited terminal; first check all existing model assemblies / 保存一个显式 CCC 父结构，将分类子、良点性与自然数对象关联到继承终对象，先核对已有模型装配 |
 | 4 | [Monoid](../theories/Algebra/Monoid/Core.v) directly stores multiplication and associativity / 幺半群直接保存乘法及结合律 | Magma and Semigroup are absent intermediate theories. Extract them with useful weak clients; the temporary discussion example is not an implementation / Magma 与半群是尚缺的中间理论，可结合实际较弱客户端抽取；临时讨论示例不是现有实现 |
-| 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) is a natural tensorial map with coherence; [HasAxiomChoice](../theories/ETCS/Core.v) chooses right inverses of epimorphisms / 前者给出带相干律的自然张量强度，后者选择满态射右逆 | If chosen-operation classes are renamed too, `TensorialStrength` and `EpiSplitting` are semantic candidates; preserve all choices and assumptions / 若也改选定运算类，可考虑 `TensorialStrength`、`EpiSplitting` 等语义名称，保留所有选择和前提 |
+| 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/ETCS/Core.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
 | 6 | [IsGroupoid](../theories/Cat/Groupoid/Core.v) is an inverse-witness interface on a fixed category / 是固定范畴上的逆见证接口 | Keep its current fixed-data role unless choosing a public `GroupoidCat` entry; any such migration must preserve inverses and setoid laws / 若要改为公共 `GroupoidCat` 入口，须联动保留逆及广集定律；当前固定数据职责有其用途 |
 | 7 | [CwF](../theories/DTT/CwF.v), [Comprehension](../theories/Cat/Comprehension.v), and [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) have different primary views/coherence data / 各自有不同主要视图或相干数据 | Keep CwF's type-and-term functor view; choose a comprehension view only with a client; strictness stays relative to specified 1-cell equality and comparison / 保留 CwF 的类型与项函子视图，理解结构的视图结合客户端决定，严格性保留指定一胞相等及比较 |
 
@@ -752,16 +761,15 @@ opposite-based implementation of dual constructions.
 
 Every class and record is listed below exactly once. Group assignments
 identify API roles; they do not assert that law witnesses live in Prop.
-This audit changes documentation only. Its checks are declaration/count
-coverage, source-link resolution and direct-import inspection; the previous
-mathematical build and assumption results above belong to their stated
-commits. No new library build or proof-assumption result is claimed for this
-documentation audit.
+The original audit commit `1d29636` changed documentation only and checked
+declaration/count coverage, source links and direct imports. The first
+hierarchy application has its own validation below; earlier build and
+assumption results above belong to their stated stages.
 
 下表将每个类和记录恰好列出一次。分组表达 API 职责，不断言定律见证位于
-Prop。本次审计只修改文档，检查项目为声明／数量覆盖、源码链接及直接导入。
-上文数学构建与公理检查结果属于各自注明的提交；本次文档审计没有新增数学
-构建或证明假设检查的结论。
+Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆盖、源码链接及
+直接导入。首批层级实施的验证见下文；上文较早的构建与公理检查结果属于
+各自注明的阶段。
 
 | Interface / 接口 | Declaration / 声明 | Role / 职责 |
 | --- | --- | --- |
@@ -805,7 +813,7 @@ Prop。本次审计只修改文档，检查项目为声明／数量覆盖、源�
 | [HasLimitsOfShape](../theories/Cat/Limit/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [Monad](../theories/Cat/Monad/Core.v) | `Class` | Computational structures / 计算结构 |
 | [StrongMonad](../theories/Cat/Monad/Strength.v) | `Class` | Computational structures / 计算结构 |
-| [MonoidalCategory](../theories/Cat/Monoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [MonoidalCat](../theories/Cat/Monoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [HasStrength](../theories/Cat/Monoidal/Strength.v) | `Class` | Chosen construction / 选定构造 |
@@ -852,3 +860,67 @@ Prop。本次审计只修改文档，检查项目为声明／数量覆盖、源�
 | [LiftT](../theories/Set/Core.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
 | [HasFiniteCover](../theories/Set/Finite.v) | `Class` | Chosen construction / 选定构造 |
 | [FunS_resp](../theories/Set/Morphism.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+
+## First hierarchy-normalization slice
+
+## 首批层级规范化
+
+The user-approved serial slice starts from `1d29636` on `monoidal-cat-view`.
+[AGENTS.md](../AGENTS.md#structural-hierarchies) now records the hierarchy
+rules: mathematical structure names, retained `Has*` construction interfaces,
+named ambient parameters, computed carrier/category views, one stored
+immediate parent, `:>` with separate instance registration when needed,
+shared dependent choices and minimal assumptions in general theorems.
+
+用户授权的首批串行实施从 `monoidal-cat-view` 上的 `1d29636` 开始。
+[AGENTS.md](../AGENTS.md#structural-hierarchies) 现记录层级规范：数学结构名、
+保留的 `Has*` 构造接口、具名环境参数、计算性载体／范畴视图、唯一保存的直接
+父结构、`:>` 及按需单独注册实例、共享依赖选择，以及一般定理的最弱前提。
+
+[Group](../theories/Algebra/Group/Core.v) now declares
+`GroupM :> Monoid G` directly and exports the same projection as an
+inherited instance. The Boolean and endomorphism group constructors use
+the named parent field; existing inverse proofs and operations are reused.
+The monoidal category interface is now
+[MonoidalCat](../theories/Cat/Monoidal/Core.v), retaining the named category,
+computed `MonoidalC`, tensor, natural isomorphisms and coherence laws. All
+clients and documentation use that name. No compatibility aliases or new
+intermediate algebra theories are introduced in this slice.
+
+[Group](../theories/Algebra/Group/Core.v) 现直接声明 `GroupM :> Monoid G`，
+并将同一投影导出为继承实例。布尔群与自同态群的构造使用具名父字段，复用
+已有逆运算及证明。幺半范畴接口现名为
+[MonoidalCat](../theories/Cat/Monoidal/Core.v)，保留具名范畴、计算性
+`MonoidalC`、张量、自然同构及相干律；所有客户端和文档同步使用新名。
+本批没有添加兼容别名或新的代数中间理论。
+
+The existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
+Dune 3.23.1) passed `dune build @all @runtest @install`. Thirty-nine new
+and 286 existing temporary `Print Assumptions` checks all reported
+`Closed under the global context`. The new checks cover both strict
+carrier/equality and hom/equality universe orders, inherited monoid
+inference, two groups on the same carrier, five transparent Boolean/model
+reductions and explicitly enabled models. Existing Arrow, Applicative,
+State and cartesian/CCC checks were rerun after the rename.
+
+已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
+通过 `dune build @all @runtest @install`。新增 39 项及已有 286 项临时
+`Print Assumptions` 检查均报告 `Closed under the global context`。
+新增检查覆盖载体／相等与 Hom／相等的两种严格宇宙次序、继承幺半群推导、
+同一载体上的两个群、五项透明布尔／模型归约，以及具体模型的显式启用。
+已有 Arrow、Applicative、State 及笛卡尔／CCC 检查均在改名后重跑。
+
+Strict bilingual HTML generated 278 modules per language and checked
+links and anchors in 561 pages. The renamed monoidal interface, direct
+group parent and adjacent field explanations were checked in both
+languages. No permanent tests or shared test aliases were added; existing
+interface/universe tests only change references to the renamed interface.
+PDF export and updates to `typeprop` remain with the integration session.
+ETCS parent sharing is the next bounded slice; Magma/Semigroup extraction
+remains a later mathematical task with its own useful clients.
+
+严格双语 HTML 每种语言生成 278 个模块，检查 561 页的链接与锚点；改名后的
+幺半接口、直接群父结构及字段旁说明均已核对英中文。没有新增永久测试或
+共享测试别名，原有接口／宇宙测试仅更新被改名接口的引用。PDF 导出及
+`typeprop` 更新仍由集成会话负责。下一有限批次是 ETCS 父结构共享；
+Magma／半群抽取属于后续需要实际客户端的独立数学任务。

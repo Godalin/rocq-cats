@@ -24,7 +24,7 @@ Local Open Scope monoidal_scope.
 (** 固定载体、单位和乘法上的幺半群定律；此谓词可比较不同呈现，而不必量化
     数据可能不同的完整结构包。 *)
 
-Definition is_monoid_object {C : Cat} (MC : MonoidalCategory C)
+Definition is_monoid_object {C : Cat} (MC : MonoidalCat C)
     (A : @Ob C) (e : Hom (I⊗[MC]) A) (m : Hom (A ⊗ A) A)
   : Type
   := (m ∘ (e ⊗m id) ≈ λ⊗[A]) ∧
@@ -36,7 +36,7 @@ Definition is_monoid_object {C : Cat} (MC : MonoidalCategory C)
 
 (** 满足幺半群交换图表的选定载体及运算；强制转换暴露所在范畴中的载体对象。 *)
 
-Class MonoidObject {C : Cat} (MC : MonoidalCategory C)
+Class MonoidObject {C : Cat} (MC : MonoidalCat C)
   :=
   { MonoidCarrier :> @Ob C
   ; monoid_object_unit : Hom (I⊗[MC]) MonoidCarrier
@@ -64,7 +64,7 @@ Arguments monoid_object_assoc {_ _} _.
 
 (** 从选定幺半群对象中提取固定数据上的定律谓词。 *)
 
-Definition monoid_object_laws {C : Cat} {MC : MonoidalCategory C}
+Definition monoid_object_laws {C : Cat} {MC : MonoidalCat C}
     (A : MonoidObject MC)
   : is_monoid_object MC (MonoidCarrier A)
       (monoid_object_unit A) (monoid_object_mul A)
@@ -85,7 +85,7 @@ Notation "'m[' A ']'" := (monoid_object_mul A) : monoidal_scope.
     固定 [C] 上的幺半结构 [MC]，以保持单位和乘法定义同态，比较底层箭头，并构造恒等与复合同态。 *)
 
 Section MonoidMorphisms.
-Context {C : Cat} {MC : MonoidalCategory C}.
+Context {C : Cat} {MC : MonoidalCat C}.
 
 (** A homomorphism preserves the unit and multiplication. The commuting
     diagrams are Type-valued evidence, not an equality of structure records. *)
@@ -171,7 +171,7 @@ Context {C : Cat}.
 
 (** 幺半群对象及保持运算箭头组成的范畴；Hom 相等继承自 [C]，不比较证明字段。 *)
 
-Program Definition MonoidCat (MC : MonoidalCategory C)
+Program Definition MonoidCat (MC : MonoidalCat C)
   : Cat
   :=
   {|Ob := MonoidObject MC
@@ -191,7 +191,7 @@ Next Obligation. exact (comp_assoc f.1 g.1 h.1). Defined.
 
 (** 忘却幺半群的运算及同态的保持性证明。 *)
 
-Program Definition MonoidForgetF (MC : MonoidalCategory C)
+Program Definition MonoidForgetF (MC : MonoidalCat C)
   : Functor (MonoidCat MC) C
   :=
   {|F0 := MonoidCarrier
@@ -206,7 +206,7 @@ Next Obligation. reflexivity. Defined.
 
 (** 同态的相等本就只比较底层箭头，因此忘却函子忠实。 *)
 
-Lemma monoid_forget_faithful (MC : MonoidalCategory C)
+Lemma monoid_forget_faithful (MC : MonoidalCat C)
   : is_faithful (MonoidForgetF MC).
 Proof. intros A B f g H. exact H. Qed.
 

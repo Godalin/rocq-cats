@@ -18,8 +18,8 @@ Local Open Scope monoidal_scope.
     可逆，也不要求张量强度。 *)
 
 Section ConstantLax.
-Context {C D : Cat} (MC : MonoidalCategory C)
-    {MD : MonoidalCategory D} (A : MonoidObject MD).
+Context {C D : Cat} (MC : MonoidalCat C)
+    {MD : MonoidalCat D} (A : MonoidObject MD).
 
 (** The multiplication of [A] is the constant tensorator. Naturality
     follows because every source arrow maps to an identity. *)

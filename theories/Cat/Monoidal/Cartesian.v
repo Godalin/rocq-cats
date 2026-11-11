@@ -103,7 +103,7 @@ Defined.
 (** 有限积给出选定幺半结构；导入本模块不会为 [C] 注册默认幺半结构。 *)
 
 Program Definition CartesianMonoidal
-  : MonoidalCategory C
+  : MonoidalCat C
   :=
   {|tensorF := ProductF
   ; TensorUnit := 1

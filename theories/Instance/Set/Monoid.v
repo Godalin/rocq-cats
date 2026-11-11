@@ -18,7 +18,7 @@ From Cats Require Import
     不会全局选取这些结构。 *)
 
 Definition SetCartesianMonoidal
-  : MonoidalCategory SetCat
+  : MonoidalCat SetCat
   := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** ** Setoid Monoids as Monoid Objects

@@ -31,7 +31,7 @@ Local Open Scope monoidal_scope.
     将两个比较映射反向。 *)
 
 Class LaxMonoidalFunctor {C D : Cat}
-    (MC : MonoidalCategory C) (MD : MonoidalCategory D)
+    (MC : MonoidalCat C) (MD : MonoidalCat D)
   :=
   { LaxMonoidalF :> Functor C D
   ; lax_unit : Hom (I⊗[MD]) (LaxMonoidalF (I⊗[MC]))
@@ -75,7 +75,7 @@ Notation "'φ₂[' L ';' X ';' Y ']'" := (lax_tensorN L (X, Y))
     相同时的歧义。 *)
 
 Lemma lax_tensor_natural {C D : Cat}
-    {MC : MonoidalCategory C} {MD : MonoidalCategory D}
+    {MC : MonoidalCat C} {MD : MonoidalCat D}
     (L : LaxMonoidalFunctor MC MD)
     {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
   : φ₂[L; X'; Y'] ∘ (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L g)) ≈
@@ -90,7 +90,7 @@ Qed.
 
 (** 恒等 tensorator 的分量为恒等态射，不要求来源与目标函子记录相等。 *)
 
-Program Definition IdLaxTensorN {C : Cat} (MC : MonoidalCategory C)
+Program Definition IdLaxTensorN {C : Cat} (MC : MonoidalCat C)
   : (tensorF MC ∘F (IdF ×F IdF)) ⇒ (IdF ∘F tensorF MC)
   :=
   {|nt p := _
@@ -107,7 +107,7 @@ Defined.
 (** 每个幺半结构都给出须显式选择的 lax 恒等函子；导入本模块不会启用选定结构。 *)
 
 Program Definition IdF_LaxMonoidalFunctor {C : Cat}
-    (MC : MonoidalCategory C)
+    (MC : MonoidalCat C)
   : LaxMonoidalFunctor MC MC
   :=
   {|LaxMonoidalF := IdF

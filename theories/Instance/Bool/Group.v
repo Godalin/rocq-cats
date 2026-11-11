@@ -44,7 +44,7 @@ Next Obligation. destruct x, y, z; reflexivity. Defined.
 Program Definition BoolS_Group
   : Group BoolS
   :=
-  {|hasMonoid := BoolS_Monoid
+  {|GroupM := BoolS_Monoid
   ; group_inv x := x
   |}.
 Next Obligation. destruct x; reflexivity. Defined.

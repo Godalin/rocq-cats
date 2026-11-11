@@ -30,6 +30,35 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Bundle category-like data and laws in one `Class`, without a staging `*Data`
   record. Keep derived operations separate.
 
+## Structural hierarchies
+
+- Name complete mathematical structures directly, as in `Monoid`, `Group`,
+  `CartesianCat`, `MonoidalCat` and `CCC`. Keep `Has*` for the existence and
+  selection of the corresponding constructions on supplied data:
+  `HasProduct C` provides a chosen product for every pair of objects.
+  These interfaces retain Type-valued computational witnesses.
+- Keep a named ambient setoid/category as a parameter. At the first layer,
+  expose it with a computed field such as `MonoidS :> SetC := M` or
+  `CartesianC :> Cat := C`, without storing another carrier or category.
+- Store each immediate parent once. When it is the unique underlying view,
+  declare it with `:>` and a kind-based name such as `GroupM` or `CCCC`.
+  Reach weaker structures through that parent; add no direct bypass to an
+  ancestor and do not duplicate inherited operations or universal choices.
+- If the parent view must also support instance search, register the same
+  projection with `#[export] Existing Instance GroupM`; `:>` alone does not
+  register an inherited instance. Supplementary chosen structures/properties
+  use named `has*`/`is*` fields and `::`.
+- Tie dependent constructions to those same inherited choices. For example,
+  a CCC's exponentials use its cartesian parent's selected products.
+  General theorems retain the weakest sufficient hypotheses.
+- Select one primary view per interface; keep other presentations explicit.
+  A CwF's primary view is its type-and-term functor. Functors keep their
+  object-map coercion and use `fmap` for arrows.
+- Extract intermediate structures with reusable operations/laws and actual
+  clients. Deliver hierarchy changes and global renames in bounded,
+  coordinated steps, updating models, clients and bilingual documentation
+  together without unnecessary compatibility aliases.
+
 ## Code and naming
 
 - Write source documentation in coqdoc syntax: `(** ... *)`, `[term]` for
@@ -38,7 +67,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   second. Document each definition and public lemma where practical,
   explaining its mathematical role and important assumptions; keep routine
   laws concise. Leave a blank line after every source comment before the
-  following declaration or text.
+  following declaration or text, and between a record field and the next
+  documentation block.
 - Introduce every `Section` with a bilingual coqdoc title or opening prose,
   following the [section-opening requirements](docs/ExportRequirements.md#section-openings).
   Explain its local assumptions and the theory developed next; do not rely on
@@ -69,8 +99,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   symbols may express distinct meanings, such as `↣` for monomorphisms.
   Use `∏`/`∐` for indexed products/coproducts; reserve `Π` for Pi-types.
 - Category extensions take a named category parameter. Declare chosen
-  dependencies by name; use named `!Has*` constraints in clients. Bundle
-  inherited structures with `has*`/`is*` fields and `::`.
+  dependencies by name; use named `!Has*` constraints in clients. Primary
+  parents follow the structural-hierarchy rules; supplementary inherited
+  structures use `has*`/`is*` fields and `::`.
 - Expose a unique underlying function, functor or carrier with `:>` and use
   that coercion in clients. Keep competing views explicit; avoid ambiguous
   coercion paths. `::` registers inherited instances, not coercions.
@@ -191,8 +222,3 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   as in `arrow_context A Z f`. This exposes an ordinary partial application
   for `Proper`; a dependent context argument after the morphism can make
   rewriting search for unsupported `forall_relation` instances.
-- Declare the unique underlying view with `:>` and name it by its
-  mathematical kind, such as `CCCC :> CartesianCat C`, rather than `has*`.
-  If that view is also an inherited class, register the same projection with
-  `#[export] Existing Instance CCCC`; `:>` alone does not register an instance.
-  Leave a blank line between a record field and the next documentation block.

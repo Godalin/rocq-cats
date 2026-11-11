@@ -9,7 +9,7 @@ Local Open Scope computation_scope.
 (** * 带幺半上下文的纯计算 *)
 
 Section Pure.
-Context {C : Cat} `{MC : !MonoidalCategory C}.
+Context {C : Cat} `{MC : !MonoidalCat C}.
 
 (** The identity functor with left tensoring is an explicit pure model.
     Neither binary products nor symmetry are needed. *)

@@ -29,7 +29,7 @@ Program Definition MonoidCat_IsGroupoid (G : SetC) `{HG : !Group G}
 Program Definition EndGroup (C : Cat) `{HC : !IsGroupoid C} (X : @Ob C)
   : Group (HomSet X X)
   :=
-  {|hasMonoid := EndMonoid C X
+  {|GroupM := EndMonoid C X
   ; group_inv f := @groupoid_inv C HC X X f
   ; group_inv_l := @groupoid_inv_l C HC X X
   ; group_inv_r := @groupoid_inv_r C HC X X

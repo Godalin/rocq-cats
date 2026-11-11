@@ -20,7 +20,7 @@ Local Open Scope monoidal_scope.
     笛卡尔特化提供熟悉的 Haskell Arrow 运算。这不同于以箭头为对象的范畴。 *)
 
 Section Interface.
-Context (C K : Cat) `{MC : !MonoidalCategory C}.
+Context (C K : Cat) `{MC : !MonoidalCat C}.
 
 Class Arrow
   :=
@@ -113,7 +113,7 @@ Notation "'context[' A ';' Z ';' f ']'" := (arrow_context A Z f)
 Local Open Scope computation_scope.
 
 Section Derived.
-Context {C K : Cat} `{MC : !MonoidalCategory C} (A : Arrow C K MC).
+Context {C K : Cat} `{MC : !MonoidalCat C} (A : Arrow C K MC).
 
 (** Reindex the existing computation category by the pure object map. *)
 

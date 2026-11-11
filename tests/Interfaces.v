@@ -81,7 +81,7 @@ From Cats Require Import
 (** 导入笛卡尔模型不得自动选定默认幺半结构。 *)
 
 Fail Definition unchosen_set_monoidal
-  : MonoidalCategory SetCat
+  : MonoidalCat SetCat
   := ltac:(typeclasses eauto).
 
 From Cats Require Import

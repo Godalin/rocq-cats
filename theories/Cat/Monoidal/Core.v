@@ -78,7 +78,7 @@ Defined.
     五边形与三角形是固定端点的态射方程，不要求张量单位为终对象，也不要求
     张量为积。载体、相等及定律的大小由底层范畴和自然同构分别推导。 *)
 
-Class MonoidalCategory (C : Cat)
+Class MonoidalCat (C : Cat)
   :=
   (** The unique underlying category view is the supplied parameter. *)
 
@@ -143,7 +143,7 @@ Local Open Scope monoidal_scope.
     固定 [C] 上的幺半范畴结构，导出张量的保相等性及函子律，以及结合子和单位子的自然性与可逆性。 *)
 
 Section TensorLaws.
-Context {C : Cat} `{MC : !MonoidalCategory C}.
+Context {C : Cat} `{MC : !MonoidalCat C}.
 
 (** Tensoring arrows preserves the specified equality in both variables. *)
 

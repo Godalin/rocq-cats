@@ -19,19 +19,27 @@ Class Group (G : SetC)
 
   (** 选定幺半群同时作为继承实例和唯一底层视图，其广集视图继而恢复 [G]。 *)
 
-  { hasMonoid :: Monoid G
+  { GroupM :> Monoid G
+
+  (** The inverse operation is additional data on the same carrier. *)
+
+  (** 逆运算是同一载体上的额外数据。 *)
+
   ; group_inv : G → G
   ; group_inv_l x : group_inv x ⋅ x ≈S 1
   ; group_inv_r x : x ⋅ group_inv x ≈S 1
   }.
 
-(** Register the existing parent projection, retaining its instance role.
-    The single chain through [Monoid] reaches [SetC] and its carrier type. *)
+Arguments GroupM {_} _.
 
-(** 将已有父结构投影注册为强制转换，并保留其实例职责；唯一转换链经 [Monoid]
-    到达 [SetC] 及其载体类型。 *)
+(** Expose the same parent to instance search. The [:>] field already
+    supplies the unique chain through [Monoid] to [SetC] and its carrier;
+    this registration selects no further monoid. *)
 
-Coercion hasMonoid : Group >-> Monoid.
+(** 将同一父结构提供给实例搜索。[:>] 字段已给出经 [Monoid] 到 [SetC] 及其
+    载体的唯一转换链；此注册不再选择其他幺半群。 *)
+
+#[export] Existing Instance GroupM.
 
 Notation "x '⁻¹'" := (group_inv x)
   (at level 9) : monoid_scope.

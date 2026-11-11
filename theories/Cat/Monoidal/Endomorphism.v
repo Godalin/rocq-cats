@@ -66,7 +66,7 @@ Next Obligation. exact (@right_unitor_naturality B X X _ _ f). Defined.
     逆分量、自然性、五边形与三角形均从已有结构继承。 *)
 
 Program Definition EndoMonoidal
-  : MonoidalCategory (@HomCat B X X)
+  : MonoidalCat (@HomCat B X X)
   :=
   {|tensorF := @comp1F B X X X
   ; TensorUnit := 𝟙₁ X

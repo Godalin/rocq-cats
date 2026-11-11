@@ -14,7 +14,7 @@ Local Open Scope monad_scope.
 
     底层普通 Monad 保持不变。选定张量强度必须保持其单位和乘法，不要求交换性。 *)
 
-Class StrongMonad (C : Cat) (MC : MonoidalCategory C)
+Class StrongMonad (C : Cat) (MC : MonoidalCat C)
   :=
   (** The unique coercion exposes the existing ordinary monad. *)
 
@@ -55,7 +55,7 @@ Arguments strongmonad_unit {_ _} _ _ _.
 Arguments strongmonad_mul {_ _} _ _ _.
 
 Section Extension.
-Context {C : Cat} `{MC : !MonoidalCategory C} (M : StrongMonad C MC).
+Context {C : Cat} `{MC : !MonoidalCat C} (M : StrongMonad C MC).
 
 (** Extend an effectful arrow while retaining an ordinary tensor context. *)
 

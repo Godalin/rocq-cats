@@ -17,7 +17,7 @@ Local Open Scope computation_scope.
     构造直接使用指定张量强度，不假定积、对称性或交换性。 *)
 
 Section Kleisli.
-Context {C : Cat} `{MC : !MonoidalCategory C} (M : StrongMonad C MC).
+Context {C : Cat} `{MC : !MonoidalCat C} (M : StrongMonad C MC).
 
 (** Carry the ordinary left context through the computation's result. *)
 

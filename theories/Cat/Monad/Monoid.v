@@ -35,7 +35,7 @@ Definition BicatMonad (B : Bicat) (X : ObB B)
 (** 复合是自函子的张量，恒等函子是其单位。 *)
 
 Definition EndofunctorMonoidal (C : Cat)
-  : MonoidalCategory (Fct C C)
+  : MonoidalCat (Fct C C)
   := EndoMonoidal CatBicat C.
 
 (** Constructive equivalence of laws for the same [T], [η] and [μ]. The
