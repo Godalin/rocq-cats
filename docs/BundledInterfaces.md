@@ -2,6 +2,13 @@
 
 # 打包接口与底层视图
 
+The [current whole-library audit](#library-wide-structure-and-naming-audit)
+classifies all 87 class/record interfaces at baseline `5d87331`, including
+the structural naming and inheritance findings after the CCC changes.
+
+[当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
+分类全部 87 个类／记录接口，并记录 CCC 修改后的结构命名与继承问题。
+
 The lax monoidal interface now bundles its underlying functor and structure
 in one class, exposing a single coercion to `Functor`. The first follow-up
 from the library-wide survey now adds bundled cartesian and cartesian closed
@@ -494,7 +501,7 @@ candidates require separate interface decisions and clients.
 | [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `Group` inherits its monoid with `::`; [SetMonoidObject](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
 | [MonoidalCategory](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
 | `HasTerminal`, products, coproducts, exponentials, (co)equalizers, pullbacks/pushouts, [HasLimit and HasLimitsOfShape](../theories/Cat/Limit/Core.v), [colimit interfaces](../theories/Cat/Colimit/Core.v) | Choose constructions for fixed categories/diagrams; their derived functors remain derived / 为固定范畴／图式选择构造，其诱导函子仍是派生构造 |
-| [HasFiniteCover](../theories/Set/Finite.v), [finite generators/covers](../theories/Cat/Shape/Finite.v), [horn fillers](../theories/Instance/Set/Simplicial/Horn.v), [two-horn fillers](../theories/Instance/Set/Simplicial/Horn2.v), [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | Additional evidence or choices for fixed sets/categories/simplicial objects / 固定集合、范畴或单纯对象上的额外证据或选择 |
+| [HasFiniteCover](../theories/Set/Finite.v), [finite generators/covers](../theories/Cat/Shape/Finite.v), [horn fillers](../theories/Instance/Set/Simplicial/Horn.v), [two-horn fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v), [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | Additional evidence or choices for fixed sets/categories/simplicial objects / 固定集合、范畴或单纯对象上的额外证据或选择 |
 | [ArrowHom](../theories/Cat/Arrow/Core.v), [CommaHom](../theories/Cat/Comma/Core.v), [ContextMap](../theories/DTT/Comprehension.v) | A commuting square retains two distinct side maps; choosing one as its universal arrow view would hide part of its structure / 交换方形保留两条不同侧边，任取一条作为通用底层箭头会遮蔽其结构 |
 | [Graph](../theories/Graph/Core.v), [Cat](../theories/Cat/Core.v), [Bicat](../theories/Cat/Bicategory/Core.v), [Sieve](../theories/Cat/Sieve.v) | Existing foundational or indexed structures have no competing stored underlying functor to remove; a new coercion requires a separate inference/use-case justification / 不存在需要消除的重复底层函子，新强制转换须另有推断及使用需求依据 |
 
@@ -562,3 +569,286 @@ context`. These are local results on the task branch.
 STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块，并检查 507 页。
 全部七项适配器、恒等／复合构造及继承实例的临时 `Print Assumptions` 检查
 均报告 `Closed under the global context`。这些是任务分支的本地结果。
+
+## Library-wide structure and naming audit
+
+## 全库结构与命名审计
+
+This audit reads baseline `5d87331` on `monoidal-cat-view`: 278 theory
+modules, 60 classes and 27 records. It inventories every declaration,
+checks their parameter/field roles and coercion declarations, and inspects
+principal inheritance clients. It also considers definition-based interfaces
+such as `Cone`, `iso`, `NatIso`, `is_monad`, `is_monoid_object` and
+`HasLeftDivision`. It does not audit every proof body. The algebra hierarchy
+example from the discussion was a temporary example; no Magma or Semigroup
+interface has been added to the library.
+
+本次审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
+类及 27 个记录。清单覆盖每个声明，核对参数／字段职责、强制转换声明及主要
+继承客户端；也检查通过定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
+`is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
+讨论中的代数层级属于临时示例；库里尚未加入 Magma 或半群接口。
+
+### Naming by interface role
+
+### 按接口职责命名
+
+A public mathematical structure uses its mathematical name: `Monoid`,
+`Group`, `CartesianCat`, `CCC`, `Monad`, `Applicative`, `Arrow` or `CwF`.
+A named ambient parameter fixes its carrier or category; a computed view
+can expose that same parameter. A stored primary parent uses a kind-based
+projection and `:>`, with a separate inherited-instance registration when
+needed. `CCCC :> CartesianCat C` is the implemented category example.
+
+公共数学结构直接使用数学结构名，例如 `Monoid`、`Group`、`CartesianCat`、
+`CCC`、`Monad`、`Applicative`、`Arrow` 或 `CwF`。具名环境参数固定载体或
+范畴，计算视图可以暴露同一参数。保存的主要父结构使用按数学种类命名的投影
+及 `:>`，需要时另外注册继承实例。`CCCC :> CartesianCat C` 是已实现的
+范畴例子。
+
+The existing `Has*` interfaces choose objects, operations or families of
+witnesses over supplied data. All 29 such classes retain computational
+data; `HasProduct C`, for example, chooses products for all pairs, not just
+one product object. `Is*` and `is_*` interfaces can also retain Type-valued
+witnesses. Prefixes do not distinguish data from propositions or justify
+proof irrelevance. A public bundle and an interface on fixed data can
+present related mathematics with different API roles.
+
+已有 `Has*` 接口在给定数据上选择对象、运算或见证族。全部 29 个这类接口都
+保留计算数据；例如 `HasProduct C` 为每对对象选择积，并非只表示一个积对象。
+`Is*` 和 `is_*` 接口也可能保留 Type 值见证。前缀不能用来区分数据与命题，
+也不能据此假定证明无关性。公共结构包与固定数据上的接口可以表达相关数学，
+同时承担不同的 API 职责。
+
+This audit records the structural-name rule and the candidates below. It
+makes no mathematical-source rename. Extending prefix removal to the 29
+chosen-construction classes is a separate naming-scope decision: names
+must reflect whether the interface chooses one object, an indexed family,
+or a compatible operation, and the dual constructions must stay shared.
+
+本次审计记录结构直接命名的规则及下述候选，没有修改数学源码。是否进一步
+为全部 29 个选定构造类去掉前缀，属于另一项命名范围决定：名称需要表达接口
+选择的是单个对象、带索引的构造族，还是相容运算，并保持对偶构造共用底层
+实现。
+
+### Existing layers and primary views
+
+### 已有层次与主要视图
+
+| Layer / 层次 | Modules / 模块数 | Observed boundary / 已核对边界 |
+| --- | ---: | --- |
+| `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
+| `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
+| `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
+| `Cat/` | 140 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Algebra/` | 7 | Monoid/group cores depend on sets; categories/actions add category dependencies / 幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
+| `Instance/` | 78 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
+| `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
+| `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
+
+Direct import inspection confirms that `Instance.Set.Core` depends only
+on `Cat.Core`; the three STLC, DTT and ETCS directions do not import one
+another. Some category theories use the setoid category to express natural
+hom correspondences and presheaves, and chains/shapes use the natural-number
+order model. These imports serve named mathematical constructions; the
+selected setoid terminal/product/CCC models remain separate.
+
+直接导入检查确认 `Instance.Set.Core` 只依赖 `Cat.Core`，STLC、DTT 与 ETCS
+三个方向之间没有相互导入。部分范畴理论使用广集范畴表达自然 Hom 对应与
+预层，链与形状则使用自然数序模型。这些导入服务于具名数学构造；广集的选定
+终对象、积及 CCC 模型仍分别提供。
+
+```mermaid
+flowchart LR
+  Group -->|hasMonoid, current| Monoid
+  Monoid -->|MonoidS, computed| SetC
+  SetC -->|carrier| Type
+  CCC -->|CCCC| CartesianCat
+  CartesianCat -->|CartesianC, computed| Cat
+  MonoidalCategory -->|MonoidalC, computed| Cat
+  StrongMonad -->|StrongMonadM| Monad
+  Monad -->|MonadF| Functor
+  CCCFunctor -->|CCCF| CartesianFunctor
+  CartesianFunctor -->|CartesianF| Functor
+  Applicative -->|ApplicativeLax| LaxMonoidalFunctor
+  LaxMonoidalFunctor -->|LaxMonoidalF| Functor
+  ApplicativeOps -->|OpsF| Functor
+  ApplicativeAp -->|ApF| Functor
+  Arrow -->|ArrowF| Functor
+  CwF -->|TyTmF| Functor
+  Functor -->|F0| ObjectMap
+```
+
+Arrows in this diagram are current views, including computed views; they
+are not claims that every node is an inherited typeclass instance. In
+particular, a `:>` field does not by itself register its parent for instance
+search. `Cat` has no coercion to its object type. A monoid object's carrier
+has a dependent target `Ob C`, which does not automatically create a
+further coercion to `SetC` when `C` specializes to the setoid category.
+
+图中的箭头都是当前视图，包含计算视图，并不声称每个节点都已注册为继承
+类型类实例；特别是 `:>` 本身不会注册父类实例。`Cat` 没有到对象类型的强制
+转换。幺半群对象载体的目标是依赖类型 `Ob C`，当 `C` 特化为广集范畴时，也
+不会自动产生到 `SetC` 的后续转换。
+
+### Concrete design findings
+
+### 具体设计问题
+
+| Priority / 次序 | Evidence / 证据 | Proposed treatment / 建议处理 |
+| --- | --- | --- |
+| 1 | [Group](../theories/Algebra/Group/Core.v) stores its primary monoid as `hasMonoid ::` and adds a separate coercion / 群将主要幺半群视图写成 `hasMonoid ::` 再单独注册转换 | Use `GroupM :> Monoid G`, explicitly register that parent for instance search, and update model constructors and clients together / 使用 `GroupM :> Monoid G`，显式注册父实例，并同步模型构造及客户端 |
+| 2 | [MonoidalCategory](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) use different category suffixes / 两者的范畴名称后缀不一致 | Consider the public name `MonoidalCat` in one bounded rename; keep its existing named category and `MonoidalC` view / 可单独统一为 `MonoidalCat`，保留具名范畴及 `MonoidalC` 视图 |
+| 3 | [ETCS](../theories/ETCS/Core.v) repeats terminal, product and exponential fields instead of storing a CCC parent / ETCS 重复保存终对象、积与指数字段，没有 CCC 父结构 | Store one explicit CCC parent and index classifier, well-pointedness and NNO by its inherited terminal; first check all existing model assemblies / 保存一个显式 CCC 父结构，将分类子、良点性与自然数对象关联到继承终对象，先核对已有模型装配 |
+| 4 | [Monoid](../theories/Algebra/Monoid/Core.v) directly stores multiplication and associativity / 幺半群直接保存乘法及结合律 | Magma and Semigroup are absent intermediate theories. Extract them with useful weak clients; the temporary discussion example is not an implementation / Magma 与半群是尚缺的中间理论，可结合实际较弱客户端抽取；临时讨论示例不是现有实现 |
+| 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) is a natural tensorial map with coherence; [HasAxiomChoice](../theories/ETCS/Core.v) chooses right inverses of epimorphisms / 前者给出带相干律的自然张量强度，后者选择满态射右逆 | If chosen-operation classes are renamed too, `TensorialStrength` and `EpiSplitting` are semantic candidates; preserve all choices and assumptions / 若也改选定运算类，可考虑 `TensorialStrength`、`EpiSplitting` 等语义名称，保留所有选择和前提 |
+| 6 | [IsGroupoid](../theories/Cat/Groupoid/Core.v) is an inverse-witness interface on a fixed category / 是固定范畴上的逆见证接口 | Keep its current fixed-data role unless choosing a public `GroupoidCat` entry; any such migration must preserve inverses and setoid laws / 若要改为公共 `GroupoidCat` 入口，须联动保留逆及广集定律；当前固定数据职责有其用途 |
+| 7 | [CwF](../theories/DTT/CwF.v), [Comprehension](../theories/Cat/Comprehension.v), and [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) have different primary views/coherence data / 各自有不同主要视图或相干数据 | Keep CwF's type-and-term functor view; choose a comprehension view only with a client; strictness stays relative to specified 1-cell equality and comparison / 保留 CwF 的类型与项函子视图，理解结构的视图结合客户端决定，严格性保留指定一胞相等及比较 |
+
+The already implemented cartesian/CCC, structured-functor and computational
+chains fit the direct structural-name rule. The outstanding issues concern
+parent selection and naming consistency, not missing coercions for every
+parameter. Alternate presentations of Applicative and the monoid/Monad
+correspondence remain explicit conversions rather than extra coercion paths.
+
+已实现的笛卡尔／CCC、带结构函子及计算接口链符合结构直接命名的原则。
+待处理问题主要是父结构选择与命名一致性，不是为每个参数都补转换。
+Applicative 的不同呈现以及幺半群／Monad 对应继续使用显式转换。
+
+### The 29 chosen-construction classes
+
+### 29 个选定构造类
+
+| Family / 接口族 | Actual choice / 实际选择 |
+| --- | --- |
+| `HasTerminal`, `HasInitial` | One selected object with its universal property / 一个选定对象及泛性质 |
+| `HasProduct`, `HasCoproduct`, `HasExponential` | Constructions indexed by object pairs; exponentials depend on the same selected products / 按对象对索引的构造，指数依赖同一组选定积 |
+| `HasEqualizer`, `HasCoequalizer`, `HasPullback`, `HasPushout` | Constructions for each supplied parallel pair or cospan/span / 对每个给定平行箭头对或余跨度／跨度给出构造 |
+| `HasLimit`, `HasColimit` | One specified diagram's universal cone/cocone / 指定图式的泛锥／余锥 |
+| `HasLimitsOfShape`, `HasColimitsOfShape` | A family of choices indexed by diagrams of a fixed shape / 按固定形状的图式索引的选择族 |
+| `HasCartesianLift`, `HasFreeObjects` | Chosen lifts over a fixed functor, or universal arrows in structured-arrow categories / 固定函子上的选定提升，或结构箭头范畴中的泛箭头 |
+| `HasStrength` | A compatible tensorial natural map on a specified endofunctor / 指定自函子上的相容张量自然映射 |
+| `HasRightDivision` | Solutions of composition equations; `HasLeftDivision` is a definition on the opposite / 复合方程的解，`HasLeftDivision` 是反范畴上的定义 |
+| `HasContextExtension`, `HasContextRepresentation`, `HasDisplay` | Chosen extensions, representations or coherent displays over a fixed family/presheaf / 固定族／预层上的选定扩张、表示或相干显示 |
+| `HasNaturalNumbersObject`, `HasSubObjectClassifier` | Selected universal objects relative to the selected terminal / 相对于选定终对象的泛对象 |
+| `HasAxiomChoice` | Right inverses for all epimorphisms, supplied as Type-valued data / 为全部满态射提供 Type 值右逆数据 |
+| `HasFiniteCover`, `HasFiniteGenerators`, `HasFiniteHomCover` | Finite representatives/generators with covering witnesses / 有限代表或生成元及覆盖见证 |
+| `HasHornFillers`, `HasKanFillers`, `HasHorn2Fillers` | Chosen fillers indexed by horns; uniqueness and functoriality are separate requirements / 按 horn 索引的选定填充，唯一性及函子性另行要求 |
+
+These names cannot all be shortened to a singular noun without specifying
+what the noun packages. For example, a binary-product cone for one pair,
+a family of chosen products, and a cartesian category are different
+interfaces. Naming changes should retain those boundaries and the single
+opposite-based implementation of dual constructions.
+
+这些名称若缩写为单数名词，需要说明名词究竟打包什么。例如，一个对象对的
+积锥、一族选定积、笛卡尔范畴是不同接口。改名应保留这些边界，以及通过反
+范畴共用的对偶实现。
+
+### Complete declaration inventory
+
+### 完整声明清单
+
+Every class and record is listed below exactly once. Group assignments
+identify API roles; they do not assert that law witnesses live in Prop.
+This audit changes documentation only. Its checks are declaration/count
+coverage, source-link resolution and direct-import inspection; the previous
+mathematical build and assumption results above belong to their stated
+commits. No new library build or proof-assumption result is claimed for this
+documentation audit.
+
+下表将每个类和记录恰好列出一次。分组表达 API 职责，不断言定律见证位于
+Prop。本次审计只修改文档，检查项目为声明／数量覆盖、源码链接及直接导入。
+上文数学构建与公理检查结果属于各自注明的提交；本次文档审计没有新增数学
+构建或证明假设检查的结论。
+
+| Interface / 接口 | Declaration / 声明 | Role / 职责 |
+| --- | --- | --- |
+| [Group](../theories/Algebra/Group/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [Adjunction](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [ApplicativeAp](../theories/Cat/Applicative/Application.v) | `Class` | Computational structures / 计算结构 |
+| [Applicative](../theories/Cat/Applicative/Core.v) | `Class` | Computational structures / 计算结构 |
+| [IsApplicativeOps](../theories/Cat/Applicative/Operations.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [ApplicativeOps](../theories/Cat/Applicative/Operations.v) | `Class` | Computational structures / 计算结构 |
+| [ArrowOb](../theories/Cat/Arrow/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [ArrowHom](../theories/Cat/Arrow/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [Bicat](../theories/Cat/Bicategory/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [CCC](../theories/Cat/CCC.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [CartesianCat](../theories/Cat/Cartesian/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [Chain](../theories/Cat/Chain.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [HasCoequalizer](../theories/Cat/Coequalizer.v) | `Class` | Chosen construction / 选定构造 |
+| [HasColimit](../theories/Cat/Colimit/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [HasColimitsOfShape](../theories/Cat/Colimit/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [CommaOb](../theories/Cat/Comma/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [CommaHom](../theories/Cat/Comma/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [Comprehension](../theories/Cat/Comprehension.v) | `Record` | Dependent semantics / 依赖语义 |
+| [Arrow](../theories/Cat/Computational/Arrow/Core.v) | `Class` | Computational structures / 计算结构 |
+| [HasCoproduct](../theories/Cat/Coproduct/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [Cat](../theories/Cat/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [Cocone](../theories/Cat/Diagram/Dual.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [GeneratorNat](../theories/Cat/Diagram/Generator.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [HasEqualizer](../theories/Cat/Equalizer.v) | `Class` | Chosen construction / 选定构造 |
+| [HasExponential](../theories/Cat/Exponential/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [HasCartesianLift](../theories/Cat/Fibration.v) | `Class` | Chosen construction / 选定构造 |
+| [HasFreeObjects](../theories/Cat/FreeObject/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [IsCartesianF](../theories/Cat/Functor/Cartesian.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [CartesianFunctor](../theories/Cat/Functor/Cartesian.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [IsCCCF](../theories/Cat/Functor/Closed.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [CCCFunctor](../theories/Cat/Functor/Closed.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [Functor](../theories/Cat/Functor/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [IsGroupoid](../theories/Cat/Groupoid/Core.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [HasRightDivision](../theories/Cat/Groupoid/Division.v) | `Class` | Chosen construction / 选定构造 |
+| [HasLimit](../theories/Cat/Limit/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [HasLimitsOfShape](../theories/Cat/Limit/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [Monad](../theories/Cat/Monad/Core.v) | `Class` | Computational structures / 计算结构 |
+| [StrongMonad](../theories/Cat/Monad/Strength.v) | `Class` | Computational structures / 计算结构 |
+| [MonoidalCategory](../theories/Cat/Monoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [HasStrength](../theories/Cat/Monoidal/Strength.v) | `Class` | Chosen construction / 选定构造 |
+| [Mono](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [Sub](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [Nat](../theories/Cat/Natural.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [HasProduct](../theories/Cat/Product/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [HasPullback](../theories/Cat/Pullback.v) | `Class` | Chosen construction / 选定构造 |
+| [HasPushout](../theories/Cat/Pushout.v) | `Class` | Chosen construction / 选定构造 |
+| [HasFiniteGenerators](../theories/Cat/Shape/Finite.v) | `Class` | Chosen construction / 选定构造 |
+| [HasFiniteHomCover](../theories/Cat/Shape/Finite.v) | `Class` | Chosen construction / 选定构造 |
+| [Sieve](../theories/Cat/Sieve.v) | `Class` | Families and matching / 族与匹配 |
+| [SliceOb](../theories/Cat/Slice/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [SliceHom](../theories/Cat/Slice/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [HasTerminal](../theories/Cat/Terminal.v) | `Class` | Chosen construction / 选定构造 |
+| [HasInitial](../theories/Cat/Terminal.v) | `Class` | Chosen construction / 选定构造 |
+| [ContextMap](../theories/DTT/Comprehension.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [HasContextRepresentation](../theories/DTT/Context/Representation.v) | `Class` | Chosen construction / 选定构造 |
+| [HasContextExtension](../theories/DTT/CwF.v) | `Class` | Chosen construction / 选定构造 |
+| [CwF](../theories/DTT/CwF.v) | `Class` | Dependent semantics / 依赖语义 |
+| [HasDisplay](../theories/DTT/Display/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [IsWellPointed](../theories/ETCS/Core.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [HasAxiomChoice](../theories/ETCS/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [ETCS](../theories/ETCS/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [HasNaturalNumbersObject](../theories/ETCS/Nat.v) | `Class` | Chosen construction / 选定构造 |
+| [HasSubObjectClassifier](../theories/ETCS/Sub.v) | `Class` | Chosen construction / 选定构造 |
+| [Graph](../theories/Graph/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [GraphMap](../theories/Graph/Morphism.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [FamC](../theories/Instance/Set/Fam/Cat.v) | `Record` | Families and matching / 族与匹配 |
+| [FamF](../theories/Instance/Set/Fam/Cat.v) | `Record` | Families and matching / 族与匹配 |
+| [FamS](../theories/Instance/Set/Fam/Core.v) | `Record` | Families and matching / 族与匹配 |
+| [FamMap](../theories/Instance/Set/Fam/Fixed.v) | `Record` | Families and matching / 族与匹配 |
+| [SectionS_resp](../theories/Instance/Set/Fam/Section.v) | `Record` | Families and matching / 族与匹配 |
+| [SieveMatching](../theories/Instance/Set/Sieve/Matching.v) | `Record` | Families and matching / 族与匹配 |
+| [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [HasHornFillers](../theories/Instance/Set/Simplicial/Horn.v) | `Class` | Chosen construction / 选定构造 |
+| [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | `Class` | Chosen construction / 选定构造 |
+| [Horn2Presentation](../theories/Instance/Set/Simplicial/Vertex/Filling.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
+| [HasHorn2Fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) | `Class` | Chosen construction / 选定构造 |
+| [VertexFunctor](../theories/Instance/Set/Vertex/Functor.v) | `Record` | Families and matching / 族与匹配 |
+| [is_unique](../theories/Meta.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
+| [Closure](../theories/Set/Closure/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [SetC](../theories/Set/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [LiftT](../theories/Set/Core.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
+| [HasFiniteCover](../theories/Set/Finite.v) | `Class` | Chosen construction / 选定构造 |
+| [FunS_resp](../theories/Set/Morphism.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
