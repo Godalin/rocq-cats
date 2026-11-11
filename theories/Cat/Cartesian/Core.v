@@ -15,7 +15,7 @@ From Cats Require Import
 (** 具名范畴 [C] 上选定的有限积。终对象给出空积，二元积给出其余有限积；
     泛性质保留 Type 值的计算见证。 *)
 
-Class CartesianCategory (C : Cat)
+Class CartesianCat (C : Cat)
   :=
   (** The unique category view computes to the supplied parameter;
       no second category is stored. *)

@@ -177,7 +177,7 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [Cocone](../theories/Cat/Diagram/Dual.v), [Nat](../theories/Cat/Natural.v) | `Cocone → Nat → component function` / 余锥经自然变换到分量函数 | Already complete; keep the opposite-cone construction underneath / 已完整，底层保留反范畴上的锥构造 |
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
-| [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCategory → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
+| [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
 | [ETCS](../theories/ETCS/Core.v) | Named category, without a category coercion or stored CCC parent / 具名范畴，尚无范畴强制转换或保存的 CCC 父结构 | A future adapter must share existing choices rather than duplicate them / 未来适配器须共享已有选择，不重复保存 |
 | [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `Group → Monoid → SetC → Type`; the parent remains an inherited instance / 群经幺半群、广集到载体类型，父结构仍是继承实例 | Implemented in the computational-model continuation below, reusing the stored parent and named setoid / 已在下述计算模型后续工作中实现，复用保存的父结构及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
@@ -242,20 +242,20 @@ PDF 留待下一集成批次统一导出。以上为本地验证结果，不代�
 
 ## 笛卡尔与 CCC 的累次层级
 
-[CartesianCategory C](../theories/Cat/Cartesian/Core.v) stores the selected
+[CartesianCat C](../theories/Cat/Cartesian/Core.v) stores the selected
 terminal object and binary products, including their computational universal
 properties. Its computed field `CartesianC :> Cat := C` exposes the named
 category. [CCC C](../theories/Cat/CCC.v) then stores one
-`hasCartesian :: CartesianCategory C` parent and exponentials relative to
+`hasCartesian :: CartesianCat C` parent and exponentials relative to
 that parent's products. Registering the parent projection as a coercion
-gives the unique chain `CCC → CartesianCategory → Cat`; there is no direct
+gives the unique chain `CCC → CartesianCat → Cat`; there is no direct
 CCC-to-category bypass and no repeated terminal/product data.
 
-[CartesianCategory C](../theories/Cat/Cartesian/Core.v) 保存选定终对象和
+[CartesianCat C](../theories/Cat/Cartesian/Core.v) 保存选定终对象和
 二元积，包含其可计算泛性质。计算字段 `CartesianC :> Cat := C` 暴露具名
 范畴。[CCC C](../theories/Cat/CCC.v) 再保存一个
-`hasCartesian :: CartesianCategory C` 父结构及相对于其积的指数。将父投影
-注册为强制转换，得到唯一链 `CCC → CartesianCategory → Cat`；不添加
+`hasCartesian :: CartesianCat C` 父结构及相对于其积的指数。将父投影
+注册为强制转换，得到唯一链 `CCC → CartesianCat → Cat`；不添加
 CCC 直接到普通范畴的旁路，也不重复保存终对象或积。
 
 The following client illustrates both mechanisms. Expected types insert
@@ -281,7 +281,7 @@ Context {C : Cat} (HC : CCC C).
 Local Existing Instance HC.
 
 Definition cartesian_view
-  : CartesianCategory C
+  : CartesianCat C
   := HC.
 Definition category_view
   : Cat

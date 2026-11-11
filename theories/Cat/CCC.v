@@ -23,7 +23,7 @@ Class CCC (C : Cat)
 
   (** 与所有较弱的客户端共享选定有限积。 *)
 
-  { hasCartesian :: CartesianCategory C
+  { hasCartesian :: CartesianCat C
   (** Exponentials use exactly the inherited choice of binary products. *)
 
   (** 指数恰好使用继承的二元积选择。 *)
@@ -32,10 +32,10 @@ Class CCC (C : Cat)
   }.
 
 (** Register the parent projection as a coercion while retaining its
-    instance role. The unique chain is [CCC] to [CartesianCategory] to
+    instance role. The unique chain is [CCC] to [CartesianCat] to
     [Cat]; it computes to the named category [C]. *)
 
 (** 将父结构投影同时注册为强制转换，并保留其实例职责。唯一转换链为 [CCC]
-    经 [CartesianCategory] 到 [Cat]，直接计算为具名范畴 [C]。 *)
+    经 [CartesianCat] 到 [Cat]，直接计算为具名范畴 [C]。 *)
 
-Coercion hasCartesian : CCC >-> CartesianCategory.
+Coercion hasCartesian : CCC >-> CartesianCat.
