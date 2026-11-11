@@ -744,3 +744,103 @@ with `e < h < p` hom/equality levels. See
 [u-kl]: https://github.com/UniMath/UniMath/blob/7a4b03cce49449f45ce0d4285615165172f50546/UniMath/CategoryTheory/Monads/Kleisli.v
 [u-mm]: https://github.com/UniMath/UniMath/blob/7a4b03cce49449f45ce0d4285615165172f50546/UniMath/CategoryTheory/Monoidal/Examples/MonadsAsMonoidsElementary.v
 [paper]: https://arxiv.org/abs/1406.4823v1
+
+## Two-sided context and centrality prerequisite
+
+## 双侧上下文与中心性前置基础
+
+The user-approved serial slice starts from `751de86` on `monoidal-cat-view`.
+The existing generic Arrow has a left-context action over a named monoidal
+base; that alone does not specify a right-context action. This slice
+extracts [BinoidalCat](../theories/Cat/Binoidal/Core.v): one object tensor
+and two separately functorial arrow actions, without units, associators,
+symmetry or effect interchange. Derived fixed-context functors share that
+same object tensor. Public `binoidal_scope` notation writes the tensor as
+`X ⊗ Y`, left context as `Z ⊲ f`, and right context as `f ⊳ Z`.
+
+用户授权的串行批次从 `monoidal-cat-view` 上的 `751de86` 开始。现有一般
+Arrow 在具名幺半基底上具有左上下文作用，但这本身尚未指定右上下文作用。
+本批抽出 [BinoidalCat](../theories/Cat/Binoidal/Core.v)：唯一对象张量与两种
+分别具有函子性的态射作用，不要求单位元、结合子、对称性或效应交换律。
+导出的固定上下文函子共享同一对象张量。公开 `binoidal_scope` 中，张量写作
+`X ⊗ Y`，左上下文写作 `Z ⊲ f`，右上下文写作 `f ⊳ Z`。
+
+[Centrality](../theories/Cat/Binoidal/Center.v) is a Type-valued predicate
+on an arrow: it supplies exchange with every partner, in either tensor
+position. Specified-equal arrows share centrality, and central arrows are
+closed under identity and composition. Ordered sequencing agrees with the
+opposite execution order when either factor is central. There is no
+principle asserting this for two arbitrary effects.
+
+[中心性](../theories/Cat/Binoidal/Center.v) 是态射上的 Type 值谓词，在两个
+张量位置都给出与任意另一态射交换的见证。指定相等的态射共享中心性，中心
+态射在恒等与复合下封闭。任一因子为中心态射时，有序组合与相反执行次序
+相等；没有断言两个任意效应都可如此交换。
+
+[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) explicitly adapts
+an existing monoidal tensor, with all arrows central by bifunctoriality.
+It is not another coercion or globally chosen parent of MonoidalCat.
+[ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) reuses
+`ComputationCat A`, the selected value products and existing `first`/`second`
+operations. `ArrowPureF` is identity on the shared value-object type and
+reuses the original pure-arrow action. Both old context-naturality laws
+prove that every pure arrow is central. Generic ordered sequencing agrees
+with the existing Arrow split. No concrete model laws are reproved.
+
+[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) 显式适配已有幺半张量，
+由双函子性证明全部态射为中心态射；它不是 MonoidalCat 的另一强制转换或
+全局选定父结构。
+[ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) 复用
+`ComputationCat A`、选定值积及已有 `first`／`second` 运算。`ArrowPureF`
+在共享值对象类型上为恒等，并复用原纯态射作用。已有两种上下文自然性律证明
+每个纯态射都是中心态射；一般有序组合与原 Arrow split 一致。不重复证明
+具体模型的定律。
+
+The adapter fixes the value-category product explicitly even though value
+and computation objects have the same type. Right-context action currently
+uses the existing cartesian exchange. The general binoidal foundation
+requires no symmetry, but extending the one-sided generic Arrow to two
+sides over a weaker base needs extra data or a coherent exchange structure.
+Full premonoidal central structural isomorphisms, separate naturality and
+pentagon/triangle coherence, symmetric structure, and the complete Freyd
+characterization remain later tasks. This prerequisite makes no such claim.
+The pinned [Wiegley binoidal interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Binoidal.v)
+was rechecked alongside the cached premonoidal/Freyd sources; the existing
+prior-art and compatibility boundaries above still apply.
+
+尽管值对象和计算对象具有同一类型，适配器仍显式固定值范畴的积选择。右上下文
+作用目前使用已有笛卡尔交换。一般双侧张量基础不要求对称性，但在更弱基底上
+将只有单侧作用的一般 Arrow 扩展为双侧，需要额外数据或相干交换结构。
+完整预幺半结构的中心结构同构、分别自然性、五边形／三角形相干、对称结构及
+完整 Freyd 刻画仍为后续任务，本前置基础不主张已完成这些结果。
+固定版本的 [Wiegley 双侧张量接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Binoidal.v)
+已与缓存的预幺半／Freyd 源码一起复核，上述既有先例与相容边界继续适用。
+
+Validation used the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
+passed. All 73 temporary `Print Assumptions` checks reported
+`Closed under the global context`: both strict hom/equality universe
+orders, independent value/computation hom equalities, centrality rewriting,
+explicit model choices, both State carrier/equality orders and concrete
+pure/context/sequence reductions were checked. The State example proves
+that changing state before reading differs from reading before changing,
+and that the changing computation is not central. These are temporary
+checks, with no permanent test or shared test configuration changes.
+
+验证使用已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过。73 项临时
+`Print Assumptions` 检查均报告 `Closed under the global context`，覆盖
+Hom／相等的两种严格宇宙次序、值／计算 Hom 相等的独立大小、中心性重写、
+显式模型选择、State 载体／相等的两种次序，以及具体纯映射／上下文／组合
+归约。State 示例证明先改变状态再读取与先读取再改变不同，且改变状态的计算
+不是中心态射。这些均为临时检查，没有新增永久测试或修改共享测试配置。
+
+Strict bilingual HTML generated 287 modules per language and checked
+links/anchors in 579 pages. All four new interface/adapter pages were
+inspected in both languages. Batch PDF export and updating `typeprop`
+remain with the integration session. The delivered foundation is ready
+for independent integration before further premonoidal/Freyd work.
+
+严格双语 HTML 每种语言生成 287 个模块，检查 579 页的链接／锚点；四个新增
+接口／适配器页面均核对英中文。批次 PDF 导出及 `typeprop` 更新仍由集成会话
+负责。本基础已可独立集成，无须等待后续预幺半／Freyd 工作。

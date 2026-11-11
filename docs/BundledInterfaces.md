@@ -4,11 +4,11 @@
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 89 interfaces after Magma/Semigroup extraction,
+inventory now includes 90 interfaces after the hierarchy and binoidal slices,
 alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含抽取原群／半群后的 89 个接口，
+起初分类全部 87 个类／记录接口；清单现包含层级与双侧张量批次后的 90 个接口，
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
@@ -590,7 +590,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy slices and now covers 283 modules, 62 classes and 27 records.
+hierarchy and binoidal slices and now covers 287 modules, 63 classes and
+27 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
@@ -600,7 +601,7 @@ example from the discussion was temporary; the final algebra slice below
 implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表跟随层级批次更新，现覆盖 283 个模块、62 个类及 27 个
+类及 27 个记录。下表跟随层级与双侧张量批次更新，现覆盖 287 个模块、63 个类及 27 个
 记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
@@ -661,7 +662,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 140 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 144 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -691,6 +692,7 @@ flowchart LR
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
   MonoidalCat -->|MonoidalC, computed| Cat
+  BinoidalCat -->|BinoidalC, computed| Cat
   StrongMonad -->|StrongMonadM| Monad
   Monad -->|MonadF| Functor
   CCCFunctor -->|CCCF| CartesianFunctor
@@ -801,6 +803,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [ArrowHom](../theories/Cat/Arrow/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [Bicat](../theories/Cat/Bicategory/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [BinoidalCat](../theories/Cat/Binoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [CCC](../theories/Cat/CCC.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [CartesianCat](../theories/Cat/Cartesian/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [Chain](../theories/Cat/Chain.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
@@ -1087,3 +1090,45 @@ and `typeprop` integration remain with the integration session.
 新增或修改接口／模型页面的英中文。清单恰好覆盖全部 89 个声明一次（62 个类
 及 27 个记录），保留全部 29 个 `Has*` 类。没有新增永久测试，也没有修改旧测试
 文件。批次 PDF 导出及 `typeprop` 集成仍由集成会话负责。
+
+## Binoidal context prerequisite
+
+## 双侧张量上下文前置基础
+
+[BinoidalCat](../theories/Cat/Binoidal/Core.v) follows the same named-category
+rule: `BinoidalC :> Cat := C` computes the unique underlying view, while one
+object tensor indexes two respectful arrow actions and their separate
+functor laws. The fixed-context functors are derived, rather than storing
+additional independently chosen object maps. Units and associators are not
+assumed at this weakest layer. `is_central` retains Type-valued witnesses
+and is separate from choosing the structure itself.
+
+[BinoidalCat](../theories/Cat/Binoidal/Core.v) 遵循同一具名范畴规范：
+`BinoidalC :> Cat := C` 计算唯一底层视图，唯一对象张量为两种保相等态射作用
+及各自函子律提供索引。固定上下文函子由此导出，不另存独立选取的对象映射。
+最弱一层不要求单位元或结合子。`is_central` 保留 Type 值见证，与选定结构
+本身分离。
+
+[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) and
+[ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) are explicit
+adapters. The monoidal category's primary view stays Cat; Arrow's primary
+view stays its pure functor. No competing coercions or globally selected
+models are introduced. See the [computation audit](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)
+for the relationship to the remaining premonoidal and Freyd layers.
+
+[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) 与
+[ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) 都是显式
+适配器。幺半范畴的主要视图仍为 Cat，Arrow 的主要视图仍为纯函子；不增加
+竞争强制转换或全局选定模型。与后续预幺半及 Freyd 层的关系见
+[计算审计](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)。
+
+The current inventory contains 287 modules, 63 classes and 27 records,
+with every interface listed once. Full-library build/test/install targets,
+73 temporary assumption checks and strict bilingual HTML passed; the
+[computation audit](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)
+records the exact scope, state-order counterexample and remaining layers.
+
+当前清单包含 287 个模块、63 个类及 27 个记录，每个接口恰好列出一次。
+全库构建／测试／安装目标、73 项临时公理检查及严格双语 HTML 均通过；
+[计算审计](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)
+记录确切范围、状态次序反例及剩余层次。
