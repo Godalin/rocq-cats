@@ -185,7 +185,7 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
 | [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
-| [ETCS](../theories/ETCS/Core.v) | Named category, without a category coercion or stored CCC parent / 具名范畴，尚无范畴强制转换或保存的 CCC 父结构 | A future adapter must share existing choices rather than duplicate them / 未来适配器须共享已有选择，不重复保存 |
+| [ETCS](../theories/ETCS/Core.v) | `ETCS → CCC → CartesianCat → Cat` | One `ETCSC` parent shares all inherited choices; terminal-dependent fields use that same terminal / 唯一 `ETCSC` 父结构共享继承选择，依赖终对象的字段使用同一终对象 |
 | [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v) | `Group → Monoid → SetC → Type`; the parent remains an inherited instance / 群经幺半群、广集到载体类型，父结构仍是继承实例 | Implemented in the computational-model continuation below, reusing the stored parent and named setoid / 已在下述计算模型后续工作中实现，复用保存的父结构及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
@@ -217,12 +217,12 @@ lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以
 
 The first change implements the monoidal category view; the continuation
 below adds group/monoid views and the cumulative cartesian/CCC hierarchy.
-An ETCS category view remains a follow-up candidate.
+The ETCS slice below extends this chain through its shared CCC parent.
 `Cat` has no coercion to its object type, and `Functor` still uses its
 object function as its sole function coercion; arrow mapping stays `fmap`.
 
 首项修改实现幺半结构的底层范畴视图；下述后续工作增加群／幺半群视图及
-笛卡尔／CCC 累次层级。ETCS 范畴视图仍属于后续候选。
+笛卡尔／CCC 累次层级。下述 ETCS 批次通过共享 CCC 父结构进一步延伸此链。
 `Cat` 没有到对象类型的强制转换；`Functor`
 仍以对象函数为唯一函数强制转换，态射映射保留 `fmap`。
 
@@ -673,6 +673,7 @@ flowchart LR
   Group -->|GroupM| Monoid
   Monoid -->|MonoidS, computed| SetC
   SetC -->|carrier| Type
+  ETCS -->|ETCSC| CCC
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
   MonoidalCat -->|MonoidalC, computed| Cat
@@ -709,7 +710,7 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 | --- | --- | --- |
 | 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
 | 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | Implemented in the first slice; the named category, selected tensor and `MonoidalC` view are retained / 首批已实施，保留具名范畴、选定张量及 `MonoidalC` 视图 |
-| 3 | [ETCS](../theories/ETCS/Core.v) repeats terminal, product and exponential fields instead of storing a CCC parent / ETCS 重复保存终对象、积与指数字段，没有 CCC 父结构 | Store one explicit CCC parent and index classifier, well-pointedness and NNO by its inherited terminal; first check all existing model assemblies / 保存一个显式 CCC 父结构，将分类子、良点性与自然数对象关联到继承终对象，先核对已有模型装配 |
+| 3 | [ETCS](../theories/ETCS/Core.v) now stores `ETCSC :> CCC C` / ETCS 现保存唯一 CCC 父结构 | Implemented in the ETCS slice; classifier, well-pointedness and NNO use its inherited terminal, with no concrete ETCS bundle assembly to migrate / ETCS 批次已实施，分类子、良点性与自然数对象使用继承终对象；现无完整具体 ETCS 装配需要迁移 |
 | 4 | [Monoid](../theories/Algebra/Monoid/Core.v) directly stores multiplication and associativity / 幺半群直接保存乘法及结合律 | Magma and Semigroup are absent intermediate theories. Extract them with useful weak clients; the temporary discussion example is not an implementation / Magma 与半群是尚缺的中间理论，可结合实际较弱客户端抽取；临时讨论示例不是现有实现 |
 | 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/ETCS/Core.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
 | 6 | [IsGroupoid](../theories/Cat/Groupoid/Core.v) is an inverse-witness interface on a fixed category / 是固定范畴上的逆见证接口 | Keep its current fixed-data role unless choosing a public `GroupoidCat` entry; any such migration must preserve inverses and setoid laws / 若要改为公共 `GroupoidCat` 入口，须联动保留逆及广集定律；当前固定数据职责有其用途 |
@@ -924,3 +925,61 @@ remains a later mathematical task with its own useful clients.
 共享测试别名，原有接口／宇宙测试仅更新被改名接口的引用。PDF 导出及
 `typeprop` 更新仍由集成会话负责。下一有限批次是 ETCS 父结构共享；
 Magma／半群抽取属于后续需要实际客户端的独立数学任务。
+
+## ETCS parent-sharing slice
+
+## ETCS 父结构共享批次
+
+The user explicitly approved this serial continuation from `a70a0a2` on
+`monoidal-cat-view`, before integrating its prerequisite hierarchy changes.
+[ETCS](../theories/ETCS/Core.v) now stores one `ETCSC :> CCC C` parent
+and registers that same projection for instance search. Its only category
+view follows `ETCS → CCC → CartesianCat → Cat`; no direct ancestor bypass
+or additional terminal, product or exponential choice is stored.
+
+用户明确批准在前置层级变更集成前，从 `monoidal-cat-view` 上的 `a70a0a2`
+串行继续。[ETCS](../theories/ETCS/Core.v) 现只保存 `ETCSC :> CCC C`
+父结构，并将同一投影注册到实例搜索。唯一范畴视图沿
+`ETCS → CCC → CartesianCat → Cat` 转换，不增加直接祖先旁路，也不另存
+终对象、积或指数选择。
+
+The subobject classifier, well-pointedness and natural-numbers object are
+explicitly indexed by `@hasTerminal C ETCSC`. Initial objects, pullbacks
+and Type-valued epi-splitting witnesses remain supplementary fields;
+no mathematical hypothesis or explicit model-selection policy changes.
+Repository inspection found no concrete ETCS bundle assembly or qualified
+use of the removed ETCS projections to migrate. Existing setoid NNO theory
+and its explicitly chosen model retain their weaker interfaces.
+
+子对象分类子、良点性及自然数对象均显式以 `@hasTerminal C ETCSC` 为索引。
+始对象、拉回及 Type 值满态射分裂见证仍为补充字段，不改变数学前提或显式
+模型选择规则。全库调查没有发现需要迁移的完整具体 ETCS 装配或被移除 ETCS
+投影的限定引用。已有广集自然数对象理论及其显式选定模型保留较弱接口。
+
+With the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
+Dune 3.23.1), the affected ETCS module and full
+`dune build @all @runtest @install` passed. Forty-nine temporary
+`Print Assumptions` checks reported `Closed under the global context`.
+They cover all inherited instances, dependent terminal choices, both
+strict hom/equality universe orders, two ETCS structures on one category,
+identity structured-functor clients and seven transparent assembly or
+operation reductions. Native equality is used only to test definitional
+projection reduction; mathematical operation checks use specified hom
+equality. No permanent tests or shared test configuration were added.
+
+使用已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1），受影响 ETCS 模块及全库 `dune build @all @runtest @install`
+均通过。49 项临时 `Print Assumptions` 检查均报告
+`Closed under the global context`，覆盖全部继承实例、依赖的终对象选择、
+Hom／相等的两种严格宇宙次序、同一范畴上的两个 ETCS 结构、恒等带结构函子
+客户端，以及七项透明装配或运算归约。原生相等仅用于测试投影的定义性归约，
+数学运算检查使用指定 Hom 相等。没有新增永久测试或共享测试配置。
+
+Strict bilingual HTML generated 278 modules per language and checked links
+and anchors in 561 pages; both ETCS interface pages were inspected. Batch
+PDF export and integration into `typeprop` remain with the integration
+session. Magma/Semigroup extraction remains a separate subsequent task.
+
+严格双语 HTML 每种语言生成 278 个模块，检查 561 页的链接与锚点，并核对
+两种语言的 ETCS 接口页面。批次 PDF 导出及 `typeprop` 集成仍由集成会话
+负责。Magma／半群抽取仍是单独的后续任务。
