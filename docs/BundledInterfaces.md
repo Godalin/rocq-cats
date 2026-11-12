@@ -152,7 +152,7 @@ audited individually.
 `ccc-equivalence-23` 任务，并补充上文的历史调查。所有声明的接口均已分类，
 继承字段和每个强制转换的来源均已核查；没有逐一审计证明体。
 
-[MonoidalCat C](../theories/Cat/Monoidal/Core.v) now has the computed
+[MonoidalCat C](../theories/Cat/Monoidal/Core.v) initially gained the computed
 field `MonoidalC :> Cat := C`. It exposes the supplied category without
 storing another one or changing any constructor argument. Clients can write
 `Functor MC MD`, `@Ob MC` and `Functor (MC ×C MC) MC`. Tensor, associators,
@@ -161,7 +161,7 @@ Two monoidal structures on the same category remain distinct choices;
 recovering their category does not identify their tensor data. The conversion
 does not enable any concrete monoidal instance.
 
-[MonoidalCat C](../theories/Cat/Monoidal/Core.v) 现通过计算字段
+[MonoidalCat C](../theories/Cat/Monoidal/Core.v) 起初通过计算字段
 `MonoidalC :> Cat := C` 暴露给定范畴，不另存一个范畴，也不改变构造器参数。
 客户端可写 `Functor MC MD`、`@Ob MC`、`Functor (MC ×C MC) MC`。张量、
 结合子、单位子及其定律仍使用具名范畴和选定结构。同一范畴上的两个幺半结构
@@ -590,7 +590,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy, binoidal and premonoidal slices and now covers 290 modules,
+hierarchy, binoidal and premonoidal slices and now covers 291 modules,
 64 classes and
 27 records.
 It inventories every declaration, checks their parameter/field
@@ -602,7 +602,7 @@ example from the discussion was temporary; the final algebra slice below
 implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表跟随层级、双侧张量与预幺半批次更新，现覆盖 290 个模块、64 个类及 27 个
+类及 27 个记录。下表跟随层级、双侧张量与预幺半批次更新，现覆盖 291 个模块、64 个类及 27 个
 记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
@@ -663,7 +663,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 147 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 148 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -692,7 +692,7 @@ flowchart LR
   ETCS -->|ETCSC| CCC
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
-  MonoidalCat -->|MonoidalC, computed| Cat
+  MonoidalCat -->|MonoidalP| PremonoidalCat
   PremonoidalCat -->|PremonoidalB| BinoidalCat
   BinoidalCat -->|BinoidalC, computed| Cat
   StrongMonad -->|StrongMonadM| Monad
@@ -727,7 +727,7 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 | Priority / 次序 | Evidence / 证据 | Proposed treatment / 建议处理 |
 | --- | --- | --- |
 | 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
-| 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | Implemented in the first slice; the named category, selected tensor and `MonoidalC` view are retained / 首批已实施，保留具名范畴、选定张量及 `MonoidalC` 视图 |
+| 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | The first slice unified names; the current parent chain is `MonoidalP` → `PremonoidalB` → `BinoidalC` / 首批统一名称；当前父链为 `MonoidalP` → `PremonoidalB` → `BinoidalC` |
 | 3 | [ETCS](../theories/ETCS/Core.v) now stores `ETCSC :> CCC C` / ETCS 现保存唯一 CCC 父结构 | Implemented in the ETCS slice; classifier, well-pointedness and NNO use its inherited terminal, with no concrete ETCS bundle assembly to migrate / ETCS 批次已实施，分类子、良点性与自然数对象使用继承终对象；现无完整具体 ETCS 装配需要迁移 |
 | 4 | [Monoid](../theories/Algebra/Monoid/Core.v) inherits [Semigroup](../theories/Algebra/Semigroup/Core.v), which inherits [Magma](../theories/Algebra/Magma/Core.v) / 幺半群继承半群，半群继承原群 | Implemented in the algebra slice with weaker multiplication maps, composition laws, Boolean and endomorphism models / 代数批次已实施，包含较弱前提的乘法映射、复合律、布尔及自态射模型 |
 | 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/ETCS/Core.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
@@ -904,7 +904,7 @@ shared dependent choices and minimal assumptions in general theorems.
 `GroupM :> Monoid G` directly and exports the same projection as an
 inherited instance. The Boolean and endomorphism group constructors use
 the named parent field; existing inverse proofs and operations are reused.
-The monoidal category interface is now
+In that slice the monoidal category interface became
 [MonoidalCat](../theories/Cat/Monoidal/Core.v), retaining the named category,
 computed `MonoidalC`, tensor, natural isomorphisms and coherence laws. All
 clients and documentation use that name. No compatibility aliases or new
@@ -912,7 +912,7 @@ intermediate algebra theories are introduced in this slice.
 
 [Group](../theories/Algebra/Group/Core.v) 现直接声明 `GroupM :> Monoid G`，
 并将同一投影导出为继承实例。布尔群与自同态群的构造使用具名父字段，复用
-已有逆运算及证明。幺半范畴接口现名为
+已有逆运算及证明。该批将幺半范畴接口改名为
 [MonoidalCat](../theories/Cat/Monoidal/Core.v)，保留具名范畴、计算性
 `MonoidalC`、张量、自然同构及相干律；所有客户端和文档同步使用新名。
 本批没有添加兼容别名或新的代数中间理论。
@@ -1112,16 +1112,16 @@ and is separate from choosing the structure itself.
 最弱一层不要求单位元或结合子。`is_central` 保留 Type 值见证，与选定结构
 本身分离。
 
-[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) and
+[MonoidalBinoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Binoidal.v) and
 [ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) are explicit
-adapters. The monoidal category's primary view stays Cat; Arrow's primary
+adapters at this checkpoint. The monoidal category's primary view then stayed Cat; Arrow's primary
 view stays its pure functor. No competing coercions or globally selected
 models are introduced. See the [computation audit](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)
 for the relationship to the remaining premonoidal and Freyd layers.
 
-[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) 与
+[MonoidalBinoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Binoidal.v) 与
 [ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) 都是显式
-适配器。幺半范畴的主要视图仍为 Cat，Arrow 的主要视图仍为纯函子；不增加
+在该阶段均为适配器。幺半范畴当时的主要视图为 Cat，Arrow 的主要视图仍为纯函子；不增加
 竞争强制转换或全局选定模型。与后续预幺半及 Freyd 层的关系见
 [计算审计](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)。
 
@@ -1158,23 +1158,83 @@ follow from general isomorphism and binoidal lemmas.
 结构只保存正向中心性和自然性；[逆向定律](../theories/Cat/Premonoidal/Laws.v)
 由一般同构及双侧张量引理导出。
 
-[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) is an explicit
+[MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) is an explicit
 adapter that reuses the existing tensor, unit, structure maps and inverse
-components. `MonoidalCat` still has its original primary category view;
+components. At that checkpoint `MonoidalCat` retained its primary category view;
 changing it to inherit the new parent and deriving the tensor bifunctor
 are a later coordinated migration. No global model choices, symmetry or
 interchange for arbitrary effects are added by the premonoidal interface.
 
-[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) 是显式适配器，
-复用已有张量、单位对象、结构映射及逆分量。`MonoidalCat` 仍保留原主要范畴
+[MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) 是显式适配器，
+复用已有张量、单位对象、结构映射及逆分量。该阶段 `MonoidalCat` 仍保留原主要范畴
 视图；改为继承新父结构及导出张量双函子属于后续协调迁移。预幺半接口没有
 增加全局模型选择、对称性或任意效应的交换律。
 
-The updated inventory contains 290 modules, 64 classes and 27 records,
+The inventory at the premonoidal delivery contained 290 modules, 64 classes and 27 records,
 covering all 91 interfaces exactly once and retaining all 29 `Has*`
 classes. The [computation audit](./ComputationAudit.md#premonoidal-structure-prerequisite)
 records validation and remaining computational-category work.
 
-更新后的清单包含 290 个模块、64 个类及 27 个记录，全部 91 个接口恰好各列
+预幺半交付时的清单包含 290 个模块、64 个类及 27 个记录，全部 91 个接口恰好各列
 一次，保留全部 29 个 `Has*` 类。[计算审计](./ComputationAudit.md#premonoidal-structure-prerequisite)
 记录验证与剩余计算范畴工作。
+
+
+## Monoidal inheritance and derived tensor
+
+## 幺半继承与导出张量
+
+[MonoidalCat](../theories/Cat/Monoidal/Core.v) now stores exactly one
+`MonoidalP :> PremonoidalCat C` and a single interchange equation.
+The same parent is an exported instance. Its coercion chain continues
+through `PremonoidalB` and the computed `BinoidalC`; there is no direct
+ancestor bypass. The tensor on objects, both context actions, unit,
+associator/unitors and inverse choices are inherited once. The tensor
+bifunctor, joint natural isomorphisms and ordinary monoidal coherence
+statements are derived operations and theorems.
+
+[MonoidalCat](../theories/Cat/Monoidal/Core.v) 现在恰好保存唯一
+`MonoidalP :> PremonoidalCat C` 及一条交换方程。同一父结构导出为实例，
+强制转换链继续经过 `PremonoidalB` 及计算性的 `BinoidalC`，没有直达祖先的
+旁路。对象张量、两种上下文作用、单位、结合子／单位子及逆选择只继承一次。
+张量双函子、联合自然同构及通常幺半相干陈述都改为导出运算与定理。
+
+[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) preserves the
+convenient assembly from a supplied bifunctor and natural structural
+isomorphisms. Cartesian and bicategory endomorphism models use it instead
+of duplicating the parent laws. Its reconstructed tensor is naturally
+isomorphic to the supplied functor with identity components; its arrow
+map is compared by specified hom equality. The former explicit monoidal
+to binoidal/premonoidal adapters are replaced by the actual parent chain.
+
+[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) 保留由给定双函子
+及自然结构同构装配模型的便利方式。笛卡尔与双范畴自同态模型复用它，不重复
+证明父层定律。重建张量与给定函子通过恒等分量自然同构，态射映射使用指定
+Hom 相等比较。先前显式的幺半到双侧张量／预幺半适配器已由实际父链替代。
+
+[Cartesian lifting](../theories/Cat/Monoidal/CartesianLifting.v) retains
+ordinary product notation in weaker lax clients. Applicative, strength,
+Monad and Arrow specializations use the product/horizontal-composition
+comparison laws. Monad–monoid functors retain the same underlying natural
+transformations and transport their preservation witnesses explicitly.
+This migration changes no `Has*` naming or computational Arrow interchange
+assumptions. The [computation audit](./ComputationAudit.md#monoidal-parent-migration)
+records validation and the remaining Arrow/Freyd work.
+
+[笛卡尔提升](../theories/Cat/Monoidal/CartesianLifting.v) 让较弱 lax 客户端
+继续使用通常积记号。Applicative、强度、Monad 及 Arrow 特化使用积／水平复合
+比较定律。Monad–幺半群函子保留同一底层自然变换，显式运输保持性见证。
+本迁移没有修改 `Has*` 命名或计算 Arrow 的效应交换前提。
+[计算审计](./ComputationAudit.md#monoidal-parent-migration) 记录验证与剩余
+Arrow／Freyd 工作。
+
+The current inventory covers 291 modules and all 91 interfaces once
+(64 classes, 27 records), retaining all 29 `Has*` classes. Full-library
+build/test/install, 212 temporary assumption checks and strict bilingual
+HTML (587 checked pages) passed. No old tests or shared test configuration
+were modified; batch PDF export remains with integration.
+
+当前清单覆盖 291 个模块，全部 91 个接口各一次（64 个类、27 个记录），
+保留全部 29 个 `Has*` 类。全库构建／测试／安装、212 项临时公理检查及严格
+双语 HTML（检查 587 页）通过。未修改旧测试或共享测试配置；批次 PDF 导出
+仍由集成方负责。

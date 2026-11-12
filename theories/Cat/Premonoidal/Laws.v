@@ -115,3 +115,24 @@ Proof.
 Qed.
 
 End InverseLaws.
+
+(** Separate associator naturality also respects ordered sequences of
+    three arrows. This does not require joint functoriality of the tensor. *)
+
+(** 结合子的分别自然性也保持三条态射的有序组合，不要求张量的联合函子性。 *)
+
+Lemma premonoidal_assoc_sequence_natural {C : Cat}
+    `{PC : !PremonoidalCat C} {X X' Y Y' Z Z' : @Ob C}
+    (f : Hom X X') (g : Hom Y Y') (h : Hom Z Z')
+  : αₚ[X'; Y'; Z'] ∘ binoidal_sequence (binoidal_sequence f g) h ≈
+      binoidal_sequence f (binoidal_sequence g h) ∘ αₚ[X; Y; Z].
+Proof.
+  unfold binoidal_sequence.
+  rewrite binoidal_right_comp, binoidal_left_comp, <- !comp_assoc.
+  rewrite (@premonoidal_assoc_natural_r C PC Z Z' X' Y' h).
+  rewrite !comp_assoc. apply comp_proper; [reflexivity |].
+  rewrite <- comp_assoc,
+    (@premonoidal_assoc_natural_m C PC Y Y' X' Z g), comp_assoc.
+  apply comp_proper; [reflexivity |].
+  exact (@premonoidal_assoc_natural_l C PC X X' Y Z f).
+Qed.

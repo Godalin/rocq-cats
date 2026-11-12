@@ -77,12 +77,15 @@ Local Ltac normalize_pairing :=
 (** tensorator 打包自然的有序配对。 *)
 
 Program Definition MonadTensorN
-  : (ProductF ∘F (M ×F M)) ⇒ (M ∘F ProductF)
+  : (tensorF (@CartesianMonoidal C HT HP) ∘F (M ×F M)) ⇒
+      (M ∘F tensorF (@CartesianMonoidal C HT HP))
   :=
   {|nt p := @monad_pair (fst p) (snd p)
   |}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
+  rewrite (@cartesian_tensor_map C HT HP _ _ _ _ (fmap M f) (fmap M g)),
+    (@cartesian_tensor_map C HT HP _ _ _ _ f g).
   exact (monad_pair_natural f g).
 Defined.
 
@@ -101,16 +104,31 @@ Program Definition MonadLax
   |}.
 Next Obligation.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
+    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+      (monad_return M (@id 1)) (@id (M X))) ≈ π2).
+  rewrite cartesian_tensor_map.
+  change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
     (monad_return M (@id 1) × id) ≈ π2).
   unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 Next Obligation.
+  change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
+    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+      (@id (M X)) (monad_return M (@id 1))) ≈ π1).
+  rewrite cartesian_tensor_map.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
     (id × monad_return M (@id 1)) ≈ π1).
   unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 Local Opaque monad_pair.
 Next Obligation.
+  change (fmap M (@product_assoc C HP X Y Z).1 ∘ monad_pair ∘
+    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+      (@monad_pair X Y) (@id (M Z))) ≈ monad_pair ∘
+    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+      (@id (M X)) (@monad_pair Y Z)) ∘
+    (@product_assoc C HP (M X) (M Y) (M Z)).1).
+  rewrite !cartesian_tensor_map.
   change (fmap M (@product_assoc C HP X Y Z).1 ∘ monad_pair ∘
     (monad_pair × id) ≈ monad_pair ∘ (id × monad_pair) ∘
       (@product_assoc C HP (M X) (M Y) (M Z)).1).

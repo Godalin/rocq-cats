@@ -1,5 +1,5 @@
 From Cats Require Export
-  Cat.Monoidal.Core.
+  Cat.Monoidal.Bifunctor.
 From Cats Require Import
   Cat.Bicategory.Core.
 
@@ -67,17 +67,25 @@ Next Obligation. exact (@right_unitor_naturality B X X _ _ f). Defined.
 
 Program Definition EndoMonoidal
   : MonoidalCat (@HomCat B X X)
-  :=
-  {|tensorF := @comp1F B X X X
-  ; TensorUnit := 𝟙₁ X
-  ; monoidal_associator := (EndoAssociatorN;
+  := BifunctorMonoidal (@comp1F B X X X) (𝟙₁ X)
+    (EndoAssociatorN;
       λ '((h, g), f), @associator_iso B X X X X h g f)
-  ; monoidal_left_unitor := (EndoLeftUnitorN;
+    (EndoLeftUnitorN;
       λ f, @left_unitor_iso B X X f)
-  ; monoidal_right_unitor := (EndoRightUnitorN;
+    (EndoRightUnitorN;
       λ f, @right_unitor_iso B X X f)
-  |}.
+    _ _.
 Next Obligation. exact (bicat_pentagon W X0 Y Z). Defined.
 Next Obligation. exact (bicat_triangle X0 Y). Defined.
+
+(** The derived tensor of two cells agrees with horizontal composition. *)
+
+(** 两个胞腔的导出张量与水平复合相等。 *)
+
+Lemma endomorphism_tensor_map {f f' g g' : Cell1 X X}
+    (β : Cell2 g g') (α : Cell2 f f')
+  : @tensor_map (@HomCat B X X) EndoMonoidal g g' f f' β α ≈
+      comp2_h β α.
+Proof. apply bifunctor_monoidal_map. Qed.
 
 End Endomorphisms.

@@ -183,7 +183,7 @@ Proof.
     + exact (product_comp_l u v (fmap A f) (fmap A (@id Y))).
     + rewrite functor_id, comp_id_l. reflexivity.
   - apply comp_proper; [| reflexivity].
-    exact (lax_lift2_pre A (eval (X := Y) (Y := Z)) f (@id Y)).
+    exact (cartesian_lift2_pre A (eval (X := Y) (Y := Z)) f (@id Y)).
 Qed.
 
 (** The uncurried composition equation is a lifted evaluation diagram.
@@ -209,7 +209,7 @@ Proof.
       (@product_assoc C HP (A (Z ^ Y)) (A (Y ^ X)) (A X)).1) ∘
       ⟨⟨u, v⟩, w⟩).
     + apply comp_proper; [| reflexivity].
-      exact (lax_lift2_assoc A (internal_comp X Y Z)
+      exact (cartesian_lift2_assoc A (internal_comp X Y Z)
         (eval (X := X) (Y := Z)) (eval (X := X) (Y := Y))
         (eval (X := Y) (Y := Z)) (internal_comp_eval X Y Z)).
     + rewrite !comp_assoc, (product_assoc_pair u v w).

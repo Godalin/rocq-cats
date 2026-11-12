@@ -25,6 +25,7 @@ Lemma cartesian_strength_projection (X Y : @Ob C)
   : fmap F (π2 : Hom (X × Y) Y) ∘ st[S; X; Y] ≈ π2.
 Proof.
   pose proof (strength_natural S (! : Hom X 1) (@id Y)) as H.
+  rewrite !cartesian_tensor_map in H.
   change (st[S; 1; Y] ∘ (! × fmap F (@id Y)) ≈
     fmap F (! × @id Y) ∘ st[S; X; Y]) in H.
   rewrite functor_id in H.

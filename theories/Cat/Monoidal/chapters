@@ -1,6 +1,5 @@
 Core.v
-Binoidal.v
-Premonoidal.v
+Bifunctor.v
 Strength.v
 Monoid.v
 Functor.v
@@ -8,5 +7,6 @@ Lifting.v
 Constant.v
 Transport.v
 Cartesian.v
+CartesianLifting.v
 CartesianStrength.v
 Endomorphism.v

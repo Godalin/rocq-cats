@@ -777,7 +777,7 @@ principle asserting this for two arbitrary effects.
 态射在恒等与复合下封闭。任一因子为中心态射时，有序组合与相反执行次序
 相等；没有断言两个任意效应都可如此交换。
 
-[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) explicitly adapts
+[MonoidalBinoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Binoidal.v) explicitly adapts
 an existing monoidal tensor, with all arrows central by bifunctoriality.
 It is not another coercion or globally chosen parent of MonoidalCat.
 [ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) reuses
@@ -787,7 +787,7 @@ reuses the original pure-arrow action. Both old context-naturality laws
 prove that every pure arrow is central. Generic ordered sequencing agrees
 with the existing Arrow split. No concrete model laws are reproved.
 
-[MonoidalBinoidal](../theories/Cat/Monoidal/Binoidal.v) 显式适配已有幺半张量，
+[MonoidalBinoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Binoidal.v) 显式适配已有幺半张量，
 由双函子性证明全部态射为中心态射；它不是 MonoidalCat 的另一强制转换或
 全局选定父结构。
 [ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) 复用
@@ -885,7 +885,7 @@ of each structural map; object tensor and contexts retain binoidal notation.
 不作为重复类字段保存。公开 `premonoidal_scope` 记号提供单位对象及每种
 结构映射的两个方向；对象张量及上下文沿用双侧张量记号。
 
-[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) is an explicit
+[MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) is an explicit
 client of the new layer. It reuses `MonoidalBinoidal`, the original unit,
 associator/unitors and their inverse components. Separate naturality
 specializes existing joint naturality; existing coherence is reused.
@@ -896,7 +896,7 @@ computational Arrow premonoidal structure, symmetric/Freyd interfaces and
 the full characterization also remain open. No concrete model laws are
 reproved here.
 
-[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) 是新层的显式
+[MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) 是新层的显式
 客户端，复用 `MonoidalBinoidal`、原单位对象、结合子／单位子及其逆分量。
 分别自然性特化已有联合自然性，相干性复用原定律。原 `MonoidalCat` 接口及
 全部具体模型构造维持已有形式。迁移其父结构并由交换律导出双函子属于后续
@@ -935,3 +935,115 @@ session; this foundation can be integrated independently.
 页面均抽查英中文正文，同时检查新增一般引理的锚点。结构清单恰好覆盖全部
 91 个接口各一次（64 个类、27 个记录）。批次 PDF 导出与 `typeprop` 集成
 仍由集成会话负责；本基础可独立集成。
+
+
+## Monoidal parent migration
+
+## 幺半父结构迁移
+
+This user-authorized serial slice starts from `0a41be9` on
+`monoidal-cat-view`. [MonoidalCat](../theories/Cat/Monoidal/Core.v) now
+inherits one `PremonoidalCat C` through `MonoidalP :>`, exported as the
+inherited instance. A single interchange equation supplies centrality
+for every arrow; the other centrality square is obtained by swapping
+arguments. The stored tensor bifunctor and direct category bypass are
+removed. The derived tensor functor sequences the inherited actions,
+while unit, associator/unitors, inverse components and coherence come
+from the same parent.
+
+本用户授权的串行批次从 `monoidal-cat-view` 上的 `0a41be9` 开始。
+[MonoidalCat](../theories/Cat/Monoidal/Core.v) 现在通过 `MonoidalP :>` 继承
+唯一 `PremonoidalCat C`，并导出同一父实例。一条交换方程给出每条态射的
+中心性；另一中心性方块通过交换参数得到。不再保存张量双函子，也不保留
+直达范畴的旁路。导出张量函子顺序组合继承作用；单位、结合子／单位子、
+逆分量及相干性均来自同一父结构。
+
+Two proofs use weaker hypotheses than monoidal structure:
+[central_sequence_comp](../theories/Cat/Binoidal/Center.v) needs centrality
+only of the crossing arrow, and
+[premonoidal_assoc_sequence_natural](../theories/Cat/Premonoidal/Laws.v)
+uses only separate premonoidal naturality. The monoidal tensor functor
+and joint associator naturality reuse these proofs. Derived natural
+isomorphisms retain the original inverse components rather than storing
+new choices.
+
+两项证明使用比幺半结构更弱的前提：
+[central_sequence_comp](../theories/Cat/Binoidal/Center.v) 只要求需要交换的
+那条态射的中心性；
+[premonoidal_assoc_sequence_natural](../theories/Cat/Premonoidal/Laws.v)
+只使用预幺半的分别自然性。幺半张量函子及结合子的联合自然性复用这些证明。
+导出自然同构保留原逆分量，不保存新的选择。
+
+[BifunctorBinoidal](../theories/Cat/Binoidal/Bifunctor.v) extracts separate
+actions from any tensor bifunctor. The
+[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) assembly constructor
+then reuses supplied natural structural isomorphisms and two coherence
+proofs. It supplies a natural isomorphism between its derived tensor and
+the original bifunctor, with identity components. The two concrete model
+families (cartesian and bicategory endomorphism, hence endofunctors) use
+this shared constructor; there is no staging data record or equality of
+functor/law records. The transitional `MonoidalBinoidal` and
+`MonoidalPremonoidal` adapters from earlier milestones are removed in
+favor of the inherited projections.
+
+[BifunctorBinoidal](../theories/Cat/Binoidal/Bifunctor.v) 从任意张量双函子
+抽出分别作用；
+[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) 装配器再复用给定
+自然结构同构及两个相干证明，并通过恒等分量给出导出张量与原双函子的自然
+同构。两个具体模型族（笛卡尔及双范畴自同态，包括自函子）复用此构造器，
+没有分阶段数据记录或函子／定律记录的相等。先前批次中的过渡适配器
+`MonoidalBinoidal`、`MonoidalPremonoidal` 已删除，由继承投影替代。
+
+Cartesian and endomorphism comparison laws adapt weaker clients using
+specified equality. [CartesianLifting](../theories/Cat/Monoidal/CartesianLifting.v)
+transports generic lax lifting results without adding pure maps,
+exponentials or strength. Applicative, Monad, strength and Arrow clients
+use these comparisons; tensorator natural transformations have the same
+derived tensor functor at their endpoints. Monad–monoid functors keep
+the underlying arrow and transport its Type-valued preservation witness.
+Computational Arrows remain merely binoidal where already constructed;
+no interchange for arbitrary State effects is inferred. Constructing
+Arrow premonoidal/symmetric/Freyd structure and translations remains open.
+
+笛卡尔及自同态比较定律使用指定相等适配较弱客户端。
+[CartesianLifting](../theories/Cat/Monoidal/CartesianLifting.v) 运输一般
+lax 提升结果，不增加纯值映射、指数或强度。Applicative、Monad、强度及
+Arrow 客户端使用这些比较；tensorator 自然变换的两端使用同一导出张量函子。
+Monad–幺半群函子保持底层态射，运输其 Type 值保持性见证。已有计算 Arrow
+仍只具有已构造的双侧张量结构，不由此推出任意 State 效应的交换律。
+构造 Arrow 的预幺半／对称／Freyd 结构及其翻译仍待完成。
+
+
+Validation used the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
+passed, including the unchanged interface, universe and computation tests.
+All 212 temporary `Print Assumptions` checks were closed under the global
+context: 76 new monoidal-parent checks and 136 adapted premonoidal/binoidal
+checks. They cover both strict hom/equality universe orders, the full
+inherited coercion/instance chain, reconstruction of existing monoidal
+structures and tensor natural-isomorphism comparison, explicit model
+selection, transparent tensor/structure/inverse reductions and the
+unchanged State order counterexample. No permanent tests or shared test
+configuration were changed. The existing `AGENTS.md` learning section now
+records the comparison and tensorator-endpoint discipline.
+
+验证使用已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过，包括未修改
+的接口、宇宙及计算测试。全部 212 项临时 `Print Assumptions` 检查均无额外
+全局假设：新增幺半父层检查 76 项，适配后的预幺半／双侧张量检查 136 项。
+覆盖 Hom／相等的两种严格宇宙次序、完整继承转换／实例链、已有幺半结构
+重建与张量自然同构比较、显式模型选择、张量／结构／逆的透明归约，以及
+原有 State 次序反例。没有新增永久测试或修改共享测试配置。已有
+`AGENTS.md` 的经验部分补充了比较定律与 tensorator 端点选择规范。
+
+Strict bilingual HTML generated 291 modules per language and checked
+links/anchors in 587 pages. The monoidal core, all three new modules and
+the added premonoidal sequence law were inspected in both languages.
+The inventory still covers all 91 interfaces exactly once (64 classes,
+27 records), with all 29 `Has*` classes retained. Batch PDF export and
+`typeprop` integration remain with the integration session.
+
+严格双语 HTML 每种语言生成 291 个模块，检查 587 页的链接／锚点。幺半核心、
+全部三个新增模块及新增预幺半有序组合定律均抽查英中文。清单仍恰好覆盖全部
+91 个接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。批次 PDF
+导出及 `typeprop` 集成仍由集成会话负责。

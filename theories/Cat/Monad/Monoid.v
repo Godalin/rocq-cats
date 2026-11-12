@@ -48,23 +48,37 @@ Theorem monad_monoid_laws {C : Cat} (T : Functor C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
   : is_monad T η μ ↔ is_monoid_object (EndofunctorMonoidal C) T η μ.
 Proof.
-  split; intros [Hu [Hv Ha]]; (split; [| split]); intros X.
-  - change (μ X ∘ (η (T X) ∘ id) ≈ id).
+  split; intros [Hu [Hv Ha]]; (split; [| split]).
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ η id).
+    intros X.
+    change (μ X ∘ (η (T X) ∘ id) ≈ id).
     rewrite comp_id_r. apply Hu.
-  - change (μ X ∘ (id ∘ fmap T (η X)) ≈ id).
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ id η).
+    intros X.
+    change (μ X ∘ (id ∘ fmap T (η X)) ≈ id).
     rewrite comp_id_l. apply Hv.
-  - change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ μ id),
+      (@endomorphism_tensor_map CatBicat C _ _ _ _ id μ).
+    intros X.
+    change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id).
     rewrite (@functor_id C C T (T X)), (@functor_id C C T (T (T X))).
     rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
       (comp_id_r (μ X ∘ fmap T (μ X))). apply Ha.
-  - specialize (Hu X).
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ η id) in Hu.
+    intros X.
+    specialize (Hu X).
     change (μ X ∘ (η (T X) ∘ id) ≈ id) in Hu.
     rewrite comp_id_r in Hu. exact Hu.
-  - specialize (Hv X).
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ id η) in Hv.
+    intros X.
+    specialize (Hv X).
     change (μ X ∘ (id ∘ fmap T (η X)) ≈ id) in Hv.
     rewrite comp_id_l in Hv. exact Hv.
-  - specialize (Ha X).
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ μ id),
+      (@endomorphism_tensor_map CatBicat C _ _ _ _ id μ) in Ha.
+    intros X.
+    specialize (Ha X).
     change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id) in Ha.
     rewrite (@functor_id C C T (T X)), (@functor_id C C T (T (T X))) in Ha.
@@ -115,7 +129,14 @@ Program Definition MonoidMonad {C : Cat}
 Theorem monad_monoid_hom {C : Cat} (M N : Monad C)
     (α : M ⇒ N)
   : is_monad_hom M N α ↔ is_monoid_hom (MonadMonoid M) (MonadMonoid N) α.
-Proof. split; intros H; exact H. Defined.
+Proof.
+  split; intros [Hu Hm]; split.
+  - exact Hu.
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ α α). exact Hm.
+  - exact Hu.
+  - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ α α) in Hm.
+    exact Hm.
+Defined.
 
 (** The structure conversion acts identically on underlying transformations. *)
 
@@ -125,7 +146,7 @@ Program Definition MonadMonoidF (C : Cat)
   : Functor (MonadCat C) (MonoidCat (EndofunctorMonoidal C))
   :=
   {|F0 := MonadMonoid
-  ; F1 M N α := α
+  ; F1 M N α := (α.1; fst (monad_monoid_hom M N α.1) α.2)
   |}.
 Next Obligation. intros α β E. exact E. Defined.
 Next Obligation. reflexivity. Defined.
@@ -139,7 +160,8 @@ Program Definition MonoidMonadF (C : Cat)
   : Functor (MonoidCat (EndofunctorMonoidal C)) (MonadCat C)
   :=
   {|F0 := MonoidMonad
-  ; F1 A B α := α
+  ; F1 A B α := (α.1;
+      snd (monad_monoid_hom (MonoidMonad A) (MonoidMonad B) α.1) α.2)
   |}.
 Next Obligation. intros α β E. exact E. Defined.
 Next Obligation. reflexivity. Defined.

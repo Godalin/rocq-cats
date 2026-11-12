@@ -205,11 +205,11 @@ Program Definition applicative_operations_laws {C : Cat}
   :=
   {|ops_proper X Y Z := lax_lift2_proper A
   ; ops_post X Y Z W f g := lax_lift2_post A f g
-  ; ops_pre X Y X' Y' Z f g h := lax_lift2_pre A f g h
+  ; ops_pre X Y X' Y' Z f g h := cartesian_lift2_pre A f g h
   ; ops_pure X Y Z f := applicative_lift2_pure A f
   ; ops_unit_l X := applicative_unit_l A X
   ; ops_unit_r X := applicative_unit_r A X
-  ; ops_assoc X Y Z U V T f g h k H := lax_lift2_assoc A f g h k H
+  ; ops_assoc X Y Z U V T f g h k H := cartesian_lift2_assoc A f g h k H
   |}.
 
 (** Forget the structural packaging while keeping its functor and operations. *)
@@ -248,12 +248,15 @@ Qed.
 (** 提升后的配对在两个积因子上自然。 *)
 
 Program Definition OperationsTensorN
-  : (ProductF ∘F (O ×F O)) ⇒ (O ∘F ProductF)
+  : (tensorF (@CartesianMonoidal C HT HP) ∘F (O ×F O)) ⇒
+      (O ∘F tensorF (@CartesianMonoidal C HT HP))
   :=
   {|nt p := lift₂ᵒ[O; (@id (fst p × snd p))]
   |}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
+  rewrite (@cartesian_tensor_map C HT HP _ _ _ _ (fmap O f) (fmap O g)),
+    (@cartesian_tensor_map C HT HP _ _ _ _ f g).
   pose proof (ops_pre (IsApplicativeOps := operations_laws O)
     (@id (Y1 × Y2)) f g) as H.
   cbn in H. rewrite comp_id_l in H.
@@ -273,14 +276,31 @@ Program Definition OperationsLax
   ; lax_tensorN := OperationsTensorN
   |}.
 Next Obligation.
+  change (fmap O (π2 : Hom (1 × X) X) ∘ lift₂ᵒ[O; (@id (1 × X))] ∘
+    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+      (pureᵒ[O] 1) (@id (O X))) ≈ π2).
+  rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
   exact (ops_unit_l (IsApplicativeOps := operations_laws O) X).
 Defined.
 Next Obligation.
+  change (fmap O (π1 : Hom (X × 1) X) ∘ lift₂ᵒ[O; (@id (X × 1))] ∘
+    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+      (@id (O X)) (pureᵒ[O] 1)) ≈ π1).
+  rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
   exact (ops_unit_r (IsApplicativeOps := operations_laws O) X).
 Defined.
 Next Obligation.
+  change (fmap O (@product_assoc C HP X Y Z).1 ∘
+    lift₂ᵒ[O; (@id ((X × Y) × Z))] ∘
+      (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+        lift₂ᵒ[O; (@id (X × Y))] (@id (O Z))) ≈
+    lift₂ᵒ[O; (@id (X × (Y × Z)))] ∘
+      (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+        (@id (O X)) lift₂ᵒ[O; (@id (Y × Z))]) ∘
+      (@product_assoc C HP (O X) (O Y) (O Z)).1).
+  rewrite !cartesian_tensor_map.
   rewrite <- operations_lift_pair.
   apply (ops_assoc (IsApplicativeOps := operations_laws O) id
     (@product_assoc C HP X Y Z).1 id id).

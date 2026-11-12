@@ -1,125 +1,113 @@
 From Cats Require Export
-  Cat.Core
-  Cat.Functor.Core
-  Cat.Natural.
+  Cat.Binoidal.Bifunctor
+  Cat.Premonoidal.Laws.
+
+Local Open Scope binoidal_scope.
 
 (** * Monoidal Categories
 
-    A tensor is a bifunctor, not necessarily a categorical product. Its
-    associator and unitors are chosen natural isomorphisms; coherence uses
-    the specified hom equality. No equality of functor records is needed. *)
+    A monoidal category is a premonoidal category with interchange.
+    Its tensor bifunctor and joint naturality are derived from the shared
+    context actions. Units, structure maps, inverses and coherence are
+    inherited once; all equations use specified hom equality. *)
 
 (** * 幺半范畴
 
-    张量是双函子，不必是范畴积。结合子与单位子是选定自然同构，相干性使用
-    指定 Hom 相等，不要求函子记录相等。 *)
-
-(** The left bracketing of a tensor on triples. *)
-
-(** 三个对象上的左括号张量函子。 *)
-
-Definition TensorLeftF {C : Cat} (T : Functor (C ×C C) C)
-  : Functor ((C ×C C) ×C C) C
-  := T ∘F (T ×F IdF).
-
-(** The right bracketing, on the same triple-product source. *)
-
-(** 在同一个三重乘积来源上的右括号张量函子。 *)
-
-Program Definition TensorRightF {C : Cat} (T : Functor (C ×C C) C)
-  : Functor ((C ×C C) ×C C) C
-  :=
-  {|F0 p := T (fst (fst p), T (snd (fst p), snd p))
-  ; F1 p q f := fmap T
-      (X := (fst (fst p), T (snd (fst p), snd p)))
-      (Y := (fst (fst q), T (snd (fst q), snd q)))
-      (fst (fst f), fmap T
-        (X := (snd (fst p), snd p)) (Y := (snd (fst q), snd q))
-        (snd (fst f), snd f))
-  |}.
-Next Obligation.
-  intros [[f g] h] [[f' g'] h'] [[Hf Hg] Hh]. cbn.
-  apply functor_fmap_proper. split; [exact Hf |].
-  exact (@functor_fmap_proper _ _ T
-    (snd (fst X), snd X) (snd (fst Y), snd Y)
-    (g, h) (g', h') (Hg, Hh)).
-Defined.
-Next Obligation.
-  transitivity (fmap T
-    (X := (fst (fst X), T (snd (fst X), snd X)))
-    (Y := (fst (fst X), T (snd (fst X), snd X))) (id, id)).
-  - apply functor_fmap_proper. split; [reflexivity |].
-    exact (@functor_id _ _ T (snd (fst X), snd X)).
-  - apply functor_id.
-Defined.
-Next Obligation.
-  etransitivity; [| apply functor_comp].
-  apply functor_fmap_proper. split; [reflexivity |].
-  exact (@functor_comp _ _ T
-    (snd (fst X), snd X) (snd (fst Y), snd Y) (snd (fst Z), snd Z)
-    (snd (fst f), snd f) (snd (fst g), snd g)).
-Defined.
-
-(** A monoidal structure on the named category [C]. The natural
-    isomorphisms retain their inverse components. The intermediate tensor
-    and coherence components are computed fields, not additional choices.
-    The coercion to [Cat] computes to the named [C]; it stores no second
-    category and does not choose a monoidal structure for [C].
-
-    Pentagon and triangle are equations of arrows with fixed endpoints.
-    Neither the tensor unit nor the tensor is required to be terminal or
-    a product, respectively. Carrier, equality and law sizes are inferred
-    independently from the underlying category and natural isomorphisms. *)
-
-(** 指定范畴 [C] 上的幺半结构。自然同构保留各分量的逆，中间张量运算及相干
-    分量都是计算字段，不是额外选取。到 [Cat] 的强制转换直接计算为具名的
-    [C]，不保存第二个范畴，也不会为 [C] 自动选取幺半结构。
-
-    五边形与三角形是固定端点的态射方程，不要求张量单位为终对象，也不要求
-    张量为积。载体、相等及定律的大小由底层范畴和自然同构分别推导。 *)
+    幺半范畴是具有交换律的预幺半范畴。张量双函子及联合自然性从共享上下文
+    作用导出。单位对象、结构映射、逆与相干性只继承一次；全部方程使用指定
+    Hom 相等。 *)
 
 Class MonoidalCat (C : Cat)
   :=
-  (** The unique underlying category view is the supplied parameter. *)
+  (** The only parent stores the tensor actions and structural choices. *)
 
-  (** 唯一的底层范畴视图就是给定参数。 *)
+  (** 唯一父结构保存张量作用及结构选择。 *)
 
-  { MonoidalC :> Cat := C
-  ; tensorF : Functor (C ×C C) C
-  ; TensorUnit : @Ob C
-  ; monoidal_associator : TensorLeftF tensorF ≅N TensorRightF tensorF
-  ; monoidal_left_unitor : π2F tensorF TensorUnit ≅N IdF
-  ; monoidal_right_unitor : π1F tensorF TensorUnit ≅N IdF
-  ; tensor (X Y : @Ob C) := tensorF (X, Y)
-  ; tensor_map {X X' Y Y' : @Ob C}
+  { MonoidalP :> PremonoidalCat C
+
+  (** The two orders agree for arbitrary arrows. The other centrality
+      square follows by exchanging the roles of the two arrows. *)
+
+  (** 任意态射的两种次序相等。交换两条态射的角色即可导出另一中心性方块。 *)
+
+  ; monoidal_interchange {X X' Y Y' : @Ob C}
       (f : Hom X X') (g : Hom Y Y')
-      : Hom (tensor X Y) (tensor X' Y')
-    := fmap tensorF (X := (X, Y)) (Y := (X', Y')) (f, g)
-  ; tensor_assoc (X Y Z : @Ob C)
-      : Hom (tensor (tensor X Y) Z) (tensor X (tensor Y Z))
-    := monoidal_associator.1 ((X, Y), Z)
-  ; tensor_unit_l (X : @Ob C) : Hom (tensor TensorUnit X) X
-    := monoidal_left_unitor.1 X
-  ; tensor_unit_r (X : @Ob C) : Hom (tensor X TensorUnit) X
-    := monoidal_right_unitor.1 X
-  ; monoidal_pentagon (W X Y Z : @Ob C)
-    : tensor_assoc W X (tensor Y Z) ∘ tensor_assoc (tensor W X) Y Z ≈
-        tensor_map id (tensor_assoc X Y Z) ∘
-          (tensor_assoc W (tensor X Y) Z ∘
-            tensor_map (tensor_assoc W X Y) id)
-  ; monoidal_triangle (X Y : @Ob C)
-    : tensor_map id (tensor_unit_l Y) ∘ tensor_assoc X TensorUnit Y ≈
-        tensor_map (tensor_unit_r X) id
+    : (f ⊳ Y') ∘ (X ⊲ g) ≈ (X' ⊲ g) ∘ (f ⊳ Y)
   }.
 
-Arguments MonoidalC {_} _.
-Arguments tensorF {_} _.
-Arguments TensorUnit {_} _.
-Arguments tensor {_ _} _ _.
-Arguments tensor_map {_ _ _ _ _ _} _ _.
-Arguments tensor_assoc {_ _} _ _ _.
-Arguments tensor_unit_l {_ _} _.
-Arguments tensor_unit_r {_ _} _.
+Arguments MonoidalP {_} _.
+
+(** Register the same immediate parent for inherited instance search. *)
+
+(** 为继承实例搜索注册同一个直接父结构。 *)
+
+#[export] Existing Instance MonoidalP.
+
+Section TensorOperations.
+Context {C : Cat} `{MC : !MonoidalCat C}.
+
+(** The object tensor is exactly the inherited tensor. *)
+
+(** 对象张量恰好是继承的张量。 *)
+
+Definition tensor (X Y : @Ob C)
+  : @Ob C
+  := X ⊗ Y.
+
+(** Tensor arrows by the inherited left-then-right ordered actions. *)
+
+(** 通过继承的先左后右有序作用张量态射。 *)
+
+Definition tensor_map {X X' Y Y' : @Ob C}
+    (f : Hom X X') (g : Hom Y Y')
+  : Hom (tensor X Y) (tensor X' Y')
+  := binoidal_sequence f g.
+
+(** Every arrow is central; only one interchange equation was stored. *)
+
+(** 每条态射都是中心态射；结构只保存了一种交换方程。 *)
+
+Definition monoidal_arrow_central {X Y : @Ob C} (f : Hom X Y)
+  : is_central f.
+Proof.
+  intros Z W g. split.
+  - apply monoidal_interchange.
+  - symmetry. apply monoidal_interchange.
+Defined.
+
+(** The associator is the parent's chosen forward map. *)
+
+(** 结合子是父结构的选定正向映射。 *)
+
+Definition tensor_assoc (X Y Z : @Ob C)
+  : Hom (tensor (tensor X Y) Z) (tensor X (tensor Y Z))
+  := (premonoidal_associator X Y Z).1.
+
+(** The left unit map retains the parent's selected component. *)
+
+(** 左单位映射保留父结构的选定分量。 *)
+
+Definition tensor_unit_l (X : @Ob C)
+  : Hom (binoidal_tensor (PremonoidalUnit MC) X) X
+  := (premonoidal_left_unitor X).1.
+
+(** The right unitor uses the same inherited unit. *)
+
+(** 右单位子使用同一继承单位对象。 *)
+
+Definition tensor_unit_r (X : @Ob C)
+  : Hom (binoidal_tensor X (PremonoidalUnit MC)) X
+  := (premonoidal_right_unitor X).1.
+
+End TensorOperations.
+
+(** Expose the inherited unit with an explicit structure argument. *)
+
+(** 通过显式结构参数提供继承的单位对象。 *)
+
+Definition TensorUnit {C : Cat} (MC : MonoidalCat C)
+  : @Ob C
+  := PremonoidalUnit MC.
 
 Declare Scope monoidal_scope.
 Delimit Scope monoidal_scope with monoidal.
@@ -145,91 +133,216 @@ Local Open Scope monoidal_scope.
 Section TensorLaws.
 Context {C : Cat} `{MC : !MonoidalCat C}.
 
-(** Tensoring arrows preserves the specified equality in both variables. *)
+(** Tensoring arrows preserves specified hom equality. *)
 
-(** 态射张量在两个变量上保持指定相等。 *)
+(** 态射张量保持指定 Hom 相等。 *)
 
 Global Instance tensor_map_proper {X X' Y Y' : @Ob C}
   : Proper (HomEq ==> HomEq ==> HomEq)
       (@tensor_map C MC X X' Y Y').
-Proof.
-  intros f f' Hf g g' Hg.
-  exact (@functor_fmap_proper _ _ (tensorF MC) (X, Y) (X', Y')
-    (f, g) (f', g') (Hf, Hg)).
-Qed.
+Proof. apply binoidal_sequence_proper. Qed.
 
-(** Tensor preserves a pair of identities. *)
+(** Tensor preserves identities using only the separate action laws. *)
 
-(** 张量保持一对恒等态射。 *)
+(** 仅通过分别作用的定律，张量保持恒等。 *)
 
 Lemma tensor_map_id (X Y : @Ob C)
   : (@id X ⊗m @id Y) ≈ @id (X ⊗ Y).
-Proof. exact (@functor_id _ _ (tensorF MC) (X, Y)). Qed.
+Proof.
+  unfold tensor_map, binoidal_sequence.
+  rewrite binoidal_left_id, binoidal_right_id, comp_id_l. reflexivity.
+Qed.
 
-(** Bifunctoriality is the interchange equation for tensor and composition. *)
+(** A fixed identity on the left recovers left context action. *)
 
-(** 双函子性就是张量与复合的交换方程。 *)
+(** 左侧固定恒等时，恢复左上下文作用。 *)
+
+Lemma tensor_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
+  : (@id Z ⊗m f) ≈ Z ⊲ f.
+Proof.
+  unfold tensor_map, binoidal_sequence.
+  rewrite binoidal_right_id, comp_id_r. reflexivity.
+Qed.
+
+(** A fixed identity on the right recovers right context action. *)
+
+(** 右侧固定恒等时，恢复右上下文作用。 *)
+
+Lemma tensor_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
+  : (f ⊗m @id Z) ≈ f ⊳ Z.
+Proof.
+  unfold tensor_map, binoidal_sequence.
+  rewrite binoidal_left_id, comp_id_l. reflexivity.
+Qed.
+
+(** Interchange makes ordered tensoring jointly functorial. *)
+
+(** 交换律使有序张量联合具有函子性。 *)
 
 Lemma tensor_map_comp {X X' X'' Y Y' Y'' : @Ob C}
     (f' : Hom X' X'') (f : Hom X X')
     (g' : Hom Y' Y'') (g : Hom Y Y')
   : ((f' ∘ f) ⊗m (g' ∘ g)) ≈ (f' ⊗m g') ∘ (f ⊗m g).
 Proof.
-  exact (@functor_comp _ _ (tensorF MC)
-    (X, Y) (X', Y') (X'', Y'') (f', g') (f, g)).
+  exact (central_sequence_comp f' f g' g (monoidal_arrow_central f')).
 Qed.
 
-(** The associator is natural in all three tensor arguments. *)
+(** The associator is jointly natural by three separate naturality squares. *)
 
-(** 结合子在三个张量变量上自然。 *)
+(** 结合子的联合自然性由三个分别自然性方块得到。 *)
 
 Lemma tensor_assoc_natural {X X' Y Y' Z Z' : @Ob C}
     (f : Hom X X') (g : Hom Y Y') (h : Hom Z Z')
   : α⊗[X'; Y'; Z'] ∘ ((f ⊗m g) ⊗m h) ≈
       (f ⊗m (g ⊗m h)) ∘ α⊗[X; Y; Z].
 Proof.
-  exact (nt_naturality (monoidal_associator.1)
-    (X := ((X, Y), Z)) (Y := ((X', Y'), Z')) ((f, g), h)).
+  exact (premonoidal_assoc_sequence_natural f g h).
 Qed.
 
-(** The left unitor is natural. *)
+(** Left-unitor naturality uses the inherited equation. *)
 
-(** 左单位子自然。 *)
+(** 左单位子自然性使用继承的方程。 *)
 
 Lemma tensor_unit_l_natural {X Y : @Ob C} (f : Hom X Y)
   : λ⊗[Y] ∘ (@id (I⊗[MC]) ⊗m f) ≈ f ∘ λ⊗[X].
-Proof. exact (nt_naturality (monoidal_left_unitor.1) f). Qed.
+Proof. rewrite tensor_map_left. apply premonoidal_unit_l_natural. Qed.
 
-(** The right unitor is natural. *)
+(** Right-unitor naturality uses the inherited equation. *)
 
-(** 右单位子自然。 *)
+(** 右单位子自然性使用继承的方程。 *)
 
 Lemma tensor_unit_r_natural {X Y : @Ob C} (f : Hom X Y)
   : ρ⊗[Y] ∘ (f ⊗m @id (I⊗[MC])) ≈ f ∘ ρ⊗[X].
-Proof. exact (nt_naturality (monoidal_right_unitor.1) f). Qed.
+Proof. rewrite tensor_map_right. apply premonoidal_unit_r_natural. Qed.
 
-(** The associator component comes with a computational inverse. *)
+(** The original computational inverse of the associator. *)
 
-(** 结合子分量具有可计算的逆。 *)
+(** 结合子的原可计算逆。 *)
 
 Definition tensor_assoc_iso (X Y Z : @Ob C)
   : is_iso α⊗[X; Y; Z]
-  := monoidal_associator.2 ((X, Y), Z).
+  := (premonoidal_associator X Y Z).2.
 
-(** The left unitor component comes with a computational inverse. *)
+(** The original computational inverse of the left unitor. *)
 
-(** 左单位子分量具有可计算的逆。 *)
+(** 左单位子的原可计算逆。 *)
 
 Definition tensor_unit_l_iso (X : @Ob C)
   : is_iso λ⊗[X]
-  := monoidal_left_unitor.2 X.
+  := (premonoidal_left_unitor X).2.
 
-(** The right unitor component comes with a computational inverse. *)
+(** The original computational inverse of the right unitor. *)
 
-(** 右单位子分量具有可计算的逆。 *)
+(** 右单位子的原可计算逆。 *)
 
 Definition tensor_unit_r_iso (X : @Ob C)
   : is_iso ρ⊗[X]
-  := monoidal_right_unitor.2 X.
+  := (premonoidal_right_unitor X).2.
+
+(** The inherited pentagon expressed with the derived bimap. *)
+
+(** 用导出的二元映射表述继承的五边形。 *)
+
+Lemma monoidal_pentagon (W X Y Z : @Ob C)
+  : α⊗[W; X; Y ⊗ Z] ∘ α⊗[W ⊗ X; Y; Z] ≈
+      (id ⊗m α⊗[X; Y; Z]) ∘
+        (α⊗[W; X ⊗ Y; Z] ∘ (α⊗[W; X; Y] ⊗m id)).
+Proof.
+  rewrite tensor_map_left, tensor_map_right. apply premonoidal_pentagon.
+Qed.
+
+(** The inherited triangle expressed with the derived bimap. *)
+
+(** 用导出的二元映射表述继承的三角形。 *)
+
+Lemma monoidal_triangle (X Y : @Ob C)
+  : (id ⊗m λ⊗[Y]) ∘ α⊗[X; I⊗[MC]; Y] ≈ ρ⊗[X] ⊗m id.
+Proof.
+  rewrite tensor_map_left, tensor_map_right. apply premonoidal_triangle.
+Qed.
 
 End TensorLaws.
+
+(** The tensor bifunctor is computed, not stored as another choice.
+    Pair projections preserve reduction on an undestructed input pair. *)
+
+(** 张量双函子通过计算得到，不另作选择。对投影保留未拆解输入对上的归约。 *)
+
+Program Definition tensorF {C : Cat} (MC : MonoidalCat C)
+  : Functor (C ×C C) C
+  :=
+  {|F0 p := @tensor C MC (fst p) (snd p)
+  ; F1 p q f := @tensor_map C MC _ _ _ _ (fst f) (snd f)
+  |}.
+Next Obligation.
+  intros [f1 f2] [g1 g2] [H1 H2].
+  apply tensor_map_proper; assumption.
+Defined.
+Next Obligation. apply tensor_map_id. Defined.
+Next Obligation. apply tensor_map_comp. Defined.
+
+Section NaturalIsomorphisms.
+Context {C : Cat} `{MC : !MonoidalCat C}.
+
+(** Package derived joint naturality with the inherited associator. *)
+
+(** 将导出的联合自然性与继承结合子打包。 *)
+
+Program Definition MonoidalAssociatorN
+  : TensorLeftF (tensorF MC) ⇒ TensorRightF (tensorF MC)
+  :=
+  {|nt p := α⊗[fst (fst p); snd (fst p); snd p]
+  |}.
+Next Obligation.
+  destruct X as [[x y] z], Y as [[x' y'] z'], f as [[f g] h].
+  apply tensor_assoc_natural.
+Defined.
+
+(** The natural isomorphism retains the same component inverses. *)
+
+(** 自然同构保留相同的分量逆。 *)
+
+Definition monoidal_associator
+  : TensorLeftF (tensorF MC) ≅N TensorRightF (tensorF MC)
+  := (MonoidalAssociatorN;
+      λ p, tensor_assoc_iso (fst (fst p)) (snd (fst p)) (snd p)).
+
+(** Package the inherited left unitor as a natural transformation. *)
+
+(** 将继承左单位子打包为自然变换。 *)
+
+Program Definition MonoidalLeftUnitorN
+  : π2F (tensorF MC) (I⊗[MC]) ⇒ IdF
+  :=
+  {|nt X := λ⊗[X]
+  |}.
+Next Obligation. apply tensor_unit_l_natural. Defined.
+
+(** Package the inherited right unitor as a natural transformation. *)
+
+(** 将继承右单位子打包为自然变换。 *)
+
+Program Definition MonoidalRightUnitorN
+  : π1F (tensorF MC) (I⊗[MC]) ⇒ IdF
+  :=
+  {|nt X := ρ⊗[X]
+  |}.
+Next Obligation. apply tensor_unit_r_natural. Defined.
+
+(** The natural left-unitor isomorphism keeps its selected inverse. *)
+
+(** 左单位自然同构保留其选定逆。 *)
+
+Definition monoidal_left_unitor
+  : π2F (tensorF MC) (I⊗[MC]) ≅N IdF
+  := (MonoidalLeftUnitorN; tensor_unit_l_iso).
+
+(** The natural right-unitor isomorphism keeps its selected inverse. *)
+
+(** 右单位自然同构保留其选定逆。 *)
+
+Definition monoidal_right_unitor
+  : π1F (tensorF MC) (I⊗[MC]) ≅N IdF
+  := (MonoidalRightUnitorN; tensor_unit_r_iso).
+
+End NaturalIsomorphisms.

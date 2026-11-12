@@ -1,6 +1,7 @@
 From Cats Require Export
   Cat.Monoidal.Monoid.
 From Cats Require Import
+  Cat.Monoidal.Bifunctor
   Cat.Terminal
   Cat.Product.Transport.
 
@@ -104,14 +105,10 @@ Defined.
 
 Program Definition CartesianMonoidal
   : MonoidalCat C
-  :=
-  {|tensorF := ProductF
-  ; TensorUnit := 1
-  ; monoidal_associator := (CartesianAssociatorN;
+  := BifunctorMonoidal ProductF 1
+    (CartesianAssociatorN;
       λ '((X, Y), Z), (@product_assoc C HP X Y Z).2)
-  ; monoidal_left_unitor := CartesianLeftUnitorIso
-  ; monoidal_right_unitor := CartesianRightUnitorIso
-  |}.
+    CartesianLeftUnitorIso CartesianRightUnitorIso _ _.
 Next Obligation.
   cbn. repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
@@ -124,6 +121,15 @@ Next Obligation.
     rewrite comp_id_l | rewrite comp_id_r].
   reflexivity.
 Defined.
+
+(** The derived tensor action agrees with the selected product bimap. *)
+
+(** 导出的张量作用与选定积的二元映射相等。 *)
+
+Lemma cartesian_tensor_map {X X' Y Y' : @Ob C}
+    (f : Hom X X') (g : Hom Y Y')
+  : @tensor_map C CartesianMonoidal X X' Y Y' f g ≈ f × g.
+Proof. apply bifunctor_monoidal_map. Qed.
 
 (** Internal monoids for finite products are a specialization of the same
     monoid-object definition. Their multiplication has type [M × M → M]
@@ -145,6 +151,7 @@ Lemma cartesian_monoid_unit_l (A : CartesianMonoid)
   : m[A] ∘ ⟨e[A] ∘ !, id⟩ ≈ id.
 Proof.
   pose proof (monoid_object_unit_l A) as H.
+  rewrite cartesian_tensor_map in H.
   change (m[A] ∘ (e[A] × id) ≈ π2) in H.
   transitivity ((m[A] ∘ (e[A] × id)) ∘
     (⟨!, id⟩ : Hom (MonoidCarrier A) (1 × MonoidCarrier A))).
@@ -165,6 +172,7 @@ Lemma cartesian_monoid_unit_r (A : CartesianMonoid)
   : m[A] ∘ ⟨id, e[A] ∘ !⟩ ≈ id.
 Proof.
   pose proof (monoid_object_unit_r A) as H.
+  rewrite cartesian_tensor_map in H.
   change (m[A] ∘ (id × e[A]) ≈ π1) in H.
   transitivity ((m[A] ∘ (id × e[A])) ∘
     (⟨id, !⟩ : Hom (MonoidCarrier A) (MonoidCarrier A × 1))).
@@ -185,6 +193,9 @@ Lemma cartesian_monoid_assoc (A : CartesianMonoid)
   : m[A] ∘ (m[A] × id) ≈ m[A] ∘ (id × m[A]) ∘
       (@product_assoc C HP
         (MonoidCarrier A) (MonoidCarrier A) (MonoidCarrier A)).1.
-Proof. exact (monoid_object_assoc A). Qed.
+Proof.
+  pose proof (monoid_object_assoc A) as H.
+  rewrite !cartesian_tensor_map in H. exact H.
+Qed.
 
 End Cartesian.

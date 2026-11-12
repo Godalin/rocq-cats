@@ -118,3 +118,22 @@ Lemma central_sequence_r {X Y Z W : @Ob C}
 Proof. exact (snd (Hg X Y f)). Qed.
 
 End CentralLaws.
+
+(** Ordered tensoring preserves composition when the later left arrow
+    exchanges with the earlier right arrow. No other centrality is needed. *)
+
+(** 后执行的左态射可与先执行的右态射交换时，有序张量保持复合；不需其他
+    中心性条件。 *)
+
+Lemma central_sequence_comp {C : Cat} `{BC : !BinoidalCat C}
+    {X X' X'' Y Y' Y'' : @Ob C}
+    (f' : Hom X' X'') (f : Hom X X')
+    (g' : Hom Y' Y'') (g : Hom Y Y') (Hf' : is_central f')
+  : binoidal_sequence (f' ∘ f) (g' ∘ g) ≈
+      binoidal_sequence f' g' ∘ binoidal_sequence f g.
+Proof.
+  unfold binoidal_sequence.
+  rewrite binoidal_left_comp, binoidal_right_comp, !comp_assoc.
+  rewrite <- (comp_assoc (X'' ⊲ g) (f' ⊳ Y) (f ⊳ Y)),
+    <- (fst (Hf' Y Y' g)), comp_assoc. reflexivity.
+Qed.

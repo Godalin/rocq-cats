@@ -43,7 +43,10 @@ Proof. exact (strong_extend_proper M). Qed.
 
 Lemma context_extend_pure {W X Y : @Ob C} (k : Hom (W × X) (M Y))
   : context_extend k ∘ (id × η[M] X) ≈ k.
-Proof. exact (strong_extend_pure M k). Qed.
+Proof.
+  pose proof (strong_extend_pure M k) as H.
+  rewrite cartesian_tensor_map in H. exact H.
+Qed.
 
 (** Pure continuations are ordinary maps after strength. *)
 
@@ -71,7 +74,10 @@ Lemma context_extend_pre {W W' X X' Y : @Ob C}
     (k : Hom (W' × X') (M Y)) (f : Hom W W') (g : Hom X X')
   : context_extend k ∘ (f × fmap M g) ≈
       context_extend (k ∘ (f × g)).
-Proof. exact (strong_extend_pre M k f g). Qed.
+Proof.
+  pose proof (strong_extend_pre M k f g) as H.
+  rewrite !cartesian_tensor_map in H. exact H.
+Qed.
 
 (** Nested extensions reassociate their ordinary product contexts. *)
 
@@ -83,7 +89,10 @@ Lemma context_extend_assoc {W V X Y Z : @Ob C}
       (@product_assoc C HP W V (M X)).1 ≈
       context_extend (context_extend h ∘ (id × k) ∘
         (@product_assoc C HP W V X).1).
-Proof. exact (strong_extend_assoc M k h). Qed.
+Proof.
+  pose proof (strong_extend_assoc M k h) as H.
+  rewrite !cartesian_tensor_map in H. exact H.
+Qed.
 
 (** Run the first computation, then pass its result together with the
     original context to the continuation. *)
@@ -272,8 +281,9 @@ Proof.
   - apply comp_proper; [| reflexivity].
     apply comp_proper; [| reflexivity].
     apply functor_fmap_proper. rewrite cross_η, comp_id_l. reflexivity.
-  - rewrite <- (strength_natural (hasStrength M) σ (@id X)), functor_id,
-      comp_assoc.
+  - pose proof (strength_natural (hasStrength M) σ (@id X)) as H.
+    rewrite !cartesian_tensor_map in H.
+    rewrite <- H, functor_id, comp_assoc.
     change (st[hasStrength M; V; X] ∘
       ((σ × @id (M X)) ∘ ⟨id, u⟩) ≈
       st[hasStrength M; V; X] ∘ ⟨σ, u⟩).

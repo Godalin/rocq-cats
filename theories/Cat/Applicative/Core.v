@@ -1,8 +1,7 @@
 From Cats Require Export
   Cat.Terminal
   Cat.Product.Core
-  Cat.Monoidal.Lifting
-  Cat.Monoidal.Cartesian.
+  Cat.Monoidal.CartesianLifting.
 
 Local Open Scope monoidal_scope.
 
@@ -113,7 +112,8 @@ Lemma applicative_unit_l (X : @Ob C)
   : lift₂[A; (π2 : Hom (1 × X) X)] ∘ (pure[A] 1 × id) ≈ π2.
 Proof.
   unfold lax_lift2. rewrite (applicative_pure_unit A).
-  exact (lax_unit_l A X).
+  pose proof (lax_unit_l A X) as H.
+  rewrite cartesian_tensor_map in H. exact H.
 Qed.
 
 (** The terminal pure input on the right can be removed. *)
@@ -124,7 +124,8 @@ Lemma applicative_unit_r (X : @Ob C)
   : lift₂[A; (π1 : Hom (X × 1) X)] ∘ (id × pure[A] 1) ≈ π1.
 Proof.
   unfold lax_lift2. rewrite (applicative_pure_unit A).
-  exact (lax_unit_r A X).
+  pose proof (lax_unit_r A X) as H.
+  rewrite cartesian_tensor_map in H. exact H.
 Qed.
 
 (** A fixed pure left input reduces lifting to an ordinary unary map.
@@ -141,7 +142,7 @@ Proof.
   assert (K : (fmap A x ∘ pure[A] 1) × id ≈
       (fmap A x × fmap A (@id Y)) ∘ (pure[A] 1 × id)).
   { rewrite functor_id, <- cross_comp, comp_id_l. reflexivity. }
-  rewrite K, <- comp_assoc, (lax_lift2_pre A f x id).
+  rewrite K, <- comp_assoc, (cartesian_lift2_pre A f x id).
   unfold lax_lift2. rewrite H, functor_comp.
   transitivity (fmap A g ∘
     (lift₂[A; (π2 : Hom (1 × Y) Y)] ∘ (pure[A] 1 × id))).
@@ -162,7 +163,7 @@ Proof.
   assert (K : id × (fmap A y ∘ pure[A] 1) ≈
       (fmap A (@id X) × fmap A y) ∘ (id × pure[A] 1)).
   { rewrite functor_id, <- cross_comp, comp_id_l. reflexivity. }
-  rewrite K, <- comp_assoc, (lax_lift2_pre A f id y).
+  rewrite K, <- comp_assoc, (cartesian_lift2_pre A f id y).
   unfold lax_lift2. rewrite H, functor_comp.
   transitivity (fmap A g ∘
     (lift₂[A; (π1 : Hom (X × 1) X)] ∘ (id × pure[A] 1))).

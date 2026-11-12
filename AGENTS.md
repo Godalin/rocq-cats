@@ -222,3 +222,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   as in `arrow_context A Z f`. This exposes an ordinary partial application
   for `Proper`; a dependent context argument after the morphism can make
   rewriting search for unsupported `forall_relation` instances.
+- Reconstructing a tensor bifunctor from separate actions recovers a supplied
+  bimap up to `HomEq`, not generally by conversion. Use comparisons such as
+  `cartesian_tensor_map` or `endomorphism_tensor_map` before specializing
+  natural-transformation equations to components; keep tensorator endpoints
+  on that same derived tensor functor. When preservation predicates change,
+  rebuild subset morphisms with transported law witnesses and the same
+  underlying arrow, without equality of law records.

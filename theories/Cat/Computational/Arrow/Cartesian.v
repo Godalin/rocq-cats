@@ -83,7 +83,10 @@ Qed.
 
 Lemma arrow_second_arr {X Y : @Ob C} (f : Hom X Y) (Z : @Ob C)
   : second[A; arr[A; f]; Z] ≈ arr[A; @id Z × f].
-Proof. exact (arrow_context_arr A Z f). Qed.
+Proof.
+  pose proof (arrow_context_arr A Z f) as H.
+  rewrite cartesian_tensor_map in H. exact H.
+Qed.
 
 (** Left-context action preserves sequencing. *)
 
@@ -102,7 +105,10 @@ Lemma arrow_second_natural {X Y Z W : @Ob C}
     (f : Hom (A X) (A Y)) (h : Hom Z W)
   : arr[A; h × @id Y] ∘ second[A; f; Z] ≈
       second[A; f; W] ∘ arr[A; h × @id X].
-Proof. exact (arrow_context_natural A f h). Qed.
+Proof.
+  pose proof (arrow_context_natural A f h) as H.
+  rewrite !cartesian_tensor_map in H. exact H.
+Qed.
 
 (** Pure right-context extension is an ordinary product map. *)
 
