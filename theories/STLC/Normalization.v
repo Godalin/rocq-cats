@@ -1,4 +1,6 @@
-From Cats Require Export STLC.Evaluation.
+From Cats Require Export
+  STLC.Evaluation
+  STLC.NormalDecision.
 From Cats Require Import
   STLC.EvaluationEquivalence
   STLC.LogicalRelation
@@ -270,5 +272,21 @@ Definition tm_eq_nf@{e +} {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
 Lemma nf_idempotent {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   : nf (embed_nf (nf t)) = nf t.
 Proof. symmetry. exact (nf_tm_eq (nf_sound t)). Defined.
+
+(** Decide beta/eta equality using the explicit base-label decision.
+    Equal computed trees yield an equational derivation in the chosen
+    evidence universe; unequal trees refute every such derivation by
+    invariance. The decision keeps either witness as Type-valued data.
+    All preceding normalization theorems remain unconditional. *)
+
+(** 使用显式基标签判定来判定 βη 相等。计算所得树相同时，在选定证据宇宙中
+    产生等式推导；不同时，由不变性反驳任意这样的推导。判定将任一分支的见证
+    保留为 Type 值数据。此前的全部正规化定理仍然无条件成立。 *)
+
+Definition tm_eq_decision@{e +}
+    (d : ∀ p q : B, Decision (p = q))
+    {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
+  : Decision (TmEq@{b e _} t u)
+  := decision_iff (tm_eq_nf t u) (nf_eq_decision d (nf t) (nf u)).
 
 End Normalization.
