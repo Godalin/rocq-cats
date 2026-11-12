@@ -9,6 +9,16 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Eta Correctness above the Syntax Level
+
+    Fix a signature, context, type and neutral term with [b < e].
+    Check that eta correctness accepts the larger evidence universe. *)
+
+(** ** 高于语法层级的 η 正确性
+
+    固定签名、上下文、类型和中性项，并取 [b < e]，检查 η 正确性接受较大的
+    证据宇宙。 *)
+
 Section LargerEvidence.
 Universes b e.
 Constraint b < e.
@@ -24,6 +34,16 @@ Definition separated_eta_correctness
 
 End LargerEvidence.
 
+(** ** Eta Correctness at the Syntax Level
+
+    Keep the same syntactic inputs but choose evidence at [b] itself.
+    Check that eta correctness needs no strict universe increase. *)
+
+(** ** 语法层级处的 η 正确性
+
+    仍固定同类语法输入，但将证据取在 [b] 本身，检查 η 正确性无须严格提升
+    宇宙。 *)
+
 Section SameLevel.
 Universe b.
 Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B) (n : Ne Γ A).
@@ -37,6 +57,16 @@ Definition same_level_eta_correctness
   := eta_expand_ne_sound A n.
 
 End SameLevel.
+
+(** ** Executable Eta Expansions
+
+    Fix arbitrary base labels [p] and [q] and a context [Γ]. Check
+    type-directed expansion and its behavior under binders and renaming. *)
+
+(** ** 可执行的 η 展开
+
+    固定任意基标签 [p]、[q] 与上下文 [Γ]，检查类型导向展开及其在绑定与
+    重命名下的计算。 *)
 
 Section Computations.
 Context {B : Type} (p q : B) (Γ : Ctx B).

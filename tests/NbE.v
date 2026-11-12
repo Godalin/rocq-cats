@@ -14,6 +14,16 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Evaluation at Separated Bounds
+
+    Fix [B], [Γ], [A] and a term [t] with [b < r < s < l]. Check
+    evaluation, initialization and normalization at these distinct bounds. *)
+
+(** ** 独立界限处的求值
+
+    固定 [B]、[Γ]、[A] 和项 [t]，取 [b < r < s < l]，检查这些不同界限处
+    的求值、初始化与正规化。 *)
+
 Section SeparatedBounds.
 Universes b r s l.
 Constraint b < r.
@@ -76,6 +86,15 @@ Defined.
 
 End SeparatedBounds.
 
+(** ** Evaluation with Smaller World Laws
+
+    Fix the same kinds of inputs with [b < r < l < s]. Check that
+    evaluation and normalization also accept this order of bounds. *)
+
+(** ** 较小世界定律界限下的求值
+
+    固定同类输入并取 [b < r < l < s]，检查求值与正规化也接受此界限顺序。 *)
+
 Section SmallerWorldLawBound.
 Universes b r l s.
 Constraint b < r.
@@ -127,6 +146,16 @@ Proof.
 Defined.
 
 End SmallerWorldLawBound.
+
+(** ** Executable Open-Term Normalization
+
+    Fix arbitrary labels [p] and [q] and a context [Γ]. Check beta/eta
+    normalization, capture avoidance and blocked higher-order applications. *)
+
+(** ** 开放项正规化的执行
+
+    固定任意标签 [p]、[q] 与上下文 [Γ]，检查 βη 正规化、避免捕获及被阻塞
+    的高阶应用。 *)
 
 Section Computations.
 Context {B : Type} (p q : B) (Γ : Ctx B).

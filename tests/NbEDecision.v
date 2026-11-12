@@ -13,6 +13,17 @@ Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Independent Decision and Fiber Bounds
+
+    Fix [P : Type@{p}], [Q : Type@{q}] and two implication maps with
+    [p < q]. Check decisions in both directions and dependent-fiber
+    injection with either ordering of index and fiber sizes. *)
+
+(** ** 独立的判定与纤维界限
+
+    固定 [P : Type@{p}]、[Q : Type@{q}] 及双向蕴含映射，并取 [p < q]，检查
+    双向判定传递及索引和纤维两种大小顺序下的依赖纤维单射性。 *)
+
 Section IndependentDecisionBounds.
 Universes p q.
 Constraint p < q.
@@ -49,6 +60,16 @@ Definition larger_indices (I : Type@{q}) (F : I → Type@{p})
 
 End IndependentDecisionBounds.
 
+(** ** Decisions with Small Equational Evidence
+
+    Fix [B], its label equality decision, contexts and terms with
+    [b < r < s < l]. Check the complete beta/eta decision at evidence [b]. *)
+
+(** ** 较小等式证据下的判定
+
+    固定 [B]、其标签相等判定、上下文及项，并取 [b < r < s < l]，检查证据
+    位于 [b] 时的完整 βη 判定。 *)
+
 Section SmallerEvidence.
 Universes b r s l.
 Constraint b < r.
@@ -70,6 +91,16 @@ Definition smaller_evidence_decision
       _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} d t u.
 
 End SmallerEvidence.
+
+(** ** Decisions with Larger Evidence
+
+    Fix the same kinds of inputs with [b < r < l < s < e]. Check the
+    complete decision with evidence above semantic values and world laws. *)
+
+(** ** 较大证据下的判定
+
+    固定同类输入并取 [b < r < l < s < e]，检查证据高于语义值及世界定律时
+    的完整判定。 *)
 
 Section LargerEvidenceAndSmallerWorldLaws.
 Universes b r l s e.
