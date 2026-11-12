@@ -8,12 +8,17 @@ From Cats Require Import
 
 (** * Prisms Respect Specified Vertex Transport
 
+    Fix label setoids [X], [Y], object actions [T], [U], two
+    transport-preserving functors [F], [G] and a transformation [α : F ⇒ G].
+    The following lemmas compare prism arrows and labelled diagrams.
     Naturality along the chosen transport arrows makes an ordinary natural
     transformation compatible with labelled-diagram equality. No additional
     equality of its component family is required. *)
 
 (** * 棱柱保持指定顶点运输
 
+    固定标签广集 [X]、[Y]，对象作用 [T]、[U]，两个保运输函子 [F]、[G]
+    以及自然变换 [α : F ⇒ G]。接下来的引理比较棱柱箭头与带标签图式。
     沿选定运输箭头的自然性，使普通自然变换与带标签图式相等相容，
     无须额外要求其分量族具有原生相等。 *)
 

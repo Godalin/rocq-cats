@@ -6,11 +6,18 @@ From Cats Require Import
 
 (** * Independent Sizes in the Nerve Homotopy Bridge
 
+    Fix label setoids [X], [Y], categories [C], [D] and object actions
+    [T], [U] under the displayed chain of levels. For functors [F], [G]
+    and pointwise equal transformations [α], [β], check the prism,
+    homotopy, endpoint and identity interfaces at the common value sizes.
     Source and target use opposite native carrier/equality profiles.
     The common simplicial values are checked in both strict size orders. *)
 
 (** * nerve 同伦桥梁的独立大小
 
+    在下述层级链下固定标签广集 [X]、[Y]，范畴 [C]、[D] 及对象作用 [T]、[U]。
+    对函子 [F]、[G] 和逐点相等的自然变换 [α]、[β]，在共同值大小下检查棱柱、
+    同伦、端点及恒等比较接口。
     源与目标使用相反的原生载体／相等配置，共同单纯值检查两种严格大小次序。 *)
 
 Section Levels.

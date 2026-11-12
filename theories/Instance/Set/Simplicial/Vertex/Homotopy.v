@@ -11,6 +11,10 @@ Local Open Scope nat_scope.
 
 (** * Natural Transformations Give Vertex Nerve Homotopies
 
+    Fix object actions [T], [U] on label setoids [X], [Y],
+    transport-preserving functors [F], [G], and independent value sizes
+    [u], [p]. For each [α : F ⇒ G], construct the cylinder map and its
+    endpoint equations, then prove respect for pointwise equality of [α].
     A time simplex [θ : [n] → [1]] decides when a labelled diagram changes
     from [F] to [G]. The prism reuses the walking-arrow diagram and
     uncurrying. Its comparison uses the prescribed vertex transports,
@@ -18,6 +22,9 @@ Local Open Scope nat_scope.
 
 (** * 自然变换给出顶点 nerve 的同伦
 
+    固定标签广集 [X]、[Y] 上的对象作用 [T]、[U]，保运输函子 [F]、[G]
+    及独立值大小 [u]、[p]。对每个 [α : F ⇒ G] 构造柱映射及端点方程，
+    再证明此构造保持 [α] 的逐点相等。
     时间单形 [θ : [n] → [1]] 决定带标签图式何时从 [F] 切换到 [G]。
     棱柱复用步行箭头图式与去柯里化；其比较使用指定顶点运输，
     而非图式之间的任意自然同构。 *)
