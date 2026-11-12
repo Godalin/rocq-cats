@@ -51,6 +51,16 @@ From Cats Require Import
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
+(** ** Soundness in an Arbitrary CCC
+
+    Fix a CCC [C] and a base-type assignment [I]. Build environments and term
+    evaluation, then prove compatibility with renaming, substitution and the
+    typed equational theory. *)
+
+(** ** 任意 CCC 中的可靠性
+
+    固定 CCC [C] 及基类型赋值 [I]，构造环境和项求值，再证明与重命名、替换及带类型等式理论相容。 *)
+
 Section Semantics.
 Universes b e.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).

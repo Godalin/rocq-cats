@@ -84,6 +84,16 @@ Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
 
 
 
+(** ** Uniqueness of Product Objects
+
+    Fix a category [C] and two candidate product cones over the same objects.
+    Their universal properties give an isomorphism of vertices, without
+    assuming chosen products. *)
+
+(** ** 积对象的唯一性
+
+    固定范畴 [C] 及相同对象上的两个候选积锥，由各自的泛性质得到顶点同构，不要求选定积结构。 *)
+
 Section Product.
 Context {C : Cat}.
 
@@ -132,6 +142,15 @@ Notation "P '⦂' '≅' X '×' Y 'with' p1 ',' p2"
   (at level 50).
 
 
+
+(** ** Pairing Laws for Chosen Products
+
+    Assume chosen binary products in [C]. Derive the projection equations,
+    pairing with composites, extensionality and the symmetry comparison. *)
+
+(** ** 选定积的配对定律
+
+    假定 [C] 具有选定二元积，导出投影方程、配对与复合的相容性、外延性及交换比较。 *)
 
 Section Product.
 Context {C : Cat} `{HP : !HasProduct C}.
@@ -220,6 +239,15 @@ Hint Rewrite @product_β2 : cat.
 
 
 
+(** ** Mapping Both Factors of a Product
+
+    Fix chosen binary products in [C]. Pair the two component maps to define
+    the induced arrow between products. *)
+
+(** ** 同时映射积的两个因子
+
+    固定 [C] 的选定二元积，将两个分量映射配对，定义积之间的诱导箭头。 *)
+
 Section Cross.
 Context {C : Cat} `{H : !HasProduct C}.
 
@@ -239,6 +267,16 @@ Notation "f '×' g" := (cross f g)
   (at level 41, right associativity) : hom_scope.
 
 
+
+(** ** Functorial Laws for Product Maps
+
+    Continue with chosen binary products in [C]. Prove that the two-factor map
+    is respectful and preserves identities and composition, and relate it to
+    pairing. *)
+
+(** ** 积上映射的函子律
+
+    继续使用 [C] 的选定二元积，证明双因子映射保相等、保持恒等和复合，并给出它与配对的关系。 *)
 
 Section Cross.
 Context {C : Cat} `{HP : !HasProduct C}.
@@ -324,6 +362,16 @@ Qed.
 End Cross.
 
 
+
+(** ** Products with a Terminal Object
+
+    Assume chosen terminal and binary product structures in [C]. Show that
+    multiplying by the terminal object on either side gives an isomorphic
+    object. *)
+
+(** ** 与终对象的积
+
+    假定 [C] 具有选定终对象和二元积，证明左右任一侧与终对象取积均得到同构对象。 *)
 
 Section Product.
 Context {C : Cat}.

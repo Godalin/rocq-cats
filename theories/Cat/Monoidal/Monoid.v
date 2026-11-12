@@ -74,6 +74,16 @@ Definition monoid_object_laws {C : Cat} {MC : MonoidalCategory C}
 Notation "'e[' A ']'" := (monoid_object_unit A) : monoidal_scope.
 Notation "'m[' A ']'" := (monoid_object_mul A) : monoidal_scope.
 
+(** ** Homomorphisms of Monoid Objects
+
+    Fix a monoidal structure [MC] on [C]. Define homomorphisms by preservation
+    of unit and multiplication, compare their underlying arrows, and construct
+    identity and composite homomorphisms. *)
+
+(** ** 幺半群对象的同态
+
+    固定 [C] 上的幺半结构 [MC]，以保持单位和乘法定义同态，比较底层箭头，并构造恒等与复合同态。 *)
+
 Section MonoidMorphisms.
 Context {C : Cat} {MC : MonoidalCategory C}.
 
@@ -142,6 +152,16 @@ Proof.
 Defined.
 
 End MonoidMorphisms.
+
+(** ** The Category of Monoid Objects
+
+    Fix the underlying category [C]. For a monoidal structure supplied to each
+    construction, assemble its monoid objects into a category and define the
+    faithful forgetful functor. *)
+
+(** ** 幺半群对象范畴
+
+    固定底层范畴 [C]，在各构造中给定幺半结构后，将其幺半群对象组装为范畴，并定义忠实的忘却函子。 *)
 
 Section MonoidCategories.
 Context {C : Cat}.

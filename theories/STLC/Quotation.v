@@ -50,6 +50,16 @@ Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_ren_scope.
 
 
+(** ** Quotation in the Syntactic CCC
+
+    Fix base types [B] and explicitly enable their type category's CCC
+    structure. Compare packed contexts with type environments and derive the
+    evaluation equations used for quotation. *)
+
+(** ** 语法 CCC 中的还原
+
+    固定基类型 [B] 并显式启用其类型范畴的 CCC 结构，比较打包上下文与类型环境，导出还原所用的求值方程。 *)
+
 Section Quotation.
 Universes b e l.
 Context {B : Type@{b}}.

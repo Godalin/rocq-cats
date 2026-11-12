@@ -77,6 +77,16 @@ Notation "e '▸D[' P ']' s" := (display_term_conv_resp P e s)
 Notation "s '[' σ ']TmD[' P ']'" := (display_term_sub_resp P σ s)
   (at level 8, left associativity, format "s [ σ ]TmD[ P ]") : cat_scope.
 
+(** ** Substitution Laws for Display Terms
+
+    Keep the display structure for [P] fixed. Prove the computation,
+    conversion and composition laws of term substitution, then package types
+    and terms as a family-valued presheaf. *)
+
+(** ** 显示项的替换定律
+
+    保持 [P] 的显示结构固定，证明项替换的计算、转换和复合定律，再将类型与项组装为族值预层。 *)
+
 Section DisplayTermLaws.
 Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
 

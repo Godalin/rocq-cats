@@ -27,6 +27,16 @@ From Cats Require Import
 Definition ContextType {C : Cat} (T : Functor (C^op) FamCat)
   := ∃ Γ : @Ob C, Ty T Γ.
 
+(** ** Maps between Context Extensions
+
+    Fix a family-valued presheaf [T] on [C] with chosen context extensions.
+    Define commuting maps between extensions, their specified equality, and
+    identity and composition. *)
+
+(** ** 上下文扩张之间的映射
+
+    固定 [C] 上具有选定上下文扩张的族值预层 [T]，定义扩张之间的交换映射、指定相等以及恒等和复合。 *)
+
 Section ContextMaps.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
@@ -104,6 +114,16 @@ Arguments context_map_comm {_ _ _ _ _} _.
 
 Notation "g '∘Ctx[' T ']' f" := (context_map_comp T g f)
   (at level 40, left associativity, format "g  ∘Ctx[ T ]  f") : cat_scope.
+
+(** ** The Category of Context Types
+
+    Keep [T] and its chosen context extensions fixed. Assemble context types
+    and commuting extension maps into a category, with base and extension
+    functors and a projection transformation. *)
+
+(** ** 上下文类型范畴
+
+    保持 [T] 及其选定上下文扩张固定，将上下文类型和交换扩张映射组装为范畴，并给出基底函子、扩张函子及投影变换。 *)
 
 Section ContextCategory.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
@@ -184,6 +204,16 @@ Definition ReindexContextType {C : Cat} (T : Functor (C^op) FamCat)
 
 Notation "Y '[' σ ']Ctx[' T ']'" := (ReindexContextType T Y σ)
   (at level 8, left associativity, format "Y [ σ ]Ctx[ T ]") : cat_scope.
+
+(** ** Comprehension from Context Extensions
+
+    Assume chosen context extensions for [T]. Use substitution pullbacks to
+    construct cartesian reindexing and the comprehension structure, then
+    characterize cartesian maps. *)
+
+(** ** 由上下文扩张构造理解结构
+
+    假定 [T] 具有选定上下文扩张，用替换拉回构造笛卡尔重索引及理解结构，再刻画笛卡尔映射。 *)
 
 Section ContextComprehension.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
@@ -313,6 +343,16 @@ Proof.
 Defined.
 
 End ContextComprehension.
+
+(** ** Full Faithfulness of Comprehension
+
+    Continue with the same [T] and chosen extensions. Recover a context map
+    from its underlying arrow square to prove the comprehension functor fully
+    faithful. *)
+
+(** ** 理解函子的全忠实性
+
+    继续使用同一 [T] 及选定扩张，从底层箭头方形恢复上下文映射，证明理解函子全忠实。 *)
 
 Section FullComprehension.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.

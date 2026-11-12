@@ -61,6 +61,16 @@ Proof.
   apply comp_l. exact (H i).
 Qed.
 
+(** ** Extending Cones along a Full Functor
+
+    Fix a full, essentially surjective functor [Q] and a diagram [D]. Extend
+    cones from its restriction and prove that extension and restriction are
+    inverse under cone equality. *)
+
+(** ** 沿全函子扩张锥
+
+    固定全且本质满的函子 [Q] 及图式 [D]，从限制后的图式扩张锥，并证明扩张与限制在锥相等下互逆。 *)
+
 Section ConeExtension.
 Context {I J C : Cat} {Q : Functor I J}.
 Context (HF : is_full Q) (HQ : is_essentially_surjective Q).

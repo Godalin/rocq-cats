@@ -27,6 +27,15 @@ Class Adjunction@{u p +} {C D : Cat} (F : Functor C D) (G : Functor D C)
 Arguments adjunction_hom {_ _ _ _} _.
 Infix "⊣" := Adjunction (at level 50, no associativity) : cat_scope.
 
+(** ** Transposition along an Adjunction
+
+    Fix functors [F] and [G] and an adjunction [A : F ⊣ G]. Extract the two
+    hom maps, their inverse and naturality laws, and the unit and counit. *)
+
+(** ** 沿伴随转置态射
+
+    固定函子 [F]、[G] 及伴随 [A : F ⊣ G]，提取两个 Hom 映射、互逆与自然性定律，以及单位和余单位。 *)
+
 Section Transposition.
 Context {C D : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
 

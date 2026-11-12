@@ -260,6 +260,15 @@ Hint Rewrite @comp_id_r : cat.
 
 
 
+(** ** Reversing the Identity Equations
+
+    Fix a category [C] and objects [X], [Y]. Record the symmetric forms of the
+    two identity laws for arrows between them. *)
+
+(** ** 反向使用恒等方程
+
+    固定范畴 [C] 及对象 [X]、[Y]，为两者之间的箭头给出左右恒等律的反向形式。 *)
+
 Section CatBasic.
 Context {C : Cat} {X Y : Ob}.
 
@@ -491,6 +500,12 @@ Infix "×C" := ProdCat
 
 
 
+(** Work in a fixed category [C]. First derive respectfulness of composition,
+    then define inverse witnesses and isomorphisms using its specified hom
+    equality. *)
+
+(** 在固定范畴 [C] 中，先导出复合的保相等性，再以指定 Hom 相等定义逆见证及同构。 *)
+
 Section Cat.
 Context {C : Cat}.
 
@@ -607,6 +622,15 @@ Tactic Notation "elim_iso" ident(f) :=
   intros (f & fi & Hfif & Hffi).
 
 
+
+(** ** Isomorphism as an Equivalence
+
+    Fix a category [C]. Identity arrows, inverse witnesses and composition
+    make object isomorphism reflexive, symmetric and transitive. *)
+
+(** ** 同构构成等价关系
+
+    固定范畴 [C]，由恒等箭头、逆见证和复合证明对象同构的自反性、对称性和传递性。 *)
 
 Section Iso.
 Context {C : Cat}.

@@ -13,6 +13,16 @@ From Cats.Set.Closure Require Export Core.
 
 Local Open Scope closure_scope.
 
+(** ** Comparing Two Closure Operators
+
+    Fix a preorder [R] and closure operators [c], [d]. A one-way interchange
+    law makes their composite a closure and yields its least-extension
+    property. *)
+
+(** ** 比较两个闭包算子
+
+    固定预序 [R] 及闭包算子 [c]、[d]，由单向交换律证明复合仍为闭包，并给出最小扩张泛性质。 *)
+
 Section Composition.
 Context {X : Type} {R : crelation X} `{HR : !PreOrder R}.
 Context (c d : Closure R).

@@ -110,6 +110,16 @@ Notation "e '^D[' P ']'" := (display_conv P e)
 Notation "σ '^D[' P ',' A ']'" := (display_lift P σ A)
   (at level 35, format "σ ^D[ P ,  A ]") : cat_scope.
 
+(** ** Conversion and Lifting for Displays
+
+    Fix a setoid-valued presheaf [P] with chosen display structure over [C].
+    Derive independence and invertibility of conversion and the projection
+    equation for display lifts. *)
+
+(** ** 显示结构的转换与提升
+
+    固定 [C] 上带选定显示结构的广集值预层 [P]，导出转换的见证无关性与可逆性，以及显示提升的投影方程。 *)
+
 Section DisplayLaws.
 Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
 

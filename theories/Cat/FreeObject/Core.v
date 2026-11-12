@@ -18,6 +18,15 @@ Class HasFreeObjects {C D : Cat} (U : Functor D C)
 
 Arguments free_initial {_ _ _ _} _.
 
+(** ** Extension from Free Objects
+
+    Fix a functor [U] with chosen free objects. Extract each free object and
+    its universal arrow, then derive extension and uniqueness laws. *)
+
+(** ** 从自由对象扩张
+
+    固定带选定自由对象的函子 [U]，提取自由对象及泛箭头，再导出扩张映射和唯一性定律。 *)
+
 Section FreeObjects.
 Context {C D : Cat} (U : Functor D C) `{HF : !HasFreeObjects U}.
 

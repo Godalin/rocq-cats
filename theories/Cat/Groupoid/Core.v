@@ -19,6 +19,16 @@ Class IsGroupoid (C : Cat)
 Notation "C '⦂' 'Gpd'" := (IsGroupoid C)
   (at level 50, no associativity) : type_scope.
 
+(** ** Inverse Arrows in a Groupoid
+
+    Assume [C] is a groupoid. Extract each arrow's inverse and prove
+    uniqueness, respectfulness and compatibility with identity and
+    composition. *)
+
+(** ** 群胚中的逆箭头
+
+    假定 [C] 为群胚，提取每条箭头的逆，并证明唯一性、保相等性及与恒等和复合的相容性。 *)
+
 Section Groupoid.
 Context {C : Cat} `{HC : !IsGroupoid C}.
 

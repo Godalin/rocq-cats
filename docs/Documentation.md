@@ -22,6 +22,15 @@ coqdoc 内置符号替换。代码保留 `*`、`->`、`forall` 等源码写法�
 指定打印规则。生成的前言同步平移 `.glob` 字节范围并更新源码校验值，保持声明
 链接正确，不修改理论源码。
 
+Section openings use native bilingual coqdoc headings or introductory prose.
+They identify the local assumptions and the construction or laws that follow;
+both backends preserve these openings before the section's context. See the
+[section-opening requirements](./ExportRequirements.md#section-openings).
+
+Section 开场使用原生双语 coqdoc 标题或引言，说明局部假设及接下来的构造或
+定律；两种后端均在该段环境声明之前保留开场，遵循
+[Section 开场要求](./ExportRequirements.md#section-openings)。
+
 ## Full-library export / 全库导出
 
 Run from the repository root in the initialized project environment:

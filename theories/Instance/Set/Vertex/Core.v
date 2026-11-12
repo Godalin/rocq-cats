@@ -44,6 +44,16 @@ End VertexObjects.
 Notation "T '⟦' p '⟧Ob'" := (vertex_transport T p)
   (at level 8, left associativity) : hom_scope.
 
+(** ** Equality of Labelled Vertex Diagrams
+
+    Fix the presentation [T] and its coherent transport along equality in [X].
+    Use these transports to compare labelled diagrams and prove their equality
+    and comparison laws. *)
+
+(** ** 带标签顶点图式的相等
+
+    固定呈现 [T] 及其沿 [X] 中相等的相干运输，用这些运输比较带标签图式，并证明相等与比较的定律。 *)
+
 Section VertexDiagrams.
 Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
 

@@ -68,6 +68,15 @@ Defined.
 
 End ChosenColimits.
 
+(** ** Colimits from a Diagonal Adjunction
+
+    Fix an adjunction from [L] to the diagonal functor. Its hom correspondence
+    supplies chosen colimits for diagrams of shape [J] in [C]. *)
+
+(** ** 由对角伴随获得余极限
+
+    固定 [L] 到对角函子的伴随，以其 Hom 对应为 [C] 中形状为 [J] 的图式提供选定余极限。 *)
+
 Section DiagonalAdjunction.
 Context {J C : Cat} {L : Functor (Fct J C) C} (A : L ⊣ Δ[J,C]).
 

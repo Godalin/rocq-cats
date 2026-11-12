@@ -43,6 +43,15 @@ Definition equalize {C : Cat} `{HE : !HasEqualizer C}
 
 Notation "'eq⟨' q ',' H '⟩'" := (equalize q H) : hom_scope.
 
+(** ** Laws of Chosen Equalizers
+
+    Assume chosen equalizers in [C]. Derive commutativity and the unique
+    mediator's computation, respectfulness and composition laws. *)
+
+(** ** 选定等化子的定律
+
+    假定 [C] 具有选定等化子，导出交换性及唯一中介的计算、保相等性和复合定律。 *)
+
 Section Equalizer.
 Context {C : Cat} `{HE : !HasEqualizer C}.
 

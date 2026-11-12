@@ -33,6 +33,16 @@ Program Definition VertexProductObjectsF
 Next Obligation. intros [x y] [x' y'] [p q]. exact p. Defined.
 Next Obligation. intros [x y] [x' y'] [p q]. exact q. Defined.
 
+(** ** Splitting and Pairing Product Diagrams
+
+    Fix presentations [T] and [U] into [C] and [D]. Construct the projection
+    and pairing functors for their product presentation and compare diagram
+    setoids by an isomorphism. *)
+
+(** ** 积图式的分拆与配对
+
+    固定取值于 [C]、[D] 的呈现 [T]、[U]，为积呈现构造投影与配对函子，并以同构比较图式广集。 *)
+
 Section Product.
 Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
     (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D).

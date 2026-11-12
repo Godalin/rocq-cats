@@ -55,6 +55,16 @@ From Cats Require Import
 
 Local Open Scope cat_scope.
 
+(** ** Recovering Inhabitants from the Canonical Model
+
+    Fix [B] and the canonical syntactic CCC. Specialize the interpretation
+    comparison to the identity functor to recover typed terms from semantic
+    arrows. *)
+
+(** ** 从规范模型恢复可居留见证
+
+    固定 [B] 及规范语法 CCC，将解释比较专门化到恒等函子，从语义箭头恢复带类型项。 *)
+
 Section CanonicalInhabitation.
 Universes b e l.
 Context {B : Type@{b}}.

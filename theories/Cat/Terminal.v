@@ -70,6 +70,15 @@ Notation "'!'" := term : hom_scope.
 Notation "'@!' X" := (@term _ _ _ X)
   (at level 34) : hom_scope.
 
+(** ** Uniqueness of Terminal Objects
+
+    Work in a fixed category [C]. Derive the identity equation for a terminal
+    object and compare any two terminal objects by an isomorphism. *)
+
+(** ** 终对象的唯一性
+
+    在固定范畴 [C] 中，导出终对象的恒等方程，并以同构比较任意两个终对象。 *)
+
 Section Terminal.
 Context {C : Cat}.
 
@@ -127,6 +136,15 @@ Notation "X '⦂' '≅' '1'" := (is_terminal X)
 
 
 
+(** ** Laws of Chosen Terminal Arrows
+
+    Assume a chosen terminal object in [C]. Its unique arrows satisfy
+    extensionality and are stable under precomposition. *)
+
+(** ** 选定终箭头的定律
+
+    假定 [C] 具有选定终对象，证明其唯一箭头的外延性及对预合成的稳定性。 *)
+
 Section Terminal.
 Context {C : Cat} `{HT : !HasTerminal C}.
 
@@ -166,6 +184,15 @@ Class HasInitial (C : Cat)
   :=
   { hasOpTerminal :: HasTerminal (C^op)
   }.
+
+(** ** Initial Objects by Duality
+
+    Fix a category [C]. Apply the terminal-object theory to its opposite to
+    expose initial objects, chosen initial arrows and their laws. *)
+
+(** ** 通过对偶给出始对象
+
+    固定范畴 [C]，将终对象理论用于反范畴，给出始对象、选定始箭头及其定律。 *)
 
 Section Initial.
 Context {C : Cat}.

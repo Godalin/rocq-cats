@@ -123,6 +123,16 @@ Notation "'λ⊗[' X ']'" := (tensor_unit_l X) : monoidal_scope.
 Notation "'ρ⊗[' X ']'" := (tensor_unit_r X) : monoidal_scope.
 Local Open Scope monoidal_scope.
 
+(** ** Derived Tensor Laws
+
+    Fix a monoidal category structure on [C]. Derive the tensor's
+    respectfulness and functor laws, together with naturality and
+    invertibility of its associator and unitors. *)
+
+(** ** 张量的导出定律
+
+    固定 [C] 上的幺半范畴结构，导出张量的保相等性及函子律，以及结合子和单位子的自然性与可逆性。 *)
+
 Section TensorLaws.
 Context {C : Cat} `{MC : !MonoidalCategory C}.
 

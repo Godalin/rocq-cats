@@ -56,6 +56,16 @@ Class IsStrictTwoCat (K : Bicat)
           cell1_eq_to_cell2 W Z _ _ (comp1_assoc W X Y Z h g f)
   }.
 
+(** ** Transport in a Strict Two-Category
+
+    Fix a bicategory [K], relations [R] on parallel 1-cells and strict
+    comparison data [S]. Use their coherent comparison 2-cells to transport
+    2-cells and prove compatibility with composition. *)
+
+(** ** 严格二范畴中的运输
+
+    固定双范畴 [K]、平行一胞腔上的关系 [R] 及严格比较结构 [S]，通过相干比较二胞腔运输二胞腔，并证明与复合相容。 *)
+
 Section StrictTwoCat.
 Context {K : Bicat}
     {R : ∀ X Y : ObB K, crelation (Cell1 X Y)}

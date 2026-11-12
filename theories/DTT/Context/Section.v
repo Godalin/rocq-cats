@@ -59,6 +59,16 @@ Notation "t '^Sec[' T ',' A ']'" := (term_to_section_resp T A t)
 Notation "s '^Tm[' T ',' A ']'" := (section_to_term_resp T A s)
   (at level 35, format "s ^Tm[ T ,  A ]") : cat_scope.
 
+(** ** Terms as Sections of Context Extensions
+
+    Fix [T] with chosen context extensions. Prove that terms correspond to
+    sections of the display projection, and relate this correspondence to
+    pairing and substitution. *)
+
+(** ** 项作为上下文扩张的截面
+
+    固定带选定上下文扩张的 [T]，证明项对应显示投影的截面，并给出这一对应与配对、替换的关系。 *)
+
 Section ContextSectionLaws.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 

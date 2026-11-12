@@ -120,6 +120,16 @@ Definition colimit_desc {J C : Cat} {D : Functor J C}
 Notation "'colim⟨' κ '⟩'" := (colimit_desc κ)
   (at level 35) : hom_scope.
 
+(** ** Descent from a Chosen Colimit
+
+    Fix a diagram [D] with a chosen colimit in [C]. Its universal property
+    gives uniqueness, computation, equality preservation and composition for
+    descent maps. *)
+
+(** ** 从选定余极限出发的下降定律
+
+    固定 [C] 中具有选定余极限的图式 [D]，由泛性质导出下降映射的唯一性、计算、保相等性及复合定律。 *)
+
 Section ChosenColimit.
 Context {J C : Cat} {D : Functor J C} `{HC : !HasColimit C D}.
 
@@ -218,6 +228,16 @@ Global Program Instance hasColimit {J C : Cat}
   :=
   {|hasOpLimit := hasLimit (D^opF)
   |}.
+
+(** ** The Colimit Functor
+
+    Assume chosen colimits for all diagrams of shape [J] in [C]. Extend the
+    chosen objects to a functor on diagram categories and prove its action on
+    natural transformations. *)
+
+(** ** 余极限函子
+
+    假定 [C] 为所有形状为 [J] 的图式选定余极限，将选定对象扩展为图式范畴上的函子，并证明其自然变换作用的定律。 *)
 
 Section ColimitFunctor.
 Context {J C : Cat} `{HC : !HasColimitsOfShape C J}.

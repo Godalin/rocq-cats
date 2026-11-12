@@ -32,6 +32,16 @@ End ContextLiftMap.
 Notation "σ '^+[' T ',' A ']'" := (context_lift T σ A)
   (at level 35, format "σ ^+[ T ,  A ]") : cat_scope.
 
+(** ** Substitution Lifts of Context Extensions
+
+    Fix [T] with chosen context extensions. Derive the substitution lift's
+    projection, variable and coherence laws, then prove its square is a
+    pullback. *)
+
+(** ** 上下文扩张的替换提升
+
+    固定带选定上下文扩张的 [T]，导出替换提升的投影、变量及相干定律，再证明对应方形为拉回。 *)
+
 Section ContextLift.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 

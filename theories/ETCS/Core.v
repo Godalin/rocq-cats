@@ -68,6 +68,16 @@ Notation "'∅'" := Init.
 Notation "'∈' X" := (Hom 1 X)
   (at level 35) : etcs_scope.
 
+(** ** The ETCS Environment
+
+    Fix a category [C] equipped with [ETCS C]. This opens the categorical
+    set-theory environment for the elementary set constructions discussed
+    below. *)
+
+(** ** ETCS 环境
+
+    固定带有 [ETCS C] 结构的范畴 [C]，为下文讨论基本集合构造设定范畴集合论环境。 *)
+
 Section ETCS.
 Context {C : Cat} `{Axioms : !ETCS C}.
 

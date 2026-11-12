@@ -45,6 +45,16 @@ End Interval.
 Arguments interval_object {_ _} _.
 Arguments interval_point {_ _} _ _.
 
+(** ** Cylinders and Homotopies
+
+    Fix chosen terminal and binary product structures in [C] and an interval
+    [I]. Build the cylinder, its endpoints and homotopies, then study their
+    equality and composition operations. *)
+
+(** ** 柱体与同伦
+
+    固定 [C] 的选定终对象、二元积及区间 [I]，构造柱体、端点和同伦，再研究同伦相等及复合操作。 *)
+
 Section Homotopy.
 Context {C : Cat} `{TC : !HasTerminal C} `{PC : !HasProduct C}
     (I : Interval C).

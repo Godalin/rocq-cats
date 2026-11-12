@@ -81,6 +81,15 @@ Definition po {C : Cat} `{HP : !HasPushout C} {X Y Z}
 
 Notation "'po⟨' i ',' j ',' H '⟩'" := (po i j H) : hom_scope.
 
+(** ** Laws of Chosen Pushouts
+
+    Assume chosen pushouts in [C] and fix a span [f], [g]. Use opposite
+    pullback laws to derive commutativity, mediator equations and uniqueness. *)
+
+(** ** 选定推出的定律
+
+    假定 [C] 具有选定推出，并固定跨度 [f]、[g]，由反范畴上的拉回定律导出交换性、中介方程和唯一性。 *)
+
 Section Pushout.
 Context {C : Cat} `{HP : !HasPushout C}.
 Context {X Y Z} {f : Hom Z X} {g : Hom Z Y}.

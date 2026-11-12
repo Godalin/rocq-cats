@@ -98,6 +98,16 @@ Theorem square_slice_round_trip {C : Cat} {X : @Ob C} {A B : SliceOb C X}
   : slice_map (square_to_slice (slice_to_square h) H) ≈ slice_map h.
 Proof. reflexivity. Defined.
 
+(** ** Cartesian Lifts of Slice Reindexing
+
+    Assume chosen pullbacks in [C]. Relate slice reindexing squares to
+    cartesian arrows of the codomain functor, including their identity and
+    composition comparisons. *)
+
+(** ** 切片重索引的笛卡尔提升
+
+    假定 [C] 具有选定拉回，联系切片重索引方形与余域函子的笛卡尔箭头，并给出恒等及复合比较。 *)
+
 Section SliceCodomainLifts.
 Context {C : Cat} `{HP : !HasPullback C}.
 

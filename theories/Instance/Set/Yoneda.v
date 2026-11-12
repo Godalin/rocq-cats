@@ -57,6 +57,15 @@ Program Canonical Nat_SetS {C D : Cat}
   ; carrier_equiv := NatEq
   |} .
 
+(** ** The Covariant Yoneda Correspondence
+
+    Fix [F : Functor C SetCat]. Evaluation at the identity and the functor
+    action give inverse respectful maps, yielding the Yoneda isomorphism. *)
+
+(** ** 协变 Yoneda 对应
+
+    固定 [F : Functor C SetCat]，由恒等态射处的求值及函子作用构造互逆的保相等映射，得到 Yoneda 同构。 *)
+
 Section Yoneda.
 Context {C : Cat}.
 Context {F : Functor C SetCat}.

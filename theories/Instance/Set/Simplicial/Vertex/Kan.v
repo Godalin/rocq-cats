@@ -258,6 +258,16 @@ Defined.
 
 End HigherHorns.
 
+(** ** Kan Fillers for the Vertex Nerve
+
+    Fix a presentation [T : Functor (EqGpd X) C]. Construct one-dimensional
+    fillers directly and higher fillers under the additional groupoid
+    assumption stated by each construction. *)
+
+(** ** 顶点 nerve 的 Kan 填充
+
+    固定呈现 [T : Functor (EqGpd X) C]，直接构造一维填充，并在各构造声明的额外群胚假设下给出高维填充。 *)
+
 Section KanFilling.
 Universes u p.
 Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).

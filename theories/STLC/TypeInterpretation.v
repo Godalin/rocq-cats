@@ -45,6 +45,16 @@ From Cats Require Import
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
+(** ** Interpreting the Type Category
+
+    Fix a CCC [C] and base-type assignment [I]. Interpret arrows between types
+    using singleton environments and assemble the functor together with
+    terminal and product preservation. *)
+
+(** ** 解释类型范畴
+
+    固定 CCC [C] 及基类型赋值 [I]，用单变量环境解释类型间箭头，组装解释函子，并给出终对象及积的保持性。 *)
+
 Section TypeInterpretation.
 Universes b e l.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).
@@ -168,6 +178,16 @@ Next Obligation.
 Defined.
 
 End TypeInterpretation.
+
+(** ** Preservation of Exponentials by Interpretation
+
+    Keep [C] and [I] fixed and reuse the interpretation functor's cartesian
+    structure. Compute the product inverse and exponential comparison to prove
+    it is a CCC functor. *)
+
+(** ** 解释对指数结构的保持
+
+    保持 [C]、[I] 固定，复用解释函子的笛卡尔结构，计算积逆及指数比较，证明它是 CCC 函子。 *)
 
 Section TypeStructurePreservation.
 Universes b e l.

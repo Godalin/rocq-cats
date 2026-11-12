@@ -38,6 +38,16 @@ Program Definition UnderlyingGraph (C : Cat)
   ; EdgeSet := @HomSet C
   |}.
 
+(** ** Interpreting a Free Category
+
+    Fix a graph map [D] from [G] to the underlying graph of [C]. Evaluate
+    paths using categorical composition and assemble the induced functor from
+    the free category. *)
+
+(** ** 解释自由范畴
+
+    固定从 [G] 到 [C] 底层图的图映射 [D]，用范畴复合解释路径，并组装从自由范畴出发的诱导函子。 *)
+
 Section Interpretation.
 Context {G : Graph} {C : Cat} (D : G →G UnderlyingGraph C).
 

@@ -22,6 +22,16 @@ Definition FreeHomF@{u p +} {C D : Cat} (U : Functor D C) (X : @Ob C)
   : Functor D SetCat@{u p _ _ _ _ _}
   := LiftF ∘F (Hom(X,-) ∘F U).
 
+(** ** Representing Universal Arrows
+
+    Fix [U : Functor D C] and ambient value universes [u], [p]. Compare
+    universal arrows with universal elements of lifted hom functors, leading
+    to the pointwise representability criterion for a left adjoint. *)
+
+(** ** 表示泛箭头
+
+    固定 [U : Functor D C] 及环境值宇宙 [u]、[p]，比较泛箭头与提升 Hom 函子的泛元素，进而给出左伴随的逐点可表性判据。 *)
+
 Section FreeRepresentations.
 Universe u p.
 Context {C D : Cat} (U : Functor D C).

@@ -161,6 +161,15 @@ End PullbackSections.
 Notation "s '[' HP ']Sec'" := (section_of_pullback_resp HP s)
   (at level 8, left associativity, format "s [ HP ]Sec") : cat_scope.
 
+(** ** Uniqueness of a Lifted Section
+
+    Fix a pullback square [HP] over [σ] and [p]. Its universal property
+    determines the lifted section uniquely through its two projections. *)
+
+(** ** 提升截面的唯一性
+
+    固定 [σ]、[p] 上的拉回方形 [HP]，由泛性质通过两个投影唯一确定提升后的截面。 *)
+
 Section PullbackSectionLaws.
 Context {C : Cat} {Γ Δ E D : @Ob C}
     {σ : Hom Δ Γ} {p : Hom E Γ} {q : Hom D Δ} {l : Hom D E}

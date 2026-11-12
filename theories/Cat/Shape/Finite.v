@@ -76,6 +76,16 @@ Arguments finite_object {_} {_} _.
 Arguments finite_object_cover {_} {_} _.
 Arguments hasFiniteHom {_} {_} _ _.
 
+(** ** Finite Generators from a Hom Cover
+
+    Assume [J] has a finite hom cover, including its chosen object and arrow
+    covers. Build a finite graph whose induced free-category functor is full
+    and essentially surjective. *)
+
+(** ** 由 Hom 覆盖获得有限生成元
+
+    假定 [J] 带有有限 Hom 覆盖及其中选定的对象、箭头覆盖，构造有限图，使其自由范畴的诱导函子全且本质满。 *)
+
 Section FiniteHomGenerators.
 Context {J : Cat} `{HJ : !HasFiniteHomCover J}.
 

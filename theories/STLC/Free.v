@@ -58,6 +58,16 @@ From Cats Require Import
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
+(** ** The Universal Property of the Syntactic CCC
+
+    Fix a CCC model, a CCC functor [F] from syntax and chosen base comparisons
+    [β]. Prove the induced interpretation comparison is the unique compatible
+    natural transformation. *)
+
+(** ** 语法 CCC 的泛性质
+
+    固定 CCC 模型、从语法出发的 CCC 函子 [F] 及选定基类型比较 [β]，证明诱导的解释比较是唯一相容的自然变换。 *)
+
 Section FreeCCC.
 Universes b e l.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C}

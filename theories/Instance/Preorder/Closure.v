@@ -20,6 +20,16 @@ From Cats Require Import
 Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 
+(** ** Reflection into Closed Objects
+
+    Fix a preorder [R] and a closure operator [c]. Form the category of closed
+    objects and its full inclusion, then derive the reflection adjunction and
+    associated monad. *)
+
+(** ** 到闭对象的反射
+
+    固定预序 [R] 及闭包算子 [c]，构造闭对象范畴及其全包含，再导出反射伴随和相应单子。 *)
+
 Section Reflection.
 Context {X : Type} {R : crelation X} `{HR : !PreOrder R}.
 Context (c : Closure R).

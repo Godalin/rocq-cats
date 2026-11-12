@@ -43,6 +43,16 @@ Record Closure {X : Type} (R : crelation X)
   ; closure_laws : is_closure R closure_map
   }.
 
+(** ** Basic Closure Laws and Comparisons
+
+    Fix a type [X] and a Type-valued relation [R]. Extract closure laws,
+    define closed elements, and compare operators pointwise without yet
+    assuming [R] is a preorder. *)
+
+(** ** 闭包的基本定律与比较
+
+    固定类型 [X] 及 Type 值关系 [R]，提取闭包定律、定义闭元素并逐点比较算子，此处尚不假定 [R] 为预序。 *)
+
 Section ClosureLaws.
 Context {X : Type} {R : crelation X}.
 
@@ -111,6 +121,16 @@ Delimit Scope closure_scope with closure.
 Infix "⊑Cl" := ClosureLe (at level 70) : closure_scope.
 Infix "≈Cl" := ClosureEq (at level 70) : closure_scope.
 Local Open Scope closure_scope.
+
+(** ** Closure Universal Properties over a Preorder
+
+    Now assume [R] is a preorder. Characterize closure by comparison with
+    closed elements, derive uniqueness, and construct the identity closure and
+    closures from universal data. *)
+
+(** ** 预序上的闭包泛性质
+
+    现在假定 [R] 为预序，通过与闭元素的比较刻画闭包，导出唯一性，并构造恒等闭包及由泛数据确定的闭包。 *)
 
 Section PreorderClosures.
 Context {X : Type} {R : crelation X} `{HR : !PreOrder R}.

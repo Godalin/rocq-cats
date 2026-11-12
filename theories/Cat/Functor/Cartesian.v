@@ -30,6 +30,16 @@ Class IsCartesianF {C D : Cat} (F : Functor C D)
       (fmap F (@Cats.Cat.Product.Core.π2 C PC X Y))
   }.
 
+(** ** Product Comparisons for a Cartesian Functor
+
+    Fix chosen terminal objects and binary products in [C] and [D], and a
+    functor [F] preserving the chosen source structures. Derive the canonical
+    product isomorphism and its pairing and naturality laws. *)
+
+(** ** 笛卡尔函子的积比较
+
+    固定 [C]、[D] 的选定终对象与二元积，以及保持来源选定结构的函子 [F]，导出规范积同构及其配对和自然性定律。 *)
+
 Section CartesianFunctor.
 Context {C D : Cat} (F : Functor C D)
     `{TC : !HasTerminal C} `{PC : !HasProduct C}

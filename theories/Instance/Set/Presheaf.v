@@ -21,6 +21,15 @@ From Cats Require Import
 Definition Psh C
   := Fct (op C) SetCat.
 
+(** ** The Yoneda Embedding
+
+    Fix a category [C]. Map its objects to contravariant representables and
+    prove that the resulting presheaf embedding is fully faithful. *)
+
+(** ** Yoneda 嵌入
+
+    固定范畴 [C]，将对象映为反变可表函子，并证明得到的预层嵌入全忠实。 *)
+
 Section Psh.
 Context {C : Cat}.
 

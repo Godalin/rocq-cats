@@ -34,6 +34,16 @@ Definition simplex_interval_position (b : bool)
   : Ordinal 1
   := if b then fin_next fin_first else fin_first.
 
+(** ** Homotopies of Simplicial Setoids
+
+    Fix independent carrier and equality sizes for simplicial setoids.
+    Explicitly choose the pointwise terminal and product structures, then
+    specialize interval homotopy to the simplicial interval. *)
+
+(** ** 单纯广集的同伦
+
+    固定单纯广集相互独立的载体与相等大小，显式选取逐点终对象和积结构，再将区间同伦专门化到单纯区间。 *)
+
 Section SimplicialHomotopies.
 Universes u r.
 

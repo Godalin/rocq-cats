@@ -117,6 +117,16 @@ Definition ctx_eval {B : Type} (Γ Δ : Ctx B)
       ⟨RenSub (ren_append_l (Δ ^Ctx Γ) Γ),
         ctx_pack_sub Γ ∘Sub RenSub (ren_append_r (Δ ^Ctx Γ) Γ)⟩Sub.
 
+(** ** Exponentials in the Syntactic Category
+
+    Fix base types [B] and enable the context category's chosen products.
+    Prove the singleton function context represents evaluation, then extend
+    the construction to arbitrary contexts. *)
+
+(** ** 语法范畴中的指数对象
+
+    固定基类型 [B] 并启用上下文范畴的选定积，证明单元素函数上下文表示求值，再将构造扩展到任意上下文。 *)
+
 Section SyntacticExponentials.
 Universes b e l.
 Context {B : Type@{b}}.

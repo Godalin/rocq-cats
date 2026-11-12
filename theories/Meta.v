@@ -138,6 +138,16 @@ Record is_unique {X R} `{Equivalence X R}
   ; that : ∀ y : X, P y → R y x
   }.
 
+(** ** Uniqueness under a Specified Equivalence
+
+    Fix a type [X] and a Type-valued equivalence relation [R]. Relate
+    unique-element witnesses to comparison with a chosen element, always using
+    [R] for equality. *)
+
+(** ** 指定等价下的唯一性
+
+    固定类型 [X] 及 Type 值等价关系 [R]，联系唯一元素见证与同选定元素的比较，相等始终使用 [R]。 *)
+
 Section Unique.
 Context {X : Type} {R : X → X → Type} `{Equivalence X R}.
 

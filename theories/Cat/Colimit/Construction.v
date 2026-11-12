@@ -37,6 +37,16 @@ Definition CodiagramSources {J C : Cat} (D : Functor J C)
   : @Ob C
   := D (arrow_cod a).
 
+(** ** Colimit Constraints from Coproducts
+
+    Fix a diagram [D] and chosen coproducts of its objects and arrow sources.
+    Form the two constraint arrows and use a coequalizer to obtain the colimit
+    property. *)
+
+(** ** 用余积表达余极限约束
+
+    固定图式 [D] 及其对象和箭头源的选定余积，构造两条约束箭头，再用余等化子获得余极限泛性质。 *)
+
 Section CoproductConstraints.
 Context {J C : Cat} (D : Functor J C).
 Context `{HO : !HasColimit C (DiscreteF (CodiagramObjects D))}.

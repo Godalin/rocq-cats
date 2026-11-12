@@ -43,6 +43,16 @@ From Cats Require Import
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
+(** ** Interpreting Context Substitutions
+
+    Fix a CCC [C] and a base-type assignment [I]. Interpret tuples and
+    substitutions as arrows, prove substitution compatibility, and assemble
+    the interpretation functor. *)
+
+(** ** 解释上下文替换
+
+    固定 CCC [C] 及基类型赋值 [I]，将元组和替换解释为箭头，证明替换相容性，并组装解释函子。 *)
+
 Section Interpretation.
 Universes b e l.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).

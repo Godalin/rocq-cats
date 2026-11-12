@@ -60,6 +60,26 @@ the approved typography and code frames.
   translations or documentation boundaries. Keep nonempty rows' indentation
   and at most one intentional blank row between them; omit empty code frames.
 
+## Section openings
+
+- Introduce every Rocq `Section` with a reader-facing coqdoc heading or opening
+  prose, immediately before the section begins. The vernacular `Section` name
+  alone is not a reading-edition heading and must not leave a new development
+  visually attached to the preceding code.
+- Give the mathematical subject a meaningful name. Explain the category,
+  objects, functors, chosen structures or other local assumptions fixed by the
+  following `Context`, and say which construction or laws are developed next.
+  Keep a small context concise; explain changes of assumptions between adjacent
+  sections. Do not claim stronger assumptions than the source uses.
+- Use native coqdoc heading levels appropriate to the surrounding hierarchy,
+  or a short introductory paragraph when it provides enough separation. Keep
+  an existing suitable opening rather than adding a duplicate title. A module
+  introduction may also introduce its first section when they are adjacent.
+- Write separate English-first and Chinese-second comment blocks. Both HTML
+  and PDF must retain their native position before the section's context and
+  declarations; do not synthesize headings from internal section identifiers
+  in the exporter or move assumptions for presentation.
+
 ## Focused proof states
 
 When displaying proof states and a tactic creates multiple goals, **display the

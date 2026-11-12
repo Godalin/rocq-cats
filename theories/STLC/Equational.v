@@ -47,6 +47,16 @@ From Cats Require Import
 Local Open Scope cat_scope.
 Local Open Scope stlc_sub_scope.
 
+(** ** Reflection in the Canonical Model
+
+    Fix the base-type family [B] and explicitly equip its syntactic category
+    with the canonical CCC structure. The identity comparison lets canonical
+    interpretation reflect the syntactic equality. *)
+
+(** ** 规范模型中的等式反映
+
+    固定基类型族 [B]，显式为其语法范畴配备规范 CCC 结构，用恒等比较证明规范解释反映语法相等。 *)
+
 Section CanonicalModel.
 Universes b e l.
 Context {B : Type@{b}}.

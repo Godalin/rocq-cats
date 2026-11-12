@@ -247,6 +247,15 @@ Proof.
   exact (comp_proper (α X) (α' X) (Eα X) (β X) (β' X) (Eβ X)).
 Qed.
 
+(** ** Isomorphisms in a Functor Category
+
+    Fix functors [F], [G] between [C] and [D]. Compare an isomorphism in their
+    functor category with componentwise natural-isomorphism data. *)
+
+(** ** 函子范畴中的同构
+
+    固定 [C] 到 [D] 的函子 [F]、[G]，比较函子范畴中的同构与逐分量的自然同构数据。 *)
+
 Section Fct.
 Context {C D : Cat} {F G : Functor C D}.
 

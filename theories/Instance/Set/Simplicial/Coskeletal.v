@@ -53,6 +53,16 @@ Class IsCoskeletal@{u p +}
 Notation "X '⦂' 'Cosk[' k ']'" := (IsCoskeletal X k)
   (at level 50, no associativity) : type_scope.
 
+(** ** Respectful Coskeletal Filling
+
+    Fix a simplicial setoid [X] that is [k]-coskeletal. Its unique boundary
+    fillers above dimension [k] determine a filling map that respects the
+    specified boundary equality. *)
+
+(** ** Coskeletal 填充的保相等性
+
+    固定 [k]-coskeletal 的单纯广集 [X]，由高于维度 [k] 的唯一边界填充确定填充映射，并证明它保持指定边界相等。 *)
+
 Section CoskeletalFilling.
 Universes u p.
 Context {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {k : nat}
@@ -79,6 +89,15 @@ End CoskeletalFilling.
 
 Notation "'fill∂[' X ';' k ';' n ']'" := (@coskeletal_fill_resp X k _ n)
   : hom_scope.
+
+(** ** Computation Laws for Coskeletal Filling
+
+    Under the same [k]-coskeletal assumption on [X], derive the two inverse
+    laws relating filling to boundary restriction. *)
+
+(** ** Coskeletal 填充的计算定律
+
+    在 [X] 的同一 [k]-coskeletal 假设下，导出填充与边界限制之间的两个互逆定律。 *)
 
 Section CoskeletalLaws.
 Universes u p.

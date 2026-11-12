@@ -63,6 +63,16 @@ Proof.
     + unfold p. symmetry. apply (indexed_product_β (D := DiagramObjects D)).
 Defined.
 
+(** ** Limits from Products and an Equalizer
+
+    Fix a diagram [D] and chosen products of its objects and arrow targets.
+    The two constraint maps determine an equalizer cone with the full limit
+    property. *)
+
+(** ** 由积与等化子构造极限
+
+    固定图式 [D] 及其对象和箭头目标的选定积，由两条约束映射构造等化子锥，并证明完整极限泛性质。 *)
+
 Section ProductsEqualizer.
 Context {J C : Cat} (D : Functor J C).
 Context `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}.

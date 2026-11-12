@@ -36,6 +36,16 @@ Qed.
 
 End ConversionSubstitution.
 
+(** ** Mapping Extensions along Type Equality
+
+    Fix a family-valued presheaf [T] with chosen context extensions. Use its
+    generic term and conversion to map extensions along designated type
+    equality. *)
+
+(** ** 沿类型相等映射扩张
+
+    固定具有选定上下文扩张的族值预层 [T]，用泛项及转换沿指定类型相等映射扩张。 *)
+
 Section ContextConversionMap.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
 
@@ -51,6 +61,16 @@ End ContextConversionMap.
 
 Notation "e '^Ext[' T ']'" := (context_conv T e)
   (at level 35, format "e ^Ext[ T ]") : cat_scope.
+
+(** ** Coherence of Context Conversion
+
+    With the same chosen extensions for [T], prove that conversion preserves
+    projection and generic terms, composes coherently and gives an
+    isomorphism. *)
+
+(** ** 上下文转换的相干性
+
+    在 [T] 的同一选定扩张下，证明转换保持投影与泛项、满足复合相干性，并给出同构。 *)
 
 Section ContextConversion.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.

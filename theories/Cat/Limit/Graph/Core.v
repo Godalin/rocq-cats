@@ -20,6 +20,16 @@ Definition GraphTargets {G : Graph} {C : Cat} (D : Functor (FreeCat G) C)
   : @Ob C
   := D a.2.1.
 
+(** ** Limits of Graph-Generated Diagrams
+
+    Fix a diagram on the free category of [G], with chosen products of its
+    objects and generator targets. An equalizer imposes the generator
+    equations and yields a limit. *)
+
+(** ** 图生成图式的极限
+
+    固定 [G] 的自由范畴上的图式，以及其对象和生成边目标的选定积，用等化子施加生成边方程并获得极限。 *)
+
 Section GraphLimits.
 Context {G : Graph} {C : Cat} (D : Functor (FreeCat G) C).
 Context `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}.

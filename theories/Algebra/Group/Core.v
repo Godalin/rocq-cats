@@ -23,6 +23,16 @@ Class Group (G : SetC)
 Notation "x '⁻¹'" := (group_inv x)
   (at level 9) : monoid_scope.
 
+(** ** Inverse Laws in a Group
+
+    Fix a setoid [G] with a chosen group structure. Derive uniqueness,
+    respectfulness and the unit, involution and multiplication laws for its
+    inverse. *)
+
+(** ** 群中逆运算的定律
+
+    固定带选定群结构的广集 [G]，由逆的唯一性导出保相等性及单位、对合和乘法定律。 *)
+
 Section Group.
 Context {G : SetC} `{HG : !Group G}.
 

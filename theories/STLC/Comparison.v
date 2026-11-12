@@ -81,6 +81,16 @@ Local Open Scope hom_scope.
 
 Local Open Scope cat_scope.
 
+(** ** Comparing Interpretations through a CCC Functor
+
+    Fix a target CCC, a structure-preserving functor [F] from the syntactic
+    type category, and base-type comparison isomorphisms [β]. Extend these
+    comparisons to types, terms and contexts. *)
+
+(** ** 通过 CCC 函子比较解释
+
+    固定目标 CCC、从语法类型范畴出发的保结构函子 [F] 及基类型比较同构 [β]，将比较扩展到类型、项和上下文。 *)
+
 Section Comparison.
 Universes b e l.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C}

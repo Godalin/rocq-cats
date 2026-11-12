@@ -39,6 +39,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   explaining its mathematical role and important assumptions; keep routine
   laws concise. Leave a blank line after every source comment before the
   following declaration or text.
+- Introduce every `Section` with a bilingual coqdoc title or opening prose,
+  following the [section-opening requirements](docs/ExportRequirements.md#section-openings).
+  Explain its local assumptions and the theory developed next; do not rely on
+  the Rocq section name to separate it from preceding code in reading editions.
 - Put each required module on its own line; in grouped `Require Import` or
   `Require Export`, place the module list below the command. Keep lines near
   80 characters where practical. Wrap long declarations by parameter groups,

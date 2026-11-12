@@ -40,6 +40,16 @@ Definition indexed_copair {C : Cat} {I : Type} {D : I → @Ob C}
 
 Notation "'∐⟨' κ '⟩'" := (indexed_copair κ) : hom_scope.
 
+(** ** Laws of an Indexed Coproduct
+
+    Fix an object family [D] indexed by [I] and a chosen colimit of its
+    discrete diagram. Derive the injection and copairing laws using the
+    specified hom equality. *)
+
+(** ** 指标余积的定律
+
+    固定以 [I] 为指标的对象族 [D] 及其离散图式的选定余极限，用指定 Hom 相等导出内射及余配对定律。 *)
+
 Section IndexedCoproduct.
 Context {C : Cat} {I : Type} {D : I → @Ob C}
     `{HC : !HasColimit C (DiscreteF D)}.

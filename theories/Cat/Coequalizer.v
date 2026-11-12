@@ -68,6 +68,16 @@ Definition coequalize {C : Cat} `{HC : !HasCoequalizer C}
 
 Notation "'coeq⟨' q ',' H '⟩'" := (coequalize q H) : hom_scope.
 
+(** ** Laws of Chosen Coequalizers
+
+    Assume chosen coequalizers in [C]. Derive the mediator equations,
+    uniqueness and composition laws from the equalizer theory on the opposite
+    category. *)
+
+(** ** 选定余等化子的定律
+
+    假定 [C] 具有选定余等化子，由反范畴上的等化子理论导出中介方程、唯一性及复合定律。 *)
+
 Section Coequalizer.
 Context {C : Cat} `{HC : !HasCoequalizer C}.
 

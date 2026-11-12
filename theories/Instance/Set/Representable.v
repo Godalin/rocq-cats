@@ -25,6 +25,15 @@ Notation "u '⦂' 'Univ(' F ')'" := (is_universal_element F u)
   (at level 50, no associativity,
     format "u  ⦂  Univ( F )") : cat_scope.
 
+(** ** Representations from Universal Elements
+
+    Fix a setoid-valued functor [F] on [C]. A universal element yields a
+    respectful inverse to its evaluation map and hence a representation. *)
+
+(** ** 由泛元素获得表示
+
+    固定 [C] 上的广集值函子 [F]，由泛元素构造求值映射的保相等逆，从而获得表示。 *)
+
 Section UniversalElements.
 Context {C : Cat} (F : Functor C SetCat).
 
@@ -100,6 +109,16 @@ Proof.
 Defined.
 
 End UniversalElements.
+
+(** ** Generic Elements of a Representation
+
+    Fix [F : Functor C SetCat]. Extract generic elements from representations,
+    compare them with universal elements, and prove the two constructions
+    agree up to the specified equivalences. *)
+
+(** ** 表示的泛元素
+
+    固定 [F : Functor C SetCat]，从表示提取泛元素，与泛元素的普遍性比较，并证明两个构造在指定等价下相容。 *)
 
 Section Representations.
 Context {C : Cat} {F : Functor C SetCat}.
@@ -220,6 +239,12 @@ Notation "X '⦂' 'Repᵒᵖ' P" := (represents_op P X)
 
 Definition is_representable_op {C : Cat} (P : Functor (C^op) SetCat)
   := ∃ X, X ⦂ Repᵒᵖ P.
+
+(** Fix a presheaf [P] on [C]. Apply the covariant representation theory to
+    [C^op] to obtain generic elements, universal maps and representation
+    comparisons. *)
+
+(** 固定 [C] 上的预层 [P]，将协变表示理论用于 [C^op]，给出泛元素、泛映射及表示比较。 *)
 
 Section PresheafRepresentations.
 Context {C : Cat} {P : Functor (C^op) SetCat}.
@@ -348,6 +373,12 @@ Definition represents_lifted@{u p +} {C : Cat}
 
 Notation "X '⦂' 'Rep↑' F" := (represents_lifted F X)
   (at level 50, no associativity, format "X  ⦂  Rep↑  F") : cat_scope.
+
+(** Fix [F] with independent value-carrier and equality universes [u], [p].
+    Lift the representable comparison into these ambient sizes while retaining
+    universal-element witnesses. *)
+
+(** 固定值载体与相等宇宙 [u]、[p] 相互独立的 [F]，将可表比较提升到这些环境大小，同时保留泛元素见证。 *)
 
 Section LiftedRepresentations.
 Universe u p.

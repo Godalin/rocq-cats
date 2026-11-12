@@ -104,6 +104,16 @@ Qed.
 
 
 
+(** ** Uniqueness of Pullback Objects
+
+    Work in an arbitrary category [C]. Two pullback squares for the same
+    cospan determine isomorphic vertices using only their universal
+    properties. *)
+
+(** ** 拉回对象的唯一性
+
+    在任意范畴 [C] 中，仅用泛性质证明同一余跨度的两个拉回方形具有同构顶点。 *)
+
 Section Pullback.
 Context {C : Cat}.
 
@@ -198,6 +208,16 @@ Proof.
 Defined.
 
 
+
+(** ** Laws of a Chosen Pullback Mediator
+
+    Assume chosen pullbacks in [C] and fix a commuting cone over [f], [g].
+    Derive the two projection equations, uniqueness and respectfulness of its
+    mediator. *)
+
+(** ** 选定拉回中介的定律
+
+    假定 [C] 具有选定拉回，并固定 [f]、[g] 上的交换锥，导出中介的两个投影方程、唯一性及保相等性。 *)
 
 Section Pullback.
 Context {C : Cat} `{H : !HasPullback C}.
@@ -328,6 +348,16 @@ Qed.
 End Pullback.
 
 
+
+(** ** Products from Pullbacks over a Terminal Object
+
+    Fix objects [X], [Y] in a category with a chosen terminal object and
+    pullbacks. Pull back their terminal arrows to obtain the binary product
+    property. *)
+
+(** ** 由终对象上的拉回获得积
+
+    在具有选定终对象及拉回的范畴中固定 [X]、[Y]，拉回两者的终箭头，获得二元积泛性质。 *)
 
 Section Product.
 Context {C : Cat}.

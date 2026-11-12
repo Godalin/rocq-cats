@@ -30,6 +30,16 @@ Definition VertexTerminalObjectsF@{x e o h p l a b}
       (EqGpd@{x e e} UnitS@{x e}) (CodiscreteCat@{o h p l} unit)
   := ConstF (EqGpd UnitS@{x e}) (C := CodiscreteCat unit) tt.
 
+(** ** Terminal Diagrams at Independent Sizes
+
+    Keep vertex, category, hom and equality universes independent. Construct
+    the terminal presentation functor and compare its diagram setoid with the
+    singleton setoid. *)
+
+(** ** 独立大小下的终图式
+
+    保持顶点、范畴、Hom 及相等宇宙独立，构造终呈现函子，并将其图式广集与单元素广集比较。 *)
+
 Section TerminalSizes.
 Universes x e o h p l a b.
 

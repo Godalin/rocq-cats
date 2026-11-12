@@ -17,6 +17,16 @@ From Cats Require Export
 
 Notation "'∏[' D ']'" := (Lim (DiscreteF D)) : ob_scope.
 
+(** ** Laws of an Indexed Product
+
+    Fix an [I]-indexed object family [D] and a chosen limit of its discrete
+    diagram. Extract projections and tupling, then derive their computation
+    and uniqueness laws. *)
+
+(** ** 指标积的定律
+
+    固定以 [I] 为指标的对象族 [D] 及其离散图式的选定极限，提取投影和组元组操作，再导出计算及唯一性定律。 *)
+
 Section IndexedProduct.
 Context {C : Cat} {I : Type} {D : I → @Ob C}
     `{HP : !HasLimit C (DiscreteF D)}.

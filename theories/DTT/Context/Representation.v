@@ -156,6 +156,16 @@ Program Definition RepresentedCwF `{HT : !HasTerminal C}
   ; hasContextExtension := ContextRepresentation_HasContextExtension
   |}.
 
+(** ** Recovering the Original Context Extension
+
+    Within the fixed presheaf [T], assume chosen context extensions. Pass to
+    their representing objects and back, comparing the recovered projection,
+    generic term and pairing with the originals. *)
+
+(** ** 恢复原来的上下文扩张
+
+    在固定预层 [T] 下假定选定上下文扩张，先转为表示对象再转回，比较恢复后的投影、泛项和配对与原构造。 *)
+
 Section ExtensionRoundTrip.
 Context `{HC : !HasContextExtension T}.
 (** The representation structure obtained from the current context extensions. *)

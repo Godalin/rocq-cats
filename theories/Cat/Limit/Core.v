@@ -47,6 +47,15 @@ Definition limit_lift {J C : Cat} {D : Functor J C}
 
 Notation "'lim⟨' κ '⟩'" := (limit_lift κ) (at level 35) : hom_scope.
 
+(** ** Lifting into a Chosen Limit
+
+    Fix a diagram [D] with a chosen limit in [C]. Derive uniqueness,
+    computation, respectfulness and composition for its universal lift. *)
+
+(** ** 到选定极限的提升定律
+
+    固定 [C] 中具有选定极限的图式 [D]，导出泛提升的唯一性、计算、保相等性和复合定律。 *)
+
 Section ChosenLimit.
 Context {J C : Cat} {D : Functor J C} `{HL : !HasLimit C D}.
 
@@ -158,6 +167,16 @@ Defined.
 Class HasLimitsOfShape (C J : Cat)
   :=
   { hasLimit (D : Functor J C) :: HasLimit C D }.
+
+(** ** The Limit Functor
+
+    Assume chosen limits for all diagrams of shape [J] in [C]. Map natural
+    transformations by universal lifts and assemble the resulting limit
+    functor. *)
+
+(** ** 极限函子
+
+    假定 [C] 为所有形状为 [J] 的图式选定极限，用泛提升映射自然变换，并组装极限函子。 *)
 
 Section LimitFunctor.
 Context {J C : Cat} `{HL : !HasLimitsOfShape C J}.

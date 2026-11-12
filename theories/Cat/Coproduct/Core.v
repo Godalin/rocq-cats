@@ -72,6 +72,15 @@ Definition copair {C : Cat} `{HC : !HasCoproduct C} {X Y Z}
 
 Notation "'⦗' f ',' g '⦘'" := (copair f g) : hom_scope.
 
+(** ** Copairing with Chosen Coproducts
+
+    Assume chosen binary coproducts in [C]. Apply the opposite product laws to
+    copairing, deriving computation, uniqueness and composition equations. *)
+
+(** ** 选定余积中的余配对
+
+    假定 [C] 具有选定二元余积，将反范畴上的积定律用于余配对，导出计算、唯一性和复合方程。 *)
+
 Section Coproduct.
 Context {C : Cat} `{HC : !HasCoproduct C}.
 

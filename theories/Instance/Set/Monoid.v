@@ -21,6 +21,16 @@ Definition SetCartesianMonoidal
   : MonoidalCategory SetCat
   := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
+(** ** Setoid Monoids as Monoid Objects
+
+    Fix a monoid structure [HM] on [M]. Explicitly enable the setoid
+    category's terminal and product choices to realize this algebra as a
+    cartesian monoid object. *)
+
+(** ** 广集幺半群作为幺半群对象
+
+    固定 [M] 上的幺半群结构 [HM]，显式启用广集范畴的终对象和积选择，将该代数实现为笛卡尔幺半群对象。 *)
+
 Section SetMonoid.
 Context {M : SetC} (HM : Monoid M).
 Local Existing Instance HM.

@@ -78,6 +78,15 @@ End ContextPairs.
 Notation "x '[' τ ']Pair[' T ',' A ']'" := (context_pair_sub_resp T A τ x)
   (at level 8, left associativity, format "x [ τ ]Pair[ T ,  A ]") : cat_scope.
 
+(** ** Substitution of Context-Term Pairs
+
+    Fix a family-valued presheaf [T] without choosing context extensions.
+    Substitution on pairs of a base map and a term forms a presheaf. *)
+
+(** ** 上下文与项配对的替换
+
+    固定族值预层 [T]，不选取上下文扩张；由基底映射和项组成的配对在替换下构成预层。 *)
+
 Section ContextPairPresheaf.
 Context {C : Cat} (T : Functor (C^op) FamCat).
 
@@ -167,6 +176,16 @@ Next Obligation. intros x. apply context_pair_sub_id. Defined.
 Next Obligation. intros x. apply context_pair_sub_comp. Defined.
 
 End ContextPairPresheaf.
+
+(** ** Context Extensions Represent Pairs
+
+    Now assume chosen context extensions for [T]. Compare arrows into an
+    extension with base-map and term pairs, and assemble the natural
+    representation isomorphism. *)
+
+(** ** 上下文扩张表示配对
+
+    现在假定 [T] 具有选定上下文扩张，比较指向扩张的箭头与基底映射、项的配对，并组装自然表示同构。 *)
 
 Section ContextRepresentation.
 Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.

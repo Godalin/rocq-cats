@@ -20,6 +20,16 @@ From Cats Require Import
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
+(** ** Comparing Exponentials along a Functor
+
+    Fix source terminal and product structures, products in the target, and
+    exponentials in both categories. For a cartesian functor [F], construct
+    the exponential comparison and its evaluation and currying equations. *)
+
+(** ** 沿函子比较指数对象
+
+    固定来源的终对象与积、目标的积以及两侧的指数结构，为笛卡尔函子 [F] 构造指数比较，并给出求值和柯里化方程。 *)
+
 Section ExponentialComparison.
 Context {C D : Cat} (F : Functor C D)
     `{TC : !HasTerminal C} `{PC : !HasProduct C}
