@@ -12,12 +12,15 @@ Local Open Scope monoid_scope.
 
     群为选定幺半群增加可计算的逆，逆的保相等性与相干性由唯一性导出而不另存。 *)
 
+Reserved Notation "x '⁻¹'" (at level 9).
+
 Class Group (G : SetC)
   :=
   { hasMonoid :: Monoid G
   ; group_inv : G → G
-  ; group_inv_l x : group_inv x ⋅ x ≈S 1
-  ; group_inv_r x : x ⋅ group_inv x ≈S 1
+    where "x '⁻¹'" := (group_inv x) : monoid_scope
+  ; group_inv_l x : x⁻¹ ⋅ x ≈S 1
+  ; group_inv_r x : x ⋅ x⁻¹ ≈S 1
   }.
 
 Notation "x '⁻¹'" := (group_inv x)

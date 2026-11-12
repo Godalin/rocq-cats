@@ -20,13 +20,16 @@ Definition is_product {C : Cat} (X Y P : Ob)
 
 (** 选定二元积、投影及其泛性质。 *)
 
+Reserved Notation "X × Y" (at level 41, right associativity).
+
 Class HasProduct (C : Cat)
   :=
   { Prod : Ob → Ob → Ob
-  ; π1 {X Y} : Hom (Prod X Y) X
-  ; π2 {X Y} : Hom (Prod X Y) Y
+    where "X × Y" := (Prod X Y) : ob_scope
+  ; π1 {X Y} : Hom (X × Y) X
+  ; π2 {X Y} : Hom (X × Y) Y
 
-  ; product_universal {X Y} : is_product X Y (Prod X Y) π1 π2
+  ; product_universal {X Y} : is_product X Y (X × Y) π1 π2
   }.
 
 Arguments Prod {_ _} _%_ob _%_ob.

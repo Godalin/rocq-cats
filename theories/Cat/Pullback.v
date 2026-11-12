@@ -23,13 +23,20 @@ Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
 
 (** 为余跨度选择拉回、两个投影与泛性质。 *)
 
+Reserved Notation "'@×[' f ',' g ']'" (at level 52, no associativity).
+Reserved Notation "#pb1".
+Reserved Notation "#pb2".
+
 Class HasPullback (C : Cat)
   :=
   { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
-  ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
-  ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
+    where "'@×[' f ',' g ']'" := (Pb f g) : ob_scope
+  ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (@×[f,g]) X
+    where "#pb1" := (pb1 _ _) : hom_scope
+  ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (@×[f,g]) Y
+    where "#pb2" := (pb2 _ _) : hom_scope
   ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-    : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
+    : is_pullback f g (@×[f,g]) #pb1 #pb2
   }.
 
 (** The universal mediator into a selected pullback. *)

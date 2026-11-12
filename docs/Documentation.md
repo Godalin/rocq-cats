@@ -22,6 +22,13 @@ coqdoc 内置符号替换。代码保留 `*`、`->`、`forall` 等源码写法�
 指定打印规则。生成的前言同步平移 `.glob` 字节范围并更新源码校验值，保持声明
 链接正确，不修改理论源码。
 
+Interface laws use existing mathematical notation through `Reserved Notation`
+and native field-level `where` bindings. Public bindings follow the interface.
+Both reading backends export this compiled source syntax directly.
+
+接口定律通过 `Reserved Notation` 与原生字段级 `where` 绑定使用已有数学记号，
+公开绑定保留在接口之后。两种阅读后端直接导出这份经过编译的源码语法。
+
 ## Full-library export / 全库导出
 
 Run from the repository root in the initialized project environment:

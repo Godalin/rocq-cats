@@ -1,6 +1,12 @@
 From Cats.Set Require Export
   Morphism.
 
+Declare Scope monoid_scope.
+Delimit Scope monoid_scope with monoid.
+Local Open Scope monoid_scope.
+
+Reserved Notation "x ⋅ y" (at level 40, left associativity).
+
 (** * Monoids on Sets
 
     The underlying set carries its specified Type-valued equality. Neither
@@ -13,21 +19,20 @@ From Cats.Set Require Export
 Class Monoid (M : SetC)
   :=
   { monoid_unit : M
+    where "1" := monoid_unit : monoid_scope
   ; monoid_mul : M → M → M
+    where "x ⋅ y" := (monoid_mul x y) : monoid_scope
   ; monoid_mul_proper
     :: Proper (carrier_equiv M ==> carrier_equiv M ==> carrier_equiv M)
         monoid_mul
-  ; monoid_unit_l x : monoid_mul monoid_unit x ≈S x
-  ; monoid_unit_r x : monoid_mul x monoid_unit ≈S x
+  ; monoid_unit_l x : 1 ⋅ x ≈S x
+  ; monoid_unit_r x : x ⋅ 1 ≈S x
   ; monoid_assoc x y z
-    : monoid_mul (monoid_mul x y) z ≈S monoid_mul x (monoid_mul y z)
+    : (x ⋅ y) ⋅ z ≈S x ⋅ (y ⋅ z)
   }.
 
-Declare Scope monoid_scope.
-Delimit Scope monoid_scope with monoid.
 Notation "1" := monoid_unit : monoid_scope.
 Infix "⋅" := monoid_mul (at level 40, left associativity) : monoid_scope.
-Local Open Scope monoid_scope.
 
 (** A left and a right inverse of the same element agree. This elementary
     argument supplies all later coherence of selected group inverses. *)

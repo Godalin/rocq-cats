@@ -77,6 +77,16 @@ Open Scope cat_scope.
     它的箭头是保相等映射，方程就是逐点集合相等。此处的一般理论已能直接操作
     Hom 广集，不必导入这个具体模型。 *)
 
+(** Reserve the public syntax before the interface. Each field's [where]
+    clause binds it for subsequent fields; exported bindings follow the class. *)
+
+(** 在接口前预留公开语法；字段的 [where] 为后续字段绑定记号，
+    类结束后再给出供外部使用的绑定。 *)
+
+Reserved Notation "f ≈ g" (at level 50, no associativity).
+Reserved Notation "f ∘ g" (at level 40, left associativity).
+Reserved Notation "'@HomEq[' X ',' Y ']'".
+
 Class Cat@{o h p +}
   :=
   (** [Ob] is the type of objects. A term [X : @Ob C] is an object of [C]. *)
@@ -106,6 +116,8 @@ Class Cat@{o h p +}
 
   ; HomEq {X Y} : Hom X Y → Hom X Y → Type@{p}
   := carrier_equiv (HomSet X Y)
+    where "f ≈ g" := (HomEq f g) : cat_scope
+    and "'@HomEq[' X ',' Y ']'" := (@HomEq X Y) : cat_scope
 
   (** [id] selects an identity arrow for each object. The object argument
       is implicit; [@id X] below makes the intended object explicit. *)
@@ -122,6 +134,7 @@ Class Cat@{o h p +}
       [f ∘ g : Hom X Z]，右侧箭头先作用。 *)
 
   ; comp {X Y Z} : Hom Y Z → Hom X Y → Hom X Z
+    where "f ∘ g" := (comp f g) : hom_scope
 
   (** [comp_proper] makes composition respectful in both arguments:
       [f ≈ f'] and [g ≈ g'] imply [f ∘ g ≈ f' ∘ g']. The [::] registers
@@ -131,21 +144,21 @@ Class Cat@{o h p +}
       得到 [f ∘ g ≈ f' ∘ g']。[::] 将此字段注册为继承实例，供广集重写使用。 *)
 
   ; comp_proper {X Y Z}
-    :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
+    :: Proper (@HomEq[Y, Z] ==> @HomEq[X, Y] ==> @HomEq[X, Z]) comp
 
   (** [comp_id_r] states [f ∘ id ≈ f], using the identity at the source. *)
 
   (** [comp_id_r] 给出 [f ∘ id ≈ f]，其中恒等箭头位于源对象。 *)
 
   ; comp_id_r {X Y : Ob} (f : Hom X Y)
-    : HomEq (comp f id) f
+    : f ∘ id ≈ f
 
   (** [comp_id_l] states [id ∘ f ≈ f], using the identity at the target. *)
 
   (** [comp_id_l] 给出 [id ∘ f ≈ f]，其中恒等箭头位于目标对象。 *)
 
   ; comp_id_l {X Y : Ob} (f : Hom X Y)
-    : HomEq (comp id f) f
+    : id ∘ f ≈ f
 
   (** [comp_assoc] states [(f ∘ g) ∘ h ≈ f ∘ (g ∘ h)]. It permits
       regrouping a composable chain without changing its order. *)
@@ -155,7 +168,7 @@ Class Cat@{o h p +}
 
   ; comp_assoc {X Y Z W}
       (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
-    : HomEq (comp (comp f g) h) (comp f (comp g h))
+    : (f ∘ g) ∘ h ≈ f ∘ (g ∘ h)
   }.
 
 (** Reflexivity, symmetry and transitivity come directly from the hom-set.

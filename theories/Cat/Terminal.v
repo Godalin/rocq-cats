@@ -34,13 +34,14 @@ Class HasTerminal (C : Cat)
   (** [Term] 选出终对象。 *)
 
   { Term : Ob
+    where "'1'" := Term : ob_scope
   (** [terminal_universal] supplies a universal arrow to [Term] from every
       object, together with its uniqueness under hom equality. *)
 
   (** [terminal_universal] 为每个对象提供指向 [Term] 的泛箭头，
       以及 Hom 相等下的唯一性。 *)
 
-  ; terminal_universal : is_terminal Term
+  ; terminal_universal : is_terminal 1
   }.
 
 Arguments Term {_ _}.

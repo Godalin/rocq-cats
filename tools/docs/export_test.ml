@@ -40,6 +40,7 @@ let () =
     ^ "(** printing ⇒ %\\Rightarrow% #&rArr;# *)\n"
     ^ "(** [⇒] *)\n\n"
     ^ "Definition visible_sample := tt.\n"
+    ^ "Reserved Notation \"x '▹test'\" (at level 35).\n"
     ^ "Record DocumentedInterface := {\n"
     ^ "  (** FieldCarrier selects the carrier of the interface, retaining its"
     ^ " computational data rather than merely asserting that some carrier"
@@ -50,6 +51,8 @@ let () =
     ^ "  (** FieldIdentity acts on the selected carrier. *)\n\n"
     ^ "  (** 字段恒等作用于选定载体。 *)\n\n"
     ^ "  interface_identity : interface_carrier -> interface_carrier\n"
+    ^ "    where \"x '▹test'\" := (interface_identity x);\n"
+    ^ "  interface_identity_id (x : interface_carrier) : x ▹test = x\n"
     ^ "}.\n"
     ^ "(* begin hide *)\nDefinition hidden_support := tt.\n(* end hide *)\n"
     ^ "Example verified_example : visible_sample = tt.\n"
@@ -121,6 +124,10 @@ let () =
         + String.length token
       with Not_found -> failwith ("missing interleaved field documentation: " ^ token)
     in
+    List.iter (fun text ->
+      ignore (List.fold_left (after text) 0
+        ["DocumentedInterface"; identity_prose; "where";
+         "interface"; "▹"; "test"])) [page; latex];
     List.iter (fun (text, carrier, identity) ->
       ignore (List.fold_left (after text) 0
         ["DocumentedInterface"; carrier_prose; carrier;

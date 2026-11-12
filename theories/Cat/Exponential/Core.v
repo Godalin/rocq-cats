@@ -21,12 +21,15 @@ Definition is_exponential {C : Cat} `{HP : !HasProduct C}
 
 (** 相对于选定积的指数对象、求值及其泛性质。 *)
 
+Reserved Notation "X '^' Y" (at level 30, right associativity).
+
 Class HasExponential {C : Cat} (HP : HasProduct C)
   :=
   { exp : Ob → Ob → Ob
-  ; eval {X Y} : Hom (exp Y X × X) Y
+    where "X '^' Y" := (exp X Y) : ob_scope
+  ; eval {X Y} : Hom ((Y ^ X) × X) Y
 
-  ; exponential_universal {X Y} : is_exponential X Y (exp Y X) eval
+  ; exponential_universal {X Y} : is_exponential X Y (Y ^ X) eval
   }.
 
 Arguments exponential_universal {_ _ _ _ _} _ _.

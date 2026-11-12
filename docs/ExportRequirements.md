@@ -47,6 +47,10 @@ the approved typography and code frames.
 
 ## Interface explanations
 
+- Express interface laws using their existing public mathematical notation.
+  Reserve nonprimitive syntax before the interface and use field-level `where`
+  bindings for subsequent fields; retain public bindings after the interface.
+  Export these source declarations directly, without reconstructing notation.
 - Place field explanations inside the corresponding interface declaration,
   immediately beside the fields they describe. Interleave code and explanation
   in declaration order, rather than collecting a field catalogue before or

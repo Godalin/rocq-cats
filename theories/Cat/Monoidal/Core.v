@@ -3,6 +3,16 @@ From Cats Require Export
   Cat.Functor.Core
   Cat.Natural.
 
+Declare Scope monoidal_scope.
+Delimit Scope monoidal_scope with monoidal.
+Local Open Scope monoidal_scope.
+
+Reserved Notation "X ⊗ Y" (at level 41, right associativity).
+Reserved Notation "f ⊗m g" (at level 41, right associativity).
+Reserved Notation "'α⊗[' X ';' Y ';' Z ']'".
+Reserved Notation "'λ⊗[' X ']'".
+Reserved Notation "'ρ⊗[' X ']'".
+
 (** * Monoidal Categories
 
     A tensor is a bifunctor, not necessarily a categorical product. Its
@@ -83,25 +93,29 @@ Class MonoidalCategory (C : Cat)
   ; monoidal_left_unitor : π2F tensorF TensorUnit ≅N IdF
   ; monoidal_right_unitor : π1F tensorF TensorUnit ≅N IdF
   ; tensor (X Y : @Ob C) := tensorF (X, Y)
+    where "X ⊗ Y" := (tensor X Y) : monoidal_scope
   ; tensor_map {X X' Y Y' : @Ob C}
       (f : Hom X X') (g : Hom Y Y')
-      : Hom (tensor X Y) (tensor X' Y')
+      : Hom (X ⊗ Y) (X' ⊗ Y')
     := fmap tensorF (X := (X, Y)) (Y := (X', Y')) (f, g)
+    where "f ⊗m g" := (tensor_map f g) : monoidal_scope
   ; tensor_assoc (X Y Z : @Ob C)
-      : Hom (tensor (tensor X Y) Z) (tensor X (tensor Y Z))
+      : Hom ((X ⊗ Y) ⊗ Z) (X ⊗ (Y ⊗ Z))
     := monoidal_associator.1 ((X, Y), Z)
-  ; tensor_unit_l (X : @Ob C) : Hom (tensor TensorUnit X) X
+    where "'α⊗[' X ';' Y ';' Z ']'" := (tensor_assoc X Y Z)
+      : monoidal_scope
+  ; tensor_unit_l (X : @Ob C) : Hom (TensorUnit ⊗ X) X
     := monoidal_left_unitor.1 X
-  ; tensor_unit_r (X : @Ob C) : Hom (tensor X TensorUnit) X
+    where "'λ⊗[' X ']'" := (tensor_unit_l X) : monoidal_scope
+  ; tensor_unit_r (X : @Ob C) : Hom (X ⊗ TensorUnit) X
     := monoidal_right_unitor.1 X
+    where "'ρ⊗[' X ']'" := (tensor_unit_r X) : monoidal_scope
   ; monoidal_pentagon (W X Y Z : @Ob C)
-    : tensor_assoc W X (tensor Y Z) ∘ tensor_assoc (tensor W X) Y Z ≈
-        tensor_map id (tensor_assoc X Y Z) ∘
-          (tensor_assoc W (tensor X Y) Z ∘
-            tensor_map (tensor_assoc W X Y) id)
+    : α⊗[W; X; Y ⊗ Z] ∘ α⊗[W ⊗ X; Y; Z] ≈
+        (id ⊗m α⊗[X; Y; Z]) ∘
+          (α⊗[W; X ⊗ Y; Z] ∘ (α⊗[W; X; Y] ⊗m id))
   ; monoidal_triangle (X Y : @Ob C)
-    : tensor_map id (tensor_unit_l Y) ∘ tensor_assoc X TensorUnit Y ≈
-        tensor_map (tensor_unit_r X) id
+    : (id ⊗m λ⊗[Y]) ∘ α⊗[X; TensorUnit; Y] ≈ ρ⊗[X] ⊗m id
   }.
 
 Arguments tensorF {_} _.
@@ -112,8 +126,6 @@ Arguments tensor_assoc {_ _} _ _ _.
 Arguments tensor_unit_l {_ _} _.
 Arguments tensor_unit_r {_ _} _.
 
-Declare Scope monoidal_scope.
-Delimit Scope monoidal_scope with monoidal.
 Infix "⊗" := tensor (at level 41, right associativity) : monoidal_scope.
 Infix "⊗m" := tensor_map (at level 41, right associativity) : monoidal_scope.
 Notation "'I⊗[' M ']'" := (TensorUnit M) : monoidal_scope.
@@ -121,7 +133,6 @@ Notation "'α⊗[' X ';' Y ';' Z ']'" := (tensor_assoc X Y Z)
   : monoidal_scope.
 Notation "'λ⊗[' X ']'" := (tensor_unit_l X) : monoidal_scope.
 Notation "'ρ⊗[' X ']'" := (tensor_unit_r X) : monoidal_scope.
-Local Open Scope monoidal_scope.
 
 Section TensorLaws.
 Context {C : Cat} `{MC : !MonoidalCategory C}.

@@ -63,11 +63,14 @@ Open Scope set_scope.
     [u <= p]，也不要求 [p <= u]。后续构造可能把相等证据存为数据，或使用其他
     大小的 Hom 广集，因此须保留两者的独立性。 *)
 
+Reserved Notation "[≈S]".
+
 Record SetC
   :=
   { carrier :> Type
   ; carrier_equiv : crelation carrier
-  ; carrier_setoid :: Equivalence carrier_equiv
+    where "[≈S]" := carrier_equiv
+  ; carrier_setoid :: Equivalence [≈S]
   }.
 
 (** [x ≈S y] reads the equality from the ambient set, and [[≈S]] exposes

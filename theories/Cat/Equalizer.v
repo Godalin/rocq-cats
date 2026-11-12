@@ -21,12 +21,17 @@ Notation "e '⦂' 'Eq(' f ',' g ')'" := (is_equalizer f g _ e)
 
 (** 选定等化子、包含箭头及其泛性质。 *)
 
+Reserved Notation "'Eq[' f ',' g ']'".
+Reserved Notation "'ιeq[' f ',' g ']'".
+
 Class HasEqualizer (C : Cat)
   :=
   { EqObj {X Y} : Hom X Y → Hom X Y → Ob
-  ; eqι {X Y} (f g : Hom X Y) : Hom (EqObj f g) X
+    where "'Eq[' f ',' g ']'" := (EqObj f g) : ob_scope
+  ; eqι {X Y} (f g : Hom X Y) : Hom Eq[f, g] X
+    where "'ιeq[' f ',' g ']'" := (eqι f g) : hom_scope
   ; equalizer_universal {X Y} {f g : Hom X Y}
-    : is_equalizer f g (EqObj f g) (eqι f g)
+    : is_equalizer f g Eq[f, g] ιeq[f, g]
   }.
 
 Notation "'Eq[' f ',' g ']'" := (EqObj f g) : ob_scope.

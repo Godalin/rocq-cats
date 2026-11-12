@@ -6,6 +6,14 @@ Declare Scope bicat_scope.
 Delimit Scope bicat_scope with bicat.
 Local Open Scope bicat_scope.
 
+Reserved Notation "f ⇒₂ g" (at level 50, no associativity).
+Reserved Notation "α ≈₂ β" (at level 50, no associativity).
+Reserved Notation "g ∘₁ f" (at level 40, left associativity).
+Reserved Notation "β ∘₂ α" (at level 51, right associativity).
+Reserved Notation "β ⋆ α" (at level 48, left associativity).
+Reserved Notation "'𝟙₁' X" (at level 35).
+Reserved Notation "'𝟙₂' f" (at level 35).
+
 (** * Bicategories
 
     Objects, hom-categories, composition and coherence form one structure. The
@@ -25,45 +33,52 @@ Class Bicat@{o h t p +}
   { ObB : Type@{o}
   ; HomCat : ObB → ObB → Cat@{h t p _ _}
   ; id1 (X : ObB) : @Ob (HomCat X X)
+    where "'𝟙₁' X" := (id1 X) : bicat_scope
   ; comp1F (X Y Z : ObB) : Functor (HomCat Y Z ×C HomCat X Y) (HomCat X Z)
 
   ; Cell1 (X Y : ObB) := @Ob (HomCat X Y)
   ; Cell2 {X Y : ObB} (f g : Cell1 X Y) := (@Hom (HomCat X Y)) f g
-  ; Cell2Eq {X Y} {f g : Cell1 X Y} (α β : Cell2 f g)
+    where "f ⇒₂ g" := (Cell2 f g) : bicat_scope
+  ; Cell2Eq {X Y} {f g : Cell1 X Y} (α β : f ⇒₂ g)
   := @Cats.Cat.Core.HomEq (HomCat X Y) f g α β
+    where "α ≈₂ β" := (Cell2Eq α β) : bicat_scope
   ; comp1 {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y) : Cell1 X Z
   := comp1F X Y Z (g, f)
-  ; id2 {X Y} (f : Cell1 X Y) : Cell2 f f := id
-  ; comp2_v {X Y} {f g h : Cell1 X Y} (β : Cell2 g h) (α : Cell2 f g)
-      : Cell2 f h := β ∘ α
+    where "g ∘₁ f" := (comp1 g f) : bicat_scope
+  ; id2 {X Y} (f : Cell1 X Y) : f ⇒₂ f := id
+    where "'𝟙₂' f" := (id2 f) : bicat_scope
+  ; comp2_v {X Y} {f g h : Cell1 X Y} (β : g ⇒₂ h) (α : f ⇒₂ g)
+      : f ⇒₂ h := β ∘ α
+    where "β ∘₂ α" := (comp2_v β α) : bicat_scope
   ; comp2_h {X Y Z} {g g' : Cell1 Y Z} {f f' : Cell1 X Y}
-      (β : Cell2 g g') (α : Cell2 f f') : Cell2 (comp1 g f) (comp1 g' f')
+      (β : g ⇒₂ g') (α : f ⇒₂ f') : (g ∘₁ f) ⇒₂ (g' ∘₁ f')
   := fmap (comp1F X Y Z) (X := (g, f)) (Y := (g', f')) (β, α)
+    where "β ⋆ α" := (comp2_h β α) : bicat_scope
 
   ; associator {W X Y Z : ObB} (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
-      : Cell2 (comp1 (comp1 h g) f) (comp1 h (comp1 g f))
+      : ((h ∘₁ g) ∘₁ f) ⇒₂ (h ∘₁ (g ∘₁ f))
   ; associator_iso {W X Y Z} (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
       : is_iso (associator h g f)
-  ; left_unitor {X Y : ObB} (f : Cell1 X Y) : Cell2 (comp1 (id1 Y) f) f
+  ; left_unitor {X Y : ObB} (f : Cell1 X Y) : (𝟙₁ Y ∘₁ f) ⇒₂ f
   ; left_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (left_unitor f)
-  ; right_unitor {X Y : ObB} (f : Cell1 X Y) : Cell2 (comp1 f (id1 X)) f
+  ; right_unitor {X Y : ObB} (f : Cell1 X Y) : (f ∘₁ 𝟙₁ X) ⇒₂ f
   ; right_unitor_iso {X Y} (f : Cell1 X Y) : is_iso (right_unitor f)
   ; associator_naturality {W X Y Z} {h h' : Cell1 Y Z} {g g' : Cell1 X Y}
-      {f f' : Cell1 W X} (γ : Cell2 h h') (β : Cell2 g g') (α : Cell2 f f')
-      : Cell2Eq (associator h' g' f' ∘ comp2_h (comp2_h γ β) α)
-          (comp2_h γ (comp2_h β α) ∘ associator h g f)
-  ; left_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
-      : Cell2Eq (left_unitor g ∘ comp2_h (id2 (id1 Y)) α) (α ∘ left_unitor f)
-  ; right_unitor_naturality {X Y} {f g : Cell1 X Y} (α : Cell2 f g)
-      : Cell2Eq (right_unitor g ∘ comp2_h α (id2 (id1 X))) (α ∘ right_unitor f)
+      {f f' : Cell1 W X} (γ : h ⇒₂ h') (β : g ⇒₂ g') (α : f ⇒₂ f')
+      : (associator h' g' f' ∘₂ ((γ ⋆ β) ⋆ α)) ≈₂
+          ((γ ⋆ (β ⋆ α)) ∘₂ associator h g f)
+  ; left_unitor_naturality {X Y} {f g : Cell1 X Y} (α : f ⇒₂ g)
+      : (left_unitor g ∘₂ (𝟙₂ (𝟙₁ Y) ⋆ α)) ≈₂ (α ∘₂ left_unitor f)
+  ; right_unitor_naturality {X Y} {f g : Cell1 X Y} (α : f ⇒₂ g)
+      : (right_unitor g ∘₂ (α ⋆ 𝟙₂ (𝟙₁ X))) ≈₂ (α ∘₂ right_unitor f)
   ; bicat_pentagon {V W X Y Z} (k : Cell1 Y Z) (h : Cell1 X Y)
       (g : Cell1 W X) (f : Cell1 V W)
-      : Cell2Eq (associator k h (comp1 g f) ∘ associator (comp1 k h) g f)
-          (comp2_h (id2 k) (associator h g f) ∘
-            (associator k (comp1 h g) f ∘ comp2_h (associator k h g) (id2 f)))
+      : (associator k h (g ∘₁ f) ∘₂ associator (k ∘₁ h) g f) ≈₂
+          ((𝟙₂ k ⋆ associator h g f) ∘₂
+            (associator k (h ∘₁ g) f ∘₂ (associator k h g ⋆ 𝟙₂ f)))
   ; bicat_triangle {X Y Z} (g : Cell1 Y Z) (f : Cell1 X Y)
-      : Cell2Eq (comp2_h (id2 g) (left_unitor f) ∘ associator g (id1 Y) f)
-          (comp2_h (right_unitor g) (id2 f))
+      : ((𝟙₂ g ⋆ left_unitor f) ∘₂ associator g (𝟙₁ Y) f) ≈₂
+          right_unitor g ⋆ 𝟙₂ f
   }.
 
 Arguments ObB _ : clear implicits.
