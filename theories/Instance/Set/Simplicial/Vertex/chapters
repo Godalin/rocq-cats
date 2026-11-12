@@ -3,6 +3,7 @@ Point.v
 Functor.v
 Product.v
 Terminal.v
+Ordinal.v
 Edge.v
 Reconstruction.v
 Spine.v

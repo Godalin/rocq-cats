@@ -61,6 +61,13 @@ A category theory library for self study.
   fully faithful Yoneda embedding, with maps from the standard n-simplex
   corresponding naturally to n-simplices. Explicit universe lifts keep small
   simplex operators compatible with larger setoid values.
+  The [ordinal vertex comparison](./theories/Instance/Set/Simplicial/Vertex/Ordinal.v)
+  also realizes `Δ[n]` as the vertex nerve of the finite ordinal with
+  specified position equality. The transparent natural isomorphism commutes
+  with all simplex operators and identifies the two chosen interval points
+  with the existing simplicial endpoints.
+  序数顶点比较将标准单形实现为带指定位置相等的有限序数顶点 nerve；透明自然同构
+  与全部单纯算子相容，并将两个选定区间点对应到已有单纯端点。
   The [diagram nerve](./theories/Instance/Set/Simplicial/Nerve.v), written
   `N≅(C)`, specializes a general
   [category-probe presheaf](./theories/Instance/Set/Functor.v).

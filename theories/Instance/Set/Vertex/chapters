@@ -3,6 +3,7 @@ Functor.v
 Prism.v
 Product.v
 Terminal.v
+Ordinal.v
 Relabel.v
 Chain.v
 Category.v
