@@ -226,6 +226,15 @@ Program Definition ApplicativeOperations {C : Cat}
   ; operations_laws := applicative_operations_laws A
   |}.
 
+(** ** Reconstructing the Structural Applicative
+
+    Fix coherent pure and binary operations over selected finite products.
+    Reconstruct their tensorator, lax structure and Applicative bundle. *)
+
+(** ** 重建结构式 Applicative
+
+    固定选定有限积上的相干纯值与二元运算，重建 tensorator、lax 结构及 Applicative 包。 *)
+
 Section Reconstruction.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     (O : ApplicativeOps C HT HP).
@@ -341,6 +350,15 @@ Lemma operations_roundtrip_pure (X : @Ob C)
 Proof. reflexivity. Qed.
 
 End Reconstruction.
+
+(** ** The Structural Round Trip
+
+    Fix a structural Applicative with the same terminal and product choices.
+    Compare the recovered tensorator, unit and pure components. *)
+
+(** ** 结构式往返
+
+    固定使用同一终对象与积选择的结构式 Applicative，比较恢复的 tensorator、单位及纯值分量。 *)
 
 Section StructuralRoundtrip.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}

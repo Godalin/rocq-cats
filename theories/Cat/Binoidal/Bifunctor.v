@@ -52,6 +52,15 @@ Next Obligation.
     (snd (fst f), snd f) (snd (fst g), snd g)).
 Defined.
 
+(** ** Separate Actions from a Bifunctor
+
+    Fix a tensor bifunctor on a category. Recover its two separate actions
+    and compare their assembled map with the supplied bifunctor action. *)
+
+(** ** 从双函子得到分别作用
+
+    固定范畴上的张量双函子，恢复两个分别作用，并将组装映射与原双函子作用比较。 *)
+
 Section Bifunctor.
 Context {C : Cat} (T : Functor (C ×C C) C).
 

@@ -22,6 +22,15 @@ Definition is_central {C : Cat} `{BC : !BinoidalCat C}
     (f ⊳ W) ∘ (X ⊲ g) ≈ (Y ⊲ g) ∘ (f ⊳ Z) ∧
     (W ⊲ f) ∘ (g ⊳ X) ≈ (g ⊳ Y) ∘ (Z ⊲ f).
 
+(** ** Central Morphisms and the Center
+
+    Fix a binoidal category. Derive closure and inverse laws for central
+    morphisms, then form their category with the inherited actions. *)
+
+(** ** 中心态射与中心
+
+    固定双侧张量范畴，导出中心态射的闭包与取逆定律，再构造具有继承作用的中心范畴。 *)
+
 Section CentralLaws.
 Context {C : Cat} `{BC : !BinoidalCat C}.
 

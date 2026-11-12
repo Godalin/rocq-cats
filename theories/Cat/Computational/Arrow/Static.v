@@ -47,6 +47,15 @@ Definition static_comp {C : Cat}
 Notation "g '∘ˢ[' A ']' f" := (static_comp A g f)
   (at level 40, left associativity) : computation_scope.
 
+(** ** The Static Computation Category and Arrow
+
+    Fix an Applicative and the selected finite products and exponentials of
+    its base. Prove sequential composition laws, then construct the static Arrow. *)
+
+(** ** 静态计算范畴与 Arrow
+
+    固定 Applicative 及其基底的选定有限积与指数，证明顺序复合定律，再构造静态 Arrow。 *)
+
 Section Static.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} (A : Applicative C HT HP).

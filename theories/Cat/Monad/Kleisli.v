@@ -27,6 +27,15 @@ Definition kleisli_comp {C : Cat} (M : Monad C) {X Y Z : @Ob C}
 Notation "g '∘K[' M ']' f" := (kleisli_comp M g f)
   (at level 40, left associativity) : monad_scope.
 
+(** ** The Kleisli Category and Its Functors
+
+    Fix an ordinary Monad on a category. Prove the sequential composition
+    laws and construct the Kleisli category, pure inclusion and extension functor. *)
+
+(** ** Kleisli 范畴及其函子
+
+    固定范畴上的普通 Monad，证明顺序复合定律，构造 Kleisli 范畴、纯嵌入及扩张函子。 *)
+
 Section Kleisli.
 Context {C : Cat} (M : Monad C).
 

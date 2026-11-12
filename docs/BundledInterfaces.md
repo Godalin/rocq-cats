@@ -4,11 +4,12 @@
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 93 interfaces after the structural hierarchy slices,
+inventory now includes 97 interfaces after the structural hierarchy slices
+and the synchronized integrated baseline,
 alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含结构层级批次后的 93 个接口，
+起初分类全部 87 个类／记录接口；清单现包含结构层级批次及已同步集成基线后的 97 个接口，
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
@@ -591,8 +592,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 305 modules,
-66 classes and 27 records.
+covers 329 modules,
+68 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
@@ -603,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 305 个模块、66 个类及 27 个记录。清单覆盖
+更新，现覆盖 329 个模块、68 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -792,6 +793,10 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 
 | Interface / 接口 | Declaration / 声明 | Role / 职责 |
 | --- | --- | --- |
+| [Interval](../theories/Cat/Homotopy/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [Homotopy](../theories/Cat/Homotopy/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
+| [VertexPresentation](../theories/Instance/Set/Vertex/Category.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [ContextSystem](../theories/Set/Relation/Compatible.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [Group](../theories/Algebra/Group/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Magma](../theories/Algebra/Magma/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
@@ -1424,11 +1429,11 @@ Applicative 包装中完整保留独立的环境与所在层级，修复静态�
 限制，不改变运算。显式闭广集实例保留既有宇宙闭包限制；抽象静态 Arrow
 保留独立的对象、Hom 及 Hom 相等层级。没有启用默认模型。
 
-This slice adds three modules without changing the 93 class/record
-interfaces or the 29 `Has*` classes. The current inventory covers 305
+This slice added three modules without changing the 93 class/record
+interfaces or the 29 `Has*` classes at that delivery, which covered 305
 modules. The [computation audit](./ComputationAudit.md#static-arrow-construction)
 records validation and the remaining syntax/representation comparisons.
 
-本批增加三个模块，不改变 93 个类／记录接口及 29 个 `Has*` 类。当前清单
+本批增加三个模块，在该次交付时不改变 93 个类／记录接口及 29 个 `Has*` 类，
 覆盖 305 个模块。[计算审计](./ComputationAudit.md#static-arrow-construction)
 记录验证及剩余语法／表示比较。

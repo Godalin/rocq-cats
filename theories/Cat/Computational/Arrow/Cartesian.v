@@ -45,6 +45,15 @@ Definition arrow_first {C K : Cat}
 Notation "'first[' A ';' f ';' Z ']'" := (arrow_first A Z f)
   : computation_scope.
 
+(** ** Cartesian Arrow Laws
+
+    Fix a computational Arrow over the selected finite products. Derive the
+    first, second, parallel and fanout laws using ordinary exchange and copying. *)
+
+(** ** 笛卡尔 Arrow 定律
+
+    固定选定有限积上的计算 Arrow，利用通常交换与复制导出 first、second、并行及扇出定律。 *)
+
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     (A : Arrow C K (@CartesianMonoidal C HT HP)).

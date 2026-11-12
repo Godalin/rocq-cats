@@ -43,6 +43,15 @@ Arguments MonoidalP {_} _.
 
 #[export] Existing Instance MonoidalP.
 
+(** ** Tensor Operations and Interchange
+
+    Fix a monoidal structure on the named category. Derive the tensor map
+    from separate actions and prove its joint functoriality using interchange. *)
+
+(** ** 张量运算与交换律
+
+    固定具名范畴上的幺半结构，从分别作用导出张量映射，并利用交换律证明联合函子性。 *)
+
 Section TensorOperations.
 Context {C : Cat} `{MC : !MonoidalCat C}.
 
@@ -280,6 +289,15 @@ Next Obligation.
 Defined.
 Next Obligation. apply tensor_map_id. Defined.
 Next Obligation. apply tensor_map_comp. Defined.
+
+(** ** Joint Structural Natural Isomorphisms
+
+    Keep the same monoidal structure. Assemble joint natural associator and
+    unitor isomorphisms from the inherited premonoidal coherence. *)
+
+(** ** 联合结构自然同构
+
+    保持同一幺半结构，从继承的预幺半相干性组装联合自然的结合子与单位子同构。 *)
 
 Section NaturalIsomorphisms.
 Context {C : Cat} `{MC : !MonoidalCat C}.

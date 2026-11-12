@@ -1503,3 +1503,40 @@ integration session.
 （66 个类、27 个记录）及全部 29 个 `Has*` 类。已有 `AGENTS.md` 经验部分
 现记录上下文提升证明的选定积边界。本分支已可交付集成；`typeprop` 及批次
 PDF 仍由集成会话负责。
+
+
+## Section openings after the integrated baseline
+
+## 集成基线后的 Section 引言
+
+The task branch was rebased onto integrated baseline
+`fee98fcff6c656d4dae26425401db7a2bc403b9b`; the static construction is now
+`a167f6c` (formerly `a454875`). The only conflict was in `AGENTS.md` and
+retained both upstream Section requirements and the existing field/comment
+spacing rule. All task-modified source Sections now have an adjacent
+bilingual mathematical opening. Twenty missing openings were added, and
+seven existing entrance descriptions were clarified. Removing comments
+leaves every source token unchanged in this documentation batch.
+
+任务分支已重基到集成基线 `fee98fcff6c656d4dae26425401db7a2bc403b9b`；
+静态构造现为 `a167f6c`（原 `a454875`）。唯一冲突位于 `AGENTS.md`，保留
+上游 Section 要求及原有字段／注释空行规则。本任务修改过的源码 Section
+现均有相邻的双语数学引言，补齐二十处缺项，并澄清七处已有入口说明。本次
+文档批次删除注释后，所有源码词元均与提交前相同。
+
+With the unchanged `rocq-cats` switch, full `dune build @all @runtest
+@install` passed. All 251 static/Reader/Applicative temporary assumption
+checks were rerun successfully. Strict bilingual HTML generated 329 modules
+per language, checked 663 pages, and all 54 changed English/Chinese comment
+blocks were checked in their language's output. The declaration inventory
+now includes the four upstream interfaces and covers all 97 declarations
+once (68 classes, 29 records), retaining 29 `Has*` classes. No permanent
+tests, shared environment or integration branch were changed. Batch PDF
+exports remain with the integration session.
+
+在未修改的 `rocq-cats` switch 中，全库 `dune build @all @runtest @install`
+通过，251 项静态／Reader／Applicative 临时公理检查重跑通过。严格双语 HTML
+每种语言生成 329 个模块，检查 663 页，54 个修改的英中注释块均核对已进入
+对应语言的输出。声明清单补入上游四个接口，现恰好覆盖全部 97 项声明各
+一次（68 个类、29 个记录），保留 29 个 `Has*` 类。没有修改永久测试、共享
+环境或集成分支；批次 PDF 仍由集成会话导出。

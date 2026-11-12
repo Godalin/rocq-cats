@@ -8,6 +8,11 @@ Local Open Scope computation_scope.
 
 (** * 带幺半上下文的纯计算 *)
 
+(** Fix a category and its selected monoidal structure. Use identity pure
+    inclusion and tensoring to construct an explicit effect-free Arrow. *)
+
+(** 固定范畴及其选定幺半结构，用恒等纯嵌入及张量构造显式无效应 Arrow。 *)
+
 Section Pure.
 Context {C : Cat} `{MC : !MonoidalCat C}.
 

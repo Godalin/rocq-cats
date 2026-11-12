@@ -54,6 +54,15 @@ Arguments hasStrength {_ _} _.
 Arguments strongmonad_unit {_ _} _ _ _.
 Arguments strongmonad_mul {_ _} _ _ _.
 
+(** ** Extending with Tensorial Strength
+
+    Fix a StrongMonad over the selected monoidal structure. Derive contextual
+    extension and sequencing laws from its strength and multiplication. *)
+
+(** ** 通过张量强度扩张
+
+    固定选定幺半结构上的 StrongMonad，从其强度与乘法导出上下文扩张及顺序组合定律。 *)
+
 Section Extension.
 Context {C : Cat} `{MC : !MonoidalCat C} (M : StrongMonad C MC).
 

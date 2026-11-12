@@ -7,6 +7,11 @@ Local Open Scope binoidal_scope.
 
 (** * 运输张量边界 *)
 
+(** Fix a binoidal category. Compare equality transports with each context
+    functor and derive naturality when the fixed context changes. *)
+
+(** 固定双侧张量范畴，比较相等运输与各上下文函子，并导出固定上下文变化时的自然性。 *)
+
 Section Transport.
 Context {C : Cat} `{BC : !BinoidalCat C}.
 

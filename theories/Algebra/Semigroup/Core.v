@@ -35,6 +35,15 @@ Arguments SemigroupM {_} _.
 
 #[export] Existing Instance SemigroupM.
 
+(** ** Associative Multiplication
+
+    Fix a setoid with its selected semigroup structure; derive equations for
+    repeated multiplication from its associative operation. *)
+
+(** ** 结合乘法
+
+    固定广集及其选定半群结构，从结合运算导出重复乘法的方程。 *)
+
 Section Multiplication.
 Context {S : SetC} `{HS : !Semigroup S}.
 

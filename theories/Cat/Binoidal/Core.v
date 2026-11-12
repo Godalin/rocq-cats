@@ -73,6 +73,15 @@ Notation "f '⊳' Z" := (binoidal_right Z f)
   (at level 40, left associativity) : binoidal_scope.
 Local Open Scope binoidal_scope.
 
+(** ** Fixed-Context Functors
+
+    Fix a binoidal structure on the named category. Bundle left and right
+    context actions as functors and derive their identity and composition laws. *)
+
+(** ** 固定上下文函子
+
+    固定具名范畴上的双侧张量结构，将左右上下文作用打包为函子，并导出恒等与复合定律。 *)
+
 Section ContextFunctors.
 Context {C : Cat} `{BC : !BinoidalCat C}.
 

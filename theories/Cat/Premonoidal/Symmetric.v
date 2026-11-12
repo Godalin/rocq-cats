@@ -70,6 +70,15 @@ Arguments premonoidal_symmetry {_ _} _ _.
 Notation "'σₚ[' X ';' Y ']'" := (premonoidal_symmetry X Y)
   : premonoidal_scope.
 
+(** ** Derived Symmetry Laws
+
+    Fix a symmetric premonoidal category. Derive inverse and other-variable
+    naturality laws, and recover the right action using symmetry. *)
+
+(** ** 导出的对称定律
+
+    固定对称预幺半范畴，导出取逆及另一变量的自然性定律，并用对称性恢复右作用。 *)
+
 Section Derived.
 Context {C : Cat} `{SP : !SymmetricPremonoidalCat C}.
 

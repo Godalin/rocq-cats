@@ -49,6 +49,15 @@ Notation "'ap[' A ']'" := (applicative_ap A) : applicative_scope.
 Notation "u '⋆[' A ']' v" := (applicative_apply A u v)
   (at level 40, left associativity) : applicative_scope.
 
+(** ** Application Laws
+
+    Fix an Applicative on the chosen finite products and exponentials. Derive
+    the classical application equations in arbitrary shared contexts. *)
+
+(** ** 应用定律
+
+    固定选定有限积与指数上的 Applicative，在任意共同上下文中导出经典应用方程。 *)
+
 Section Laws.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} (A : Applicative C HT HP).

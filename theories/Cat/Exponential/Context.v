@@ -11,13 +11,14 @@ Import Cats.Cat.Exponential.Core.
 
 (** * Internal Sequencing and Product Contexts
 
-    These are ordinary arrows in a cartesian closed base. Sequencing lists
-    its inputs in execution order, before any effectful lifting is chosen. *)
+    Fix binary products and exponentials. These ordinary arrows present
+    sequencing in execution order before any effectful lifting; a terminal
+    object is added later for names and unit contexts. *)
 
 (** * 内部顺序组合与积上下文
 
-    这些是笛卡尔闭基底中的通常态射。顺序组合在选取效应提升之前，先按执行
-    次序排列输入。 *)
+    固定二元积与指数。这些通常态射在选取效应提升之前，按执行次序呈现顺序
+    组合；稍后为命名及单位上下文增加终对象。 *)
 
 Section Contexts.
 Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.

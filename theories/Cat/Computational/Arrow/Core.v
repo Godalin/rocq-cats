@@ -112,6 +112,15 @@ Notation "'context[' A ';' Z ';' f ']'" := (arrow_context A Z f)
   : computation_scope.
 Local Open Scope computation_scope.
 
+(** ** The Induced Computation Category
+
+    Fix a computational Arrow over a named monoidal category. Reindex its
+    computations by value objects and derive pure and fixed-context functors. *)
+
+(** ** 诱导计算范畴
+
+    固定具名幺半范畴上的计算 Arrow，按值对象重索引计算，并导出纯态射及固定上下文函子。 *)
+
 Section Derived.
 Context {C K : Cat} `{MC : !MonoidalCat C} (A : Arrow C K MC).
 

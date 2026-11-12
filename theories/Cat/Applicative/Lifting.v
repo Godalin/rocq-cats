@@ -8,13 +8,14 @@ Local Open Scope applicative_scope.
 
 (** * Binary Lifting in a Shared Context
 
-    These equations specialize the general lax laws by pairing the inputs.
-    They preserve input order and do not require exponentials or strength. *)
+    Fix an Applicative on selected finite products. Pairing the inputs
+    specializes the general lax laws while preserving input order, without
+    requiring exponentials or strength. *)
 
 (** * 共同上下文中的二元提升
 
-    这些方程通过配对输入特化一般 lax 定律。它们保持输入次序，不要求指数
-    或强度。 *)
+    固定选定有限积上的 Applicative。配对输入特化一般 lax 定律并保持输入次序，
+    不要求指数或强度。 *)
 
 Section Lifting.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
@@ -35,6 +36,15 @@ End Lifting.
 Notation "'lift₂[' A ';' h ';' u ';' v ']'" :=
   (applicative_combine A h u v) : applicative_scope.
 Local Open Scope applicative_scope.
+
+(** ** Contextual Lifting Laws
+
+    Keep an Applicative and its chosen finite products fixed. Derive shared-
+    context substitution, pure-input and associativity laws from lax lifting. *)
+
+(** ** 上下文提升定律
+
+    固定 Applicative 及其选定有限积，从 lax 提升导出共同上下文替换、纯输入及结合律。 *)
 
 Section Laws.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}

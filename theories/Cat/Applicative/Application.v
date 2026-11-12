@@ -17,6 +17,11 @@ Local Open Scope applicative_scope.
     应用通过柯里化唯一确定二元提升。以下定律要求恢复的提升作为态射运算相干。
     在任意闭范畴中，不将四条经典全局值方程单独作为这些条件的替代。 *)
 
+(** First fix binary products, exponentials, an endofunctor and an application
+    operation. Recover binary lifting without assuming a pure map or terminal. *)
+
+(** 首先固定二元积、指数、自函子及应用运算，恢复二元提升；此处不假设纯值映射或终对象。 *)
+
 Section RawApplication.
 Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
     (F : Functor C C)
@@ -51,6 +56,15 @@ Proof.
 Qed.
 
 End RawApplication.
+
+(** ** Application from Coherent Operations
+
+    Fix chosen finite products and exponentials and a coherent binary-operation
+    presentation. Construct application and recover its original lifting. *)
+
+(** ** 从相干运算得到应用
+
+    固定选定有限积、指数及相干二元运算呈现，构造应用并恢复原提升。 *)
 
 Section OperationApplication.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
@@ -179,6 +193,15 @@ Definition ApplicativeApplication {C : Cat}
     (A : Applicative C HT HP)
   : ApplicativeAp C HT HP HE
   := OperationsApplication (ApplicativeOperations A).
+
+(** ** Application Round Trips
+
+    Fix the same finite-product and exponential choices. Compare application
+    and structural Applicative presentations in their specified hom equality. *)
+
+(** ** 应用的往返
+
+    固定同一有限积与指数选择，在指定 Hom 相等下比较应用与结构式呈现。 *)
 
 Section Roundtrips.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}

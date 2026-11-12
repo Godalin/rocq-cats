@@ -10,6 +10,13 @@ From Cats Require Export
 
 (** * 内部恒等与复合 *)
 
+(** Fix selected binary products and exponentials on a category. Develop
+    internal identities, composition and evaluation; terminal objects are
+    added only for the final unit diagrams. *)
+
+(** 固定范畴上的选定二元积与指数，发展内部恒等、复合及求值；仅在最后的
+    单位图中增加终对象。 *)
+
 Section InternalHom.
 Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 

@@ -81,6 +81,15 @@ Global Instance applicative_pure_value_proper {C : Cat}
   : Proper (HomEq ==> HomEq) (@applicative_pure_value C HT HP A W X).
 Proof. intros x y H. unfold applicative_pure_value. rewrite H. reflexivity. Qed.
 
+(** ** Pure Values and Binary Lifting
+
+    Fix an Applicative on selected finite products. Derive naturality, unit
+    and partial-evaluation equations without any closedness assumption. *)
+
+(** ** 纯值与二元提升
+
+    固定选定有限积上的 Applicative，导出自然性、单位及部分求值方程，不假设闭性。 *)
+
 Section Laws.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     (A : Applicative C HT HP).

@@ -19,6 +19,11 @@ Local Open Scope computation_scope.
     实际索引计算范畴，并使用显式结构边界；不主张未使用的环境对象或定律
     记录相等。 *)
 
+(** First fix a computational Arrow with selected cartesian values. Compare
+    the pure functor and context action after its Freyd round trip. *)
+
+(** 首先固定具有选定笛卡尔值的计算 Arrow，比较经 Freyd 往返后的纯函子与上下文作用。 *)
+
 Section ArrowRoundTrip.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     (A : Arrow C K (@CartesianMonoidal C HT HP)).
@@ -66,6 +71,15 @@ Definition ArrowFreydRoundTripIso
   := InducedFactorIso A.
 
 End ArrowRoundTrip.
+
+(** ** Returning to the Freyd Computation Structure
+
+    Fix a Freyd structure between the value and ambient categories. Compare
+    its returned value-indexed computation category and all structural boundaries. *)
+
+(** ** 返回 Freyd 计算结构
+
+    固定值与环境范畴间的 Freyd 结构，比较返回的值索引计算范畴及全部结构边界。 *)
 
 Section FreydRoundTrip.
 Context {C K : Cat} (F : FreydCat C K).
