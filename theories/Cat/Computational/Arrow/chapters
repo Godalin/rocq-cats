@@ -4,4 +4,6 @@ Kleisli.v
 Cartesian.v
 Binoidal.v
 Premonoidal.v
+Symmetric.v
+Freyd.v
 Applicative.v

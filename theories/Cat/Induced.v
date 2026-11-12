@@ -27,6 +27,21 @@ Next Obligation. apply comp_id_r. Qed.
 Next Obligation. apply comp_id_l. Qed.
 Next Obligation. apply comp_assoc. Qed.
 
+(** Factor a functor through its own object-indexed category. The new
+    object map is identity and its arrow action is the original one. *)
+
+(** 将函子经其自身对象索引范畴分解。新对象映射为恒等，态射作用仍为原作用。 *)
+
+Program Definition InducedF {C D : Cat} (F : Functor C D)
+  : Functor C (InducedCat (@Ob C) F)
+  :=
+  {|F0 X := X
+  ; F1 X Y f := fmap F f
+  ; functor_fmap_proper X Y := @functor_fmap_proper C D F X Y
+  ; functor_id X := @functor_id C D F X
+  ; functor_comp X Y Z g f := @functor_comp C D F X Y Z g f
+  |}.
+
 (** The inclusion acts identically on every hom-set. Its laws remain
     transparent when equality contains computational inverse data. *)
 

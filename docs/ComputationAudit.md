@@ -1139,3 +1139,141 @@ the integration session.
 记录接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。没有新增
 永久测试或修改共享测试配置。本任务分支基础已可独立集成；`typeprop` 及
 批次 PDF 导出仍由集成会话负责。
+
+## Symmetric contexts and Freyd foundation
+
+## 对称上下文与 Freyd 基础
+
+This user-authorized serial batch starts from `4098284` on
+`monoidal-cat-view`. The classical conditions were rechecked against
+[Jacobs–Heunen–Hasuo, definitions 6.2–6.4](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/35C603B99F43CBD8109C97FA51BDAB23/S0956796809007308a.pdf/categorical_semantics_for_arrows.pdf)
+and [Selinger, section 2.1](https://www.mscs.dal.ca/~selinger/papers/control.pdf).
+The interface includes finite-product values, symmetric premonoidal
+computations, a central identity-on-objects inclusion and strict
+preservation. It does not use the weaker third-party effectful interface
+as a substitute for these requirements.
+
+本用户授权的串行批次从 `monoidal-cat-view` 上的 `4098284` 开始。经典
+条件与 [Jacobs–Heunen–Hasuo 定义 6.2–6.4](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/35C603B99F43CBD8109C97FA51BDAB23/S0956796809007308a.pdf/categorical_semantics_for_arrows.pdf)
+及 [Selinger 第 2.1 节](https://www.mscs.dal.ca/~selinger/papers/control.pdf)
+重新核对。接口包括有限积值结构、对称预幺半计算结构、对象上恒等的中心
+嵌入及严格保持性，没有以较弱的第三方 effectful 接口替代这些条件。
+
+[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v)
+inherits exactly one premonoidal parent. It stores central exchange,
+involution, left-variable naturality, the hexagon and unit compatibility.
+The symmetry isomorphism uses the opposite exchange as its transparent
+inverse; right-variable naturality follows by inverting the first square.
+A derived conjugation law recovers right action from left action.
+[CartesianSymmetricPremonoidal](../theories/Cat/Premonoidal/Cartesian.v)
+inherits the existing cartesian monoidal parent's premonoidal structure,
+proving only the new exchange equations from products.
+
+[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v) 恰好
+继承一个预幺半父结构，保存中心交换、对合、左变量自然性、六边形及单位
+相容性。对称同构以反序交换为透明逆；右变量自然性通过对第一个方块取逆
+得到。导出的共轭律从左作用恢复右作用。
+[CartesianSymmetricPremonoidal](../theories/Cat/Premonoidal/Cartesian.v)
+继承已有笛卡尔幺半父层的预幺半结构，仅从积证明新增交换方程。
+
+[ArrowSymmetricPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
+retains exactly `ArrowPremonoidal A`. Exchange is pure product exchange,
+central by `arrow_pure_central`. Its naturality follows from the existing
+right-context definition and involutive pure exchange. Hexagon and unit
+coherence are functorial images of the generic cartesian symmetry laws;
+no separate Reader or State coherence proofs are added. Symmetry exchanges
+context positions without exchanging the execution of two effects.
+
+[ArrowSymmetricPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
+保留完全相同的 `ArrowPremonoidal A`。交换为纯积交换，其中心性来自
+`arrow_pure_central`；自然性来自已有右上下文定义及纯交换对合律。六边形
+及单位相干性为一般笛卡尔对称定律的函子像，不增加 Reader 或 State 的
+独立相干证明。对称性交换上下文位置，不交换两个效应的执行次序。
+
+[FreydCat](../theories/Cat/Computational/Freyd/Core.v) bundles the pure
+ambient functor with chosen cartesian values and symmetric premonoidal
+computations. Its actual computation category is the existing induced
+category indexed by value objects. `FreydPureF` therefore has identity
+object map by construction; arbitrary unused ambient objects are not
+claimed to belong to this Freyd category. The reusable
+[InducedF](../theories/Cat/Induced.v) supplies this factorization and now
+also supplies the existing `ArrowPureF`, keeping its arrow/object maps.
+No equality of object-map functions or bijection of ambient object types
+is required.
+
+[FreydCat](../theories/Cat/Computational/Freyd/Core.v) 将纯环境函子与
+选定笛卡尔值结构、对称预幺半计算结构打包。实际计算范畴为按值对象索引的
+已有诱导范畴，因此 `FreydPureF` 的对象映射按构造为恒等；不主张任意未
+使用的环境对象都属于这个 Freyd 范畴。可复用
+[InducedF](../theories/Cat/Induced.v) 提供此分解，现在也提供已有
+`ArrowPureF`，保留其态射／对象映射。无需对象映射函数的相等或环境对象
+类型之间的双射。
+
+Strict object preservation retains explicit tensor/unit equality
+witnesses. The existing `eq_to_hom` operation supplies every boundary
+transport. Context preservation, both unitors, both nested associator
+boundaries and symmetry use those same witnesses coherently, and every
+arrow equation uses specified Hom equality. There is no UIP, function
+extensionality, proof irrelevance or identification of law records.
+[ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) reuses the
+same pure functor, finite-product choices and symmetric computation
+parent. All its object equalities are reflexive, so boundary transports
+compute to identities; preservation reuses the existing Arrow laws.
+
+严格对象保持性保留显式张量／单位相等见证。已有 `eq_to_hom` 运算提供每个
+边界运输。上下文保持性、两个单位子、结合子的两个嵌套边界及对称性相干地
+使用同一批见证，所有态射方程均使用指定 Hom 相等。没有使用 UIP、函数
+外延性、证明无关性或定律记录的相等。
+[ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) 复用同一纯
+函子、有限积选择及对称计算父层。其全部对象相等均自反，因此边界运输计算
+为恒等；保持性复用已有 Arrow 定律。
+
+This delivers the symmetric/Freyd interfaces and the forward
+computational Arrow-to-Freyd construction. Reverse translation, explicit
+round-trip comparisons and their precise categorical equivalence level
+remain open. No full Arrow/Freyd correspondence, ordinary-arrow-category
+change, closed Freyd/ArrowApply result or general noncartesian right
+action is claimed. All model structures remain explicitly selected.
+
+本批交付对称／Freyd 接口及计算 Arrow 到 Freyd 的正向构造。逆向翻译、
+显式往返比较及其精确范畴等价层级仍待完成。不主张完整 Arrow／Freyd
+对应，不修改通常箭头范畴，也不提供闭 Freyd／ArrowApply 结果或一般非
+笛卡尔右作用。所有模型结构仍须显式选择。
+
+Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
+passed. All 169 temporary assumption checks were closed under the global
+context: 90 new symmetric/Freyd checks and the 79 premonoidal checks rerun
+after extracting `InducedF`. They cover both strict hom/equality universe
+orders, separately sized value/computation objects and hom-sets, both
+strict state carrier/equality orders, inherited coercions/instances,
+identity-on-objects inclusion, exact shared structure choices, transparent
+exchange/inverse/boundary computations, structural preservation and the
+unchanged State order/noncentrality counterexamples. Imports do not select
+a default symmetric or Freyd model. No permanent tests or shared test
+configuration were changed.
+
+验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过；全部
+169 项临时公理检查均无额外全局假设，其中新增对称／Freyd 检查 90 项，
+提取 `InducedF` 后重跑预幺半检查 79 项。覆盖 Hom／相等的两种严格宇宙
+次序、值／计算对象及 Hom 广集的分别定级、状态载体／相等的两种严格次序、
+继承转换／实例、对象上恒等的嵌入、完全共享的结构选择、交换／逆／边界的
+透明计算、结构保持性，以及原有 State 次序／非中心性反例。导入不选定
+默认对称或 Freyd 模型。没有修改永久测试或共享测试配置。
+
+Strict bilingual HTML generated 297 modules per language and checked
+599 pages. All five new module texts, interface-field anchors and the
+shared `InducedF` documentation were inspected in both languages. The
+inventory covers all 93 interfaces exactly once (66 classes, 27 records),
+retaining all 29 `Has*` classes. The existing `AGENTS.md` learning section
+records object-indexed inclusions, explicit ambient-category inference and
+consistent boundary witnesses. This foundation is ready for independent
+integration before the reverse translation; `typeprop` and batch PDFs
+remain with integration.
+
+严格双语 HTML 每种语言生成 297 个模块，检查 599 页。英中文均抽查全部
+五个新增模块正文、接口字段锚点及共享 `InducedF` 文档。清单恰好覆盖全部
+93 个接口各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。已有
+`AGENTS.md` 经验部分记录对象索引嵌入、显式环境范畴推断及一致的边界见证。
+本基础已可在逆向翻译前独立集成；`typeprop` 及批次 PDF 仍由集成方负责。

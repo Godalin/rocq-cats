@@ -1,2 +1,4 @@
 Core.v
 Laws.v
+Symmetric.v
+Cartesian.v

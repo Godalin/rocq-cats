@@ -50,15 +50,9 @@ Next Obligation. exact (arrow_first_comp A g f Z). Defined.
 (** 将同一纯态射作用提升到重索引后的范畴。对象映射为恒等，不保存额外计算
     数据。 *)
 
-Program Definition ArrowPureF
+Definition ArrowPureF
   : Functor C (ComputationCat A)
-  :=
-  {|F0 X := X
-  ; F1 X Y f := arr[A; f]
-  ; functor_fmap_proper X Y := @functor_fmap_proper C K A X Y
-  ; functor_id X := arrow_arr_id A X
-  ; functor_comp X Y Z g f := arrow_arr_comp A g f
-  |}.
+  := InducedF A.
 
 (** Pure maps commute with arbitrary computations in both tensor positions.
     The proof reuses the two existing context-naturality laws. *)

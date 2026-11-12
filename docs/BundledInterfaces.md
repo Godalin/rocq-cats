@@ -4,11 +4,11 @@
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 91 interfaces after the structural hierarchy slices,
+inventory now includes 93 interfaces after the structural hierarchy slices,
 alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含结构层级批次后的 91 个接口，
+起初分类全部 87 个类／记录接口；清单现包含结构层级批次后的 93 个接口，
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
@@ -590,8 +590,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy, binoidal and premonoidal slices and now covers 292 modules,
-64 classes and
+hierarchy, binoidal, premonoidal and Freyd slices and now covers 297 modules,
+66 classes and
 27 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -602,7 +602,8 @@ example from the discussion was temporary; the final algebra slice below
 implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表跟随层级、双侧张量与预幺半批次更新，现覆盖 292 个模块、64 个类及 27 个
+类及 27 个记录。下表跟随层级、双侧张量、预幺半及 Freyd 批次更新，现覆盖
+297 个模块、66 个类及 27 个
 记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
@@ -663,7 +664,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 149 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 154 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -839,6 +840,8 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [PremonoidalCat](../theories/Cat/Premonoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [FreydCat](../theories/Cat/Computational/Freyd/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [HasStrength](../theories/Cat/Monoidal/Strength.v) | `Class` | Chosen construction / 选定构造 |
 | [Mono](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [Sub](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
@@ -1258,15 +1261,69 @@ premonoidal laws provide inverse centrality and naturality.
 到达同一计算范畴。全部张量／上下文选择仅继承一次。选定值结合子／单位子
 的纯像提供结构同构，保留其可计算逆。一般预幺半定律给出逆中心性及自然性。
 
-This adds one theory module and no class/record interface. The current
-inventory covers 292 modules and all 91 interfaces once (64 classes,
+This added one theory module and no class/record interface. At that stage
+the inventory covered 292 modules and all 91 interfaces once (64 classes,
 27 records), retaining all 29 `Has*` classes. No model structure is
 globally selected, and no effect interchange is added. The
 [computation audit](./ComputationAudit.md#computational-arrow-premonoidal-structure)
 records the proof reuse, validation and remaining symmetric/Freyd work.
 
-本批增加一个理论模块，没有增加类／记录接口。当前清单覆盖 292 个模块，
+该批增加一个理论模块，没有增加类／记录接口。该阶段清单覆盖 292 个模块，
 全部 91 个接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。
 没有全局选定模型结构，也没有增加效应交换律。
 [计算审计](./ComputationAudit.md#computational-arrow-premonoidal-structure)
 记录证明复用、验证及剩余对称／Freyd 工作。
+
+## Symmetric computations and the Freyd inclusion
+
+## 对称计算与 Freyd 嵌入
+
+[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v)
+has one `SymmetricPremonoidalP :> PremonoidalCat C` parent, also registered
+for instance search. It stores central exchange, involution, one-variable
+naturality, hexagon and unit compatibility. The inverse is the opposite
+exchange; other-variable naturality and recovery of right action are
+derived. [Cartesian values](../theories/Cat/Premonoidal/Cartesian.v) and
+[computational Arrows](../theories/Cat/Computational/Arrow/Symmetric.v)
+explicitly select this extension of their existing parent.
+
+[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v)
+具有唯一 `SymmetricPremonoidalP :> PremonoidalCat C` 父结构，并注册同一
+实例。它保存中心交换、对合、单变量自然性、六边形及单位相容性。逆为反序
+交换；另一变量自然性及右作用的恢复均由此导出。
+[笛卡尔值](../theories/Cat/Premonoidal/Cartesian.v)及
+[计算 Arrow](../theories/Cat/Computational/Arrow/Symmetric.v)显式选定
+对其已有父层的这一扩展。
+
+[FreydCat C K](../theories/Cat/Computational/Freyd/Core.v) has the pure
+ambient functor `FreydF :> Functor C K` as its unique primary view.
+Its computed `FreydComputations` reindexes ambient hom-sets by value
+objects, rather than choosing a second category. Supplementary named
+`hasCartesian` and `hasSymmetricPremonoidal` fields select the value and
+computation structures. `FreydPureF` uses the shared
+[InducedF](../theories/Cat/Induced.v) and has identity object map.
+Tensor/unit object equalities determine every boundary transport in its
+context, associator, unitor and symmetry preservation laws. All arrow
+laws use specified hom equality, with no equality of functions or records.
+
+[FreydCat C K](../theories/Cat/Computational/Freyd/Core.v) 以纯环境函子
+`FreydF :> Functor C K` 为唯一主要视图。计算性 `FreydComputations`
+按值对象重索引环境 Hom 广集，不额外选取范畴。辅助具名字段 `hasCartesian`
+及 `hasSymmetricPremonoidal` 选定值与计算结构。`FreydPureF` 使用共享
+[InducedF](../theories/Cat/Induced.v)，对象映射为恒等。张量／单位对象的
+相等确定上下文、结合子、单位子及对称性保持律中的全部边界运输。所有态射
+定律均使用指定 Hom 相等，不要求函数或记录相等。
+
+[ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) retains the
+same pure functor, value choices and symmetric computation parent.
+All its object boundaries are reflexive and compute to identities.
+The current inventory contains 297 modules and 93 interfaces (66 classes,
+27 records), with all 29 `Has*` classes retained. The
+[computation audit](./ComputationAudit.md#symmetric-contexts-and-freyd-foundation)
+records validation and the remaining reverse translation/round trips.
+
+[ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) 保留同一纯函子、
+值选择及对称计算父层。其所有对象边界均为自反相等，计算为恒等。当前清单
+包含 297 个模块、93 个接口（66 个类、27 个记录），保留全部 29 个 `Has*`
+类。[计算审计](./ComputationAudit.md#symmetric-contexts-and-freyd-foundation)
+记录验证及剩余逆向翻译／往返定律。
