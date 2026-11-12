@@ -195,6 +195,19 @@ Proof.
   - destruct x. reflexivity.
 Defined.
 
+(** Weakening drops the newest environment entry. In particular, a
+    weakened term is evaluated independently of the new argument. *)
+
+(** 弱化丢弃环境的最新分量。特别地，弱化项的求值与新实参无关。 *)
+
+Lemma env_renaming_weaken {Γ : Ctx B} {A : Ty B}
+    (Θ : Ctx B) (γ : EnvF Γ Θ) (a : SemF A Θ)
+  : EnvRenamingN Γ (Γ ▻ A) wkRen Θ (γ, a) ≈S γ.
+Proof.
+  apply env_ext. intros U x.
+  exact (env_renaming_lookup Γ (Γ ▻ A) Θ wkRen (γ, a) U x).
+Defined.
+
 (** Within the common semantic bound, currying needs no outer lift of
     the parameter. Its components and laws are the existing general
     Kripke construction, specialized to this semantic family. *)

@@ -1,5 +1,6 @@
 From Cats Require Export STLC.Evaluation.
 From Cats Require Import
+  STLC.EvaluationEquivalence
   Cat.Core
   Cat.Functor.Core
   Cat.Natural
@@ -17,7 +18,9 @@ From Cats Require Import
     Termination here is structural recursion in the metatheory. It is not
     a claim about every directed reduction sequence. Likewise, producing
     a well-shaped normal tree alone does not prove beta/eta equality with
-    its input: full soundness and invariance require further arguments. *)
+    its input: full soundness requires a further argument. Beta/eta
+    invariance below follows from semantic equality and respectful
+    reification. *)
 
 (** * 通过求值正规化
 
@@ -26,8 +29,8 @@ From Cats Require Import
     的可执行映射。
 
     此处终止性来自元理论中的结构递归，并不是关于每条有向归约序列的断言。
-    同样，仅产生形状正确的正规树尚不能证明其与输入 βη 相等；完整可靠性与
-    不变性需要进一步论证。 *)
+    同样，仅产生形状正确的正规树尚不能证明其与输入 βη 相等；完整可靠性需要
+    进一步论证。下文的 βη 不变性则由语义相等与实化的保相等性质得到。 *)
 
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
@@ -191,6 +194,21 @@ Proof.
       * exact (reflected_env_select Γ Δ Δ ρ idRen).
       * symmetry. exact (reflected_env_reindex Γ Γ Δ idRen ρ).
     + exact (eval_reindex t Γ Δ ρ (initial_env Γ)).
+Defined.
+
+(** Beta/eta equal inputs produce literally the same normal syntax tree.
+    Semantic extensional equality suffices because reification is a
+    respectful map into the native-equality setoid of normal forms. *)
+
+(** βη 相等的输入产生完全相同的正规语法树。语义外延相等已经足够，因为
+    实化是到以原生相等比较的正规形广集的保相等映射。 *)
+
+Lemma nf_tm_eq@{e +} {Γ : Ctx B} {A : Ty B}
+    {t u : Tm Γ A} (h : TmEq@{b e _} t u)
+  : nf t = nf u.
+Proof.
+  unfold nf. apply reify_sem_proper.
+  exact (eval_tm_eq h Γ (initial_env Γ)).
 Defined.
 
 End Normalization.
