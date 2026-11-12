@@ -207,6 +207,8 @@ Notation "G '^K' F" := (KripkeFunctionF F G)
 
 (** ** Currying across Explicit Size Bounds
 
+    Fix a world category [C] and presheaves [F], [G] and [H]. Construct
+    currying and uncurrying, then prove their beta/eta and universal laws.
     Pointwise products use the chosen setoid product. The function presheaf
     may live in larger value universes because it stores preservation laws.
     The source of a curried map is therefore explicitly lifted into that
@@ -214,7 +216,9 @@ Notation "G '^K' F" := (KripkeFunctionF F G)
 
 (** ** 跨显式大小界限的柯里化
 
-    逐点积使用选定的广集积。函数预层保存保持律，因而可能位于更大的值宇宙；
+    固定世界范畴 [C] 与预层 [F]、[G]、[H]，构造柯里化和反柯里化，并证明
+    β、η 及泛性质定律。逐点积使用选定的广集积。函数预层保存保持律，因而
+    可能位于更大的值宇宙；
     柯里化映射的源显式提升到该较大的集合范畴中，不向下重设任何大小。 *)
 
 Section KripkeCurrying.

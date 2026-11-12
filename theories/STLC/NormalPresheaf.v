@@ -91,10 +91,17 @@ Program Definition nf_rename_resp@{b q +} {B : Type@{b}}
   |}.
 Next Obligation. intros v w h. destruct h. reflexivity. Defined.
 
-(** Fix world and syntax-equality bounds once for these presheaves and
-    their transformations. References within the section inherit them. *)
+(** ** Syntax Presheaves for a Fixed Signature
 
-(** 为这些预层及其变换一次固定世界与语法相等界限；节内引用继承这些界限。 *)
+    Fix a signature [B] and bounds for world equality, syntax equality and
+    world laws. Construct neutral, normal and raw-term presheaves together
+    with their embeddings and eta transformation. References within the
+    section inherit these bounds. *)
+
+(** ** 固定签名的语法预层
+
+    固定签名 [B] 及世界相等、语法相等与世界定律界限，构造中性、正规与原始项
+    预层及其嵌入和 η 变换。节内引用继承这些界限。 *)
 
 Section SyntaxPresheaves.
 Universes b r q l.

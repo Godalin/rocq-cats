@@ -11,6 +11,16 @@ Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Soundness with Small Equational Evidence
+
+    Fix [B], [Γ] and [A] at [b < r < s < l]. Check soundness and the
+    two-way characterization with evidence at [b], then idempotence. *)
+
+(** ** 较小等式证据下的可靠性
+
+    在 [b < r < s < l] 处固定 [B]、[Γ]、[A]，检查证据位于 [b] 时的可靠性
+    与双向刻画，再检查幂等性。 *)
+
 Section SmallerEvidence.
 Universes b r s l.
 Constraint b < r.
@@ -55,6 +65,16 @@ Definition separated_idempotence (t : Tm Γ A)
   := nf_idempotent t.
 
 End SmallerEvidence.
+
+(** ** Soundness with Larger Evidence
+
+    Fix [B], [Γ] and [A] at [b < r < l < s < e]. Check soundness and
+    both characterization maps with evidence above semantic values. *)
+
+(** ** 较大证据下的可靠性
+
+    在 [b < r < l < s < e] 处固定 [B]、[Γ]、[A]，检查等式证据高于语义值时
+    的可靠性与双向刻画映射。 *)
 
 Section LargerEvidenceAndSmallerWorldLaws.
 Universes b r l s e.

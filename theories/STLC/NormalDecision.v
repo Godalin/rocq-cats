@@ -141,6 +141,17 @@ Proof.
       first [apply ty_eq_decision; exact d | apply d]].
 Defined.
 
+(** ** Typed Comparison under Decidable Label Equality
+
+    Fix a signature [B] and an explicit native equality decision [d] for
+    its labels. Prove code injectivity and derive neutral and normal
+    equality decisions at a fixed context and type. *)
+
+(** ** 标签相等可判定时的带类型比较
+
+    固定签名 [B] 与其标签的显式原生相等判定 [d]，证明编码单射性，并在固定
+    上下文与类型处导出中性项和正规形的相等判定。 *)
+
 Section Comparison.
 Context {B : Type} (d : ∀ p q : B, Decision (p = q)).
 

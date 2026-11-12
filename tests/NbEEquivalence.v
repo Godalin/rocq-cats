@@ -16,6 +16,16 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Invariance with Small Equational Evidence
+
+    Fix signature, contexts, terms and a substitution at [b < r < s < l].
+    Check substitution compatibility and invariance with evidence at [b]. *)
+
+(** ** 较小等式证据下的不变性
+
+    在 [b < r < s < l] 处固定签名、上下文、项与替换，检查替换相容性及证据
+    位于 [b] 时的不变性。 *)
+
 Section SmallerEvidence.
 Universes b r s l.
 Constraint b < r.
@@ -69,6 +79,16 @@ Definition smaller_evidence_invariance (h : TmEq@{b b _} t u)
   := nf_tm_eq h.
 
 End SmallerEvidence.
+
+(** ** Invariance with Larger Evidence
+
+    Fix the same kinds of inputs at [b < r < l < s < e]. Check
+    substitution and invariance with evidence above semantic values. *)
+
+(** ** 较大证据下的不变性
+
+    在 [b < r < l < s < e] 处固定同类输入，检查等式证据高于语义值时的替换
+    与不变性。 *)
 
 Section LargerEvidenceAndSmallerWorldLaws.
 Universes b r l s e.
