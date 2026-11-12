@@ -3,4 +3,5 @@ Pure.v
 Kleisli.v
 Cartesian.v
 Binoidal.v
+Premonoidal.v
 Applicative.v

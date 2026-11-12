@@ -293,6 +293,52 @@ Proof.
   normalize_arr. rewrite Hi. reflexivity.
 Qed.
 
+(** Reassociation is natural in the middle computation. The proof uses
+    ordinary context exchange, never interchange of two effects. *)
+
+(** 括号重排在中间计算上自然。仅使用通常上下文的交换，不交换两个带效应
+    计算。 *)
+
+Lemma arrow_middle_assoc {X Y Y' Z : @Ob C}
+    (f : Hom (A Y) (A Y'))
+  : arr[A; (@product_assoc C HP X Y' Z).1] ∘
+      first[A; second[A; f; X]; Z] ≈
+      second[A; first[A; f; Z]; X] ∘
+        arr[A; (@product_assoc C HP X Y Z).1].
+Proof.
+  unfold arrow_first.
+  rewrite !arrow_second_comp, !arrow_second_arr, !arrow_second_nested.
+  normalize_arr.
+  assert (Ho : (@product_assoc C HP X Y' Z).1 ∘
+    ((⟨π2, π1⟩ : Hom (Z × (X × Y')) ((X × Y') × Z)) ∘
+      (@product_assoc C HP Z X Y').1) ≈
+    ((@id X × (⟨π2, π1⟩ : Hom (Z × Y') (Y' × Z))) ∘
+      (@product_assoc C HP X Z Y').1) ∘
+        ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y')).
+  { unfold product_assoc. cbn.
+    repeat first [rewrite cross_η | rewrite product_comp_r |
+      rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
+      rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
+  assert (Hi : ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y) ∘
+    ((@product_assoc C HP Z X Y).2.1 ∘
+      (⟨π2, π1⟩ : Hom ((X × Y) × Z) (Z × (X × Y)))) ≈
+    (@product_assoc C HP X Z Y).2.1 ∘
+      ((@id X × (⟨π2, π1⟩ : Hom (Y × Z) (Z × Y))) ∘
+        (@product_assoc C HP X Y Z).1)).
+  { unfold product_assoc. cbn.
+    repeat first [rewrite cross_η | rewrite product_comp_r |
+      rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
+      rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
+  rewrite Ho, functor_comp. repeat rewrite comp_assoc.
+  rewrite <- (comp_assoc
+    arr[A; ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y')]
+    (second[A; f; (Z × X)%ob])
+    arr[A; (@product_assoc C HP Z X Y).2.1 ∘
+      (⟨π2, π1⟩ : Hom ((X × Y) × Z) (Z × (X × Y)))]),
+    arrow_second_natural.
+  normalize_arr. rewrite Hi. reflexivity.
+Qed.
+
 End Cartesian.
 
 (** Run the left computation before the right on separate inputs.

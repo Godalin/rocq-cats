@@ -1001,17 +1001,18 @@ exponentials or strength. Applicative, Monad, strength and Arrow clients
 use these comparisons; tensorator natural transformations have the same
 derived tensor functor at their endpoints. Monad–monoid functors keep
 the underlying arrow and transport its Type-valued preservation witness.
-Computational Arrows remain merely binoidal where already constructed;
-no interchange for arbitrary State effects is inferred. Constructing
-Arrow premonoidal/symmetric/Freyd structure and translations remains open.
+At this milestone computational Arrows had only their binoidal structure;
+no interchange for arbitrary State effects was inferred. The following
+batch supplies their premonoidal structure; symmetric/Freyd structure and
+translations remain open.
 
 笛卡尔及自同态比较定律使用指定相等适配较弱客户端。
 [CartesianLifting](../theories/Cat/Monoidal/CartesianLifting.v) 运输一般
 lax 提升结果，不增加纯值映射、指数或强度。Applicative、Monad、强度及
 Arrow 客户端使用这些比较；tensorator 自然变换的两端使用同一导出张量函子。
-Monad–幺半群函子保持底层态射，运输其 Type 值保持性见证。已有计算 Arrow
-仍只具有已构造的双侧张量结构，不由此推出任意 State 效应的交换律。
-构造 Arrow 的预幺半／对称／Freyd 结构及其翻译仍待完成。
+Monad–幺半群函子保持底层态射，运输其 Type 值保持性见证。在该阶段，计算
+Arrow 仍只具有已构造的双侧张量结构，不由此推出任意 State 效应的交换律。
+下一批补充其预幺半结构；对称／Freyd 结构及其翻译仍待完成。
 
 
 Validation used the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0,
@@ -1047,3 +1048,94 @@ The inventory still covers all 91 interfaces exactly once (64 classes,
 全部三个新增模块及新增预幺半有序组合定律均抽查英中文。清单仍恰好覆盖全部
 91 个接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。批次 PDF
 导出及 `typeprop` 集成仍由集成会话负责。
+
+## Computational Arrow premonoidal structure
+
+## 计算 Arrow 的预幺半结构
+
+This user-authorized serial batch starts from `1b341ec` on
+`monoidal-cat-view`. [ArrowPremonoidal](../theories/Cat/Computational/Arrow/Premonoidal.v)
+constructs a `PremonoidalCat (ComputationCat A)` for a computational Arrow
+over the cartesian monoidal structure supplied by named terminal and
+product choices. Its parent is exactly the existing `ArrowBinoidal A`:
+the object tensor, equality and both context operations are inherited,
+without new choices or a direct ancestor bypass.
+
+本用户授权的串行批次从 `monoidal-cat-view` 上的 `1b341ec` 开始。
+[ArrowPremonoidal](../theories/Cat/Computational/Arrow/Premonoidal.v)
+为具名终对象及积选择给出的笛卡尔幺半结构上的计算 Arrow，构造
+`PremonoidalCat (ComputationCat A)`。父结构恰好为已有 `ArrowBinoidal A`：
+对象张量、相等及两种上下文运算全部继承，不增加选择或直达祖先的旁路。
+
+The associator and both unitors, including their inverse maps, are pure
+images of the same selected value isomorphisms through `ArrowPureF A`.
+The existing `functor_is_iso` theorem supplies the inverse equations;
+`arrow_pure_central` supplies all three centrality witnesses. Unit
+naturality reuses the two projection laws. The associator's left/right
+naturality reuses `arrow_first_assoc` and `arrow_context_assoc`; the new
+[arrow_middle_assoc](../theories/Cat/Computational/Arrow/Cartesian.v)
+proves middle naturality from nested left contexts and ordinary context
+exchange. It never exchanges two effectful computations. Pentagon and
+triangle are the functorial images of existing value coherence, without
+reproving product coherence or individual model laws. All inverse
+centrality and naturality laws then follow from the general premonoidal
+theory, with no duplicate structure fields.
+
+结合子及两个单位子，包括其逆映射，均为同一选定值同构沿 `ArrowPureF A`
+的纯像。已有 `functor_is_iso` 定理提供互逆方程，`arrow_pure_central`
+提供三种中心性见证。单位子自然性复用两个投影律；结合子左右自然性复用
+`arrow_first_assoc` 及 `arrow_context_assoc`。新增
+[arrow_middle_assoc](../theories/Cat/Computational/Arrow/Cartesian.v)
+从嵌套左上下文及通常上下文交换证明中间自然性，不交换两个带效应计算。
+五边形及三角形来自已有值相干性的函子像，不重复证明积相干性或各个模型
+的定律。全部逆向中心性及自然性随后由一般预幺半理论导出，不增加重复字段。
+
+The construction is explicitly selected and requires neither exponentials
+nor commutativity. It applies directly to the existing pure and strong
+Monad/Kleisli Arrow models, including State. This batch does not supply a
+general noncartesian right action, symmetric/Freyd interfaces or an
+Arrow–Freyd equivalence; those are subsequent tasks. In particular,
+the unchanged Boolean-state toggle/read example still distinguishes
+execution order and supplies a noncentral computation in this very
+premonoidal structure.
+
+本构造必须显式选择，不要求指数对象或交换性，可直接应用于已有纯计算及强
+Monad／Kleisli Arrow 模型，包括 State。本批没有为一般非笛卡尔情形提供
+右作用，也没有构造对称／Freyd 接口或 Arrow–Freyd 等价；这些属于后续任务。
+尤其是原有布尔状态切换／读取示例，在这个预幺半结构中仍能区分执行次序，
+并提供非中心计算。
+
+Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
+passed. All 79 temporary `Print Assumptions` checks were closed under
+the global context. These checks cover both strict hom/equality universe
+orders, separately sized value/computation object and hom universes,
+the exact inherited parent and its instance search, pure preservation of
+both associator directions, both strict state carrier/equality orders,
+transparent structural maps/inverses and the original observable-order
+and noncentrality counterexamples. Concrete clients specify the computation
+category explicitly where value and computation objects share a type;
+object arguments alone do not determine the ambient hom-set.
+
+验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过，全部
+79 项临时 `Print Assumptions` 检查均无额外全局假设。覆盖 Hom／相等的
+两种严格宇宙次序、值与计算对象及 Hom 宇宙的分别定级、完全相同的继承父层
+及实例搜索、结合子正逆两个方向的纯保持性、状态载体／相等的两种严格次序、
+结构映射／逆的透明计算，以及原有可观察次序与非中心性反例。当值与计算对象
+共享类型时，具体客户端显式指定计算范畴；仅凭对象参数不能确定所在 Hom 集。
+
+Strict bilingual HTML generated 292 modules per language and checked
+589 pages. The new module, middle-context lemma, both language texts and
+public symbol anchors were inspected. The inventory still covers all
+91 class/record interfaces exactly once (64 classes, 27 records), with
+all 29 `Has*` classes retained. No permanent tests or shared test
+configuration were added or changed. This task-branch foundation is ready
+for independent integration; `typeprop` and batch PDF export remain with
+the integration session.
+
+严格双语 HTML 每种语言生成 292 个模块，检查 589 页。抽查新增模块、
+中间上下文引理、两种语言正文及公开符号锚点。清单仍恰好覆盖全部 91 个类／
+记录接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。没有新增
+永久测试或修改共享测试配置。本任务分支基础已可独立集成；`typeprop` 及
+批次 PDF 导出仍由集成会话负责。

@@ -590,7 +590,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy, binoidal and premonoidal slices and now covers 291 modules,
+hierarchy, binoidal and premonoidal slices and now covers 292 modules,
 64 classes and
 27 records.
 It inventories every declaration, checks their parameter/field
@@ -602,7 +602,7 @@ example from the discussion was temporary; the final algebra slice below
 implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表跟随层级、双侧张量与预幺半批次更新，现覆盖 291 个模块、64 个类及 27 个
+类及 27 个记录。下表跟随层级、双侧张量与预幺半批次更新，现覆盖 292 个模块、64 个类及 27 个
 记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
@@ -663,7 +663,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 148 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 149 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -1228,13 +1228,45 @@ records validation and the remaining Arrow/Freyd work.
 [计算审计](./ComputationAudit.md#monoidal-parent-migration) 记录验证与剩余
 Arrow／Freyd 工作。
 
-The current inventory covers 291 modules and all 91 interfaces once
+At the monoidal migration, the inventory covered 291 modules and all 91 interfaces once
 (64 classes, 27 records), retaining all 29 `Has*` classes. Full-library
 build/test/install, 212 temporary assumption checks and strict bilingual
 HTML (587 checked pages) passed. No old tests or shared test configuration
 were modified; batch PDF export remains with integration.
 
-当前清单覆盖 291 个模块，全部 91 个接口各一次（64 个类、27 个记录），
+幺半迁移时的清单覆盖 291 个模块，全部 91 个接口各一次（64 个类、27 个记录），
 保留全部 29 个 `Has*` 类。全库构建／测试／安装、212 项临时公理检查及严格
 双语 HTML（检查 587 页）通过。未修改旧测试或共享测试配置；批次 PDF 导出
 仍由集成方负责。
+
+## Computational Arrow inherits the same context parent
+
+## 计算 Arrow 继承同一上下文父结构
+
+[ArrowPremonoidal](../theories/Cat/Computational/Arrow/Premonoidal.v)
+adds an explicit premonoidal construction for cartesian computational
+Arrows. Its single parent is the existing `ArrowBinoidal A`; coercion and
+inherited instance search follow `PremonoidalB` and `BinoidalC` to the
+same computation category. All tensor/context choices are inherited once.
+Pure images of the selected value associator/unitors provide the
+structural isomorphisms, retaining their computational inverses. General
+premonoidal laws provide inverse centrality and naturality.
+
+[ArrowPremonoidal](../theories/Cat/Computational/Arrow/Premonoidal.v)
+为笛卡尔计算 Arrow 增加显式预幺半构造。唯一父结构为已有
+`ArrowBinoidal A`；强制转换及继承实例搜索沿 `PremonoidalB`、`BinoidalC`
+到达同一计算范畴。全部张量／上下文选择仅继承一次。选定值结合子／单位子
+的纯像提供结构同构，保留其可计算逆。一般预幺半定律给出逆中心性及自然性。
+
+This adds one theory module and no class/record interface. The current
+inventory covers 292 modules and all 91 interfaces once (64 classes,
+27 records), retaining all 29 `Has*` classes. No model structure is
+globally selected, and no effect interchange is added. The
+[computation audit](./ComputationAudit.md#computational-arrow-premonoidal-structure)
+records the proof reuse, validation and remaining symmetric/Freyd work.
+
+本批增加一个理论模块，没有增加类／记录接口。当前清单覆盖 292 个模块，
+全部 91 个接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。
+没有全局选定模型结构，也没有增加效应交换律。
+[计算审计](./ComputationAudit.md#computational-arrow-premonoidal-structure)
+记录证明复用、验证及剩余对称／Freyd 工作。
