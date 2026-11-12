@@ -1,5 +1,6 @@
 Core.v
 Functor.v
+Prism.v
 Product.v
 Terminal.v
 Relabel.v

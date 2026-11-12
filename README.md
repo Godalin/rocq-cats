@@ -171,6 +171,14 @@ A category theory library for self study.
   and horizontal composition. It specializes the reusable
   [product-interval theory](./theories/Cat/Homotopy/Core.v). Its two interval
   point maps are homotopic and remain distinct under natural equality.
+  [Natural transformations induce vertex nerve homotopies](./theories/Instance/Set/Simplicial/Vertex/Homotopy.v)
+  by restricting the reusable
+  [natural-transformation prism](./theories/Cat/Diagram/Prism.v).
+  The two endpoint maps are the nerves of the original transport-preserving
+  functors; the identity transformation gives a constant homotopy in
+  specified map equality. Components need not be invertible.
+  自然变换通过可复用棱柱构造诱导顶点 nerve 的实际单纯同伦；两个端点为原保运输
+  函子的 nerve 映射，恒等变换在指定映射相等下给出恒定同伦，分量无须可逆。
   Symmetry and transitivity are not assumed for arbitrary simplicial setoids.
   Examples with nontrivial higher homotopy remain a separate goal.
 
