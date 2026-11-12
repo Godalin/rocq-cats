@@ -1,5 +1,6 @@
 Core.v
 Binoidal.v
+Premonoidal.v
 Strength.v
 Monoid.v
 Functor.v

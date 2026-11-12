@@ -6,14 +6,14 @@ From Cats Require Export
 (** * 通过同构处理等式 *)
 
 (** An isomorphism lets an equation be solved by composing with its
-    inverse. The lemmas here package three common steps: identifying
-    inverse choices, cancelling an invertible factor, and moving that
-    factor across an equation. All conclusions use the category's specified
+    inverse. The lemmas here package common steps: identifying inverse
+    choices, cancelling or moving an invertible factor, and inverting a
+    commuting square. All conclusions use the category's specified
     hom equality. They neither identify isomorphic objects by native
     equality nor compare the witnesses of inverse laws. *)
 
-(** 同构允许通过复合其逆来求解等式。本模块整理三类常用步骤：证明逆的选择
-    相等、消去可逆因子、将该因子移到等式另一边。所有结论都使用范畴指定的
+(** 同构允许通过复合其逆来求解等式。本模块整理常用步骤：证明逆的选择
+    相等、消去或移动可逆因子、对交换方块取逆。所有结论都使用范畴指定的
     Hom 相等，既不以原生相等识别同构对象，也不比较互逆定律的见证。 *)
 
 Section IsomorphismEquations.
@@ -106,6 +106,21 @@ Proof.
   - rewrite <- H, comp_assoc, (snd i.2.2), comp_id_r. reflexivity.
   - rewrite H, comp_assoc, (fst i.2.2), comp_id_r. reflexivity.
 Qed.
+
+(** Invert the vertical isomorphisms of a commuting square. This derives
+    inverse naturality from forward naturality without extra equations. *)
+
+(** 将交换方块的竖直同构取逆，由正向自然性导出逆向自然性，无需额外方程。 *)
+
+Definition iso_square_inv {X X' Y Y' : @Ob C}
+    (i : X ≅ X') (j : Y ≅ Y') (f : Hom X Y) (g : Hom X' Y')
+    (H : j.1 ∘ f ≈ g ∘ i.1)
+  : j.2.1 ∘ g ≈ f ∘ i.2.1.
+Proof.
+  apply (iso_cancel_l j).
+  rewrite <- !comp_assoc, (snd j.2.2), comp_id_l, H,
+    comp_assoc, (snd i.2.2), comp_id_r. reflexivity.
+Defined.
 
 End IsomorphismEquations.
 

@@ -1,5 +1,7 @@
 From Cats Require Export
   Cat.Binoidal.Core.
+From Cats Require Import
+  Cat.Isomorphism.
 
 Local Open Scope binoidal_scope.
 
@@ -73,6 +75,27 @@ Proof.
       <- comp_assoc, Hg1, comp_assoc. reflexivity.
   - rewrite !binoidal_left_comp, comp_assoc, Hf2,
       <- comp_assoc, Hg2, comp_assoc. reflexivity.
+Defined.
+
+(** The inverse of a central isomorphism is central. Each exchange square
+    is inverted using functoriality of the corresponding context action. *)
+
+(** 中心同构的逆仍为中心态射。借助相应上下文作用的函子性，分别反转两个
+    交换方块。 *)
+
+Definition central_inv {X Y : @Ob C} (i : X ≅ Y)
+    (Hi : is_central i.1)
+  : is_central i.2.1.
+Proof.
+  intros Z W g. destruct (Hi Z W g) as [H1 H2]. split.
+  - exact (iso_square_inv
+      (i.1 ⊳ Z; functor_is_iso (BinoidalRightF Z) i.1 i.2)
+      (i.1 ⊳ W; functor_is_iso (BinoidalRightF W) i.1 i.2)
+      (X ⊲ g) (Y ⊲ g) H1).
+  - exact (iso_square_inv
+      (Z ⊲ i.1; functor_is_iso (BinoidalLeftF Z) i.1 i.2)
+      (W ⊲ i.1; functor_is_iso (BinoidalLeftF W) i.1 i.2)
+      (g ⊳ X) (g ⊳ Y) H2).
 Defined.
 
 (** Centrality equates the two execution orders with the central arrow

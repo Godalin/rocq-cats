@@ -1,0 +1,117 @@
+From Cats Require Export
+  Cat.Premonoidal.Core.
+From Cats Require Import
+  Cat.Isomorphism.
+
+Local Open Scope binoidal_scope.
+Local Open Scope premonoidal_scope.
+
+(** * Derived Inverse Laws
+
+    Inverse structure maps introduce no new choices or axioms. Centrality
+    follows from the general binoidal inverse theorem; naturality follows
+    by inverting the vertical isomorphisms of each forward square. *)
+
+(** * 导出的逆向定律
+
+    逆结构映射不增加选择或公理。中心性来自双侧张量的一般取逆定理；自然性
+    来自对每个正向方块的竖直同构取逆。 *)
+
+Section InverseLaws.
+Context {C : Cat} `{PC : !PremonoidalCat C}.
+
+(** The inverse associator is central. *)
+
+(** 逆结合子是中心态射。 *)
+
+Definition premonoidal_assoc_inv_central (X Y Z : @Ob C)
+  : is_central αₚ⁻¹[X; Y; Z]
+  := central_inv (premonoidal_associator X Y Z)
+    (premonoidal_assoc_central X Y Z).
+
+(** The inverse left unitor is central. *)
+
+(** 逆左单位子是中心态射。 *)
+
+Definition premonoidal_unit_l_inv_central (X : @Ob C)
+  : is_central λₚ⁻¹[X]
+  := central_inv (premonoidal_left_unitor X) (premonoidal_unit_l_central X).
+
+(** The inverse right unitor is central. *)
+
+(** 逆右单位子是中心态射。 *)
+
+Definition premonoidal_unit_r_inv_central (X : @Ob C)
+  : is_central ρₚ⁻¹[X]
+  := central_inv (premonoidal_right_unitor X) (premonoidal_unit_r_central X).
+
+(** The inverse left unitor is natural in its variable. *)
+
+(** 逆左单位子在其变量上自然。 *)
+
+Lemma premonoidal_unit_l_inv_natural {X Y : @Ob C} (f : Hom X Y)
+  : λₚ⁻¹[Y] ∘ f ≈ (Iₚ[PC] ⊲ f) ∘ λₚ⁻¹[X].
+Proof.
+  exact (iso_square_inv
+    (premonoidal_left_unitor X) (premonoidal_left_unitor Y)
+    (Iₚ[PC] ⊲ f) f (premonoidal_unit_l_natural f)).
+Qed.
+
+(** The inverse right unitor is natural in its variable. *)
+
+(** 逆右单位子在其变量上自然。 *)
+
+Lemma premonoidal_unit_r_inv_natural {X Y : @Ob C} (f : Hom X Y)
+  : ρₚ⁻¹[Y] ∘ f ≈ (f ⊳ Iₚ[PC]) ∘ ρₚ⁻¹[X].
+Proof.
+  exact (iso_square_inv
+    (premonoidal_right_unitor X) (premonoidal_right_unitor Y)
+    (f ⊳ Iₚ[PC]) f (premonoidal_unit_r_natural f)).
+Qed.
+
+(** The inverse associator is natural in the left position. *)
+
+(** 逆结合子在左侧位置自然。 *)
+
+Lemma premonoidal_assoc_inv_natural_l {X X' : @Ob C}
+    (Y Z : @Ob C) (f : Hom X X')
+  : αₚ⁻¹[X'; Y; Z] ∘ (f ⊳ (Y ⊗ Z)) ≈
+      ((f ⊳ Y) ⊳ Z) ∘ αₚ⁻¹[X; Y; Z].
+Proof.
+  exact (iso_square_inv
+    (premonoidal_associator X Y Z) (premonoidal_associator X' Y Z)
+    ((f ⊳ Y) ⊳ Z) (f ⊳ (Y ⊗ Z))
+    (premonoidal_assoc_natural_l Y Z f)).
+Qed.
+
+(** The inverse associator is natural in the middle position. *)
+
+(** 逆结合子在中间位置自然。 *)
+
+Lemma premonoidal_assoc_inv_natural_m {Y Y' : @Ob C}
+    (X Z : @Ob C) (g : Hom Y Y')
+  : αₚ⁻¹[X; Y'; Z] ∘ (X ⊲ (g ⊳ Z)) ≈
+      ((X ⊲ g) ⊳ Z) ∘ αₚ⁻¹[X; Y; Z].
+Proof.
+  exact (iso_square_inv
+    (premonoidal_associator X Y Z) (premonoidal_associator X Y' Z)
+    ((X ⊲ g) ⊳ Z) (X ⊲ (g ⊳ Z))
+    (premonoidal_assoc_natural_m X Z g)).
+Qed.
+
+(** The inverse associator is natural in the right position. *)
+
+(** 逆结合子在右侧位置自然。 *)
+
+Lemma premonoidal_assoc_inv_natural_r {Z Z' : @Ob C}
+    (X Y : @Ob C) (h : Hom Z Z')
+  : αₚ⁻¹[X; Y; Z'] ∘ (X ⊲ (Y ⊲ h)) ≈
+      ((X ⊗ Y) ⊲ h) ∘ αₚ⁻¹[X; Y; Z].
+Proof.
+  exact (iso_square_inv
+    (premonoidal_associator X Y Z) (premonoidal_associator X Y Z')
+    ((X ⊗ Y) ⊲ h) (X ⊲ (Y ⊲ h))
+    (premonoidal_assoc_natural_r X Y h)).
+Qed.
+
+End InverseLaws.

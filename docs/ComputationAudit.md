@@ -801,9 +801,9 @@ and computation objects have the same type. Right-context action currently
 uses the existing cartesian exchange. The general binoidal foundation
 requires no symmetry, but extending the one-sided generic Arrow to two
 sides over a weaker base needs extra data or a coherent exchange structure.
-Full premonoidal central structural isomorphisms, separate naturality and
-pentagon/triangle coherence, symmetric structure, and the complete Freyd
-characterization remain later tasks. This prerequisite makes no such claim.
+At this checkpoint, full premonoidal structural isomorphisms and coherence,
+symmetric structure, and the complete Freyd characterization were still
+later tasks. The next slice below supplies the general premonoidal layer.
 The pinned [Wiegley binoidal interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Binoidal.v)
 was rechecked alongside the cached premonoidal/Freyd sources; the existing
 prior-art and compatibility boundaries above still apply.
@@ -811,8 +811,8 @@ prior-art and compatibility boundaries above still apply.
 尽管值对象和计算对象具有同一类型，适配器仍显式固定值范畴的积选择。右上下文
 作用目前使用已有笛卡尔交换。一般双侧张量基础不要求对称性，但在更弱基底上
 将只有单侧作用的一般 Arrow 扩展为双侧，需要额外数据或相干交换结构。
-完整预幺半结构的中心结构同构、分别自然性、五边形／三角形相干、对称结构及
-完整 Freyd 刻画仍为后续任务，本前置基础不主张已完成这些结果。
+在此前置阶段，完整预幺半结构同构与相干、对称结构及完整 Freyd 刻画仍为
+后续任务。下一个批次补齐一般预幺半层。
 固定版本的 [Wiegley 双侧张量接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Binoidal.v)
 已与缓存的预幺半／Freyd 源码一起复核，上述既有先例与相容边界继续适用。
 
@@ -844,3 +844,94 @@ for independent integration before further premonoidal/Freyd work.
 严格双语 HTML 每种语言生成 287 个模块，检查 579 页的链接／锚点；四个新增
 接口／适配器页面均核对英中文。批次 PDF 导出及 `typeprop` 更新仍由集成会话
 负责。本基础已可独立集成，无须等待后续预幺半／Freyd 工作。
+
+
+## Premonoidal structure prerequisite
+
+## 预幺半结构前置基础
+
+This user-approved serial slice starts from `3fc3ffb` on `monoidal-cat-view`.
+[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) inherits one binoidal
+structure through `PremonoidalB :> BinoidalCat C`, with the same projection
+registered for instance search. It adds a chosen unit, central associator
+and unitors, their separate naturality, and pentagon/triangle coherence.
+Carrier, hom and equality sizes remain independent; all equality and
+centrality witnesses remain Type-valued. No structural operations or
+underlying category are selected a second time.
+
+用户授权的本串行批次从 `monoidal-cat-view` 上的 `3fc3ffb` 开始。
+[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) 通过
+`PremonoidalB :> BinoidalCat C` 继承唯一双侧张量结构，同一投影注册为继承
+实例。新增选定单位对象、中心结合子与单位子、它们的分别自然性，以及五边形／
+三角形相干。载体、Hom 与相等大小保持独立；所有相等及中心性见证保持为
+Type 值。不再次选取结构运算或底层范畴。
+
+The general [inverse-square lemma](../theories/Cat/Isomorphism.v) inverts
+the vertical isomorphisms of any commuting square using specified hom
+equality. [Centrality of an inverse](../theories/Cat/Binoidal/Center.v)
+uses that lemma with the fixed-context functors. The
+[premonoidal inverse laws](../theories/Cat/Premonoidal/Laws.v) derive all
+three inverse centrality witnesses and all five inverse naturality
+squares. Forward and inverse maps are projections of the same selected
+isomorphisms; inverse centrality/naturality are not duplicate class fields.
+Public `premonoidal_scope` notation exposes the unit and both directions
+of each structural map; object tensor and contexts retain binoidal notation.
+
+一般[逆方块引理](../theories/Cat/Isomorphism.v) 使用指定 Hom 相等，对任意
+交换方块的竖直同构取逆。[逆的中心性](../theories/Cat/Binoidal/Center.v)
+将该引理应用于固定上下文函子。
+[预幺半逆向定律](../theories/Cat/Premonoidal/Laws.v) 导出全部三种逆中心性
+见证及五个逆自然性方块。正逆映射都是同一选定同构的投影；逆中心性／自然性
+不作为重复类字段保存。公开 `premonoidal_scope` 记号提供单位对象及每种
+结构映射的两个方向；对象张量及上下文沿用双侧张量记号。
+
+[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) is an explicit
+client of the new layer. It reuses `MonoidalBinoidal`, the original unit,
+associator/unitors and their inverse components. Separate naturality
+specializes existing joint naturality; existing coherence is reused.
+The old `MonoidalCat` interface and all concrete model constructors remain
+available in their existing form. Migrating its parent and deriving the
+bifunctor from interchange is a later bounded task. Constructing the
+computational Arrow premonoidal structure, symmetric/Freyd interfaces and
+the full characterization also remain open. No concrete model laws are
+reproved here.
+
+[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) 是新层的显式
+客户端，复用 `MonoidalBinoidal`、原单位对象、结合子／单位子及其逆分量。
+分别自然性特化已有联合自然性，相干性复用原定律。原 `MonoidalCat` 接口及
+全部具体模型构造维持已有形式。迁移其父结构并由交换律导出双函子属于后续
+有限任务。构造计算 Arrow 的预幺半结构、对称／Freyd 接口及完整刻画仍待
+完成。本批没有重新证明具体模型定律。
+
+Validation uses the existing `rocq-cats` switch: Rocq/Stdlib 9.2.0,
+OCaml 5.3.0 and Dune 3.23.1. Full `dune build @all @runtest @install`
+passed. All 63 new temporary `Print Assumptions` probes and all 73 repeated
+binoidal/Arrow probes reported `Closed under the global context`.
+The new probes check the inherited coercion/instance chain, both strict
+hom/equality universe orders, multiple explicit structures on one category,
+absence of globally selected models, transparent forward/inverse
+associator/unitor reductions, and inverse centrality of a nonidentity
+isomorphism. The prior State order counterexample and its noncentral
+effect remain valid. These checks are temporary; no permanent tests or
+shared test configuration were changed.
+
+验证使用已有 `rocq-cats` switch：Rocq／Stdlib 9.2.0、OCaml 5.3.0 及
+Dune 3.23.1。全库 `dune build @all @runtest @install` 通过。63 项新增
+临时 `Print Assumptions` 探针及重跑的 73 项双侧张量／Arrow 探针均报告
+`Closed under the global context`。新增探针检查继承转换／实例链、Hom 与
+相等的两种严格宇宙次序、同范畴上的多个显式结构、没有全局选定模型、
+正逆结合子／单位子的透明归约，以及非恒等同构的逆中心性。原 State 次序
+反例及其非中心效应继续成立。这些检查均为临时检查，没有新增永久测试或
+修改共享测试配置。
+
+Strict bilingual HTML generated 290 modules per language and checked
+links/anchors in 585 pages. All three new pages were inspected in both
+languages, together with the added general-lemma anchors. The structural
+inventory covers all 91 interfaces exactly once (64 classes, 27 records).
+Batch PDF export and `typeprop` integration remain with the integration
+session; this foundation can be integrated independently.
+
+严格双语 HTML 每种语言生成 290 个模块，检查 585 页的链接／锚点。三个新增
+页面均抽查英中文正文，同时检查新增一般引理的锚点。结构清单恰好覆盖全部
+91 个接口各一次（64 个类、27 个记录）。批次 PDF 导出与 `typeprop` 集成
+仍由集成会话负责；本基础可独立集成。

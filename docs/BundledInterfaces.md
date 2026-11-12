@@ -4,11 +4,11 @@
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 90 interfaces after the hierarchy and binoidal slices,
+inventory now includes 91 interfaces after the structural hierarchy slices,
 alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含层级与双侧张量批次后的 90 个接口，
+起初分类全部 87 个类／记录接口；清单现包含结构层级批次后的 91 个接口，
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
@@ -590,7 +590,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy and binoidal slices and now covers 287 modules, 63 classes and
+hierarchy, binoidal and premonoidal slices and now covers 290 modules,
+64 classes and
 27 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -601,7 +602,7 @@ example from the discussion was temporary; the final algebra slice below
 implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表跟随层级与双侧张量批次更新，现覆盖 287 个模块、63 个类及 27 个
+类及 27 个记录。下表跟随层级、双侧张量与预幺半批次更新，现覆盖 290 个模块、64 个类及 27 个
 记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
@@ -662,7 +663,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 144 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 147 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -692,6 +693,7 @@ flowchart LR
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
   MonoidalCat -->|MonoidalC, computed| Cat
+  PremonoidalCat -->|PremonoidalB| BinoidalCat
   BinoidalCat -->|BinoidalC, computed| Cat
   StrongMonad -->|StrongMonadM| Monad
   Monad -->|MonadF| Functor
@@ -836,6 +838,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [PremonoidalCat](../theories/Cat/Premonoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [HasStrength](../theories/Cat/Monoidal/Strength.v) | `Class` | Chosen construction / 选定构造 |
 | [Mono](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [Sub](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
@@ -1122,13 +1125,56 @@ for the relationship to the remaining premonoidal and Freyd layers.
 竞争强制转换或全局选定模型。与后续预幺半及 Freyd 层的关系见
 [计算审计](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)。
 
-The current inventory contains 287 modules, 63 classes and 27 records,
+At the binoidal delivery, the inventory contained 287 modules, 63 classes
+and 27 records,
 with every interface listed once. Full-library build/test/install targets,
 73 temporary assumption checks and strict bilingual HTML passed; the
 [computation audit](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)
 records the exact scope, state-order counterexample and remaining layers.
 
-当前清单包含 287 个模块、63 个类及 27 个记录，每个接口恰好列出一次。
+双侧张量交付时的清单包含 287 个模块、63 个类及 27 个记录，每个接口恰好列出一次。
 全库构建／测试／安装目标、73 项临时公理检查及严格双语 HTML 均通过；
 [计算审计](./ComputationAudit.md#two-sided-context-and-centrality-prerequisite)
 记录确切范围、状态次序反例及剩余层次。
+
+
+## Premonoidal parent layer
+
+## 预幺半父结构层
+
+[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) extends one supplied
+category by `PremonoidalB :> BinoidalCat C`. The same projection is exported
+as an inherited instance. The coercion chain reaches the named category
+through that parent, and the selected object tensor and context actions
+are stored only once. A chosen unit and central associator/unitors add
+separate naturality and pentagon/triangle coherence. The structure stores
+forward centrality and naturality only; [inverse laws](../theories/Cat/Premonoidal/Laws.v)
+follow from general isomorphism and binoidal lemmas.
+
+[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) 通过
+`PremonoidalB :> BinoidalCat C` 扩展一个给定范畴。同一投影导出为继承实例，
+强制转换链经过该父结构到达具名范畴，选定对象张量与上下文作用都只保存一次。
+选定单位对象及中心结合子／单位子增加分别自然性与五边形／三角形相干。
+结构只保存正向中心性和自然性；[逆向定律](../theories/Cat/Premonoidal/Laws.v)
+由一般同构及双侧张量引理导出。
+
+[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) is an explicit
+adapter that reuses the existing tensor, unit, structure maps and inverse
+components. `MonoidalCat` still has its original primary category view;
+changing it to inherit the new parent and deriving the tensor bifunctor
+are a later coordinated migration. No global model choices, symmetry or
+interchange for arbitrary effects are added by the premonoidal interface.
+
+[MonoidalPremonoidal](../theories/Cat/Monoidal/Premonoidal.v) 是显式适配器，
+复用已有张量、单位对象、结构映射及逆分量。`MonoidalCat` 仍保留原主要范畴
+视图；改为继承新父结构及导出张量双函子属于后续协调迁移。预幺半接口没有
+增加全局模型选择、对称性或任意效应的交换律。
+
+The updated inventory contains 290 modules, 64 classes and 27 records,
+covering all 91 interfaces exactly once and retaining all 29 `Has*`
+classes. The [computation audit](./ComputationAudit.md#premonoidal-structure-prerequisite)
+records validation and remaining computational-category work.
+
+更新后的清单包含 290 个模块、64 个类及 27 个记录，全部 91 个接口恰好各列
+一次，保留全部 29 个 `Has*` 类。[计算审计](./ComputationAudit.md#premonoidal-structure-prerequisite)
+记录验证与剩余计算范畴工作。
