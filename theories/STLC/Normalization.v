@@ -1,6 +1,7 @@
 From Cats Require Export STLC.Evaluation.
 From Cats Require Import
   STLC.EvaluationEquivalence
+  STLC.LogicalRelation
   Cat.Core
   Cat.Functor.Core
   Cat.Natural
@@ -18,9 +19,10 @@ From Cats Require Import
     Termination here is structural recursion in the metatheory. It is not
     a claim about every directed reduction sequence. Likewise, producing
     a well-shaped normal tree alone does not prove beta/eta equality with
-    its input: full soundness requires a further argument. Beta/eta
-    invariance below follows from semantic equality and respectful
-    reification. *)
+    its input. Below, the logical-relation fundamental lemma proves this
+    soundness theorem; semantic equality and respectful reification prove
+    invariance. Together they characterize beta/eta equality by equality of
+    computed normal trees, without assuming a decision procedure. *)
 
 (** * 通过求值正规化
 
@@ -29,12 +31,14 @@ From Cats Require Import
     的可执行映射。
 
     此处终止性来自元理论中的结构递归，并不是关于每条有向归约序列的断言。
-    同样，仅产生形状正确的正规树尚不能证明其与输入 βη 相等；完整可靠性需要
-    进一步论证。下文的 βη 不变性则由语义相等与实化的保相等性质得到。 *)
+    同样，仅产生形状正确的正规树尚不能证明其与输入 βη 相等。下文由逻辑关系
+    基本引理证明此可靠性，由语义相等与实化的保相等性质证明不变性。两者合用
+    以计算所得正规树的相等刻画 βη 相等，无须假设判定过程。 *)
 
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
+Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_tm_scope.
 
 (** Fix the signature, world equality, semantic and world-law bounds
@@ -210,5 +214,61 @@ Proof.
   unfold nf. apply reify_sem_proper.
   exact (eval_tm_eq h Γ (initial_env Γ)).
 Defined.
+
+(** Full normalization soundness for arbitrary open terms. The fundamental
+    lemma uses the identity syntactic assignment and the reflected initial
+    environment. Reification yields the equational witness, whose bound
+    remains independent of the semantic value bound. *)
+
+(** 任意开放项的完整正规化可靠性。基本引理使用恒等语法赋值与反射初始环境；
+    实化给出等式见证，其界限仍独立于语义值界限。 *)
+
+Definition nf_sound@{e +} {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : TmEq@{b e _} t (embed_nf (nf t)).
+Proof.
+  refine (realizes_reify A Γ t (EvalN t Γ (initial_env Γ)) _).
+  refine (realizes_tm_eq A Γ t[idSub] t _
+    (tm_eq_of_eq (subst_id t)) _).
+  apply eval_realizes. apply env_realizes_reflected.
+  intros U x. exact (reflected_env_lookup Γ Γ idRen U x).
+Defined.
+
+(** Equality of computed trees produces a beta/eta derivation by following
+    soundness from each input to its normal form. Native tree equality
+    transports the middle term; no equality of derivation witnesses is used. *)
+
+(** 计算所得树的相等产生 βη 推导：可靠性将两边输入接到各自的正规形，原生
+    树相等输运中间项；不使用推导见证之间的相等。 *)
+
+Definition nf_eq_tm_eq@{e +} {Γ : Ctx B} {A : Ty B}
+    (t u : Tm Γ A) (h : nf t = nf u)
+  : TmEq@{b e _} t u.
+Proof.
+  refine (tm_eq_trans (nf_sound t) _).
+  rewrite h. exact (tm_eq_sym (nf_sound u)).
+Defined.
+
+(** Beta/eta equality is characterized by equality of computed normal
+    trees. The Type-valued equivalence retains both maps and constructs
+    equational witnesses in the independently chosen evidence universe.
+    Deciding tree equality is a separate question. *)
+
+(** βη 相等由计算所得正规树的相等刻画。Type 值逻辑等价保留双向映射，并在
+    独立选定的证据宇宙中构造等式见证。判定树相等是另一问题。 *)
+
+Definition tm_eq_nf@{e +} {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
+  : TmEq@{b e _} t u ↔ nf t = nf u
+  := (nf_tm_eq, nf_eq_tm_eq t u).
+
+(** Normalizing the embedded output again leaves that output unchanged.
+    This is strict equality of syntax trees, derived from soundness and
+    invariance rather than a claim about all reduction paths. *)
+
+(** 将输出嵌入后再次正规化，仍得到原输出。这是由可靠性与不变性导出的语法树
+    严格相等，而非关于全部归约路径的断言。 *)
+
+Lemma nf_idempotent {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : nf (embed_nf (nf t)) = nf t.
+Proof. symmetry. exact (nf_tm_eq (nf_sound t)). Defined.
 
 End Normalization.

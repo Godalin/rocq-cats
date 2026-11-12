@@ -493,3 +493,25 @@ Proof.
       [reflexivity | destruct x; reflexivity].
   - apply subst_id.
 Qed.
+
+(** Lift an assignment under a binder, rename into a future context, then
+    supply the bound argument. The result substitutes the renamed old
+    assignments together with that argument. This is the raw binder
+    algebra used by the logical-relation fundamental lemma. *)
+
+(** 将赋值提升到绑定下，重命名到未来上下文，再传入绑定实参，等于同时代入
+    重命名后的旧赋值与该实参。这是逻辑关系基本引理使用的原始绑定代数。 *)
+
+Lemma subst_lift_rename_single {B : Type} {Γ Δ Θ : Ctx B}
+    {A U : Ty B} (t : Tm (Γ ▻ A) U)
+    (σ : Sub Δ Γ) (ρ : Ren Θ Δ) (u : Tm Θ A)
+  : t[σ^↑Sub]⟨ρ^↑Ren⟩[u/] =
+      t[(λ V x, (σ V x)⟨ρ⟩) ▻Sub u].
+Proof.
+  rewrite rename_subst, subst_comp. apply subst_ext.
+  intros V [x | x]; cbn [sub_lift sub_comp sub_single sub_extend sub_id].
+  - change ((σ V x)⟨wkRen⟩⟨ρ^↑Ren⟩[u/] = (σ V x)⟨ρ⟩).
+    rewrite rename_weaken, subst_rename.
+    change ((σ V x)⟨ρ⟩[idSub] = (σ V x)⟨ρ⟩). apply subst_id.
+  - destruct x. reflexivity.
+Defined.
