@@ -1,7 +1,8 @@
 From Cats Require Export
   Cat.Premonoidal.Core.
 From Cats Require Import
-  Cat.Isomorphism.
+  Cat.Isomorphism
+  Cat.Natural.
 
 Local Open Scope binoidal_scope.
 Local Open Scope premonoidal_scope.
@@ -115,6 +116,30 @@ Proof.
 Qed.
 
 End InverseLaws.
+
+(** A fixed pair of contexts has its associator natural transformation. *)
+
+(** 一对固定上下文具有相应的结合子自然变换。 *)
+
+Program Definition PremonoidalContextAssociatorN {C : Cat}
+    `{PC : !PremonoidalCat C} (Z W : @Ob C)
+  : BinoidalLeftF (Z ⊗ W) ⇒ (BinoidalLeftF Z ∘F BinoidalLeftF W)
+  :=
+  {|nt X := αₚ[Z; W; X]
+  |}.
+Next Obligation. exact (premonoidal_assoc_natural_r Z W f). Defined.
+
+(** The left unitor is natural from the unit context to identity. *)
+
+(** 左单位子是从单位上下文到恒等的自然变换。 *)
+
+Program Definition PremonoidalLeftUnitorN {C : Cat}
+    `{PC : !PremonoidalCat C}
+  : BinoidalLeftF (Iₚ[PC]) ⇒ IdF
+  :=
+  {|nt X := λₚ[X]
+  |}.
+Next Obligation. exact (premonoidal_unit_l_natural f). Defined.
 
 (** Separate associator naturality also respects ordered sequences of
     three arrows. This does not require joint functoriality of the tensor. *)

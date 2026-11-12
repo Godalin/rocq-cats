@@ -590,9 +590,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy, binoidal, premonoidal and Freyd slices and now covers 297 modules,
-66 classes and
-27 records.
+hierarchy, binoidal, premonoidal and Freyd slices and now covers 302 modules,
+66 classes and 27 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
@@ -603,8 +602,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半及 Freyd 批次更新，现覆盖
-297 个模块、66 个类及 27 个
-记录。清单覆盖
+302 个模块、66 个类及 27 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -664,7 +662,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 154 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 159 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -1317,13 +1315,66 @@ laws use specified hom equality, with no equality of functions or records.
 [ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) retains the
 same pure functor, value choices and symmetric computation parent.
 All its object boundaries are reflexive and compute to identities.
-The current inventory contains 297 modules and 93 interfaces (66 classes,
+At the symmetric/Freyd delivery, the inventory contained 297 modules and
+93 interfaces (66 classes,
 27 records), with all 29 `Has*` classes retained. The
 [computation audit](./ComputationAudit.md#symmetric-contexts-and-freyd-foundation)
 records validation and the remaining reverse translation/round trips.
 
 [ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) 保留同一纯函子、
-值选择及对称计算父层。其所有对象边界均为自反相等，计算为恒等。当前清单
+值选择及对称计算父层。其所有对象边界均为自反相等，计算为恒等。该阶段清单
 包含 297 个模块、93 个接口（66 个类、27 个记录），保留全部 29 个 `Has*`
 类。[计算审计](./ComputationAudit.md#symmetric-contexts-and-freyd-foundation)
 记录验证及剩余逆向翻译／往返定律。
+
+## Freyd reconstruction and round-trip comparisons
+
+## Freyd 重建及往返比较
+
+[TransportF](../theories/Cat/Functor/Transport.v) changes a functor's object
+representatives along chosen isomorphisms, with a transparent natural
+isomorphism to the original functor. Its shared boundary-naturality lemma
+requires only a natural incoming boundary and an invertible outgoing one.
+[Tensor-boundary laws](../theories/Cat/Binoidal/Transport.v) reuse the
+existing context functors and centrality of transported identities.
+
+[TransportF](../theories/Cat/Functor/Transport.v) 沿选定同构改变函子的对象
+代表，并以透明自然同构与原函子比较。共享的边界自然性引理只要求入边界
+自然、出边界可逆。[张量边界定律](../theories/Cat/Binoidal/Transport.v)
+复用已有上下文函子及运输恒等的中心性。
+
+[FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v) reconstructs a
+computational Arrow from the existing Freyd pure inclusion and transported
+context action. It retains the selected value products and all supplied
+tensor/unit equality witnesses. Naturality across boundary transformations
+derives unit and associativity laws from the general premonoidal theory.
+
+[FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v) 从已有 Freyd
+纯嵌入及运输后的上下文作用重建计算 Arrow，保留选定值积及给定的全部张量／
+单位相等见证。边界自然变换上的自然性从一般预幺半理论导出单位及结合律。
+
+[Round-trip comparisons](../theories/Cat/Computational/Freyd/RoundTrip.v)
+recover Arrow pure maps and context in specified hom equality, and compare
+the pure functors by natural isomorphism. The Freyd side supplies an actual
+categorical equivalence of value-indexed computation categories, a natural
+isomorphism of pure inclusions, and boundary comparisons for both actions,
+both unitors, associator and symmetry. This comparison level concerns
+these supplied structures and computations; it does not assert a
+2-category equivalence or a characterization of an Arrow syntax.
+
+[往返比较](../theories/Cat/Computational/Freyd/RoundTrip.v) 在指定 Hom
+相等下恢复 Arrow 的纯映射与上下文，以自然同构比较纯函子。Freyd 方向给出
+值索引计算范畴的实际范畴等价、纯嵌入的自然同构，以及两个作用、两个单位子、
+结合子和对称性的边界比较。此比较层级涉及给定结构及计算，不主张二范畴
+等价或 Arrow 语法刻画。
+
+This slice adds five modules without new classes or records. The current
+inventory covers 302 modules and all 93 interfaces once (66 classes,
+27 records), retaining all 29 `Has*` classes. The
+[computation audit](./ComputationAudit.md#freyd-reconstruction-and-round-trips)
+records validation and the remaining computation-theory work.
+
+本批增加五个模块，没有增加类或记录。当前清单覆盖 302 个模块、全部 93 个
+接口各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。
+[计算审计](./ComputationAudit.md#freyd-reconstruction-and-round-trips)
+记录验证及后续计算理论工作。

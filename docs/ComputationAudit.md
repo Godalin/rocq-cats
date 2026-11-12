@@ -1277,3 +1277,117 @@ remain with integration.
 93 个接口各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。已有
 `AGENTS.md` 经验部分记录对象索引嵌入、显式环境范畴推断及一致的边界见证。
 本基础已可在逆向翻译前独立集成；`typeprop` 及批次 PDF 仍由集成方负责。
+
+## Freyd reconstruction and round trips
+
+## Freyd 重建及往返
+
+This slice continues the symmetric/Freyd foundation on `monoidal-cat-view`
+from `af3d0fe`. It delivers the reverse translation and explicit round-trip
+comparisons deferred by that slice. Ordinary arrow categories, self
+enrichment and concrete model definitions are unchanged.
+
+本批从 `monoidal-cat-view` 的 `af3d0fe` 继续对称／Freyd 基础，交付前批
+待完成的逆向翻译及显式往返比较。通常箭头范畴、自富集及具体模型定义保持
+原样。
+
+The reusable [functor transport](../theories/Cat/Functor/Transport.v)
+changes object representatives along chosen isomorphisms and supplies a
+natural isomorphism to the original functor. Its boundary-naturality lemma
+uses the weakest sufficient assumptions: a natural incoming boundary and
+an invertible outgoing one. General
+[tensor transport](../theories/Cat/Binoidal/Transport.v) uses context
+functors and centrality of transported identities. Premonoidal associators
+and the left unitor now expose the natural transformations used by this
+argument. Equality isomorphisms, commuting-square composition and the
+natural-isomorphism comparison for induced factorization live with their
+general category theories.
+
+可复用的[函子运输](../theories/Cat/Functor/Transport.v)沿选定同构改变对象
+代表，并提供到原函子的自然同构。其边界自然性引理只使用充分的最弱条件：
+入边界自然，出边界可逆。一般[张量运输](../theories/Cat/Binoidal/Transport.v)
+使用上下文函子及运输恒等的中心性。预幺半结合子及左单位子现在暴露此论证
+需要的自然变换。相等同构、交换方块复合及诱导分解的自然同构比较均放在
+相应一般范畴理论中。
+
+[Freyd contexts](../theories/Cat/Computational/Freyd/Context.v) conjugate
+the original left action by exactly the tensor boundaries supplied by the
+Freyd structure. Fixed and nested boundaries form natural transformations
+and natural isomorphisms. Naturality across these boundaries derives the
+value-unit and value-associativity equations without identifying equality
+witnesses. [FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v)
+therefore reconstructs the computational Arrow from the same selected
+cartesian values and pure inclusion. Computational witnesses, conjugating
+inverse maps and model reductions remain transparent.
+
+[Freyd 上下文](../theories/Cat/Computational/Freyd/Context.v)恰好沿 Freyd
+结构给定的张量边界对原左作用共轭。固定及嵌套边界组成自然变换和自然同构。
+跨这些边界的自然性导出值单位及值结合方程，无需识别相等见证。因此
+[FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v)从同一组选定
+笛卡尔值及纯嵌入重建计算 Arrow。计算见证、共轭逆映射及模型归约保持透明。
+
+The [round-trip module](../theories/Cat/Computational/Freyd/RoundTrip.v)
+compares Arrow pure maps and contexts in specified Hom equality and the
+pure functors by natural isomorphism. On the Freyd side it supplies an
+actual categorical equivalence in the existing `CatCat` interface between
+the original and returned value-indexed computation categories. Its pure
+inclusions are naturally isomorphic, and its comparison preserves left
+and right actions, both unitors, associator and symmetry across the
+original selected boundaries. The right-action comparison composes the
+exchange and left-action boundary squares; it assumes no effect
+interchange.
+
+[往返模块](../theories/Cat/Computational/Freyd/RoundTrip.v)在指定 Hom
+相等下比较 Arrow 的纯映射及上下文，以自然同构比较纯函子。Freyd 方向在
+已有 `CatCat` 接口中，给出原有与返回的值索引计算范畴之间的实际范畴等价。
+纯嵌入自然同构，比较跨原有选定边界保持左右作用、两个单位子、结合子及
+对称性。右作用比较复合交换与左作用边界方块，不假设效应交换律。
+
+These are comparisons of supplied structures at the actual computation
+categories. They do not assert an equivalence with unused ambient objects,
+native equality of functor/law records, an equivalence of 2-categories of
+structured functors, or soundness/completeness for an Arrow syntax. Closed
+Freyd/ArrowApply and the separate static-Arrow characterization remain
+future work. No extra axiom, UIP, proof irrelevance or function
+extensionality is introduced. Model choices remain explicit.
+
+这些比较涉及实际计算范畴上的给定结构，不主张与未使用环境对象的等价、
+函子／定律记录的原生相等、带结构函子二范畴的等价，或 Arrow 语法的可靠性／
+完备性。闭 Freyd／ArrowApply 及独立的静态 Arrow 刻画仍属后续工作。没有
+增加公理、UIP、证明无关性或函数外延性；模型选择仍须显式提供。
+
+Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
+passed. All 278 temporary `Print Assumptions` checks were closed under the
+global context: the previous 169 checks, 51 general constructions/laws,
+and 58 new universe/concrete probes. The new probes cover both strict
+hom/equality universe orders, separately sized value/computation categories,
+both strict state carrier/equality orders, returned pure/context operations,
+inverse comparison components and both equivalence functors. Returned State
+sequencing still computes different results in the two execution orders;
+the original noncentrality and order counterexamples were rerun. No
+permanent tests or shared test configuration were changed.
+
+验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过。全部
+278 项临时 `Print Assumptions` 均无额外全局假设：此前 169 项检查、51 项
+一般构造／定律及 58 项新增宇宙／具体探针。新增探针覆盖 Hom／相等的两种
+严格宇宙次序、值／计算范畴分别定级、状态载体／相等的两种严格次序、返回的
+纯映射／上下文运算、比较逆分量及两个等价函子。返回的 State 顺序组合仍按
+两种执行次序算出不同结果；原有非中心性及次序反例也重新验证。没有修改
+永久测试或共享测试配置。
+
+Strict bilingual HTML generated 302 modules per language and checked
+609 pages. Both languages were inspected for the five new modules and
+five extended foundational modules, including public anchors. The
+inventory covers all 93 interfaces once (66 classes, 27 records), with all
+29 `Has*` classes retained. The existing `AGENTS.md` learnings record
+explicit category arguments and transport of naturality across coherent
+boundaries. This task branch is ready for integration; `typeprop` and
+batch PDF exports remain with the integration session.
+
+严格双语 HTML 每种语言生成 302 个模块，检查 609 页。英中文均抽查五个
+新增模块、五个扩展基础模块的正文及公共锚点。清单恰好覆盖全部 93 个接口
+各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。已有 `AGENTS.md`
+经验部分记录显式范畴参数及跨相干边界的自然性运输。本任务分支已可交付
+集成；`typeprop` 及批次 PDF 导出仍由集成会话负责。

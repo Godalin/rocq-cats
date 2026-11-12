@@ -290,6 +290,20 @@ Proof. symmetry. cato. Qed.
 
 End CatBasic.
 
+(** Two commuting squares compose along their horizontal arrows. *)
+
+(** 两个交换方块可沿其水平态射复合。 *)
+
+Lemma comp_square {C : Cat} {X0 X1 X2 Y0 Y1 Y2 : @Ob C}
+    (a : Hom X0 Y0) (b : Hom X1 Y1) (c : Hom X2 Y2)
+    (f : Hom X0 X1) (g : Hom X1 X2)
+    (f' : Hom Y0 Y1) (g' : Hom Y1 Y2)
+    (Hf : b ∘ f ≈ f' ∘ a) (Hg : c ∘ g ≈ g' ∘ b)
+  : c ∘ (g ∘ f) ≈ (g' ∘ f') ∘ a.
+Proof.
+  rewrite <- comp_assoc, Hg, comp_assoc, Hf, <- comp_assoc. reflexivity.
+Qed.
+
 Hint Resolve symm_id_l : cat.
 Hint Resolve symm_id_r : cat.
 

@@ -61,6 +61,15 @@ Proof.
       comp_id_l, comp_id_r; reflexivity.
 Defined.
 
+(** An identity transported along native object equality remains central.
+    Equality elimination introduces no uniqueness assumption on paths. *)
+
+(** 沿对象原生相等运输的恒等仍为中心态射；相等消去不引入路径唯一性假设。 *)
+
+Definition eq_to_hom_central {X Y : @Ob C} (p : X = Y)
+  : is_central (eq_to_hom p).
+Proof. destruct p. apply central_id. Defined.
+
 (** Composing central arrows retains both exchange witnesses. *)
 
 (** 复合中心态射保留两种交换见证。 *)

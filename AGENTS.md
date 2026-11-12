@@ -232,5 +232,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Use `InducedF` for identity-on-objects pure inclusions. When value and
   computation objects share a type, pin the ambient category in structural
   and context clients; object arguments alone do not determine the hom-sets.
+  Pin category arguments on laws too, and use the pure functor into the
+  indexed category when working there.
   For strict preservation, use the same chosen object-equality boundaries
   throughout the arrow laws, without identifying equality witnesses.
+- Represent coherent context boundaries as natural transformations and
+  natural isomorphisms. Derive transported naturality with
+  `nt_naturality_boundary`; its incoming boundary only needs naturality,
+  while its outgoing boundary must be invertible.

@@ -57,6 +57,28 @@ Next Obligation. intros f g H. exact H. Defined.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
 
+(** Factoring a functor through its object-indexed category changes no
+    component. Identity arrows compare it naturally with the original. *)
+
+(** 经对象索引范畴分解函子不改变分量；恒等态射给出与原函子的自然比较。 *)
+
+Program Definition InducedFactorN {C D : Cat} (F : Functor C D)
+  : (InducedInclusionF (@Ob C) F ∘F InducedF F) ⇒ F
+  :=
+  {|nt X := id
+  |}.
+Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
+
+(** The factorization comparison retains identity inverse components. *)
+
+(** 分解比较保留恒等逆分量。 *)
+
+Definition InducedFactorIso {C D : Cat} (F : Functor C D)
+  : (InducedInclusionF (@Ob C) F ∘F InducedF F) ≅N F.
+Proof.
+  exists (InducedFactorN F). intro X. exists id. split; apply comp_id_l.
+Defined.
+
 (** * Representatives for an Induced Category *)
 
 (** * 诱导范畴的对象代表 *)

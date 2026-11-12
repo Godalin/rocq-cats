@@ -19,6 +19,16 @@ From Cats Require Export
 Section IsomorphismEquations.
 Context {C : Cat}.
 
+(** An explicitly supplied object equality gives a transparent isomorphism.
+    Its two inverse laws reuse the existing transported-identity equations. *)
+
+(** 显式给定的对象相等给出透明同构；其互逆律复用已有的运输恒等方程。 *)
+
+Definition EqualityIso {X Y : @Ob C} (p : X = Y)
+  : X ≅ Y
+  := (eq_to_hom p; (eq_to_hom (eq_sym p);
+    (eq_to_hom_inv_l p, eq_to_hom_inv_r p))).
+
 (** A left inverse and a right inverse of the same arrow are equal.
     In particular, two inverse choices agree without comparing their laws. *)
 
