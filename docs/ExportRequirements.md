@@ -34,6 +34,10 @@ the approved typography and code frames.
 - Generate both languages from the same compiled Rocq sources and bilingual
   coqdoc comments. Preserve mathematical meaning, specified equality, notation,
   source positions and references. Do not duplicate proofs to suit a renderer.
+- Preserve source spelling in code and inline code. Disable coqdoc's implicit
+  symbol substitutions, including `*` to `×`, ASCII arrows to Unicode arrows,
+  and `forall`/`exists` to quantifier glyphs. Unicode already written in the
+  source stays Unicode. Explicit source printing directives remain opt-in.
 - Prefer native coqdoc, Alectryon and LaTeX facilities with documented extension
   points. Obtain displayed proof states from Rocq through the supported driver;
   do not invent goals, inject diagnostic commands or parse terminal transcripts

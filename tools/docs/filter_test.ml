@@ -74,6 +74,17 @@ let () =
     ^ "R9:10 Example <> Γ:3 var\nR11:12 Other <> Γ:3 var\n"
     ^ "R13:14 Example <> Tree:4 ind\n" in
   let normalized = glob ~original:source ~filtered:en aliases in
+  let prefixed = glob ~prefix:printing_preamble ~original:source ~filtered:en
+    aliases in
+  let offset = String.length printing_preamble in
+  check "coqdoc preamble did not shift definition positions"
+    (contains prefixed (Printf.sprintf "proj %d:%d <> eqι" (offset + 1) (offset + 2)));
+  check "coqdoc preamble did not shift reference positions"
+    (contains prefixed (Printf.sprintf "R%d:%d Example <> eqι meth"
+      (offset + 5) (offset + 6)));
+  check "prefixed source digest is stale"
+    (starts prefixed 0 ("DIGEST " ^ Digest.to_hex
+      (Digest.string (printing_preamble ^ en))));
   check "field alias not resolved" (contains normalized "Example <> eqι meth");
   check "declared binder lost" (contains normalized "Example <> Γ:1 var");
   check "missing local binder linked" (not (contains normalized "Example <> Γ:3 var"));

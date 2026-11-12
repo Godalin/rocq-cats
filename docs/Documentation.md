@@ -11,6 +11,17 @@ modules under [theories/](../theories/), using one compiled bilingual source tre
 构建方法与实现进度。阅读版直接来自 [theories/](../theories/) 下的全部模块，
 使用同一份经过编译的双语源码。
 
+HTML and both PDF modes disable coqdoc's built-in symbol substitutions with
+native `remove printing` directives in generated inputs. Code retains source
+spelling, such as `*`, `->` and `forall`; explicit source printing directives
+remain available. The generated preamble shifts `.glob` byte ranges and updates
+the source digest, preserving declaration links without editing theory sources.
+
+HTML 与两种 PDF 模式都在生成输入中使用原生 `remove printing` 指令，关闭
+coqdoc 内置符号替换。代码保留 `*`、`->`、`forall` 等源码写法，仍允许源码显式
+指定打印规则。生成的前言同步平移 `.glob` 字节范围并更新源码校验值，保持声明
+链接正确，不修改理论源码。
+
 ## Full-library export / 全库导出
 
 Run from the repository root in the initialized project environment:

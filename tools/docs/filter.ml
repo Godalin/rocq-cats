@@ -3,6 +3,17 @@ type diagnostic = { line : int; message : string }
 type block = { first : int; last : int; body : int; stop : int }
 type kind = English | Chinese | Neutral | Mixed
 
+(** Disable built-in symbol substitutions using native coqdoc directives.
+    Explicit printing directives in the source remain available. *)
+
+(** 使用原生 coqdoc 指令关闭内置符号替换，仍允许源码显式指定打印规则。 *)
+
+let printing_preamble =
+  ["*"; "|"; "->"; "->~"; "->~~"; "<-"; "<->"; "=>"; "<="; ">=";
+   "<>"; "~"; "/\\"; "\\/"; "|-"; "forall"; "exists"; "Π"; "λ"]
+  |> List.map (fun token -> "(** remove printing " ^ token ^ " *)\n")
+  |> String.concat ""
+
 let starts s i token =
   i + String.length token <= String.length s
   && String.sub s i (String.length token) = token
@@ -191,12 +202,13 @@ let filter language source =
   loop (blocks source);
   Bytes.to_string out, List.rev !diagnostics
 
-(** Positions are reusable because filtering preserves byte counts and lines.
-    The generated copy receives its own source digest. *)
+(** Filtering preserves positions; a generated coqdoc preamble shifts all
+    byte ranges uniformly. The generated copy receives its own source digest. *)
 
-(** 过滤保持字节数与行位置，故可复用定位信息；生成副本使用自己的源码校验值。 *)
+(** 过滤保持定位信息；生成的 coqdoc 前言统一平移全部字节范围。
+    生成副本使用自己的源码校验值。 *)
 
-let glob ~original ~filtered contents =
+let glob ?(prefix = "") ~original ~filtered contents =
   let first = try String.index contents '\n' with Not_found -> String.length contents in
   let header = String.sub contents 0 first in
   let digest s = Digest.to_hex (Digest.string s) in
@@ -233,5 +245,23 @@ let glob ~original ~filtered contents =
   (* Rocq 9.0 元数据中的未声明局部别名没有跳转目标；字段别名指向其声明，
      其余局部变量仍完整显示为文本。 *)
 
-  "DIGEST " ^ digest filtered ^ "\n"
-  ^ (List.tl lines |> List.filter_map normalize |> String.concat "\n")
+  let shift_range range =
+    let shift n =
+      let n = int_of_string n in
+      string_of_int (if n < 0 then n else n + String.length prefix)
+    in
+    match String.split_on_char ':' range with
+    | [first; last] -> shift first ^ ":" ^ shift last
+    | _ -> invalid_arg "unsupported .glob byte range"
+  in
+  let shift line = if prefix = "" then line else match words line with
+    | [pos; lib; section; name; kind] when starts pos 0 "R" ->
+        String.concat " " ["R" ^ shift_range
+          (String.sub pos 1 (String.length pos - 1)); lib; section; name; kind]
+    | [kind; range; section; name] ->
+        String.concat " " [kind; shift_range range; section; name]
+    | _ -> line
+  in
+  "DIGEST " ^ digest (prefix ^ filtered) ^ "\n"
+  ^ (List.tl lines |> List.filter_map normalize |> List.map shift
+      |> String.concat "\n")

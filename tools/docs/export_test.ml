@@ -36,7 +36,9 @@ let () =
     ^ "\\end{tikzcd}%\n*)\n\n"
     ^ "Definition quoted := \"(** fake documentation *) \"\"quoted\"\"\".\n"
     ^ "(* outer (* nested *) comment *)\n"
+    ^ "(** [* -> <- <-> => <= >= <> ~ /\\ \\/ |- forall exists Π λ | _* _*N] *)\n\n"
     ^ "(** printing ⇒ %\\Rightarrow% #&rArr;# *)\n"
+    ^ "(** [⇒] *)\n\n"
     ^ "Definition visible_sample := tt.\n"
     ^ "Record DocumentedInterface := {\n"
     ^ "  (** FieldCarrier selects the carrier of the interface, retaining its"
@@ -67,8 +69,9 @@ let () =
     Unix.mkdir output 0o700;
     let filtered, messages = filter language source in
     if messages <> [] then failwith "unexpected fixture language diagnostics";
-    write (output ^ "/Fixture.v") filtered;
-    write (output ^ "/Fixture.glob") (glob ~original:source ~filtered metadata);
+    write (output ^ "/Fixture.v") (printing_preamble ^ filtered);
+    write (output ^ "/Fixture.glob")
+      (glob ~prefix:printing_preamble ~original:source ~filtered metadata);
     run "rocq" ["doc"; "--utf8"; "--gallina"; "--no-externals"; "--no-index";
       "--no-lib-name"; "-o"; output ^ "/page.html"; output ^ "/Fixture.v"];
     let page = read (output ^ "/page.html") in
@@ -81,6 +84,19 @@ let () =
     run "rocq" ["doc"; "--latex"; "--utf8"; "--gallina"; "--body-only";
       "--no-index"; "-d"; output; "-o"; output ^ "/page.tex"; output ^ "/Fixture.v"];
     let latex = read (output ^ "/page.tex") in
+    List.iter (fun (text, escaped) ->
+      List.iter (fun token -> if not (contains text token) then
+        failwith ("source notation was substituted: " ^ token)) escaped)
+      [page, [">*</span>"; "-&gt;"; "&lt;-&gt;"; "forall"; "exists"; "Π"; "λ"];
+       latex, ["* -> <- <-> => <= >= <>"; "{forall}"; "{exists}"; "Π"; "λ"]];
+    if not (contains latex "\\Rightarrow") then
+      failwith "explicit source printing directive was discarded";
+    if not (contains page "href=\"#interface_carrier\"") then
+      failwith "coqdoc preamble displaced compiled field references";
+    List.iter (fun token -> if contains latex token then
+      failwith ("implicit symbol substitution survived: " ^ token))
+      ["\\ensuremath{\\times}"; "\\ensuremath{\\forall}";
+       "\\ensuremath{\\rightarrow}"; "\\ensuremath{\\Rightarrow}"];
     (* Suppressed field prose must not turn into wide blank indentation. *)
 
     (* 被隐藏的字段正文不得变成很宽的空白缩进。 *)

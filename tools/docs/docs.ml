@@ -305,9 +305,10 @@ let build root strict format =
       if tag = "en" then List.iter (fun (m : Filter.diagnostic) ->
         warnings := Printf.sprintf "%s:%d: %s" s.path m.line m.message :: !warnings) messages;
       let path = inputs ^ "/" ^ s.path in
-      write path filtered;
+      write path (Filter.printing_preamble ^ filtered);
       write (Filename.chop_extension path ^ ".glob")
-        (Filter.glob ~original ~filtered (read (metadata root s)));
+        (Filter.glob ~prefix:Filter.printing_preamble ~original ~filtered
+          (read (metadata root s)));
       path) sources in
     if format = "pdf" || format = "design" then
       pdf ~design:(format = "design") root output tag paths else begin
