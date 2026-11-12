@@ -73,7 +73,9 @@ Arguments reify_sem_rename {_ _ _} _ _ _ _ _.
 
 Definition lift_reification@{u p +} {B : Type} {A : Ty B}
     {S : Functor ((RenamingCat B)^op) SetCat} (R : Reification A S)
-  : Reification A (LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F S).
+  : Reification A
+      (LiftF ∘F S : Functor ((RenamingCat B)^op)
+        SetCat@{u p _ _ _ _ _}).
 Proof.
   unshelve notypeclasses refine
     {|reflect_ne := _
@@ -102,9 +104,9 @@ Defined.
     全部证明义务由操作对已有的保相等性质与重命名律提供。 *)
 
 Program Definition ReflectN@{b r u p l +} {B : Type@{b}} {A : Ty B}
-    {S : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+    {S : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}} (R : Reification A S)
-  : LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F NePsh A ⇒ S
+  : LiftF ∘F NePsh A ⇒ S
   :=
   {|nt Γ :=
      {|func n := reflect_ne R Γ (lower n)
@@ -125,9 +127,9 @@ Defined.
     可通过 [lower] 取出。 *)
 
 Program Definition ReifyN@{b r u p l +} {B : Type@{b}} {A : Ty B}
-    {S : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+    {S : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}} (R : Reification A S)
-  : S ⇒ LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F NfPsh A
+  : S ⇒ LiftF ∘F NfPsh A
   :=
   {|nt Γ :=
      {|func v := {|lower := reify_sem R Γ v
@@ -171,6 +173,19 @@ Proof.
     rewrite rename_ne_comp, <- reify_sem_rename. reflexivity.
 Defined.
 
+(** Fix the signature, world equality, semantic and world-law bounds
+    once for this construction and its laws. Section-local references
+    inherit those bindings, so they need no repeated universe instances.
+    The semantic bound [s] and world-law bound [l] remain independent. *)
+
+(** 为本构造及其定律一次固定签名、世界相等、语义与世界定律界限。节内引用
+    继承这些绑定，无须反复写宇宙实例；语义界限 [s] 与世界定律界限 [l] 仍
+    相互独立。 *)
+
+Section TypeDirected.
+Universes b r s l.
+Context {B : Type@{b}}.
+
 (** Type-directed construction. At base types lift wrappers carry neutral
     syntax; at products the operations act componentwise; the arrow case
     builds the existing coherent Kripke function record. *)
@@ -178,9 +193,10 @@ Defined.
 (** 类型导向构造。基类型处的提升包装保存中性语法，积类型逐分量作用，箭头
     情形构造既有的相容 Kripke 函数记录。 *)
 
-Fixpoint TypeReification@{b r s l +} {B : Type@{b}} (A : Ty B)
+Fixpoint TypeReification (A : Ty B)
   : Reification A
-      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A).
+      (SemF A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+        SetCat@{s s _ _ _ _ _}).
 Proof.
   destruct A as [b | | A U | A U].
   - unshelve notypeclasses refine
@@ -214,8 +230,8 @@ Proof.
     + intros Γ v w h. reflexivity.
     + intros Γ Δ ρ n. exact tt.
     + intros Γ Δ ρ v. reflexivity.
-  - pose (RA := @TypeReification B A).
-    pose (RU := @TypeReification B U).
+  - pose (RA := TypeReification A).
+    pose (RU := TypeReification U).
     unshelve notypeclasses refine
       {|reflect_ne := _
       ; reify_sem := _
@@ -238,8 +254,8 @@ Proof.
     + intros Γ Δ ρ [v w]. cbn. f_equal.
       * exact (reify_sem_rename RA Γ Δ ρ v).
       * exact (reify_sem_rename RU Γ Δ ρ w).
-  - pose (RA := @TypeReification B A).
-    pose (RU := @TypeReification B U).
+  - pose (RA := TypeReification A).
+    pose (RU := TypeReification U).
     pose (rf := reflect_function_value A U RA RU).
     unshelve notypeclasses refine
       {|reflect_ne := _
@@ -272,10 +288,9 @@ Defined.
 (** 实化反射后的中性项，得到语法上的类型导向 η 展开。这里比较正规语法树，
     不比较语义函数记录。 *)
 
-Lemma reify_reflect_eta@{b r s l +} {B : Type@{b}} (A : Ty B)
+Lemma reify_reflect_eta (A : Ty B)
   : ∀ (Γ : Ctx B) (n : Ne Γ A),
-      reify_sem (TypeReification@{b r s l
-        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A) Γ
+      reify_sem (TypeReification A) Γ
         (reflect_ne (TypeReification A) Γ n) = eta_expand_ne n.
 Proof.
   induction A; intros Γ n;
@@ -297,11 +312,10 @@ Defined.
 (** 中性项经过反射与实化所得的正规树，与输入 βη 相等，证明复用既有语法 η
     定理。推导见证的界限独立于语义值；这尚非任意原始项正规化的可靠性。 *)
 
-Definition reify_reflect_sound@{b r s l e +} {B : Type@{b}} (A : Ty B)
+Definition reify_reflect_sound@{e +} (A : Ty B)
     (Γ : Ctx B) (n : Ne Γ A)
   : TmEq@{b e _} (embed_ne n)
-      (embed_nf (reify_sem (TypeReification@{b r s l
-        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A) Γ
+      (embed_nf (reify_sem (TypeReification A) Γ
         (reflect_ne (TypeReification A) Γ n))).
 Proof. rewrite reify_reflect_eta. apply eta_expand_ne_sound. Defined.
 
@@ -310,11 +324,12 @@ Proof. rewrite reify_reflect_eta. apply eta_expand_ne_sound. Defined.
 
 (** 显式提升值宇宙后，语义往返与语法 η 展开也按自然变换相等。 *)
 
-Definition reification_eta_triangle@{b r s l +} {B : Type@{b}} (A : Ty B)
-  : (ReifyN (TypeReification@{b r s l
-        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A) ∘Nv
+Definition reification_eta_triangle (A : Ty B)
+  : (ReifyN (TypeReification A) ∘Nv
       ReflectN (TypeReification A)) ≈N (LiftF ∘Nl NeutralEtaN A).
 Proof.
   intros Γ [n]. refine {|lower := _
                         |}. apply reify_reflect_eta.
 Defined.
+
+End TypeDirected.

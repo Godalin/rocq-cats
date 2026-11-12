@@ -61,7 +61,7 @@ Local Existing Instance SetCat_HasProduct.
 (** 沿类型递归的语义预层。箭头值复用一般函数预层，包括它的全部相容性见证。 *)
 
 Fixpoint SemF@{b r s l +} {B : Type@{b}} (A : Ty B)
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}
   := match A with
   | ty_base b => LiftF ∘F NePsh (ty_base b)
@@ -78,7 +78,8 @@ Fixpoint SemF@{b r s l +} {B : Type@{b}} (A : Ty B)
     另一个包装中保留原见证。 *)
 
 Definition RaisedSemF@{b r s l u p +} {B : Type@{b}} (A : Ty B)
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+  : Functor ((RenamingCat B)^op)
       SetCat@{u p _ _ _ _ _}
-  := LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F
-      SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A.
+  := LiftF ∘F
+      (SemF A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+        SetCat@{s s _ _ _ _ _}).

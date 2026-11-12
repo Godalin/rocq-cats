@@ -109,7 +109,7 @@ Proof.
     canonical_identity (@ty_base B) β Γ A t) as Ht.
   pose proof (@context_compare_term B C canonical_ccc (@IdF C)
     canonical_identity (@ty_base B) β Γ A u) as Hu.
-  assert (Hq : SubTmEq@{b e _} (quote_tm t ∘Sub z.1)
+  assert (Hq : SubTmEq (quote_tm t ∘Sub z.1)
     (quote_tm u ∘Sub z.1)).
   { transitivity (sub_comp
       (@type_compare B C canonical_ccc (@IdF C)
@@ -117,7 +117,7 @@ Proof.
       (tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) t)).
     - symmetry. exact Ht.
     - rewrite H. exact Hu. }
-  assert (Hz : SubTmEq@{b e _} (z.1 ∘Sub z.2.1) sub_id).
+  assert (Hz : SubTmEq (z.1 ∘Sub z.2.1) sub_id).
   { exact (snd z.2.2). }
   apply quote_tm_faithful.
   transitivity ((quote_tm t ∘Sub z.1) ∘Sub z.2.1).
@@ -170,7 +170,7 @@ Notation "t '≈CCC' u" := (TmModelEq t u)
 
 Theorem tm_soundness_iff_completeness@{b e l +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
-  : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u.
+  : TmEq@{b e _} t u ↔ TmModelEq t u.
 Proof.
   split.
   - intros H C HC I. exact (@tm_interp_sound B C HC I Γ A t u H).
