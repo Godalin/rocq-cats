@@ -16,6 +16,17 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Reification at Separated Bounds
+
+    Fix [B], [A] and [Γ], separating signature, world equality,
+    equational evidence, semantic values, world laws and both raised
+    bounds. Check reflection, reification and their eta comparison. *)
+
+(** ** 独立界限处的实化
+
+    固定 [B]、[A]、[Γ]，分开签名、世界相等、等式证据、语义值、世界定律及
+    两个提升界限，检查反射、实化与 η 比较。 *)
+
 Section SeparatedBounds.
 Universes b r e s l u p.
 Constraint b < r.
@@ -62,6 +73,16 @@ Definition separated_neutral_soundness (n : Ne Γ A)
 
 End SeparatedBounds.
 
+(** ** Raised Equality below Raised Carriers
+
+    Fix [B] and [A] with [b < r < s < p < u < l]. Check the lifting
+    interfaces when raised equality lies below the raised carrier. *)
+
+(** ** 提升相等低于提升载体
+
+    固定 [B]、[A] 并取 [b < r < s < p < u < l]，检查提升相等低于提升载体
+    时的提升接口。 *)
+
 Section SmallerRaisedEquality.
 Universes b r s p u l.
 Constraint b < r.
@@ -87,6 +108,16 @@ Definition raised_semantic_family
 
 End SmallerRaisedEquality.
 
+(** ** World Laws below Semantic Values
+
+    Fix [B], [A] and [Γ] with [b < r < l < s]. Check reification and
+    eta comparison when semantic values exceed the world-law bound. *)
+
+(** ** 世界定律低于语义值
+
+    固定 [B]、[A]、[Γ] 并取 [b < r < l < s]，检查语义值高于世界定律界限
+    时的实化与 η 比较。 *)
+
 Section SmallerWorldLawBound.
 Universes b r l s.
 Constraint b < r.
@@ -111,6 +142,16 @@ Definition same_level_neutral_soundness (n : Ne Γ A)
   := reify_reflect_sound A Γ n.
 
 End SmallerWorldLawBound.
+
+(** ** Computing Reflection and Reification
+
+    Fix arbitrary base labels [p] and [q] and a context [Γ]. Check
+    reflection and reification computations at base and composite types. *)
+
+(** ** 反射与实化的计算
+
+    固定任意基标签 [p]、[q] 与上下文 [Γ]，检查基类型及复合类型处反射与实化
+    的计算。 *)
 
 Section Computations.
 Context {B : Type} (p q : B) (Γ : Ctx B).

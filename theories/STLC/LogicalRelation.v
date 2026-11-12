@@ -34,6 +34,18 @@ Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Realization for a Fixed Signature and Evidence Bound
+
+    Fix [B] with independent world equality, semantic, world-law and
+    equational evidence bounds. Evidence must contain the signature level.
+    Construct realization, its transport laws and the evaluation
+    fundamental lemma; auxiliary sizes accommodate the relation itself. *)
+
+(** ** 固定签名与证据界限的实现关系
+
+    固定 [B] 及独立的世界相等、语义、世界定律和等式证据界限。证据须容纳签名
+    层级。构造实现关系、其输运律及求值基本引理；辅助大小容纳关系本身。 *)
+
 Section LogicalRelation.
 Universes b r s l e.
 Constraint b <= e.

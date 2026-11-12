@@ -43,12 +43,19 @@ Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_tm_scope.
 
-(** Fix the signature, world equality, semantic and world-law bounds
-    once for this construction and its laws. Section-local references
+(** ** Normalization and Correctness for a Fixed Signature
+
+    Fix a signature [B] and world equality, semantic and world-law bounds
+    to construct reflected initial environments, normalization and its
+    correctness laws. The optional decision procedure takes its label
+    decision as an explicit argument. Section-local references
     inherit those bindings, so they need no repeated universe instances.
     The semantic bound [s] and world-law bound [l] remain independent. *)
 
-(** 为本构造及其定律一次固定签名、世界相等、语义与世界定律界限。节内引用
+(** ** 固定签名的正规化与正确性
+
+    固定签名 [B] 及世界相等、语义与世界定律界限，构造反射初始环境、正规化与
+    正确性定律。可选判定过程将标签判定作为显式参数。节内引用
     继承这些绑定，无须反复写宇宙实例；语义界限 [s] 与世界定律界限 [l] 仍
     相互独立。 *)
 

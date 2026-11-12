@@ -13,6 +13,16 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** World Equality above Syntax Equality
+
+    Fix [B] and [A] with [b < q < r < l]. Check presheaves and their
+    transformations when world equality exceeds syntax equality. *)
+
+(** ** 世界相等高于语法相等
+
+    固定 [B]、[A] 并取 [b < q < r < l]，检查世界相等高于语法相等时的预层
+    及其变换。 *)
+
 Section LargerWorldEquality.
 Universes b q r l.
 Constraint b < q.
@@ -44,6 +54,16 @@ Definition larger_world_triangle
 
 End LargerWorldEquality.
 
+(** ** Syntax Equality above World Equality
+
+    Fix [B] and [A] with [b < r < q < l]. Check the opposite equality
+    ordering and the interpretation of renaming worlds as contexts. *)
+
+(** ** 语法相等高于世界相等
+
+    固定 [B]、[A] 并取 [b < r < q < l]，检查相反的相等层级顺序及重命名
+    世界到上下文的解释。 *)
+
 Section LargerValueEquality.
 Universes b r q l.
 Constraint b < r.
@@ -74,6 +94,16 @@ Definition larger_value_context_interpretation
 
 End LargerValueEquality.
 
+(** ** World Equality below the Signature Level
+
+    Fix [B] and [A] with [r < b < q < l]. Check that pointwise
+    variable equality remains usable below the signature level. *)
+
+(** ** 世界相等低于签名层级
+
+    固定 [B]、[A] 并取 [r < b < q < l]，检查逐点变量相等在签名层级以下
+    仍可使用。 *)
+
 Section SmallStructuralEquality.
 Universes r b q l.
 Constraint r < b.
@@ -93,6 +123,15 @@ Definition small_world_triangle
   := neutral_eta_triangle A.
 
 End SmallStructuralEquality.
+
+(** ** Computing Presheaf Reindexing
+
+    Fix arbitrary labels and contexts [Γ] and [Δ]. Check that
+    presheaf reindexing and eta components preserve syntax computations. *)
+
+(** ** 预层重索引的计算
+
+    固定任意标签及上下文 [Γ]、[Δ]，检查预层重索引与 η 分量保留语法计算。 *)
 
 Section Computations.
 Context {B : Type} (Γ Δ : Ctx B) (p q : B).

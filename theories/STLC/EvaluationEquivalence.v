@@ -40,6 +40,17 @@ Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Equations in a Fixed Evaluation Model
+
+    Fix a signature [B] and world equality, semantic and world-law bounds.
+    Validate function eta and all beta/eta derivations in this model;
+    equational evidence keeps a separate bound chosen by each lemma. *)
+
+(** ** 固定求值模型中的方程
+
+    固定签名 [B] 及世界相等、语义与世界定律界限，在此模型中验证函数 η 及
+    全部 βη 推导；等式证据保留由各引理另选的独立界限。 *)
+
 Section EvaluationEquivalence.
 Universes b r s l.
 Context {B : Type@{b}}.

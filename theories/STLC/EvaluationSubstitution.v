@@ -40,6 +40,18 @@ Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_sub_scope.
 Local Open Scope stlc_tm_scope.
 
+(** ** Natural Substitution Maps
+
+    Fix a signature [B] and the world equality, semantic and world-law
+    bounds. Using the chosen setoid products and terminal object enabled
+    above, evaluate substitutions as environment maps and prove lookup,
+    binder, composition and term-substitution compatibility. *)
+
+(** ** 自然替换映射
+
+    固定签名 [B] 及世界相等、语义与世界定律界限。使用上文启用的选定广集积
+    与终对象，将替换求值为环境映射，并证明查找、绑定、复合及项替换相容性。 *)
+
 Section EvaluationSubstitution.
 Universes b r s l.
 Context {B : Type@{b}}.

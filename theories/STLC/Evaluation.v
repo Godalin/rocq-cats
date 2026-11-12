@@ -38,12 +38,18 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
 
-(** Fix the signature, world equality, semantic and world-law bounds
-    once for this construction and its laws. Section-local references
+(** ** Environments and Evaluation for a Fixed Signature
+
+    Fix a signature [B] and world equality, semantic and world-law bounds
+    to construct environment presheaves and natural evaluation maps.
+    Section-local references
     inherit those bindings, so they need no repeated universe instances.
     The semantic bound [s] and world-law bound [l] remain independent. *)
 
-(** 为本构造及其定律一次固定签名、世界相等、语义与世界定律界限。节内引用
+(** ** 固定签名的环境与求值
+
+    固定签名 [B] 及世界相等、语义与世界定律界限，构造环境预层与自然求值
+    映射。节内引用
     继承这些绑定，无须反复写宇宙实例；语义界限 [s] 与世界定律界限 [l] 仍
     相互独立。 *)
 

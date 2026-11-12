@@ -14,6 +14,17 @@ From Cats Require Import
 
 (** * 相容函数接口回归检查 *)
 
+(** ** Function Equality below World Equality
+
+    Fix a category [C], presheaves [F], [G], [H] and a world [X], with
+    function equality below world equality and a larger value carrier.
+    Check coherent functions, lifted currying and their beta/eta laws. *)
+
+(** ** 函数相等低于世界相等
+
+    固定范畴 [C]、预层 [F]、[G]、[H] 及世界 [X]，使函数相等低于世界相等，
+    值载体取更大界限。检查相容函数、提升柯里化及其 β、η 律。 *)
+
 Section SmallFunctionEquality.
 Universes b p e r l v.
 Constraint b < p.
@@ -65,6 +76,16 @@ Definition separated_curry_eta
 
 End SmallFunctionEquality.
 
+(** ** Function Equality above World Equality
+
+    Fix [C], [F] and [G] with function equality above world equality.
+    Check that the coherent-function presheaf retains distinct bounds. *)
+
+(** ** 函数相等高于世界相等
+
+    固定 [C]、[F]、[G]，使函数相等高于世界相等，检查相容函数预层仍保留
+    不同的大小界限。 *)
+
 Section LargerFunctionEquality.
 Universes b r p e l v.
 Constraint b < r.
@@ -90,6 +111,17 @@ Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
+
+(** ** Currying over Syntax Presheaves
+
+    Fix a signature, types [A] and [U], and a context [Γ]. Enable the
+    chosen setoid product and check captured normal values and currying
+    directly in syntax presheaves. *)
+
+(** ** 语法预层上的柯里化
+
+    固定签名、类型 [A]、[U] 和上下文 [Γ]，启用选定广集积，直接在语法预层
+    中检查捕获的正规值与柯里化。 *)
 
 Section SyntaxComputations.
 Context {B : Type} (A U : Ty B) (Γ : Ctx B).
