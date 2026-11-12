@@ -91,14 +91,23 @@ Program Definition nf_rename_resp@{b q +} {B : Type@{b}}
   |}.
 Next Obligation. intros v w h. destruct h. reflexivity. Defined.
 
+(** Fix world and syntax-equality bounds once for these presheaves and
+    their transformations. References within the section inherit them. *)
+
+(** 为这些预层及其变换一次固定世界与语法相等界限；节内引用继承这些界限。 *)
+
+Section SyntaxPresheaves.
+Universes b r q l.
+Context {B : Type@{b}}.
+
 (** The neutral presheaf: a world arrow [Δ → Γ] acts from syntax at [Γ]
     to syntax at [Δ]. Functor laws reuse the already proved syntax laws. *)
 
 (** 中性预层：世界箭头 [Δ → Γ] 从 [Γ] 处语法作用到 [Δ] 处语法。
     函子律复用已经证明的语法定律。 *)
 
-Program Definition NePsh@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+Program Definition NePsh (A : Ty B)
+  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b q _ _ _ _ _}
   :=
   {|F0 Γ := NeS Γ A
@@ -112,8 +121,8 @@ Next Obligation. intros n. symmetry. apply rename_ne_comp. Defined.
 
 (** 正规预层使用相同世界范畴，并具有自己的语法载体。 *)
 
-Program Definition NfPsh@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+Program Definition NfPsh (A : Ty B)
+  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b q _ _ _ _ _}
   :=
   {|F0 Γ := NfS Γ A
@@ -129,9 +138,9 @@ Next Obligation. intros v. symmetry. apply rename_nf_comp. Defined.
 (** 带 βη 相等的原始项也在这些世界上组成预层；这并不允许将任意替换直接
     作用于正规形语法树。 *)
 
-Program Definition TmRenamingPsh@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
-      SetCat@{b q _ _ _ _ _}
+Program Definition TmRenamingPsh (A : Ty B)
+  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      SetCat
   :=
   {|F0 Γ := TmS@{b q} Γ A
   ; F1 _ _ ρ := tm_rename_resp ρ
@@ -148,7 +157,7 @@ Defined.
 
 (** 将中性语法嵌入项广集。 *)
 
-Program Definition embed_ne_resp@{b q +} {B : Type@{b}}
+Program Definition embed_ne_resp
     (Γ : Ctx B) (A : Ty B)
   : NeS@{b q} Γ A →r TmS@{b q} Γ A
   :=
@@ -160,7 +169,7 @@ Next Obligation. intros n m h. destruct h. apply tm_eq_refl. Defined.
 
 (** 将正规语法嵌入项广集。 *)
 
-Program Definition embed_nf_resp@{b q +} {B : Type@{b}}
+Program Definition embed_nf_resp
     (Γ : Ctx B) (A : Ty B)
   : NfS@{b q} Γ A →r TmS@{b q} Γ A
   :=
@@ -172,7 +181,7 @@ Next Obligation. intros v w h. destruct h. apply tm_eq_refl. Defined.
 
 (** η 展开尊重结构相等。 *)
 
-Program Definition eta_expand_ne_resp@{b q +} {B : Type@{b}}
+Program Definition eta_expand_ne_resp
     (Γ : Ctx B) (A : Ty B)
   : NeS@{b q} Γ A →r NfS@{b q} Γ A
   :=
@@ -185,9 +194,8 @@ Next Obligation. intros n m h. destruct h. reflexivity. Defined.
 
 (** 中性嵌入的自然性来自嵌入与重命名的严格相容律，再将其纳入 βη 相等。 *)
 
-Program Definition NeEmbedN@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : @Nat ((RenamingCat@{b r l _ _ _ _ _} B)^op)
-      SetCat@{b q _ _ _ _ _} (NePsh A) (TmRenamingPsh A)
+Program Definition NeEmbedN (A : Ty B)
+  : NePsh A ⇒ TmRenamingPsh A
   :=
   {|nt Γ := embed_ne_resp Γ A
   |}.
@@ -197,9 +205,8 @@ Next Obligation. intros n. apply tm_eq_of_eq. apply embed_rename_ne. Defined.
 
 (** 正规嵌入出于相同原因具有自然性。 *)
 
-Program Definition NfEmbedN@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : @Nat ((RenamingCat@{b r l _ _ _ _ _} B)^op)
-      SetCat@{b q _ _ _ _ _} (NfPsh A) (TmRenamingPsh A)
+Program Definition NfEmbedN (A : Ty B)
+  : NfPsh A ⇒ TmRenamingPsh A
   :=
   {|nt Γ := embed_nf_resp Γ A
   |}.
@@ -209,9 +216,8 @@ Next Obligation. intros v. apply tm_eq_of_eq. apply embed_rename_nf. Defined.
 
 (** η 展开与重命名的严格交换律恰好就是自然性。 *)
 
-Program Definition NeutralEtaN@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : @Nat ((RenamingCat@{b r l _ _ _ _ _} B)^op)
-      SetCat@{b q _ _ _ _ _} (NePsh A) (NfPsh A)
+Program Definition NeutralEtaN (A : Ty B)
+  : NePsh A ⇒ NfPsh A
   :=
   {|nt Γ := eta_expand_ne_resp Γ A
   |}.
@@ -224,8 +230,8 @@ Next Obligation. intros n. apply eta_expand_ne_rename. Defined.
 (** 从中性语法到 βη 项的两条路径按自然变换相等。这是展开正确性，不是推导
     见证的相等或互逆定律。 *)
 
-Definition neutral_eta_triangle@{b r q l +} {B : Type@{b}} (A : Ty B)
-  : @NatEq ((RenamingCat@{b r l _ _ _ _ _} B)^op)
-      SetCat@{b q _ _ _ _ _} (NePsh A) (TmRenamingPsh A)
-      (NeEmbedN A) (NfEmbedN A ∘Nv NeutralEtaN A).
+Definition neutral_eta_triangle (A : Ty B)
+  : NeEmbedN A ≈N (NfEmbedN A ∘Nv NeutralEtaN A).
 Proof. intros Γ n. apply eta_expand_ne_sound. Defined.
+
+End SyntaxPresheaves.

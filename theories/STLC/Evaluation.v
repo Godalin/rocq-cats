@@ -38,6 +38,19 @@ Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
 Local Open Scope stlc_tm_scope.
 
+(** Fix the signature, world equality, semantic and world-law bounds
+    once for this construction and its laws. Section-local references
+    inherit those bindings, so they need no repeated universe instances.
+    The semantic bound [s] and world-law bound [l] remain independent. *)
+
+(** 为本构造及其定律一次固定签名、世界相等、语义与世界定律界限。节内引用
+    继承这些绑定，无须反复写宇宙实例；语义界限 [s] 与世界定律界限 [l] 仍
+    相互独立。 *)
+
+Section Evaluation.
+Universes b r s l.
+Context {B : Type@{b}}.
+
 (** Empty environments are singleton values; context extension stores the
     older environment and one new value. The semantic bound is the same
     explicit internal bound as in [SemF], independent of world-law size. *)
@@ -45,8 +58,8 @@ Local Open Scope stlc_tm_scope.
 (** 空环境是单元素值；上下文扩张保存旧环境与一个新值。语义界限沿用 [SemF]
     中显式的内部界限，与世界定律的大小独立。 *)
 
-Fixpoint EnvF@{b r s l +} {B : Type@{b}} (Γ : Ctx B)
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+Fixpoint EnvF (Γ : Ctx B)
+  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}
   := match Γ with
   | ctx_empty => ConstF ((RenamingCat B)^op) (C := SetCat) UnitS
@@ -60,13 +73,13 @@ Fixpoint EnvF@{b r s l +} {B : Type@{b}} (Γ : Ctx B)
 (** 带类型查找是自然变换。旧位置投影出环境前缀，最新标记投影出新值；无须
     判定类型标签或绑定类型的相等。 *)
 
-Fixpoint EnvLookupN {B : Type} (Γ : Ctx B)
+Fixpoint EnvLookupN (Γ : Ctx B)
   : ∀ A : Ty B, Var Γ A → EnvF Γ ⇒ SemF A.
 Proof.
   destruct Γ as [| Γ U]; intros A x.
   - destruct x.
   - destruct x as [x | x].
-    + exact (EnvLookupN B Γ A x ∘Nv
+    + exact (EnvLookupN Γ A x ∘Nv
         PointwiseFstN _ _ (EnvF Γ) (SemF U)).
     + destruct x. exact (PointwiseSndN _ _ (EnvF Γ) (SemF U)).
 Defined.
@@ -78,7 +91,7 @@ Defined.
 (** 环境由其带类型观察确定。所得相等是环境逐分量的广集关系，不是语义函数
     或保存定律见证的原生相等。 *)
 
-Lemma env_ext {B : Type} (Γ : Ctx B)
+Lemma env_ext (Γ : Ctx B)
   : ∀ (Δ : Ctx B) (γ δ : EnvF Γ Δ),
       (∀ (A : Ty B) (x : Var Γ A),
         EnvLookupN Γ A x Δ γ ≈S EnvLookupN Γ A x Δ δ) → γ ≈S δ.
@@ -97,13 +110,13 @@ Defined.
 (** 语法重命名选取环境分量。此作用更换被解释的上下文而保持世界不变，区别
     于沿世界箭头对语义值重索引。 *)
 
-Fixpoint EnvRenamingN {B : Type} (Γ : Ctx B)
+Fixpoint EnvRenamingN (Γ : Ctx B)
   : ∀ Δ : Ctx B, Ren Δ Γ → EnvF Δ ⇒ EnvF Γ.
 Proof.
   destruct Γ as [| Γ A]; intros Δ ρ.
   - exact (PointwiseTerminalN _ _ (EnvF Δ)).
   - exact (PointwisePairN _ _
-      (EnvRenamingN B Γ Δ (λ U x, ρ U (var_succ x)))
+      (EnvRenamingN Γ Δ (λ U x, ρ U (var_succ x)))
       (EnvLookupN Δ A (ρ A var_zero))).
 Defined.
 
@@ -112,7 +125,7 @@ Defined.
 
 (** 在选取后的环境中查找，等于在原环境中查找重命名后的变量。 *)
 
-Lemma env_renaming_lookup {B : Type} (Γ : Ctx B)
+Lemma env_renaming_lookup (Γ : Ctx B)
   : ∀ (Δ Θ : Ctx B) (ρ : Ren Δ Γ) (γ : EnvF Δ Θ)
       (A : Ty B) (x : Var Γ A),
       EnvLookupN Γ A x Θ (EnvRenamingN Γ Δ ρ Θ γ) ≈S
@@ -129,7 +142,7 @@ Defined.
 
 (** 环境选取保持重命名的逐点相等。 *)
 
-Global Instance EnvRenamingN_proper {B : Type} (Γ Δ : Ctx B)
+Global Instance EnvRenamingN_proper (Γ Δ : Ctx B)
   : Proper (RenEq ==> NatEq) (EnvRenamingN Γ Δ).
 Proof.
   intros ρ τ h Θ γ. apply env_ext. intros A x.
@@ -141,7 +154,7 @@ Defined.
 
 (** 按恒等选取保留每个环境。 *)
 
-Lemma env_renaming_id {B : Type} (Γ : Ctx B)
+Lemma env_renaming_id (Γ : Ctx B)
   : EnvRenamingN Γ Γ idRen ≈N idN.
 Proof.
   intros Θ γ. apply env_ext. intros A x.
@@ -153,7 +166,7 @@ Defined.
 
 (** 沿复合选取等于按语法上下文映射的反向顺序逐次选取，比较使用自然相等。 *)
 
-Lemma env_renaming_comp {B : Type} {Γ Δ Θ : Ctx B}
+Lemma env_renaming_comp {Γ Δ Θ : Ctx B}
     (ρ : Ren Δ Γ) (τ : Ren Θ Δ)
   : EnvRenamingN Γ Θ (ρ ∘Ren τ) ≈N
       (EnvRenamingN Γ Δ ρ ∘Nv EnvRenamingN Δ Θ τ).
@@ -171,7 +184,7 @@ Defined.
 
 (** 在绑定下提升重命名时，保留新环境分量，只选取旧分量。 *)
 
-Lemma env_renaming_lift {B : Type} {Γ Δ : Ctx B} {A : Ty B}
+Lemma env_renaming_lift {Γ Δ : Ctx B} {A : Ty B}
     (ρ : Ren Δ Γ) (Θ : Ctx B) (γ : EnvF Δ Θ) (a : SemF A Θ)
   : EnvRenamingN (Γ ▻ A) (Δ ▻ A) (ρ^↑Ren) Θ (γ, a) ≈S
       (EnvRenamingN Γ Δ ρ Θ γ, a).
@@ -189,9 +202,9 @@ Defined.
 (** 在共同语义界限内部，柯里化无须额外提升参数。其分量与定律直接使用既有
     的一般 Kripke 构造，专化到此语义族。 *)
 
-Program Definition SemanticCurryN@{b r s l +} {B : Type@{b}}
+Program Definition SemanticCurryN
     (A U : Ty B)
-    (H : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+    (H : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _})
     (α : PointwiseProductF H (SemF A) ⇒ SemF U)
   : H ⇒ SemF (A ⇒ U)
@@ -209,7 +222,7 @@ Defined.
 
 (** 在当前世界将语义函数应用于实参是自然的；一般重索引定理恰好提供此定律。 *)
 
-Program Definition SemanticApplyN {B : Type} (A U : Ty B)
+Program Definition SemanticApplyN (A U : Ty B)
   : PointwiseProductF (SemF (A ⇒ U)) (SemF A) ⇒ SemF U
   :=
   {|nt Δ :=
@@ -244,21 +257,20 @@ Defined.
     应用使用恒等未来箭头；实化则可使用弱化进入新绑定。这是对同一个相容
     函数值的两种观察。 *)
 
-Fixpoint EvalN@{b r s l +} {B : Type@{b}} {Γ : Ctx B} {A : Ty B}
+Fixpoint EvalN {Γ : Ctx B} {A : Ty B}
     (t : Tm Γ A)
-  : EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ ⇒
-      SemF A.
+  : EnvF Γ ⇒ SemF A.
 Proof.
   destruct t as [Γ A x | Γ | Γ A U t u | Γ A U t | Γ A U t |
     Γ A U t | Γ A U f a].
   - exact (EnvLookupN Γ A x).
   - exact (PointwiseTerminalN _ _ (EnvF Γ)).
-  - exact (PointwisePairN _ _ (EvalN _ _ _ t) (EvalN _ _ _ u)).
-  - exact (PointwiseFstN _ _ (SemF A) (SemF U) ∘Nv EvalN _ _ _ t).
-  - exact (PointwiseSndN _ _ (SemF A) (SemF U) ∘Nv EvalN _ _ _ t).
-  - exact (SemanticCurryN A U (EnvF Γ) (EvalN _ _ _ t)).
+  - exact (PointwisePairN _ _ (EvalN _ _ t) (EvalN _ _ u)).
+  - exact (PointwiseFstN _ _ (SemF A) (SemF U) ∘Nv EvalN _ _ t).
+  - exact (PointwiseSndN _ _ (SemF A) (SemF U) ∘Nv EvalN _ _ t).
+  - exact (SemanticCurryN A U (EnvF Γ) (EvalN _ _ t)).
   - exact (SemanticApplyN A U ∘Nv
-      PointwisePairN _ _ (EvalN _ _ _ f) (EvalN _ _ _ a)).
+      PointwisePairN _ _ (EvalN _ _ f) (EvalN _ _ a)).
 Defined.
 
 (** Evaluation as a component operation. The environment may live in a
@@ -266,9 +278,9 @@ Defined.
 
 (** 作为分量操作的求值。环境所在的世界可以不同于项的语法上下文。 *)
 
-Definition eval@{b r s l +} {B : Type@{b}} {Γ : Ctx B} {A : Ty B}
+Definition eval {Γ : Ctx B} {A : Ty B}
     (t : Tm Γ A) (Δ : Ctx B)
-    (γ : EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ Δ)
+    (γ : EnvF Γ Δ)
   : SemF A Δ
   := EvalN t Δ γ.
 
@@ -277,7 +289,7 @@ Definition eval@{b r s l +} {B : Type@{b}} {Γ : Ctx B} {A : Ty B}
 
 (** 等价环境产生等价值；函数类型处的相等观察全部未来应用。 *)
 
-Global Instance eval_proper {B : Type} {Γ : Ctx B} {A : Ty B}
+Global Instance eval_proper {Γ : Ctx B} {A : Ty B}
     (t : Tm Γ A) (Δ : Ctx B)
   : Proper ([≈S] ==> [≈S]) (eval t Δ).
 Proof. exact (@func_proper _ _ (EvalN t Δ)). Defined.
@@ -286,9 +298,9 @@ Proof. exact (@func_proper _ _ (EvalN t Δ)). Defined.
 
 (** 求值与同时重索引环境的全部分量交换。 *)
 
-Lemma eval_reindex@{b r s l +} {B : Type@{b}} {Γ : Ctx B} {A : Ty B}
+Lemma eval_reindex {Γ : Ctx B} {A : Ty B}
     (t : Tm Γ A) (Δ Θ : Ctx B) (ρ : Ren Θ Δ)
-    (γ : EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ Δ)
+    (γ : EnvF Γ Δ)
   : eval t Θ (fmap (EnvF Γ) ρ γ) ≈S fmap (SemF A) ρ (eval t Δ γ).
 Proof. exact (nt_naturality (EvalN t) ρ γ). Defined.
 
@@ -300,7 +312,7 @@ Proof. exact (nt_naturality (EvalN t) ρ γ). Defined.
 (** 语义 β 方程：应用求值后的抽象，等于在按实参扩张的环境中求值其项体。
     唯一所需比较是环境函子的单位律；此处尚未断言与语法替换的相容性。 *)
 
-Lemma eval_lam_β {B : Type} {Γ : Ctx B} {A U : Ty B}
+Lemma eval_lam_β {Γ : Ctx B} {A U : Ty B}
     (t : Tm (Γ ▻ A) U) (Δ : Ctx B) (γ : EnvF Γ Δ) (a : SemF A Δ)
   : kripke_eval (SemF A) (SemF U) (eval (ƛ t) Δ γ) a ≈S
       eval t Δ (γ, a).
@@ -319,10 +331,10 @@ Defined.
 (** 语法重命名通过选取环境分量来求值。抽象情形同时使用绑定提升与选取的
     自然性，因此适用于每个未来世界。 *)
 
-Lemma eval_rename@{b r s l +} {B : Type@{b}} {Γ : Ctx B} {A : Ty B}
+Lemma eval_rename {Γ : Ctx B} {A : Ty B}
     (t : Tm Γ A)
   : ∀ (Δ Θ : Ctx B) (ρ : Ren Δ Γ)
-      (γ : EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Δ Θ),
+      (γ : EnvF Δ Θ),
       eval t⟨ρ⟩ Θ γ ≈S eval t Θ (EnvRenamingN Γ Δ ρ Θ γ).
 Proof.
   induction t as [Γ A x | Γ | Γ A U t IHt u IHu |
@@ -344,3 +356,5 @@ Proof.
     + reflexivity.
   - apply kripke_eval_proper; [apply IHf | apply IHa].
 Defined.
+
+End Evaluation.

@@ -216,7 +216,7 @@ Definition context_step_lift@{b e +} {B : Type@{b}}
 (** 全部上下文中的 β 步骤保持可独立使用。 *)
 
 Definition BetaStep@{b e +} {B : Type@{b}}
-  : TmRelation@{b e _} B
+  : TmRelation B
   := λ Γ A, @ContextStep B (@RootBeta@{b e _} B) Γ A.
 
 (** Eta expansion steps are likewise independent of beta and unit. *)
@@ -224,7 +224,7 @@ Definition BetaStep@{b e +} {B : Type@{b}}
 (** η 展开步骤同样独立于 β 和单位规则。 *)
 
 Definition EtaExpandStep@{b e +} {B : Type@{b}}
-  : TmRelation@{b e _} B
+  : TmRelation B
   := λ Γ A, @ContextStep B (@RootEtaExpand@{b e _} B) Γ A.
 
 (** Unit steps are contextualized separately. *)
@@ -232,7 +232,7 @@ Definition EtaExpandStep@{b e +} {B : Type@{b}}
 (** 单位步骤单独加入上下文。 *)
 
 Definition UnitEtaStep@{b e +} {B : Type@{b}}
-  : TmRelation@{b e _} B
+  : TmRelation B
   := λ Γ A, @ContextStep B (@RootUnitEta@{b e} B) Γ A.
 
 (** Combine the independently available steps by the relation coproduct. *)
@@ -254,7 +254,7 @@ Arguments CombinedStep {_ _ _} _ _.
 (** 一条之字边为一个组合步骤选择方向。 *)
 
 Definition ZigStep@{b e +} {B : Type@{b}}
-  : TmRelation@{b e _} B
+  : TmRelation B
   := λ Γ A, (@CombinedStep@{b e _} B Γ A)^±.
 
 Arguments ZigStep {_ _ _} _ _.
@@ -264,7 +264,7 @@ Arguments ZigStep {_ _ _} _ _.
 (** 空路径与有限有向边序列给出可转换性。 *)
 
 Definition ZigStar@{b e +} {B : Type@{b}}
-  : TmRelation@{b e _} B
+  : TmRelation B
   := λ Γ A, @ReflTransClosure@{b e e} (Tm Γ A) (@ZigStep@{b e _ _} B Γ A).
 
 Arguments ZigStar {_ _ _} _ _.
@@ -343,10 +343,10 @@ Definition root_combined_to_tm_eq@{b e +} {B : Type@{b}}
     新的上下文归纳。 *)
 
 Definition context_step_to_tm_eq@{b e +} {B : Type@{b}}
-    (R : TmRelation@{b e _} B)
+    (R : TmRelation B)
     (hr : ∀ Γ A, @R Γ A ⊆R @TmEq@{b e _} B Γ A)
     {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A} (h : ContextStep R t u)
-  : TmEq@{b e _} t u
+  : TmEq t u
   := context_closure_preserves (TmContexts B) tm_eq_compatible
       (λ i, hr (fst i) (snd i)) (Γ, A) t u h.
 
@@ -356,7 +356,7 @@ Definition context_step_to_tm_eq@{b e +} {B : Type@{b}}
 
 Definition combined_step_to_tm_eq@{b e +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
-    (h : CombinedStep@{b e _} t u)
+    (h : CombinedStep t u)
   : TmEq@{b e _} t u.
 Proof.
   destruct h as [h | [h | h]].
@@ -376,10 +376,10 @@ Proof.
   intros [Γ A] [Δ U] c x y h.
   exact (family_relation_sum_compatible (TmContexts B)
       (context_closure_compatible (TmContexts B)
-        (tm_relation_family (@RootBeta@{b e _} B)))
+        (tm_relation_family (@RootBeta B)))
       (family_relation_sum_compatible (TmContexts B)
         (context_closure_compatible (TmContexts B)
-          (tm_relation_family (@RootEtaExpand@{b e _} B)))
+          (tm_relation_family (@RootEtaExpand B)))
         (context_closure_compatible (TmContexts B)
           (tm_relation_family (@RootUnitEta@{b e} B))))
       (Γ, A) (Δ, U) c x y h).
@@ -412,7 +412,7 @@ Defined.
 Global Instance ZigStar_Equivalence@{b e +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B}
   : Equivalence (@ZigStar@{b e _ _} B Γ A)
-  := EquivalenceClosure_Equivalence (@CombinedStep@{b e _} B Γ A).
+  := EquivalenceClosure_Equivalence (@CombinedStep B Γ A).
 
 (** Empty paths witness reflexivity. *)
 
@@ -553,8 +553,8 @@ Definition zig_step_to_tm_eq@{b e +} {B : Type@{b}}
 
 Definition zig_star_to_tm_eq@{b e +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A} (h : ZigStar@{b e _ _} t u)
-  : TmEq@{b e _} t u
-  := equivalence_closure_preserves (S := @TmEq@{b e _} B Γ A)
+  : TmEq t u
+  := equivalence_closure_preserves (S := @TmEq B Γ A)
       (λ t, t) (λ t u, combined_step_to_tm_eq) h.
 
 (** The generic joint presentation specialized to the primitive equations.
@@ -578,7 +578,7 @@ Arguments TmEquationalClosure {_ _ _} _ _.
 
 Definition tm_eq_to_equational_closure@{b e +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A} (h : TmEq@{b e _} t u)
-  : TmEquationalClosure@{b e _} t u.
+  : TmEquationalClosure t u.
 Proof.
   induction h as [Γ A t | Γ A t u p ih | Γ A t u v p ih q iq |
     Γ A U t t' u u' p ih q iq | Γ A U t u p ih | Γ A U t u p ih |
@@ -617,9 +617,9 @@ Definition tm_eq_to_zig_star@{b e +} {B : Type@{b}}
   : ZigStar@{b e _ _} t u.
 Proof.
   pose (p := fst (equational_closure_paths (TmContexts B)
-    (tm_relation_family (@RootCombined@{b e _} B)) (Γ, A) t u)
+    (tm_relation_family (@RootCombined B)) (Γ, A) t u)
     (tm_eq_to_equational_closure h)).
-  exact (equivalence_closure_preserves (S := @ZigStar@{b e _ _} B Γ A)
+  exact (equivalence_closure_preserves (S := @ZigStar B Γ A)
     (λ t, t) (λ t u q, rtc_step (inl (root_context_to_combined_step q))) p).
 Defined.
 

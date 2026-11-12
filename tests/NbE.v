@@ -58,7 +58,7 @@ Definition separated_normalization_renaming (Δ : Ctx B) (ρ : Ren Δ Γ)
       separated_normalization⟨ρ⟩nf.
 Proof.
   exact (nf_rename@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
 Defined.
 
 (** Variable eta expansion also retains the chosen universe bounds. *)
@@ -71,7 +71,7 @@ Definition separated_variable_normalization (x : Var Γ A)
       eta_expand_ne (ne_var x).
 Proof.
   exact (nf_var@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
 Defined.
 
 End SeparatedBounds.
@@ -110,7 +110,7 @@ Definition smaller_world_law_normalization_renaming
       smaller_world_law_normalization⟨ρ⟩nf.
 Proof.
   exact (nf_rename@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
 Defined.
 
 (** Variable eta expansion also retains the chosen universe bounds. *)
@@ -123,7 +123,7 @@ Definition smaller_world_law_variable_normalization (x : Var Γ A)
       eta_expand_ne (ne_var x).
 Proof.
   exact (nf_var@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
 Defined.
 
 End SmallerWorldLawBound.
