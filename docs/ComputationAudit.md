@@ -1540,3 +1540,80 @@ exports remain with the integration session.
 对应语言的输出。声明清单补入上游四个接口，现恰好覆盖全部 97 项声明各
 一次（68 个类、29 个记录），保留 29 个 `Has*` 类。没有修改永久测试、共享
 环境或集成分支；批次 PDF 仍由集成会话导出。
+
+
+## Static values and ordered Applicative operations
+
+## 静态值与有序 Applicative 运算
+
+Following the Section documentation commit `d3798ae`, this phase adds
+[StaticValues](../theories/Cat/Computational/Arrow/StaticValues.v) on the
+same integrated baseline `fee98fcff6c656d4dae26425401db7a2bc403b9b`.
+Transparent evaluation and abstraction compare terminal-input static
+computations with global Applicative values; the underlying maps also
+commute with every external-context substitution. Both inverse laws,
+respectfulness and equality reflection use only the original hom equality.
+The comparison reuses the exponential-unit isomorphism, without equality
+of function/law records or a well-pointedness assumption.
+
+继 Section 文档提交 `d3798ae` 后，本阶段在同一集成基线
+`fee98fcff6c656d4dae26425401db7a2bc403b9b` 上增加
+[StaticValues](../theories/Cat/Computational/Arrow/StaticValues.v)。透明求值
+与抽象比较终输入静态计算和全局 Applicative 值，其底层映射也与每个外部
+上下文替换交换。两条互逆定律、尊重性及相等反映只使用原有 Hom 相等。比较
+复用指数单位同构，不要求函数／定律记录相等或良点性。
+
+Pure values, ordinary result mapping and ordered application are preserved
+and reflected. Arbitrary binary lifting is represented by a static
+composition which first abstracts the left value, then composes with the
+function produced from the right value. This retains the left-before-right
+effect order. Three ordinary diagrams were extracted to
+[exponential context theory](../theories/Cat/Exponential/Context.v): terminal
+evaluation of names and sequencing, and binary application. The binary
+diagram needs no terminal object or effect structure. All lifting proofs
+reuse the general shared-context Applicative laws.
+
+纯值、通常结果映射及有序应用均得到保持与反映。任意二元提升可表示为静态
+复合：先抽象左值，再与从右值产生的函数复合，保持从左到右的效应次序。
+三个通常图提取到[指数上下文理论](../theories/Cat/Exponential/Context.v)：
+命名与顺序组合的终求值，以及二元应用。二元图不要求终对象或效应结构。
+所有提升证明复用一般共同上下文 Applicative 定律。
+
+The unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
+Dune 3.23.1) passed full `dune build @all @runtest @install`. All 91 new
+temporary assumption checks are closed under the global context: 20 public
+definitions/laws, 51 signatures instantiated with both strict hom/equality
+orders and objects strictly above hom/equality, and 20 concrete definitions
+and reductions. The concrete checks include explicit model enabling,
+Reader computations, both State inverse reductions, pure/state retention,
+and ordered binary State outputs `(false, true)` versus reversed
+`(false, false)` from the same initial state. These supplement the 529
+successful rebase checks (91 static, 278 Freyd, 148 Applicative/strong Monad,
+12 Reader signatures); no permanent tests were added.
+
+未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune
+3.23.1）通过全库 `dune build @all @runtest @install`。91 项新增临时公理
+检查均无额外全局假设：20 项公共定义／定律、51 项签名分别实例化到 Hom／
+相等的两种严格次序及对象严格高于两者的情形，以及 20 项具体定义和归约。
+具体检查覆盖显式模型启用、Reader 计算、State 的两个互逆归约、纯值及状态
+保持，以及同一初始状态下顺序二元 State 输出 `(false, true)`、反序输出
+`(false, false)`。这些补充已通过的 529 项重基检查（91 项静态、278 项 Freyd、
+148 项 Applicative／强 Monad、12 项 Reader 签名）；没有新增永久测试。
+
+Strict bilingual HTML generated 330 modules per language and checked
+665 pages. All 78 English/Chinese comment blocks and all public anchors
+in the two affected modules were checked in their language's output.
+The inventory covers all 97 interfaces exactly once (68 classes, 29 records)
+and retains all 29 `Has*` classes. The latest fetched integration baseline
+is still `fee98fc`; only the task branch is updated. Batch PDF export remains
+with integration. A direct comparison with derived Arrow fanout, typed
+syntax preservation/reflection, and static/dynamic representation conditions
+remain future work; this phase proves operations on actual arrows rather
+than a syntactic equational equivalence.
+
+严格双语 HTML 每种语言生成 330 个模块，检查 665 页。两个受影响模块的
+全部 78 个英中注释块及全部公共锚点均核对已进入对应语言输出。清单恰好覆盖
+全部 97 个接口各一次（68 个类、29 个记录），保留全部 29 个 `Has*` 类。
+最新获取的集成基线仍为 `fee98fc`，只更新任务分支，批次 PDF 仍由集成方导出。
+与导出的 Arrow fanout 直接比较、带类型语法保持／反映、静态／动态表示条件
+留作后续。本阶段证明实际态射上的运算，不主张语法方程等价。

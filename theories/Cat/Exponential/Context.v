@@ -5,7 +5,8 @@ From Cats Require Import
   Cat.Core
   Cat.Terminal
   Cat.Product.Core
-  Cat.Product.Transport.
+  Cat.Product.Transport
+  Cat.Exponential.Laws.
 
 Import Cats.Cat.Exponential.Core.
 
@@ -117,6 +118,24 @@ Proof.
   rewrite <- !exponential_dimap_id_r. context_simpl. reflexivity.
 Qed.
 
+(** A binary operation applies the function selected by its second factor
+    to its first factor. This is an ordinary product and exponential diagram,
+    independent of terminal objects or effects. *)
+
+(** 二元运算将由第二因子选定的函数应用于第一因子。这是通常积与指数的图，
+    不依赖终对象或效应。 *)
+
+Lemma exponential_binary_apply {X Y Z : @Ob C} (h : Hom (X × Y) Z)
+  : (app π2 π1) ∘ (id × (ƛ (h ∘ ⟨π2, π1⟩))) ≈ h.
+Proof.
+  rewrite exponential_app_comp, cross_η, product_β1, product_β2, comp_id_l.
+  rewrite <- exponential_curry_comp_r, exponential_app_β.
+  repeat first [rewrite comp_assoc | rewrite product_comp_l |
+    rewrite product_comp_r | rewrite product_β1 | rewrite product_β2 |
+    rewrite comp_id_l | rewrite comp_id_r].
+  rewrite product_pair_η, comp_id_r. reflexivity.
+Qed.
+
 Context `{HT : !HasTerminal C}.
 
 (** Name an ordinary arrow as a global internal function. *)
@@ -146,6 +165,34 @@ Lemma exponential_name_app {W X Y : @Ob C} (f : Hom X Y)
 Proof.
   unfold exponential_name. rewrite <- exponential_curry_comp_r,
     exponential_app_β. context_simpl. reflexivity.
+Qed.
+
+(** Naming a global value and evaluating at the terminal argument
+    returns that value, using only terminal uniqueness. *)
+
+(** 命名全局值后在终参数处求值返回原值，只使用终对象唯一性。 *)
+
+Lemma exponential_unit_name {Y : @Ob C} (y : Hom 1 Y)
+  : exponential_unit_eval Y ∘ exponential_name y ≈ y.
+Proof.
+  unfold exponential_name. rewrite exponential_unit_eval_curry,
+    comp_assoc, product_β2.
+  rewrite <- (term_η (@id (@Term C HT))), comp_id_r. reflexivity.
+Qed.
+
+(** At terminal input, internal sequencing is ordinary application, with
+    the value-producing function before the following internal function. *)
+
+(** 在终输入处，内部顺序组合就是通常应用，先产生值，再应用后续内部函数。 *)
+
+Lemma exponential_unit_then (Y Z : @Ob C)
+  : exponential_unit_eval Z ∘ internal_then 1 Y Z ≈
+      (app π2 π1) ∘ (exponential_unit_eval Y × id).
+Proof.
+  unfold exponential_unit_eval, internal_then.
+  rewrite exponential_app_comp, comp_id_l, exponential_comp_app.
+  rewrite exponential_app_comp, cross_η, product_β1, product_β2, comp_id_l.
+  rewrite exponential_app_comp, comp_id_l, !term_comp_l. reflexivity.
 Qed.
 
 (** The name of identity is the existing internal identity. *)

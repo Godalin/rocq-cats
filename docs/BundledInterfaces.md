@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 329 modules,
+covers 330 modules,
 68 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 329 个模块、68 个类及 29 个记录。清单覆盖
+更新，现覆盖 330 个模块、68 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -1437,3 +1437,45 @@ records validation and the remaining syntax/representation comparisons.
 本批增加三个模块，在该次交付时不改变 93 个类／记录接口及 29 个 `Has*` 类，
 覆盖 305 个模块。[计算审计](./ComputationAudit.md#static-arrow-construction)
 记录验证及剩余语法／表示比较。
+
+
+## Static values and Applicative operations
+
+## 静态值与 Applicative 运算
+
+[StaticValues](../theories/Cat/Computational/Arrow/StaticValues.v) compares
+terminal-input static computations with global Applicative values. Evaluation
+and abstraction are transparent, respect the original hom equality, and are
+mutually inverse in every external context. They commute with substitution.
+The construction reuses the selected exponential-unit isomorphism; it adds
+no chosen structures or class registrations.
+
+[StaticValues](../theories/Cat/Computational/Arrow/StaticValues.v) 比较终输入
+静态计算与全局 Applicative 值。求值和抽象透明、保持原有 Hom 相等，并在每个
+外部上下文中互逆，也与替换交换。构造复用选定的指数单位同构，不增加选定
+结构或类注册。
+
+Pure values, ordinary result maps and ordered application are preserved and
+reflected. Every binary Applicative lifting has a sequential static
+representation: abstract the left value, then compose with the effectful
+function selected by the right value. General evaluation diagrams live in
+[exponential context theory](../theories/Cat/Exponential/Context.v), before
+any effectful lifting. The binary diagram needs only products and
+exponentials; terminal evaluation additionally needs the selected terminal.
+
+纯值、通常结果映射和有序应用得到保持与反映。每个二元 Applicative 提升均有
+顺序的静态表示：抽象左值，再与右值选出的带效应函数复合。一般求值图位于
+[指数上下文理论](../theories/Cat/Exponential/Context.v)，先于任何效应提升。
+二元图只要求积与指数，终求值另需选定终对象。
+
+These results compare actual arrows and their specified equality. They do
+not infer an arbitrary functor or its law records from global elements, or
+establish a typed syntax equivalence. No well-pointedness, strength, monad
+or effect commutativity is required. Direct comparison with the derived
+Arrow fanout and syntax-level representation remain separate follow-ups.
+The current inventory covers 330 modules and the same 97 interfaces.
+
+这些结果比较实际态射及其指定相等，不从全局元素推断任意函子或其定律记录，
+也尚未建立带类型语法等价。不要求良点性、强度、Monad 或效应交换性。与导出
+的 Arrow fanout 直接比较以及语法层表示留作后续步骤。当前清单覆盖 330 个
+模块及原有 97 个接口。
