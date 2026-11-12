@@ -159,7 +159,7 @@ Definition tm_inhabitation_soundness@{b e l +} {B : Type@{b}}
 
 Definition tm_inhabitation_completeness@{b e l +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B}
-    (H : TmModelInhabited@{b e l _ _ _ _} Γ A)
+    (H : TmModelInhabited Γ A)
   : Tm Γ A
   := tm_interp_canonical_inhabited
       (H (TyCat@{b e l} B) (TyCat_CCC B) (@ty_base B)).

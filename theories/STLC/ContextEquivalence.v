@@ -91,14 +91,14 @@ Definition ContextCategoryEquivalence@{b e l +} (B : Type@{b})
   : (TyCat@{b e l} B) ≅[CatCat] (CtxCat@{b e l} B).
 Proof.
   exists (CatCatHom (SingletonF B)), (CatCatHom (PackF B)). split.
-  - pose (N := pack_singleton_nat_iso@{b e l _ _ _} B).
+  - pose (N := pack_singleton_nat_iso B).
     unshelve refine (existT _ {|nt := _
                               ; nt_naturality := _
                               |} _).
     + exact (λ X, N.1 X).
     + intros X Y f. exact (nt_naturality N.1 f).
     + intros X. exact (N.2 X).
-  - pose (N := singleton_pack_nat_iso@{b e l _ _ _} B).
+  - pose (N := singleton_pack_nat_iso B).
     unshelve refine (existT _ {|nt := _
                               ; nt_naturality := _
                               |} _).

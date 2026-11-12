@@ -371,10 +371,10 @@ Fixpoint context_compare (Γ : Ctx B)
 
 Lemma context_compare_environment (Γ : Ctx B)
   : ∀ A x, (type_compare A).1 ∘ ctx_env I Γ A x ≈
-      fmap F (packed_env@{b e l _} Γ A x) ∘ (context_compare Γ).1.
+      fmap F (packed_env Γ A x) ∘ (context_compare Γ).1.
 Proof.
   induction Γ as [|Γ IH A]; intros U x; [destruct x |].
-  exact (type_compare_environment (packed_env@{b e l _} Γ) (ctx_env I Γ)
+  exact (type_compare_environment (packed_env Γ) (ctx_env I Γ)
     (context_compare Γ).1 IH A U x).
 Qed.
 
@@ -387,7 +387,7 @@ Theorem context_compare_term {Γ A} (t : Tm Γ A)
   : (type_compare A).1 ∘ tm_interp I t ≈
       fmap F (quote_tm t) ∘ (context_compare Γ).1.
 Proof.
-  transitivity (fmap F (syntax_eval t (packed_env@{b e l _} Γ)) ∘
+  transitivity (fmap F (syntax_eval t (packed_env Γ)) ∘
     (context_compare Γ).1).
   - apply type_compare_eval_term. apply context_compare_environment.
   - apply comp_proper; [|reflexivity].

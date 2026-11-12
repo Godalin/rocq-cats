@@ -167,7 +167,7 @@ End Quotation.
 (** 字面单变量环境将输入变量赋为恒等。 *)
 
 Definition ty_single_env@{b e l +} {B : Type@{b}} (A : Ty B)
-  : TyEnv@{b e l _} A (ctx_snoc ctx_empty A)
+  : TyEnv A (ctx_snoc ctx_empty A)
   := λ U x, match x with
   | inl x => match x with end
   | inr x => match x in NewVar _ V
@@ -217,7 +217,7 @@ Proof.
   destruct x as [x | x]; [|destruct x; reflexivity].
   pose (p := @tm_fst B (ctx_snoc ctx_empty (ty_prod (CtxTy Γ) A))
     (CtxTy Γ) A (tm_var var_zero)).
-  change (TmEq ((packed_env@{b e l _} Γ U x U var_zero)[
+  change (TmEq ((packed_env Γ U x U var_zero)[
     sub_empty ▻Sub p])
     (ctx_unpack Γ (p) U x)).
   transitivity ((ctx_unpack Γ (tm_var var_zero) U x)[
@@ -261,7 +261,7 @@ Proof.
   specialize (H A var_zero). unfold quote_tm in H; cbn in H.
   pose proof (tm_eq_subst H Γ (ctx_pack_sub Γ)) as K.
   rewrite !subst_comp in K.
-  assert (Ht : TmEq@{b e _} t
+  assert (Ht : TmEq t
     t[sub_comp (ctx_unpack Γ (tm_var var_zero)) (ctx_pack_sub Γ)]).
   { transitivity t[sub_id]; [symmetry; apply tm_eq_of_eq; apply subst_id |].
     apply subst_tm_ext. symmetry.
