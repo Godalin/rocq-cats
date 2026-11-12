@@ -1391,3 +1391,115 @@ batch PDF exports remain with the integration session.
 各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。已有 `AGENTS.md`
 经验部分记录显式范畴参数及跨相干边界的自然性运输。本任务分支已可交付
 集成；`typeprop` 及批次 PDF 导出仍由集成会话负责。
+
+## Static Arrow construction
+
+## 静态 Arrow 构造
+
+This slice continues E of #35 from `b86fee1` on `monoidal-cat-view`.
+[StaticCat and StaticArrow](../theories/Cat/Computational/Arrow/Static.v)
+construct static computations from the existing Applicative on a category
+with selected terminal object, products and exponentials. The hom-set from
+one value object to another is the base hom-set of global elements of the
+Applicative image of their internal function object. Its specified,
+Type-valued equality is reused directly. Effects are combined before the
+resulting function receives its value argument; the value argument cannot
+select a different effectful computation.
+
+本批从 `monoidal-cat-view` 的 `b86fee1` 继续 #35 的 E 阶段。
+[StaticCat 与 StaticArrow](../theories/Cat/Computational/Arrow/Static.v)
+从具有选定终对象、积及指数的范畴上的已有 Applicative 构造静态计算。两个
+值对象间的 Hom 广集，是其内部函数对象的 Applicative 像的全局元素所组成
+的基底 Hom 广集，直接复用指定 Type 值相等。效应在所得函数收到值参数之前
+组合，值参数不能选取另一个带效应计算。
+
+The construction first extracts two general components.
+[Exponential context theory](../theories/Cat/Exponential/Context.v) names
+ordinary functions, presents the existing internal composition in execution
+order, and derives internal product-context diagrams by evaluation and
+exponential extensionality. [Contextual binary lifting](../theories/Cat/Applicative/Lifting.v)
+specializes the existing lax postcomposition, input naturality, pure-input
+and associativity laws by pairing contextual inputs. Its incoming product
+boundaries are pinned to the same chosen products. Temporary proof opacity
+is restored before exposing clients; computational maps stay transparent.
+
+构造先提取两个一般组件。[指数上下文理论](../theories/Cat/Exponential/Context.v)
+命名通常函数，按执行次序呈现已有内部复合，并通过求值及指数外延性导出内部
+积上下文图。[上下文二元提升](../theories/Cat/Applicative/Lifting.v)通过配对
+上下文输入，特化已有 lax 后合成、输入自然性、纯输入及结合定律。输入积边界
+固定为同一组选定积。证明中的临时不透明性在暴露客户端前恢复，计算映射保持
+透明。
+
+Static composition lifts internal sequencing with the first computation
+before the second. Pure inclusion names the base arrow and applies pure;
+context extension maps the ordinary internal context function through the
+same Applicative. The full computational Arrow laws follow from these
+general diagrams. No strength, Monad, commutative tensorator, well-pointedness
+or native equality of functions or law records is assumed. The existing
+Freyd construction and round-trip comparison consume this Arrow unchanged.
+This delivers a structural static representation, not a completeness or
+equivalence theorem for a typed static-arrow calculus. ArrowApply, the
+static/dynamic syntax comparison and Day/strong-profunctor results remain
+open.
+
+静态复合提升内部顺序组合，先运行第一个计算，再运行第二个。纯嵌入先命名
+基底态射再作用纯值；上下文扩展通过同一 Applicative 映射通常内部上下文
+函数。完整计算 Arrow 定律来自这些一般图。不假设强度、Monad、交换
+tensorator、良点性或函数／定律记录的原生相等。已有 Freyd 构造及往返比较
+可直接使用该 Arrow。本批交付结构式静态表示，不主张带类型静态 Arrow
+演算的完备性或等价。ArrowApply、静态／动态语法比较及 Day／强余函子结果
+仍待完成。
+
+The new strict-level probes exposed an existing restriction in
+[Reader](../theories/Instance/Set/Reader.v): its helpers and upper packaging
+had identified the environment's universes with ambient ones, despite the
+underlying `ReaderF` keeping them independent. Separate helper parameters
+and explicit levels on the tensorator, pure transformation, lax structure
+and `ReaderA` repair that restriction. The reader operations and witnesses
+are unchanged. Strict probes now check both environment carrier/equality
+orders, with ambient carrier strictly above ambient equality, independently
+of the static closed client. Concrete static Reader/State probes use the
+existing closed setoid model's common ambient carrier/equality level;
+no resizing or stronger closed-setoid model is claimed.
+
+新的严格层级探针暴露了[Reader](../theories/Instance/Set/Reader.v) 的已有
+限制：辅助函数与上层包装合并了环境和所在宇宙，尽管底层 `ReaderF` 保持
+它们独立。分开辅助参数，并在 tensorator、纯自然变换、lax 结构及
+`ReaderA` 中显式指定层级，修复这一限制。Reader 运算及见证保持原样。严格
+探针现分别检查环境载体／相等的两种次序，并使所在载体严格高于所在相等，
+独立于静态闭客户端。具体静态 Reader／State 探针使用已有闭广集模型共同的
+所在载体／相等层级，不主张 resizing 或更强的闭广集模型。
+
+Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
+passed after the Reader repair. All 251 temporary assumption checks were
+closed under the global context: 91 static/general construction and client
+checks, 12 Reader signature checks and 148 rerun Applicative/strong-Monad
+checks. They cover both strict hom/equality orders, objects strictly larger
+than both, separate environment and ambient levels, explicit model enabling,
+pure/context/first computations, noncommuting State execution orders and
+Freyd round-trip computations and comparison inverses. No permanent tests
+or shared test configuration were changed.
+
+验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）。Reader 修复后，全库 `dune build @all @runtest @install`
+通过。251 项临时公理检查均无额外全局假设：91 项静态／一般构造及客户端
+检查、12 项 Reader 签名检查，以及重跑的 148 项 Applicative／强 Monad
+检查。覆盖 Hom／相等的两种严格次序、对象严格高于两者、独立环境与所在
+层级、显式模型启用、纯／上下文／first 计算、不交换的 State 执行次序，
+以及 Freyd 往返计算和比较逆映射。没有修改永久测试或共享测试配置。
+
+Strict bilingual HTML generated 305 modules per language and checked
+615 pages. The three new modules and the updated Reader documentation
+were inspected in both languages, including public anchors. The complete
+inventory still covers 93 interfaces exactly once (66 classes, 27 records)
+and all 29 `Has*` classes. The existing `AGENTS.md` learnings now record
+chosen product boundaries for contextual lifting proofs. The branch is
+ready for integration; `typeprop` and batch PDF export remain with the
+integration session.
+
+严格双语 HTML 每种语言生成 305 个模块，检查 615 页。英中文均抽查三个
+新模块及 Reader 更新的正文和公共锚点。完整清单仍恰好覆盖 93 个接口各一次
+（66 个类、27 个记录）及全部 29 个 `Has*` 类。已有 `AGENTS.md` 经验部分
+现记录上下文提升证明的选定积边界。本分支已可交付集成；`typeprop` 及批次
+PDF 仍由集成会话负责。

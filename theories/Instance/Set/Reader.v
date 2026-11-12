@@ -42,7 +42,8 @@ Next Obligation. intros k. apply comp_resp_assoc. Defined.
 
 (** 常值保相等函数给出 Reader 纯值。 *)
 
-Program Definition reader_pure (R X : SetC)
+Program Definition reader_pure@{r e u p +}
+    (R : SetC@{r e}) (X : SetC@{u p})
   : X →r (R →S X)
   :=
   {|func x := {|func _ := x|}
@@ -54,7 +55,8 @@ Next Obligation. intros x x' H r. exact H. Defined.
 
 (** 将同一环境下两个 Reader 的输出配对。 *)
 
-Program Definition reader_pair (R X Y : SetC)
+Program Definition reader_pair@{r e u p +}
+    (R : SetC@{r e}) (X Y : SetC@{u p})
   : ((R →S X) ×S (R →S Y)) →r (R →S (X ×S Y))
   :=
   {|func p := {|func r := (fst p r, snd p r)|}
@@ -70,9 +72,10 @@ Defined.
 
 (** 逐点配对就是 Reader 的自然 tensorator。 *)
 
-Program Definition ReaderTensorN (R : SetC)
-  : (tensorF SetCartesianMonoidal ∘F (ReaderF R ×F ReaderF R)) ⇒
-      (ReaderF R ∘F tensorF SetCartesianMonoidal)
+Program Definition ReaderTensorN@{r e u p +} (R : SetC@{r e})
+  : (tensorF SetCartesianMonoidal ∘F
+      (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF@{r e u p _ _ _ _ _ _ _} R)) ⇒
+      (ReaderF@{r e u p _ _ _ _ _ _ _} R ∘F tensorF SetCartesianMonoidal)
   :=
   {|nt p := reader_pair R (fst p) (snd p)
   |}.
@@ -85,8 +88,10 @@ Defined.
 
 (** Reader 的 lax 结构使用已有笛卡尔幺半模型。 *)
 
-Program Definition ReaderLax (R : SetC)
-  : LaxMonoidalFunctor SetCartesianMonoidal SetCartesianMonoidal
+Program Definition ReaderLax@{r e u p +} (R : SetC@{r e})
+  : LaxMonoidalFunctor (C := SetCat@{u p _ _ _ _ _})
+      (D := SetCat@{u p _ _ _ _ _})
+      SetCartesianMonoidal SetCartesianMonoidal
   :=
   {|LaxMonoidalF := ReaderF R
   ; lax_unit := reader_pure R UnitS
@@ -107,19 +112,22 @@ Defined.
 
 (** Reader 纯值组成自然变换。 *)
 
-Program Definition ReaderPureN (R : SetC)
-  : IdF ⇒ ReaderF R
+Program Definition ReaderPureN@{r e u p +} (R : SetC@{r e})
+  : IdF ⇒ ReaderF@{r e u p _ _ _ _ _ _ _} R
   :=
   {|nt X := reader_pure R X
   |}.
 Next Obligation. intros x r. reflexivity. Defined.
 
-(** Explicitly choose the lawful reader Applicative [ReaderA]. *)
+(** Explicitly choose the lawful reader Applicative [ReaderA]. Pin the
+    ambient levels independently of the environment throughout its data. *)
 
-(** 显式选择带定律的 Reader Applicative [ReaderA]。 *)
+(** 显式选择带定律的 Reader Applicative [ReaderA]，在全部数据中固定独立于
+    环境的所在层级。 *)
 
-Program Definition ReaderA (R : SetC)
-  : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
+Program Definition ReaderA@{r e u p +} (R : SetC@{r e})
+  : Applicative (SetCat@{u p _ _ _ _ _})
+      SetCat_HasTerminal SetCat_HasProduct
   :=
   {|ApplicativeLax := ReaderLax R
   ; applicative_pure := ReaderPureN R

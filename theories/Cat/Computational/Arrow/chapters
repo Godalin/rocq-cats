@@ -7,3 +7,4 @@ Premonoidal.v
 Symmetric.v
 Freyd.v
 Applicative.v
+Static.v

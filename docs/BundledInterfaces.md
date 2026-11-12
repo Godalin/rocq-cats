@@ -590,7 +590,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
-hierarchy, binoidal, premonoidal and Freyd slices and now covers 302 modules,
+hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
+covers 305 modules,
 66 classes and 27 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -601,8 +602,8 @@ example from the discussion was temporary; the final algebra slice below
 implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
-类及 27 个记录。下表跟随层级、双侧张量、预幺半及 Freyd 批次更新，现覆盖
-302 个模块、66 个类及 27 个记录。清单覆盖
+类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
+更新，现覆盖 305 个模块、66 个类及 27 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -662,7 +663,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 159 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 162 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -1368,13 +1369,66 @@ these supplied structures and computations; it does not assert a
 结合子和对称性的边界比较。此比较层级涉及给定结构及计算，不主张二范畴
 等价或 Arrow 语法刻画。
 
-This slice adds five modules without new classes or records. The current
-inventory covers 302 modules and all 93 interfaces once (66 classes,
+This slice added five modules without new classes or records. At that
+delivery, the inventory covered 302 modules and all 93 interfaces once (66 classes,
 27 records), retaining all 29 `Has*` classes. The
 [computation audit](./ComputationAudit.md#freyd-reconstruction-and-round-trips)
 records validation and the remaining computation-theory work.
 
-本批增加五个模块，没有增加类或记录。当前清单覆盖 302 个模块、全部 93 个
+该批增加五个模块，没有增加类或记录。该阶段清单覆盖 302 个模块、全部 93 个
 接口各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。
 [计算审计](./ComputationAudit.md#freyd-reconstruction-and-round-trips)
 记录验证及后续计算理论工作。
+
+## Static computational Arrow
+
+## 静态计算 Arrow
+
+[StaticArrow](../theories/Cat/Computational/Arrow/Static.v) builds a
+computational Arrow from an Applicative on chosen finite products and
+exponentials. Its [StaticCat](../theories/Cat/Computational/Arrow/Static.v)
+hom-sets are global effectful internal functions, using the base Hom
+setoids unchanged. Pure inclusion names an ordinary map; context extension
+maps the ordinary internal context operation. The construction requires
+neither a monad nor a separately selected functor strength.
+
+[StaticArrow](../theories/Cat/Computational/Arrow/Static.v) 从选定有限积与
+指数上的 Applicative 构造计算 Arrow。
+[StaticCat](../theories/Cat/Computational/Arrow/Static.v) 的 Hom 广集是
+全局带效应内部函数，直接使用基底 Hom 广集。纯嵌入命名通常映射，上下文扩展
+映射通常内部上下文运算。构造不要求 Monad 或另选的函子强度。
+
+[Internal context diagrams](../theories/Cat/Exponential/Context.v) and
+[shared-context lifting](../theories/Cat/Applicative/Lifting.v) are reusable
+at their respective theory layers. Internal sequencing reorders the inputs
+of the existing internal composition, so computation composition combines
+the input computation's effects before the following computation's effects.
+No interchange of two effects is assumed. Unit and associativity proofs
+reuse the general lax laws, with no model-specific coherence proofs.
+
+[内部上下文图](../theories/Cat/Exponential/Context.v)及
+[共同上下文提升](../theories/Cat/Applicative/Lifting.v)分别属于可复用理论。
+内部顺序组合调整已有内部复合的输入排列，使计算复合先组合输入计算的效应，
+再组合后续计算的效应。不假设两个效应交换。单位与结合证明复用一般 lax
+定律，没有增加模型专用的相干证明。
+
+[Reader](../theories/Instance/Set/Reader.v) now keeps its environment and
+ambient levels separate throughout its pure, tensorator, lax and Applicative
+packaging. This repairs a signature restriction exposed by the static
+client without changing its operations. Explicit closed-setoid instances
+retain their existing universe closure bounds; abstract static Arrows keep
+independent object, hom and hom-equality levels. No default model is enabled.
+
+[Reader](../theories/Instance/Set/Reader.v) 现在在纯值、tensorator、lax 及
+Applicative 包装中完整保留独立的环境与所在层级，修复静态客户端暴露的签名
+限制，不改变运算。显式闭广集实例保留既有宇宙闭包限制；抽象静态 Arrow
+保留独立的对象、Hom 及 Hom 相等层级。没有启用默认模型。
+
+This slice adds three modules without changing the 93 class/record
+interfaces or the 29 `Has*` classes. The current inventory covers 305
+modules. The [computation audit](./ComputationAudit.md#static-arrow-construction)
+records validation and the remaining syntax/representation comparisons.
+
+本批增加三个模块，不改变 93 个类／记录接口及 29 个 `Has*` 类。当前清单
+覆盖 305 个模块。[计算审计](./ComputationAudit.md#static-arrow-construction)
+记录验证及剩余语法／表示比较。

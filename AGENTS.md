@@ -229,6 +229,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   on that same derived tensor functor. When preservation predicates change,
   rebuild subset morphisms with transported law witnesses and the same
   underlying arrow, without equality of law records.
+  In contextual liftings, pin composition's intermediate object to the
+  chosen product. Apply general laws by `HomEq` when inferred tensor
+  boundaries prevent rewriting, rather than unfolding those structures.
 - Use `InducedF` for identity-on-objects pure inclusions. When value and
   computation objects share a type, pin the ambient category in structural
   and context clients; object arguments alone do not determine the hom-sets.
