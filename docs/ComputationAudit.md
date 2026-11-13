@@ -1776,3 +1776,85 @@ paused until the semantic development is established.
 目标层级。现有 339 个模块、原有 97 个接口。没有修改永久测试或共享工具链。
 广集基底的 Applicative 打包及静态重建是同一已授权任务的后续依赖切片；语法
 等语义建立后再讨论。
+
+
+## Arrow values and static Applicative recovery
+
+## Arrow 值与静态 Applicative 回收
+
+This slice continues on `monoidal-cat-view` from the validated integrated
+baseline `89580d6ee75110d30fc4a82d6c60fb44f28aabc1`. The reusable
+terminal-input Hom/lax foundation was delivered independently in
+[078ba8f](https://github.com/Godalin/rocq-cats/commit/078ba8fe97f04fdc885579b3a44bd3a4af32e465).
+[The setoid adapter](../theories/Instance/Set/Arrow.v) supplies `ArrowA`
+using that same lax structure and pure constant arrows. Computation hom
+carrier/equality levels match the ambient setoid levels; computation
+objects retain an independent universe. No Monad, strength or exponentials
+are required by this adapter. Imports enable no chosen model structure.
+
+本切片在 `monoidal-cat-view` 上继续，已验证的集成基线为
+`89580d6ee75110d30fc4a82d6c60fb44f28aabc1`。可复用的终输入 Hom／lax
+基础已在 [078ba8f](https://github.com/Godalin/rocq-cats/commit/078ba8fe97f04fdc885579b3a44bd3a4af32e465)
+独立交付。[广集适配器](../theories/Instance/Set/Arrow.v)复用同一 lax
+结构，以纯常值箭头提供 `ArrowA`。计算 Hom 的载体／相等层级对应所在广集
+层级，计算对象保留独立宇宙。适配器不要求 Monad、强度或指数，导入不启用
+选定模型结构。
+
+[Static recovery](../theories/Instance/Set/StaticArrow.v) works in the
+existing closed setoid model at a common carrier/equality level. It reuses
+two exponential-unit isomorphisms to compare the recovered and original
+Applicatives by a transparent natural isomorphism. Both transformations
+preserve pure values, ordered pairing and every ordinary binary lifting.
+This establishes the Applicative-to-static-Arrow-to-Applicative round trip
+on that model, without equating functor or law records. It does not
+reconstruct arbitrary dynamic Arrows. General static/dynamic reconstruction
+conditions and the ArrowApply/Monad relationship remain subsequent semantic
+work; typed syntax stays deferred.
+
+[静态回收](../theories/Instance/Set/StaticArrow.v)使用载体／相等处于同一
+层级的已有闭广集模型，复用两个指数单位同构，以透明自然同构比较回收与原有
+Applicative。两个变换均保持纯值、有序配对及每个通常二元提升。这给出该模型
+上的 Applicative 经静态 Arrow 再回到 Applicative 的往返，不要求函子或定律
+记录相等，也不重建任意动态 Arrow。一般静态／动态重建条件及 ArrowApply／
+Monad 关系仍为后续语义工作；带类型语法继续暂缓。
+
+Full-library `dune build @all @runtest @install` passed with the unchanged
+`rocq-cats` switch: Rocq/Stdlib 9.2.0, OCaml 5.3.0 and Dune 3.23.1.
+All 95 comprehensive temporary assumption checks were closed under the
+global context: all 33 public declarations across the five new modules,
+26 universe probes and 36 concrete constructions/reductions. The probes
+separate the two abstract categories' hom/equality levels, vary the setoid
+adapter's carrier/equality order and computation-object level, and separate
+Reader/State environment sizes below the existing closed-model bound.
+Concrete checks cover pure values, both inverse equations, pairing, binary
+lifting, ordinary State Arrow values, left-before-right State effects and
+Reader recovery. Model-import probes also check explicit structure enabling.
+The earlier 22 foundation checks overlap this comprehensive batch and are
+not counted as additional distinct checks.
+
+在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。95 项
+综合临时公理检查均无额外全局假设：五个新模块的全部 33 个公共声明、26 项
+宇宙探针及 36 项具体构造／归约。探针分离两个抽象范畴的 Hom／相等层级，
+改变广集适配器的载体／相等次序及计算对象层级，并在已有闭模型界限下分离
+Reader／State 环境大小。具体检查覆盖纯值、两条互逆方程、配对、二元提升、
+通常 State Arrow 的值、从左到右的 State 效应及 Reader 回收。模型导入探针
+也检查选定结构须显式启用。先前 22 项基础检查与本综合批次重叠，不重复计数。
+
+Strict bilingual HTML generated 341 modules per language and checked local
+links and anchors in all 687 pages. All 76 bilingual documentation blocks
+and 66 public declaration anchors across the five new modules were checked
+in the appropriate reading edition. The inventory remains 97 interfaces
+(68 classes, 29 records), including 29 `Has*` classes. Abstract pointwise
+inverse lemmas avoid normalizing large lifted computations; computational
+maps remain transparent, and the existing `AGENTS.md` learning records this
+proof technique. No permanent tests, shared test aliases, shared toolchain
+or `typeprop` updates were introduced. Batch PDF export remains with the
+integration session.
+
+严格双语 HTML 每种语言生成 341 个模块，全部 687 页的本地链接及锚点检查
+通过。五个新模块的全部 76 段双语文档及 66 个公共声明锚点均在对应阅读版
+核对。清单仍为 97 个接口（68 个类、29 个记录），其中 29 个 `Has*` 类。
+抽象的逐点互逆引理避免归约整个大型提升计算，计算映射保持透明；现有
+`AGENTS.md` 学习条目记录此证明技巧。没有新增永久测试、共享测试别名、
+共享工具链变更或 `typeprop` 更新；批次 PDF 仍由集成会话导出。

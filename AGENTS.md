@@ -210,6 +210,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   unfolding can copy entire computations during substitution. Keep any
   proof-only opacity local, restore transparency before exposing clients,
   and verify concrete reductions after import.
+- Expose pointwise inverse laws with an abstract value before applying
+  them to large lifted computations, as in
+  [static_recovery_inv_l](theories/Instance/Set/StaticArrow.v).
+  Apply these lemmas and explicitly instantiated functor laws to the computed
+  values; extracting inverse-witness equations directly can normalize the
+  entire computation. Keep the maps transparent.
 - Pin ambient carrier/equality levels in concrete model transformations as
   well as their underlying functors, as in `StatePureN`. Inferred downstream
   signatures can otherwise identify levels which the functor kept separate;
