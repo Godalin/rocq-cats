@@ -31,7 +31,7 @@ Local Open Scope relation_scope.
 
 Inductive SN@{a r s} {A : Type@{a}} (R : A → A → Type@{r}) (x : A)
   : Type@{s}
-  := | sn_intro : (∀ y, R x y → SN R y) → SN R x.
+  :=| sn_intro : (∀ y, R x y → SN R y) → SN R x.
 
 Arguments sn_intro {_ _ _} _.
 

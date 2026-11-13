@@ -47,16 +47,16 @@ Local Open Scope stlc_tm_scope.
 
 Inductive Ne@{b} {B : Type@{b}}
   : Ctx B → Ty B → Type@{b}
-  := | ne_var {Γ A} : Var Γ A → Ne Γ A
-     | ne_app {Γ A U} : Ne Γ (A ⇒ U) → Nf Γ A → Ne Γ U
-     | ne_fst {Γ A U} : Ne Γ (A × U) → Ne Γ A
-     | ne_snd {Γ A U} : Ne Γ (A × U) → Ne Γ U
+  :=| ne_var {Γ A} : Var Γ A → Ne Γ A
+    | ne_app {Γ A U} : Ne Γ (A ⇒ U) → Nf Γ A → Ne Γ U
+    | ne_fst {Γ A U} : Ne Γ (A × U) → Ne Γ A
+    | ne_snd {Γ A U} : Ne Γ (A × U) → Ne Γ U
 with Nf {B : Type@{b}}
   : Ctx B → Ty B → Type@{b}
-  := | nf_base {Γ b} : Ne Γ (ty_base b) → Nf Γ (ty_base b)
-     | nf_unit {Γ} : Nf Γ ⊤
-     | nf_pair {Γ A U} : Nf Γ A → Nf Γ U → Nf Γ (A × U)
-     | nf_lam {Γ A U} : Nf (Γ ▻ A) U → Nf Γ (A ⇒ U).
+  :=| nf_base {Γ b} : Ne Γ (ty_base b) → Nf Γ (ty_base b)
+    | nf_unit {Γ} : Nf Γ ⊤
+    | nf_pair {Γ A U} : Nf Γ A → Nf Γ U → Nf Γ (A × U)
+    | nf_lam {Γ A U} : Nf (Γ ▻ A) U → Nf Γ (A ⇒ U).
 
 Arguments ne_var {_ _ _} _.
 Arguments ne_app {_ _ _ _} _ _.
