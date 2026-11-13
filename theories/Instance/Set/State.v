@@ -117,7 +117,7 @@ Next Obligation. intros x r. split; reflexivity. Defined.
 
 Program Definition StateJoinN@{r e u p +} (R : SetC@{r e})
   : (StateF@{r e u p _ _ _ _} R ∘F
-      StateF@{r e u p _ _ _ _} R) ⇒ StateF@{r e u p _ _ _ _} R
+      StateF R) ⇒ StateF R
   :=
   {|nt X := state_join R X
   |}.
@@ -172,7 +172,7 @@ Defined.
 Program Definition StateStrengthN@{r e u p +} (R : SetC@{r e})
   : (tensorF SetCartesianMonoidal ∘F
       (IdF ×F StateF@{r e u p _ _ _ _} R)) ⇒
-      (StateF@{r e u p _ _ _ _} R ∘F tensorF SetCartesianMonoidal)
+      (StateF R ∘F tensorF SetCartesianMonoidal)
   :=
   {|nt p := state_strength R (fst p) (snd p)
   |}.

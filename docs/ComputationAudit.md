@@ -1858,3 +1858,48 @@ integration session.
 抽象的逐点互逆引理避免归约整个大型提升计算，计算映射保持透明；现有
 `AGENTS.md` 学习条目记录此证明技巧。没有新增永久测试、共享测试别名、
 共享工具链变更或 `typeprop` 更新；批次 PDF 仍由集成会话导出。
+
+
+## Inferred universe instances in computational models
+
+## 计算模型中由推断确定的宇宙实例
+
+Following the user's readability request, the Reader tensorator, State
+multiplication/strength transformations and setoid Arrow adapter omit
+seven repeated universe instances. Each still fixes its necessary size
+boundary once; functor composition, product functors and transformation
+endpoints infer the other occurrences. General Monad, Applicative and
+computational Arrow theory already uses inferred instances. The remaining
+model annotations preserve independent environment, ambient carrier and
+equality levels, or state the existing closed-model common-level bound.
+No mathematical interface, operation or universe binder order is changed.
+
+按用户的可读性要求，Reader tensorator、State 乘法／强度变换及广集 Arrow
+适配器省略七处重复宇宙实例。每处仍固定一次必要的大小边界，其余出现由函子
+复合、积函子及自然变换端点推断。一般 Monad、Applicative 和计算 Arrow
+理论原已使用推断实例。模型中保留的标注保护环境、所在载体及相等层级的独立性，
+或表达已有闭模型的共用层级界限。数学接口、运算及宇宙绑定次序均未改变。
+
+The unchanged `rocq-cats` switch passed full-library
+`dune build @all @runtest @install`. Twenty-eight temporary probes check all
+Reader/State functor, natural transformation and chosen computational
+structures with both strict environment carrier/equality orders below
+independent ambient levels. The existing 95 Arrow-value/static-recovery
+checks were rerun, including their four independent adapter-level orders
+and transparent Reader/State computations. All 123 assumption reports are
+closed under the global context. A separate temporary probe against the
+committed Reader source confirms that the function-setoid size bound is
+pre-existing, rather than introduced by this simplification. Strict
+bilingual HTML again covers 341 modules per language and 687 checked pages.
+No permanent test, interface, chosen instance, shared toolchain or
+integration-branch update was added.
+
+未改动的 `rocq-cats` switch 通过全库
+`dune build @all @runtest @install`。28 项临时探针检查全部 Reader／State
+函子、自然变换及选定计算结构：环境载体／相等按两种严格次序排列，并低于
+独立的所在层级。另重跑既有 95 项 Arrow 值／静态回收检查，包括四种独立
+适配器层级次序及透明 Reader／State 计算。全部 123 项公理报告均无额外全局
+假设。针对已提交 Reader 源码的独立临时探针确认，函数广集的大小界限原已
+存在，并非此次简化引入。严格双语 HTML 再次覆盖每种语言 341 个模块及
+687 页链接检查。没有新增永久测试、接口、选定实例、共享工具链或集成分支
+更新。

@@ -51,7 +51,7 @@ Defined.
 (** 纯常值计算关于通常保相等映射自然。 *)
 
 Program Definition ArrowValuePureN
-  : @IdF (SetCat@{u p _ _ _ _ _}) ⇒ ArrowGlobalF A
+  : IdF ⇒ ArrowGlobalF A
   :=
   {|nt X := arrow_value_pure X
   |}.
@@ -70,7 +70,7 @@ Defined.
     载体／相等层级与选定所在广集层级对应。 *)
 
 Program Definition ArrowA
-  : Applicative (SetCat@{u p _ _ _ _ _}) SetCat_HasTerminal SetCat_HasProduct
+  : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
   :=
   {|ApplicativeLax := ArrowGlobalLax A
   ; applicative_pure := ArrowValuePureN

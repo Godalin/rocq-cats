@@ -74,8 +74,8 @@ Defined.
 
 Program Definition ReaderTensorN@{r e u p +} (R : SetC@{r e})
   : (tensorF SetCartesianMonoidal ∘F
-      (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF@{r e u p _ _ _ _ _ _ _} R)) ⇒
-      (ReaderF@{r e u p _ _ _ _ _ _ _} R ∘F tensorF SetCartesianMonoidal)
+      (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF R)) ⇒
+      (ReaderF R ∘F tensorF SetCartesianMonoidal)
   :=
   {|nt p := reader_pair R (fst p) (snd p)
   |}.
