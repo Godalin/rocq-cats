@@ -86,14 +86,14 @@ Defined.
 
 Inductive NormalCode (B : Type)
   : Type
-  := | code_var : Ty B → nat → NormalCode B
-     | code_app : Ty B → Ty B → NormalCode B → NormalCode B → NormalCode B
-     | code_fst : Ty B → Ty B → NormalCode B → NormalCode B
-     | code_snd : Ty B → Ty B → NormalCode B → NormalCode B
-     | code_base : B → NormalCode B → NormalCode B
-     | code_unit : NormalCode B
-     | code_pair : Ty B → Ty B → NormalCode B → NormalCode B → NormalCode B
-     | code_lam : Ty B → Ty B → NormalCode B → NormalCode B.
+  :=| code_var : Ty B → nat → NormalCode B
+    | code_app : Ty B → Ty B → NormalCode B → NormalCode B → NormalCode B
+    | code_fst : Ty B → Ty B → NormalCode B → NormalCode B
+    | code_snd : Ty B → Ty B → NormalCode B → NormalCode B
+    | code_base : B → NormalCode B → NormalCode B
+    | code_unit : NormalCode B
+    | code_pair : Ty B → Ty B → NormalCode B → NormalCode B → NormalCode B
+    | code_lam : Ty B → Ty B → NormalCode B → NormalCode B.
 
 Arguments code_var {_} _ _.
 Arguments code_app {_} _ _ _ _.
