@@ -1617,3 +1617,92 @@ than a syntactic equational equivalence.
 最新获取的集成基线仍为 `fee98fc`，只更新任务分支，批次 PDF 仍由集成方导出。
 与导出的 Arrow fanout 直接比较、带类型语法保持／反映、静态／动态表示条件
 留作后续。本阶段证明实际态射上的运算，不主张语法方程等价。
+
+
+## Static cartesian operation comparisons
+
+## 静态笛卡尔运算比较
+
+On task branch `monoidal-cat-view`, following `1f2450c` and based on the
+unchanged integrated baseline `fee98fcff6c656d4dae26425401db7a2bc403b9b`,
+[StaticCartesian](../theories/Cat/Computational/Arrow/StaticCartesian.v)
+compares actual derived first, ordered split and fanout with Applicative
+lifting. For every ordinary input object, fanout lifts the existing inverse
+product-exponential comparison. Split precomposes the two internal
+functions with their respective input projections. Right context is
+conjugated from the original left context by pure exchange, without
+selecting another action.
+
+任务分支 `monoidal-cat-view` 在 `1f2450c` 之后，基于未变的集成基线
+`fee98fcff6c656d4dae26425401db7a2bc403b9b`，增加
+[StaticCartesian](../theories/Cat/Computational/Arrow/StaticCartesian.v)，
+比较实际导出的 first、有序 split 和 fanout 与 Applicative 提升。对每个
+通常输入对象，fanout 提升已有积指数比较的逆；split 按各自输入投影预合成
+两个内部函数。右上下文通过纯交换共轭原左上下文得到，不另选第二个作用。
+
+The ordinary diagrams are reusable in
+[exponential context theory](../theories/Cat/Exponential/Context.v).
+[Exponential laws](../theories/Cat/Exponential/Laws.v) now expose contextual
+application of the product comparison and its coherence with terminal
+argument evaluation. These reuse the existing inverse transpose formula,
+not a second universal-property proof. Products and exponentials suffice
+for the context diagrams; terminal evaluation additionally uses the chosen
+terminal object. Applicative lifting uses the existing contextual laws.
+
+通常图位于可复用的[指数上下文理论](../theories/Cat/Exponential/Context.v)。
+[指数定律](../theories/Cat/Exponential/Laws.v)增加积比较的上下文应用及其与
+终参数求值的相干，复用已有逆转置公式，不重复证明泛性质。上下文图只要求
+积与指数，终参数求值另用选定终对象；Applicative 提升使用已有上下文定律。
+
+At terminal input, the transparent value comparison preserves ordered
+pairing and every binary lifting expressed as fanout followed by a pure
+binary operation. Its inverse reflects those same operations. All
+comparisons use HomEq and retain left-before-right effects, without
+commutativity, strength or Monad assumptions. The work remains categorical
+semantics; following the user's priority, typed syntax is deferred until
+the semantic structures and their correspondence conditions are established.
+
+在终输入处，透明值比较保持有序配对及由 fanout 后接纯二元运算表示的任意
+二元提升，其逆反映同一批运算。所有比较使用 HomEq，保留从左到右的效应，
+不假设交换性、强度或 Monad。本轮继续范畴语义；按用户确定的优先级，带
+类型语法等语义结构及其对应条件建立后再讨论。
+
+The unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
+Dune 3.23.1) passed full `dune build @all @runtest @install`. All 284
+temporary assumption checks were closed under the global context: 102 new
+checks, 91 existing value-comparison checks and 91 static-Arrow/Freyd client
+checks. The new batch covers all 13 public definitions/laws, 52 strict
+signatures (both hom/equality orders with objects strictly below or above
+both), four Reader/State environment-level signatures and 33 concrete
+constructions/reductions. Concrete checks include actual first/split/fanout,
+State execution-order differences, both value comparison directions,
+Reader evaluation and a binary operation discarding its left result while
+retaining that computation's observable state effect. No permanent tests
+or shared test configuration changed.
+
+未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune
+3.23.1）通过全库 `dune build @all @runtest @install`。284 项临时公理检查
+均无额外全局假设：102 项新增检查、91 项已有值比较检查及 91 项静态 Arrow／
+Freyd 客户端检查。新增批次覆盖全部 13 项公共定义／定律、52 项严格签名
+（Hom／相等两种次序，且对象严格低于或高于两者）、四项 Reader／State
+环境层级签名及 33 项具体构造／归约。具体检查包括实际 first／split／
+fanout、State 执行次序差异、值比较的两个方向、Reader 求值，以及丢弃左
+结果的二元运算仍保留其计算的可观察状态效应。没有修改永久测试或共享测试
+配置。
+
+Strict bilingual HTML generated 331 modules per language and checked
+667 pages. All 104 bilingual comment blocks and 98 public anchors in the
+three affected modules were checked against their generated language
+outputs, including generated anchors for Unicode names. The inventory
+still covers all 97 class/record declarations exactly once, including all
+29 `Has*` classes. Only this task branch is updated; `typeprop`, the shared
+toolchain and batch PDF export remain with integration. The remaining
+semantic work concerns reconstruction and precise static/dynamic or
+ArrowApply conditions, without treating syntax as the next required phase.
+
+严格双语 HTML 每种语言生成 331 个模块，检查 667 页。三个受影响模块的
+全部 104 个英中注释块及 98 个公共锚点均对照对应语言输出核验，包括 Unicode
+名称的生成锚点。清单仍恰好覆盖全部 97 个类／记录声明各一次，包括全部
+29 个 `Has*` 类。只更新本任务分支；`typeprop`、共享工具链及批次 PDF
+仍由集成会话管理。剩余语义工作涉及重建及精确的静态／动态或 ArrowApply
+条件，不将语法视为下一必经阶段。

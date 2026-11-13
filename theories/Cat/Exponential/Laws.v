@@ -12,9 +12,16 @@ From Cats Require Export
   Cat.Exponential.Core
   Cat.Exponential.Currying.
 
-(** * Canonical Exponential Isomorphisms *)
+(** * Canonical Exponential Isomorphisms
 
-(** * 规范指数同构 *)
+    Fix selected binary products and exponentials. Construct canonical
+    comparison isomorphisms and their evaluation diagrams; a selected
+    terminal object is added only for the terminal and unit comparisons. *)
+
+(** * 规范指数同构
+
+    固定选定二元积与指数，构造规范比较同构及其求值图；仅在终对象及单位比较
+    处增加选定终对象。 *)
 
 Section ExponentialProducts.
 Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
@@ -88,6 +95,25 @@ Proof.
     (π1 : Hom ((X ^ A) × (Y ^ A)) (X ^ A)) π2) as H.
   rewrite product_pair_η, comp_id_r in H.
   rewrite H, exponential_β. reflexivity.
+Qed.
+
+(** The inverse product-exponential comparison evaluates both internal
+    functions at the same contextual argument, with the original chosen
+    products and exponentials. *)
+
+(** 积指数比较的逆在同一个上下文参数处求值两个内部函数，使用原有选定积与指数。 *)
+
+Lemma exponential_product_app {W X Y Z : @Ob C}
+    (u : Hom W ((Y ^ X) × (Z ^ X))) (a : Hom W X)
+  : app ((exponential_product_iso X Y Z).2.1 ∘ u) a ≈
+      ⟨app (π1 ∘ u) a, app (π2 ∘ u) a⟩.
+Proof.
+  pose proof (exponential_product_inv_curry (π1 ∘ u) (π2 ∘ u)) as H.
+  rewrite <- product_comp_r, product_pair_η, comp_id_l in H.
+  rewrite H, exponential_app_β. unfold uncurry, app.
+  repeat first [rewrite comp_assoc | rewrite product_comp_r |
+    rewrite product_comp_l | rewrite cross_η | rewrite product_β1 |
+    rewrite product_β2 | rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
 Qed.
 
 (** The product comparison is natural in both result factors. *)
@@ -165,6 +191,26 @@ Lemma exponential_unit_eval_curry {Y Z : @Ob C} (f : Hom (Z × 1) Y)
 Proof.
   unfold exponential_unit_eval. rewrite exponential_app_comp, comp_id_l.
   rewrite (term_η (! ∘ (ƛ f))). apply exponential_app_β.
+Qed.
+
+(** Terminal-argument evaluation commutes with the selected internal pairing
+    comparison. This is the product coherence needed to compare global values. *)
+
+(** 终参数求值与选定内部配对比较交换，给出全局值比较所需的积相干。 *)
+
+Lemma exponential_unit_product (Y Z : @Ob C)
+  : exponential_unit_eval (Y × Z) ∘
+      (exponential_product_iso 1 Y Z).2.1 ≈
+      exponential_unit_eval Y × exponential_unit_eval Z.
+Proof.
+  unfold exponential_unit_eval.
+  rewrite exponential_app_comp, comp_id_l, term_comp_l.
+  rewrite <- (comp_id_r (exponential_product_iso 1 Y Z).2.1) at 1.
+  rewrite exponential_product_app.
+  repeat first [rewrite comp_assoc | rewrite exponential_app_comp |
+    rewrite cross_η | rewrite product_β1 | rewrite product_β2 |
+    rewrite comp_id_l | rewrite comp_id_r | rewrite term_comp_l].
+  reflexivity.
 Qed.
 
 (** Exponentiation by the terminal object is isomorphic to the result object.

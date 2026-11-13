@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 330 modules,
+covers 331 modules,
 68 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 330 个模块、68 个类及 29 个记录。清单覆盖
+更新，现覆盖 331 个模块、68 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -1471,11 +1471,56 @@ exponentials; terminal evaluation additionally needs the selected terminal.
 These results compare actual arrows and their specified equality. They do
 not infer an arbitrary functor or its law records from global elements, or
 establish a typed syntax equivalence. No well-pointedness, strength, monad
-or effect commutativity is required. Direct comparison with the derived
-Arrow fanout and syntax-level representation remain separate follow-ups.
-The current inventory covers 330 modules and the same 97 interfaces.
+or effect commutativity is required. At that delivery, direct comparison with derived
+Arrow fanout was still pending; it is completed below. The inventory then
+covered 330 modules and the same 97 interfaces. Syntax is deferred until
+the categorical semantics and its correspondences are established.
 
 这些结果比较实际态射及其指定相等，不从全局元素推断任意函子或其定律记录，
-也尚未建立带类型语法等价。不要求良点性、强度、Monad 或效应交换性。与导出
-的 Arrow fanout 直接比较以及语法层表示留作后续步骤。当前清单覆盖 330 个
-模块及原有 97 个接口。
+也尚未建立带类型语法等价。不要求良点性、强度、Monad 或效应交换性。该次交付时，与导出
+的 Arrow fanout 直接比较仍待完成，现已由下述批次完成。当时清单覆盖 330 个
+模块及原有 97 个接口。语法层等范畴语义及对应关系建立后再讨论。
+
+
+## Static Arrow fanout and binary lifting
+
+## 静态 Arrow fanout 与二元提升
+
+[StaticCartesian](../theories/Cat/Computational/Arrow/StaticCartesian.v)
+compares the actual derived `first`, ordered `split` and `fanout` operations
+with Applicative lifting. The internal function pairing is the existing
+inverse product-exponential comparison, not another selected product or
+independently proved universal property. Ordinary
+[context diagrams](../theories/Cat/Exponential/Context.v) establish the
+comparison before introducing effects. Right context is derived by pure
+exchange from the original left context; no second action is selected.
+
+[StaticCartesian](../theories/Cat/Computational/Arrow/StaticCartesian.v)
+比较实际导出的 `first`、有序 `split` 及 `fanout` 与 Applicative 提升。内部
+函数配对复用已有积指数比较的逆，不另选积或重新证明泛性质。通常
+[上下文图](../theories/Cat/Exponential/Context.v)先于效应建立比较；右上下文
+由原左上下文经纯交换导出，不另选第二个作用。
+
+At terminal input, evaluation preserves ordered Applicative pairing and
+pure postcomposition recovers every binary lifting. The inverse value map
+reflects these same operations as actual Arrow fanout followed by the pure
+binary operation. Hom equality and left-before-right effects are retained;
+no interchange or monad is assumed. Generic diagrams need only products
+and exponentials, with a terminal object added for unit evaluation.
+
+在终输入处，求值保持有序 Applicative 配对，纯后合成恢复每个二元提升。
+逆值映射将这些运算反映为实际 Arrow fanout 及其后的纯二元运算。保留 Hom
+相等及从左到右的效应，不假设交换律或 Monad。一般图只要求积与指数，在
+单位求值处另加终对象。
+
+The current inventory covers 331 modules and the unchanged 97 interfaces
+(68 classes, 29 records), including all 29 `Has*` classes. Work continues
+with categorical semantic structures and their correspondence conditions;
+typed syntax is deferred until that semantic development is established.
+The [audit](./ComputationAudit.md#static-cartesian-operation-comparisons)
+records validation and the exact delivered comparison level.
+
+当前清单覆盖 331 个模块及原有 97 个接口（68 个类、29 个记录），包括全部
+29 个 `Has*` 类。后续继续范畴语义结构及其对应条件，待语义发展建立后再
+讨论带类型语法。[审计](./ComputationAudit.md#static-cartesian-operation-comparisons)
+记录验证及本次交付的精确比较层次。

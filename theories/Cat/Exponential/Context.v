@@ -71,8 +71,34 @@ Proof.
   reflexivity.
 Qed.
 
+(** Carry context on the right by conjugating the original left-context
+    action with ordinary product exchange. No second action is chosen. *)
+
+(** 用通常积交换共轭原左上下文作用，得到右上下文；不另选第二个作用。 *)
+
+Definition internal_context_right (Z X Y : @Ob C)
+  : Hom (Y ^ X) ((Y × Z) ^ (X × Z))
+  := exponential_dimap ⟨π2, π1⟩ ⟨π2, π1⟩ ∘ internal_context Z X Y.
+
+(** Right context remains unchanged while the first factor is evaluated. *)
+
+(** 求值第一因子时，右上下文保持不变。 *)
+
+Lemma internal_context_right_app {W X Y : @Ob C} (Z : @Ob C)
+    (f : Hom W (Y ^ X)) (a : Hom W (X × Z))
+  : app (internal_context_right Z X Y ∘ f) a ≈
+      ⟨app f (π1 ∘ a), π2 ∘ a⟩.
+Proof.
+  unfold internal_context_right. rewrite comp_assoc, exponential_app_dimap,
+    internal_context_app.
+  repeat first [rewrite comp_assoc | rewrite product_comp_r |
+    rewrite product_comp_l | rewrite product_β1 | rewrite product_β2 |
+    rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
+Qed.
+
 Local Ltac context_simpl :=
-  repeat first [rewrite comp_assoc | rewrite internal_context_app |
+  repeat first [rewrite comp_assoc | rewrite internal_context_right_app |
+    rewrite internal_context_app |
     rewrite internal_then_app | rewrite exponential_app_dimap |
     rewrite exponential_app_comp | rewrite product_comp_r |
     rewrite cross_η | rewrite product_β1 | rewrite product_β2 |
@@ -134,6 +160,39 @@ Proof.
     rewrite product_comp_r | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r].
   rewrite product_pair_η, comp_id_r. reflexivity.
+Qed.
+
+(** Sequential right- then left-context extension splits two independent
+    inputs. The comparison reuses the inverse product-exponential isomorphism
+    after precomposing the two internal functions by their projections. *)
+
+(** 依次作右、左上下文扩展，分别作用于两个独立输入。比较复用积指数同构的逆，
+    先将两个内部函数按各自投影预合成。 *)
+
+Lemma internal_context_split (X Y X' Y' : @Ob C)
+  : internal_then (X × X') (Y × X') (Y × Y') ∘
+      (internal_context_right X' X Y × internal_context Y X' Y') ≈
+      (exponential_product_iso (X × X') Y Y').2.1 ∘
+        (exponential_dimap π1 id × exponential_dimap π2 id).
+Proof.
+  apply exponential_ext. rewrite !exponential_uncurry_app, !comp_assoc,
+    exponential_product_app.
+  context_simpl. reflexivity.
+Qed.
+
+(** Copying a shared input after sequential context extension is precisely
+    the existing internal pairing comparison. This diagram assumes no effects. *)
+
+(** 顺序扩展上下文后复制共同输入，恰好得到已有内部配对比较。此图不涉及效应。 *)
+
+Lemma internal_context_fanout (X Y Z : @Ob C)
+  : exponential_dimap ⟨id, id⟩ id ∘
+      internal_then (X × X) (Y × X) (Y × Z) ∘
+      (internal_context_right X X Y × internal_context Y X Z) ≈
+      (exponential_product_iso X Y Z).2.1.
+Proof.
+  apply exponential_ext. rewrite !exponential_uncurry_app.
+  rewrite exponential_product_app. context_simpl. reflexivity.
 Qed.
 
 Context `{HT : !HasTerminal C}.
