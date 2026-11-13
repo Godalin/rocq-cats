@@ -1706,3 +1706,38 @@ ArrowApply conditions, without treating syntax as the next required phase.
 29 个 `Has*` 类。只更新本任务分支；`typeprop`、共享工具链及批次 PDF
 仍由集成会话管理。剩余语义工作涉及重建及精确的静态／动态或 ArrowApply
 条件，不将语法视为下一必经阶段。
+
+
+## Revalidation on the advanced integration baseline
+
+## 在前进后的集成基线上复验
+
+The final handoff check found that local `typeprop` had advanced to
+`89580d6ee75110d30fc4a82d6c60fb44f28aabc1`, while the fetched remote still
+reported `fee98fc`. The task branch was rebased without conflicts onto that
+local integrated baseline. The fanout mathematics is now `3c971d7`
+(formerly `bc077f1`); all three affected theory modules are byte-identical
+to their pre-rebase versions. This updates the preceding handoff baseline
+without extending the mathematical scope or changing the integration branch.
+
+最终交接检查发现本地 `typeprop` 已推进到
+`89580d6ee75110d30fc4a82d6c60fb44f28aabc1`，获取的远端当时仍为 `fee98fc`。
+任务分支已无冲突重基到这个本地集成基线。fanout 数学提交现为 `3c971d7`
+（原 `bc077f1`），三个受影响理论模块与重基前逐字节一致。本条更新上一轮
+交接基线，不扩大数学范围，也不修改集成分支。
+
+On `89580d6`, full `dune build @all @runtest @install` and all 284 temporary
+assumption checks were rerun successfully (102 new interfaces/clients,
+91 value comparisons, 91 static-Arrow/Freyd checks). Strict bilingual HTML
+now covers 336 modules per language and checks 677 pages, including the
+five modules added by integration. The same 104 bilingual comment blocks
+and 98 public anchors were checked again; the exact inventory remains
+97 interfaces. The unchanged project switch and explicit model selection
+were retained. Batch PDFs remain with integration; syntax remains deferred.
+
+在 `89580d6` 上，全库 `dune build @all @runtest @install` 及全部 284 项
+临时公理检查均重跑通过（102 项新增接口／客户端、91 项值比较、91 项静态
+Arrow／Freyd 检查）。严格双语 HTML 现每种语言覆盖 336 个模块、检查 677 页，
+包含集成新增的五个模块。同样的 104 个英中注释块及 98 个公共锚点再次核验，
+精确清单仍为 97 个接口。保留未改动的项目 switch 及显式模型选择。批次 PDF
+仍由集成方导出，语法仍暂缓。
