@@ -88,10 +88,10 @@ Delimit Scope stlc_tm_scope with stm.
 
 Inductive Ty (B : Type)
   : Type
-  := | ty_base : B → Ty B
-     | ty_unit : Ty B
-     | ty_prod : Ty B → Ty B → Ty B
-     | ty_arr : Ty B → Ty B → Ty B.
+  :=| ty_base : B → Ty B
+    | ty_unit : Ty B
+    | ty_prod : Ty B → Ty B → Ty B
+    | ty_arr : Ty B → Ty B → Ty B.
 
 Arguments ty_base {_} _.
 Arguments ty_unit {_}.
@@ -108,8 +108,8 @@ Infix "⇒" := ty_arr (at level 50, no associativity) : stlc_ty_scope.
 
 Inductive Ctx (B : Type)
   : Type
-  := | ctx_empty : Ctx B
-     | ctx_snoc : Ctx B → Ty B → Ctx B.
+  :=| ctx_empty : Ctx B
+    | ctx_snoc : Ctx B → Ty B → Ctx B.
 
 Arguments ctx_empty {_}.
 Arguments ctx_snoc {_} _ _.
@@ -125,7 +125,7 @@ Local Open Scope stlc_ctx_scope.
 
 Inductive NewVar {B : Type} (A : Ty B)
   : Ty B → Set
-  := | new_var : NewVar A A.
+  :=| new_var : NewVar A A.
 
 Arguments new_var {_ _}.
 
@@ -170,13 +170,13 @@ Notation "'↑v' x" := (var_succ x) (at level 35) : stlc_var_scope.
 
 Inductive Tm {B : Type}
   : Ctx B → Ty B → Type
-  := | tm_var {Γ A} : Var Γ A → Tm Γ A
-     | tm_unit {Γ} : Tm Γ ty_unit
-     | tm_pair {Γ A U} : Tm Γ A → Tm Γ U → Tm Γ (ty_prod A U)
-     | tm_fst {Γ A U} : Tm Γ (ty_prod A U) → Tm Γ A
-     | tm_snd {Γ A U} : Tm Γ (ty_prod A U) → Tm Γ U
-     | tm_lam {Γ A U} : Tm (Γ ▻ A) U → Tm Γ (ty_arr A U)
-     | tm_app {Γ A U} : Tm Γ (ty_arr A U) → Tm Γ A → Tm Γ U.
+  :=| tm_var {Γ A} : Var Γ A → Tm Γ A
+    | tm_unit {Γ} : Tm Γ ty_unit
+    | tm_pair {Γ A U} : Tm Γ A → Tm Γ U → Tm Γ (ty_prod A U)
+    | tm_fst {Γ A U} : Tm Γ (ty_prod A U) → Tm Γ A
+    | tm_snd {Γ A U} : Tm Γ (ty_prod A U) → Tm Γ U
+    | tm_lam {Γ A U} : Tm (Γ ▻ A) U → Tm Γ (ty_arr A U)
+    | tm_app {Γ A U} : Tm Γ (ty_arr A U) → Tm Γ A → Tm Γ U.
 
 Arguments tm_var {_ _ _} _.
 Arguments tm_unit {_ _}.

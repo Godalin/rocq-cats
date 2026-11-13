@@ -167,17 +167,17 @@ Defined.
 Inductive EquationalClosure {I : Type} {A : I → Type}
     (K : ContextSystem A) (R : RelationFamily A)
   : RelationFamily A
-  := | equation_step {i} {x y : A i}
-         : R i x y → EquationalClosure K R i x y
-     | equation_refl {i} (x : A i) : EquationalClosure K R i x x
-     | equation_sym {i} {x y : A i}
-         : EquationalClosure K R i x y → EquationalClosure K R i y x
-     | equation_trans {i} {x y z : A i}
-         : EquationalClosure K R i x y → EquationalClosure K R i y z →
-           EquationalClosure K R i x z
-     | equation_context {i j} (c : context_operation K i j) {x y : A i}
-         : EquationalClosure K R i x y →
-           EquationalClosure K R j (K i j c x) (K i j c y).
+  :=| equation_step {i} {x y : A i}
+        : R i x y → EquationalClosure K R i x y
+    | equation_refl {i} (x : A i) : EquationalClosure K R i x x
+    | equation_sym {i} {x y : A i}
+        : EquationalClosure K R i x y → EquationalClosure K R i y x
+    | equation_trans {i} {x y z : A i}
+        : EquationalClosure K R i x y → EquationalClosure K R i y z →
+          EquationalClosure K R i x z
+    | equation_context {i j} (c : context_operation K i j) {x y : A i}
+        : EquationalClosure K R i x y →
+          EquationalClosure K R j (K i j c x) (K i j c y).
 
 Arguments equation_step {_ _ _ _ _ _ _} _.
 Arguments equation_refl {_ _ _ _ _} _.

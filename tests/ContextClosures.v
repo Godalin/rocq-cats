@@ -100,7 +100,7 @@ Section IndexedComputations.
 
 Inductive ValueSort
   : Type
-  := | scalar | tuple.
+  :=| scalar | tuple.
 
 Definition Values (i : ValueSort)
   : Type
@@ -108,8 +108,8 @@ Definition Values (i : ValueSort)
 
 Inductive PairOperation
   : ValueSort → ValueSort → Type
-  := | pair_left (n : nat) : PairOperation scalar tuple
-     | pair_right (n : nat) : PairOperation scalar tuple.
+  :=| pair_left (n : nat) : PairOperation scalar tuple
+    | pair_right (n : nat) : PairOperation scalar tuple.
 
 Program Definition PairContexts
   : ContextSystem Values
@@ -129,7 +129,7 @@ Program Definition PairContexts
 
 Inductive Increment
   : RelationFamily Values
-  := | increment (n w : nat) : Increment scalar n (S n).
+  :=| increment (n w : nat) : Increment scalar n (S n).
 
 Definition increment_weight {i} {x y : Values i} (p : Increment i x y)
   : nat

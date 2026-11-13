@@ -53,6 +53,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   with `{ ... }` or `{| ... |}` starts on the next line.
   For `{| ... |}` literals, place the first field immediately after `{|`;
   align each following `;` and the closing `|}` with the opening `{`.
+  In `Inductive` and `CoInductive` declarations with an initial constructor
+  bar, write `:=| Constructor`: no space before that first `|`, one space
+  after it. Use ordinary `| Constructor` syntax for subsequent branches,
+  aligning their bars with the first bar in the source.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
   Prefer existing public mathematical notation throughout declarations,
   construction bodies and proofs; use underlying names and explicit arguments

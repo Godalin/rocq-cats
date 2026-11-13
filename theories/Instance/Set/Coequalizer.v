@@ -17,8 +17,8 @@ From Cats.Set Require Export
 
 Inductive CoeqRel {X Y : SetC} (f g : X →r Y)
   : crelation Y
-  := | coeq_rel_equiv {y y' : Y} : y ≈S y' → CoeqRel f g y y'
-     | coeq_rel_pair (x : X) : CoeqRel f g (f x) (g x).
+  :=| coeq_rel_equiv {y y' : Y} : y ≈S y' → CoeqRel f g y y'
+    | coeq_rel_pair (x : X) : CoeqRel f g (f x) (g x).
 
 Arguments coeq_rel_equiv {_ _ _ _ _ _} _.
 Arguments coeq_rel_pair {_ _} _ _ _.

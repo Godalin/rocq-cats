@@ -84,9 +84,9 @@ Definition sym_closure_universal {A : Type} (R S : crelation A)
 Inductive ReflTransClosure@{a r p} {A : Type@{a}}
     (R : A → A → Type@{r})
   : A → A → Type@{p}
-  := | rtc_refl (x : A) : ReflTransClosure R x x
-     | rtc_cons {x y z : A}
-         : R x y → ReflTransClosure R y z → ReflTransClosure R x z.
+  :=| rtc_refl (x : A) : ReflTransClosure R x x
+    | rtc_cons {x y z : A}
+        : R x y → ReflTransClosure R y z → ReflTransClosure R x z.
 
 Arguments rtc_refl {_ _} _.
 Arguments rtc_cons {_ _ _ _ _} _ _.

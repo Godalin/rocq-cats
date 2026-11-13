@@ -48,6 +48,14 @@
   {\par\endgroup\medskip}
 \renewcommand{\coqdocemptyline}{\par\smallskip}
 \renewcommand{\coqdoceol}{\par}
+% Coqdoc represents each source space as .5em; use the code font's space.
+% coqdoc 用 .5em 表示每个源码空格；原生缩进改用代码字体的实际空格宽度。
+\ExplSyntaxOn
+\renewcommand{\coqdocindent}[1]{%
+  \noindent\kern\coqdocbaseindent\noindent\kern
+  \fp_to_dim:n {\dim_to_fp:n {#1}
+    * \dim_ratio:nn {\fontdimen2\font} {.5em}}}
+\ExplSyntaxOff
 \renewcommand{\coqdocmod}[1]{\textsf{#1}}
 \renewcommand{\coqdef}[3]{\hypertarget{coq:#1}{#3}}
 \renewcommand{\coqref}[2]{\hyperlink{coq:#1}{#2}}

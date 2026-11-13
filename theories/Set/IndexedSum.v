@@ -12,8 +12,8 @@ From Cats.Set Require Export
 
 Inductive IndexedSumRel {I : Type} (D : I → SetC)
   : crelation (∃ i, D i)
-  := | indexed_sum_rel (i : I) {x y : D i}
-         : x ≈S y → IndexedSumRel D (i; x) (i; y).
+  :=| indexed_sum_rel (i : I) {x y : D i}
+        : x ≈S y → IndexedSumRel D (i; x) (i; y).
 
 Arguments indexed_sum_rel {_ _} _ {_ _} _.
 

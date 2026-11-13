@@ -12,12 +12,12 @@ From Cats.Set Require Export
 
 Inductive EquivClosure {A : Type} (R : crelation A)
   : crelation A
-  := | closure_refl (x : A) : EquivClosure R x x
-     | closure_step {x y : A} : R x y → EquivClosure R x y
-     | closure_sym {x y : A}
-         : EquivClosure R x y → EquivClosure R y x
-     | closure_trans {x y z : A}
-         : EquivClosure R x y → EquivClosure R y z → EquivClosure R x z.
+  :=| closure_refl (x : A) : EquivClosure R x x
+    | closure_step {x y : A} : R x y → EquivClosure R x y
+    | closure_sym {x y : A}
+        : EquivClosure R x y → EquivClosure R y x
+    | closure_trans {x y z : A}
+        : EquivClosure R x y → EquivClosure R y z → EquivClosure R x z.
 
 Arguments closure_refl {_ _} _.
 Arguments closure_step {_ _ _ _} _.

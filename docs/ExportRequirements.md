@@ -60,6 +60,26 @@ the approved typography and code frames.
   translations or documentation boundaries. Keep nonempty rows' indentation
   and at most one intentional blank row between them; omit empty code frames.
 
+## Constructor bars
+
+For `Inductive` and `CoInductive` constructor lists with an initial `|`, write
+`:=| Constructor`: omit the space between `:=` and the first bar, then put one
+space after the bar. Use ordinary `| Constructor` syntax for subsequent
+branches and align their bars with the first bar in the source. This is a
+source-format exception to the ordinary space after
+`:=`; export it through native coqdoc without a renderer-specific replacement.
+
+```coq
+Inductive ConstructorExample
+  : Type
+  :=| example_first
+    | example_second.
+```
+
+PDF code indentation must use the actual space width of its current code font.
+Use the native coqdoc indentation command to convert its half-em units to source
+spaces, preserving source columns instead of adding constructor-specific padding.
+
 ## Section openings
 
 - Introduce every Rocq `Section` with a reader-facing coqdoc heading or opening

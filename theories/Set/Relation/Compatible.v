@@ -71,11 +71,11 @@ Definition is_compatible {I : Type} {A : I → Type}
 Inductive ContextClosure {I : Type} {A : I → Type}
     (K : ContextSystem A) (R : RelationFamily A)
   : RelationFamily A
-  := | context_step {i} {x y : A i}
-         : R i x y → ContextClosure K R i x y
-     | context_lift {i j} (c : context_operation K i j) {x y : A i}
-         : ContextClosure K R i x y →
-           ContextClosure K R j (K i j c x) (K i j c y).
+  :=| context_step {i} {x y : A i}
+        : R i x y → ContextClosure K R i x y
+    | context_lift {i j} (c : context_operation K i j) {x y : A i}
+        : ContextClosure K R i x y →
+          ContextClosure K R j (K i j c x) (K i j c y).
 
 Arguments context_step {_ _ _ _ _ _ _} _.
 Arguments context_lift {_ _ _ _ _ _} _ {_ _} _.

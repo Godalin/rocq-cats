@@ -90,17 +90,17 @@ Definition tm_relation_family {B : Type} (R : TmRelation B)
 
 Inductive TmOperation@{b} {B : Type@{b}}
   : TmIndex B → TmIndex B → Type@{b}
-  := | op_pair_l {Γ A U} (u : Tm Γ U)
-         : TmOperation (Γ, A) (Γ, A × U)
-     | op_pair_r {Γ A U} (t : Tm Γ A)
-         : TmOperation (Γ, U) (Γ, A × U)
-     | op_fst {Γ A U} : TmOperation (Γ, A × U) (Γ, A)
-     | op_snd {Γ A U} : TmOperation (Γ, A × U) (Γ, U)
-     | op_lam {Γ A U} : TmOperation (Γ ▻ A, U) (Γ, A ⇒ U)
-     | op_app_l {Γ A U} (u : Tm Γ A)
-         : TmOperation (Γ, A ⇒ U) (Γ, U)
-     | op_app_r {Γ A U} (t : Tm Γ (A ⇒ U))
-         : TmOperation (Γ, A) (Γ, U).
+  :=| op_pair_l {Γ A U} (u : Tm Γ U)
+        : TmOperation (Γ, A) (Γ, A × U)
+    | op_pair_r {Γ A U} (t : Tm Γ A)
+        : TmOperation (Γ, U) (Γ, A × U)
+    | op_fst {Γ A U} : TmOperation (Γ, A × U) (Γ, A)
+    | op_snd {Γ A U} : TmOperation (Γ, A × U) (Γ, U)
+    | op_lam {Γ A U} : TmOperation (Γ ▻ A, U) (Γ, A ⇒ U)
+    | op_app_l {Γ A U} (u : Tm Γ A)
+        : TmOperation (Γ, A ⇒ U) (Γ, U)
+    | op_app_r {Γ A U} (t : Tm Γ (A ⇒ U))
+        : TmOperation (Γ, A) (Γ, U).
 
 Arguments op_pair_l {_ _ _ _} _.
 Arguments op_pair_r {_ _ _ _} _.
@@ -138,12 +138,12 @@ Program Definition TmContexts@{b} (B : Type@{b})
 
 Inductive RootBeta@{b e +} {B : Type@{b}}
   : ∀ {Γ : Ctx B} {A : Ty B}, Tm Γ A → Tm Γ A → Type@{e}
-  := | root_beta_function {Γ A U} (t : Tm (Γ ▻ A) U) (u : Tm Γ A)
-         : RootBeta ((ƛ t) · u) t[u/]
-     | root_beta_fst {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
-         : RootBeta (π₁ ⟨t, u⟩) t
-     | root_beta_snd {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
-         : RootBeta (π₂ ⟨t, u⟩) u.
+  :=| root_beta_function {Γ A U} (t : Tm (Γ ▻ A) U) (u : Tm Γ A)
+        : RootBeta ((ƛ t) · u) t[u/]
+    | root_beta_fst {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
+        : RootBeta (π₁ ⟨t, u⟩) t
+    | root_beta_snd {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
+        : RootBeta (π₂ ⟨t, u⟩) u.
 
 (** Root eta points toward expansion, opposite to the orientation of the
     existing equational eta constructors. No termination is assumed. *)
@@ -152,10 +152,10 @@ Inductive RootBeta@{b e +} {B : Type@{b}}
 
 Inductive RootEtaExpand@{b e +} {B : Type@{b}}
   : ∀ {Γ : Ctx B} {A : Ty B}, Tm Γ A → Tm Γ A → Type@{e}
-  := | root_eta_function {Γ A U} (f : Tm Γ (A ⇒ U))
-         : RootEtaExpand f (ƛ ((f⟨wkRen⟩) · (# var_zero)))
-     | root_eta_product {Γ A U} (p : Tm Γ (A × U))
-         : RootEtaExpand p (⟨π₁ p, π₂ p⟩).
+  :=| root_eta_function {Γ A U} (f : Tm Γ (A ⇒ U))
+        : RootEtaExpand f (ƛ ((f⟨wkRen⟩) · (# var_zero)))
+    | root_eta_product {Γ A U} (p : Tm Γ (A × U))
+        : RootEtaExpand p (⟨π₁ p, π₂ p⟩).
 
 (** Keep the unit rule separate: its self-loop must not be included in an
     unconditional strong-normalization statement. *)
@@ -164,7 +164,7 @@ Inductive RootEtaExpand@{b e +} {B : Type@{b}}
 
 Inductive RootUnitEta@{b e +} {B : Type@{b}}
   : ∀ {Γ : Ctx B} {A : Ty B}, Tm Γ A → Tm Γ A → Type@{e}
-  := | root_unit_eta {Γ} (t : Tm Γ ⊤) : RootUnitEta t ⋆.
+  :=| root_unit_eta {Γ} (t : Tm Γ ⊤) : RootUnitEta t ⋆.
 
 (** The three primitive alternatives retain their branch tags. *)
 

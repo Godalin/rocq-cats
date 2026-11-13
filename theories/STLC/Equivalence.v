@@ -80,31 +80,31 @@ Local Open Scope stlc_sub_scope.
 
 Inductive TmEq@{b e +} {B : Type@{b}}
   : ∀ {Γ : Ctx B} {A : Ty B}, Tm Γ A → Tm Γ A → Type@{e}
-  := | tm_eq_refl {Γ A} (t : Tm Γ A) : TmEq t t
-     | tm_eq_sym {Γ A} {t u : Tm Γ A} : TmEq t u → TmEq u t
-     | tm_eq_trans {Γ A} {t u v : Tm Γ A}
-         : TmEq t u → TmEq u v → TmEq t v
-     | tm_eq_pair {Γ A U} {t t' : Tm Γ A} {u u' : Tm Γ U}
-         : TmEq t t' → TmEq u u' → TmEq (⟨t, u⟩) (⟨t', u'⟩)
-     | tm_eq_fst {Γ A U} {t u : Tm Γ (A × U)}
-         : TmEq t u → TmEq (π₁ t) (π₁ u)
-     | tm_eq_snd {Γ A U} {t u : Tm Γ (A × U)}
-         : TmEq t u → TmEq (π₂ t) (π₂ u)
-     | tm_eq_lam {Γ A U} {t u : Tm (Γ ▻ A) U}
-         : TmEq t u → TmEq (ƛ t) (ƛ u)
-     | tm_eq_app {Γ A U} {t t' : Tm Γ (A ⇒ U)} {u u' : Tm Γ A}
-         : TmEq t t' → TmEq u u' → TmEq (t · u) (t' · u')
-     | tm_eq_unit_η {Γ} (t : Tm Γ ⊤) : TmEq t ⋆
-     | tm_eq_product_β1 {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
-         : TmEq (π₁ ⟨t, u⟩) t
-     | tm_eq_product_β2 {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
-         : TmEq (π₂ ⟨t, u⟩) u
-     | tm_eq_product_η {Γ A U} (t : Tm Γ (A × U))
-         : TmEq (⟨π₁ t, π₂ t⟩) t
-     | tm_eq_function_β {Γ A U} (t : Tm (Γ ▻ A) U) (u : Tm Γ A)
-         : TmEq ((ƛ t) · u) t[u/]
-     | tm_eq_function_η {Γ A U} (t : Tm Γ (A ⇒ U))
-         : TmEq (ƛ (t⟨wkRen⟩ · # var_zero)) t.
+  :=| tm_eq_refl {Γ A} (t : Tm Γ A) : TmEq t t
+    | tm_eq_sym {Γ A} {t u : Tm Γ A} : TmEq t u → TmEq u t
+    | tm_eq_trans {Γ A} {t u v : Tm Γ A}
+        : TmEq t u → TmEq u v → TmEq t v
+    | tm_eq_pair {Γ A U} {t t' : Tm Γ A} {u u' : Tm Γ U}
+        : TmEq t t' → TmEq u u' → TmEq (⟨t, u⟩) (⟨t', u'⟩)
+    | tm_eq_fst {Γ A U} {t u : Tm Γ (A × U)}
+        : TmEq t u → TmEq (π₁ t) (π₁ u)
+    | tm_eq_snd {Γ A U} {t u : Tm Γ (A × U)}
+        : TmEq t u → TmEq (π₂ t) (π₂ u)
+    | tm_eq_lam {Γ A U} {t u : Tm (Γ ▻ A) U}
+        : TmEq t u → TmEq (ƛ t) (ƛ u)
+    | tm_eq_app {Γ A U} {t t' : Tm Γ (A ⇒ U)} {u u' : Tm Γ A}
+        : TmEq t t' → TmEq u u' → TmEq (t · u) (t' · u')
+    | tm_eq_unit_η {Γ} (t : Tm Γ ⊤) : TmEq t ⋆
+    | tm_eq_product_β1 {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
+        : TmEq (π₁ ⟨t, u⟩) t
+    | tm_eq_product_β2 {Γ A U} (t : Tm Γ A) (u : Tm Γ U)
+        : TmEq (π₂ ⟨t, u⟩) u
+    | tm_eq_product_η {Γ A U} (t : Tm Γ (A × U))
+        : TmEq (⟨π₁ t, π₂ t⟩) t
+    | tm_eq_function_β {Γ A U} (t : Tm (Γ ▻ A) U) (u : Tm Γ A)
+        : TmEq ((ƛ t) · u) t[u/]
+    | tm_eq_function_η {Γ A U} (t : Tm Γ (A ⇒ U))
+        : TmEq (ƛ (t⟨wkRen⟩ · # var_zero)) t.
 
 Infix "≈βη" := TmEq (at level 50, no associativity) : stlc_tm_scope.
 

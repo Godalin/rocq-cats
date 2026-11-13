@@ -31,6 +31,16 @@ Section 开场使用原生双语 coqdoc 标题或引言，说明局部假设及�
 定律；两种后端均在该段环境声明之前保留开场，遵循
 [Section 开场要求](./ExportRequirements.md#section-openings)。
 
+PDF uses the native `\coqdocindent` command to convert coqdoc's half-em source
+indentation units to the current code font's actual space width. Constructor
+bars follow the [shared source convention](./ExportRequirements.md#constructor-bars),
+so source columns agree with native HTML and PDF output.
+
+PDF 通过原生 `\coqdocindent` 命令，将 coqdoc 的半 em 源码缩进单位转换为
+当前代码字体的实际空格宽度。构造子竖线遵循
+[统一源码约定](./ExportRequirements.md#constructor-bars)，使源码列位置与原生
+HTML、PDF 输出一致。
+
 ## Full-library export / 全库导出
 
 Run from the repository root in the initialized project environment:
