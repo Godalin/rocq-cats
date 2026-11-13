@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 336 modules,
+covers 339 modules,
 68 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 336 个模块、68 个类及 29 个记录。清单覆盖
+更新，现覆盖 339 个模块、68 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -1513,14 +1513,43 @@ and exponentials, with a terminal object added for unit evaluation.
 相等及从左到右的效应，不假设交换律或 Monad。一般图只要求积与指数，在
 单位求值处另加终对象。
 
-The current inventory covers 336 modules and the unchanged 97 interfaces
+The current inventory covers 339 modules and the unchanged 97 interfaces
 (68 classes, 29 records), including all 29 `Has*` classes. Work continues
 with categorical semantic structures and their correspondence conditions;
 typed syntax is deferred until that semantic development is established.
 The [audit](./ComputationAudit.md#static-cartesian-operation-comparisons)
 records validation and the exact delivered comparison level.
 
-当前清单覆盖 336 个模块及原有 97 个接口（68 个类、29 个记录），包括全部
+当前清单覆盖 339 个模块及原有 97 个接口（68 个类、29 个记录），包括全部
 29 个 `Has*` 类。后续继续范畴语义结构及其对应条件，待语义发展建立后再
 讨论带类型语法。[审计](./ComputationAudit.md#static-cartesian-operation-comparisons)
 记录验证及本次交付的精确比较层次。
+
+
+## Terminal-input computation functors
+
+## 终输入计算函子
+
+[Global](../theories/Cat/Computational/Arrow/Global.v) reuses the covariant
+Hom functor and pure inclusion to send a value object to its terminal-input
+computation setoid. Ordered fanout supplies a lax monoidal structure into
+the category of setoids. Its proof reuses
+[general pairing laws](../theories/Cat/Computational/Arrow/Pairing.v), with
+no Monad, exponentials or effect interchange. Value and computation
+categories keep separate hom/equality sizes. This is generally a setoid-valued
+functor; an endofunctor on the value category requires a suitable model or
+representation condition.
+
+[Global](../theories/Cat/Computational/Arrow/Global.v) 复用协变 Hom 函子与纯
+嵌入，将值对象送到其终输入计算广集。有序 fanout 提供进入广集范畴的 lax
+幺半结构，证明复用[一般配对律](../theories/Cat/Computational/Arrow/Pairing.v)，
+不要求 Monad、指数或效应交换。值与计算范畴保留各自独立的 Hom／相等大小。
+该构造一般为广集值函子；要得到值范畴上的自函子，需要适当模型或表示条件。
+
+[Constant maps](../theories/Set/Constant.v) provide the independent
+setoid-level primitive needed by the subsequent pure-value construction,
+with target equality and no category imports. No interfaces or chosen
+instances are added. The declaration inventory remains 97 interfaces.
+
+[常值映射](../theories/Set/Constant.v)提供后续纯值构造所需的独立广集层原语，
+使用目标相等，不导入范畴。没有新增接口或选定实例，声明清单仍为 97 个接口。

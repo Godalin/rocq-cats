@@ -2,6 +2,8 @@ Core.v
 Pure.v
 Kleisli.v
 Cartesian.v
+Pairing.v
+Global.v
 Binoidal.v
 Premonoidal.v
 Symmetric.v

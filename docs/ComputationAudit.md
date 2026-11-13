@@ -1741,3 +1741,38 @@ Arrow／Freyd 检查）。严格双语 HTML 现每种语言覆盖 336 个模块�
 包含集成新增的五个模块。同样的 104 个英中注释块及 98 个公共锚点再次核验，
 精确清单仍为 97 个接口。保留未改动的项目 switch 及显式模型选择。批次 PDF
 仍由集成方导出，语法仍暂缓。
+
+
+## Global-computation foundations
+
+## 全局计算基础
+
+Following `4cd858a`, the #35 task independently adds the general ordered
+pairing laws, the terminal-input Hom lax functor and constant respectful
+maps. The existing Hom functor supplies functoriality, and `comp_square`
+composes the three associativity naturality squares. Neither a monad nor
+closedness nor interchange of two effects is required. The result lands
+in setoids, keeping the computation category's native hom/equality levels;
+it is not automatically an endofunctor on an arbitrary value category.
+
+继 `4cd858a` 后，#35 任务独立添加一般有序配对定律、终输入 Hom lax 函子
+及常值保相等映射。已有 Hom 函子提供函子性，`comp_square` 复合三个结合
+自然性方块。不要求 Monad、闭性或两个效应交换。结果落在广集范畴，保留计算
+范畴原生 Hom／相等层级，一般不会自动成为任意值范畴上的自函子。
+
+Targeted Global/Constant builds passed in the unchanged `rocq-cats` switch.
+All 22 temporary assumption checks are closed under the global context:
+all 16 public declarations and six independent-universe probes. These
+separate the two categories' hom/equality levels in both strict orders
+and keep constant-map source and target levels distinct. There are 339
+modules and the same 97 interfaces. No permanent test or shared toolchain
+was changed. Setoid-base Applicative packaging and static reconstruction
+are the dependent next slice of this same authorized task; syntax stays
+paused until the semantic development is established.
+
+在未改动的 `rocq-cats` switch 中，Global／Constant 定向构建通过。22 项
+临时公理检查均无额外全局假设：全部 16 个公共声明及六项独立宇宙探针，
+将两个范畴的 Hom／相等层级按两种严格次序分离，也分离常值映射的来源及
+目标层级。现有 339 个模块、原有 97 个接口。没有修改永久测试或共享工具链。
+广集基底的 Applicative 打包及静态重建是同一已授权任务的后续依赖切片；语法
+等语义建立后再讨论。
