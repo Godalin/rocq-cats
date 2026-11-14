@@ -1903,3 +1903,39 @@ integration-branch update was added.
 存在，并非此次简化引入。严格双语 HTML 再次覆盖每种语言 341 个模块及
 687 页链接检查。没有新增永久测试、接口、选定实例、共享工具链或集成分支
 更新。
+
+
+## Global-computation context foundation
+
+## 全局计算上下文基础
+
+The static-interpretation slice rebases `monoidal-cat-view` onto
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`. The rebase has no conflicts;
+full-library/test/install validation and the existing 123 temporary
+universe/semantic checks passed with the unchanged `rocq-cats` switch.
+The rebased task head before new mathematics is `c434d44`; original
+`0683f04` is retained in the earlier historical delivery records.
+
+静态解释切片将 `monoidal-cat-view` 重基到
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`，没有冲突；在未改动的
+`rocq-cats` switch 中，全库／测试／安装与既有 123 项临时宇宙／语义检查
+通过。新增数学内容前的重基任务头为 `c434d44`，原 `0683f04` 保留在此前
+历史交付记录中。
+
+[GlobalContext](../theories/Cat/Computational/Arrow/GlobalContext.v)
+attaches a terminal-input computation to an unchanged ordinary input.
+Its substitution, ordered-pairing and nested-context laws require only
+selected finite products and the existing Arrow laws. Effects are neither
+duplicated nor interchanged. This independently reusable foundation adds
+no interface or model choice and retains separate category sizes.
+All ten public declarations and six strict independent-category probes
+passed temporary assumption inspection (16 reports, all closed under the
+global context). The targeted module build passed. No permanent test,
+shared toolchain change or integration-branch update was introduced.
+
+[GlobalContext](../theories/Cat/Computational/Arrow/GlobalContext.v)
+将终输入计算附在不变的普通输入旁。其替换、有序配对及嵌套上下文律仅要求
+选定有限积及已有 Arrow 定律，不复制或交换效应。此可独立复用基础不增加
+接口或模型选择，并保留独立范畴大小。全部十个公共声明及六项严格独立范畴
+探针通过临时公理检查（16 项报告，均无额外全局假设）；模块定向构建通过。
+没有新增永久测试、共享工具链变更或集成分支更新。

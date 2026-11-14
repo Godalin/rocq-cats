@@ -3,6 +3,7 @@ Pure.v
 Kleisli.v
 Cartesian.v
 Pairing.v
+GlobalContext.v
 Global.v
 Binoidal.v
 Premonoidal.v
