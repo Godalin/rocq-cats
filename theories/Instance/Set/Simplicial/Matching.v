@@ -26,7 +26,13 @@ Local Open Scope ordinal_scope.
     {%[boundary_matching_iso]%}% and
     %\coqref{Cats.Instance.Set.Simplicial.Matching.horn matching iso}
     {%[horn_matching_iso]%}% prove that compatible lists and maps from the actual
-    subobject describe the same data. They do not themselves provide fillers. *)
+    subobject describe the same data. They do not themselves provide fillers.
+    For constructing this data from just the usual pairwise intersection
+    equations, continue with
+    %\coqref{Cats.Instance.Set.Simplicial.FaceGluing.HornFacesN}
+    {%[HornFacesN]%}% and
+    %\coqref{Cats.Instance.Set.Simplicial.FaceGluing.BoundaryFacesN}
+    {%[BoundaryFacesN]%}%. *)
 
 (** 要展开 %\coqref{Cats.Instance.Set.Simplicial.Horn.HornS}
     {%[HornS]%}% 的映射描述，可以列出它的保留面，但这些面不能任意选取：
@@ -37,7 +43,12 @@ Local Open Scope ordinal_scope.
     {%[boundary_matching_iso]%}% 与
     %\coqref{Cats.Instance.Set.Simplicial.Matching.horn matching iso}
     {%[horn_matching_iso]%}% 证明，相容面列表和从实际子对象出发的映射表示同样的
-    数据；这些对应本身还不提供填充。 *)
+    数据；这些对应本身还不提供填充。若要仅由通常的逐对交叠方程构造这些
+    数据，接着看
+    %\coqref{Cats.Instance.Set.Simplicial.FaceGluing.HornFacesN}
+    {%[HornFacesN]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.FaceGluing.BoundaryFacesN}
+    {%[BoundaryFacesN]%}%。 *)
 
 (** A boundary matching datum gives all faces and their overlap equations. *)
 
