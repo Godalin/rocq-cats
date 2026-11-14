@@ -19,7 +19,7 @@ Definition is_natural_numbers_object {C : Cat} `{HT : !HasTerminal C}
 
 (** 选择自然数对象、零、后继及其递归性质。 *)
 
-Class HasNaturalNumbersObject (C : Cat) (HT : HasTerminal C)
+Class HasNaturalNumbersObj (C : Cat) (HT : HasTerminal C)
   :=
   { NNO : Ob
   ; zero : Hom 1 NNO
@@ -34,7 +34,7 @@ Arguments nno_universal {_ _ _} _ _ _.
 (** 从选定自然数对象出发的递归中介。 *)
 
 Definition rec {C : Cat} `{HT : !HasTerminal C}
-    `{HNNO : !HasNaturalNumbersObject C HT} {X}
+    `{HNNO : !HasNaturalNumbersObj C HT} {X}
     (z : Hom 1 X) (s : Hom X X)
   : Hom NNO X
   := (nno_universal X z s).1.
@@ -44,7 +44,7 @@ Definition rec {C : Cat} `{HT : !HasTerminal C}
 (** 递归子由零与后继方程唯一确定。 *)
 
 Theorem nno_rec_unique {C : Cat} `{HT : !HasTerminal C}
-    `{HNNO : !HasNaturalNumbersObject C HT} {X} (z : Hom 1 X) (s : Hom X X)
+    `{HNNO : !HasNaturalNumbersObj C HT} {X} (z : Hom 1 X) (s : Hom X X)
   : is_unique (λ f, f ∘ zero ≈ z ∧ f ∘ succ ≈ s ∘ f) (rec z s).
 Proof. exact (nno_universal X z s).2. Qed.
 
@@ -53,7 +53,7 @@ Proof. exact (nno_universal X z s).2. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance nno_rec_proper {C : Cat} `{HT : !HasTerminal C}
-    `{HNNO : !HasNaturalNumbersObject C HT} {X}
+    `{HNNO : !HasNaturalNumbersObj C HT} {X}
   : Proper (@HomEq[1, X] ==> @HomEq[X, X] ==> @HomEq[NNO, X]) rec.
 Proof.
   intros z z' Hz s s' Hs.

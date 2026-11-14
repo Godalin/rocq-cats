@@ -21,7 +21,7 @@ Local Open Scope monad_scope.
     原像显式取转置，不需要强度、积或对象代表。 *)
 
 Section Comparison.
-Context {C D : Cat} {F : Functor C D} {U : Functor D C} (A : F ⊣ U).
+Context {C D : Cat} {F : Fct C D} {U : Fct D C} (A : F ⊣ U).
 
 (** Inverse transposition turns Kleisli composition into target composition.
     Multiplication is the image of the counit; reuse inverse naturality. *)
@@ -30,9 +30,9 @@ Context {C D : Cat} {F : Functor C D} {U : Functor D C} (A : F ⊣ U).
 
 Lemma adjunction_kleisli_unadjunct_comp {X Y Z : @Ob C}
     (f : Hom Y (U (F Z))) (g : Hom X (U (F Y)))
-  : (f ∘K[AdjunctionMonad A] g)^♭[A] ≈ f^♭[A] ∘ g^♭[A].
+  : (f ∘K[AdjMonad A] g)^♭[A] ≈ f^♭[A] ∘ g^♭[A].
 Proof.
-  change ((fmap U (adjunction_counit A (F Z)) ∘
+  change ((fmap U (adj_counit A (F Z)) ∘
     fmap U (fmap F f) ∘ g)^♭[A] ≈ f^♭[A] ∘ g^♭[A]).
   rewrite <- functor_comp, <- (unadjunct_counit A f).
   apply unadjunct_comp_l.
@@ -43,8 +43,8 @@ Qed.
 
 (** 比较函子在对象上使用左伴随，在箭头上使用所给 Hom 逆对应。 *)
 
-Program Definition AdjunctionKleisliF
-  : Functor (KleisliCat (AdjunctionMonad A)) D
+Program Definition AdjKleisliF
+  : Fct (KleisliCat (AdjMonad A)) D
   :=
   {|F0 := F
   ; F1 X Y f := f^♭[A]
@@ -62,7 +62,7 @@ Next Obligation. exact (adjunction_kleisli_unadjunct_comp f g). Defined.
     因此这里不宣称本质满。 *)
 
 Definition adjunction_kleisli_fully_faithful
-  : is_fully_faithful AdjunctionKleisliF.
+  : is_fully_faithful AdjKleisliF.
 Proof.
   split.
   - intros X Y f. exists (f^♯[A]). exact (adjunction_β A f).

@@ -29,7 +29,7 @@ Local Existing Instance HN.
 (** 环境相等低于载体，原生相等也较低。 *)
 
 Definition low_equality_model
-  : Functor (Δ^op) SetCat@{u o _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u o _ _ _ _ _}
   := Z²(M).
 
 (** Ambient equality above the carrier, keeping that native profile. *)
@@ -37,7 +37,7 @@ Definition low_equality_model
 (** 保留该原生配置，令环境相等高于载体。 *)
 
 Definition high_equality_model
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 (** Exchange the coefficient profile without identifying its levels. *)
@@ -45,7 +45,7 @@ Definition high_equality_model
 (** 交换系数配置，而不识别其层级。 *)
 
 Definition opposite_native_low_model
-  : Functor (Δ^op) SetCat@{u o _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u o _ _ _ _ _}
   := Z²(N).
 
 (** The exchanged native profile also permits higher ambient equality. *)
@@ -53,7 +53,7 @@ Definition opposite_native_low_model
 (** 交换后的原生配置也允许更高的环境相等。 *)
 
 Definition opposite_native_high_model
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(N).
 
 (** The triangle constructor accepts coefficients in the exchanged profile. *)

@@ -24,7 +24,7 @@ From Cats Require Import
 
 Section Prisms.
 Context {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α : F ⇒ G).
 
 (** The prism carries a source transport square to a target transport
@@ -78,7 +78,7 @@ Defined.
     运输方块来自 [α] 的自然性。 *)
 
 Lemma vertex_prism_diagram_proper {J : Cat}
-    (θ : Functor J [Ord 1]) (P Q : Functor J (VertexCat T))
+    (θ : Fct J [Ord 1]) (P Q : Fct J (VertexCat T))
     (H : VertexDiagramEq T P Q)
   : VertexDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF α Q θ).
 Proof.
@@ -102,9 +102,9 @@ End Prisms.
 (** 固定边界函子时，相等自然变换给出相等的带标签棱柱，实际箭头按指定相等比较。 *)
 
 Lemma vertex_prism_transformation_eq {X Y : SetC} {C D J : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α β : F ⇒ G) (H : α ≈N β)
-    (P : Functor J (VertexCat T)) (θ : Functor J [Ord 1])
+    (P : Fct J (VertexCat T)) (θ : Fct J [Ord 1])
   : VertexDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF β P θ).
 Proof.
   exists (λ i, reflexivity (_ : Y)). intros i j a.
@@ -118,7 +118,7 @@ Defined.
 (** 只改变具体时间位置保持棱柱箭头；平行时间箭头在薄序数范畴中比较。 *)
 
 Lemma vertex_prism_time_square {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α : F ⇒ G) {x y : X}
     {i i' j j' : Ordinal 1} (e : i = i') (d : j = j')
     (f : (@Hom (VertexCat T)) x y)
@@ -142,9 +142,9 @@ Defined.
     不比较记录的原生相等。 *)
 
 Lemma vertex_prism_time_eq {X Y : SetC} {C D J : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {F G : T →ᵥ U} (α : F ⇒ G) (P : Functor J (VertexCat T))
-    (θ φ : Functor J [Ord 1]) (H : ∀ i, θ i = φ i)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {F G : T →ᵥ U} (α : F ⇒ G) (P : Fct J (VertexCat T))
+    (θ φ : Fct J [Ord 1]) (H : ∀ i, θ i = φ i)
   : VertexDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF α P φ).
 Proof.
   assert (d : ∀ i, (PrismDiagramF α P θ i : Y) ≈S
@@ -160,8 +160,8 @@ Defined.
 (** 在任一恒定时间处，棱柱限制为相应的端点函子。 *)
 
 Lemma vertex_prism_endpoint {X Y : SetC} {C D J : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {F G : T →ᵥ U} (α : F ⇒ G) (P : Functor J (VertexCat T))
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {F G : T →ᵥ U} (α : F ⇒ G) (P : Fct J (VertexCat T))
     (b : bool)
   : VertexDiagramEq U
       (PrismDiagramF α P
@@ -181,7 +181,7 @@ Defined.
 (** 对恒等自然变换，箭头部分与时间无关；此陈述允许任意平行自反运输见证。 *)
 
 Lemma vertex_prism_id_square {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     (F : T →ᵥ U) {x y : X} {i j : Ordinal 1}
     (f : (@Hom (VertexCat T)) x y) (a : (@Hom [Ord 1]) i j)
     (r : (NaturalPrismF (F := F) idN (x, i) : Y) ≈S F x)
@@ -201,9 +201,9 @@ Defined.
 (** 恒等自然变换给出与时间无关的带标签图式。 *)
 
 Lemma vertex_prism_id {X Y : SetC} {C D J : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    (F : T →ᵥ U) (P : Functor J (VertexCat T))
-    (θ : Functor J [Ord 1])
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    (F : T →ᵥ U) (P : Fct J (VertexCat T))
+    (θ : Fct J [Ord 1])
   : VertexDiagramEq U (PrismDiagramF (F := F) idN P θ) (F ∘F P).
 Proof.
   assert (d : ∀ i, (PrismDiagramF (F := F) idN P θ i : Y) ≈S F (P i)).

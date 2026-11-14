@@ -24,8 +24,8 @@ From Cats Require Import
 (** 已有 nerve 作用构成函子，其恒等、复合及保相等定律均使用指定相等。 *)
 
 Program Definition VertexNerveF@{u r x e o h p l a b +}
-  : Functor VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
-      (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
+  : Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+      (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
   :=
   {|F0 P := Nᵥ(P)
   ; F1 P Q F := VertexNerveN F
@@ -41,8 +41,8 @@ Next Obligation. exact (vertex_nerve_comp f g). Defined.
 
 Definition vertex_nerve_full@{u r x e o h p l a b +}
   : is_full (VertexNerveF :
-      Functor VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
-        (Fct (Δ^op) SetCat@{u r _ _ _ _ _})).
+      Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+        (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})).
 Proof.
   intros P Q α. exists (VertexNerveInvF α). exact (vertex_nerve_β α).
 Defined.
@@ -54,8 +54,8 @@ Defined.
 
 Definition vertex_nerve_faithful@{u r x e o h p l a b +}
   : is_faithful (VertexNerveF :
-      Functor VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
-        (Fct (Δ^op) SetCat@{u r _ _ _ _ _})).
+      Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+        (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})).
 Proof.
   intros P Q F G H.
   transitivity (VertexNerveInvF (VertexNerveN F)).
@@ -74,6 +74,6 @@ Defined.
 
 Definition vertex_nerve_fully_faithful@{u r x e o h p l a b +}
   : is_fully_faithful (VertexNerveF :
-      Functor VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
-        (Fct (Δ^op) SetCat@{u r _ _ _ _ _}))
+      Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+        (FctCat (Δ^op) SetCat@{u r _ _ _ _ _}))
   := (vertex_nerve_full, vertex_nerve_faithful).

@@ -63,7 +63,7 @@ End SubObjectClassifier.
 
 (** 选择真值对象、真箭头及完整分类性质。 *)
 
-Class HasSubObjectClassifier (C : Cat) (HT : HasTerminal C)
+Class HasSubObjClassifier (C : Cat) (HT : HasTerminal C)
   :=
   { SubOC : Ob
   ; truth : Hom 1 SubOC
@@ -77,7 +77,7 @@ Arguments classifier_universal {_ _ _} _ _.
 (** 由选定分类子给出的子对象特征箭头。 *)
 
 Definition char {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjectClassifier C HT} {X Y} (m : X ↣ Y)
+    `{HSC : !HasSubObjClassifier C HT} {X Y} (m : X ↣ Y)
   : Hom Y SubOC
   := (classifier_universal Y {|sub := X
                              ; sub_mono := m
@@ -92,7 +92,7 @@ Notation χ := char.
 (** 特征箭头由分类拉回唯一确定。 *)
 
 Theorem classifier_char_unique {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjectClassifier C HT} {X Y} {m : Mono X Y}
+    `{HSC : !HasSubObjClassifier C HT} {X Y} {m : Mono X Y}
   : is_unique (λ c, is_pullback c truth X m !) (χ m).
 Proof.
   destruct (classifier_universal Y {|sub := X

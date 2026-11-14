@@ -24,7 +24,7 @@ From Cats Require Export
 (** 用顶点与生成边源对象余积选择，通过原反图构造得到单个自由图式余极限。 *)
 
 Program Definition GraphCoproductsCoequalizerColimit {G : Graph} {C : Cat}
-    (D : Functor (FreeCat G) C)
+    (D : Fct (FreeCat G) C)
     `{HO : !HasColimit C (DiscreteF (λ x, D x))}
     `{HG : !HasColimit C
       (DiscreteF (λ a : GraphEdges (G^opG), D a.2.1))}

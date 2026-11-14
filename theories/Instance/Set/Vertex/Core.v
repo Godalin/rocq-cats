@@ -6,7 +6,7 @@ From Cats Require Import
 
 (** * Diagrams with Specified Vertex Transport
 
-    An object action [T : Functor (EqGpd X) C] selects objects of C and
+    An object action [T : Fct (EqGpd X) C] selects objects of C and
     coherent transport along the specified equality of X. Diagrams take
     values in the induced category on X. Their equality requires squares
     with these transports, rather than arbitrary vertex isomorphisms.
@@ -15,12 +15,12 @@ From Cats Require Import
 
 (** * 具有指定顶点运输的图式
 
-    对象作用 [T : Functor (EqGpd X) C] 选定 C 中的对象，并沿 X 的指定相等
+    对象作用 [T : Fct (EqGpd X) C] 选定 C 中的对象，并沿 X 的指定相等
     提供相干运输。图式取值于 X 上的诱导范畴；其相等要求指定运输构成交换方块，
     不允许任意顶点同构。这是带顶点标签的数据相等，不替代一般函子的自然同构比较。 *)
 
 Section VertexObjects.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** The underlying category retains X as its objects and C's hom-setoids. *)
 
@@ -55,7 +55,7 @@ Notation "T '⟦' p '⟧Ob'" := (vertex_transport T p)
     固定呈现 [T] 及其沿 [X] 中相等的相干运输，用这些运输比较带标签图式，并证明相等与比较的定律。 *)
 
 Section VertexDiagrams.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** Parallel equality witnesses have equal transport arrows. *)
 
@@ -107,7 +107,7 @@ Defined.
 
 (** 相等由顶点相等和箭头交换方块组成；见证保留在 Type 中，不比较证明字段。 *)
 
-Definition VertexDiagramEq {J : Cat} (F G : Functor J (VertexCat T))
+Definition VertexDiagramEq {J : Cat} (F G : Fct J (VertexCat T))
   : Type
   := ∃ e : ∀ j, (F j : X) ≈S G j,
       ∀ i j (f : (@Hom J) i j),
@@ -148,7 +148,7 @@ Defined.
 (** 自然比较的分量若等于指定顶点运输，就给出带标签的相等。 *)
 
 Definition vertex_diagram_comparison {J : Cat}
-    {F G : Functor J (VertexCat T)} (e : ∀ j, (F j : X) ≈S G j)
+    {F G : Fct J (VertexCat T)} (e : ∀ j, (F j : X) ≈S G j)
     (α : F ⇒ G) (H : ∀ j, α j ≈ T⟦e j⟧Ob)
   : VertexDiagramEq F G.
 Proof.
@@ -164,7 +164,7 @@ Defined.
 Program Definition VertexDiagramS (J : Cat)
   : SetC
   :=
-  {|carrier := Functor J (VertexCat T)
+  {|carrier := Fct J (VertexCat T)
   ; carrier_equiv := VertexDiagramEq
   ; carrier_setoid := VertexDiagramEq_Equivalence
   |}.
@@ -174,7 +174,7 @@ Program Definition VertexDiagramS (J : Cat)
 (** 忘却顶点标签得到通常的自然同构。 *)
 
 Program Definition vertex_diagram_iso {J : Cat}
-    {F G : Functor J (VertexCat T)} (e : VertexDiagramEq F G)
+    {F G : Fct J (VertexCat T)} (e : VertexDiagramEq F G)
   : F ≅N G
   := ({|nt j := T⟦e.1 j⟧Ob
       |}; _).
@@ -190,7 +190,7 @@ Defined.
 (** 限制保留顶点相等及其交换方块。 *)
 
 Program Definition vertex_diagram_precomp_resp {I J : Cat}
-    (Q : Functor I J)
+    (Q : Fct I J)
   : VertexDiagramS J →r VertexDiagramS I
   :=
   {|func F := F ∘F Q
@@ -205,7 +205,7 @@ Defined.
 (** 忘却标签保持进入环境函子广集的相等。 *)
 
 Program Definition vertex_diagram_forget_resp {J : Cat}
-  : VertexDiagramS J →r FunctorS J C
+  : VertexDiagramS J →r FctS J C
   :=
   {|func F := InducedInclusionF X T ∘F F
   |}.

@@ -25,16 +25,16 @@ Constraint u < p.
 
 Context (X : SetC@{o e}) (Y : SetC@{h o})
     (C : Cat@{o h e l l}) (D : Cat@{h e o l l})
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
     (F G : T →ᵥ U) (α : F ⇒ G)
     (H K : SimplicialHomotopy
       (VertexNerveN F :
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
       (VertexNerveN G))
     (E : HomotopyEq H K)
     (L : SimplicialHomotopy
       (VertexNerveN F :
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
       (VertexNerveN G)).
 
 (** Value equality below the carrier still recovers an ordinary transformation. *)
@@ -49,7 +49,7 @@ Definition low_value_homotopy_roundtrip
   : ∃ β : F ⇒ G, HomotopyEq
       (VertexNerveHomotopy (F := F) (G := G) β : SimplicialHomotopy
         (VertexNerveN F :
-          (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
+          (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
         (VertexNerveN G)) H.
 Proof.
   exists (VertexNerveInvHomotopyN H).
@@ -72,7 +72,7 @@ Definition high_value_homotopy_roundtrip
   : ∃ β : F ⇒ G, HomotopyEq
       (VertexNerveHomotopy (F := F) (G := G) β : SimplicialHomotopy
         (VertexNerveN F :
-          (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
+          (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
         (VertexNerveN G)) L.
 Proof.
   exists (VertexNerveInvHomotopyN L).
@@ -87,7 +87,7 @@ Definition low_value_transformation_roundtrip
   : VertexNerveInvHomotopyN
       (VertexNerveHomotopy α : SimplicialHomotopy
         (VertexNerveN F :
-          (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
+          (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
         (VertexNerveN G)) ≈N α
   := vertex_nerve_homotopy_η α.
 
@@ -95,7 +95,7 @@ Definition high_value_transformation_roundtrip
   : VertexNerveInvHomotopyN
       (VertexNerveHomotopy α : SimplicialHomotopy
         (VertexNerveN F :
-          (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
+          (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
         (VertexNerveN G)) ≈N α
   := vertex_nerve_homotopy_η α.
 

@@ -87,12 +87,12 @@ Section SimplicialHomotopies.
 Universes u r.
 
 Let simplicial_terminal
-  : HasTerminal (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
-  := @Fct_HasTerminal _ _ SetCat_HasTerminal.
+  : HasTerminal (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
+  := @FctCat_HasTerminal _ _ SetCat_HasTerminal.
 
 Let simplicial_product
-  : HasProduct (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
-  := @Fct_HasProduct _ _ SetCat_HasProduct.
+  : HasProduct (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
+  := @FctCat_HasProduct _ _ SetCat_HasProduct.
 
 Local Existing Instance simplicial_terminal.
 Local Existing Instance simplicial_product.
@@ -127,7 +127,7 @@ Defined.
 (** 区间使用显式提供的点态有限积；导入此模块不注册选定模型结构。 *)
 
 Program Definition SimplicialInterval
-  : Interval (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
+  : Interval (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
   :=
   {|interval_object := Δ[1]
   ; interval_point := SimplicialIntervalPointN
@@ -138,8 +138,8 @@ Program Definition SimplicialInterval
 (** 柱为与标准区间的点态积。 *)
 
 Definition SimplicialCylinderF
-  : Functor (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
-      (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
+  : Fct (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
+      (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
   := CylinderF SimplicialInterval.
 
 (** The endpoint inclusion is natural in the source simplicial setoid. *)
@@ -147,7 +147,7 @@ Definition SimplicialCylinderF
 (** 端点嵌入在源单纯广集上自然。 *)
 
 Definition SimplicialEndpointN
-    (X : Functor (Δ^op) SetCat@{u r _ _ _ _ _}) (b : bool)
+    (X : Fct (Δ^op) SetCat@{u r _ _ _ _ _}) (b : bool)
   : X ⇒ SimplicialCylinderF X
   := CylinderEndpointN SimplicialInterval b X.
 
@@ -157,7 +157,7 @@ Definition SimplicialEndpointN
 (** 单纯同伦将通用区间同伦特化至点态积和 [Δ[1]]，保留相同透明见证。 *)
 
 Definition SimplicialHomotopy
-    {X Y : Functor (Δ^op) SetCat@{u r _ _ _ _ _}} (f g : X ⇒ Y)
+    {X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}} (f g : X ⇒ Y)
   : Type
   := Homotopy SimplicialInterval f g.
 
@@ -166,7 +166,7 @@ Definition SimplicialHomotopy
 (** 第一个限制在自然相等下恢复起始映射。 *)
 
 Lemma simplicial_homotopy_0
-    {X Y : Functor (Δ^op) SetCat@{u r _ _ _ _ _}} {f g : X ⇒ Y}
+    {X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}} {f g : X ⇒ Y}
     (H : SimplicialHomotopy f g)
   : (homotopy_map H ∘Nv SimplicialEndpointN X false) ≈N f.
 Proof. exact (homotopy_endpoint H false). Defined.
@@ -176,7 +176,7 @@ Proof. exact (homotopy_endpoint H false). Defined.
 (** 第二个限制恢复终止映射。 *)
 
 Lemma simplicial_homotopy_1
-    {X Y : Functor (Δ^op) SetCat@{u r _ _ _ _ _}} {f g : X ⇒ Y}
+    {X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}} {f g : X ⇒ Y}
     (H : SimplicialHomotopy f g)
   : (homotopy_map H ∘Nv SimplicialEndpointN X true) ≈N g.
 Proof. exact (homotopy_endpoint H true). Defined.
@@ -186,7 +186,7 @@ Proof. exact (homotopy_endpoint H true). Defined.
 (** 每个单纯映射都有恒定同伦。 *)
 
 Definition SimplicialConstantHomotopy
-    {X Y : Functor (Δ^op) SetCat@{u r _ _ _ _ _}} (f : X ⇒ Y)
+    {X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}} (f : X ⇒ Y)
   : SimplicialHomotopy f f
   := ConstantHomotopy SimplicialInterval f.
 
@@ -195,7 +195,7 @@ Definition SimplicialConstantHomotopy
 (** 预复合沿单纯映射限制同伦。 *)
 
 Definition SimplicialPreHomotopy
-    {W X Y : Functor (Δ^op) SetCat@{u r _ _ _ _ _}}
+    {W X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}}
     {f g : X ⇒ Y} (H : SimplicialHomotopy f g) (a : W ⇒ X)
   : SimplicialHomotopy (f ∘Nv a) (g ∘Nv a)
   := @PreHomotopy _ simplicial_terminal simplicial_product
@@ -206,7 +206,7 @@ Definition SimplicialPreHomotopy
 (** 后复合将单纯映射作用于同伦。 *)
 
 Definition SimplicialPostHomotopy
-    {X Y Z : Functor (Δ^op) SetCat@{u r _ _ _ _ _}}
+    {X Y Z : Fct (Δ^op) SetCat@{u r _ _ _ _ _}}
     {f g : X ⇒ Y} (a : Y ⇒ Z) (H : SimplicialHomotopy f g)
   : SimplicialHomotopy (a ∘Nv f) (a ∘Nv g)
   := @PostHomotopy _ simplicial_terminal simplicial_product
@@ -217,7 +217,7 @@ Definition SimplicialPostHomotopy
 (** 水平复合在两个因子中使用同一个时间单形。 *)
 
 Definition SimplicialCompHomotopy
-    {X Y Z : Functor (Δ^op) SetCat@{u r _ _ _ _ _}}
+    {X Y Z : Fct (Δ^op) SetCat@{u r _ _ _ _ _}}
     {f g : X ⇒ Y} {a b : Y ⇒ Z}
     (K : SimplicialHomotopy a b) (H : SimplicialHomotopy f g)
   : SimplicialHomotopy (a ∘Nv f) (b ∘Nv g)
@@ -230,7 +230,7 @@ Definition SimplicialCompHomotopy
 (** 来自任意源的常值端点映射通过其终映射分解，使用指定自然相等。 *)
 
 Definition SimplicialConstantPointN
-    (X : Functor (Δ^op) SetCat@{u r _ _ _ _ _}) (b : bool)
+    (X : Fct (Δ^op) SetCat@{u r _ _ _ _ _}) (b : bool)
   : X ⇒ Δ[1]
   := SimplicialIntervalPointN b ∘Nv (@term _ simplicial_terminal X).
 
@@ -240,7 +240,7 @@ Definition SimplicialConstantPointN
 (** 区间坐标给出其不同常值端点之间的同伦，并不以广集相等识别它们。 *)
 
 Definition SimplicialIntervalHomotopy
-    (X : Functor (Δ^op) SetCat@{u r _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u r _ _ _ _ _})
   : SimplicialHomotopy (SimplicialConstantPointN X false)
       (SimplicialConstantPointN X true)
   := IntervalHomotopy SimplicialInterval X.

@@ -26,9 +26,9 @@ From Cats Require Import
     不声称这些大小的整个广集范畴本身就是小指标范畴。 *)
 
 Definition SetCat_Coend@{o h e u p +} (C : Cat@{o h e _ _})
-    (F : Functor ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
+    (F : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
   : HasCoend SetCat F
   := @CoproductsCoequalizerCoend C SetCat F
-      (SetCat_IndexedCoproductColimit (DiscreteF (CoendDiagonal F)))
+      (SetCat_IndexedCoproductColimit (DiscreteF (CoendDiag F)))
       (SetCat_IndexedCoproductColimit (DiscreteF (CoendSources F)))
       SetCat_HasCoequalizer.

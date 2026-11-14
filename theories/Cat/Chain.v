@@ -151,7 +151,7 @@ Defined.
 (** 将箭头链解释为序数图式；全部复合箭头和函子律均由区间求值导出。 *)
 
 Program Definition ChainF {C : Cat} {n : nat} (c : Chain C n)
-  : Functor [Ord n] C
+  : Fct [Ord n] C
   :=
   {|F0 := c
   ; F1 i j f := chain_segment c i j f
@@ -169,7 +169,7 @@ Notation "'⟦' c '⟧Ch'" := (ChainF c) : cat_scope.
 (** 提取序数图式的顶点与相邻箭头数据。 *)
 
 Program Definition diagram_chain {C : Cat} {n : nat}
-    (F : Functor [Ord n] C)
+    (F : Fct [Ord n] C)
   : Chain C n
   :=
   {|chain_vertex := F
@@ -193,7 +193,7 @@ Proof. exact (chain_segment_step c i). Defined.
 (** 指定分量在生成箭头上的方块交换时，给出从箭头链解释出发的自然比较。 *)
 
 Program Definition ChainCompareN {C : Cat} {n : nat} (c : Chain C n)
-    (F : Functor [Ord n] C) (α : ∀ i, Hom (c i) (F i))
+    (F : Fct [Ord n] C) (α : ∀ i, Hom (c i) (F i))
     (H : ∀ i, α (fin_next i) ∘ chain_edge c i ≈
       fmap F (ordinal_step i) ∘ α (fin_weaken i))
   : ⟦c⟧Ch ⇒ F
@@ -213,7 +213,7 @@ Defined.
 (** 从箭头链重构序数图式得到恒等分量的自然同构，不要求函子记录相等。 *)
 
 Definition chain_diagram_η {C : Cat} {n : nat}
-    (F : Functor [Ord n] C)
+    (F : Fct [Ord n] C)
   : ⟦⌊F⌋Ch⟧Ch ≅N F.
 Proof.
   unshelve refine ((ChainCompareN ⌊F⌋Ch F (λ i, id) _); _).
@@ -227,7 +227,7 @@ Defined.
 (** 通过解释像区间并再次提取相邻箭头，沿序数映射替换箭头链。 *)
 
 Definition chain_reindex {C : Cat} {m n : nat}
-    (Q : Functor [Ord m] [Ord n]) (c : Chain C n)
+    (Q : Fct [Ord m] [Ord n]) (c : Chain C n)
   : Chain C m
   := ⌊⟦c⟧Ch ∘F Q⌋Ch.
 

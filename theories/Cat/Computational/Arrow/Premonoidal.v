@@ -27,7 +27,7 @@ Let V
   := CartesianMonoidal.
 
 Let J
-  : Functor C (ComputationCat A)
+  : Fct C (ComputationCat A)
   := ArrowPureF A.
 
 (** All structural inverses are the pure images of the same selected

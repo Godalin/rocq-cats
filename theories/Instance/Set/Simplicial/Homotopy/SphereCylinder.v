@@ -67,10 +67,10 @@ Local Open Scope ordinal_scope.
 
 Section SphereCylinders.
 Universes u p.
-Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
+Context (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
 
 Let D
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Δ[2].
 
 (** The full cylinder map is constant on the actual boundary subpresheaf
@@ -80,8 +80,8 @@ Let D
 
 Definition is_two_sphere_cylinder_relative (K : SimplicialCylinderF D ⇒ X)
   : Type
-  := ∀ n (a : (∂Δ[2] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
-      (t : (Δ[1] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n),
+  := ∀ n (a : (∂Δ[2] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+      (t : (Δ[1] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n),
       K n (ι∂[2] n a, t) ≈S simplex_constant X b n.
 
 (** Retain an actual homotopy between the two represented triangle maps,
@@ -160,7 +160,7 @@ Definition two_sphere_cylinder_eval {x y : TwoSphereS X b}
          |} : D n),
         ({|lower := t
           |} :
-          (Δ[1] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)).
+          (Δ[1] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)).
 
 (** Equal shape operators give equal values, without comparing their records. *)
 
@@ -266,7 +266,7 @@ Defined.
 
 Section SpherePrism.
 Universes u p.
-Context {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {b : X 0}
+Context {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {b : X 0}
     {x y : TwoSphereS X b} (H : TwoSphereCylinderHomotopy X b x y).
 
 (** The i-th actual tetrahedron of the staircase. *)

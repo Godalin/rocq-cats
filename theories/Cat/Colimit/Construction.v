@@ -23,7 +23,7 @@ From Cats Require Export
 
 (** 图式的对象索引族。 *)
 
-Definition CodiagramObjects {J C : Cat} (D : Functor J C) (j : @Ob J)
+Definition CodiagramObj {J C : Cat} (D : Fct J C) (j : @Ob J)
   : @Ob C
   := D j.
 
@@ -32,7 +32,7 @@ Definition CodiagramObjects {J C : Cat} (D : Functor J C) (j : @Ob J)
 
 (** 用反箭头索引源对象，保留全部依赖端点数据，无需沿记录相等运输。 *)
 
-Definition CodiagramSources {J C : Cat} (D : Functor J C)
+Definition CodiagramSources {J C : Cat} (D : Fct J C)
     (a : ArrowOb (J^op))
   : @Ob C
   := D (arrow_cod a).
@@ -48,8 +48,8 @@ Definition CodiagramSources {J C : Cat} (D : Functor J C)
     固定图式 [D] 及其对象和箭头源的选定余积，构造两条约束箭头，再用余等化子获得余极限泛性质。 *)
 
 Section CoproductConstraints.
-Context {J C : Cat} (D : Functor J C).
-Context `{HO : !HasColimit C (DiscreteF (CodiagramObjects D))}.
+Context {J C : Cat} (D : Fct J C).
+Context `{HO : !HasColimit C (DiscreteF (CodiagramObj D))}.
 Context `{HA : !HasColimit C (DiscreteF (CodiagramSources D))}.
 
 (** Keep the selected object coproduct as the original opposite product. *)
@@ -57,8 +57,8 @@ Context `{HA : !HasColimit C (DiscreteF (CodiagramSources D))}.
 (** 将选定对象余积保留为原反积。 *)
 
 Local Definition codiagram_objects_product
-  : HasLimit (C^op) (@DiscreteF (C^op) _ (CodiagramObjects D))
-  := @IndexedCoproductOpProduct C _ (CodiagramObjects D) HO.
+  : HasLimit (C^op) (@DiscreteF (C^op) _ (CodiagramObj D))
+  := @IndexedCoproductOpProduct C _ (CodiagramObj D) HO.
 
 (** Keep the selected source coproduct as the original opposite product. *)
 
@@ -74,7 +74,7 @@ Local Definition codiagram_sources_product
 (** 对反箭头 [a]，将其原源注入对象余积；这就是原反目标约束。 *)
 
 Definition codiagram_coproduct_source
-  : Hom ∐[CodiagramSources D] ∐[CodiagramObjects D]
+  : Hom ∐[CodiagramSources D] ∐[CodiagramObj D]
   := @diagram_product_target (J^op) (C^op) (D^opF)
       codiagram_objects_product codiagram_sources_product.
 
@@ -84,7 +84,7 @@ Definition codiagram_coproduct_source
 (** 先应用图式箭头，再注入其原目标；这就是原反源约束。 *)
 
 Definition codiagram_coproduct_target
-  : Hom ∐[CodiagramSources D] ∐[CodiagramObjects D]
+  : Hom ∐[CodiagramSources D] ∐[CodiagramObj D]
   := @diagram_product_source (J^op) (C^op) (D^opF)
       codiagram_objects_product codiagram_sources_product.
 
@@ -94,7 +94,7 @@ Definition codiagram_coproduct_target
 (** 将目标与源约束余等化，通过原反等化子锥得到余锥。 *)
 
 Program Definition CoproductsCoequalizerCocone {E : @Ob C}
-    (e : Hom ∐[CodiagramObjects D] E)
+    (e : Hom ∐[CodiagramObj D] E)
     (H : e ∘ codiagram_coproduct_target ≈ e ∘ codiagram_coproduct_source)
   : D ⇒∇ E.
 Proof.
@@ -109,7 +109,7 @@ Defined.
 (** 候选余等化子由原积／等化子极限定理得到余极限性质，不另证中介唯一性。 *)
 
 Definition coproducts_coequalizer_colimit {E : @Ob C}
-    (e : Hom ∐[CodiagramObjects D] E)
+    (e : Hom ∐[CodiagramObj D] E)
     (H : e ∘ codiagram_coproduct_target ≈ e ∘ codiagram_coproduct_source)
     (HE : is_coequalizer codiagram_coproduct_target
       codiagram_coproduct_source E e)
@@ -128,14 +128,14 @@ End CoproductConstraints.
     分别是 [i] 处注入及图式映射后接 [j] 处注入；不重证泛性质。 *)
 
 Program Definition CoproductsCoequalizerColimit {J C : Cat}
-    (D : Functor J C)
-    `{HO : !HasColimit C (DiscreteF (CodiagramObjects D))}
+    (D : Fct J C)
+    `{HO : !HasColimit C (DiscreteF (CodiagramObj D))}
     `{HA : !HasColimit C (DiscreteF (CodiagramSources D))}
     `{HE : !HasCoequalizer C}
   : HasColimit C D
   :=
   {|hasOpLimit := @ProductsEqualizerLimit (J^op) (C^op) (D^opF)
-      (@IndexedCoproductOpProduct C _ (CodiagramObjects D) HO)
+      (@IndexedCoproductOpProduct C _ (CodiagramObj D) HO)
       (@IndexedCoproductOpProduct C _ (CodiagramSources D) HA)
       (@hasOpEqualizer C HE)
   |}.

@@ -17,7 +17,7 @@ From Cats Require Import
 
     源范畴任意，全部相等和唯一性使用指定 Hom 或广集相等，中介保持透明。 *)
 
-Definition is_universal_element {C : Cat} (F : Functor C SetCat)
+Definition is_universal_element {C : Cat} (F : Fct C SetCat)
     {X : @Ob C} (u : F X)
   := ∀ Y (y : F Y), ∃ f : Hom X Y, is_unique (λ f, fmap F f u ≈S y) f.
 
@@ -35,7 +35,7 @@ Notation "u '⦂' 'Univ(' F ')'" := (is_universal_element F u)
     固定 [C] 上的广集值函子 [F]，由泛元素构造求值映射的保相等逆，从而获得表示。 *)
 
 Section UniversalElements.
-Context {C : Cat} (F : Functor C SetCat).
+Context {C : Cat} (F : Fct C SetCat).
 
 (** A universal element detects equality of arrows through its functorial
     images. *)
@@ -112,16 +112,16 @@ End UniversalElements.
 
 (** ** Generic Elements of a Representation
 
-    Fix [F : Functor C SetCat]. Extract generic elements from representations,
+    Fix [F : Fct C SetCat]. Extract generic elements from representations,
     compare them with universal elements, and prove the two constructions
     agree up to the specified equivalences. *)
 
 (** ** 表示的泛元素
 
-    固定 [F : Functor C SetCat]，从表示提取泛元素，与泛元素的普遍性比较，并证明两个构造在指定等价下相容。 *)
+    固定 [F : Fct C SetCat]，从表示提取泛元素，与泛元素的普遍性比较，并证明两个构造在指定等价下相容。 *)
 
 Section Representations.
-Context {C : Cat} {F : Functor C SetCat}.
+Context {C : Cat} {F : Fct C SetCat}.
 
 (** The value of the representing transformation at the identity arrow. *)
 
@@ -227,7 +227,7 @@ End Representations.
     通过显式 Hom 比较使用反范畴上的协变理论，不重复证明泛性质，也不要求函子原
     生相等。 *)
 
-Definition represents_op {C : Cat} (P : Functor (C^op) SetCat) (X : @Ob C)
+Definition represents_op {C : Cat} (P : Fct (C^op) SetCat) (X : @Ob C)
   := Hom(-,X) ≅N P.
 
 Notation "X '⦂' 'Repᵒᵖ' P" := (represents_op P X)
@@ -237,7 +237,7 @@ Notation "X '⦂' 'Repᵒᵖ' P" := (represents_op P X)
 
 (** 保留反变函子的表示对象及表示数据。 *)
 
-Definition is_representable_op {C : Cat} (P : Functor (C^op) SetCat)
+Definition is_representable_op {C : Cat} (P : Fct (C^op) SetCat)
   := ∃ X, X ⦂ Repᵒᵖ P.
 
 (** Fix a presheaf [P] on [C]. Apply the covariant representation theory to
@@ -247,7 +247,7 @@ Definition is_representable_op {C : Cat} (P : Functor (C^op) SetCat)
 (** 固定 [C] 上的预层 [P]，将协变表示理论用于 [C^op]，给出泛元素、泛映射及表示比较。 *)
 
 Section PresheafRepresentations.
-Context {C : Cat} {P : Functor (C^op) SetCat}.
+Context {C : Cat} {P : Fct (C^op) SetCat}.
 
 (** Convert a contravariant representation to the covariant theory on the
     opposite category. *)
@@ -367,7 +367,7 @@ End PresheafRepresentations.
     保留原指定相等；不要求大小重设或原生宇宙相同。 *)
 
 Definition represents_lifted@{u p +} {C : Cat}
-    (F : Functor C SetCat@{u p _ _ _ _ _}) (X : @Ob C)
+    (F : Fct C SetCat@{u p _ _ _ _ _}) (X : @Ob C)
   : Type
   := (LiftF ∘F Hom(X,-)) ≅N F.
 
@@ -382,7 +382,7 @@ Notation "X '⦂' 'Rep↑' F" := (represents_lifted F X)
 
 Section LiftedRepresentations.
 Universe u p.
-Context {C : Cat} (F : Functor C SetCat@{u p _ _ _ _ _}).
+Context {C : Cat} (F : Fct C SetCat@{u p _ _ _ _ _}).
 
 (** Reuse presheaf Yoneda on the opposite category for the covariant
     lifted hom functor. Only its endpoints are repackaged. *)

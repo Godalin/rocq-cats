@@ -25,8 +25,8 @@ From Cats Require Import
 
 (** 相等位置通过唯一序数自同态作用；薄 Hom 相等保证作用不依赖原生相等见证。 *)
 
-Program Definition OrdinalObjectsF (n : nat)
-  : Functor (EqGpd (FinS@{Set Set Set} (S n))) [Ord n]
+Program Definition OrdinalObjF (n : nat)
+  : Fct (EqGpd (FinS@{Set Set Set} (S n))) [Ord n]
   :=
   {|F0 i := i
   ; F1 i j p := _
@@ -43,12 +43,12 @@ Next Obligation. exact tt. Defined.
 (** 选定序数位置定义一个从终呈现出发的映射。 *)
 
 Program Definition OrdinalVertexPointF (n : nat) (i : Ordinal n)
-  : VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set} →ᵥ
-      OrdinalObjectsF n
+  : VertexTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
+      OrdinalObjF n
   :=
   {|vertex_functor := ConstF
-      (VertexCat VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set})
-      (C := VertexCat (OrdinalObjectsF n)) i
+      (VertexCat VertexTerminalObjF@{Set Set Set Set Set Set Set Set})
+      (C := VertexCat (OrdinalObjF n)) i
   |}.
 Next Obligation. intros x y p. reflexivity. Defined.
 Next Obligation. exact tt. Defined.
@@ -59,7 +59,7 @@ Next Obligation. exact tt. Defined.
 (** 忘却冗余诱导范畴包装，原样保留位置与箭头，无须范畴记录相等。 *)
 
 Program Definition OrdinalVertexF (n : nat)
-  : Functor (VertexCat (OrdinalObjectsF n)) [Ord n]
+  : Fct (VertexCat (OrdinalObjF n)) [Ord n]
   :=
   {|F0 i := i
   ; F1 i j f := f
@@ -73,7 +73,7 @@ Next Obligation. exact tt. Defined.
 (** 反向视图保留相同的可计算数据。 *)
 
 Program Definition OrdinalVertexInvF (n : nat)
-  : Functor [Ord n] (VertexCat (OrdinalObjectsF n))
+  : Fct [Ord n] (VertexCat (OrdinalObjF n))
   :=
   {|F0 i := i
   ; F1 i j f := f
@@ -88,8 +88,8 @@ Next Obligation. exact tt. Defined.
 (** 带标签的序数图式恰按位置比较，运输方块在薄目标 Hom 相等中成立。 *)
 
 Lemma vertex_ordinal_diagram_eq_iff {J : Cat} (n : nat)
-    (P Q : Functor J (VertexCat (OrdinalObjectsF n)))
-  : VertexDiagramEq (OrdinalObjectsF n) P Q ↔ ∀ i, P i = Q i.
+    (P Q : Fct J (VertexCat (OrdinalObjF n)))
+  : VertexDiagramEq (OrdinalObjF n) P Q ↔ ∀ i, P i = Q i.
 Proof.
   split.
   - intros [e H]. exact e.
@@ -102,8 +102,8 @@ Defined.
 (** 通常的序数图式只忘却诱导范畴包装；其自然同构相等已经按位置比较。 *)
 
 Program Definition vertex_ordinal_diagram_resp (m n : nat)
-  : VertexDiagramS (OrdinalObjectsF n) [Ord m] →r
-      FunctorS [Ord m] [Ord n]
+  : VertexDiagramS (OrdinalObjF n) [Ord m] →r
+      FctS [Ord m] [Ord n]
   :=
   {|func P := OrdinalVertexF n ∘F P
   |}.
@@ -117,8 +117,8 @@ Defined.
 (** 重新加入标签，无须选取任何新的顶点相等。 *)
 
 Program Definition vertex_ordinal_diagram_inv_resp (m n : nat)
-  : FunctorS [Ord m] [Ord n] →r
-      VertexDiagramS (OrdinalObjectsF n) [Ord m]
+  : FctS [Ord m] [Ord n] →r
+      VertexDiagramS (OrdinalObjF n) [Ord m]
   :=
   {|func P := OrdinalVertexInvF n ∘F P
   |}.
@@ -132,8 +132,8 @@ Defined.
 (** 每个保序映射均保持指定序数运输。 *)
 
 Program Definition OrdinalVertexMapF {m n : nat}
-    (θ : Functor [Ord m] [Ord n])
-  : OrdinalObjectsF m →ᵥ OrdinalObjectsF n
+    (θ : Fct [Ord m] [Ord n])
+  : OrdinalObjF m →ᵥ OrdinalObjF n
   :=
   {|vertex_functor := OrdinalVertexInvF n ∘F θ ∘F OrdinalVertexF m
   |}.
@@ -145,7 +145,7 @@ Next Obligation. exact tt. Defined.
 (** 自然同构的序数映射逐点位置相等，因此给出指定顶点比较。 *)
 
 Global Instance ordinal_vertex_map_proper {m n : nat}
-  : Proper (NatIso ==> VertexFunctorEq) (@OrdinalVertexMapF m n).
+  : Proper (NatIso ==> VtxFctEq) (@OrdinalVertexMapF m n).
 Proof.
   intros θ φ H.
   apply (snd (vertex_ordinal_diagram_eq_iff n _ _)).
@@ -157,8 +157,8 @@ Defined.
 (** 恒等序数映射诱导恒等呈现映射。 *)
 
 Lemma ordinal_vertex_map_id (n : nat)
-  : VertexFunctorEq (OrdinalVertexMapF (@IdF [Ord n]))
-      (VertexIdF (OrdinalObjectsF n)).
+  : VtxFctEq (OrdinalVertexMapF (@IdF [Ord n]))
+      (VertexIdF (OrdinalObjF n)).
 Proof.
   apply (snd (vertex_ordinal_diagram_eq_iff n _ _)).
   intros i. reflexivity.
@@ -169,8 +169,8 @@ Defined.
 (** 序数映射的复合诱导呈现映射的复合。 *)
 
 Lemma ordinal_vertex_map_comp {k m n : nat}
-    (φ : Functor [Ord m] [Ord n]) (θ : Functor [Ord k] [Ord m])
-  : VertexFunctorEq (OrdinalVertexMapF (φ ∘F θ))
+    (φ : Fct [Ord m] [Ord n]) (θ : Fct [Ord k] [Ord m])
+  : VtxFctEq (OrdinalVertexMapF (φ ∘F θ))
       (OrdinalVertexMapF φ ∘Fᵥ OrdinalVertexMapF θ).
 Proof.
   apply (snd (vertex_ordinal_diagram_eq_iff n _ _)).

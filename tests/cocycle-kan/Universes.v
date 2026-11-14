@@ -25,7 +25,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 Definition monoid_lower_equality_fillers (n : nat)
     (i : Ordinal (S (S (S (S (S n))))))
   : HasHornFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u o _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u o _ _ _ _ _})
       (S (S (S (S (S n))))) i
   := cocycle_higher_HasFillers n i.
 
@@ -36,7 +36,7 @@ Definition monoid_lower_equality_fillers (n : nat)
 Definition monoid_higher_equality_fillers (n : nat)
     (i : Ordinal (S (S (S (S (S n))))))
   : HasHornFillers
-      (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (S (S (S (S (S n))))) i
   := cocycle_higher_HasFillers n i.
 
@@ -61,7 +61,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 (** 缺失系数允许较低原生相等。 *)
 
 Definition group_lower_equality_fill (i : Ordinal 3)
-    (b : HornS (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 3 i)
+    (b : HornS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 i)
   : ∃ x, is_horn_filler b x
   := cocycle_horn3_filler i b.
 
@@ -70,7 +70,7 @@ Definition group_lower_equality_fill (i : Ordinal 3)
 (** 相反原生配置也保留完整限制证明。 *)
 
 Definition group_higher_equality_fill (i : Ordinal 3)
-    (b : HornS (Z²(N) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) 3 i)
+    (b : HornS (Z²(N) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) 3 i)
   : ∃ x, is_horn_filler b x
   := cocycle_horn3_filler i b.
 
@@ -99,7 +99,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 (** 较低系数相等及环境相等。 *)
 
 Definition lower_native_lower_ambient_Kan
-  : HasKanFillers (Z²(M) : Functor (Δ^op) SetCat@{u o _ _ _ _ _})
+  : HasKanFillers (Z²(M) : Fct (Δ^op) SetCat@{u o _ _ _ _ _})
   := two_cocycle_HasKanFillers.
 
 (** Lower coefficient equality, higher ambient equality. *)
@@ -107,7 +107,7 @@ Definition lower_native_lower_ambient_Kan
 (** 较低系数相等、较高环境相等。 *)
 
 Definition lower_native_higher_ambient_Kan
-  : HasKanFillers (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+  : HasKanFillers (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   := two_cocycle_HasKanFillers.
 
 (** Higher coefficient equality, lower ambient equality. *)
@@ -115,7 +115,7 @@ Definition lower_native_higher_ambient_Kan
 (** 较高系数相等、较低环境相等。 *)
 
 Definition higher_native_lower_ambient_Kan
-  : HasKanFillers (Z²(N) : Functor (Δ^op) SetCat@{u o _ _ _ _ _})
+  : HasKanFillers (Z²(N) : Fct (Δ^op) SetCat@{u o _ _ _ _ _})
   := two_cocycle_HasKanFillers.
 
 (** Higher coefficient and ambient equality. *)
@@ -123,7 +123,7 @@ Definition higher_native_lower_ambient_Kan
 (** 较高系数相等及环境相等。 *)
 
 Definition higher_native_higher_ambient_Kan
-  : HasKanFillers (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+  : HasKanFillers (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   := two_cocycle_HasKanFillers.
 
 (** Extract a chosen filler and its equation at an arbitrary dimension. *)
@@ -131,7 +131,7 @@ Definition higher_native_higher_ambient_Kan
 (** 在任意维度提取选定填充及其方程。 *)
 
 Definition lower_ambient_actual_fill (n : nat) (i : Ordinal (S n))
-    (b : HornS (Z²(M) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (S n) i)
+    (b : HornS (Z²(M) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (S n) i)
   : ∃ x, is_horn_filler b x
   := @horn_fill _ _ _
       (@hasHornFillers _ lower_native_lower_ambient_Kan n i) b.
@@ -141,7 +141,7 @@ Definition lower_ambient_actual_fill (n : nat) (i : Ordinal (S n))
 (** 完整匹配对象不会迫使相等大小等于载体大小。 *)
 
 Definition higher_ambient_actual_fill (n : nat) (i : Ordinal (S n))
-    (b : HornS (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
+    (b : HornS (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
   : ∃ x, is_horn_filler b x
   := @horn_fill _ _ _
       (@hasHornFillers _ higher_native_higher_ambient_Kan n i) b.

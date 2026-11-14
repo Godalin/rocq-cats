@@ -37,7 +37,7 @@ Context (B : Type@{b}) (A : Ty B).
     层级。 *)
 
 Definition larger_world_NePsh
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+  : Fct ((RenamingCat@{b r l _ _ _ _ _} B)^op)
       SetCat@{b q _ _ _ _ _}
   := NePsh A.
 
@@ -77,7 +77,7 @@ Context (B : Type@{b}) (A : Ty B).
 (** 相反的层级顺序同样受支持，包括 βη 项及从世界箭头到替换的解释。 *)
 
 Definition larger_value_TmPsh
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+  : Fct ((RenamingCat@{b r l _ _ _ _ _} B)^op)
       SetCat@{b q _ _ _ _ _}
   := TmRenamingPsh A.
 
@@ -88,7 +88,7 @@ Definition larger_value_triangle
   := neutral_eta_triangle A.
 
 Definition larger_value_context_interpretation
-  : Functor (RenamingCat@{b r l _ _ _ _ _} B)
+  : Fct (RenamingCat@{b r l _ _ _ _ _} B)
       (Category.CtxCat@{b q l} B)
   := RenamingToContextF B.
 

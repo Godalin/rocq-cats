@@ -64,7 +64,7 @@ End HighNativeEquality.
 Section LowValueEquality.
 Universes r u.
 Constraint r < u.
-Context (X Y Z : Functor (Δ^op) SetCat@{u r _ _ _ _ _})
+Context (X Y Z : Fct (Δ^op) SetCat@{u r _ _ _ _ _})
     (f g : X ⇒ Y) (a b : Y ⇒ Z) (H : f ∼Δ g) (K : a ∼Δ b).
 
 (** Value equality need not contain the value carrier. *)
@@ -96,7 +96,7 @@ End LowValueEquality.
 Section HighValueEquality.
 Universes u r.
 Constraint u < r.
-Context (X Y : Functor (Δ^op) SetCat@{u r _ _ _ _ _}) (f : X ⇒ Y).
+Context (X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}) (f : X ⇒ Y).
 
 (** The opposite strict value-size order supports the same constructions. *)
 

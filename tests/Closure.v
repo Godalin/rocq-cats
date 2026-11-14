@@ -42,7 +42,7 @@ Definition separated_closed_category
 (** 反射与幂等乘法在相同的分离层级工作，不对闭对象见证作大小重设。 *)
 
 Definition separated_closure_adjunction
-  := ClosureAdjunction c.
+  := ClosAdj c.
 Definition separated_closure_monad_iso (x : X)
   := closure_monad_mul_iso c x.
 
@@ -62,7 +62,7 @@ Definition low_witness_closure_universal {x y : X} (hy : is_closed c y)
   : R (c x) y ↔ R x y
   := closure_universal c hy.
 Definition low_witness_closure_reflection
-  := ClosureAdjunction c.
+  := ClosAdj c.
 
 End ReverseLevels.
 

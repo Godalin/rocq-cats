@@ -66,9 +66,9 @@ Context {B : Type@{b}}.
 (** 提升等式语法，保留原有等式见证。 *)
 
 Definition GluingSyntaxF (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}
-  := LiftF ∘F (TmRenamingPsh A : Functor
+  := LiftF ∘F (TmRenamingPsh A : Fct
       ((RenamingCat B)^op) SetCat@{b e _ _ _ _ _}).
 
 (** Raise the existing semantic presheaf, preserving its value equality. *)
@@ -76,9 +76,9 @@ Definition GluingSyntaxF (A : Ty B)
 (** 提升既有语义预层，保持其值相等。 *)
 
 Definition GluingValuesF (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}
-  := LiftF ∘F (SemF A : Functor
+  := LiftF ∘F (SemF A : Fct
       ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}).
 
 (** The same ambient category also contains lifted long normal syntax. *)
@@ -86,9 +86,9 @@ Definition GluingValuesF (A : Ty B)
 (** 同一环境范畴也容纳提升后的长正规语法。 *)
 
 Definition GluingNormalF (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}
-  := LiftF ∘F (NfPsh A : Functor
+  := LiftF ∘F (NfPsh A : Fct
       ((RenamingCat B)^op) SetCat@{b e _ _ _ _ _}).
 
 (** Realization is a respectful diagram relation: equation and semantic
@@ -115,7 +115,7 @@ Defined.
 (** 由一般关系粘合函子得到的已实现语法与值配对。 *)
 
 Definition NormalizationGluingF (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}
   := RelationGluingF (GluingSyntaxF A) (GluingValuesF A)
       (NormalizationRelation A).

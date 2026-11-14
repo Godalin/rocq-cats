@@ -144,7 +144,7 @@ End Reconstruction.
 Section SieveValues.
 Universes u p.
 Context {M : SetC} `{HM : !Monoid M} {n : nat} (R : Sieve Δ n)
-    (b : SievePsh R ⇒ (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})).
+    (b : SievePsh R ⇒ (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
 
 (** Evaluate at a member with its explicit factorization witness. *)
 
@@ -152,7 +152,7 @@ Context {M : SetC} `{HM : !Monoid M} {n : nat} (R : Sieve Δ n)
 
 Definition cocycle_sieve_value {m : nat} (f : (@Hom Δ) m n)
     (H : f ∈Sv R)
-  : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) m
+  : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) m
   := b m {|lower := (f; H)
           |}.
 
@@ -297,7 +297,7 @@ Context (U : ∀ f : (@Hom Δ) 3 n, f ∈Sv R).
 (** 从包含全部三角形与四面体的筛重构实际单形；系数幺半群无须为群。 *)
 
 Definition CocycleSieveSimplex
-  : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n
+  : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := TriangleLabelCocycle cocycle_sieve_triangle
       cocycle_sieve_triangle_proper cocycle_sieve_triangle_unit
@@ -327,7 +327,7 @@ Defined.
 (** 仅三角形覆盖就能反映单形相等。 *)
 
 Lemma cocycle_sieve_reflects
-    (x y : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x y : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     (H : x↾Sv[Z²(M); R] ≈N y↾Sv[Z²(M); R])
   : x ≈S y.
 Proof.
@@ -349,9 +349,9 @@ Defined.
 (** 保留延拓及其完整唯一性。 *)
 
 Definition cocycle_sieve_universal
-  : ∃ x : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n,
+  : ∃ x : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n,
       is_unique (R := carrier_equiv ((Z²(M) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n))
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n))
         (λ x, x↾Sv[Z²(M); R] ≈N b) x.
 Proof.
   exists CocycleSieveSimplex.

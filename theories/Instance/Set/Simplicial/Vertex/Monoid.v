@@ -19,9 +19,9 @@ Local Open Scope monoid_scope.
 
 (** 单元素对象集合的运输为恒等；它识别顶点，但不识别幺半群 Hom 广集中的不同元素。 *)
 
-Definition MonoidObjectsF@{v q +} (M : SetC@{v q})
+Definition MonoidObjF@{v q +} (M : SetC@{v q})
     `{HM : !Monoid M}
-  : Functor (EqGpd UnitS@{Set Set}) B(M)
+  : Fct (EqGpd UnitS@{Set Set}) B(M)
   := ConstF (EqGpd UnitS@{Set Set}) (C := B(M)) tt.
 
 (** Regard the monoid category as the induced category on its labelled
@@ -31,7 +31,7 @@ Definition MonoidObjectsF@{v q +} (M : SetC@{v q})
 
 Program Definition MonoidVertexF@{v q +} (M : SetC@{v q})
     `{HM : !Monoid M}
-  : Functor B(M) (VertexCat (MonoidObjectsF M))
+  : Fct B(M) (VertexCat (MonoidObjF M))
   :=
   {|F0 x := x
   ; F1 x y f := f
@@ -47,8 +47,8 @@ Next Obligation. reflexivity. Defined.
 
 Program Definition MonoidVertexN@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
-  : (LiftF ∘F Nₘ(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
-      Nᵥ(MonoidObjectsF M)
+  : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+      Nᵥ(MonoidObjF M)
   :=
   {|nt n :=
       {|func xs := ⟨MonoidVertexF M ∘F MonoidChainF (lower xs)⟩ᵥ
@@ -81,7 +81,7 @@ Defined.
 Lemma monoid_vertex_reflects@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat} (xs ys : M ^S n)
   : (MonoidVertexN : (LiftF ∘F Nₘ(M) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) n
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) n
         {|lower := xs
         |} ≈S MonoidVertexN n {|lower := ys
                               |} → xs ≈S ys.
@@ -99,8 +99,8 @@ Defined.
 
 Lemma monoid_vertex_diagram@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
-  : (VertexDiagramN (MonoidObjectsF M) ∘Nv MonoidVertexN :
-      (LiftF ∘F Nₘ(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
+  : (VertexDiagramN (MonoidObjF M) ∘Nv MonoidVertexN :
+      (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       MonoidDiagramN.
 Proof.
   intros n [xs]. refine {|lower := _
@@ -114,7 +114,7 @@ Defined.
 
 Definition monoid_vertex_chain@{v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat}
-    (F : Functor [Ord n] (VertexCat (MonoidObjectsF M)))
+    (F : Fct [Ord n] (VertexCat (MonoidObjF M)))
   : M ^S n
   := λ i, fmap F (ordinal_step i).
 
@@ -125,8 +125,8 @@ Definition monoid_vertex_chain@{v q +} {M : SetC@{v q}}
 
 Definition monoid_vertex_reconstruct@{v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat}
-    (F : Functor [Ord n] (VertexCat (MonoidObjectsF M)))
-  : VertexDiagramEq (MonoidObjectsF M)
+    (F : Fct [Ord n] (VertexCat (MonoidObjF M)))
+  : VertexDiagramEq (MonoidObjF M)
       (MonoidVertexF M ∘F MonoidChainF (monoid_vertex_chain F)) F.
 Proof.
   exists (λ i, tt). apply ordinal_naturality_steps. intros i.
@@ -141,7 +141,7 @@ Defined.
 
 Lemma monoid_vertex_segment@{v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat}
-    (F : Functor [Ord n] (VertexCat (MonoidObjectsF M)))
+    (F : Fct [Ord n] (VertexCat (MonoidObjF M)))
     (i j : Ordinal n) (f : (@Hom [Ord n]) i j)
   : (monoid_vertex_chain F)⟦i, j⟧⋅ ≈S fmap F f.
 Proof.
@@ -156,7 +156,7 @@ Defined.
 
 Program Definition VertexMonoidN@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
-  : (Nᵥ(MonoidObjectsF M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+  : (Nᵥ(MonoidObjF M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       (LiftF ∘F Nₘ(M))
   :=
   {|nt n :=
@@ -187,8 +187,8 @@ Defined.
 
 Definition monoid_vertex_iso@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
-  : (LiftF ∘F Nₘ(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
-      Nᵥ(MonoidObjectsF M).
+  : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+      Nᵥ(MonoidObjF M).
 Proof.
   exists MonoidVertexN. intros n. exists (VertexMonoidN n). split.
   - intros [xs]. refine {|lower := _

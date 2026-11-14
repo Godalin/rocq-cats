@@ -68,8 +68,8 @@ Definition ArrowKleisli
 (** 一般伴随比较求值动态命名，在值索引上的对象映射为恒等。 *)
 
 Definition DynamicEvaluationF
-  : Functor (KleisliCat (ArrowMonad AA)) (ComputationCat AA)
-  := AdjunctionKleisliF (ArrowApplyAdjunction AA).
+  : Fct (KleisliCat (ArrowMonad AA)) (ComputationCat AA)
+  := AdjKleisliF (ArrowApplyAdj AA).
 
 (** Reuse the general comparison theorem with computational transpose
     preimages; no native Hom sizes are identified. *)
@@ -78,7 +78,7 @@ Definition DynamicEvaluationF
 
 Definition dynamic_evaluation_fully_faithful
   : is_fully_faithful DynamicEvaluationF
-  := adjunction_kleisli_fully_faithful (ArrowApplyAdjunction AA).
+  := adjunction_kleisli_fully_faithful (ArrowApplyAdj AA).
 
 (** Name original computations as reconstructed Kleisli arrows. Both
     functor laws are inherited from the general full-faithful inverse. *)
@@ -86,7 +86,7 @@ Definition dynamic_evaluation_fully_faithful
 (** 将原计算命名为重建后的 Kleisli 箭头，两条函子律均继承自一般全忠实逆。 *)
 
 Program Definition DynamicNamingF
-  : Functor (ComputationCat AA) (KleisliCat (ArrowMonad AA))
+  : Fct (ComputationCat AA) (KleisliCat (ArrowMonad AA))
   :=
   {|F0 X := X
   ; F1 X Y f := arrow_dynamic_name AA f
@@ -192,7 +192,7 @@ Qed.
 Lemma dynamic_evaluation_pre {X Y Z : SetC@{u p}}
     (f : Y →r ArrowMonad AA Z) (h : X →r Y)
   : arrow_dynamic_eval AA (f ∘r h) ≈ arrow_dynamic_eval AA f ∘ arr[AA; h].
-Proof. exact (unadjunct_comp_r (ArrowApplyAdjunction AA) f h). Qed.
+Proof. exact (unadjunct_comp_r (ArrowApplyAdj AA) f h). Qed.
 
 (** Evaluation recovers the original pure arrow from reconstructed return. *)
 

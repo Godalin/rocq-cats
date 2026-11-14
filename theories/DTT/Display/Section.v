@@ -21,7 +21,7 @@ From Cats Require Import
     不预设族值预层或带族范畴。 *)
 
 Section DisplayTerms.
-Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
+Context {C : Cat} (P : Fct (C^op) SetCat) `{HD : !HasDisplay C P}.
 
 (** Display conversion acts respectfully on sections of display projections. *)
 
@@ -88,7 +88,7 @@ Notation "s '[' σ ']TmD[' P ']'" := (display_term_sub_resp P σ s)
     保持 [P] 的显示结构固定，证明项替换的计算、转换和复合定律，再将类型与项组装为族值预层。 *)
 
 Section DisplayTermLaws.
-Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
+Context {C : Cat} (P : Fct (C^op) SetCat) `{HD : !HasDisplay C P}.
 
 (** The substituted section has the prescribed composite with the display
     lift. *)
@@ -175,7 +175,7 @@ Next Obligation. apply display_term_sub_conv. Qed.
 (** 相干显示截面构成族值预层。 *)
 
 Program Definition DisplayTyTmF
-  : Functor (C^op) FamCat
+  : Fct (C^op) FamCat
   :=
   {|F0 := DisplayTyTm P
   ; F1 Γ Δ σ := display_sub_fam σ

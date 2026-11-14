@@ -18,13 +18,13 @@ From Cats Require Import
     逆，但其同伦仍恢复以这两个原标签为端点的自然变换。 *)
 
 Definition InitialF
-  : VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set} →ᵥ
-      OrdinalObjectsF 1
+  : VertexTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
+      OrdinalObjF 1
   := OrdinalVertexPointF 1 fin_first.
 
 Definition FinalF
-  : VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set} →ᵥ
-      OrdinalObjectsF 1
+  : VertexTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
+      OrdinalObjF 1
   := OrdinalVertexPointF 1 (fin_next fin_first).
 
 Program Definition DirectedN
@@ -45,8 +45,8 @@ Proof. intros H. exact (H tt).1. Defined.
 Definition DirectedHomotopy
   : SimplicialHomotopy
       (VertexNerveN InitialF :
-        (Nᵥ(VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set}) :
-          Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(OrdinalObjectsF 1))
+        (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+          Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(OrdinalObjF 1))
       (VertexNerveN FinalF)
   := VertexNerveHomotopy DirectedN.
 

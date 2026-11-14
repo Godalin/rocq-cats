@@ -72,7 +72,7 @@ respectfulness 对路径相等的生成规则归纳证明。
 第三条锥腿由任一侧复合决定；证明只比较态射，不比较交换性见证。
 
 这些选定结构只通过显式定义启用，不由导入全局注册。
-它们可直接传给 `LimitAdjunction`，得到相应形状的对角函子右伴随。
+它们可直接传给 `LimAdj`，得到相应形状的对角函子右伴随。
 右伴随保持积、拉回则直接由一般极限保持定理和上述泛性质对应导出，
 不重新证明模型专属的中介唯一性。
 
@@ -142,27 +142,27 @@ free paths, as witnessed by counting the top edge, but their images agree by
 ## Free diagrams and comma-initiality / 自由图式与逗号始性
 
 For a fixed graph `G` and target category `C`,
-[GeneratorDiagramCat](../theories/Cat/Diagram/Generator.v) has graph
+[GenDiagramCat](../theories/Cat/Diagram/Generator.v) has graph
 interpretations as objects and generator-natural vertex arrows as morphisms.
 Its hom equality compares those arrows pointwise. It does not compare vertex
 functions or commuting-square witnesses by Rocq equality.
 
 固定图 `G` 及目标范畴 `C` 后，
-[GeneratorDiagramCat](../theories/Cat/Diagram/Generator.v) 以图解释为对象，
+[GenDiagramCat](../theories/Cat/Diagram/Generator.v) 以图解释为对象，
 以在生成边上自然的顶点箭头族为态射。Hom 相等逐点比较箭头，不使用 Rocq
 相等比较顶点函数或交换方形见证。
 
-Restriction gives a functor from `Fct (FreeCat G) C` to this category.
-`GeneratorUnit` has the direct universal-arrow property, proved with the
-existing `FreeN` path-extension theorem. `GeneratorFreeObjects` packages it
-as initiality in a structured-arrow category. The general `FreeAdjunction`
-then constructs `GeneratorFreeAdjunction`; its unit and counit are invertible,
+Restriction gives a functor from `FctCat (FreeCat G) C` to this category.
+`GenUnit` has the direct universal-arrow property, proved with the
+existing `FreeN` path-extension theorem. `GenFreeObj` packages it
+as initiality in a structured-arrow category. The general `FreeAdj`
+then constructs `GenFreeAdj`; its unit and counit are invertible,
 yielding `generator_diagram_equiv`.
 
-限制给出从 `Fct (FreeCat G) C` 到此范畴的函子。`GeneratorUnit` 具有直接
-泛箭头性质，证明复用已有 `FreeN` 路径延拓定理。`GeneratorFreeObjects` 将其
-包装为结构箭头范畴中的始性，再由一般 `FreeAdjunction` 构造
-`GeneratorFreeAdjunction`；单位与余单位均可逆，得到
+限制给出从 `FctCat (FreeCat G) C` 到此范畴的函子。`GenUnit` 具有直接
+泛箭头性质，证明复用已有 `FreeN` 路径延拓定理。`GenFreeObj` 将其
+包装为结构箭头范畴中的始性，再由一般 `FreeAdj` 构造
+`GenFreeAdj`；单位与余单位均可逆，得到
 `generator_diagram_equiv`。
 
 This is an ordinary adjunction between two categories of diagrams, with all

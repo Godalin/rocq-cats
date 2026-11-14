@@ -100,10 +100,10 @@ app ((v ^ u) ∘ g) a ≈ v ∘ app g (u ∘ a)
 参数的变化，本节处理函数参数类型与结果类型的变化。
 
 ```text
-ExponentialBiF          : Functor (C^op ×C C) C
+ExponentialBiF          : Fct (C^op ×C C) C
 ExponentialBiF (X, Y)   = Y ^ X
 (-^-)                  表示 ExponentialBiF
-ExponentialContraF Y   : Functor (C^op) C
+ExponentialContraF Y   : Fct (C^op) C
 (Y ^-)                 表示 ExponentialContraF Y
 ```
 
@@ -272,12 +272,12 @@ curry (app (f ∘ π1) π2) ≈ f
 
 ## 5. 通用伴随、语法 CCC 与自由性质
 
-[Adjunction](../theories/Cat/Adjunction.v) 以一个 `Class` 保存两侧 Hom
+[Adj](../theories/Cat/Adjunction.v) 以一个 `Class` 保存两侧 Hom
 函子之间的自然同构：
 
 ```text
 A : F ⊣ G
-adjunction_hom A : LeftHomF F ≅N RightHomF G
+adj_hom A : LeftHomF F ≅N RightHomF G
 ```
 
 这两个函子在 [Hom](../theories/Instance/Set/Hom.v) 中由已有 `HomF`、
@@ -305,12 +305,12 @@ fmap G (ε Y) ∘ η(G Y) ≈ id
 `f^♯[A] ≈ fmap G f ∘ η X`、`g^♭[A] ≈ ε Y ∘ fmap F g`。
 这些结论对任意两个范畴成立，不将源范畴特化为集合范畴或 CCC。
 
-`AdjunctionFromHom` 是构造这个自然同构的便利接口：接受两个互逆的
+`AdjFromHom` 是构造这个自然同构的便利接口：接受两个互逆的
 尊重映射，以及正向映射在源对象和目标对象上的自然性。
 任意逐点同构并不自动自然；这部分证据必须提供一次。
-如果已有自然同构，则直接填入 `adjunction_hom`，不用通过这个便利接口重证。
+如果已有自然同构，则直接填入 `adj_hom`，不用通过这个便利接口重证。
 `adjunct_from_hom` / `unadjunct_from_hom` 说明所得转置与原映射逐点相等。
-`IdAdjunction` 和 `CompAdjunction` 分别给出恒等伴随与伴随复合；
+`IdAdj` 和 `CompAdj` 分别给出恒等伴随与伴随复合；
 复合复用 hom 对应的构造，不重复证明单位／余单位的长复合等式。
 
 [Set.Adjunction](../theories/Instance/Set/Adjunction.v) 允许将已有伴随的
@@ -332,7 +332,7 @@ C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
 固定 X 后，`ProductRF X`（记号 `(-× X)`）与 `ExponentialF X`
 （记号 `(-^ X)`）的态射作用分别为 `σ × id` 和 `exponential_map`。
 `ProductF` 还给出两个参数同时变化的积双函子。
-`ProductExponentialAdjunction X` 将 `curry` / `uncurry` 实例化为通用伴随：
+`ProdExpAdj X` 将 `curry` / `uncurry` 实例化为通用伴随：
 
 ```text
 (-) × X ⊣ (-)^X
@@ -496,7 +496,7 @@ CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境�
 
 ### 保持结构的函子与解释比较
 
-[Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 的 `IsCartesianF`
+[Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 的 `IsCartF`
 要求像终对象和像积满足完整泛性质。[Functor.Closed](../theories/Cat/Functor/Closed.v)
 的 `IsCCCF` 再要求规范指数比较可逆。积的比较、逆比较及其自然性均由泛性质
 导出；指数比较由像求值转置而得。它们不要求选定对象或函子记录原生相等。

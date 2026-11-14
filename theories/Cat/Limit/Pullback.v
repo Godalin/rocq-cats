@@ -14,7 +14,7 @@ From Cats Require Export Cat.Diagram.Shape.
 (** * 拉回作为余跨度图式的极限 *)
 
 Section PullbackLimits.
-Context {C : Cat} {D : Functor CospanShape C} {P : @Ob C} (κ : P ⇒Δ D).
+Context {C : Cat} {D : Fct CospanShape C} {P : @Ob C} (κ : P ⇒Δ D).
 
 (** The candidate pullback property gives a limit of the cospan diagram. *)
 
@@ -129,7 +129,7 @@ Defined.
 (** 由一般右伴随保持定理，像锥仍为拉回。 *)
 
 Definition right_adjoint_preserves_pullback {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {X Y Z P : @Ob D} {f : Hom X Z} {g : Hom Y Z}
     {p : Hom P X} {q : Hom P Y} (HP : is_pullback f g P p q)
   : is_pullback (fmap G f) (fmap G g) (G P) (fmap G p) (fmap G q)

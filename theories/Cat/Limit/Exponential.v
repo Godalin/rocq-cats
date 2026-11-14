@@ -28,9 +28,9 @@ Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 (** 将右伴随定理用于指定极限锥，不要求选择全部极限或终对象。 *)
 
 Definition exponential_preserves_limit (A : @Ob C) {J : Cat}
-    {D : Functor J C} {L : @Ob C} {κ : L ⇒Δ D} (Hκ : is_limit κ)
+    {D : Fct J C} {L : @Ob C} {κ : L ⇒Δ D} (Hκ : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
-  := right_adjoint_preserves_limit (ProductExponentialAdjunction A) Hκ.
+  := right_adjoint_preserves_limit (ProdExpAdj A) Hκ.
 
 (** Any terminal object remains terminal after exponentiation. *)
 
@@ -39,7 +39,7 @@ Definition exponential_preserves_limit (A : @Ob C) {J : Cat}
 Definition exponential_preserves_terminal (A : @Ob C) {T : @Ob C}
     (HT : is_terminal T)
   : is_terminal (T ^ A)
-  := right_adjoint_preserves_terminal (ProductExponentialAdjunction A) HT.
+  := right_adjoint_preserves_terminal (ProdExpAdj A) HT.
 
 (** Exponentiation preserves the full property of a candidate product. *)
 
@@ -49,7 +49,7 @@ Definition exponential_preserves_product (A : @Ob C) {X Y P : @Ob C}
     {p : Hom P X} {q : Hom P Y} (H : is_product X Y P p q)
   : is_product (X ^ A) (Y ^ A) (P ^ A)
       (fmap (-^ A) p) (fmap (-^ A) q)
-  := right_adjoint_preserves_product (ProductExponentialAdjunction A) H.
+  := right_adjoint_preserves_product (ProdExpAdj A) H.
 
 (** Preserve an existing equalizer; a CCC need not have all equalizers. *)
 
@@ -59,7 +59,7 @@ Definition exponential_preserves_equalizer (A : @Ob C) {X Y E : @Ob C}
     {f g : Hom X Y} {e : Hom E X} (H : is_equalizer f g E e)
   : is_equalizer (fmap (-^ A) f) (fmap (-^ A) g)
       (E ^ A) (fmap (-^ A) e)
-  := right_adjoint_preserves_equalizer (ProductExponentialAdjunction A) H.
+  := right_adjoint_preserves_equalizer (ProdExpAdj A) H.
 
 (** Preserve an existing pullback, under its candidate universal property. *)
 
@@ -70,16 +70,16 @@ Definition exponential_preserves_pullback (A : @Ob C)
     {p : Hom P X} {q : Hom P Y} (H : is_pullback f g P p q)
   : is_pullback (fmap (-^ A) f) (fmap (-^ A) g) (P ^ A)
       (fmap (-^ A) p) (fmap (-^ A) q)
-  := right_adjoint_preserves_pullback (ProductExponentialAdjunction A) H.
+  := right_adjoint_preserves_pullback (ProdExpAdj A) H.
 
 (** Finite-product preservation follows from the same adjunction. This
     selected proof remains explicitly enabled. *)
 
 (** 有限积保持性来自同一个伴随；此选定证明仍须显式启用。 *)
 
-Program Definition ExponentialF_IsCartesianF `{HT : !HasTerminal C}
+Program Definition ExponentialF_IsCartF `{HT : !HasTerminal C}
     (A : @Ob C)
-  : IsCartesianF (-^ A) HT HP
+  : IsCartF (-^ A) HT HP
   :=
   {|functor_terminal := exponential_preserves_terminal A terminal_universal
   ; functor_product X Y := exponential_preserves_product A product_universal

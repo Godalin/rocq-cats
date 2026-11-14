@@ -29,7 +29,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 
 Definition lower_native_lower_ambient_class_iso
   : LiftS@{_ _ v q}
-      (TwoSphereClassS (Z²(M) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (TwoSphereClassS (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
         (two_cocycle_simplex_unit 0)) ≅[SetCat] LiftS@{_ _ v q} M
   := cocycle_two_sphere_class_iso.
 
@@ -39,7 +39,7 @@ Definition lower_native_lower_ambient_class_iso
 
 Definition lower_native_higher_ambient_class_iso
   : LiftS@{_ _ v q}
-      (TwoSphereClassS (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (TwoSphereClassS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
         (two_cocycle_simplex_unit 0)) ≅[SetCat] LiftS@{_ _ v q} M
   := cocycle_two_sphere_class_iso.
 
@@ -49,7 +49,7 @@ Definition lower_native_higher_ambient_class_iso
 
 Definition higher_native_lower_ambient_class_iso
   : LiftS@{_ _ v q}
-      (TwoSphereClassS (Z²(N) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (TwoSphereClassS (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
         (two_cocycle_simplex_unit 0)) ≅[SetCat] LiftS@{_ _ v q} N
   := cocycle_two_sphere_class_iso.
 
@@ -59,7 +59,7 @@ Definition higher_native_lower_ambient_class_iso
 
 Definition higher_native_higher_ambient_class_iso
   : LiftS@{_ _ v q}
-      (TwoSphereClassS (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (TwoSphereClassS (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
         (two_cocycle_simplex_unit 0)) ≅[SetCat] LiftS@{_ _ v q} N
   := cocycle_two_sphere_class_iso.
 
@@ -69,7 +69,7 @@ Definition higher_native_higher_ambient_class_iso
 
 Definition lower_common_equality_class_iso
   : LiftS@{_ _ q v}
-      (TwoSphereClassS (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (TwoSphereClassS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
         (two_cocycle_simplex_unit 0)) ≅[SetCat] LiftS@{_ _ q v} M
   := cocycle_two_sphere_class_iso.
 
@@ -79,7 +79,7 @@ Definition lower_common_equality_class_iso
 
 Definition reverse_lower_common_equality_class_iso
   : LiftS@{_ _ q v}
-      (TwoSphereClassS (Z²(N) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (TwoSphereClassS (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
         (two_cocycle_simplex_unit 0)) ≅[SetCat] LiftS@{_ _ q v} N
   := cocycle_two_sphere_class_iso.
 
@@ -99,15 +99,15 @@ Local Existing Instance BoolS_Monoid.
 Universes e h o l u p.
 Constraint e < h, h < o, o < l, l < u, u < p.
 Context (A : SetC@{o e}) (C : Cat@{o h e l l})
-    (T : Functor (EqGpd A) C).
+    (T : Fct (EqGpd A) C).
 
 (** Lower ambient equality retains the obstruction. *)
 
 (** 较低环境相等保留该障碍。 *)
 
 Definition lower_equality_nerve_obstruction
-  : ¬ ((Z²(BoolS) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N
-      (VertexNerve T : Functor (Δ^op) SetCat@{u o _ _ _ _ _}))
+  : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N
+      (VertexNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
   := bool_cocycle_not_vertex_nerve T.
 
 (** Higher ambient equality retains the same obstruction. *)
@@ -115,8 +115,8 @@ Definition lower_equality_nerve_obstruction
 (** 较高环境相等也保留同样的障碍。 *)
 
 Definition higher_equality_nerve_obstruction
-  : ¬ ((Z²(BoolS) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
-      (VertexNerve T : Functor (Δ^op) SetCat@{u p _ _ _ _ _}))
+  : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+      (VertexNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
   := bool_cocycle_not_vertex_nerve T.
 
 End NerveSizes.

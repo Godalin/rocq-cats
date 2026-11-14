@@ -14,7 +14,7 @@ From Cats Require Export Cat.Diagram.Discrete.
 (** * 终对象作为空图式的极限 *)
 
 Section EmptyLimits.
-Context {C : Cat} {D : Functor EmptyShape C} {T : @Ob C} (κ : T ⇒Δ D).
+Context {C : Cat} {D : Fct EmptyShape C} {T : @Ob C} (κ : T ⇒Δ D).
 
 (** A terminal object supplies the limiting cone on any empty diagram. *)
 
@@ -61,7 +61,7 @@ End EmptyLimits.
 (** 用选定终对象结构选择空图式的极限。 *)
 
 Program Definition TerminalDiagramLimit {C : Cat} `{HT : !HasTerminal C}
-    (D : Functor EmptyShape C)
+    (D : Fct EmptyShape C)
   : HasLimit C D
   :=
   {|Lim := 1
@@ -100,7 +100,7 @@ Defined.
 (** 右伴随保持候选终对象的泛性质。 *)
 
 Definition right_adjoint_preserves_terminal {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {T : @Ob D} (HT : is_terminal T)
   : is_terminal (G T)
   := empty_limit_terminal (MapCone G (@EmptyCone D (EmptyDiagram D) T))

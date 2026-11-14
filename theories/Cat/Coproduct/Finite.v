@@ -87,7 +87,7 @@ Qed.
 (** 原有限离散极限通过共用自对偶适配给出通常离散余极限。 *)
 
 Definition FiniteCoproductColimit {n : nat}
-    (D : Functor (DiscreteCat (Fin n)) C)
+    (D : Fct (DiscreteCat (Fin n)) C)
   : HasColimit C D
   := @DiscreteDiagramColimit C (Fin n) D
       (@FiniteProductLimit (C^op) (@hasOpTerminal C HI)

@@ -20,7 +20,7 @@ Local Open Scope monoid_scope.
     [Hom(tt,-)]，继承其单位律与复合律，不再重复证明。 *)
 
 Definition RegularActionF (M : SetC) `{HM : !Monoid M}
-  : Functor B(M) SetCat
+  : Fct B(M) SetCat
   := @ℎ1F B(M) tt.
 
 (** The action of an element is left multiplication. *)

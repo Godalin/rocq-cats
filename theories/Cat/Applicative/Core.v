@@ -22,7 +22,7 @@ Class Applicative (C : Cat) (HT : HasTerminal C) (HP : HasProduct C)
 
   (** 唯一底层视图是笛卡尔 lax 自函子。 *)
 
-  { ApplicativeLax :> LaxMonoidalFunctor
+  { ApplicativeLax :> LaxMonoidalFct
       (@CartesianMonoidal C HT HP) (@CartesianMonoidal C HT HP)
 
   (** Pure values commute with ordinary maps. *)

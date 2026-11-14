@@ -28,15 +28,15 @@ Constraint l < u.
 Constraint u < p.
 Context (X : SetC@{o e}) (Y : SetC@{e o})
     (C : Cat@{o h e l l}) (D : Cat@{e h o l l})
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D).
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D).
 
 (** Product comparison with value equality below the value carrier. *)
 
 (** 值相等低于值载体的积比较。 *)
 
 Definition low_eq_product_iso
-  : (Nᵥ(VertexProductObjectsF T U) :
-      Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N VertexNerveProduct T U
+  : (Nᵥ(VertexProductObjF T U) :
+      Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N VertexNerveProduct T U
   := vertex_nerve_product_iso T U.
 
 (** Product comparison with value equality above the value carrier. *)
@@ -44,8 +44,8 @@ Definition low_eq_product_iso
 (** 值相等高于值载体的积比较。 *)
 
 Definition high_eq_product_iso
-  : (Nᵥ(VertexProductObjectsF T U) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N VertexNerveProduct T U
+  : (Nᵥ(VertexProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N VertexNerveProduct T U
   := vertex_nerve_product_iso T U.
 
 (** Exchange the two native size profiles. *)
@@ -53,8 +53,8 @@ Definition high_eq_product_iso
 (** 交换两个原生大小配置。 *)
 
 Definition reverse_product_iso
-  : (Nᵥ(VertexProductObjectsF U T) :
-      Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N VertexNerveProduct U T
+  : (Nᵥ(VertexProductObjF U T) :
+      Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N VertexNerveProduct U T
   := vertex_nerve_product_iso U T.
 
 (** The native correspondence also admits a larger arbitrary probe. *)
@@ -62,7 +62,7 @@ Definition reverse_product_iso
 (** 原生对应也允许更大且任意的探测范畴。 *)
 
 Definition native_diagram_product_iso (J : Cat@{e h o l l})
-  : VertexDiagramS (VertexProductObjectsF T U) J ≅[SetCat]
+  : VertexDiagramS (VertexProductObjF T U) J ≅[SetCat]
       (VertexDiagramS T J ×S VertexDiagramS U J)
   := vertex_diagram_product_iso T U J.
 
@@ -71,7 +71,7 @@ Definition native_diagram_product_iso (J : Cat@{e h o l l})
 (** 终图式比较不能迫使探测范畴变为小范畴。 *)
 
 Definition native_diagram_terminal_iso (J : Cat@{e h o l l})
-  : VertexDiagramS VertexTerminalObjectsF J ≅[SetCat] UnitS@{l o}
+  : VertexDiagramS VertexTerminalObjF J ≅[SetCat] UnitS@{l o}
   := vertex_diagram_terminal_iso J.
 
 (** Naturality exchanges factors with different native size profiles. *)
@@ -80,8 +80,8 @@ Definition native_diagram_terminal_iso (J : Cat@{e h o l l})
 
 Definition exchanged_product_naturality (F : T →ᵥ U) (G : U →ᵥ T)
   : (VertexNerveProductN U T ∘Nv VertexNerveN (VertexProductF F G) :
-      (Nᵥ(VertexProductObjectsF T U) :
-        Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ _) ≈N
+      (Nᵥ(VertexProductObjF T U) :
+        Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ _) ≈N
       (@PointwiseProductN _ _ SetCat_HasProduct _ _ _ _
         (VertexNerveN F) (VertexNerveN G) ∘Nv VertexNerveProductN T U)
   := vertex_nerve_product_natural F G.
@@ -97,14 +97,14 @@ Universes u p.
 Constraint u < p.
 
 Definition low_eq_terminal_iso
-  : (Nᵥ(VertexTerminalObjectsF) :
-      Functor (Δ^op) SetCat@{p u _ _ _ _ _}) ≅N
+  : (Nᵥ(VertexTerminalObjF) :
+      Fct (Δ^op) SetCat@{p u _ _ _ _ _}) ≅N
       ConstF (Δ^op) UnitS@{p u}
   := vertex_nerve_terminal_iso.
 
 Definition high_eq_terminal_iso
-  : (Nᵥ(VertexTerminalObjectsF) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+  : (Nᵥ(VertexTerminalObjF) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       ConstF (Δ^op) UnitS@{u p}
   := vertex_nerve_terminal_iso.
 

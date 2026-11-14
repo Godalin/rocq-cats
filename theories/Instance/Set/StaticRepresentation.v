@@ -97,7 +97,7 @@ Context (H : is_static_arrow A).
 (** 将解释函子经已有值索引计算范畴分解。 *)
 
 Definition StaticRepresentationF
-  : Functor (StaticCat (ArrowA K A)) (ComputationCat A)
+  : Fct (StaticCat (ArrowA K A)) (ComputationCat A)
   := InducedF (StaticInterpretF K A).
 
 (** Reuse the general fully faithful inverse on the indexed image objects. *)
@@ -105,7 +105,7 @@ Definition StaticRepresentationF
 (** 在索引像对象上复用一般完全忠实逆函子。 *)
 
 Definition StaticReifyF
-  : Functor (ComputationCat A) (StaticCat (ArrowA K A))
+  : Fct (ComputationCat A) (StaticCat (ArrowA K A))
   := FullyFaithfulInverseF (StaticInterpretF K A)
       (static_interpret_fully_faithful H).
 

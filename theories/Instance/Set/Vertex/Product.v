@@ -22,10 +22,10 @@ From Cats Require Import
 
 (** 积呈现在每个因子中使用给定的运输。 *)
 
-Program Definition VertexProductObjectsF
+Program Definition VertexProductObjF
     {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)
-  : Functor (EqGpd (X ×S Y)) (C ×C D)
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
+  : Fct (EqGpd (X ×S Y)) (C ×C D)
   := PairF (T ∘F EqGpdF ({|func := fst
                           |} : (X ×S Y) →r X))
       (U ∘F EqGpdF ({|func := snd
@@ -45,14 +45,14 @@ Next Obligation. intros [x y] [x' y'] [p q]. exact q. Defined.
 
 Section Product.
 Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D).
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D).
 
 (** Projection preserves labels and their specified transports. *)
 
 (** 投影保持标签及其指定运输。 *)
 
 Program Definition VertexFstF
-  : VertexProductObjectsF T U →ᵥ T
+  : VertexProductObjF T U →ᵥ T
   :=
   {|vertex_functor := FstF (VertexCat T) (VertexCat U) ∘F
       InducedProductF X Y T U
@@ -65,7 +65,7 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 (** 第二投影同样保持运输。 *)
 
 Program Definition VertexSndF
-  : VertexProductObjectsF T U →ᵥ U
+  : VertexProductObjF T U →ᵥ U
   :=
   {|vertex_functor := SndF (VertexCat T) (VertexCat U) ∘F
       InducedProductF X Y T U
@@ -78,8 +78,8 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 (** 通过配对底层函子，配对同源呈现映射。 *)
 
 Program Definition VertexPairF {Z : SetC} {E : Cat}
-    {V : Functor (EqGpd Z) E} (F : V →ᵥ T) (G : V →ᵥ U)
-  : V →ᵥ VertexProductObjectsF T U
+    {V : Fct (EqGpd Z) E} (F : V →ᵥ T) (G : V →ᵥ U)
+  : V →ᵥ VertexProductObjF T U
   :=
   {|vertex_functor := InducedProductInvF X Y T U ∘F PairF F G
   |}.
@@ -93,7 +93,7 @@ Next Obligation. split; apply vertex_functor_transport_witness. Defined.
 (** 通过与投影作保相等后复合，拆分带标签图式。 *)
 
 Program Definition vertex_diagram_product_split_resp (J : Cat)
-  : VertexDiagramS (VertexProductObjectsF T U) J →r
+  : VertexDiagramS (VertexProductObjF T U) J →r
       (VertexDiagramS T J ×S VertexDiagramS U J)
   :=
   {|func F := (vertex_diagram_postcomp_resp VertexFstF F,
@@ -111,7 +111,7 @@ Defined.
 
 Program Definition vertex_diagram_product_pair_resp (J : Cat)
   : (VertexDiagramS T J ×S VertexDiagramS U J) →r
-      VertexDiagramS (VertexProductObjectsF T U) J
+      VertexDiagramS (VertexProductObjF T U) J
   :=
   {|func FG := InducedProductInvF X Y T U ∘F PairF (fst FG) (snd FG)
   |}.
@@ -127,7 +127,7 @@ Defined.
 (** 原生图式的拆分及配对在带标签相等下互逆，无需函数或函子定律的相等。 *)
 
 Definition vertex_diagram_product_iso (J : Cat)
-  : VertexDiagramS (VertexProductObjectsF T U) J ≅[SetCat]
+  : VertexDiagramS (VertexProductObjF T U) J ≅[SetCat]
       (VertexDiagramS T J ×S VertexDiagramS U J).
 Proof.
   exists (vertex_diagram_product_split_resp J),
@@ -160,17 +160,17 @@ Defined.
 (** 配对保持两个呈现映射的指定比较。 *)
 
 Global Instance vertex_pair_proper {Z : SetC} {E : Cat}
-    {V : Functor (EqGpd Z) E}
-  : Proper (VertexFunctorEq ==> VertexFunctorEq ==> VertexFunctorEq)
+    {V : Fct (EqGpd Z) E}
+  : Proper (VtxFctEq ==> VtxFctEq ==> VtxFctEq)
       (VertexPairF (V := V)).
 Proof.
   intros F F' H G G' K.
   exact (@func_proper _ _
     (vertex_diagram_product_pair_resp (VertexCat V))
-    ((F : Functor (VertexCat V) (VertexCat T)),
-     (G : Functor (VertexCat V) (VertexCat U)))
-    ((F' : Functor (VertexCat V) (VertexCat T)),
-     (G' : Functor (VertexCat V) (VertexCat U))) (H, K)).
+    ((F : Fct (VertexCat V) (VertexCat T)),
+     (G : Fct (VertexCat V) (VertexCat U)))
+    ((F' : Fct (VertexCat V) (VertexCat T)),
+     (G' : Fct (VertexCat V) (VertexCat U))) (H, K)).
 Defined.
 
 End Product.
@@ -182,10 +182,10 @@ End Product.
 Definition VertexProductF
     {X : SetC} {Y : SetC} {X' : SetC} {Y' : SetC}
     {C : Cat} {D : Cat} {C' : Cat} {D' : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {T' : Functor (EqGpd X') C'} {U' : Functor (EqGpd Y') D'}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {T' : Fct (EqGpd X') C'} {U' : Fct (EqGpd Y') D'}
     (F : T →ᵥ T') (G : U →ᵥ U')
-  : VertexProductObjectsF T U →ᵥ VertexProductObjectsF T' U'
+  : VertexProductObjF T U →ᵥ VertexProductObjF T' U'
   := VertexPairF T' U' (F ∘Fᵥ VertexFstF T U) (G ∘Fᵥ VertexSndF T U).
 
 (** Independent products preserve comparison of both factors. *)
@@ -195,9 +195,9 @@ Definition VertexProductF
 Global Instance vertex_product_proper
     {X : SetC} {Y : SetC} {X' : SetC} {Y' : SetC}
     {C : Cat} {D : Cat} {C' : Cat} {D' : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {T' : Functor (EqGpd X') C'} {U' : Functor (EqGpd Y') D'}
-  : Proper (VertexFunctorEq ==> VertexFunctorEq ==> VertexFunctorEq)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {T' : Fct (EqGpd X') C'} {U' : Fct (EqGpd Y') D'}
+  : Proper (VtxFctEq ==> VtxFctEq ==> VtxFctEq)
       (@VertexProductF X Y X' Y' C D C' D' T U T' U').
 Proof.
   intros F F' H G G' K. apply vertex_pair_proper;

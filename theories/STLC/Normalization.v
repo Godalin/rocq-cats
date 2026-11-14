@@ -80,7 +80,7 @@ Context {B : Type@{b}}.
 
 Fixpoint reflected_env (Γ : Ctx B)
   : ∀ Δ : Ctx B, Ren Δ Γ →
-      (EnvF Γ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      (EnvF Γ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}) Δ.
 Proof.
   destruct Γ as [| Γ A]; intros Δ ρ.
@@ -405,7 +405,7 @@ Defined.
 (** 正规化是从等式语法到结构正规语法的自然变换；等式证据界 [q] 独立于语义。 *)
 
 Program Definition NormalizeN@{q +} (A : Ty B)
-  : (TmRenamingPsh A : Functor
+  : (TmRenamingPsh A : Fct
       ((RenamingCat B : Cat@{b b r l l})^op) SetCat@{b q _ _ _ _ _})
       ⇒ NfPsh A
   :=

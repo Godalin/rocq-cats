@@ -24,14 +24,14 @@ Local Open Scope monoidal_scope.
 Section LaxMonoidTransport.
 Context {C D : Cat}
     {MC : MonoidalCat C} {MD : MonoidalCat D}
-    (L : LaxMonoidalFunctor MC MD).
+    (L : LaxMonoidalFct MC MD).
 Local Existing Instance MD.
 
 (** The transported unit first inserts the lax unit comparison. *)
 
 (** 传输后的单位先插入 lax 单位比较。 *)
 
-Definition lax_monoid_unit (A : MonoidObject MC)
+Definition lax_monoid_unit (A : MonoidObj MC)
   : Hom (I⊗[MD]) (L A)
   := fmap L e[A] ∘ φ₀[L].
 
@@ -40,7 +40,7 @@ Definition lax_monoid_unit (A : MonoidObject MC)
 
 (** 传输后的乘法先组合像，再映射原乘法。 *)
 
-Definition lax_monoid_mul (A : MonoidObject MC)
+Definition lax_monoid_mul (A : MonoidObj MC)
   : Hom (L A ⊗ L A) (L A)
   := fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A].
 
@@ -50,8 +50,8 @@ Definition lax_monoid_mul (A : MonoidObject MC)
 (** Lax 相干性及来源幺半群定律给出目标幺半群；载体和两个运算均保留透明的
     计算数据。 *)
 
-Program Definition LaxMonoidObject (A : MonoidObject MC)
-  : MonoidObject MD
+Program Definition LaxMonoidObj (A : MonoidObj MC)
+  : MonoidObj MD
   :=
   {|MonoidCarrier := L A
   ; monoid_object_unit := lax_monoid_unit A
@@ -106,10 +106,10 @@ Defined.
 
 (** 保持运算的箭头在映射后保持两个传输后的运算；证明可独立于打包函子复用。 *)
 
-Lemma lax_monoid_hom {A B : MonoidObject MC}
+Lemma lax_monoid_hom {A B : MonoidObj MC}
     (f : Hom A B)
     (Hf : is_monoid_hom A B f)
-  : is_monoid_hom (LaxMonoidObject A) (LaxMonoidObject B) (fmap L f).
+  : is_monoid_hom (LaxMonoidObj A) (LaxMonoidObj B) (fmap L f).
 Proof.
   destruct Hf as [He Hm]. split; cbn.
   - unfold lax_monoid_unit. rewrite <- comp_assoc, <- functor_comp, He.
@@ -125,9 +125,9 @@ Qed.
 (** 幺半群对象上的诱导函子用 [fmap L] 映射同态；其保相等性及范畴律继承自 [L]。 *)
 
 Program Definition LaxMonoidF
-  : Functor (MonoidCat MC) (MonoidCat MD)
+  : Fct (MonoidCat MC) (MonoidCat MD)
   :=
-  {|F0 := LaxMonoidObject
+  {|F0 := LaxMonoidObj
   ; F1 A B f := (fmap L f.1; lax_monoid_hom f.1 f.2)
   |}.
 Next Obligation.

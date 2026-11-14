@@ -28,14 +28,14 @@ Local Open Scope monoidal_scope.
 
 Definition BicatMonad (B : Bicat) (X : ObB B)
   : Type
-  := MonoidObject (EndoMonoidal B X).
+  := MonoidObj (EndoMonoidal B X).
 
 (** Composition is the tensor of endofunctors; the identity is its unit. *)
 
 (** 复合是自函子的张量，恒等函子是其单位。 *)
 
 Definition EndofunctorMonoidal (C : Cat)
-  : MonoidalCat (Fct C C)
+  : MonoidalCat (FctCat C C)
   := EndoMonoidal CatBicat C.
 
 (** Constructive equivalence of laws for the same [T], [η] and [μ]. The
@@ -44,7 +44,7 @@ Definition EndofunctorMonoidal (C : Cat)
 (** 同一组 [T]、[η]、[μ] 上定律的构造性等价；幺半群交换图表只额外含有
     规范恒等因子。 *)
 
-Theorem monad_monoid_laws {C : Cat} (T : Functor C C)
+Theorem monad_monoid_laws {C : Cat} (T : Fct C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
   : is_monad T η μ ↔ is_monoid_object (EndofunctorMonoidal C) T η μ.
 Proof.
@@ -91,7 +91,7 @@ Defined.
 (** 复用固定数据上的定理，将普通 Monad 看作幺半群对象。 *)
 
 Program Definition MonadMonoid {C : Cat} (M : Monad C)
-  : MonoidObject (EndofunctorMonoidal C)
+  : MonoidObj (EndofunctorMonoidal C)
   :=
   {|MonoidCarrier := M
   ; monoid_object_unit := η[M]
@@ -112,7 +112,7 @@ Defined.
 (** 从幺半群对象恢复通常公理，保持全部数据。 *)
 
 Program Definition MonoidMonad {C : Cat}
-    (A : MonoidObject (EndofunctorMonoidal C))
+    (A : MonoidObj (EndofunctorMonoidal C))
   : Monad C
   :=
   {|MonadF := MonoidCarrier A
@@ -143,7 +143,7 @@ Defined.
 (** 结构转换在底层自然变换上取恒等作用。 *)
 
 Program Definition MonadMonoidF (C : Cat)
-  : Functor (MonadCat C) (MonoidCat (EndofunctorMonoidal C))
+  : Fct (MonadCat C) (MonoidCat (EndofunctorMonoidal C))
   :=
   {|F0 := MonadMonoid
   ; F1 M N α := (α.1; fst (monad_monoid_hom M N α.1) α.2)
@@ -157,7 +157,7 @@ Next Obligation. reflexivity. Defined.
 (** 恢复普通 Monad 及底层相同的同态。 *)
 
 Program Definition MonoidMonadF (C : Cat)
-  : Functor (MonoidCat (EndofunctorMonoidal C)) (MonadCat C)
+  : Fct (MonoidCat (EndofunctorMonoidal C)) (MonadCat C)
   :=
   {|F0 := MonoidMonad
   ; F1 A B α := (α.1;

@@ -19,13 +19,13 @@ From Cats Require Import
     [NatIso_inv] 导出逆向自然性。环境广集的宇宙仅为独立上界，不把两侧原有的
     Hom 大小等同。 *)
 
-Class Adjunction@{u p +} {C D : Cat} (F : Functor C D) (G : Functor D C)
+Class Adj@{u p +} {C D : Cat} (F : Fct C D) (G : Fct D C)
   :=
-  { adjunction_hom : @NatIso _ SetCat@{u p _ _ _ _ _}
+  { adj_hom : @NatIso _ SetCat@{u p _ _ _ _ _}
       (LeftHomF F) (RightHomF G) }.
 
-Arguments adjunction_hom {_ _ _ _} _.
-Infix "⊣" := Adjunction (at level 50, no associativity) : cat_scope.
+Arguments adj_hom {_ _ _ _} _.
+Infix "⊣" := Adj (at level 50, no associativity) : cat_scope.
 
 (** ** Transposition along an Adjunction
 
@@ -37,7 +37,7 @@ Infix "⊣" := Adjunction (at level 50, no associativity) : cat_scope.
     固定函子 [F]、[G] 及伴随 [A : F ⊣ G]，提取两个 Hom 映射、互逆与自然性定律，以及单位和余单位。 *)
 
 Section Transposition.
-Context {C D : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
+Context {C D : Cat} {F : Fct C D} {G : Fct D C} (A : F ⊣ G).
 
 (** The forward hom-setoid map of an adjunction. *)
 
@@ -46,12 +46,12 @@ Context {C D : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
 Program Definition adjunct_resp@{s +} {X Y}
   : FunS_resp@{s _ _ _ _ _} (HomSet (F X) Y) (HomSet X (G Y))
   :=
-  {|func f := lower ((adjunction_hom A).1 (X, Y) {|lower := f
-                                                 |})
+  {|func f := lower ((adj_hom A).1 (X, Y) {|lower := f
+                                          |})
   |}.
 Next Obligation.
   intros f g H.
-  exact (lower (@func_proper _ _ ((adjunction_hom A).1 (X, Y))
+  exact (lower (@func_proper _ _ ((adj_hom A).1 (X, Y))
     {|lower := f
     |} {|lower := g
        |} {|lower := H
@@ -65,12 +65,12 @@ Defined.
 Program Definition unadjunct_resp@{s +} {X Y}
   : FunS_resp@{s _ _ _ _ _} (HomSet X (G Y)) (HomSet (F X) Y)
   :=
-  {|func g := lower (((adjunction_hom A).2 (X, Y)).1 {|lower := g
-                                                     |})
+  {|func g := lower (((adj_hom A).2 (X, Y)).1 {|lower := g
+                                              |})
   |}.
 Next Obligation.
   intros f g H.
-  exact (lower (@func_proper _ _ ((adjunction_hom A).2 (X, Y)).1
+  exact (lower (@func_proper _ _ ((adj_hom A).2 (X, Y)).1
     {|lower := f
     |} {|lower := g
        |} {|lower := H
@@ -115,15 +115,15 @@ Proof. apply func_proper. Qed.
 Theorem adjunction_β {X Y} (f : Hom (F X) Y)
   : unadjunct (adjunct f) ≈ f.
 Proof.
-  pose proof (fst ((adjunction_hom A).2 (X, Y)).2 {|lower := f
-                                                  |}) as H.
+  pose proof (fst ((adj_hom A).2 (X, Y)).2 {|lower := f
+                                           |}) as H.
   etransitivity.
-  - exact (lower (@func_proper _ _ ((adjunction_hom A).2 (X, Y)).1
-      {|lower := lower ((adjunction_hom A).1 (X, Y) {|lower := f
-                                                    |})
+  - exact (lower (@func_proper _ _ ((adj_hom A).2 (X, Y)).1
+      {|lower := lower ((adj_hom A).1 (X, Y) {|lower := f
+                                             |})
       |}
-      ((adjunction_hom A).1 (X, Y) {|lower := f
-                                   |})
+      ((adj_hom A).1 (X, Y) {|lower := f
+                            |})
       {|lower := reflexivity _
       |})).
   - exact (lower H).
@@ -136,15 +136,15 @@ Qed.
 Theorem adjunction_η {X Y} (g : Hom X (G Y))
   : adjunct (unadjunct g) ≈ g.
 Proof.
-  pose proof (snd ((adjunction_hom A).2 (X, Y)).2 {|lower := g
-                                                  |}) as H.
+  pose proof (snd ((adj_hom A).2 (X, Y)).2 {|lower := g
+                                           |}) as H.
   etransitivity.
-  - exact (lower (@func_proper _ _ ((adjunction_hom A).1 (X, Y))
-      {|lower := lower (((adjunction_hom A).2 (X, Y)).1 {|lower := g
-                                                        |})
+  - exact (lower (@func_proper _ _ ((adj_hom A).1 (X, Y))
+      {|lower := lower (((adj_hom A).2 (X, Y)).1 {|lower := g
+                                                 |})
       |}
-      (((adjunction_hom A).2 (X, Y)).1 {|lower := g
-                                       |})
+      (((adj_hom A).2 (X, Y)).1 {|lower := g
+                                |})
       {|lower := reflexivity _
       |})).
   - exact (lower H).
@@ -159,7 +159,7 @@ Lemma adjunct_naturality {X X' : @Ob C} {Y Y' : @Ob D}
     (f : Hom (F X) Y)
   : adjunct (k ∘ f ∘ fmap F h) ≈ fmap G k ∘ adjunct f ∘ h.
 Proof.
-  exact (lower (nt_naturality (adjunction_hom A).1
+  exact (lower (nt_naturality (adj_hom A).1
     (X := (X, Y)) (Y := (X', Y')) (h, k) {|lower := f
                                          |})).
 Qed.
@@ -195,7 +195,7 @@ Lemma unadjunct_naturality {X X' : @Ob C} {Y Y' : @Ob D}
   : unadjunct (fmap G k ∘ g ∘ h) ≈ k ∘ unadjunct g ∘ fmap F h.
 Proof.
   exact (lower (nt_naturality
-    (NatIso_inv (adjunction_hom A).1 (adjunction_hom A).2)
+    (NatIso_inv (adj_hom A).1 (adj_hom A).2)
     (X := (X, Y)) (Y := (X', Y')) (h, k) {|lower := g
                                          |})).
 Qed.
@@ -239,7 +239,7 @@ Qed.
 
 (** 单位与余单位由恒等态射转置得到，其自然性来自 Hom 对应，不是额外选取的字段。 *)
 
-Program Definition adjunction_unit
+Program Definition adj_unit
   : IdF ⇒ G ∘F F
   :=
   {|nt X := adjunct id
@@ -253,7 +253,7 @@ Qed.
 
 (** 逆转置目标端恒等态射得到伴随余单位。 *)
 
-Program Definition adjunction_counit
+Program Definition adj_counit
   : F ∘F G ⇒ IdF
   :=
   {|nt Y := unadjunct id
@@ -269,7 +269,7 @@ Qed.
 (** 正向转置等于施加右伴随后与单位复合。 *)
 
 Lemma adjunct_unit {X Y} (f : Hom (F X) Y)
-  : adjunct f ≈ fmap G f ∘ adjunction_unit X.
+  : adjunct f ≈ fmap G f ∘ adj_unit X.
 Proof.
   change (adjunct f ≈ fmap G f ∘ adjunct (@id (F X))).
   rewrite <- (adjunct_comp_l f (@id (F X))), comp_id_r. reflexivity.
@@ -281,7 +281,7 @@ Qed.
 (** 逆向转置等于施加左伴随后与余单位复合。 *)
 
 Lemma unadjunct_counit {X Y} (g : Hom X (G Y))
-  : unadjunct g ≈ adjunction_counit Y ∘ fmap F g.
+  : unadjunct g ≈ adj_counit Y ∘ fmap F g.
 Proof.
   change (unadjunct g ≈ unadjunct (@id (G Y)) ∘ fmap F g).
   rewrite <- (unadjunct_comp_r (@id (G Y)) g), comp_id_l. reflexivity.
@@ -291,8 +291,8 @@ Qed.
 
 (** 单位与余单位满足左三角方程。 *)
 
-Theorem adjunction_triangle_l (X : @Ob C)
-  : adjunction_counit (F X) ∘ fmap F (adjunction_unit X) ≈ id.
+Theorem adj_triangle_l (X : @Ob C)
+  : adj_counit (F X) ∘ fmap F (adj_unit X) ≈ id.
 Proof.
   transitivity (unadjunct (adjunct (@id (F X)))).
   - symmetry. apply unadjunct_counit.
@@ -303,8 +303,8 @@ Qed.
 
 (** 单位与余单位满足右三角方程。 *)
 
-Theorem adjunction_triangle_r (Y : @Ob D)
-  : fmap G (adjunction_counit Y) ∘ adjunction_unit (G Y) ≈ id.
+Theorem adj_triangle_r (Y : @Ob D)
+  : fmap G (adj_counit Y) ∘ adj_unit (G Y) ≈ id.
 Proof.
   transitivity (adjunct (unadjunct (@id (G Y)))).
   - symmetry. apply adjunct_unit.
@@ -315,8 +315,8 @@ Qed.
 
 (** 单位对指向右伴随像的箭头具有泛性质。 *)
 
-Theorem adjunction_unit_universal {X Y} (g : Hom X (G Y))
-  : is_unique (λ f, fmap G f ∘ adjunction_unit X ≈ g) (unadjunct g).
+Theorem adj_unit_universal {X Y} (g : Hom X (G Y))
+  : is_unique (λ f, fmap G f ∘ adj_unit X ≈ g) (unadjunct g).
 Proof.
   refine {|this := _
          ; that := _
@@ -329,8 +329,8 @@ Defined.
 
 (** 余单位对从左伴随像出发的箭头具有泛性质。 *)
 
-Theorem adjunction_counit_universal {X Y} (f : Hom (F X) Y)
-  : is_unique (λ g, adjunction_counit Y ∘ fmap F g ≈ f) (adjunct f).
+Theorem adj_counit_universal {X Y} (f : Hom (F X) Y)
+  : is_unique (λ g, adj_counit Y ∘ fmap F g ≈ f) (adjunct f).
 Proof.
   refine {|this := _
          ; that := _
@@ -355,7 +355,7 @@ Notation "g '^♭[' A ']'" := (unadjunct A g) (at level 35) : hom_scope.
     只需给出正向自然性；两个互逆定律就是各分量的同构定律。 *)
 
 Section HomCorrespondence.
-Context {C D : Cat} (F : Functor C D) (G : Functor D C).
+Context {C D : Cat} (F : Fct C D) (G : Fct D C).
 Context (φ : ∀ X Y, HomSet (F X) Y →r HomSet X (G Y)).
 Context (ψ : ∀ X Y, HomSet X (G Y) →r HomSet (F X) Y).
 Context (hom_β : ∀ X Y f, ψ X Y (φ X Y f) ≈ f).
@@ -386,10 +386,10 @@ Defined.
 
 (** 由互逆的原生 Hom 映射构造伴随。 *)
 
-Definition AdjunctionFromHom
+Definition AdjFromHom
   : F ⊣ G.
 Proof.
-  refine {|adjunction_hom := (HomAdjunctN; _)
+  refine {|adj_hom := (HomAdjunctN; _)
          |}.
   intros [X Y]. exists ((ψ X Y)^↑S). split; intros [f]; constructor;
     [apply hom_β | apply hom_η].
@@ -400,7 +400,7 @@ Defined.
 (** 构造的伴随保留给定正向 Hom 映射。 *)
 
 Theorem adjunct_from_hom {X Y} (f : Hom (F X) Y)
-  : f^♯[AdjunctionFromHom] ≈ φ X Y f.
+  : f^♯[AdjFromHom] ≈ φ X Y f.
 Proof. reflexivity. Qed.
 
 (** The constructed adjunction retains the supplied inverse hom map. *)
@@ -408,7 +408,7 @@ Proof. reflexivity. Qed.
 (** 构造的伴随保留给定逆向 Hom 映射。 *)
 
 Theorem unadjunct_from_hom {X Y} (g : Hom X (G Y))
-  : g^♭[AdjunctionFromHom] ≈ ψ X Y g.
+  : g^♭[AdjFromHom] ≈ ψ X Y g.
 Proof. reflexivity. Qed.
 
 End HomCorrespondence.
@@ -418,11 +418,11 @@ End HomCorrespondence.
 
 (** 取反交换左右伴随；正向 Hom 映射为原来的逆对应，其自然性已经导出。 *)
 
-Definition OpAdjunction {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+Definition OpAdj {C D : Cat}
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
   : G^opF ⊣ F^opF.
 Proof.
-  refine (AdjunctionFromHom (G^opF) (F^opF)
+  refine (AdjFromHom (G^opF) (F^opF)
     (λ X Y, unadjunct_resp A (X := Y) (Y := X))
     (λ X Y, adjunct_resp A (X := Y) (Y := X)) _ _ _ _).
   - intros X Y f. exact (@adjunction_η C D F G A Y X f).
@@ -438,9 +438,9 @@ Defined.
 
 (** 反伴随的正向转置是原伴随的逆向转置，并保留可计算箭头数据。 *)
 
-Lemma adjunct_op {C D : Cat} {F : Functor C D} {G : Functor D C}
+Lemma adjunct_op {C D : Cat} {F : Fct C D} {G : Fct D C}
     (A : F ⊣ G) {X Y} (f : Hom X (G Y))
-  : f^♯[OpAdjunction A] ≈ f^♭[A].
+  : f^♯[OpAdj A] ≈ f^♭[A].
 Proof. reflexivity. Qed.
 
 (** The inverse transpose of the opposite adjunction is the original
@@ -448,37 +448,37 @@ Proof. reflexivity. Qed.
 
 (** 反伴随的逆向转置是原伴随的正向转置。 *)
 
-Lemma unadjunct_op {C D : Cat} {F : Functor C D} {G : Functor D C}
+Lemma unadjunct_op {C D : Cat} {F : Fct C D} {G : Fct D C}
     (A : F ⊣ G) {X Y} (f : Hom (F X) Y)
-  : f^♭[OpAdjunction A] ≈ f^♯[A].
+  : f^♭[OpAdj A] ≈ f^♯[A].
 Proof. reflexivity. Qed.
 
 (** The opposite adjunction's unit is the original counit at each object. *)
 
 (** 反伴随的单位逐对象为原伴随的余单位。 *)
 
-Lemma adjunction_op_unit {C D : Cat} {F : Functor C D} {G : Functor D C}
+Lemma adj_op_unit {C D : Cat} {F : Fct C D} {G : Fct D C}
     (A : F ⊣ G) (Y : @Ob D)
-  : adjunction_unit (OpAdjunction A) Y ≈ adjunction_counit A Y.
+  : adj_unit (OpAdj A) Y ≈ adj_counit A Y.
 Proof. reflexivity. Qed.
 
 (** The opposite adjunction's counit is the original unit at each object. *)
 
 (** 反伴随的余单位逐对象为原伴随的单位。 *)
 
-Lemma adjunction_op_counit {C D : Cat} {F : Functor C D} {G : Functor D C}
+Lemma adj_op_counit {C D : Cat} {F : Fct C D} {G : Fct D C}
     (A : F ⊣ G) (X : @Ob C)
-  : adjunction_counit (OpAdjunction A) X ≈ adjunction_unit A X.
+  : adj_counit (OpAdj A) X ≈ adj_unit A X.
 Proof. reflexivity. Qed.
 
 (** The identity functor is adjoint to itself. *)
 
 (** 恒等函子自伴随。 *)
 
-Definition IdAdjunction (C : Cat)
+Definition IdAdj (C : Cat)
   : (@IdF C) ⊣ IdF.
 Proof.
-  refine (AdjunctionFromHom IdF IdF (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _);
+  refine (AdjFromHom IdF IdF (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _);
     intros; reflexivity.
 Defined.
 
@@ -486,12 +486,12 @@ Defined.
 
 (** 通过 Hom 对应复合两个伴随。 *)
 
-Definition CompAdjunction {C D E : Cat}
-    {F : Functor C D} {G : Functor D C}
-    {L : Functor D E} {R : Functor E D} (B : L ⊣ R) (A : F ⊣ G)
+Definition CompAdj {C D E : Cat}
+    {F : Fct C D} {G : Fct D C}
+    {L : Fct D E} {R : Fct E D} (B : L ⊣ R) (A : F ⊣ G)
   : (L ∘F F) ⊣ (G ∘F R).
 Proof.
-  refine (AdjunctionFromHom (L ∘F F) (G ∘F R)
+  refine (AdjFromHom (L ∘F F) (G ∘F R)
     (λ X Y, adjunct_resp A ∘r adjunct_resp B)
     (λ X Y, unadjunct_resp B ∘r unadjunct_resp A) _ _ _ _).
   - intros X Y f.

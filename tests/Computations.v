@@ -32,14 +32,14 @@ From Cats Require Import
 Module MonoidalComputations.
 
 Definition BoolObject
-  := SetMonoidObject BoolS_Monoid.
+  := SetMonoidObj BoolS_Monoid.
 
 Example monoid_object_mul_computes
   : monoid_object_mul BoolObject (true, false) = true.
 Proof. reflexivity. Qed.
 
 Definition IdentityFromAdjunction
-  := AdjunctionMonad (IdAdjunction SetCat).
+  := AdjMonad (IdAdj SetCat).
 
 Example adjunction_monad_unit_computes
   : monad_unit IdentityFromAdjunction BoolS true = true.
@@ -78,13 +78,13 @@ Module LaxMonoidalComputations.
 Local Open Scope monoidal_scope.
 
 Definition BoolObject
-  := SetMonoidObject BoolS_Monoid.
+  := SetMonoidObj BoolS_Monoid.
 
 Definition BoolConstantLax
-  := ConstF_LaxMonoidalFunctor SetCartesianMonoidal BoolObject.
+  := ConstF_LaxMonoidalFct SetCartesianMonoidal BoolObject.
 
 Definition BoolConstantImage
-  := LaxMonoidObject BoolConstantLax BoolObject.
+  := LaxMonoidObj BoolConstantLax BoolObject.
 
 (** The bundled structure acts directly as a functor, through its unique
     underlying-functor coercion and without changing computation. *)
@@ -155,7 +155,7 @@ Proof. reflexivity. Qed.
 
 Example bundled_ccc_exponential_inverse_computes
   : (@functor_exponential _ _ CompositeCCC SetCat_CCC SetCat_CCC
-      (CCCFunctor_IsCCCF CompositeCCC) BoolS BoolS).1 id_resp true = true.
+      (CCCFct_IsCCCF CompositeCCC) BoolS BoolS).1 id_resp true = true.
 Proof. reflexivity. Qed.
 End BundledCCCComputations.
 
@@ -299,7 +299,7 @@ Proof. reflexivity. Qed.
 Example vertex_functor_reconstruction_computes
   : fmap (VertexNerveInvF
       (idN : BoolVertexNerve ⇒ BoolVertexNerve))
-      (true : (@Hom (VertexCat (MonoidObjectsF BoolS))) tt tt) = true.
+      (true : (@Hom (VertexCat (MonoidObjF BoolS))) tt tt) = true.
 Proof. reflexivity. Qed.
 
 (** The chosen spine inverse reconstructs the original arrow by interval
@@ -309,7 +309,7 @@ Proof. reflexivity. Qed.
 
 Example vertex_spine_inverse_computes
   : let e := vertex_spine_iso
-      (MonoidObjectsF BoolS (HM := BoolS_Monoid)) 1%nat in
+      (MonoidObjF BoolS (HM := BoolS_Monoid)) 1%nat in
     fmap (lower (e.2.1 (e.1
       (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
                                   |})))) (ordinal_step fin_first) = true.
@@ -323,7 +323,7 @@ Module LocalHornComputation.
 (** 对偶外填充经过反转、限制取逆及脊实现，仍保留缺失先行箭头的计算。 *)
 
 Definition T
-  := MonoidObjectsF BoolS (HM := BoolS_Monoid).
+  := MonoidObjF BoolS (HM := BoolS_Monoid).
 
 Local Instance chosen_groupoid
   : VertexCat T ⦂ Gpd
@@ -331,7 +331,7 @@ Local Instance chosen_groupoid
 
 Example local_horn2_dual_computes
   : fmap (lower ((fill₂[T; tt; tt; tt; fin_next (fin_next fin_first)] :
-      _ →r (Nᵥ(T) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat)
+      _ →r (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat)
         (false, true))) (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.
 
@@ -375,9 +375,9 @@ End HornFaceComputation.
 (** 实际外 horn 经重构、局部填充及再次实现后，缺失边的计算仍不受阻碍。 *)
 
 Example actual_outer_horn2_filler_computes
-  : let T := MonoidObjectsF BoolS (HM := BoolS_Monoid) in
+  : let T := MonoidObjF BoolS (HM := BoolS_Monoid) in
     let x := (△₂[T; tt; tt; tt] : _ →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat) (true, true) in
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat) (true, true) in
     let HF := vertex_groupoid_horn2_HasFillers T
       (HC := VertexCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid)) fin_first in
     fmap (lower (@horn_fill _ _ _ HF (x↾Λ[Nᵥ(T); 2%nat; fin_first])).1)
@@ -390,9 +390,9 @@ Proof. reflexivity. Qed.
 (** 在给出任何填充或逆之前，匹配下降即可计算指定长边。 *)
 
 Example actual_outer_horn2_descent_computes
-  : let T := MonoidObjectsF BoolS (HM := BoolS_Monoid) in
+  : let T := MonoidObjF BoolS (HM := BoolS_Monoid) in
     let h := (OuterHorn2N T (A := tt) (B := tt) (D := tt) true false :
-      HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat fin_first) in
+      HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat fin_first) in
     fmap (lower (h 1%nat
       {|lower := (δ[1%nat; fin_next fin_first];
           horn_face_member fin_first (fin_next fin_first)
@@ -425,8 +425,8 @@ From Cats Require Import
 Module FreeObjectComputations.
 
 Definition FreeIdentity
-  : HasFreeObjects (@IdF SetCat)
-  := AdjunctionFreeObjects (IdAdjunction SetCat).
+  : HasFreeObj (@IdF SetCat)
+  := AdjFreeObj (IdAdj SetCat).
 
 Example free_extension_computes
   : @free_object_extend SetCat SetCat IdF FreeIdentity BoolS BoolS
@@ -449,7 +449,7 @@ From Cats Require Import
 (** 具体自由图式余单位可穿过一般选定逗号始性构造计算，而不仅是直接路径映射。 *)
 
 Example generator_counit_computes
-  : adjunction_counit
-      (GeneratorFreeAdjunction (DiscreteGraph unit) SetCat)
+  : adj_counit
+      (GenFreeAdj (DiscreteGraph unit) SetCat)
       (@ConstF (FreeCat (DiscreteGraph unit)) SetCat BoolS) tt true = true.
 Proof. reflexivity. Qed.

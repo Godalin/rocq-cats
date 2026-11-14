@@ -41,7 +41,7 @@ Next Obligation. intros [x a]. reflexivity. Defined.
 (** 将固定基底族送到切片范畴中的全空间投影。 *)
 
 Program Definition FamSumF (X : SetC)
-  : Functor (FamSCat X) (SetCat /C X)
+  : Fct (FamSCat X) (SetCat /C X)
   :=
   {|F0 := FamSumOb
   ; F1 A B := fam_sum_map
@@ -85,7 +85,7 @@ Next Obligation. reflexivity. Defined.
 (** 将切片对象送到其相干纤维族。 *)
 
 Program Definition SliceFamF (X : SetC)
-  : Functor (SetCat /C X) (FamSCat X)
+  : Fct (SetCat /C X) (FamSCat X)
   :=
   {|F0 A := FiberFamS (slice_arrow A)
   ; F1 A B := slice_fiber_map

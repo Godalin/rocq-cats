@@ -160,7 +160,7 @@ Context `{HE : !HasEqualizer C}.
 
 (** 为带有限生成元的形状选择全部极限；形状可以有无限多条箭头或额外路径方程。 *)
 
-Definition GeneratedLimits {J : Cat} `{HG : !HasFiniteGenerators J}
+Definition GeneratedLimits {J : Cat} `{HG : !HasFiniteGen J}
   : HasLimitsOfShape C J
   := @ReindexedLimits _ J C generator_functor generator_full
     generator_essentially_surjective (FiniteGraphLimits generator_edges).
@@ -172,7 +172,7 @@ Definition GeneratedLimits {J : Cat} `{HG : !HasFiniteGenerators J}
 
 Definition FiniteLimits {J : Cat} `{HJ : !HasFiniteHomCover J}
   : HasLimitsOfShape C J
-  := @GeneratedLimits J FiniteHomGenerators.
+  := @GeneratedLimits J FiniteHomGen.
 
 (** Select the limit of one finite-shape diagram. All its mediator laws and
     the associated limit functor come from the general limit interface. *)
@@ -180,7 +180,7 @@ Definition FiniteLimits {J : Cat} `{HJ : !HasFiniteHomCover J}
 (** 选择单个有限形状图式的极限；中介定律及相应极限函子均来自一般极限接口。 *)
 
 Definition FiniteLimit {J : Cat} `{HJ : !HasFiniteHomCover J}
-    (D : Functor J C)
+    (D : Fct J C)
   : HasLimit C D
   := @hasLimit C J FiniteLimits D.
 

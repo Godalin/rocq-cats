@@ -30,9 +30,9 @@ Constraint u < p.
 (** 值相等严格低于载体，且原生 Hom 相等也低于其原生箭头载体。 *)
 
 Definition low_eq_nerve_functor
-  : Functor
+  : Fct
       VertexPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
-      (Fct (Δ^op) SetCat@{u o _ _ _ _ _})
+      (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
   := VertexNerveF.
 
 (** The same source supports equality strictly above the value carrier. *)
@@ -40,9 +40,9 @@ Definition low_eq_nerve_functor
 (** 同一源也支持严格高于值载体的相等。 *)
 
 Definition high_eq_nerve_functor
-  : Functor
+  : Fct
       VertexPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
-      (Fct (Δ^op) SetCat@{u p _ _ _ _ _})
+      (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})
   := VertexNerveF.
 
 (** Reverse both native carrier/equality profiles. *)
@@ -50,9 +50,9 @@ Definition high_eq_nerve_functor
 (** 反转两个原生载体／相等大小配置。 *)
 
 Definition reverse_native_nerve_functor
-  : Functor
+  : Fct
       VertexPresentationCat@{e o e h o l o o _ _ _ _ _ _ _ _ _ _}
-      (Fct (Δ^op) SetCat@{u o _ _ _ _ _})
+      (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
   := VertexNerveF.
 
 (** Full faithfulness retains all of these independent sizes. *)
@@ -77,7 +77,7 @@ Definition reverse_native_fully_faithful
 (** 将严格更大辅助界中的作用定律重新包装至选定呈现界，包括相等群胚的定律界。 *)
 
 Context (X : SetC@{o e}) (C : Cat@{o h e l l})
-    (T : Functor@{o e Set u u p o h e l} (EqGpd@{o e u} X) C).
+    (T : Fct@{o e Set u u p o h e l} (EqGpd@{o e u} X) C).
 
 Definition repacked_large_action_laws
   : VertexPresentation@{o e o h e l h e}

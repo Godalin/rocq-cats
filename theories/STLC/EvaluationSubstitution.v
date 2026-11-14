@@ -65,7 +65,7 @@ Context {B : Type@{b}}.
 
 Fixpoint EvalSubN (Γ : Ctx B)
   : ∀ Δ : Ctx B, Sub Δ Γ →
-      (EnvF Δ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      (EnvF Δ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}) ⇒ EnvF Γ.
 Proof.
   destruct Γ as [| Γ A]; intros Δ σ.

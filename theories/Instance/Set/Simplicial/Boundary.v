@@ -117,7 +117,7 @@ Definition HornSieve (n : nat) (i : Ordinal n)
 (** 将边界筛实现为单纯广集。 *)
 
 Definition Boundary@{u p +} (n : nat)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := SievePsh (BoundarySieve n).
 
 Notation "'∂Δ[' n ']'" := (Boundary n) : ob_scope.
@@ -127,7 +127,7 @@ Notation "'∂Δ[' n ']'" := (Boundary n) : ob_scope.
 (** 使用同一子预层构造实现 horn 筛。 *)
 
 Definition Horn@{u p +} (n : nat) (i : Ordinal n)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := SievePsh (HornSieve n i).
 
 Notation "'Λ[' n ';' i ']'" := (Horn n i) : ob_scope.
@@ -137,7 +137,7 @@ Notation "'Λ[' n ';' i ']'" := (Horn n i) : ob_scope.
 (** 将边界包含到其标准单形中。 *)
 
 Definition BoundaryInclusionN@{u p +} (n : nat)
-  : (∂Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
+  : (∂Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
   := ιSv[BoundarySieve n].
 
 Notation "'ι∂[' n ']'" := (BoundaryInclusionN n) : hom_scope.
@@ -147,7 +147,7 @@ Notation "'ι∂[' n ']'" := (BoundaryInclusionN n) : hom_scope.
 (** 将 horn 包含到其标准单形中。 *)
 
 Definition HornInclusionN@{u p +} (n : nat) (i : Ordinal n)
-  : (Λ[n; i] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
+  : (Λ[n; i] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
   := ιSv[HornSieve n i].
 
 Notation "'ιΛ[' n ';' i ']'" := (HornInclusionN n i) : hom_scope.
@@ -157,7 +157,7 @@ Notation "'ιΛ[' n ';' i ']'" := (HornInclusionN n i) : hom_scope.
 (** 边界包含是单纯范畴中的单态射。 *)
 
 Program Definition BoundaryMono@{u p +} (n : nat)
-  : @Mono (Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ∂Δ[n] Δ[n]
+  : @Mono (FctCat (Δ^op) SetCat@{u p _ _ _ _ _}) ∂Δ[n] Δ[n]
   :=
   {|mor := ι∂[n]
   |}.
@@ -168,7 +168,7 @@ Next Obligation. exact (@sieve_inclusion_mono Δ n (BoundarySieve n)). Defined.
 (** 同理，horn 的包含也是单态射。 *)
 
 Program Definition HornMono@{u p +} (n : nat) (i : Ordinal n)
-  : @Mono (Fct (Δ^op) SetCat@{u p _ _ _ _ _}) Λ[n; i] Δ[n]
+  : @Mono (FctCat (Δ^op) SetCat@{u p _ _ _ _ _}) Λ[n; i] Δ[n]
   :=
   {|mor := ιΛ[n; i]
   |}.
@@ -215,7 +215,7 @@ Definition horn_generic_not_member (n : nat) (i : Ordinal n)
 (** horn 包含经过边界分解。 *)
 
 Definition HornBoundaryN@{u p +} (n : nat) (i : Ordinal n)
-  : (Λ[n; i] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ ∂Δ[n]
+  : (Λ[n; i] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ ∂Δ[n]
   := @SieveMapN Δ n (HornSieve n i) (BoundarySieve n)
       (horn_sieve_boundary n i).
 
@@ -225,7 +225,7 @@ Definition HornBoundaryN@{u p +} (n : nat) (i : Ordinal n)
 
 Lemma horn_boundary_comm@{u p +} (n : nat) (i : Ordinal n)
   : (ι∂[n] ∘Nv (HornBoundaryN n i :
-      (Λ[n; i] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _)) ≈N ιΛ[n; i].
+      (Λ[n; i] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _)) ≈N ιΛ[n; i].
 Proof.
   exact (@sieve_map_inclusion Δ n (HornSieve n i) (BoundarySieve n)
     (horn_sieve_boundary n i)).
@@ -293,7 +293,7 @@ Definition horn_face_member {n : nat} (i j : Ordinal (S n))
 (** 通过一般筛的限制，每个面映射经过边界分解。 *)
 
 Definition BoundaryFaceN@{u p +} {n : nat} (i : Ordinal (S n))
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ ∂Δ[S n]
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ ∂Δ[S n]
   := @SieveFactorN Δ (S n) n (BoundarySieve (S n))
       δ[n; i] (boundary_face_member i).
 
@@ -303,7 +303,7 @@ Definition BoundaryFaceN@{u p +} {n : nat} (i : Ordinal (S n))
 
 Definition HornFaceN@{u p +} {n : nat} (i j : Ordinal (S n))
     (H : ¬ j = i)
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Λ[S n; i]
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Λ[S n; i]
   := @SieveFactorN Δ (S n) n (HornSieve (S n) i)
       δ[n; j] (horn_face_member i j H).
 
@@ -313,7 +313,7 @@ Definition HornFaceN@{u p +} {n : nat} (i j : Ordinal (S n))
 
 Lemma boundary_face_comm@{u p +} {n : nat} (i : Ordinal (S n))
   : (ι∂[S n] ∘Nv (BoundaryFaceN i :
-      (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
+      (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
       ≈N fmap StandardSimplexF δ[n; i].
 Proof.
   exact (@sieve_factor_comm Δ (S n) n (BoundarySieve (S n))
@@ -327,7 +327,7 @@ Defined.
 Lemma horn_face_comm@{u p +} {n : nat} (i j : Ordinal (S n))
     (H : ¬ j = i)
   : (ιΛ[S n; i] ∘Nv (HornFaceN i j H :
-      (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
+      (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
       ≈N fmap StandardSimplexF δ[n; j].
 Proof.
   exact (@sieve_factor_comm Δ (S n) n (HornSieve (S n) i)

@@ -68,13 +68,13 @@ limit data and theorems; the data are not reconstructed in a parallel record.
 不在另一套平行记录中重建这些数据。
 
 `HasColimitsOfShape C J` contains only the original selected structure
-`HasLimitsOfShape (C^op) (J^op)`. `ColimitF` is constructed by taking the
-opposite of `LimitF ∘F OpFctF` and adapting the double-opposite endpoints.
+`HasLimitsOfShape (C^op) (J^op)`. `ColimF` is constructed by taking the
+opposite of `LimF ∘F OpFctCatF` and adapting the double-opposite endpoints.
 Its identity, composition and respectfulness are inherited functor laws.
 Importing the modules does not choose any model structures.
 
 `HasColimitsOfShape C J` 只包含原选定结构
-`HasLimitsOfShape (C^op) (J^op)`。`ColimitF` 由 `LimitF ∘F OpFctF`
+`HasLimitsOfShape (C^op) (J^op)`。`ColimF` 由 `LimF ∘F OpFctCatF`
 取反后适配双重反范畴端点得到；恒等、复合与保相等性直接继承已有函子律。
 导入模块不会为具体模型选择结构。
 
@@ -83,16 +83,16 @@ Importing the modules does not choose any model structures.
 ## 伴随与保持性接口
 
 [Colimit.Adjunction](../theories/Cat/Colimit/Adjunction.v) exposes
-`ColimitF ⊣ Δ[J,C]`. Its two hom maps are the inverse and forward maps of
+`ColimF ⊣ Δ[J,C]`. Its two hom maps are the inverse and forward maps of
 the original opposite-limit adjunction, read at the ordinary endpoints.
 The inverse and naturality laws use the original adjunction laws. Conversely,
-`adjunction_unit_universal` supplies the stored opposite limit directly.
+`adj_unit_universal` supplies the stored opposite limit directly.
 It is not necessary to prove a separate colimit mediator uniqueness theorem.
 
 [Colimit.Adjunction](../theories/Cat/Colimit/Adjunction.v) 提供
-`ColimitF ⊣ Δ[J,C]`。两个 Hom 映射是原反范畴极限伴随的逆、正向映射，
+`ColimF ⊣ Δ[J,C]`。两个 Hom 映射是原反范畴极限伴随的逆、正向映射，
 读回通常端点；互逆律及自然性使用原伴随定律。反向构造由
-`adjunction_unit_universal` 直接给出存储的反范畴极限，无须另证余极限中介唯一性。
+`adj_unit_universal` 直接给出存储的反范畴极限，无须另证余极限中介唯一性。
 
 For arbitrary opposite-shape diagrams, `UnopF` reads a functor between
 opposite categories in the original categories. `OpUnopF` supplies the
@@ -107,12 +107,12 @@ These are general functor/limit adapters, rather than duplicate dual constructio
 在该端点提供选定结构。它们是通用函子／极限适配，不是独立重建的对偶构造。
 
 [Colimit.Preservation](../theories/Cat/Colimit/Preservation.v) directly
-uses `right_adjoint_preserves_limit` with `OpAdjunction` on the stored cone,
+uses `right_adjoint_preserves_limit` with `OpAdj` on the stored cone,
 then the composition comparison already used by `MapCocone`. The input
 assumption is only that the specified source cocone is colimiting.
 
 [Colimit.Preservation](../theories/Cat/Colimit/Preservation.v) 将
-`OpAdjunction` 与 `right_adjoint_preserves_limit` 直接用于存储的锥，
+`OpAdj` 与 `right_adjoint_preserves_limit` 直接用于存储的锥，
 再使用 `MapCocone` 中同一个复合比较；输入只要求指定源余锥为余极限。
 
 ## Named constructions and their shapes
@@ -174,13 +174,13 @@ existing limit reindexing theorem then permits direct use of the original
 terminal/product/equalizer limit characterizations. Selected structures
 convert in both directions through the same reindexing theory; there is no
 claim that round-trip selected records are equal. Left-adjoint preservation
-likewise applies original right-adjoint preservation to `OpAdjunction`.
+likewise applies original right-adjoint preservation to `OpAdj`.
 
 [Colimit.Shape](../theories/Cat/Colimit/Shape.v) 沿 `ToDoubleOpF` 限制
 存储的双重反锥。该函子以恒等原像和恒等代表同构具有满性及本质满性，因而已有
 极限重索引定理允许直接使用原终对象／积／等化子的极限刻画。选定结构的双向
 转换也经过同一重索引理论，不声称往返后的选定记录相等。左伴随保持性同样将
-原右伴随保持定理用于 `OpAdjunction`。
+原右伴随保持定理用于 `OpAdj`。
 
 ## Pushouts and finite-colimit bases
 
@@ -316,7 +316,7 @@ directions. No equality of graph or category records is required.
 
 [Shape.Finite](../theories/Cat/Shape/Finite.v) reverses finite hom covers
 and finite generating graphs through `OpFiniteHomCover` and
-`OpFiniteGenerators`. [Colimit.Finite](../theories/Cat/Colimit/Finite.v)
+`OpFiniteGen`. [Colimit.Finite](../theories/Cat/Colimit/Finite.v)
 then wraps the original opposite `FiniteLimits` and `GeneratedLimits`.
 Both initial+coproducts+coequalizers and initial+pushouts supply colimits
 for finite **and finitely generated** shapes.
@@ -326,7 +326,7 @@ Cycles and additional path equations remain allowed; finite generation
 does not assert a finite hom cover or a finite presentation.
 
 [Shape.Finite](../theories/Cat/Shape/Finite.v) 通过 `OpFiniteHomCover` 与
-`OpFiniteGenerators` 反转有限 Hom 覆盖及有限生成图。
+`OpFiniteGen` 反转有限 Hom 覆盖及有限生成图。
 [Colimit.Finite](../theories/Cat/Colimit/Finite.v) 据此包装原反
 `FiniteLimits` 与 `GeneratedLimits`。始对象＋余积＋余等化子和始对象＋推出
 两套基础都给出有限及**有限生成**形状的余极限。

@@ -18,7 +18,7 @@ Section Matching.
 Universes v q.
 Context {C : Cat} {A : @Ob C} {I : Type} {D : I → @Ob C}
     (g : ∀ i, Hom (D i) A)
-    (P : Functor (C^op) SetCat@{v q _ _ _ _ _}).
+    (P : Fct (C^op) SetCat@{v q _ _ _ _ _}).
 
 (** Matching values satisfy the restriction equation on every overlap.
     Coercion evaluates the matching data at a generator as [a i]. *)
@@ -195,7 +195,7 @@ End Matching.
 
 Definition sieve_matching_iso@{u p v q +} {C : Cat} {A : @Ob C}
     {I : Type} {D : I → @Ob C} (g : ∀ i, Hom (D i) A)
-    (P : Functor (C^op) SetCat@{v q _ _ _ _ _})
+    (P : Fct (C^op) SetCat@{v q _ _ _ _ _})
   : LiftS@{_ _ u p} (SieveMatchingS g P) ≅[SetCat]
       LiftS@{_ _ u p} (Nat_SetS (SievePsh (GeneratedSieve D g)) P).
 Proof.

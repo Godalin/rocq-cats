@@ -31,11 +31,11 @@ Local Open Scope cat_scope.
     固定来源的终对象与积、目标的积以及两侧的指数结构，为笛卡尔函子 [F] 构造指数比较，并给出求值和柯里化方程。 *)
 
 Section ExponentialComparison.
-Context {C D : Cat} (F : Functor C D)
+Context {C D : Cat} (F : Fct C D)
     `{TC : !HasTerminal C} `{PC : !HasProduct C}
     `{EC : !HasExponential PC}
     `{PD : !HasProduct D} `{ED : !HasExponential PD}
-    `{HF : !IsCartesianF F TC PC}.
+    `{HF : !IsCartF F TC PC}.
 
 (** Transpose the image evaluation after the inverse product comparison. *)
 
@@ -78,13 +78,13 @@ End ExponentialComparison.
 
 (** CCC 函子保持有限积，并具有可逆的指数比较；所有结构具名且显式提供。 *)
 
-Class IsCCCF {C D : Cat} (F : Functor C D) (HC : CCC C) (HD : CCC D)
+Class IsCCCF {C D : Cat} (F : Fct C D) (HC : CCC C) (HD : CCC D)
   :=
-  { isCartesianF :: IsCartesianF F (@hasTerminal C HC) (@hasProduct C HC)
+  { isCartF :: IsCartF F (@hasTerminal C HC) (@hasProduct C HC)
   ; functor_exponential X Y
       : is_iso (@functor_exponential_comparison C D F
           (@hasTerminal C HC) (@hasProduct C HC) (@hasExponential C HC)
-          (@hasProduct D HD) (@hasExponential D HD) isCartesianF X Y)
+          (@hasProduct D HD) (@hasExponential D HD) isCartF X Y)
   }.
 
 (** Identity functors are cartesian closed relative to the same choices. *)
@@ -94,14 +94,14 @@ Class IsCCCF {C D : Cat} (F : Functor C D) (HC : CCC C) (HD : CCC D)
 Program Definition IdF_IsCCCF (C : Cat) (HC : CCC C)
   : IsCCCF (@IdF C) HC HC
   :=
-  {|isCartesianF := IdF_IsCartesianF C (@hasTerminal C HC) (@hasProduct C HC)
+  {|isCartF := IdF_IsCartF C (@hasTerminal C HC) (@hasProduct C HC)
   |}.
 Next Obligation.
   assert (H : functor_exponential_comparison (@IdF C)
     (TC := @hasTerminal C HC) (PC := @hasProduct C HC)
     (EC := @hasExponential C HC) (PD := @hasProduct C HC)
     (ED := @hasExponential C HC)
-    (HF := IdF_IsCartesianF C (@hasTerminal C HC) (@hasProduct C HC))
+    (HF := IdF_IsCartF C (@hasTerminal C HC) (@hasProduct C HC))
     X Y ≈ id).
   { unfold functor_exponential_comparison.
     rewrite id_functor_product_inv, comp_id_r.
@@ -115,7 +115,7 @@ Defined.
 (** ** 笛卡尔闭函子的复合 *)
 
 Section ClosedFunctorComposition.
-Context {C D E : Cat} (F : Functor C D) (G : Functor D E)
+Context {C D E : Cat} (F : Fct C D) (G : Fct D E)
     (HC : CCC C) (HD : CCC D) (HE : CCC E)
     (HF : IsCCCF F HC HD) (HG : IsCCCF G HD HE).
 Local Existing Instance HC.
@@ -131,7 +131,7 @@ Local Existing Instance HG.
 
 Lemma functor_exponential_comparison_comp (X Y : @Ob C)
   : functor_exponential_comparison (G ∘F F)
-      (HF := CompF_IsCartesianF F G) X Y ≈
+      (HF := CompF_IsCartF F G) X Y ≈
       functor_exponential_comparison G (F X) (F Y) ∘
         fmap G (functor_exponential_comparison F X Y).
 Proof.
@@ -162,7 +162,7 @@ Qed.
 Program Definition CompF_IsCCCF
   : IsCCCF (G ∘F F) HC HE
   :=
-  {|isCartesianF := CompF_IsCartesianF F G
+  {|isCartF := CompF_IsCartF F G
   |}.
 Next Obligation.
   refine (is_iso_equiv (symmetry (functor_exponential_comparison_comp X Y)) _).
@@ -180,21 +180,21 @@ End ClosedFunctorComposition.
 
 (** A CCC functor extends one cartesian functor with invertibility of the
     canonical exponential comparison. The coercion chain passes through
-    [CartesianFunctor] to [Functor], storing neither a second functor nor
+    [CartFct] to [Fct], storing neither a second functor nor
     another choice of cartesian preservation witnesses. *)
 
 (** CCC 函子为一个笛卡尔函子增加规范指数比较的可逆性；强制转换经
-    [CartesianFunctor] 到达 [Functor]，不另存函子或另一份笛卡尔保持性见证。 *)
+    [CartFct] 到达 [Fct]，不另存函子或另一份笛卡尔保持性见证。 *)
 
-Class CCCFunctor {C D : Cat} (HC : CCC C) (HD : CCC D)
+Class CCCFct {C D : Cat} (HC : CCC C) (HD : CCC D)
   :=
-  { CCCF :> @CartesianFunctor C D
+  { CCCF :> @CartFct C D
       (@hasTerminal C HC) (@hasProduct C HC)
   ; ccc_functor_exponential (X Y : @Ob C)
     : is_iso (@functor_exponential_comparison C D CCCF
         (@hasTerminal C HC) (@hasProduct C HC) (@hasExponential C HC)
         (@hasProduct D HD) (@hasExponential D HD)
-        (cartesian_isCartesianF CCCF) X Y)
+        (cartesian_isCartF CCCF) X Y)
   }.
 
 Arguments CCCF {_ _ _ _} _.
@@ -207,11 +207,11 @@ Arguments ccc_functor_exponential {_ _ _ _} _ _ _.
 (** 从保存的数据恢复固定函子呈现。这个通用继承实例需要显式的打包函子，
     不选取具体模型；笛卡尔证据在定义上共享。 *)
 
-Program Instance CCCFunctor_IsCCCF {C D : Cat} {HC : CCC C} {HD : CCC D}
-    (F : CCCFunctor HC HD)
+Program Instance CCCFct_IsCCCF {C D : Cat} {HC : CCC C} {HD : CCC D}
+    (F : CCCFct HC HD)
   : IsCCCF F HC HD
   :=
-  {|isCartesianF := cartesian_isCartesianF (CCCF F)
+  {|isCartF := cartesian_isCartF (CCCF F)
   ; functor_exponential := ccc_functor_exponential F
   |}.
 
@@ -220,11 +220,11 @@ Program Instance CCCFunctor_IsCCCF {C D : Cat} {HC : CCC C} {HD : CCC D}
 
 (** 打包已有 CCC 保持性证据，不改变底层函子、积中介或指数比较的逆。 *)
 
-Program Definition CCCFunctorFromPreservation {C D : Cat}
-    {HC : CCC C} {HD : CCC D} (F : Functor C D) (HF : IsCCCF F HC HD)
-  : CCCFunctor HC HD
+Program Definition CCCFctFromPreservation {C D : Cat}
+    {HC : CCC C} {HD : CCC D} (F : Fct C D) (HF : IsCCCF F HC HD)
+  : CCCFct HC HD
   :=
-  {|CCCF := CartesianFunctorFromPreservation F (@isCartesianF _ _ F HC HD HF)
+  {|CCCF := CartFctFromPreservation F (@isCartF _ _ F HC HD HF)
   ; ccc_functor_exponential := @functor_exponential _ _ F HC HD HF
   |}.
 
@@ -233,8 +233,8 @@ Program Definition CCCFunctorFromPreservation {C D : Cat}
 (** 打包的恒等函子使用已有 CCC 保持性定理。 *)
 
 Program Definition IdCCCF (C : Cat) (HC : CCC C)
-  : CCCFunctor HC HC
-  := CCCFunctorFromPreservation IdF (IdF_IsCCCF C HC).
+  : CCCFct HC HC
+  := CCCFctFromPreservation IdF (IdF_IsCCCF C HC).
 
 (** Compose bundled CCC functors using the established comparison and
     preservation proofs; the underlying functor is ordinary composition. *)
@@ -243,8 +243,8 @@ Program Definition IdCCCF (C : Cat) (HC : CCC C)
 
 Program Definition CompCCCF {C D E : Cat}
     {HC : CCC C} {HD : CCC D} {HE : CCC E}
-    (G : CCCFunctor HD HE) (F : CCCFunctor HC HD)
-  : CCCFunctor HC HE
-  := CCCFunctorFromPreservation (G ∘F F)
+    (G : CCCFct HD HE) (F : CCCFct HC HD)
+  : CCCFct HC HE
+  := CCCFctFromPreservation (G ∘F F)
       (CompF_IsCCCF F G HC HD HE
-        (CCCFunctor_IsCCCF F) (CCCFunctor_IsCCCF G)).
+        (CCCFct_IsCCCF F) (CCCFct_IsCCCF G)).

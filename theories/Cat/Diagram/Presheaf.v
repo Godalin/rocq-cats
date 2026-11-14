@@ -18,9 +18,9 @@ From Cats Require Import
 
 (** 固定顶点的锥就是从常图式出发的自然变换 Hom 广集；相等为 [NatEq]。 *)
 
-Definition ConeS {J C : Cat} (D : Functor J C) (X : @Ob C)
+Definition ConeS {J C : Cat} (D : Fct J C) (X : @Ob C)
   : SetC
-  := @HomSet (Fct J C) (ConstF J X) D.
+  := @HomSet (FctCat J C) (ConstF J X) D.
 
 (** Precomposition in the apex is the contravariant hom functor restricted
     along the diagonal. Independent ambient bounds allow different shape
@@ -29,9 +29,9 @@ Definition ConeS {J C : Cat} (D : Functor J C) (X : @Ob C)
 (** 顶点预合成就是反变 Hom 函子沿对角函子的限制。独立环境上界允许不同大小的
     形状取值于同一集合范畴；函子律直接继承。 *)
 
-Definition ConeF@{u p +} {J C : Cat} (D : Functor J C)
-  : Functor (C^op) SetCat@{u p _ _ _ _ _}
-  := LiftF ∘F (@ℎ2F (Fct J C) D ∘F (Δ[J,C])^opF).
+Definition ConeF@{u p +} {J C : Cat} (D : Fct J C)
+  : Fct (C^op) SetCat@{u p _ _ _ _ _}
+  := LiftF ∘F (@ℎ2F (FctCat J C) D ∘F (Δ[J,C])^opF).
 
 Notation "'Cone(-,' D ')'" := (ConeF D) : cat_scope.
 
@@ -40,8 +40,8 @@ Notation "'Cone(-,' D ')'" := (ConeF D) : cat_scope.
 
 (** 即使两侧载体及相等层级不同，限制也是原生锥广集间的保相等映射。 *)
 
-Program Definition cone_restrict_resp {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X}
+Program Definition cone_restrict_resp {I J C : Cat} (Q : Fct I J)
+    {D : Fct J C} {X}
   : ConeS D X →r ConeS (D ∘F Q) X
   :=
   {|func κ := κ ∘Δ Q
@@ -52,9 +52,9 @@ Program Definition cone_restrict_resp {I J C : Cat} (Q : Functor I J)
 
 (** 延拓复用原来基于代表的锥延拓。 *)
 
-Program Definition cone_extend_resp {I J C : Cat} {Q : Functor I J}
+Program Definition cone_extend_resp {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {X}
+    {D : Fct J C} {X}
   : ConeS (D ∘F Q) X →r ConeS D X
   :=
   {|func := ExtendCone HF HQ
@@ -67,7 +67,7 @@ Program Definition cone_extend_resp {I J C : Cat} {Q : Functor I J}
 (** 顶点自然性恰为已有的限制与预合成相容律；限制本身不要求满性或本质满性。 *)
 
 Program Definition ConeRestrictN {I J C : Cat}
-    (Q : Functor I J) (D : Functor J C)
+    (Q : Fct I J) (D : Fct J C)
   : Cone(-,D) ⇒ Cone(-,D ∘F Q)
   :=
   {|nt X := (cone_restrict_resp Q)^↑S
@@ -84,8 +84,8 @@ Qed.
 (** 满且本质满的限制是自然广集同构；逆分量为原延拓映射，两条互逆方程就是已有的
     [NatEq] 往返定律。 *)
 
-Definition cone_reindex_nat_iso {I J C : Cat} {Q : Functor I J}
-    (HF : is_full Q) (HQ : is_essentially_surjective Q) (D : Functor J C)
+Definition cone_reindex_nat_iso {I J C : Cat} {Q : Fct I J}
+    (HF : is_full Q) (HQ : is_essentially_surjective Q) (D : Fct J C)
   : Cone(-,D) ≅N Cone(-,D ∘F Q).
 Proof.
   exists (ConeRestrictN Q D). intros X.
@@ -101,9 +101,9 @@ Defined.
 
 (** 固定顶点同构就是自然同构的分量；提升仅将两侧原生锥广集放到共同大小上界。 *)
 
-Definition cone_reindex_iso {I J C : Cat} {Q : Functor I J}
+Definition cone_reindex_iso {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    (D : Functor J C) (X : @Ob C)
+    (D : Fct J C) (X : @Ob C)
   : ↑S (ConeS D X) ≅[SetCat] ↑S (ConeS (D ∘F Q) X)
   := ((ConeRestrictN Q D) X; (cone_reindex_nat_iso HF HQ D).2 X).
 
@@ -112,8 +112,8 @@ Definition cone_reindex_iso {I J C : Cat} {Q : Functor I J}
 
 (** 逆方向自然性由一般逆自然变换定理导出，分量使用选定延拓映射。 *)
 
-Definition ConeExtendN {I J C : Cat} {Q : Functor I J}
-    (HF : is_full Q) (HQ : is_essentially_surjective Q) (D : Functor J C)
+Definition ConeExtendN {I J C : Cat} {Q : Fct I J}
+    (HF : is_full Q) (HQ : is_essentially_surjective Q) (D : Fct J C)
   : Cone(-,D ∘F Q) ⇒ Cone(-,D)
   := (ConeRestrictN Q D)^-1N (cone_reindex_nat_iso HF HQ D).2.
 
@@ -124,6 +124,6 @@ Definition ConeExtendN {I J C : Cat} {Q : Functor I J}
 (** 有限生成形状与其选定生成图解释具有自然同构的锥预层；不要求忠实性或关系列表。 *)
 
 Definition generated_cone_nat_iso {J C : Cat}
-    `{HG : !HasFiniteGenerators J} (D : Functor J C)
+    `{HG : !HasFiniteGen J} (D : Fct J C)
   : Cone(-,D) ≅N Cone(-,D ∘F generator_functor)
   := cone_reindex_nat_iso generator_full generator_essentially_surjective D.

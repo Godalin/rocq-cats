@@ -25,8 +25,8 @@ From Cats Require Import
     相干性是后续结构。导入此模块不全局选择模型。 *)
 
 Program Definition SetCat_Day@{o h e u p +} (C : Cat@{o h e _ _})
-    (T : Functor (C ×C C) C)
-    (F G : Functor C (SetCat@{u p _ _ _ _ _}))
+    (T : Fct (C ×C C) C)
+    (F G : Fct C (SetCat@{u p _ _ _ _ _}))
   : HasDay C T F G
   :=
   {|hasDayCoend Z := SetCat_Coend (C ×C C) (DayKernel T F G Z)

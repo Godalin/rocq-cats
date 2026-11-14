@@ -137,7 +137,7 @@ Qed.
 (** 将双变量作用组装为乘积范畴上的函子。 *)
 
 Program Definition ExponentialBiF
-  : Functor (C^op ×C C) C
+  : Fct (C^op ×C C) C
   :=
   {|F0 p := (snd p ^ fst p)%ob
   ; F1 X Y f := (snd f ^ fst f)%hom
@@ -153,7 +153,7 @@ Next Obligation. apply exponential_dimap_comp. Qed.
 (** 固定结果对象，得到反变指数函子。 *)
 
 Definition ExponentialContraF (Y : @Ob C)
-  : Functor (C^op) C
+  : Fct (C^op) C
   := π1F ExponentialBiF Y.
 
 (** Fixing the argument gives the existing covariant exponential functor,

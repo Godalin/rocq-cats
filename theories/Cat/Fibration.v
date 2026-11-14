@@ -11,7 +11,7 @@ From Cats Require Import
 
     基底中的交换三角形沿候选态射唯一提升；交换性和唯一性均使用指定态射相等。 *)
 
-Definition is_cartesian {E B : Cat} (P : Functor E B)
+Definition is_cartesian {E B : Cat} (P : Fct E B)
     {X Y : @Ob E} (f : Hom X Y)
   := ∀ Z (g : Hom Z Y) (u : Hom (P Z) (P X)),
     fmap P f ∘ u ≈ fmap P g
@@ -25,7 +25,7 @@ Notation "f '⦂' 'Cart(' P ')'" := (is_cartesian P f)
 
 (** 位于指定基底分解上、经过笛卡尔箭头的唯一分解。 *)
 
-Definition cartesian_factor {E B : Cat} {P : Functor E B}
+Definition cartesian_factor {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
@@ -36,7 +36,7 @@ Definition cartesian_factor {E B : Cat} {P : Functor E B}
 
 (** 选定笛卡尔分解满足基底、复合与唯一性定律。 *)
 
-Theorem cartesian_factor_unique {E B : Cat} {P : Functor E B}
+Theorem cartesian_factor_unique {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
@@ -48,7 +48,7 @@ Proof. exact (Hf Z g u H).2. Qed.
 
 (** 笛卡尔分解位于给定基底箭头之上。 *)
 
-Theorem cartesian_factor_base {E B : Cat} {P : Functor E B}
+Theorem cartesian_factor_base {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
@@ -59,7 +59,7 @@ Proof. exact (fst (this _ _ (cartesian_factor_unique Hf g u H))). Qed.
 
 (** [cartesian_factor] 与复合的相容性。 *)
 
-Theorem cartesian_factor_comp {E B : Cat} {P : Functor E B}
+Theorem cartesian_factor_comp {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
@@ -70,7 +70,7 @@ Proof. exact (snd (this _ _ (cartesian_factor_unique Hf g u H))). Qed.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Theorem cartesian_factor_proper {E B : Cat} {P : Functor E B}
+Theorem cartesian_factor_proper {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} {g g' : Hom Z Y} {u u' : Hom (P Z) (P X)}
     (H : fmap P f ∘ u ≈ fmap P g) (H' : fmap P f ∘ u' ≈ fmap P g')
@@ -86,7 +86,7 @@ Qed.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Definition cartesian_proper {E B : Cat} {P : Functor E B}
+Definition cartesian_proper {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f f' : Hom X Y} (Hff' : f ≈ f')
     (Hf : f ⦂ Cart(P))
   : f' ⦂ Cart(P).
@@ -104,7 +104,7 @@ Defined.
 
 (** 每条恒等箭头都是笛卡尔的。 *)
 
-Definition cartesian_id {E B : Cat} (P : Functor E B) (X : @Ob E)
+Definition cartesian_id {E B : Cat} (P : Fct E B) (X : @Ob E)
   : (@id X) ⦂ Cart(P).
 Proof.
   intros Z g u H. rewrite functor_id, comp_id_l in H.
@@ -117,7 +117,7 @@ Defined.
 
 (** 笛卡尔箭头的复合仍为笛卡尔箭头。 *)
 
-Definition cartesian_comp {E B : Cat} {P : Functor E B}
+Definition cartesian_comp {E B : Cat} {P : Fct E B}
     {X Y W : @Ob E} {f : Hom X Y} {g : Hom Y W}
     (Hg : g ⦂ Cart(P)) (Hf : f ⦂ Cart(P))
   : (g ∘ f) ⦂ Cart(P).
@@ -141,7 +141,7 @@ Defined.
 
 (** 基底分解及其复合都相等时，中介态射相等；这就是笛卡尔性给出的消去性质。 *)
 
-Theorem cartesian_cancel {E B : Cat} {P : Functor E B}
+Theorem cartesian_cancel {E B : Cat} {P : Fct E B}
     {X Y : @Ob E} {f : Hom X Y} (Hf : f ⦂ Cart(P))
     {Z : @Ob E} {h k : Hom Z X}
   : fmap P h ≈ fmap P k → f ∘ h ≈ f ∘ k → h ≈ k.
@@ -161,7 +161,7 @@ Qed.
 
 (** 通过基底同构连接的笛卡尔提升彼此同构；基底比较作为数据给出，不把对象等同。 *)
 
-Definition cartesian_factor_is_iso {E B : Cat} {P : Functor E B}
+Definition cartesian_factor_is_iso {E B : Cat} {P : Fct E B}
     {X X' Y : @Ob E} {f : Hom X Y} {g : Hom X' Y}
     (Hf : f ⦂ Cart(P)) (Hg : g ⦂ Cart(P))
     (u : Hom (P X) (P X')) (Hu : is_iso u)
@@ -195,7 +195,7 @@ Defined.
 
 (** 同一基底箭头和余域的笛卡尔提升具有同构的定义域。 *)
 
-Definition cartesian_unique {E B : Cat} {P : Functor E B}
+Definition cartesian_unique {E B : Cat} {P : Fct E B}
     {X X' Y : @Ob E} {f : Hom X Y} {g : Hom X' Y}
     (Hf : f ⦂ Cart(P)) (Hg : g ⦂ Cart(P))
     (u : Hom (P X) (P X')) (Hu : is_iso u)
@@ -213,7 +213,7 @@ Definition cartesian_unique {E B : Cat} {P : Functor E B}
     基底对象的识别作为显式数据保留；不要求其见证相等，也不预设提升的严格恒等律
     或复合律。 *)
 
-Class HasCartesianLift {E B : Cat} (P : Functor E B)
+Class HasCartesianLift {E B : Cat} (P : Fct E B)
   :=
   { CartesianLift {Y : @Ob E} {X : @Ob B} (f : Hom X (P Y)) : @Ob E
   ; cartesian_lift_base {Y X} (f : Hom X (P Y)) : P (CartesianLift f) = X

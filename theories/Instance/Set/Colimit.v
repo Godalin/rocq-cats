@@ -27,7 +27,7 @@ From Cats.Set Require Export
 (** 指标不交和具有原反离散极限性质；生成相等无需 UIP 即给出保相等性。 *)
 
 Program Definition SetCat_IndexedCoproductColimit@{i u p +} {I : Type@{i}}
-    (D : Functor (DiscreteCat I) (SetCat@{u p _ _ _ _ _}))
+    (D : Fct (DiscreteCat I) (SetCat@{u p _ _ _ _ _}))
   : HasColimit SetCat D
   :=
   {|hasOpLimit :=
@@ -86,10 +86,10 @@ Definition SetCat_SigmaCoproductColimits@{u p +} {I : Type} (J : I → Type)
 (** 两个特定余积及选定余等化子通过共用抽象构造给出一般图式余极限。 *)
 
 Definition SetCat_DiagramColimit@{u p +} {J : Cat}
-    (D : Functor J (SetCat@{u p _ _ _ _ _}))
+    (D : Fct J (SetCat@{u p _ _ _ _ _}))
   : HasColimit SetCat D
   := @CoproductsCoequalizerColimit J SetCat D
-      (SetCat_IndexedCoproductColimit (DiscreteF (CodiagramObjects D)))
+      (SetCat_IndexedCoproductColimit (DiscreteF (CodiagramObj D)))
       (SetCat_IndexedCoproductColimit (DiscreteF (CodiagramSources D)))
       SetCat_HasCoequalizer.
 
@@ -134,7 +134,7 @@ Definition SetCat_FiniteColimits@{u p +} {J : Cat}
 (** 即使环生成无限多条路径或目标形状施加额外方程，有限生成元仍给出余极限。 *)
 
 Definition SetCat_GeneratedColimits@{u p +} {J : Cat}
-    `{HJ : !HasFiniteGenerators J}
+    `{HJ : !HasFiniteGen J}
   : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) J
   := @GeneratedColimits SetCat J SetCat_HasInitial SetCat_HasCoproduct
       SetCat_HasCoequalizer HJ.

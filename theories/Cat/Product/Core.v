@@ -428,7 +428,7 @@ End Product.
 (** 选定积在两个参数上都具有函子性。 *)
 
 Program Definition ProductF {C : Cat} `{HP : !HasProduct C}
-  : Functor (C ×C C) C
+  : Fct (C ×C C) C
   :=
   {|F0 p := (fst p × snd p)%ob
   ; F1 X Y f := (fst f × snd f)%hom
@@ -444,7 +444,7 @@ Next Obligation. apply cross_comp. Qed.
 (** 固定右因子的积函子。 *)
 
 Definition ProductRF {C : Cat} `{HP : !HasProduct C} (X : @Ob C)
-  : Functor C C
+  : Fct C C
   := π1F ProductF X.
 
 Notation "'(-×' X ')'" := (ProductRF X) : cat_scope.

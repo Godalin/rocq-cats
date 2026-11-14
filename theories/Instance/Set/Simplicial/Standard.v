@@ -99,7 +99,7 @@ Local Open Scope nat_scope.
     因而“延拓它们的映射”将成为询问填充是否存在的精确定义。 *)
 
 Definition StandardSimplex@{u p +} (n : nat)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := RaisedEmbedding (C := Δ) n.
 
 Notation "'Δ[' n ']'" := (StandardSimplex n) : ob_scope.
@@ -110,7 +110,7 @@ Notation "'Δ[' n ']'" := (StandardSimplex n) : ob_scope.
 (** 标准单形嵌入继承提升的 Yoneda 的全部函子律，其箭头作用是后合成。 *)
 
 Definition StandardSimplexF@{u p +}
-  : Functor Δ (Fct (Δ^op) SetCat@{u p _ _ _ _ _})
+  : Fct Δ (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})
   := RaisedEmbedding (C := Δ).
 
 (** The simplex category is fully faithfully embedded among simplicial sets. *)
@@ -119,7 +119,7 @@ Definition StandardSimplexF@{u p +}
 
 Theorem standard_simplex_fully_faithful@{u p +}
   : is_fully_faithful
-      (StandardSimplexF : Functor Δ (Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
+      (StandardSimplexF : Fct Δ (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})).
 Proof. apply raised_embedding_fully_faithful. Defined.
 
 (** The generic n-simplex is the lifted identity of [n]. *)
@@ -127,7 +127,7 @@ Proof. apply raised_embedding_fully_faithful. Defined.
 (** 泛 n-单形是 [n] 的提升恒等。 *)
 
 Definition simplex_generic@{u p +} (n : nat)
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := (id : (@Hom Δ) n n)
   |}.
@@ -138,7 +138,7 @@ Definition simplex_generic@{u p +} (n : nat)
 (** X 的每个 n-单形唯一确定从标准 n-单形出发的映射；双向均保持相等和计算。 *)
 
 Definition simplex_element_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
   : Nat_SetS Δ[n] X →r X n
   := presheaf_yoneda_resp (C := Δ) (P := X) (X := n).
 
@@ -148,7 +148,7 @@ Definition simplex_element_resp@{u p +}
 (** 沿各单纯算子限制一个单形，重构由它确定的映射。 *)
 
 Definition simplex_map_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
   : X n →r Nat_SetS Δ[n] X
   := presheaf_yoneda_inv_resp (C := Δ) (P := X) (X := n).
 
@@ -160,7 +160,7 @@ Notation "'⟦' x '⟧Δ[' X ';' n ']'" := (@simplex_map_resp X n x)
 (** 求值重构的映射恢复所选单形。 *)
 
 Lemma simplex_element_β@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (x : X n)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (x : X n)
   : simplex_element_resp ⟦x⟧Δ[X; n] ≈S x.
 Proof. apply presheaf_yoneda_β. Qed.
 
@@ -169,7 +169,7 @@ Proof. apply presheaf_yoneda_β. Qed.
 (** 从泛单形的像重构恢复原单纯映射。 *)
 
 Lemma simplex_element_η@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (α : Δ[n] ⇒ X)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (α : Δ[n] ⇒ X)
   : ⟦simplex_element_resp α⟧Δ[X; n] ≈N α.
 Proof. apply presheaf_yoneda_η. Qed.
 
@@ -180,7 +180,7 @@ Proof. apply presheaf_yoneda_η. Qed.
     而提升两侧。 *)
 
 Definition simplex_element_iso@{u p v q +}
-    {X : Functor (Δ^op) SetCat@{v q _ _ _ _ _}} (n : nat)
+    {X : Fct (Δ^op) SetCat@{v q _ _ _ _ _}} (n : nat)
   : LiftS@{_ _ u p} (Nat_SetS Δ[n] X) ≅[SetCat]
       LiftS@{_ _ u p} (X n)
   := presheaf_yoneda_iso (C := Δ) (P := X) (X := n).
@@ -191,7 +191,7 @@ Definition simplex_element_iso@{u p v q +}
 (** 从标准单形出发的映射相等，当且仅当其泛单形的像相等。 *)
 
 Lemma simplex_map_unique@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (α β : Δ[n] ⇒ X)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (α β : Δ[n] ⇒ X)
   : α ≈N β ↔ simplex_element_resp α ≈S simplex_element_resp β.
 Proof.
   split.
@@ -208,7 +208,7 @@ Qed.
 (** Yoneda 对应与单纯集合映射交换。 *)
 
 Lemma simplex_element_natural@{u p +}
-    {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (α : X ⇒ Y) (β : Δ[n] ⇒ X)
   : simplex_element_resp (α ∘Nv β) ≈S α n (simplex_element_resp β).
 Proof. apply presheaf_yoneda_natural_presheaf. Qed.
@@ -247,7 +247,7 @@ Proof. apply presheaf_yoneda_natural_presheaf. Qed.
 (** 与标准单形之间的映射预合成，对应于限制泛单形的像；特别包含全部面和退化。 *)
 
 Lemma simplex_element_restrict@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
     (θ : (@Hom Δ) m n) (α : Δ[n] ⇒ X)
   : simplex_element_resp (α ∘Nv fmap StandardSimplexF θ) ≈S
       X[θ]Δ (simplex_element_resp α).

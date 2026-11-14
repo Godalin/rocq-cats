@@ -153,7 +153,7 @@ Defined.
 (** 将固定基底族嵌入全部相干族的范畴。 *)
 
 Program Definition FamFixedF (X : SetC)
-  : Functor (FamSCat X) FamCat
+  : Fct (FamSCat X) FamCat
   :=
   {|F0 := FixedFamC
   ; F1 A B := fam_map_to_fam
@@ -195,7 +195,7 @@ Next Obligation. apply fam_map_naturality. Defined.
 (** 沿基底箭头重索引相干族及固定基底族映射。 *)
 
 Program Definition FamReindexF {X Y : SetC} (f : X →r Y)
-  : Functor (FamSCat Y) (FamSCat X)
+  : Fct (FamSCat Y) (FamSCat X)
   :=
   {|F0 A := A[f]S
   ; F1 A B := fam_map_reindex f

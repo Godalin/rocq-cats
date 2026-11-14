@@ -48,7 +48,7 @@ Next Obligation. rewrite comp_id_l. apply slice_comm. Defined.
 (** 将切片范畴嵌入箭头范畴。 *)
 
 Program Definition SliceArrowF (C : Cat) (X : @Ob C)
-  : Functor (C /C X) (Arr C)
+  : Fct (C /C X) (Arr C)
   :=
   {|F0 := SliceArrowOb
   ; F1 A B := slice_to_square

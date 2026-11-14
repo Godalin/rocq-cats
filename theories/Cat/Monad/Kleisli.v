@@ -126,7 +126,7 @@ Qed.
 (** 将通常箭头送为纯计算，对象不变。对任意 Monad，此函子不一定忠实。 *)
 
 Program Definition KleisliPureF
-  : Functor C KleisliCat
+  : Fct C KleisliCat
   :=
   {|F0 X := X
   ; F1 X Y f := return[M; f]
@@ -144,7 +144,7 @@ Defined.
 (** 将计算扩张回基底范畴；对象上使用原 Monad 函子，箭头上使用 Kleisli 扩张。 *)
 
 Program Definition KleisliExtendF
-  : Functor KleisliCat C
+  : Fct KleisliCat C
   :=
   {|F0 X := M X
   ; F1 X Y f := kleisli_extend M f
@@ -161,7 +161,7 @@ Next Obligation. exact (kleisli_extend_assoc M g f). Defined.
     此命题比较自函子，不比较完整 Monad 结构。 *)
 
 Program Definition KleisliCompositeIso
-  : KleisliExtendF ∘F KleisliPureF ≅N (M : Functor C C)
+  : KleisliExtendF ∘F KleisliPureF ≅N (M : Fct C C)
   := ({|nt X := id|}; _).
 Next Obligation.
   change (id ∘ kleisli_extend M (return[M; f]) ≈ fmap M f ∘ id).

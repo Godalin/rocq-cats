@@ -24,7 +24,7 @@ Local Open Scope monoid_scope.
 
 Program Definition monoid_diagram_iso@{u p +}
     {M : SetC@{u p}} `{HM : !Monoid M}
-    {J : Cat} (F G : Functor J B(M))
+    {J : Cat} (F G : Fct J B(M))
     (H : ∀ i j (f : (@Hom J) i j), fmap F f ≈S fmap G f)
   : F ≅N G
   := ({|nt j := 1
@@ -46,7 +46,7 @@ Defined.
 Program Definition MonoidChainF@{u p +}
     {M : SetC@{u p}} `{HM : !Monoid M}
     {n : nat} (xs : M ^S n)
-  : Functor [Ord n] B(M)
+  : Fct [Ord n] B(M)
   :=
   {|F0 i := tt
   ; F1 i j f := xs⟦i, j⟧⋅
@@ -77,7 +77,7 @@ Defined.
 
 Definition monoid_chain_sub_iso@{u p +}
     {M : SetC@{u p}} `{HM : !Monoid M}
-    {m n : nat} (f : Functor [Ord m] [Ord n]) (xs : M ^S n)
+    {m n : nat} (f : Fct [Ord m] [Ord n]) (xs : M ^S n)
   : MonoidChainF xs[f]M ≅N (MonoidChainF xs ∘F f).
 Proof.
   apply monoid_diagram_iso. intros i j a.

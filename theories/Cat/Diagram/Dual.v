@@ -14,7 +14,7 @@ From Cats Require Import
 
 (** 余锥直接使用反图式上的原锥构造；其分量在 [C] 中从图式对象指向顶点。 *)
 
-Record Cocone {J C : Cat} (D : Functor J C) (X : @Ob C)
+Record Cocone {J C : Cat} (D : Fct J C) (X : @Ob C)
   :=
   { op_cone : @Cone (J^op) (C^op) (D^opF) X
   }.
@@ -26,7 +26,7 @@ Arguments op_cone {_ _ _ _} _.
 
 (** 通常的自然变换接口将存储的反锥腿读回 [C]，自然性直接继承自锥。 *)
 
-Program Definition CoconeN {J C : Cat} {D : Functor J C} {X : @Ob C}
+Program Definition CoconeN {J C : Cat} {D : Fct J C} {X : @Ob C}
     (κ : Cocone D X)
   : D ⇒ ConstF J X
   :=
@@ -46,7 +46,7 @@ Notation "D '⇒∇' X" := (Cocone D X)
 
 (** 通常的余锥方程就是反锥的自然性。 *)
 
-Lemma cocone_naturality {J C : Cat} {D : Functor J C} {X}
+Lemma cocone_naturality {J C : Cat} {D : Fct J C} {X}
     (κ : D ⇒∇ X) {i j : @Ob J} (f : Hom i j)
   : κ j ∘ fmap D f ≈ κ i.
 Proof.
@@ -58,7 +58,7 @@ Qed.
 
 (** 后合成就是反范畴中锥的预合成。 *)
 
-Definition cocone_comp {J C : Cat} {D : Functor J C} {X Y : @Ob C}
+Definition cocone_comp {J C : Cat} {D : Fct J C} {X Y : @Ob C}
     (f : Hom X Y) (κ : D ⇒∇ X)
   : D ⇒∇ Y
   :=
@@ -72,7 +72,7 @@ Infix "∘Cocone" := cocone_comp
 
 (** 保相等性继承自锥的预合成。 *)
 
-Global Instance cocone_comp_proper {J C : Cat} {D : Functor J C}
+Global Instance cocone_comp_proper {J C : Cat} {D : Fct J C}
     {X Y : @Ob C}
   : Proper (@HomEq[X, Y] ==>
       (λ κ μ : D ⇒∇ X, κ ≈N μ) ==>
@@ -88,7 +88,7 @@ Qed.
 
 (** 余锥的恒等律就是锥的恒等律。 *)
 
-Lemma cocone_comp_id {J C : Cat} {D : Functor J C} {X}
+Lemma cocone_comp_id {J C : Cat} {D : Fct J C} {X}
     (κ : D ⇒∇ X)
   : id ∘Cocone κ ≈N κ.
 Proof. exact (cone_comp_id (op_cone κ)). Qed.
@@ -97,7 +97,7 @@ Proof. exact (cone_comp_id (op_cone κ)). Qed.
 
 (** 余锥结合律反转两个顶点映射的次序。 *)
 
-Lemma cocone_comp_assoc {J C : Cat} {D : Functor J C} {X Y Z}
+Lemma cocone_comp_assoc {J C : Cat} {D : Fct J C} {X Y Z}
     (g : Hom Y Z) (f : Hom X Y) (κ : D ⇒∇ X)
   : g ∘Cocone (f ∘Cocone κ) ≈N (g ∘ f) ∘Cocone κ.
 Proof. exact (cone_comp_assoc (op_cone κ) f g). Qed.
@@ -107,7 +107,7 @@ Proof. exact (cone_comp_assoc (op_cone κ) f g). Qed.
 
 (** 用图式自然变换预合成余锥，底层使用其反变换及原来的垂直复合。 *)
 
-Definition cocone_precompose {J C : Cat} {D E : Functor J C} {X : @Ob C}
+Definition cocone_precompose {J C : Cat} {D E : Fct J C} {X : @Ob C}
     (κ : E ⇒∇ X) (α : D ⇒ E)
   : D ⇒∇ X
   :=
@@ -122,7 +122,7 @@ Infix "∘∇" := cocone_precompose
 (** 图式作用接口保持同样的逐点相等。 *)
 
 Global Instance cocone_precompose_proper {J C : Cat}
-    {D E : Functor J C} {X : @Ob C}
+    {D E : Fct J C} {X : @Ob C}
   : Proper ((λ κ μ : E ⇒∇ X, κ ≈N μ) ==> NatEq ==>
       (λ κ μ : D ⇒∇ X, κ ≈N μ)) (@cocone_precompose J C D E X).
 Proof.
@@ -134,8 +134,8 @@ Qed.
 
 (** 函子像使用反范畴中的 [MapCone]，再沿取反与复合的已有比较转换图式。 *)
 
-Definition MapCocone {J C E : Cat} (F : Functor C E)
-    {D : Functor J C} {X : @Ob C} (κ : D ⇒∇ X)
+Definition MapCocone {J C E : Cat} (F : Fct C E)
+    {D : Fct J C} {X : @Ob C} (κ : D ⇒∇ X)
   : (F ∘F D) ⇒∇ F X
   :=
   {|op_cone := ((OpF_comp F D).1 ^-1N (OpF_comp F D).2) ∘Nv
@@ -147,7 +147,7 @@ Definition MapCocone {J C E : Cat} (F : Functor C E)
 
 (** 将通常自然变换的分量送入反锥表示，不另设第二种余锥记录。 *)
 
-Program Definition CoconeOfN {J C : Cat} {D : Functor J C} {X : @Ob C}
+Program Definition CoconeOfN {J C : Cat} {D : Fct J C} {X : @Ob C}
     (κ : D ⇒ ConstF J X)
   : D ⇒∇ X
   :=
@@ -165,7 +165,7 @@ Qed.
 
 (** 将锥读入双重反图式时只在相应端点重组自然性，分量箭头保持不变。 *)
 
-Program Definition ConeOp {J C : Cat} {D : Functor J C} {X : @Ob C}
+Program Definition ConeOp {J C : Cat} {D : Fct J C} {X : @Ob C}
     (κ : X ⇒Δ D)
   : D^opF ⇒∇ X
   :=
@@ -180,8 +180,8 @@ Next Obligation. exact (nt_naturality κ f). Qed.
 
 (** 将反目标范畴中的图式读作反形状的通常图式，保留其对象及箭头映射。 *)
 
-Definition DualDiagram {J C : Cat} (D : Functor J (C^op))
-  : Functor (J^op) C
+Definition DualDiagram {J C : Cat} (D : Fct J (C^op))
+  : Fct (J^op) C
   := FromDoubleOpF ∘F D^opF.
 
 (** Read its original cone as a cocone. Only the naturality endpoints are
@@ -189,7 +189,7 @@ Definition DualDiagram {J C : Cat} (D : Functor J (C^op))
 
 (** 将其原锥读作余锥；仅适配自然性端点，保留分量箭头及所有计算见证。 *)
 
-Program Definition DualCone {J C : Cat} {D : Functor J (C^op)} {X}
+Program Definition DualCone {J C : Cat} {D : Fct J (C^op)} {X}
     (κ : X ⇒Δ D)
   : DualDiagram D ⇒∇ X
   :=
@@ -203,7 +203,7 @@ Next Obligation. exact (nt_naturality κ f). Qed.
 
 (** 从双重反图式的锥表示恢复原来的锥表示。 *)
 
-Program Definition ConeUnop {J C : Cat} {D : Functor J C} {X : @Ob C}
+Program Definition ConeUnop {J C : Cat} {D : Fct J C} {X : @Ob C}
     (κ : D^opF ⇒∇ X)
   : X ⇒Δ D
   :=
@@ -215,7 +215,7 @@ Next Obligation. exact (nt_naturality (op_cone κ) f). Qed.
 
 (** 余锥对象及态射直接由反锥范畴给出。 *)
 
-Definition CoconeCat {J C : Cat} (D : Functor J C)
+Definition CoconeCat {J C : Cat} (D : Fct J C)
   : Cat
   := (ConeCat (D^opF))^op.
 
@@ -224,6 +224,6 @@ Definition CoconeCat {J C : Cat} (D : Functor J C)
 
 (** 顶点函子为原顶点函子取反后读回 [C] 的结果。 *)
 
-Definition CoconeApexF {J C : Cat} (D : Functor J C)
-  : Functor (CoconeCat D) C
+Definition CoconeApexF {J C : Cat} (D : Fct J C)
+  : Fct (CoconeCat D) C
   := FromDoubleOpF ∘F (ConeApexF (D^opF))^opF.

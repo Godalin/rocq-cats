@@ -13,7 +13,7 @@ From Cats Require Import
     载体与相等见证独立提升，这是显式包装，不是大小重设原理。 *)
 
 Program Definition LiftF@{u p +}
-  : Functor SetCat SetCat@{u p _ _ _ _ _}
+  : Fct SetCat SetCat@{u p _ _ _ _ _}
   :=
   {|F0 X := LiftS@{_ _ u p} X
   ; F1 X Y f := f^↑S

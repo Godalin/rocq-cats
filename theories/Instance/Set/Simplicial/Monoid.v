@@ -24,7 +24,7 @@ Local Open Scope monoid_scope.
 
 Program Definition MonoidNerve@{u p +} (M : SetC@{u p})
     `{HM : !Monoid M}
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   :=
   {|F0 n := M ^S n
   ; F1 n m θ :=
@@ -162,7 +162,7 @@ Defined.
 
 Program Definition MonoidDiagramN@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
-  : (LiftF ∘F Nₘ(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+  : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       N≅(B(M))
   :=
   {|nt n :=

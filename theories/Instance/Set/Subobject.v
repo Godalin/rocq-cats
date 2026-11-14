@@ -24,7 +24,7 @@ Context {C : Cat} `{H : !HasPullback C}.
 
 (** 以相互分解为相等的子对象广集。 *)
 
-Program Canonical SubObject Z
+Program Canonical SubObjS Z
   : SetC
   :=
   {|carrier := Sub Z
@@ -92,9 +92,9 @@ Proof. simpl. auto. Qed.
 (** 子对象逆像是反变广集值函子。 *)
 
 Program Canonical SubF
-  : Functor (op C) SetCat
+  : Fct (op C) SetCat
   :=
-  {|F0 Z := SubObject Z
+  {|F0 Z := SubObjS Z
   ; F1 Y X (f : (@Hom C) X Y) :=
       {|func := Sub_fmap f
       |}

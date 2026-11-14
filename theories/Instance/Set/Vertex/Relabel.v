@@ -6,7 +6,7 @@ From Cats Require Export
 (** * 沿指定相等重标记图式 *)
 
 Section Relabel.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** Change both endpoints by precomposition and inverse postcomposition. *)
 
@@ -105,9 +105,9 @@ Defined.
 (** 任意图式可沿指定顶点相等重标记；相干性完全来自对象运输。 *)
 
 Program Definition VertexRelabelF {J : Cat}
-    (F : Functor J (VertexCat T)) (v : @Ob J → X)
+    (F : Fct J (VertexCat T)) (v : @Ob J → X)
     (e : ∀ j, v j ≈S F j)
-  : Functor J (VertexCat T)
+  : Fct J (VertexCat T)
   :=
   {|F0 := v
   ; F1 i j f := vertex_rebase_resp (e i) (e j) (fmap F f)
@@ -133,7 +133,7 @@ Defined.
 (** 重标记后的图式通过指定运输方块等于原图式，不比较函子记录的原生相等。 *)
 
 Definition vertex_relabel_eq {J : Cat}
-    (F : Functor J (VertexCat T)) (v : @Ob J → X)
+    (F : Fct J (VertexCat T)) (v : @Ob J → X)
     (e : ∀ j, v j ≈S F j)
   : VertexDiagramEq T (VertexRelabelF F v e) F.
 Proof. exists e. intros i j f. apply vertex_rebase_square. Defined.

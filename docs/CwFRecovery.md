@@ -7,7 +7,7 @@
 
 ## 1. 现有 comprehension 提供什么
 
-对 `P : Functor E C`，已有的
+对 `P : Fct E C`，已有的
 [Comprehension](../theories/Cat/Comprehension.v) 提供选定笛卡尔提升、
 扩张函子、投影自然变换，以及笛卡尔态射的显示方块为拉回的泛性质。
 它没有选择：
@@ -24,7 +24,7 @@
 
 ## 2. 已实现的必要充分准则：固定 T 后的表示
 
-输入已有的 `T : Functor (C^op) FamCat`。它已经给出类型、项、指定相等、
+输入已有的 `T : Fct (C^op) FamCat`。它已经给出类型、项、指定相等、
 相干转换和替换。对 `A : Ty T Γ`，已有的配对预层是：
 
 ```text
@@ -115,7 +115,7 @@ context_extension_iff_representation T:
 [Display](../theories/DTT/Display/Core.v) 已将以下输入实现为单个
 `HasDisplay C P` 类。它不要求 C 存在所有拉回，也不要求终对象或预先给定项。
 
-首先选择类型预层 `TyF : Functor (C^op) SetCat`，并对每个 A 选择
+首先选择类型预层 `TyF : Fct (C^op) SetCat`，并对每个 A 选择
 显示映射 `p_A : E_A → Γ`。类型相等 `e : A ≈S B` 作用为指定的
 垂直同构 `i_e : E_A → E_B`，保持投影，并满足见证独立、单位和复合律。
 类型相等来自 TyF 的广集，而不是反过来由所有显示同构定义。
@@ -196,7 +196,7 @@ H 是保持投影的见证；定律不比较它或右逆见证的原生相等。
 ```text
 DisplayTerms P Γ A := Sec(display_proj P A)
 DisplayTyTm P Γ   := (P Γ, DisplayTerms P Γ)
-DisplayTyTmF P    : Functor (C^op) FamCat
+DisplayTyTmF P    : Fct (C^op) FamCat
 
 e ▸D[P] s      := e^D[P] ▷Sec[display_conv_proj e] s
 s[σ]TmD[P]     := s[display_lift_universal σ A]Sec

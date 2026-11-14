@@ -23,7 +23,7 @@ From Cats Require Import Instance.Set.Representable.
     族值预层已经提供指定类型相等、项相等和相干替换，选定表示提供扩张。 *)
 
 Section ContextRepresentation.
-Context {C : Cat} (T : Functor (C^op) FamCat).
+Context {C : Cat} (T : Fct (C^op) FamCat).
 
 (** Equality of substituted generic pairs is equivalent to the two
     context-pairing equations. *)

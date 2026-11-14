@@ -23,8 +23,8 @@ Local Open Scope nat_scope.
 (** 选定余骨架结构使用原生单形大小及指定相等；导入本模块不会全局启用该结构。 *)
 
 Program Definition vertex_IsCoskeletal@{u p +}
-    {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2]
+    {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2]
   :=
   {|coskeletal_boundary_universal n b :=
       vertex_sieve_universal T (BoundarySieve (S (S (S n)))) b

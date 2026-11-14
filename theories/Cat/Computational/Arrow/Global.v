@@ -35,7 +35,7 @@ Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     大小保留 [K] 的层级，独立于值范畴。 *)
 
 Definition ArrowGlobalF
-  : Functor C SetCat
+  : Fct C SetCat
   := Hom(A 1,-) ∘F A.
 
 (** Ordered fanout is a respectful pairing of terminal-input computations. *)
@@ -94,7 +94,7 @@ Next Obligation. intros x y H. reflexivity. Defined.
     不假设这些 Hom 广集可在值范畴内部表示。 *)
 
 Program Definition ArrowGlobalLax
-  : LaxMonoidalFunctor (@CartesianMonoidal C HT HP)
+  : LaxMonoidalFct (@CartesianMonoidal C HT HP)
       (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)
   := {|LaxMonoidalF := ArrowGlobalF
      ; lax_unit := arrow_global_unit

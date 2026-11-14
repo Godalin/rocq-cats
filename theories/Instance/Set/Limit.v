@@ -26,7 +26,7 @@ From Cats.Set Require Export
 (** 依赖函数按逐点相等给出离散极限；索引宇宙须同时容纳于载体及相等宇宙。 *)
 
 Program Definition SetCat_IndexedProductLimit@{i u p +} {I : Type@{i}}
-    (D : Functor (DiscreteCat I) (SetCat@{u p _ _ _ _ _}))
+    (D : Fct (DiscreteCat I) (SetCat@{u p _ _ _ _ _}))
   : HasLimit SetCat D
   :=
   {|Lim := ∏S[λ i, D i]
@@ -75,7 +75,7 @@ Definition SetCat_SigmaProductLimits@{u p +} {I : Type} (J : I → Type)
 (** 复用对象／箭头指标积及选定等化子构造单个一般图式极限；大小界保留于形状。 *)
 
 Definition SetCat_DiagramLimit@{u p +} {J : Cat}
-    (D : Functor J (SetCat@{u p _ _ _ _ _}))
+    (D : Fct J (SetCat@{u p _ _ _ _ _}))
   : HasLimit SetCat D
   := @ProductsEqualizerLimit J SetCat D
       (@hasLimit SetCat _ (SetCat_HasIndexedProducts (@Ob J)) _)
@@ -118,7 +118,7 @@ Definition SetCat_FiniteLimits@{u p +} {J : Cat}
 (** 即使形状具有无限多条路径，有限生成元也已经足够。 *)
 
 Definition SetCat_GeneratedLimits@{u p +} {J : Cat}
-    `{HJ : !HasFiniteGenerators J}
+    `{HJ : !HasFiniteGen J}
   : HasLimitsOfShape (SetCat@{u p _ _ _ _ _}) J
   := @GeneratedLimits SetCat SetCat_HasTerminal SetCat_HasProduct
       SetCat_HasEqualizer J HJ.

@@ -18,8 +18,8 @@ From Cats Require Export
 
 (** 在保留 Hom 权重的同时变换两个值坐标；此处使用已有的自然变换逐点积。 *)
 
-Definition DayInputN@{u p +} {C : Cat} (T : Functor (C ×C C) C)
-    {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})} (α : F ⇒ F') (β : G ⇒ G')
+Definition DayInputN@{u p +} {C : Cat} (T : Fct (C ×C C) C)
+    {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})} (α : F ⇒ F') (β : G ⇒ G')
     (Z : @Ob C)
   : DayKernel T F G Z ⇒ DayKernel T F' G' Z
   := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _ idN
@@ -38,13 +38,13 @@ Definition DayInputN@{u p +} {C : Cat} (T : Functor (C ×C C) C)
 
 Section InputLaws.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
+Context {C : Cat} (T : Fct (C ×C C) C).
 
 (** Equal input transformations give equal maps of kernels. *)
 
 (** 相等的输入自然变换给出相等的核映射。 *)
 
-Global Instance day_input_proper {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})}
+Global Instance day_input_proper {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     (Z : @Ob C)
   : Proper (NatEq ==> NatEq ==> NatEq)
       (λ (α : F ⇒ F') (β : G ⇒ G'), DayInputN T α β Z).
@@ -57,7 +57,7 @@ Defined.
 
 (** 输入恒等映射在每个坐标上恒等作用。 *)
 
-Lemma day_input_id (F G : Functor C (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
+Lemma day_input_id (F G : Fct C (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
   : DayInputN T (idN (F := F)) (idN (F := G)) Z ≈N idN.
 Proof. intros [[X Y] [X' Y']] [h [x y]]. repeat split; reflexivity. Defined.
 
@@ -65,7 +65,7 @@ Proof. intros [[X Y] [X' Y']] [h [x y]]. repeat split; reflexivity. Defined.
 
 (** 输入复合与核映射的垂直复合一致。 *)
 
-Lemma day_input_comp {F F' F'' G G' G'' : Functor C (SetCat@{u p _ _ _ _ _})}
+Lemma day_input_comp {F F' F'' G G' G'' : Fct C (SetCat@{u p _ _ _ _ _})}
     (α' : F' ⇒ F'') (α : F ⇒ F')
     (β' : G' ⇒ G'') (β : G ⇒ G') (Z : @Ob C)
   : DayInputN T (α' ∘Nv α) (β' ∘Nv β) Z ≈N
@@ -76,7 +76,7 @@ Proof. intros [[X Y] [X' Y']] [h [x y]]. repeat split; reflexivity. Defined.
 
 (** 值与 Hom 目标的独立改变彼此交换。 *)
 
-Lemma day_input_post {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})}
+Lemma day_input_post {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     (α : F ⇒ F') (β : G ⇒ G') {Z Z' : @Ob C} (f : Hom Z Z')
   : (DayInputN T α β Z' ∘Nv DayPostN T f) ≈N
       (DayPostN T f ∘Nv DayInputN T α β Z).
@@ -89,8 +89,8 @@ End InputLaws.
 
 (** 只需两个端点的卷积选择；自然性由核交换方块及 coend 函子性得到。 *)
 
-Program Definition DayMapN@{u p +} {C : Cat} (T : Functor (C ×C C) C)
-    {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})}
+Program Definition DayMapN@{u p +} {C : Cat} (T : Fct (C ×C C) C)
+    {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     `{HD : !HasDay C T F G} `{HD' : !HasDay C T F' G'}
     (α : F ⇒ F') (β : G ⇒ G')
   : DayF T F G ⇒ DayF T F' G'
@@ -116,13 +116,13 @@ Defined.
 
 Section MapLaws.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
+Context {C : Cat} (T : Fct (C ×C C) C).
 
 (** Convolution maps respect equality of both input transformations. *)
 
 (** 卷积映射保持两路输入自然变换的相等。 *)
 
-Global Instance day_map_proper {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})}
+Global Instance day_map_proper {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     `{HD : !HasDay C T F G} `{HD' : !HasDay C T F' G'}
   : Proper (NatEq ==> NatEq ==> NatEq)
       (λ (α : F ⇒ F') (β : G ⇒ G'), DayMapN T α β).
@@ -136,7 +136,7 @@ Defined.
 
 (** 输入恒等自然变换给出恒等卷积映射。 *)
 
-Lemma day_map_id (F G : Functor C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}
+Lemma day_map_id (F G : Fct C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}
   : DayMapN T (idN (F := F)) (idN (F := G)) ≈N idN.
 Proof.
   intros Z. change (coend_map (DayInputN T idN idN Z) ≈ id).
@@ -149,7 +149,7 @@ Defined.
 
 (** 只需三个端点选择就可保持复合。 *)
 
-Lemma day_map_comp {F F' F'' G G' G'' : Functor C (SetCat@{u p _ _ _ _ _})}
+Lemma day_map_comp {F F' F'' G G' G'' : Fct C (SetCat@{u p _ _ _ _ _})}
     `{HD : !HasDay C T F G} `{HD' : !HasDay C T F' G'}
     `{HD'' : !HasDay C T F'' G''}
     (α' : F' ⇒ F'') (α : F ⇒ F')
@@ -177,9 +177,9 @@ End MapLaws.
     结合子及相干性仍须单独证明。选择族是显式参数，不安装全局实例。 *)
 
 Program Definition DayTensorF@{u p +} {C : Cat}
-    (T : Functor (C ×C C) C)
-    (HD : ∀ F G : Functor C (SetCat@{u p _ _ _ _ _}), HasDay C T F G)
-  : Functor (Fct C SetCat ×C Fct C SetCat) (Fct C SetCat)
+    (T : Fct (C ×C C) C)
+    (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G)
+  : Fct (FctCat C SetCat ×C FctCat C SetCat) (FctCat C SetCat)
   :=
   {|F0 q := @DayF C T (fst q) (snd q) (HD (fst q) (snd q))
   ; F1 q q' α := @DayMapN C T (fst q) (fst q') (snd q) (snd q')

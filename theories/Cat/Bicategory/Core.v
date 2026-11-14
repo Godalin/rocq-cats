@@ -25,7 +25,7 @@ Class Bicat@{o h t p +}
   { ObB : Type@{o}
   ; HomCat : ObB → ObB → Cat@{h t p _ _}
   ; id1 (X : ObB) : @Ob (HomCat X X)
-  ; comp1F (X Y Z : ObB) : Functor (HomCat Y Z ×C HomCat X Y) (HomCat X Z)
+  ; comp1F (X Y Z : ObB) : Fct (HomCat Y Z ×C HomCat X Y) (HomCat X Z)
 
   ; Cell1 (X Y : ObB) := @Ob (HomCat X Y)
   ; Cell2 {X Y : ObB} (f g : Cell1 X Y) := (@Hom (HomCat X Y)) f g

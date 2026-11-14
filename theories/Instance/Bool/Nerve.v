@@ -23,7 +23,7 @@ Local Existing Instance BoolS_Monoid.
 (** 异或幺半群在最小值宇宙中给出箭头链 nerve，保留原来的指定相等。 *)
 
 Definition BoolNerve
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Nₘ(BoolS).
 
 (** The identity one-simplex. *)
@@ -72,7 +72,7 @@ Proof. intros [[] | []]. reflexivity. Defined.
 (** 一般图式比较实例化到布尔群胚。 *)
 
 Definition BoolNerveComparison
-  : (LiftF ∘F BoolNerve : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
+  : (LiftF ∘F BoolNerve : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
       N≅(BoolGroupoid)
   := MonoidDiagramN.
 
@@ -98,8 +98,8 @@ Defined.
 (** 一般顶点 nerve 在单元素对象集合上使用恒等运输，同样保留布尔环路的区别。 *)
 
 Definition BoolVertexNerve
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
-  := Nᵥ(MonoidObjectsF BoolS).
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  := Nᵥ(MonoidObjF BoolS).
 
 (** The vertex nerve of the xor group has chosen fillers in every
     positive dimension, while retaining its distinct loops. Enable this
@@ -109,8 +109,8 @@ Definition BoolVertexNerve
 
 Definition BoolVertexNerve_HasKanFillers
   : HasKanFillers BoolVertexNerve
-  := vertex_groupoid_HasKanFillers (MonoidObjectsF BoolS)
-      (HC := VertexCat_IsGroupoid (MonoidObjectsF BoolS)
+  := vertex_groupoid_HasKanFillers (MonoidObjF BoolS)
+      (HC := VertexCat_IsGroupoid (MonoidObjF BoolS)
         (HC := BoolGroupoid_IsGroupoid)).
 
 (** Every compatible boolean-nerve boundary above dimension two has a
@@ -120,14 +120,14 @@ Definition BoolVertexNerve_HasKanFillers
 
 Definition BoolVertexNerve_IsCoskeletal
   : BoolVertexNerve ⦂ Cosk[2]
-  := vertex_IsCoskeletal (MonoidObjectsF BoolS).
+  := vertex_IsCoskeletal (MonoidObjF BoolS).
 
 (** The tuple interpretation is a map into the general construction. *)
 
 (** 元组解释给出进入一般构造的映射。 *)
 
 Definition BoolVertexComparison
-  : (LiftF ∘F BoolNerve : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
+  : (LiftF ∘F BoolNerve : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
       BoolVertexNerve
   := MonoidVertexN.
 
@@ -173,7 +173,7 @@ Qed.
     其相等为布尔值的原生相等。因此两个对象同构，但其指定标签仍保持区别。 *)
 
 Program Definition BooleanLabels
-  : Functor (EqGpd BoolS) (CodiscreteCat bool)
+  : Fct (EqGpd BoolS) (CodiscreteCat bool)
   :=
   {|F0 b := b
   ; F1 x y p := tt
@@ -215,7 +215,7 @@ Next Obligation. intros x. exists tt. split; exact tt. Defined.
 (** 指定运输比较将迫使 false 和 true 相等。 *)
 
 Example constants_not_vertex_equal
-  : ¬ VertexFunctorEq (ConstantVertexF false) (ConstantVertexF true).
+  : ¬ VtxFctEq (ConstantVertexF false) (ConstantVertexF true).
 Proof. intros [e H]. discriminate (e false). Defined.
 
 (** *** 3. Degree zero detects exactly the retained distinction
@@ -231,7 +231,7 @@ Proof. intros [e H]. discriminate (e false). Defined.
 
 Example constant_nerve_maps_distinct
   : ¬ ((VertexNerveN (ConstantVertexF false) :
-      (Nᵥ(BooleanLabels) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)
+      (Nᵥ(BooleanLabels) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)
         ≈N VertexNerveN (ConstantVertexF true)).
 Proof.
   intros H.
@@ -255,18 +255,18 @@ Defined.
 
 Example every_boolean_nerve_map_reconstructs
     (α : (Nᵥ(BooleanLabels) :
-      Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(BooleanLabels))
+      Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(BooleanLabels))
   : VertexNerveN (VertexNerveInvF α) ≈N α.
 Proof. exact (vertex_nerve_β α). Defined.
 
-(** The other round trip uses [VertexFunctorEq]. It does not identify the
+(** The other round trip uses [VtxFctEq]. It does not identify the
     distinct constant functors above. *)
 
-(** 另一侧往返使用 [VertexFunctorEq]，不会识别上面两个不同的常值函子。 *)
+(** 另一侧往返使用 [VtxFctEq]，不会识别上面两个不同的常值函子。 *)
 
 Example boolean_vertex_functor_round_trip (F : BooleanLabels →ᵥ BooleanLabels)
-  : VertexFunctorEq (VertexNerveInvF (VertexNerveN F :
-      (Nᵥ(BooleanLabels) : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)) F.
+  : VtxFctEq (VertexNerveInvF (VertexNerveN F :
+      (Nᵥ(BooleanLabels) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)) F.
 Proof. exact (vertex_nerve_η F). Defined.
 
 (** [vertex_nerve_hom_iso] bundles both respectful maps and round trips as

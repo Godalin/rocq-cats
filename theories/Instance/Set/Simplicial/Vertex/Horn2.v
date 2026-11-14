@@ -298,9 +298,9 @@ Defined.
 (** 固定顶点的脊通过一般脊重构确定实际的二维单形。 *)
 
 Program Definition triangle_simplex_resp@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C) (A B D : X)
+    (T : Fct (EqGpd X) C) (A B D : X)
   : TriangleS (VertexCat T) A B D →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
   :=
   {|func p := ⟦{|lower := @PairChain (VertexCat T) A B D (fst p) (snd p)
                 |}⟧Sp[T; 2]
@@ -327,11 +327,11 @@ Notation "'△₂[' T ';' A ';' B ';' D ']'" :=
 (** 固定顶点三角形相等恰为所实现单形的相等；任意自反顶点见证都作用为恒等。 *)
 
 Lemma triangle_simplex_eq_iff@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p q : TriangleS (VertexCat T) A B D)
   : p ≈S q ↔
       (△₂[T; A; B; D] : _ →r
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p ≈S
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p ≈S
       △₂[T; A; B; D] q.
 Proof.
   split.
@@ -355,11 +355,11 @@ Defined.
 (** 首面保留后续脊箭头。 *)
 
 Lemma triangle_face_0@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p : TriangleS (VertexCat T) A B D)
   : fmap (lower (d[Nᵥ(T); 1; fin_first]
       ((△₂[T; A; B; D] : _ →r
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
       (ordinal_step fin_first) ≈ snd p.
 Proof. change (id ∘ snd p ≈ snd p). apply comp_id_l. Defined.
 
@@ -368,11 +368,11 @@ Proof. change (id ∘ snd p ≈ snd p). apply comp_id_l. Defined.
 (** 中间面为两条脊箭头的复合。 *)
 
 Lemma triangle_face_1@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p : TriangleS (VertexCat T) A B D)
   : fmap (lower (d[Nᵥ(T); 1; fin_next fin_first]
       ((△₂[T; A; B; D] : _ →r
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
       (ordinal_step fin_first) ≈ snd p ∘ fst p.
 Proof. change ((id ∘ snd p) ∘ fst p ≈ snd p ∘ fst p).
   rewrite comp_id_l. reflexivity. Defined.
@@ -382,11 +382,11 @@ Proof. change ((id ∘ snd p) ∘ fst p ≈ snd p ∘ fst p).
 (** 末面保留先行脊箭头。 *)
 
 Lemma triangle_face_2@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p : TriangleS (VertexCat T) A B D)
   : fmap (lower (d[Nᵥ(T); 1; fin_next (fin_next fin_first)]
       ((△₂[T; A; B; D] : _ →r
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
       (ordinal_step fin_first) ≈ fst p.
 Proof. change (id ∘ fst p ≈ fst p). apply comp_id_l. Defined.
 
@@ -396,7 +396,7 @@ Proof. change (id ∘ fst p ≈ fst p). apply comp_id_l. Defined.
 (** 群胚的选定对象通过全忠实诱导嵌入继承群胚结构；此结构须显式启用。 *)
 
 Definition VertexCat_IsGroupoid {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C) `{HC : !IsGroupoid C}
+    (T : Fct (EqGpd X) C) `{HC : !IsGroupoid C}
   : VertexCat T ⦂ Gpd
   := @fully_faithful_IsGroupoid (VertexCat T) C (InducedInclusionF X T)
       (induced_inclusion_fully_faithful X T) HC.
@@ -409,9 +409,9 @@ Definition VertexCat_IsGroupoid {X : SetC} {C : Cat}
     保留边与 horn 相等；选定代表及全部比较见证均显式保留。 *)
 
 Definition is_local_horn2_filler@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X} {i : Ordinal 2}
+    {T : Fct (EqGpd X) C} {A B D : X} {i : Ordinal 2}
     (h : Horn2S (VertexCat T) A B D i)
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
   : Type
   := ∃ q : TriangleS (VertexCat T) A B D,
       (△₂[T; A; B; D] q ≈S x) ∧ is_horn2_filler h q.
@@ -422,10 +422,10 @@ Definition is_local_horn2_filler@{u p +} {X : SetC} {C : Cat}
 (** 群胚中的局部填充是保相等映射，由限制的逆后接三角形实现得到。 *)
 
 Definition local_horn2_resp@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} `{HC : !IsGroupoid (VertexCat T)}
+    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VertexCat T)}
     {A B D : X} (i : Ordinal 2)
   : Horn2S (VertexCat T) A B D i →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
   := △₂[T; A; B; D] ∘r (horn2_iso i).2.1.
 
 Notation "'fill₂[' T ';' A ';' B ';' D ';' i ']'" :=
@@ -437,10 +437,10 @@ Notation "'fill₂[' T ';' A ';' B ';' D ';' i ']'" :=
 (** 任意范畴的每个局部内 horn 都具有唯一实现单形，它是恒等限制的唯一纤维之像。 *)
 
 Definition local_inner_horn2_universal@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (h : Horn2S (VertexCat T) A B D (fin_next fin_first))
   : is_unique (R := carrier_equiv
-      ((Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
+      ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
       (is_local_horn2_filler h) (△₂[T; A; B; D] h)
   := iso_fiber_image_universal inner_horn2_iso △₂[T; A; B; D] h.
 
@@ -450,10 +450,10 @@ Definition local_inner_horn2_universal@{u p +} {X : SetC} {C : Cat}
 (** 群胚中的每个局部 horn 均具有唯一实现单形；定理统一使用一般唯一纤维像构造。 *)
 
 Definition local_horn2_universal@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} `{HC : !IsGroupoid (VertexCat T)}
+    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VertexCat T)}
     {A B D : X} (i : Ordinal 2) (h : Horn2S (VertexCat T) A B D i)
   : is_unique (R := carrier_equiv
-      ((Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
+      ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
       (is_local_horn2_filler h)
       (△₂[T; A; B; D] ((horn2_iso i).2.1 h)).
 Proof.
@@ -473,11 +473,11 @@ Defined.
     自反运输作用为恒等。 *)
 
 Lemma triangle_face_edge_eq@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p q : TriangleS (VertexCat T) A B D) (j : Ordinal 2)
     (H : fmap (lower (d[Nᵥ(T); 1; j]
       ((△₂[T; A; B; D] : _ →r
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
         (ordinal_step fin_first) ≈
       fmap (lower (d[Nᵥ(T); 1; j] (△₂[T; A; B; D] q)))
         (ordinal_step fin_first))
@@ -497,13 +497,13 @@ Defined.
 (** 相等的局部 horn 限制给出相等的保留一维面；使用指定顶点相等，不要求群胚。 *)
 
 Lemma triangle_retained_face_eq@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p q : TriangleS (VertexCat T) A B D) (i j : Ordinal 2)
     (Hj : ¬ j = i) (H : ρ₂[VertexCat T; A; B; D; i] p ≈S
       ρ₂[VertexCat T; A; B; D; i] q)
   : d[Nᵥ(T); 1; j]
       ((△₂[T; A; B; D] : _ →r
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p) ≈S
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p) ≈S
       d[Nᵥ(T); 1; j] (△₂[T; A; B; D] q).
 Proof.
   destruct p as [f g], q as [f' g'].
@@ -527,16 +527,16 @@ Defined.
     传播到每个维度及每种分解。 *)
 
 Lemma triangle_horn_restrict_eq@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B D : X}
+    {T : Fct (EqGpd X) C} {A B D : X}
     (p q : TriangleS (VertexCat T) A B D) (i : Ordinal 2)
     (H : ρ₂[VertexCat T; A; B; D; i] p ≈S
       ρ₂[VertexCat T; A; B; D; i] q)
   : ((△₂[T; A; B; D] : _ →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)↾Λ[Nᵥ(T); 2; i]
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)↾Λ[Nᵥ(T); 2; i]
       ≈N (△₂[T; A; B; D] q)↾Λ[Nᵥ(T); 2; i].
 Proof.
   apply (snd (@generated_sieve_map_eq Δ 2
     (∃ j : Ordinal 2, ¬ j = i) (λ _, 1) (λ j, δ[1; j.1])
-    (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) _ _)).
+    (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) _ _)).
   intros [j Hj]. exact (triangle_retained_face_eq p q i j Hj H).
 Defined.

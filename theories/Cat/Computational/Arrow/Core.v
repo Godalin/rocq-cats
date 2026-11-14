@@ -29,7 +29,7 @@ Class Arrow
 
   (** 唯一底层视图是纯箭头函子；已有定律提供恒等及复合的保持性。 *)
 
-  { ArrowF :> Functor C K
+  { ArrowF :> Fct C K
 
   (** Carry a left context through the computation, without running an
       additional effect in that context. *)
@@ -153,7 +153,7 @@ Proof. apply functor_comp. Qed.
 (** 固定上下文扩展是计算上的函子。 *)
 
 Program Definition ContextF (Z : @Ob C)
-  : Functor ComputationCat ComputationCat
+  : Fct ComputationCat ComputationCat
   :=
   {|F0 X := Z ⊗ X
   ; F1 X Y f := context[A; Z; f]

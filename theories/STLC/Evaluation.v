@@ -65,7 +65,7 @@ Context {B : Type@{b}}.
     中显式的内部界限，与世界定律的大小独立。 *)
 
 Fixpoint EnvF (Γ : Ctx B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}
   := match Γ with
   | ctx_empty => ConstF ((RenamingCat B)^op) (C := SetCat) UnitS
@@ -223,7 +223,7 @@ Defined.
 
 Program Definition SemanticCurryN
     (A U : Ty B)
-    (H : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (H : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _})
     (α : PointwiseProductF H (SemF A) ⇒ SemF U)
   : H ⇒ SemF (A ⇒ U)

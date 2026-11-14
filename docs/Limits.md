@@ -5,9 +5,9 @@
 [Diagram](../theories/Cat/Diagram/Core.v) 复用函子和自然变换：
 
 ```text
-D : Functor J C
-ConstF J X : Functor J C
-Δ[J,C] : Functor C (Fct J C)
+D : Fct J C
+ConstF J X : Fct J C
+Δ[J,C] : Fct C (FctCat J C)
 κ : X ⇒Δ D := ConstF J X ⇒ D
 κ ∘Cone f : Y ⇒Δ D       （f : Hom Y X）
 ```
@@ -103,7 +103,7 @@ eq⟨q,H⟩             由 H : f ∘ q ≈ g ∘ q 得到的唯一中介
 `D : J → C` 使用两族对象：
 
 ```text
-DiagramObjects D j = D j
+DiagramObj D j = D j
 DiagramTargets D a = D (arrow_cod a)       a : ArrowOb J
 ```
 
@@ -122,7 +122,7 @@ DiagramTargets D a = D (arrow_cod a)       a : ArrowOb J
 
 `IndexedProductsEqualizerLimits` 从对象索引、箭头索引两类离散图式的全部
 选定极限，以及选定等化子，构造 `HasLimitsOfShape C J`。
-所得极限函子及对角伴随可以直接调用既有 `LimitF` 和 `LimitAdjunction`，
+所得极限函子及对角伴随可以直接调用既有 `LimF` 和 `LimAdj`，
 无需另选相干的极限映射。
 
 公式本身不要求 J 有限；能否选出上述两个积由 C 的结构和大小界决定。
@@ -152,7 +152,7 @@ FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
 
 递归对象、投影、配对及泛性质中的中介均保持透明，便于直接计算。
 有限生成图通过下一节的构造接入这些积；带有限 Hom 覆盖的范畴则通过
-`FiniteHomGenerators` 给出相应生成图及其解释函子。
+`FiniteHomGen` 给出相应生成图及其解释函子。
 
 ## 只按生成边取积的极限构造
 
@@ -194,7 +194,7 @@ EdgeSet x y = FinS (k x y)
 
 ## 沿满且本质满函子传递极限
 
-设 `Q : Functor I J`。`is_full Q` 为每条像对象之间的态射保留一个原像；
+设 `Q : Fct I J`。`is_full Q` 为每条像对象之间的态射保留一个原像；
 `is_essentially_surjective Q` 为每个 j 保留代表 i 及同构 `Q i ≅ j`。
 这两种存在都是 Type 值的选取数据，不需要选择公理或对象的原生相等。
 
@@ -232,13 +232,13 @@ extend_limit HF HQ        : is_limit μ → is_limit (ExtendCone HF HQ μ)
 
 [Diagram.Presheaf](../theories/Cat/Diagram/Presheaf.v) packages the existing
 restriction and extension laws. `ConeS D X` is the native hom-setoid
-`HomSet (ConstF J X) D` in `Fct J C`, with `NatEq` equality. The cone presheaf
+`HomSet (ConstF J X) D` in `FctCat J C`, with `NatEq` equality. The cone presheaf
 `Cone(-,D)` is the contravariant hom functor at `D`, precomposed with the
 opposite diagonal functor and followed by `LiftF`. Functor laws therefore
 come from the existing Hom and composition theory.
 
 [Diagram.Presheaf](../theories/Cat/Diagram/Presheaf.v) 包装已有的限制及延拓定律。
-`ConeS D X` 是 `Fct J C` 中的原生 `HomSet (ConstF J X) D`，相等为 `NatEq`。
+`ConeS D X` 是 `FctCat J C` 中的原生 `HomSet (ConstF J X) D`，相等为 `NatEq`。
 锥预层 `Cone(-,D)` 由以 D 为目标的反变 Hom 函子预合成反对角函子、再复合
 `LiftF` 得到；函子律因此直接来自已有 Hom 及复合理论。
 
@@ -275,14 +275,14 @@ through `lower`; no new notion of cones is introduced.
 见证保留独立上界，不作大小重设，也不合并形状或目标范畴的原生宇宙。
 实际锥分量通过 `lower` 读取，没有引入新的锥概念。
 
-For `HG : HasFiniteGenerators J`, `generated_cone_nat_iso D` specializes the
+For `HG : HasFiniteGen J`, `generated_cone_nat_iso D` specializes the
 comparison to `generator_functor`. Equations on generating edges suffice
 to build a cone on the restricted diagram by `FreeCone`, and extension gives
 a cone on `D`. Here `D` is already a functor on `J`: its respectfulness
 already handles the extra path equations. This does not make an arbitrary
 assignment of graph edges descend to `J`.
 
-对于 `HG : HasFiniteGenerators J`，`generated_cone_nat_iso D` 将比较特化到
+对于 `HG : HasFiniteGen J`，`generated_cone_nat_iso D` 将比较特化到
 `generator_functor`。生成边上的方程足以通过 `FreeCone` 构造限制图式上的锥，
 再延拓为 D 上的锥。这里 D 已经是 J 上的函子，其保相等性已经处理额外路径方程；
 这一结论不会使任意的图边赋值自动下降为 J 上的图式。
@@ -310,7 +310,7 @@ finite_cover x : ∃ i, finite_enum i ≈S x
 
 [Shape.Finite](../theories/Cat/Shape/Finite.v) 区分两种选定数据：
 
-- `HasFiniteGenerators J`：有限顶点及有限生成边，连同满且本质满的路径解释
+- `HasFiniteGen J`：有限顶点及有限生成边，连同满且本质满的路径解释
   `generator_functor : FreeCat (FiniteGraph k) → J`。
 - `HasFiniteHomCover J`：有限对象代表、每个对象到代表的选定同构，
   以及代表对象之间各个 Hom 广集的 `HasFiniteCover`。
@@ -321,9 +321,9 @@ finite_cover x : ∃ i, finite_enum i ≈S x
 `FiniteHomGraphMap` 将每个 Hom 代表解释为一条生成边；`FiniteHomF`
 复用 `FreeF` 延拓到路径。`finite_hom_full` 为任意箭头选择一条单边路径作为原像，
 相等见证直接来自有限覆盖；`finite_hom_essentially_surjective` 复用对象覆盖。
-`FiniteHomGenerators` 将两者组装成 `HasFiniteGenerators J`。
+`FiniteHomGen` 将两者组装成 `HasFiniteGen J`。
 
-有限生成不要求 Hom 集合有限：`FiniteGraphGenerators k` 以恒等函子给出有限图
+有限生成不要求 Hom 集合有限：`FiniteGraphGen k` 以恒等函子给出有限图
 自由范畴的生成数据，包括有循环的情形。这里没有保存有限条路径关系，也不声称
 给出通常意义下的有限关系呈示；目标范畴已经规定全部路径解释的相等。
 
@@ -331,7 +331,7 @@ finite_cover x : ∃ i, finite_enum i ≈S x
 `ReindexedLimits`，给出：
 
 ```text
-GeneratedLimits : HasFiniteGenerators J → HasLimitsOfShape C J
+GeneratedLimits : HasFiniteGen J → HasLimitsOfShape C J
 FiniteLimits    : HasFiniteHomCover J   → HasLimitsOfShape C J
 FiniteLimit D   : HasLimit C D
 ```
@@ -340,7 +340,7 @@ FiniteLimit D   : HasLimit C D
 `!Has*` 约束。`PullbackFiniteLimits` 通过 `PullbackProduct` 和
 `PullbackEqualizer` 使选定终对象与拉回也足以构造这些有限形状的极限。
 所有选定结构均须显式启用，极限中介保持透明；极限函子和对角伴随直接复用
-`LimitF` 与 `LimitAdjunction`。
+`LimF` 与 `LimAdj`。
 
 该定理对每个给定形状及覆盖数据分别成立，不在一个小宇宙内收集所有有限范畴。
 无需构造路径商、比较证明字段、增加选择公理，或合并形状与目标范畴的宇宙。
@@ -372,7 +372,7 @@ HasLimitsOfShape C J
 
 ```text
 limit_map α := lim⟨ α ∘Nv πlim[D] ⟩
-LimitF : Functor (Fct J C) C
+LimF : Fct (FctCat J C) C
 ```
 
 respectfulness、恒等律、复合律从唯一性导出。
@@ -381,8 +381,8 @@ respectfulness、恒等律、复合律从唯一性导出。
 [Limit.Adjunction](../theories/Cat/Limit/Adjunction.v) 将上述泛性质组织为：
 
 ```text
-Hom_Fct(Δ X, D) ≅S Hom_C(X, lim D)
-LimitAdjunction : Δ[J,C] ⊣ LimitF
+Hom_FctCat(Δ X, D) ≅S Hom_C(X, lim D)
+LimAdj : Δ[J,C] ⊣ LimF
 ```
 
 正向映射取中介，逆向映射将极限锥沿态射预合成。
@@ -394,7 +394,7 @@ LimitAdjunction : Δ[J,C] ⊣ LimitF
 
 ```text
 HasLimitsOfShape C J
-  ↔ ∃ R : Functor (Fct J C) C, Δ[J,C] ⊣ R
+  ↔ ∃ R : Fct (FctCat J C) C, Δ[J,C] ⊣ R
 ```
 
 这是存在性与选定结构之间的 Type 值双向构造，不要求两次构造后记录原生相等。

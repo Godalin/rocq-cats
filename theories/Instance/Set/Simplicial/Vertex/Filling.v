@@ -18,7 +18,7 @@ Local Open Scope nat_scope.
 
 Section TwoHorns.
 Universes u p.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** A local presentation retains three chosen vertices and the local horn.
     Every local filler realizes a filler of the original entire horn map. *)
@@ -27,7 +27,7 @@ Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
     映射的填充。 *)
 
 Record Horn2Presentation {i : Ordinal 2}
-    (h : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i)
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i)
   :=
   { horn2_vertex0 : X
   ; horn2_vertex1 : X
@@ -51,7 +51,7 @@ Arguments horn2_presentation {i h} _ _ _.
 (** 从任意实际 horn 映射提取局部呈现；同一端点调整操作处理两种外侧方向。 *)
 
 Definition horn2_reconstruct {i : Ordinal 2}
-    (h : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i)
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i)
   : Horn2Presentation h.
 Proof.
   destruct i as [[] | [[] | [[] | []]]].
@@ -183,7 +183,7 @@ Defined.
 
 Program Definition vertex_horn2_HasFillers (i : Ordinal 2)
     `{HF : !HasHorn2Fillers (VertexCat T) i}
-  : HasHornFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
+  : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
   :=
   {|horn_fill h := _
   |}.
@@ -200,7 +200,7 @@ Defined.
 (** 每个范畴均具有实际二维内 horn 填充。 *)
 
 Definition vertex_inner_horn2_HasFillers
-  : HasHornFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2
+  : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
       (fin_next fin_first)
   := @vertex_horn2_HasFillers (fin_next fin_first)
       (inner_horn2_HasFillers (VertexCat T)).
@@ -212,7 +212,7 @@ Definition vertex_inner_horn2_HasFillers
 
 Definition vertex_groupoid_horn2_HasFillers
     `{HC : !IsGroupoid (VertexCat T)} (i : Ordinal 2)
-  : HasHornFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
+  : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
   := @vertex_horn2_HasFillers i (@horn2_HasFillers (VertexCat T) HC i).
 
 End TwoHorns.

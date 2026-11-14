@@ -60,7 +60,7 @@ Universes u p.
 Context {M : SetC} `{HM : !Monoid M}.
 
 Let Z
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 (** Regard a freely labelled triangle as a based sphere. *)

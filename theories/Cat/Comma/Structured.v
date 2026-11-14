@@ -16,7 +16,7 @@ From Cats Require Import
     固定左端点得到从 [X] 指向 [U] 的像的逗号范畴；其始性等价于唯一分解
     泛性质，所有中介均保留为可计算数据。 *)
 
-Definition StructuredArrow {C D : Cat} (U : Functor D C) (X : @Ob C)
+Definition StructuredArrow {C D : Cat} (U : Fct D C) (X : @Ob C)
   : Cat
   := ConstF (CodiscreteCat unit) X ↓C U.
 
@@ -27,7 +27,7 @@ Notation "X '↓[' U ']'" := (StructuredArrow U X)
 
 (** 将候选箭头与唯一左对象打包。 *)
 
-Program Definition StructuredOb {C D : Cat} (U : Functor D C)
+Program Definition StructuredOb {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A : @Ob D} (η : Hom X (U A))
   : @Ob (X ↓[U])
   :=
@@ -41,7 +41,7 @@ Program Definition StructuredOb {C D : Cat} (U : Functor D C)
 
 (** 交换三角形确定结构箭头态射；左侧取典范单元素箭头，右侧保持原映射。 *)
 
-Program Definition StructuredMap {C D : Cat} (U : Functor D C)
+Program Definition StructuredMap {C D : Cat} (U : Fct D C)
     {X : @Ob C} (Z W : @Ob (X ↓[U]))
     (g : Hom (comma_right_ob Z) (comma_right_ob W))
     (H : fmap U g ∘ comma_arrow Z ≈ comma_arrow W)
@@ -60,7 +60,7 @@ Defined.
 
 (** 每条指向 [U] 的像的箭头均通过候选唯一分解，使用指定 Hom 相等。 *)
 
-Definition is_universal_arrow {C D : Cat} (U : Functor D C)
+Definition is_universal_arrow {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A : @Ob D} (η : Hom X (U A))
   : Type
   := ∀ B (f : Hom X (U B)), ∃ g : Hom A B,
@@ -74,7 +74,7 @@ Notation "η '⦂' 'UnivArr(' U ')'" := (is_universal_arrow U η)
 
 (** 任意结构箭头对象的始性给出直接泛性质，单元素左对象的代表不影响结果。 *)
 
-Definition structured_initial_universal {C D : Cat} (U : Functor D C)
+Definition structured_initial_universal {C D : Cat} (U : Fct D C)
     {X : @Ob C} (Z : @Ob (X ↓[U]))
     (HZ : @is_initial (X ↓[U]) Z)
   : comma_arrow Z ⦂ UnivArr(U).
@@ -95,7 +95,7 @@ Defined.
 
 (** 直接泛箭头是其逗号范畴的始对象。 *)
 
-Definition universal_arrow_is_initial {C D : Cat} (U : Functor D C)
+Definition universal_arrow_is_initial {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A : @Ob D} {η : Hom X (U A)}
     (Hη : η ⦂ UnivArr(U))
   : @is_initial (X ↓[U]) (StructuredOb U η).
@@ -117,7 +117,7 @@ Defined.
 
 (** 同一候选箭头的始性与直接泛性质构造性等价。 *)
 
-Theorem universal_arrow_initial {C D : Cat} (U : Functor D C)
+Theorem universal_arrow_initial {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A : @Ob D} (η : Hom X (U A))
   : (η ⦂ UnivArr(U)) ↔ @is_initial (X ↓[U]) (StructuredOb U η).
 Proof.
@@ -131,7 +131,7 @@ Defined.
 
 (** 从同一对象出发的两个泛箭头确定保持它们的同构，由始对象唯一性得到。 *)
 
-Definition universal_arrow_iso {C D : Cat} (U : Functor D C)
+Definition universal_arrow_iso {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A B : @Ob D} {η : Hom X (U A)} {θ : Hom X (U B)}
     (Hη : η ⦂ UnivArr(U)) (Hθ : θ ⦂ UnivArr(U))
   : ∃ i : A ≅[D] B, fmap U i.1 ∘ η ≈ θ.
@@ -149,7 +149,7 @@ Defined.
 
 (** 与泛箭头相容便唯一确定中介，因而也唯一确定前面的比较同构。 *)
 
-Lemma universal_arrow_hom_unique {C D : Cat} (U : Functor D C)
+Lemma universal_arrow_hom_unique {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A B : @Ob D} {η : Hom X (U A)}
     (Hη : η ⦂ UnivArr(U)) (f g : Hom A B)
     (E : fmap U f ∘ η ≈ fmap U g ∘ η)
@@ -165,7 +165,7 @@ Qed.
 
 (** 比较在保持两个单位的箭头中唯一。 *)
 
-Lemma universal_arrow_iso_unique {C D : Cat} (U : Functor D C)
+Lemma universal_arrow_iso_unique {C D : Cat} (U : Fct D C)
     {X : @Ob C} {A B : @Ob D} {η : Hom X (U A)} {θ : Hom X (U B)}
     (Hη : η ⦂ UnivArr(U)) (Hθ : θ ⦂ UnivArr(U))
     (f : Hom A B) (Hf : fmap U f ∘ η ≈ θ)

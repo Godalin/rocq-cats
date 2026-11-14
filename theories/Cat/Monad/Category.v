@@ -50,7 +50,7 @@ Qed.
 
 Definition MonadHomS (M N : Monad C)
   : SetC
-  := SubsetS (@HomSet (Fct C C) M N) (is_monad_hom M N).
+  := SubsetS (@HomSet (FctCat C C) M N) (is_monad_hom M N).
 
 (** The identity transformation preserves the operations. *)
 
@@ -107,11 +107,11 @@ Program Definition MonadCat (C : Cat)
   |}.
 Next Obligation.
   intros [β Hβ] [β' Hβ'] Eβ [α Hα] [α' Hα'] Eα.
-  exact (@comp_proper (Fct C C) _ _ _ β β' Eβ α α' Eα).
+  exact (@comp_proper (FctCat C C) _ _ _ β β' Eβ α α' Eα).
 Defined.
-Next Obligation. exact (@comp_id_r (Fct C C) _ _ f.1). Defined.
-Next Obligation. exact (@comp_id_l (Fct C C) _ _ f.1). Defined.
-Next Obligation. exact (@comp_assoc (Fct C C) _ _ _ _ f.1 g.1 h.1). Defined.
+Next Obligation. exact (@comp_id_r (FctCat C C) _ _ f.1). Defined.
+Next Obligation. exact (@comp_id_l (FctCat C C) _ _ f.1). Defined.
+Next Obligation. exact (@comp_assoc (FctCat C C) _ _ _ _ f.1 g.1 h.1). Defined.
 
 (** A monad morphism preserves its unit. *)
 

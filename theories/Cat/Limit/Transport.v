@@ -14,7 +14,7 @@ From Cats Require Import
 
 (** 逐点相等的锥腿具有相同泛性质；不要求自然性见证相等。 *)
 
-Definition limit_cone_equiv {J C : Cat} {D : Functor J C} {L : @Ob C}
+Definition limit_cone_equiv {J C : Cat} {D : Fct J C} {L : @Ob C}
     {κ μ : L ⇒Δ D} (Hκ : is_limit κ) (H : κ ≈N μ)
   : is_limit μ.
 Proof.
@@ -32,7 +32,7 @@ Defined.
 
 (** 可逆图式自然变换将极限锥送到极限锥；中介保留原来的可计算箭头。 *)
 
-Definition limit_transport {J C : Cat} {D E : Functor J C}
+Definition limit_transport {J C : Cat} {D E : Fct J C}
     (α : D ⇒ E) (Hα : α ⦂ D ≅N E) {L : @Ob C}
     {κ : L ⇒Δ D} (Hκ : is_limit κ)
   : is_limit (α ∘Nv κ).
@@ -59,7 +59,7 @@ Defined.
 
 (** 沿可逆图式自然变换运输选定极限，保留其选定顶点及中介数据。 *)
 
-Program Definition TransportedLimit {J C : Cat} {D E : Functor J C}
+Program Definition TransportedLimit {J C : Cat} {D E : Fct J C}
     (α : D ⇒ E) (Hα : α ⦂ D ≅N E) `{HL : !HasLimit C D}
   : HasLimit C E
   :=

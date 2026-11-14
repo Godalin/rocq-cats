@@ -60,7 +60,7 @@ x\in X_2 && y\in X_2
 
 Section ConstantSimplices.
 Universes u p.
-Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
+Context (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
 
 (** Collapse every position to the specified vertex. *)
 
@@ -93,7 +93,7 @@ End ConstantSimplices.
 (** 由自然性，单纯映射将常值单形送到像顶点处的常值单形，而非要求原生相等。 *)
 
 Lemma simplex_constant_natural@{u p +}
-    {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (α : X ⇒ Y) (b : X 0) (n : nat)
   : α n (simplex_constant X b n) ≈S
       simplex_constant Y (α 0 b) n.
@@ -113,7 +113,7 @@ Proof. apply simplex_restrict_natural. Defined.
 
 Section TwoSpheres.
 Universes u p.
-Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
+Context (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
 
 (** A triangle with all edges fixed at the base vertex. *)
 
@@ -241,7 +241,7 @@ End TwoSpheres.
 
 Section MappingSpheres.
 Universes u p.
-Context {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+Context {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (α : X ⇒ Y) (b : X 0).
 
 (** Apply a simplicial map to the retained triangle. *)

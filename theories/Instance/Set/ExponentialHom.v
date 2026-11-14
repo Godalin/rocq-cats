@@ -46,7 +46,7 @@ Defined.
 Definition exponential_hom_nat_iso@{u p +} (X : @Ob C)
   : @NatIso _ SetCat@{u p _ _ _ _ _}
       (LeftHomF (-× X)) (RightHomF (-^ X))
-  := adjunction_hom_nat_iso (ProductExponentialAdjunction X).
+  := adjunction_hom_nat_iso (ProdExpAdj X).
 
 End ExponentialHom.
 

@@ -26,9 +26,9 @@ From Cats Require Import
     导入本模块不全局选择结构，也不要求见证字段相等。 *)
 
 Definition SetCat_End@{o h e u p +} (C : Cat@{o h e _ _})
-    (F : Functor ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
+    (F : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
   : HasEnd SetCat F
   := @ProductsEqualizerEnd C SetCat F
-      (SetCat_IndexedProductLimit (DiscreteF (EndDiagonal F)))
+      (SetCat_IndexedProductLimit (DiscreteF (EndDiag F)))
       (SetCat_IndexedProductLimit (DiscreteF (EndTargets F)))
       SetCat_HasEqualizer.

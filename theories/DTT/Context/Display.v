@@ -17,7 +17,7 @@ From Cats Require Import Instance.Set.Fam.Cat.
     忘却已有族值预层中的项即可；显示结构须显式启用，不需要终对象。 *)
 
 Section ContextDisplay.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Forget terms to obtain coherent display maps from chosen context
     extensions. *)

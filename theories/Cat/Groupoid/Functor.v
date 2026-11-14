@@ -17,7 +17,7 @@ From Cats Require Import
 (** 任意源于群胚的函子均将箭头送到同构，即使目标范畴不是群胚。 *)
 
 Definition groupoid_fmap_iso {C D : Cat} `{HC : !IsGroupoid C}
-    (F : Functor C D) {X Y : @Ob C} (f : Hom X Y)
+    (F : Fct C D) {X Y : @Ob C} (f : Hom X Y)
   : is_iso (fmap F f)
   := functor_is_iso F f (groupoid_iso f).
 
@@ -28,7 +28,7 @@ Definition groupoid_fmap_iso {C D : Cat} `{HC : !IsGroupoid C}
 
 Lemma groupoid_fmap_inv {C D : Cat}
     `{HC : !IsGroupoid C} `{HD : !IsGroupoid D}
-    (F : Functor C D) {X Y : @Ob C} (f : Hom X Y)
+    (F : Fct C D) {X Y : @Ob C} (f : Hom X Y)
   : fmap F f⁻¹ ≈ (fmap F f)⁻¹.
 Proof.
   apply groupoid_inv_unique.
@@ -41,7 +41,7 @@ Qed.
 (** 取逆给出反变函子，保留对象并反转箭头，而非同方差的自函子。 *)
 
 Program Definition InvF (C : Cat) `{HC : !IsGroupoid C}
-  : Functor (C^op) C
+  : Fct (C^op) C
   :=
   {|F0 X := X
   ; F1 X Y f := @groupoid_inv C HC Y X f
@@ -57,7 +57,7 @@ Next Obligation. exact (@groupoid_inv_comp C HC Z Y X g f). Qed.
 (** 到群胚的全忠实函子使其源范畴成为群胚。 *)
 
 Program Definition fully_faithful_IsGroupoid {C D : Cat}
-    (F : Functor C D) (HF : is_fully_faithful F)
+    (F : Fct C D) (HF : is_fully_faithful F)
     `{HD : !IsGroupoid D}
   : C ⦂ Gpd
   :=
@@ -69,8 +69,8 @@ Program Definition fully_faithful_IsGroupoid {C D : Cat}
 
 (** 目标为群胚的函子范畴也是群胚，逆直接复用已有的逐分量逆自然变换。 *)
 
-Program Definition Fct_IsGroupoid (C D : Cat) `{HD : !IsGroupoid D}
-  : Fct C D ⦂ Gpd
+Program Definition FctCat_IsGroupoid (C D : Cat) `{HD : !IsGroupoid D}
+  : FctCat C D ⦂ Gpd
   :=
   {|groupoid_iso F G α := NatIso_is_iso α (λ X, groupoid_iso (α X))
   |}.
@@ -81,7 +81,7 @@ Program Definition Fct_IsGroupoid (C D : Cat) `{HD : !IsGroupoid D}
 (** 在自然同构下为群胚之收缩的范畴仍是群胚，只需源侧的收缩同构。 *)
 
 Program Definition retract_IsGroupoid {C D : Cat}
-    (F : Functor C D) (G : Functor D C)
+    (F : Fct C D) (G : Fct D C)
     (α : (G ∘F F) ≅N (@IdF C)) `{HD : !IsGroupoid D}
   : C ⦂ Gpd
   :=
@@ -116,7 +116,7 @@ Definition equivalence_IsGroupoid {C D : Cat} (e : C ≃C D)
 
 Definition groupoid_initial_diagram_iso {J C : Cat}
     `{HC : !IsGroupoid C} {j : @Ob J}
-    (Hj : is_initial j) (F : Functor J C)
+    (Hj : is_initial j) (F : Fct J C)
   : ConstF J (F j) ≅N F.
 Proof.
   exists (InitialCone Hj F). intros k. apply groupoid_iso.

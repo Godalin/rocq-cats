@@ -175,7 +175,7 @@ End TetrahedronEquality.
 
 Lemma cocycle_triangle_eq_of_value@{u p +}
     {M : SetC} `{HM : !Monoid M}
-    (x y : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
+    (x y : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
     (H : two_cocycle_triangle_value_resp x ≈S
       two_cocycle_triangle_value_resp y)
   : x ≈S y.

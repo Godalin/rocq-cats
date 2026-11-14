@@ -56,7 +56,7 @@ Program Definition CospanGraphMap {C : Cat} {X Y Z : @Ob C}
 (** 将余跨度解释延拓为自由图式。 *)
 
 Definition CospanDiagram {C : Cat} {X Y Z : @Ob C} (f : Hom X Z) (g : Hom Y Z)
-  : Functor CospanShape C
+  : Fct CospanShape C
   := FreeF (CospanGraphMap f g).
 
 Notation "'⟨' f '→←' g '⟩D'" := (CospanDiagram f g) : cat_scope.
@@ -65,7 +65,7 @@ Notation "'⟨' f '→←' g '⟩D'" := (CospanDiagram f g) : cat_scope.
 
 (** 用交换的两条锥腿构造任意余跨度图式上的锥。 *)
 
-Definition CospanConeOver {C : Cat} {D : Functor CospanShape C} {P : @Ob C}
+Definition CospanConeOver {C : Cat} {D : Fct CospanShape C} {P : @Ob C}
     (p : Hom P (D cospan_left)) (q : Hom P (D cospan_right))
     (H : fmap D (path_edge cospan_l) ∘ p ≈ fmap D (path_edge cospan_r) ∘ q)
   : P ⇒Δ D.
@@ -95,7 +95,7 @@ Definition CospanCone {C : Cat} {X Y Z P : @Ob C}
 
 (** 余跨度锥的两条外侧锥腿具有相等复合。 *)
 
-Lemma cospan_cone_comm {C : Cat} {D : Functor CospanShape C} {P : @Ob C}
+Lemma cospan_cone_comm {C : Cat} {D : Fct CospanShape C} {P : @Ob C}
     (κ : P ⇒Δ D)
   : fmap D (path_edge cospan_l) ∘ κ cospan_left ≈
       fmap D (path_edge cospan_r) ∘ κ cospan_right.
@@ -114,7 +114,7 @@ Qed.
 (** 对余跨度图式取反得到跨度图式。 *)
 
 Definition SpanDiagram {C : Cat} {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
-  : Functor SpanShape C
+  : Fct SpanShape C
   := FromDoubleOpF ∘F (CospanDiagram (C := C^op) f g)^opF.
 
 Notation "'⟨' f '←→' g '⟩D'" := (SpanDiagram f g) : cat_scope.

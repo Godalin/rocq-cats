@@ -27,7 +27,7 @@ Definition ℎ2 {C : Cat} (X : Ob)
 (** 后合成给出固定源对象的协变 Hom 函子。 *)
 
 Program Definition ℎ1F {C : Cat} (X : Ob)
-  : Functor C SetCat
+  : Fct C SetCat
   :=
   {|F0 := ℎ1 X
   ; F1 Y Y' (f : Hom Y Y') := f _*
@@ -43,7 +43,7 @@ Notation "'Hom(' X  ',-)'" := (ℎ1F X).
 (** 预合成给出固定目标对象的反变 Hom 函子。 *)
 
 Program Definition ℎ2F {C : Cat} (X : Ob)
-  : Functor (op C) SetCat
+  : Fct (op C) SetCat
   :=
   {|F0 := ℎ2 X
   ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
@@ -162,7 +162,7 @@ Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
 (** 源反变、目标协变的双变量 Hom 函子。 *)
 
 Program Definition HomF {C : Cat}
-  : Functor (op C ×C C) SetCat
+  : Fct (op C ×C C) SetCat
   :=
   {|F0 X := (@HomSet C) (fst X) (snd X)
   ; F1 _ _ f := bi_comp (fst f) (snd f)
@@ -181,16 +181,16 @@ Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat ca
 (** 一对函子两侧的 Hom。共同环境集合范畴独立提升载体和相等见证宇宙；函子性由
     [HomF] 和复合继承，不再重证。 *)
 
-Definition LeftHomF@{u p +} {C D : Cat} (F : Functor C D)
-  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _}
+Definition LeftHomF@{u p +} {C D : Cat} (F : Fct C D)
+  : Fct (C^op ×C D) SetCat@{u p _ _ _ _ _}
   := LiftF ∘F (HomF ∘F (F^opF ×F IdF)).
 
 (** The hom functor on the right side of an adjunction correspondence. *)
 
 (** 伴随对应右侧的 Hom 函子。 *)
 
-Definition RightHomF@{u p +} {C D : Cat} (G : Functor D C)
-  : Functor (C^op ×C D) SetCat@{u p _ _ _ _ _}
+Definition RightHomF@{u p +} {C D : Cat} (G : Fct D C)
+  : Fct (C^op ×C D) SetCat@{u p _ _ _ _ _}
   := LiftF ∘F (HomF ∘F (IdF ×F G)).
 
 (** * Morphism Maps of Functors
@@ -201,7 +201,7 @@ Definition RightHomF@{u p +} {C D : Cat} (G : Functor D C)
 
     全忠实性使此指定映射成为广集同构。 *)
 
-Program Canonical fmap_resp {C D : Cat} (F : Functor C D) {X Y : @Ob C}
+Program Canonical fmap_resp {C D : Cat} (F : Fct C D) {X Y : @Ob C}
   : HomSet X Y →r HomSet (F X) (F Y)
   :=
   {|func := fmap F (X := X) (Y := Y)
@@ -212,7 +212,7 @@ Program Canonical fmap_resp {C D : Cat} (F : Functor C D) {X Y : @Ob C}
 
 (** 函子全忠实，当且仅当其指定 Hom 映射可逆。 *)
 
-Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Functor C D)
+Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Fct C D)
   : is_fully_faithful F ↔
       ∀ X Y, @is_iso SetCat _ _ (fmap_resp F (X := X) (Y := Y)).
 Proof. split.

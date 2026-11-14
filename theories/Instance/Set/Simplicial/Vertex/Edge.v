@@ -20,8 +20,8 @@ Local Open Scope nat_scope.
 (** 端点比较及唯一边方块确定一维单形相等，不需要群胚假设。 *)
 
 Definition vertex_edge_comparison@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C}
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1)
+    {T : Fct (EqGpd X) C}
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1)
     (e0 : (lower x fin_first : X) ≈S lower y fin_first)
     (e1 : (lower x (fin_next fin_first) : X) ≈S lower y (fin_next fin_first))
     (H : T⟦e1⟧Ob ∘ fmap (lower x) (ordinal_step fin_first) ≈
@@ -44,8 +44,8 @@ Defined.
 (** 边相等对任意平行端点见证给出箭头方块，因为指定对象运输不依赖见证。 *)
 
 Definition vertex_edge_square@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C}
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1)
+    {T : Fct (EqGpd X) C}
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1)
     (e0 : (lower x fin_first : X) ≈S lower y fin_first)
     (e1 : (lower x (fin_next fin_first) : X) ≈S lower y (fin_next fin_first))
     (H : x ≈S y)
@@ -63,8 +63,8 @@ Defined.
 (** 与调整端点后的箭头相等，自动给出边方块。 *)
 
 Definition vertex_edge_rebased_eq@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C}
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1)
+    {T : Fct (EqGpd X) C}
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1)
     (e0 : (lower x fin_first : X) ≈S lower y fin_first)
     (e1 : (lower x (fin_next fin_first) : X) ≈S lower y (fin_next fin_first))
     (H : fmap (lower x) (ordinal_step fin_first) ≈
@@ -80,9 +80,9 @@ Defined.
 (** 箭头给出端点恰为其指定端点的一维单形。 *)
 
 Program Definition edge_simplex_resp@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C) (A B : X)
+    (T : Fct (EqGpd X) C) (A B : X)
   : (@HomSet (VertexCat T) A B) →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1
   :=
   {|func f := ⟨⟦ArrowChain f⟧Ch⟩ᵥ
   |}.
@@ -101,10 +101,10 @@ Notation "'△₁[' T ';' A ';' B ']'" := (edge_simplex_resp T A B)
 (** 构造单形中的箭头等于原箭头。 *)
 
 Lemma edge_simplex_arrow@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {A B : X}
+    {T : Fct (EqGpd X) C} {A B : X}
     (f : (@Hom (VertexCat T)) A B)
   : fmap (lower ((△₁[T; A; B] : _ →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1) f))
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1) f))
       (ordinal_step fin_first) ≈ f.
 Proof. change (id ∘ f ≈ f). apply comp_id_l. Defined.
 
@@ -114,8 +114,8 @@ Proof. change (id ∘ f ≈ f). apply comp_id_l. Defined.
 (** 沿有序顶点对的限制是其像箭头的单形，包括重复端点及任意顺序见证。 *)
 
 Lemma vertex_edge_restrict@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {n : nat}
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     (i j : Ordinal n) (h : (@Hom [Ord n]) i j)
   : △₁[T; lower x i; lower x j] (fmap (lower x) h) ≈S
       Nᵥ(T)[⟦ArrowChain h⟧Ch]Δ x.

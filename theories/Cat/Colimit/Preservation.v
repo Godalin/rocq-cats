@@ -18,11 +18,11 @@ From Cats Require Import
 (** 将原右伴随保持定理用于存储的反锥，再使用 [MapCocone] 中已有的复合比较。 *)
 
 Definition left_adjoint_preserves_colimit {C D J : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
-    {K : Functor J C} {L : @Ob C} {κ : K ⇒∇ L}
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
+    {K : Fct J C} {L : @Ob C} {κ : K ⇒∇ L}
     (Hκ : is_colimit κ)
   : is_colimit (MapCocone F κ)
   := limit_transport
       ((OpF_comp F K).1 ^-1N (OpF_comp F K).2)
       (NatIso_inv_NatIso (OpF_comp F K).1 (OpF_comp F K).2)
-      (right_adjoint_preserves_limit (OpAdjunction A) Hκ).
+      (right_adjoint_preserves_limit (OpAdj A) Hκ).

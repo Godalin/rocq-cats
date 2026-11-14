@@ -15,7 +15,7 @@ From Cats Require Export
     映射或定律记录相等。 *)
 
 Section Transport.
-Context {C D : Cat} (F : Functor C D) (j : @Ob C → @Ob D)
+Context {C D : Cat} (F : Fct C D) (j : @Ob C → @Ob D)
     (e : ∀ X, j X ≅ F X).
 
 (** Change representatives, keeping the supplied inverse maps transparent. *)
@@ -23,7 +23,7 @@ Context {C D : Cat} (F : Functor C D) (j : @Ob C → @Ob D)
 (** 改变代表，并保持给定逆映射透明。 *)
 
 Program Definition TransportF
-  : Functor C D
+  : Fct C D
   :=
   {|F0 := j
   ; F1 X Y f := (e Y).2.1 ∘ fmap F f ∘ (e X).1
@@ -69,7 +69,7 @@ End Transport.
     变换；结论保留给定分量族。 *)
 
 Lemma nt_naturality_boundary {C D : Cat}
-    {F G F' G' : Functor C D} (i : F' ⇒ F) (j : G' ≅N G)
+    {F G F' G' : Fct C D} (i : F' ⇒ F) (j : G' ≅N G)
     (β : F ⇒ G) (a : ∀ X, Hom (F' X) (G' X))
     (Ha : ∀ X, j.1 X ∘ a X ≈ β X ∘ i X)
     {X Y : @Ob C} (f : Hom X Y)

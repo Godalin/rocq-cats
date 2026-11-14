@@ -114,7 +114,7 @@ Context {B : Type@{b}}.
     函子律复用已经证明的语法定律。 *)
 
 Program Definition NePsh (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b q _ _ _ _ _}
   :=
   {|F0 Γ := NeS Γ A
@@ -129,7 +129,7 @@ Next Obligation. intros n. symmetry. apply rename_ne_comp. Defined.
 (** 正规预层使用相同世界范畴，并具有自己的语法载体。 *)
 
 Program Definition NfPsh (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b q _ _ _ _ _}
   :=
   {|F0 Γ := NfS Γ A
@@ -146,7 +146,7 @@ Next Obligation. intros v. symmetry. apply rename_nf_comp. Defined.
     作用于正规形语法树。 *)
 
 Program Definition TmRenamingPsh (A : Ty B)
-  : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat
   :=
   {|F0 Γ := TmS@{b q} Γ A

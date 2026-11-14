@@ -188,7 +188,7 @@ Qed.
 (** 语义替换定律组装为解释函子。 *)
 
 Program Definition InterpretF
-  : Functor (CtxCat@{b e l} B) C
+  : Fct (CtxCat@{b e l} B) C
   :=
   {|F0 := CtxI I
   ; F1 Γ Δ σ := sub_interp σ

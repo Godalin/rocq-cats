@@ -102,7 +102,7 @@ Definition smaller_raised_equality_reification
   := lift_reification (TypeReification A).
 
 Definition raised_semantic_family
-  : Functor ((RenamingCat@{b r l _ _ _ _ _} B)^op)
+  : Fct ((RenamingCat@{b r l _ _ _ _ _} B)^op)
       SetCat@{u p _ _ _ _ _}
   := RaisedSemF A.
 

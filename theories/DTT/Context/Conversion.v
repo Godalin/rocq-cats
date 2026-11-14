@@ -12,7 +12,7 @@ From Cats Require Import
 (** * 沿指定类型相等转换上下文扩张 *)
 
 Section ConversionSubstitution.
-Context {C : Cat} (T : Functor (C^op) FamCat).
+Context {C : Cat} (T : Fct (C^op) FamCat).
 
 (** Conversion commutes with substitution and the conversion associated to a
     commuting triangle of base substitutions. *)
@@ -47,7 +47,7 @@ End ConversionSubstitution.
     固定具有选定上下文扩张的族值预层 [T]，用泛项及转换沿指定类型相等映射扩张。 *)
 
 Section ContextConversionMap.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Map context extensions along designated equality of their types. *)
 
@@ -73,7 +73,7 @@ Notation "e '^Ext[' T ']'" := (context_conv T e)
     在 [T] 的同一选定扩张下，证明转换保持投影与泛项、满足复合相干性，并给出同构。 *)
 
 Section ContextConversion.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Context conversion preserves the display projection. *)
 

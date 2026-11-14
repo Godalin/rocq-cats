@@ -64,7 +64,7 @@ Context {B : Type@{b}}.
 
 Lemma eval_function_η {Γ : Ctx B} {A U : Ty B}
     (t : Tm Γ (A ⇒ U)) (Θ : Ctx B)
-    (γ : (EnvF Γ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (γ : (EnvF Γ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}) Θ)
   : eval (ƛ (t⟨wkRen⟩ · (# var_zero))) Θ γ ≈S eval t Θ γ.
 Proof.
@@ -98,7 +98,7 @@ Defined.
 Lemma eval_tm_eq@{e +} {Γ : Ctx B} {A : Ty B}
     {t u : Tm Γ A} (h : TmEq@{b e _} t u)
   : (EvalN t : (EnvF Γ :
-      Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}) ⇒ SemF A) ≈N EvalN u.
 Proof.
   induction h as [Γ A t | Γ A t u h IH |

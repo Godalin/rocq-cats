@@ -17,7 +17,7 @@ Local Open Scope nat_scope.
     序数重构继承带标签图式的等价律，不为箭头链重新证明运输相干性。 *)
 
 Section VertexChains.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** Chain comparisons store only vertex witnesses and consecutive squares. *)
 
@@ -159,7 +159,7 @@ Defined.
 (** 通过复合像区间重索引箭头链；保持相等由已有解释、限制与提取的复合导出。 *)
 
 Definition vertex_chain_reindex_resp {m n : nat}
-    (Q : Functor [Ord m] [Ord n])
+    (Q : Fct [Ord m] [Ord n])
   : VertexChainS n →r VertexChainS m
   := vertex_chain_resp m ∘r vertex_diagram_precomp_resp T Q ∘r
       vertex_chain_diagram_resp n.

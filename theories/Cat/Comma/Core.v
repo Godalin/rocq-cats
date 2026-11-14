@@ -15,7 +15,7 @@ From Cats Require Export
     数据保留；三个范畴各自保留原有 Hom 宇宙。 *)
 
 Section CommaData.
-Context {A B C : Cat} (F : Functor A C) (G : Functor B C).
+Context {A B C : Cat} (F : Fct A C) (G : Fct B C).
 
 (** An arrow from an [F]-image to a [G]-image. Neither endpoint is forgotten. *)
 
@@ -127,7 +127,7 @@ Arguments comma_comp {_ _ _ _ _ _ _ _} _ _.
 
 (** 逗号构造以逐分量方程组成范畴。 *)
 
-Program Definition Comma {A B C : Cat} (F : Functor A C) (G : Functor B C)
+Program Definition Comma {A B C : Cat} (F : Fct A C) (G : Fct B C)
   : Cat
   :=
   {|Ob := CommaOb F G
@@ -149,8 +149,8 @@ Infix "↓C" := Comma (at level 40, no associativity) : cat_scope.
 (** 投影到左端点范畴。 *)
 
 Program Definition CommaLeftF {A B C : Cat}
-    (F : Functor A C) (G : Functor B C)
-  : Functor (F ↓C G) A
+    (F : Fct A C) (G : Fct B C)
+  : Fct (F ↓C G) A
   :=
   {|F0 := comma_left_ob
   ; F1 X Y := comma_left
@@ -164,8 +164,8 @@ Next Obligation. reflexivity. Defined.
 (** 投影到右端点范畴。 *)
 
 Program Definition CommaRightF {A B C : Cat}
-    (F : Functor A C) (G : Functor B C)
-  : Functor (F ↓C G) B
+    (F : Fct A C) (G : Fct B C)
+  : Fct (F ↓C G) B
   :=
   {|F0 := comma_right_ob
   ; F1 X Y := comma_right
@@ -179,7 +179,7 @@ Next Obligation. reflexivity. Defined.
 (** 所保存箭头构成两个投影之间的自然变换。 *)
 
 Program Definition CommaSquareN {A B C : Cat}
-    (F : Functor A C) (G : Functor B C)
+    (F : Fct A C) (G : Fct B C)
   : (F ∘F CommaLeftF F G) ⇒ (G ∘F CommaRightF F G)
   :=
   {|nt := comma_arrow

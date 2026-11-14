@@ -71,7 +71,7 @@ available. This requires no new choice of pullbacks.
 ## Slices and the codomain lifts
 
 [Slice.Arrow](../theories/Cat/Slice/Arrow.v) provides the faithful functor
-`SliceArrowF C X : Functor (C /C X) (Arr C)`.
+`SliceArrowF C X : Fct (C /C X) (Arr C)`.
 Its object action `A^Arr` retains the domain, base X and projection of A.
 `slice_to_square h` has top edge `slice_map h` and bottom edge id.
 Conversely, `square_to_slice f H` accepts a square between such objects

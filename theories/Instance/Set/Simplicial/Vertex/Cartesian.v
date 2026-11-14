@@ -35,12 +35,12 @@ Local Existing Instance SetCat_HasProduct.
 (** 选定终呈现的像由已有常值单元素图式比较得到终性。 *)
 
 Definition vertex_nerve_terminal_universal
-  : is_terminal (C := Fct (Δ^op) SetCat@{u r _ _ _ _ _})
+  : is_terminal (C := FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
       (Nᵥ(VertexPresentationTerminal@{x e o h p l a b})).
 Proof.
   pose (i := vertex_nerve_terminal_iso).
   pose (j := ((i.1; NatIso_is_iso i.1 i.2) :
-    _ ≅[Fct (Δ^op) SetCat@{u r _ _ _ _ _}] _)).
+    _ ≅[FctCat (Δ^op) SetCat@{u r _ _ _ _ _}] _)).
   exact (terminal_iso
     (@pointwise_terminal_universal (Δ^op) _ SetCat_HasTerminal)
     (iso_symm j)).
@@ -53,13 +53,13 @@ Defined.
 
 Definition vertex_nerve_product_universal
     (P Q : VertexPresentation@{x e o h p l a b})
-  : is_product (C := Fct (Δ^op) SetCat@{u r _ _ _ _ _})
+  : is_product (C := FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
       (Nᵥ(P)) (Nᵥ(Q)) (Nᵥ(VertexPresentationProduct P Q))
       (VertexNerveN (VertexFstF P Q)) (VertexNerveN (VertexSndF P Q)).
 Proof.
   pose (i := vertex_nerve_product_iso P Q).
   pose (j := ((i.1; NatIso_is_iso i.1 i.2) :
-    _ ≅[Fct (Δ^op) SetCat@{u r _ _ _ _ _}] _)).
+    _ ≅[FctCat (Δ^op) SetCat@{u r _ _ _ _ _}] _)).
   refine (product_apex_iso
     (@pointwise_product_universal (Δ^op) _ SetCat_HasProduct (Nᵥ(P)) (Nᵥ(Q)))
     (iso_symm j) _ _ _ _).
@@ -80,11 +80,11 @@ Defined.
 
 (** 保持性使用通用笛卡尔函子性质类，显式具名源终对象及积结构。 *)
 
-Program Definition VertexNerveF_IsCartesianF
-  : IsCartesianF
-      (VertexNerveF : Functor
+Program Definition VertexNerveF_IsCartF
+  : IsCartF
+      (VertexNerveF : Fct
         VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
-        (Fct (Δ^op) SetCat@{u r _ _ _ _ _}))
+        (FctCat (Δ^op) SetCat@{u r _ _ _ _ _}))
       VertexPresentationCat_HasTerminal VertexPresentationCat_HasProduct
   :=
   {|functor_terminal := vertex_nerve_terminal_universal
@@ -96,10 +96,10 @@ Program Definition VertexNerveF_IsCartesianF
 (** 精确保留已有 nerve 及其保持性证据进行打包。 *)
 
 Definition VertexNerveCartesianF
-  : @CartesianFunctor
+  : @CartFct
       VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
-      (Fct (Δ^op) SetCat@{u r _ _ _ _ _})
+      (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
       VertexPresentationCat_HasTerminal VertexPresentationCat_HasProduct
-  := CartesianFunctorFromPreservation VertexNerveF VertexNerveF_IsCartesianF.
+  := CartFctFromPreservation VertexNerveF VertexNerveF_IsCartF.
 
 End Cartesian.

@@ -60,7 +60,7 @@ Notation Δ := SimplexCat.
 (** 序数解释直接使用已有的诱导嵌入。 *)
 
 Definition SimplexInclusionF
-  : Functor Δ CatCat
+  : Fct Δ CatCat
   := InducedInclusionF nat OrdinalShape.
 
 (** The ordinal interpretation is fully faithful. *)

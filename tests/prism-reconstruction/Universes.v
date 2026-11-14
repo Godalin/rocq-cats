@@ -22,8 +22,8 @@ Constraint h < o.
 Constraint o < l.
 
 Context (C : Cat@{o h e l l}) (D : Cat@{h e o l l})
-    (K : Functor (C ×C [Ord 1]) D)
-    (F G : Functor C D) (α : F ⇒ G)
+    (K : Fct (C ×C [Ord 1]) D)
+    (F G : Fct C D) (α : F ⇒ G)
     (a : F ⇒ π1F K fin_first)
     (b : G ⇒ π1F K (fin_next fin_first))
     (H : (b ∘Nv α) ≈N (PrismTransformationN K ∘Nv a)).

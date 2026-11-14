@@ -21,7 +21,7 @@ Global Instance CatCat
   :=
   {|Ob := Cat
   ; HomSet C D :=
-      {|carrier := Functor C D
+      {|carrier := Fct C D
       ; carrier_equiv := NatIso
       ; carrier_setoid := NatIso_Equivalence
       |}
@@ -66,7 +66,7 @@ Defined.
 (** 在以自然同构比较函子的范畴之范畴中，取反构成函子。 *)
 
 Program Definition OpCatF
-  : Functor CatCat CatCat
+  : Fct CatCat CatCat
   :=
   {|F0 := op
   ; F1 C D F := F^opF
@@ -111,7 +111,7 @@ Defined.
     定律不把原函子的辅助证明宇宙与共同大小界合并。 *)
 
 Program Definition CatCatHom@{o h p l m n +}
-    {C D : Cat@{o h p l l}} (F : Functor@{o h p l m n o h p l} C D)
+    {C D : Cat@{o h p l l}} (F : Fct@{o h p l m n o h p l} C D)
   : (@Hom CatCat) C D
   :=
   {|F0 X := F X

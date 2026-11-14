@@ -44,7 +44,7 @@ From Cats.Set Require Import Subset.
 
 (** 两个图式之间的保相等关系，带选定的沿箭头运输；不要求运输见证相等。 *)
 
-Class DiagramRelation@{w +} {J : Cat} (F G : Functor J SetCat)
+Class DiagramRelation@{w +} {J : Cat} (F G : Fct J SetCat)
   :=
   {
   (** The unique function view exposes the pointwise relation. *)
@@ -86,7 +86,7 @@ Arguments diagram_relation_map {_ _ _} _ {_ _} _ {_ _} _.
 
 Section RelationGluing.
 Universes u q.
-Context {J : Cat} (F G : Functor J SetCat@{u q _ _ _ _ _}).
+Context {J : Cat} (F G : Fct J SetCat@{u q _ _ _ _ _}).
 Context (R : DiagramRelation F G).
 
 (** The subset inherits componentwise setoid equality. Membership
@@ -119,7 +119,7 @@ Defined.
 (** 两个原函子的定律证明粘合图式的全部函子律，不断言隶属见证之间的方程。 *)
 
 Program Definition RelationGluingF
-  : Functor J SetCat@{u q _ _ _ _ _}
+  : Fct J SetCat@{u q _ _ _ _ _}
   :=
   {|F0 := RelationGluingS
   ; F1 X Y := relation_gluing_map
@@ -182,7 +182,7 @@ Next Obligation. intros [[x y] h]. reflexivity. Defined.
     假设。 *)
 
 Section RelatedMaps.
-Context {H : Functor J SetCat@{u q _ _ _ _ _}} (α : H ⇒ F) (β : H ⇒ G).
+Context {H : Fct J SetCat@{u q _ _ _ _ _}} (α : H ⇒ F) (β : H ⇒ G).
 Context (related : ∀ X x, R X (α X x) (β X x)).
 
 (** Retain the two component images with their chosen relatedness. *)

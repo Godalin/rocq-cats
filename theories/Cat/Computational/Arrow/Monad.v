@@ -42,9 +42,9 @@ Context {K : Cat@{o u p _ _}} (AA : ArrowApply K).
 
 (** 动态 Hom 对应给出伴随；已有构造处理大小界，不将原生 Hom 层级等同。 *)
 
-Program Definition ArrowApplyAdjunction
+Program Definition ArrowApplyAdj
   : InducedF AA ⊣ (@ℎ1F (ComputationCat AA) UnitS)
-  := AdjunctionFromHom (InducedF AA) (@ℎ1F (ComputationCat AA) UnitS)
+  := AdjFromHom (InducedF AA) (@ℎ1F (ComputationCat AA) UnitS)
       (arrow_dynamic_name_resp AA) (arrow_dynamic_eval_resp AA) _ _ _ _.
 Next Obligation. exact (arrow_dynamic_eval_name AA f). Defined.
 Next Obligation. exact (arrow_dynamic_name_eval AA g). Defined.
@@ -56,7 +56,7 @@ Next Obligation. exact (arrow_dynamic_name_post AA f k). Defined.
 (** 正向转置命名所给计算。 *)
 
 Lemma arrow_apply_adjunct {X Y : SetC@{u p}} (f : Hom (AA X) (AA Y))
-  : f^♯[ArrowApplyAdjunction] ≈f arrow_dynamic_name AA f.
+  : f^♯[ArrowApplyAdj] ≈f arrow_dynamic_name AA f.
 Proof. reflexivity. Qed.
 
 (** Inverse transposition dynamically evaluates a value-indexed computation. *)
@@ -65,7 +65,7 @@ Proof. reflexivity. Qed.
 
 Lemma arrow_apply_unadjunct {X Y : SetC@{u p}}
     (f : X →r ArrowGlobalF AA Y)
-  : f^♭[ArrowApplyAdjunction] ≈ arrow_dynamic_eval AA f.
+  : f^♭[ArrowApplyAdj] ≈ arrow_dynamic_eval AA f.
 Proof. reflexivity. Qed.
 
 (** The induced Monad stores exactly the global computations of the Arrow. *)
@@ -74,7 +74,7 @@ Proof. reflexivity. Qed.
 
 Definition ArrowMonad
   : Monad (SetCat@{u p _ _ _ _ _})
-  := AdjunctionMonad ArrowApplyAdjunction.
+  := AdjMonad ArrowApplyAdj.
 
 (** Identity components compare the underlying functor with [ArrowGlobalF],
     without requiring equality of functor structures or their law fields. *)
@@ -82,7 +82,7 @@ Definition ArrowMonad
 (** 恒等分量将底层函子与 [ArrowGlobalF] 比较，不要求函子结构或定律字段相等。 *)
 
 Program Definition ArrowMonadUnderlyingIso
-  : (ArrowMonad : Functor SetCat SetCat) ≅N ArrowGlobalF AA
+  : (ArrowMonad : Fct SetCat SetCat) ≅N ArrowGlobalF AA
   := ({|nt X := id_resp
       |}; _).
 Next Obligation. intros m. reflexivity. Defined.
@@ -122,7 +122,7 @@ Proof.
   change (arrow_dynamic_eval AA (id_resp (X := ArrowGlobalF AA Y)) ∘
     (arr[AA; f] ∘ m) ≈ arrow_dynamic_eval AA f ∘ m).
   rewrite <- comp_assoc. apply comp_proper; [|reflexivity].
-  symmetry. exact (unadjunct_counit ArrowApplyAdjunction f).
+  symmetry. exact (unadjunct_counit ArrowApplyAdj f).
 Qed.
 
 End Theory.

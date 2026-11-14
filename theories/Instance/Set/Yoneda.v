@@ -19,7 +19,7 @@ From Cats Require Import
 
 (** 表示是从协变 Hom 函子出发的自然同构。 *)
 
-Definition represents {C : Cat} (F : Functor C SetCat) (X : @Ob C)
+Definition represents {C : Cat} (F : Fct C SetCat) (X : @Ob C)
   := Hom( X ,-) ≅N F.
 
 Notation "X '⦂' 'Rep' F" := (represents F X)
@@ -29,7 +29,7 @@ Notation "X '⦂' 'Rep' F" := (represents F X)
 
 (** 保留表示对象及其自然同构。 *)
 
-Definition is_representable {C : Cat} (F : Functor C SetCat)
+Definition is_representable {C : Cat} (F : Fct C SetCat)
   := ∃ X, X ⦂ Rep F.
 
 (** A covariant hom functor is represented by its source object. *)
@@ -51,7 +51,7 @@ Proof. exists idN. intros Y. exists id. cato. Defined.
 (** 以逐点分量相等比较自然变换的广集。 *)
 
 Program Canonical Nat_SetS {C D : Cat}
-  (F G : Functor C D)
+  (F G : Fct C D)
   :=
   {|carrier := F ⇒ G
   ; carrier_equiv := NatEq
@@ -59,16 +59,16 @@ Program Canonical Nat_SetS {C D : Cat}
 
 (** ** The Covariant Yoneda Correspondence
 
-    Fix [F : Functor C SetCat]. Evaluation at the identity and the functor
+    Fix [F : Fct C SetCat]. Evaluation at the identity and the functor
     action give inverse respectful maps, yielding the Yoneda isomorphism. *)
 
 (** ** 协变 Yoneda 对应
 
-    固定 [F : Functor C SetCat]，由恒等态射处的求值及函子作用构造互逆的保相等映射，得到 Yoneda 同构。 *)
+    固定 [F : Fct C SetCat]，由恒等态射处的求值及函子作用构造互逆的保相等映射，得到 Yoneda 同构。 *)
 
 Section Yoneda.
 Context {C : Cat}.
-Context {F : Functor C SetCat}.
+Context {F : Fct C SetCat}.
 
 (** Evaluate a natural transformation from a representable at the identity. *)
 
@@ -158,7 +158,7 @@ End Yoneda.
 
 (** Yoneda 求值与目标函子的自然变换交换。 *)
 
-Theorem yoneda_func_natural_functor {C : Cat} {F G : Functor C SetCat}
+Theorem yoneda_func_natural_functor {C : Cat} {F G : Fct C SetCat}
     {X : @Ob C}
     (β : F ⇒ G) (α : Hom(X,-) ⇒ F)
   : yoneda_func (β ∘Nv α) ≈S β X (yoneda_func α).
@@ -168,7 +168,7 @@ Proof. reflexivity. Qed.
 
 (** Yoneda 求值在表示对象上自然。 *)
 
-Theorem yoneda_func_natural_object {C : Cat} {F : Functor C SetCat}
+Theorem yoneda_func_natural_object {C : Cat} {F : Fct C SetCat}
     {X Y : @Ob C} (f : Hom X Y)
     (α : Hom(X,-) ⇒ F)
   : yoneda_func (α ∘Nv f ^*N) ≈S fmap F f (yoneda_func α).
@@ -184,7 +184,7 @@ Qed.
 
 Section PresheafYoneda.
 Universes u p.
-Context {C : Cat} {P : Functor (C^op) SetCat@{u p _ _ _ _ _}}.
+Context {C : Cat} {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}.
 
 (** Evaluate at the lifted identity. Raising the representable to P's value
     universes allows small domains with larger values; both levels of P
@@ -274,7 +274,7 @@ End PresheafYoneda.
 (** 求值与预层映射交换。 *)
 
 Lemma presheaf_yoneda_natural_presheaf@{u p +} {C : Cat}
-    {P Q : Functor (C^op) SetCat@{u p _ _ _ _ _}} {X : @Ob C}
+    {P Q : Fct (C^op) SetCat@{u p _ _ _ _ _}} {X : @Ob C}
     (β : P ⇒ Q) (α : (LiftF ∘F Hom(-,X)) ⇒ P)
   : presheaf_yoneda_resp (C := C) (P := Q) (X := X) (β ∘Nv α) ≈S
       β X (presheaf_yoneda_resp (C := C) (P := P) (X := X) α).
@@ -285,7 +285,7 @@ Proof. reflexivity. Qed.
 (** 求值在表示对象上反变自然。 *)
 
 Lemma presheaf_yoneda_natural_object@{u p +} {C : Cat}
-    {P : Functor (C^op) SetCat@{u p _ _ _ _ _}} {X Y : @Ob C}
+    {P : Fct (C^op) SetCat@{u p _ _ _ _ _}} {X Y : @Ob C}
     (f : Hom X Y) (α : (LiftF ∘F Hom(-,Y)) ⇒ P)
   : presheaf_yoneda_resp (C := C) (P := P) (X := X)
       (α ∘Nv (LiftF ∘Nl f _*N)) ≈S

@@ -49,7 +49,7 @@ Definition FreydTensorIso (X Y : @Ob C)
 (** 共轭将原左作用变成值积上的函子。 *)
 
 Definition FreydContextF (Z : @Ob C)
-  : Functor D D
+  : Fct D D
   := TransportF (@BinoidalLeftF D SP Z)
     (λ X, @Prod C hasProduct Z X) (FreydTensorIso Z).
 

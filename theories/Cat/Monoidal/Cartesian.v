@@ -140,7 +140,7 @@ Proof. apply bifunctor_monoidal_map. Qed.
 
 Definition CartesianMonoid
   : Type
-  := MonoidObject CartesianMonoidal.
+  := MonoidObj CartesianMonoidal.
 
 (** In the familiar internal-monoid form, pairing with the unit on the
     left followed by multiplication is the identity. *)

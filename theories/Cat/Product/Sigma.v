@@ -12,7 +12,7 @@ Section SigmaProducts.
 Context {C : Cat} {I : Type} (J : I → Type).
 Context `{HO : !HasLimitsOfShape C (DiscreteCat I)}.
 Context (HI : ∀ i, HasLimitsOfShape C (DiscreteCat (J i))).
-Context (D : Functor (DiscreteCat (∃ i, J i)) C).
+Context (D : Fct (DiscreteCat (∃ i, J i)) C).
 
 (** Use the chosen product in each fiber of the dependent index family. *)
 

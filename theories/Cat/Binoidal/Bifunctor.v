@@ -10,16 +10,16 @@ From Cats Require Export
 
 (** 三个对象上的左括号张量函子。 *)
 
-Definition TensorLeftF {C : Cat} (T : Functor (C ×C C) C)
-  : Functor ((C ×C C) ×C C) C
+Definition TensorLeftF {C : Cat} (T : Fct (C ×C C) C)
+  : Fct ((C ×C C) ×C C) C
   := T ∘F (T ×F IdF).
 
 (** The right bracketing, on the same triple-product source. *)
 
 (** 在同一个三重乘积来源上的右括号张量函子。 *)
 
-Program Definition TensorRightF {C : Cat} (T : Functor (C ×C C) C)
-  : Functor ((C ×C C) ×C C) C
+Program Definition TensorRightF {C : Cat} (T : Fct (C ×C C) C)
+  : Fct ((C ×C C) ×C C) C
   :=
   {|F0 p := T (fst (fst p), T (snd (fst p), snd p))
   ; F1 p q f := fmap T
@@ -62,7 +62,7 @@ Defined.
     固定范畴上的张量双函子，恢复两个分别作用，并将组装映射与原双函子作用比较。 *)
 
 Section Bifunctor.
-Context {C : Cat} (T : Functor (C ×C C) C).
+Context {C : Cat} (T : Fct (C ×C C) C).
 
 (** Reuse the same object tensor, fixing one identity arrow at a time. *)
 

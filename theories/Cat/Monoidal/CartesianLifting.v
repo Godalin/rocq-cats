@@ -22,7 +22,7 @@ Local Open Scope monoidal_scope.
 Section Lifting.
 Context {C D : Cat} `{TC : !HasTerminal C} `{PC : !HasProduct C}
     `{TD : !HasTerminal D} `{PD : !HasProduct D}
-    (L : LaxMonoidalFunctor
+    (L : LaxMonoidalFct
       (@CartesianMonoidal C TC PC) (@CartesianMonoidal D TD PD)).
 
 (** Naturality at the ordinary product maps of both categories. *)

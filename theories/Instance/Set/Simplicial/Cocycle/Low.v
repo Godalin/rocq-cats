@@ -168,7 +168,7 @@ Context {M : SetC} `{HM : !Monoid M}.
 (** 所有顶点相等。 *)
 
 Lemma two_cocycle_zero_unique
-    (x y : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 0)
+    (x y : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 0)
   : x ≈S y.
 Proof.
   refine {|lower := _
@@ -182,7 +182,7 @@ Defined.
 (** 所有边相等，但这并不迫使所有三角形相等。 *)
 
 Lemma two_cocycle_one_unique
-    (x y : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1%nat)
+    (x y : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1%nat)
   : x ≈S y.
 Proof.
   refine {|lower := _
@@ -197,7 +197,7 @@ Defined.
 (** 系数给出实际的二维单形，保持系数相等而不比较构造证明。 *)
 
 Program Definition two_cocycle_triangle_resp
-  : M →r (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2
+  : M →r (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
   :=
   {|func a :=
       {|lower := TriangleTwoCocycle a
@@ -216,7 +216,7 @@ Defined.
 (** 在严格递增的三角形处对二维单形求值。 *)
 
 Program Definition two_cocycle_triangle_value_resp
-  : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 →r M
+  : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 →r M
   :=
   {|func c := ordinal_cocycle_triangle_value (lower c)
   |}.
@@ -235,7 +235,7 @@ Proof. apply triangle_two_cocycle_β. Defined.
 (** 先求值再构造，恢复整个二维单形。 *)
 
 Lemma two_cocycle_triangle_η
-    (c : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
+    (c : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
   : two_cocycle_triangle_resp (two_cocycle_triangle_value_resp c) ≈S c.
 Proof.
   refine {|lower := _
@@ -247,7 +247,7 @@ Defined.
 (** 由边退化而来的每个三角形都具有单位标签。 *)
 
 Lemma two_cocycle_degenerate_one
-    (c : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1%nat)
+    (c : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1%nat)
     (i : Fin@{Set} 2)
   : s[Z²(M); 1%nat; i] c ≈S two_cocycle_simplex_unit 2.
 Proof.

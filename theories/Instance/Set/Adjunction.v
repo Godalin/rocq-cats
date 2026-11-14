@@ -20,7 +20,7 @@ From Cats Require Export Instance.Set.Hom.
     列都可使用。 *)
 
 Section AdjunctionSets.
-Context {C D : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
+Context {C D : Cat} {F : Fct C D} {G : Fct D C} (A : F ⊣ G).
 
 (** Lift adjunct maps into a common ambient set category, preserving their
     naturality. *)

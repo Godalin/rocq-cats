@@ -24,7 +24,7 @@ Local Open Scope nat_scope.
     Recall %\coqref{Cats.Instance.Set.Simplicial.Nerve.DiagramNerve}
     {%[DiagramNerve]%}%: its simplices are ordinal diagrams, compared by
     natural isomorphism. Here each vertex instead carries a label in a
-    setoid X. The input [T : Functor (EqGpd X) C] tells us both what object
+    setoid X. The input [T : Fct (EqGpd X) C] tells us both what object
     a label denotes and how a specified equality of labels transports
     arrows. This is why the construction takes T, rather than only C.
 
@@ -49,7 +49,7 @@ Local Open Scope nat_scope.
 
     回顾 %\coqref{Cats.Instance.Set.Simplicial.Nerve.DiagramNerve}
     {%[DiagramNerve]%}%：其单形是序数图式，按自然同构比较。这里则让每个
-    顶点带有广集 X 中的标签。输入 [T : Functor (EqGpd X) C] 同时说明标签
+    顶点带有广集 X 中的标签。输入 [T : Fct (EqGpd X) C] 同时说明标签
     表示哪个对象，以及指定的标签相等如何运输箭头。因此，构造的输入是 T，
     而不只是 C。
 
@@ -72,9 +72,9 @@ Local Open Scope nat_scope.
 (** 逐点相等的序数位置在限制后诱导带标签的相等；原生相等只用于具体有限位置。 *)
 
 Definition vertex_ordinal_precomp_eq {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C) {m n : nat}
-    (θ φ : Functor [Ord m] [Ord n]) (H : ∀ i, θ i = φ i)
-    (F : Functor [Ord n] (VertexCat T))
+    (T : Fct (EqGpd X) C) {m n : nat}
+    (θ φ : Fct [Ord m] [Ord n]) (H : ∀ i, θ i = φ i)
+    (F : Fct [Ord n] (VertexCat T))
   : VertexDiagramEq T (F ∘F θ) (F ∘F φ).
 Proof.
   assert (e : ∀ i, (F (θ i) : X) ≈S F (φ i)).
@@ -96,10 +96,10 @@ Defined.
 (** 常值限制按唯一顶点比较；即使顺序见证不同，其箭头也都成为恒等。 *)
 
 Definition vertex_constant_precomp_eq {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C) {m n k : nat}
-    (F : Functor [Ord n] (VertexCat T))
-    (G : Functor [Ord k] (VertexCat T))
-    (u : Functor [Ord m] [Ord n]) (v : Functor [Ord m] [Ord k])
+    (T : Fct (EqGpd X) C) {m n k : nat}
+    (F : Fct [Ord n] (VertexCat T))
+    (G : Fct [Ord k] (VertexCat T))
+    (u : Fct [Ord m] [Ord n]) (v : Fct [Ord m] [Ord k])
     (a : Ordinal n) (b : Ordinal k)
     (Hu : ∀ i, u i = a) (Hv : ∀ i, v i = b)
     (e : (F a : X) ≈S G b)
@@ -127,8 +127,8 @@ Defined.
     这是通常的大小嵌入，不是大小重设。 *)
 
 Program Definition VertexNerve@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+    (T : Fct (EqGpd X) C)
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   :=
   {|F0 n := LiftS (VertexDiagramS T [Ord n])
   ; F1 n m θ := (vertex_diagram_precomp_resp T θ)^↑S
@@ -158,9 +158,9 @@ Notation "'Nᵥ(' T ')'" := (VertexNerve T) : ob_scope.
 (** 将带标签的序数图式作为单形。 *)
 
 Definition VertexSimplex@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
-    (F : Functor [Ord n] (VertexCat T))
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n
+    {T : Fct (EqGpd X) C} {n : nat}
+    (F : Fct [Ord n] (VertexCat T))
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := F
   |}.
@@ -172,9 +172,9 @@ Notation "'⟨' F '⟩ᵥ'" := (VertexSimplex F) : hom_scope.
 (** 将图式作为单形保持其指定的顶点相等。 *)
 
 Global Instance vertex_simplex_proper@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
+    {T : Fct (EqGpd X) C} {n : nat}
   : Proper (VertexDiagramEq T ==>
-      carrier_equiv ((Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n))
+      carrier_equiv ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n))
       (@VertexSimplex X C T n).
 Proof.
   intros F G e. exact {|lower := e
@@ -189,8 +189,8 @@ Defined.
     定理导出，不需要额外的单形字段。 *)
 
 Lemma vertex_simplex_eq_steps@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {n : nat}
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : x ≈S y ↔
       ∃ e : ∀ i, (lower x i : X) ≈S lower y i,
         ∀ i : Fin@{Set} n,
@@ -210,8 +210,8 @@ Defined.
 (** 零维单形恰按唯一顶点的指定相等比较。 *)
 
 Lemma vertex_nerve_zero_eq_iff@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C}
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 0)
+    {T : Fct (EqGpd X) C}
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 0)
   : x ≈S y ↔ (lower x fin_first : X) ≈S lower y fin_first.
 Proof.
   split.
@@ -227,8 +227,8 @@ Defined.
 (** 限制就是保留顶点标签的预复合。 *)
 
 Lemma vertex_nerve_restrict@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {m n : nat} (θ : (@Hom Δ) m n)
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {m n : nat} (θ : (@Hom Δ) m n)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : Nᵥ(T)[θ]Δ x ≈S ⟨lower x ∘F θ⟩ᵥ.
 Proof. reflexivity. Defined.
 
@@ -237,8 +237,8 @@ Proof. reflexivity. Defined.
 (** 面映射省略一个顶点，并使用图式中的复合箭头。 *)
 
 Lemma vertex_nerve_face@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat} (i : Ordinal (S n))
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S n))
+    {T : Fct (EqGpd X) C} {n : nat} (i : Ordinal (S n))
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S n))
   : d[Nᵥ(T); n; i] x ≈S ⟨lower x ∘F δ[n; i]⟩ᵥ.
 Proof. apply vertex_nerve_restrict. Defined.
 
@@ -247,8 +247,8 @@ Proof. apply vertex_nerve_restrict. Defined.
 (** 退化映射重复顶点，并插入其恒等箭头。 *)
 
 Lemma vertex_nerve_degeneracy@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat} (i : Ordinal n)
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {n : nat} (i : Ordinal n)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : s[Nᵥ(T); n; i] x ≈S ⟨lower x ∘F σ[n; i]⟩ᵥ.
 Proof. apply vertex_nerve_restrict. Defined.
 
@@ -258,8 +258,8 @@ Proof. apply vertex_nerve_restrict. Defined.
 (** 忘却指定顶点比较得到 C 的图式 nerve；两种 nerve 使用共同的一对值宇宙。 *)
 
 Program Definition VertexDiagramN@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C)
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(C)
+    (T : Fct (EqGpd X) C)
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(C)
   :=
   {|nt n := (vertex_diagram_forget_resp T)^↑S
   |}.

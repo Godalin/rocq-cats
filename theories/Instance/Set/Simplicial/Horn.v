@@ -64,7 +64,7 @@ Local Open Scope nat_scope.
 (** 边界映射按逐点相等组成匹配广集；其大小可以超过值大小，不要求大小重设。 *)
 
 Definition BoundaryS@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat)
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat)
   : SetC
   := Nat_SetS ∂Δ[n] X.
 
@@ -73,7 +73,7 @@ Definition BoundaryS@{u p +}
 (** horn 映射组成相应的部分匹配广集。 *)
 
 Definition HornS@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat) (i : Ordinal n)
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat) (i : Ordinal n)
   : SetC
   := Nat_SetS Λ[n; i] X.
 
@@ -82,7 +82,7 @@ Definition HornS@{u p +}
 (** 使用一般筛映射，将单形限制到整个边界。 *)
 
 Definition boundary_restrict_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
   : X n →r BoundaryS X n
   := sieve_restrict_resp (BoundarySieve n).
 
@@ -94,7 +94,7 @@ Notation "x '↾∂[' X ';' n ']'" := (@boundary_restrict_resp X n x)
 (** 使用同一构造，将单形限制到选定 horn。 *)
 
 Definition horn_restrict_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (i : Ordinal n)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} (i : Ordinal n)
   : X n →r HornS X n i
   := sieve_restrict_resp (HornSieve n i).
 
@@ -107,7 +107,7 @@ Notation "x '↾Λ[' X ';' n ';' i ']'" := (@horn_restrict_resp X n i x)
 (** 填充是整个限制映射等于给定 horn 的 n-单形；不比较自然性证明。 *)
 
 Definition is_horn_filler@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} {i : Ordinal n}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat} {i : Ordinal n}
     (h : HornS X n i) (x : X n)
   : Type
   := x↾Λ[X; n; i] ≈S h.
@@ -120,7 +120,7 @@ Definition is_horn_filler@{u p +}
     后续 Kan 填充结构只量化正维度。 *)
 
 Class HasHornFillers@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (n : nat) (i : Ordinal n)
   :=
   { horn_fill (h : HornS X n i)
@@ -135,7 +135,7 @@ Class HasHornFillers@{u p +}
     不要求选择保持相等或具有函子性，也不使用选择公理。 *)
 
 Class HasKanFillers@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   { hasHornFillers (n : nat) (i : Ordinal (S n))
     :: HasHornFillers X (S n) i
@@ -148,7 +148,7 @@ Class HasKanFillers@{u p +}
     转换。 *)
 
 Definition horn_extension_iff@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} {i : Ordinal n} (h : HornS X n i)
   : (∃ α : Δ[n] ⇒ X, (α ∘Nv ιΛ[n; i]) ≈N h) ↔
       (∃ x : X n, is_horn_filler h x)
@@ -159,7 +159,7 @@ Definition horn_extension_iff@{u p +}
 (** 将边界映射限制到 horn，忘却其排除的面。 *)
 
 Program Definition boundary_horn_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat) (i : Ordinal n)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat) (i : Ordinal n)
   : BoundaryS X n →r HornS X n i
   :=
   {|func h := h ∘Nv HornBoundaryN n i
@@ -171,7 +171,7 @@ Next Obligation. intros h k H m a. exact (H m (HornBoundaryN n i m a)). Defined.
 (** 先限制到边界再到 horn，等于直接限制到 horn。 *)
 
 Lemma boundary_horn_restrict@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (i : Ordinal n) (x : X n)
   : boundary_horn_resp n i (x↾∂[X; n]) ≈S x↾Λ[X; n; i].
 Proof. intros m a. reflexivity. Defined.
@@ -182,7 +182,7 @@ Proof. intros m a. reflexivity. Defined.
 (** 在保留面的泛单形处求值限制后的 horn 映射，恰好恢复原单形的相应面。 *)
 
 Lemma horn_restrict_face@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (i j : Ordinal (S n)) (H : ¬ j = i) (x : X (S n))
   : simplex_element_resp
       (x↾Λ[X; S n; i] ∘Nv HornFaceN i j H) ≈S d[X; n; j] x.
@@ -196,7 +196,7 @@ Defined.
 (** 同一计算从边界映射恢复每个面。 *)
 
 Lemma boundary_restrict_face@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (j : Ordinal (S n)) (x : X (S n))
   : simplex_element_resp
       (x↾∂[X; S n] ∘Nv BoundaryFaceN j) ≈S d[X; n; j] x.

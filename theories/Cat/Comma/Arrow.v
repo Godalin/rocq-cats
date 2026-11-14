@@ -16,7 +16,7 @@ From Cats Require Import
     两种记录表示。 *)
 
 Program Definition CommaArrowF (C : Cat)
-  : Functor ((@IdF C) ↓C IdF) (Arr C)
+  : Fct ((@IdF C) ↓C IdF) (Arr C)
   :=
   {|F0 X :=
      {|arrow_dom := comma_left_ob X
@@ -38,7 +38,7 @@ Next Obligation. split; reflexivity. Defined.
 (** 将箭头范畴方形读作恒等／恒等逗号方形。 *)
 
 Program Definition ArrowCommaF (C : Cat)
-  : Functor (Arr C) ((@IdF C) ↓C IdF)
+  : Fct (Arr C) ((@IdF C) ↓C IdF)
   :=
   {|F0 X :=
      {|comma_left_ob := arrow_dom X

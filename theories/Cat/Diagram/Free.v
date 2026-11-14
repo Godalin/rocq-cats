@@ -14,7 +14,7 @@ From Cats Require Import
 
 (** 将生成边上交换的锥腿延拓为所有路径上的锥。 *)
 
-Definition FreeCone {G : Graph} {C : Cat} {D : Functor (FreeCat G) C}
+Definition FreeCone {G : Graph} {C : Cat} {D : Fct (FreeCat G) C}
     {X : @Ob C} (κ : ∀ x, Hom X (D x))
     (Hκ : ∀ x y (e : Edge x y), fmap D (path_edge e) ∘ κ x ≈ κ y)
   : X ⇒Δ D.
@@ -27,7 +27,7 @@ Defined.
 
 (** 自由范畴上的锥在每条生成边上交换。 *)
 
-Lemma free_cone_edge {G : Graph} {C : Cat} {D : Functor (FreeCat G) C}
+Lemma free_cone_edge {G : Graph} {C : Cat} {D : Fct (FreeCat G) C}
     {X : @Ob C} (κ : X ⇒Δ D) {x y} (e : Edge x y)
   : fmap D (path_edge e) ∘ κ x ≈ κ y.
 Proof.

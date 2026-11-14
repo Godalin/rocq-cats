@@ -24,7 +24,7 @@ From Cats Require Import
     对象是上下文与类型的配对，态射是显示投影之间的交换方形，保留两条边及交换性
     见证；相等比较映射，不比较见证。 *)
 
-Definition ContextType {C : Cat} (T : Functor (C^op) FamCat)
+Definition ContextType {C : Cat} (T : Fct (C^op) FamCat)
   := ∃ Γ : @Ob C, Ty T Γ.
 
 (** ** Maps between Context Extensions
@@ -38,7 +38,7 @@ Definition ContextType {C : Cat} (T : Functor (C^op) FamCat)
     固定 [C] 上具有选定上下文扩张的族值预层 [T]，定义扩张之间的交换映射、指定相等以及恒等和复合。 *)
 
 Section ContextMaps.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** A commuting square between context-extension projections. *)
 
@@ -126,7 +126,7 @@ Notation "g '∘Ctx[' T ']' f" := (context_map_comp T g f)
     保持 [T] 及其选定上下文扩张固定，将上下文类型和交换扩张映射组装为范畴，并给出基底函子、扩张函子及投影变换。 *)
 
 Section ContextCategory.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** The category of context-type pairs and commuting display squares. *)
 
@@ -156,7 +156,7 @@ Next Obligation. split; apply comp_assoc. Defined.
 (** 将上下文与类型的配对忘却为基底上下文。 *)
 
 Program Definition CwFBaseF
-  : Functor ContextTypeCat C
+  : Fct ContextTypeCat C
   :=
   {|F0 X := X.1
   ; F1 X Y := context_map_base
@@ -170,7 +170,7 @@ Next Obligation. reflexivity. Defined.
 (** 将上下文与类型的配对送到其上下文扩张。 *)
 
 Program Definition CwFExtF
-  : Functor ContextTypeCat C
+  : Fct ContextTypeCat C
   :=
   {|F0 X := X.1 ▹[T] X.2
   ; F1 X Y := context_map_ext
@@ -197,7 +197,7 @@ End ContextCategory.
 
 (** 替换上下文与类型配对中的类型分量。 *)
 
-Definition ReindexContextType {C : Cat} (T : Functor (C^op) FamCat)
+Definition ReindexContextType {C : Cat} (T : Fct (C^op) FamCat)
     (Y : ContextType T) {Γ : @Ob C} (σ : Hom Γ Y.1)
   : ContextType T
   := (Γ; Y.2[σ]Ty[T]).
@@ -216,7 +216,7 @@ Notation "Y '[' σ ']Ctx[' T ']'" := (ReindexContextType T Y σ)
     假定 [T] 具有选定上下文扩张，用替换拉回构造笛卡尔重索引及理解结构，再刻画笛卡尔映射。 *)
 
 Section ContextComprehension.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** The canonical display square over a context substitution. *)
 
@@ -355,14 +355,14 @@ End ContextComprehension.
     继续使用同一 [T] 及选定扩张，从底层箭头方形恢复上下文映射，证明理解函子全忠实。 *)
 
 Section FullComprehension.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Present the CwF comprehension as a functor to the arrow category. *)
 
 (** 将带族范畴的理解结构表示为到箭头范畴的函子。 *)
 
 Definition CwFComprehensionF
-  : Functor (ContextTypeCat T) (Arr C)
+  : Fct (ContextTypeCat T) (Arr C)
   := ComprehensionF (CwFComprehension T).
 
 (** A square between context projections determines a context map. *)

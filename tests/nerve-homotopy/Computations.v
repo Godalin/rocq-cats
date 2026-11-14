@@ -22,7 +22,7 @@ Local Open Scope nat_scope.
     自然变换。此桥梁保留这条实际有向边。 *)
 
 Program Definition ArrowObjectsF
-  : Functor (EqGpd BoolS) ArrowShape
+  : Fct (EqGpd BoolS) ArrowShape
   :=
   {|F0 b := b
   ; F1 x y p := _
@@ -33,8 +33,8 @@ Next Obligation. exact tt. Defined.
 Next Obligation. exact tt. Defined.
 
 Definition TerminalObjectsF
-  : Functor (EqGpd UnitS@{Set Set}) (CodiscreteCat@{Set Set Set Set} unit)
-  := VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set}.
+  : Fct (EqGpd UnitS@{Set Set}) (CodiscreteCat@{Set Set Set Set} unit)
+  := VertexTerminalObjF@{Set Set Set Set Set Set Set Set}.
 
 Program Definition EndpointVertexF (b : bool)
   : TerminalObjectsF →ᵥ ArrowObjectsF
@@ -53,11 +53,11 @@ Program Definition ArrowTransformation
 Next Obligation. exact tt. Defined.
 
 Definition ArrowNerve
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Nᵥ(ArrowObjectsF).
 
 Definition TerminalNerve
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Nᵥ(TerminalObjectsF).
 
 Definition ArrowHomotopy
@@ -133,9 +133,9 @@ Qed.
 Local Existing Instance BoolS_Monoid.
 
 Definition BooleanObjectsF
-  : Functor (EqGpd UnitS@{Set Set})
+  : Fct (EqGpd UnitS@{Set Set})
       B(BoolS)
-  := MonoidObjectsF BoolS (HM := BoolS_Monoid).
+  := MonoidObjF BoolS (HM := BoolS_Monoid).
 
 Definition BooleanIdentityF
   : BooleanObjectsF →ᵥ BooleanObjectsF
@@ -149,7 +149,7 @@ Program Definition BooleanLoopTransformation
 Next Obligation. destruct f; reflexivity. Defined.
 
 Definition BooleanVertexNerve
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Nᵥ(BooleanObjectsF).
 
 Definition BooleanLoopHomotopy

@@ -25,8 +25,8 @@ From Cats Require Import
 (** 全部标签及箭头均为单元素广集的选定元素。标签、环境对象、箭头、相等及
     辅助定律大小相互独立，同一构造适用于每个原生呈现配置。 *)
 
-Definition VertexTerminalObjectsF@{x e o h p l a b}
-  : Functor@{x e Set e a b o h p l}
+Definition VertexTerminalObjF@{x e o h p l a b}
+  : Fct@{x e Set e a b o h p l}
       (EqGpd@{x e e} UnitS@{x e}) (CodiscreteCat@{o h p l} unit)
   := ConstF (EqGpd UnitS@{x e}) (C := CodiscreteCat unit) tt.
 
@@ -48,11 +48,11 @@ Universes x e o h p l a b.
 (** 每个呈现都具有保运输的终映射。 *)
 
 Program Definition VertexTerminalF {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C)
-  : T →ᵥ VertexTerminalObjectsF@{x e o h p l a b}
+    (T : Fct (EqGpd X) C)
+  : T →ᵥ VertexTerminalObjF@{x e o h p l a b}
   :=
   {|vertex_functor := ConstF (VertexCat T)
-      (C := VertexCat VertexTerminalObjectsF@{x e o h p l a b}) tt
+      (C := VertexCat VertexTerminalObjF@{x e o h p l a b}) tt
   |}.
 Next Obligation. intros x y p. exact tt. Defined.
 Next Obligation. exact tt. Defined.
@@ -63,8 +63,8 @@ Next Obligation. exact tt. Defined.
 (** 对任意源范畴，两个终呈现图式在指定标签与箭头相等下均相等。 *)
 
 Lemma vertex_diagram_terminal_eq {J : Cat}
-    (F G : Functor J (VertexCat VertexTerminalObjectsF@{x e o h p l a b}))
-  : VertexDiagramEq VertexTerminalObjectsF@{x e o h p l a b} F G.
+    (F G : Fct J (VertexCat VertexTerminalObjF@{x e o h p l a b}))
+  : VertexDiagramEq VertexTerminalObjF@{x e o h p l a b} F G.
 Proof. exists (λ i, tt). intros i j f. exact tt. Defined.
 
 (** The terminal presentation map is unique in prescribed comparison. *)
@@ -72,9 +72,9 @@ Proof. exists (λ i, tt). intros i j f. exact tt. Defined.
 (** 终呈现映射在指定比较下唯一。 *)
 
 Lemma vertex_terminal_unique {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C}
-    (F : T →ᵥ VertexTerminalObjectsF@{x e o h p l a b})
-  : VertexFunctorEq F (VertexTerminalF T).
+    {T : Fct (EqGpd X) C}
+    (F : T →ᵥ VertexTerminalObjF@{x e o h p l a b})
+  : VtxFctEq F (VertexTerminalF T).
 Proof. apply vertex_diagram_terminal_eq. Defined.
 
 (** Extract the unique value of a terminal-presentation diagram. *)
@@ -82,7 +82,7 @@ Proof. apply vertex_diagram_terminal_eq. Defined.
 (** 提取终呈现图式的唯一值。 *)
 
 Program Definition vertex_diagram_terminal_resp (J : Cat)
-  : VertexDiagramS VertexTerminalObjectsF@{x e o h p l a b} J →r UnitS
+  : VertexDiagramS VertexTerminalObjF@{x e o h p l a b} J →r UnitS
   :=
   {|func F := tt
   |}.
@@ -93,10 +93,10 @@ Next Obligation. intros F G H. exact tt. Defined.
 (** 常值单元素图式给出透明逆。 *)
 
 Program Definition vertex_diagram_terminal_inv_resp (J : Cat)
-  : UnitS →r VertexDiagramS VertexTerminalObjectsF@{x e o h p l a b} J
+  : UnitS →r VertexDiagramS VertexTerminalObjF@{x e o h p l a b} J
   :=
   {|func x := ConstF J
-      (C := VertexCat VertexTerminalObjectsF@{x e o h p l a b}) tt
+      (C := VertexCat VertexTerminalObjF@{x e o h p l a b}) tt
   |}.
 Next Obligation. intros x y H. apply vertex_diagram_terminal_eq. Defined.
 
@@ -106,7 +106,7 @@ Next Obligation. intros x y H. apply vertex_diagram_terminal_eq. Defined.
 (** 终呈现图式在原生大小中恢复终广集，不使用选择或函子字段相等。 *)
 
 Definition vertex_diagram_terminal_iso (J : Cat)
-  : VertexDiagramS VertexTerminalObjectsF@{x e o h p l a b} J ≅[SetCat] UnitS.
+  : VertexDiagramS VertexTerminalObjF@{x e o h p l a b} J ≅[SetCat] UnitS.
 Proof.
   exists (vertex_diagram_terminal_resp J),
     (vertex_diagram_terminal_inv_resp J). split.

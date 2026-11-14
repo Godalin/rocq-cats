@@ -109,7 +109,7 @@ Definition FreydRoundTrip
 (** 比较嵌入第二次索引，在值对象与计算态射上均恒等作用。 *)
 
 Definition FreydRoundTripToF
-  : Functor (FreydComputations FreydRoundTrip) D
+  : Fct (FreydComputations FreydRoundTrip) D
   := InducedInclusionF (@Ob C) (FreydArrow F).
 
 (** The inverse also retains every computation. *)
@@ -117,7 +117,7 @@ Definition FreydRoundTripToF
 (** 反向函子同样保留每个计算。 *)
 
 Program Definition FreydRoundTripFromF
-  : Functor D (FreydComputations FreydRoundTrip)
+  : Fct D (FreydComputations FreydRoundTrip)
   :=
   {|F0 X := X
   ; F1 X Y f := f

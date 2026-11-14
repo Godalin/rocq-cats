@@ -26,7 +26,7 @@ Local Open Scope monoidal_scope.
     载体宇宙可严格大于相等见证宇宙。 *)
 
 Program Definition ReaderF@{r e u p +} (R : SetC@{r e})
-  : Functor (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
+  : Fct (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
   :=
   {|F0 X := R →S X
   ; F1 X Y f := {|func g := f ∘r g|}
@@ -89,7 +89,7 @@ Defined.
 (** Reader 的 lax 结构使用已有笛卡尔幺半模型。 *)
 
 Program Definition ReaderLax@{r e u p +} (R : SetC@{r e})
-  : LaxMonoidalFunctor (C := SetCat@{u p _ _ _ _ _})
+  : LaxMonoidalFct (C := SetCat@{u p _ _ _ _ _})
       (D := SetCat@{u p _ _ _ _ _})
       SetCartesianMonoidal SetCartesianMonoidal
   :=

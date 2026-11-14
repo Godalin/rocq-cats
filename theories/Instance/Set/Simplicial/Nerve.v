@@ -94,8 +94,8 @@ A \arrow[ur,"{f}"] \arrow[rr,"{h \approx g\circ f}"'] && D
     就能明确第二种 nerve 究竟保留了哪些信息。 *)
 
 Definition DiagramNerve@{u p +} (C : Cat)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
-  := FunctorPresheaf SimplexInclusionF C.
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
+  := FctPsh SimplexInclusionF C.
 
 Notation "'N≅(' C ')'" := (DiagramNerve C) : ob_scope.
 
@@ -103,9 +103,9 @@ Notation "'N≅(' C ')'" := (DiagramNerve C) : ob_scope.
 
 (** 与函子后复合诱导 nerve 之间的映射。 *)
 
-Definition DiagramNerveN@{u p +} {C D : Cat} (F : Functor C D)
-  : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
-  := FunctorPresheafN SimplexInclusionF F.
+Definition DiagramNerveN@{u p +} {C D : Cat} (F : Fct C D)
+  : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
+  := FctPshN SimplexInclusionF F.
 
 Notation "'N≅[' F ']'" := (DiagramNerveN F) : cat_scope.
 
@@ -116,16 +116,16 @@ Notation "'N≅[' F ']'" := (DiagramNerveN F) : cat_scope.
     预层构造。 *)
 
 Definition DiagramNerveF@{u p +}
-  : Functor CatCat (Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-  := FunctorPresheafF SimplexInclusionF.
+  : Fct CatCat (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})
+  := FctPshF SimplexInclusionF.
 
 (** Embed a finite-ordinal diagram as a nerve simplex. *)
 
 (** 将有限序数图式嵌入为 nerve 的单形。 *)
 
 Definition NerveSimplex@{u p +} {C : Cat} {n : nat}
-    (F : Functor [Ord n] C)
-  : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n
+    (F : Fct [Ord n] C)
+  : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := F
   |}.
@@ -138,7 +138,7 @@ Notation "'⟨' F '⟩N'" := (NerveSimplex F) : hom_scope.
 
 Global Instance nerve_simplex_proper@{u p +} {C : Cat} {n : nat}
   : Proper (NatIso ==>
-      carrier_equiv ((N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n))
+      carrier_equiv ((N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n))
       (@NerveSimplex C n).
 Proof. intros F G H. exact {|lower := H
                            |}. Defined.
@@ -149,7 +149,7 @@ Proof. intros F G H. exact {|lower := H
 
 Lemma nerve_restrict@{u p +} {C : Cat} {m n : nat}
     (θ : (@Hom Δ) m n)
-    (x : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : N≅(C)[θ]Δ x ≈S ⟨lower x ∘F θ⟩N.
 Proof. reflexivity. Defined.
 
@@ -159,7 +159,7 @@ Proof. reflexivity. Defined.
 
 Lemma nerve_face@{u p +} {C : Cat} {n : nat}
     (i : Ordinal (S n))
-    (x : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S n))
+    (x : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S n))
   : d[N≅(C); n; i] x ≈S ⟨lower x ∘F δ[n; i]⟩N.
 Proof. apply nerve_restrict. Defined.
 
@@ -169,7 +169,7 @@ Proof. apply nerve_restrict. Defined.
 
 Lemma nerve_degeneracy@{u p +} {C : Cat} {n : nat}
     (i : Ordinal n)
-    (x : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : s[N≅(C); n; i] x ≈S ⟨lower x ∘F σ[n; i]⟩N.
 Proof. apply nerve_restrict. Defined.
 
@@ -177,8 +177,8 @@ Proof. apply nerve_restrict. Defined.
 
 (** nerve 映射通过后复合作用于单形。 *)
 
-Lemma nerve_map@{u p +} {C D : Cat} (F : Functor C D) {n : nat}
-    (x : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+Lemma nerve_map@{u p +} {C D : Cat} (F : Fct C D) {n : nat}
+    (x : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : N≅[F] n x ≈S ⟨F ∘F lower x⟩N.
 Proof. reflexivity. Defined.
 
@@ -188,7 +188,7 @@ Proof. reflexivity. Defined.
 (** 范畴等价诱导 nerve 的自然同构，通过函子性使用同一组拟逆数据。 *)
 
 Definition nerve_equiv_iso@{u p +} {C D : Cat} (e : C ≃C D)
-  : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅(D).
+  : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅(D).
 Proof.
   exists N≅[e.1]. apply is_iso_NatIso.
   exact (functor_is_iso DiagramNerveF e.1 e.2).
@@ -204,7 +204,7 @@ Defined.
 (** 两侧具有相同的图式及预复合作用；用恒等映射比较，不等同函子定律字段。 *)
 
 Program Definition standard_nerve_iso@{u p +} (n : nat)
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅([Ord n])
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅([Ord n])
   := ({|nt m := id_resp
       |}; _).
 Next Obligation. intros [F]. reflexivity. Defined.
@@ -217,7 +217,7 @@ Defined.
 (** 标准单形的比较在序数维数上自然。 *)
 
 Program Definition StandardNerveN@{u p +}
-  : (StandardSimplexF : Functor Δ (Fct (Δ^op) SetCat@{u p _ _ _ _ _})) ⇒
+  : (StandardSimplexF : Fct Δ (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})) ⇒
       (DiagramNerveF ∘F SimplexInclusionF)
   :=
   {|nt n := (standard_nerve_iso n).1
@@ -230,7 +230,7 @@ Next Obligation. intros m [F]. reflexivity. Defined.
 (** 标准单形嵌入在自然同构下分解为序数解释后接 nerve。 *)
 
 Definition standard_nerve_nat_iso@{u p +}
-  : (StandardSimplexF : Functor Δ (Fct (Δ^op) SetCat@{u p _ _ _ _ _})) ≅N
+  : (StandardSimplexF : Fct Δ (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})) ≅N
       (DiagramNerveF ∘F SimplexInclusionF).
 Proof.
   exists StandardNerveN. intros n.
@@ -251,7 +251,7 @@ Defined.
 
 Lemma nerve_groupoid_eq_iff@{u p +} {C : Cat} `{HC : !IsGroupoid C}
     {n : nat}
-    (x y : (N≅(C) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x y : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : x ≈S y ↔ lower x fin_first ≅[C] lower y fin_first.
 Proof.
   split.
@@ -262,9 +262,9 @@ Proof.
     + symmetry. exact (groupoid_initial_diagram_iso
         (ordinal_first_initial n) (lower x)).
     + transitivity (ConstF [Ord n] (lower y fin_first)).
-      * exists (fmap (DiagonalF [Ord n] C) e.1).
+      * exists (fmap (DiagF [Ord n] C) e.1).
         apply is_iso_NatIso.
-        exact (functor_is_iso (DiagonalF [Ord n] C) e.1 e.2).
+        exact (functor_is_iso (DiagF [Ord n] C) e.1 e.2).
       * exact (groupoid_initial_diagram_iso
           (ordinal_first_initial n) (lower y)).
 Defined.

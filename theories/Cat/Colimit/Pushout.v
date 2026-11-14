@@ -16,7 +16,7 @@ From Cats Require Export
 (** * 推出作为跨度图式的余极限 *)
 
 Section PushoutColimits.
-Context {C : Cat} {D : Functor SpanShape C} {P : @Ob C}
+Context {C : Cat} {D : Fct SpanShape C} {P : @Ob C}
     (κ : D ⇒∇ P).
 
 (** In the span shape, both generating arrows leave [cospan_tip]. Their
@@ -65,7 +65,7 @@ End PushoutColimits.
 (** 使用共用形状适配，从存储的反范畴拉回极限选择给定跨度的余极限。 *)
 
 Definition PushoutDiagramColimit {C : Cat} `{HP : !HasPushout C}
-    (D : Functor SpanShape C)
+    (D : Fct SpanShape C)
   : HasColimit C D
   := @OpShapeDiagramColimit CospanShape C D
       (@hasLimit (C^op) CospanShape
@@ -99,9 +99,9 @@ Program Definition SpanColimitsPushout {C : Cat}
 (** 将反范畴右伴随保持拉回定理用于反伴随，得到左伴随保持候选推出。 *)
 
 Definition left_adjoint_preserves_pushout {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {X Y Z P : @Ob C} {f : Hom Z X} {g : Hom Z Y}
     {i : Hom X P} {j : Hom Y P} (HP : is_pushout f g P i j)
   : is_pushout (fmap F f) (fmap F g) (F P) (fmap F i) (fmap F j)
   := @right_adjoint_preserves_pullback (D^op) (C^op)
-      (G^opF) (F^opF) (OpAdjunction A) X Y Z P f g i j HP.
+      (G^opF) (F^opF) (OpAdj A) X Y Z P f g i j HP.

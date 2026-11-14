@@ -18,7 +18,7 @@ From Cats Require Import
 (** end 是使每个楔都唯一分解的楔。量词与唯一性见证均为 Type 值；存在性是
     假设，并非全局完备性断言。 *)
 
-Definition is_end {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
+Definition is_end {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
     (κ : Wedge F E)
   := ∀ W (μ : Wedge F W),
     ∃ h : Hom W E, is_unique (λ h, κ ∘Wedge h ≈W μ) h.
@@ -27,7 +27,7 @@ Definition is_end {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
 
 (** 选定 end 存储一个顶点、其楔及候选泛性质。 *)
 
-Class HasEnd (D : Cat) {C : Cat} (F : Functor ((C^op) ×C C) D)
+Class HasEnd (D : Cat) {C : Cat} (F : Fct ((C^op) ×C C) D)
   :=
   (** The chosen apex is an object of the supplied codomain. *)
 
@@ -59,7 +59,7 @@ Notation "'πend[' F ']'" := (end_wedge F) : hom_scope.
 
 (** 泛性质提供透明中介。 *)
 
-Definition end_lift {C D : Cat} {F : Functor ((C^op) ×C C) D}
+Definition end_lift {C D : Cat} {F : Fct ((C^op) ×C C) D}
     `{HE : !HasEnd D F} {W} (κ : Wedge F W)
   : Hom W (end[F])
   := (end_universal F W κ).1.
@@ -76,7 +76,7 @@ Notation "'end⟨' κ '⟩'" := (end_lift κ) : hom_scope.
     固定具有选定 end 的混合变元双函子，由其泛性质导出中介的计算、唯一性及复合。 *)
 
 Section ChosenEnd.
-Context {C D : Cat} {F : Functor ((C^op) ×C C) D} `{HE : !HasEnd D F}.
+Context {C D : Cat} {F : Fct ((C^op) ×C C) D} `{HE : !HasEnd D F}.
 
 (** The selected mediator is the unique map with the prescribed legs. *)
 
@@ -137,7 +137,7 @@ End ChosenEnd.
 
 (** 泛楔在楔范畴中是终对象，保留的交换性见证不要求证明字段相等。 *)
 
-Definition end_terminal {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
+Definition end_terminal {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
     {κ : Wedge F E} (Hκ : is_end κ)
   : @is_terminal (WedgeCat F) (E; κ).
 Proof.
@@ -153,7 +153,7 @@ Defined.
 
 (** 终对象性质恢复同一个 Type 值泛性质。 *)
 
-Definition terminal_end {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
+Definition terminal_end {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
     {κ : Wedge F E} (Hκ : @is_terminal (WedgeCat F) (E; κ))
   : is_end κ.
 Proof.
@@ -168,7 +168,7 @@ Defined.
 
 (** 此刻画复用普通终对象理论。 *)
 
-Theorem end_iff_terminal {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
+Theorem end_iff_terminal {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
     (κ : Wedge F E)
   : is_end κ ↔ @is_terminal (WedgeCat F) (E; κ).
 Proof. split; [apply end_terminal | apply terminal_end]. Defined.
@@ -177,7 +177,7 @@ Proof. split; [apply end_terminal | apply terminal_end]. Defined.
 
 (** 两个候选 end 的顶点由终对象唯一性得到同构。 *)
 
-Definition end_unique {C D : Cat} {F : Functor ((C^op) ×C C) D} {E K}
+Definition end_unique {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
     {κ : Wedge F E} {μ : Wedge F K} (Hκ : is_end κ) (Hμ : is_end μ)
   : E ≅[D] K.
 Proof.
@@ -190,7 +190,7 @@ Defined.
 
 (** 唯一比较保持两个候选的每个投影。 *)
 
-Lemma end_unique_β {C D : Cat} {F : Functor ((C^op) ×C C) D} {E K}
+Lemma end_unique_β {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
     {κ : Wedge F E} {μ : Wedge F K} (Hκ : is_end κ) (Hμ : is_end μ)
     (X : @Ob C)
   : μ X ∘ (end_unique Hκ Hμ).1 ≈ κ X.
@@ -203,7 +203,7 @@ Qed.
 
 (** 普通自然变换诱导两个选定 end 之间的映射，只要求这两个 end 存在。 *)
 
-Definition end_map {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Definition end_map {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G} (α : F ⇒ G)
   : Hom (end[F]) (end[G])
   := end⟨wedge_map α πend[F]⟩.
@@ -212,7 +212,7 @@ Definition end_map {C D : Cat} {F G : Functor ((C^op) ×C C) D}
 
 (** 诱导映射与每个对角分量交换。 *)
 
-Lemma end_map_β {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Lemma end_map_β {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G} (α : F ⇒ G) (X : @Ob C)
   : πend[G] X ∘ end_map α ≈ α (X, X) ∘ πend[F] X.
 Proof. exact (end_β (wedge_map α πend[F]) X). Qed.
@@ -222,7 +222,7 @@ Proof. exact (end_β (wedge_map α πend[F]) X). Qed.
 (** end 映射保持自然变换相等。 *)
 
 Global Instance end_map_proper {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D}
+    {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G}
   : Proper (NatEq ==> @HomEq[end[F], end[G]]) (@end_map C D F G HF HG).
 Proof.
@@ -234,7 +234,7 @@ Qed.
 
 (** 恒等自然变换诱导恒等 end 映射。 *)
 
-Lemma end_map_id {C D : Cat} {F : Functor ((C^op) ×C C) D}
+Lemma end_map_id {C D : Cat} {F : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F}
   : end_map (idN (F := F)) ≈ id.
 Proof. apply end_hom_ext. intros X. rewrite end_map_β. cbn. carw. Qed.
@@ -243,7 +243,7 @@ Proof. apply end_hom_ext. intros X. rewrite end_map_β. cbn. carw. Qed.
 
 (** 垂直复合诱导 end 映射的复合。 *)
 
-Lemma end_map_comp {C D : Cat} {F G K : Functor ((C^op) ×C C) D}
+Lemma end_map_comp {C D : Cat} {F G K : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G} `{HK : !HasEnd D K}
     (β : G ⇒ K) (α : F ⇒ G)
   : end_map (β ∘Nv α) ≈ end_map β ∘ end_map α.
@@ -258,7 +258,7 @@ Qed.
 
 (** 自然同构诱导两个选定 end 的同构，其逆是逆自然变换诱导的映射。 *)
 
-Definition end_map_is_iso {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Definition end_map_is_iso {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G}
     (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : is_iso (end_map α).
@@ -277,7 +277,7 @@ Defined.
 
 (** 泛提升与双函子自然变换相容。 *)
 
-Lemma end_lift_map {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Lemma end_lift_map {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G} (α : F ⇒ G) {W}
     (κ : Wedge F W)
   : end⟨wedge_map α κ⟩ ≈ end_map α ∘ end⟨κ⟩.

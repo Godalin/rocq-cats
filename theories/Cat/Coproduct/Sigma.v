@@ -17,7 +17,7 @@ From Cats Require Export
 Definition SigmaCoproductColimit {C : Cat} {I : Type} (J : I → Type)
     `{HO : !HasColimitsOfShape C (DiscreteCat I)}
     (HI : ∀ i, HasColimitsOfShape C (DiscreteCat (J i)))
-    (D : Functor (DiscreteCat (∃ i, J i)) C)
+    (D : Fct (DiscreteCat (∃ i, J i)) C)
   : HasColimit C D
   := @DiscreteDiagramColimit C (∃ i, J i) D
       (@SigmaProductLimit (C^op) I J (@DiscreteColimitsOpLimits C I HO)

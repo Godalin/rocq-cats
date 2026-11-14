@@ -44,7 +44,7 @@ Local Open Scope ordinal_scope.
 (** 边界匹配数据给出全部面及其交叠方程。 *)
 
 Definition BoundaryMatchingS@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat)
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat)
   : SetC
   := @SieveMatchingS Δ (S n) (Ordinal (S n))
       (λ _, n) (λ j, δ[n; j]) X.
@@ -54,7 +54,7 @@ Definition BoundaryMatchingS@{u p +}
 (** 在泛面处求值边界映射。 *)
 
 Program Definition boundary_face_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (j : Ordinal (S n))
   : BoundaryS X (S n) →r X n
   :=
@@ -70,7 +70,7 @@ Notation "'face∂[' j ']'" := (boundary_face_resp j) : hom_scope.
 (** 边界映射相等，当且仅当其泛面相等。 *)
 
 Definition boundary_map_eq_iff@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (b c : BoundaryS X (S n))
   : b ≈S c ↔ ∀ j, face∂[j] b ≈S face∂[j] c
   := @generated_sieve_map_eq Δ (S n) (Ordinal (S n))
@@ -81,7 +81,7 @@ Definition boundary_map_eq_iff@{u p +}
 (** 沿任意相等的共同因子对限制边界的面。 *)
 
 Definition boundary_face_overlap@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (b : BoundaryS X (S n)) (j k : Ordinal (S n))
     {m : nat} (f g : (@Hom Δ) m n)
     (E : δ[n; j] ∘ f ≈ δ[n; k] ∘ g)
@@ -96,7 +96,7 @@ Definition boundary_face_overlap@{u p +}
 (** 全部面交满足通常的移位面方程。 *)
 
 Definition boundary_face_comp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (b : BoundaryS X (S (S n)))
     (i j : Ordinal (S n)) (H : fin_rank i ≤ fin_rank j)
   : d[X; n; j] (face∂[i↑] b) ≈S d[X; n; i] (face∂[j⁺] b)
@@ -107,7 +107,7 @@ Definition boundary_face_comp@{u p +}
 (** 生成筛下降给出完整的边界匹配同构。 *)
 
 Definition boundary_matching_iso@{u p v q +}
-    {X : Functor (Δ^op) SetCat@{v q _ _ _ _ _}} (n : nat)
+    {X : Fct (Δ^op) SetCat@{v q _ _ _ _ _}} (n : nat)
   : LiftS@{_ _ u p} (BoundaryMatchingS X n) ≅[SetCat]
       LiftS@{_ _ u p} (BoundaryS X (S n))
   := @sieve_matching_iso Δ (S n) (Ordinal (S n))
@@ -118,7 +118,7 @@ Definition boundary_matching_iso@{u p v q +}
 (** 全部保留面上的匹配值及每个交叠方程。 *)
 
 Definition HornMatchingS@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (n : nat) (i : Ordinal (S n))
   : SetC
   := @SieveMatchingS Δ (S n) (∃ j : Ordinal (S n), ¬ j = i)
@@ -130,7 +130,7 @@ Definition HornMatchingS@{u p +}
 (** 提取保留面的值；它是该余面的像，不向计算数据插入恒等替换。 *)
 
 Program Definition horn_face_resp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (i j : Ordinal (S n)) (H : ¬ j = i)
   : HornS X (S n) i →r X n
   :=
@@ -146,7 +146,7 @@ Notation "'face[' i ';' j ';' H ']'" := (horn_face_resp i j H) : hom_scope.
 (** 从边界转到 horn 保留每个容许的面。 *)
 
 Lemma boundary_horn_face@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} (i j : Ordinal (S n)) (H : ¬ j = i)
     (b : BoundaryS X (S n))
   : face[i; j; H] (boundary_horn_resp (S n) i b) ≈S face∂[j] b.
@@ -162,7 +162,7 @@ Defined.
 (** 不同保留面证明给出相等的值，无需等同证明；它们在筛中表示同一底层余面。 *)
 
 Lemma horn_face_witness_independent@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} {i j : Ordinal (S n)} (H K : ¬ j = i)
     (h : HornS X (S n) i)
   : face[i; j; H] h ≈S face[i; j; K] h.
@@ -177,7 +177,7 @@ Defined.
 (** 自然性及共同因子相等给出全部面交叠。 *)
 
 Definition horn_face_overlap@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} {i j k : Ordinal (S n)} (Hj : ¬ j = i) (Hk : ¬ k = i)
     (h : HornS X (S n) i) {m : nat}
     (f g : (@Hom Δ) m n) (E : δ[n; j] ∘ f ≈ δ[n; k] ∘ g)
@@ -194,7 +194,7 @@ Definition horn_face_overlap@{u p +}
     判等导出。 *)
 
 Definition horn_filler_faces_iff@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} {i : Ordinal (S n)} (h : HornS X (S n) i) (x : X (S n))
   : is_horn_filler h x ↔
       ∀ j (H : ¬ j = i), d[X; n; j] x ≈S face[i; j; H] h.
@@ -213,7 +213,7 @@ Defined.
 (** 一般匹配同构给出完整的双向 horn 映射对应，仅使用进入共同宇宙的通常提升。 *)
 
 Definition horn_matching_iso@{u p v q +}
-    {X : Functor (Δ^op) SetCat@{v q _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{v q _ _ _ _ _}}
     (n : nat) (i : Ordinal (S n))
   : LiftS@{_ _ u p} (HornMatchingS X n i) ≅[SetCat]
       LiftS@{_ _ u p} (HornS X (S n) i)

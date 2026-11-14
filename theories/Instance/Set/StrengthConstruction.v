@@ -32,7 +32,7 @@ Local Existing Instance SetCat_HasProduct.
 
 Section Construction.
 Universes u p.
-Context (F : Functor (SetCat@{u p _ _ _ _ _})
+Context (F : Fct (SetCat@{u p _ _ _ _ _})
     (SetCat@{u p _ _ _ _ _})).
 
 (** Pair a fixed ordinary context with every functor result. Respectfulness

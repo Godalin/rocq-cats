@@ -50,7 +50,7 @@ Definition ClosedCat
 (** 全包含只忘去选定闭性见证。 *)
 
 Definition ClosedInclusionF
-  : Functor ClosedCat (PreorderCat R)
+  : Fct ClosedCat (PreorderCat R)
   := @InducedInclusionF (PreorderCat R)
       (∃ x, is_closed c x) (λ x, x.1).
 
@@ -70,7 +70,7 @@ Definition closed_inclusion_fully_faithful
 (** 反射函子选取 [c x] 及其压平见证，箭头映射恰好就是闭包的单调性。 *)
 
 Program Definition ClosureF
-  : Functor (PreorderCat R) ClosedCat
+  : Fct (PreorderCat R) ClosedCat
   :=
   {|F0 x := (c x; closure_closed c x)
   ; F1 x y h := closure_monotone c h
@@ -112,10 +112,10 @@ Next Obligation. repeat intro; exact tt. Defined.
 (** 最小扩张对应组装已有伴随接口。互逆律与自然性使用指定的薄 Hom 相等，
     不要求比较见证之间的原生等式。 *)
 
-Definition ClosureAdjunction
+Definition ClosAdj
   : ClosureF ⊣ ClosedInclusionF.
 Proof.
-  refine (AdjunctionFromHom ClosureF ClosedInclusionF
+  refine (AdjFromHom ClosureF ClosedInclusionF
     closure_adjunct_resp closure_unadjunct_resp _ _ _ _);
     repeat intro; exact tt.
 Defined.
@@ -127,7 +127,7 @@ Defined.
 
 Definition ClosureMonad
   : Monad (PreorderCat R)
-  := AdjunctionMonad ClosureAdjunction.
+  := AdjMonad ClosAdj.
 
 (** Its multiplication is invertible in the specified hom equality. The
     inverse is inflation at the closed extension, so this is an idempotent

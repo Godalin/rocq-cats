@@ -16,7 +16,7 @@ From Cats Require Export
 (** * 余等化子作为平行箭头对的余极限 *)
 
 Section CoequalizerColimits.
-Context {C : Cat} {D : Functor (ParallelShape^op) C} {Q : @Ob C}
+Context {C : Cat} {D : Fct (ParallelShape^op) C} {Q : @Ob C}
     (κ : D ⇒∇ Q).
 
 (** In the opposite shape, the arrows run from [true] to [false]. Thus the
@@ -61,7 +61,7 @@ End CoequalizerColimits.
 (** 使用反范畴中的等化子图式选择平行箭头对余极限。 *)
 
 Definition CoequalizerDiagramColimit {C : Cat} `{HC : !HasCoequalizer C}
-    (D : Functor (ParallelShape^op) C)
+    (D : Fct (ParallelShape^op) C)
   : HasColimit C D
   := @OpShapeDiagramColimit ParallelShape C D
       (@EqualizerDiagramLimit (C^op) (@hasOpEqualizer C HC)
@@ -108,9 +108,9 @@ Defined.
 (** 左伴随通过反范畴中等化子的保持性保持候选余等化子。 *)
 
 Definition left_adjoint_preserves_coequalizer {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {X Y Q : @Ob C} {f g : Hom X Y} {q : Hom Y Q}
     (HC : is_coequalizer f g Q q)
   : is_coequalizer (fmap F f) (fmap F g) (F Q) (fmap F q)
   := @right_adjoint_preserves_equalizer (D^op) (C^op)
-      (G^opF) (F^opF) (OpAdjunction A) Y X Q f g q HC.
+      (G^opF) (F^opF) (OpAdj A) Y X Q f g q HC.

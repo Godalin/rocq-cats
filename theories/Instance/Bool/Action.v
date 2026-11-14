@@ -51,7 +51,7 @@ Proof. intros H. discriminate H. Qed.
 (** 正则作用直接实例化通用的协变 Hom 构造。 *)
 
 Definition BoolActionF
-  : Functor BoolGroupoid SetCat
+  : Fct BoolGroupoid SetCat
   := RegularActionF BoolS.
 
 (** Faithfulness follows from the general regular-action argument. *)

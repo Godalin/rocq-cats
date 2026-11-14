@@ -20,17 +20,17 @@ From Cats Require Export
 
 (** 对角族就是将反 end 的对角族读回 [D]。 *)
 
-Definition CoendDiagonal {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition CoendDiag {C D : Cat} (F : Fct ((C^op) ×C C) D)
     (X : @Ob C)
   : @Ob D
-  := EndDiagonal (BifunctorOpF F) X.
+  := EndDiag (BifunctorOpF F) X.
 
 (** Reversed arrows index the original opposite constraints. An original
     arrow [X → Y] contributes [F (Y,X)], without storing an equality proof. *)
 
 (** 反向箭头为原反约束提供指标。原箭头 [X → Y] 贡献 [F (Y,X)]，不存储相等证明。 *)
 
-Definition CoendSources {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition CoendSources {C D : Cat} (F : Fct ((C^op) ×C C) D)
     (a : ArrowOb (C^op))
   : @Ob D
   := EndTargets (BifunctorOpF F) a.
@@ -45,8 +45,8 @@ Definition CoendSources {C D : Cat} (F : Functor ((C^op) ×C C) D)
     固定双函子及其对角族和箭头族的选定余积。将这些选择适配为反积，复用 end 构造。 *)
 
 Section CoproductsCoequalizer.
-Context {C D : Cat} (F : Functor ((C^op) ×C C) D).
-Context `{HO : !HasColimit D (DiscreteF (CoendDiagonal F))}.
+Context {C D : Cat} (F : Fct ((C^op) ×C C) D).
+Context `{HO : !HasColimit D (DiscreteF (CoendDiag F))}.
 Context `{HA : !HasColimit D (DiscreteF (CoendSources F))}.
 
 (** Retain the selected diagonal coproduct as the opposite product. *)
@@ -54,8 +54,8 @@ Context `{HA : !HasColimit D (DiscreteF (CoendSources F))}.
 (** 将选定对角余积保留为反积。 *)
 
 Local Definition coend_diagonal_product
-  : HasLimit (D^op) (@DiscreteF (D^op) _ (CoendDiagonal F))
-  := @IndexedCoproductOpProduct D _ (CoendDiagonal F) HO.
+  : HasLimit (D^op) (@DiscreteF (D^op) _ (CoendDiag F))
+  := @IndexedCoproductOpProduct D _ (CoendDiag F) HO.
 
 (** Retain the selected arrow coproduct as the opposite product. *)
 
@@ -71,7 +71,7 @@ Local Definition coend_sources_product
 (** 对 [f : X → Y]，先作用 [F (f,id)] 再注入 [X]，即原反逆变约束。 *)
 
 Definition coend_coproduct_source
-  : Hom ∐[CoendSources F] ∐[CoendDiagonal F]
+  : Hom ∐[CoendSources F] ∐[CoendDiag F]
   := @end_product_contravariant (C^op) (D^op) (BifunctorOpF F)
       coend_diagonal_product coend_sources_product.
 
@@ -81,7 +81,7 @@ Definition coend_coproduct_source
 (** 对 [f : X → Y]，先作用 [F (id,f)] 再注入 [Y]，即原反协变约束。 *)
 
 Definition coend_coproduct_target
-  : Hom ∐[CoendSources F] ∐[CoendDiagonal F]
+  : Hom ∐[CoendSources F] ∐[CoendDiag F]
   := @end_product_covariant (C^op) (D^op) (BifunctorOpF F)
       coend_diagonal_product coend_sources_product.
 
@@ -90,7 +90,7 @@ Definition coend_coproduct_target
 (** 余等化箭头通过同一个反楔给出余楔。 *)
 
 Definition CoproductsCoequalizerCowedge {E : @Ob D}
-    (e : Hom ∐[CoendDiagonal F] E)
+    (e : Hom ∐[CoendDiag F] E)
     (H : e ∘ coend_coproduct_target ≈ e ∘ coend_coproduct_source)
   : Cowedge F E
   :=
@@ -104,7 +104,7 @@ Definition CoproductsCoequalizerCowedge {E : @Ob D}
 (** 候选余等化子由反 end 定理得到 coend 性质，不重复中介或唯一性论证。 *)
 
 Definition coproducts_coequalizer_coend {E : @Ob D}
-    (e : Hom ∐[CoendDiagonal F] E)
+    (e : Hom ∐[CoendDiag F] E)
     (H : e ∘ coend_coproduct_target ≈ e ∘ coend_coproduct_source)
     (HE : is_coequalizer coend_coproduct_target coend_coproduct_source E e)
   : is_coend (CoproductsCoequalizerCowedge e H)
@@ -116,7 +116,7 @@ Definition coproducts_coequalizer_coend {E : @Ob D}
 (** 一个候选余等化子选取同一个反 end。 *)
 
 Program Definition CoproductsCoequalizerCoendOf {E : @Ob D}
-    (e : Hom ∐[CoendDiagonal F] E)
+    (e : Hom ∐[CoendDiag F] E)
     (HE : is_coequalizer coend_coproduct_target coend_coproduct_source E e)
   : HasCoend D F
   :=

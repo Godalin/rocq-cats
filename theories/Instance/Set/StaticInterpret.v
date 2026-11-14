@@ -112,7 +112,7 @@ Qed.
 (** 比较函子使用原纯对象映射，定律来自前述一般保持性结果。 *)
 
 Program Definition StaticInterpretF
-  : Functor (StaticCat (ArrowA K A)) K
+  : Fct (StaticCat (ArrowA K A)) K
   :=
   {|F0 := A
   ; F1 X Y f := static_interpret f

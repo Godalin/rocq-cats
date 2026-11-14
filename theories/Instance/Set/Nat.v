@@ -62,8 +62,8 @@ Defined.
 
 (** 选择普通自然数广集作为自然数对象。 *)
 
-Program Definition SetCat_HasNaturalNumbersObject@{u r +}
-  : HasNaturalNumbersObject SetCat@{u r _ _ _ _ _} SetCat_HasTerminal
+Program Definition SetCat_HasNaturalNumbersObj@{u r +}
+  : HasNaturalNumbersObj SetCat@{u r _ _ _ _ _} SetCat_HasTerminal
   :=
   {|NNO := NatS
   ; zero := zero_resp

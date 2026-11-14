@@ -26,7 +26,7 @@ From Cats Require Export
 (** 固定数据上的通常公理。三条定律的见证均保留在 [Type] 中，自然性由 [η]
     和 [μ] 提供。 *)
 
-Definition is_monad {C : Cat} (T : Functor C C)
+Definition is_monad {C : Cat} (T : Fct C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
   : Type
   := (∀ X, μ X ∘ η (T X) ≈ id) ∧
@@ -40,7 +40,7 @@ Definition is_monad {C : Cat} (T : Functor C C)
 
 Class Monad (C : Cat)
   :=
-  { MonadF :> Functor C C
+  { MonadF :> Fct C C
   ; monad_unit : IdF ⇒ MonadF
   ; monad_mul : MonadF ∘F MonadF ⇒ MonadF
   ; monad_axioms : is_monad MonadF monad_unit monad_mul
@@ -117,7 +117,7 @@ Qed.
 
 (** 由三条通常定律直接构造 Monad；底层自函子、单位和乘法的计算行为保持不变。 *)
 
-Program Definition MonadFromComponents {C : Cat} (T : Functor C C)
+Program Definition MonadFromComponents {C : Cat} (T : Fct C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
     (Hu : ∀ X, μ X ∘ η (T X) ≈ id)
     (Hv : ∀ X, μ X ∘ fmap T (η X) ≈ id)

@@ -16,7 +16,7 @@ From Cats Require Import
 (** * 项作为上下文投影的截面 *)
 
 Section ContextSections.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Pair a term with identity to obtain a section of the context projection. *)
 
@@ -70,7 +70,7 @@ Notation "s '^Tm[' T ',' A ']'" := (section_to_term_resp T A s)
     固定带选定上下文扩张的 [T]，证明项对应显示投影的截面，并给出这一对应与配对、替换的关系。 *)
 
 Section ContextSectionLaws.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Extracting a term from its induced section recovers the term. *)
 
