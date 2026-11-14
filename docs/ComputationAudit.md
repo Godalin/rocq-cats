@@ -2439,3 +2439,96 @@ Hom-adjunction and adjunction-to-Monad theories.
 44 项严格宇宙探针；按两种次序分离 Hom／相等大小，并将计算对象大小置于
 它们之上或之下。没有新增接口、选定模型、永久测试或共享工具链，没有修改
 `typeprop`。后续 Monad 构造将复用已有 Hom 伴随及伴随到 Monad 理论。
+
+
+## Dynamic Arrow adjunction and Monad recovery
+
+## 动态 Arrow 伴随及 Monad 回收
+
+This finite phase continues from the independently delivered dynamic Hom
+foundation `557b048` on `monoidal-cat-view`, with integration baseline
+`15a7ccf05eeee9d2c8d1691d3b47468e121c7978` unchanged.
+[ArrowApplyAdjunction](../theories/Cat/Computational/Arrow/Monad.v) reuses
+`AdjunctionFromHom` with the pure indexed inclusion and the covariant
+Hom functor at terminal input. The two supplied maps are the existing
+transparent dynamic naming and evaluation. Ambient Hom lifting remains
+inside the general adjunction constructor; computation-object, native
+Hom carrier and equality levels remain independent. `ArrowMonad` reuses
+`AdjunctionMonad` and compares its underlying functor to `ArrowGlobalF`
+by an identity-component natural isomorphism. The unit agrees with the
+existing pure global value; multiplication and extension are dynamic
+composition. No Monad axiom is reproved for a concrete model.
+
+此有限阶段在 `monoidal-cat-view` 上从已独立交付的动态 Hom 基础 `557b048`
+继续，集成基线仍为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
+[ArrowApplyAdjunction](../theories/Cat/Computational/Arrow/Monad.v)以纯索引
+包含及终端输入处的协变 Hom 函子复用 `AdjunctionFromHom`。两个映射就是已有
+透明动态命名及求值；环境 Hom 提升仍封装在一般伴随构造中，计算对象、原生
+Hom 载体与相等层级保持独立。`ArrowMonad` 复用 `AdjunctionMonad`，以恒等
+分量自然同构将底层函子与 `ArrowGlobalF` 比较。单位与已有纯全局值一致，
+乘法及扩张由动态复合给出，不为具体模型重新证明 Monad 公理。
+
+[KleisliRecoveryIso](../theories/Instance/Set/KleisliRecovery.v) recovers
+the original supplied Monad from its `KleisliArrowApply`. Evaluation at
+the singleton and constant computation give transparent inverse natural
+transformations. Both preserve unit and multiplication, including the
+required horizontal composite in the multiplication law; they are actual
+inverse morphisms in the existing `MonadCat`. A separate comparison
+preserves continuation extension and its effect order. This native
+Kleisli client uses the stated common carrier/equality bound, retaining
+independent smaller state carrier/equality levels. No exponentials,
+effect commutation, equality of functions/law fields or new assumption
+is introduced. This proves the Monad round trip for a supplied Kleisli
+model; arbitrary ArrowApply reconstruction, compatibility with every
+additional computational structure and typed syntax remain subsequent work.
+
+[KleisliRecoveryIso](../theories/Instance/Set/KleisliRecovery.v)从所给 Monad
+的 `KleisliArrowApply` 回收原 Monad。在单元素处求值与常值计算给出透明互逆
+自然变换；双向保持单位和乘法，乘法律包含所需水平复合，因此是已有
+`MonadCat` 中实际互逆态射。另有比较保持续延扩张及效应次序。此原生 Kleisli
+客户端使用已声明的共同载体／相等界，状态载体／相等仍可在其下独立。
+没有引入指数、效应交换、函数／定律字段相等或新假设。这证明所给 Kleisli
+模型的 Monad 往返；任意 ArrowApply 的重建、全部附加计算结构相容性与带类型
+语法仍属后续工作。
+
+Full-library `@all @runtest @install` passed in the unchanged `rocq-cats`
+switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1). All 215 temporary
+assumption reports are closed under the global context: 35 public
+constructions/laws, 124 size probes and 56 concrete-model helpers/results.
+The probes cover both strict native Hom/equality orders, computation-object
+size above and below those levels, the common native Kleisli bound, and
+both strict state carrier/equality orders below it. Import-only typeclass
+search confirms that chosen products, Monad and ArrowApply remain explicit.
+These 215 reports include the earlier 55 foundation reports, not another
+55 in addition. All 24 Boolean-state VM reductions pass, covering return,
+nested flattening with the updated state passed to the inner computation,
+continuation selection and sequencing, both recovery maps and inverse laws,
+the underlying functor comparison and both Monad-isomorphism maps.
+Concrete expressions use an abstract value-level join helper to avoid
+expanding the entire derived structure during component type inference;
+all maps and the final checks remain transparent. All checks are temporary;
+no redundant permanent tests or shared test configuration were added.
+
+未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
+中，全库 `@all @runtest @install` 通过。215 项临时公理报告均无额外全局
+假设：35 个公共构造／定律、124 项大小探针及 56 项具体模型辅助／结果。
+探针覆盖两种严格原生 Hom／相等次序、计算对象大小位于两者之上或之下、共同
+原生 Kleisli 界，以及该界下两种严格状态载体／相等次序。仅导入后的类型类
+搜索确认选定积、Monad 与 ArrowApply 仍需显式选择。215 项包含此前 55 项
+基础报告，不另行累加。24 项布尔状态 VM 求值全部通过，覆盖返回、将更新
+状态传给内部计算的嵌套压平、续延选择及次序、双向回收映射和互逆律、底层
+函子比较，以及 Monad 同构的双向映射。具体表达式通过抽象值层 join 辅助
+组装，避免分量类型推断展开整个派生结构；全部映射及最终检查均保持透明。
+检查均为临时文件，没有增加冗余永久测试或共享测试配置。
+
+Strict bilingual HTML covers 354 modules per language and all 713 checked
+pages. The three reviewed modules' 78 language-specific documentation
+blocks and 70 public declaration anchors were checked individually in the
+corresponding reading editions. The inventory remains exactly 98 interfaces
+(69 classes, 29 records), including all 29 `Has*` classes. Only the task
+branch is changed; batch PDF export and `typeprop` remain with integration.
+
+严格双语 HTML 覆盖每种语言 354 个模块，全部 713 页检查通过。三个复核模块
+的 78 段对应语言说明及 70 个公共声明锚点均在相应阅读版逐项核对。清单仍为
+恰好 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类。仅修改任务
+分支，批次 PDF 及 `typeprop` 仍由集成会话管理。
