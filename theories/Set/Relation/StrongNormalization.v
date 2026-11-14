@@ -1,4 +1,5 @@
 From Cats.Set.Relation Require Export Closure.
+From Stdlib Require Import Arith.PeanoNat.
 
 (** * Strong Normalization of Type-Valued Relations
 
@@ -53,6 +54,27 @@ Definition sn_terminal {A : Type} {R : crelation A} {x : A}
     (h : ∀ y, R x y → Empty_set)
   : SN R x
   := sn_intro (λ y p, match h y p with end).
+
+(** A natural-number measure strictly decreases along every step. Bounded
+    induction constructs the entire normalization tree, with carrier and
+    edge universes independent of the small numerical measure. No finite
+    enumeration or decision procedure for successors is required. *)
+
+(** 自然数度量沿每一步严格下降。带界归纳构造整棵归一化树，载体与边宇宙
+    独立于小的数值度量；不要求后继的有限枚举或判定过程。 *)
+
+Definition sn_measure {A : Type} {R : crelation A} (m : A → nat)
+    (decrease : ∀ x y, R x y → m y < m x) (x : A)
+  : SN R x.
+Proof.
+  assert (go : ∀ n x, m x < n → SN R x).
+  { induction n as [| n ih]; intros y bound.
+    - exact (False_rect _ (Nat.nlt_0_r (m y) bound)).
+    - apply sn_intro. intros z h. apply (ih z).
+      exact (Nat.lt_le_trans _ _ _ (decrease y z h)
+        (proj1 (Nat.lt_succ_r _ _) bound)). }
+  exact (go (S (m x)) x (Nat.lt_succ_diag_r (m x))).
+Defined.
 
 (** Strong normalization is inherited by every endpoint of a finite path.
     This does not assert strong normalization of the reflexive path

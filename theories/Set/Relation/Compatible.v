@@ -115,6 +115,25 @@ Definition context_closure_map {I : Type} {A : I → Type}
   := context_closure_preserves K (context_closure_compatible K S)
       (λ i x y p, context_step (h i x y p)).
 
+(** Reversing a contextual edge is the same construction on reversed
+    generators. The general fold reverses endpoints without changing the
+    context labels or identifying derivations. *)
+
+(** 上下文边反向后，是对反向生成元作同一构造。一般折叠反转端点，不改变
+    上下文标签，也不识别推导。 *)
+
+Definition context_closure_reverse {I : Type} {A : I → Type}
+    (K : ContextSystem A) (R : RelationFamily A)
+    {i : I} {x y : A i} (h : (R^C[K]) i x y)
+  : ((λ i x y, R i y x)^C[K]) i y x.
+Proof.
+  refine (context_closure_preserves K
+    (S := λ i x y, ((λ i x y, R i y x)^C[K]) i y x)
+    _ _ i x y h).
+  - intros j k c v w p. exact (context_lift c p).
+  - intros j v w p. exact (context_step p).
+Defined.
+
 (** Context iteration is the least compatible relation containing its
     generators. The two maps do not identify context derivations. *)
 
