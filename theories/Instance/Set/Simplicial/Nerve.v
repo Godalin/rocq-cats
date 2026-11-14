@@ -24,6 +24,75 @@ Local Open Scope nat_scope.
     nerve 为 [N≅(C)]，函子诱导的映射为 [N≅[F]]；下方的群胚边界刻画此相等
     对路径区别的影响。 *)
 
+(** ** A Category Seen through Ordered Chains
+
+    The preceding %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}% lists monotone maps between shapes.
+    A nerve instead lists diagrams of each shape inside a chosen category C:
+    - In degree zero, a diagram selects one object.
+    - In degree one, it selects an arrow [f : A → B].
+    - In degree two, it selects composable arrows [f : A → B] and
+      [g : B → D], together with the long edge, equal to [g ∘ f].
+
+    Taking the middle face of that triangle composes its two consecutive
+    arrows. Taking either outer face retains one of them. Repeating a vertex
+    inserts an identity arrow. These operations assemble into a simplicial
+    object because diagrams are functors, so they already preserve identities
+    and composition. A triangle in a general simplicial set need not have
+    this categorical interpretation. *)
+
+(** ** 用有序箭头链观察范畴
+
+    前面的 %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}% 收集形状之间的保序映射。nerve 则在给定范畴 C
+    内收集每种形状的图式：
+    - 零维图式选取一个对象。
+    - 一维图式选取一条箭头 [f : A → B]。
+    - 二维图式选取可复合的 [f : A → B]、[g : B → D]，以及等于
+      [g ∘ f] 的长边。
+
+    取这个三角形的中间面，就是将两条相邻箭头复合；取两侧的面则分别保留其中
+    一条箭头。重复顶点会插入恒等箭头。这些操作组成单纯对象，因为图式本来就是
+    保持恒等与复合的函子。一般单纯集合中的三角形不必具有这样的范畴解释。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+& B \arrow[dr,"{g}"] & \\
+A \arrow[ur,"{f}"] \arrow[rr,"{h \approx g\circ f}"'] && D
+\end{tikzcd}
+\end{center}%
+*)
+
+(** ** Which Equality Does the Nerve Remember?
+
+    %\coqref{Cats.Instance.Set.Simplicial.Nerve.DiagramNerve}
+    {%[DiagramNerve]%}% compares diagrams by arbitrary natural isomorphisms.
+    Consequently its vertices compare as isomorphic objects of C. In a
+    groupoid, this comparison can also identify paths that one might have
+    wanted to keep distinct; see the groupoid analysis later in this module.
+
+    The later %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
+    {%[VertexNerve]%}% uses
+    an additional label setoid and prescribed coherent transports. Its
+    vertices compare using that specified label equality. Both constructions
+    use the same chain picture, but they answer different equality questions.
+    Read the vertex and edge descriptions before reconstruction: they state
+    precisely what information that second nerve retains. *)
+
+(** ** nerve 记住哪一种相等？
+
+    %\coqref{Cats.Instance.Set.Simplicial.Nerve.DiagramNerve}
+    {%[DiagramNerve]%}% 允许用任意自然同构比较图式，因此它的顶点按 C 中的对象同构
+    比较。在群胚里，这种比较还可能识别原本想区分的路径；本章后面的群胚分析
+    会具体说明这一点。
+
+    后面的 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
+    {%[VertexNerve]%}% 另外使用
+    标签广集及指定的相干运输，顶点按指定的标签相等比较。两种构造使用同样的
+    箭头链图像，却回答不同的相等问题。阅读重构定理前，先看顶点与边的描述，
+    就能明确第二种 nerve 究竟保留了哪些信息。 *)
+
 Definition DiagramNerve@{u p +} (C : Cat)
   : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
   := FunctorPresheaf SimplexInclusionF C.

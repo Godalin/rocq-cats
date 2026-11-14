@@ -29,6 +29,37 @@ Local Open Scope nat_scope.
     棱柱复用步行箭头图式与去柯里化；其比较使用指定顶点运输，
     而非图式之间的任意自然同构。 *)
 
+(** For an arrow a from A to B, naturality of [α : F ⇒ G] says
+    that the square below commutes in the target category's specified
+    equality. It is the edge-level picture of the prism. For a whole chain,
+    %\coqref{Cats.Cat.Diagram.Prism.PrismDiagramF}
+    {%[PrismDiagramF]%}% supplies compatible diagrams in every degree, and
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Homotopy.VertexNerveHomotopy}
+    {%[VertexNerveHomotopy]%}% assembles them into the simplicial homotopy whose
+    endpoints were explained in %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Core.SimplicialHomotopy}
+    {%[SimplicialHomotopy]%}%. No inverse of a
+    component of α is required. This chapter constructs the direction from
+    natural transformations to homotopies; a converse is not asserted here. *)
+
+(** 对从 A 到 B 的箭头 a，[α : F ⇒ G] 的自然性说明下图按目标范畴的指定
+    相等交换。这是棱柱在一条边上的图像。对整条箭头链，%\coqref{Cats.Cat.Diagram.Prism.PrismDiagramF}
+    {%[PrismDiagramF]%}%
+    在各维提供相容图式，%\coqref{Cats.Instance.Set.Simplicial.Vertex.Homotopy.VertexNerveHomotopy}
+    {%[VertexNerveHomotopy]%}% 再把它们组装为单纯同伦，
+    端点条件就是前面 %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Core.SimplicialHomotopy}
+    {%[SimplicialHomotopy]%}% 所说明的条件。构造不要求 α 的
+    分量可逆。本章给出从自然变换到同伦的方向，此处尚未断言反向恢复。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+F A \arrow[r,"{F a}"] \arrow[d,"{\alpha_A}"'] &
+F B \arrow[d,"{\alpha_B}"] \\
+G A \arrow[r,"{G a}"'] & G B
+\end{tikzcd}
+\end{center}%
+*)
+
 Section NerveHomotopies.
 Universes u p.
 Context {X Y : SetC} {C D : Cat}

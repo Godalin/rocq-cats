@@ -14,6 +14,50 @@ Local Open Scope nat_scope.
     horn 数据是从实际 horn 子预层出发的映射，其自然变换已包含全部交叠及限制
     相容性。填充是单形，且其 horn 映射与给定映射按指定相等比较。 *)
 
+(** ** Filling as Extending a Map
+
+    A map [h : Λ[n; i] ⇒ X] contains all retained faces and their
+    compatibility on intersections. A filler is a map from [Δ[n]] to X
+    whose restriction along %\coqref{Cats.Instance.Set.Simplicial.Boundary.HornInclusionN}
+    {%[HornInclusionN]%}% agrees with h. The dashed arrow
+    below is the requested extension. The triangle commutes in specified
+    natural-transformation equality, not by equality of proof fields.
+
+    By %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element resp}
+    {%[simplex_element_resp]%}%, this extension can equivalently be stored as
+    an element of [X n]; %\coqref{Cats.Instance.Set.Simplicial.Horn.is horn filler}
+    {%[is_horn_filler]%}% is its restriction equation, and
+    %\coqref{Cats.Instance.Set.Simplicial.Horn.horn extension iff}
+    {%[horn_extension_iff]%}% relates the two descriptions. Neither the picture
+    nor the interface asserts uniqueness. %\coqref{Cats.Instance.Set.Simplicial.Horn.HasKanFillers}
+    {%[HasKanFillers]%}% supplies chosen
+    fillers for all positive-dimensional horns, including outer horns. *)
+
+(** ** 把填充理解为映射延拓
+
+    映射 [h : Λ[n; i] ⇒ X] 包含全部保留面及其在交叠处的相容性。填充是从
+    [Δ[n]] 到 X 的映射，它沿 %\coqref{Cats.Instance.Set.Simplicial.Boundary.HornInclusionN}
+    {%[HornInclusionN]%}% 限制后与 h 相等。下图虚线
+    箭头表示所寻找的延拓，三角形按指定的自然变换相等交换，不比较证明字段。
+
+    由 %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element resp}
+    {%[simplex_element_resp]%}%，延拓也可等价地保存为 [X n] 中的元素；
+    %\coqref{Cats.Instance.Set.Simplicial.Horn.is horn filler}
+    {%[is_horn_filler]%}% 给出它的限制方程，%\coqref{Cats.Instance.Set.Simplicial.Horn.horn extension iff}
+    {%[horn_extension_iff]%}% 连接两种描述。
+    图与接口都没有断言唯一性。%\coqref{Cats.Instance.Set.Simplicial.Horn.HasKanFillers}
+    {%[HasKanFillers]%}% 则为全部正维 horn 提供选定
+    填充，包括外 horn。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=huge,row sep=large]
+\Lambda[n;i] \arrow[r,"{h}"] \arrow[d,"{\iota_\Lambda}"'] & X \\
+\Delta[n] \arrow[ur,dashed,"{\langle x\rangle}"'] &
+\end{tikzcd}
+\end{center}%
+*)
+
 (** Boundary maps form the matching setoid, with pointwise equality. Its
     size may exceed the value sizes; no resizing of this setoid is imposed. *)
 

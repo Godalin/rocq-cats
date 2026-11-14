@@ -26,6 +26,45 @@ Local Open Scope nat_scope.
     限制同时作用于单形和时间。同伦 [X × Δ[1] ⇒ Y] 保留完整单纯映射及其两个
     端点方程。对任意单纯广集，不假设此初等有向关系具有对称性或传递性。 *)
 
+(** ** A Map with a Simplicial Time Coordinate
+
+    Earlier, %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}% described [Δ[1]] using monotone zero-one
+    lists. In degree n, a cylinder datum is a pair: an n-simplex of X and
+    one such time list of length n+1. Restriction acts on both entries.
+    Time is therefore simplicial data, not a real-valued parameter added
+    to the library.
+
+    For maps f and g from X to Y, a homotopy H has the endpoint equations
+    shown below. The arrows into the cylinder pair x with constant time
+    zero or one. Both triangles commute in specified equality. At a vertex
+    of X, H supplies an edge of Y from its f-image to its g-image; at an
+    edge of X it must also supply compatible higher-dimensional data.
+    Merely choosing separate vertex paths would not suffice. *)
+
+(** ** 带单纯时间坐标的映射
+
+    前面的 %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}% 用保序的零一列表描述 [Δ[1]]。在 n 维中，
+    柱的数据是一对：X 的一个 n-单形，以及长度为 n+1 的这种时间列表。
+    限制同时作用于两项。因此，时间本身也是单纯数据，此处没有加入实数参数。
+
+    对从 X 到 Y 的映射 f、g，同伦 H 满足下图的端点方程。进入柱的箭头将
+    x 与常值时间零或一配对，两个三角形都按指定相等交换。在 X 的顶点处，
+    H 给出从 f 的像到 g 的像的一条 Y 中的边；在 X 的边处，还须给出相容的
+    高维数据。因此，仅为每个顶点分别选一条路径还不够。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+X \arrow[r,"{\iota_0}"] \arrow[dr,"{f}"'] &
+X\times\Delta[1] \arrow[d,"{H}"] &
+X \arrow[l,"{\iota_1}"'] \arrow[dl,"{g}"] \\
+& Y &
+\end{tikzcd}
+\end{center}%
+*)
+
 (** The two finite positions choose the interval's initial and final vertex. *)
 
 (** 两个有限位置选取区间的起始及终止顶点。 *)

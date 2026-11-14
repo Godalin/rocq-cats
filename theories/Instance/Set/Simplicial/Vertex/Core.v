@@ -19,6 +19,53 @@ Local Open Scope nat_scope.
     输入的对象作用提供单独一个范畴所缺少的对象相等与相干运输。单形保留顶点
     标签，并且只通过这些指定运输比较箭头数据；一般函子的自然同构相等保持不变。 *)
 
+(** ** From the Chain Picture to Specified Labels
+
+    Recall %\coqref{Cats.Instance.Set.Simplicial.Nerve.DiagramNerve}
+    {%[DiagramNerve]%}%: its simplices are ordinal diagrams, compared by
+    natural isomorphism. Here each vertex instead carries a label in a
+    setoid X. The input [T : Functor (EqGpd X) C] tells us both what object
+    a label denotes and how a specified equality of labels transports
+    arrows. This is why the construction takes T, rather than only C.
+
+    For example, an edge has a source label, a target label and an arrow
+    between their interpreted objects. Comparing two such edges first
+    compares their labels, then compares their arrows after the prescribed
+    transport. An unrelated isomorphism in C cannot substitute for that
+    label equality.
+
+    After %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
+    {%[VertexNerve]%}%, read %\coqref{Cats.Instance.Set.Simplicial.Vertex.Point.point simplex resp}
+    {%[point_simplex_resp]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Edge.edge simplex resp}
+    {%[edge_simplex_resp]%}%
+    in the next chapters for the zero- and one-dimensional descriptions.
+    Then %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.vertex spine iso}
+    {%[vertex_spine_iso]%}% makes the chain picture precise in every degree.
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Reconstruction.vertex nerve hom iso}
+    {%[vertex_nerve_hom_iso]%}% is a later reconstruction result; it is not needed
+    to understand what an individual nerve simplex is. *)
+
+(** ** 从箭头链图像到指定标签
+
+    回顾 %\coqref{Cats.Instance.Set.Simplicial.Nerve.DiagramNerve}
+    {%[DiagramNerve]%}%：其单形是序数图式，按自然同构比较。这里则让每个
+    顶点带有广集 X 中的标签。输入 [T : Functor (EqGpd X) C] 同时说明标签
+    表示哪个对象，以及指定的标签相等如何运输箭头。因此，构造的输入是 T，
+    而不只是 C。
+
+    例如，一条边包含源标签、目标标签，以及对应对象之间的箭头。比较两条边时，
+    先比较标签，再沿指定运输比较箭头。C 中无关的对象同构不能替代标签相等。
+
+    读过 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
+    {%[VertexNerve]%}% 后，可先看后续章节的 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Point.point simplex resp}
+    {%[point_simplex_resp]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Edge.edge simplex resp}
+    {%[edge_simplex_resp]%}%，理解零、一维数据，再用 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.vertex spine iso}
+    {%[vertex_spine_iso]%}% 把箭头链
+    图像推广到各维。%\coqref{Cats.Instance.Set.Simplicial.Vertex.Reconstruction.vertex nerve hom iso}
+    {%[vertex_nerve_hom_iso]%}% 是稍后的重构结果；理解单个 nerve
+    单形时还不需要它。 *)
+
 (** Pointwise equal ordinal positions induce labelled equality after
     restriction. Native equality is used only for concrete finite positions. *)
 

@@ -22,6 +22,49 @@ Local Existing Instance SetCat_HasProduct.
     使用通用对应拆分及配对带标签图式，再将两个原生相等嵌入共同值大小。
     比较对单纯算子及呈现映射均自然。 *)
 
+(** A diagram in a product consists of two diagrams with the same
+    shape, one in each factor. The comparison c below is
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
+    {%[VertexNerveProductN]%}%. Each triangle commutes: projecting the pair after
+    splitting is the same as first projecting the original product diagram.
+    The equations %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB21}
+    {%[vertex_nerve_product_β1]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB22}
+    {%[vertex_nerve_product_β2]%}%
+    state these two facts degree by degree.
+
+    Pairing the two diagrams reverses c, giving %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product iso}
+    {%[vertex_nerve_product_iso]%}%.
+    Thus preservation of products means a natural isomorphism with the
+    pointwise product, with its projections respected. The notation
+    $N_{\mathrm v}(T\times U)$ in the picture abbreviates the nerve of
+    [VertexProductObjectsF T U]. *)
+
+(** 积中的图式由两个同形状的图式组成，每个因子中各一个。下图的比较 c 是
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
+    {%[VertexNerveProductN]%}%。两个三角形都交换：拆分后投影到一个分量，等于先
+    投影原来的积图式。%\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB21}
+    {%[vertex_nerve_product_β1]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB22}
+    {%[vertex_nerve_product_β2]%}% 逐维给出这两条方程。
+
+    将两个图式配对就是 c 的逆，得到 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product iso}
+    {%[vertex_nerve_product_iso]%}%。因此，保持
+    积的意思是与逐点积自然同构，并与投影相容。图中的 $N_{\mathrm v}(T\times U)$ 简写
+    [VertexProductObjectsF T U] 的 nerve。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+& N_{\mathrm v}(T\times U)
+  \arrow[dl,"{N_{\mathrm v}(\pi_1)}"'] \arrow[d,"{c}"]
+  \arrow[dr,"{N_{\mathrm v}(\pi_2)}"] & \\
+N_{\mathrm v}(T) &
+N_{\mathrm v}(T)\times N_{\mathrm v}(U)
+  \arrow[l,"{\pi_1}"] \arrow[r,"{\pi_2}"'] & N_{\mathrm v}(U)
+\end{tikzcd}
+\end{center}%
+*)
+
 Section Product.
 Universes u p.
 Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}

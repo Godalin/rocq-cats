@@ -22,6 +22,34 @@ Local Open Scope ordinal_scope.
     [i⁺] 在较大序数中将其增加一。记作 [δ[i]]、[σ[i]]；有限类型无法
     确定维数时，可用 [δ[n; i]]、[σ[n; i]] 显式指定。 *)
 
+(** A coface selects all positions except one: the map from the edge's
+    ordered vertices to the triangle's vertices that sends zero to zero and
+    one to two skips position one. A codegeneracy instead identifies adjacent
+    positions: from the edge to the point, both positions have image zero.
+
+    The prefix ``co'' concerns this direction between shapes. Once a
+    simplicial set reverses these maps, %\coqref{Cats.Cat.Shape.Simplex.Operators.Coface}
+    {%[Coface]%}% gives an operation that takes
+    a face, and %\coqref{Cats.Cat.Shape.Simplex.Operators.Codegeneracy}
+    {%[Codegeneracy]%}% gives an operation that repeats a vertex. See
+    %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face}
+    {%[simplex_face]%}% and
+    %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex degeneracy}
+    {%[simplex_degeneracy]%}% for that step. *)
+
+(** 余面选取除一个位置以外的全部位置：例如，把边的零、一分别送到三角形的
+    零、二，就跳过了位置一。余退化则合并相邻位置：从边到点的映射把两个位置
+    都送到零。
+
+    名称中的“余”针对形状之间的这个方向。单纯集合反转这些映射后，%\coqref{Cats.Cat.Shape.Simplex.Operators.Coface}
+    {%[Coface]%}%
+    给出取面的操作，%\coqref{Cats.Cat.Shape.Simplex.Operators.Codegeneracy}
+    {%[Codegeneracy]%}% 给出重复顶点的操作。下一步分别见
+    %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face}
+    {%[simplex_face]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex degeneracy}
+    {%[simplex_degeneracy]%}%。 *)
+
 Program Definition Coface {n : nat} (i : Ordinal (S n))
   : (@Hom Δ) n (S n)
   := @OrdinalF n (S n) (@fin_skip (S n) i) _.

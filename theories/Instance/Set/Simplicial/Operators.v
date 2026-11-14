@@ -16,6 +16,66 @@ Local Open Scope ordinal_scope.
     所有单纯恒等式均通过对单纯范畴中的对应方程施加限制得到。记作 [d[X; i]]、
     [s[X; i]]，也可用 [d[X; n; i]]、[s[X; n; i]] 显式指定维数。 *)
 
+(** ** Reading a Triangle and a Repeated Vertex
+
+    Return to %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict}
+    {%[simplex_restrict]%}%: selecting a face of the shape reads a face
+    of the data. For an edge e with ordered vertices zero and one, [d[X; 0]]
+    reads the endpoint at position one, whereas [d[X; 1]] reads position
+    zero. The index says which position to omit, not which one to keep.
+
+    For a triangle t, [d[X; 0]] reads edge 12, [d[X; 1]] edge 02, and
+    [d[X; 2]] edge 01. In the picture, t denotes the entire two-dimensional
+    datum. Its edges may coincide in a particular X; drawing distinct
+    vertices is only a way to keep track of the positions. *)
+
+(** ** 读出三角形的面与重复顶点
+
+    回到 %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict}
+    {%[simplex_restrict]%}%：选取形状的一个面，就读出数据的一个面。
+    对顶点按零、一排序的边 e，[d[X; 0]] 读出位置一的端点，
+    [d[X; 1]] 读出位置零的端点。索引说的是省略哪个位置，而非保留哪个位置。
+
+    对三角形 t，[d[X; 0]] 读出边 12，[d[X; 1]] 读出边 02，
+    [d[X; 2]] 读出边 01。图中的 t 表示整份二维数据。在具体的 X 中，
+    这些边可能重合；将顶点画开只是为了辨认位置。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+& 1 \arrow[dr,"{d_0t}"] & \\
+0 \arrow[ur,"{d_2t}"] \arrow[rr,"{d_1t}"'] && 2
+\end{tikzcd}
+\end{center}%
+*)
+
+(** A degeneracy goes the other way in degree. For a vertex v, [s[X; 0]]
+    produces an edge whose two endpoints are both v. It does not assert
+    that every edge with equal endpoints is degenerate: a nerve can also
+    contain nonidentity loops. The two cancellation laws
+    %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face degeneracy id}
+    {%[simplex_face_degeneracy_id]%}% and %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face degeneracy next}
+    {%[simplex_face_degeneracy_next]%}% express
+    that either endpoint of this degenerate edge recovers v.
+
+    The remaining identities compare two routes to the same face or repeated
+    position. The shifted indices track the renumbering after an omission
+    or repetition. They all follow from the shape equations, through
+    %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict comp}
+    {%[simplex_restrict_comp]%}%, rather than independent axioms about X. *)
+
+(** 退化在维数上沿相反方向行进。对顶点 v，[s[X; 0]] 产生两个端点都为 v
+    的边。这并不表示每条端点相同的边都退化：nerve 中也可能有非恒等的环。
+    两条消去律 %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face degeneracy id}
+    {%[simplex_face_degeneracy_id]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face degeneracy next}
+    {%[simplex_face_degeneracy_next]%}% 表示，取这条退化边的任一端点都会恢复 v。
+
+    其余恒等式比较通向同一个面或重复位置的两条路径；索引的移位记录省略或
+    重复之后的重新编号。它们都由形状方程经 %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict comp}
+    {%[simplex_restrict_comp]%}% 得到，
+    无须另行给 X 添加公理。 *)
+
 (** A face deletes the position selected by a bounded index. *)
 
 (** 面删除由有界索引选定的位置。 *)

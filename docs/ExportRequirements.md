@@ -100,6 +100,36 @@ spaces, preserving source columns instead of adding constructor-specific padding
   declarations; do not synthesize headings from internal section identifiers
   in the exporter or move assumptions for presentation.
 
+## Learning paths and mathematical diagrams
+
+- Use the shared chapter preferences to keep a learning strand together after
+  its prerequisites. Dependency order remains authoritative; a reading preference
+  must not hide modules or change mathematical imports merely for presentation.
+- For the simplicial strand, introduce ordered shapes, simplicial data, faces
+  and degeneracies, standard simplices and low-dimensional nerve examples
+  before filling, reconstruction, structural preservation and homotopy results.
+  Distinguish an element of one degree from an entire simplicial object, and
+  distinguish an illustrative picture from a constructed geometric realization.
+- Add prose bridges at conceptual transitions: recall the relevant construction,
+  state the new question and refer to the declaration or law that answers it.
+  Use native coqdoc references for these links, not hard-coded page numbers.
+  Explicit PDF links may use the native LaTeX `\coqref` command around a coqdoc
+  identifier, targeting coqdoc's native destination for its qualified declaration.
+  Keep the import list as code; explain the mathematical relationship between
+  chapters in the prose.
+- Place commutative diagrams beside their explanation. Identify the objects and
+  arrows, state which equality makes the paths agree, and distinguish a supplied
+  arrow from an extension being sought. Dashed arrows indicate requested maps;
+  dashed geometric strokes may indicate absent faces only when explained.
+- Mathematical diagrams currently target the PDF reading editions. Use native
+  TikZ-cd in coqdoc LaTeX islands beside the bilingual mathematical explanation.
+  Language-neutral diagrams may use `@lang both`; their explanation remains in
+  separate English and Chinese blocks. Avoid TeX percent comments inside islands.
+  Defer webpage diagram assets and renderer work until explicitly requested.
+- Check the resulting reading order, cross-reference destinations and both
+  language editions. Render the changed PDF pages and inspect diagrams for
+  incorrect arrows, clipped labels and separation from their explanation.
+
 ## Focused proof states
 
 When displaying proof states and a tactic creates multiple goals, **display the

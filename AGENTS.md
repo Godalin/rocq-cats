@@ -104,6 +104,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   [the export requirements](docs/ExportRequirements.md). Keep future export
   presentation conventions in that file; use the documentation guide for
   commands, dependencies and implementation status.
+- For mathematical illustrations, follow the
+  [PDF diagram requirements](docs/ExportRequirements.md#learning-paths-and-mathematical-diagrams):
+  use native TikZ-cd in coqdoc; defer webpage diagrams unless explicitly requested.
 - Foundational sets and respectful maps belong under `Set/`, without category
   dependencies. Abstract interfaces and general constructions belong with their
   theories; concrete models belong under `Instance/<base>/`. Keep `Instance.Set.Core`

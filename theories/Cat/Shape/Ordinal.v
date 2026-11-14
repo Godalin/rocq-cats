@@ -18,6 +18,55 @@ From Stdlib Require Import
 
     [n] 对应从零到 n 的 n+1 个对象；当 i ≤ j 时存在唯一箭头 i → j。 *)
 
+(** ** Reading from Shapes to Simplicial Sets
+
+    A point, an edge and a filled triangle suggest dimensions zero, one and
+    two. To describe their faces without measuring lengths or angles, number
+    their vertices in order. The symbol [n] stands for the ordered list from
+    zero to n: its dimension is n, but it has n+1 positions. In particular,
+    [Ord 0] has one object, not none.
+
+    Here an ordered list is made into a category: there is one arrow from
+    i to j when i is at most j. A functor between these categories is a
+    monotone map of positions. It may skip or identify positions, but cannot
+    reverse their order. %\coqref{Cats.Cat.Shape.Ordinal.OrdinalShape}
+    {%[OrdinalShape]%}% packages this elementary model;
+    the later %\coqref{Cats.Cat.Shape.Simplex.Core.SimplexCat}
+    {%[SimplexCat]%}% collects all its sizes.
+
+    On a first reading, follow these questions rather than every helper proof:
+    - Shapes: what are the ordered vertices, faces and repeated positions?
+    - Simplicial sets: what data does a shape select, and how are faces read?
+    - Standard simplices and nerves: what do those data look like in examples?
+    - Extensions: can partial boundary data be filled, or maps joined by a
+      homotopy?
+
+    The chapter order follows this path while placing every formal dependency
+    before its use. Universe lifts and transport proofs support the interfaces;
+    the low-dimensional examples explain what those interfaces represent. *)
+
+(** ** 从形状读到单纯集合
+
+    点、边和填满的三角形分别提示零、一、二维。为了描述它们的面而不测量长度
+    或角度，先给顶点按顺序编号。[n] 表示从零到 n 的有序列表：维数是 n，
+    位置却有 n+1 个。特别地，[Ord 0] 有一个对象，并非没有对象。
+
+    此处把有序列表变成范畴：i 不大于 j 时，从 i 到 j 恰有一条箭头。
+    这些范畴之间的函子就是位置的保序映射，可以跳过位置，也可以合并位置，
+    但不能颠倒顺序。%\coqref{Cats.Cat.Shape.Ordinal.OrdinalShape}
+    {%[OrdinalShape]%}% 包装这个初等模型；后面的
+    %\coqref{Cats.Cat.Shape.Simplex.Core.SimplexCat}
+    {%[SimplexCat]%}% 再把各个大小汇集起来。
+
+    初读时可以先沿下面的问题前进，再回头细读辅助证明：
+    - 形状：有序顶点、面和重复位置分别是什么？
+    - 单纯集合：一个形状对应什么数据，怎样取出它的面？
+    - 标准单形与 nerve：在具体例子里，这些数据长什么样？
+    - 进一步的问题：部分边界能否填充，映射之间能否用同伦连接？
+
+    章节按这条路线安排，同时保证形式依赖先于使用者出现。宇宙提升与运输证明
+    支撑接口，低维例子则解释接口所表示的数学内容。 *)
+
 Definition OrdinalShape (n : nat)
   : Cat
   := @PreorderCat (Ordinal n) (λ i j, NatLe (fin_rank i) (fin_rank j))

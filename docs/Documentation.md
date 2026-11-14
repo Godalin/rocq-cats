@@ -210,6 +210,53 @@ directives remain intact. Ambiguous or unpaired prose goes in `warnings.txt`;
 歧义或未配对文字记录在 `warnings.txt`，`--strict` 将其视为失败。必要时使用
 `@lang en`、`@lang zh` 或 `@lang both`。
 
+The new prose bridges use native LaTeX `\coqref` around coqdoc identifiers for
+explicit PDF links, for example
+`%\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict}{%[simplex_restrict]%}%`.
+Use coqdoc's native destination spelling, where underscores become spaces.
+The qualified declaration supplies the destination; the displayed name
+remains short. This uses source markup, without changing import handling or
+exporter code.
+
+新增承接段落以原生 LaTeX `\coqref` 包裹 coqdoc 标识符，提供显式 PDF 链接，
+例如 `%\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict}{%[simplex_restrict]%}%`。
+目标使用 coqdoc 的原生拼写，其中下划线变为空格。限定声明提供目标，显示名称
+保持简短；这是源码标记，不修改导入处理或
+导出器代码。
+
+The simplicial learning strand now follows the abstract category introduction:
+ordered shapes → simplicial sets → faces and degeneracies → standard simplices
+→ nerves and their vertices, edges and spines → boundaries and horns → filling
+and matching → reconstruction and finite products → interval and nerve homotopy.
+The preferences in [docs/chapters](./chapters) and
+[Simplicial/chapters](../theories/Instance/Set/Simplicial/chapters) keep this strand
+ahead of independent STLC, DTT and ETCS directions. General prerequisites still
+appear before their clients. The ordinal-nerve comparison follows the interval
+chapter because its endpoint compatibility uses that interval interface.
+
+单纯理论学习线现在接在抽象范畴入门之后：有序形状 → 单纯集合 → 面与退化 →
+标准单形 → nerve 及其顶点、边与脊 → 边界与 horn → 填充与匹配 → 重构与有限积
+→ 区间与 nerve 同伦。[docs/chapters](./chapters) 与
+[Simplicial/chapters](../theories/Instance/Set/Simplicial/chapters) 中的偏好使这条
+路线先于独立的 STLC、DTT、ETCS 方向展开；通用前置理论仍先于使用者出现。
+序数 nerve 的比较放在区间章节之后，因为其端点相容性使用了区间接口。
+
+For a first pass, start with the roadmap in
+[Ordinal.v](../theories/Cat/Shape/Ordinal.v), then read the new low-dimensional
+explanations in [Core.v](../theories/Instance/Set/Simplicial/Core.v),
+[Operators.v](../theories/Instance/Set/Simplicial/Operators.v) and
+[Standard.v](../theories/Instance/Set/Simplicial/Standard.v). The prose bridges
+refer to the constructions and laws behind each picture. Implementation helpers
+and universe transports can be studied on a second pass without losing that
+conceptual route. No separate tutorial sources or duplicate proofs are used.
+
+初读可以从 [Ordinal.v](../theories/Cat/Shape/Ordinal.v) 的路线说明开始，再看
+[Core.v](../theories/Instance/Set/Simplicial/Core.v)、
+[Operators.v](../theories/Instance/Set/Simplicial/Operators.v)、
+[Standard.v](../theories/Instance/Set/Simplicial/Standard.v) 新增的低维解释。
+承接段落引用每幅图背后的构造与定律；实现辅助项及宇宙运输可在第二遍细读，
+不影响先理解概念路线。没有另建教程源码，也没有复制证明。
+
 The cover uses the accepted [logo](./branding/rocq-cats.svg); its
 [PNG preview](./branding/rocq-cats-preview.png) is copied without conversion.
 
@@ -224,6 +271,24 @@ are coqdoc delimiters. HTML omits these PDF-only islands.
 
 共享 coqdoc LaTeX 片段可直接包含 TikZ-cd，模板已加载该包。片段内避免 TeX 百分号
 注释，因为百分号是 coqdoc 分隔符。HTML 后端忽略这些 PDF 专用片段。
+
+The simplicial chapters use native TikZ-cd inside coqdoc LaTeX islands for PDF
+diagrams, marked `@lang both` for language-neutral labels. English and Chinese
+explanation blocks identify the paths and their specified equality.
+The diagrams cover shape data, restriction composition and naturality, the
+standard-simplex element correspondence, nerve composition and functoriality,
+boundary versus horn, horn extension, product projections, ordinal comparison,
+homotopy endpoints and the natural-transformation prism. Webpage diagrams are
+deferred. These are illustrations of the existing checked interfaces; they add no
+mathematical definitions or assumptions. See the
+[shared requirements](./ExportRequirements.md#learning-paths-and-mathematical-diagrams).
+
+单纯理论各章在 coqdoc LaTeX 片段中使用原生 TikZ-cd 绘制 PDF 图示，
+以 `@lang both` 标记语言中立的标签。英、中解释块说明路径及所用指定相等。
+图示覆盖形状数据、限制的复合与自然性、标准单形的元素对应、nerve 的复合与
+函子性、边界与 horn 对照、horn 延拓、积投影、序数比较、同伦端点及自然变换
+棱柱。网页图示暂缓。这些图解释已有的受检接口，不增加数学定义或假设，遵循
+[共享要求](./ExportRequirements.md#learning-paths-and-mathematical-diagrams)。
 
 `--gallina` hides proofs while retaining declarations and data. Missing glyphs,
 overfull boxes, invalid references and damaged bookmark strings fail PDF export.

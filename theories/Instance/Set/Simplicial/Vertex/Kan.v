@@ -14,6 +14,39 @@ Local Open Scope nat_scope.
 
     所有保留面都含有缺失面的对顶点；其径向箭头统一下降为共同星形，适用于任意维度。 *)
 
+(** The two-dimensional inner horn from %\coqref{Cats.Instance.Set.Simplicial.Boundary.Horn}
+    {%[Horn]%}% asks for a composite;
+    an outer horn instead asks to solve for a missing factor. For example,
+    given [f : A → B] and [h : A → D], finding [g : B → D] with
+    [h ≈ g ∘ f] is possible in a groupoid by composing h with the inverse
+    of f. %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.inner horn2 universal}
+    {%[inner_horn2_universal]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.outer horn2 groupoid iff}
+    {%[outer_horn2_groupoid_iff]%}% separate
+    these phenomena in dimension two.
+
+    This chapter assumes [IsGroupoid (VertexCat T)] and constructs fillers
+    in every positive dimension, not just for the drawn triangles. Its
+    higher-dimensional proof uses the overlap machinery from %\coqref{Cats.Instance.Set.Simplicial.Matching}
+    {%[Matching]%}%
+    and the preceding star construction. These are advanced dependencies;
+    the conclusion does not say that every category nerve or every
+    simplicial set has Kan fillers. *)
+
+(** %\coqref{Cats.Instance.Set.Simplicial.Boundary.Horn}
+    {%[Horn]%}% 中的二维内 horn 要求补出复合；外 horn 则要求解出缺失的因子。
+    例如，给定 [f : A → B]、[h : A → D]，需要寻找 [g : B → D] 满足
+    [h ≈ g ∘ f]；在群胚中可将 h 与 f 的逆复合得到 g。
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.inner horn2 universal}
+    {%[inner_horn2_universal]%}% 和 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.outer horn2 groupoid iff}
+    {%[outer_horn2_groupoid_iff]%}% 在二维分别刻画
+    这两种现象。
+
+    本章假设 [IsGroupoid (VertexCat T)]，构造所有正维的填充，而不只处理
+    图上的三角形。高维证明使用 %\coqref{Cats.Instance.Set.Simplicial.Matching}
+    {%[Matching]%}% 的交叠机制及前面的星形构造。
+    这些属于进阶依赖；结论没有声称任意范畴的 nerve 或任意单纯集合都有 Kan
+    填充。 *)
+
 Section HigherHorns.
 Universes u p.
 Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)

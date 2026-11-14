@@ -19,6 +19,85 @@ Local Open Scope nat_scope.
     标准单形是提升到所选值宇宙的可表函子；包装表达通常的大小嵌入，不是大小重设。
     标准单形记作 [Δ[n]]，X 的 n-单形 x 所确定的映射记作 [⟦x⟧Δ[X; n]]。 *)
 
+(** ** One Generator, All Its Faces and Degeneracies
+
+    [Δ[n]] is a whole simplicial set, not a single element in degree n.
+    Its k-simplices are monotone maps from the k-dimensional ordered shape
+    to the n-dimensional shape, with the explicit universe lift used below.
+    Restriction is precomposition, so it automatically keeps track of every
+    face and every repetition.
+
+    Take [Δ[1]]. It has two vertices, zero and one. Its edges are the three
+    monotone lists [00], [01] and [11]. The middle one is the generating edge;
+    the other two repeat one vertex and are degenerate. In degree two its
+    lists are [000], [001], [011] and [111], all degenerate. High-dimensional
+    data are present even though the drawing looks like one interval.
+
+    In [Δ[2]], the list [012] is the generating triangle. Its three faces
+    are [12], [02] and [01], in the order computed by %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face}
+    {%[simplex_face]%}%. The
+    six edges also include [00], [11] and [22]. Thus the word ``standard''
+    includes the faces and degeneracies around the generator, not an
+    additional requirement that arbitrary triangles of X behave like it. *)
+
+(** ** 一个生成单形及其全部面与退化
+
+    [Δ[n]] 是整个单纯集合，不是 n 维中的一个元素。它的 k-单形是从 k 维有序
+    形状到 n 维有序形状的保序映射，并带上下文所需的显式宇宙提升。限制就是
+    预合成，因此会自动记录每个面与每次重复。
+
+    看 [Δ[1]]：它有零、一两个顶点，边是三个保序列表 [00]、[01] 和 [11]。
+    中间一条是生成边，另两条各自重复一个顶点，属于退化边。二维的列表是
+    [000]、[001]、[011]、[111]，全都退化。因此，尽管图画像一条区间，
+    它仍有高维数据。
+
+    在 [Δ[2]] 中，[012] 是生成三角形，三个面按 %\coqref{Cats.Instance.Set.Simplicial.Operators.simplex face}
+    {%[simplex_face]%}% 计算的次序
+    分别为 [12]、[02]、[01]。它的六条边还包括 [00]、[11]、[22]。
+    所以，“标准单形”包括生成单形周围的面与退化，并不额外要求 X 中任意
+    三角形都具有相同的整体结构。 *)
+
+(** ** Why Maps from a Standard Simplex Encode Elements
+
+    An element x of [X n] determines where the generating n-simplex goes.
+    Commutation with restriction then determines the image of every simplex
+    of [Δ[n]]: a shape operator [θ] is sent to [X[θ]Δ x]. This is
+    %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex map resp}
+    {%[simplex_map_resp]%}%. Conversely, %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element resp}
+    {%[simplex_element_resp]%}% evaluates a map
+    on %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex generic}
+    {%[simplex_generic]%}%, the identity shape operator.
+
+    The laws %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element xCExB2}
+    {%[simplex_element_β]%}% and %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element xCExB7}
+    {%[simplex_element_η]%}% say that these
+    operations undo each other in specified equality. This is the concrete
+    content of Yoneda here; a first reading can start with these computations
+    before the general proof. Later, %\coqref{Cats.Instance.Set.Simplicial.Boundary.Boundary}
+    {%[Boundary]%}% and %\coqref{Cats.Instance.Set.Simplicial.Boundary.Horn}
+    {%[Horn]%}% keep only selected
+    parts of this standard domain, so extending their maps becomes a precise
+    way to ask for a filler. *)
+
+(** ** 为什么从标准单形出发的映射表示元素
+
+    [X n] 中的元素 x 指定生成 n-单形的去向。与限制交换的要求随后确定
+    [Δ[n]] 中每个单形的像：形状算子 [θ] 被送到 [X[θ]Δ x]。
+    这就是 %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex map resp}
+    {%[simplex_map_resp]%}%。反过来，%\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element resp}
+    {%[simplex_element_resp]%}% 将映射在
+    %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex generic}
+    {%[simplex_generic]%}% 处求值；后者就是恒等形状算子。
+
+    %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element xCExB2}
+    {%[simplex_element_β]%}% 和 %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element xCExB7}
+    {%[simplex_element_η]%}% 表明这两种操作在指定相等下
+    互逆。这是此处 Yoneda 对应的具体内容；初读可以先看这些计算，再读一般
+    证明。后面的 %\coqref{Cats.Instance.Set.Simplicial.Boundary.Boundary}
+    {%[Boundary]%}% 与 %\coqref{Cats.Instance.Set.Simplicial.Boundary.Horn}
+    {%[Horn]%}% 只保留这个标准定义域的部分数据，
+    因而“延拓它们的映射”将成为询问填充是否存在的精确定义。 *)
+
 Definition StandardSimplex@{u p +} (n : nat)
   : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
   := RaisedEmbedding (C := Δ) n.
@@ -133,6 +212,34 @@ Lemma simplex_element_natural@{u p +}
     (α : X ⇒ Y) (β : Δ[n] ⇒ X)
   : simplex_element_resp (α ∘Nv β) ≈S α n (simplex_element_resp β).
 Proof. apply presheaf_yoneda_natural_presheaf. Qed.
+
+(** In the following triangle, [α : Δ[n] ⇒ X] represents an n-simplex
+    x, its image of %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex generic}
+    {%[simplex_generic]%}%. The diagonal is the map represented
+    by [X[θ]Δ x]. The two routes agree as natural transformations by
+    %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element restrict}
+    {%[simplex_element_restrict]%}% and %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element xCExB7}
+    {%[simplex_element_η]%}%. This connects the
+    earlier restriction operation directly to maps between standard domains. *)
+
+(** 在下图中，[α : Δ[n] ⇒ X] 表示一个 n-单形 x，即 %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex generic}
+    {%[simplex_generic]%}%
+    的像。斜箭头是 [X[θ]Δ x] 所表示的映射。由 %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element restrict}
+    {%[simplex_element_restrict]%}%
+    和 %\coqref{Cats.Instance.Set.Simplicial.Standard.simplex element xCExB7}
+    {%[simplex_element_η]%}%，两条路径作为自然变换相等。它把前面的限制操作
+    与标准定义域之间的映射直接联系起来。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=huge,row sep=large]
+\Delta[m] \arrow[r,"{\Delta[\theta]}"]
+  \arrow[dr,"{\langle X[\theta]x\rangle}"'] &
+\Delta[n] \arrow[d,"{\alpha=\langle x\rangle}"] \\
+& X
+\end{tikzcd}
+\end{center}%
+*)
 
 (** Precomposing with a map of standard simplices corresponds to restriction
     of its generic image, including all faces and degeneracies. *)

@@ -15,6 +15,30 @@ Local Open Scope ordinal_scope.
 
     生成筛的匹配对应统一特化到边界与 horn；面索引及交叠分解均保留为显式数据。 *)
 
+(** To unpack the map-based description of %\coqref{Cats.Instance.Set.Simplicial.Horn.HornS}
+    {%[HornS]%}%, list its retained
+    faces. They cannot be arbitrary: two faces restrict to equal data on
+    every common subshape. For the boundary of a triangle this says, for
+    example, that the end of edge 01 and the start of edge 12 are the same
+    vertex. The shifted face equation %\coqref{Cats.Instance.Set.Simplicial.Matching.boundary face comp}
+    {%[boundary_face_comp]%}% expresses the
+    higher-dimensional version. %\coqref{Cats.Instance.Set.Simplicial.Matching.boundary matching iso}
+    {%[boundary_matching_iso]%}% and
+    %\coqref{Cats.Instance.Set.Simplicial.Matching.horn matching iso}
+    {%[horn_matching_iso]%}% prove that compatible lists and maps from the actual
+    subobject describe the same data. They do not themselves provide fillers. *)
+
+(** 要展开 %\coqref{Cats.Instance.Set.Simplicial.Horn.HornS}
+    {%[HornS]%}% 的映射描述，可以列出它的保留面，但这些面不能任意选取：
+    两个面限制到每个共同子形状时必须给出相等的数据。对三角形边界来说，
+    例如边 01 的终点必须与边 12 的起点相同。移位面方程
+    %\coqref{Cats.Instance.Set.Simplicial.Matching.boundary face comp}
+    {%[boundary_face_comp]%}% 表达其高维版本。%\coqref{Cats.Instance.Set.Simplicial.Matching.boundary matching iso}
+    {%[boundary_matching_iso]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.Matching.horn matching iso}
+    {%[horn_matching_iso]%}% 证明，相容面列表和从实际子对象出发的映射表示同样的
+    数据；这些对应本身还不提供填充。 *)
+
 (** A boundary matching datum gives all faces and their overlap equations. *)
 
 (** 边界匹配数据给出全部面及其交叠方程。 *)

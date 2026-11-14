@@ -18,6 +18,38 @@ Local Open Scope nat_scope.
     脊记录顶点及相邻箭头。顶点 nerve 与这些箭头链广集逐维同构，相等中使用同一
     指定顶点运输。两侧显式提升至共同值大小，不等同各自的原生宇宙层级。 *)
 
+(** ** Why the Consecutive Edges Suffice Here
+
+    In the preceding nerve triangle, the long edge was forced to be the
+    composite. The same idea works in every dimension: a chain of n arrows
+    determines every longer edge by composition. %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine resp}
+    {%[spine_resp]%}% reads the
+    consecutive arrows, and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine inv resp}
+    {%[spine_inv_resp]%}% restores the whole ordinal
+    diagram. %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine xCExB2}
+    {%[spine_β]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine xCExB7}
+    {%[spine_η]%}% state the two inverse laws.
+
+    This is a theorem about this nerve, not about arbitrary simplicial sets.
+    In general, specifying the consecutive edges need not determine a
+    simplex or even guarantee one exists. The later horn chapters study
+    precisely such extension questions. *)
+
+(** ** 为什么这里的相邻边已经足够
+
+    前面的 nerve 三角形中，长边必须等于复合。各维都采用同样的思想：n 条
+    箭头组成的链通过复合确定每条更长的边。%\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine resp}
+    {%[spine_resp]%}% 读出相邻箭头，
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine inv resp}
+    {%[spine_inv_resp]%}% 恢复整个序数图式，%\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine xCExB2}
+    {%[spine_β]%}% 和 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.spine xCExB7}
+    {%[spine_η]%}% 给出两条
+    互逆律。
+
+    这是关于这个 nerve 的定理，不是任意单纯集合的性质。一般而言，指定相邻边
+    未必确定一个单形，甚至不能保证存在单形。后面的 horn 章节研究的正是这种
+    延拓问题。 *)
+
 (** Extract the spine of a simplex, preserving its specified equality. *)
 
 (** 提取单形的脊，并保持其指定相等。 *)

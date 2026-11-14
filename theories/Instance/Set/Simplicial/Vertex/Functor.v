@@ -18,6 +18,38 @@ From Cats Require Import
     后复合逐维作用于带标签图式。保持运输保证此作用保相等；结合律给出它对每个
     单纯算子的自然性。 *)
 
+(** Start with a labelled chain P of length n. A functor F sends
+    every vertex and arrow of P to its image. A shape operator θ selects,
+    repeats or composes parts of that chain by precomposition. The square
+    below says that changing the chain's shape and applying F can be done
+    in either order. It is %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
+    {%[simplex_restrict_natural]%}% for [VertexNerveN F].
+
+    For a triangle, selecting its middle face gives the familiar equation
+    that F preserves composition. For a repeated vertex, it gives identity
+    preservation. Transport preservation additionally ensures that equal
+    labelled chains have equal image chains. *)
+
+(** 从长度为 n 的带标签箭头链 P 出发，函子 F 把每个顶点和每条箭头送到其像。
+    形状算子 θ 则通过预合成选取、重复或复合链的一部分。下图说明，改变链的
+    形状与应用 F 可以按任一次序进行。这就是 [VertexNerveN F] 所满足的
+    %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
+    {%[simplex_restrict_natural]%}%。
+
+    对三角形选取中间面，得到的就是 F 保持复合的方程；对重复顶点，得到的是
+    保持恒等。保持运输还保证相等的带标签链具有相等的像链。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=huge,row sep=large]
+N_{\mathrm v}(T)_n \arrow[r,"{N_{\mathrm v}(F)_n}"]
+  \arrow[d,"{[\theta]}"'] &
+N_{\mathrm v}(U)_n \arrow[d,"{[\theta]}"] \\
+N_{\mathrm v}(T)_m \arrow[r,"{N_{\mathrm v}(F)_m}"'] & N_{\mathrm v}(U)_m
+\end{tikzcd}
+\end{center}%
+*)
+
 (** A transport-preserving functor induces a simplicial map. Both nerves
     use common value sizes; their native object and hom sizes stay separate. *)
 

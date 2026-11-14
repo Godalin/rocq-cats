@@ -1,3 +1,13 @@
+theories/Cat/Core.v
+theories/Cat/Terminal.v
+theories/Cat/Morphism.v
+theories/Cat/Isomorphism.v
+theories/Cat/Functor/Core.v
+theories/Cat/Natural.v
+theories/Cat/Shape/Ordinal.v
+theories/Cat/Shape/Simplex
+theories/Instance/Set/Simplicial
+theories/Instance/Bool/Nerve.v
 theories/Cat
 theories/STLC
 theories/DTT

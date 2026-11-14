@@ -24,6 +24,24 @@ Local Open Scope nat_scope.
     零维选取对象映射，一维提供箭头；通过自然性和指定对象运输对齐其端点。
     三角形恢复复合。所有见证保持透明，无需群胚或对象原生相等假设。 *)
 
+(** This reverses the construction %\coqref{Cats.Instance.Set.Simplicial.Vertex.Functor.VertexNerveN}
+    {%[VertexNerveN]%}% on maps: instead
+    of starting with a functor, start with a simplicial map [α] between two
+    vertex nerves. Its degree-zero part chooses images of objects; its
+    degree-one part chooses images of arrows. The naturality square
+    %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
+    {%[simplex_restrict_natural]%}% aligns their endpoints. Degenerate edges
+    force identity preservation, and the nerve's composition triangle forces
+    composition preservation. The remaining proof work keeps these
+    statements coherent with the specified label transports. *)
+
+(** 这里反过来恢复 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Functor.VertexNerveN}
+    {%[VertexNerveN]%}% 的输入：从两个顶点 nerve 之间的单纯映射
+    [α] 出发，零维部分选择对象的像，一维部分选择箭头的像。自然性方块
+    %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
+    {%[simplex_restrict_natural]%}% 对齐端点；退化边保证保持恒等，nerve 的复合
+    三角形保证保持复合。其余证明负责使这些结论与指定的标签运输保持相干。 *)
+
 Section Reconstruction.
 Universes u p.
 Context {X Y : SetC} {C D : Cat}

@@ -23,6 +23,49 @@ Local Open Scope nat_scope.
     有限序数的指定对象相等是位置相等，故其顶点 nerve 与标准单形相容；
     后者的图式相等为自然同构。显式比较对每个单纯算子自然，保留独立值大小。 *)
 
+(** This returns to the first example %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}%, after
+    developing the labelled nerve. A k-simplex on either side is an ordered
+    list of k+1 positions in [Ord n]. The comparison changes the packaging,
+    not the list. %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.ordinal vertex nerve iso}
+    {%[ordinal_vertex_nerve_iso]%}% gives the two directions and
+    their inverse laws. %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.ordinal vertex nerve natural}
+    {%[ordinal_vertex_nerve_natural]%}% also compares the
+    two ways to change the target ordinal by a shape operator θ, as in the
+    square below. Thus the comparison preserves the earlier faces,
+    degeneracies and interval endpoints, rather than only matching vertices. *)
+
+(** 在发展带标签 nerve 之后，这里回到最初的例子 %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}%。两侧的
+    k-单形都是 [Ord n] 中长度为 k+1 的有序位置列表；比较改变包装，不改变
+    列表。%\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.ordinal vertex nerve iso}
+    {%[ordinal_vertex_nerve_iso]%}% 给出双向映射及互逆律。
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.ordinal vertex nerve natural}
+    {%[ordinal_vertex_nerve_natural]%}% 还比较沿形状算子 θ 改变目标序数的两种
+    方式，见下图。因此，比较保持前面的面、退化与区间端点，并非仅在顶点上
+    对应。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+N_{\mathrm v}([m]) \arrow[r,"{c_m}"] \arrow[d,"{N_{\mathrm v}(\theta)}"'] &
+\Delta[m] \arrow[d,"{\Delta[\theta]}"] \\
+N_{\mathrm v}([n]) \arrow[r,"{c_n}"'] & \Delta[n]
+\end{tikzcd}
+\end{center}%
+*)
+
+(** Here c denotes %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVertexNerveN}
+    {%[OrdinalVertexNerveN]%}%, and the left vertical arrow
+    is the nerve map induced by the transport-preserving ordinal map. Every
+    corner is a whole simplicial object, so commutativity includes every
+    degree, in natural-transformation equality. *)
+
+(** 这里 c 表示 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVertexNerveN}
+    {%[OrdinalVertexNerveN]%}%，左侧竖箭头是保运输序数映射诱导的
+    nerve 映射。每个角都是整个单纯对象，因此交换性包含各个维度，使用自然
+    变换相等。 *)
+
 (** Forget the induced-category wrapper degreewise. *)
 
 (** 逐维忘却诱导范畴包装。 *)

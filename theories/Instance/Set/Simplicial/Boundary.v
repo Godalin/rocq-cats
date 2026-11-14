@@ -19,6 +19,74 @@ Local Open Scope nat_scope.
     这些是标准单形的实际单纯子对象。单形保留选定的面分解，但相等只比较底层
     单纯算子。零维边界为空。 *)
 
+(** ** Full Triangle, Boundary, and One Missing Face
+
+    Recall the generator [012] of %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}% in dimension two.
+    Its boundary contains the three edges 01, 12 and 02, their vertices,
+    and all their degeneracies; it does not contain that generating triangle.
+    The inner horn with missing face one retains edges 01 and 12, but
+    omits edge 02 and the generating triangle. Dashed strokes below mark
+    absent data, not additional simplices.
+
+    These are simplicial subobjects, so taking a face or degeneracy of any
+    retained datum stays inside them. In particular, the absence of a
+    nondegenerate triangle does not mean their degree-two setoids are empty:
+    degenerate triangles on retained edges still occur. %\coqref{Cats.Instance.Set.Simplicial.Boundary.BoundarySieve}
+    {%[BoundarySieve]%}% and
+    %\coqref{Cats.Instance.Set.Simplicial.Boundary.HornSieve}
+    {%[HornSieve]%}% express this closure through factorization of shape maps. *)
+
+(** ** 完整三角形、边界与缺一个面的 horn
+
+    回顾二维 %\coqref{Cats.Instance.Set.Simplicial.Standard.StandardSimplex}
+    {%[StandardSimplex]%}% 的生成单形 [012]。它的边界包含 01、12、02
+    三条边、这些边的顶点及全部退化，却不包含这个生成三角形。缺失面一的内
+    horn 保留 01、12 两条边，省去边 02 及生成三角形。下图的虚线标记缺失
+    数据，不表示额外的单形。
+
+    它们是单纯子对象，因此保留数据的面与退化也都留在其中。特别地，没有非退化
+    三角形并不表示二维广集为空：保留边的退化三角形仍然存在。%\coqref{Cats.Instance.Set.Simplicial.Boundary.BoundarySieve}
+    {%[BoundarySieve]%}%
+    与 %\coqref{Cats.Instance.Set.Simplicial.Boundary.HornSieve}
+    {%[HornSieve]%}% 通过形状映射的分解表达这种封闭性。 *)
+
+(** @lang both
+%\begin{center}
+\begin{tabular}{ccc}
+\begin{tikzcd}[column sep=small,row sep=small]
+& 1 \arrow[ddr] & \\
+& t & \\
+0 \arrow[uur] \arrow[rr] && 2
+\end{tikzcd}
+&
+\begin{tikzcd}[column sep=small,row sep=small]
+& 1 \arrow[ddr] & \\
+& & \\
+0 \arrow[uur] \arrow[rr] && 2
+\end{tikzcd}
+&
+\begin{tikzcd}[column sep=small,row sep=small]
+& 1 \arrow[ddr] & \\
+& & \\
+0 \arrow[uur] \arrow[rr,dashed,gray] && 2
+\end{tikzcd}
+\\
+$\Delta[2]$ & $\partial\Delta[2]$ & $\Lambda[2;1]$
+\end{tabular}
+\end{center}%
+*)
+
+(** The next chapter turns these shapes into questions about an arbitrary
+    X. A map from the boundary assigns three compatible edges in X. A map
+    from the inner horn assigns two composable edges. Extending either map
+    to [Δ[2]] asks for a triangle with those specified restrictions; the
+    horn extension must also supply the missing long edge. *)
+
+(** 下一章把这些形状变成关于任意 X 的问题。从边界出发的映射指定 X 中三条
+    相容的边；从内 horn 出发的映射指定两条端点相接的边。把任一映射延拓到
+    [Δ[2]]，就是寻找具有这些指定限制的三角形；horn 的延拓还须提供缺失的长边。 *)
+
 (** All codimension-one faces generate the boundary sieve. *)
 
 (** 全部余维一的面生成边界筛。 *)

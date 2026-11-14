@@ -15,6 +15,28 @@ Local Open Scope ordinal_scope.
     k 余骨架单纯广集在严格高于 k 的维度中，每个边界都具有唯一填充。唯一性使用
     指定相等；保留的填充可计算，不需要选择公理。 *)
 
+(** Compare %\coqref{Cats.Instance.Set.Simplicial.Coskeletal.IsCoskeletal}
+    {%[IsCoskeletal]%}% with %\coqref{Cats.Instance.Set.Simplicial.Horn.HasKanFillers}
+    {%[HasKanFillers]%}%. Coskeletality asks
+    for a unique extension of a complete boundary above a cutoff dimension.
+    Kan filling asks for an extension of a horn in every positive dimension,
+    without requiring uniqueness. The domains and uniqueness requirements
+    differ. For instance, specifying all three edges of a triangle is more
+    data than specifying its two-edge inner horn. Keep %\coqref{Cats.Instance.Set.Simplicial.Boundary.Boundary}
+    {%[Boundary]%}% and %\coqref{Cats.Instance.Set.Simplicial.Boundary.Horn}
+    {%[Horn]%}%
+    in view when reading these two interfaces. *)
+
+(** 可以把 %\coqref{Cats.Instance.Set.Simplicial.Coskeletal.IsCoskeletal}
+    {%[IsCoskeletal]%}% 与 %\coqref{Cats.Instance.Set.Simplicial.Horn.HasKanFillers}
+    {%[HasKanFillers]%}% 对照阅读。余骨架性要求在超过
+    某个维数后，每个完整边界都有唯一延拓；Kan 填充要求每个正维 horn 都有
+    延拓，不要求唯一。两者的定义域与唯一性要求都不同。例如，指定三角形的
+    全部三条边，比指定两条边的内 horn 给出了更多数据。阅读这两个接口时，
+    可回看 %\coqref{Cats.Instance.Set.Simplicial.Boundary.Boundary}
+    {%[Boundary]%}% 与 %\coqref{Cats.Instance.Set.Simplicial.Boundary.Horn}
+    {%[Horn]%}% 的区别。 *)
+
 (** A boundary filler restricts to the entire given boundary map. *)
 
 (** 边界填充的整个限制映射等于给定边界。 *)

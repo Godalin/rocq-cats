@@ -1,12 +1,8 @@
 Core.v
 Point.v
-Functor.v
-Product.v
-Terminal.v
-Ordinal.v
 Edge.v
-Reconstruction.v
 Spine.v
+Functor.v
 Monoid.v
 Horn2.v
 Filling.v
@@ -15,6 +11,10 @@ Star.v
 Sieve.v
 Coskeletal.v
 Kan.v
+Reconstruction.v
+Product.v
+Terminal.v
 Category.v
 Cartesian.v
+Ordinal.v
 Homotopy.v
