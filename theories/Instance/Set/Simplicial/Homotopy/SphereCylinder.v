@@ -121,6 +121,25 @@ Proof.
   - exact (TwoSphereCylinderChangeEndpoints H (symmetry E) (symmetry F)).
 Defined.
 
+(** Every restriction of a sphere along the actual boundary is constant.
+    The retained coface factorization reduces this to a boundary edge. *)
+
+(** 球面沿实际边界的每个限制都是常值；保留余面分解将其归结为一条边界边。 *)
+
+Lemma two_sphere_boundary_constant (x : TwoSphereS X b) (n : nat)
+    (a : (∂Δ[2] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+  : X[(lower a).1]Δ x.1 ≈S simplex_constant X b n.
+Proof.
+  destruct a as [[θ [i [f Hf]]]].
+  transitivity (X[δ[1; i] ∘ f]Δ x.1).
+  - apply simplex_restrict_proper. exact Hf.
+  - transitivity (X[f]Δ (d[X; 1; i] x.1)).
+    + apply simplex_restrict_comp.
+    + transitivity (X[f]Δ (simplex_constant X b 1)).
+      * apply func_proper. exact (x.2 i).
+      * apply simplex_constant_restrict.
+Defined.
+
 (** Native sphere equality supplies a time-independent relative cylinder.
     The factor retained by each boundary simplex reduces its restriction
     to one of the three constant edges. *)
@@ -135,16 +154,7 @@ Proof.
     (SimplicialConstantHomotopy ⟦x.1⟧Δ[X; 2])
     (reflexivity ⟦x.1⟧Δ[X; 2])
     (@func_proper _ _ (@simplex_map_resp X 2) _ _ E)).
-  intros n a t.
-  destruct a as [[θ [i [f Hf]]]].
-  change (X[θ]Δ x.1 ≈S simplex_constant X b n).
-  transitivity (X[δ[1; i] ∘ f]Δ x.1).
-  - apply simplex_restrict_proper. exact Hf.
-  - transitivity (X[f]Δ (d[X; 1; i] x.1)).
-    + apply simplex_restrict_comp.
-    + transitivity (X[f]Δ (simplex_constant X b 1)).
-      * apply func_proper. exact (x.2 i).
-      * apply simplex_constant_restrict.
+  intros n a t. exact (two_sphere_boundary_constant x n a).
 Defined.
 
 (** Evaluate at a spatial shape and an independently supplied time shape. *)

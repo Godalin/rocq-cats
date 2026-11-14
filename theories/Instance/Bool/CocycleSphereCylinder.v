@@ -11,14 +11,20 @@ Local Existing Instance BoolS_Monoid.
     constant along its entire boundary, cannot contract the true sphere.
     This is a relative, based statement about actual simplicial maps.
     No conclusion about all unpointed homotopy equivalences or all 1-types
-    is drawn from it. *)
+    is drawn from it. The next chapter
+    %\coqref{Cats.Instance.Bool.CocycleHomotopy.bool cocycle no nerve homotopy retract}
+    {%[bool_cocycle_no_nerve_homotopy_retract]%}% uses invariance under
+    homotopies of maps to exclude a retraction through an ordinary nerve. *)
 
 (** * 非零球面在相对柱下仍然保留
 
     前章的二阶群使用生成四面体关系。现在的比较证明：即使允许整个三角柱
     的同伦，只要在其整个边界上保持常值，也不能将真球面收缩。这是关于
     实际单纯映射的相对基点陈述，不据此断言所有非基点同伦等价或所有
-    1-types 的情形。 *)
+    1-types 的情形。下一章
+    %\coqref{Cats.Instance.Bool.CocycleHomotopy.bool cocycle no nerve homotopy retract}
+    {%[bool_cocycle_no_nerve_homotopy_retract]%}% 用映射同伦下的不变性
+    排除经普通 nerve 的同伦收缩。 *)
 
 (** A relative cylinder contraction would contradict the previously proved
     nonzero generated class. *)

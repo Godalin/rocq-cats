@@ -29,6 +29,7 @@ Homotopy/Core.v
 Homotopy/Sphere.v
 Homotopy/SphereComposition.v
 Homotopy/SphereCylinder.v
+Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
 Vertex/HomotopyInv.v
@@ -42,3 +43,5 @@ Cocycle/Kan.v
 Cocycle/Sphere.v
 Cocycle/SphereGroup.v
 Cocycle/SphereCylinder.v
+Cocycle/Homotopy.v
+Cocycle/Nerve.v
