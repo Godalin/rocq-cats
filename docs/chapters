@@ -8,6 +8,7 @@ theories/Cat/Shape/Ordinal.v
 theories/Cat/Shape/Simplex
 theories/Instance/Set/Simplicial
 theories/Instance/Bool/Nerve.v
+theories/Algebra/Group/Cocycle.v
 theories/Cat/Diagram/Cocycle.v
 theories/Instance/Bool/Cocycle.v
 theories/Cat
