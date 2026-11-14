@@ -2,6 +2,7 @@ From Cats Require Export
   Cat.Computational.Arrow.Apply
   Cat.Computational.Arrow.Global.
 From Cats Require Import
+  Cat.Isomorphism
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product.
@@ -92,6 +93,42 @@ Program Definition arrow_dynamic_name_resp (X Y : SetC@{u p})
   :=
   {|func := arrow_dynamic_name
   |}.
+
+(** Naming a computation with ordinary context pairs the fixed context
+    with its named result. Invert the pure unit-context square; only an
+    ordinary Arrow is needed, with no dynamic application or Monad. *)
+
+(** 命名带通常上下文的计算，等于将固定上下文配到命名结果旁。对纯单位上下文
+    方块取逆即可证明，仅要求通常 Arrow，不使用动态应用或 Monad。 *)
+
+Lemma arrow_dynamic_name_context {X Y : SetC@{u p}} (Z : SetC@{u p})
+    (f : Hom (A X) (A Y)) (z : Z) (x : X)
+  : arrow_dynamic_name (context[A; Z; f]) (z,x) ≈
+    fmap (ArrowGlobalF A) ⟨const_resp Y z, id⟩ (arrow_dynamic_name f x).
+Proof.
+  change (second[A; f; Z] ∘ arr[A; const_resp UnitS (z,x)] ≈
+    arr[A; ⟨const_resp Y z, id⟩] ∘
+      (f ∘ arr[A; const_resp UnitS x])).
+  pose proof (iso_square_inv
+    (arr[A; (π2 : UnitS ×S X →r X)];
+      functor_is_iso A _ (@tensor_unit_l_iso SetCat
+        (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) X))
+    (arr[A; (π2 : UnitS ×S Y →r Y)];
+      functor_is_iso A _ (@tensor_unit_l_iso SetCat
+        (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) Y))
+    (second[A; f; UnitS]) f (arrow_context_unit A f)) as Hu.
+  change (arr[A; (⟨!,id⟩ : Y →r UnitS ×S Y)] ∘ f ≈
+    second[A; f; UnitS] ∘ arr[A; (⟨!,id⟩ : X →r UnitS ×S X)]) in Hu.
+  transitivity (arr[A; const_resp UnitS z × (id_resp (X := Y))] ∘
+    (second[A; f; UnitS] ∘ arr[A; (⟨!,id⟩ : X →r UnitS ×S X)]) ∘
+      arr[A; const_resp UnitS x]).
+  - symmetry. rewrite <- !comp_assoc, arrow_second_natural, !comp_assoc,
+      <- !functor_comp. apply comp_proper; [reflexivity|].
+    apply functor_fmap_proper. intros []. split; reflexivity.
+  - rewrite <- Hu, <- !comp_assoc, <- functor_comp, !comp_assoc.
+    apply comp_proper; [|reflexivity]. apply functor_fmap_proper.
+    intros y. split; reflexivity.
+Qed.
 
 End Naming.
 

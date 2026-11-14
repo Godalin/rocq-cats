@@ -2576,3 +2576,108 @@ batch PDF export remains with integration.
 四种独立范畴大小次序及两种严格广集载体／相等次序。仅导入探针确认强度及
 强 Monad 选择仍需显式给出。没有修改永久测试、共享测试配置、`typeprop`
 或共享环境。完整阅读版验证留给有限阶段完成后，批次 PDF 仍由集成方导出。
+
+
+## Native dynamic Arrow reconstruction
+
+## 原生动态 Arrow 重建
+
+This finite phase continues on `monoidal-cat-view` from the independently
+pushed comparison/strength foundation `84fb5c9`, retaining integration
+baseline `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`.
+[DynamicRecovery](../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+reuses `SetStrongM` to give the exact existing `ArrowMonad` canonical
+strength. Its reconstructed Arrow reuses `KleisliArrow`. Evaluation is
+`AdjunctionKleisliF` specialized to `ArrowApplyAdjunction`; naming inherits
+its functor laws from `FullyFaithfulInverseF`. Two explicit natural
+isomorphisms exhibit the equivalence between the reconstructed Kleisli
+category and the original computation category indexed by values.
+Their object maps are identity on those indices. This does not select
+representatives for all ambient computation objects or assume pure-arrow
+faithfulness. The original native Hom/equality levels and computation-object
+size remain independent throughout this comparison.
+
+此有限阶段在 `monoidal-cat-view` 上从已独立推送的比较／强度基础 `84fb5c9`
+继续，集成基线仍为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
+[DynamicRecovery](../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+复用 `SetStrongM`，为恰好已有 `ArrowMonad` 赋予规范强度，重建的 Arrow 复用
+`KleisliArrow`。求值是 `AdjunctionKleisliF` 在 `ArrowApplyAdjunction` 的
+专门化，命名从 `FullyFaithfulInverseF` 继承函子律。两个显式自然同构给出
+重建 Kleisli 范畴与原值索引计算范畴之间的等价；对象映射在这些索引上恒等。
+不为全部环境计算对象选择代表，也不假设纯箭头忠实。整个比较保留独立原生
+Hom／相等层级及计算对象大小。
+
+Both directions preserve the Arrow interface's pure lifting, sequential
+composition and ordinary left-context action. The context argument first
+extracts [arrow_dynamic_name_context](../theories/Cat/Computational/Arrow/Dynamic.v)
+under only an ordinary Arrow. It reuses the existing inverse-isomorphism
+square theorem and context naturality, rather than requiring dynamic
+application or a Monad for the pointwise formula. At the stated common
+native carrier/equality bound, `ArrowKleisliApply` reuses the existing
+Kleisli application on the same strong Monad. The application comparison
+maps original computation values through naming, and its inverse maps
+reconstructed values through evaluation. Both equations use the original
+Hom equality. No exponential choice, effect interchange, equality of
+functions/proof records or new axioms are introduced. This completes this
+native dynamic Arrow reconstruction slice. Compatibility of the different
+derived Applicative conversions remains subsequent semantic work; typed
+syntax, Day convolution and profunctor presentations are not part of it.
+
+双向保持 Arrow 接口的纯提升、顺序复合及通常左上下文作用。上下文证明先在
+仅有通常 Arrow 的假设下提取
+[arrow_dynamic_name_context](../theories/Cat/Computational/Arrow/Dynamic.v)，
+复用已有逆同构方块定理和上下文自然性，不为逐点公式要求动态应用或 Monad。
+在所声明的共同原生载体／相等界上，`ArrowKleisliApply` 复用同一个强 Monad
+上的已有 Kleisli 应用。应用比较通过命名映射原计算值，逆比较通过求值映射
+重建计算值，两条方程使用原 Hom 相等。未引入指数选择、效应交换、函数／
+证明记录相等或新公理。此原生动态 Arrow 重建切片至此完成。不同派生
+Applicative 转换的相容性仍属后续语义工作，带类型语法、Day 卷积及 profunctor
+呈现不在此范围。
+
+Full-library `@all @runtest @install` passed with the unchanged `rocq-cats`
+switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1). All 225 temporary
+assumption reports are closed: 25 public constructions/laws, 122 strict
+size probes and 78 concrete-model helpers/results. This includes the
+27 independently reported foundation checks. The probes cover independent
+category levels in four orders, both native carrier/equality orders,
+computation-object size above or below them, both native application
+object orders, and both strict state carrier/equality orders below a common
+ambient bound. The weaker context law is also checked with ordinary
+Kleisli Arrows. Import-only searches confirm that strength, strong Monad,
+products and Monad choices remain explicit.
+
+未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
+中，全库 `@all @runtest @install` 通过。225 项临时公理报告均无额外全局
+假设：25 个公共构造／定律、122 项严格大小探针及 78 项具体模型辅助／结果，
+包含此前独立报告的 27 项基础检查。探针覆盖四种独立范畴层级次序、两种原生
+载体／相等次序、计算对象大小位于两者之上或之下、两种原生应用对象大小次序，
+及共同环境界下两种严格状态载体／相等次序。较弱上下文律也以通常 Kleisli
+Arrow 检查。仅导入后的搜索确认强度、强 Monad、积及 Monad 选择仍需显式给出。
+
+All 28 transparent Boolean-state VM reductions pass: both functors and
+round trips, pure lifting, sequencing in two distinguishable orders,
+context in both comparison directions, dynamically supplied application,
+both natural-isomorphism components and inverse components, and canonical
+strength on the original and recovered Monads. Abstract value-level
+helpers fix the operation boundaries before concrete specialization;
+all final computations remain transparent. Checks are temporary; no
+permanent test or shared test configuration is changed.
+
+28 项透明布尔状态 VM 求值全部通过：双向函子及往返、纯提升、两种可区分
+次序的顺序组合、双向上下文比较、动态提供的应用、两个自然同构的分量及逆
+分量，以及原 Monad 与回收 Monad 的规范强度。抽象值层辅助在具体专门化前
+固定运算边界，最终计算全部透明。检查均为临时文件，不修改永久测试或共享
+测试配置。
+
+Strict bilingual HTML covers 357 modules per language and all 719 checked
+pages. The four reviewed modules' 86 documentation blocks and 72 public
+declaration anchors were checked individually in the corresponding
+reading editions. The complete inventory covers exactly 98 interfaces
+(69 classes, 29 records), including all 29 `Has*` classes, without missing
+or duplicate declarations. Only this task branch changed; `typeprop`,
+shared toolchain settings and batch PDF exports remain with integration.
+
+严格双语 HTML 覆盖每种语言 357 个模块，全部 719 页检查通过。四个复核模块
+的 86 段说明及 72 个公共声明锚点均在对应阅读版逐项核对。完整清单恰好覆盖
+98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类，无遗漏或重复。
+仅修改本任务分支，`typeprop`、共享工具链设置及批次 PDF 导出仍由集成方管理。

@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 356 modules,
+covers 357 modules,
 69 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 356 个模块、69 个类及 29 个记录。清单覆盖
+更新，现覆盖 357 个模块、69 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -664,7 +664,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 179 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 180 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 102 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -1845,3 +1845,53 @@ interfaces; dynamic Arrow reconstruction will use these foundations.
 保留所给 Monad 为唯一父结构，相容性来自单位及乘法自然性，载体／相等层级
 保持独立。这些是构造，不是新类或全局启用的模型实例。清单现覆盖 356 个
 模块及原有 98 个接口，动态 Arrow 重建将复用这些基础。
+
+
+## Reconstructing native dynamic Arrows
+
+## 重建原生动态 Arrow
+
+[DynamicRecovery](../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+explicitly gives the recovered Monad canonical strength and reuses the
+existing Kleisli Arrow. Dynamic evaluation specializes the general
+adjunction comparison; naming inherits its laws from the full-faithful
+inverse. The object maps are identity on value indices, and two transparent
+natural isomorphisms compare both composites with identity. This gives
+the equivalence with the indexed computation category, without choosing
+representatives for unrelated objects of the ambient category.
+
+[DynamicRecovery](../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+显式为回收 Monad 赋予规范强度，并复用已有 Kleisli Arrow。动态求值专门化
+一般伴随比较，命名从全忠实逆继承定律。对象映射在值索引上恒等，两个透明
+自然同构将两侧复合与恒等比较。这给出与索引计算范畴的等价，不为环境范畴的
+其他对象选择代表。
+
+Both directions preserve pure arrows, sequential composition and ordinary
+left context. The context proof first extracts a weaker
+[ordinary-Arrow naming law](../theories/Cat/Computational/Arrow/Dynamic.v)
+using the inverse pure unit-context square. These comparisons retain
+independent computation-object, native Hom carrier and equality levels.
+At a common native carrier/equality bound, `ArrowKleisliApply` reuses the
+same recovered strong Monad and preserves dynamic application in both
+directions after reindexing the supplied computation value through naming
+or evaluation. Neither operation preservation nor inverse comparisons
+require equality of structure records or their law fields.
+
+双向保持纯箭头、顺序复合和通常左上下文。上下文证明先通过纯单位上下文
+逆方块提取较弱的[普通 Arrow 命名定律](../theories/Cat/Computational/Arrow/Dynamic.v)。
+这些比较保持独立计算对象、原生 Hom 载体及相等层级。在共同原生载体／相等
+界上，`ArrowKleisliApply` 复用同一个回收强 Monad，通过命名或求值重索引所给
+计算值后，双向保持动态应用。运算保持性及互逆比较均不要求结构记录或定律
+字段相等。
+
+The current inventory covers 357 modules and the same 98 interfaces
+(69 classes, 29 records), including all 29 `Has*` classes. Cross-conversion
+compatibility involving the derived Applicative remains a separate semantic
+follow-up; syntax remains deferred. The
+[audit](./ComputationAudit.md#native-dynamic-arrow-reconstruction)
+records hypotheses, temporary checks and validation.
+
+当前清单覆盖 357 个模块及原有 98 个接口（69 个类、29 个记录），包括全部
+29 个 `Has*` 类。涉及派生 Applicative 的跨转换相容性仍为单独的语义后续工作，
+语法继续暂缓。[审计](./ComputationAudit.md#native-dynamic-arrow-reconstruction)
+记录假设、临时检查及验证。

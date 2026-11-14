@@ -8,6 +8,7 @@ GlobalContext.v
 Global.v
 Dynamic.v
 Monad.v
+DynamicRecovery.v
 Binoidal.v
 Premonoidal.v
 Symmetric.v
