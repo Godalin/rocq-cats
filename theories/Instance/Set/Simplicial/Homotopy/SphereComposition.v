@@ -18,7 +18,10 @@ Local Open Scope ordinal_scope.
     In the next chapter,
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMap.two sphere composite map}
     {%[two_sphere_composite_map]%}% sends such witnesses to their actual
-    image tetrahedra, without first choosing a group of classes. *)
+    image tetrahedra, without first choosing a group of classes. Later,
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereKan.SphereKanComposite}
+    {%[SphereKanComposite]%}% constructs such a composite from a genuine
+    horn filler, with no coefficient model assumption. *)
 
 (** * 通过四面体合成基点二维球面
 
@@ -30,7 +33,10 @@ Local Open Scope ordinal_scope.
     {%[TwoSphereHomotopy]%}%：初等同伦有两个常值面，而非一个。下一章的
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMap.two sphere composite map}
     {%[two_sphere_composite_map]%}% 将这些见证送到其实际像四面体，无须先
-    选择类群。 *)
+    选择类群。之后的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereKan.SphereKanComposite}
+    {%[SphereKanComposite]%}% 不依赖系数模型，从真正的 horn 填充构造
+    这样的合成。 *)
 
 (** @lang both
 %\begin{center}
