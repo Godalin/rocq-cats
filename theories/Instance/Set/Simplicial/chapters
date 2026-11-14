@@ -31,6 +31,7 @@ Homotopy/Sphere.v
 Homotopy/SphereComposition.v
 Homotopy/SphereMap.v
 Homotopy/SphereCylinder.v
+Homotopy/SphereBasedHomotopy.v
 Homotopy/SphereHorn.v
 Homotopy/SphereKan.v
 Homotopy/SphereKanComparison.v
@@ -43,6 +44,7 @@ Homotopy/SphereAssociativity.v
 Homotopy/SphereGroup.v
 Homotopy/SphereGroupMap.v
 Homotopy/SphereCylinderClass.v
+Homotopy/SphereBasedHomotopyClass.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
