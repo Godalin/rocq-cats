@@ -31,7 +31,11 @@ Local Open Scope ordinal_scope.
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereFaceHomotopy.SphereLowHomotopy}
     {%[SphereLowHomotopy]%}% converts that face arrangement to a standard
     class generator using a four-dimensional missing-face-one filler.
-    This conversion is separate from the cylinder data themselves. *)
+    This conversion is separate from the cylinder data themselves.
+    The later
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SpherePrismRelative.SpherePrismCylinder}
+    {%[SpherePrismCylinder]%}% reconstructs a full relative cylinder from
+    supplied adjacent, external-face and endpoint equations, without Kan. *)
 
 (** * 相对于整个边界的球面同伦
 
@@ -45,7 +49,10 @@ Local Open Scope ordinal_scope.
     下方第一块阶梯四面体的端点位于第零、第一面。之后的
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereFaceHomotopy.SphereLowHomotopy}
     {%[SphereLowHomotopy]%}% 用四维缺第一面填充将这种面排列转为标准类生成元；
-    此转换与柱本身的数据分开。 *)
+    此转换与柱本身的数据分开。后续的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SpherePrismRelative.SpherePrismCylinder}
+    {%[SpherePrismCylinder]%}% 从给定相邻面、外侧面及端点方程重构完整相对柱，
+    无需 Kan。 *)
 
 (** In the square, the lower map represents the base vertex and the left
     map collapses both coordinates to that vertex shape. Commutativity
