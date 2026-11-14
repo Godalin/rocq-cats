@@ -446,7 +446,10 @@ Proof.
   intros xw.
   transitivity (CoendProductRightIso.2.1
     (CoendProductRightIso.1 (ιcoend[CoendProductRightF F W] X xw))).
-  - apply func_proper. symmetry. exact (coend_product_right_iso_β X xw).
+  - exact (@func_proper _ _ CoendProductRightIso.2.1
+      (coend_product_right_cowedge F W X xw)
+      (CoendProductRightIso.1 (ιcoend[CoendProductRightF F W] X xw))
+      (symmetry (coend_product_right_iso_β X xw))).
   - exact (fst CoendProductRightIso.2.2
       (ιcoend[CoendProductRightF F W] X xw)).
 Defined.
@@ -463,7 +466,10 @@ Proof.
   intros wx.
   transitivity (CoendProductLeftIso.2.1
     (CoendProductLeftIso.1 (ιcoend[CoendProductLeftF F W] X wx))).
-  - apply func_proper. symmetry. exact (coend_product_left_iso_β X wx).
+  - exact (@func_proper _ _ CoendProductLeftIso.2.1
+      (coend_product_left_cowedge F W X wx)
+      (CoendProductLeftIso.1 (ιcoend[CoendProductLeftF F W] X wx))
+      (symmetry (coend_product_left_iso_β X wx))).
   - exact (fst CoendProductLeftIso.2.2
       (ιcoend[CoendProductLeftF F W] X wx)).
 Defined.
