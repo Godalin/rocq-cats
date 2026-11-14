@@ -28,8 +28,11 @@ Local Open Scope magma_scope.
     equalities, while the vertical arrows record actual composites.
 
     This gives a magma: a respectful binary operation. Associativity,
-    units and inverses require further arguments. In particular, this
-    module does not yet identify a general Kan homotopy group. *)
+    units and inverses require further arguments. The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereUnit.two_sphere_kan_mul_unit_l}
+    {%[two_sphere_kan_mul_unit_l]%}% begins with the constant unit and
+    products with inverse candidates. This module does not yet identify
+    a general Kan homotopy group. *)
 
 (** * 球面类上的二元运算
 
@@ -45,7 +48,9 @@ Local Open Scope magma_scope.
     的类相等。因此结果既不依赖输入代表，也不依赖所选三维 horn 填充；无须
     等同合成四面体。下图横边是给定的生成输入相等，竖边记录实际合成。
 
-    这给出原群，即保相等二元运算。结合律、单位元及逆仍需进一步论证，此模块
+    这给出原群，即保相等二元运算。结合律、单位元及逆仍需进一步论证。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereUnit.two_sphere_kan_mul_unit_l}
+    {%[two_sphere_kan_mul_unit_l]%}% 先证明常值单位及逆候选的乘积律。此模块
     尚不识别一般 Kan 同伦群。 *)
 
 (** @lang both
