@@ -2236,8 +2236,9 @@ No interface, chosen model, permanent test or shared toolchain was added.
 This finite slice continues on `monoidal-cat-view` from `57f7fa1`.
 The independently reusable pointwise-strength prerequisite was delivered
 first in [740e1c2](https://github.com/Godalin/rocq-cats/commit/740e1c2).
-The validated integrated baseline remains
-`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`.
+Initial validation used integrated baseline
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`; the synchronized handoff is
+recorded below.
 [ArrowApply](../theories/Cat/Computational/Arrow/Apply.v) extends one
 cartesian Arrow over the setoid base with dynamic application of an input
 computation value. Its three laws are the pure-pairing, input-substitution
@@ -2249,7 +2250,8 @@ supplied, rather than an operation class with unenforced laws.
 
 本有限切片在 `monoidal-cat-view` 上从 `57f7fa1` 继续，可独立复用的逐点强度
 基础已先在 [740e1c2](https://github.com/Godalin/rocq-cats/commit/740e1c2) 交付。
-已验证集成基线仍为 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
+初始验证使用集成基线 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`；
+同步后的交接记录见下文。
 [ArrowApply](../theories/Cat/Computational/Arrow/Apply.v)扩充一个广集基底上
 的笛卡尔 Arrow，动态应用输入中提供的计算值。三条定律为
 [Control.Arrow](https://downloads.haskell.org/ghc/9.6.7.20250131/docs/libraries/base-4.18.3.0/Control-Arrow.html)
@@ -2354,3 +2356,45 @@ is claimed here.
 PDF 仍由集成方统一导出。本批交付已声明基底上的强 Monad 到 ArrowApply
 方向；从 ArrowApply 回收 Monad、动态表示比较及带类型语法仍属后续工作，
 此处不宣称全部计算结构记录的等价。
+
+
+## ArrowApply handoff on the updated integration baseline
+
+## ArrowApply 在更新集成基线上的交接
+
+Before handoff, `typeprop` advanced to
+`15a7ccf05eeee9d2c8d1691d3b47468e121c7978`, adding prism reconstruction
+and the simplicial reading path. The task branch was rebased onto it
+without conflicts. All 41 task commits retain their original contents in
+`git range-diff`. The dynamic-application implementation `a1e26d6` is now
+`416bde1`, the independent strength foundation `740e1c2` is now `884f957`,
+and the previous static-reconstruction handoff `57f7fa1` is now `3d1f6c5`.
+The new mathematical-illustration instructions were read; this batch adds
+no mathematical diagram.
+
+交接前，`typeprop` 推进到 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`，
+增加棱柱重建与单纯理论阅读路径。任务分支无冲突重基到该版本，`git range-diff`
+确认全部 41 个任务提交均保留原内容。动态应用实现 `a1e26d6` 现为 `416bde1`，
+独立强度基础 `740e1c2` 现为 `884f957`，此前静态重建交接 `57f7fa1` 现为
+`3d1f6c5`。已读取新增数学插图规范；本批未新增数学图。
+
+Full-library `@all @runtest @install` passed again on that baseline in the
+unchanged project switch. All 139 reports and 18 concrete VM reductions
+above passed again. The import probes now explicitly run typeclass search
+to check that chosen products, Monad, strength and ArrowApply instances
+are unavailable until selected. These reports replace, rather than add to,
+the pre-rebase run. Strict bilingual HTML now covers 351 modules per
+language and all 707 pages. The same 72 bilingual documentation blocks
+and 62 public declaration anchors in the four reviewed modules were
+checked again. The exact inventory remains 98 interfaces (69 classes,
+29 records), including all 29 `Has*` classes. No source mathematics or
+shared environment changed during synchronization; only the task branch
+was rebased. Batch PDF export remains with integration.
+
+在未改动的项目 switch 中，该基线上的全库 `@all @runtest @install` 再次通过。
+上述 139 项报告及 18 项具体 VM 求值均再次通过；导入探针现显式运行类型类
+搜索，确认选定积、Monad、强度及 ArrowApply 实例在选择前不可用。此次报告
+替代重基前的检查，不累加计数。严格双语 HTML 现覆盖每种语言 351 个模块、
+全部 707 页；四个复核模块的同样 72 段双语说明与 62 个公共声明锚点再次核对。
+精确清单仍为 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类。
+同步没有改变源数学或共享环境，只重基本任务分支；批次 PDF 仍由集成方导出。

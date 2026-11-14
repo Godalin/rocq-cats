@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 350 modules,
+covers 351 modules,
 69 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 350 个模块、69 个类及 29 个记录。清单覆盖
+更新，现覆盖 351 个模块、69 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -664,7 +664,7 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 175 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 176 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
 | `Instance/` | 100 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
@@ -1515,14 +1515,14 @@ and exponentials, with a terminal object added for unit evaluation.
 相等及从左到右的效应，不假设交换律或 Monad。一般图只要求积与指数，在
 单位求值处另加终对象。
 
-The current inventory covers 350 modules and 98 interfaces
+The current inventory covers 351 modules and 98 interfaces
 (69 classes, 29 records), including all 29 `Has*` classes. Work continues
 with categorical semantic structures and their correspondence conditions;
 typed syntax is deferred until that semantic development is established.
 The [audit](./ComputationAudit.md#static-cartesian-operation-comparisons)
 records validation and the exact delivered comparison level.
 
-当前清单覆盖 350 个模块及 98 个接口（69 个类、29 个记录），包括全部
+当前清单覆盖 351 个模块及 98 个接口（69 个类、29 个记录），包括全部
 29 个 `Has*` 类。后续继续范畴语义结构及其对应条件，待语义发展建立后再
 讨论带类型语法。[审计](./ComputationAudit.md#static-cartesian-operation-comparisons)
 记录验证及本次交付的精确比较层次。
@@ -1593,12 +1593,12 @@ No equality of functor records or proof fields is used.
 This delivers the Applicative-to-static-Arrow-to-Applicative semantic round
 trip on that model. It does not reconstruct every Arrow from its global
 values; precise static/dynamic reconstruction conditions remain separate
-semantic work. The inventory now covers 350 modules and all 98 interfaces.
+semantic work. The inventory now covers 351 modules and all 98 interfaces.
 Syntax remains deferred until the semantic development is established.
 
 本批给出该模型上的 Applicative 经静态 Arrow 再回到 Applicative 的语义
 往返，不从全局值重建任意 Arrow。精确的静态／动态重建条件仍是独立后续
-语义工作。清单现覆盖 350 个模块及 98 个接口。语法继续等语义
+语义工作。清单现覆盖 351 个模块及 98 个接口。语法继续等语义
 建立后再讨论。
 
 
@@ -1751,7 +1751,7 @@ Kleisli Hom 作为输入使用已声明的共同载体／相等界。
 [StateArrowApply](../theories/Instance/Set/State.v)为已有状态 Monad 显式选择
 此构造，状态载体／相等层级仍在该界下独立。导入不选取模型实例。
 
-The inventory now covers 350 modules and all 98 interfaces (69 classes,
+The inventory now covers 351 modules and all 98 interfaces (69 classes,
 29 records), including the same 29 `Has*` classes. This delivers the
 strong-Monad-to-ArrowApply direction on the stated base. Constructing a
 Monad from ArrowApply and proving the desired reverse comparisons remain
@@ -1759,7 +1759,7 @@ subsequent semantic work; syntax remains deferred. The
 [audit](./ComputationAudit.md#lawful-arrowapply-and-kleisli-dynamic-application)
 records validation and exact boundaries.
 
-清单现覆盖 350 个模块、全部 98 个接口（69 个类、29 个记录），保留原有 29 个
+清单现覆盖 351 个模块、全部 98 个接口（69 个类、29 个记录），保留原有 29 个
 `Has*` 类。本批交付上述基底上的强 Monad 到 ArrowApply 方向；从 ArrowApply
 构造 Monad 及所需反向比较仍属后续语义工作，语法继续暂缓。
 [审计](./ComputationAudit.md#lawful-arrowapply-and-kleisli-dynamic-application)
