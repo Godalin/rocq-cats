@@ -3037,3 +3037,82 @@ and suitably conditional free constructions remain subsequent work.
 本批交付所需的存在性基础，不声称固定大小的全体广集范畴可以为自身的 coend
 提供指标。Day 与强 profunctor 构造须说明各自实际的大小和存在条件。
 其幺半群刻画、相干比较及有适当条件的自由构造仍留待后续工作。
+
+### Covariant Day convolution and its natural universal correspondence
+
+### 协变 Day 卷积及其自然泛对应
+
+The [Day kernel and output functor](../theories/Cat/Day/Core.v) reuse Hom,
+explicit universe lifting, pointwise products and the integrated coend
+theory. The kernel pairs a Hom weight from the binary result to the output
+with the two input values. Only a binary functor is needed here; a monoidal
+category supplies its tensor bifunctor when constructing coherence later.
+Neither tensorial strength nor invertible comparison maps are assumed.
+`HasDay` selects only this family's particular pointwise coends, keeping
+the existence condition explicit.
+
+[Day 核与输出函子](../theories/Cat/Day/Core.v)复用 Hom、显式宇宙提升、
+逐点积和已集成的 coend 理论。核将从二元结果到输出的 Hom 权重与两个输入值
+配对。这里仅需二元函子；稍后构造相干性时，由幺半范畴提供其张量双函子。
+不假定张量强度或可逆比较。`HasDay` 仅选择这一族特定的逐点 coend，
+保留显式存在条件。
+
+[Input maps](../theories/Cat/Day/Map.v) act independently on the value
+coordinates and commute with postcomposition in the output coordinate.
+They preserve the specified natural-transformation equality, identities
+and composition. A uniformly supplied family of choices assembles these
+maps into `DayTensorF`, a bifunctor on the functor category. This is not yet
+a monoidal structure: unitors, the associator and their coherent laws are
+separate subsequent obligations.
+
+[输入映射](../theories/Cat/Day/Map.v)独立作用于值坐标，并与输出坐标的后合成
+交换；它们保持指定自然变换相等、恒等及复合。统一提供选择族后，这些映射
+组成函子范畴上的双函子 `DayTensorF`。此时尚未得到幺半结构：单位子、结合子
+及其相干定律仍须在后续单独证明。
+
+The [universal correspondence](../theories/Cat/Day/Universal.v) treats
+weighted value pairs as generators. Changing their indices uses the coend's
+gluing equation; changing their output postcomposes their weight. A natural
+binary operation extends by evaluating the operation and applying the
+output functor to that weight. Conversely, a transformation out of the
+convolution restricts to generators with identity weights. Both round trips
+hold in the specified natural-transformation equality, and an extension is
+unique with its prescribed restriction. All maps and witnesses remain
+transparent; no equality of functions or law fields is used.
+
+[泛对应](../theories/Cat/Day/Universal.v)将加权值对作为生成元。改变其指标
+使用 coend 的粘合方程，改变输出则后合成权重。自然二元操作的延拓先求值
+该操作，再将输出函子作用于权重。反过来，从卷积出发的自然变换可限制到
+具有恒等权重的生成元。两个往返均在指定自然变换相等下成立，指定限制唯一
+确定延拓。所有映射与见证透明，不使用函数或定律字段的原生相等。
+
+The [explicit setoid model](../theories/Instance/Set/Day.v) reuses the
+integrated setoid coend model. Sufficient bounds are `o,h ≤ u ≤ p` and
+`e ≤ p`, where `o,h,e` are base object, hom-carrier and hom-equality levels
+and `u,p` are target carrier/equality levels. The Hom weight explains the
+additional equality bound. These are sufficient conditions for this model,
+not assertions that every fixed-size full setoid category admits Day
+convolution in itself. Target universes are fixed explicitly at structure
+and transformation boundaries: compilation alone can otherwise accept an
+unnecessarily identified pair of native and ambient sizes. Strict probes
+check both object/hom orders, equality levels below or above the carrier,
+and conditional abstract choices with objects larger than the output levels.
+No resizing or globally registered model choice is introduced.
+
+[显式广集模型](../theories/Instance/Set/Day.v)复用已集成的广集 coend 模型。
+充分界为 `o,h ≤ u ≤ p` 及 `e ≤ p`，其中 `o,h,e` 是基范畴对象、Hom 载体与
+Hom 相等层级，`u,p` 是目标载体与相等层级。Hom 权重导致额外的相等层级界。
+这些是本模型的充分条件，不声称任意固定大小的全体广集范畴都可在自身中取
+Day 卷积。结构与自然变换边界显式固定目标宇宙：仅通过编译仍可能无意中
+将原生与环境大小合并。严格探查检查对象／Hom 两种次序、低于或高于载体的
+相等层级，以及对象大于输出层级的条件式抽象选择。不引入大小重设或全局
+注册的模型选择。
+
+The monoidal coherence, Day-monoid/lax-monoidal correspondence and its
+operation-preserving connections remain open. Strong profunctors must carry
+their own coherent context action; that strength is not supplied by this
+Day construction. The final required free constructions remain later work.
+
+幺半相干性、Day 幺半群／lax 幺半对应及保持运算的连接仍待完成。强 profunctor
+须另带自身的相干上下文作用；此 Day 构造并不提供该强度。最终要求的自由构造
+仍属后续工作。
