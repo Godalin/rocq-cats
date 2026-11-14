@@ -14,9 +14,11 @@ Local Open Scope monoid_scope.
     unit, and every class is its own inverse. The nonzero sphere therefore
     has order two in this explicitly constructed group.
 
-    This extends the combinatorial sphere-class calculation. Comparison
-    with cylinder homotopy and invariance under homotopy equivalence are
-    still required before the broader higher-homotopy distinction. *)
+    The next chapter
+    %\coqref{Cats.Instance.Bool.CocycleSphereCylinder.bool cocycle sphere no relative cylinder}
+    {%[bool_cocycle_sphere_no_relative_cylinder]%}% proves non-contraction
+    by a full relative cylinder. Invariance under homotopy equivalence
+    remains required before the broader higher-homotopy distinction. *)
 
 (** * 布尔球面类的二阶群
 
@@ -24,8 +26,10 @@ Local Open Scope monoid_scope.
     系数计算为异或，常值球面为单位，每个类自逆。因此，非零球面在这个显式
     构造的群中具有二阶。
 
-    这是组合球面类计算的推进。更广的高阶同伦区别仍需与柱同伦比较，并证明
-    同伦等价下的不变性。 *)
+    下一章
+    %\coqref{Cats.Instance.Bool.CocycleSphereCylinder.bool cocycle sphere no relative cylinder}
+    {%[bool_cocycle_sphere_no_relative_cylinder]%}% 证明完整相对柱也不能将其
+    收缩。更广的高阶同伦区别仍需同伦等价下的不变性。 *)
 
 (** Select the group on the existing class setoid without global enabling. *)
 

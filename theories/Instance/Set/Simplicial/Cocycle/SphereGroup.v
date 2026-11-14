@@ -24,8 +24,11 @@ Local Open Scope monoid_scope.
     coefficients give inverses; commutative coefficients give a commutative
     class operation. For an abelian group the previously constructed Kan
     model thus has a group on this simplex presentation of sphere classes.
-    Comparison with cylinder homotopy and homotopy-equivalence invariance
-    remain separate tasks; we do not use this result to exclude all 1-types. *)
+    The next chapter
+    %\coqref{Cats.Instance.Set.Simplicial.Cocycle.SphereCylinder.cocycle two sphere cylinder iff}
+    {%[cocycle_two_sphere_cylinder_iff]%}% compares this model's classes with
+    relative cylinders. General Kan homotopy groups and homotopy-equivalence
+    invariance remain separate tasks; we do not exclude all 1-types. *)
 
 (** * Cocycle 球面类的乘法
 
@@ -38,7 +41,10 @@ Local Open Scope monoid_scope.
 
     此合成计算只需幺半群系数；群系数给出逆，交换系数给出类运算的交换律。
     因此，对交换群系数，先前构造的 Kan 模型在这一单形球面类呈现上具备群。
-    与柱同伦的比较、同伦等价不变性仍是独立任务；不据此排除所有 1-types。 *)
+    下一章
+    %\coqref{Cats.Instance.Set.Simplicial.Cocycle.SphereCylinder.cocycle two sphere cylinder iff}
+    {%[cocycle_two_sphere_cylinder_iff]%}% 比较此模型的类与相对柱。一般 Kan
+    同伦群及同伦等价不变性仍为独立任务；不据此排除所有 1-types。 *)
 
 (** ** A Monoid on the Classified Spheres
 
