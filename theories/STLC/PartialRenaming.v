@@ -138,6 +138,122 @@ Proof.
   - rewrite (IHt1 Δ ρ τ h), (IHt2 Δ ρ τ h). reflexivity.
 Defined.
 
+(** A commuting square of variable assignments lifts under a binder. *)
+
+(** 变量赋值的交换方块在绑定下提升。 *)
+
+Lemma partial_ren_lift_square {Γ Δ Θ Ξ : Ctx B} {A : Ty B}
+    (ρ : Ren Δ Γ) (σ : PartialRen Ξ Δ)
+    (τ : Ren Ξ Θ) (θ : PartialRen Θ Γ)
+    (h : ∀ U x, σ U (ρ U x) = option_map (τ U) (θ U x))
+  : ∀ U x, partial_ren_lift (A := A) σ U ((ρ^↑Ren) U x) =
+      option_map ((τ^↑Ren) U) (partial_ren_lift θ U x).
+Proof.
+  intros U [x | x]; cbn [ren_lift partial_ren_lift].
+  - rewrite h. destruct (θ U x); reflexivity.
+  - reflexivity.
+Defined.
+
+(** A commuting square on variables induces a commuting square on terms.
+    This single law covers restriction before or after total renaming. *)
+
+(** 变量上的交换方块诱导项上的交换方块。同一个律覆盖在全重命名之前或之后
+    作限制的情形。 *)
+
+Lemma partial_rename_square {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : ∀ (Δ Θ Ξ : Ctx B) (ρ : Ren Δ Γ) (σ : PartialRen Ξ Δ)
+      (τ : Ren Ξ Θ) (θ : PartialRen Θ Γ),
+      (∀ U x, σ U (ρ U x) = option_map (τ U) (θ U x)) →
+      partial_rename t⟨ρ⟩ Ξ σ =
+        option_map (λ v, v⟨τ⟩) (partial_rename t Θ θ).
+Proof.
+  induction t; intros Δ Θ Ξ ρ σ τ θ h; cbn [rename partial_rename].
+  - rewrite h. destruct (θ A v); reflexivity.
+  - reflexivity.
+  - rewrite (IHt1 Δ Θ Ξ ρ σ τ θ h), (IHt2 Δ Θ Ξ ρ σ τ θ h).
+    destruct (partial_rename t1 Θ θ), (partial_rename t2 Θ θ);
+      reflexivity.
+  - rewrite (IHt Δ Θ Ξ ρ σ τ θ h).
+    destruct (partial_rename t Θ θ); reflexivity.
+  - rewrite (IHt Δ Θ Ξ ρ σ τ θ h).
+    destruct (partial_rename t Θ θ); reflexivity.
+  - rewrite (IHt (Δ ▻ A) (Θ ▻ A) (Ξ ▻ A)
+      (ρ^↑Ren) (partial_ren_lift σ) (τ^↑Ren) (partial_ren_lift θ)
+      (partial_ren_lift_square ρ σ τ θ h)).
+    destruct (partial_rename t (Θ ▻ A) (partial_ren_lift θ)); reflexivity.
+  - rewrite (IHt1 Δ Θ Ξ ρ σ τ θ h), (IHt2 Δ Θ Ξ ρ σ τ θ h).
+    destruct (partial_rename t1 Θ θ), (partial_rename t2 Θ θ);
+      reflexivity.
+Defined.
+
+(** Restriction commutes with weakening into a fresh, retained binder. *)
+
+(** 限制与向一个保留的新绑定作弱化交换。 *)
+
+Definition partial_rename_weaken {Γ Δ : Ctx B} {A U : Ty B}
+    (t : Tm Γ U) (σ : PartialRen Δ Γ)
+  : partial_rename t⟨@ren_weaken B Γ A⟩ (Δ ▻ A) (partial_ren_lift σ) =
+      option_map (λ v, v⟨wkRen⟩) (partial_rename t Δ σ)
+  := partial_rename_square t _ _ _ wkRen (partial_ren_lift σ)
+      wkRen σ (λ V x, eq_refl).
+
+(** A total section of a partial variable assignment lifts under binders. *)
+
+(** 部分变量赋值的全截面在绑定下提升。 *)
+
+Lemma partial_ren_lift_section {Γ Δ : Ctx B} {A : Ty B}
+    (σ : PartialRen Δ Γ) (ρ : Ren Γ Δ)
+    (h : ∀ U x y, σ U x = Some y → ρ U y = x)
+  : ∀ U x y, partial_ren_lift (A := A) σ U x = Some y →
+      (ρ^↑Ren) U y = x.
+Proof.
+  intros U [x | x] y k; cbn [partial_ren_lift] in k.
+  - destruct (σ U x) as [z |] eqn:p; cbn in k; try discriminate k.
+    injection k as k. subst y. cbn [ren_lift var_succ].
+    f_equal. exact (h U x z p).
+  - injection k as k. subst y. reflexivity.
+Defined.
+
+(** Whenever restriction succeeds, a section reconstructs the original
+    term by total renaming. No equality of assignment functions is used. *)
+
+(** 限制成功时，截面通过全重命名重构原项。不使用赋值函数之间的相等。 *)
+
+Lemma partial_rename_section {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : ∀ (Δ : Ctx B) (σ : PartialRen Δ Γ) (ρ : Ren Γ Δ),
+      (∀ U x y, σ U x = Some y → ρ U y = x) →
+      ∀ v, partial_rename t Δ σ = Some v → t = v⟨ρ⟩.
+Proof.
+  induction t; intros Δ σ ρ h v' k; cbn [partial_rename] in k.
+  - destruct (σ A v) as [x |] eqn:p; cbn in k; try discriminate k.
+    injection k as k. subst v'. cbn [rename]. f_equal.
+    symmetry. exact (h A v x p).
+  - injection k as k. subst v'. reflexivity.
+  - destruct (partial_rename t1 Δ σ) as [x |] eqn:px;
+      destruct (partial_rename t2 Δ σ) as [y |] eqn:py;
+      try discriminate k.
+    injection k as k. subst v'. cbn [rename].
+    rewrite <- (IHt1 Δ σ ρ h x px), <- (IHt2 Δ σ ρ h y py).
+    reflexivity.
+  - destruct (partial_rename t Δ σ) as [x |] eqn:px; try discriminate k.
+    injection k as k. subst v'. cbn [rename].
+    rewrite <- (IHt Δ σ ρ h x px). reflexivity.
+  - destruct (partial_rename t Δ σ) as [x |] eqn:px; try discriminate k.
+    injection k as k. subst v'. cbn [rename].
+    rewrite <- (IHt Δ σ ρ h x px). reflexivity.
+  - destruct (partial_rename t (Δ ▻ A) (partial_ren_lift σ))
+      as [x |] eqn:px; try discriminate k.
+    injection k as k. subst v'. cbn [rename].
+    rewrite <- (IHt (Δ ▻ A) (partial_ren_lift σ) (ρ^↑Ren)
+      (partial_ren_lift_section σ ρ h) x px). reflexivity.
+  - destruct (partial_rename t1 Δ σ) as [x |] eqn:px;
+      destruct (partial_rename t2 Δ σ) as [y |] eqn:py;
+      try discriminate k.
+    injection k as k. subst v'. cbn [rename].
+    rewrite <- (IHt1 Δ σ ρ h x px), <- (IHt2 Δ σ ρ h y py).
+    reflexivity.
+Defined.
+
 (** Partial left inverses of renamings lift to partial left inverses
     under a fresh binder. This law is pointwise on variables. *)
 
@@ -181,6 +297,21 @@ Defined.
 Definition partial_drop {Γ : Ctx B} {A : Ty B}
   : PartialRen Γ (Γ ▻ A)
   := λ U x, match x with inl y => Some y | inr _ => None end.
+
+(** A successful removal witnesses that the term was a weakening. *)
+
+(** 成功的移除见证该项原本就是一次弱化的结果。 *)
+
+Definition partial_drop_section {Γ : Ctx B} {A U : Ty B}
+    (t : Tm (Γ ▻ A) U) (v : Tm Γ U)
+    (h : partial_rename t Γ partial_drop = Some v)
+  : t = v⟨wkRen⟩.
+Proof.
+  apply (partial_rename_section t Γ partial_drop wkRen); [| exact h].
+  intros V [x | x] y k; cbn [partial_drop] in k.
+  - injection k as k. subst y. reflexivity.
+  - discriminate k.
+Defined.
 
 (** Removing a newly added unused variable recovers the original term. *)
 
