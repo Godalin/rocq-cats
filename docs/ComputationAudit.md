@@ -3240,3 +3240,74 @@ characterizations, strong profunctors and free constructions remain open.
 这为嵌套 Day 卷积中的内层 coend 下降提供前置基础，使其余值和权重可作为
 参数保留。本批不增加 Day 结合子或三角形／五边形定理；这些依赖构造须在
 本基础集成后继续。已约定的幺半群刻画、强 profunctor 及自由构造仍待完成。
+
+### Natural Day associativity from the specified four convolution families
+
+### 由指定四族卷积得到自然 Day 结合性
+
+[Parameterized extension](../theories/Cat/Day/Parameter.v) keeps a fixed
+setoid value outside a Day convolution. Slicing a parameterized natural
+binary operation gives the existing ordinary Day extension; respectful
+product/coend descent reassembles the slices. Computation, uniqueness and
+parameter/output comparison laws follow from the same universal property.
+There is no internal function object and no new carrier/equality ordering.
+
+[带参数延拓](../theories/Cat/Day/Parameter.v)使固定广集值保持在 Day 卷积外部。
+切片带参数自然二元操作后得到已有的普通 Day 延拓；保相等的积／coend 下降
+再将切片重组。计算、唯一性及参数／输出比较定律来自同一个泛性质。
+不引入内部函数对象或新的载体／相等大小次序。
+
+[Nested extension](../theories/Cat/Day/Iterated.v) then treats either
+bracketing of three inputs. The inner pair extends with the remaining
+value as a parameter; the outer pair uses ordinary Day extension. Ordered
+weight computation and gluing show that every doubly weighted generator
+comes from an identity triple under the output action. Consequently,
+natural transformations are determined on identity triples. Left and
+right output bracketings use the same triple-indexed source, retaining
+all three inputs in their original order.
+
+[嵌套延拓](../theories/Cat/Day/Iterated.v)随后处理三输入的两种括号。将其余值
+作为参数延拓内层对，再用普通 Day 延拓处理外层对。有序权重计算和粘合表明，
+每个双重加权生成元都是恒等三重值在输出作用下的像。因此，自然变换由其在
+恒等三重值上的作用决定。左右输出括号使用同一个三重指标来源，保留三个
+输入的原顺序。
+
+The [Day associator](../theories/Cat/Day/Associator.v) needs only a binary
+functor and its supplied natural associativity isomorphism. Transport the
+right ternary generator by the inverse base map, then extend it through
+the left nesting. The reverse extension uses the forward base map. Joint
+distinction reduces both inverse laws to the base inverse laws. Each map
+is natural in the output and in all three input functors. Inverse input
+naturality reuses the general inverse-square theorem. Uniform explicit
+convolution choices package these maps as a natural isomorphism between
+the tensor bracketings on the functor category.
+
+[Day 结合子](../theories/Cat/Day/Associator.v)只需二元函子及给定的自然结合
+同构。用基逆映射运输右三元生成元，再沿左嵌套延拓；反向延拓使用基正向
+映射。联合区分性将两条互逆律归约到基逆律。两映射关于输出及三个输入函子
+都自然；逆输入自然性复用一般逆方块定理。统一显式卷积选择后，这些映射
+打包为函子范畴上两种张量括号之间的自然同构。
+
+Individual associators require only the two inner and two outer selected
+convolutions. Their ambient carrier/equality levels and the Hom-weight
+bounds are those of the original Day construction; actual generated
+models retain their original sufficient size conditions. No unit,
+symmetry, strength, equality between functor records or additional axiom
+is used. A general first-coordinate product-parameter transformation
+reuses the existing second-coordinate naturality through an explicitly
+flipped diagram and has the right nested extension as a client.
+
+单个结合子只要求两个内层及两个外层选定卷积。环境载体／相等层级和 Hom
+权重界与原 Day 构造相同；实际生成模型沿用原充分大小条件。不使用单位、
+对称、强度、函子记录相等或额外公理。一般的第一坐标积参数自然变换通过
+显式翻转图式复用已有第二坐标自然性，右嵌套延拓是其实际客户端。
+
+This establishes natural associativity and its transparent inverse, not
+the triangle or pentagon. Those require the corresponding base coherence
+and separate proofs before a complete Day monoidal structure is claimed.
+The Day-monoid/lax correspondence, strong profunctors, coherent connections
+and conditional free constructions remain subsequent work.
+
+本批建立自然结合性及其透明逆，尚未建立三角形或五边形。后两者需要相应
+基相干条件及独立证明，完成后才能声称完整 Day 幺半结构。Day 幺半群／lax
+对应、强 profunctor、相干连接及条件式自由构造仍待后续工作。

@@ -140,6 +140,22 @@ Defined.
 
 End ProductRestrictions.
 
+(** Changing the first coordinate gives the other parameter transformation.
+    Reuse second-coordinate naturality through the explicit flipped diagram. *)
+
+(** 改变第一坐标给出另一参数自然变换；通过显式翻转图式，复用第二坐标自然性。 *)
+
+Program Definition ProductFirstAtN {A B C : Cat}
+    (K : Fct (A ×C B) C) {a a' : @Ob A} (f : Hom a a')
+  : π2F K a ⇒ π2F K a'
+  :=
+  {|nt b := fmap K (X := (a,b)) (Y := (a',b)) (f,id)
+  |}.
+Next Obligation.
+  exact (nt_naturality
+    (ProductAtN (K ∘F PairF (SndF B A) (FstF B A)) f) f0).
+Defined.
+
 (** Restrict a natural comparison to one parameter value. *)
 
 (** 将自然比较限制在一个参数值。 *)
