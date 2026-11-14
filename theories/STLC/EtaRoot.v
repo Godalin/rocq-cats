@@ -120,3 +120,32 @@ Proof.
   exact (f_equal (λ p : option (Tm (Γ ▻ A) (A ⇒ U)),
     match p with Some w => w | None => f⟨wkRen⟩ end) q).
 Defined.
+
+(** Restricting a defined root eta source also defines its target and
+    retains the root contraction. The function case uses the commuting
+    square for weakening; no test for unused variables is postulated. *)
+
+(** 若根 η 来源的限制有定义，则其目标的限制也有定义，且保持根收缩。函数
+    分支使用弱化的交换方块，不假定未使用变量的额外测试。 *)
+
+Definition root_eta_partial@{b e +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
+    (h : RootEtaContract@{b e} t u)
+  : ∀ (Δ : Ctx B) (σ : PartialRen Δ Γ) (t' : Tm Δ A),
+      partial_rename t Δ σ = Some t' →
+      ∃ u', partial_rename u Δ σ = Some u' ∧ RootEtaContract@{b e} t' u'.
+Proof.
+  destruct h as [Γ A U f | Γ A U p]; intros Δ σ t' h.
+  - cbn [partial_rename] in h. rewrite partial_rename_weaken in h.
+    destruct (partial_rename f Δ σ) as [f' |] eqn:k; cbn in h;
+      try discriminate h.
+    injection h as h. subst t'. exists f'. split.
+    + reflexivity.
+    + exact (root_eta_contract_function f').
+  - cbn [partial_rename] in h.
+    destruct (partial_rename p Δ σ) as [p' |] eqn:k; cbn in h;
+      try discriminate h.
+    injection h as h. subst t'. exists p'. split.
+    + reflexivity.
+    + exact (root_eta_contract_product p').
+Defined.
