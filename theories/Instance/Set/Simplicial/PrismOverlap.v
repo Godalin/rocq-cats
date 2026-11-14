@@ -17,7 +17,10 @@ Local Open Scope ordinal_scope.
     just two adjacent-face equations give all overlap equations.
 
     These are compatibility witnesses for supplied simplex values. This
-    module does not yet glue them to a cylinder map or supply Kan fillers. *)
+    module does not itself glue them. The next
+    %\coqref{Cats.Instance.Set.Simplicial.PrismGluing.SimplexTrianglePrismGluingN}
+    {%[SimplexTrianglePrismGluingN]%}% constructs the actual cylinder map
+    from those two equations, without Kan fillers. *)
 
 (** * 相邻面方程控制棱柱交叠
 
@@ -26,8 +29,9 @@ Local Open Scope ordinal_scope.
     {%[SimplexPrismAdjacentFactor]%}% 将单个相邻面方程扩展到任意共同因子对。
     三角柱首尾交叠也在中间块内，因此两条相邻面方程就给出全部交叠方程。
 
-    这些是给定单形值的相容见证，本模块尚不将它们粘成柱映射，也不提供 Kan
-    填充。 *)
+    这些是给定单形值的相容见证，本模块不承担粘合。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.PrismGluing.SimplexTrianglePrismGluingN}
+    {%[SimplexTrianglePrismGluingN]%}% 从这两条方程构造实际柱映射，无需 Kan 填充。 *)
 
 (** ** Restricting the Actual Common Face
 

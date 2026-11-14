@@ -15,8 +15,11 @@ Local Open Scope ordinal_scope.
     {%[SimplexPrismFactor]%}% covers every degree of a standard simplex
     cylinder, including degenerate simplices. Naturality therefore reads
     any given cylinder map from its m+1 maximal staircase values. This
-    proves determination, not existence of a map from arbitrary values;
-    their overlap compatibility and gluing remain separate work. The sphere
+    proves determination, not existence of a map from arbitrary values.
+    The later
+    %\coqref{Cats.Instance.Set.Simplicial.PrismGluing.SimplexPrismGluingN}
+    {%[SimplexPrismGluingN]%}% constructs that map when all spatial/time
+    overlaps are compatible. The sphere
     cylinder client
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinder.two_sphere_cylinder_factor}
     {%[two_sphere_cylinder_factor]%}% applies this to the original three
@@ -27,7 +30,9 @@ Local Open Scope ordinal_scope.
     形状分解 %\coqref{Cats.Cat.Shape.Simplex.Prism.SimplexPrismFactor}
     {%[SimplexPrismFactor]%}% 覆盖标准单形柱的每一维，包括退化单形。
     因此，自然性可从 m+1 个最大阶梯值读取任意给定柱映射。这只证明确定性，
-    不从任意给定值构造映射；交叠相容性与粘合仍需另行处理。球面柱客户端
+    不从任意给定值构造映射。后续的
+    %\coqref{Cats.Instance.Set.Simplicial.PrismGluing.SimplexPrismGluingN}
+    {%[SimplexPrismGluingN]%}% 在全部空间／时间交叠相容时构造该映射。球面柱客户端
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinder.two_sphere_cylinder_factor}
     {%[two_sphere_cylinder_factor]%}% 将其应用于原有三个棱柱四面体，
     保留其原有数据。 *)
