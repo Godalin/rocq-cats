@@ -73,7 +73,7 @@ Definition high_equality_interchange (a b c d : N)
 (** 逆映射的比较保留较低相等层级。 *)
 
 Definition low_equality_round_trip (a : M)
-  : group_mul_l_solve_resp a ∘r monoid_mul_l_resp a ≈f id_resp
+  : group_mul_l_solve_resp a ∘r magma_mul_l_resp a ≈f id_resp
   := group_mul_l_solve_η a.
 
 (** Test the other direction with higher equality witnesses. *)
@@ -81,7 +81,7 @@ Definition low_equality_round_trip (a : M)
 (** 用较高的相等见证测试另一个方向。 *)
 
 Definition high_equality_evaluation (a : N)
-  : monoid_mul_r_resp a ∘r group_mul_r_solve_resp a ≈f id_resp
+  : magma_mul_r_resp a ∘r group_mul_r_solve_resp a ≈f id_resp
   := group_mul_r_solve_β a.
 
 End Sizes.

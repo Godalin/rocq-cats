@@ -197,12 +197,12 @@ Defined.
 Next Obligation.
   transitivity (c⟦fmap F f, fmap F g⟧₂ ⋅
     c⟦fmap F g ∘ fmap F f, fmap F h⟧₂).
-  - apply monoid_mul_proper; [reflexivity |].
+  - apply magma_mul_proper; [reflexivity |].
     apply two_cocycle_triangle_proper; [apply functor_comp | reflexivity].
   - transitivity (c⟦fmap F g, fmap F h⟧₂ ⋅
       c⟦fmap F f, fmap F h ∘ fmap F g⟧₂).
     + apply two_cocycle_tetrahedron.
-    + apply monoid_mul_proper; [reflexivity |].
+    + apply magma_mul_proper; [reflexivity |].
       apply two_cocycle_triangle_proper;
         [reflexivity | symmetry; apply functor_comp].
 Defined.

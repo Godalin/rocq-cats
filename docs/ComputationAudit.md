@@ -2681,3 +2681,62 @@ shared toolchain settings and batch PDF exports remain with integration.
 的 86 段说明及 72 个公共声明锚点均在对应阅读版逐项核对。完整清单恰好覆盖
 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类，无遗漏或重复。
 仅修改本任务分支，`typeprop`、共享工具链设置及批次 PDF 导出仍由集成方管理。
+
+
+## Dynamic reconstruction handoff on the updated baseline
+
+## 更新基线上的动态重建交接
+
+Before handoff, integration advanced to
+`5631b64a7ad8e854638cd116169ca6ef5ceee761`. The task branch rebased without
+Git conflicts; `git range-diff` preserves all 46 task commits' contents.
+The independent comparison/strength foundation `84fb5c9` is now `2c4565f`,
+dynamic reconstruction `5fb79f5` is now `4a378ac`, the earlier Monad
+recovery `874ed08` is now `e133b8d`, and dynamic Hom foundation `557b048`
+is now `1ddbc48`. The current integrated instructions were read. No
+mathematical diagram was introduced by this slice.
+
+交接前集成推进到 `5631b64a7ad8e854638cd116169ca6ef5ceee761`。任务分支
+无 Git 冲突重基，`git range-diff` 确认全部 46 个任务提交内容保留。独立比较／
+强度基础 `84fb5c9` 现为 `2c4565f`，动态重建 `5fb79f5` 现为 `4a378ac`，
+此前 Monad 回收 `874ed08` 现为 `e133b8d`，动态 Hom 基础 `557b048` 现为
+`1ddbc48`。已阅读当前集成规范，本切片没有新增数学图。
+
+Three upstream additions had proof references to algebra names moved by
+the task's previously authorized hierarchy refactor. The commutative
+coefficient, group-equation and cocycle modules now reference
+`semigroup_assoc` and `magma_mul_proper`; group-equation laws and their
+bilingual diagram labels use `magma_mul_l_resp`/`magma_mul_r_resp`.
+The new upstream coefficient universe regression has the same two map
+reference updates. These are adaptations of the earlier rename to new
+clients: upstream operations, public declarations, mathematical conditions
+and test assertions are retained, with no compatibility aliases or new
+regression files. No shared test configuration is changed.
+
+三个上游新增模块的证明仍引用本任务此前已授权层级重构中迁移的代数名称。
+交换系数、群方程及 cocycle 模块现引用 `semigroup_assoc`、
+`magma_mul_proper`，群方程定律及双语图标签使用 `magma_mul_l_resp`／
+`magma_mul_r_resp`。上游新增系数宇宙回归同步了相同的两处映射引用。
+这是将此前重命名适配到新客户端：保留上游运算、公共声明、数学条件及测试
+断言，不加兼容别名或新回归文件，也不修改共享测试配置。
+
+Full-library `@all @runtest @install` passed on the new baseline with the
+unchanged toolchain. The preceding 225 assumption reports and 28 transparent
+VM reductions passed again, and 31 additional reports for the adapted
+upstream clients are also closed under the global context: 256 reports
+in the final run. These replace, rather than accumulate with, the old
+baseline's checks. Strict bilingual HTML now covers 363 modules per
+language and all 731 checked pages. The same four task modules' 86
+language-specific documentation blocks and 72 public anchors were checked
+again. The inventory covers all 100 interfaces exactly once (70 classes,
+30 records), including all 29 `Has*` classes; the two additions belong to
+the new upstream batch. Only the task branch is updated; integration
+retains `typeprop` and batch PDF export.
+
+在未改动工具链中，新基线上的全库 `@all @runtest @install` 通过。上述
+225 项公理报告及 28 项透明 VM 求值再次通过，适配的上游客户端另有 31 项
+报告也无额外全局假设，最终一轮合计 256 项。这些替代旧基线检查，不累加。
+严格双语 HTML 现覆盖每种语言 363 个模块，全部 731 页检查通过；相同四个
+任务模块的 86 段对应语言说明及 72 个公共锚点再次逐项核对。清单恰好覆盖全部
+100 个接口各一次（70 个类、30 个记录），包括全部 29 个 `Has*` 类；两个新增
+接口来自上游新批次。仅更新任务分支，`typeprop` 和批次 PDF 仍由集成方管理。

@@ -4,12 +4,12 @@
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 98 interfaces after the structural hierarchy slices
+inventory now includes 100 interfaces after the structural hierarchy slices
 and the synchronized integrated baseline,
 alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含结构层级批次及已同步集成基线后的 98 个接口，
+起初分类全部 87 个类／记录接口；清单现包含结构层级批次及已同步集成基线后的 100 个接口，
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
@@ -592,8 +592,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 357 modules,
-69 classes and 29 records.
+covers 363 modules,
+70 classes and 30 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 357 个模块、69 个类及 29 个记录。清单覆盖
+更新，现覆盖 363 个模块、70 个类及 30 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -664,9 +664,9 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 180 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
-| `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
-| `Instance/` | 102 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `Cat/` | 181 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Algebra/` | 13 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
+| `Instance/` | 105 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
 | `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
@@ -801,6 +801,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [Group](../theories/Algebra/Group/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Magma](../theories/Algebra/Magma/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [IsCommutativeMonoid](../theories/Algebra/Monoid/Commutative.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [Semigroup](../theories/Algebra/Semigroup/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Adjunction](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [ApplicativeAp](../theories/Cat/Applicative/Application.v) | `Class` | Computational structures / 计算结构 |
@@ -827,6 +828,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [Cat](../theories/Cat/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [Cocone](../theories/Cat/Diagram/Dual.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [GeneratorNat](../theories/Cat/Diagram/Generator.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [TwoCocycle](../theories/Cat/Diagram/Cocycle.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [HasEqualizer](../theories/Cat/Equalizer.v) | `Class` | Chosen construction / 选定构造 |
 | [HasExponential](../theories/Cat/Exponential/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [HasCartesianLift](../theories/Cat/Fibration.v) | `Class` | Chosen construction / 选定构造 |
@@ -1895,3 +1897,37 @@ records hypotheses, temporary checks and validation.
 29 个 `Has*` 类。涉及派生 Applicative 的跨转换相容性仍为单独的语义后续工作，
 语法继续暂缓。[审计](./ComputationAudit.md#native-dynamic-arrow-reconstruction)
 记录假设、临时检查及验证。
+
+
+## Dynamic reconstruction on the updated integration baseline
+
+## 更新集成基线上的动态重建
+
+Handoff synchronization rebases the task onto
+`5631b64a7ad8e854638cd116169ca6ef5ceee761`. The upstream batch adds six
+modules, the fixed-monoid property `IsCommutativeMonoid`, and the bundled
+triangle-label function `TwoCocycle`. The latter exposes its unique
+`two_cocycle_triangle :>` function and retains Type-valued normalization
+and tetrahedron laws. These additions match the existing distinction
+between fixed-data properties and computational bundles.
+
+交接同步将任务重基到 `5631b64a7ad8e854638cd116169ca6ef5ceee761`。上游
+批次增加六个模块、固定幺半群上的性质 `IsCommutativeMonoid`，以及三角标签
+函数结构包 `TwoCocycle`；后者暴露唯一 `two_cocycle_triangle :>` 函数，保留
+Type 值归一化及四面体定律。这些新增接口符合已有的固定数据性质／计算结构包
+区分。
+
+Three new upstream clients and two references in their new universe
+regression still used multiplication and associativity names moved by the
+task's earlier hierarchy slice. These references and group-equation
+documentation now use `magma_mul_proper`, `magma_mul_l_resp`,
+`magma_mul_r_resp` and `semigroup_assoc`. Mathematical operations, law
+statements, public construction names and test assertions are retained.
+The current inventory covers 363 modules and all 100 interfaces exactly
+once (70 classes, 30 records), including the unchanged 29 `Has*` classes.
+
+三个上游新客户端及其新宇宙回归中的两处引用仍使用本任务此前层级批次已迁移
+的乘法及结合律名称。这些引用及群方程说明现使用 `magma_mul_proper`、
+`magma_mul_l_resp`、`magma_mul_r_resp` 及 `semigroup_assoc`，保留数学运算、
+定律陈述、公共构造名称及测试断言。当前清单覆盖 363 个模块及全部 100 个接口
+各一次（70 个类、30 个记录），原有 29 个 `Has*` 类不变。

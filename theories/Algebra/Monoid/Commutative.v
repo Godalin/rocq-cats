@@ -48,8 +48,8 @@ Context {M : SetC} `{HM : !Monoid M} `{HC : !IsCommutativeMonoid M}.
 Lemma monoid_mul_interchange (a b c d : M)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d).
 Proof.
-  rewrite monoid_assoc, <- (monoid_assoc b c d), (monoid_mul_comm b c),
-    (monoid_assoc c b d), <- monoid_assoc.
+  rewrite semigroup_assoc, <- (semigroup_assoc b c d), (monoid_mul_comm b c),
+    (semigroup_assoc c b d), <- semigroup_assoc.
   reflexivity.
 Defined.
 
