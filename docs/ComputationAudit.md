@@ -2740,3 +2740,113 @@ retains `typeprop` and batch PDF export.
 任务模块的 86 段对应语言说明及 72 个公共锚点再次逐项核对。清单恰好覆盖全部
 100 个接口各一次（70 个类、30 个记录），包括全部 29 个 `Has*` 类；两个新增
 接口来自上游新批次。仅更新任务分支，`typeprop` 和批次 PDF 仍由集成方管理。
+
+## Direct Applicative compatibility
+
+## 直接 Applicative 相容性
+
+This finite #35 slice continues the authorized serial task on
+`monoidal-cat-view`, from `c0e6fb1` on integrated baseline
+`5631b64a7ad8e854638cd116169ca6ef5ceee761`. It closes the outstanding direct
+Applicative comparison in E. Day convolution, profunctor/end/coend theory and
+free constructions are subsequent phases; no typed calculus is introduced.
+
+本次 #35 有限切片从集成基线 `5631b64a7ad8e854638cd116169ca6ef5ceee761`
+上的 `c0e6fb1` 继续已授权的 `monoidal-cat-view` 串行任务，补齐 E 中尚缺的
+直接 Applicative 比较。Day 卷积、profunctor／end／coend 理论及自由构造
+属于后续阶段；本批不引入有类型演算。
+
+[Applicative morphisms](../theories/Cat/Applicative/Morphism.v) are Type-valued
+pure/pairing preservation laws on supplied natural transformations. The
+shared theory proves stability under designated equality, identity, composition
+and the same chosen natural inverse. It derives lax-unit, arbitrary binary
+lifting and contextual pure preservation; selected exponentials add application
+preservation. The abstract theory uses named terminal/product choices and
+independent category sizes, with no extra strength or function-equality axioms.
+
+[Applicative 态射](../theories/Cat/Applicative/Morphism.v)是所给自然变换上的
+Type 值纯值／配对保持律。共用理论证明其在指定相等、恒等、复合及同一个
+选定自然逆下稳定，导出 lax 单位、任意二元提升及上下文纯值保持性；选定
+指数后另得应用保持性。抽象理论使用具名终对象／积选择及独立范畴大小，
+不添加强度或函数相等公理。
+
+[Dynamic comparison](../theories/Cat/Computational/Arrow/DynamicApplicative.v)
+reuses pure, composition and context preservation to compare first, split and
+fanout with the recovered Kleisli Arrow. The weaker terminal-input naming law
+in [Dynamic](../theories/Cat/Computational/Arrow/Dynamic.v) needs only an
+ordinary Arrow. Combined with the existing general Kleisli fanout comparison,
+it proves the two Applicatives' pairing comparison. The existing identity
+natural isomorphism preserves all operations in both directions. Computation
+object, native carrier and equality levels remain independent. This part needs
+neither exponentials nor the common native size bound used by application models.
+
+[动态比较](../theories/Cat/Computational/Arrow/DynamicApplicative.v)复用纯值、
+复合及上下文保持性，将 first、split、fanout 与回收 Kleisli Arrow 比较。
+[Dynamic](../theories/Cat/Computational/Arrow/Dynamic.v)中较弱的终输入命名律
+只需要通常 Arrow。结合已有一般 Kleisli fanout 比较，得到两个 Applicative
+的配对比较。已有恒等自然同构双向保持全部运算，计算对象、原生载体与相等
+层级保持独立。本部分既不需要指数，也不需要应用模型使用的共同原生大小界。
+
+[Native Kleisli compatibility](../theories/Instance/Set/KleisliApplicative.v)
+retains the existing native recovery model's common carrier/equality bound.
+It repackages the original evaluation/constant components on the actual
+Applicative functors and reuses their naturality and inverses, rather than
+requiring definitional equality of functor law records. It preserves the
+original supplied strength and ordered pairing. Both comparison triangles
+commute with Monad recovery. Composing the comparisons proves forward and
+inverse Applicative preservation for the recovered Monad with canonical
+strength. [Static recovery](../theories/Instance/Set/StaticArrow.v) exposes its
+previously proved comparisons through the shared preservation predicate.
+
+[原生 Kleisli 相容性](../theories/Instance/Set/KleisliApplicative.v)保留已有
+原生回收模型的共同载体／相等界，将原求值／常值分量重新打包到实际 Applicative
+函子上，复用其自然性及逆，不要求函子定律记录定义相等。它保留原所给强度
+及有序配对，两个比较三角与 Monad 回收交换。复合比较后，证明带规范强度的
+回收 Monad 双向保持 Applicative。[静态回收](../theories/Instance/Set/StaticArrow.v)
+通过共用保持性谓词暴露此前已证的比较。
+
+Proofs first compare explicitly typed abstract computation values, cancel
+identity comparison maps at the morphism level, then instantiate the values.
+This avoids expanding computations stored in lifted products during conversion.
+Proof-only opacity for pairing/fanout is local and restored before clients;
+all comparison maps retain transparent computational bodies.
+
+证明先比较具有明确类型的抽象计算值，在态射层消去恒等比较映射，再代入值，
+避免转换检查展开存于提升积中的计算。配对／fanout 的证明期不透明性仅局部
+使用，暴露客户端前恢复；全部比较映射保留透明计算体。
+
+Validation with the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
+OCaml 5.3.0, Dune 3.23.1): full-library `@all @runtest @install` passes.
+All **205 temporary assumption reports** are closed: 124 public/strict-size
+and application probes, and 81 concrete-model helpers/results. Size probes
+cover both strict hom/equality orders with objects above/below them, independent
+dynamic computation sizes, and both strict State carrier/equality orders below
+the native common bound. Import-only probes select no default Monad, strength
+or Applicative. **30 transparent Boolean-state reductions** cover pure,
+result maps, ordered pairing in both distinguishable effect orders, binary
+lifting, application, both comparison directions, round trips and comparison
+triangles. No permanent tests, shared test configuration, environment changes
+or concrete model-law proofs are added. Strict bilingual HTML covers 366 modules per language and 737 checked pages;
+batch PDF export remains with integration.
+
+使用原有 `rocq-cats` switch（Rocq/Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
+验证：全库 `@all @runtest @install` 通过。全部 **205 项临时公理报告**均无
+额外假设，其中 124 项为公共／严格大小及应用检查，81 项为具体模型辅助项／
+结果。大小检查覆盖 Hom／相等严格双序、对象位于其上／下、独立动态计算大小，
+以及共同原生界下 State 载体／相等的严格双序。仅导入检查不选择默认 Monad、
+强度或 Applicative。**30 项透明布尔状态归约**覆盖纯值、结果映射、可区分的
+两种效应次序下的有序配对、二元提升、应用、双向比较、往返及比较三角。
+未新增永久测试、共享测试配置、环境修改或具体模型定律证明。严格双语 HTML
+覆盖每种语言 366 个模块，检查 737 页；批次 PDF 仍由集成方导出。
+
+The agreed completion boundary now includes direct definitions/models,
+monoid-object characterizations and coherent connections, followed by the
+general free-monoid construction and justified free Monad/Applicative/Arrow
+instances with universal interpretation and uniqueness. Each specialization
+must prove its size/existence/preservation hypotheses. Typed language syntax
+and optional Cayley representations are outside that boundary.
+
+已定完结范围包含直接定义／模型、幺半群对象刻画与相干连接，再完成一般自由
+幺半群构造，以及具有泛解释与唯一性的自由 Monad／Applicative／Arrow 实例。
+每个特化均须证明其大小／存在性／保持性假设。有类型语言语法及可选 Cayley
+表示不属于该范围。

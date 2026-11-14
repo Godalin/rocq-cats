@@ -1,6 +1,7 @@
 From Cats Require Export
   Instance.Set.Arrow.
 From Cats Require Import
+  Cat.Applicative.Morphism
   Cat.Computational.Arrow.StaticCartesian
   Cat.Exponential.Laws
   Cat.Isomorphism
@@ -224,6 +225,29 @@ Proof.
   - exact (static_recovery_inv_l Z
       (lift₂[StaticRecoveredA; h] (StaticRecoveryInvN X f,
         StaticRecoveryInvN Y g))).
+Qed.
+
+(** The existing static recovery is an operation-preserving Applicative
+    comparison in the shared interface. Its previously proved pure and
+    pairing laws suffice for all derived operations. *)
+
+(** 已有静态回收在共用接口中是保持运算的 Applicative 比较；此前证明的纯值
+    与配对律足以推出全部导出运算的保持性。 *)
+
+Lemma static_recovery_applicative_hom
+  : is_applicative_hom StaticRecoveredA B StaticRecoveryN.
+Proof. split; [exact static_recovery_pure|exact static_recovery_pair]. Qed.
+
+(** The exact same chosen static inverse also satisfies the shared
+    preservation interface, by the general inverse theorem. *)
+
+(** 恰好同一个选定静态逆，也由一般求逆定理满足共用保持性接口。 *)
+
+Lemma static_recovery_applicative_inverse_hom
+  : is_applicative_hom B StaticRecoveredA StaticRecoveryInvN.
+Proof.
+  exact (applicative_hom_inverse _ _ _ static_recovery_applicative_hom
+    StaticRecoveryNatIso.2).
 Qed.
 
 End Recovery.

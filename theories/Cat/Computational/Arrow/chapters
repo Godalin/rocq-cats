@@ -14,6 +14,7 @@ Premonoidal.v
 Symmetric.v
 Freyd.v
 Applicative.v
+DynamicApplicative.v
 Static.v
 StaticEvaluation.v
 StaticRepresentation.v

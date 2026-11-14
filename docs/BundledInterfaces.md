@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 363 modules,
+covers 366 modules,
 70 classes and 30 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 363 个模块、70 个类及 30 个记录。清单覆盖
+更新，现覆盖 366 个模块、70 个类及 30 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -664,9 +664,9 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 181 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 183 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 13 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
-| `Instance/` | 105 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `Instance/` | 106 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
 | `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
@@ -1931,3 +1931,60 @@ once (70 classes, 30 records), including the unchanged 29 `Has*` classes.
 `magma_mul_l_resp`、`magma_mul_r_resp` 及 `semigroup_assoc`，保留数学运算、
 定律陈述、公共构造名称及测试断言。当前清单覆盖 363 个模块及全部 100 个接口
 各一次（70 个类、30 个记录），原有 29 个 `Has*` 类不变。
+
+## Direct Applicative compatibility
+
+## 直接 Applicative 相容性
+
+[The shared comparison theory](../theories/Cat/Applicative/Morphism.v)
+adds a Type-valued predicate on an existing natural transformation: preserve
+pure and ordered pairing. Naturality then gives preservation of every binary
+lifting and, with chosen exponentials, application in every ordinary context.
+Identity, vertical composition and a chosen natural-isomorphism inverse retain
+these laws. This is fixed-data theory; it adds no class, record, coercion path
+or chosen model instance.
+
+[共用比较理论](../theories/Cat/Applicative/Morphism.v)在已有自然变换上添加
+Type 值谓词，要求保持纯值与有序配对。自然性随后给出每个二元提升，以及
+选定指数时任意通常上下文中应用的保持性。恒等、垂直复合及选定自然同构逆
+均保留这些定律。这是固定数据理论，不新增类、记录、强制转换路径或选定
+模型实例。
+
+[Dynamic compatibility](../theories/Cat/Computational/Arrow/DynamicApplicative.v)
+uses the existing naming functor, pure/context preservation and general
+Kleisli fanout law. The recovered Monad's Applicative and the Arrow's own
+Applicative have an operation-preserving natural isomorphism in both
+directions, with independent computation-object, native carrier and equality
+sizes. No closed structure or equality of strength records is required.
+
+[动态相容性](../theories/Cat/Computational/Arrow/DynamicApplicative.v)使用
+已有命名函子、纯值／上下文保持性及一般 Kleisli fanout 律。回收 Monad 的
+Applicative 与 Arrow 自身的 Applicative 双向具有保持运算的自然同构，计算
+对象、原生载体及相等大小独立。不要求闭结构或强度记录相等。
+
+[The native Kleisli comparison](../theories/Instance/Set/KleisliApplicative.v)
+retains the existing recovery model's common carrier/equality bound and the
+original Monad's supplied strength. Evaluation/constant components are reused
+on the actual Applicative functors, without equating their functor law
+records. Both comparison triangles agree with the existing Monad recovery
+maps, and Monad recovery preserves the derived Applicative in both directions.
+[Static recovery](../theories/Instance/Set/StaticArrow.v) also exposes its
+existing pure/pairing comparisons through this same predicate.
+
+[原生 Kleisli 比较](../theories/Instance/Set/KleisliApplicative.v)保留已有
+回收模型的共同载体／相等界及原 Monad 所给强度。在实际 Applicative 函子上
+复用求值／常值分量，不等同函子定律记录。两个比较三角与已有 Monad 回收
+映射一致，Monad 回收也双向保持导出 Applicative。
+[静态回收](../theories/Instance/Set/StaticArrow.v)同样通过此谓词暴露已有
+纯值／配对比较。
+
+The current source inventory is 366 modules and 100 interfaces (70 classes,
+30 records), including all 29 `Has*` classes. This slice adds three theory/client
+modules and no bundled interface. See the [computation audit](./ComputationAudit.md)
+for assumptions, temporary validation and the agreed endpoint through free
+constructions; typed syntax is outside that completion boundary.
+
+当前源码清单为 366 个模块及 100 个接口（70 个类、30 个记录），包含全部
+29 个 `Has*` 类。本批新增三个理论／客户端模块，不新增打包接口。假设、临时
+验证及以自由构造为终点的已定范围，见[计算审计](./ComputationAudit.md)；
+有类型语法不属于该完结范围。

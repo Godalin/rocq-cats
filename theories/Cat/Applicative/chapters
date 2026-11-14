@@ -2,4 +2,5 @@ Core.v
 Operations.v
 Lifting.v
 Closed.v
+Morphism.v
 Application.v

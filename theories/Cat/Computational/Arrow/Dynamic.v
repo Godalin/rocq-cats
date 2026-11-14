@@ -94,6 +94,24 @@ Program Definition arrow_dynamic_name_resp (X Y : SetC@{u p})
   {|func := arrow_dynamic_name
   |}.
 
+(** Naming a terminal-input computation and evaluating its name at the
+    singleton leaves that computation unchanged. Only an ordinary Arrow
+    and the uniqueness of the terminal input are used. *)
+
+(** 命名终输入计算后，在单元素处求值命名，保持原计算不变。只使用通常 Arrow
+    及终输入的唯一性。 *)
+
+Lemma arrow_dynamic_name_global {Y : SetC@{u p}}
+    (f : Hom (A UnitS) (A Y))
+  : arrow_dynamic_name f tt ≈ f.
+Proof.
+  change (f ∘ arr[A; @const_resp UnitS UnitS tt] ≈ f).
+  transitivity (f ∘ arr[A; (id_resp (X := UnitS))]).
+  - apply comp_proper; [reflexivity|].
+    apply functor_fmap_proper. intros []. exact tt.
+  - rewrite arrow_arr_id, comp_id_r. reflexivity.
+Qed.
+
 (** Naming a computation with ordinary context pairs the fixed context
     with its named result. Invert the pure unit-context square; only an
     ordinary Arrow is needed, with no dynamic application or Monad. *)
