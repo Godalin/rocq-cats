@@ -22,7 +22,10 @@ Local Open Scope ordinal_scope.
     constant, since each of its edges also lies in a retained sphere face.
     This constructs sphere representatives and actual tetrahedra. It does
     not yet prove that different fillers give equal generated classes, or
-    that their choices define a group operation on classes. *)
+    that their choices define a group operation on classes. The next chapter
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereKan.SphereKanComposite}
+    {%[SphereKanComposite]%}% uses this gluing for actual composite and
+    inverse candidates. *)
 
 (** * 将基点球面粘成实际四面体 Horn
 
@@ -33,7 +36,9 @@ Local Open Scope ordinal_scope.
 
     选定填充给出缺失三角形。它的每条边也处于一个保留球面面中，因而边界仍为
     常值。由此构造球面代表及实际四面体；尚未证明不同填充给出相等生成类，
-    也未证明这些选择定义类上的群运算。 *)
+    也未证明这些选择定义类上的群运算。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereKan.SphereKanComposite}
+    {%[SphereKanComposite]%}% 用此粘合给出实际合成及逆候选。 *)
 
 (** ** Sphere Values Agree on Intersections
 
@@ -117,6 +122,27 @@ Lemma sphere_tetrahedron_horn_face (i : Ordinal 3)
     (a : Ordinal 3 → TwoSphereS X b) (j : Ordinal 3) (Hj : ¬ j = i)
   : face[i; j; Hj] (SphereTetrahedronHornN i a) ≈S (a j).1.
 Proof. apply simplex_restrict_id. Defined.
+
+(** Pointwise equality on retained faces gives equality of whole horn maps.
+    The value at the missing face is irrelevant; filler choices themselves
+    are not required to preserve this equality. *)
+
+(** 保留面上的逐点相等给出整个 horn 映射相等；缺失面处的值无关。不要求填充
+    选择本身保持此相等。 *)
+
+Lemma sphere_tetrahedron_horn_eq (i : Ordinal 3)
+    (a c : Ordinal 3 → TwoSphereS X b)
+    (E : ∀ j, ¬ j = i → a j ≈S c j)
+  : SphereTetrahedronHornN i a ≈S SphereTetrahedronHornN i c.
+Proof.
+  apply (snd (@generated_sieve_map_eq Δ 3
+    (∃ j : Ordinal 3, ¬ j = i) (λ _, 2%nat) (λ j, δ[2; j.1]) X _ _)).
+  intros [j Hj]. transitivity (a j).1.
+  - apply sphere_tetrahedron_horn_face.
+  - transitivity (c j).1.
+    + exact (E j Hj).
+    + symmetry. apply sphere_tetrahedron_horn_face.
+Defined.
 
 End SphereHornMatching.
 

@@ -30,6 +30,8 @@ Homotopy/Sphere.v
 Homotopy/SphereComposition.v
 Homotopy/SphereMap.v
 Homotopy/SphereCylinder.v
+Homotopy/SphereHorn.v
+Homotopy/SphereKan.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
