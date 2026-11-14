@@ -22,9 +22,11 @@ Local Existing Instance BoolS_Monoid.
     {%[vertex_two_sphere_unique]%}%. Naturality and component inverses
     therefore exclude a natural isomorphism from the Boolean cocycle model
     to any such nerve, including groupoid nerves. This is a proved
-    combinatorial distinction. Identification of the full homotopy group,
-    its multiplication and comparison with other homotopy presentations
-    remain further work. *)
+    combinatorial distinction. The next chapter
+    %\coqref{Cats.Instance.Bool.CocycleSphereGroup.BoolCocycleSphereClassS Group}
+    {%[BoolCocycleSphereClassS_Group]%}% supplies an order-two group on these
+    classes. Identification with other homotopy presentations and their
+    invariance remain further work. *)
 
 (** * 实际 Kan 模型中的两个球面类
 
@@ -35,8 +37,10 @@ Local Existing Instance BoolS_Monoid.
     由 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Sphere.vertex two sphere unique}
     {%[vertex_two_sphere_unique]%}%，普通范畴 nerve 只有一个基点二维球面。
     自然性及分量的逆因此排除布尔 cocycle 模型与任意此类 nerve 的自然同构，
-    其中包括群胚 nerve。这是已证明的组合区别；完整同伦群、其乘法及与其他
-    同伦呈现的比较仍须后续工作。 *)
+    其中包括群胚 nerve。这是已证明的组合区别。下一章
+    %\coqref{Cats.Instance.Bool.CocycleSphereGroup.BoolCocycleSphereClassS Group}
+    {%[BoolCocycleSphereClassS_Group]%}% 为这些类构造二阶群；与其他同伦呈现
+    的识别及其不变性仍须后续工作。 *)
 
 (** The actual sphere-class setoid at the unit vertex. *)
 

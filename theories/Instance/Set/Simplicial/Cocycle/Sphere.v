@@ -23,8 +23,10 @@ Local Open Scope monoid_scope.
 
     Only a monoid is needed for this calculation. The separately proved
     Kan theorem needs commutative group coefficients. This chapter computes
-    a sphere-class setoid; it does not yet equip it with the conventional
-    homotopy-group multiplication or compare cylinder presentations. *)
+    a sphere-class setoid. The next chapter
+    %\coqref{Cats.Instance.Set.Simplicial.Cocycle.SphereGroup.cocycle two sphere Group}
+    {%[cocycle_two_sphere_Group]%}% equips it with a group operation witnessed
+    by tetrahedra; comparison with cylinder presentations remains separate. *)
 
 (** * 系数分类基点二维球面
 
@@ -37,7 +39,10 @@ Local Open Scope monoid_scope.
     系数分类整个生成球面关系，包括任意有限链与代表替换。
 
     这个计算只需幺半群；独立证明的 Kan 定理要求交换群系数。本章计算球面类
-    广集，尚未赋予通常的同伦群乘法，也尚未比较柱呈现。 *)
+    广集。下一章
+    %\coqref{Cats.Instance.Set.Simplicial.Cocycle.SphereGroup.cocycle two sphere Group}
+    {%[cocycle_two_sphere_Group]%}% 赋予它具有四面体见证的群运算；柱呈现比较
+    仍是独立任务。 *)
 
 (** ** Spheres in the Cocycle Model
 

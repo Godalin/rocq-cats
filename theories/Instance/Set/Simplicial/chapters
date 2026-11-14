@@ -27,6 +27,7 @@ Vertex/Category.v
 Vertex/Cartesian.v
 Homotopy/Core.v
 Homotopy/Sphere.v
+Homotopy/SphereComposition.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
 Vertex/HomotopyInv.v
@@ -38,3 +39,4 @@ Cocycle/Sieve.v
 Cocycle/Four.v
 Cocycle/Kan.v
 Cocycle/Sphere.v
+Cocycle/SphereGroup.v
