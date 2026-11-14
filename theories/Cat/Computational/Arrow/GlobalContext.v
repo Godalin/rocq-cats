@@ -1,6 +1,7 @@
 From Cats Require Export
   Cat.Computational.Arrow.Pairing.
 Local Open Scope computation_scope.
+
 (** * Carrying Global Computations through Ordinary Inputs
 
     Fix an Arrow over selected finite products. Attach a terminal-input
@@ -36,7 +37,8 @@ Proof.
   intros f g H. unfold arrow_global_context. rewrite H. reflexivity.
 Qed.
 
-(** Inserting the ordinary terminal right context commutes with every computation. *)
+(** Inserting the ordinary terminal right context commutes with every
+    computation. *)
 
 (** 插入通常的右侧终上下文与每项计算交换。 *)
 
@@ -60,7 +62,8 @@ Proof.
       product_β1, functor_id, comp_id_r. reflexivity.
 Qed.
 
-(** A prior computation runs once; the global result is then paired with its output. *)
+(** A prior computation runs once; the global result is then paired with its
+    output. *)
 
 (** 先前计算只运行一次，再将全局计算结果与其输出配对。 *)
 
@@ -80,7 +83,8 @@ Proof.
   rewrite Hi, arrow_first_unit_inv. reflexivity.
 Qed.
 
-(** Attaching a global result is ordered fanout with the pure input identity. *)
+(** Attaching a global result is ordered fanout with the pure input
+    identity. *)
 
 (** 附加全局结果就是与纯输入恒等做有序扇出。 *)
 
@@ -92,7 +96,8 @@ Proof.
   rewrite comp_id_r in H. exact H.
 Qed.
 
-(** Attaching an ordered pair agrees with attaching the two global computations in sequence. *)
+(** Attaching an ordered pair agrees with attaching the two global
+    computations in sequence. *)
 
 (** 附加有序配对，等于依次附加两项全局计算。 *)
 
@@ -119,7 +124,8 @@ Proof.
     arrow_second_arr, comp_assoc. reflexivity.
 Qed.
 
-(** Pure input substitution commutes with attaching the same global computation. *)
+(** Pure input substitution commutes with attaching the same global
+    computation. *)
 
 (** 纯输入替换与附加同一项全局计算交换。 *)
 
@@ -152,7 +158,8 @@ Proof.
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
 Qed.
 
-(** Nested ordinary context is the selected reassociation of one larger context. *)
+(** Nested ordinary context is the selected reassociation of one larger
+    context. *)
 
 (** 嵌套通常上下文，等于对一个较大上下文作选定括号重排。 *)
 

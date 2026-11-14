@@ -11,3 +11,4 @@ Symmetric.v
 Freyd.v
 Applicative.v
 Static.v
+StaticEvaluation.v

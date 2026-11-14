@@ -1939,3 +1939,104 @@ shared toolchain change or integration-branch update was introduced.
 接口或模型选择，并保留独立范畴大小。全部十个公共声明及六项严格独立范畴
 探针通过临时公理检查（16 项报告，均无额外全局假设）；模块定向构建通过。
 没有新增永久测试、共享工具链变更或集成分支更新。
+
+
+## Static interpretation into the original Arrow
+
+## 解释静态计算回原 Arrow
+
+This authorized slice continues on `monoidal-cat-view` after rebasing onto
+`typeprop@c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`. The independently
+reusable [global-context foundation](../theories/Cat/Computational/Arrow/GlobalContext.v)
+was pushed first in
+[82e8efc](https://github.com/Godalin/rocq-cats/commit/82e8efca787a37e0626020fce7685c1dd30d548e).
+[StaticEvaluation](../theories/Cat/Computational/Arrow/StaticEvaluation.v)
+adds exponentials only for ordinary internal-function evaluation. It
+interprets a terminal-input internal function alongside its argument,
+using the original Arrow's context action. Pure names, ordered internal
+composition and context extension preserve the specified computation
+Hom equality. No Monad, strength, effect interchange or representation
+as a value-category endofunctor is assumed by this generic theory.
+
+本授权切片在 `monoidal-cat-view` 上重基到
+`typeprop@c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` 后继续。
+可独立复用的[全局上下文基础](../theories/Cat/Computational/Arrow/GlobalContext.v)
+已先在 [82e8efc](https://github.com/Godalin/rocq-cats/commit/82e8efca787a37e0626020fce7685c1dd30d548e)
+推送。[StaticEvaluation](../theories/Cat/Computational/Arrow/StaticEvaluation.v)
+仅为通常内部函数求值加入指数，使用原 Arrow 上下文作用，将终输入内部函数
+与其参数一起解释。纯命名、有序内部复合及上下文扩展均保持指定计算 Hom
+相等。一般理论不假设 Monad、强度、效应交换或值范畴自函子表示。
+
+[StaticInterpret](../theories/Instance/Set/StaticInterpret.v) packages the
+comparison as `StaticInterpretF`, from the static category of the Arrow's
+extracted Applicative into the original computation category. Its object
+map is the original pure object map; no object-map injectivity or unused
+ambient-object representation is assumed. The existing closed setoid
+model requires a common carrier/equality level matched by the computation
+hom-setoids. Computation-object size remains independent. This boundary
+is fixed once, with repeated universe instances inferred.
+
+[StaticInterpret](../theories/Instance/Set/StaticInterpret.v)将比较打包为
+`StaticInterpretF`：从 Arrow 抽取的 Applicative 的静态范畴，进入原计算
+范畴。对象映射为原纯对象映射，不要求其单射，也不假设表示环境中未用的
+对象。已有闭广集模型要求共用的载体／相等层级，计算 Hom 广集与之匹配；
+计算对象大小仍独立。此边界只固定一次，重复宇宙实例交由推断。
+
+`StaticInterpretPureIso` compares the interpreted static pure inclusion
+with the original pure functor by identity components and explicit
+identity inverses. Interpretation preserves composition and the same
+chosen left context. All computational maps and inverse witnesses remain
+transparent. This is an interpretation and operation-preservation result;
+fullness, faithfulness, inverse reconstruction, ArrowApply/Monad and typed
+syntax are not supplied by this slice. No new interface or chosen model
+instance is introduced.
+
+`StaticInterpretPureIso` 以恒等分量及显式恒等逆，将解释后的静态纯嵌入与
+原纯函子自然比较。解释保持复合及同一组选定左上下文。全部计算映射及逆
+见证保持透明。本批给出解释及运算保持结果；满性、忠实性、逆向重建、
+ArrowApply／Monad 与带类型语法不在本切片中。没有新增接口或选定模型实例。
+
+
+Full-library `dune build @all @runtest @install` passed with the unchanged
+`rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1).
+All 82 temporary assumption reports are closed under the global context:
+24 public declarations, 38 strict universe probes and 20 concrete
+constructions/result checks. The probes separate the two abstract
+categories in both hom/equality orders, retain a smaller or larger
+computation-object universe in the setoid interpreter, and separate
+Reader/State environment levels below the closed-model bound. State
+computations distinguish toggling before reading from reading before
+toggling and check context, pure values and the pure comparison. Reader
+values and context compute transparently. For the latter context check,
+the temporary source first evaluates the result by `vm_compute`, then
+compares the resulting small value; this avoids rechecking expanded
+structure proofs when closing an ordinary equality. Library maps remain
+transparent. Import probes confirm model choices require explicit enabling.
+The earlier 123 checks passed again after rebase. The earlier 16 foundation
+reports overlap this new 82-report batch and are not added again.
+
+在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。82 项
+临时公理报告均无额外全局假设：24 个公共声明、38 项严格宇宙探针及 20 项
+具体构造／结果检查。探针按两种 Hom／相等次序分离两个抽象范畴，在广集
+解释器中保留更小或更大的计算对象宇宙，并在闭模型界限下分离 Reader／State
+环境层级。State 计算区分先切换再读取与相反次序，也检查上下文、纯值及纯
+比较；Reader 的值与上下文透明计算。后一个上下文检查在临时源码中先用
+`vm_compute` 求出结果，再比较所得小值，避免关闭通常等式时重新检查展开的
+大量结构证明。库中映射保持透明。导入探针确认选定模型仍须显式启用。此前
+123 项检查也在重基后复验通过。先前 16 项基础报告与本批 82 项重叠，不重复
+计数。
+
+Strict bilingual HTML generated 344 modules per language and checked all
+693 pages. All 54 bilingual documentation blocks and 48 public declaration
+anchors in the three new modules were checked in their reading editions.
+The inventory remains 97 interfaces (68 classes, 29 records), including
+29 `Has*` classes. No permanent test, shared test alias or toolchain change
+was added. Only this task branch was changed; `typeprop` remains owned by
+integration. Batch PDF export remains with the integration session.
+
+严格双语 HTML 每种语言生成 344 个模块，全部 693 页检查通过。三个新模块的
+54 段双语说明及 48 个公共声明锚点均在对应阅读版逐项核对。清单仍为 97 个
+接口（68 个类、29 个记录），其中 29 个 `Has*` 类。没有新增永久测试、共享
+测试别名或工具链变更。只修改本任务分支；`typeprop` 仍由集成会话管理。
+批次 PDF 仍由集成会话导出。
