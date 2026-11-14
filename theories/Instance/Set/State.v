@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Monad.Applicative
-  Cat.Computational.Arrow.Kleisli
+  Instance.Set.KleisliApply
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
@@ -235,3 +235,15 @@ Definition StateArrow@{r e u p +} (R : SetC@{r e})
   : Arrow (SetCat@{u p _ _ _ _ _}) (KleisliCat (StateM R))
       SetCartesianMonoidal
   := KleisliArrow (StateStrongM R).
+
+
+(** Extend the same state Arrow by dynamic application, at the common
+    native Hom carrier/equality bound. This is an explicit model value;
+    importing it selects no instance. *)
+
+(** 在共同原生 Hom 载体／相等界上，为同一个状态 Arrow 增加动态应用。这是显式
+    模型值，导入不会选取实例。 *)
+
+Definition StateArrowApply@{r e u +} (R : SetC@{r e})
+  : ArrowApply (KleisliCat (StateM@{r e u u _ _ _ _ _} R))
+  := KleisliArrowApply (StateStrongM R).

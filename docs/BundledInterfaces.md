@@ -4,12 +4,12 @@
 
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 97 interfaces after the structural hierarchy slices
+inventory now includes 98 interfaces after the structural hierarchy slices
 and the synchronized integrated baseline,
 alongside the structural naming and inheritance findings after the CCC changes.
 
 [当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含结构层级批次及已同步集成基线后的 97 个接口，
+起初分类全部 87 个类／记录接口；清单现包含结构层级批次及已同步集成基线后的 98 个接口，
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
@@ -592,8 +592,8 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 347 modules,
-68 classes and 29 records.
+covers 350 modules,
+69 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
 principal inheritance clients. It also considers definition-based interfaces
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 347 个模块、68 个类及 29 个记录。清单覆盖
+更新，现覆盖 350 个模块、69 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -662,12 +662,12 @@ and opposite-based dual constructions.
 | Layer / 层次 | Modules / 模块数 | Observed boundary / 已核对边界 |
 | --- | ---: | --- |
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
-| `Set/` | 12 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
+| `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 162 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 175 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
-| `Instance/` | 79 | Models and model-specific bridges / 模型及模型特有的桥接 |
-| `STLC/` | 21 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
+| `Instance/` | 100 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
 | `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
 
@@ -704,6 +704,7 @@ flowchart LR
   LaxMonoidalFunctor -->|LaxMonoidalF| Functor
   ApplicativeOps -->|OpsF| Functor
   ApplicativeAp -->|ApF| Functor
+  ArrowApply -->|ArrowApplyA| Arrow
   Arrow -->|ArrowF| Functor
   CwF -->|TyTmF| Functor
   Functor -->|F0| ObjectMap
@@ -820,6 +821,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [CommaOb](../theories/Cat/Comma/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [CommaHom](../theories/Cat/Comma/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [Comprehension](../theories/Cat/Comprehension.v) | `Record` | Dependent semantics / 依赖语义 |
+| [ArrowApply](../theories/Cat/Computational/Arrow/Apply.v) | `Class` | Computational structures / 计算结构 |
 | [Arrow](../theories/Cat/Computational/Arrow/Core.v) | `Class` | Computational structures / 计算结构 |
 | [HasCoproduct](../theories/Cat/Coproduct/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [Cat](../theories/Cat/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
@@ -1513,14 +1515,14 @@ and exponentials, with a terminal object added for unit evaluation.
 相等及从左到右的效应，不假设交换律或 Monad。一般图只要求积与指数，在
 单位求值处另加终对象。
 
-The current inventory covers 347 modules and the unchanged 97 interfaces
-(68 classes, 29 records), including all 29 `Has*` classes. Work continues
+The current inventory covers 350 modules and 98 interfaces
+(69 classes, 29 records), including all 29 `Has*` classes. Work continues
 with categorical semantic structures and their correspondence conditions;
 typed syntax is deferred until that semantic development is established.
 The [audit](./ComputationAudit.md#static-cartesian-operation-comparisons)
 records validation and the exact delivered comparison level.
 
-当前清单覆盖 347 个模块及原有 97 个接口（68 个类、29 个记录），包括全部
+当前清单覆盖 350 个模块及 98 个接口（69 个类、29 个记录），包括全部
 29 个 `Has*` 类。后续继续范畴语义结构及其对应条件，待语义发展建立后再
 讨论带类型语法。[审计](./ComputationAudit.md#static-cartesian-operation-comparisons)
 记录验证及本次交付的精确比较层次。
@@ -1591,13 +1593,12 @@ No equality of functor records or proof fields is used.
 This delivers the Applicative-to-static-Arrow-to-Applicative semantic round
 trip on that model. It does not reconstruct every Arrow from its global
 values; precise static/dynamic reconstruction conditions remain separate
-semantic work. The inventory now covers 347 modules and all 97 interfaces
-unchanged. Syntax remains deferred until the semantic development is
-established.
+semantic work. The inventory now covers 350 modules and all 98 interfaces.
+Syntax remains deferred until the semantic development is established.
 
 本批给出该模型上的 Applicative 经静态 Arrow 再回到 Applicative 的语义
 往返，不从全局值重建任意 Arrow。精确的静态／动态重建条件仍是独立后续
-语义工作。清单现覆盖 347 个模块，原有 97 个接口不变。语法继续等语义
+语义工作。清单现覆盖 350 个模块及 98 个接口。语法继续等语义
 建立后再讨论。
 
 
@@ -1682,13 +1683,84 @@ client retains an independent computation-object size.
 环境对象选取代表。一般理论保留独立范畴 Hom 大小，广集客户端保留独立计算
 对象大小。
 
-The current inventory covers 347 modules and the unchanged 97 interfaces
-(68 classes, 29 records), including all 29 `Has*` classes. ArrowApply and its
-Monad relationship remain subsequent semantic work; typed syntax stays
-deferred. The [audit](./ComputationAudit.md#static-representation-and-inverse-reconstruction)
+At static reconstruction delivery the inventory covered 347 modules and
+97 interfaces (68 classes, 29 records), including all 29 `Has*` classes.
+The following slice adds ArrowApply and its Kleisli instance; the reverse
+Monad construction and typed syntax remain deferred. The
+[audit](./ComputationAudit.md#static-representation-and-inverse-reconstruction)
 records exact hypotheses, temporary computations and validation.
 
-当前清单覆盖 347 个模块，原有 97 个接口（68 个类、29 个记录）及全部 29 个
-`Has*` 类不变。ArrowApply 及其 Monad 关系仍属后续语义工作，带类型语法继续
-暂缓。[审计](./ComputationAudit.md#static-representation-and-inverse-reconstruction)
+静态重建交付时清单为 347 个模块、97 个接口（68 个类、29 个记录），包括全部
+29 个 `Has*` 类。下个切片增加 ArrowApply 及其 Kleisli 实例，反向 Monad
+构造和带类型语法继续暂缓。[审计](./ComputationAudit.md#static-representation-and-inverse-reconstruction)
 记录精确假设、临时计算及验证。
+
+
+## Dynamic Arrow application and Kleisli models
+
+## 动态 Arrow 应用与 Kleisli 模型
+
+[ArrowApply](../theories/Cat/Computational/Arrow/Apply.v) stores exactly one
+`ArrowApplyA :> Arrow` parent. Its existing pure-functor and object-map views
+remain available through that chain; arrow maps still use `fmap`. The new
+operation accepts a native computation Hom value and an ordinary input,
+then runs that computation. Pure pairing, input computation substitution
+and output computation postcomposition are its three laws, matching
+[Control.Arrow](https://downloads.haskell.org/ghc/9.6.7.20250131/docs/libraries/base-4.18.3.0/Control-Arrow.html)
+after expanding `first` on pure arrows. The fixed-computation application
+law follows from these fields and ordinary Arrow equations in native Hom
+equality; it does not assume that pointwise tests determine computations.
+
+[ArrowApply](../theories/Cat/Computational/Arrow/Apply.v)仅保存一个
+`ArrowApplyA :> Arrow` 父结构，沿该链恢复已有纯函子及对象映射视图，箭头
+映射仍使用 `fmap`。新增运算接受原生计算 Hom 值与通常输入，并运行该计算。
+三条定律分别表达纯配对、输入计算代入及输出计算后合成，对应
+[Control.Arrow](https://downloads.haskell.org/ghc/9.6.7.20250131/docs/libraries/base-4.18.3.0/Control-Arrow.html)
+在纯箭头上展开 `first` 后的定律。固定计算应用律由这些字段与通常 Arrow
+方程在原生 Hom 相等下导出，不假设逐点测试决定计算相等。
+
+This interface uses the setoid base, matching computation hom carrier and
+equality levels to their ambient setoid levels, with an independent
+computation-object level. It requires no selected exponentials. It does
+not provide an internal representation of computation homs in every
+abstract CCC. [Pointwise strength](../theories/Instance/Set/Strength.v)
+first proves that any supplied setoid strength pairs a fixed context with
+the functor result, so its components are unique in specified equality.
+Its carrier/equality levels remain independent.
+
+该接口使用广集基底，将计算 Hom 载体及相等层级对应于所在广集层级，计算
+对象层级独立，不要求选定指数。它不提供任意抽象 CCC 中计算 Hom 的内部
+表示。[逐点强度](../theories/Instance/Set/Strength.v)先证明任意给定广集
+强度将固定上下文配到函子结果旁边，因此其分量在指定相等下唯一；该结论
+保留独立载体／相等层级。
+
+[KleisliArrowApply](../theories/Instance/Set/KleisliApply.v) extends the
+exact existing Kleisli Arrow of a supplied strong Monad. Applying a
+Kleisli computation is ordinary respectful function evaluation. The
+input-substitution law reuses the general pointwise strength result and
+Kleisli extension; no model-specific law proof is copied. Native
+Kleisli Hom-as-input uses the stated common carrier/equality bound.
+[StateArrowApply](../theories/Instance/Set/State.v) explicitly selects this
+construction for the existing state Monad, retaining separate state
+carrier/equality levels below that bound. Imports select no model instance.
+
+[KleisliArrowApply](../theories/Instance/Set/KleisliApply.v)扩充所给强 Monad
+恰好已有的 Kleisli Arrow，应用 Kleisli 计算就是通常保相等函数求值。输入
+代入律复用一般逐点强度及 Kleisli 扩张，不重复具体模型定律证明。将原生
+Kleisli Hom 作为输入使用已声明的共同载体／相等界。
+[StateArrowApply](../theories/Instance/Set/State.v)为已有状态 Monad 显式选择
+此构造，状态载体／相等层级仍在该界下独立。导入不选取模型实例。
+
+The inventory now covers 350 modules and all 98 interfaces (69 classes,
+29 records), including the same 29 `Has*` classes. This delivers the
+strong-Monad-to-ArrowApply direction on the stated base. Constructing a
+Monad from ArrowApply and proving the desired reverse comparisons remain
+subsequent semantic work; syntax remains deferred. The
+[audit](./ComputationAudit.md#lawful-arrowapply-and-kleisli-dynamic-application)
+records validation and exact boundaries.
+
+清单现覆盖 350 个模块、全部 98 个接口（69 个类、29 个记录），保留原有 29 个
+`Has*` 类。本批交付上述基底上的强 Monad 到 ArrowApply 方向；从 ArrowApply
+构造 Monad 及所需反向比较仍属后续语义工作，语法继续暂缓。
+[审计](./ComputationAudit.md#lawful-arrowapply-and-kleisli-dynamic-application)
+记录验证及精确边界。

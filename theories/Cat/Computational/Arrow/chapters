@@ -2,6 +2,7 @@ Core.v
 Pure.v
 Kleisli.v
 Cartesian.v
+Apply.v
 Pairing.v
 GlobalContext.v
 Global.v

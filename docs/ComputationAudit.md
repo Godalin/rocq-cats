@@ -2227,3 +2227,130 @@ No interface, chosen model, permanent test or shared toolchain was added.
 模块构建通过。六项临时公理报告均无额外全局假设：两个公共引理及四项严格
 探针，按两种次序分离所在载体／相等宇宙。没有新增接口、选定模型、永久测试
 或共享工具链，没有修改 `typeprop`；客户端完成后再进行整批验证。
+
+
+## Lawful ArrowApply and Kleisli dynamic application
+
+## 带定律的 ArrowApply 与 Kleisli 动态应用
+
+This finite slice continues on `monoidal-cat-view` from `57f7fa1`.
+The independently reusable pointwise-strength prerequisite was delivered
+first in [740e1c2](https://github.com/Godalin/rocq-cats/commit/740e1c2).
+The validated integrated baseline remains
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`.
+[ArrowApply](../theories/Cat/Computational/Arrow/Apply.v) extends one
+cartesian Arrow over the setoid base with dynamic application of an input
+computation value. Its three laws are the pure-pairing, input-substitution
+and postcomposition equations in
+[Control.Arrow](https://downloads.haskell.org/ghc/9.6.7.20250131/docs/libraries/base-4.18.3.0/Control-Arrow.html),
+after using the existing equation for `first` on pure arrows. This is a
+certified interface, with Type-valued native Hom equality and all laws
+supplied, rather than an operation class with unenforced laws.
+
+本有限切片在 `monoidal-cat-view` 上从 `57f7fa1` 继续，可独立复用的逐点强度
+基础已先在 [740e1c2](https://github.com/Godalin/rocq-cats/commit/740e1c2) 交付。
+已验证集成基线仍为 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
+[ArrowApply](../theories/Cat/Computational/Arrow/Apply.v)扩充一个广集基底上
+的笛卡尔 Arrow，动态应用输入中提供的计算值。三条定律为
+[Control.Arrow](https://downloads.haskell.org/ghc/9.6.7.20250131/docs/libraries/base-4.18.3.0/Control-Arrow.html)
+的纯配对、输入代入及后合成方程，使用已有纯箭头 `first` 方程展开。本接口
+实际提供全部定律见证，使用 Type 值原生 Hom 相等，不是只有操作而未验证
+定律的类。
+
+The sole immediate parent is `ArrowApplyA :> Arrow`. Its pure functor and
+object-map coercions are inherited through that parent, while morphism
+mapping remains `fmap`. No inherited operations, context choices or
+bypass coercions are duplicated. Fixed-computation application, its
+respectfulness, postcomposition law and identity/value recovery are
+separate derived operations and proofs. The value-recovery proof uses
+only the class laws and ordinary Arrow equations; it assumes no
+faithfulness of pure inclusion or pointwise extensionality of computation
+arrows.
+
+唯一直接父结构为 `ArrowApplyA :> Arrow`，经该父结构继承纯函子与对象映射
+强制转换，态射映射保留 `fmap`。不重复继承运算、上下文选择或直达祖先的
+强制转换。固定计算应用、其尊重性、后合成律及恒等／值恢复均单独导出。
+值恢复证明仅使用类定律及通常 Arrow 方程，不假设纯嵌入忠实，也不假设计算
+箭头的逐点外延性。
+
+The interface explicitly matches computation hom carrier/equality levels
+with its ambient setoids; its computation-object size is independent.
+No selected exponential is needed. This is a native setoid presentation,
+not a construction of internal computation-hom objects in every CCC.
+[Kleisli dynamic application](../theories/Instance/Set/KleisliApply.v)
+uses respectful evaluation with the exact existing Arrow of an arbitrary
+supplied strong Monad. Its input-substitution proof reuses pointwise
+strength and ordinary Kleisli extension, so it works with that supplied
+strength rather than replacing it by a concrete implementation. For
+native Kleisli homs to be input objects, this client uses the stated common
+carrier/equality bound. The underlying ordinary Monad is unchanged.
+[StateArrowApply](../theories/Instance/Set/State.v) is the explicit model
+value, retaining independent state carrier/equality levels below that
+bound. All computation data remain transparent.
+
+接口显式将计算 Hom 载体／相等层级对应到所在广集，计算对象大小独立，不要求
+选定指数。这是原生广集呈现，不是在每个 CCC 中构造内部计算 Hom 对象。
+[Kleisli 动态应用](../theories/Instance/Set/KleisliApply.v)使用保相等求值，
+保留任意所给强 Monad 恰好已有的 Arrow。其输入代入证明复用逐点强度及通常
+Kleisli 扩张，适用于原选定强度，不将它替换为具体实现。为使原生 Kleisli Hom
+可以作为输入对象，此客户端使用已声明的共同载体／相等界，底层普通 Monad
+保持不变。[StateArrowApply](../theories/Instance/Set/State.v)是显式模型值，
+其状态载体／相等层级仍在该界下独立。全部计算数据保持透明。
+
+Full-library `dune build @all @runtest @install` passed with the unchanged
+`rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1).
+All 139 temporary assumption reports are closed under the global context:
+18 new public interfaces/constructions/laws including the class fields,
+66 strict universe and coercion probes, three native model signatures,
+and 52 concrete constructions/result checks. The strict probes retain both
+hom/equality orders with computation-object universes below or above
+them, check the complete Arrow/functor/object-map coercion chain, separate
+the strength foundation's ambient levels, and separate state carrier and
+equality levels below the native model bound. The earlier six foundation
+reports overlap this batch and are not added again.
+
+在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
+Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。139 项
+临时公理报告均无额外全局假设：18 个新公共接口／构造／定律（包含类字段）、
+66 项严格宇宙及强制转换探针、三个原生模型签名、52 项具体构造／结果检查。
+严格探针在 Hom／相等两种次序下保留比它们更小或更大的计算对象宇宙，检查
+完整 Arrow／函子／对象映射转换链，分离强度基础所在层级，并在原生模型界下
+分离状态载体与相等层级。此前六项基础报告与本批重叠，不重复计数。
+
+The concrete batch includes 18 VM reductions after importing the public
+modules. State examples dynamically choose between reading and toggling
+then reading, based on a runtime ordinary input. Separate results check
+input computation substitution versus output postcomposition, fixed
+application, identity, pure pairing and the inherited views. Temporary
+sources first compute large transparent constructions and then compare the
+resulting small values. Import probes confirm that products, Monad,
+strength and ArrowApply models require explicit selection. No temporary
+check was installed as a permanent test or shared test alias; no new axiom
+or shared toolchain change was introduced.
+
+具体批次在导入公开模块后完成 18 项 VM 求值。状态例子根据运行时通常输入，
+动态选择读取或先切换再读取；分别核对输入计算代入与输出后合成、固定应用、
+恒等、纯配对及继承视图。临时源码先求值大型透明构造，再比较所得小值。
+导入探针确认积、Monad、强度及 ArrowApply 模型仍须显式选择。临时检查没有
+安装为永久测试或共享测试别名，也没有新公理或共享工具链变更。
+
+Strict bilingual HTML generated 350 modules per language and checked all
+705 pages. The four reviewed modules have 72 bilingual documentation
+blocks and 62 public declaration anchors, all checked in their reading
+editions; these counts include the existing state-model declarations.
+The inventory covers all 98 interfaces exactly once (69 classes,
+29 records), including the unchanged 29 `Has*` classes. Only this task
+branch was changed; `typeprop` remains owned by integration. Batch PDF
+export remains with integration. This slice delivers the strong-Monad-to-
+ArrowApply direction on its stated base. Recovering a Monad from
+ArrowApply, dynamic representation comparisons and typed syntax remain
+subsequent work; no equivalence of all computational structure records
+is claimed here.
+
+严格双语 HTML 每种语言生成 350 个模块，全部 705 页检查通过。四个复核模块的
+72 段双语说明及 62 个公共声明锚点均在对应阅读版逐项核对，计数包含已有状态
+模型声明。清单恰好覆盖全部 98 个接口各一次（69 个类、29 个记录），原有
+29 个 `Has*` 类不变。只修改本任务分支，`typeprop` 仍由集成会话管理，批次
+PDF 仍由集成方统一导出。本批交付已声明基底上的强 Monad 到 ArrowApply
+方向；从 ArrowApply 回收 Monad、动态表示比较及带类型语法仍属后续工作，
+此处不宣称全部计算结构记录的等价。
