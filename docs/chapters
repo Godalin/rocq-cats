@@ -12,6 +12,7 @@ theories/Algebra/Group/Cocycle.v
 theories/Cat/Diagram/Cocycle.v
 theories/Instance/Bool/Cocycle.v
 theories/Instance/Bool/CocycleModel.v
+theories/Instance/Bool/CocycleKan.v
 theories/Cat
 theories/STLC
 theories/DTT

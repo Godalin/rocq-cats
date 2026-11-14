@@ -31,3 +31,7 @@ Vertex/Homotopy.v
 Vertex/HomotopyInv.v
 Cocycle/Core.v
 Cocycle/Low.v
+Cocycle/Finite.v
+Cocycle/Sieve.v
+Cocycle/Four.v
+Cocycle/Kan.v
