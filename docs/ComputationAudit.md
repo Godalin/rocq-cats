@@ -2970,3 +2970,70 @@ It does not claim the mathematical construction as new.
 及[反 end 形式的 coend 接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Coend.v)。
 此实现沿用本库已有的锥／终对象接口，复用一般反范畴及自然变换理论，不将该
 数学构造宣称为新结果。
+
+### End/coend existence from selected products and equalizers
+
+### 从选定积和等化子得到 end／coend 的存在性
+
+[Constrained-family factorization](../theories/Cat/Product/Equalizer.v)
+extracts the common argument used by ordinary limits and ends: a family
+determines a product arrow, and an equalizing product arrow factors uniquely
+through a candidate equalizer. The existing
+[limit construction](../theories/Cat/Limit/Construction.v) now reuses this
+lemma without changing its public statements or selected objects.
+
+[受约束族的分解](../theories/Cat/Product/Equalizer.v)提取普通极限和 end 的
+共同论证：箭头族确定指向积的箭头，满足等化条件的积箭头经过候选等化子唯一
+分解。已有[极限构造](../theories/Cat/Limit/Construction.v)改用此引理，
+不改变公共陈述或选定对象。
+
+The [end construction](../theories/Cat/End/Construction.v) requires only
+the product of diagonal values, the product of one off-diagonal value per
+arrow, and an equalizer of the resulting two constraint maps. Arrow indices
+retain endpoints and a morphism, without storing hom-equality witnesses.
+`ProductsEqualizerEndOf` accepts that one candidate equalizer; the convenience
+constructor additionally accepts chosen equalizers. Neither requires limits
+of unrelated diagrams. The
+[coend construction](../theories/Cat/Coend/Construction.v) adapts selected
+coproducts to opposite products and reuses the same end construction, including
+its universal mediator and uniqueness proof. It does not build a second
+universal-property proof or compare duplicate constructions.
+
+[End 构造](../theories/Cat/End/Construction.v)只需对角值的积、按每条箭头
+索引的非对角值的积，以及两条约束映射的等化子。箭头指标保留端点与态射，
+不存储 Hom 相等见证。`ProductsEqualizerEndOf` 接受这一个候选等化子；
+便捷构造另接受选定等化子。两者都不要求无关图式的极限。
+[Coend 构造](../theories/Cat/Coend/Construction.v)将选定余积适配为反积，
+复用同一个 end 构造及其泛中介与唯一性证明，不另建泛性质证明或比较重复构造。
+
+The explicit [setoid end model](../theories/Instance/Set/End.v) reuses
+dependent products and equalizers. Sufficient bounds for this construction
+are that the index category's object and hom-carrier levels fit its target
+equality level, which in turn fits the target carrier level. The explicit
+[setoid coend model](../theories/Instance/Set/Coend.v) reuses indexed sums
+and generated coequalizer equality. Here the index object and hom-carrier
+levels fit the target carrier level, which fits the target equality level;
+generated equality may retain intermediate representatives. In both models
+the index category's hom-equality level stays independent. These bounds are
+sufficient conditions for the particular models, without a resizing axiom
+or a claim of optimal necessity. Importing either module does not register
+a global choice.
+
+显式[广集 end 模型](../theories/Instance/Set/End.v)复用依赖积和等化子。
+此构造的充分大小条件是：指标范畴的对象和 Hom 载体层级容纳于目标相等层级，
+后者又容纳于目标载体层级。显式
+[广集 coend 模型](../theories/Instance/Set/Coend.v)复用指标和及生成的
+余等化子相等。这里指标对象和 Hom 载体层级容纳于目标载体层级，后者容纳于
+目标相等层级；生成相等可能保留中间代表。两个模型均保持指标范畴的 Hom 相等
+层级独立。这些是特定模型的充分条件，不使用大小重设公理，也不宣称是最优
+必要条件。导入任一模块都不注册全局选择。
+
+This batch supplies the promised existence foundation. It does not assert
+that a full fixed-size setoid category can index coends in itself. Day and
+strong-profunctor constructions must state their own actual size and
+existence conditions. Their monoid characterizations, coherent comparisons
+and suitably conditional free constructions remain subsequent work.
+
+本批交付所需的存在性基础，不声称固定大小的全体广集范畴可以为自身的 coend
+提供指标。Day 与强 profunctor 构造须说明各自实际的大小和存在条件。
+其幺半群刻画、相干比较及有适当条件的自由构造仍留待后续工作。
