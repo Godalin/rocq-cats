@@ -152,11 +152,13 @@ Proof.
       (fmap A x × fmap A (@id Y)) ∘ (pure[A] 1 × id)).
   { rewrite functor_id, <- cross_comp, comp_id_l. reflexivity. }
   rewrite K, <- comp_assoc, (cartesian_lift2_pre A f x id).
-  unfold lax_lift2. rewrite H, functor_comp.
-  transitivity (fmap A g ∘
-    (lift₂[A; (π2 : Hom (1 × Y) Y)] ∘ (pure[A] 1 × id))).
-  - unfold lax_lift2. rewrite !comp_assoc. reflexivity.
-  - rewrite (applicative_unit_l Y). reflexivity.
+  transitivity
+    (lift₂[A; g ∘ (π2 : Hom (1 × Y) Y)] ∘ (pure[A] 1 × id)).
+  - apply comp_proper; [| reflexivity].
+    unfold lax_lift2. apply comp_proper;
+      [exact (@functor_fmap_proper C C A _ _ _ _ H) | reflexivity].
+  - rewrite <- (lax_lift2_post A (π2 : Hom (1 × Y) Y) g),
+      comp_assoc, (applicative_unit_l Y). reflexivity.
 Qed.
 
 (** A fixed pure right input similarly reduces to partial evaluation. *)
@@ -173,11 +175,13 @@ Proof.
       (fmap A (@id X) × fmap A y) ∘ (id × pure[A] 1)).
   { rewrite functor_id, <- cross_comp, comp_id_l. reflexivity. }
   rewrite K, <- comp_assoc, (cartesian_lift2_pre A f id y).
-  unfold lax_lift2. rewrite H, functor_comp.
-  transitivity (fmap A g ∘
-    (lift₂[A; (π1 : Hom (X × 1) X)] ∘ (id × pure[A] 1))).
-  - unfold lax_lift2. rewrite !comp_assoc. reflexivity.
-  - rewrite (applicative_unit_r X). reflexivity.
+  transitivity
+    (lift₂[A; g ∘ (π1 : Hom (X × 1) X)] ∘ (id × pure[A] 1)).
+  - apply comp_proper; [| reflexivity].
+    unfold lax_lift2. apply comp_proper;
+      [exact (@functor_fmap_proper C C A _ _ _ _ H) | reflexivity].
+  - rewrite <- (lax_lift2_post A (π1 : Hom (X × 1) X) g),
+      comp_assoc, (applicative_unit_r X). reflexivity.
 Qed.
 
 End Laws.
