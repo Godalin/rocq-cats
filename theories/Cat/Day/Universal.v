@@ -173,6 +173,23 @@ Defined.
 
 End Injections.
 
+(** A convolution map acts on the two generator values and retains the
+    weight. This specializes the general coend map computation law. *)
+
+(** 卷积映射作用于两个生成元值并保留权重；这是一般 coend 映射计算律的特化。 *)
+
+Lemma day_map_inject@{u p +} {C : Cat} (T : Functor (C ×C C) C)
+    {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})}
+    `{HD : !HasDay C T F G} `{HD' : !HasDay C T F' G'}
+    (α : F ⇒ F') (β : G ⇒ G') (q : @Ob (C ×C C))
+    {Z : @Ob C} (h : Hom (T q) Z) (x : F (fst q)) (y : G (snd q))
+  : DayMapN T α β Z (day_inject T F G q h (x,y)) ≈S
+      day_inject T F' G' q h (α (fst q) x, β (snd q) y).
+Proof.
+  exact (@coend_map_β (C ×C C) SetCat _ _ _ _
+    (DayInputN T α β Z) q ({|lower := h|}, (x,y))).
+Defined.
+
 (** ** Extending a Natural Binary Operation
 
     Fix an output functor [H]. An operation from the external input product
