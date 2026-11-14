@@ -62,6 +62,123 @@ Defined.
 Next Obligation. split; apply functor_id. Defined.
 Next Obligation. split; apply functor_comp. Defined.
 
+(** ** Fixing the Second Product Coordinate
+
+    For categories [A], [B], [C] and [K : Functor (A ×C B) C], fixing
+    an object of [B] gives the existing restriction [π1F K b] on [A].
+    An arrow of [B] then gives a natural transformation between these
+    restrictions. This uses product
+    categories, without choosing products inside any of the three categories. *)
+
+(** ** 固定积的第二坐标
+
+    给定范畴 [A]、[B]、[C] 及 [K : Functor (A ×C B) C]，固定 [B] 的一个
+    对象就得到已有的限制函子 [π1F K b]；[B] 中的箭头随后给出这些限制之间
+    的自然变换。
+    此处使用积范畴，不在这三个范畴内选取积结构。 *)
+
+Section ProductRestrictions.
+Context {A B C : Cat} (K : Functor (A ×C B) C).
+
+(** The second-coordinate arrow acts at every first-coordinate object. *)
+
+(** 第二坐标的箭头在每个第一坐标对象处作用。 *)
+
+Program Definition ProductAtN {b b' : @Ob B} (a : Hom b b')
+  : π1F K b ⇒ π1F K b'
+  :=
+  {|nt x := fmap K (X := (x, b)) (Y := (x, b')) (id, a)
+  |}.
+Next Obligation.
+  cbn. rewrite <- !functor_comp. apply functor_fmap_proper.
+  split; carw.
+Defined.
+
+(** Equal parameter arrows induce pointwise equal transformations. *)
+
+(** 相等的参数箭头诱导逐点相等的自然变换。 *)
+
+Global Instance product_at_proper {b b' : @Ob B}
+  : Proper (@HomEq B b b' ==> NatEq) (@ProductAtN b b').
+Proof.
+  intros a a' H x. cbn. apply functor_fmap_proper.
+  split; [reflexivity | exact H].
+Defined.
+
+(** An identity parameter arrow gives the identity transformation. *)
+
+(** 恒等参数箭头给出恒等自然变换。 *)
+
+Lemma product_at_id (b : @Ob B)
+  : ProductAtN (@Cat.Core.id B b) ≈N idN.
+Proof. intros x. exact (@functor_id _ _ K (x, b)). Defined.
+
+(** Composition in the parameter becomes vertical composition. *)
+
+(** 参数中的复合变成自然变换的垂直复合。 *)
+
+Lemma product_at_comp {b b' b'' : @Ob B}
+    (a' : Hom b' b'') (a : Hom b b')
+  : ProductAtN (a' ∘ a) ≈N (ProductAtN a' ∘Nv ProductAtN a).
+Proof.
+  intros x. cbn. rewrite <- functor_comp. apply functor_fmap_proper.
+  split; cbn; carw; reflexivity.
+Defined.
+
+(** A product arrow first changes the parameter, then the first coordinate. *)
+
+(** 积中的箭头可先改变参数，再改变第一坐标。 *)
+
+Lemma product_at_map {x y : @Ob A} {b b' : @Ob B}
+    (f : Hom x y) (a : Hom b b')
+  : fmap K (X := (x, b)) (Y := (y, b')) (f, a) ≈
+      fmap (π1F K b') f ∘ ProductAtN a x.
+Proof.
+  cbn. rewrite <- functor_comp. apply functor_fmap_proper.
+  split; cbn; carw; reflexivity.
+Defined.
+
+End ProductRestrictions.
+
+(** Restrict a natural comparison to one parameter value. *)
+
+(** 将自然比较限制在一个参数值。 *)
+
+Program Definition ProductRestrictionN {A B C : Cat}
+    {K L : Functor (A ×C B) C} (β : K ⇒ L) (b : @Ob B)
+  : π1F K b ⇒ π1F L b
+  :=
+  {|nt x := β (x, b)
+  |}.
+Next Obligation.
+  exact (nt_naturality β (X := (X, b)) (Y := (Y, b)) (f, id)).
+Defined.
+
+(** Restriction preserves the specified pointwise equality of comparisons. *)
+
+(** 限制保持比较所指定的逐点相等。 *)
+
+Global Instance product_restriction_proper {A B C : Cat}
+    {K L : Functor (A ×C B) C} (b : @Ob B)
+  : Proper (NatEq ==> NatEq) (λ β : K ⇒ L, ProductRestrictionN β b).
+Proof. intros β γ H x. exact (H (x, b)). Defined.
+
+(** A natural comparison of product functors intertwines their parameter
+    transformations. All four sides have their original, possibly different
+    object maps; the equation compares transformations with fixed endpoints. *)
+
+(** 积函子之间的自然比较与其参数自然变换相容。四条边沿用原有且可能不同的
+    对象映射；方程比较固定两端之间的自然变换。 *)
+
+Lemma product_at_natural {A B C : Cat}
+    {K L : Functor (A ×C B) C} (β : K ⇒ L)
+    {b b' : @Ob B} (a : Hom b b')
+  : (ProductRestrictionN β b' ∘Nv ProductAtN K a) ≈N
+      (ProductAtN L a ∘Nv ProductRestrictionN β b).
+Proof.
+  intros x. exact (nt_naturality β (X := (x, b)) (Y := (x, b')) (id, a)).
+Defined.
+
 (** Repackage a product-labelled induced category as a product of induced
     categories. The object and arrow maps are identities; category law
     fields need not be natively equal. *)
