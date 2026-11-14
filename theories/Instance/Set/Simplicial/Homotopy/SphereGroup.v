@@ -27,7 +27,11 @@ Local Open Scope ordinal_scope.
     No equality of tetrahedra, functions or structure records is asserted.
     This is a group on the simplex presentation of sphere classes;
     commutativity, general π₂ identification, cylinder/path comparison and
-    weak-equivalence invariants remain further work. *)
+    weak-equivalence invariants remain further work. The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereGroupMap.two_sphere_class_map_mul}
+    {%[two_sphere_class_map_mul]%}% connects the existing simplicial class
+    maps to this selected multiplication, without assuming that maps
+    preserve chosen fillers. *)
 
 (** * 既有球面类广集上的群
 
@@ -44,7 +48,10 @@ Local Open Scope ordinal_scope.
     所有选择仍须显式给出。下图 I_L、I_R 表示独立给定的左右候选；方块表示
     将 I_L 读作右逆所需的逆相等。不等同四面体、函数或结构记录。这是在球面类
     的单形呈现上构造的群；交换性、一般 π₂ 识别、柱／路径比较和弱等价不变量
-    仍需进一步工作。 *)
+    仍需进一步工作。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereGroupMap.two_sphere_class_map_mul}
+    {%[two_sphere_class_map_mul]%}% 将既有单纯类映射与此选定乘法接通，
+    不假设映射保持选定填充。 *)
 
 (** @lang both
 %\begin{center}

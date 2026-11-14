@@ -20,7 +20,12 @@ Local Open Scope ordinal_scope.
     transport along their specified setoid equality, keeping the triangle
     itself and changing only its boundary witnesses. The laws below compare
     classes, not those witnesses. This is equality transport; an arbitrary
-    edge between vertices is different data and is not handled here. *)
+    edge between vertices is different data and is not handled here.
+    After constructing class group operations, return to these same maps
+    through
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereGroupMap.two_sphere_class_map_mul}
+    {%[two_sphere_class_map_mul]%}%: the actual image tetrahedron below
+    supplies product preservation even for independent filler choices. *)
 
 (** * 映射球面类及运输相等的基点顶点
 
@@ -31,7 +36,10 @@ Local Open Scope ordinal_scope.
 
     像基点顶点不必定义相同。先沿其指定广集相等运输，保持三角形本身，仅更换
     边界见证。下方定律比较类，不比较这些见证。这是相等运输；顶点之间的任意
-    边是另一种数据，此处尚不处理。 *)
+    边是另一种数据，此处尚不处理。构造类群运算后，可通过
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereGroupMap.two_sphere_class_map_mul}
+    {%[two_sphere_class_map_mul]%}% 返回这些相同映射：下方的实际像四面体
+    给出乘积保持，即使填充选择相互独立。 *)
 
 (** ** Transport along Specified Vertex Equality
 

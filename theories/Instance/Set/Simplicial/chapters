@@ -40,6 +40,7 @@ Homotopy/SphereMagma.v
 Homotopy/SphereUnit.v
 Homotopy/SphereAssociativity.v
 Homotopy/SphereGroup.v
+Homotopy/SphereGroupMap.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
