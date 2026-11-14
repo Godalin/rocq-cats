@@ -14,6 +14,7 @@ theories/Instance/Bool/Cocycle.v
 theories/Instance/Bool/CocycleModel.v
 theories/Instance/Bool/CocycleKan.v
 theories/Instance/Bool/CocycleSphere.v
+theories/Instance/Bool/CocycleSphereGroup.v
 theories/Cat
 theories/STLC
 theories/DTT
