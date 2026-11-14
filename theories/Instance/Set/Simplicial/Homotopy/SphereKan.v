@@ -17,7 +17,12 @@ Local Open Scope ordinal_scope.
     one or face three missing instead gives right or left inverse candidates
     with constant output. Each candidate retains an actual tetrahedron and
     its four face equations. No respectfulness of selected fillers, equality
-    of their choices, associativity or group structure on classes is asserted. *)
+    of their choices, associativity or group structure on classes is asserted.
+    The following
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereKanComparison.SphereCompositeOutputHomotopy}
+    {%[SphereCompositeOutputHomotopy]%}% compares the output classes using
+    a four-dimensional horn. The selected tetrahedra remain explicit
+    computational witnesses. *)
 
 (** * 选定球面合成与逆候选
 
@@ -28,7 +33,10 @@ Local Open Scope ordinal_scope.
 
     填充缺失的第二面得到合成；改为缺少第一面或第三面，则得到输出为常值的
     右逆或左逆候选。每个候选均保留实际四面体及四个面方程。不预设选定填充
-    保相等、不同选择相等、结合律或类上的群结构。 *)
+    保相等、不同选择相等、结合律或类上的群结构。接下来的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereKanComparison.SphereCompositeOutputHomotopy}
+    {%[SphereCompositeOutputHomotopy]%}% 用四维 horn 比较输出类，并保留
+    实际选定四面体为可计算见证。 *)
 
 (** The dashed arrows are the requested sphere faces, not equations
     already true of the inputs. All three constructions use the same
