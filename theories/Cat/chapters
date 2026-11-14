@@ -18,4 +18,6 @@ FreeObject
 Diagram
 Limit
 Colimit
+End
+Coend
 Groupoid

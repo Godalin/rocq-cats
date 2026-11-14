@@ -2903,3 +2903,70 @@ checks replace the earlier-baseline counts; they are not cumulative totals.
 110 个声明锚点均与渲染页核对。精确清单仍为 100 个接口（70 个类、30 个
 记录），包含全部 29 个 `Has*` 类。批次 PDF 仍由集成方导出。这些最终检查
 替换较早基线的计数，不与之前计数累加。
+
+### Universal end/coend interfaces
+
+### end／coend 泛性质接口
+
+[Wedges](../theories/Cat/End/Wedge.v) retain diagonal legs and their
+Type-valued commuting equations. A wedge is the special dinatural family
+needed here; this does not introduce composition of arbitrary dinatural
+transformations. [Ends](../theories/Cat/End/Core.v) separate the candidate
+universal property from a selected apex and wedge. Mediators are transparent;
+their computation, uniqueness and natural-transformation action use the
+specified hom equality. Object comparison reuses terminal-object uniqueness
+in the wedge category, including the projection equation of that comparison.
+
+[楔](../theories/Cat/End/Wedge.v)保留对角腿及 Type 值交换方程。楔是此处所需的
+特殊双自然族，不引入任意双自然变换的复合。[End](../theories/Cat/End/Core.v)
+将候选泛性质与选定顶点及楔分开。中介透明，其计算、唯一性及自然变换作用均
+使用指定 Hom 相等。对象比较复用楔范畴中的终对象唯一性，并给出该比较的
+投影方程。
+
+[Cowedges](../theories/Cat/Coend/Wedge.v) and
+[coends](../theories/Cat/Coend/Core.v) store only the corresponding opposite
+wedge and end. [The domain adapter](../theories/Cat/Functor/OppositeProduct.v)
+compares a product of opposite categories with the opposite product. Reversing
+a mixed-variance bifunctor changes its index category to the opposite category;
+it does not swap the object pair. Injection, descent and comparison laws are
+wrappers around the end theory. Natural isomorphisms retain computed inverse
+maps on both ends and coends. No equality of category records, component
+functions or retained law witnesses is required.
+
+[余楔](../theories/Cat/Coend/Wedge.v)与
+[coend](../theories/Cat/Coend/Core.v)仅存储对应的反楔和反 end。
+[定义域适配](../theories/Cat/Functor/OppositeProduct.v)将反范畴的积比较到积的
+反范畴。反转混合变元双函子使指标范畴取反，不交换对象对。注入、下降及比较
+定律包装原来的 end 理论。自然同构在 end 和 coend 上均保留计算得到的逆映射，
+不要求范畴记录、分量函数或保留的定律见证相等。
+
+This is an existence-conditional foundation. It asserts neither that every
+category has these objects nor that object-indexed constructions fit into one
+fixed universe. Abstract interfaces retain independent object, hom-carrier and
+hom-equality levels; law witnesses may require separate upper bounds. Concrete
+product/equalizer and setoid models, size/existence conditions for Day and
+profunctor composition, and the later monoid/free constructions remain work
+for subsequent batches. In particular, the full category of setoids at one
+fixed carrier/equality size is not thereby a small indexing category for
+coends in that same category.
+
+这批基础以存在性为条件，既不声称所有范畴都具有这些对象，也不声称任意按对象
+索引的构造都能容纳于同一个固定宇宙。抽象接口保留独立的对象、Hom 载体和
+Hom 相等层级；定律见证可需单独上界。积／等化子与广集模型、Day 和 profunctor
+复合的大小／存在条件，以及后续幺半群和自由构造留待后续批次。特别是，固定
+载体／相等大小的全体广集范畴并不会因此成为该范畴中 coend 的小指标范畴。
+
+Prior art includes Wiegley's pinned
+[wedge interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Wedge.v),
+[end interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/End.v)
+and [opposite-end coend interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Coend.v).
+The present implementation follows the library's existing cone/terminal
+interfaces and reuses its general opposite and natural-transformation theory.
+It does not claim the mathematical construction as new.
+
+已有工作包括 Wiegley 固定版本的
+[楔接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Wedge.v)、
+[end 接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/End.v)
+及[反 end 形式的 coend 接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Coend.v)。
+此实现沿用本库已有的锥／终对象接口，复用一般反范畴及自然变换理论，不将该
+数学构造宣称为新结果。
