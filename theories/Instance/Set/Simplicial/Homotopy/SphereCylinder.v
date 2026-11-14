@@ -24,7 +24,13 @@ Local Open Scope ordinal_scope.
     or its three vertex paths would not impose this relative condition.
 
     We retain the existing simplicial homotopy and this boundary law.
-    Neither Kan filling nor an equivalence-relation law is assumed here. *)
+    Neither Kan filling nor an equivalence-relation law is assumed here.
+    The first staircase tetrahedron below uses faces zero and one for
+    its endpoints. Later,
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereFaceHomotopy.SphereLowHomotopy}
+    {%[SphereLowHomotopy]%}% converts that face arrangement to a standard
+    class generator using a four-dimensional missing-face-one filler.
+    This conversion is separate from the cylinder data themselves. *)
 
 (** * 相对于整个边界的球面同伦
 
@@ -34,7 +40,11 @@ Local Open Scope ordinal_scope.
     [∂Δ[2] × Δ[1]] 的限制须在每一维、整个时间中恒等于基点的常值单形。
     仅固定端点三角形或三条顶点路径，并不施加这个相对条件。
 
-    这里保留既有单纯同伦及此边界定律，不预设 Kan 填充或等价关系定律。 *)
+    这里保留既有单纯同伦及此边界定律，不预设 Kan 填充或等价关系定律。
+    下方第一块阶梯四面体的端点位于第零、第一面。之后的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereFaceHomotopy.SphereLowHomotopy}
+    {%[SphereLowHomotopy]%}% 用四维缺第一面填充将这种面排列转为标准类生成元；
+    此转换与柱本身的数据分开。 *)
 
 (** In the square, the lower map represents the base vertex and the left
     map collapses both coordinates to that vertex shape. Commutativity

@@ -34,6 +34,7 @@ Homotopy/SphereCylinder.v
 Homotopy/SphereHorn.v
 Homotopy/SphereKan.v
 Homotopy/SphereKanComparison.v
+Homotopy/SphereFaceHomotopy.v
 Homotopy/SphereFirstTransport.v
 Homotopy/SphereSecondTransport.v
 Homotopy/SphereMagma.v
