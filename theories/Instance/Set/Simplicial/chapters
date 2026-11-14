@@ -53,6 +53,7 @@ Cocycle/Four.v
 Cocycle/Kan.v
 Cocycle/Sphere.v
 Cocycle/SphereGroup.v
+Cocycle/SphereKanGroup.v
 Cocycle/SphereCylinder.v
 Cocycle/Homotopy.v
 Cocycle/Nerve.v
