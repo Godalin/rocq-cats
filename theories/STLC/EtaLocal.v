@@ -134,6 +134,41 @@ Definition is_eta_product_root_joinable
       RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v →
       Join@{b e p} BetaEtaContractStep@{b e l} t v.
 
+(** Restrict the missing diagram to targets with no pair observation.
+    The competing target also has no pair observation by
+    [root_eta_product_parts]. This remains an explicit, unconstructed
+    obligation for arbitrary base labels. *)
+
+(** 将缺失图式限制到没有配对观测的目标。由 [root_eta_product_parts]，竞争
+    目标也没有配对观测。这仍是任意基标签下显式、尚未构造的证明义务。 *)
+
+Definition is_eta_nonpair_product_root_joinable
+  : Type@{p}
+  := ∀ (Γ : Ctx B) (A U : Ty B) (t v : Tm Γ (A × U)),
+      RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v →
+      pair_parts t = None →
+      Join@{b e p} BetaEtaContractStep@{b e l} t v.
+
+(** The pair branch needs no residual steps: its targets already agree.
+    Thus only the non-pair branch needs the supplied joining operation.
+    The conclusion is the original interface, with no new global instance. *)
+
+(** 配对分支无须剩余步骤，因为其目标已经相等。因此只有非配对分支需要给定
+    的汇合操作。结论是原有接口，不引入新的全局实例。 *)
+
+Definition eta_product_roots_of_nonpairs
+    (nonpairs : is_eta_nonpair_product_root_joinable)
+  : is_eta_product_root_joinable.
+Proof.
+  intros Γ A U t v h.
+  pose proof (pair_parts_spec t) as spec.
+  destruct (pair_parts t) as [[a u] |] eqn:parts.
+  - cbn in spec. subst t.
+    pose proof (root_eta_product_pair_unique a u v h) as same.
+    subst v. exact (join_refl _).
+  - exact (nonpairs Γ A U t v h parts).
+Defined.
+
 Context (product_roots : is_eta_product_root_joinable).
 
 (** Given that diagram, every eta root joins any eta step from its source. *)
