@@ -8,3 +8,5 @@ Associator.v
 Coherence.v
 Monoidal.v
 Monoid.v
+Morphism.v
+Comparison.v
