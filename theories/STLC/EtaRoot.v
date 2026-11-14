@@ -2,18 +2,25 @@ From Cats.STLC Require Export
   EtaSource
   PartialRenaming.
 
-(** * Observing a Function Eta Root
+(** * Observing Eta Roots
 
     Function eta applies a weakened function to the newest variable. That
     variable's indexed marker exposes its declared type. This permits an
     observer to recover the function at the correct type without comparing
-    hidden type annotations. Partial renaming then cancels weakening. *)
+    hidden type annotations. Partial renaming then cancels weakening.
 
-(** * 观测函数 η 根
+    For products, the two projections determine the optional pair
+    components through their root beta observations. This identifies
+    pair targets of competing eta roots without injecting projections. *)
+
+(** * 观测 η 根
 
     函数 η 将弱化后的函数应用于最新变量。该变量的索引标记暴露其声明类型，
     因此可以在正确类型处恢复函数，无须比较隐藏的类型注解。随后由部分重命名
-    消去弱化。 *)
+    消去弱化。
+
+    对于积，两个投影通过各自的根 β 观测确定可选的配对分量。因此可以识别
+    竞争 η 根的配对目标，无须对投影作构造器单射消去。 *)
 
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
@@ -148,4 +155,84 @@ Proof.
     injection h as h. subst t'. exists p'. split.
     + reflexivity.
     + exact (root_eta_contract_product p').
+Defined.
+
+(** ** Product Observations from Both Projections
+
+    Fix arbitrary base labels. Equality of the two projections implies
+    equality of the optional pair observations: beta at each projection
+    reads one component. This does not claim injectivity of projections
+    on arbitrary raw terms; the non-pair case remains uninformative. *)
+
+(** ** 从两个投影得到积观测
+
+    固定任意基标签。两个投影分别相等，蕴含可选配对观测相等，因为每个投影
+    处的 β 根各读取一个分量。这不声称投影对任意原始项联合单射；非配对情形
+    的观测仍不提供目标信息。 *)
+
+Section ProductObservations.
+Context {B : Type}.
+
+(** Projection equality preserves exactly the pair information needed
+    to reconstruct an introduction. Other term shapes return [None]. *)
+
+(** 投影相等保持重构引入形式所需的配对信息；其他项形状返回 [None]。 *)
+
+Definition product_projection_parts {Γ : Ctx B} {A U : Ty B}
+    (t v : Tm Γ (A × U)) (left : π₁ t = π₁ v) (right : π₂ t = π₂ v)
+  : pair_parts t = pair_parts v.
+Proof.
+  pose proof (f_equal root_contractum left) as first.
+  pose proof (f_equal root_contractum right) as second.
+  change (option_map fst (pair_parts t) =
+    option_map fst (pair_parts v)) in first.
+  change (option_map snd (pair_parts t) =
+    option_map snd (pair_parts v)) in second.
+  destruct (pair_parts t) as [[a u] |];
+    destruct (pair_parts v) as [[a' u'] |]; cbn in *;
+    try discriminate first.
+  - injection first as first. injection second as second.
+    subst a' u'. reflexivity.
+  - reflexivity.
+Defined.
+
+End ProductObservations.
+
+(** Competing product eta roots expose the same optional pair parts.
+    Use fixed-type observers of the source pair, retaining independent
+    syntax and root-evidence bounds. *)
+
+(** 竞争的积 η 根暴露同一份可选配对分量。使用固定类型的源配对观测，保持
+    语法界与根证据界独立。 *)
+
+Definition root_eta_product_parts@{b e +} {B : Type@{b}}
+    {Γ : Ctx B} {A U : Ty B} (t v : Tm Γ (A × U))
+    (h : RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v)
+  : pair_parts t = pair_parts v.
+Proof.
+  pose proof (root_eta_source h) as parts.
+  change (Some (π₁ t, π₂ t) = Some (π₁ v, π₂ v)) in parts.
+  apply product_projection_parts.
+  - exact (f_equal (λ z,
+      match z with Some p => fst p | None => π₁ t end) parts).
+  - exact (f_equal (λ z,
+      match z with Some p => snd p | None => π₂ t end) parts).
+Defined.
+
+(** If one root target is a pair, the other target is that same pair by
+    native syntax equality. No assertion about non-pair targets follows. *)
+
+(** 若一个根目标为配对，另一个目标按语法原生相等就是该配对；此结论不处理
+    非配对目标。 *)
+
+Definition root_eta_product_pair_unique@{b e +} {B : Type@{b}}
+    {Γ : Ctx B} {A U : Ty B} (a : Tm Γ A) (u : Tm Γ U)
+    (v : Tm Γ (A × U))
+    (h : RootEtaContract@{b e} (⟨π₁ (⟨a, u⟩), π₂ (⟨a, u⟩)⟩) v)
+  : ⟨a, u⟩ = v.
+Proof.
+  pose proof (pair_parts_spec v) as spec.
+  pose proof (root_eta_product_parts (⟨a, u⟩) v h) as parts.
+  change (Some (a, u) = pair_parts v) in parts.
+  rewrite <- parts in spec. cbn in spec. symmetry. exact spec.
 Defined.

@@ -126,9 +126,10 @@ Proof.
     reflexivity || exact tt.
 Defined.
 
-(** Discovered components likewise reconstruct a pair. *)
+(** Discovered components likewise reconstruct a pair. At a displayed
+    pair, the proof computes without inspecting its component types. *)
 
-(** 发现的分量同样重构配对。 *)
+(** 发现的分量同样重构配对。在给定配对处，证明计算无须检查其分量类型。 *)
 
 Definition pair_parts_spec {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   : match A as U return Tm Γ U → PairParts Γ U → Type with
@@ -137,7 +138,8 @@ Definition pair_parts_spec {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
     | _ => λ _ _, unit
     end t (pair_parts t).
 Proof.
-  destruct t; cbn; try destruct A; try destruct U;
+  destruct t; cbn; try reflexivity; try exact tt;
+    try destruct A; try destruct U;
     reflexivity || exact tt.
 Defined.
 
