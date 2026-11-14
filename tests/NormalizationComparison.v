@@ -36,7 +36,7 @@ Universes b r e p l.
 Constraint b < r, r < e, e < p, p < l.
 Context {B : Type@{b}} (A : Ty B).
 Context (I : (NfEmbedN A) ⦂
-    (NfPsh A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (NfPsh A : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b e _ _ _ _ _}) ≅N TmRenamingPsh A).
 
 (** Neither endpoint's irreducibility is needed for agreement. *)
@@ -66,7 +66,7 @@ Universes b e r l p.
 Constraint b < e, e < r, r < l, l < p.
 Context {B : Type@{b}} (A : Ty B).
 Context (I : (NfEmbedN A) ⦂
-    (NfPsh A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (NfPsh A : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b e _ _ _ _ _}) ≅N TmRenamingPsh A).
 
 (** Irreducibility certificates and paths retain their own bounds. *)

@@ -42,7 +42,7 @@ Local Open Scope ordinal_scope.
 (** 边界填充的整个限制映射等于给定边界。 *)
 
 Definition is_boundary_filler@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (b : BoundaryS X n) (x : X n)
   : Type
   := x↾∂[X; n] ≈S b.
@@ -52,7 +52,7 @@ Definition is_boundary_filler@{u p +}
 (** 正维边界填充的检查归结为全部面方程。 *)
 
 Definition boundary_filler_faces_iff@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (b : BoundaryS X (S n)) (x : X (S n))
   : is_boundary_filler b x ↔ ∀ j, d[X; n; j] x ≈S face∂[j] b
   := boundary_map_eq_iff (x↾∂[X; S n]) b.
@@ -64,7 +64,7 @@ Definition boundary_filler_faces_iff@{u p +}
     共同提升。 *)
 
 Class IsCoskeletal@{u p +}
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (k : nat)
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (k : nat)
   :=
   { coskeletal_boundary_universal (n : nat) (b : BoundaryS X (S (k + n)))
     : ∃ x : X (S (k + n)),
@@ -87,7 +87,7 @@ Notation "X '⦂' 'Cosk[' k ']'" := (IsCoskeletal X k)
 
 Section CoskeletalFilling.
 Universes u p.
-Context {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {k : nat}
+Context {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {k : nat}
     `{HK : !IsCoskeletal X k}.
 
 (** Fillers respect equal boundary data by their universal uniqueness. *)
@@ -123,7 +123,7 @@ Notation "'fill∂[' X ';' k ';' n ']'" := (@coskeletal_fill_resp X k _ n)
 
 Section CoskeletalLaws.
 Universes u p.
-Context {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {k : nat}
+Context {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {k : nat}
     `{HK : !IsCoskeletal X k}.
 
 (** Restriction recovers the boundary supplied to filling. *)
@@ -154,7 +154,7 @@ End CoskeletalLaws.
 (** 将两个原生广集通常嵌入共同宇宙后，余骨架性使边界限制成为同构。 *)
 
 Definition coskeletal_boundary_iso@{u p v q +}
-    {X : Functor (Δ^op) SetCat@{v q _ _ _ _ _}} {k : nat}
+    {X : Fct (Δ^op) SetCat@{v q _ _ _ _ _}} {k : nat}
     `{HK : !IsCoskeletal X k} (n : nat)
   : LiftS@{_ _ u p} (X (S (k + n))) ≅[SetCat]
       LiftS@{_ _ u p} (BoundaryS X (S (k + n))).
@@ -175,7 +175,7 @@ Defined.
     本身均不足够。 *)
 
 Definition boundary_reflects_from_horns@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     {n : nat} {i : Ordinal n}
     (U : ∀ h : HornS X n i, ∃ x : X n,
       is_unique (R := carrier_equiv (X n)) (is_horn_filler h) x)
@@ -198,7 +198,7 @@ Defined.
     缺失面由其自身边界及低维唯一性恢复。 *)
 
 Definition boundary_from_horns_universal@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
     (L : ∀ h : HornS X (S n) fin_first, ∃ x : X (S n),
       is_unique (R := carrier_equiv (X (S n))) (is_horn_filler h) x)
     (U : ∀ h : HornS X (S (S n)) fin_first, ∃ x : X (S (S n)),

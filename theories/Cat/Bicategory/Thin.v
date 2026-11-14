@@ -53,7 +53,7 @@ Defined.
 (** 将 Hom 相等见证的水平复合组织为 Hom 范畴函子。 *)
 
 Program Definition thin_horizontalF (C : Cat) (X Y Z : @Ob C)
-  : Functor (ThinHomCat C Y Z ×C ThinHomCat C X Y) (ThinHomCat C X Z)
+  : Fct (ThinHomCat C Y Z ×C ThinHomCat C X Y) (ThinHomCat C X Z)
   :=
   {|F0 p := fst p ∘ snd p
   ; F1 u v α := @comp_proper C X Y Z
@@ -118,7 +118,7 @@ Next Obligation. exact tt. Defined.
 (** 从薄同伦范畴恢复原范畴箭头。 *)
 
 Program Definition FromThinHomotopyF (C : Cat)
-  : Functor (BicatHomotopyCat (ThinBicat C)) C
+  : Fct (BicatHomotopyCat (ThinBicat C)) C
   :=
   {|F0 X := X
   ; F1 X Y f := f
@@ -132,7 +132,7 @@ Next Obligation. reflexivity. Defined.
 (** 将原范畴箭头视为薄同伦范畴的箭头。 *)
 
 Program Definition ToThinHomotopyF (C : Cat)
-  : Functor C (BicatHomotopyCat (ThinBicat C))
+  : Fct C (BicatHomotopyCat (ThinBicat C))
   :=
   {|F0 X := X
   ; F1 X Y f := f

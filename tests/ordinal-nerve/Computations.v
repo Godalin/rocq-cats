@@ -19,8 +19,8 @@ Local Open Scope nat_scope.
     双向均保留位置与实际序数箭头；面映射跳过选定位置，两个区间端点仍不同。 *)
 
 Definition ordinal_triangle
-  : (Nᵥ(OrdinalObjectsF 2) :
-      Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2
+  : (Nᵥ(OrdinalObjF 2) :
+      Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2
   := StandardVertexNerveN 2 2 (simplex_generic 2).
 
 Example generic_vertex_computes (i : Ordinal 2)
@@ -40,8 +40,8 @@ Proof. reflexivity. Qed.
 (** 三角形的中间面为从零到二的边。 *)
 
 Definition ordinal_middle_face
-  : (Nᵥ(OrdinalObjectsF 2) :
-      Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 1
+  : (Nᵥ(OrdinalObjF 2) :
+      Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 1
   := VertexNerveN (OrdinalVertexMapF (δ[1; fin_next fin_first])) 1
       (StandardVertexNerveN 1 1 (simplex_generic 1)).
 
@@ -59,11 +59,11 @@ Proof. reflexivity. Qed.
 (** 从终呈现出发的点求值为选定位置。 *)
 
 Definition terminal_vertex
-  : (Nᵥ(VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set}) :
-      Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}) 0
+  : (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+      Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 0
   := ⟨ConstF [Ord 0]
       (C := VertexCat
-        VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set}) tt⟩ᵥ.
+        VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) tt⟩ᵥ.
 
 Example interval_initial_point_computes
   : lower (OrdinalVertexNerveN 1 0

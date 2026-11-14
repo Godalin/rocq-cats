@@ -39,7 +39,7 @@ Local Existing Instance BoolS_Monoid.
     幺半群。 *)
 
 Definition BoolCocycleModel
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Z²(BoolS).
 
 (** A two-simplex whose increasing triangle has coefficient [true]. *)

@@ -45,7 +45,7 @@ The four cell/equality sizes are independent. The earlier coupling came from
 `Cat@{o h p | h <= p}`: when a bare `Cat` was instantiated with fresh
 universes, Rocq's minimization identified `h` with its bound `p`. Even
 `Definition keep_cat (C : Cat) := C` acquired the restricted argument type
-`Cat@{o h h}`. This was not a restriction intrinsic to `Functor`, `ProdCat`
+`Cat@{o h h}`. This was not a restriction intrinsic to `Fct`, `ProdCat`
 or two-dimensional composition. See the reference manual's
 [minimization and explicit universes](https://docs.rocq-prover.org/master/refman/addendum/universe-polymorphism.html#minimization).
 
@@ -55,8 +55,8 @@ The homs are now bundled as `HomSet X Y : SetC@{h p}`; `Hom` and `HomEq`
 are derived. See [the foundational set layer](./FoundationalSets.md).
 The inferred signature on Rocq 9.0.1 is `Cat@{o h p l q}`, with
 `h <= q`, `p <= q`, and `q <= l` (and their redundant consequences).
-There is no required inequality between `h` and `p`. `Functor`, `ProdCat`
-and `Fct` consequently retain separate morphism and equality sizes without
+There is no required inequality between `h` and `p`. `Fct`, `ProdCat`
+and `FctCat` consequently retain separate morphism and equality sizes without
 changes to their mathematical fields. Their auxiliary upper bounds remain.
 
 `Bicat@{o h t p +}` explicitly names the universes of 0-cells, 1-cells,
@@ -212,7 +212,7 @@ two functor categories. Horizontal composition also preserves natural
 isomorphisms, with computational inverse witnesses.
 
 [Cat.v](../theories/Cat/Bicategory/Cat.v) instantiates `Bicat` with `Cat`,
-`Fct C D`, `IdF`, and `CompNF`. The same structure supplies the canonical identity-
+`FctCat C D`, `IdF`, and `CompNF`. The same structure supplies the canonical identity-
 component associators and unitors and proves all coherence laws. All natural
 transformations are 2-cells, including noninvertible ones; parallel 2-cells
 are compared by `NatEq`. Derived whiskering agrees with the existing

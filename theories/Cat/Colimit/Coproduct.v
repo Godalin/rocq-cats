@@ -16,7 +16,7 @@ From Cats Require Export
 (** * 二元余积作为离散余极限 *)
 
 Section CoproductColimits.
-Context {C : Cat} {D : Functor (PairShape^op) C} {S : @Ob C}
+Context {C : Cat} {D : Fct (PairShape^op) C} {S : @Ob C}
     (κ : D ⇒∇ S).
 
 (** A candidate coproduct is a colimit of the opposite discrete pair. *)
@@ -55,7 +55,7 @@ End CoproductColimits.
 (** 使用反范畴中的积图式极限选择离散二点余极限。 *)
 
 Definition CoproductDiagramColimit {C : Cat} `{HC : !HasCoproduct C}
-    (D : Functor (PairShape^op) C)
+    (D : Fct (PairShape^op) C)
   : HasColimit C D
   := @OpShapeDiagramColimit PairShape C D
       (@ProductDiagramLimit (C^op) (@hasOpProduct C HC)
@@ -88,9 +88,9 @@ Program Definition PairColimitsCoproduct {C : Cat}
 (** 左伴随通过反范畴中积的保持性保持候选余积。 *)
 
 Definition left_adjoint_preserves_coproduct {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {X Y S : @Ob C} {i : Hom X S} {j : Hom Y S}
     (HC : is_coproduct X Y S i j)
   : is_coproduct (F X) (F Y) (F S) (fmap F i) (fmap F j)
   := @right_adjoint_preserves_product (D^op) (C^op)
-      (G^opF) (F^opF) (OpAdjunction A) X Y S i j HC.
+      (G^opF) (F^opF) (OpAdj A) X Y S i j HC.

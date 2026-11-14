@@ -79,7 +79,7 @@ Proof. intros k r. split; reflexivity. Defined.
     层级，而后者可严格小于载体层级。以下接口显式保留这两个所在层级。 *)
 
 Program Definition StateF@{r e u p +} (R : SetC@{r e})
-  : Functor (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
+  : Fct (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
   :=
   {|F0 X := R →S (X ×S R)
   ; F1 X Y f := state_map f

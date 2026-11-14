@@ -12,7 +12,7 @@ Local Open Scope monoidal_scope.
 
 Section Projection.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    {F : Functor C C} (S : HasStrength (@CartesianMonoidal C HT HP) F).
+    {F : Fct C C} (S : HasStrength (@CartesianMonoidal C HT HP) F).
 
 (** Discarding the ordinary context after strength preserves the effectful
     input. This follows from naturality into the terminal context and the

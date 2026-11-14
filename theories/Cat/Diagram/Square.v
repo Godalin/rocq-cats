@@ -17,8 +17,8 @@ From Cats Require Import
 Definition SquareDiagram {C : Cat} {A B D E : @Ob C}
     (f : Hom A B) (g : Hom A D) (h : Hom B E) (k : Hom D E)
     (H : h ∘ f ≈ k ∘ g)
-  : Functor SquareShape C
-  := (ArrowDiagram (C := Fct ArrowShape C)
+  : Fct SquareShape C
+  := (ArrowDiagram (C := FctCat ArrowShape C)
     (@ArrowN C (ArrowDiagram f) (ArrowDiagram k) g h H))^uncF.
 
 Notation "'⟨' f ',' g ';' h ',' k '|' H '⟩□'" := (SquareDiagram f g h k H) : cat_scope.

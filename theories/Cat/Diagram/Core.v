@@ -12,7 +12,7 @@ From Cats Require Import
 (** 取固定对象为值、将态射送到恒等的常图式。 *)
 
 Program Definition ConstF (J : Cat) {C : Cat} (X : @Ob C)
-  : Functor J C
+  : Fct J C
   :=
   {|F0 j := X
   ; F1 j k f := id
@@ -25,8 +25,8 @@ Next Obligation. symmetry. apply comp_id_l. Qed.
 
 (** 将对象和箭头送到对应常图式及常自然变换。 *)
 
-Program Definition DiagonalF (J C : Cat)
-  : Functor C (Fct J C)
+Program Definition DiagF (J C : Cat)
+  : Fct C (FctCat J C)
   :=
   {|F0 X := ConstF J X
   ; F1 X Y f :=
@@ -38,13 +38,13 @@ Next Obligation. intros f g H j. exact H. Qed.
 Next Obligation. intros j. reflexivity. Qed.
 Next Obligation. intros j. reflexivity. Qed.
 
-Notation "'Δ[' J ',' C ']'" := (DiagonalF J C) : cat_scope.
+Notation "'Δ[' J ',' C ']'" := (DiagF J C) : cat_scope.
 
 (** A cone is a natural transformation from a constant diagram. *)
 
 (** 锥是从常图式出发的自然变换。 *)
 
-Definition Cone {J C : Cat} (D : Functor J C) (X : @Ob C)
+Definition Cone {J C : Cat} (D : Fct J C) (X : @Ob C)
   := ConstF J X ⇒ D.
 Notation "X '⇒Δ' D" := (Cone D X)
   (at level 50, no associativity) : cat_scope.
@@ -53,7 +53,7 @@ Notation "X '⇒Δ' D" := (Cone D X)
 
 (** 每条锥腿沿图式箭头经过前一条锥腿分解。 *)
 
-Lemma cone_naturality {J C : Cat} {D : Functor J C} {X}
+Lemma cone_naturality {J C : Cat} {D : Fct J C} {X}
     (κ : X ⇒Δ D) {i j : @Ob J} (f : Hom i j)
   : κ j ≈ fmap D f ∘ κ i.
 Proof.
@@ -65,10 +65,10 @@ Qed.
 
 (** 将每条锥腿与给定顶点映射预合成。 *)
 
-Definition cone_comp {J C : Cat} {D : Functor J C} {X Y : @Ob C}
+Definition cone_comp {J C : Cat} {D : Fct J C} {X Y : @Ob C}
     (κ : X ⇒Δ D) (f : Hom Y X)
   : Y ⇒Δ D
-  := κ ∘Nv fmap (DiagonalF J C) f.
+  := κ ∘Nv fmap (DiagF J C) f.
 
 Infix "∘Cone" := cone_comp (at level 40, left associativity) : cat_scope.
 
@@ -76,7 +76,7 @@ Infix "∘Cone" := cone_comp (at level 40, left associativity) : cat_scope.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance cone_comp_proper {J C : Cat} {D : Functor J C} {X Y : @Ob C}
+Global Instance cone_comp_proper {J C : Cat} {D : Fct J C} {X Y : @Ob C}
   : Proper (NatEq ==> @HomEq[Y, X] ==> NatEq) (@cone_comp J C D X Y).
 Proof. intros κ μ H f g K j. cbn. rewrite (H j), K. reflexivity. Qed.
 
@@ -84,7 +84,7 @@ Proof. intros κ μ H f g K j. cbn. rewrite (H j), K. reflexivity. Qed.
 
 (** [cone_comp] 与恒等的相容性。 *)
 
-Lemma cone_comp_id {J C : Cat} {D : Functor J C} {X} (κ : X ⇒Δ D)
+Lemma cone_comp_id {J C : Cat} {D : Fct J C} {X} (κ : X ⇒Δ D)
   : κ ∘Cone id ≈N κ.
 Proof. intros j. apply comp_id_r. Qed.
 
@@ -92,7 +92,7 @@ Proof. intros j. apply comp_id_r. Qed.
 
 (** [cone_comp] 结合律。 *)
 
-Lemma cone_comp_assoc {J C : Cat} {D : Functor J C} {X Y Z}
+Lemma cone_comp_assoc {J C : Cat} {D : Fct J C} {X Y Z}
     (κ : X ⇒Δ D) (f : Hom Y X) (g : Hom Z Y)
   : (κ ∘Cone f) ∘Cone g ≈N κ ∘Cone (f ∘ g).
 Proof. intros j. apply comp_assoc. Qed.
@@ -101,8 +101,8 @@ Proof. intros j. apply comp_assoc. Qed.
 
 (** 将函子作用于锥的顶点及每条腿。 *)
 
-Program Definition MapCone {J C E : Cat} (F : Functor C E)
-    {D : Functor J C} {X : @Ob C} (κ : X ⇒Δ D)
+Program Definition MapCone {J C E : Cat} (F : Fct C E)
+    {D : Fct J C} {X : @Ob C} (κ : X ⇒Δ D)
   : F X ⇒Δ (F ∘F D)
   :=
   {|nt j := fmap F (κ j)
@@ -119,20 +119,20 @@ Qed.
 
 (** 锥态射只比较顶点映射，保留交换性见证而不比较见证本身。 *)
 
-Definition ConeOb {J C : Cat} (D : Functor J C)
+Definition ConeOb {J C : Cat} (D : Fct J C)
   := ∃ X : @Ob C, X ⇒Δ D.
 (** An apex map making all cone triangles commute. *)
 
 (** 使所有锥三角形交换的顶点映射。 *)
 
-Definition ConeMap {J C : Cat} {D : Functor J C} (κ μ : ConeOb D)
+Definition ConeMap {J C : Cat} {D : Fct J C} (κ μ : ConeOb D)
   := ∃ f : Hom κ.1 μ.1, μ.2 ∘Cone f ≈N κ.2.
 
 (** The category of cones, comparing morphisms by their apex maps. *)
 
 (** 以顶点映射相等比较态射的锥范畴。 *)
 
-Program Definition ConeCat {J C : Cat} (D : Functor J C)
+Program Definition ConeCat {J C : Cat} (D : Fct J C)
   : Cat
   :=
   {|Ob := ConeOb D
@@ -162,8 +162,8 @@ Next Obligation. apply comp_assoc. Qed.
 
 (** 将锥及锥态射分别忘却为顶点及顶点映射。 *)
 
-Program Definition ConeApexF {J C : Cat} (D : Functor J C)
-  : Functor (ConeCat D) C
+Program Definition ConeApexF {J C : Cat} (D : Fct J C)
+  : Fct (ConeCat D) C
   :=
   {|F0 κ := κ.1
   ; F1 κ μ f := f.1

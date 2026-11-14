@@ -18,7 +18,7 @@ From Cats Require Import
     相干转换，不另设平行的类型或项相等字段。 *)
 
 Section TypesAndTerms.
-Context {C : Cat} (T : Functor (C^op) FamCat).
+Context {C : Cat} (T : Fct (C^op) FamCat).
 
 (** The setoid of types in a context, extracted from the family-valued
     presheaf. *)
@@ -206,7 +206,7 @@ Notation "e '▸[' T ']' t" := (tm_conv T e t)
     配对方程保留基底相等见证；第二条定律在复合与基底相等转换后比较项。 *)
 
 Section ContextExtension.
-Context {C : Cat} (T : Functor (C^op) FamCat).
+Context {C : Cat} (T : Fct (C^op) FamCat).
 
 (** A candidate pairing satisfies projection and converted-variable equations. *)
 
@@ -369,7 +369,7 @@ Notation "'⟨' σ ';' t '⟩[' T ',' A ']'" := (context_pair T A σ t)
 Class CwF (C : Cat)
   :=
   { hasTerminal :: HasTerminal C
-  ; TyTmF :> Functor (C^op) FamCat
+  ; TyTmF :> Fct (C^op) FamCat
   ; hasContextExtension :: HasContextExtension TyTmF
   }.
 

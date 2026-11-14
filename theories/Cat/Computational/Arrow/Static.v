@@ -173,7 +173,7 @@ Next Obligation. apply static_comp_assoc. Defined.
 (** 将通常态射嵌入为纯命名函数，对象保持不变。 *)
 
 Program Definition StaticPureF
-  : Functor C StaticCat
+  : Fct C StaticCat
   :=
   {|F0 X := X
   ; F1 X Y f := static_arr A f

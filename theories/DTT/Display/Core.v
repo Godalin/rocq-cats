@@ -16,7 +16,7 @@ From Cats Require Import
     假设项、终上下文或任意箭头的拉回。 *)
 
 Section TypePresheaf.
-Context {C : Cat} (P : Functor (C^op) SetCat).
+Context {C : Cat} (P : Fct (C^op) SetCat).
 
 (** The type-presheaf action on a context substitution. *)
 
@@ -70,7 +70,7 @@ Notation "e '[' σ ']EqF[' P ']'" := (type_eq_sub P σ e)
 
 (** 带相干类型转换和替换拉回的选定显示投影。 *)
 
-Class HasDisplay (C : Cat) (P : Functor (C^op) SetCat)
+Class HasDisplay (C : Cat) (P : Fct (C^op) SetCat)
   :=
   { Display {Γ : @Ob C} (A : P Γ) : @Ob C
   ; display_proj {Γ : @Ob C} (A : P Γ) : Hom (Display A) Γ
@@ -121,7 +121,7 @@ Notation "σ '^D[' P ',' A ']'" := (display_lift P σ A)
     固定 [C] 上带选定显示结构的广集值预层 [P]，导出转换的见证无关性与可逆性，以及显示提升的投影方程。 *)
 
 Section DisplayLaws.
-Context {C : Cat} (P : Functor (C^op) SetCat) `{HD : !HasDisplay C P}.
+Context {C : Cat} (P : Fct (C^op) SetCat) `{HD : !HasDisplay C P}.
 
 (** Any two witnesses of the same designated type equality act identically.
     Inverses use symmetry of that equality, rather than an additional choice. *)

@@ -16,7 +16,7 @@ From Cats Require Import Cat.Core.
     平行箭头，不要求函数或定律见证的原生相等。每个函子都必须保持 Hom 相等；
     反映这种相等则是下文另行定义的忠实性。 *)
 
-Record Functor (C D : Cat)
+Record Fct (C D : Cat)
   :=
   (** [F0] maps objects. The [:>] coercion lets us write its value as [F X]. *)
 
@@ -69,7 +69,7 @@ Notation fmap F := (@F1 _ _ F).
 
     比较使用两侧范畴指定的态射相等；满性为每条目标态射保留 Type 中的原像见证。 *)
 
-Definition is_faithful {C D : Cat} (F : Functor C D)
+Definition is_faithful {C D : Cat} (F : Fct C D)
   := ∀ X Y (f g : Hom X Y), fmap F f ≈ fmap F g → f ≈ g.
 
 (** Every arrow between image objects has a selected preimage up to hom
@@ -77,14 +77,14 @@ Definition is_faithful {C D : Cat} (F : Functor C D)
 
 (** 像对象之间的每条箭头都具有按 Hom 相等选取的原像。 *)
 
-Definition is_full {C D : Cat} (F : Functor C D)
+Definition is_full {C D : Cat} (F : Fct C D)
   := ∀ X Y (g : Hom (F X) (F Y)), ∃ f : Hom X Y, fmap F f ≈ g.
 
 (** Fullness together with faithfulness, retaining full preimage data. *)
 
 (** 同时具有满性与忠实性，并保留满性的原像数据。 *)
 
-Definition is_fully_faithful {C D : Cat} (F : Functor C D)
+Definition is_fully_faithful {C D : Cat} (F : Fct C D)
   := is_full F ∧ is_faithful F.
 
 (** Essential surjectivity retains an object representative and an
@@ -93,14 +93,14 @@ Definition is_fully_faithful {C D : Cat} (F : Functor C D)
 
 (** 本质满保留对象代表与同构，不要求对象原生相等，也不截断存在见证。 *)
 
-Definition is_essentially_surjective {C D : Cat} (F : Functor C D)
+Definition is_essentially_surjective {C D : Cat} (F : Fct C D)
   := ∀ Y : @Ob D, ∃ X : @Ob C, F X ≅ Y.
 
 (** A functor sends an invertible arrow to an invertible arrow. *)
 
 (** 函子将可逆箭头送到可逆箭头。 *)
 
-Definition functor_is_iso {C D : Cat} (F : Functor C D)
+Definition functor_is_iso {C D : Cat} (F : Fct C D)
     {X Y : @Ob C} (f : Hom X Y) (Hf : is_iso f)
   : is_iso (fmap F f).
 Proof.
@@ -115,7 +115,7 @@ Defined.
 
 (** 全忠实函子反映可逆性：满性提供逆的原像，忠实性反映两条互逆方程。 *)
 
-Definition functor_reflects_iso {C D : Cat} (F : Functor C D)
+Definition functor_reflects_iso {C D : Cat} (F : Fct C D)
     (HF : is_fully_faithful F) {X Y : @Ob C} (f : Hom X Y)
     (Hf : is_iso (fmap F f))
   : is_iso f.
@@ -136,7 +136,7 @@ Defined.
 (** 恒等函子。 *)
 
 Program Canonical IdF {C : Cat}
-  : Functor C C
+  : Fct C C
   :=
   {|F0 X := X
   ; F1 _ _ f := f
@@ -150,7 +150,7 @@ Next Obligation. reflexivity. Qed.
 (** 在对象与态射上复合函子。 *)
 
 Program Canonical CompF {C D E : Cat}
-    (G : Functor D E) (F : Functor C D)
+    (G : Fct D E) (F : Fct C D)
   :=
   {|F0 X := (G (F X))
   ; F1 _ _ f := fmap G (fmap F f)
@@ -177,8 +177,8 @@ Context {C D E : Cat}.
 
 (** 改变第一个参数，固定第二个参数。 *)
 
-Program Definition π1F (F : Functor (C ×C D) E) (d : @Ob D)
-  : Functor C E
+Program Definition π1F (F : Fct (C ×C D) E) (d : @Ob D)
+  : Fct C E
   :=
   {|F0 c := F (c, d)
   ; F1 X Y f := fmap F (X := (X, d)) (Y := (Y, d)) (f, id)
@@ -195,8 +195,8 @@ Qed.
 
 (** 改变第二个参数，固定第一个参数。 *)
 
-Program Definition π2F (F : Functor (C ×C D) E) (c : @Ob C)
-  : Functor D E
+Program Definition π2F (F : Fct (C ×C D) E) (c : @Ob C)
+  : Fct D E
   :=
   {|F0 d := F (c, d)
   ; F1 X Y f := fmap F (X := (c, X)) (Y := (c, Y)) (id, f)
@@ -218,8 +218,8 @@ Infix "∘F" := CompF
 
 (** 两个独立函子在乘积范畴上逐分量作用。 *)
 
-Program Definition ProdF {C D E K : Cat} (F : Functor C D) (G : Functor E K)
-  : Functor (C ×C E) (D ×C K)
+Program Definition ProdF {C D E K : Cat} (F : Fct C D) (G : Fct E K)
+  : Fct (C ×C E) (D ×C K)
   :=
   {|F0 p := (F (fst p), G (snd p))
   ; F1 X Y f := (fmap F (fst f), fmap G (snd f))
@@ -238,7 +238,7 @@ Infix "×F" := ProdF (at level 41) : cat_scope.
 
 (** 函子保持沿对象原生相等运输的恒等态射。 *)
 
-Lemma fmap_eq_to_hom {C D : Cat} (F : Functor C D)
+Lemma fmap_eq_to_hom {C D : Cat} (F : Fct C D)
     {X Y : @Ob C} (p : X = Y)
   : fmap F (eq_to_hom p) ≈ eq_to_hom (f_equal F p).
 Proof. destruct p. simpl. apply functor_id. Qed.
@@ -254,8 +254,8 @@ Proof. destruct p. simpl. apply functor_id. Qed.
     取反同时反转两侧范畴的箭头。双重取反通过在对象和态射上为恒等的显式函子比较，
     不要求范畴记录或定律证明原生相等。 *)
 
-Program Definition OpF {C D : Cat} (F : Functor C D)
-  : Functor (C ^op) (D ^op)
+Program Definition OpF {C D : Cat} (F : Fct C D)
+  : Fct (C ^op) (D ^op)
   :=
   {|F0 X := F X
   ; F1 X Y f := fmap F f
@@ -272,7 +272,7 @@ Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
 
 (** 取反保留选定的箭头原像。 *)
 
-Definition functor_op_full {C D : Cat} {F : Functor C D}
+Definition functor_op_full {C D : Cat} {F : Fct C D}
     (HF : is_full F)
   : is_full (F^opF)
   := λ X Y f, HF Y X f.
@@ -283,7 +283,7 @@ Definition functor_op_full {C D : Cat} {F : Functor C D}
 (** 反转代表同构给出反范畴中的本质满性，并保留原对象代表。 *)
 
 Definition functor_op_essentially_surjective {C D : Cat}
-    {F : Functor C D} (HF : is_essentially_surjective F)
+    {F : Fct C D} (HF : is_essentially_surjective F)
   : is_essentially_surjective (F^opF).
 Proof.
   intros Y. destruct (HF Y) as [X e].
@@ -296,8 +296,8 @@ Defined.
 
 (** 将反范畴之间的函子读作原范畴之间的函子，保留底层映射，不比较范畴记录。 *)
 
-Program Definition UnopF {C D : Cat} (F : Functor (C^op) (D^op))
-  : Functor C D
+Program Definition UnopF {C D : Cat} (F : Fct (C^op) (D^op))
+  : Fct C D
   :=
   {|F0 X := F X
   ; F1 X Y f := fmap F f
@@ -314,7 +314,7 @@ Notation "F '^unopF'" := (UnopF F) (at level 35) : cat_scope.
 (** 从范畴到其双重反范畴的恒等作用。 *)
 
 Program Definition ToDoubleOpF {C : Cat}
-  : Functor C (C ^op ^op)
+  : Fct C (C ^op ^op)
   :=
   {|F0 X := X
   ; F1 X Y f := f
@@ -328,7 +328,7 @@ Next Obligation. reflexivity. Qed.
 (** 从双重反范畴返回原范畴的恒等作用。 *)
 
 Program Definition FromDoubleOpF {C : Cat}
-  : Functor (C ^op ^op) C
+  : Fct (C ^op ^op) C
   :=
   {|F0 X := X
   ; F1 X Y f := f

@@ -41,10 +41,10 @@ Local Open Scope ordinal_scope.
 
 Section NerveSpheres.
 Universes u p.
-Context {A : SetC} {C : Cat} (T : Functor (EqGpd A) C).
+Context {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 Let N
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Nᵥ(T).
 
 (** Three equal corresponding faces force equality of whole triangles. *)

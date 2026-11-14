@@ -42,8 +42,8 @@ Definition NativeTerminal
 (** 共同值相等低于范畴定律界及载体。 *)
 
 Definition low_eq_cartesian
-  : @CartesianFunctor Presentations
-      (Fct (Δ^op) SetCat@{u o _ _ _ _ _}) NativeTerminal NativeProducts
+  : @CartFct Presentations
+      (FctCat (Δ^op) SetCat@{u o _ _ _ _ _}) NativeTerminal NativeProducts
   := VertexNerveCartesianF.
 
 (** The same source also permits value equality above its carrier. *)
@@ -51,8 +51,8 @@ Definition low_eq_cartesian
 (** 同一源也允许值相等高于其载体。 *)
 
 Definition high_eq_cartesian
-  : @CartesianFunctor Presentations
-      (Fct (Δ^op) SetCat@{u q _ _ _ _ _}) NativeTerminal NativeProducts
+  : @CartFct Presentations
+      (FctCat (Δ^op) SetCat@{u q _ _ _ _ _}) NativeTerminal NativeProducts
   := VertexNerveCartesianF.
 
 (** Reverse the native label and arrow carrier/equality profiles. *)
@@ -72,8 +72,8 @@ Definition ReverseTerminal
   := VertexPresentationCat_HasTerminal.
 
 Definition reverse_native_cartesian
-  : @CartesianFunctor ReversePresentations
-      (Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ReverseTerminal ReverseProducts
+  : @CartFct ReversePresentations
+      (FctCat (Δ^op) SetCat@{u o _ _ _ _ _}) ReverseTerminal ReverseProducts
   := VertexNerveCartesianF.
 
 (** The general pointwise structures retain both strict value-size orders. *)
@@ -81,20 +81,20 @@ Definition reverse_native_cartesian
 (** 通用点态结构保留两种严格值大小次序。 *)
 
 Definition low_eq_pointwise_products
-  : HasProduct (Fct (Δ^op) SetCat@{u o _ _ _ _ _})
-  := @Fct_HasProduct _ _ SetCat_HasProduct.
+  : HasProduct (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
+  := @FctCat_HasProduct _ _ SetCat_HasProduct.
 
 Definition high_eq_pointwise_products
-  : HasProduct (Fct (Δ^op) SetCat@{u q _ _ _ _ _})
-  := @Fct_HasProduct _ _ SetCat_HasProduct.
+  : HasProduct (FctCat (Δ^op) SetCat@{u q _ _ _ _ _})
+  := @FctCat_HasProduct _ _ SetCat_HasProduct.
 
 Definition low_eq_pointwise_terminal
-  : HasTerminal (Fct (Δ^op) SetCat@{u o _ _ _ _ _})
-  := @Fct_HasTerminal _ _ SetCat_HasTerminal.
+  : HasTerminal (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
+  := @FctCat_HasTerminal _ _ SetCat_HasTerminal.
 
 Definition high_eq_pointwise_terminal
-  : HasTerminal (Fct (Δ^op) SetCat@{u q _ _ _ _ _})
-  := @Fct_HasTerminal _ _ SetCat_HasTerminal.
+  : HasTerminal (FctCat (Δ^op) SetCat@{u q _ _ _ _ _})
+  := @FctCat_HasTerminal _ _ SetCat_HasTerminal.
 
 (** A probe larger than both value sizes does not resize pointwise values. *)
 
@@ -103,11 +103,11 @@ Definition high_eq_pointwise_terminal
 Context (J : Cat@{q q q q q}).
 
 Definition large_probe_products
-  : HasProduct (Fct J SetCat@{u o _ _ _ _ _})
-  := @Fct_HasProduct _ _ SetCat_HasProduct.
+  : HasProduct (FctCat J SetCat@{u o _ _ _ _ _})
+  := @FctCat_HasProduct _ _ SetCat_HasProduct.
 
 Definition large_probe_terminal
-  : HasTerminal (Fct J SetCat@{u o _ _ _ _ _})
-  := @Fct_HasTerminal _ _ SetCat_HasTerminal.
+  : HasTerminal (FctCat J SetCat@{u o _ _ _ _ _})
+  := @FctCat_HasTerminal _ _ SetCat_HasTerminal.
 
 End Levels.

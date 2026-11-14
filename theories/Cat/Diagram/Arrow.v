@@ -15,7 +15,7 @@ From Cats Require Import
 (** 用给定态射解释步行箭头。 *)
 
 Program Definition ArrowDiagram {C : Cat} {X Y : @Ob C} (f : Hom X Y)
-  : Functor ArrowShape C
+  : Fct ArrowShape C
   :=
   {|F0 b := if b then Y else X
   ; F1 x y e := _
@@ -38,7 +38,7 @@ Notation "'⟨' f '⟩D'" := (ArrowDiagram f) : cat_scope.
 
 (** 交换方形给出箭头图式之间的自然变换。 *)
 
-Program Definition ArrowN {C : Cat} {F G : Functor ArrowShape C}
+Program Definition ArrowN {C : Cat} {F G : Fct ArrowShape C}
     (a : Hom (F false) (G false)) (b : Hom (F true) (G true))
     (H : b ∘ fmap F arrow_step ≈ fmap G arrow_step ∘ a)
   : F ⇒ G
@@ -107,7 +107,7 @@ Defined.
 (** 由平行箭头对生成的图式。 *)
 
 Definition ParallelDiagram {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
-  : Functor ParallelShape C
+  : Fct ParallelShape C
   := FreeF (ParallelGraphMap f g).
 
 Notation "'⟨' f '⇉' g '⟩D'" := (ParallelDiagram f g) : cat_scope.
@@ -131,7 +131,7 @@ Defined.
 
 (** 将等化锥腿延拓到任意平行箭头图式上的锥。 *)
 
-Definition ParallelConeOver {C : Cat} {D : Functor ParallelShape C} {P : @Ob C}
+Definition ParallelConeOver {C : Cat} {D : Fct ParallelShape C} {P : @Ob C}
     (p : Hom P (D false))
     (H : fmap D (path_edge parallel_l) ∘ p ≈ fmap D (path_edge parallel_r) ∘ p)
   : P ⇒Δ D.
@@ -156,7 +156,7 @@ Definition ParallelCone {C : Cat} {X Y P : @Ob C} {f g : Hom X Y}
 
 (** 平行锥的定义域锥腿等化两条箭头。 *)
 
-Lemma parallel_cone_comm {C : Cat} {D : Functor ParallelShape C} {P : @Ob C}
+Lemma parallel_cone_comm {C : Cat} {D : Fct ParallelShape C} {P : @Ob C}
     (κ : P ⇒Δ D)
   : fmap D (path_edge parallel_l) ∘ κ false ≈
       fmap D (path_edge parallel_r) ∘ κ false.
@@ -175,7 +175,7 @@ Qed.
 (** 用指定同构解释步行同构。 *)
 
 Program Definition IsoDiagram {C : Cat} {X Y : @Ob C} (i : X ≅[C] Y)
-  : Functor IsoShape C
+  : Fct IsoShape C
   :=
   {|F0 b := if b then Y else X
   ; F1 x y e := _

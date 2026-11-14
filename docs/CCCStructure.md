@@ -143,11 +143,11 @@ independent of its hom carrier/equality levels.
 
 [Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) first extends preservation
 of the selected terminal/product objects to arbitrary candidates using their
-universal isomorphisms. This gives `CompF_IsCartesianF` and the inverse-product
+universal isomorphisms. This gives `CompF_IsCartF` and the inverse-product
 comparison equation. [Functor.Closed](../theories/Cat/Functor/Closed.v) proves:
 
 [Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 先通过泛同构，将选定
-终对象／积的保持性推广到任意候选，进而得到 `CompF_IsCartesianF` 及逆向积比较
+终对象／积的保持性推广到任意候选，进而得到 `CompF_IsCartF` 及逆向积比较
 的复合方程。[Functor.Closed](../theories/Cat/Functor/Closed.v) 证明：
 
 ```text
@@ -165,30 +165,30 @@ proofs remain explicitly enabled.
 
 ## 打包保持性
 
-[CartesianFunctor](../theories/Cat/Functor/Cartesian.v) stores one underlying
-`Functor` and its `IsCartesianF` evidence for named source terminal and product
+[CartFct](../theories/Cat/Functor/Cartesian.v) stores one underlying
+`Fct` and its `IsCartF` evidence for named source terminal and product
 structures. No chosen target products are needed until an operation uses them.
-[CCCFunctor](../theories/Cat/Functor/Closed.v) adds invertibility of the canonical
+[CCCFct](../theories/Cat/Functor/Closed.v) adds invertibility of the canonical
 exponential comparison to that same cartesian bundle. Its unique coercion chain
-is `CCCFunctor → CartesianFunctor → Functor`; the derived `CCCFunctor_IsCCCF`
+is `CCCFct → CartFct → Fct`; the derived `CCCFct_IsCCCF`
 instance reuses the stored cartesian witnesses.
 
-[CartesianFunctor](../theories/Cat/Functor/Cartesian.v) 保存一个底层 `Functor`
-及其相对于具名来源终对象和积结构的 `IsCartesianF` 证据；仅在运算实际需要时
-才引入目标选定积。[CCCFunctor](../theories/Cat/Functor/Closed.v) 在同一个
+[CartFct](../theories/Cat/Functor/Cartesian.v) 保存一个底层 `Fct`
+及其相对于具名来源终对象和积结构的 `IsCartF` 证据；仅在运算实际需要时
+才引入目标选定积。[CCCFct](../theories/Cat/Functor/Closed.v) 在同一个
 笛卡尔包上增加规范指数比较的可逆性。唯一强制转换链为
-`CCCFunctor → CartesianFunctor → Functor`；派生实例 `CCCFunctor_IsCCCF`
+`CCCFct → CartFct → Fct`；派生实例 `CCCFct_IsCCCF`
 复用保存的笛卡尔见证。
 
-`CartesianFunctorFromPreservation` and `CCCFunctorFromPreservation` package
-existing evidence transparently. `IdCartesianF`, `CompCartesianF`, `IdCCCF`
+`CartFctFromPreservation` and `CCCFctFromPreservation` package
+existing evidence transparently. `IdCartF`, `CompCartF`, `IdCCCF`
 and `CompCCCF` reuse the identity and composition theorems above. Clients can
 write `F X`, `fmap F f` and apply the existing comparison/curry laws directly.
 The fixed-functor interfaces remain available to general theorems and STLC
 clients; constructors do not register chosen model functors globally.
 
-`CartesianFunctorFromPreservation` 及 `CCCFunctorFromPreservation` 透明地
-打包已有证据。`IdCartesianF`、`CompCartesianF`、`IdCCCF`、`CompCCCF` 复用
+`CartFctFromPreservation` 及 `CCCFctFromPreservation` 透明地
+打包已有证据。`IdCartF`、`CompCartF`、`IdCCCF`、`CompCCCF` 复用
 上述恒等和复合定理。客户端可直接写 `F X`、`fmap F f` 并应用已有比较／
 柯里化定律。固定函子接口继续服务于一般定理和 STLC 客户端；构造器不会全局
 注册选定模型函子。

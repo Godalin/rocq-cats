@@ -19,7 +19,7 @@ From Cats Require Import
 (** 预层是反变广集值函子，其态射为自然变换。 *)
 
 Definition Psh C
-  := Fct (op C) SetCat.
+  := FctCat (op C) SetCat.
 
 (** ** The Yoneda Embedding
 
@@ -38,7 +38,7 @@ Context {C : Cat}.
 (** Yoneda 嵌入将对象送到其反变可表函子。 *)
 
 Program Canonical Embedding
-  : Functor C (Psh C)
+  : Fct C (Psh C)
   :=
   {|F0 := ℎ2F
   ; F1 X Y f := f _*N
@@ -90,7 +90,7 @@ End Psh.
 (** 将可表函子提升到独立选择的一对值宇宙；适用于小范畴上的较大预层。 *)
 
 Program Definition RaisedEmbedding@{u p +} {C : Cat}
-  : Functor C (Fct (C^op) SetCat@{u p _ _ _ _ _})
+  : Fct C (FctCat (C^op) SetCat@{u p _ _ _ _ _})
   :=
   {|F0 X := LiftF ∘F Hom(-,X)
   ; F1 X Y f := LiftF ∘Nl f _*N
@@ -116,7 +116,7 @@ Defined.
 
 Theorem raised_embedding_fully_faithful@{u p +} {C : Cat}
   : is_fully_faithful
-      (RaisedEmbedding : Functor C (Fct (C^op) SetCat@{u p _ _ _ _ _})).
+      (RaisedEmbedding : Fct C (FctCat (C^op) SetCat@{u p _ _ _ _ _})).
 Proof.
   split.
   - intros X Y α. exists (lower (presheaf_yoneda_resp

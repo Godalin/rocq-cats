@@ -199,7 +199,7 @@ Definition low_eq_set_graph_limits
   := SetCat_GraphLimits G.
 
 Context (K : Cat@{s s s _ _}) (HK : HasFiniteHomCover K)
-    (HG : HasFiniteGenerators K).
+    (HG : HasFiniteGen K).
 
 (** Finite covers and generators bypass the larger raw shape carriers. *)
 
@@ -280,9 +280,9 @@ Definition high_eq_product
 Definition low_eq_product
   := D ×C D.
 Definition high_eq_functors
-  := Fct C C.
+  := FctCat C C.
 Definition low_eq_functors
-  := Fct D D.
+  := FctCat D D.
 Definition high_eq_ccc
   := CCC C.
 Definition low_eq_ccc
@@ -363,10 +363,10 @@ Definition low_eq_exponential_hom (X Y Z : @Ob D)
   := exponential_hom_iso.
 Definition high_eq_exponential_adjunction (X : @Ob C)
   : (-× X) ⊣ (-^ X)
-  := ProductExponentialAdjunction X.
+  := ProdExpAdj X.
 Definition low_eq_exponential_adjunction (X : @Ob D)
   : (-× X) ⊣ (-^ X)
-  := ProductExponentialAdjunction X.
+  := ProdExpAdj X.
 Definition high_eq_exponential_nat (X : @Ob C)
   : @NatIso _ SetCat@{h p _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
   := exponential_hom_nat_iso X.
@@ -374,16 +374,16 @@ Definition low_eq_exponential_nat (X : @Ob D)
   : @NatIso _ SetCat@{p h _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
   := exponential_hom_nat_iso X.
 Definition high_eq_exponential_bifunctor
-  : Functor (C^op ×C C) C
+  : Fct (C^op ×C C) C
   := (-^-).
 Definition low_eq_exponential_bifunctor
-  : Functor (D^op ×C D) D
+  : Fct (D^op ×C D) D
   := (-^-).
 Definition high_eq_contravariant_exponential (Y : @Ob C)
-  : Functor (C^op) C
+  : Fct (C^op) C
   := (Y ^-).
 Definition low_eq_contravariant_exponential (Y : @Ob D)
-  : Functor (D^op) D
+  : Fct (D^op) D
   := (Y ^-).
 Definition high_eq_fixed_exponential (X : @Ob C)
   : π2F (-^-) X ≅N (-^ X)
@@ -436,7 +436,7 @@ Definition low_eq_double_curry (A B Y Z : @Ob D)
   : (ƛ₂ f)^♭₂ ≈ f
   := exponential_curry_twice_β f.
 
-Context (F : Functor C D) (G : Functor D C)
+Context (F : Fct C D) (G : Fct D C)
     (HF : IsCCCF F HC HD) (HG : IsCCCF G HD HC).
 
 (** CCC-preservation composition permits different hom/equality orderings
@@ -453,18 +453,18 @@ Definition mixed_levels_closed_composite
 (** 打包及复合保持 Hom／相等层级的两种严格排列。 *)
 
 Definition high_eq_bundled_closed_functor
-  : CCCFunctor HC HD
-  := CCCFunctorFromPreservation F HF.
+  : CCCFct HC HD
+  := CCCFctFromPreservation F HF.
 Definition low_eq_bundled_closed_functor
-  : CCCFunctor HD HC
-  := CCCFunctorFromPreservation G HG.
+  : CCCFct HD HC
+  := CCCFctFromPreservation G HG.
 Definition mixed_levels_bundled_closed_composite
-  : CCCFunctor HC HC
+  : CCCFct HC HC
   := CompCCCF low_eq_bundled_closed_functor high_eq_bundled_closed_functor.
 Definition mixed_levels_bundled_cartesian_composite
-  : @CartesianFunctor C C (@Cats.Cat.Cartesian.Core.hasTerminal C HC)
+  : @CartFct C C (@Cats.Cat.Cartesian.Core.hasTerminal C HC)
       (@Cats.Cat.Cartesian.Core.hasProduct C HC)
-  := CompCartesianF (CCCF low_eq_bundled_closed_functor)
+  := CompCartF (CCCF low_eq_bundled_closed_functor)
       (CCCF high_eq_bundled_closed_functor).
 
 Universe s.
@@ -476,11 +476,11 @@ Context (J : Cat@{s s s _ _}).
 (** 极限保持性不对形状施加索引大小界。 *)
 
 Definition high_eq_exponential_limit (A : @Ob C)
-    (K : Functor J C) (L : @Ob C) (κ : L ⇒Δ K) (H : is_limit κ)
+    (K : Fct J C) (L : @Ob C) (κ : L ⇒Δ K) (H : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
   := exponential_preserves_limit A H.
 Definition low_eq_exponential_limit (A : @Ob D)
-    (K : Functor J D) (L : @Ob D) (κ : L ⇒Δ K) (H : is_limit κ)
+    (K : Fct J D) (L : @Ob D) (κ : L ⇒Δ K) (H : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
   := exponential_preserves_limit A H.
 End ExponentialLevels.
@@ -499,7 +499,7 @@ Constraint p < n.
 Constraint n < e.
 Constraint e < l.
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
-Context (F : Functor C D) (G : Functor D C) (A : F ⊣ G).
+Context (F : Fct C D) (G : Fct D C) (A : F ⊣ G).
 
 Definition mixed_adjunct (X : @Ob C) (Y : @Ob D)
   : HomSet (F X) Y →r HomSet X (G Y)
@@ -509,7 +509,7 @@ Definition mixed_unadjunct (X : @Ob C) (Y : @Ob D)
   := unadjunct_resp A.
 Definition mixed_adjunction_comp
   : (F ∘F IdF) ⊣ (IdF ∘F G)
-  := CompAdjunction A (IdAdjunction C).
+  := CompAdj A (IdAdj C).
 Definition high_eq_adjunction_hom
   : @NatIso _ SetCat@{n e _ _ _ _ _} (LeftHomF F) (RightHomF G)
   := adjunction_hom_nat_iso A.
@@ -534,24 +534,24 @@ Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 Context `{HC : !HasLimitsOfShape C J} `{HD : !HasLimitsOfShape D J}.
 
 Definition high_eq_limit_functor
-  := @LimitF J C HC.
+  := @LimF J C HC.
 Definition low_eq_limit_functor
-  := @LimitF J D HD.
+  := @LimF J D HD.
 Definition high_eq_limit_adjunction
-  := @LimitAdjunction J C HC.
+  := @LimAdj J C HC.
 Definition low_eq_limit_adjunction
-  := @LimitAdjunction J D HD.
+  := @LimAdj J D HD.
 Definition high_eq_limit_converse
   := limits_iff_diagonal_right_adjoint J C.
 Definition low_eq_limit_converse
   := limits_iff_diagonal_right_adjoint J D.
-Definition high_eq_cone_category (K : Functor J C)
+Definition high_eq_cone_category (K : Fct J C)
   := ConeCat K.
-Definition low_eq_cone_category (K : Functor J D)
+Definition low_eq_cone_category (K : Fct J D)
   := ConeCat K.
 
-Context (F : Functor C D) (G : Functor D C) (A : F ⊣ G).
-Context (K : Functor J D) (L : @Ob D) (κ : L ⇒Δ K) (Hκ : is_limit κ).
+Context (F : Fct C D) (G : Fct D C) (A : F ⊣ G).
+Context (K : Fct J D) (L : @Ob D) (κ : L ⇒Δ K) (Hκ : is_limit κ).
 Definition mixed_right_adjoint_limit
   : is_limit (MapCone G κ)
   := right_adjoint_preserves_limit A Hκ.
@@ -573,26 +573,26 @@ Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 
 Definition high_eq_colimit_adjunction
   : HasColimitsOfShape C J ↔
-      ∃ L : Functor (Fct J C) C, L ⊣ Δ[J,C]
+      ∃ L : Fct (FctCat J C) C, L ⊣ Δ[J,C]
   := colimits_iff_diagonal_left_adjoint J C.
 
 Definition low_eq_colimit_adjunction
   : HasColimitsOfShape D J ↔
-      ∃ L : Functor (Fct J D) D, L ⊣ Δ[J,D]
+      ∃ L : Fct (FctCat J D) D, L ⊣ Δ[J,D]
   := colimits_iff_diagonal_left_adjoint J D.
 
-Definition high_eq_limit_duality (K : Functor J C) {L}
+Definition high_eq_limit_duality (K : Fct J C) {L}
     (κ : L ⇒Δ K)
   : is_limit κ ↔ is_colimit (ConeOp κ)
   := limit_iff_op_colimit κ.
 
-Definition low_eq_limit_duality (K : Functor J D) {L}
+Definition low_eq_limit_duality (K : Fct J D) {L}
     (κ : L ⇒Δ K)
   : is_limit κ ↔ is_colimit (ConeOp κ)
   := limit_iff_op_colimit κ.
 
-Context (F : Functor C D) (G : Functor D C) (A : F ⊣ G).
-Context (K : Functor J C) (L : @Ob C) (κ : K ⇒∇ L).
+Context (F : Fct C D) (G : Fct D C) (A : F ⊣ G).
+Context (K : Fct J C) (L : @Ob C) (κ : K ⇒∇ L).
 
 Definition mixed_left_adjoint_colimit (Hκ : is_colimit κ)
   : is_colimit (MapCocone F κ)
@@ -685,8 +685,8 @@ Constraint n < m.
 Constraint m < l.
 Context (I : Cat@{m p h l l}) (J : Cat@{n h p l l}).
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
-Context (Q : Functor I J) (HF : is_full Q) (HQ : is_essentially_surjective Q).
-Context (K : Functor J C) (K' : Functor J D).
+Context (Q : Fct I J) (HF : is_full Q) (HQ : is_essentially_surjective Q).
+Context (K : Fct J C) (K' : Fct J D).
 Context (X : @Ob C) (X' : @Ob D).
 Context (κ : X ⇒Δ (K ∘F Q)) (κ' : X' ⇒Δ (K' ∘F Q)).
 
@@ -776,18 +776,18 @@ Constraint m < l.
 Context (J : Cat@{n p h l l}) (K : Cat@{m h p l l}).
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 Context `{HJ : !HasFiniteHomCover J} `{HK : !HasFiniteHomCover K}.
-Context `{HGC : !HasFiniteGenerators J} `{HGD : !HasFiniteGenerators K}.
+Context `{HGC : !HasFiniteGen J} `{HGD : !HasFiniteGen K}.
 Context `{HTC : !HasTerminal C} `{HTD : !HasTerminal D}.
 Context `{HPC : !HasProduct C} `{HPD : !HasProduct D}.
 Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
 Context `{HPbC : !HasPullback C} `{HPbD : !HasPullback D}.
 
 Definition high_eq_finite_hom_generators
-  : HasFiniteGenerators J
-  := FiniteHomGenerators.
+  : HasFiniteGen J
+  := FiniteHomGen.
 Definition low_eq_finite_hom_generators
-  : HasFiniteGenerators K
-  := FiniteHomGenerators.
+  : HasFiniteGen K
+  := FiniteHomGen.
 Definition high_eq_generated_limits
   : HasLimitsOfShape C J
   := GeneratedLimits.
@@ -800,10 +800,10 @@ Definition high_eq_finite_limits
 Definition low_eq_finite_limits
   : HasLimitsOfShape D K
   := FiniteLimits.
-Definition high_eq_finite_limit (F : Functor J C)
+Definition high_eq_finite_limit (F : Fct J C)
   : HasLimit C F
   := FiniteLimit F.
-Definition low_eq_finite_limit (F : Functor K D)
+Definition low_eq_finite_limit (F : Fct K D)
   : HasLimit D F
   := FiniteLimit F.
 Definition high_eq_pullback_finite_limits
@@ -869,10 +869,10 @@ Definition large_vertex_free
 Context (C : Cat@{o e p l l}) (D : Cat@{o p e l l}).
 Context (R : G →G UnderlyingGraph C) (S : G →G UnderlyingGraph D).
 Definition high_eq_free_interpretation
-  : Functor (FreeCat G) C
+  : Fct (FreeCat G) C
   := FreeF R.
 Definition low_eq_free_interpretation
-  : Functor (FreeCat G) D
+  : Fct (FreeCat G) D
   := FreeF S.
 
 Definition high_eq_finite_graph {n : nat} (k : Fin n → Fin n → nat)
@@ -939,21 +939,21 @@ Context `{HTC : !HasTerminal C} `{HTD : !HasTerminal D}.
 Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
 
 Definition high_eq_product_diagonal
-  := @LimitAdjunction PairShape C (ProductLimits (C := C)).
+  := @LimAdj PairShape C (ProductLimits (C := C)).
 Definition low_eq_product_diagonal
-  := @LimitAdjunction PairShape D (ProductLimits (C := D)).
+  := @LimAdj PairShape D (ProductLimits (C := D)).
 Definition high_eq_pullback_diagonal
-  := @LimitAdjunction CospanShape C (PullbackLimits (C := C)).
+  := @LimAdj CospanShape C (PullbackLimits (C := C)).
 Definition low_eq_pullback_diagonal
-  := @LimitAdjunction CospanShape D (PullbackLimits (C := D)).
+  := @LimAdj CospanShape D (PullbackLimits (C := D)).
 Definition high_eq_empty_diagonal
-  := @LimitAdjunction EmptyShape C (TerminalLimits (C := C)).
+  := @LimAdj EmptyShape C (TerminalLimits (C := C)).
 Definition low_eq_empty_diagonal
-  := @LimitAdjunction EmptyShape D (TerminalLimits (C := D)).
+  := @LimAdj EmptyShape D (TerminalLimits (C := D)).
 Definition high_eq_equalizer_diagonal
-  := @LimitAdjunction ParallelShape C (EqualizerLimits (C := C)).
+  := @LimAdj ParallelShape C (EqualizerLimits (C := C)).
 Definition low_eq_equalizer_diagonal
-  := @LimitAdjunction ParallelShape D (EqualizerLimits (C := D)).
+  := @LimAdj ParallelShape D (EqualizerLimits (C := D)).
 Definition high_eq_terminal_from_limits
   := @EmptyLimitsTerminal C (TerminalLimits (C := C)).
 Definition low_eq_terminal_from_limits
@@ -1017,9 +1017,9 @@ Definition high_eq_product_equalizer_limits
   := @IndexedProductsEqualizerLimits J C HOC HAC HEC.
 Definition low_eq_product_equalizer_limits
   := @IndexedProductsEqualizerLimits J D HOD HAD HED.
-Definition high_eq_product_equalizer_limit (K : Functor J C)
+Definition high_eq_product_equalizer_limit (K : Fct J C)
   := ProductsEqualizerLimit K.
-Definition low_eq_product_equalizer_limit (K : Functor J D)
+Definition low_eq_product_equalizer_limit (K : Fct J D)
   := ProductsEqualizerLimit K.
 (** The dual constructor needs only its two discrete coproduct choices;
     these large indices do not constrain the target hom/equality order. *)
@@ -1122,8 +1122,8 @@ Constraint Set < h.
 Constraint h < p.
 Constraint p < l.
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
-Context (F : Functor C SetCat@{h p _ _ _ _ _}).
-Context (P : Functor (D^op) SetCat@{p h _ _ _ _ _}).
+Context (F : Fct C SetCat@{h p _ _ _ _ _}).
+Context (P : Fct (D^op) SetCat@{p h _ _ _ _ _}).
 
 Definition high_eq_universal_elements
   := @represents_iff_universal_element C F.
@@ -1197,7 +1197,7 @@ Constraint b < c.
 Constraint c < d.
 Constraint d < l.
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
-Context (T : Functor (C^op) FamCat) (U : Functor (D^op) FamCat).
+Context (T : Fct (C^op) FamCat) (U : Fct (D^op) FamCat).
 Context (HC : HasContextExtension T) (HU : HasContextExtension U).
 
 Definition high_eq_rep_types (Γ : @Ob C)
@@ -1403,10 +1403,10 @@ Local Existing Instance HD.
 Context (I : B → @Ob C) (J : B → @Ob D).
 
 Definition high_eq_stlc_interpretation
-  : Functor (CtxCat@{b e l} B) C
+  : Fct (CtxCat@{b e l} B) C
   := InterpretF I.
 Definition low_eq_stlc_interpretation
-  : Functor (CtxCat@{b e l} B) D
+  : Fct (CtxCat@{b e l} B) D
   := InterpretF J.
 
 (** Existing interpretation preservation packages without changing its
@@ -1415,13 +1415,13 @@ Definition low_eq_stlc_interpretation
 (** 已有解释保持性可直接打包，不改变语法层级，也不要求迁移固定函子客户端。 *)
 
 Definition high_eq_bundled_type_interpretation
-  : CCCFunctor (TyCat_CCC B) HC
-  := CCCFunctorFromPreservation (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
+  : CCCFct (TyCat_CCC B) HC
+  := CCCFctFromPreservation (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
 Definition low_eq_bundled_type_interpretation
-  : CCCFunctor (TyCat_CCC B) HD
-  := CCCFunctorFromPreservation (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
+  : CCCFct (TyCat_CCC B) HD
+  := CCCFctFromPreservation (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
 
-Context (F : Functor (TyCat@{b e l} B) C)
+Context (F : Fct (TyCat@{b e l} B) C)
     (HF : IsCCCF F (TyCat_CCC B) HC).
 Local Existing Instance HF.
 Context (β : ∀ b, I b ≅[C] F (ty_base b)).
@@ -1456,7 +1456,7 @@ Definition high_eq_groupoid_inverse {X Y : @Ob C} (f : Hom X Y)
   := f⁻¹.
 
 Definition low_eq_groupoid_inverse_functor
-  : Functor (D^op) D
+  : Fct (D^op) D
   := InvF D.
 
 Definition high_eq_opposite_groupoid
@@ -1468,8 +1468,8 @@ Definition mixed_groupoid_product
   := ProdCat_IsGroupoid C D.
 
 Definition low_eq_functor_groupoid
-  : Fct C D ⦂ Gpd
-  := Fct_IsGroupoid C D.
+  : FctCat C D ⦂ Gpd
+  := FctCat_IsGroupoid C D.
 End GroupoidLevels.
 
 (** Setoid elements and their equality witnesses remain independent in the
@@ -1528,11 +1528,11 @@ Definition low_eq_group_category_structure
   := MonoidCat_IsGroupoid Y.
 
 Definition high_eq_regular_action
-  : Functor high_eq_group_category SetCat@{u p _ _ _ _ _}
+  : Fct high_eq_group_category SetCat@{u p _ _ _ _ _}
   := RegularActionF X.
 
 Definition low_eq_regular_action
-  : Functor low_eq_group_category SetCat@{p u _ _ _ _ _}
+  : Fct low_eq_group_category SetCat@{p u _ _ _ _ _}
   := RegularActionF Y.
 
 Definition high_eq_endomorphism_group
@@ -1561,19 +1561,19 @@ Constraint e < l.
 Context (X : SetC@{b e}) (Y : SetC@{e b}).
 
 Definition high_eq_family_action_equivalence
-  : FamSCat X ≃C Fct (EqGpd X) SetCat@{u p _ l _ _ _}
+  : FamSCat X ≃C FctCat (EqGpd X) SetCat@{u p _ l _ _ _}
   := fam_action_equiv X.
 
 Definition low_eq_family_action_equivalence
-  : FamSCat X ≃C Fct (EqGpd X) SetCat@{p u _ l _ _ _}
+  : FamSCat X ≃C FctCat (EqGpd X) SetCat@{p u _ l _ _ _}
   := fam_action_equiv X.
 
 Definition reversed_base_family_action_equivalence
-  : FamSCat Y ≃C Fct (EqGpd Y) SetCat@{u p _ l _ _ _}
+  : FamSCat Y ≃C FctCat (EqGpd Y) SetCat@{u p _ l _ _ _}
   := fam_action_equiv Y.
 
 Definition reversed_base_low_eq_family_action_equivalence
-  : FamSCat Y ≃C Fct (EqGpd Y) SetCat@{p u _ l _ _ _}
+  : FamSCat Y ≃C FctCat (EqGpd Y) SetCat@{p u _ l _ _ _}
   := fam_action_equiv Y.
 End FamilyActionLevels.
 
@@ -1588,7 +1588,7 @@ Constraint p < u.
 Context (X : SetC@{u p}).
 
 Definition distinct_action_slice_equivalence
-  : Fct (EqGpd X) SetCat@{u p _ _ _ _ _} ≃C
+  : FctCat (EqGpd X) SetCat@{u p _ _ _ _ _} ≃C
       (SetCat@{u p _ _ _ _ _} /C X)
   := action_slice_equiv X.
 End ActionSliceLevels.
@@ -1610,15 +1610,15 @@ Definition small_simplex_category
 Section SimplicialLevels.
 Universes u p.
 Constraint u < p.
-Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
-    (Y : Functor (Δ^op) SetCat@{p u _ _ _ _ _}).
+Context (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
+    (Y : Fct (Δ^op) SetCat@{p u _ _ _ _ _}).
 
 Definition high_eq_standard_simplex (n : nat)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Δ[n].
 
 Definition low_eq_standard_simplex (n : nat)
-  : Functor (Δ^op) SetCat@{p u _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{p u _ _ _ _ _}
   := Δ[n].
 
 Definition high_eq_simplex_yoneda (n : nat)
@@ -1635,11 +1635,11 @@ Definition low_eq_simplex_yoneda (n : nat)
 (** 标准单形比较经过一般范畴探测构造后，仍保留两种大小次序。 *)
 
 Definition high_eq_standard_nerve (n : nat)
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅([Ord n])
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅([Ord n])
   := standard_nerve_iso n.
 
 Definition low_eq_standard_nerve (n : nat)
-  : (Δ[n] : Functor (Δ^op) SetCat@{p u _ _ _ _ _}) ≅N N≅([Ord n])
+  : (Δ[n] : Fct (Δ^op) SetCat@{p u _ _ _ _ _}) ≅N N≅([Ord n])
   := standard_nerve_iso n.
 End SimplicialLevels.
 
@@ -1660,11 +1660,11 @@ Constraint u < p.
 Context (C : Cat@{o h e l l}) (D : Cat@{e h o l l}).
 
 Definition low_eq_large_diagram_nerve
-  : Functor (Δ^op) SetCat@{u h _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u h _ _ _ _ _}
   := N≅(C).
 
 Definition high_eq_large_diagram_nerve
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := N≅(D).
 End NerveLevels.
 
@@ -1684,19 +1684,19 @@ Context (M : SetC@{u p}) (N : SetC@{p u})
     `{HM : !Monoid M} `{HN : !Monoid N}.
 
 Definition high_eq_monoid_nerve
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Nₘ(M).
 
 Definition low_eq_monoid_nerve
-  : Functor (Δ^op) SetCat@{p u _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{p u _ _ _ _ _}
   := Nₘ(N).
 
 Definition high_eq_monoid_comparison
-  : (LiftF ∘F Nₘ(M) : Functor (Δ^op) SetCat@{c e _ _ _ _ _}) ⇒ N≅(B(M))
+  : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{c e _ _ _ _ _}) ⇒ N≅(B(M))
   := MonoidDiagramN.
 
 Definition low_eq_monoid_comparison
-  : (LiftF ∘F Nₘ(N) : Functor (Δ^op) SetCat@{e c _ _ _ _ _}) ⇒ N≅(B(N))
+  : (LiftF ∘F Nₘ(N) : Fct (Δ^op) SetCat@{e c _ _ _ _ _}) ⇒ N≅(B(N))
   := MonoidDiagramN.
 End MonoidNerveLevels.
 
@@ -1718,7 +1718,7 @@ Constraint p < v.
 Constraint v < q.
 Context (X : SetC@{o e}) (Y : SetC@{e o})
     (C : Cat@{o h e l l}) (D : Cat@{e h o l l})
-    (T : Functor (EqGpd X) C) (S : Functor (EqGpd Y) D).
+    (T : Fct (EqGpd X) C) (S : Fct (EqGpd Y) D).
 
 (** Transport-preserving functors keep hom-comparison sizes independent
     of stored functor laws, even when source and target sizes are exchanged. *)
@@ -1727,11 +1727,11 @@ Context (X : SetC@{o e}) (Y : SetC@{e o})
 
 Definition forward_vertex_functor_set
   : SetC@{l o}
-  := VertexFunctorS T S.
+  := VtxFctS T S.
 
 Definition reverse_vertex_functor_set
   : SetC@{l h}
-  := VertexFunctorS S T.
+  := VtxFctS S T.
 
 (** The nerve map admits common value equality strictly below or above
     its value carrier, with independent native source and target homs. *)
@@ -1739,13 +1739,13 @@ Definition reverse_vertex_functor_set
 (** nerve 映射允许共同值相等严格低于或高于值载体，且原生源与目标 Hom 大小独立。 *)
 
 Definition low_eq_vertex_functor_map
-  : VertexFunctorS T S →r Nat_SetS
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S))
+  : VtxFctS T S →r Nat_SetS
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S))
   := vertex_nerve_resp T S.
 
 Definition high_eq_vertex_functor_map
-  : VertexFunctorS T S →r Nat_SetS
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S))
+  : VtxFctS T S →r Nat_SetS
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S))
   := vertex_nerve_resp T S.
 
 (** Reconstruction returns to the native hom-setoid even when the nerve
@@ -1754,18 +1754,18 @@ Definition high_eq_vertex_functor_map
 (** 无论 nerve 相等宇宙低于或高于载体宇宙，重构均返回原生态射广集。 *)
 
 Definition low_eq_vertex_functor_inverse
-  : Nat_SetS (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)) →r
-      VertexFunctorS T S
+  : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)) →r
+      VtxFctS T S
   := vertex_nerve_inv_resp T S.
 
 Definition high_eq_vertex_functor_inverse
-  : Nat_SetS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)) →r
-      VertexFunctorS T S
+  : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)) →r
+      VtxFctS T S
   := vertex_nerve_inv_resp T S.
 
 Definition reverse_vertex_functor_inverse
-  : Nat_SetS (Nᵥ(S) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(T)) →r
-      VertexFunctorS S T
+  : Nat_SetS (Nᵥ(S) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(T)) →r
+      VtxFctS S T
   := vertex_nerve_inv_resp S T.
 
 (** The hom isomorphism uses ordinary common lifts, with common equality
@@ -1774,31 +1774,31 @@ Definition reverse_vertex_functor_inverse
 (** 态射同构使用通常的共同提升，共同相等可低于或高于共同载体，不调整原生大小。 *)
 
 Definition low_eq_vertex_hom_isomorphism
-  : LiftS@{_ _ v p} (VertexFunctorS T S) ≅[SetCat]
+  : LiftS@{_ _ v p} (VtxFctS T S) ≅[SetCat]
       LiftS@{_ _ v p} (Nat_SetS
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)))
   := vertex_nerve_hom_iso T S.
 
 Definition high_eq_vertex_hom_isomorphism
-  : LiftS@{_ _ v q} (VertexFunctorS T S) ≅[SetCat]
+  : LiftS@{_ _ v q} (VtxFctS T S) ≅[SetCat]
       LiftS@{_ _ v q} (Nat_SetS
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)))
   := vertex_nerve_hom_iso T S.
 
 Definition low_eq_vertex_nerve
-  : Functor (Δ^op) SetCat@{u h _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u h _ _ _ _ _}
   := Nᵥ(T).
 
 Definition high_eq_vertex_nerve
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Nᵥ(S).
 
 Definition low_eq_vertex_diagram_comparison
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) ⇒ N≅(C)
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) ⇒ N≅(C)
   := VertexDiagramN T.
 
 Definition high_eq_vertex_diagram_comparison
-  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
+  : (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
   := VertexDiagramN S.
 
 (** Chain data need not carry the larger diagram-law universe. Equality
@@ -1819,12 +1819,12 @@ Definition high_eq_vertex_chains (n : nat)
 (** 脊同构同样允许值大小的两种次序。 *)
 
 Definition low_eq_vertex_spine (n : nat)
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) n ≅[SetCat]
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) n ≅[SetCat]
       LiftS (VertexChainS T n)
   := vertex_spine_iso T n.
 
 Definition high_eq_vertex_spine (n : nat)
-  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
+  : (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
       LiftS (VertexChainS S n)
   := vertex_spine_iso S n.
 
@@ -1834,11 +1834,11 @@ Definition high_eq_vertex_spine (n : nat)
 (** 任意范畴 nerve 在两种严格宇宙次序下均具有唯一边界填充，无需群胚假设。 *)
 
 Definition low_eq_vertex_coskeletal
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) ⦂ Cosk[2%nat]
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) ⦂ Cosk[2%nat]
   := vertex_IsCoskeletal T.
 
 Definition high_eq_vertex_coskeletal
-  : (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2%nat]
+  : (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⦂ Cosk[2%nat]
   := vertex_IsCoskeletal S.
 
 (** Local horn isomorphisms retain native hom and equality sizes. Their
@@ -1859,12 +1859,12 @@ Definition high_eq_outer_horn (A B E : @Ob D)
 
 Definition low_eq_local_horn (A B E : X)
   : Horn2S (VertexCat T) A B E fin_first →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat
   := @local_horn2_resp _ _ T (VertexCat_IsGroupoid T) A B E fin_first.
 
 Definition high_eq_local_horn (A B E : Y)
   : Horn2S (VertexCat S) A B E (fin_next (fin_next fin_first)) →r
-      (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat
+      (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat
   := @local_horn2_resp _ _ S (VertexCat_IsGroupoid S)
       A B E (fin_next (fin_next fin_first)).
 
@@ -1874,11 +1874,11 @@ Definition high_eq_local_horn (A B E : Y)
 (** 两种载体与相等大小次序下，实际 horn 映射均容许选定群胚填充。 *)
 
 Definition low_eq_actual_horn (i : Ordinal 2%nat)
-  : HasHornFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat i
+  : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat i
   := vertex_groupoid_horn2_HasFillers T (HC := VertexCat_IsGroupoid T) i.
 
 Definition high_eq_actual_horn (i : Ordinal 2%nat)
-  : HasHornFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat i
+  : HasHornFillers (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat i
   := vertex_groupoid_horn2_HasFillers S (HC := VertexCat_IsGroupoid S) i.
 
 (** The all-dimensional Kan structures retain both strict orderings of
@@ -1887,11 +1887,11 @@ Definition high_eq_actual_horn (i : Ordinal 2%nat)
 (** 全维 Kan 结构保留值载体与相等宇宙的两种严格次序。 *)
 
 Definition low_eq_vertex_kan
-  : HasKanFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u h _ _ _ _ _})
+  : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _})
   := vertex_groupoid_HasKanFillers T (HC := VertexCat_IsGroupoid T).
 
 Definition high_eq_vertex_kan
-  : HasKanFillers (Nᵥ(S) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+  : HasKanFillers (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   := vertex_groupoid_HasKanFillers S (HC := VertexCat_IsGroupoid S).
 
 End VertexNerveLevels.
@@ -1907,21 +1907,21 @@ Constraint e < u.
 Constraint u < p.
 
 Definition low_eq_boundary (n : nat)
-  : Functor (Δ^op) SetCat@{u e _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u e _ _ _ _ _}
   := ∂Δ[n].
 
 Definition high_eq_horn (n : nat) (i : Ordinal n)
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Λ[n; i].
 
 Definition low_eq_horn_restriction
-    (X : Functor (Δ^op) SetCat@{u e _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u e _ _ _ _ _})
     (n : nat) (i : Ordinal n)
   : X n →r HornS X n i
   := horn_restrict_resp i.
 
 Definition high_eq_horn_matching
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (n : nat) (i : Ordinal n)
   : SetC
   := HornS X n i.
@@ -1938,8 +1938,8 @@ Constraint e < u.
 Constraint u < p.
 Constraint p < v.
 Constraint v < q.
-Context (X : Functor (Δ^op) SetCat@{u e _ _ _ _ _})
-    (Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}).
+Context (X : Fct (Δ^op) SetCat@{u e _ _ _ _ _})
+    (Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}).
 
 Definition low_eq_matching (n : nat) (i : Ordinal (S n))
   : LiftS@{_ _ v q} (HornMatchingS X n i) ≅[SetCat]
@@ -2032,17 +2032,17 @@ Constraint o < e.
 Constraint e < h.
 Constraint h < p.
 Context (A B : Cat@{o h e _ _}) (D : Cat@{o h p _ _})
-    (F : Functor A D) (G : Functor B D).
+    (F : Fct A D) (G : Fct B D).
 
 Definition comma_low_side_equality
   : Cat@{_ _ e _ _}
   := F ↓C G.
 
-Context (U : Functor D A) `{HF : !HasFreeObjects U}.
+Context (U : Fct D A) `{HF : !HasFreeObj U}.
 
 Definition mixed_free_adjunction
-  : FreeFunctor U ⊣ U
-  := FreeAdjunction U.
+  : FreeFct U ⊣ U
+  := FreeAdj U.
 
 Definition mixed_free_monad
   : Monad A
@@ -2065,23 +2065,23 @@ Constraint h < p.
 Constraint p < v.
 Constraint v < q.
 Context (C : Cat@{o h e _ _}) (D : Cat@{o h p _ _})
-    (U : Functor D C) `{HF : !HasFreeObjects U} (X : @Ob C).
+    (U : Fct D C) `{HF : !HasFreeObj U} (X : @Ob C).
 
 Definition mixed_free_representation
   : FreeOb U X ⦂ Rep↑
-      (FreeHomF U X : Functor D SetCat@{v q _ _ _ _ _})
+      (FreeHomF U X : Fct D SetCat@{v q _ _ _ _ _})
   := universal_arrow_representation U (free_universal U X).
 
 (** A second model separates the native hom carriers as well. *)
 
 (** 第二个模型也使原生 Hom 载体处于不同层级。 *)
 
-Context (E : Cat@{o p h _ _}) (V : Functor E C)
-    `{HV : !HasFreeObjects V}.
+Context (E : Cat@{o p h _ _}) (V : Fct E C)
+    `{HV : !HasFreeObj V}.
 
 Definition mixed_free_carrier_representation
   : FreeOb V X ⦂ Rep↑
-      (FreeHomF V X : Functor E SetCat@{v q _ _ _ _ _})
+      (FreeHomF V X : Fct E SetCat@{v q _ _ _ _ _})
   := universal_arrow_representation V (free_universal V X).
 End FreeRepresentationLevels.
 
@@ -2103,40 +2103,40 @@ Constraint e < h.
 Constraint h < p.
 Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
     (MC0 : MonoidalCat C0) (MC1 : MonoidalCat C1)
-    (L01 : LaxMonoidalFunctor MC0 MC1)
-    (L10 : LaxMonoidalFunctor MC1 MC0).
+    (L01 : LaxMonoidalFct MC0 MC1)
+    (L10 : LaxMonoidalFct MC1 MC0).
 
 (** Coercion recovers the underlying functor at either native equality size. *)
 
 (** 强制转换在两种原生相等大小下均恢复底层函子。 *)
 
 Definition low_eq_lax_underlying
-  : Functor C1 C0
+  : Fct C1 C0
   := L10.
 
 Definition high_eq_lax_underlying
-  : Functor C0 C1
+  : Fct C0 C1
   := L01.
 
 Definition low_eq_lax_monoid_functor
-  : Functor (MonoidCat MC1) (MonoidCat MC0)
+  : Fct (MonoidCat MC1) (MonoidCat MC0)
   := LaxMonoidF L10.
 
 Definition high_eq_lax_monoid_functor
-  : Functor (MonoidCat MC0) (MonoidCat MC1)
+  : Fct (MonoidCat MC0) (MonoidCat MC1)
   := LaxMonoidF L01.
 
-Definition low_eq_lax_monoid_map {A B : MonoidObject MC1}
+Definition low_eq_lax_monoid_map {A B : MonoidObj MC1}
     (f g : (@Hom (MonoidCat MC1)) A B)
   : Type@{e}
   := fmap low_eq_lax_monoid_functor f ≈ fmap low_eq_lax_monoid_functor g.
 
-Definition high_eq_lax_monoid_map {A B : MonoidObject MC0}
+Definition high_eq_lax_monoid_map {A B : MonoidObj MC0}
     (f g : (@Hom (MonoidCat MC0)) A B)
   : Type@{p}
   := fmap high_eq_lax_monoid_functor f ≈ fmap high_eq_lax_monoid_functor g.
 
-Definition mixed_constant_lax (A : MonoidObject MC0)
-  : LaxMonoidalFunctor MC1 MC0
-  := ConstF_LaxMonoidalFunctor MC1 A.
+Definition mixed_constant_lax (A : MonoidObj MC0)
+  : LaxMonoidalFct MC1 MC0
+  := ConstF_LaxMonoidalFct MC1 A.
 End LaxMonoidalLevels.

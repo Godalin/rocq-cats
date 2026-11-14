@@ -57,8 +57,8 @@ Class ETCS (C : Cat)
 
   (** 使用继承的终对象分类子对象。 *)
 
-  ; hasSubObjectClassifier
-    :: HasSubObjectClassifier C (@hasTerminal C ETCSC)
+  ; hasSubObjClassifier
+    :: HasSubObjClassifier C (@hasTerminal C ETCSC)
 
   (** Global points from that same terminal detect equality of arrows. *)
 
@@ -76,8 +76,8 @@ Class ETCS (C : Cat)
 
   (** 零与递归恰好使用继承的终对象选择。 *)
 
-  ; hasNaturalNumbersObject
-    :: HasNaturalNumbersObject C (@hasTerminal C ETCSC)
+  ; hasNaturalNumbersObj
+    :: HasNaturalNumbersObj C (@hasTerminal C ETCSC)
   }.
 
 Arguments ETCSC {_} _.

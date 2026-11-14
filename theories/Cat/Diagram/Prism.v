@@ -32,7 +32,7 @@ Definition ordinal_interval_side (i : Ordinal 1)
 (** 序数区间映到已有步行箭头；仅分析这些具体有限位置及其可计算顺序。 *)
 
 Program Definition OrdinalArrowF
-  : Functor [Ord 1] ArrowShape
+  : Fct [Ord 1] ArrowShape
   :=
   {|F0 := ordinal_interval_side
   ; F1 i j a := _
@@ -51,9 +51,9 @@ Next Obligation. exact tt. Defined.
 (** 对函子之间的箭头去柯里化，将原源范畴置于第一坐标，序数时间置于第二坐标；
     全部函子律均复用既有构造。 *)
 
-Definition NaturalPrismF {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
-  : Functor (C ×C [Ord 1]) D
-  := (@ArrowDiagram (Fct C D) F G α)^uncF ∘F
+Definition NaturalPrismF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
+  : Fct (C ×C [Ord 1]) D
+  := (@ArrowDiagram (FctCat C D) F G α)^uncF ∘F
       PairF (OrdinalArrowF ∘F SndF C [Ord 1]) (FstF C [Ord 1]).
 
 (** Restrict the prism along a diagram and a monotone time diagram.
@@ -61,16 +61,16 @@ Definition NaturalPrismF {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
 
 (** 沿图式及保序时间图式限制棱柱；此构造也适用于有限序数以外的形状。 *)
 
-Definition PrismDiagramF {C D J : Cat} {F G : Functor C D}
-    (α : F ⇒ G) (P : Functor J C) (θ : Functor J [Ord 1])
-  : Functor J D
+Definition PrismDiagramF {C D J : Cat} {F G : Fct C D}
+    (α : F ⇒ G) (P : Fct J C) (θ : Fct J [Ord 1])
+  : Fct J D
   := NaturalPrismF α ∘F PairF P θ.
 
 (** The time edge at a fixed source object computes to the component. *)
 
 (** 固定源对象处的时间边计算为相应分量。 *)
 
-Lemma natural_prism_step {C D : Cat} {F G : Functor C D}
+Lemma natural_prism_step {C D : Cat} {F G : Fct C D}
     (α : F ⇒ G) (x : @Ob C)
   : fmap (NaturalPrismF α)
       (X := (x, fin_first)) (Y := (x, fin_next fin_first))
@@ -83,7 +83,7 @@ Proof. cbn. rewrite functor_id. apply comp_id_l. Defined.
 (** 分量逐点相等的自然变换给出相等的棱柱箭头；其对象映射定义相同，
     因此只使用 Hom 相等。 *)
 
-Lemma natural_prism_map_proper {C D : Cat} {F G : Functor C D}
+Lemma natural_prism_map_proper {C D : Cat} {F G : Fct C D}
     (α β : F ⇒ G) (H : α ≈N β) {x y : @Ob C}
     {i j : Ordinal 1} (f : Hom x y) (a : (@Hom [Ord 1]) i j)
   : fmap (NaturalPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈

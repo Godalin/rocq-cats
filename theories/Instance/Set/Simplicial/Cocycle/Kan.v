@@ -107,13 +107,13 @@ Context {M : SetC} `{HM : !Monoid M}.
 
 Program Definition cocycle_horn1_HasFillers (i : Ordinal 1)
   : HasHornFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1 i
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1 i
   :=
   {|horn_fill h := (two_cocycle_simplex_unit 1; _)
   |}.
 Next Obligation.
   refine (snd (@horn_filler_faces_iff
-    (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     0 i h (two_cocycle_simplex_unit 1)) _). intros j Hj.
   apply two_cocycle_zero_unique.
 Defined.
@@ -124,13 +124,13 @@ Defined.
 
 Program Definition cocycle_horn2_HasFillers (i : Ordinal 2)
   : HasHornFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
   :=
   {|horn_fill h := (two_cocycle_simplex_unit 2; _)
   |}.
 Next Obligation.
   refine (snd (@horn_filler_faces_iff
-    (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     1 i h (two_cocycle_simplex_unit 2)) _). intros j Hj.
   apply two_cocycle_one_unique.
 Defined.
@@ -144,12 +144,12 @@ Defined.
 
 Definition cocycle_higher_horn_universal (n : nat)
     (i : Ordinal (S (S (S (S (S n))))))
-    (h : HornS (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (h : HornS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (S (S (S (S (S n))))) i)
-  : ∃ x : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+  : ∃ x : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
         (S (S (S (S (S n))))),
       is_unique (R := carrier_equiv ((Z²(M) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _})
         (S (S (S (S (S n))))))) (is_horn_filler h) x
   := cocycle_sieve_universal (HornSieve _ i) h
       (cocycle_horn_triangle_member (S n) i)
@@ -163,7 +163,7 @@ Definition cocycle_higher_horn_universal (n : nat)
 Program Definition cocycle_higher_HasFillers (n : nat)
     (i : Ordinal (S (S (S (S (S n))))))
   : HasHornFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (S (S (S (S (S n))))) i
   :=
   {|horn_fill h := ((cocycle_higher_horn_universal n i h).1; _)
@@ -195,8 +195,8 @@ Context {M : SetC} `{HG : !Group M}.
 (** 选定的系数解给出整个 horn 的填充。 *)
 
 Definition cocycle_horn3_filler (i : Ordinal 3)
-    (h : HornS (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 3 i)
-  : ∃ x : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 3,
+    (h : HornS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 i)
+  : ∃ x : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3,
       is_horn_filler h x.
 Proof.
   destruct i as [[] | [[] | [[] | [[] | []]]]].
@@ -217,7 +217,7 @@ Proof.
       (@this _ _ _ _ _ Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       2 _ h _) _). intros j Hj.
     destruct j as [[] | [[] | [[] | [[] | []]]]];
       try solve [destruct (Hj eq_refl)];
@@ -247,7 +247,7 @@ Proof.
       (@this _ _ _ _ _ Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       2 _ h _) _). intros j Hj.
     destruct j as [[] | [[] | [[] | [[] | []]]]];
       try solve [destruct (Hj eq_refl)];
@@ -277,7 +277,7 @@ Proof.
       (@this _ _ _ _ _ Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       2 _ h _) _). intros j Hj.
     destruct j as [[] | [[] | [[] | [[] | []]]]];
       try solve [destruct (Hj eq_refl)];
@@ -307,7 +307,7 @@ Proof.
       (@this _ _ _ _ _ Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       2 _ h _) _). intros j Hj.
     destruct j as [[] | [[] | [[] | [[] | []]]]];
       try solve [destruct (Hj eq_refl)];
@@ -346,7 +346,7 @@ Context {M : SetC} `{HG : !Group M} `{HC : !IsCommutativeMonoid M}.
 
 Program Definition cocycle_horn3_HasFillers (i : Ordinal 3)
   : HasHornFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 3 i
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 i
   :=
   {|horn_fill h := cocycle_horn3_filler i h
   |}.
@@ -358,7 +358,7 @@ Program Definition cocycle_horn3_HasFillers (i : Ordinal 3)
 
 Program Definition cocycle_horn4_HasFillers (i : Ordinal 4)
   : HasHornFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 4 i
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 i
   :=
   {|horn_fill h := (CocycleHorn4Simplex i h
       (cocycle_horn_triangle_member 0 i); _)
@@ -373,7 +373,7 @@ Next Obligation. apply cocycle_horn4_filler. Defined.
 
 Program Definition two_cocycle_HasKanFillers
   : HasKanFillers
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|hasHornFillers n i := _
   |}.

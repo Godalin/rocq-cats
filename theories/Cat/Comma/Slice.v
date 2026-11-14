@@ -16,7 +16,7 @@ From Cats Require Import
     反逗号范畴，不另行定义独立的对偶逗号构造。 *)
 
 Program Definition SliceCommaF (C : Cat) (X : @Ob C)
-  : Functor (C /C X) ((X ↓[(@IdF (C^op))])^op)
+  : Fct (C /C X) ((X ↓[(@IdF (C^op))])^op)
   :=
   {|F0 A := @StructuredOb (C^op) (C^op) IdF X (slice_dom A)
       (slice_arrow A)
@@ -35,7 +35,7 @@ Next Obligation. split; [exact tt | reflexivity]. Defined.
 (** 将反结构箭头读作切片对象及交换三角形。 *)
 
 Program Definition CommaSliceF (C : Cat) (X : @Ob C)
-  : Functor ((X ↓[(@IdF (C^op))])^op) (C /C X)
+  : Fct ((X ↓[(@IdF (C^op))])^op) (C /C X)
   :=
   {|F0 A := {|slice_dom := comma_right_ob A
              ; slice_arrow := comma_arrow A

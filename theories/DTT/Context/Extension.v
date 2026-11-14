@@ -14,7 +14,7 @@ From Cats Require Import
 (** * 上下文扩张表示带项的替换 *)
 
 Section ContextPairs.
-Context {C : Cat} (T : Functor (C^op) FamCat).
+Context {C : Cat} (T : Fct (C^op) FamCat).
 
 (** For a fixed type, substitution is respectful in the base arrow. *)
 
@@ -88,7 +88,7 @@ Notation "x '[' τ ']Pair[' T ',' A ']'" := (context_pair_sub_resp T A τ x)
     固定族值预层 [T]，不选取上下文扩张；由基底映射和项组成的配对在替换下构成预层。 *)
 
 Section ContextPairPresheaf.
-Context {C : Cat} (T : Functor (C^op) FamCat).
+Context {C : Cat} (T : Fct (C^op) FamCat).
 
 (** The operation respects the specified equivalences of its arguments. *)
 
@@ -166,7 +166,7 @@ Defined.
 (** 带项替换所组成的预层。 *)
 
 Program Definition ContextPairF {Γ : @Ob C} (A : Ty T Γ)
-  : Functor (C^op) SetCat
+  : Fct (C^op) SetCat
   :=
   {|F0 := ContextPairS T A
   ; F1 Δ Θ τ := context_pair_sub_resp T A τ
@@ -188,7 +188,7 @@ End ContextPairPresheaf.
     现在假定 [T] 具有选定上下文扩张，比较指向扩张的箭头与基底映射、项的配对，并组装自然表示同构。 *)
 
 Section ContextRepresentation.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Pairing as a respectful map from substitution-term data to context arrows. *)
 

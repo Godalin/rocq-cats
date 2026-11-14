@@ -71,8 +71,8 @@ N_{\mathrm v}([n]) \arrow[r,"{c_n}"'] & \Delta[n]
 (** 逐维忘却诱导范畴包装。 *)
 
 Program Definition OrdinalVertexNerveN@{u p +} (n : nat)
-  : (Nᵥ(OrdinalObjectsF n) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
+  : (Nᵥ(OrdinalObjF n) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
   :=
   {|nt m := (vertex_ordinal_diagram_resp m n)^↑S
   |}.
@@ -87,8 +87,8 @@ Defined.
 (** 重新将有限位置作为标签。 *)
 
 Program Definition StandardVertexNerveN@{u p +} (n : nat)
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
-      Nᵥ(OrdinalObjectsF n)
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+      Nᵥ(OrdinalObjF n)
   :=
   {|nt m := (vertex_ordinal_diagram_inv_resp m n)^↑S
   |}.
@@ -105,8 +105,8 @@ Defined.
 (** 双向映射组成自然同构，在指定相等中比较图式，而不识别函子定律字段。 *)
 
 Definition ordinal_vertex_nerve_iso@{u p +} (n : nat)
-  : (Nᵥ(OrdinalObjectsF n) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n].
+  : (Nᵥ(OrdinalObjF n) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n].
 Proof.
   exists (OrdinalVertexNerveN n). intros m.
   exists (StandardVertexNerveN n m). split; intros [P];
@@ -125,8 +125,8 @@ Defined.
 Lemma ordinal_vertex_nerve_natural@{u p +} {m n : nat}
     (θ : (@Hom Δ) m n)
   : (OrdinalVertexNerveN n ∘Nv VertexNerveN (OrdinalVertexMapF θ) :
-      (Nᵥ(OrdinalObjectsF m) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]) ≈N
+      (Nᵥ(OrdinalObjF m) :
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]) ≈N
       (fmap StandardSimplexF θ ∘Nv OrdinalVertexNerveN m).
 Proof.
   intros k [P]. refine {|lower := _
@@ -142,8 +142,8 @@ Defined.
 Lemma ordinal_vertex_interval_endpoint@{u p +} (b : bool)
   : (OrdinalVertexNerveN 1 ∘Nv
       VertexNerveN (OrdinalVertexPointF 1 (simplex_interval_position b)) :
-        (Nᵥ(VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set}) :
-          Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[1]) ≈N
+        (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+          Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[1]) ≈N
       (SimplicialIntervalPointN b ∘Nv VertexNerveTerminalN).
 Proof.
   intros n [P]. refine {|lower := _

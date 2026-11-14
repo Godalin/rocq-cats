@@ -37,7 +37,7 @@ Local Existing Instance SetCat_HasProduct.
     Thus preservation of products means a natural isomorphism with the
     pointwise product, with its projections respected. The notation
     $N_{\mathrm v}(T\times U)$ in the picture abbreviates the nerve of
-    [VertexProductObjectsF T U]. *)
+    [VertexProductObjF T U]. *)
 
 (** 积中的图式由两个同形状的图式组成，每个因子中各一个。下图的比较 c 是
     %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
@@ -50,7 +50,7 @@ Local Existing Instance SetCat_HasProduct.
     将两个图式配对就是 c 的逆，得到 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product iso}
     {%[vertex_nerve_product_iso]%}%。因此，保持
     积的意思是与逐点积自然同构，并与投影相容。图中的 $N_{\mathrm v}(T\times U)$ 简写
-    [VertexProductObjectsF T U] 的 nerve。 *)
+    [VertexProductObjF T U] 的 nerve。 *)
 
 (** @lang both
 %\begin{center}
@@ -68,7 +68,7 @@ N_{\mathrm v}(T)\times N_{\mathrm v}(U)
 Section Product.
 Universes u p.
 Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D).
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D).
 
 (** The target is the ordinary pointwise setoid product of the two nerves.
     Chosen setoid products are supplied explicitly. *)
@@ -76,7 +76,7 @@ Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
 (** 目标为两个 nerve 的通常逐点广集积；选定广集积显式提供。 *)
 
 Definition VertexNerveProduct
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := @PointwiseProductF _ _ SetCat_HasProduct (Nᵥ(T)) (Nᵥ(U)).
 
 (** Projection of a simplex keeps both lifted diagrams separately. *)
@@ -84,8 +84,8 @@ Definition VertexNerveProduct
 (** 单形投影分别保留两个提升后的图式。 *)
 
 Program Definition VertexNerveProductN
-  : (Nᵥ(VertexProductObjectsF T U) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ VertexNerveProduct
+  : (Nᵥ(VertexProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ VertexNerveProduct
   :=
   {|nt n :=
       {|func x :=
@@ -121,8 +121,8 @@ Defined.
 
 Program Definition VertexNerveProductInvN
   : VertexNerveProduct ⇒
-      (Nᵥ(VertexProductObjectsF T U) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Nᵥ(VertexProductObjF T U) :
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|nt n :=
       {|func xy := ⟨vertex_diagram_product_pair_resp T U [Ord n]
@@ -154,8 +154,8 @@ Defined.
 (** 比较及其显式逆给出自然同构。 *)
 
 Definition vertex_nerve_product_iso
-  : (Nᵥ(VertexProductObjectsF T U) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N VertexNerveProduct.
+  : (Nᵥ(VertexProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N VertexNerveProduct.
 Proof.
   exists VertexNerveProductN. intros n. exists (VertexNerveProductInvN n).
   split.
@@ -176,8 +176,8 @@ Defined.
 (** 比较的第一投影为第一投影的 nerve。 *)
 
 Lemma vertex_nerve_product_β1 (n : nat)
-    (x : (Nᵥ(VertexProductObjectsF T U) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (Nᵥ(VertexProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : fst (VertexNerveProductN n x) ≈S VertexNerveN (VertexFstF T U) n x.
 Proof. reflexivity. Defined.
 
@@ -186,8 +186,8 @@ Proof. reflexivity. Defined.
 (** 第二投影具有相应方程。 *)
 
 Lemma vertex_nerve_product_β2 (n : nat)
-    (x : (Nᵥ(VertexProductObjectsF T U) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (Nᵥ(VertexProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : snd (VertexNerveProductN n x) ≈S VertexNerveN (VertexSndF T U) n x.
 Proof. reflexivity. Defined.
 
@@ -200,12 +200,12 @@ End Product.
 Lemma vertex_nerve_product_natural@{u p +}
     {X : SetC} {Y : SetC} {X' : SetC} {Y' : SetC}
     {C : Cat} {D : Cat} {C' : Cat} {D' : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {T' : Functor (EqGpd X') C'} {U' : Functor (EqGpd Y') D'}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {T' : Fct (EqGpd X') C'} {U' : Fct (EqGpd Y') D'}
     (F : T →ᵥ T') (G : U →ᵥ U')
   : (VertexNerveProductN T' U' ∘Nv VertexNerveN (VertexProductF F G) :
-      (Nᵥ(VertexProductObjectsF T U) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
+      (Nᵥ(VertexProductObjF T U) :
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       (@PointwiseProductN _ _ SetCat_HasProduct _ _ _ _
         (VertexNerveN F) (VertexNerveN G) ∘Nv VertexNerveProductN T U).
 Proof.

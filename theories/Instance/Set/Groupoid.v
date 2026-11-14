@@ -47,7 +47,7 @@ Proof. exact tt. Defined.
 (** 保相等映射诱导相等群胚之间的函子。 *)
 
 Definition EqGpdF {X Y : SetC} (f : X →r Y)
-  : Functor (EqGpd X) (EqGpd Y)
+  : Fct (EqGpd X) (EqGpd Y)
   := PreorderF
       (HR := equivalence_preorder (carrier_equiv X))
       (HS := equivalence_preorder (carrier_equiv Y))

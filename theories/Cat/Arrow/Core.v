@@ -146,7 +146,7 @@ Next Obligation. split; apply comp_assoc. Defined.
 (** 取箭头的定义域及方形的定义域侧边。 *)
 
 Program Definition ArrowDomF (C : Cat)
-  : Functor (Arr C) C
+  : Fct (Arr C) C
   :=
   {|F0 := arrow_dom
   ; F1 A B := arrow_top
@@ -160,7 +160,7 @@ Next Obligation. reflexivity. Defined.
 (** 取箭头的余域及方形的余域侧边。 *)
 
 Program Definition ArrowCodF (C : Cat)
-  : Functor (Arr C) C
+  : Fct (Arr C) C
   :=
   {|F0 := arrow_cod
   ; F1 A B := arrow_bottom
@@ -173,8 +173,8 @@ Next Obligation. reflexivity. Defined.
 
 (** 自然变换可组织为取值于箭头范畴的函子。 *)
 
-Program Definition NatArrowF {C D : Cat} {F G : Functor C D} (α : F ⇒ G)
-  : Functor C (Arr D)
+Program Definition NatArrowF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
+  : Fct C (Arr D)
   :=
   {|F0 X :=
      {|arrow_dom := F X

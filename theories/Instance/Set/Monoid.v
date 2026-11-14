@@ -54,8 +54,8 @@ Next Obligation. intros x y H. reflexivity. Defined.
 
 (** 已有代数定律验证内部交换图表；这里不重复与单对象范畴的独立比较。 *)
 
-Program Definition SetMonoidObject
-  : MonoidObject SetCartesianMonoidal
+Program Definition SetMonoidObj
+  : MonoidObj SetCartesianMonoidal
   :=
   {|MonoidCarrier := M
   ; monoid_object_unit := set_monoid_unit_resp

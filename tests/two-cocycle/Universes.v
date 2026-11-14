@@ -16,7 +16,7 @@ Constraint e < h.
 Constraint h < o.
 Constraint o < l.
 Context (I : Cat@{o h e l l}) (J : Cat@{e h o l l})
-    (F : Functor I J) (G : Functor J I)
+    (F : Fct I J) (G : Fct J I)
     (M : SetC@{h e}) (N : SetC@{e h})
     `{HM : !Monoid M} `{HN : !Monoid N}
     (c : TwoCocycle J M) (d : TwoCocycle I N).

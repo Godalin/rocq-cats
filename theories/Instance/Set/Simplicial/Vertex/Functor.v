@@ -57,8 +57,8 @@ N_{\mathrm v}(T)_m \arrow[r,"{N_{\mathrm v}(F)_m}"'] & N_{\mathrm v}(U)_m
     仍保持独立。 *)
 
 Program Definition VertexNerveN@{u p +} {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D} (F : T →ᵥ U)
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
   :=
   {|nt n := (vertex_diagram_postcomp_resp (J := [Ord n]) F)^↑S
   |}.
@@ -76,10 +76,10 @@ Defined.
 
 Global Instance vertex_nerve_proper@{u p +}
     {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-  : Proper (VertexFunctorEq ==>
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+  : Proper (VtxFctEq ==>
       @NatEq _ _
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U)))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U)))
       (@VertexNerveN X Y C D T U).
 Proof.
   intros F G H n [P]. refine {|lower := _
@@ -93,9 +93,9 @@ Defined.
 (** 前向映射保持原生态射广集的相等。逆及两侧往返律在 [Reconstruction] 中定义。 *)
 
 Program Definition vertex_nerve_resp@{u p +} {X Y : SetC} {C D : Cat}
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)
-  : VertexFunctorS T U →r Nat_SetS
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U))
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
+  : VtxFctS T U →r Nat_SetS
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U))
   :=
   {|func := VertexNerveN
   |}.
@@ -105,9 +105,9 @@ Program Definition vertex_nerve_resp@{u p +} {X Y : SetC} {C D : Cat}
 (** 恒等函子诱导恒等单纯映射。 *)
 
 Lemma vertex_nerve_id@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C)
+    (T : Fct (EqGpd X) C)
   : (VertexNerveN (VertexIdF T) :
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N idN.
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N idN.
 Proof.
   intros n [P]. refine {|lower := _
                        |}.
@@ -121,10 +121,10 @@ Defined.
 (** 保运输函子的复合诱导单纯映射的垂直复合，不要求函子记录相等。 *)
 
 Lemma vertex_nerve_comp@{u p +} {X Y Z : SetC} {C D E : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {V : Functor (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
   : (VertexNerveN (G ∘Fᵥ F) :
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(V)) ≈N
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(V)) ≈N
       (VertexNerveN G ∘Nv VertexNerveN F).
 Proof.
   intros n [P]. refine {|lower := _

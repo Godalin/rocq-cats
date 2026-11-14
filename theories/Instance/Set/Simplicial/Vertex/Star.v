@@ -23,7 +23,7 @@ Local Open Scope nat_scope.
 
 Section RadialComparisons.
 Universes u p.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
     `{HC : !IsGroupoid (VertexCat T)}.
 
 (** A labelled diagram equality compares radial transitions using any
@@ -32,7 +32,7 @@ Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
 (** 带标签图式相等按任意同端点的指定相等见证比较径向过渡。 *)
 
 Lemma vertex_radial_comparison {n : nat}
-    (F G : Functor [Ord n] (VertexCat T)) (H : VertexDiagramEq T F G)
+    (F G : Fct [Ord n] (VertexCat T)) (H : VertexDiagramEq T F G)
     (i j : Ordinal n) (a : (F i : X) ≈S G i) (b : (F j : X) ≈S G j)
   : T⟦b⟧Ob ∘ ρ[F; i; j] ≈ ρ[G; i; j] ∘ T⟦a⟧Ob.
 Proof.
@@ -49,7 +49,7 @@ Defined.
 
 Definition vertex_star_comparison {n : nat} (A : X)
     (v : Ordinal n → X) (s : ∀ j, (@Hom (VertexCat T)) A (v j))
-    (F : Functor [Ord n] (VertexCat T)) (a : Ordinal n)
+    (F : Fct [Ord n] (VertexCat T)) (a : Ordinal n)
     (e : ∀ j, v j ≈S F j) (c : A ≈S F a)
     (H : ∀ j, T⟦e j⟧Ob ∘ s j ≈ ρ[F; a; j] ∘ T⟦c⟧Ob)
   : VertexDiagramEq T (@StarF (VertexCat T) HC [Ord n] A v s) F.
@@ -68,7 +68,7 @@ Defined.
 
 Definition horn_vertex_overlap {n : nat} {i j k : Ordinal (S n)}
     (Hj : ¬ j = i) (Hk : ¬ k = i)
-    (h : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
     (a b : Ordinal n) (E : δ[n; j] a = δ[n; k] b)
   : (lower (face[i; j; Hj] h) a : X) ≈S lower (face[i; k; Hk] h) b.
 Proof.
@@ -88,7 +88,7 @@ Defined.
 
 Lemma horn_radial_overlap_ordered {n : nat} {i j k : Ordinal (S n)}
     (Hj : ¬ j = i) (Hk : ¬ k = i)
-    (h : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
     (a b c d : Ordinal n)
     (Ea : δ[n; j] a = δ[n; k] b)
     (Ec : δ[n; j] c = δ[n; k] d) (Hac : fin_rank a ≤ fin_rank c)
@@ -131,7 +131,7 @@ Defined.
 
 Lemma horn_radial_overlap {n : nat} {i j k : Ordinal (S n)}
     (Hj : ¬ j = i) (Hk : ¬ k = i)
-    (h : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S n) i)
     (a b c d : Ordinal n)
     (Ea : δ[n; j] a = δ[n; k] b)
     (Ec : δ[n; j] c = δ[n; k] d)

@@ -21,9 +21,9 @@ From Cats Require Import
 (** 此阶段只需二元函子 [T]。幺半范畴稍后提供其张量双函子；构造逐点卷积
     不需要单位、结合子或强度。Hom 值显式提升到共同的目标广集宇宙。 *)
 
-Definition DayHomF@{u p +} {C : Cat} (T : Functor (C ×C C) C)
+Definition DayHomF@{u p +} {C : Cat} (T : Fct (C ×C C) C)
     (Z : @Ob C)
-  : Functor ((C ×C C)^op) (SetCat@{u p _ _ _ _ _})
+  : Fct ((C ×C C)^op) (SetCat@{u p _ _ _ _ _})
   := (LiftF ∘F Hom(-, Z)) ∘F (T^opF).
 
 (** External products evaluate the two input functors independently. *)
@@ -31,8 +31,8 @@ Definition DayHomF@{u p +} {C : Cat} (T : Functor (C ×C C) C)
 (** 外积独立求值两个输入函子。 *)
 
 Definition DayValuesF@{u p +} {C : Cat}
-    (F G : Functor C (SetCat@{u p _ _ _ _ _}))
-  : Functor (C ×C C) SetCat
+    (F G : Fct C (SetCat@{u p _ _ _ _ _}))
+  : Fct (C ×C C) SetCat
   := @PointwiseProductF _ SetCat SetCat_HasProduct
       (F ∘F FstF C C) (G ∘F SndF C C).
 
@@ -43,9 +43,9 @@ Definition DayValuesF@{u p +} {C : Cat}
 (** 逆变坐标贡献 [Hom (T (X,Y)) Z]，协变坐标贡献 [F X] 和 [G Y]。
     函子性由 Hom、复合及逐点积继承。 *)
 
-Definition DayKernel@{u p +} {C : Cat} (T : Functor (C ×C C) C)
-    (F G : Functor C (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
-  : Functor (((C ×C C)^op) ×C (C ×C C)) SetCat
+Definition DayKernel@{u p +} {C : Cat} (T : Fct (C ×C C) C)
+    (F G : Fct C (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
+  : Fct (((C ×C C)^op) ×C (C ×C C)) SetCat
   := @PointwiseProductF _ SetCat SetCat_HasProduct
       (DayHomF T Z ∘F FstF ((C ×C C)^op) (C ×C C))
       (DayValuesF F G ∘F SndF ((C ×C C)^op) (C ×C C)).
@@ -63,8 +63,8 @@ Definition DayKernel@{u p +} {C : Cat} (T : Functor (C ×C C) C)
 
 Section KernelMaps.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
-Context {F G : Functor C (SetCat@{u p _ _ _ _ _})}.
+Context {C : Cat} (T : Fct (C ×C C) C).
+Context {F G : Fct C (SetCat@{u p _ _ _ _ _})}.
 
 (** Postcomposition in the Hom weight changes the output parameter. *)
 
@@ -119,8 +119,8 @@ End KernelMaps.
 
 (** 只为这一特定核族选择 coend，没有全局余完备假设或固定大小自索引的断言。 *)
 
-Class HasDay@{u p +} (C : Cat) (T : Functor (C ×C C) C)
-    (F G : Functor C (SetCat@{u p _ _ _ _ _}))
+Class HasDay@{u p +} (C : Cat) (T : Fct (C ×C C) C)
+    (F G : Fct C (SetCat@{u p _ _ _ _ _}))
   :=
   { hasDayCoend (Z : @Ob C) :: HasCoend (SetCat@{u p _ _ _ _ _})
       (DayKernel T F G Z)
@@ -137,15 +137,15 @@ Class HasDay@{u p +} (C : Cat) (T : Functor (C ×C C) C)
 
 Section ChosenDay.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
-Context (F G : Functor C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}.
+Context {C : Cat} (T : Fct (C ×C C) C).
+Context (F G : Fct C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}.
 
 (** Day convolution is the coend of its Hom-weighted kernel. *)
 
 (** Day 卷积是其 Hom 加权核的 coend。 *)
 
 Program Definition DayF
-  : Functor C (SetCat@{u p _ _ _ _ _})
+  : Fct C (SetCat@{u p _ _ _ _ _})
   :=
   {|F0 Z := coend[DayKernel T F G Z]
   ; F1 Z Z' f := coend_map (DayPostN T f)

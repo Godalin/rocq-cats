@@ -259,6 +259,8 @@ the induced functor on monoid homomorphisms. The direct computation
 interfaces and their comparison diagram remain future milestones.
 See the [interface survey](./docs/BundledInterfaces.md) for other candidates
 for bundling and the fixed-data interfaces that should remain separate.
+The [abbreviation guide](./docs/Abbreviations.md) records public name migrations
+and the remaining naming families.
 
 The [cartesian](./theories/Cat/Functor/Cartesian.v) and
 [CCC functor bundles](./theories/Cat/Functor/Closed.v) extend this approach
@@ -274,6 +276,7 @@ Monad–Applicative–Arrow 工作从
 直接计算接口及其比较图仍是后续里程碑。
 其他打包候选与应独立保留的固定数据接口见
 [接口调查](./docs/BundledInterfaces.md)。
+[缩写对照](./docs/Abbreviations.md)记录公共名称迁移及后续待整理词族。
 
 [笛卡尔](./theories/Cat/Functor/Cartesian.v)及
 [CCC 函子包](./theories/Cat/Functor/Closed.v)通过单一继承链延续这一做法；
@@ -317,7 +320,7 @@ Monad–Applicative–Arrow 工作从
   identity. Write `A^Arr` for the arrow object. Slice reindexing, including its
   unit/composition comparisons, agrees with codomain cartesian factorization
   for the same chosen pullbacks; `SliceReindexSquareN f` packages the natural squares.
-  [Functor](./theories/Cat/Functor/Core.v) and
+  [Fct](./theories/Cat/Functor/Core.v) and
   [Natural](./theories/Cat/Natural.v) extend opposition to functors (`F ^opF`)
   and natural transformations (`α ^opN`). Functors are compared by natural
   isomorphism (`F ≅N G`), without requiring equality of their object values.

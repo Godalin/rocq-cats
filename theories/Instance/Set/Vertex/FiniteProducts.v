@@ -26,7 +26,7 @@ Program Definition VertexPresentationProduct
   :=
   {|vertex_labels := vertex_labels P ×S vertex_labels Q
   ; vertex_ambient := vertex_ambient P ×C vertex_ambient Q
-  ; vertex_action := VertexProductObjectsF P Q
+  ; vertex_action := VertexProductObjF P Q
   |}.
 
 (** The diagram correspondence supplies both projections and uniqueness
@@ -42,14 +42,14 @@ Definition vertex_presentation_product_universal
 Proof.
   intros R F G. exists (VertexPairF P Q F G). split.
   - exact (snd (vertex_diagram_product_iso P Q (VertexCat R)).2.2
-      ((F : Functor (VertexCat R) (VertexCat P)),
-       (G : Functor (VertexCat R) (VertexCat Q)))).
+      ((F : Fct (VertexCat R) (VertexCat P)),
+       (G : Fct (VertexCat R) (VertexCat Q)))).
   - intros K [H1 H2].
     transitivity (VertexPairF P Q
       (VertexFstF P Q ∘Fᵥ K) (VertexSndF P Q ∘Fᵥ K)).
     + symmetry.
       exact (fst (vertex_diagram_product_iso P Q (VertexCat R)).2.2
-        (K : Functor (VertexCat R) (VertexCat (VertexPresentationProduct P Q)))).
+        (K : Fct (VertexCat R) (VertexCat (VertexPresentationProduct P Q)))).
     + apply vertex_pair_proper; assumption.
 Defined.
 
@@ -76,7 +76,7 @@ Program Definition VertexPresentationTerminal
   :=
   {|vertex_labels := UnitS@{x e}
   ; vertex_ambient := CodiscreteCat@{o h p l} unit
-  ; vertex_action := VertexTerminalObjectsF@{x e o h p l a b}
+  ; vertex_action := VertexTerminalObjF@{x e o h p l a b}
   |}.
 
 (** The existing unique terminal map proves terminality of the bundle. *)

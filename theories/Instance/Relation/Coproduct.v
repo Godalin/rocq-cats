@@ -49,7 +49,7 @@ Defined.
 
 Program Definition RelationSumF@{i a r +}
     {I : Type@{i}} (A : I → Type@{a})
-  : Functor
+  : Fct
       (RelationFamilyCat@{i a r _ _ _} A ×C
         RelationFamilyCat@{i a r _ _ _} A)
       (RelationFamilyCat@{i a r _ _ _} A)

@@ -28,7 +28,7 @@ From Cats.Set Require Export
 
 Program Definition SievePsh@{u p +} {C : Cat} {A : @Ob C}
     (S : Sieve C A)
-  : Functor (C^op) SetCat@{u p _ _ _ _ _}
+  : Fct (C^op) SetCat@{u p _ _ _ _ _}
   :=
   {|F0 X := LiftS (SubsetS (@HomSet C X A) (@sieve_member C A S X))
   ; F1 X Y f :=
@@ -61,7 +61,7 @@ Defined.
 
 Program Definition SieveInclusionN@{u p +} {C : Cat} {A : @Ob C}
     (S : Sieve C A)
-  : (SievePsh S : Functor (C^op) SetCat@{u p _ _ _ _ _}) ⇒
+  : (SievePsh S : Fct (C^op) SetCat@{u p _ _ _ _ _}) ⇒
       RaisedEmbedding A
   :=
   {|nt X :=
@@ -81,7 +81,7 @@ Notation "'ιSv[' S ']'" := (SieveInclusionN S) : hom_scope.
 
 Lemma sieve_inclusion_mono@{u p +} {C : Cat} {A : @Ob C}
     (S : Sieve C A)
-  : @is_mono (Fct (C^op) SetCat@{u p _ _ _ _ _}) _ _ ιSv[S].
+  : @is_mono (FctCat (C^op) SetCat@{u p _ _ _ _ _}) _ _ ιSv[S].
 Proof. intros P α β H X x. exact (H X x). Defined.
 
 (** A containment of sieves induces a map preserving the underlying arrow. *)
@@ -91,7 +91,7 @@ Proof. intros P α β H X x. exact (H X x). Defined.
 Program Definition SieveMapN@{u p +} {C : Cat} {A : @Ob C}
     {S R : Sieve C A}
     (H : ∀ X (f : Hom X A), f ∈Sv S → f ∈Sv R)
-  : (SievePsh S : Functor (C^op) SetCat@{u p _ _ _ _ _}) ⇒ SievePsh R
+  : (SievePsh S : Fct (C^op) SetCat@{u p _ _ _ _ _}) ⇒ SievePsh R
   :=
   {|nt X :=
       {|func x :=
@@ -113,7 +113,7 @@ Lemma sieve_map_inclusion@{u p +} {C : Cat} {A : @Ob C}
     {S R : Sieve C A}
     (H : ∀ X (f : Hom X A), f ∈Sv S → f ∈Sv R)
   : (ιSv[R] ∘Nv (SieveMapN H :
-      (SievePsh S : Functor (C^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
+      (SievePsh S : Fct (C^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
       ≈N ιSv[S].
 Proof. intros X x. reflexivity. Defined.
 
@@ -124,7 +124,7 @@ Proof. intros X x. reflexivity. Defined.
 
 Program Definition SieveFactorN@{u p +} {C : Cat} {A B : @Ob C}
     {S : Sieve C A} (f : Hom B A) (H : f ∈Sv S)
-  : (RaisedEmbedding B : Functor (C^op) SetCat@{u p _ _ _ _ _}) ⇒
+  : (RaisedEmbedding B : Fct (C^op) SetCat@{u p _ _ _ _ _}) ⇒
       SievePsh S
   :=
   {|nt X :=
@@ -149,7 +149,7 @@ Defined.
 Lemma sieve_factor_comm@{u p +} {C : Cat} {A B : @Ob C}
     {S : Sieve C A} (f : Hom B A) (H : f ∈Sv S)
   : (ιSv[S] ∘Nv (SieveFactorN f H :
-      (RaisedEmbedding B : Functor (C^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
+      (RaisedEmbedding B : Fct (C^op) SetCat@{u p _ _ _ _ _}) ⇒ _))
       ≈N fmap RaisedEmbedding f.
 Proof. intros X x. reflexivity. Defined.
 
@@ -159,7 +159,7 @@ Proof. intros X x. reflexivity. Defined.
 (** 将元素的 Yoneda 映射限制到筛；此构造适用于任意预层，并保留原元素的计算。 *)
 
 Program Definition sieve_restrict_resp@{u p +} {C : Cat} {A : @Ob C}
-    (S : Sieve C A) {P : Functor (C^op) SetCat@{u p _ _ _ _ _}}
+    (S : Sieve C A) {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}
   : P A →r Nat_SetS (SievePsh S) P
   :=
   {|func x := presheaf_yoneda_inv_resp (C := C) (P := P) (X := A) x
@@ -180,7 +180,7 @@ Notation "x '↾Sv[' P ';' S ']'" := (sieve_restrict_resp S (P := P) x)
     Yoneda 对应。 *)
 
 Definition sieve_extension_iff@{u p +} {C : Cat} {A : @Ob C}
-    (S : Sieve C A) {P : Functor (C^op) SetCat@{u p _ _ _ _ _}}
+    (S : Sieve C A) {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}
     (h : SievePsh S ⇒ P)
   : (∃ α : RaisedEmbedding A ⇒ P, (α ∘Nv ιSv[S]) ≈N h) ↔
       (∃ x : P A, x↾Sv[P; S] ≈N h).
@@ -205,7 +205,7 @@ Defined.
 
 Definition generated_sieve_map_eq@{u p +} {C : Cat} {A : @Ob C}
     {I : Type} {D : I → @Ob C} (g : ∀ i, Hom (D i) A)
-    {P : Functor (C^op) SetCat@{u p _ _ _ _ _}}
+    {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}
     (α β : SievePsh (GeneratedSieve D g) ⇒ P)
   : α ≈N β ↔ ∀ i,
       α (D i) {|lower := (g i; generated_sieve_member g i)

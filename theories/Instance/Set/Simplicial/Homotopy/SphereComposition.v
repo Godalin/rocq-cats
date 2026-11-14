@@ -56,7 +56,7 @@ x\in X_2 & w\in X_3 \arrow[l,"d_3"']
 
 Section SphereComposition.
 Universes u p.
-Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
+Context (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0).
 
 (** An actual tetrahedron witnessing the ordered composite [x], then [y]. *)
 

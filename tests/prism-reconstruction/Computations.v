@@ -17,11 +17,11 @@ From Cats Require Import
     两个边界及恢复出的时间箭头都须透明计算。 *)
 
 Definition InitialF
-  : Functor ArrowShape ArrowShape
+  : Fct ArrowShape ArrowShape
   := ConstF ArrowShape (C := ArrowShape) false.
 
 Definition FinalF
-  : Functor ArrowShape ArrowShape
+  : Fct ArrowShape ArrowShape
   := ConstF ArrowShape (C := ArrowShape) true.
 
 Program Definition DirectedN

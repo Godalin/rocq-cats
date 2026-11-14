@@ -39,7 +39,7 @@ Definition PairShape
 (** 离散形状通过路径反转自对偶，无需认同范畴记录。 *)
 
 Definition OpDiscreteF (I : Type)
-  : Functor (DiscreteCat I) ((DiscreteCat I)^op)
+  : Fct (DiscreteCat I) ((DiscreteCat I)^op)
   := OpFreeF (DiscreteGraph I).
 
 (** The inverse self-duality reads reversed discrete paths back. *)
@@ -47,7 +47,7 @@ Definition OpDiscreteF (I : Type)
 (** 自对偶的逆向映射将反离散路径读回。 *)
 
 Definition UnopDiscreteF (I : Type)
-  : Functor ((DiscreteCat I)^op) (DiscreteCat I)
+  : Fct ((DiscreteCat I)^op) (DiscreteCat I)
   := UnopFreeF (DiscreteGraph I).
 
 (** Self-duality retains chosen arrow preimages in both directions. *)

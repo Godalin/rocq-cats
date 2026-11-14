@@ -95,7 +95,7 @@ Defined.
 (** 终对象处的 Monad 返回及有序配对组成 lax 幺半自函子，证明保留求值次序。 *)
 
 Program Definition MonadLax
-  : LaxMonoidalFunctor (@CartesianMonoidal C HT HP)
+  : LaxMonoidalFct (@CartesianMonoidal C HT HP)
       (@CartesianMonoidal C HT HP)
   :=
   {|LaxMonoidalF := M

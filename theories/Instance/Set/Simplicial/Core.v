@@ -109,7 +109,7 @@ $X_0$ & $X_1$ & $X_2$
 
 Definition SimplicialCat@{u p +}
   : Cat
-  := Fct (Δ^op) SetCat@{u p _ _ _ _ _}.
+  := FctCat (Δ^op) SetCat@{u p _ _ _ _ _}.
 
 Notation sSet := SimplicialCat.
 
@@ -119,7 +119,7 @@ Notation sSet := SimplicialCat.
 (** 沿单纯算子的限制反转其方向；源和目标沿用原值广集，保持大小的独立性。 *)
 
 Definition simplex_restrict@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
     (θ : (@Hom Δ) m n)
   : X n →r X m
   := fmap X θ.
@@ -132,7 +132,7 @@ Notation "X '[' θ ']Δ'" := (simplex_restrict (X := X) θ)
 (** 沿恒等的限制是恒等映射。 *)
 
 Lemma simplex_restrict_id@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
   : X[(id : (@Hom Δ) n n)]Δ ≈f id_resp.
 Proof. exact (functor_id _ _ X). Qed.
 
@@ -165,7 +165,7 @@ X_m \arrow[d,"{X[\varphi]}"] \\
 (** 限制反转复合次序。 *)
 
 Lemma simplex_restrict_comp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {l m n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {l m n : nat}
     (θ : (@Hom Δ) m n) (φ : (@Hom Δ) l m)
   : X[θ ∘ φ]Δ ≈f (X[φ]Δ ∘r X[θ]Δ).
 Proof. exact (functor_comp _ _ X φ θ). Qed.
@@ -175,7 +175,7 @@ Proof. exact (functor_comp _ _ X φ θ). Qed.
 (** 等价的单纯算子诱导相等的限制映射。 *)
 
 Global Instance simplex_restrict_proper@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
   : Proper (@HomEq Δ m n ==> FunEq) (@simplex_restrict X m n).
 Proof. exact (@functor_fmap_proper _ _ X n m). Qed.
 
@@ -211,7 +211,7 @@ X_m \arrow[r,"{\alpha_m}"'] & Y_m
 (** 单纯集合映射与每个限制交换。 *)
 
 Lemma simplex_restrict_natural@{u p +}
-    {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (α : X ⇒ Y) {m n : nat} (θ : (@Hom Δ) m n)
   : (α m ∘r X[θ]Δ) ≈f (Y[θ]Δ ∘r α n).
 Proof. exact (nt_naturality α θ). Qed.

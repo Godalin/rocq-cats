@@ -47,7 +47,7 @@ From Cats Require Import
 (** 将类型嵌为其单变量上下文，原样保留 Hom 广集。 *)
 
 Definition SingletonF@{b e l +} (B : Type@{b})
-  : Functor (TyCat@{b e l} B) (CtxCat@{b e l} B)
+  : Fct (TyCat@{b e l} B) (CtxCat@{b e l} B)
   := @InducedInclusionF (CtxCat@{b e l} B) (Ty B)
       (λ A, ctx_snoc ctx_empty A).
 
@@ -57,7 +57,7 @@ Definition SingletonF@{b e l +} (B : Type@{b})
 (** 将上下文打包为积类型，沿已有打包、拆包映射运输每条替换。 *)
 
 Definition PackF@{b e l +} (B : Type@{b})
-  : Functor (CtxCat@{b e l} B) (TyCat@{b e l} B)
+  : Fct (CtxCat@{b e l} B) (TyCat@{b e l} B)
   := @InducedRepresentativesF (CtxCat@{b e l} B) (Ty B)
       (λ A, ctx_snoc ctx_empty A) (@CtxTy B)
       (λ Γ, iso_symm (ctx_pack_iso Γ)).

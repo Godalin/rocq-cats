@@ -12,7 +12,7 @@ From Cats Require Export
     函子具有选定自由对象，指每个结构箭头范畴均有选定始对象。这是额外结构，
     并不声称每个函子都具有左伴随。 *)
 
-Class HasFreeObjects {C D : Cat} (U : Functor D C)
+Class HasFreeObj {C D : Cat} (U : Fct D C)
   :=
   { free_initial (X : @Ob C) : HasInitial (X ↓[U]) }.
 
@@ -28,7 +28,7 @@ Arguments free_initial {_ _ _ _} _.
     固定带选定自由对象的函子 [U]，提取自由对象及泛箭头，再导出扩张映射和唯一性定律。 *)
 
 Section FreeObjects.
-Context {C D : Cat} (U : Functor D C) `{HF : !HasFreeObjects U}.
+Context {C D : Cat} (U : Fct D C) `{HF : !HasFreeObj U}.
 
 (** The free object is the right endpoint of the selected initial arrow. *)
 
@@ -118,10 +118,10 @@ End FreeObjects.
 
 (** 直接泛箭头组装为选定始对象；选取箭头的函数显式给出，不使用选择公理。 *)
 
-Program Definition FreeObjectsFromUniversal {C D : Cat} (U : Functor D C)
+Program Definition FreeObjFromUniversal {C D : Cat} (U : Fct D C)
     (A : @Ob C → @Ob D) (η : ∀ X, Hom X (U (A X)))
     (Hη : ∀ X, η X ⦂ UnivArr(U))
-  : HasFreeObjects U
+  : HasFreeObj U
   :=
   {|free_initial X :=
      {|hasOpTerminal :=

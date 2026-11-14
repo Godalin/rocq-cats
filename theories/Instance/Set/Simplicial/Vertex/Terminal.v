@@ -27,8 +27,8 @@ Universes x e o h q l a b.
 (** 比较在每个维度取唯一值。 *)
 
 Program Definition VertexNerveTerminalN@{u p +}
-  : (Nᵥ(VertexTerminalObjectsF@{x e o h q l a b}) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+  : (Nᵥ(VertexTerminalObjF@{x e o h q l a b}) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p}
   :=
   {|nt n :=
@@ -44,12 +44,12 @@ Next Obligation. intros x. exact tt. Defined.
 
 Program Definition VertexNerveTerminalInvN@{u p +}
   : ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p} ⇒
-      (Nᵥ(VertexTerminalObjectsF@{x e o h q l a b}) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Nᵥ(VertexTerminalObjF@{x e o h q l a b}) :
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|nt n :=
       {|func x := ⟨ConstF [Ord n]
-          (C := VertexCat VertexTerminalObjectsF@{x e o h q l a b}) tt⟩ᵥ
+          (C := VertexCat VertexTerminalObjF@{x e o h q l a b}) tt⟩ᵥ
       |}
   |}.
 Next Obligation.
@@ -67,8 +67,8 @@ Defined.
 (** 两侧往返均使用指定相等，与两个共同值大小相互独立；不识别函子记录或见证。 *)
 
 Definition vertex_nerve_terminal_iso@{u p +}
-  : (Nᵥ(VertexTerminalObjectsF@{x e o h q l a b}) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+  : (Nᵥ(VertexTerminalObjF@{x e o h q l a b}) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p}.
 Proof.
   exists VertexNerveTerminalN. intros n. exists (VertexNerveTerminalInvN n).
@@ -84,10 +84,10 @@ Defined.
 
 Lemma vertex_nerve_terminal_natural@{u p +}
     {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D} (F : T →ᵥ U)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : (VertexNerveTerminalN ∘Nv VertexNerveN (VertexTerminalF U) ∘Nv
       VertexNerveN F :
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       (VertexNerveTerminalN ∘Nv VertexNerveN (VertexTerminalF T)).
 Proof. intros n x. exact tt. Defined.
 

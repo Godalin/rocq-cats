@@ -43,7 +43,7 @@ Local Open Scope stlc_tm_scope.
     函数观察方式均保持显式。 *)
 
 Record Reification {B : Type} (A : Ty B)
-    (S : Functor ((RenamingCat B)^op) SetCat)
+    (S : Fct ((RenamingCat B)^op) SetCat)
   :=
   { reflect_ne : ∀ Γ : Ctx B, Ne Γ A → S Γ
   ; reify_sem : ∀ Γ : Ctx B, S Γ → Nf Γ A
@@ -72,9 +72,9 @@ Arguments reify_sem_rename {_ _ _} _ _ _ _ _.
     全部相容律直接继承，不比较其见证。 *)
 
 Definition lift_reification@{u p +} {B : Type} {A : Ty B}
-    {S : Functor ((RenamingCat B)^op) SetCat} (R : Reification A S)
+    {S : Fct ((RenamingCat B)^op) SetCat} (R : Reification A S)
   : Reification A
-      (LiftF ∘F S : Functor ((RenamingCat B)^op)
+      (LiftF ∘F S : Fct ((RenamingCat B)^op)
         SetCat@{u p _ _ _ _ _}).
 Proof.
   unshelve notypeclasses refine
@@ -104,7 +104,7 @@ Defined.
     全部证明义务由操作对已有的保相等性质与重命名律提供。 *)
 
 Program Definition ReflectN@{b r u p l +} {B : Type@{b}} {A : Ty B}
-    {S : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    {S : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}} (R : Reification A S)
   : LiftF ∘F NePsh A ⇒ S
   :=
@@ -129,9 +129,9 @@ Defined.
     比较。 *)
 
 Program Definition ReifyN@{b r u p l q +} {B : Type@{b}} {A : Ty B}
-    {S : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    {S : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}} (R : Reification A S)
-  : S ⇒ LiftF ∘F (NfPsh A : Functor
+  : S ⇒ LiftF ∘F (NfPsh A : Fct
       ((RenamingCat B)^op) SetCat@{b q _ _ _ _ _})
   :=
   {|nt Γ :=
@@ -204,7 +204,7 @@ Context {B : Type@{b}}.
 
 Fixpoint TypeReification (A : Ty B)
   : Reification A
-      (SemF A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      (SemF A : Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}).
 Proof.
   destruct A as [b | | A U | A U].

@@ -23,8 +23,8 @@ Context {J C : Cat} `{HL : !HasLimitsOfShape C J}.
 
 (** 泛中介运算作为 Hom 广集间的保相等映射。 *)
 
-Program Definition limit_lift_resp {X : @Ob C} {D : Functor J C}
-  : @HomSet (Fct J C) (ConstF J X) D →r HomSet X (lim D)
+Program Definition limit_lift_resp {X : @Ob C} {D : Fct J C}
+  : @HomSet (FctCat J C) (ConstF J X) D →r HomSet X (lim D)
   :=
   {|func := limit_lift
   |}.
@@ -34,8 +34,8 @@ Program Definition limit_lift_resp {X : @Ob C} {D : Functor J C}
 
 (** Hom 对应的逆将箭头送到预合成后的极限锥。 *)
 
-Program Definition limit_cone_resp {X : @Ob C} {D : Functor J C}
-  : HomSet X (lim D) →r @HomSet (Fct J C) (ConstF J X) D
+Program Definition limit_cone_resp {X : @Ob C} {D : Fct J C}
+  : HomSet X (lim D) →r @HomSet (FctCat J C) (ConstF J X) D
   :=
   {|func f := πlim[D] ∘Cone f
   |}.
@@ -45,10 +45,10 @@ Next Obligation. intros f g H j. cbn. rewrite H. reflexivity. Defined.
 
 (** 对角函子左伴随于选定极限函子。 *)
 
-Definition LimitAdjunction
-  : Δ[J,C] ⊣ LimitF.
+Definition LimAdj
+  : Δ[J,C] ⊣ LimF.
 Proof.
-  refine (AdjunctionFromHom Δ[J,C] LimitF
+  refine (AdjFromHom Δ[J,C] LimF
     (λ X D, limit_lift_resp) (λ X D, limit_cone_resp) _ _ _ _).
   - intros X D κ. apply limit_β.
   - intros X D f. apply limit_η.
@@ -67,17 +67,17 @@ End ChosenLimits.
     实例。 *)
 
 Section DiagonalAdjunction.
-Context {J C : Cat} {R : Functor (Fct J C) C} (A : Δ[J,C] ⊣ R).
+Context {J C : Cat} {R : Fct (FctCat J C) C} (A : Δ[J,C] ⊣ R).
 
 (** The counit of a diagonal adjunction selects a limit of one diagram. *)
 
 (** 对角伴随的余单位为单个图式选择极限。 *)
 
-Program Definition DiagonalAdjunctionLimit (D : Functor J C)
+Program Definition DiagAdjLim (D : Fct J C)
   : HasLimit C D
   :=
   {|Lim := R D
-  ; limit_cone := adjunction_counit A D
+  ; limit_cone := adj_counit A D
   |}.
 Next Obligation.
   intros X κ. exists (κ^♯[A]). refine {|this := _
@@ -87,7 +87,7 @@ Next Obligation.
     exact (transitivity (symmetry (unadjunct_counit A (κ^♯[A]) j))
       (adjunction_β A κ j)).
   - intros f H. symmetry. apply (snd (adjunct_iff A κ f)).
-    transitivity (adjunction_counit A D ∘Nv fmap Δ[J,C] f).
+    transitivity (adj_counit A D ∘Nv fmap Δ[J,C] f).
     + symmetry. exact H.
     + exact (symmetry (unadjunct_counit A f)).
 Defined.
@@ -96,10 +96,10 @@ Defined.
 
 (** 对角函子的右伴随给出该形状的全部选定极限。 *)
 
-Program Definition DiagonalAdjunctionLimits
+Program Definition DiagAdjLims
   : HasLimitsOfShape C J
   :=
-  {|hasLimit := DiagonalAdjunctionLimit
+  {|hasLimit := DiagAdjLim
   |}.
 
 End DiagonalAdjunction.
@@ -110,9 +110,9 @@ End DiagonalAdjunction.
 (** 某形状的选定极限与其对角函子的选定右伴随对应。 *)
 
 Theorem limits_iff_diagonal_right_adjoint (J C : Cat)
-  : HasLimitsOfShape C J ↔ ∃ R : Functor (Fct J C) C, Δ[J,C] ⊣ R.
+  : HasLimitsOfShape C J ↔ ∃ R : Fct (FctCat J C) C, Δ[J,C] ⊣ R.
 Proof.
   split.
-  - intros HL. exists (@LimitF J C HL). exact (@LimitAdjunction J C HL).
-  - intros [R A]. exact (DiagonalAdjunctionLimits A).
+  - intros HL. exists (@LimF J C HL). exact (@LimAdj J C HL).
+  - intros [R A]. exact (DiagAdjLims A).
 Defined.

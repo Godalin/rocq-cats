@@ -14,7 +14,7 @@ Local Open Scope nat_scope.
 
 Section OuterHorns.
 Universes u p.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** Two arrows with common source agree on every overlap of the two
     retained faces. Mixed overlaps are constant at their shared vertex. *)
@@ -23,7 +23,7 @@ Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
 
 Program Definition outer_horn2_matching {A B D : X}
     (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
-  : HornMatchingS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1 fin_first
+  : HornMatchingS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1 fin_first
   :=
   {|matching_value j := match j.1 with
       | inl _ => △₁[T; A; D] h
@@ -80,7 +80,7 @@ Defined.
 
 Definition OuterHorn2N {A B D : X}
     (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
-  : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first
+  : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first
   := SieveMatchingN _ _ (outer_horn2_matching f h).
 
 (** The middle retained face recovers the prescribed long edge. *)
@@ -118,7 +118,7 @@ Defined.
 
 Definition outer_horn2_normalize {A B D : X}
     (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
     (H : is_horn_filler (OuterHorn2N f h) x)
   : ∃ q : TriangleS (VertexCat T) A B D,
       is_horn2_filler (i := fin_first) (f, h) q.
@@ -180,7 +180,7 @@ Defined.
 
 Program Definition vertex_outer_horn2_HasLocalFillers
     `{HF : !HasHornFillers
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
   : HasHorn2Fillers (VertexCat T) fin_first
   :=
   {|horn2_fill A B D h := _
@@ -198,7 +198,7 @@ Defined.
 
 Definition vertex_outer_horn2_IsGroupoid
     `{HF : !HasHornFillers
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
   : VertexCat T ⦂ Gpd
   := @horn2_0_IsGroupoid (VertexCat T) vertex_outer_horn2_HasLocalFillers.
 
@@ -209,7 +209,7 @@ Definition vertex_outer_horn2_IsGroupoid
 
 Definition vertex_outer_horn2_groupoid_iff
   : HasHornFillers
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first ↔
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first ↔
       VertexCat T ⦂ Gpd.
 Proof.
   split.
@@ -223,7 +223,7 @@ Defined.
 
 Definition vertex_kan_IsGroupoid
     `{HK : !HasKanFillers
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})}
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})}
   : VertexCat T ⦂ Gpd
   := @vertex_outer_horn2_IsGroupoid (@hasHornFillers _ HK 1 fin_first).
 

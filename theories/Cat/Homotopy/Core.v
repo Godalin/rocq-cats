@@ -64,7 +64,7 @@ Context {C : Cat} `{TC : !HasTerminal C} `{PC : !HasProduct C}
 (** 固定区间因子得到积柱函子。 *)
 
 Definition CylinderF
-  : Functor C C
+  : Fct C C
   := (-× (interval_object I)).
 
 (** Each endpoint includes an object into its cylinder. *)

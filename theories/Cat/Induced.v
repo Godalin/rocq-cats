@@ -32,8 +32,8 @@ Next Obligation. apply comp_assoc. Qed.
 
 (** 将函子经其自身对象索引范畴分解。新对象映射为恒等，态射作用仍为原作用。 *)
 
-Program Definition InducedF {C D : Cat} (F : Functor C D)
-  : Functor C (InducedCat (@Ob C) F)
+Program Definition InducedF {C D : Cat} (F : Fct C D)
+  : Fct C (InducedCat (@Ob C) F)
   :=
   {|F0 X := X
   ; F1 X Y f := fmap F f
@@ -48,7 +48,7 @@ Program Definition InducedF {C D : Cat} (F : Functor C D)
 (** 嵌入在每个 Hom 广集上恒等作用；相等包含可计算逆数据时，其定律仍保持透明。 *)
 
 Program Definition InducedInclusionF {C : Cat} (O : Type) (j : O → @Ob C)
-  : Functor (InducedCat O j) C
+  : Fct (InducedCat O j) C
   :=
   {|F0 := j
   ; F1 X Y f := f
@@ -62,7 +62,7 @@ Next Obligation. reflexivity. Defined.
 
 (** 经对象索引范畴分解函子不改变分量；恒等态射给出与原函子的自然比较。 *)
 
-Program Definition InducedFactorN {C D : Cat} (F : Functor C D)
+Program Definition InducedFactorN {C D : Cat} (F : Fct C D)
   : (InducedInclusionF (@Ob C) F ∘F InducedF F) ⇒ F
   :=
   {|nt X := id
@@ -73,7 +73,7 @@ Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
 
 (** 分解比较保留恒等逆分量。 *)
 
-Definition InducedFactorIso {C D : Cat} (F : Functor C D)
+Definition InducedFactorIso {C D : Cat} (F : Fct C D)
   : (InducedInclusionF (@Ob C) F ∘F InducedF F) ≅N F.
 Proof.
   exists (InducedFactorN F). intro X. exists id. split; apply comp_id_l.
@@ -92,7 +92,7 @@ Context {C : Cat} (O : Type) (j : O → @Ob C)
 (** 选定对象代表给出嵌入的拟逆函子。 *)
 
 Program Definition InducedRepresentativesF
-  : Functor C (InducedCat O j)
+  : Fct C (InducedCat O j)
   :=
   {|F0 := r
   ; F1 X Y f := ((ε Y).2.1 ∘ f ∘ (ε X).1)%hom

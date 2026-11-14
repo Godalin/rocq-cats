@@ -16,7 +16,7 @@ From Cats Require Export
     相等大小保持独立，不使用选择公理。 *)
 
 Section FullyFaithful.
-Context {C D : Cat} (F : Functor C D) (H : is_fully_faithful F).
+Context {C D : Cat} (F : Fct C D) (H : is_fully_faithful F).
 
 (** Lift a target arrow through the chosen Type-valued fullness witness. *)
 
@@ -64,7 +64,7 @@ Proof. exact (fst H X Y f).2. Qed.
 (** 逆函子保留值索引作为对象，只提升箭头。 *)
 
 Program Definition FullyFaithfulInverseF
-  : Functor (InducedCat (@Ob C) F) C
+  : Fct (InducedCat (@Ob C) F) C
   :=
   {|F0 X := X
   ; F1 X Y f := fully_faithful_preimage f

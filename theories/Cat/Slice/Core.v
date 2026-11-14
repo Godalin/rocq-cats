@@ -97,7 +97,7 @@ Notation "C '/C' X" := (Slice C X)
 (** 将切片对象忘却为定义域，将切片映射忘却为底层箭头。 *)
 
 Program Definition SliceDomF (C : Cat) (X : @Ob C)
-  : Functor (C /C X) C
+  : Fct (C /C X) C
   :=
   {|F0 := slice_dom
   ; F1 A B := slice_map

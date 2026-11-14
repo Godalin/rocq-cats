@@ -33,7 +33,7 @@ Constraint e < r.
 Constraint r < l.
 Constraint l < v.
 Context (C : Cat@{b b r l l}).
-Context (F G H : Functor (C^op) SetCat@{b p _ _ _ _ _}).
+Context (F G H : Fct (C^op) SetCat@{b p _ _ _ _ _}).
 Context (X : @Ob C).
 Local Existing Instance SetCat_HasProduct.
 
@@ -47,7 +47,7 @@ Definition separated_function_set
   := KripkeFunctionS F G X.
 
 Definition separated_function_presheaf
-  : Functor (C^op) SetCat@{v e _ _ _ _ _}
+  : Fct (C^op) SetCat@{v e _ _ _ _ _}
   := KripkeFunctionF F G.
 
 Definition separated_curry (α : PointwiseProductF H F ⇒ G)
@@ -94,7 +94,7 @@ Constraint p < e.
 Constraint e < l.
 Constraint l < v.
 Context (C : Cat@{b b r l l}).
-Context (F G : Functor (C^op) SetCat@{b p _ _ _ _ _}).
+Context (F G : Fct (C^op) SetCat@{b p _ _ _ _ _}).
 
 (** Function equality can also exceed world equality without forcing the
     carrier, the value relation and the category laws to share a level. *)
@@ -102,7 +102,7 @@ Context (F G : Functor (C^op) SetCat@{b p _ _ _ _ _}).
 (** 函数相等也可高于世界相等，且不迫使载体、值关系与范畴律共用一个层级。 *)
 
 Definition larger_function_equality_presheaf
-  : Functor (C^op) SetCat@{v e _ _ _ _ _}
+  : Fct (C^op) SetCat@{v e _ _ _ _ _}
   := KripkeFunctionF F G.
 
 End LargerFunctionEquality.

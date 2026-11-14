@@ -40,7 +40,7 @@ Class VertexPresentation@{x e o h p l a b}
   (** 唯一强制转换暴露相干对象作用函子；平行标签相等见证作用为相等运输箭头。
       其保相等与复合定律界 [a] 和 [b] 独立于环境范畴定律界 [l]。 *)
 
-  ; vertex_action :> Functor@{x e Set e a b o h p l}
+  ; vertex_action :> Fct@{x e Set e a b o h p l}
       (EqGpd@{x e e} vertex_labels) vertex_ambient
   }.
 
@@ -56,7 +56,7 @@ Arguments vertex_action _ : clear implicits.
 
 Program Definition VertexPresentationOf@{x e o h p l a b q c d}
     {X : SetC@{x e}} {C : Cat@{o h p l l}}
-    (T : Functor@{x e Set q c d o h p l} (EqGpd@{x e q} X) C)
+    (T : Fct@{x e Set q c d o h p l} (EqGpd@{x e q} X) C)
   : VertexPresentation@{x e o h p l a b}
   :=
   {|vertex_labels := X
@@ -82,7 +82,7 @@ Program Canonical VertexPresentationCat@{x e o h p l a b +}
   : Cat
   :=
   {|Ob := VertexPresentation@{x e o h p l a b}
-  ; HomSet P Q := VertexFunctorS P Q
+  ; HomSet P Q := VtxFctS P Q
   ; id P := VertexIdF P
   ; comp P Q R G F := G ∘Fᵥ F
   ; comp_proper P Q R := vertex_comp_proper
@@ -100,7 +100,7 @@ Next Obligation. exact (vertex_comp_assoc f g h). Defined.
 
 Program Definition VertexPresentationMap@{x e o h p l a b +}
     {X Y : SetC@{x e}} {C D : Cat@{o h p l l}}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D} (F : T →ᵥ U)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : VertexPresentationOf@{x e o h p l a b _ _ _} T →ᵥ
       VertexPresentationOf@{x e o h p l a b _ _ _} U
   :=
@@ -123,8 +123,8 @@ Next Obligation. exact (vertex_functor_transport F p). Defined.
 
 Global Instance vertex_presentation_map_proper
     {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-  : Proper (VertexFunctorEq ==> VertexFunctorEq)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+  : Proper (VtxFctEq ==> VtxFctEq)
       (@VertexPresentationMap _ _ _ _ T U).
 Proof. intros F G [e H]. exists e. intros i j f. exact (H i j f). Defined.
 
@@ -134,8 +134,8 @@ Proof. intros F G [e H]. exists e. intros i j f. exact (H i j f). Defined.
 (** 重新包装在指定比较下将原恒等送到捆绑恒等，不比较恒等律字段。 *)
 
 Lemma vertex_presentation_map_id {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C)
-  : VertexFunctorEq (VertexPresentationMap (VertexIdF T))
+    (T : Fct (EqGpd X) C)
+  : VtxFctEq (VertexPresentationMap (VertexIdF T))
       (VertexIdF (VertexPresentationOf T)).
 Proof.
   exists (λ i, reflexivity (i : X)). intros i j f.
@@ -147,9 +147,9 @@ Defined.
 (** 重新包装在同一比较下与复合交换。 *)
 
 Lemma vertex_presentation_map_comp {X Y Z : SetC} {C D E : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    {V : Functor (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
-  : VertexFunctorEq (VertexPresentationMap (G ∘Fᵥ F))
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
+  : VtxFctEq (VertexPresentationMap (G ∘Fᵥ F))
       (VertexPresentationMap G ∘Fᵥ VertexPresentationMap F).
 Proof.
   exists (λ i, reflexivity (G (F i) : Z)). intros i j f.

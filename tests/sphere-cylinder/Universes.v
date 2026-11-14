@@ -26,7 +26,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 
 Definition lower_native_lower_ambient_cylinder
     (x y : TwoSphereClassS
-      (Z²(M) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   : TwoSphereCylinderHomotopy _ _ x y ↔ x ≈S y
   := cocycle_two_sphere_cylinder_iff x y.
@@ -37,7 +37,7 @@ Definition lower_native_lower_ambient_cylinder
 
 Definition lower_native_higher_ambient_cylinder
     (x y : TwoSphereClassS
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   : TwoSphereCylinderHomotopy _ _ x y ↔ x ≈S y
   := cocycle_two_sphere_cylinder_iff x y.
@@ -48,7 +48,7 @@ Definition lower_native_higher_ambient_cylinder
 
 Definition higher_native_lower_ambient_cylinder
     (x y : TwoSphereClassS
-      (Z²(N) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   : TwoSphereCylinderHomotopy _ _ x y ↔ x ≈S y
   := cocycle_two_sphere_cylinder_iff x y.
@@ -59,7 +59,7 @@ Definition higher_native_lower_ambient_cylinder
 
 Definition higher_native_higher_ambient_cylinder
     (x y : TwoSphereClassS
-      (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   : TwoSphereCylinderHomotopy _ _ x y ↔ x ≈S y
   := cocycle_two_sphere_cylinder_iff x y.
@@ -86,7 +86,7 @@ Constraint l < u, u < p.
 (** 较低环境相等接受通用常值柱映射。 *)
 
 Definition lower_ambient_constant_cylinder
-    (X : Functor (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
+    (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     (x y : TwoSphereS X b) (E : x ≈S y)
   : TwoSphereCylinderHomotopy X b x y
   := TwoSphereConstantCylinder X b x y E.
@@ -96,7 +96,7 @@ Definition lower_ambient_constant_cylinder
 (** 较高环境相等接受同一个透明构造。 *)
 
 Definition higher_ambient_constant_cylinder
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     (x y : TwoSphereS X b) (E : x ≈S y)
   : TwoSphereCylinderHomotopy X b x y
   := TwoSphereConstantCylinder X b x y E.

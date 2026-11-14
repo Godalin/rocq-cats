@@ -13,11 +13,11 @@ Local Open Scope nat_scope.
 (** * 时间及端点限制的计算 *)
 
 Definition SmallInterval
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Δ[1].
 
 Definition SmallPoint
-  : Functor (Δ^op) SetCat@{Set Set _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := ConstF (Δ^op) UnitS@{Set Set}.
 
 Definition PointPath

@@ -107,7 +107,7 @@ Qed.
 (** 字面类型对象上的语义函子。 *)
 
 Program Definition TypeInterpretF
-  : Functor (TyCat@{b e l} B) C
+  : Fct (TyCat@{b e l} B) C
   :=
   {|F0 := TyI I
   ; F1 A U h := type_interp h
@@ -165,8 +165,8 @@ Qed.
 
 (** 此解释保持终对象与积的泛性质。 *)
 
-Program Definition TypeInterpretF_IsCartesianF
-  : IsCartesianF TypeInterpretF (TyCat_HasTerminal B) (TyCat_HasProduct B)
+Program Definition TypeInterpretF_IsCartF
+  : IsCartF TypeInterpretF (TyCat_HasTerminal B) (TyCat_HasProduct B)
   :=
   {|functor_terminal := @terminal_universal C (@hasTerminal C HC)
   |}.
@@ -193,9 +193,9 @@ Section TypeStructurePreservation.
 Universes b e l.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).
 Let F
-  : Functor (TyCat@{b e l} B) C
+  : Fct (TyCat@{b e l} B) C
   := TypeInterpretF I.
-Local Existing Instance TypeInterpretF_IsCartesianF.
+Local Existing Instance TypeInterpretF_IsCartF.
 
 (** The product comparison is the identity up to specified equality. *)
 
@@ -257,7 +257,7 @@ Qed.
 Program Definition TypeInterpretF_IsCCCF
   : IsCCCF F (TyCat_CCC B) HC
   :=
-  {|isCartesianF := TypeInterpretF_IsCartesianF I
+  {|isCartF := TypeInterpretF_IsCartF I
   |}.
 Next Obligation.
   exists id. split; unfold is_linv_of, is_rinv_of;

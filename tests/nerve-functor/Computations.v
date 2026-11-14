@@ -23,16 +23,16 @@ Local Open Scope nat_scope.
 
 Definition BooleanPresentation
   : VertexPresentation@{Set Set Set Set Set Set Set Set}
-  := VertexPresentationOf (MonoidObjectsF BoolS (HM := BoolS_Monoid)).
+  := VertexPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
 
 (** All values remain at the small carrier and equality levels. *)
 
 (** 全部值保留在小载体及相等层级。 *)
 
 Definition BooleanNerveFunctor
-  : Functor
+  : Fct
       VertexPresentationCat@{Set Set Set Set Set Set Set Set _ _ _ _ _ _ _ _ _ _}
-      (Fct (Δ^op) SetCat@{Set Set _ _ _ _ _})
+      (FctCat (Δ^op) SetCat@{Set Set _ _ _ _ _})
   := VertexNerveF.
 
 (** The general full-faithfulness proof specializes without new choices. *)
@@ -50,7 +50,7 @@ Definition BooleanNerveFullyFaithful
 Definition BooleanIdentity
   : (@Hom VertexPresentationCat) BooleanPresentation BooleanPresentation
   := VertexPresentationMap
-      (VertexIdF (MonoidObjectsF BoolS (HM := BoolS_Monoid))).
+      (VertexIdF (MonoidObjF BoolS (HM := BoolS_Monoid))).
 
 Example bundled_existing_map_computes
   : fmap BooleanIdentity

@@ -86,7 +86,7 @@ Defined.
 (** 由生成边解释诱导的函子。 *)
 
 Program Definition FreeF
-  : Functor (FreeCat G) C
+  : Fct (FreeCat G) C
   :=
   {|F0 := vertex_map D
   ; F1 x y := path_eval
@@ -112,7 +112,7 @@ Proof. reflexivity. Qed.
     指定相等。 *)
 
 Program Definition RestrictGraph {G : Graph} {C : Cat}
-    (F : Functor (FreeCat G) C)
+    (F : Fct (FreeCat G) C)
   : G →G UnderlyingGraph C
   :=
   {|vertex_map := F
@@ -126,7 +126,7 @@ Next Obligation. intros e f H. apply functor_fmap_proper. apply path_edge_equiv.
 
 (** 先限制再自由延拓，恢复原来在路径上的作用。 *)
 
-Lemma free_extend_η {G : Graph} {C : Cat} (F : Functor (FreeCat G) C)
+Lemma free_extend_η {G : Graph} {C : Cat} (F : Fct (FreeCat G) C)
     {x y} (p : Path G x y)
   : fmap (FreeF (RestrictGraph F)) p ≈ fmap F p.
 Proof.
@@ -143,7 +143,7 @@ Qed.
     状重证。 *)
 
 Program Definition FreeN {G : Graph} {C : Cat}
-    {F H : Functor (FreeCat G) C}
+    {F H : Fct (FreeCat G) C}
     (α : ∀ x, Hom (F x) (H x))
     (Hα : ∀ x y (e : Edge x y),
       α y ∘ fmap F (path_edge e) ≈ fmap H (path_edge e) ∘ α x)
@@ -166,7 +166,7 @@ Defined.
 
 (** 用自然同构比较限制后延拓的函子与原函子。 *)
 
-Definition free_extend_nat_iso {G : Graph} {C : Cat} (F : Functor (FreeCat G) C)
+Definition free_extend_nat_iso {G : Graph} {C : Cat} (F : Fct (FreeCat G) C)
   : FreeF (RestrictGraph F) ≅N F.
 Proof.
   exists (@FreeN G C (FreeF (RestrictGraph F)) F (λ _, id)
@@ -180,7 +180,7 @@ Defined.
 (** 反向路径将反图的自由范畴与自由范畴的反范畴相比较，无需范畴记录相等。 *)
 
 Program Definition OpFreeF (G : Graph)
-  : Functor (FreeCat (G^opG)) ((FreeCat G)^op)
+  : Fct (FreeCat (G^opG)) ((FreeCat G)^op)
   :=
   {|F0 x := x
   ; F1 x y := path_unop
@@ -209,7 +209,7 @@ Proof. intros x. exists x, id, id. split; apply comp_id_l. Defined.
 (** 逆向比较反转原路径。 *)
 
 Program Definition UnopFreeF (G : Graph)
-  : Functor ((FreeCat G)^op) (FreeCat (G^opG))
+  : Fct ((FreeCat G)^op) (FreeCat (G^opG))
   :=
   {|F0 x := x
   ; F1 x y := path_op

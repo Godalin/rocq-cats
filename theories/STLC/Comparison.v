@@ -94,7 +94,7 @@ Local Open Scope cat_scope.
 Section Comparison.
 Universes b e l.
 Context {B : Type@{b}} {C : Cat} `{HC : !CCC C}
-    (F : Functor (TyCat@{b e l} B) C)
+    (F : Fct (TyCat@{b e l} B) C)
     `{HF : !IsCCCF F (TyCat_CCC B) HC}
     (I : B → @Ob C) (β : ∀ b, I b ≅ F (ty_base b)).
 
@@ -115,7 +115,7 @@ Fixpoint type_compare (A : Ty B)
   | ty_base b => β b
   | ty_unit => terminal_unique (@terminal_universal C (@hasTerminal C HC))
       (@functor_terminal (TyCat@{b e l} B) C F (TyCat_HasTerminal B)
-        (TyCat_HasProduct B) (@isCartesianF _ _ F _ _ HF))
+        (TyCat_HasProduct B) (@isCartF _ _ F _ _ HF))
   | ty_prod A U => iso_trans (product_iso (type_compare A) (type_compare U))
       (iso_symm (functor_product_iso F A U))
   | ty_arr A U => iso_trans
@@ -192,7 +192,7 @@ Proof.
   rewrite <- (@functor_eval (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B) (TyCat_HasExponential B)
     (@hasProduct C HC) (@hasExponential C HC)
-    (@isCartesianF _ _ F _ _ HF) A U), comp_assoc, <- cross_comp,
+    (@isCartF _ _ F _ _ HF) A U), comp_assoc, <- cross_comp,
     type_compare_function, comp_id_l.
   apply exponential_iso_eval.
 Qed.
@@ -269,7 +269,7 @@ Proof.
   induction t; intros Z X η ρ z H; cbn [tm_eval syntax_eval].
   - apply H.
   - destruct (@functor_terminal (TyCat@{b e l} B) C F (TyCat_HasTerminal B)
-      (TyCat_HasProduct B) (@isCartesianF _ _ F _ _ HF) X)
+      (TyCat_HasProduct B) (@isCartF _ _ F _ _ HF) X)
       as [h [_ Hu]].
     transitivity h; [apply Hu | symmetry; apply Hu]; constructor.
   - rewrite type_compare_product, comp_assoc.
@@ -281,7 +281,7 @@ Proof.
       (fmap F (syntax_eval t2 η)) z), <- comp_assoc.
     rewrite <- (@functor_pair (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B) (@hasProduct C HC)
-      (@isCartesianF _ _ F _ _ HF) A U Z
+      (@isCartF _ _ F _ _ HF) A U Z
       (syntax_eval t1 η) (syntax_eval t2 η)).
     reflexivity.
   - rewrite <- comp_assoc, <- type_compare_π1, comp_assoc,
@@ -306,7 +306,7 @@ Proof.
         (ty_arr A U) A Z (syntax_eval t1 η) (syntax_eval t2 η))).
     rewrite (@functor_pair (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B) (@hasProduct C HC)
-      (@isCartesianF _ _ F _ _ HF) (ty_arr A U) A Z
+      (@isCartF _ _ F _ _ HF) (ty_arr A U) A Z
       (syntax_eval t1 η) (syntax_eval t2 η)).
     rewrite !comp_assoc.
     reflexivity.

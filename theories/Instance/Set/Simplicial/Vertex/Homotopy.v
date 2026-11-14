@@ -68,7 +68,7 @@ G A \arrow[r,"{G a}"'] & G B
 Section NerveHomotopies.
 Universes u p.
 Context {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U}.
 
 (** The cylinder map sends a labelled simplex and a monotone time simplex
@@ -80,7 +80,7 @@ Context {X Y : SetC} {C D : Cat}
 
 Program Definition VertexNerveHomotopyN (α : F ⇒ G)
   : SimplicialCylinderF
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
   :=
   {|nt n :=
       {|func z := ⟨PrismDiagramF α (lower (fst z)) (lower (snd z))⟩ᵥ
@@ -109,7 +109,7 @@ Defined.
 Program Definition VertexNerveHomotopy (α : F ⇒ G)
   : SimplicialHomotopy
       (VertexNerveN F :
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
       (VertexNerveN G)
   :=
   {|homotopy_map := VertexNerveHomotopyN α
@@ -160,12 +160,12 @@ End NerveHomotopies.
 (** 恒等自然变换在柱映射的指定相等下给出恒定同伦，不比较见证记录的原生相等。 *)
 
 Lemma vertex_nerve_homotopy_id@{u p +} {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D} (F : T →ᵥ U)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : HomotopyEq
       (VertexNerveHomotopy (F := F) (G := F)
         (idN : F ⇒ F) : SimplicialHomotopy
           (VertexNerveN F :
-            (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
+            (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
           (VertexNerveN F))
       (SimplicialConstantHomotopy (VertexNerveN F)).
 Proof.

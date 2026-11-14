@@ -290,7 +290,7 @@ End Exponential.
 
 Program Definition ExponentialF {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} (X : @Ob C)
-  : Functor C C
+  : Fct C C
   :=
   {|F0 Y := Y ^ X
   ; F1 Y Y' f := exponential_map f
@@ -305,11 +305,11 @@ Notation "'(-^' X ')'" := (ExponentialF X) : cat_scope.
 
 (** 自然 Hom 对应给出积函子左伴随于指数函子。 *)
 
-Definition ProductExponentialAdjunction {C : Cat}
+Definition ProdExpAdj {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} (X : @Ob C)
   : (-× X) ⊣ (-^ X).
 Proof.
-  refine (AdjunctionFromHom (-× X) (-^ X)
+  refine (AdjFromHom (-× X) (-^ X)
     (λ Z Y, exponential_curry_resp) (λ Z Y, exponential_uncurry_resp)
     _ _ _ _).
   - intros Z Y f. apply exponential_β.
@@ -325,7 +325,7 @@ Defined.
 Theorem exponential_adjunct {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
     (f : Hom (Z × X) Y)
-  : f^♯[ProductExponentialAdjunction X] ≈ ƛ f.
+  : f^♯[ProdExpAdj X] ≈ ƛ f.
 Proof. apply adjunct_from_hom. Qed.
 
 (** The inverse product-exponential adjunct is uncurrying. *)
@@ -335,7 +335,7 @@ Proof. apply adjunct_from_hom. Qed.
 Theorem exponential_unadjunct {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
     (g : Hom Z (Y ^ X))
-  : g^♭[ProductExponentialAdjunction X] ≈ uncurry g.
+  : g^♭[ProdExpAdj X] ≈ uncurry g.
 Proof. apply unadjunct_from_hom. Qed.
 
 (** Transposing evaluation gives the identity on the exponential. *)

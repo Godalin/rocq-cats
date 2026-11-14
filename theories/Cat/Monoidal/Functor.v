@@ -30,10 +30,10 @@ Local Open Scope monoidal_scope.
     选定的结合子及单位子。Strong monoidal 函子还须比较可逆，oplax 结构则
     将两个比较映射反向。 *)
 
-Class LaxMonoidalFunctor {C D : Cat}
+Class LaxMonoidalFct {C D : Cat}
     (MC : MonoidalCat C) (MD : MonoidalCat D)
   :=
-  { LaxMonoidalF :> Functor C D
+  { LaxMonoidalF :> Fct C D
   ; lax_unit : Hom (I⊗[MD]) (LaxMonoidalF (I⊗[MC]))
   ; lax_tensorN : (tensorF MD ∘F (LaxMonoidalF ×F LaxMonoidalF)) ⇒
       (LaxMonoidalF ∘F tensorF MC)
@@ -76,7 +76,7 @@ Notation "'φ₂[' L ';' X ';' Y ']'" := (lax_tensorN L (X, Y))
 
 Lemma lax_tensor_natural {C D : Cat}
     {MC : MonoidalCat C} {MD : MonoidalCat D}
-    (L : LaxMonoidalFunctor MC MD)
+    (L : LaxMonoidalFct MC MD)
     {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
   : φ₂[L; X'; Y'] ∘ (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L g)) ≈
       fmap L (@tensor_map C MC _ _ _ _ f g) ∘ φ₂[L; X; Y].
@@ -106,9 +106,9 @@ Defined.
 
 (** 每个幺半结构都给出须显式选择的 lax 恒等函子；导入本模块不会启用选定结构。 *)
 
-Program Definition IdF_LaxMonoidalFunctor {C : Cat}
+Program Definition IdF_LaxMonoidalFct {C : Cat}
     (MC : MonoidalCat C)
-  : LaxMonoidalFunctor MC MC
+  : LaxMonoidalFct MC MC
   :=
   {|LaxMonoidalF := IdF
   ; lax_unit := id

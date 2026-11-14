@@ -29,7 +29,7 @@ From Cats Require Import
 Section LargeWitnesses.
 Universes q w u.
 Constraint q < w, w < u.
-Context {J : Cat} (F G : Functor J SetCat@{u q _ _ _ _ _}).
+Context {J : Cat} (F G : Fct J SetCat@{u q _ _ _ _ _}).
 Context (W : Type@{w}).
 
 (** No equation between the retained witnesses is required. *)
@@ -49,7 +49,7 @@ Next Obligation. intros x x' hx y y' hy. exact ((λ h, h), (λ h, h)). Defined.
 (** 粘合不将指定相等界提升到 [w]。 *)
 
 Definition large_witness_gluing
-  : Functor J SetCat@{u q _ _ _ _ _}
+  : Fct J SetCat@{u q _ _ _ _ _}
   := RelationGluingF F G LargeRelation.
 
 End LargeWitnesses.
@@ -66,7 +66,7 @@ End LargeWitnesses.
 Section LargeEquality.
 Universes w u q.
 Constraint w < u, u < q.
-Context {J : Cat} (F G : Functor J SetCat@{u q _ _ _ _ _}).
+Context {J : Cat} (F G : Fct J SetCat@{u q _ _ _ _ _}).
 Context (W : Type@{w}).
 
 (** Membership stays at the smaller witness bound. *)
@@ -86,7 +86,7 @@ Next Obligation. intros x x' hx y y' hy. exact ((λ h, h), (λ h, h)). Defined.
 (** 大相等不增大粘合载体。 *)
 
 Definition large_equality_gluing
-  : Functor J SetCat@{u q _ _ _ _ _}
+  : Fct J SetCat@{u q _ _ _ _ _}
   := RelationGluingF F G SmallRelation.
 
 End LargeEquality.
@@ -111,7 +111,7 @@ Section Tags.
 (** 两边使用同一个常值图式。 *)
 
 Definition NumbersF
-  : Functor (CodiscreteCat unit) SetCat
+  : Fct (CodiscreteCat unit) SetCat
   := ConstF (CodiscreteCat unit) (C := SetCat) NatS.
 
 (** Tags remain data, with arbitrary maps between the membership types. *)

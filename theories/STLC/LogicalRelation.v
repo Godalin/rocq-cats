@@ -60,7 +60,7 @@ Context {B : Type@{b}}.
 
 Fixpoint Realizes (A : Ty B)
   : ∀ Γ : Ctx B, Tm Γ A →
-      (SemF A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      (SemF A : Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}) Γ → Type.
 Proof.
   destruct A as [p | | A U | A U]; intros Γ t v.

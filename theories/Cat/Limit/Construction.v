@@ -19,14 +19,14 @@ From Cats Require Export
     只需要两个特定的积，分别由形状的对象与箭头索引；大小约束保留在选定积的假设
     中。 *)
 
-Definition DiagramObjects {J C : Cat} (D : Functor J C) (j : @Ob J)
+Definition DiagramObj {J C : Cat} (D : Fct J C) (j : @Ob J)
   : @Ob C
   := D j.
 (** Index target objects by all arrows of the diagram shape. *)
 
 (** 用图式形状的全部箭头索引其目标对象。 *)
 
-Definition DiagramTargets {J C : Cat} (D : Functor J C) (a : ArrowOb J)
+Definition DiagramTargets {J C : Cat} (D : Fct J C) (a : ArrowOb J)
   : @Ob C
   := D (arrow_cod a).
 
@@ -37,19 +37,19 @@ Definition DiagramTargets {J C : Cat} (D : Functor J C) (a : ArrowOb J)
 (** 共享的泛性质证明仅需锥分量等化约束，且候选锥腿经过对象积。不同表示可以提供
     不同的约束映射。 *)
 
-Definition product_cone_equalizer_limit {J C : Cat} (D : Functor J C)
-    `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}
-    {Q E : @Ob C} {s t : Hom ∏[DiagramObjects D] Q}
-    {e : Hom E ∏[DiagramObjects D]}
-    (κ : E ⇒Δ D) (Hκ : ∀ j, κ j ≈ π∏[DiagramObjects D] j ∘ e)
+Definition product_cone_equalizer_limit {J C : Cat} (D : Fct J C)
+    `{HO : !HasLimit C (DiscreteF (DiagramObj D))}
+    {Q E : @Ob C} {s t : Hom ∏[DiagramObj D] Q}
+    {e : Hom E ∏[DiagramObj D]}
+    (κ : E ⇒Δ D) (Hκ : ∀ j, κ j ≈ π∏[DiagramObj D] j ∘ e)
     (Hcones : ∀ X (μ : X ⇒Δ D),
-      s ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j) ≈
-      t ∘ indexed_pair (D := DiagramObjects D) (λ j, μ j))
+      s ∘ indexed_pair (D := DiagramObj D) (λ j, μ j) ≈
+      t ∘ indexed_pair (D := DiagramObj D) (λ j, μ j))
     (HE : is_equalizer s t E e)
   : is_limit κ.
 Proof.
   intros X μ.
-  destruct (indexed_product_equalizer_universal (DiagramObjects D)
+  destruct (indexed_product_equalizer_universal (DiagramObj D)
     HE X (λ j, μ j) (Hcones X μ)) as [h Hh].
   exists h. refine {|this := _
                    ; that := _
@@ -72,8 +72,8 @@ Defined.
     固定图式 [D] 及其对象和箭头目标的选定积，由两条约束映射构造等化子锥，并证明完整极限泛性质。 *)
 
 Section ProductsEqualizer.
-Context {J C : Cat} (D : Functor J C).
-Context `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}.
+Context {J C : Cat} (D : Fct J C).
+Context `{HO : !HasLimit C (DiscreteF (DiagramObj D))}.
 Context `{HA : !HasLimit C (DiscreteF (DiagramTargets D))}.
 
 (** The constraint map whose components apply each diagram arrow after its
@@ -82,25 +82,25 @@ Context `{HA : !HasLimit C (DiscreteF (DiagramTargets D))}.
 (** 约束映射的分量先取源投影，再应用图式箭头。 *)
 
 Definition diagram_product_source
-  : Hom ∏[DiagramObjects D] ∏[DiagramTargets D]
-  := ∏⟨λ a, fmap D (arrow_map a) ∘ π∏[DiagramObjects D] (arrow_dom a)⟩.
+  : Hom ∏[DiagramObj D] ∏[DiagramTargets D]
+  := ∏⟨λ a, fmap D (arrow_map a) ∘ π∏[DiagramObj D] (arrow_dom a)⟩.
 
 (** The constraint map whose components are target projections. *)
 
 (** 以目标投影为各分量的约束映射。 *)
 
 Definition diagram_product_target
-  : Hom ∏[DiagramObjects D] ∏[DiagramTargets D]
-  := ∏⟨λ a, π∏[DiagramObjects D] (arrow_cod a)⟩.
+  : Hom ∏[DiagramObj D] ∏[DiagramTargets D]
+  := ∏⟨λ a, π∏[DiagramObj D] (arrow_cod a)⟩.
 
 (** Equalizing the two product constraints makes the proposed legs commute. *)
 
 (** 等化两个积约束后，候选锥腿交换。 *)
 
-Lemma diagram_product_comm {E : @Ob C} (e : Hom E ∏[DiagramObjects D])
+Lemma diagram_product_comm {E : @Ob C} (e : Hom E ∏[DiagramObj D])
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
     {i j : @Ob J} (f : Hom i j)
-  : fmap D f ∘ (π∏[DiagramObjects D] i ∘ e) ≈ π∏[DiagramObjects D] j ∘ e.
+  : fmap D f ∘ (π∏[DiagramObj D] i ∘ e) ≈ π∏[DiagramObj D] j ∘ e.
 Proof.
   pose (a := ({|arrow_dom := i
               ; arrow_cod := j
@@ -118,11 +118,11 @@ Qed.
 (** 将等化子包含箭头与对象积投影复合得到的锥。 *)
 
 Program Definition ProductsEqualizerCone {E : @Ob C}
-    (e : Hom E ∏[DiagramObjects D])
+    (e : Hom E ∏[DiagramObj D])
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
   : E ⇒Δ D
   :=
-  {|nt j := π∏[DiagramObjects D] j ∘ e
+  {|nt j := π∏[DiagramObj D] j ∘ e
   |}.
 Next Obligation.
   rewrite comp_id_r. symmetry. apply diagram_product_comm. exact H.
@@ -132,7 +132,7 @@ Qed.
 
 (** 两个积约束的等化子具有极限性质。 *)
 
-Definition products_equalizer_limit {E : @Ob C} {e : Hom E ∏[DiagramObjects D]}
+Definition products_equalizer_limit {E : @Ob C} {e : Hom E ∏[DiagramObj D]}
     (H : diagram_product_source ∘ e ≈ diagram_product_target ∘ e)
     (HE : is_equalizer diagram_product_source diagram_product_target E e)
   : is_limit (ProductsEqualizerCone e H).
@@ -146,7 +146,7 @@ Proof.
     cbn in Hμ. rewrite comp_id_r in Hμ.
     transitivity (μ (arrow_cod a)).
     + symmetry. exact Hμ.
-    + symmetry. apply (indexed_product_β (D := DiagramObjects D)).
+    + symmetry. apply (indexed_product_β (D := DiagramObj D)).
 Defined.
 
 (** Select a diagram limit using its two indexed products and an equalizer. *)

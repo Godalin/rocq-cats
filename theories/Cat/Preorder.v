@@ -49,7 +49,7 @@ Definition PreorderCat@{x r l} {X : Type@{x}}
 Program Definition PreorderF {X Y : Type} {R : crelation X} {S : crelation Y}
     `{HR : !PreOrder R} `{HS : !PreOrder S}
     (f : X → Y) (Hf : ∀ x y, R x y → S (f x) (f y))
-  : Functor (PreorderCat R) (PreorderCat S)
+  : Fct (PreorderCat R) (PreorderCat S)
   :=
   {|F0 := f
   ; F1 x y := Hf x y

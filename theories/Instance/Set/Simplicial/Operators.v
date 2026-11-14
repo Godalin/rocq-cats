@@ -81,7 +81,7 @@ Local Open Scope ordinal_scope.
 (** 面删除由有界索引选定的位置。 *)
 
 Definition simplex_face@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i : Ordinal (S n))
   : X (S n) →r X n
   := X[δ[n; i]]Δ.
@@ -96,7 +96,7 @@ Notation "'d[' X ';' n ';' i ']'" := (@simplex_face X n i)
 (** 退化重复选定位置。 *)
 
 Definition simplex_degeneracy@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i : Ordinal n)
   : X n →r X (S n)
   := X[σ[n; i]]Δ.
@@ -111,7 +111,7 @@ Notation "'s[' X ';' n ';' i ']'" := (@simplex_degeneracy X n i)
 (** 两个面在适当的索引移位下交换。 *)
 
 Lemma simplex_face_comp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i j : Ordinal (S n)) (H : fin_rank i ≤ fin_rank j)
   : (d[X; n; j] ∘r d[X; S n; i↑]) ≈f
       (d[X; n; i] ∘r d[X; S n; j⁺]).
@@ -125,7 +125,7 @@ Qed.
 (** 两个退化在适当的索引移位下交换。 *)
 
 Lemma simplex_degeneracy_comp@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i j : Ordinal n) (H : fin_rank i ≤ fin_rank j)
   : (s[X; S n; j⁺] ∘r s[X; n; i]) ≈f
       (s[X; S n; i↑] ∘r s[X; n; j]).
@@ -139,7 +139,7 @@ Qed.
 (** 重复位置处的面消去其退化。 *)
 
 Lemma simplex_face_degeneracy_id@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i : Ordinal n)
   : (d[X; n; i↑] ∘r s[X; n; i]) ≈f id_resp.
 Proof.
@@ -155,7 +155,7 @@ Qed.
 (** 紧邻后继位置处的面同样消去退化。 *)
 
 Lemma simplex_face_degeneracy_next@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i : Ordinal n)
   : (d[X; n; i⁺] ∘r s[X; n; i]) ≈f id_resp.
 Proof.
@@ -171,7 +171,7 @@ Qed.
 (** 交换面与在其后的退化。 *)
 
 Lemma simplex_face_degeneracy_before@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i : Ordinal (S n)) (j : Ordinal n)
     (H : fin_rank i ≤ fin_rank j)
   : (d[X; S n; i↑] ∘r s[X; S n; j⁺]) ≈f
@@ -187,7 +187,7 @@ Qed.
 (** 交换面与在其前的退化。 *)
 
 Lemma simplex_face_degeneracy_after@{u p +}
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {n : nat}
     (i : Ordinal (S n)) (j : Ordinal n)
     (H : fin_rank j < fin_rank i)
   : (d[X; S n; i⁺] ∘r s[X; S n; j↑]) ≈f
@@ -203,7 +203,7 @@ Qed.
 (** 单纯映射与面交换。 *)
 
 Lemma simplex_face_natural@{u p +}
-    {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} (α : X ⇒ Y)
+    {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (α : X ⇒ Y)
     {n : nat} (i : Ordinal (S n))
   : (α n ∘r d[X; n; i]) ≈f (d[Y; n; i] ∘r α (S n)).
 Proof. apply simplex_restrict_natural. Qed.
@@ -213,7 +213,7 @@ Proof. apply simplex_restrict_natural. Qed.
 (** 单纯映射与退化交换。 *)
 
 Lemma simplex_degeneracy_natural@{u p +}
-    {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} (α : X ⇒ Y)
+    {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (α : X ⇒ Y)
     {n : nat} (i : Ordinal n)
   : (α (S n) ∘r s[X; n; i]) ≈f (s[Y; n; i] ∘r α n).
 Proof. apply simplex_restrict_natural. Qed.

@@ -29,7 +29,7 @@ Local Existing Instance SetCat_HasProduct.
     其在每一对输入上的值。所在载体与相等层级保持独立，不要求指数或 Monad。 *)
 
 Section Pointwise.
-Context (F : Functor SetCat SetCat).
+Context (F : Fct SetCat SetCat).
 
 (** A fixed ordinary context is paired with the result by the functor's
     action. This compares the supplied strength, without choosing a new

@@ -2,6 +2,11 @@
 
 # Monad、Applicative 与 Arrow 审计
 
+Source-pinned evidence below retains its historical identifiers. See the
+[abbreviation map](./Abbreviations.md) for their current public names.
+
+下方固定版本的证据保留历史标识符；当前公共名称见[缩写对照](./Abbreviations.md)。
+
 [Issue #35](https://github.com/Godalin/rocq-cats/issues/35) starts with a
 source-level prior-art audit. The first implementation slice is **lax monoidal
 transport of monoid objects and homomorphisms** (milestones B and G). This is

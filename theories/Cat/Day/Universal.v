@@ -18,8 +18,8 @@ From Cats Require Export
 
 (** 插入固定 Hom 权重而保留值对可变；独立的权重和值指标也描述非对角项。 *)
 
-Program Definition day_weight@{u p +} {C : Cat} (T : Functor (C ×C C) C)
-    (F G : Functor C (SetCat@{u p _ _ _ _ _})) {Z : @Ob C}
+Program Definition day_weight@{u p +} {C : Cat} (T : Fct (C ×C C) C)
+    (F G : Fct C (SetCat@{u p _ _ _ _ _})) {Z : @Ob C}
     (p q : @Ob (C ×C C)) (h : Hom (T p) Z)
   : DayValuesF F G q →r DayKernel T F G Z (p, q)
   :=
@@ -40,8 +40,8 @@ Defined.
 
 Section WeightLaws.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
-Context (F G : Functor C (SetCat@{u p _ _ _ _ _})).
+Context {C : Cat} (T : Fct (C ×C C) C).
+Context (F G : Fct C (SetCat@{u p _ _ _ _ _})).
 
 (** A contravariant change precomposes the weight. *)
 
@@ -85,8 +85,8 @@ End WeightLaws.
 
 Section Injections.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
-Context (F G : Functor C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}.
+Context {C : Cat} (T : Fct (C ×C C) C).
+Context (F G : Fct C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}.
 
 (** A value pair and a weight give an element of the chosen convolution. *)
 
@@ -159,7 +159,7 @@ Defined.
 
 (** 恒等权重在张量值处给出生成对。 *)
 
-Program Definition DayGeneratorN
+Program Definition DayGenN
   : DayValuesF F G ⇒ (DayF T F G ∘F T)
   :=
   {|nt p := day_inject p id
@@ -203,8 +203,8 @@ Defined.
 
 Section Extension.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
-Context {F G H : Functor C (SetCat@{u p _ _ _ _ _})}.
+Context {C : Cat} (T : Fct (C ×C C) C).
+Context {F G H : Fct C (SetCat@{u p _ _ _ _ _})}.
 Context (β : DayValuesF F G ⇒ (H ∘F T)).
 
 (** Evaluate the binary operation and then apply the weight. *)
@@ -293,8 +293,8 @@ End Extension.
 
 Section UniversalCorrespondence.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C).
-Context {F G H : Functor C (SetCat@{u p _ _ _ _ _})}.
+Context {C : Cat} (T : Fct (C ×C C) C).
+Context {F G H : Fct C (SetCat@{u p _ _ _ _ _})}.
 Context `{HD : !HasDay C T F G}.
 
 (** Restrict an outgoing natural transformation to the generating pairs. *)
@@ -303,7 +303,7 @@ Context `{HD : !HasDay C T F G}.
 
 Definition DayRestrictN (α : DayF T F G ⇒ H)
   : DayValuesF F G ⇒ (H ∘F T)
-  := (α ∘Nr T) ∘Nv DayGeneratorN T F G.
+  := (α ∘Nr T) ∘Nv DayGenN T F G.
 
 (** An extension evaluates every weighted generator as prescribed. *)
 

@@ -18,7 +18,7 @@ Local Open Scope monad_scope.
     伴随两侧的 Hom 广集就是同一个基底 Hom 广集，恒等对应给出伴随。
     已有一般构造恢复原 Monad，比较为 Monad 同构。不需要强度、积或闭结构。 *)
 
-Section KleisliAdjunction.
+Section KleisliAdj.
 Context {C : Cat} (M : Monad C).
 
 (** Reuse the general construction from mutually inverse respectful hom
@@ -28,9 +28,9 @@ Context {C : Cat} (M : Monad C).
 (** 复用互逆保相等 Hom 映射的一般伴随构造。来源自然性就是纯值代入，目标
     自然性就是 Kleisli 复合的定义。 *)
 
-Program Definition KleisliAdjunction
+Program Definition KleisliAdj
   : KleisliPureF M ⊣ KleisliExtendF M
-  := AdjunctionFromHom (KleisliPureF M) (KleisliExtendF M)
+  := AdjFromHom (KleisliPureF M) (KleisliExtendF M)
       (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -42,7 +42,7 @@ Next Obligation. reflexivity. Defined.
 (** 转置保持底层计算不变。 *)
 
 Lemma kleisli_adjunct {X Y : @Ob C} (f : Hom X (M Y))
-  : f^♯[KleisliAdjunction] ≈ f.
+  : f^♯[KleisliAdj] ≈ f.
 Proof. reflexivity. Qed.
 
 (** Inverse transposition also retains the computation. *)
@@ -50,7 +50,7 @@ Proof. reflexivity. Qed.
 (** 逆转置也保持计算不变。 *)
 
 Lemma kleisli_unadjunct {X Y : @Ob C} (f : Hom X (M Y))
-  : (f^♭[KleisliAdjunction] : Hom X (M Y)) ≈ f.
+  : (f^♭[KleisliAdj] : Hom X (M Y)) ≈ f.
 Proof. reflexivity. Qed.
 
 (** The unit is the original Monad unit, by transposing a Kleisli identity. *)
@@ -58,7 +58,7 @@ Proof. reflexivity. Qed.
 (** 单位是原 Monad 单位，由转置 Kleisli 恒等得到。 *)
 
 Lemma kleisli_adjunction_unit (X : @Ob C)
-  : adjunction_unit KleisliAdjunction X ≈ η[M] X.
+  : adj_unit KleisliAdj X ≈ η[M] X.
 Proof. reflexivity. Qed.
 
 (** The counit at [X] is the base identity on [M X], viewed as a Kleisli
@@ -67,7 +67,7 @@ Proof. reflexivity. Qed.
 (** [X] 处的余单位是 [M X] 上的基底恒等，视为从 [M X] 到 [X] 的 Kleisli 箭头。 *)
 
 Lemma kleisli_adjunction_counit (X : @Ob C)
-  : (adjunction_counit KleisliAdjunction X : Hom (M X) (M X)) ≈ id.
+  : (adj_counit KleisliAdj X : Hom (M X) (M X)) ≈ id.
 Proof. reflexivity. Qed.
 
 (** The left triangle uses Kleisli composition and its identity. The proof
@@ -76,18 +76,18 @@ Proof. reflexivity. Qed.
 (** 左三角使用 Kleisli 复合及其恒等，证明继承自一般 Hom 对应理论。 *)
 
 Lemma kleisli_adjunction_triangle_l (X : @Ob C)
-  : adjunction_counit KleisliAdjunction X ∘K[M]
-      return[M; adjunction_unit KleisliAdjunction X] ≈ η[M] X.
-Proof. exact (adjunction_triangle_l KleisliAdjunction X). Qed.
+  : adj_counit KleisliAdj X ∘K[M]
+      return[M; adj_unit KleisliAdj X] ≈ η[M] X.
+Proof. exact (adj_triangle_l KleisliAdj X). Qed.
 
 (** The right triangle takes place in the base category. *)
 
 (** 右三角在基底范畴中成立。 *)
 
 Lemma kleisli_adjunction_triangle_r (X : @Ob C)
-  : kleisli_extend M (adjunction_counit KleisliAdjunction X) ∘
-      adjunction_unit KleisliAdjunction (M X) ≈ id.
-Proof. exact (adjunction_triangle_r KleisliAdjunction X). Qed.
+  : kleisli_extend M (adj_counit KleisliAdj X) ∘
+      adj_unit KleisliAdj (M X) ≈ id.
+Proof. exact (adj_triangle_r KleisliAdj X). Qed.
 
 (** Use the general adjunction-to-Monad construction without reproving its
     laws for this particular category. *)
@@ -96,7 +96,7 @@ Proof. exact (adjunction_triangle_r KleisliAdjunction X). Qed.
 
 Definition KleisliMonad
   : Monad C
-  := AdjunctionMonad KleisliAdjunction.
+  := AdjMonad KleisliAdj.
 
 (** The recovered unit is the original unit. *)
 
@@ -163,4 +163,4 @@ Next Obligation.
   split; intros X; change ((@id (M X)) ∘ id ≈ id); apply comp_id_l.
 Defined.
 
-End KleisliAdjunction.
+End KleisliAdj.

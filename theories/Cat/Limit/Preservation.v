@@ -17,13 +17,13 @@ From Cats Require Import
     各锥腿逐分量转置；自然性来自自然 Hom 同构，不增加新的相干选择。 *)
 
 Section RightAdjointLimits.
-Context {C D J : Cat} {F : Functor C D} {G : Functor D C} (A : F ⊣ G).
+Context {C D J : Cat} {F : Fct C D} {G : Fct D C} (A : F ⊣ G).
 
 (** Transpose cone legs inversely along a hom adjunction. *)
 
 (** 沿 Hom 伴随逆向转置每条锥腿。 *)
 
-Program Definition UnadjunctCone {K : Functor J D} {X : @Ob C}
+Program Definition UnadjunctCone {K : Fct J D} {X : @Ob C}
     (κ : X ⇒Δ (G ∘F K))
   : F X ⇒Δ K
   :=
@@ -40,7 +40,7 @@ Qed.
 
 (** 右伴随将极限锥送到极限锥。 *)
 
-Definition right_adjoint_preserves_limit {K : Functor J D} {L : @Ob D}
+Definition right_adjoint_preserves_limit {K : Fct J D} {L : @Ob D}
     {κ : L ⇒Δ K} (Hκ : is_limit κ)
   : is_limit (MapCone G κ).
 Proof.

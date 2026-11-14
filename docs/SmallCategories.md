@@ -77,7 +77,7 @@ PointDiagram X
 
 `ArrowN` 从一个交换方形得到两个箭头图式之间的自然变换。
 [函子去柯里化](../theories/Cat/Functor/Uncurry.v) 将
-`F : Functor A (Fct B C)` 变成 `F^uncF : Functor (A ×C B) C`；
+`F : Fct A (FctCat B C)` 变成 `F^uncF : Fct (A ×C B) C`；
 `α^uncN` 同时去柯里化自然变换，且保留自然同构。
 `SquareDiagram` 直接复用这项通用理论，将 H 作为 `ArrowN` 的自然性，
 再去柯里化，不为方形另写一套长复合证明。

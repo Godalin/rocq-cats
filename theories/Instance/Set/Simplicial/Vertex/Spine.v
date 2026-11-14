@@ -55,8 +55,8 @@ Local Open Scope nat_scope.
 (** 提取单形的脊，并保持其指定相等。 *)
 
 Definition spine_resp@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n →r
+    {T : Fct (EqGpd X) C} {n : nat}
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n →r
       LiftS (VertexChainS T n)
   := (vertex_chain_resp T n)^↑S.
 
@@ -65,9 +65,9 @@ Definition spine_resp@{u p +} {X : SetC} {C : Cat}
 (** 通过复合脊的区间重构单形。 *)
 
 Definition spine_inv_resp@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
+    {T : Fct (EqGpd X) C} {n : nat}
   : LiftS (VertexChainS T n) →r
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   := (vertex_chain_diagram_resp T n)^↑S.
 
 Notation "'⌊' x '⌋Sp[' T ';' n ']'" := (@spine_resp _ _ T n x)
@@ -80,7 +80,7 @@ Notation "'⟦' c '⟧Sp[' T ';' n ']'" := (@spine_inv_resp _ _ T n c)
 (** 提取重构的单形恢复其箭头链。 *)
 
 Lemma spine_β@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
+    {T : Fct (EqGpd X) C} {n : nat}
     (c : LiftS@{_ _ u p} (VertexChainS T n))
   : ⌊⟦c⟧Sp[T; n]⌋Sp[T; n] ≈S c.
 Proof.
@@ -93,8 +93,8 @@ Defined.
 (** 重构提取的脊恢复其单形。 *)
 
 Lemma spine_η@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {n : nat}
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : ⟦⌊x⌋Sp[T; n]⟧Sp[T; n] ≈S x.
 Proof.
   destruct x as [F]. exact {|lower := vertex_chain_η T F
@@ -107,8 +107,8 @@ Defined.
 (** 脊对应是指定广集的同构；重构及两条互逆律均保留计算行为。 *)
 
 Definition vertex_spine_iso@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C) (n : nat)
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
+    (T : Fct (EqGpd X) C) (n : nat)
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
       LiftS (VertexChainS T n).
 Proof.
   exists spine_resp, spine_inv_resp. split.
@@ -121,8 +121,8 @@ Defined.
 (** 单形相等当且仅当其脊相等。 *)
 
 Lemma spine_eq_iff@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {n : nat}
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {n : nat}
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : x ≈S y ↔ ⌊x⌋Sp[T; n] ≈S ⌊y⌋Sp[T; n].
 Proof.
   split.
@@ -140,8 +140,8 @@ Defined.
 (** 单形限制对应于脊中的区间替换，特别包括面与退化。 *)
 
 Lemma spine_restrict@{u p +} {X : SetC} {C : Cat}
-    {T : Functor (EqGpd X) C} {m n : nat} (θ : (@Hom Δ) m n)
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    {T : Fct (EqGpd X) C} {m n : nat} (θ : (@Hom Δ) m n)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : ⌊Nᵥ(T)[θ]Δ x⌋Sp[T; m] ≈S
       (vertex_chain_reindex_resp T θ)^↑S ⌊x⌋Sp[T; n].
 Proof.

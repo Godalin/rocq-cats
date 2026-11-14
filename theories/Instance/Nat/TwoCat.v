@@ -41,7 +41,7 @@ Next Obligation. lia. Defined.
 (** 将两个自然数二胞相加，给出水平复合。 *)
 
 Program Definition nat_horizontalF
-  : Functor (NatHomCat ×C NatHomCat) NatHomCat
+  : Fct (NatHomCat ×C NatHomCat) NatHomCat
   :=
   {|F0 _ := tt
   ; F1 _ _ p := fst p + snd p

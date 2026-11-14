@@ -51,7 +51,7 @@ Next Obligation. exact (arrow_first_comp A g f Z). Defined.
     数据。 *)
 
 Definition ArrowPureF
-  : Functor C (ComputationCat A)
+  : Fct C (ComputationCat A)
   := InducedF A.
 
 (** Pure maps commute with arbitrary computations in both tensor positions.

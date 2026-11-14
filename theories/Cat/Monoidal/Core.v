@@ -278,7 +278,7 @@ End TensorLaws.
 (** 张量双函子通过计算得到，不另作选择。对投影保留未拆解输入对上的归约。 *)
 
 Program Definition tensorF {C : Cat} (MC : MonoidalCat C)
-  : Functor (C ×C C) C
+  : Fct (C ×C C) C
   :=
   {|F0 p := @tensor C MC (fst p) (snd p)
   ; F1 p q f := @tensor_map C MC _ _ _ _ (fst f) (snd f)

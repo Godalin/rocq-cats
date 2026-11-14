@@ -21,5 +21,5 @@ From Cats Require Import
     基底相等见证须容纳于共同载体宇宙，即 [p <= u]。 *)
 
 Definition action_slice_equiv@{u p +} (X : SetC@{u p})
-  : Fct (EqGpd X) SetCat ≃C (SetCat /C X)
+  : FctCat (EqGpd X) SetCat ≃C (SetCat /C X)
   := iso_trans (iso_symm (fam_action_equiv X)) (fam_slice_equiv X).

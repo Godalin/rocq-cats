@@ -45,8 +45,8 @@ Local Open Scope nat_scope.
 Section Reconstruction.
 Universes u p.
 Context {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-    (α : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)).
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+    (α : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)).
 
 (** Extract the respectful object map from degree zero. *)
 
@@ -61,7 +61,7 @@ Definition nerve_map_ob_resp
 (** 自然性将顶点的每个出现对齐到其选定像。 *)
 
 Definition nerve_map_vertex {n : nat}
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     (i : Ordinal n)
   : nerve_map_ob_resp (lower x i) ≈S lower (α n x) i.
 Proof.
@@ -153,7 +153,7 @@ Defined.
 (** 任意源单形中的箭头计算其归一化全局像。 *)
 
 Lemma nerve_map_arrow_simplex {n : nat}
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     (i j : Ordinal n) (h : (@Hom [Ord n]) i j)
   : nerve_map_arrow (fmap (lower x) h) ≈
       U⟦nerve_map_vertex x i; fmap (lower (α n x)) h; nerve_map_vertex x j⟧Ar.
@@ -196,7 +196,7 @@ Defined.
 (** 端点对齐后保持任意单形内部的复合。 *)
 
 Lemma nerve_map_simplex_comp {n : nat}
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     (i j k : Ordinal n) (f : (@Hom [Ord n]) i j)
     (g : (@Hom [Ord n]) j k)
   : nerve_map_arrow (fmap (lower x) (g ∘ f)) ≈
@@ -223,7 +223,7 @@ Lemma nerve_map_arrow_comp {A B E : X}
   : nerve_map_arrow (g ∘ f) ≈ nerve_map_arrow g ∘ nerve_map_arrow f.
 Proof.
   pose (x := ⟨⟦⟨f, g⟩Ch⟧Ch⟩ᵥ :
-    (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 2).
+    (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2).
   pose (a := ordinal_step (@fin_first 1)).
   pose (b := ordinal_step (fin_next (@fin_first 0))).
   assert (Ha : fmap (lower x) a ≈ f).
@@ -259,7 +259,7 @@ Defined.
 (** 重构的普通函子不依赖群胚结构。 *)
 
 Program Definition NerveMapF
-  : Functor (VertexCat T) (VertexCat U)
+  : Fct (VertexCat T) (VertexCat U)
   :=
   {|F0 := nerve_map_ob_resp
   ; F1 A B f := nerve_map_arrow f
@@ -305,10 +305,10 @@ End Reconstruction.
 
 Global Instance vertex_nerve_inv_proper@{u p +}
     {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D}
-  : Proper (NatEq ==> VertexFunctorEq)
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
+  : Proper (NatEq ==> VtxFctEq)
       (@VertexNerveInvF _ _ _ _ T U :
-        ((Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)) → _).
+        ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)) → _).
 Proof.
   intros α β H.
   pose (e := λ A : X, (lower (H 0 (△₀[T] A))).1 fin_first).
@@ -334,9 +334,9 @@ Defined.
 
 Program Definition vertex_nerve_inv_resp@{u p +}
     {X Y : SetC} {C D : Cat}
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)
-  : Nat_SetS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U)) →r
-      VertexFunctorS T U
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
+  : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U)) →r
+      VtxFctS T U
   :=
   {|func := VertexNerveInvF
   |}.
@@ -347,10 +347,10 @@ Program Definition vertex_nerve_inv_resp@{u p +}
 (** 重构顶点函子的 nerve 后，在指定运输比较下恢复原函子，不要求函子记录相等。 *)
 
 Lemma vertex_nerve_η@{u p +} {X Y : SetC} {C D : Cat}
-    {T : Functor (EqGpd X) C} {U : Functor (EqGpd Y) D} (F : T →ᵥ U)
-  : VertexFunctorEq
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
+  : VtxFctEq
       (VertexNerveInvF (VertexNerveN F :
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))) F.
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))) F.
 Proof.
   exists (λ A, reflexivity (F A : Y)). intros A B f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r.
@@ -371,10 +371,10 @@ Defined.
 
 Definition vertex_nerve_hom_iso@{v q u p +}
     {X Y : SetC} {C D : Cat}
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)
-  : LiftS@{_ _ v q} (VertexFunctorS T U) ≅[SetCat]
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
+  : LiftS@{_ _ v q} (VtxFctS T U) ≅[SetCat]
       LiftS@{_ _ v q} (Nat_SetS
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U))).
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U))).
 Proof.
   exists ((vertex_nerve_resp T U)^↑S), ((vertex_nerve_inv_resp T U)^↑S).
   split.

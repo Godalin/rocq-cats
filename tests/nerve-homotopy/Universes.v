@@ -30,7 +30,7 @@ Constraint u < p.
 
 Context (X : SetC@{o e}) (Y : SetC@{h o})
     (C : Cat@{o h e l l}) (D : Cat@{h e o l l})
-    (T : Functor (EqGpd X) C) (U : Functor (EqGpd Y) D)
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
     (F G : T →ᵥ U) (α β : F ⇒ G) (H : α ≈N β).
 
 (** The generic construction keeps native hom sizes independent. *)
@@ -38,7 +38,7 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
 (** 通用构造保持原生 Hom 大小独立。 *)
 
 Definition native_prism
-  : Functor (VertexCat T ×C [Ord 1]) (VertexCat U)
+  : Fct (VertexCat T ×C [Ord 1]) (VertexCat U)
   := NaturalPrismF α.
 
 (** Value equality can lie strictly below the value carrier. *)
@@ -48,7 +48,7 @@ Definition native_prism
 Definition low_value_nerve_homotopy
   : SimplicialHomotopy
       (VertexNerveN F :
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
       (VertexNerveN G)
   := VertexNerveHomotopy α.
 
@@ -68,7 +68,7 @@ Definition low_value_nerve_endpoint
 Definition high_value_nerve_homotopy
   : SimplicialHomotopy
       (VertexNerveN F :
-        (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
+        (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
       (VertexNerveN G)
   := VertexNerveHomotopy α.
 
@@ -86,7 +86,7 @@ Definition low_value_nerve_identity
       (VertexNerveHomotopy (F := F) (idN : F ⇒ F) :
         SimplicialHomotopy
           (VertexNerveN F :
-            (Nᵥ(T) : Functor (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
+            (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
           (VertexNerveN F))
       (SimplicialConstantHomotopy (VertexNerveN F))
   := vertex_nerve_homotopy_id F.

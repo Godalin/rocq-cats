@@ -123,6 +123,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Preserve abbreviations: `S` = setoid, `C` = category, `F` = functor,
   `N` = natural transformation, `r`/`resp` = respectful, `v` = vertical.
   `_resp` names respectful maps; `_proper` names preservation laws.
+- Use `Fct` for the functor type, `FctCat` for functor categories, and `Adj`
+  for adjunction constructions. Use `Diag` for `Diagonal`, `Gen` for
+  `Generator`/`Generators`, and `Obj` for `Object`/`Objects`, retaining kind
+  suffixes such as `S` for setoids. Maintain the exact public rename map and
+  pending families in [the abbreviation guide](docs/Abbreviations.md),
+  updating bilingual docs and clients with each batch. Keep module paths
+  and descriptive helper names unless individually reviewed.
 - Prefix laws by their mathematical subject, not `axiom_`. Reuse descriptive
   endings (`_id`, `_comp`, `_inv`, `_iso`, `_unique`, `_β1`, `_η`).
   `_universal` denotes the full universal property; distinguish mediator

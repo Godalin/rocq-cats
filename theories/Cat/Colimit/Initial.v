@@ -16,7 +16,7 @@ From Cats Require Export
 (** * 始对象作为空余极限 *)
 
 Section EmptyColimits.
-Context {C : Cat} {D : Functor (EmptyShape^op) C} {I : @Ob C}
+Context {C : Cat} {D : Fct (EmptyShape^op) C} {I : @Ob C}
     (κ : D ⇒∇ I).
 
 (** Initiality gives a colimit of any opposite empty diagram. *)
@@ -52,7 +52,7 @@ End EmptyColimits.
 (** 从原来的反范畴终对象极限选择空余极限。 *)
 
 Definition InitialDiagramColimit {C : Cat} `{HI : !HasInitial C}
-    (D : Functor (EmptyShape^op) C)
+    (D : Fct (EmptyShape^op) C)
   : HasColimit C D
   := @OpShapeDiagramColimit EmptyShape C D
       (@TerminalDiagramLimit (C^op) (@hasOpTerminal C HI)
@@ -84,8 +84,8 @@ Program Definition EmptyColimitsInitial {C : Cat}
 (** 左伴随的保持性就是反范畴中右伴随的保持性。 *)
 
 Definition left_adjoint_preserves_initial {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {I : @Ob C} (HI : is_initial I)
   : is_initial (F I)
   := @right_adjoint_preserves_terminal (D^op) (C^op)
-      (G^opF) (F^opF) (OpAdjunction A) I HI.
+      (G^opF) (F^opF) (OpAdj A) I HI.

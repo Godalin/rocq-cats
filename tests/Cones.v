@@ -15,10 +15,10 @@ From Cats Require Import
 (** 有限自由形状直接使用其选定生成图。 *)
 
 Definition free_generated_cones {n : nat} (k : Fin n → Fin n → nat)
-    {C : Cat} (D : Functor (FreeCat (FiniteGraph k)) C)
+    {C : Cat} (D : Fct (FreeCat (FiniteGraph k)) C)
   : ConeF D ≅N ConeF (D ∘F
-      @generator_functor _ (FiniteGraphGenerators k))
-  := generated_cone_nat_iso (HG := FiniteGraphGenerators k) D.
+      @generator_functor _ (FiniteGraphGen k))
+  := generated_cone_nat_iso (HG := FiniteGraphGen k) D.
 
 (** Interpret paths of underlying square arrows back in the commuting square.
     Fullness has a one-edge preimage and every object represents itself. *)
@@ -26,7 +26,7 @@ Definition free_generated_cones {n : nat} (k : Fin n → Fin n → nat)
 (** 将底层方形箭头的路径解释回交换方形；满性取单边原像，每个对象以自身为代表。 *)
 
 Definition SquareEvaluation
-  : Functor (FreeCat (UnderlyingGraph SquareShape)) SquareShape
+  : Fct (FreeCat (UnderlyingGraph SquareShape)) SquareShape
   := @FreeF (UnderlyingGraph SquareShape) SquareShape
       (GraphId (UnderlyingGraph SquareShape)).
 
@@ -46,7 +46,7 @@ Proof. intro x. exists x. apply iso_refl. Defined.
 
 (** 非忠实的路径解释仍为每个方形图式及目标范畴给出公开的自然同构。 *)
 
-Definition square_cone_comparison {C : Cat} (D : Functor SquareShape C)
+Definition square_cone_comparison {C : Cat} (D : Fct SquareShape C)
   : ConeF D ≅N ConeF (D ∘F SquareEvaluation)
   := cone_reindex_nat_iso square_evaluation_full
       square_evaluation_essentially_surjective D.

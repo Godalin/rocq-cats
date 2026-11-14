@@ -17,7 +17,7 @@ From Cats Require Import
 
 (** 泛余楔正是反双函子的泛楔，不另存第二份泛性质。 *)
 
-Definition is_coend {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
+Definition is_coend {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
     (κ : Cowedge F E)
   := is_end (op_wedge κ).
 
@@ -26,7 +26,7 @@ Definition is_coend {C D : Cat} {F : Functor ((C^op) ×C C) D} {E}
 (** 用原范畴中的箭头和余楔读取泛性质。 *)
 
 Definition coend_universal_iff {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {E} (κ : Cowedge F E)
+    {F : Fct ((C^op) ×C C) D} {E} (κ : Cowedge F E)
   : is_coend κ ↔ ∀ W (μ : Cowedge F W),
       ∃ h : Hom E W, is_unique (λ h, h ∘Cowedge κ ≈CW μ) h.
 Proof.
@@ -39,7 +39,7 @@ Defined.
 
 (** 选定 coend 仅存储反范畴中的一个选定 end。 *)
 
-Class HasCoend (D : Cat) {C : Cat} (F : Functor ((C^op) ×C C) D)
+Class HasCoend (D : Cat) {C : Cat} (F : Fct ((C^op) ×C C) D)
   :=
   (** Inherit exactly the chosen opposite end and its witnesses. *)
 
@@ -53,7 +53,7 @@ Class HasCoend (D : Cat) {C : Cat} (F : Functor ((C^op) ×C C) D)
 (** 将给定反 end 启用为 coend。 *)
 
 Program Definition OpEndCoend {C D : Cat}
-    {F : Functor ((C^op) ×C C) D}
+    {F : Fct ((C^op) ×C C) D}
     `{HE : !HasEnd (D^op) (BifunctorOpF F)}
   : HasCoend D F
   :=
@@ -64,7 +64,7 @@ Program Definition OpEndCoend {C D : Cat}
 
 (** 选定 coend 对象就是同一个选定反 end 对象。 *)
 
-Definition CoendObj {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition CoendObj {C D : Cat} (F : Fct ((C^op) ×C C) D)
     `{HC : !HasCoend D F}
   : @Ob D
   := end[BifunctorOpF F].
@@ -76,7 +76,7 @@ Notation "'coend[' F ']'" := (CoendObj F) : ob_scope.
 
 (** 选定余楔将存储的反 end 投影读作注入。 *)
 
-Definition coend_cowedge {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition coend_cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D)
     `{HC : !HasCoend D F}
   : Cowedge F (coend[F])
   :=
@@ -90,7 +90,7 @@ Notation "'ιcoend[' F ']'" := (coend_cowedge F) : hom_scope.
 
 (** 泛性质复用同一个见证，不重建中介。 *)
 
-Definition coend_universal {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition coend_universal {C D : Cat} (F : Fct ((C^op) ×C C) D)
     `{HC : !HasCoend D F}
   : is_coend ιcoend[F]
   := end_universal (BifunctorOpF F).
@@ -99,7 +99,7 @@ Definition coend_universal {C D : Cat} (F : Functor ((C^op) ×C C) D)
 
 (** 从 coend 下降就是向原来的反 end 提升。 *)
 
-Definition coend_desc {C D : Cat} {F : Functor ((C^op) ×C C) D}
+Definition coend_desc {C D : Cat} {F : Fct ((C^op) ×C C) D}
     `{HC : !HasCoend D F} {W} (κ : Cowedge F W)
   : Hom (coend[F]) W
   := end⟨op_wedge κ⟩.
@@ -116,7 +116,7 @@ Notation "'coend⟨' κ '⟩'" := (coend_desc κ) : hom_scope.
     固定具有选定 coend 的双函子，以下下降定律均为反范畴中已有的 end 定律。 *)
 
 Section ChosenCoend.
-Context {C D : Cat} {F : Functor ((C^op) ×C C) D} `{HC : !HasCoend D F}.
+Context {C D : Cat} {F : Fct ((C^op) ×C C) D} `{HC : !HasCoend D F}.
 
 (** The inherited mediator is unique with its prescribed injection equations. *)
 
@@ -177,7 +177,7 @@ End ChosenCoend.
 
 (** 对象唯一性就是将反 end 唯一性读回原范畴。 *)
 
-Definition coend_unique {C D : Cat} {F : Functor ((C^op) ×C C) D} {E K}
+Definition coend_unique {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
     {κ : Cowedge F E} {μ : Cowedge F K}
     (Hκ : is_coend κ) (Hμ : is_coend μ)
   : E ≅[D] K.
@@ -191,7 +191,7 @@ Defined.
 
 (** 继承的比较与每个注入交换。 *)
 
-Lemma coend_unique_β {C D : Cat} {F : Functor ((C^op) ×C C) D} {E K}
+Lemma coend_unique_β {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
     {κ : Cowedge F E} {μ : Cowedge F K}
     (Hκ : is_coend κ) (Hμ : is_coend μ) (X : @Ob C)
   : (coend_unique Hκ Hμ).1 ∘ κ X ≈ μ X.
@@ -202,7 +202,7 @@ Proof. exact (end_unique_β Hμ Hκ X). Qed.
 
 (** 双函子自然变换诱导反 end 映射，只要求两端的 coend。 *)
 
-Definition coend_map {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Definition coend_map {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G} (α : F ⇒ G)
   : Hom (coend[F]) (coend[G])
   := end_map (bifunctor_op_nt α).
@@ -211,7 +211,7 @@ Definition coend_map {C D : Cat} {F G : Functor ((C^op) ×C C) D}
 
 (** 诱导 coend 映射具有指定的注入分量。 *)
 
-Lemma coend_map_β {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Lemma coend_map_β {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G} (α : F ⇒ G) (X : @Ob C)
   : coend_map α ∘ ιcoend[F] X ≈ ιcoend[G] X ∘ α (X, X).
 Proof. exact (end_map_β (bifunctor_op_nt α) X). Qed.
@@ -221,7 +221,7 @@ Proof. exact (end_map_β (bifunctor_op_nt α) X). Qed.
 (** coend 映射保持同样的自然变换相等。 *)
 
 Global Instance coend_map_proper {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D}
+    {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G}
   : Proper (NatEq ==> @HomEq[coend[F], coend[G]])
       (@coend_map C D F G HF HG).
@@ -236,7 +236,7 @@ Qed.
 
 (** coend 恒等律就是反 end 恒等律。 *)
 
-Lemma coend_map_id {C D : Cat} {F : Functor ((C^op) ×C C) D}
+Lemma coend_map_id {C D : Cat} {F : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F}
   : coend_map (idN (F := F)) ≈ id.
 Proof.
@@ -250,7 +250,7 @@ Qed.
 
 (** coend 复合律就是反 end 复合律。 *)
 
-Lemma coend_map_comp {C D : Cat} {F G K : Functor ((C^op) ×C C) D}
+Lemma coend_map_comp {C D : Cat} {F G K : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G} `{HK : !HasCoend D K}
     (β : G ⇒ K) (α : F ⇒ G)
   : coend_map (β ∘Nv α) ≈ coend_map β ∘ coend_map α.
@@ -268,7 +268,7 @@ Qed.
 (** 自然同构通过同一个反 end 定理诱导 coend 同构，保留其计算得到的逆。 *)
 
 Definition coend_map_is_iso {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D}
+    {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G}
     (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : is_iso (coend_map α).
@@ -282,7 +282,7 @@ Defined.
 
 (** 下降与双函子自然变换的预合成相容。 *)
 
-Lemma coend_desc_map {C D : Cat} {F G : Functor ((C^op) ×C C) D}
+Lemma coend_desc_map {C D : Cat} {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G} (α : F ⇒ G) {W}
     (κ : Cowedge G W)
   : coend⟨cowedge_precompose κ α⟩ ≈ coend⟨κ⟩ ∘ coend_map α.

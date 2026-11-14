@@ -18,7 +18,7 @@ From Cats Require Import
     不要求选定的始对象结构。 *)
 
 Program Definition InitialCone {J C : Cat} {j : @Ob J}
-    (Hj : is_initial j) (F : Functor J C)
+    (Hj : is_initial j) (F : Fct J C)
   : F j ⇒Δ F
   :=
   {|nt k := fmap F (Hj k).1

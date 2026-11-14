@@ -130,12 +130,12 @@ Defined.
 
 Program Definition GeneratedColimits {C J : Cat}
     `{HI : !HasInitial C} `{HC : !HasCoproduct C}
-    `{HE : !HasCoequalizer C} `{HJ : !HasFiniteGenerators J}
+    `{HE : !HasCoequalizer C} `{HJ : !HasFiniteGen J}
   : HasColimitsOfShape C J
   :=
   {|hasOpLimits := @GeneratedLimits (C^op) (@hasOpTerminal C HI)
       (@hasOpProduct C HC) (@hasOpEqualizer C HE) (J^op)
-      (@OpFiniteGenerators J HJ)
+      (@OpFiniteGen J HJ)
   |}.
 
 (** Finite object and hom covers give colimits with the original opposite
@@ -160,7 +160,7 @@ Program Definition FiniteColimits {C J : Cat}
 Definition FiniteColimit {C J : Cat}
     `{HI : !HasInitial C} `{HC : !HasCoproduct C}
     `{HE : !HasCoequalizer C} `{HJ : !HasFiniteHomCover J}
-    (D : Functor J C)
+    (D : Fct J C)
   : HasColimit C D
   := @hasColimit J C (@FiniteColimits C J HI HC HE HJ) D.
 
@@ -183,7 +183,7 @@ Definition PushoutFiniteColimits {C J : Cat}
 
 Definition PushoutGeneratedColimits {C J : Cat}
     `{HI : !HasInitial C} `{HP : !HasPushout C}
-    `{HJ : !HasFiniteGenerators J}
+    `{HJ : !HasFiniteGen J}
   : HasColimitsOfShape C J
   := @GeneratedColimits C J HI (@PushoutCoproduct C HI HP)
       (@PushoutCoequalizer C HI HP) HJ.

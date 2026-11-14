@@ -18,7 +18,7 @@ Context (J C : Cat) `{TC : !HasTerminal C} `{PC : !HasProduct C}.
 
 (** 终对象的分量箭头组成自然变换。 *)
 
-Program Definition PointwiseTerminalN (F : Functor J C)
+Program Definition PointwiseTerminalN (F : Fct J C)
   : F ⇒ ConstF J (@Term C TC)
   :=
   {|nt i := !
@@ -32,7 +32,7 @@ Defined.
 (** 常值终图式是全部图式中的终对象。 *)
 
 Definition pointwise_terminal_universal
-  : is_terminal (C := Fct J C) (ConstF J (@Term C TC)).
+  : is_terminal (C := FctCat J C) (ConstF J (@Term C TC)).
 Proof.
   intros F. exists (PointwiseTerminalN F). split; [exact I |].
   intros α _ i. apply terminal_arrow_unique. exact I.
@@ -42,8 +42,8 @@ Defined.
 
 (** 选定终图式由使用者显式启用。 *)
 
-Program Definition Fct_HasTerminal
-  : HasTerminal (Fct J C)
+Program Definition FctCat_HasTerminal
+  : HasTerminal (FctCat J C)
   :=
   {|Term := ConstF J (@Term C TC)
   ; terminal_universal := pointwise_terminal_universal
@@ -53,7 +53,7 @@ Program Definition Fct_HasTerminal
 
 (** 点态积投影由积方程保证自然性。 *)
 
-Program Definition PointwiseFstN (F G : Functor J C)
+Program Definition PointwiseFstN (F G : Fct J C)
   : PointwiseProductF F G ⇒ F
   :=
   {|nt i := π1
@@ -64,7 +64,7 @@ Next Obligation. unfold cross. rewrite product_β1. reflexivity. Defined.
 
 (** 第二投影满足另一条积方程。 *)
 
-Program Definition PointwiseSndN (F G : Functor J C)
+Program Definition PointwiseSndN (F G : Fct J C)
   : PointwiseProductF F G ⇒ G
   :=
   {|nt i := π2
@@ -75,7 +75,7 @@ Next Obligation. unfold cross. rewrite product_β2. reflexivity. Defined.
 
 (** 使用选定分量中介配对自然变换。 *)
 
-Program Definition PointwisePairN {F G H : Functor J C}
+Program Definition PointwisePairN {F G H : Fct J C}
     (α : H ⇒ F) (β : H ⇒ G)
   : H ⇒ PointwiseProductF F G
   :=
@@ -89,8 +89,8 @@ Defined.
 
 (** 点态锥满足完整积泛性质。 *)
 
-Definition pointwise_product_universal (F G : Functor J C)
-  : is_product (C := Fct J C) F G (PointwiseProductF F G)
+Definition pointwise_product_universal (F G : Fct J C)
+  : is_product (C := FctCat J C) F G (PointwiseProductF F G)
       (PointwiseFstN F G) (PointwiseSndN F G).
 Proof.
   intros H α β. exists (PointwisePairN α β).
@@ -104,8 +104,8 @@ Defined.
 
 (** 选定点态二元积，不进行全局实例注册。 *)
 
-Program Definition Fct_HasProduct
-  : HasProduct (Fct J C)
+Program Definition FctCat_HasProduct
+  : HasProduct (FctCat J C)
   :=
   {|Prod := PointwiseProductF
   ; π1 := PointwiseFstN

@@ -45,7 +45,7 @@ From Cats Require Import
     \]% *)
 
 Section PrismReconstruction.
-Context {C D : Cat} (K : Functor (C ×C [Ord 1]) D).
+Context {C D : Cat} (K : Fct (C ×C [Ord 1]) D).
 
 (** Read the time edge at each object. Naturality is the general product
     restriction law, so no groupoid or invertible-component assumption enters. *)
@@ -110,7 +110,7 @@ End PrismReconstruction.
     通过规范恒等比较限制为 [F] 或 [G]；这些比较对齐往返律的端点。 *)
 
 Section PrismBoundaries.
-Context {C D : Cat} {F G : Functor C D} (α : F ⇒ G).
+Context {C D : Cat} {F G : Fct C D} (α : F ⇒ G).
 
 (** Restriction to either time position compares with the corresponding
     boundary functor; the component remains a transparent identity. *)
@@ -173,7 +173,7 @@ End PrismBoundaries.
     也无需可逆假设。 *)
 
 Section PrismComparisons.
-Context {C D : Cat} {F G F' G' : Functor C D}
+Context {C D : Cat} {F G F' G' : Fct C D}
     (α : F ⇒ G) (β : F' ⇒ G')
     (a : F ⇒ F') (b : G ⇒ G')
     (H : (b ∘Nv α) ≈N (β ∘Nv a)).
@@ -203,8 +203,8 @@ Context {C D : Cat} {F G F' G' : Functor C D}
 
 Definition NaturalPrismN
   : NaturalPrismF α ⇒ NaturalPrismF β
-  := (@ArrowN (Fct C D) (@ArrowDiagram (Fct C D) F G α)
-      (@ArrowDiagram (Fct C D) F' G' β) a b H)^uncN
+  := (@ArrowN (FctCat C D) (@ArrowDiagram (FctCat C D) F G α)
+      (@ArrowDiagram (FctCat C D) F' G' β) a b H)^uncN
       ∘Nr PairF (OrdinalArrowF ∘F SndF C [Ord 1]) (FstF C [Ord 1]).
 
 (** The extension has precisely the prescribed initial boundary. *)
@@ -242,7 +242,7 @@ End PrismComparisons.
 
 (** 相等的边界映射给出相等的棱柱比较，不依赖边界方形交换性的证明见证。 *)
 
-Lemma natural_prism_eq {C D : Cat} {F G F' G' : Functor C D}
+Lemma natural_prism_eq {C D : Cat} {F G F' G' : Fct C D}
     (α : F ⇒ G) (β : F' ⇒ G') (a a' : F ⇒ F') (b b' : G ⇒ G')
     (H : (b ∘Nv α) ≈N (β ∘Nv a))
     (H' : (b' ∘Nv α) ≈N (β ∘Nv a'))
@@ -266,8 +266,8 @@ Defined.
     不比较证明字段。 *)
 
 Section PrescribedPrism.
-Context {C D : Cat} (K : Functor (C ×C [Ord 1]) D)
-    {F G : Functor C D} (α : F ⇒ G)
+Context {C D : Cat} (K : Fct (C ×C [Ord 1]) D)
+    {F G : Fct C D} (α : F ⇒ G)
     (a : F ⇒ π1F K fin_first)
     (b : G ⇒ π1F K (fin_next fin_first))
     (H : (b ∘Nv α) ≈N (PrismTransformationN K ∘Nv a)).

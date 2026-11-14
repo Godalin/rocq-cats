@@ -21,11 +21,11 @@ From Cats Require Import
 (** 有限生成图及其满且本质满的路径解释。不要求列出路径关系，目标范畴已经给出
     箭头相等。 *)
 
-Class HasFiniteGenerators (J : Cat)
+Class HasFiniteGen (J : Cat)
   :=
   { generator_count : nat
   ; generator_edges : Fin generator_count → Fin generator_count → nat
-  ; generator_functor : Functor (FreeCat (FiniteGraph generator_edges)) J
+  ; generator_functor : Fct (FreeCat (FiniteGraph generator_edges)) J
   ; generator_full : is_full generator_functor
   ; generator_essentially_surjective
       : is_essentially_surjective generator_functor
@@ -42,9 +42,9 @@ Arguments generator_essentially_surjective {_} {_} _.
 
 (** 有限图的自由范畴由该图生成，即使循环产生无限多条路径也成立。 *)
 
-Program Definition FiniteGraphGenerators {n : nat}
+Program Definition FiniteGraphGen {n : nat}
     (k : Fin n → Fin n → nat)
-  : HasFiniteGenerators (FreeCat (FiniteGraph k))
+  : HasFiniteGen (FreeCat (FiniteGraph k))
   :=
   {|generator_count := n
   ; generator_edges := k
@@ -86,7 +86,7 @@ Arguments hasFiniteHom {_} {_} _ _.
 
     假定 [J] 带有有限 Hom 覆盖及其中选定的对象、箭头覆盖，构造有限图，使其自由范畴的诱导函子全且本质满。 *)
 
-Section FiniteHomGenerators.
+Section FiniteHomGen.
 Context {J : Cat} `{HJ : !HasFiniteHomCover J}.
 
 (** Use one generating edge for each selected representative of a hom-set. *)
@@ -113,7 +113,7 @@ Program Definition FiniteHomGraphMap
 (** 通过自由范畴理论将有限 Hom 枚举延拓到路径。 *)
 
 Definition FiniteHomF
-  : Functor (FreeCat (FiniteGraph FiniteHomEdges)) J
+  : Fct (FreeCat (FiniteGraph FiniteHomEdges)) J
   := FreeF FiniteHomGraphMap.
 
 (** Every target arrow has a one-edge preimage, up to specified equality. *)
@@ -141,8 +141,8 @@ Definition finite_hom_essentially_surjective
 
 (** 有限 Hom 覆盖给出有限生成元，不比较相等见证，也不构造路径商；结果须显式启用。 *)
 
-Program Definition FiniteHomGenerators
-  : HasFiniteGenerators J
+Program Definition FiniteHomGen
+  : HasFiniteGen J
   :=
   {|generator_count := finite_object_count
   ; generator_edges := FiniteHomEdges
@@ -151,7 +151,7 @@ Program Definition FiniteHomGenerators
   ; generator_essentially_surjective := finite_hom_essentially_surjective
   |}.
 
-End FiniteHomGenerators.
+End FiniteHomGen.
 
 (** Opposite hom covers exchange their endpoints and reverse the chosen
     representative isomorphisms. No new enumerations are selected. *)
@@ -179,9 +179,9 @@ Defined.
 (** 反转每条有限生成边，再用原解释的反函子解释反路径；同样适用于含环图及
     带额外路径方程的目标范畴。 *)
 
-Program Definition OpFiniteGenerators {J : Cat}
-    `{HJ : !HasFiniteGenerators J}
-  : HasFiniteGenerators (J^op)
+Program Definition OpFiniteGen {J : Cat}
+    `{HJ : !HasFiniteGen J}
+  : HasFiniteGen (J^op)
   :=
   {|generator_count := @generator_count J HJ
   ; generator_edges i j := @generator_edges J HJ j i

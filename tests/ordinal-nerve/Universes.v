@@ -31,19 +31,19 @@ Universes p u.
 Constraint p < u.
 
 Definition low_equality_ordinal_iso (n : nat)
-  : (Nᵥ(OrdinalObjectsF n) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n]
+  : (Nᵥ(OrdinalObjF n) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n]
   := ordinal_vertex_nerve_iso n.
 
 Definition low_equality_forward (n : nat)
-  : (Nᵥ(OrdinalObjectsF n) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
+  : (Nᵥ(OrdinalObjF n) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
   := OrdinalVertexNerveN n.
 
 Definition low_equality_naturality {m n : nat} (θ : (@Hom Δ) m n)
   : (OrdinalVertexNerveN n ∘Nv VertexNerveN (OrdinalVertexMapF θ) :
-      (Nᵥ(OrdinalObjectsF m) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]) ≈N
+      (Nᵥ(OrdinalObjF m) :
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]) ≈N
       (fmap StandardSimplexF θ ∘Nv OrdinalVertexNerveN m)
   := ordinal_vertex_nerve_natural θ.
 
@@ -64,20 +64,20 @@ Universes u p.
 Constraint u < p.
 
 Definition high_equality_ordinal_iso (n : nat)
-  : (Nᵥ(OrdinalObjectsF n) :
-      Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n]
+  : (Nᵥ(OrdinalObjF n) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n]
   := ordinal_vertex_nerve_iso n.
 
 Definition high_equality_inverse (n : nat)
-  : (Δ[n] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
-      Nᵥ(OrdinalObjectsF n)
+  : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+      Nᵥ(OrdinalObjF n)
   := StandardVertexNerveN n.
 
 Definition high_equality_interval_endpoint (b : bool)
   : (OrdinalVertexNerveN 1 ∘Nv
       VertexNerveN (OrdinalVertexPointF 1 (simplex_interval_position b)) :
-        (Nᵥ(VertexTerminalObjectsF@{Set Set Set Set Set Set Set Set}) :
-          Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[1]) ≈N
+        (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+          Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[1]) ≈N
       (SimplicialIntervalPointN b ∘Nv VertexNerveTerminalN)
   := ordinal_vertex_interval_endpoint b.
 

@@ -63,7 +63,7 @@ Universes u p.
 Context {M : SetC} `{HM : !Monoid M}.
 
 Let Z
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 Let Q
@@ -433,7 +433,7 @@ Universes u p.
 Context {M : SetC} `{HG : !Group M}.
 
 Let Z
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 Let Q
@@ -539,7 +539,7 @@ Universes u p.
 Context {M : SetC} `{HM : !Monoid M} `{HC : !IsCommutativeMonoid M}.
 
 Let Z
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 (** Commutativity on the same selected class monoid. *)

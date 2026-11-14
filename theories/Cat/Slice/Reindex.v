@@ -95,7 +95,7 @@ Proof. apply slice_reindex_lift_β2. Qed.
 (** 选定拉回给出切片范畴之间的基变换函子。 *)
 
 Program Definition SliceReindexF {X Y : @Ob C} (f : Hom X Y)
-  : Functor (C /C Y) (C /C X)
+  : Fct (C /C Y) (C /C X)
   :=
   {|F0 := SliceReindexOb f
   ; F1 A B := slice_reindex_map f

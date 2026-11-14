@@ -15,7 +15,7 @@ From Cats Require Import Cat.Arrow.Core.
 
     从全空间到基底的自然投影把笛卡尔态射送到拉回方形；此性质与提升的选取分开。 *)
 
-Definition is_comprehension {E B : Cat} {P T : Functor E B} (π : T ⇒ P)
+Definition is_comprehension {E B : Cat} {P T : Fct E B} (π : T ⇒ P)
   := ∀ X Y (f : Hom X Y), f ⦂ Cart(P)
     → is_pullback (fmap P f) (π Y) (T X) (π X) (fmap T f).
 
@@ -24,10 +24,10 @@ Definition is_comprehension {E B : Cat} {P T : Functor E B} (π : T ⇒ P)
 
 (** 纤维化投影及自然显示投影，把笛卡尔方形送到拉回。 *)
 
-Record Comprehension {E B : Cat} (P : Functor E B)
+Record Comprehension {E B : Cat} (P : Fct E B)
   :=
   { comprehension_lifts : HasCartesianLift P
-  ; ExtF : Functor E B
+  ; ExtF : Fct E B
   ; projectionN : ExtF ⇒ P
   ; comprehension_universal : is_comprehension projectionN
   }.
@@ -46,7 +46,7 @@ Notation "'π[' K ']' A" := (projectionN K A)
 
 (** 显示投影与全范畴的每条态射交换。 *)
 
-Theorem comprehension_comm {E B : Cat} {P : Functor E B} (K : Comprehension P)
+Theorem comprehension_comm {E B : Cat} {P : Fct E B} (K : Comprehension P)
     {X Y : @Ob E} (f : Hom X Y)
   : π[K] Y ∘ fmap (ExtF K) f ≈ fmap P f ∘ π[K] X.
 Proof. apply nt_naturality. Qed.
@@ -57,6 +57,6 @@ Proof. apply nt_naturality. Qed.
 (** 每个理解结构都可表示为取值于箭头范畴的函子。满性与忠实性是独立性质，不是
     [K] 的字段。 *)
 
-Definition ComprehensionF {E B : Cat} {P : Functor E B} (K : Comprehension P)
-  : Functor E (Arr B)
+Definition ComprehensionF {E B : Cat} {P : Fct E B} (K : Comprehension P)
+  : Fct E (Arr B)
   := NatArrowF (projectionN K).

@@ -138,7 +138,7 @@ Definition IndexedCoproductOpProduct {C : Cat} {I : Type}
 (** 将单个反离散极限适配为通常离散余极限，仅沿满且本质满的反转改变形状。 *)
 
 Program Definition DiscreteDiagramColimit {C : Cat} {I : Type}
-    (D : Functor (DiscreteCat I) C)
+    (D : Fct (DiscreteCat I) C)
     `{HL : !HasLimit (C^op) (D^opF ∘F OpDiscreteF I)}
   : HasColimit C D
   :=

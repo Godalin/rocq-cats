@@ -15,7 +15,7 @@ From Cats Require Import
 (** * 替换提升与显示投影的拉回 *)
 
 Section ContextLiftMap.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** Lift a context substitution to the corresponding context extensions. *)
 
@@ -43,7 +43,7 @@ Notation "σ '^+[' T ',' A ']'" := (context_lift T σ A)
     固定带选定上下文扩张的 [T]，导出替换提升的投影、变量及相干定律，再证明对应方形为拉回。 *)
 
 Section ContextLift.
-Context {C : Cat} (T : Functor (C^op) FamCat) `{HC : !HasContextExtension T}.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
 (** The substitution lift commutes with context projections. *)
 

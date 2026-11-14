@@ -24,7 +24,7 @@ Local Open Scope nat_scope.
 (** 异或幺半群提供具有不同环路的单元素呈现。 *)
 
 Definition BooleanPresentation
-  := MonoidObjectsF BoolS (HM := BoolS_Monoid).
+  := MonoidObjF BoolS (HM := BoolS_Monoid).
 
 (** Pairing retains both distinct boolean components. *)
 
@@ -43,7 +43,7 @@ Proof. reflexivity. Qed.
 
 Example product_split_computes
   : let t := BooleanPresentation in
-    let z := △₁[VertexProductObjectsF t t; (tt, tt); (tt, tt)] (true, false) in
+    let z := △₁[VertexProductObjF t t; (tt, tt); (tt, tt)] (true, false) in
     let xy := VertexNerveProductN t t 1 z in
     (fmap (lower (fst xy)) (ordinal_step fin_first),
      fmap (lower (snd xy)) (ordinal_step fin_first)) = (true, false).

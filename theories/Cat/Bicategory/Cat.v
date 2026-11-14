@@ -9,7 +9,7 @@ From Cats Require Import
 
 (** * Categories, Functors and All Natural Transformations
 
-    The hom-categories are [Fct], with [NatEq] on their morphisms. Identity
+    The hom-categories are [FctCat], with [NatEq] on their morphisms. Identity
     and composition of functors agree on actions, but their proof-bearing
     records need not be Rocq-equal. We therefore retain the canonical
     associators and unitors and verify bicategory coherence, without claiming
@@ -17,7 +17,7 @@ From Cats Require Import
 
 (** * 范畴、函子与全部自然变换
 
-    Hom 范畴取 [Fct]，其态射按 [NatEq] 相等。函子恒等和复合的作用一致，但含证
+    Hom 范畴取 [FctCat]，其态射按 [NatEq] 相等。函子恒等和复合的作用一致，但含证
     明的记录未必原生相等；因此保留结合子和单位子并验证双范畴相干性，不要求原生
     严格性。 *)
 
@@ -25,7 +25,7 @@ Program Definition CatBicat
   : Bicat
   :=
   {|ObB := Cat
-  ; HomCat := Fct
+  ; HomCat := FctCat
   ; id1 C := @IdF C
   ; comp1F := CompNF
   ; associator W X Y Z H G F := (@CompF_assoc W X Y Z H G F).1
@@ -49,8 +49,8 @@ Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
 
 (** 范畴双范畴的左须化与函子须化一致。 *)
 
-Theorem cat_whisker_l {C D E : Cat} (G : Functor D E)
-    {F F' : Functor C D} (α : F ⇒ F')
+Theorem cat_whisker_l {C D E : Cat} (G : Fct D E)
+    {F F' : Fct C D} (α : F ⇒ F')
   : whisker_l (K := CatBicat) G α ≈N (G ∘Nl α).
 Proof. intros X. exact (comp_id_l (fmap G (α X))). Qed.
 
@@ -58,8 +58,8 @@ Proof. intros X. exact (comp_id_l (fmap G (α X))). Qed.
 
 (** 范畴双范畴的右须化与函子须化一致。 *)
 
-Theorem cat_whisker_r {C D E : Cat} {G G' : Functor D E}
-    (β : G ⇒ G') (F : Functor C D)
+Theorem cat_whisker_r {C D E : Cat} {G G' : Fct D E}
+    (β : G ⇒ G') (F : Fct C D)
   : whisker_r (K := CatBicat) β F ≈N (β ∘Nr F).
 Proof.
   intros X. change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).
@@ -74,7 +74,7 @@ Qed.
 
 (** 范畴双范畴的可逆二胞就是自然同构。 *)
 
-Definition cat_bicat_homotopy_eq {C D : Cat} (F G : Functor C D)
+Definition cat_bicat_homotopy_eq {C D : Cat} (F G : Fct C D)
   : @Cats.Cat.Core.HomEq (BicatHomotopyCat CatBicat) C D F G ↔ F ≅N G.
 Proof.
   split; intros H.
@@ -87,7 +87,7 @@ Defined.
 (** 将范畴双范畴的同伦范畴送到 [CatCat]。 *)
 
 Program Definition ToCatCatF
-  : Functor (BicatHomotopyCat CatBicat) CatCat
+  : Fct (BicatHomotopyCat CatBicat) CatCat
   :=
   {|F0 C := C
   ; F1 C D F := F
@@ -101,7 +101,7 @@ Next Obligation. reflexivity. Defined.
 (** 在范畴双范畴的同伦范畴中解释 [CatCat] 的函子。 *)
 
 Program Definition FromCatCatF
-  : Functor CatCat (BicatHomotopyCat CatBicat)
+  : Fct CatCat (BicatHomotopyCat CatBicat)
   :=
   {|F0 C := C
   ; F1 C D F := F

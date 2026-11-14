@@ -29,7 +29,7 @@ Next Obligation. intros []. Qed.
 (** 将对象族延拓为离散图式。 *)
 
 Definition DiscreteF {C : Cat} {V : Type} (D : V → @Ob C)
-  : Functor (DiscreteCat V) C
+  : Fct (DiscreteCat V) C
   := FreeF (DiscreteGraphMap D).
 
 (** Every discrete diagram is naturally isomorphic to the canonical diagram
@@ -38,7 +38,7 @@ Definition DiscreteF {C : Cat} {V : Type} (D : V → @Ob C)
 (** 每个离散图式都自然同构于其对象族的规范图式；比较的分量为恒等。 *)
 
 Definition discrete_functor_nat_iso {C : Cat} {I : Type}
-    (D : Functor (DiscreteCat I) C)
+    (D : Fct (DiscreteCat I) C)
   : DiscreteF (λ i, D i) ≅N D.
 Proof.
   exists (@FreeN (DiscreteGraph I) C (DiscreteF (λ i, D i)) D
@@ -50,7 +50,7 @@ Defined.
 
 (** 任意锥腿族给出离散图式上的锥。 *)
 
-Definition DiscreteCone {C : Cat} {V : Type} {D : Functor (DiscreteCat V) C}
+Definition DiscreteCone {C : Cat} {V : Type} {D : Fct (DiscreteCat V) C}
     {X : @Ob C} (κ : ∀ v, Hom X (D v))
   : X ⇒Δ D.
 Proof. refine (FreeCone κ _). intros x y []. Defined.
@@ -60,7 +60,7 @@ Proof. refine (FreeCone κ _). intros x y []. Defined.
 (** [false] 是左端点，[true] 是右端点。 *)
 
 Definition PairDiagram {C : Cat} (X Y : @Ob C)
-  : Functor PairShape C
+  : Fct PairShape C
   := DiscreteF (λ b : bool, if b then Y else X).
 
 Notation "'⟨' X ',' Y '⟩D'" := (PairDiagram X Y) : cat_scope.
@@ -86,14 +86,14 @@ Notation "'⟨' p ',' q '⟩Cone'" := (PairCone p q) : cat_scope.
 (** 空形状上的图式。 *)
 
 Definition EmptyDiagram (C : Cat)
-  : Functor EmptyShape C
+  : Fct EmptyShape C
   := DiscreteF (λ x : Empty_set, match x with end).
 
 (** The cone with no legs on an empty diagram. *)
 
 (** 空图式上没有锥腿的锥。 *)
 
-Definition EmptyCone {C : Cat} {D : Functor EmptyShape C} (X : @Ob C)
+Definition EmptyCone {C : Cat} {D : Fct EmptyShape C} (X : @Ob C)
   : X ⇒Δ D
   := DiscreteCone (λ x : Empty_set, match x with end).
 
@@ -102,5 +102,5 @@ Definition EmptyCone {C : Cat} {D : Functor EmptyShape C} (X : @Ob C)
 (** 取指定值的离散单对象图式。 *)
 
 Definition PointDiagram {C : Cat} (X : @Ob C)
-  : Functor PointShape C
+  : Fct PointShape C
   := DiscreteF (λ _ : unit, X).

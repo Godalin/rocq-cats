@@ -14,7 +14,7 @@ From Cats Require Export Cat.Diagram.Arrow.
 (** * 等化子作为平行箭头对的极限 *)
 
 Section EqualizerLimits.
-Context {C : Cat} {D : Functor ParallelShape C} {E : @Ob C} (κ : E ⇒Δ D).
+Context {C : Cat} {D : Fct ParallelShape C} {E : @Ob C} (κ : E ⇒Δ D).
 
 (** The candidate equalizer property gives a limit of the parallel-pair
     diagram. *)
@@ -79,7 +79,7 @@ End EqualizerLimits.
 (** 用选定等化子结构选择平行箭头对图式的极限。 *)
 
 Program Definition EqualizerDiagramLimit {C : Cat} `{HE : !HasEqualizer C}
-    (D : Functor ParallelShape C)
+    (D : Fct ParallelShape C)
   : HasLimit C D
   :=
   {|Lim := Eq[fmap D (path_edge parallel_l), fmap D (path_edge parallel_r)]
@@ -129,7 +129,7 @@ Definition equalizer_unique {C : Cat} {X Y E E' : @Ob C} {f g : Hom X Y}
 (** 右伴随保持候选等化子的泛性质。 *)
 
 Definition right_adjoint_preserves_equalizer {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {X Y E : @Ob D} {f g : Hom X Y} {e : Hom E X}
     (HE : is_equalizer f g E e)
   : is_equalizer (fmap G f) (fmap G g) (G E) (fmap G e)

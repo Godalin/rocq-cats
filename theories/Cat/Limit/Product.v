@@ -14,7 +14,7 @@ From Cats Require Export Cat.Diagram.Shape.
 (** * 二元积作为离散图式的极限 *)
 
 Section ProductLimits.
-Context {C : Cat} {D : Functor PairShape C} {P : @Ob C} (κ : P ⇒Δ D).
+Context {C : Cat} {D : Fct PairShape C} {P : @Ob C} (κ : P ⇒Δ D).
 
 (** The candidate binary product property gives a limit of the two-object
     discrete diagram. *)
@@ -70,7 +70,7 @@ End ProductLimits.
 (** 选定积为该形状的任意图式给出选定极限；这些结构须显式启用。 *)
 
 Program Definition ProductDiagramLimit {C : Cat} `{HP : !HasProduct C}
-    (D : Functor PairShape C)
+    (D : Fct PairShape C)
   : HasLimit C D
   :=
   {|Lim := D false × D true
@@ -112,7 +112,7 @@ Defined.
 (** 保持性质来自一般极限定理。 *)
 
 Definition right_adjoint_preserves_product {C D : Cat}
-    {F : Functor C D} {G : Functor D C} (A : F ⊣ G)
+    {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
     {X Y P : @Ob D} {p : Hom P X} {q : Hom P Y}
     (HP : is_product X Y P p q)
   : is_product (G X) (G Y) (G P) (fmap G p) (fmap G q)

@@ -39,7 +39,7 @@ Class FreydCat (C K : Cat)
 
   (** 纯函子是唯一主要视图。 *)
 
-  { FreydF :> Functor C K
+  { FreydF :> Fct C K
 
   (** Compute the actual computation category on value objects. *)
 
@@ -149,5 +149,5 @@ Arguments FreydComputations {_ _} _.
 (** 实际值嵌入的对象映射按构造为恒等。它复用同一纯态射作用并保留其宇宙层级。 *)
 
 Definition FreydPureF {C K : Cat} (F : FreydCat C K)
-  : Functor C (FreydComputations F)
+  : Fct C (FreydComputations F)
   := InducedF F.

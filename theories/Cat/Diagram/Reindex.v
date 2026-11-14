@@ -15,8 +15,8 @@ From Cats Require Import
 
 (** 在像对象上求值锥，得到复合图式上的锥。 *)
 
-Program Definition RestrictCone {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X} (κ : X ⇒Δ D)
+Program Definition RestrictCone {I J C : Cat} (Q : Fct I J)
+    {D : Fct J C} {X} (κ : X ⇒Δ D)
   : X ⇒Δ (D ∘F Q)
   :=
   {|nt i := κ (Q i)
@@ -32,8 +32,8 @@ Notation "κ '∘Δ' Q" := (RestrictCone Q κ)
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance cone_restrict_proper {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X}
+Global Instance cone_restrict_proper {I J C : Cat} (Q : Fct I J)
+    {D : Fct J C} {X}
   : Proper (NatEq ==> NatEq) (@RestrictCone I J C Q D X).
 Proof. intros κ μ H i. exact (H (Q i)). Qed.
 
@@ -41,8 +41,8 @@ Proof. intros κ μ H i. exact (H (Q i)). Qed.
 
 (** 限制锥与顶点预合成交换。 *)
 
-Lemma cone_restrict_comp {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X Y} (κ : X ⇒Δ D) (f : Hom Y X)
+Lemma cone_restrict_comp {I J C : Cat} (Q : Fct I J)
+    {D : Fct J C} {X Y} (κ : X ⇒Δ D) (f : Hom Y X)
   : (κ ∘Cone f) ∘Δ Q ≈N (κ ∘Δ Q) ∘Cone f.
 Proof. intros i. reflexivity. Qed.
 
@@ -51,8 +51,8 @@ Proof. intros i. reflexivity. Qed.
 
 (** 仅本质满就足以检测锥相等；延拓限制图式上的任意锥时才需要满性。 *)
 
-Lemma cone_restrict_reflects {I J C : Cat} {Q : Functor I J}
-    (HQ : is_essentially_surjective Q) {D : Functor J C} {X}
+Lemma cone_restrict_reflects {I J C : Cat} {Q : Fct I J}
+    (HQ : is_essentially_surjective Q) {D : Fct J C} {X}
     (κ μ : X ⇒Δ D)
   : κ ∘Δ Q ≈N μ ∘Δ Q → κ ≈N μ.
 Proof.
@@ -72,9 +72,9 @@ Qed.
     固定全且本质满的函子 [Q] 及图式 [D]，从限制后的图式扩张锥，并证明扩张与限制在锥相等下互逆。 *)
 
 Section ConeExtension.
-Context {I J C : Cat} {Q : Functor I J}.
+Context {I J C : Cat} {Q : Fct I J}.
 Context (HF : is_full Q) (HQ : is_essentially_surjective Q).
-Context {D : Functor J C}.
+Context {D : Fct J C}.
 
 (** Use the selected representative isomorphism to transport a source cone
     leg. *)
@@ -169,8 +169,8 @@ End ConeExtension.
 
 (** 用原反锥限制及已有反复合图式比较限制余锥。 *)
 
-Definition RestrictCocone {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X : @Ob C} (κ : D ⇒∇ X)
+Definition RestrictCocone {I J C : Cat} (Q : Fct I J)
+    {D : Fct J C} {X : @Ob C} (κ : D ⇒∇ X)
   : (D ∘F Q) ⇒∇ X
   :=
   {|op_cone := ((OpF_comp D Q).1 ^-1N (OpF_comp D Q).2)
@@ -185,9 +185,9 @@ Notation "κ '∘∇F' Q" := (RestrictCocone Q κ)
 
 (** 用原反锥延拓来延拓余锥，仅要求形状函子满且本质满。 *)
 
-Definition ExtendCocone {I J C : Cat} {Q : Functor I J}
+Definition ExtendCocone {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {X : @Ob C} (κ : (D ∘F Q) ⇒∇ X)
+    {D : Fct J C} {X : @Ob C} (κ : (D ∘F Q) ⇒∇ X)
   : D ⇒∇ X
   :=
   {|op_cone := ExtendCone (functor_op_full HF)
@@ -199,8 +199,8 @@ Definition ExtendCocone {I J C : Cat} {Q : Functor I J}
 
 (** 限制保持余锥腿的逐点相等。 *)
 
-Global Instance cocone_restrict_proper {I J C : Cat} (Q : Functor I J)
-    {D : Functor J C} {X : @Ob C}
+Global Instance cocone_restrict_proper {I J C : Cat} (Q : Fct I J)
+    {D : Fct J C} {X : @Ob C}
   : Proper ((λ κ μ : D ⇒∇ X, κ ≈N μ) ==>
       (λ κ μ : (D ∘F Q) ⇒∇ X, κ ≈N μ))
       (@RestrictCocone I J C Q D X).
@@ -210,8 +210,8 @@ Proof. intros κ μ H i. cbn. rewrite (H (Q i)). reflexivity. Qed.
 
 (** 本质满性能在余锥限制后检测相等。 *)
 
-Lemma cocone_restrict_reflects {I J C : Cat} {Q : Functor I J}
-    (HQ : is_essentially_surjective Q) {D : Functor J C} {X : @Ob C}
+Lemma cocone_restrict_reflects {I J C : Cat} {Q : Fct I J}
+    (HQ : is_essentially_surjective Q) {D : Fct J C} {X : @Ob C}
     (κ μ : D ⇒∇ X)
   : κ ∘∇F Q ≈N μ ∘∇F Q → κ ≈N μ.
 Proof.
@@ -224,9 +224,9 @@ Qed.
 
 (** 余锥延拓保持同一逐点相等。 *)
 
-Global Instance cocone_extend_proper {I J C : Cat} {Q : Functor I J}
+Global Instance cocone_extend_proper {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {X : @Ob C}
+    {D : Fct J C} {X : @Ob C}
   : Proper ((λ κ μ : (D ∘F Q) ⇒∇ X, κ ≈N μ) ==>
       (λ κ μ : D ⇒∇ X, κ ≈N μ)) (@ExtendCocone I J C Q HF HQ D X).
 Proof.
@@ -242,9 +242,9 @@ Qed.
 
 (** 延拓限制后的余锥，逐点恢复原余锥。 *)
 
-Lemma cocone_extend_restrict {I J C : Cat} {Q : Functor I J}
+Lemma cocone_extend_restrict {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {X : @Ob C} (κ : D ⇒∇ X)
+    {D : Fct J C} {X : @Ob C} (κ : D ⇒∇ X)
   : ExtendCocone HF HQ (κ ∘∇F Q) ≈N κ.
 Proof.
   change (NatEq (op_cone (ExtendCocone HF HQ (κ ∘∇F Q))) (op_cone κ)).
@@ -259,9 +259,9 @@ Qed.
 
 (** 限制延拓后的余锥，逐点恢复原源余锥。 *)
 
-Lemma cocone_restrict_extend {I J C : Cat} {Q : Functor I J}
+Lemma cocone_restrict_extend {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {X : @Ob C} (κ : (D ∘F Q) ⇒∇ X)
+    {D : Fct J C} {X : @Ob C} (κ : (D ∘F Q) ⇒∇ X)
   : ExtendCocone HF HQ κ ∘∇F Q ≈N κ.
 Proof.
   intros i.

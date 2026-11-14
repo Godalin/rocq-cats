@@ -2,6 +2,13 @@
 
 # 打包接口与底层视图
 
+Public identifiers in this guide follow the current
+[abbreviation map](./Abbreviations.md); dated baseline inventories below
+remain historical evidence.
+
+本文公共标识符按当前[缩写对照](./Abbreviations.md)更新；下方注明日期与基线的
+清单仍是历史证据。
+
 The [current whole-library audit](#library-wide-structure-and-naming-audit)
 started with all 87 class/record interfaces at baseline `5d87331`. Its
 inventory now includes 100 interfaces after the structural hierarchy slices
@@ -13,13 +20,13 @@ alongside the structural naming and inheritance findings after the CCC changes.
 并记录 CCC 修改后的结构命名与继承问题。
 
 The lax monoidal interface now bundles its underlying functor and structure
-in one class, exposing a single coercion to `Functor`. The first follow-up
+in one class, exposing a single coercion to `Fct`. The first follow-up
 from the library-wide survey now adds bundled cartesian and cartesian closed
 functors. Existing fixed-data preservation interfaces remain available for
 general theorems alongside those bundles.
 
 Lax monoidal 接口现已将底层函子及结构打包在同一个类中，只提供一条到
-`Functor` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
+`Fct` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
 笛卡尔闭函子。已有固定数据保持性接口继续与打包接口共存，服务于一般定理。
 
 ## Scope and decision rule
@@ -64,8 +71,8 @@ those witnesses or assert proof irrelevance.
 
 ## 已实现的打包接口
 
-[LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v) now stores
-`LaxMonoidalF :> Functor C D`, the unit comparison, natural tensorator and
+[LaxMonoidalFct MC MD](../theories/Cat/Monoidal/Functor.v) now stores
+`LaxMonoidalF :> Fct C D`, the unit comparison, natural tensorator and
 three coherence laws. Clients use `L X` and `fmap L f`. The
 [identity](../theories/Cat/Monoidal/Functor.v) and
 [constant](../theories/Cat/Monoidal/Constant.v) constructors explicitly
@@ -73,8 +80,8 @@ choose their underlying functors. The
 [monoid transport](../theories/Cat/Monoidal/Transport.v) remains derived
 from `L`, including its action on homomorphisms.
 
-[LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v) 现在保存
-`LaxMonoidalF :> Functor C D`、单位比较、自然 tensorator 及三条相干律。
+[LaxMonoidalFct MC MD](../theories/Cat/Monoidal/Functor.v) 现在保存
+`LaxMonoidalF :> Fct C D`、单位比较、自然 tensorator 及三条相干律。
 客户端使用 `L X`、`fmap L f`。
 [恒等构造](../theories/Cat/Monoidal/Functor.v)与
 [常值构造](../theories/Cat/Monoidal/Constant.v)显式选择底层函子。
@@ -91,20 +98,20 @@ directly, so no such independent choice is needed.
 
 The 2026-11-10 follow-up, based on integrated commit
 `b7455f5869a76862c0388967f31719058789fc47`, implements the first two survey
-candidates. [CartesianFunctor](../theories/Cat/Functor/Cartesian.v) stores one
-`Functor` with inherited `IsCartesianF` evidence. It requires only the named
-source terminal/products. [CCCFunctor](../theories/Cat/Functor/Closed.v) adds
+candidates. [CartFct](../theories/Cat/Functor/Cartesian.v) stores one
+`Fct` with inherited `IsCartF` evidence. It requires only the named
+source terminal/products. [CCCFct](../theories/Cat/Functor/Closed.v) adds
 exponential comparison invertibility, with the single coercion chain
-`CCCFunctor → CartesianFunctor → Functor`. Its derived `IsCCCF` instance
+`CCCFct → CartFct → Fct`. Its derived `IsCCCF` instance
 shares the stored cartesian evidence. Preservation adapters, identity and
 composition constructors reuse the existing proofs and computational witnesses.
 
 2026-11-10 的后续工作基于集成提交
 `b7455f5869a76862c0388967f31719058789fc47`，实现了调查中的前两个候选。
-[CartesianFunctor](../theories/Cat/Functor/Cartesian.v) 保存一个 `Functor`
-及继承的 `IsCartesianF` 证据，仅要求具名来源终对象／积。
-[CCCFunctor](../theories/Cat/Functor/Closed.v) 增加指数比较可逆性，唯一强制
-转换链为 `CCCFunctor → CartesianFunctor → Functor`；派生的 `IsCCCF` 实例
+[CartFct](../theories/Cat/Functor/Cartesian.v) 保存一个 `Fct`
+及继承的 `IsCartF` 证据，仅要求具名来源终对象／积。
+[CCCFct](../theories/Cat/Functor/Closed.v) 增加指数比较可逆性，唯一强制
+转换链为 `CCCFct → CartFct → Fct`；派生的 `IsCCCF` 实例
 共享保存的笛卡尔证据。保持性适配器、恒等和复合构造复用已有证明及计算见证。
 
 General theorems keep accepting fixed `F` and preservation evidence. STLC
@@ -123,10 +130,10 @@ CCC-to-functor coercion or globally chosen concrete functor is introduced.
 | Interface / 接口 | Underlying view / 底层视图 | Finding / 结论 |
 | --- | --- | --- |
 | [SetC and FunS_resp](../theories/Set/Morphism.v), [SetC carrier](../theories/Set/Core.v) | Carrier or respectful function / 载体或保相等函数 | Already bundled; preserve pointwise setoid equality / 已打包，保留逐点广集相等 |
-| [Functor](../theories/Cat/Functor/Core.v), [Nat](../theories/Cat/Natural.v) | Object map or component family / 对象映射或分量族 | Already expose the unique computational view / 已暴露唯一计算视图 |
-| [Monad](../theories/Cat/Monad/Core.v), [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | Endofunctor or ambient carrier / 自函子或所在范畴的载体 | Model for the new lax bundle; fixed-data law predicates also remain / 可作为 lax 打包范式，同时保留固定数据定律谓词 |
-| [CwF](../theories/DTT/CwF.v) | `TyTmF :> Functor (C^op) FamCat` | Already bundles the functor and context extension; inherited terminal/context structures use `::` / 已打包函子和上下文扩张，用 `::` 继承结构 |
-| [GraphMap](../theories/Graph/Morphism.v), [GeneratorNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v) | Vertex map or component family / 顶点映射或分量族 | Existing coercions support direct application / 已支持直接作用 |
+| [Fct](../theories/Cat/Functor/Core.v), [Nat](../theories/Cat/Natural.v) | Object map or component family / 对象映射或分量族 | Already expose the unique computational view / 已暴露唯一计算视图 |
+| [Monad](../theories/Cat/Monad/Core.v), [MonoidObj](../theories/Cat/Monoidal/Monoid.v) | Endofunctor or ambient carrier / 自函子或所在范畴的载体 | Model for the new lax bundle; fixed-data law predicates also remain / 可作为 lax 打包范式，同时保留固定数据定律谓词 |
+| [CwF](../theories/DTT/CwF.v) | `TyTmF :> Fct (C^op) FamCat` | Already bundles the functor and context extension; inherited terminal/context structures use `::` / 已打包函子和上下文扩张，用 `::` 继承结构 |
+| [GraphMap](../theories/Graph/Morphism.v), [GenNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v) | Vertex map or component family / 顶点映射或分量族 | Existing coercions support direct application / 已支持直接作用 |
 | [FamS](../theories/Instance/Set/Fam/Core.v), [FamMap](../theories/Instance/Set/Fam/Fixed.v), [FamC and FamF](../theories/Instance/Set/Fam/Cat.v) | Fiber family, fiberwise maps or base map / 纤维族、逐纤维映射或基底映射 | Keep the selected view; other family components stay explicit / 保持选定视图，其他族分量显式访问 |
 | [SectionS_resp](../theories/Instance/Set/Fam/Section.v), [SieveMatching](../theories/Instance/Set/Sieve/Matching.v) | Section or generator values / 截面或生成元处的值 | Already apply directly and compare values without proof-field equality / 已可直接作用，按值比较而不比较证明字段 |
 | [Mono and Sub](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Underlying arrow / 底层箭头 | Already bundled; `Mono` also has an explicit domain-object view, which should be considered during any future coercion changes / 已打包；`Mono` 还有显式定义域对象视图，未来修改强制转换时须一并考虑 |
@@ -156,7 +163,7 @@ audited individually.
 [MonoidalCat C](../theories/Cat/Monoidal/Core.v) initially gained the computed
 field `MonoidalC :> Cat := C`. It exposes the supplied category without
 storing another one or changing any constructor argument. Clients can write
-`Functor MC MD`, `@Ob MC` and `Functor (MC ×C MC) MC`. Tensor, associators,
+`Fct MC MD`, `@Ob MC` and `Fct (MC ×C MC) MC`. Tensor, associators,
 unitors and their laws still use the named category and selected structure.
 Two monoidal structures on the same category remain distinct choices;
 recovering their category does not identify their tensor data. The conversion
@@ -164,7 +171,7 @@ does not enable any concrete monoidal instance.
 
 [MonoidalCat C](../theories/Cat/Monoidal/Core.v) 起初通过计算字段
 `MonoidalC :> Cat := C` 暴露给定范畴，不另存一个范畴，也不改变构造器参数。
-客户端可写 `Functor MC MD`、`@Ob MC`、`Functor (MC ×C MC) MC`。张量、
+客户端可写 `Fct MC MD`、`@Ob MC`、`Fct (MC ×C MC) MC`。张量、
 结合子、单位子及其定律仍使用具名范畴和选定结构。同一范畴上的两个幺半结构
 仍是不同选择，恢复底层范畴不等于识别其张量数据，也不会启用任何具体幺半实例。
 
@@ -180,40 +187,40 @@ in a term. Neither mechanism should choose a model's structure by import.
 
 | Family / 接口族 | Current chain or boundary / 当前链或边界 | Decision / 结论 |
 | --- | --- | --- |
-| [CCCFunctor](../theories/Cat/Functor/Closed.v) | `CCCFunctor → CartesianFunctor → Functor → object function` / 经笛卡尔函子和普通函子到对象函数 | Already complete; no direct bypass / 已完整，不增加直接旁路 |
-| [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v), [Monad](../theories/Cat/Monad/Core.v), [VertexFunctor](../theories/Instance/Set/Vertex/Functor.v) | Each goes through its unique `Functor` to the object function / 各自经唯一底层函子到对象函数 | Keep `fmap` for arrows; the respectful vertex-map adapter stays explicit / 态射保留 `fmap`，保相等顶点映射的适配器保持显式 |
-| [CwF](../theories/DTT/CwF.v) | `CwF → Functor → object function`; an image is a [FamC](../theories/Instance/Set/Fam/Cat.v) / 函子像为相干族 | Its selected primary view is the type-and-term functor; adding a category view needs a separate interface decision / 主要视图已选为类型与项函子，增加范畴视图须另行决定 |
+| [CCCFct](../theories/Cat/Functor/Closed.v) | `CCCFct → CartFct → Fct → object function` / 经笛卡尔函子和普通函子到对象函数 | Already complete; no direct bypass / 已完整，不增加直接旁路 |
+| [LaxMonoidalFct](../theories/Cat/Monoidal/Functor.v), [Monad](../theories/Cat/Monad/Core.v), [VtxFct](../theories/Instance/Set/Vertex/Functor.v) | Each goes through its unique `Fct` to the object function / 各自经唯一底层函子到对象函数 | Keep `fmap` for arrows; the respectful vertex-map adapter stays explicit / 态射保留 `fmap`，保相等顶点映射的适配器保持显式 |
+| [CwF](../theories/DTT/CwF.v) | `CwF → Fct → object function`; an image is a [FamC](../theories/Instance/Set/Fam/Cat.v) / 函子像为相干族 | Its selected primary view is the type-and-term functor; adding a category view needs a separate interface decision / 主要视图已选为类型与项函子，增加范畴视图须另行决定 |
 | [FamC and FamF](../theories/Instance/Set/Fam/Cat.v), [FamS](../theories/Instance/Set/Fam/Core.v) | `FamC → FamS → fiber function`; `FamF → FunS_resp → base function`; fibers go through `SetC → Type` / 相干族到纤维函数，相干族态射到基底函数，纤维经广集到类型 | Already chainable; the fiber action of a family morphism remains explicit / 已可连续使用，族态射的纤维作用保持显式 |
 | [Cocone](../theories/Cat/Diagram/Dual.v), [Nat](../theories/Cat/Natural.v) | `Cocone → Nat → component function` / 余锥经自然变换到分量函数 | Already complete; keep the opposite-cone construction underneath / 已完整，底层保留反范畴上的锥构造 |
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
-| [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
+| [MonoidObj](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
 | [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
 | [ETCS](../theories/ETCS/Core.v) | `ETCS → CCC → CartesianCat → Cat` | One `ETCSC` parent shares all inherited choices; terminal-dependent fields use that same terminal / 唯一 `ETCSC` 父结构共享继承选择，依赖终对象的字段使用同一终对象 |
 | [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v), [Semigroup](../theories/Algebra/Semigroup/Core.v), [Magma](../theories/Algebra/Magma/Core.v) | `Group → Monoid → Semigroup → Magma → SetC → Type`; each parent is an inherited instance / 群经幺半群、半群、原群、广集到载体类型，各父结构均为继承实例 | Implemented in the algebra hierarchy slice below, sharing one multiplication and named setoid / 已在下述代数层级批次中实现，共享唯一乘法及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
 | [HasLimitsOfShape](../theories/Cat/Limit/Core.v), [HasFiniteHomCover](../theories/Cat/Shape/Finite.v), [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | Inherited structures depend on diagrams, endpoints or horn indices / 继承结构依赖图式、端点或 horn 索引 | Use instance inheritance; no single uniform carrier conversion is needed / 使用实例继承，无须统一载体转换 |
-| [Closure](../theories/Set/Closure/Core.v), respectful maps, [GraphMap](../theories/Graph/Morphism.v), [GeneratorNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v), sections and matching families | Already expose their operation or component function / 已暴露运算或分量函数 | Keep their existing unique functional view / 保留已有唯一函数视图 |
-| Remaining `Has*`/preservation interfaces, [Adjunction](../theories/Cat/Adjunction.v), [Comprehension](../theories/Cat/Comprehension.v), [Sieve](../theories/Cat/Sieve.v) | Operations, relations or multiple views on fixed data / 固定数据上的运算、关系或多个视图 | Retain explicit parameters as detailed below; no blanket category/functor coercions / 按下文保留显式参数，不统一增加范畴或函子转换 |
+| [Closure](../theories/Set/Closure/Core.v), respectful maps, [GraphMap](../theories/Graph/Morphism.v), [GenNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v), sections and matching families | Already expose their operation or component function / 已暴露运算或分量函数 | Keep their existing unique functional view / 保留已有唯一函数视图 |
+| Remaining `Has*`/preservation interfaces, [Adj](../theories/Cat/Adjunction.v), [Comprehension](../theories/Cat/Comprehension.v), [Sieve](../theories/Cat/Sieve.v) | Operations, relations or multiple views on fixed data / 固定数据上的运算、关系或多个视图 | Retain explicit parameters as detailed below; no blanket category/functor coercions / 按下文保留显式参数，不统一增加范畴或函子转换 |
 | [ArrowOb](../theories/Cat/Arrow/Core.v), [CommaOb](../theories/Cat/Comma/Core.v), [SliceOb](../theories/Cat/Slice/Core.v), commuting-square records, [Horn2Presentation](../theories/Instance/Set/Simplicial/Vertex/Filling.v), [is_unique](../theories/Meta.v), [LiftT](../theories/Set/Core.v) | Multiple endpoints or witness/presentation records / 多个端点或见证、呈现记录 | No new hierarchy edge justified / 不据此新增层级边 |
 | [Cat](../theories/Cat/Core.v), [Graph](../theories/Graph/Core.v), [Bicat](../theories/Cat/Bicategory/Core.v) | Foundational structures, not an existing inheritance chain / 基础结构，尚非继承链 | Keep object/vertex types and derived underlying categories explicit / 对象、顶点类型及派生底层范畴保持显式 |
 
-Temporary elaboration checks confirmed `Functor MC MD`, coexistence of two
+Temporary elaboration checks confirmed `Fct MC MD`, coexistence of two
 structures on one category, unchanged lax object/arrow use, both strict
 hom/equality universe orders, and transparent identities in setoid and
 endofunctor models. They also checked existing family/CwF chains: with the
 relevant interface modules imported, `U x : Type`, `f x : famC_base V` and
 `(T X) a : Type` elaborate directly. For
-`A : MonoidObject SetCartesianMonoidal`, `A : @Ob SetCat` works, but
+`A : MonoidObj SetCartesianMonoidal`, `A : @Ob SetCat` works, but
 `A : SetC` and `A : Type` do not; `MonoidCarrier A : Type` does.
 The coercion graph matches declared targets, so reduction of a dependent
 target to a concrete record does not automatically add another graph edge.
 
-临时 elaboration 检查确认了 `Functor MC MD`、同一范畴上两个结构共存、
+临时 elaboration 检查确认了 `Fct MC MD`、同一范畴上两个结构共存、
 lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以及广集和自函子
 模型的恒等运算保持透明。相干族和 CwF 的已有链也已检查：导入相关接口模块后，
 `U x : Type`、`f x : famC_base V` 和 `(T X) a : Type` 均可直接使用。
-对 `A : MonoidObject SetCartesianMonoidal`，`A : @Ob SetCat` 可用，
+对 `A : MonoidObj SetCartesianMonoidal`，`A : @Ob SetCat` 可用，
 但 `A : SetC`、`A : Type` 不可用，显式 `MonoidCarrier A : Type` 可用。
 强制转换图按声明的目标匹配；依赖目标能归约为某个具体记录，不会自动增加
 一条新的图边。
@@ -221,12 +228,12 @@ lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以
 The first change implements the monoidal category view; the continuation
 below adds group/monoid views and the cumulative cartesian/CCC hierarchy.
 The ETCS slice below extends this chain through its shared CCC parent.
-`Cat` has no coercion to its object type, and `Functor` still uses its
+`Cat` has no coercion to its object type, and `Fct` still uses its
 object function as its sole function coercion; arrow mapping stays `fmap`.
 
 首项修改实现幺半结构的底层范畴视图；下述后续工作增加群／幺半群视图及
 笛卡尔／CCC 累次层级。下述 ETCS 批次通过共享 CCC 父结构进一步延伸此链。
-`Cat` 没有到对象类型的强制转换；`Functor`
+`Cat` 没有到对象类型的强制转换；`Fct`
 仍以对象函数为唯一函数强制转换，态射映射保留 `fmap`。
 
 This follow-up passed `dune build @all @runtest @install` using
@@ -298,7 +305,7 @@ Definition category_view
   : Cat
   := HC.
 Definition identity_view
-  : Functor HC HC
+  : Fct HC HC
   := IdF.
 Definition inherited_terminal
   : HasTerminal HC
@@ -384,7 +391,7 @@ coercion command.
 
 Given `HG : Group G`, clients can pass `HG` where `Monoid G` or `SetC`
 is expected and bind `x : HG` as an element of the original setoid. For
-example, `SetMonoidObject HG` builds the internal monoid object using the
+example, `SetMonoidObj HG` builds the internal monoid object using the
 same selected operations. The [lax transport](../theories/Cat/Monoidal/Transport.v)
 now uses `L A` and `Hom A B` through the existing monoid-carrier view.
 Its tensorator notation keeps explicit carrier projections: constructing
@@ -392,7 +399,7 @@ a pair before checking its dependent endpoint does not distribute
 coercions into both pair components.
 
 给定 `HG : Group G`，客户端可在要求 `Monoid G` 或 `SetC` 的位置传入
-`HG`，也可用 `x : HG` 绑定原广集的元素。例如 `SetMonoidObject HG` 使用
+`HG`，也可用 `x : HG` 绑定原广集的元素。例如 `SetMonoidObj HG` 使用
 同一组选定运算构造内部幺半群对象。[Lax 运输](../theories/Cat/Monoidal/Transport.v)
 现通过已有载体视图直接使用 `L A` 和 `Hom A B`。Tensorator 记号保留显式载体
 投影：先构造成对输入、再检查其依赖端点，不会把强制转换分配到两个分量中。
@@ -431,14 +438,14 @@ PDF 仍由集成批次统一导出。
 
 The next serial slice implements
 [Applicative](../theories/Cat/Applicative/Core.v) with the single chain
-`Applicative → LaxMonoidalFunctor → Functor → object function`, preserving
+`Applicative → LaxMonoidalFct → Fct → object function`, preserving
 the selected parent functor and `fmap`. Its pure operation is a natural
 transformation with unit/product compatibility, rather than a competing
 function coercion. See the [computation audit](./ComputationAudit.md#lawful-applicative-slice)
 for the proved laws, Reader model, size checks and remaining boundaries.
 
 下一串行切片实现了 [Applicative](../theories/Cat/Applicative/Core.v)，唯一转换链
-为 `Applicative → LaxMonoidalFunctor → Functor → object function`，保留
+为 `Applicative → LaxMonoidalFct → Fct → object function`，保留
 选定父函子和 `fmap`。纯值运算是满足单位／积相容律的自然变换，不增加竞争的
 函数强制转换。已证定律、Reader 模型、大小检查及剩余边界见
 [计算模型审计](./ComputationAudit.md#lawful-applicative-slice)。
@@ -446,19 +453,19 @@ for the proved laws, Reader model, size checks and remaining boundaries.
 The operation-comparison slice adds
 [ApplicativeOps](../theories/Cat/Applicative/Operations.v) and
 [ApplicativeAp](../theories/Cat/Applicative/Application.v). Each has a single
-`Functor → object function` view, preserving `fmap`; pure and application
+`Fct → object function` view, preserving `fmap`; pure and application
 stay explicit operations. Their conversions retain that same functor and
 compare the supplied operations by designated equality. No competing
 coercion to the structural Applicative is registered.
 
 运算比较切片增加 [ApplicativeOps](../theories/Cat/Applicative/Operations.v)
 及 [ApplicativeAp](../theories/Cat/Applicative/Application.v)，两者均只有
-`Functor → object function` 视图，保留 `fmap`；纯值及应用仍为显式运算。
+`Fct → object function` 视图，保留 `fmap`；纯值及应用仍为显式运算。
 转换保留同一底层函子，使用指定相等比较所给运算，不注册到结构式 Applicative
 的竞争强制转换。
 
 The strength phase adds [StrongMonad](../theories/Cat/Monad/Strength.v)
-with the unique chain `StrongMonad → Monad → Functor → object function`.
+with the unique chain `StrongMonad → Monad → Fct → object function`.
 Its `hasStrength` field inherits a chosen structure on that same functor;
 no second functor view is introduced. The
 [MonadA conversion](../theories/Cat/Monad/Applicative.v) is an explicit
@@ -467,14 +474,14 @@ coercion path. The [State model](../theories/Instance/Set/State.v) likewise
 provides explicitly selected values.
 
 强度阶段增加 [StrongMonad](../theories/Cat/Monad/Strength.v)，唯一转换链为
-`StrongMonad → Monad → Functor → object function`。`hasStrength` 字段继承同一
+`StrongMonad → Monad → Fct → object function`。`hasStrength` 字段继承同一
 函子上的选定结构，不增加第二个函子视图。
 [MonadA 转换](../theories/Cat/Monad/Applicative.v) 为显式构造，保留父函子及
 `fmap`，不增加竞争的强制转换路径；[状态模型](../theories/Instance/Set/State.v)
 同样只提供须显式选定的值。
 
 The computational [Arrow](../theories/Cat/Computational/Arrow/Core.v)
-adds the unique `Arrow → Functor → object function` view, with the source
+adds the unique `Arrow → Fct → object function` view, with the source
 monoidal structure and target category named separately. `ComputationCat`
 is an explicit reindexing of that target, not another coercion. Cartesian
 first/second/split/fanout are derived operations. The concrete
@@ -482,7 +489,7 @@ first/second/split/fanout are derived operations. The concrete
 retains independent ambient carrier/equality levels.
 
 计算 [Arrow](../theories/Cat/Computational/Arrow/Core.v) 增加唯一的
-`Arrow → Functor → object function` 视图，分别具名指定来源幺半结构及目标
+`Arrow → Fct → object function` 视图，分别具名指定来源幺半结构及目标
 范畴。`ComputationCat` 是目标的显式重索引，不增加强制转换；笛卡尔
 first／second／分开组合／扇出均为导出运算。具体
 [StateArrow](../theories/Instance/Set/State.v) 须显式选择，保留独立的所在载体／
@@ -510,10 +517,10 @@ candidates require separate interface decisions and clients.
 | Interface family / 接口族 | Reason / 原因 |
 | --- | --- |
 | [is_faithful, is_full, is_fully_faithful](../theories/Cat/Functor/Core.v), [is_monad](../theories/Cat/Monad/Core.v), [is_monoid_object and is_monoid_hom](../theories/Cat/Monoidal/Monoid.v) | State laws about supplied data; fullness and universal properties retain computational witnesses / 陈述给定数据的定律，满性和泛性质仍保留计算见证 |
-| [Adjunction F G](../theories/Cat/Adjunction.v) | Relates two specified functors; keep left/right views explicit / 关联两个指定函子，左右视图应显式访问 |
-| [HasCartesianLift P](../theories/Cat/Fibration.v), [HasFreeObjects U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
+| [Adj F G](../theories/Cat/Adjunction.v) | Relates two specified functors; keep left/right views explicit / 关联两个指定函子，左右视图应显式访问 |
+| [HasCartesianLift P](../theories/Cat/Fibration.v), [HasFreeObj U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
 | [HasDisplay](../theories/DTT/Display/Core.v), [HasContextExtension and CwF](../theories/DTT/CwF.v), [HasContextRepresentation](../theories/DTT/Context/Representation.v) | Describe interchangeable presentations over a fixed presheaf/family functor; CwF already supplies the complete bundled object / 描述固定预层／族函子上的可互换呈现，完整打包对象已有 CwF |
-| [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `GroupM :>` and its instance registration share one monoid; [SetMonoidObject](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
+| [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `GroupM :>` and its instance registration share one monoid; [SetMonoidObj](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
 | [MonoidalCat](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC.v), [ETCS](../theories/ETCS/Core.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
 | `HasTerminal`, products, coproducts, exponentials, (co)equalizers, pullbacks/pushouts, [HasLimit and HasLimitsOfShape](../theories/Cat/Limit/Core.v), [colimit interfaces](../theories/Cat/Colimit/Core.v) | Choose constructions for fixed categories/diagrams; their derived functors remain derived / 为固定范畴／图式选择构造，其诱导函子仍是派生构造 |
 | [HasFiniteCover](../theories/Set/Finite.v), [finite generators/covers](../theories/Cat/Shape/Finite.v), [horn fillers](../theories/Instance/Set/Simplicial/Horn.v), [two-horn fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v), [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | Additional evidence or choices for fixed sets/categories/simplicial objects / 固定集合、范畴或单纯对象上的额外证据或选择 |
@@ -697,17 +704,17 @@ flowchart LR
   PremonoidalCat -->|PremonoidalB| BinoidalCat
   BinoidalCat -->|BinoidalC, computed| Cat
   StrongMonad -->|StrongMonadM| Monad
-  Monad -->|MonadF| Functor
-  CCCFunctor -->|CCCF| CartesianFunctor
-  CartesianFunctor -->|CartesianF| Functor
-  Applicative -->|ApplicativeLax| LaxMonoidalFunctor
-  LaxMonoidalFunctor -->|LaxMonoidalF| Functor
-  ApplicativeOps -->|OpsF| Functor
-  ApplicativeAp -->|ApF| Functor
+  Monad -->|MonadF| Fct
+  CCCFct -->|CCCF| CartFct
+  CartFct -->|CartF| Fct
+  Applicative -->|ApplicativeLax| LaxMonoidalFct
+  LaxMonoidalFct -->|LaxMonoidalF| Fct
+  ApplicativeOps -->|OpsF| Fct
+  ApplicativeAp -->|ApF| Fct
   ArrowApply -->|ArrowApplyA| Arrow
-  Arrow -->|ArrowF| Functor
-  CwF -->|TyTmF| Functor
-  Functor -->|F0| ObjectMap
+  Arrow -->|ArrowF| Fct
+  CwF -->|TyTmF| Fct
+  Fct -->|F0| ObjectMap
 ```
 
 Arrows in this diagram are current views, including computed views; they
@@ -757,13 +764,13 @@ Applicative 的不同呈现以及幺半群／Monad 对应继续使用显式转�
 | `HasEqualizer`, `HasCoequalizer`, `HasPullback`, `HasPushout` | Constructions for each supplied parallel pair or cospan/span / 对每个给定平行箭头对或余跨度／跨度给出构造 |
 | `HasLimit`, `HasColimit` | One specified diagram's universal cone/cocone / 指定图式的泛锥／余锥 |
 | `HasLimitsOfShape`, `HasColimitsOfShape` | A family of choices indexed by diagrams of a fixed shape / 按固定形状的图式索引的选择族 |
-| `HasCartesianLift`, `HasFreeObjects` | Chosen lifts over a fixed functor, or universal arrows in structured-arrow categories / 固定函子上的选定提升，或结构箭头范畴中的泛箭头 |
+| `HasCartesianLift`, `HasFreeObj` | Chosen lifts over a fixed functor, or universal arrows in structured-arrow categories / 固定函子上的选定提升，或结构箭头范畴中的泛箭头 |
 | `HasStrength` | A compatible tensorial natural map on a specified endofunctor / 指定自函子上的相容张量自然映射 |
 | `HasRightDivision` | Solutions of composition equations; `HasLeftDivision` is a definition on the opposite / 复合方程的解，`HasLeftDivision` 是反范畴上的定义 |
 | `HasContextExtension`, `HasContextRepresentation`, `HasDisplay` | Chosen extensions, representations or coherent displays over a fixed family/presheaf / 固定族／预层上的选定扩张、表示或相干显示 |
-| `HasNaturalNumbersObject`, `HasSubObjectClassifier` | Selected universal objects relative to the selected terminal / 相对于选定终对象的泛对象 |
+| `HasNaturalNumbersObj`, `HasSubObjClassifier` | Selected universal objects relative to the selected terminal / 相对于选定终对象的泛对象 |
 | `HasAxiomChoice` | Right inverses for all epimorphisms, supplied as Type-valued data / 为全部满态射提供 Type 值右逆数据 |
-| `HasFiniteCover`, `HasFiniteGenerators`, `HasFiniteHomCover` | Finite representatives/generators with covering witnesses / 有限代表或生成元及覆盖见证 |
+| `HasFiniteCover`, `HasFiniteGen`, `HasFiniteHomCover` | Finite representatives/generators with covering witnesses / 有限代表或生成元及覆盖见证 |
 | `HasHornFillers`, `HasKanFillers`, `HasHorn2Fillers` | Chosen fillers indexed by horns; uniqueness and functoriality are separate requirements / 按 horn 索引的选定填充，唯一性及函子性另行要求 |
 
 These names cannot all be shortened to a singular noun without specifying
@@ -803,7 +810,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [IsCommutativeMonoid](../theories/Algebra/Monoid/Commutative.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [Semigroup](../theories/Algebra/Semigroup/Core.v) | `Class` | Set algebra / 集合上的代数 |
-| [Adjunction](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [Adj](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [ApplicativeAp](../theories/Cat/Applicative/Application.v) | `Class` | Computational structures / 计算结构 |
 | [Applicative](../theories/Cat/Applicative/Core.v) | `Class` | Computational structures / 计算结构 |
 | [IsApplicativeOps](../theories/Cat/Applicative/Operations.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
@@ -827,17 +834,17 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [HasCoproduct](../theories/Cat/Coproduct/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [Cat](../theories/Cat/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [Cocone](../theories/Cat/Diagram/Dual.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
-| [GeneratorNat](../theories/Cat/Diagram/Generator.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
+| [GenNat](../theories/Cat/Diagram/Generator.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [TwoCocycle](../theories/Cat/Diagram/Cocycle.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [HasEqualizer](../theories/Cat/Equalizer.v) | `Class` | Chosen construction / 选定构造 |
 | [HasExponential](../theories/Cat/Exponential/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [HasCartesianLift](../theories/Cat/Fibration.v) | `Class` | Chosen construction / 选定构造 |
-| [HasFreeObjects](../theories/Cat/FreeObject/Core.v) | `Class` | Chosen construction / 选定构造 |
-| [IsCartesianF](../theories/Cat/Functor/Cartesian.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
-| [CartesianFunctor](../theories/Cat/Functor/Cartesian.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [HasFreeObj](../theories/Cat/FreeObject/Core.v) | `Class` | Chosen construction / 选定构造 |
+| [IsCartF](../theories/Cat/Functor/Cartesian.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [CartFct](../theories/Cat/Functor/Cartesian.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [IsCCCF](../theories/Cat/Functor/Closed.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
-| [CCCFunctor](../theories/Cat/Functor/Closed.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [Functor](../theories/Cat/Functor/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [CCCFct](../theories/Cat/Functor/Closed.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [Fct](../theories/Cat/Functor/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [HasRightDivision](../theories/Cat/Groupoid/Division.v) | `Class` | Chosen construction / 选定构造 |
 | [HasLimit](../theories/Cat/Limit/Core.v) | `Class` | Chosen construction / 选定构造 |
@@ -845,8 +852,8 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [Monad](../theories/Cat/Monad/Core.v) | `Class` | Computational structures / 计算结构 |
 | [StrongMonad](../theories/Cat/Monad/Strength.v) | `Class` | Computational structures / 计算结构 |
 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [LaxMonoidalFunctor](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [MonoidObject](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [LaxMonoidalFct](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [MonoidObj](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [PremonoidalCat](../theories/Cat/Premonoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [FreydCat](../theories/Cat/Computational/Freyd/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
@@ -857,7 +864,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [HasProduct](../theories/Cat/Product/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [HasPullback](../theories/Cat/Pullback.v) | `Class` | Chosen construction / 选定构造 |
 | [HasPushout](../theories/Cat/Pushout.v) | `Class` | Chosen construction / 选定构造 |
-| [HasFiniteGenerators](../theories/Cat/Shape/Finite.v) | `Class` | Chosen construction / 选定构造 |
+| [HasFiniteGen](../theories/Cat/Shape/Finite.v) | `Class` | Chosen construction / 选定构造 |
 | [HasFiniteHomCover](../theories/Cat/Shape/Finite.v) | `Class` | Chosen construction / 选定构造 |
 | [Sieve](../theories/Cat/Sieve.v) | `Class` | Families and matching / 族与匹配 |
 | [SliceOb](../theories/Cat/Slice/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
@@ -872,8 +879,8 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [IsWellPointed](../theories/ETCS/Core.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [HasAxiomChoice](../theories/ETCS/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [ETCS](../theories/ETCS/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [HasNaturalNumbersObject](../theories/ETCS/Nat.v) | `Class` | Chosen construction / 选定构造 |
-| [HasSubObjectClassifier](../theories/ETCS/Sub.v) | `Class` | Chosen construction / 选定构造 |
+| [HasNaturalNumbersObj](../theories/ETCS/Nat.v) | `Class` | Chosen construction / 选定构造 |
+| [HasSubObjClassifier](../theories/ETCS/Sub.v) | `Class` | Chosen construction / 选定构造 |
 | [Graph](../theories/Graph/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [GraphMap](../theories/Graph/Morphism.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [FamC](../theories/Instance/Set/Fam/Cat.v) | `Record` | Families and matching / 族与匹配 |
@@ -887,7 +894,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | `Class` | Chosen construction / 选定构造 |
 | [Horn2Presentation](../theories/Instance/Set/Simplicial/Vertex/Filling.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
 | [HasHorn2Fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) | `Class` | Chosen construction / 选定构造 |
-| [VertexFunctor](../theories/Instance/Set/Vertex/Functor.v) | `Record` | Families and matching / 族与匹配 |
+| [VtxFct](../theories/Instance/Set/Vertex/Functor.v) | `Record` | Families and matching / 族与匹配 |
 | [is_unique](../theories/Meta.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
 | [Closure](../theories/Set/Closure/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [SetC](../theories/Set/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
@@ -1065,7 +1072,7 @@ that order. [EndMagma](../theories/Algebra/Magma/Category.v) and
 composition and associativity; `EndMonoid` adds identities to that same
 parent. Single-object categories, group laws and chain proofs consume the
 weaker operation/law fields. [Set magma multiplication](../theories/Instance/Set/Magma.v)
-packages the product-input map with only a named magma; `SetMonoidObject`
+packages the product-input map with only a named magma; `SetMonoidObj`
 reuses it. Concrete structures are still explicitly enabled.
 
 布尔模型按原群、半群、幺半群、群的次序显式构造。
@@ -1074,7 +1081,7 @@ reuses it. Concrete structures are still explicitly enabled.
 与结合律，`EndMonoid` 为同一父结构增加恒等箭头。单对象范畴、群定律及箭头
 链证明使用较弱运算／定律字段。
 [广集原群乘法](../theories/Instance/Set/Magma.v) 只需具名原群，即将乘积输入的
-映射打包；`SetMonoidObject` 复用此构造。具体结构仍须显式启用。
+映射打包；`SetMonoidObj` 复用此构造。具体结构仍须显式启用。
 
 With the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
 Dune 3.23.1), `dune build @all @runtest @install` passed, including the
@@ -1304,7 +1311,7 @@ explicitly select this extension of their existing parent.
 对其已有父层的这一扩展。
 
 [FreydCat C K](../theories/Cat/Computational/Freyd/Core.v) has the pure
-ambient functor `FreydF :> Functor C K` as its unique primary view.
+ambient functor `FreydF :> Fct C K` as its unique primary view.
 Its computed `FreydComputations` reindexes ambient hom-sets by value
 objects, rather than choosing a second category. Supplementary named
 `hasCartesian` and `hasSymmetricPremonoidal` fields select the value and
@@ -1315,7 +1322,7 @@ context, associator, unitor and symmetry preservation laws. All arrow
 laws use specified hom equality, with no equality of functions or records.
 
 [FreydCat C K](../theories/Cat/Computational/Freyd/Core.v) 以纯环境函子
-`FreydF :> Functor C K` 为唯一主要视图。计算性 `FreydComputations`
+`FreydF :> Fct C K` 为唯一主要视图。计算性 `FreydComputations`
 按值对象重索引环境 Hom 广集，不额外选取范畴。辅助具名字段 `hasCartesian`
 及 `hasSymmetricPremonoidal` 选定值与计算结构。`FreydPureF` 使用共享
 [InducedF](../theories/Cat/Induced.v)，对象映射为恒等。张量／单位对象的
@@ -1776,9 +1783,9 @@ records validation and exact boundaries.
 provide inverse respectful Hom maps. Naming uses only the ordinary Arrow;
 its inverse uses ArrowApply. The
 [dynamic adjunction](../theories/Cat/Computational/Arrow/Monad.v) reuses
-`AdjunctionFromHom`, with the pure indexed inclusion on the left and the
+`AdjFromHom`, with the pure indexed inclusion on the left and the
 covariant Hom functor at terminal input on the right. `ArrowMonad` then
-reuses `AdjunctionMonad`, retaining a natural isomorphism to the existing
+reuses `AdjMonad`, retaining a natural isomorphism to the existing
 `ArrowGlobalF`. The unit is the existing pure global value; multiplication
 runs the returned computation; extension runs a selected continuation.
 The computation-object, native Hom carrier and equality levels remain
@@ -1787,8 +1794,8 @@ independent. No exponential choice or new interface class is introduced.
 [动态命名与求值](../theories/Cat/Computational/Arrow/Dynamic.v)提供互逆的
 保相等 Hom 映射，命名只使用通常 Arrow，逆向使用 ArrowApply。
 [动态伴随](../theories/Cat/Computational/Arrow/Monad.v)复用
-`AdjunctionFromHom`，左侧是索引后的纯包含，右侧是终端输入处的协变 Hom
-函子。`ArrowMonad` 再复用 `AdjunctionMonad`，保留到已有 `ArrowGlobalF`
+`AdjFromHom`，左侧是索引后的纯包含，右侧是终端输入处的协变 Hom
+函子。`ArrowMonad` 再复用 `AdjMonad`，保留到已有 `ArrowGlobalF`
 的自然同构。单位是已有纯全局值，乘法运行返回的计算，扩张运行选出的续延。
 计算对象、原生 Hom 载体及相等层级保持独立，不选择指数，也不增加接口类。
 
@@ -1825,7 +1832,7 @@ records the finite phase's validation and precise scope.
 
 ## Kleisli 比较及显式广集强度基础
 
-[AdjunctionKleisliF](../theories/Cat/Monad/KleisliComparison.v) inverse-
+[AdjKleisliF](../theories/Cat/Monad/KleisliComparison.v) inverse-
 transposes Kleisli arrows of an induced Monad into the adjunction target.
 Its full-faithfulness witness keeps transposes as explicit preimages.
 This general theorem requires no strength or finite products and does
@@ -1839,7 +1846,7 @@ independent. These are constructions, not new classes or globally enabled
 model instances. The inventory now covers 356 modules and the same 98
 interfaces; dynamic Arrow reconstruction will use these foundations.
 
-[AdjunctionKleisliF](../theories/Cat/Monad/KleisliComparison.v)将诱导 Monad
+[AdjKleisliF](../theories/Cat/Monad/KleisliComparison.v)将诱导 Monad
 的 Kleisli 箭头逆转置到伴随目标；全忠实见证保留转置作为显式原像。此一般
 定理不需要强度或有限积，也不选择目标对象代表。
 [SetStrength](../theories/Instance/Set/StrengthConstruction.v)通过函子对

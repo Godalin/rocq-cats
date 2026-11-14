@@ -39,11 +39,11 @@ Context {B : Type@{b}}.
 (** 同一个输入同时确定两个投影的界。 *)
 
 Definition separated_gluing_projections (A : Ty B) (Γ : Ctx B)
-    (x : (NormalizationGluingF A : Functor
+    (x : (NormalizationGluingF A : Fct
       ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{u p _ _ _ _ _}) Γ)
   : (LiftS@{b e u p} (TmS@{b e} Γ A) *
-      LiftS@{s s u p} ((SemF A : Functor
+      LiftS@{s s u p} ((SemF A : Fct
         ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}) Γ))%type
   := (GluingSyntaxN A Γ x, GluingValuesN A Γ x).
 
@@ -70,11 +70,11 @@ Context {B : Type@{b}}.
 (** 同一接口支持相反的次序。 *)
 
 Definition reversed_gluing_projections (A : Ty B) (Γ : Ctx B)
-    (x : (NormalizationGluingF A : Functor
+    (x : (NormalizationGluingF A : Fct
       ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{u p _ _ _ _ _}) Γ)
   : (LiftS@{b e u p} (TmS@{b e} Γ A) *
-      LiftS@{s s u p} ((SemF A : Functor
+      LiftS@{s s u p} ((SemF A : Fct
         ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}) Γ))%type
   := (GluingSyntaxN A Γ x, GluingValuesN A Γ x).
 
@@ -99,11 +99,11 @@ Context {B : Type@{b}}.
 (** 粘合构造不要求严格分离。 *)
 
 Definition equal_gluing_projections (A : Ty B) (Γ : Ctx B)
-    (x : (NormalizationGluingF A : Functor
+    (x : (NormalizationGluingF A : Fct
       ((RenamingCat B : Cat@{b b b l l})^op)
         SetCat@{b b _ _ _ _ _}) Γ)
   : (LiftS@{b b b b} (TmS@{b b} Γ A) *
-      LiftS@{b b b b} ((SemF A : Functor
+      LiftS@{b b b b} ((SemF A : Fct
         ((RenamingCat B)^op) SetCat@{b b _ _ _ _ _}) Γ))%type
   := (GluingSyntaxN A Γ x, GluingValuesN A Γ x).
 

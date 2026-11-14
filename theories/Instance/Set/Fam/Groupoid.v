@@ -26,7 +26,7 @@ From Cats Require Import
     由辅助宇宙提供。 *)
 
 Program Definition FamActionF {X : SetC} (A : FamS X)
-  : Functor (EqGpd X) SetCat
+  : Fct (EqGpd X) SetCat
   :=
   {|F0 x := A x
   ; F1 x y p := transpS A p
@@ -43,7 +43,7 @@ Next Obligation. intros a. apply transpS_comp. Defined.
 (** 薄性将普通函子律加强为任意基底见证的相干律，包括任意环路及复合见证。 *)
 
 Program Definition ActionFamS {X : SetC}
-    (F : Functor (EqGpd X) SetCat)
+    (F : Fct (EqGpd X) SetCat)
   : FamS X
   :=
   {|fam x := F x
@@ -78,7 +78,7 @@ Next Obligation. intros a. apply fam_map_naturality. Defined.
 (** 反之，自然变换给出相干的逐纤维映射。 *)
 
 Program Definition action_nat_fam_map {X : SetC}
-    {F G : Functor (EqGpd X) SetCat} (α : F ⇒ G)
+    {F G : Fct (EqGpd X) SetCat} (α : F ⇒ G)
   : ActionFamS F →Fam ActionFamS G
   :=
   {|fam_map x := α x
@@ -90,7 +90,7 @@ Next Obligation. exact (nt_naturality α p a). Defined.
 (** 族及族映射组成指向作用范畴的函子。 *)
 
 Program Definition FamActionCatF (X : SetC)
-  : Functor (FamSCat X) (Fct (EqGpd X) SetCat)
+  : Fct (FamSCat X) (FctCat (EqGpd X) SetCat)
   :=
   {|F0 := FamActionF
   ; F1 A B := FamMapActionN
@@ -104,7 +104,7 @@ Next Obligation. intros x a. reflexivity. Defined.
 (** 从作用和自然变换函子性地恢复族。 *)
 
 Program Definition ActionFamCatF (X : SetC)
-  : Functor (Fct (EqGpd X) SetCat) (FamSCat X)
+  : Fct (FctCat (EqGpd X) SetCat) (FamSCat X)
   :=
   {|F0 := ActionFamS
   ; F1 F G := action_nat_fam_map
@@ -171,7 +171,7 @@ Definition fam_action_fam_nat_iso (X : SetC)
 (** 作用的往返保留对象集合与箭头映射，通过取值上的恒等自然变换比较函子。 *)
 
 Program Definition ActionFamMapN {X : SetC}
-    (F : Functor (EqGpd X) SetCat)
+    (F : Fct (EqGpd X) SetCat)
   : FamActionF (ActionFamS F) ⇒ F
   :=
   {|nt x := id_resp
@@ -183,8 +183,8 @@ Next Obligation. intros a. reflexivity. Defined.
 (** 恒等分量使作用比较可逆。 *)
 
 Definition action_fam_action_iso {X : SetC}
-    (F : Functor (EqGpd X) SetCat)
-  : @is_iso (Fct (EqGpd X) SetCat) _ _ (ActionFamMapN F).
+    (F : Fct (EqGpd X) SetCat)
+  : @is_iso (FctCat (EqGpd X) SetCat) _ _ (ActionFamMapN F).
 Proof.
   apply NatIso_is_iso. intros x.
   exists id_resp. split; intros a; reflexivity.
@@ -196,7 +196,7 @@ Defined.
 
 Program Definition ActionFamActionN (X : SetC)
   : (FamActionCatF X ∘F ActionFamCatF X) ⇒
-      (@IdF (Fct (EqGpd X) SetCat))
+      (@IdF (FctCat (EqGpd X) SetCat))
   :=
   {|nt := ActionFamMapN
   |}.
@@ -208,7 +208,7 @@ Next Obligation. intros x a. reflexivity. Defined.
 
 Definition action_fam_action_nat_iso (X : SetC)
   : (FamActionCatF X ∘F ActionFamCatF X) ≅N
-      (@IdF (Fct (EqGpd X) SetCat))
+      (@IdF (FctCat (EqGpd X) SetCat))
   := (ActionFamActionN X; action_fam_action_iso).
 
 (** Coherent families are exactly covariant actions of the thin equality
@@ -217,7 +217,7 @@ Definition action_fam_action_nat_iso (X : SetC)
 (** 相干族恰为薄相等群胚的协变作用，此对应构成范畴等价。 *)
 
 Definition fam_action_equiv (X : SetC)
-  : FamSCat X ≃C Fct (EqGpd X) SetCat
+  : FamSCat X ≃C FctCat (EqGpd X) SetCat
   := (FamActionCatF X; (ActionFamCatF X;
       (fam_action_fam_nat_iso X, action_fam_action_nat_iso X))).
 

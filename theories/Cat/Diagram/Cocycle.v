@@ -178,7 +178,7 @@ Context {I J : Cat} {M : SetC} `{HM : !Monoid M}.
 
 (** 在两个箭头输入处预复合函子的箭头映射。 *)
 
-Program Definition TwoCocyclePullback (F : Functor I J)
+Program Definition TwoCocyclePullback (F : Fct I J)
     (c : TwoCocycle J M)
   : TwoCocycle I M
   :=
@@ -211,7 +211,7 @@ Defined.
 
 (** 拉回保持 cocycle 的相等，并保留相等见证。 *)
 
-Program Definition two_cocycle_pullback_resp (F : Functor I J)
+Program Definition two_cocycle_pullback_resp (F : Fct I J)
   : @TwoCocycleS J M HM →r @TwoCocycleS I M HM
   :=
   {|func c := TwoCocyclePullback F c
@@ -222,7 +222,7 @@ Next Obligation. intros c d H x y z f g. apply H. Defined.
 
 (** 常值标签拉回后仍为常值标签。 *)
 
-Lemma two_cocycle_pullback_unit (F : Functor I J)
+Lemma two_cocycle_pullback_unit (F : Fct I J)
   : TwoCocycleEq (TwoCocyclePullback F UnitTwoCocycle) UnitTwoCocycle.
 Proof. intros x y z f g. reflexivity. Defined.
 
@@ -244,7 +244,7 @@ Proof. intros x y z f g. reflexivity. Defined.
     见证。 *)
 
 Lemma two_cocycle_pullback_comp {I J K : Cat} {M : SetC}
-    `{HM : !Monoid M} (F : Functor I J) (G : Functor J K)
+    `{HM : !Monoid M} (F : Fct I J) (G : Fct J K)
     (c : TwoCocycle K M)
   : TwoCocycleEq (TwoCocyclePullback (G ∘F F) c)
       (TwoCocyclePullback F (TwoCocyclePullback G c)).

@@ -12,8 +12,8 @@ From Cats Require Import
 
     外层函子的自然性恰好保证两个独立变量的作用交换。 *)
 
-Program Definition UncurryF {A B C : Cat} (F : Functor A (Fct B C))
-  : Functor (A ×C B) C
+Program Definition UncurryF {A B C : Cat} (F : Fct A (FctCat B C))
+  : Fct (A ×C B) C
   :=
   {|F0 p := F (fst p) (snd p)
   ; F1 X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X)
@@ -22,18 +22,18 @@ Next Obligation.
   intros [u v] [u' v'] [Hu Hv]. cbn in *.
   apply comp_proper.
   - apply functor_fmap_proper. exact Hv.
-  - exact (@functor_fmap_proper A (Fct B C) F _ _ u u' Hu (snd X)).
+  - exact (@functor_fmap_proper A (FctCat B C) F _ _ u u' Hu (snd X)).
 Defined.
 
 Next Obligation.
   destruct X as [a b]. cbn.
-  rewrite (@functor_id A (Fct B C) F a b). cbn.
+  rewrite (@functor_id A (FctCat B C) F a b). cbn.
   rewrite functor_id, comp_id_r. reflexivity.
 Defined.
 Next Obligation.
   destruct X as [a b], Y as [a' b'], Z as [a'' b''], f as [u' v'], g as [u v].
   cbn.
-  rewrite (@functor_comp A (Fct B C) F a a' a'' u' u b). cbn.
+  rewrite (@functor_comp A (FctCat B C) F a a' a'' u' u b). cbn.
   rewrite (@functor_comp B C (F a'') b b' b'' v' v).
   repeat rewrite comp_assoc.
   rewrite <- (comp_assoc (fmap (F a'') v) (fmap F u' b) (fmap F u b)).
@@ -47,7 +47,7 @@ Notation "F '^uncF'" := (UncurryF F) (at level 35) : cat_scope.
 
 (** 对函子值函子之间的自然变换去柯里化。 *)
 
-Program Definition UncurryN {A B C : Cat} {F G : Functor A (Fct B C)}
+Program Definition UncurryN {A B C : Cat} {F G : Fct A (FctCat B C)}
     (α : F ⇒ G)
   : F^uncF ⇒ G^uncF
   :=
@@ -73,7 +73,7 @@ Notation "α '^uncN'" := (UncurryN α) (at level 35) : cat_scope.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance UncurryN_proper {A B C : Cat} {F G : Functor A (Fct B C)}
+Global Instance UncurryN_proper {A B C : Cat} {F G : Fct A (FctCat B C)}
   : Proper (NatEq ==> NatEq) (@UncurryN A B C F G).
 Proof. intros α β H [a b]. exact (H a b). Defined.
 

@@ -16,7 +16,7 @@ From Cats Require Export
 
 (** 余楔只存储反双函子的楔，其通常方向的腿从 [F (X,X)] 指向顶点。 *)
 
-Record Cowedge {C D : Cat} (F : Functor ((C^op) ×C C) D) (W : @Ob D)
+Record Cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
   :=
   (** The sole stored presentation is a wedge in the opposite categories. *)
 
@@ -31,7 +31,7 @@ Arguments op_wedge {_ _ _ _} _.
 
 (** 在原范畴中读取同一份腿。 *)
 
-Definition cowedge_leg {C D : Cat} {F : Functor ((C^op) ×C C) D} {W}
+Definition cowedge_leg {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
     (κ : Cowedge F W) (X : @Ob C)
   : Hom (F (X, X)) W
   := op_wedge κ X.
@@ -42,7 +42,7 @@ Coercion cowedge_leg : Cowedge >-> Funclass.
 
 (** 余楔方程就是反楔方程的反向读取。 *)
 
-Lemma cowedge_comm {C D : Cat} {F : Functor ((C^op) ×C C) D} {W}
+Lemma cowedge_comm {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
     (κ : Cowedge F W) {X Y : @Ob C} (f : Hom X Y)
   : κ X ∘ fmap F (X := (Y, X)) (Y := (X, X)) (f, id)
     ≈ κ Y ∘ fmap F (X := (Y, X)) (Y := (Y, Y)) (id, f).
@@ -58,7 +58,7 @@ Qed.
 (** 通常方向的余楔腿及其交换方程启用同一个反楔，不另立双自然性概念。 *)
 
 Program Definition CowedgeOf {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W}
+    {F : Fct ((C^op) ×C C) D} {W}
     (κ : ∀ X : @Ob C, Hom (F (X, X)) W)
     (Hκ : ∀ (X Y : @Ob C) (f : Hom X Y),
       κ X ∘ fmap F (X := (Y, X)) (Y := (X, X)) (f, id)
@@ -75,7 +75,7 @@ Next Obligation. symmetry. exact (Hκ Y X f). Qed.
 
 (** 用存储的反楔相等比较余楔。 *)
 
-Definition CowedgeEq {C D : Cat} {F : Functor ((C^op) ×C C) D} {W}
+Definition CowedgeEq {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
     (κ μ : Cowedge F W)
   := op_wedge κ ≈W op_wedge μ.
 
@@ -99,7 +99,7 @@ Defined.
 (** 后合成就是反范畴中的预合成。 *)
 
 Definition cowedge_comp {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W V : @Ob D}
+    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
     (f : Hom W V) (κ : Cowedge F W)
   : Cowedge F V
   :=
@@ -114,7 +114,7 @@ Infix "∘Cowedge" := cowedge_comp
 (** 后合成保持两种继承的相等。 *)
 
 Global Instance cowedge_comp_proper {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W V : @Ob D}
+    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
   : Proper (@HomEq[W, V] ==> CowedgeEq ==> CowedgeEq)
       (@cowedge_comp C D F W V).
 Proof.
@@ -127,7 +127,7 @@ Qed.
 
 (** 恒等律继承自楔预合成。 *)
 
-Lemma cowedge_comp_id {C D : Cat} {F : Functor ((C^op) ×C C) D} {W}
+Lemma cowedge_comp_id {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
     (κ : Cowedge F W)
   : id ∘Cowedge κ ≈CW κ.
 Proof. exact (wedge_comp_id (op_wedge κ)). Qed.
@@ -137,7 +137,7 @@ Proof. exact (wedge_comp_id (op_wedge κ)). Qed.
 (** 结合律就是映射次序反转的反楔定律。 *)
 
 Lemma cowedge_comp_assoc {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W V U}
+    {F : Fct ((C^op) ×C C) D} {W V U}
     (g : Hom V U) (f : Hom W V) (κ : Cowedge F W)
   : g ∘Cowedge (f ∘Cowedge κ) ≈CW (g ∘ f) ∘Cowedge κ.
 Proof. exact (wedge_comp_assoc (op_wedge κ) f g). Qed.
@@ -148,7 +148,7 @@ Proof. exact (wedge_comp_assoc (op_wedge κ) f g). Qed.
 (** 用双函子自然变换预合成腿，底层使用反范畴中原来的楔映射。 *)
 
 Definition cowedge_precompose {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D} {W}
+    {F G : Fct ((C^op) ×C C) D} {W}
     (κ : Cowedge G W) (α : F ⇒ G)
   : Cowedge F W
   :=
@@ -160,7 +160,7 @@ Definition cowedge_precompose {C D : Cat}
 (** 预合成保持余楔及自然变换相等。 *)
 
 Global Instance cowedge_precompose_proper {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D} {W}
+    {F G : Fct ((C^op) ×C C) D} {W}
   : Proper (CowedgeEq ==> NatEq ==> CowedgeEq)
       (@cowedge_precompose C D F G W).
 Proof.

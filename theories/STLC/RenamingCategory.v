@@ -75,7 +75,7 @@ Next Obligation. apply ren_comp_assoc. Defined.
 (** 将重命名解释为变量的同时替换。源 Hom 相等与目标 βη 见证具有独立大小界限。 *)
 
 Program Definition RenamingToContextF@{b r e l +} (B : Type@{b})
-  : Functor (RenamingCat B : Cat@{b b r l l}) (CtxCat@{b e l} B)
+  : Fct (RenamingCat B : Cat@{b b r l l}) (CtxCat@{b e l} B)
   :=
   {|F0 Γ := Γ
   ; F1 _ _ ρ := RenSub ρ

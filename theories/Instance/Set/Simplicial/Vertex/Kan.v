@@ -49,10 +49,10 @@ Local Open Scope nat_scope.
 
 Section HigherHorns.
 Universes u p.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
     `{HC : !IsGroupoid (VertexCat T)}
     (n : nat) (i : Ordinal (S (S n)))
-    (h : HornS (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i).
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i).
 
 (** Choose a retained face containing the requested vertex. There are
     at least three vertices, so finite avoidance suffices. *)
@@ -173,7 +173,7 @@ Defined.
 (** 共同星形是原值宇宙中的实际单形。 *)
 
 Definition HornStarSimplex
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n))
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n))
   := ⟨@StarF (VertexCat T) HC [Ord (S (S n))] (horn_label i) horn_label horn_leg⟩ᵥ.
 
 (** Every retained face of the star recovers the given chart. *)
@@ -205,7 +205,7 @@ Proof. apply (snd (horn_filler_faces_iff _ _)). exact horn_star_face. Defined.
 (** 任意填充将每个选定标签等同于其对应顶点；原生相等仅用于有限位置。 *)
 
 Definition horn_label_filler
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)))
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)))
     (Hx : is_horn_filler h x) (a : Ordinal (S (S n)))
   : horn_label a ≈S lower x a.
 Proof.
@@ -222,7 +222,7 @@ Defined.
 (** 任意填充的径向腿都与选定全局腿相容。 *)
 
 Lemma horn_leg_filler
-    (x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)))
+    (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)))
     (Hx : is_horn_filler h x) (a : Ordinal (S (S n)))
   : T⟦horn_label_filler x Hx a⟧Ob ∘ horn_leg a ≈
       ρ[lower x; i; a] ∘ T⟦horn_label_filler x Hx i⟧Ob.
@@ -276,7 +276,7 @@ Defined.
 
 Definition horn_star_universal
   : is_unique (R := carrier_equiv
-      ((Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n))))
+      ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n))))
       (is_horn_filler h) HornStarSimplex.
 Proof.
   refine {|this := horn_star_filler
@@ -293,17 +293,17 @@ End HigherHorns.
 
 (** ** Kan Fillers for the Vertex Nerve
 
-    Fix a presentation [T : Functor (EqGpd X) C]. Construct one-dimensional
+    Fix a presentation [T : Fct (EqGpd X) C]. Construct one-dimensional
     fillers directly and higher fillers under the additional groupoid
     assumption stated by each construction. *)
 
 (** ** 顶点 nerve 的 Kan 填充
 
-    固定呈现 [T : Functor (EqGpd X) C]，直接构造一维填充，并在各构造声明的额外群胚假设下给出高维填充。 *)
+    固定呈现 [T : Fct (EqGpd X) C]，直接构造一维填充，并在各构造声明的额外群胚假设下给出高维填充。 *)
 
 Section KanFilling.
 Universes u p.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** A one-horn specifies one endpoint. The identity edge at that vertex
     fills it, in any category and without choosing any new vertex. *)
@@ -311,7 +311,7 @@ Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
 (** 一维 horn 指定一个端点；该顶点的恒等边即为填充，不要求群胚，也不选择新顶点。 *)
 
 Definition vertex_horn1_HasFillers (i : Ordinal 1)
-  : HasHornFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 1 i.
+  : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1 i.
 Proof.
   destruct i as [[] | [[] | []]].
   - assert (J : ¬ (fin_next fin_first : Ordinal 1) = fin_first)
@@ -348,7 +348,7 @@ Context `{HC : !IsGroupoid (VertexCat T)}.
 Program Definition vertex_groupoid_higher_HasFillers (n : nat)
     (i : Ordinal (S (S n)))
   : HasHornFillers
-      (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i
   :=
   {|horn_fill h := (HornStarSimplex T n i h; horn_star_filler T n i h)
   |}.
@@ -359,7 +359,7 @@ Program Definition vertex_groupoid_higher_HasFillers (n : nat)
 (** 选定对象上的群胚给出全部正维 Kan 填充；构造显式，不使用选择公理。 *)
 
 Program Definition vertex_groupoid_HasKanFillers
-  : HasKanFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+  : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|hasHornFillers n := match n as d return ∀ i : Ordinal (S d),
         HasHornFillers (Nᵥ(T)) (S d) i with
@@ -378,8 +378,8 @@ End KanFilling.
     不要求仅有存在性，也不比较选择的相等。 *)
 
 Definition vertex_kan_groupoid_iff@{u p +} {X : SetC} {C : Cat}
-    (T : Functor (EqGpd X) C)
-  : HasKanFillers (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ↔
+    (T : Fct (EqGpd X) C)
+  : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ↔
       VertexCat T ⦂ Gpd.
 Proof.
   split.

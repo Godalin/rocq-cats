@@ -21,9 +21,9 @@ Local Open Scope nat_scope.
 
 Section SieveValues.
 Universes u p.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
     {n : nat} (R : Sieve Δ n)
-    (b : SievePsh R ⇒ (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})).
+    (b : SievePsh R ⇒ (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
 
 (** Evaluate a sieve map with an explicit membership witness. *)
 
@@ -31,7 +31,7 @@ Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C)
 
 Definition vertex_sieve_value {m : nat} (f : (@Hom Δ) m n)
     (H : f ∈Sv R)
-  : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) m
+  : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) m
   := b m {|lower := (f; H)
           |}.
 
@@ -164,7 +164,7 @@ Defined.
 (** 仅顶点和边就可反映单形相等，无需三角形或延拓的存在性。 *)
 
 Definition vertex_sieve_reflects
-    (x y : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (x y : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     (H : x↾Sv[Nᵥ(T); R] ≈N y↾Sv[Nᵥ(T); R])
   : x ≈S y.
 Proof.
@@ -225,7 +225,7 @@ Defined.
 (** 使用筛的二维数据重构序数图式。 *)
 
 Program Definition VertexSieveF
-  : Functor [Ord n] (VertexCat T)
+  : Fct [Ord n] (VertexCat T)
   :=
   {|F0 := vertex_sieve_label
   ; F1 i j h := vertex_sieve_arrow i j h
@@ -260,9 +260,9 @@ Defined.
 (** 包含二维骨架的筛具有唯一延拓，使用指定单形相等并保留透明见证。 *)
 
 Definition vertex_sieve_universal
-  : ∃ x : (Nᵥ(T) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n,
+  : ∃ x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n,
       is_unique (R := carrier_equiv ((Nᵥ(T) :
-        Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n))
+        Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n))
         (λ x, x↾Sv[Nᵥ(T); R] ≈N b) x.
 Proof.
   exists ⟨VertexSieveF⟩ᵥ. refine

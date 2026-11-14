@@ -36,7 +36,7 @@ Definition is_monoid_object {C : Cat} (MC : MonoidalCat C)
 
 (** 满足幺半群交换图表的选定载体及运算；强制转换暴露所在范畴中的载体对象。 *)
 
-Class MonoidObject {C : Cat} (MC : MonoidalCat C)
+Class MonoidObj {C : Cat} (MC : MonoidalCat C)
   :=
   { MonoidCarrier :> @Ob C
   ; monoid_object_unit : Hom (I⊗[MC]) MonoidCarrier
@@ -65,7 +65,7 @@ Arguments monoid_object_assoc {_ _} _.
 (** 从选定幺半群对象中提取固定数据上的定律谓词。 *)
 
 Definition monoid_object_laws {C : Cat} {MC : MonoidalCat C}
-    (A : MonoidObject MC)
+    (A : MonoidObj MC)
   : is_monoid_object MC (MonoidCarrier A)
       (monoid_object_unit A) (monoid_object_mul A)
   := (monoid_object_unit_l A,
@@ -92,7 +92,7 @@ Context {C : Cat} {MC : MonoidalCat C}.
 
 (** 同态保持单位和乘法；交换图表是 Type 值证据，不是结构记录的相等。 *)
 
-Definition is_monoid_hom (A B : MonoidObject MC)
+Definition is_monoid_hom (A B : MonoidObj MC)
     (f : Hom (MonoidCarrier A) (MonoidCarrier B))
   : Type
   := f ∘ e[A] ≈ e[B] ∧ f ∘ m[A] ≈ m[B] ∘ (f ⊗m f).
@@ -101,7 +101,7 @@ Definition is_monoid_hom (A B : MonoidObject MC)
 
 (** 相等箭头满足相同的同态交换方程。 *)
 
-Lemma monoid_hom_equiv (A B : MonoidObject MC)
+Lemma monoid_hom_equiv (A B : MonoidObj MC)
     (f g : Hom (MonoidCarrier A) (MonoidCarrier B))
     (E : f ≈ g)
   : is_monoid_hom A B f ↔ is_monoid_hom A B g.
@@ -120,7 +120,7 @@ Qed.
 (** 同态组成底层 Hom 广集的子集，相等只比较箭头；保持性见证仍然保存，并未
     通过证明无关性将它们等同。 *)
 
-Definition MonoidHomS (A B : MonoidObject MC)
+Definition MonoidHomS (A B : MonoidObj MC)
   : SetC
   := SubsetS (HomSet (MonoidCarrier A) (MonoidCarrier B))
       (is_monoid_hom A B).
@@ -129,7 +129,7 @@ Definition MonoidHomS (A B : MonoidObject MC)
 
 (** 恒等箭头保持两个运算。 *)
 
-Definition monoid_hom_id (A : MonoidObject MC)
+Definition monoid_hom_id (A : MonoidObj MC)
   : MonoidHomS A A.
 Proof.
   exists id. split; [apply comp_id_l |].
@@ -140,7 +140,7 @@ Defined.
 
 (** 由张量双函子性，复合保持两个运算。 *)
 
-Definition monoid_hom_comp {A B D : MonoidObject MC}
+Definition monoid_hom_comp {A B D : MonoidObj MC}
     (g : MonoidHomS B D) (f : MonoidHomS A B)
   : MonoidHomS A D.
 Proof.
@@ -174,7 +174,7 @@ Context {C : Cat}.
 Program Definition MonoidCat (MC : MonoidalCat C)
   : Cat
   :=
-  {|Ob := MonoidObject MC
+  {|Ob := MonoidObj MC
   ; HomSet := MonoidHomS
   ; id := monoid_hom_id
   ; comp _ _ _ := monoid_hom_comp
@@ -192,7 +192,7 @@ Next Obligation. exact (comp_assoc f.1 g.1 h.1). Defined.
 (** 忘却幺半群的运算及同态的保持性证明。 *)
 
 Program Definition MonoidForgetF (MC : MonoidalCat C)
-  : Functor (MonoidCat MC) C
+  : Fct (MonoidCat MC) C
   :=
   {|F0 := MonoidCarrier
   ; F1 A B f := f.1

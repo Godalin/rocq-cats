@@ -106,7 +106,7 @@ Section LongComparison.
 Universes b r e p l.
 Context {B : Type@{b}} (A : Ty B).
 Context (I : (NfEmbedN A) ⦂
-    (NfPsh A : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (NfPsh A : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b e _ _ _ _ _}) ≅N TmRenamingPsh A).
 
 (** The inverse retains the chosen long-normalization algorithm. *)
@@ -242,7 +242,7 @@ Proof. intros h. discriminate h. Defined.
 (** 每个长代表元映射都会识别这两个不同的短正规形。 *)
 
 Definition unit_short_long_equal
-    (Q : (TmRenamingPsh (ty_unit (B := B)) : Functor
+    (Q : (TmRenamingPsh (ty_unit (B := B)) : Fct
       ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{b e _ _ _ _ _}) ⇒ NfPsh ⊤)
   : Q (∅ ▻ ⊤) UnitVariableShort.1 = Q (∅ ▻ ⊤) UnitConstantShort.1.
@@ -256,7 +256,7 @@ Defined.
 (** 即使仅要求对底层短项单射也不可能。此结论不比较不可约证书。 *)
 
 Definition unit_short_long_not_injective
-    (Q : (TmRenamingPsh (ty_unit (B := B)) : Functor
+    (Q : (TmRenamingPsh (ty_unit (B := B)) : Fct
       ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{b e _ _ _ _ _}) ⇒ NfPsh ⊤)
     (injective : ∀ s t : ShortForm (∅ ▻ ⊤) (ty_unit (B := B)),

@@ -370,7 +370,7 @@ Section ActualFourHorn.
 Universes u p.
 Context {M : SetC} `{HG : !Group M} `{HC : !IsCommutativeMonoid M}
     (i : Ordinal 4)
-    (h : HornS (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 4 i)
+    (h : HornS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 i)
     (T : ∀ f : (@Hom Δ) 2 4, f ∈Sv HornSieve 4 i).
 
 Let t (f : (@Hom Δ) 2 4)
@@ -397,7 +397,7 @@ Defined.
 (** 补全标签表是原值宇宙中的实际四维单形；只比较系数标签，不比较定律字段。 *)
 
 Definition CocycleHorn4Simplex
-  : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) 4
+  : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4
   :=
   {|lower := PentachoronTwoCocycle
       (t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺]))

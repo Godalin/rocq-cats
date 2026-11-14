@@ -208,7 +208,7 @@ Global Instance FamCat
 (** 将相干族忘却为基底广集。 *)
 
 Program Definition FamBaseF
-  : Functor FamCat SetCat
+  : Fct FamCat SetCat
   :=
   {|F0 := famC_base
   ; F1 U V f := famF_base f
@@ -250,7 +250,7 @@ Qed.
 (** 将相干族送到依赖和全空间。 *)
 
 Program Definition FamTotalF
-  : Functor FamCat SetCat
+  : Fct FamCat SetCat
   :=
   {|F0 U := SigS (famC_base U) U
   ; F1 U V f := fam_total_resp f

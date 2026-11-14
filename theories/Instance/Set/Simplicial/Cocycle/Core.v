@@ -92,7 +92,7 @@ Defined.
     并未断言对任意自然同构函子的拉回均相等。 *)
 
 Program Definition OrdinalCocycleF
-  : Functor (Δ^op) SetCat
+  : Fct (Δ^op) SetCat
   :=
   {|F0 n := @TwoCocycleS [Ord n] M HM
   ; F1 n m θ := two_cocycle_pullback_resp θ
@@ -114,7 +114,7 @@ End OrdinalRestriction.
 (** 实际的单纯集合，复用已有提升函子，独立提升原生载体及相等见证。 *)
 
 Definition TwoCocycleSimplicial@{u p +} (M : SetC) `{HM : !Monoid M}
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := LiftF ∘F OrdinalCocycleF (M := M).
 
 Notation "'Z²(' M ')'" := (TwoCocycleSimplicial M) : ob_scope.
@@ -125,7 +125,7 @@ Notation "'Z²(' M ')'" := (TwoCocycleSimplicial M) : ob_scope.
 
 Definition two_cocycle_simplex_unit@{u p +}
     {M : SetC} `{HM : !Monoid M} (n : nat)
-  : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n
+  : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := UnitTwoCocycle
   |}.
@@ -137,7 +137,7 @@ Definition two_cocycle_simplex_unit@{u p +}
 Lemma two_cocycle_simplex_restrict@{u p +}
     {M : SetC} `{HM : !Monoid M} {m n : nat}
     (θ : (@Hom Δ) m n)
-    (c : (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (c : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     {x y z : Ordinal m}
     (f : (@Hom [Ord m]) x y) (g : (@Hom [Ord m]) y z)
   : (lower (Z²(M)[θ]Δ c))⟦f, g⟧₂ ≈S
@@ -153,7 +153,7 @@ Lemma two_cocycle_simplex_unit_restrict@{u p +}
     (θ : (@Hom Δ) m n)
   : Z²(M)[θ]Δ (two_cocycle_simplex_unit n) ≈S
       (two_cocycle_simplex_unit m :
-        (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) m).
+        (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) m).
 Proof.
   refine {|lower := _
           |}. apply two_cocycle_pullback_unit.

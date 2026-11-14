@@ -104,7 +104,7 @@ Defined.
 
 Definition OrdinalF {n m : nat} (f : Ordinal n → Ordinal m)
     (Hf : ∀ x y, fin_rank x ≤ fin_rank y → fin_rank (f x) ≤ fin_rank (f y))
-  : Functor [Ord n] [Ord m]
+  : Fct [Ord n] [Ord m]
   := PreorderF
       (HR := pullback_preorder NatLe fin_rank)
       (HS := pullback_preorder NatLe fin_rank)
@@ -115,7 +115,7 @@ Definition OrdinalF {n m : nat} (f : Ordinal n → Ordinal m)
 (** 每个有限序数函子都保持编号的算术顺序。 *)
 
 Definition ordinal_functor_monotone {n m : nat}
-    (F : Functor [Ord n] [Ord m]) (x y : Ordinal n)
+    (F : Fct [Ord n] [Ord m]) (x y : Ordinal n)
     (H : fin_rank x ≤ fin_rank y)
   : fin_rank (F x) ≤ fin_rank (F y).
 Proof.
@@ -147,7 +147,7 @@ Qed.
     可计算。 *)
 
 Program Definition OrdinalCompareN {n m : nat}
-    (F G : Functor [Ord n] [Ord m])
+    (F G : Fct [Ord n] [Ord m])
     (H : ∀ x, fin_rank (F x) = fin_rank (G x))
   : F ⇒ G
   :=
@@ -161,7 +161,7 @@ Next Obligation. exact tt. Defined.
 (** 编号相等提供可逆的自然比较。 *)
 
 Definition ordinal_functor_rank_iso {n m : nat}
-    (F G : Functor [Ord n] [Ord m])
+    (F G : Fct [Ord n] [Ord m])
     (H : ∀ x, fin_rank (F x) = fin_rank (G x))
   : F ≅N G.
 Proof.
@@ -176,7 +176,7 @@ Defined.
 (** 对于这些有限顺序，自然同构恰为位置上的逐点相等，不等同函子记录。 *)
 
 Definition ordinal_functor_iso_iff {n m : nat}
-    (F G : Functor [Ord n] [Ord m])
+    (F G : Fct [Ord n] [Ord m])
   : F ≅N G ↔ ∀ x, F x = G x.
 Proof.
   split.
@@ -191,7 +191,7 @@ Defined.
     字段的原生相等。 *)
 
 Definition ordinal_functor_rebuild_iso {n m : nat}
-    (F : Functor [Ord n] [Ord m])
+    (F : Fct [Ord n] [Ord m])
   : OrdinalF F (ordinal_functor_monotone F) ≅N F.
 Proof. apply ordinal_functor_rank_iso. intros x. reflexivity. Defined.
 
@@ -213,14 +213,14 @@ Defined.
     对任意带指定 Hom 相等的范畴成立。 *)
 
 Lemma ordinal_naturality_steps {C : Cat} {n : nat}
-    (F G : Functor [Ord n] C) (α : ∀ i, Hom (F i) (G i))
+    (F G : Fct [Ord n] C) (α : ∀ i, Hom (F i) (G i))
     (H : ∀ i : Fin@{Set} n,
       α (fin_next i) ∘ fmap F (ordinal_step i) ≈
         fmap G (ordinal_step i) ∘ α (fin_weaken i))
   : ∀ i j (f : (@Hom [Ord n]) i j),
       α j ∘ fmap F f ≈ fmap G f ∘ α i.
 Proof.
-  assert (Hid : ∀ {m} (P Q : Functor [Ord m] C)
+  assert (Hid : ∀ {m} (P Q : Fct [Ord m] C)
       (β : ∀ i, Hom (P i) (Q i)) i (f : (@Hom [Ord m]) i i),
       β i ∘ fmap P f ≈ fmap Q f ∘ β i).
   { intros m P Q β i f.

@@ -16,10 +16,10 @@ From Cats Require Import
 
     函子按自然同构比较，保留比较及其逆分量；定义域和目标的大小相互独立。 *)
 
-Program Definition FunctorS (C D : Cat)
+Program Definition FctS (C D : Cat)
   : SetC
   :=
-  {|carrier := Functor C D
+  {|carrier := Fct C D
   ; carrier_equiv := NatIso
   ; carrier_setoid := NatIso_Equivalence
   |}.
@@ -28,8 +28,8 @@ Program Definition FunctorS (C D : Cat)
 
 (** 预复合是函子广集之间的保相等映射。 *)
 
-Program Definition functor_precomp_resp {A B C : Cat} (F : Functor A B)
-  : FunctorS B C →r FunctorS A C
+Program Definition functor_precomp_resp {A B C : Cat} (F : Fct A B)
+  : FctS B C →r FctS A C
   :=
   {|func G := G ∘F F
   |}.
@@ -41,8 +41,8 @@ Defined.
 
 (** 后复合是函子广集之间的保相等映射。 *)
 
-Program Definition functor_postcomp_resp {A B C : Cat} (G : Functor B C)
-  : FunctorS A B →r FunctorS A C
+Program Definition functor_postcomp_resp {A B C : Cat} (G : Fct B C)
+  : FctS A B →r FctS A C
   :=
   {|func F := G ∘F F
   |}.
@@ -81,11 +81,11 @@ Defined.
     给定由函子 J 组织的探测范畴族，对从各探测到 C 的函子作预复合限制。
     提升将原生函子广集放到共同的一对值宇宙中。 *)
 
-Program Definition FunctorPresheaf@{u p +} {S : Cat}
-    (J : Functor S CatCat) (C : Cat)
-  : Functor (S^op) SetCat@{u p _ _ _ _ _}
+Program Definition FctPsh@{u p +} {S : Cat}
+    (J : Fct S CatCat) (C : Cat)
+  : Fct (S^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 s := LiftS (FunctorS (J s) C)
+  {|F0 s := LiftS (FctS (J s) C)
   ; F1 s t θ := (functor_precomp_resp (fmap J θ))^↑S
   |}.
 Next Obligation.
@@ -112,10 +112,10 @@ Defined.
 
 (** 目标之间的函子在每个探测处通过后复合作用。 *)
 
-Program Definition FunctorPresheafN@{u p +} {S : Cat}
-    (J : Functor S CatCat) {C D : Cat} (F : Functor C D)
-  : (FunctorPresheaf J C : Functor (S^op) SetCat@{u p _ _ _ _ _}) ⇒
-      FunctorPresheaf J D
+Program Definition FctPshN@{u p +} {S : Cat}
+    (J : Fct S CatCat) {C D : Cat} (F : Fct C D)
+  : (FctPsh J C : Fct (S^op) SetCat@{u p _ _ _ _ _}) ⇒
+      FctPsh J D
   :=
   {|nt s := (functor_postcomp_resp F)^↑S
   |}.
@@ -129,12 +129,12 @@ Defined.
 
 (** 探测预层在目标范畴上构成函子；源中的函子相等沿用 CatCat 的自然同构。 *)
 
-Program Definition FunctorPresheafF@{u p +} {S : Cat}
-    (J : Functor S CatCat)
-  : Functor CatCat (Fct (S^op) SetCat@{u p _ _ _ _ _})
+Program Definition FctPshF@{u p +} {S : Cat}
+    (J : Fct S CatCat)
+  : Fct CatCat (FctCat (S^op) SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 C := FunctorPresheaf J C
-  ; F1 C D F := FunctorPresheafN J F
+  {|F0 C := FctPsh J C
+  ; F1 C D F := FctPshN J F
   |}.
 Next Obligation.
   intros F G H s [K]. refine {|lower := _

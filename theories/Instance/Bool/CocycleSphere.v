@@ -84,7 +84,7 @@ Defined.
 
 Section NerveComparison.
 Universes u p.
-Context {A : SetC} {C : Cat} (T : Functor (EqGpd A) C).
+Context {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 (** No natural isomorphism identifies this model with an ordinary nerve.
     The proof maps two spheres forward and reflects their forced equality
@@ -94,11 +94,11 @@ Context {A : SetC} {C : Cat} (T : Functor (EqGpd A) C).
     二维分量的逆反映其被迫成立的相等。 *)
 
 Lemma bool_cocycle_not_vertex_nerve
-  : ¬ ((Z²(BoolS) : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
-      (VertexNerve T : Functor (Δ^op) SetCat@{u p _ _ _ _ _})).
+  : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+      (VertexNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
 Proof.
   intros [α Hα].
-  pose (B := (Z²(BoolS) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})).
+  pose (B := (Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
   pose (b := (two_cocycle_simplex_unit 0 : B 0)).
   pose (f := (cocycle_two_sphere_resp : BoolS →r TwoSphereS B b)).
   pose (x := f true). pose (y := f false).

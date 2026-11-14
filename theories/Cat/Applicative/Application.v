@@ -24,7 +24,7 @@ Local Open Scope applicative_scope.
 
 Section RawApplication.
 Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
-    (F : Functor C C)
+    (F : Fct C C)
     (a : ∀ {X Y : @Ob C}, Hom (F (Y ^ X) × F X) (F Y)).
 
 (** Lift a binary arrow by mapping its transpose and then applying. *)
@@ -110,7 +110,7 @@ Class ApplicativeAp (C : Cat) (HT : HasTerminal C) (HP : HasProduct C)
 
   (** 唯一强制转换暴露底层自函子。 *)
 
-  { ApF :> Functor C C
+  { ApF :> Fct C C
 
   (** Pure embedding commutes with every ordinary arrow. *)
 

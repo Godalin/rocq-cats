@@ -19,7 +19,7 @@ Local Open Scope monoidal_scope.
 
 Section ConstantLax.
 Context {C D : Cat} (MC : MonoidalCat C)
-    {MD : MonoidalCat D} (A : MonoidObject MD).
+    {MD : MonoidalCat D} (A : MonoidObj MD).
 
 (** The multiplication of [A] is the constant tensorator. Naturality
     follows because every source arrow maps to an identity. *)
@@ -44,8 +44,8 @@ Defined.
 
 (** 三条 lax 相干图恰好是 [A] 的幺半群定律；结构须显式选择，不在导入时注册。 *)
 
-Program Definition ConstF_LaxMonoidalFunctor
-  : LaxMonoidalFunctor MC MD
+Program Definition ConstF_LaxMonoidalFct
+  : LaxMonoidalFct MC MD
   :=
   {|LaxMonoidalF := ConstF C (MonoidCarrier A)
   ; lax_unit := e[A]

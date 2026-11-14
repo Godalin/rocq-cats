@@ -91,7 +91,7 @@ Context {C : Cat} `{BC : !BinoidalCat C}.
 (** 在左侧张量一个固定对象。对象映射从同一选定张量导出，不另作选择。 *)
 
 Program Definition BinoidalLeftF (Z : @Ob C)
-  : Functor C C
+  : Fct C C
   :=
   {|F0 X := Z ⊗ X
   ; F1 X Y f := Z ⊲ f
@@ -105,7 +105,7 @@ Program Definition BinoidalLeftF (Z : @Ob C)
 (** 在右侧张量一个固定对象。 *)
 
 Program Definition BinoidalRightF (Z : @Ob C)
-  : Functor C C
+  : Fct C C
   :=
   {|F0 X := X ⊗ Z
   ; F1 X Y f := f ⊳ Z

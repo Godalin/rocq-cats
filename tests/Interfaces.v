@@ -22,7 +22,7 @@ From Cats Require Import
 (** 顶点 nerve 的余骨架结构同样需要显式启用。 *)
 
 Section VertexCoskeletalChoice.
-Context {X : SetC} {C : Cat} (T : Functor (EqGpd X) C).
+Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 Fail Definition unchosen_vertex_coskeletal
   : Nᵥ(T) ⦂ Cosk[2%nat]
@@ -61,7 +61,7 @@ Fail Definition mediator_without_commutativity : Hom P (Pb f g) :=
 End Pullback.
 
 Section Classifier.
-Context {C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjectClassifier C HT}.
+Context {C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjClassifier C HT}.
 Context {X Y : @Ob C} (m : X ↣ Y).
 
 (** The selected square is not evidence that an arbitrary candidate classifies m. *)
@@ -94,7 +94,7 @@ From Cats Require Import
     显式选择。 *)
 
 Fail Definition unchosen_set_lax_monoidal
-  : LaxMonoidalFunctor SetCartesianMonoidal SetCartesianMonoidal
+  : LaxMonoidalFct SetCartesianMonoidal SetCartesianMonoidal
   := ltac:(typeclasses eauto).
 
 From Cats Require Import
@@ -115,7 +115,7 @@ Definition inferred_family_map_equality {X : SetC} {A B : FamS X}
 
 Definition inferred_matching_equality {C : Cat} {A : @Ob C}
     {I : Type} {D : I → @Ob C} (g : ∀ i, Hom (D i) A)
-    (P : Functor (C^op) SetCat) (a b : SieveMatching g P)
+    (P : Fct (C^op) SetCat) (a b : SieveMatching g P)
   : Type
   := a ≈S b.
 
@@ -127,7 +127,7 @@ From Cats Require Import
 (** 一般定理不自动注册选定自由对象结构。 *)
 
 Fail Definition unchosen_free_objects
-  : HasFreeObjects (@IdF SetCat)
+  : HasFreeObj (@IdF SetCat)
   := ltac:(typeclasses eauto).
 
 From Cats Require Import
@@ -143,10 +143,10 @@ From Cats Require Import
 (** 导入打包保持性接口不会自动选定具体笛卡尔或 CCC 函子。 *)
 
 Fail Definition unchosen_set_cartesian_functor
-  : @CartesianFunctor SetCat SetCat SetCat_HasTerminal SetCat_HasProduct
+  : @CartFct SetCat SetCat SetCat_HasTerminal SetCat_HasProduct
   := ltac:(typeclasses eauto).
 Fail Definition unchosen_set_ccc_functor
-  : CCCFunctor SetCat_CCC SetCat_CCC
+  : CCCFct SetCat_CCC SetCat_CCC
   := ltac:(typeclasses eauto).
 
 (** Cartesian inheritance needs no chosen structures in the target. *)
@@ -155,10 +155,10 @@ Fail Definition unchosen_set_ccc_functor
 
 Section BundledCartesianInference.
 Context {C D : Cat} {TC : HasTerminal C} {PC : HasProduct C}
-    (F : @CartesianFunctor C D TC PC).
+    (F : @CartFct C D TC PC).
 
 Definition inferred_cartesian_preservation
-  : IsCartesianF F TC PC
+  : IsCartF F TC PC
   := ltac:(typeclasses eauto).
 End BundledCartesianInference.
 
@@ -168,7 +168,7 @@ End BundledCartesianInference.
 (** 给定 CCC 包通过单一函子强制转换链，支持两个继承接口及已有柯里化定理。 *)
 
 Section BundledCCCInference.
-Context {C D : Cat} {HC : CCC C} {HD : CCC D} (F : CCCFunctor HC HD).
+Context {C D : Cat} {HC : CCC C} {HD : CCC D} (F : CCCFct HC HD).
 Local Existing Instance HC.
 Local Existing Instance HD.
 
@@ -176,7 +176,7 @@ Definition inferred_ccc_preservation
   : IsCCCF F HC HD
   := ltac:(typeclasses eauto).
 Definition inferred_ccc_cartesian_preservation
-  : IsCartesianF F (@hasTerminal C HC) (@hasProduct C HC)
+  : IsCartF F (@hasTerminal C HC) (@hasProduct C HC)
   := ltac:(typeclasses eauto).
 Definition bundled_functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
   : functor_exponential_comparison F X Y ∘ fmap F (ƛ f) ≈

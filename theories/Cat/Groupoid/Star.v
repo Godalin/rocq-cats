@@ -24,7 +24,7 @@ Context {C : Cat} `{HC : !IsGroupoid C}.
 
 Program Definition StarF (J : Cat) (A : @Ob C)
     (v : @Ob J → @Ob C) (s : ∀ j, Hom A (v j))
-  : Functor J C
+  : Fct J C
   :=
   {|F0 := v
   ; F1 i j f := s j ∘ (s i)⁻¹
@@ -71,7 +71,7 @@ Defined.
 
 (** 将序数图式延拓到任意位置间的过渡，包括逆向过渡；全部逆选择来自 C。 *)
 
-Definition ordinal_radial {n : nat} (F : Functor [Ord n] C)
+Definition ordinal_radial {n : nat} (F : Fct [Ord n] C)
     (i j : Ordinal n)
   : Hom (F i) (F j)
   := fmap F (ordinal_from_first j) ∘ (fmap F (ordinal_from_first i))⁻¹.
@@ -80,7 +80,7 @@ Definition ordinal_radial {n : nat} (F : Functor [Ord n] C)
 
 (** 原有有向箭头恰等于这些过渡。 *)
 
-Lemma ordinal_radial_arrow {n : nat} (F : Functor [Ord n] C)
+Lemma ordinal_radial_arrow {n : nat} (F : Fct [Ord n] C)
     {i j : Ordinal n} (f : (@Hom [Ord n]) i j)
   : fmap F f ≈ ordinal_radial F i j.
 Proof.
@@ -97,7 +97,7 @@ Defined.
 
 (** 径向过渡的复合不要求位置间有顺序关系。 *)
 
-Lemma ordinal_radial_comp {n : nat} (F : Functor [Ord n] C)
+Lemma ordinal_radial_comp {n : nat} (F : Fct [Ord n] C)
     (i j k : Ordinal n)
   : ordinal_radial F j k ∘ ordinal_radial F i j ≈ ordinal_radial F i k.
 Proof.
@@ -110,7 +110,7 @@ Defined.
 
 (** 反转径向过渡得到其选定逆。 *)
 
-Lemma ordinal_radial_inv {n : nat} (F : Functor [Ord n] C)
+Lemma ordinal_radial_inv {n : nat} (F : Fct [Ord n] C)
     (i j : Ordinal n)
   : (ordinal_radial F i j)⁻¹ ≈ ordinal_radial F j i.
 Proof.
@@ -122,7 +122,7 @@ Defined.
 
 (** 自然变换与任意径向过渡交换。 *)
 
-Lemma ordinal_radial_natural {n : nat} {F G : Functor [Ord n] C}
+Lemma ordinal_radial_natural {n : nat} {F G : Fct [Ord n] C}
     (α : F ⇒ G) (i j : Ordinal n)
   : α j ∘ ordinal_radial F i j ≈ ordinal_radial G i j ∘ α i.
 Proof.
@@ -135,8 +135,8 @@ Defined.
 
 (** 径向过渡与序数替换交换，即使替换后的图式从另一个顶点开始。 *)
 
-Lemma ordinal_radial_precomp {m n : nat} (F : Functor [Ord n] C)
-    (Q : Functor [Ord m] [Ord n]) (i j : Ordinal m)
+Lemma ordinal_radial_precomp {m n : nat} (F : Fct [Ord n] C)
+    (Q : Fct [Ord m] [Ord n]) (i j : Ordinal m)
   : ordinal_radial (F ∘F Q) i j ≈ ordinal_radial F (Q i) (Q j).
 Proof.
   pose (c := fmap F (ordinal_from_first (Q fin_first))).

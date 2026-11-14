@@ -15,7 +15,7 @@ From Cats Require Export
 
     积仅由顶点和生成边索引，不由所有路径索引。 *)
 
-Definition GraphTargets {G : Graph} {C : Cat} (D : Functor (FreeCat G) C)
+Definition GraphTargets {G : Graph} {C : Cat} (D : Fct (FreeCat G) C)
     (a : GraphEdges G)
   : @Ob C
   := D a.2.1.
@@ -31,8 +31,8 @@ Definition GraphTargets {G : Graph} {C : Cat} (D : Functor (FreeCat G) C)
     固定 [G] 的自由范畴上的图式，以及其对象和生成边目标的选定积，用等化子施加生成边方程并获得极限。 *)
 
 Section GraphLimits.
-Context {G : Graph} {C : Cat} (D : Functor (FreeCat G) C).
-Context `{HO : !HasLimit C (DiscreteF (DiagramObjects D))}.
+Context {G : Graph} {C : Cat} (D : Fct (FreeCat G) C).
+Context `{HO : !HasLimit C (DiscreteF (DiagramObj D))}.
 Context `{HG : !HasLimit C (DiscreteF (GraphTargets D))}.
 
 (** The source constraint applies each generating arrow to its source
@@ -41,8 +41,8 @@ Context `{HG : !HasLimit C (DiscreteF (GraphTargets D))}.
 (** 源约束将每条生成箭头作用于其源投影。 *)
 
 Definition graph_product_source
-  : Hom ∏[DiagramObjects D] ∏[GraphTargets D]
-  := ∏⟨λ a, fmap D (ιG a.2.2) ∘ π∏[DiagramObjects D] a.1⟩.
+  : Hom ∏[DiagramObj D] ∏[GraphTargets D]
+  := ∏⟨λ a, fmap D (ιG a.2.2) ∘ π∏[DiagramObj D] a.1⟩.
 
 (** The target constraint selects the target projection of each generating
     edge. *)
@@ -50,17 +50,17 @@ Definition graph_product_source
 (** 目标约束选取每条生成边的目标投影。 *)
 
 Definition graph_product_target
-  : Hom ∏[DiagramObjects D] ∏[GraphTargets D]
-  := ∏⟨λ a, π∏[DiagramObjects D] a.2.1⟩.
+  : Hom ∏[DiagramObj D] ∏[GraphTargets D]
+  := ∏⟨λ a, π∏[DiagramObj D] a.2.1⟩.
 
 (** Equalizing generator constraints gives commutativity on each edge. *)
 
 (** 等化生成边约束，得到每条边上的交换性。 *)
 
-Lemma graph_product_comm {E : @Ob C} (e : Hom E ∏[DiagramObjects D])
+Lemma graph_product_comm {E : @Ob C} (e : Hom E ∏[DiagramObj D])
     (H : graph_product_source ∘ e ≈ graph_product_target ∘ e)
     {x y : @Vertex G} (f : Edge x y)
-  : fmap D (ιG f) ∘ (π∏[DiagramObjects D] x ∘ e) ≈ π∏[DiagramObjects D] y ∘ e.
+  : fmap D (ιG f) ∘ (π∏[DiagramObj D] x ∘ e) ≈ π∏[DiagramObj D] y ∘ e.
 Proof.
   pose (a := ((x; (y; f)) : GraphEdges G)).
   transitivity ((π∏[GraphTargets D] a ∘ graph_product_source) ∘ e).
@@ -73,10 +73,10 @@ Qed.
 
 (** 将顶点上的等化子锥腿延拓到所有自由路径。 *)
 
-Definition GraphEqualizerCone {E : @Ob C} (e : Hom E ∏[DiagramObjects D])
+Definition GraphEqualizerCone {E : @Ob C} (e : Hom E ∏[DiagramObj D])
     (H : graph_product_source ∘ e ≈ graph_product_target ∘ e)
   : E ⇒Δ D
-  := @FreeCone G C D E (λ x, π∏[DiagramObjects D] x ∘ e)
+  := @FreeCone G C D E (λ x, π∏[DiagramObj D] x ∘ e)
     (λ x y f, graph_product_comm e H f).
 
 (** The generator-constraint equalizer gives the limit of the free diagram. *)
@@ -84,7 +84,7 @@ Definition GraphEqualizerCone {E : @Ob C} (e : Hom E ∏[DiagramObjects D])
 (** 生成边约束的等化子给出自由图式的极限。 *)
 
 Definition graph_products_equalizer_limit {E : @Ob C}
-    {e : Hom E ∏[DiagramObjects D]}
+    {e : Hom E ∏[DiagramObj D]}
     (H : graph_product_source ∘ e ≈ graph_product_target ∘ e)
     (HE : is_equalizer graph_product_source graph_product_target E e)
   : is_limit (GraphEqualizerCone e H).
@@ -96,7 +96,7 @@ Proof.
     rewrite <- !comp_assoc, !indexed_product_β, comp_assoc, !indexed_product_β.
     transitivity (μ y).
     + exact (free_cone_edge μ f).
-    + symmetry. apply (indexed_product_β (D := DiagramObjects D)).
+    + symmetry. apply (indexed_product_β (D := DiagramObj D)).
 Defined.
 
 (** Choose one free-diagram limit using vertex and generator products. *)

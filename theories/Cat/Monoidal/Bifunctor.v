@@ -15,7 +15,7 @@ Local Open Scope binoidal_scope.
     统一证明交换律，不另存第二个张量。 *)
 
 Section Assembly.
-Context {C : Cat} (T : Functor (C ×C C) C) (I : @Ob C)
+Context {C : Cat} (T : Fct (C ×C C) C) (I : @Ob C)
     (A : TensorLeftF T ≅N TensorRightF T)
     (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
 

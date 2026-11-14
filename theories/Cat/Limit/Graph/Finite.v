@@ -46,7 +46,7 @@ Definition FiniteGraphLimits `{HE : !HasEqualizer C} {n : nat}
 (** 选择一个有限图生成的图式的极限。 *)
 
 Definition FiniteGraphLimit `{HE : !HasEqualizer C} {n : nat}
-    (k : Fin n → Fin n → nat) (D : Functor (FreeCat (FiniteGraph k)) C)
+    (k : Fin n → Fin n → nat) (D : Fct (FreeCat (FiniteGraph k)) C)
   : HasLimit C D
   := @hasLimit C _ (FiniteGraphLimits k) D.
 

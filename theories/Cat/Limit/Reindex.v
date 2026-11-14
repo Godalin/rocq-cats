@@ -15,8 +15,8 @@ From Cats Require Import
 
 (** 检测极限锥只需本质满。 *)
 
-Definition limit_of_restrict {I J C : Cat} {Q : Functor I J}
-    (HQ : is_essentially_surjective Q) {D : Functor J C} {L}
+Definition limit_of_restrict {I J C : Cat} {Q : Fct I J}
+    (HQ : is_essentially_surjective Q) {D : Fct J C} {L}
     {κ : L ⇒Δ D} (Hκ : is_limit (κ ∘Δ Q))
   : is_limit κ.
 Proof.
@@ -34,9 +34,9 @@ Defined.
 
 (** 满性保证每个源形状上的锥都能延拓；不需要忠实性或对象代表的原生相等。 *)
 
-Definition restrict_limit {I J C : Cat} {Q : Functor I J}
+Definition restrict_limit {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {L} {κ : L ⇒Δ D} (Hκ : is_limit κ)
+    {D : Fct J C} {L} {κ : L ⇒Δ D} (Hκ : is_limit κ)
   : is_limit (κ ∘Δ Q).
 Proof.
   intros X μ. destruct (Hκ X (ExtendCone HF HQ μ)) as [h Hh].
@@ -55,9 +55,9 @@ Defined.
 
 (** 满且本质满的形状限制保持并反映极限锥。 *)
 
-Theorem limit_iff_restrict {I J C : Cat} {Q : Functor I J}
+Theorem limit_iff_restrict {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {L} (κ : L ⇒Δ D)
+    {D : Fct J C} {L} (κ : L ⇒Δ D)
   : is_limit κ ↔ is_limit (κ ∘Δ Q).
 Proof. split; [apply (restrict_limit HF HQ) | apply (limit_of_restrict HQ)]. Defined.
 
@@ -66,9 +66,9 @@ Proof. split; [apply (restrict_limit HF HQ) | apply (limit_of_restrict HQ)]. Def
 
 (** 将复合图式的极限延拓为原图式的极限。 *)
 
-Definition extend_limit {I J C : Cat} {Q : Functor I J}
+Definition extend_limit {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    {D : Functor J C} {L} {κ : L ⇒Δ (D ∘F Q)} (Hκ : is_limit κ)
+    {D : Fct J C} {L} {κ : L ⇒Δ (D ∘F Q)} (Hκ : is_limit κ)
   : is_limit (ExtendCone HF HQ κ).
 Proof.
   apply (limit_of_restrict HQ).
@@ -89,9 +89,9 @@ Defined.
 
 (** 通过延拓选定源形状极限锥，选择目标形状的极限。 *)
 
-Program Definition ReindexedLimit {I J C : Cat} {Q : Functor I J}
+Program Definition ReindexedLimit {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    (D : Functor J C) `{HL : !HasLimit C (D ∘F Q)}
+    (D : Fct J C) `{HL : !HasLimit C (D ∘F Q)}
   : HasLimit C D
   :=
   {|Lim := lim (D ∘F Q)
@@ -104,9 +104,9 @@ Next Obligation. apply extend_limit. apply limit_universal. Defined.
 
 (** 反向限制选定极限，保留顶点，并用原限制定理给出泛性质。 *)
 
-Program Definition RestrictedLimit {I J C : Cat} {Q : Functor I J}
+Program Definition RestrictedLimit {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
-    (D : Functor J C) `{HL : !HasLimit C D}
+    (D : Fct J C) `{HL : !HasLimit C D}
   : HasLimit C (D ∘F Q)
   :=
   {|Lim := lim D
@@ -119,7 +119,7 @@ Next Obligation. apply (restrict_limit HF HQ). apply limit_universal. Defined.
 
 (** 沿满且本质满函子传递整个形状的选定极限。 *)
 
-Program Definition ReindexedLimits {I J C : Cat} {Q : Functor I J}
+Program Definition ReindexedLimits {I J C : Cat} {Q : Fct I J}
     (HF : is_full Q) (HQ : is_essentially_surjective Q)
     `{HL : !HasLimitsOfShape C I}
   : HasLimitsOfShape C J

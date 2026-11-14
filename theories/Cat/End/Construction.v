@@ -19,7 +19,7 @@ From Cats Require Export
 (** 第一个积收集对角值，第二个积为每条箭头收集一个非对角值。后者的指标保留端点
     和箭头，不存储指标范畴的相等见证。 *)
 
-Definition EndDiagonal {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition EndDiag {C D : Cat} (F : Fct ((C^op) ×C C) D)
     (X : @Ob C)
   : @Ob D
   := F (X, X).
@@ -28,7 +28,7 @@ Definition EndDiagonal {C D : Cat} (F : Functor ((C^op) ×C C) D)
 
 (** 对于箭头 [X → Y]，约束的值域为 [F (X,Y)]。 *)
 
-Definition EndTargets {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition EndTargets {C D : Cat} (F : Fct ((C^op) ×C C) D)
     (a : ArrowOb C)
   : @Ob D
   := F (arrow_dom a, arrow_cod a).
@@ -45,8 +45,8 @@ Definition EndTargets {C D : Cat} (F : Functor ((C^op) ×C C) D)
     等化子给出 end。 *)
 
 Section ProductsEqualizer.
-Context {C D : Cat} (F : Functor ((C^op) ×C C) D).
-Context `{HO : !HasLimit D (DiscreteF (EndDiagonal F))}.
+Context {C D : Cat} (F : Fct ((C^op) ×C C) D).
+Context `{HO : !HasLimit D (DiscreteF (EndDiag F))}.
 Context `{HA : !HasLimit D (DiscreteF (EndTargets F))}.
 
 (** Apply the covariant arrow action after the source diagonal projection. *)
@@ -54,34 +54,34 @@ Context `{HA : !HasLimit D (DiscreteF (EndTargets F))}.
 (** 在源的对角投影后应用协变箭头作用。 *)
 
 Definition end_product_covariant
-  : Hom ∏[EndDiagonal F] ∏[EndTargets F]
+  : Hom ∏[EndDiag F] ∏[EndTargets F]
   := indexed_pair (D := EndTargets F) (λ a, fmap F
       (X := (arrow_dom a, arrow_dom a))
       (Y := (arrow_dom a, arrow_cod a)) (id, arrow_map a)
-      ∘ π∏[EndDiagonal F] (arrow_dom a)).
+      ∘ π∏[EndDiag F] (arrow_dom a)).
 
 (** Apply the contravariant arrow action after the target diagonal projection. *)
 
 (** 在目标的对角投影后应用逆变箭头作用。 *)
 
 Definition end_product_contravariant
-  : Hom ∏[EndDiagonal F] ∏[EndTargets F]
+  : Hom ∏[EndDiag F] ∏[EndTargets F]
   := indexed_pair (D := EndTargets F) (λ a, fmap F
       (X := (arrow_cod a, arrow_cod a))
       (Y := (arrow_dom a, arrow_cod a)) (arrow_map a, id)
-      ∘ π∏[EndDiagonal F] (arrow_cod a)).
+      ∘ π∏[EndDiag F] (arrow_cod a)).
 
 (** Equalizing the constraints makes the projected family a wedge. *)
 
 (** 等化约束使投影族成为楔。 *)
 
-Lemma end_product_comm {E : @Ob D} (e : Hom E ∏[EndDiagonal F])
+Lemma end_product_comm {E : @Ob D} (e : Hom E ∏[EndDiag F])
     (H : end_product_covariant ∘ e ≈ end_product_contravariant ∘ e)
     {X Y : @Ob C} (f : Hom X Y)
   : fmap F (X := (X, X)) (Y := (X, Y)) (id, f)
-      ∘ (π∏[EndDiagonal F] X ∘ e)
+      ∘ (π∏[EndDiag F] X ∘ e)
     ≈ fmap F (X := (Y, Y)) (Y := (X, Y)) (f, id)
-      ∘ (π∏[EndDiagonal F] Y ∘ e).
+      ∘ (π∏[EndDiag F] Y ∘ e).
 Proof.
   pose (a := ({|arrow_dom := X
               ; arrow_cod := Y
@@ -100,11 +100,11 @@ Qed.
 (** 等化子包含后接对角投影组成楔。 *)
 
 Program Definition ProductsEqualizerWedge {E : @Ob D}
-    (e : Hom E ∏[EndDiagonal F])
+    (e : Hom E ∏[EndDiag F])
     (H : end_product_covariant ∘ e ≈ end_product_contravariant ∘ e)
   : Wedge F E
   :=
-  {|wedge_leg X := π∏[EndDiagonal F] X ∘ e
+  {|wedge_leg X := π∏[EndDiag F] X ∘ e
   |}.
 Next Obligation. apply end_product_comm. exact H. Qed.
 
@@ -113,14 +113,14 @@ Next Obligation. apply end_product_comm. exact H. Qed.
 (** 每个楔在对角配对后等化两条约束。 *)
 
 Lemma end_product_equalizes {W} (κ : Wedge F W)
-  : end_product_covariant ∘ indexed_pair (D := EndDiagonal F) (λ X, κ X)
-    ≈ end_product_contravariant ∘ indexed_pair (D := EndDiagonal F) (λ X, κ X).
+  : end_product_covariant ∘ indexed_pair (D := EndDiag F) (λ X, κ X)
+    ≈ end_product_contravariant ∘ indexed_pair (D := EndDiag F) (λ X, κ X).
 Proof.
   apply indexed_product_hom_ext. intros a.
   unfold end_product_covariant, end_product_contravariant.
   rewrite <- !comp_assoc, !indexed_product_β, !comp_assoc.
-  rewrite (@indexed_product_β D _ (EndDiagonal F) HO W _ (arrow_dom a)).
-  rewrite (@indexed_product_β D _ (EndDiagonal F) HO W _ (arrow_cod a)).
+  rewrite (@indexed_product_β D _ (EndDiag F) HO W _ (arrow_dom a)).
+  rewrite (@indexed_product_β D _ (EndDiag F) HO W _ (arrow_cod a)).
   apply wedge_comm.
 Qed.
 
@@ -129,13 +129,13 @@ Qed.
 (** 完整 end 性质复用受约束族的唯一分解。 *)
 
 Definition products_equalizer_end {E : @Ob D}
-    {e : Hom E ∏[EndDiagonal F]}
+    {e : Hom E ∏[EndDiag F]}
     (H : end_product_covariant ∘ e ≈ end_product_contravariant ∘ e)
     (HE : is_equalizer end_product_covariant end_product_contravariant E e)
   : is_end (ProductsEqualizerWedge e H).
 Proof.
   intros W κ.
-  exact (indexed_product_equalizer_universal (EndDiagonal F)
+  exact (indexed_product_equalizer_universal (EndDiag F)
     HE W (λ X, κ X) (end_product_equalizes κ)).
 Defined.
 
@@ -144,7 +144,7 @@ Defined.
 (** 单个候选等化子就足以选取 end。 *)
 
 Program Definition ProductsEqualizerEndOf {E : @Ob D}
-    (e : Hom E ∏[EndDiagonal F])
+    (e : Hom E ∏[EndDiag F])
     (HE : is_equalizer end_product_covariant end_product_contravariant E e)
   : HasEnd D F
   :=

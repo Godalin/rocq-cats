@@ -15,7 +15,7 @@ From Cats Require Import
 (** 楔具有固定顶点及对角腿。对于箭头 [f : X → Y]，两条腿映射到 [F (X,Y)] 后
     相等。这种特殊的双自然性足以定义 end，不假定任意双自然变换可复合。 *)
 
-Class Wedge {C D : Cat} (F : Functor ((C^op) ×C C) D) (W : @Ob D)
+Class Wedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
   :=
   (** The primary view is the family of arrows to diagonal values. *)
 
@@ -39,7 +39,7 @@ Arguments wedge_comm {_ _ _ _} _ {_ _} _.
 
 (** 仅用值域的指定相等比较各条腿。 *)
 
-Definition WedgeEq {C D : Cat} {F : Functor ((C^op) ×C C) D} {W}
+Definition WedgeEq {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
     (κ μ : Wedge F W)
   := ∀ X, κ X ≈ μ X.
 
@@ -63,7 +63,7 @@ Defined.
 (** 用顶点映射预合成全部腿。 *)
 
 Program Definition wedge_comp {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W V : @Ob D}
+    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
     (κ : Wedge F W) (f : Hom V W)
   : Wedge F V
   :=
@@ -81,7 +81,7 @@ Infix "∘Wedge" := wedge_comp
 (** 预合成保持楔相等和箭头相等。 *)
 
 Global Instance wedge_comp_proper {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W V : @Ob D}
+    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
   : Proper (WedgeEq ==> @HomEq[V, W] ==> WedgeEq)
       (@wedge_comp C D F W V).
 Proof. intros κ μ H f g K X. cbn. rewrite (H X), K. reflexivity. Qed.
@@ -90,7 +90,7 @@ Proof. intros κ μ H f g K X. cbn. rewrite (H X), K. reflexivity. Qed.
 
 (** 用恒等预合成恢复原楔。 *)
 
-Lemma wedge_comp_id {C D : Cat} {F : Functor ((C^op) ×C C) D} {W}
+Lemma wedge_comp_id {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
     (κ : Wedge F W)
   : κ ∘Wedge id ≈W κ.
 Proof. intros X. apply comp_id_r. Qed.
@@ -100,7 +100,7 @@ Proof. intros X. apply comp_id_r. Qed.
 (** 连续预合成与顶点映射的复合相容。 *)
 
 Lemma wedge_comp_assoc {C D : Cat}
-    {F : Functor ((C^op) ×C C) D} {W V U}
+    {F : Fct ((C^op) ×C C) D} {W V U}
     (κ : Wedge F W) (f : Hom V W) (g : Hom U V)
   : (κ ∘Wedge f) ∘Wedge g ≈W κ ∘Wedge (f ∘ g).
 Proof. intros X. apply comp_assoc. Qed.
@@ -111,7 +111,7 @@ Proof. intros X. apply comp_assoc. Qed.
 (** 普通自然变换将楔映为楔，仅需其自然性及原楔方程。 *)
 
 Program Definition wedge_map {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D} {W} (α : F ⇒ G)
+    {F G : Fct ((C^op) ×C C) D} {W} (α : F ⇒ G)
     (κ : Wedge F W)
   : Wedge G W
   :=
@@ -127,7 +127,7 @@ Qed.
 (** 映射楔保持自然变换及每条腿的相等。 *)
 
 Global Instance wedge_map_proper {C D : Cat}
-    {F G : Functor ((C^op) ×C C) D} {W}
+    {F G : Fct ((C^op) ×C C) D} {W}
   : Proper (NatEq ==> WedgeEq ==> WedgeEq) (@wedge_map C D F G W).
 Proof.
   intros α β H κ μ K X. cbn. rewrite (H (X, X)), (K X). reflexivity.
@@ -137,14 +137,14 @@ Qed.
 
 (** 楔范畴的对象保留顶点及其楔。 *)
 
-Definition WedgeOb {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Definition WedgeOb {C D : Cat} (F : Fct ((C^op) ×C C) D)
   := ∃ W : @Ob D, Wedge F W.
 
 (** A wedge morphism retains an apex map and commuting triangles. *)
 
 (** 楔态射保留顶点映射及交换三角形。 *)
 
-Definition WedgeMap {C D : Cat} {F : Functor ((C^op) ×C C) D}
+Definition WedgeMap {C D : Cat} {F : Fct ((C^op) ×C C) D}
     (κ μ : WedgeOb F)
   := ∃ f : Hom κ.1 μ.1, μ.2 ∘Wedge f ≈W κ.2.
 
@@ -153,7 +153,7 @@ Definition WedgeMap {C D : Cat} {F : Functor ((C^op) ×C C) D}
 
 (** 楔态射按顶点映射比较，不比较保留的交换性见证。 *)
 
-Program Definition WedgeCat {C D : Cat} (F : Functor ((C^op) ×C C) D)
+Program Definition WedgeCat {C D : Cat} (F : Fct ((C^op) ×C C) D)
   : Cat
   :=
   {|Ob := WedgeOb F
@@ -183,8 +183,8 @@ Next Obligation. apply comp_assoc. Qed.
 
 (** 忘掉楔，保留顶点及顶点映射。 *)
 
-Program Definition WedgeApexF {C D : Cat} (F : Functor ((C^op) ×C C) D)
-  : Functor (WedgeCat F) D
+Program Definition WedgeApexF {C D : Cat} (F : Fct ((C^op) ×C C) D)
+  : Fct (WedgeCat F) D
   :=
   {|F0 κ := κ.1
   ; F1 κ μ f := f.1

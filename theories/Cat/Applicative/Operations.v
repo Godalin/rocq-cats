@@ -25,7 +25,7 @@ Local Open Scope applicative_scope.
     并将来源方程作为 Type 值输入保留。 *)
 
 Class IsApplicativeOps {C : Cat} (HT : HasTerminal C) (HP : HasProduct C)
-    (F : Functor C C) (pure : IdF ⇒ F)
+    (F : Fct C C) (pure : IdF ⇒ F)
     (lift : ∀ {X Y Z : @Ob C}, Hom (@Prod C HP X Y) Z →
       Hom (@Prod C HP (F X) (F Y)) (F Z))
   :=
@@ -100,7 +100,7 @@ Class IsApplicativeOps {C : Cat} (HT : HasTerminal C) (HP : HasProduct C)
 
 Program Definition applicative_ops_transport {C : Cat}
     {HT : HasTerminal C} {HP : HasProduct C}
-    {F : Functor C C} {pure : IdF ⇒ F}
+    {F : Fct C C} {pure : IdF ⇒ F}
     {b c : ∀ {X Y Z : @Ob C}, Hom (@Prod C HP X Y) Z →
       Hom (@Prod C HP (F X) (F Y)) (F Z)}
     (B : IsApplicativeOps HT HP F pure (@b))
@@ -152,7 +152,7 @@ Class ApplicativeOps (C : Cat) (HT : HasTerminal C) (HP : HasProduct C)
 
   (** 唯一强制转换暴露指定自函子。 *)
 
-  { OpsF :> Functor C C
+  { OpsF :> Fct C C
 
   (** Pure embedding is natural, including for non-global contextual values. *)
 
@@ -277,7 +277,7 @@ Defined.
 (** 从纯终值及提升后的配对恢复 lax 结构。 *)
 
 Program Definition OperationsLax
-  : LaxMonoidalFunctor (@CartesianMonoidal C HT HP)
+  : LaxMonoidalFct (@CartesianMonoidal C HT HP)
       (@CartesianMonoidal C HT HP)
   :=
   {|LaxMonoidalF := O

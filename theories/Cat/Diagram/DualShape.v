@@ -15,7 +15,7 @@ From Cats Require Import
 (** 离散图式上的出发锥腿族不需要生成边自然性方程。 *)
 
 Definition DiscreteCocone {C : Cat} {I : Type}
-    {D : Functor (DiscreteCat I) C} {X : @Ob C}
+    {D : Fct (DiscreteCat I) C} {X : @Ob C}
     (κ : ∀ i, Hom (D i) X)
   : D ⇒∇ X
   := CoconeOfN (@FreeN (DiscreteGraph I) C D
@@ -31,7 +31,7 @@ Definition DiscreteCocone {C : Cat} {I : Type}
 (** 反空形状的图式就是原反范畴空图式的对偶。 *)
 
 Definition EmptyCodiagram (C : Cat)
-  : Functor (EmptyShape^op) C
+  : Fct (EmptyShape^op) C
   := DualDiagram (EmptyDiagram (C^op)).
 
 (** The empty cocone is the original empty cone read in the dual interface. *)
@@ -48,7 +48,7 @@ Definition EmptyCocone {C : Cat} (X : @Ob C)
 (** 对象对给出原离散二点图式的对偶；[false] 仍为第一对象，[true] 为第二对象。 *)
 
 Definition PairCodiagram {C : Cat} (X Y : @Ob C)
-  : Functor (PairShape^op) C
+  : Fct (PairShape^op) C
   := DualDiagram (@PairDiagram (C^op) X Y).
 
 Notation "'⟨' X ',' Y '⟩CoD'" := (PairCodiagram X Y) : cat_scope.
@@ -70,7 +70,7 @@ Notation "'⟨' i ',' j '⟩Cocone'" := (PairCocone i j) : cat_scope.
 (** 反转原反范畴中的平行箭头图式；[true] 是源，[false] 是共同目标。 *)
 
 Definition ParallelCodiagram {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
-  : Functor (ParallelShape^op) C
+  : Fct (ParallelShape^op) C
   := DualDiagram (@ParallelDiagram (C^op) Y X f g).
 
 Notation "'⟨' f '⇉' g '⟩CoD'" := (ParallelCodiagram f g) : cat_scope.

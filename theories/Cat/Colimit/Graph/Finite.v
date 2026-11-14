@@ -38,7 +38,7 @@ Definition FiniteGraphColimits {C : Cat}
     `{HE : !HasCoequalizer C} {n : nat} (k : Fin n → Fin n → nat)
   : HasColimitsOfShape C (FreeCat (FiniteGraph k))
   := @GeneratedColimits C (FreeCat (FiniteGraph k)) HI HC HE
-      (FiniteGraphGenerators k).
+      (FiniteGraphGen k).
 
 (** Select one finite-generator free-diagram colimit. *)
 
@@ -47,6 +47,6 @@ Definition FiniteGraphColimits {C : Cat}
 Definition FiniteGraphColimit {C : Cat}
     `{HI : !HasInitial C} `{HC : !HasCoproduct C}
     `{HE : !HasCoequalizer C} {n : nat} (k : Fin n → Fin n → nat)
-    (D : Functor (FreeCat (FiniteGraph k)) C)
+    (D : Fct (FreeCat (FiniteGraph k)) C)
   : HasColimit C D
   := @hasColimit _ C (FiniteGraphColimits k) D.

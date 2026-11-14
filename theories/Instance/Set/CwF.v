@@ -74,7 +74,7 @@ Next Obligation. intros δ. cbn. apply transpS_witness_independent. Defined.
 (** 代码与解码截面组成类型和项的族值预层。 *)
 
 Program Definition CodeTyTmF
-  : Functor (SetCat^op) FamCat
+  : Fct (SetCat^op) FamCat
   :=
   {|F0 := CodeFamily
   ; F1 Γ Δ σ := code_sub σ

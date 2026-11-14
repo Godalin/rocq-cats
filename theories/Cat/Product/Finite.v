@@ -91,7 +91,7 @@ Qed.
 (** 结果使用已有索引积结构，适用于有限离散形状上的任意函子。 *)
 
 Program Definition FiniteProductLimit {n : nat}
-    (D : Functor (DiscreteCat (Fin n)) C)
+    (D : Fct (DiscreteCat (Fin n)) C)
   : HasLimit C D
   :=
   {|Lim := FiniteProduct (λ i, D i)

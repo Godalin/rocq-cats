@@ -41,7 +41,7 @@ From Cats Require Import
     证明无关性。 *)
 
 Section KripkeFunctions.
-Context {C : Cat} (F G : Functor (C^op) SetCat).
+Context {C : Cat} (F G : Fct (C^op) SetCat).
 
 (** Application, respectfulness and reindexing coherence form one value.
     The unique function coercion exposes future-world application. *)
@@ -143,7 +143,7 @@ Program Definition kripke_reindex_resp {X Y : @Ob C} (f : Hom Y X)
 (** 相容函数值在同一世界范畴上组成预层。 *)
 
 Program Definition KripkeFunctionF
-  : Functor (C^op) SetCat
+  : Fct (C^op) SetCat
   :=
   {|F0 := KripkeFunctionS
   ; F1 _ _ f := kripke_reindex_resp f
@@ -222,7 +222,7 @@ Notation "G '^K' F" := (KripkeFunctionF F G)
     柯里化映射的源显式提升到该较大的集合范畴中，不向下重设任何大小。 *)
 
 Section KripkeCurrying.
-Context {C : Cat} (F G H : Functor (C^op) SetCat).
+Context {C : Cat} (F G H : Fct (C^op) SetCat).
 Local Existing Instance SetCat_HasProduct.
 
 (** A map on pairs produces a coherent function at every parameter value.

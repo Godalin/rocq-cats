@@ -24,7 +24,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 
 Definition lower_native_lower_ambient_group
   : Group (TwoSphereClassS
-      (Z²(M) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   := cocycle_two_sphere_Group.
 
@@ -34,7 +34,7 @@ Definition lower_native_lower_ambient_group
 
 Definition lower_native_higher_ambient_group
   : Group (TwoSphereClassS
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   := cocycle_two_sphere_Group.
 
@@ -44,7 +44,7 @@ Definition lower_native_higher_ambient_group
 
 Definition higher_native_lower_ambient_group
   : Group (TwoSphereClassS
-      (Z²(N) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   := cocycle_two_sphere_Group.
 
@@ -54,7 +54,7 @@ Definition higher_native_lower_ambient_group
 
 Definition higher_native_higher_ambient_group
   : Group (TwoSphereClassS
-      (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   := cocycle_two_sphere_Group.
 
@@ -67,7 +67,7 @@ Context `{HC : !IsCommutativeMonoid M} `{HD : !IsCommutativeMonoid N}.
 Definition lower_ambient_commutativity
   : @IsCommutativeMonoid
       (TwoSphereClassS
-        (Z²(M) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+        (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
         (two_cocycle_simplex_unit 0))
       (GroupM lower_native_lower_ambient_group)
   := cocycle_two_sphere_IsCommutativeMonoid.
@@ -79,7 +79,7 @@ Definition lower_ambient_commutativity
 Definition higher_ambient_commutativity
   : @IsCommutativeMonoid
       (TwoSphereClassS
-        (Z²(N) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+        (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
         (two_cocycle_simplex_unit 0))
       (GroupM higher_native_higher_ambient_group)
   := cocycle_two_sphere_IsCommutativeMonoid.
@@ -106,7 +106,7 @@ Context (M : SetC@{h e}) `{HM : !Monoid M}.
 
 Definition lower_ambient_composite
     (x y : TwoSphereClassS
-      (Z²(M) : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   : TwoSphereComposite _ _ x y (cocycle_two_sphere_mul x y)
   := CocycleTwoSphereMul x y.
@@ -117,7 +117,7 @@ Definition lower_ambient_composite
 
 Definition higher_ambient_composite
     (x y : TwoSphereClassS
-      (Z²(M) : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (two_cocycle_simplex_unit 0))
   : TwoSphereComposite _ _ x y (cocycle_two_sphere_mul x y)
   := CocycleTwoSphereMul x y.

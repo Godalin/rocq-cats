@@ -40,7 +40,7 @@ Context (B : Type@{b}) (Γ Δ Θ : Ctx B) (A : Ty B)
 (** 替换映射保留公开环境接口的签名、世界相等、语义与世界定律界限。 *)
 
 Definition separated_substitution
-  : (EnvF Δ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : (EnvF Δ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}) ⇒ EnvF Γ
   := EvalSubN Γ Δ σ.
 
@@ -49,7 +49,7 @@ Definition separated_substitution
 (** 替换引理必须在这些指定且不同的界限处成立。 *)
 
 Definition separated_substitution_law
-    (γ : (EnvF Δ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (γ : (EnvF Δ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}) Θ)
   : eval t[σ] Θ γ ≈S eval t Θ (separated_substitution Θ γ)
   := eval_subst t Δ Θ σ γ.
@@ -61,7 +61,7 @@ Definition separated_substitution_law
 
 Definition smaller_evidence_evaluation (h : TmEq@{b b _} t u)
   : (EvalN t : (EnvF Γ :
-      Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}) ⇒ SemF A) ≈N EvalN u
   := eval_tm_eq h.
 
@@ -104,12 +104,12 @@ Context (B : Type@{b}) (Γ Δ Θ : Ctx B) (A : Ty B)
 (** 语义界限可以高于世界定律界限。 *)
 
 Definition smaller_law_substitution
-  : (EnvF Δ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+  : (EnvF Δ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}) ⇒ EnvF Γ
   := EvalSubN Γ Δ σ.
 
 Definition smaller_law_substitution_law
-    (γ : (EnvF Δ : Functor ((RenamingCat B : Cat@{b b r l l})^op)
+    (γ : (EnvF Δ : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{s s _ _ _ _ _}) Θ)
   : eval t[σ] Θ γ ≈S eval t Θ (smaller_law_substitution Θ γ)
   := eval_subst t Δ Θ σ γ.
@@ -121,7 +121,7 @@ Definition smaller_law_substitution_law
 
 Definition larger_evidence_evaluation (h : TmEq@{b e _} t u)
   : (EvalN t : (EnvF Γ :
-      Functor ((RenamingCat B : Cat@{b b r l l})^op)
+      Fct ((RenamingCat B : Cat@{b b r l l})^op)
         SetCat@{s s _ _ _ _ _}) ⇒ SemF A) ≈N EvalN u
   := eval_tm_eq h.
 

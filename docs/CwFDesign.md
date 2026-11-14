@@ -62,7 +62,7 @@ Tm Γ A := SectionS A
 核心数据采用：
 
 ```text
-T : Functor (C^op) FamCat
+T : Fct (C^op) FamCat
 ```
 
 这里的 [FamCat](../theories/Instance/Set/Fam/Cat.v) 已有广集索引、相干的纤维族、
@@ -386,7 +386,7 @@ term_section_sub:
 ```coq
 Class CwF (C : Cat) :=
   { hasTerminal :: HasTerminal C
-  ; TyTmF : Functor (C^op) FamCat
+  ; TyTmF : Fct (C^op) FamCat
   ; hasContextExtension :: HasContextExtension TyTmF
   }.
 ```
