@@ -9,8 +9,9 @@ Local Open Scope monoid_scope.
 
     A composable pair [f : x → y], [g : y → z] determines a triangle:
     its long edge is [g ∘ f]. A two-cocycle assigns a coefficient [c(f,g)]
-    to that triangle. A triangle containing an identity edge has coefficient
-    [1]; this is the meaning of normalized.
+    to that triangle. If either short edge [f] or [g] is an identity, the
+    coefficient must be [1]; this is the meaning of normalized. An identity
+    long edge alone does not impose this condition.
 
     Number [x,y,z,w] as [0,1,2,3]. Four vertices give four triangles.
     The tetrahedron equation compares
@@ -28,8 +29,8 @@ Local Open Scope monoid_scope.
 (** * 归一化三角形数据
 
     可复合的 [f : x → y]、[g : y → z] 给出一个三角形，长边为 [g ∘ f]。
-    二维 cocycle 为它赋一个系数 [c(f,g)]。只要三角形含恒等边，系数就必须
-    为 [1]；这就是“归一化”的含义。
+    二维 cocycle 为它赋一个系数 [c(f,g)]。若短边 [f] 或 [g] 为恒等，系数就
+    必须为 [1]；这就是“归一化”的含义。只有长边为恒等并不施加此条件。
 
     将 [x,y,z,w] 依次编号为 [0,1,2,3]，四个顶点给出四个三角形。
     四面体方程比较两对面上系数的乘积；改用加法
