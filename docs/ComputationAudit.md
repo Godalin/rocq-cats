@@ -2398,3 +2398,44 @@ was rebased. Batch PDF export remains with integration.
 全部 707 页；四个复核模块的同样 72 段双语说明与 62 个公共声明锚点再次核对。
 精确清单仍为 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类。
 同步没有改变源数学或共享环境，只重基本任务分支；批次 PDF 仍由集成方导出。
+
+
+## Dynamic Hom correspondence foundation
+
+## 动态 Hom 对应基础
+
+This independently reusable prerequisite continues on `monoidal-cat-view`
+from `7df4d2f`, with integrated baseline
+`15a7ccf05eeee9d2c8d1691d3b47468e121c7978` unchanged.
+[Dynamic computations](../theories/Cat/Computational/Arrow/Dynamic.v)
+name an arrow by pure substitution of each ordinary input. Naming,
+respectfulness and both naturality equations require only an ordinary
+cartesian Arrow. Dynamic evaluation adds ArrowApply and applies the
+selected terminal-input computation to the singleton. Its two
+reconstruction laws follow from the existing application equations,
+without assuming pointwise extensionality or pure-inclusion faithfulness.
+Both native Hom-setoid maps are transparent and retain their distinct
+native sizes; the eventual adjunction supplies any ambient lifting.
+
+此可独立复用基础在 `monoidal-cat-view` 上从 `7df4d2f` 继续，集成基线仍为
+`15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
+[动态计算](../theories/Cat/Computational/Arrow/Dynamic.v)以每个通常输入的
+纯代入命名箭头；命名、尊重性及两个自然性方程仅要求通常笛卡尔 Arrow。
+动态求值增加 ArrowApply，将选出的终输入计算应用于单元素。两个重建律由
+已有应用方程推出，不假设逐点外延性或纯嵌入忠实。两个原生 Hom 广集映射
+透明并保留各自不同原生大小；所需环境提升留给后续伴随。
+
+The targeted module build passed with the unchanged `rocq-cats` switch
+(Rocq/Stdlib 9.2.0, Dune 3.23.1). All 55 temporary assumption reports are
+closed under the global context: eleven public constructions/laws and
+44 strict universe probes, separating hom/equality sizes in both orders
+and placing computation-object size below or above them. No interface,
+chosen model, permanent test or shared toolchain was added. `typeprop`
+was not changed. The following Monad construction will reuse the existing
+Hom-adjunction and adjunction-to-Monad theories.
+
+在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）中，定向
+模块构建通过。55 项临时公理报告均无额外全局假设：11 个公共构造／定律和
+44 项严格宇宙探针；按两种次序分离 Hom／相等大小，并将计算对象大小置于
+它们之上或之下。没有新增接口、选定模型、永久测试或共享工具链，没有修改
+`typeprop`。后续 Monad 构造将复用已有 Hom 伴随及伴随到 Monad 理论。

@@ -6,6 +6,7 @@ Apply.v
 Pairing.v
 GlobalContext.v
 Global.v
+Dynamic.v
 Binoidal.v
 Premonoidal.v
 Symmetric.v
