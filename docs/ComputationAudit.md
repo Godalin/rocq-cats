@@ -3697,3 +3697,70 @@ coherent further connections and justified free constructions remain open.
 本有界连接是在上述前提下的对象／运算／态射对应；不新增 Applicative 范畴，
 也不声称新的打包 Applicative 范畴等价。强 profunctor、后续相干连接及具有
 充分条件的自由构造继续开放。
+
+### The ordinary profunctor prerequisite
+
+### 通常 Profunctor 前置
+
+[The ordinary interface](../theories/Cat/Profunctor/Core.v) uses exactly the
+existing mixed-variance functor bundle. `Profunctor` names a setoid-valued
+functor contravariant in its input and covariant in its output; its existing
+object-map coercion and `fmap` remain available. No duplicate structure/data
+record or extra homomorphism predicate is stored. `ProfunctorCat` is the
+existing functor category, with natural transformations and their specified
+pointwise equality. Neither an end nor a coend is required for these types.
+
+[通常接口](../theories/Cat/Profunctor/Core.v)恰好使用已有混合变元函子打包。
+`Profunctor` 命名输入反变、输出协变的广集值函子，已有对象映射强制转换及
+`fmap` 继续可用。不另存重复结构／数据记录或同态谓词。`ProfunctorCat` 就是
+已有函子范畴，使用自然变换及其指定逐点相等；这些类型不要求 end 或 coend。
+
+The shared scoped notation `dimap`, `lmap`, `rmap` reads existing functor
+maps as two-sided preprocessing/postprocessing and their one-sided actions.
+Functor laws prove identity, composition and respectfulness. The one-sided
+natural comparisons reuse product-coordinate restrictions; their naturality
+supplies interchange and the two decompositions of `dimap`. Input and output
+category object/Hom/equality levels are independent of one another and of
+the value carrier/equality bounds, with no order between the two value levels.
+
+共享作用域记号 `dimap`、`lmap`、`rmap` 将已有函子映射读作双侧预处理／
+后处理及其单侧作用。函子律给出恒等、复合及尊重性；单侧自然比较复用积坐标
+限制，其自然性给出交换律及 `dimap` 的两个分解。输入、输出范畴的对象／Hom／
+相等层级彼此独立，也独立于值载体／相等界，不增加两个值层级间的次序。
+
+`ProfunctorReindex` precomposes opposite/product functors. Transformations
+and specified inverse witnesses are right-whiskered by the existing theory.
+`ProfunctorReindexF` restricts the existing horizontal-composition functor;
+its arrow action agrees with right whiskering in natural equality. This
+comparison is deliberately not record equality: an identity functor map
+may change representatives while satisfying the specified equality law.
+Ordinary naturality already gives the profunctor transformation equation.
+
+`ProfunctorReindex` 对反函子／积函子预合成，变换及指定逆见证使用已有理论的
+右须化。`ProfunctorReindexF` 限制已有水平复合函子，其箭头作用按自然相等与
+右须化一致。此比较不要求记录相等：函子恒等映射可以改变代表而仍满足指定
+相等律。通常自然性已给出 profunctor 变换方程。
+
+[The Hom client](../theories/Cat/Profunctor/Hom.v) lifts the existing `HomF`
+with independently declared carrier/equality bounds. It then reindexes to
+`Hom (F X) (G Y)` for two functors with a common target, using that target's
+original composition. The bounds must contain the actual Hom carrier and
+Hom equality levels; no bound on indexing objects, ambient equality/carrier
+identification, global choice or resizing is asserted. This interface is
+intended for the later computation-Hom client without assuming strength.
+
+[Hom 客户端](../theories/Cat/Profunctor/Hom.v)以独立声明的载体／相等界提升
+已有 `HomF`，再对两个同目标函子重索引为 `Hom (F X) (G Y)`，使用原目标复合。
+大小界须容纳真实 Hom 载体及其相等层级，不要求指标对象界，不识别环境相等／
+载体，也不声称全局选择或 resizing。此接口供后续计算 Hom 客户端使用，
+目前不假定强度。
+
+This independent prerequisite does not compose profunctors or provide
+monoidal strength, promonads or the Arrow monoid characterization. Those
+clients follow after this foundation is integrated, with their own actual
+coend/existence/strength hypotheses. Conditional free constructions remain
+later work in the agreed semantic endpoint.
+
+此独立前置不复合 profunctor，不提供幺半强度、promonad 或 Arrow 幺半群刻画。
+这些客户端在基础集成后开展，并各自说明实际 coend／存在／强度前提。
+约定语义终点中的条件式自由构造仍属后续工作。
