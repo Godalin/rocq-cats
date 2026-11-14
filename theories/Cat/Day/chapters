@@ -5,3 +5,5 @@ Unit.v
 Parameter.v
 Iterated.v
 Associator.v
+Coherence.v
+Monoidal.v
