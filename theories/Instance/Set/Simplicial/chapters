@@ -26,12 +26,15 @@ Vertex/Terminal.v
 Vertex/Category.v
 Vertex/Cartesian.v
 Homotopy/Core.v
+Homotopy/Sphere.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
 Vertex/HomotopyInv.v
+Vertex/Sphere.v
 Cocycle/Core.v
 Cocycle/Low.v
 Cocycle/Finite.v
 Cocycle/Sieve.v
 Cocycle/Four.v
 Cocycle/Kan.v
+Cocycle/Sphere.v
