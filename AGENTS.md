@@ -201,31 +201,36 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Keep `_build/` and generated outputs separate per worktree. Reuse the initialized
   toolchain without modifying shared opam environments during parallel work.
   Branches, remotes and stash are shared Git state, not private to each worktree.
-- Integrate completed branches one at a time: rebase the task branch onto the
-  latest `typeprop`, validate it and its dependents, then fast-forward `typeprop`.
-  Record the validated baseline commit. If `typeprop` advances before integration,
-  rebase again and revalidate affected modules and dependents before fast-forwarding.
-  Do not create merge commits or rewrite `typeprop`. Coordinate rebases of
-  published task branches with dependent sessions; use `--force-with-lease`
-  when pushing rewritten task history. Avoid repeated cherry-picks of the same
-  changes across branches.
+- Integrate frozen submissions one at a time. The integrator creates a temporary
+  branch from the submitted SHA in its own reusable validation worktree and
+  rebases there onto the latest `typeprop` when needed. Validate the resulting
+  SHA and affected dependents, then fast-forward `typeprop`. If the baseline
+  advances, the integrator rebases and revalidates before advancing. Keep the
+  worker's source branch/worktree unchanged; return conflicts requiring proof,
+  API or design changes to the worker. Do not create merge commits or rewrite
+  `typeprop`. Any worker-owned published history rewrite still requires
+  coordination and `--force-with-lease`; avoid repeated cherry-picks.
 - Write bilingual documentation with the code. Integration acceptance requires
   a successful library build with the project toolchain. HTML/PDF exports are
   separate documentation tasks, performed when requested; they are not routine
   integration or batch acceptance requirements.
 - Git commits and branch refs record integration state. Coordinate ongoing work
   through direct session messages; keep no separate coordination issue or runtime
-  registry. Workers alone write their assigned branches/worktrees, including
-  requested rebases. Resolve overlapping ownership before edits. Coordinator
-  takeover requires user designation of an existing session, explicit release
-  or stopping the old coordinator, and checking Git refs and pending work;
+  registry. Workers alone write their assigned source branches/worktrees;
+  integrator rebases use its own temporary branch/worktree. Resolve overlapping
+  ownership before edits. Coordinator takeover requires user designation of an
+  existing session, explicit release or stopping the old coordinator, and
+  checking Git refs and pending work;
   timeout or peer agreement alone does not grant authority.
 - A stable part may integrate before issue completion. Use an ordinary integration
   request stating branch/SHA and summary, validation, and impact on other work.
-  No proposal/event IDs, fixed schema or message state machine is needed. Keep
-  the requested branch unchanged while it is processed; agree replacements with
-  the integrator and report fresh validation. Reply with the integrated SHA, or
-  a pause reason and next action.
+  No proposal/event IDs, fixed schema or message state machine is needed. The
+  submitted SHA need not contain the latest `typeprop`. Keep the source branch
+  unchanged while it is processed; agree replacements with the integrator and
+  report fresh validation. Reply with the integrated SHA and, after rebase, its
+  source SHA, or a pause reason and next action. Continue subsequent bounded
+  work on a new short branch from the reported integrated baseline, preserving
+  any unintegrated work without replaying already integrated patches.
 - Route by semantic effect and reviewed import/API dependencies: L0 to the origin,
   L1 also to affected consumers, L2 to all active workers for foundational/global
   changes. The worker reports impact; the integrator confirms it. Breaking is

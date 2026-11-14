@@ -15,12 +15,14 @@ Git 提交和分支引用记录集成状态，正在进行的工作通过会话�
 
 All sessions already exist, and the user designates their roles. No session
 creates other sessions or assigns/changes session roles. Only the designated
-integrator advances `typeprop`; workers own their task branches and independent
-worktrees, including any requested rebases. No session edits another's worktree.
+integrator advances `typeprop`; workers own their source branches and independent
+worktrees. The integrator rebases submitted commits in its own temporary branch
+and reusable validation worktree. No session edits another's worktree.
 
 所有会话均已存在，由用户指定角色。会话不创建其他会话，也不指定或更改角色。
-只有指定的集成会话推进 `typeprop`；工作会话负责自己的任务分支和独立 worktree，
-包括执行所需的 rebase。任何会话都不编辑其他会话的 worktree。
+只有指定的集成会话推进 `typeprop`；工作会话负责自己的来源分支和独立 worktree。
+集成会话在自己的临时分支和可复用验证 worktree 中重基提交，任何会话都不编辑
+其他会话的 worktree。
 
 A designated worker starts its task directly. When a stable part is committed
 and validated, it sends an integration request. No startup handshake is needed.
@@ -47,35 +49,47 @@ Use an ordinary message containing three things:
 3. **影响范围：** 受影响的接口／消费者、是否 breaking、谁可能需要同步。
    影响不明确时说明不确定性。
 
-A stable part of a larger task may integrate independently. Keep the requested
-branch at the reported SHA while it is being processed. If it needs further
-edits, agree with the integrator before replacing the request, then send the
-new SHA and validation. No separate proposal, event number or fixed schema
-is required.
+A stable part of a larger task may integrate independently. Its submitted SHA
+need not contain the latest `typeprop`; the integrator handles that rebase.
+Keep the source branch at the reported SHA while it is being processed. If it
+needs further edits, agree with the integrator before replacing the request,
+then send the new SHA and validation. No separate proposal, event number or
+fixed schema is required.
 
-较大任务中的稳定部分可以先独立集成。处理期间，待集成分支保持在所报 SHA。
+较大任务中的稳定部分可以先独立集成。提交 SHA 不必已包含最新 `typeprop`，
+由集成会话处理重基；处理期间，来源分支保持在所报 SHA。
 需要继续修改时，先与集成会话约定替换请求，再发送新的 SHA 和验证结果。
 不需要单独提案、事件编号或固定消息格式。
 
-After checking Git, the integrator replies **“integrated” with the SHA**, or
-**“pause” with the reason and next action**. A failed delivery leaves the worker
-paused with its work preserved; it must not integrate itself. A pause ends when
-the integrator confirms the blocker is resolved.
+After checking Git, the integrator replies **“integrated” with the resulting
+SHA** (and source SHA if rebased), or **“pause” with the reason and next action**.
+A failed delivery leaves the worker paused with its work preserved; it must not
+integrate itself. A pause ends when the integrator confirms the blocker is
+resolved.
 
-集成会话核对 Git 后回复“已集成”并附 SHA，或回复“请暂停”并说明原因和下一步。
+集成会话核对 Git 后回复“已集成”并附结果 SHA（重基时也附来源 SHA），
+或回复“请暂停”并说明原因和下一步。
 消息投递失败时，工作会话保全工作并暂停，不自行集成。集成会话确认阻塞解除后
 再继续。
+
+After integration, start the next bounded task on a new short branch from the
+reported integrated baseline. Keep any remaining unintegrated work and adapt
+only that remainder; do not replay patches already accepted under new SHAs.
+
+集成后，从通知的集成基线另开短分支开始下一有界任务。保留尚未集成的工作，
+仅适配剩余部分，不因重基改变 SHA 而重复提交已接收的补丁。
 
 ## 3. Serial integration / 串行集成
 
 1. Check the requested commit, task scope and prerequisites. Confirm affected
    consumers from the actual declarations/imports and session discussion;
    include implicit parameters, instances, coercions, notation and universes.
-2. If the requested commit does not include the latest `typeprop`, ask its
-   owner to rebase and revalidate, then report the new SHA. Coordinate published
-   rewrites and use
-   `--force-with-lease`. Never rebase another session's checkout.
-3. Validate the exact candidate and affected dependents with the project
+2. Create an integrator-owned temporary branch from the submitted SHA in a
+   reusable validation worktree. Rebase onto the latest `typeprop` when needed,
+   leaving the worker's branch/worktree unchanged. Resolve unambiguous mechanical
+   conflicts; return conflicts requiring proof, API or design changes to the
+   worker. Compare the original and rebased changes before accepting the result.
+3. Validate the exact resulting candidate and affected dependents with the project
    `rocq-cats` switch. Apply the existing mathematical and bilingual documentation
    requirements, checking `Print Assumptions` when appropriate. Keep build
    outputs separate per worktree; do not modify shared toolchains.
@@ -83,8 +97,9 @@ the integrator confirms the blocker is resolved.
    wait for their explicit confirmation. Before advancing, confirm the candidate
    and `typeprop` still match the validated SHAs and the integration checkout is
    clean. Fast-forward one branch at a time with `git merge --ff-only <sha>`;
-   allow no merge commits or rewriting of `typeprop`. Changed SHAs require
-   renewed validation.
+   allow no merge commits or rewriting of `typeprop`. If the baseline advances,
+   the integrator rebases again in its worktree and renews validation. Any other
+   candidate SHA change also requires renewed validation.
 5. Verify the resulting Git ref, reply to the origin and notify affected workers.
    Failure before advancement leaves `typeprop` unchanged. If notification or
    push fails after advancement, inspect refs before retrying; do not integrate
@@ -94,16 +109,18 @@ the integrator confirms the blocker is resolved.
 
 1. 核对请求提交、任务范围和前置依赖。结合实际声明／导入和会话讨论确认消费者，
    包括隐式参数、实例、强制转换、记号和宇宙约束的影响。
-2. 请求提交未包含最新 `typeprop` 时，请所有者 rebase 并重新验证，报告新 SHA。
-   改写已发布历史须协调并使用 `--force-with-lease`；不 rebase 其他会话的
-   checkout。
-3. 使用项目 `rocq-cats` switch 验证精确候选及受影响依赖方，遵守原有数学和
+2. 集成会话在自己可复用的验证 worktree 中，从提交 SHA 建立临时分支，按需
+   重基到最新 `typeprop`，保持工作会话的分支／worktree 不变。可处理含义明确
+   的机械冲突；需要修改证明、API 或设计的冲突交回工作会话。接收结果前比较
+   原始与重基后的改动。
+3. 使用项目 `rocq-cats` switch 验证重基后的精确候选及受影响依赖方，遵守原有数学和
    双语文档要求，按需检查 `Print Assumptions`。各 worktree 的构建输出独立，
    不修改共享工具链。
 4. breaking 变更先请受影响工作会话保全并暂停，等待明确确认。推进前确认候选与
    `typeprop` 仍对应已验证 SHA，且集成 checkout 干净。逐分支使用
    `git merge --ff-only <sha>` 快进，不产生 merge commit 或改写 `typeprop`。
-   SHA 改变时须重新验证。
+   基线改变时，由集成会话在自己的 worktree 再次重基并重新验证；候选 SHA
+   的其他变化同样要求重新验证。
 5. 核实结果 ref，回复来源会话并通知受影响会话。推进前失败须保持 `typeprop`
    不变；推进后通知或推送失败时，先检查 refs 再重试，不重复集成，也不在核实
    前声称远端已发布。
@@ -161,8 +178,8 @@ routine commit/build broadcasts. Preserve explicit pause/sync instructions.
 | Situation / 情形 | Action / 动作 |
 | --- | --- |
 | Dirty worktree or running build / 脏工作区或正在构建 | Reach a safe checkpoint and preserve work before Git operations; never discard user edits / 到安全点并保全后再操作 Git，不丢弃用户编辑 |
-| Conflict or failed validation / 冲突或验证失败 | Tell the owner which commit/check failed; repair and revalidate before integration / 告知所有者失败提交／检查，修复并重验后再集成 |
-| Missing, repeated or late message / 漏收、重复或迟到消息 | Check Git ancestry and ask the sender what remains pending; never repeat an already completed integration / 检查 Git 祖先关系并向发送者确认待办，不重复已完成集成 |
+| Conflict or failed validation / 冲突或验证失败 | Integrator handles mechanical rebases; report substantive conflicts or failures to the worker, then validate the repaired result / 集成会话处理机械重基；实质冲突或失败交回工作会话，修复后验证结果 |
+| Missing, repeated or late message / 漏收、重复或迟到消息 | Check Git history and source/result SHAs in replies; rebased source SHAs may not be ancestors, so confirm equivalent patches before replaying / 检查 Git 历史及回复中的来源／结果 SHA；重基后来源 SHA 未必是祖先，重放前先确认补丁是否已等价集成 |
 | Unreachable session / 会话失联 | Preserve work and pause the affected task/handoff until contact resumes / 保全并暂停受影响任务／交接，恢复联系后再继续 |
 | Restart or uncertain push result / 重启或推送结果不明 | Inspect actual local/remote refs, then confirm unfinished actions through normal messages / 检查真实本地／远端 refs，通过正常消息核对未完成动作 |
 | Coordinator replacement or overlapping ownership / 协调者更换或归属重叠 | Pause disputed work; the user designates any replacement session, and the old coordinator must release authority or stop before the new one integrates / 暂停争议工作；替代会话由用户指定，旧协调者交接或停止后新会话才可集成 |
