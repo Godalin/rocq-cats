@@ -42,6 +42,34 @@ Next Obligation.
   split; [apply func_proper; exact Hx | exact Hs].
 Defined.
 
+(** Mapping respects equality of the ordinary value maps. *)
+
+(** 状态映射保持通常值映射的相等。 *)
+
+Global Instance state_map_proper {R X Y : SetC}
+  : Proper (carrier_equiv (X →S Y) ==>
+      carrier_equiv ((R →S (X ×S R)) →S (R →S (Y ×S R))))
+      (@state_map R X Y).
+Proof.
+  intros f g H k r. split; [exact (H (fst (k r))) | reflexivity].
+Defined.
+
+(** Mapping the identity preserves the entire state computation. *)
+
+(** 映射恒等函数保持整个状态计算。 *)
+
+Lemma state_map_id {R X : SetC}
+  : @state_map R X X (id_resp (X := X)) ≈S id_resp.
+Proof. intros k r. cbn. destruct (k r). split; reflexivity. Defined.
+
+(** Successive value maps compose without changing the state. *)
+
+(** 连续的值映射可复合，且不改变状态。 *)
+
+Lemma state_map_comp {R X Y Z : SetC} (f : Y →r Z) (g : X →r Y)
+  : @state_map R X Z (f ∘r g) ≈S (state_map f ∘r state_map g).
+Proof. intros k r. split; reflexivity. Defined.
+
 (** The state carrier and equality levels remain separate. Function-space
     equality requires both to fit in the ambient equality level, which may
     be strictly below the ambient carrier level. The following interfaces
@@ -50,32 +78,15 @@ Defined.
 (** 状态载体与相等层级保持独立。函数空间相等要求两者均不超过所在广集的相等
     层级，而后者可严格小于载体层级。以下接口显式保留这两个所在层级。 *)
 
-(** Introduce the functor-law parameters explicitly: reduction of [Proper]
-    during automatic obligation introduction differs across Rocq versions. *)
-
-(** 显式引入函子定律的参数：不同 Rocq 版本在自动引入义务参数时，对
-    [Proper] 的归约行为有所不同。 *)
-
-Local Obligation Tactic := idtac.
-
 Program Definition StateF@{r e u p +} (R : SetC@{r e})
   : Functor (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
   :=
   {|F0 X := R →S (X ×S R)
   ; F1 X Y f := state_map f
+  ; functor_fmap_proper X Y := state_map_proper
+  ; functor_id X := state_map_id
+  ; functor_comp X Y Z f g := state_map_comp f g
   |}.
-Next Obligation.
-  intros R X Y f g H k r.
-  split; [exact (H (fst (k r))) | reflexivity].
-Defined.
-Next Obligation.
-  intros R X k r. cbn. destruct (k r). split; reflexivity.
-Defined.
-Next Obligation.
-  intros R X Y Z f g k r. split; reflexivity.
-Defined.
-
-Local Obligation Tactic := cats_obligation.
 
 (** Return a value without changing the state. *)
 
