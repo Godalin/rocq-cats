@@ -2191,3 +2191,39 @@ structure records.
 `Has*` 类。只修改本任务分支，没有修改 `typeprop` 或共享工具链。批次 PDF
 仍由集成会话导出。ArrowApply／Monad 与带类型语法仍属后续工作；本批交付
 具有显式运算保持性的条件范畴等价，不宣称计算结构记录的无条件等价。
+
+
+## Pointwise strength foundation for ArrowApply
+
+## ArrowApply 的逐点强度基础
+
+This independently reusable prerequisite continues on `monoidal-cat-view`
+from `57f7fa1`, with integrated baseline
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` unchanged.
+[Setoid strength](../theories/Instance/Set/Strength.v) proves that every
+supplied cartesian tensorial strength pairs a fixed ordinary context value
+with the functor's result. Naturality and the unit equation suffice; the
+proof uses no Monad or exponential, and compares values in specified
+setoid equality. Any two supplied strengths consequently have equal
+components, without equality of structure or law records. This will allow
+Kleisli dynamic application to use an arbitrary supplied strong Monad.
+
+此可独立复用前置基础在 `monoidal-cat-view` 上从 `57f7fa1` 继续，集成基线仍为
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
+[广集强度](../theories/Instance/Set/Strength.v)证明任意给定笛卡尔张量强度
+逐点等于通过函子作用将固定通常上下文值配到结果旁边。自然性及单位方程已
+足够，不要求 Monad 或指数，使用指定广集相等。因此任意两个给定强度具有
+相等的分量，无须等同结构或定律记录。该结论使 Kleisli 动态应用能复用任意
+所给强 Monad。
+
+The targeted module build passed with the unchanged `rocq-cats` switch
+(Rocq/Stdlib 9.2.0, Dune 3.23.1). All six temporary assumption reports are
+closed under the global context: the two public lemmas and four probes
+with ambient carrier/equality universes strictly separated in both orders.
+No interface, chosen model, permanent test or shared toolchain was added.
+`typeprop` was not changed; full-batch validation follows with its clients.
+
+在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）中，定向
+模块构建通过。六项临时公理报告均无额外全局假设：两个公共引理及四项严格
+探针，按两种次序分离所在载体／相等宇宙。没有新增接口、选定模型、永久测试
+或共享工具链，没有修改 `typeprop`；客户端完成后再进行整批验证。
