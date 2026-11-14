@@ -232,12 +232,18 @@ End TwoSpheres.
 
     Fix a simplicial map between independently sized values at common
     ambient bounds. Naturality transports all boundary and tetrahedron
-    equations to the image base vertex. *)
+    equations to the image base vertex. The later chapter
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMap.two sphere class map resp}
+    {%[two_sphere_class_map_resp]%}% descends these actual images to
+    generated classes and corrects image bases by specified equality. *)
 
 (** ** 映射球面
 
     固定共同环境界内的单纯映射。自然性将所有边界及四面体方程运输到像基点
-    顶点处。 *)
+    顶点处。后续章节
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMap.two sphere class map resp}
+    {%[two_sphere_class_map_resp]%}% 将这些实际像下降到生成类，并用指定
+    相等校正像基点。 *)
 
 Section MappingSpheres.
 Universes u p.
