@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 366 modules,
+covers 370 modules,
 70 classes and 30 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 366 个模块、70 个类及 30 个记录。清单覆盖
+更新，现覆盖 370 个模块、70 个类及 30 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -665,8 +665,8 @@ and opposite-based dual constructions.
 | `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
 | `Cat/` | 183 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
-| `Algebra/` | 13 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
-| `Instance/` | 106 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `Algebra/` | 14 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
+| `Instance/` | 109 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
 | `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
@@ -1978,13 +1978,29 @@ existing pure/pairing comparisons through this same predicate.
 [静态回收](../theories/Instance/Set/StaticArrow.v)同样通过此谓词暴露已有
 纯值／配对比较。
 
-The current source inventory is 366 modules and 100 interfaces (70 classes,
+The current source inventory is 370 modules and 100 interfaces (70 classes,
 30 records), including all 29 `Has*` classes. This slice adds three theory/client
 modules and no bundled interface. See the [computation audit](./ComputationAudit.md)
 for assumptions, temporary validation and the agreed endpoint through free
 constructions; typed syntax is outside that completion boundary.
 
-当前源码清单为 366 个模块及 100 个接口（70 个类、30 个记录），包含全部
+当前源码清单为 370 个模块及 100 个接口（70 个类、30 个记录），包含全部
 29 个 `Has*` 类。本批新增三个理论／客户端模块，不新增打包接口。假设、临时
 验证及以自由构造为终点的已定范围，见[计算审计](./ComputationAudit.md)；
 有类型语法不属于该完结范围。
+
+This direct-comparison slice is now rebased onto integrated
+`8db08e33d0e859c9a62980a2c313b4fb00398607`. All 48 task commits retain their
+contents in the range comparison. The new upstream cocycle-completion client
+uses the task's existing `magma_mul_proper` and `semigroup_assoc` names. Two
+explicit Monoid universe instances in its new simplicial-model regression
+are reordered to the existing hierarchy's carrier/equality/law parameter
+order, preserving both native size profiles and every strict inequality.
+No new interface or shared test configuration is introduced by this adaptation.
+
+本次直接比较切片现已重基到集成版本
+`8db08e33d0e859c9a62980a2c313b4fb00398607`，范围比较确认全部 48 个任务
+提交内容不变。新增上游 cocycle 补全客户端改用任务已有的
+`magma_mul_proper` 与 `semigroup_assoc` 名称。新增单纯模型回归中的两处
+显式 Monoid 宇宙实例按现有层级的载体／相等／定律参数顺序排列，保留两种
+原生大小配置及每条严格不等式。此适配不新增接口或共享测试配置。

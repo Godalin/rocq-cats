@@ -2850,3 +2850,56 @@ and optional Cayley representations are outside that boundary.
 幺半群构造，以及具有泛解释与唯一性的自由 Monad／Applicative／Arrow 实例。
 每个特化均须证明其大小／存在性／保持性假设。有类型语言语法及可选 Cayley
 表示不属于该范围。
+
+### Direct-comparison handoff on the updated baseline
+
+### 更新基线上的直接比较交接
+
+Before handoff, `typeprop` advanced by two upstream commits to
+`8db08e33d0e859c9a62980a2c313b4fb00398607`. The task's 48 commits rebase
+without conflicts; `git range-diff` confirms identical contents, including
+implementation `8351ed5` becoming `89a6bee`. The following synchronization
+adaptations are separate from those unchanged commits:
+
+- [Cocycle completion](../theories/Algebra/Group/Cocycle.v) uses the existing
+  magma respectfulness and semigroup associativity names. Its operations,
+  hypotheses, construction names and mathematical conclusions are retained.
+- [The new upstream size regression](../tests/cocycle-model/Universes.v)
+  changes only two explicit Monoid universe-instance orders to match the
+  inherited hierarchy. The carrier/equality profiles remain interchanged,
+  law witnesses retain their independent upper bound, and every strict
+  inequality and test assertion is retained. No test file or alias is added
+  by this adaptation, and shared test configuration is untouched.
+
+交接前 `typeprop` 经两个上游提交推进至
+`8db08e33d0e859c9a62980a2c313b4fb00398607`。48 个任务提交无冲突重基，
+`git range-diff` 确认内容不变，其中实现提交 `8351ed5` 变为 `89a6bee`。
+下述同步适配独立于这些内容不变的提交：
+
+- [Cocycle 补全](../theories/Algebra/Group/Cocycle.v)改用已有原群尊重性及
+  半群结合律名称，保留运算、假设、构造名称与数学结论。
+- [新增上游大小回归](../tests/cocycle-model/Universes.v)只调整两处显式
+  Monoid 宇宙实例顺序以匹配继承层级。载体／相等配置仍然交换，定律见证
+  保留独立上界，每条严格不等式与测试断言均保留。此适配不新增测试文件或
+  别名，也不修改共享测试配置。
+
+The final local validation on this baseline includes full-library
+`@all @runtest @install`, the same 30 transparent State reductions and all
+245 closed temporary assumption reports: 124 general/strict-size probes,
+81 concrete-model helpers/results and 40 public declarations in the new
+upstream cocycle-completion and simplicial-model modules. Strict bilingual
+HTML covers 370 modules per language and 745 checked pages. In the five
+affected comparison/recovery modules, all 126 language-specific documentation
+blocks and 110 declaration anchors are checked against the rendered pages.
+The exact inventory remains 100 interfaces (70 classes, 30 records), including
+all 29 `Has*` classes. Batch PDF export remains with integration. These final
+checks replace the earlier-baseline counts; they are not cumulative totals.
+
+此基线上的最终本地验证包括全库 `@all @runtest @install`、同样的 30 项
+透明 State 归约，以及全部 245 项无额外假设的临时公理报告：124 项一般／
+严格大小检查、81 项具体模型辅助项／结果、40 项新增上游 cocycle 补全与
+单纯模型模块的公共声明。严格双语 HTML 覆盖每种语言 370 个模块，检查
+745 页。在五个受影响比较／回收模块中，全部 126 个语言专属文档块及
+110 个声明锚点均与渲染页核对。精确清单仍为 100 个接口（70 个类、30 个
+记录），包含全部 29 个 `Has*` 类。批次 PDF 仍由集成方导出。这些最终检查
+替换较早基线的计数，不与之前计数累加。

@@ -20,7 +20,7 @@ Constraint o < l.
 Constraint l < u.
 Constraint u < p.
 Context (M : SetC@{h e}) (N : SetC@{e h})
-    (HM : Monoid@{l h e} M) (HN : Monoid@{l e h} N).
+    (HM : Monoid@{h e l} M) (HN : Monoid@{e h l} N).
 Local Existing Instance HM.
 Local Existing Instance HN.
 
