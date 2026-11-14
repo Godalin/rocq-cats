@@ -14,7 +14,11 @@ Local Open Scope ordinal_scope.
     asserts that an arbitrary simplicial setoid has a group of classes.
     Compare the elementary homotopy in
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Sphere.TwoSphereHomotopy}
-    {%[TwoSphereHomotopy]%}%: it has two constant faces instead of one. *)
+    {%[TwoSphereHomotopy]%}%: it has two constant faces instead of one.
+    In the next chapter,
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMap.two sphere composite map}
+    {%[two_sphere_composite_map]%}% sends such witnesses to their actual
+    image tetrahedra, without first choosing a group of classes. *)
 
 (** * 通过四面体合成基点二维球面
 
@@ -23,7 +27,10 @@ Local Open Scope ordinal_scope.
     这里保留四面体本身及全部四个面方程。此定义既不选择填充，也不声称
     任意单纯广集的类构成群。可对照
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Sphere.TwoSphereHomotopy}
-    {%[TwoSphereHomotopy]%}%：初等同伦有两个常值面，而非一个。 *)
+    {%[TwoSphereHomotopy]%}%：初等同伦有两个常值面，而非一个。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMap.two sphere composite map}
+    {%[two_sphere_composite_map]%}% 将这些见证送到其实际像四面体，无须先
+    选择类群。 *)
 
 (** @lang both
 %\begin{center}
