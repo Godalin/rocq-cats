@@ -37,6 +37,38 @@ Definition FunctorHomProfunctor@{u p +} {C D K : Cat}
   : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})
   := ProfunctorReindex F G (HomProfunctor K).
 
+(** A functor maps represented Hom arrows into the corresponding reindexed
+    Hom profunctor. Reuse its respectful Hom map and independent lifting;
+    its auxiliary law bounds remain independent of the raised value bounds. *)
+
+(** 函子将表示的 Hom 箭头映到相应重索引 Hom profunctor；复用其尊重 Hom 映射及
+    独立提升，辅助定律界与提升值界保持独立。 *)
+
+Program Definition HomProfunctorMapN@{u p a b +} {C D : Cat}
+    (F : Fct@{_ _ _ _ a b _ _ _ _} C D)
+  : (HomProfunctor C : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})) ⇒
+      (FunctorHomProfunctor F F)
+  :=
+  {|nt XY :=
+      {|func h :=
+          {|lower := fmap F (lower h)
+          |}
+      |}
+  |}.
+Next Obligation.
+  intros h k E. refine {|lower := _|}.
+  exact (@functor_fmap_proper C D F _ _ (lower h) (lower k) (lower E)).
+Defined.
+Next Obligation.
+  intros h. refine {|lower := _|}.
+  change (fmap F (snd f ∘ lower h ∘ fst f) ≈
+    fmap F (snd f) ∘ fmap F (lower h) ∘ fmap F (fst f)).
+  transitivity (fmap F (snd f ∘ lower h) ∘ fmap F (fst f)).
+  - exact (@functor_comp C D F _ _ _ (snd f ∘ lower h) (fst f)).
+  - apply comp_proper; [|reflexivity].
+    exact (@functor_comp C D F _ _ _ (snd f) (lower h)).
+Defined.
+
 (** ** Hom Action in the Declared Bounds
 
     Fix a category and ambient bounds for its Hom carriers and equality

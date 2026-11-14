@@ -3764,3 +3764,64 @@ later work in the agreed semantic endpoint.
 此独立前置不复合 profunctor，不提供幺半强度、promonad 或 Arrow 幺半群刻画。
 这些客户端在基础集成后开展，并各自说明实际 coend／存在／强度前提。
 约定语义终点中的条件式自由构造仍属后续工作。
+
+### Left-context profunctor strength
+
+### 左上下文 Profunctor 强度
+
+[The strength interface](../theories/Cat/Profunctor/Strength.v) adds chosen
+left-context action to a supplied profunctor over a named monoidal category.
+For each context, it stores an ordinary natural transformation into
+`ProfunctorContext`, which reuses the existing reindexing along the same
+`BinoidalLeftF` at both ends. Naturality in input and output is inherited
+from that transformation, rather than stored again as separate laws.
+The derived `pstrength` notation is confined to `profunctor_scope`.
+
+[强度接口](../theories/Cat/Profunctor/Strength.v)在具名幺半范畴上，为给定
+profunctor 添加选定左上下文作用。每个上下文存储一个到 `ProfunctorContext`
+的通常自然变换；该目标复用沿两端同一 `BinoidalLeftF` 的已有重索引。
+输入及输出自然性从此变换继承，不另存一套定律。导出 `pstrength` 记号
+局限在 `profunctor_scope` 中。
+
+Changing the context satisfies a dinaturality equation: ordinary substitution
+can act at either end of the computation. It does not require the context
+map to be invertible. The unit and associator equations use the original
+monoidal boundaries and designated equality; no native equality of objects,
+functions or law records is required. This left-context convention matches
+the existing computational Arrow context. It does not assume symmetry,
+cartesian products or effect interchange, and it does not choose a strength
+from an arbitrary ordinary profunctor.
+
+改变上下文时满足双自然性方程：通常代入可在计算任一端作用，不要求上下文
+映射可逆。单位及结合方程使用原幺半边界与指定相等，不要求对象、函数或定律
+记录的原生相等。这个左上下文约定与既有计算 Arrow 上下文一致，不要求
+对称性、笛卡尔积或效应交换，也不替任意通常 profunctor 自动选择强度。
+
+[The Hom client](../theories/Cat/Profunctor/HomStrength.v) explicitly selects
+the original fixed-context functor's arrow map as Hom strength.
+`HomProfunctorMapN`, added to the [Hom module](../theories/Cat/Profunctor/Hom.v),
+first makes any supplied functor's lifted Hom map a natural transformation.
+The strength reuses this naturality; coherence reuses monoidal interchange
+and the existing left-unitor/associator naturality. Its lifted respectful
+components preserve independent value and equality bounds as well as the
+context functor's auxiliary law bounds. Only the actual Hom carrier and
+equality levels must fit their respective value bounds; object indices
+need not fit either bound. These are explicit constructions, with no chosen
+model instance registered by importing either module.
+
+[Hom 客户端](../theories/Cat/Profunctor/HomStrength.v)显式选择原固定上下文函子的
+箭头映射作为 Hom 强度。[Hom 模块](../theories/Cat/Profunctor/Hom.v)新增
+`HomProfunctorMapN`，先将任意给定函子的提升 Hom 映射组成自然变换。
+强度复用该自然性，相干性复用幺半交换律及已有左单位子／结合子自然性。
+其提升尊重分量保持值／相等界和上下文函子辅助定律界独立；只要求实际 Hom
+载体及相等层级分别容纳于对应值界，对象指标不必容纳其中。这些构造必须
+显式选择，导入任一模块均不注册选定模型实例。
+
+Neither module assumes or constructs a coend. Composition of profunctors,
+strength on that composition, strong promonads and the Arrow-monoid comparison
+remain subsequent stages, with their actual existence and size assumptions.
+The general conditional free constructions also remain open.
+
+两个模块均不假设或构造 coend。Profunctor 复合、复合上的强度、强 promonad
+及 Arrow 幺半群比较仍为后续阶段，须保留实际存在和大小条件；一般条件式
+自由构造也仍未完成。
