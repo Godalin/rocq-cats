@@ -50,6 +50,24 @@ Arguments candidate_sn {_ _ _ _} {_} _ _.
 Arguments candidate_step {_ _ _ _} {_} _ _ _ _.
 Arguments candidate_expand {_ _ _ _} {_} _ _ _.
 
+(** Step closure iterates along a finite directed path. The path and
+    normalization-tree universes are independent: membership transport
+    uses the step law, not a comparison or resizing of trees. *)
+
+(** 步骤封闭沿有限有向路径迭代。路径和归一化树的宇宙独立：成员性传递使用
+    步骤律，不比较或缩小树。 *)
+
+Definition candidate_rtc@{a r n p s k w +} {A : Type@{a}}
+    {R : A → A → Type@{r}} {N : A → Type@{n}} {P : A → Type@{p}}
+    (hP : IsReducibilityCandidate@{a r n p s k} R N P)
+    {x y : A} (h : ReflTransClosure@{a r w} R x y)
+  : P x → P y.
+Proof.
+  induction h as [x | x y z h q ih]; intros p.
+  - exact p.
+  - exact (ih (@candidate_step _ _ _ _ hP x y h p)).
+Defined.
+
 (** Pointwise equivalent predicates have equivalent candidate laws. This
     transports membership evidence rather than equating predicates or
     their normalization trees. *)
