@@ -24,7 +24,11 @@ Local Open Scope ordinal_scope.
 
     This compares outputs for fixed input representatives. It does not
     yet descend composition through arbitrary generated input homotopies,
-    prove group laws, or identify a general Kan homotopy group. *)
+    prove group laws, or identify a general Kan homotopy group. Next,
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereFirstTransport.SphereCompositeFirstHomotopy}
+    {%[SphereCompositeFirstHomotopy]%}% transports a first-input homotopy
+    while retaining the output representative. That module extends it
+    through generated first-input equality, with the second input fixed. *)
 
 (** * 比较两份合成填充
 
@@ -39,7 +43,10 @@ Local Open Scope ordinal_scope.
     [d_2 V] 的第二、第三面是两个输出，第零、第一面为常值，因而给出所需同伦。
 
     这里比较固定输入代表的输出；尚未将合成沿任意生成输入同伦下降，未证明
-    群律，也未识别一般 Kan 同伦群。 *)
+    群律，也未识别一般 Kan 同伦群。接下来的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereFirstTransport.SphereCompositeFirstHomotopy}
+    {%[SphereCompositeFirstHomotopy]%}% 沿第一输入同伦运输并保留输出代表；
+    该模块固定第二输入，将此运输扩展到第一输入的生成相等。 *)
 
 (** @lang both
 %\begin{center}
