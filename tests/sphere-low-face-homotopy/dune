@@ -1,0 +1,7 @@
+(rocq.theory
+ (name CatsSphereLowFaceHomotopyTests)
+ (theories Cats Stdlib))
+
+(alias
+ (name runtest)
+ (deps Universes.vo Computations.vo))
