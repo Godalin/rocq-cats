@@ -25,7 +25,11 @@ Local Open Scope ordinal_scope.
     These laws do not yet prove associativity, identify the two inverse
     candidates, or make either candidate a respectful class map. Group
     packaging must wait for the remaining laws and general inverse
-    uniqueness; we do not introduce an alternative algebra hierarchy. *)
+    uniqueness; we do not introduce an alternative algebra hierarchy.
+    Next,
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereAssociativity.two_sphere_kan_mul_assoc}
+    {%[two_sphere_kan_mul_assoc]%}% proves associativity by an actual
+    four-horn while retaining the same selected multiplication. *)
 
 (** * 单位与逆候选的乘积
 
@@ -42,7 +46,10 @@ Local Open Scope ordinal_scope.
 
     比较只需四维缺第二面的选择。这些定律尚不证明结合律、识别两个逆候选，
     或使任一候选成为保相等类映射。群的打包须等待其余定律及一般逆唯一性，
-    不在这里引入另一套代数层级。 *)
+    不在这里引入另一套代数层级。接下来的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereAssociativity.two_sphere_kan_mul_assoc}
+    {%[two_sphere_kan_mul_assoc]%}% 通过实际四维 horn 证明结合律，保留同一份
+    选定乘法。 *)
 
 (** @lang both
 %\begin{center}
