@@ -1,7 +1,8 @@
 From Cats Require Export
   Instance.Set.Sieve.Core.
 From Cats Require Import
-  Instance.Set.Isomorphism.
+  Instance.Set.Isomorphism
+  Instance.Set.PresheafDescent.
 
 (** * Matching Data for Generated Sieves
 
@@ -13,6 +14,38 @@ From Cats Require Import
 
     每个生成元上的值若在全部共同因子上相容，就唯一给出从生成筛出发的映射。
     交叠见证保留在 Type 中，不选取优先分解，也不比较见证。 *)
+
+(** The retained membership factor is a cover of the sieve presheaf in the
+    sense of %\coqref{Cats.Instance.Set.PresheafDescent.is presheaf cover}
+    {%[is_presheaf_cover]%}%. The generator is its actual sieve member. *)
+
+(** 保留的隶属分解给出筛预层的
+    %\coqref{Cats.Instance.Set.PresheafDescent.is presheaf cover}
+    {%[is_presheaf_cover]%}% 覆盖；生成元就是实际筛成员。 *)
+
+Definition generated_sieve_cover@{u p +} {C : Cat} {A : @Ob C}
+    {I : Type} {D : I → @Ob C} (g : ∀ i, Hom (D i) A)
+  : is_presheaf_cover
+      (Q := SievePsh (GeneratedSieve D g) :
+        Fct (C^op) SetCat@{u p _ _ _ _ _})
+      (λ i, {|lower := (g i; generated_sieve_member g i)
+             |}).
+Proof.
+  intros X [[f [i [h E]]]]. exists i, h.
+  exact {|lower := symmetry E
+         |}.
+Defined.
+
+(** ** Matching and Descent
+
+    Fix a generating arrow family and a target presheaf. The general
+    presheaf-cover theorem now constructs descent and its universal
+    property, retaining the original generator-value interface. *)
+
+(** ** 匹配与下降
+
+    固定生成箭头族和目标预层。以下由一般预层覆盖定理构造下降及其泛性质，
+    保留原生成元值接口。 *)
 
 Section Matching.
 Universes v q.
@@ -67,9 +100,22 @@ Program Canonical SieveMatchingS
   ; carrier_equiv := MatchingEq
   |}.
 
-(** Descend matching data by evaluating any retained factorization. *)
+(** A sieve overlap is exactly an equality of the generator restrictions
+    in its presheaf. Membership witnesses need not agree. *)
 
-(** 沿任一保留分解求值，使匹配数据下降。 *)
+(** 筛的交叠正是其预层中生成元限制的相等；隶属见证无需一致。 *)
+
+Lemma sieve_matching_compatible (a : SieveMatching)
+  : presheaf_values_compatible
+      (Q := SievePsh (GeneratedSieve D g))
+      (λ i, {|lower := (g i; generated_sieve_member g i)
+             |}) (λ i, a i).
+Proof. intros X i j f h [E]. exact (matching_overlap a X i j f h E). Defined.
+
+(** Descend matching data by evaluating the same retained factorization
+    as before. The general theorem supplies respectfulness and naturality. *)
+
+(** 仍沿原保留分解求值使匹配数据下降；保相等性和自然性由一般定理提供。 *)
 
 Program Definition SieveMatchingN (a : SieveMatching)
   : SievePsh (GeneratedSieve D g) ⇒ P
@@ -82,14 +128,31 @@ Program Definition SieveMatchingN (a : SieveMatching)
   |}.
 Next Obligation.
   intros [[f [i [h E]]]] [[f' [j [k F]]]] [H].
-  apply (matching_overlap a X i j h k).
-  transitivity f; [symmetry; exact E |].
-  transitivity f'; [exact H | exact F].
+  exact (@func_proper _ _
+    (PresheafDescendN _ (generated_sieve_cover g) (λ i, a i)
+      (sieve_matching_compatible a) X)
+    {|lower := (f; (i; (h; E)))|}
+    {|lower := (f'; (j; (k; F)))|} {|lower := H|}).
 Defined.
 Next Obligation.
   intros [[a0 [i [h E]]]].
-  exact (functor_comp _ _ P f h (a i)).
+  exact (nt_naturality
+    (PresheafDescendN _ (generated_sieve_cover g) (λ i, a i)
+      (sieve_matching_compatible a)) f
+    {|lower := (a0; (i; (h; E)))|}).
 Defined.
+
+(** The original raw map is the general descent in specified natural
+    equality. Keeping its original component expression also preserves
+    conversion for clients with an opaque sieve element. *)
+
+(** 原始映射按指定自然相等就是一般下降；保留原分量表达式也保持含不透明
+    筛元素的客户端所需的定义转换。 *)
+
+Lemma sieve_matching_descend_eq (a : SieveMatching)
+  : PresheafDescendN _ (generated_sieve_cover g) (λ i, a i)
+      (sieve_matching_compatible a) ≈N SieveMatchingN a.
+Proof. intros X [[f [i [h E]]]]. reflexivity. Defined.
 
 (** Restrict a sieve map to its generating members. Naturality and
     respectfulness provide all overlap equations. *)
@@ -128,7 +191,10 @@ Program Definition matching_descend_resp
   |}.
 Next Obligation.
   intros a b H X [[f [i [h E]]]].
-  exact (@func_proper _ _ (fmap P h) _ _ (H i)).
+  exact (presheaf_descend_proper _ (generated_sieve_cover g)
+    (generated_sieve_cover g) (λ i, a i) (λ i, b i)
+    (sieve_matching_compatible a) (sieve_matching_compatible b) H X
+    {|lower := (f; (i; (h; E)))|}).
 Defined.
 
 (** Extraction preserves equality of natural transformations. *)
@@ -148,7 +214,10 @@ Next Obligation. intros α β H i. exact (H _ _). Defined.
 
 Lemma matching_descend_β (a : SieveMatching)
   : MatchingEq (SieveMatchingOfN (SieveMatchingN a)) a.
-Proof. intros i. exact (functor_id _ _ P (a i)). Defined.
+Proof.
+  intros i. exact (presheaf_descend_β _ (generated_sieve_cover g)
+    (λ i, a i) (sieve_matching_compatible a) i).
+Defined.
 
 (** Descending the generator values recovers the entire map. *)
 
@@ -157,19 +226,20 @@ Proof. intros i. exact (functor_id _ _ P (a i)). Defined.
 Lemma matching_descend_η (α : SievePsh (GeneratedSieve D g) ⇒ P)
   : SieveMatchingN (SieveMatchingOfN α) ≈N α.
 Proof.
-  intros X [[f [i [h E]]]].
-  pose (a := {|lower := (g i; generated_sieve_member g i)
-              |} : SievePsh (GeneratedSieve D g) (D i)).
-  transitivity (α X (fmap (SievePsh (GeneratedSieve D g)) h a)).
-  - symmetry. exact (nt_naturality α h a).
-  - apply func_proper. exact {|lower := symmetry E
-                             |}.
+  transitivity (PresheafDescendN _ (generated_sieve_cover g)
+    (λ i, SieveMatchingOfN α i)
+    (sieve_matching_compatible (SieveMatchingOfN α))).
+  - symmetry. apply sieve_matching_descend_eq.
+  - transitivity (PresheafDescendN _ (generated_sieve_cover g)
+      (λ i, SieveMatchingOfN α i) (presheaf_map_values_compatible _ α)).
+    + apply presheaf_descend_proper. intros i. reflexivity.
+    + apply presheaf_descend_η.
 Defined.
 
 (** Matching data have a unique descent with the prescribed generator
-    values. Uniqueness uses the general generator equality criterion. *)
+    values. The universal property is the general cover descent theorem. *)
 
-(** 匹配数据具有生成元值指定的唯一下降；唯一性复用一般生成元判等。 *)
+(** 匹配数据具有生成元值指定的唯一下降；泛性质复用一般覆盖下降定理。 *)
 
 Definition matching_descend_universal (a : SieveMatching)
   : is_unique (R := @NatEq _ _ _ _)
@@ -180,10 +250,11 @@ Proof.
           |}.
   - exact (matching_descend_β a).
   - intros α H.
-    apply (snd (generated_sieve_map_eq g α (SieveMatchingN a))).
-    intros i. transitivity (a i).
-    + exact (H i).
-    + symmetry. exact (matching_descend_β a i).
+    transitivity (PresheafDescendN _ (generated_sieve_cover g)
+      (λ i, a i) (sieve_matching_compatible a)).
+    + exact (@that _ _ _ _ _ (presheaf_descend_universal _ (generated_sieve_cover g)
+        (λ i, a i) (sieve_matching_compatible a)) α H).
+    + apply sieve_matching_descend_eq.
 Defined.
 
 End Matching.
