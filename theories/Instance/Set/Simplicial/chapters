@@ -42,6 +42,7 @@ Homotopy/SphereUnit.v
 Homotopy/SphereAssociativity.v
 Homotopy/SphereGroup.v
 Homotopy/SphereGroupMap.v
+Homotopy/SphereCylinderClass.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v

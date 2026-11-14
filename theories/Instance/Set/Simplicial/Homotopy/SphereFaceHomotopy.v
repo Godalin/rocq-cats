@@ -24,8 +24,11 @@ Local Open Scope ordinal_scope.
     four-dimensional missing-face-one choice gives the conversion and
     hence generated class equality. No three-dimensional selection,
     multiplication, group, full Kan or filler uniqueness is needed.
-    This is a prerequisite for general relative-cylinder comparison;
-    it does not yet identify π₂ or provide arbitrary-path base change. *)
+    The subsequent
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderClass.two_sphere_cylinder_class}
+    {%[two_sphere_cylinder_class]%}% combines this prerequisite with the
+    remaining prism pieces. Neither construction identifies π₂ or
+    provides arbitrary-path base change. *)
 
 (** * 将球面同伦从最前两面移到最后两面
 
@@ -40,8 +43,10 @@ Local Open Scope ordinal_scope.
     不预设 x 与 y 的三角形相等，也不要求 w 与 d₁V 相等。
 
     先保留给定填充及其方程，再由显式四维缺第一面选择得到转换及生成类相等。
-    不要求三维选择、乘法、群、完整 Kan 或填充唯一性。这是一般相对柱比较的
-    前置，尚不识别 π₂ 或给出任意路径换基。 *)
+    不要求三维选择、乘法、群、完整 Kan 或填充唯一性。后续的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderClass.two_sphere_cylinder_class}
+    {%[two_sphere_cylinder_class]%}% 将此前置与其余柱片段接通。两种构造均不识别
+    π₂ 或给出任意路径换基。 *)
 
 (** @lang both
 %\begin{center}
