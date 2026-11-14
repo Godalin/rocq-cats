@@ -3576,3 +3576,61 @@ free constructions remain subsequent stages of the broader semantic line.
 在所述选择下，本阶段完成 Day 幺半群／原生 lax 的范畴对应。与直接
 Applicative 接口的连接、强 profunctor、相干计算结构连接及具有充分条件的
 自由构造，仍是整条语义路线的后续阶段。
+
+### Native setoid pure as a prerequisite for the Applicative–Day connection
+
+### Applicative–Day 连接的原生广集纯值前置
+
+[Native lax Applicatives](../theories/Instance/Set/LaxApplicative.v) recover
+pure values from the unit of a cartesian lax setoid endofunctor. First,
+`SetPureN` maps any specified singleton value along constant respectful maps.
+Functor composition proves naturality; naturality at constants proves that
+any other supplied pure transformation with the same singleton value agrees
+in designated natural equality. This first result does not use lax data.
+
+[原生 lax Applicative](../theories/Instance/Set/LaxApplicative.v)从笛卡尔 lax
+广集自函子的单位恢复纯值。首先，`SetPureN` 沿常值保相等映射映射指定单元素值。
+函子复合给出自然性；常值处的自然性证明，任意单元素值相同的所给纯值变换，
+均按指定自然相等与它一致。此首个结果不使用 lax 数据。
+
+`SetLaxA` takes exactly the supplied lax structure as its parent. Its pure
+unit law follows from functor identity, and pure pairing uses only tensorator
+naturality and the left lax unit equation. No strength is selected and no
+coend is assumed. The existing Applicative laws therefore apply directly,
+including contextual binary lifting and application when exponentials are
+separately available. Neither ambient carrier/equality universe is ordered
+against the other by this construction.
+
+`SetLaxA` 的父结构恰为所给 lax 结构。纯单位律来自函子恒等律，纯配对只用
+张量子自然性及左 lax 单位方程。不选择强度，也不假定 coend。已有 Applicative
+定律因而直接适用，包括上下文二元提升，以及另有指数时的应用。此构造不在
+所在载体／相等宇宙之间添加次序要求。
+
+Unit-preserving natural transformations preserve the recovered pure values.
+`set_lax_applicative_hom` identifies the existing Applicative and monoidal
+preservation predicates for these explicit lifts; `set_applicative_hom_lax`
+does the same for any supplied native Applicatives. Binary preservation
+reuses the existing comparison of derived tensor action with product maps.
+`set_applicative_pure_roundtrip` recovers the original pure, and identity
+components preserve both directions' operations. The inverse comparison
+reuses general Applicative inverse preservation. No equality of structures,
+functions or law records is required.
+
+保持单位的自然变换保持恢复所得纯值。`set_lax_applicative_hom` 对这些显式提升
+识别已有 Applicative 与幺半保持谓词；`set_applicative_hom_lax` 对任意所给
+原生 Applicative 给出相同识别。二元保持性复用派生张量作用与积映射的已有比较。
+`set_applicative_pure_roundtrip` 恢复原纯值，恒等分量在两个方向保持运算；逆比较
+复用一般 Applicative 逆保持性。不要求结构、函数或定律记录相等。
+
+This independently reusable prerequisite is specific to the native setoid
+category. An arbitrary categorical lax endofunctor is not silently given a
+pure map. The dependent Day connection still requires explicit convolution
+choices: no fixed-size full-setoid self-indexing coend, resizing principle or
+new global model choice is claimed. Its packaging is a subsequent bounded
+stage after this prerequisite's integration; strong profunctors and free
+constructions remain outside this batch.
+
+此独立可复用前置专用于原生广集范畴，不为任意范畴的 lax 自函子自动添加纯值。
+依赖的 Day 连接仍须显式选择卷积，不声称固定大小全广集自索引 coend、resizing
+原则或新的全局模型选择。该连接在此前置集成后另作有界打包；强 profunctor
+及自由构造不混入本批。
