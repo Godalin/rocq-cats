@@ -3,6 +3,7 @@ Bifunctor.v
 Strength.v
 Monoid.v
 Functor.v
+Natural.v
 Lifting.v
 Constant.v
 Transport.v
