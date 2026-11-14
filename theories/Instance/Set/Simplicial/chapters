@@ -35,6 +35,7 @@ Homotopy/SphereHorn.v
 Homotopy/SphereKan.v
 Homotopy/SphereKanComparison.v
 Homotopy/SphereFirstTransport.v
+Homotopy/SphereSecondTransport.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v

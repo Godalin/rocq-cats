@@ -21,10 +21,12 @@ Local Open Scope ordinal_scope.
     %\coqref{Cats.Instance.Set.Simplicial.FaceGluing.HornFacesN}
     {%[HornFacesN]%}% supplies the actual horn maps in both directions.
 
-    This is a prerequisite for class descent in the first input. Transport
-    in the second input and a binary operation on sphere classes require
-    further work. No group law or general homotopy-group identification is
-    claimed here. In the diagram, the top arrow is the supplied elementary
+    This gives class descent in the first input. The next chapter,
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereSecondTransport.SphereCompositeSecondHomotopy}
+    {%[SphereCompositeSecondHomotopy]%}%, supplies the second direction.
+    A binary class operation and group laws require further work; no
+    general homotopy-group identification is claimed here.
+    In the diagram, the top arrow is the supplied elementary
     homotopy h; the dashed arrow is the constructed replacement of a
     composite. Vertical arrows read faces in specified equality. *)
 
@@ -40,9 +42,11 @@ Local Open Scope ordinal_scope.
     %\coqref{Cats.Instance.Set.Simplicial.FaceGluing.HornFacesN}
     {%[HornFacesN]%}% 的逐对下降得到实际 horn 映射。
 
-    这是第一输入类上下降的前置；第二输入运输和球面类上的二元运算仍需后续
-    工作，此处不声称群律或一般同伦群识别。下图顶边表示给定初等同伦 h，虚线
-    表示构造的合成替换，竖边按指定相等读出各面。 *)
+    这里得到第一输入的类上下降。下一章
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereSecondTransport.SphereCompositeSecondHomotopy}
+    {%[SphereCompositeSecondHomotopy]%}% 给出第二方向。二元类运算和群律仍需后续
+    工作，此处不声称一般同伦群识别。下图顶边表示给定初等同伦 h，虚线表示
+    构造的合成替换，竖边按指定相等读出各面。 *)
 
 (** @lang both
 %\begin{center}
