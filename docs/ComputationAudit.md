@@ -3116,3 +3116,64 @@ Day construction. The final required free constructions remain later work.
 幺半相干性、Day 幺半群／lax 幺半对应及保持运算的连接仍待完成。强 profunctor
 须另带自身的相干上下文作用；此 Day 构造并不提供该强度。最终要求的自由构造
 仍属后续工作。
+
+### Representable Day units and natural unit isomorphisms
+
+### 可表 Day 单位及自然单位同构
+
+The [unit construction](../theories/Cat/Day/Unit.v) uses the explicitly
+raised covariant representable at a proposed unit object. Its left unitor
+needs only a binary functor and an invertible natural left unit map;
+the right construction needs the corresponding right unit map. They do
+not require an associator, symmetry, cartesian products in the base,
+strength or preservation properties of the input functor. Their existence
+conditions remain exactly the selected convolutions involving this
+representable and the input functor.
+
+[单位构造](../theories/Cat/Day/Unit.v)使用候选单位对象处显式提升的协变可表
+函子。左单位子只需二元函子及可逆的自然左单位映射；右侧构造需要对应的
+右单位映射。它们不要求结合子、对称性、基范畴的笛卡尔积、强度，或输入
+函子的保持性质。存在条件仍仅为涉及此可表函子与输入函子的选定卷积。
+
+Both forward transformations reuse the natural Day extension. Their
+inverses insert the identity representable arrow with the supplied base
+unitor as weight. The two inverse equations follow from the base inverse
+laws, the Day generator computation and coend gluing. No new quotient,
+universal-property construction or equality between law witnesses is used.
+The construction retains transparent inverse maps and their computation
+equations on arbitrary weighted generators.
+
+两个正向自然变换均复用自然 Day 延拓。其逆插入可表恒等箭头，以给定的
+基单位子为权重。两条互逆方程由基逆律、Day 生成元计算及 coend 粘合得到。
+不另建商对象或泛性质构造，也不比较定律见证相等。构造保留透明逆映射，
+并给出任意加权生成元上的计算方程。
+
+The general [generator-map law](../theories/Cat/Day/Universal.v) exposes
+how a convolution map changes both values while retaining the weight.
+It supplies naturality of these unitors in the input functor. Naturality
+of their inverses reuses the existing inverse-square theorem. With a
+uniform explicit family of convolution choices, the unitors assemble
+into natural isomorphisms on the functor category itself, ready for the
+existing bifunctor-based monoidal constructor. The original monoidal
+tensor and its selected unit maps instantiate these interfaces directly.
+
+一般[生成元映射定律](../theories/Cat/Day/Universal.v)暴露卷积映射如何在
+保留权重的同时改变两个值，用于证明单位子关于输入函子的自然性。逆的
+自然性复用已有逆方块定理。统一显式提供卷积选择族后，单位子组装为函子
+范畴本身上的自然同构，可供已有的双函子式幺半构造使用。原幺半张量及其
+选定单位映射可直接实例化这些接口。
+
+Ambient carrier and equality levels stay fixed independently, with the
+same Hom-weight and coend size conditions as the preceding Day model.
+Only the coends at the functors concerned are assumed in the individual
+unit laws; a uniform family is needed only for the functor-category
+packaging. No chosen structure is registered by importing the module.
+This establishes the unit part, not the associator, triangle or pentagon.
+Their coherence, the Day-monoid/lax-monoidal characterization, strong
+profunctors and the required free constructions remain subsequent work.
+
+环境载体与相等层级保持独立固定，沿用前批 Day 模型的 Hom 权重和 coend
+大小条件。单个单位定律只假定相关函子处的 coend；仅在函子范畴打包时才
+需要统一选择族。导入模块不注册选定结构。本批完成单位部分，尚未建立
+结合子、三角形或五边形。相干性、Day 幺半群／lax 幺半刻画、强 profunctor
+及要求的自由构造仍是后续工作。
