@@ -28,3 +28,6 @@ Vertex/Cartesian.v
 Homotopy/Core.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
+Vertex/HomotopyInv.v
+Cocycle/Core.v
+Cocycle/Low.v

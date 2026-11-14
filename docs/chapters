@@ -11,6 +11,7 @@ theories/Instance/Bool/Nerve.v
 theories/Algebra/Group/Cocycle.v
 theories/Cat/Diagram/Cocycle.v
 theories/Instance/Bool/Cocycle.v
+theories/Instance/Bool/CocycleModel.v
 theories/Cat
 theories/STLC
 theories/DTT
