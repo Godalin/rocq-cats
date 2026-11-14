@@ -34,6 +34,7 @@ Prism.v
 PrismOverlap.v
 PrismGluing.v
 Homotopy/SphereCylinder.v
+Homotopy/SpherePrismRelative.v
 Homotopy/SphereBasedHomotopy.v
 Homotopy/SphereHorn.v
 Homotopy/SphereKan.v
