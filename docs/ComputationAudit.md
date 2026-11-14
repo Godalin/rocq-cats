@@ -3387,3 +3387,70 @@ subsequent work; they are not implied by this monoidal assembly alone.
 在所述假设下，本批完成 Day 张量／单位／结合性的相干层。Day 幺半群／lax
 对应、强 profunctor、相干计算结构连接及条件式自由构造仍是后续工作，不能
 仅由本幺半装配直接推得。
+
+### Day monoids and native lax monoidal operations
+
+### Day 幺半群与原生 lax 幺半运算
+
+[Day monoid characterization](../theories/Cat/Day/Monoid.v) starts from a
+supplied monoidal base and explicit uniform Day convolution choices. The
+value target uses the existing selected terminal object and products on
+setoids. Lifted covariant Yoneda, via the existing opposite-presheaf proof,
+identifies a map from the representable Day unit with a value at the base
+unit. The existing Day restriction/extension correspondence identifies a
+multiplication with its natural binary operation. No new universal property
+is rebuilt in a concrete model.
+
+[Day 幺半群刻画](../theories/Cat/Day/Monoid.v)以给定幺半基及显式统一 Day 卷积
+选择为输入。值目标使用已有广集终对象与积选择。提升协变 Yoneda 经已有的
+反范畴预层证明，将可表 Day 单位的出射映射与基单位处的值对应起来。已有
+Day 限制／延拓对应将乘法与其自然二元操作对应起来，不在具体模型中重建
+泛性质。
+
+`day_monoid_laws` equates the three fixed-data Day monoid diagrams with the
+native lax unit and associativity equations. The unit equations use the
+transparent inverse Day unitors; the multiplication equation uses ternary
+generator distinction and inverse associativity. The reconstructed Day tensor
+map is compared with the universal Day action in natural equality. The
+predicate `is_day_lax` compares fixed operations; the complete structure
+remains the existing `LaxMonoidalFct`, with no staging data record.
+
+`day_monoid_laws` 将固定数据上的三个 Day 幺半群图与原生 lax 单位／结合
+方程对应。单位方程使用透明的 Day 逆单位子；乘法方程使用三元生成元区分性
+及逆结合性。重建 Day 张量映射按自然相等与泛 Day 作用比较。谓词
+`is_day_lax` 只比较固定运算，完整结构仍使用已有 `LaxMonoidalFct`，不另设
+数据阶段记录。
+
+`LaxDayMonoid` and `DayMonoidLax` construct both structures with exactly the
+same underlying functor. Both units and both binary operations survive the
+round trips in designated equality, without identifying law or functor
+records. All mediators and conversion data stay transparent. The generic
+lax-functor preservation of monoid objects remains available separately;
+applying it to the base unit monoid alone would produce an object at that
+unit, not this monoid in the functor category.
+
+`LaxDayMonoid` 与 `DayMonoidLax` 双向构造结构，保持完全相同的底层函子。
+两侧的单位和二元运算均在往返后按指定相等保持，不识别定律或函子记录。
+全部中介与转换数据保持透明。一般 lax 函子保持幺半群对象的定理继续独立
+可用；仅将其作用于基单位幺半群会得到该单位处的对象，并不能直接给出这里
+函子范畴中的幺半群。
+
+Ambient carrier and equality universes stay independent, with the original
+Day weight bounds and explicit existence input. Conditional choices add no
+ordering between those ambient levels. The generated model retains its
+sufficient bounds `o,h ≤ u ≤ p` and `e ≤ p`; no resizing or fixed-size full
+setoid self-indexing is asserted. Importing this optional module enables no
+global selected structure and changes no coercion or notation.
+
+环境载体与相等宇宙保持独立，沿用原 Day 权重界和显式存在输入。条件式选择
+不增加两环境层级的次序。生成模型保留充分界 `o,h ≤ u ≤ p` 及 `e ≤ p`，
+不声称 resizing 或固定大小的全广集自索引。导入此可选模块不启用全局选定
+结构，也不改变强制转换或记号。
+
+This bounded stage proves the object/operation correspondence. Packaging
+monoidal natural transformations and the resulting categorical comparison,
+the connection with the direct Applicative interface, strong profunctors and
+conditional free constructions remain separate subsequent stages.
+
+本有界阶段证明对象／运算对应。幺半自然变换及所得范畴比较的打包、与直接
+Applicative 接口的连接、强 profunctor 和条件式自由构造仍待后续独立阶段。
