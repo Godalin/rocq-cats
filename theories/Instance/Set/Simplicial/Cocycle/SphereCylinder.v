@@ -21,7 +21,10 @@ Local Open Scope monoid_scope.
     gives an actual relative homotopy whenever the generated classes agree.
     This proves the two presentations equivalent in the cocycle model.
     It is not a theorem about arbitrary Kan objects or about invariance
-    under unpointed homotopy equivalences. *)
+    under unpointed homotopy equivalences. The next chapter
+    %\coqref{Cats.Instance.Set.Simplicial.Cocycle.Homotopy.cocycle homotopy evaluation resp}
+    {%[cocycle_homotopy_evaluation_resp]%}% extends the coefficient
+    invariant to homotopies of maps into this particular target. *)
 
 (** * 比较 Cocycle 球面类与相对柱
 
@@ -33,7 +36,10 @@ Local Open Scope monoid_scope.
 
     反之，在这个具体模型中，系数分类已经能反映三角形相等。因此，若生成类
     相等，常值柱就给出实际相对同伦。由此证明 cocycle 模型中两个呈现等价；
-    此结论并非任意 Kan 对象的定理，也未证明非基点同伦等价下的不变性。 *)
+    此结论并非任意 Kan 对象的定理，也未证明非基点同伦等价下的不变性。下一章
+    %\coqref{Cats.Instance.Set.Simplicial.Cocycle.Homotopy.cocycle homotopy evaluation resp}
+    {%[cocycle_homotopy_evaluation_resp]%}% 将系数不变量推广到以此具体
+    模型为目标的映射同伦。 *)
 
 (** The equalities in the diagram live in the coefficient setoid.
     [D001] and [D011] are the two internal triangles, and each equality
