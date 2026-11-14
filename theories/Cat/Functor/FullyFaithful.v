@@ -1,5 +1,6 @@
 From Cats Require Export
   Cat.Induced.
+
 (** * Inverting Fully Faithful Functors on Their Image Objects
 
     Fix a functor and Type-valued full-faithfulness data. Use its computational

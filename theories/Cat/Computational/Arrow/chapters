@@ -12,3 +12,4 @@ Freyd.v
 Applicative.v
 Static.v
 StaticEvaluation.v
+StaticRepresentation.v

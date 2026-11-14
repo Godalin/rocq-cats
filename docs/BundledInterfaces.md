@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 344 modules,
+covers 347 modules,
 68 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 344 个模块、68 个类及 29 个记录。清单覆盖
+更新，现覆盖 347 个模块、68 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -1513,14 +1513,14 @@ and exponentials, with a terminal object added for unit evaluation.
 相等及从左到右的效应，不假设交换律或 Monad。一般图只要求积与指数，在
 单位求值处另加终对象。
 
-The current inventory covers 344 modules and the unchanged 97 interfaces
+The current inventory covers 347 modules and the unchanged 97 interfaces
 (68 classes, 29 records), including all 29 `Has*` classes. Work continues
 with categorical semantic structures and their correspondence conditions;
 typed syntax is deferred until that semantic development is established.
 The [audit](./ComputationAudit.md#static-cartesian-operation-comparisons)
 records validation and the exact delivered comparison level.
 
-当前清单覆盖 344 个模块及原有 97 个接口（68 个类、29 个记录），包括全部
+当前清单覆盖 347 个模块及原有 97 个接口（68 个类、29 个记录），包括全部
 29 个 `Has*` 类。后续继续范畴语义结构及其对应条件，待语义发展建立后再
 讨论带类型语法。[审计](./ComputationAudit.md#static-cartesian-operation-comparisons)
 记录验证及本次交付的精确比较层次。
@@ -1591,13 +1591,13 @@ No equality of functor records or proof fields is used.
 This delivers the Applicative-to-static-Arrow-to-Applicative semantic round
 trip on that model. It does not reconstruct every Arrow from its global
 values; precise static/dynamic reconstruction conditions remain separate
-semantic work. The inventory now covers 344 modules and all 97 interfaces
+semantic work. The inventory now covers 347 modules and all 97 interfaces
 unchanged. Syntax remains deferred until the semantic development is
 established.
 
 本批给出该模型上的 Applicative 经静态 Arrow 再回到 Applicative 的语义
 往返，不从全局值重建任意 Arrow。精确的静态／动态重建条件仍是独立后续
-语义工作。清单现覆盖 344 个模块，原有 97 个接口不变。语法继续等语义
+语义工作。清单现覆盖 347 个模块，原有 97 个接口不变。语法继续等语义
 建立后再讨论。
 
 
@@ -1629,15 +1629,66 @@ closed setoid model uses a common carrier/equality level, matched by the
 computation hom-setoids, with an independent computation-object level.
 The object map is the original Arrow's pure object map. Identity-component
 `StaticInterpretPureIso` compares the composite static pure inclusion
-with the original pure functor. This is an interpretation with operation
-preservation; fullness, faithfulness, inverse reconstruction and ArrowApply
-remain separate semantic work. No model choice is enabled by import.
-The inventory remains 97 interfaces over 344 modules; syntax stays deferred.
+with the original pure functor. This slice delivers interpretation and
+operation preservation; the subsequent reconstruction results are described
+below. No model choice is enabled by import. At delivery, the inventory
+contained 97 interfaces over 344 modules; syntax stays deferred.
 
 [广集解释器](../theories/Instance/Set/StaticInterpret.v)提供
 `StaticInterpretF`：从 Arrow 抽取的 Applicative 的静态范畴，进入原计算
 范畴。已有闭广集模型使用共用的载体／相等层级，计算 Hom 广集与之匹配，计算
 对象层级仍独立。对象映射是原 Arrow 的纯对象映射。恒等分量的
 `StaticInterpretPureIso` 将复合后的静态纯嵌入与原纯函子自然比较。本批是
-保持运算的解释；满性、忠实性、逆向重建及 ArrowApply 仍属后续语义工作。
-导入不启用模型选择。清单仍为 344 个模块、97 个接口；语法继续暂缓。
+保持运算的解释；满性、忠实性、逆向重建及 ArrowApply 的后续进度见下节。
+导入不启用模型选择。本切片交付时清单为 344 个模块、97 个接口；语法继续暂缓。
+
+
+## Static representations and inverse reconstruction
+
+## 静态表示与逆向重建
+
+[StaticRepresentation](../theories/Cat/Computational/Arrow/StaticRepresentation.v)
+states `is_static_arrow` as invertibility of the specified global-function
+evaluation maps. It is equivalent to supplied Type-valued unique fibers,
+using native computation equality. The transparent inverse preserves pure
+names, ordered composition and the same context action. Every
+Applicative-generated static Arrow satisfies this criterion over any base
+with the selected finite products and exponentials. The proof reuses the
+existing terminal-input value/function inverse, without well-pointedness.
+
+[StaticRepresentation](../theories/Cat/Computational/Arrow/StaticRepresentation.v)
+以指定全局函数求值映射的可逆性定义 `is_static_arrow`，并以原生计算相等
+证明它等价于给定 Type 值唯一纤维。透明逆保持纯命名、有序复合及同一上下文
+作用。任意具有选定有限积与指数的基底上，由 Applicative 生成的静态 Arrow
+均满足该条件；证明复用已有终输入值／函数逆，不要求良点性。
+
+[The setoid reconstruction](../theories/Instance/Set/StaticRepresentation.v)
+identifies the criterion with full faithfulness of the existing interpreter
+at the closed model's common carrier/equality bound. `StaticRepresentationEq`
+gives an actual category equivalence with the original Arrow's value-indexed
+computation category, using the general
+[fully faithful inverse](../theories/Cat/Functor/FullyFaithful.v).
+The two inverse functors preserve pure arrows and context, with composition
+inherited from their functor laws. This conclusion concerns the objects used
+by the Arrow; it does not select representatives for other ambient objects.
+The general theory retains independent category hom sizes, and the setoid
+client retains an independent computation-object size.
+
+[广集重建](../theories/Instance/Set/StaticRepresentation.v)在闭模型的共同
+载体／相等界下，将该条件与已有解释函子的完全忠实性联系起来。
+`StaticRepresentationEq` 复用[一般完全忠实逆](../theories/Cat/Functor/FullyFaithful.v)，
+给出与原 Arrow 值索引计算范畴的实际范畴等价。两个互逆函子保持纯箭头与
+上下文，复合保持性由函子定律给出。结论涉及 Arrow 使用的对象，不为其他
+环境对象选取代表。一般理论保留独立范畴 Hom 大小，广集客户端保留独立计算
+对象大小。
+
+The current inventory covers 347 modules and the unchanged 97 interfaces
+(68 classes, 29 records), including all 29 `Has*` classes. ArrowApply and its
+Monad relationship remain subsequent semantic work; typed syntax stays
+deferred. The [audit](./ComputationAudit.md#static-representation-and-inverse-reconstruction)
+records exact hypotheses, temporary computations and validation.
+
+当前清单覆盖 347 个模块，原有 97 个接口（68 个类、29 个记录）及全部 29 个
+`Has*` 类不变。ArrowApply 及其 Monad 关系仍属后续语义工作，带类型语法继续
+暂缓。[审计](./ComputationAudit.md#static-representation-and-inverse-reconstruction)
+记录精确假设、临时计算及验证。
