@@ -3182,3 +3182,61 @@ profunctors and the required free constructions remain subsequent work.
 需要统一选择族。导入模块不注册选定结构。本批完成单位部分，尚未建立
 结合子、三角形或五边形。相干性、Day 幺半群／lax 幺半刻画、强 profunctor
 及要求的自由构造仍是后续工作。
+
+### Products preserve specified setoid coends
+
+### 积保持指定的广集 coend
+
+The [product/coend construction](../theories/Instance/Set/CoendProduct.v)
+assumes only a selected coend of a setoid-valued bifunctor and a fixed
+setoid parameter. A respectful family of cowedges descends separately at
+each parameter. Respectfulness of the resulting map in both coordinates
+follows from the original coend's uniqueness and respectful mediator.
+Paired injections jointly distinguish outgoing maps, giving computation,
+uniqueness and invariance under pointwise equality of the input family.
+Neither function equality nor equality of respectfulness witnesses is used.
+
+[积／coend 构造](../theories/Instance/Set/CoendProduct.v)只假定广集值双函子
+的一个选定 coend 和固定广集参数。保持相等的余楔族分别在每个参数处下降；
+所得映射在两个坐标方向上的保相等由原 coend 的唯一性及保相等中介导出。
+配对注入联合地区分出射映射，从而给出计算、唯一性和输入族逐点相等下的
+不变性。不使用函数相等，也不比较保相等见证。
+
+Applying that one parameterized construction to a product cowedge shows
+that taking a fixed right product preserves the specified coend. A fixed
+left product reuses the same mediator after coordinate exchange. Both
+choices are explicitly enabled definitions, not globally registered
+instances. When a product kernel already has another chosen coend,
+universal object uniqueness supplies a canonical comparison isomorphism
+with a transparent inverse and injection/reinsertion equations. The
+comparison does not identify the selected objects or their law records.
+
+将同一个带参数构造用于积余楔，得到固定右积保持指定 coend；固定左积在
+交换坐标后复用同一个中介。两个选定构造都须显式启用，不全局注册实例。
+若积核另有选定 coend，泛对象唯一性给出典范比较同构，保留透明逆以及
+注入／重新插入方程。比较不认同选定对象或其定律记录。
+
+Carrier and equality universes remain independent. The abstract result
+requires no ordering between them because it uses parameterized descent,
+not an internal function object. Existence is still explicit: it does not
+construct a coend for every bifunctor. Instantiating the existing generated
+setoid coend model retains its sufficient bounds on index objects and
+arrows below the target carrier, and carrier below equality; the index
+hom-equality level remains independent. No resizing or fixed-size full
+setoid self-indexing assertion is introduced.
+
+载体与相等宇宙保持独立。抽象结果通过带参数下降而非内部函数对象实现，
+不要求这两个层级之间的次序。存在性仍是显式条件，并未构造每个双函子的
+coend。实例化已有生成广集模型时，沿用其充分界：指标对象及箭头不高于
+目标载体，载体不高于相等；指标 Hom 相等层级仍独立。不引入大小重设，
+也不声称固定大小的完整广集范畴可对自身取 coend。
+
+This is a prerequisite for descending through the inner coend of a nested
+Day convolution while retaining its other values and weights as parameters.
+It adds no Day associator or triangle/pentagon theorem. Those dependent
+constructions follow after this foundation integrates; the agreed monoid
+characterizations, strong profunctors and free constructions remain open.
+
+这为嵌套 Day 卷积中的内层 coend 下降提供前置基础，使其余值和权重可作为
+参数保留。本批不增加 Day 结合子或三角形／五边形定理；这些依赖构造须在
+本基础集成后继续。已约定的幺半群刻画、强 profunctor 及自由构造仍待完成。

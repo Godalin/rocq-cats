@@ -398,7 +398,8 @@ Definition CoendProductRightIso
   := coend_unique (coend_universal (CoendProductRightF F W))
       (coend_product_right_universal F W).
 
-(** The comparison sends each generator to its original injection and parameter. *)
+(** The comparison sends each generator to its original injection and
+    parameter. *)
 
 (** 比较将每个生成元送到原注入及参数。 *)
 
