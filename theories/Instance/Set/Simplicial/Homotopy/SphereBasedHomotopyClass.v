@@ -13,14 +13,21 @@ Local Open Scope ordinal_scope.
     {%[two_sphere_cylinder_class]%}% in the target. This compares the
     existing class maps after their explicit derived base corrections;
     it neither creates a new map interface nor identifies natural
-    transformations or functions in native equality. *)
+    transformations or functions in native equality. The next comparison
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereHomotopyEquivalence.two_sphere_class_homotopy_iso}
+    {%[two_sphere_class_homotopy_iso]%}% applies this to two actual
+    composite-to-identity homotopies: the same base-corrected maps become
+    inverse on classes, retaining both constant trajectory hypotheses. *)
 
 (** * 常值轨迹同伦在球面类上作用一致
 
     前面的构造为每个源球面保留实际相对柱。现于目标应用
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderClass.two_sphere_cylinder_class}
     {%[two_sphere_cylinder_class]%}%，比较既有类映射经显式导出的基点校正
-    后的结果。不新建映射接口，也不按原生相等识别自然变换或函数。 *)
+    后的结果。不新建映射接口，也不按原生相等识别自然变换或函数。下一比较
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereHomotopyEquivalence.two_sphere_class_homotopy_iso}
+    {%[two_sphere_class_homotopy_iso]%}% 将其应用于两个实际复合到恒等同伦，
+    使同样的校正映射在类上互逆，并保留两个常值轨迹假设。 *)
 
 (** ** Only Target Comparison Choices
 
