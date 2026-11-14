@@ -39,6 +39,7 @@ Homotopy/SphereSecondTransport.v
 Homotopy/SphereMagma.v
 Homotopy/SphereUnit.v
 Homotopy/SphereAssociativity.v
+Homotopy/SphereGroup.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v

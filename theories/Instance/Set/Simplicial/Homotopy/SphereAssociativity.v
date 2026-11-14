@@ -26,8 +26,10 @@ Local Open Scope ordinal_scope.
     needs no chosen structure at all. The diagram's dashed arrow reads
     the new composite E; its faces two and one are l and t. The class
     equality follows only after comparison.
-    Stronger algebra structures and inverse uniqueness are later work,
-    using the existing hierarchy rather than new interfaces. *)
+    The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereGroup.TwoSphereClassGroup}
+    {%[TwoSphereClassGroup]%}% assembles the stronger structures and
+    inverse uniqueness using the existing algebra hierarchy. *)
 
 (** * 从实际四维 Horn 得到结合律
 
@@ -45,7 +47,9 @@ Local Open Scope ordinal_scope.
 
     重括号仅需缺第三面的选择，比较另需缺第二面的选择。给定实际填充时完全
     无需选定结构。下图虚线读出新合成 E，其第二、第一面是 l、t；类相等在
-    比较之后才得到。更强代数结构及逆唯一性留待后续复用既有层级，不新增接口。 *)
+    比较之后才得到。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereGroup.TwoSphereClassGroup}
+    {%[TwoSphereClassGroup]%}% 复用既有代数层级，组装更强结构及逆唯一性。 *)
 
 (** @lang both
 %\begin{center}
