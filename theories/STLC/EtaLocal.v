@@ -169,6 +169,31 @@ Proof.
   - exact (nonpairs Γ A U t v h parts).
 Defined.
 
+(** Pair and variable targets are already uniquely determined. Supply
+    joins only when both observations are absent; at a product type these
+    remaining heads are projections or applications. This operation is
+    still an explicit input, not an unconditional confluence theorem. *)
+
+(** 配对和变量目标均已唯一确定。只须在两种观测都缺失时提供汇合；在积类型
+    处，这些剩余头部为投影或应用。该操作仍为显式输入，不是无条件合流定理。 *)
+
+Definition eta_product_roots_of_eliminations
+    (eliminations : ∀ (Γ : Ctx B) (A U : Ty B)
+      (t v : Tm Γ (A × U)),
+      RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v →
+      pair_parts t = None → variable_position t = None →
+      Join@{b e p} BetaEtaContractStep@{b e l} t v)
+  : is_eta_product_root_joinable.
+Proof.
+  apply eta_product_roots_of_nonpairs. intros Γ A U t v h parts.
+  pose proof (variable_position_spec t) as spec.
+  destruct (variable_position t) as [x |] eqn:position.
+  - cbn in spec. subst t.
+    pose proof (root_eta_product_var_unique x v h) as same.
+    subst v. exact (join_refl _).
+  - exact (eliminations Γ A U t v h parts position).
+Defined.
+
 Context (product_roots : is_eta_product_root_joinable).
 
 (** Given that diagram, every eta root joins any eta step from its source. *)
