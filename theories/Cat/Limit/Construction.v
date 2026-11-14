@@ -3,8 +3,10 @@ From Cats Require Import
   Cat.Functor.Core
   Cat.Natural
   Cat.Arrow.Core
-  Cat.Equalizer.
-From Cats Require Export Cat.Product.Indexed.
+  Cat.Equalizer
+  Cat.Product.Equalizer.
+From Cats Require Export
+  Cat.Product.Indexed.
 
 (** * Constructing Limits from Products and Equalizers
 
@@ -47,20 +49,16 @@ Definition product_cone_equalizer_limit {J C : Cat} (D : Functor J C)
   : is_limit κ.
 Proof.
   intros X μ.
-  pose (p := indexed_pair (D := DiagramObjects D) (λ j, μ j)).
-  destruct (snd HE X p (Hcones X μ)) as [h Hh].
+  destruct (indexed_product_equalizer_universal (DiagramObjects D)
+    HE X (λ j, μ j) (Hcones X μ)) as [h Hh].
   exists h. refine {|this := _
                    ; that := _
                    |}.
   - intros j.
     change (κ j ∘ h ≈ μ j).
-    rewrite (Hκ j), comp_assoc, (@this _ _ _ _ _ Hh).
-    unfold p. apply (indexed_product_β (D := DiagramObjects D)).
+    rewrite (Hκ j). exact (@this _ _ _ _ _ Hh j).
   - intros k Hk. apply (@that _ _ _ _ _ Hh).
-    apply indexed_product_hom_ext. intros j.
-    rewrite <- comp_assoc, <- (Hκ j). transitivity (μ j).
-    + exact (Hk j).
-    + unfold p. symmetry. apply (indexed_product_β (D := DiagramObjects D)).
+    intros j. rewrite <- (Hκ j). exact (Hk j).
 Defined.
 
 (** ** Limits from Products and an Equalizer
