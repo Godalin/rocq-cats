@@ -331,4 +331,25 @@ Proof.
     rewrite rename_id in k. exact k.
 Defined.
 
+(** An environment reflecting its own variables realizes identity
+    substitution. Thus every open term realizes its evaluated value in
+    that environment. The native substitution identity transports only
+    the syntax endpoint. Realization evidence keeps its section bound,
+    independent of the semantic environment's bound. *)
+
+(** 反射自身变量的环境实现恒等替换，因此每个开放项都实现其在该环境中的
+    求值结果。原生替换恒等式只运输语法终点；实现证据保持本节的界限，独立于
+    语义环境的界限。 *)
+
+Definition eval_reflected_realizes (Γ : Ctx B) (γ : EnvF Γ Γ)
+    (reflected : ∀ A x, EnvLookupN Γ A x Γ γ ≈S
+      reflect_ne (TypeReification A) Γ (ne_var x))
+    {A : Ty B} (t : Tm Γ A)
+  : Realizes A Γ t (eval t Γ γ).
+Proof.
+  refine (realizes_tm_eq A Γ t[idSub] t _
+    (tm_eq_of_eq (subst_id t)) _).
+  exact (eval_realizes t Γ idSub γ (env_realizes_reflected Γ γ reflected)).
+Defined.
+
 End LogicalRelation.
