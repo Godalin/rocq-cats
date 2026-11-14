@@ -3825,3 +3825,69 @@ The general conditional free constructions also remain open.
 两个模块均不假设或构造 coend。Profunctor 复合、复合上的强度、强 promonad
 及 Arrow 幺半群比较仍为后续阶段，须保留实际存在和大小条件；一般条件式
 自由构造也仍未完成。
+
+### Ordinary profunctor composition through specified coends
+
+### 通过指定 coend 复合通常 Profunctor
+
+[Composition](../theories/Cat/Profunctor/Compose.v) takes a profunctor `P`
+from `C` to `D`, followed by `Q` from `D` to `E`. The composite is written
+`Q ∘Pr P` in `profunctor_scope`. Its kernel at outer boundaries `X,Z` has
+values `P(X,B)` paired with `Q(A,Z)` at the middle indices `A,B`.
+The value-pair order is always the execution order: `P` first, then `Q`.
+Existing one-sided restrictions, whiskering and pointwise setoid products
+supply the kernel and its outer-boundary natural transformations.
+
+[复合](../theories/Cat/Profunctor/Compose.v)先取从 `C` 到 `D` 的 profunctor
+`P`，再取从 `D` 到 `E` 的 `Q`，在 `profunctor_scope` 中写作 `Q ∘Pr P`。
+固定外部边界 `X,Z` 后，核在中间指标 `A,B` 处的值为 `P(X,B)` 与 `Q(A,Z)`
+之对。值对顺序始终对应执行顺序：先 `P` 再 `Q`。已有单侧限制、须化与逐点
+广集积提供核及其外部边界自然变换。
+
+`HasProfunctorComp` chooses coends only for this kernel family. The resulting
+mixed-variance functor uses existing coend maps and their equality, identity
+and composition laws. Carrier and equality value levels remain independent;
+there is no implicit size order or completeness assumption. No strength is
+needed to compose ordinary profunctors.
+
+`HasProfunctorComp` 只为此核族选择 coend，得到的混合变元函子使用已有 coend
+映射及其相等、恒等和复合定律。值载体与相等层级保持独立，不隐含大小次序或
+余完备性假设。复合通常 profunctor 不需要强度。
+
+[Generators and descent](../theories/Cat/Profunctor/ComposeUniversal.v) retain
+the original diagonal coend injections. Intermediate arrows move from the
+output action on `P` to the input action on `Q` by the original cowedge
+law; identity actions are removed using the existing functor laws.
+A fixed-boundary injection, gluing, descent, computation, uniqueness and
+reinsertion require only one selected coend. An outer-boundary map requires
+only its two endpoint coends; the full composite's dimap specializes that
+same equation. These wrappers keep the original transparent universal maps
+and specified equality, with no separate quotient or dual construction.
+
+[生成元与下降](../theories/Cat/Profunctor/ComposeUniversal.v)保留原对角 coend
+注入。中间箭头由原余楔定律在 `P` 的输出作用与 `Q` 的输入作用间移动，恒等
+作用由已有函子律移去。固定边界的注入、粘合、下降、计算、唯一性与重新插入
+只要求一个选定 coend；外部边界映射只要求两个端点的 coend，完整复合的
+`dimap` 特化同一方程。这些包装保留原透明泛映射及指定相等，不另建商或对偶构造。
+
+[The explicit setoid model](../theories/Instance/Set/ProfunctorComp.v) reuses
+`SetCat_Coend`. Its sufficient bounds concern the middle category alone:
+its object and Hom-carrier levels fit the value carrier, which fits the
+value-equality level. The middle Hom-equality level remains independent;
+this kernel carries no Hom weight. Source and target categories need not
+fit those value bounds. The model is explicitly enabled and does not assert
+fixed-size full-setoid self-indexing or resizing. Its sufficient bounds are
+not extra requirements on a separately supplied abstract coend.
+
+[显式广集模型](../theories/Instance/Set/ProfunctorComp.v)复用 `SetCat_Coend`。
+其充分界只针对中间范畴：对象及 Hom 载体层级容纳于值载体，后者容纳于值相等
+层级。中间 Hom 相等层级保持独立，因为本核不携带 Hom 权重。来源及目标范畴
+不必容纳于这些值界。模型须显式启用，不宣称固定大小全广集自索引或 resizing；
+这些充分界不是另行给定抽象 coend 的额外要求。
+
+Composition on input transformations, associators/unitors and their coherence,
+strength on the composite, strong promonads/Arrow monoids and the conditional
+free constructions remain subsequent independent stages.
+
+输入变换上的复合、结合子／单位子及相干性、复合上的强度、强 promonad／Arrow
+幺半群与条件式自由构造仍为后续独立阶段。

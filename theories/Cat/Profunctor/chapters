@@ -2,3 +2,5 @@ Core.v
 Hom.v
 Strength.v
 HomStrength.v
+Compose.v
+ComposeUniversal.v
