@@ -77,15 +77,17 @@ Proof.
 Defined.
 
 (** Strong normalization is inherited by every endpoint of a finite path.
+    The path and normalization tree bounds remain independent.
     This does not assert strong normalization of the reflexive path
     relation itself, which has a self-loop at every element. *)
 
 (** 强归一化由有限路径的每个终点继承。这并不声称自反路径关系本身强归一化：
-    该关系在每个元素处都有自环。 *)
+    该关系在每个元素处都有自环。路径与归一化树的界保持独立。 *)
 
-Definition sn_rtc {A : Type} {R : crelation A} {x y : A}
-    (h : (R^*) x y)
-  : SN R x → SN R y.
+Definition sn_rtc@{a r p s} {A : Type@{a}}
+    {R : A → A → Type@{r}} {x y : A}
+    (h : ReflTransClosure@{a r p} R x y)
+  : SN@{a r s} R x → SN@{a r s} R y.
 Proof.
   induction h as [x | x y z h p ih]; intros q.
   - exact q.

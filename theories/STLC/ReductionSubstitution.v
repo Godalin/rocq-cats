@@ -1,4 +1,4 @@
-From Cats.STLC Require Export Reduction.
+From Cats.STLC Require Export ReductionPaths.
 From Cats.Set.Relation Require Import Compatible.
 
 (** * Directed Beta Reduction and Substitution
@@ -157,6 +157,15 @@ Definition beta_step_lift {Γ Δ : Ctx B} {A U : Ty B}
       (TmContexts B (Γ, A) (Δ, U) c u)
   := context_step_lift (@RootBeta@{b e _} B) c h.
 
+(** Expose constructor preservation as an indexed compatibility witness. *)
+
+(** 将构造器保持性呈现为带索引的相容性见证。 *)
+
+Definition beta_step_compatible
+  : is_compatible (TmContexts B)
+      (tm_relation_family (@BetaStep@{b e _ _} B)).
+Proof. intros [Γ A] [Δ U] c x y h. exact (beta_step_lift c h). Defined.
+
 (** Finite directed paths retain the same substitution. No backward edges
     or eta rules are introduced. *)
 
@@ -253,9 +262,8 @@ Definition sub_lift_beta_rtc {Γ Δ : Ctx B} {A : Ty B}
       (@BetaStep@{b e _ _} B (Δ ▻ A) U)
       ((σ^↑Sub) U x) ((τ^↑Sub) U x).
 Proof.
-  intros U [x | x]; cbn.
-  - exact (beta_rtc_rename (h U x) _ wkRen).
-  - exact (rtc_refl _).
+  exact (sub_lift_rtc (@BetaStep@{b e _ _} B)
+    (λ Γ A t u k Δ ρ, beta_step_rename k Δ ρ) h).
 Defined.
 
 (** Reducing all assigned terms pointwise gives a directed path between
@@ -269,15 +277,9 @@ Definition subst_beta_rtc {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
         (@BetaStep@{b e _ _} B Δ U) (σ U x) (τ U x)) →
       ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] t[τ].
 Proof.
-  induction t; intros Δ σ τ h; cbn.
-  - exact (h A v).
-  - exact (rtc_refl _).
-  - exact (beta_rtc_pair (IHt1 Δ σ τ h) (IHt2 Δ σ τ h)).
-  - exact (beta_rtc_lift op_fst (IHt Δ σ τ h)).
-  - exact (beta_rtc_lift op_snd (IHt Δ σ τ h)).
-  - exact (beta_rtc_lift op_lam
-      (IHt _ (σ^↑Sub) (τ^↑Sub) (sub_lift_beta_rtc h))).
-  - exact (beta_rtc_app (IHt1 Δ σ τ h) (IHt2 Δ σ τ h)).
+  exact (subst_rtc (@BetaStep@{b e _ _} B)
+    beta_step_compatible
+    (λ Γ A t u k Δ ρ, beta_step_rename k Δ ρ) t).
 Defined.
 
 (** Both the expression and its assignments can reduce. First follow the
@@ -306,9 +308,9 @@ Definition beta_rtc_single {Γ : Ctx B} {A U : Ty B}
     (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) u u')
   : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ U) t[u/] t[u'/].
 Proof.
-  apply subst_beta_rtc. intros V [x | x]; cbn.
-  - exact (rtc_refl _).
-  - destruct x. exact h.
+  exact (tm_rtc_single (@BetaStep@{b e _ _} B)
+    beta_step_compatible
+    (λ Γ A t u k Δ ρ, beta_step_rename k Δ ρ) t h).
 Defined.
 
 End AssignmentReduction.
