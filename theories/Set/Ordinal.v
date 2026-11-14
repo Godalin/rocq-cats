@@ -342,6 +342,30 @@ Proof.
     destruct (Nat.ltb_spec0 (fin_rank y) (fin_rank i)); lia.
 Qed.
 
+(** Removing two distinct positions in either order gives the same map.
+    The two inner positions are characterized by their skip equations;
+    no equality between inverse witnesses is needed. *)
+
+(** 按两种次序删除两个不同位置得到相同映射。内层位置由跳过方程刻画，
+    无需等同原像见证。 *)
+
+Lemma fin_skip_exchange {n : nat} (j k : Fin (S (S n)))
+    (v w : Fin (S n))
+    (Hv : fin_skip j v = k) (Hw : fin_skip k w = j)
+    (z : Fin n)
+  : fin_skip j (fin_skip v z) = fin_skip k (fin_skip w z).
+Proof.
+  apply fin_rank_injective.
+  pose proof (f_equal (@fin_rank (S (S n))) Hv) as Hvr.
+  pose proof (f_equal (@fin_rank (S (S n))) Hw) as Hwr.
+  rewrite !fin_skip_rank in *.
+  unfold skip_rank in *.
+  repeat match goal with
+  | |- context [Nat.ltb ?a ?b] => destruct (Nat.ltb_spec0 a b)
+  | H : context [Nat.ltb ?a ?b] |- _ => destruct (Nat.ltb_spec0 a b)
+  end; lia.
+Defined.
+
 (** Merging preserves the natural-number order. *)
 
 (** 合并保持自然数顺序。 *)

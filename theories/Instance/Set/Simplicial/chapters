@@ -13,6 +13,7 @@ Boundary.v
 Horn.v
 Vertex/Horn2.v
 Matching.v
+FaceGluing.v
 Vertex/Filling.v
 Vertex/Outer.v
 Vertex/Star.v
