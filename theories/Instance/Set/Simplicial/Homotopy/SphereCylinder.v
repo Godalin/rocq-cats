@@ -3,6 +3,7 @@ From Cats Require Export
   Instance.Set.Simplicial.Homotopy.Sphere
   Instance.Set.Simplicial.Boundary.
 From Cats Require Import
+  Instance.Set.Simplicial.Prism
   Cat.Core
   Cat.Functor.Core
   Cat.Natural
@@ -273,6 +274,19 @@ Next Obligation.
     y as [[] | [[] | [[] | [[] | []]]]]; cbn in *; lia.
 Defined.
 
+(** The existing triangle-prism time table is the general staircase time
+    operator in dimension two, in specified operator equality. *)
+
+(** 既有三角柱时间表正是一般阶梯时间算子在二维的情形，比较使用指定算子相等。 *)
+
+Lemma two_sphere_prism_time_eq (i : Ordinal 2)
+  : SimplexPrismTimeF i ≈ two_sphere_prism_time i.
+Proof.
+  apply (snd (simplex_eq_iff _ _)). intros j.
+  destruct i as [[] | [[] | [[] | []]]],
+    j as [[] | [[] | [[] | [[] | []]]]]; reflexivity.
+Defined.
+
 (** ** Evaluating the Staircase
 
     Fix a relative cylinder with independent value sizes. The two internal
@@ -355,3 +369,43 @@ Proof.
 Defined.
 
 End SpherePrism.
+
+(** ** The Three Tetrahedra Determine the Given Cylinder
+
+    For arbitrary targets and relative cylinders at independent value
+    bounds, apply the constructive shape cover in every degree. This
+    recovers the original cylinder values, including all degenerate
+    inputs, but does not glue arbitrary proposed tetrahedron values. *)
+
+(** ** 三个四面体确定给定柱
+
+    对独立取值界的任意目标及相对柱，在每一维应用构造性形状覆盖。这恢复原柱
+    的全部值，包括退化输入，但不粘合任意给定四面体值。 *)
+
+Section SphereCylinderFactorization.
+Universes u p.
+Context {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {b : X 0}
+    {x y : TwoSphereS X b} (H : TwoSphereCylinderHomotopy X b x y).
+
+(** Every value is the restriction of the computed original prism piece.
+    No filling choices, coefficient decoder or homotopy-group law enters. *)
+
+(** 每个值都是计算所得原棱柱块的限制，不用填充选择、系数读取或同伦群定律。 *)
+
+Lemma two_sphere_cylinder_factor {n : nat}
+    (a : (@Hom Δ) n 2) (t : (@Hom Δ) n 1%nat)
+  : two_sphere_cylinder_eval X b H a t ≈S
+      X[SimplexPrismIndexF a t]Δ
+        (two_sphere_prism H (simplex_prism_pivot a t)).
+Proof.
+  transitivity (X[SimplexPrismIndexF a t]Δ
+    (simplex_prism_eval (homotopy_map H.1) (simplex_prism_pivot a t))).
+  - exact (simplex_prism_eval_factor (homotopy_map H.1) a t).
+  - apply func_proper.
+    apply (@func_proper _ _ (homotopy_map H.1 3)). split;
+      refine {|lower := _|}.
+    + reflexivity.
+    + apply two_sphere_prism_time_eq.
+Defined.
+
+End SphereCylinderFactorization.

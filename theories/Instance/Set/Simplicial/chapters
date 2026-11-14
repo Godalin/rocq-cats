@@ -30,6 +30,7 @@ Homotopy/Core.v
 Homotopy/Sphere.v
 Homotopy/SphereComposition.v
 Homotopy/SphereMap.v
+Prism.v
 Homotopy/SphereCylinder.v
 Homotopy/SphereBasedHomotopy.v
 Homotopy/SphereHorn.v
