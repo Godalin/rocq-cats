@@ -21,7 +21,11 @@ Local Open Scope ordinal_scope.
     constructed from the filler, not supplied as an equality of tetrahedra.
     After elementary transport, the existing equivalence-closure fold
     handles arbitrary generated second-input equality. This prerequisite
-    does not yet package a binary class operation or prove group laws. *)
+    does not itself package a binary class operation or prove group laws.
+    The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMagma.TwoSphereClassMagma}
+    {%[TwoSphereClassMagma]%}% combines the two input transports into an
+    explicitly chosen magma. *)
 
 (** * 运输合成的第二输入
 
@@ -33,7 +37,10 @@ Local Open Scope ordinal_scope.
 
     两个方向均保留 x 以及完全相同的输出代表 z。下图按指定相等读取各面，
     虚线由填充构造，不是给定四面体相等。初等运输之后，既有等价闭包折叠
-    处理第二输入的任意生成相等。此前置尚不打包二元类运算或证明群律。 *)
+    处理第二输入的任意生成相等。此前置自身不打包二元类运算或证明群律。
+    下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereMagma.TwoSphereClassMagma}
+    {%[TwoSphereClassMagma]%}% 将两个输入运输组合为显式选定的原群。 *)
 
 (** @lang both
 %\begin{center}
