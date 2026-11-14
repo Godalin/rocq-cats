@@ -108,14 +108,19 @@ the integrator confirms the blocker is resolved.
    不变；推进后通知或推送失败时，先检查 refs 再重试，不重复集成，也不在核实
    前声称远端已发布。
 
-After each integrated batch, run full-library validation and export both reading
-editions according to [the documentation guide](./Documentation.md). If these
-fail, pause unrelated integration and coordinate a repair commit. Do not erase
-integrated history. Distinguish these checks from per-request validation and CI.
+Integration acceptance requires the library to build successfully with the
+project toolchain: `opam exec --switch=rocq-cats -- dune build @all`. A library
+build failure blocks acceptance until repaired. HTML/PDF exports are separate
+documentation tasks, performed when requested according to
+[the documentation guide](./Documentation.md); they are not routine integration
+or batch acceptance requirements. Preserve integrated history and distinguish
+local validation from CI.
 
-每批集成后按[文档指南](./Documentation.md)验证全库并导出两种阅读版。
-失败时暂停无关集成，协调修复提交，不抹去已集成历史。区分批次检查、单次请求
-验证和 CI。
+集成验收以项目工具链下库构建通过为准：
+`opam exec --switch=rocq-cats -- dune build @all`。库构建失败时须先修复，
+再完成验收。HTML／PDF 导出作为独立文档任务，在有要求时按
+[文档指南](./Documentation.md)执行，不作为常规集成或批次验收要求。
+保留已集成历史，区分本地验证和 CI。
 
 ## 4. Notifications and synchronization / 通知与同步
 

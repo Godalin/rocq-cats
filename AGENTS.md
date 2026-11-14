@@ -209,9 +209,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   published task branches with dependent sessions; use `--force-with-lease`
   when pushing rewritten task history. Avoid repeated cherry-picks of the same
   changes across branches.
-- Write bilingual documentation with the code. Run full-library validation and
-  export both reading editions after each integrated batch, rather than after
-  every intermediate task commit.
+- Write bilingual documentation with the code. Integration acceptance requires
+  a successful library build with the project toolchain. HTML/PDF exports are
+  separate documentation tasks, performed when requested; they are not routine
+  integration or batch acceptance requirements.
 - Git commits and branch refs record integration state. Coordinate ongoing work
   through direct session messages; keep no separate coordination issue or runtime
   registry. Workers alone write their assigned branches/worktrees, including
