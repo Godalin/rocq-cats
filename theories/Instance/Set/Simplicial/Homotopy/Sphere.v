@@ -70,6 +70,19 @@ Definition simplex_constant (n : nat)
   : X n
   := X[ConstF [Ord n] (C := [Ord 0]) fin_first]Δ b.
 
+(** The constant zero-simplex recovers its vertex in specified equality. *)
+
+(** 常值零单形按指定相等恢复其顶点。 *)
+
+Lemma simplex_constant_zero
+  : simplex_constant 0 ≈S b.
+Proof.
+  transitivity (X[(id : (@Hom Δ) 0 0)]Δ b).
+  - apply simplex_restrict_proper.
+    apply (snd (simplex_eq_iff _ _)). intros [[] | []]. reflexivity.
+  - apply simplex_restrict_id.
+Defined.
+
 (** Every restriction of a constant simplex is constant. *)
 
 (** 常值单形的每个限制仍为常值。 *)

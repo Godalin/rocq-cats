@@ -1,5 +1,5 @@
 From Cats Require Export
-  Instance.Set.Simplicial.Homotopy.SphereCylinder.
+  Instance.Set.Simplicial.Homotopy.SphereBasedHomotopy.
 From Cats Require Import
   Cat.Core
   Cat.Functor.Core
@@ -19,7 +19,12 @@ Local Open Scope nat_scope.
     Together with the full boundary lemma
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinder.two sphere boundary constant}
     {%[two_sphere_boundary_constant]%}%, this turns the restriction of any
-    homotopy to a source sphere into an actual relative sphere cylinder. *)
+    homotopy to a source sphere into an actual relative sphere cylinder.
+    The proof now specializes
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereBasedHomotopy.SphereBasedHomotopyCylinder}
+    {%[SphereBasedHomotopyCylinder]%}%, which only needs the single
+    actual trajectory edge to be constant. The existing endpoint
+    presentation and underlying precomposed map are retained. *)
 
 (** * 到只有常值边的目标的同伦
 
@@ -30,7 +35,10 @@ Local Open Scope nat_scope.
     结合完整边界引理
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinder.two sphere boundary constant}
     {%[two_sphere_boundary_constant]%}%，即可将任意同伦在源球面上的限制
-    转为实际相对球面柱。 *)
+    转为实际相对球面柱。证明现专门化
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereBasedHomotopy.SphereBasedHomotopyCylinder}
+    {%[SphereBasedHomotopyCylinder]%}%，该一般构造只要求实际单条轨迹边为常值。
+    保留既有端点呈现及底层预复合映射。 *)
 
 (** The square is naturality along a time operator τ from degree n to
     degree one. Its upper-right value is a single target edge; the explicit
@@ -94,21 +102,8 @@ Lemma one_reduced_homotopy_trace
   : homotopy_map H n (simplex_constant X b n, t) ≈S
       simplex_constant Y c n.
 Proof.
-  pose (τ := lower t).
-  pose (z := (simplex_constant X b 1, simplex_generic 1)
-    : SimplicialCylinderF X 1).
-  transitivity (homotopy_map H n ((SimplicialCylinderF X)[τ]Δ z)).
-  - apply func_proper. split.
-    + symmetry. exact (simplex_constant_restrict X b τ).
-    + refine {|lower := _
-              |}. symmetry.
-      change (@HomEq Δ n 1%nat (id ∘ τ) τ).
-      apply comp_id_l.
-  - transitivity (Y[τ]Δ (homotopy_map H 1 z)).
-    + exact (simplex_restrict_natural (homotopy_map H) τ z).
-    + transitivity (Y[τ]Δ (simplex_constant Y c 1)).
-      * apply func_proper. apply E1.
-      * apply simplex_constant_restrict.
+  exact (sphere_homotopy_trace H b c
+    (E1 (homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1))) n t).
 Defined.
 
 (** Restrict a whole homotopy to a source sphere. The relative boundary
@@ -125,20 +120,12 @@ Definition OneReducedSphereCylinder
       (one_reduced_sphere_resp (f 2 x.1))
       (one_reduced_sphere_resp (g 2 x.1)).
 Proof.
-  assert (Ef : (f ∘Nv ⟦x.1⟧Δ[X; 2]) ≈N ⟦f 2 x.1⟧Δ[Y; 2]).
-  { intros n [θ]. exact (simplex_restrict_natural f θ x.1). }
-  assert (Eg : (g ∘Nv ⟦x.1⟧Δ[X; 2]) ≈N ⟦g 2 x.1⟧Δ[Y; 2]).
-  { intros n [θ]. exact (simplex_restrict_natural g θ x.1). }
-  exists (HomotopyChangeEndpoints
-    (SimplicialPreHomotopy H ⟦x.1⟧Δ[X; 2]) Ef Eg).
-  intros n a t.
-  change (homotopy_map H n (X[(lower a).1]Δ x.1, t) ≈S
-    simplex_constant Y c n).
-  transitivity (homotopy_map H n (simplex_constant X b n, t)).
-  - apply func_proper. split.
-    + apply two_sphere_boundary_constant.
-    + reflexivity.
-  - exact (one_reduced_homotopy_trace H b n t).
+  refine (TwoSphereCylinderChangeEndpoints Y c
+    (SphereBasedHomotopyCylinder H b c
+      (E1 (homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1))) x)
+    _ _).
+  - change (f 2 x.1 ≈S f 2 x.1). reflexivity.
+  - change (g 2 x.1 ≈S g 2 x.1). reflexivity.
 Defined.
 
 End OneReducedHomotopies.
