@@ -3508,3 +3508,71 @@ functor, monoid and Day interfaces and their selected structures are unchanged.
 
 本独立前置尚未打包 Day／lax 态射比较或其范畴等价；这些依赖构造及直接
 Applicative 连接仍待后续。已有 lax 函子、幺半群、Day 接口及其选择保持不变。
+
+### Day monoids and lax functors on morphisms and categories
+
+### 态射与范畴层面的 Day 幺半群／lax 函子对应
+
+[Day morphisms](../theories/Cat/Day/Morphism.v) first compares preservation
+on candidate operations. Lifted Yoneda detects a unit square at the identity
+value, with no convolution assumption. The multiplication square is detected
+on ordinary pairs using the existing Day restriction/extension inverse laws.
+Only the two endpoint convolutions are selected by this binary result; no
+unit, associativity or coherence is assumed at this step.
+
+[Day 态射](../theories/Cat/Day/Morphism.v)先比较候选运算的保持性。提升 Yoneda
+在恒等值处检测单位方块，不需要卷积假设。乘法方块通过已有 Day 限制／延拓
+互逆律在通常值对上检测。二元结果只选择两个端点卷积，此步骤不假定单位、
+结合性或相干性。
+
+For a supplied monoidal base and the same uniform Day choices as before,
+`day_monoid_hom_laws` identifies monoid homomorphisms with monoidal natural
+transformations of the restricted lax functors. `lax_day_monoid_hom` gives
+the converse presentation, reusing the existing operation round trips.
+The reconstructed tensor action is compared with `DayMapN` in natural
+equality, without identifying tensor-functor or preservation records.
+
+对于给定幺半基及前述相同的统一 Day 选择，`day_monoid_hom_laws` 将幺半群
+同态与限制所得 lax 函子的幺半自然变换对应。`lax_day_monoid_hom` 复用已有
+运算往返，给出反方向的呈现。重建张量作用按自然相等与 `DayMapN` 比较，
+不识别张量函子或保持性记录。
+
+[The categorical comparison](../theories/Cat/Day/Comparison.v) extends the
+two existing object conversions to `LaxDayMonoidF` and `DayMonoidLaxF`.
+Their arrow actions retain exactly the supplied underlying natural
+transformation and transfer only its preservation witnesses. The unit and
+multiplication round trips make identity components into homomorphisms.
+They assemble into natural isomorphisms in both directions; the lax inverse
+uses the independently established general inverse-preservation theorem.
+`day_lax_monoid_equiv` packages the resulting equivalence in the existing
+`CatCat`. The chosen unit and counit also satisfy both comparison triangles.
+There is no equality of functor, monoid or law records.
+
+[范畴比较](../theories/Cat/Day/Comparison.v)将两个已有对象转换扩展为
+`LaxDayMonoidF` 和 `DayMonoidLaxF`。箭头作用保留给定的原底层自然变换，
+只运输保持性见证。单位和乘法往返使恒等分量成为同态，进而在两侧装配自然
+同构；lax 逆复用已独立建立的一般逆保持性定理。`day_lax_monoid_equiv` 在
+已有 `CatCat` 中打包所得等价，选定单位／余单位还满足两个比较三角形。
+不要求函子、幺半群或定律记录相等。
+
+All comparisons retain the original explicit Day existence input and
+independent ambient carrier/equality levels. The actual generated model
+still uses `o,h ≤ u ≤ p`, `e ≤ p`; conditional choices do not impose an
+additional ordering of the ambient levels or require self-indexing the full
+setoid category. The optional modules add no chosen structure, global
+instance, coercion, notation or axiom. Pointwise operation boundaries keep
+type inference from normalizing unrelated stored law witnesses.
+
+全部比较保留原显式 Day 存在输入和独立环境载体／相等层级。实际生成模型仍
+使用 `o,h ≤ u ≤ p`、`e ≤ p`；条件式选择不增加环境层级次序，也不要求全
+广集范畴自索引。可选模块不增加选定结构、全局实例、强制转换、记号或公理。
+逐点运算边界避免类型推断归约无关的所存定律见证。
+
+This completes the Day-monoid/native-lax categorical correspondence under
+its stated choices. The link to the direct Applicative interface, strong
+profunctors, coherent computational connections and justified conditional
+free constructions remain subsequent stages of the broader semantic line.
+
+在所述选择下，本阶段完成 Day 幺半群／原生 lax 的范畴对应。与直接
+Applicative 接口的连接、强 profunctor、相干计算结构连接及具有充分条件的
+自由构造，仍是整条语义路线的后续阶段。
