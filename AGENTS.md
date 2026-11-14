@@ -168,6 +168,21 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Parallel worktrees
 
+- All participating sessions already exist; the user designates their roles,
+  including integrator/coordinator and workers. No session creates, spawns or
+  clones sessions, enrolls other sessions on its own, or assigns/changes session
+  roles. Missing participants or role changes go back to the user; task
+  coordination stays within the user-designated roles.
+- A user-designated worker starts its assigned task directly in its own branch
+  and worktree. At a committed, validated checkpoint, it sends an integration
+  request to the designated integrator; no startup handshake or preliminary
+  availability check is required. If the integrator cannot process the request,
+  it tells the worker to pause and explains the blocker. If delivery fails, the
+  worker preserves its checkpoint and pauses rather than integrating itself.
+- This section states mandatory rules; the Rocq-Cats-specific experimental
+  [parallel development protocol](docs/ParallelDevelopment.md) specifies their
+  execution and recovery, subordinate to these rules. Defer reusable skill
+  extraction until the concrete protocol has been tested.
 - Keep `typeprop` as the integration branch. Start each bounded task from the
   current integrated baseline, on its own short branch and worktree; keep each
   session in its assigned worktree rather than switching another session's branch.
@@ -197,6 +212,30 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Write bilingual documentation with the code. Run full-library validation and
   export both reading editions after each integrated batch, rather than after
   every intermediate task commit.
+- Git commits and branch refs record integration state. Coordinate ongoing work
+  through direct session messages; keep no separate coordination issue or runtime
+  registry. Workers alone write their assigned branches/worktrees, including
+  requested rebases. Resolve overlapping ownership before edits. Coordinator
+  takeover requires user designation of an existing session, explicit release
+  or stopping the old coordinator, and checking Git refs and pending work;
+  timeout or peer agreement alone does not grant authority.
+- A stable part may integrate before issue completion. Use an ordinary integration
+  request stating branch/SHA and summary, validation, and impact on other work.
+  No proposal/event IDs, fixed schema or message state machine is needed. Keep
+  the requested branch unchanged while it is processed; agree replacements with
+  the integrator and report fresh validation. Reply with the integrated SHA, or
+  a pause reason and next action.
+- Route by semantic effect and reviewed import/API dependencies: L0 to the origin,
+  L1 also to affected consumers, L2 to all active workers for foundational/global
+  changes. The worker reports impact; the integrator confirms it. Breaking is
+  independent of scope: affected workers confirm preserved pauses before
+  integration, then synchronization and validation before related edits resume.
+- Synchronize at safe checkpoints after preserving local/user work. Ask for
+  confirmation only when a pause or synchronization requires it; silence is not
+  completion. Coalesce related notices and avoid routine commit/build broadcasts.
+  After missed/repeated messages, inspect Git refs and confirm pending actions
+  directly. Failed communication pauses the affected task/handoff until contact
+  resumes.
 
 ## Learnings
 
