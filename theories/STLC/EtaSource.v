@@ -84,3 +84,33 @@ Definition eta_contract_source@{b e l +} {B : Type@{b}}
     (h : EtaContractStep@{b e l} t u)
   : ContextSource (@RootEtaContract@{b e} B) t u
   := context_step_source _ (eta_contract_context h).
+
+(** A variable has neither an introduction root nor an immediate child,
+    so no eta contraction can start there. *)
+
+(** 变量既没有引入形式的根，也没有直接子项，因此不能从变量作 η 收缩。 *)
+
+Definition eta_contract_var_absurd@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {A : Ty B} (x : Var Γ A) {u : Tm Γ A}
+    (h : EtaContractStep@{b e l} (# x) u)
+  : Empty_set.
+Proof.
+  destruct (eta_contract_source h) as [h' | h'].
+  - exact (root_eta_neutral_absurd h' tt).
+  - exact h'.
+Defined.
+
+(** The unit constant has no eta contraction. The unit equation belongs
+    to equational equality and is deliberately absent from this relation. *)
+
+(** 单位常量没有 η 收缩。单位方程属于等式相等，此收缩关系特意未包含它。 *)
+
+Definition eta_contract_unit_absurd@{b e l +} {B : Type@{b}}
+    {Γ : Ctx B} {u : Tm Γ ⊤}
+    (h : EtaContractStep@{b e l} ⋆ u)
+  : Empty_set.
+Proof.
+  destruct (eta_contract_source h) as [h' | h'].
+  - exact (root_eta_source h').
+  - exact h'.
+Defined.
