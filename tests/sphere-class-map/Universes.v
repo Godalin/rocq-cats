@@ -23,7 +23,7 @@ Constraint l < u, u < p, p < v, v < q.
 (** 此环境及最终相等配置下的自然同构。 *)
 
 Definition lower_ambient_higher_common_iso
-    (X Y : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+    (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (α : X ⇒ Y) (Hα : α ⦂ X ≅N Y) (b : X 0)
   : LiftS@{_ _ v q} (TwoSphereClassS X b) ≅[SetCat]
       LiftS@{_ _ v q} (TwoSphereClassS Y (α 0 b))
@@ -34,7 +34,7 @@ Definition lower_ambient_higher_common_iso
 (** 此环境及最终相等配置下的自然同构。 *)
 
 Definition lower_ambient_lower_common_iso
-    (X Y : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+    (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (α : X ⇒ Y) (Hα : α ⦂ X ≅N Y) (b : X 0)
   : LiftS@{_ _ q v} (TwoSphereClassS X b) ≅[SetCat]
       LiftS@{_ _ q v} (TwoSphereClassS Y (α 0 b))
@@ -45,7 +45,7 @@ Definition lower_ambient_lower_common_iso
 (** 此环境相等配置下的相等运输。 *)
 
 Definition lower_ambient_base_iso
-    (X : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (b c : X 0) (E : b ≈S c)
   : LiftS@{_ _ v q} (TwoSphereClassS X b) ≅[SetCat]
       LiftS@{_ _ v q} (TwoSphereClassS X c)
@@ -56,7 +56,7 @@ Definition lower_ambient_base_iso
 (** 此环境相等配置下的实际合成见证。 *)
 
 Definition lower_ambient_composite_map
-    (X Y : Functor (Δ^op) SetCat@{u l _ _ _ _ _})
+    (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (α : X ⇒ Y) (b : X 0) (x y z : TwoSphereS X b)
     (H : TwoSphereComposite X b x y z)
   : TwoSphereComposite Y (α 0 b)
@@ -69,7 +69,7 @@ Definition lower_ambient_composite_map
 (** 此环境及最终相等配置下的自然同构。 *)
 
 Definition higher_ambient_higher_common_iso
-    (X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (α : X ⇒ Y) (Hα : α ⦂ X ≅N Y) (b : X 0)
   : LiftS@{_ _ v q} (TwoSphereClassS X b) ≅[SetCat]
       LiftS@{_ _ v q} (TwoSphereClassS Y (α 0 b))
@@ -80,7 +80,7 @@ Definition higher_ambient_higher_common_iso
 (** 此环境及最终相等配置下的自然同构。 *)
 
 Definition higher_ambient_lower_common_iso
-    (X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (α : X ⇒ Y) (Hα : α ⦂ X ≅N Y) (b : X 0)
   : LiftS@{_ _ q v} (TwoSphereClassS X b) ≅[SetCat]
       LiftS@{_ _ q v} (TwoSphereClassS Y (α 0 b))
@@ -91,7 +91,7 @@ Definition higher_ambient_lower_common_iso
 (** 此环境相等配置下的相等运输。 *)
 
 Definition higher_ambient_base_iso
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (b c : X 0) (E : b ≈S c)
   : LiftS@{_ _ v q} (TwoSphereClassS X b) ≅[SetCat]
       LiftS@{_ _ v q} (TwoSphereClassS X c)
@@ -102,7 +102,7 @@ Definition higher_ambient_base_iso
 (** 此环境相等配置下的实际合成见证。 *)
 
 Definition higher_ambient_composite_map
-    (X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (α : X ⇒ Y) (b : X 0) (x y z : TwoSphereS X b)
     (H : TwoSphereComposite X b x y z)
   : TwoSphereComposite Y (α 0 b)

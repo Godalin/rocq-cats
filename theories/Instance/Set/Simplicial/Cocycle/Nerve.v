@@ -79,14 +79,14 @@ a \arrow[r,mapsto,"{g f}"] & c(gf(x_a))
 Section NerveRetraction.
 Universes u p.
 Context {M : SetC} `{HM : !Monoid M}
-    {A : SetC} {C : Cat} (T : Functor (EqGpd A) C).
+    {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 Let Z
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 Let N
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := VertexNerve T.
 
 Context (f : Z ⇒ N) (g : N ⇒ Z).

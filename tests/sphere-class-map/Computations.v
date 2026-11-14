@@ -36,7 +36,7 @@ Defined.
 (** 常值单纯对象在每一维保留这些表示。 *)
 
 Definition WitnessX
-  : Functor (Δ^op) SetCat
+  : Fct (Δ^op) SetCat
   := ConstF (Δ^op) WitnessS.
 
 (** A retained true triangle based at false. Its boundary equalities are data. *)

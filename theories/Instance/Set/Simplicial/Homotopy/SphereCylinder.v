@@ -127,7 +127,7 @@ Defined.
 (** 球面沿实际边界的每个限制都是常值；保留余面分解将其归结为一条边界边。 *)
 
 Lemma two_sphere_boundary_constant (x : TwoSphereS X b) (n : nat)
-    (a : (∂Δ[2] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (a : (∂Δ[2] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : X[(lower a).1]Δ x.1 ≈S simplex_constant X b n.
 Proof.
   destruct a as [[θ [i [f Hf]]]].

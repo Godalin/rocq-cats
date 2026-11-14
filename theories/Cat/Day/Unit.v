@@ -24,7 +24,7 @@ From Cats Require Export
     层级。以下构造只需二元函子及指定的自然单位同构，不需要结合性或强度。 *)
 
 Definition DayUnitF@{u p +} {C : Cat} (I : @Ob C)
-  : Functor C (SetCat@{u p _ _ _ _ _})
+  : Fct C (SetCat@{u p _ _ _ _ _})
   := LiftF ∘F Hom(I,-).
 
 (** ** Inserting a Representable Arrow on the Left
@@ -38,7 +38,7 @@ Definition DayUnitF@{u p +} {C : Cat} (I : @Ob C)
     第一个张量坐标。 *)
 
 Section LeftArrows.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
 Context (L : π2F T I ≅N IdF).
 
 (** Introduce the left unit, then apply the representable arrow. *)
@@ -121,7 +121,7 @@ End LeftArrows.
     右侧构造使用同一二元函子的指定自然右单位同构，不假定对称性。 *)
 
 Section RightArrows.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
 Context (R : π1F T I ≅N IdF).
 
 (** Introduce the right unit before applying its representable arrow. *)
@@ -205,9 +205,9 @@ End RightArrows.
 
 Section LeftOperation.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
 Context (L : π2F T I ≅N IdF).
-Context (F : Functor C (SetCat@{u p _ _ _ _ _})).
+Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 
 (** The left operation is natural before any coend is selected. *)
 
@@ -261,9 +261,9 @@ End LeftOperation.
 
 Section RightOperation.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
 Context (R : π1F T I ≅N IdF).
-Context (F : Functor C (SetCat@{u p _ _ _ _ _})).
+Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 
 (** Right insertion gives the natural operation for the other unitor. *)
 
@@ -319,9 +319,9 @@ End RightOperation.
 
 Section LeftUnitor.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
 Context (L : π2F T I ≅N IdF).
-Context (F : Functor C (SetCat@{u p _ _ _ _ _})).
+Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 Context `{HD : !HasDay C T (DayUnitF I) F}.
 
 (** Evaluate a left-unit convolution by the natural Day extension. *)
@@ -477,9 +477,9 @@ End LeftUnitor.
 
 Section RightUnitor.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
 Context (R : π1F T I ≅N IdF).
-Context (F : Functor C (SetCat@{u p _ _ _ _ _})).
+Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 Context `{HD : !HasDay C T F (DayUnitF I)}.
 
 (** Evaluate the right-unit convolution by the existing natural extension. *)
@@ -632,8 +632,8 @@ End RightUnitor.
 
 Section InputNaturality.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
-Context {F G : Functor C (SetCat@{u p _ _ _ _ _})}.
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
+Context {F G : Fct C (SetCat@{u p _ _ _ _ _})}.
 
 (** The left unitor commutes with a natural transformation of its input. *)
 
@@ -734,8 +734,8 @@ End InputNaturality.
 
 Section FunctorCategoryUnits.
 Universes u p.
-Context {C : Cat} (T : Functor (C ×C C) C) {I : @Ob C}.
-Context (HD : ∀ F G : Functor C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
+Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
+Context (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 
 (** The family of left unitors is itself a natural transformation. *)
 

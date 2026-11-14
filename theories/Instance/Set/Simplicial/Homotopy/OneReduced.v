@@ -67,7 +67,7 @@ H_n(\operatorname{const}_n b,\tau)
 
 Section OneReducedHomotopies.
 Universes u p.
-Context (Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) (c : Y 0)
+Context (Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (c : Y 0)
     (E1 : ∀ z : Y 1, z ≈S simplex_constant Y c 1).
 
 (** Every target triangle is a based sphere, with its original triangle
@@ -88,9 +88,9 @@ Next Obligation. intros x y H. exact H. Defined.
 (** 沿时间的自然性将每个基点轨迹单形表示为同一条轨迹边的限制。 *)
 
 Lemma one_reduced_homotopy_trace
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Y}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Y}
     (H : SimplicialHomotopy f g) (b : X 0) (n : nat)
-    (t : (Δ[1] : Functor (Δ^op) SetCat@{u p _ _ _ _ _}) n)
+    (t : (Δ[1] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : homotopy_map H n (simplex_constant X b n, t) ≈S
       simplex_constant Y c n.
 Proof.
@@ -119,7 +119,7 @@ Defined.
     保存的映射就是实际预复合同伦。 *)
 
 Definition OneReducedSphereCylinder
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Y}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Y}
     (H : SimplicialHomotopy f g) (b : X 0) (x : TwoSphereS X b)
   : TwoSphereCylinderHomotopy Y c
       (one_reduced_sphere_resp (f 2 x.1))

@@ -178,8 +178,8 @@ End Injections.
 
 (** 卷积映射作用于两个生成元值并保留权重；这是一般 coend 映射计算律的特化。 *)
 
-Lemma day_map_inject@{u p +} {C : Cat} (T : Functor (C ×C C) C)
-    {F F' G G' : Functor C (SetCat@{u p _ _ _ _ _})}
+Lemma day_map_inject@{u p +} {C : Cat} (T : Fct (C ×C C) C)
+    {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     `{HD : !HasDay C T F G} `{HD' : !HasDay C T F' G'}
     (α : F ⇒ F') (β : G ⇒ G') (q : @Ob (C ×C C))
     {Z : @Ob C} (h : Hom (T q) Z) (x : F (fst q)) (y : G (snd q))

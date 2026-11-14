@@ -51,7 +51,7 @@ Universes u p.
 Context {M : SetC} `{HM : !Monoid M}.
 
 Let Z
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(M).
 
 (** Every edge agrees with the constant edge at the unit vertex. *)
@@ -68,7 +68,7 @@ Proof. apply two_cocycle_one_unique. Defined.
 (** 将完整同伦限制到源球面，保留实际柱映射及整个相对边界。 *)
 
 Definition CocycleHomotopySphereCylinder
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
     (H : SimplicialHomotopy f g) (b : X 0) (x : TwoSphereS X b)
   : TwoSphereCylinderHomotopy Z (two_cocycle_simplex_unit 0)
       (one_reduced_sphere_resp Z (two_cocycle_simplex_unit 0)
@@ -86,7 +86,7 @@ Definition CocycleHomotopySphereCylinder
     目标边唯一性控制其基点顶点的轨迹。 *)
 
 Lemma cocycle_homotopy_sphere_value
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
     (H : SimplicialHomotopy f g) (b : X 0) (x : TwoSphereS X b)
   : two_cocycle_triangle_value_resp (f 2 x.1) ≈S
       two_cocycle_triangle_value_resp (g 2 x.1).
@@ -103,7 +103,7 @@ Defined.
     其大小可以超过原有单形相等界。 *)
 
 Definition CocycleHomotopyMapS
-    (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _})
+    (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   : SetC
   := GeneratedS (Nat_SetS X Z)
       (λ f g, ((f ≈N g) + SimplicialHomotopy f g)%type).
@@ -113,7 +113,7 @@ Definition CocycleHomotopyMapS
 (** 自然相等给出映射关系的生成元。 *)
 
 Definition cocycle_homotopy_map_eq
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
     (E : f ≈N g)
   : (f : CocycleHomotopyMapS X) ≈S g
   := closure_step (inl E).
@@ -123,7 +123,7 @@ Definition cocycle_homotopy_map_eq
 (** 整份有向同伦给出一个保留生成元。 *)
 
 Definition cocycle_homotopy_map_step
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {f g : X ⇒ Z}
     (H : SimplicialHomotopy f g)
   : (f : CocycleHomotopyMapS X) ≈S g
   := closure_step (inr H).
@@ -133,7 +133,7 @@ Definition cocycle_homotopy_map_step
 (** 将映射作用于固定源球面，再读取其三角形。 *)
 
 Program Definition cocycle_sphere_evaluation_resp
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (b : X 0) (x : TwoSphereS X b)
   : Nat_SetS X Z →r M
   :=
@@ -153,7 +153,7 @@ Defined.
     下的不变性。求值映射仍为可计算数据。 *)
 
 Definition cocycle_homotopy_evaluation_resp
-    {X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (b : X 0) (x : TwoSphereS X b)
   : CocycleHomotopyMapS X →r M.
 Proof.

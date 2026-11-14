@@ -46,7 +46,7 @@ Local Open Scope ordinal_scope.
 
 Section SphereBaseEquality.
 Universes u p.
-Context (X : Functor (Δ^op) SetCat@{u p _ _ _ _ _}).
+Context (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}).
 
 (** Constants respect the specified equality of their vertices. *)
 
@@ -197,7 +197,7 @@ End SphereBaseEquality.
 (** 映射保留代表及每个初等生成元。 *)
 
 Definition two_sphere_class_map_resp@{u p +}
-    {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+    {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (α : X ⇒ Y) (b : X 0)
   : TwoSphereClassS X b →r TwoSphereClassS Y (α 0 b).
 Proof.
@@ -240,7 +240,7 @@ Defined.
 
 Section SphereClassMaps.
 Universes u p.
-Context {X Y Z : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}.
+Context {X Y Z : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}.
 
 (** The distinguished class goes to the distinguished image class. *)
 
@@ -349,7 +349,7 @@ End SphereClassMaps.
 
 Section SphereClassIsomorphism.
 Universes u p.
-Context {X Y : Functor (Δ^op) SetCat@{u p _ _ _ _ _}}
+Context {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (α : X ⇒ Y) (Hα : α ⦂ X ≅N Y) (b : X 0).
 
 (** The inverse class map includes its explicit basepoint correction. *)

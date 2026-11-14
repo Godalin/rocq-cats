@@ -310,6 +310,73 @@ existing concise `Ob` projections.
 - 用户已授权向既有集成会话提交本检查点；来源提交与集成结果由 Git 和 #38
   记录。交接后保全冻结来源，等待用户后续安排。
 
+## Upstream-client compatibility repair / 基线后客户端兼容修订
+
+The original frozen source `6314f0d4c7d49d828b71a3d6cbe9f925d70a6a28`
+remains unchanged on `agents/refactor-issue-abbreviation-standards`. The
+integrator's ordinary rebase onto `typeprop@72d9aed` produced
+`91f4d64349b86f9d5fbe71b80a8d1696d3fe6bb3` without text conflicts, but
+clients added after the original baseline still referenced retired names.
+The source owner repairs these clients on `abbreviations-38-upstream-compat`,
+starting from that temporary result in the source owner's own worktree.
+
+原冻结来源及原分支保持不变。集成者在其自有工作区将来源普通重基到 `72d9aed`，
+得到无文本冲突的临时结果 `91f4d6`；原基线后新增的客户端仍引用已退役名称，
+因而构建失败。来源 owner 从该临时结果在自己的工作区另建兼容修订分支，
+只补齐原批准表对这些客户端的迁移。
+
+This repair changes exactly 60 `Functor → Fct` references in the following
+11 files. Their proofs, declarations, universes and import commands otherwise
+remain byte-for-byte identical. The actual temporary baseline already uses
+`DayGenN` for the Day generator declaration and its references. Coqdoc code
+references were checked in both languages; ordinary mathematical prose and
+source paths retain their original wording. The 108-name map and all pending
+families are unchanged.
+
+修订仅替换下表 11 个文件中的 60 处函子类型引用；除此之外，证明、声明、宇宙
+及导入命令逐字保持原样。实际临时基线中的 Day 生成元声明及引用已使用
+`DayGenN`。双语 coqdoc 代码引用一并核对，普通数学叙述及源码路径保留。
+108 项原映射和后续词族清单不变。
+
+| Client / 客户端 | Replacements / 替换数 |
+| --- | --- |
+| [tests/cocycle-homotopy/Universes.v](../tests/cocycle-homotopy/Universes.v) | 11 |
+| [tests/sphere-class-map/Computations.v](../tests/sphere-class-map/Computations.v) | 1 |
+| [tests/sphere-class-map/Universes.v](../tests/sphere-class-map/Universes.v) | 8 |
+| [theories/Cat/Day/Unit.v](../theories/Cat/Day/Unit.v) | 15 |
+| [theories/Cat/Day/Universal.v](../theories/Cat/Day/Universal.v) | 2 |
+| [theories/Instance/Bool/CocycleHomotopy.v](../theories/Instance/Bool/CocycleHomotopy.v) | 3 |
+| [theories/Instance/Set/Simplicial/Cocycle/Homotopy.v](../theories/Instance/Set/Simplicial/Cocycle/Homotopy.v) | 8 |
+| [theories/Instance/Set/Simplicial/Cocycle/Nerve.v](../theories/Instance/Set/Simplicial/Cocycle/Nerve.v) | 3 |
+| [theories/Instance/Set/Simplicial/Homotopy/OneReduced.v](../theories/Instance/Set/Simplicial/Homotopy/OneReduced.v) | 4 |
+| [theories/Instance/Set/Simplicial/Homotopy/SphereCylinder.v](../theories/Instance/Set/Simplicial/Homotopy/SphereCylinder.v) | 1 |
+| [theories/Instance/Set/Simplicial/Homotopy/SphereMap.v](../theories/Instance/Set/Simplicial/Homotopy/SphereMap.v) | 4 |
+
+`opam exec --switch=rocq-cats -- dune build @all` passed with Rocq/Stdlib
+9.2, OCaml 5.3.0 and Dune 3.23.1, including the added upstream regression
+modules. The original final audit was rerun unchanged: 108 signatures with
+universes printed, 108 closed assumption reports, 113 retired/intermediate-name
+checks and its definitional/coercion/selected-parent probes all passed.
+A whole-source lexer scan found no approved retired names in executable code
+or coqdoc code references. The exact diff reverses to `91f4d6` by replacing
+only those 60 type references; `git diff --check` passed. These audits are
+temporary checks, not added regression files. No HTML/PDF export was run.
+
+项目 switch 下全库及新增上游回归模块构建通过，工具链为 Rocq/Stdlib 9.2、
+OCaml 5.3.0、Dune 3.23.1。原最终审计原样重跑通过：108 项签名打印宇宙，
+108 项假设报告全部闭合，113 项退役／中间名及原有定义相等、强制转换、选定
+父结构检查均通过。全源词法扫描确认执行代码及 coqdoc 代码引用无已批准退役名
+遗留；差异按这 60 处类型替换可精确恢复 `91f4d6`，格式检查通过。审计仍为
+临时检查，不添加重复回归文件，未运行 HTML/PDF 导出。
+
+This is a compatibility repair required for accepting the existing L2 naming
+change, with no new mathematical/API design or abbreviation family. The new
+candidate is committed and frozen for the existing integrator's revalidation;
+the original source stays preserved, and further work awaits user instructions.
+
+这是完成既有 L2 命名变更验收所需的兼容修复，不增加数学／API 设计或缩写词族。
+新候选提交后冻结，交由既有集成者复验；原来源保全，后续工作等待用户安排。
+
 ## Pending batches / 后续批次
 
 These are remaining families, not completed migrations. Audit each declaration

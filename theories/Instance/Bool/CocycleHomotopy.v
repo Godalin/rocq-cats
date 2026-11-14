@@ -53,14 +53,14 @@ Local Open Scope nat_scope.
 
 Section BooleanNerveRetraction.
 Universes u p.
-Context {A : SetC} {C : Cat} (T : Functor (EqGpd A) C).
+Context {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 Let B
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := Z²(BoolS).
 
 Let N
-  : Functor (Δ^op) SetCat@{u p _ _ _ _ _}
+  : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := VertexNerve T.
 
 Context (f : B ⇒ N) (g : N ⇒ B).
