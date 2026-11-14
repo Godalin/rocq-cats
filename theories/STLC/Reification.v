@@ -121,15 +121,18 @@ Defined.
 
 (** Reification as a natural transformation to lifted normal syntax.
     The returned wrapper retains a normal tree at the original signature
-    universe; it is removed by [lower]. *)
+    universe; it is removed by [lower]. Its chosen structural-equality
+    bound [q] permits comparison with other syntax diagrams at that bound. *)
 
 (** 到提升后正规语法的实化自然变换。返回的包装保留原签名宇宙中的正规树，
-    可通过 [lower] 取出。 *)
+    可通过 [lower] 取出。其选定结构相等界 [q] 允许与使用该界的其他语法图式
+    比较。 *)
 
-Program Definition ReifyN@{b r u p l +} {B : Type@{b}} {A : Ty B}
+Program Definition ReifyN@{b r u p l q +} {B : Type@{b}} {A : Ty B}
     {S : Functor ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{u p _ _ _ _ _}} (R : Reification A S)
-  : S ⇒ LiftF ∘F NfPsh A
+  : S ⇒ LiftF ∘F (NfPsh A : Functor
+      ((RenamingCat B)^op) SetCat@{b q _ _ _ _ _})
   :=
   {|nt Γ :=
      {|func v := {|lower := reify_sem R Γ v
