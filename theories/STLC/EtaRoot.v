@@ -1,6 +1,7 @@
 From Cats.STLC Require Export
   EtaSource
-  PartialRenaming.
+  PartialRenaming
+  VariableProduct.
 
 (** * Observing Eta Roots
 
@@ -11,7 +12,9 @@ From Cats.STLC Require Export
 
     For products, the two projections determine the optional pair
     components through their root beta observations. This identifies
-    pair targets of competing eta roots without injecting projections. *)
+    pair targets of competing eta roots without injecting projections.
+    The two typed variable views likewise identify variable targets,
+    preserving their positions and binding markers. *)
 
 (** * 观测 η 根
 
@@ -20,7 +23,8 @@ From Cats.STLC Require Export
     消去弱化。
 
     对于积，两个投影通过各自的根 β 观测确定可选的配对分量。因此可以识别
-    竞争 η 根的配对目标，无须对投影作构造器单射消去。 *)
+    竞争 η 根的配对目标，无须对投影作构造器单射消去。两个带类型变量视图
+    同样识别变量目标，保持其位置与绑定标记。 *)
 
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
@@ -46,6 +50,17 @@ Context {B : Type}.
 Definition variable_position {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   : option (Var Γ A)
   := match t with tm_var x => Some x | _ => None end.
+
+(** A discovered variable position reconstructs the term itself. *)
+
+(** 发现的变量位置重构项本身。 *)
+
+Definition variable_position_spec {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : match variable_position t return Type with
+    | Some x => t = # x
+    | None => unit
+    end.
+Proof. destruct t; reflexivity || exact tt. Defined.
 
 (** When an argument is the newest variable, its marker aligns the
     function domain with the most recent context declaration. *)
@@ -162,16 +177,40 @@ Defined.
     Fix arbitrary base labels. Equality of the two projections implies
     equality of the optional pair observations: beta at each projection
     reads one component. This does not claim injectivity of projections
-    on arbitrary raw terms; the non-pair case remains uninformative. *)
+    on arbitrary raw terms. The separate variable views recover position
+    and marker information even when the pair observation is absent. *)
 
 (** ** 从两个投影得到积观测
 
     固定任意基标签。两个投影分别相等，蕴含可选配对观测相等，因为每个投影
-    处的 β 根各读取一个分量。这不声称投影对任意原始项联合单射；非配对情形
-    的观测仍不提供目标信息。 *)
+    处的 β 根各读取一个分量。这不声称投影对任意原始项联合单射。独立的变量
+    视图在配对观测缺失时仍可恢复位置与标记信息。 *)
 
 Section ProductObservations.
 Context {B : Type}.
+
+(** A left projection of an actual variable exposes its left view.
+    Every other head returns [None], without comparing hidden types. *)
+
+(** 实际变量的左投影暴露其左视图；其他头部返回 [None]，不比较隐藏类型。 *)
+
+Definition projected_var_left {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
+  : option (LeftProductVar Γ A)
+  := match t in Tm Γ A return option (LeftProductVar Γ A) with
+     | tm_fst p => option_map product_var_left (variable_position p)
+     | _ => None
+     end.
+
+(** The right projection exposes the corresponding right view. *)
+
+(** 右投影暴露对应的右视图。 *)
+
+Definition projected_var_right {Γ : Ctx B} {U : Ty B} (t : Tm Γ U)
+  : option (RightProductVar Γ U)
+  := match t in Tm Γ U return option (RightProductVar Γ U) with
+     | tm_snd p => option_map product_var_right (variable_position p)
+     | _ => None
+     end.
 
 (** Projection equality preserves exactly the pair information needed
     to reconstruct an introduction. Other term shapes return [None]. *)
@@ -197,6 +236,25 @@ Proof.
 Defined.
 
 End ProductObservations.
+
+(** A competing product root has the same two displayed projections.
+    Fixed-type observers read each component of its source equation. *)
+
+(** 竞争的积根具有相同的两个投影；固定类型的观测读取来源等式的各个分量。 *)
+
+Definition root_eta_product_projections@{b e +} {B : Type@{b}}
+    {Γ : Ctx B} {A U : Ty B} (t v : Tm Γ (A × U))
+    (h : RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v)
+  : (π₁ t = π₁ v) ∧ (π₂ t = π₂ v).
+Proof.
+  pose proof (root_eta_source h) as parts.
+  change (Some (π₁ t, π₂ t) = Some (π₁ v, π₂ v)) in parts.
+  split.
+  - exact (f_equal (λ z,
+      match z with Some p => fst p | None => π₁ t end) parts).
+  - exact (f_equal (λ z,
+      match z with Some p => snd p | None => π₂ t end) parts).
+Defined.
 
 (** Competing product eta roots expose the same optional pair parts.
     Use fixed-type observers of the source pair, retaining independent
@@ -235,4 +293,35 @@ Proof.
   pose proof (root_eta_product_parts (⟨a, u⟩) v h) as parts.
   change (Some (a, u) = pair_parts v) in parts.
   rewrite <- parts in spec. cbn in spec. symmetry. exact spec.
+Defined.
+
+(** If one product root target is a variable, both projection views
+    recover its position and marker in the other target. Thus the targets
+    coincide natively, for arbitrary base labels and contexts. This does
+    not yet identify targets headed by an elimination. *)
+
+(** 若一个积根目标为变量，两个投影视图恢复另一目标中同一位置及标记。因此
+    在任意基标签与上下文中，两目标原生相等。此结论尚不处理消去形式的目标。 *)
+
+Definition root_eta_product_var_unique@{b e +} {B : Type@{b}}
+    {Γ : Ctx B} {A U : Ty B} (x : Var Γ (A × U))
+    (v : Tm Γ (A × U))
+    (h : RootEtaContract@{b e} (⟨π₁ (# x), π₂ (# x)⟩) v)
+  : # x = v.
+Proof.
+  destruct (root_eta_product_projections (# x) v h) as [first second].
+  pose proof (f_equal projected_var_left first) as left.
+  pose proof (f_equal projected_var_right second) as right.
+  change (Some (product_var_left x) =
+    option_map (@product_var_left B Γ A U) (variable_position v)) in left.
+  change (Some (product_var_right x) =
+    option_map (@product_var_right B Γ A U) (variable_position v)) in right.
+  pose proof (variable_position_spec v) as spec.
+  destruct (variable_position v) as [y |] eqn:position;
+    cbn in left, right, spec; [| discriminate left].
+  subst v. apply f_equal. apply (product_var_projections_injective x y).
+  - exact (f_equal (λ z,
+      match z with Some p => p | None => product_var_left x end) left).
+  - exact (f_equal (λ z,
+      match z with Some p => p | None => product_var_right x end) right).
 Defined.
