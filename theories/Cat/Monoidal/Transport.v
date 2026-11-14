@@ -1,3 +1,5 @@
+From Cats Require Import
+  Cat.Monoidal.Natural.
 From Cats Require Export
   Cat.Monoidal.Functor
   Cat.Monoidal.Monoid.
@@ -138,3 +140,106 @@ Next Obligation. apply functor_id. Defined.
 Next Obligation. apply functor_comp. Defined.
 
 End LaxMonoidTransport.
+
+(** ** Naturality with Respect to Monoidal Transformations
+
+    Fix source and target monoidal structures. A monoidal transformation
+    between lax functors gives a homomorphism between every pair of
+    transported monoids. Reuse their existing functors and subset hom-sets;
+    preservation witnesses remain distinct from the underlying arrows. *)
+
+(** ** 关于幺半变换的自然性
+
+    固定来源和目标幺半结构。Lax 函子之间的幺半变换在每个传输后的幺半群对
+    之间给出同态。复用其已有函子及子集 Hom 广集，将保持性见证与底层箭头
+    区分开来。 *)
+
+Section LaxMonoidTransformations.
+Context {C D : Cat} {MC : MonoidalCat C} {MD : MonoidalCat D}.
+
+(** Monoidal preservation and naturality give both monoid homomorphism
+    diagrams, without unfolding or reproving transported monoid laws. *)
+
+(** 幺半保持性与自然性给出两个幺半群同态图，无需展开或重证传输后的定律。 *)
+
+Lemma lax_monoidal_monoid_hom (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
+    (Hα : is_lax_monoidal_hom L K α) (A : MonoidObj MC)
+  : is_monoid_hom (LaxMonoidObj L A) (LaxMonoidObj K A) (α A).
+Proof.
+  destruct Hα as [Hu Ht]. split; cbn.
+  - unfold lax_monoid_unit.
+    rewrite <- comp_assoc, (nt_naturality α e[A]), comp_assoc, Hu.
+    reflexivity.
+  - unfold lax_monoid_mul.
+    rewrite <- comp_assoc, (nt_naturality α m[A]), comp_assoc,
+      (Ht (MonoidCarrier A) (MonoidCarrier A)).
+    rewrite <- comp_assoc. reflexivity.
+Defined.
+
+(** The same components are natural in monoid homomorphisms. *)
+
+(** 相同分量关于幺半群同态自然。 *)
+
+Program Definition LaxMonoidN (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
+    (Hα : is_lax_monoidal_hom L K α)
+  : LaxMonoidF L ⇒ LaxMonoidF K
+  :=
+  {|nt A := (α A; lax_monoidal_monoid_hom L K α Hα A)
+  |}.
+Next Obligation. exact (nt_naturality α f.1). Defined.
+
+(** Equality compares the same components regardless of preservation
+    witnesses. This is natural equality in the target monoid category. *)
+
+(** 无论保持性见证如何，相等比较相同分量，即目标幺半群范畴中的自然相等。 *)
+
+Lemma lax_monoid_nt_proper (L K : LaxMonoidalFct MC MD) (α β : L ⇒ K)
+    (Hα : is_lax_monoidal_hom L K α) (Hβ : is_lax_monoidal_hom L K β)
+    (E : α ≈N β)
+  : LaxMonoidN L K α Hα ≈N LaxMonoidN L K β Hβ.
+Proof. intros A. exact (E A). Defined.
+
+(** Transport respects the identity monoidal transformation. *)
+
+(** 传输保持恒等幺半变换。 *)
+
+Lemma lax_monoid_nt_id (L : LaxMonoidalFct MC MD)
+  : LaxMonoidN L L idN (lax_monoidal_hom_id L) ≈N idN.
+Proof.
+  intros A. change (@Cat.Core.id D (L A) ≈ @Cat.Core.id D (L A)). reflexivity.
+Defined.
+
+(** Transport respects vertical composition in designated equality. *)
+
+(** 传输按指定相等保持竖直复合。 *)
+
+Lemma lax_monoid_nt_comp (L K J : LaxMonoidalFct MC MD)
+    (β : K ⇒ J) (α : L ⇒ K)
+    (Hβ : is_lax_monoidal_hom K J β) (Hα : is_lax_monoidal_hom L K α)
+  : LaxMonoidN L J (β ∘Nv α) (lax_monoidal_hom_comp L K J β α Hβ Hα) ≈N
+      (LaxMonoidN K J β Hβ ∘Nv LaxMonoidN L K α Hα).
+Proof.
+  intros A. change (β A ∘ α A ≈ β A ∘ α A). reflexivity.
+Defined.
+
+(** The existing lax monoid functors now vary functorially with the lax
+    functor, providing a general client of monoidal natural transformations. *)
+
+(** 已有 lax 幺半群函子现在关于 lax 函子也具有函子性，成为幺半自然变换的
+    一般客户端。 *)
+
+Program Definition LaxMonoidTransportF
+  : Fct (LaxMonoidalFctCat MC MD) (FctCat (MonoidCat MC) (MonoidCat MD))
+  :=
+  {|F0 := LaxMonoidF
+  ; F1 L K α := LaxMonoidN L K α.1 α.2
+  |}.
+Next Obligation.
+  intros [α Hα] [β Hβ] E. exact (lax_monoid_nt_proper X Y α β Hα Hβ E).
+Defined.
+Next Obligation. exact (lax_monoid_nt_id X). Defined.
+Next Obligation.
+  symmetry. exact (lax_monoid_nt_comp X Y Z f.1 g.1 f.2 g.2).
+Defined.
+
+End LaxMonoidTransformations.

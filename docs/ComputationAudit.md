@@ -3454,3 +3454,57 @@ conditional free constructions remain separate subsequent stages.
 
 本有界阶段证明对象／运算对应。幺半自然变换及所得范畴比较的打包、与直接
 Applicative 接口的连接、强 profunctor 和条件式自由构造仍待后续独立阶段。
+
+### Monoidal natural transformations as an independent prerequisite
+
+### 作为独立前置的幺半自然变换
+
+[Monoidal natural transformations](../theories/Cat/Monoidal/Natural.v)
+compare lax monoidal functors at fixed named source and target structures.
+`is_lax_monoidal_hom` retains Type-valued unit and tensor preservation on a
+supplied natural transformation. Equality is the existing natural equality;
+no equality of functor or preservation records is used. Preservation is
+stable under equal transformations, identity and vertical composition. A
+specified natural inverse preserves the same comparisons by cancellation;
+ordinary morphisms need not be invertible.
+
+[幺半自然变换](../theories/Cat/Monoidal/Natural.v)比较固定具名来源／目标幺半
+结构上的 lax 幺半函子。`is_lax_monoidal_hom` 在给定自然变换上保留 Type 值
+单位／张量保持性。相等使用已有自然相等，不比较函子或保持性记录。保持性对
+相等变换、恒等和竖直复合稳定；指定自然逆通过消去也保持相同比较，不要求
+普通态射可逆。
+
+`LaxMonoidalFctCat` uses the existing subset-setoid construction for its
+hom-sets. It stores the transformation and its preservation witnesses while
+comparing only the transformation. `LaxMonoidalForgetF` retains the exact
+underlying functors and transformations and is faithful by that equality.
+Source and target object, Hom and equality levels remain independent; law
+universes supply the needed bounds separately.
+
+`LaxMonoidalFctCat` 以已有子集广集构造 Hom 广集，保存自然变换与保持性见证，
+但只比较变换。`LaxMonoidalForgetF` 保留原底层函子和变换，其忠实性直接来自
+该相等。来源和目标的对象、Hom、相等层级保持独立，所需定律界由辅助宇宙
+分别提供。
+
+The existing [monoid transport](../theories/Cat/Monoidal/Transport.v) is an
+actual general client. A monoidal transformation induces monoid
+homomorphisms between the transported monoids. These components form
+`LaxMonoidN`, natural in source monoid homomorphisms, without re-proving
+transported monoid laws. Identity and vertical composition are preserved in
+specified equality; `LaxMonoidTransportF` packages this variation into a
+functor to the category of monoid-transport functors. No strength, symmetry,
+cartesian structure, coends or chosen model is required by the general result.
+
+已有[幺半群传输](../theories/Cat/Monoidal/Transport.v)是实际的一般客户端。
+幺半变换在传输后的幺半群之间诱导同态；其分量组成关于来源幺半群同态自然的
+`LaxMonoidN`，不重证传输后的幺半群定律。恒等及竖直复合按指定相等保持；
+`LaxMonoidTransportF` 将此变化打包为到幺半群传输函子范畴的函子。一般结果
+不需要强度、对称、笛卡尔结构、coend 或选定模型。
+
+This independent prerequisite does not yet package the Day/lax morphism
+comparison or its categorical equivalence. Those dependent constructions and
+the direct Applicative connection remain subsequent stages. Existing lax
+functor, monoid and Day interfaces and their selected structures are unchanged.
+
+本独立前置尚未打包 Day／lax 态射比较或其范畴等价；这些依赖构造及直接
+Applicative 连接仍待后续。已有 lax 函子、幺半群、Day 接口及其选择保持不变。
