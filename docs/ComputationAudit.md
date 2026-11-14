@@ -2532,3 +2532,47 @@ branch is changed; batch PDF export and `typeprop` remain with integration.
 的 78 段对应语言说明及 70 个公共声明锚点均在相应阅读版逐项核对。清单仍为
 恰好 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类。仅修改任务
 分支，批次 PDF 及 `typeprop` 仍由集成会话管理。
+
+
+## General foundations for dynamic reconstruction
+
+## 动态重建的一般基础
+
+Continue the authorized serial #35 task on `monoidal-cat-view` from
+`874ed08`, with integration baseline `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`.
+[The general Kleisli comparison](../theories/Cat/Monad/KleisliComparison.v)
+uses inverse transposition and counit multiplication to preserve composition.
+Its Type-valued full-faithfulness witness keeps transposes as preimages;
+it does not assert essential surjectivity onto an arbitrary adjunction
+target. [Explicit setoid strength](../theories/Instance/Set/StrengthConstruction.v)
+maps pairing with an ordinary fixed value through any endofunctor. Functor
+laws give naturality/coherence, while unit and multiplication naturality
+give an explicit strong view of any supplied setoid Monad. Neither import
+registers a chosen model; no new interface or axiom is introduced.
+
+在 `monoidal-cat-view` 上从 `874ed08` 继续用户授权的 #35 串行任务，集成基线
+为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
+[一般 Kleisli 比较](../theories/Cat/Monad/KleisliComparison.v)使用逆转置及
+余单位乘法保持复合，Type 值全忠实见证保留转置作为原像；不宣称对任意伴随
+目标本质满。[显式广集强度](../theories/Instance/Set/StrengthConstruction.v)
+通过任意自函子映射与通常固定值的配对。函子律给出自然性／相干，单位与乘法
+自然性为任意所给广集 Monad 提供显式强视图。导入均不注册选定模型，没有
+增加接口或公理。
+
+The two foundations are delivered independently before the reconstruction
+client. Full-library `@all @runtest @install` passed with the unchanged
+`rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1). All 27 temporary
+assumption reports are closed: seven public constructions/laws and 20
+strict universe probes, covering independent category sizes in four
+orders and both strict setoid carrier/equality orders. Import-only probes
+confirm strength and strong Monad choices remain explicit. No permanent
+tests, shared test configuration, `typeprop` or shared environment changed.
+Full reading-edition validation is deferred to the completed finite phase;
+batch PDF export remains with integration.
+
+两项基础在重建客户端前独立交付。未改动的 `rocq-cats` switch（Rocq／Stdlib
+9.2.0、Dune 3.23.1）中，全库 `@all @runtest @install` 通过。27 项临时
+公理报告均无额外全局假设：7 个公共构造／定律和 20 项严格宇宙探针，覆盖
+四种独立范畴大小次序及两种严格广集载体／相等次序。仅导入探针确认强度及
+强 Monad 选择仍需显式给出。没有修改永久测试、共享测试配置、`typeprop`
+或共享环境。完整阅读版验证留给有限阶段完成后，批次 PDF 仍由集成方导出。

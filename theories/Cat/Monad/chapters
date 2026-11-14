@@ -8,3 +8,4 @@ Category.v
 Monoid.v
 Adjunction.v
 KleisliAdjunction.v
+KleisliComparison.v

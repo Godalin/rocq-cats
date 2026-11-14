@@ -592,7 +592,7 @@ STLC 解释适配。严格双语 HTML 导出为每种语言生成 251 个模块�
 The original audit reads baseline `5d87331` on `monoidal-cat-view`: 278
 theory modules, 60 classes and 27 records. The inventory below follows the
 hierarchy, binoidal, premonoidal, Freyd and static-Arrow slices and now
-covers 354 modules,
+covers 356 modules,
 69 classes and 29 records.
 It inventories every declaration, checks their parameter/field
 roles and coercion declarations, and inspects
@@ -604,7 +604,7 @@ implements Magma and Semigroup in the library with actual clients.
 
 原始审计读取 `monoidal-cat-view` 上的基线 `5d87331`：278 个理论模块、60 个
 类及 27 个记录。下表跟随层级、双侧张量、预幺半、Freyd 及静态 Arrow 批次
-更新，现覆盖 354 个模块、69 个类及 29 个记录。清单覆盖
+更新，现覆盖 356 个模块、69 个类及 29 个记录。清单覆盖
 每个声明，核对参数／字段职责、强制转换声明及主要继承客户端；也检查通过
 定义表达的接口，例如 `Cone`、`iso`、`NatIso`、
 `is_monad`、`is_monoid_object` 与 `HasLeftDivision`。没有逐个审计证明体。
@@ -664,9 +664,9 @@ and opposite-based dual constructions.
 | `Meta` | 1 | Constructive, Type-valued logical vocabulary / 构造性、Type 值逻辑词汇 |
 | `Set/` | 22 | Setoids, respectful maps, finite covers and closure; no category imports / 广集、保相等映射、有限覆盖与闭包，不导入范畴层 |
 | `Graph/` | 6 | Graphs over the set foundation / 基于集合基础的图 |
-| `Cat/` | 178 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
+| `Cat/` | 179 | Categories, functors, universal properties, monoidal and computational theory / 范畴、函子、泛性质、幺半及计算理论 |
 | `Algebra/` | 11 | Magma/semigroup/monoid/group cores depend on sets; categories/actions add category dependencies / 原群／半群／幺半群／群核心依赖集合，其范畴及作用扩展再依赖范畴层 |
-| `Instance/` | 101 | Models and model-specific bridges / 模型及模型特有的桥接 |
+| `Instance/` | 102 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
 | `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
@@ -1817,3 +1817,31 @@ records the finite phase's validation and precise scope.
 当前清单覆盖 354 个模块及原有 98 个接口（69 个类、29 个记录），包括全部
 29 个 `Has*` 类。[审计](./ComputationAudit.md#dynamic-arrow-adjunction-and-monad-recovery)
 记录此有限阶段的验证及精确范围。
+
+
+## Kleisli comparison and explicit setoid strength foundations
+
+## Kleisli 比较及显式广集强度基础
+
+[AdjunctionKleisliF](../theories/Cat/Monad/KleisliComparison.v) inverse-
+transposes Kleisli arrows of an induced Monad into the adjunction target.
+Its full-faithfulness witness keeps transposes as explicit preimages.
+This general theorem requires no strength or finite products and does
+not select target object representatives.
+[SetStrength](../theories/Instance/Set/StrengthConstruction.v) explicitly
+supplies coherent tensorial strength for a setoid endofunctor, using its
+arrow action on pairing with a fixed ordinary value. `SetStrongM` keeps
+the supplied Monad as its unique parent; compatibility follows from
+naturality of unit and multiplication. Carrier/equality levels remain
+independent. These are constructions, not new classes or globally enabled
+model instances. The inventory now covers 356 modules and the same 98
+interfaces; dynamic Arrow reconstruction will use these foundations.
+
+[AdjunctionKleisliF](../theories/Cat/Monad/KleisliComparison.v)将诱导 Monad
+的 Kleisli 箭头逆转置到伴随目标；全忠实见证保留转置作为显式原像。此一般
+定理不需要强度或有限积，也不选择目标对象代表。
+[SetStrength](../theories/Instance/Set/StrengthConstruction.v)通过函子对
+固定通常值配对的箭头作用，显式提供广集自函子的相干张量强度。`SetStrongM`
+保留所给 Monad 为唯一父结构，相容性来自单位及乘法自然性，载体／相等层级
+保持独立。这些是构造，不是新类或全局启用的模型实例。清单现覆盖 356 个
+模块及原有 98 个接口，动态 Arrow 重建将复用这些基础。
