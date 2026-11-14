@@ -3634,3 +3634,66 @@ constructions remain outside this batch.
 依赖的 Day 连接仍须显式选择卷积，不声称固定大小全广集自索引 coend、resizing
 原则或新的全局模型选择。该连接在此前置集成后另作有界打包；强 profunctor
 及自由构造不混入本批。
+
+### Direct Applicatives and Day operations on native setoids
+
+### 原生广集上的直接 Applicative 与 Day 运算
+
+[The direct connection](../theories/Instance/Set/DayApplicative.v) reuses the
+integrated native pure reconstruction and Day/lax correspondence. Its weak
+operation interfaces first extend the inherited lax unit by lifted Yoneda
+and the tensorator by the Day universal correspondence. Constants in the
+representable unit compute to the original pure values; weighted binary
+generators compute to the original binary lifting. Unit preservation needs
+no convolution choice. Binary preservation needs only the two endpoint
+self-convolutions, without uniform choices or a Day monoidal assembly.
+
+[直接连接](../theories/Instance/Set/DayApplicative.v)复用已集成的原生纯值恢复及
+Day／lax 对应。弱运算接口先由提升 Yoneda 延拓继承 lax 单位，由 Day 泛对应
+延拓张量子。可表单位中的常值计算为原纯值，加权二元生成元计算为原二元提升。
+单位保持性不需卷积选择；二元保持性只需两个端点的自身卷积，不需统一选择
+或装配 Day 幺半结构。
+
+Under explicit uniform choices, `ApplicativeDayMonoid` and `DayMonoidA`
+retain the underlying functor and reuse the existing structure conversions.
+Their two homomorphism theorems identify exactly the existing preservation
+predicates on the same natural transformation. Pure recovery uses singleton
+uniqueness and the accepted lax-unit round trip. Tensorator, all binary
+liftings and native application survive the round trip; Day unit and
+multiplication use their already proved round trips. Identity comparisons
+preserve operations in both directions, reusing the existing inverse laws.
+No duplicate structure laws, equality of records or proof fields are added.
+
+显式统一选择下，`ApplicativeDayMonoid` 与 `DayMonoidA` 保留底层函子，复用
+已有结构转换。两个同态定理在同一自然变换上精确识别既有保持谓词。纯值恢复
+使用单元素唯一性及已验收 lax 单位往返；张量子、全部二元提升和原生应用在
+往返中保持不变。Day 单位／乘法直接使用已有往返。恒等比较在两方向保持运算，
+复用已有逆律，不另加结构律证明、记录或证明字段相等。
+
+The native specialization has an explicit common ambient carrier/equality
+bound. Existing Day kernels lift Hom weights to their value levels. Native
+respectful function carriers and pointwise equality witnesses involve both
+ambient levels, so applying these interfaces to full native endofunctors
+requires that common bound. This is a stated specialization, not an implicit
+identification of the independent levels of the native Applicative theory.
+Supporting unequal levels through raised values or a relative presentation
+would be a separate construction. In particular, the actual generated
+small-base Day model cannot be invoked on this full native category: its
+object-index size exceeds the common bound. Uniform convolution existence
+therefore remains explicit input and is not claimed by this module.
+
+原生特化显式使用共同环境载体／相等界。已有 Day 核将 Hom 权重提升至其值层级；
+原生保相等函数载体与逐点相等见证涉及两个环境层级，故这些接口用于完整原生
+自函子时要求共同界。此处明确限定适用范围，不暗中识别原生 Applicative 理论
+的独立层级。经提升值或相对呈现支持不同层级，需要另行构造。尤其不能在此
+完整原生范畴上调用已有小基生成 Day 模型：其对象指标大小超过共同界。因此，
+统一卷积存在性仍是显式输入，本模块不声称提供该存在性。
+
+This bounded bridge is an object/operation/morphism correspondence under
+those hypotheses. It does not add an Applicative category or claim a new
+categorical equivalence of bundled Applicatives. Strong profunctors,
+coherent further connections and justified free constructions remain open.
+
+本有界连接是在上述前提下的对象／运算／态射对应；不新增 Applicative 范畴，
+也不声称新的打包 Applicative 范畴等价。强 profunctor、后续相干连接及具有
+充分条件的自由构造继续开放。
