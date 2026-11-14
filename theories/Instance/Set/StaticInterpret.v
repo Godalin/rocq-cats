@@ -69,7 +69,8 @@ Proof.
   unfold static_interpret. etransitivity; [| exact (arrow_static_eval_pure A f)].
   unfold arrow_static_eval, arrow_global_context.
   apply comp_proper; [reflexivity |]. apply comp_proper; [| reflexivity].
-  apply arrow_second_proper, functor_fmap_proper. intros [].
+  apply arrow_second_proper.
+  apply (@functor_fmap_proper C K A UnitS (Y ^ X)%ob). intros [].
   intros x. reflexivity.
 Qed.
 

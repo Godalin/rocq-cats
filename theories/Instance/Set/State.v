@@ -50,6 +50,14 @@ Defined.
 (** 状态载体与相等层级保持独立。函数空间相等要求两者均不超过所在广集的相等
     层级，而后者可严格小于载体层级。以下接口显式保留这两个所在层级。 *)
 
+(** Introduce the functor-law parameters explicitly: reduction of [Proper]
+    during automatic obligation introduction differs across Rocq versions. *)
+
+(** 显式引入函子定律的参数：不同 Rocq 版本在自动引入义务参数时，对
+    [Proper] 的归约行为有所不同。 *)
+
+Local Obligation Tactic := idtac.
+
 Program Definition StateF@{r e u p +} (R : SetC@{r e})
   : Functor (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
   :=
@@ -57,12 +65,17 @@ Program Definition StateF@{r e u p +} (R : SetC@{r e})
   ; F1 X Y f := state_map f
   |}.
 Next Obligation.
-  intros f g H k r. split; [exact (H (fst (k r))) | reflexivity].
+  intros R X Y f g H k r.
+  split; [exact (H (fst (k r))) | reflexivity].
 Defined.
 Next Obligation.
-  intros k r. cbn. destruct (k r). split; reflexivity.
+  intros R X k r. cbn. destruct (k r). split; reflexivity.
 Defined.
-Next Obligation. intros k r. split; reflexivity. Defined.
+Next Obligation.
+  intros R X Y Z f g k r. split; reflexivity.
+Defined.
+
+Local Obligation Tactic := cats_obligation.
 
 (** Return a value without changing the state. *)
 
