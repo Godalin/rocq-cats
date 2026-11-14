@@ -2040,3 +2040,50 @@ integration. Batch PDF export remains with the integration session.
 接口（68 个类、29 个记录），其中 29 个 `Has*` 类。没有新增永久测试、共享
 测试别名或工具链变更。只修改本任务分支；`typeprop` 仍由集成会话管理。
 批次 PDF 仍由集成会话导出。
+
+
+## Fully faithful inverse foundation for static reconstruction
+
+## 静态重建使用的完全忠实逆基础
+
+This slice continues on `monoidal-cat-view` from `4d517d5`, with integrated
+baseline `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` unchanged.
+[Functor.FullyFaithful](../theories/Cat/Functor/FullyFaithful.v) constructs
+a transparent inverse to a fully faithful functor restricted to its indexed
+image objects. Type-valued fullness supplies preimages; faithfulness proves
+respectfulness and the inverse laws. The two composites have natural
+isomorphisms with identity components. No ambient object representatives or
+additional choice principle are required.
+
+本切片在 `monoidal-cat-view` 上从 `4d517d5` 继续，集成基线仍为
+`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
+[Functor.FullyFaithful](../theories/Cat/Functor/FullyFaithful.v)在完全忠实
+函子的索引像对象上构造透明逆。Type 值满性提供原像，忠实性证明尊重性及
+互逆律，两个复合由恒等分量的自然同构比较。不要求环境对象代表或额外选择
+原理。
+
+[Setoid isomorphisms](../theories/Instance/Set/Isomorphism.v) now also
+construct an inverse from supplied Type-valued unique fibers. This uses
+specified setoid equality. A native Hom isomorphism in one `SetCat` has a
+common ambient bound, so the general inverse functor directly uses fullness
+rather than identifying two categories' native hom universes. This
+strict-probe finding is recorded in the existing `AGENTS.md` learnings.
+
+[广集同构](../theories/Instance/Set/Isomorphism.v)另提供从已给 Type 值唯一
+纤维构造逆的通用引理，使用指定广集相等。一个 `SetCat` 中的原生 Hom 同构
+具有共同环境界，因此一般逆函子直接使用满性，避免合并两个范畴的原生 Hom
+宇宙。严格探针发现的这一限制已记录到现有 `AGENTS.md` 学习条目。
+
+Targeted builds passed in the unchanged `rocq-cats` switch. All 30 temporary
+assumption reports are closed under the global context: ten public
+constructions/laws, eighteen strict independent-category probes, and two
+setoid ambient carrier/equality-order probes. Both category hom/equality
+orders are separated, while the setoid lemma uses its stated common bound.
+This independently reusable prerequisite adds no interface, chosen model,
+permanent test or shared toolchain change. `typeprop` was not changed.
+
+在未改动的 `rocq-cats` switch 中，定向构建通过。30 项临时公理报告均无额外
+全局假设：十个公共构造／定律、十八项严格独立范畴探针及两项广集所在载体／
+相等次序探针。两个范畴的 Hom／相等按两种次序分离；广集引理使用已声明的
+共同界。此可独立复用前置基础不增加接口、选定模型、永久测试或共享工具链
+变更，没有修改 `typeprop`。

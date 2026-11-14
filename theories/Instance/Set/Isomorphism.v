@@ -43,3 +43,24 @@ Proof.
     + symmetry. exact Hr.
     + apply func_proper. exact (Hunique a Hi).
 Defined.
+
+
+(** Type-valued unique-fiber data supplies a transparent inverse map.
+    Respectfulness follows from uniqueness in the source setoid, so no
+    native function equality or additional choice principle is needed. *)
+
+(** Type 值唯一纤维数据提供透明逆映射。尊重性来自源广集中的唯一性，
+    因而不需要函数原生相等或额外选择原理。 *)
+
+Definition is_iso_of_unique_fibers {A B : SetC} (f : A →r B)
+    (H : ∀ b : B, ∃ a : A,
+      is_unique (R := carrier_equiv A) (λ a, f a ≈S b) a)
+  : @is_iso SetCat A B f.
+Proof.
+  unshelve notypeclasses refine (({|func b := (H b).1|}); _).
+  - intros b b' Hb. symmetry. apply (H b).2.
+    transitivity b'; [exact (@this _ _ _ _ _ (H b').2) | symmetry; exact Hb].
+  - split.
+    + intros a. symmetry. apply (H (f a)).2. reflexivity.
+    + intros b. exact (@this _ _ _ _ _ (H b).2).
+Defined.

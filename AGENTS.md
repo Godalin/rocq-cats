@@ -220,6 +220,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   well as their underlying functors, as in `StatePureN`. Inferred downstream
   signatures can otherwise identify levels which the functor kept separate;
   probe the completed structure at strict levels.
+- Native Hom isomorphisms in one `SetCat` use a common carrier/equality
+  bound. For general fully faithful inverses, use the Type-valued fullness
+  preimages, as in `Functor.FullyFaithful`, to retain independent category
+  hom levels; raise both setoids explicitly when a common ambient Hom
+  isomorphism is needed. Check strict category levels before specializing.
 - Separate ordinary monoidal context action from its cartesian operations,
   as in `Computational.Arrow.Core` and `Cartesian`. Introduce products,
   exchange, projection and duplication only at the layer that uses them;
