@@ -39,7 +39,10 @@ Local Open Scope nat_scope.
     endpoints were explained in %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Core.SimplicialHomotopy}
     {%[SimplicialHomotopy]%}%. No inverse of a
     component of α is required. This chapter constructs the direction from
-    natural transformations to homotopies; a converse is not asserted here. *)
+    natural transformations to homotopies. The converse and both round trips
+    follow in
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.HomotopyInv.VertexNerveInvHomotopyN}
+    {%[VertexNerveInvHomotopyN]%}%. *)
 
 (** 对从 A 到 B 的箭头 a，[α : F ⇒ G] 的自然性说明下图按目标范畴的指定
     相等交换。这是棱柱在一条边上的图像。对整条箭头链，%\coqref{Cats.Cat.Diagram.Prism.PrismDiagramF}
@@ -48,7 +51,9 @@ Local Open Scope nat_scope.
     {%[VertexNerveHomotopy]%}% 再把它们组装为单纯同伦，
     端点条件就是前面 %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Core.SimplicialHomotopy}
     {%[SimplicialHomotopy]%}% 所说明的条件。构造不要求 α 的
-    分量可逆。本章给出从自然变换到同伦的方向，此处尚未断言反向恢复。 *)
+    分量可逆。本章给出从自然变换到同伦的方向，反向恢复及两个往返律接着见
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.HomotopyInv.VertexNerveInvHomotopyN}
+    {%[VertexNerveInvHomotopyN]%}%。 *)
 
 (** @lang both
 %\begin{center}
