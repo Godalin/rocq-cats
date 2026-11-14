@@ -10,9 +10,9 @@ From Cats.Set.Relation Require Export Candidate.
     its original context has no variable of the required domain type.
 
     This relation is independent of NbE and uses the directed beta steps.
-    Its candidate laws prove normalization of reducible terms, not yet
-    reducibility of every typed term. The substitution fundamental theorem
-    is the remaining bridge to that stronger statement. *)
+    Its candidate laws prove normalization of reducible terms.
+    [STLC.StrongNormalization] separately proves the substitution
+    fundamental theorem, extending this result to every typed term. *)
 
 (** * 按类型索引的可归约性
 
@@ -21,8 +21,9 @@ From Cats.Set.Relation Require Export Candidate.
     函数类型。后续上下文允许用新变量测试函数，即使原上下文没有定义域类型
     的变量也可如此。
 
-    此关系独立于 NbE，使用有向 β 步骤。候选律证明可归约项强归一化，尚未
-    证明所有带类型项都可归约；替换基本定理是通向后一结论的剩余桥梁。 *)
+    此关系独立于 NbE，使用有向 β 步骤。候选律证明可归约项强归一化；
+    [STLC.StrongNormalization] 单独证明替换基本定理，将此结论扩展到每个
+    带类型项。 *)
 
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
