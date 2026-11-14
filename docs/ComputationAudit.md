@@ -3311,3 +3311,79 @@ and conditional free constructions remain subsequent work.
 本批建立自然结合性及其透明逆，尚未建立三角形或五边形。后两者需要相应
 基相干条件及独立证明，完成后才能声称完整 Day 幺半结构。Day 幺半群／lax
 对应、强 profunctor、相干连接及条件式自由构造仍待后续工作。
+
+### Coherent Day convolution and the explicit monoidal assembly
+
+### 相干 Day 卷积与显式幺半装配
+
+[Day coherence](../theories/Cat/Day/Coherence.v) separates the two coherence
+assumptions. The triangle uses just the base triangle, the supplied natural
+unit/associativity isomorphisms and the five selected convolutions in its
+source, intermediate objects and target. The base equation says that left
+unit insertion followed by inverse associativity equals right unit insertion
+in the other coordinate. Ternary generator distinction lifts that equation
+to the two Day routes. No base pentagon is needed by this theorem.
+
+[Day 相干性](../theories/Cat/Day/Coherence.v)分开使用两个相干条件。三角形只需
+基三角形、给定的自然单位／结合同构，以及其来源、中间对象和目标中的五个
+选定卷积。基方程表示：左单位插入再经过逆结合子，等于另一坐标中的右单位
+插入。三元生成元区分性将此方程提升为 Day 两路相等；此定理不需要基五边形。
+
+The pentagon requires the base pentagon and the twelve selected binary
+convolutions used by the five bracketings of four inputs. A fourth-input
+distinction lemma reuses ternary distinction and parameterized coend descent.
+It selects only the three convolutions of the fully left-associated source.
+Both routes on identity quadruples become the same final generator with
+different result weights. Since Day associativity uses the inverse base
+map, these weights satisfy the inverse base pentagon. Inverse uniqueness
+derives that equation from the forward base pentagon without equating law
+witnesses. This theorem needs no unit, symmetry or strength.
+
+五边形需要基五边形及四输入五种括号所用的十二个选定二元卷积。四输入区分
+引理复用三元区分性和带参数 coend 下降，只选择完全左结合来源中的三个卷积。
+在恒等四重值上，两路变成相同的最终生成元，但结果权重不同。由于 Day
+结合性使用基逆映射，权重满足基逆五边形。逆的唯一性由正向基五边形导出
+这一方程，不识别定律见证。此定理不需要单位、对称或强度。
+
+[Day monoidal assembly](../theories/Cat/Day/Monoidal.v) takes a coherent
+binary functor with unit and uniform explicit convolution choices. It reuses
+`BifunctorMonoidal`, the original `DayTensorF`, representable `DayUnitF`,
+unitors and associator with their transparent inverses. Tensor interchange
+comes from the bifunctor; its reconstructed tensor action agrees with the
+supplied Day action in natural equality. Identity components compare the
+derived tensor functor with the original one, without equality of functor
+records. `MonoidalDay` also starts directly from a supplied monoidal category,
+reusing its existing bimap pentagon and triangle. Importing these modules
+registers no global convolution choices.
+
+[Day 幺半装配](../theories/Cat/Day/Monoidal.v)以带单位的相干二元函子及统一显式
+卷积选择为输入，复用 `BifunctorMonoidal`、原 `DayTensorF`、可表 `DayUnitF`、
+单位子和结合子及其透明逆。张量交换律来自双函子；重建张量作用在自然相等下
+等于给定 Day 作用。恒等分量比较导出的张量函子与原函子，不要求函子记录
+相等。`MonoidalDay` 还可直接从给定幺半范畴出发，复用已有二元映射的
+五边形与三角形。导入这些模块不会注册全局卷积选择。
+
+All ambient carrier/equality and base Hom-weight bounds remain those of the
+original Day construction. Conditional coend choices add no extra ordering
+between ambient carrier and equality levels. The existing generated setoid
+model retains its sufficient bounds: base objects and Hom carriers at most
+the output carrier, that carrier at most output equality, and base Hom
+equality at most output equality. No assertion of fixed-size full setoid
+self-indexing, resizing, internal function objects or new axioms is added.
+Pointwise coherence boundaries let concrete clients supply large
+representatives without unfolding their stored computations during inference.
+
+环境载体／相等与基 Hom 权重界仍沿用原 Day 构造。条件式 coend 选择不增加
+环境载体与相等层级之间的次序。已有生成广集模型保留充分界：基对象与 Hom
+载体不超过输出载体，输出载体不超过输出相等，基 Hom 相等不超过输出相等。
+不声称固定大小的全广集自索引，也不增加 resizing、内部函数对象或新公理。
+逐点相干边界允许具体客户端代入较大的代表，避免推断时展开其所存计算。
+
+This completes the Day tensor/unit/associativity coherence layer under its
+stated hypotheses. The Day-monoid/lax correspondence, strong profunctors,
+coherent computational connections and conditional free constructions remain
+subsequent work; they are not implied by this monoidal assembly alone.
+
+在所述假设下，本批完成 Day 张量／单位／结合性的相干层。Day 幺半群／lax
+对应、强 profunctor、相干计算结构连接及条件式自由构造仍是后续工作，不能
+仅由本幺半装配直接推得。
