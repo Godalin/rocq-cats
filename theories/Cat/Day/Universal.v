@@ -391,4 +391,24 @@ Proof.
   - apply day_extend_proper. exact K.
 Defined.
 
+(** Every outgoing transformation evaluates a weighted generator through
+    its restriction. This is the computation form of the existing inverse
+    universal correspondence, without unfolding a selected coend. *)
+
+(** 每个出射变换通过其限制求值加权生成元。这是已有互逆泛对应的计算形式，
+    不展开选定 coend。 *)
+
+Lemma day_transform_inject (α : DayF T F G ⇒ H)
+    {Z : @Ob C} (q : @Ob (C ×C C)) (h : Hom (T q) Z)
+    (xy : DayValuesF F G q)
+  : α Z (day_inject T F G q h xy) ≈S
+      fmap H h (DayRestrictN α q xy).
+Proof.
+  transitivity (DayExtendN T (DayRestrictN α) Z
+    (day_inject T F G q h xy)).
+  - symmetry. exact (day_extend_restrict α Z
+      (day_inject T F G q h xy)).
+  - exact (day_extend_β (DayRestrictN α) q h xy).
+Defined.
+
 End UniversalCorrespondence.
