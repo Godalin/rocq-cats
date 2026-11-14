@@ -440,6 +440,15 @@ Proof. intros t u H. destruct H. intros U x. reflexivity. Qed.
 Notation "t '[' u '/]'" := (subst t (sub_single u))
   (at level 8, left associativity) : stlc_tm_scope.
 
+(** Substituting the newest input leaves a weakened old term unchanged. *)
+
+(** 代入最新输入不改变已经弱化的旧项。 *)
+
+Definition subst_weaken_single {B : Type} {Γ : Ctx B} {A U : Ty B}
+    (t : Tm Γ U) (a : Tm Γ A)
+  : t⟨wkRen⟩[a/] = t.
+Proof. rewrite subst_rename. change (t[idSub] = t). apply subst_id. Defined.
+
 (** Renaming commutes with replacing the newest variable, provided the
     renaming is lifted on the body. *)
 
