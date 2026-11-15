@@ -90,14 +90,16 @@ objects, inherited properties, two choices on one category, transparent
 boolean/opposite/product inverses, existing CCC/monoidal sort chains and both
 strict hom/equality universe orders. The remaining algebra, cartesian/CCC,
 topos and monoidal hierarchy migrations are later bounded slices. The dated
-inventories below describe their respective baselines; this slice adds one
-class to the 116-interface baseline, for 117 current class/record interfaces.
+inventories below describe their respective baselines. At its `76642d4`
+baseline this slice adds one class to 116 interfaces, making 117. Including
+the subsequently integrated `ElementMap` record, the rebased tree has 118.
 
 [群胚打包回归](../tests/BundledGroupoid.v) 覆盖依赖对象、继承性质、同一范畴
 的两份选择、透明的布尔／反群胚／乘积逆、已有 CCC／幺半类型链，以及 Hom 与
 相等见证宇宙的两种严格次序。剩余代数、笛卡尔／CCC、拓扑斯及幺半层级留在
-后续有界批次。下方注明日期的清单对应各自基线；本片在 116 个接口的基线上
-增加一个类，当前共有 117 个类／记录接口。
+后续有界批次。下方注明日期的清单对应各自基线；本片在 `76642d4` 的 116 个
+接口基线上增加一个类，得到 117。计入此后已集成的 `ElementMap` 记录，
+重基后的源码树现有 118 个类／记录接口。
 
 Local validation on the `76642d4`-based working tree passed project-switch
 `dune build -j2 @all @runtest @install`, the new interface regression and the
