@@ -2668,3 +2668,52 @@ objects/finite colimits and meaningful models remain separate work.
 这是已集成一般桥梁的实际客户端，桥梁仍位于 Topos 之外；本批只打包固定
 积投影上的量化。任意态射量词、完整索引相干、完整超教义、Beck–Chevalley／
 Frobenius、环境始对象／有限余极限及有意义模型仍属后续工作。
+
+## Pointwise comparisons into preorder targets / 到预序目标的逐点比较
+
+[Cat.Logic.Natural](../theories/Cat/Logic/Natural.v) is a second independent
+categorical-logic prerequisite outside Topos. For an arbitrary source
+category `C`, a target `PreorderCatAt R`, and functors `F G`,
+`PreorderN F G H` turns witnesses `H : ∀ c, R (F c) (G c)` into the existing
+`Nat F G`. Naturality uses the specified thin target hom equality.
+There is no source preorder or source thinness assumption, no classifier
+or limits, and no new transformation interface. Both functors are supplied
+explicitly, retaining their arrow maps rather than inferring functor data
+from pointwise object images.
+
+`PreorderNatIso F G H` accepts both comparisons at every object and retains
+both as its forward/inverse components. Inverse naturality comes from the
+existing `NatIso_inv` construction. Public native equations expose the
+supplied components definitionally. The inverse laws use target `HomEq`,
+without native inverse equations between comparison witnesses or native
+equality of the functors' object maps. `preorder_nat_eq` compares arbitrary
+parallel transformations by the existing `NatEq`; it does not identify
+their component functions or proof records by Rocq equality.
+
+The target's object, relation, hom-equality and law bounds remain separate,
+as do the source category's native bounds. There are no global instances,
+Proper registrations, model choices or new notation. After this general
+prerequisite is integrated, a separate Topos branch can use the classifier's
+comparison factors for reindex identity/composition natural isomorphisms
+and use `NatEq` for their coherence diagrams. This prerequisite itself
+does not deliver that client, a complete pseudofunctor/hyperdoctrine,
+arbitrary-arrow quantifiers, Beck–Chevalley or Frobenius.
+
+[Cat.Logic.Natural](../theories/Cat/Logic/Natural.v) 是 Topos 之外的第二个
+独立范畴逻辑前置。给定任意源范畴 `C`、目标 `PreorderCatAt R` 及函子
+`F G`，`PreorderN F G H` 将 `H : ∀ c, R (F c) (G c)` 组装为既有 `Nat F G`。
+自然性使用指定的薄目标 Hom 相等，不要求源范畴是预序或薄范畴，不需要
+分类子／极限，也不新造变换接口。显式给出两个函子，保留其箭头映射，不从
+逐点对象像反推函子数据。
+
+`PreorderNatIso F G H` 接受每个对象处的双向比较，并将其保留为正／反分量；
+逆的自然性来自既有 `NatIso_inv`。公开原生方程给出这些分量与给定见证的
+定义相等。互逆律使用目标 `HomEq`，不要求比较见证原生互逆或函子对象映射
+原生相等。`preorder_nat_eq` 以既有 `NatEq` 比较任意平行变换，不用 Rocq
+相等识别分量函数或证明记录。
+
+目标的对象、关系、Hom 相等与定律界保持独立，源范畴的各原生界亦独立。
+没有全局实例、Proper 注册、模型选择或新记号。此一般前置集成后，后续
+Topos 分支再用分类子比较因子构造重索引恒等／复合自然同构，并以 `NatEq`
+验证相干图。本前置自身不交付该客户端、完整伪函子／超教义、任意态射量词、
+Beck–Chevalley 或 Frobenius。

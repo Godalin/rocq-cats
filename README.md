@@ -675,6 +675,18 @@ of Topos and does not assume classifiers, limits or a full hyperdoctrine.
 组装为上述既有伴随，保留见证映射，支持大小独立的预序范畴并通过 `PreorderF`
 特化。该通用范畴逻辑模块不依赖 Topos，不预设分类子、极限或完整超教义。
 
+The optional [preorder comparison bridge](./theories/Cat/Logic/Natural.v)
+assembles pointwise witnesses into natural transformations and mutual
+comparisons into natural isomorphisms. Its source category is arbitrary;
+only the target uses the existing thin preorder model. Forward/inverse
+components retain their chosen data, and parallel transformations compare
+by the existing `NatEq`, without native equality of witnesses.
+
+可选的[预序比较桥梁](./theories/Cat/Logic/Natural.v)将逐点见证组装为自然
+变换，将相互比较组装为自然同构。源范畴保持任意，只有目标使用既有薄预序
+模型；正／反分量保留选定数据，平行变换使用既有 `NatEq` 比较，不要求见证
+原生相等。
+
 The [limit theory](./docs/Limits.md) derives limit functors, the diagonal
 adjunction and preservation of limits by right adjoints from universal properties.
 The [graph and free-category constructions](./docs/Graphs.md) generate diagram
