@@ -2545,3 +2545,64 @@ bounded stages.
 推导等化子，保持同一终对象／分类子／积／指数选择，不注册全局模型或选定
 结构。本批给出谓词并；子对象并及其范畴余积、环境始对象／有限余极限、存在
 量词、其余逻辑及有意义模型留待后续有界阶段。
+
+## Generic preorder adjunctions outside Topos / Topos 之外的通用预序伴随
+
+[Cat.Logic.Adjunction](../theories/Cat/Logic/Adjunction.v) is an independent
+categorical-logic prerequisite. It uses the existing
+[preorder categories and functors](../theories/Cat/Preorder.v) and
+[adjunction construction](../theories/Cat/Adjunction.v). It imports no
+Topos module and assumes no truth-value objects, classifiers, limits or
+quantifier constructions.
+Given `F : Fct (PreorderCatAt R) (PreorderCatAt S)`, the reverse functor `G`
+and maps `S (F x) y ↔ R x (G y)`, `PreorderAdj F G H` assembles `F ⊣ G`
+using `AdjFromHom`. The relation witnesses remain arrows. Both native hom
+maps retain the corresponding supplied maps definitionally; unit/counit
+and naturality use the existing adjunction theory.
+
+No native inverse equations between comparison witnesses are required:
+parallel witnesses have the specified singleton equality in these thin
+categories. This preserves their data without making arbitrary Type-valued
+predicate families a posetal hyperdoctrine, identifying witness records or
+truncating them into Prop. `preorder_adjunction_correspondence` recovers
+the two witness maps from an existing adjunction; it asserts no equality
+between chosen correspondences.
+
+Object, relation-witness, hom-equality and law bounds are separate for both
+preorder categories. The existing adjunction interface embeds their homs
+in a sufficient common ambient setoid category; this is an upper bound,
+not resizing or identification of native levels. `PreorderFAdj` specializes
+the bridge to two monotone functions through the existing `PreorderF`,
+keeping their supplied monotonicity maps. Neither constructor is a global
+instance or chooses model structures by import.
+
+This batch supplies the general bridge first. A later branch will package
+the already proved Topos projection-substitution/forall correspondence as
+an actual client after this prerequisite is integrated. Classifier-specific
+arrows stay specialized; reusable order/adjunction reasoning belongs here
+or in the existing general theories. This does not supply arbitrary-arrow
+quantifiers, Beck–Chevalley, Frobenius or a full hyperdoctrine, and does not
+complete #6 or #16.
+
+[Cat.Logic.Adjunction](../theories/Cat/Logic/Adjunction.v) 是独立的范畴逻辑
+前置，复用既有[预序范畴／函子](../theories/Cat/Preorder.v)及
+[伴随构造](../theories/Cat/Adjunction.v)，不导入 Topos 模块，不假定真值
+对象、分类子、极限或量词构造。给定
+`F : Fct (PreorderCatAt R) (PreorderCatAt S)`、反向函子 `G` 及映射 `S (F x) y ↔ R x (G y)`，`PreorderAdj F G H` 用
+`AdjFromHom` 组装 `F ⊣ G`。关系见证保持为箭头；两个原生 Hom 映射定义上
+保留给定对应映射，单位／余单位及自然性复用既有伴随理论。
+
+不要求比较见证的原生互逆等式：薄范畴中平行见证使用指定的单元素相等。
+这保留数据，不把任意 Type 值谓词族直接当作偏序超教义，不识别见证记录或
+将它们截断成 Prop。`preorder_adjunction_correspondence` 从既有伴随取回
+两个见证映射，不断言选定对应相等。
+
+两个预序范畴各有独立的对象、关系见证、Hom 相等及定律界。既有伴随接口将
+Hom 嵌入足够大的共同环境广集范畴；这是上界，不是重设大小或等同原生层级。
+`PreorderFAdj` 通过既有 `PreorderF` 对两个单调函数特化，保留其给定单调
+映射。两个构造均非全局实例，导入不选择模型结构。
+
+本批先给出一般桥梁；前置集成后，后续分支再将已证明的 Topos 投影代入／
+forall 对应打包为实际客户端。分类子特有箭头保持为特化，通用序／伴随推理
+放在此处或既有一般理论中。不声称任意态射量词、Beck–Chevalley、Frobenius
+或完整超教义，也不关闭 #6 或 #16。
