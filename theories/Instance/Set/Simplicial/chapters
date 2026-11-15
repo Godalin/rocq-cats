@@ -11,6 +11,7 @@ Monoid.v
 Vertex/Monoid.v
 Boundary.v
 Horn.v
+HornAttachment.v
 Vertex/Horn2.v
 Matching.v
 FaceGluing.v
