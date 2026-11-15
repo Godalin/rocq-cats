@@ -4,3 +4,4 @@ Strength.v
 HomStrength.v
 Compose.v
 ComposeUniversal.v
+ComposeMap.v
