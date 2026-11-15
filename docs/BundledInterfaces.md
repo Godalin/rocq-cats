@@ -2424,8 +2424,9 @@ substitution commutes with quantifying the unchanged object `A`; no
 arbitrary-morphism quantifier or complete hyperdoctrine is claimed. Actual
 Topos clients use exactly their inherited product, exponential, terminal,
 classifier and pullback choices. No new structure fields or globally
-selected model instances are added. Bottom, joins, remaining internal logic,
-initial objects/finite colimits and meaningful models stay open.
+selected model instances are added. The next section develops bottom;
+joins, remaining internal logic, ambient initial objects/finite colimits
+and meaningful models stay open.
 
 [Cat.ProductPullback](../theories/Cat/ProductPullback.v) 从积泛性质得到任意
 箭头沿第一投影的拉回，中介就是原有积配对。`SubProduct s A` 使用已有拉回
@@ -2444,5 +2445,47 @@ initial objects/finite colimits and meaningful models stay open.
 `r ∘ π1 ⊢Ω f ↔ r ⊢Ω ∀Ω[A] f`、求值、单调性以及用同一上下文中项的实例化。
 上下文代入与对未改变对象 `A` 的全称量化相容；本批不声称任意态射的量词
 或完整超教义。实际 Topos 客户端恰好使用继承的积、指数、终对象、分类子及
-拉回选择，不新增结构字段或全局选定模型实例。底、并、其余内部逻辑、
-始对象／有限余极限及有意义模型仍保持开放。
+拉回选择，不新增结构字段或全局选定模型实例。下一节发展底；并、其余内部
+逻辑、环境范畴始对象／有限余极限及有意义模型仍保持开放。
+
+## False predicates and least subobjects / 假谓词与最小子对象
+
+[Topos.Bottom](../theories/Topos/Bottom.v) defines `Bottom : Hom 1 Ω` by
+universally quantifying the truth-value variable: `∀Ω[Ω] π2` in context `1`.
+The predicate `⊥Ω` substitutes that same global arrow into any context.
+Its substitution law and its expression as quantification of the variable
+use the existing quantifier-substitution law, without identifying a context
+with its product with `1`. Named terminal, classifier, products and relative
+exponentials suffice for these arrows and equations.
+
+With named pullbacks, quantifier instantiation by any predicate `f` gives
+`⊥Ω ⊢Ω f`. Predicate equality reflection yields the leastness/uniqueness
+criterion `f ⊢Ω ⊥Ω ↔ f ≈ ⊥Ω`, preserving the reverse factor.
+`SubBottom X := ClassifiedSub (⊥Ω : Hom X Ω)` factors through every
+subobject. Existing classification and inverse-image comparisons transport
+these factors and prove inverse image preserves bottom. No proof records
+or subobject witnesses are identified by native equality.
+
+`SubCat_HasInitial X` explicitly packages this least subobject as initial in
+the existing thin category `SubCat X`. It uses the original `HasInitial`
+interface through terminality in the opposite category. Import does not
+enable that choice globally. This is an initial object of the subobject
+category; initial objects of the ambient category and finite colimits remain
+later results, alongside joins, remaining internal logic and meaningful models.
+
+[Topos.Bottom](../theories/Topos/Bottom.v) 在上下文 `1` 中对真值变量作全称
+量化，以 `∀Ω[Ω] π2` 定义 `Bottom : Hom 1 Ω`。谓词 `⊥Ω` 将同一全局箭头
+代入任意上下文。其代入律及在任意上下文中量化真值变量的刻画复用已有量词
+代入律，不将上下文与其同 `1` 的积识别。这些箭头与方程仅要求具名终对象、
+分类子、积和相对指数。
+
+另加具名拉回，通过用任意谓词 `f` 作量词实例化得到 `⊥Ω ⊢Ω f`。谓词相等
+反射给出最小性／唯一性判据 `f ⊢Ω ⊥Ω ↔ f ≈ ⊥Ω`，保留反向因子。
+`SubBottom X := ClassifiedSub (⊥Ω : Hom X Ω)` 经过每个子对象分解；既有
+分类与逆像比较运输这些因子，并证明逆像保持底。不用原生相等识别证明记录
+或子对象见证。
+
+`SubCat_HasInitial X` 在已有薄范畴 `SubCat X` 中显式将最小子对象打包为
+始对象，经由反范畴中的终性复用原 `HasInitial` 接口，导入不全局启用该选择。
+这是子对象范畴的始对象；环境范畴的始对象及有限余极限，与并、其余内部逻辑
+和有意义模型仍属后续结果。
