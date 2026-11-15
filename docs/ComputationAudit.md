@@ -4180,3 +4180,53 @@ conditional free constructions remain separate stages.
 
 这里打包的是普通自 Profunctor 复合。复合强度及其相干相容、强 promonad／Arrow
 刻画和有充分条件的自由构造仍为独立阶段。
+
+### Strength on a supplied profunctor composite
+
+### 给定 Profunctor 复合上的强度
+
+[Composite strength](../theories/Cat/Profunctor/ComposeStrength.v) applies the
+two supplied strengths to a generating pair, then inserts at the intermediate
+object extended by the same left context. Single-sided naturality is derived
+from the original strength transformation. It turns the balance equation into
+original coend gluing, so the existing balanced-cowedge constructor and
+transparent mediator supply descent and its generating equation. The original
+coend extensionality gives uniqueness on the entire coend.
+
+[复合强度](../theories/Cat/Profunctor/ComposeStrength.v)将两个给定强度施加于
+生成对，再在被同一左上下文扩展的中间对象处注入。单侧自然性从原强度自然变换
+导出，将平衡方程转为原 coend 粘合。因此已有平衡余楔构造子及透明中介提供下降
+和生成元计算律；原 coend 外延性给出整个 coend 上的唯一性。
+
+Balanced legs need only the target kernel coend. Descent and its uniqueness
+need that target and the original source kernel coend, with independent
+choices. Packaging a natural transformation and `ProfCompStrength` uses only
+the supplied composition family for the two fixed profunctors. Endpoint
+naturality follows on generators. Context dinaturality, including
+noninvertible substitutions, and the unit/associativity strength equations
+move the middle context map, unitor or associator between factors by gluing.
+No separate universal-property proof is introduced.
+
+平衡腿只需目标核 coend。下降及其唯一性需要此目标与原来源核 coend，两处可以
+独立选择。打包自然变换与 `ProfCompStrength` 只使用这两个固定 profunctor 的
+给定复合族。端点自然性在生成元上成立；上下文双自然性（包括不可逆代入）及
+单位／结合强度方程通过粘合，在因子之间移动中间上下文映射、单位子或结合子。
+不另证明泛性质。
+
+The base is monoidal; symmetry, cartesian operations and tensor preservation
+of coends are unnecessary. Value carrier/equality levels remain independent;
+no object-index or Hom-size bound is added to the abstract construction.
+Existence stays explicit: the generated setoid model retains its actual size
+conditions, while special Hom coends can be supplied directly by co-Yoneda.
+No import selects a global strength/coend model or asserts fixed-size full
+SetCat self-indexed coends. Compatibility of strength-preserving input maps
+and the composition unitors/associator, the strong-profunctor monoidal
+packaging, strong-promonad/Arrow comparison and conditional free constructions
+remain subsequent stages.
+
+基范畴只需幺半结构，无须对称性、笛卡尔运算或张量保持 coend。值载体与相等层级
+保持独立，抽象构造不增加对象指标界或 Hom 大小界。存在性仍须显式给定：生成
+广集模型保留其真实大小条件，特殊 Hom coend 则可由 co-Yoneda 直接提供。导入
+不选择全局强度／coend 模型，也不声称固定大小全 SetCat 自索引 coend。保持强度
+的输入映射及复合单位子／结合子的相容性、强 Profunctor 幺半打包、强 promonad／
+Arrow 比较和条件自由构造仍为后续阶段。
