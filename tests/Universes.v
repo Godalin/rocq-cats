@@ -2334,3 +2334,61 @@ Definition low_eq_restricted_hom_equality {X Y : @Ob E}
   := fmap (ExtF low_eq_restricted_comprehension) f ≈
       fmap (ExtF low_eq_restricted_comprehension) g.
 End RestrictionLevels.
+
+From Cats Require Import
+  DTT.Display.Interpretation.
+
+(** Type elements may be larger than the base laws and are interpreted in
+    categories with independently larger hom/equality levels. Recovery keeps
+    the original base hom bounds for terms in both strict size orders. *)
+
+(** 类型元素可大于基底定律，并解释到 Hom／相等层级独立且更大的范畴中；
+    两种严格大小次序下，恢复项仍保持原基底 Hom 大小界。 *)
+
+Section InterpretedElementLevels.
+Universes o h p l a b.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Constraint l < a.
+Constraint a < b.
+Constraint b < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l})
+    (E : Cat@{o a b o o}) (E' : Cat@{o b a o o})
+    (A : Fct (C^op) SetCat@{a b _ _ _ _ _})
+    (A' : Fct (D^op) SetCat@{b a _ _ _ _ _}).
+Context (P T : Fct E C) (S : Fct (ElementsCat A) E)
+    (β : (P ∘F S) ≅N ElementsBaseF A)
+    (π : T ⇒ P) (Hπ : is_comprehension π)
+    (HS : ∀ X Y (f : ElementMap A X Y), fmap S f ⦂ Cart(P)).
+Definition high_eq_interpreted_comprehension
+  : Comprehension (ElementsBaseF A)
+  := InterpretedElementsComprehension A S β π Hπ HS.
+Definition high_eq_interpreted_display
+  : HasDisplay C A
+  := InterpretedElements_HasDisplay A S β π Hπ HS.
+Definition high_eq_interpreted_terms (HT : HasTerminal C)
+    (Γ : @Ob C) (X : A Γ)
+  : SetC@{p p}
+  := Tm (TyTmF (@InterpretedCwF C E A P T S β π Hπ HS HT)) Γ X.
+Definition high_eq_interpreted_comparison
+  : @DisplayElementsF C A high_eq_interpreted_display ≅N (T ∘F S)
+  := interpreted_display_iso A S β π Hπ HS.
+Context (P' T' : Fct E' D) (S' : Fct (ElementsCat A') E')
+    (β' : (P' ∘F S') ≅N ElementsBaseF A')
+    (π' : T' ⇒ P') (Hπ' : is_comprehension π')
+    (HS' : ∀ X Y (f : ElementMap A' X Y), fmap S' f ⦂ Cart(P')).
+Definition low_eq_interpreted_comprehension
+  : Comprehension (ElementsBaseF A')
+  := InterpretedElementsComprehension A' S' β' π' Hπ' HS'.
+Definition low_eq_interpreted_display
+  : HasDisplay D A'
+  := InterpretedElements_HasDisplay A' S' β' π' Hπ' HS'.
+Definition low_eq_interpreted_terms (HT : HasTerminal D)
+    (Γ : @Ob D) (X : A' Γ)
+  : SetC@{p h}
+  := Tm (TyTmF (@InterpretedCwF D E' A' P' T' S' β' π' Hπ' HS' HT)) Γ X.
+Definition low_eq_interpreted_comparison
+  : @DisplayElementsF D A' low_eq_interpreted_display ≅N (T' ∘F S')
+  := interpreted_display_iso A' S' β' π' Hπ' HS'.
+End InterpretedElementLevels.
