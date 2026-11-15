@@ -2392,3 +2392,46 @@ Definition low_eq_interpreted_comparison
   : @DisplayElementsF D A' low_eq_interpreted_display ≅N (T' ∘F S')
   := interpreted_display_iso A' S' β' π' Hπ' HS'.
 End InterpretedElementLevels.
+
+(** General pairing laws must retain independent type/term sizes strictly
+    above context homs. Fix the input FamCat universes explicitly, and check
+    the context-display and comprehension clients in both strict orders. *)
+
+(** 一般配对律必须保留严格高于上下文 Hom 的独立类型／项大小。显式固定输入
+    FamCat 宇宙，并在两种严格次序下检查上下文显示及理解结构客户端。 *)
+
+Section GeneralPairingLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l})
+    (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _})
+    (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition high_eq_pairing_composition
+  := @context_pair_comp C T HC.
+Definition low_eq_pairing_composition
+  := @context_pair_comp D U HU.
+Definition high_eq_pairing_injectivity
+  := @context_pair_inj C T HC.
+Definition low_eq_pairing_injectivity
+  := @context_pair_inj D U HU.
+Definition high_eq_general_context_display
+  : HasDisplay C (FamBaseF ∘F T)
+  := @ContextExtension_HasDisplay C T HC.
+Definition low_eq_general_context_display
+  : HasDisplay D (FamBaseF ∘F U)
+  := @ContextExtension_HasDisplay D U HU.
+Definition high_eq_general_context_comprehension
+  : Comprehension (CwFBaseF T)
+  := @CwFComprehension C T HC.
+Definition low_eq_general_context_comprehension
+  : Comprehension (CwFBaseF U)
+  := @CwFComprehension D U HU.
+End GeneralPairingLevels.
