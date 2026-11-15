@@ -37,6 +37,8 @@ PrismOverlap.v
 PrismGluing.v
 TriangleProduct.v
 TriangleHorn.v
+TriangleStage.v
+TriangleAttachment.v
 Homotopy/SphereCylinder.v
 Homotopy/SpherePrismRelative.v
 Homotopy/SphereElementaryCylinder.v
