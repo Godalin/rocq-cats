@@ -140,4 +140,3 @@ Definition higher_nine_step_client
   := TriangleHornProductExtension r K higher_input.
 
 End higher_sizes.
-

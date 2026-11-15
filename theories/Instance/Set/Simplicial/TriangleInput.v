@@ -146,7 +146,6 @@ Let values (B : Bdy ⇒ X) (H : Ordinal 2 → Cyl ⇒ X) (i : I)
      | inr x => H x.1 (snd x.2).1 (snd x.2).2
      end.
 
-
 (** All common representable factors are compatible. Naturality reduces
     them to the two explicit overlap conditions, without witness equality. *)
 
@@ -232,8 +231,8 @@ Definition triangle_input_boundary_β
     (EB : triangle_input_boundary_agreement B H)
     (EH : triangle_input_face_agreement H)
     n (a : (∂Δ[2]) n) (t : (Δ[2]) n)
-  : TriangleInputN B H EB EH n (triangle_input_generator (inl (n; (a, t)))) ≈S
-      B n (a, t).
+  : TriangleInputN B H EB EH n
+      (triangle_input_generator (inl (n; (a, t)))) ≈S B n (a, t).
 Proof.
   exact (presheaf_descend_β triangle_input_generator triangle_input_cover
     (values B H) (triangle_input_compatible B H EB EH) (inl (n; (a, t)))).
@@ -248,8 +247,8 @@ Definition triangle_input_face_β
     (EB : triangle_input_boundary_agreement B H)
     (EH : triangle_input_face_agreement H)
     j (Hj : ¬ j = r) n (z : Cyl n)
-  : TriangleInputN B H EB EH n (triangle_input_generator (inr (j; (Hj, (n; z))))) ≈S
-      H j n z.
+  : TriangleInputN B H EB EH n
+      (triangle_input_generator (inr (j; (Hj, (n; z))))) ≈S H j n z.
 Proof.
   exact (presheaf_descend_β triangle_input_generator triangle_input_cover
     (values B H) (triangle_input_compatible B H EB EH) (inr (j; (Hj, (n; z))))).
