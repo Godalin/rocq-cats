@@ -676,7 +676,7 @@ and opposite-based dual constructions.
 | `Instance/` | 109 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
-| `Topos/` | 6 | Elementary topos structure and classifiers, plus optional representation, conjunction, NNO and ETCS extensions / 初等拓扑斯结构与分类子，以及可选的表示、合取、自然数及 ETCS 扩展 |
+| `Topos/` | 7 | Elementary topos structure and classifiers, plus optional representation, conjunction, predicate order, NNO and ETCS extensions / 初等拓扑斯结构与分类子，以及可选的表示、合取、谓词序、自然数及 ETCS 扩展 |
 
 Direct import inspection confirms that `Instance.Set.Core` depends only
 on `Cat.Core`; the three STLC, DTT and ETCS directions do not import one
@@ -2222,3 +2222,36 @@ separate milestones.
 子对象交定律传递。不使用指数、CCC、ETCS、良点性或经典逻辑原理。模块保持
 可选，不改变基础导入，也不全局启用任何选定结构。这仅为合取片段；蕴含、
 并、底及其余 Heyting 逻辑、始对象／有限余极限和有意义模型仍为独立里程碑。
+
+## Predicate entailment / 谓词蕴含序
+
+[Topos.PredicateOrder](../theories/Topos/PredicateOrder.v) defines `f ⊢Ω g`
+as an actual factor from `ClassifiedSub f` to `ClassifiedSub g`. The explicit
+`PredicatePreorder` reuses the generic inverse-image preorder construction
+with the transparent subobject preorder. Identity and transitivity retain
+identity and composite arrows. Mutual entailment is equivalent to the
+specified Hom equality; respectful transport uses transparent classifier
+reflection rather than equality of functions or proof fields. Entailment
+also says that the consequent is true on the antecedent's chosen subobject.
+
+Classification commutes with precomposition up to subobject equivalence.
+Together with existing inverse-image monotonicity, this gives a transparent
+entailment factor after substitution. The constantly true predicate is top.
+These statements require named terminal, classifier and pullback choices,
+with no products. Adding named products gives conjunction's Type-valued
+greatest-lower-bound property and its introduction/elimination factors;
+`f ⊢Ω g` is equivalently `f ∧Ω g ≈ f`. No separate lattice bundle or global
+chosen model is added. This supplies entailment and finite meets, leaving
+the implication arrow, joins, bottom and other remaining milestones open.
+
+[Topos.PredicateOrder](../theories/Topos/PredicateOrder.v) 将 `f ⊢Ω g`
+定义为从 `ClassifiedSub f` 到 `ClassifiedSub g` 的实际分解因子。显式的
+`PredicatePreorder` 以透明子对象预序复用一般预序逆像构造，恒等与传递保留
+恒等及复合箭头。相互蕴含等价于指定的 Hom 相等，保相等运输使用透明分类
+反射，不比较函数或证明字段。蕴含也表示后件在前件的选定子对象上为真。
+
+分类与预合成按子对象等价相容，结合既有逆像单调性，得到代入后的透明蕴含
+因子。恒真谓词为最大元。这些结论要求具名终对象、分类子和拉回选择，不需要
+积。另加具名积选择，得到合取的 Type 值最大下界性质及引入／消去因子；
+`f ⊢Ω g` 等价于 `f ∧Ω g ≈ f`。不另加格结构束或全局选定模型。此阶段
+提供蕴含序与有限交，蕴含箭头、并、底及其他未交付里程碑仍保持开放。
