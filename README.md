@@ -655,6 +655,16 @@ The reusable [exponential laws](./theories/Cat/Exponential/Core.v) and
 [hom-setoid correspondence](./theories/Instance/Set/ExponentialHom.v) are implemented;
 the general [adjunction theory](./theories/Cat/Adjunction.v) starts with natural
 hom isomorphisms and derives unit/counit and composition, including `(-) × A ⊣ (-)^A`.
+The optional [preorder adjunction bridge](./theories/Cat/Logic/Adjunction.v)
+turns a Type-valued relation correspondence into this existing adjunction
+interface, retaining its witness maps. It supports independently sized
+preorder categories and specializes through `PreorderF`; it is independent
+of Topos and does not assume classifiers, limits or a full hyperdoctrine.
+
+可选的[预序伴随桥梁](./theories/Cat/Logic/Adjunction.v)将 Type 值关系对应
+组装为上述既有伴随，保留见证映射，支持大小独立的预序范畴并通过 `PreorderF`
+特化。该通用范畴逻辑模块不依赖 Topos，不预设分类子、极限或完整超教义。
+
 The [limit theory](./docs/Limits.md) derives limit functors, the diagonal
 adjunction and preservation of limits by right adjoints from universal properties.
 The [graph and free-category constructions](./docs/Graphs.md) generate diagram
