@@ -11,7 +11,8 @@ A category theory library for self study.
 
 - Modularity with sub-/super- type classes [see here](/theories/Cat/Core.v).
 
-- `CCC` and `ETCS` theories ([see here](/theories/Cat/CCC.v) and [here](/theories/Cat/CCC.v)) can be build up from this modularity.
+- [CCC](./theories/Cat/CCC.v), [Topos](./theories/Topos/Core.v) and
+  [ETCS](./theories/ETCS/Core.v) build on this modularity.
 
 - A Fully formalized category of sets `SetCat` [see here](./theories/Instance/Set/Core.v)
   - with the following the Rocq features
@@ -189,9 +190,29 @@ A category theory library for self study.
   Symmetry and transitivity are not assumed for arbitrary simplicial setoids.
   Examples with nontrivial higher homotopy remain a separate goal.
 
-### ETCS
+### Topos and ETCS
 
-This project aims at building ETCS.
+`Topos C` extends one chosen `CCC C` with pullbacks and a subobject classifier.
+Its classifier uses the inherited terminal object. Import `Cats.Topos.Core`
+for elementary topos theory without well-pointedness, choice or a
+natural-numbers object. The classifier interface and its existing proofs live
+in `Cats.Topos.Sub`; `Cats.ETCS.Sub` re-exports that interface for existing
+imports.
+
+`Topos C` 为一个选定 `CCC C` 增加拉回和子对象分类子，分类子使用继承的
+终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
+初等拓扑斯理论。分类子接口及已有证明位于 `Cats.Topos.Sub`，
+`Cats.ETCS.Sub` 为已有导入重新导出该接口。
+
+`ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
+natural-numbers object, retaining the existing chosen initial-object field.
+The single parent chain is `ETCS → Topos → CCC → CartesianCat → Cat`;
+terminal-dependent fields all use that same inherited choice. Deriving initial
+objects from the topos structure remains a later theorem.
+
+`ETCS C` 为 `Topos C` 增加良点性、满态射分裂和自然数对象，并保留原有的
+选定始对象字段。唯一父链为 `ETCS → Topos → CCC → CartesianCat → Cat`；
+依赖终对象的字段均使用同一继承选择。由拓扑斯结构推出始对象留待后续证明。
 
 ## Building
 
@@ -480,7 +501,10 @@ Monad–Applicative–Arrow 工作从
   of display projections, compatibly with pairing and substitution.
   Write `t^Sec[T,A]` and `s^Tm[T,A]` for the two directions.
   See the [design note](./docs/CwFDesign.md).
-- [ETCS](./theories/ETCS/): abstract ETCS interfaces and results.
+- [Topos](./theories/Topos/): elementary topos structure and subobject
+  classifiers, independent of ETCS / 独立于 ETCS 的初等拓扑斯结构与子对象分类子。
+- [ETCS](./theories/ETCS/): additional categorical set-theory axioms and
+  natural-numbers objects / 额外的范畴集合论公理与自然数对象。
 
 Chosen universal constructions share the same design: `is_*` describes a
 specific candidate, and `Has*` stores a chosen candidate with that universal
@@ -491,7 +515,7 @@ uniqueness, and respectfulness follow from the property. This covers
 [exponentials](./theories/Cat/Exponential/Core.v),
 [pullbacks](./theories/Cat/Pullback.v),
 [natural-numbers objects](./theories/ETCS/Nat.v), and
-[subobject classifiers](./theories/ETCS/Sub.v).
+[subobject classifiers](./theories/Topos/Sub.v).
 
 Import the setoid structures that are needed and enable chosen structures explicitly:
 

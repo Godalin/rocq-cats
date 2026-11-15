@@ -195,7 +195,7 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
 | [MonoidObj](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
 | [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
-| [ETCS](../theories/ETCS/Core.v) | `ETCS → CCC → CartesianCat → Cat` | One `ETCSC` parent shares all inherited choices; terminal-dependent fields use that same terminal / 唯一 `ETCSC` 父结构共享继承选择，依赖终对象的字段使用同一终对象 |
+| [Topos](../theories/Topos/Core.v), [ETCS](../theories/ETCS/Core.v) | `ETCS → Topos → CCC → CartesianCat → Cat` | `ETCSC` and `ToposC` each store one immediate parent; terminal-dependent fields use that same inherited terminal / `ETCSC` 与 `ToposC` 各保存唯一直接父结构，依赖终对象的字段使用同一继承终对象 |
 | [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v), [Semigroup](../theories/Algebra/Semigroup/Core.v), [Magma](../theories/Algebra/Magma/Core.v) | `Group → Monoid → Semigroup → Magma → SetC → Type`; each parent is an inherited instance / 群经幺半群、半群、原群、广集到载体类型，各父结构均为继承实例 | Implemented in the algebra hierarchy slice below, sharing one multiplication and named setoid / 已在下述代数层级批次中实现，共享唯一乘法及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
@@ -676,7 +676,8 @@ and opposite-based dual constructions.
 | `Instance/` | 109 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
-| `ETCS/` | 3 | Topos-related choices and ETCS axioms / 拓扑斯相关选择及 ETCS 公理 |
+| `Topos/` | 2 | Elementary topos structure and classifiers, independent of ETCS / 独立于 ETCS 的初等拓扑斯结构与分类子 |
+| `ETCS/` | 3 | Additional set-theory axioms, NNO and classifier import compatibility / 额外集合论公理、自然数对象及分类子导入兼容 |
 
 Direct import inspection confirms that `Instance.Set.Core` depends only
 on `Cat.Core`; the three STLC, DTT and ETCS directions do not import one
@@ -697,7 +698,8 @@ flowchart LR
   Semigroup -->|SemigroupM| Magma
   Magma -->|MagmaS, computed| SetC
   SetC -->|carrier| Type
-  ETCS -->|ETCSC| CCC
+  ETCS -->|ETCSC| Topos
+  Topos -->|ToposC| CCC
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
   MonoidalCat -->|MonoidalP| PremonoidalCat
@@ -737,7 +739,7 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 | --- | --- | --- |
 | 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
 | 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | The first slice unified names; the current parent chain is `MonoidalP` → `PremonoidalB` → `BinoidalC` / 首批统一名称；当前父链为 `MonoidalP` → `PremonoidalB` → `BinoidalC` |
-| 3 | [ETCS](../theories/ETCS/Core.v) now stores `ETCSC :> CCC C` / ETCS 现保存唯一 CCC 父结构 | Implemented in the ETCS slice; classifier, well-pointedness and NNO use its inherited terminal, with no concrete ETCS bundle assembly to migrate / ETCS 批次已实施，分类子、良点性与自然数对象使用继承终对象；现无完整具体 ETCS 装配需要迁移 |
+| 3 | [ETCS](../theories/ETCS/Core.v) stores `ETCSC :> Topos C`, whose `ToposC :> CCC C` shares the cartesian closed choices / ETCS 经唯一 Topos 父结构共享 CCC 选择 | Topos owns pullbacks and the classifier; ETCS adds its set-theory axioms, with dependent fields on the same terminal / Topos 持有拉回与分类子，ETCS 增加集合论公理，各依赖字段使用同一终对象 |
 | 4 | [Monoid](../theories/Algebra/Monoid/Core.v) inherits [Semigroup](../theories/Algebra/Semigroup/Core.v), which inherits [Magma](../theories/Algebra/Magma/Core.v) / 幺半群继承半群，半群继承原群 | Implemented in the algebra slice with weaker multiplication maps, composition laws, Boolean and endomorphism models / 代数批次已实施，包含较弱前提的乘法映射、复合律、布尔及自态射模型 |
 | 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/ETCS/Core.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
 | 6 | [IsGroupoid](../theories/Cat/Groupoid/Core.v) is an inverse-witness interface on a fixed category / 是固定范畴上的逆见证接口 | Keep its current fixed-data role unless choosing a public `GroupoidCat` entry; any such migration must preserve inverses and setoid laws / 若要改为公共 `GroupoidCat` 入口，须联动保留逆及广集定律；当前固定数据职责有其用途 |
@@ -879,8 +881,9 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [IsWellPointed](../theories/ETCS/Core.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [HasAxiomChoice](../theories/ETCS/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [ETCS](../theories/ETCS/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [Topos](../theories/Topos/Core.v) | `Class` | Elementary topos structure / 初等拓扑斯结构 |
 | [HasNaturalNumbersObj](../theories/ETCS/Nat.v) | `Class` | Chosen construction / 选定构造 |
-| [HasSubObjClassifier](../theories/ETCS/Sub.v) | `Class` | Chosen construction / 选定构造 |
+| [HasSubObjClassifier](../theories/Topos/Sub.v) | `Class` | Chosen construction / 选定构造 |
 | [Graph](../theories/Graph/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [GraphMap](../theories/Graph/Morphism.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [FamC](../theories/Instance/Set/Fam/Cat.v) | `Record` | Families and matching / 族与匹配 |
@@ -969,6 +972,13 @@ Magma／半群抽取属于后续需要实际客户端的独立数学任务。
 ## ETCS parent-sharing slice
 
 ## ETCS 父结构共享批次
+
+This section records the earlier CCC-parent checkpoint. The later independent
+Topos extraction below inserts `Topos` between `ETCS` and `CCC`, while preserving
+the same chosen terminal, products and exponentials.
+
+本节记录较早的 CCC 父结构检查点。下文的独立 Topos 抽取在 `ETCS` 与 `CCC`
+之间插入 `Topos`，保留同一组选定终对象、积与指数。
 
 The user explicitly approved this serial continuation from `a70a0a2` on
 `monoidal-cat-view`, before integrating its prerequisite hierarchy changes.
@@ -2011,3 +2021,47 @@ No new interface or shared test configuration is introduced by this adaptation.
 `magma_mul_proper` 与 `semigroup_assoc` 名称。新增单纯模型回归中的两处
 显式 Monoid 宇宙实例按现有层级的载体／相等／定律参数顺序排列，保留两种
 原生大小配置及每条严格不等式。此适配不新增接口或共享测试配置。
+
+## Independent elementary topos layer
+
+## 独立初等拓扑斯层
+
+[Topos](../theories/Topos/Core.v) now owns the elementary-topos part of
+[ETCS](../theories/ETCS/Core.v). Its one immediate parent is `ToposC :> CCC C`;
+pullbacks and the classifier are supplementary chosen structures. The classifier
+is indexed by the same terminal object inherited through `CCC` and
+`CartesianCat`. ETCS stores `ETCSC :> Topos C`, retaining its chosen initial
+object, well-pointedness, epi-splitting and NNO. No terminal, product, exponential,
+pullback or classifier choice is duplicated. Each parent projection is also
+registered as an inherited instance.
+
+[Topos](../theories/Topos/Core.v) 现持有 [ETCS](../theories/ETCS/Core.v)
+中的初等拓扑斯部分。唯一直接父结构为 `ToposC :> CCC C`，拉回与分类子为
+补充选定结构；分类子以经 `CCC` 和 `CartesianCat` 继承的同一终对象为索引。
+ETCS 保存 `ETCSC :> Topos C`，保留选定始对象、良点性、满态射分裂和
+自然数对象。不重复选择终对象、积、指数、拉回或分类子；各父投影同时注册
+为继承实例。
+
+The classifier interface and proofs move unchanged to
+[Topos/Sub.v](../theories/Topos/Sub.v), without any ETCS dependency.
+[ETCS/Sub.v](../theories/ETCS/Sub.v) re-exports the same declarations for
+existing unqualified imports. Qualified classifier names and the two moved
+projections now belong to the Topos modules; direct ETCS assembly must first
+assemble its Topos parent. Repository consumers use the re-exported interface
+without assembling a concrete ETCS bundle. These source-level changes do not
+alter classifier universals or their Type-valued computational witnesses.
+
+分类子接口和证明原样移至 [Topos/Sub.v](../theories/Topos/Sub.v)，不依赖
+ETCS。[ETCS/Sub.v](../theories/ETCS/Sub.v) 为已有非限定导入重新导出同一组
+声明。分类子的限定名和两个迁移投影现属于 Topos 模块；直接装配 ETCS 时须
+先装配其 Topos 父结构。仓库中的消费者使用重新导出的接口，没有具体 ETCS
+装配。这些源码层面的变化不改变分类泛性质及其 Type 值计算见证。
+
+This extraction adds one bundled class. It does not add a model or derive
+initial objects, finite colimits or internal logic. In particular, the base
+Topos interface requires neither well-pointedness, choice, NNO nor a chosen
+initial object. Those later results remain separate milestones of issue #16.
+
+本次抽取增加一个打包类，不增加模型，也不证明始对象、有限余极限或内部逻辑。
+特别地，基础 Topos 接口不要求良点性、选择、自然数对象或选定始对象；后续
+结果仍是 issue #16 的独立里程碑。

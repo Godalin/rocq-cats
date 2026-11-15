@@ -1,3 +1,5 @@
+From Cats Require Export
+  Topos.Core.
 From Cats Require Import
   Cat.Core
   Cat.CCC
@@ -6,8 +8,7 @@ From Cats Require Import
   Cat.Exponential.Core
   Cat.Morphism
   Cat.Pullback
-  ETCS.Nat
-  ETCS.Sub.
+  ETCS.Nat.
 
 (** Well-Pointed Category: equality on all global points detects equality. *)
 
@@ -29,36 +30,28 @@ Class HasAxiomChoice (C : Cat)
     : is_epi f → ∃ g, is_rinv_of f g
   }.
 
-(** Extend one chosen cartesian closed structure with initial objects,
-    pullbacks, a subobject classifier, well-pointedness, split epimorphisms
-    and a natural-numbers object. Every terminal-dependent field uses the
-    parent's same selected terminal object. *)
+(** Extend one elementary topos with a chosen initial object,
+    well-pointedness, split epimorphisms and a natural-numbers object.
+    Every terminal-dependent field uses the parent's same selected terminal
+    object. *)
 
-(** 为一个选定笛卡尔闭结构增加始对象、拉回、子对象分类子、良点性、
-    满态射分裂及自然数对象。所有依赖终对象的字段均使用父结构的同一选择。 *)
+(** 为一个初等拓扑斯增加选定始对象、良点性、满态射分裂及自然数对象。
+    所有依赖终对象的字段均使用父结构的同一终对象选择。 *)
 
 Class ETCS (C : Cat)
   :=
-  (** The unique parent shares terminal objects, products and exponentials
-      through the existing [CCC] and [CartesianCat] hierarchy. *)
+  (** The unique parent shares the classifier and pullbacks as well as
+      the existing [CCC] and [CartesianCat] choices. *)
 
-  (** 唯一父结构通过已有 [CCC] 与 [CartesianCat] 层级共享终对象、积及指数。 *)
+  (** 唯一父结构共享分类子、拉回及已有 [CCC] 与 [CartesianCat] 的各项选择。 *)
 
-  { ETCSC :> CCC C
+  { ETCSC :> Topos C
 
-  (** Retain the additional chosen initial object and pullbacks. *)
+  (** Retain the additional chosen initial object. *)
 
-  (** 保留额外选定的始对象与拉回。 *)
+  (** 保留额外选定的始对象。 *)
 
   ; hasInitial :: HasInitial C
-  ; hasPullback :: HasPullback C
-
-  (** Classify subobjects using the inherited terminal object. *)
-
-  (** 使用继承的终对象分类子对象。 *)
-
-  ; hasSubObjClassifier
-    :: HasSubObjClassifier C (@hasTerminal C ETCSC)
 
   (** Global points from that same terminal detect equality of arrows. *)
 
