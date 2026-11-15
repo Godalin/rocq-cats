@@ -407,7 +407,7 @@ an independent general prerequisite: it does not construct a type presheaf
 or an interpretation from arbitrary comprehension. Specializing to
 `D := ElementsCat A`, `Q := ElementsBaseF A` still requires the interpretation,
 base comparison and cartesian preservation; element theory then supplies the
-target lifts. The specialized display/CwF construction is a subsequent step.
+target lifts. The next section supplies the specialized display/CwF construction.
 
 一般前置位于 [Comprehension](../theories/Cat/Comprehension.v)。给定投影
 `P : Fct E B`、`Q : Fct D B`、解释 `S : Fct D E`、自然同构
@@ -423,9 +423,50 @@ target lifts. The specialized display/CwF construction is a subsequent step.
 `RestrictedComprehension` 只再使用给定的 `HasCartLift Q`，不需要源选定提升、
 满性或本质满，也不会自动启用模型。这是独立的一般前置，不从任意理解结构
 生成类型预层或解释。后续专门化到类型元素时，仍需给定解释、自然基底比较及
-笛卡尔保持；元素理论可提供目标提升，显示结构与 CwF 的专门构造留待下一阶段。
+笛卡尔保持；元素理论提供目标提升，下一节给出专门的显示结构与 CwF 构造。
 
-## 6. 宇宙与验证
+## 6. Interpreted type elements / 解释后的类型元素
+
+[Display/Interpretation](../theories/DTT/Display/Interpretation.v) specializes
+the general restriction to a fixed type presheaf P. Its explicit inputs are
+an interpretation `S : Fct (ElementsCat P) E`, source projections
+`R,T : Fct E C`, a natural isomorphism
+`β : (R ∘F S) ≅N ElementsBaseF P`, a projection `π : T ⇒ R` satisfying
+`is_comprehension π`, and cartesianness of every interpreted element arrow.
+The latter is exactly cartesian preservation here, since all element arrows
+are cartesian. No source cleavage or fullness assumption is needed.
+
+`InterpretedElementsComprehension` uses the canonical element lifts with
+`RestrictedComprehension`. `InterpretedElements_HasDisplay` and, with an
+independent terminal choice, `InterpretedCwF` reuse the existing recovery.
+The display of `(Γ,A)` is `T (S (Γ,A))`; its projection is
+`β.1 (Γ,A) ∘ π (S (Γ,A))`. Conversion and restriction act by interpreting
+the corresponding element arrow and applying T. These formulas retain the
+given comparison rather than replacing it by native object equality.
+
+`interpreted_display_iso` compares the recovered total-space functor with
+`T ∘F S` by the existing transparent natural isomorphism.
+`interpreted_display_projection` preserves projection across β. The result
+does not infer P, S, β or cartesian preservation from arbitrary comprehension,
+and makes no claim of equivalence with the whole source category E.
+Computational witnesses remain transparent; concrete reductions also depend
+on the supplied interpretation, inverse and universal-property witnesses.
+
+[Display/Interpretation](../theories/DTT/Display/Interpretation.v) 对固定类型
+预层 P 专门化一般限制。显式输入为元素解释 S、源基底与全空间函子 R、T、
+自然同构 `R ∘F S ≅N ElementsBaseF P`、满足理解泛性质的自然投影 π，以及每条
+解释后的元素箭头的笛卡尔性。由于元素箭头全部笛卡尔，后者正是此处的笛卡尔
+保持；不需要源 cleavage 或满性。
+
+标准元素提升与一般限制提供 `InterpretedElementsComprehension`；已有显示
+恢复提供 `InterpretedElements_HasDisplay`，独立终上下文再给出
+`InterpretedCwF`。显示对象为 `T (S (Γ,A))`，投影为基底比较与源投影的复合；
+转换和限制是相应元素箭头经 S、T 的像。全空间函子以透明自然同构比较，投影
+比较保留 β，不用原生相等识别对象。构造不会从任意理解结构推断这些输入，
+也不断言与整个源范畴等价。计算见证保持透明；具体归约也依赖给定解释、逆及
+泛性质见证本身的透明性。
+
+## 7. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
 现有 [Universes.v](../tests/Universes.v) 新增四项检查，覆盖两种大小排列下的
@@ -524,3 +565,18 @@ assumption outputs remain outside the repository.
 定律，包括不同的已存元素见证、非平凡转换、项替换、恢复的配对与泛项、最终
 模型及双向比较。33 个新公开声明及三个具体选定模型的假设报告均闭合；显式
 选择探针确认不会自动启用显示结构或 CwF。临时模型和假设输出不加入仓库。
+
+Interpreted elements add eight fixed universe checks at these same strict
+levels, with independently larger hom/equality levels in the source category.
+A temporary arrow-category model uses bases Γ × Unit, naturally isomorphic
+to Γ but not identified by native equality. Eighteen native computations
+cover the base comparison, interpreted arrows and recovered CwF operations;
+fifteen unique theory/model assumption reports are closed. Seven negative
+probes check required inputs, explicit model choices and the base boundary.
+These temporary models and assumption reports stay outside the library.
+
+解释后的元素另增八项相同严格层级下的固定检查，源范畴的 Hom／相等层级
+独立且更大。临时箭头范畴模型使用 Γ × Unit 作为基底，通过自然同构与 Γ
+比较，不以原生相等识别。十八项原生计算覆盖基底比较、解释箭头及恢复后的
+CwF 操作；十五项唯一理论／模型假设报告均闭合。七项负探针检查必要输入、
+显式模型选择及基底边界。临时模型与假设报告不加入库。

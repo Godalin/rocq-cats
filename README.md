@@ -521,6 +521,11 @@ Monad–Applicative–Arrow 工作从
   projection; a terminal choice then gives `ComprehensionCwF P K`.
   固定类型预层后，其元素投影上的理解结构与相干显示结构互相构造；全空间函子
   以保持投影的自然同构比较，另选终上下文得到 CwF。
+  [Display/Interpretation](./theories/DTT/Display/Interpretation.v) interprets
+  these elements in a supplied comprehension category, retaining the natural
+  base comparison and cartesian-preservation hypotheses explicitly.
+  显式给定元素解释、自然基底比较及笛卡尔保持后，复用一般限制及显示恢复得到
+  CwF；源理解只需候选泛性质，不要求选定提升。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)
