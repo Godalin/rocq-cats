@@ -7,6 +7,8 @@ theories/Cat/Natural.v
 theories/Cat/Shape/Ordinal.v
 theories/Cat/Shape/Simplex
 theories/Instance/Set/PresheafDescent.v
+theories/Instance/Set/PresheafRegion.v
+theories/Instance/Set/PresheafRegionUnion.v
 theories/Instance/Set/Simplicial
 theories/Instance/Bool/Nerve.v
 theories/Algebra/Group/Cocycle.v
