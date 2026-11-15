@@ -7,20 +7,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        image:
-          - "rocq/rocq-prover:9.0"
-          - "rocq/rocq-prover:9.1"
-          - "rocq/rocq-prover:9.2"
     steps:
       - uses: actions/checkout@v4
       - name: Install Rocq
         uses: rocq-community/docker-coq-action@v1
         with:
           opam_file: "rocq-cats.opam"
-          custom_image: ${{ matrix.image }}
+          custom_image: "rocq/rocq-prover:9.2"
           export: "OPAMWITHTEST"
           before_install: |
             opam pin remove --no-action --yes dune

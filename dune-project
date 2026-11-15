@@ -26,6 +26,6 @@
  (description "A Rocq package for category theory.")
  (depends
   (rocq-prover
-   (>= 9.0))
+   (>= 9.2))
   (rocq-stdlib
-   (>= 9.0))))
+   (>= 9.2))))
