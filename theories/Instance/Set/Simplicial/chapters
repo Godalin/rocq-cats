@@ -64,6 +64,7 @@ Homotopy/SphereCylinderClass.v
 Homotopy/SphereCylinderComparison.v
 Homotopy/SphereCylinderSetoid.v
 Homotopy/SphereCylinderGroup.v
+Homotopy/SphereCylinderGroupMap.v
 Homotopy/SphereBasedHomotopyClass.v
 Homotopy/SphereHomotopyEquivalence.v
 Homotopy/OneReduced.v
