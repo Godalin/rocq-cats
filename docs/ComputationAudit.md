@@ -3891,3 +3891,46 @@ free constructions remain subsequent independent stages.
 
 输入变换上的复合、结合子／单位子及相干性、复合上的强度、强 promonad／Arrow
 幺半群与条件式自由构造仍为后续独立阶段。
+
+### Input transformations and the profunctor composition bifunctor
+
+### 输入变换与 Profunctor 复合双函子
+
+[Natural maps](../theories/Cat/Profunctor/ComposeMap.v) transform the two
+kernel value coordinates by the supplied ordinary natural transformations.
+Their order is `P` then `Q`, while the composite and bifunctor arguments are
+written `Q` after `P`. The original naturality equations give the commuting
+square with outer boundary changes. The induced transformation of composites
+uses the existing coend map, its specified equality, and its identity and
+composition laws; no second universal-property argument is introduced.
+
+[自然映射](../theories/Cat/Profunctor/ComposeMap.v)用给定的通常自然变换改变核的
+两个值坐标，顺序为先 `P` 再 `Q`，而复合及双函子变元按 `Q` 在 `P` 之后书写。
+原自然性方程给出与外部边界改变的交换方块。诱导复合变换复用已有 coend
+映射、指定相等及恒等／复合定律，不另写第二份泛性质论证。
+
+A transformation between two composites requires only those two endpoint
+composition choices. Its chosen inverse is obtained by the same construction
+on the supplied inverse input transformations; both inverse laws use `NatEq`.
+At a fixed outer boundary, generator computation and compatibility with
+descent require only the two individual kernel coends. These interfaces do
+not need a uniform family of choices or any size order between the value
+carrier and equality levels, or between those levels and category indices.
+
+两个复合之间的变换只要求这两个端点的复合选择。其选定逆是同一构造作用于
+给定输入逆变换，两条互逆定律使用 `NatEq`。固定外部边界的生成元计算及下降
+相容性只需两个单独的核 coend。这些接口不要求统一选择族，也不要求值载体
+与相等层级间、或这些层级与范畴指标间存在大小次序。
+
+`ProfunctorCompF` packages the bifunctor on the existing profunctor categories
+only after receiving a choice for every input pair explicitly. No global
+instance chooses such a family. The explicit setoid existence model keeps
+its previously stated middle-category bounds; the bifunctor does not assert
+fixed-size full-setoid self-indexing. Associators/unitors, their coherence,
+composite strength, strong promonad–Arrow comparisons and conditional free
+constructions remain separate subsequent stages.
+
+`ProfunctorCompF` 显式接收每个输入对的选择之后，才在已有 profunctor 范畴上
+打包双函子；没有全局实例选择该族。显式广集存在模型保留原来中间范畴的大小
+界，双函子不宣称固定大小全广集自索引存在。结合子／单位子及其相干、复合
+强度、强 promonad–Arrow 比较及条件自由构造仍为后续独立阶段。
