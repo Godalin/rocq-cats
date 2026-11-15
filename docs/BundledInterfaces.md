@@ -2576,9 +2576,9 @@ the bridge to two monotone functions through the existing `PreorderF`,
 keeping their supplied monotonicity maps. Neither constructor is a global
 instance or chooses model structures by import.
 
-This batch supplies the general bridge first. A later branch will package
+The general bridge was delivered independently. The next section packages
 the already proved Topos projection-substitution/forall correspondence as
-an actual client after this prerequisite is integrated. Classifier-specific
+an actual client of that integrated prerequisite. Classifier-specific
 arrows stay specialized; reusable order/adjunction reasoning belongs here
 or in the existing general theories. This does not supply arbitrary-arrow
 quantifiers, Beck–Chevalley, Frobenius or a full hyperdoctrine, and does not
@@ -2602,7 +2602,69 @@ Hom 嵌入足够大的共同环境广集范畴；这是上界，不是重设大�
 `PreorderFAdj` 通过既有 `PreorderF` 对两个单调函数特化，保留其给定单调
 映射。两个构造均非全局实例，导入不选择模型结构。
 
-本批先给出一般桥梁；前置集成后，后续分支再将已证明的 Topos 投影代入／
-forall 对应打包为实际客户端。分类子特有箭头保持为特化，通用序／伴随推理
+一般桥梁已独立交付；下一节将已证明的 Topos 投影代入／forall 对应打包为
+该已集成前置的实际客户端。分类子特有箭头保持为特化，通用序／伴随推理
 放在此处或既有一般理论中。不声称任意态射量词、Beck–Chevalley、Frobenius
 或完整超教义，也不关闭 #6 或 #16。
+
+## Actual projection-quantifier adjunction / 实际投影量词伴随
+
+[Topos.PredicateCategory](../theories/Topos/PredicateCategory.v) uses
+`PredicatePreorder X` and the existing `PreorderCat` to define
+`PredicateCat X`. Objects are classifier arrows on `X`; morphisms are the
+same Type-valued classified-subobject factors. Their specified parallel
+hom equality is thin, while identity/composition retain the transparent
+original factors. `PredicateReindexF k` reuses `PreorderF` and exactly
+`predicate_le_subst k` on arrows. This only needs named terminal,
+classifier and pullback choices. Its object maps respect identity and
+contravariant composition up to the original classifier-arrow `HomEq`;
+there is no native equality claim about selected functors or factor data.
+
+Adding named products and exponentials relative to the same products,
+[Topos.ForallAdjunction](../theories/Topos/ForallAdjunction.v) defines
+`PredicateForallF A X` using exactly the old `forall_predicate A` and
+`predicate_forall_mono A`. `PredicateForallAdj A X` applies the independent
+`Cat.Logic.Adjunction.PreorderAdj` bridge to the existing correspondence
+`r ∘ π1 ⊢Ω f ↔ r ⊢Ω ∀Ω[A] f`. Thus projection substitution is left adjoint
+to this forall functor in the existing `Adj` interface. No new proof of
+that universal property or model choices is introduced.
+
+The two transposes are definitionally the original forward/reverse factor
+maps. The unit applies the same forward map to the weakened predicate's
+transparent identity; the counit is exactly `predicate_forall_eval`.
+Beta/eta, naturality and triangles then follow from the existing adjunction
+interface using specified thin hom equality. They do not equate unrelated
+computational factors by native equality. Actual Topos clients keep the
+same inherited terminal/classifier/pullback/product/exponential choices;
+no equalizer, initial-object, choice or NNO assumption is needed.
+
+This is an actual client of the previously integrated general bridge, with
+that bridge still outside Topos. It packages quantification only along a
+fixed product projection. Arbitrary-arrow quantifiers, complete indexed
+coherence, full hyperdoctrines, Beck–Chevalley/Frobenius, ambient initial
+objects/finite colimits and meaningful models remain separate work.
+
+[Topos.PredicateCategory](../theories/Topos/PredicateCategory.v) 通过既有
+`PreorderCat` 将 `PredicatePreorder X` 变成 `PredicateCat X`。对象是 `X`
+上的分类箭头，态射仍是同一 Type 值分类子对象因子；平行 Hom 相等是指定的
+薄相等，恒等／复合仍保留透明原有因子。`PredicateReindexF k` 复用
+`PreorderF`，箭头映射恰为 `predicate_le_subst k`，仅需具名终对象、分类子
+及拉回。其对象映射按原分类箭头的 `HomEq` 满足恒等及逆变复合，不断言选定
+函子或因子数据的原生相等。
+
+另加具名积及绑定同一积的指数，
+[Topos.ForallAdjunction](../theories/Topos/ForallAdjunction.v) 以原有
+`forall_predicate A` 和 `predicate_forall_mono A` 定义 `PredicateForallF A X`。
+`PredicateForallAdj A X` 将独立的 `Cat.Logic.Adjunction.PreorderAdj` 桥梁
+应用于已有对应 `r ∘ π1 ⊢Ω f ↔ r ⊢Ω ∀Ω[A] f`，在既有 `Adj` 接口中证明
+此 forall 函子是投影代入的右伴随，不重证泛性质或另选模型数据。
+
+两个转置定义上就是原有正／反向因子映射。单位是同一正向映射作用于弱化谓词
+的透明恒等因子，余单位恰为 `predicate_forall_eval`。Beta／eta、自然性及
+三角律随后复用既有伴随接口，使用指定薄 Hom 相等，不以原生相等识别不同
+计算因子。实际 Topos 客户端保持同一继承终对象／分类子／拉回／积／指数
+选择，不增加等化子、始对象、选择或 NNO 前提。
+
+这是已集成一般桥梁的实际客户端，桥梁仍位于 Topos 之外；本批只打包固定
+积投影上的量化。任意态射量词、完整索引相干、完整超教义、Beck–Chevalley／
+Frobenius、环境始对象／有限余极限及有意义模型仍属后续工作。
