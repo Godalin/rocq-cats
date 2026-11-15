@@ -2722,3 +2722,35 @@ Definition low_type_fiber_iso Γ
   : @is_iso (FamSCat (Ty U Γ)) _ _ (low_type_forward_fiber Γ)
   := @context_elements_fiber_map_iso D U HU Γ.
 End RaisedFibersBelowTypes.
+
+From Cats Require Import
+  DTT.Context.Section.
+
+(** The section/pairing laws retain fixed original type and term bounds
+    above both context hom levels, in both orders. *)
+
+(** 截面／配对律在两种次序下，保留显式高于上下文 Hom 两层级的原类型及项大小界。 *)
+
+Section ContextSectionPairingLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition high_eq_lift_term_section
+  := @context_lift_term_section C T HC.
+Definition low_eq_lift_term_section
+  := @context_lift_term_section D U HU.
+Definition high_eq_lift_section_term
+  := @context_lift_section_term C T HC.
+Definition low_eq_lift_section_term
+  := @context_lift_section_term D U HU.
+End ContextSectionPairingLevels.
