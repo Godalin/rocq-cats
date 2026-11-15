@@ -2798,3 +2798,69 @@ Definition high_eq_canonical_var_inv
 Definition low_eq_canonical_var_inv
   := @context_elements_var_inv D U HU.
 End CanonicalPairingLevels.
+
+(** Derived context operations preserve fixed type sizes above both hom
+    levels, in both orders, with independent bounds for the laws. *)
+
+(** 恢复后的上下文操作在两序中保留高于 Hom 两层级的固定类型界，律使用独立辅助界。 *)
+
+Section DisplayContextActionLevels.
+Universes o h p a b l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (P : Fct (C^op) SetCat@{a b _ _ _ _ _})
+    (Q : Fct (D^op) SetCat@{b a _ _ _ _ _}).
+Context (HP : HasDisplay C P) (HQ : HasDisplay D Q).
+Definition high_eq_display_terms (Γ : @Ob C) (A : P Γ)
+  : SetC@{p p}
+  := @DisplayTerms C P HP Γ A.
+Definition low_eq_display_terms (Γ : @Ob D) (A : Q Γ)
+  : SetC@{p h}
+  := @DisplayTerms D Q HQ Γ A.
+Definition high_eq_display_context_conv
+  := @display_context_conv C P HP.
+Definition low_eq_display_context_conv
+  := @display_context_conv D Q HQ.
+Definition high_eq_display_context_lift
+  := @display_context_lift C P HP.
+Definition low_eq_display_context_lift
+  := @display_context_lift D Q HQ.
+End DisplayContextActionLevels.
+
+(** Type carrier and equality bounds may also lie above the auxiliary
+    bounds of the base-category laws. Keep the same recovered term bounds. *)
+
+(** 类型载体和相等界也可高于基底范畴定律的辅助界；恢复项仍保留原大小界。 *)
+
+Section DisplayContextActionLargeTypeLevels.
+Universes o h p a b l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Constraint a < b.
+Constraint l < a.
+Constraint b < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (P : Fct (C^op) SetCat@{a b _ _ _ _ _})
+    (Q : Fct (D^op) SetCat@{b a _ _ _ _ _}).
+Context (HP : HasDisplay C P) (HQ : HasDisplay D Q).
+Definition large_type_high_eq_display_terms (Γ : @Ob C) (A : P Γ)
+  : SetC@{p p}
+  := @DisplayTerms C P HP Γ A.
+Definition large_type_low_eq_display_terms (Γ : @Ob D) (A : Q Γ)
+  : SetC@{p h}
+  := @DisplayTerms D Q HQ Γ A.
+Definition large_type_high_eq_display_context_conv
+  := @display_context_conv C P HP.
+Definition large_type_low_eq_display_context_conv
+  := @display_context_conv D Q HQ.
+Definition large_type_high_eq_display_context_lift
+  := @display_context_lift C P HP.
+Definition large_type_low_eq_display_context_lift
+  := @display_context_lift D Q HQ.
+End DisplayContextActionLargeTypeLevels.

@@ -279,6 +279,16 @@ Hom packaging of `HasContextRepresentation`.
 `context_extension_of_universal_element`. The recovered projection is equal
 to the supplied display projection (`display_context_proj`), and its pairing
 computes to the supplied lift composed with the section (`display_context_pair`).
+`display_context_conv` and `display_context_lift` also compare the derived
+context operations with the supplied display conversion and substitution lift.
+They use display conversion/composition coherence and pairing the generic
+section back to identity. These are specified hom equalities, without
+identifying equality witnesses or chosen structure records. No terminal context
+is used, and no second universal-property proof is introduced. Fixed-size
+regressions retain type carrier/equality sizes above both hom levels (and
+independently above the base law bounds), with recovered term bounds p/p and
+p/h in the two orders.
+
 With an independently supplied `HasTerminal C`, `DisplayCwF P` assembles the
 CwF. These are ordinary definitions; import enables no chosen model.
 
@@ -304,7 +314,12 @@ CwF. These are ordinary definitions; import enables no chosen model.
 `Display_HasContextExtension` 复用已集成的
 `context_extension_of_universal_element`。恢复的投影等于给定显示投影
 （`display_context_proj`），配对计算为原提升与截面的复合
-（`display_context_pair`）。独立提供 `HasTerminal C` 后，`DisplayCwF P`
+（`display_context_pair`）。`display_context_conv` 和 `display_context_lift`
+进一步按指定态射相等比较导出的上下文操作与给定显示转换、替换提升。证明复用
+显示转换／复合相干性及泛截面配对回恒等的定律，不识别相等见证或选定结构记录，
+不使用终上下文，也不另证泛性质。固定大小回归保留高于 Hom 两层级、并可独立
+高于基底定律界的类型载体／相等层级；两序恢复项界分别为 p/p 与 p/h。
+独立提供 `HasTerminal C` 后，`DisplayCwF P`
 组装 CwF。这些均为普通定义，导入不会自动启用选定模型。
 
 这完成了给定相干显示结构后的恢复。下一步仍须明确具体 comprehension
