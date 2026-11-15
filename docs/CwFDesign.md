@@ -392,7 +392,7 @@ Class CwF (C : Cat) :=
 ```
 
 组合结构字段沿用 [CCC](../theories/Cat/CCC.v) 和
-[ETCS](../theories/ETCS/Core.v) 的 `has* :: Has*` 写法。
+[ETCS](../theories/Topos/ETCS.v) 的 `has* :: Has*` 写法。
 客户端先显式启用具体 CwF 模型，再由这个结构包推导终对象和上下文扩张结构；
 导入模块本身不启用任何具体模型。`TyTmF` 是普通数据字段，显式投影所选的 CwF。
 派生定义单独放置，不另设 `CwFData`。
