@@ -2435,3 +2435,75 @@ Definition low_eq_general_context_comprehension
   : Comprehension (CwFBaseF U)
   := @CwFComprehension D U HU.
 End GeneralPairingLevels.
+
+From Cats Require Import
+  DTT.Context.Elements.
+
+(** Context interpretation retains independent type/term levels, with
+    recovered section carriers below the law bound in both strict orders. *)
+
+(** 上下文解释保留独立类型／项层级；两种严格次序下，恢复截面载体均低于律上界。 *)
+
+Section ContextElementLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition high_eq_original_types (Γ : @Ob C)
+  : SetC@{a c}
+  := Ty T Γ.
+Definition high_eq_original_terms (Γ : @Ob C) (A : Ty T Γ)
+  : SetC@{b d}
+  := Tm T Γ A.
+Definition low_eq_original_types (Γ : @Ob D)
+  : SetC@{c a}
+  := Ty U Γ.
+Definition low_eq_original_terms (Γ : @Ob D) (A : Ty U Γ)
+  : SetC@{d b}
+  := Tm U Γ A.
+Definition high_eq_context_interpretation
+  : Fct (ElementsCat (FamBaseF ∘F T)) (ContextTypeCat T)
+  := @ContextElementsF C T HC.
+Definition low_eq_context_interpretation
+  : Fct (ElementsCat (FamBaseF ∘F U)) (ContextTypeCat U)
+  := @ContextElementsF D U HU.
+Definition high_eq_context_recovered_display
+  : HasDisplay C (FamBaseF ∘F T)
+  := @ContextElements_HasDisplay C T HC.
+Definition low_eq_context_recovered_display
+  : HasDisplay D (FamBaseF ∘F U)
+  := @ContextElements_HasDisplay D U HU.
+Definition high_eq_context_recovered_terms (Γ : @Ob C) (A : Ty T Γ)
+  : SetC@{p p}
+  := @DisplayTerms C (FamBaseF ∘F T) high_eq_context_recovered_display Γ A.
+Definition low_eq_context_recovered_terms (Γ : @Ob D) (A : Ty U Γ)
+  : SetC@{p h}
+  := @DisplayTerms D (FamBaseF ∘F U) low_eq_context_recovered_display Γ A.
+Definition high_eq_context_fiber_comparison (Γ : @Ob C) (A : Ty T Γ)
+  : LiftS@{_ _ d l} (Tm T Γ A) ≅[SetCat]
+      LiftS@{_ _ d l} (high_eq_context_recovered_terms Γ A)
+  := @context_elements_term_iso C T HC Γ A.
+Definition low_eq_context_fiber_comparison (Γ : @Ob D) (A : Ty U Γ)
+  : LiftS@{_ _ d l} (Tm U Γ A) ≅[SetCat]
+      LiftS@{_ _ d l} (low_eq_context_recovered_terms Γ A)
+  := @context_elements_term_iso D U HU Γ A.
+Definition high_eq_context_total_comparison
+  := @context_elements_display_iso C T HC.
+Definition low_eq_context_total_comparison
+  := @context_elements_display_iso D U HU.
+Definition high_eq_context_recovered_cwf (HT : HasTerminal C)
+  : CwF C
+  := @ContextElementsCwF C T HC HT.
+Definition low_eq_context_recovered_cwf (HT : HasTerminal D)
+  : CwF D
+  := @ContextElementsCwF D U HU HT.
+End ContextElementLevels.

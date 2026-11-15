@@ -545,6 +545,11 @@ Monad–Applicative–Arrow 工作从
   base comparison and cartesian-preservation hypotheses explicitly.
   显式给定元素解释、自然基底比较及笛卡尔保持后，复用一般限制及显示恢复得到
   CwF；源理解只需候选泛性质，不要求选定提升。
+  [Context/Elements](./theories/DTT/Context/Elements.v) supplies this
+  interpretation from chosen context extensions and compares the recovered
+  term fibers through transparent maps and a lifted setoid isomorphism.
+  给定上下文扩张即可构造规范元素解释；透明映射及提升广集同构比较恢复后的
+  项纤维，并保持转换与替换。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)

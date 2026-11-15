@@ -493,7 +493,48 @@ Hom 两层级的原类型／项载体与相等层级，双序覆盖这两条律�
 独立原生表示同构仍保留共同大小边界，不修改表示 API 或选定计算数据。
 后续规范上下文解释可复用这些一般律，仍须保留上文的显式解释等条件。
 
-## 7. 宇宙与验证
+## 7. Canonical context interpretation / 规范上下文解释
+
+[Context/Elements](../theories/DTT/Context/Elements.v) starts with a supplied
+family-valued presheaf T and chosen context extensions. `ContextElementsF`
+interprets its type elements in `ContextTypeCat T`: the base map is the
+element map's base, and the extension map is the existing coherent display
+action. The identity-component base natural isomorphism compares functors;
+the existing display pullbacks prove cartesian preservation. The accepted
+conditional theorem then gives comprehension and displays, with an independent
+terminal choice for `ContextElementsCwF`. Projection, conversion and restriction
+agree with the original data in the specified hom equality; a transparent
+natural isomorphism compares the recovered and interpreted total functors.
+
+The original term and recovered section setoids retain separate sizes.
+`context_elements_term_resp` and its inverse transport only the right-inverse
+witness at the projection boundary; their round trips use the existing
+term–section correspondence. The forward comparison commutes with conversion
+and substitution. `context_elements_term_iso` raises both carriers and equality
+witnesses independently before packaging these maps in a common `SetCat`.
+A native isomorphism in one `SetCat` requires common carrier and equality
+bounds. The lifted comparison works in both strict orders without resizing.
+Sixteen fixed checks explicitly place the original type/term carrier and
+equality levels above both context Hom levels, while recovered sections stay
+below the auxiliary law bound. This stage proves fiberwise comparison and
+its forward coherence, without asserting equality of CwF records or
+equivalence with the entire context-type category.
+
+[Context/Elements](../theories/DTT/Context/Elements.v) 从给定族值预层 T 和
+选定上下文扩张出发。规范元素解释保留基底映射，扩张映射复用相干显示作用；
+恒等分量自然同构比较基底函子，既有显示拉回给出笛卡尔保持。条件解释定理
+提供理解结构与显示结构，终上下文独立选择后才组装 CwF。恢复投影、转换与
+限制在指定 Hom 相等下与原数据一致，全空间函子以透明自然同构比较。
+
+原项与恢复截面保留不同大小。双向透明映射只跨投影边界运输右逆见证，往返律
+复用已有项—截面对应；前向比较保持转换与替换。项纤维同构先独立提升载体及
+相等见证，再打包到共同 `SetCat`。原生同构要求共同载体／相等大小界，
+提升比较无需 resizing 即可覆盖两种严格次序。十六项固定检查显式将原类型／项
+载体及相等层级放在上下文 Hom 两层级之上，同时恢复截面低于律的辅助上界。
+本阶段给出逐纤维比较及其前向相干性，不断言 CwF 记录相等或与整个上下文类型
+范畴等价。
+
+## 8. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
 现有 [Universes.v](../tests/Universes.v) 新增四项检查，覆盖两种大小排列下的
@@ -607,3 +648,22 @@ These temporary models and assumption reports stay outside the library.
 比较，不以原生相等识别。十八项原生计算覆盖基底比较、解释箭头及恢复后的
 CwF 操作；十五项唯一理论／模型假设报告均闭合。七项负探针检查必要输入、
 显式模型选择及基底边界。临时模型与假设报告不加入库。
+
+Canonical context interpretation adds sixteen fixed size configurations:
+four pin the original type/term bounds, and twelve exercise interpretation,
+recovered displays/terms, total/fiber comparisons and completed CwFs in both
+strict orders. The recovered terms remain at `(p,p)` / `(p,h)` while the
+fiber isomorphism raises carrier/equality to distinct common bounds. A temporary
+Boolean Code/El model verifies twenty-two native computations and four specified
+equality clients for the inverse and coherence laws. All nineteen public
+assumption reports and five concrete model reports are closed. Four missing-input
+or explicit-choice probes and a separate native-boundary failure pass. Temporary
+models, the earlier native candidate and all assumption output remain outside
+the library.
+
+规范上下文解释另增十六项固定大小配置：四项固定原类型／项大小，十二项在两种
+严格次序下检查解释、恢复显示／项、全空间／纤维比较及最终 CwF。恢复项仍为
+`(p,p)`／`(p,h)`，纤维同构将载体与相等提升至不同共同上界。临时布尔 Code/El
+模型验证二十二项原生计算及四项互逆／相干律的指定相等客户端；十九项公开声明
+及五项具体模型假设报告均闭合。四项缺输入或显式选择探针及独立原生大小边界
+失败均通过。临时模型、早先原生候选及假设输出不加入库。
