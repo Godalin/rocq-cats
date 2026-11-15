@@ -16,8 +16,11 @@ Local Open Scope ordinal_scope.
     uniqueness on the old region and the actual new standard simplex.
 
     Each selected filler extends an old map across this actual square.
-    This chapter constructs one step, uniformly for all nine positions;
-    iterating the steps and comparing relative cylinders is later work. *)
+    This chapter constructs one step, uniformly for all nine positions.
+    The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
+    {%[TriangleHornProductExtension]%}% iterates them to the full product;
+    constructing initial data from relative cylinders is later work. *)
 
 (** * 九步的实际 horn 附着方形
 
@@ -25,8 +28,11 @@ Local Open Scope ordinal_scope.
     下一阶段的并比较，[region_union_pushout] 给出 horn 中介；
     [triangle_horn_attachment_ext] 在旧区域和实际新增标准单形上检测其唯一性。
 
-    每份选定填充沿此实际方形延拓旧映射。本章统一构造九个位置中的单步；
-    逐步迭代与相对柱比较留待后续。 *)
+    每份选定填充沿此实际方形延拓旧映射。本章统一构造九个位置中的单步。
+    下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
+    {%[TriangleHornProductExtension]%}% 将它们迭代到完整积；由相对柱构造
+    初始数据留待后续。 *)
 
 (** @lang both
 %\begin{center}
