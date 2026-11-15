@@ -492,6 +492,8 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - [DTT/Context/Section.v](../theories/DTT/Context/Section.v)：项与显示投影截面的广集同构及替换相容性。
 - [DTT/Display/Section.v](../theories/DTT/Display/Section.v)：从相干显示映射构造截面项族及类型—项函子，不预设 CwF。
 - [DTT/Display/Representation.v](../theories/DTT/Display/Representation.v)：证明显示泛配对及提升 Hom 表示，复用泛元素准则恢复上下文扩张；另选终上下文组装 `DisplayCwF P`。
+- [Instance/Set/Elements.v](../theories/Instance/Set/Elements.v)：固定广集值预层的元素范畴、标准笛卡尔提升及从自然显示投影构造理解结构。
+- [DTT/Display/Comprehension.v](../theories/DTT/Display/Comprehension.v)：固定类型预层后，在元素投影上的理解结构与相干显示结构间互构，以保持投影的自然同构比较全空间函子；终上下文独立选择。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 
