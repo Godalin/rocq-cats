@@ -198,7 +198,7 @@ for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
 in `Cats.Topos.Nat`, and the stronger set-theory bundle in `Cats.Topos.ETCS`.
-All twelve modules are under `Topos/`; there are no ETCS compatibility imports.
+All fourteen modules are under `Topos/`; there are no ETCS compatibility imports.
 Characteristic arrows respect monomorphism equality, detect subobject
 equivalence and turn pullback into precomposition. These laws need only a
 chosen terminal object and classifier; [pullback monicity](./theories/Cat/Subobject.v)
@@ -225,6 +225,12 @@ The optional [universal quantifier](./theories/Topos/Forall.v) classifies
 the name of constant truth. It gives quantification over a fixed product
 factor, commuting with context substitution and right adjoint to projection
 substitution, with transparent entailment factors.
+The optional [predicate categories](./theories/Topos/PredicateCategory.v)
+retain these factors as arrows and make substitution a functor, without
+products or exponentials. Adding those choices, the
+[projection adjunction client](./theories/Topos/ForallAdjunction.v) applies
+the general preorder bridge to assemble an actual right adjunction,
+retaining the same transposes and quantifier evaluation counit.
 The optional [bottom module](./theories/Topos/Bottom.v) quantifies over truth
 values to obtain false, the least predicate and least subobject in each
 context. Inverse image preserves these subobjects; their initial structure
@@ -240,7 +246,7 @@ monotonicity and the join laws reuse the same chosen data.
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
-十二个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
+十四个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
 特征箭头保持单态射相等、检测子对象等价，并将拉回变为预合成。这些律只需要
 选定终对象及分类子；[拉回单态性](./theories/Cat/Subobject.v) 对任意范畴中的
 给定拉回方形成立。
@@ -259,6 +265,10 @@ Type 值子对象预序范畴的二元积给出；其
 拓扑斯通过已有有限极限转换，从自身的积和拉回得到该选择。
 可选的[全称量词](./theories/Topos/Forall.v)分类恒真的名称，对固定积因子作
 全称量化，与上下文代入相容，并为沿投影代入的右伴随，保留透明蕴含因子。
+可选的[谓词范畴](./theories/Topos/PredicateCategory.v)将这些因子保留为箭头，
+使代入成为函子，不要求积或指数。另加这些选择，
+[投影伴随客户端](./theories/Topos/ForallAdjunction.v)应用一般预序桥梁，组装
+实际右伴随，保留同一转置及作为余单位的量词求值。
 可选的[底模块](./theories/Topos/Bottom.v)对真值作全称量化得到假，以及每个
 上下文中的最小谓词与最小子对象。逆像保持这些子对象；子对象薄范畴中的
 对应始对象结构由使用者显式启用。
