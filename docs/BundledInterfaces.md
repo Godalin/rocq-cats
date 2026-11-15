@@ -2097,6 +2097,8 @@ identifying their domains or witness records. `classifier_char_pullback`
 classifies any supplied inverse-image square by precomposition, using the
 general pullback-pasting theorem. The truth subobject has characteristic
 identity; the largest subobject has the constantly true characteristic.
+The existing `classifier_char_unique` witness and the new equivalence
+reflection keep their mediator data transparent.
 No extra chosen pullbacks, CCC structure, well-pointedness, choice or NNO
 are assumptions of these laws. Initial objects, finite colimits, internal
 logic and models remain later milestones.
@@ -2108,3 +2110,4 @@ logic and models remain later milestones.
 一般拉回粘合定理，以预合成分类任意给定的逆像方形。真子对象的特征箭头为
 恒等，最大子对象的特征箭头为恒真。这些律不假定额外选定拉回、CCC 结构、
 良点性、选择或 NNO。始对象、有限余极限、内部逻辑与模型仍属后续里程碑。
+已有 `classifier_char_unique` 见证及新的等价反向映射均保留透明的中介数据。
