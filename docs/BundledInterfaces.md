@@ -676,7 +676,7 @@ and opposite-based dual constructions.
 | `Instance/` | 109 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
-| `Topos/` | 4 | Elementary topos structure and classifiers, plus separate optional NNO and ETCS extensions / 初等拓扑斯结构与分类子，以及独立可选的自然数及 ETCS 扩展 |
+| `Topos/` | 5 | Elementary topos structure and classifiers, plus separate optional NNO and ETCS extensions / 初等拓扑斯结构与分类子，以及独立可选的自然数及 ETCS 扩展 |
 
 Direct import inspection confirms that `Instance.Set.Core` depends only
 on `Cat.Core`; the three STLC, DTT and ETCS directions do not import one
@@ -2111,3 +2111,33 @@ logic and models remain later milestones.
 恒等，最大子对象的特征箭头为恒真。这些律不假定额外选定拉回、CCC 结构、
 良点性、选择或 NNO。始对象、有限余极限、内部逻辑与模型仍属后续里程碑。
 已有 `classifier_char_unique` 见证及新的等价反向映射均保留透明的中介数据。
+
+## The generic truth subobject / 泛真子对象
+
+[Topos.Representation](../theories/Topos/Representation.v) constructs
+`ClassifiedSub f` as the chosen inverse image of truth, reusing
+[Sub_fmap](../theories/Instance/Set/Subobject.v). Classifying this subobject
+recovers `f`; pulling back truth along a subobject's characteristic arrow
+recovers that subobject under mutual factorization. These laws make truth
+a universal element of the explicitly lifted `SubF` on the opposite category.
+`SubobjectRepresentation` then applies the existing
+[lifted universal-element representation theorem](../theories/Instance/Set/Representable.v).
+Its forward map takes the inverse image of truth; its inverse returns the
+already chosen characteristic arrow. Both maps retain transparent data.
+Subobject values are lifted as well. Native hom carriers and equality
+witnesses remain independent; the lifted
+comparison uses explicit common ambient bounds rather than resizing.
+Only a named terminal choice, classifier and chosen pullbacks are required.
+This optional module adds no model choice, structure field or global
+selection instance, and does not change the base Topos imports.
+
+[Topos.Representation](../theories/Topos/Representation.v) 复用
+[Sub_fmap](../theories/Instance/Set/Subobject.v)，以真子对象的选定逆像构造
+`ClassifiedSub f`。分类该子对象恢复 `f`；沿子对象的特征箭头拉回真子对象，
+在相互分解等价下恢复原子对象。因此包装后的真子对象是反范畴上显式提升的 `SubF` 的泛元素。
+`SubobjectRepresentation` 直接应用已有的
+[提升泛元素表示定理](../theories/Instance/Set/Representable.v)：正向映射取真
+子对象的逆像，逆向映射返回已有的选定特征箭头，二者均保留透明数据。原生
+Hom 载体与相等见证保持独立；子对象值也显式提升到共同环境界，不使用大小重设。
+前提仅为具名的终对象选择、分类子和选定拉回。此可选模块不增加模型选择、
+结构字段或全局选择实例，也不改变基础 Topos 导入。
