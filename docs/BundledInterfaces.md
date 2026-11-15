@@ -2337,8 +2337,9 @@ These statements require named terminal, classifier and pullback choices,
 with no products. Adding named products gives conjunction's Type-valued
 greatest-lower-bound property and its introduction/elimination factors;
 `f ⊢Ω g` is equivalently `f ∧Ω g ≈ f`. No separate lattice bundle or global
-chosen model is added. This supplies entailment and finite meets, leaving
-the implication arrow, joins, bottom and other remaining milestones open.
+chosen model is added. This supplies entailment and finite meets; the next
+section develops the implication arrow. Joins, bottom and other remaining
+milestones stay open.
 
 [Topos.PredicateOrder](../theories/Topos/PredicateOrder.v) 将 `f ⊢Ω g`
 定义为从 `ClassifiedSub f` 到 `ClassifiedSub g` 的实际分解因子。显式的
@@ -2350,4 +2351,48 @@ the implication arrow, joins, bottom and other remaining milestones open.
 因子。恒真谓词为最大元。这些结论要求具名终对象、分类子和拉回选择，不需要
 积。另加具名积选择，得到合取的 Type 值最大下界性质及引入／消去因子；
 `f ⊢Ω g` 等价于 `f ∧Ω g ≈ f`。不另加格结构束或全局选定模型。此阶段
-提供蕴含序与有限交，蕴含箭头、并、底及其他未交付里程碑仍保持开放。
+提供蕴含序与有限交，下一节发展蕴含箭头；并、底及其他未交付里程碑仍保持开放。
+
+## Classifier implication / 分类对象上的蕴含
+
+[Cat.EqualizerMorphism](../theories/Cat/EqualizerMorphism.v) packages a
+candidate equalizer's same inclusion as `EqualizerMono`, reusing the existing
+hom-extensionality theorem. Its Type-valued factor correspondence retains the
+universal mediator without selecting limits. Separately,
+[subobject restriction](../theories/Instance/Set/SubobjectRestriction.v)
+observes that intersection uses the same pullback as inverse image along its
+first subobject. The existing inverse-image factor theorem therefore gives
+`r ∩Sub s ≲Sub t ↔ Sub_fmap r s ≲Sub Sub_fmap r t`, with transparent factors
+and only named pullbacks.
+
+[Topos.Implication](../theories/Topos/Implication.v) classifies the equalizer
+of `Conj` and first projection as `Imp`. Applying it to a pair gives
+`f ⇒Ω g`. Named terminal, classifier, product and equalizer choices suffice
+for the arrow, Proper, substitution and the criterion
+`f ⇒Ω g ≈ truth ∘ ! ↔ f ∧Ω g ≈ f`; no pullbacks or exponentials are needed
+at that layer. With named pullbacks, subobject restriction transfers to
+predicate entailment and gives the transparent Heyting adjunction
+`r ∧Ω f ⊢Ω g ↔ r ⊢Ω f ⇒Ω g`, together with evaluation. Equalizer choices are
+not registered globally. A topos client explicitly enables the existing
+`ProductPullbackEqualizer` with its inherited products and pullbacks; no
+Topos/ETCS field or choice is duplicated. There is no ETCS, classical logic,
+global-point or model assumption. Joins, bottom, remaining internal logic,
+initial objects/finite colimits and meaningful models remain later milestones.
+
+[Cat.EqualizerMorphism](../theories/Cat/EqualizerMorphism.v) 复用既有 Hom
+外延定理，将候选等化子的同一包含打包为 `EqualizerMono`。其 Type 值分解
+对应保留泛中介，不选择极限。另有
+[子对象限制](../theories/Instance/Set/SubobjectRestriction.v)利用交与沿第一个
+子对象的逆像使用同一拉回这一事实；已有逆像分解定理直接给出
+`r ∩Sub s ≲Sub t ↔ Sub_fmap r s ≲Sub Sub_fmap r t`。因子透明，前提仅为
+具名拉回选择。
+
+[Topos.Implication](../theories/Topos/Implication.v) 将 `Conj` 与第一投影的
+等化子分类为 `Imp`，作用于配对记为 `f ⇒Ω g`。具名终对象、分类子、积及
+等化子选择已足以构造箭头，证明 Proper、代入及判据
+`f ⇒Ω g ≈ truth ∘ ! ↔ f ∧Ω g ≈ f`；此层不需要拉回或指数。另加具名拉回，
+将子对象限制传到谓词序，得到透明的 Heyting 伴随律
+`r ∧Ω f ⊢Ω g ↔ r ⊢Ω f ⇒Ω g` 及求值。等化子选择不全局注册；拓扑斯客户端
+以自身继承的积与拉回显式启用已有 `ProductPullbackEqualizer`，不重复保存
+Topos/ETCS 字段或选择。不假定 ETCS、经典逻辑、全局点或模型。并、底、
+其余内部逻辑、始对象／有限余极限及有意义模型仍属后续里程碑。

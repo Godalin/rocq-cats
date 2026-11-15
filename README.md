@@ -198,7 +198,7 @@ for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
 in `Cats.Topos.Nat`, and the stronger set-theory bundle in `Cats.Topos.ETCS`.
-All seven modules are under `Topos/`; there are no ETCS compatibility imports.
+All eight modules are under `Topos/`; there are no ETCS compatibility imports.
 Characteristic arrows respect monomorphism equality, detect subobject
 equivalence and turn pullback into precomposition. These laws need only a
 chosen terminal object and classifier; [pullback monicity](./theories/Cat/Subobject.v)
@@ -216,12 +216,17 @@ intersection classification and laws to predicates.
 The optional [predicate order](./theories/Topos/PredicateOrder.v) retains
 entailment factors, proves substitution monotone, and identifies conjunction
 as greatest lower bound.
+The optional [implication module](./theories/Topos/Implication.v) classifies
+the equalizer of conjunction and first projection. It proves substitution,
+the truth criterion and the Type-valued Heyting adjunction with conjunction.
+Equalizers remain explicit choices; a topos obtains them from its products
+and pullbacks through the existing finite-limit conversion.
 
 `Topos C` 为一个选定 `CCC C` 增加拉回和子对象分类子，分类子使用继承的
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
-七个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
+八个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
 特征箭头保持单态射相等、检测子对象等价，并将拉回变为预合成。这些律只需要
 选定终对象及分类子；[拉回单态性](./theories/Cat/Subobject.v) 对任意范畴中的
 给定拉回方形成立。
@@ -235,6 +240,9 @@ Type 值子对象预序范畴的二元积给出；其
 为真的判据，并将交的分类及定律传递到谓词。
 可选的[谓词序](./theories/Topos/PredicateOrder.v)保留蕴含分解因子，证明代入
 单调，并将合取刻画为最大下界。
+可选的[蕴含模块](./theories/Topos/Implication.v)分类合取与第一投影的等化子，
+证明代入、为真判据及与合取的 Type 值 Heyting 伴随律。等化子保持为显式选择；
+拓扑斯通过已有有限极限转换，从自身的积和拉回得到该选择。
 
 `ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
 natural-numbers object, retaining the existing chosen initial-object field.
