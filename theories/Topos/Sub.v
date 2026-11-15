@@ -110,7 +110,7 @@ Proof.
       * intros k [Hk1 Hk2]. apply Hu. split.
         exact Hk1. rewrite (term_η a). exact Hk2.
   - intros c Hc. apply Hunique. exists !. exact Hc.
-Qed.
+Defined.
 
 (** ** Characteristic Arrows and Inverse Images
 
