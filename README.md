@@ -206,6 +206,10 @@ holds in any category for a supplied pullback square.
 The optional [representation module](./theories/Topos/Representation.v) uses
 truth as the generic subobject and reuses the universal-element theorem
 to represent the subobject functor by explicitly lifted classifier arrows.
+For finite intersections, [SubobjectIntersection](./theories/Cat/SubobjectIntersection.v)
+uses binary products in the Type-valued subobject preorder category.
+Its [inverse-image laws](./theories/Instance/Set/SubobjectIntersection.v)
+need only chosen pullbacks and preserve comparison-factor data.
 
 `Topos C` 为一个选定 `CCC C` 增加拉回和子对象分类子，分类子使用继承的
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
@@ -217,6 +221,10 @@ to represent the subobject functor by explicitly lifted classifier arrows.
 给定拉回方形成立。
 可选的[表示模块](./theories/Topos/Representation.v)以真子对象为泛元素，复用
 一般泛元素定理，用显式提升的分类箭头表示子对象函子。
+有限交由 [SubobjectIntersection](./theories/Cat/SubobjectIntersection.v) 中
+Type 值子对象预序范畴的二元积给出；其
+[逆像保持律](./theories/Instance/Set/SubobjectIntersection.v)仅需要选定拉回，
+保留比较因子数据。
 
 `ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
 natural-numbers object, retaining the existing chosen initial-object field.
