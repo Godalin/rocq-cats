@@ -23,12 +23,12 @@ From Cats Require Import
 
 (** 显式启用这一特定复合族；导入本模块不注册选定模型实例。 *)
 
-Program Definition SetCat_ProfunctorComp@{o h e u p +}
+Program Definition SetCat_ProfComp@{o h e u p +}
     {C E : Cat} (D : Cat@{o h e _ _})
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
-  : HasProfunctorComp C D E Q P
+  : HasProfComp C D E Q P
   :=
-  {|hasProfunctorCompCoend X Z :=
-      SetCat_Coend D (ProfunctorCompKernel Q P X Z)
+  {|hasProfCompCoend X Z :=
+      SetCat_Coend D (ProfCompKernel Q P X Z)
   |}.

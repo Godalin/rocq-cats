@@ -5,21 +5,21 @@ From Cats.Set Require Import Generated.
 
     Finite paths of oriented edges form the equivalence relation generated
     by the edges. Symmetry moves past path closure in the direction needed
-    by [CompositeClosure]. The closure laws and least simultaneous extension
+    by [CompositeClos]. The closure laws and least simultaneous extension
     then follow from that general theorem, rather than a second independent
     equivalence-generation construction.
 
-    The original [EquivClosure] interface is preserved. Its derivation trees
+    The original [EquivClos] interface is preserved. Its derivation trees
     and the path presentation have the same relation, by transparent maps;
     no equality or inverse laws between their witness types are imposed. *)
 
 (** * 由复合得到等价闭包
 
     带正反方向的有限路径形成由边生成的等价关系。对称操作可按
-    [CompositeClosure] 所需的方向移过路径闭包。因此闭包律及同时闭合的最小
+    [CompositeClos] 所需的方向移过路径闭包。因此闭包律及同时闭合的最小
     扩张来自一般定理，无须再独立构造一套等价生成理论。
 
-    原有 [EquivClosure] 接口保持不变。其推导树与路径呈现通过透明映射表示
+    原有 [EquivClos] 接口保持不变。其推导树与路径呈现通过透明映射表示
     相同关系，不为两种见证类型施加相等或互逆律。 *)
 
 Local Open Scope relation_scope.
@@ -37,8 +37,8 @@ Definition sym_rtc_interchange {A : Type} (R : crelation A)
 Proof.
   intros x y [p | p].
   - exact (rtc_map (S := R^±) (λ x y h, inl h) x y p).
-  - exact (@ReflTransClosure_Symmetric A (R^±)
-      (SymClosure_Symmetric R) y x
+  - exact (@ReflTransClos_Symmetric A (R^±)
+      (SymClos_Symmetric R) y x
       (rtc_map (S := R^±) (λ x y h, inl h) y x p)).
 Defined.
 
@@ -50,14 +50,14 @@ Defined.
 (** 先对称闭包再路径闭包，得到选定等价闭包。其共同见证界容纳路径中间元素
     所需的载体。显式提供包含预序，使复合与压平不依赖不透明实例。 *)
 
-Definition EquivalenceClosure@{a r +} (A : Type@{a})
-  : Closure (@subrelation@{a r r} A)
-  := @CompositeClosure (A → A → Type@{r})
+Definition EquivClosOp@{a r +} (A : Type@{a})
+  : Clos (@subrelation@{a r r} A)
+  := @CompositeClos (A → A → Type@{r})
       (@subrelation@{a r r} A) (RelationInclusionPreorder A)
-      (SymmetricClosure A) (ReflexiveTransitiveClosure A)
+      (SymClosOp A) (ReflTransClosOp A)
       (@sym_rtc_interchange A).
 
-Notation "R '^±*'" := (EquivalenceClosure _ R)
+Notation "R '^±*'" := (EquivClosOp _ R)
   (at level 1) : relation_scope.
 
 (** The generated paths are a preorder and are symmetric because their
@@ -65,12 +65,12 @@ Notation "R '^±*'" := (EquivalenceClosure _ R)
 
 (** 生成路径构成预序，且因边对称而对称；这个性质不识别不同路径。 *)
 
-Global Program Instance EquivalenceClosure_Equivalence@{a r +}
+Global Program Instance EquivClosOp_Equivalence@{a r +}
     {A : Type@{a}} (R : A → A → Type@{r})
-  : Equivalence (EquivalenceClosure@{a r _} A R)
+  : Equivalence (EquivClosOp@{a r _} A R)
   :=
   {|Equivalence_Reflexive := rtc_refl
-  ; Equivalence_Symmetric := ReflTransClosure_Symmetric (R^±)
+  ; Equivalence_Symmetric := ReflTransClos_Symmetric (R^±)
   ; Equivalence_Transitive x y z := rtc_trans
   |}.
 
@@ -83,10 +83,10 @@ Global Program Instance EquivalenceClosure_Equivalence@{a r +}
 
 Definition equivalence_closure_closed@{a r +}
     {A : Type@{a}} (R : A → A → Type@{r})
-  : is_closed (EquivalenceClosure@{a r _} A) R ↔ Equivalence R.
+  : is_closed (EquivClosOp@{a r _} A) R ↔ Equivalence R.
 Proof.
   pose (hc := @composite_closure_closed _ _ (RelationInclusionPreorder A)
-    (SymmetricClosure A) (ReflexiveTransitiveClosure A)
+    (SymClosOp A) (ReflTransClosOp A)
     (@sym_rtc_interchange A) R).
   split.
   - intros h.
@@ -115,7 +115,7 @@ Definition equivalence_closure_universal {A : Type} (R S : crelation A)
     `{HS : !Equivalence S}
   : R^±* ⊆R S ↔ R ⊆R S
   := @closure_universal _ _ (RelationInclusionPreorder A)
-      (EquivalenceClosure A) R S (snd (equivalence_closure_closed S) HS).
+      (EquivClosOp A) R S (snd (equivalence_closure_closed S) HS).
 
 (** Map generated paths along a function into an equivalence target.
     The source and target carriers and witness levels can differ. *)
@@ -127,7 +127,7 @@ Definition equivalence_closure_preserves@{a b r s +}
     {R : A → A → Type@{r}} {S : B → B → Type@{s}}
     `{HS : !Equivalence S}
     (f : A → B) (h : ∀ x y, R x y → S (f x) (f y))
-    {x y : A} (p : EquivalenceClosure@{a r _} A R x y)
+    {x y : A} (p : EquivClosOp@{a r _} A R x y)
   : S (f x) (f y).
 Proof.
   refine (@rtc_preserves@{a b r r s} A B (R^±) S
@@ -146,15 +146,15 @@ Defined.
 Definition equivalence_closure_map {A : Type} {R S : crelation A}
     (h : R ⊆R S)
   : R^±* ⊆R S^±*
-  := closure_monotone (EquivalenceClosure A) h.
+  := closure_monotone (EquivClosOp A) h.
 
 (** It consequently respects pointwise equivalence of generators. *)
 
 (** 因而它保持生成关系的逐点等价。 *)
 
-Global Instance EquivalenceClosure_proper {A : Type}
+Global Instance EquivClosOp_proper {A : Type}
   : Proper (relation_equivalence ==> relation_equivalence)
-      (EquivalenceClosure A).
+      (EquivClosOp A).
 Proof.
   intros R S h. apply relation_equiv_of_inclusions.
   - exact (equivalence_closure_map (relation_equiv_forward h)).
@@ -175,5 +175,5 @@ Proof.
   - apply (snd (equivalence_closure_universal R (R^≈))).
     intros x y p. exact (closure_step p).
   - intros x y p. exact (equiv_closure_preserves (λ x, x)
-      (λ x y q, closure_inflate (EquivalenceClosure A) R x y q) p).
+      (λ x y q, closure_inflate (EquivClosOp A) R x y q) p).
 Defined.

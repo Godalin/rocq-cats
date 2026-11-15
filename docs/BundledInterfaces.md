@@ -200,7 +200,7 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
 | [HasLimitsOfShape](../theories/Cat/Limit/Core.v), [HasFiniteHomCover](../theories/Cat/Shape/Finite.v), [HasKanFillers](../theories/Instance/Set/Simplicial/Horn.v) | Inherited structures depend on diagrams, endpoints or horn indices / 继承结构依赖图式、端点或 horn 索引 | Use instance inheritance; no single uniform carrier conversion is needed / 使用实例继承，无须统一载体转换 |
-| [Closure](../theories/Set/Closure/Core.v), respectful maps, [GraphMap](../theories/Graph/Morphism.v), [GenNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v), sections and matching families | Already expose their operation or component function / 已暴露运算或分量函数 | Keep their existing unique functional view / 保留已有唯一函数视图 |
+| [Clos](../theories/Set/Closure/Core.v), respectful maps, [GraphMap](../theories/Graph/Morphism.v), [GenNat](../theories/Cat/Diagram/Generator.v), [Chain](../theories/Cat/Chain.v), sections and matching families | Already expose their operation or component function / 已暴露运算或分量函数 | Keep their existing unique functional view / 保留已有唯一函数视图 |
 | Remaining `Has*`/preservation interfaces, [Adj](../theories/Cat/Adjunction.v), [Comprehension](../theories/Cat/Comprehension.v), [Sieve](../theories/Cat/Sieve.v) | Operations, relations or multiple views on fixed data / 固定数据上的运算、关系或多个视图 | Retain explicit parameters as detailed below; no blanket category/functor coercions / 按下文保留显式参数，不统一增加范畴或函子转换 |
 | [ArrowOb](../theories/Cat/Arrow/Core.v), [CommaOb](../theories/Cat/Comma/Core.v), [SliceOb](../theories/Cat/Slice/Core.v), commuting-square records, [Horn2Presentation](../theories/Instance/Set/Simplicial/Vertex/Filling.v), [is_unique](../theories/Meta.v), [LiftT](../theories/Set/Core.v) | Multiple endpoints or witness/presentation records / 多个端点或见证、呈现记录 | No new hierarchy edge justified / 不据此新增层级边 |
 | [Cat](../theories/Cat/Core.v), [Graph](../theories/Graph/Core.v), [Bicat](../theories/Cat/Bicategory/Core.v) | Foundational structures, not an existing inheritance chain / 基础结构，尚非继承链 | Keep object/vertex types and derived underlying categories explicit / 对象、顶点类型及派生底层范畴保持显式 |
@@ -211,7 +211,7 @@ hom/equality universe orders, and transparent identities in setoid and
 endofunctor models. They also checked existing family/CwF chains: with the
 relevant interface modules imported, `U x : Type`, `f x : famC_base V` and
 `(T X) a : Type` elaborate directly. For
-`A : MonoidObj SetCartesianMonoidal`, `A : @Ob SetCat` works, but
+`A : MonoidObj SetCartMonoidal`, `A : @Ob SetCat` works, but
 `A : SetC` and `A : Type` do not; `MonoidCarrier A : Type` does.
 The coercion graph matches declared targets, so reduction of a dependent
 target to a concrete record does not automatically add another graph edge.
@@ -220,7 +220,7 @@ target to a concrete record does not automatically add another graph edge.
 lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以及广集和自函子
 模型的恒等运算保持透明。相干族和 CwF 的已有链也已检查：导入相关接口模块后，
 `U x : Type`、`f x : famC_base V` 和 `(T X) a : Type` 均可直接使用。
-对 `A : MonoidObj SetCartesianMonoidal`，`A : @Ob SetCat` 可用，
+对 `A : MonoidObj SetCartMonoidal`，`A : @Ob SetCat` 可用，
 但 `A : SetC`、`A : Type` 不可用，显式 `MonoidCarrier A : Type` 可用。
 强制转换图按声明的目标匹配；依赖目标能归约为某个具体记录，不会自动增加
 一条新的图边。
@@ -518,7 +518,7 @@ candidates require separate interface decisions and clients.
 | --- | --- |
 | [is_faithful, is_full, is_fully_faithful](../theories/Cat/Functor/Core.v), [is_monad](../theories/Cat/Monad/Core.v), [is_monoid_object and is_monoid_hom](../theories/Cat/Monoidal/Monoid.v) | State laws about supplied data; fullness and universal properties retain computational witnesses / 陈述给定数据的定律，满性和泛性质仍保留计算见证 |
 | [Adj F G](../theories/Cat/Adjunction.v) | Relates two specified functors; keep left/right views explicit / 关联两个指定函子，左右视图应显式访问 |
-| [HasCartesianLift P](../theories/Cat/Fibration.v), [HasFreeObj U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
+| [HasCartLift P](../theories/Cat/Fibration.v), [HasFreeObj U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
 | [HasDisplay](../theories/DTT/Display/Core.v), [HasContextExtension and CwF](../theories/DTT/CwF.v), [HasContextRepresentation](../theories/DTT/Context/Representation.v) | Describe interchangeable presentations over a fixed presheaf/family functor; CwF already supplies the complete bundled object / 描述固定预层／族函子上的可互换呈现，完整打包对象已有 CwF |
 | [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `GroupM :>` and its instance registration share one monoid; [SetMonoidObj](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
 | [MonoidalCat](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC.v), [ETCS](../theories/Topos/ETCS.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
@@ -765,7 +765,7 @@ Applicative 的不同呈现以及幺半群／Monad 对应继续使用显式转�
 | `HasEqualizer`, `HasCoequalizer`, `HasPullback`, `HasPushout` | Constructions for each supplied parallel pair or cospan/span / 对每个给定平行箭头对或余跨度／跨度给出构造 |
 | `HasLimit`, `HasColimit` | One specified diagram's universal cone/cocone / 指定图式的泛锥／余锥 |
 | `HasLimitsOfShape`, `HasColimitsOfShape` | A family of choices indexed by diagrams of a fixed shape / 按固定形状的图式索引的选择族 |
-| `HasCartesianLift`, `HasFreeObj` | Chosen lifts over a fixed functor, or universal arrows in structured-arrow categories / 固定函子上的选定提升，或结构箭头范畴中的泛箭头 |
+| `HasCartLift`, `HasFreeObj` | Chosen lifts over a fixed functor, or universal arrows in structured-arrow categories / 固定函子上的选定提升，或结构箭头范畴中的泛箭头 |
 | `HasStrength` | A compatible tensorial natural map on a specified endofunctor / 指定自函子上的相容张量自然映射 |
 | `HasRightDivision` | Solutions of composition equations; `HasLeftDivision` is a definition on the opposite / 复合方程的解，`HasLeftDivision` 是反范畴上的定义 |
 | `HasContextExtension`, `HasContextRepresentation`, `HasDisplay` | Chosen extensions, representations or coherent displays over a fixed family/presheaf / 固定族／预层上的选定扩张、表示或相干显示 |
@@ -839,7 +839,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [TwoCocycle](../theories/Cat/Diagram/Cocycle.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [HasEqualizer](../theories/Cat/Equalizer.v) | `Class` | Chosen construction / 选定构造 |
 | [HasExponential](../theories/Cat/Exponential/Core.v) | `Class` | Chosen construction / 选定构造 |
-| [HasCartesianLift](../theories/Cat/Fibration.v) | `Class` | Chosen construction / 选定构造 |
+| [HasCartLift](../theories/Cat/Fibration.v) | `Class` | Chosen construction / 选定构造 |
 | [HasFreeObj](../theories/Cat/FreeObject/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [IsCartF](../theories/Cat/Functor/Cartesian.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [CartFct](../theories/Cat/Functor/Cartesian.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
@@ -898,7 +898,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [HasHorn2Fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) | `Class` | Chosen construction / 选定构造 |
 | [VtxFct](../theories/Instance/Set/Vertex/Functor.v) | `Record` | Families and matching / 族与匹配 |
 | [is_unique](../theories/Meta.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
-| [Closure](../theories/Set/Closure/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
+| [Clos](../theories/Set/Closure/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [SetC](../theories/Set/Core.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [LiftT](../theories/Set/Core.v) | `Record` | Witness and presentation data / 见证与呈现数据 |
 | [HasFiniteCover](../theories/Set/Finite.v) | `Class` | Chosen construction / 选定构造 |

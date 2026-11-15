@@ -33,7 +33,7 @@ Definition family_equivalence_closure_compatible@{i a o r +}
 Proof.
   intros i j c x y p.
   exact (equivalence_closure_preserves (K i j c)
-    (λ x y q, closure_inflate (EquivalenceClosure (A j)) (R j)
+    (λ x y q, closure_inflate (EquivClosOp (A j)) (R j)
       (K i j c x) (K i j c y) (hr i j c x y q)) p).
 Defined.
 
@@ -51,21 +51,21 @@ Definition compatible_equivalence_interchange@{i a o r +}
   := context_closure_preserves K
       (family_equivalence_closure_compatible K
         (context_closure_compatible K R))
-      (closure_monotone (FamilyEquivalenceClosure A)
-        (closure_inflate (CompatibleClosure K) R)).
+      (closure_monotone (FamilyEquivClosOp A)
+        (closure_inflate (CompatibleClosOp K) R)).
 
 (** The chosen congruence closure reuses the general composite operator;
     no separate monotonicity, inflation or flattening proof is needed. *)
 
 (** 选定合同闭包复用一般复合算子，不需另证单调性、扩张律或压平律。 *)
 
-Definition CongruenceClosure@{i a o r +}
+Definition CongruenceClosOp@{i a o r +}
     {I : Type@{i}} {A : I → Type@{a}}
     (K : ContextSystem@{i a o} A)
-  : Closure (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
-  := @CompositeClosure (RelationFamily A) (@RelationFamilyLe I A)
-      (RelationFamilyPreorder A) (CompatibleClosure K)
-      (FamilyEquivalenceClosure A) (compatible_equivalence_interchange K).
+  : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
+  := @CompositeClos (RelationFamily A) (@RelationFamilyLe I A)
+      (RelationFamilyPreorder A) (CompatibleClosOp K)
+      (FamilyEquivClosOp A) (compatible_equivalence_interchange K).
 
 (** Closed relations are exactly the compatible equivalence relations.
     This is the generic simultaneous-closedness theorem, with its two
@@ -77,11 +77,11 @@ Definition CongruenceClosure@{i a o r +}
 Definition congruence_closure_closed@{i a o r +}
     {I : Type@{i}} {A : I → Type@{a}}
     (K : ContextSystem@{i a o} A) (R : RelationFamily@{i a r _} A)
-  : is_closed (CongruenceClosure K) R ↔
+  : is_closed (CongruenceClosOp K) R ↔
       (is_compatible K R ∧ ∀ j, Equivalence@{a r} (R j)).
 Proof.
   pose (hc := @composite_closure_closed _ _ (RelationFamilyPreorder A)
-    (CompatibleClosure K) (FamilyEquivalenceClosure A)
+    (CompatibleClosOp K) (FamilyEquivClosOp A)
     (compatible_equivalence_interchange K) R).
   split.
   - intros h. split.
@@ -99,21 +99,21 @@ Defined.
 Definition congruence_closure_compatible@{i a o r +}
     {I : Type@{i}} {A : I → Type@{a}}
     (K : ContextSystem@{i a o} A) (R : RelationFamily@{i a r _} A)
-  : is_compatible K (CongruenceClosure K R)
-  := fst (fst (congruence_closure_closed K (CongruenceClosure K R))
-      (closure_flatten (CongruenceClosure K) R)).
+  : is_compatible K (CongruenceClosOp K R)
+  := fst (fst (congruence_closure_closed K (CongruenceClosOp K R))
+      (closure_flatten (CongruenceClosOp K) R)).
 
 (** Each generated fiber has its equivalence laws. Different path or
     context witnesses are not identified by this property. *)
 
 (** 每个生成纤维具有等价律。此性质不识别不同路径或上下文见证。 *)
 
-Global Instance CongruenceClosure_Equivalence@{i a o r +}
+Global Instance CongruenceClosOp_Equivalence@{i a o r +}
     {I : Type@{i}} {A : I → Type@{a}}
     (K : ContextSystem@{i a o} A) (R : RelationFamily@{i a r _} A) (j : I)
-  : Equivalence@{a r} (CongruenceClosure K R j)
-  := snd (fst (congruence_closure_closed K (CongruenceClosure K R))
-      (closure_flatten (CongruenceClosure K) R)) j.
+  : Equivalence@{a r} (CongruenceClosOp K R j)
+  := snd (fst (congruence_closure_closed K (CongruenceClosOp K R))
+      (closure_flatten (CongruenceClosOp K) R)) j.
 
 (** Minimality among compatible equivalence extensions follows directly
     from the general closure universal property. *)
@@ -124,23 +124,23 @@ Definition congruence_closure_universal@{i a o r +}
     {I : Type@{i}} {A : I → Type@{a}}
     (K : ContextSystem@{i a o} A) (R S : RelationFamily@{i a r _} A)
     (hs : is_compatible K S) (es : ∀ j, Equivalence@{a r} (S j))
-  : CongruenceClosure K R ⊆ᵢ S ↔ R ⊆ᵢ S
+  : CongruenceClosOp K R ⊆ᵢ S ↔ R ⊆ᵢ S
   := @closure_universal _ _ (RelationFamilyPreorder A)
-      (CongruenceClosure K) R S
+      (CongruenceClosOp K) R S
       (snd (congruence_closure_closed K S) (hs, es)).
 
 (** Specified equivalence of generators is respected by the composite. *)
 
 (** 复合保持生成元的指定等价。 *)
 
-Global Instance CongruenceClosure_proper {I : Type} {A : I → Type}
+Global Instance CongruenceClosOp_proper {I : Type} {A : I → Type}
     (K : ContextSystem A)
-  : Proper (RelationFamilyEq ==> RelationFamilyEq) (CongruenceClosure K).
+  : Proper (RelationFamilyEq ==> RelationFamilyEq) (CongruenceClosOp K).
 Proof.
   intros R S h. apply relation_family_equiv_of_inclusions.
-  - exact (closure_monotone (CongruenceClosure K)
+  - exact (closure_monotone (CongruenceClosOp K)
       (λ i, relation_equiv_forward (h i))).
-  - exact (closure_monotone (CongruenceClosure K)
+  - exact (closure_monotone (CongruenceClosOp K)
       (λ i, relation_equiv_backward (h i))).
 Defined.
 
@@ -164,20 +164,20 @@ Defined.
 (** 一条生成元、三条等价规则，以及单孔合同规则。二元合同可通过两次单孔替换
     与传递性得到，每次操作的标签保存不变的另一参数。 *)
 
-Inductive EquationalClosure {I : Type} {A : I → Type}
+Inductive EquationalClos {I : Type} {A : I → Type}
     (K : ContextSystem A) (R : RelationFamily A)
   : RelationFamily A
   :=| equation_step {i} {x y : A i}
-        : R i x y → EquationalClosure K R i x y
-    | equation_refl {i} (x : A i) : EquationalClosure K R i x x
+        : R i x y → EquationalClos K R i x y
+    | equation_refl {i} (x : A i) : EquationalClos K R i x x
     | equation_sym {i} {x y : A i}
-        : EquationalClosure K R i x y → EquationalClosure K R i y x
+        : EquationalClos K R i x y → EquationalClos K R i y x
     | equation_trans {i} {x y z : A i}
-        : EquationalClosure K R i x y → EquationalClosure K R i y z →
-          EquationalClosure K R i x z
+        : EquationalClos K R i x y → EquationalClos K R i y z →
+          EquationalClos K R i x z
     | equation_context {i j} (c : context_operation K i j) {x y : A i}
-        : EquationalClosure K R i x y →
-          EquationalClosure K R j (K i j c x) (K i j c y).
+        : EquationalClos K R i x y →
+          EquationalClos K R j (K i j c x) (K i j c y).
 
 Arguments equation_step {_ _ _ _ _ _ _} _.
 Arguments equation_refl {_ _ _ _ _} _.
@@ -189,10 +189,10 @@ Arguments equation_context {_ _ _ _ _ _} _ {_ _} _.
 
 (** 共同呈现直接从其规则给出等价性。 *)
 
-Global Program Instance EquationalClosure_Equivalence
+Global Program Instance EquationalClos_Equivalence
     {I : Type} {A : I → Type} (K : ContextSystem A)
     (R : RelationFamily A) (i : I)
-  : Equivalence (EquationalClosure K R i)
+  : Equivalence (EquationalClos K R i)
   :=
   {|Equivalence_Reflexive := equation_refl
   ; Equivalence_Symmetric x y := equation_sym
@@ -205,7 +205,7 @@ Global Program Instance EquationalClosure_Equivalence
 
 Definition equational_closure_compatible {I : Type} {A : I → Type}
     (K : ContextSystem A) (R : RelationFamily A)
-  : is_compatible K (EquationalClosure K R)
+  : is_compatible K (EquationalClos K R)
   := λ i j c x y p, equation_context c p.
 
 (** Interpret a derivation in any compatible equivalence target receiving
@@ -217,7 +217,7 @@ Definition equational_closure_preserves {I : Type} {A : I → Type}
     (K : ContextSystem A) {R S : RelationFamily A}
     (hs : is_compatible K S) (es : ∀ i, Equivalence (S i))
     (h : R ⊆ᵢ S)
-  : EquationalClosure K R ⊆ᵢ S.
+  : EquationalClos K R ⊆ᵢ S.
 Proof.
   intros i x y p.
   induction p as [i x y p | i x | i x y p ih |
@@ -239,16 +239,16 @@ Defined.
 Definition equational_closure_paths@{i a o r +}
     {I : Type@{i}} {A : I → Type@{a}}
     (K : ContextSystem@{i a o} A) (R : RelationFamily@{i a r _} A)
-  : EquationalClosure K R ≈ᵢ (R^C[K])^≈ᵢ.
+  : EquationalClos K R ≈ᵢ (R^C[K])^≈ᵢ.
 Proof.
   apply relation_family_equiv_of_inclusions.
   - exact (equational_closure_preserves K
       (congruence_closure_compatible K R)
-      (CongruenceClosure_Equivalence K R)
-      (closure_inflate (CongruenceClosure K) R)).
+      (CongruenceClosOp_Equivalence K R)
+      (closure_inflate (CongruenceClosOp K) R)).
   - apply (snd (congruence_closure_universal K R
-      (EquationalClosure K R) (equational_closure_compatible K R)
-      (EquationalClosure_Equivalence K R))).
+      (EquationalClos K R) (equational_closure_compatible K R)
+      (EquationalClos_Equivalence K R))).
     intros i x y p. exact (equation_step p).
 Defined.
 
@@ -256,15 +256,15 @@ Defined.
 
 (** 共同推导也保持生成元的指定等价。 *)
 
-Global Instance EquationalClosure_proper {I : Type} {A : I → Type}
+Global Instance EquationalClos_proper {I : Type} {A : I → Type}
     (K : ContextSystem A)
-  : Proper (RelationFamilyEq ==> RelationFamilyEq) (EquationalClosure K).
+  : Proper (RelationFamilyEq ==> RelationFamilyEq) (EquationalClos K).
 Proof.
   intros R S h. apply relation_family_equiv_of_inclusions.
   - exact (equational_closure_preserves K (equational_closure_compatible K S)
-      (EquationalClosure_Equivalence K S)
+      (EquationalClos_Equivalence K S)
       (λ i x y p, equation_step (fst (h i x y) p))).
   - exact (equational_closure_preserves K (equational_closure_compatible K R)
-      (EquationalClosure_Equivalence K R)
+      (EquationalClos_Equivalence K R)
       (λ i x y p, equation_step (snd (h i x y) p))).
 Defined.

@@ -244,7 +244,7 @@ Definition binder_eta
 
 Fixpoint context_depth {I : Type} {X : I → Type}
     {K : ContextSystem X} {R : RelationFamily X}
-    {i : I} {x y : X i} (h : ContextClosure K R i x y)
+    {i : I} {x y : X i} (h : ContextClos K R i x y)
   : nat
   := match h with
   | context_step _ => 0

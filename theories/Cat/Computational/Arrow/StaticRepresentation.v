@@ -20,7 +20,7 @@ Local Open Scope applicative_scope.
 Section General.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** The actual evaluation operation is a map of the native computation Hom
     setoids. *)
@@ -100,7 +100,7 @@ End General.
 Section UniversalCriterion.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** Supplied Type-valued unique representations construct the actual
     inverse, without an additional choice axiom. *)

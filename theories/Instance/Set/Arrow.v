@@ -30,7 +30,7 @@ Section SetBase.
 Universes o u p.
 Context (K : Cat@{o u p _ _})
     (A : Arrow (SetCat@{u p _ _ _ _ _}) K
-      (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Embed a setoid value as the pure constant computation from the
     singleton. Respectfulness compares constants pointwise. *)

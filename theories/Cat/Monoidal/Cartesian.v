@@ -25,7 +25,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 
 (** 积的括号重排在三个因子上自然。 *)
 
-Program Definition CartesianAssociatorN
+Program Definition CartAssociatorN
   : TensorLeftF ProductF ⇒ TensorRightF ProductF
   :=
   {|nt '((X, Y), Z) := (@product_assoc C HP X Y Z).1
@@ -41,7 +41,7 @@ Defined.
 
 (** 从左侧带终对象的积取投影。 *)
 
-Program Definition CartesianLeftUnitorN
+Program Definition CartLeftUnitorN
   : π2F ProductF 1 ⇒ IdF
   :=
   {|nt X := π2
@@ -54,7 +54,7 @@ Defined.
 
 (** 从右侧带终对象的积取投影。 *)
 
-Program Definition CartesianRightUnitorN
+Program Definition CartRightUnitorN
   : π1F ProductF 1 ⇒ IdF
   :=
   {|nt X := π1
@@ -68,10 +68,10 @@ Defined.
 
 (** 左单位子的逆将终箭头与恒等配对；这个见证保持透明，也适用于具体模型计算。 *)
 
-Definition CartesianLeftUnitorIso
+Definition CartLeftUnitorIso
   : π2F ProductF 1 ≅N IdF.
 Proof.
-  exists CartesianLeftUnitorN. intros X. exists ⟨!, id⟩. split.
+  exists CartLeftUnitorN. intros X. exists ⟨!, id⟩. split.
   - change ((⟨!, id⟩ : Hom X (1 × X)) ∘ π2 ≈ id).
     rewrite product_comp_r, comp_id_l. symmetry.
     apply product_pair_unique. split.
@@ -85,10 +85,10 @@ Defined.
 
 (** 右单位子的逆将恒等与终箭头配对。 *)
 
-Definition CartesianRightUnitorIso
+Definition CartRightUnitorIso
   : π1F ProductF 1 ≅N IdF.
 Proof.
-  exists CartesianRightUnitorN. intros X. exists ⟨id, !⟩. split.
+  exists CartRightUnitorN. intros X. exists ⟨id, !⟩. split.
   - change ((⟨id, !⟩ : Hom X (X × 1)) ∘ π1 ≈ id).
     rewrite product_comp_r, comp_id_l. symmetry.
     apply product_pair_unique. split.
@@ -103,12 +103,12 @@ Defined.
 
 (** 有限积给出选定幺半结构；导入本模块不会为 [C] 注册默认幺半结构。 *)
 
-Program Definition CartesianMonoidal
+Program Definition CartMonoidal
   : MonoidalCat C
   := BifunctorMonoidal ProductF 1
-    (CartesianAssociatorN;
+    (CartAssociatorN;
       λ '((X, Y), Z), (@product_assoc C HP X Y Z).2)
-    CartesianLeftUnitorIso CartesianRightUnitorIso _ _.
+    CartLeftUnitorIso CartRightUnitorIso _ _.
 Next Obligation.
   cbn. repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
@@ -128,7 +128,7 @@ Defined.
 
 Lemma cartesian_tensor_map {X X' Y Y' : @Ob C}
     (f : Hom X X') (g : Hom Y Y')
-  : @tensor_map C CartesianMonoidal X X' Y Y' f g ≈ f × g.
+  : @tensor_map C CartMonoidal X X' Y Y' f g ≈ f × g.
 Proof. apply bifunctor_monoidal_map. Qed.
 
 (** Internal monoids for finite products are a specialization of the same
@@ -138,16 +138,16 @@ Proof. apply bifunctor_monoidal_map. Qed.
 (** 有限积中的内部幺半群是同一个幺半群对象定义的特化，乘法类型为 [M × M → M]，
     单位类型为 [1 → M]。 *)
 
-Definition CartesianMonoid
+Definition CartMonoid
   : Type
-  := MonoidObj CartesianMonoidal.
+  := MonoidObj CartMonoidal.
 
 (** In the familiar internal-monoid form, pairing with the unit on the
     left followed by multiplication is the identity. *)
 
 (** 在通常的内部幺半群形式下，先在左侧与单位配对，再乘法，得到恒等。 *)
 
-Lemma cartesian_monoid_unit_l (A : CartesianMonoid)
+Lemma cartesian_monoid_unit_l (A : CartMonoid)
   : m[A] ∘ ⟨e[A] ∘ !, id⟩ ≈ id.
 Proof.
   pose proof (monoid_object_unit_l A) as H.
@@ -168,7 +168,7 @@ Qed.
 
 (** 右单位方程使用同一个选定结构。 *)
 
-Lemma cartesian_monoid_unit_r (A : CartesianMonoid)
+Lemma cartesian_monoid_unit_r (A : CartMonoid)
   : m[A] ∘ ⟨id, e[A] ∘ !⟩ ≈ id.
 Proof.
   pose proof (monoid_object_unit_r A) as H.
@@ -189,7 +189,7 @@ Qed.
 
 (** 结合律使用选定积的规范括号重排。 *)
 
-Lemma cartesian_monoid_assoc (A : CartesianMonoid)
+Lemma cartesian_monoid_assoc (A : CartMonoid)
   : m[A] ∘ (m[A] × id) ≈ m[A] ∘ (id × m[A]) ∘
       (@product_assoc C HP
         (MonoidCarrier A) (MonoidCarrier A) (MonoidCarrier A)).1.

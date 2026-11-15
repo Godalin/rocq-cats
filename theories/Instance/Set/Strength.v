@@ -38,12 +38,12 @@ Context (F : Fct SetCat SetCat).
 (** 固定通常上下文由函子作用配到结果旁边；此式比较所给强度，不另选强度，
     也不等同其定律字段。 *)
 
-Lemma set_strength_value (S : HasStrength SetCartesianMonoidal F)
+Lemma set_strength_value (S : HasStrength SetCartMonoidal F)
     (X Y : SetC) (x : X) (v : F Y)
   : st[S; X; Y] (x,v) ≈S fmap F ⟨const_resp Y x, id⟩ v.
 Proof.
   pose proof (strength_natural S (const_resp UnitS x) (@id Y)) as H.
-  unfold SetCartesianMonoidal in H.
+  unfold SetCartMonoidal in H.
   rewrite !cartesian_tensor_map, functor_id in H.
   pose proof (H (tt,v)) as Hv.
   change (st[S; X; Y] (x,v) ≈S
@@ -69,7 +69,7 @@ Qed.
 
 (** 任意另一个所给强度在指定逐点相等下具有相同分量。 *)
 
-Lemma set_strength_unique (S T : HasStrength SetCartesianMonoidal F)
+Lemma set_strength_unique (S T : HasStrength SetCartMonoidal F)
     (X Y : SetC)
   : st[S; X; Y] ≈ st[T; X; Y].
 Proof.

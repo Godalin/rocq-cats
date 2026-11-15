@@ -132,8 +132,8 @@ Definition beta_confluent (Γ : Ctx B) (A : Ty B)
 
 Definition beta_irreducible_unique {Γ : Ctx B} {A : Ty B}
     {t u v : Tm Γ A}
-    (p : ReflTransClosure@{b e p} BetaStep@{b e l b} t u)
-    (q : ReflTransClosure@{b e p} BetaStep@{b e l b} t v)
+    (p : ReflTransClos@{b e p} BetaStep@{b e l b} t u)
+    (q : ReflTransClos@{b e p} BetaStep@{b e l b} t v)
     (hu : is_irreducible BetaStep@{b e l b} u)
     (hv : is_irreducible BetaStep@{b e l b} v)
   : u = v

@@ -56,14 +56,14 @@ Definition EtaExpansionIntro {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
   | ty_prod U V => λ t u,
       match pair_parts t with
       | Some (a, c) => ∃ a' c', u = ⟨a', c'⟩ ∧
-          ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} a' a ∧
-          ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} c' c
+          ReflTransClos@{b e p} BetaEtaContractStep@{b e l} a' a ∧
+          ReflTransClos@{b e p} BetaEtaContractStep@{b e l} c' c
       | None => unit
       end
   | ty_arr U V => λ t u,
       match lambda_body t with
       | Some body => ∃ body', u = ƛ body' ∧ ∀ a : Tm Γ U,
-          ReflTransClosure@{b e p} BetaEtaContractStep@{b e l}
+          ReflTransClos@{b e p} BetaEtaContractStep@{b e l}
             body'[a/] body[a/]
       | None => unit
       end
@@ -85,7 +85,7 @@ Proof.
   - pose proof (lambda_body_spec f) as spec.
     destruct (lambda_body f) as [body |]; cbn in *; [| exact tt].
     rewrite spec. eexists. split; [reflexivity |]. intros a.
-    change (ReflTransClosure@{b e p} BetaEtaContractStep@{b e l}
+    change (ReflTransClos@{b e p} BetaEtaContractStep@{b e l}
       ((ƛ body)⟨wkRen⟩[a/] · a) body[a/]).
     apply rtc_step. left. rewrite subst_weaken_single.
     exact (context_step_root _ (root_beta_function body a)).
@@ -161,7 +161,7 @@ Definition EtaBetaDiagram {Γ : Ctx B} {A : Ty B} (x y : Tm Γ A)
   : Type@{p}
   := ∀ z, BetaStep@{b e l b} x z →
       ∃ v, BetaStep@{b e l b} y v ∧
-        ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} v z.
+        ReflTransClos@{b e p} BetaEtaContractStep@{b e l} v z.
 
 (** A function expansion lifts beta once. A product expansion lifts it
     into both copies, then contracts the resulting eta expansion. *)
@@ -200,7 +200,7 @@ Definition eta_expansion_root_context {i j : TmIndex B}
     (h : EtaExpandStep@{b e l b} x y) {z : TmAt j}
     (r : RootBeta@{b e b} (TmContexts B _ _ c x) z)
   : ∃ v, BetaStep@{b e l b} (TmContexts B _ _ c y) v ∧
-      ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} v z.
+      ReflTransClos@{b e p} BetaEtaContractStep@{b e l} v z.
 Proof.
   pose proof (root_beta_contractum r) as target.
   destruct c as [Γ A U a | Γ A U f | Γ A U | Γ A U | Γ A U |

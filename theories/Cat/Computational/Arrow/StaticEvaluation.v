@@ -22,7 +22,7 @@ Local Open Scope computation_scope.
 Section StaticEvaluation.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** Interpret a global internal function by carrying its argument and
     applying ordinary evaluation. *)

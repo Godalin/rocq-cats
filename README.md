@@ -436,7 +436,7 @@ Monad–Applicative–Arrow 工作从
   Write `A[f]S` for reindexing a coherent family and `U[f]` for reindexing a
   family object, including its base; successive reindexing is `U[f][g]`.
   [FamFibration](./theories/Instance/Set/Fam/Fibration.v) proves reindexing
-  cartesian for `FamBaseF`. Its chosen structure `FamBaseF_HasCartesianLift`
+  cartesian for `FamBaseF`. Its chosen structure `FamBaseF_HasCartLift`
   is enabled explicitly; the abstract lift `f ^*[FamBaseF] U` then computes to
   `U[f]`. The reindexed family morphism `φ⟦f⟧` acts directly on fibers.
   [FamSection](./theories/Instance/Set/Fam/Section.v) provides coherent sections,

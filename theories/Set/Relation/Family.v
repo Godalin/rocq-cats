@@ -99,13 +99,13 @@ Defined.
 
 (** 等价闭包是已有闭包的逐点提升，因此其定律复用一般的族构造。 *)
 
-Definition FamilyEquivalenceClosure@{i a r +}
+Definition FamilyEquivClosOp@{i a r +}
     {I : Type@{i}} (A : I → Type@{a})
-  : Closure (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
-  := PointwiseClosure (λ i, @subrelation (A i))
-      (λ i, EquivalenceClosure (A i)).
+  : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
+  := PointwiseClos (λ i, @subrelation (A i))
+      (λ i, EquivClosOp (A i)).
 
-Notation "R '^≈ᵢ'" := (FamilyEquivalenceClosure _ R)
+Notation "R '^≈ᵢ'" := (FamilyEquivClosOp _ R)
   (at level 1) : relation_scope.
 
 (** Closedness is exactly a supplied equivalence structure in every fiber.
@@ -115,7 +115,7 @@ Notation "R '^≈ᵢ'" := (FamilyEquivalenceClosure _ R)
 
 Definition family_equivalence_closure_closed@{i a r +}
     {I : Type@{i}} {A : I → Type@{a}} (R : RelationFamily@{i a r _} A)
-  : is_closed (FamilyEquivalenceClosure A) R ↔
+  : is_closed (FamilyEquivClosOp A) R ↔
       ∀ j, Equivalence@{a r} (R j)
   := ((λ h j, fst (@equivalence_closure_closed@{a r _} (A j) (R j)) (h j)),
       (λ h j, snd (@equivalence_closure_closed@{a r _} (A j) (R j)) (h j))).
@@ -124,13 +124,13 @@ Definition family_equivalence_closure_closed@{i a r +}
 
 (** 选定逐点闭包保持所指定的族等价。 *)
 
-Global Instance FamilyEquivalenceClosure_proper {I : Type} {A : I → Type}
+Global Instance FamilyEquivClosOp_proper {I : Type} {A : I → Type}
   : Proper (RelationFamilyEq ==> RelationFamilyEq)
-      (FamilyEquivalenceClosure A).
+      (FamilyEquivClosOp A).
 Proof.
   intros R S h. apply relation_family_equiv_of_inclusions.
-  - exact (closure_monotone (FamilyEquivalenceClosure A)
+  - exact (closure_monotone (FamilyEquivClosOp A)
       (λ i, relation_equiv_forward (h i))).
-  - exact (closure_monotone (FamilyEquivalenceClosure A)
+  - exact (closure_monotone (FamilyEquivClosOp A)
       (λ i, relation_equiv_backward (h i))).
 Defined.

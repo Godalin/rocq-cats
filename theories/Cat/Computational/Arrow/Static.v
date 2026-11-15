@@ -233,7 +233,7 @@ Qed.
     函子定律。 *)
 
 Program Definition StaticArrow
-  : Arrow C StaticCat (@CartesianMonoidal C HT HP)
+  : Arrow C StaticCat (@CartMonoidal C HT HP)
   :=
   {|ArrowF := StaticPureF
   ; arrow_context X Y Z f := static_context Z f

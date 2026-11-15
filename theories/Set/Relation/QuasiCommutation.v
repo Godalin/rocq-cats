@@ -35,7 +35,7 @@ Definition is_quasi_commuting@{a r t p +} {A : Type@{a}}
     (R : A → A → Type@{r}) (S : A → A → Type@{t})
   : Type
   := ∀ x y z, S x y → R y z →
-      ∃ v, R x v ∧ ReflTransClosure@{a _ p} (R ⊕R S) v z.
+      ∃ v, R x v ∧ ReflTransClos@{a _ p} (R ⊕R S) v z.
 
 (** ** Transporting Readiness
 

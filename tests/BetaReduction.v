@@ -128,9 +128,9 @@ Definition separated_step_rename {t u : Tm Γ A}
 (** 路径替换保持严格高于单条边的界。 *)
 
 Definition separated_path_subst {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
+    (h : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
     (σ : Sub Δ Γ)
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] u[σ]
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] u[σ]
   := beta_rtc_subst h Δ σ.
 
 (** The generic one-hole lift can change context and result type. *)
@@ -139,8 +139,8 @@ Definition separated_path_subst {t u : Tm Γ A}
 
 Definition separated_path_lift {U : Ty B}
     (c : TmOperation (Γ, A) (Δ, U)) {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ U)
+    (h : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Δ U)
       (TmContexts B (Γ, A) (Δ, U) c t)
       (TmContexts B (Γ, A) (Δ, U) c u)
   := beta_rtc_lift c h.
@@ -150,9 +150,9 @@ Definition separated_path_lift {U : Ty B}
 (** 赋值归约同样接受高于语法的 β 证据。 *)
 
 Definition separated_assignment_path (t : Tm Γ A) (σ τ : Sub Δ Γ)
-    (h : ∀ U x, ReflTransClosure@{b e p}
+    (h : ∀ U x, ReflTransClos@{b e p}
       (@BetaStep@{b e _ _} B Δ U) (σ U x) (τ U x))
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] t[τ]
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] t[τ]
   := subst_beta_rtc t Δ σ τ h.
 
 (** Both a term path and its assignment paths can use the larger bound. *)
@@ -160,11 +160,11 @@ Definition separated_assignment_path (t : Tm Γ A) (σ τ : Sub Δ Γ)
 (** 项路径及其赋值路径可以共同使用较大的界。 *)
 
 Definition separated_both_path {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
+    (h : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
     {σ τ : Sub Δ Γ}
-    (k : ∀ U x, ReflTransClosure@{b e p}
+    (k : ∀ U x, ReflTransClos@{b e p}
       (@BetaStep@{b e _ _} B Δ U) (σ U x) (τ U x))
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] u[τ]
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] u[τ]
   := beta_rtc_subst_both h k.
 
 (** Single-variable replacement also retains the larger path universe. *)
@@ -173,8 +173,8 @@ Definition separated_both_path {t u : Tm Γ A}
 
 Definition separated_single_path {U : Ty B} (t : Tm (Γ ▻ A) U)
     {u v : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) u v)
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ U) t[u/] t[v/]
+    (h : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ A) u v)
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ U) t[u/] t[v/]
   := beta_rtc_single t h.
 
 End SeparatedLevels.

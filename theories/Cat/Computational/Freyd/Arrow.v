@@ -35,7 +35,7 @@ Let D
 (** 重建作用为沿选定张量边界的共轭，其见证及反向边界映射保持透明。 *)
 
 Program Definition FreydArrow
-  : Arrow C D (@CartesianMonoidal C hasTerminal hasProduct)
+  : Arrow C D (@CartMonoidal C hasTerminal hasProduct)
   :=
   {|ArrowF := FreydPureF F
   ; arrow_context X Y Z f := freyd_context F Z f

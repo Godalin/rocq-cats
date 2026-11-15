@@ -27,7 +27,7 @@ Definition is_closure {X : Type} (R : crelation X) (c : X → X)
 
 (** 选定的操作及其闭包律。唯一的函数强制转换暴露操作；构造闭包时须提供定律。 *)
 
-Record Closure {X : Type} (R : crelation X)
+Record Clos {X : Type} (R : crelation X)
   :=
   {
   (** The selected extension operation. *)
@@ -60,7 +60,7 @@ Context {X : Type} {R : crelation X}.
 
 (** 单调性将输入比较运输到闭包后的对象。 *)
 
-Definition closure_monotone (c : Closure R) {x y : X} (h : R x y)
+Definition closure_monotone (c : Clos R) {x y : X} (h : R x y)
   : R (c x) (c y)
   := fst (closure_laws R c) x y h.
 
@@ -68,7 +68,7 @@ Definition closure_monotone (c : Closure R) {x y : X} (h : R x y)
 
 (** 扩张将每个输入嵌入其选定闭扩张。 *)
 
-Definition closure_inflate (c : Closure R) (x : X)
+Definition closure_inflate (c : Clos R) (x : X)
   : R x (c x)
   := fst (snd (closure_laws R c)) x.
 
@@ -76,7 +76,7 @@ Definition closure_inflate (c : Closure R) (x : X)
 
 (** 压平消去一层闭包，不把两个对象判为原生相等。 *)
 
-Definition closure_flatten (c : Closure R) (x : X)
+Definition closure_flatten (c : Clos R) (x : X)
   : R (c (c x)) (c x)
   := snd (snd (closure_laws R c)) x.
 
@@ -85,7 +85,7 @@ Definition closure_flatten (c : Closure R) (x : X)
 
 (** 闭对象具有扩张的反向比较。谓词记录见证，不要求表示之间的等式。 *)
 
-Definition is_closed (c : Closure R) (x : X)
+Definition is_closed (c : Clos R) (x : X)
   : Type
   := R (c x) x.
 
@@ -93,7 +93,7 @@ Definition is_closed (c : Closure R) (x : X)
 
 (** 每个选定闭扩张自身都是闭的。 *)
 
-Definition closure_closed (c : Closure R) (x : X)
+Definition closure_closed (c : Clos R) (x : X)
   : is_closed c (c x)
   := closure_flatten c x.
 
@@ -101,7 +101,7 @@ Definition closure_closed (c : Closure R) (x : X)
 
 (** 逐点比较操作，全部比较见证仍保留为数据。 *)
 
-Definition ClosureLe (c d : Closure R)
+Definition ClosLe (c d : Clos R)
   : Type
   := ∀ x, R (c x) (d x).
 
@@ -110,16 +110,16 @@ Definition ClosureLe (c d : Closure R)
 
 (** 闭包等价是两个方向的逐点比较，不要求函数或定律字段相等。 *)
 
-Definition ClosureEq (c d : Closure R)
+Definition ClosEq (c d : Clos R)
   : Type
-  := ClosureLe c d ∧ ClosureLe d c.
+  := ClosLe c d ∧ ClosLe d c.
 
 End ClosureLaws.
 
 Declare Scope closure_scope.
 Delimit Scope closure_scope with closure.
-Infix "⊑Cl" := ClosureLe (at level 70) : closure_scope.
-Infix "≈Cl" := ClosureEq (at level 70) : closure_scope.
+Infix "⊑Cl" := ClosLe (at level 70) : closure_scope.
+Infix "≈Cl" := ClosEq (at level 70) : closure_scope.
 Local Open Scope closure_scope.
 
 (** ** Closure Universal Properties over a Preorder
@@ -140,7 +140,7 @@ Context {X : Type} {R : crelation X} `{HR : !PreOrder R}.
 
 (** 输入到闭目标的比较可延拓经过闭包：先用单调性，再用目标的闭性见证。 *)
 
-Definition closure_extend (c : Closure R) {x y : X}
+Definition closure_extend (c : Clos R) {x y : X}
     (hy : is_closed c y) (h : R x y)
   : R (c x) y
   := transitivity (closure_monotone c h) hy.
@@ -149,7 +149,7 @@ Definition closure_extend (c : Closure R) {x y : X}
 
 (** 限制将比较与扩张见证预合成。 *)
 
-Definition closure_restrict (c : Closure R) {x y : X} (h : R (c x) y)
+Definition closure_restrict (c : Clos R) {x y : X} (h : R (c x) y)
   : R x y
   := transitivity (closure_inflate c x) h.
 
@@ -160,7 +160,7 @@ Definition closure_restrict (c : Closure R) {x y : X} (h : R (c x) y)
 (** 最小闭扩张性质。所陈述等价提供两个见证转换，不要求见证上的互逆方程。
     在预序中，对象唯一性表示相互可比较。 *)
 
-Definition closure_universal (c : Closure R) {x y : X}
+Definition closure_universal (c : Clos R) {x y : X}
     (hy : is_closed c y)
   : R (c x) y ↔ R x y
   := (closure_restrict c, closure_extend c hy).
@@ -170,7 +170,7 @@ Definition closure_universal (c : Closure R) {x y : X}
 
 (** 闭性在双向比较下保持；这适用于预序中具有不同等价表示的情形。 *)
 
-Definition closure_closed_transport (c : Closure R) {x y : X}
+Definition closure_closed_transport (c : Clos R) {x y : X}
     (h : R x y) (k : R y x) (hx : is_closed c x)
   : is_closed c y
   := transitivity (closure_monotone c k) (transitivity hx h).
@@ -179,8 +179,8 @@ Definition closure_closed_transport (c : Closure R) {x y : X}
 
 (** 逐点比较在闭包结构上形成 Type 值预序。 *)
 
-Global Instance ClosureLe_PreOrder
-  : PreOrder (@ClosureLe X R).
+Global Instance ClosLe_PreOrder
+  : PreOrder (@ClosLe X R).
 Proof.
   split.
   - intros c x. reflexivity.
@@ -191,8 +191,8 @@ Defined.
 
 (** 双向逐点比较给出闭包的指定等价关系。 *)
 
-Global Instance ClosureEq_Equivalence
-  : Equivalence (@ClosureEq X R).
+Global Instance ClosEq_Equivalence
+  : Equivalence (@ClosEq X R).
 Proof.
   split.
   - intros c. split; intros x; reflexivity.
@@ -210,7 +210,7 @@ Defined.
 (** 较小闭包至少具有较大闭包的全部闭对象。反过来，在闭扩张 [d x] 处检验
     此包含便能恢复逐点比较。因此算子顺序与闭对象谓词的包含方向相反。 *)
 
-Definition closure_le_iff_closed (c d : Closure R)
+Definition closure_le_iff_closed (c d : Clos R)
   : c ⊑Cl d ↔ (∀ x, is_closed d x → is_closed c x).
 Proof.
   split.
@@ -224,7 +224,7 @@ Defined.
 
 (** 具有相同闭对象的闭包逐点等价，不使用谓词函数或选定见证的相等。 *)
 
-Definition closure_unique (c d : Closure R)
+Definition closure_unique (c d : Clos R)
     (h : ∀ x, is_closed c x ↔ is_closed d x)
   : c ≈Cl d.
 Proof.
@@ -237,8 +237,8 @@ Defined.
 
 (** 任意预序上的恒等操作都是闭包。 *)
 
-Program Definition IdentityClosure
-  : Closure R
+Program Definition IdentityClos
+  : Clos R
   :=
   {|closure_map x := x
   |}.
@@ -263,7 +263,7 @@ Definition is_closure_universal (P : X → Type) (c : X → X)
 
 (** 每个闭包都为其闭对象谓词提供这种泛扩张，将操作定律接到候选性质。 *)
 
-Definition closure_is_universal (c : Closure R)
+Definition closure_is_universal (c : Clos R)
   : is_closure_universal (is_closed c) c
   := λ x, (closure_closed c x,
       (closure_inflate c x, λ y hy hxy, closure_extend c hy hxy)).
@@ -275,9 +275,9 @@ Definition closure_is_universal (c : Closure R)
 (** 选定泛扩张满足闭包律。此构造不将 [P] 与不动对象谓词直接识别；要作这种
     识别，还须假设 [P] 在双向比较下保持。 *)
 
-Program Definition ClosureFromUniversal (P : X → Type) (c : X → X)
+Program Definition ClosFromUniversal (P : X → Type) (c : X → X)
     (h : is_closure_universal P c)
-  : Closure R
+  : Clos R
   :=
   {|closure_map := c
   |}.

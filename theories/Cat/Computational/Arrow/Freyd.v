@@ -20,7 +20,7 @@ Local Open Scope computation_scope.
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** Retain the original pure functor and all existing structure choices.
     Pure, Reader-like and stateful models share this one construction. *)

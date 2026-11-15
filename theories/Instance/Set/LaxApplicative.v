@@ -113,7 +113,7 @@ Section Lax.
 Universes u p.
 Let SM
   : MonoidalCat (SetCat@{u p _ _ _ _ _})
-  := SetCartesianMonoidal.
+  := SetCartMonoidal.
 Context (L : LaxMonoidalFct SM SM).
 
 (** The lax unit determines pure values without selecting a strength. *)
@@ -165,7 +165,7 @@ Proof.
     + symmetry.
       pose proof (lax_tensor_natural L (const_resp UnitS x)
         (const_resp UnitS y)) as H.
-      unfold SM, SetCartesianMonoidal in H.
+      unfold SM, SetCartMonoidal in H.
       rewrite !cartesian_tensor_map in H.
       exact (H (lax_unit L tt,lax_unit L tt)).
 Defined.
@@ -205,7 +205,7 @@ Let SC
   := SetCat@{u p _ _ _ _ _}.
 Let SM
   : MonoidalCat SC
-  := SetCartesianMonoidal.
+  := SetCartMonoidal.
 
 (** Unit preservation already determines pure preservation pointwise. *)
 

@@ -213,22 +213,22 @@ Definition cartesian_unique {E B : Cat} {P : Fct E B}
     基底对象的识别作为显式数据保留；不要求其见证相等，也不预设提升的严格恒等律
     或复合律。 *)
 
-Class HasCartesianLift {E B : Cat} (P : Fct E B)
+Class HasCartLift {E B : Cat} (P : Fct E B)
   :=
-  { CartesianLift {Y : @Ob E} {X : @Ob B} (f : Hom X (P Y)) : @Ob E
-  ; cartesian_lift_base {Y X} (f : Hom X (P Y)) : P (CartesianLift f) = X
-  ; cartesian_lift {Y X} (f : Hom X (P Y)) : Hom (CartesianLift f) Y
+  { CartLift {Y : @Ob E} {X : @Ob B} (f : Hom X (P Y)) : @Ob E
+  ; cartesian_lift_base {Y X} (f : Hom X (P Y)) : P (CartLift f) = X
+  ; cartesian_lift {Y X} (f : Hom X (P Y)) : Hom (CartLift f) Y
   ; cartesian_lift_comm {Y X} (f : Hom X (P Y))
     : fmap P (cartesian_lift f) ≈ f ∘ eq_to_hom (cartesian_lift_base f)
   ; cartesian_lift_universal {Y X} (f : Hom X (P Y))
     : cartesian_lift f ⦂ Cart(P)
   }.
 
-Arguments CartesianLift {_ _ _ _ _ _} _.
+Arguments CartLift {_ _ _ _ _ _} _.
 Arguments cartesian_lift_base {_ _ _ _ _ _} _.
 Arguments cartesian_lift {_ _ _ _ _ _} _.
 Arguments cartesian_lift_comm {_ _ _ _ _ _} _.
 Arguments cartesian_lift_universal {_ _ _ _ _ _} _.
 
-Notation "f '^*[' P ']' Y" := (@CartesianLift _ _ P _ Y _ f)
+Notation "f '^*[' P ']' Y" := (@CartLift _ _ P _ Y _ f)
   (at level 35, no associativity, format "f  ^*[ P ]  Y") : cat_scope.

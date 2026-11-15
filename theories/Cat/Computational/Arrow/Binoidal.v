@@ -19,7 +19,7 @@ Local Open Scope computation_scope.
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** The computation objects are the value objects themselves, so the
     underlying tensor needs no equality or transport of object maps. *)

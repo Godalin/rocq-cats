@@ -25,7 +25,7 @@ Local Open Scope closure_scope.
 
 Section Composition.
 Context {X : Type} {R : crelation X} `{HR : !PreOrder R}.
-Context (c d : Closure R).
+Context (c d : Clos R).
 
 (** Interchange has a specified direction. It is not an equality of
     composites, nor an assertion that arbitrary closures commute. *)
@@ -45,8 +45,8 @@ Context (h : is_closure_interchange).
 (** 复合先应用 [c] 再应用 [d]。压平证明用交换将中间的 [c] 移过 [d]，
     再用两个原有压平律消去重复层。 *)
 
-Program Definition CompositeClosure
-  : Closure R
+Program Definition CompositeClos
+  : Clos R
   :=
   {|closure_map x := d (c x)
   |}.
@@ -70,7 +70,7 @@ Defined.
     两因子闭合的对象处压平复合。 *)
 
 Definition composite_closure_closed (x : X)
-  : is_closed CompositeClosure x ↔ (is_closed c x ∧ is_closed d x).
+  : is_closed CompositeClos x ↔ (is_closed c x ∧ is_closed d x).
 Proof.
   split.
   - intros k. split.
@@ -86,8 +86,8 @@ Defined.
 
 Definition composite_closure_universal {x y : X}
     (hc : is_closed c y) (hd : is_closed d y)
-  : R (CompositeClosure x) y ↔ R x y
-  := closure_universal CompositeClosure
+  : R (CompositeClos x) y ↔ R x y
+  := closure_universal CompositeClos
       (snd (composite_closure_closed y) (hc, hd)).
 
 (** Each factor lies below the composite in pointwise operator order. *)
@@ -95,7 +95,7 @@ Definition composite_closure_universal {x y : X}
 (** 每个因子在逐点算子顺序中都位于复合之下。 *)
 
 Definition composite_closure_upper
-  : (c ⊑Cl CompositeClosure) ∧ (d ⊑Cl CompositeClosure).
+  : (c ⊑Cl CompositeClos) ∧ (d ⊑Cl CompositeClos).
 Proof.
   split; intros x.
   - exact (closure_inflate d (c x)).
@@ -107,9 +107,9 @@ Defined.
 
 (** 复合是闭包算子中两个因子的最小上界；这不声称每对闭包都具有这种复合。 *)
 
-Definition composite_closure_least (e : Closure R)
+Definition composite_closure_least (e : Clos R)
     (hc : c ⊑Cl e) (hd : d ⊑Cl e)
-  : CompositeClosure ⊑Cl e.
+  : CompositeClos ⊑Cl e.
 Proof.
   apply (snd (closure_le_iff_closed _ _)). intros x hx.
   apply (snd (composite_closure_closed x)). split.

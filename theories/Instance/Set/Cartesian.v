@@ -15,7 +15,7 @@ From Cats Require Import
 (** 打包已有终广集与积广集。这个选定结构须显式启用；导入时不自动选取
     模型实例。 *)
 
-Program Definition SetCat_Cartesian
+Program Definition SetCat_Cart
   : CartesianCat SetCat
   :=
   {|hasTerminal := SetCat_HasTerminal

@@ -44,8 +44,8 @@ Context (I : (NfEmbedN A) ⦂
 (** 终点一致性不需要任一终点的不可约性。 *)
 
 Definition small_path_long_comparison {Γ : Ctx B} {t u v : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t u)
-    (k : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t v)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t u)
+    (k : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t v)
   : ContractionLongN A I Γ u = ContractionLongN A I Γ v
   := contraction_endpoints_long A I h k.
 
@@ -75,7 +75,7 @@ Context (I : (NfEmbedN A) ⦂
 
 Definition large_path_short_comparison {Γ : Ctx B} (t : Tm Γ A)
     (s : ShortForm Γ A)
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t s.1)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t s.1)
   : ContractionLongN A I Γ t = short_to_long A I s
   := short_endpoint_comparison A I t s h.
 

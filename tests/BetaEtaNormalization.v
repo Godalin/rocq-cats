@@ -102,7 +102,7 @@ Definition separated_beta_eta_sn (t : Tm Γ A)
 Definition separated_beta_eta_diagram {x y z : Tm Γ A}
     (h : EtaContractStep@{b e l} x y) (k : BetaStep@{b e l b} y z)
   : ∃ v, BetaStep@{b e l b} x v ∧
-      ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} v z
+      ReflTransClos@{b e p} BetaEtaContractStep@{b e l} v z
   := beta_eta_quasi_commuting Γ A x y z h k.
 
 End SeparatedLevels.
@@ -136,7 +136,7 @@ Definition large_beta_eta_sn (t : Tm Γ A)
 Definition large_beta_eta_diagram {x y z : Tm Γ A}
     (h : EtaContractStep@{b e l} x y) (k : BetaStep@{b e l b} y z)
   : ∃ v, BetaStep@{b e l b} x v ∧
-      ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} v z
+      ReflTransClos@{b e p} BetaEtaContractStep@{b e l} v z
   := beta_eta_quasi_commuting Γ A x y z h k.
 
 End LargeTrees.

@@ -94,7 +94,7 @@ From Cats Require Import
     显式选择。 *)
 
 Fail Definition unchosen_set_lax_monoidal
-  : LaxMonoidalFct SetCartesianMonoidal SetCartesianMonoidal
+  : LaxMonoidalFct SetCartMonoidal SetCartMonoidal
   := ltac:(typeclasses eauto).
 
 From Cats Require Import

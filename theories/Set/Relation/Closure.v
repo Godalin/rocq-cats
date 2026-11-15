@@ -28,17 +28,17 @@ Local Open Scope relation_scope.
 
 (** 一条带方向的边。不存储中间载体元素，因此见证界可以保持低于载体界。 *)
 
-Definition SymClosure@{a r} {A : Type@{a}} (R : A → A → Type@{r})
+Definition SymClos@{a r} {A : Type@{a}} (R : A → A → Type@{r})
   : A → A → Type@{r}
   := λ x y, (R x y + R y x)%type.
 
-Notation "R '^±'" := (SymClosure R) (at level 1) : relation_scope.
+Notation "R '^±'" := (SymClos R) (at level 1) : relation_scope.
 
 (** Reversing an oriented edge swaps the two alternatives. *)
 
 (** 反转有向边时交换两个分支。 *)
 
-Global Instance SymClosure_Symmetric {A : Type} (R : crelation A)
+Global Instance SymClos_Symmetric {A : Type} (R : crelation A)
   : Symmetric (R^±).
 Proof. intros x y [h | h]; [exact (inr h) | exact (inl h)]. Defined.
 
@@ -81,12 +81,12 @@ Definition sym_closure_universal {A : Type} (R S : crelation A)
 (** 空路径，或一条生成边接上一条路径。每个非空见证的头部只增加一条边，
     路径连接另行导出。 *)
 
-Inductive ReflTransClosure@{a r p} {A : Type@{a}}
+Inductive ReflTransClos@{a r p} {A : Type@{a}}
     (R : A → A → Type@{r})
   : A → A → Type@{p}
-  :=| rtc_refl (x : A) : ReflTransClosure R x x
+  :=| rtc_refl (x : A) : ReflTransClos R x x
     | rtc_cons {x y z : A}
-        : R x y → ReflTransClosure R y z → ReflTransClosure R x z.
+        : R x y → ReflTransClos R y z → ReflTransClos R x z.
 
 Arguments rtc_refl {_ _} _.
 Arguments rtc_cons {_ _ _ _ _} _ _.
@@ -97,7 +97,7 @@ Arguments rtc_cons {_ _ _ _ _} _ _.
 (** 与范畴预合成共用已有的优先级，使关系与范畴模块能够同时导入。 *)
 
 Local Set Warnings "-postfix-notation-not-level-1".
-Notation "R '^*'" := (ReflTransClosure R) (at level 35) : relation_scope.
+Notation "R '^*'" := (ReflTransClos R) (at level 35) : relation_scope.
 Local Set Warnings "+postfix-notation-not-level-1".
 
 (** A single edge is a path with an empty tail. *)
@@ -127,7 +127,7 @@ Defined.
 
 (** 空路径与连接给出透明预序。这是生成关系的性质，不是全局选定的模型数据。 *)
 
-Global Program Instance ReflTransClosure_PreOrder {A : Type}
+Global Program Instance ReflTransClos_PreOrder {A : Type}
     (R : crelation A)
   : PreOrder (R^*)
   :=
@@ -177,7 +177,7 @@ Definition rtc_universal {A : Type} (R S : crelation A)
 
 (** 对称生成关系给出可反转的路径。反转倒置连接的次序；它不是正规化关系。 *)
 
-Global Instance ReflTransClosure_Symmetric {A : Type} (R : crelation A)
+Global Instance ReflTransClos_Symmetric {A : Type} (R : crelation A)
     `{HS : !Symmetric R}
   : Symmetric (R^*).
 Proof.
@@ -191,14 +191,14 @@ Defined.
 
 (** 包含预序上的选定对称闭包。一般泛扩张构造提供其闭包律。 *)
 
-Definition SymmetricClosure@{a r +} (A : Type@{a})
-  : Closure (@subrelation@{a r r} A).
+Definition SymClosOp@{a r +} (A : Type@{a})
+  : Clos (@subrelation@{a r r} A).
 Proof.
-  refine (@ClosureFromUniversal (A → A → Type@{r})
+  refine (@ClosFromUniversal (A → A → Type@{r})
     (@subrelation@{a r r} A) (RelationInclusionPreorder A)
-    (λ S, Symmetric S) (@SymClosure@{a r} A) _).
+    (λ S, Symmetric S) (@SymClos@{a r} A) _).
   intros R. split.
-  - exact (SymClosure_Symmetric R).
+  - exact (SymClos_Symmetric R).
   - split.
     + intros x y p. exact (inl p).
     + intros S hs h. exact (snd (sym_closure_universal R S) h).
@@ -211,14 +211,14 @@ Defined.
 (** 在容纳载体及边见证的共同界内选定路径闭包。上面的原始路径类型仍允许
     输入、输出见证界不同；只有自映射封装需要这个共同界。 *)
 
-Definition ReflexiveTransitiveClosure@{a r +} (A : Type@{a})
-  : Closure (@subrelation@{a r r} A).
+Definition ReflTransClosOp@{a r +} (A : Type@{a})
+  : Clos (@subrelation@{a r r} A).
 Proof.
-  refine (@ClosureFromUniversal (A → A → Type@{r})
+  refine (@ClosFromUniversal (A → A → Type@{r})
     (@subrelation@{a r r} A) (RelationInclusionPreorder A)
-    (λ S, PreOrder S) (@ReflTransClosure@{a r r} A) _).
+    (λ S, PreOrder S) (@ReflTransClos@{a r r} A) _).
   intros R. split.
-  - exact (ReflTransClosure_PreOrder R).
+  - exact (ReflTransClos_PreOrder R).
   - split.
     + intros x y p. exact (rtc_step p).
     + intros S hs h. exact (snd (rtc_universal R S) h).
@@ -232,7 +232,7 @@ Defined.
     边；不需要见证类型相等。 *)
 
 Definition sym_closure_closed {A : Type} (R : crelation A)
-  : is_closed (SymmetricClosure A) R ↔ Symmetric R.
+  : is_closed (SymClosOp A) R ↔ Symmetric R.
 Proof.
   split.
   - intros h x y p. exact (h y x (inr p)).
@@ -247,7 +247,7 @@ Defined.
     传递性。 *)
 
 Definition rtc_closed@{a r +} {A : Type@{a}} (R : A → A → Type@{r})
-  : is_closed (ReflexiveTransitiveClosure@{a r _} A) R ↔ PreOrder R.
+  : is_closed (ReflTransClosOp@{a r _} A) R ↔ PreOrder R.
 Proof.
   split.
   - intros h.
@@ -262,8 +262,8 @@ Defined.
 
 (** 逐点等价的生成关系给出等价的对称闭包。 *)
 
-Global Instance SymClosure_proper {A : Type}
-  : Proper (relation_equivalence ==> relation_equivalence) (@SymClosure A).
+Global Instance SymClos_proper {A : Type}
+  : Proper (relation_equivalence ==> relation_equivalence) (@SymClos A).
 Proof.
   intros R S h. apply relation_equiv_of_inclusions.
   - exact (sym_closure_map (relation_equiv_forward h)).
@@ -274,9 +274,9 @@ Defined.
 
 (** 路径闭包也保持指定的关系等价。 *)
 
-Global Instance ReflTransClosure_proper {A : Type}
+Global Instance ReflTransClos_proper {A : Type}
   : Proper (relation_equivalence ==> relation_equivalence)
-      (@ReflTransClosure A).
+      (@ReflTransClos A).
 Proof.
   intros R S h. apply relation_equiv_of_inclusions.
   - exact (rtc_map (relation_equiv_forward h)).

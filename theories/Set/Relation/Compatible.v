@@ -68,18 +68,18 @@ Definition is_compatible {I : Type} {A : I → Type}
 (** 有限上下文恰好包含一个原关系见证。与路径连接不同，上下文迭代不引入
     额外的可归约位置。结果宇宙须容纳索引、标签、元素与边。 *)
 
-Inductive ContextClosure {I : Type} {A : I → Type}
+Inductive ContextClos {I : Type} {A : I → Type}
     (K : ContextSystem A) (R : RelationFamily A)
   : RelationFamily A
   :=| context_step {i} {x y : A i}
-        : R i x y → ContextClosure K R i x y
+        : R i x y → ContextClos K R i x y
     | context_lift {i j} (c : context_operation K i j) {x y : A i}
-        : ContextClosure K R i x y →
-          ContextClosure K R j (K i j c x) (K i j c y).
+        : ContextClos K R i x y →
+          ContextClos K R j (K i j c x) (K i j c y).
 
 Arguments context_step {_ _ _ _ _ _ _} _.
 Arguments context_lift {_ _ _ _ _ _} _ {_ _} _.
-Notation "R '^C[' K ']'" := (ContextClosure K R)
+Notation "R '^C[' K ']'" := (ContextClos K R)
   (at level 1) : relation_scope.
 
 (** Context iteration itself is compatible, by adding an outer operation. *)
@@ -153,13 +153,13 @@ Definition context_closure_universal {I : Type} {A : I → Type}
 (** 用一般泛扩张构造封装上下文迭代。共同见证界须容纳所存上下文数据；原始
     构造则可以另用更大的结果界。 *)
 
-Definition CompatibleClosure {I : Type} {A : I → Type}
+Definition CompatibleClosOp {I : Type} {A : I → Type}
     (K : ContextSystem A)
-  : Closure (@RelationFamilyLe I A).
+  : Clos (@RelationFamilyLe I A).
 Proof.
-  refine (@ClosureFromUniversal (RelationFamily A)
+  refine (@ClosFromUniversal (RelationFamily A)
     (@RelationFamilyLe I A) (RelationFamilyPreorder A)
-    (is_compatible K) (ContextClosure K) _).
+    (is_compatible K) (ContextClos K) _).
   intros R. split.
   - exact (context_closure_compatible K R).
   - split.
@@ -174,7 +174,7 @@ Defined.
 
 Definition compatible_closure_closed {I : Type} {A : I → Type}
     (K : ContextSystem A) (R : RelationFamily A)
-  : is_closed (CompatibleClosure K) R ↔ is_compatible K R.
+  : is_closed (CompatibleClosOp K) R ↔ is_compatible K R.
 Proof.
   split.
   - intros h i j c x y p.
@@ -189,9 +189,9 @@ Defined.
 
 (** 按指定等价替换生成元，使上下文闭包按同样的逐点等价变化。 *)
 
-Global Instance ContextClosure_proper {I : Type} {A : I → Type}
+Global Instance ContextClos_proper {I : Type} {A : I → Type}
     (K : ContextSystem A)
-  : Proper (RelationFamilyEq ==> RelationFamilyEq) (ContextClosure K).
+  : Proper (RelationFamilyEq ==> RelationFamilyEq) (ContextClos K).
 Proof.
   intros R S h. apply relation_family_equiv_of_inclusions.
   - exact (context_closure_map K (λ i, relation_equiv_forward (h i))).

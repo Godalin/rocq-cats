@@ -68,10 +68,10 @@ Defined.
 (** 此选定结构须由客户端显式启用，基底对象识别为自反，其底层箭头是
     [fam_reindex]。 *)
 
-Program Definition FamBaseF_HasCartesianLift
-  : HasCartesianLift FamBaseF
+Program Definition FamBaseF_HasCartLift
+  : HasCartLift FamBaseF
   :=
-  {|CartesianLift U X f := U[f]
+  {|CartLift U X f := U[f]
   ; cartesian_lift_base U X f := eq_refl
   ; cartesian_lift U X f := fam_reindex U f
   |}.

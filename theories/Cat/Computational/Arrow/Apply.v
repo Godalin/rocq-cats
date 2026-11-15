@@ -29,7 +29,7 @@ Section PureNames.
 Universes o u p.
 Context {K : Cat@{o u p _ _}}
     (A : Arrow (SetCat@{u p _ _ _ _ _}) K
-      (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Name the pure arrow that pairs a fixed value with its ordinary input.
     Both the ordinary value and the resulting computation use specified
@@ -74,7 +74,7 @@ Class ArrowApply
   (** 唯一直接父结构提供纯箭头与上下文。 *)
 
   { ArrowApplyA :> Arrow (SetCat@{u p _ _ _ _ _}) K
-      (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)
+      (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)
 
   (** Run the computation supplied in the first input on the second input.
       Computations are values in their native Hom setoid. *)

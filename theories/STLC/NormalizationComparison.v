@@ -152,7 +152,7 @@ Defined.
 (** 每条有限路径均有同样的不变性，包括空路径。 *)
 
 Definition contraction_long_path {Γ : Ctx B} {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e _} t u)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e _} t u)
   : ContractionLongN Γ t = ContractionLongN Γ u.
 Proof.
   induction h as [t | t u v h k IH].
@@ -176,7 +176,7 @@ Definition short_to_long {Γ : Ctx B} (s : ShortForm Γ A)
 
 Definition short_endpoint_comparison {Γ : Ctx B} (t : Tm Γ A)
     (s : ShortForm Γ A)
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e _} t s.1)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e _} t s.1)
   : ContractionLongN Γ t = short_to_long s
   := contraction_long_path h.
 
@@ -188,8 +188,8 @@ Definition short_endpoint_comparison {Γ : Ctx B} (t : Tm Γ A)
     此结论来自不变性，而不是收缩关系的合流性。 *)
 
 Definition contraction_endpoints_long {Γ : Ctx B} {t u v : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e _} t u)
-    (k : ReflTransClosure@{b e p} BetaEtaContractStep@{b e _} t v)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e _} t u)
+    (k : ReflTransClos@{b e p} BetaEtaContractStep@{b e _} t v)
   : ContractionLongN Γ u = ContractionLongN Γ v
   := eq_trans (eq_sym (contraction_long_path h)) (contraction_long_path k).
 

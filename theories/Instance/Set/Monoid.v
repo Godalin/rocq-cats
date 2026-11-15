@@ -18,9 +18,9 @@ From Cats Require Import
     从已有广集幺半群构造一般幺半接口的实例，显式使用选定的集合积；导入本模块
     不会全局选取这些结构。 *)
 
-Definition SetCartesianMonoidal
+Definition SetCartMonoidal
   : MonoidalCat SetCat
-  := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** ** Setoid Monoids as Monoid Objects
 
@@ -55,7 +55,7 @@ Next Obligation. intros x y H. reflexivity. Defined.
 (** 已有代数定律验证内部交换图表；这里不重复与单对象范畴的独立比较。 *)
 
 Program Definition SetMonoidObj
-  : MonoidObj SetCartesianMonoidal
+  : MonoidObj SetCartMonoidal
   :=
   {|MonoidCarrier := M
   ; monoid_object_unit := set_monoid_unit_resp

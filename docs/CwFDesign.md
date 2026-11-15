@@ -298,7 +298,7 @@ context_map_cartesian_iff_pullback:
 
 `CwFComprehension T` 将选择的提升、扩张函子、投影自然变换和该泛性质
 组装为已有的 `Comprehension (CwFBaseF T)`。
-`CwFBaseF_HasCartesianLift T` 及结构包中的提升都需显式启用；
+`CwFBaseF_HasCartLift T` 及结构包中的提升都需显式启用；
 基底对象的识别由构造的第一投影直接给出反身识别。
 构造仅要求 `HasContextExtension T`，不需要终对象或所有拉回。
 
@@ -335,7 +335,7 @@ arrow_cartesian_iff_pullback f:
 给定 `HasPullback C`，`ArrowReindexOb B σ`（记作 `B[σ]Arr`）
 以 `Pb σ (arrow_map B)` 为定义域、以 σ 的定义域为陪域。
 `arrow_reindex B σ` 的两条边为 `pb2` 和 σ。
-`ArrowCodF_HasCartesianLift` 将其组织成选定笛卡尔提升。
+`ArrowCodF_HasCartLift` 将其组织成选定笛卡尔提升。
 
 反向的 `ArrowCodF_HasPullback` 接受任意选定陪域提升。
 若提升对象为 L，其携带的基底对象识别为 `e : arrow_cod L = X`，

@@ -250,7 +250,7 @@ Qed.
 
 (** 从迭代指数到积参数指数的自然变换。 *)
 
-Program Definition ExponentialIteratedN (A B : @Ob C)
+Program Definition ExpIteratedN (A B : @Ob C)
   : ((-^ B) ∘F (-^ A)) ⇒ (-^ (A × B))
   :=
   {|nt Y := (exponential_iterated_iso A B Y).1
@@ -271,7 +271,7 @@ Qed.
 
 Definition exponential_iterated_nat_iso (A B : @Ob C)
   : ((-^ B) ∘F (-^ A)) ≅N (-^ (A × B))
-  := (ExponentialIteratedN A B; λ Y, (exponential_iterated_iso A B Y).2).
+  := (ExpIteratedN A B; λ Y, (exponential_iterated_iso A B Y).2).
 
 End IteratedCurrying.
 

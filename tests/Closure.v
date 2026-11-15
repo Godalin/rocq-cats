@@ -17,7 +17,7 @@ Section SeparatedLevels.
 Universes u r.
 Constraint u < r.
 Context (X : Type@{u}) (R : X → X → Type@{r}).
-Context `{HR : !PreOrder R} (c d : Closure R).
+Context `{HR : !PreOrder R} (c d : Clos R).
 Context (h : is_closure_interchange c d).
 
 (** Closure laws and their composite retain the larger witness universe. *)
@@ -25,8 +25,8 @@ Context (h : is_closure_interchange c d).
 (** 闭包律及其复合保留较大的见证宇宙。 *)
 
 Definition separated_composite_closure
-  : Closure R
-  := CompositeClosure c d h.
+  : Clos R
+  := CompositeClos c d h.
 
 (** The category of closed objects retains its proof-bearing object data. *)
 
@@ -52,7 +52,7 @@ Section ReverseLevels.
 Universes u r.
 Constraint r < u.
 Context (X : Type@{u}) (R : X → X → Type@{r}).
-Context `{HR : !PreOrder R} (c : Closure R).
+Context `{HR : !PreOrder R} (c : Clos R).
 
 (** The abstract closure interface also permits smaller order witnesses. *)
 
@@ -91,7 +91,7 @@ Local Program Instance witness_order_PreOrder
     的见证数据。 *)
 
 Program Definition WitnessClosure
-  : Closure WitnessOrder
+  : Clos WitnessOrder
   :=
   {|closure_map := negb
   |}.

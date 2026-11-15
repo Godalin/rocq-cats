@@ -41,7 +41,7 @@ Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 Context (K : Cat)
     (A : Arrow C K
-      (@CartesianMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Compose singleton evaluation with the supplied static evaluation
     isomorphism. *)

@@ -38,7 +38,7 @@ Local Existing Instance SetCat_HasProduct.
 
 Section Comparison.
 Universe u.
-Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartesianMonoidal).
+Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
 
 (** Reuse the Monad recovery components and their naturality. Repackage
     them on the actual global-computation functor; functor law records

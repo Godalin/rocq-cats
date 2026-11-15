@@ -256,9 +256,9 @@ Context {B : Type@{b}}.
 
 Definition sub_lift_beta_rtc {Γ Δ : Ctx B} {A : Ty B}
     {σ τ : Sub Δ Γ}
-    (h : ∀ U x, ReflTransClosure@{b e p}
+    (h : ∀ U x, ReflTransClos@{b e p}
       (@BetaStep@{b e _ _} B Δ U) (σ U x) (τ U x))
-  : ∀ U x, ReflTransClosure@{b e p}
+  : ∀ U x, ReflTransClos@{b e p}
       (@BetaStep@{b e _ _} B (Δ ▻ A) U)
       ((σ^↑Sub) U x) ((τ^↑Sub) U x).
 Proof.
@@ -273,9 +273,9 @@ Defined.
 
 Definition subst_beta_rtc {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   : ∀ Δ (σ τ : Sub Δ Γ),
-      (∀ U x, ReflTransClosure@{b e p}
+      (∀ U x, ReflTransClos@{b e p}
         (@BetaStep@{b e _ _} B Δ U) (σ U x) (τ U x)) →
-      ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] t[τ].
+      ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] t[τ].
 Proof.
   exact (subst_rtc (@BetaStep@{b e _ _} B)
     beta_step_compatible
@@ -289,11 +289,11 @@ Defined.
 
 Definition beta_rtc_subst_both {Γ : Ctx B} {A : Ty B}
     {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
+    (h : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ A) t u)
     {Δ : Ctx B} {σ τ : Sub Δ Γ}
-    (k : ∀ U x, ReflTransClosure@{b e p}
+    (k : ∀ U x, ReflTransClos@{b e p}
       (@BetaStep@{b e _ _} B Δ U) (σ U x) (τ U x))
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] u[τ]
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Δ A) t[σ] u[τ]
   := rtc_trans (beta_rtc_subst h Δ σ) (subst_beta_rtc u Δ σ τ k).
 
 (** Replacing the newest variable by an argument path is the single-input
@@ -305,8 +305,8 @@ Definition beta_rtc_subst_both {Γ : Ctx B} {A : Ty B}
 
 Definition beta_rtc_single {Γ : Ctx B} {A U : Ty B}
     (t : Tm (Γ ▻ A) U) {u u' : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ A) u u')
-  : ReflTransClosure@{b e p} (@BetaStep@{b e _ _} B Γ U) t[u/] t[u'/].
+    (h : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ A) u u')
+  : ReflTransClos@{b e p} (@BetaStep@{b e _ _} B Γ U) t[u/] t[u'/].
 Proof.
   exact (tm_rtc_single (@BetaStep@{b e _ _} B)
     beta_step_compatible

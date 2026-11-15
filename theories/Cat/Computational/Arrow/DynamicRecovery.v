@@ -50,7 +50,7 @@ Context {K : Cat@{o u p _ _}} (AA : ArrowApply K).
 (** 为回收 Monad 赋予规范强度，底层恰好保留 [ArrowMonad]。 *)
 
 Definition ArrowStrongM
-  : StrongMonad (SetCat@{u p _ _ _ _ _}) SetCartesianMonoidal
+  : StrongMonad (SetCat@{u p _ _ _ _ _}) SetCartMonoidal
   := SetStrongM (ArrowMonad AA).
 
 (** Rebuild the Arrow using the existing strong-Monad construction. *)
@@ -59,7 +59,7 @@ Definition ArrowStrongM
 
 Definition ArrowKleisli
   : Arrow (SetCat@{u p _ _ _ _ _}) (KleisliCat (ArrowMonad AA))
-      SetCartesianMonoidal
+      SetCartMonoidal
   := KleisliArrow ArrowStrongM.
 
 (** The general adjunction comparison evaluates dynamic names. Its object
@@ -237,7 +237,7 @@ Proof.
       arrow_dynamic_name AA (arrow_dynamic_eval AA f)]).
     + exact (dynamic_naming_context Z (arrow_dynamic_eval AA f)).
     + exact (@arrow_context_proper SetCat (KleisliCat (ArrowMonad AA))
-        SetCartesianMonoidal ArrowKleisli X Y Z _ _
+        SetCartMonoidal ArrowKleisli X Y Z _ _
         (arrow_dynamic_name_eval AA f)).
   - exact (arrow_dynamic_eval_name AA _).
 Qed.

@@ -39,7 +39,7 @@ Record HeadResult {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   := {
   head_result_term : Tm Γ A;
 
-  head_result_path : ReflTransClosure@{b Set p} HeadBetaStep
+  head_result_path : ReflTransClos@{b Set p} HeadBetaStep
     t head_result_term;
 
   head_result_terminal : head_contractum@{b b} head_result_term = None
@@ -71,8 +71,8 @@ Context {B : Type@{b}}.
 (** 策略路径逐边映为完整上下文 β 路径。 *)
 
 Definition head_beta_path_beta {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
-    (h : ReflTransClosure@{b Set p} HeadBetaStep t u)
-  : ReflTransClosure@{b e p} BetaStep@{b e l b} t u
+    (h : ReflTransClos@{b Set p} HeadBetaStep t u)
+  : ReflTransClos@{b e p} BetaStep@{b e l b} t u
   := rtc_preserves (λ x, x)
       (λ x y k, rtc_step (head_beta_step_beta k)) h.
 

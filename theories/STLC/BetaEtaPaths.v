@@ -49,8 +49,8 @@ Proof. intros [Γ A] [Δ U] c x y h. exact (beta_eta_contract_lift c h). Defined
 
 Definition beta_eta_rtc_lift {Γ Δ : Ctx B} {A U : Ty B}
     (c : TmOperation (Γ, A) (Δ, U)) {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t u)
-  : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l}
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t u)
+  : ReflTransClos@{b e p} BetaEtaContractStep@{b e l}
       (TmContexts B _ _ c t) (TmContexts B _ _ c u)
   := tm_rtc_lift _ beta_eta_contract_compatible c h.
 
@@ -59,9 +59,9 @@ Definition beta_eta_rtc_lift {Γ Δ : Ctx B} {A U : Ty B}
 (** 重命名每条边，不改变路径方向。 *)
 
 Definition beta_eta_rtc_rename {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t u)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t u)
     (Δ : Ctx B) (ρ : Ren Δ Γ)
-  : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t⟨ρ⟩ u⟨ρ⟩
+  : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t⟨ρ⟩ u⟨ρ⟩
   := rtc_preserves (λ v, v⟨ρ⟩)
       (λ x y k, rtc_step (beta_eta_contract_rename k Δ ρ)) h.
 
@@ -70,9 +70,9 @@ Definition beta_eta_rtc_rename {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
 (** 对混合路径作替换，保留每个生成步骤。 *)
 
 Definition beta_eta_rtc_subst {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t u)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t u)
     (Δ : Ctx B) (σ : Sub Δ Γ)
-  : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t[σ] u[σ]
+  : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t[σ] u[σ]
   := rtc_preserves (λ v, v[σ])
       (λ x y k, rtc_step (beta_eta_contract_subst k Δ σ)) h.
 
@@ -82,8 +82,8 @@ Definition beta_eta_rtc_subst {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A}
 
 Definition beta_eta_rtc_single {Γ : Ctx B} {A U : Ty B}
     (t : Tm (Γ ▻ A) U) {u u' : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} u u')
-  : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t[u/] t[u'/]
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} u u')
+  : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t[u/] t[u'/]
   := tm_rtc_single _ beta_eta_contract_compatible
       (λ Γ A t u k Δ ρ, beta_eta_contract_rename k Δ ρ) t h.
 

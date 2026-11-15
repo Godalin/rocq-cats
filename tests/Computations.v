@@ -81,7 +81,7 @@ Definition BoolObject
   := SetMonoidObj BoolS_Monoid.
 
 Definition BoolConstantLax
-  := ConstF_LaxMonoidalFct SetCartesianMonoidal BoolObject.
+  := ConstF_LaxMonoidalFct SetCartMonoidal BoolObject.
 
 Definition BoolConstantImage
   := LaxMonoidObj BoolConstantLax BoolObject.

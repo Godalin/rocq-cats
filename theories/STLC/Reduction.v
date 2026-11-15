@@ -185,7 +185,7 @@ Arguments RootCombined {_ _ _} _ _.
 Definition ContextStep@{b e +} {B : Type@{b}} (R : TmRelation@{b e _} B)
     {Γ : Ctx B} {A : Ty B}
   : Tm Γ A → Tm Γ A → Type@{e}
-  := CompatibleClosure (TmContexts B) (tm_relation_family R) (Γ, A).
+  := CompatibleClosOp (TmContexts B) (tm_relation_family R) (Γ, A).
 
 (** Embed a primitive step at the empty single-hole context. *)
 
@@ -265,7 +265,7 @@ Arguments ZigStep {_ _ _} _ _.
 
 Definition ZigStar@{b e +} {B : Type@{b}}
   : TmRelation B
-  := λ Γ A, @ReflTransClosure@{b e e} (Tm Γ A) (@ZigStep@{b e _ _} B Γ A).
+  := λ Γ A, @ReflTransClos@{b e e} (Tm Γ A) (@ZigStep@{b e _ _} B Γ A).
 
 Arguments ZigStar {_ _ _} _ _.
 
@@ -412,7 +412,7 @@ Defined.
 Global Instance ZigStar_Equivalence@{b e +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B}
   : Equivalence (@ZigStar@{b e _ _} B Γ A)
-  := EquivalenceClosure_Equivalence (@CombinedStep B Γ A).
+  := EquivClosOp_Equivalence (@CombinedStep B Γ A).
 
 (** Empty paths witness reflexivity. *)
 
@@ -562,12 +562,12 @@ Definition zig_star_to_tm_eq@{b e +} {B : Type@{b}}
 
 (** 将一般共同呈现专化到原始方程。它与给定相等和路径关系共用见证界。 *)
 
-Definition TmEquationalClosure@{b e +} {B : Type@{b}}
+Definition TmEquationalClos@{b e +} {B : Type@{b}}
   : TmRelation@{b e _} B
-  := λ Γ A, EquationalClosure (TmContexts B)
+  := λ Γ A, EquationalClos (TmContexts B)
       (tm_relation_family (@RootCombined@{b e _} B)) (Γ, A).
 
-Arguments TmEquationalClosure {_ _ _} _ _.
+Arguments TmEquationalClos {_ _ _} _ _.
 
 (** Translate the existing constructors once. Binary congruence is two
     one-hole replacements followed by transitivity; eta uses a backward
@@ -578,7 +578,7 @@ Arguments TmEquationalClosure {_ _ _} _ _.
 
 Definition tm_eq_to_equational_closure@{b e +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} {t u : Tm Γ A} (h : TmEq@{b e _} t u)
-  : TmEquationalClosure t u.
+  : TmEquationalClos t u.
 Proof.
   induction h as [Γ A t | Γ A t u p ih | Γ A t u v p ih q iq |
     Γ A U t t' u u' p ih q iq | Γ A U t u p ih | Γ A U t u p ih |

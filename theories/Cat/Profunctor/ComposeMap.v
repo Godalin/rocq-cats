@@ -6,7 +6,7 @@ From Cats Require Import
   Instance.Set.Core
   Instance.Set.Product.
 
-Local Open Scope profunctor_scope.
+Local Open Scope prof_scope.
 
 (** * Natural Maps of Profunctor Composites
 
@@ -24,11 +24,11 @@ Local Open Scope profunctor_scope.
 
 (** 在分离的中间指标处配对两个变换分量；自然性就是各值坐标的原自然性。 *)
 
-Program Definition ProfunctorCompInputN@{u p +} {C D E : Cat}
+Program Definition ProfCompInputN@{u p +} {C D E : Cat}
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
     (β : Q ⇒ Q') (α : P ⇒ P') (X : @Ob C) (Z : @Ob E)
-  : ProfunctorCompKernel Q P X Z ⇒ ProfunctorCompKernel Q' P' X Z
+  : ProfCompKernel Q P X Z ⇒ ProfCompKernel Q' P' X Z
   :=
   {|nt AB := α (X,snd AB) × β (fst AB,Z)
   |}.
@@ -59,12 +59,12 @@ Context {C D E : Cat}.
 
 (** 相等的变换诱导相等的核映射。 *)
 
-Global Instance profunctor_comp_input_proper
+Global Instance prof_comp_input_proper
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
     (X : @Ob C) (Z : @Ob E)
   : Proper (NatEq ==> NatEq ==> NatEq)
-      (λ (β : Q ⇒ Q') (α : P ⇒ P'), ProfunctorCompInputN β α X Z).
+      (λ (β : Q ⇒ Q') (α : P ⇒ P'), ProfCompInputN β α X Z).
 Proof.
   intros β β' H α α' K [A B] [x y]. split.
   - exact (K (X,B) x).
@@ -75,42 +75,42 @@ Defined.
 
 (** 输入恒等保持两个坐标。 *)
 
-Lemma profunctor_comp_input_id
+Lemma prof_comp_input_id
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
     (X : @Ob C) (Z : @Ob E)
-  : ProfunctorCompInputN (idN (F := Q)) (idN (F := P)) X Z ≈N idN.
+  : ProfCompInputN (idN (F := Q)) (idN (F := P)) X Z ≈N idN.
 Proof. intros [A B] [x y]. split; reflexivity. Defined.
 
 (** Successive input transformations compose coordinatewise. *)
 
 (** 连续输入变换按坐标复合。 *)
 
-Lemma profunctor_comp_input_comp
+Lemma prof_comp_input_comp
     {Q Q' Q'' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' P'' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
     (β' : Q' ⇒ Q'') (β : Q ⇒ Q')
     (α' : P' ⇒ P'') (α : P ⇒ P') (X : @Ob C) (Z : @Ob E)
-  : ProfunctorCompInputN (β' ∘Nv β) (α' ∘Nv α) X Z ≈N
-      (ProfunctorCompInputN β' α' X Z ∘Nv ProfunctorCompInputN β α X Z).
+  : ProfCompInputN (β' ∘Nv β) (α' ∘Nv α) X Z ≈N
+      (ProfCompInputN β' α' X Z ∘Nv ProfCompInputN β α X Z).
 Proof. intros [A B] [x y]. split; reflexivity. Defined.
 
 (** Input transformation and outer reindexing form a commuting square. *)
 
 (** 输入变换与外部重索引组成交换方块。 *)
 
-Lemma profunctor_comp_input_boundary
+Lemma prof_comp_input_boundary
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
     (β : Q ⇒ Q') (α : P ⇒ P')
     {X X' : @Ob C} {Z Z' : @Ob E} (f : Hom X' X) (g : Hom Z Z')
-  : (ProfunctorCompInputN β α X' Z' ∘Nv ProfunctorCompBoundaryN Q P f g)
-      ≈N (ProfunctorCompBoundaryN Q' P' f g ∘Nv
-        ProfunctorCompInputN β α X Z).
+  : (ProfCompInputN β α X' Z' ∘Nv ProfCompBoundaryN Q P f g)
+      ≈N (ProfCompBoundaryN Q' P' f g ∘Nv
+        ProfCompInputN β α X Z).
 Proof.
   intros [A B] [x y]. split.
-  - exact (profunctor_natural α f (@id B) x).
-  - exact (profunctor_natural β (@id A) g y).
+  - exact (prof_natural α f (@id B) x).
+  - exact (prof_natural β (@id A) g y).
 Defined.
 
 End InputLaws.
@@ -123,24 +123,24 @@ End InputLaws.
 (** 分量就是一般 coend 映射。其自然性复用核交换方块与 coend 复合，只需两个
     端点的复合选择，不要求强度或覆盖全部 profunctor 的统一选择。 *)
 
-Program Definition ProfunctorCompMapN@{u p +} {C D E : Cat}
+Program Definition ProfCompMapN@{u p +} {C D E : Cat}
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
-    `{HC : !HasProfunctorComp C D E Q P}
-    `{HC' : !HasProfunctorComp C D E Q' P'}
+    `{HC : !HasProfComp C D E Q P}
+    `{HC' : !HasProfComp C D E Q' P'}
     (β : Q ⇒ Q') (α : P ⇒ P')
   : Q ∘Pr P ⇒ Q' ∘Pr P'
   :=
-  {|nt XZ := coend_map (ProfunctorCompInputN β α (fst XZ) (snd XZ))
+  {|nt XZ := coend_map (ProfCompInputN β α (fst XZ) (snd XZ))
   |}.
 Next Obligation.
-  transitivity (coend_map (ProfunctorCompInputN β α (fst Y) (snd Y)
-    ∘Nv ProfunctorCompBoundaryN Q P (fst f) (snd f))).
+  transitivity (coend_map (ProfCompInputN β α (fst Y) (snd Y)
+    ∘Nv ProfCompBoundaryN Q P (fst f) (snd f))).
   - symmetry. apply (@coend_map_comp D SetCat).
   - transitivity (coend_map
-      (ProfunctorCompBoundaryN Q' P' (fst f) (snd f)
-        ∘Nv ProfunctorCompInputN β α (fst X) (snd X))).
-    + apply (@coend_map_proper D SetCat). apply profunctor_comp_input_boundary.
+      (ProfCompBoundaryN Q' P' (fst f) (snd f)
+        ∘Nv ProfCompInputN β α (fst X) (snd X))).
+    + apply (@coend_map_proper D SetCat). apply prof_comp_input_boundary.
     + apply (@coend_map_comp D SetCat).
 Defined.
 
@@ -163,38 +163,38 @@ Context {C D E : Cat}.
 
 (** 复合映射保持两个变换的指定相等。 *)
 
-Global Instance profunctor_comp_map_proper
+Global Instance prof_comp_map_proper
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
-    `{HC : !HasProfunctorComp C D E Q P}
-    `{HC' : !HasProfunctorComp C D E Q' P'}
+    `{HC : !HasProfComp C D E Q P}
+    `{HC' : !HasProfComp C D E Q' P'}
   : Proper (NatEq ==> NatEq ==> NatEq)
-      (λ (β : Q ⇒ Q') (α : P ⇒ P'), ProfunctorCompMapN β α).
+      (λ (β : Q ⇒ Q') (α : P ⇒ P'), ProfCompMapN β α).
 Proof.
   intros β β' H α α' K [X Z].
   apply (@coend_map_proper D SetCat
-    (ProfunctorCompKernel Q P X Z) (ProfunctorCompKernel Q' P' X Z)
-    (@hasProfunctorCompCoend C D E Q P HC X Z)
-    (@hasProfunctorCompCoend C D E Q' P' HC' X Z)).
-  exact (@profunctor_comp_input_proper C D E Q Q' P P' X Z β β' H α α' K).
+    (ProfCompKernel Q P X Z) (ProfCompKernel Q' P' X Z)
+    (@hasProfCompCoend C D E Q P HC X Z)
+    (@hasProfCompCoend C D E Q' P' HC' X Z)).
+  exact (@prof_comp_input_proper C D E Q Q' P P' X Z β β' H α α' K).
 Defined.
 
 (** Identity transformations give the identity on the same selected composite. *)
 
 (** 恒等变换给出同一选定复合上的恒等。 *)
 
-Lemma profunctor_comp_map_id
+Lemma prof_comp_map_id
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
-    `{HC : !HasProfunctorComp C D E Q P}
-  : ProfunctorCompMapN (idN (F := Q)) (idN (F := P)) ≈N idN.
+    `{HC : !HasProfComp C D E Q P}
+  : ProfCompMapN (idN (F := Q)) (idN (F := P)) ≈N idN.
 Proof.
   intros [X Z].
   transitivity (@coend_map D SetCat
-    (ProfunctorCompKernel Q P X Z) (ProfunctorCompKernel Q P X Z)
-    (@hasProfunctorCompCoend C D E Q P HC X Z)
-    (@hasProfunctorCompCoend C D E Q P HC X Z) idN).
-  - apply (@coend_map_proper D SetCat). apply profunctor_comp_input_id.
+    (ProfCompKernel Q P X Z) (ProfCompKernel Q P X Z)
+    (@hasProfCompCoend C D E Q P HC X Z)
+    (@hasProfCompCoend C D E Q P HC X Z) idN).
+  - apply (@coend_map_proper D SetCat). apply prof_comp_input_id.
   - apply (@coend_map_id D SetCat).
 Defined.
 
@@ -202,23 +202,23 @@ Defined.
 
 (** 只需三个端点选择即可保持输入复合。 *)
 
-Lemma profunctor_comp_map_comp
+Lemma prof_comp_map_comp
     {Q Q' Q'' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' P'' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
-    `{HC : !HasProfunctorComp C D E Q P}
-    `{HC' : !HasProfunctorComp C D E Q' P'}
-    `{HC'' : !HasProfunctorComp C D E Q'' P''}
+    `{HC : !HasProfComp C D E Q P}
+    `{HC' : !HasProfComp C D E Q' P'}
+    `{HC'' : !HasProfComp C D E Q'' P''}
     (β' : Q' ⇒ Q'') (β : Q ⇒ Q') (α' : P' ⇒ P'') (α : P ⇒ P')
-  : ProfunctorCompMapN (β' ∘Nv β) (α' ∘Nv α) ≈N
-      (ProfunctorCompMapN β' α' ∘Nv ProfunctorCompMapN β α).
+  : ProfCompMapN (β' ∘Nv β) (α' ∘Nv α) ≈N
+      (ProfCompMapN β' α' ∘Nv ProfCompMapN β α).
 Proof.
   intros [X Z].
   transitivity (@coend_map D SetCat
-    (ProfunctorCompKernel Q P X Z) (ProfunctorCompKernel Q'' P'' X Z)
-    (@hasProfunctorCompCoend C D E Q P HC X Z)
-    (@hasProfunctorCompCoend C D E Q'' P'' HC'' X Z)
-    (ProfunctorCompInputN β' α' X Z ∘Nv ProfunctorCompInputN β α X Z)).
-  - apply (@coend_map_proper D SetCat). apply profunctor_comp_input_comp.
+    (ProfCompKernel Q P X Z) (ProfCompKernel Q'' P'' X Z)
+    (@hasProfCompCoend C D E Q P HC X Z)
+    (@hasProfCompCoend C D E Q'' P'' HC'' X Z)
+    (ProfCompInputN β' α' X Z ∘Nv ProfCompInputN β α X Z)).
+  - apply (@coend_map_proper D SetCat). apply prof_comp_input_comp.
   - apply (@coend_map_comp D SetCat).
 Defined.
 
@@ -227,34 +227,34 @@ Defined.
 
 (** 给定自然逆在反向诱导同一映射构造；两条互逆方程使用原指定自然相等。 *)
 
-Definition profunctor_comp_map_iso
+Definition prof_comp_map_iso
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
-    `{HC : !HasProfunctorComp C D E Q P}
-    `{HC' : !HasProfunctorComp C D E Q' P'}
+    `{HC : !HasProfComp C D E Q P}
+    `{HC' : !HasProfComp C D E Q' P'}
     (β : Q ⇒ Q') (α : P ⇒ P') (Hβ : β ⦂ Q ≅N Q') (Hα : α ⦂ P ≅N P')
-  : ProfunctorCompMapN β α ⦂ Q ∘Pr P ≅N Q' ∘Pr P'.
+  : ProfCompMapN β α ⦂ Q ∘Pr P ≅N Q' ∘Pr P'.
 Proof.
-  intros [X Z]. exists (ProfunctorCompMapN (β ^-1N Hβ) (α ^-1N Hα) (X,Z)).
+  intros [X Z]. exists (ProfCompMapN (β ^-1N Hβ) (α ^-1N Hα) (X,Z)).
   split; unfold is_linv_of, is_rinv_of.
-  - transitivity (ProfunctorCompMapN
+  - transitivity (ProfCompMapN
       ((β ^-1N Hβ) ∘Nv β) ((α ^-1N Hα) ∘Nv α) (X,Z)).
-    + symmetry. exact (@profunctor_comp_map_comp
+    + symmetry. exact (@prof_comp_map_comp
         Q Q' Q P P' P HC HC' HC (β ^-1N Hβ) β (α ^-1N Hα) α (X,Z)).
-    + transitivity (ProfunctorCompMapN (idN (F := Q)) (idN (F := P)) (X,Z)).
-      * exact (@profunctor_comp_map_proper Q Q P P HC HC
+    + transitivity (ProfCompMapN (idN (F := Q)) (idN (F := P)) (X,Z)).
+      * exact (@prof_comp_map_proper Q Q P P HC HC
           ((β ^-1N Hβ) ∘Nv β) idN (λ U, fst (Hβ U).2)
           ((α ^-1N Hα) ∘Nv α) idN (λ U, fst (Hα U).2) (X,Z)).
-      * exact (@profunctor_comp_map_id Q P HC (X,Z)).
-  - transitivity (ProfunctorCompMapN
+      * exact (@prof_comp_map_id Q P HC (X,Z)).
+  - transitivity (ProfCompMapN
       (β ∘Nv (β ^-1N Hβ)) (α ∘Nv (α ^-1N Hα)) (X,Z)).
-    + symmetry. exact (@profunctor_comp_map_comp
+    + symmetry. exact (@prof_comp_map_comp
         Q' Q Q' P' P P' HC' HC HC' β (β ^-1N Hβ) α (α ^-1N Hα) (X,Z)).
-    + transitivity (ProfunctorCompMapN (idN (F := Q')) (idN (F := P')) (X,Z)).
-      * exact (@profunctor_comp_map_proper Q' Q' P' P' HC' HC'
+    + transitivity (ProfCompMapN (idN (F := Q')) (idN (F := P')) (X,Z)).
+      * exact (@prof_comp_map_proper Q' Q' P' P' HC' HC'
           (β ∘Nv (β ^-1N Hβ)) idN (λ U, snd (Hβ U).2)
           (α ∘Nv (α ^-1N Hα)) idN (λ U, snd (Hα U).2) (X,Z)).
-      * exact (@profunctor_comp_map_id Q' P' HC' (X,Z)).
+      * exact (@prof_comp_map_id Q' P' HC' (X,Z)).
 Defined.
 
 End MapLaws.
@@ -277,31 +277,31 @@ Context {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}.
 Context {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}.
 Context (β : Q ⇒ Q') (α : P ⇒ P').
 Context {X : @Ob C} {Z : @Ob E}.
-Context `{HC : !HasCoend SetCat (ProfunctorCompKernel Q P X Z)}.
-Context `{HC' : !HasCoend SetCat (ProfunctorCompKernel Q' P' X Z)}.
+Context `{HC : !HasCoend SetCat (ProfCompKernel Q P X Z)}.
+Context `{HC' : !HasCoend SetCat (ProfCompKernel Q' P' X Z)}.
 
 (** Each factor receives its own transformation component, in order. *)
 
 (** 各因子按原顺序接受各自的变换分量。 *)
 
-Lemma profunctor_comp_input_inject (Y : @Ob D)
+Lemma prof_comp_input_inject (Y : @Ob D)
     (x : P (X,Y)) (y : Q (Y,Z))
-  : coend_map (ProfunctorCompInputN β α X Z) (ιPr[Q; P; Y] (x,y)) ≈S
+  : coend_map (ProfCompInputN β α X Z) (ιPr[Q; P; Y] (x,y)) ≈S
       ιPr[Q'; P'; Y] (α (X,Y) x,β (Y,Z) y).
-Proof. exact (coend_map_β (ProfunctorCompInputN β α X Z) Y (x,y)). Defined.
+Proof. exact (coend_map_β (ProfCompInputN β α X Z) Y (x,y)). Defined.
 
 (** Descending a transformed operation agrees with applying the input map
     followed by the original descent. Only these two kernel coends are needed. *)
 
 (** 变换后操作的下降，等于先作用输入映射再进行原下降；只需这两个核的 coend。 *)
 
-Lemma profunctor_comp_desc_input {W : SetC}
-    (κ : Cowedge (ProfunctorCompKernel Q' P' X Z) W)
-  : profunctor_comp_desc Q P
-      (cowedge_precompose κ (ProfunctorCompInputN β α X Z)) ≈f
-      (profunctor_comp_desc Q' P' κ ∘r
-        coend_map (ProfunctorCompInputN β α X Z)).
-Proof. exact (coend_desc_map (ProfunctorCompInputN β α X Z) κ). Defined.
+Lemma prof_comp_desc_input {W : SetC}
+    (κ : Cowedge (ProfCompKernel Q' P' X Z) W)
+  : prof_comp_desc Q P
+      (cowedge_precompose κ (ProfCompInputN β α X Z)) ≈f
+      (prof_comp_desc Q' P' κ ∘r
+        coend_map (ProfCompInputN β α X Z)).
+Proof. exact (coend_desc_map (ProfCompInputN β α X Z) κ). Defined.
 
 End InputGenerators.
 
@@ -309,16 +309,16 @@ End InputGenerators.
 
 (** 完整复合的自然映射具有同一生成元方程。 *)
 
-Lemma profunctor_comp_map_inject@{u p +} {C D E : Cat}
+Lemma prof_comp_map_inject@{u p +} {C D E : Cat}
     {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}
     {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
-    `{HC : !HasProfunctorComp C D E Q P}
-    `{HC' : !HasProfunctorComp C D E Q' P'}
+    `{HC : !HasProfComp C D E Q P}
+    `{HC' : !HasProfComp C D E Q' P'}
     (β : Q ⇒ Q') (α : P ⇒ P') (X : @Ob C) (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z))
-  : ProfunctorCompMapN β α (X,Z) (ιPr[Q; P; Y] (x,y)) ≈S
+  : ProfCompMapN β α (X,Z) (ιPr[Q; P; Y] (x,y)) ≈S
       ιPr[Q'; P'; Y] (α (X,Y) x,β (Y,Z) y).
-Proof. exact (profunctor_comp_input_inject β α Y x y). Defined.
+Proof. exact (prof_comp_input_inject β α Y x y). Defined.
 
 (** A supplied family of composition choices gives the bifunctor. Its
     arguments follow ordinary composition order [Q,P], whereas generators
@@ -330,26 +330,26 @@ Proof. exact (profunctor_comp_input_inject β α Y x y). Defined.
     执行顺序 [P,Q]。该选择族是显式参数，不安装全局模型或存在断言。结合子、
     单位、相干及复合上的强度仍为独立构造。 *)
 
-Program Definition ProfunctorCompF@{u p +} (C D E : Cat)
+Program Definition ProfCompF@{u p +} (C D E : Cat)
     (HC : ∀ (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
       (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})),
-      HasProfunctorComp C D E Q P)
-  : Fct (ProfunctorCat D E ×C ProfunctorCat C D) (ProfunctorCat C E)
+      HasProfComp C D E Q P)
+  : Fct (ProfCat D E ×C ProfCat C D) (ProfCat C E)
   :=
-  {|F0 QP := @ProfunctorComp C D E (fst QP) (snd QP)
+  {|F0 QP := @ProfComp C D E (fst QP) (snd QP)
       (HC (fst QP) (snd QP))
-  ; F1 QP QP' βα := @ProfunctorCompMapN C D E
+  ; F1 QP QP' βα := @ProfCompMapN C D E
       (fst QP) (fst QP') (snd QP) (snd QP')
       (HC (fst QP) (snd QP)) (HC (fst QP') (snd QP'))
       (fst βα) (snd βα)
   |}.
 Next Obligation.
   intros [β α] [β' α'] [H K].
-  exact (@profunctor_comp_map_proper C D E _ _ _ _ _ _ β β' H α α' K).
+  exact (@prof_comp_map_proper C D E _ _ _ _ _ _ β β' H α α' K).
 Defined.
-Next Obligation. destruct X as [Q P]. apply profunctor_comp_map_id. Defined.
+Next Obligation. destruct X as [Q P]. apply prof_comp_map_id. Defined.
 Next Obligation.
   destruct X as [Q P], Y as [Q' P'], Z as [Q'' P''],
     f as [β' α'], g as [β α].
-  apply profunctor_comp_map_comp.
+  apply prof_comp_map_comp.
 Defined.

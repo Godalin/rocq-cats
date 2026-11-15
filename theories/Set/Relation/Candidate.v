@@ -60,7 +60,7 @@ Arguments candidate_expand {_ _ _ _} {_} _ _ _.
 Definition candidate_rtc@{a r n p s k w +} {A : Type@{a}}
     {R : A → A → Type@{r}} {N : A → Type@{n}} {P : A → Type@{p}}
     (hP : IsReducibilityCandidate@{a r n p s k} R N P)
-    {x y : A} (h : ReflTransClosure@{a r w} R x y)
+    {x y : A} (h : ReflTransClos@{a r w} R x y)
   : P x → P y.
 Proof.
   induction h as [x | x y z h q ih]; intros p.

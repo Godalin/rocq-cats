@@ -41,8 +41,8 @@ Context (compatible : is_compatible (TmContexts B) (tm_relation_family R)).
 
 Definition tm_rtc_lift {Γ Δ : Ctx B} {A U : Ty B}
     (c : TmOperation (Γ, A) (Δ, U)) {t u : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (R Γ A) t u)
-  : ReflTransClosure@{b e p} (R Δ U)
+    (h : ReflTransClos@{b e p} (R Γ A) t u)
+  : ReflTransClos@{b e p} (R Δ U)
       (TmContexts B _ _ c t) (TmContexts B _ _ c u)
   := rtc_preserves (TmContexts B _ _ c)
       (λ x y k, rtc_step (compatible _ _ c x y k)) h.
@@ -55,8 +55,8 @@ Context (rename_steps : ∀ Γ A (t u : Tm Γ A), R Γ A t u →
 (** 旧赋值作弱化；新鲜变量具有空路径。 *)
 
 Definition sub_lift_rtc {Γ Δ : Ctx B} {A : Ty B} {σ τ : Sub Δ Γ}
-    (h : ∀ U x, ReflTransClosure@{b e p} (R Δ U) (σ U x) (τ U x))
-  : ∀ U x, ReflTransClosure@{b e p} (R (Δ ▻ A) U)
+    (h : ∀ U x, ReflTransClos@{b e p} (R Δ U) (σ U x) (τ U x))
+  : ∀ U x, ReflTransClos@{b e p} (R (Δ ▻ A) U)
       ((σ^↑Sub) U x) ((τ^↑Sub) U x).
 Proof.
   intros U [x | x]; cbn.
@@ -72,8 +72,8 @@ Defined.
 
 Definition subst_rtc {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   : ∀ Δ (σ τ : Sub Δ Γ),
-      (∀ U x, ReflTransClosure@{b e p} (R Δ U) (σ U x) (τ U x)) →
-      ReflTransClosure@{b e p} (R Δ A) t[σ] t[τ].
+      (∀ U x, ReflTransClos@{b e p} (R Δ U) (σ U x) (τ U x)) →
+      ReflTransClos@{b e p} (R Δ A) t[σ] t[τ].
 Proof.
   induction t; intros Δ σ τ h; cbn.
   - exact (h A v).
@@ -95,8 +95,8 @@ Defined.
 
 Definition tm_rtc_single {Γ : Ctx B} {A U : Ty B}
     (t : Tm (Γ ▻ A) U) {u u' : Tm Γ A}
-    (h : ReflTransClosure@{b e p} (R Γ A) u u')
-  : ReflTransClosure@{b e p} (R Γ U) t[u/] t[u'/].
+    (h : ReflTransClos@{b e p} (R Γ A) u u')
+  : ReflTransClos@{b e p} (R Γ U) t[u/] t[u'/].
 Proof.
   apply subst_rtc. intros V [x | x]; cbn.
   - exact (rtc_refl _).

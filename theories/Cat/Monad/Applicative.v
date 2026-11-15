@@ -21,7 +21,7 @@ Local Open Scope applicative_scope.
 
 Section Applicative.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (M : StrongMonad C (@CartesianMonoidal C HT HP)).
+    (M : StrongMonad C (@CartMonoidal C HT HP)).
 
 (** Bind the left input, then the right, and return their ordinary pair. *)
 
@@ -77,8 +77,8 @@ Local Ltac normalize_pairing :=
 (** tensorator 打包自然的有序配对。 *)
 
 Program Definition MonadTensorN
-  : (tensorF (@CartesianMonoidal C HT HP) ∘F (M ×F M)) ⇒
-      (M ∘F tensorF (@CartesianMonoidal C HT HP))
+  : (tensorF (@CartMonoidal C HT HP) ∘F (M ×F M)) ⇒
+      (M ∘F tensorF (@CartMonoidal C HT HP))
   :=
   {|nt p := @monad_pair (fst p) (snd p)
   |}.
@@ -95,8 +95,8 @@ Defined.
 (** 终对象处的 Monad 返回及有序配对组成 lax 幺半自函子，证明保留求值次序。 *)
 
 Program Definition MonadLax
-  : LaxMonoidalFct (@CartesianMonoidal C HT HP)
-      (@CartesianMonoidal C HT HP)
+  : LaxMonoidalFct (@CartMonoidal C HT HP)
+      (@CartMonoidal C HT HP)
   :=
   {|LaxMonoidalF := M
   ; lax_unit := monad_return M (@id 1)
@@ -104,7 +104,7 @@ Program Definition MonadLax
   |}.
 Next Obligation.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
-    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
       (monad_return M (@id 1)) (@id (M X))) ≈ π2).
   rewrite cartesian_tensor_map.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
@@ -113,7 +113,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
-    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
       (@id (M X)) (monad_return M (@id 1))) ≈ π1).
   rewrite cartesian_tensor_map.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
@@ -123,9 +123,9 @@ Defined.
 Local Opaque monad_pair.
 Next Obligation.
   change (fmap M (@product_assoc C HP X Y Z).1 ∘ monad_pair ∘
-    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
       (@monad_pair X Y) (@id (M Z))) ≈ monad_pair ∘
-    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _
+    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
       (@id (M X)) (@monad_pair Y Z)) ∘
     (@product_assoc C HP (M X) (M Y) (M Z)).1).
   rewrite !cartesian_tensor_map.

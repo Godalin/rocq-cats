@@ -140,7 +140,7 @@ Definition large_path_head_result {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
 
 Definition large_path_pair_join {Γ : Ctx B} {A U : Ty B}
     (t v : Tm Γ (A × U)) (a : Tm Γ A) (u : Tm Γ U)
-    (path : ReflTransClosure@{b Set p} HeadBetaStep t (⟨a, u⟩))
+    (path : ReflTransClos@{b Set p} HeadBetaStep t (⟨a, u⟩))
     (root : RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v)
   : Join@{b e p} BetaStep@{b e l b} t v
   := eta_product_root_beta_join_of_head_pair t v a u path root.

@@ -127,9 +127,9 @@ Context {B : Type@{b}}.
 
 Definition product_projection_head_path {Γ : Ctx B} {A U : Ty B}
     {t u : Tm Γ (A × U)}
-    (path : ReflTransClosure@{b Set p} HeadBetaStep t u)
+    (path : ReflTransClos@{b Set p} HeadBetaStep t u)
   : ∀ v, π₁ t = π₁ v → π₂ t = π₂ v →
-      ∃ w, ReflTransClosure@{b Set p} HeadBetaStep v w ∧
+      ∃ w, ReflTransClos@{b Set p} HeadBetaStep v w ∧
         (π₁ u = π₁ w) ∧ (π₂ u = π₂ w).
 Proof.
   induction path as [t | t x u step path ih]; intros v left right.
@@ -159,7 +159,7 @@ Proof. rewrite left, right. exact (root_eta_contract_product v). Defined.
 Definition eta_product_root_beta_join_of_head_pair
     {Γ : Ctx B} {A U : Ty B} (t v : Tm Γ (A × U))
     (a : Tm Γ A) (u : Tm Γ U)
-    (path : ReflTransClosure@{b Set p} HeadBetaStep t (⟨a, u⟩))
+    (path : ReflTransClos@{b Set p} HeadBetaStep t (⟨a, u⟩))
     (root : RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v)
   : Join@{b e p} BetaStep@{b e l b} t v.
 Proof.
@@ -179,7 +179,7 @@ Defined.
 Definition eta_product_root_beta_join_of_head_var
     {Γ : Ctx B} {A U : Ty B} (t v : Tm Γ (A × U))
     (x : Var Γ (A × U))
-    (path : ReflTransClosure@{b Set p} HeadBetaStep t (# x))
+    (path : ReflTransClos@{b Set p} HeadBetaStep t (# x))
     (root : RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v)
   : Join@{b e p} BetaStep@{b e l b} t v.
 Proof.
@@ -199,7 +199,7 @@ Defined.
 
 Definition eta_product_root_join_of_head_path
     {Γ : Ctx B} {A U : Ty B} {t u : Tm Γ (A × U)}
-    (path : ReflTransClosure@{b Set p} HeadBetaStep t u)
+    (path : ReflTransClos@{b Set p} HeadBetaStep t u)
     (v : Tm Γ (A × U))
     (root : RootEtaContract@{b e} (⟨π₁ t, π₂ t⟩) v)
     (endpoint : ∀ w, RootEtaContract@{b e} (⟨π₁ u, π₂ u⟩) w →
