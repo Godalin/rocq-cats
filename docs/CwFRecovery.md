@@ -466,6 +466,33 @@ on the supplied interpretation, inverse and universal-property witnesses.
 也不断言与整个源范畴等价。计算见证保持透明；具体归约也依赖给定解释、逆及
 泛性质见证本身的透明性。
 
+The general pairing laws in
+[Context/Extension](../theories/DTT/Context/Extension.v) use the context-extension
+universal property directly. `context_pair_comp` composes the generic-term
+comparison with substitution coherence; `context_pair_inj` reflects the supplied
+hom equality through the two generic-term equations. Neither law needs the
+native Hom representation in a common `SetCat`. Their mathematical statements,
+arguments and opacity remain unchanged; only their universe constraints weaken.
+Eight fixed regressions explicitly put original
+type/term carrier and equality levels above both context hom levels, and check
+both orders for these laws and the context-display/comprehension clients.
+
+The separate native representation isomorphisms retain their common-size
+boundaries. No representation API or chosen computational data is changed.
+Canonical context interpretation can reuse these general laws together with
+the explicit interpretation hypotheses described above.
+
+[Context/Extension](../theories/DTT/Context/Extension.v) 中，一般配对律直接使用
+上下文扩张泛性质。配对复合将泛项比较与替换相干性复合；配对单射性通过两条
+泛项方程反射给定 Hom 相等。两者都不要求在共同 `SetCat` 中作原生 Hom 表示。
+数学声明、参数和不透明性保持不变，仅这两条律的宇宙约束放宽。八项固定回归
+在输入中显式固定严格高于上下文
+Hom 两层级的原类型／项载体与相等层级，双序覆盖这两条律及上下文显示／理解
+结构客户端。
+
+独立原生表示同构仍保留共同大小边界，不修改表示 API 或选定计算数据。
+后续规范上下文解释可复用这些一般律，仍须保留上文的显式解释等条件。
+
 ## 7. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。

@@ -238,25 +238,31 @@ Proof.
     + apply context_pair_β2.
 Defined.
 
-(** Pairing reflects equality of terms over the same base substitution. *)
+(** Pairing reflects equality of terms over the same base substitution.
+    Comparing the generic terms directly retains independent term and hom
+    sizes. *)
 
-(** 固定基底替换时，配对反映项相等。 *)
+(** 固定基底替换时，配对反映项相等；直接比较泛项以保留独立项／Hom 大小。 *)
 
 Theorem context_pair_inj {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
     (t u : Tm T Δ A[σ]Ty[T])
   : ⟨σ; t⟩[T, A] ≈ ⟨σ; u⟩[T, A] → t ≈S u.
 Proof.
-  intros H. pose (Hβ := snd (context_extension_iso A Δ).2.2).
-  assert (Hd : ((σ; t) : ContextPairS T A Δ) ≈S (σ; u)).
-  { transitivity (context_unpair_resp A Δ ⟨σ; t⟩[T, A]).
-    - symmetry. exact (Hβ (σ; t)).
-    - transitivity (context_unpair_resp A Δ ⟨σ; u⟩[T, A]).
-      + apply func_proper. exact H.
-      + exact (Hβ (σ; u)). }
-  destruct Hd as [Hσ Ht].
-  transitivity (ty_sub_equiv T Hσ A ▸[T] t).
-  - symmetry. apply tm_conv_id.
-  - exact Ht.
+  intros H.
+  transitivity (ty_sub_comm T A (context_proj T A) ⟨σ; t⟩[T, A]
+    (context_pair_β1 T A σ t) ▸[T]
+      (context_var T A)[⟨σ; t⟩[T, A]]Tm[T]).
+  - symmetry. apply context_pair_β2.
+  - transitivity (ty_sub_comm T A (context_proj T A) ⟨σ; u⟩[T, A]
+      (context_pair_β1 T A σ u) ▸[T]
+        (ty_sub_equiv T H A[context_proj T A]Ty[T] ▸[T]
+          (context_var T A)[⟨σ; t⟩[T, A]]Tm[T])).
+    + apply tm_conv_comp.
+    + transitivity (ty_sub_comm T A (context_proj T A) ⟨σ; u⟩[T, A]
+        (context_pair_β1 T A σ u) ▸[T]
+          (context_var T A)[⟨σ; u⟩[T, A]]Tm[T]).
+      * apply func_proper. apply tm_sub_equiv.
+      * apply context_pair_β2.
 Qed.
 
 (** Eta with an arbitrary equivalent base map, retaining its witness. *)
@@ -304,14 +310,42 @@ Definition context_pairN {Γ : @Ob C} (A : Ty T Γ)
   : ContextPairF T A ⇒ Hom(-, Γ ▹[T] A)
   := (context_extensionN A) ^-1N (context_extension_nat_iso A).2.
 
-(** Compatibility with composition for [context_pair]. *)
+(** Pairing commutes with substitution. The extension universal property
+    and coherent term substitution retain independent term and hom sizes. *)
 
-(** [context_pair] 与复合的相容性。 *)
+(** 配对与替换交换；扩张泛性质及相干项替换保留独立项／Hom 大小。 *)
 
 Theorem context_pair_comp {Γ Δ Θ : @Ob C} (A : Ty T Γ)
     (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T]) (τ : Hom Θ Δ)
   : ⟨σ; t⟩[T, A] ∘ τ ≈
       ⟨σ ∘ τ; ty_sub_comp T σ τ A ▸[T] t[τ]Tm[T]⟩[T, A].
-Proof. symmetry. exact (nt_naturality (context_pairN A) τ (σ; t)). Qed.
+Proof.
+  assert (Hbase : context_proj T A ∘ (⟨σ; t⟩[T, A] ∘ τ) ≈ σ ∘ τ).
+  { rewrite <- comp_assoc, context_pair_β1. reflexivity. }
+  refine (context_pair_unique T A (σ ∘ τ)
+    (ty_sub_comp T σ τ A ▸[T] t[τ]Tm[T]) (⟨σ; t⟩[T, A] ∘ τ) _).
+  exists Hbase.
+  transitivity (ty_sub_comm T A (context_proj T A)
+    (⟨σ; t⟩[T, A] ∘ τ) Hbase ▸[T]
+      (ty_sub_comp T ⟨σ; t⟩[T, A] τ A[context_proj T A]Ty[T]
+        ▸[T] (context_var T A)[⟨σ; t⟩[T, A]]Tm[T][τ]Tm[T])).
+  - apply func_proper. symmetry. apply tm_sub_comp.
+  - transitivity (ty_sub_comp T σ τ A ▸[T]
+      ((ty_sub_comm T A (context_proj T A) ⟨σ; t⟩[T, A]
+        (context_pair_β1 T A σ t))[τ]Eq[T]
+        ▸[T] (context_var T A)[⟨σ; t⟩[T, A]]Tm[T][τ]Tm[T])).
+    + transitivity (transitivity
+        (ty_sub_comp T ⟨σ; t⟩[T, A] τ A[context_proj T A]Ty[T])
+        (ty_sub_comm T A (context_proj T A) (⟨σ; t⟩[T, A] ∘ τ) Hbase)
+        ▸[T] (context_var T A)[⟨σ; t⟩[T, A]]Tm[T][τ]Tm[T]).
+      * symmetry. apply tm_conv_comp.
+      * apply tm_conv_comp.
+    + transitivity (ty_sub_comp T σ τ A ▸[T]
+        ((ty_sub_comm T A (context_proj T A) ⟨σ; t⟩[T, A]
+          (context_pair_β1 T A σ t) ▸[T]
+          (context_var T A)[⟨σ; t⟩[T, A]]Tm[T])[τ]Tm[T])).
+      * apply func_proper. symmetry. apply tm_sub_conv.
+      * apply func_proper. apply func_proper. apply context_pair_β2.
+Qed.
 
 End ContextRepresentation.
