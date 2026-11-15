@@ -112,7 +112,8 @@ Proof.
   pose (m := (fmap (π1F T P) (a S R Q).1;
     functor_is_iso (π1F T P) (a S R Q).1
       (NatIso_is_iso (a S R Q).1 (a S R Q).2))).
-  assert (H : @HomEq K _ _ (j.1 ∘ i.1) (m.1 ∘ (l.1 ∘ k.1))).
+  assert (H : @HomEq K _ _ (@comp K _ _ _ j.1 i.1)
+    (@comp K _ _ _ m.1 (@comp K _ _ _ l.1 k.1))).
   { intros [X V] v.
     exact (@profunctor_pentagon C C C C C S R Q P
       (HC Q P) (HC R Q) (HC S R)
@@ -205,7 +206,7 @@ Lemma prof_monoidal_triangle (Q P : @Ob K)
 Proof.
   pose (i := ((a Q I P).1; NatIso_is_iso (a Q I P).1 (a Q I P).2)).
   assert (H : @HomEq K _ _
-    (fmap (π1F T P) (ProfRightUnitorFctN Q) ∘ i.1)
+    (@comp K _ _ _ (fmap (π1F T P) (ProfRightUnitorFctN Q)) i.1)
     (fmap (π2F T Q) (ProfLeftUnitorFctN P))).
   { intros [X V] v.
     exact (@profunctor_triangle C C C Q P
