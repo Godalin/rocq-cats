@@ -130,7 +130,7 @@ larger term sizes. `context_extension_lifted_representation` instead reuses
 `universal_element_lifted_representation` on the opposite category, providing
 `E ⦂ Rep↑ ContextPairF T A` with upward bounds only. No resizing or equality
 of functor records is assumed. Display recovery can use this general
-universal-pair criterion and lifted representation in a subsequent step.
+universal-pair criterion and lifted representation, as implemented below.
 
 ### 独立大小下的泛配对准则
 
@@ -148,7 +148,7 @@ universal-pair criterion and lifted representation in a subsequent step.
 `context_extension_lifted_representation` 改在反范畴中复用已有
 `universal_element_lifted_representation`，以仅向上的大小约束给出
 `E ⦂ Rep↑ ContextPairF T A`，不假定 resizing 或函子记录相等。
-后续显示恢复可使用这里的一般泛配对准则及提升表示。
+下述显示恢复使用这里的一般泛配对准则及提升表示。
 
 ## 3. 显示映射接口与截面项预层
 
@@ -251,11 +251,65 @@ s[σ]TmD[P]     := s[display_lift_universal σ A]Sec
 其类型广集及类型替换保持为 P 的原有数据。
 构造只需显式启用输入的 `HasDisplay C P`，不选择其他结构。
 
-接口、正向构造及反向截面项预层现已实现。
-**下一步仍是证明显示对象表示这个新预层的配对数据**，
-再复用第 2 节的表示准则恢复上下文扩张；终对象仍须独立选择。
-因此，此处尚未声称从任意 comprehension 恢复 CwF。
-已证明的必要充分性包括第 2 节固定 T 后的泛配对准则，以及原生表示可包装时的选定结构准则。
+### Display recovery from universal pairs
+
+[Display/Representation](../theories/DTT/Display/Representation.v) now recovers
+context extensions from `HasDisplay C P`. Pairing sends `(σ,s)` to
+`σ^D[P,A] ∘ s.1`; its inverse sends `h` to the base map `p_A ∘ h`
+and the section factoring the cone `(id,h)` through that base map's chosen
+display pullback. Equality of base maps converts sections, and pullback
+uniqueness proves both inverse laws. The maps preserve the specified equality.
+
+The reusable `section_of_pullback_factor`, its top-edge equation and
+uniqueness live in [Section](../theories/Cat/Section.v). Existing section
+substitution and its uniqueness theorem reuse this factorization. It requires
+only the supplied pullback, retaining the chosen mediator and right-inverse
+witness without equating cone or proof witnesses.
+
+`display_generic_pair` factors identity. `display_pair_universal` gives its
+unique mediator, the original display pairing. Lift composition and term
+substitution prove compatibility with precomposition; comparison witnesses
+are aligned by their action. `display_representation` reuses
+`universal_element_lifted_representation` on the opposite category to provide
+`E_A ⦂ Rep↑ ContextPairF (DisplayTyTmF P) A`. It does not require the native
+Hom packaging of `HasContextRepresentation`.
+
+`Display_HasContextExtension` reuses the integrated
+`context_extension_of_universal_element`. The recovered projection is equal
+to the supplied display projection (`display_context_proj`), and its pairing
+computes to the supplied lift composed with the section (`display_context_pair`).
+With an independently supplied `HasTerminal C`, `DisplayCwF P` assembles the
+CwF. These are ordinary definitions; import enables no chosen model.
+
+### 从泛配对恢复显示结构
+
+[Display/Representation](../theories/DTT/Display/Representation.v) 现已从
+`HasDisplay C P` 恢复上下文扩张。配对把 `(σ,s)` 送到
+`σ^D[P,A] ∘ s.1`；反向把 h 送到基映射 `p_A ∘ h`，再由沿该基映射
+的选定显示拉回分解锥 `(id,h)`，取得截面。基映射相等转换截面，拉回唯一性
+证明两侧逆律；两个映射均保持指定相等。
+
+一般的 `section_of_pullback_factor`、上边方程及唯一性放在
+[Section](../theories/Cat/Section.v)。原有截面替换及其唯一性定理也复用此分解。
+它只需给定的拉回，保留选定中介及右逆见证，不比较锥或证明见证本身。
+
+`display_generic_pair` 分解恒等；`display_pair_universal` 给出其唯一中介，
+即原显示配对。提升复合律及项替换证明预合成相容性，比较见证通过其作用对齐。
+`display_representation` 在反范畴中复用
+`universal_element_lifted_representation`，给出
+`E_A ⦂ Rep↑ ContextPairF (DisplayTyTmF P) A`，不要求
+`HasContextRepresentation` 的原生 Hom 包装。
+
+`Display_HasContextExtension` 复用已集成的
+`context_extension_of_universal_element`。恢复的投影等于给定显示投影
+（`display_context_proj`），配对计算为原提升与截面的复合
+（`display_context_pair`）。独立提供 `HasTerminal C` 后，`DisplayCwF P`
+组装 CwF。这些均为普通定义，导入不会自动启用选定模型。
+
+这完成了给定相干显示结构后的恢复。下一步仍须明确具体 comprehension
+如何提供指定类型预层、相等作用与相干提升数据，并比较所得数学数据。
+此处不声称任意 comprehension 无条件给出 CwF；第 2 节的必要充分准则
+仍以固定类型与项预层 T 为前提。
 
 ## 4. 宇宙与验证
 
@@ -310,3 +364,26 @@ Rocq 9.0.1 / Dune 3.21.0，CI 状态另在 issue 中记录。
 两种 Type 值相等见证、提升表示正逆映射及原生表示恢复。
 十项临时假设审计均无额外公理；这些模型与输出不加入永久测试。
 定向检查使用 Rocq 9.2、Stdlib 9.2.0 和 Dune 3.23.1。
+
+Display recovery adds eight fixed universe checks for universal pairs, lifted
+representations, context extensions and the completed CwF's term setoids.
+They keep `Set < h < p < l < o`, swap hom/equality levels, and retain term
+carriers below the category-law bound. Temporary checks also use independent,
+larger type carrier/equality levels. Fourteen Boolean computations cover
+factorization, pairing, projection, generic terms, nontrivial conversion,
+substitution, the lifted representation and the completed model. A separate
+single-object category uses Boolean hom-equality witnesses: three direct
+reductions retain the chosen right-inverse and top-edge witnesses without
+comparing cone witnesses. All 21 temporary assumption reports are closed;
+chosen context extensions and CwFs still require explicit enabling. These
+temporary models and outputs stay outside the library. The checks use the
+project switch with Rocq 9.2, Stdlib 9.2.0 and Dune 3.23.1.
+
+显示恢复另增八项固定宇宙检查，覆盖泛配对、提升表示、上下文扩张及最终 CwF
+的项广集；保持 `Set < h < p < l < o`，对调 Hom／相等层级，项载体仍严格
+低于范畴定律上界。临时检查还使用独立且更大的类型载体／相等层级。
+十四项布尔直接计算覆盖分解、配对、投影、泛项、非平凡转换、替换、提升表示
+及最终模型。另一单对象范畴使用布尔 Hom 相等见证，三项直接归约保留选定
+右逆及上边见证，不比较锥见证。二十一项临时假设报告全部闭合，选定上下文
+扩张及 CwF 仍须显式启用。临时模型和输出不加入库，验证使用项目 switch
+中的 Rocq 9.2、Stdlib 9.2.0 和 Dune 3.23.1。

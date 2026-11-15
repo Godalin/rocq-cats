@@ -477,7 +477,13 @@ Monad–Applicative–Arrow 工作从
   [Display/Section](./theories/DTT/Display/Section.v) constructs `DisplayTyTmF P`
   in the reverse direction: terms are sections of the display projections,
   conversion is `e ▸D[P] s`, and substitution is `s[σ]TmD[P]`.
-  Representing its pair presheaves remains a separate step.
+  [Display/Representation](./theories/DTT/Display/Representation.v) proves
+  universality of the display pair and reuses the general lifted Hom theory
+  for its representation. It recovers context extensions and constructs
+  `DisplayCwF P` with a separately chosen terminal context; model selection
+  remains explicit.
+  显示泛配对经一般泛元素准则恢复上下文扩张，提升 Hom 给出表示；
+  另选终上下文得到 `DisplayCwF P`，模型选择仍须显式启用。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)
