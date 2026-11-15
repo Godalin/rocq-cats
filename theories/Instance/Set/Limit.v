@@ -99,7 +99,7 @@ Definition SetCat_HasLimitsOfShape@{u p +} (J : Cat)
 Definition SetCat_GraphLimits@{u p +} (G : Graph)
   : HasLimitsOfShape (SetCat@{u p _ _ _ _ _}) (FreeCat G)
   := @GraphProductsEqualizerLimits G SetCat
-      (SetCat_HasIndexedProducts (@Vertex G))
+      (SetCat_HasIndexedProducts (@Vtx G))
       (SetCat_HasIndexedProducts (GraphEdges G)) SetCat_HasEqualizer.
 
 (** Finite-shape limits reuse the already selected terminal, product and

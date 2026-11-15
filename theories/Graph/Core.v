@@ -10,15 +10,15 @@ From Cats.Set Require Export Core.
 
 Class Graph@{o e p +}
   :=
-  { Vertex : Type@{o}
-  ; EdgeSet : Vertex → Vertex → SetC@{e p}
+  { Vtx : Type@{o}
+  ; EdgeSet : Vtx → Vtx → SetC@{e p}
   }.
 
 (** The carrier of the specified edge setoid. *)
 
 (** 指定边广集的载体。 *)
 
-Definition Edge {G : Graph} (x y : @Vertex G)
+Definition Edge {G : Graph} (x y : @Vtx G)
   := carrier (EdgeSet x y).
 
 (** A total index for generators, retaining their dependent endpoints. *)
@@ -26,7 +26,7 @@ Definition Edge {G : Graph} (x y : @Vertex G)
 (** 生成边的总索引保留其依赖端点。 *)
 
 Definition GraphEdges (G : Graph)
-  := ∃ x : @Vertex G, ∃ y : @Vertex G, Edge x y.
+  := ∃ x : @Vtx G, ∃ y : @Vtx G, Edge x y.
 
 Declare Scope graph_scope.
 Delimit Scope graph_scope with graph.
@@ -42,7 +42,7 @@ Notation "x '→[' G ']' y" := (@Edge G x y)
 Program Definition DiscreteGraph (V : Type)
   : Graph
   :=
-  {|Vertex := V
+  {|Vtx := V
   ; EdgeSet x y :=
       {|carrier := Empty_set
       ; carrier_equiv _ _ := unit

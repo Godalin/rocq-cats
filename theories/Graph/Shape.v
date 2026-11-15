@@ -9,14 +9,14 @@ From Cats Require Export Graph.Core.
 
     仅两条腿是生成边；单元素相等与空边集一样使用 Type 值见证。 *)
 
-Inductive CospanVertex
+Inductive CospanVtx
   := cospan_left | cospan_right | cospan_tip.
 
 (** Generators from each outer cospan vertex into its common target. *)
 
 (** 从余跨度各外侧顶点指向共同目标的生成边。 *)
 
-Definition CospanEdge (x y : CospanVertex)
+Definition CospanEdge (x y : CospanVtx)
   : Type
   := match x, y with
   | cospan_left, cospan_tip => unit
@@ -31,7 +31,7 @@ Definition CospanEdge (x y : CospanVertex)
 Program Definition CospanGraph
   : Graph
   :=
-  {|Vertex := CospanVertex
+  {|Vtx := CospanVtx
   ; EdgeSet x y :=
       {|carrier := CospanEdge x y
       ; carrier_equiv _ _ := unit
@@ -66,7 +66,7 @@ Definition cospan_r
 Program Definition LabelledArrowGraph (S : SetC)
   : Graph
   :=
-  {|Vertex := bool
+  {|Vtx := bool
   ; EdgeSet x y :=
       if x then {|carrier := Empty_set
                 ; carrier_equiv _ _ := unit

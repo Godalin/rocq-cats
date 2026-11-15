@@ -26,8 +26,8 @@ Universes x e o h q l a b.
 
 (** 比较在每个维度取唯一值。 *)
 
-Program Definition VertexNerveTerminalN@{u p +}
-  : (Nᵥ(VertexTerminalObjF@{x e o h q l a b}) :
+Program Definition VtxNerveTerminalN@{u p +}
+  : (Nᵥ(VtxTerminalObjF@{x e o h q l a b}) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p}
   :=
@@ -42,14 +42,14 @@ Next Obligation. intros x. exact tt. Defined.
 
 (** 逆选取带单元素标签的常值序数图式。 *)
 
-Program Definition VertexNerveTerminalInvN@{u p +}
+Program Definition VtxNerveTerminalInvN@{u p +}
   : ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p} ⇒
-      (Nᵥ(VertexTerminalObjF@{x e o h q l a b}) :
+      (Nᵥ(VtxTerminalObjF@{x e o h q l a b}) :
         Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|nt n :=
       {|func x := ⟨ConstF [Ord n]
-          (C := VertexCat VertexTerminalObjF@{x e o h q l a b}) tt⟩ᵥ
+          (C := VtxCat VtxTerminalObjF@{x e o h q l a b}) tt⟩ᵥ
       |}
   |}.
 Next Obligation.
@@ -67,11 +67,11 @@ Defined.
 (** 两侧往返均使用指定相等，与两个共同值大小相互独立；不识别函子记录或见证。 *)
 
 Definition vertex_nerve_terminal_iso@{u p +}
-  : (Nᵥ(VertexTerminalObjF@{x e o h q l a b}) :
+  : (Nᵥ(VtxTerminalObjF@{x e o h q l a b}) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       ConstF (Δ^op) (C := SetCat@{u p _ _ _ _ _}) UnitS@{u p}.
 Proof.
-  exists VertexNerveTerminalN. intros n. exists (VertexNerveTerminalInvN n).
+  exists VtxNerveTerminalN. intros n. exists (VtxNerveTerminalInvN n).
   split.
   - intros [F]. refine {|lower := _
                        |}. apply vertex_diagram_terminal_eq.
@@ -85,10 +85,10 @@ Defined.
 Lemma vertex_nerve_terminal_natural@{u p +}
     {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
-  : (VertexNerveTerminalN ∘Nv VertexNerveN (VertexTerminalF U) ∘Nv
-      VertexNerveN F :
+  : (VtxNerveTerminalN ∘Nv VtxNerveN (VtxTerminalF U) ∘Nv
+      VtxNerveN F :
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
-      (VertexNerveTerminalN ∘Nv VertexNerveN (VertexTerminalF T)).
+      (VtxNerveTerminalN ∘Nv VtxNerveN (VtxTerminalF T)).
 Proof. intros n x. exact tt. Defined.
 
 End TerminalSizes.

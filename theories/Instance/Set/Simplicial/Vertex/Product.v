@@ -24,8 +24,8 @@ Local Existing Instance SetCat_HasProduct.
 
 (** A diagram in a product consists of two diagrams with the same
     shape, one in each factor. The comparison c below is
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
-    {%[VertexNerveProductN]%}%. Each triangle commutes: projecting the pair after
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VtxNerveProductN}
+    {%[VtxNerveProductN]%}%. Each triangle commutes: projecting the pair after
     splitting is the same as first projecting the original product diagram.
     The equations %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB21}
     {%[vertex_nerve_product_β1]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB22}
@@ -37,11 +37,11 @@ Local Existing Instance SetCat_HasProduct.
     Thus preservation of products means a natural isomorphism with the
     pointwise product, with its projections respected. The notation
     $N_{\mathrm v}(T\times U)$ in the picture abbreviates the nerve of
-    [VertexProductObjF T U]. *)
+    [VtxProductObjF T U]. *)
 
 (** 积中的图式由两个同形状的图式组成，每个因子中各一个。下图的比较 c 是
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
-    {%[VertexNerveProductN]%}%。两个三角形都交换：拆分后投影到一个分量，等于先
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VtxNerveProductN}
+    {%[VtxNerveProductN]%}%。两个三角形都交换：拆分后投影到一个分量，等于先
     投影原来的积图式。%\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB21}
     {%[vertex_nerve_product_β1]%}% 与
     %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product xCExB22}
@@ -50,7 +50,7 @@ Local Existing Instance SetCat_HasProduct.
     将两个图式配对就是 c 的逆，得到 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.vertex nerve product iso}
     {%[vertex_nerve_product_iso]%}%。因此，保持
     积的意思是与逐点积自然同构，并与投影相容。图中的 $N_{\mathrm v}(T\times U)$ 简写
-    [VertexProductObjF T U] 的 nerve。 *)
+    [VtxProductObjF T U] 的 nerve。 *)
 
 (** @lang both
 %\begin{center}
@@ -75,7 +75,7 @@ Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
 
 (** 目标为两个 nerve 的通常逐点广集积；选定广集积显式提供。 *)
 
-Definition VertexNerveProduct
+Definition VtxNerveProduct
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := @PointwiseProductF _ _ SetCat_HasProduct (Nᵥ(T)) (Nᵥ(U)).
 
@@ -83,9 +83,9 @@ Definition VertexNerveProduct
 
 (** 单形投影分别保留两个提升后的图式。 *)
 
-Program Definition VertexNerveProductN
-  : (Nᵥ(VertexProductObjF T U) :
-      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ VertexNerveProduct
+Program Definition VtxNerveProductN
+  : (Nᵥ(VtxProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ VtxNerveProduct
   :=
   {|nt n :=
       {|func x :=
@@ -119,9 +119,9 @@ Defined.
 
 (** 使用原生透明图式配对，将两个提升后的单形配对。 *)
 
-Program Definition VertexNerveProductInvN
-  : VertexNerveProduct ⇒
-      (Nᵥ(VertexProductObjF T U) :
+Program Definition VtxNerveProductInvN
+  : VtxNerveProduct ⇒
+      (Nᵥ(VtxProductObjF T U) :
         Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|nt n :=
@@ -154,10 +154,10 @@ Defined.
 (** 比较及其显式逆给出自然同构。 *)
 
 Definition vertex_nerve_product_iso
-  : (Nᵥ(VertexProductObjF T U) :
-      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N VertexNerveProduct.
+  : (Nᵥ(VtxProductObjF T U) :
+      Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N VtxNerveProduct.
 Proof.
-  exists VertexNerveProductN. intros n. exists (VertexNerveProductInvN n).
+  exists VtxNerveProductN. intros n. exists (VtxNerveProductInvN n).
   split.
   - intros [F].
     exact {|lower := fst (vertex_diagram_product_iso T U [Ord n]).2.2 F
@@ -176,9 +176,9 @@ Defined.
 (** 比较的第一投影为第一投影的 nerve。 *)
 
 Lemma vertex_nerve_product_β1 (n : nat)
-    (x : (Nᵥ(VertexProductObjF T U) :
+    (x : (Nᵥ(VtxProductObjF T U) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
-  : fst (VertexNerveProductN n x) ≈S VertexNerveN (VertexFstF T U) n x.
+  : fst (VtxNerveProductN n x) ≈S VtxNerveN (VtxFstF T U) n x.
 Proof. reflexivity. Defined.
 
 (** The second projection has the corresponding equation. *)
@@ -186,9 +186,9 @@ Proof. reflexivity. Defined.
 (** 第二投影具有相应方程。 *)
 
 Lemma vertex_nerve_product_β2 (n : nat)
-    (x : (Nᵥ(VertexProductObjF T U) :
+    (x : (Nᵥ(VtxProductObjF T U) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
-  : snd (VertexNerveProductN n x) ≈S VertexNerveN (VertexSndF T U) n x.
+  : snd (VtxNerveProductN n x) ≈S VtxNerveN (VtxSndF T U) n x.
 Proof. reflexivity. Defined.
 
 End Product.
@@ -203,11 +203,11 @@ Lemma vertex_nerve_product_natural@{u p +}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {T' : Fct (EqGpd X') C'} {U' : Fct (EqGpd Y') D'}
     (F : T →ᵥ T') (G : U →ᵥ U')
-  : (VertexNerveProductN T' U' ∘Nv VertexNerveN (VertexProductF F G) :
-      (Nᵥ(VertexProductObjF T U) :
+  : (VtxNerveProductN T' U' ∘Nv VtxNerveN (VtxProductF F G) :
+      (Nᵥ(VtxProductObjF T U) :
         Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       (@PointwiseProductN _ _ SetCat_HasProduct _ _ _ _
-        (VertexNerveN F) (VertexNerveN G) ∘Nv VertexNerveProductN T U).
+        (VtxNerveN F) (VtxNerveN G) ∘Nv VtxNerveProductN T U).
 Proof.
   intros n [P]. cbn. split.
   - refine {|lower := _

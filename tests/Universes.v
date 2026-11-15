@@ -850,10 +850,10 @@ Constraint p < n.
 Constraint n < l.
 Context (G : Graph@{o e p}) (H : Graph@{o p e}) (K : Graph@{n e p}).
 
-Definition high_eq_graph_path (x y : @Vertex G)
+Definition high_eq_graph_path (x y : @Vtx G)
   : Type@{e}
   := Path G x y.
-Definition low_eq_graph_path (x y : @Vertex H)
+Definition low_eq_graph_path (x y : @Vtx H)
   : Type@{p}
   := Path H x y.
 Definition high_eq_free
@@ -883,32 +883,32 @@ Definition low_eq_finite_graph {n : nat} (k : Fin n → Fin n → nat)
   := FiniteGraph k.
 
 Context `{HEC : !HasEqualizer C} `{HED : !HasEqualizer D}.
-Context `{HOC : !HasLimitsOfShape C (DiscreteCat (@Vertex G))}.
+Context `{HOC : !HasLimitsOfShape C (DiscreteCat (@Vtx G))}.
 Context `{HGC : !HasLimitsOfShape C (DiscreteCat (GraphEdges G))}.
-Context `{HOD : !HasLimitsOfShape D (DiscreteCat (@Vertex G))}.
+Context `{HOD : !HasLimitsOfShape D (DiscreteCat (@Vtx G))}.
 Context `{HGD : !HasLimitsOfShape D (DiscreteCat (GraphEdges G))}.
 Definition high_eq_graph_generated_limits
   := @GraphProductsEqualizerLimits G C HOC HGC HEC.
 Definition low_eq_graph_generated_limits
   := @GraphProductsEqualizerLimits G D HOD HGD HED.
 
-Context (HFC : ∀ x : @Vertex G,
-  HasLimitsOfShape C (DiscreteCat (∃ y : @Vertex G, Edge x y))).
-Context (HFD : ∀ x : @Vertex G,
-  HasLimitsOfShape D (DiscreteCat (∃ y : @Vertex G, Edge x y))).
+Context (HFC : ∀ x : @Vtx G,
+  HasLimitsOfShape C (DiscreteCat (∃ y : @Vtx G, Edge x y))).
+Context (HFD : ∀ x : @Vtx G,
+  HasLimitsOfShape D (DiscreteCat (∃ y : @Vtx G, Edge x y))).
 Definition high_eq_sigma_edge_products
-  := @SigmaProductLimits C (@Vertex G) (λ x, ∃ y : @Vertex G, Edge x y) HOC HFC.
+  := @SigmaProductLimits C (@Vtx G) (λ x, ∃ y : @Vtx G, Edge x y) HOC HFC.
 Definition low_eq_sigma_edge_products
-  := @SigmaProductLimits D (@Vertex G) (λ x, ∃ y : @Vertex G, Edge x y) HOD HFD.
+  := @SigmaProductLimits D (@Vtx G) (λ x, ∃ y : @Vtx G, Edge x y) HOD HFD.
 (** Opposite graph colimits need only vertex and generator-source coproducts,
     while preserving either ordering of target hom and equality levels. *)
 
 (** 反图余极限仅需顶点与生成边源对象余积，并保持目标 Hom 与相等的两种大小顺序。 *)
 
 Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
-Context `{HCO : !HasColimitsOfShape C (DiscreteCat (@Vertex G))}.
+Context `{HCO : !HasColimitsOfShape C (DiscreteCat (@Vtx G))}.
 Context `{HCG : !HasColimitsOfShape C (DiscreteCat (GraphEdges (G^opG)))}.
-Context `{HDO : !HasColimitsOfShape D (DiscreteCat (@Vertex G))}.
+Context `{HDO : !HasColimitsOfShape D (DiscreteCat (@Vtx G))}.
 Context `{HDG : !HasColimitsOfShape D (DiscreteCat (GraphEdges (G^opG)))}.
 
 Definition high_eq_graph_colimits
@@ -1795,11 +1795,11 @@ Definition high_eq_vertex_nerve
 
 Definition low_eq_vertex_diagram_comparison
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) ⇒ N≅(C)
-  := VertexDiagramN T.
+  := VtxDiagramN T.
 
 Definition high_eq_vertex_diagram_comparison
   : (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(D)
-  := VertexDiagramN S.
+  := VtxDiagramN S.
 
 (** Chain data need not carry the larger diagram-law universe. Equality
     remains independent of the native vertex and arrow carriers. *)
@@ -1808,11 +1808,11 @@ Definition high_eq_vertex_diagram_comparison
 
 Definition low_eq_vertex_chains (n : nat)
   : SetC@{o e}
-  := VertexChainS T n.
+  := VtxChainS T n.
 
 Definition high_eq_vertex_chains (n : nat)
   : SetC@{h o}
-  := VertexChainS S n.
+  := VtxChainS S n.
 
 (** The spine isomorphism also admits both orderings of value sizes. *)
 
@@ -1820,12 +1820,12 @@ Definition high_eq_vertex_chains (n : nat)
 
 Definition low_eq_vertex_spine (n : nat)
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) n ≅[SetCat]
-      LiftS (VertexChainS T n)
+      LiftS (VtxChainS T n)
   := vertex_spine_iso T n.
 
 Definition high_eq_vertex_spine (n : nat)
   : (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
-      LiftS (VertexChainS S n)
+      LiftS (VtxChainS S n)
   := vertex_spine_iso S n.
 
 (** Arbitrary category nerves admit unique boundary filling at both strict
@@ -1858,14 +1858,14 @@ Definition high_eq_outer_horn (A B E : @Ob D)
   := horn2_2_iso.
 
 Definition low_eq_local_horn (A B E : X)
-  : Horn2S (VertexCat T) A B E fin_first →r
+  : Horn2S (VtxCat T) A B E fin_first →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat
-  := @local_horn2_resp _ _ T (VertexCat_IsGroupoid T) A B E fin_first.
+  := @local_horn2_resp _ _ T (VtxCat_IsGroupoid T) A B E fin_first.
 
 Definition high_eq_local_horn (A B E : Y)
-  : Horn2S (VertexCat S) A B E (fin_next (fin_next fin_first)) →r
+  : Horn2S (VtxCat S) A B E (fin_next (fin_next fin_first)) →r
       (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat
-  := @local_horn2_resp _ _ S (VertexCat_IsGroupoid S)
+  := @local_horn2_resp _ _ S (VtxCat_IsGroupoid S)
       A B E (fin_next (fin_next fin_first)).
 
 (** Actual horn maps admit the selected groupoid fillings at either
@@ -1875,11 +1875,11 @@ Definition high_eq_local_horn (A B E : Y)
 
 Definition low_eq_actual_horn (i : Ordinal 2%nat)
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat i
-  := vertex_groupoid_horn2_HasFillers T (HC := VertexCat_IsGroupoid T) i.
+  := vertex_groupoid_horn2_HasFillers T (HC := VtxCat_IsGroupoid T) i.
 
 Definition high_eq_actual_horn (i : Ordinal 2%nat)
   : HasHornFillers (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat i
-  := vertex_groupoid_horn2_HasFillers S (HC := VertexCat_IsGroupoid S) i.
+  := vertex_groupoid_horn2_HasFillers S (HC := VtxCat_IsGroupoid S) i.
 
 (** The all-dimensional Kan structures retain both strict orderings of
     value carrier and equality universes. *)
@@ -1888,11 +1888,11 @@ Definition high_eq_actual_horn (i : Ordinal 2%nat)
 
 Definition low_eq_vertex_kan
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _})
-  := vertex_groupoid_HasKanFillers T (HC := VertexCat_IsGroupoid T).
+  := vertex_groupoid_HasKanFillers T (HC := VtxCat_IsGroupoid T).
 
 Definition high_eq_vertex_kan
   : HasKanFillers (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-  := vertex_groupoid_HasKanFillers S (HC := VertexCat_IsGroupoid S).
+  := vertex_groupoid_HasKanFillers S (HC := VtxCat_IsGroupoid S).
 
 End VertexNerveLevels.
 

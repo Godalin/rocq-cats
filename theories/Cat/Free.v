@@ -18,7 +18,7 @@ From Cats Require Import
 Program Definition FreeCat (G : Graph)
   : Cat
   :=
-  {|Ob := @Vertex G
+  {|Ob := @Vtx G
   ; HomSet := PathS G
   ; id x := path_id x
   ; comp x y z := path_comp
@@ -34,7 +34,7 @@ Next Obligation. apply path_assoc. Defined.
 Program Definition UnderlyingGraph (C : Cat)
   : Graph
   :=
-  {|Vertex := @Ob C
+  {|Vtx := @Ob C
   ; EdgeSet := @HomSet C
   |}.
 

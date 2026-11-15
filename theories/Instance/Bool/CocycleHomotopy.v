@@ -6,7 +6,7 @@ From Cats Require Import
   Cat.Natural.
 
 Import Cats.Instance.Set.Groupoid (EqGpd).
-Import Cats.Instance.Set.Simplicial.Vertex.Core (VertexNerve).
+Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 
 Local Existing Instance BoolS_Monoid.
 Local Open Scope nat_scope.
@@ -61,7 +61,7 @@ Let B
 
 Let N
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
-  := VertexNerve T.
+  := VtxNerve T.
 
 Context (f : B ⇒ N) (g : N ⇒ B).
 

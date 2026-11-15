@@ -29,9 +29,9 @@ Definition MonoidObjF@{v q +} (M : SetC@{v q})
 
 (** 将幺半群范畴看成带单元素对象标签的诱导范畴；保留全部箭头数据及运算。 *)
 
-Program Definition MonoidVertexF@{v q +} (M : SetC@{v q})
+Program Definition MonoidVtxF@{v q +} (M : SetC@{v q})
     `{HM : !Monoid M}
-  : Fct B(M) (VertexCat (MonoidObjF M))
+  : Fct B(M) (VtxCat (MonoidObjF M))
   :=
   {|F0 x := x
   ; F1 x y f := f
@@ -45,13 +45,13 @@ Next Obligation. reflexivity. Defined.
 
 (** 将元组 nerve 解释到一般顶点 nerve；自然性就是已有的段积细分定律。 *)
 
-Program Definition MonoidVertexN@{u p v q +} {M : SetC@{v q}}
+Program Definition MonoidVtxN@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
   : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       Nᵥ(MonoidObjF M)
   :=
   {|nt n :=
-      {|func xs := ⟨MonoidVertexF M ∘F MonoidChainF (lower xs)⟩ᵥ
+      {|func xs := ⟨MonoidVtxF M ∘F MonoidChainF (lower xs)⟩ᵥ
       |}
   |}.
 Next Obligation.
@@ -80,11 +80,11 @@ Defined.
 
 Lemma monoid_vertex_reflects@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat} (xs ys : M ^S n)
-  : (MonoidVertexN : (LiftF ∘F Nₘ(M) :
+  : (MonoidVtxN : (LiftF ∘F Nₘ(M) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) n
         {|lower := xs
-        |} ≈S MonoidVertexN n {|lower := ys
-                              |} → xs ≈S ys.
+        |} ≈S MonoidVtxN n {|lower := ys
+                           |} → xs ≈S ys.
 Proof.
   intros [[e H]] i. specialize (H _ _ (ordinal_step i)).
   change (1 ⋅ xs⟦fin_weaken i, fin_next i⟧⋅ ≈S
@@ -99,7 +99,7 @@ Defined.
 
 Lemma monoid_vertex_diagram@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
-  : (VertexDiagramN (MonoidObjF M) ∘Nv MonoidVertexN :
+  : (VtxDiagramN (MonoidObjF M) ∘Nv MonoidVtxN :
       (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       MonoidDiagramN.
 Proof.
@@ -114,7 +114,7 @@ Defined.
 
 Definition monoid_vertex_chain@{v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat}
-    (F : Fct [Ord n] (VertexCat (MonoidObjF M)))
+    (F : Fct [Ord n] (VtxCat (MonoidObjF M)))
   : M ^S n
   := λ i, fmap F (ordinal_step i).
 
@@ -125,9 +125,9 @@ Definition monoid_vertex_chain@{v q +} {M : SetC@{v q}}
 
 Definition monoid_vertex_reconstruct@{v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat}
-    (F : Fct [Ord n] (VertexCat (MonoidObjF M)))
-  : VertexDiagramEq (MonoidObjF M)
-      (MonoidVertexF M ∘F MonoidChainF (monoid_vertex_chain F)) F.
+    (F : Fct [Ord n] (VtxCat (MonoidObjF M)))
+  : VtxDiagramEq (MonoidObjF M)
+      (MonoidVtxF M ∘F MonoidChainF (monoid_vertex_chain F)) F.
 Proof.
   exists (λ i, tt). apply ordinal_naturality_steps. intros i.
   change (1 ⋅ (monoid_vertex_chain F)⟦fin_weaken i, fin_next i⟧⋅ ≈S
@@ -141,7 +141,7 @@ Defined.
 
 Lemma monoid_vertex_segment@{v q +} {M : SetC@{v q}}
     `{HM : !Monoid M} {n : nat}
-    (F : Fct [Ord n] (VertexCat (MonoidObjF M)))
+    (F : Fct [Ord n] (VtxCat (MonoidObjF M)))
     (i j : Ordinal n) (f : (@Hom [Ord n]) i j)
   : (monoid_vertex_chain F)⟦i, j⟧⋅ ≈S fmap F f.
 Proof.
@@ -154,7 +154,7 @@ Defined.
 
 (** 相邻箭头提取与任意单纯限制交换。 *)
 
-Program Definition VertexMonoidN@{u p v q +} {M : SetC@{v q}}
+Program Definition VtxMonoidN@{u p v q +} {M : SetC@{v q}}
     `{HM : !Monoid M}
   : (Nᵥ(MonoidObjF M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       (LiftF ∘F Nₘ(M))
@@ -190,7 +190,7 @@ Definition monoid_vertex_iso@{u p v q +} {M : SetC@{v q}}
   : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       Nᵥ(MonoidObjF M).
 Proof.
-  exists MonoidVertexN. intros n. exists (VertexMonoidN n). split.
+  exists MonoidVtxN. intros n. exists (VtxMonoidN n). split.
   - intros [xs]. refine {|lower := _
                          |}.
     intros i. apply monoid_segment_step.

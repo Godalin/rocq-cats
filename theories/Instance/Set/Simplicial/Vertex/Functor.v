@@ -23,7 +23,7 @@ From Cats Require Import
     repeats or composes parts of that chain by precomposition. The square
     below says that changing the chain's shape and applying F can be done
     in either order. It is %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
-    {%[simplex_restrict_natural]%}% for [VertexNerveN F].
+    {%[simplex_restrict_natural]%}% for [VtxNerveN F].
 
     For a triangle, selecting its middle face gives the familiar equation
     that F preserves composition. For a repeated vertex, it gives identity
@@ -32,7 +32,7 @@ From Cats Require Import
 
 (** 从长度为 n 的带标签箭头链 P 出发，函子 F 把每个顶点和每条箭头送到其像。
     形状算子 θ 则通过预合成选取、重复或复合链的一部分。下图说明，改变链的
-    形状与应用 F 可以按任一次序进行。这就是 [VertexNerveN F] 所满足的
+    形状与应用 F 可以按任一次序进行。这就是 [VtxNerveN F] 所满足的
     %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
     {%[simplex_restrict_natural]%}%。
 
@@ -56,7 +56,7 @@ N_{\mathrm v}(T)_m \arrow[r,"{N_{\mathrm v}(F)_m}"'] & N_{\mathrm v}(U)_m
 (** 保运输函子诱导单纯映射。两个 nerve 使用共同值大小，其原生对象及 Hom 大小
     仍保持独立。 *)
 
-Program Definition VertexNerveN@{u p +} {X Y : SetC} {C D : Cat}
+Program Definition VtxNerveN@{u p +} {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
   :=
@@ -80,7 +80,7 @@ Global Instance vertex_nerve_proper@{u p +}
   : Proper (VtxFctEq ==>
       @NatEq _ _
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U)))
-      (@VertexNerveN X Y C D T U).
+      (@VtxNerveN X Y C D T U).
 Proof.
   intros F G H n [P]. refine {|lower := _
                             |}.
@@ -97,7 +97,7 @@ Program Definition vertex_nerve_resp@{u p +} {X Y : SetC} {C D : Cat}
   : VtxFctS T U →r Nat_SetS
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U))
   :=
-  {|func := VertexNerveN
+  {|func := VtxNerveN
   |}.
 
 (** Identity functors induce identity simplicial maps. *)
@@ -106,7 +106,7 @@ Program Definition vertex_nerve_resp@{u p +} {X Y : SetC} {C D : Cat}
 
 Lemma vertex_nerve_id@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
-  : (VertexNerveN (VertexIdF T) :
+  : (VtxNerveN (VtxIdF T) :
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N idN.
 Proof.
   intros n [P]. refine {|lower := _
@@ -123,9 +123,9 @@ Defined.
 Lemma vertex_nerve_comp@{u p +} {X Y Z : SetC} {C D E : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
-  : (VertexNerveN (G ∘Fᵥ F) :
+  : (VtxNerveN (G ∘Fᵥ F) :
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(V)) ≈N
-      (VertexNerveN G ∘Nv VertexNerveN F).
+      (VtxNerveN G ∘Nv VtxNerveN F).
 Proof.
   intros n [P]. refine {|lower := _
                        |}.

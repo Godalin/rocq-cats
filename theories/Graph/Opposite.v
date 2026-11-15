@@ -12,7 +12,7 @@ From Cats Require Export
 Program Definition OpGraph (G : Graph)
   : Graph
   :=
-  {|Vertex := @Vertex G
+  {|Vtx := @Vtx G
   ; EdgeSet x y := @EdgeSet G y x
   |}.
 

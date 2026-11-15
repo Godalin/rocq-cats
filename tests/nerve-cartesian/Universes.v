@@ -27,15 +27,15 @@ Constraint u < q.
 
 Definition Presentations
   : Cat
-  := VertexPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}.
+  := VtxPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}.
 
 Definition NativeProducts
   : HasProduct Presentations
-  := VertexPresentationCat_HasProduct.
+  := VtxPresentationCat_HasProduct.
 
 Definition NativeTerminal
   : HasTerminal Presentations
-  := VertexPresentationCat_HasTerminal.
+  := VtxPresentationCat_HasTerminal.
 
 (** The common value equality is below the category-law bound and carrier. *)
 
@@ -44,7 +44,7 @@ Definition NativeTerminal
 Definition low_eq_cartesian
   : @CartFct Presentations
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _}) NativeTerminal NativeProducts
-  := VertexNerveCartesianF.
+  := VtxNerveCartF.
 
 (** The same source also permits value equality above its carrier. *)
 
@@ -53,7 +53,7 @@ Definition low_eq_cartesian
 Definition high_eq_cartesian
   : @CartFct Presentations
       (FctCat (Δ^op) SetCat@{u q _ _ _ _ _}) NativeTerminal NativeProducts
-  := VertexNerveCartesianF.
+  := VtxNerveCartF.
 
 (** Reverse the native label and arrow carrier/equality profiles. *)
 
@@ -61,20 +61,20 @@ Definition high_eq_cartesian
 
 Definition ReversePresentations
   : Cat
-  := VertexPresentationCat@{e o e h o l o o _ _ _ _ _ _ _ _ _ _}.
+  := VtxPresentationCat@{e o e h o l o o _ _ _ _ _ _ _ _ _ _}.
 
 Definition ReverseProducts
   : HasProduct ReversePresentations
-  := VertexPresentationCat_HasProduct.
+  := VtxPresentationCat_HasProduct.
 
 Definition ReverseTerminal
   : HasTerminal ReversePresentations
-  := VertexPresentationCat_HasTerminal.
+  := VtxPresentationCat_HasTerminal.
 
 Definition reverse_native_cartesian
   : @CartFct ReversePresentations
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _}) ReverseTerminal ReverseProducts
-  := VertexNerveCartesianF.
+  := VtxNerveCartF.
 
 (** The general pointwise structures retain both strict value-size orders. *)
 

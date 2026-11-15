@@ -43,8 +43,8 @@ Proof. reflexivity. Qed.
 
 Example product_split_computes
   : let t := BooleanPresentation in
-    let z := △₁[VertexProductObjF t t; (tt, tt); (tt, tt)] (true, false) in
-    let xy := VertexNerveProductN t t 1 z in
+    let z := △₁[VtxProductObjF t t; (tt, tt); (tt, tt)] (true, false) in
+    let xy := VtxNerveProductN t t 1 z in
     (fmap (lower (fst xy)) (ordinal_step fin_first),
      fmap (lower (snd xy)) (ordinal_step fin_first)) = (true, false).
 Proof. reflexivity. Qed.

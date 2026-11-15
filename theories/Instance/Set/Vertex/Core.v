@@ -26,7 +26,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** 底层范畴以 X 为对象，并保留 C 的 Hom 广集。 *)
 
-Definition VertexCat
+Definition VtxCat
   : Cat
   := InducedCat X T.
 
@@ -36,7 +36,7 @@ Definition VertexCat
 (** 对象相等通过选定函子作用，不要求对象或相等见证的原生相等。 *)
 
 Definition vertex_transport {x y : X} (p : x ≈S y)
-  : (@Hom VertexCat) x y
+  : (@Hom VtxCat) x y
   := fmap T p.
 
 End VertexObjects.
@@ -107,7 +107,7 @@ Defined.
 
 (** 相等由顶点相等和箭头交换方块组成；见证保留在 Type 中，不比较证明字段。 *)
 
-Definition VertexDiagramEq {J : Cat} (F G : Fct J (VertexCat T))
+Definition VtxDiagramEq {J : Cat} (F G : Fct J (VtxCat T))
   : Type
   := ∃ e : ∀ j, (F j : X) ≈S G j,
       ∀ i j (f : (@Hom J) i j),
@@ -117,8 +117,8 @@ Definition VertexDiagramEq {J : Cat} (F G : Fct J (VertexCat T))
 
 (** 指定运输的相干性使顶点图式相等构成等价关系。 *)
 
-Global Instance VertexDiagramEq_Equivalence {J : Cat}
-  : Equivalence (@VertexDiagramEq J).
+Global Instance VtxDiagramEq_Equivalence {J : Cat}
+  : Equivalence (@VtxDiagramEq J).
 Proof.
   split.
   - intros F. exists (λ j, reflexivity (F j : X)). intros i j f.
@@ -148,9 +148,9 @@ Defined.
 (** 自然比较的分量若等于指定顶点运输，就给出带标签的相等。 *)
 
 Definition vertex_diagram_comparison {J : Cat}
-    {F G : Fct J (VertexCat T)} (e : ∀ j, (F j : X) ≈S G j)
+    {F G : Fct J (VtxCat T)} (e : ∀ j, (F j : X) ≈S G j)
     (α : F ⇒ G) (H : ∀ j, α j ≈ T⟦e j⟧Ob)
-  : VertexDiagramEq F G.
+  : VtxDiagramEq F G.
 Proof.
   exists e. intros i j f. rewrite <- (H i), <- (H j).
   apply nt_naturality.
@@ -161,12 +161,12 @@ Defined.
 
 (** 带标签的图式组成广集；对象、Hom 以及两种相等关系保留各自的原生宇宙层级。 *)
 
-Program Definition VertexDiagramS (J : Cat)
+Program Definition VtxDiagramS (J : Cat)
   : SetC
   :=
-  {|carrier := Fct J (VertexCat T)
-  ; carrier_equiv := VertexDiagramEq
-  ; carrier_setoid := VertexDiagramEq_Equivalence
+  {|carrier := Fct J (VtxCat T)
+  ; carrier_equiv := VtxDiagramEq
+  ; carrier_setoid := VtxDiagramEq_Equivalence
   |}.
 
 (** Forgetting vertex labels yields an ordinary natural isomorphism. *)
@@ -174,7 +174,7 @@ Program Definition VertexDiagramS (J : Cat)
 (** 忘却顶点标签得到通常的自然同构。 *)
 
 Program Definition vertex_diagram_iso {J : Cat}
-    {F G : Fct J (VertexCat T)} (e : VertexDiagramEq F G)
+    {F G : Fct J (VtxCat T)} (e : VtxDiagramEq F G)
   : F ≅N G
   := ({|nt j := T⟦e.1 j⟧Ob
       |}; _).
@@ -191,7 +191,7 @@ Defined.
 
 Program Definition vertex_diagram_precomp_resp {I J : Cat}
     (Q : Fct I J)
-  : VertexDiagramS J →r VertexDiagramS I
+  : VtxDiagramS J →r VtxDiagramS I
   :=
   {|func F := F ∘F Q
   |}.
@@ -205,7 +205,7 @@ Defined.
 (** 忘却标签保持进入环境函子广集的相等。 *)
 
 Program Definition vertex_diagram_forget_resp {J : Cat}
-  : VertexDiagramS J →r FctS J C
+  : VtxDiagramS J →r FctS J C
   :=
   {|func F := InducedInclusionF X T ∘F F
   |}.

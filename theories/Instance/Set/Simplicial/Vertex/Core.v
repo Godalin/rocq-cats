@@ -34,8 +34,8 @@ Local Open Scope nat_scope.
     transport. An unrelated isomorphism in C cannot substitute for that
     label equality.
 
-    After %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
-    {%[VertexNerve]%}%, read %\coqref{Cats.Instance.Set.Simplicial.Vertex.Point.point simplex resp}
+    After %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VtxNerve}
+    {%[VtxNerve]%}%, read %\coqref{Cats.Instance.Set.Simplicial.Vertex.Point.point simplex resp}
     {%[point_simplex_resp]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Edge.edge simplex resp}
     {%[edge_simplex_resp]%}%
     in the next chapters for the zero- and one-dimensional descriptions.
@@ -56,8 +56,8 @@ Local Open Scope nat_scope.
     例如，一条边包含源标签、目标标签，以及对应对象之间的箭头。比较两条边时，
     先比较标签，再沿指定运输比较箭头。C 中无关的对象同构不能替代标签相等。
 
-    读过 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
-    {%[VertexNerve]%}% 后，可先看后续章节的 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Point.point simplex resp}
+    读过 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VtxNerve}
+    {%[VtxNerve]%}% 后，可先看后续章节的 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Point.point simplex resp}
     {%[point_simplex_resp]%}% 与
     %\coqref{Cats.Instance.Set.Simplicial.Vertex.Edge.edge simplex resp}
     {%[edge_simplex_resp]%}%，理解零、一维数据，再用 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Spine.vertex spine iso}
@@ -74,8 +74,8 @@ Local Open Scope nat_scope.
 Definition vertex_ordinal_precomp_eq {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) {m n : nat}
     (θ φ : Fct [Ord m] [Ord n]) (H : ∀ i, θ i = φ i)
-    (F : Fct [Ord n] (VertexCat T))
-  : VertexDiagramEq T (F ∘F θ) (F ∘F φ).
+    (F : Fct [Ord n] (VtxCat T))
+  : VtxDiagramEq T (F ∘F θ) (F ∘F φ).
 Proof.
   assert (e : ∀ i, (F (θ i) : X) ≈S F (φ i)).
   { intros i. rewrite (H i). reflexivity. }
@@ -97,13 +97,13 @@ Defined.
 
 Definition vertex_constant_precomp_eq {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) {m n k : nat}
-    (F : Fct [Ord n] (VertexCat T))
-    (G : Fct [Ord k] (VertexCat T))
+    (F : Fct [Ord n] (VtxCat T))
+    (G : Fct [Ord k] (VtxCat T))
     (u : Fct [Ord m] [Ord n]) (v : Fct [Ord m] [Ord k])
     (a : Ordinal n) (b : Ordinal k)
     (Hu : ∀ i, u i = a) (Hv : ∀ i, v i = b)
     (e : (F a : X) ≈S G b)
-  : VertexDiagramEq T (F ∘F u) (G ∘F v).
+  : VtxDiagramEq T (F ∘F u) (G ∘F v).
 Proof.
   assert (d : ∀ i, (F (u i) : X) ≈S G (v i)).
   { intros i. rewrite (Hu i), (Hv i). exact e. }
@@ -126,11 +126,11 @@ Defined.
 (** 带标签的序数图式及其限制构成单纯广集；原生图式及相等分别提升至所选值大小，
     这是通常的大小嵌入，不是大小重设。 *)
 
-Program Definition VertexNerve@{u p +} {X : SetC} {C : Cat}
+Program Definition VtxNerve@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 n := LiftS (VertexDiagramS T [Ord n])
+  {|F0 n := LiftS (VtxDiagramS T [Ord n])
   ; F1 n m θ := (vertex_diagram_precomp_resp T θ)^↑S
   |}.
 Next Obligation.
@@ -151,21 +151,21 @@ Next Obligation.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
 Defined.
 
-Notation "'Nᵥ(' T ')'" := (VertexNerve T) : ob_scope.
+Notation "'Nᵥ(' T ')'" := (VtxNerve T) : ob_scope.
 
 (** Include a labelled ordinal diagram as a simplex. *)
 
 (** 将带标签的序数图式作为单形。 *)
 
-Definition VertexSimplex@{u p +} {X : SetC} {C : Cat}
+Definition VtxSimplex@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {n : nat}
-    (F : Fct [Ord n] (VertexCat T))
+    (F : Fct [Ord n] (VtxCat T))
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := F
   |}.
 
-Notation "'⟨' F '⟩ᵥ'" := (VertexSimplex F) : hom_scope.
+Notation "'⟨' F '⟩ᵥ'" := (VtxSimplex F) : hom_scope.
 
 (** Including a diagram preserves its specified vertex equality. *)
 
@@ -173,9 +173,9 @@ Notation "'⟨' F '⟩ᵥ'" := (VertexSimplex F) : hom_scope.
 
 Global Instance vertex_simplex_proper@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {n : nat}
-  : Proper (VertexDiagramEq T ==>
+  : Proper (VtxDiagramEq T ==>
       carrier_equiv ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n))
-      (@VertexSimplex X C T n).
+      (@VtxSimplex X C T n).
 Proof.
   intros F G e. exact {|lower := e
                       |}.
@@ -257,7 +257,7 @@ Proof. apply vertex_nerve_restrict. Defined.
 
 (** 忘却指定顶点比较得到 C 的图式 nerve；两种 nerve 使用共同的一对值宇宙。 *)
 
-Program Definition VertexDiagramN@{u p +} {X : SetC} {C : Cat}
+Program Definition VtxDiagramN@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ N≅(C)
   :=

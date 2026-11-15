@@ -59,7 +59,7 @@ Definition graph_product_target
 
 Lemma graph_product_comm {E : @Ob C} (e : Hom E ∏[DiagramObj D])
     (H : graph_product_source ∘ e ≈ graph_product_target ∘ e)
-    {x y : @Vertex G} (f : Edge x y)
+    {x y : @Vtx G} (f : Edge x y)
   : fmap D (ιG f) ∘ (π∏[DiagramObj D] x ∘ e) ≈ π∏[DiagramObj D] y ∘ e.
 Proof.
   pose (a := ((x; (y; f)) : GraphEdges G)).
@@ -120,7 +120,7 @@ End GraphLimits.
 (** 由顶点积、生成边积及等化子选择自由形状的全部极限。 *)
 
 Program Definition GraphProductsEqualizerLimits {G : Graph} {C : Cat}
-    `{HO : !HasLimitsOfShape C (DiscreteCat (@Vertex G))}
+    `{HO : !HasLimitsOfShape C (DiscreteCat (@Vtx G))}
     `{HG : !HasLimitsOfShape C (DiscreteCat (GraphEdges G))}
     `{HE : !HasEqualizer C}
   : HasLimitsOfShape C (FreeCat G)

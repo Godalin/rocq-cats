@@ -18,14 +18,14 @@ From Cats Require Import
     逆，但其同伦仍恢复以这两个原标签为端点的自然变换。 *)
 
 Definition InitialF
-  : VertexTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
+  : VtxTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
       OrdinalObjF 1
-  := OrdinalVertexPointF 1 fin_first.
+  := OrdinalVtxPointF 1 fin_first.
 
 Definition FinalF
-  : VertexTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
+  : VtxTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
       OrdinalObjF 1
-  := OrdinalVertexPointF 1 (fin_next fin_first).
+  := OrdinalVtxPointF 1 (fin_next fin_first).
 
 Program Definition DirectedN
   : InitialF ⇒ FinalF
@@ -44,11 +44,11 @@ Proof. intros H. exact (H tt).1. Defined.
 
 Definition DirectedHomotopy
   : SimplicialHomotopy
-      (VertexNerveN InitialF :
-        (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+      (VtxNerveN InitialF :
+        (Nᵥ(VtxTerminalObjF@{Set Set Set Set Set Set Set Set}) :
           Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(OrdinalObjF 1))
-      (VertexNerveN FinalF)
-  := VertexNerveHomotopy DirectedN.
+      (VtxNerveN FinalF)
+  := VtxNerveHomotopy DirectedN.
 
 (** Recovery has the original functor boundaries, without endpoint casts. *)
 
@@ -56,7 +56,7 @@ Definition DirectedHomotopy
 
 Definition RecoveredN
   : InitialF ⇒ FinalF
-  := VertexNerveInvHomotopyN DirectedHomotopy.
+  := VtxNerveInvHomotopyN DirectedHomotopy.
 
 (** The concrete time witness remains transparent through the full inverse. *)
 

@@ -31,9 +31,9 @@ Constraint u < p.
 
 Definition low_eq_nerve_functor
   : Fct
-      VertexPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
+      VtxPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
-  := VertexNerveF.
+  := VtxNerveF.
 
 (** The same source supports equality strictly above the value carrier. *)
 
@@ -41,9 +41,9 @@ Definition low_eq_nerve_functor
 
 Definition high_eq_nerve_functor
   : Fct
-      VertexPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
+      VtxPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})
-  := VertexNerveF.
+  := VtxNerveF.
 
 (** Reverse both native carrier/equality profiles. *)
 
@@ -51,9 +51,9 @@ Definition high_eq_nerve_functor
 
 Definition reverse_native_nerve_functor
   : Fct
-      VertexPresentationCat@{e o e h o l o o _ _ _ _ _ _ _ _ _ _}
+      VtxPresentationCat@{e o e h o l o o _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
-  := VertexNerveF.
+  := VtxNerveF.
 
 (** Full faithfulness retains all of these independent sizes. *)
 
@@ -80,7 +80,7 @@ Context (X : SetC@{o e}) (C : Cat@{o h e l l})
     (T : Fct@{o e Set u u p o h e l} (EqGpd@{o e u} X) C).
 
 Definition repacked_large_action_laws
-  : VertexPresentation@{o e o h e l h e}
-  := VertexPresentationOf T.
+  : VtxPresentation@{o e o h e l h e}
+  := VtxPresentationOf T.
 
 End Levels.

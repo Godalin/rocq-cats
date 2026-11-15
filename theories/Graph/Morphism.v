@@ -12,7 +12,7 @@ From Cats.Set Require Export Morphism.
 
 Record GraphMap (G H : Graph)
   :=
-  { vertex_map :> @Vertex G → @Vertex H
+  { vertex_map :> @Vtx G → @Vtx H
   ; edge_map {x y} : EdgeSet x y →r EdgeSet (vertex_map x) (vertex_map y)
   }.
 

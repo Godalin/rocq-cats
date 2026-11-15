@@ -23,12 +23,12 @@ From Cats Require Import
 
 (** 已有 nerve 作用构成函子，其恒等、复合及保相等定律均使用指定相等。 *)
 
-Program Definition VertexNerveF@{u r x e o h p l a b +}
-  : Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+Program Definition VtxNerveF@{u r x e o h p l a b +}
+  : Fct VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
   :=
   {|F0 P := Nᵥ(P)
-  ; F1 P Q F := VertexNerveN F
+  ; F1 P Q F := VtxNerveN F
   ; functor_fmap_proper P Q F G H := vertex_nerve_proper F G H
   |}.
 Next Obligation. exact (vertex_nerve_id X). Defined.
@@ -40,11 +40,11 @@ Next Obligation. exact (vertex_nerve_comp f g). Defined.
 (** 像 nerve 之间的每个单纯映射，都以已有重构呈现态射作为选定原像。 *)
 
 Definition vertex_nerve_full@{u r x e o h p l a b +}
-  : is_full (VertexNerveF :
-      Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+  : is_full (VtxNerveF :
+      Fct VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
         (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})).
 Proof.
-  intros P Q α. exists (VertexNerveInvF α). exact (vertex_nerve_β α).
+  intros P Q α. exists (VtxNerveInvF α). exact (vertex_nerve_β α).
 Defined.
 
 (** Reconstruction respects equality and its other round trip reflects
@@ -53,14 +53,14 @@ Defined.
 (** 重构保持相等，且另一侧往返律反映呈现态射的相等。 *)
 
 Definition vertex_nerve_faithful@{u r x e o h p l a b +}
-  : is_faithful (VertexNerveF :
-      Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+  : is_faithful (VtxNerveF :
+      Fct VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
         (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})).
 Proof.
   intros P Q F G H.
-  transitivity (VertexNerveInvF (VertexNerveN F)).
+  transitivity (VtxNerveInvF (VtxNerveN F)).
   - symmetry. apply vertex_nerve_η.
-  - transitivity (VertexNerveInvF (VertexNerveN G)).
+  - transitivity (VtxNerveInvF (VtxNerveN G)).
     + apply vertex_nerve_inv_proper. exact H.
     + apply vertex_nerve_η.
 Defined.
@@ -73,7 +73,7 @@ Defined.
     的反向重构。 *)
 
 Definition vertex_nerve_fully_faithful@{u r x e o h p l a b +}
-  : is_fully_faithful (VertexNerveF :
-      Fct VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+  : is_fully_faithful (VtxNerveF :
+      Fct VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
         (FctCat (Δ^op) SetCat@{u r _ _ _ _ _}))
   := (vertex_nerve_full, vertex_nerve_faithful).

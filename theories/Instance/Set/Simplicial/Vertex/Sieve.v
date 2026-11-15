@@ -88,7 +88,7 @@ Context (E : ∀ f : (@Hom Δ) 1 n, f ∈Sv R).
 
 Definition vertex_sieve_arrow (i j : Ordinal n)
     (h : (@Hom [Ord n]) i j)
-  : (@Hom (VertexCat T)) (vertex_sieve_label i) (vertex_sieve_label j)
+  : (@Hom (VtxCat T)) (vertex_sieve_label i) (vertex_sieve_label j)
   := let f := ⟦ArrowChain h⟧Ch in
     T⟦vertex_sieve_label_value f (E f) fin_first;
       fmap (lower (vertex_sieve_value f (E f))) (ordinal_step fin_first);
@@ -224,8 +224,8 @@ Defined.
 
 (** 使用筛的二维数据重构序数图式。 *)
 
-Program Definition VertexSieveF
-  : Fct [Ord n] (VertexCat T)
+Program Definition VtxSieveF
+  : Fct [Ord n] (VtxCat T)
   :=
   {|F0 := vertex_sieve_label
   ; F1 i j h := vertex_sieve_arrow i j h
@@ -241,7 +241,7 @@ Next Obligation. exact (vertex_sieve_arrow_comp X0 Y Z f g). Defined.
 (** 重构单形限制为整个给定的筛映射。 *)
 
 Lemma vertex_sieve_filler
-  : ⟨VertexSieveF⟩ᵥ↾Sv[Nᵥ(T); R] ≈N b.
+  : ⟨VtxSieveF⟩ᵥ↾Sv[Nᵥ(T); R] ≈N b.
 Proof.
   intros m [[f H]]. refine {|lower := _
                           |}.
@@ -265,12 +265,12 @@ Definition vertex_sieve_universal
         Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n))
         (λ x, x↾Sv[Nᵥ(T); R] ≈N b) x.
 Proof.
-  exists ⟨VertexSieveF⟩ᵥ. refine
+  exists ⟨VtxSieveF⟩ᵥ. refine
     {|this := _
     ; that := _
     |}.
   - exact vertex_sieve_filler.
-  - intros y Hy. apply (vertex_sieve_reflects y ⟨VertexSieveF⟩ᵥ).
+  - intros y Hy. apply (vertex_sieve_reflects y ⟨VtxSieveF⟩ᵥ).
     transitivity b; [exact Hy | symmetry; exact vertex_sieve_filler].
 Defined.
 

@@ -57,7 +57,7 @@ Local Open Scope nat_scope.
 Definition spine_resp@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {n : nat}
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n →r
-      LiftS (VertexChainS T n)
+      LiftS (VtxChainS T n)
   := (vertex_chain_resp T n)^↑S.
 
 (** Reconstruct a simplex by composing the intervals of its spine. *)
@@ -66,7 +66,7 @@ Definition spine_resp@{u p +} {X : SetC} {C : Cat}
 
 Definition spine_inv_resp@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {n : nat}
-  : LiftS (VertexChainS T n) →r
+  : LiftS (VtxChainS T n) →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   := (vertex_chain_diagram_resp T n)^↑S.
 
@@ -81,7 +81,7 @@ Notation "'⟦' c '⟧Sp[' T ';' n ']'" := (@spine_inv_resp _ _ T n c)
 
 Lemma spine_β@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {n : nat}
-    (c : LiftS@{_ _ u p} (VertexChainS T n))
+    (c : LiftS@{_ _ u p} (VtxChainS T n))
   : ⌊⟦c⟧Sp[T; n]⌋Sp[T; n] ≈S c.
 Proof.
   destruct c as [c]. exact {|lower := vertex_chain_β T c
@@ -109,7 +109,7 @@ Defined.
 Definition vertex_spine_iso@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) (n : nat)
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n ≅[SetCat]
-      LiftS (VertexChainS T n).
+      LiftS (VtxChainS T n).
 Proof.
   exists spine_resp, spine_inv_resp. split.
   - intros x. exact (spine_η x).

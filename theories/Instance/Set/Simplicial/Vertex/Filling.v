@@ -32,9 +32,9 @@ Record Horn2Presentation {i : Ordinal 2}
   { horn2_vertex0 : X
   ; horn2_vertex1 : X
   ; horn2_vertex2 : X
-  ; horn2_local : Horn2S (VertexCat T) horn2_vertex0 horn2_vertex1 horn2_vertex2 i
+  ; horn2_local : Horn2S (VtxCat T) horn2_vertex0 horn2_vertex1 horn2_vertex2 i
   ; horn2_presentation
-      (q : TriangleS (VertexCat T) horn2_vertex0 horn2_vertex1 horn2_vertex2)
+      (q : TriangleS (VtxCat T) horn2_vertex0 horn2_vertex1 horn2_vertex2)
     : is_horn2_filler horn2_local q →
       is_horn_filler h (△₂[T; horn2_vertex0; horn2_vertex1; horn2_vertex2] q)
   }.
@@ -182,14 +182,14 @@ Defined.
 (** 任意选定局部填充结构均给出实际 horn 映射的填充。 *)
 
 Program Definition vertex_horn2_HasFillers (i : Ordinal 2)
-    `{HF : !HasHorn2Fillers (VertexCat T) i}
+    `{HF : !HasHorn2Fillers (VtxCat T) i}
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
   :=
   {|horn_fill h := _
   |}.
 Next Obligation.
   pose (r := horn2_reconstruct h).
-  pose (q := @horn2_fill (VertexCat T) i HF
+  pose (q := @horn2_fill (VtxCat T) i HF
     (horn2_vertex0 r) (horn2_vertex1 r) (horn2_vertex2 r) (horn2_local r)).
   exists (△₂[T; horn2_vertex0 r; horn2_vertex1 r; horn2_vertex2 r] q.1).
   exact (horn2_presentation r q.1 q.2).
@@ -203,7 +203,7 @@ Definition vertex_inner_horn2_HasFillers
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
       (fin_next fin_first)
   := @vertex_horn2_HasFillers (fin_next fin_first)
-      (inner_horn2_HasFillers (VertexCat T)).
+      (inner_horn2_HasFillers (VtxCat T)).
 
 (** A groupoid on the selected objects supplies all actual two-dimensional
     horn fillers. The second outer local construction remains the dual one. *)
@@ -211,9 +211,9 @@ Definition vertex_inner_horn2_HasFillers
 (** 选定对象上的群胚提供全部实际二维 horn 填充；第二类外侧局部构造仍来自对偶。 *)
 
 Definition vertex_groupoid_horn2_HasFillers
-    `{HC : !IsGroupoid (VertexCat T)} (i : Ordinal 2)
+    `{HC : !IsGroupoid (VtxCat T)} (i : Ordinal 2)
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
-  := @vertex_horn2_HasFillers i (@horn2_HasFillers (VertexCat T) HC i).
+  := @vertex_horn2_HasFillers i (@horn2_HasFillers (VtxCat T) HC i).
 
 End TwoHorns.
 

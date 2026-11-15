@@ -4,7 +4,7 @@ From Cats Require
   Instance.Set.Simplicial.Vertex.Core.
 
 Import Cats.Instance.Set.Groupoid (EqGpd).
-Import Cats.Instance.Set.Simplicial.Vertex.Core (VertexNerve).
+Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 
 (** * Sphere Classes at Strictly Different Sizes
 
@@ -107,7 +107,7 @@ Context (A : SetC@{o e}) (C : Cat@{o h e l l})
 
 Definition lower_equality_nerve_obstruction
   : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N
-      (VertexNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
+      (VtxNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
   := bool_cocycle_not_vertex_nerve T.
 
 (** Higher ambient equality retains the same obstruction. *)
@@ -116,7 +116,7 @@ Definition lower_equality_nerve_obstruction
 
 Definition higher_equality_nerve_obstruction
   : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
-      (VertexNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
+      (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
   := bool_cocycle_not_vertex_nerve T.
 
 End NerveSizes.

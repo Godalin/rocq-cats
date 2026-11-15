@@ -24,7 +24,7 @@ Local Open Scope nat_scope.
 Section RadialComparisons.
 Universes u p.
 Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
-    `{HC : !IsGroupoid (VertexCat T)}.
+    `{HC : !IsGroupoid (VtxCat T)}.
 
 (** A labelled diagram equality compares radial transitions using any
     witnesses of the same specified endpoint equalities. *)
@@ -32,7 +32,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
 (** 带标签图式相等按任意同端点的指定相等见证比较径向过渡。 *)
 
 Lemma vertex_radial_comparison {n : nat}
-    (F G : Fct [Ord n] (VertexCat T)) (H : VertexDiagramEq T F G)
+    (F G : Fct [Ord n] (VtxCat T)) (H : VtxDiagramEq T F G)
     (i j : Ordinal n) (a : (F i : X) ≈S G i) (b : (F j : X) ≈S G j)
   : T⟦b⟧Ob ∘ ρ[F; i; j] ≈ ρ[G; i; j] ∘ T⟦a⟧Ob.
 Proof.
@@ -48,14 +48,14 @@ Defined.
 (** 共同星形的腿若与序数图式的径向过渡及指定顶点运输交换，便等于该图式。 *)
 
 Definition vertex_star_comparison {n : nat} (A : X)
-    (v : Ordinal n → X) (s : ∀ j, (@Hom (VertexCat T)) A (v j))
-    (F : Fct [Ord n] (VertexCat T)) (a : Ordinal n)
+    (v : Ordinal n → X) (s : ∀ j, (@Hom (VtxCat T)) A (v j))
+    (F : Fct [Ord n] (VtxCat T)) (a : Ordinal n)
     (e : ∀ j, v j ≈S F j) (c : A ≈S F a)
     (H : ∀ j, T⟦e j⟧Ob ∘ s j ≈ ρ[F; a; j] ∘ T⟦c⟧Ob)
-  : VertexDiagramEq T (@StarF (VertexCat T) HC [Ord n] A v s) F.
+  : VtxDiagramEq T (@StarF (VtxCat T) HC [Ord n] A v s) F.
 Proof.
   exists e. intros i j f.
-  pose proof (@star_transition_square (VertexCat T) HC _ _ _ _ _ _
+  pose proof (@star_transition_square (VtxCat T) HC _ _ _ _ _ _
     (s i) (s j) ρ[F; a; i] ρ[F; a; j]
     T⟦e i⟧Ob T⟦e j⟧Ob T⟦c⟧Ob (H i) (H j)) as K.
   rewrite ordinal_radial_inv, ordinal_radial_comp in K.

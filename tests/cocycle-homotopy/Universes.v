@@ -2,7 +2,7 @@ From Cats Require Import
   Instance.Bool.CocycleHomotopy.
 
 Import Cats.Instance.Set.Groupoid (EqGpd).
-Import Cats.Instance.Set.Simplicial.Vertex.Core (VertexNerve).
+Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 
 Local Open Scope nat_scope.
 
@@ -134,8 +134,8 @@ Context (A : SetC@{o e}) (C : Cat@{o h e l l})
 
 Definition lower_equality_nerve_obstruction
     (f : (Z²(BoolS) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒
-      (VertexNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
-    (g : VertexNerve T ⇒ Z²(BoolS))
+      (VtxNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
+    (g : VtxNerve T ⇒ Z²(BoolS))
   : ¬ SimplicialHomotopy (g ∘Nv f) idN
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 
@@ -145,8 +145,8 @@ Definition lower_equality_nerve_obstruction
 
 Definition higher_equality_nerve_obstruction
     (f : (Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
-      (VertexNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
-    (g : VertexNerve T ⇒ Z²(BoolS))
+      (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
+    (g : VtxNerve T ⇒ Z²(BoolS))
   : ¬ SimplicialHomotopy (g ∘Nv f) idN
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 

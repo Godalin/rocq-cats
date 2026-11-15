@@ -22,7 +22,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 (** 同源的两条箭头在两个保留面的全部交叠上相容；不同面的交叠常值于共同顶点。 *)
 
 Program Definition outer_horn2_matching {A B D : X}
-    (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
+    (f : (@Hom (VtxCat T)) A B) (h : (@Hom (VtxCat T)) A D)
   : HornMatchingS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1 fin_first
   :=
   {|matching_value j := match j.1 with
@@ -79,7 +79,7 @@ Defined.
 (** 下降实现外 horn，不要求预先给出缺失边。 *)
 
 Definition OuterHorn2N {A B D : X}
-    (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
+    (f : (@Hom (VtxCat T)) A B) (h : (@Hom (VtxCat T)) A D)
   : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first
   := SieveMatchingN _ _ (outer_horn2_matching f h).
 
@@ -88,7 +88,7 @@ Definition OuterHorn2N {A B D : X}
 (** 中间保留面恢复指定长边。 *)
 
 Lemma outer_horn2_face_1 {A B D : X}
-    (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
+    (f : (@Hom (VtxCat T)) A B) (h : (@Hom (VtxCat T)) A D)
     (H : ¬ (fin_next fin_first : Ordinal 2) = fin_first)
   : face[fin_first; fin_next fin_first; H] (OuterHorn2N f h) ≈S
       △₁[T; A; D] h.
@@ -102,7 +102,7 @@ Defined.
 (** 末个保留面恢复指定先行边。 *)
 
 Lemma outer_horn2_face_2 {A B D : X}
-    (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
+    (f : (@Hom (VtxCat T)) A B) (h : (@Hom (VtxCat T)) A D)
     (H : ¬ (fin_next (fin_next fin_first) : Ordinal 2) = fin_first)
   : face[fin_first; fin_next (fin_next fin_first); H] (OuterHorn2N f h) ≈S
       △₁[T; A; B] f.
@@ -117,10 +117,10 @@ Defined.
 (** 任意实际填充给出固定端点的局部填充；其三个顶点标签只需与指定标签广集相等。 *)
 
 Definition outer_horn2_normalize {A B D : X}
-    (f : (@Hom (VertexCat T)) A B) (h : (@Hom (VertexCat T)) A D)
+    (f : (@Hom (VtxCat T)) A B) (h : (@Hom (VtxCat T)) A D)
     (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
     (H : is_horn_filler (OuterHorn2N f h) x)
-  : ∃ q : TriangleS (VertexCat T) A B D,
+  : ∃ q : TriangleS (VtxCat T) A B D,
       is_horn2_filler (i := fin_first) (f, h) q.
 Proof.
   assert (J1 : ¬ (fin_next fin_first : Ordinal 2) = fin_first)
@@ -153,7 +153,7 @@ Proof.
         (ordinal_step fin_first)) ∘ T⟦p0⟧Ob).
     + exact K.
     + apply comp_proper; [| reflexivity].
-      exact (@functor_fmap_proper [Ord 2] (VertexCat T) (lower x)
+      exact (@functor_fmap_proper [Ord 2] (VtxCat T) (lower x)
         fin_first (fin_next fin_first) _ _ tt).
   - transitivity (T⟦p0; b ∘ a; p2⟧Ar).
     + symmetry. exact (vertex_rebase_comp T p0 p1 p2 a b).
@@ -162,7 +162,7 @@ Proof.
       transitivity T⟦p0; c; p2⟧Ar.
       * apply (@func_proper _ _ (vertex_rebase_resp T p0 p2)).
         unfold a, b, c. rewrite <- functor_comp.
-        exact (@functor_fmap_proper [Ord 2] (VertexCat T) (lower x)
+        exact (@functor_fmap_proper [Ord 2] (VtxCat T) (lower x)
           fin_first (fin_next (fin_next fin_first)) _ _ tt).
       * symmetry. apply (vertex_rebase_of_square T p0 p2 h c).
         pose proof (Hh _ _ (ordinal_step fin_first)) as K.
@@ -181,7 +181,7 @@ Defined.
 Program Definition vertex_outer_horn2_HasLocalFillers
     `{HF : !HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
-  : HasHorn2Fillers (VertexCat T) fin_first
+  : HasHorn2Fillers (VtxCat T) fin_first
   :=
   {|horn2_fill A B D h := _
   |}.
@@ -199,8 +199,8 @@ Defined.
 Definition vertex_outer_horn2_IsGroupoid
     `{HF : !HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
-  : VertexCat T ⦂ Gpd
-  := @horn2_0_IsGroupoid (VertexCat T) vertex_outer_horn2_HasLocalFillers.
+  : VtxCat T ⦂ Gpd
+  := @horn2_0_IsGroupoid (VtxCat T) vertex_outer_horn2_HasLocalFillers.
 
 (** The actual first outer two-horn filling structure characterizes the
     groupoid on the selected objects, rather than on an arbitrary ambient C. *)
@@ -210,7 +210,7 @@ Definition vertex_outer_horn2_IsGroupoid
 Definition vertex_outer_horn2_groupoid_iff
   : HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first ↔
-      VertexCat T ⦂ Gpd.
+      VtxCat T ⦂ Gpd.
 Proof.
   split.
   - intros H. exact (@vertex_outer_horn2_IsGroupoid H).
@@ -224,7 +224,7 @@ Defined.
 Definition vertex_kan_IsGroupoid
     `{HK : !HasKanFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})}
-  : VertexCat T ⦂ Gpd
+  : VtxCat T ⦂ Gpd
   := @vertex_outer_horn2_IsGroupoid (@hasHornFillers _ HK 1 fin_first).
 
 End OuterHorns.

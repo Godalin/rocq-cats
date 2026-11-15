@@ -14,7 +14,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 Program Definition vertex_rebase_resp {A B A' B' : X}
     (p : A ≈S A') (q : B ≈S B')
-  : (@HomSet (VertexCat T) A' B') →r (@HomSet (VertexCat T) A B)
+  : (@HomSet (VtxCat T) A' B') →r (@HomSet (VtxCat T) A B)
   :=
   {|func f := T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob
   |}.
@@ -25,7 +25,7 @@ Next Obligation. intros f g H. rewrite H. reflexivity. Defined.
 (** 调整后的箭头满足所需运输方块。 *)
 
 Lemma vertex_rebase_square {A B A' B' : X}
-    (p : A ≈S A') (q : B ≈S B') (f : (@Hom (VertexCat T)) A' B')
+    (p : A ≈S A') (q : B ≈S B') (f : (@Hom (VtxCat T)) A' B')
   : T⟦q⟧Ob ∘ vertex_rebase_resp p q f ≈ f ∘ T⟦p⟧Ob.
 Proof.
   change (T⟦q⟧Ob ∘ (T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob) ≈ f ∘ T⟦p⟧Ob).
@@ -37,7 +37,7 @@ Defined.
 (** 自反端点调整保持原箭头。 *)
 
 Lemma vertex_rebase_id {A B : X} (p : A ≈S A) (q : B ≈S B)
-    (f : (@Hom (VertexCat T)) A B)
+    (f : (@Hom (VtxCat T)) A B)
   : vertex_rebase_resp p q f ≈ f.
 Proof.
   change (T⟦symmetry q⟧Ob ∘ f ∘ T⟦p⟧Ob ≈ f).
@@ -51,7 +51,7 @@ Defined.
 
 Lemma vertex_rebase_of_square {A B A' B' : X}
     (p : A ≈S A') (q : B ≈S B')
-    (f : (@Hom (VertexCat T)) A B) (g : (@Hom (VertexCat T)) A' B')
+    (f : (@Hom (VtxCat T)) A B) (g : (@Hom (VtxCat T)) A' B')
     (H : T⟦q⟧Ob ∘ f ≈ g ∘ T⟦p⟧Ob)
   : f ≈ vertex_rebase_resp p q g.
 Proof.
@@ -67,7 +67,7 @@ Defined.
 
 Lemma vertex_rebase_comp {A B D A' B' D' : X}
     (p : A ≈S A') (q : B ≈S B') (r : D ≈S D')
-    (f : (@Hom (VertexCat T)) A' B') (g : (@Hom (VertexCat T)) B' D')
+    (f : (@Hom (VtxCat T)) A' B') (g : (@Hom (VtxCat T)) B' D')
   : vertex_rebase_resp p r (g ∘ f) ≈
       vertex_rebase_resp q r g ∘ vertex_rebase_resp p q f.
 Proof.
@@ -87,8 +87,8 @@ Lemma vertex_rebase_eq {A B A' B' A'' B'' : X}
     (p : A ≈S A') (q : B ≈S B')
     (r : A ≈S A'') (s : B ≈S B'')
     (e : A' ≈S A'') (d : B' ≈S B'')
-    (f : (@Hom (VertexCat T)) A' B')
-    (g : (@Hom (VertexCat T)) A'' B'')
+    (f : (@Hom (VtxCat T)) A' B')
+    (g : (@Hom (VtxCat T)) A'' B'')
     (H : T⟦d⟧Ob ∘ f ≈ g ∘ T⟦e⟧Ob)
   : vertex_rebase_resp p q f ≈ vertex_rebase_resp r s g.
 Proof.
@@ -104,10 +104,10 @@ Defined.
 
 (** 任意图式可沿指定顶点相等重标记；相干性完全来自对象运输。 *)
 
-Program Definition VertexRelabelF {J : Cat}
-    (F : Fct J (VertexCat T)) (v : @Ob J → X)
+Program Definition VtxRelabelF {J : Cat}
+    (F : Fct J (VtxCat T)) (v : @Ob J → X)
     (e : ∀ j, v j ≈S F j)
-  : Fct J (VertexCat T)
+  : Fct J (VtxCat T)
   :=
   {|F0 := v
   ; F1 i j f := vertex_rebase_resp (e i) (e j) (fmap F f)
@@ -133,9 +133,9 @@ Defined.
 (** 重标记后的图式通过指定运输方块等于原图式，不比较函子记录的原生相等。 *)
 
 Definition vertex_relabel_eq {J : Cat}
-    (F : Fct J (VertexCat T)) (v : @Ob J → X)
+    (F : Fct J (VtxCat T)) (v : @Ob J → X)
     (e : ∀ j, v j ≈S F j)
-  : VertexDiagramEq T (VertexRelabelF F v e) F.
+  : VtxDiagramEq T (VtxRelabelF F v e) F.
 Proof. exists e. intros i j f. apply vertex_rebase_square. Defined.
 
 End Relabel.

@@ -34,26 +34,26 @@ Local Open Scope nat_scope.
     equality. It is the edge-level picture of the prism. For a whole chain,
     %\coqref{Cats.Cat.Diagram.Prism.PrismDiagramF}
     {%[PrismDiagramF]%}% supplies compatible diagrams in every degree, and
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Homotopy.VertexNerveHomotopy}
-    {%[VertexNerveHomotopy]%}% assembles them into the simplicial homotopy whose
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Homotopy.VtxNerveHomotopy}
+    {%[VtxNerveHomotopy]%}% assembles them into the simplicial homotopy whose
     endpoints were explained in %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Core.SimplicialHomotopy}
     {%[SimplicialHomotopy]%}%. No inverse of a
     component of α is required. This chapter constructs the direction from
     natural transformations to homotopies. The converse and both round trips
     follow in
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.HomotopyInv.VertexNerveInvHomotopyN}
-    {%[VertexNerveInvHomotopyN]%}%. *)
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.HomotopyInv.VtxNerveInvHomotopyN}
+    {%[VtxNerveInvHomotopyN]%}%. *)
 
 (** 对从 A 到 B 的箭头 a，[α : F ⇒ G] 的自然性说明下图按目标范畴的指定
     相等交换。这是棱柱在一条边上的图像。对整条箭头链，%\coqref{Cats.Cat.Diagram.Prism.PrismDiagramF}
     {%[PrismDiagramF]%}%
-    在各维提供相容图式，%\coqref{Cats.Instance.Set.Simplicial.Vertex.Homotopy.VertexNerveHomotopy}
-    {%[VertexNerveHomotopy]%}% 再把它们组装为单纯同伦，
+    在各维提供相容图式，%\coqref{Cats.Instance.Set.Simplicial.Vertex.Homotopy.VtxNerveHomotopy}
+    {%[VtxNerveHomotopy]%}% 再把它们组装为单纯同伦，
     端点条件就是前面 %\coqref{Cats.Instance.Set.Simplicial.Homotopy.Core.SimplicialHomotopy}
     {%[SimplicialHomotopy]%}% 所说明的条件。构造不要求 α 的
     分量可逆。本章给出从自然变换到同伦的方向，反向恢复及两个往返律接着见
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.HomotopyInv.VertexNerveInvHomotopyN}
-    {%[VertexNerveInvHomotopyN]%}%。 *)
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.HomotopyInv.VtxNerveInvHomotopyN}
+    {%[VtxNerveInvHomotopyN]%}%。 *)
 
 (** @lang both
 %\begin{center}
@@ -78,7 +78,7 @@ Context {X Y : SetC} {C D : Cat}
 (** 柱映射将带标签单形及保序时间单形送到相应棱柱限制。两个值大小共同选取，
     源及目标的原生大小仍保持独立。 *)
 
-Program Definition VertexNerveHomotopyN (α : F ⇒ G)
+Program Definition VtxNerveHomotopyN (α : F ⇒ G)
   : SimplicialCylinderF
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
   :=
@@ -106,13 +106,13 @@ Defined.
 
 (** 完整同伦保留此映射及两个端点方程；自然变换的分量无须可逆。 *)
 
-Program Definition VertexNerveHomotopy (α : F ⇒ G)
+Program Definition VtxNerveHomotopy (α : F ⇒ G)
   : SimplicialHomotopy
-      (VertexNerveN F :
+      (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-      (VertexNerveN G)
+      (VtxNerveN G)
   :=
-  {|homotopy_map := VertexNerveHomotopyN α
+  {|homotopy_map := VtxNerveHomotopyN α
   |}.
 Next Obligation.
   destruct b; intros n [P]; refine {|lower := _
@@ -127,7 +127,7 @@ Defined.
 (** 此构造保持自然变换的逐点相等，比较所存柱映射。 *)
 
 Global Instance vertex_nerve_homotopy_proper
-  : Proper (NatEq ==> HomotopyEq) VertexNerveHomotopy.
+  : Proper (NatEq ==> HomotopyEq) VtxNerveHomotopy.
 Proof.
   intros α β H n [[P] [θ]]. refine {|lower := _
                                    |}.
@@ -139,18 +139,18 @@ Defined.
 (** 起点限制为 [F] 诱导的 nerve 映射。 *)
 
 Lemma vertex_nerve_homotopy_0 (α : F ⇒ G)
-  : (VertexNerveHomotopyN α ∘Nv SimplicialEndpointN Nᵥ(T) false) ≈N
-      VertexNerveN F.
-Proof. exact (homotopy_endpoint (VertexNerveHomotopy α) false). Defined.
+  : (VtxNerveHomotopyN α ∘Nv SimplicialEndpointN Nᵥ(T) false) ≈N
+      VtxNerveN F.
+Proof. exact (homotopy_endpoint (VtxNerveHomotopy α) false). Defined.
 
 (** The final restriction is the nerve map induced by [G]. *)
 
 (** 终点限制为 [G] 诱导的 nerve 映射。 *)
 
 Lemma vertex_nerve_homotopy_1 (α : F ⇒ G)
-  : (VertexNerveHomotopyN α ∘Nv SimplicialEndpointN Nᵥ(T) true) ≈N
-      VertexNerveN G.
-Proof. exact (homotopy_endpoint (VertexNerveHomotopy α) true). Defined.
+  : (VtxNerveHomotopyN α ∘Nv SimplicialEndpointN Nᵥ(T) true) ≈N
+      VtxNerveN G.
+Proof. exact (homotopy_endpoint (VtxNerveHomotopy α) true). Defined.
 
 End NerveHomotopies.
 
@@ -162,12 +162,12 @@ End NerveHomotopies.
 Lemma vertex_nerve_homotopy_id@{u p +} {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : HomotopyEq
-      (VertexNerveHomotopy (F := F) (G := F)
+      (VtxNerveHomotopy (F := F) (G := F)
         (idN : F ⇒ F) : SimplicialHomotopy
-          (VertexNerveN F :
+          (VtxNerveN F :
             (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-          (VertexNerveN F))
-      (SimplicialConstantHomotopy (VertexNerveN F)).
+          (VtxNerveN F))
+      (SimplicialConstantHomotopy (VtxNerveN F)).
 Proof.
   intros n [[P] [θ]]. refine {|lower := _
                              |}.

@@ -46,7 +46,7 @@ Program Definition GraphCoproductsCoequalizerColimit {G : Graph} {C : Cat}
 (** 从顶点与生成边余积选择自由形状的全部余极限。 *)
 
 Program Definition GraphCoproductsCoequalizerColimits {G : Graph} {C : Cat}
-    `{HO : !HasColimitsOfShape C (DiscreteCat (@Vertex G))}
+    `{HO : !HasColimitsOfShape C (DiscreteCat (@Vtx G))}
     `{HG : !HasColimitsOfShape C (DiscreteCat (GraphEdges (G^opG)))}
     `{HE : !HasCoequalizer C}
   : HasColimitsOfShape C (FreeCat G)

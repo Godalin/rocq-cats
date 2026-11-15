@@ -81,7 +81,7 @@ Defined.
 
 Program Definition edge_simplex_resp@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) (A B : X)
-  : (@HomSet (VertexCat T) A B) →r
+  : (@HomSet (VtxCat T) A B) →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1
   :=
   {|func f := ⟨⟦ArrowChain f⟧Ch⟩ᵥ
@@ -102,7 +102,7 @@ Notation "'△₁[' T ';' A ';' B ']'" := (edge_simplex_resp T A B)
 
 Lemma edge_simplex_arrow@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B : X}
-    (f : (@Hom (VertexCat T)) A B)
+    (f : (@Hom (VtxCat T)) A B)
   : fmap (lower ((△₁[T; A; B] : _ →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 1) f))
       (ordinal_step fin_first) ≈ f.

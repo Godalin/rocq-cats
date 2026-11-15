@@ -22,7 +22,7 @@ From Cats Require Import
 
 (** 积呈现在每个因子中使用给定的运输。 *)
 
-Program Definition VertexProductObjF
+Program Definition VtxProductObjF
     {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
     (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
   : Fct (EqGpd (X ×S Y)) (C ×C D)
@@ -51,10 +51,10 @@ Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
 
 (** 投影保持标签及其指定运输。 *)
 
-Program Definition VertexFstF
-  : VertexProductObjF T U →ᵥ T
+Program Definition VtxFstF
+  : VtxProductObjF T U →ᵥ T
   :=
-  {|vertex_functor := FstF (VertexCat T) (VertexCat U) ∘F
+  {|vertex_functor := FstF (VtxCat T) (VtxCat U) ∘F
       InducedProductF X Y T U
   |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact p. Defined.
@@ -64,10 +64,10 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 
 (** 第二投影同样保持运输。 *)
 
-Program Definition VertexSndF
-  : VertexProductObjF T U →ᵥ U
+Program Definition VtxSndF
+  : VtxProductObjF T U →ᵥ U
   :=
-  {|vertex_functor := SndF (VertexCat T) (VertexCat U) ∘F
+  {|vertex_functor := SndF (VtxCat T) (VtxCat U) ∘F
       InducedProductF X Y T U
   |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact q. Defined.
@@ -77,9 +77,9 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 
 (** 通过配对底层函子，配对同源呈现映射。 *)
 
-Program Definition VertexPairF {Z : SetC} {E : Cat}
+Program Definition VtxPairF {Z : SetC} {E : Cat}
     {V : Fct (EqGpd Z) E} (F : V →ᵥ T) (G : V →ᵥ U)
-  : V →ᵥ VertexProductObjF T U
+  : V →ᵥ VtxProductObjF T U
   :=
   {|vertex_functor := InducedProductInvF X Y T U ∘F PairF F G
   |}.
@@ -93,16 +93,16 @@ Next Obligation. split; apply vertex_functor_transport_witness. Defined.
 (** 通过与投影作保相等后复合，拆分带标签图式。 *)
 
 Program Definition vertex_diagram_product_split_resp (J : Cat)
-  : VertexDiagramS (VertexProductObjF T U) J →r
-      (VertexDiagramS T J ×S VertexDiagramS U J)
+  : VtxDiagramS (VtxProductObjF T U) J →r
+      (VtxDiagramS T J ×S VtxDiagramS U J)
   :=
-  {|func F := (vertex_diagram_postcomp_resp VertexFstF F,
-      vertex_diagram_postcomp_resp VertexSndF F)
+  {|func F := (vertex_diagram_postcomp_resp VtxFstF F,
+      vertex_diagram_postcomp_resp VtxSndF F)
   |}.
 Next Obligation.
   intros F G H. split.
-  - exact (@func_proper _ _ (vertex_diagram_postcomp_resp VertexFstF) F G H).
-  - exact (@func_proper _ _ (vertex_diagram_postcomp_resp VertexSndF) F G H).
+  - exact (@func_proper _ _ (vertex_diagram_postcomp_resp VtxFstF) F G H).
+  - exact (@func_proper _ _ (vertex_diagram_postcomp_resp VtxSndF) F G H).
 Defined.
 
 (** Pair arbitrary labelled diagrams, with paired equality witnesses. *)
@@ -110,8 +110,8 @@ Defined.
 (** 配对任意带标签图式，并配对其相等见证。 *)
 
 Program Definition vertex_diagram_product_pair_resp (J : Cat)
-  : (VertexDiagramS T J ×S VertexDiagramS U J) →r
-      VertexDiagramS (VertexProductObjF T U) J
+  : (VtxDiagramS T J ×S VtxDiagramS U J) →r
+      VtxDiagramS (VtxProductObjF T U) J
   :=
   {|func FG := InducedProductInvF X Y T U ∘F PairF (fst FG) (snd FG)
   |}.
@@ -127,16 +127,16 @@ Defined.
 (** 原生图式的拆分及配对在带标签相等下互逆，无需函数或函子定律的相等。 *)
 
 Definition vertex_diagram_product_iso (J : Cat)
-  : VertexDiagramS (VertexProductObjF T U) J ≅[SetCat]
-      (VertexDiagramS T J ×S VertexDiagramS U J).
+  : VtxDiagramS (VtxProductObjF T U) J ≅[SetCat]
+      (VtxDiagramS T J ×S VtxDiagramS U J).
 Proof.
   exists (vertex_diagram_product_split_resp J),
     (vertex_diagram_product_pair_resp J). split.
   - intros F.
     assert (e : ∀ i, ((fst (F i), snd (F i)) : X ×S Y) ≈S F i).
     { intros i. destruct (F i). split; reflexivity. }
-    pose (e1 := λ i, vertex_functor_ob_proper VertexFstF _ _ (e i)).
-    pose (e2 := λ i, vertex_functor_ob_proper VertexSndF _ _ (e i)).
+    pose (e1 := λ i, vertex_functor_ob_proper VtxFstF _ _ (e i)).
+    pose (e2 := λ i, vertex_functor_ob_proper VtxSndF _ _ (e i)).
     exists e. intros i j f. split.
     + change (T⟦e1 j⟧Ob ∘ fst (fmap F f) ≈
         fst (fmap F f) ∘ T⟦e1 i⟧Ob).
@@ -162,15 +162,15 @@ Defined.
 Global Instance vertex_pair_proper {Z : SetC} {E : Cat}
     {V : Fct (EqGpd Z) E}
   : Proper (VtxFctEq ==> VtxFctEq ==> VtxFctEq)
-      (VertexPairF (V := V)).
+      (VtxPairF (V := V)).
 Proof.
   intros F F' H G G' K.
   exact (@func_proper _ _
-    (vertex_diagram_product_pair_resp (VertexCat V))
-    ((F : Fct (VertexCat V) (VertexCat T)),
-     (G : Fct (VertexCat V) (VertexCat U)))
-    ((F' : Fct (VertexCat V) (VertexCat T)),
-     (G' : Fct (VertexCat V) (VertexCat U))) (H, K)).
+    (vertex_diagram_product_pair_resp (VtxCat V))
+    ((F : Fct (VtxCat V) (VtxCat T)),
+     (G : Fct (VtxCat V) (VtxCat U)))
+    ((F' : Fct (VtxCat V) (VtxCat T)),
+     (G' : Fct (VtxCat V) (VtxCat U))) (H, K)).
 Defined.
 
 End Product.
@@ -179,14 +179,14 @@ End Product.
 
 (** 独立呈现映射作用于两个因子。 *)
 
-Definition VertexProductF
+Definition VtxProductF
     {X : SetC} {Y : SetC} {X' : SetC} {Y' : SetC}
     {C : Cat} {D : Cat} {C' : Cat} {D' : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {T' : Fct (EqGpd X') C'} {U' : Fct (EqGpd Y') D'}
     (F : T →ᵥ T') (G : U →ᵥ U')
-  : VertexProductObjF T U →ᵥ VertexProductObjF T' U'
-  := VertexPairF T' U' (F ∘Fᵥ VertexFstF T U) (G ∘Fᵥ VertexSndF T U).
+  : VtxProductObjF T U →ᵥ VtxProductObjF T' U'
+  := VtxPairF T' U' (F ∘Fᵥ VtxFstF T U) (G ∘Fᵥ VtxSndF T U).
 
 (** Independent products preserve comparison of both factors. *)
 
@@ -198,7 +198,7 @@ Global Instance vertex_product_proper
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {T' : Fct (EqGpd X') C'} {U' : Fct (EqGpd Y') D'}
   : Proper (VtxFctEq ==> VtxFctEq ==> VtxFctEq)
-      (@VertexProductF X Y X' Y' C D C' D' T U T' U').
+      (@VtxProductF X Y X' Y' C D C' D' T U T' U').
 Proof.
   intros F F' H G G' K. apply vertex_pair_proper;
     apply vertex_comp_proper; try reflexivity; assumption.

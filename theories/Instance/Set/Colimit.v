@@ -112,7 +112,7 @@ Definition SetCat_HasColimitsOfShape@{u p +} (J : Cat)
 Definition SetCat_GraphColimits@{u p +} (G : Graph)
   : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) (FreeCat G)
   := @GraphCoproductsCoequalizerColimits G SetCat
-      (SetCat_HasIndexedCoproducts (@Vertex G))
+      (SetCat_HasIndexedCoproducts (@Vtx G))
       (SetCat_HasIndexedCoproducts (GraphEdges (G^opG)))
       SetCat_HasCoequalizer.
 
