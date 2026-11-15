@@ -18,7 +18,10 @@ Local Open Scope ordinal_scope.
     product is determined by six four-simplex values.
 
     Determination is not extension from a subdomain: the horn attachment
-    geometry and the supplied values' compatibility are separate tasks. *)
+    geometry and the supplied values' compatibility are separate tasks.
+    The concrete nine-step geometry is developed in
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleHorn.triangle_horn_stage_preimage_iff}
+    {%[triangle_horn_stage_preimage_iff]%}%, before its future pushout consumer. *)
 
 (** * 六个单形覆盖实际三角积
 
@@ -27,7 +30,10 @@ Local Open Scope ordinal_scope.
     {%[is_presheaf_cover]%}% 意义下的覆盖，因此从该积出发的给定映射由六个
     四单形值确定。
 
-    确定性不等于从子域延拓；horn 附着几何及给定值的相容性仍是独立任务。 *)
+    确定性不等于从子域延拓；horn 附着几何及给定值的相容性仍是独立任务。
+    具体九步几何见
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleHorn.triangle_horn_stage_preimage_iff}
+    {%[triangle_horn_stage_preimage_iff]%}%，其预层推出消费者留待后续。 *)
 
 (** The generator retains both actual monotone coordinates. *)
 
