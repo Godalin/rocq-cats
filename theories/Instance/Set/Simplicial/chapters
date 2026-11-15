@@ -29,6 +29,7 @@ Vertex/Category.v
 Vertex/Cartesian.v
 Homotopy/Core.v
 Homotopy/Triangle.v
+Homotopy/TimeOverlap.v
 Homotopy/Sphere.v
 Homotopy/SphereComposition.v
 Homotopy/SphereMap.v
