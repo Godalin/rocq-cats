@@ -461,6 +461,11 @@ Monad–Applicative–Arrow 工作从
   with transparent mediators and unique comparisons preserving the generic element.
   Write `X ⦂ Rep F`, `X ⦂ Repᵒᵖ P` and `u ⦂ Univ(F)` for these structures;
   cartesian morphisms use the same annotation style, `f ⦂ Cart(P)`.
+  [Elements](./theories/Instance/Set/Elements.v) constructs the category of
+  elements of a setoid-valued presheaf and its canonical cartesian lifts,
+  retaining element-equality witnesses while comparing base arrows.
+  元素范畴保留广集值预层的元素相等见证，以基底箭头相等比较态射，并提供标准
+  笛卡尔提升。
   [Terminal](./theories/Instance/Set/Terminal.v) and
   [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
   [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map
@@ -486,6 +491,12 @@ Monad–Applicative–Arrow 工作从
   remains explicit.
   显示泛配对经一般泛元素准则恢复上下文扩张，提升 Hom 给出表示；
   另选终上下文得到 `DisplayCwF P`，模型选择仍须显式启用。
+  [Display/Comprehension](./theories/DTT/Display/Comprehension.v) relates these
+  displays to comprehension over the fixed type presheaf's element projection.
+  The total-space functors are compared by a natural isomorphism preserving
+  projection; a terminal choice then gives `ComprehensionCwF P K`.
+  固定类型预层后，其元素投影上的理解结构与相干显示结构互相构造；全空间函子
+  以保持投影的自然同构比较，另选终上下文得到 CwF。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)
