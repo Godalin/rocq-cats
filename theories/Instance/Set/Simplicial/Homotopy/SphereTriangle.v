@@ -21,11 +21,13 @@ Local Open Scope ordinal_scope.
     {%[TwoSphereHomotopyCylinder]%}% has direction y to x; its direction
     cannot be silently reversed without supplying
     further data. Generated chains, general π₂ and weak-equivalence
-    comparison remain separate work. The
-    %\coqref{Cats.Instance.Set.Simplicial.HornAttachment.HornAttachmentExtension}
-    {%[HornAttachmentExtension]%}% constructs an actual extension across
-    one supplied attachment square; the product's attachment geometry
-    still has to be exhibited. *)
+    comparison remain separate work.
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
+    {%[TriangleHornProductExtension]%}% now iterates the actual attachment
+    geometry, while
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereReverseTriangleInput}
+    {%[SphereReverseTriangleInput]%}% supplies the complete relative
+    initial map. Their assembly and full recovery are the next consumer. *)
 
 (** * 球面柱的相对三角延拓
 
@@ -37,9 +39,11 @@ Local Open Scope ordinal_scope.
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereElementaryCylinder.TwoSphereHomotopyCylinder}
     {%[TwoSphereHomotopyCylinder]%}% 方向为 y 到 x，不能在没有额外数据时
     悄然反转；生成链、一般 π₂ 及弱等价比较仍是独立工作。
-    %\coqref{Cats.Instance.Set.Simplicial.HornAttachment.HornAttachmentExtension}
-    {%[HornAttachmentExtension]%}% 跨一个给定附着方形实际构造延拓；仍须给出
-    该积的具体附着几何。 *)
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
+    {%[TriangleHornProductExtension]%}% 现已迭代实际附着几何，
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereReverseTriangleInput}
+    {%[SphereReverseTriangleInput]%}% 则给出完整相对初始映射。
+    将两者组合并证明完整恢复，留待接下来的消费者。 *)
 
 (** ** Fixing All Spatial Boundary Simplices
 
