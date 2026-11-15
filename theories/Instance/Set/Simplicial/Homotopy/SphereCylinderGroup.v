@@ -27,7 +27,10 @@ Local Open Scope ordinal_scope.
     choices and algebra choices are supplied independently, and import
     enables no model. Commutativity for general Kan objects, identification
     with general π₂, arbitrary-path transport and weak-equivalence
-    invariants remain further work. *)
+    invariants remain further work. The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderGroupMap.two_sphere_cylinder_map_mul}
+    {%[two_sphere_cylinder_map_mul]%}% compares the same selected operations
+    under the existing simplicial maps, without preserving chosen fillers. *)
 
 (** * 实际柱呈现中的同一球面群
 
@@ -43,7 +46,10 @@ Local Open Scope ordinal_scope.
 
     生成类呈现仍为主呈现，柱等价选择与代数选择独立显式给出，导入不启用模型。
     一般 Kan 对象的交换性、一般 π₂ 识别、任意路径运输及弱等价不变量仍需
-    后续工作。 *)
+    后续工作。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderGroupMap.two_sphere_cylinder_map_mul}
+    {%[two_sphere_cylinder_map_mul]%}% 比较原单纯映射下的同一选定运算，
+    不要求保持所选填充。 *)
 
 (** The vertical maps retain representatives; their preservation equations
     compare products in generated equality on the bottom row. The transported
