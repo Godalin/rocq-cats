@@ -1,9 +1,10 @@
+From Cats Require Export
+  Cat.Groupoid.Core.
 From Cats Require Import
   Algebra.Monoid.Action
   Algebra.Group.Category
   Cat.Core
   Cat.Functor.Core
-  Cat.Groupoid.Core
   Cat.Groupoid.Functor
   Instance.Set.Core
   Instance.Bool.Group.
@@ -19,16 +20,16 @@ Local Existing Instance BoolS_Group.
 (** 异或群的单对象范畴保留两条不同的环路。 *)
 
 Definition BoolGroupoid
-  : Cat
-  := B(BoolS).
+  : Gpd
+  := GroupGpd BoolS.
 
-(** Explicitly enable the groupoid structure inherited from the xor group. *)
+(** Read the same groupoid witnesses stored by the xor-group bundle. *)
 
-(** 显式启用从异或群继承的群胚结构。 *)
+(** 读取异或群结构包保存的同一群胚见证。 *)
 
 Definition BoolGroupoid_IsGroupoid
   : BoolGroupoid ⦂ Gpd
-  := MonoidCat_IsGroupoid BoolS.
+  := @isGroupoid BoolGroupoid.
 
 (** The nonidentity loop of the boolean groupoid. *)
 
@@ -85,7 +86,7 @@ Proof. intros H. specialize (H false). discriminate H. Qed.
 
 Definition bool_action_loop_iso
   : is_iso (fmap BoolActionF bool_loop)
-  := groupoid_fmap_iso (HC := BoolGroupoid_IsGroupoid) BoolActionF bool_loop.
+  := groupoid_fmap_iso BoolActionF bool_loop.
 
 (** Applying the loop twice is the identity, by the original inverse laws. *)
 

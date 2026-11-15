@@ -37,9 +37,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   selection of the corresponding constructions on supplied data:
   `HasProduct C` provides a chosen product for every pair of objects.
   These interfaces retain Type-valued computational witnesses.
-- Keep a named ambient setoid/category as a parameter. At the first layer,
-  expose it with a computed field such as `MagmaS :> SetC := M` or
-  `CartesianC :> Cat := C`, without storing another carrier or category.
+- Complete structures are moving to bundles that own one underlying carrier
+  or category. `Gpd` stores `GpdC :> Cat`; `Cat` exposes `Ob :> Type`.
+  Migrate the remaining parameterized hierarchies in bounded steps; do not
+  duplicate a carrier or category during that migration. Fixed-data `Has*`
+  choices and `Is*` properties keep their named ambient parameters.
 - Store each immediate parent once. When it is the unique underlying view,
   declare it with `:>` and a kind-based name such as `GroupM` or `CCCC`.
   Reach weaker structures through that parent; add no direct bypass to an
@@ -50,6 +52,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   use named `has*`/`is*` fields and `::`.
 - Tie dependent constructions to those same inherited choices. For example,
   a CCC's exponentials use its cartesian parent's selected products.
+  Bundle-derived operations pass their stored evidence explicitly when
+  other instances can share a definitionally equal carrier or category.
   General theorems retain the weakest sufficient hypotheses.
 - Select one primary view per interface; keep other presentations explicit.
   A CwF's primary view is its type-and-term functor. Functors keep their
@@ -98,8 +102,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   rather than using alternative long-arrow Unicode characters. Distinct
   symbols may express distinct meanings, such as `↣` for monomorphisms.
   Use `∏`/`∐` for indexed products/coproducts; reserve `Π` for Pi-types.
-- Category extensions take a named category parameter. Declare chosen
-  dependencies by name; use named `!Has*` constraints in clients. Primary
+- Fixed-data category extensions take a named category parameter; complete
+  bundles expose their stored category through one underlying view. Declare
+  chosen dependencies by name; use named `!Has*` constraints in clients. Primary
   parents follow the structural-hierarchy rules; supplementary inherited
   structures use `has*`/`is*` fields and `::`.
 - Expose a unique underlying function, functor or carrier with `:>` and use

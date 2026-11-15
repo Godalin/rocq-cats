@@ -1,6 +1,9 @@
 From Cats Require Import
   Instance.Bool.CocycleHomotopy.
 
+From Cats Require Import
+  Cat.Groupoid.Core.
+
 Import Cats.Instance.Set.Groupoid (EqGpd).
 Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 

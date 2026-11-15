@@ -3,6 +3,9 @@ From Cats Require Import
 From Cats Require
   Instance.Set.Simplicial.Vertex.Core.
 
+From Cats Require Import
+  Cat.Groupoid.Core.
+
 Import Cats.Instance.Set.Groupoid (EqGpd).
 Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 

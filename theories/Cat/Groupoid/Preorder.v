@@ -1,5 +1,6 @@
+From Cats Require Export
+  Cat.Groupoid.Core.
 From Cats Require Import
-  Cat.Groupoid.Core
   Cat.Preorder.
 
 (** * Thin Groupoids
@@ -28,3 +29,21 @@ Program Definition CodiscreteCat_IsGroupoid (X : Type)
   :=
   {|groupoid_iso x y f := (tt; (tt, tt))
   |}.
+
+(** A symmetric preorder gives a complete thin groupoid, using its original
+    relation witnesses as arrows and the supplied symmetry as inversion. *)
+
+(** 对称预序给出完整薄群胚，以原关系见证为箭头，以给定对称性取逆。 *)
+
+Definition PreorderGpd {X : Type} (R : crelation X)
+    `{HR : !PreOrder R} `{HS : !Symmetric R}
+  : Gpd
+  := GpdFromProperty (PreorderCat R) (PreorderCat_IsGroupoid R).
+
+(** Package the codiscrete category with its unique reverse arrows. *)
+
+(** 将余离散范畴与其唯一反向箭头打包。 *)
+
+Definition CodiscreteGpd (X : Type)
+  : Gpd
+  := GpdFromProperty (CodiscreteCat X) (CodiscreteCat_IsGroupoid X).

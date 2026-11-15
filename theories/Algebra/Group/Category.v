@@ -1,7 +1,6 @@
 From Cats Require Export
   Algebra.Group.Core
-  Algebra.Monoid.Category.
-From Cats Require Import
+  Algebra.Monoid.Category
   Cat.Groupoid.Core.
 
 Local Open Scope monoid_scope.
@@ -20,6 +19,15 @@ Program Definition MonoidCat_IsGroupoid (G : SetC) `{HG : !Group G}
   :=
   {|groupoid_iso X Y g := (g⁻¹; (group_inv_l g, group_inv_r g))
   |}.
+
+(** Bundle the original one-object category and its group inverses.
+    This keeps the specified setoid equality and stores no second operation. *)
+
+(** 将原单对象范畴与其群逆打包，保留指定广集相等，不另存运算。 *)
+
+Definition GroupGpd (G : SetC) `{HG : !Group G}
+  : Gpd
+  := GpdFromProperty B(G) (MonoidCat_IsGroupoid G).
 
 (** Endomorphisms at any specified object of a groupoid form a group.
     This construction requires no equality of object representatives. *)

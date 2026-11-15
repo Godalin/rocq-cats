@@ -5,16 +5,52 @@ From Cats Require Export
 
     A groupoid is an existing category in which every arrow has an inverse.
     The inverse laws use the specified hom-setoid equality. All further
-    coherence follows from inverse uniqueness; no new category is bundled. *)
+    coherence follows from inverse uniqueness. [IsGroupoid] supplies witnesses
+    on a fixed category; [Gpd] bundles that category with those witnesses. *)
 
 (** * 群胚
 
     群胚是每条箭头均有逆的已有范畴。互逆定律使用 Hom 广集指定的相等；其余
-    相干性由逆的唯一性导出，不重新组合一个范畴。 *)
+    相干性由逆的唯一性导出。[IsGroupoid] 为固定范畴提供见证；[Gpd] 将该范畴
+    与这些见证打包。 *)
 
 Class IsGroupoid (C : Cat)
   :=
   { groupoid_iso {X Y : @Ob C} (f : Hom X Y) : is_iso f }.
+
+(** A complete groupoid owns one category. Its inherited inverse witnesses
+    use that category's hom equality and remain computational data in [Type].
+    The unique underlying chain is [Gpd] to [Cat] to the object type. *)
+
+(** 完整群胚保存唯一底层范畴。继承的逆见证使用该范畴的 Hom 相等，并保持为
+    [Type] 中的计算数据。唯一底层转换链由 [Gpd] 经 [Cat] 到对象类型。 *)
+
+Class Gpd
+  :=
+  (** The only category view stores the category once. *)
+
+  (** 唯一范畴视图只保存一次底层范畴。 *)
+
+  { GpdC :> Cat
+
+  (** Reuse the property interface on precisely that category. *)
+
+  (** 在恰好该底层范畴上复用性质接口。 *)
+
+  ; isGroupoid :: IsGroupoid GpdC
+  }.
+
+(** Package explicitly supplied inverse witnesses without choosing a new
+    category, inverse operation or equality relation. *)
+
+(** 将显式提供的逆见证打包，不另选范畴、逆运算或相等关系。 *)
+
+Program Definition GpdFromProperty (C : Cat) (HC : IsGroupoid C)
+  : Gpd
+  :=
+  {|GpdC := C
+  ; isGroupoid := HC
+  |}.
 
 Notation "C '⦂' 'Gpd'" := (IsGroupoid C)
   (at level 50, no associativity) : type_scope.
@@ -127,6 +163,17 @@ Definition groupoid_arrow_iso {X Y : @Ob C} (f : Hom X Y)
 
 End Groupoid.
 
+(** Invert with precisely the witnesses stored in the supplied bundle.
+    Keeping [G] explicit prevents another property on the same underlying
+    category from changing this computational choice. *)
+
+(** 恰好使用给定结构包保存的见证取逆。显式保留 [G]，避免同一底层范畴上的
+    另一份性质改变该计算选择。 *)
+
+Definition gpd_inv (G : Gpd) {X Y : G} (f : Hom X Y)
+  : Hom Y X
+  := @groupoid_inv G (@isGroupoid G) X Y f.
+
 Notation "f '⁻¹'" := (groupoid_inv f)
   (at level 9) : hom_scope.
 
@@ -161,3 +208,22 @@ Next Obligation.
   split; split; cbn; [apply groupoid_inv_l | apply groupoid_inv_l |
     apply groupoid_inv_r | apply groupoid_inv_r].
 Defined.
+
+(** The opposite groupoid reuses the opposite-category construction and
+    swaps the original inverse laws; it does not rebuild the dual theory. *)
+
+(** 反群胚复用反范畴构造并交换原有互逆定律，不另建对偶理论。 *)
+
+Definition OpGpd (G : Gpd)
+  : Gpd
+  := GpdFromProperty (G^op) (@op_IsGroupoid G (@isGroupoid G)).
+
+(** The product groupoid inherits the componentwise inverses on the same
+    product category. *)
+
+(** 乘积群胚在同一乘积范畴上继承逐分量的逆。 *)
+
+Definition ProdGpd (G H : Gpd)
+  : Gpd
+  := GpdFromProperty (G ×C H)
+      (@ProdCat_IsGroupoid G H (@isGroupoid G) (@isGroupoid H)).

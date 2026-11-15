@@ -4,6 +4,9 @@ From Cats Require Export
 From Cats Require
   Instance.Set.Simplicial.Vertex.Sphere.
 
+From Cats Require Import
+  Cat.Groupoid.Core.
+
 Import Cats.Instance.Set.Groupoid (EqGpd).
 Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 Import Cats.Instance.Set.Simplicial.Vertex.Sphere (vertex_two_sphere_unique).

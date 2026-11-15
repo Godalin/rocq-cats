@@ -9,15 +9,16 @@ remain historical evidence.
 本文公共标识符按当前[缩写对照](./Abbreviations.md)更新；下方注明日期与基线的
 清单仍是历史证据。
 
-The [current whole-library audit](#library-wide-structure-and-naming-audit)
-started with all 87 class/record interfaces at baseline `5d87331`. Its
-inventory now includes 100 interfaces after the structural hierarchy slices
-and the synchronized integrated baseline,
-alongside the structural naming and inheritance findings after the CCC changes.
+The [dated whole-library audit](#library-wide-structure-and-naming-audit)
+started with all 87 class/record interfaces at baseline `5d87331`, growing to
+100 interfaces at its later synchronized checkpoint. It records the structural
+naming and inheritance findings after the CCC changes. The complete-category
+slice below gives a fresh inventory for its own integration baseline.
 
-[当前全库审计](#library-wide-structure-and-naming-audit)基于 `5d87331`，
-起初分类全部 87 个类／记录接口；清单现包含结构层级批次及已同步集成基线后的 100 个接口，
-并记录 CCC 修改后的结构命名与继承问题。
+[注明基线的全库审计](#library-wide-structure-and-naming-audit)起初基于
+`5d87331` 分类全部 87 个类／记录接口，在后续同步检查点增至 100 个接口，
+并记录 CCC 修改后的结构命名与继承问题。下方完整范畴首片按自己的集成基线
+重新盘点接口。
 
 The lax monoidal interface now bundles its underlying functor and structure
 in one class, exposing a single coercion to `Fct`. The first follow-up
@@ -28,6 +29,96 @@ general theorems alongside those bundles.
 Lax monoidal 接口现已将底层函子及结构打包在同一个类中，只提供一条到
 `Fct` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
 笛卡尔闭函子。已有固定数据保持性接口继续与打包接口共存，服务于一般定理。
+
+## Complete category bundles: first slice
+
+## 完整范畴打包：首个批次
+
+The user-directed structural migration starts from integrated naming result
+`76642d4`. This first bounded slice changes [Cat](../theories/Cat/Core.v) to
+expose `Ob :> Type`, so an object can be written `X : C`. It adds the complete
+[Gpd](../theories/Cat/Groupoid/Core.v) class with `GpdC :> Cat` and inherited
+`isGroupoid :: IsGroupoid GpdC`. The sole view chain is `Gpd → Cat → Type`;
+the category and computational inverse witnesses are stored once. Fixed-data
+`IsGroupoid C` and the general inverse theory remain independently reusable.
+
+用户安排的结构迁移从已集成命名结果 `76642d4` 开始。首个有界批次让
+[Cat](../theories/Cat/Core.v) 通过 `Ob :> Type` 暴露对象类型，可直接写
+`X : C`；新增完整 [Gpd](../theories/Cat/Groupoid/Core.v) 类，保存
+`GpdC :> Cat`，并继承 `isGroupoid :: IsGroupoid GpdC`。唯一视图链为
+`Gpd → Cat → Type`，范畴及可计算逆见证只保存一次。固定数据上的
+`IsGroupoid C` 与一般取逆理论继续独立复用。
+
+`GpdFromProperty` packages an explicitly supplied category and property.
+`OpGpd` and `ProdGpd` reuse the existing opposite/product constructions and
+their inverse laws. [PreorderGpd and CodiscreteGpd](../theories/Cat/Groupoid/Preorder.v)
+and [GroupGpd](../theories/Algebra/Group/Category.v) similarly reuse the thin and
+one-object theories. The existing
+[EqGpd](../theories/Instance/Set/Groupoid.v) and
+[BoolGroupoid](../theories/Instance/Bool/Action.v) now return complete `Gpd`
+values; their category projections reduce to the original categories.
+Their explicit property views read the same stored witnesses. Model modules
+export the groupoid interface so clients can use its coercion chain. Clients
+that selectively import only `EqGpd` explicitly import `Cat.Groupoid.Core`
+as well; selecting a constructor alone does not activate its coercion.
+
+`GpdFromProperty` 打包显式提供的范畴及性质；`OpGpd` 与 `ProdGpd` 复用
+已有反范畴／乘积构造及互逆定律。
+[PreorderGpd、CodiscreteGpd](../theories/Cat/Groupoid/Preorder.v) 与
+[GroupGpd](../theories/Algebra/Group/Category.v) 同样复用薄群胚及单对象理论。
+已有 [EqGpd](../theories/Instance/Set/Groupoid.v) 和
+[BoolGroupoid](../theories/Instance/Bool/Action.v) 现在返回完整 `Gpd` 值，
+范畴投影归约为原范畴，显式性质视图读取同一份保存的见证。模型模块导出
+群胚接口，使客户端可用其强制转换链。只选择性导入 `EqGpd` 的客户端另行显式
+导入 `Cat.Groupoid.Core`；仅选择构造器不会启用其强制转换。
+
+For an abstract `G : Gpd`, the existing `groupoid_inv f` infers its inherited
+property. When two properties live on the same definitionally equal category,
+ordinary instance search can choose either in-scope property; use
+`gpd_inv G f` to select precisely the bundle's witnesses, or pass the desired
+property explicitly to the fixed-data theory. Creating a concrete bundle is
+an explicit selection; importing models alone supplies no arbitrary `Gpd`
+or groupoid structure on an unrelated category.
+
+对抽象 `G : Gpd`，已有 `groupoid_inv f` 可推断继承的性质。同一定义相等的
+范畴上若有两份性质，普通实例搜索可能选择任一在域性质；使用 `gpd_inv G f`
+即可固定为该包的见证，也可向固定数据理论显式传入所需性质。构造具体包本身
+就是显式选择；仅导入模型不会选取任意 `Gpd` 或无关范畴上的群胚结构。
+
+The [bundled-groupoid regression](../tests/BundledGroupoid.v) covers dependent
+objects, inherited properties, two choices on one category, transparent
+boolean/opposite/product inverses, existing CCC/monoidal sort chains and both
+strict hom/equality universe orders. The remaining algebra, cartesian/CCC,
+topos and monoidal hierarchy migrations are later bounded slices. The dated
+inventories below describe their respective baselines; this slice adds one
+class to the 116-interface baseline, for 117 current class/record interfaces.
+
+[群胚打包回归](../tests/BundledGroupoid.v) 覆盖依赖对象、继承性质、同一范畴
+的两份选择、透明的布尔／反群胚／乘积逆、已有 CCC／幺半类型链，以及 Hom 与
+相等见证宇宙的两种严格次序。剩余代数、笛卡尔／CCC、拓扑斯及幺半层级留在
+后续有界批次。下方注明日期的清单对应各自基线；本片在 116 个接口的基线上
+增加一个类，当前共有 117 个类／记录接口。
+
+Local validation on the `76642d4`-based working tree passed project-switch
+`dune build -j2 @all @runtest @install`, the new interface regression and the
+existing nerve strict-universe target. Temporary checks passed 31 public
+signatures/closed assumption reports, the unique coercion graph and two
+model-only imports. The first full build exposed two selective-import
+failures; all five such clients were given the explicit interface import and
+passed targeted validation before the successful full build. The original
+fixed-category inverse theory and opposite/product proofs are byte-for-byte
+preserved. The 370 exact naming rows and all touched-document paths resolve;
+whitespace checks pass. No HTML/PDF export or shared-toolchain change. This
+slice has user approval for committing and submission to the designated
+integrator; integration acceptance is pending.
+
+基于 `76642d4` 的本地工作树使用项目 switch 通过全库／测试／安装目标、
+新增接口回归及已有 nerve 严格宇宙目标。临时检查的 31 项公共签名／假设全部
+闭合，唯一转换图及两份仅导入模型的探针通过。首轮全库发现两处选择性导入
+失败后，已补齐全部五个此类客户端的显式接口导入；定向验证及最终全库通过。
+原固定范畴取逆理论及反／乘积证明逐字保留，370 行原命名表与全部改动文档
+路径有效，差异空白检查通过。无 HTML/PDF 或共享环境变更。用户已批准本片
+提交并交付指定集成者；集成验收待完成。
 
 ## Scope and decision rule
 
@@ -228,13 +319,14 @@ lax 对象／态射用法不变、Hom 与相等宇宙的两种严格次序，以
 The first change implements the monoidal category view; the continuation
 below adds group/monoid views and the cumulative cartesian/CCC hierarchy.
 The ETCS slice below extends this chain through its shared CCC parent.
-`Cat` has no coercion to its object type, and `Fct` still uses its
-object function as its sole function coercion; arrow mapping stays `fmap`.
+At that checkpoint `Cat` had no coercion to its object type; the first
+complete-bundle slice above adds it. `Fct` still uses its object function
+as its sole function coercion; arrow mapping stays `fmap`.
 
 首项修改实现幺半结构的底层范畴视图；下述后续工作增加群／幺半群视图及
 笛卡尔／CCC 累次层级。下述 ETCS 批次通过共享 CCC 父结构进一步延伸此链。
-`Cat` 没有到对象类型的强制转换；`Fct`
-仍以对象函数为唯一函数强制转换，态射映射保留 `fmap`。
+该检查点的 `Cat` 尚无到对象类型的强制转换；上方完整打包首片已添加此转换。
+`Fct` 仍以对象函数为唯一函数强制转换，态射映射保留 `fmap`。
 
 This follow-up passed `dune build @all @runtest @install` using
 `opam exec --switch=rocq-cats`, Rocq/Stdlib 9.2.0, OCaml 5.3.0 and
@@ -701,6 +793,8 @@ flowchart LR
   Topos -->|ToposC| CCC
   CCC -->|CCCC| CartesianCat
   CartesianCat -->|CartesianC, computed| Cat
+  Gpd -->|GpdC| Cat
+  Cat -->|Ob| Type
   MonoidalCat -->|MonoidalP| PremonoidalCat
   PremonoidalCat -->|PremonoidalB| BinoidalCat
   BinoidalCat -->|BinoidalC, computed| Cat
@@ -721,13 +815,13 @@ flowchart LR
 Arrows in this diagram are current views, including computed views; they
 are not claims that every node is an inherited typeclass instance. In
 particular, a `:>` field does not by itself register its parent for instance
-search. `Cat` has no coercion to its object type. A monoid object's carrier
+search. `Cat` reaches its object type through `Ob`. A monoid object's carrier
 has a dependent target `Ob C`, which does not automatically create a
 further coercion to `SetC` when `C` specializes to the setoid category.
 
 图中的箭头都是当前视图，包含计算视图，并不声称每个节点都已注册为继承
-类型类实例；特别是 `:>` 本身不会注册父类实例。`Cat` 没有到对象类型的强制
-转换。幺半群对象载体的目标是依赖类型 `Ob C`，当 `C` 特化为广集范畴时，也
+类型类实例；特别是 `:>` 本身不会注册父类实例。`Cat` 通过 `Ob` 到达对象类型。
+幺半群对象载体的目标是依赖类型 `Ob C`，当 `C` 特化为广集范畴时，也
 不会自动产生到 `SetC` 的后续转换。
 
 ### Concrete design findings
