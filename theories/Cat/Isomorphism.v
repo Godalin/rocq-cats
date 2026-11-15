@@ -132,6 +132,32 @@ Proof.
     comp_assoc, (snd i.2.2), comp_id_r. reflexivity.
 Defined.
 
+(** Invert a commuting pentagon of five supplied isomorphisms. A two-edge
+    path equal to a three-edge path gives equal inverse paths in reverse
+    order. Uniqueness of inverses supplies the equation without comparing
+    inverse choices or their law witnesses. No monoidal structure is needed. *)
+
+(** 反转由五个给定同构组成的交换五边形。二边路径等于三边路径，便得到反序
+    逆路径相等。逆唯一性给出此方程，不比较逆的选择或其定律见证，也不需要
+    幺半结构。 *)
+
+Lemma iso_pentagon_inv {A B D E F : @Ob C}
+    (i : A ≅ B) (j : B ≅ F)
+    (k : A ≅ D) (l : D ≅ E) (m : E ≅ F)
+    (H : j.1 ∘ i.1 ≈ m.1 ∘ (l.1 ∘ k.1))
+  : i.2.1 ∘ j.2.1 ≈ k.2.1 ∘ (l.2.1 ∘ m.2.1).
+Proof.
+  pose (short := iso_trans i j).
+  pose (long := iso_trans (iso_trans k l) m).
+  transitivity ((k.2.1 ∘ l.2.1) ∘ m.2.1).
+  - change (short.2.1 ≈ long.2.1).
+    apply (@inverse_unique A F short.1 short.2.1 long.2.1).
+    + exact (fst short.2.2).
+    + change ((j.1 ∘ i.1) ∘ long.2.1 ≈ @id F).
+      rewrite H. exact (snd long.2.2).
+  - apply comp_assoc.
+Defined.
+
 End IsomorphismEquations.
 
 (** An isomorphism read in the opposite keeps its two arrows and reverses
