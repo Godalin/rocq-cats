@@ -198,7 +198,7 @@ for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
 in `Cats.Topos.Nat`, and the stronger set-theory bundle in `Cats.Topos.ETCS`.
-All sixteen modules are under `Topos/`; there are no ETCS compatibility imports.
+All seventeen modules are under `Topos/`; there are no ETCS compatibility imports.
 Characteristic arrows respect monomorphism equality, detect subobject
 equivalence and turn pullback into precomposition. These laws need only a
 chosen terminal object and classifier; [pullback monicity](./theories/Cat/Subobject.v)
@@ -243,6 +243,11 @@ The optional [ambient initial object](./theories/Topos/Initial.v) classifies
 false on the terminal object, constructs its unique arrow to every object,
 and proves strictness. Its derived `HasInitial` choice is explicitly enabled;
 no initial-object axiom is added to Topos.
+The optional [image construction](./theories/Topos/Image.v) intersects the
+internal family of predicates containing an arbitrary arrow. It gives its
+least containing subobject and an actual epimorphic factor, with unique
+mediators into other containing subobjects. The general
+[image property and epi proof](./theories/Cat/Image.v) stay outside Topos.
 The optional [implication laws](./theories/Topos/ImplicationLaws.v) exchange
 antecedents and eliminate a true antecedent, without exponentials.
 The optional [disjunction module](./theories/Topos/Disjunction.v) quantifies
@@ -254,7 +259,7 @@ monotonicity and the join laws reuse the same chosen data.
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
-十六个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
+十七个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
 特征箭头保持单态射相等、检测子对象等价，并将拉回变为预合成。这些律只需要
 选定终对象及分类子；[拉回单态性](./theories/Cat/Subobject.v) 对任意范畴中的
 给定拉回方形成立。
@@ -286,6 +291,9 @@ Type 值子对象预序范畴的二元积给出；其
 [环境始对象](./theories/Topos/Initial.v)在终对象上分类假，构造到每个对象的
 唯一箭头并证明严格性。推导的 `HasInitial` 选择显式启用，不为 Topos
 增加始对象公理。
+可选的[像构造](./theories/Topos/Image.v)对包含任意箭头的内部谓词族取交，
+给出最小包含子对象和实际满分解箭头，以及进入其他包含子对象的唯一中介。
+一般的[像性质及满性证明](./theories/Cat/Image.v)保持在 Topos 之外。
 可选的[蕴含定律](./theories/Topos/ImplicationLaws.v)交换前件并消去真前件，
 不要求指数。可选的[析取模块](./theories/Topos/Disjunction.v)借助蕴含对共同
 上界作量化。透明的引入和最小上界对应保留蕴含因子；代入、单调性及并定律
