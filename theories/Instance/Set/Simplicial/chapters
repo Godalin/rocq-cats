@@ -47,6 +47,7 @@ Homotopy/SpherePrismRelative.v
 Homotopy/SphereElementaryCylinder.v
 Homotopy/SphereTriangleInput.v
 Homotopy/SphereTriangle.v
+Homotopy/SphereCylinderKan.v
 Homotopy/SphereBasedHomotopy.v
 Homotopy/SphereHorn.v
 Homotopy/SphereKan.v

@@ -15,19 +15,19 @@ Local Open Scope ordinal_scope.
     generic edge restrictions give actual relative composite or reverse
     cylinders whenever the required two edge equations are supplied.
 
-    This does not yet construct those extensions from Kan choices.
-    In particular, the earlier
+    Here the triangle remains supplied. The subsequent
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderKan.SphereCylinderComposite}
+    {%[SphereCylinderComposite]%}% and
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderKan.SphereCylinderReverse}
+    {%[SphereCylinderReverse]%}% construct actual output cylinders using
+    nine explicit choices, reusing the restrictions in this module.
+    The earlier
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereElementaryCylinder.TwoSphereHomotopyCylinder}
     {%[TwoSphereHomotopyCylinder]%}% has direction y to x; its direction
     cannot be silently reversed without supplying
     further data. Generated chains, general π₂ and weak-equivalence
-    comparison remain separate work.
-    %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
-    {%[TriangleHornProductExtension]%}% now iterates the actual attachment
-    geometry, while
-    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereReverseTriangleInput}
-    {%[SphereReverseTriangleInput]%}% supplies the complete relative
-    initial map. Their assembly and full recovery are the next consumer. *)
+    comparison remain separate work. The new construction combines the
+    actual nine-step geometry with the complete relative initial maps. *)
 
 (** * 球面柱的相对三角延拓
 
@@ -35,15 +35,16 @@ Local Open Scope ordinal_scope.
     要求整个空间边界对任意参数单形均为常值；再给所需两个边方程，通用边限制
     就给出实际相对复合柱或反向柱。
 
-    此处尚不从 Kan 选择构造这些延拓。尤其先前的
+    此处仍给定三角形。后续的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderKan.SphereCylinderComposite}
+    {%[SphereCylinderComposite]%}% 与
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderKan.SphereCylinderReverse}
+    {%[SphereCylinderReverse]%}% 用九份显式选择构造实际输出柱，复用本章的限制。
+    先前的
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereElementaryCylinder.TwoSphereHomotopyCylinder}
     {%[TwoSphereHomotopyCylinder]%}% 方向为 y 到 x，不能在没有额外数据时
     悄然反转；生成链、一般 π₂ 及弱等价比较仍是独立工作。
-    %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
-    {%[TriangleHornProductExtension]%}% 现已迭代实际附着几何，
-    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereReverseTriangleInput}
-    {%[SphereReverseTriangleInput]%}% 则给出完整相对初始映射。
-    将两者组合并证明完整恢复，留待接下来的消费者。 *)
+    新构造将实际九步几何与完整相对初始映射组合起来。 *)
 
 (** ** Fixing All Spatial Boundary Simplices
 

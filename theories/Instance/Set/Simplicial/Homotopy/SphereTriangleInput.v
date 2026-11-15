@@ -22,8 +22,10 @@ Local Open Scope ordinal_scope.
 
     For composition retain edges 01 and 12 (missing edge 02). For reversal
     retain edge 01 and the constant edge 02 (missing edge 12). These are
-    actual input maps, not yet extended triangles or reverse cylinders.
-    The nine-step Kan extension is a subsequent dependency. *)
+    actual input maps. The subsequent
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderKan.SphereRelativeTriangleExtension}
+    {%[SphereRelativeTriangleExtension]%}% extends them with the nine
+    explicit choices and recovers the full relative/retained-edge laws. *)
 
 (** * 三角初始区域上的实际相对数据
 
@@ -36,7 +38,10 @@ Local Open Scope ordinal_scope.
     {%[TriangleInputN]%}%，无需重证下降。
 
     复合保留01、12边，缺02边；反向保留01边及常值02边，缺12边。
-    这些是实际初始映射，尚非已延拓三角形或反向柱；九步Kan延拓留待依赖阶段。 *)
+    这些是实际初始映射；后续的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderKan.SphereRelativeTriangleExtension}
+    {%[SphereRelativeTriangleExtension]%}% 用九份显式选择延拓它们，并恢复完整
+    相对定律与保留边定律。 *)
 
 (** @lang both
 %\begin{center}
