@@ -1,0 +1,7 @@
+(rocq.theory
+ (name CatsSphereCylinderGroupTests)
+ (theories Cats Stdlib))
+
+(alias
+ (name runtest)
+ (deps Universes.vo Computations.vo))

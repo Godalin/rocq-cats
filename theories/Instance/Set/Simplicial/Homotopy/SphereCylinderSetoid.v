@@ -28,7 +28,10 @@ Local Open Scope ordinal_scope.
     isomorphisms. Only their representative maps are compared; selected
     fillers and constructed cylinder witnesses need not be equal. This
     presentation alone proves no commutativity, general π₂ identification,
-    arbitrary-path transport or weak-equivalence invariant. *)
+    arbitrary-path transport or weak-equivalence invariant. The next chapter's
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderGroup.TwoSphereCylinderGroup}
+    {%[TwoSphereCylinderGroup]%}% explicitly transports the existing class
+    group through these same maps; this presentation alone selects no group. *)
 
 (** * 以实际相对柱呈现广集
 
@@ -43,7 +46,9 @@ Local Open Scope ordinal_scope.
 
     独立启用选择的比较，直接复合这些相同同构。只比较代表映射，不等同所选
     填充或构造的柱见证。这个呈现本身不证明交换性、一般π₂识别、任意路径运输
-    或弱等价不变量。 *)
+    或弱等价不变量。下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderGroup.TwoSphereCylinderGroup}
+    {%[TwoSphereCylinderGroup]%}% 沿相同映射显式运输既有类群；本呈现自身不选择群。 *)
 
 (** The horizontal arrows retain the representative. Φ interprets generated
     equality as a cylinder, while Ψ reads a cylinder as generated equality.
