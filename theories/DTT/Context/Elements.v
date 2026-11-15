@@ -380,3 +380,133 @@ Proof.
 Defined.
 
 End ContextElementsInverse.
+
+From Cats Require Import
+  DTT.Context.Extension
+  DTT.Display.Representation.
+
+(** ** Canonical Pairing and Generic Terms
+
+    Keep the supplied context extensions and their interpreted displays.
+    Reuse the general section/pairing bridge for both term comparisons.
+    Generic terms are compared after aligning the actual recovered context
+    projection with the original projection. No terminal context is used. *)
+
+(** ** 规范配对与泛项
+
+    固定给定上下文扩张及其解释后的显示结构，复用一般截面／配对桥梁，
+    比较两个方向的项映射。先对齐实际恢复的上下文投影与原投影，再比较泛项；
+    无需终上下文。 *)
+
+Section ContextElementsPairing.
+Context {C : Cat} (T : Fct (C^op) FamCat)
+    `{HC : !HasContextExtension T}.
+Let P := FamBaseF ∘F T.
+Let HD := @ContextElements_HasDisplay C T HC.
+Let R := @DisplayTyTmF C P HD.
+Let HR := @Display_HasContextExtension C P HD.
+
+(** The context projection recovered from the interpreted display has
+    the original boundary in hom equality, retaining the chosen witness. *)
+
+(** 从解释后的显示恢复的上下文投影，在 Hom 相等下具有原边界，并保留选定见证。 *)
+
+Theorem context_elements_context_proj {Γ : @Ob C} (A : Ty T Γ)
+  : @context_proj C R HR Γ A ≈ context_proj T A.
+Proof.
+  transitivity (@display_proj C P HD Γ A).
+  - apply display_context_proj.
+  - apply context_elements_proj.
+Defined.
+
+(** Pairing the forward image of any substituted-type term gives the
+    original pairing map. The term need not be a substitution image. *)
+
+(** 对任意替换类型中项的前向像配对，得到原配对映射；该项不必是替换像。 *)
+
+Theorem context_elements_pair {Γ Δ : @Ob C} (A : Ty T Γ)
+    (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T])
+  : @context_pair C R HR Γ Δ A σ
+      (context_elements_term_resp T A[σ]Ty[T] t) ≈ ⟨σ; t⟩[T, A].
+Proof.
+  transitivity (@display_lift C P HD Γ Δ σ A ∘
+    (term_to_section_resp T A[σ]Ty[T] t).1).
+  - apply display_context_pair.
+  - transitivity (σ^+[T, A] ∘ (term_to_section_resp T A[σ]Ty[T] t).1).
+    + apply comp_r. apply context_elements_lift.
+    + exact (@context_lift_term_section C T HC Γ Δ σ A t).
+Defined.
+
+(** Pairing an arbitrary recovered section agrees with pairing its
+    backward term. Only the section's right-inverse witness is retargeted. *)
+
+(** 任意恢复截面的配对等于其逆向项的配对，仅重定向截面的右逆见证。 *)
+
+Theorem context_elements_pair_inv {Γ Δ : @Ob C} (A : Ty T Γ)
+    (σ : Hom Δ Γ) (s : @DisplayTerms C P HD Δ A[σ]Ty[T])
+  : @context_pair C R HR Γ Δ A σ s ≈
+      ⟨σ; context_elements_term_inv_resp T A[σ]Ty[T] s⟩[T, A].
+Proof.
+  transitivity (@display_lift C P HD Γ Δ σ A ∘ s.1).
+  - apply display_context_pair.
+  - transitivity (σ^+[T, A] ∘ s.1).
+    + apply comp_r. apply context_elements_lift.
+    + exact (@context_lift_section_term C T HC Γ Δ σ A
+        (context_elements_section_resp T A[σ]Ty[T] s)).
+Defined.
+
+(** Align the recovered generic term by any supplied projection equality
+    before comparing it with the forward image of the original generic term.
+    Pairing injectivity compares values without identifying law witnesses. *)
+
+(** 先沿任意给定投影相等对齐恢复泛项，再与原泛项的前向像比较；
+    配对单射性比较值，不识别律见证。 *)
+
+Theorem context_elements_var {Γ : @Ob C} (A : Ty T Γ)
+    (H : @context_proj C R HR Γ A ≈ context_proj T A)
+  : ty_sub_equiv T H A
+      ▸[R] (@context_var C R HR Γ A) ≈S
+      context_elements_term_resp T A[context_proj T A]Ty[T]
+        (context_var T A).
+Proof.
+  apply (@context_pair_inj C R HR Γ (Γ ▹[T] A) A (context_proj T A)).
+  transitivity (@context_pair C R HR Γ (Γ ▹[T] A) A
+    (@context_proj C R HR Γ A) (@context_var C R HR Γ A)).
+  - symmetry. apply (@context_pair_equiv C R HR Γ (Γ ▹[T] A) A
+      _ _ H).
+    apply tm_conv_witness_independent.
+  - transitivity (@id (Γ ▹[T] A)).
+    + exact (@display_pair_unpair C P HD Γ (Γ ▹[T] A) A id).
+    + symmetry. transitivity ⟨context_proj T A; context_var T A⟩[T, A].
+      * apply context_elements_pair.
+      * symmetry. apply (@context_pair_unique C T HC).
+        exists (comp_id_r (context_proj T A)).
+        transitivity (ty_sub_id T A[context_proj T A]Ty[T]
+          ▸[T] (context_var T A)[id]Tm[T]).
+        -- apply tm_conv_witness_independent.
+        -- apply tm_sub_id.
+Defined.
+
+(** The inverse comparison sends the recovered generic term to the
+    original after the same explicit projection conversion. *)
+
+(** 逆向比较沿同一显式投影转换，将恢复泛项送回原泛项。 *)
+
+Theorem context_elements_var_inv {Γ : @Ob C} (A : Ty T Γ)
+    (H : @context_proj C R HR Γ A ≈ context_proj T A)
+  : ty_sub_equiv T H A ▸[T]
+      context_elements_term_inv_resp T A[@context_proj C R HR Γ A]Ty[T]
+        (@context_var C R HR Γ A) ≈S context_var T A.
+Proof.
+  transitivity (context_elements_term_inv_resp T A[context_proj T A]Ty[T]
+    (ty_sub_equiv T H A
+      ▸[R] (@context_var C R HR Γ A))).
+  - symmetry. apply context_elements_term_inv_conv.
+  - transitivity (context_elements_term_inv_resp T A[context_proj T A]Ty[T]
+      (context_elements_term_resp T A[context_proj T A]Ty[T]
+        (context_var T A))).
+    + apply func_proper. exact (context_elements_var A H).
+    + apply context_elements_term_β.
+Defined.
+
+End ContextElementsPairing.
