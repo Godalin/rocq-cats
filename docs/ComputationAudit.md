@@ -4076,3 +4076,55 @@ coherence, composite strength and free constructions are not claimed here.
 这一独立可复用前置支持计划中的右 Hom 单位：在反范畴上应用协变 co-Yoneda，
 再显式重定向指标，并交换值／Hom 因子及其提升包装。这里不声称已交付该依赖
 单位、其自然比较或后续结合、相干、复合强度及自由构造。
+
+
+### The right Hom unit from opposite co-Yoneda
+
+### 从反范畴上的 co-Yoneda 得到右 Hom 单位
+
+[The right unit](../theories/Cat/Profunctor/RightUnit.v) places the raised
+Hom profunctor of C before P from C to D. Reverse the original composition
+kernel's index, then exchange its Hom/value factors and rewrap the represented
+arrow's lift. This gives a natural isomorphism to the existing covariant
+co-Yoneda kernel for P's contravariant fibre on C's opposite category.
+The original mediator and uniqueness witness apply there; index-unop reads
+them back on the original kernel. No contravariant co-Yoneda or dual universal
+property is proved independently.
+
+[右单位](../theories/Cat/Profunctor/RightUnit.v)在从 C 到 D 的 P 之前放置 C 的
+提升 Hom profunctor。反转原复合核的指标，再交换 Hom／值因子并重新包装所表示
+箭头的提升，即得到与 C 的反范畴上 P 的逆变单侧函子之协变 co-Yoneda 核的自然
+同构。在那里应用原中介及唯一性见证，再由指标反向包装读回原核。不独立证明
+逆变 co-Yoneda 或对偶泛性质。
+
+`ProfunctorRightUnitComp` explicitly chooses this special composition on the
+original P values. The actual requirements are C Hom carrier ≤ value carrier
+and C Hom equality ≤ value equality, without ordering the two value bounds.
+No object-index bound or bound on D's Hom/equality is added; import selects
+no composition model globally.
+
+`ProfunctorRightUnitComp` 在原 P 值上显式选择这一特殊复合。真实条件为 C 的
+Hom 载体及 Hom 相等分别容纳于对应值界，不要求两个值界之间的次序，也不增加
+对象指标界或 D 的 Hom／相等界。导入不选择全局复合模型。
+
+For any supplied single kernel coend, its original mediator evaluates an
+input arrow by preprocessing, and its original injection inserts the identity.
+The two maps are transparent inverses on the whole coend. A supplied family
+assembles a natural right unitor and its computed inverse. Outer-boundary
+naturality uses the existing Hom and single-coordinate action laws; input
+naturality at one boundary needs only the two endpoint coends. Its inverse
+square is the existing general inverse-isomorphism-square theorem.
+
+对任意给定的单个核 coend，原中介以预处理求值输入箭头，原注入插入恒等；两者
+是整个 coend 上的透明逆。给定复合族后组成自然右单位子及其计算逆。外部边界
+自然性使用已有 Hom 和单坐标作用定律；一个边界处的输入自然性只需两端 coend，
+其逆方块就是已有一般逆同构方块定理。
+
+Both Hom units are now available under their respective actual bounds and
+supplied choices. Associativity, triangle/pentagon coherence, composite
+strength and the strong-promonad/Arrow/free constructions remain separate
+stages; these units alone do not assert a monoidal profunctor category.
+
+两个 Hom 单位现已分别在各自真实大小界和给定选择下提供。结合、三角形／五边形
+相干、复合强度和 strong-promonad／Arrow／自由构造仍为独立阶段；仅有这些单位
+不声称已给出幺半 profunctor 范畴。
