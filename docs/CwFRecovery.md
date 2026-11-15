@@ -1,7 +1,8 @@
 # 从表示与 comprehension 恢复 CwF
 
-本轮先完成一个精确的反向准则：**固定族值预层 T 时，选定上下文扩张与
-选定配对预层表示可互相构造。**
+本轮先完成一个精确的反向准则：**固定族值预层 T 时，在原生 Hom 表示
+可包装的大小下，选定上下文扩张与选定配对预层表示可互相构造。**
+独立大小下的候选级准则使用泛配对，并给出提升 Hom 表示，见第 2 节。
 [ContextRepresentation](../theories/DTT/Context/Representation.v) 已实现该结果。
 从一般 comprehension 提取 T 的部分另行设计，边界如下。
 
@@ -110,6 +111,45 @@ context_extension_iff_representation T:
 不要求结构记录、证明字段或自然同构的逆见证原生相等。
 这些结论中的类型、项和替换都来自同一个 T。
 
+### Universal-pair criterion at independent sizes
+
+[Context/Representation](../theories/DTT/Context/Representation.v) also exposes
+the candidate-level `context_extension_iff_universal_element`: for a fixed
+pair `u = (p,q)` at E, `is_context_extension T A E p q` is equivalent to
+`u ⦂ Univ(ContextPairF T A)`. The two transparent conversions retain the
+same mediating maps. `context_extension_universal_mediator` compares the
+recovered mediator with the supplied one. The existing native-representation
+recovery now reuses `context_extension_of_universal_element`.
+
+This criterion avoids putting native Hom and pair setoids in a common
+`SetCat`. Their sizes can differ: section carriers must contain both homs
+and right-inverse witnesses, so hom equality may force them above the native
+hom carrier. The existing `HasContextRepresentation` uses native Hom and
+retains that packaging restriction; it is not a necessary criterion at these
+larger term sizes. `context_extension_lifted_representation` instead reuses
+`universal_element_lifted_representation` on the opposite category, providing
+`E ⦂ Rep↑ ContextPairF T A` with upward bounds only. No resizing or equality
+of functor records is assumed. Display recovery can use this general
+universal-pair criterion and lifted representation in a subsequent step.
+
+### 独立大小下的泛配对准则
+
+[Context/Representation](../theories/DTT/Context/Representation.v) 另给出候选
+层级的 `context_extension_iff_universal_element`：固定 E 处的配对
+`u = (p,q)` 后，`is_context_extension T A E p q` 恰等价于
+`u ⦂ Univ(ContextPairF T A)`。两个透明转换保留同一个中介映射；
+`context_extension_universal_mediator` 比较恢复的中介与给定中介。
+原有原生表示恢复也改为复用 `context_extension_of_universal_element`。
+
+这个准则不把原生 Hom 与配对广集装入同一个 `SetCat`，允许两者大小不同。
+截面载体须同时包含态射及其右逆见证，故 Hom 相等见证可能迫使截面大于
+原生 Hom 载体。现有 `HasContextRepresentation` 使用原生 Hom，仍受此
+包装限制；对于这些较大的项载体，它不是必要准则。
+`context_extension_lifted_representation` 改在反范畴中复用已有
+`universal_element_lifted_representation`，以仅向上的大小约束给出
+`E ⦂ Rep↑ ContextPairF T A`，不假定 resizing 或函子记录相等。
+后续显示恢复可使用这里的一般泛配对准则及提升表示。
+
 ## 3. 显示映射接口与截面项预层
 
 [Display](../theories/DTT/Display/Core.v) 已将以下输入实现为单个
@@ -215,7 +255,7 @@ s[σ]TmD[P]     := s[display_lift_universal σ A]Sec
 **下一步仍是证明显示对象表示这个新预层的配对数据**，
 再复用第 2 节的表示准则恢复上下文扩张；终对象仍须独立选择。
 因此，此处尚未声称从任意 comprehension 恢复 CwF。
-已证明的必要充分性仍是第 2 节固定 T 后的表示准则。
+已证明的必要充分性包括第 2 节固定 T 后的泛配对准则，以及原生表示可包装时的选定结构准则。
 
 ## 4. 宇宙与验证
 
@@ -261,3 +301,12 @@ hom／相等大小排列，并要求项载体可小于范畴定律的辅助层�
 33 项新的临时 `Print Assumptions` 检查均无额外公理。
 这些计算实例和假设输出不加入永久测试；完整构建使用
 Rocq 9.0.1 / Dune 3.21.0，CI 状态另在 issue 中记录。
+
+泛配对准则的独立大小回归另增加八项永久检查：固定小类型预层、项载体及
+项相等层级，在 `h < p < l < o` 和 Hom／相等层级对调两种排列下检查
+准则、提升表示及中介往返。项载体严格小于范畴定律的辅助上界。
+临时检查还固定彼此独立、均高于上下文 Hom 的类型及项载体／相等层级。
+布尔 Code/El 模型的九项直接计算覆盖原中介、恢复中介、非平凡类型转换、
+两种 Type 值相等见证、提升表示正逆映射及原生表示恢复。
+十项临时假设审计均无额外公理；这些模型与输出不加入永久测试。
+定向检查使用 Rocq 9.2、Stdlib 9.2.0 和 Dune 3.23.1。

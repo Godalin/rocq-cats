@@ -1282,6 +1282,51 @@ Definition low_eq_represented_cwf
   := @RepresentedCwF D U.
 End ContextRepresentationLevels.
 
+(** Universal pairs recover extensions even when section carriers contain
+    larger hom-equality witnesses. Fix small type presheaves and independent
+    hom/equality levels, with a still larger category-law bound. *)
+
+(** 即使截面载体包含更大的 Hom 相等见证，泛配对仍可恢复扩张。固定小类型预层
+    及独立 Hom／相等层级，范畴定律的上界仍可更大。 *)
+
+Section ContextUniversalLevels.
+Universe o h p l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (P : Fct (C^op) SetCat@{Set Set _ _ _ _ _})
+    (Q : Fct (D^op) SetCat@{Set Set _ _ _ _ _}).
+Context (HD : HasDisplay C P) (HE : HasDisplay D Q).
+
+Let T
+  : Fct (C^op) FamCat@{_ _ _ _ _ Set Set p p p _ _ _ _ _ _}
+  := @DisplayTyTmF C P HD.
+Let U
+  : Fct (D^op) FamCat@{_ _ _ _ _ Set Set p p h _ _ _ _ _ _}
+  := @DisplayTyTmF D Q HE.
+
+Definition high_eq_universal_terms (Γ : @Ob C) (A : Ty T Γ)
+  : SetC@{p p}
+  := Tm T Γ A.
+Definition low_eq_universal_terms (Γ : @Ob D) (A : Ty U Γ)
+  : SetC@{p h}
+  := Tm U Γ A.
+Definition high_eq_universal_criterion
+  := @context_extension_iff_universal_element C T.
+Definition low_eq_universal_criterion
+  := @context_extension_iff_universal_element D U.
+Definition high_eq_universal_representation
+  := @context_extension_lifted_representation C T.
+Definition low_eq_universal_representation
+  := @context_extension_lifted_representation D U.
+Definition high_eq_universal_mediator
+  := @context_extension_universal_mediator C T.
+Definition low_eq_universal_mediator
+  := @context_extension_universal_mediator D U.
+End ContextUniversalLevels.
+
 (** Raw syntax accepts arbitrary signature levels. An inferred extra universe
     on variable markers must not restrict rename/substitution clients. *)
 
