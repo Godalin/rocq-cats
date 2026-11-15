@@ -2692,11 +2692,11 @@ their component functions or proof records by Rocq equality.
 
 The target's object, relation, hom-equality and law bounds remain separate,
 as do the source category's native bounds. There are no global instances,
-Proper registrations, model choices or new notation. After this general
-prerequisite is integrated, a separate Topos branch can use the classifier's
-comparison factors for reindex identity/composition natural isomorphisms
-and use `NatEq` for their coherence diagrams. This prerequisite itself
-does not deliver that client, a complete pseudofunctor/hyperdoctrine,
+Proper registrations, model choices or new notation. The separate
+[Topos reindex client](../theories/Topos/PredicateReindex.v) below now uses
+the classifier's comparison factors for identity/composition natural
+isomorphisms and `NatEq` for their coherence diagrams. The general
+prerequisite itself does not provide a complete pseudofunctor/hyperdoctrine,
 arbitrary-arrow quantifiers, Beck–Chevalley or Frobenius.
 
 [Cat.Logic.Natural](../theories/Cat/Logic/Natural.v) 是 Topos 之外的第二个
@@ -2713,7 +2713,79 @@ arbitrary-arrow quantifiers, Beck–Chevalley or Frobenius.
 相等识别分量函数或证明记录。
 
 目标的对象、关系、Hom 相等与定律界保持独立，源范畴的各原生界亦独立。
-没有全局实例、Proper 注册、模型选择或新记号。此一般前置集成后，后续
-Topos 分支再用分类子比较因子构造重索引恒等／复合自然同构，并以 `NatEq`
-验证相干图。本前置自身不交付该客户端、完整伪函子／超教义、任意态射量词、
+没有全局实例、Proper 注册、模型选择或新记号。下面独立的
+[Topos 重索引客户端](../theories/Topos/PredicateReindex.v)现复用分类子比较
+因子构造恒等／复合自然同构，并以 `NatEq` 验证相干图。一般前置自身不提供
+完整伪函子／超教义、任意态射量词、
 Beck–Chevalley 或 Frobenius。
+
+## Predicate reindex comparisons / 谓词重索引比较
+
+[Topos.PredicateReindex](../theories/Topos/PredicateReindex.v) is an optional
+client of the independently integrated general preorder comparison bridge.
+It requires only the named terminal, classifier and pullback choices used
+by `PredicateCat` and `PredicateReindexF`. It adds no product, exponential,
+CCC, ETCS or model-choice premise. The existing reindex object/arrow maps
+are unchanged.
+
+`PredicateReindexEqIso H` transports reindexing along a specified context
+arrow equality `H : k ≈ k'`. It compares `f ∘ k` and `f ∘ k'` by the
+transparent classifier-reflection factors. `PredicateReindexIdIso X`
+compares reindexing by the context identity with `IdF`;
+`PredicateReindexCompIso k l` compares `Rk ∘F Rl` with `R(l ∘ k)`.
+All three directly use `PreorderNatIso` with explicit functor endpoints.
+Six public native equations retain the forward factor and the factor
+computed by the general `NatIso_inv` construction.
+
+The two unit diagrams compare the composite comparison followed by
+base unit-law transport with whiskering of the identity comparison
+followed by the corresponding existing functor unitor. The association
+diagram compares the two paths for three substitutions, explicitly using
+`CompF_assoc` and base `comp_assoc` transport. Parallel paths agree by
+`preorder_nat_eq` in existing `NatEq`. No native equality of context
+arrows, functor records, comparison components or chosen factors is used.
+Even a reflexive base-arrow equality may select a classifier factor
+different from the identity factor.
+
+The temporary payload probe makes this distinction observable: comparisons
+retain factor 42 in both directions, while the inverse composite has 84
+and the identity has 0. The left unit paths compute to 84/42, the right
+unit paths to 84/126, and the association paths to 84/210. They satisfy the
+specified natural equality. These are computational interface probes,
+not meaningful models or native equalities of the paths.
+
+This supplies the selected reindex comparisons and the two unit/one
+association diagrams. It does not package a pseudofunctor or hyperdoctrine,
+nor provide arbitrary-arrow quantifiers, Beck–Chevalley/Frobenius,
+finite colimits or meaningful models. Those remain separate work for
+#6/#16. No global instance, Proper registration or notation is added;
+the classifier-specific assembly stays here while the comparison theory
+remains outside Topos.
+
+[Topos.PredicateReindex](../theories/Topos/PredicateReindex.v) 是独立集成的
+一般预序比较桥梁的可选客户端，仅需 `PredicateCat`／`PredicateReindexF`
+已有的具名终对象、分类子和拉回选择，不增加积、指数、CCC、ETCS 或模型
+选择前提。既有重索引对象／箭头映射不变。
+
+`PredicateReindexEqIso H` 沿指定上下文箭头相等 `H : k ≈ k'` 运输重索引，
+用透明分类反射因子比较 `f ∘ k` 与 `f ∘ k'`。
+`PredicateReindexIdIso X` 将上下文恒等重索引与 `IdF` 比较；
+`PredicateReindexCompIso k l` 将 `Rk ∘F Rl` 与 `R(l ∘ k)` 比较。
+三者均显式给出函子端点并直接应用 `PreorderNatIso`。六个公开原生方程
+保留正向因子，以及一般 `NatIso_inv` 构造算出的反向因子。
+
+两张单位图比较以下路径：复合比较后沿基范畴单位律运输；恒等比较的
+whiskering 后接对应既有函子单位比较。结合图比较三次代入的两条路径，
+显式使用 `CompF_assoc` 和基范畴 `comp_assoc` 运输。平行路径通过
+`preorder_nat_eq` 在既有 `NatEq` 中相等，不使用上下文箭头、函子记录、
+比较分量或选定因子的原生相等。即使基箭头相等自反，也可选出不同于恒等
+因子的分类比较因子。
+
+临时负载探针使此区别可计算：正反比较均保留因子42，逆复合为84而恒等
+为0；左单位两路为84／42，右单位为84／126，结合为84／210。它们满足
+指定自然相等，只是计算接口探针，不作为有意义模型或路径原生相等。
+
+本批提供选定重索引比较及两张单位／一张结合图，不打包完整伪函子或超教义，
+不提供任意态射量词、Beck–Chevalley／Frobenius、有限余极限或有意义模型；
+这些仍是 #6／#16 的后续工作。不增加全局实例、Proper 注册或记号；分类子
+特有组装留在此处，一般比较理论保持在 Topos 之外。
