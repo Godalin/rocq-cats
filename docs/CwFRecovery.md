@@ -520,8 +520,8 @@ A native isomorphism in one `SetCat` requires common carrier and equality
 bounds. The lifted comparison works in both strict orders without resizing.
 Sixteen fixed checks explicitly place the original type/term carrier and
 equality levels above both context Hom levels, while recovered sections stay
-below the auxiliary law bound. This stage proves fiberwise comparison and
-its coherence in both directions, without asserting equality of CwF records or
+below the auxiliary law bound. The pointwise stage proves fiberwise comparison
+and its coherence in both directions, without asserting equality of CwF records or
 equivalence with the entire context-type category.
 
 [Context/Elements](../theories/DTT/Context/Elements.v) 从给定族值预层 T 和
@@ -537,8 +537,48 @@ equivalence with the entire context-type category.
 载体及相等层级放在上下文 Hom 两层级之上，同时恢复截面低于律的辅助上界。
 逆向相干性复用一般逆同构交换方形，内部提升纤维后解包相等见证，无需额外
 语义输入或终上下文；另六项严格检查显式固定两序的原输入层级。
-本阶段给出逐纤维比较及其双向相干性，不断言 CwF 记录相等或与整个上下文类型
+上述逐纤维阶段给出比较及其双向相干性，不断言 CwF 记录相等或与整个上下文类型
 范畴等价。
+
+[Context/Comparison](../theories/DTT/Context/Comparison.v) now assembles
+these pointwise comparisons into a natural isomorphism of the primary
+type-and-term functors. Both sides are postcomposed with the explicit
+[FamLiftF](../theories/Instance/Set/Fam/Lift.v); only fiber carriers and
+equality witnesses are raised, while the type base stays fixed.
+`ContextElementsFiberMap` and `ContextElementsFiberInvMap` use the accepted
+conversion laws as fixed-base family maps. The fixed-base embedding sends
+their explicit inverse to the family category, substitution coherence gives
+`ContextElementsTyTmN`, and the general natural-inverse construction gives
+`ContextElementsTyTmInvN`. All component maps and chosen inverses remain
+transparent. This compares the primary functors up to natural isomorphism;
+it does not identify CwF records or prove an equivalence with the entire
+context-type category. Chosen context extensions suffice for this comparison;
+the separate terminal choice is still required to assemble complete CwFs.
+
+[Context/Comparison](../theories/DTT/Context/Comparison.v) 将这些逐点比较
+组装为主类型—项函子的自然同构。两侧均后复合显式的
+[FamLiftF](../theories/Instance/Set/Fam/Lift.v)，仅提升纤维载体和相等见证，
+保留类型基底。正反纤维映射复用已有转换律，成为固定基底族映射；固定基底
+嵌入将其显式逆送入族范畴，替换相干性给出正向自然变换，一般自然逆构造给出
+逆向变换。全部分量映射和选定逆保持透明。这里以自然同构比较主函子，不识别
+CwF 记录，也不证明与整个上下文类型范畴等价。比较只需选定上下文扩张，
+组装完整 CwF 仍须独立选择终上下文。
+
+Twelve permanent strict configurations fix the original type bases above
+both common raised fiber bounds, in both hom orders. Separate temporary
+controls place the bases below the raised bounds, reject four downward
+carrier/equality bounds, and test the missing-input and explicit-choice
+boundaries. Boolean Code/El clients check native component/inverse
+computations, nontrivial conversion and substitution, distinguishable
+Type-valued base-equality witnesses, naturality and the specified inverse
+laws. Independent exact-source copies and assumption reports remain outside
+the library.
+
+十二项永久严格配置在两种 Hom 次序下，将原类型基底显式放在两个共同提升
+纤维界之上；另有临时正控制把基底放在提升界之下，四项向下降界负检查及
+缺输入／显式选择检查。布尔 Code/El 客户端验证分量和逆的原生计算、非平凡
+转换与替换、可区分的 Type 值基底相等见证、自然性及指定互逆律；精确源码
+独立副本和假设输出仍置于库外。
 
 ## 8. 宇宙与验证
 
