@@ -2141,3 +2141,48 @@ selection instance, and does not change the base Topos imports.
 Hom 载体与相等见证保持独立；子对象值也显式提升到共同环境界，不使用大小重设。
 前提仅为具名的终对象选择、分类子和选定拉回。此可选模块不增加模型选择、
 结构字段或全局选择实例，也不改变基础 Topos 导入。
+
+## Finite intersections of subobjects / 子对象的有限交
+
+[Cat.SubobjectIntersection](../theories/Cat/SubobjectIntersection.v) views
+the existing Type-valued factorization preorder as `SubCat X`, reusing
+`PreorderCat`. Its identity and composition use an explicit transparent
+`SubFactorPreorder`, since the old preorder instance proofs are opaque.
+This retains actual comparison arrows without changing the old instances.
+Parallel comparison witnesses have the thin category's singleton equality;
+they are not identified by native equality. The largest subobject is
+terminal without any limit choices. With chosen pullbacks, `s ∩Sub t`
+retains the chosen pullback domain and the composite through its first
+projection as its monomorphism. Factoring any arrow through the intersection
+is equivalent to factoring through both subobjects, with transparent maps.
+
+`SubCat_HasTerminal` and `SubCat_HasProduct` expose the existing terminal
+and product interfaces and require explicit enabling. Commutativity pairs
+the swapped projections using the transparent general product mediator;
+associativity reuses the general product associator. Properness,
+idempotence and the largest-subobject unit law use the same universal
+property. No separate lattice structure or global chosen instance is added.
+[Instance.Set.SubobjectIntersection](../theories/Instance/Set/SubobjectIntersection.v)
+extends the existing inverse-image operation: it preserves subobject
+inclusion, largest subobjects and binary intersections. All comparison
+factors remain transparent. Only named chosen pullbacks are required;
+these statements do not require a classifier, terminal object in the
+ambient category, CCC or ETCS. They provide finite intersections, not the
+remaining initial-object/finite-colimit or full internal-logic milestones.
+
+[Cat.SubobjectIntersection](../theories/Cat/SubobjectIntersection.v) 复用
+`PreorderCat`，将既有的 Type 值分解预序视为 `SubCat X`。由于旧预序实例
+证明不透明，其恒等与复合显式使用透明的 `SubFactorPreorder`，保留实际比较
+箭头，不改变旧实例。平行比较见证具有薄范畴的单元素相等，不以原生相等识别。
+最大子对象不需要极限选择即为终对象。有选定拉回时，`s ∩Sub t` 保留选定
+拉回定义域，以经过第一投影的复合作为单态射。任意箭头经过交分解等价于
+经过两个子对象分解，两个方向均透明保留见证。
+
+`SubCat_HasTerminal` 与 `SubCat_HasProduct` 使用已有终对象及积接口，由使用者
+显式启用。交换律通过透明的一般积中介将交换后的投影配对，结合律复用一般积
+的结合同构；保相等、幂等和最大子对象
+单位律使用同一泛性质。不增加独立格结构或全局选定实例。
+[Instance.Set.SubobjectIntersection](../theories/Instance/Set/SubobjectIntersection.v)
+扩展原逆像操作，证明其保持子对象包含、最大子对象及二元交，所有比较因子
+保持透明。前提仅为具名的选定拉回，不要求环境范畴的终对象、分类子、CCC
+或 ETCS。这只提供有限交，不计为始对象／有限余极限或完整内部逻辑里程碑。
