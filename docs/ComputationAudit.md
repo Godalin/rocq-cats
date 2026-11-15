@@ -4230,3 +4230,45 @@ remain subsequent stages.
 不选择全局强度／coend 模型，也不声称固定大小全 SetCat 自索引 coend。保持强度
 的输入映射及复合单位子／结合子的相容性、强 Profunctor 幺半打包、强 promonad／
 Arrow 比较和条件自由构造仍为后续阶段。
+
+### Strength-preserving transformations and their category
+
+### 保持强度的变换及其范畴
+
+[Strength-preserving natural transformations](../theories/Cat/Profunctor/StrengthNatural.v)
+commute with extending both profunctor ends by the same left context. The
+Type-valued predicate is placed on the original transformation, whose endpoint
+naturality is already supplied. Natural equality transports preservation;
+identity and vertical composition preserve it. A specified natural inverse
+preserves strength by the existing `iso_square_inv` on each context square,
+without a new naturality or inverse-universality argument.
+
+[保持强度的自然变换](../theories/Cat/Profunctor/StrengthNatural.v)与在 profunctor
+两端扩展同一左上下文交换。Type 值谓词施加于原变换，其端点自然性已有给定。
+自然相等运输保持性，恒等及竖直复合保持该性质。指定自然逆的保持性由各上下文
+方块上的原 `iso_square_inv` 提供，不另证明自然性或逆的泛性质。
+
+`StrongProf` stores one underlying functor and one strength relative to the
+named ambient monoidal structure. The functor is the sole coercion view;
+`hasProfStrength` exposes that same stored evidence. `StrongProfCat` uses subset
+hom-setoids of the original natural transformations: equality does not compare
+preservation witnesses. Its faithful forgetful functor keeps the original
+functor and component maps, and `StrongProfIso` lifts a supplied natural
+isomorphism with exactly its chosen forward and inverse maps.
+
+`StrongProf` 相对于具名环境幺半结构存储一个底层函子及一个强度。函子是唯一
+强制转换视图，`hasProfStrength` 暴露同一份存储见证。`StrongProfCat` 的 Hom
+广集是原自然变换的子集，相等不比较保持性见证。忠实忘却函子保留原函子及分量
+映射，`StrongProfIso` 用给定自然同构的同一选定正向与逆向映射提升该同构。
+
+This category requires no coends, symmetry, cartesian operations or bounds on
+base objects/Homs relative to value universes. Carrier and equality bounds
+remain independent. It does not yet lift profunctor composition to a strong
+bifunctor or establish strength compatibility of its unitors/associator.
+Those constructions, strong monoidal packaging, the strong-promonad/Arrow
+comparison and conditional free constructions remain dependent stages.
+
+此范畴不要求 coend、对称性、笛卡尔运算或基对象／Hom 相对于值宇宙的大小界。
+载体及相等大小界保持独立。目前尚未将 profunctor 复合提升为强双函子，也未
+建立复合单位子／结合子的强度相容性；这些构造、强幺半打包、强 promonad／Arrow
+比较及条件自由构造仍为依赖阶段。

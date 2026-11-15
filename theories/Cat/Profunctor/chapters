@@ -2,6 +2,7 @@ Core.v
 Hom.v
 Strength.v
 HomStrength.v
+StrengthNatural.v
 Compose.v
 ComposeUniversal.v
 ComposeMap.v
