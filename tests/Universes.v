@@ -2507,3 +2507,37 @@ Definition low_eq_context_recovered_cwf (HT : HasTerminal D)
   : CwF D
   := @ContextElementsCwF D U HU HT.
 End ContextElementLevels.
+
+(** Inverse comparison laws retain explicitly larger original FamCat
+    carrier/equality inputs in both hom orders, without a terminal choice. *)
+
+(** 逆向比较律在两种 Hom 次序下保留显式较大的原 FamCat 载体／相等输入，
+    无需终上下文选择。 *)
+
+Section ContextElementInverseLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition high_eq_context_inverse_square
+  := @context_elements_term_square_inv C T HC.
+Definition low_eq_context_inverse_square
+  := @context_elements_term_square_inv D U HU.
+Definition high_eq_context_inverse_conversion
+  := @context_elements_term_inv_conv C T HC.
+Definition low_eq_context_inverse_conversion
+  := @context_elements_term_inv_conv D U HU.
+Definition high_eq_context_inverse_substitution
+  := @context_elements_term_inv_sub C T HC.
+Definition low_eq_context_inverse_substitution
+  := @context_elements_term_inv_sub D U HU.
+End ContextElementInverseLevels.

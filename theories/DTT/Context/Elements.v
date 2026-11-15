@@ -1,6 +1,7 @@
 From Cats Require Import
   Cat.Core
   Cat.Functor.Core
+  Cat.Isomorphism
   Cat.Natural
   Cat.Fibration
   Cat.Comprehension
@@ -303,3 +304,79 @@ Proof.
 Defined.
 
 End ContextElements.
+
+(** ** Inverse Coherence of the Fiber Comparison
+
+    Keep the supplied family-valued presheaf and chosen extensions fixed.
+    Apply the general inverse-square theorem to independently lifted fibers,
+    then recover pointwise conversion and substitution laws by lowering the
+    resulting equality witness. No terminal context is required. *)
+
+(** ** 纤维比较的逆向相干性
+
+    固定给定族值预层和选定扩张，对独立提升的纤维应用一般逆方形定理，
+    再解包相等见证，得到逐点的转换及替换律；无需终上下文。 *)
+
+Section ContextElementsInverse.
+Context {C : Cat} (T : Fct (C^op) FamCat)
+    `{HC : !HasContextExtension T}.
+Let P := FamBaseF ∘F T.
+Let HD := @ContextElements_HasDisplay C T HC.
+
+(** Invert any square commuting with the forward fiber comparison.
+    Lifting supplies common bounds only inside the proof; the unlifted
+    maps and the resulting equality retain their independent sizes. *)
+
+(** 对与前向纤维比较交换的任意方形取逆。提升仅在证明内部提供共同大小界，
+    原映射和所得相等仍保留独立大小。 *)
+
+Theorem context_elements_term_square_inv {Γ Δ : @Ob C}
+    (A : Ty T Γ) (B : Ty T Δ)
+    (f : Tm T Γ A →r Tm T Δ B)
+    (g : @DisplayTerms C P HD Γ A →r @DisplayTerms C P HD Δ B)
+    (H : ∀ t, context_elements_term_resp T B (f t)
+      ≈S g (context_elements_term_resp T A t))
+    (s : @DisplayTerms C P HD Γ A)
+  : context_elements_term_inv_resp T B (g s)
+      ≈S f (context_elements_term_inv_resp T A s).
+Proof.
+  pose (i := context_elements_term_iso T A).
+  pose (j := context_elements_term_iso T B).
+  assert (Hlift : (j.1 ∘r f^↑S) ≈f (g^↑S ∘r i.1)).
+  { intros [t]. exact {|lower := H t|}. }
+  exact (lower (@iso_square_inv SetCat _ _ _ _ i j (f^↑S) (g^↑S) Hlift
+    {|lower := s|})).
+Defined.
+
+(** The backward comparison commutes with designated type conversion. *)
+
+(** 逆向比较与指定类型转换交换。 *)
+
+Theorem context_elements_term_inv_conv {Γ : @Ob C} {A B : Ty T Γ}
+    (e : A ≈S B) (s : @DisplayTerms C P HD Γ A)
+  : context_elements_term_inv_resp T B
+      (@display_term_conv_resp C P HD Γ A B e s)
+      ≈S e ▸[T] context_elements_term_inv_resp T A s.
+Proof.
+  apply (context_elements_term_square_inv A B (tm_conv T e)
+    (@display_term_conv_resp C P HD Γ A B e)).
+  intros t. apply context_elements_term_conv.
+Defined.
+
+(** The backward comparison commutes with substitution, using only the
+    accepted forward square and its pointwise inverse laws. *)
+
+(** 逆向比较与替换交换，仅使用已接收的正向方形及逐点互逆律。 *)
+
+Theorem context_elements_term_inv_sub {Γ Δ : @Ob C} (σ : Hom Δ Γ)
+    (A : Ty T Γ) (s : @DisplayTerms C P HD Γ A)
+  : context_elements_term_inv_resp T A[σ]Ty[T]
+      (@display_term_sub_resp C P HD Γ Δ σ A s)
+      ≈S (context_elements_term_inv_resp T A s)[σ]Tm[T].
+Proof.
+  apply (context_elements_term_square_inv A A[σ]Ty[T] (tm_sub T σ)
+    (@display_term_sub_resp C P HD Γ Δ σ A)).
+  intros t. apply context_elements_term_sub.
+Defined.
+
+End ContextElementsInverse.

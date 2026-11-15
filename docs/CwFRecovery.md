@@ -509,15 +509,19 @@ natural isomorphism compares the recovered and interpreted total functors.
 The original term and recovered section setoids retain separate sizes.
 `context_elements_term_resp` and its inverse transport only the right-inverse
 witness at the projection boundary; their round trips use the existing
-term–section correspondence. The forward comparison commutes with conversion
-and substitution. `context_elements_term_iso` raises both carriers and equality
+term–section correspondence. Both comparisons commute with conversion
+and substitution. The inverse laws reuse the general `iso_square_inv` after
+lifting the fibers, then lower its equality witness. No additional semantic
+input or terminal choice is needed for these laws; six further strict checks
+fix the original input levels in both orders.
+`context_elements_term_iso` raises both carriers and equality
 witnesses independently before packaging these maps in a common `SetCat`.
 A native isomorphism in one `SetCat` requires common carrier and equality
 bounds. The lifted comparison works in both strict orders without resizing.
 Sixteen fixed checks explicitly place the original type/term carrier and
 equality levels above both context Hom levels, while recovered sections stay
 below the auxiliary law bound. This stage proves fiberwise comparison and
-its forward coherence, without asserting equality of CwF records or
+its coherence in both directions, without asserting equality of CwF records or
 equivalence with the entire context-type category.
 
 [Context/Elements](../theories/DTT/Context/Elements.v) 从给定族值预层 T 和
@@ -527,11 +531,13 @@ equivalence with the entire context-type category.
 限制在指定 Hom 相等下与原数据一致，全空间函子以透明自然同构比较。
 
 原项与恢复截面保留不同大小。双向透明映射只跨投影边界运输右逆见证，往返律
-复用已有项—截面对应；前向比较保持转换与替换。项纤维同构先独立提升载体及
+复用已有项—截面对应；双向比较保持转换与替换。项纤维同构先独立提升载体及
 相等见证，再打包到共同 `SetCat`。原生同构要求共同载体／相等大小界，
 提升比较无需 resizing 即可覆盖两种严格次序。十六项固定检查显式将原类型／项
 载体及相等层级放在上下文 Hom 两层级之上，同时恢复截面低于律的辅助上界。
-本阶段给出逐纤维比较及其前向相干性，不断言 CwF 记录相等或与整个上下文类型
+逆向相干性复用一般逆同构交换方形，内部提升纤维后解包相等见证，无需额外
+语义输入或终上下文；另六项严格检查显式固定两序的原输入层级。
+本阶段给出逐纤维比较及其双向相干性，不断言 CwF 记录相等或与整个上下文类型
 范畴等价。
 
 ## 8. 宇宙与验证
