@@ -14,3 +14,4 @@ Associator.v
 Coherence.v
 Monoidal.v
 ComposeStrength.v
+StrongCompose.v

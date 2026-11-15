@@ -4272,3 +4272,49 @@ comparison and conditional free constructions remain dependent stages.
 载体及相等大小界保持独立。目前尚未将 profunctor 复合提升为强双函子，也未
 建立复合单位子／结合子的强度相容性；这些构造、强幺半打包、强 promonad／Arrow
 比较及条件自由构造仍为依赖阶段。
+
+### Strong composition maps and bifunctor
+
+### 强复合映射及双函子
+
+[Strong composition](../theories/Cat/Profunctor/StrongCompose.v) lifts the
+original coend input map when both transformations preserve their supplied
+strengths. At a fixed context and outer boundary, the square needs only four
+individual coends: input and output choices before and after context extension.
+On generators it is exactly the pair of input preservation equations; original
+coend extensionality extends it to the full source coend. No tensor preservation
+of coends, symmetry, cartesian operation or additional base-size bound is used.
+
+[强复合](../theories/Cat/Profunctor/StrongCompose.v)在两个变换保持给定强度时，
+提升原 coend 输入映射。固定上下文和外部边界处的方块，只需要上下文扩展前后
+输入和输出的四个单独 coend 选择。在生成元上，方块恰为两个输入保持性方程；
+原 coend 外延性将其延拓到整个来源 coend。不使用张量保持 coend、对称性、
+笛卡尔运算或额外的基范畴大小界。
+
+Two supplied composition families suffice for `StrongProfCompMap` and
+`StrongProfCompIso`. The latter lifts the original chosen coend isomorphism
+with its original inverse. `StrongProfComp` stores that same composite functor
+and its strength; subset arrow equality compares only underlying natural
+transformations. The new respectfulness law therefore ignores preservation
+witnesses while retaining them as Type-valued data.
+
+给定两个复合族即足以构造 `StrongProfCompMap` 与 `StrongProfCompIso`。后者用
+原逆提升原选定 coend 同构。`StrongProfComp` 存储同一复合函子及其强度；子集
+态射相等只比较底层自然变换。因此新的尊重性律不比较保持性见证，同时仍将见证
+保留为 Type 值数据。
+
+`StrongProfCompF` requires uniform composition choices only for pairs of
+strong profunctors. It reuses the old map identity/composition laws, with the
+ordinary left-after-right order; forgetting its arrows gives the old input
+map in designated natural equality. Carrier and equality levels remain
+independent. Importing the module chooses no global coend model, and the
+construction does not assert fixed-size full-SetCat self-indexed existence.
+Strength compatibility of the unitors and associator, strong monoidal
+packaging, the strong-promonad/Arrow comparison and conditional free
+constructions remain subsequent stages.
+
+`StrongProfCompF` 只要求为强 profunctor 对给出统一复合选择。它复用原映射的
+恒等及复合律，保留通常的左在右之后次序；忘却其态射，在指定自然相等下得到
+原输入映射。载体及相等层级保持独立。导入模块不选择全局 coend 模型，构造
+也不声称固定大小全 SetCat 自索引存在性。单位子及结合子的强度相容性、强
+幺半打包、强 promonad／Arrow 比较和条件自由构造仍为后续阶段。
