@@ -21,7 +21,10 @@ Local Open Scope ordinal_scope.
     relative boundary. Only the supplied tetrahedron and simplicial
     identities are needed, without Kan choices or coefficient classification.
     This is a single elementary step. Reversing or composing general
-    cylinders and handling generated chains remain separate constructions. *)
+    cylinders and handling generated chains remain separate constructions.
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangle.SphereTriangleReverse}
+    {%[SphereTriangleReverse]%}% next reads a reverse from an explicitly
+    supplied relative triangle extension; it does not yet construct one. *)
 
 (** * 一个初等四面体给出相对柱
 
@@ -33,7 +36,9 @@ Local Open Scope ordinal_scope.
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SpherePrismRelative.SpherePrismCylinder}
     {%[SpherePrismCylinder]%}%，将这些值及其完整相对边界粘合。只需给定四面体
     和单纯恒等式，无需 Kan 选择或系数分类。这只是单个初等步骤；一般柱的反转、
-    复合及生成链处理仍是独立构造。 *)
+    复合及生成链处理仍是独立构造。接下来的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangle.SphereTriangleReverse}
+    {%[SphereTriangleReverse]%}% 从显式给定的相对三角延拓读取反向柱，尚不构造延拓。 *)
 
 (** The arrows indicate restrictions to the shared faces. The lower
     arrow shows the time direction of the glued cylinder. *)

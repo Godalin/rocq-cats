@@ -27,6 +27,7 @@ Vertex/Terminal.v
 Vertex/Category.v
 Vertex/Cartesian.v
 Homotopy/Core.v
+Homotopy/Triangle.v
 Homotopy/Sphere.v
 Homotopy/SphereComposition.v
 Homotopy/SphereMap.v
@@ -36,6 +37,7 @@ PrismGluing.v
 Homotopy/SphereCylinder.v
 Homotopy/SpherePrismRelative.v
 Homotopy/SphereElementaryCylinder.v
+Homotopy/SphereTriangle.v
 Homotopy/SphereBasedHomotopy.v
 Homotopy/SphereHorn.v
 Homotopy/SphereKan.v
