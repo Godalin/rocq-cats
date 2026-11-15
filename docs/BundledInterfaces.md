@@ -2396,3 +2396,53 @@ initial objects/finite colimits and meaningful models remain later milestones.
 以自身继承的积与拉回显式启用已有 `ProductPullbackEqualizer`，不重复保存
 Topos/ETCS 字段或选择。不假定 ETCS、经典逻辑、全局点或模型。并、底、
 其余内部逻辑、始对象／有限余极限及有意义模型仍属后续里程碑。
+
+## Universal quantification along projections / 沿投影的全称量化
+
+[Cat.ProductPullback](../theories/Cat/ProductPullback.v) obtains the pullback
+of an arbitrary arrow along first projection from the product universal
+property. The mediator is the original product pairing. `SubProduct s A`
+displays the corresponding inverse image with the same domain `sub s × A`
+and arrow `s × id`, using the existing pullback-monicity theorem. Only a
+named product choice is needed; no pullback structure is selected.
+
+[Topos.Forall](../theories/Topos/Forall.v) names the constantly true predicate
+on `A` as `ForallTruth A : Hom 1 (Ω ^ A)` and classifies that monomorphism
+from the terminal object as `Forall A`. For `f : Hom (X × A) Ω`, the notation
+`∀Ω[A] f` applies this arrow to `ƛ f`. The construction, Proper, truth
+criterion and context-substitution law need named terminal, classifier,
+products and exponentials relative to those products. They reuse the
+existing exponential β/η and substitution laws. The truth criterion says
+that `∀Ω[A] f` is constantly true exactly when `f` is constantly true;
+it does not use a test on external global elements.
+
+With named pullbacks, the explicit product square compares the classified
+subobject of `r ∘ π1` with `SubProduct (ClassifiedSub r) A`. This gives the
+Type-valued right adjunction `r ∘ π1 ⊢Ω f ↔ r ⊢Ω ∀Ω[A] f`, evaluation,
+monotonicity and instantiation by a term in the same context. Context
+substitution commutes with quantifying the unchanged object `A`; no
+arbitrary-morphism quantifier or complete hyperdoctrine is claimed. Actual
+Topos clients use exactly their inherited product, exponential, terminal,
+classifier and pullback choices. No new structure fields or globally
+selected model instances are added. Bottom, joins, remaining internal logic,
+initial objects/finite colimits and meaningful models stay open.
+
+[Cat.ProductPullback](../theories/Cat/ProductPullback.v) 从积泛性质得到任意
+箭头沿第一投影的拉回，中介就是原有积配对。`SubProduct s A` 使用已有拉回
+单态性定理，以同一对象 `sub s × A` 及箭头 `s × id` 展示相应逆像。前提仅为
+具名积选择，不选择拉回结构。
+
+[Topos.Forall](../theories/Topos/Forall.v) 将 `A` 上的恒真谓词命名为
+`ForallTruth A : Hom 1 (Ω ^ A)`，并将从终对象出发的该单态射分类为
+`Forall A`。对 `f : Hom (X × A) Ω`，记号 `∀Ω[A] f` 将此箭头作用于 `ƛ f`。
+构造、Proper、为真判据及上下文代入律要求具名终对象、分类子、积和相对于
+同一积的指数选择，复用已有指数 β/η 及代入律。为真判据表示 `∀Ω[A] f` 恒真
+当且仅当 `f` 恒真，不通过外部全局元素来测试。
+
+另加具名拉回，通过显式积方形将 `r ∘ π1` 的分类子对象与
+`SubProduct (ClassifiedSub r) A` 比较，得到 Type 值右伴随
+`r ∘ π1 ⊢Ω f ↔ r ⊢Ω ∀Ω[A] f`、求值、单调性以及用同一上下文中项的实例化。
+上下文代入与对未改变对象 `A` 的全称量化相容；本批不声称任意态射的量词
+或完整超教义。实际 Topos 客户端恰好使用继承的积、指数、终对象、分类子及
+拉回选择，不新增结构字段或全局选定模型实例。底、并、其余内部逻辑、
+始对象／有限余极限及有意义模型仍保持开放。
