@@ -192,6 +192,18 @@ routine commit/build broadcasts. Preserve explicit pause/sync instructions.
 在使用新契约或开始新的依赖工作前完成同步即可。合并相关通知，不广播例行提交
 或构建状态；明确的暂停／同步要求不能省略。
 
+For the same matter, update your own still-pending message with the combined
+facts when supported, rather than queueing each status separately. Do not send
+routine progress/build or unchanged standby notices. If a confirmed result
+already supersedes late or duplicate statuses, record them together without
+repeating validation or replying to each; check only unresolved or conflicting
+facts. Required integration replies and pause/sync confirmations remain in place.
+
+同一事项有补充时，通信工具支持的情况下更新自己尚未处理的排队消息，合并事实，
+避免逐条追加状态。不单独发送例行进度／构建或无变化的待命消息。迟到或重复状态
+已被明确确认的结果覆盖时，合并记录，不重复验证或逐条回复；只核对尚未解决或
+相互矛盾的事实。必要的集成回执及暂停／同步确认仍须保留。
+
 ## 5. Problems and recovery / 问题与恢复
 
 | Situation / 情形 | Action / 动作 |

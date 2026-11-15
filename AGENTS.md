@@ -260,10 +260,14 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   integration, then synchronization and validation before related edits resume.
 - Synchronize at safe checkpoints after preserving local/user work. Ask for
   confirmation only when a pause or synchronization requires it; silence is not
-  completion. Coalesce related notices and avoid routine commit/build broadcasts.
-  After missed/repeated messages, inspect Git refs and confirm pending actions
-  directly. Failed communication pauses the affected task/handoff until contact
-  resumes.
+  completion. Coalesce updates to the same matter into the sender's own pending
+  message when supported; do not send routine progress/build or unchanged standby
+  notices. Preserve required integration replies and pause/sync confirmations.
+  Record late or duplicate statuses together when a confirmed result already
+  supersedes them, without repeating validation or acknowledging each message.
+  Check Git refs and confirm directly only what remains unresolved or conflicts
+  with that result. Failed communication pauses the affected task/handoff until
+  contact resumes.
 
 ## Learnings
 
