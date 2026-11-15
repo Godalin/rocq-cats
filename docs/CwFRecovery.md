@@ -580,6 +580,28 @@ the library.
 转换与替换、可区分的 Type 值基底相等见证、自然性及指定互逆律；精确源码
 独立副本和假设输出仍置于库外。
 
+[Context/Section](../theories/DTT/Context/Section.v) supplies the general
+pairing bridge needed for the next canonical comparison. For any term of
+`A[σ]Ty[T]`, `context_lift_term_section` identifies the substitution lift
+composed with its section with the universal pair `⟨σ; t⟩[T,A]` in hom
+equality. `context_lift_section_term` gives the corresponding equation for
+an arbitrary section after extracting its term. The term need not lie in
+the image of substitution. Both laws reuse existing lift/pair compatibility
+and section inverse laws, with explicit chosen context extensions and no
+terminal choice. They impose no native common term/Hom universe bound.
+Four permanent strict checks fix the larger original input levels in both
+orders. These are general prerequisites; compatibility of the canonical
+recovery comparison with all chosen context-extension data remains a later
+specialization.
+
+[Context/Section](../theories/DTT/Context/Section.v) 提供下一步规范比较所需的
+一般配对桥梁：对 `A[σ]Ty[T]` 中任意项，提升替换后复合其截面，在 Hom
+相等下就是对应泛配对；任意截面提取项后也满足同一方程。该项不必位于替换的
+像中。两条律复用既有提升／配对相容性和截面互逆律，显式给定上下文扩张，
+无需终上下文，不要求原项与 Hom 的原生层级共享大小界。四项永久严格检查
+固定两序的较大原输入层级。这些只是一般前置；规范恢复比较与全部选定上下文
+扩张数据的相容性留待后续专门化。
+
 ## 8. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。

@@ -376,6 +376,28 @@ term_section_sub:
   ≈ (t^Sec[T,A]).1 ∘ σ
 ```
 
+For an arbitrary term of the substituted type, the reusable laws are:
+
+对替换类型中的任意项，可复用以下定律：
+
+```text
+context_lift_term_section:
+  σ^+[T,A] ∘ (t^Sec[T,A[σ]Ty[T]]).1 ≈ ⟨σ; t⟩[T,A]
+
+context_lift_section_term:
+  σ^+[T,A] ∘ s.1 ≈ ⟨σ; s^Tm[T,A[σ]Ty[T]]⟩[T,A]
+```
+
+Here `t` need not be a substituted term. The first law reuses lift/pair
+compatibility and coherent conversion; the second uses the existing section
+inverse law. No new universal-property proof or common native term/Hom size
+bound is imposed, and right-inverse witnesses are compared only through the
+specified section equality.
+
+其中 `t` 不必本身是替换所得的项。第一条复用提升／配对相容性及相干转换，
+第二条使用已有截面互逆律；不重证泛性质，不要求原项与 Hom 共享大小界，
+右逆见证只通过指定的截面相等处理。
+
 这些结果只要求 `HasContextExtension T`，不要求终对象。
 任意 comprehension 的反向项接口仍需单独陈述假设；本定理处理已有的 CwF 项族。
 

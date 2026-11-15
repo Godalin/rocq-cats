@@ -174,3 +174,60 @@ Proof.
 Qed.
 
 End ContextSectionLaws.
+
+(** ** Pairing an Arbitrary Term over a Substitution
+
+    Fix the supplied context extensions. A term of a substituted type need
+    not itself be a substituted term. Express its universal pair through
+    the existing substitution lift and its section; then use the section
+    inverse law for arbitrary sections. No terminal choice is needed. *)
+
+(** ** 对替换类型中的任意项配对
+
+    固定给定上下文扩张。替换类型中的项不必本身是替换所得的项；
+    通过既有替换提升及其截面表达泛配对，再用截面互逆律处理任意截面。
+    无需终上下文选择。 *)
+
+Section ContextSectionPairing.
+Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
+
+(** Lifting a substitution and then using the term's section gives its
+    universal context pair. Type conversion uses the specified coherence. *)
+
+(** 提升替换后复合项的截面，得到对应泛上下文配对；类型转换使用指定相干性。 *)
+
+Theorem context_lift_term_section {Γ Δ : @Ob C} (σ : Hom Δ Γ)
+    (A : Ty T Γ) (t : Tm T Δ A[σ]Ty[T])
+  : σ^+[T, A] ∘ (t^Sec[T, A[σ]Ty[T]]).1 ≈ ⟨σ; t⟩[T, A].
+Proof.
+  transitivity ⟨σ ∘ id; ty_sub_comp T σ id A ▸[T]
+    (symmetry (ty_sub_id T A[σ]Ty[T]) ▸[T] t)⟩[T, A].
+  - apply context_lift_pair.
+  - apply (context_pair_equiv T A (comp_id_r σ)).
+    transitivity (ty_sub_equiv T (comp_id_r σ) A ▸[T]
+      (transitivity (symmetry (ty_sub_id T A[σ]Ty[T]))
+        (ty_sub_comp T σ id A) ▸[T] t)).
+    + apply func_proper. symmetry. apply tm_conv_comp.
+    + transitivity (transitivity
+        (transitivity (symmetry (ty_sub_id T A[σ]Ty[T]))
+          (ty_sub_comp T σ id A))
+        (ty_sub_equiv T (comp_id_r σ) A) ▸[T] t).
+      * symmetry. apply tm_conv_comp.
+      * apply tm_conv_id.
+Defined.
+
+(** Any section gives the same pairing equation after extracting its term.
+    The statement compares arrows, without equating right-inverse witnesses. *)
+
+(** 任意截面提取项后满足同一配对方程；结论比较箭头，不识别右逆见证。 *)
+
+Theorem context_lift_section_term {Γ Δ : @Ob C} (σ : Hom Δ Γ)
+    (A : Ty T Γ) (s : Sec(context_proj T A[σ]Ty[T]))
+  : σ^+[T, A] ∘ s.1 ≈ ⟨σ; s^Tm[T, A[σ]Ty[T]]⟩[T, A].
+Proof.
+  transitivity (σ^+[T, A] ∘ ((s^Tm[T, A[σ]Ty[T]])^Sec[T, A[σ]Ty[T]]).1).
+  - apply comp_l. symmetry. apply term_section_η.
+  - apply context_lift_term_section.
+Defined.
+
+End ContextSectionPairing.
