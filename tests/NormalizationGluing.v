@@ -47,6 +47,21 @@ Definition separated_gluing_projections (A : Ty B) (Γ : Ctx B)
         ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}) Γ))%type
   := (GluingSyntaxN A Γ x, GluingValuesN A Γ x).
 
+(** Compare the full respectful projection arrows, including their
+    domain and codomain equality relations. Merely observing carrier
+    values would not detect a collapsed internal equation universe. *)
+
+(** 比较完整的保相等投影箭头，包括定义域与陪域的相等关系；仅观察载体值，
+    无法检测内部等式宇宙被合并的问题。 *)
+
+Definition separated_gluing_projection_arrows (A : Ty B) (Γ : Ctx B)
+  : let R : Fct ((RenamingCat B : Cat@{b b r l l})^op)
+        SetCat@{u p _ _ _ _ _} := NormalizationGluingF A in
+    ((R Γ →r LiftS@{b e u p} (TmS@{b e} Γ A)) *
+     (R Γ →r LiftS@{s s u p} ((SemF A : Fct
+       ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}) Γ)))%type
+  := (GluingSyntaxN A Γ, GluingValuesN A Γ).
+
 End LargeSemantics.
 
 (** ** Equations above Semantics
@@ -77,6 +92,21 @@ Definition reversed_gluing_projections (A : Ty B) (Γ : Ctx B)
       LiftS@{s s u p} ((SemF A : Fct
         ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}) Γ))%type
   := (GluingSyntaxN A Γ x, GluingValuesN A Γ x).
+
+(** Compare the full respectful projection arrows, including their
+    domain and codomain equality relations. Merely observing carrier
+    values would not detect a collapsed internal equation universe. *)
+
+(** 比较完整的保相等投影箭头，包括定义域与陪域的相等关系；仅观察载体值，
+    无法检测内部等式宇宙被合并的问题。 *)
+
+Definition reversed_gluing_projection_arrows (A : Ty B) (Γ : Ctx B)
+  : let R : Fct ((RenamingCat B : Cat@{b b r l l})^op)
+        SetCat@{u p _ _ _ _ _} := NormalizationGluingF A in
+    ((R Γ →r LiftS@{b e u p} (TmS@{b e} Γ A)) *
+     (R Γ →r LiftS@{s s u p} ((SemF A : Fct
+       ((RenamingCat B)^op) SetCat@{s s _ _ _ _ _}) Γ)))%type
+  := (GluingSyntaxN A Γ, GluingValuesN A Γ).
 
 End LargeEquations.
 

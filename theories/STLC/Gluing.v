@@ -93,15 +93,20 @@ Definition GluingNormalF (A : Ty B)
 
 (** Realization is a respectful diagram relation: equation and semantic
     transport give respectfulness; world transport gives the arrow action.
-    No new relation or fundamental lemma is introduced. *)
+    Bind realization to the declared equation bound explicitly: its
+    universe is not determined by the lifted value types alone. No new
+    relation or fundamental lemma is introduced. *)
 
 (** 实现关系是保相等的图式关系：等式和语义运输给出保相等性，世界运输给出
-    箭头作用。不引入另一套关系或基本引理。 *)
+    箭头作用。显式将实现关系绑定到声明的等式界，因为仅凭提升后的值类型
+    不能确定该宇宙。不引入另一套关系或基本引理。 *)
 
 Program Definition NormalizationRelation (A : Ty B)
   : DiagramRelation (GluingSyntaxF A) (GluingValuesF A)
   :=
-  {|diagram_relation Γ t v := Realizes A Γ (lower t) (lower v)
+  {|diagram_relation Γ t v := Realizes@{b r s l e
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _}
+      A Γ (lower t) (lower v)
   ; diagram_relation_map Γ Δ ρ t v h :=
       realizes_rename A Γ Δ ρ (lower t) (lower v) h
   |}.
