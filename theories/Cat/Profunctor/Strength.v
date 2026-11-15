@@ -124,3 +124,37 @@ Proof.
   exact (nt_naturality (prof_strengthN S Z)
     (X := (X,Y)) (Y := (X',Y')) (f,g)).
 Defined.
+
+(** Input naturality is the stored two-sided square with an identity
+    output; remove the context functor's identity by specified equality. *)
+
+(** 输入自然性是输出取恒等的已有双侧方块；用指定相等消去上下文函子的恒等。 *)
+
+Lemma prof_strength_lmap {C : Cat} {MC : MonoidalCat C}
+    {P : Fct ((C^op) ×C C) SetCat} (S : HasProfStrength MC P)
+    (Z : @Ob C) {X X' Y : @Ob C} (f : Hom X' X)
+  : (pstrength[S; Z] ∘r (@prof_lmap C C P Y X X' f)) ≈f
+      (lmap[P; Z ⊲ f] ∘r pstrength[S; Z]).
+Proof.
+  transitivity (dimap[P; Z ⊲ f; Z ⊲ @id Y] ∘r pstrength[S; Z]).
+  - exact (prof_strength_natural S Z f (@id Y)).
+  - intros v. apply prof_dimap_proper; [reflexivity |].
+    exact (binoidal_left_id Z Y).
+Defined.
+
+(** Output naturality is the other single-sided specialization, with no
+    additional naturality witness stored in a strength. *)
+
+(** 输出自然性是另一单侧特化；强度中不另存自然性见证。 *)
+
+Lemma prof_strength_rmap {C : Cat} {MC : MonoidalCat C}
+    {P : Fct ((C^op) ×C C) SetCat} (S : HasProfStrength MC P)
+    (Z : @Ob C) {X Y Y' : @Ob C} (g : Hom Y Y')
+  : (pstrength[S; Z] ∘r (@prof_rmap C C P X Y Y' g)) ≈f
+      (rmap[P; Z ⊲ g] ∘r pstrength[S; Z]).
+Proof.
+  transitivity (dimap[P; Z ⊲ @id X; Z ⊲ g] ∘r pstrength[S; Z]).
+  - exact (prof_strength_natural S Z (@id X) g).
+  - intros v. apply prof_dimap_proper; [| reflexivity].
+    exact (binoidal_left_id Z X).
+Defined.
