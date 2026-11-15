@@ -3,16 +3,21 @@ From Cats Require Import
   Cat.Core
   Cat.Terminal
   Cat.Product.Core
-  Cat.Product.Transport.
+  Cat.Product.Transport
+  Cat.Functor.ProductPreservation.
 
 (** * Functors Preserving Finite Products
 
     Preservation concerns full universal properties. The canonical comparison
-    and its inverse are derived, without equality of chosen objects. *)
+    and its inverse are derived, without equality of chosen objects. The
+    binary-product arguments reuse [Cat.Functor.ProductPreservation], whose
+    weaker interface does not require terminal preservation. *)
 
 (** * 保持有限积的函子
 
-    保持性使用完整泛性质；规范比较及其逆由此导出，不要求选定对象原生相等。 *)
+    保持性使用完整泛性质；规范比较及其逆由此导出，不要求选定对象原生相等。
+    二元积论证复用 [Cat.Functor.ProductPreservation]，其较弱接口不要求终对象
+    保持性。 *)
 
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
@@ -53,7 +58,7 @@ Context {C D : Cat} (F : Fct C D)
 Definition functor_product_iso (X Y : @Ob C)
   : F ((X × Y)%ob) ≅ (F X × F Y)%ob.
 Proof.
-  exact (product_unique (functor_product X Y) (@product_universal D PD (F X) (F Y))).
+  exact (preserved_product_iso F (functor_product (F := F)) X Y).
 Defined.
 
 (** The inverse comparison is the mediator of the preserved product. *)
@@ -62,7 +67,7 @@ Defined.
 
 Definition functor_product_inv (X Y : @Ob C)
   : Hom (F X × F Y)%ob (F ((X × Y)%ob))
-  := (functor_product X Y _ π1 π2).1.
+  := preserved_product_inv F (functor_product (F := F)) X Y.
 
 (** Both projections of the inverse comparison compute. *)
 
@@ -71,7 +76,7 @@ Definition functor_product_inv (X Y : @Ob C)
 Lemma functor_product_inv_β (X Y : @Ob C)
   : (fmap F π1 ∘ functor_product_inv X Y ≈ π1) ∧
     (fmap F π2 ∘ functor_product_inv X Y ≈ π2).
-Proof. exact (@this _ _ _ _ _ (functor_product X Y _ π1 π2).2). Qed.
+Proof. apply preserved_product_inv_β. Qed.
 
 (** Pairing is preserved through the product comparison. *)
 
@@ -79,16 +84,7 @@ Proof. exact (@this _ _ _ _ _ (functor_product X Y _ π1 π2).2). Qed.
 
 Lemma functor_pair {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
   : fmap F ⟨f, g⟩ ≈ functor_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
-Proof.
-  transitivity ((functor_product X Y _ (fmap F f) (fmap F g)).1).
-  - apply (functor_product X Y _ (fmap F f) (fmap F g)).2.
-    split; rewrite <- functor_comp; [rewrite product_β1 | rewrite product_β2];
-      reflexivity.
-  - symmetry. apply (functor_product X Y _ (fmap F f) (fmap F g)).2.
-    split; rewrite <- comp_assoc;
-      [rewrite (fst (functor_product_inv_β X Y)), product_β1 |
-       rewrite (snd (functor_product_inv_β X Y)), product_β2]; reflexivity.
-Qed.
+Proof. apply preserved_pair. Qed.
 
 (** The inverse comparison is natural in both factors. *)
 
@@ -98,21 +94,7 @@ Lemma functor_product_inv_natural {X Y X' Y' : @Ob C}
     (f : Hom X X') (g : Hom Y Y')
   : fmap F (f × g) ∘ functor_product_inv X Y ≈
       functor_product_inv X' Y' ∘ (fmap F f × fmap F g).
-Proof.
-  transitivity ((functor_product X' Y' _
-    (fmap F f ∘ π1) (fmap F g ∘ π2)).1).
-  - apply (functor_product X' Y' _ _ _).2. split;
-      rewrite <- comp_assoc, <- functor_comp, cross_η;
-      [rewrite product_β1 | rewrite product_β2];
-      rewrite functor_comp, comp_assoc;
-      [rewrite (fst (functor_product_inv_β X Y)) |
-       rewrite (snd (functor_product_inv_β X Y))]; reflexivity.
-  - symmetry. apply (functor_product X' Y' _ _ _).2. split;
-      rewrite <- comp_assoc;
-      [rewrite (fst (functor_product_inv_β X' Y')), cross_η, product_β1 |
-       rewrite (snd (functor_product_inv_β X' Y')), cross_η, product_β2];
-      reflexivity.
-Qed.
+Proof. apply preserved_product_inv_natural. Qed.
 
 End CartFct.
 
