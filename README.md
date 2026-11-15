@@ -607,6 +607,9 @@ Monad–Applicative–Arrow 工作从
   Pairing is preserved in both directions, and generic terms compare after
   conversion along any given equality of recovered and original projections.
   双向项比较保持配对；沿任意给定的恢复／原投影相等转换类型后，泛项也相容。
+  Derived context conversion and substitution lifts also agree with the
+  original operations by the general display-to-context comparison.
+  复用一般显示到上下文比较，导出的上下文转换与替换提升也与原操作相容。
   [Context/Comparison](./theories/DTT/Context/Comparison.v) assembles these
   maps into a natural isomorphism of the original and recovered type-and-term
   functors after explicit fiber lifting, retaining the type base.

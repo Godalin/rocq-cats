@@ -660,6 +660,28 @@ Exact source copies and assumption output remain outside the library.
 相等见证，检查双向配对／泛项的原生计算，并对非满射替换像外的项证明配对
 方程。精确源码副本及假设输出仍置于库外。
 
+`context_elements_context_conv` and `context_elements_context_lift` also
+compare the actual recovered context operations with the original conversion
+and substitution lift. They compose `display_context_conv` /
+`display_context_lift` from the independently accepted general display theorem
+with `context_elements_conv` / `context_elements_lift`. No generic-term or
+pullback universal property is reproved. Each supplied Type-valued type-equality
+witness is retained as input, and the result is specified hom equality; the
+chosen structure and law records are not identified. These transparent laws
+need chosen context extensions, with no terminal choice or native common
+term/Hom size bound. Twelve fixed regressions retain independent original
+input sizes and recovered-term bounds in both hom orders, placing the original
+types/terms both below and above the auxiliary bound of the base laws.
+
+`context_elements_context_conv` 和 `context_elements_context_lift` 进一步比较
+实际恢复的上下文操作与原转换／替换提升。它们将独立验收的一般显示定理
+`display_context_conv`／`display_context_lift` 与原规范显示比较
+`context_elements_conv`／`context_elements_lift` 复合，不重证泛项或拉回泛性质。
+给定的 Type 值类型相等见证仍是输入，结论为指定 Hom 相等，不识别选定结构或
+定律记录。这两条透明律只需选定上下文扩张，不需终上下文或原项／Hom 的原生
+共同大小界。十二项固定回归在两种 Hom 次序中保留独立原输入与恢复项界，
+并将原类型／项大小分别置于基底律辅助界的下方与上方。
+
 ## 8. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。

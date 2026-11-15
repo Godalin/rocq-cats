@@ -510,3 +510,53 @@ Proof.
 Defined.
 
 End ContextElementsPairing.
+
+(** ** Canonical Context Conversion and Substitution Lifts
+
+    Keep the chosen original extensions and their interpreted displays.
+    Compose the general display-to-context comparison with the canonical
+    display comparison. Only specified hom equality is asserted; no terminal
+    context or equality of chosen structure records is required. *)
+
+(** ** 规范上下文转换与替换提升
+
+    固定选定的原上下文扩张及其解释后的显示结构，将一般显示到上下文比较与
+    规范显示比较复合。结论仅为指定 Hom 相等，不需要终上下文或选定结构记录相等。 *)
+
+Section ContextElementsActions.
+Context {C : Cat} (T : Fct (C^op) FamCat)
+    `{HC : !HasContextExtension T}.
+Let P := FamBaseF ∘F T.
+Let HD := @ContextElements_HasDisplay C T HC.
+Let R := @DisplayTyTmF C P HD.
+Let HR := @Display_HasContextExtension C P HD.
+
+(** The actual recovered context conversion retains the original action
+    of each supplied Type-valued type-equality witness, up to hom equality. *)
+
+(** 实际恢复的上下文转换，在 Hom 相等下保留每个给定 Type 值类型相等见证的原作用。 *)
+
+Theorem context_elements_context_conv {Γ : @Ob C} {A B : Ty T Γ}
+    (e : A ≈S B)
+  : @context_conv C R HR Γ A B e ≈ e^Ext[T].
+Proof.
+  transitivity (@display_conv C P HD Γ A B e).
+  - exact (@display_context_conv C P HD Γ A B e).
+  - exact (@context_elements_conv C T HC Γ A B e).
+Defined.
+
+(** The actual recovered context substitution lift retains the original
+    chosen lift, without identifying their pullback-law witnesses. *)
+
+(** 实际恢复的上下文替换提升保留原选定提升，不识别它们的拉回定律见证。 *)
+
+Theorem context_elements_context_lift {Γ Δ : @Ob C} (σ : Hom Δ Γ)
+    (A : Ty T Γ)
+  : @context_lift C R HR Γ Δ σ A ≈ σ^+[T, A].
+Proof.
+  transitivity (@display_lift C P HD Γ Δ σ A).
+  - exact (@display_context_lift C P HD Γ Δ σ A).
+  - exact (@context_elements_lift C T HC Γ Δ σ A).
+Defined.
+
+End ContextElementsActions.
