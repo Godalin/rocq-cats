@@ -4134,13 +4134,15 @@ stages; these units alone do not assert a monoidal profunctor category.
 
 ### 自 Profunctor 复合作为幺半范畴
 
-[The monoidal assembly](../theories/Cat/Profunctor/Monoidal.v) uses the existing
-composition bifunctor with its usual order: the left factor follows the right
+[The monoidal assembly](../theories/Cat/Profunctor/Monoidal.v) retains the
+existing composition bifunctor's objects, input maps and functor laws, with its
+usual order: the left factor follows the right
 factor, while generated pairs retain execution order. Fix a uniform family of
 chosen kernel coends. The tensor uses those same choices, and its associator
 is the inverse of the previously constructed ordered reassociation.
 
-[幺半装配](../theories/Cat/Profunctor/Monoidal.v)使用已有复合双函子及其通常次序：
+[幺半装配](../theories/Cat/Profunctor/Monoidal.v)保留已有复合双函子的对象、输入
+映射及函子律，并使用其通常次序：
 左因子在右因子之后作用，生成对仍保持执行次序。固定统一选定核 coend 族后，
 张量使用同一批选择，其结合子为已有有序重结合的逆。
 
