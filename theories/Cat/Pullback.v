@@ -84,6 +84,35 @@ Notation "@pb2 f g" := (pb2 f g)
 
 Hint Resolve pullback_comm : cat.
 
+(** Transport a candidate pullback square along the specified equality of
+    its four arrows. The mediator is retained; equality witnesses need not
+    be identified. No globally chosen pullbacks are required. *)
+
+(** 沿四条边的指定相等传递候选拉回方形，保留原中介；不要求相等见证本身
+    相等，也不要求全局选定拉回。 *)
+
+Definition pullback_congr {C : Cat} {X Y Z P : @Ob C}
+    {f f' : Hom X Z} {g g' : Hom Y Z}
+    {p1 p1' : Hom P X} {p2 p2' : Hom P Y}
+    (Hf : f ≈ f') (Hg : g ≈ g')
+    (H1 : p1 ≈ p1') (H2 : p2 ≈ p2')
+    (HP : is_pullback f g P p1 p2)
+  : is_pullback f' g' P p1' p2'.
+Proof.
+  destruct HP as [Hcomm Hu]. split.
+  - rewrite <- Hf, <- Hg, <- H1, <- H2. exact Hcomm.
+  - intros Q q1 q2 Hq.
+    assert (Hq' : f ∘ q1 ≈ g ∘ q2).
+    { rewrite Hf, Hg. exact Hq. }
+    destruct (Hu Q q1 q2 Hq') as [h [[Hh1 Hh2] Hunique]].
+    exists h. refine {|this := _
+                     ; that := _
+                     |}.
+    + split; [rewrite <- H1 | rewrite <- H2]; assumption.
+    + intros k [Hk1 Hk2]. apply Hunique.
+      split; [rewrite H1 | rewrite H2]; assumption.
+Defined.
+
 (** Two arrows into a pullback agree when both projections agree. *)
 
 (** 指向拉回的两条态射在两个投影下都相等时，它们相等。 *)

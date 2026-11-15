@@ -1,6 +1,7 @@
 From Cats Require Import Cat.Core.
 From Cats Require Import Cat.Pullback.
 From Cats Require Import Cat.Morphism.
+From Cats Require Import Cat.Subobject.
 From Cats Require Import Cat.Functor.Core.
 From Cats Require Import Instance.Set.Core.
 
@@ -50,33 +51,8 @@ Program Definition Sub_fmap {X Y : Ob}
   : Sub X
   :=
   {|sub := Pb f sY
-  ; sub_mono :=
-      {|mor := pb1 f sY
-      |}
+  ; sub_mono := PullbackMono pullback_universal
   |}.
-Next Obligation.
-  intros W x y H1.
-  assert (Hx : f ∘ (pb1 f sY ∘ x) ≈ sY ∘ (pb2 f sY ∘ x)).
-  { rewrite <- comp_assoc.
-    rewrite <- comp_assoc.
-    rewrite pullback_comm. cato. }
-  assert (Hy : f ∘ (pb1 f sY ∘ y) ≈ sY ∘ (pb2 f sY ∘ y)).
-  { rewrite <- comp_assoc.
-    rewrite <- comp_assoc.
-    rewrite pullback_comm. cato. }
-  destruct (pullback_mediator_unique Hx) as [[Hx11 Hx12] Hx2].
-  specialize (Hx2 y).
-  assert (Hxη : x ≈ pb (pb1 f sY ∘ x) (pb2 f sY ∘ x) Hx).
-  { apply pb_η. split; cato. }
-  assert (Hyη : y ≈ pb (pb1 f sY ∘ y) (pb2 f sY ∘ y) Hy).
-  { apply pb_η. split; cato. }
-  rewrite <- Hxη in Hx2.
-  symmetry. apply Hx2.
-  split. symmetry. auto.
-  assert (sY ∘ (pb2 f sY ∘ x) ≈ sY ∘ (pb2 f sY ∘ y)).
-  { rewrite <- Hx, <- Hy. apply comp_l. auto. }
-  apply sub_mono in X0. symmetry. auto.
-Qed.
 
 (** The chosen inverse-image subobject has the selected pullback as its
     domain. *)
