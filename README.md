@@ -227,7 +227,11 @@ factor, commuting with context substitution and right adjoint to projection
 substitution, with transparent entailment factors.
 The optional [predicate categories](./theories/Topos/PredicateCategory.v)
 retain these factors as arrows and make substitution a functor, without
-products or exponentials. Adding those choices, the
+products or exponentials. The optional
+[reindex comparisons](./theories/Topos/PredicateReindex.v) use the general
+preorder comparison bridge for identity, composition and base-arrow equality
+natural isomorphisms, with unit and association diagrams in natural equality.
+Adding products and exponentials, the
 [projection adjunction client](./theories/Topos/ForallAdjunction.v) applies
 the general preorder bridge to assemble an actual right adjunction,
 retaining the same transposes and quantifier evaluation counit.
@@ -266,7 +270,10 @@ Type 值子对象预序范畴的二元积给出；其
 可选的[全称量词](./theories/Topos/Forall.v)分类恒真的名称，对固定积因子作
 全称量化，与上下文代入相容，并为沿投影代入的右伴随，保留透明蕴含因子。
 可选的[谓词范畴](./theories/Topos/PredicateCategory.v)将这些因子保留为箭头，
-使代入成为函子，不要求积或指数。另加这些选择，
+使代入成为函子，不要求积或指数。可选的
+[重索引比较](./theories/Topos/PredicateReindex.v)复用一般预序比较桥梁，
+给出恒等、复合和基箭头相等的自然同构，以及自然相等下的单位与结合图。
+另加积和指数，
 [投影伴随客户端](./theories/Topos/ForallAdjunction.v)应用一般预序桥梁，组装
 实际右伴随，保留同一转置及作为余单位的量词求值。
 可选的[底模块](./theories/Topos/Bottom.v)对真值作全称量化得到假，以及每个
