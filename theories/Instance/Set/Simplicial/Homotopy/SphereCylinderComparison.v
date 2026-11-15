@@ -27,9 +27,13 @@ Local Open Scope ordinal_scope.
     witness, never an automatically registered instance. The converse reuses
     the missing-face-one/two choices already present in the reversal family.
     The result is a pair of Type-valued witness transformations, not inverse
-    equations for
-    cylinder or derivation records. Choice independence, general Kan π₂,
-    arbitrary paths and weak-equivalence comparisons remain separate. *)
+    equations for cylinder or derivation records. The next optional
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderSetoid.two_sphere_cylinder_class_iso}
+    {%[two_sphere_cylinder_class_iso]%}% packages their unchanged sphere
+    representatives into isomorphic setoid presentations, after independent
+    common upward lifts. Choice independence for constructed witnesses,
+    general Kan π₂, arbitrary paths and weak-equivalence comparisons remain
+    separate. *)
 
 (** * 生成链与实际相对柱
 
@@ -44,8 +48,11 @@ Local Open Scope ordinal_scope.
 
     两组显式九份选择给出显式等价见证，不自动注册实例。反方向复用反转选择族
     中已有的四维缺第一／第二面选择。结果是一对Type值见证转换，不要求柱记录
-    或推导记录满足往返相等。选择独立、一般Kan π₂、任意路径及弱等价比较保持
-    为独立目标。 *)
+    或推导记录满足往返相等。后续可选的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderSetoid.two_sphere_cylinder_class_iso}
+    {%[two_sphere_cylinder_class_iso]%}% 在独立共同向上提升后，将保持不变的球面
+    代表组成同构的广集呈现。构造见证的选择独立、一般Kan π₂、任意路径及弱等价
+    比较保持为独立目标。 *)
 
 (** In the first diagram Π(w) is the three-piece cylinder and R is actual
     reversal; its two occurrences of x are the same supplied sphere.
