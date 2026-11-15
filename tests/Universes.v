@@ -2816,10 +2816,10 @@ Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 Context (P : Fct (C^op) SetCat@{a b _ _ _ _ _})
     (Q : Fct (D^op) SetCat@{b a _ _ _ _ _}).
 Context (HP : HasDisplay C P) (HQ : HasDisplay D Q).
-Definition high_eq_display_terms (Γ : @Ob C) (A : P Γ)
+Definition high_eq_display_context_action_terms (Γ : @Ob C) (A : P Γ)
   : SetC@{p p}
   := @DisplayTerms C P HP Γ A.
-Definition low_eq_display_terms (Γ : @Ob D) (A : Q Γ)
+Definition low_eq_display_context_action_terms (Γ : @Ob D) (A : Q Γ)
   : SetC@{p h}
   := @DisplayTerms D Q HQ Γ A.
 Definition high_eq_display_context_conv
