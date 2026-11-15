@@ -583,9 +583,11 @@ Monad–Applicative–Arrow 工作从
   universality of the display pair and reuses the general lifted Hom theory
   for its representation. It recovers context extensions and constructs
   `DisplayCwF P` with a separately chosen terminal context; model selection
-  remains explicit.
+  remains explicit. Derived context conversion and substitution lifts agree
+  with the supplied display maps in specified hom equality.
   显示泛配对经一般泛元素准则恢复上下文扩张，提升 Hom 给出表示；
-  另选终上下文得到 `DisplayCwF P`，模型选择仍须显式启用。
+  另选终上下文得到 `DisplayCwF P`，模型选择仍须显式启用；
+  导出的上下文转换和替换提升按指定态射相等保留给定显示操作。
   [Display/Comprehension](./theories/DTT/Display/Comprehension.v) relates these
   displays to comprehension over the fixed type presheaf's element projection.
   The total-space functors are compared by a natural isomorphism preserving

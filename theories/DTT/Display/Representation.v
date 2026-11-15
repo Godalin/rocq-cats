@@ -275,3 +275,76 @@ Program Definition DisplayCwF `{HT : !HasTerminal C}
   |}.
 
 End DisplayRepresentation.
+
+From Cats Require Import
+  DTT.Context.Conversion
+  DTT.Context.Pullback.
+
+(** ** Recovering Display Conversion and Substitution Lifts
+
+    Fix the supplied display structure. The context operations derived from
+    its generic pairs agree with its original conversion and lift maps.
+    Pairing and display coherence suffice; no terminal context is needed. *)
+
+(** ** 恢复显示转换与替换提升
+
+    固定给定显示结构，由其泛配对导出的上下文操作与原转换、提升映射一致。
+    证明仅用配对和显示相干律，不需要终上下文。 *)
+
+Section DisplayContextActions.
+Context {C : Cat} (P : Fct (C^op) SetCat) `{HD : !HasDisplay C P}.
+
+Let R := DisplayTyTmF P.
+Let HR := Display_HasContextExtension P.
+
+(** Recovered context conversion is the given display conversion, in
+    specified hom equality rather than equality of witnesses. *)
+
+(** 恢复的上下文转换按指定态射相等等于给定显示转换，而不比较见证的原生相等。 *)
+
+Theorem display_context_conv {Γ : @Ob C} {A B : P Γ} (e : A ≈S B)
+  : @context_conv C R HR Γ A B e ≈ e^D[P].
+Proof.
+  change ((display_proj P A ∘ id)^D[P, B] ∘
+    ((e[display_proj P A ∘ id]EqF[P])^D[P] ∘
+      (display_generic_pair P A).2.1) ≈ e^D[P]).
+  rewrite <- comp_assoc, display_lift_conv, comp_assoc.
+  change (e^D[P] ∘ display_pair_resp P A _
+    (display_generic_pair P A) ≈ e^D[P]).
+  unfold display_generic_pair.
+  rewrite display_pair_unpair. apply comp_id_r.
+Defined.
+
+(** Recovered context substitution lifts are the given display lifts.
+    The proof uses composition coherence and the generic factorization. *)
+
+(** 恢复的上下文替换提升等于给定显示提升；证明复用复合相干性与泛分解。 *)
+
+Theorem display_context_lift {Γ Δ : @Ob C} (σ : Hom Δ Γ) (A : P Γ)
+  : @context_lift C R HR Γ Δ σ A ≈ σ^D[P, A].
+Proof.
+  change ((σ ∘ (display_proj P A[σ]TyF[P] ∘ id))^D[P, A] ∘
+    ((ty_sub_comp R σ (display_proj P A[σ]TyF[P] ∘ id) A)^D[P] ∘
+      (display_generic_pair P A[σ]TyF[P]).2.1) ≈ σ^D[P, A]).
+  rewrite (display_conv_witness_independent P
+    (ty_sub_comp R σ (display_proj P A[σ]TyF[P] ∘ id) A)
+    (type_sub_comp P σ (display_proj P A[σ]TyF[P] ∘ id) A)).
+  transitivity (((σ ∘ (display_proj P A[σ]TyF[P] ∘ id))^D[P, A] ∘
+    (type_sub_comp P σ (display_proj P A[σ]TyF[P] ∘ id) A)^D[P]) ∘
+      (display_generic_pair P A[σ]TyF[P]).2.1).
+  - apply symmetry, comp_assoc.
+  - transitivity ((σ^D[P, A] ∘
+        (display_proj P A[σ]TyF[P] ∘ id)^D[P, A[σ]TyF[P]]) ∘
+        (display_generic_pair P A[σ]TyF[P]).2.1).
+    + apply comp_r. symmetry. apply display_lift_comp.
+    + transitivity (σ^D[P, A] ∘
+        ((display_proj P A[σ]TyF[P] ∘ id)^D[P, A[σ]TyF[P]] ∘
+          (display_generic_pair P A[σ]TyF[P]).2.1)).
+      * apply comp_assoc.
+      * change (σ^D[P, A] ∘ display_pair_resp P A[σ]TyF[P] _
+          (display_generic_pair P A[σ]TyF[P]) ≈ σ^D[P, A]).
+        unfold display_generic_pair.
+        rewrite display_pair_unpair. apply comp_id_r.
+Defined.
+
+End DisplayContextActions.
