@@ -39,6 +39,7 @@ TriangleProduct.v
 TriangleHorn.v
 TriangleStage.v
 TriangleAttachment.v
+TriangleInput.v
 TriangleIteration.v
 Homotopy/SphereCylinder.v
 Homotopy/SpherePrismRelative.v

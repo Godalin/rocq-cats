@@ -22,7 +22,10 @@ Local Open Scope ordinal_scope.
     used. Neither full Kan nor choice Proper/uniqueness is required.
 
     This constructs the extension from given initial-region data.
-    Constructing those data from relative cylinders is a later consumer. *)
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleInput.TriangleInputN}
+    {%[TriangleInputN]%}% now glues boundary and retained time-edge maps
+    with explicit common-factor agreement. Deriving that agreement from
+    relative-cylinder endpoints remains a later consumer. *)
 
 (** * 九次实际延拓到三角积
 
@@ -34,7 +37,10 @@ Local Open Scope ordinal_scope.
     指定参数 horn。恢复方程对每个来源维数成立。只使用列出的九份三维和四维
     horn 选择，不要求完整 Kan 或选择 Proper/唯一。
 
-    本章从给定初始区域数据构造延拓；由相对柱构造这些数据留待后续消费。 *)
+    本章从给定初始区域数据构造延拓。
+    %\coqref{Cats.Instance.Set.Simplicial.TriangleInput.TriangleInputN}
+    {%[TriangleInputN]%}% 现以显式共同因子相容粘合边界及保留时间边映射；
+    由相对柱端点导出该相容仍留待后续消费。 *)
 
 (** @lang both
 %\begin{center}
