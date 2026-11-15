@@ -128,9 +128,16 @@ Definition triangle_input_boundary_agreement
         H j n (ι∂[2] n a, t).
 
 (** Equal time images have equal values, for every spatial simplex.
-    The omitted face and its value impose no condition. *)
+    The omitted face and its value impose no condition. The optional
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.TimeOverlap.cylinder_time_matching_iff}
+    {%[cylinder_time_matching_iff]%}% derives this condition exactly from
+    agreement at the shared cylinder endpoints, without Kan choices. *)
 
-(** 对每个空间单形，相等时间像具有相等取值；缺失面及其取值不施加条件。 *)
+(** 对每个空间单形，相等时间像具有相等取值；缺失面及其取值不施加条件。
+    可选的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.TimeOverlap.cylinder_time_matching_iff}
+    {%[cylinder_time_matching_iff]%}% 将此条件与柱的公共端点一致精确等价，
+    不需要 Kan 选择。 *)
 
 Definition triangle_input_face_agreement (H : Ordinal 2 → Cyl ⇒ X)
   : Type
