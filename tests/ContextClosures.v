@@ -21,12 +21,12 @@ Context (R : RelationFamily@{i a r _} A).
 (** 将生成闭包封装为关系族的自映射时，载体、操作与见证层级须保持不同。 *)
 
 Definition separated_compatible_closure
-  : Closure (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
-  := CompatibleClosure K.
+  : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
+  := CompatibleClosOp K.
 
 Definition separated_congruence_closure
-  : Closure (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
-  := CongruenceClosure K.
+  : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
+  := CongruenceClosOp K.
 
 (** The equivalence instance must apply to the original carrier level,
     rather than silently lifting the carrier to the edge-witness level. *)
@@ -34,21 +34,21 @@ Definition separated_congruence_closure
 (** 等价实例必须适用于原载体层级，不能隐含地将载体提升到边见证层级。 *)
 
 Definition separated_generated_equivalence (j : I)
-  : Equivalence (EquivalenceClosure@{a r _} (A j) (R j))
-  := EquivalenceClosure_Equivalence (R j).
+  : Equivalence (EquivClosOp@{a r _} (A j) (R j))
+  := EquivClosOp_Equivalence (R j).
 
 Definition separated_interchange
   : (R^≈ᵢ)^C[K] ⊆ᵢ (R^C[K])^≈ᵢ
   := compatible_equivalence_interchange K R.
 
 Definition separated_joint_presentation
-  : EquationalClosure K R ≈ᵢ (R^C[K])^≈ᵢ
+  : EquationalClos K R ≈ᵢ (R^C[K])^≈ᵢ
   := equational_closure_paths K R.
 
 Definition separated_congruence_universal
     (S : RelationFamily@{i a r _} A)
     (hs : is_compatible K S) (es : ∀ j, Equivalence (S j))
-  : CongruenceClosure K R ⊆ᵢ S ↔ R ⊆ᵢ S
+  : CongruenceClosOp K R ⊆ᵢ S ↔ R ⊆ᵢ S
   := congruence_closure_universal K R S hs es.
 
 End IndependentLevels.
@@ -65,8 +65,8 @@ Context (I : Type@{i}) (A : I → Type@{a}).
 (** 逐点路径不保存索引，因此见证界不必容纳索引宇宙；上下文迭代的界则不同。 *)
 
 Definition large_index_pointwise_closure
-  : Closure (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
-  := FamilyEquivalenceClosure A.
+  : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
+  := FamilyEquivClosOp A.
 
 End LargerIndices.
 
@@ -87,7 +87,7 @@ Context (R : RelationFamily@{i a r _} A).
 
 Definition small_generator_context_closure
   : RelationFamily@{i a p _} A
-  := ContextClosure K R.
+  := ContextClos K R.
 
 End SmallerGenerators.
 
@@ -187,7 +187,7 @@ Proof. reflexivity. Qed.
 (** 分别替换两个参数，再连接推导；这从恰有一个变化输入的操作得到二元合同。 *)
 
 Definition both_pair_arguments
-  : EquationalClosure PairContexts Increment tuple (0, 0) (1, 1)
+  : EquationalClos PairContexts Increment tuple (0, 0) (1, 1)
   := equation_trans
       (equation_context (K := PairContexts)
         (pair_left 0) (equation_step (increment 0 2)))

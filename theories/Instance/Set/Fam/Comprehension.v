@@ -57,7 +57,7 @@ Defined.
 Definition FamComprehension
   : Comprehension FamBaseF
   :=
-  {|comprehension_lifts := FamBaseF_HasCartesianLift
+  {|comprehension_lifts := FamBaseF_HasCartLift
   ; ExtF := FamTotalF
   ; projectionN := FamProjectionN
   ; comprehension_universal := fam_comprehension_universal

@@ -32,7 +32,7 @@ Local Open Scope monad_scope.
 
 Section Reflection.
 Context {X : Type} {R : crelation X} `{HR : !PreOrder R}.
-Context (c : Closure R).
+Context (c : Clos R).
 
 (** Objects retain a value and its closedness witness. Homs are exactly
     ambient comparisons; no equality of the stored closedness proofs enters
@@ -69,7 +69,7 @@ Definition closed_inclusion_fully_faithful
 
 (** 反射函子选取 [c x] 及其压平见证，箭头映射恰好就是闭包的单调性。 *)
 
-Program Definition ClosureF
+Program Definition ClosF
   : Fct (PreorderCat R) ClosedCat
   :=
   {|F0 x := (c x; closure_closed c x)
@@ -85,7 +85,7 @@ Next Obligation. exact tt. Defined.
 (** 正向 Hom 映射沿扩张限制。终点是闭对象，但限制不需要其闭性见证。 *)
 
 Program Definition closure_adjunct_resp (x : X) (y : @Ob ClosedCat)
-  : @HomSet ClosedCat (ClosureF x) y →r
+  : @HomSet ClosedCat (ClosF x) y →r
       @HomSet (PreorderCat R) x (ClosedInclusionF y)
   :=
   {|func h := closure_restrict c h
@@ -99,7 +99,7 @@ Next Obligation. repeat intro; exact tt. Defined.
 
 Program Definition closure_unadjunct_resp (x : X) (y : @Ob ClosedCat)
   : @HomSet (PreorderCat R) x (ClosedInclusionF y) →r
-      @HomSet ClosedCat (ClosureF x) y
+      @HomSet ClosedCat (ClosF x) y
   :=
   {|func h := closure_extend c y.2 h
   |}.
@@ -113,9 +113,9 @@ Next Obligation. repeat intro; exact tt. Defined.
     不要求比较见证之间的原生等式。 *)
 
 Definition ClosAdj
-  : ClosureF ⊣ ClosedInclusionF.
+  : ClosF ⊣ ClosedInclusionF.
 Proof.
-  refine (AdjFromHom ClosureF ClosedInclusionF
+  refine (AdjFromHom ClosF ClosedInclusionF
     closure_adjunct_resp closure_unadjunct_resp _ _ _ _);
     repeat intro; exact tt.
 Defined.
@@ -125,7 +125,7 @@ Defined.
 
 (** 复用一般的伴随到 Monad 构造，不另选单位、乘法或 Monad 定律证明。 *)
 
-Definition ClosureMonad
+Definition ClosMonad
   : Monad (PreorderCat R)
   := AdjMonad ClosAdj.
 
@@ -137,7 +137,7 @@ Definition ClosureMonad
     幂等，无须反复闭包对象之间的原生相等。 *)
 
 Definition closure_monad_mul_iso (x : X)
-  : @is_iso (PreorderCat R) _ _ (μ[ClosureMonad] x).
+  : @is_iso (PreorderCat R) _ _ (μ[ClosMonad] x).
 Proof.
   exists (closure_inflate c (c x)). split; exact tt.
 Defined.

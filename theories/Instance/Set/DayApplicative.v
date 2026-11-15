@@ -47,7 +47,7 @@ Let SC
   := SetCat@{u u _ _ _ _ _}.
 Let SM
   : MonoidalCat SC
-  := SetCartesianMonoidal.
+  := SetCartMonoidal.
 
 (** Extend the exact inherited lax unit, keeping the same functor. *)
 
@@ -187,7 +187,7 @@ Let SC
   := SetCat@{u u _ _ _ _ _}.
 Let SM
   : MonoidalCat SC
-  := SetCartesianMonoidal.
+  := SetCartMonoidal.
 Context (HD : ∀ F G : Fct SC SC, HasDay SC (tensorF SM) F G).
 Local Existing Instance HD.
 Let DM

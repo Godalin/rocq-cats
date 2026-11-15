@@ -136,7 +136,7 @@ Qed.
 
 (** 将双变量作用组装为乘积范畴上的函子。 *)
 
-Program Definition ExponentialBiF
+Program Definition ExpBiF
   : Fct (C^op ×C C) C
   :=
   {|F0 p := (snd p ^ fst p)%ob
@@ -152,17 +152,17 @@ Next Obligation. apply exponential_dimap_comp. Qed.
 
 (** 固定结果对象，得到反变指数函子。 *)
 
-Definition ExponentialContraF (Y : @Ob C)
+Definition ExpContraF (Y : @Ob C)
   : Fct (C^op) C
-  := π1F ExponentialBiF Y.
+  := π1F ExpBiF Y.
 
 (** Fixing the argument gives the existing covariant exponential functor,
     compared by identity components and specified morphism equality. *)
 
 (** 固定参数后，以恒等分量及指定态射相等比较双函子的截面与已有协变指数函子。 *)
 
-Program Definition ExponentialFixedN (X : @Ob C)
-  : π2F ExponentialBiF X ⇒ ExponentialF X
+Program Definition ExpFixedN (X : @Ob C)
+  : π2F ExpBiF X ⇒ ExpF X
   :=
   {|nt Y := id
   |}.
@@ -176,9 +176,9 @@ Qed.
 (** 比较的恒等分量可逆，不要求函子记录或其定律字段相等。 *)
 
 Definition exponential_fixed_nat_iso (X : @Ob C)
-  : π2F ExponentialBiF X ≅N ExponentialF X.
+  : π2F ExpBiF X ≅N ExpF X.
 Proof.
-  exists (ExponentialFixedN X). intros Y.
+  exists (ExpFixedN X). intros Y.
   exists id. split; apply comp_id_l.
 Defined.
 
@@ -186,5 +186,5 @@ End ExponentialBifunctor.
 
 Notation "v '^' u" := (exponential_dimap u v)
   (at level 30, right associativity) : hom_scope.
-Notation "'(-^-)'" := ExponentialBiF : cat_scope.
-Notation "'(' Y '^-)'" := (ExponentialContraF Y) : cat_scope.
+Notation "'(-^-)'" := ExpBiF : cat_scope.
+Notation "'(' Y '^-)'" := (ExpContraF Y) : cat_scope.

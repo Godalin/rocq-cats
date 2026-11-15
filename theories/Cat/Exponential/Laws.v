@@ -147,7 +147,7 @@ Qed.
 
 (** 将二元积比较组织为自然变换。 *)
 
-Program Definition ExponentialProductN (A : @Ob C)
+Program Definition ExpProdN (A : @Ob C)
   : ((-^ A) ∘F ProductF) ⇒ (ProductF ∘F ((-^ A) ×F (-^ A)))
   :=
   {|nt XY := (exponential_product_iso A (fst XY) (snd XY)).1
@@ -160,7 +160,7 @@ Next Obligation. destruct f as [f g]. apply exponential_product_natural. Qed.
 
 Definition exponential_product_nat_iso (A : @Ob C)
   : ((-^ A) ∘F ProductF) ≅N (ProductF ∘F ((-^ A) ×F (-^ A)))
-  := (ExponentialProductN A;
+  := (ExpProdN A;
       λ XY, (exponential_product_iso A (fst XY) (snd XY)).2).
 
 Context `{HT : !HasTerminal C}.
@@ -253,7 +253,7 @@ Qed.
 
 (** 将终参数处的求值组织为自然变换。 *)
 
-Program Definition ExponentialUnitN
+Program Definition ExpUnitN
   : (-^ 1) ⇒ (@IdF C)
   :=
   {|nt Y := exponential_unit_eval Y
@@ -266,6 +266,6 @@ Next Obligation. apply exponential_unit_natural. Qed.
 
 Definition exponential_unit_nat_iso
   : (-^ 1) ≅N (@IdF C)
-  := (ExponentialUnitN; λ Y, (exponential_unit_iso Y).2).
+  := (ExpUnitN; λ Y, (exponential_unit_iso Y).2).
 
 End ExponentialProducts.

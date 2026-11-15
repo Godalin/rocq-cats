@@ -7,7 +7,7 @@ From Cats Require Import
   Instance.Set.Product
   Instance.Set.CoendProduct.
 
-Local Open Scope profunctor_scope.
+Local Open Scope prof_scope.
 
 (** * Balanced Composition with an External Parameter
 
@@ -44,19 +44,19 @@ Context {X : @Ob C} {Z : @Ob E} {W : SetC@{u p}}.
 
 (** 每个核余楔平衡中间指标的两个单侧作用。 *)
 
-Lemma profunctor_comp_cowedge_gluing
-    (κ : Cowedge (ProfunctorCompKernel Q P X Z) W)
+Lemma prof_comp_cowedge_gluing
+    (κ : Cowedge (ProfCompKernel Q P X Z) W)
     {Y Y' : @Ob D} (h : Hom Y Y')
     (x : P (X,Y)) (y : Q (Y',Z))
   : κ Y (x,lmap[Q; h] y) ≈S κ Y' (rmap[P; h] x,y).
 Proof.
   transitivity (κ Y (dimap[P; @id X; @id Y] x,lmap[Q; h] y)).
   - apply func_proper. split; [| reflexivity].
-    symmetry. exact (profunctor_dimap_id P X Y x).
+    symmetry. exact (prof_dimap_id P X Y x).
   - transitivity (κ Y' (rmap[P; h] x,dimap[Q; @id Y'; @id Z] y)).
     + exact (cowedge_comm κ h (x,y)).
     + apply func_proper. split; [reflexivity |].
-      exact (profunctor_dimap_id Q Y' Z y).
+      exact (prof_dimap_id Q Y' Z y).
 Defined.
 
 (** Balanced respectful legs form a cowedge with those same legs. The
@@ -64,23 +64,23 @@ Defined.
 
 (** 平衡的尊重腿组成具有原腿的余楔，恒等作用由原 profunctor 定律消去。 *)
 
-Program Definition ProfunctorCompCowedge
+Program Definition ProfCompCowedge
     (κ : ∀ Y : @Ob D, (P (X,Y) ×S Q (Y,Z)) →r W)
     (Hκ : ∀ (Y Y' : @Ob D) (h : Hom Y Y')
       (x : P (X,Y)) (y : Q (Y',Z)),
       κ Y (x,lmap[Q; h] y) ≈S κ Y' (rmap[P; h] x,y))
-  : Cowedge (ProfunctorCompKernel Q P X Z) W
-  := CowedgeOf (D := SetCat) (F := ProfunctorCompKernel Q P X Z)
+  : Cowedge (ProfCompKernel Q P X Z) W
+  := CowedgeOf (D := SetCat) (F := ProfCompKernel Q P X Z)
       (W := W) κ _.
 Next Obligation.
   intros [x y].
   transitivity (κ X0 (x,lmap[Q; f] y)).
   - apply func_proper. split; [| reflexivity].
-    exact (profunctor_dimap_id P X X0 x).
+    exact (prof_dimap_id P X X0 x).
   - transitivity (κ Y (rmap[P; f] x,y)).
     + exact (Hκ X0 Y f x y).
     + apply func_proper. split; [reflexivity |].
-      symmetry. exact (profunctor_dimap_id Q Y Z y).
+      symmetry. exact (prof_dimap_id Q Y Z y).
 Defined.
 
 (** Reconstructing a cowedge keeps its original components; no equality
@@ -88,10 +88,10 @@ Defined.
 
 (** 重构余楔保留原分量，不要求定律见证相等。 *)
 
-Lemma profunctor_comp_cowedge_η
-    (κ : Cowedge (ProfunctorCompKernel Q P X Z) W)
-  : ProfunctorCompCowedge κ
-      (λ Y Y' h x y, profunctor_comp_cowedge_gluing κ h x y) ≈CW κ.
+Lemma prof_comp_cowedge_η
+    (κ : Cowedge (ProfCompKernel Q P X Z) W)
+  : ProfCompCowedge κ
+      (λ Y Y' h x y, prof_comp_cowedge_gluing κ h x y) ≈CW κ.
 Proof. intros Y xy. reflexivity. Defined.
 
 End BalancedLegs.
@@ -113,28 +113,28 @@ Context {C D E : Cat}.
 Context (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})).
 Context (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})).
 Context {X : @Ob C} {Z : @Ob E}.
-Context `{HC : !HasCoend SetCat (ProfunctorCompKernel Q P X Z)}.
+Context `{HC : !HasCoend SetCat (ProfCompKernel Q P X Z)}.
 Context {V W : SetC@{u p}}.
 
 (** Parameterized descent is the existing coend mediator at each parameter. *)
 
 (** 带参数下降就是每个参数处已有的 coend 中介。 *)
 
-Definition profunctor_comp_parameter_desc
-    (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Definition prof_comp_parameter_desc
+    (κ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
-  : (coend[ProfunctorCompKernel Q P X Z] ×S V) →r W
+  : (coend[ProfCompKernel Q P X Z] ×S V) →r W
   := coend_parameter_desc κ Hκ.
 
 (** Each original generating pair is evaluated at the unchanged parameter. *)
 
 (** 每个原生成对在不变参数处求值。 *)
 
-Lemma profunctor_comp_parameter_β
-    (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Lemma prof_comp_parameter_β
+    (κ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
     (Y : @Ob D) (xy : P (X,Y) ×S Q (Y,Z)) (v : V)
-  : profunctor_comp_parameter_desc κ Hκ (ιPr[Q; P; Y] xy,v)
+  : prof_comp_parameter_desc κ Hκ (ιPr[Q; P; Y] xy,v)
     ≈S κ v Y xy.
 Proof. exact (coend_parameter_β κ Hκ Y xy v). Defined.
 
@@ -142,8 +142,8 @@ Proof. exact (coend_parameter_β κ Hκ Y xy v). Defined.
 
 (** 配对生成元区分全部保持参数相等的映射。 *)
 
-Lemma profunctor_comp_parameter_hom_ext
-    (f g : (coend[ProfunctorCompKernel Q P X Z] ×S V) →r W)
+Lemma prof_comp_parameter_hom_ext
+    (f g : (coend[ProfCompKernel Q P X Z] ×S V) →r W)
     (H : ∀ Y (xy : P (X,Y) ×S Q (Y,Z)) (v : V),
       f (ιPr[Q; P; Y] xy,v) ≈S g (ιPr[Q; P; Y] xy,v))
   : f ≈f g.
@@ -153,13 +153,13 @@ Proof. exact (coend_parameter_hom_ext f g H). Defined.
 
 (** 生成元方程唯一决定下降。 *)
 
-Lemma profunctor_comp_parameter_unique
-    (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Lemma prof_comp_parameter_unique
+    (κ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
-    (f : (coend[ProfunctorCompKernel Q P X Z] ×S V) →r W)
+    (f : (coend[ProfCompKernel Q P X Z] ×S V) →r W)
     (H : ∀ Y (xy : P (X,Y) ×S Q (Y,Z)) (v : V),
       f (ιPr[Q; P; Y] xy,v) ≈S κ v Y xy)
-  : f ≈f profunctor_comp_parameter_desc κ Hκ.
+  : f ≈f prof_comp_parameter_desc κ Hκ.
 Proof. exact (coend_parameter_unique κ Hκ f H). Defined.
 
 (** Pointwise equal cowedge families give equal descents, independently
@@ -167,29 +167,29 @@ Proof. exact (coend_parameter_unique κ Hκ f H). Defined.
 
 (** 逐点相等的余楔族给出相等下降，不依赖各自的保相等见证。 *)
 
-Lemma profunctor_comp_parameter_proper
-    (κ μ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Lemma prof_comp_parameter_proper
+    (κ μ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
     (Hμ : Proper ([≈S] ==> CowedgeEq) μ)
     (H : ∀ v, κ v ≈CW μ v)
-  : profunctor_comp_parameter_desc κ Hκ ≈f
-      profunctor_comp_parameter_desc μ Hμ.
+  : prof_comp_parameter_desc κ Hκ ≈f
+      prof_comp_parameter_desc μ Hμ.
 Proof. exact (coend_parameter_desc_proper κ μ Hκ Hμ H). Defined.
 
 (** Exchange coordinates without another mediator or universal proof. *)
 
 (** 交换坐标，不引入另一中介或泛证明。 *)
 
-Program Definition profunctor_comp_left_parameter_desc
-    (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Program Definition prof_comp_left_parameter_desc
+    (κ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
-  : (V ×S coend[ProfunctorCompKernel Q P X Z]) →r W
+  : (V ×S coend[ProfCompKernel Q P X Z]) →r W
   :=
-  {|func vz := profunctor_comp_parameter_desc κ Hκ (snd vz,fst vz)
+  {|func vz := prof_comp_parameter_desc κ Hκ (snd vz,fst vz)
   |}.
 Next Obligation.
   intros [v z] [v' z'] [Hv Hz].
-  exact (@func_proper _ _ (profunctor_comp_parameter_desc κ Hκ)
+  exact (@func_proper _ _ (prof_comp_parameter_desc κ Hκ)
     (z,v) (z',v') (Hz,Hv)).
 Defined.
 
@@ -197,48 +197,48 @@ Defined.
 
 (** 左参数下降满足同一个原注入方程。 *)
 
-Lemma profunctor_comp_left_parameter_β
-    (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Lemma prof_comp_left_parameter_β
+    (κ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
     (Y : @Ob D) (xy : P (X,Y) ×S Q (Y,Z)) (v : V)
-  : profunctor_comp_left_parameter_desc κ Hκ (v,ιPr[Q; P; Y] xy)
+  : prof_comp_left_parameter_desc κ Hκ (v,ιPr[Q; P; Y] xy)
     ≈S κ v Y xy.
-Proof. exact (profunctor_comp_parameter_β κ Hκ Y xy v). Defined.
+Proof. exact (prof_comp_parameter_β κ Hκ Y xy v). Defined.
 
 (** Left-paired generators distinguish maps by the original right-side law. *)
 
 (** 由原右侧定律可知左配对生成元区分映射。 *)
 
-Lemma profunctor_comp_left_parameter_hom_ext
-    (f g : (V ×S coend[ProfunctorCompKernel Q P X Z]) →r W)
+Lemma prof_comp_left_parameter_hom_ext
+    (f g : (V ×S coend[ProfCompKernel Q P X Z]) →r W)
     (H : ∀ Y (xy : P (X,Y) ×S Q (Y,Z)) (v : V),
       f (v,ιPr[Q; P; Y] xy) ≈S g (v,ιPr[Q; P; Y] xy))
   : f ≈f g.
 Proof.
   unshelve epose (f' := ({|func zv := f (snd zv,fst zv)|}
-    : (coend[ProfunctorCompKernel Q P X Z] ×S V) →r W)).
+    : (coend[ProfCompKernel Q P X Z] ×S V) →r W)).
   { intros [z v] [z' v'] [Hz Hv]. apply func_proper. exact (Hv,Hz). }
   unshelve epose (g' := ({|func zv := g (snd zv,fst zv)|}
-    : (coend[ProfunctorCompKernel Q P X Z] ×S V) →r W)).
+    : (coend[ProfCompKernel Q P X Z] ×S V) →r W)).
   { intros [z v] [z' v'] [Hz Hv]. apply func_proper. exact (Hv,Hz). }
-  intros [v z]. exact (profunctor_comp_parameter_hom_ext f' g' H (z,v)).
+  intros [v z]. exact (prof_comp_parameter_hom_ext f' g' H (z,v)).
 Defined.
 
 (** Left descent is likewise uniquely determined on paired generators. *)
 
 (** 左下降同样由配对生成元上的值唯一决定。 *)
 
-Lemma profunctor_comp_left_parameter_unique
-    (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W)
+Lemma prof_comp_left_parameter_unique
+    (κ : V → Cowedge (ProfCompKernel Q P X Z) W)
     (Hκ : Proper ([≈S] ==> CowedgeEq) κ)
-    (f : (V ×S coend[ProfunctorCompKernel Q P X Z]) →r W)
+    (f : (V ×S coend[ProfCompKernel Q P X Z]) →r W)
     (H : ∀ Y (xy : P (X,Y) ×S Q (Y,Z)) (v : V),
       f (v,ιPr[Q; P; Y] xy) ≈S κ v Y xy)
-  : f ≈f profunctor_comp_left_parameter_desc κ Hκ.
+  : f ≈f prof_comp_left_parameter_desc κ Hκ.
 Proof.
-  apply profunctor_comp_left_parameter_hom_ext. intros Y xy v.
+  apply prof_comp_left_parameter_hom_ext. intros Y xy v.
   transitivity (κ v Y xy); [apply H |].
-  symmetry. apply profunctor_comp_left_parameter_β.
+  symmetry. apply prof_comp_left_parameter_β.
 Defined.
 
 End ParameterDescent.
@@ -260,53 +260,53 @@ Context {C D E : Cat}.
 Context {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}.
 Context {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}.
 Context {X X' : @Ob C} {Z Z' : @Ob E}.
-Context `{HF : !HasCoend SetCat (ProfunctorCompKernel Q P X Z)}.
-Context `{HG : !HasCoend SetCat (ProfunctorCompKernel Q' P' X' Z')}.
+Context `{HF : !HasCoend SetCat (ProfCompKernel Q P X Z)}.
+Context `{HG : !HasCoend SetCat (ProfCompKernel Q' P' X' Z')}.
 Context {V V' W W' : SetC@{u p}}.
-Context (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W).
-Context (μ : V' → Cowedge (ProfunctorCompKernel Q' P' X' Z') W').
+Context (κ : V → Cowedge (ProfCompKernel Q P X Z) W).
+Context (μ : V' → Cowedge (ProfCompKernel Q' P' X' Z') W').
 Context (Hκ : Proper ([≈S] ==> CowedgeEq) κ).
 Context (Hμ : Proper ([≈S] ==> CowedgeEq) μ).
-Context (δ : ProfunctorCompKernel Q P X Z ⇒
-    ProfunctorCompKernel Q' P' X' Z') (k : V →r V') (ψ : W →r W').
+Context (δ : ProfCompKernel Q P X Z ⇒
+    ProfCompKernel Q' P' X' Z') (k : V →r V') (ψ : W →r W').
 
 (** One generator square suffices; the coend map and parameterized
     distinction law supply its unique extension. *)
 
 (** 一个生成元方块已充分，coend 映射与带参数区分律给出其唯一延拓。 *)
 
-Lemma profunctor_comp_parameter_map
+Lemma prof_comp_parameter_map
     (H : ∀ Y (xy : P (X,Y) ×S Q (Y,Z)) (v : V),
       μ (k v) Y (δ (Y,Y) xy) ≈S ψ (κ v Y xy))
-    (z : coend[ProfunctorCompKernel Q P X Z]) (v : V)
-  : profunctor_comp_parameter_desc Q' P' μ Hμ
+    (z : coend[ProfCompKernel Q P X Z]) (v : V)
+  : prof_comp_parameter_desc Q' P' μ Hμ
       (coend_map δ z,k v) ≈S
-      ψ (profunctor_comp_parameter_desc Q P κ Hκ (z,v)).
+      ψ (prof_comp_parameter_desc Q P κ Hκ (z,v)).
 Proof.
   pose (m := @coend_map D SetCat _ _ HF HG δ).
   unshelve epose (f := ({|func zv :=
-    profunctor_comp_parameter_desc Q' P' μ Hμ (m (fst zv),k (snd zv))|}
-    : (coend[ProfunctorCompKernel Q P X Z] ×S V) →r W')).
+    prof_comp_parameter_desc Q' P' μ Hμ (m (fst zv),k (snd zv))|}
+    : (coend[ProfCompKernel Q P X Z] ×S V) →r W')).
   { intros [a b] [a' b'] [Ha Hb].
     exact (@func_proper _ _
-      (profunctor_comp_parameter_desc Q' P' μ Hμ)
+      (prof_comp_parameter_desc Q' P' μ Hμ)
       (m a,k b) (m a',k b')
       (@func_proper _ _ m a a' Ha,@func_proper _ _ k b b' Hb)). }
-  pose (g := ψ ∘r profunctor_comp_parameter_desc Q P κ Hκ).
+  pose (g := ψ ∘r prof_comp_parameter_desc Q P κ Hκ).
   assert (HE : f ≈f g).
-  { apply (profunctor_comp_parameter_hom_ext Q P). intros Y xy w.
-    transitivity (profunctor_comp_parameter_desc Q' P' μ Hμ
+  { apply (prof_comp_parameter_hom_ext Q P). intros Y xy w.
+    transitivity (prof_comp_parameter_desc Q' P' μ Hμ
       (ιPr[Q'; P'; Y] (δ (Y,Y) xy),k w)).
     - exact (@func_proper _ _
-        (profunctor_comp_parameter_desc Q' P' μ Hμ)
+        (prof_comp_parameter_desc Q' P' μ Hμ)
         (m (ιPr[Q; P; Y] xy),k w)
         (ιPr[Q'; P'; Y] (δ (Y,Y) xy),k w)
         (coend_map_β δ Y xy,reflexivity (k w))).
     - transitivity (μ (k w) Y (δ (Y,Y) xy)).
-      + apply profunctor_comp_parameter_β.
+      + apply prof_comp_parameter_β.
       + transitivity (ψ (κ w Y xy)); [apply H |].
         exact (@func_proper _ _ ψ _ _
-          (symmetry (profunctor_comp_parameter_β Q P κ Hκ Y xy w))). }
+          (symmetry (prof_comp_parameter_β Q P κ Hκ Y xy w))). }
   exact (HE (z,v)).
 Defined.
 
@@ -314,14 +314,14 @@ Defined.
 
 (** 左参数表示中的同一个方块不需要新证明。 *)
 
-Lemma profunctor_comp_left_parameter_map
+Lemma prof_comp_left_parameter_map
     (H : ∀ Y (xy : P (X,Y) ×S Q (Y,Z)) (v : V),
       μ (k v) Y (δ (Y,Y) xy) ≈S ψ (κ v Y xy))
-    (v : V) (z : coend[ProfunctorCompKernel Q P X Z])
-  : profunctor_comp_left_parameter_desc Q' P' μ Hμ
+    (v : V) (z : coend[ProfCompKernel Q P X Z])
+  : prof_comp_left_parameter_desc Q' P' μ Hμ
       (k v,coend_map δ z) ≈S
-      ψ (profunctor_comp_left_parameter_desc Q P κ Hκ (v,z)).
-Proof. exact (profunctor_comp_parameter_map H z v). Defined.
+      ψ (prof_comp_left_parameter_desc Q P κ Hκ (v,z)).
+Proof. exact (prof_comp_parameter_map H z v). Defined.
 
 End ParameterChange.
 
@@ -342,11 +342,11 @@ Context {C D E : Cat}.
 Context {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}.
 Context {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}.
 Context {X : @Ob C} {Z : @Ob E}.
-Context `{HF : !HasCoend SetCat (ProfunctorCompKernel Q P X Z)}.
-Context `{HG : !HasCoend SetCat (ProfunctorCompKernel Q' P' X Z)}.
+Context `{HF : !HasCoend SetCat (ProfCompKernel Q P X Z)}.
+Context `{HG : !HasCoend SetCat (ProfCompKernel Q' P' X Z)}.
 Context {V V' W W' : SetC@{u p}}.
-Context (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W).
-Context (μ : V' → Cowedge (ProfunctorCompKernel Q' P' X Z) W').
+Context (κ : V → Cowedge (ProfCompKernel Q P X Z) W).
+Context (μ : V' → Cowedge (ProfCompKernel Q' P' X Z) W').
 Context (Hκ : Proper ([≈S] ==> CowedgeEq) κ).
 Context (Hμ : Proper ([≈S] ==> CowedgeEq) μ).
 Context (α : P ⇒ P') (β : Q ⇒ Q') (k : V →r V') (ψ : W →r W').
@@ -355,16 +355,16 @@ Context (α : P ⇒ P') (β : Q ⇒ Q') (k : V →r V') (ψ : W →r W').
 
 (** 输入变换按执行顺序分别作用于各值。 *)
 
-Lemma profunctor_comp_parameter_change
+Lemma prof_comp_parameter_change
     (H : ∀ Y (x : P (X,Y)) (y : Q (Y,Z)) (v : V),
       μ (k v) Y (α (X,Y) x,β (Y,Z) y) ≈S ψ (κ v Y (x,y)))
-    (z : coend[ProfunctorCompKernel Q P X Z]) (v : V)
-  : profunctor_comp_parameter_desc Q' P' μ Hμ
-      (coend_map (ProfunctorCompInputN β α X Z) z,k v) ≈S
-      ψ (profunctor_comp_parameter_desc Q P κ Hκ (z,v)).
+    (z : coend[ProfCompKernel Q P X Z]) (v : V)
+  : prof_comp_parameter_desc Q' P' μ Hμ
+      (coend_map (ProfCompInputN β α X Z) z,k v) ≈S
+      ψ (prof_comp_parameter_desc Q P κ Hκ (z,v)).
 Proof.
-  refine (profunctor_comp_parameter_map κ μ Hκ Hμ
-    (ProfunctorCompInputN β α X Z) k ψ _ z v).
+  refine (prof_comp_parameter_map κ μ Hκ Hμ
+    (ProfCompInputN β α X Z) k ψ _ z v).
   intros Y [x y] w. exact (H Y x y w).
 Defined.
 
@@ -387,11 +387,11 @@ Context {C D E : Cat}.
 Context (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})).
 Context (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})).
 Context {X X' : @Ob C} {Z Z' : @Ob E}.
-Context `{HF : !HasCoend SetCat (ProfunctorCompKernel Q P X Z)}.
-Context `{HG : !HasCoend SetCat (ProfunctorCompKernel Q P X' Z')}.
+Context `{HF : !HasCoend SetCat (ProfCompKernel Q P X Z)}.
+Context `{HG : !HasCoend SetCat (ProfCompKernel Q P X' Z')}.
 Context {V V' W W' : SetC@{u p}}.
-Context (κ : V → Cowedge (ProfunctorCompKernel Q P X Z) W).
-Context (μ : V' → Cowedge (ProfunctorCompKernel Q P X' Z') W').
+Context (κ : V → Cowedge (ProfCompKernel Q P X Z) W).
+Context (μ : V' → Cowedge (ProfCompKernel Q P X' Z') W').
 Context (Hκ : Proper ([≈S] ==> CowedgeEq) κ).
 Context (Hμ : Proper ([≈S] ==> CowedgeEq) μ).
 Context (f : Hom X' X) (g : Hom Z Z') (k : V →r V') (ψ : W →r W').
@@ -401,16 +401,16 @@ Context (f : Hom X' X) (g : Hom Z Z') (k : V →r V') (ψ : W →r W').
 
 (** 原外端作用与参数改变只要在每个原对上与操作交换，便与下降交换。 *)
 
-Lemma profunctor_comp_parameter_boundary
+Lemma prof_comp_parameter_boundary
     (H : ∀ Y (x : P (X,Y)) (y : Q (Y,Z)) (v : V),
       μ (k v) Y (lmap[P; f] x,rmap[Q; g] y) ≈S ψ (κ v Y (x,y)))
-    (z : coend[ProfunctorCompKernel Q P X Z]) (v : V)
-  : profunctor_comp_parameter_desc Q P μ Hμ
-      (coend_map (ProfunctorCompBoundaryN Q P f g) z,k v) ≈S
-      ψ (profunctor_comp_parameter_desc Q P κ Hκ (z,v)).
+    (z : coend[ProfCompKernel Q P X Z]) (v : V)
+  : prof_comp_parameter_desc Q P μ Hμ
+      (coend_map (ProfCompBoundaryN Q P f g) z,k v) ≈S
+      ψ (prof_comp_parameter_desc Q P κ Hκ (z,v)).
 Proof.
-  refine (profunctor_comp_parameter_map κ μ Hκ Hμ
-    (ProfunctorCompBoundaryN Q P f g) k ψ _ z v).
+  refine (prof_comp_parameter_map κ μ Hκ Hμ
+    (ProfCompBoundaryN Q P f g) k ψ _ z v).
   intros Y [x y] w. exact (H Y x y w).
 Defined.
 

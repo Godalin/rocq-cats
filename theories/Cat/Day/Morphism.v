@@ -137,7 +137,7 @@ Let DM
   := MonoidalDay MC HD.
 Let SM
   : MonoidalCat (SetCat@{u p _ _ _ _ _})
-  := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** The selected tensor action agrees with the universal Day action. *)
 

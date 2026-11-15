@@ -32,7 +32,7 @@ Local Existing Instance SetCat_HasProduct.
 
 Section Kleisli.
 Universe u.
-Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartesianMonoidal).
+Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
 
 (** Run a supplied Kleisli arrow without adding another effect. Its result
     already lies in the original Monad. *)

@@ -26,12 +26,12 @@ Context (A : Type@{a}) (R : A → A → Type@{r}).
 (** 选定自映射保留严格高于载体的见证界，特别是封装不能识别这两个层级。 *)
 
 Definition large_witness_path_closure
-  : Closure (@subrelation@{a r r} A)
-  := ReflexiveTransitiveClosure A.
+  : Clos (@subrelation@{a r r} A)
+  := ReflTransClosOp A.
 
 Definition large_witness_equivalence_closure
-  : Closure (@subrelation@{a r r} A)
-  := EquivalenceClosure A.
+  : Clos (@subrelation@{a r r} A)
+  := EquivClosOp A.
 
 Definition large_witness_equivalence_comparison
   : R^±* ≈R R^≈
@@ -52,12 +52,12 @@ Context (A : Type@{a}) (R : A → A → Type@{r}).
     元素。 *)
 
 Definition small_witness_symmetric_closure
-  : Closure (@subrelation@{a r r} A)
-  := SymmetricClosure A.
+  : Clos (@subrelation@{a r r} A)
+  := SymClosOp A.
 
 Definition small_edges_large_paths
   : A → A → Type@{p}
-  := @ReflTransClosure@{a r p} A R.
+  := @ReflTransClos@{a r p} A R.
 
 Definition small_edges_large_path_step {x y : A} (h : R x y)
   : small_edges_large_paths x y
@@ -105,13 +105,13 @@ Definition weighted_path
 
 Example equivalence_inflation_computes
   : path_weight
-      (closure_inflate (EquivalenceClosure bool) WeightedRelation
+      (closure_inflate (EquivClosOp bool) WeightedRelation
         false true 7) = 7.
 Proof. reflexivity. Qed.
 
 Example equivalence_flattening_computes
   : path_weight
-      (closure_flatten (EquivalenceClosure bool) WeightedRelation
+      (closure_flatten (EquivClosOp bool) WeightedRelation
         true false
         (rtc_step (R := WeightedRelation^±*^±)
           (x := true) (y := false) (inr weighted_path))) = 5.

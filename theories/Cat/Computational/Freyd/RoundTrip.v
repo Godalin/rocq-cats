@@ -26,14 +26,14 @@ Local Open Scope computation_scope.
 
 Section ArrowRoundTrip.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** Returning through Freyd reindexes the same computation hom-sets. *)
 
 (** 经 Freyd 返回时重索引同一计算 Hom 广集。 *)
 
 Definition ArrowFreydRoundTrip
-  : Arrow C (ComputationCat A) (@CartesianMonoidal C HT HP)
+  : Arrow C (ComputationCat A) (@CartMonoidal C HT HP)
   := FreydArrow (ArrowFreyd A).
 
 (** Pure maps are unchanged on every hom-set. *)

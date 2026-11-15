@@ -278,10 +278,10 @@ Definition context_type_reindex_cartesian (Y : ContextType T) {Γ : @Ob C}
 
 (** 选定提升须显式启用，其基底识别是自反见证。 *)
 
-Program Definition CwFBaseF_HasCartesianLift
-  : HasCartesianLift (CwFBaseF T)
+Program Definition CwFBaseF_HasCartLift
+  : HasCartLift (CwFBaseF T)
   :=
-  {|CartesianLift Y Γ σ := Y[σ]Ctx[T]
+  {|CartLift Y Γ σ := Y[σ]Ctx[T]
   ; cartesian_lift_base Y Γ σ := eq_refl
   ; cartesian_lift Y Γ σ := context_type_reindex Y σ
   |}.
@@ -321,7 +321,7 @@ Defined.
 Program Definition CwFComprehension
   : Comprehension (CwFBaseF T)
   :=
-  {|comprehension_lifts := CwFBaseF_HasCartesianLift
+  {|comprehension_lifts := CwFBaseF_HasCartLift
   ; ExtF := CwFExtF T
   ; projectionN := CwFProjectionN T
   ; comprehension_universal := cwf_comprehension_universal

@@ -41,7 +41,7 @@ Context (hP : IsReducibilityCandidate@{a r Set p s k} R N P).
 (** 小路径无须共用归一化树的大小。 *)
 
 Definition smaller_path_membership {x y : X}
-    (h : ReflTransClosure@{a r w} R x y)
+    (h : ReflTransClos@{a r w} R x y)
   : P x → P y
   := candidate_rtc hP h.
 
@@ -69,7 +69,7 @@ Context (hP : IsReducibilityCandidate@{a r Set p s k} R N P).
 (** 不假设将路径缩小到树界或定律界。 *)
 
 Definition larger_path_membership {x y : X}
-    (h : ReflTransClosure@{a r w} R x y)
+    (h : ReflTransClos@{a r w} R x y)
   : P x → P y
   := candidate_rtc hP h.
 

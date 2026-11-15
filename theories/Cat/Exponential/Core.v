@@ -288,7 +288,7 @@ End Exponential.
 
 (** 指数在结果对象上的函子。 *)
 
-Program Definition ExponentialF {C : Cat}
+Program Definition ExpF {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} (X : @Ob C)
   : Fct C C
   :=
@@ -298,7 +298,7 @@ Program Definition ExponentialF {C : Cat}
 Next Obligation. apply exponential_map_id. Qed.
 Next Obligation. apply exponential_map_comp. Qed.
 
-Notation "'(-^' X ')'" := (ExponentialF X) : cat_scope.
+Notation "'(-^' X ')'" := (ExpF X) : cat_scope.
 
 (** The natural hom correspondence gives product left adjoint to
     exponentiation. *)

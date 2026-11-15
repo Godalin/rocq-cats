@@ -34,8 +34,8 @@ Local Open Scope relation_scope.
 Definition Join@{a r p} {A : Type@{a}} (R : A → A → Type@{r})
     (x y : A)
   : Type@{p}
-  := ∃ z, ReflTransClosure@{a r p} R x z ∧
-      ReflTransClosure@{a r p} R y z.
+  := ∃ z, ReflTransClos@{a r p} R x z ∧
+      ReflTransClos@{a r p} R y z.
 
 Notation "x '↓[' R ']' y" := (Join R x y)
   (at level 70, R at level 0) : relation_scope.
@@ -78,8 +78,8 @@ Definition is_locally_confluent@{a r p +} {A : Type@{a}}
 Definition is_confluent_at@{a r p +} {A : Type@{a}}
     (R : A → A → Type@{r}) (x : A)
   : Type
-  := ∀ y z, ReflTransClosure@{a r p} R x y →
-      ReflTransClosure@{a r p} R x z → Join@{a r p} R y z.
+  := ∀ y z, ReflTransClos@{a r p} R x y →
+      ReflTransClos@{a r p} R x z → Join@{a r p} R y z.
 
 (** Confluence supplies these joins uniformly at every source. *)
 

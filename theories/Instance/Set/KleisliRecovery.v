@@ -33,7 +33,7 @@ Local Existing Instance SetCat_HasProduct.
 
 Section Recovery.
 Universe u.
-Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartesianMonoidal).
+Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
 
 (** Recover a Monad from the existing Kleisli ArrowApply, using the general
     dynamic adjunction construction. *)

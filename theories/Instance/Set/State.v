@@ -194,9 +194,9 @@ Defined.
 (** 状态强度在上下文及结果上均自然。 *)
 
 Program Definition StateStrengthN@{r e u p +} (R : SetC@{r e})
-  : (tensorF SetCartesianMonoidal ∘F
+  : (tensorF SetCartMonoidal ∘F
       (IdF ×F StateF@{r e u p _ _ _ _} R)) ⇒
-      (StateF R ∘F tensorF SetCartesianMonoidal)
+      (StateF R ∘F tensorF SetCartMonoidal)
   :=
   {|nt p := state_strength R (fst p) (snd p)
   |}.
@@ -211,7 +211,7 @@ Defined.
 (** 显式选择状态函子的相干强度。 *)
 
 Program Definition StateStrength@{r e u p +} (R : SetC@{r e})
-  : @HasStrength (SetCat@{u p _ _ _ _ _}) SetCartesianMonoidal (StateF R)
+  : @HasStrength (SetCat@{u p _ _ _ _ _}) SetCartMonoidal (StateF R)
   :=
   {|strengthN := StateStrengthN R
   |}.
@@ -228,7 +228,7 @@ Defined.
 (** 返回及压平保持此选定状态强度。 *)
 
 Program Definition StateStrongM@{r e u p +} (R : SetC@{r e})
-  : StrongMonad (SetCat@{u p _ _ _ _ _}) SetCartesianMonoidal
+  : StrongMonad (SetCat@{u p _ _ _ _ _}) SetCartMonoidal
   :=
   {|StrongMonadM := StateM R
   ; hasStrength := StateStrength R
@@ -257,7 +257,7 @@ Definition StateA@{r e u p +} (R : SetC@{r e})
 
 Definition StateArrow@{r e u p +} (R : SetC@{r e})
   : Arrow (SetCat@{u p _ _ _ _ _}) (KleisliCat (StateM R))
-      SetCartesianMonoidal
+      SetCartMonoidal
   := KleisliArrow (StateStrongM R).
 
 

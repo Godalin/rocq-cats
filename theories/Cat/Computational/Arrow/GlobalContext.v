@@ -16,7 +16,7 @@ Local Open Scope computation_scope.
 
 Section GlobalContext.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** Run a global computation while carrying an ordinary input unchanged. *)
 

@@ -113,7 +113,7 @@ Universes u p.
 Context {C : Cat} (MC : MonoidalCat C).
 Let SM
   : MonoidalCat (SetCat@{u p _ _ _ _ _})
-  := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** Regard a lax tensorator as the natural binary operation required by
     Day extension. Only the tensor-map comparison is necessary. *)
@@ -484,7 +484,7 @@ Let I
   := TensorUnit MC.
 Let SM
   : MonoidalCat (SetCat@{u p _ _ _ _ _})
-  := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** Fixed-data coherence keeps the chosen base unitors and associator. *)
 
@@ -675,7 +675,7 @@ Let DM
   := MonoidalDay MC HD.
 Let SM
   : MonoidalCat (SetCat@{u p _ _ _ _ _})
-  := @CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** Extending a lax unit and tensorator satisfies the Day monoid diagrams. *)
 

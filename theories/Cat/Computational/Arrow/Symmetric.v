@@ -17,7 +17,7 @@ Local Open Scope computation_scope.
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** Keep exactly the same premonoidal parent and use pure exchange.
     Coherence is inherited under the pure functor from cartesian values. *)
@@ -48,14 +48,14 @@ Next Obligation.
   rewrite arrow_second_arr, arrow_first_arr, <- !functor_comp.
   apply functor_fmap_proper.
   exact (@premonoidal_symmetry_hexagon C
-    (@CartesianSymmetricPremonoidal C HT HP) X Y Z).
+    (@CartSymmetricPremonoidal C HT HP) X Y Z).
 Defined.
 Next Obligation.
   change (arr[A; (π2 : Hom (1 × X) X)] ∘ arr[A; ⟨π2, π1⟩] ≈
     arr[A; (π1 : Hom (X × 1) X)]).
   rewrite <- functor_comp. apply functor_fmap_proper.
   exact (@premonoidal_symmetry_unit C
-    (@CartesianSymmetricPremonoidal C HT HP) X).
+    (@CartSymmetricPremonoidal C HT HP) X).
 Defined.
 
 End Cartesian.

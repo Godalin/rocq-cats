@@ -73,9 +73,9 @@ Defined.
 (** 逐点配对就是 Reader 的自然 tensorator。 *)
 
 Program Definition ReaderTensorN@{r e u p +} (R : SetC@{r e})
-  : (tensorF SetCartesianMonoidal ∘F
+  : (tensorF SetCartMonoidal ∘F
       (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF R)) ⇒
-      (ReaderF R ∘F tensorF SetCartesianMonoidal)
+      (ReaderF R ∘F tensorF SetCartMonoidal)
   :=
   {|nt p := reader_pair R (fst p) (snd p)
   |}.
@@ -91,7 +91,7 @@ Defined.
 Program Definition ReaderLax@{r e u p +} (R : SetC@{r e})
   : LaxMonoidalFct (C := SetCat@{u p _ _ _ _ _})
       (D := SetCat@{u p _ _ _ _ _})
-      SetCartesianMonoidal SetCartesianMonoidal
+      SetCartMonoidal SetCartMonoidal
   :=
   {|LaxMonoidalF := ReaderF R
   ; lax_unit := reader_pure R UnitS

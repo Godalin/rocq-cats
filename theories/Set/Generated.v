@@ -10,28 +10,28 @@ From Cats.Set Require Export
 
 (** 保留 [R] 所生成等价关系的有限推导；中间元素及关系见证仍为计算数据。 *)
 
-Inductive EquivClosure {A : Type} (R : crelation A)
+Inductive EquivClos {A : Type} (R : crelation A)
   : crelation A
-  :=| closure_refl (x : A) : EquivClosure R x x
-    | closure_step {x y : A} : R x y → EquivClosure R x y
+  :=| closure_refl (x : A) : EquivClos R x x
+    | closure_step {x y : A} : R x y → EquivClos R x y
     | closure_sym {x y : A}
-        : EquivClosure R x y → EquivClosure R y x
+        : EquivClos R x y → EquivClos R y x
     | closure_trans {x y z : A}
-        : EquivClosure R x y → EquivClosure R y z → EquivClosure R x z.
+        : EquivClos R x y → EquivClos R y z → EquivClos R x z.
 
 Arguments closure_refl {_ _} _.
 Arguments closure_step {_ _ _ _} _.
 Arguments closure_sym {_ _ _ _} _.
 Arguments closure_trans {_ _ _ _ _} _ _.
 
-Notation "R '^≈'" := (EquivClosure R)
+Notation "R '^≈'" := (EquivClos R)
   (at level 20) : set_scope.
 
 (** The closure constructors supply the specified equivalence laws. *)
 
 (** 闭包构造器给出指定等价律。 *)
 
-Global Instance EquivClosure_Equivalence {A : Type} (R : crelation A)
+Global Instance EquivClos_Equivalence {A : Type} (R : crelation A)
   : Equivalence (R^≈) | 100.
 Proof.
   split; [exact closure_refl | exact (λ x y, closure_sym) |

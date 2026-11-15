@@ -6,7 +6,7 @@ From Cats Require Import
   Instance.Set.Hom
   Instance.Set.Lift.
 
-Local Open Scope profunctor_scope.
+Local Open Scope prof_scope.
 
 (** * Hom Profunctors and Functorial Reindexing
 
@@ -24,7 +24,7 @@ Local Open Scope profunctor_scope.
 
 (** 提升已有 Hom 函子，不重新证明其复合定律。 *)
 
-Definition HomProfunctor@{u p +} (C : Cat)
+Definition HomProf@{u p +} (C : Cat)
   : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
   := LiftF ∘F (@HomF C).
 
@@ -32,10 +32,10 @@ Definition HomProfunctor@{u p +} (C : Cat)
 
 (** 在两个独立给定函子上求值同一个提升 Hom。 *)
 
-Definition FunctorHomProfunctor@{u p +} {C D K : Cat}
+Definition FctHomProf@{u p +} {C D K : Cat}
     (F : Fct C K) (G : Fct D K)
   : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})
-  := ProfunctorReindex F G (HomProfunctor K).
+  := ProfReindex F G (HomProf K).
 
 (** A functor maps represented Hom arrows into the corresponding reindexed
     Hom profunctor. Reuse its respectful Hom map and independent lifting;
@@ -44,10 +44,10 @@ Definition FunctorHomProfunctor@{u p +} {C D K : Cat}
 (** 函子将表示的 Hom 箭头映到相应重索引 Hom profunctor；复用其尊重 Hom 映射及
     独立提升，辅助定律界与提升值界保持独立。 *)
 
-Program Definition HomProfunctorMapN@{u p a b +} {C D : Cat}
+Program Definition HomProfMapN@{u p a b +} {C D : Cat}
     (F : Fct@{_ _ _ _ a b _ _ _ _} C D)
-  : (HomProfunctor C : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})) ⇒
-      (FunctorHomProfunctor F F)
+  : (HomProf C : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})) ⇒
+      (FctHomProf F F)
   :=
   {|nt XY :=
       {|func h :=
@@ -85,13 +85,13 @@ Universes u p.
 Context (C : Cat).
 Let H
   : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
-  := HomProfunctor C.
+  := HomProf C.
 
 (** Two-sided action postcomposes and precomposes the represented arrow. *)
 
 (** 双侧作用在所表示箭头之后及之前复合。 *)
 
-Lemma hom_profunctor_dimap {X X' Y Y' : @Ob C}
+Lemma hom_prof_dimap {X X' Y Y' : @Ob C}
     (f : Hom X' X) (g : Hom Y Y') (h : H (X,Y))
   : lower (dimap[H; f; g] h) ≈ g ∘ lower h ∘ f.
 Proof. reflexivity. Defined.
@@ -100,7 +100,7 @@ Proof. reflexivity. Defined.
 
 (** 输入作用是预合成。 *)
 
-Lemma hom_profunctor_lmap {X X' Y : @Ob C}
+Lemma hom_prof_lmap {X X' Y : @Ob C}
     (f : Hom X' X) (h : H (X,Y))
   : lower (lmap[H; f] h) ≈ lower h ∘ f.
 Proof.
@@ -112,7 +112,7 @@ Defined.
 
 (** 输出作用是后合成。 *)
 
-Lemma hom_profunctor_rmap {X Y Y' : @Ob C}
+Lemma hom_prof_rmap {X Y Y' : @Ob C}
     (g : Hom Y Y') (h : H (X,Y))
   : lower (rmap[H; g] h) ≈ g ∘ lower h.
 Proof.
@@ -138,14 +138,14 @@ Universes u p.
 Context {C D K : Cat} (F : Fct C K) (G : Fct D K).
 Let H
   : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})
-  := FunctorHomProfunctor F G.
+  := FctHomProf F G.
 
 (** Dimap on computation Hom values uses exactly the functor images of
     input/output maps, followed by the original composition in the target. *)
 
 (** 计算 Hom 值上的 dimap 恰好使用输入／输出映射的函子像，再使用原目标复合。 *)
 
-Lemma functor_hom_profunctor_dimap {X X' : @Ob C} {Y Y' : @Ob D}
+Lemma fct_hom_prof_dimap {X X' : @Ob C} {Y Y' : @Ob D}
     (f : Hom X' X) (g : Hom Y Y') (h : H (X,Y))
   : lower (dimap[H; f; g] h) ≈ fmap G g ∘ lower h ∘ fmap F f.
 Proof. reflexivity. Defined.

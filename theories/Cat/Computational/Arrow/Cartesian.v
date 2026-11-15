@@ -23,7 +23,7 @@ Local Open Scope computation_scope.
 
 Definition arrow_second {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP))
+    (A : Arrow C K (@CartMonoidal C HT HP))
     {X Y : @Ob C} (Z : @Ob C) (f : Hom (A X) (A Y))
   : Hom (A (Z × X)%ob) (A (Z × Y)%ob)
   := context[A; Z; f].
@@ -37,7 +37,7 @@ Notation "'second[' A ';' f ';' Z ']'" := (arrow_second A Z f)
 
 Definition arrow_first {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP))
+    (A : Arrow C K (@CartMonoidal C HT HP))
     {X Y : @Ob C} (Z : @Ob C) (f : Hom (A X) (A Y))
   : Hom (A (X × Z)%ob) (A (Y × Z)%ob)
   := arr[A; ⟨π2, π1⟩] ∘ second[A; f; Z] ∘ arr[A; ⟨π2, π1⟩].
@@ -56,7 +56,7 @@ Notation "'first[' A ';' f ';' Z ']'" := (arrow_first A Z f)
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)).
+    (A : Arrow C K (@CartMonoidal C HT HP)).
 
 (** The derived operations respect computation equality. *)
 
@@ -357,7 +357,7 @@ End Cartesian.
 
 Definition arrow_split {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP))
+    (A : Arrow C K (@CartMonoidal C HT HP))
     {X Y X' Y' : @Ob C}
     (f : Hom (A X) (A Y)) (g : Hom (A X') (A Y'))
   : Hom (A (X × X')%ob) (A (Y × Y')%ob)
@@ -372,7 +372,7 @@ Notation "f '***[' A ']' g" := (arrow_split A f g)
 
 Definition arrow_fanout {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)) {X Y Z : @Ob C}
+    (A : Arrow C K (@CartMonoidal C HT HP)) {X Y Z : @Ob C}
     (f : Hom (A X) (A Y)) (g : Hom (A X) (A Z))
   : Hom (A X) (A (Y × Z)%ob)
   := (f ***[A] g) ∘ arr[A; ⟨id, id⟩].
@@ -386,7 +386,7 @@ Notation "f '&&&[' A ']' g" := (arrow_fanout A f g)
 
 Global Instance arrow_split_proper {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP))
+    (A : Arrow C K (@CartMonoidal C HT HP))
     {X Y X' Y' : @Ob C}
   : Proper (HomEq ==> HomEq ==> HomEq) (@arrow_split C K HT HP A X Y X' Y').
 Proof.
@@ -399,7 +399,7 @@ Qed.
 
 Global Instance arrow_fanout_proper {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartesianMonoidal C HT HP)) {X Y Z : @Ob C}
+    (A : Arrow C K (@CartMonoidal C HT HP)) {X Y Z : @Ob C}
   : Proper (HomEq ==> HomEq ==> HomEq) (@arrow_fanout C K HT HP A X Y Z).
 Proof.
   intros f f' Hf g g' Hg. unfold arrow_fanout. rewrite Hf, Hg. reflexivity.

@@ -227,7 +227,7 @@ Program Definition TyCat_HasExponential@{b e l +} (B : Type@{b})
 
 (** 类型呈现具有选定的单位类型与积类型构造器；此笛卡尔模型须显式启用。 *)
 
-Program Definition TyCat_Cartesian@{b e l +} (B : Type@{b})
+Program Definition TyCat_Cart@{b e l +} (B : Type@{b})
   : CartesianCat (TyCat@{b e l} B)
   :=
   {|hasTerminal := TyCat_HasTerminal B
@@ -241,6 +241,6 @@ Program Definition TyCat_Cartesian@{b e l +} (B : Type@{b})
 Program Definition TyCat_CCC@{b e l +} (B : Type@{b})
   : CCC (TyCat@{b e l} B)
   :=
-  {|CCCC := TyCat_Cartesian B
+  {|CCCC := TyCat_Cart B
   ; hasExponential := TyCat_HasExponential B
   |}.

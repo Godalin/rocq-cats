@@ -129,10 +129,10 @@ Definition arrow_reindex_cartesian (B : ArrowOb C) {X : @Ob C}
 
 (** 此选定结构须显式启用，导入模块不会自动注册。 *)
 
-Program Definition ArrowCodF_HasCartesianLift
-  : HasCartesianLift (ArrowCodF C)
+Program Definition ArrowCodF_HasCartLift
+  : HasCartLift (ArrowCodF C)
   :=
-  {|CartesianLift B X σ := ArrowReindexOb B σ
+  {|CartLift B X σ := ArrowReindexOb B σ
   ; cartesian_lift_base B X σ := eq_refl
   ; cartesian_lift B X σ := arrow_reindex B σ
   |}.
@@ -149,7 +149,7 @@ Notation "B '[' σ ']Arr'" := (ArrowReindexOb B σ)
 (** ** 由选定笛卡尔提升构造选定拉回 *)
 
 Section LiftPullbacks.
-Context {C : Cat} `{HL : !HasCartesianLift (ArrowCodF C)}.
+Context {C : Cat} `{HL : !HasCartLift (ArrowCodF C)}.
 
 (** The pullback vertex recovered from a chosen codomain-cartesian lift. *)
 
@@ -233,9 +233,9 @@ End LiftPullbacks.
 (** 两种选定结构的可用性构造性等价；不声称选取、对象或证明字段相等。 *)
 
 Theorem pullbacks_iff_arrow_cartesian_lifts (C : Cat)
-  : HasPullback C ↔ HasCartesianLift (ArrowCodF C).
+  : HasPullback C ↔ HasCartLift (ArrowCodF C).
 Proof.
   split.
-  - intros HPb. exact (@ArrowCodF_HasCartesianLift C HPb).
+  - intros HPb. exact (@ArrowCodF_HasCartLift C HPb).
   - intros HL. exact (@ArrowCodF_HasPullback C HL).
 Defined.

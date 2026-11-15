@@ -131,6 +131,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   [the abbreviation guide](docs/Abbreviations.md),
   updating bilingual docs and clients with each batch. Keep module paths
   and descriptive helper names unless individually reviewed.
+- Use `Clos` for generic closures and raw generated relations, with `*ClosOp`
+  for packaged relation-closure operators. Use `Exp` for named exponential
+  constructions, `Cart` for reviewed cartesian constructions, and `Prof` /
+  `prof_` for the reviewed profunctor family, including public operations,
+  laws and fields. Retain `HasExponential` and the complete parameterized
+  `CartesianCat` hierarchy; module paths and existing notation stay unchanged.
 - Prefix laws by their mathematical subject, not `axiom_`. Reuse descriptive
   endings (`_id`, `_comp`, `_inv`, `_iso`, `_unique`, `_β1`, `_η`).
   `_universal` denotes the full universal property; distinguish mediator

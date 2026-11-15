@@ -26,7 +26,7 @@ Definition is_comprehension {E B : Cat} {P T : Fct E B} (π : T ⇒ P)
 
 Record Comprehension {E B : Cat} (P : Fct E B)
   :=
-  { comprehension_lifts : HasCartesianLift P
+  { comprehension_lifts : HasCartLift P
   ; ExtF : Fct E B
   ; projectionN : ExtF ⇒ P
   ; comprehension_universal : is_comprehension projectionN

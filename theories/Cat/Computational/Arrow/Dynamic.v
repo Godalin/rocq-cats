@@ -31,7 +31,7 @@ Section Naming.
 Universes o u p.
 Context {K : Cat@{o u p _ _}}
     (A : Arrow (SetCat@{u p _ _ _ _ _}) K
-      (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Substitute each ordinary input purely into the computation. *)
 
@@ -130,10 +130,10 @@ Proof.
   pose proof (iso_square_inv
     (arr[A; (π2 : UnitS ×S X →r X)];
       functor_is_iso A _ (@tensor_unit_l_iso SetCat
-        (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) X))
+        (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) X))
     (arr[A; (π2 : UnitS ×S Y →r Y)];
       functor_is_iso A _ (@tensor_unit_l_iso SetCat
-        (@CartesianMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) Y))
+        (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) Y))
     (second[A; f; UnitS]) f (arrow_context_unit A f)) as Hu.
   change (arr[A; (⟨!,id⟩ : Y →r UnitS ×S Y)] ∘ f ≈
     second[A; f; UnitS] ∘ arr[A; (⟨!,id⟩ : X →r UnitS ×S X)]) in Hu.

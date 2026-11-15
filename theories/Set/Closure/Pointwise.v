@@ -16,9 +16,9 @@ From Cats.Set.Closure Require Export Core.
 
 (** 提升分量闭包律，不按原生相等比较依赖函数；顺序使用所给顺序的逐点族。 *)
 
-Program Definition PointwiseClosure {I : Type} {X : I → Type}
-    (R : ∀ i, crelation (X i)) (c : ∀ i, Closure (R i))
-  : Closure (λ x y : ∀ i, X i, ∀ i, R i (x i) (y i))
+Program Definition PointwiseClos {I : Type} {X : I → Type}
+    (R : ∀ i, crelation (X i)) (c : ∀ i, Clos (R i))
+  : Clos (λ x y : ∀ i, X i, ∀ i, R i (x i) (y i))
   :=
   {|closure_map x i := c i (x i)
   |}.

@@ -15,6 +15,18 @@ After that handoff, preserve the frozen source and await further instructions.
 不等待三条数学支线。本分支由用户直接安排；用户随后授权将完成的两批提交、
 推送并发送至既有集成会话。交接后保全冻结来源，等待后续安排。
 
+Current work is Batch 4 below: the user approved the combined Clos/ClosOp,
+Exp, remaining Cart and Prof migration. Its local implementation started at
+`7d6e9da` and is now synchronized and validated on `bc446ab`.
+The user has approved committing, publishing and submitting this frozen
+candidate; integration acceptance is pending. Earlier
+batches were integrated as `0f18829` and `6ec6c06`.
+
+当前工作为下文第四批：用户批准合并处理 Clos/ClosOp、Exp、剩余 Cart 与 Prof。
+本地实现从 `7d6e9da` 开始，现已同步至 `bc446ab` 并通过重新验证；用户已批准
+提交、推送及冻结交付，集成验收待完成。前序批次分别已集成至 `0f18829` 和
+`6ec6c06`。
+
 ## Reading and maintenance / 阅读与维护
 
 The old-name column refers to the batch's starting baseline, and the new-name
@@ -60,17 +72,18 @@ the implemented batch have migrated; the remaining families are tracked below.
 | Functor category / 函子范畴 | `FctCat` | Distinct from the functor type / 区别于函子类型 |
 | Natural transformation and isomorphism / 自然变换及同构 | `Nat`, `NatIso` | Retain suffix `N` / 保留 `N` 后缀 |
 | Adjunction / 伴随 | `Adj` | Retain notation `⊣` / 保留记号 |
-| Cartesian / 笛卡尔 | `Cart` | Review complete structures separately / 完整结构另行审阅 |
+| Cartesian / 笛卡尔 | `Cart` | Retain the complete `CartesianCat` hierarchy / 完整结构层级另行审阅 |
 | Diagonal / 对角 | `Diag` | Keep the existing diagonal notation / 保留已有对角记号 |
 | Generator and generators / 生成元 | `Gen` | Singular and plural use the same stem / 单复数使用同一词根 |
 | Object and objects / 对象 | `Obj` | Singular and plural use the same stem; preserve kind suffixes / 单复数统一，保留种类后缀 |
 | Limit and colimit / 极限与余极限 | `Lim`, `Colim` | Keep `HasLimit`, `HasColimit` / 保留选定构造接口 |
 | Presheaf / 预层 | `Psh` | Existing category name stays / 保留已有范畴名 |
 | Vertex / 顶点 | `Vtx` | Public declarations and fields use this stem; module paths stay unchanged / 公共声明及字段统一，模块路径保留 |
-| Closure / 闭包 | `Clos` | Do not conflate with Closed / 不与 Closed 混写 |
-| Packaged relation-closure operator / 打包关系闭包算子 | `*ClosOp` | Raw generated relations use `*Clos` / 底层生成关系用 `*Clos` |
+| Closure / 闭包 | `Clos` | Generic operators and raw relations; do not conflate with Closed / 一般算子及底层关系，不与 Closed 混写 |
+| Packaged relation-closure operator / 打包关系闭包算子 | `*ClosOp` | Includes fiberwise, compatible and congruence operators; raw relations use `*Clos` / 含逐纤维、相容及合同算子，底层关系用 `*Clos` |
+| Exponential constructions / 指数构造 | `Exp` | Retain `HasExponential` and descriptive helpers / 保留选定结构及描述性辅助名 |
+| Profunctors / Profunctor 词族 | `Prof`, `prof_` | Includes reviewed public operations, laws, fields and scope; retain module paths / 含公开操作、定律、字段及 scope，保留模块路径 |
 | Subobject / 子对象 | `SubObj` | A setoid of subobjects needs `S` / 子对象广集须体现 `S` |
-| Named exponential construction / 指数构造名 | `Exp` | Keep `HasExponential` / 保留选定指数接口 |
 | Groupoid / 群胚 | `Gpd` | No change to `IsGroupoid C` in this batch / 本批不改固定范畴上的接口 |
 | Monoid, monoidal, monad / 幺半群、幺半、单子 | `Monoid`, `Monoidal`, `Monad` | Keep complete stems / 保留完整词根 |
 
@@ -134,7 +147,7 @@ renamed bundles and adjunctions have consistent direct clients.
 | `isCartesianF` | `isCartF` | [Cat/Functor/Closed.v](../theories/Cat/Functor/Closed.v) |
 | `TypeInterpretF_IsCartesianF` | `TypeInterpretF_IsCartF` | [STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
 | `VertexNerveF_IsCartesianF` | `VtxNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
-| `ExponentialF_IsCartesianF` | `ExponentialF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `ExponentialF_IsCartesianF` | `ExpF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
 
 ### Adjunctions and induced constructions / 伴随及其诱导构造
 
@@ -512,25 +525,358 @@ validation afterward.
 验收期间保全来源分支。本批为 L2 breaking 公开改名，集成前须取得受影响会话
 的保全／暂停确认，集成后须同步并验证。
 
+## Batch 4: Clos, Exp, Cart and Prof / 第四批：合并词族
+
+The user approved `Prof` and requested completing these remaining families
+in one batch. This work starts from integrated
+`7d6e9da929a71590021ceb7deeca9238a4d017aa` on
+`abbreviations-clos-exp-cart-prof-38`. All earlier frozen sources remain
+preserved. This batch has 195 exact entries: 194 declarations/fields and one
+scope. The user subsequently approved committing, publishing and submitting
+this validated batch to the designated integrator. Keep its source frozen
+during acceptance; integration remains pending.
+
+用户批准 Prof，并安排剩余 Clos/ClosOp、Exp、Cart 与 Prof 合并处理。本批从
+已集成 `7d6e9da` 在新短分支 `abbreviations-clos-exp-cart-prof-38` 开始，前序
+冻结来源保全。195 项精确映射包括 194 个声明／字段和一个 scope；用户随后
+批准提交、推送并交付指定集成会话，验收期间冻结来源，集成待完成。
+
+For the #16 path-breaking integration, preserve the original WIP in the named
+stash `wip-38-clos-exp-cart-prof-before-etcs-path-16` at
+`61c28df28a5f6b14e4fe32ca9fb3d03c2487dcc6`. Following the explicit synchronization
+instruction, only this unintegrated WIP was restored, without conflicts, onto
+`bc446abd3d7bc844d221d290830cfb2f312ba743` on
+`abbreviations-clos-exp-cart-prof-synced-bc446ab`. The 195-entry map is unchanged;
+current source links and temporary audit imports use `Topos.ETCS`, `Topos.Nat`
+and `Topos.Sub`. The new baseline also includes the CI dependency repair.
+Old branches, stashes and frozen submissions remain preserved.
+
+因 #16 路径 breaking 集成，原 WIP 已保全至上述命名 stash。按明确同步指令，
+仅将未集成 WIP 无冲突恢复到 `bc446ab` 的新短分支，195 项精确映射保持不变；
+现行源码定位及临时审计导入采用新的 Topos 路径。新基线也包含 CI 依赖修复；
+旧分支、stash 及冻结来源继续保留。
+
+### Reviewed mathematical boundaries / 已核对的数学边界
+
+Generic operators use `Clos`; raw generated relations use `*Clos`.
+`FamilyEquivalenceClosure` returns a packaged closure on the inclusion preorder
+of relation families, so its target is `FamilyEquivClosOp`. The packaged
+compatible and congruence operators similarly become `CompatibleClosOp` and
+`CongruenceClosOp`; their raw context/equational relations use `ContextClos`
+and `EquationalClos`. The records, Type-valued witnesses, selected maps,
+coercions and universe bounds remain the same.
+
+一般闭包算子采用 Clos，底层生成关系采用 *Clos。逐纤维等价闭包实际返回关系族
+包含预序上的打包算子，因此采用 FamilyEquivClosOp；相容及合同打包算子也采用
+ClosOp，其底层上下文／方程关系则采用 Clos。记录、Type 值见证、选定映射、
+强制转换及宇宙界保持原样。
+
+The `Prof` family includes the reviewed public lowercase operations and laws,
+the composition/strength fields, Hom constructions, instance and scope names.
+`FunctorHomProfunctor` is the Hom profunctor reindexed along two supplied
+functors, hence `FctHomProf`. `Prof` remains the existing mixed-variance `Fct`
+alias; `ProfCat` remains its ordinary functor category. There is no new class
+or bifunctor implementation. The existing notation and `%profunctor` delimiter
+remain; only the scope's registered name becomes `prof_scope`.
+
+Prof 词族包含经审阅的公开小写操作与定律、复合／强度字段、Hom 构造、实例和
+scope 名。两个给定函子对 Hom profunctor 重索引的构造采用 FctHomProf。
+Prof 仍是已有混合变元 Fct 别名，ProfCat 仍是通常函子范畴，不新增结构类或
+双函子实现。现有记号及 scope 分隔符保留，只将 scope 注册名缩为 prof_scope。
+
+Keep `HasExponential`, `hasExponential`, `CartesianCat`, `CartesianC`,
+`hasCartesian` and the matching `Gluing_CartesianCat` instance. The complete
+cartesian hierarchy is reserved for separate review. Cartesian lift names
+have been inventoried with their arrow-category, CwF and set-family clients;
+these names change without changing any lifting property or chosen data.
+Other descriptive lowercase helpers and test-only `WitnessClosure` remain.
+Module paths, section names and ordinary mathematical prose are unchanged.
+Optional `NatPrism`, `CtxCatEquiv`, `NNO`, `Gpd`, reserved notation and structural
+experiments remain separate.
+
+保留 HasExponential 选定接口及完整 CartesianCat 层级、投影／选择字段与对应
+Gluing 实例；完整层级另行审阅。笛卡尔提升已盘点箭头范畴、CwF 和广集族的
+客户端，只迁移名称，保留提升性质与选择数据。其他描述性小写辅助名和仅供测试的
+WitnessClosure 保留；模块路径、Section 名及普通数学叙述不改。可选缩写、
+预留记号及结构实验另行安排。
+
+### Clos / 闭包
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `Closure` | `Clos` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `ClosureEq` | `ClosEq` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `ClosureEq_Equivalence` | `ClosEq_Equivalence` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `ClosureF` | `ClosF` | [Instance/Preorder/Closure.v](../theories/Instance/Preorder/Closure.v) |
+| `ClosureFromUniversal` | `ClosFromUniversal` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `ClosureLe` | `ClosLe` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `ClosureLe_PreOrder` | `ClosLe_PreOrder` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `ClosureMonad` | `ClosMonad` | [Instance/Preorder/Closure.v](../theories/Instance/Preorder/Closure.v) |
+| `CompatibleClosure` | `CompatibleClosOp` | [Set/Relation/Compatible.v](../theories/Set/Relation/Compatible.v) |
+| `CompositeClosure` | `CompositeClos` | [Set/Closure/Composition.v](../theories/Set/Closure/Composition.v) |
+| `CongruenceClosure` | `CongruenceClosOp` | [Set/Relation/Congruence.v](../theories/Set/Relation/Congruence.v) |
+| `CongruenceClosure_Equivalence` | `CongruenceClosOp_Equivalence` | [Set/Relation/Congruence.v](../theories/Set/Relation/Congruence.v) |
+| `CongruenceClosure_proper` | `CongruenceClosOp_proper` | [Set/Relation/Congruence.v](../theories/Set/Relation/Congruence.v) |
+| `ContextClosure` | `ContextClos` | [Set/Relation/Compatible.v](../theories/Set/Relation/Compatible.v) |
+| `ContextClosure_proper` | `ContextClos_proper` | [Set/Relation/Compatible.v](../theories/Set/Relation/Compatible.v) |
+| `EquationalClosure` | `EquationalClos` | [Set/Relation/Congruence.v](../theories/Set/Relation/Congruence.v) |
+| `EquationalClosure_Equivalence` | `EquationalClos_Equivalence` | [Set/Relation/Congruence.v](../theories/Set/Relation/Congruence.v) |
+| `EquationalClosure_proper` | `EquationalClos_proper` | [Set/Relation/Congruence.v](../theories/Set/Relation/Congruence.v) |
+| `EquivClosure` | `EquivClos` | [Set/Generated.v](../theories/Set/Generated.v) |
+| `EquivClosure_Equivalence` | `EquivClos_Equivalence` | [Set/Generated.v](../theories/Set/Generated.v) |
+| `EquivalenceClosure` | `EquivClosOp` | [Set/Relation/Equivalence.v](../theories/Set/Relation/Equivalence.v) |
+| `EquivalenceClosure_Equivalence` | `EquivClosOp_Equivalence` | [Set/Relation/Equivalence.v](../theories/Set/Relation/Equivalence.v) |
+| `EquivalenceClosure_proper` | `EquivClosOp_proper` | [Set/Relation/Equivalence.v](../theories/Set/Relation/Equivalence.v) |
+| `FamilyEquivalenceClosure` | `FamilyEquivClosOp` | [Set/Relation/Family.v](../theories/Set/Relation/Family.v) |
+| `FamilyEquivalenceClosure_proper` | `FamilyEquivClosOp_proper` | [Set/Relation/Family.v](../theories/Set/Relation/Family.v) |
+| `IdentityClosure` | `IdentityClos` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `PointwiseClosure` | `PointwiseClos` | [Set/Closure/Pointwise.v](../theories/Set/Closure/Pointwise.v) |
+| `ReflTransClosure` | `ReflTransClos` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `ReflTransClosure_PreOrder` | `ReflTransClos_PreOrder` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `ReflTransClosure_Symmetric` | `ReflTransClos_Symmetric` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `ReflTransClosure_proper` | `ReflTransClos_proper` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `ReflexiveTransitiveClosure` | `ReflTransClosOp` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `SymClosure` | `SymClos` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `SymClosure_Symmetric` | `SymClos_Symmetric` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `SymClosure_proper` | `SymClos_proper` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `SymmetricClosure` | `SymClosOp` | [Set/Relation/Closure.v](../theories/Set/Relation/Closure.v) |
+| `TmEquationalClosure` | `TmEquationalClos` | [STLC/Reduction.v](../theories/STLC/Reduction.v) |
+
+### Exp / 指数构造
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `ExponentialBiF` | `ExpBiF` | [Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `ExponentialContraF` | `ExpContraF` | [Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `ExponentialF` | `ExpF` | [Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `ExponentialF_IsCartF` | `ExpF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `ExponentialFixedN` | `ExpFixedN` | [Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `ExponentialIteratedN` | `ExpIteratedN` | [Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `ExponentialProductN` | `ExpProdN` | [Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `ExponentialUnitN` | `ExpUnitN` | [Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+
+### Cart / 笛卡尔构造
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `ArrowCodF_HasCartesianLift` | `ArrowCodF_HasCartLift` | [Cat/Arrow/Fibration.v](../theories/Cat/Arrow/Fibration.v) |
+| `CartesianAssociatorN` | `CartAssociatorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianLeftUnitorIso` | `CartLeftUnitorIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianLeftUnitorN` | `CartLeftUnitorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianLift` | `CartLift` | [Cat/Fibration.v](../theories/Cat/Fibration.v) |
+| `CartesianMonoid` | `CartMonoid` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianMonoidal` | `CartMonoidal` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianRightUnitorIso` | `CartRightUnitorIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianRightUnitorN` | `CartRightUnitorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianSymmetricPremonoidal` | `CartSymmetricPremonoidal` | [Cat/Premonoidal/Cartesian.v](../theories/Cat/Premonoidal/Cartesian.v) |
+| `CtxCat_Cartesian` | `CtxCat_Cart` | [STLC/CCC.v](../theories/STLC/CCC.v) |
+| `CwFBaseF_HasCartesianLift` | `CwFBaseF_HasCartLift` | [DTT/Comprehension.v](../theories/DTT/Comprehension.v) |
+| `FamBaseF_HasCartesianLift` | `FamBaseF_HasCartLift` | [Instance/Set/Fam/Fibration.v](../theories/Instance/Set/Fam/Fibration.v) |
+| `HasCartesianLift` | `HasCartLift` | [Cat/Fibration.v](../theories/Cat/Fibration.v) |
+| `SetCartesianMonoidal` | `SetCartMonoidal` | [Instance/Set/Monoid.v](../theories/Instance/Set/Monoid.v) |
+| `SetCat_Cartesian` | `SetCat_Cart` | [Instance/Set/Cartesian.v](../theories/Instance/Set/Cartesian.v) |
+| `TyCat_Cartesian` | `TyCat_Cart` | [STLC/TypeCategory.v](../theories/STLC/TypeCategory.v) |
+
+### Prof family / Prof 词族
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `FunctorHomProfunctor` | `FctHomProf` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `HasProfunctorComp` | `HasProfComp` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `HasProfunctorStrength` | `HasProfStrength` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `HomProfunctor` | `HomProf` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `HomProfunctorMapN` | `HomProfMapN` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `HomProfunctorStrength` | `HomProfStrength` | [Cat/Profunctor/HomStrength.v](../theories/Cat/Profunctor/HomStrength.v) |
+| `HomProfunctorStrengthN` | `HomProfStrengthN` | [Cat/Profunctor/HomStrength.v](../theories/Cat/Profunctor/HomStrength.v) |
+| `Profunctor` | `Prof` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `ProfunctorCat` | `ProfCat` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `ProfunctorComp` | `ProfComp` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `ProfunctorCompBoundaryN` | `ProfCompBoundaryN` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `ProfunctorCompCowedge` | `ProfCompCowedge` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `ProfunctorCompF` | `ProfCompF` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `ProfunctorCompInputN` | `ProfCompInputN` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `ProfunctorCompKernel` | `ProfCompKernel` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `ProfunctorCompMapN` | `ProfCompMapN` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `ProfunctorContext` | `ProfContext` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `ProfunctorLeftUnitComp` | `ProfLeftUnitComp` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitCowedge` | `ProfLeftUnitCowedge` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitIso` | `ProfLeftUnitIso` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitKernelInvN` | `ProfLeftUnitKernelInvN` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitKernelN` | `ProfLeftUnitKernelN` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitor` | `ProfLeftUnitor` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitorInvN` | `ProfLeftUnitorInvN` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLeftUnitorN` | `ProfLeftUnitorN` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `ProfunctorLmapN` | `ProfLmapN` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `ProfunctorReindex` | `ProfReindex` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `ProfunctorReindexF` | `ProfReindexF` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `ProfunctorReindexN` | `ProfReindexN` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `ProfunctorRightUnitComp` | `ProfRightUnitComp` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitCowedge` | `ProfRightUnitCowedge` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitIso` | `ProfRightUnitIso` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitKernelInvN` | `ProfRightUnitKernelInvN` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitKernelN` | `ProfRightUnitKernelN` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitor` | `ProfRightUnitor` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitorInvN` | `ProfRightUnitorInvN` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRightUnitorN` | `ProfRightUnitorN` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `ProfunctorRmapN` | `ProfRmapN` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `SetCat_ProfunctorComp` | `SetCat_ProfComp` | [Instance/Set/ProfunctorComp.v](../theories/Instance/Set/ProfunctorComp.v) |
+| `functor_hom_profunctor_dimap` | `fct_hom_prof_dimap` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `hasProfunctorCompCoend` | `hasProfCompCoend` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `hom_profunctor_dimap` | `hom_prof_dimap` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `hom_profunctor_lmap` | `hom_prof_lmap` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `hom_profunctor_rmap` | `hom_prof_rmap` | [Cat/Profunctor/Hom.v](../theories/Cat/Profunctor/Hom.v) |
+| `hom_profunctor_strength` | `hom_prof_strength` | [Cat/Profunctor/HomStrength.v](../theories/Cat/Profunctor/HomStrength.v) |
+| `profunctor_comp_boundary_comp` | `prof_comp_boundary_comp` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `profunctor_comp_boundary_id` | `prof_comp_boundary_id` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `profunctor_comp_boundary_inject` | `prof_comp_boundary_inject` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_boundary_proper` | `prof_comp_boundary_proper` | [Cat/Profunctor/Compose.v](../theories/Cat/Profunctor/Compose.v) |
+| `profunctor_comp_cowedge_gluing` | `prof_comp_cowedge_gluing` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_cowedge_η` | `prof_comp_cowedge_η` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_desc` | `prof_comp_desc` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_desc_input` | `prof_comp_desc_input` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_desc_unique` | `prof_comp_desc_unique` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_desc_β` | `prof_comp_desc_β` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_desc_η` | `prof_comp_desc_η` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_dimap_inject` | `prof_comp_dimap_inject` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_gluing` | `prof_comp_gluing` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_hom_ext` | `prof_comp_hom_ext` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_inject` | `prof_comp_inject` | [Cat/Profunctor/ComposeUniversal.v](../theories/Cat/Profunctor/ComposeUniversal.v) |
+| `profunctor_comp_input_boundary` | `prof_comp_input_boundary` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_input_comp` | `prof_comp_input_comp` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_input_id` | `prof_comp_input_id` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_input_inject` | `prof_comp_input_inject` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_input_proper` | `prof_comp_input_proper` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_left_parameter_desc` | `prof_comp_left_parameter_desc` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_left_parameter_hom_ext` | `prof_comp_left_parameter_hom_ext` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_left_parameter_map` | `prof_comp_left_parameter_map` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_left_parameter_unique` | `prof_comp_left_parameter_unique` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_left_parameter_β` | `prof_comp_left_parameter_β` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_map_comp` | `prof_comp_map_comp` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_map_id` | `prof_comp_map_id` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_map_inject` | `prof_comp_map_inject` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_map_iso` | `prof_comp_map_iso` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_map_proper` | `prof_comp_map_proper` | [Cat/Profunctor/ComposeMap.v](../theories/Cat/Profunctor/ComposeMap.v) |
+| `profunctor_comp_parameter_boundary` | `prof_comp_parameter_boundary` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_change` | `prof_comp_parameter_change` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_desc` | `prof_comp_parameter_desc` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_hom_ext` | `prof_comp_parameter_hom_ext` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_map` | `prof_comp_parameter_map` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_proper` | `prof_comp_parameter_proper` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_unique` | `prof_comp_parameter_unique` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_comp_parameter_β` | `prof_comp_parameter_β` | [Cat/Profunctor/Parameter.v](../theories/Cat/Profunctor/Parameter.v) |
+| `profunctor_dimap` | `prof_dimap` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_dimap_comp` | `prof_dimap_comp` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_dimap_id` | `prof_dimap_id` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_dimap_l_r` | `prof_dimap_l_r` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_dimap_proper` | `prof_dimap_proper` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_dimap_r_l` | `prof_dimap_r_l` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_interchange` | `prof_interchange` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_left_unit_eval_boundary` | `prof_left_unit_eval_boundary` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_factor` | `prof_left_unit_factor` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_in` | `prof_left_unit_in` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_in_out` | `prof_left_unit_in_out` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_kernel_iso` | `prof_left_unit_kernel_iso` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_out` | `prof_left_unit_out` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_out_in` | `prof_left_unit_out_in` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_out_input` | `prof_left_unit_out_input` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_universal` | `prof_left_unit_universal` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unit_β` | `prof_left_unit_β` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unitor_inv_natural` | `prof_left_unitor_inv_natural` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_left_unitor_natural` | `prof_left_unitor_natural` | [Cat/Profunctor/LeftUnit.v](../theories/Cat/Profunctor/LeftUnit.v) |
+| `profunctor_lmap` | `prof_lmap` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_lmap_comp` | `prof_lmap_comp` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_lmap_id` | `prof_lmap_id` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_lmap_proper` | `prof_lmap_proper` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_natural` | `prof_natural` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_reindex_dimap` | `prof_reindex_dimap` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_reindex_iso` | `prof_reindex_iso` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_reindex_map` | `prof_reindex_map` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_right_unit_eval_boundary` | `prof_right_unit_eval_boundary` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_factor` | `prof_right_unit_factor` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_in` | `prof_right_unit_in` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_in_out` | `prof_right_unit_in_out` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_kernel_iso` | `prof_right_unit_kernel_iso` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_out` | `prof_right_unit_out` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_out_in` | `prof_right_unit_out_in` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_out_input` | `prof_right_unit_out_input` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_universal` | `prof_right_unit_universal` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unit_β` | `prof_right_unit_β` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unitor_inv_natural` | `prof_right_unitor_inv_natural` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_right_unitor_natural` | `prof_right_unitor_natural` | [Cat/Profunctor/RightUnit.v](../theories/Cat/Profunctor/RightUnit.v) |
+| `profunctor_rmap` | `prof_rmap` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_rmap_comp` | `prof_rmap_comp` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_rmap_id` | `prof_rmap_id` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_rmap_proper` | `prof_rmap_proper` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_scope` | `prof_scope` | [Cat/Profunctor/Core.v](../theories/Cat/Profunctor/Core.v) |
+| `profunctor_strength` | `prof_strength` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `profunctor_strengthN` | `prof_strengthN` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `profunctor_strength_assoc` | `prof_strength_assoc` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `profunctor_strength_context` | `prof_strength_context` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `profunctor_strength_natural` | `prof_strength_natural` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+| `profunctor_strength_unit` | `prof_strength_unit` | [Cat/Profunctor/Strength.v](../theories/Cat/Profunctor/Strength.v) |
+
+### Batch 4 validation / 第四批验证
+
+Before synchronization, the `7d6e9da` working tree passed project-switch
+`dune build -j2 @all` and the temporary 359-signature/assumption audit, with all
+reports closed. Its 368 retired-name probes, old/new scope checks, definitional
+and strict-universe probes passed. These results describe that earlier WIP,
+not the later synchronized baseline.
+
+同步前的 `7d6e9da` 工作树已通过项目 switch 全库构建及 359 项临时签名／假设
+审计，报告全部闭合；368 项退役名、scope、定义计算及严格宇宙探针也通过。
+这些结果只描述旧 WIP，不作为同步后基线的验证结论。
+
+On the synchronized `bc446ab` working tree, project-switch
+`dune build -j2 @all @install` passed with Rocq/Stdlib 9.2, OCaml 5.3.0 and
+Dune 3.23.1. The regenerated temporary audit passed all 359 signatures with
+printed universes and 359 closed assumption reports, 368 retired-name probes,
+old/new scope checks, Prof alias/category definitional comparisons, both
+strict carrier/equality universe orders, closure computations and the earlier
+Graph/Vtx computation/coercion probes.
+
+同步至 `bc446ab` 的工作树使用项目 switch 全库及安装目标构建通过，工具链为
+Rocq/Stdlib 9.2、OCaml 5.3.0、Dune 3.23.1。重新生成的临时审计覆盖全部
+359 项带宇宙签名与假设，报告全部闭合；368 项退役名、新旧 scope、Prof 别名／
+范畴定义相等、载体与相等见证宇宙的两种严格次序、闭包计算及原 Graph/Vtx
+计算／强制转换探针均通过。
+
+The source audit confirms 104 Rocq files reverse exactly to this new baseline,
+with no extra edits; module imports and namespaces are unchanged. All 370 map
+rows, referring to 359 declarations/fields and one scope, resolve to current
+names and source files. A loader mirror containing only the 539 current source
+modules passed three retired-ETCS `Fail Require` probes and direct imports of
+the new modules; the install manifest contains no old paths. Current sources
+and docs contain no retired ETCS imports or local links. Whitespace checks
+passed. These are temporary audits; no new permanent tests or HTML/PDF export.
+The user approved freezing this validated batch for submission. This is an
+L2 breaking public-name migration; before integration, the designated
+integrator coordinates preserved pauses with affected consumers, then renewed
+validation and synchronization. Further work awaits user instructions.
+
+精确源码审计确认：104 个 Rocq 文件逆向替换后与新基线完全一致，零额外改动，
+导入及命名空间不变；370 行对照涉及 359 个声明／字段和一个 scope，现名及
+源码定位均有效。仅包含 539 个当前源码模块的加载镜像中，三个旧 ETCS 模块的
+导入失败检查、新模块直接导入均通过；安装清单无旧路径，现行源码和文档无退役
+ETCS 导入或本地链接，差异空白检查通过。均为临时审计，未增加永久测试或导出
+HTML/PDF。用户已批准冻结交付本批；本批为 L2 breaking 公开名称迁移，由指定
+集成者协调受影响消费者保全／暂停，复验后集成并同步。后续工作等待用户安排。
+
 ## Pending batches / 后续批次
 
-These are remaining families, not completed migrations. Audit each declaration
-and its import scopes before adding exact implemented rows. The compound
-`VtxFct`/`FctPsh`/`ClosAdj`/`ProdExpAdj` names already in Batch 1 do not imply
-that their entire stem families have migrated.
+The approved Clos/ClosOp, Exp, Cart and Prof work is implemented and validated
+in Batch 4 above. The user approved submission; integration acceptance is
+pending.
+The following optional candidates and experiments are not included.
 
-以下词族尚未完成迁移；后续须核对每个声明及导入作用域，再补入已实现精确表。
-第一批已有的复合名不代表对应词族全部完成。
+已批准的合并词族在第四批实现并通过验证，用户已批准交付，集成验收待完成；以下候选与实验
+不在本批。
 
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
-| Closure / 闭包 | `Closure → Clos`, `ClosureLe → ClosLe`, `ClosureEq → ClosEq`, `ClosureF → ClosF`, `ClosureMonad → ClosMonad` | Review related constructors / 审阅相关构造 |
-| Raw generated relations / 底层生成关系 | `EquivClosure → EquivClos`, `SymClosure → SymClos`, `ReflTransClosure → ReflTransClos` | Preserve witnesses / 保留见证 |
-| Packaged closure operators / 打包闭包算子 | `EquivalenceClosure → EquivClosOp`, `SymmetricClosure → SymClosOp`, `ReflexiveTransitiveClosure → ReflTransClosOp` | Check the actual type of `FamilyEquivalenceClosure` before choosing its name / 逐纤维接口先核对类型 |
-| Exponentials / 指数 | `ExponentialF → ExpF`, `ExponentialBiF → ExpBiF`, `ExponentialContraF → ExpContraF`, `ExponentialFixedN → ExpFixedN`, `ExponentialProductN → ExpProdN`, `ExponentialUnitN → ExpUnitN`, `ExponentialIteratedN → ExpIteratedN` | Retain `HasExponential` / 保留选定接口 |
-| Other Cartesian names / 其他笛卡尔名称 | `CartesianMonoidal → CartMonoidal`, `CartesianAssociatorN → CartAssociatorN`, corresponding unitors, model/instance names / 单位子、模型与实例名 | Review complete `CartesianCat` hierarchy separately / 完整结构层级另行审阅 |
-| Fibration lifts / 纤维化提升 | `HasCartesianLift → HasCartLift`, `CartesianLift → CartLift` | Candidate requiring exact client inventory / 候选，须盘点客户端 |
-| Optional names / 可选名称 | `BoolGroupoid → BoolGpd`, `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv` | Reconfirm optional compounds individually / 可选复合名逐项确认 |
+| Optional names / 可选名称 | `BoolGroupoid → BoolGpd`, `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
+| Complete hierarchies / 完整层级 | `CartesianCat`, groupoid/monoidal/CCC bundling / 群胚、幺半及 CCC 打包 | Separate structural experiment / 独立结构实验 |
+| Notation / 记号 | `Reserved Notation` / `where` | Separate review / 单独审阅 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突
 

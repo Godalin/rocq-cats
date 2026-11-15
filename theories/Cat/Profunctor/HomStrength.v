@@ -5,7 +5,7 @@ From Cats Require Import
   Instance.Set.Core.
 
 Local Open Scope monoidal_scope.
-Local Open Scope profunctor_scope.
+Local Open Scope prof_scope.
 
 (** * The Hom Profunctor Carries Ordinary Context
 
@@ -34,7 +34,7 @@ Universes o h e s u p.
 Context {C : Cat@{o h e s s}} (MC : MonoidalCat C).
 Let H
   : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
-  := HomProfunctor C.
+  := HomProf C.
 
 (** The original Hom map of the original left-context functor supplies
     naturality in both input and output, without reproving those squares.
@@ -44,8 +44,8 @@ Let H
 (** 原左上下文函子的原 Hom 映射提供输入／输出自然性，不重新证明这些方块。
     显式提升分量让值界与上下文函子的辅助尊重性层级保持分离。 *)
 
-Program Definition HomProfunctorStrengthN (Z : @Ob C)
-  : H ⇒ ProfunctorContext MC H Z
+Program Definition HomProfStrengthN (Z : @Ob C)
+  : H ⇒ ProfContext MC H Z
   :=
   {|nt XY :=
       {|func h :=
@@ -61,7 +61,7 @@ Defined.
 Next Obligation.
   intros h. refine {|lower := _|}.
   exact (lower (nt_naturality
-    (HomProfunctorMapN (@BinoidalLeftF C MC Z)) f h)).
+    (HomProfMapN (@BinoidalLeftF C MC Z)) f h)).
 Defined.
 
 (** Choose the Hom strength explicitly; importing this module does not
@@ -69,10 +69,10 @@ Defined.
 
 (** 显式选取 Hom 强度；导入本模块不注册选定模型实例。相干性继承自基范畴。 *)
 
-Program Definition HomProfunctorStrength
-  : HasProfunctorStrength MC H
+Program Definition HomProfStrength
+  : HasProfStrength MC H
   :=
-  {|profunctor_strengthN Z := HomProfunctorStrengthN Z
+  {|prof_strengthN Z := HomProfStrengthN Z
   |}.
 Next Obligation.
   intros k. refine {|lower := _|}.
@@ -105,8 +105,8 @@ Defined.
 
 (** 透明作用恰为原左上下文箭头映射。 *)
 
-Lemma hom_profunctor_strength (Z : @Ob C) {X Y : @Ob C} (h : H (X,Y))
-  : lower (pstrength[HomProfunctorStrength; Z] h) ≈
+Lemma hom_prof_strength (Z : @Ob C) {X Y : @Ob C} (h : H (X,Y))
+  : lower (pstrength[HomProfStrength; Z] h) ≈
       fmap (@BinoidalLeftF C MC Z) (lower h).
 Proof. reflexivity. Defined.
 

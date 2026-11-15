@@ -100,16 +100,16 @@ app ((v ^ u) ∘ g) a ≈ v ∘ app g (u ∘ a)
 参数的变化，本节处理函数参数类型与结果类型的变化。
 
 ```text
-ExponentialBiF          : Fct (C^op ×C C) C
-ExponentialBiF (X, Y)   = Y ^ X
-(-^-)                  表示 ExponentialBiF
-ExponentialContraF Y   : Fct (C^op) C
-(Y ^-)                 表示 ExponentialContraF Y
+ExpBiF           : Fct (C^op ×C C) C
+ExpBiF (X, Y)    = Y ^ X
+(-^-)            表示 ExpBiF
+ExpContraF Y     : Fct (C^op) C
+(Y ^-)           表示 ExpContraF Y
 ```
 
 反变截面直接使用通用的 `π1F`。固定参数对象得到的 `π2F (-^-) X`
 与原有的 `(-^ X)` 通过 `exponential_fixed_nat_iso X` 比较，分量均为恒等态射；
-这不要求函子记录或定律字段原生相等。原有 `ExponentialF` 与积－指数伴随接口保留。
+这不要求函子记录或定律字段原生相等。原有 `ExpF` 与积－指数伴随接口保留。
 
 ## 2. 从类型、上下文和项得到态射
 
@@ -329,7 +329,7 @@ C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
 不要求两个源 hom 具有相同大小，也不要求载体与相等见证大小相同。
 提升由 `LiftT` 包装和投影计算，不使用 resizing。
 
-固定 X 后，`ProductRF X`（记号 `(-× X)`）与 `ExponentialF X`
+固定 X 后，`ProductRF X`（记号 `(-× X)`）与 `ExpF X`
 （记号 `(-^ X)`）的态射作用分别为 `σ × id` 和 `exponential_map`。
 `ProductF` 还给出两个参数同时变化的积双函子。
 `ProdExpAdj X` 将 `curry` / `uncurry` 实例化为通用伴随：

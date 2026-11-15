@@ -18,7 +18,7 @@ Local Open Scope monad_scope.
 
 Section Context.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (M : StrongMonad C (@CartesianMonoidal C HT HP)).
+    (M : StrongMonad C (@CartMonoidal C HT HP)).
 
 (** The cartesian specialization exposes product endpoints directly.
     This keeps product rewriting independent of the chosen monoidal packaging. *)

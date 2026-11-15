@@ -110,8 +110,8 @@ Definition small_path_completed_confluence (Γ : Ctx B) (A : Ty B)
 
 Definition small_path_completed_uniqueness
     {Γ : Ctx B} {A : Ty B} {t u v : Tm Γ A}
-    (h : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t u)
-    (k : ReflTransClosure@{b e p} BetaEtaContractStep@{b e l} t v)
+    (h : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t u)
+    (k : ReflTransClos@{b e p} BetaEtaContractStep@{b e l} t v)
     (hu : is_irreducible BetaEtaContractStep@{b e l} u)
     (hv : is_irreducible BetaEtaContractStep@{b e l} v)
   : u = v

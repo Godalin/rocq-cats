@@ -77,7 +77,7 @@ Definition exponential_preserves_pullback (A : @Ob C)
 
 (** 有限积保持性来自同一个伴随；此选定证明仍须显式启用。 *)
 
-Program Definition ExponentialF_IsCartF `{HT : !HasTerminal C}
+Program Definition ExpF_IsCartF `{HT : !HasTerminal C}
     (A : @Ob C)
   : IsCartF (-^ A) HT HP
   :=

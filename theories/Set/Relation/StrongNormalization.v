@@ -86,7 +86,7 @@ Defined.
 
 Definition sn_rtc@{a r p s} {A : Type@{a}}
     {R : A → A → Type@{r}} {x y : A}
-    (h : ReflTransClosure@{a r p} R x y)
+    (h : ReflTransClos@{a r p} R x y)
   : SN@{a r s} R x → SN@{a r s} R y.
 Proof.
   induction h as [x | x y z h p ih]; intros q.

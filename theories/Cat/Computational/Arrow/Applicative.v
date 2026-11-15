@@ -22,7 +22,7 @@ Local Open Scope applicative_scope.
 
 Section Comparison.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (M : StrongMonad C (@CartesianMonoidal C HT HP)).
+    (M : StrongMonad C (@CartMonoidal C HT HP)).
 
 (** Proofs use the contextual equations; computation is restored below. *)
 
@@ -48,7 +48,7 @@ Lemma kleisli_arrow_second {X Y : @Ob C} (f : Hom X (M Y)) (Z : @Ob C)
       bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]].
 Proof.
   change (st[hasStrength M; Z; Y] ∘
-    (@tensor_map C (@CartesianMonoidal C HT HP) _ _ _ _ (@id Z) f) ≈
+    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _ (@id Z) f) ≈
     bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]).
   rewrite cartesian_tensor_map, context_bind_pair, cross_η, comp_id_l.
   reflexivity.

@@ -24,13 +24,13 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 
 (** 规范积交换给出显式对称结构；导入本模块不会为 [C] 选定默认结构。 *)
 
-Program Definition CartesianSymmetricPremonoidal
+Program Definition CartSymmetricPremonoidal
   : SymmetricPremonoidalCat C
   :=
-  {|SymmetricPremonoidalP := MonoidalP CartesianMonoidal
+  {|SymmetricPremonoidalP := MonoidalP CartMonoidal
   ; premonoidal_symmetry X Y := ⟨π2, π1⟩
   ; premonoidal_symmetry_central X Y :=
-      @monoidal_arrow_central C CartesianMonoidal _ _ _
+      @monoidal_arrow_central C CartMonoidal _ _ _
   |}.
 Next Obligation.
   rewrite product_comp_r, product_β1, product_β2. apply product_pair_η.

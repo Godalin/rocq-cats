@@ -60,8 +60,8 @@ Defined.
 (** 这些映射对两个变量自然；先比较派生张量作用与选定积映射，再使用函子复合。 *)
 
 Program Definition SetStrengthN
-  : (tensorF SetCartesianMonoidal ∘F (IdF ×F F)) ⇒
-    (F ∘F tensorF SetCartesianMonoidal)
+  : (tensorF SetCartMonoidal ∘F (IdF ×F F)) ⇒
+    (F ∘F tensorF SetCartMonoidal)
   :=
   {|nt p := set_strength_map (fst p) (snd p)
   |}.
@@ -69,7 +69,7 @@ Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
   intros [x v].
   change (fmap F ⟨const_resp Y2 (f x), id⟩ (fmap F g v) ≈S
-    fmap F (@tensor_map SetCat SetCartesianMonoidal _ _ _ _ f g)
+    fmap F (@tensor_map SetCat SetCartMonoidal _ _ _ _ f g)
       (fmap F ⟨const_resp X2 x, id⟩ v)).
   transitivity (fmap F (f × g) (fmap F ⟨const_resp X2 x, id⟩ v)).
   - transitivity (fmap F (⟨const_resp Y2 (f x), id⟩ ∘ g) v).
@@ -89,7 +89,7 @@ Defined.
 (** 所选强度由函子恒等及复合律满足单位及结合图，由 [set_strength_unique] 唯一。 *)
 
 Program Definition SetStrength
-  : HasStrength SetCartesianMonoidal F
+  : HasStrength SetCartMonoidal F
   :=
   {|strengthN := SetStrengthN
   |}.
@@ -146,7 +146,7 @@ Context (M : Monad (SetCat@{u p _ _ _ _ _})).
 (** 赋予所给 Monad 规范广集强度；两张相容图由自然性推出，不要求交换性或指数。 *)
 
 Program Definition SetStrongM
-  : StrongMonad SetCat SetCartesianMonoidal
+  : StrongMonad SetCat SetCartMonoidal
   :=
   {|StrongMonadM := M
   ; hasStrength := SetStrength M
