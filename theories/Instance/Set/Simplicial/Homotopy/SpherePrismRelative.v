@@ -16,13 +16,18 @@ Local Open Scope ordinal_scope.
     triangles. The six side-face equations below detect the complete
     boundary law, including arbitrary time simplices and degeneracies.
     The proof uses the edge-cylinder cover, then reuses actual triangle
-    gluing; it does not select Kan fillers. *)
+    gluing; it does not select Kan fillers. The next
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereElementaryCylinder.TwoSphereHomotopyCylinder}
+    {%[TwoSphereHomotopyCylinder]%}% supplies these pieces from a single
+    elementary tetrahedron, with reversed endpoint order. *)
 
 (** * 重构整个相对边界
 
     仅固定端点三角形不能使柱相对于边界保持常值。每条空间边有两个阶梯
     三角形；下方六个侧面方程判定完整边界定律，包括任意时间单形和退化。
-    证明使用边柱覆盖，再复用实际三角柱粘合，不选择 Kan 填充。 *)
+    证明使用边柱覆盖，再复用实际三角柱粘合，不选择 Kan 填充。接下来的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereElementaryCylinder.TwoSphereHomotopyCylinder}
+    {%[TwoSphereHomotopyCylinder]%}% 从单个初等四面体给出这些块，端点顺序反转。 *)
 
 (** For spatial edge j and staircase k, let (i,l) be the computed side
     pair. The square commutes in both shape coordinates. Constancy on
