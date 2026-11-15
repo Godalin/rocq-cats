@@ -6,16 +6,21 @@ From Cats Require Import
   Cat.Product.Core
   Cat.Exponential.Core
   Cat.Exponential.Functor
-  Cat.CCC.
+  Cat.CCC
+  Cat.Functor.ExponentialComparison.
 
 (** * Cartesian Closed Functors
 
     Product preservation uses universal properties. Exponential preservation
-    asks that its canonical comparison be invertible, not an object equation. *)
+    asks that its canonical comparison be invertible, not an object equation.
+    Evaluation and currying reuse [Cat.Functor.ExponentialComparison]; that
+    weaker interface also applies without terminal preservation. *)
 
 (** * 笛卡尔闭函子
 
-    积保持性使用泛性质；指数保持性要求规范比较可逆，不要求对象方程。 *)
+    积保持性使用泛性质；指数保持性要求规范比较可逆，不要求对象方程。
+    求值与柯里化复用 [Cat.Functor.ExponentialComparison]，其较弱接口也适用于
+    不保持终对象的函子。 *)
 
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
@@ -52,15 +57,7 @@ Definition functor_exponential_comparison (X Y : @Ob C)
 Lemma functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
   : functor_exponential_comparison X Y ∘ fmap F (ƛ f) ≈
       ƛ (fmap F f ∘ functor_product_inv F Z X).
-Proof.
-  unfold functor_exponential_comparison.
-  rewrite <- exponential_curry_comp_r. apply exponential_curry_proper.
-  rewrite <- (@functor_id C D F X).
-  rewrite comp_assoc, <- functor_product_inv_natural,
-    <- comp_assoc, <- functor_comp.
-  pose proof (@exponential_β C PC EC X Y Z f) as Hβ.
-  unfold uncurry in Hβ. rewrite Hβ. reflexivity.
-Qed.
+Proof. apply preserved_curry. Qed.
 
 (** Evaluation is preserved in the same comparison square. *)
 
@@ -69,7 +66,7 @@ Qed.
 Lemma functor_eval (X Y : @Ob C)
   : eval ∘ (functor_exponential_comparison X Y × id) ≈
       fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X.
-Proof. apply exponential_β. Qed.
+Proof. apply preserved_eval. Qed.
 
 End ExponentialComparison.
 
