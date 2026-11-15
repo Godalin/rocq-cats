@@ -15,17 +15,19 @@ After that handoff, preserve the frozen source and await further instructions.
 不等待三条数学支线。本分支由用户直接安排；用户随后授权将完成的两批提交、
 推送并发送至既有集成会话。交接后保全冻结来源，等待后续安排。
 
-Current work is Batch 4 below: the user approved the combined Clos/ClosOp,
-Exp, remaining Cart and Prof migration. Its local implementation started at
-`7d6e9da` and is now synchronized and validated on `bc446ab`.
-The user has approved committing, publishing and submitting this frozen
-candidate; integration acceptance is pending. Earlier
-batches were integrated as `0f18829` and `6ec6c06`.
+Batch 4's combined Clos/ClosOp, Exp, remaining Cart and Prof migration is
+integrated as `76642d4`: frozen `315dbda` was rebased to `98dec6e`, followed by
+the owner's upstream-client compatibility repair. Both sources remain preserved.
+Earlier batches were integrated as `0f18829` and `6ec6c06`. The user-authorized
+[complete-structure migration](./BundledInterfaces.md#complete-category-bundles-first-slice)
+now starts separately from this naming baseline; it does not extend the exact
+195-entry Batch 4 map or replay its patches.
 
-当前工作为下文第四批：用户批准合并处理 Clos/ClosOp、Exp、剩余 Cart 与 Prof。
-本地实现从 `7d6e9da` 开始，现已同步至 `bc446ab` 并通过重新验证；用户已批准
-提交、推送及冻结交付，集成验收待完成。前序批次分别已集成至 `0f18829` 和
-`6ec6c06`。
+第四批 Clos/ClosOp、Exp、剩余 Cart 与 Prof 已集成为 `76642d4`：冻结来源
+`315dbda` 重基得到 `98dec6e`，再由命名负责人修复上游客户端。来源均保全，
+前序批次分别已集成至 `0f18829` 和 `6ec6c06`。用户授权的
+[完整结构打包迁移](./BundledInterfaces.md#complete-category-bundles-first-slice)
+现从此命名基线独立开始，不扩充第四批 195 项精确表，也不重放其补丁。
 
 ## Reading and maintenance / 阅读与维护
 
@@ -875,7 +877,8 @@ ordinary prose, notation, proofs and mathematical choices are preserved.
 The map remains 370 historical rows referring to 359 declarations/fields
 and one scope. Across the original batch and this repair, all 106 changed
 Rocq files reverse byte-for-byte to `a92b026`. The original source and
-backups remain preserved; integration acceptance is still pending.
+backups remain preserved. The integrator accepted and pushed the exact repair
+as `76642d4`, which is also the final integration result.
 
 集成者将冻结来源 `315dbda` 重基至 `a92b026`，得到临时结果 `98dec6e`。
 独立兼容分支严格从该结果开始，仅按已有 195 项表适配后来新增的
@@ -884,7 +887,7 @@ backups remain preserved; integration acceptance is still pending.
 其中包括两处 scope 开启。新增声明保留原名；模块路径、普通叙述、记号、证明
 及数学选择均保持。对照表仍为 370 条历史行，对应 359 个声明／字段及一个
 scope。原批次与本修订合计 106 个 Rocq 文件，逆向后与 `a92b026` 逐字一致。
-原来源与备份保全，集成验收仍待完成。
+原来源与备份保全；集成者已原样验收并推送修订 `76642d4`，最终来源与结果同 SHA。
 
 The repaired tree passed project-switch compilation of both affected modules
 and `dune build -j2 @all @install`. The original temporary audit was copied
@@ -905,18 +908,17 @@ remain temporary checks; no new permanent tests or HTML/PDF export.
 
 ## Pending batches / 后续批次
 
-The approved Clos/ClosOp, Exp, Cart and Prof work is implemented and validated
-in Batch 4 above. The user approved submission; integration acceptance is
-pending.
-The following optional candidates and experiments are not included.
+The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.
+The following optional candidates remain outside that naming batch; structural
+work follows the separate user-authorized bundled-interface migration.
 
-已批准的合并词族在第四批实现并通过验证，用户已批准交付，集成验收待完成；以下候选与实验
-不在本批。
+已批准的合并词族已作为第四批集成。以下可选候选不在该命名批次；结构工作按用户
+另行授权的打包接口迁移推进。
 
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
 | Optional names / 可选名称 | `BoolGroupoid → BoolGpd`, `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
-| Complete hierarchies / 完整层级 | `CartesianCat`, groupoid/monoidal/CCC bundling / 群胚、幺半及 CCC 打包 | Separate structural experiment / 独立结构实验 |
+| Complete hierarchies / 完整层级 | `CartesianCat`, groupoid/monoidal/CCC bundling / 群胚、幺半及 CCC 打包 | Separately authorized; Cat/Gpd first slice in progress / 已独立授权，Cat/Gpd 首片进行中 |
 | Notation / 记号 | `Reserved Notation` / `where` | Separate review / 单独审阅 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突

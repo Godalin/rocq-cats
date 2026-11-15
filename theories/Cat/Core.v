@@ -79,11 +79,14 @@ Open Scope cat_scope.
 
 Class Cat@{o h p +}
   :=
-  (** [Ob] is the type of objects. A term [X : @Ob C] is an object of [C]. *)
+  (** [Ob] is the type of objects and the category's unique sort view.
+      A term [X : C] is an object of [C], also written [X : @Ob C]. *)
 
-  (** [Ob] 是对象类型。[X : @Ob C] 表示 [C] 的一个对象。 *)
+  (** [Ob] 是对象类型，也是范畴的唯一类型视图。
+      [X : C] 表示 [C] 的一个对象，也可写成 [X : @Ob C]。 *)
 
-  { Ob : Type@{o}
+  { Ob :> Type@{o}
+
   (** [HomSet X Y] is the set of arrows from [X] to [Y], including its
       specified equivalence relation and equivalence laws. *)
 

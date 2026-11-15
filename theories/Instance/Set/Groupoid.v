@@ -1,6 +1,7 @@
+From Cats Require Export
+  Cat.Groupoid.Core.
 From Cats Require Import
   Cat.Functor.Core
-  Cat.Groupoid.Core
   Cat.Groupoid.Preorder
   Cat.Preorder.
 From Cats.Set Require Import
@@ -18,19 +19,18 @@ From Cats.Set Require Import
     即使相等见证构成非平凡的 Type，所得群胚仍是薄群胚。 *)
 
 Definition EqGpd (X : SetC)
-  : Cat
-  := @PreorderCat X (carrier_equiv X)
-      (equivalence_preorder (carrier_equiv X)).
+  : Gpd
+  := @PreorderGpd X (carrier_equiv X)
+      (equivalence_preorder (carrier_equiv X)) Equivalence_Symmetric.
 
-(** Symmetry of setoid equality supplies inverses. Enable this instance
-    explicitly; importing the model does not select a groupoid structure. *)
+(** Read the inverses already stored by the equality groupoid. This explicit
+    property view uses exactly the same category and symmetry witnesses. *)
 
-(** 广集相等的对称性提供逆；此实例须显式启用，导入模型不自动选择群胚结构。 *)
+(** 读取相等群胚已保存的逆；此显式性质视图使用恰好相同的范畴与对称见证。 *)
 
 Definition EqGpd_IsGroupoid (X : SetC)
   : EqGpd X ⦂ Gpd
-  := @PreorderCat_IsGroupoid X (carrier_equiv X)
-      (equivalence_preorder (carrier_equiv X)) Equivalence_Symmetric.
+  := @isGroupoid (EqGpd X).
 
 (** Parallel equality witnesses agree in the hom-setoid, regardless of their
     native equality. This is the thinness used by coherent families. *)
