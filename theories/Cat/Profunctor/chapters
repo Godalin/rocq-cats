@@ -8,3 +8,5 @@ ComposeMap.v
 Parameter.v
 LeftUnit.v
 RightUnit.v
+Iterated.v
+Associator.v
