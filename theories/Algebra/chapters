@@ -1,0 +1,12 @@
+Magma/Core.v
+Magma/Transport.v
+Semigroup/Core.v
+Semigroup/Transport.v
+Monoid/Core.v
+Monoid/Transport.v
+Group/Core.v
+Group/Transport.v
+Magma/Category.v
+Semigroup/Category.v
+Monoid/Category.v
+Group/Category.v
