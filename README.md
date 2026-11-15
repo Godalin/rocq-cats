@@ -417,6 +417,10 @@ Monad–Applicative–Arrow 工作从
   to give pullback squares. Write `A ^ext[K]` for the extension and `π[K] A`
   for its display projection. `ComprehensionF K` is its functor to the arrow category;
   fullness and faithfulness are separate properties.
+  `RestrictedComprehension` restricts along an interpretation that preserves
+  cartesian arrows, with a natural base isomorphism and explicit target lifts.
+  沿解释函子限制理解结构时，显式要求笛卡尔保持、自然基底同构及目标选定提升；
+  不要求源端选定提升或函子记录相等。
 - [Instance/Set](./theories/Instance/Set/): concrete implementations using setoids
   as sets. [Core](./theories/Instance/Set/Core.v) defines their category `SetCat`;
   [Product](./theories/Instance/Set/Product.v),

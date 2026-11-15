@@ -98,18 +98,26 @@ Proof. intros Hgf W x y Hf.
   repeat rewrite comp_assoc. auto.
 Qed.
 
-(** Every invertible arrow is monic. *)
+(** Every invertible arrow is monic. Cancellation stays transparent so
+    computational cone witnesses may use the supplied inverse laws. *)
 
-(** 每条可逆箭头都是单态射。 *)
+(** 每条可逆箭头都是单态射。消去保持透明，使可计算的锥见证能使用给定互逆律。 *)
 
 Proposition iso_mono {X Y} (f : Hom X Y)
   : is_iso f → is_mono f.
-Proof. intros [fi [H1 H2]] Z x y H.
-  apply (comp_l fi) in H.
-  repeat rewrite <- comp_assoc in H.
-  repeat rewrite H1 in H.
-  repeat rewrite comp_id_l in H. auto.
-Qed.
+Proof.
+  intros [fi [H1 H2]] Z x y H.
+  transitivity (id ∘ x); [symmetry; apply comp_id_l |].
+  transitivity ((fi ∘ f) ∘ x).
+  - apply comp_proper; [symmetry; exact H1 | reflexivity].
+  - transitivity (fi ∘ (f ∘ x)); [apply comp_assoc |].
+    transitivity (fi ∘ (f ∘ y)).
+    + apply comp_proper; [reflexivity | exact H].
+    + transitivity ((fi ∘ f) ∘ y); [symmetry; apply comp_assoc |].
+      transitivity (id ∘ y).
+      * apply comp_proper; [exact H1 | reflexivity].
+      * apply comp_id_l.
+Defined.
 
 
 

@@ -1,5 +1,6 @@
 From Cats Require Import
   Cat.Core
+  Cat.Morphism
   Cat.Terminal
   Cat.Product.Core.
 
@@ -206,9 +207,11 @@ Proof.
 Defined.
 
 (** Change one base object along an isomorphism, keeping the pullback vertex.
-    The first projection is composed with the specified isomorphism. *)
+    The first projection is composed with the specified isomorphism. Cone
+    transport uses transparent laws so mediators may inspect Type witnesses. *)
 
-(** 沿同构改变一个基底对象并保留拉回顶点，第一个投影与给定同构复合。 *)
+(** 沿同构改变一个基底对象并保留拉回顶点，第一个投影与给定同构复合。
+    锥的运输使用透明定律，使中介可读取 Type 值见证。 *)
 
 Definition pullback_base_iso {C : Cat} {X X' Y Z P : @Ob C}
     {f : Hom X Z} {g : Hom Y Z} {h : Hom X' Z}
@@ -221,7 +224,17 @@ Proof.
   - rewrite <- comp_assoc, <- H. exact Hcomm.
   - intros Q q1 q2 Hq.
     assert (Hcone : h ∘ (ii ∘ q1) ≈ g ∘ q2).
-    { rewrite H, comp_assoc, <- (comp_assoc i), Hi, comp_id_l. exact Hq. }
+    { transitivity ((f ∘ i) ∘ (ii ∘ q1)).
+      - apply comp_proper; [exact H | reflexivity].
+      - transitivity (f ∘ (i ∘ (ii ∘ q1))); [apply comp_assoc |].
+        transitivity (f ∘ ((i ∘ ii) ∘ q1)).
+        + apply comp_proper; [reflexivity | symmetry; apply comp_assoc].
+        + transitivity (f ∘ (id ∘ q1)).
+          * apply comp_proper; [reflexivity |].
+            apply comp_proper; [exact Hi | reflexivity].
+          * transitivity (f ∘ q1).
+            -- apply comp_proper; [reflexivity | apply comp_id_l].
+            -- exact Hq. }
     destruct (Hu Q (ii ∘ q1) q2 Hcone) as [k [[Hk1 Hk2] Hku]].
     exists k. refine {|this := _
                      ; that := _
@@ -235,6 +248,46 @@ Proof.
         -- rewrite Hl1. reflexivity.
       * exact Hl2.
 Defined.
+
+(** Postcompose both cospan legs with a monomorphism. Cancellation recovers
+    the original cone equation, so the vertex and mediator are retained.
+    Invertibility of the outgoing boundary is not required. *)
+
+(** 将余跨度两边后合成同一单态射。消去性恢复原锥方程，故保留顶点及中介；
+    不要求出边界可逆。 *)
+
+Definition pullback_postcompose_mono {C : Cat} {X Y Z Z' P : @Ob C}
+    {f : Hom X Z} {g : Hom Y Z}
+    {p1 : Hom P X} {p2 : Hom P Y}
+    (i : Hom Z Z') (Hi : is_mono i)
+    (HP : is_pullback f g P p1 p2)
+  : is_pullback (i ∘ f) (i ∘ g) P p1 p2.
+Proof.
+  split.
+  - rewrite !comp_assoc, (fst HP). reflexivity.
+  - intros Q q1 q2 Hq. apply (snd HP Q q1 q2).
+    apply Hi. transitivity ((i ∘ f) ∘ q1).
+    + symmetry. apply comp_assoc.
+    + transitivity ((i ∘ g) ∘ q2); [exact Hq | apply comp_assoc].
+Defined.
+
+(** Change the base row of a pullback across a commuting boundary square.
+    Its source boundary is invertible; its target boundary need only be
+    monic. The pullback vertex and its second projection stay fixed. *)
+
+(** 沿交换边界方形改变拉回的基底一行。源边界可逆，目标边界仅需为单态射；
+    拉回顶点及第二投影保持不变。 *)
+
+Definition pullback_base_boundary {C : Cat}
+    {X X' Y Z Z' P : @Ob C}
+    {f : Hom X Z} {f' : Hom X' Z'} {g : Hom Y Z}
+    {p1 : Hom P X} {p2 : Hom P Y}
+    (i : Hom X X') (Hi : is_iso i)
+    (j : Hom Z Z') (Hj : is_mono j)
+    (H : j ∘ f ≈ f' ∘ i)
+    (HP : is_pullback f g P p1 p2)
+  : is_pullback f' (j ∘ g) P (i ∘ p1) p2
+  := pullback_base_iso i Hi H (pullback_postcompose_mono j Hj HP).
 
 
 
