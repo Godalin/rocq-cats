@@ -2156,11 +2156,14 @@ classification property or Type-valued computational witness changes.
 This extraction adds one bundled class. It does not add a model or derive
 initial objects, finite colimits or internal logic. In particular, the base
 Topos interface requires neither well-pointedness, choice, NNO nor a chosen
-initial object. Those later results remain separate milestones of issue #16.
+initial object. Subsequent sections deliver internal-logic fragments and
+the ambient initial-object theorem; finite colimits and meaningful models
+remain open milestones of issue #16.
 
 本次抽取增加一个打包类，不增加模型，也不证明始对象、有限余极限或内部逻辑。
 特别地，基础 Topos 接口不要求良点性、选择、自然数对象或选定始对象；后续
-结果仍是 issue #16 的独立里程碑。
+章节已交付内部逻辑片段及环境始对象定理；有限余极限与有意义模型仍为
+issue #16 的开放里程碑。
 
 ## Characteristic arrows and pullback stability / 特征箭头与拉回稳定性
 
@@ -2196,8 +2199,8 @@ identity; the largest subobject has the constantly true characteristic.
 The existing `classifier_char_unique` witness and the new equivalence
 reflection keep their mediator data transparent.
 No extra chosen pullbacks, CCC structure, well-pointedness, choice or NNO
-are assumptions of these laws. Initial objects, finite colimits, internal
-logic and models remain later milestones.
+are assumptions of these laws. Subsequent sections develop internal logic
+and ambient initiality; finite colimits and meaningful models remain open.
 
 [Topos.Sub](../theories/Topos/Sub.v) 仅在具名的终对象及分类子选择下增加特征
 箭头律。`classifier_char_proper` 及其 `char_proper` 实例在底层箭头相等时
@@ -2205,7 +2208,8 @@ logic and models remain later milestones.
 子对象相互分解，不识别其定义域或见证记录。`classifier_char_pullback` 复用
 一般拉回粘合定理，以预合成分类任意给定的逆像方形。真子对象的特征箭头为
 恒等，最大子对象的特征箭头为恒真。这些律不假定额外选定拉回、CCC 结构、
-良点性、选择或 NNO。始对象、有限余极限、内部逻辑与模型仍属后续里程碑。
+良点性、选择或 NNO。后续章节已发展内部逻辑并推导环境始对象；有限余极限
+与有意义模型仍开放。
 已有 `classifier_char_unique` 见证及新的等价反向映射均保留透明的中介数据。
 
 ## The generic truth subobject / 泛真子对象
@@ -2377,7 +2381,7 @@ not registered globally. A topos client explicitly enables the existing
 `ProductPullbackEqualizer` with its inherited products and pullbacks; no
 Topos/ETCS field or choice is duplicated. There is no ETCS, classical logic,
 global-point or model assumption. Joins, bottom, remaining internal logic,
-initial objects/finite colimits and meaningful models remain later milestones.
+finite colimits and meaningful models remain later milestones.
 
 [Cat.EqualizerMorphism](../theories/Cat/EqualizerMorphism.v) 复用既有 Hom
 外延定理，将候选等化子的同一包含打包为 `EqualizerMono`。其 Type 值分解
@@ -2395,7 +2399,7 @@ initial objects/finite colimits and meaningful models remain later milestones.
 `r ∧Ω f ⊢Ω g ↔ r ⊢Ω f ⇒Ω g` 及求值。等化子选择不全局注册；拓扑斯客户端
 以自身继承的积与拉回显式启用已有 `ProductPullbackEqualizer`，不重复保存
 Topos/ETCS 字段或选择。不假定 ETCS、经典逻辑、全局点或模型。并、底、
-其余内部逻辑、始对象／有限余极限及有意义模型仍属后续里程碑。
+其余内部逻辑、有限余极限及有意义模型仍属后续里程碑。
 
 ## Universal quantification along projections / 沿投影的全称量化
 
@@ -2425,7 +2429,7 @@ arbitrary-morphism quantifier or complete hyperdoctrine is claimed. Actual
 Topos clients use exactly their inherited product, exponential, terminal,
 classifier and pullback choices. No new structure fields or globally
 selected model instances are added. The next section develops bottom;
-joins, remaining internal logic, ambient initial objects/finite colimits
+joins, remaining internal logic, ambient finite colimits
 and meaningful models stay open.
 
 [Cat.ProductPullback](../theories/Cat/ProductPullback.v) 从积泛性质得到任意
@@ -2446,7 +2450,7 @@ and meaningful models stay open.
 上下文代入与对未改变对象 `A` 的全称量化相容；本批不声称任意态射的量词
 或完整超教义。实际 Topos 客户端恰好使用继承的积、指数、终对象、分类子及
 拉回选择，不新增结构字段或全局选定模型实例。下一节发展底；并、其余内部
-逻辑、环境范畴始对象／有限余极限及有意义模型仍保持开放。
+逻辑、环境范畴有限余极限及有意义模型仍保持开放。
 
 ## False predicates and least subobjects / 假谓词与最小子对象
 
@@ -2470,8 +2474,9 @@ or subobject witnesses are identified by native equality.
 the existing thin category `SubCat X`. It uses the original `HasInitial`
 interface through terminality in the opposite category. Import does not
 enable that choice globally. This is an initial object of the subobject
-category; initial objects of the ambient category and finite colimits remain
-later results, alongside the remaining internal logic and meaningful models.
+category. The separate [ambient initial construction](../theories/Topos/Initial.v)
+below now upgrades the false subobject of `1` to ambient initiality.
+Finite colimits, remaining internal logic and meaningful models stay open.
 The next section constructs predicate joins.
 
 [Topos.Bottom](../theories/Topos/Bottom.v) 在上下文 `1` 中对真值变量作全称
@@ -2488,8 +2493,9 @@ The next section constructs predicate joins.
 
 `SubCat_HasInitial X` 在已有薄范畴 `SubCat X` 中显式将最小子对象打包为
 始对象，经由反范畴中的终性复用原 `HasInitial` 接口，导入不全局启用该选择。
-这是子对象范畴的始对象；环境范畴的始对象及有限余极限，与其余内部逻辑
-和有意义模型仍属后续结果。下一节构造谓词并。
+这是子对象范畴的始对象；下面独立的
+[环境始对象构造](../theories/Topos/Initial.v)现将 `1` 的假子对象提升为环境
+始对象。有限余极限、其余内部逻辑和有意义模型仍开放。下一节构造谓词并。
 
 ## Disjunction as a least upper bound / 作为最小上界的析取
 
@@ -2521,7 +2527,7 @@ or proof records is required. Actual Topos clients explicitly derive the
 equalizers from their inherited products/pullbacks, retaining the same
 terminal/classifier/product/exponential choices. No global model or chosen
 structure is registered. This supplies predicate joins; subobject unions
-and their categorical coproducts, ambient initial objects/finite colimits,
+and their categorical coproducts, ambient finite colimits,
 existential quantifiers, further logic and meaningful models remain later
 bounded stages.
 
@@ -2543,7 +2549,7 @@ bounded stages.
 均透明。单调、交换、幂等、结合及假单位元律来自同一最小上界性质，不要求
 谓词、因子或证明记录的原生相等。实际 Topos 客户端显式从继承的积／拉回
 推导等化子，保持同一终对象／分类子／积／指数选择，不注册全局模型或选定
-结构。本批给出谓词并；子对象并及其范畴余积、环境始对象／有限余极限、存在
+结构。本批给出谓词并；子对象并及其范畴余积、环境有限余极限、存在
 量词、其余逻辑及有意义模型留待后续有界阶段。
 
 ## Generic preorder adjunctions outside Topos / Topos 之外的通用预序伴随
@@ -2641,8 +2647,8 @@ no equalizer, initial-object, choice or NNO assumption is needed.
 This is an actual client of the previously integrated general bridge, with
 that bridge still outside Topos. It packages quantification only along a
 fixed product projection. Arbitrary-arrow quantifiers, complete indexed
-coherence, full hyperdoctrines, Beck–Chevalley/Frobenius, ambient initial
-objects/finite colimits and meaningful models remain separate work.
+coherence, full hyperdoctrines, Beck–Chevalley/Frobenius, ambient
+finite colimits and meaningful models remain separate work.
 
 [Topos.PredicateCategory](../theories/Topos/PredicateCategory.v) 通过既有
 `PreorderCat` 将 `PredicatePreorder X` 变成 `PredicateCat X`。对象是 `X`
@@ -2667,7 +2673,7 @@ objects/finite colimits and meaningful models remain separate work.
 
 这是已集成一般桥梁的实际客户端，桥梁仍位于 Topos 之外；本批只打包固定
 积投影上的量化。任意态射量词、完整索引相干、完整超教义、Beck–Chevalley／
-Frobenius、环境始对象／有限余极限及有意义模型仍属后续工作。
+Frobenius、环境有限余极限及有意义模型仍属后续工作。
 
 ## Pointwise comparisons into preorder targets / 到预序目标的逐点比较
 
@@ -2789,3 +2795,76 @@ whiskering 后接对应既有函子单位比较。结合图比较三次代入的
 不提供任意态射量词、Beck–Chevalley／Frobenius、有限余极限或有意义模型；
 这些仍是 #6／#16 的后续工作。不增加全局实例、Proper 注册或记号；分类子
 特有组装留在此处，一般比较理论保持在 Topos 之外。
+
+## Derived strict ambient initial object / 推导严格的环境始对象
+
+[Topos.Initial](../theories/Topos/Initial.v) derives an actual initial object
+of the ambient category from named terminal, classifier, pullback, product
+and relative exponential choices. Each elementary Topos supplies exactly
+these inherited choices. No initial-object assumption, well-pointedness,
+epi splitting, choice or NNO is needed. This extends the earlier bottom
+result from the thin subobject category to the ambient category itself.
+
+`ToposInitial` is the domain of `SubBottom 1`. False is true on this
+classified subobject by the original classified truth criterion. More
+generally, `bottom_true_section` splits every monomorphism into a context
+where false is true: leastness factors its false subobject through that
+monomorphism, and the characteristic-arrow criterion factors the identity
+through the false subobject. Applying this section to the equalizer of
+two parallel arrows proves `bottom_true_hom_eq`. Equalizers come from the
+existing `ProductPullbackEqualizer`, using the same products and pullbacks;
+the existing `EqualizerMono` bundles its inclusion. There is no extra
+chosen equalizer premise or new universal-property proof.
+
+For any object `X`, `InitialProductSub X` displays `ToposInitial × X` as a
+subobject of `1`. Its terminal arrow is monic: an incoming arrow makes its
+source false, so all parallel arrows from that source agree. Leastness
+then supplies `ToposInitial → ToposInitial × X`; projecting gives the actual
+universal arrow `topos_init X`. Uniqueness follows from the same
+false-context equality theorem. The public data equation retains exactly
+this least-subobject factor and product projection.
+
+`topos_initial_universal` proves the existing Type-valued `is_initial`
+property, with its category explicitly fixed. `Topos_HasInitial` packages
+that witness through terminality in the opposite category, preserving
+native object/arrow computations. It is a plain optional definition:
+import does not globally enable it, alter Topos/ETCS fields or replace an
+existing initial-object choice. `topos_initial_strict f` proves every
+arrow `f : X → ToposInitial` invertible, retaining `topos_init X` as its
+transparent inverse. All uniqueness and inverse laws use specified
+hom equality, without equality of proof fields or a classical principle.
+
+This delivers the ambient initial-object milestone and its strictness.
+Finite coproducts/finite colimits, further quantifier stability and
+meaningful models remain separate work. Earlier explicit-universe breaking
+records are unaffected; this optional construction introduces no old API,
+universe or choice migration.
+
+[Topos.Initial](../theories/Topos/Initial.v) 从具名终对象、分类子、拉回、积及
+相对指数选择推导环境范畴的实际始对象；每个初等 Topos 已通过继承提供这些
+选择。不要求始对象、良点性、满态射分裂、选择或 NNO。这将此前子对象薄
+范畴中的底结果推进到环境范畴本身。
+
+`ToposInitial` 是 `SubBottom 1` 的定义域。由原分类为真判据，假在此分类
+子对象上为真。一般地，`bottom_true_section` 分裂每个映入假为真上下文的
+单态射：最小性使假子对象经该单态射分解，特征箭头判据再将恒等经假子对象
+分解。将所得截面用于一对平行箭头的等化子，得到 `bottom_true_hom_eq`。
+等化子由既有 `ProductPullbackEqualizer` 使用同一积和拉回提供，包含箭头由
+既有 `EqualizerMono` 打包，不增加独立等化子前提或重证泛性质。
+
+对任意 `X`，`InitialProductSub X` 将 `ToposInitial × X` 展示为 `1` 的
+子对象。它的终箭头是单态射：映入此积使源成为假上下文，因而该源出发的
+平行箭头都相等。最小性随后给出 `ToposInitial → ToposInitial × X`，投影
+得到实际泛箭头 `topos_init X`，唯一性复用同一假上下文相等定理。公开数据
+方程恰好保留此最小子对象分解因子和积投影。
+
+`topos_initial_universal` 显式固定范畴，证明既有 Type 值 `is_initial`。
+`Topos_HasInitial` 经反范畴终性打包此见证，保持对象／箭头的原生计算。
+它是普通可选定义；导入不全局启用，不改 Topos／ETCS 字段，也不替换已有
+始对象选择。`topos_initial_strict f` 证明每个 `f : X → ToposInitial` 可逆，
+保留 `topos_init X` 为透明逆。唯一性及互逆律均用指定 Hom 相等，不要求
+证明字段相等或经典原理。
+
+本批完成环境始对象及其严格性里程碑。有限余积／有限余极限、后续量词稳定性
+和有意义模型仍属后续工作。此前显式宇宙 breaking 记录不变；此可选构造不
+迁移旧 API、宇宙或选择。

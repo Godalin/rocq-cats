@@ -198,7 +198,7 @@ for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
 in `Cats.Topos.Nat`, and the stronger set-theory bundle in `Cats.Topos.ETCS`.
-All fifteen modules are under `Topos/`; there are no ETCS compatibility imports.
+All sixteen modules are under `Topos/`; there are no ETCS compatibility imports.
 Characteristic arrows respect monomorphism equality, detect subobject
 equivalence and turn pullback into precomposition. These laws need only a
 chosen terminal object and classifier; [pullback monicity](./theories/Cat/Subobject.v)
@@ -239,6 +239,10 @@ The optional [bottom module](./theories/Topos/Bottom.v) quantifies over truth
 values to obtain false, the least predicate and least subobject in each
 context. Inverse image preserves these subobjects; their initial structure
 in the thin subobject category is explicitly enabled.
+The optional [ambient initial object](./theories/Topos/Initial.v) classifies
+false on the terminal object, constructs its unique arrow to every object,
+and proves strictness. Its derived `HasInitial` choice is explicitly enabled;
+no initial-object axiom is added to Topos.
 The optional [implication laws](./theories/Topos/ImplicationLaws.v) exchange
 antecedents and eliminate a true antecedent, without exponentials.
 The optional [disjunction module](./theories/Topos/Disjunction.v) quantifies
@@ -250,7 +254,7 @@ monotonicity and the join laws reuse the same chosen data.
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
-十五个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
+十六个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
 特征箭头保持单态射相等、检测子对象等价，并将拉回变为预合成。这些律只需要
 选定终对象及分类子；[拉回单态性](./theories/Cat/Subobject.v) 对任意范畴中的
 给定拉回方形成立。
@@ -278,7 +282,10 @@ Type 值子对象预序范畴的二元积给出；其
 实际右伴随，保留同一转置及作为余单位的量词求值。
 可选的[底模块](./theories/Topos/Bottom.v)对真值作全称量化得到假，以及每个
 上下文中的最小谓词与最小子对象。逆像保持这些子对象；子对象薄范畴中的
-对应始对象结构由使用者显式启用。
+对应始对象结构由使用者显式启用。可选的
+[环境始对象](./theories/Topos/Initial.v)在终对象上分类假，构造到每个对象的
+唯一箭头并证明严格性。推导的 `HasInitial` 选择显式启用，不为 Topos
+增加始对象公理。
 可选的[蕴含定律](./theories/Topos/ImplicationLaws.v)交换前件并消去真前件，
 不要求指数。可选的[析取模块](./theories/Topos/Disjunction.v)借助蕴含对共同
 上界作量化。透明的引入和最小上界对应保留蕴含因子；代入、单调性及并定律
@@ -287,12 +294,15 @@ Type 值子对象预序范畴的二元积给出；其
 `ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
 natural-numbers object, retaining the existing chosen initial-object field.
 The single parent chain is `ETCS → Topos → CCC → CartesianCat → Cat`;
-terminal-dependent fields all use that same inherited choice. Deriving initial
-objects from the topos structure remains a later theorem.
+terminal-dependent fields all use that same inherited choice. The optional
+[initial-object theorem](./theories/Topos/Initial.v) now derives an initial
+object from the Topos structure; this batch preserves the existing ETCS field.
 
 `ETCS C` 为 `Topos C` 增加良点性、满态射分裂和自然数对象，并保留原有的
 选定始对象字段。唯一父链为 `ETCS → Topos → CCC → CartesianCat → Cat`；
-依赖终对象的字段均使用同一继承选择。由拓扑斯结构推出始对象留待后续证明。
+依赖终对象的字段均使用同一继承选择。可选的
+[始对象定理](./theories/Topos/Initial.v)现已从拓扑斯结构推导始对象；本批保留
+现有 ETCS 字段。
 
 ## Building
 
