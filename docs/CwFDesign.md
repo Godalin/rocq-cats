@@ -495,6 +495,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 - [Instance/Set/Elements.v](../theories/Instance/Set/Elements.v)：固定广集值预层的元素范畴、标准笛卡尔提升及从自然显示投影构造理解结构。
 - [DTT/Display/Comprehension.v](../theories/DTT/Display/Comprehension.v)：固定类型预层后，在元素投影上的理解结构与相干显示结构间互构，以保持投影的自然同构比较全空间函子；终上下文独立选择。
 - [DTT/Display/Interpretation.v](../theories/DTT/Display/Interpretation.v)：显式给定元素解释、自然基底同构及笛卡尔保持后，限制源候选理解结构并恢复显示／CwF；比较保留基底边界，不要求源选定提升。
+- [DTT/Context/Elements.v](../theories/DTT/Context/Elements.v)：由给定上下文扩张构造规范元素解释；比较恢复投影、转换、提升及项纤维，以独立提升的广集同构保留原项与截面的不同大小，并证明前向比较保持转换／替换。
 - [Instance/Set/CwF.v](../theories/Instance/Set/CwF.v)：Code/El 模型。
 - 必要的截面映射等可复用数学放回已有族/截面模块，不另建实验框架。
 
