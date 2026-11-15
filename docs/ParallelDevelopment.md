@@ -174,35 +174,36 @@ notification scope. A changed file count or directory alone cannot determine it.
 | L2 Global / 全局 | All active workers / 全部活跃工作会话 | Foundational contracts, global notation/instances, toolchain or workflow / 基础契约、全局记号／实例、工具链或流程 |
 
 A notification gives the integrated SHA, relevant change and required action.
-Breaking is independent of scope. After a breaking integration, affected workers
-synchronize, validate their dependents and confirm completion before resuming
-related edits. Only request confirmation when a pause or synchronization needs
-it; message delivery or silence is not confirmation that the action is complete.
+Ordinary notices need no acknowledgment. Breaking is independent of scope:
+affected workers preserve and pause before integration, then synchronize,
+validate and confirm before resuming related edits. A nonbreaking notice allows
+synchronization at a safe checkpoint before using the new contract.
 
-通知说明集成 SHA、相关变化和所需动作。breaking 与通知范围独立。breaking
-集成后，受影响工作会话同步、验证依赖方并确认完成，再恢复相关编辑。只在暂停
-或同步确实需要时要求确认；投递成功或沉默不代表动作已完成。
+通知说明集成 SHA、相关变化和所需动作，普通通知无需回执。breaking 与范围
+独立：受影响工作会话先保全并暂停，集成后同步、验证并确认，再恢复相关编辑。
+非 breaking 通知允许在使用新契约前，于安全点同步。
 
-Synchronize at a safe checkpoint after preserving local/user work. A nonbreaking
-notice does not require an immediate rebase: synchronize before using the new
-contract or starting new dependent work. Coalesce related notices and avoid
-routine commit/build broadcasts. Preserve explicit pause/sync instructions.
+Request confirmation only for required pause/sync actions. Before changing a
+shared toolchain, every affected session explicitly confirms it has stopped
+using it; delivery or silence is insufficient. A confirmation needs only the
+completed action, such as “Stopped using the shared switch”; add details only
+for blockers or uncertainty. Preserve work locally without repeating branch/ref
+inventories. Do not reply merely to acknowledge a confirmation; integration
+result replies remain required.
 
-先保全本地／用户工作，再在安全点同步。非 breaking 通知不要求立即 rebase，
-在使用新契约或开始新的依赖工作前完成同步即可。合并相关通知，不广播例行提交
-或构建状态；明确的暂停／同步要求不能省略。
+只为必要的暂停／同步动作要求确认。修改共享工具链前，各受影响会话须明确确认
+已停用；投递或沉默不算完成。确认只需说明动作结果，如“已停用共享 switch”；
+有阻塞或不确定性时才补充细节。本地仍须保全工作，无需重复列出分支／引用清单。
+不为确认另回“收到”；集成结果回执仍须保留。
 
-For the same matter, update your own still-pending message with the combined
-facts when supported, rather than queueing each status separately. Do not send
-routine progress/build or unchanged standby notices. If a confirmed result
-already supersedes late or duplicate statuses, record them together without
-repeating validation or replying to each; check only unresolved or conflicting
-facts. Required integration replies and pause/sync confirmations remain in place.
+Combine related updates in your own pending message when supported. Skip routine
+progress/build/standby notices and statuses superseded by confirmed results.
+Do not repeat validation or reread confirmed sessions for the same action;
+consult context or Git only for unresolved or conflicting facts.
 
-同一事项有补充时，通信工具支持的情况下更新自己尚未处理的排队消息，合并事实，
-避免逐条追加状态。不单独发送例行进度／构建或无变化的待命消息。迟到或重复状态
-已被明确确认的结果覆盖时，合并记录，不重复验证或逐条回复；只核对尚未解决或
-相互矛盾的事实。必要的集成回执及暂停／同步确认仍须保留。
+工具支持时，将相关补充合并到自己的待处理消息。不发送例行进度／构建／待命
+通知，略过已确认结果覆盖的旧状态。同一动作不重复验证或反复读取已确认会话；
+只为未决或矛盾事实查阅上下文或 Git。
 
 ## 5. Problems and recovery / 问题与恢复
 
