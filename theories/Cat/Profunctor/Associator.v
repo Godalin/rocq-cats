@@ -7,7 +7,7 @@ From Cats Require Import
   Instance.Set.Core
   Instance.Set.Product.
 
-Local Open Scope profunctor_scope.
+Local Open Scope prof_scope.
 
 (** * Reassociation of Profunctor Composition
 
@@ -36,10 +36,10 @@ Context {C D E B : Cat}.
 Context (R : Fct ((E^op) ×C B) (SetCat@{u p _ _ _ _ _})).
 Context (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})).
 Context (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})).
-Context `{HI : !HasProfunctorComp C D E Q P}.
+Context `{HI : !HasProfComp C D E Q P}.
 Context {X : @Ob C} {W : @Ob B}.
 Context `{HO : !HasCoend SetCat
-    (ProfunctorCompKernel R (Q ∘Pr P) X W)}.
+    (ProfCompKernel R (Q ∘Pr P) X W)}.
 
 (** Insert the first pair, then pair its class with the last value. *)
 
@@ -47,10 +47,10 @@ Context `{HO : !HasCoend SetCat
 
 Program Definition ProfunctorTripleLeftInjection
   : ProfunctorTripleCowedge R Q P X W
-      (coend[ProfunctorCompKernel R (Q ∘Pr P) X W])
+      (coend[ProfCompKernel R (Q ∘Pr P) X W])
   :=
   {|triple_cowedge_leg Y Z :=
-      {|func xyz := ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z
+      {|func xyz := ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
           (ιPr[Q; P; Y] (fst xyz),snd xyz)
       |}
   |}.
@@ -60,13 +60,13 @@ Next Obligation.
 Defined.
 Next Obligation.
   apply func_proper. split; [| reflexivity].
-  exact (profunctor_comp_gluing Q P h x y).
+  exact (prof_comp_gluing Q P h x y).
 Defined.
 Next Obligation.
-  transitivity (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z'
+  transitivity (ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z'
     (rmap[Q ∘Pr P; h] (ιPr[Q; P; Y] (x,y)),z)).
-  - exact (profunctor_comp_cowedge_gluing R (Q ∘Pr P)
-      ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] h
+  - exact (prof_comp_cowedge_gluing R (Q ∘Pr P)
+      ιcoend[ProfCompKernel R (Q ∘Pr P) X W] h
       (ιPr[Q; P; Y] (x,y)) z).
   - apply func_proper. split; [| reflexivity].
     exact (profunctor_comp_rmap_inject Q P h Y x y).
@@ -91,10 +91,10 @@ Context {C D E B : Cat}.
 Context (R : Fct ((E^op) ×C B) (SetCat@{u p _ _ _ _ _})).
 Context (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})).
 Context (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})).
-Context `{HI : !HasProfunctorComp D E B R Q}.
+Context `{HI : !HasProfComp D E B R Q}.
 Context {X : @Ob C} {W : @Ob B}.
 Context `{HO : !HasCoend SetCat
-    (ProfunctorCompKernel (R ∘Pr Q) P X W)}.
+    (ProfCompKernel (R ∘Pr Q) P X W)}.
 
 (** Pair the first value with the class of the last pair. *)
 
@@ -102,10 +102,10 @@ Context `{HO : !HasCoend SetCat
 
 Program Definition ProfunctorTripleRightInjection
   : ProfunctorTripleCowedge R Q P X W
-      (coend[ProfunctorCompKernel (R ∘Pr Q) P X W])
+      (coend[ProfCompKernel (R ∘Pr Q) P X W])
   :=
   {|triple_cowedge_leg Y Z :=
-      {|func xyz := ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+      {|func xyz := ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
           (fst (fst xyz),ιPr[R; Q; Z] (snd (fst xyz),snd xyz))
       |}
   |}.
@@ -115,17 +115,17 @@ Next Obligation.
   apply func_proper. exact (K,L).
 Defined.
 Next Obligation.
-  transitivity (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+  transitivity (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
     (x,lmap[R ∘Pr Q; h] (ιPr[R; Q; Z] (y,z)))).
   - apply func_proper. split; [reflexivity |].
     symmetry. exact (profunctor_comp_lmap_inject R Q h Z y z).
-  - exact (profunctor_comp_cowedge_gluing (R ∘Pr Q) P
-      ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] h
+  - exact (prof_comp_cowedge_gluing (R ∘Pr Q) P
+      ιcoend[ProfCompKernel (R ∘Pr Q) P X W] h
       x (ιPr[R; Q; Z] (y,z))).
 Defined.
 Next Obligation.
   apply func_proper. split; [reflexivity |].
-  exact (profunctor_comp_gluing R Q h y z).
+  exact (prof_comp_gluing R Q h y z).
 Defined.
 
 End RightInsertion.
@@ -147,21 +147,21 @@ Context {C D E B : Cat}.
 Context (R : Fct ((E^op) ×C B) (SetCat@{u p _ _ _ _ _})).
 Context (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})).
 Context (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})).
-Context `{HPQ : !HasProfunctorComp C D E Q P}.
-Context `{HQR : !HasProfunctorComp D E B R Q}.
+Context `{HPQ : !HasProfComp C D E Q P}.
+Context `{HQR : !HasProfComp D E B R Q}.
 Context {X : @Ob C} {W : @Ob B}.
 Context `{HL : !HasCoend SetCat
-    (ProfunctorCompKernel R (Q ∘Pr P) X W)}.
+    (ProfCompKernel R (Q ∘Pr P) X W)}.
 Context `{HR : !HasCoend SetCat
-    (ProfunctorCompKernel (R ∘Pr Q) P X W)}.
+    (ProfCompKernel (R ∘Pr Q) P X W)}.
 
 (** Reassociate by descending the right-associated triple insertion. *)
 
 (** 下降右结合三元插入，得到重结合映射。 *)
 
 Definition profunctor_associator
-  : coend[ProfunctorCompKernel R (Q ∘Pr P) X W] →r
-      coend[ProfunctorCompKernel (R ∘Pr Q) P X W]
+  : coend[ProfCompKernel R (Q ∘Pr P) X W] →r
+      coend[ProfCompKernel (R ∘Pr Q) P X W]
   := profunctor_triple_left_desc R Q P (ProfunctorTripleRightInjection R Q P).
 
 (** Reverse the same construction by descending the left insertion. *)
@@ -169,8 +169,8 @@ Definition profunctor_associator
 (** 下降左插入，反向使用同一个构造。 *)
 
 Definition profunctor_associator_inv
-  : coend[ProfunctorCompKernel (R ∘Pr Q) P X W] →r
-      coend[ProfunctorCompKernel R (Q ∘Pr P) X W]
+  : coend[ProfCompKernel (R ∘Pr Q) P X W] →r
+      coend[ProfCompKernel R (Q ∘Pr P) X W]
   := profunctor_triple_right_desc R Q P (ProfunctorTripleLeftInjection R Q P).
 
 (** Reassociation retains all three original values and their order. *)
@@ -180,9 +180,9 @@ Definition profunctor_associator_inv
 Lemma profunctor_associator_β (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z)) (z : R (Z,W))
   : profunctor_associator
-      (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z
+      (ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
         (ιPr[Q; P; Y] (x,y),z)) ≈S
-      ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+      ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
         (x,ιPr[R; Q; Z] (y,z)).
 Proof.
   exact (profunctor_triple_left_β R Q P
@@ -196,9 +196,9 @@ Defined.
 Lemma profunctor_associator_inv_β (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z)) (z : R (Z,W))
   : profunctor_associator_inv
-      (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+      (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
         (x,ιPr[R; Q; Z] (y,z))) ≈S
-      ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z
+      ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
         (ιPr[Q; P; Y] (x,y),z).
 Proof.
   exact (profunctor_triple_right_β R Q P
@@ -214,7 +214,7 @@ Lemma profunctor_associator_inv_l
 Proof.
   apply (profunctor_triple_left_hom_ext R Q P). intros Y Z x y z.
   transitivity (profunctor_associator_inv
-    (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+    (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
       (x,ιPr[R; Q; Z] (y,z)))).
   - exact (@func_proper _ _ profunctor_associator_inv _ _
       (profunctor_associator_β Y Z x y z)).
@@ -230,7 +230,7 @@ Lemma profunctor_associator_inv_r
 Proof.
   apply (profunctor_triple_right_hom_ext R Q P). intros Y Z x y z.
   transitivity (profunctor_associator
-    (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z
+    (ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
       (ιPr[Q; P; Y] (x,y),z))).
   - exact (@func_proper _ _ profunctor_associator _ _
       (profunctor_associator_inv_β Y Z x y z)).
@@ -242,8 +242,8 @@ Defined.
 (** 这些指定相等下的互逆方程打包固定端点同构。 *)
 
 Definition ProfunctorAssociatorIso
-  : coend[ProfunctorCompKernel R (Q ∘Pr P) X W] ≅[SetCat]
-      coend[ProfunctorCompKernel (R ∘Pr Q) P X W].
+  : coend[ProfCompKernel R (Q ∘Pr P) X W] ≅[SetCat]
+      coend[ProfCompKernel (R ∘Pr Q) P X W].
 Proof.
   exists profunctor_associator, profunctor_associator_inv.
   split; [exact profunctor_associator_inv_l | exact profunctor_associator_inv_r].
@@ -268,10 +268,10 @@ Context {C D E B : Cat}.
 Context (R : Fct ((E^op) ×C B) (SetCat@{u p _ _ _ _ _})).
 Context (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})).
 Context (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})).
-Context `{HPQ : !HasProfunctorComp C D E Q P}.
-Context `{HQR : !HasProfunctorComp D E B R Q}.
-Context `{HL : !HasProfunctorComp C E B R (Q ∘Pr P)}.
-Context `{HR : !HasProfunctorComp C D B (R ∘Pr Q) P}.
+Context `{HPQ : !HasProfComp C D E Q P}.
+Context `{HQR : !HasProfComp D E B R Q}.
+Context `{HL : !HasProfComp C E B R (Q ∘Pr P)}.
+Context `{HR : !HasProfComp C D B (R ∘Pr Q) P}.
 
 (** The left-associated boundary acts on the first and third factors. *)
 
@@ -282,14 +282,14 @@ Lemma profunctor_triple_left_boundary
     (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z)) (z : R (Z,W))
   : dimap[R ∘Pr (Q ∘Pr P); f; g]
-      (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z
+      (ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
         (ιPr[Q; P; Y] (x,y),z)) ≈S
-      ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X' W'] Z
+      ιcoend[ProfCompKernel R (Q ∘Pr P) X' W'] Z
         (ιPr[Q; P; Y] (lmap[P; f] x,y),rmap[R; g] z).
 Proof.
-  transitivity (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X' W'] Z
+  transitivity (ιcoend[ProfCompKernel R (Q ∘Pr P) X' W'] Z
     (lmap[Q ∘Pr P; f] (ιPr[Q; P; Y] (x,y)),rmap[R; g] z)).
-  - exact (coend_map_β (ProfunctorCompBoundaryN R (Q ∘Pr P) f g)
+  - exact (coend_map_β (ProfCompBoundaryN R (Q ∘Pr P) f g)
       Z (ιPr[Q; P; Y] (x,y),z)).
   - apply func_proper. split; [| reflexivity].
     exact (profunctor_comp_lmap_inject Q P f Y x y).
@@ -304,14 +304,14 @@ Lemma profunctor_triple_right_boundary
     (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z)) (z : R (Z,W))
   : dimap[(R ∘Pr Q) ∘Pr P; f; g]
-      (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+      (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
         (x,ιPr[R; Q; Z] (y,z))) ≈S
-      ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X' W'] Y
+      ιcoend[ProfCompKernel (R ∘Pr Q) P X' W'] Y
         (lmap[P; f] x,ιPr[R; Q; Z] (y,rmap[R; g] z)).
 Proof.
-  transitivity (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X' W'] Y
+  transitivity (ιcoend[ProfCompKernel (R ∘Pr Q) P X' W'] Y
     (lmap[P; f] x,rmap[R ∘Pr Q; g] (ιPr[R; Q; Z] (y,z)))).
-  - exact (coend_map_β (ProfunctorCompBoundaryN (R ∘Pr Q) P f g)
+  - exact (coend_map_β (ProfCompBoundaryN (R ∘Pr Q) P f g)
       Y (x,ιPr[R; Q; Z] (y,z))).
   - apply func_proper. split; [reflexivity |].
     exact (profunctor_comp_rmap_inject R Q g Z y z).
@@ -326,39 +326,39 @@ Program Definition ProfunctorAssociatorN
   : R ∘Pr (Q ∘Pr P) ⇒ (R ∘Pr Q) ∘Pr P
   :=
   {|nt '(X,W) := @profunctor_associator C D E B R Q P HPQ HQR X W
-      (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X W)
-      (@hasProfunctorCompCoend C D B (R ∘Pr Q) P HR X W)
+      (@hasProfCompCoend C E B R (Q ∘Pr P) HL X W)
+      (@hasProfCompCoend C D B (R ∘Pr Q) P HR X W)
   |}.
 Next Obligation.
   destruct X as [X W], Y as [X' W'], f as [f g].
   change ((@profunctor_associator C D E B R Q P HPQ HQR X' W'
-    (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X' W')
-    (@hasProfunctorCompCoend C D B (R ∘Pr Q) P HR X' W') ∘r
+    (@hasProfCompCoend C E B R (Q ∘Pr P) HL X' W')
+    (@hasProfCompCoend C D B (R ∘Pr Q) P HR X' W') ∘r
     dimap[R ∘Pr (Q ∘Pr P); f; g]) ≈f
     (dimap[(R ∘Pr Q) ∘Pr P; f; g] ∘r
       @profunctor_associator C D E B R Q P HPQ HQR X W
-        (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X W)
-        (@hasProfunctorCompCoend C D B (R ∘Pr Q) P HR X W))).
+        (@hasProfCompCoend C E B R (Q ∘Pr P) HL X W)
+        (@hasProfCompCoend C D B (R ∘Pr Q) P HR X W))).
   apply (@profunctor_triple_left_hom_ext C D E B R Q P HPQ X W
-    (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X W)
+    (@hasProfCompCoend C E B R (Q ∘Pr P) HL X W)
     (((R ∘Pr Q) ∘Pr P) (X',W'))).
   intros Y Z x y z.
   transitivity (@profunctor_associator C D E B R Q P HPQ HQR X' W'
-    (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X' W')
-    (@hasProfunctorCompCoend C D B (R ∘Pr Q) P HR X' W')
-    (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X' W'] Z
+    (@hasProfCompCoend C E B R (Q ∘Pr P) HL X' W')
+    (@hasProfCompCoend C D B (R ∘Pr Q) P HR X' W')
+    (ιcoend[ProfCompKernel R (Q ∘Pr P) X' W'] Z
       (ιPr[Q; P; Y] (lmap[P; f] x,y),rmap[R; g] z))).
   - exact (@func_proper _ _
       (@profunctor_associator C D E B R Q P HPQ HQR X' W'
-        (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X' W')
-        (@hasProfunctorCompCoend C D B (R ∘Pr Q) P HR X' W')) _ _
+        (@hasProfCompCoend C E B R (Q ∘Pr P) HL X' W')
+        (@hasProfCompCoend C D B (R ∘Pr Q) P HR X' W')) _ _
       (profunctor_triple_left_boundary f g Y Z x y z)).
-  - transitivity (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X' W'] Y
+  - transitivity (ιcoend[ProfCompKernel (R ∘Pr Q) P X' W'] Y
       (lmap[P; f] x,ιPr[R; Q; Z] (y,rmap[R; g] z))).
     + exact (profunctor_associator_β R Q P Y Z
         (lmap[P; f] x) y (rmap[R; g] z)).
     + transitivity (dimap[(R ∘Pr Q) ∘Pr P; f; g]
-        (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+        (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
           (x,ιPr[R; Q; Z] (y,z)))).
       * symmetry. exact (profunctor_triple_right_boundary f g Y Z x y z).
       * exact (@func_proper _ _ (dimap[(R ∘Pr Q) ∘Pr P; f; g]) _ _
@@ -375,8 +375,8 @@ Definition ProfunctorAssociator
 Proof.
   exists ProfunctorAssociatorN. intros [X W].
   exists (@profunctor_associator_inv C D E B R Q P HPQ HQR X W
-    (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X W)
-    (@hasProfunctorCompCoend C D B (R ∘Pr Q) P HR X W)).
+    (@hasProfCompCoend C E B R (Q ∘Pr P) HL X W)
+    (@hasProfCompCoend C D B (R ∘Pr Q) P HR X W)).
   split; [exact (profunctor_associator_inv_l R Q P)
     | exact (profunctor_associator_inv_r R Q P)].
 Defined.
@@ -409,21 +409,21 @@ Context {C D E B : Cat}.
 Context {R R' : Fct ((E^op) ×C B) (SetCat@{u p _ _ _ _ _})}.
 Context {Q Q' : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _})}.
 Context {P P' : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}.
-Context `{HPQ : !HasProfunctorComp C D E Q P}.
-Context `{HQR : !HasProfunctorComp D E B R Q}.
-Context `{HL : !HasProfunctorComp C E B R (Q ∘Pr P)}.
-Context `{HR : !HasProfunctorComp C D B (R ∘Pr Q) P}.
-Context `{HPQ' : !HasProfunctorComp C D E Q' P'}.
-Context `{HQR' : !HasProfunctorComp D E B R' Q'}.
-Context `{HL' : !HasProfunctorComp C E B R' (Q' ∘Pr P')}.
-Context `{HR' : !HasProfunctorComp C D B (R' ∘Pr Q') P'}.
+Context `{HPQ : !HasProfComp C D E Q P}.
+Context `{HQR : !HasProfComp D E B R Q}.
+Context `{HL : !HasProfComp C E B R (Q ∘Pr P)}.
+Context `{HR : !HasProfComp C D B (R ∘Pr Q) P}.
+Context `{HPQ' : !HasProfComp C D E Q' P'}.
+Context `{HQR' : !HasProfComp D E B R' Q'}.
+Context `{HL' : !HasProfComp C E B R' (Q' ∘Pr P')}.
+Context `{HR' : !HasProfComp C D B (R' ∘Pr Q') P'}.
 Context (α : P ⇒ P') (β : Q ⇒ Q') (γ : R ⇒ R').
 
-Let αPQ := @ProfunctorCompMapN C D E Q Q' P P' HPQ HPQ' β α.
-Let αQR := @ProfunctorCompMapN D E B R R' Q Q' HQR HQR' γ β.
-Let αL := @ProfunctorCompMapN C E B R R' (Q ∘Pr P) (Q' ∘Pr P')
+Let αPQ := @ProfCompMapN C D E Q Q' P P' HPQ HPQ' β α.
+Let αQR := @ProfCompMapN D E B R R' Q Q' HQR HQR' γ β.
+Let αL := @ProfCompMapN C E B R R' (Q ∘Pr P) (Q' ∘Pr P')
     HL HL' γ αPQ.
-Let αR := @ProfunctorCompMapN C D B (R ∘Pr Q) (R' ∘Pr Q') P P'
+Let αR := @ProfCompMapN C D B (R ∘Pr Q) (R' ∘Pr Q') P P'
     HR HR' αQR α.
 Let i := @ProfunctorAssociator C D E B R Q P HPQ HQR HL HR.
 Let j := @ProfunctorAssociator C D E B R' Q' P' HPQ' HQR' HL' HR'.
@@ -438,17 +438,17 @@ Lemma profunctor_triple_left_input (X : @Ob C) (W : @Ob B)
     (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z)) (z : R (Z,W))
   : αL (X,W)
-      (ιcoend[ProfunctorCompKernel R (Q ∘Pr P) X W] Z
+      (ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
         (ιPr[Q; P; Y] (x,y),z)) ≈S
-      ιcoend[ProfunctorCompKernel R' (Q' ∘Pr P') X W] Z
+      ιcoend[ProfCompKernel R' (Q' ∘Pr P') X W] Z
         (ιPr[Q'; P'; Y] (α (X,Y) x,β (Y,Z) y),γ (Z,W) z).
 Proof.
-  transitivity (ιcoend[ProfunctorCompKernel R' (Q' ∘Pr P') X W] Z
+  transitivity (ιcoend[ProfCompKernel R' (Q' ∘Pr P') X W] Z
     (αPQ (X,Z) (ιPr[Q; P; Y] (x,y)),γ (Z,W) z)).
-  - exact (coend_map_β (ProfunctorCompInputN γ αPQ X W)
+  - exact (coend_map_β (ProfCompInputN γ αPQ X W)
       Z (ιPr[Q; P; Y] (x,y),z)).
   - apply func_proper. split; [| reflexivity].
-    exact (coend_map_β (ProfunctorCompInputN β α X Z) Y (x,y)).
+    exact (coend_map_β (ProfCompInputN β α X Z) Y (x,y)).
 Defined.
 
 (** The right-associated maps have the same three value transformations. *)
@@ -459,17 +459,17 @@ Lemma profunctor_triple_right_input (X : @Ob C) (W : @Ob B)
     (Y : @Ob D) (Z : @Ob E)
     (x : P (X,Y)) (y : Q (Y,Z)) (z : R (Z,W))
   : αR (X,W)
-      (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+      (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
         (x,ιPr[R; Q; Z] (y,z))) ≈S
-      ιcoend[ProfunctorCompKernel (R' ∘Pr Q') P' X W] Y
+      ιcoend[ProfCompKernel (R' ∘Pr Q') P' X W] Y
         (α (X,Y) x,ιPr[R'; Q'; Z] (β (Y,Z) y,γ (Z,W) z)).
 Proof.
-  transitivity (ιcoend[ProfunctorCompKernel (R' ∘Pr Q') P' X W] Y
+  transitivity (ιcoend[ProfCompKernel (R' ∘Pr Q') P' X W] Y
     (α (X,Y) x,αQR (Y,W) (ιPr[R; Q; Z] (y,z)))).
-  - exact (coend_map_β (ProfunctorCompInputN αQR α X W)
+  - exact (coend_map_β (ProfCompInputN αQR α X W)
       Y (x,ιPr[R; Q; Z] (y,z))).
   - apply func_proper. split; [reflexivity |].
-    exact (coend_map_β (ProfunctorCompInputN γ β Y W) Z (y,z)).
+    exact (coend_map_β (ProfCompInputN γ β Y W) Z (y,z)).
 Defined.
 
 (** Reassociation is compatible with all three input transformations. *)
@@ -482,20 +482,20 @@ Proof.
   intros [X W].
   change ((a' (X,W) ∘r αL (X,W)) ≈f (αR (X,W) ∘r a (X,W))).
   apply (@profunctor_triple_left_hom_ext C D E B R Q P HPQ X W
-    (@hasProfunctorCompCoend C E B R (Q ∘Pr P) HL X W)
+    (@hasProfCompCoend C E B R (Q ∘Pr P) HL X W)
     (((R' ∘Pr Q') ∘Pr P') (X,W))).
   intros Y Z x y z.
   transitivity (a' (X,W)
-    (ιcoend[ProfunctorCompKernel R' (Q' ∘Pr P') X W] Z
+    (ιcoend[ProfCompKernel R' (Q' ∘Pr P') X W] Z
       (ιPr[Q'; P'; Y] (α (X,Y) x,β (Y,Z) y),γ (Z,W) z))).
   - exact (@func_proper _ _ (a' (X,W)) _ _
       (profunctor_triple_left_input X W Y Z x y z)).
-  - transitivity (ιcoend[ProfunctorCompKernel (R' ∘Pr Q') P' X W] Y
+  - transitivity (ιcoend[ProfCompKernel (R' ∘Pr Q') P' X W] Y
       (α (X,Y) x,ιPr[R'; Q'; Z] (β (Y,Z) y,γ (Z,W) z))).
     + exact (profunctor_associator_β R' Q' P' Y Z
         (α (X,Y) x) (β (Y,Z) y) (γ (Z,W) z)).
     + transitivity (αR (X,W)
-        (ιcoend[ProfunctorCompKernel (R ∘Pr Q) P X W] Y
+        (ιcoend[ProfCompKernel (R ∘Pr Q) P X W] Y
           (x,ιPr[R; Q; Z] (y,z)))).
       * symmetry. exact (profunctor_triple_right_input X W Y Z x y z).
       * exact (@func_proper _ _ (αR (X,W)) _ _

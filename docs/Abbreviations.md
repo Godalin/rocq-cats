@@ -862,6 +862,47 @@ ETCS 导入或本地链接，差异空白检查通过。均为临时审计，未
 HTML/PDF。用户已批准冻结交付本批；本批为 L2 breaking 公开名称迁移，由指定
 集成者协调受影响消费者保全／暂停，复验后集成并同步。后续工作等待用户安排。
 
+### Upstream client compatibility / 上游客户端兼容
+
+The frozen source `315dbda` was rebased by the integrator onto `a92b026`,
+yielding temporary result `98dec6e`. A separate compatibility branch starts
+from that exact result and adapts the later
+[iterated composition](../theories/Cat/Profunctor/Iterated.v) and
+[associator](../theories/Cat/Profunctor/Associator.v) clients using only the
+existing 195-entry map: 139 exact replacements, including their two scope
+openings. Their new declarations keep their existing names; module paths,
+ordinary prose, notation, proofs and mathematical choices are preserved.
+The map remains 370 historical rows referring to 359 declarations/fields
+and one scope. Across the original batch and this repair, all 106 changed
+Rocq files reverse byte-for-byte to `a92b026`. The original source and
+backups remain preserved; integration acceptance is still pending.
+
+集成者将冻结来源 `315dbda` 重基至 `a92b026`，得到临时结果 `98dec6e`。
+独立兼容分支严格从该结果开始，仅按已有 195 项表适配后来新增的
+[迭代复合](../theories/Cat/Profunctor/Iterated.v)与
+[结合子](../theories/Cat/Profunctor/Associator.v)客户端，共 139 处精确替换，
+其中包括两处 scope 开启。新增声明保留原名；模块路径、普通叙述、记号、证明
+及数学选择均保持。对照表仍为 370 条历史行，对应 359 个声明／字段及一个
+scope。原批次与本修订合计 106 个 Rocq 文件，逆向后与 `a92b026` 逐字一致。
+原来源与备份保全，集成验收仍待完成。
+
+The repaired tree passed project-switch compilation of both affected modules
+and `dune build -j2 @all @install`. The original temporary audit was copied
+unchanged and passed 359 universe signatures/closed assumption reports,
+368 retired-name probes and its computation/coercion/strict-universe checks.
+A supplementary audit passed 42 client signatures/closed reports (39 explicit
+declarations and three record fields); importing the new clients also passed
+the same 368 retired-name probes and old/new scope checks. The unchanged map,
+source reverse comparison, guide links and whitespace checks passed. These
+remain temporary checks; no new permanent tests or HTML/PDF export.
+
+修订工作树使用项目 switch 通过两个模块定向编译及全库／安装目标构建。
+原临时审计原样复制复跑，359 项带宇宙签名／假设全部闭合，368 项退役名及
+原计算／强制转换／严格宇宙检查通过。补充检查覆盖 42 项客户端签名／闭合
+报告（39 个显式声明及三个记录字段）；导入新增客户端后，同样的 368 项
+退役名及新旧 scope 检查也通过。原表、源码逆向、指南链接及差异空白检查
+通过。均为临时检查，未增加永久测试或导出 HTML/PDF。
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is implemented and validated
