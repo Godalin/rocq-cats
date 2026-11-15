@@ -43,88 +43,126 @@ Local Existing Instance HC.
 Let K
   : Cat
   := FctCat ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}).
-Let T
+
+(** The tensor retains the chosen composites and their original input
+    maps. All three functor laws are inherited from [ProfCompF]. *)
+
+(** 张量保留选定复合及其原输入映射；三条函子律均继承自 [ProfCompF]。 *)
+
+Program Definition ProfTensorF
   : Fct (K ×C K) K
-  := ProfCompF C C C HC.
+  :=
+  {|F0 (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
+  ; F1 QP QP' βα := ProfCompMapN (fst βα) (snd βα)
+  ; functor_fmap_proper := @functor_fmap_proper _ _ (ProfCompF C C C HC)
+  ; functor_id := @functor_id _ _ (ProfCompF C C C HC)
+  ; functor_comp := @functor_comp _ _ (ProfCompF C C C HC)
+  |}.
 
-(** Read reassociation on the exact objects selected by the tensor.
-    Its outer choices use those same inner functors, including their laws. *)
+(** The inverse reassociation is natural on triples of endoprofunctors. *)
 
-(** 在张量实际选定的对象上读取重结合；外层选择使用同一内层函子及其定律。 *)
-
-Let a (R Q P : @Ob K)
-  : T (R,T (Q,P)) ≅N T (T (R,Q),P)
-  := @ProfunctorAssociator C C C C R Q P
-      (HC Q P) (HC R Q) (HC R (T (Q,P))) (HC (T (R,Q)) P).
-
-(** The selected inverse reassociation is natural on triples. *)
-
-(** 选定的逆重结合在三元组上自然。 *)
+(** 逆重结合在自 profunctor 三元组上自然。 *)
 
 Program Definition ProfAssociatorFctN
-  : TensorLeftF T ⇒ TensorRightF T
+  : TensorLeftF ProfTensorF ⇒ TensorRightF ProfTensorF
   :=
-  {|nt q := _
+  {|nt '((R,Q),P) := @ProfunctorAssociatorInvN C C C C R Q P
+      (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)
   |}.
-Next Obligation.
-  destruct q as [[R Q] P]. exact ((a R Q P).1 ^-1N (a R Q P).2).
-Defined.
 Next Obligation.
   destruct X as [[R Q] P], Y as [[R' Q'] P'], f as [[γ β] α].
   exact (@profunctor_associator_inv_natural C C C C R R' Q Q' P P'
-    (HC Q P) (HC R Q) (HC R (T (Q,P))) (HC (T (R,Q)) P)
-    (HC Q' P') (HC R' Q') (HC R' (T (Q',P'))) (HC (T (R',Q')) P')
+    (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)
+    (HC Q' P') (HC R' Q') (HC R' (Q' ∘Pr P')) (HC (R' ∘Pr Q') P')
     α β γ).
 Defined.
 
-(** Keep the same chosen maps and their forward reassociation inverses. *)
+(** Reversing the same object isomorphism supplies the forward
+    reassociation as its computed inverse. *)
 
-(** 保留同一组选定映射，以及作为其逆的正向重结合。 *)
+(** 反转同一个对象同构，以原正向重结合作为计算逆。 *)
 
 Definition ProfAssociatorFct
-  : TensorLeftF T ≅N TensorRightF T.
+  : TensorLeftF ProfTensorF ≅N TensorRightF ProfTensorF.
 Proof.
   exists ProfAssociatorFctN. intros [[R Q] P].
-  exact (NatIso_is_iso _ (NatIso_inv_NatIso (a R Q P).1 (a R Q P).2)).
+  pose (i := @ProfunctorAssociator C C C C R Q P
+    (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)).
+  exact (NatIso_is_iso (i.1 ^-1N i.2) (NatIso_inv_NatIso i.1 i.2)).
 Defined.
 
-(** Reverse the accepted pentagon on these exact tensor objects.
-    Ordinary functoriality supplies both whiskered inverse witnesses. *)
+Let ai (R Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
+  : (R ∘Pr Q) ∘Pr P ⇒ R ∘Pr (Q ∘Pr P)
+  := @ProfunctorAssociatorInvN C C C C R Q P
+      (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P).
 
-(** 在这些实际张量对象上反转已验收五边形；普通函子性提供两个须化逆见证。 *)
+(** The monoidal pentagon is the inverse of the existing path equation.
+    The two whiskered inverses come from ordinary functoriality. *)
 
-Lemma prof_monoidal_pentagon (S R Q P : @Ob K)
-  : (ProfAssociatorFctN ((S,R),T (Q,P)) ∘Nv
-      ProfAssociatorFctN ((T (S,R),Q),P)) ≈N
-    (fmap (π2F T S) (ProfAssociatorFctN ((R,Q),P)) ∘Nv
-      (ProfAssociatorFctN ((S,T (R,Q)),P) ∘Nv
-        fmap (π1F T P) (ProfAssociatorFctN ((S,R),Q)))).
+(** 幺半五边形为已有路径方程的逆；两个须化后的逆来自普通函子性。 *)
+
+Lemma prof_monoidal_pentagon
+    (S R Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
+  : (ai S R (Q ∘Pr P) ∘Nv ai (S ∘Pr R) Q P) ≈N
+    (ProfCompMapN (idN (F := S)) (ai R Q P) ∘Nv
+      ((ai S (R ∘Pr Q) P) ∘Nv
+        ProfCompMapN (ai S R Q) (idN (F := P)))).
 Proof.
-  pose (i := ((a S R (T (Q,P))).1;
-    NatIso_is_iso (a S R (T (Q,P))).1 (a S R (T (Q,P))).2)).
-  pose (j := ((a (T (S,R)) Q P).1;
-    NatIso_is_iso (a (T (S,R)) Q P).1 (a (T (S,R)) Q P).2)).
-  pose (k := (fmap (π2F T S) (a R Q P).1;
-    functor_is_iso (π2F T S) (a R Q P).1
-      (NatIso_is_iso (a R Q P).1 (a R Q P).2))).
-  pose (l := ((a S (T (R,Q)) P).1;
-    NatIso_is_iso (a S (T (R,Q)) P).1 (a S (T (R,Q)) P).2)).
-  pose (m := (fmap (π1F T P) (a S R Q).1;
-    functor_is_iso (π1F T P) (a S R Q).1
-      (NatIso_is_iso (a S R Q).1 (a S R Q).2))).
-  assert (H : @HomEq K _ _ (@comp K _ _ _ j.1 i.1)
-    (@comp K _ _ _ m.1 (@comp K _ _ _ l.1 k.1))).
-  { intros [X V] v.
+  pose (i := @ProfunctorAssociator C C C C S R (Q ∘Pr P)
+    (HC R (Q ∘Pr P)) (HC S R)
+    (HC S (R ∘Pr (Q ∘Pr P))) (HC (S ∘Pr R) (Q ∘Pr P))).
+  pose (j := @ProfunctorAssociator C C C C (S ∘Pr R) Q P
+    (HC Q P) (HC (S ∘Pr R) Q)
+    (HC (S ∘Pr R) (Q ∘Pr P)) (HC ((S ∘Pr R) ∘Pr Q) P)).
+  pose (k0 := @ProfunctorAssociator C C C C R Q P
+    (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)).
+  pose (l := @ProfunctorAssociator C C C C S (R ∘Pr Q) P
+    (HC (R ∘Pr Q) P) (HC S (R ∘Pr Q))
+    (HC S ((R ∘Pr Q) ∘Pr P)) (HC (S ∘Pr (R ∘Pr Q)) P)).
+  pose (m0 := @ProfunctorAssociator C C C C S R Q
+    (HC R Q) (HC S R) (HC S (R ∘Pr Q)) (HC (S ∘Pr R) Q)).
+  pose (hs := λ XY, (@iso_refl SetCat (S XY)).2).
+  pose (hp := λ XY, (@iso_refl SetCat (P XY)).2).
+  pose (kN := ProfCompMapN (idN (F := S)) k0.1).
+  pose (mN := ProfCompMapN m0.1 (idN (F := P))).
+  pose (hk := prof_comp_map_iso (idN (F := S)) k0.1 hs k0.2).
+  pose (hm := prof_comp_map_iso m0.1 (idN (F := P)) m0.2 hp).
+  assert (Ek : ProfCompMapN ((idN (F := S)) ^-1N hs)
+      (k0.1 ^-1N k0.2) ≈N ProfCompMapN (idN (F := S)) (ai R Q P)).
+  { apply prof_comp_map_proper; intros [X V] v; reflexivity. }
+  assert (Em : ProfCompMapN (m0.1 ^-1N m0.2)
+      ((idN (F := P)) ^-1N hp) ≈N
+      ProfCompMapN (ai S R Q) (idN (F := P))).
+  { apply prof_comp_map_proper; intros [X V] v; reflexivity. }
+  intros [X V] v.
+  pose proof (@iso_pentagon_inv SetCat _ _ _ _ _
+    (i.1 (X,V); i.2 (X,V)) (j.1 (X,V); j.2 (X,V))
+    (kN (X,V); hk (X,V)) (l.1 (X,V); l.2 (X,V))
+    (mN (X,V); hm (X,V))) as invert.
+  assert (H : j.1 (X,V) ∘ i.1 (X,V) ≈
+      mN (X,V) ∘ (l.1 (X,V) ∘ kN (X,V))).
+  { intros w.
     exact (@profunctor_pentagon C C C C C S R Q P
       (HC Q P) (HC R Q) (HC S R)
-      (HC R (T (Q,P))) (HC (T (R,Q)) P)
-      (HC S (T (R,Q))) (HC (T (S,R)) Q)
-      (HC S (T (R,T (Q,P)))) (HC (T (S,R)) (T (Q,P)))
-      (HC S (T (T (R,Q),P))) (HC (T (S,T (R,Q))) P)
-      (HC (T (T (S,R),Q)) P) (X,V) v). }
-  pose proof (@iso_pentagon_inv K _ _ _ _ _ i j k l m H) as E.
-  intros [X V] v. exact (E (X,V) v).
+      (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)
+      (HC S (R ∘Pr Q)) (HC (S ∘Pr R) Q)
+      (HC S (R ∘Pr (Q ∘Pr P))) (HC (S ∘Pr R) (Q ∘Pr P))
+      (HC S ((R ∘Pr Q) ∘Pr P)) (HC (S ∘Pr (R ∘Pr Q)) P)
+      (HC ((S ∘Pr R) ∘Pr Q) P) (X,V) w). }
+  pose proof (invert H) as Hinv.
+  cbv beta iota zeta delta [ai i j l kN mN hk hm k0 m0
+    ProfunctorAssociatorInvN ProfunctorAssociator NatIso_inv
+    prof_comp_map_iso projT1 projT2 fst snd nt comp HomEq SetCat
+    FunS FunEq carrier_equiv comp_resp func] in Hinv |- *.
+  etransitivity; [exact (Hinv v) |].
+  etransitivity.
+  - apply func_proper. apply func_proper. exact (Em (X,V) v).
+  - exact (Ek (X,V) ((ai S (R ∘Pr Q) P) (X,V)
+      (ProfCompMapN (ai S R Q) (idN (F := P)) (X,V) v))).
+
 Defined.
+
+End Associativity.
 
 (** ** Hom Units and Monoidal Assembly
 
@@ -140,9 +178,35 @@ Defined.
     不安装新的全局模型。 *)
 
 Section MonoidalAssembly.
+Universes u p.
+Context {C : Cat}.
+Context (HC : ∀ Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}),
+    HasProfComp C C C Q P).
+Local Existing Instance HC.
+
+Let K
+  : Cat
+  := FctCat ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}).
+
+(** Keep the same selected composites and input maps at the ambient
+    levels of this assembly. The general composition bifunctor again
+    supplies all functor laws; no additional coend is selected. *)
+
+(** 在本次装配的环境层级保留同一选定复合及输入映射。一般复合双函子仍提供
+    全部函子律，不再选择额外的 coend。 *)
+
+Local Program Definition AssemblyTensorF
+  : Fct (K ×C K) K
+  :=
+  {|F0 (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
+  ; F1 QP QP' βα := ProfCompMapN (fst βα) (snd βα)
+  ; functor_fmap_proper := @functor_fmap_proper _ _ (ProfCompF C C C HC)
+  ; functor_id := @functor_id _ _ (ProfCompF C C C HC)
+  ; functor_comp := @functor_comp _ _ (ProfCompF C C C HC)
+  |}.
 
 Let I
-  : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
+  : @Ob K
   := HomProf C.
 
 (** The original left unitors form a natural transformation on the
@@ -151,7 +215,7 @@ Let I
 (** 原左单位子由已有输入自然性组成自 profunctor 范畴上的自然变换。 *)
 
 Program Definition ProfLeftUnitorFctN
-  : π2F T I ⇒ IdF
+  : π2F AssemblyTensorF I ⇒ IdF
   :=
   {|nt P := @ProfLeftUnitorN C C P (HC I P)
   |}.
@@ -164,7 +228,7 @@ Defined.
 (** 在每个 profunctor 处保留原恒等插入逆。 *)
 
 Definition ProfLeftUnitorFct
-  : π2F T I ≅N IdF.
+  : π2F AssemblyTensorF I ≅N IdF.
 Proof.
   exists ProfLeftUnitorFctN. intros P.
   exact (NatIso_is_iso _ (@ProfLeftUnitor C C P (HC I P)).2).
@@ -175,7 +239,7 @@ Defined.
 (** 右单位子组成相应的自然族。 *)
 
 Program Definition ProfRightUnitorFctN
-  : π1F T I ⇒ IdF
+  : π1F AssemblyTensorF I ⇒ IdF
   :=
   {|nt P := @ProfRightUnitorN C C P (HC P I)
   |}.
@@ -188,7 +252,7 @@ Defined.
 (** 其选定逆仍为原恒等插入。 *)
 
 Definition ProfRightUnitorFct
-  : π1F T I ≅N IdF.
+  : π1F AssemblyTensorF I ≅N IdF.
 Proof.
   exists ProfRightUnitorFctN. intros P.
   exact (NatIso_is_iso _ (@ProfRightUnitor C C P (HC P I)).2).
@@ -199,23 +263,21 @@ Defined.
 
 (** 将原结合子移过其三角形，恰好得到选定逆的三角形；单位子保持不变。 *)
 
-Lemma prof_monoidal_triangle (Q P : @Ob K)
-  : (fmap (π2F T Q) (ProfLeftUnitorFctN P) ∘Nv
-      ProfAssociatorFctN ((Q,I),P)) ≈N
-    fmap (π1F T P) (ProfRightUnitorFctN Q).
+Lemma prof_monoidal_triangle
+    (Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
+  : (ProfCompMapN (idN (F := Q)) (ProfLeftUnitorN P) ∘Nv
+      ProfAssociatorFctN (C := C) HC ((Q,I),P)) ≈N
+    ProfCompMapN (ProfRightUnitorN Q) (idN (F := P)).
 Proof.
-  pose (i := ((a Q I P).1; NatIso_is_iso (a Q I P).1 (a Q I P).2)).
-  assert (H : @HomEq K _ _
-    (@comp K _ _ _ (fmap (π1F T P) (ProfRightUnitorFctN Q)) i.1)
-    (fmap (π2F T Q) (ProfLeftUnitorFctN P))).
-  { intros [X V] v.
-    exact (@profunctor_triangle C C C Q P
-      (HC I P) (HC Q I) (HC Q (T (I,P))) (HC (T (Q,I)) P)
-      (HC Q P) (X,V) v). }
-  pose proof (fst (@iso_move_r K _ _ _ i
-    (fmap (π1F T P) (ProfRightUnitorFctN Q))
-    (fmap (π2F T Q) (ProfLeftUnitorFctN P))) H) as E.
-  symmetry. intros [X V] v. exact (E (X,V) v).
+  pose (i := @ProfunctorAssociator C C C C Q I P
+    (HC I P) (HC Q I) (HC Q (I ∘Pr P)) (HC (Q ∘Pr I) P)).
+  symmetry.
+  exact (fst (@iso_move_r K _ _ _ (i.1; NatIso_is_iso i.1 i.2)
+    (ProfCompMapN (ProfRightUnitorN Q) (idN (F := P)))
+    (ProfCompMapN (idN (F := Q)) (ProfLeftUnitorN P)))
+    (@profunctor_triangle C C C Q P
+      (HC I P) (HC Q I) (HC Q (I ∘Pr P)) (HC (Q ∘Pr I) P)
+      (HC Q P))).
 Defined.
 
 (** Assemble the existing bifunctor, Hom unit and structural inverses.
@@ -226,10 +288,10 @@ Defined.
 Definition ProfMonoidal
   : MonoidalCat K.
 Proof.
-  refine (BifunctorMonoidal T I (ProfAssociatorFct)
+  refine (BifunctorMonoidal AssemblyTensorF I (ProfAssociatorFct (C := C) HC)
     ProfLeftUnitorFct ProfRightUnitorFct _ _).
-  - intros S R Q P. exact (prof_monoidal_pentagon S R Q P).
-  - intros Q P. exact (prof_monoidal_triangle Q P).
+  - exact (prof_monoidal_pentagon (C := C) HC).
+  - exact prof_monoidal_triangle.
 Defined.
 
 (** The derived tensor map agrees with the original composite input map
@@ -242,19 +304,36 @@ Lemma prof_monoidal_map
     (β : Q ⇒ Q') (α : P ⇒ P')
   : @tensor_map K ProfMonoidal Q Q' P P' β α ≈N
       @ProfCompMapN C C C Q Q' P P' (HC Q P) (HC Q' P') β α.
-Proof. exact (@bifunctor_sequence K T Q Q' P P' β α). Defined.
+Proof. exact (@bifunctor_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
 
 (** Identity components compare the reconstructed tensor functor with
-    the supplied composition bifunctor, keeping all selected coends. *)
+    the original composition bifunctor. Its naturality is the preceding
+    map comparison, rather than equality of functor law records. *)
 
-(** 恒等分量比较重建张量函子与给定复合双函子，保留全部选定 coend。 *)
+(** 恒等分量比较重建张量函子与原复合双函子；其自然性来自前述映射比较，
+    不要求函子定律记录相等。 *)
+
+Program Definition ProfTensorN
+  : tensorF ProfMonoidal ⇒ ProfCompF C C C HC
+  :=
+  {|nt p := _
+  |}.
+Next Obligation. destruct p as [Q P]. exact idN. Defined.
+Next Obligation.
+  destruct X as [Q P], Y as [Q' P'], f as [β α].
+  intros [X V] v. exact (prof_monoidal_map β α (X,V) v).
+Defined.
+
+(** The comparison and its inverse compute to identity transformations
+    on each selected composite, preserving every chosen coend. *)
+
+(** 比较及其逆在每个选定复合上计算为恒等变换，保留全部选定 coend。 *)
 
 Definition ProfTensorIso
-  : tensorF ProfMonoidal ≅N T.
+  : tensorF ProfMonoidal ≅N ProfCompF C C C HC.
 Proof.
-  unfold ProfMonoidal. exact (@bifunctor_monoidal_iso K T).
+  exists ProfTensorN. intros [Q P].
+  exists idN. split; intros [X V] v; reflexivity.
 Defined.
 
 End MonoidalAssembly.
-
-End Associativity.
