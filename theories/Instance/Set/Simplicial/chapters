@@ -61,6 +61,7 @@ Homotopy/SphereAssociativity.v
 Homotopy/SphereGroup.v
 Homotopy/SphereGroupMap.v
 Homotopy/SphereCylinderClass.v
+Homotopy/SphereCylinderComparison.v
 Homotopy/SphereBasedHomotopyClass.v
 Homotopy/SphereHomotopyEquivalence.v
 Homotopy/OneReduced.v

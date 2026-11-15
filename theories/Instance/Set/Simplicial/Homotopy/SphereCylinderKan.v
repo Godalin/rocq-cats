@@ -23,8 +23,10 @@ Local Open Scope ordinal_scope.
     Only the nine stated three-/four-dimensional choices are supplied.
     Full Kan, uniqueness or respectfulness of the choosing functions are
     unnecessary. This does not prove independence of those choices or
-    register an equivalence instance for directed cylinders. Comparison
-    with generated chains, general π₂ and weak equivalences remains separate. *)
+    register an equivalence instance for directed cylinders. The optional
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderComparison.TwoSphereClassCylinder}
+    {%[TwoSphereClassCylinder]%}% next uses these operations to interpret
+    generated chains. General π₂ and weak equivalences remain separate. *)
 
 (** * 从Kan选择构造实际相对复合与反向
 
@@ -35,8 +37,10 @@ Local Open Scope ordinal_scope.
     两个保留柱映射，再由既有给定三角形理论读取剩余边，得到实际相对复合柱与反向柱。
 
     只给定所列九份三／四维选择，无需完整Kan、选择唯一或选择函数保相等。
-    此处不证明选择独立，也不为有向柱自动注册等价实例；与生成链、一般π₂及
-    弱等价的比较保持独立。 *)
+    此处不证明选择独立，也不为有向柱自动注册等价实例；后续可选的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderComparison.TwoSphereClassCylinder}
+    {%[TwoSphereClassCylinder]%}% 用这些操作解释生成链。一般π₂及弱等价的比较
+    保持独立。 *)
 
 (** @lang both
 %\begin{center}

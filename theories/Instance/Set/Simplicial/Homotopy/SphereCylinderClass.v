@@ -30,9 +30,12 @@ Local Open Scope ordinal_scope.
     are used. No three-dimensional filling, selected multiplication or
     Group, coefficient classification, cancellation or full Kan is
     required. All original cylinder and prism data are retained. This
-    proves one direction of the general comparison; the reverse, general
-    Kan commutativity/π₂ identification and arbitrary-path base change
-    remain further work. *)
+    proves one direction of the general comparison. The later optional
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderComparison.TwoSphereClassCylinder}
+    {%[TwoSphereClassCylinder]%}% folds finite generated chains back into
+    actual relative cylinders under explicit reversal/composition choices.
+    General Kan commutativity/π₂ identification and arbitrary-path base
+    change remain further work. *)
 
 (** * 相对柱给出生成球面类相等
 
@@ -49,8 +52,11 @@ Local Open Scope ordinal_scope.
     比较，无须选择乘法。三个步骤给出 x 与 y 之间的生成类相等。
 
     只使用四维缺第一面及缺第二面选择，不要求三维填充、选定乘法或群、系数
-    分类、消去律或完整 Kan。原有柱及棱柱数据全部保留。这只证明一般比较的
-    一个方向；反向、一般 Kan 交换性／π₂ 识别及任意路径换基仍需后续工作。 *)
+    分类、消去律或完整 Kan。原有柱及棱柱数据全部保留。这证明一般比较的
+    一个方向；后续可选的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderComparison.TwoSphereClassCylinder}
+    {%[TwoSphereClassCylinder]%}% 用显式反转／复合选择将有限生成链折叠为实际
+    相对柱。一般 Kan 交换性／π₂ 识别及任意路径换基仍需后续工作。 *)
 
 (** The arrows denote generated class equalities, with actual tetrahedron
     witnesses at the first and last step and output comparison in between.

@@ -24,7 +24,11 @@ Local Open Scope ordinal_scope.
     cylinders and handling generated chains remain separate constructions.
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangle.SphereTriangleReverse}
     {%[SphereTriangleReverse]%}% next reads a reverse from an explicitly
-    supplied relative triangle extension; it does not yet construct one. *)
+    supplied relative triangle extension; it does not itself construct one.
+    The later
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderComparison.TwoSphereElementaryForwardCylinder}
+    {%[TwoSphereElementaryForwardCylinder]%}% corrects the direction using
+    an actual Kan extension before folding generated chains. *)
 
 (** * 一个初等四面体给出相对柱
 
@@ -38,7 +42,10 @@ Local Open Scope ordinal_scope.
     和单纯恒等式，无需 Kan 选择或系数分类。这只是单个初等步骤；一般柱的反转、
     复合及生成链处理仍是独立构造。接下来的
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangle.SphereTriangleReverse}
-    {%[SphereTriangleReverse]%}% 从显式给定的相对三角延拓读取反向柱，尚不构造延拓。 *)
+    {%[SphereTriangleReverse]%}% 从显式给定的相对三角延拓读取反向柱，本身不构造
+    延拓。后续
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderComparison.TwoSphereElementaryForwardCylinder}
+    {%[TwoSphereElementaryForwardCylinder]%}% 用实际Kan延拓校正方向，再折叠生成链。 *)
 
 (** The arrows indicate restrictions to the shared faces. The lower
     arrow shows the time direction of the glued cylinder. *)
