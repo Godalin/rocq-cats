@@ -2471,7 +2471,8 @@ the existing thin category `SubCat X`. It uses the original `HasInitial`
 interface through terminality in the opposite category. Import does not
 enable that choice globally. This is an initial object of the subobject
 category; initial objects of the ambient category and finite colimits remain
-later results, alongside joins, remaining internal logic and meaningful models.
+later results, alongside the remaining internal logic and meaningful models.
+The next section constructs predicate joins.
 
 [Topos.Bottom](../theories/Topos/Bottom.v) 在上下文 `1` 中对真值变量作全称
 量化，以 `∀Ω[Ω] π2` 定义 `Bottom : Hom 1 Ω`。谓词 `⊥Ω` 将同一全局箭头
@@ -2487,5 +2488,60 @@ later results, alongside joins, remaining internal logic and meaningful models.
 
 `SubCat_HasInitial X` 在已有薄范畴 `SubCat X` 中显式将最小子对象打包为
 始对象，经由反范畴中的终性复用原 `HasInitial` 接口，导入不全局启用该选择。
-这是子对象范畴的始对象；环境范畴的始对象及有限余极限，与并、其余内部逻辑
-和有意义模型仍属后续结果。
+这是子对象范畴的始对象；环境范畴的始对象及有限余极限，与其余内部逻辑
+和有意义模型仍属后续结果。下一节构造谓词并。
+
+## Disjunction as a least upper bound / 作为最小上界的析取
+
+[Topos.ImplicationLaws](../theories/Topos/ImplicationLaws.v) first extracts
+exchange `r ⊢Ω (s ⇒Ω t) ↔ s ⊢Ω (r ⇒Ω t)` from the existing conjunction
+adjunction and commutativity. Both directions retain actual factors.
+The truth-antecedent law `(truth ∘ !) ⇒Ω f ≈ f` follows from the same
+adjunction and conjunction's truth unit. These laws need named terminal,
+classifier, pullbacks, products and equalizers, without exponentials.
+
+[Topos.Disjunction](../theories/Topos/Disjunction.v) then defines the body
+`(((f ∘ π1) ⇒Ω π2) ∧Ω ((g ∘ π1) ⇒Ω π2)) ⇒Ω π2` in `X × Ω`.
+Quantifying its truth-value variable for the two projections gives one
+arrow `Disj : Hom (Ω × Ω) Ω`; `f ∨Ω g` applies it to `⟨f,g⟩`.
+It equals `∀Ω[Ω] (disjunction_body f g)` by the existing quantifier
+substitution law. These arrows, Proper instances and substitution laws need
+named terminal/classifier/products, exponentials relative to those same
+products, and equalizers; they do not need selected pullbacks.
+`∨Ω` is right associative at the existing implication level 46; `∧Ω` binds
+more tightly. Parenthesize mixed implication/disjunction formulas, as above.
+
+Adding named pullbacks, implication exchange gives the two introduction
+factors. Quantifier instantiation by a common upper bound `r` then gives
+`(f ∨Ω g) ⊢Ω r ↔ (f ⊢Ω r ∧ g ⊢Ω r)`. This is a correspondence of
+Type-valued factors; both directions are transparent. Monotonicity,
+commutativity, idempotence, associativity and the false-unit law follow from
+this least-upper-bound property. No native equality of predicates, factors
+or proof records is required. Actual Topos clients explicitly derive the
+equalizers from their inherited products/pullbacks, retaining the same
+terminal/classifier/product/exponential choices. No global model or chosen
+structure is registered. This supplies predicate joins; subobject unions
+and their categorical coproducts, ambient initial objects/finite colimits,
+existential quantifiers, further logic and meaningful models remain later
+bounded stages.
+
+[Topos.ImplicationLaws](../theories/Topos/ImplicationLaws.v) 首先由已有合取
+伴随与交换性抽出交换律 `r ⊢Ω (s ⇒Ω t) ↔ s ⊢Ω (r ⇒Ω t)`，两个方向均
+保留实际因子。真前件定律 `(truth ∘ !) ⇒Ω f ≈ f` 来自同一伴随及合取的
+真单位元。这些定律只需具名终对象、分类子、拉回、积及等化子，不要求指数。
+
+[Topos.Disjunction](../theories/Topos/Disjunction.v) 随后在 `X × Ω` 中定义
+公式体 `(((f ∘ π1) ⇒Ω π2) ∧Ω ((g ∘ π1) ⇒Ω π2)) ⇒Ω π2`。对两个投影的
+真值变量作全称量化，得到同一箭头 `Disj : Hom (Ω × Ω) Ω`；`f ∨Ω g` 将它
+作用于 `⟨f,g⟩`。既有量词代入律给出它与 `∀Ω[Ω] (disjunction_body f g)`
+相等。这些箭头、Proper 实例及代入律仅需具名终对象／分类子／积、绑定同一积
+的指数以及等化子，不要求选定拉回。`∨Ω` 在既有蕴含层级 46 右结合，`∧Ω`
+结合更紧；蕴含与析取混用时按上述公式加括号。
+
+另加具名拉回，蕴含交换给出两个引入因子。用共同上界 `r` 作全称实例化得到
+`(f ∨Ω g) ⊢Ω r ↔ (f ⊢Ω r ∧ g ⊢Ω r)`；此为 Type 值因子的对应，两个方向
+均透明。单调、交换、幂等、结合及假单位元律来自同一最小上界性质，不要求
+谓词、因子或证明记录的原生相等。实际 Topos 客户端显式从继承的积／拉回
+推导等化子，保持同一终对象／分类子／积／指数选择，不注册全局模型或选定
+结构。本批给出谓词并；子对象并及其范畴余积、环境始对象／有限余极限、存在
+量词、其余逻辑及有意义模型留待后续有界阶段。
