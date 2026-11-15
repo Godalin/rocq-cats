@@ -4025,3 +4025,54 @@ strength and the strong-promonad/Arrow/free constructions remain later work.
 只需两个单独的 coend；逆方块继承一般同构方块定理。右 Hom 单位仍需反范畴和
 指标／因子重排阶段；结合、相干、复合强度和强 promonad／Arrow／自由构造仍待
 后续工作。
+
+
+### Reversing end/coend indices without reversing values
+
+### 反转 end/coend 指标而保持值域
+
+[The index adapter](../theories/Cat/Functor/IndexReversal.v) exchanges the
+mixed-variance coordinates and views the index as its opposite, retaining the
+codomain. It reuses product projection/pairing and the double-opposite
+adapter; transformations retain their direction, components and computed
+inverses. It differs from `BifunctorOpF`, which reverses the codomain too.
+
+[指标适配](../theories/Cat/Functor/IndexReversal.v)交换混合变元坐标，将指标视作
+反范畴，同时保持值域。它复用积投影／配对及双重反范畴适配；自然变换保留方向、
+分量和计算得到的逆。这不同于也反转值域的 `BifunctorOpF`。
+
+[The end wrappers](../theories/Cat/End/IndexReversal.v) retain each wedge's
+apex and exact legs, reading its commuting equation in reverse. The existing
+universal end witness receives the backward or forward test-wedge wrapper;
+no new existence or uniqueness proof is required. `EndIndexOp` and
+`EndIndexUnop` explicitly retain the chosen apex and this same factorization
+function. Their mediator laws use the original mediator on the wrapped test
+wedge, without equating records or law witnesses.
+
+[End 包装](../theories/Cat/End/IndexReversal.v)保留各楔的顶点和原腿，反向读取其
+交换方程。原泛 end 见证接受反向或正向测试楔包装，不需要新的存在或唯一性证明。
+`EndIndexOp` 与 `EndIndexUnop` 显式保留选定顶点及同一分解函数。中介定律将
+原中介用于包装的测试楔，不等同记录或定律见证。
+
+[The coend wrappers](../theories/Cat/Coend/IndexReversal.v) read those same
+end witnesses in the opposite codomain, rebundling the stored wedge
+presentation rather than identifying the functor records. Both directions
+retain the supplied apex, injections and descent function. No second dual
+universal-property proof, global instance, choice or notation is introduced.
+The constructions impose no new object, Hom or value-size ordering. Existing
+co-Yoneda or generated setoid models still require their own actual bounds.
+
+[Coend 包装](../theories/Cat/Coend/IndexReversal.v)在反值域中读取同一 end 见证，
+重包装存储的楔表示而不等同函子记录。两个方向均保留给定顶点、注入及下降函数，
+不引入第二份对偶泛性质证明、全局实例、选择或记号。构造不增加对象、Hom 或值界
+的排序；已有 co-Yoneda 或生成广集模型仍须满足各自真实大小条件。
+
+This independently reusable prerequisite supports the planned right Hom unit:
+apply the covariant co-Yoneda theory on the opposite category, then explicitly
+reorient indices and exchange the value/Hom factors with their lift wrappers.
+That dependent unit, its natural comparisons and later associativity,
+coherence, composite strength and free constructions are not claimed here.
+
+这一独立可复用前置支持计划中的右 Hom 单位：在反范畴上应用协变 co-Yoneda，
+再显式重定向指标，并交换值／Hom 因子及其提升包装。这里不声称已交付该依赖
+单位、其自然比较或后续结合、相干、复合强度及自由构造。
