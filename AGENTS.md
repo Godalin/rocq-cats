@@ -171,7 +171,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   update checklists, link evidence, and note remaining work. Distinguish
   committed tests from temporary checks; close issues once acceptance criteria
   are met. Keep CI status out of issue comments.
-- Use the project opam switch `rocq-cats` with Rocq/Stdlib 9.2 and Dune 3.23.1:
+- Use the project opam switch `rocq-cats` with Rocq 9.3.0, Stdlib 9.2.0 and
+  Dune 3.23.1:
   `opam exec --switch=rocq-cats -- <command>`. Check tool resolution and versions
   before diagnosing failures. Do not change global shell settings or upgrade
   shared environments without explicit authorization.

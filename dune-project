@@ -25,7 +25,7 @@
  (synopsis "rocq-cats")
  (description "A Rocq package for category theory.")
  (depends
-  (rocq-prover
-   (>= 9.2))
+  (rocq-core
+   (>= 9.3))
   (rocq-stdlib
    (>= 9.2))))

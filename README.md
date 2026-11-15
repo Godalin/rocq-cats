@@ -248,16 +248,21 @@ objects from the topos structure remains a later theorem.
 
 ## Building
 
-Requires Rocq / Stdlib 9.2 or later and Dune 3.23 or later.
+Requires Rocq 9.3 or later, Stdlib 9.2 or later and Dune 3.23 or later.
 With these tools available, run `dune build @all @runtest @install`.
 
-Local development uses the `rocq-cats` opam switch with Rocq/Stdlib 9.2.0 and
-Dune 3.23.1. CI checks Rocq 9.2; Rocq 9.0 and 9.1 are no longer supported.
+Local development uses the `rocq-cats` opam switch with Rocq 9.3.0,
+Stdlib 9.2.0 and Dune 3.23.1. CI checks Rocq 9.3; Rocq 9.0–9.2 are no longer
+supported. [Stdlib 9.2.0 supports Rocq 9.3](https://github.com/rocq-prover/stdlib/releases/tag/V9.2.0);
+the two packages have independent release versions. Package bounds name
+`rocq-core` because the `rocq-prover` metapackage does not follow Rocq's version.
 After creating an OCaml switch (or selecting an existing one), install the
-project tools:
+project tools. The pin command also replaces an existing Rocq 9.2 pin;
+stop builds and language servers before updating a shared switch:
 
 ```sh
-opam install --switch=rocq-cats rocq-core.9.2.0 rocq-stdlib.9.2.0 dune.3.23.1
+opam pin add --switch=rocq-cats --no-action rocq-core 9.3.0
+opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1
 opam exec --switch=rocq-cats -- dune build @all @runtest @install
 ```
 
@@ -265,9 +270,13 @@ Run all project commands through this switch, without changing the global
 opam selection. For VS Code, point `vsrocq.path` at this switch's `vsrocqtop`
 and install a `vsrocq-language-server` matching the VsRocq extension version.
 
-项目要求 Rocq/Stdlib 9.2 起及 Dune 3.23 起。
-本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq/Stdlib 9.2.0 和
-Dune 3.23.1；CI 检查 Rocq 9.2，不再支持 Rocq 9.0、9.1。
+项目要求 Rocq 9.3 起、Stdlib 9.2 起及 Dune 3.23 起。
+本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq 9.3.0、Stdlib 9.2.0 和
+Dune 3.23.1；CI 检查 Rocq 9.3，不再支持 Rocq 9.0–9.2。
+[Stdlib 9.2.0 支持 Rocq 9.3](https://github.com/rocq-prover/stdlib/releases/tag/V9.2.0)，
+两包的发布版本相互独立；包依赖以 `rocq-core`
+表达 Rocq 版本下界，因为 `rocq-prover` 是不跟随该版本号的元包。
+上述 pin 命令也会替换已有 Rocq 9.2 固定；修改共享 switch 前先停止构建和语言服务器。
 所有项目命令均通过上述 switch 运行，无须更改全局 opam 选择。
 VS Code 的 `vsrocq.path` 应指向该 switch
 中的 `vsrocqtop`，并使用与 VsRocq 扩展版本匹配的 `vsrocq-language-server`。

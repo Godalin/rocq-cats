@@ -17,7 +17,7 @@ jobs:
         uses: rocq-community/docker-coq-action@v1
         with:
           opam_file: "rocq-cats.opam"
-          custom_image: "rocq/rocq-prover:9.2"
+          custom_image: "rocq/rocq-prover:9.3"
           export: "OPAMWITHTEST"
           before_install: |
             # The image pins an older Stdlib; use the package dependency bound.
