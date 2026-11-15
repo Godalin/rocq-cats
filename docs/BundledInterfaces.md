@@ -2868,3 +2868,106 @@ universe or choice migration.
 本批完成环境始对象及其严格性里程碑。有限余积／有限余极限、后续量词稳定性
 和有意义模型仍属后续工作。此前显式宇宙 breaking 记录不变；此可选构造不
 迁移旧 API、宇宙或选择。
+
+## Images and epimorphic factors / 像与满分解箭头
+
+[Cat.Image](../theories/Cat/Image.v) keeps the general candidate property
+`is_image f m` outside Topos. It retains the factor through the candidate
+monomorphism and its factor into every other containing subobject.
+`image_factor_epi` proves any supplied factor through this image
+epimorphic using only named equalizers, with no classifier or limits
+beyond equalizers. The following Topos construction is its actual client.
+
+[Topos.Image](../theories/Topos/Image.v) constructs the image of every
+ambient arrow `f : X → Y`. It uses named terminal, classifier, pullback,
+product and relative exponential choices, without an initial object,
+classical logic, epi splitting or choice. Each elementary Topos supplies
+these same inherited choices. This is a core prerequisite toward finite
+coproducts/colimits; those constructions are still separate work.
+
+The exponential `Ω ^ Y` parametrizes predicates on `Y` internally.
+`image_contains f` universally quantifies their evaluations on `f` over
+`X`. Its classified subobject `ImagePredicates f` is the family of
+containing predicates. `image_predicate f` then universally quantifies the
+evaluation of that family at a variable `y`. Thus it is their intersection.
+The existing forall truth criterion, substitution law and product swap
+show this intersection true on `f`. Quantification ranges over objects
+of the category, without testing only global points or adding a new
+power-object or existential-quantifier interface.
+
+Any containing predicate `q` has an existing `exponential_name q`.
+Its evaluation law shows that name factors through `ImagePredicates f`.
+Instantiating the intersection by this retained factor proves
+`image_predicate f ⊢Ω q`. Classifying the intersection gives `ToposImage f`;
+classification also supplies the actual arrow `topos_image_factor f`
+whose composite with the image inclusion is `f` in specified HomEq.
+
+`topos_image_universal f s` is the Type-valued correspondence between
+`ToposImage f ≲Sub s` and a factorization of `f` through `s`. It retains
+both factor maps. `topos_image_mediator` projects the minimality factor,
+and `topos_image_mediator_unique` gives its full uniqueness property by
+monicity. A monomorphism is equivalent to its own image. Equal arrows have
+images related by actual mutual factors, without native equality of the
+chosen internal predicate-family objects or their proof fields.
+
+`topos_image_is_image` assembles the general candidate property from the
+same factor and minimality maps. `topos_image_factor_epi` applies
+`Cat.Image.image_factor_epi` with equalizers from the existing
+product/pullback conversion. The general proof takes parallel arrows
+agreeing after this factor and uses their equalizer. The actual Topos
+client supplies `ProductPullbackEqualizer`; the general proof uses the
+existing `EqualizerMono`. The original arrow factors
+through the composite of that inclusion with the image inclusion. Image
+minimality then splits the equalizer inclusion, so its commutativity law
+gives equality of the original parallel arrows. No independently selected
+equalizer or epi section is assumed; the epimorphism law does not assert
+native equality of underlying arrows.
+
+All selected factors remain transparent; the equality and epimorphism
+proofs use the specified hom equality. The optional module adds no global
+instance, Proper registration, notation or changes to existing choices.
+This delivers least images and epi–mono factorization. It does not yet
+prove image pullback stability or regularity, construct finite coproducts
+or coequalizers, or deliver a meaningful model. Those remain open under
+#16, together with further quantifier stability.
+
+[Cat.Image](../theories/Cat/Image.v) 将一般候选性质 `is_image f m` 放在
+Topos 之外，保留经候选单态射的因子及进入任意其他包含子对象的因子。
+`image_factor_epi` 仅用具名等化子证明经此像的任意给定分解箭头为满态射，
+不要求分类子或其他极限；下面的 Topos 构造是它的实际客户端。
+
+[Topos.Image](../theories/Topos/Image.v) 构造每条环境箭头 `f : X → Y` 的像。
+仅使用具名终对象、分类子、拉回、积及相对指数选择，不要求始对象、经典逻辑、
+满态射分裂或选择；初等 Topos 已继承提供这些同一选择。这是通向有限余积／
+余极限的核心前置，尚不计这些余极限完成。
+
+指数 `Ω ^ Y` 内部参数化 `Y` 上的谓词。`image_contains f` 对谓词在 `f`
+上的求值沿 `X` 作全称量化，其分类子对象 `ImagePredicates f` 是包含谓词族。
+`image_predicate f` 再全称量化该族在可变 `y` 处的求值，因而是它们的交。
+既有全称为真判据、代入律及积交换证明此交在 `f` 上为真。量化范围是范畴
+中的对象，不只测试全局点，也不增加幂对象或存在量词接口。
+
+每个包含谓词 `q` 都有既有名称 `exponential_name q`；其求值律证明名称经
+`ImagePredicates f` 分解。用此保留的因子实例化交，得到
+`image_predicate f ⊢Ω q`。分类此交得到 `ToposImage f`，分类还给出实际
+箭头 `topos_image_factor f`，与像包含的复合按指定 HomEq 等于 `f`。
+
+`topos_image_universal f s` 是 `ToposImage f ≲Sub s` 与 `f` 经 `s` 分解
+之间的 Type 值对应，保留两个方向的因子映射。`topos_image_mediator`
+投影最小性因子，`topos_image_mediator_unique` 由单态性给出完整唯一性。
+单态射与自身的像等价；相等箭头的像由实际相互因子联系，不要求选定内部
+谓词族对象或其证明字段原生相等。
+
+`topos_image_is_image` 由同一分解因子与最小性映射组装一般候选性质。
+`topos_image_factor_epi` 将原积／拉回转换所得等化子交给
+`Cat.Image.image_factor_epi`。一般证明对因子后相等的平行箭头取等化子；
+Topos 实际客户端提供 `ProductPullbackEqualizer`，一般证明复用既有
+`EqualizerMono`。
+原箭头经等化子包含与像包含的复合分解，像的最小性随后分裂等化子包含，
+其交换律给出原平行箭头相等。不假定独立等化子选择或满态射截面；满性定律
+也不声称底层箭头原生相等。
+
+所有选定因子保持透明，相等及满性证明使用指定 Hom 相等。可选模块不增加
+全局实例、Proper 注册、记号或改变原有选择。本批交付最小像及满—单分解；
+像的拉回稳定性／正则性、有限余积／余等化子、有意义模型及进一步量词稳定性
+仍在 #16 中开放。
