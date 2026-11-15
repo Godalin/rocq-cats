@@ -3981,3 +3981,47 @@ constructions remain dependent stages; this module does not claim them.
 逆律使用指定相等。比较与输入自然变换及目标对象改变交换，只需对应两个端点
 的 coend。Hom 复合单位子、结合子及相干、复合强度和后续强 promonad／Arrow／
 自由构造仍为依赖阶段，本模块未声称完成这些构造。
+
+
+### The left Hom unit for profunctor composition
+
+### Profunctor 复合的左 Hom 单位
+
+[The left unit](../theories/Cat/Profunctor/LeftUnit.v) composes a profunctor
+from C to D with the raised Hom profunctor of D. Its actual composition
+kernel is naturally isomorphic to the covariant co-Yoneda kernel of the
+output fibre. The comparison retains the value and represented arrow,
+rewrapping lifts at their respective bounds and removing Hom's identity
+postcomposition in specified equality. It identifies no functor records.
+
+[左单位](../theories/Cat/Profunctor/LeftUnit.v)将从 C 到 D 的 profunctor 与
+D 的提升 Hom profunctor 复合。其实际复合核与输出单侧函子的协变 co-Yoneda
+核自然同构。比较保留值和所表示箭头，按各自大小界重新包装提升，并在指定相等
+下消去 Hom 的恒等后合成，不等同函子记录。
+
+The co-Yoneda mediator and uniqueness witness directly give the Hom kernel's
+universal evaluation cowedge. `ProfunctorLeftUnitComp` explicitly selects
+this composition on the original P values. Only D's Hom carrier and equality
+must fit the corresponding independent value bounds; no object-index bound,
+order between the value bounds or general setoid coend model is required.
+Import does not choose a model globally.
+
+co-Yoneda 中介及唯一性见证直接给出 Hom 核的泛求值余楔。
+`ProfunctorLeftUnitComp` 在原 P 值上显式选择此复合。只需 D 的 Hom 载体和相等
+分别容纳于独立的对应值界，不要求对象指标界、两个值界间的次序或一般广集
+coend 模型。导入不全局选择模型。
+
+For any independently supplied fixed-boundary coend, evaluation and identity
+insertion are transparent inverses on the whole coend. A supplied composition
+family assembles the natural unitor and its inverse. Evaluation also commutes
+with transformations of P; its fixed-boundary square needs only the two
+individual coends. The inverse square is inherited from the general
+isomorphism-square theorem. The right Hom unit still requires the opposite
+and index/factor reorientation stage; associativity, coherence, composite
+strength and the strong-promonad/Arrow/free constructions remain later work.
+
+对独立给定的固定边界 coend，求值与恒等插入是整个 coend 上的透明逆。给定复合
+族后，它们组成自然单位子及其逆。求值也与 P 的自然变换交换，其固定边界方块
+只需两个单独的 coend；逆方块继承一般同构方块定理。右 Hom 单位仍需反范畴和
+指标／因子重排阶段；结合、相干、复合强度和强 promonad／Arrow／自由构造仍待
+后续工作。
