@@ -2628,3 +2628,97 @@ Fail Definition bad_low_equality
   : FamS@{p u l d u} Y
   := LiftFamS B.
 End IndependentFiberLift.
+
+From Cats Require Import
+  DTT.Context.Comparison.
+
+(** The original and recovered type-and-term functors compare after raising
+    only their fibers. Fix the original type bases strictly above the common
+    fiber bounds, in both hom orders, with independent auxiliary law bounds. *)
+
+(** 原类型—项函子与恢复函子仅提升纤维后即可比较。在两种 Hom 次序下，
+    显式固定原类型基底严格高于共同纤维界，并保留独立辅助律上界。 *)
+
+Section RaisedFibersBelowTypes.
+Universes o h p a b c d e f l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < e.
+Constraint e < f.
+Constraint f < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ e f _ a b _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ f e _ b a _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition high_type_forward_fiber Γ
+  : (LiftFamS (Tm T Γ) : FamS@{e f l c d} (Ty T Γ)) →Fam
+      (LiftFamS (@DisplayTerms C (FamBaseF ∘F T)
+        (@ContextElements_HasDisplay C T HC) Γ)
+        : FamS@{e f l c d} (Ty T Γ))
+  := @ContextElementsFiberMap C T HC Γ.
+Definition low_type_forward_fiber Γ
+  : (LiftFamS (Tm U Γ) : FamS@{f e l d c} (Ty U Γ)) →Fam
+      (LiftFamS (@DisplayTerms D (FamBaseF ∘F U)
+        (@ContextElements_HasDisplay D U HU) Γ)
+        : FamS@{f e l d c} (Ty U Γ))
+  := @ContextElementsFiberMap D U HU Γ.
+Definition high_type_backward_fiber Γ
+  : (LiftFamS (@DisplayTerms C (FamBaseF ∘F T)
+        (@ContextElements_HasDisplay C T HC) Γ)
+        : FamS@{e f l c d} (Ty T Γ)) →Fam
+      (LiftFamS (Tm T Γ) : FamS@{e f l c d} (Ty T Γ))
+  := @ContextElementsFiberInvMap C T HC Γ.
+Definition low_type_backward_fiber Γ
+  : (LiftFamS (@DisplayTerms D (FamBaseF ∘F U)
+        (@ContextElements_HasDisplay D U HU) Γ)
+        : FamS@{f e l d c} (Ty U Γ)) →Fam
+      (LiftFamS (Tm U Γ) : FamS@{f e l d c} (Ty U Γ))
+  := @ContextElementsFiberInvMap D U HU Γ.
+Definition high_type_forward
+  : ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ e f _ c d _ _ _ _ _ _}) ∘F T)
+      ⇒ ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ e f _ c d _ _ _ _ _ _})
+        ∘F @DisplayTyTmF C (FamBaseF ∘F T)
+          (@ContextElements_HasDisplay C T HC))
+  := @ContextElementsTyTmN C T HC.
+Definition low_type_forward
+  : ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ f e _ d c _ _ _ _ _ _}) ∘F U)
+      ⇒ ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ f e _ d c _ _ _ _ _ _})
+        ∘F @DisplayTyTmF D (FamBaseF ∘F U)
+          (@ContextElements_HasDisplay D U HU))
+  := @ContextElementsTyTmN D U HU.
+Definition high_type_iso
+  : ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ e f _ c d _ _ _ _ _ _}) ∘F T)
+      ≅N ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ e f _ c d _ _ _ _ _ _})
+        ∘F @DisplayTyTmF C (FamBaseF ∘F T)
+          (@ContextElements_HasDisplay C T HC))
+  := @context_elements_ty_tm_iso C T HC.
+Definition low_type_iso
+  : ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ f e _ d c _ _ _ _ _ _}) ∘F U)
+      ≅N ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ f e _ d c _ _ _ _ _ _})
+        ∘F @DisplayTyTmF D (FamBaseF ∘F U)
+          (@ContextElements_HasDisplay D U HU))
+  := @context_elements_ty_tm_iso D U HU.
+Definition high_type_inverse
+  : ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ e f _ c d _ _ _ _ _ _})
+        ∘F @DisplayTyTmF C (FamBaseF ∘F T)
+          (@ContextElements_HasDisplay C T HC))
+      ⇒ ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ e f _ c d _ _ _ _ _ _}) ∘F T)
+  := @ContextElementsTyTmInvN C T HC.
+Definition low_type_inverse
+  : ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ f e _ d c _ _ _ _ _ _})
+        ∘F @DisplayTyTmF D (FamBaseF ∘F U)
+          (@ContextElements_HasDisplay D U HU))
+      ⇒ ((FamLiftF : Fct _ FamCat@{_ _ _ _ _ f e _ d c _ _ _ _ _ _}) ∘F U)
+  := @ContextElementsTyTmInvN D U HU.
+Definition high_type_fiber_iso Γ
+  : @is_iso (FamSCat (Ty T Γ)) _ _ (high_type_forward_fiber Γ)
+  := @context_elements_fiber_map_iso C T HC Γ.
+Definition low_type_fiber_iso Γ
+  : @is_iso (FamSCat (Ty U Γ)) _ _ (low_type_forward_fiber Γ)
+  := @context_elements_fiber_map_iso D U HU Γ.
+End RaisedFibersBelowTypes.

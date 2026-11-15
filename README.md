@@ -568,6 +568,11 @@ Monad–Applicative–Arrow 工作从
   term fibers through transparent maps and a lifted setoid isomorphism.
   给定上下文扩张即可构造规范元素解释；透明映射及提升广集同构比较恢复后的
   项纤维，并保持转换与替换。
+  [Context/Comparison](./theories/DTT/Context/Comparison.v) assembles these
+  maps into a natural isomorphism of the original and recovered type-and-term
+  functors after explicit fiber lifting, retaining the type base.
+  显式提升纤维后，以自然同构比较原类型—项函子与恢复函子，保留类型基底；
+  比较无需终上下文，完整 CwF 仍需独立的终上下文选择。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)
