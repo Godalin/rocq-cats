@@ -3934,3 +3934,50 @@ constructions remain separate subsequent stages.
 打包双函子；没有全局实例选择该族。显式广集存在模型保留原来中间范畴的大小
 界，双函子不宣称固定大小全广集自索引存在。结合子／单位子及其相干、复合
 强度、强 promonad–Arrow 比较及条件自由构造仍为后续独立阶段。
+
+
+### The co-Yoneda prerequisite for Hom composition units
+
+### Hom 复合单位的 co-Yoneda 前置
+
+[Co-Yoneda](../theories/Cat/Coend/Yoneda.v) treats any covariant setoid-valued
+functor. Its kernel pairs a covariant value with a raised contravariant Hom
+weight. Evaluation on the original value at the target is a universal
+cowedge: every balanced operation factors uniquely through its component at
+the identity. The proof uses the original cowedge equation and functor laws,
+with Type-valued uniqueness and the existing opposite-end coend interface.
+
+[Co-Yoneda](../theories/Cat/Coend/Yoneda.v)处理任意协变广集值函子。其核将协变值
+与提升的反变 Hom 权重配对。到目标处原值的求值是泛余楔：每个平衡操作通过其
+恒等处分量唯一分解。证明使用原余楔方程和函子律，以及 Type 值唯一性和已有
+反 end 的 coend 接口。
+
+`CoyonedaCoend` explicitly enables only this particular coend on that original
+value; import installs no chosen instance. Object indices need not fit the
+value bounds, and the carrier/equality bounds have no required ordering.
+The actual Hom carrier and equality levels must fit their respective value
+bounds independently. The kernel reads the supplied functor's operations
+and retains its independent auxiliary law bounds, reusing the original
+functor laws and Hom composition laws coordinatewise. This direct
+representable construction does not invoke
+the general setoid coend model, its index-size sufficient conditions, resizing
+or fixed-size full-setoid self-indexing.
+
+`CoyonedaCoend` 只在该原值上显式启用这一特殊 coend；导入不安装选定实例。
+对象指标不必容纳于值界，载体／相等值界间不要求大小次序。真实 Hom 载体和相等
+层级须分别容纳于对应值界。核读取给定函子的操作并保留其独立辅助定律界，按坐标
+复用原函子律及 Hom 复合律。这一直接可表构造不调用一般广集 coend 模型、其指标
+大小充分条件、resizing 或固定大小全广集自索引原则。
+
+With any independently supplied coend of the same kernel, the original
+coend mediator evaluates generators and identity insertion gives its inverse.
+Both complete inverse laws use specified equality. Comparisons commute with
+input natural transformations and changes of the target object, requiring
+only their two endpoint coends. Hom-composition unitors, associators and
+coherence, composite strength and the later strong-promonad/Arrow/free
+constructions remain dependent stages; this module does not claim them.
+
+对独立给定的同核 coend，原 coend 中介求值生成元，恒等插入给出其逆。两条完整
+逆律使用指定相等。比较与输入自然变换及目标对象改变交换，只需对应两个端点
+的 coend。Hom 复合单位子、结合子及相干、复合强度和后续强 promonad／Arrow／
+自由构造仍为依赖阶段，本模块未声称完成这些构造。
