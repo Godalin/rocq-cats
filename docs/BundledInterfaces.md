@@ -2065,3 +2065,46 @@ initial object. Those later results remain separate milestones of issue #16.
 本次抽取增加一个打包类，不增加模型，也不证明始对象、有限余极限或内部逻辑。
 特别地，基础 Topos 接口不要求良点性、选择、自然数对象或选定始对象；后续
 结果仍是 issue #16 的独立里程碑。
+
+## Characteristic arrows and pullback stability / 特征箭头与拉回稳定性
+
+[Cat.Subobject](../theories/Cat/Subobject.v) derives `pullback_mono` for a
+supplied square and packages its first projection as `PullbackMono`.
+`pullback_subobject` transports that square to an equivalent subobject
+representative through the existing `pullback_iso` construction. It retains
+the comparison factor and requires neither a classifier nor chosen
+pullbacks. The generic `pullback_congr` in
+[Cat.Pullback](../theories/Cat/Pullback.v) transports a square along specified
+arrow equalities while retaining its universal mediators.
+[Sub_fmap](../theories/Instance/Set/Subobject.v) now uses `PullbackMono`
+instead of proving monicity again; its domain and underlying arrow remain
+the chosen pullback and first projection by conversion.
+
+[Cat.Subobject](../theories/Cat/Subobject.v) 对给定方形证明 `pullback_mono`，
+并以 `PullbackMono` 将第一投影组合成单态射。`pullback_subobject` 通过已有
+`pullback_iso` 构造将方形传到等价子对象表示，保留比较因子；不要求分类子或
+选定拉回。[Cat.Pullback](../theories/Cat/Pullback.v) 中的通用
+`pullback_congr` 沿指定箭头相等传递方形，保留其泛中介。
+[Sub_fmap](../theories/Instance/Set/Subobject.v) 改用 `PullbackMono`，不再重复
+证明单态性；其定义域及底层箭头仍定义转换为选定拉回及第一投影。
+
+[Topos.Sub](../theories/Topos/Sub.v) adds characteristic-arrow laws under
+only named terminal/classifier choices. `classifier_char_proper` and its
+`char_proper` instance ignore changes to monicity witnesses when underlying
+arrows are equal. `classifier_char_subobject_eq` identifies equality of
+characteristic arrows with mutual factorization of subobjects, without
+identifying their domains or witness records. `classifier_char_pullback`
+classifies any supplied inverse-image square by precomposition, using the
+general pullback-pasting theorem. The truth subobject has characteristic
+identity; the largest subobject has the constantly true characteristic.
+No extra chosen pullbacks, CCC structure, well-pointedness, choice or NNO
+are assumptions of these laws. Initial objects, finite colimits, internal
+logic and models remain later milestones.
+
+[Topos.Sub](../theories/Topos/Sub.v) 仅在具名的终对象及分类子选择下增加特征
+箭头律。`classifier_char_proper` 及其 `char_proper` 实例在底层箭头相等时
+忽略单态性见证的差异。`classifier_char_subobject_eq` 将特征箭头相等刻画为
+子对象相互分解，不识别其定义域或见证记录。`classifier_char_pullback` 复用
+一般拉回粘合定理，以预合成分类任意给定的逆像方形。真子对象的特征箭头为
+恒等，最大子对象的特征箭头为恒真。这些律不假定额外选定拉回、CCC 结构、
+良点性、选择或 NNO。始对象、有限余极限、内部逻辑与模型仍属后续里程碑。

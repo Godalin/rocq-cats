@@ -2,7 +2,8 @@ From Cats Require Import
   Cat.Core
   Cat.Terminal
   Cat.Pullback
-  Cat.Morphism.
+  Cat.Morphism
+  Cat.Subobject.
 
 (** * Sub-object Classifier
 
@@ -110,3 +111,135 @@ Proof.
         exact Hk1. rewrite (term_η a). exact Hk2.
   - intros c Hc. apply Hunique. exists !. exact Hc.
 Qed.
+
+(** ** Characteristic Arrows and Inverse Images
+
+    Fix only a chosen terminal object and a subobject classifier. Their
+    universal properties suffice for equality and pullback laws; no chosen
+    pullbacks, products or additional ETCS axioms are needed. *)
+
+(** ** 特征箭头与逆像
+
+    仅固定选定终对象及子对象分类子。其泛性质足以给出相等与拉回律，
+    无须选定拉回、积或额外 ETCS 公理。 *)
+
+Section CharacteristicArrows.
+Context {C : Cat} `{HT : !HasTerminal C}
+    `{HSC : !HasSubObjClassifier C HT}.
+
+(** Equivalent representatives of a subobject have equal characteristic
+    arrows in the specified hom-set equality. *)
+
+(** 同一子对象的等价表示具有按指定 Hom 相等相等的特征箭头。 *)
+
+Theorem classifier_char_subobject_proper {Y} (i j : Sub Y)
+    (H : i ~Sub j)
+  : χ (sub_mono _ i) ≈ χ (sub_mono _ j).
+Proof.
+  destruct (classifier_char_unique (m := sub_mono _ i)) as [Hi _].
+  destruct (classifier_char_unique (m := sub_mono _ j)) as [_ Hj].
+  destruct (pullback_subobject Hi H) as [a HP].
+  apply Hj.
+  exact (pullback_congr (reflexivity _) (reflexivity _)
+    (reflexivity _) (term_η a) HP).
+Qed.
+
+(** Changing a monomorphism or its monicity witness within the specified
+    arrow equality leaves its characteristic arrow equal. *)
+
+(** 按指定箭头相等改变单态射或其单态性见证，特征箭头仍相等。 *)
+
+Theorem classifier_char_proper {X Y} (m n : X ↣ Y) (H : m ≈ n)
+  : χ m ≈ χ n.
+Proof.
+  apply (classifier_char_subobject_proper
+    {|sub := X
+    ; sub_mono := m
+    |}
+    {|sub := X
+    ; sub_mono := n
+    |}).
+  split; exists id; simpl; rewrite comp_id_r; [exact H | symmetry; exact H].
+Qed.
+
+(** Register respectfulness for rewriting characteristic arrows along
+    equality of the underlying monomorphisms. *)
+
+(** 注册保相等性，使特征箭头可沿底层单态射相等重写。 *)
+
+Global Instance char_proper {X Y}
+  : Proper ((λ (m n : X ↣ Y), m ≈ n) ==> @HomEq[Y, Ω]) char.
+Proof. intros m n H. exact (classifier_char_proper m n H). Qed.
+
+(** Equal characteristic arrows also give mutual factorizations, so they
+    detect exactly the specified subobject equivalence. *)
+
+(** 相等的特征箭头也给出相互分解，因此恰好检测指定的子对象等价。 *)
+
+Theorem classifier_char_subobject_eq {Y} (i j : Sub Y)
+  : i ~Sub j ↔ χ (sub_mono _ i) ≈ χ (sub_mono _ j).
+Proof.
+  split; [apply classifier_char_subobject_proper | intros H].
+  destruct (classifier_char_unique (m := sub_mono _ i)) as [Hi _].
+  destruct (classifier_char_unique (m := sub_mono _ j)) as [Hj _].
+  split.
+  - assert (Hcone : χ (sub_mono _ j) ∘ i ≈ truth ∘ !).
+    { rewrite <- H. exact (fst Hi). }
+    destruct (snd Hj i i ! Hcone) as [h [[Hh _] _]].
+    exists h. symmetry. exact Hh.
+  - assert (Hcone : χ (sub_mono _ i) ∘ j ≈ truth ∘ !).
+    { rewrite H. exact (fst Hj). }
+    destruct (snd Hi j j ! Hcone) as [h [[Hh _] _]].
+    exists h. symmetry. exact Hh.
+Defined.
+
+(** A pullback of a classified monomorphism is classified by precomposition.
+    The square may be supplied without globally choosing pullbacks. *)
+
+(** 分类单态射的拉回由预合成分类；可直接提供方形，无须全局选择拉回。 *)
+
+Theorem classifier_char_pullback {X Y M P : @Ob C}
+    (f : Hom X Y) (m : M ↣ Y) (n : P ↣ X) (a : Hom P M)
+    (HP : is_pullback f m P n a)
+  : χ n ≈ χ m ∘ f.
+Proof.
+  destruct (classifier_char_unique (m := m)) as [Hm _].
+  destruct (classifier_char_unique (m := n)) as [_ Hn].
+  symmetry. apply Hn.
+  exact (pullback_congr (reflexivity _) (reflexivity _)
+    (reflexivity _) (term_η (! ∘ a))
+    (pullback_comp Hm HP)).
+Qed.
+
+(** The truth subobject is classified by the identity on truth values. *)
+
+(** 真子对象由真值对象上的恒等箭头分类。 *)
+
+Theorem classifier_char_truth
+  : χ (Mono_term truth) ≈ id.
+Proof.
+  destruct (classifier_char_unique (m := Mono_term truth)) as [_ Hu].
+  symmetry. apply Hu.
+  exact (pullback_congr (reflexivity _) (reflexivity _)
+    (reflexivity _) (term_η id) pullback_id).
+Qed.
+
+(** The largest subobject has the constantly true characteristic arrow. *)
+
+(** 最大子对象具有恒真的特征箭头。 *)
+
+Theorem classifier_char_top {Y : @Ob C}
+  : χ (Mono_id : Y ↣ Y) ≈ truth ∘ !.
+Proof.
+  destruct (classifier_char_unique (m := (Mono_id : Y ↣ Y)))
+    as [_ Hu].
+  symmetry. apply Hu. split.
+  - rewrite comp_id_r. reflexivity.
+  - intros Q q1 q2 Hq. exists q1. split.
+    + split.
+      * apply comp_id_l.
+      * rewrite (term_η (! ∘ q1)), (term_η q2). reflexivity.
+    + intros h [Hh _]. rewrite comp_id_l in Hh. exact Hh.
+Qed.
+
+End CharacteristicArrows.
