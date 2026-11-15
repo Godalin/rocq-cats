@@ -469,6 +469,10 @@ Monad–Applicative–Arrow 工作从
   [FamCat](./theories/Instance/Set/Fam/Cat.v) assembles coherent families and
   transport-compatible maps into a category, with base and total-space
   functors to `SetCat` and their natural projection.
+  [FamLift](./theories/Instance/Set/Fam/Lift.v) raises fiber carriers and
+  equality witnesses independently, preserving the base and coherent transport.
+  族纤维提升独立提高载体及相等见证的层级，保留基底和相干运输；基底函子以
+  透明恒等分量的自然同构比较。
   [FamFixed](./theories/Instance/Set/Fam/Fixed.v) gives the category `FamSCat X`
   of families over a fixed base and fiberwise maps `A →Fam B`.
   [FamSlice](./theories/Instance/Set/Fam/Slice.v) constructs total-space and

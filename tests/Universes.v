@@ -2541,3 +2541,90 @@ Definition high_eq_context_inverse_substitution
 Definition low_eq_context_inverse_substitution
   := @context_elements_term_inv_sub D U HU.
 End ContextElementInverseLevels.
+
+From Cats Require Import
+  Instance.Set.Fam.Lift.
+
+(** Fiber lifting retains independent base, fiber and raised levels in both
+    orders. Its source map bound can also exceed the target carrier bound;
+    the explicit wrappers reject downward carrier or equality resizing. *)
+
+(** 纤维提升在两种次序下保留独立的基底、纤维和目标层级；来源映射上界也可
+    严格高于目标载体界，显式包装拒绝载体或相等的向下降界。 *)
+
+Section IndependentFiberLift.
+Universes u p a b c d l o.
+Constraint Set < u.
+Constraint u < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (X : SetC@{u p}) (Y : SetC@{p u})
+    (A : FamS@{u p l a b} X) (B : FamS@{p u l b a} Y)
+    (U V : FamC@{u p l a b}) (W Z : FamC@{p u l b a}).
+Definition high_eq_fiber_lift
+  : FamS@{u p l c d} X
+  := LiftFamS A.
+Definition low_eq_fiber_lift
+  : FamS@{p u l d c} Y
+  := LiftFamS B.
+Definition high_eq_family_lift
+  : FamC@{u p l c d}
+  := LiftFamC U.
+Definition low_eq_family_lift
+  : FamC@{p u l d c}
+  := LiftFamC W.
+Definition high_eq_family_map (f : FamF U V)
+  : FamF (LiftFamC U : FamC@{u p l c d})
+      (LiftFamC V : FamC@{u p l c d})
+  := lift_fam_map f.
+Definition low_eq_family_map (f : FamF W Z)
+  : FamF (LiftFamC W : FamC@{p u l d c})
+      (LiftFamC Z : FamC@{p u l d c})
+  := lift_fam_map f.
+Definition high_eq_family_functor
+  : Fct FamCat@{o l l o l u p l a b l l l l l l}
+      FamCat@{o l l o l u p l c d l l l l l l}
+  := FamLiftF.
+Definition low_eq_family_functor
+  : Fct FamCat@{o l l o l p u l b a l l l l l l}
+      FamCat@{o l l o l p u l d c l l l l l l}
+  := FamLiftF.
+Definition high_eq_base_comparison
+  : (FamBaseF ∘F high_eq_family_functor) ⇒ FamBaseF
+  := FamLiftBaseN.
+Definition low_eq_base_comparison
+  : (FamBaseF ∘F low_eq_family_functor) ⇒ FamBaseF
+  := FamLiftBaseN.
+Definition high_eq_base_iso
+  : (FamBaseF ∘F high_eq_family_functor) ≅N FamBaseF
+  := fam_lift_base_iso.
+Definition low_eq_base_iso
+  : (FamBaseF ∘F low_eq_family_functor) ≅N FamBaseF
+  := fam_lift_base_iso.
+Definition high_aux_family_map
+    (f : FamF@{_ _ _ _ _ _ _ _ l _ _ _ _ _} U V)
+  : FamF (LiftFamC U : FamC@{u p l c d})
+      (LiftFamC V : FamC@{u p l c d})
+  := lift_fam_map f.
+Definition low_aux_family_map
+    (f : FamF@{_ _ _ _ _ _ _ _ l _ _ _ _ _} W Z)
+  : FamF (LiftFamC W : FamC@{p u l d c})
+      (LiftFamC Z : FamC@{p u l d c})
+  := lift_fam_map f.
+Fail Definition bad_high_carrier
+  : FamS@{u p l u d} X
+  := LiftFamS A.
+Fail Definition bad_high_equality
+  : FamS@{u p l c p} X
+  := LiftFamS A.
+Fail Definition bad_low_carrier
+  : FamS@{p u l p c} Y
+  := LiftFamS B.
+Fail Definition bad_low_equality
+  : FamS@{p u l d u} Y
+  := LiftFamS B.
+End IndependentFiberLift.
