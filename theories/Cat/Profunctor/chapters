@@ -11,3 +11,4 @@ RightUnit.v
 Iterated.v
 Associator.v
 Coherence.v
+Monoidal.v

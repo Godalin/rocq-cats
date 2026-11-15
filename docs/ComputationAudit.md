@@ -4128,3 +4128,53 @@ stages; these units alone do not assert a monoidal profunctor category.
 两个 Hom 单位现已分别在各自真实大小界和给定选择下提供。结合、三角形／五边形
 相干、复合强度和 strong-promonad／Arrow／自由构造仍为独立阶段；仅有这些单位
 不声称已给出幺半 profunctor 范畴。
+
+
+### Endoprofunctor composition as a monoidal category
+
+### 自 Profunctor 复合作为幺半范畴
+
+[The monoidal assembly](../theories/Cat/Profunctor/Monoidal.v) uses the existing
+composition bifunctor with its usual order: the left factor follows the right
+factor, while generated pairs retain execution order. Fix a uniform family of
+chosen kernel coends. The tensor uses those same choices, and its associator
+is the inverse of the previously constructed ordered reassociation.
+
+[幺半装配](../theories/Cat/Profunctor/Monoidal.v)使用已有复合双函子及其通常次序：
+左因子在右因子之后作用，生成对仍保持执行次序。固定统一选定核 coend 族后，
+张量使用同一批选择，其结合子为已有有序重结合的逆。
+
+The inverse input square supplies natural associativity. The accepted
+pentagon is reversed by the general `iso_pentagon_inv`; the existing
+composition-map properness laws compare its whiskered inverses with the native
+inverse input maps. The Hom units retain their original identity-insertion
+inverses. Moving the old associator across the accepted triangle gives the
+triangle for the inverse associator. `BifunctorMonoidal` supplies interchange
+and the remaining separate naturality, without re-proving coend universality.
+
+逆输入方块给出自然结合性。一般 `iso_pentagon_inv` 反转已验收的五边形，已有
+复合映射保相等律比较其须化逆与原生逆输入映射。Hom 单位保留原恒等插入逆；
+将原结合子移过已验收三角形，得到逆结合子的三角形。`BifunctorMonoidal` 提供
+交换律及其余分别自然性，不重复证明 coend 泛性质。
+
+Associativity and its pentagon need no Hom-unit bounds. Full assembly requires
+the base Hom carrier and equality to fit the corresponding independent value
+bounds. It adds no object-index bound or ordering between those value bounds.
+Uniform composition existence is still explicit input; importing the module
+does not select a global model or assert fixed-size full-setoid self-indexed
+coends. The reconstructed tensor map agrees with the supplied composition map
+by natural equality, and identity components give their tensor-functor
+comparison. No equality of functor records or law witnesses is required.
+
+结合性及其五边形不需要 Hom 单位大小界。完整装配要求基 Hom 载体与相等分别
+容纳于对应独立值界，不增加对象指标界或两个值界间的次序。统一复合存在性仍为
+显式输入；导入不选择全局模型，也不声称固定大小全广集自索引 coend。重建张量
+映射在自然相等下等于给定复合映射，恒等分量给出张量函子比较；不要求函子记录
+或定律见证相等。
+
+This packages ordinary endoprofunctor composition. Composite strength, its
+coherent compatibility, the strong-promonad/Arrow characterization and
+conditional free constructions remain separate stages.
+
+这里打包的是普通自 Profunctor 复合。复合强度及其相干相容、强 promonad／Arrow
+刻画和有充分条件的自由构造仍为独立阶段。
