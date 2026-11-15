@@ -21,7 +21,11 @@ Local Open Scope ordinal_scope.
     {%[TwoSphereHomotopyCylinder]%}% has direction y to x; its direction
     cannot be silently reversed without supplying
     further data. Generated chains, general π₂ and weak-equivalence
-    comparison remain separate work. *)
+    comparison remain separate work. The
+    %\coqref{Cats.Instance.Set.Simplicial.HornAttachment.HornAttachmentExtension}
+    {%[HornAttachmentExtension]%}% constructs an actual extension across
+    one supplied attachment square; the product's attachment geometry
+    still has to be exhibited. *)
 
 (** * 球面柱的相对三角延拓
 
@@ -32,7 +36,10 @@ Local Open Scope ordinal_scope.
     此处尚不从 Kan 选择构造这些延拓。尤其先前的
     %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereElementaryCylinder.TwoSphereHomotopyCylinder}
     {%[TwoSphereHomotopyCylinder]%}% 方向为 y 到 x，不能在没有额外数据时
-    悄然反转；生成链、一般 π₂ 及弱等价比较仍是独立工作。 *)
+    悄然反转；生成链、一般 π₂ 及弱等价比较仍是独立工作。
+    %\coqref{Cats.Instance.Set.Simplicial.HornAttachment.HornAttachmentExtension}
+    {%[HornAttachmentExtension]%}% 跨一个给定附着方形实际构造延拓；仍须给出
+    该积的具体附着几何。 *)
 
 (** ** Fixing All Spatial Boundary Simplices
 
