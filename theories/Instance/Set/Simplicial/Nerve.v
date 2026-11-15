@@ -72,8 +72,8 @@ A \arrow[ur,"{f}"] \arrow[rr,"{h \approx g\circ f}"'] && D
     groupoid, this comparison can also identify paths that one might have
     wanted to keep distinct; see the groupoid analysis later in this module.
 
-    The later %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
-    {%[VertexNerve]%}% uses
+    The later %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VtxNerve}
+    {%[VtxNerve]%}% uses
     an additional label setoid and prescribed coherent transports. Its
     vertices compare using that specified label equality. Both constructions
     use the same chain picture, but they answer different equality questions.
@@ -87,8 +87,8 @@ A \arrow[ur,"{f}"] \arrow[rr,"{h \approx g\circ f}"'] && D
     比较。在群胚里，这种比较还可能识别原本想区分的路径；本章后面的群胚分析
     会具体说明这一点。
 
-    后面的 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VertexNerve}
-    {%[VertexNerve]%}% 另外使用
+    后面的 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Core.VtxNerve}
+    {%[VtxNerve]%}% 另外使用
     标签广集及指定的相干运输，顶点按指定的标签相等比较。两种构造使用同样的
     箭头链图像，却回答不同的相等问题。阅读重构定理前，先看顶点与边的描述，
     就能明确第二种 nerve 究竟保留了哪些信息。 *)

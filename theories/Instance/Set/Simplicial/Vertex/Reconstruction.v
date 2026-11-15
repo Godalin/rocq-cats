@@ -24,8 +24,8 @@ Local Open Scope nat_scope.
     零维选取对象映射，一维提供箭头；通过自然性和指定对象运输对齐其端点。
     三角形恢复复合。所有见证保持透明，无需群胚或对象原生相等假设。 *)
 
-(** This reverses the construction %\coqref{Cats.Instance.Set.Simplicial.Vertex.Functor.VertexNerveN}
-    {%[VertexNerveN]%}% on maps: instead
+(** This reverses the construction %\coqref{Cats.Instance.Set.Simplicial.Vertex.Functor.VtxNerveN}
+    {%[VtxNerveN]%}% on maps: instead
     of starting with a functor, start with a simplicial map [α] between two
     vertex nerves. Its degree-zero part chooses images of objects; its
     degree-one part chooses images of arrows. The naturality square
@@ -35,8 +35,8 @@ Local Open Scope nat_scope.
     composition preservation. The remaining proof work keeps these
     statements coherent with the specified label transports. *)
 
-(** 这里反过来恢复 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Functor.VertexNerveN}
-    {%[VertexNerveN]%}% 的输入：从两个顶点 nerve 之间的单纯映射
+(** 这里反过来恢复 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Functor.VtxNerveN}
+    {%[VtxNerveN]%}% 的输入：从两个顶点 nerve 之间的单纯映射
     [α] 出发，零维部分选择对象的像，一维部分选择箭头的像。自然性方块
     %\coqref{Cats.Instance.Set.Simplicial.Core.simplex restrict natural}
     {%[simplex_restrict_natural]%}% 对齐端点；退化边保证保持恒等，nerve 的复合
@@ -77,8 +77,8 @@ Defined.
 
 (** 将像边的端点调整到零维选取的对象。 *)
 
-Definition nerve_map_arrow {A B : X} (f : (@Hom (VertexCat T)) A B)
-  : (@Hom (VertexCat U)) (nerve_map_ob_resp A) (nerve_map_ob_resp B)
+Definition nerve_map_arrow {A B : X} (f : (@Hom (VtxCat T)) A B)
+  : (@Hom (VtxCat U)) (nerve_map_ob_resp A) (nerve_map_ob_resp B)
   := let e := △₁[T; A; B] f in
     U⟦nerve_map_vertex e fin_first;
       fmap (lower (α 1 e)) (ordinal_step fin_first);
@@ -88,7 +88,7 @@ Definition nerve_map_arrow {A B : X} (f : (@Hom (VertexCat T)) A B)
 
 (** 归一化边在 nerve 中等于原来的像。 *)
 
-Lemma nerve_map_edge {A B : X} (f : (@Hom (VertexCat T)) A B)
+Lemma nerve_map_edge {A B : X} (f : (@Hom (VtxCat T)) A B)
   : △₁[U; nerve_map_ob_resp A; nerve_map_ob_resp B] (nerve_map_arrow f) ≈S
       α 1 (△₁[T; A; B] f).
 Proof.
@@ -107,7 +107,7 @@ Defined.
 
 Lemma nerve_map_arrow_square {A B A' B' : X}
     (a : A ≈S A') (b : B ≈S B')
-    (f : (@Hom (VertexCat T)) A B) (g : (@Hom (VertexCat T)) A' B')
+    (f : (@Hom (VtxCat T)) A B) (g : (@Hom (VtxCat T)) A' B')
     (H : T⟦b⟧Ob ∘ f ≈ g ∘ T⟦a⟧Ob)
   : U⟦@func_proper _ _ nerve_map_ob_resp B B' b⟧Ob ∘ nerve_map_arrow f ≈
       nerve_map_arrow g ∘ U⟦@func_proper _ _ nerve_map_ob_resp A A' a⟧Ob.
@@ -136,8 +136,8 @@ Defined.
 (** 平行相等箭头具有相等的归一化像。 *)
 
 Global Instance nerve_map_arrow_proper {A B : X}
-  : Proper (@HomEq (VertexCat T) A B ==>
-      @HomEq (VertexCat U) (nerve_map_ob_resp A) (nerve_map_ob_resp B))
+  : Proper (@HomEq (VtxCat T) A B ==>
+      @HomEq (VtxCat U) (nerve_map_ob_resp A) (nerve_map_ob_resp B))
       (@nerve_map_arrow A B).
 Proof.
   intros f g H.
@@ -179,7 +179,7 @@ Defined.
 (** 退化边给出恒等律。 *)
 
 Lemma nerve_map_arrow_id (A : X)
-  : nerve_map_arrow (@Cats.Cat.Core.id (VertexCat T) A) ≈ id.
+  : nerve_map_arrow (@Cats.Cat.Core.id (VtxCat T) A) ≈ id.
 Proof.
   pose (x := △₀[T] A).
   transitivity (U⟦nerve_map_vertex x fin_first;
@@ -219,7 +219,7 @@ Defined.
 (** 任意两条箭头构成的三角形提供全局函子律。 *)
 
 Lemma nerve_map_arrow_comp {A B E : X}
-    (f : (@Hom (VertexCat T)) A B) (g : (@Hom (VertexCat T)) B E)
+    (f : (@Hom (VtxCat T)) A B) (g : (@Hom (VtxCat T)) B E)
   : nerve_map_arrow (g ∘ f) ≈ nerve_map_arrow g ∘ nerve_map_arrow f.
 Proof.
   pose (x := ⟨⟦⟨f, g⟩Ch⟧Ch⟩ᵥ :
@@ -259,7 +259,7 @@ Defined.
 (** 重构的普通函子不依赖群胚结构。 *)
 
 Program Definition NerveMapF
-  : Fct (VertexCat T) (VertexCat U)
+  : Fct (VtxCat T) (VtxCat U)
   :=
   {|F0 := nerve_map_ob_resp
   ; F1 A B f := nerve_map_arrow f
@@ -272,7 +272,7 @@ Next Obligation. exact (nerve_map_arrow_comp g f). Defined.
 
 (** 将重构函子、对象保相等性及指定运输律捆绑起来。 *)
 
-Program Definition VertexNerveInvF
+Program Definition VtxNerveInvF
   : T →ᵥ U
   :=
   {|vertex_functor := NerveMapF
@@ -285,7 +285,7 @@ Next Obligation. exact (nerve_map_transport p). Defined.
 (** 重构单纯映射后，在每个维度恢复其作用。 *)
 
 Lemma vertex_nerve_β
-  : VertexNerveN VertexNerveInvF ≈N α.
+  : VtxNerveN VtxNerveInvF ≈N α.
 Proof.
   intros n x. refine {|lower := _
                     |}.
@@ -307,7 +307,7 @@ Global Instance vertex_nerve_inv_proper@{u p +}
     {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
   : Proper (NatEq ==> VtxFctEq)
-      (@VertexNerveInvF _ _ _ _ T U :
+      (@VtxNerveInvF _ _ _ _ T U :
         ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)) → _).
 Proof.
   intros α β H.
@@ -338,7 +338,7 @@ Program Definition vertex_nerve_inv_resp@{u p +}
   : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(U)) →r
       VtxFctS T U
   :=
-  {|func := VertexNerveInvF
+  {|func := VtxNerveInvF
   |}.
 
 (** Reconstructing the nerve of a vertex functor recovers it up to its
@@ -349,14 +349,14 @@ Program Definition vertex_nerve_inv_resp@{u p +}
 Lemma vertex_nerve_η@{u p +} {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : VtxFctEq
-      (VertexNerveInvF (VertexNerveN F :
+      (VtxNerveInvF (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))) F.
 Proof.
   exists (λ A, reflexivity (F A : Y)). intros A B f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r.
-  change (U⟦nerve_map_vertex (VertexNerveN F) (△₁[T; A; B] f) fin_first;
+  change (U⟦nerve_map_vertex (VtxNerveN F) (△₁[T; A; B] f) fin_first;
       fmap F (fmap (lower (△₁[T; A; B] f)) (ordinal_step fin_first));
-      nerve_map_vertex (VertexNerveN F) (△₁[T; A; B] f)
+      nerve_map_vertex (VtxNerveN F) (△₁[T; A; B] f)
         (fin_next fin_first)⟧Ar ≈ fmap F f).
   etransitivity; [apply vertex_rebase_id |].
   exact (@functor_fmap_proper _ _ F _ _ _ _ (edge_simplex_arrow f)).

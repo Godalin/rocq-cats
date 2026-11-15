@@ -34,13 +34,13 @@ Next Obligation. exact tt. Defined.
 
 Definition TerminalObjectsF
   : Fct (EqGpd UnitS@{Set Set}) (CodiscreteCat@{Set Set Set Set} unit)
-  := VertexTerminalObjF@{Set Set Set Set Set Set Set Set}.
+  := VtxTerminalObjF@{Set Set Set Set Set Set Set Set}.
 
 Program Definition EndpointVertexF (b : bool)
   : TerminalObjectsF →ᵥ ArrowObjectsF
   :=
-  {|vertex_functor := ConstF (VertexCat TerminalObjectsF)
-      (C := VertexCat ArrowObjectsF) b
+  {|vertex_functor := ConstF (VtxCat TerminalObjectsF)
+      (C := VtxCat ArrowObjectsF) b
   |}.
 Next Obligation. intros x y p. reflexivity. Defined.
 Next Obligation. exact tt. Defined.
@@ -62,9 +62,9 @@ Definition TerminalNerve
 
 Definition ArrowHomotopy
   : SimplicialHomotopy
-      (VertexNerveN (EndpointVertexF false) : TerminalNerve ⇒ ArrowNerve)
-      (VertexNerveN (EndpointVertexF true))
-  := VertexNerveHomotopy ArrowTransformation.
+      (VtxNerveN (EndpointVertexF false) : TerminalNerve ⇒ ArrowNerve)
+      (VtxNerveN (EndpointVertexF true))
+  := VtxNerveHomotopy ArrowTransformation.
 
 (** A constant input edge and the generic time edge evaluate the stored
     witness, including its two distinct endpoint labels. *)
@@ -73,7 +73,7 @@ Definition ArrowHomotopy
 
 Definition terminal_edge
   : TerminalNerve 1
-  := ⟨ConstF [Ord 1] (C := VertexCat TerminalObjectsF) tt⟩ᵥ.
+  := ⟨ConstF [Ord 1] (C := VtxCat TerminalObjectsF) tt⟩ᵥ.
 
 Definition prism_edge
   : ArrowNerve 1
@@ -116,8 +116,8 @@ Proof. reflexivity. Qed.
 (** 这两个映射具有同伦，同时仍保留不相等的顶点像。 *)
 
 Example nerve_endpoints_remain_distinct
-  : ¬ ((VertexNerveN (EndpointVertexF false) : TerminalNerve ⇒ ArrowNerve)
-      ≈N VertexNerveN (EndpointVertexF true)).
+  : ¬ ((VtxNerveN (EndpointVertexF false) : TerminalNerve ⇒ ArrowNerve)
+      ≈N VtxNerveN (EndpointVertexF true)).
 Proof.
   intros H.
   pose proof (fst (vertex_nerve_zero_eq_iff _ _)
@@ -139,7 +139,7 @@ Definition BooleanObjectsF
 
 Definition BooleanIdentityF
   : BooleanObjectsF →ᵥ BooleanObjectsF
-  := VertexIdF BooleanObjectsF.
+  := VtxIdF BooleanObjectsF.
 
 Program Definition BooleanLoopTransformation
   : BooleanIdentityF ⇒ BooleanIdentityF
@@ -154,13 +154,13 @@ Definition BooleanVertexNerve
 
 Definition BooleanLoopHomotopy
   : SimplicialHomotopy
-      (VertexNerveN BooleanIdentityF : BooleanVertexNerve ⇒ BooleanVertexNerve)
-      (VertexNerveN BooleanIdentityF)
-  := VertexNerveHomotopy BooleanLoopTransformation.
+      (VtxNerveN BooleanIdentityF : BooleanVertexNerve ⇒ BooleanVertexNerve)
+      (VtxNerveN BooleanIdentityF)
+  := VtxNerveHomotopy BooleanLoopTransformation.
 
 Definition boolean_constant_edge
   : BooleanVertexNerve 1
-  := ⟨ConstF [Ord 1] (C := VertexCat BooleanObjectsF) tt⟩ᵥ.
+  := ⟨ConstF [Ord 1] (C := VtxCat BooleanObjectsF) tt⟩ᵥ.
 
 Example nonidentity_component_is_retained
   : fmap (lower (homotopy_map BooleanLoopHomotopy 1
@@ -170,12 +170,12 @@ Proof. reflexivity. Qed.
 
 Example identity_component_is_constant
   : fmap (lower (homotopy_map
-      (VertexNerveHomotopy (F := BooleanIdentityF)
+      (VtxNerveHomotopy (F := BooleanIdentityF)
         (idN : BooleanIdentityF ⇒ BooleanIdentityF) :
           SimplicialHomotopy
-            (VertexNerveN BooleanIdentityF :
+            (VtxNerveN BooleanIdentityF :
               BooleanVertexNerve ⇒ BooleanVertexNerve)
-            (VertexNerveN BooleanIdentityF)) 1
+            (VtxNerveN BooleanIdentityF)) 1
       (boolean_constant_edge, simplex_generic 1)))
       (ordinal_step fin_first) = false.
 Proof. reflexivity. Qed.

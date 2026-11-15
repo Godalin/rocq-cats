@@ -287,8 +287,8 @@ Proof. reflexivity. Qed.
 
 Example vertex_nerve_monoid_inverse_computes
   : lower (((monoid_vertex_iso (M := BoolS)).2 1%nat).1
-      (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
-                                  |})) fin_first = true.
+      (BoolVtxComparison 1%nat {|lower := bool_nerve_loop
+                               |})) fin_first = true.
 Proof. reflexivity. Qed.
 
 (** Reconstruction computes on a nonidentity boolean loop, through the
@@ -297,9 +297,9 @@ Proof. reflexivity. Qed.
 (** 重构在非恒等布尔环路上穿过一般逆的自然性见证及端点运输进行计算。 *)
 
 Example vertex_functor_reconstruction_computes
-  : fmap (VertexNerveInvF
-      (idN : BoolVertexNerve ⇒ BoolVertexNerve))
-      (true : (@Hom (VertexCat (MonoidObjF BoolS))) tt tt) = true.
+  : fmap (VtxNerveInvF
+      (idN : BoolVtxNerve ⇒ BoolVtxNerve))
+      (true : (@Hom (VtxCat (MonoidObjF BoolS))) tt tt) = true.
 Proof. reflexivity. Qed.
 
 (** The chosen spine inverse reconstructs the original arrow by interval
@@ -311,8 +311,8 @@ Example vertex_spine_inverse_computes
   : let e := vertex_spine_iso
       (MonoidObjF BoolS (HM := BoolS_Monoid)) 1%nat in
     fmap (lower (e.2.1 (e.1
-      (BoolVertexComparison 1%nat {|lower := bool_nerve_loop
-                                  |})))) (ordinal_step fin_first) = true.
+      (BoolVtxComparison 1%nat {|lower := bool_nerve_loop
+                               |})))) (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.
 
 Module LocalHornComputation.
@@ -326,8 +326,8 @@ Definition T
   := MonoidObjF BoolS (HM := BoolS_Monoid).
 
 Local Instance chosen_groupoid
-  : VertexCat T ⦂ Gpd
-  := VertexCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid).
+  : VtxCat T ⦂ Gpd
+  := VtxCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid).
 
 Example local_horn2_dual_computes
   : fmap (lower ((fill₂[T; tt; tt; tt; fin_next (fin_next fin_first)] :
@@ -379,7 +379,7 @@ Example actual_outer_horn2_filler_computes
     let x := (△₂[T; tt; tt; tt] : _ →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat) (true, true) in
     let HF := vertex_groupoid_horn2_HasFillers T
-      (HC := VertexCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid)) fin_first in
+      (HC := VtxCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid)) fin_first in
     fmap (lower (@horn_fill _ _ _ HF (x↾Λ[Nᵥ(T); 2%nat; fin_first])).1)
       (ordinal_step (fin_next fin_first)) = true.
 Proof. reflexivity. Qed.
@@ -406,12 +406,12 @@ Proof. reflexivity. Qed.
 (** 一般边界下降穿过筛隶属、选定标签及端点运输后，仍保留非平凡箭头的计算。 *)
 
 Example vertex_boundary_filler_computes
-  : let x := BoolVertexComparison 3%nat
+  : let x := BoolVtxComparison 3%nat
       {|lower := (true ∷S false ∷S true ∷S []S : BoolS ^S 3%nat)
       |} in
-    fmap (lower (@coskeletal_fill_resp BoolVertexNerve 2%nat
-      BoolVertexNerve_IsCoskeletal 0%nat
-      (x↾∂[BoolVertexNerve; 3%nat]))) (ordinal_step fin_first) = true.
+    fmap (lower (@coskeletal_fill_resp BoolVtxNerve 2%nat
+      BoolVtxNerve_IsCoskeletal 0%nat
+      (x↾∂[BoolVtxNerve; 3%nat]))) (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.
 
 From Cats Require Import

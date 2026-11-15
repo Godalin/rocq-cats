@@ -12,8 +12,8 @@ From Cats Require Export Graph.Core.
     其相容闭包生成。 *)
 
 Inductive Path (G : Graph)
-  : @Vertex G → @Vertex G → Type
-  :=| path_id (x : @Vertex G) : Path G x x
+  : @Vtx G → @Vtx G → Type
+  :=| path_id (x : @Vtx G) : Path G x x
     | path_edge {x y} : Edge x y → Path G x y
     | path_comp {x y z} : Path G y z → Path G x y → Path G x z.
 
@@ -51,7 +51,7 @@ Infix "≈P" := PathEq (at level 50, no associativity) : graph_scope.
 
 (** [PathEq] 是等价关系。 *)
 
-Global Instance PathEq_Equivalence {G : Graph} {x y : @Vertex G}
+Global Instance PathEq_Equivalence {G : Graph} {x y : @Vtx G}
   : Equivalence (@PathEq G x y).
 Proof.
   split.
@@ -64,7 +64,7 @@ Defined.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance path_edge_proper {G : Graph} {x y : @Vertex G}
+Global Instance path_edge_proper {G : Graph} {x y : @Vtx G}
   : Proper (carrier_equiv (@EdgeSet G x y) ==> PathEq) (@path_edge G x y).
 Proof. intros e f H. exact (path_edge_equiv H). Defined.
 
@@ -72,7 +72,7 @@ Proof. intros e f H. exact (path_edge_equiv H). Defined.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance path_comp_proper {G : Graph} {x y z : @Vertex G}
+Global Instance path_comp_proper {G : Graph} {x y z : @Vtx G}
   : Proper (PathEq ==> PathEq ==> PathEq) (@path_comp G x y z).
 Proof. intros g g' H f f' K. exact (path_comp_equiv H K). Defined.
 
@@ -80,7 +80,7 @@ Proof. intros g g' H f f' K. exact (path_comp_equiv H K). Defined.
 
 (** 固定端点间的路径及其生成相等组成的广集。 *)
 
-Program Definition PathS (G : Graph) (x y : @Vertex G)
+Program Definition PathS (G : Graph) (x y : @Vtx G)
   : SetC
   :=
   {|carrier := Path G x y

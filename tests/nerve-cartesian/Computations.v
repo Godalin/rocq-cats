@@ -19,16 +19,16 @@ Local Open Scope nat_scope.
 
 Definition SmallPresentations
   : Cat
-  := VertexPresentationCat@{Set Set Set Set Set Set Set Set
+  := VtxPresentationCat@{Set Set Set Set Set Set Set Set
       _ _ _ _ _ _ _ _ _ _}.
 
 Definition SmallProducts
   : HasProduct SmallPresentations
-  := VertexPresentationCat_HasProduct.
+  := VtxPresentationCat_HasProduct.
 
 Definition SmallTerminal
   : HasTerminal SmallPresentations
-  := VertexPresentationCat_HasTerminal.
+  := VtxPresentationCat_HasTerminal.
 
 Definition SmallPointwiseProducts
   : HasProduct (FctCat (Δ^op) SetCat@{Set Set _ _ _ _ _})
@@ -41,7 +41,7 @@ Definition SmallPointwiseProducts
 Definition SmallNerve
   : @CartFct SmallPresentations
       (FctCat (Δ^op) SetCat@{Set Set _ _ _ _ _}) SmallTerminal SmallProducts
-  := VertexNerveCartesianF.
+  := VtxNerveCartF.
 
 (** The original full-faithfulness interface remains usable by coercion. *)
 
@@ -52,8 +52,8 @@ Example cartesian_full_faithfulness
 Proof. exact vertex_nerve_fully_faithful. Qed.
 
 Definition BooleanPresentation
-  : VertexPresentation@{Set Set Set Set Set Set Set Set}
-  := VertexPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
+  : VtxPresentation@{Set Set Set Set Set Set Set Set}
+  := VtxPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
 
 (** The actual source product mediator retains both nonidentity arrows. *)
 
@@ -64,7 +64,7 @@ Example chosen_pair_computes
     fmap (@pair SmallPresentations SmallProducts P P P
       (@Cats.Cat.Core.id SmallPresentations P)
       (@Cats.Cat.Core.id SmallPresentations P))
-      (true : (@Hom (VertexCat P)) tt tt) = (true, true).
+      (true : (@Hom (VtxCat P)) tt tt) = (true, true).
 Proof. reflexivity. Qed.
 
 (** Applying the bundled nerve to the mediator preserves its two edges. *)

@@ -24,7 +24,7 @@ Local Open Scope nat_scope.
     {%[outer_horn2_groupoid_iff]%}% separate
     these phenomena in dimension two.
 
-    This chapter assumes [IsGroupoid (VertexCat T)] and constructs fillers
+    This chapter assumes [IsGroupoid (VtxCat T)] and constructs fillers
     in every positive dimension, not just for the drawn triangles. Its
     higher-dimensional proof uses the overlap machinery from %\coqref{Cats.Instance.Set.Simplicial.Matching}
     {%[Matching]%}%
@@ -41,7 +41,7 @@ Local Open Scope nat_scope.
     {%[outer_horn2_groupoid_iff]%}% 在二维分别刻画
     这两种现象。
 
-    本章假设 [IsGroupoid (VertexCat T)]，构造所有正维的填充，而不只处理
+    本章假设 [IsGroupoid (VtxCat T)]，构造所有正维的填充，而不只处理
     图上的三角形。高维证明使用 %\coqref{Cats.Instance.Set.Simplicial.Matching}
     {%[Matching]%}% 的交叠机制及前面的星形构造。
     这些属于进阶依赖；结论没有声称任意范畴的 nerve 或任意单纯集合都有 Kan
@@ -50,7 +50,7 @@ Local Open Scope nat_scope.
 Section HigherHorns.
 Universes u p.
 Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
-    `{HC : !IsGroupoid (VertexCat T)}
+    `{HC : !IsGroupoid (VtxCat T)}
     (n : nat) (i : Ordinal (S (S n)))
     (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i).
 
@@ -119,7 +119,7 @@ Defined.
 (** 到一个顶点的腿先将共同中心运输到该图表，再沿图表中的径向过渡行进。 *)
 
 Definition horn_leg (a : Ordinal (S (S n)))
-  : (@Hom (VertexCat T)) (horn_label i) (horn_label a)
+  : (@Hom (VtxCat T)) (horn_label i) (horn_label a)
   := ρ[lower (face[i; (horn_chart a).1; fst (horn_chart a).2] h);
         (horn_chart_centre (horn_chart a).1 (fst (horn_chart a).2)).1;
         (horn_chart_vertex a).1] ∘
@@ -160,10 +160,10 @@ Proof.
   pose (q := ρ[lower (face[i; j; Hj] h); (horn_chart_centre j Hj).1; b]).
   transitivity ((q ∘ T⟦e⟧Ob) ∘ T⟦s⟧Ob).
   - transitivity ((T⟦horn_label_face j Hj b⟧Ob ∘ r) ∘ T⟦s⟧Ob).
-    + symmetry. exact (@comp_assoc (VertexCat T) _ _ _ _ _ _ _).
+    + symmetry. exact (@comp_assoc (VtxCat T) _ _ _ _ _ _ _).
     + apply comp_proper; [exact K | reflexivity].
   - transitivity (q ∘ (T⟦e⟧Ob ∘ T⟦s⟧Ob)).
-    + exact (@comp_assoc (VertexCat T) _ _ _ _ _ _ _).
+    + exact (@comp_assoc (VtxCat T) _ _ _ _ _ _ _).
     + apply comp_proper; [reflexivity |].
       symmetry. exact (vertex_transport_comp T s e t).
 Defined.
@@ -174,7 +174,7 @@ Defined.
 
 Definition HornStarSimplex
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n))
-  := ⟨@StarF (VertexCat T) HC [Ord (S (S n))] (horn_label i) horn_label horn_leg⟩ᵥ.
+  := ⟨@StarF (VtxCat T) HC [Ord (S (S n))] (horn_label i) horn_label horn_leg⟩ᵥ.
 
 (** Every retained face of the star recovers the given chart. *)
 
@@ -231,7 +231,7 @@ Proof.
   pose (Hj := fst (horn_chart a).2).
   pose (c := (horn_chart_centre j Hj).1).
   pose (b := (horn_chart_vertex a).1).
-  assert (E : VertexDiagramEq T (lower (face[i; j; Hj] h))
+  assert (E : VtxDiagramEq T (lower (face[i; j; Hj] h))
       (lower x ∘F δ[S n; j])).
   { symmetry. exact (lower (fst (horn_filler_faces_iff _ _) Hx j Hj)). }
   assert (K : ∀ (s : (lower (face[i; j; Hj] h) c : X) ≈S
@@ -261,10 +261,10 @@ Proof.
   pose (q := ρ[lower x; i; a]).
   transitivity ((q ∘ T⟦s⟧Ob) ∘ T⟦p⟧Ob).
   - transitivity ((T⟦horn_label_filler x Hx a⟧Ob ∘ r) ∘ T⟦p⟧Ob).
-    + symmetry. exact (@comp_assoc (VertexCat T) _ _ _ _ _ _ _).
+    + symmetry. exact (@comp_assoc (VtxCat T) _ _ _ _ _ _ _).
     + apply comp_proper; [exact K | reflexivity].
   - transitivity (q ∘ (T⟦s⟧Ob ∘ T⟦p⟧Ob)).
-    + exact (@comp_assoc (VertexCat T) _ _ _ _ _ _ _).
+    + exact (@comp_assoc (VtxCat T) _ _ _ _ _ _ _).
     + apply comp_proper; [reflexivity |].
       symmetry. exact (vertex_transport_comp T p s e).
 Defined.
@@ -338,7 +338,7 @@ Proof.
     + destruct (Hj eq_refl).
 Defined.
 
-Context `{HC : !IsGroupoid (VertexCat T)}.
+Context `{HC : !IsGroupoid (VtxCat T)}.
 
 (** The common star supplies chosen fillers uniformly in all dimensions
     at least two. No uniqueness of the choice is stored. *)
@@ -380,7 +380,7 @@ End KanFilling.
 Definition vertex_kan_groupoid_iff@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ↔
-      VertexCat T ⦂ Gpd.
+      VtxCat T ⦂ Gpd.
 Proof.
   split.
   - intros H. exact (@vertex_kan_IsGroupoid _ _ T H).

@@ -38,12 +38,12 @@ Local Obligation Tactic := intros.
     两个固定函子为端点的自然变换。 *)
 
 (** The product comparison
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
-    {%[VertexNerveProductN]%}% and the ordinal comparison
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVertexNerveN}
-    {%[OrdinalVertexNerveN]%}% turn the cylinder map into a map between nerves.
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Reconstruction.VertexNerveInvF}
-    {%[VertexNerveInvF]%}% then recovers a functor K on the product with [1].
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VtxNerveProductN}
+    {%[VtxNerveProductN]%}% and the ordinal comparison
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVtxNerveN}
+    {%[OrdinalVtxNerveN]%}% turn the cylinder map into a map between nerves.
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Reconstruction.VtxNerveInvF}
+    {%[VtxNerveInvF]%}% then recovers a functor K on the product with [1].
     Its boundary labels need only equal the requested labels in the specified
     setoid equality. Write their transport witnesses as p and q. The square
     below explains the correction: its top arrow is the recovered component,
@@ -51,12 +51,12 @@ Local Obligation Tactic := intros.
     transport. Only the vertical transports must be invertible. *)
 
 (** 积比较
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VertexNerveProductN}
-    {%[VertexNerveProductN]%}% 与序数比较
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVertexNerveN}
-    {%[OrdinalVertexNerveN]%}% 把柱映射变成 nerve 之间的映射，再由
-    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Reconstruction.VertexNerveInvF}
-    {%[VertexNerveInvF]%}% 恢复与 [1] 的积上的函子 K。其边界标签只须按指定广集
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Product.VtxNerveProductN}
+    {%[VtxNerveProductN]%}% 与序数比较
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVtxNerveN}
+    {%[OrdinalVtxNerveN]%}% 把柱映射变成 nerve 之间的映射，再由
+    %\coqref{Cats.Instance.Set.Simplicial.Vertex.Reconstruction.VtxNerveInvF}
+    {%[VtxNerveInvF]%}% 恢复与 [1] 的积上的函子 K。其边界标签只须按指定广集
     相等对应于所需标签。将相应的运输见证记为 p、q，下图解释如何校正：上边是
     恢复的分量，沿另外三边并使用 q 的运输的逆就能得到它。只有竖直运输需要
     可逆。 *)
@@ -103,22 +103,22 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** 拆分两个坐标，并将序数的 nerve 与 [Δ[1]] 对应。 *)
 
-Definition VertexNerveCylinderN
-  : (Nᵥ(VertexProductObjF T (OrdinalObjF 1)) :
+Definition VtxNerveCylinderN
+  : (Nᵥ(VtxProductObjF T (OrdinalObjF 1)) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ SimplicialCylinderF Nᵥ(T)
   := @PointwiseProductN _ _ SetCat_HasProduct _ _ _ _
-      idN (OrdinalVertexNerveN 1) ∘Nv
-      VertexNerveProductN T (OrdinalObjF 1).
+      idN (OrdinalVtxNerveN 1) ∘Nv
+      VtxNerveProductN T (OrdinalObjF 1).
 
 (** Repackage the ordinary product category with its original labels. *)
 
 (** 用原标签重新包装普通积范畴。 *)
 
-Definition VertexIntervalProductF
-  : Fct (VertexCat T ×C [Ord 1])
-      (VertexCat (VertexProductObjF T (OrdinalObjF 1)))
+Definition VtxIntervalProductF
+  : Fct (VtxCat T ×C [Ord 1])
+      (VtxCat (VtxProductObjF T (OrdinalObjF 1)))
   := InducedProductInvF X (FinS@{Set Set Set} 2) T (OrdinalObjF 1)
-      ∘F (IdF ×F OrdinalVertexInvF 1).
+      ∘F (IdF ×F OrdinalVtxInvF 1).
 
 End CylinderComparison.
 
@@ -141,26 +141,26 @@ Context {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U}
     (H : SimplicialHomotopy
-      (VertexNerveN F :
+      (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-      (VertexNerveN G)).
+      (VtxNerveN G)).
 
 (** View the cylinder map as a map out of the product presentation's nerve. *)
 
 (** 将柱映射看作从积呈现的 nerve 出发的映射。 *)
 
 Definition nerve_homotopy_product_map
-  : (Nᵥ(VertexProductObjF T (OrdinalObjF 1)) :
+  : (Nᵥ(VtxProductObjF T (OrdinalObjF 1)) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U)
-  := homotopy_map H ∘Nv VertexNerveCylinderN T.
+  := homotopy_map H ∘Nv VtxNerveCylinderN T.
 
 (** Recover the ordinary categorical prism by the existing nerve inverse. *)
 
 (** 通过已有 nerve 逆构造恢复普通范畴棱柱。 *)
 
 Definition NerveHomotopyPrismF
-  : Fct (VertexCat T ×C [Ord 1]) (VertexCat U)
-  := VertexNerveInvF nerve_homotopy_product_map ∘F VertexIntervalProductF T.
+  : Fct (VtxCat T ×C [Ord 1]) (VtxCat U)
+  := VtxNerveInvF nerve_homotopy_product_map ∘F VtxIntervalProductF T.
 
 (** Restricting the recovered prism gives the original cylinder map in
     every degree, using specified labelled-diagram equality. *)
@@ -168,11 +168,11 @@ Definition NerveHomotopyPrismF
 (** 在每个维度限制恢复的棱柱，按指定带标签图式相等得到原柱映射。 *)
 
 Lemma nerve_homotopy_prism_β {n : nat}
-    (P : Fct [Ord n] (VertexCat T)) (θ : Fct [Ord n] [Ord 1])
-  : VertexDiagramEq U (NerveHomotopyPrismF ∘F PairF P θ)
+    (P : Fct [Ord n] (VtxCat T)) (θ : Fct [Ord n] [Ord 1])
+  : VtxDiagramEq U (NerveHomotopyPrismF ∘F PairF P θ)
       (lower (homotopy_map H n (⟨P⟩ᵥ, {|lower := θ|}))).
 Proof.
-  pose (Q := VertexIntervalProductF T ∘F PairF P θ).
+  pose (Q := VtxIntervalProductF T ∘F PairF P θ).
   transitivity (lower (nerve_homotopy_product_map n ⟨Q⟩ᵥ)).
   - exact (lower (vertex_nerve_β nerve_homotopy_product_map n ⟨Q⟩ᵥ)).
   - apply (λ e, lower e).
@@ -195,8 +195,8 @@ Defined.
 (** 在常值时间，原端点方程把重构边界与选定端点函子在任意图式上的作用对应。 *)
 
 Definition nerve_homotopy_boundary {n : nat}
-    (P : Fct [Ord n] (VertexCat T)) (b : bool)
-  : VertexDiagramEq U
+    (P : Fct [Ord n] (VtxCat T)) (b : bool)
+  : VtxDiagramEq U
       (NerveHomotopyPrismF ∘F
         PairF P (ConstF [Ord n] (C := [Ord 1])
           (simplex_interval_position b)))
@@ -214,7 +214,7 @@ Defined.
 
 (** 时间位置选取边界标签，不使用原生相等识别不同的源或目标对象。 *)
 
-Definition nerve_homotopy_label (z : @Ob (VertexCat T ×C [Ord 1]))
+Definition nerve_homotopy_label (z : @Ob (VtxCat T ×C [Ord 1]))
   : Y
   := if ordinal_interval_side (snd z) then G (fst z) else F (fst z).
 
@@ -222,14 +222,14 @@ Definition nerve_homotopy_label (z : @Ob (VertexCat T ×C [Ord 1]))
 
 (** 端点比较恰提供重标记所需的运输。 *)
 
-Definition nerve_homotopy_label_eq (z : @Ob (VertexCat T ×C [Ord 1]))
+Definition nerve_homotopy_label_eq (z : @Ob (VtxCat T ×C [Ord 1]))
   : nerve_homotopy_label z ≈S NerveHomotopyPrismF z.
 Proof.
   destruct z as [x [[] | [[] | []]]].
   - symmetry. exact ((nerve_homotopy_boundary
-      (ConstF [Ord 0] (C := VertexCat T) x) false).1 fin_first).
+      (ConstF [Ord 0] (C := VtxCat T) x) false).1 fin_first).
   - symmetry. exact ((nerve_homotopy_boundary
-      (ConstF [Ord 0] (C := VertexCat T) x) true).1 fin_first).
+      (ConstF [Ord 0] (C := VtxCat T) x) true).1 fin_first).
 Defined.
 
 (** Relabel by the specified endpoint transports, retaining the full prism. *)
@@ -237,8 +237,8 @@ Defined.
 (** 沿指定端点运输重标记，保留整个棱柱。 *)
 
 Definition NerveHomotopyAlignedF
-  : Fct (VertexCat T ×C [Ord 1]) (VertexCat U)
-  := VertexRelabelF U NerveHomotopyPrismF
+  : Fct (VtxCat T ×C [Ord 1]) (VtxCat U)
+  := VtxRelabelF U NerveHomotopyPrismF
       nerve_homotopy_label nerve_homotopy_label_eq.
 
 (** Endpoint equations identify arrows after any parallel specified endpoint
@@ -249,10 +249,10 @@ Definition NerveHomotopyAlignedF
     见证无关性保证不依赖其中具体的端点证明。 *)
 
 Lemma nerve_homotopy_boundary_arrow (t : bool) {x y : X}
-    (f : (@Hom (VertexCat T)) x y)
-    (a : ((if t then (G : Fct (VertexCat T) (VertexCat U)) else F) x : Y) ≈S
+    (f : (@Hom (VtxCat T)) x y)
+    (a : ((if t then (G : Fct (VtxCat T) (VtxCat U)) else F) x : Y) ≈S
       NerveHomotopyPrismF (x, simplex_interval_position t))
-    (b : ((if t then (G : Fct (VertexCat T) (VertexCat U)) else F) y : Y) ≈S
+    (b : ((if t then (G : Fct (VtxCat T) (VtxCat U)) else F) y : Y) ≈S
       NerveHomotopyPrismF (y, simplex_interval_position t))
   : U⟦a; fmap NerveHomotopyPrismF
       (X := (x, simplex_interval_position t))
@@ -270,11 +270,11 @@ Proof.
     + symmetry. apply edge_simplex_arrow.
     + exact tt.
   - transitivity (U⟦reflexivity
-      ((if t then (G : Fct (VertexCat T) (VertexCat U)) else F) x : Y);
+      ((if t then (G : Fct (VtxCat T) (VtxCat U)) else F) x : Y);
       fmap (if t then G else F)
         (fmap (lower e) (ordinal_step fin_first));
       reflexivity
-        ((if t then (G : Fct (VertexCat T) (VertexCat U)) else F) y : Y)⟧Ar).
+        ((if t then (G : Fct (VtxCat T) (VtxCat U)) else F) y : Y)⟧Ar).
     + exact (vertex_rebase_eq U a b _ _ (E.1 fin_first)
         (E.1 (fin_next fin_first)) _ _ (E.2 _ _ (ordinal_step fin_first))).
     + etransitivity; [apply vertex_rebase_id |].
@@ -287,7 +287,7 @@ Defined.
 (** 对齐后的边界箭头是原函子的箭头；其边界对象映射已计算为 [F]、[G] 的映射。 *)
 
 Lemma nerve_homotopy_aligned_0 {x y : X}
-    (f : (@Hom (VertexCat T)) x y)
+    (f : (@Hom (VtxCat T)) x y)
   : fmap (π1F NerveHomotopyAlignedF fin_first) f ≈ fmap F f.
 Proof.
   exact (nerve_homotopy_boundary_arrow false f
@@ -300,7 +300,7 @@ Defined.
 (** 对齐后的终止边界具有 [G] 的箭头映射。 *)
 
 Lemma nerve_homotopy_aligned_1 {x y : X}
-    (f : (@Hom (VertexCat T)) x y)
+    (f : (@Hom (VtxCat T)) x y)
   : fmap (π1F NerveHomotopyAlignedF (fin_next fin_first)) f ≈ fmap G f.
 Proof.
   exact (nerve_homotopy_boundary_arrow true f
@@ -314,7 +314,7 @@ Defined.
 (** 复用通用棱柱提取，读出对齐后的时间边。边界箭头方程给出对原 [F]、[G]
     的自然性。 *)
 
-Program Definition VertexNerveInvHomotopyN
+Program Definition VtxNerveInvHomotopyN
   : F ⇒ G
   :=
   {|nt x := PrismTransformationN NerveHomotopyAlignedF x
@@ -355,7 +355,7 @@ Defined.
 (** 恢复的自然变换与两个恒等边界比较组成通用棱柱延拓所需的交换方形。 *)
 
 Lemma nerve_homotopy_boundary_square
-  : (NerveHomotopyBoundaryN true ∘Nv VertexNerveInvHomotopyN) ≈N
+  : (NerveHomotopyBoundaryN true ∘Nv VtxNerveInvHomotopyN) ≈N
       (PrismTransformationN NerveHomotopyAlignedF ∘Nv
         NerveHomotopyBoundaryN false).
 Proof.
@@ -370,8 +370,8 @@ Defined.
 (** 复用指定边界的唯一范畴棱柱比较。 *)
 
 Definition NerveHomotopyComparisonN
-  : NaturalPrismF VertexNerveInvHomotopyN ⇒ NerveHomotopyAlignedF
-  := PrismComparisonN NerveHomotopyAlignedF VertexNerveInvHomotopyN
+  : NaturalPrismF VtxNerveInvHomotopyN ⇒ NerveHomotopyAlignedF
+  := PrismComparisonN NerveHomotopyAlignedF VtxNerveInvHomotopyN
       (NerveHomotopyBoundaryN false) (NerveHomotopyBoundaryN true)
       nerve_homotopy_boundary_square.
 
@@ -381,10 +381,10 @@ Definition NerveHomotopyComparisonN
 (** 通用比较是指定顶点比较：两个时间位置上的分量都是恒等，即自反运输。 *)
 
 Definition nerve_homotopy_comparison
-  : VertexDiagramEq U (NaturalPrismF VertexNerveInvHomotopyN)
+  : VtxDiagramEq U (NaturalPrismF VtxNerveInvHomotopyN)
       NerveHomotopyAlignedF.
 Proof.
-  assert (e : ∀ z, (NaturalPrismF VertexNerveInvHomotopyN z : Y) ≈S
+  assert (e : ∀ z, (NaturalPrismF VtxNerveInvHomotopyN z : Y) ≈S
     NerveHomotopyAlignedF z).
   { intros [x [[] | [[] | []]]]; reflexivity. }
   apply (vertex_diagram_comparison U e NerveHomotopyComparisonN).
@@ -397,7 +397,7 @@ Defined.
 (** 提取后重建恢复整个柱映射：比较每个单形与时间单形，而非仅比较顶点时间边。 *)
 
 Lemma vertex_nerve_homotopy_β
-  : HomotopyEq (VertexNerveHomotopy VertexNerveInvHomotopyN) H.
+  : HomotopyEq (VtxNerveHomotopy VtxNerveInvHomotopyN) H.
 Proof.
   intros n [[P] [θ]]. refine {|lower := _
                              |}.
@@ -425,16 +425,16 @@ Lemma vertex_nerve_homotopy_faithful@{u p +}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α β : F ⇒ G)
     (E : HomotopyEq
-      (VertexNerveHomotopy α : SimplicialHomotopy
-        (VertexNerveN F :
+      (VtxNerveHomotopy α : SimplicialHomotopy
+        (VtxNerveN F :
           (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-        (VertexNerveN G)) (VertexNerveHomotopy β))
+        (VtxNerveN G)) (VtxNerveHomotopy β))
   : α ≈N β.
 Proof.
   intros x.
-  pose (z := (⟨ConstF [Ord 1] (C := VertexCat T) x⟩ᵥ, simplex_generic 1)).
+  pose (z := (⟨ConstF [Ord 1] (C := VtxCat T) x⟩ᵥ, simplex_generic 1)).
   pose proof (vertex_edge_square
-    (VertexNerveHomotopyN α 1 z) (VertexNerveHomotopyN β 1 z)
+    (VtxNerveHomotopyN α 1 z) (VtxNerveHomotopyN β 1 z)
     (reflexivity (F x : Y)) (reflexivity (G x : Y)) (E 1 z)) as S.
   change (U⟦reflexivity (G x : Y)⟧Ob ∘
     fmap (NaturalPrismF α)
@@ -462,11 +462,11 @@ Lemma vertex_nerve_homotopy_η@{u p +}
     {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α : F ⇒ G)
-  : VertexNerveInvHomotopyN
-      (VertexNerveHomotopy α : SimplicialHomotopy
-        (VertexNerveN F :
+  : VtxNerveInvHomotopyN
+      (VtxNerveHomotopy α : SimplicialHomotopy
+        (VtxNerveN F :
           (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-        (VertexNerveN G)) ≈N α.
+        (VtxNerveN G)) ≈N α.
 Proof.
   apply vertex_nerve_homotopy_faithful.
   apply vertex_nerve_homotopy_β.
@@ -507,11 +507,11 @@ Global Instance vertex_nerve_inv_homotopy_proper@{u p +}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U}
   : Proper (HomotopyEq ==> NatEq)
-      (@VertexNerveInvHomotopyN _ _ _ _ T U F G :
+      (@VtxNerveInvHomotopyN _ _ _ _ T U F G :
         SimplicialHomotopy
-          (VertexNerveN F :
+          (VtxNerveN F :
             (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-          (VertexNerveN G) → _).
+          (VtxNerveN G) → _).
 Proof.
   intros H K E. apply vertex_nerve_homotopy_faithful.
   transitivity H; [apply vertex_nerve_homotopy_β |].

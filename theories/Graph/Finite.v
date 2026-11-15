@@ -13,6 +13,6 @@ From Cats.Set Require Export Finite.
 Program Definition FiniteGraph@{o e p +} {n : nat} (k : Fin n → Fin n → nat)
   : Graph@{o e p}
   :=
-  {|Vertex := Fin n
+  {|Vtx := Fin n
   ; EdgeSet x y := FinS (k x y)
   |}.

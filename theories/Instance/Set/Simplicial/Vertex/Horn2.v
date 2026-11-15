@@ -299,20 +299,20 @@ Defined.
 
 Program Definition triangle_simplex_resp@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) (A B D : X)
-  : TriangleS (VertexCat T) A B D →r
+  : TriangleS (VtxCat T) A B D →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
   :=
-  {|func p := ⟦{|lower := @PairChain (VertexCat T) A B D (fst p) (snd p)
+  {|func p := ⟦{|lower := @PairChain (VtxCat T) A B D (fst p) (snd p)
                 |}⟧Sp[T; 2]
   |}.
 Next Obligation.
   intros [f g] [f' g'] [H K].
   apply (snd (vertex_simplex_eq_steps _ _)).
-  exists (λ i, reflexivity ((@PairChain (VertexCat T) A B D f g) i : X)).
+  exists (λ i, reflexivity ((@PairChain (VtxCat T) A B D f g) i : X)).
   intros i. rewrite !vertex_transport_id, comp_id_l, comp_id_r.
-  change (chain_segment (@PairChain (VertexCat T) A B D f g) _ _
+  change (chain_segment (@PairChain (VtxCat T) A B D f g) _ _
       (ordinal_step i) ≈
-    chain_segment (@PairChain (VertexCat T) A B D f' g') _ _
+    chain_segment (@PairChain (VtxCat T) A B D f' g') _ _
       (ordinal_step i)).
   rewrite !chain_segment_step.
   destruct i as [[] | [[] | []]]; assumption.
@@ -328,7 +328,7 @@ Notation "'△₂[' T ';' A ';' B ';' D ']'" :=
 
 Lemma triangle_simplex_eq_iff@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p q : TriangleS (VertexCat T) A B D)
+    (p q : TriangleS (VtxCat T) A B D)
   : p ≈S q ↔
       (△₂[T; A; B; D] : _ →r
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p ≈S
@@ -338,13 +338,13 @@ Proof.
   - intros H. exact (@func_proper _ _ △₂[T; A; B; D] _ _ H).
   - destruct p as [f g], q as [f' g']. intros H.
     destruct (fst (vertex_simplex_eq_steps _ _) H) as [e E].
-    assert (K : ∀ i, chain_edge (@PairChain (VertexCat T) A B D f g) i ≈
-      chain_edge (@PairChain (VertexCat T) A B D f' g') i).
+    assert (K : ∀ i, chain_edge (@PairChain (VtxCat T) A B D f g) i ≈
+      chain_edge (@PairChain (VtxCat T) A B D f' g') i).
     { intros i. pose proof (E i) as Hstep.
       rewrite !vertex_transport_id, comp_id_l, comp_id_r in Hstep.
-      change (chain_segment (@PairChain (VertexCat T) A B D f g) _ _
+      change (chain_segment (@PairChain (VtxCat T) A B D f g) _ _
           (ordinal_step i) ≈
-        chain_segment (@PairChain (VertexCat T) A B D f' g') _ _
+        chain_segment (@PairChain (VtxCat T) A B D f' g') _ _
           (ordinal_step i)) in Hstep.
       rewrite !chain_segment_step in Hstep. exact Hstep. }
     split; [exact (K fin_first) | exact (K (fin_next fin_first))].
@@ -356,7 +356,7 @@ Defined.
 
 Lemma triangle_face_0@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p : TriangleS (VertexCat T) A B D)
+    (p : TriangleS (VtxCat T) A B D)
   : fmap (lower (d[Nᵥ(T); 1; fin_first]
       ((△₂[T; A; B; D] : _ →r
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
@@ -369,7 +369,7 @@ Proof. change (id ∘ snd p ≈ snd p). apply comp_id_l. Defined.
 
 Lemma triangle_face_1@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p : TriangleS (VertexCat T) A B D)
+    (p : TriangleS (VtxCat T) A B D)
   : fmap (lower (d[Nᵥ(T); 1; fin_next fin_first]
       ((△₂[T; A; B; D] : _ →r
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
@@ -383,7 +383,7 @@ Proof. change ((id ∘ snd p) ∘ fst p ≈ snd p ∘ fst p).
 
 Lemma triangle_face_2@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p : TriangleS (VertexCat T) A B D)
+    (p : TriangleS (VtxCat T) A B D)
   : fmap (lower (d[Nᵥ(T); 1; fin_next (fin_next fin_first)]
       ((△₂[T; A; B; D] : _ →r
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
@@ -395,10 +395,10 @@ Proof. change (id ∘ fst p ≈ fst p). apply comp_id_l. Defined.
 
 (** 群胚的选定对象通过全忠实诱导嵌入继承群胚结构；此结构须显式启用。 *)
 
-Definition VertexCat_IsGroupoid {X : SetC} {C : Cat}
+Definition VtxCat_IsGroupoid {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) `{HC : !IsGroupoid C}
-  : VertexCat T ⦂ Gpd
-  := @fully_faithful_IsGroupoid (VertexCat T) C (InducedInclusionF X T)
+  : VtxCat T ⦂ Gpd
+  := @fully_faithful_IsGroupoid (VtxCat T) C (InducedInclusionF X T)
       (induced_inclusion_fully_faithful X T) HC.
 
 (** An actual simplex fills a local horn when it is equal to a realized
@@ -410,10 +410,10 @@ Definition VertexCat_IsGroupoid {X : SetC} {C : Cat}
 
 Definition is_local_horn2_filler@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X} {i : Ordinal 2}
-    (h : Horn2S (VertexCat T) A B D i)
+    (h : Horn2S (VtxCat T) A B D i)
     (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
   : Type
-  := ∃ q : TriangleS (VertexCat T) A B D,
+  := ∃ q : TriangleS (VtxCat T) A B D,
       (△₂[T; A; B; D] q ≈S x) ∧ is_horn2_filler h q.
 
 (** In a groupoid, local filling is a respectful map obtained by inverse
@@ -422,9 +422,9 @@ Definition is_local_horn2_filler@{u p +} {X : SetC} {C : Cat}
 (** 群胚中的局部填充是保相等映射，由限制的逆后接三角形实现得到。 *)
 
 Definition local_horn2_resp@{u p +} {X : SetC} {C : Cat}
-    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VertexCat T)}
+    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VtxCat T)}
     {A B D : X} (i : Ordinal 2)
-  : Horn2S (VertexCat T) A B D i →r
+  : Horn2S (VtxCat T) A B D i →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
   := △₂[T; A; B; D] ∘r (horn2_iso i).2.1.
 
@@ -438,7 +438,7 @@ Notation "'fill₂[' T ';' A ';' B ';' D ';' i ']'" :=
 
 Definition local_inner_horn2_universal@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (h : Horn2S (VertexCat T) A B D (fin_next fin_first))
+    (h : Horn2S (VtxCat T) A B D (fin_next fin_first))
   : is_unique (R := carrier_equiv
       ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
       (is_local_horn2_filler h) (△₂[T; A; B; D] h)
@@ -450,8 +450,8 @@ Definition local_inner_horn2_universal@{u p +} {X : SetC} {C : Cat}
 (** 群胚中的每个局部 horn 均具有唯一实现单形；定理统一使用一般唯一纤维像构造。 *)
 
 Definition local_horn2_universal@{u p +} {X : SetC} {C : Cat}
-    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VertexCat T)}
-    {A B D : X} (i : Ordinal 2) (h : Horn2S (VertexCat T) A B D i)
+    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VtxCat T)}
+    {A B D : X} (i : Ordinal 2) (h : Horn2S (VtxCat T) A B D i)
   : is_unique (R := carrier_equiv
       ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
       (is_local_horn2_filler h)
@@ -459,11 +459,11 @@ Definition local_horn2_universal@{u p +} {X : SetC} {C : Cat}
 Proof.
   destruct i as [[] | [[] | [[] | []]]].
   - exact (iso_fiber_image_universal
-      (@horn2_0_iso (VertexCat T) HC A B D) △₂[T; A; B; D] h).
+      (@horn2_0_iso (VtxCat T) HC A B D) △₂[T; A; B; D] h).
   - exact (iso_fiber_image_universal
-      (@inner_horn2_iso (VertexCat T) A B D) △₂[T; A; B; D] h).
+      (@inner_horn2_iso (VtxCat T) A B D) △₂[T; A; B; D] h).
   - exact (iso_fiber_image_universal
-      (@horn2_2_iso (VertexCat T) HC A B D) △₂[T; A; B; D] h).
+      (@horn2_2_iso (VtxCat T) HC A B D) △₂[T; A; B; D] h).
 Defined.
 
 (** Equality of a triangle face follows from equality of its sole edge.
@@ -474,7 +474,7 @@ Defined.
 
 Lemma triangle_face_edge_eq@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p q : TriangleS (VertexCat T) A B D) (j : Ordinal 2)
+    (p q : TriangleS (VtxCat T) A B D) (j : Ordinal 2)
     (H : fmap (lower (d[Nᵥ(T); 1; j]
       ((△₂[T; A; B; D] : _ →r
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)))
@@ -498,9 +498,9 @@ Defined.
 
 Lemma triangle_retained_face_eq@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p q : TriangleS (VertexCat T) A B D) (i j : Ordinal 2)
-    (Hj : ¬ j = i) (H : ρ₂[VertexCat T; A; B; D; i] p ≈S
-      ρ₂[VertexCat T; A; B; D; i] q)
+    (p q : TriangleS (VtxCat T) A B D) (i j : Ordinal 2)
+    (Hj : ¬ j = i) (H : ρ₂[VtxCat T; A; B; D; i] p ≈S
+      ρ₂[VtxCat T; A; B; D; i] q)
   : d[Nᵥ(T); 1; j]
       ((△₂[T; A; B; D] : _ →r
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p) ≈S
@@ -528,9 +528,9 @@ Defined.
 
 Lemma triangle_horn_restrict_eq@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {A B D : X}
-    (p q : TriangleS (VertexCat T) A B D) (i : Ordinal 2)
-    (H : ρ₂[VertexCat T; A; B; D; i] p ≈S
-      ρ₂[VertexCat T; A; B; D; i] q)
+    (p q : TriangleS (VtxCat T) A B D) (i : Ordinal 2)
+    (H : ρ₂[VtxCat T; A; B; D; i] p ≈S
+      ρ₂[VtxCat T; A; B; D; i] q)
   : ((△₂[T; A; B; D] : _ →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2) p)↾Λ[Nᵥ(T); 2; i]
       ≈N (△₂[T; A; B; D] q)↾Λ[Nᵥ(T); 2; i].

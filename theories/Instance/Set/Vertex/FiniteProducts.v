@@ -20,13 +20,13 @@ Universes x e o h p l a b.
 
 (** 在原生大小中捆绑已有逐分量积作用。 *)
 
-Program Definition VertexPresentationProduct
-    (P Q : VertexPresentation@{x e o h p l a b})
-  : VertexPresentation@{x e o h p l a b}
+Program Definition VtxPresentationProduct
+    (P Q : VtxPresentation@{x e o h p l a b})
+  : VtxPresentation@{x e o h p l a b}
   :=
   {|vertex_labels := vertex_labels P ×S vertex_labels Q
   ; vertex_ambient := vertex_ambient P ×C vertex_ambient Q
-  ; vertex_action := VertexProductObjF P Q
+  ; vertex_action := VtxProductObjF P Q
   |}.
 
 (** The diagram correspondence supplies both projections and uniqueness
@@ -35,21 +35,21 @@ Program Definition VertexPresentationProduct
 (** 图式对应给出呈现映射的两个投影方程及唯一性，映射本身保留运输。 *)
 
 Definition vertex_presentation_product_universal
-    (P Q : VertexPresentation@{x e o h p l a b})
+    (P Q : VtxPresentation@{x e o h p l a b})
   : is_product
-      (C := VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _})
-      P Q (VertexPresentationProduct P Q) (VertexFstF P Q) (VertexSndF P Q).
+      (C := VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _})
+      P Q (VtxPresentationProduct P Q) (VtxFstF P Q) (VtxSndF P Q).
 Proof.
-  intros R F G. exists (VertexPairF P Q F G). split.
-  - exact (snd (vertex_diagram_product_iso P Q (VertexCat R)).2.2
-      ((F : Fct (VertexCat R) (VertexCat P)),
-       (G : Fct (VertexCat R) (VertexCat Q)))).
+  intros R F G. exists (VtxPairF P Q F G). split.
+  - exact (snd (vertex_diagram_product_iso P Q (VtxCat R)).2.2
+      ((F : Fct (VtxCat R) (VtxCat P)),
+       (G : Fct (VtxCat R) (VtxCat Q)))).
   - intros K [H1 H2].
-    transitivity (VertexPairF P Q
-      (VertexFstF P Q ∘Fᵥ K) (VertexSndF P Q ∘Fᵥ K)).
+    transitivity (VtxPairF P Q
+      (VtxFstF P Q ∘Fᵥ K) (VtxSndF P Q ∘Fᵥ K)).
     + symmetry.
-      exact (fst (vertex_diagram_product_iso P Q (VertexCat R)).2.2
-        (K : Fct (VertexCat R) (VertexCat (VertexPresentationProduct P Q)))).
+      exact (fst (vertex_diagram_product_iso P Q (VtxCat R)).2.2
+        (K : Fct (VtxCat R) (VtxCat (VtxPresentationProduct P Q)))).
     + apply vertex_pair_proper; assumption.
 Defined.
 
@@ -57,13 +57,13 @@ Defined.
 
 (** 此选定结构仅在显式启用时可用。 *)
 
-Program Definition VertexPresentationCat_HasProduct
+Program Definition VtxPresentationCat_HasProduct
   : HasProduct
-      VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+      VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
   :=
-  {|Prod := VertexPresentationProduct
-  ; π1 P Q := VertexFstF P Q
-  ; π2 P Q := VertexSndF P Q
+  {|Prod := VtxPresentationProduct
+  ; π1 P Q := VtxFstF P Q
+  ; π2 P Q := VtxSndF P Q
   ; product_universal := vertex_presentation_product_universal
   |}.
 
@@ -71,12 +71,12 @@ Program Definition VertexPresentationCat_HasProduct
 
 (** 单元素作用在每个原生大小中独立捆绑。 *)
 
-Program Definition VertexPresentationTerminal
-  : VertexPresentation@{x e o h p l a b}
+Program Definition VtxPresentationTerminal
+  : VtxPresentation@{x e o h p l a b}
   :=
   {|vertex_labels := UnitS@{x e}
   ; vertex_ambient := CodiscreteCat@{o h p l} unit
-  ; vertex_action := VertexTerminalObjF@{x e o h p l a b}
+  ; vertex_action := VtxTerminalObjF@{x e o h p l a b}
   |}.
 
 (** The existing unique terminal map proves terminality of the bundle. *)
@@ -85,10 +85,10 @@ Program Definition VertexPresentationTerminal
 
 Definition vertex_presentation_terminal_universal
   : is_terminal
-      (C := VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _})
-      VertexPresentationTerminal.
+      (C := VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _})
+      VtxPresentationTerminal.
 Proof.
-  intros P. exists (VertexTerminalF P). split; [exact I |].
+  intros P. exists (VtxTerminalF P). split; [exact I |].
   intros F _. apply vertex_terminal_unique.
 Defined.
 
@@ -96,11 +96,11 @@ Defined.
 
 (** 选定终呈现也要求显式启用。 *)
 
-Program Definition VertexPresentationCat_HasTerminal
+Program Definition VtxPresentationCat_HasTerminal
   : HasTerminal
-      VertexPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
+      VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
   :=
-  {|Term := VertexPresentationTerminal
+  {|Term := VtxPresentationTerminal
   ; terminal_universal := vertex_presentation_terminal_universal
   |}.
 

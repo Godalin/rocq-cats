@@ -22,8 +22,8 @@ Local Open Scope nat_scope.
 (** 捆绑已有的带单元素标签布尔作用。 *)
 
 Definition BooleanPresentation
-  : VertexPresentation@{Set Set Set Set Set Set Set Set}
-  := VertexPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
+  : VtxPresentation@{Set Set Set Set Set Set Set Set}
+  := VtxPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
 
 (** All values remain at the small carrier and equality levels. *)
 
@@ -31,9 +31,9 @@ Definition BooleanPresentation
 
 Definition BooleanNerveFunctor
   : Fct
-      VertexPresentationCat@{Set Set Set Set Set Set Set Set _ _ _ _ _ _ _ _ _ _}
+      VtxPresentationCat@{Set Set Set Set Set Set Set Set _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{Set Set _ _ _ _ _})
-  := VertexNerveF.
+  := VtxNerveF.
 
 (** The general full-faithfulness proof specializes without new choices. *)
 
@@ -48,13 +48,13 @@ Definition BooleanNerveFullyFaithful
 (** 已有未捆绑映射进入新范畴时不改变箭头。 *)
 
 Definition BooleanIdentity
-  : (@Hom VertexPresentationCat) BooleanPresentation BooleanPresentation
-  := VertexPresentationMap
-      (VertexIdF (MonoidObjF BoolS (HM := BoolS_Monoid))).
+  : (@Hom VtxPresentationCat) BooleanPresentation BooleanPresentation
+  := VtxPresentationMap
+      (VtxIdF (MonoidObjF BoolS (HM := BoolS_Monoid))).
 
 Example bundled_existing_map_computes
   : fmap BooleanIdentity
-      (true : (@Hom (VertexCat BooleanPresentation)) tt tt) = true.
+      (true : (@Hom (VtxCat BooleanPresentation)) tt tt) = true.
 Proof. reflexivity. Qed.
 
 (** The image of the presentation identity computes on a nonidentity edge. *)
@@ -65,7 +65,7 @@ Example nerve_identity_computes
   : let P := BooleanPresentation in
     let e := △₁[P; tt; tt] true in
     fmap (lower (fmap BooleanNerveFunctor
-      (@Cats.Cat.Core.id VertexPresentationCat P) 1 e))
+      (@Cats.Cat.Core.id VtxPresentationCat P) 1 e))
       (ordinal_step fin_first) = true.
 Proof. reflexivity. Qed.
 
@@ -77,5 +77,5 @@ Proof. reflexivity. Qed.
 Example nerve_fullness_preimage_computes
   : fmap (fst BooleanNerveFullyFaithful
       BooleanPresentation BooleanPresentation idN).1
-      (true : (@Hom (VertexCat BooleanPresentation)) tt tt) = true.
+      (true : (@Hom (VtxCat BooleanPresentation)) tt tt) = true.
 Proof. reflexivity. Qed.

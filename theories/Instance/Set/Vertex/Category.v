@@ -19,7 +19,7 @@ From Cats Require Import
     其相等保留分量为指定运输的自然同构。原生标签及 Hom 大小相互独立；
     辅助界 [l]、[a] 和 [b] 分别存储范畴与作用定律，不识别载体与相等宇宙。 *)
 
-Class VertexPresentation@{x e o h p l a b}
+Class VtxPresentation@{x e o h p l a b}
   :=
   (** Labels carry their specified Type-valued equality. *)
 
@@ -54,10 +54,10 @@ Arguments vertex_action _ : clear implicits.
 (** 复制已有作用的映射，并在共同界中逐点检查其定律，从而捆绑该作用；输入的
     定律宇宙保持独立。 *)
 
-Program Definition VertexPresentationOf@{x e o h p l a b q c d}
+Program Definition VtxPresentationOf@{x e o h p l a b q c d}
     {X : SetC@{x e}} {C : Cat@{o h p l l}}
     (T : Fct@{x e Set q c d o h p l} (EqGpd@{x e q} X) C)
-  : VertexPresentation@{x e o h p l a b}
+  : VtxPresentation@{x e o h p l a b}
   :=
   {|vertex_labels := X
   ; vertex_ambient := C
@@ -78,12 +78,12 @@ Next Obligation. exact (@functor_comp _ _ T X0 Y Z f g). Defined.
 (** 呈现及其已有态射构成范畴。原生 Hom 广集和全部范畴定律复用顶点函子理论，
     不要求呈现、函数或证明字段的相等。 *)
 
-Program Canonical VertexPresentationCat@{x e o h p l a b +}
+Program Canonical VtxPresentationCat@{x e o h p l a b +}
   : Cat
   :=
-  {|Ob := VertexPresentation@{x e o h p l a b}
+  {|Ob := VtxPresentation@{x e o h p l a b}
   ; HomSet P Q := VtxFctS P Q
-  ; id P := VertexIdF P
+  ; id P := VtxIdF P
   ; comp P Q R G F := G ∘Fᵥ F
   ; comp_proper P Q R := vertex_comp_proper
   |}.
@@ -98,11 +98,11 @@ Next Obligation. exact (vertex_comp_assoc f g h). Defined.
 (** 将已有呈现态射重新包装为捆绑作用之间的态射。保留映射，并逐点证明定律，
     避免将输入证明宇宙与范畴的共同界识别。 *)
 
-Program Definition VertexPresentationMap@{x e o h p l a b +}
+Program Definition VtxPresentationMap@{x e o h p l a b +}
     {X Y : SetC@{x e}} {C D : Cat@{o h p l l}}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
-  : VertexPresentationOf@{x e o h p l a b _ _ _} T →ᵥ
-      VertexPresentationOf@{x e o h p l a b _ _ _} U
+  : VtxPresentationOf@{x e o h p l a b _ _ _} T →ᵥ
+      VtxPresentationOf@{x e o h p l a b _ _ _} U
   :=
   {|vertex_functor :=
       {|F0 i := F i
@@ -125,7 +125,7 @@ Global Instance vertex_presentation_map_proper
     {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
   : Proper (VtxFctEq ==> VtxFctEq)
-      (@VertexPresentationMap _ _ _ _ T U).
+      (@VtxPresentationMap _ _ _ _ T U).
 Proof. intros F G [e H]. exists e. intros i j f. exact (H i j f). Defined.
 
 (** Repackaging sends the original identity to the bundled identity in
@@ -135,8 +135,8 @@ Proof. intros F G [e H]. exists e. intros i j f. exact (H i j f). Defined.
 
 Lemma vertex_presentation_map_id {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
-  : VtxFctEq (VertexPresentationMap (VertexIdF T))
-      (VertexIdF (VertexPresentationOf T)).
+  : VtxFctEq (VtxPresentationMap (VtxIdF T))
+      (VtxIdF (VtxPresentationOf T)).
 Proof.
   exists (λ i, reflexivity (i : X)). intros i j f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
@@ -149,8 +149,8 @@ Defined.
 Lemma vertex_presentation_map_comp {X Y Z : SetC} {C D E : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
-  : VtxFctEq (VertexPresentationMap (G ∘Fᵥ F))
-      (VertexPresentationMap G ∘Fᵥ VertexPresentationMap F).
+  : VtxFctEq (VtxPresentationMap (G ∘Fᵥ F))
+      (VtxPresentationMap G ∘Fᵥ VtxPresentationMap F).
 Proof.
   exists (λ i, reflexivity (G (F i) : Z)). intros i j f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.

@@ -6,8 +6,8 @@
 
 ```text
 Graph:
-  Vertex : Type
-  EdgeSet : Vertex → Vertex → SetC
+  Vtx : Type
+  EdgeSet : Vtx → Vtx → SetC
 
 x →[G] y       边载体
 x →*[G] y      路径载体

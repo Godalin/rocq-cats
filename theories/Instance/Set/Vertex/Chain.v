@@ -23,7 +23,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 (** 链比较只存储顶点见证与相邻方块。 *)
 
-Definition VertexChainEq {n : nat} (c d : Chain (VertexCat T) n)
+Definition VtxChainEq {n : nat} (c d : Chain (VtxCat T) n)
   : Type
   := ∃ e : ∀ i, (c i : X) ≈S d i,
       ∀ i : Fin@{Set} n,
@@ -36,8 +36,8 @@ Definition VertexChainEq {n : nat} (c d : Chain (VertexCat T) n)
 (** 链相等恰为所解释图式的带标签相等；区间方块由序数生成箭头定理导出。 *)
 
 Lemma vertex_chain_diagram_eq_iff {n : nat}
-    (c d : Chain (VertexCat T) n)
-  : VertexChainEq c d ↔ VertexDiagramEq T (⟦c⟧Ch) (⟦d⟧Ch).
+    (c d : Chain (VtxCat T) n)
+  : VtxChainEq c d ↔ VtxDiagramEq T (⟦c⟧Ch) (⟦d⟧Ch).
 Proof.
   split.
   - intros [e H]. exists e.
@@ -57,8 +57,8 @@ Defined.
 
 (** 沿解释拉回已经证明的图式等价关系。 *)
 
-Global Instance VertexChainEq_Equivalence {n : nat}
-  : Equivalence (@VertexChainEq n).
+Global Instance VtxChainEq_Equivalence {n : nat}
+  : Equivalence (@VtxChainEq n).
 Proof.
   split.
   - intros c. apply (snd (vertex_chain_diagram_eq_iff c c)). reflexivity.
@@ -75,12 +75,12 @@ Defined.
 
 (** 原生有限箭头链广集以顶点和箭头为数据，比较保留在独立大小的 Type 中。 *)
 
-Program Definition VertexChainS (n : nat)
+Program Definition VtxChainS (n : nat)
   : SetC
   :=
-  {|carrier := Chain (VertexCat T) n
-  ; carrier_equiv := VertexChainEq
-  ; carrier_setoid := VertexChainEq_Equivalence
+  {|carrier := Chain (VtxCat T) n
+  ; carrier_equiv := VtxChainEq
+  ; carrier_setoid := VtxChainEq_Equivalence
   |}.
 
 (** Consecutive-arrow extraction preserves labelled diagram equality. *)
@@ -88,7 +88,7 @@ Program Definition VertexChainS (n : nat)
 (** 相邻箭头提取保持带标签图式相等。 *)
 
 Program Definition vertex_chain_resp (n : nat)
-  : VertexDiagramS T [Ord n] →r VertexChainS n
+  : VtxDiagramS T [Ord n] →r VtxChainS n
   :=
   {|func F := ⌊F⌋Ch
   |}.
@@ -101,7 +101,7 @@ Defined.
 (** 区间重构由生成箭头判据保持相等。 *)
 
 Program Definition vertex_chain_diagram_resp (n : nat)
-  : VertexChainS n →r VertexDiagramS T [Ord n]
+  : VtxChainS n →r VtxDiagramS T [Ord n]
   :=
   {|func c := ⟦c⟧Ch
   |}.
@@ -113,7 +113,7 @@ Defined.
 
 (** 提取重构结果恢复原箭头链。 *)
 
-Lemma vertex_chain_β {n : nat} (c : VertexChainS n)
+Lemma vertex_chain_β {n : nat} (c : VtxChainS n)
   : vertex_chain_resp n (vertex_chain_diagram_resp n c) ≈S c.
 Proof.
   exists (λ i, reflexivity (c i : X)). intros i.
@@ -126,7 +126,7 @@ Defined.
 
 (** 重构提取结果恢复原带标签图式；恒等分量比较来自一般箭头链理论。 *)
 
-Lemma vertex_chain_η {n : nat} (F : VertexDiagramS T [Ord n])
+Lemma vertex_chain_η {n : nat} (F : VtxDiagramS T [Ord n])
   : vertex_chain_diagram_resp n (vertex_chain_resp n F) ≈S F.
 Proof.
   refine (vertex_diagram_comparison T
@@ -140,9 +140,9 @@ Defined.
 
 (** 重构图式是原链在指定带标签相等下的唯一延拓，不额外存储中介选择。 *)
 
-Definition vertex_chain_universal {n : nat} (c : VertexChainS n)
-  : is_unique (R := VertexDiagramEq T)
-      (λ F, VertexChainEq ⌊F⌋Ch c) (⟦c⟧Ch).
+Definition vertex_chain_universal {n : nat} (c : VtxChainS n)
+  : is_unique (R := VtxDiagramEq T)
+      (λ F, VtxChainEq ⌊F⌋Ch c) (⟦c⟧Ch).
 Proof.
   refine {|this := _
           ; that := _
@@ -160,7 +160,7 @@ Defined.
 
 Definition vertex_chain_reindex_resp {m n : nat}
     (Q : Fct [Ord m] [Ord n])
-  : VertexChainS n →r VertexChainS m
+  : VtxChainS n →r VtxChainS m
   := vertex_chain_resp m ∘r vertex_diagram_precomp_resp T Q ∘r
       vertex_chain_diagram_resp n.
 

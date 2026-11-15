@@ -55,14 +55,14 @@ N_{\mathrm v}([n]) \arrow[r,"{c_n}"'] & \Delta[n]
 \end{center}%
 *)
 
-(** Here c denotes %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVertexNerveN}
-    {%[OrdinalVertexNerveN]%}%, and the left vertical arrow
+(** Here c denotes %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVtxNerveN}
+    {%[OrdinalVtxNerveN]%}%, and the left vertical arrow
     is the nerve map induced by the transport-preserving ordinal map. Every
     corner is a whole simplicial object, so commutativity includes every
     degree, in natural-transformation equality. *)
 
-(** 这里 c 表示 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVertexNerveN}
-    {%[OrdinalVertexNerveN]%}%，左侧竖箭头是保运输序数映射诱导的
+(** 这里 c 表示 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Ordinal.OrdinalVtxNerveN}
+    {%[OrdinalVtxNerveN]%}%，左侧竖箭头是保运输序数映射诱导的
     nerve 映射。每个角都是整个单纯对象，因此交换性包含各个维度，使用自然
     变换相等。 *)
 
@@ -70,7 +70,7 @@ N_{\mathrm v}([n]) \arrow[r,"{c_n}"'] & \Delta[n]
 
 (** 逐维忘却诱导范畴包装。 *)
 
-Program Definition OrdinalVertexNerveN@{u p +} (n : nat)
+Program Definition OrdinalVtxNerveN@{u p +} (n : nat)
   : (Nᵥ(OrdinalObjF n) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
   :=
@@ -86,7 +86,7 @@ Defined.
 
 (** 重新将有限位置作为标签。 *)
 
-Program Definition StandardVertexNerveN@{u p +} (n : nat)
+Program Definition StandardVtxNerveN@{u p +} (n : nat)
   : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       Nᵥ(OrdinalObjF n)
   :=
@@ -108,8 +108,8 @@ Definition ordinal_vertex_nerve_iso@{u p +} (n : nat)
   : (Nᵥ(OrdinalObjF n) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N Δ[n].
 Proof.
-  exists (OrdinalVertexNerveN n). intros m.
-  exists (StandardVertexNerveN n m). split; intros [P];
+  exists (OrdinalVtxNerveN n). intros m.
+  exists (StandardVtxNerveN n m). split; intros [P];
     refine {|lower := _
             |}.
   - apply (snd (vertex_ordinal_diagram_eq_iff n _ _)).
@@ -124,10 +124,10 @@ Defined.
 
 Lemma ordinal_vertex_nerve_natural@{u p +} {m n : nat}
     (θ : (@Hom Δ) m n)
-  : (OrdinalVertexNerveN n ∘Nv VertexNerveN (OrdinalVertexMapF θ) :
+  : (OrdinalVtxNerveN n ∘Nv VtxNerveN (OrdinalVtxMapF θ) :
       (Nᵥ(OrdinalObjF m) :
         Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]) ≈N
-      (fmap StandardSimplexF θ ∘Nv OrdinalVertexNerveN m).
+      (fmap StandardSimplexF θ ∘Nv OrdinalVtxNerveN m).
 Proof.
   intros k [P]. refine {|lower := _
                         |}.
@@ -140,11 +140,11 @@ Defined.
 (** 对区间序数，在终比较之后，两个呈现点恰对应已有的单纯端点。 *)
 
 Lemma ordinal_vertex_interval_endpoint@{u p +} (b : bool)
-  : (OrdinalVertexNerveN 1 ∘Nv
-      VertexNerveN (OrdinalVertexPointF 1 (simplex_interval_position b)) :
-        (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+  : (OrdinalVtxNerveN 1 ∘Nv
+      VtxNerveN (OrdinalVtxPointF 1 (simplex_interval_position b)) :
+        (Nᵥ(VtxTerminalObjF@{Set Set Set Set Set Set Set Set}) :
           Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[1]) ≈N
-      (SimplicialIntervalPointN b ∘Nv VertexNerveTerminalN).
+      (SimplicialIntervalPointN b ∘Nv VtxNerveTerminalN).
 Proof.
   intros n [P]. refine {|lower := _
                         |}.

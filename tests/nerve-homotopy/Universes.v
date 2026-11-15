@@ -38,7 +38,7 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
 (** 通用构造保持原生 Hom 大小独立。 *)
 
 Definition native_prism
-  : Fct (VertexCat T ×C [Ord 1]) (VertexCat U)
+  : Fct (VtxCat T ×C [Ord 1]) (VtxCat U)
   := NaturalPrismF α.
 
 (** Value equality can lie strictly below the value carrier. *)
@@ -47,18 +47,18 @@ Definition native_prism
 
 Definition low_value_nerve_homotopy
   : SimplicialHomotopy
-      (VertexNerveN F :
+      (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
-      (VertexNerveN G)
-  := VertexNerveHomotopy α.
+      (VtxNerveN G)
+  := VtxNerveHomotopy α.
 
 Definition low_value_nerve_homotopy_eq
-  : HomotopyEq low_value_nerve_homotopy (VertexNerveHomotopy β)
+  : HomotopyEq low_value_nerve_homotopy (VtxNerveHomotopy β)
   := vertex_nerve_homotopy_proper α β H.
 
 Definition low_value_nerve_endpoint
   : (homotopy_map low_value_nerve_homotopy ∘Nv
-      SimplicialEndpointN Nᵥ(T) false) ≈N VertexNerveN F
+      SimplicialEndpointN Nᵥ(T) false) ≈N VtxNerveN F
   := vertex_nerve_homotopy_0 α.
 
 (** Value equality can instead lie strictly above the value carrier. *)
@@ -67,14 +67,14 @@ Definition low_value_nerve_endpoint
 
 Definition high_value_nerve_homotopy
   : SimplicialHomotopy
-      (VertexNerveN F :
+      (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-      (VertexNerveN G)
-  := VertexNerveHomotopy α.
+      (VtxNerveN G)
+  := VtxNerveHomotopy α.
 
 Definition high_value_nerve_endpoint
   : (homotopy_map high_value_nerve_homotopy ∘Nv
-      SimplicialEndpointN Nᵥ(T) true) ≈N VertexNerveN G
+      SimplicialEndpointN Nᵥ(T) true) ≈N VtxNerveN G
   := vertex_nerve_homotopy_1 α.
 
 (** Identity comparison uses the equality of stored maps, not proof fields. *)
@@ -83,12 +83,12 @@ Definition high_value_nerve_endpoint
 
 Definition low_value_nerve_identity
   : HomotopyEq
-      (VertexNerveHomotopy (F := F) (idN : F ⇒ F) :
+      (VtxNerveHomotopy (F := F) (idN : F ⇒ F) :
         SimplicialHomotopy
-          (VertexNerveN F :
+          (VtxNerveN F :
             (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
-          (VertexNerveN F))
-      (SimplicialConstantHomotopy (VertexNerveN F))
+          (VtxNerveN F))
+      (SimplicialConstantHomotopy (VtxNerveN F))
   := vertex_nerve_homotopy_id F.
 
 End Levels.

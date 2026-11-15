@@ -38,13 +38,13 @@ Definition low_equality_ordinal_iso (n : nat)
 Definition low_equality_forward (n : nat)
   : (Nᵥ(OrdinalObjF n) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]
-  := OrdinalVertexNerveN n.
+  := OrdinalVtxNerveN n.
 
 Definition low_equality_naturality {m n : nat} (θ : (@Hom Δ) m n)
-  : (OrdinalVertexNerveN n ∘Nv VertexNerveN (OrdinalVertexMapF θ) :
+  : (OrdinalVtxNerveN n ∘Nv VtxNerveN (OrdinalVtxMapF θ) :
       (Nᵥ(OrdinalObjF m) :
         Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[n]) ≈N
-      (fmap StandardSimplexF θ ∘Nv OrdinalVertexNerveN m)
+      (fmap StandardSimplexF θ ∘Nv OrdinalVtxNerveN m)
   := ordinal_vertex_nerve_natural θ.
 
 End LowEquality.
@@ -71,14 +71,14 @@ Definition high_equality_ordinal_iso (n : nat)
 Definition high_equality_inverse (n : nat)
   : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       Nᵥ(OrdinalObjF n)
-  := StandardVertexNerveN n.
+  := StandardVtxNerveN n.
 
 Definition high_equality_interval_endpoint (b : bool)
-  : (OrdinalVertexNerveN 1 ∘Nv
-      VertexNerveN (OrdinalVertexPointF 1 (simplex_interval_position b)) :
-        (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+  : (OrdinalVtxNerveN 1 ∘Nv
+      VtxNerveN (OrdinalVtxPointF 1 (simplex_interval_position b)) :
+        (Nᵥ(VtxTerminalObjF@{Set Set Set Set Set Set Set Set}) :
           Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Δ[1]) ≈N
-      (SimplicialIntervalPointN b ∘Nv VertexNerveTerminalN)
+      (SimplicialIntervalPointN b ∘Nv VtxNerveTerminalN)
   := ordinal_vertex_interval_endpoint b.
 
 End HighEquality.

@@ -28,14 +28,14 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
     (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
     (F G : T →ᵥ U) (α : F ⇒ G)
     (H K : SimplicialHomotopy
-      (VertexNerveN F :
+      (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
-      (VertexNerveN G))
+      (VtxNerveN G))
     (E : HomotopyEq H K)
     (L : SimplicialHomotopy
-      (VertexNerveN F :
+      (VtxNerveN F :
         (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-      (VertexNerveN G)).
+      (VtxNerveN G)).
 
 (** Value equality below the carrier still recovers an ordinary transformation. *)
 
@@ -43,21 +43,21 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
 
 Definition low_value_recovery
   : F ⇒ G
-  := VertexNerveInvHomotopyN H.
+  := VtxNerveInvHomotopyN H.
 
 Definition low_value_homotopy_roundtrip
   : ∃ β : F ⇒ G, HomotopyEq
-      (VertexNerveHomotopy (F := F) (G := G) β : SimplicialHomotopy
-        (VertexNerveN F :
+      (VtxNerveHomotopy (F := F) (G := G) β : SimplicialHomotopy
+        (VtxNerveN F :
           (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
-        (VertexNerveN G)) H.
+        (VtxNerveN G)) H.
 Proof.
-  exists (VertexNerveInvHomotopyN H).
+  exists (VtxNerveInvHomotopyN H).
   exact (@vertex_nerve_homotopy_β X Y C D T U F G H).
 Defined.
 
 Definition low_value_recovery_proper
-  : VertexNerveInvHomotopyN H ≈N VertexNerveInvHomotopyN K
+  : VtxNerveInvHomotopyN H ≈N VtxNerveInvHomotopyN K
   := vertex_nerve_inv_homotopy_proper H K E.
 
 (** The opposite strict order also supports recovery and its full round trip. *)
@@ -66,16 +66,16 @@ Definition low_value_recovery_proper
 
 Definition high_value_recovery
   : F ⇒ G
-  := VertexNerveInvHomotopyN L.
+  := VtxNerveInvHomotopyN L.
 
 Definition high_value_homotopy_roundtrip
   : ∃ β : F ⇒ G, HomotopyEq
-      (VertexNerveHomotopy (F := F) (G := G) β : SimplicialHomotopy
-        (VertexNerveN F :
+      (VtxNerveHomotopy (F := F) (G := G) β : SimplicialHomotopy
+        (VtxNerveN F :
           (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-        (VertexNerveN G)) L.
+        (VtxNerveN G)) L.
 Proof.
-  exists (VertexNerveInvHomotopyN L).
+  exists (VtxNerveInvHomotopyN L).
   exact (@vertex_nerve_homotopy_β X Y C D T U F G L).
 Defined.
 
@@ -84,19 +84,19 @@ Defined.
 (** 自然变换相等是原生相等，与提升后的值大小独立。 *)
 
 Definition low_value_transformation_roundtrip
-  : VertexNerveInvHomotopyN
-      (VertexNerveHomotopy α : SimplicialHomotopy
-        (VertexNerveN F :
+  : VtxNerveInvHomotopyN
+      (VtxNerveHomotopy α : SimplicialHomotopy
+        (VtxNerveN F :
           (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))
-        (VertexNerveN G)) ≈N α
+        (VtxNerveN G)) ≈N α
   := vertex_nerve_homotopy_η α.
 
 Definition high_value_transformation_roundtrip
-  : VertexNerveInvHomotopyN
-      (VertexNerveHomotopy α : SimplicialHomotopy
-        (VertexNerveN F :
+  : VtxNerveInvHomotopyN
+      (VtxNerveHomotopy α : SimplicialHomotopy
+        (VtxNerveN F :
           (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
-        (VertexNerveN G)) ≈N α
+        (VtxNerveN G)) ≈N α
   := vertex_nerve_homotopy_η α.
 
 End Levels.

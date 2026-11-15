@@ -21,7 +21,7 @@ Local Open Scope nat_scope.
 Definition ordinal_triangle
   : (Nᵥ(OrdinalObjF 2) :
       Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2
-  := StandardVertexNerveN 2 2 (simplex_generic 2).
+  := StandardVtxNerveN 2 2 (simplex_generic 2).
 
 Example generic_vertex_computes (i : Ordinal 2)
   : lower ordinal_triangle i = i.
@@ -32,7 +32,7 @@ Example generic_arrow_computes
 Proof. reflexivity. Qed.
 
 Example comparison_round_trip_computes (i : Ordinal 2)
-  : lower (OrdinalVertexNerveN 2 2 ordinal_triangle) i = i.
+  : lower (OrdinalVtxNerveN 2 2 ordinal_triangle) i = i.
 Proof. reflexivity. Qed.
 
 (** The middle face of a triangle is the edge from zero to two. *)
@@ -42,8 +42,8 @@ Proof. reflexivity. Qed.
 Definition ordinal_middle_face
   : (Nᵥ(OrdinalObjF 2) :
       Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 1
-  := VertexNerveN (OrdinalVertexMapF (δ[1; fin_next fin_first])) 1
-      (StandardVertexNerveN 1 1 (simplex_generic 1)).
+  := VtxNerveN (OrdinalVtxMapF (δ[1; fin_next fin_first])) 1
+      (StandardVtxNerveN 1 1 (simplex_generic 1)).
 
 Example face_first_vertex_computes
   : lower ordinal_middle_face fin_first = fin_first.
@@ -59,20 +59,20 @@ Proof. reflexivity. Qed.
 (** 从终呈现出发的点求值为选定位置。 *)
 
 Definition terminal_vertex
-  : (Nᵥ(VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) :
+  : (Nᵥ(VtxTerminalObjF@{Set Set Set Set Set Set Set Set}) :
       Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 0
   := ⟨ConstF [Ord 0]
-      (C := VertexCat
-        VertexTerminalObjF@{Set Set Set Set Set Set Set Set}) tt⟩ᵥ.
+      (C := VtxCat
+        VtxTerminalObjF@{Set Set Set Set Set Set Set Set}) tt⟩ᵥ.
 
 Example interval_initial_point_computes
-  : lower (OrdinalVertexNerveN 1 0
-      (VertexNerveN (OrdinalVertexPointF 1 (simplex_interval_position false))
+  : lower (OrdinalVtxNerveN 1 0
+      (VtxNerveN (OrdinalVtxPointF 1 (simplex_interval_position false))
         0 terminal_vertex)) fin_first = fin_first.
 Proof. reflexivity. Qed.
 
 Example interval_final_point_computes
-  : lower (OrdinalVertexNerveN 1 0
-      (VertexNerveN (OrdinalVertexPointF 1 (simplex_interval_position true))
+  : lower (OrdinalVtxNerveN 1 0
+      (VtxNerveN (OrdinalVtxPointF 1 (simplex_interval_position true))
         0 terminal_vertex)) fin_first = fin_next fin_first.
 Proof. reflexivity. Qed.

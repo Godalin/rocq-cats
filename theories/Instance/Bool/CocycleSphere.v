@@ -5,7 +5,7 @@ From Cats Require
   Instance.Set.Simplicial.Vertex.Sphere.
 
 Import Cats.Instance.Set.Groupoid (EqGpd).
-Import Cats.Instance.Set.Simplicial.Vertex.Core (VertexNerve).
+Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 Import Cats.Instance.Set.Simplicial.Vertex.Sphere (vertex_two_sphere_unique).
 
 Local Existing Instance BoolS_Monoid.
@@ -95,7 +95,7 @@ Context {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 Lemma bool_cocycle_not_vertex_nerve
   : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
-      (VertexNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
+      (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
 Proof.
   intros [α Hα].
   pose (B := (Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).

@@ -66,7 +66,7 @@ the implemented batch have migrated; the remaining families are tracked below.
 | Object and objects / 对象 | `Obj` | Singular and plural use the same stem; preserve kind suffixes / 单复数统一，保留种类后缀 |
 | Limit and colimit / 极限与余极限 | `Lim`, `Colim` | Keep `HasLimit`, `HasColimit` / 保留选定构造接口 |
 | Presheaf / 预层 | `Psh` | Existing category name stays / 保留已有范畴名 |
-| Vertex / 顶点 | `Vtx` | First batch only migrates the functor bundle family / 本批只迁移函子包词族 |
+| Vertex / 顶点 | `Vtx` | Public declarations and fields use this stem; module paths stay unchanged / 公共声明及字段统一，模块路径保留 |
 | Closure / 闭包 | `Clos` | Do not conflate with Closed / 不与 Closed 混写 |
 | Packaged relation-closure operator / 打包关系闭包算子 | `*ClosOp` | Raw generated relations use `*Clos` / 底层生成关系用 `*Clos` |
 | Subobject / 子对象 | `SubObj` | A setoid of subobjects needs `S` / 子对象广集须体现 `S` |
@@ -133,7 +133,7 @@ renamed bundles and adjunctions have consistent direct clients.
 | `cartesian_isCartesianF` | `cartesian_isCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `isCartesianF` | `isCartF` | [Cat/Functor/Closed.v](../theories/Cat/Functor/Closed.v) |
 | `TypeInterpretF_IsCartesianF` | `TypeInterpretF_IsCartF` | [STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
-| `VertexNerveF_IsCartesianF` | `VertexNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
+| `VertexNerveF_IsCartesianF` | `VtxNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
 | `ExponentialF_IsCartesianF` | `ExponentialF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
 
 ### Adjunctions and induced constructions / 伴随及其诱导构造
@@ -269,8 +269,8 @@ existing concise `Ob` projections.
 | `SetCat_HasNaturalNumbersObject` | `SetCat_HasNaturalNumbersObj` | [Instance/Set/Nat.v](../theories/Instance/Set/Nat.v) |
 | `SetMonoidObject` | `SetMonoidObj` | [Instance/Set/Monoid.v](../theories/Instance/Set/Monoid.v) |
 | `SubObject` | `SubObjS` | [Instance/Set/Subobject.v](../theories/Instance/Set/Subobject.v) |
-| `VertexProductObjectsF` | `VertexProductObjF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
-| `VertexTerminalObjectsF` | `VertexTerminalObjF` | [Instance/Set/Vertex/Terminal.v](../theories/Instance/Set/Vertex/Terminal.v) |
+| `VertexProductObjectsF` | `VtxProductObjF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
+| `VertexTerminalObjectsF` | `VtxTerminalObjF` | [Instance/Set/Vertex/Terminal.v](../theories/Instance/Set/Vertex/Terminal.v) |
 | `hasNaturalNumbersObject` | `hasNaturalNumbersObj` | [ETCS/Core.v](../theories/ETCS/Core.v) |
 | `hasSubObjectClassifier` | `hasSubObjClassifier` | [ETCS/Core.v](../theories/ETCS/Core.v) |
 
@@ -377,6 +377,141 @@ the original source stays preserved, and further work awaits user instructions.
 这是完成既有 L2 命名变更验收所需的兼容修复，不增加数学／API 设计或缩写词族。
 新候选提交后冻结，交由既有集成者复验；原来源保全，后续工作等待用户安排。
 
+## Batch 3: the Vtx family / 第三批：Vtx 词族
+
+The user requested the next naming step after the updated #38 coverage audit.
+This bounded batch starts from integrated
+`9f7024af8f705a176a8923c38e97877fb66ccec7` on `abbreviations-vtx-38` and
+completes the previously approved `Vertex → Vtx` family. The original frozen
+sources `6314f0d` and `0f18829` remain preserved. The user subsequently authorized
+committing, publishing and submitting this batch to the designated integrator.
+Integration acceptance remains pending.
+
+用户在 #38 更新覆盖审查后安排继续下一步。本批从已集成 `9f7024a` 在新短分支
+`abbreviations-vtx-38` 开始，补齐此前已批准的 Vtx 词族。两个旧冻结来源保全；
+用户随后授权提交、推送并交给指定集成会话，集成验收待完成。
+
+The 61 exact rows cover the graph vertex projection, graph shapes, presented
+categories, labelled diagrams/chains, vertex nerves and their concrete models
+and instance names. Already migrated `VtxFct` names remain unchanged. The
+previously accepted compound `VertexNerveCartesianF → VtxNerveCartF` combines
+the two approved stems. Three earlier map targets are now shortened further;
+the earlier rows point directly to their current final names.
+
+61 项精确映射覆盖图顶点投影、图形状、带对象呈现的范畴、标记图式／链、顶点
+nerve 及具体模型、实例名。已有 VtxFct 词族保持原样；预先确认的复合名
+VtxNerveCartF 同时采用 Vtx、Cart 词根。三项旧批次目标在本批继续缩短，旧表的
+新名栏同步指向当前最终名称。
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `BoolVertexComparison` | `BoolVtxComparison` | [Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
+| `BoolVertexNerve` | `BoolVtxNerve` | [Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
+| `BoolVertexNerve_HasKanFillers` | `BoolVtxNerve_HasKanFillers` | [Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
+| `BoolVertexNerve_IsCoskeletal` | `BoolVtxNerve_IsCoskeletal` | [Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
+| `ConstantVertexF` | `ConstantVtxF` | [Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
+| `CospanVertex` | `CospanVtx` | [Graph/Shape.v](../theories/Graph/Shape.v) |
+| `MonoidVertexF` | `MonoidVtxF` | [Instance/Set/Simplicial/Vertex/Monoid.v](../theories/Instance/Set/Simplicial/Vertex/Monoid.v) |
+| `MonoidVertexN` | `MonoidVtxN` | [Instance/Set/Simplicial/Vertex/Monoid.v](../theories/Instance/Set/Simplicial/Vertex/Monoid.v) |
+| `OrdinalVertexF` | `OrdinalVtxF` | [Instance/Set/Vertex/Ordinal.v](../theories/Instance/Set/Vertex/Ordinal.v) |
+| `OrdinalVertexInvF` | `OrdinalVtxInvF` | [Instance/Set/Vertex/Ordinal.v](../theories/Instance/Set/Vertex/Ordinal.v) |
+| `OrdinalVertexMapF` | `OrdinalVtxMapF` | [Instance/Set/Vertex/Ordinal.v](../theories/Instance/Set/Vertex/Ordinal.v) |
+| `OrdinalVertexNerveN` | `OrdinalVtxNerveN` | [Instance/Set/Simplicial/Vertex/Ordinal.v](../theories/Instance/Set/Simplicial/Vertex/Ordinal.v) |
+| `OrdinalVertexPointF` | `OrdinalVtxPointF` | [Instance/Set/Vertex/Ordinal.v](../theories/Instance/Set/Vertex/Ordinal.v) |
+| `StandardVertexNerveN` | `StandardVtxNerveN` | [Instance/Set/Simplicial/Vertex/Ordinal.v](../theories/Instance/Set/Simplicial/Vertex/Ordinal.v) |
+| `Vertex` | `Vtx` | [Graph/Core.v](../theories/Graph/Core.v) |
+| `VertexCat` | `VtxCat` | [Instance/Set/Vertex/Core.v](../theories/Instance/Set/Vertex/Core.v) |
+| `VertexCat_IsGroupoid` | `VtxCat_IsGroupoid` | [Instance/Set/Simplicial/Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) |
+| `VertexChainEq` | `VtxChainEq` | [Instance/Set/Vertex/Chain.v](../theories/Instance/Set/Vertex/Chain.v) |
+| `VertexChainEq_Equivalence` | `VtxChainEq_Equivalence` | [Instance/Set/Vertex/Chain.v](../theories/Instance/Set/Vertex/Chain.v) |
+| `VertexChainS` | `VtxChainS` | [Instance/Set/Vertex/Chain.v](../theories/Instance/Set/Vertex/Chain.v) |
+| `VertexCompF` | `VtxCompF` | [Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `VertexDiagramEq` | `VtxDiagramEq` | [Instance/Set/Vertex/Core.v](../theories/Instance/Set/Vertex/Core.v) |
+| `VertexDiagramEq_Equivalence` | `VtxDiagramEq_Equivalence` | [Instance/Set/Vertex/Core.v](../theories/Instance/Set/Vertex/Core.v) |
+| `VertexDiagramN` | `VtxDiagramN` | [Instance/Set/Simplicial/Vertex/Core.v](../theories/Instance/Set/Simplicial/Vertex/Core.v) |
+| `VertexDiagramS` | `VtxDiagramS` | [Instance/Set/Vertex/Core.v](../theories/Instance/Set/Vertex/Core.v) |
+| `VertexFstF` | `VtxFstF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
+| `VertexIdF` | `VtxIdF` | [Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `VertexIntervalProductF` | `VtxIntervalProductF` | [Instance/Set/Simplicial/Vertex/HomotopyInv.v](../theories/Instance/Set/Simplicial/Vertex/HomotopyInv.v) |
+| `VertexMonoidN` | `VtxMonoidN` | [Instance/Set/Simplicial/Vertex/Monoid.v](../theories/Instance/Set/Simplicial/Vertex/Monoid.v) |
+| `VertexNerve` | `VtxNerve` | [Instance/Set/Simplicial/Vertex/Core.v](../theories/Instance/Set/Simplicial/Vertex/Core.v) |
+| `VertexNerveCartesianF` | `VtxNerveCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
+| `VertexNerveCylinderN` | `VtxNerveCylinderN` | [Instance/Set/Simplicial/Vertex/HomotopyInv.v](../theories/Instance/Set/Simplicial/Vertex/HomotopyInv.v) |
+| `VertexNerveF` | `VtxNerveF` | [Instance/Set/Simplicial/Vertex/Category.v](../theories/Instance/Set/Simplicial/Vertex/Category.v) |
+| `VertexNerveF_IsCartF` | `VtxNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
+| `VertexNerveHomotopy` | `VtxNerveHomotopy` | [Instance/Set/Simplicial/Vertex/Homotopy.v](../theories/Instance/Set/Simplicial/Vertex/Homotopy.v) |
+| `VertexNerveHomotopyN` | `VtxNerveHomotopyN` | [Instance/Set/Simplicial/Vertex/Homotopy.v](../theories/Instance/Set/Simplicial/Vertex/Homotopy.v) |
+| `VertexNerveInvF` | `VtxNerveInvF` | [Instance/Set/Simplicial/Vertex/Reconstruction.v](../theories/Instance/Set/Simplicial/Vertex/Reconstruction.v) |
+| `VertexNerveInvHomotopyN` | `VtxNerveInvHomotopyN` | [Instance/Set/Simplicial/Vertex/HomotopyInv.v](../theories/Instance/Set/Simplicial/Vertex/HomotopyInv.v) |
+| `VertexNerveN` | `VtxNerveN` | [Instance/Set/Simplicial/Vertex/Functor.v](../theories/Instance/Set/Simplicial/Vertex/Functor.v) |
+| `VertexNerveProduct` | `VtxNerveProduct` | [Instance/Set/Simplicial/Vertex/Product.v](../theories/Instance/Set/Simplicial/Vertex/Product.v) |
+| `VertexNerveProductInvN` | `VtxNerveProductInvN` | [Instance/Set/Simplicial/Vertex/Product.v](../theories/Instance/Set/Simplicial/Vertex/Product.v) |
+| `VertexNerveProductN` | `VtxNerveProductN` | [Instance/Set/Simplicial/Vertex/Product.v](../theories/Instance/Set/Simplicial/Vertex/Product.v) |
+| `VertexNerveTerminalInvN` | `VtxNerveTerminalInvN` | [Instance/Set/Simplicial/Vertex/Terminal.v](../theories/Instance/Set/Simplicial/Vertex/Terminal.v) |
+| `VertexNerveTerminalN` | `VtxNerveTerminalN` | [Instance/Set/Simplicial/Vertex/Terminal.v](../theories/Instance/Set/Simplicial/Vertex/Terminal.v) |
+| `VertexPairF` | `VtxPairF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
+| `VertexPresentation` | `VtxPresentation` | [Instance/Set/Vertex/Category.v](../theories/Instance/Set/Vertex/Category.v) |
+| `VertexPresentationCat` | `VtxPresentationCat` | [Instance/Set/Vertex/Category.v](../theories/Instance/Set/Vertex/Category.v) |
+| `VertexPresentationCat_HasProduct` | `VtxPresentationCat_HasProduct` | [Instance/Set/Vertex/FiniteProducts.v](../theories/Instance/Set/Vertex/FiniteProducts.v) |
+| `VertexPresentationCat_HasTerminal` | `VtxPresentationCat_HasTerminal` | [Instance/Set/Vertex/FiniteProducts.v](../theories/Instance/Set/Vertex/FiniteProducts.v) |
+| `VertexPresentationMap` | `VtxPresentationMap` | [Instance/Set/Vertex/Category.v](../theories/Instance/Set/Vertex/Category.v) |
+| `VertexPresentationOf` | `VtxPresentationOf` | [Instance/Set/Vertex/Category.v](../theories/Instance/Set/Vertex/Category.v) |
+| `VertexPresentationProduct` | `VtxPresentationProduct` | [Instance/Set/Vertex/FiniteProducts.v](../theories/Instance/Set/Vertex/FiniteProducts.v) |
+| `VertexPresentationTerminal` | `VtxPresentationTerminal` | [Instance/Set/Vertex/FiniteProducts.v](../theories/Instance/Set/Vertex/FiniteProducts.v) |
+| `VertexProductF` | `VtxProductF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
+| `VertexProductObjF` | `VtxProductObjF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
+| `VertexRelabelF` | `VtxRelabelF` | [Instance/Set/Vertex/Relabel.v](../theories/Instance/Set/Vertex/Relabel.v) |
+| `VertexSieveF` | `VtxSieveF` | [Instance/Set/Simplicial/Vertex/Sieve.v](../theories/Instance/Set/Simplicial/Vertex/Sieve.v) |
+| `VertexSimplex` | `VtxSimplex` | [Instance/Set/Simplicial/Vertex/Core.v](../theories/Instance/Set/Simplicial/Vertex/Core.v) |
+| `VertexSndF` | `VtxSndF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
+| `VertexTerminalF` | `VtxTerminalF` | [Instance/Set/Vertex/Terminal.v](../theories/Instance/Set/Vertex/Terminal.v) |
+| `VertexTerminalObjF` | `VtxTerminalObjF` | [Instance/Set/Vertex/Terminal.v](../theories/Instance/Set/Vertex/Terminal.v) |
+
+Source module names and paths containing `Vertex` remain unchanged. Selective
+imports adapt their public declaration names while keeping their namespace.
+Coqdoc code references and qualified `\coqref` targets migrate in both languages;
+ordinary mathematical prose keeps “vertex”. Descriptive lowercase helpers,
+including `vertex_*`, are not mechanically renamed. The remaining `Clos`,
+`*ClosOp`, `Exp` and `Cart` families, optional `Prof` proposals, notation and
+structural experiments remain separate work.
+
+含 Vertex 的模块名及路径保持原样；选择性导入只更新公开声明名，保留命名空间。
+双语 coqdoc 代码引用及带限定名的交叉引用同步迁移，普通数学叙述保留原词。
+描述性小写辅助名不机械缩写；其余词族、新候选、记号及结构实验仍为独立工作。
+
+### Batch 3 validation / 第三批验证
+
+On this local working tree, project-switch `dune build @all` passed with
+Rocq/Stdlib 9.2, OCaml 5.3.0 and Dune 3.23.1. The temporary audit checked all
+166 current public targets with printed universes and `Print Assumptions`;
+all 166 reports were closed. All 174 retired/intermediate-name `Fail Check`
+probes passed, as did graph-projection computation and the vertex-category
+and identity-functor coercion probes.
+
+当前本地工作树使用项目 switch 的全库构建通过，工具链为 Rocq/Stdlib 9.2、
+OCaml 5.3.0、Dune 3.23.1。临时审计覆盖全部 166 个现名的带宇宙签名与假设，
+166 项假设报告全部闭合；174 项退役／中间名检查、图顶点投影计算及顶点范畴、
+恒等函子的强制转换探针均通过。
+
+The source audit reversed all 63 changed Rocq files exactly to the baseline,
+apart from five record-closing indentation adjustments. Module imports and
+selective-import namespaces are unchanged; 20 qualified coqdoc cross-reference
+targets migrated within their original namespaces. All 175 historical/current
+mapping rows resolve to existing source files and current names, and
+`git diff --check` passed. These are temporary checks, with no new permanent
+tests or HTML/PDF export. The user authorized freezing this validated batch
+for integration; its source branch must remain unchanged during acceptance.
+This is L2 breaking public-name migration, requiring affected-session
+preservation/pause confirmations before integration and synchronization with
+validation afterward.
+
+源码审计确认：63 个 Rocq 文件逆向替换后与基线逐行一致，仅有五处记录闭合缩进
+调整；模块导入和选择性导入命名空间保持原样，20 处带限定名交叉引用在原命名空间
+内迁移。175 行历史／当前映射的源码与现名均可定位，差异空白检查通过。审计均为
+临时检查，未增加永久测试，未导出 HTML/PDF。用户已授权冻结本批交付集成，
+验收期间保全来源分支。本批为 L2 breaking 公开改名，集成前须取得受影响会话
+的保全／暂停确认，集成后须同步并验证。
+
 ## Pending batches / 后续批次
 
 These are remaining families, not completed migrations. Audit each declaration
@@ -389,7 +524,6 @@ that their entire stem families have migrated.
 
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
-| Vertex / 顶点 | `VertexCat → VtxCat`, `VertexPresentation → VtxPresentation`, `VertexNerve → VtxNerve`, related diagrams/products/chains / 相关图式、积及链 | Keep object/functor/transformation suffixes distinct / 区分对象、函子与自然变换后缀 |
 | Closure / 闭包 | `Closure → Clos`, `ClosureLe → ClosLe`, `ClosureEq → ClosEq`, `ClosureF → ClosF`, `ClosureMonad → ClosMonad` | Review related constructors / 审阅相关构造 |
 | Raw generated relations / 底层生成关系 | `EquivClosure → EquivClos`, `SymClosure → SymClos`, `ReflTransClosure → ReflTransClos` | Preserve witnesses / 保留见证 |
 | Packaged closure operators / 打包闭包算子 | `EquivalenceClosure → EquivClosOp`, `SymmetricClosure → SymClosOp`, `ReflexiveTransitiveClosure → ReflTransClosOp` | Check the actual type of `FamilyEquivalenceClosure` before choosing its name / 逐纤维接口先核对类型 |

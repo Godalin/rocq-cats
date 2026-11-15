@@ -24,7 +24,7 @@ Program Definition point_simplex_resp@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : X →r (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 0
   :=
-  {|func x := ⟨ConstF [Ord 0] (C := VertexCat T) x⟩ᵥ
+  {|func x := ⟨ConstF [Ord 0] (C := VtxCat T) x⟩ᵥ
   |}.
 Next Obligation.
   intros x y H. apply (snd (vertex_nerve_zero_eq_iff _ _)). exact H.

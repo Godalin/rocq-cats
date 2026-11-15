@@ -178,7 +178,7 @@ FiniteProduct D = D fin_first × FiniteProduct (D ∘ fin_next) n = S m
 
 ```text
 k : Fin n → Fin n → nat
-Vertex (FiniteGraph k) = Fin n
+Vtx (FiniteGraph k) = Fin n
 EdgeSet x y = FinS (k x y)
 ```
 

@@ -14,7 +14,7 @@ From Cats Require Import
 
 (** 将两个源对象及共同目标赋给余跨度顶点。 *)
 
-Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVertex)
+Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVtx)
   : @Ob C
   := match v with
   | cospan_left => X
@@ -27,7 +27,7 @@ Definition CospanOb {C : Cat} (X Y Z : @Ob C) (v : CospanVertex)
 (** 将余跨度生成边保相等地送到对应箭头。 *)
 
 Program Definition cospan_edge_resp {C : Cat} {X Y Z : @Ob C}
-    (f : Hom X Z) (g : Hom Y Z) (x y : CospanVertex)
+    (f : Hom X Z) (g : Hom Y Z) (x y : CospanVtx)
   : @EdgeSet CospanGraph x y →r HomSet (CospanOb X Y Z x) (CospanOb X Y Z y)
   :=
   {|func e := _

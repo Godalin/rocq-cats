@@ -97,7 +97,7 @@ Defined.
 
 (** 一般顶点 nerve 在单元素对象集合上使用恒等运输，同样保留布尔环路的区别。 *)
 
-Definition BoolVertexNerve
+Definition BoolVtxNerve
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Nᵥ(MonoidObjF BoolS).
 
@@ -107,10 +107,10 @@ Definition BoolVertexNerve
 
 (** 异或群的顶点 nerve 在全部正维具有选定填充，并保留不同环路；须显式启用此结构。 *)
 
-Definition BoolVertexNerve_HasKanFillers
-  : HasKanFillers BoolVertexNerve
+Definition BoolVtxNerve_HasKanFillers
+  : HasKanFillers BoolVtxNerve
   := vertex_groupoid_HasKanFillers (MonoidObjF BoolS)
-      (HC := VertexCat_IsGroupoid (MonoidObjF BoolS)
+      (HC := VtxCat_IsGroupoid (MonoidObjF BoolS)
         (HC := BoolGroupoid_IsGroupoid)).
 
 (** Every compatible boolean-nerve boundary above dimension two has a
@@ -118,18 +118,18 @@ Definition BoolVertexNerve_HasKanFillers
 
 (** 布尔 nerve 中每个高于二维的相容边界具有唯一填充，一维环路仍保持区别。 *)
 
-Definition BoolVertexNerve_IsCoskeletal
-  : BoolVertexNerve ⦂ Cosk[2]
+Definition BoolVtxNerve_IsCoskeletal
+  : BoolVtxNerve ⦂ Cosk[2]
   := vertex_IsCoskeletal (MonoidObjF BoolS).
 
 (** The tuple interpretation is a map into the general construction. *)
 
 (** 元组解释给出进入一般构造的映射。 *)
 
-Definition BoolVertexComparison
+Definition BoolVtxComparison
   : (LiftF ∘F BoolNerve : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
-      BoolVertexNerve
-  := MonoidVertexN.
+      BoolVtxNerve
+  := MonoidVtxN.
 
 (** The two loops stay unequal before forgetting the specified vertex
     comparison. This follows from the general reflection theorem. *)
@@ -137,10 +137,10 @@ Definition BoolVertexComparison
 (** 忘却指定顶点比较之前，两条环路保持不等；此结论直接来自一般反映定理。 *)
 
 Lemma bool_vertex_loop_not_id
-  : ¬ (BoolVertexComparison 1 {|lower := bool_nerve_loop
-                              |} ≈S
-      BoolVertexComparison 1 {|lower := bool_nerve_id
-                              |}).
+  : ¬ (BoolVtxComparison 1 {|lower := bool_nerve_loop
+                           |} ≈S
+      BoolVtxComparison 1 {|lower := bool_nerve_id
+                          |}).
 Proof.
   intros H. apply bool_nerve_loop_not_id.
   exact (monoid_vertex_reflects bool_nerve_loop bool_nerve_id H).
@@ -186,11 +186,11 @@ Next Obligation. exact tt. Defined.
 
 (** 常值函子保持对象广集及全部运输。 *)
 
-Program Definition ConstantVertexF (b : bool)
+Program Definition ConstantVtxF (b : bool)
   : BooleanLabels →ᵥ BooleanLabels
   :=
-  {|vertex_functor := ConstF (VertexCat BooleanLabels)
-      (C := VertexCat BooleanLabels) b
+  {|vertex_functor := ConstF (VtxCat BooleanLabels)
+      (C := VtxCat BooleanLabels) b
   |}.
 Next Obligation. intros; reflexivity. Defined.
 
@@ -204,7 +204,7 @@ Next Obligation. intros; reflexivity. Defined.
     唯一的余离散箭头给出两个底层常值函子之间的自然同构，尽管其标签不同。 *)
 
 Program Definition constants_nat_iso
-  : ConstantVertexF false ≅N ConstantVertexF true
+  : ConstantVtxF false ≅N ConstantVtxF true
   := ({|nt x := tt
        |}; _).
 Next Obligation. exact tt. Defined.
@@ -215,7 +215,7 @@ Next Obligation. intros x. exists tt. split; exact tt. Defined.
 (** 指定运输比较将迫使 false 和 true 相等。 *)
 
 Example constants_not_vertex_equal
-  : ¬ VtxFctEq (ConstantVertexF false) (ConstantVertexF true).
+  : ¬ VtxFctEq (ConstantVtxF false) (ConstantVtxF true).
 Proof. intros [e H]. discriminate (e false). Defined.
 
 (** *** 3. Degree zero detects exactly the retained distinction
@@ -230,33 +230,33 @@ Proof. intros [e H]. discriminate (e false). Defined.
     上使用任意自然同构相等。 *)
 
 Example constant_nerve_maps_distinct
-  : ¬ ((VertexNerveN (ConstantVertexF false) :
+  : ¬ ((VtxNerveN (ConstantVtxF false) :
       (Nᵥ(BooleanLabels) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)
-        ≈N VertexNerveN (ConstantVertexF true)).
+        ≈N VtxNerveN (ConstantVtxF true)).
 Proof.
   intros H.
-  pose (x := ⟨ConstF [Ord 0] (C := VertexCat BooleanLabels) false⟩ᵥ).
+  pose (x := ⟨ConstF [Ord 0] (C := VtxCat BooleanLabels) false⟩ᵥ).
   pose (e := (lower (H 0%nat x)).1 fin_first).
   discriminate e.
 Defined.
 
 (** *** 4. Every simplicial map reconstructs a transport-preserving functor
 
-    [VertexNerveInvF] extracts objects in degree zero and arrows in degree
+    [VtxNerveInvF] extracts objects in degree zero and arrows in degree
     one. Naturality aligns endpoints by specified transport; degeneracies
     give identities and triangles give composition. The following result
     applies to any simplicial map, rather than only one built from a functor. *)
 
 (** *** 4. 每个单纯映射重构为保运输函子
 
-    [VertexNerveInvF] 从零维提取对象、从一维提取箭头。自然性通过指定运输对齐
+    [VtxNerveInvF] 从零维提取对象、从一维提取箭头。自然性通过指定运输对齐
     端点，退化给出恒等，三角形给出复合。以下结论适用于任意单纯映射，而不只
     适用于已经由函子构造的映射。 *)
 
 Example every_boolean_nerve_map_reconstructs
     (α : (Nᵥ(BooleanLabels) :
       Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ Nᵥ(BooleanLabels))
-  : VertexNerveN (VertexNerveInvF α) ≈N α.
+  : VtxNerveN (VtxNerveInvF α) ≈N α.
 Proof. exact (vertex_nerve_β α). Defined.
 
 (** The other round trip uses [VtxFctEq]. It does not identify the
@@ -265,7 +265,7 @@ Proof. exact (vertex_nerve_β α). Defined.
 (** 另一侧往返使用 [VtxFctEq]，不会识别上面两个不同的常值函子。 *)
 
 Example boolean_vertex_functor_round_trip (F : BooleanLabels →ᵥ BooleanLabels)
-  : VtxFctEq (VertexNerveInvF (VertexNerveN F :
+  : VtxFctEq (VtxNerveInvF (VtxNerveN F :
       (Nᵥ(BooleanLabels) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)) F.
 Proof. exact (vertex_nerve_η F). Defined.
 

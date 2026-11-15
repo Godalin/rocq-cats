@@ -34,8 +34,8 @@ Context {X Y : SetC} {C D : Cat}
 
 Lemma vertex_prism_square {x x' y y' : X} {i j : Ordinal 1}
     (p : x ≈S x') (q : y ≈S y')
-    (f : (@Hom (VertexCat T)) x y)
-    (g : (@Hom (VertexCat T)) x' y') (a : (@Hom [Ord 1]) i j)
+    (f : (@Hom (VtxCat T)) x y)
+    (g : (@Hom (VtxCat T)) x' y') (a : (@Hom [Ord 1]) i j)
     (r : (NaturalPrismF α (x, i) : Y) ≈S
       NaturalPrismF α (x', i))
     (s : (NaturalPrismF α (y, j) : Y) ≈S
@@ -60,11 +60,11 @@ Proof.
     exact (K F).
   - rewrite <- (vertex_functor_transport_witness F p r),
       <- (vertex_functor_transport_witness G q s).
-    change (@HomEq (VertexCat U) (F x) (G y')
+    change (@HomEq (VtxCat U) (F x) (G y')
       (fmap G T⟦q⟧Ob ∘ (fmap G f ∘ α x))
       ((fmap G g ∘ α x') ∘ fmap F T⟦p⟧Ob)).
     rewrite comp_assoc, (nt_naturality α T⟦p⟧Ob), <- !comp_assoc.
-    apply (@comp_r (VertexCat U)).
+    apply (@comp_r (VtxCat U)).
     exact (K G).
   - rewrite <- (vertex_functor_transport_witness G p r),
       <- (vertex_functor_transport_witness G q s), !comp_id_r.
@@ -78,9 +78,9 @@ Defined.
     运输方块来自 [α] 的自然性。 *)
 
 Lemma vertex_prism_diagram_proper {J : Cat}
-    (θ : Fct J [Ord 1]) (P Q : Fct J (VertexCat T))
-    (H : VertexDiagramEq T P Q)
-  : VertexDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF α Q θ).
+    (θ : Fct J [Ord 1]) (P Q : Fct J (VtxCat T))
+    (H : VtxDiagramEq T P Q)
+  : VtxDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF α Q θ).
 Proof.
   destruct H as [e H].
   assert (d : ∀ i, (PrismDiagramF α P θ i : Y) ≈S
@@ -104,8 +104,8 @@ End Prisms.
 Lemma vertex_prism_transformation_eq {X Y : SetC} {C D J : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α β : F ⇒ G) (H : α ≈N β)
-    (P : Fct J (VertexCat T)) (θ : Fct J [Ord 1])
-  : VertexDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF β P θ).
+    (P : Fct J (VtxCat T)) (θ : Fct J [Ord 1])
+  : VtxDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF β P θ).
 Proof.
   exists (λ i, reflexivity (_ : Y)). intros i j a.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r.
@@ -121,7 +121,7 @@ Lemma vertex_prism_time_square {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (α : F ⇒ G) {x y : X}
     {i i' j j' : Ordinal 1} (e : i = i') (d : j = j')
-    (f : (@Hom (VertexCat T)) x y)
+    (f : (@Hom (VtxCat T)) x y)
     (a : (@Hom [Ord 1]) i j) (b : (@Hom [Ord 1]) i' j')
     (r : (NaturalPrismF α (x, i) : Y) ≈S NaturalPrismF α (x, i'))
     (s : (NaturalPrismF α (y, j) : Y) ≈S NaturalPrismF α (y, j'))
@@ -143,9 +143,9 @@ Defined.
 
 Lemma vertex_prism_time_eq {X Y : SetC} {C D J : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
-    {F G : T →ᵥ U} (α : F ⇒ G) (P : Fct J (VertexCat T))
+    {F G : T →ᵥ U} (α : F ⇒ G) (P : Fct J (VtxCat T))
     (θ φ : Fct J [Ord 1]) (H : ∀ i, θ i = φ i)
-  : VertexDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF α P φ).
+  : VtxDiagramEq U (PrismDiagramF α P θ) (PrismDiagramF α P φ).
 Proof.
   assert (d : ∀ i, (PrismDiagramF α P θ i : Y) ≈S
     PrismDiagramF α P φ i).
@@ -161,9 +161,9 @@ Defined.
 
 Lemma vertex_prism_endpoint {X Y : SetC} {C D J : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
-    {F G : T →ᵥ U} (α : F ⇒ G) (P : Fct J (VertexCat T))
+    {F G : T →ᵥ U} (α : F ⇒ G) (P : Fct J (VtxCat T))
     (b : bool)
-  : VertexDiagramEq U
+  : VtxDiagramEq U
       (PrismDiagramF α P
         (ConstF J (C := [Ord 1])
           (if b then fin_next fin_first else fin_first)))
@@ -183,7 +183,7 @@ Defined.
 Lemma vertex_prism_id_square {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     (F : T →ᵥ U) {x y : X} {i j : Ordinal 1}
-    (f : (@Hom (VertexCat T)) x y) (a : (@Hom [Ord 1]) i j)
+    (f : (@Hom (VtxCat T)) x y) (a : (@Hom [Ord 1]) i j)
     (r : (NaturalPrismF (F := F) idN (x, i) : Y) ≈S F x)
     (s : (NaturalPrismF (F := F) idN (y, j) : Y) ≈S F y)
   : U⟦s⟧Ob ∘ fmap (NaturalPrismF (F := F) idN)
@@ -202,9 +202,9 @@ Defined.
 
 Lemma vertex_prism_id {X Y : SetC} {C D J : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
-    (F : T →ᵥ U) (P : Fct J (VertexCat T))
+    (F : T →ᵥ U) (P : Fct J (VtxCat T))
     (θ : Fct J [Ord 1])
-  : VertexDiagramEq U (PrismDiagramF (F := F) idN P θ) (F ∘F P).
+  : VtxDiagramEq U (PrismDiagramF (F := F) idN P θ) (F ∘F P).
 Proof.
   assert (d : ∀ i, (PrismDiagramF (F := F) idN P θ i : Y) ≈S F (P i)).
   { intros i. cbn. destruct (θ i) as [[] | [[] | []]]; reflexivity. }

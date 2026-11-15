@@ -25,7 +25,7 @@ From Cats Require Import
 Record VtxFct {X Y : SetC} {C D : Cat}
     (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
   :=
-  { vertex_functor :> Fct (VertexCat T) (VertexCat U)
+  { vertex_functor :> Fct (VtxCat T) (VtxCat U)
   ; vertex_functor_ob_proper
     :: Proper (carrier_equiv X ==> carrier_equiv Y) vertex_functor
   ; vertex_functor_transport {x y : X} (p : x ≈S y)
@@ -71,7 +71,7 @@ Defined.
 
 (** 恒等函子保持指定运输，无需选取新数据。 *)
 
-Program Canonical VertexIdF {X : SetC} {C : Cat}
+Program Canonical VtxIdF {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : T →ᵥ T
   :=
@@ -85,7 +85,7 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 
 (** 复合结合普通函子及其保相等对象映射；运输律由原来的两条运输律导出。 *)
 
-Program Canonical VertexCompF {X Y Z : SetC} {C D E : Cat}
+Program Canonical VtxCompF {X Y Z : SetC} {C D E : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
   : T →ᵥ V
@@ -102,7 +102,7 @@ Next Obligation.
   - apply vertex_functor_transport_witness.
 Defined.
 
-Infix "∘Fᵥ" := VertexCompF (at level 40) : cat_scope.
+Infix "∘Fᵥ" := VtxCompF (at level 40) : cat_scope.
 
 (** Functors compare by the target's specified vertex transports. This
     records a natural isomorphism with prescribed components, and does not
@@ -115,7 +115,7 @@ Definition VtxFctEq {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     (F G : T →ᵥ U)
   : Type
-  := VertexDiagramEq U F G.
+  := VtxDiagramEq U F G.
 
 (** Equivalence laws are inherited from labelled-diagram comparison. *)
 
@@ -163,7 +163,7 @@ Definition vertex_functor_iso {X Y : SetC} {C D : Cat}
 Program Definition vertex_diagram_postcomp_resp {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {J : Cat} (F : T →ᵥ U)
-  : VertexDiagramS T J →r VertexDiagramS U J
+  : VtxDiagramS T J →r VtxDiagramS U J
   :=
   {|func P := F ∘F P
   |}.
@@ -200,7 +200,7 @@ Global Instance vertex_comp_proper {X Y Z : SetC} {C D E : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {V : Fct (EqGpd Z) E}
   : Proper (VtxFctEq ==> VtxFctEq ==> VtxFctEq)
-      (@VertexCompF X Y Z C D E T U V).
+      (@VtxCompF X Y Z C D E T U V).
 Proof.
   intros G G' H F F' K. unfold VtxFctEq.
   transitivity (G' ∘F F).
@@ -214,7 +214,7 @@ Defined.
 
 Lemma vertex_comp_id_l {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
-  : VtxFctEq (VertexIdF U ∘Fᵥ F) F.
+  : VtxFctEq (VtxIdF U ∘Fᵥ F) F.
 Proof.
   exists (λ x, reflexivity (F x : Y)). intros x y f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
@@ -226,7 +226,7 @@ Defined.
 
 Lemma vertex_comp_id_r {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
-  : VtxFctEq (F ∘Fᵥ VertexIdF T) F.
+  : VtxFctEq (F ∘Fᵥ VtxIdF T) F.
 Proof.
   exists (λ x, reflexivity (F x : Y)). intros x y f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
