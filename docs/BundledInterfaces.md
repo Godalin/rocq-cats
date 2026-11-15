@@ -676,7 +676,7 @@ and opposite-based dual constructions.
 | `Instance/` | 109 | Models and model-specific bridges / 模型及模型特有的桥接 |
 | `STLC/` | 22 | Syntax, interpretation and free-CCC clients / 语法、解释与自由 CCC 客户端 |
 | `DTT/` | 10 | Families, display, context extension and comprehension clients / 族、显示、上下文扩张与理解客户端 |
-| `Topos/` | 5 | Elementary topos structure and classifiers, plus separate optional NNO and ETCS extensions / 初等拓扑斯结构与分类子，以及独立可选的自然数及 ETCS 扩展 |
+| `Topos/` | 6 | Elementary topos structure and classifiers, plus optional representation, conjunction, NNO and ETCS extensions / 初等拓扑斯结构与分类子，以及可选的表示、合取、自然数及 ETCS 扩展 |
 
 Direct import inspection confirms that `Instance.Set.Core` depends only
 on `Cat.Core`; the three STLC, DTT and ETCS directions do not import one
@@ -2186,3 +2186,39 @@ remaining initial-object/finite-colimit or full internal-logic milestones.
 扩展原逆像操作，证明其保持子对象包含、最大子对象及二元交，所有比较因子
 保持透明。前提仅为具名的选定拉回，不要求环境范畴的终对象、分类子、CCC
 或 ETCS。这只提供有限交，不计为始对象／有限余极限或完整内部逻辑里程碑。
+
+## Classifier conjunction / 分类对象上的合取
+
+[Topos.Conjunction](../theories/Topos/Conjunction.v) defines `Conj` as the
+characteristic arrow of `⟨truth, truth⟩` from the selected terminal object.
+For predicates with a common context, `f ∧Ω g` applies this arrow to their
+pair. The construction, its Proper instance, substitution law and truth
+criterion require only named terminal, classifier and product choices.
+The criterion says both predicates are constantly true, retaining their
+specified Hom-equality witnesses. The generic `classifier_char_factor`
+also retains the actual factor through a monomorphism; identifying a
+classifier by this criterion uses no selected pullbacks or products.
+
+With an additional named pullback choice, the characteristic arrow of
+`s ∩Sub t` is `χ s ∧Ω χ t`. Reconstruction by inverse image gives the
+corresponding subobject intersection with transparent comparison factors.
+Commutativity, associativity, idempotence and the truth unit are transported
+from the existing subobject-intersection laws. No exponentials, CCC, ETCS,
+well-pointedness or classical principles enter these statements. The module
+is optional, with no base import change or globally enabled chosen structure.
+This is the conjunction fragment; implication, joins, bottom and other
+Heyting logic, initial objects/finite colimits and meaningful models remain
+separate milestones.
+
+[Topos.Conjunction](../theories/Topos/Conjunction.v) 将从选定终对象出发的
+`⟨truth, truth⟩` 的特征箭头定义为 `Conj`。同一上下文上的谓词以 `f ∧Ω g`
+表示将该箭头作用于二者的配对。构造、Proper 实例、代入律及为真判据仅要求
+具名的终对象、分类子与积选择。判据断言两个谓词均恒真，保留其指定 Hom
+相等见证。一般的 `classifier_char_factor` 还保留经过单态射的实际分解因子；
+由此判据确定分类箭头不需要选定拉回或积。
+
+另有具名拉回选择时，`s ∩Sub t` 的特征箭头为 `χ s ∧Ω χ t`。通过逆像重构，
+得到对应的子对象交及透明比较因子。交换、结合、幂等与真单位律均从既有
+子对象交定律传递。不使用指数、CCC、ETCS、良点性或经典逻辑原理。模块保持
+可选，不改变基础导入，也不全局启用任何选定结构。这仅为合取片段；蕴含、
+并、底及其余 Heyting 逻辑、始对象／有限余极限和有意义模型仍为独立里程碑。

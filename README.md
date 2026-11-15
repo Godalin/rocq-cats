@@ -198,7 +198,7 @@ for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
 in `Cats.Topos.Nat`, and the stronger set-theory bundle in `Cats.Topos.ETCS`.
-All five modules are under `Topos/`; there are no ETCS compatibility imports.
+All six modules are under `Topos/`; there are no ETCS compatibility imports.
 Characteristic arrows respect monomorphism equality, detect subobject
 equivalence and turn pullback into precomposition. These laws need only a
 chosen terminal object and classifier; [pullback monicity](./theories/Cat/Subobject.v)
@@ -210,12 +210,15 @@ For finite intersections, [SubobjectIntersection](./theories/Cat/SubobjectInters
 uses binary products in the Type-valued subobject preorder category.
 Its [inverse-image laws](./theories/Instance/Set/SubobjectIntersection.v)
 need only chosen pullbacks and preserve comparison-factor data.
+The optional [conjunction module](./theories/Topos/Conjunction.v) classifies
+paired truth. It proves substitution and truth criteria, and transports
+intersection classification and laws to predicates.
 
 `Topos C` 为一个选定 `CCC C` 增加拉回和子对象分类子，分类子使用继承的
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
-五个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
+六个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
 特征箭头保持单态射相等、检测子对象等价，并将拉回变为预合成。这些律只需要
 选定终对象及分类子；[拉回单态性](./theories/Cat/Subobject.v) 对任意范畴中的
 给定拉回方形成立。
@@ -225,6 +228,8 @@ need only chosen pullbacks and preserve comparison-factor data.
 Type 值子对象预序范畴的二元积给出；其
 [逆像保持律](./theories/Instance/Set/SubobjectIntersection.v)仅需要选定拉回，
 保留比较因子数据。
+可选的[合取模块](./theories/Topos/Conjunction.v)分类成对真箭头，证明代入与
+为真的判据，并将交的分类及定律传递到谓词。
 
 `ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
 natural-numbers object, retaining the existing chosen initial-object field.
