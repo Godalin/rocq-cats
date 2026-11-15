@@ -4,7 +4,8 @@
 可包装的大小下，选定上下文扩张与选定配对预层表示可互相构造。**
 独立大小下的候选级准则使用泛配对，并给出提升 Hom 表示，见第 2 节。
 [ContextRepresentation](../theories/DTT/Context/Representation.v) 已实现该结果。
-从一般 comprehension 提取 T 的部分另行设计，边界如下。
+固定类型预层后，元素投影上的 comprehension 已可恢复显示结构及 CwF，见第 4 节。
+从一般总范畴选取类型代码的部分仍另行设计，边界如下。
 
 ## 1. 现有 comprehension 提供什么
 
@@ -311,7 +312,76 @@ CwF. These are ordinary definitions; import enables no chosen model.
 此处不声称任意 comprehension 无条件给出 CwF；第 2 节的必要充分准则
 仍以固定类型与项预层 T 为前提。
 
-## 4. 宇宙与验证
+## 4. Comprehension over chosen type elements / 指定类型元素上的理解结构
+
+[Elements](../theories/Instance/Set/Elements.v) constructs `ElementsCat P`
+for a fixed `P : Fct (C^op) SetCat`. Objects are pairs `(Γ,A)`; an arrow
+from `(Γ,A)` to `(Δ,B)` retains `σ : Hom Γ Δ` and `A ≈S fmap P σ B`.
+Arrow equality compares the base arrows, keeping the Type-valued element
+witnesses as data. Every arrow is cartesian for `ElementsBaseF P`: its
+element equality supplies the factor's equality, while the prescribed base
+factor determines its hom-equality class. Canonical restriction therefore
+provides chosen cartesian lifts, with no new global model selection.
+
+A functor `T : Fct (ElementsCat P) C`, a natural projection
+`π : T ⇒ ElementsBaseF P`, and `is_comprehension π` suffice as input.
+`ElementsComprehension` supplies the canonical lifts to assemble the existing
+comprehension interface. No independently chosen cleavage is required.
+[Display/Comprehension](../theories/DTT/Display/Comprehension.v) then defines
+`Comprehension_HasDisplay P K`: display objects and projections come from K;
+conversion and substitution lifts are the images of vertical equality arrows
+and canonical element restrictions. Functor identity, composition and
+respectfulness derive all conversion/lift coherence laws. The given
+comprehension property supplies the display pullbacks. With an independent
+`HasTerminal C`, `ComprehensionCwF P K` reuses the existing display recovery.
+
+Conversely, `DisplayElementsComprehension` extends a supplied display
+structure along every element arrow: first convert its source type, then
+apply the display lift. The existing pullback-transport theorem supplies the
+comprehension property along the conversion isomorphism. The display round
+trip preserves projection, conversion and lifts in the specified hom equality.
+The comprehension round trip has a transparent natural isomorphism
+`comprehension_display_iso` between its total-space functor and the original
+`ExtF K`; `comprehension_display_projection` preserves the projection.
+No equality of functor records, proof fields or chosen cleavages is asserted.
+`display_iff_elements_comprehension` records mutual constructibility with P
+fixed, rather than a category equivalence for arbitrary comprehension.
+
+This criterion explicitly assumes the type-element presentation. Its vertical
+endomorphisms have identity base and hence are equal to identity in the
+specified hom equality; an arbitrary total category need not have this
+property. For comprehension on a general `E → C`, the next step must supply
+an interpretation of the chosen type elements in E, with coherent base
+comparison and cartesian preservation. Such interpretation and any stronger
+comparison hypotheses are not inferred from fullness or from arbitrary
+vertical isomorphisms.
+
+[Elements](../theories/Instance/Set/Elements.v) 为固定的类型预层构造
+`ElementsCat P`。对象为 `(Γ,A)`；从 `(Γ,A)` 到 `(Δ,B)` 的态射保留
+`σ : Hom Γ Δ` 及 `A ≈S fmap P σ B`。态射相等只比较基底映射，Type 值元素
+见证仍作为数据保留。每条态射对 `ElementsBaseF P` 均为笛卡尔的：元素相等
+提供分解的相等见证，给定基底分解确定其 Hom 相等类。因此标准限制提供选定
+笛卡尔提升，不新增全局模型选择。
+
+全空间函子 T、自然投影 `π : T ⇒ ElementsBaseF P` 及其
+`is_comprehension π` 已足够作为输入；`ElementsComprehension` 使用标准提升
+组装既有接口，不另假设选定 cleavage。`Comprehension_HasDisplay P K` 取 K
+的全空间对象及投影，把垂直相等箭头及标准元素限制映为转换和替换提升。
+函子的恒等、复合及尊重性导出全部相干律；给定理解泛性质提供显示拉回。
+另选 `HasTerminal C` 后，`ComprehensionCwF P K` 复用已有显示恢复。
+
+反向的 `DisplayElementsComprehension` 把元素箭头送到先转换、再提升的复合，
+并复用拉回沿转换同构的运输定理。显示结构往返在指定 Hom 相等下保持投影、
+转换和提升；理解结构往返的全空间函子通过透明自然同构比较，并保持投影。
+不要求函子记录、证明字段或选定 cleavage 相等。固定 P 的互构准则不声称
+任意理解结构之间的范畴等价。
+
+此准则明确假设类型元素表述。其垂直自态射的基底为恒等，因而在指定 Hom
+相等下等于恒等；任意总范畴不必具有此性质。对一般 `E → C` 上的理解结构，
+下一步仍须给出类型元素在 E 中的解释、相干基底比较及笛卡尔保持。解释及更强
+比较所需的假设，不能由满性或任意垂直同构自动取得。
+
+## 5. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
 现有 [Universes.v](../tests/Universes.v) 新增四项检查，覆盖两种大小排列下的
@@ -387,3 +457,26 @@ project switch with Rocq 9.2, Stdlib 9.2.0 and Dune 3.23.1.
 右逆及上边见证，不比较锥见证。二十一项临时假设报告全部闭合，选定上下文
 扩张及 CwF 仍须显式启用。临时模型和输出不加入库，验证使用项目 switch
 中的 Rocq 9.2、Stdlib 9.2.0 和 Dune 3.23.1。
+
+Type-element comprehension adds twelve fixed universe regressions. With
+`Set < h < p < l < a < b < o`, the type presheaves use carrier/equality
+levels `(a,b)` and `(b,a)`. Element hom carriers contain the type-equality
+witnesses, while their hom equality remains at the base equality level;
+the recovered CwF terms still have levels `(p,p)` and `(p,h)`. The criterion,
+canonical lifts and total-space natural isomorphism pass at these levels.
+Temporary Boolean models check eighteen native reflexivity computations and
+one specified-equality law, including distinct stored element witnesses,
+nontrivial conversion, term substitution, recovered pairing/generic terms,
+the completed model and both comparison directions. All 33 new public
+declarations and three concrete chosen-model reports are closed. Explicit
+choice probes reject automatic display/CwF selection. These models and
+assumption outputs remain outside the repository.
+
+类型元素上的理解结构另增十二项固定宇宙回归：在
+`Set < h < p < l < a < b < o` 下，类型预层分别使用 `(a,b)` 与 `(b,a)`
+载体／相等层级。元素 Hom 载体容纳类型相等见证，Hom 相等仍处于基底相等
+层级；恢复 CwF 的项仍为 `(p,p)` 与 `(p,h)`。互构准则、标准提升及全空间
+自然同构在这些层级通过。临时布尔模型验证十八项原生反身计算及一项指定相等
+定律，包括不同的已存元素见证、非平凡转换、项替换、恢复的配对与泛项、最终
+模型及双向比较。33 个新公开声明及三个具体选定模型的假设报告均闭合；显式
+选择探针确认不会自动启用显示结构或 CwF。临时模型和假设输出不加入仓库。

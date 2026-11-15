@@ -96,7 +96,11 @@ From Cats Require Import
   DTT.Context.Display.
 From Cats Require Import
   DTT.Display.Section
-  DTT.Display.Representation.
+  DTT.Display.Representation
+  DTT.Display.Comprehension
+  Instance.Set.Elements
+  Cat.Fibration
+  Cat.Comprehension.
 From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import
@@ -1354,6 +1358,66 @@ Definition low_eq_display_model_terms (HT : HasTerminal D)
   : SetC@{p h}
   := Tm (TyTmF (@DisplayCwF D Q HE HT)) Γ A.
 End ContextUniversalLevels.
+
+(** Comprehension over type elements keeps large type carriers/equalities
+    independent of base homs and of the recovered term bounds. Both orders
+    also check the total-space natural isomorphism. *)
+
+(** 类型元素上的理解结构保持较大的类型载体／相等层级独立于基底 Hom 及恢复项
+    的大小界；两种排列同时检查全空间自然同构。 *)
+
+Section ComprehensionElementLevels.
+Universe o h p l a b.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Constraint l < a.
+Constraint a < b.
+Constraint b < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (P : Fct (C^op) SetCat@{a b _ _ _ _ _})
+    (Q : Fct (D^op) SetCat@{b a _ _ _ _ _}).
+Definition high_eq_elements
+  : Cat@{o b p _ _}
+  := ElementsCat P.
+Definition low_eq_elements
+  : Cat@{o a h _ _}
+  := ElementsCat Q.
+Definition high_eq_elements_lifts
+  : HasCartesianLift (ElementsBaseF P)
+  := ElementsBaseF_HasCartesianLift P.
+Definition low_eq_elements_lifts
+  : HasCartesianLift (ElementsBaseF Q)
+  := ElementsBaseF_HasCartesianLift Q.
+Context (K : Comprehension (ElementsBaseF P))
+    (L : Comprehension (ElementsBaseF Q)).
+Definition high_eq_comprehension_display
+  : HasDisplay C P
+  := Comprehension_HasDisplay P K.
+Definition low_eq_comprehension_display
+  : HasDisplay D Q
+  := Comprehension_HasDisplay Q L.
+Definition high_eq_comprehension_terms (HT : HasTerminal C)
+    (Γ : @Ob C) (A : P Γ)
+  : SetC@{p p}
+  := Tm (TyTmF (@ComprehensionCwF C P K HT)) Γ A.
+Definition low_eq_comprehension_terms (HT : HasTerminal D)
+    (Γ : @Ob D) (A : Q Γ)
+  : SetC@{p h}
+  := Tm (TyTmF (@ComprehensionCwF D Q L HT)) Γ A.
+Definition high_eq_elements_criterion
+  : HasDisplay C P ↔ Comprehension (ElementsBaseF P)
+  := display_iff_elements_comprehension P.
+Definition low_eq_elements_criterion
+  : HasDisplay D Q ↔ Comprehension (ElementsBaseF Q)
+  := display_iff_elements_comprehension Q.
+Definition high_eq_comprehension_iso
+  : @DisplayElementsF C P (Comprehension_HasDisplay P K) ≅N ExtF K
+  := comprehension_display_iso P K.
+Definition low_eq_comprehension_iso
+  : @DisplayElementsF D Q (Comprehension_HasDisplay Q L) ≅N ExtF L
+  := comprehension_display_iso Q L.
+End ComprehensionElementLevels.
 
 (** Raw syntax accepts arbitrary signature levels. An inferred extra universe
     on variable markers must not restrict rename/substitution clients. *)
