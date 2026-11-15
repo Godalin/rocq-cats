@@ -1,5 +1,6 @@
 From Cats Require Import
   Cat.Core
+  Cat.Morphism
   Cat.Functor.Core
   Cat.Natural
   Cat.Fibration
@@ -60,3 +61,67 @@ Proof. apply nt_naturality. Qed.
 Definition ComprehensionF {E B : Cat} {P : Fct E B} (K : Comprehension P)
   : Fct E (Arr B)
   := NatArrowF (projectionN K).
+
+(** ** Restriction with a Coherent Base Comparison
+
+    Interpret objects of [D] in [E] through [S]. A natural isomorphism
+    compares the interpreted projection [P ∘F S] with the supplied [Q];
+    it does not identify their object maps. Cartesian preservation is a
+    separate hypothesis. Source comprehension needs only its candidate
+    universal property, while chosen target lifts are supplied separately. *)
+
+(** ** 带相干基底比较的限制
+
+    通过 [S] 将 [D] 的对象解释到 [E]。自然同构比较解释后的投影 [P ∘F S]
+    与给定 [Q]，不等同它们的对象映射；笛卡尔保持是独立假设。源理解结构只需
+    候选泛性质，目标选定提升另行提供。 *)
+
+Section Restriction.
+Context {D E B : Cat} {P T : Fct E B} {Q : Fct D B}
+    (S : Fct D E) (β : (P ∘F S) ≅N Q) (π : T ⇒ P).
+
+(** Evaluate the source projection along the interpretation, then apply the
+    given base comparison. Naturality follows by whiskering and composition. *)
+
+(** 沿解释求值源投影，再作用给定的基底比较；须化与复合给出自然性。 *)
+
+Definition ComprehensionRestrictionN
+  : (T ∘F S) ⇒ Q
+  := β.1 ∘Nv (π ∘Nr S).
+
+(** Each preserved cartesian arrow gives a pullback across the natural
+    base boundary. No equality of functors or chosen lifts is used. *)
+
+(** 每条保持的笛卡尔箭头跨自然基底边界给出拉回，不使用函子或选定提升的相等。 *)
+
+Definition comprehension_restrict_universal (Hπ : is_comprehension π)
+    (HS : ∀ X Y (f : (@Hom D) X Y),
+      f ⦂ Cart(Q) → fmap S f ⦂ Cart(P))
+  : is_comprehension ComprehensionRestrictionN.
+Proof.
+  intros X Y f Hf.
+  exact (pullback_base_boundary (β.1 X) (β.2 X)
+    (β.1 Y) (iso_mono (β.1 Y) (β.2 Y))
+    (nt_naturality β.1 f) (Hπ _ _ (fmap S f) (HS _ _ f Hf))).
+Defined.
+
+(** Assemble a chosen comprehension using exactly the supplied target
+    lifts. Source lifts, fullness and object equality are not required;
+    importing the construction enables no chosen model. *)
+
+(** 使用给定的目标提升组装选定理解结构。不要求源提升、满性或对象相等；
+    导入此构造不会启用选定模型。 *)
+
+Program Definition RestrictedComprehension (Hπ : is_comprehension π)
+    (HS : ∀ X Y (f : (@Hom D) X Y),
+      f ⦂ Cart(Q) → fmap S f ⦂ Cart(P))
+    (HQ : HasCartLift Q)
+  : Comprehension Q
+  :=
+  {|comprehension_lifts := HQ
+  ; ExtF := T ∘F S
+  ; projectionN := ComprehensionRestrictionN
+  ; comprehension_universal := comprehension_restrict_universal Hπ HS
+  |}.
+
+End Restriction.

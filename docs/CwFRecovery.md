@@ -381,7 +381,51 @@ vertical isomorphisms.
 下一步仍须给出类型元素在 E 中的解释、相干基底比较及笛卡尔保持。解释及更强
 比较所需的假设，不能由满性或任意垂直同构自动取得。
 
-## 5. 宇宙与验证
+## 5. Restriction across a natural base comparison / 跨自然基底比较的限制
+
+The general prerequisite lives in
+[Comprehension](../theories/Cat/Comprehension.v). Given projections
+`P : Fct E B`, `Q : Fct D B`, an interpretation `S : Fct D E`, a natural
+isomorphism `β : (P ∘F S) ≅N Q`, and `π : T ⇒ P`, it forms
+`ComprehensionRestrictionN S β π := β.1 ∘Nv (π ∘Nr S)`.
+Whiskering and vertical composition supply naturality; no object or functor
+record equality is needed.
+
+`comprehension_restrict_universal` assumes `is_comprehension π` and explicitly
+requires `S` to send each Q-cartesian arrow to a P-cartesian arrow. The source
+property supplies a pullback; naturality of β identifies its base boundary.
+[Pullback](../theories/Cat/Pullback.v) transports this square using the existing
+`pullback_base_iso` and the new `pullback_postcompose_mono`. Postcomposition
+needs only a monic outgoing boundary; changing the other base object needs
+an invertible incoming boundary. `pullback_base_boundary` packages both steps.
+The cone transport and `iso_mono` cancellation remain transparent even when
+the original mediator computes from a Type-valued cone witness.
+
+`RestrictedComprehension` adds exactly a supplied `HasCartLift Q`. Source
+chosen lifts, fullness and essential surjectivity are unnecessary. This is
+an independent general prerequisite: it does not construct a type presheaf
+or an interpretation from arbitrary comprehension. Specializing to
+`D := ElementsCat A`, `Q := ElementsBaseF A` still requires the interpretation,
+base comparison and cartesian preservation; element theory then supplies the
+target lifts. The specialized display/CwF construction is a subsequent step.
+
+一般前置位于 [Comprehension](../theories/Cat/Comprehension.v)。给定投影
+`P : Fct E B`、`Q : Fct D B`、解释 `S : Fct D E`、自然同构
+`β : (P ∘F S) ≅N Q` 及 `π : T ⇒ P`，以须化和垂直复合构造新的自然投影，
+不要求对象或函子记录相等。`comprehension_restrict_universal` 使用源候选
+理解泛性质，并显式要求 S 将 Q-笛卡尔箭头送到 P-笛卡尔箭头。
+
+源泛性质提供拉回，β 的自然性提供基底边界方程；复用既有基底同构运输及新的
+后合成单态射定理得到目标方形。出边界只需为单态射，另一基底对象的改变需要
+可逆入边界；`pullback_base_boundary` 组织两步。锥见证运输与 `iso_mono`
+消去均保持透明，即使原中介会读取 Type 值锥见证也可计算。
+
+`RestrictedComprehension` 只再使用给定的 `HasCartLift Q`，不需要源选定提升、
+满性或本质满，也不会自动启用模型。这是独立的一般前置，不从任意理解结构
+生成类型预层或解释。后续专门化到类型元素时，仍需给定解释、自然基底比较及
+笛卡尔保持；元素理论可提供目标提升，显示结构与 CwF 的专门构造留待下一阶段。
+
+## 6. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
 现有 [Universes.v](../tests/Universes.v) 新增四项检查，覆盖两种大小排列下的

@@ -2277,3 +2277,60 @@ Definition mixed_constant_lax (A : MonoidObj MC0)
   : LaxMonoidalFct MC1 MC0
   := ConstF_LaxMonoidalFct MC1 A.
 End LaxMonoidalLevels.
+
+(** Restriction compares bases naturally while retaining independent hom
+    and equality levels in the base and in both interpreting categories.
+    Auxiliary law bounds stay strictly above those levels. *)
+
+(** 限制通过自然同构比较基底，并保留基底与两个解释范畴各自独立的 Hom／
+    相等层级；定律辅助上界严格高于这些层级。 *)
+
+Section RestrictionLevels.
+Universes o h p a b l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < l.
+Constraint l < o.
+Context (B : Cat@{o h p l l}) (B' : Cat@{o p h l l})
+    (E : Cat@{o a b l l}) (D : Cat@{o b a l l}).
+Context (P T : Fct E B) (Q : Fct D B) (S : Fct D E)
+    (β : (P ∘F S) ≅N Q) (π : T ⇒ P)
+    (Hπ : is_comprehension π)
+    (HS : ∀ X Y (f : (@Hom D) X Y),
+      f ⦂ Cart(Q) → fmap S f ⦂ Cart(P)) (HQ : HasCartLift Q).
+Definition high_eq_restricted_projection
+  : (T ∘F S) ⇒ Q
+  := ComprehensionRestrictionN S β π.
+Definition high_eq_restricted_universal
+  : is_comprehension high_eq_restricted_projection
+  := comprehension_restrict_universal S β π Hπ HS.
+Definition high_eq_restricted_comprehension
+  : Comprehension Q
+  := RestrictedComprehension S β π Hπ HS HQ.
+Definition high_eq_restricted_hom_equality {X Y : @Ob D}
+    (f g : Hom X Y)
+  : Type@{p}
+  := fmap (ExtF high_eq_restricted_comprehension) f ≈
+      fmap (ExtF high_eq_restricted_comprehension) g.
+Context (P' T' : Fct D B') (Q' : Fct E B') (S' : Fct E D)
+    (β' : (P' ∘F S') ≅N Q') (π' : T' ⇒ P')
+    (Hπ' : is_comprehension π')
+    (HS' : ∀ X Y (f : (@Hom E) X Y),
+      f ⦂ Cart(Q') → fmap S' f ⦂ Cart(P')) (HQ' : HasCartLift Q').
+Definition low_eq_restricted_projection
+  : (T' ∘F S') ⇒ Q'
+  := ComprehensionRestrictionN S' β' π'.
+Definition low_eq_restricted_universal
+  : is_comprehension low_eq_restricted_projection
+  := comprehension_restrict_universal S' β' π' Hπ' HS'.
+Definition low_eq_restricted_comprehension
+  : Comprehension Q'
+  := RestrictedComprehension S' β' π' Hπ' HS' HQ'.
+Definition low_eq_restricted_hom_equality {X Y : @Ob E}
+    (f g : Hom X Y)
+  : Type@{h}
+  := fmap (ExtF low_eq_restricted_comprehension) f ≈
+      fmap (ExtF low_eq_restricted_comprehension) g.
+End RestrictionLevels.
