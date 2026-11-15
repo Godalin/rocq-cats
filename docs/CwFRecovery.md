@@ -581,7 +581,7 @@ the library.
 独立副本和假设输出仍置于库外。
 
 [Context/Section](../theories/DTT/Context/Section.v) supplies the general
-pairing bridge needed for the next canonical comparison. For any term of
+pairing bridge used by the canonical comparison below. For any term of
 `A[σ]Ty[T]`, `context_lift_term_section` identifies the substitution lift
 composed with its section with the universal pair `⟨σ; t⟩[T,A]` in hom
 equality. `context_lift_section_term` gives the corresponding equation for
@@ -590,17 +590,60 @@ the image of substitution. Both laws reuse existing lift/pair compatibility
 and section inverse laws, with explicit chosen context extensions and no
 terminal choice. They impose no native common term/Hom universe bound.
 Four permanent strict checks fix the larger original input levels in both
-orders. These are general prerequisites; compatibility of the canonical
-recovery comparison with all chosen context-extension data remains a later
-specialization.
+orders. The canonical specialization below reuses these prerequisites and
+aligns the recovered projection explicitly when comparing generic terms.
 
-[Context/Section](../theories/DTT/Context/Section.v) 提供下一步规范比较所需的
+[Context/Section](../theories/DTT/Context/Section.v) 提供下方规范比较使用的
 一般配对桥梁：对 `A[σ]Ty[T]` 中任意项，提升替换后复合其截面，在 Hom
 相等下就是对应泛配对；任意截面提取项后也满足同一方程。该项不必位于替换的
 像中。两条律复用既有提升／配对相容性和截面互逆律，显式给定上下文扩张，
 无需终上下文，不要求原项与 Hom 的原生层级共享大小界。四项永久严格检查
-固定两序的较大原输入层级。这些只是一般前置；规范恢复比较与全部选定上下文
-扩张数据的相容性留待后续专门化。
+固定两序的较大原输入层级。下方规范专门化复用这些前置，并在比较泛项时
+显式对齐恢复投影。
+
+The canonical specialization in
+[Context/Elements](../theories/DTT/Context/Elements.v) now compares pairing
+and generic terms as well. Let R be the recovered type-and-term functor,
+with its explicitly chosen recovered context extensions. The forward and
+backward term maps preserve pairing in hom equality, including terms outside
+the image of substitution and arbitrary recovered sections. The actual
+recovered context projection is compared with the original one by
+`context_elements_context_proj`; this includes the display-to-context
+projection boundary.
+
+For any supplied witness H of that projection equality, the generic term
+is first converted along `ty_sub_equiv T H A`. `context_elements_var`
+compares it with the forward image of the original generic term, and
+`context_elements_var_inv` gives the backward equation in the original term
+setoid. The proofs use the general section bridge, display factorization,
+pairing injectivity and the accepted inverse conversion law. They do not
+identify H with a different witness, compare law records, or use the native
+term/section isomorphism's common size bound. No terminal choice is needed
+for these laws; a complete CwF still requires its independent terminal input.
+This establishes these pointwise canonical compatibility laws without
+introducing a new interface for structured CwF morphisms.
+
+[Context/Elements](../theories/DTT/Context/Elements.v) 的规范专门化进一步比较
+配对及泛项。令 R 为恢复的类型—项函子，并显式选择其恢复上下文扩张。双向项
+映射在 Hom 相等下保持配对，覆盖不属于替换像的项及任意恢复截面。实际恢复的
+上下文投影经指定相等与原投影比较，其中包括从显示投影到上下文投影的边界。
+对该投影相等的任意给定见证 H，先沿 `ty_sub_equiv T H A` 转换泛项类型，
+再比较原泛项的前向像；逆向方程在原项广集中成立。证明复用一般截面桥梁、
+显示分解、配对单射及既有逆转换律，不识别不同的 H 或律记录，也不使用原生
+项／截面同构的共同大小界。这些律无需终上下文，完整 CwF 仍须独立终上下文；
+本次给出逐点规范相容律，不新增结构化 CwF 态射接口。
+
+Ten permanent strict configurations fix the actual original type/term bounds
+above both context hom levels in both orders. Temporary Code/El clients retain
+distinct true/false Type-valued projection and induced type-equality witnesses,
+check native forward/backward pairing and generic computations, and prove the
+pairing equations for a term outside a non-surjective substitution's image.
+Exact source copies and assumption output remain outside the library.
+
+十项永久严格配置在两种次序下，将实际原类型／项界固定在上下文 Hom 两层级
+之上。临时 Code/El 客户端保留可区分的 true／false Type 值投影及诱导类型
+相等见证，检查双向配对／泛项的原生计算，并对非满射替换像外的项证明配对
+方程。精确源码副本及假设输出仍置于库外。
 
 ## 8. 宇宙与验证
 

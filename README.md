@@ -585,6 +585,9 @@ Monad–Applicative–Arrow 工作从
   term fibers through transparent maps and a lifted setoid isomorphism.
   给定上下文扩张即可构造规范元素解释；透明映射及提升广集同构比较恢复后的
   项纤维，并保持转换与替换。
+  Pairing is preserved in both directions, and generic terms compare after
+  conversion along any given equality of recovered and original projections.
+  双向项比较保持配对；沿任意给定的恢复／原投影相等转换类型后，泛项也相容。
   [Context/Comparison](./theories/DTT/Context/Comparison.v) assembles these
   maps into a natural isomorphism of the original and recovered type-and-term
   functors after explicit fiber lifting, retaining the type base.

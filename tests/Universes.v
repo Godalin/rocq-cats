@@ -2754,3 +2754,47 @@ Definition high_eq_lift_section_term
 Definition low_eq_lift_section_term
   := @context_lift_section_term D U HU.
 End ContextSectionPairingLevels.
+
+From Cats Require Import
+  DTT.Context.Elements.
+
+(** Canonical pairing and generic-term comparisons retain fixed original
+    type/term bounds strictly above both context hom levels, in both orders. *)
+
+(** 规范配对及泛项比较在两序中，保留显式高于上下文 Hom 两层级的原类型／项界。 *)
+
+Section CanonicalPairingLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition high_eq_canonical_projection
+  := @context_elements_context_proj C T HC.
+Definition low_eq_canonical_projection
+  := @context_elements_context_proj D U HU.
+Definition high_eq_canonical_pair
+  := @context_elements_pair C T HC.
+Definition low_eq_canonical_pair
+  := @context_elements_pair D U HU.
+Definition high_eq_canonical_pair_inv
+  := @context_elements_pair_inv C T HC.
+Definition low_eq_canonical_pair_inv
+  := @context_elements_pair_inv D U HU.
+Definition high_eq_canonical_var
+  := @context_elements_var C T HC.
+Definition low_eq_canonical_var
+  := @context_elements_var D U HU.
+Definition high_eq_canonical_var_inv
+  := @context_elements_var_inv C T HC.
+Definition low_eq_canonical_var_inv
+  := @context_elements_var_inv D U HU.
+End CanonicalPairingLevels.
