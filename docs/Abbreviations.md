@@ -272,7 +272,7 @@ existing concise `Ob` projections.
 | `VertexProductObjectsF` | `VtxProductObjF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
 | `VertexTerminalObjectsF` | `VtxTerminalObjF` | [Instance/Set/Vertex/Terminal.v](../theories/Instance/Set/Vertex/Terminal.v) |
 | `hasNaturalNumbersObject` | `hasNaturalNumbersObj` | [ETCS/Core.v](../theories/ETCS/Core.v) |
-| `hasSubObjectClassifier` | `hasSubObjClassifier` | [ETCS/Core.v](../theories/ETCS/Core.v) |
+| `hasSubObjectClassifier` | `hasSubObjClassifier` | [Topos/Core.v](../theories/Topos/Core.v) |
 
 ### Batch 2 validation / 第二批验证
 
