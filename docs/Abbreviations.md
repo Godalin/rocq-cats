@@ -260,7 +260,7 @@ existing concise `Ob` projections.
 | `FreeObjectsFromUniversal` | `FreeObjFromUniversal` | [Cat/FreeObject/Core.v](../theories/Cat/FreeObject/Core.v) |
 | `HasFreeObjects` | `HasFreeObj` | [Cat/FreeObject/Core.v](../theories/Cat/FreeObject/Core.v) |
 | `HasNaturalNumbersObject` | `HasNaturalNumbersObj` | [ETCS/Nat.v](../theories/ETCS/Nat.v) |
-| `HasSubObjectClassifier` | `HasSubObjClassifier` | [ETCS/Sub.v](../theories/ETCS/Sub.v) |
+| `HasSubObjectClassifier` | `HasSubObjClassifier` | [Topos/Sub.v](../theories/Topos/Sub.v) |
 | `LaxMonoidObject` | `LaxMonoidObj` | [Cat/Monoidal/Transport.v](../theories/Cat/Monoidal/Transport.v) |
 | `MonoidObject` | `MonoidObj` | [Cat/Monoidal/Monoid.v](../theories/Cat/Monoidal/Monoid.v) |
 | `MonoidObjectsF` | `MonoidObjF` | [Instance/Set/Simplicial/Vertex/Monoid.v](../theories/Instance/Set/Simplicial/Vertex/Monoid.v) |
