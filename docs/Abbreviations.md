@@ -259,7 +259,7 @@ existing concise `Ob` projections.
 | `DiagramObjects` | `DiagramObj` | [Cat/Limit/Construction.v](../theories/Cat/Limit/Construction.v) |
 | `FreeObjectsFromUniversal` | `FreeObjFromUniversal` | [Cat/FreeObject/Core.v](../theories/Cat/FreeObject/Core.v) |
 | `HasFreeObjects` | `HasFreeObj` | [Cat/FreeObject/Core.v](../theories/Cat/FreeObject/Core.v) |
-| `HasNaturalNumbersObject` | `HasNaturalNumbersObj` | [ETCS/Nat.v](../theories/ETCS/Nat.v) |
+| `HasNaturalNumbersObject` | `HasNaturalNumbersObj` | [Topos/Nat.v](../theories/Topos/Nat.v) |
 | `HasSubObjectClassifier` | `HasSubObjClassifier` | [Topos/Sub.v](../theories/Topos/Sub.v) |
 | `LaxMonoidObject` | `LaxMonoidObj` | [Cat/Monoidal/Transport.v](../theories/Cat/Monoidal/Transport.v) |
 | `MonoidObject` | `MonoidObj` | [Cat/Monoidal/Monoid.v](../theories/Cat/Monoidal/Monoid.v) |
@@ -271,7 +271,7 @@ existing concise `Ob` projections.
 | `SubObject` | `SubObjS` | [Instance/Set/Subobject.v](../theories/Instance/Set/Subobject.v) |
 | `VertexProductObjectsF` | `VtxProductObjF` | [Instance/Set/Vertex/Product.v](../theories/Instance/Set/Vertex/Product.v) |
 | `VertexTerminalObjectsF` | `VtxTerminalObjF` | [Instance/Set/Vertex/Terminal.v](../theories/Instance/Set/Vertex/Terminal.v) |
-| `hasNaturalNumbersObject` | `hasNaturalNumbersObj` | [ETCS/Core.v](../theories/ETCS/Core.v) |
+| `hasNaturalNumbersObject` | `hasNaturalNumbersObj` | [Topos/ETCS.v](../theories/Topos/ETCS.v) |
 | `hasSubObjectClassifier` | `hasSubObjClassifier` | [Topos/Core.v](../theories/Topos/Core.v) |
 
 ### Batch 2 validation / 第二批验证

@@ -1,6 +1,6 @@
 From Cats Require Import
   Cat.Core
-  ETCS.Nat.
+  Topos.Nat.
 From Cats Require Import
   Instance.Set.Core
   Instance.Set.Terminal.

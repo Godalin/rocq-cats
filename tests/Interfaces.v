@@ -3,7 +3,7 @@ From Cats Require Import
   Cat.Terminal
   Cat.Pullback
   Cat.Morphism
-  ETCS.Sub.
+  Topos.Sub.
 From Cats Require Import
   Instance.Set.Core
   Cat.Coproduct.Core

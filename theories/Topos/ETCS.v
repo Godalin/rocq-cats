@@ -8,7 +8,7 @@ From Cats Require Import
   Cat.Exponential.Core
   Cat.Morphism
   Cat.Pullback
-  ETCS.Nat.
+  Topos.Nat.
 
 (** Well-Pointed Category: equality on all global points detects equality. *)
 

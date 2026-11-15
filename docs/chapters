@@ -23,7 +23,7 @@ theories/Instance/Bool/CocycleHomotopy.v
 theories/Cat
 theories/STLC
 theories/DTT
-theories/ETCS
+theories/Topos
 theories/Graph
 theories/Algebra
 theories/Instance
