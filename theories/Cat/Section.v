@@ -111,6 +111,42 @@ Context {C : Cat} {Γ Δ E D : @Ob C}
     {σ : Hom Δ Γ} {p : Hom E Γ} {q : Hom D Δ} {l : Hom D E}
     (HP : is_pullback σ p D q l).
 
+(** An arrow over the base map factors through the pullback as a section. *)
+
+(** 位于基底映射之上的箭头通过拉回分解为截面。 *)
+
+Program Definition section_of_pullback_factor@{s +} (h : Hom Δ E)
+    (H : σ ∘ id ≈ p ∘ h)
+  : SectionOfS@{s _ _ _ _} q
+  := ((snd HP Δ id h H).1; _).
+Next Obligation.
+  exact (fst (@this _ _ _ _ _ (snd HP Δ id h H).2)).
+Defined.
+
+(** The factored section recovers the supplied arrow along the top edge. *)
+
+(** 分解所得截面沿上边恢复给定箭头。 *)
+
+Definition section_of_pullback_factor_β (h : Hom Δ E)
+    (H : σ ∘ id ≈ p ∘ h)
+  : l ∘ (section_of_pullback_factor h H).1 ≈ h
+  := snd (@this _ _ _ _ _ (snd HP Δ id h H).2).
+
+(** The top edge determines this section, independently of cone witnesses. *)
+
+(** 上边唯一确定此截面，不依赖锥的见证。 *)
+
+Theorem section_of_pullback_factor_unique (h : Hom Δ E)
+    (H : σ ∘ id ≈ p ∘ h) (t : Sec(q)) (Ht : l ∘ t.1 ≈ h)
+  : t ≈S section_of_pullback_factor h H.
+Proof.
+  apply (pullback_hom_ext HP).
+  - transitivity (@id Δ); [exact t.2 |
+      symmetry; exact (section_of_pullback_factor h H).2].
+  - transitivity h; [exact Ht |
+      symmetry; apply section_of_pullback_factor_β].
+Qed.
+
 (** A section and a base map give a commuting pullback cone. *)
 
 (** 截面与基底映射给出交换的拉回锥。 *)
@@ -123,13 +159,9 @@ Proof. rewrite <- comp_assoc, s.2, comp_id_l. apply comp_id_r. Defined.
 
 (** 用给定方形的泛中介拉回截面。 *)
 
-Program Definition section_of_pullback@{s +} (t : SectionOfS@{s _ _ _ _} p)
+Definition section_of_pullback@{s +} (t : SectionOfS@{s _ _ _ _} p)
   : SectionOfS@{s _ _ _ _} q
-  := ((snd HP Δ id (t.1 ∘ σ) (section_of_pullback_cone t)).1; _).
-Next Obligation.
-  exact (fst (@this _ _ _ _ _
-    (snd HP Δ id (t.1 ∘ σ) (section_of_pullback_cone t)).2)).
-Defined.
+  := section_of_pullback_factor (t.1 ∘ σ) (section_of_pullback_cone t).
 
 (** The lifted section has the prescribed composite with the pullback leg. *)
 
@@ -137,8 +169,7 @@ Defined.
 
 Definition section_of_pullback_β (s : Sec(p))
   : l ∘ (section_of_pullback s).1 ≈ s.1 ∘ σ
-  := snd (@this _ _ _ _ _
-    (snd HP Δ id (s.1 ∘ σ) (section_of_pullback_cone s)).2).
+  := section_of_pullback_factor_β (s.1 ∘ σ) (section_of_pullback_cone s).
 
 (** Pulling back sections as a respectful map of section setoids. *)
 
@@ -184,9 +215,8 @@ Theorem section_of_pullback_unique (s : Sec(p)) (t : Sec(q))
     (H : l ∘ t.1 ≈ s.1 ∘ σ)
   : t ≈S s[HP]Sec.
 Proof.
-  apply (pullback_hom_ext HP).
-  - transitivity (@id Δ); [exact t.2 | symmetry; exact s[HP]Sec.2].
-  - transitivity (s.1 ∘ σ); [exact H | symmetry; apply section_of_pullback_β].
+  exact (section_of_pullback_factor_unique HP (s.1 ∘ σ)
+    (section_of_pullback_cone s) t H).
 Qed.
 
 End PullbackSectionLaws.

@@ -94,7 +94,9 @@ From Cats Require Import DTT.Context.Representation.
 From Cats Require Import
   DTT.Display.Core
   DTT.Context.Display.
-From Cats Require Import DTT.Display.Section.
+From Cats Require Import
+  DTT.Display.Section
+  DTT.Display.Representation.
 From Cats Require Import DTT.Context.Pullback.
 From Cats Require Import DTT.Comprehension.
 From Cats Require Import
@@ -1325,6 +1327,32 @@ Definition high_eq_universal_mediator
   := @context_extension_universal_mediator C T.
 Definition low_eq_universal_mediator
   := @context_extension_universal_mediator D U.
+Definition high_eq_display_universal {Γ : @Ob C} (A : P Γ)
+  : @display_generic_pair C P HD Γ A ⦂ Univ(ContextPairF T A)
+  := @display_pair_universal C P HD Γ A.
+Definition low_eq_display_universal {Γ : @Ob D} (A : Q Γ)
+  : @display_generic_pair D Q HE Γ A ⦂ Univ(ContextPairF U A)
+  := @display_pair_universal D Q HE Γ A.
+Definition high_eq_display_lifted {Γ : @Ob C} (A : P Γ)
+  : Display P A ⦂ Rep↑ ContextPairF T A
+  := @display_representation C P HD Γ A.
+Definition low_eq_display_lifted {Γ : @Ob D} (A : Q Γ)
+  : Display Q A ⦂ Rep↑ ContextPairF U A
+  := @display_representation D Q HE Γ A.
+Definition high_eq_display_recovery
+  : HasContextExtension T
+  := @Display_HasContextExtension C P HD.
+Definition low_eq_display_recovery
+  : HasContextExtension U
+  := @Display_HasContextExtension D Q HE.
+Definition high_eq_display_model_terms (HT : HasTerminal C)
+    (Γ : @Ob C) (A : P Γ)
+  : SetC@{p p}
+  := Tm (TyTmF (@DisplayCwF C P HD HT)) Γ A.
+Definition low_eq_display_model_terms (HT : HasTerminal D)
+    (Γ : @Ob D) (A : Q Γ)
+  : SetC@{p h}
+  := Tm (TyTmF (@DisplayCwF D Q HE HT)) Γ A.
 End ContextUniversalLevels.
 
 (** Raw syntax accepts arbitrary signature levels. An inferred extra universe
