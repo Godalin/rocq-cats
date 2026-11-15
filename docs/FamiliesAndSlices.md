@@ -48,6 +48,30 @@ Both round trips have specified natural isomorphisms:
 `fam_slice_equiv X` bundles these functors and comparisons. No equality of
 family records, functions, or witness data is required.
 
+## Independent fiber lifting / 独立纤维提升
+
+[FamLift](../theories/Instance/Set/Fam/Lift.v) raises a coherent family's
+fiber carriers and equality witnesses independently, keeping its supplied
+base setoid. Transport and fiber maps reuse `LiftS` and `lift_resp`.
+The source fiber map's auxiliary carrier bound stays independent of the
+raised carrier bound. Both orders of base and fiber equality levels are
+supported; the wrappers require their source levels to fit the target bounds.
+
+`FamLiftF` lifts family morphisms as well as objects. It retains base maps
+and their equality witnesses, with transparent fiber maps and coherence.
+`FamLiftBaseN` and `fam_lift_base_iso` compare its base-forgetting functors
+by identity components with transparent inverses. This comparison concerns
+the base functors; it gives no resizing or equivalence of whole universe-sized
+family categories. Chosen model structures are not registered.
+
+族纤维提升保持给定基底广集，独立提升纤维载体及相等见证，运输和纤维映射复用
+已有广集提升。来源纤维映射的辅助载体界与目标界独立，支持基底／纤维相等大小
+的两种次序；包装要求来源层级不高于对应目标界。
+
+族提升函子保留基底映射及其相等见证，纤维映射和相干性透明。基底忘却函子
+通过恒等分量及透明逆作自然同构比较；这只比较基底函子，不提供大小重设或
+整个不同大小族范畴的等价，也不注册选定模型结构。
+
 ## Sizes and substitution
 
 The equivalence explicitly names `X : SetC@{u p}`. In this fixed-size
