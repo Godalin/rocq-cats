@@ -485,7 +485,7 @@ Code/El 是首个实例的选择，**不是 CwF 接口要求所有模型都采�
 
 - [DTT/CwF.v](../theories/DTT/CwF.v)：已实现的 CwF 抽象接口和派生结构律。
 - [DTT/Context/Extension.v](../theories/DTT/Context/Extension.v)：配对数据预层、表示广集同构及自然性。
-- [DTT/Context/Representation.v](../theories/DTT/Context/Representation.v)：从选定表示反向恢复上下文扩张及 CwF，并比较双向往返。
+- [DTT/Context/Representation.v](../theories/DTT/Context/Representation.v)：从选定表示反向恢复上下文扩张及 CwF，并比较双向往返；候选层级的泛配对准则及提升 Hom 表示保留独立项／Hom 大小。
 - [DTT/Context/Conversion.v](../theories/DTT/Context/Conversion.v)：沿类型相等的扩张同构及其相干性。
 - [DTT/Context/Pullback.v](../theories/DTT/Context/Pullback.v)：替换提升、相干性及显示投影的拉回泛性质。
 - [DTT/Comprehension.v](../theories/DTT/Comprehension.v)：显示映射形式的类型总范畴及对应的 comprehension 结构。

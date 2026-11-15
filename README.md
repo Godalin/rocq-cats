@@ -464,6 +464,9 @@ Monad–Applicative–Arrow 工作从
   [ContextRepresentation](./theories/DTT/Context/Representation.v) recovers context
   extensions from chosen representations of the pair presheaves, compares both
   round trips, and assembles a CwF when a terminal context is chosen.
+  Its candidate-level universal-pair criterion also works when native hom
+  and term carriers have different sizes; lifted Hom provides the corresponding
+  representation without resizing.
   The [recovery design](./docs/CwFRecovery.md) separates this criterion from the
   additional data needed to recover types and coherent terms from comprehension.
   [ContextConversion](./theories/DTT/Context/Conversion.v) derives context-extension

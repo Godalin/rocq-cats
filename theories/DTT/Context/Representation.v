@@ -67,19 +67,18 @@ Theorem context_representation_at {Γ : @Ob C} (A : Ty T Γ) {E : @Ob C}
   : R.1 Δ h ≈S (context_representation_generic A R)[h]Pair[T, A].
 Proof. exact (representation_op_at R h). Defined.
 
-(** A representation of substitution-term pairs supplies a candidate context
-    extension. *)
+(** A universal substitution-term pair supplies a candidate context extension
+    directly, independently of native hom and term carrier sizes. *)
 
-(** 替换与项配对的表示给出候选上下文扩张。 *)
+(** 泛替换与项配对直接提供候选上下文扩张，不依赖原生 Hom 与项载体的大小关系。 *)
 
-Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ)
-    {E : @Ob C}
-    (R : E ⦂ Repᵒᵖ ContextPairF T A)
-  : is_context_extension T A E (context_representation_generic A R).1
-      (context_representation_generic A R).2.
+Definition context_extension_of_universal_element {Γ E : @Ob C}
+    (A : Ty T Γ) (u : ContextPairS T A E)
+    (Hu : u ⦂ Univ(ContextPairF T A))
+  : is_context_extension T A E u.1 u.2.
 Proof.
   intros Δ σ t.
-  destruct (representation_op_universal R Δ (σ; t)) as [h Hh].
+  destruct (Hu Δ (σ; t)) as [h Hh].
   exists h. refine {|this := _
                    ; that := _
                    |}.
@@ -89,6 +88,82 @@ Proof.
     apply (@that _ _ _ _ _ Hh).
     exact (snd (context_pair_data_iff A _ _ σ t k) Hk).
 Defined.
+
+(** A candidate context extension supplies a universal substitution-term
+    pair without choosing extensions for other types. *)
+
+(** 候选上下文扩张提供泛替换与项配对，不需要选择其他类型的扩张。 *)
+
+Definition context_extension_universal_element {Γ E : @Ob C}
+    (A : Ty T Γ) (u : ContextPairS T A E)
+    (Hu : is_context_extension T A E u.1 u.2)
+  : u ⦂ Univ(ContextPairF T A).
+Proof.
+  intros Δ [σ t]. destruct (Hu Δ σ t) as [h Hh].
+  exists h. refine {|this := _
+                   ; that := _
+                   |}.
+  - exact (snd (context_pair_data_iff A u.1 u.2 σ t h)
+      (@this _ _ _ _ _ Hh)).
+  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+    exact (fst (context_pair_data_iff A u.1 u.2 σ t k) Hk).
+Defined.
+
+(** The context-extension property is exactly universality of its pair.
+    This criterion does not package native hom-sets in a common SetCat. *)
+
+(** 上下文扩张性质恰好是其配对的泛性；此准则不把原生 Hom 广集包装进共同集合范畴。 *)
+
+Theorem context_extension_iff_universal_element {Γ E : @Ob C}
+    (A : Ty T Γ) (u : ContextPairS T A E)
+  : is_context_extension T A E u.1 u.2
+      ↔ u ⦂ Univ(ContextPairF T A).
+Proof.
+  split.
+  - apply context_extension_universal_element.
+  - apply context_extension_of_universal_element.
+Defined.
+
+(** A candidate extension represents its pair presheaf using lifted Hom in
+    the opposite category. Only upward size bounds are required. *)
+
+(** 候选扩张通过反范畴中的提升 Hom 表示配对预层，只需要向上的大小约束。 *)
+
+Definition context_extension_lifted_representation {Γ E : @Ob C}
+    (A : Ty T Γ) (u : ContextPairS T A E)
+    (Hu : is_context_extension T A E u.1 u.2)
+  : E ⦂ Rep↑ ContextPairF T A
+  := universal_element_lifted_representation (ContextPairF T A)
+      (context_extension_universal_element A u Hu).
+
+(** The universal-element round trip retains the original mediator. *)
+
+(** 泛元素往返保留原中介。 *)
+
+Theorem context_extension_universal_mediator {Γ E Δ : @Ob C}
+    (A : Ty T Γ) (u : ContextPairS T A E)
+    (Hu : is_context_extension T A E u.1 u.2)
+    (σ : Hom Δ Γ) (t : Tm T Δ A[σ]Ty[T])
+  : (context_extension_of_universal_element A u
+      (context_extension_universal_element A u Hu) Δ σ t).1
+      ≈ (Hu Δ σ t).1.
+Proof.
+  unfold context_extension_of_universal_element,
+    context_extension_universal_element.
+  destruct (Hu Δ σ t) as [h Hh]. reflexivity.
+Defined.
+
+(** A representation supplies its universal pair; reuse the candidate-level
+    criterion to recover the extension with the same transparent mediator. *)
+
+(** 表示提供泛配对，复用候选层级准则恢复扩张，并保留同一个透明中介。 *)
+
+Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ)
+    {E : @Ob C} (R : E ⦂ Repᵒᵖ ContextPairF T A)
+  : is_context_extension T A E (context_representation_generic A R).1
+      (context_representation_generic A R).2
+  := context_extension_of_universal_element A
+      (context_representation_generic A R) (representation_op_universal R).
 
 (** Choose a representing object and natural representation for every context
     type. *)
