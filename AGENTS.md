@@ -239,6 +239,14 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   source SHA, or a pause reason and next action. Continue subsequent bounded
   work on a new short branch from the reported integrated baseline, preserving
   any unintegrated work without replaying already integrated patches.
+- Periodically let each owner clean up obsolete local and remote task branches
+  after the integrator confirms all changes are accepted, source/result SHAs
+  are recorded, and no pending handoff, dependent work or retention need remains.
+  For rebased submissions, check the source/result mapping and equivalent
+  patches, not only `git branch --merged`. Keep a durable ref when original
+  commits must remain available; recorded SHAs alone do not preserve them.
+  Check worktree attachments and preserve reusable worktrees/build caches;
+  retain branches whenever their status is uncertain.
 - Route by semantic effect and reviewed import/API dependencies: L0 to the origin,
   L1 also to affected consumers, L2 to all active workers for foundational/global
   changes. The worker reports impact; the integrator confirms it. Breaking is

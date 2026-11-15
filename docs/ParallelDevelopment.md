@@ -79,6 +79,25 @@ only that remainder; do not replay patches already accepted under new SHAs.
 集成后，从通知的集成基线另开短分支开始下一有界任务。保留尚未集成的工作，
 仅适配剩余部分，不因重基改变 SHA 而重复提交已接收的补丁。
 
+Periodically, each owner may remove obsolete local and remote task branches
+once the integrator has confirmed all their changes are accepted, source/result
+SHAs are recorded, and no pending request, dependent task or unintegrated work
+remains. Retain branches still needed for audit or recovery, or whose status is
+uncertain. For rebased integration, verify the source/result mapping and patch
+equivalence; `git branch --merged` alone is insufficient. If the exact original
+commits must remain available, retain a durable Git ref: recording their SHAs
+alone does not keep them reachable. Check worktree attachments before deleting
+branches, switching only your own clean worktree when needed. Branch cleanup
+does not require removing worktrees or clearing their reusable build caches.
+
+定期由各所有者清理不再需要的本地及远端任务分支：须先由集成会话确认全部改动
+已接收，来源／结果 SHA 已记录，且没有待处理请求、依赖任务或未集成工作。
+仍有审计／恢复保留需求或状态不明确的分支继续保留。重基集成须核对来源／结果
+映射及补丁等价性，不能只依赖 `git branch --merged`。如需保留精确的原始提交，
+应保留持久 Git 引用；仅记录 SHA 不能保证提交仍可达。删除前检查 worktree
+关联，必要时只切换自己的干净工作区。清理分支不要求删除工作区或清空可复用的
+构建缓存。
+
 ## 3. Serial integration / 串行集成
 
 1. Check the requested commit, task scope and prerequisites. Confirm affected
