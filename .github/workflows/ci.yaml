@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,10 +20,13 @@ jobs:
           custom_image: "rocq/rocq-prover:9.2"
           export: "OPAMWITHTEST"
           before_install: |
-            opam pin remove --no-action --yes dune
+            # The image pins an older Stdlib; use the package dependency bound.
+            # 镜像固定了旧 Stdlib；解除固定后按项目依赖下界解析。
+            opam pin remove --no-action --yes dune rocq-stdlib
           before_script: |
             rocq --version
             dune --version
+            opam list --installed --columns=name,version rocq-core rocq-stdlib
           after_script: |
             startGroup "Validate checkout and bilingual documentation"
               # The checkout belongs to the runner, not the container user.
