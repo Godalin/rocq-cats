@@ -24,8 +24,10 @@ Local Open Scope ordinal_scope.
     This constructs the extension from given initial-region data.
     %\coqref{Cats.Instance.Set.Simplicial.TriangleInput.TriangleInputN}
     {%[TriangleInputN]%}% now glues boundary and retained time-edge maps
-    with explicit common-factor agreement. Deriving that agreement from
-    relative-cylinder endpoints remains a later consumer. *)
+    with explicit common-factor agreement.
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereCompositeTriangleInput}
+    {%[SphereCompositeTriangleInput]%}% supplies this initial map directly
+    from two actual composable relative cylinders and their endpoint laws. *)
 
 (** * 九次实际延拓到三角积
 
@@ -39,8 +41,10 @@ Local Open Scope ordinal_scope.
 
     本章从给定初始区域数据构造延拓。
     %\coqref{Cats.Instance.Set.Simplicial.TriangleInput.TriangleInputN}
-    {%[TriangleInputN]%}% 现以显式共同因子相容粘合边界及保留时间边映射；
-    由相对柱端点导出该相容仍留待后续消费。 *)
+    {%[TriangleInputN]%}% 现以显式共同因子相容粘合边界及保留时间边映射。
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereCompositeTriangleInput}
+    {%[SphereCompositeTriangleInput]%}% 从两个实际可复合相对柱及其端点律直接
+    给出这一初始映射。 *)
 
 (** @lang both
 %\begin{center}

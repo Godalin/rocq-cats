@@ -45,6 +45,7 @@ TriangleIteration.v
 Homotopy/SphereCylinder.v
 Homotopy/SpherePrismRelative.v
 Homotopy/SphereElementaryCylinder.v
+Homotopy/SphereTriangleInput.v
 Homotopy/SphereTriangle.v
 Homotopy/SphereBasedHomotopy.v
 Homotopy/SphereHorn.v

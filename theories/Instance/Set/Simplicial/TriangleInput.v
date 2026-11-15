@@ -19,8 +19,9 @@ Local Open Scope ordinal_scope.
     {%[TriangleHornProductExtension]%}%.
 
     Agreement below is stated on actual common time factors. Reducing
-    it to the endpoint equations of relative cylinders is a subsequent
-    specialization; this module needs no Kan choices. *)
+    it to the endpoint equations of relative cylinders is supplied by
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereTriangleInputN}
+    {%[SphereTriangleInputN]%}%; neither construction needs Kan choices. *)
 
 (** * 粘合完整的三角初始区域
 
@@ -32,8 +33,10 @@ Local Open Scope ordinal_scope.
     %\coqref{Cats.Instance.Set.Simplicial.TriangleIteration.TriangleHornProductExtension}
     {%[TriangleHornProductExtension]%}% 所需的实际输入。
 
-    下方在实际共同时间因子上表述一致性；将其化为相对柱的端点方程是后续
-    特化。本模块不需要 Kan 选择。 *)
+    下方在实际共同时间因子上表述一致性；
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereTriangleInput.SphereTriangleInputN}
+    {%[SphereTriangleInputN]%}% 将其化为相对柱的端点方程；两种构造均不需要
+    Kan 选择。 *)
 
 (** @lang both
 %\begin{center}
