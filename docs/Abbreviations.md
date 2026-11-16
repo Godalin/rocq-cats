@@ -912,7 +912,7 @@ This separate exact map implements the user-authorized ergonomic follow-up
 to [architecture #42](https://github.com/Godalin/rocq-cats/issues/42), with
 implementation in [#15](https://github.com/Godalin/rocq-cats/issues/15) and
 [naming review in #38](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626).
-It starts at `hierarchy-packed-algebra-42@e30adfa`; the 45 entries below are
+It starts at `hierarchy-packed-algebra-42@e30adfa`; the 54 entries below are
 implemented and locally validated for the current user-review checkpoint.
 This is not an extension of the historical 195-entry Batch 4 abbreviation
 table or an integration
@@ -922,7 +922,7 @@ unchanged; no compatibility aliases are introduced.
 本独立精确表落实用户授权的 [#42 架构易用性后续](https://github.com/Godalin/rocq-cats/issues/42)，
 具体实现归 [#15](https://github.com/Godalin/rocq-cats/issues/15)，
 [命名审阅归 #38](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626)。
-从 `hierarchy-packed-algebra-42@e30adfa` 开始，以下 45 项已完成本地实施及
+从 `hierarchy-packed-algebra-42@e30adfa` 开始，以下 54 项已完成本地实施及
 验证，作为当前用户审阅检查点；不扩充历史第四批 195 项缩写表，也不表示提交
 集成。模块路径、选定数据及乘法记号保持不变，不增加兼容别名。
 
@@ -955,10 +955,10 @@ unchanged; no compatibility aliases are introduced.
 | `semigroup_mul_r_comp` | `mul_r_comp` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
 | `semigroup_mul_lr_comm` | `mul_lr_comm` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
 | `monoid_units_equiv` | `units_equiv` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
-| `monoid_extension_inverse_unique` | `mul_extension_inv_unique` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `monoid_extension_inverse_unique` | `mul_ext_inv_unique` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
 | `monoid_inverse_unique` | `mul_inv_unique` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
 | `group_inverse_candidates_equiv` | `inv_candidates_equiv` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
-| `group_extension_inv_unique` | `inv_extension_unique` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_extension_inv_unique` | `inv_ext_unique` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
 | `monoid_mul_comm` | `mul_comm` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
 | `monoid_mul_interchange` | `mul_interchange` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
 | `group_mul_cancel_l` | `mul_cancel_l` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
@@ -973,6 +973,15 @@ unchanged; no compatibility aliases are introduced.
 | `group_mul_l_solve_η` | `mul_l_solve_η` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
 | `group_mul_r_solve_β` | `mul_r_solve_β` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
 | `group_mul_r_solve_η` | `mul_r_solve_η` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `IsCommutativeMonoid` | `IsCommMonoid` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
+| `BoolS_IsCommutativeMonoid` | `BoolS_IsCommMonoid` | [Instance/Bool/Commutative.v](../theories/Instance/Bool/Commutative.v) |
+| `BoolCocycleSphereClassS_IsCommutativeMonoid` | `BoolCocycleSphereClassS_IsCommMonoid` | [Instance/Bool/CocycleSphereGroup.v](../theories/Instance/Bool/CocycleSphereGroup.v) |
+| `cocycle_two_sphere_IsCommutativeMonoid` | `cocycle_two_sphere_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v) |
+| `cocycle_kan_IsCommutativeMonoid` | `cocycle_kan_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereKanGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereKanGroup.v) |
+| `MagmaFromExtension` | `MagmaOfSetC` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `MonoidFromExtension` | `MonoidOfSemigroup` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `GroupFromExtension` | `GroupOfMonoid` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `SemigroupFromProperty` | `SemigroupOfMagma` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
 
 Each parent name denotes the same immediate `:>` projection; no direct
 ancestor bypass is added. All stronger structures inherit one `mul` and
@@ -1007,10 +1016,10 @@ for the full validation scope. No export or shared environment changes.
 The user-authorized follow-up to #42 combines the above field names with
 one inherited notation scope. This is a separate scope migration, not an
 extension of the historical 195-entry Batch 4 table. The identifier map
-above now has 45 entries, including the later user-requested `monoid_unit → mul_unit` change; scope changes are:
+at that checkpoint had 45 entries, including the later user-requested `monoid_unit → mul_unit` change; scope changes are:
 
 用户授权的 #42 后续将上述字段名称与唯一继承记号作用域合并实施。本节独立
-记录作用域迁移，不扩充历史第四批 195 项表。上方现有 45 项标识符改名，
+记录作用域迁移，不扩充历史第四批 195 项表。该检查点有 45 项标识符改名，
 含用户后续指定的 `monoid_unit → mul_unit`；
 作用域的源码 breaking 变化如下：
 
@@ -1048,7 +1057,7 @@ This notation checkpoint was local review work, not an integration submission.
 At the unit-renaming checkpoint, the user-requested `monoid_unit → mul_unit`
 entry above was implemented
 on the same local WIP, without a compatibility alias. The earlier 44 names
-are unchanged; the current map has 45 entries. All 21 affected Rocq files
+are unchanged; that checkpoint map had 45 entries. All 21 affected Rocq files
 contain only this exact token replacement relative to the notation WIP.
 Final full build/tests/install passed; the expanded audit has 231 closed
 reports, and the retired unit name fails as intended. This was a local
@@ -1056,17 +1065,113 @@ review checkpoint, with no integration handoff.
 
 在单位字段改名检查点，用户指定的 `monoid_unit → mul_unit` 在同一本地 WIP
 实施，不保留
-兼容别名。此前 44 项名称不变，当前对照表共 45 项；21 个受影响 Rocq 文件
+兼容别名。此前 44 项名称不变，该检查点对照表共 45 项；21 个受影响 Rocq 文件
 相对前一步记号 WIP 只有该精确词元替换。最终全库／测试／安装通过，扩展审计
 共 231 项报告全部闭合，旧单位字段名按预期退役；该检查点仅为本地待审成果，
 未交集成。
 
-The subsequent readability cleanup uses the same 45 identifiers and scope
+The earlier readability checkpoint used the same 45 identifiers and scope
 map; mathematical notation, inferred law arguments and actual rewriting
 are simplified without local forwarding bindings. See the [structure guide](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration).
 
-后续可读性整理沿用这 45 项名称及作用域表，简化数学记号、定律隐式参数及
+此前可读性检查点沿用这 45 项名称及作用域表，简化数学记号、定律隐式参数及
 实际重写，不增加局部转发绑定，详见[结构指南](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration)。
+
+### Comm, Ext and Of / 交换、扩充及构造名称
+
+The user-authorized algebra follow-up on local review commit `4814341`
+uses `Comm` for commutativity, `Ext` / `ext` for extensions, and `Of`
+for constructors previously named with `From`. The exact 11-name step is
+below; two existing cumulative targets are shortened and nine new rows are
+added, bringing the current algebra map to 54 entries. Earlier 45-name
+checkpoint counts and the historical 195-entry table remain historical.
+No compatibility aliases, module-path changes or mathematical changes are
+introduced; Rocq's `From ... Require` command is unchanged.
+
+用户授权在本地审阅提交 `4814341` 上继续将交换性缩为 `Comm`，扩充缩为
+`Ext`／`ext`，构造名称中的 `From` 改为 `Of`。本步精确 11 项如下：
+累计表中两项已有目标继续缩短，新增九行，当前代数表共 54 项。早前 45 项
+检查点数量及历史 195 项表仍保留历史含义。不增加兼容别名、不改模块路径或
+数学内容，也不改 Rocq 的 `From ... Require` 命令。
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `IsCommutativeMonoid` | `IsCommMonoid` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
+| `BoolS_IsCommutativeMonoid` | `BoolS_IsCommMonoid` | [Instance/Bool/Commutative.v](../theories/Instance/Bool/Commutative.v) |
+| `BoolCocycleSphereClassS_IsCommutativeMonoid` | `BoolCocycleSphereClassS_IsCommMonoid` | [Instance/Bool/CocycleSphereGroup.v](../theories/Instance/Bool/CocycleSphereGroup.v) |
+| `cocycle_two_sphere_IsCommutativeMonoid` | `cocycle_two_sphere_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v) |
+| `cocycle_kan_IsCommutativeMonoid` | `cocycle_kan_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereKanGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereKanGroup.v) |
+| `MagmaFromExtension` | `MagmaOfExt` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `MonoidFromExtension` | `MonoidOfExt` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `GroupFromExtension` | `GroupOfExt` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `SemigroupFromProperty` | `SemigroupOfProperty` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
+| `mul_extension_inv_unique` | `mul_ext_inv_unique` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `inv_extension_unique` | `inv_ext_unique` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+
+All 29 renamed Rocq source/client targets compile with the project switch
+and `-j2`. Eleven full signature/assumption checks are closed; all eleven
+retired names fail lookup. Exact reverse substitution restores every
+pre-rename file, including the earlier uncommitted proof cleanup, and
+imports are unchanged. This step remains uncommitted review work; it is
+not pushed or submitted for integration.
+
+项目 switch 下全部 29 个改名源码／客户端目标以 `-j2` 编译通过。11 项完整
+签名／假设检查闭合，11 个旧名均退役。精确逆向替换可逐字恢复每个改名前文件，
+包括此前未提交的证明整理；导入不变。本步仍为未提交待审修改，未推送或交集成。
+
+Other extension families (category extension and DTT context extension)
+and constructors outside the reviewed algebra hierarchy remain pending
+bounded migrations. Ordinary English and descriptive local helper names
+are retained.
+
+其他扩充词族（范畴扩充及 DTT 上下文扩充）以及本次代数层级以外的构造名称
+留待后续有界迁移；普通英文与描述性局部辅助名称保留。
+
+The final local closeout passes 34 concrete changed-module and regression
+targets; exact snapshot substitution, retired-name and map/link checks pass.
+Existing closed assumption reports are reused for unchanged inputs. The
+interrupted full build is not a pass. See the [dated review record](./BundledInterfaces.md#local-review-closeout-2026-11-16)
+for coverage, evidence and the remaining full-library integration check.
+
+最终本地收尾通过 34 个具体修改模块及回归目标；精确快照替换、旧名退役、
+表格及链接检查通过。已有闭合假设报告按未变输入复用，中断的全量构建不计
+成功。覆盖范围、证据及后续全库集成验证见[注明日期的审阅记录](./BundledInterfaces.md#local-review-closeout-2026-11-16)。
+
+In the subsequent constructor cleanup, the four packing names become actual
+record constructors. The user then selected the uniform `TargetOfParent`
+naming scheme, paired with `TargetToParent` projections. This four-name
+follow-up updates four existing targets in the cumulative map; it stays at
+54 rows. The earlier 11-name step above records its intermediate spellings.
+
+后续构造器整理将四个打包名称直接作为记录构造器，用户随后选择统一的
+`TargetOfParent` 命名，与 `TargetToParent` 父投影配对。本步四项改名更新
+累计表中的四个已有目标，总行数仍为 54；上方早前 11 项表保留当时的中间名称。
+
+| Previous / 前名 | Current constructor / 当前构造器 | Parent projection / 父投影 |
+| --- | --- | --- |
+| `MagmaOfExt` | `MagmaOfSetC` | `MagmaToSetC` |
+| `SemigroupOfProperty` | `SemigroupOfMagma` | `SemigroupToMagma` |
+| `MonoidOfExt` | `MonoidOfSemigroup` | `MonoidToSemigroup` |
+| `GroupOfExt` | `GroupOfMonoid` | `GroupToMonoid` |
+
+Each constructor takes its parent and extension/property witness explicitly;
+separate packing definitions and intermediary aliases are removed. See the
+[constructor design](./BundledInterfaces.md#named-algebra-record-constructors).
+
+各构造器显式接受父结构及扩充／性质见证，不保留独立打包定义或中间名别名，
+详见[构造器设计](./BundledInterfaces.md#named-algebra-record-constructors)。
+
+The parent-named constructor checkpoint passes 34 concrete targets and
+19 closed temporary assumption/pattern/signature reports. The four retired
+intermediary names fail lookup; no aliases remain. The semigroup proof
+formatting supplied during review is preserved. Evidence:
+`/tmp/hierarchy42-parent-constructors`; this is uncommitted local work,
+with no full build, push or integration handoff.
+
+按父结构命名的构造器检查点通过 34 个具体目标及 19 项闭合临时假设／模式
+匹配／签名报告，四个中间名查找失败，不保留别名。审阅期间用户提供的半群
+证明排版已保留；证据位于 `/tmp/hierarchy42-parent-constructors`。
+本批仍未提交，未运行全库构建、推送或交集成。
 
 ## Pending batches / 后续批次
 

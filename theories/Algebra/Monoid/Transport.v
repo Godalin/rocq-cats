@@ -68,7 +68,7 @@ Definition MonoidTransport
     (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
   : Monoid
-  := MonoidFromExtension (SemigroupTransport A f g Hfg)
+  := MonoidOfSemigroup (SemigroupTransport A f g Hfg)
       (HasMonoidTransport Hfg Hgf).
 
 (** The forward map preserves this same selected unit. *)

@@ -40,21 +40,16 @@ Class HasMagma (S : SetC)
 (** 完整原群拥有其广集及一份乘法扩充。 *)
 
 Record Magma@{u p l}
-  :=
+  := MagmaOfSetC
   { MagmaToSetC :> SetC@{u p}
   ; hasMagma :: HasMagma@{l u p} MagmaToSetC
   }.
 
-(** Pack a fixed-setoid choice without copying its multiplication. *)
+(** The record constructor takes its parent and witness explicitly. *)
 
-(** 将固定广集上的选择打包，不复制乘法。 *)
+(** 记录构造器显式接受父结构及其见证。 *)
 
-Program Definition MagmaFromExtension (S : SetC) (HM : HasMagma S)
-  : Magma
-  :=
-  {|MagmaToSetC := S
-  ; hasMagma := HM
-  |}.
+Arguments MagmaOfSetC _ _ : clear implicits.
 
 Infix "⋅" := (@mul _ (hasMagma _)) : algebra_scope.
 Local Open Scope algebra_scope.

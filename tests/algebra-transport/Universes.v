@@ -122,7 +122,7 @@ Definition forward_inverse (x : B)
 Definition actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
       (@inv _ (hasGroup transported_group))
-  := @inv_proper transported_group.
+  := @inv_proper _ _ (@isGroup _ (hasGroup transported_group)).
 
 Definition actual_inverse_involution (x : B)
   : @inv _ (hasGroup transported_group) (@inv _ (hasGroup transported_group) x) ≈S x
@@ -268,7 +268,7 @@ Definition high_forward_inverse (x : B)
 Definition high_actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
       (@inv _ (hasGroup high_transported_group))
-  := @inv_proper high_transported_group.
+  := @inv_proper _ _ (@isGroup _ (hasGroup high_transported_group)).
 
 Definition high_actual_inverse_involution (x : B)
   : @inv _ (hasGroup high_transported_group) (@inv _ (hasGroup high_transported_group) x) ≈S x

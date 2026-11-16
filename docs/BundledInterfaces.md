@@ -88,7 +88,7 @@ further integration submission.
 
 The ergonomic follow-up starts at published review commit `e30adfa`, applying
 the new directional-parent and operation-subject rules from #42. Its exact
-45-name map is recorded separately in
+54-name map is recorded separately in
 [the naming guide](./Abbreviations.md#algebra-interface-ergonomics--代数接口易用性)
 and [#38's naming review](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626).
 The earlier 195-entry abbreviation table and frozen sources are preserved.
@@ -96,11 +96,28 @@ This follow-up has passed local validation and is retained for user review;
 it is not an integration result.
 
 易用性后续从已发布审阅提交 `e30adfa` 开始，落实 #42 新增的方向父投影及
-运算主题命名规则。45 项精确对照单独记录在
+运算主题命名规则。54 项精确对照单独记录在
 [命名指南](./Abbreviations.md#algebra-interface-ergonomics--代数接口易用性)及
 [#38 命名审阅](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626)，
 保全此前 195 项缩写表及冻结来源。此后续已完成本地验证，作为当前用户
 审阅检查点保留，不是集成结果。
+
+The user has approved saving the completed local algebra work as a review
+checkpoint. Earlier descriptions of uncommitted work below record the editing
+history; this checkpoint includes the parent-named direct constructors,
+Comm/Ext client migration, derived inverse respectfulness and simplified
+unit typing. The last relevant edit passed six concrete targets and six
+closed temporary reports; the preceding inverse-respectfulness step passed
+14 affected targets and six closed reports. Earlier naming/constructor
+checks are recorded at their respective checkpoints. Full-library integration
+acceptance, push and further hierarchy migrations are separate actions.
+
+用户已批准将完成的本地代数修改保存为审阅提交。下方早前“未提交”的描述
+保留编辑过程的历史含义；本检查点包含按父结构命名的直接构造器、Comm/Ext
+客户端迁移、导出的逆保相等性及简化的单位元类型标注。最后相关修改通过
+六个具体目标及六项闭合临时报告；此前逆保相等性后续通过 14 个受影响目标
+及六项闭合报告。更早的命名／构造器检查按各自检查点记录。全库集成验收、
+推送及进一步层级迁移是独立动作。
 
 The four complete interfaces are unparameterized `Record` objects. Each stores
 its immediate parent once: `MagmaToSetC`, `SemigroupToMagma`,
@@ -157,6 +174,17 @@ associativity gives `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`.
 乘法偏应用 `(x ⋅−)` 与 `(−⋅ y)` 分别表示既有的左乘及右乘保相等映射。
 共用的 `algebra_scope` 提供这组记号，复合仍使用普通 `∘r`。
 例如结合律给出 `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`。
+
+The fixed-parent inverse-uniqueness theorem `mul_ext_inv_unique` types
+its elements in `MonoidOfSemigroup SG HM`, so both inverse hypotheses use
+bare `1`. This view has definitionally the same carrier and specified
+equality as `SG`, retaining exactly the supplied `HM`; moving the annotation
+introduces no additional mathematical assumption or transport.
+
+固定父结构的逆唯一性定理 `mul_ext_inv_unique` 将元素类型写为
+`MonoidOfSemigroup SG HM`，两条逆假设因而直接使用 `1`。此视图的载体及
+指定相等按定义就是 `SG` 的同一份，并保留给定的 `HM`；移动类型标注不增加
+数学假设，也不引入运输。
 
 All four cores share that one scope, delimited by `%alg`. The magma core
 fixes multiplication's common grammar with `Reserved Infix` before the
@@ -223,6 +251,19 @@ At a boundary between two structures on one carrier, annotate the intended
 bundle, as in `f ((x : MagmaTransport) ⋅ y)`. Fixed-parent candidate theorems
 still pass their independently supplied choices explicitly.
 
+The next user-reviewed naming step uses `Comm`, `Ext` / `ext` and `Of`:
+`IsCommMonoid`, `MagmaOfSetC`, `MonoidOfSemigroup`, `GroupOfMonoid`,
+`SemigroupOfMagma`, `mul_ext_inv_unique` and `inv_ext_unique`.
+Related commutativity instances and actual clients migrate together.
+The exact 11-name step is recorded in the naming guide; module paths and
+ordinary prose retain their spelling, with no compatibility aliases.
+
+用户继续指定使用 `Comm`、`Ext`／`ext` 和 `Of`，对应
+`IsCommMonoid`、`MagmaOfSetC`、`MonoidOfSemigroup`、`GroupOfMonoid`、
+`SemigroupOfMagma`、`mul_ext_inv_unique` 和 `inv_ext_unique`。
+相关交换性实例和实际客户端同步迁移；命名指南记录本步精确 11 项。
+模块路径及普通文字保留原拼写，不增加兼容别名。
+
 Historical source-pinned sections below retain their original names; use
 the current map when reading them against this branch.
 
@@ -288,7 +329,7 @@ HTML/PDF export was performed.
 [运输](../theories/Algebra/Group/Transport.v)及球面客户端在本批同步迁移。
 运输先接受完整来源结构，再接受两个映射；更强层的运输复用恰好前一层的父
 结构。本片不增加完整代数对象的范畴或无关多父菱形；历史第四批 195 项表
-不变，新的 45 项代数接口名称单列记录。
+不变，当前 54 项代数接口名称单列记录。
 球面回归固定输入载体／相等的两种严格次序，以定义转换确认完整对象保存指定
 类广集。派生球面载体含边界数据，生成相等也含见证，其大小界不必等于输入
 单纯广集的界。交换性比较现在通过可复用乘积引理直接使用系数定律，不再为
@@ -307,13 +348,13 @@ Earlier notation and unit-renaming checkpoints passed full build/tests/install.
 The notation checkpoint retained 218 closed temporary reports and added 12;
 the later unit-name checkpoint had 231 closed reports. These are historical
 results for those exact inputs, rather than reruns of the current source.
-The historical 195-entry table is unchanged; the current algebra map has 45
+The historical 195-entry table is unchanged; the current algebra map has 54
 identifiers and four scope/delimiter migrations.
 
 此前记号及单位字段改名检查点分别通过全库／测试／安装。记号检查点保留
 218 项闭合临时报告并新增 12 项；后续单位字段改名检查点共 231 项闭合报告。
 这些是对应精确输入的历史结果，不表示已对当前源码重跑。历史 195 项表不变；
-当前代数表包含 45 项标识符及四项作用域／分隔符迁移。
+当前代数表包含 54 项标识符及四项作用域／分隔符迁移。
 
 The current review checkpoint removes the 26 explicit multiplication
 applications and all 30 proposed local law bindings. Algebra laws infer
@@ -343,6 +384,175 @@ export or shared-environment change.
 五项隐式见证／严格宇宙／假设检查及三项可观察运输见证计算。已中断的宽构建
 不计成功；完整交付验证另行执行。本分支保存供用户审核，未交集成、导出或
 修改共享环境。
+
+### Local review closeout (2026-11-16)
+
+### 本地审阅收尾（2026-11-16）
+
+The current proof cleanup and 11-name Comm/Ext/Of migration pass a final
+project-switch `dune build -j2` of 34 concrete targets: all 31 modified Rocq
+modules plus the inherited-notation and transport computation/universe
+regressions. The existing monoid/group extensions, Boolean and sphere
+clients are included. Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1 are used.
+The attempted full build was interrupted after the user requested a faster
+validation strategy; it is not counted as successful. Its cache is retained.
+
+当前证明整理及 11 项 Comm/Ext/Of 迁移已在项目 switch 下通过最终 34 个具体
+目标的 `dune build -j2`：覆盖全部 31 个修改 Rocq 模块，以及继承记号与运输
+计算／宇宙回归，包含已有幺半群／群扩充、布尔和球面客户端。工具链为
+Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1。用户要求更快的验证方案后，本轮
+全量构建已中断，不计成功；已完成的缓存保留。
+
+Fresh checks confirm that the 29 renamed files equal their pre-rename
+snapshots after exactly the specified 11-name substitution, preserving the
+earlier proof edits. Retired names are absent from theory/test sources;
+the cumulative 54-row and separate 11-name tables agree, and both edited
+guides' local links pass. The existing 11 closed signature/assumption
+reports and retired-name checks are reused for unchanged inputs. This is
+not a fresh rerun of all historical audits. Permanent regressions check
+competing stored choices, strict universe orders, actual rewriting and
+transparent transport witnesses.
+
+本轮新检查确认，29 个改名文件恰好等于改名前快照加指定 11 项替换，保全此前
+证明整理。理论／测试源码无遗留退役名，累计 54 行表与独立 11 项表一致，
+两份修改指南的本地链接通过。此前 11 项闭合签名／假设报告及旧名负检查按
+未变输入复用，不表示重跑全部历史审计。永久回归检查所存竞争选择、严格
+宇宙次序、实际重写及透明运输见证。
+
+The concrete target list, exit status, log and source hashes are retained
+in `/tmp/hierarchy42-final-review-20261116`. Editing validation follows the
+current mainline rule now synchronized into this worktree's AGENTS: select
+checks by mathematical impact and reuse unchanged evidence. Targeted
+validation establishes the listed coverage; final integration still requires
+the full library build on its exact resulting SHA. This remains uncommitted
+local review work based on `4814341`, with no push or integration handoff.
+Broader #15, #38 and #42 work remains open. No additional theory, permanent
+test, export or shared-environment change was introduced in this closeout.
+
+具体目标清单、退出码、日志及源码摘要保留于
+`/tmp/hierarchy42-final-review-20261116`。本 worktree 的 AGENTS 已同步当前
+主线的编辑期验证规则：按数学影响选检查，复用未变证据。定向验证提供上述
+覆盖范围的证据；最终集成仍须对精确结果 SHA 执行全库构建。本批仍是基于
+`4814341` 的未提交本地待审成果，未推送或交集成；#15、#38、#42 的更广范围
+工作继续开放。本轮收尾未新增理论、永久测试、导出或共享环境修改。
+
+### Derivable respectfulness and interface requirements
+
+### 可推导的保相等性与接口要求
+
+Before adding `Proper` or analogous evidence that an operation is
+well-defined on the specified equality, derive it from the existing
+structural laws whenever possible. Keep the proof at the weakest sufficient
+layer and expose it as an instance when appropriate. Callers should supply
+independent defining data and laws, while the interface provides the
+operational compatibility that follows from them. Preserve the required
+Type-valued witnesses, transparency and independent universe bounds.
+
+新增 `Proper` 或类似的操作适用条件前，先检查能否由已有结构定律推出操作
+对指定相等的保相等性。可以推出时，在最弱充分层证明，并在合适时提供实例；
+调用者只需给出独立的定义数据和定律，由接口提供可推导的操作相容性。保留
+所需的 Type 值见证、透明性及独立宇宙上界。
+
+For example, a raw magma's binary operation needs respectfulness as an
+input: an arbitrary function on representatives need not preserve setoid
+equality. In contrast, an operation satisfying `IsGroup M i` is respectful
+by inverse uniqueness, using the monoid's respectful multiplication and
+the two inverse laws. No additional inverse-respectfulness field is needed.
+The general `inv_proper` instance now takes a supplied monoid, candidate
+inverse and `IsGroup` witness directly. Complete groups obtain it through
+their stored inverse laws, without a second instance. This rule concerns operational well-definedness, and does not
+ask for an artificially minimal group axiom system or move ordinary group
+theorems such as cancellation into required fields.
+
+例如，原群的原始二元运算需要输入保相等性：任意代表上的函数未必保持广集
+相等。相反，满足 `IsGroup M i` 的运算可由逆唯一性推出保相等性，只使用
+幺半群已有的保相等乘法及双侧逆律，无须新增逆保相等字段。一般实例
+`inv_proper` 现直接接受给定幺半群、候选逆及 `IsGroup` 见证；完整群通过
+保存的逆律获得该实例，不另建第二份实例。这条规则针对操作的适用条件，不要求人为压缩群的定义公理体系，也不
+将消去律等通常的群论定理改作必填字段。
+
+The inverse-respectfulness follow-up passes 14 concrete group, transport,
+Boolean and sphere targets with the project switch. A permanent regression
+rewrites a raw inverse candidate under multiplication using only `IsGroup`.
+Six temporary assumption reports are closed, including strict carrier/equality
+orders and actual candidate/complete-group rewriting. At explicit transport
+and cylinder boundaries, clients pass the stored `IsGroup` witness to pin
+the intended parent and universe bounds. `inv_resp` likewise uses its stored
+witness; no additional group-specific instance is added. Evidence:
+`/tmp/hierarchy42-inv-proper`, with the initial failed inference check kept
+separate from the final passing build. This remains uncommitted local work;
+no full-library build is claimed.
+
+逆保相等性后续在项目 switch 下通过 14 个具体群论、运输、布尔及球面目标。
+永久回归仅给出 `IsGroup`，就在乘法内部实际重写候选逆。六项临时假设报告
+闭合，覆盖严格载体／相等次序及候选逆／完整群的实际重写。在显式运输与柱
+边界，客户端传入保存的 `IsGroup` 见证，以固定所用父结构及宇宙上界；
+`inv_resp` 同样使用其保存的见证，不另增完整群专用实例。证据位于
+`/tmp/hierarchy42-inv-proper`，初次推断失败与最终通过的构建分别保留。
+修改仍未提交，不声称全库构建通过。
+
+### Named algebra record constructors
+
+### 具名代数记录构造器
+
+The user-directed follow-up makes `MagmaOfSetC`, `SemigroupOfMagma`,
+`MonoidOfSemigroup` and `GroupOfMonoid` the actual record constructors. The four
+separate packing definitions are removed. Each constructor directly takes
+its immediate parent and extension/property witness; `Arguments ... : clear
+implicits` keeps both arguments explicit. Named-field literals, parent
+coercions, instance projections and selected computational witnesses use
+the same fields. No forwarding alias or new mathematical structure is added.
+
+用户指定的后续将 `MagmaOfSetC`、`SemigroupOfMagma`、`MonoidOfSemigroup` 和
+`GroupOfMonoid` 直接作为记录构造器，移除四个独立打包定义。每个构造器直接接受
+父结构及扩充／性质见证，以 `Arguments ... : clear implicits` 保持两个参数
+显式。具名字段字面量、父结构转换、实例投影及选定计算见证仍使用同一组字段，
+不增加转发别名或数学结构。
+
+Names follow `TargetOfParent`, paired with the stored `TargetToParent`
+projection. The witness type expresses which additional choices or laws
+are required; constructor names consistently describe the parent instead.
+
+名称统一遵循 `TargetOfParent`，与保存的 `TargetToParent` 父投影配对。
+见证类型说明需要增加哪些选择或定律，构造器名称统一说明父结构。
+
+| Constructor / 构造器 | Parent projection / 父投影 |
+| --- | --- |
+| `MagmaOfSetC` | `MagmaToSetC` |
+| `SemigroupOfMagma` | `SemigroupToMagma` |
+| `MonoidOfSemigroup` | `MonoidToSemigroup` |
+| `GroupOfMonoid` | `GroupToMonoid` |
+
+The preceding 29-file snapshot-substitution result describes the earlier
+rename-only checkpoint. These four core files now additionally change the
+constructor declarations; the public rename map still has 54 rows, with four
+constructor targets updated to the parent-based names. Validation of this
+follow-up is recorded separately from that earlier result.
+
+前述 29 文件快照替换结果对应更早的纯改名检查点。本次四个核心文件还修改了
+构造器声明；公共改名表仍为 54 行，其中四个构造器目标已同步更新为基于父结构
+的名称。本次验证与此前结果分别记录。
+
+Final current-source validation with the project switch passes all 34
+concrete algebra/client/regression targets. Temporary constructor-pattern
+and public-signature checks give 19 closed assumption reports; the four
+intermediate names and the default `Build_*` names are absent. Strict
+universe orders, competing stored choices and transparent transport-witness
+computations are covered by the compiled regressions. Eleven client/core
+files are exact token renames; the semigroup core additionally preserves
+the user's proof formatting, with a missing sentence terminator repaired.
+The four constructors have explicit parent/witness arguments, and the
+named-field literals remain valid. Evidence is retained separately in
+`/tmp/hierarchy42-parent-constructors`. No full build was run for this step;
+the changes remain uncommitted local review work.
+
+最终当前源码在项目 switch 下通过全部 34 个具体代数／客户端／回归目标。
+临时构造器模式匹配及公开签名检查得到 19 项闭合假设报告；四个中间名及默认
+`Build_*` 名均不存在。编译的回归覆盖严格宇宙次序、所存竞争选择及透明运输
+见证计算。11 个客户端／核心文件为精确词元替换；半群核心还保留用户的证明
+排版，并补正缺失的句点。四个构造器均显式接受父结构及见证，具名字段字面量
+继续可用。证据单独保留于 `/tmp/hierarchy42-parent-constructors`。
+本步未运行全库构建，修改仍为未提交的本地待审成果。
 
 ### Historical first-slice evidence
 
@@ -1248,7 +1458,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [Group](../theories/Algebra/Group/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Magma](../theories/Algebra/Magma/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
-| [IsCommutativeMonoid](../theories/Algebra/Monoid/Commutative.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
+| [IsCommMonoid](../theories/Algebra/Monoid/Commutative.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [Semigroup](../theories/Algebra/Semigroup/Core.v) | `Class` | Set algebra / 集合上的代数 |
 | [Adj](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [ApplicativeAp](../theories/Cat/Applicative/Application.v) | `Class` | Computational structures / 计算结构 |
@@ -2376,14 +2586,14 @@ records hypotheses, temporary checks and validation.
 
 Handoff synchronization rebases the task onto
 `5631b64a7ad8e854638cd116169ca6ef5ceee761`. The upstream batch adds six
-modules, the fixed-monoid property `IsCommutativeMonoid`, and the bundled
+modules, the fixed-monoid property `IsCommMonoid`, and the bundled
 triangle-label function `TwoCocycle`. The latter exposes its unique
 `two_cocycle_triangle :>` function and retains Type-valued normalization
 and tetrahedron laws. These additions match the existing distinction
 between fixed-data properties and computational bundles.
 
 交接同步将任务重基到 `5631b64a7ad8e854638cd116169ca6ef5ceee761`。上游
-批次增加六个模块、固定幺半群上的性质 `IsCommutativeMonoid`，以及三角标签
+批次增加六个模块、固定幺半群上的性质 `IsCommMonoid`，以及三角标签
 函数结构包 `TwoCocycle`；后者暴露唯一 `two_cocycle_triangle :>` 函数，保留
 Type 值归一化及四面体定律。这些新增接口符合已有的固定数据性质／计算结构包
 区分。

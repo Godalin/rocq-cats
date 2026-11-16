@@ -118,10 +118,14 @@ Defined.
 (** 三个已知标签的相等保持选定的第一个标签。 *)
 
 Global Instance cocycle012_solution_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G ==> carrier_equiv G ==>
-      carrier_equiv G) (λ q r s, (Cocycle012Solution q r s).1).
+  : Proper (carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G)
+      (λ q r s, (Cocycle012Solution q r s).1).
 Proof.
-  intros q q' Hq r r' Hr s s' Hs. cbn. rewrite Hq, Hr, Hs. reflexivity.
+  intros q q' Hq r r' Hr s s' Hs. cbn.
+  rewrite Hq, Hr, Hs. reflexivity.
 Defined.
 
 (** The second selected label also respects all three inputs. *)
@@ -129,10 +133,14 @@ Defined.
 (** 第二个选定标签也保持全部三个输入的相等。 *)
 
 Global Instance cocycle023_solution_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G ==> carrier_equiv G ==>
-      carrier_equiv G) (λ p r s, (Cocycle023Solution p r s).1).
+  : Proper (carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G)
+      (λ p r s, (Cocycle023Solution p r s).1).
 Proof.
-  intros p p' Hp r r' Hr s s' Hs. cbn. rewrite Hp, Hr, Hs. reflexivity.
+  intros p p' Hp r r' Hr s s' Hs. cbn.
+  rewrite Hp, Hr, Hs. reflexivity.
 Defined.
 
 (** Respectfulness compares labels, without comparing uniqueness witnesses. *)
@@ -140,10 +148,14 @@ Defined.
 (** 保相等性只比较标签，不比较唯一性见证。 *)
 
 Global Instance cocycle123_solution_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G ==> carrier_equiv G ==>
-      carrier_equiv G) (λ p q s, (Cocycle123Solution p q s).1).
+  : Proper (carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G)
+      (λ p q s, (Cocycle123Solution p q s).1).
 Proof.
-  intros p p' Hp q q' Hq s s' Hs. cbn. rewrite Hp, Hq, Hs. reflexivity.
+  intros p p' Hp q q' Hq s s' Hs. cbn.
+  rewrite Hp, Hq, Hs. reflexivity.
 Defined.
 
 (** The last selected label has the same pointwise preservation law. *)
@@ -151,10 +163,14 @@ Defined.
 (** 最后一个选定标签满足同样的逐点保相等律。 *)
 
 Global Instance cocycle013_solution_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G ==> carrier_equiv G ==>
-      carrier_equiv G) (λ p q r, (Cocycle013Solution p q r).1).
+  : Proper (carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G
+        ==> carrier_equiv G)
+      (λ p q r, (Cocycle013Solution p q r).1).
 Proof.
-  intros p p' Hp q q' Hq r r' Hr. cbn. rewrite Hp, Hq, Hr. reflexivity.
+  intros p p' Hp q q' Hq r r' Hr. cbn.
+  rewrite Hp, Hq, Hr. reflexivity.
 Defined.
 
 End Completion.
@@ -209,7 +225,7 @@ End Completion.
 \end{center}% *)
 
 Section FiveVertices.
-Context {G : Group} `{HC : !IsCommutativeMonoid G}.
+Context {G : Group} `{HC : !IsCommMonoid G}.
 Context (a b c d e f g h i j : G).
 
 (** Recover the equation on vertices [1,2,3,4] by cancelling [c014]. *)
@@ -222,8 +238,9 @@ Lemma cocycle_tetrahedron_1234
   : g ⋅ i ≈S j ⋅ h.
 Proof.
   apply (mul_cancel_r c).
-  rewrite mul_assoc, <- H2, <- mul_assoc, <- H4, mul_assoc, H1, <-
-    (mul_assoc a j e), (mul_comm a j), mul_assoc, H3, <- mul_assoc.
+  rewrite mul_assoc, <- H2, <- mul_assoc, <- H4,
+    mul_assoc, H1, <- (mul_assoc a j e),
+    (mul_comm a j), mul_assoc, H3, <- mul_assoc.
   reflexivity.
 Defined.
 
@@ -237,8 +254,10 @@ Lemma cocycle_tetrahedron_0234
   : d ⋅ f ≈S j ⋅ e.
 Proof.
   apply (mul_cancel_l a).
-  rewrite <- mul_assoc, H4, mul_assoc, H2, <- mul_assoc, H0, mul_assoc, <-
-    H3, <- (mul_assoc j a e), (mul_comm j a), mul_assoc.
+  rewrite <- mul_assoc, H4, mul_assoc, H2,
+    <- mul_assoc, H0, mul_assoc, <- H3,
+    <- (mul_assoc j a e), (mul_comm j a),
+    mul_assoc.
   reflexivity.
 Defined.
 
@@ -252,8 +271,9 @@ Lemma cocycle_tetrahedron_0134
   : b ⋅ f ≈S i ⋅ c.
 Proof.
   apply (mul_cancel_l g).
-  rewrite <- mul_assoc, <- H4, mul_assoc, H1, <- (mul_assoc a j e),
-    (mul_comm a j), mul_assoc, H3, <- mul_assoc, <- H0, mul_assoc.
+  rewrite <- mul_assoc, <- H4, mul_assoc, H1,
+    <- (mul_assoc a j e), (mul_comm a j),
+    mul_assoc, H3, <- mul_assoc, <- H0, mul_assoc.
   reflexivity.
 Defined.
 
@@ -267,8 +287,9 @@ Lemma cocycle_tetrahedron_0124
   : a ⋅ e ≈S h ⋅ c.
 Proof.
   apply (mul_cancel_l j).
-  rewrite <- (mul_assoc j a e), (mul_comm j a), mul_assoc, <- H1, <-
-    mul_assoc, H4, mul_assoc, H2, <- mul_assoc, H0, mul_assoc.
+  rewrite <- (mul_assoc j a e), (mul_comm j a),
+    mul_assoc, <- H1, <- mul_assoc, H4, mul_assoc,
+    H2, <- mul_assoc, H0, mul_assoc.
   reflexivity.
 Defined.
 
@@ -282,8 +303,9 @@ Lemma cocycle_tetrahedron_0123
   : a ⋅ d ≈S g ⋅ b.
 Proof.
   apply (mul_cancel_r f).
-  rewrite mul_assoc, H1, <- (mul_assoc a j e), (mul_comm a j), mul_assoc,
-    H3, <- mul_assoc, <- H0, mul_assoc, <- H2, <- mul_assoc.
+  rewrite mul_assoc, H1, <- (mul_assoc a j e),
+    (mul_comm a j), mul_assoc, H3, <- mul_assoc,
+    <- H0, mul_assoc, <- H2, <- mul_assoc.
   reflexivity.
 Defined.
 

@@ -194,7 +194,7 @@ Definition lower_inverse_proper (x y : C)
     (E : TwoSphereCylinderHomotopy X b x y)
   : TwoSphereCylinderHomotopy X b
       (@inv _ (hasGroup lower_group) x) (@inv _ (hasGroup lower_group) y)
-  := @inv_proper lower_group x y E.
+  := @inv_proper _ _ (@isGroup _ (hasGroup lower_group)) x y E.
 
 (** Generic involution returns an actual full relative cylinder. *)
 
@@ -407,7 +407,7 @@ Definition higher_inverse_proper (x y : C)
     (E : TwoSphereCylinderHomotopy X b x y)
   : TwoSphereCylinderHomotopy X b
       (@inv _ (hasGroup higher_group) x) (@inv _ (hasGroup higher_group) y)
-  := @inv_proper higher_group x y E.
+  := @inv_proper _ _ (@isGroup _ (hasGroup higher_group)) x y E.
 
 (** Generic involution returns an actual full relative cylinder. *)
 

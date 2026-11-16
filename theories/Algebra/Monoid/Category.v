@@ -24,7 +24,7 @@ Program Definition MonoidCat (M : Monoid)
   ; HomSet _ _ := M
   ; id _ := 1
   ; comp _ _ _ g f := g ⋅ f
-  ; comp_proper _ _ _ := (@mul_proper _ (hasMagma M))
+  ; comp_proper _ _ _ := mul_proper
   ; comp_id_r _ _ := mul_unit_r
   ; comp_id_l _ _ := mul_unit_l
   ; comp_assoc _ _ _ _ := mul_assoc
@@ -56,4 +56,4 @@ Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
 
 Definition EndMonoid (C : Cat) (X : @Ob C)
   : Monoid
-  := MonoidFromExtension (EndSemigroup C X) (EndHasMonoid C X).
+  := MonoidOfSemigroup (EndSemigroup C X) (EndHasMonoid C X).

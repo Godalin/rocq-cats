@@ -18,8 +18,8 @@ From Cats Require Export
     已选定的乘法，它也是 [BoolS_Group] 的底层幺半群。这里不引入第二种乘法；
     导入模块不会全局选定系数群或交换性见证。 *)
 
-Program Definition BoolS_IsCommutativeMonoid
-  : @IsCommutativeMonoid BoolS_Monoid
+Program Definition BoolS_IsCommMonoid
+  : @IsCommMonoid BoolS_Monoid
   :=
   {|mul_comm x y := _
   |}.

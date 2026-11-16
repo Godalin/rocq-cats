@@ -24,6 +24,29 @@ Fail Definition unchosen_group_extension
 
 End UnchosenExtension.
 
+(** ** Respectfulness of a Supplied Inverse
+
+    Fix a monoid and a candidate operation with its inverse laws. Actual
+    rewriting derives respectfulness without selecting a group extension. *)
+
+(** ** 给定逆运算的保相等性
+
+    固定幺半群及带逆律的候选运算；无须选取群扩充即可实际重写。 *)
+
+Section CandidateRespectfulness.
+Context {M : Monoid} {i : M → M} `{Hi : !IsGroup M i}.
+
+(** Candidate inversion rewrites inside multiplication using derived
+    respectfulness alone. *)
+
+(** 候选逆仅使用导出的保相等性，即可在乘法内部重写。 *)
+
+Example candidate_inverse_rewriting (x y z : M) (H : x ≈S y)
+  : i x ⋅ z ≈S i y ⋅ z.
+Proof. rewrite H. reflexivity. Qed.
+
+End CandidateRespectfulness.
+
 (** ** Competing Choices and Observable Law Witnesses
 
     The indiscrete bool-valued equality permits distinct native inverse
@@ -70,7 +93,7 @@ Program Definition TokenHasMonoid
 
 Definition TokenMonoid
   : Monoid
-  := MonoidFromExtension TokenSemigroup TokenHasMonoid.
+  := MonoidOfSemigroup TokenSemigroup TokenHasMonoid.
 
 Program Definition TokenExtension (e t : bool)
   : HasGroup TokenMonoid
@@ -95,11 +118,11 @@ Local Existing Instance TrueExtension.
 
 Definition FirstGroup
   : Group
-  := GroupFromExtension TokenMonoid FalseExtension.
+  := GroupOfMonoid TokenMonoid FalseExtension.
 
 Definition SecondGroup
   : Group
-  := GroupFromExtension TokenMonoid TrueExtension.
+  := GroupOfMonoid TokenMonoid TrueExtension.
 
 Example stored_parent
   : GroupToMonoid FirstGroup = TokenMonoid.
@@ -182,11 +205,11 @@ Context (HA : HasGroup MA) (HB : HasGroup MB).
 
 Definition low_carrier_group
   : Group@{u p l}
-  := GroupFromExtension MA HA.
+  := GroupOfMonoid MA HA.
 
 Definition low_equality_group
   : Group@{p u l}
-  := GroupFromExtension MB HB.
+  := GroupOfMonoid MB HB.
 
 Example low_carrier_view
   : (low_carrier_group : SetC@{u p}) = (MA : SetC@{u p}).

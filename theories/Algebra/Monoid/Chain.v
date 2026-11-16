@@ -108,7 +108,7 @@ Proof.
     + rewrite mul_unit_l. reflexivity.
     + rewrite mul_unit_r. reflexivity.
     + rewrite (IH (tuple_tail xs) fin_first j k).
-      * apply mul_assoc.
+      * rewrite mul_assoc. reflexivity.
       * cbn. lia.
       * cbn. lia.
     + apply IH; cbn in *; lia.

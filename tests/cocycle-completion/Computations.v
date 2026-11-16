@@ -20,7 +20,7 @@ Fail Definition unchosen_boolean_group
   := _.
 
 Fail Definition unchosen_boolean_commutativity
-  : IsCommutativeMonoid BoolS_Monoid
+  : IsCommMonoid BoolS_Monoid
   := _.
 
 

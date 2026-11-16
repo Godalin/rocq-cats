@@ -25,7 +25,7 @@ From Cats Require Export
 
     这里得到实际 Kan 结构；其同伦群计算及预期的高阶同伦区别仍为独立工作。 *)
 
-Local Existing Instance BoolS_IsCommutativeMonoid.
+Local Existing Instance BoolS_IsCommMonoid.
 
 (** Select the full Kan structure without globally registering it. *)
 

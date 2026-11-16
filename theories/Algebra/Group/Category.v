@@ -18,8 +18,7 @@ Program Definition MonoidCat_IsGroupoid (G : Group)
   : B(G) ⦂ Gpd
   :=
   {|groupoid_iso X Y g :=
-      (g⁻¹; (@mul_inv_l _ _ (@isGroup _ (hasGroup G)) g,
-              @mul_inv_r _ _ (@isGroup _ (hasGroup G)) g))
+      (g⁻¹; (mul_inv_l g, mul_inv_r g))
   |}.
 
 (** Bundle the original one-object category and its inverses.
@@ -36,8 +35,8 @@ Definition GroupGpd (G : Group)
 
 (** 群胚任意指定对象处的自态射构成群，不要求对象代表之间原生相等。 *)
 
-Program Definition EndHasGroup (C : Cat) `{HC : !IsGroupoid C}
-    (X : @Ob C)
+Program Definition EndHasGroup (C : Cat)
+    `{HC : !IsGroupoid C} (X : @Ob C)
   : HasGroup (EndMonoid C X)
   :=
   {|inv f := @groupoid_inv C HC X X f
@@ -53,4 +52,4 @@ Program Definition EndHasGroup (C : Cat) `{HC : !IsGroupoid C}
 
 Definition EndGroup (C : Cat) `{HC : !IsGroupoid C} (X : @Ob C)
   : Group
-  := GroupFromExtension (EndMonoid C X) (EndHasGroup C X).
+  := GroupOfMonoid (EndMonoid C X) (EndHasGroup C X).

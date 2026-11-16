@@ -36,15 +36,15 @@ Section IndependentChoices.
 Context (SG : Semigroup) (H K : HasMonoid SG).
 
 Example first_parent_is_preserved
-  : MonoidToSemigroup (MonoidFromExtension SG H) = SG.
+  : MonoidToSemigroup (MonoidOfSemigroup SG H) = SG.
 Proof. reflexivity. Qed.
 
 Example first_extension_is_preserved
-  : hasMonoid (MonoidFromExtension SG H) = H.
+  : hasMonoid (MonoidOfSemigroup SG H) = H.
 Proof. reflexivity. Qed.
 
 Example first_unit_is_selected
-  : @mul_unit _ (hasMonoid (MonoidFromExtension SG H)) =
+  : @mul_unit _ (hasMonoid (MonoidOfSemigroup SG H)) =
       @mul_unit SG H.
 Proof. reflexivity. Qed.
 
@@ -105,7 +105,7 @@ Program Definition TrueMultiplication
 
 Definition TrueMagma
   : Magma
-  := MagmaFromExtension IndiscreteBoolS TrueMultiplication.
+  := MagmaOfSetC IndiscreteBoolS TrueMultiplication.
 
 Local Existing Instance TrueMultiplication.
 
@@ -117,7 +117,7 @@ Local Existing Instance OtherAssociativity.
 
 Definition OtherSemigroup
   : Semigroup
-  := SemigroupFromProperty ConstantBoolMagma OtherAssociativity.
+  := SemigroupOfMagma ConstantBoolMagma OtherAssociativity.
 
 Example stored_multiplications_compute
   : (@mul _ (hasMagma ConstantBoolMagma) false false,
@@ -168,11 +168,11 @@ Local Existing Instance TrueUnit.
 
 Definition FirstMonoid
   : Monoid
-  := MonoidFromExtension ConstantBoolSemigroup FalseUnit.
+  := MonoidOfSemigroup ConstantBoolSemigroup FalseUnit.
 
 Definition SecondMonoid
   : Monoid
-  := MonoidFromExtension ConstantBoolSemigroup TrueUnit.
+  := MonoidOfSemigroup ConstantBoolSemigroup TrueUnit.
 
 Example stored_units_compute
   : (@mul_unit _ (hasMonoid FirstMonoid),
@@ -244,11 +244,11 @@ Context (SA : Semigroup@{u p l}) (SB : Semigroup@{p u l})
 
 Definition high_equality_monoid
   : Monoid@{u p l}
-  := MonoidFromExtension SA HA.
+  := MonoidOfSemigroup SA HA.
 
 Definition low_equality_monoid
   : Monoid@{p u l}
-  := MonoidFromExtension SB HB.
+  := MonoidOfSemigroup SB HB.
 
 Example high_carrier_coercion
   : (high_equality_monoid : SetC@{u p}) = (SA : SetC@{u p}).
