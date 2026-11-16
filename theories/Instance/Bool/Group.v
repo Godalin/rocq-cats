@@ -48,14 +48,25 @@ Next Obligation. destruct x, y, z; reflexivity. Defined.
 
 (** 异或幺半群为选定半群增加单位元。 *)
 
-Program Definition BoolS_Monoid
-  : Monoid BoolS
+Program Definition BoolS_HasMonoid
+  : HasMonoid BoolS_Semigroup
   :=
-  {|MonoidSG := BoolS_Semigroup
-  ; monoid_unit := false
+  {|monoid_chosen_unit := false
+  ; isMonoid :=
+      {|monoid_unit_left := _
+      ; monoid_unit_right := _
+      |}
   |}.
 Next Obligation. destruct x; reflexivity. Defined.
 Next Obligation. destruct x; reflexivity. Defined.
+
+(** The existing monoid view retains that same semigroup and extension. *)
+
+(** 现有幺半群视图保留同一半群及扩充。 *)
+
+Definition BoolS_Monoid
+  : Monoid BoolS
+  := MonoidFromExtension BoolS_Semigroup BoolS_HasMonoid.
 
 (** Inversion is the identity function, extending the same selected monoid. *)
 

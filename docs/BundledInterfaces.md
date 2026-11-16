@@ -30,6 +30,124 @@ Lax monoidal 接口现已将底层函子及结构打包在同一个类中，只�
 `Fct` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
 笛卡尔闭函子。已有固定数据保持性接口继续与打包接口共存，服务于一般定理。
 
+## Fixed-parent monoid extensions: architecture transition
+
+## 固定父结构的幺半群扩充：架构过渡
+
+[Issue #42](https://github.com/Godalin/rocq-cats/issues/42) is the normative
+architecture issue; [issue #15](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6905019620)
+records this algebra-specific implementation. The user authorized incremental
+implementation and serial integration on 2026-11-16, without requiring a
+broadcast for now. The first bounded step starts at `3a1991a` on
+`hierarchy-monoid-extensions-42`; it is separate from the naming-only #38 work.
+
+[议题 #42](https://github.com/Godalin/rocq-cats/issues/42) 是规范架构的唯一总议题；
+[议题 #15](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6905019620)
+记录本片具体代数实现。用户于 2026-11-16 授权逐步实施、串行集成，暂不要求
+广播。首片在 `hierarchy-monoid-extensions-42` 从 `3a1991a` 开始，与仅负责
+命名的 #38 工作分开。
+
+The architecture distinguishes properties of specified candidate data (`Is*`),
+chosen extensions of exact parents (`Has*`), and first-class complete objects
+(`Record`). A property-only extension need not have another choice wrapper.
+Meaningful multiple parent views are permitted when shared ancestors are stored
+once and the converging paths are definitionally coherent. Fixed-ancestor
+fibers are introduced only for actual mathematical clients. Existing complete
+`Class` interfaces below describe earlier migration checkpoints; they are not
+the final representation mandated by #42. The adjunction interface retains its
+two specified functors as parameters.
+
+该架构区分指定候选数据的性质（`Is*`）、恰好指定父结构上的选定扩充（`Has*`）
+及作为数学对象的完整包（`Record`）。仅增添性质的扩充无须额外选择包装。
+有数学意义的多父视图允许共存，但共享祖先只保存一次，汇合路径须定义相等。
+固定祖先纤维仅按实际数学客户端需要引入。下文已有完整 `Class` 接口属于先前
+迁移检查点，并非 #42 规定的最终表示。伴随接口保留两个指定函子作为参数。
+
+In [the monoid core](../theories/Algebra/Monoid/Core.v), `IsMonoid SG e`
+asserts the two unit laws for exactly the selected semigroup `SG` and candidate
+`e`. `HasMonoid SG` stores `monoid_chosen_unit` and its `isMonoid` evidence.
+The existing parameterized `Monoid M` now stores `MonoidSG` and one
+`hasMonoid` extension indexed by that parent. `MonoidFromExtension` transparently
+recovers this existing view. The ordinary `monoid_unit`, `monoid_unit_l` and
+`monoid_unit_r` operations read its stored evidence explicitly; they do not ask
+instance search to select another extension on the same parent. The laws are
+fields only in `IsMonoid`, and the unit is stored only in `HasMonoid`.
+
+[幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`IsMonoid SG e` 表示恰好
+选定半群 `SG` 上候选 `e` 的双侧单位律。`HasMonoid SG` 保存
+`monoid_chosen_unit` 及其 `isMonoid` 见证。现有具参 `Monoid M` 改为保存
+`MonoidSG` 及以该父结构索引的一份 `hasMonoid` 扩充，`MonoidFromExtension`
+透明恢复此现有视图。通常的 `monoid_unit`、`monoid_unit_l`、`monoid_unit_r`
+显式读取保存的见证，不让实例搜索在同一父结构上另选扩充。定律仅在 `IsMonoid`
+中作为字段，单位元仅在 `HasMonoid` 中保存。
+
+`monoid_units_equiv` compares two candidate units by specified setoid equality;
+`monoid_extension_inverse_unique` needs only the fixed-parent extension. The
+existing inverse theorem delegates to it. The
+[boolean](../theories/Instance/Bool/Group.v),
+[endomorphism](../theories/Algebra/Monoid/Category.v) and
+[transport](../theories/Algebra/Monoid/Transport.v) constructors provide actual
+chosen-extension clients, retaining their original computations. The two
+existing sphere-monoid constructors in
+[Cocycle.SphereGroup](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v)
+and [Homotopy.SphereGroup](../theories/Instance/Set/Simplicial/Homotopy/SphereGroup.v)
+only regroup their original unit and law fields inside `hasMonoid`; their
+mathematical proofs are unchanged. Direct monoid record constructors now supply
+`hasMonoid` or use `MonoidFromExtension`; this is a source-breaking constructor
+change, while ordinary operation/law signatures are retained. The
+[interface regression](../tests/MonoidExtensions.v) checks two extensions of one
+parent, distinct native boolean units under Type-valued setoid equality,
+explicit stored selection, negative unchosen-instance search, transparent
+parent/unit projections, both strict carrier/equality size orders and a
+strictly larger law universe. Explicit `Monoid@{u p l}` arguments keep their
+original carrier/equality/law order; the refactor does not rely on a newly
+inferred order.
+
+`monoid_units_equiv` 用指定广集相等比较两个候选单位元；
+`monoid_extension_inverse_unique` 仅需固定父结构上的扩充，已有逆唯一性定理
+委托给它。[布尔](../theories/Instance/Bool/Group.v)、
+[自态射](../theories/Algebra/Monoid/Category.v) 及
+[运输](../theories/Algebra/Monoid/Transport.v) 构造作为实际选定扩充客户端，
+保留原计算。已有
+[Cocycle.SphereGroup](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v)
+及 [Homotopy.SphereGroup](../theories/Instance/Set/Simplicial/Homotopy/SphereGroup.v)
+中的两个球面幺半群构造器仅把原单位元与定律字段重组进 `hasMonoid`，数学
+证明保持。直接记录构造器现须提供 `hasMonoid` 或使用 `MonoidFromExtension`；
+这属于构造器源码 breaking，普通运算／定律签名保留。
+[接口回归](../tests/MonoidExtensions.v) 检查同一父结构的两份扩充、
+Type 值广集相等下原生不同的布尔单位元、显式保存的选择、未选定实例负检查、
+透明父结构／单位元投影、两种严格的载体／相等大小次序及更大的定律宇宙。
+显式 `Monoid@{u p l}` 参数保留原有载体／相等／定律次序，不依赖重构后
+重新推断的次序。
+
+Validation on the `3a1991a`-based source tree passed the project-switch
+`dune build -j2 @all @runtest @install`, the new extension regression, original
+algebra-transport checks, original strict cocycle-model checks and eight
+sphere-related targets. Temporary checks passed 30 core/model signatures and
+two sphere-constructor signatures, all with closed assumption reports. The
+explicit universe-order regression retains the original distinct law bound.
+Document targets and whitespace checks passed; the exact abbreviation guide
+is byte-for-byte unchanged. Rocq 9.3.0, Stdlib 9.2.0, OCaml 5.3.0 and Dune
+3.23.1; no exports or shared-environment changes. Serial integration acceptance
+is pending.
+
+基于 `3a1991a` 的源码树使用项目 switch 通过全库／测试／安装、新扩充回归、
+原代数运输检查、原严格 cocycle 模型检查及八个球面相关目标。临时检查的
+30 项核心／模型签名和两个球面构造器签名的假设报告全部闭合；显式宇宙次序
+回归保留原先独立的定律上界。文档目标及空白检查通过，精确缩写指南逐字不变。
+工具链为 Rocq 9.3.0、Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1；无导出或
+共享环境变更，串行集成验收待完成。
+
+This step does not yet replace the parameterized algebra hierarchy with
+unparameterized complete records, introduce an arbitrary hierarchy diamond,
+or build categories of complete structures. Those are subsequent separately
+validated slices. Module paths, the approved abbreviation table, chosen
+setoid equality and functor/adjunction endpoints remain unchanged.
+
+本片尚未把具参代数层级替换为无参数完整记录，也不引入任意层级菱形或构造
+完整结构的范畴；这些留给后续独立验证的批次。模块路径、已批准缩写表、选定
+广集相等及函子／伴随端点保持。
+
 ## Complete category bundles: first slice
 
 ## 完整范畴打包：首个批次

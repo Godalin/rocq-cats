@@ -187,9 +187,13 @@ Program Definition cocycle_two_sphere_Monoid
   : Monoid Q
   :=
   {|MonoidSG := cocycle_two_sphere_Semigroup
-  ; monoid_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
-  ; monoid_unit_l := cocycle_two_sphere_unit_l
-  ; monoid_unit_r := cocycle_two_sphere_unit_r
+  ; hasMonoid :=
+      {|monoid_chosen_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
+      ; isMonoid :=
+          {|monoid_unit_left := cocycle_two_sphere_unit_l
+          ; monoid_unit_right := cocycle_two_sphere_unit_r
+          |}
+      |}
   |}.
 
 (** ** Actual Fillers and Independence of Their Choice
