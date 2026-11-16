@@ -249,7 +249,7 @@ Defined.
     自然同构相等不保留所有图式之间的区别。群胚中，两个 n-单形相等当且仅当
     其首顶点同构；特别地，单对象群胚的任意两个 n-单形在此广集值 nerve 中相等。 *)
 
-Lemma nerve_groupoid_eq_iff@{u p +} {C : Cat} `{HC : !IsGroupoid C}
+Lemma nerve_gpd_eq_iff@{u p +} {C : Cat} `{HC : !IsGpd C}
     {n : nat}
     (x y : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : x ≈S y ↔ lower x fin_first ≅[C] lower y fin_first.
@@ -259,12 +259,12 @@ Proof.
   - intros e. refine {|lower := _
                       |}.
     transitivity (ConstF [Ord n] (lower x fin_first)).
-    + symmetry. exact (groupoid_initial_diagram_iso
+    + symmetry. exact (gpd_initial_diagram_iso
         (ordinal_first_initial n) (lower x)).
     + transitivity (ConstF [Ord n] (lower y fin_first)).
       * exists (fmap (DiagF [Ord n] C) e.1).
         apply is_iso_NatIso.
         exact (functor_is_iso (DiagF [Ord n] C) e.1 e.2).
-      * exact (groupoid_initial_diagram_iso
+      * exact (gpd_initial_diagram_iso
           (ordinal_first_initial n) (lower y)).
 Defined.

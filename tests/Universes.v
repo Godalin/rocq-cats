@@ -1584,7 +1584,7 @@ Universes o h p l.
 Constraint h < p.
 Constraint p < l.
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l})
-    (HC : IsGroupoid C) (HD : IsGroupoid D).
+    (HC : IsGpd C) (HD : IsGpd D).
 Local Existing Instance HC.
 Local Existing Instance HD.
 
@@ -1598,15 +1598,15 @@ Definition low_eq_groupoid_inverse_functor
 
 Definition high_eq_opposite_groupoid
   : C^op ⦂ Gpd
-  := op_IsGroupoid C.
+  := op_IsGpd C.
 
 Definition mixed_groupoid_product
   : (C ×C D) ⦂ Gpd
-  := ProdCat_IsGroupoid C D.
+  := ProdCat_IsGpd C D.
 
 Definition low_eq_functor_groupoid
   : FctCat C D ⦂ Gpd
-  := FctCat_IsGroupoid C D.
+  := FctCat_IsGpd C D.
 End GroupoidLevels.
 
 (** Setoid elements and their equality witnesses remain independent in the
@@ -1630,7 +1630,7 @@ Definition low_witness_equality_groupoid
 
 Definition separated_equality_groupoid_structure
   : high_witness_equality_groupoid ⦂ Gpd
-  := EqGpd_IsGroupoid X.
+  := EqGpd_IsGpd X.
 End EqualityGroupoidLevels.
 
 (** Delooping and the regular action preserve independent carrier and
@@ -1655,11 +1655,11 @@ Definition low_eq_group_category
 
 Definition high_eq_group_category_structure
   : high_eq_group_category ⦂ Gpd
-  := MonoidCat_IsGroupoid X.
+  := MonoidCat_IsGpd X.
 
 Definition low_eq_group_category_structure
   : low_eq_group_category ⦂ Gpd
-  := MonoidCat_IsGroupoid Y.
+  := MonoidCat_IsGpd Y.
 
 Definition high_eq_regular_action
   : Fct high_eq_group_category SetCat@{u p _ _ _ _ _}
@@ -1987,7 +1987,7 @@ Definition high_eq_vertex_coskeletal
 
 (** 局部 horn 同构保留原生 Hom 及相等大小；实现填充也允许环境值大小的两种次序。 *)
 
-Context `{HC : !IsGroupoid C} `{HD : !IsGroupoid D}.
+Context `{HC : !IsGpd C} `{HD : !IsGpd D}.
 
 Definition low_eq_outer_horn (A B E : @Ob C)
   : TriangleS C A B E ≅[SetCat] Horn2S C A B E fin_first
@@ -2001,12 +2001,12 @@ Definition high_eq_outer_horn (A B E : @Ob D)
 Definition low_eq_local_horn (A B E : X)
   : Horn2S (VtxCat T) A B E fin_first →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat
-  := @local_horn2_resp _ _ T (VtxCat_IsGroupoid T) A B E fin_first.
+  := @local_horn2_resp _ _ T (VtxCat_IsGpd T) A B E fin_first.
 
 Definition high_eq_local_horn (A B E : Y)
   : Horn2S (VtxCat S) A B E (fin_next (fin_next fin_first)) →r
       (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat
-  := @local_horn2_resp _ _ S (VtxCat_IsGroupoid S)
+  := @local_horn2_resp _ _ S (VtxCat_IsGpd S)
       A B E (fin_next (fin_next fin_first)).
 
 (** Actual horn maps admit the selected groupoid fillings at either
@@ -2016,11 +2016,11 @@ Definition high_eq_local_horn (A B E : Y)
 
 Definition low_eq_actual_horn (i : Ordinal 2%nat)
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat i
-  := vertex_groupoid_horn2_HasFillers T (HC := VtxCat_IsGroupoid T) i.
+  := vertex_gpd_horn2_HasFillers T (HC := VtxCat_IsGpd T) i.
 
 Definition high_eq_actual_horn (i : Ordinal 2%nat)
   : HasHornFillers (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2%nat i
-  := vertex_groupoid_horn2_HasFillers S (HC := VtxCat_IsGroupoid S) i.
+  := vertex_gpd_horn2_HasFillers S (HC := VtxCat_IsGpd S) i.
 
 (** The all-dimensional Kan structures retain both strict orderings of
     value carrier and equality universes. *)
@@ -2029,11 +2029,11 @@ Definition high_eq_actual_horn (i : Ordinal 2%nat)
 
 Definition low_eq_vertex_kan
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _})
-  := vertex_groupoid_HasKanFillers T (HC := VtxCat_IsGroupoid T).
+  := vertex_gpd_HasKanFillers T (HC := VtxCat_IsGpd T).
 
 Definition high_eq_vertex_kan
   : HasKanFillers (Nᵥ(S) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-  := vertex_groupoid_HasKanFillers S (HC := VtxCat_IsGroupoid S).
+  := vertex_gpd_HasKanFillers S (HC := VtxCat_IsGpd S).
 
 End VertexNerveLevels.
 

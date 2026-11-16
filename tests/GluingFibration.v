@@ -310,7 +310,7 @@ Definition action_factor
         ActionGluingOb tt bool_loop)
   := cartesian_factor (@cartesian_lift_universal _ _
       (GluingRightF BoolActionF) action_lifts ActionGluingOb tt bool_loop)
-      action_square (@Cats.Cat.Core.id BoolGroupoid tt) (comp_id_r bool_loop).
+      action_square (@Cats.Cat.Core.id BoolGpd tt) (comp_id_r bool_loop).
 
 (** The two pullback coordinates exhibit the nonidentity action. *)
 

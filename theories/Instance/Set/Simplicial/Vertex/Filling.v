@@ -210,8 +210,8 @@ Definition vertex_inner_horn2_HasFillers
 
 (** 选定对象上的群胚提供全部实际二维 horn 填充；第二类外侧局部构造仍来自对偶。 *)
 
-Definition vertex_groupoid_horn2_HasFillers
-    `{HC : !IsGroupoid (VtxCat T)} (i : Ordinal 2)
+Definition vertex_gpd_horn2_HasFillers
+    `{HC : !IsGpd (VtxCat T)} (i : Ordinal 2)
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i
   := @vertex_horn2_HasFillers i (@horn2_HasFillers (VtxCat T) HC i).
 

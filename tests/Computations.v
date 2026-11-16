@@ -327,7 +327,7 @@ Definition T
 
 Local Instance chosen_groupoid
   : VtxCat T ⦂ Gpd
-  := VtxCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid).
+  := VtxCat_IsGpd T (HC := BoolGpd_IsGpd).
 
 Example local_horn2_dual_computes
   : fmap (lower ((fill₂[T; tt; tt; tt; fin_next (fin_next fin_first)] :
@@ -341,9 +341,9 @@ Proof. reflexivity. Qed.
 (** 从第二类外填充恢复群胚后，其逆仍可计算，不受除法方程证明的阻碍。 *)
 
 Example outer_horn2_recovered_inverse_computes
-  : @groupoid_inv BoolGroupoid
-      (@horn2_2_IsGroupoid BoolGroupoid
-        (@horn2_HasFillers BoolGroupoid BoolGroupoid_IsGroupoid
+  : @gpd_inv BoolGpd
+      (@horn2_2_IsGpd BoolGpd
+        (@horn2_HasFillers BoolGpd BoolGpd_IsGpd
           (fin_next (fin_next fin_first)))) tt tt true = true.
 Proof. reflexivity. Qed.
 
@@ -378,8 +378,8 @@ Example actual_outer_horn2_filler_computes
   : let T := MonoidObjF BoolS_Monoid in
     let x := (△₂[T; tt; tt; tt] : _ →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat) (true, true) in
-    let HF := vertex_groupoid_horn2_HasFillers T
-      (HC := VtxCat_IsGroupoid T (HC := BoolGroupoid_IsGroupoid)) fin_first in
+    let HF := vertex_gpd_horn2_HasFillers T
+      (HC := VtxCat_IsGpd T (HC := BoolGpd_IsGpd)) fin_first in
     fmap (lower (@horn_fill _ _ _ HF (x↾Λ[Nᵥ(T); 2%nat; fin_first])).1)
       (ordinal_step (fin_next fin_first)) = true.
 Proof. reflexivity. Qed.

@@ -72,7 +72,7 @@ Proof. intros [[] | []]. reflexivity. Defined.
 
 Definition BoolNerveComparison
   : (LiftF ∘F BoolNerve : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒
-      N≅(BoolGroupoid)
+      N≅(BoolGpd)
   := MonoidDiagramN.
 
 (** The diagram comparison identifies the two distinct one-simplices.
@@ -87,7 +87,7 @@ Lemma bool_nerve_comparison_identifies_loops
       BoolNerveComparison 1 {|lower := bool_nerve_id
                              |}.
 Proof.
-  apply (snd (nerve_groupoid_eq_iff (HC := BoolGroupoid_IsGroupoid) _ _)).
+  apply (snd (nerve_gpd_eq_iff (HC := BoolGpd_IsGpd) _ _)).
   apply iso_refl.
 Defined.
 
@@ -108,9 +108,9 @@ Definition BoolVtxNerve
 
 Definition BoolVtxNerve_HasKanFillers
   : HasKanFillers BoolVtxNerve
-  := vertex_groupoid_HasKanFillers (MonoidObjF BoolS_Monoid)
-      (HC := VtxCat_IsGroupoid (MonoidObjF BoolS_Monoid)
-        (HC := BoolGroupoid_IsGroupoid)).
+  := vertex_gpd_HasKanFillers (MonoidObjF BoolS_Monoid)
+      (HC := VtxCat_IsGpd (MonoidObjF BoolS_Monoid)
+        (HC := BoolGpd_IsGpd)).
 
 (** Every compatible boolean-nerve boundary above dimension two has a
     unique filler, while the one-dimensional loops remain distinct. *)

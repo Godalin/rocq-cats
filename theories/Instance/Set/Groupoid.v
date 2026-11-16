@@ -28,9 +28,9 @@ Definition EqGpd (X : SetC)
 
 (** 读取相等群胚已保存的逆；此显式性质视图使用恰好相同的范畴与对称见证。 *)
 
-Definition EqGpd_IsGroupoid (X : SetC)
+Definition EqGpd_IsGpd (X : SetC)
   : EqGpd X ⦂ Gpd
-  := @isGroupoid (EqGpd X).
+  := @isGpd (EqGpd X).
 
 (** Parallel equality witnesses agree in the hom-setoid, regardless of their
     native equality. This is the thinness used by coherent families. *)

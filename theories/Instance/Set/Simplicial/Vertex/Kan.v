@@ -21,10 +21,10 @@ Local Open Scope nat_scope.
     [h ≈ g ∘ f] is possible in a groupoid by composing h with the inverse
     of f. %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.inner horn2 universal}
     {%[inner_horn2_universal]%}% and %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.outer horn2 groupoid iff}
-    {%[outer_horn2_groupoid_iff]%}% separate
+    {%[outer_horn2_gpd_iff]%}% separate
     these phenomena in dimension two.
 
-    This chapter assumes [IsGroupoid (VtxCat T)] and constructs fillers
+    This chapter assumes [IsGpd (VtxCat T)] and constructs fillers
     in every positive dimension, not just for the drawn triangles. Its
     higher-dimensional proof uses the overlap machinery from %\coqref{Cats.Instance.Set.Simplicial.Matching}
     {%[Matching]%}%
@@ -38,10 +38,10 @@ Local Open Scope nat_scope.
     [h ≈ g ∘ f]；在群胚中可将 h 与 f 的逆复合得到 g。
     %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.inner horn2 universal}
     {%[inner_horn2_universal]%}% 和 %\coqref{Cats.Instance.Set.Simplicial.Vertex.Horn2.outer horn2 groupoid iff}
-    {%[outer_horn2_groupoid_iff]%}% 在二维分别刻画
+    {%[outer_horn2_gpd_iff]%}% 在二维分别刻画
     这两种现象。
 
-    本章假设 [IsGroupoid (VtxCat T)]，构造所有正维的填充，而不只处理
+    本章假设 [IsGpd (VtxCat T)]，构造所有正维的填充，而不只处理
     图上的三角形。高维证明使用 %\coqref{Cats.Instance.Set.Simplicial.Matching}
     {%[Matching]%}% 的交叠机制及前面的星形构造。
     这些属于进阶依赖；结论没有声称任意范畴的 nerve 或任意单纯集合都有 Kan
@@ -50,7 +50,7 @@ Local Open Scope nat_scope.
 Section HigherHorns.
 Universes u p.
 Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
-    `{HC : !IsGroupoid (VtxCat T)}
+    `{HC : !IsGpd (VtxCat T)}
     (n : nat) (i : Ordinal (S (S n)))
     (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i).
 
@@ -338,14 +338,14 @@ Proof.
     + destruct (Hj eq_refl).
 Defined.
 
-Context `{HC : !IsGroupoid (VtxCat T)}.
+Context `{HC : !IsGpd (VtxCat T)}.
 
 (** The common star supplies chosen fillers uniformly in all dimensions
     at least two. No uniqueness of the choice is stored. *)
 
 (** 共同星形统一提供所有至少二维的选定填充，不额外存储选择的唯一性。 *)
 
-Program Definition vertex_groupoid_higher_HasFillers (n : nat)
+Program Definition vertex_gpd_higher_HasFillers (n : nat)
     (i : Ordinal (S (S n)))
   : HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (S (S n)) i
@@ -358,13 +358,13 @@ Program Definition vertex_groupoid_higher_HasFillers (n : nat)
 
 (** 选定对象上的群胚给出全部正维 Kan 填充；构造显式，不使用选择公理。 *)
 
-Program Definition vertex_groupoid_HasKanFillers
+Program Definition vertex_gpd_HasKanFillers
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   {|hasHornFillers n := match n as d return ∀ i : Ordinal (S d),
         HasHornFillers (Nᵥ(T)) (S d) i with
       | 0 => vertex_horn1_HasFillers
-      | S m => vertex_groupoid_higher_HasFillers m
+      | S m => vertex_gpd_higher_HasFillers m
       end
   |}.
 
@@ -377,12 +377,12 @@ End KanFilling.
 (** 顶点 nerve 具有选定 Kan 填充，当且仅当选定范畴为群胚。双向均保留计算见证，
     不要求仅有存在性，也不比较选择的相等。 *)
 
-Definition vertex_kan_groupoid_iff@{u p +} {X : SetC} {C : Cat}
+Definition vertex_kan_gpd_iff@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ↔
       VtxCat T ⦂ Gpd.
 Proof.
   split.
-  - intros H. exact (@vertex_kan_IsGroupoid _ _ T H).
-  - intros H. exact (@vertex_groupoid_HasKanFillers _ _ T H).
+  - intros H. exact (@vertex_kan_IsGpd _ _ T H).
+  - intros H. exact (@vertex_gpd_HasKanFillers _ _ T H).
 Defined.

@@ -575,6 +575,160 @@ preserved.
 仍是该精确历史结果的有效证据；当时的签名及宇宙位置比较不对当前完整对象
 迁移施加兼容义务。冻结来源及其引用继续保全。
 
+## Groupoid Record follow-up
+
+## 群胚 Record 后续
+
+The user has completed the local review and approved saving this groupoid
+and division batch as a local checkpoint. Earlier uncommitted-status notes
+below describe its editing stages. Validation remains the documented
+28-target groupoid naming checkpoint and six-target division follow-up,
+with their signature, assumption and retired-name checks; later formatting
+preserves the same tokens. Full-library integration acceptance and pushing
+are separate actions.
+
+用户已完成本地审核，并批准将群胚及除法批次保存为本地检查点。下方更早的
+未提交状态描述保留其编辑阶段含义。验证采用已记录的 28 目标群胚命名检查点
+及六目标除法后续，包含对应签名、假设和退役名检查；后续排版保持词元不变。
+全库集成验收及推送是独立动作。
+
+On local algebra checkpoint `4788f85`, the user requested a bounded groupoid
+migration for review. `Gpd` is now a `Record`; `GpdOfCat` is its actual
+constructor and `GpdToCat :> Cat` its sole category projection. The constructor
+takes the category and `IsGroupoid` witness explicitly. The fixed-category
+`IsGroupoid C` remains a class, and the same `isGroupoid` field supplies
+inherited instance search. The former `GpdFromProperty` packing definition
+and `GpdC` name are removed, without aliases.
+
+在本地代数检查点 `4788f85` 上，用户要求实施一个有界群胚迁移供审核。
+`Gpd` 现为 `Record`，`GpdOfCat` 是其实际构造器，`GpdToCat :> Cat` 是唯一
+范畴投影。构造器显式接受范畴及 `IsGroupoid` 见证；固定范畴上的
+`IsGroupoid C` 仍为类，同一个 `isGroupoid` 字段继续支持继承实例搜索。
+原 `GpdFromProperty` 打包定义和 `GpdC` 名称已移除，不留别名。
+
+The unique view chain remains `Gpd → Cat → Type`. No category, inverse,
+property witness or selected equality is copied. The opposite and product
+constructions, preorder groupoids and one-object groupoids use the direct
+constructor. Existing inverse theory and its derived respectfulness keep
+their fixed-category assumptions. The interface regression additionally
+checks the supplied parent and property by conversion. No change to `Cat`,
+other hierarchy families or concrete-model enabling is included.
+
+唯一视图链仍为 `Gpd → Cat → Type`，不复制范畴、逆、性质见证或选定相等。
+反／乘积构造、预序群胚及单对象群胚使用直接构造器；既有逆理论及导出的
+保相等性保持固定范畴假设。接口回归新增了给定父结构及性质按定义保留的
+检查。本批不改 `Cat`、其他层级族或具体模型的启用方式。
+
+Project-switch validation passes 16 concrete core/model/interface/nerve
+and strict-universe targets. Nine temporary assumption reports are closed;
+constructor-pattern checks accept `GpdOfCat` and reject the two retired
+names and default `Build_Gpd`. The fixed-category inverse theory is
+byte-for-byte unchanged, including derived respectfulness. Source clients
+outside the core/regression are exact identifier substitutions. The two
+edited guides' local links and `git diff --check` pass. Evidence and exact
+targets are retained in `/tmp/hierarchy42-gpd-record`. No full-library build,
+commit, push or integration handoff is included; the user requested review.
+
+项目 switch 下 16 个具体核心／模型／接口／nerve 及严格宇宙目标通过，九项
+临时假设报告闭合；模式匹配确认 `GpdOfCat` 是实际构造器，两个退役名及
+默认 `Build_Gpd` 名查找失败。固定范畴上的逆理论逐字不变，包含导出的
+保相等性；核心／回归之外的源码客户端均为精确标识符替换。两份修改指南的
+本地链接及 `git diff --check` 通过。证据和精确目标保留于
+`/tmp/hierarchy42-gpd-record`。本批未执行全库构建、提交、推送或交接，
+按用户要求保留供审核。
+
+The dated first-slice report below retains its historical class and naming
+choices. This follow-up is a separate, uncommitted review batch; validation
+is recorded for its own source inputs, without a full-library acceptance claim.
+
+下方注明基线的首片报告保留当时的类及命名选择。本后续是独立的未提交待审
+批次，按自身源码输入记录验证，不声称完成全库验收。
+
+### IsGpd and gpd operations
+
+### IsGpd 及 gpd 运算
+
+The user's naming review then expands this pending batch to `IsGpd`,
+`isGpd`, `gpd_iso` and the `gpd_*` operation/law family. Related `_IsGpd`
+instances and `BoolGpd` migrate with actual clients. The exact 48-name map
+is in the naming guide. The earlier 16-target result above is evidence for
+the preceding constructor-only checkpoint; the current renamed interface
+has its own validation inputs. Dated historical reports retain their old names.
+
+用户随后将待审批次的命名统一为 `IsGpd`、`isGpd`、`gpd_iso` 及 `gpd_*`
+运算／定律族，相关 `_IsGpd` 实例与 `BoolGpd` 同实际客户端一起迁移。
+精确 48 项表见命名指南；上方早前 16 目标结果对应仅修改构造器的检查点，
+当前改名接口按自己的输入验证。注明日期的历史报告保留原名称。
+
+The old bundle-only `gpd_inv` wrapper is removed so that the general
+fixed-category inverse can use this name directly. Its hypotheses are
+`C : Cat` and `IsGpd C`; inverse respectfulness remains derived. Explicit
+selection uses the bundle's stored `isGpd` witness, without a second inverse
+operation, a forwarding alias or equality of property records. The two
+competing-choice regressions exercise exactly that stored-witness use.
+Module paths, chosen data, ordinary mathematical statements and universe
+conventions are preserved. No commit, push or integration handoff is included.
+
+移除原仅用于完整结构包的 `gpd_inv` 包装，使固定范畴上的一般逆运算直接
+使用此名；其假设为 `C : Cat` 和 `IsGpd C`，逆保相等性仍由定律导出。
+显式选择时使用结构包保存的 `isGpd` 见证，不另建逆运算或转发别名，也不
+要求性质记录相等；两个竞争选择回归检查恰好使用所存见证的行为。
+模块路径、选定数据、通常数学陈述及宇宙约定保持不变，未提交、推送或交接。
+
+The final naming checkpoint passes 28 concrete affected/representative
+targets with the project switch. All 48 public signatures have closed
+assumption reports, and all 48 retired-name checks pass. The fixed-category
+inverse theory is unchanged after the exact identifier substitution;
+20 ordinary clients match that substitution byte for byte. Core and bundle
+regressions additionally remove the conflicting wrapper and select the
+stored property explicitly. Strict universes, selected inverse computations,
+models and nerve/horn clients are covered by the compiled targets. Exact
+maps, source snapshots, logs and review patch are retained in
+`/tmp/hierarchy42-gpd-names`. This is uncommitted review work; no full build,
+push or integration handoff is claimed.
+
+最终命名检查点在项目 switch 下通过 28 个具体受影响／代表性目标；48 个
+公开签名的假设报告全部闭合，48 项退役名负检查通过。固定范畴上的逆理论
+在精确替换标识符后保持不变，20 个普通客户端逐字符合该替换；核心及结构包
+回归另移除冲突包装，并显式选取所存性质。编译目标覆盖严格宇宙、选定逆的
+计算、模型及 nerve／horn 客户端。精确表、源码快照、日志及审阅补丁保留于
+`/tmp/hierarchy42-gpd-names`。本批仍为未提交待审修改，不声称完成全库构建、
+推送或交接。
+
+### Division abbreviations
+
+### 除法缩写
+
+The next user-approved naming step uses `HasDivR`, `HasDivL`, `div_r`,
+`gpd_HasDivR`, `gpd_HasDivL`, `div_r_IsGpd`, `div_l_IsGpd`,
+`div_r_gpd_iff` and `div_l_gpd_iff`; the naming guide records all nine names. `HasDivL C` is definitionally
+`HasDivR (C^op)`, preserving the existing opposite construction and its
+computational witnesses. Only identifiers in the division core and horn
+client change. The module remains `Cat.Groupoid.Division`, and no new
+operation, assumption or compatibility alias is added. This step remains
+uncommitted for review, separately from the preceding naming checkpoints.
+
+下一步用户批准的命名使用 `HasDivR`、`HasDivL`、`div_r`、`gpd_HasDivR`、
+`gpd_HasDivL`、`div_r_IsGpd`、`div_l_IsGpd`、`div_r_gpd_iff` 和
+`div_l_gpd_iff`；命名指南记录全部九个精确名称。
+`HasDivL C` 按定义仍为 `HasDivR (C^op)`，保留原反范畴构造及计算见证。
+本步仅修改除法核心及 horn 客户端中的标识符；模块仍为
+`Cat.Groupoid.Division`，不新增运算、假设或兼容别名。修改仍未提交供审核，
+与此前命名检查点分别记录。
+
+The division rename passes six concrete division/horn/interface/universe
+targets. All nine public signatures and retired-name checks pass; ten
+temporary assumption reports are closed, including the definitional
+opposite identity. Both modified Rocq files exactly match the specified
+token substitution, so proofs and selected witnesses are preserved.
+Evidence: `/tmp/hierarchy42-div-names`. No full build, commit, push or
+integration handoff is included.
+
+除法改名通过六个具体除法／horn／接口／宇宙目标；九项公开签名及退役名检查
+通过，包含反范畴定义等式的十项临时假设报告闭合。两个修改后的 Rocq 文件
+均为指定词元的精确替换，保留原证明及选定见证。证据位于
+`/tmp/hierarchy42-div-names`，未执行全库构建、提交、推送或交接。
+
 ## Complete category bundles: first slice
 
 ## 完整范畴打包：首个批次

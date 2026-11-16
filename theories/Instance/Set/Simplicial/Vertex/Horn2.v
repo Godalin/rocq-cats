@@ -164,19 +164,19 @@ Next Obligation. destruct h as [f g]. split; reflexivity. Defined.
 
 (** 群胚中缺失的后续边为 [h ∘ f⁻¹]；互逆律及保持相等来自一般群胚理论。 *)
 
-Definition horn2_0_iso {C : Cat} `{HC : !IsGroupoid C}
+Definition horn2_0_iso {C : Cat} `{HC : !IsGpd C}
     {A B D : @Ob C}
   : TriangleS C A B D ≅[SetCat] Horn2S C A B D fin_first.
 Proof.
   unshelve refine (horn2_0_resp; ({|func p :=
-      (fst p, snd p ∘ (@groupoid_inv C HC A B (fst p)))
+      (fst p, snd p ∘ (@gpd_inv C HC A B (fst p)))
     |}; _)).
   - intros [f a] [f' a'] [H K]. split; [exact H |].
-    apply comp_proper; [exact K | apply groupoid_inv_proper; exact H].
+    apply comp_proper; [exact K | apply gpd_inv_proper; exact H].
   - split; intros [f g]; split; [reflexivity | | reflexivity |].
-    + destruct (iso_precomp_universal (groupoid_arrow_iso f) (g ∘ f))
+    + destruct (iso_precomp_universal (gpd_arrow_iso f) (g ∘ f))
         as [_ Hunique]. symmetry. apply Hunique. reflexivity.
-    + destruct (iso_precomp_universal (groupoid_arrow_iso f) g) as [H _].
+    + destruct (iso_precomp_universal (gpd_arrow_iso f) g) as [H _].
       exact H.
 Defined.
 
@@ -185,18 +185,18 @@ Defined.
 
 (** 第二种外侧同构为三角形反转后接反范畴中的第一种同构；其逆补齐先行边。 *)
 
-Definition horn2_2_iso {C : Cat} `{HC : !IsGroupoid C}
+Definition horn2_2_iso {C : Cat} `{HC : !IsGpd C}
     {A B D : @Ob C}
   : TriangleS C A B D ≅[SetCat]
       Horn2S C A B D (fin_next (fin_next fin_first))
   := iso_trans (@triangle_op_iso C A B D)
-      (@horn2_0_iso (C^op) (op_IsGroupoid C) D B A).
+      (@horn2_0_iso (C^op) (op_IsGpd C) D B A).
 
 (** Every local restriction is invertible in a groupoid. *)
 
 (** 群胚中的每种局部限制都可逆。 *)
 
-Definition horn2_iso {C : Cat} `{HC : !IsGroupoid C}
+Definition horn2_iso {C : Cat} `{HC : !IsGpd C}
     {A B D : @Ob C} (i : Ordinal 2)
   : TriangleS C A B D ≅[SetCat] Horn2S C A B D i
   := match i with
@@ -209,7 +209,7 @@ Definition horn2_iso {C : Cat} `{HC : !IsGroupoid C}
 
 (** 群胚中的三种局部填充均唯一。 *)
 
-Definition horn2_universal {C : Cat} `{HC : !IsGroupoid C}
+Definition horn2_universal {C : Cat} `{HC : !IsGpd C}
     {A B D : @Ob C} (i : Ordinal 2) (h : Horn2S C A B D i)
   : is_unique (R := carrier_equiv (TriangleS C A B D))
       (is_horn2_filler h) ((horn2_iso i).2.1 h).
@@ -224,7 +224,7 @@ Defined.
 
 (** 从限制的逆提取选定填充。 *)
 
-Program Definition horn2_HasFillers (C : Cat) `{HC : !IsGroupoid C}
+Program Definition horn2_HasFillers (C : Cat) `{HC : !IsGpd C}
     (i : Ordinal 2)
   : HasHorn2Fillers C i
   :=
@@ -239,11 +239,11 @@ Defined.
 
 (** 选定的第一类外填充提供右除法，因此仅这一类外填充就蕴涵群胚结构。 *)
 
-Program Definition horn2_0_IsGroupoid (C : Cat)
+Program Definition horn2_0_IsGpd (C : Cat)
     `{HF : !HasHorn2Fillers C fin_first}
   : C ⦂ Gpd
-  := @right_division_IsGroupoid C
-      {|right_division A B D f h :=
+  := @div_r_IsGpd C
+      {|div_r A B D f h :=
           (snd (@horn2_fill C fin_first HF A B D (f, h)).1; _)
       |}.
 Next Obligation.
@@ -257,11 +257,11 @@ Defined.
 
 (** 第二类外填充提供左除法，因此具有对偶判据。 *)
 
-Program Definition horn2_2_IsGroupoid (C : Cat)
+Program Definition horn2_2_IsGpd (C : Cat)
     `{HF : !HasHorn2Fillers C (fin_next (fin_next fin_first))}
   : C ⦂ Gpd
-  := @left_division_IsGroupoid C
-      {|right_division D B A g h :=
+  := @div_l_IsGpd C
+      {|div_r D B A g h :=
           (fst (@horn2_fill C (fin_next (fin_next fin_first)) HF
             A B D (g, h)).1; _)
       |}.
@@ -279,12 +279,12 @@ Defined.
 
 (** 两类外填充结构共同刻画群胚；全部见证均保留为 Type 中的选定数据。 *)
 
-Definition outer_horn2_groupoid_iff (C : Cat)
+Definition outer_horn2_gpd_iff (C : Cat)
   : (HasHorn2Fillers C fin_first ∧
       HasHorn2Fillers C (fin_next (fin_next fin_first))) ↔ C ⦂ Gpd.
 Proof.
   split.
-  - intros [H _]. exact (@horn2_0_IsGroupoid C H).
+  - intros [H _]. exact (@horn2_0_IsGpd C H).
   - intros H. split; exact (@horn2_HasFillers C H _).
 Defined.
 
@@ -395,10 +395,10 @@ Proof. change (id ∘ fst p ≈ fst p). apply comp_id_l. Defined.
 
 (** 群胚的选定对象通过全忠实诱导嵌入继承群胚结构；此结构须显式启用。 *)
 
-Definition VtxCat_IsGroupoid {X : SetC} {C : Cat}
-    (T : Fct (EqGpd X) C) `{HC : !IsGroupoid C}
+Definition VtxCat_IsGpd {X : SetC} {C : Cat}
+    (T : Fct (EqGpd X) C) `{HC : !IsGpd C}
   : VtxCat T ⦂ Gpd
-  := @fully_faithful_IsGroupoid (VtxCat T) C (InducedInclusionF X T)
+  := @fully_faithful_IsGpd (VtxCat T) C (InducedInclusionF X T)
       (induced_inclusion_fully_faithful X T) HC.
 
 (** An actual simplex fills a local horn when it is equal to a realized
@@ -422,7 +422,7 @@ Definition is_local_horn2_filler@{u p +} {X : SetC} {C : Cat}
 (** 群胚中的局部填充是保相等映射，由限制的逆后接三角形实现得到。 *)
 
 Definition local_horn2_resp@{u p +} {X : SetC} {C : Cat}
-    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VtxCat T)}
+    {T : Fct (EqGpd X) C} `{HC : !IsGpd (VtxCat T)}
     {A B D : X} (i : Ordinal 2)
   : Horn2S (VtxCat T) A B D i →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2
@@ -450,7 +450,7 @@ Definition local_inner_horn2_universal@{u p +} {X : SetC} {C : Cat}
 (** 群胚中的每个局部 horn 均具有唯一实现单形；定理统一使用一般唯一纤维像构造。 *)
 
 Definition local_horn2_universal@{u p +} {X : SetC} {C : Cat}
-    {T : Fct (EqGpd X) C} `{HC : !IsGroupoid (VtxCat T)}
+    {T : Fct (EqGpd X) C} `{HC : !IsGpd (VtxCat T)}
     {A B D : X} (i : Ordinal 2) (h : Horn2S (VtxCat T) A B D i)
   : is_unique (R := carrier_equiv
       ((Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2))
