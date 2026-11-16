@@ -131,26 +131,7 @@ Lemma functor_exponential_comparison_comp (X Y : @Ob C)
       (HF := CompF_IsCartF F G) X Y ≈
       functor_exponential_comparison G (F X) (F Y) ∘
         fmap G (functor_exponential_comparison F X Y).
-Proof.
-  apply exponential_ext.
-  unfold functor_exponential_comparison at 1 2.
-  rewrite exponential_β, exponential_uncurry_comp_r, exponential_β,
-    functor_product_inv_comp.
-  change (fmap G (fmap F eval) ∘
-    (fmap G (functor_product_inv F ((Y ^ X)%ob) X) ∘
-      functor_product_inv G (F ((Y ^ X)%ob)) (F X)) ≈
-    (fmap G eval ∘ functor_product_inv G ((F Y ^ F X)%ob) (F X)) ∘
-      (fmap G (functor_exponential_comparison F X Y) × id)).
-  transitivity (fmap G (fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X) ∘
-    functor_product_inv G (F ((Y ^ X)%ob)) (F X)).
-  - rewrite functor_comp, comp_assoc. reflexivity.
-  - rewrite <- (functor_eval F X Y), functor_comp, !comp_assoc.
-    apply comp_proper; [reflexivity |].
-    pose proof (functor_product_inv_natural G
-      (functor_exponential_comparison F X Y)
-      (@Cats.Cat.Core.id D (F X))) as H.
-    rewrite functor_id in H. exact H.
-Qed.
+Proof. apply preserved_exponential_comparison_comp. Qed.
 
 (** Chosen CCC-preservation proofs compose; no global instance is enabled. *)
 
