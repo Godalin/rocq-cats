@@ -39,7 +39,7 @@ Definition vertex_nerve_terminal_universal
       (Nᵥ(VtxPresentationTerminal@{x e o h p l a b})).
 Proof.
   pose (i := vertex_nerve_terminal_iso).
-  pose (j := ((i.1; NatIso_is_iso i.1 i.2) :
+  pose (j := ((i.1; nat_iso_is_iso i.1 i.2) :
     _ ≅[FctCat (Δ^op) SetCat@{u r _ _ _ _ _}] _)).
   exact (terminal_iso
     (@pointwise_terminal_universal (Δ^op) _ SetCat_HasTerminal)
@@ -58,7 +58,7 @@ Definition vertex_nerve_product_universal
       (VtxNerveN (VtxFstF P Q)) (VtxNerveN (VtxSndF P Q)).
 Proof.
   pose (i := vertex_nerve_product_iso P Q).
-  pose (j := ((i.1; NatIso_is_iso i.1 i.2) :
+  pose (j := ((i.1; nat_iso_is_iso i.1 i.2) :
     _ ≅[FctCat (Δ^op) SetCat@{u r _ _ _ _ _}] _)).
   refine (product_apex_iso
     (@pointwise_product_universal (Δ^op) _ SetCat_HasProduct (Nᵥ(P)) (Nᵥ(Q)))

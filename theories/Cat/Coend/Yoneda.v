@@ -317,7 +317,7 @@ Next Obligation.
   - exact Hh.
 Defined.
 Next Obligation.
-  intros [x h]. split; [exact (nt_naturality α (snd f) x) | reflexivity].
+  intros [x h]. split; [exact (nat_naturality α (snd f) x) | reflexivity].
 Defined.
 
 (** Postcompose the represented arrow with a target arrow. *)
@@ -351,7 +351,7 @@ Lemma coyoneda_eval_input
     (α : F ⇒ G) (Z Y : @Ob C)
   : (α Z ∘r coyoneda_eval F Z Y) ≈f
       (coyoneda_eval G Z Y ∘r CoyonedaInputN α Z (Y,Y)).
-Proof. intros [x [h]]. exact (nt_naturality α h x). Defined.
+Proof. intros [x [h]]. exact (nat_naturality α h x). Defined.
 
 (** Evaluation of a postcomposed weight is functor composition. *)
 

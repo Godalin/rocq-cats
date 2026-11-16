@@ -85,7 +85,7 @@ Definition predicate_reindex_eq_data {X Y : C} {k k' : Hom X Y}
 
 Definition predicate_reindex_eq_inv_data {X Y : C} {k k' : Hom X Y}
     (H : k ≈ k') (f : Hom Y Ω)
-  : NatIso_inv (PredicateReindexEqIso H).1
+  : InvN (PredicateReindexEqIso H).1
       (PredicateReindexEqIso H).2 f
     = snd (classified_sub_congr (predicate_reindex_eq H f))
   := eq_refl.
@@ -104,7 +104,7 @@ Definition predicate_reindex_id_data {X : C} (f : Hom X Ω)
 (** 逆恒等比较保留另一个分类子因子。 *)
 
 Definition predicate_reindex_id_inv_data {X : C} (f : Hom X Ω)
-  : NatIso_inv (PredicateReindexIdIso X).1
+  : InvN (PredicateReindexIdIso X).1
       (PredicateReindexIdIso X).2 f
     = snd (classified_sub_congr (predicate_reindex_id f))
   := eq_refl.
@@ -125,7 +125,7 @@ Definition predicate_reindex_comp_data {X Y Z : C}
 
 Definition predicate_reindex_comp_inv_data {X Y Z : C}
     (k : Hom X Y) (l : Hom Y Z) (f : Hom Z Ω)
-  : NatIso_inv (PredicateReindexCompIso k l).1
+  : InvN (PredicateReindexCompIso k l).1
       (PredicateReindexCompIso k l).2 f
     = snd (classified_sub_congr (predicate_reindex_comp k l f))
   := eq_refl.

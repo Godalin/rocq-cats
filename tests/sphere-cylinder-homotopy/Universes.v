@@ -31,10 +31,10 @@ Universes l u p v q.
 Constraint l < u, u < p, p < v, v < q.
 Context (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _}).
 Context (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0).
-Context (T : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X)).
+Context (T : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X)).
 Context (E : homotopy_map T 1 (simplex_constant X b 1, simplex_generic 1)
   ≈S simplex_constant X b 1).
-Context (U : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y)).
+Context (U : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y)).
 Context (F : homotopy_map U 1
   (simplex_constant Y (f 0 b) 1, simplex_generic 1)
   ≈S simplex_constant Y (f 0 b) 1).
@@ -148,10 +148,10 @@ Universes l u p v q.
 Constraint l < u, u < p, p < v, v < q.
 Context (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}).
 Context (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0).
-Context (T : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X)).
+Context (T : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X)).
 Context (E : homotopy_map T 1 (simplex_constant X b 1, simplex_generic 1)
   ≈S simplex_constant X b 1).
-Context (U : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y)).
+Context (U : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y)).
 Context (F : homotopy_map U 1
   (simplex_constant Y (f 0 b) 1, simplex_generic 1)
   ≈S simplex_constant Y (f 0 b) 1).

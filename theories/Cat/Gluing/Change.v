@@ -221,7 +221,7 @@ Definition gluing_change_pullback_cartesian
 Proof.
   apply (gluing_pullback_cartesian F').
   pose (P := pullback_base_boundary (α (comma_right_ob X)) Hi
-    (α (comma_right_ob Y)) Hj (nt_naturality α (comma_right h)) HP).
+    (α (comma_right_ob Y)) Hj (nat_naturality α (comma_right h)) HP).
   eapply pullback_congr; [reflexivity | | | reflexivity | exact P].
   - symmetry. apply gluing_change_arrow.
   - symmetry. apply gluing_change_arrow.

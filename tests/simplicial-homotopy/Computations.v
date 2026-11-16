@@ -57,7 +57,7 @@ Proof. reflexivity. Qed.
 (** 恒定同伦在每个时间保留其源单形。 *)
 
 Example constant_homotopy_computes
-  : let H := SimplicialConstantHomotopy (@idN _ _ SmallInterval) in
+  : let H := SimplicialConstantHomotopy (@IdN _ _ SmallInterval) in
     fin_rank (lower (homotopy_map H 1
       (simplex_generic 1, SimplicialIntervalPointN false 1 tt))
       (fin_next fin_first)) = 1.
@@ -68,7 +68,7 @@ Proof. reflexivity. Qed.
 (** 预复合保留存储的时间坐标。 *)
 
 Example precomposition_computes
-  : let H := SimplicialPreHomotopy PointPath (@idN _ _ SmallPoint) in
+  : let H := SimplicialPreHomotopy PointPath (@IdN _ _ SmallPoint) in
     fin_rank (lower (homotopy_map H 1 (tt, simplex_generic 1))
       (fin_next fin_first)) = 1.
 Proof. reflexivity. Qed.
@@ -78,7 +78,7 @@ Proof. reflexivity. Qed.
 (** 后复合使用原有底层见证映射。 *)
 
 Example postcomposition_computes
-  : let H := SimplicialPostHomotopy (@idN _ _ SmallInterval) PointPath in
+  : let H := SimplicialPostHomotopy (@IdN _ _ SmallInterval) PointPath in
     fin_rank (lower (homotopy_map H 1 (tt, simplex_generic 1))
       (fin_next fin_first)) = 1.
 Proof. reflexivity. Qed.
@@ -89,7 +89,7 @@ Proof. reflexivity. Qed.
 
 Example horizontal_composition_computes
   : let K := SimplicialIntervalHomotopy SmallInterval in
-    let H := SimplicialConstantHomotopy (@idN _ _ SmallInterval) in
+    let H := SimplicialConstantHomotopy (@IdN _ _ SmallInterval) in
     fin_rank (lower (homotopy_map (SimplicialCompHomotopy K H) 1
       (SimplicialIntervalPointN false 1 tt, simplex_generic 1))
       (fin_next fin_first)) = 1.

@@ -62,7 +62,7 @@ Program Definition comma_change_map {X Y : F ↓C G} (h : Hom X Y)
   |}.
 Next Obligation.
   rewrite <- !(@comp_assoc C').
-  rewrite <- (nt_naturality β (comma_right h)).
+  rewrite <- (nat_naturality β (comma_right h)).
   change ((β (comma_right_ob Y) ∘ fmap K (fmap G (comma_right h))) ∘
     fmap K (comma_arrow X) ∘ α (comma_left_ob X) ≈
     β (comma_right_ob Y) ∘ fmap K (comma_arrow Y) ∘
@@ -73,7 +73,7 @@ Next Obligation.
   rewrite (comma_comm h).
   rewrite (@functor_comp C C' K _ _ _
     (comma_arrow Y) (fmap F (comma_left h))).
-  rewrite !(@comp_assoc C'), (nt_naturality α (comma_left h)).
+  rewrite !(@comp_assoc C'), (nat_naturality α (comma_left h)).
   reflexivity.
 Defined.
 
@@ -355,13 +355,13 @@ Program Definition CommaChangeCompLeftN
   |}.
 Next Obligation.
   rewrite (comp_assoc (fmap K' (α Y))),
-    (nt_naturality α' (fmap L f)).
+    (nat_naturality α' (fmap L f)).
   change (fmap K' (α Y) ∘
     (fmap K' (fmap F' (fmap L f)) ∘ α' (L X)) ≈
     fmap K' (fmap K (fmap F f)) ∘ (fmap K' (α X) ∘ α' (L X))).
   rewrite <- (comp_assoc (fmap K' (α Y))).
   rewrite <- (@functor_comp C' C'' K' _ _ _
-    (α Y) (fmap F' (fmap L f))), (nt_naturality α f).
+    (α Y) (fmap F' (fmap L f))), (nat_naturality α f).
   rewrite (@functor_comp C' C'' K' _ _ _
     (fmap K (fmap F f)) (α X)), (@comp_assoc C'').
   reflexivity.
@@ -380,13 +380,13 @@ Program Definition CommaChangeCompRightN
 Next Obligation.
   rewrite (comp_assoc (β' (R Y))).
   rewrite <- (@functor_comp C' C'' K' _ _ _
-    (β Y) (fmap K (fmap G f))), (nt_naturality β f).
+    (β Y) (fmap K (fmap G f))), (nat_naturality β f).
   rewrite (@functor_comp C' C'' K' _ _ _
     (fmap G' (fmap R f)) (β X)).
   change (β' (R Y) ∘ (fmap K' (fmap G' (fmap R f)) ∘ fmap K' (β X)) ≈
     fmap G'' (fmap R' (fmap R f)) ∘ (β' (R X) ∘ fmap K' (β X))).
   rewrite <- (comp_assoc (β' (R Y))).
-  rewrite (nt_naturality β' (fmap R f)), (@comp_assoc C'').
+  rewrite (nat_naturality β' (fmap R f)), (@comp_assoc C'').
   reflexivity.
 Defined.
 

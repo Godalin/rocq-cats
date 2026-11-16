@@ -163,7 +163,7 @@ Lemma vertex_nerve_homotopy_id@{u p +} {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : HomotopyEq
       (VtxNerveHomotopy (F := F) (G := F)
-        (idN : F ⇒ F) : SimplicialHomotopy
+        (IdN : F ⇒ F) : SimplicialHomotopy
           (VtxNerveN F :
             (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ Nᵥ(U))
           (VtxNerveN F))

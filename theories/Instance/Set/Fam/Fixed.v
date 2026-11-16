@@ -385,7 +385,7 @@ Proof. intros A x a. cbn. apply transpS_witness_independent. Qed.
 (** 自反基底映射相等诱导的运输是恒等。 *)
 
 Theorem fam_reindex_equiv_id {X Y : SetC} {f : X →r Y} (H : f ≈f f)
-  : FamReindexEqN H ≈N idN.
+  : FamReindexEqN H ≈N IdN.
 Proof. intros A x a. cbn. apply transpS_id. Qed.
 
 (** Transport along composite base-map equality agrees with successive

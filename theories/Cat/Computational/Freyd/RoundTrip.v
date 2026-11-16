@@ -87,8 +87,8 @@ Let D
   : Cat
   := FreydComputations F.
 Let CC
-  : CartesianCat C
-  := @hasCartesian C K F.
+  : CartCat C
+  := @hasCartCat C K F.
 Local Existing Instance CC.
 Let SP
   : SymmetricPremonoidalCat D

@@ -24,7 +24,7 @@ Definition restrict_colimit {I J C : Cat} {Q : Fct I J}
     (Hκ : is_colimit κ)
   : is_colimit (κ ∘∇F Q)
   := limit_transport ((OpF_comp D Q).1 ^-1N (OpF_comp D Q).2)
-      (NatIso_inv_NatIso (OpF_comp D Q).1 (OpF_comp D Q).2)
+      (nat_inv_iso (OpF_comp D Q).1 (OpF_comp D Q).2)
       (restrict_limit (functor_op_full HF)
         (functor_op_essentially_surjective HQ) Hκ).
 
@@ -94,7 +94,7 @@ Program Definition RestrictedColimit {I J C : Cat} {Q : Fct I J}
   :=
   {|hasOpLimit := @TransportedLimit (I^op) (C^op) _ _
       ((OpF_comp D Q).1 ^-1N (OpF_comp D Q).2)
-      (NatIso_inv_NatIso (OpF_comp D Q).1 (OpF_comp D Q).2)
+      (nat_inv_iso (OpF_comp D Q).1 (OpF_comp D Q).2)
       (RestrictedLimit (functor_op_full HF)
         (functor_op_essentially_surjective HQ) (D^opF))
   |}.

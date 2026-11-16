@@ -116,7 +116,7 @@ Definition TaggedDiagram
 
 Definition TaggedPullbackDiagram
   : Fct (InducedCat bool (λ _, TaggedGluingS)) SetCat
-  := PointwisePullbackF (idN (F := TaggedDiagram)) idN.
+  := PointwisePullbackF (IdN (F := TaggedDiagram)) IdN.
 
 (** A pullback element retains both representations and their equality data. *)
 
@@ -180,9 +180,9 @@ Definition tagged_pullback_square_token
 
 Definition TaggedDiagonalN
   : TaggedDiagram ⇒ TaggedPullbackDiagram
-  := PointwisePullbackLiftN (idN (F := TaggedDiagram)) idN
-      (PointwisePullbackFstN idN idN) (PointwisePullbackSndN idN idN)
-      (λ _, pullback_universal) idN idN (λ _, reflexivity _).
+  := PointwisePullbackLiftN (IdN (F := TaggedDiagram)) IdN
+      (PointwisePullbackFstN IdN IdN) (PointwisePullbackSndN IdN IdN)
+      (λ _, pullback_universal) IdN IdN (λ _, reflexivity _).
 
 (** The first mediator projection computes on the supplied argument. *)
 

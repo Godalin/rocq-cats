@@ -149,14 +149,14 @@ Program Definition PshLiftedContextN (k : Z ⇒ B ^K A)
 Next Obligation.
   intros [z] [w] [Hzw]. exact (@func_proper _ _ (k X) z w Hzw).
 Defined.
-Next Obligation. intros [z]. exact (nt_naturality k f z). Defined.
+Next Obligation. intros [z]. exact (nat_naturality k f z). Defined.
 
 (** The old beta law is definitionally the required native evaluation law. *)
 
 (** 原 β 律按定义就是所需的原生求值律。 *)
 
 Lemma psh_exponential_β (t : PointwiseProductF Z A ⇒ B)
-  : (PshEvalN ∘Nv PointwiseProductN (PshCurryN t) (idN (F := A))) ≈N t.
+  : (PshEvalN ∘Nv PointwiseProductN (PshCurryN t) (IdN (F := A))) ≈N t.
 Proof. exact (kripke_curry_β A B Z t). Qed.
 
 (** The existing unique transpose applies to the lifted context; evaluation
@@ -167,7 +167,7 @@ Proof. exact (kripke_curry_β A B Z t). Qed.
 
 Lemma psh_exponential_unique (t : PointwiseProductF Z A ⇒ B)
     (k : Z ⇒ B ^K A)
-    (Hk : (PshEvalN ∘Nv PointwiseProductN k (idN (F := A))) ≈N t)
+    (Hk : (PshEvalN ∘Nv PointwiseProductN k (IdN (F := A))) ≈N t)
   : k ≈N PshCurryN t.
 Proof.
   pose proof (kripke_curry_unique A B Z t (PshLiftedContextN k) Hk)
@@ -234,7 +234,7 @@ Next Obligation. apply psh_exponential_universal. Defined.
 Program Definition Psh_CCC@{o h e l u +} (C : Cat@{o h e l l})
   : CCC (FctCat (C^op) SetCat@{u u _ _ _ _ _})
   :=
-  {|CCCC :=
+  {|CCCToCartCat :=
     {|hasTerminal := @FctCat_HasTerminal _ _ SetCat_HasTerminal
     ; hasProduct := @FctCat_HasProduct _ _ SetCat_HasProduct
     |}

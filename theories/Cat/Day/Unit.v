@@ -71,7 +71,7 @@ Lemma day_left_arrow_natural {X X' Y Y' : @Ob C}
   : day_left_arrow Y' (f ∘ j) ∘ g ≈
       fmap T (X := (X,Y)) (Y := (X',Y')) (f,g) ∘ day_left_arrow Y j.
 Proof.
-  pose proof (nt_naturality (NatIso_inv L.1 L.2) g) as Hinv.
+  pose proof (nat_naturality (InvN L.1 L.2) g) as Hinv.
   change ((L.2 Y').1 ∘ g ≈
     fmap T (X := (I,Y)) (Y := (I,Y')) (id,g) ∘ (L.2 Y).1) in Hinv.
   unfold day_left_arrow. rewrite comp_assoc.
@@ -154,7 +154,7 @@ Lemma day_right_arrow_natural {X X' Y Y' : @Ob C}
   : day_right_arrow X' (g ∘ j) ∘ f ≈
       fmap T (X := (X,Y)) (Y := (X',Y')) (f,g) ∘ day_right_arrow X j.
 Proof.
-  pose proof (nt_naturality (NatIso_inv R.1 R.2) f) as Hinv.
+  pose proof (nat_naturality (InvN R.1 R.2) f) as Hinv.
   change ((R.2 X').1 ∘ f ≈
     fmap T (X := (X,I)) (Y := (X',I)) (f,id) ∘ (R.2 X).1) in Hinv.
   unfold day_right_arrow. rewrite comp_assoc.
@@ -395,7 +395,7 @@ Proof.
         (p := (I,Y)) (q := (I,Z)) (id,f) (L.1 Z)
           ({|lower := @id I|}, y)).
     + exact (@day_inject_proper C T (DayUnitF I) F HD (I,Y) Z _ _
-        (nt_naturality L.1 f) ({|lower := @id I|}, y)).
+        (nat_naturality L.1 f) ({|lower := @id I|}, y)).
 Defined.
 
 (** Inserting and then evaluating leaves the value unchanged. *)
@@ -551,7 +551,7 @@ Proof.
         (p := (X,I)) (q := (Z,I)) (f,id) (R.1 Z)
           (x, {|lower := @id I|})).
     + exact (@day_inject_proper C T F (DayUnitF I) HD (X,I) Z _ _
-        (nt_naturality R.1 f) (x, {|lower := @id I|})).
+        (nat_naturality R.1 f) (x, {|lower := @id I|})).
 Defined.
 
 (** Inserting and evaluating on the right recovers the value. *)
@@ -642,13 +642,13 @@ Context {F G : Fct C (SetCat@{u p _ _ _ _ _})}.
 Lemma day_left_unitor_natural (L : π2F T I ≅N IdF)
     `{HF : !HasDay C T (DayUnitF I) F}
     `{HG : !HasDay C T (DayUnitF I) G} (α : F ⇒ G)
-  : (DayLeftUnitorN T L G ∘Nv DayMapN T idN α) ≈N
+  : (DayLeftUnitorN T L G ∘Nv DayMapN T IdN α) ≈N
       (α ∘Nv DayLeftUnitorN T L F).
 Proof.
   intros Z. apply (day_hom_ext T (DayUnitF I) F).
   intros [X Y] h [[j] y].
   change (DayLeftUnitorN T L G Z
-      (DayMapN T idN α Z
+      (DayMapN T IdN α Z
         (day_inject T (DayUnitF I) F (X,Y) h ({|lower := j|}, y))) ≈S
     α Z (DayLeftUnitorN T L F Z
       (day_inject T (DayUnitF I) F (X,Y) h ({|lower := j|}, y)))).
@@ -658,7 +658,7 @@ Proof.
     α Z (DayLeftUnitorN T L F Z
       (day_inject T (DayUnitF I) F (X,Y) h ({|lower := j|}, y)))).
   rewrite !day_left_unitor_β.
-  symmetry. exact (nt_naturality α (h ∘ day_left_arrow T L Y j) y).
+  symmetry. exact (nat_naturality α (h ∘ day_left_arrow T L Y j) y).
 Defined.
 
 (** Inverse left-unit naturality is the general inverse-square theorem. *)
@@ -669,12 +669,12 @@ Lemma day_left_unitor_inv_natural (L : π2F T I ≅N IdF)
     `{HF : !HasDay C T (DayUnitF I) F}
     `{HG : !HasDay C T (DayUnitF I) G} (α : F ⇒ G) (Z : @Ob C)
   : (day_left_unitor_inv T L G Z ∘r α Z) ≈f
-      (DayMapN T idN α Z ∘r day_left_unitor_inv T L F Z).
+      (DayMapN T IdN α Z ∘r day_left_unitor_inv T L F Z).
 Proof.
   exact (@iso_square_inv SetCat _ _ _ _
     (DayLeftUnitorN T L F Z; (DayLeftUnitor T L F).2 Z)
     (DayLeftUnitorN T L G Z; (DayLeftUnitor T L G).2 Z)
-    (DayMapN T idN α Z) (α Z) (day_left_unitor_natural L α Z)).
+    (DayMapN T IdN α Z) (α Z) (day_left_unitor_natural L α Z)).
 Defined.
 
 (** The right unitor has the corresponding input-naturality square. *)
@@ -684,13 +684,13 @@ Defined.
 Lemma day_right_unitor_natural (R : π1F T I ≅N IdF)
     `{HF : !HasDay C T F (DayUnitF I)}
     `{HG : !HasDay C T G (DayUnitF I)} (α : F ⇒ G)
-  : (DayRightUnitorN T R G ∘Nv DayMapN T α idN) ≈N
+  : (DayRightUnitorN T R G ∘Nv DayMapN T α IdN) ≈N
       (α ∘Nv DayRightUnitorN T R F).
 Proof.
   intros Z. apply (day_hom_ext T F (DayUnitF I)).
   intros [X Y] h [x [j]].
   change (DayRightUnitorN T R G Z
-      (DayMapN T α idN Z
+      (DayMapN T α IdN Z
         (day_inject T F (DayUnitF I) (X,Y) h (x, {|lower := j|}))) ≈S
     α Z (DayRightUnitorN T R F Z
       (day_inject T F (DayUnitF I) (X,Y) h (x, {|lower := j|})))).
@@ -700,7 +700,7 @@ Proof.
     α Z (DayRightUnitorN T R F Z
       (day_inject T F (DayUnitF I) (X,Y) h (x, {|lower := j|})))).
   rewrite !day_right_unitor_β.
-  symmetry. exact (nt_naturality α (h ∘ day_right_arrow T R X j) x).
+  symmetry. exact (nat_naturality α (h ∘ day_right_arrow T R X j) x).
 Defined.
 
 (** Inverse right-unit naturality reuses the same general square theorem. *)
@@ -711,12 +711,12 @@ Lemma day_right_unitor_inv_natural (R : π1F T I ≅N IdF)
     `{HF : !HasDay C T F (DayUnitF I)}
     `{HG : !HasDay C T G (DayUnitF I)} (α : F ⇒ G) (Z : @Ob C)
   : (day_right_unitor_inv T R G Z ∘r α Z) ≈f
-      (DayMapN T α idN Z ∘r day_right_unitor_inv T R F Z).
+      (DayMapN T α IdN Z ∘r day_right_unitor_inv T R F Z).
 Proof.
   exact (@iso_square_inv SetCat _ _ _ _
     (DayRightUnitorN T R F Z; (DayRightUnitor T R F).2 Z)
     (DayRightUnitorN T R G Z; (DayRightUnitor T R G).2 Z)
-    (DayMapN T α idN Z) (α Z) (day_right_unitor_natural R α Z)).
+    (DayMapN T α IdN Z) (α Z) (day_right_unitor_natural R α Z)).
 Defined.
 
 End InputNaturality.
@@ -759,7 +759,7 @@ Definition DayLeftUnitorFct (L : π2F T I ≅N IdF)
   : π2F (DayTensorF T HD) (DayUnitF I) ≅N IdF.
 Proof.
   exists (DayLeftUnitorFctN L). intros F.
-  exact (NatIso_is_iso _ (@DayLeftUnitor C T I L F
+  exact (nat_iso_is_iso _ (@DayLeftUnitor C T I L F
     (HD (DayUnitF I) F)).2).
 Defined.
 
@@ -785,7 +785,7 @@ Definition DayRightUnitorFct (R : π1F T I ≅N IdF)
   : π1F (DayTensorF T HD) (DayUnitF I) ≅N IdF.
 Proof.
   exists (DayRightUnitorFctN R). intros F.
-  exact (NatIso_is_iso _ (@DayRightUnitor C T I R F
+  exact (nat_iso_is_iso _ (@DayRightUnitor C T I R F
     (HD F (DayUnitF I))).2).
 Defined.
 

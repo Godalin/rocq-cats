@@ -10,13 +10,13 @@ From Cats Require Import
 
     Both hom-functors inherit their functor laws from HomF. The chosen natural
     isomorphism supplies forward naturality; inverse naturality is derived by
-    NatIso_inv. The ambient set levels are independent upper bounds, not
+    InvN. The ambient set levels are independent upper bounds, not
     identifications of the two categories' native hom levels. *)
 
 (** * 以自然 Hom 同构定义伴随
 
     两个 Hom 函子的函子律来自 [HomF]。选定的自然同构给出正向自然性，
-    [NatIso_inv] 导出逆向自然性。环境广集的宇宙仅为独立上界，不把两侧原有的
+    [InvN] 导出逆向自然性。环境广集的宇宙仅为独立上界，不把两侧原有的
     Hom 大小等同。 *)
 
 Class Adj@{u p +} {C D : Cat}
@@ -131,7 +131,7 @@ Lemma adjunct_naturality
   : adjunct (k ∘ f ∘ fmap F h)
     ≈ fmap G k ∘ adjunct f ∘ h.
 Proof.
-  exact (lower (nt_naturality (adj_hom A).1
+  exact (lower (nat_naturality (adj_hom A).1
     (X := (X, Y)) (Y := (X', Y')) (h, k) (Lift f))).
 Qed.
 
@@ -151,7 +151,8 @@ Qed.
 
 (** [adjunct] 与后合成的相容性。 *)
 
-Lemma adjunct_comp_l {X Y Y'} (k : Hom Y Y') (f : Hom (F X) Y)
+Lemma adjunct_comp_l {X Y Y'}
+    (k : Hom Y Y') (f : Hom (F X) Y)
   : adjunct (k ∘ f) ≈ fmap G k ∘ adjunct f.
 Proof.
   pose proof (adjunct_naturality id k f) as H.
@@ -166,8 +167,8 @@ Lemma unadjunct_naturality {X X' : @Ob C} {Y Y' : @Ob D}
     (h : Hom X' X) (k : Hom Y Y') (g : Hom X (G Y))
   : unadjunct (fmap G k ∘ g ∘ h) ≈ k ∘ unadjunct g ∘ fmap F h.
 Proof.
-  exact (lower (nt_naturality
-    (NatIso_inv (adj_hom A).1 (adj_hom A).2)
+  exact (lower (nat_naturality
+    (InvN (adj_hom A).1 (adj_hom A).2)
     (X := (X, Y)) (Y := (X', Y')) (h, k) (Lift g))).
 Qed.
 

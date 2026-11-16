@@ -90,7 +90,7 @@ Lemma set_pure_unique (η : (@IdF SetCat) ⇒ F)
   : η ≈N SetPureN.
 Proof.
   intros X x. transitivity (fmap F (const_resp UnitS x) (η UnitS tt)).
-  - exact (nt_naturality η (const_resp UnitS x) tt).
+  - exact (nat_naturality η (const_resp UnitS x) tt).
   - change (fmap F (const_resp UnitS x) (η UnitS tt) ≈S
       fmap F (const_resp UnitS x) e).
     apply func_proper. exact Hη.
@@ -219,7 +219,7 @@ Proof.
   change (α X (fmap L (const_resp UnitS x) (lax_unit L tt)) ≈S
     fmap K (const_resp UnitS x) (lax_unit K tt)).
   transitivity (fmap K (const_resp UnitS x) (α UnitS (lax_unit L tt))).
-  - exact (nt_naturality α (const_resp UnitS x) (lax_unit L tt)).
+  - exact (nat_naturality α (const_resp UnitS x) (lax_unit L tt)).
   - apply func_proper. exact (Hu tt).
 Defined.
 
@@ -306,7 +306,7 @@ Defined.
 
 Lemma set_applicative_roundtrip_hom
     (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-  : is_applicative_hom (SetLaxA A) A idN.
+  : is_applicative_hom (SetLaxA A) A IdN.
 Proof.
   split.
   - intros X x. symmetry. exact (set_applicative_pure_roundtrip A X x).
@@ -319,10 +319,10 @@ Defined.
 
 Lemma set_applicative_roundtrip_inv_hom
     (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-  : is_applicative_hom A (SetLaxA A) idN.
+  : is_applicative_hom A (SetLaxA A) IdN.
 Proof.
-  exact (applicative_hom_inverse (SetLaxA A) A idN
-    (set_applicative_roundtrip_hom A) (nt_id_NatIso A)).
+  exact (applicative_hom_inverse (SetLaxA A) A IdN
+    (set_applicative_roundtrip_hom A) (nat_id_iso A)).
 Defined.
 
 End Preservation.

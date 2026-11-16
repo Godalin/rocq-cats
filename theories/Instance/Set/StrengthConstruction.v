@@ -155,7 +155,7 @@ Next Obligation.
   intros [x y].
   change (fmap M ⟨const_resp Y x, id⟩ (η[M] Y y) ≈S
     η[M] (X ×S Y) (x,y)).
-  symmetry. exact (nt_naturality (η[M]) ⟨const_resp Y x, id⟩ y).
+  symmetry. exact (nat_naturality (η[M]) ⟨const_resp Y x, id⟩ y).
 Defined.
 
 Next Obligation.
@@ -165,7 +165,7 @@ Next Obligation.
       (fmap M ⟨const_resp (M Y) x, id⟩ v))).
   transitivity (μ[M] (X ×S Y)
     (fmap M (fmap M ⟨const_resp Y x, id⟩) v)).
-  - symmetry. exact (nt_naturality (μ[M]) ⟨const_resp Y x, id⟩ v).
+  - symmetry. exact (nat_naturality (μ[M]) ⟨const_resp Y x, id⟩ v).
   - apply (@func_proper _ _ (μ[M] (X ×S Y))).
     transitivity (fmap M (set_strength_map M X Y ∘r
       ⟨const_resp (M Y) x, id⟩) v).

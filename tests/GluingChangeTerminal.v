@@ -171,7 +171,7 @@ Program Definition TaggedTerminalBoundaryN
         (@IdF SetCat))
   :=
   {|nt X := gluing_toggle
-  ; nt_naturality X Y f x := (eq_refl, true)
+  ; nat_naturality X Y f x := (eq_refl, true)
   |}.
 
 (** Only the component at the supplied unit object is given an inverse. *)
@@ -335,7 +335,7 @@ Program Definition EmptyStableBoundaryN
       (@CompF SetCat SetCat SetCat (ConstF SetCat EmptyS) (@IdF SetCat))
   :=
   {|nt X := id
-  ; nt_naturality X Y f x := tt
+  ; nat_naturality X Y f x := tt
   |}.
 
 (** The local inverse is the original identity isomorphism. *)
@@ -407,7 +407,7 @@ Program Definition EmptyUnitBoundaryN
       (@CompF SetCat SetCat SetCat (ConstF SetCat UnitS) (@IdF SetCat))
   :=
   {|nt X := @term SetCat SetCat_HasTerminal EmptyS
-  ; nt_naturality X Y f x := tt
+  ; nat_naturality X Y f x := tt
   |}.
 
 (** Its inverse would give a point of the empty setoid. *)

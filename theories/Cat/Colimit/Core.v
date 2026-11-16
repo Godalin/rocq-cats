@@ -281,7 +281,7 @@ Proof. exact (@functor_fmap_proper (FctCat J C) C ColimF D E). Qed.
 (** 恒等律继承自复合反函子。 *)
 
 Lemma colimit_map_id {D : Fct J C}
-  : colimit_map (idN (F := D)) ≈ id.
+  : colimit_map (IdN (F := D)) ≈ id.
 Proof. exact (@functor_id (FctCat J C) C ColimF D). Qed.
 
 (** Composition is inherited from the composite opposite functor. *)

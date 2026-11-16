@@ -48,7 +48,7 @@ Lemma monad_return_map {W X Y : @Ob C} (f : Hom X Y) (x : Hom W X)
   : fmap M f ∘ monad_return x ≈ monad_return (f ∘ x).
 Proof.
   unfold monad_return.
-  rewrite <- comp_assoc, <- (nt_naturality (η[M]) f), comp_assoc.
+  rewrite <- comp_assoc, <- (nat_naturality (η[M]) f), comp_assoc.
   reflexivity.
 Qed.
 
@@ -91,7 +91,7 @@ Proof. exact (monad_unit_r_component M X). Qed.
 Lemma kleisli_extend_pure {X Y : @Ob C} (f : Hom X (M Y))
   : kleisli_extend f ∘ η[M] X ≈ f.
 Proof.
-  unfold kleisli_extend. rewrite comp_assoc, <- (nt_naturality (η[M]) f),
+  unfold kleisli_extend. rewrite comp_assoc, <- (nat_naturality (η[M]) f),
     <- comp_assoc, (monad_unit_l_component M Y), comp_id_l. reflexivity.
 Qed.
 
@@ -113,7 +113,7 @@ Lemma kleisli_extend_post {X Y Z : @Ob C}
   : fmap M f ∘ kleisli_extend g ≈ kleisli_extend (fmap M f ∘ g).
 Proof.
   unfold kleisli_extend. rewrite functor_comp, <- !comp_assoc,
-    (nt_naturality (μ[M]) f). reflexivity.
+    (nat_naturality (μ[M]) f). reflexivity.
 Qed.
 
 (** Nested extension is associative; no commutation of effects is used. *)
@@ -130,7 +130,7 @@ Proof.
     (@functor_comp C C M _ _ _ (μ[M] Z) (fmap M g)), <- !comp_assoc,
     <- (monad_assoc_component M Z).
   rewrite (comp_assoc (μ[M] Z) (μ[M] (M Z))),
-    (nt_naturality (μ[M]) g), <- comp_assoc. reflexivity.
+    (nat_naturality (μ[M]) g), <- comp_assoc. reflexivity.
 Qed.
 
 End Extension.

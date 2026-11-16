@@ -32,7 +32,7 @@ Program Definition UnadjunctCone {K : Fct J D} {X : @Ob C}
 Next Obligation.
   rewrite comp_id_r, <- (unadjunct_comp_l A (fmap K f) (κ X0)).
   apply (unadjunct_proper A).
-  pose proof (nt_naturality κ f) as H. cbn in H.
+  pose proof (nat_naturality κ f) as H. cbn in H.
   rewrite comp_id_r in H. exact H.
 Qed.
 

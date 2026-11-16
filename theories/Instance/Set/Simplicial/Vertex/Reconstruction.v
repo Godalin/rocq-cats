@@ -69,7 +69,7 @@ Proof.
   assert (H : α 0 (△₀[T] (lower x i)) ≈S Nᵥ(U)[Q]Δ (α n x)).
   { transitivity (α 0 (Nᵥ(T)[Q]Δ x)).
     - apply func_proper. exact (vertex_zero_η (Nᵥ(T)[Q]Δ x)).
-    - exact (nt_naturality α Q x). }
+    - exact (nat_naturality α Q x). }
   exact (@func_proper _ _ (vertex_zero_resp U) _ _ H).
 Defined.
 
@@ -164,7 +164,7 @@ Proof.
       Nᵥ(U)[Q]Δ (α n x)).
   { transitivity (α 1 (Nᵥ(T)[Q]Δ x)).
     - apply func_proper. exact (vertex_edge_restrict x i j h).
-    - exact (nt_naturality α Q x). }
+    - exact (nat_naturality α Q x). }
   destruct L as [[e L]]. unfold nerve_map_arrow.
   transitivity (U⟦nerve_map_vertex x i;
       fmap (lower (α n x)) (fmap Q (ordinal_step fin_first));

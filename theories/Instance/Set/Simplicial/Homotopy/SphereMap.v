@@ -264,7 +264,7 @@ Proof. apply two_sphere_class_eq. apply simplex_constant_natural. Defined.
 (** 恒等映射在类上作用为恒等。 *)
 
 Lemma two_sphere_class_map_id (b : X 0) (x : TwoSphereClassS X b)
-  : two_sphere_class_map_resp idN b x ≈S x.
+  : two_sphere_class_map_resp IdN b x ≈S x.
 Proof.
   apply two_sphere_class_eq.
   change (x.1 ≈S x.1). reflexivity.

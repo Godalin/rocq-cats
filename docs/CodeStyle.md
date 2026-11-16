@@ -26,7 +26,7 @@ A declaration may benefit from these groups even when it fits on one line.
 `Context` 的续行分组缩进两空格。不必等到一行超长才这样分组。
 
 ```coq
-Definition nt_comp_h {C D E : Cat}
+Definition HCompN {C D E : Cat}
     {G G' : Fct D E} {F F' : Fct C D}
     (β : G ⇒ G') (α : F ⇒ F')
   : (G ∘F F) ⇒ (G' ∘F F')
@@ -49,10 +49,10 @@ avoid large padding merely to align with the width of a keyword.
 不为对齐关键字的字符宽度补一长串空格。
 
 ```coq
-Global Instance nt_whisker_l_proper {C D E : Cat}
+Global Instance nat_whisker_l_proper {C D E : Cat}
     (G : Fct D E) {F F' : Fct C D}
   : Proper (NatEq ==> NatEq)
-      (@nt_whisker_l C D E G F F').
+      (@WhiskerLN C D E G F F').
 
 Theorem adj_unit_universal {X Y} (g : Hom X (G Y))
   : is_unique (λ f, fmap G f ∘ adj_unit X ≈ g)
@@ -102,7 +102,7 @@ own line. Prefer a short constructor for single-field wrappers, as in
 避免冗长的字段字面量。
 
 ```coq
-Infix "∘Nh" := nt_comp_h
+Infix "∘Nh" := HCompN
   (at level 50, left associativity) : cat_scope.
 ```
 

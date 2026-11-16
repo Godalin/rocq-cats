@@ -22,8 +22,8 @@ Local Open Scope computation_scope.
 Section Reconstruction.
 Context {C K : Cat} (F : FreydCat C K).
 Let CC
-  : CartesianCat C
-  := @hasCartesian C K F.
+  : CartCat C
+  := @hasCartCat C K F.
 Local Existing Instance CC.
 Let D
   : Cat

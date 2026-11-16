@@ -94,8 +94,8 @@ Context (preserves : ∀ A B : @Ob C,
 
 (** 此打包复用独立构造的选择。 *)
 
-Program Definition Gluing_CartesianCat
-  : CartesianCat (Gluing F)
+Program Definition Gluing_CartCat
+  : CartCat (Gluing F)
   :=
   {|hasTerminal := Gluing_HasTerminal F
   ; hasProduct := Gluing_HasProduct F preserves

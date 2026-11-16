@@ -52,7 +52,7 @@ Program Definition KleisliApplicativeN
   :=
   {|nt X := KleisliRecoveryN M X
   |}.
-Next Obligation. exact (nt_naturality (KleisliRecoveryN M) f). Defined.
+Next Obligation. exact (nat_naturality (KleisliRecoveryN M) f). Defined.
 
 (** Keep the exact evaluation/constant inverse components of Monad recovery. *)
 

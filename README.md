@@ -375,13 +375,13 @@ Type 值子对象预序范畴的二元积给出；其
 
 `ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
 natural-numbers object, retaining the existing chosen initial-object field.
-The single parent chain is `ETCS → Topos → CCC → CartesianCat → Cat`;
+The single parent chain is `ETCS → Topos → CCC → CartCat → Cat`;
 terminal-dependent fields all use that same inherited choice. The optional
 [initial-object theorem](./theories/Topos/Initial.v) now derives an initial
 object from the Topos structure; this batch preserves the existing ETCS field.
 
 `ETCS C` 为 `Topos C` 增加良点性、满态射分裂和自然数对象，并保留原有的
-选定始对象字段。唯一父链为 `ETCS → Topos → CCC → CartesianCat → Cat`；
+选定始对象字段。唯一父链为 `ETCS → Topos → CCC → CartCat → Cat`；
 依赖终对象的字段均使用同一继承选择。可选的
 [始对象定理](./theories/Topos/Initial.v)现已从拓扑斯结构推导始对象；本批保留
 现有 ETCS 字段。

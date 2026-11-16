@@ -51,7 +51,7 @@ Next Obligation. exact tt. Defined.
 (** 对函子之间的箭头去柯里化，将原源范畴置于第一坐标，序数时间置于第二坐标；
     全部函子律均复用既有构造。 *)
 
-Definition NaturalPrismF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
+Definition NatPrismF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
   : Fct (C ×C [Ord 1]) D
   := (@ArrowDiagram (FctCat C D) F G α)^uncF ∘F
       PairF (OrdinalArrowF ∘F SndF C [Ord 1]) (FstF C [Ord 1]).
@@ -64,7 +64,7 @@ Definition NaturalPrismF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
 Definition PrismDiagramF {C D J : Cat} {F G : Fct C D}
     (α : F ⇒ G) (P : Fct J C) (θ : Fct J [Ord 1])
   : Fct J D
-  := NaturalPrismF α ∘F PairF P θ.
+  := NatPrismF α ∘F PairF P θ.
 
 (** The time edge at a fixed source object computes to the component. *)
 
@@ -72,7 +72,7 @@ Definition PrismDiagramF {C D J : Cat} {F G : Fct C D}
 
 Lemma natural_prism_step {C D : Cat} {F G : Fct C D}
     (α : F ⇒ G) (x : @Ob C)
-  : fmap (NaturalPrismF α)
+  : fmap (NatPrismF α)
       (X := (x, fin_first)) (Y := (x, fin_next fin_first))
       (id, ordinal_step fin_first) ≈ α x.
 Proof. cbn. rewrite functor_id. apply comp_id_l. Defined.
@@ -86,8 +86,8 @@ Proof. cbn. rewrite functor_id. apply comp_id_l. Defined.
 Lemma natural_prism_map_proper {C D : Cat} {F G : Fct C D}
     (α β : F ⇒ G) (H : α ≈N β) {x y : @Ob C}
     {i j : Ordinal 1} (f : Hom x y) (a : (@Hom [Ord 1]) i j)
-  : fmap (NaturalPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈
-      fmap (NaturalPrismF β) (X := (x, i)) (Y := (y, j)) (f, a).
+  : fmap (NatPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈
+      fmap (NatPrismF β) (X := (x, i)) (Y := (y, j)) (f, a).
 Proof.
   destruct i as [[] | [[] | []]], j as [[] | [[] | []]];
     cbn in *; try solve [destruct a]; try reflexivity.

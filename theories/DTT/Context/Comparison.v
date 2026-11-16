@@ -120,6 +120,6 @@ Definition ContextElementsTyTmInvN@{v q +}
       ∘F @DisplayTyTmF C P HD) ⇒
     ((FamLiftF : Fct FamCat FamCat@{_ _ _ _ _ _ _ _ v q _ _ _ _ _ _})
       ∘F T)
-  := NatIso_inv ContextElementsTyTmN (context_elements_ty_tm_iso).2.
+  := InvN ContextElementsTyTmN (context_elements_ty_tm_iso).2.
 
 End ContextElementsComparison.

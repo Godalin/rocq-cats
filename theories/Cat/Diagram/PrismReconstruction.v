@@ -64,7 +64,7 @@ Definition PrismTransformationN
     00、01、11 三种情形。 *)
 
 Program Definition PrismReconstructionN
-  : NaturalPrismF PrismTransformationN ⇒ K
+  : NatPrismF PrismTransformationN ⇒ K
   :=
   {|nt p := _
   |}.
@@ -90,7 +90,7 @@ Defined.
 (** 比较分量在两个具体时间位置处都是恒等，故无需对 [K] 作假设便可逆。 *)
 
 Definition prism_reconstruction_iso
-  : NaturalPrismF PrismTransformationN ≅N K.
+  : NatPrismF PrismTransformationN ≅N K.
 Proof.
   exists PrismReconstructionN. intros [x [[] | [[] | []]]];
     exists id; split; apply comp_id_l.
@@ -117,8 +117,8 @@ Context {C D : Cat} {F G : Fct C D} (α : F ⇒ G).
 
 (** 在任一时间位置的限制与对应边界函子比较，分量保留为透明恒等。 *)
 
-Program Definition NaturalPrismBoundaryN (i : Ordinal 1)
-  : π1F (NaturalPrismF α) i ⇒
+Program Definition NatPrismBoundaryN (i : Ordinal 1)
+  : π1F (NatPrismF α) i ⇒
       (if ordinal_interval_side i then G else F)
   :=
   {|nt x := _
@@ -136,10 +136,10 @@ Defined.
 (** 边界比较是带显式逆的自然同构。 *)
 
 Definition natural_prism_boundary_iso (i : Ordinal 1)
-  : π1F (NaturalPrismF α) i ≅N
+  : π1F (NatPrismF α) i ≅N
       (if ordinal_interval_side i then G else F).
 Proof.
-  exists (NaturalPrismBoundaryN i). intros x.
+  exists (NatPrismBoundaryN i). intros x.
   destruct i as [[] | [[] | []]]; exists id; split; apply comp_id_l.
 Defined.
 
@@ -149,9 +149,9 @@ Defined.
 (** 经过规范边界比较，读出所构造的棱柱可恢复原自然变换，不识别端点记录。 *)
 
 Lemma natural_prism_transformation_β
-  : (NaturalPrismBoundaryN (fin_next fin_first) ∘Nv
-      PrismTransformationN (NaturalPrismF α)) ≈N
-      (α ∘Nv NaturalPrismBoundaryN fin_first).
+  : (NatPrismBoundaryN (fin_next fin_first) ∘Nv
+      PrismTransformationN (NatPrismF α)) ≈N
+      (α ∘Nv NatPrismBoundaryN fin_first).
 Proof.
   intros x. cbn. rewrite !comp_id_l, !comp_id_r, functor_id.
   apply comp_id_l.
@@ -201,8 +201,8 @@ Context {C D : Cat} {F G F' G' : Fct C D}
 
 (** 沿步行箭头延拓交换的边界方形。 *)
 
-Definition NaturalPrismN
-  : NaturalPrismF α ⇒ NaturalPrismF β
+Definition NatPrismN
+  : NatPrismF α ⇒ NatPrismF β
   := (@ArrowN (FctCat C D) (@ArrowDiagram (FctCat C D) F G α)
       (@ArrowDiagram (FctCat C D) F' G' β) a b H)^uncN
       ∘Nr PairF (OrdinalArrowF ∘F SndF C [Ord 1]) (FstF C [Ord 1]).
@@ -212,7 +212,7 @@ Definition NaturalPrismN
 (** 延拓具有所指定的初始边界。 *)
 
 Lemma natural_prism_β0 (x : @Ob C)
-  : NaturalPrismN (x, fin_first) ≈ a x.
+  : NatPrismN (x, fin_first) ≈ a x.
 Proof. reflexivity. Defined.
 
 (** The extension has precisely the prescribed final boundary. *)
@@ -220,7 +220,7 @@ Proof. reflexivity. Defined.
 (** 延拓具有所指定的终止边界。 *)
 
 Lemma natural_prism_β1 (x : @Ob C)
-  : NaturalPrismN (x, fin_next fin_first) ≈ b x.
+  : NatPrismN (x, fin_next fin_first) ≈ b x.
 Proof. reflexivity. Defined.
 
 (** Invertible boundary comparisons give an invertible prism comparison,
@@ -230,7 +230,7 @@ Proof. reflexivity. Defined.
 
 Definition natural_prism_NatIso
     (Ha : a ⦂ F ≅N F') (Hb : b ⦂ G ≅N G')
-  : NaturalPrismN ⦂ NaturalPrismF α ≅N NaturalPrismF β.
+  : NatPrismN ⦂ NatPrismF α ≅N NatPrismF β.
 Proof.
   intros [x [[] | [[] | []]]]; [exact (Ha x) | exact (Hb x)].
 Defined.
@@ -247,7 +247,7 @@ Lemma natural_prism_eq {C D : Cat} {F G F' G' : Fct C D}
     (H : (b ∘Nv α) ≈N (β ∘Nv a))
     (H' : (b' ∘Nv α) ≈N (β ∘Nv a'))
     (Ha : a ≈N a') (Hb : b ≈N b')
-  : NaturalPrismN α β a b H ≈N NaturalPrismN α β a' b' H'.
+  : NatPrismN α β a b H ≈N NatPrismN α β a' b' H'.
 Proof.
   intros [x [[] | [[] | []]]]; [exact (Ha x) | exact (Hb x)].
 Defined.
@@ -277,15 +277,15 @@ Context {C D : Cat} (K : Fct (C ×C [Ord 1]) D)
 (** 将边界方形的延拓与棱柱重建复合。 *)
 
 Definition PrismComparisonN
-  : NaturalPrismF α ⇒ K
+  : NatPrismF α ⇒ K
   := PrismReconstructionN K ∘Nv
-      NaturalPrismN α (PrismTransformationN K) a b H.
+      NatPrismN α (PrismTransformationN K) a b H.
 
 (** The candidate property records both prescribed boundary components. *)
 
 (** 候选性质记录两个指定的边界分量。 *)
 
-Definition is_prism_comparison (κ : NaturalPrismF α ⇒ K)
+Definition is_prism_comparison (κ : NatPrismF α ⇒ K)
   : Type
   := (∀ x, κ (x, fin_first) ≈ a x) ∧
       (∀ x, κ (x, fin_next fin_first) ≈ b x).
@@ -314,9 +314,9 @@ Defined.
 Definition prism_comparison_NatIso
     (Ha : a ⦂ F ≅N π1F K fin_first)
     (Hb : b ⦂ G ≅N π1F K (fin_next fin_first))
-  : PrismComparisonN ⦂ NaturalPrismF α ≅N K.
+  : PrismComparisonN ⦂ NatPrismF α ≅N K.
 Proof.
-  apply nt_comp_v_NatIso.
+  apply nat_comp_iso.
   - exact (prism_reconstruction_iso K).2.
   - exact (natural_prism_NatIso α (PrismTransformationN K) a b H Ha Hb).
 Defined.

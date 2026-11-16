@@ -47,7 +47,7 @@ Proof.
     + apply (@func_proper _ _ (α X)). symmetry.
       exact (day_unit_extend_value I F η X {|lower := j|}).
     + transitivity (fmap G j (α I (day_unit_value I F η))).
-      * exact (nt_naturality α j (day_unit_value I F η)).
+      * exact (nat_naturality α j (day_unit_value I F η)).
       * transitivity (fmap G j (day_unit_value I G θ)).
         -- exact (@func_proper _ _ (fmap G j) _ _ H).
         -- exact (day_unit_extend_value I G θ X {|lower := j|}).

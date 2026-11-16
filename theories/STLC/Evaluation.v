@@ -161,7 +161,7 @@ Defined.
 (** 按恒等选取保留每个环境。 *)
 
 Lemma env_renaming_id (Γ : Ctx B)
-  : EnvRenamingN Γ Γ idRen ≈N idN.
+  : EnvRenamingN Γ Γ idRen ≈N IdN.
 Proof.
   intros Θ γ. apply env_ext. intros A x.
   exact (env_renaming_lookup Γ Γ Θ idRen γ A x).
@@ -321,7 +321,7 @@ Lemma eval_reindex {Γ : Ctx B} {A : Ty B}
     (t : Tm Γ A) (Δ Θ : Ctx B) (ρ : Ren Θ Δ)
     (γ : EnvF Γ Δ)
   : eval t Θ (fmap (EnvF Γ) ρ γ) ≈S fmap (SemF A) ρ (eval t Δ γ).
-Proof. exact (nt_naturality (EvalN t) ρ γ). Defined.
+Proof. exact (nat_naturality (EvalN t) ρ γ). Defined.
 
 (** A semantic beta equation: applying an evaluated abstraction agrees
     with evaluating its body in the environment extended by the argument.
@@ -371,7 +371,7 @@ Proof.
       eval t Ξ (fmap (EnvF Γ) τ (EnvRenamingN Γ Δ ρ Θ γ), a)).
     etransitivity; [apply IH |]. apply eval_proper.
     etransitivity; [apply env_renaming_lift |]. split.
-    + exact (nt_naturality (EnvRenamingN Γ Δ ρ) τ γ).
+    + exact (nat_naturality (EnvRenamingN Γ Δ ρ) τ γ).
     + reflexivity.
   - apply kripke_eval_proper; [apply IHf | apply IHa].
 Defined.

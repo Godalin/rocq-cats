@@ -59,6 +59,6 @@ Lemma strength_natural {C : Cat} {MC : MonoidalCat C}
   : st[S; X'; Y'] ∘ (@tensor_map C MC _ _ _ _ f (fmap F g)) ≈
       fmap F (@tensor_map C MC _ _ _ _ f g) ∘ st[S; X; Y].
 Proof.
-  exact (nt_naturality (strengthN S) (X := (X, Y)) (Y := (X', Y'))
+  exact (nat_naturality (strengthN S) (X := (X, Y)) (Y := (X', Y'))
     (f, g)).
 Qed.

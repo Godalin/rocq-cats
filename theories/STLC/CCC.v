@@ -35,7 +35,7 @@ From Cats Require Import Cat.CCC.
 (** 不要求指数，打包选定空上下文及连接积；此模型结构须显式启用。 *)
 
 Program Definition CtxCat_Cart@{b e l +} (B : Type@{b})
-  : CartesianCat (CtxCat@{b e l} B)
+  : CartCat (CtxCat@{b e l} B)
   :=
   {|hasTerminal := CtxCat_HasTerminal B
   ; hasProduct := CtxCat_HasProduct B
@@ -48,6 +48,6 @@ Program Definition CtxCat_Cart@{b e l +} (B : Type@{b})
 Program Definition CtxCat_CCC@{b e l +} (B : Type@{b})
   : CCC (CtxCat@{b e l} B)
   :=
-  {|CCCC := CtxCat_Cart B
+  {|CCCToCartCat := CtxCat_Cart B
   ; hasExponential := CtxCat_HasExponential B
   |}.

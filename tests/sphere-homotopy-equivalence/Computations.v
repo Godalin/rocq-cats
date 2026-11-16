@@ -63,14 +63,14 @@ Next Obligation. intros z z' E. exact true. Defined.
 Next Obligation. intros z. exact false. Defined.
 
 Program Definition left_homotopy
-  : SimplicialHomotopy ((idN : WitnessX ⇒ WitnessX) ∘Nv FlipN) idN
+  : SimplicialHomotopy ((IdN : WitnessX ⇒ WitnessX) ∘Nv FlipN) IdN
   :=
   {|homotopy_map := MovingN
   |}.
 Next Obligation. intros n z. exact true. Defined.
 
 Program Definition right_homotopy
-  : SimplicialHomotopy (FlipN ∘Nv (idN : WitnessX ⇒ WitnessX)) idN
+  : SimplicialHomotopy (FlipN ∘Nv (IdN : WitnessX ⇒ WitnessX)) IdN
   :=
   {|homotopy_map := MovingN
   |}.
@@ -97,7 +97,7 @@ Fail Definition unchosen_comparison
   := _.
 
 Definition reverse_resp
-  := two_sphere_class_homotopy_inverse_resp FlipN idN false
+  := two_sphere_class_homotopy_inverse_resp FlipN IdN false
       left_homotopy left_trajectory.
 
 Definition source_sphere
@@ -165,13 +165,13 @@ Fail Definition unchosen_full_Kan
 Definition witness_left
   : reverse_resp (two_sphere_class_map_resp FlipN false source_sphere)
       ≈S source_sphere
-  := two_sphere_class_homotopy_inverse_l FlipN idN false
+  := two_sphere_class_homotopy_inverse_l FlipN IdN false
       left_homotopy left_trajectory source_sphere.
 
 Definition witness_right
   : two_sphere_class_map_resp FlipN false (reverse_resp target_sphere)
       ≈S target_sphere
-  := two_sphere_class_homotopy_inverse_r FlipN idN false
+  := two_sphere_class_homotopy_inverse_r FlipN IdN false
       left_homotopy left_trajectory right_homotopy right_trajectory
       target_sphere.
 
@@ -187,12 +187,12 @@ Definition actual_image_step
 
 Definition reflected_generated_step
   : source_sphere ≈S another_source_sphere
-  := two_sphere_class_map_homotopy_reflect FlipN idN false
+  := two_sphere_class_map_homotopy_reflect FlipN IdN false
       left_homotopy left_trajectory source_sphere another_source_sphere
       (two_sphere_class_step WitnessX (FlipN 0 false) actual_image_step).
 
 Definition witness_iso
-  := two_sphere_class_homotopy_iso FlipN idN false
+  := two_sphere_class_homotopy_iso FlipN IdN false
       left_homotopy left_trajectory right_homotopy right_trajectory.
 
 Example iso_maps_compute
@@ -215,10 +215,10 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Program Definition bool_identity_homotopy
   : SimplicialHomotopy
-      ((idN : BoolCocycleModel ⇒ BoolCocycleModel) ∘Nv idN) idN
+      ((IdN : BoolCocycleModel ⇒ BoolCocycleModel) ∘Nv IdN) IdN
   :=
   {|homotopy_map := homotopy_map
-      (SimplicialConstantHomotopy (idN : BoolCocycleModel ⇒ BoolCocycleModel))
+      (SimplicialConstantHomotopy (IdN : BoolCocycleModel ⇒ BoolCocycleModel))
   |}.
 Next Obligation. destruct b; intros n z; reflexivity. Defined.
 
@@ -230,7 +230,7 @@ Definition bool_identity_trajectory
 Proof. reflexivity. Defined.
 
 Definition bool_class_iso
-  := two_sphere_class_homotopy_iso idN idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+  := two_sphere_class_homotopy_iso IdN IdN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_identity_homotopy bool_identity_trajectory
       bool_identity_homotopy bool_identity_trajectory.
 
@@ -254,13 +254,13 @@ Definition nontrivial_right_roundtrip
 (** 相等反映保持已证明非零的类，一般比较证明并不依赖系数求值。 *)
 
 Example non_null_image
-  : ¬ (two_sphere_class_map_resp (idN : BoolCocycleModel ⇒ BoolCocycleModel)
+  : ¬ (two_sphere_class_map_resp (IdN : BoolCocycleModel ⇒ BoolCocycleModel)
       (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) bool_cocycle_sphere ≈S
-      two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+      two_sphere_class_map_resp IdN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0))).
 Proof.
   intros F. apply bool_cocycle_sphere_not_null.
-  exact (two_sphere_class_map_homotopy_reflect idN idN
+  exact (two_sphere_class_map_homotopy_reflect IdN IdN
     (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) bool_identity_homotopy
     bool_identity_trajectory _ _ F).
 Defined.

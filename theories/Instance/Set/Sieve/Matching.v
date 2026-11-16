@@ -136,7 +136,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   intros [[a0 [i [h E]]]].
-  exact (nt_naturality
+  exact (nat_naturality
     (PresheafDescendN _ (generated_sieve_cover g) (λ i, a i)
       (sieve_matching_compatible a)) f
     {|lower := (a0; (i; (h; E)))|}).
@@ -173,11 +173,11 @@ Next Obligation.
   pose (b := {|lower := (g j; generated_sieve_member g j)
               |} : SievePsh (GeneratedSieve D g) (D j)).
   transitivity (α X (fmap (SievePsh (GeneratedSieve D g)) f a)).
-  - symmetry. exact (nt_naturality α f a).
+  - symmetry. exact (nat_naturality α f a).
   - transitivity (α X (fmap (SievePsh (GeneratedSieve D g)) h b)).
     + apply func_proper. exact {|lower := E
                                |}.
-    + exact (nt_naturality α h b).
+    + exact (nat_naturality α h b).
 Defined.
 
 (** Descent preserves pointwise equality of the matching values. *)

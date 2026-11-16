@@ -76,6 +76,6 @@ Proof. reflexivity. Qed.
 
 Example nerve_fullness_preimage_computes
   : fmap (fst BooleanNerveFullyFaithful
-      BooleanPresentation BooleanPresentation idN).1
+      BooleanPresentation BooleanPresentation IdN).1
       (true : (@Hom (VtxCat BooleanPresentation)) tt tt) = true.
 Proof. reflexivity. Qed.

@@ -202,7 +202,7 @@ Program Definition ComparisonUnitN
   : (@IdF SetCat) ⇒ ConstF SetCat UnitS
   :=
   {|nt X := @term SetCat SetCat_HasTerminal X
-  ; nt_naturality X Y f x := tt
+  ; nat_naturality X Y f x := tt
   |}.
 
 (** Reuse the earlier concrete proof that this component is not invertible. *)

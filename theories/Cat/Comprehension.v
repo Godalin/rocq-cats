@@ -50,7 +50,7 @@ Notation "'π[' K ']' A" := (projectionN K A)
 Theorem comprehension_comm {E B : Cat} {P : Fct E B} (K : Comprehension P)
     {X Y : @Ob E} (f : Hom X Y)
   : π[K] Y ∘ fmap (ExtF K) f ≈ fmap P f ∘ π[K] X.
-Proof. apply nt_naturality. Qed.
+Proof. apply nat_naturality. Qed.
 
 (** The arrow-category presentation is available for every comprehension.
     Fullness and faithfulness are separate properties, not fields of [K]. *)
@@ -102,7 +102,8 @@ Proof.
   intros X Y f Hf.
   exact (pullback_base_boundary (β.1 X) (β.2 X)
     (β.1 Y) (iso_mono (β.1 Y) (β.2 Y))
-    (nt_naturality β.1 f) (Hπ _ _ (fmap S f) (HS _ _ f Hf))).
+    (nat_naturality β.1 f)
+    (Hπ _ _ (fmap S f) (HS _ _ f Hf))).
 Defined.
 
 (** Assemble a chosen comprehension using exactly the supplied target

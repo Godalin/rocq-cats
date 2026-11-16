@@ -184,7 +184,7 @@ Program Definition NatArrowF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
   ; F1 X Y f :=
       {|arrow_top := fmap F f
       ; arrow_bottom := fmap G f
-      ; arrow_comm := nt_naturality α f
+      ; arrow_comm := nat_naturality α f
       |}
   |}.
 Next Obligation.

@@ -31,7 +31,7 @@ Constraint l < u, u < p, p < v, v < q.
 Definition lower_inverse
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
   : TwoSphereClassS Y (f 0 b) →r TwoSphereClassS X b
@@ -44,7 +44,7 @@ Definition lower_inverse
 Definition lower_left
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
     `{HX1 : !HasHornFillers X 4 fin_first⁺}
@@ -61,7 +61,7 @@ Definition lower_left
 Definition lower_reflect
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
     `{HX1 : !HasHornFillers X 4 fin_first⁺}
@@ -78,10 +78,10 @@ Definition lower_reflect
 Definition lower_right
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -99,10 +99,10 @@ Definition lower_right
 Definition lower_iso_v_q
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -122,10 +122,10 @@ Definition lower_iso_v_q
 Definition lower_iso_q_v
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -145,7 +145,7 @@ Definition lower_iso_q_v
 Definition higher_inverse
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
   : TwoSphereClassS Y (f 0 b) →r TwoSphereClassS X b
@@ -158,7 +158,7 @@ Definition higher_inverse
 Definition higher_left
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
     `{HX1 : !HasHornFillers X 4 fin_first⁺}
@@ -175,7 +175,7 @@ Definition higher_left
 Definition higher_reflect
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
     `{HX1 : !HasHornFillers X 4 fin_first⁺}
@@ -192,10 +192,10 @@ Definition higher_reflect
 Definition higher_right
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -213,10 +213,10 @@ Definition higher_right
 Definition higher_iso_v_q
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -236,10 +236,10 @@ Definition higher_iso_v_q
 Definition higher_iso_q_v
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0)
-    (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X))
+    (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X))
     (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
       ≈S simplex_constant X b 1)
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)

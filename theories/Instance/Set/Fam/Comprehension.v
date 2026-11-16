@@ -42,7 +42,7 @@ Proof.
     (p2 := fam_total_resp (fam_reindex V f))
     (fmap FamTotalF k) (functor_is_iso FamTotalF k Hk_iso)).
   - transitivity (fmap FamBaseF k ∘ FamProjectionN U).
-    + exact (nt_naturality FamProjectionN k).
+    + exact (nat_naturality FamProjectionN k).
     + rewrite Hk_base, comp_id_l. reflexivity.
   - change (fmap FamTotalF (fam_reindex V f) ∘ fmap FamTotalF k ≈ fmap FamTotalF φ).
     rewrite <- functor_comp, Hk_comp. reflexivity.

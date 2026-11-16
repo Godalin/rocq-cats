@@ -110,7 +110,7 @@ Defined.
 (** 恒等参数箭头给出恒等自然变换。 *)
 
 Lemma product_at_id (b : @Ob B)
-  : ProductAtN (@Cat.Core.id B b) ≈N idN.
+  : ProductAtN (@Cat.Core.id B b) ≈N IdN.
 Proof. intros x. exact (@functor_id _ _ K (x, b)). Defined.
 
 (** Composition in the parameter becomes vertical composition. *)
@@ -152,7 +152,7 @@ Program Definition ProductFirstAtN {A B C : Cat}
   {|nt b := fmap K (X := (a,b)) (Y := (a',b)) (f,id)
   |}.
 Next Obligation.
-  exact (nt_naturality
+  exact (nat_naturality
     (ProductAtN (K ∘F PairF (SndF B A) (FstF B A)) f) f0).
 Defined.
 
@@ -167,7 +167,7 @@ Program Definition ProductRestrictionN {A B C : Cat}
   {|nt x := β (x, b)
   |}.
 Next Obligation.
-  exact (nt_naturality β (X := (X, b)) (Y := (Y, b)) (f, id)).
+  exact (nat_naturality β (X := (X, b)) (Y := (Y, b)) (f, id)).
 Defined.
 
 (** Restriction preserves the specified pointwise equality of comparisons. *)
@@ -192,7 +192,7 @@ Lemma product_at_natural {A B C : Cat}
   : (ProductRestrictionN β b' ∘Nv ProductAtN K a) ≈N
       (ProductAtN L a ∘Nv ProductRestrictionN β b).
 Proof.
-  intros x. exact (nt_naturality β (X := (x, b)) (Y := (x, b')) (id, a)).
+  intros x. exact (nat_naturality β (X := (x, b)) (Y := (x, b')) (id, a)).
 Defined.
 
 (** Repackage a product-labelled induced category as a product of induced
@@ -254,5 +254,5 @@ Program Definition PointwiseProductN {J : Cat} {C : Cat} `{HP : !HasProduct C}
 Next Obligation.
   change ((α Y × β Y) ∘ (fmap F f × fmap G f) ≈
     (fmap F' f × fmap G' f) ∘ (α X × β X)).
-  rewrite <- !cross_comp, !nt_naturality. reflexivity.
+  rewrite <- !cross_comp, !nat_naturality. reflexivity.
 Defined.

@@ -173,7 +173,7 @@ Definition OpenEvaluationGlueN (A : Ty B)
   : GluingSyntaxF A ⇒ NormalizationGluingF A.
 Proof.
   refine (RelationGluingPairN _ _ (NormalizationRelation A)
-    idN (OpenEvaluationN A) _).
+    IdN (OpenEvaluationN A) _).
   intros Γ [t].
   apply eval_reflected_realizes.
   intros U x. exact (reflected_env_lookup Γ Γ idRen U x).
@@ -184,7 +184,7 @@ Defined.
 (** 提升的第一投影恢复输入语法。 *)
 
 Definition gluing_evaluation_syntax (A : Ty B)
-  : (GluingSyntaxN A ∘Nv OpenEvaluationGlueN A) ≈N idN.
+  : (GluingSyntaxN A ∘Nv OpenEvaluationGlueN A) ≈N IdN.
 Proof. apply relation_gluing_pair_β1. Defined.
 
 (** The second projection recovers ordinary open evaluation. *)

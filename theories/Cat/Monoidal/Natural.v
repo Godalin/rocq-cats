@@ -59,7 +59,7 @@ Defined.
 (** 恒等变换保持选定比较。 *)
 
 Lemma lax_monoidal_hom_id (L : LaxMonoidalFct MC MD)
-  : is_lax_monoidal_hom L L idN.
+  : is_lax_monoidal_hom L L IdN.
 Proof.
   split; cbn; intros; rewrite ?tensor_map_id, ?comp_id_l, ?comp_id_r;
     reflexivity.
@@ -146,7 +146,7 @@ Definition LaxMonoidalHomS (L K : LaxMonoidalFct MC MD)
 
 Definition lax_monoidal_id (L : LaxMonoidalFct MC MD)
   : LaxMonoidalHomS L L
-  := (idN; lax_monoidal_hom_id L).
+  := (IdN; lax_monoidal_hom_id L).
 
 (** Lift vertical composition, keeping both original witnesses. *)
 

@@ -24,22 +24,22 @@ Class CCC (C : Cat)
 
   (** 唯一底层视图与所有较弱的客户端共享选定有限积。 *)
 
-  { CCCC :> CartesianCat C
+  { CCCToCartCat :> CartCat C
 
   (** Exponentials use exactly the inherited choice of binary products. *)
 
   (** 指数恰好使用继承的二元积选择。 *)
 
-  ; hasExponential :: HasExponential (@hasProduct C CCCC)
+  ; hasExponential :: HasExponential (@hasProduct C CCCToCartCat)
   }.
 
-Arguments CCCC {_} _.
+Arguments CCCToCartCat {_} _.
 
 (** Also expose the same parent to instance search. The [:>] field
-    already supplies the unique coercion chain through [CartesianCat]
+    already supplies the unique coercion chain through [CartCat]
     to [Cat]; instance registration selects no additional structure. *)
 
-(** 同时将同一父结构提供给实例搜索。[:>] 字段已给出经 [CartesianCat]
+(** 同时将同一父结构提供给实例搜索。[:>] 字段已给出经 [CartCat]
     到 [Cat] 的唯一强制转换链；实例注册不再选择任何额外结构。 *)
 
-#[export] Existing Instance CCCC.
+#[export] Existing Instance CCCToCartCat.

@@ -93,16 +93,16 @@ Proof.
   exists (CatCatHom (SingletonF B)), (CatCatHom (PackF B)). split.
   - pose (N := pack_singleton_nat_iso B).
     unshelve refine (existT _ {|nt := _
-                              ; nt_naturality := _
+                              ; nat_naturality := _
                               |} _).
     + exact (λ X, N.1 X).
-    + intros X Y f. exact (nt_naturality N.1 f).
+    + intros X Y f. exact (nat_naturality N.1 f).
     + intros X. exact (N.2 X).
   - pose (N := singleton_pack_nat_iso B).
     unshelve refine (existT _ {|nt := _
-                              ; nt_naturality := _
+                              ; nat_naturality := _
                               |} _).
     + exact (λ X, N.1 X).
-    + intros X Y f. exact (nt_naturality N.1 f).
+    + intros X Y f. exact (nat_naturality N.1 f).
     + intros X. exact (N.2 X).
 Defined.

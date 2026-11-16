@@ -107,10 +107,10 @@ Lemma presheaf_map_values_compatible (α : Q ⇒ P)
 Proof.
   intros X i j f h E.
   transitivity (α X (fmap Q f (e i))).
-  - symmetry. exact (nt_naturality α f (e i)).
+  - symmetry. exact (nat_naturality α f (e i)).
   - transitivity (α X (fmap Q h (e j))).
     + apply func_proper. exact E.
-    + exact (nt_naturality α h (e j)).
+    + exact (nat_naturality α h (e j)).
 Defined.
 
 (** A cover detects equality of maps just on its generators. *)
@@ -127,11 +127,11 @@ Proof.
     transitivity (α X (fmap Q h (e i))).
     + apply func_proper. symmetry. exact E.
     + transitivity (fmap P h (α (D i) (e i))).
-      * exact (nt_naturality α h (e i)).
+      * exact (nat_naturality α h (e i)).
       * transitivity (fmap P h (β (D i) (e i))).
         -- apply func_proper. exact (H i).
         -- transitivity (β X (fmap Q h (e i))).
-           ++ symmetry. exact (nt_naturality β h (e i)).
+           ++ symmetry. exact (nat_naturality β h (e i)).
            ++ apply func_proper. exact E.
 Defined.
 

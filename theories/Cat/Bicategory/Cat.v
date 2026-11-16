@@ -33,17 +33,32 @@ Program Definition CatBicat
   ; right_unitor X Y F := (@CompF_id_r X Y F).1
   |}.
 Next Obligation.
-  apply NatIso_is_iso. exact (CompF_assoc _ _ _).2.
+  apply nat_iso_is_iso.
+  exact (CompF_assoc _ _ _).2.
 Defined.
-Next Obligation. apply NatIso_is_iso. exact (CompF_id_l _).2. Defined.
-Next Obligation. apply NatIso_is_iso. exact (CompF_id_r _).2. Defined.
 Next Obligation.
-  intros A. cbn. rewrite comp_id_l, comp_id_r, functor_comp, comp_assoc. reflexivity.
+  apply nat_iso_is_iso.
+  exact (CompF_id_l _).2.
+Defined.
+Next Obligation.
+  apply nat_iso_is_iso.
+  exact (CompF_id_r _).2.
+Defined.
+Next Obligation.
+  intros A. cbn. rewrite comp_id_l, comp_id_r,
+  functor_comp, comp_assoc.
+reflexivity.
 Defined.
 Next Obligation. intros A. cbn. carw. Defined.
-Next Obligation. intros A. cbn. rewrite functor_id. carw. Defined.
-Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
-Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
+Next Obligation. intros A. cbn.
+  rewrite functor_id. carw.
+Defined.
+Next Obligation. intros A. cbn.
+  repeat rewrite functor_id. carw.
+Defined.
+Next Obligation. intros A. cbn.
+  repeat rewrite functor_id. carw.
+Defined.
 
 (** Bicategorical left whiskering in Cat agrees with functor whiskering. *)
 
@@ -52,17 +67,21 @@ Next Obligation. intros A. cbn. repeat rewrite functor_id. carw. Defined.
 Theorem cat_whisker_l {C D E : Cat} (G : Fct D E)
     {F F' : Fct C D} (α : F ⇒ F')
   : whisker_l (K := CatBicat) G α ≈N (G ∘Nl α).
-Proof. intros X. exact (comp_id_l (fmap G (α X))). Qed.
+Proof. intros X.
+  exact (comp_id_l (fmap G (α X))).
+Qed.
 
 (** Bicategorical right whiskering in Cat agrees with functor whiskering. *)
 
 (** 范畴双范畴的右须化与函子须化一致。 *)
 
-Theorem cat_whisker_r {C D E : Cat} {G G' : Fct D E}
+Theorem cat_whisker_r {C D E : Cat}
+    {G G' : Fct D E}
     (β : G ⇒ G') (F : Fct C D)
   : whisker_r (K := CatBicat) β F ≈N (β ∘Nr F).
 Proof.
-  intros X. change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).
+  intros X.
+  change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).
   rewrite functor_id. apply comp_id_r.
 Qed.
 
@@ -74,12 +93,14 @@ Qed.
 
 (** 范畴双范畴的可逆二胞就是自然同构。 *)
 
-Definition cat_bicat_homotopy_eq {C D : Cat} (F G : Fct C D)
-  : @Cats.Cat.Core.HomEq (BicatHomotopyCat CatBicat) C D F G ↔ F ≅N G.
+Definition cat_bicat_homotopy_eq {C D : Cat}
+    (F G : Fct C D)
+  : @Cats.Cat.Core.HomEq
+    (BicatHomotopyCat CatBicat) C D F G ↔ F ≅N G.
 Proof.
   split; intros H.
-  - exact (H.1; is_iso_NatIso H.1 H.2).
-  - exact (H.1; NatIso_is_iso H.1 H.2).
+  - exact (H.1; is_iso_nat_iso H.1 H.2).
+  - exact (H.1; nat_iso_is_iso H.1 H.2).
 Defined.
 
 (** Send the homotopy category of the category bicategory to CatCat. *)
@@ -91,7 +112,8 @@ Program Definition ToCatCatF
   :=
   {|F0 C := C
   ; F1 C D F := F
-  ; functor_fmap_proper C D F G H := fst (cat_bicat_homotopy_eq F G) H
+  ; functor_fmap_proper C D F G H :=
+      fst (cat_bicat_homotopy_eq F G) H
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -105,7 +127,8 @@ Program Definition FromCatCatF
   :=
   {|F0 C := C
   ; F1 C D F := F
-  ; functor_fmap_proper C D F G H := snd (cat_bicat_homotopy_eq F G) H
+  ; functor_fmap_proper C D F G H :=
+      snd (cat_bicat_homotopy_eq F G) H
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.

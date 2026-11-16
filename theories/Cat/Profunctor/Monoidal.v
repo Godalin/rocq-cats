@@ -88,7 +88,7 @@ Proof.
   exists ProfAssociatorFctN. intros [[R Q] P].
   pose (i := @ProfunctorAssociator C C C C R Q P
     (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)).
-  exact (NatIso_is_iso (i.1 ^-1N i.2) (NatIso_inv_NatIso i.1 i.2)).
+  exact (nat_iso_is_iso (i.1 ^-1N i.2) (nat_inv_iso i.1 i.2)).
 Defined.
 
 Let ai (R Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
@@ -104,9 +104,9 @@ Let ai (R Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
 Lemma prof_monoidal_pentagon
     (S R Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
   : (ai S R (Q ∘Pr P) ∘Nv ai (S ∘Pr R) Q P) ≈N
-    (ProfCompMapN (idN (F := S)) (ai R Q P) ∘Nv
+    (ProfCompMapN (IdN (F := S)) (ai R Q P) ∘Nv
       ((ai S (R ∘Pr Q) P) ∘Nv
-        ProfCompMapN (ai S R Q) (idN (F := P)))).
+        ProfCompMapN (ai S R Q) (IdN (F := P)))).
 Proof.
   pose (i := @ProfunctorAssociator C C C C S R (Q ∘Pr P)
     (HC R (Q ∘Pr P)) (HC S R)
@@ -123,16 +123,16 @@ Proof.
     (HC R Q) (HC S R) (HC S (R ∘Pr Q)) (HC (S ∘Pr R) Q)).
   pose (hs := λ XY, (@iso_refl SetCat (S XY)).2).
   pose (hp := λ XY, (@iso_refl SetCat (P XY)).2).
-  pose (kN := ProfCompMapN (idN (F := S)) k0.1).
-  pose (mN := ProfCompMapN m0.1 (idN (F := P))).
-  pose (hk := prof_comp_map_iso (idN (F := S)) k0.1 hs k0.2).
-  pose (hm := prof_comp_map_iso m0.1 (idN (F := P)) m0.2 hp).
-  assert (Ek : ProfCompMapN ((idN (F := S)) ^-1N hs)
-      (k0.1 ^-1N k0.2) ≈N ProfCompMapN (idN (F := S)) (ai R Q P)).
+  pose (kN := ProfCompMapN (IdN (F := S)) k0.1).
+  pose (mN := ProfCompMapN m0.1 (IdN (F := P))).
+  pose (hk := prof_comp_map_iso (IdN (F := S)) k0.1 hs k0.2).
+  pose (hm := prof_comp_map_iso m0.1 (IdN (F := P)) m0.2 hp).
+  assert (Ek : ProfCompMapN ((IdN (F := S)) ^-1N hs)
+      (k0.1 ^-1N k0.2) ≈N ProfCompMapN (IdN (F := S)) (ai R Q P)).
   { apply prof_comp_map_proper; intros [X V] v; reflexivity. }
   assert (Em : ProfCompMapN (m0.1 ^-1N m0.2)
-      ((idN (F := P)) ^-1N hp) ≈N
-      ProfCompMapN (ai S R Q) (idN (F := P))).
+      ((IdN (F := P)) ^-1N hp) ≈N
+      ProfCompMapN (ai S R Q) (IdN (F := P))).
   { apply prof_comp_map_proper; intros [X V] v; reflexivity. }
   intros [X V] v.
   pose proof (@iso_pentagon_inv SetCat _ _ _ _ _
@@ -151,14 +151,14 @@ Proof.
       (HC ((S ∘Pr R) ∘Pr Q) P) (X,V) w). }
   pose proof (invert H) as Hinv.
   cbv beta iota zeta delta [ai i j l kN mN hk hm k0 m0
-    ProfunctorAssociatorInvN ProfunctorAssociator NatIso_inv
+    ProfunctorAssociatorInvN ProfunctorAssociator InvN
     prof_comp_map_iso projT1 projT2 fst snd nt comp HomEq SetCat
     FunS FunEq carrier_equiv comp_resp func] in Hinv |- *.
   etransitivity; [exact (Hinv v) |].
   etransitivity.
   - apply func_proper. apply func_proper. exact (Em (X,V) v).
   - exact (Ek (X,V) ((ai S (R ∘Pr Q) P) (X,V)
-      (ProfCompMapN (ai S R Q) (idN (F := P)) (X,V) v))).
+      (ProfCompMapN (ai S R Q) (IdN (F := P)) (X,V) v))).
 
 Defined.
 
@@ -231,7 +231,7 @@ Definition ProfLeftUnitorFct
   : π2F AssemblyTensorF I ≅N IdF.
 Proof.
   exists ProfLeftUnitorFctN. intros P.
-  exact (NatIso_is_iso _ (@ProfLeftUnitor C C P (HC I P)).2).
+  exact (nat_iso_is_iso _ (@ProfLeftUnitor C C P (HC I P)).2).
 Defined.
 
 (** The right unitors form the corresponding natural family. *)
@@ -255,7 +255,7 @@ Definition ProfRightUnitorFct
   : π1F AssemblyTensorF I ≅N IdF.
 Proof.
   exists ProfRightUnitorFctN. intros P.
-  exact (NatIso_is_iso _ (@ProfRightUnitor C C P (HC P I)).2).
+  exact (nat_iso_is_iso _ (@ProfRightUnitor C C P (HC P I)).2).
 Defined.
 
 (** Moving the original associator across its triangle yields precisely
@@ -265,16 +265,16 @@ Defined.
 
 Lemma prof_monoidal_triangle
     (Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}))
-  : (ProfCompMapN (idN (F := Q)) (ProfLeftUnitorN P) ∘Nv
+  : (ProfCompMapN (IdN (F := Q)) (ProfLeftUnitorN P) ∘Nv
       ProfAssociatorFctN (C := C) HC ((Q,I),P)) ≈N
-    ProfCompMapN (ProfRightUnitorN Q) (idN (F := P)).
+    ProfCompMapN (ProfRightUnitorN Q) (IdN (F := P)).
 Proof.
   pose (i := @ProfunctorAssociator C C C C Q I P
     (HC I P) (HC Q I) (HC Q (I ∘Pr P)) (HC (Q ∘Pr I) P)).
   symmetry.
-  exact (fst (@iso_move_r K _ _ _ (i.1; NatIso_is_iso i.1 i.2)
-    (ProfCompMapN (ProfRightUnitorN Q) (idN (F := P)))
-    (ProfCompMapN (idN (F := Q)) (ProfLeftUnitorN P)))
+  exact (fst (@iso_move_r K _ _ _ (i.1; nat_iso_is_iso i.1 i.2)
+    (ProfCompMapN (ProfRightUnitorN Q) (IdN (F := P)))
+    (ProfCompMapN (IdN (F := Q)) (ProfLeftUnitorN P)))
     (@profunctor_triangle C C C Q P
       (HC I P) (HC Q I) (HC Q (I ∘Pr P)) (HC (Q ∘Pr I) P)
       (HC Q P))).
@@ -318,7 +318,7 @@ Program Definition ProfTensorN
   :=
   {|nt p := _
   |}.
-Next Obligation. destruct p as [Q P]. exact idN. Defined.
+Next Obligation. destruct p as [Q P]. exact IdN. Defined.
 Next Obligation.
   destruct X as [Q P], Y as [Q' P'], f as [β α].
   intros [X V] v. exact (prof_monoidal_map β α (X,V) v).
@@ -333,7 +333,7 @@ Definition ProfTensorIso
   : tensorF ProfMonoidal ≅N ProfCompF C C C HC.
 Proof.
   exists ProfTensorN. intros [Q P].
-  exists idN. split; intros [X V] v; reflexivity.
+  exists IdN. split; intros [X V] v; reflexivity.
 Defined.
 
 End MonoidalAssembly.

@@ -39,7 +39,7 @@ Example restricted_homotopy_computes (a : bool)
   : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (two_sphere_cylinder_eval BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         (CocycleHomotopySphereCylinder
-          (SimplicialConstantHomotopy (idN : BoolCocycleModel ⇒ BoolCocycleModel))
+          (SimplicialConstantHomotopy (IdN : BoolCocycleModel ⇒ BoolCocycleModel))
           (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)) id t) = a.
 Proof. reflexivity. Defined.
 
@@ -49,10 +49,10 @@ Proof. reflexivity. Defined.
 (** 有限链保留整份同伦与自然相等，还包含反向步；不反转单纯区间。 *)
 
 Definition identity_chain
-  : (idN : @CocycleHomotopyMapS BoolS_Monoid BoolCocycleModel) ≈S idN.
+  : (IdN : @CocycleHomotopyMapS BoolS_Monoid BoolCocycleModel) ≈S IdN.
 Proof.
-  transitivity (idN : BoolCocycleModel ⇒ BoolCocycleModel).
-  - exact (cocycle_homotopy_map_step (SimplicialConstantHomotopy idN)).
+  transitivity (IdN : BoolCocycleModel ⇒ BoolCocycleModel).
+  - exact (cocycle_homotopy_map_step (SimplicialConstantHomotopy IdN)).
   - symmetry. apply cocycle_homotopy_map_eq. reflexivity.
 Defined.
 
@@ -62,7 +62,7 @@ Defined.
 
 Example chain_evaluation_computes (a : bool)
   : @cocycle_homotopy_evaluation_resp BoolS_Monoid BoolCocycleModel
-      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (cocycle_two_sphere_resp (M := BoolS_Monoid) a) idN = a.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (cocycle_two_sphere_resp (M := BoolS_Monoid) a) IdN = a.
 Proof. reflexivity. Defined.
 
 (** Consume the chain through respectfulness, without discarding it or

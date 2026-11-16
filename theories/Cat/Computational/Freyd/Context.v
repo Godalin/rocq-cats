@@ -28,8 +28,8 @@ Let D
   : Cat
   := FreydComputations F.
 Let CC
-  : CartesianCat C
-  := @hasCartesian C K F.
+  : CartCat C
+  := @hasCartCat C K F.
 Local Existing Instance CC.
 Let SP
   : SymmetricPremonoidalCat D
@@ -71,7 +71,7 @@ Lemma freyd_context_boundary {X Y : @Ob C} (Z : @Ob C)
   : (FreydTensorIso Z Y).1 ∘ freyd_context Z f ≈
       (@binoidal_left D SP X Y Z f) ∘ (FreydTensorIso Z X).1.
 Proof.
-  exact (nt_naturality
+  exact (nat_naturality
     (TransportN (@BinoidalLeftF D SP Z)
       (λ X, @Prod C hasProduct Z X) (FreydTensorIso Z)) f).
 Qed.
@@ -260,7 +260,7 @@ Lemma freyd_context_unit {X Y : @Ob C} (f : (@Hom D) X Y)
 Proof.
   apply (nt_naturality_boundary
     (FreydContextBoundaryN (@freyd_unit_object C K F))
-    (@idN D D (@IdF D); nt_id_NatIso (@IdF D))
+    (@IdN D D (@IdF D); nat_id_iso (@IdF D))
     (@PremonoidalLeftUnitorN D SP)
     (λ T : @Ob C, fmap (FreydPureF F) (π2 : Hom (1 × T) T))).
   intro T. etransitivity.

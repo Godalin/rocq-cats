@@ -214,4 +214,4 @@ Lemma simplex_restrict_natural@{u p +}
     {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}
     (α : X ⇒ Y) {m n : nat} (θ : (@Hom Δ) m n)
   : (α m ∘r X[θ]Δ) ≈f (Y[θ]Δ ∘r α n).
-Proof. exact (nt_naturality α θ). Qed.
+Proof. exact (nat_naturality α θ). Qed.

@@ -140,7 +140,7 @@ Qed.
 
 Definition StaticRecoveryInvN
   : B ⇒ StaticRecoveredA
-  := NatIso_inv StaticRecoveryN (λ X, (StaticRecoveryIso X).2).
+  := InvN StaticRecoveryN (λ X, (StaticRecoveryIso X).2).
 
 (** Abstract left round trip, so clients need not reduce the chosen
     inverse witness on a large computation. *)

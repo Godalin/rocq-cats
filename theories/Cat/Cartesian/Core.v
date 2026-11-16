@@ -15,14 +15,15 @@ From Cats Require Import
 (** 具名范畴 [C] 上选定的有限积。终对象给出空积，二元积给出其余有限积；
     泛性质保留 Type 值的计算见证。 *)
 
-Class CartesianCat (C : Cat)
+Class CartCat (C : Cat)
   :=
+
   (** The unique category view computes to the supplied parameter;
       no second category is stored. *)
 
   (** 唯一范畴视图直接计算为给定参数，不另存一个范畴。 *)
 
-  { CartesianC :> Cat := C
+  { CartCatToCat :> Cat := C
 
   (** Select the terminal object and its full universal property. *)
 
@@ -35,6 +36,7 @@ Class CartesianCat (C : Cat)
   (** 选定二元积、投影与泛中介。 *)
 
   ; hasProduct :: HasProduct C
+
   }.
 
-Arguments CartesianC {_} _.
+Arguments CartCatToCat {_} _.

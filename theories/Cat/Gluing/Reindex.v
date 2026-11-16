@@ -250,7 +250,7 @@ Definition GluingFiberReindexIdN (A : C)
 Definition gluing_fiber_reindex_id_iso (A : C)
   : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF (@id A).
 Proof.
-  exists (GluingFiberReindexIdN A). apply nt_comp_v_NatIso.
+  exists (GluingFiberReindexIdN A). apply nat_comp_iso.
   - intro R. apply slice_reindex_equiv_iso.
   - intro R. apply slice_reindex_id_iso.
 Defined.
@@ -277,7 +277,7 @@ Definition gluing_fiber_reindex_comp_iso {A B E : C} (f : Hom B E)
   : (GluingFiberReindexF g ∘F GluingFiberReindexF f)
       ≅N GluingFiberReindexF (f ∘ g).
 Proof.
-  exists (GluingFiberReindexCompN f g). apply nt_comp_v_NatIso.
+  exists (GluingFiberReindexCompN f g). apply nat_comp_iso.
   - intro R. apply slice_reindex_equiv_iso.
   - intro R. apply slice_reindex_comp_iso.
 Defined.
@@ -367,7 +367,7 @@ Definition gluing_fiber_reindex_equiv_witness_independent {A B : C}
 
 Definition gluing_fiber_reindex_equiv_id {A B : C} {f : Hom A B}
     (H : f ≈ f)
-  : GluingFiberReindexEqN H ≈N idN
+  : GluingFiberReindexEqN H ≈N IdN
   := slice_reindex_equiv_id (@functor_fmap_proper C D F _ _ _ _ H).
 
 (** Base-comparison composition is coherent without equating witnesses. *)

@@ -367,19 +367,19 @@ Lemma prof_left_unit_out_input (X : @Ob C) (Z : @Ob D)
     `{HP : !HasCoend SetCat (ProfCompKernel (HomProf D) P X Z)}
     `{HQ : !HasCoend SetCat (ProfCompKernel (HomProf D) Q X Z)}
   : (prof_left_unit_out Q X Z ∘r
-      coend_map (ProfCompInputN (idN (F := HomProf D)) α X Z))
+      coend_map (ProfCompInputN (IdN (F := HomProf D)) α X Z))
       ≈f (α (X,Z) ∘r prof_left_unit_out P X Z).
 Proof.
   refine (@coend_hom_ext D (SetCat@{u p _ _ _ _ _})
     (ProfCompKernel (HomProf D) P X Z) HP (Q (X,Z))
     (prof_left_unit_out Q X Z ∘r coend_map
-      (ProfCompInputN (idN (F := HomProf D)) α X Z))
+      (ProfCompInputN (IdN (F := HomProf D)) α X Z))
     (α (X,Z) ∘r prof_left_unit_out P X Z) _).
   intros Y [x [h]].
   transitivity (prof_left_unit_out Q X Z
     (ιPr[HomProf D; Q; Y] (α (X,Y) x,{|lower := h|}))).
   - apply (@func_proper _ _ (prof_left_unit_out Q X Z)).
-    exact (coend_map_β (ProfCompInputN (idN (F := HomProf D)) α X Z)
+    exact (coend_map_β (ProfCompInputN (IdN (F := HomProf D)) α X Z)
       Y (x,{|lower := h|})).
   - transitivity (rmap[Q; h] (α (X,Y) x)).
     + exact (prof_left_unit_β Q X Z Y (α (X,Y) x) h).
@@ -396,7 +396,7 @@ Defined.
 Lemma prof_left_unitor_natural
     `{HP : !HasProfComp C D D (HomProf D) P}
     `{HQ : !HasProfComp C D D (HomProf D) Q}
-  : (ProfLeftUnitorN Q ∘Nv ProfCompMapN idN α) ≈N
+  : (ProfLeftUnitorN Q ∘Nv ProfCompMapN IdN α) ≈N
       (α ∘Nv ProfLeftUnitorN P).
 Proof. intros [X Z]. exact (prof_left_unit_out_input X Z). Defined.
 
@@ -409,11 +409,11 @@ Lemma prof_left_unitor_inv_natural
     `{HQ : !HasProfComp C D D (HomProf D) Q}
     (X : @Ob C) (Z : @Ob D)
   : (ProfLeftUnitorInvN Q (X,Z) ∘r α (X,Z)) ≈f
-      (ProfCompMapN idN α (X,Z) ∘r ProfLeftUnitorInvN P (X,Z)).
+      (ProfCompMapN IdN α (X,Z) ∘r ProfLeftUnitorInvN P (X,Z)).
 Proof.
   exact (@iso_square_inv SetCat _ _ _ _
     (ProfLeftUnitIso P X Z) (ProfLeftUnitIso Q X Z)
-    (ProfCompMapN idN α (X,Z)) (α (X,Z))
+    (ProfCompMapN IdN α (X,Z)) (α (X,Z))
     (prof_left_unitor_natural (X,Z))).
 Defined.
 

@@ -100,7 +100,7 @@ Program Definition NormalizationSourceOb (A : Ty B)
   :=
   {|comma_left_ob := syntax A
   ; comma_right_ob := syntax A
-  ; comma_arrow := idN
+  ; comma_arrow := IdN
   |}.
 
 (** Retain both realized values and their evidence, over their syntax. *)
@@ -137,7 +137,7 @@ Program Definition CategoricalEvaluationM (A : Ty B)
       (NormalizationSourceOb A) (NormalizationRelationOb A)
   :=
   {|comma_left := evaluation A
-  ; comma_right := idN
+  ; comma_right := IdN
   |}.
 Next Obligation.
   intros Γ t. symmetry. exact (gluing_evaluation_syntax A Γ t).
@@ -155,7 +155,7 @@ Program Definition CategoricalQuoteM (A : Ty B)
       (NormalizationRelationOb A) (NormalizationNormalOb A)
   :=
   {|comma_left := GluingQuoteN A
-  ; comma_right := idN
+  ; comma_right := IdN
   |}.
 Next Obligation.
   intros Γ [[[t] [v]] h]. refine {|lower := _
@@ -172,7 +172,7 @@ Program Definition CategoricalNormalizeM (A : Ty B)
       (NormalizationSourceOb A) (NormalizationNormalOb A)
   :=
   {|comma_left := LiftF ∘Nl NormalizeN A
-  ; comma_right := idN
+  ; comma_right := IdN
   |}.
 Next Obligation.
   intros Γ [t]. exact {|lower := nf_sound t
@@ -203,7 +203,7 @@ Program Definition CategoricalNormalInclusionM (A : Ty B)
       (NormalizationNormalOb A) (NormalizationSourceOb A)
   :=
   {|comma_left := LiftF ∘Nl NfEmbedN A
-  ; comma_right := idN
+  ; comma_right := IdN
   |}.
 Next Obligation. intros Γ t. reflexivity. Defined.
 
@@ -264,7 +264,7 @@ Local Instance semantic_exponentials
 Definition SemanticArrowIsoN (A U : Ty B)
   : SemF (A ⇒ U) ≅N (@exp P semantic_products semantic_exponentials
       (SemF U) (SemF A)).
-Proof. exists idN. apply nt_id_NatIso. Defined.
+Proof. exists IdN. apply nat_id_iso. Defined.
 
 (** Semantic application is the selected evaluation, pointwise. *)
 

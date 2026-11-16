@@ -41,9 +41,9 @@ Class HasAxiomChoice (C : Cat)
 Class ETCS (C : Cat)
   :=
   (** The unique parent shares the classifier and pullbacks as well as
-      the existing [CCC] and [CartesianCat] choices. *)
+      the existing [CCC] and [CartCat] choices. *)
 
-  (** 唯一父结构共享分类子、拉回及已有 [CCC] 与 [CartesianCat] 的各项选择。 *)
+  (** 唯一父结构共享分类子、拉回及已有 [CCC] 与 [CartCat] 的各项选择。 *)
 
   { ETCSC :> Topos C
 

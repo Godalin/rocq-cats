@@ -107,7 +107,7 @@ Definition VtxNerveCylinderN
   : (Nᵥ(VtxProductObjF T (OrdinalObjF 1)) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ SimplicialCylinderF Nᵥ(T)
   := @PointwiseProductN _ _ SetCat_HasProduct _ _ _ _
-      idN (OrdinalVtxNerveN 1) ∘Nv
+      IdN (OrdinalVtxNerveN 1) ∘Nv
       VtxNerveProductN T (OrdinalObjF 1).
 
 (** Repackage the ordinary product category with its original labels. *)
@@ -320,7 +320,7 @@ Program Definition VtxNerveInvHomotopyN
   {|nt x := PrismTransformationN NerveHomotopyAlignedF x
   |}.
 Next Obligation.
-  pose (E := nt_naturality (PrismTransformationN NerveHomotopyAlignedF) f).
+  pose (E := nat_naturality (PrismTransformationN NerveHomotopyAlignedF) f).
   rewrite (nerve_homotopy_aligned_0 f), (nerve_homotopy_aligned_1 f) in E.
   exact E.
 Defined.
@@ -370,7 +370,7 @@ Defined.
 (** 复用指定边界的唯一范畴棱柱比较。 *)
 
 Definition NerveHomotopyComparisonN
-  : NaturalPrismF VtxNerveInvHomotopyN ⇒ NerveHomotopyAlignedF
+  : NatPrismF VtxNerveInvHomotopyN ⇒ NerveHomotopyAlignedF
   := PrismComparisonN NerveHomotopyAlignedF VtxNerveInvHomotopyN
       (NerveHomotopyBoundaryN false) (NerveHomotopyBoundaryN true)
       nerve_homotopy_boundary_square.
@@ -381,10 +381,10 @@ Definition NerveHomotopyComparisonN
 (** 通用比较是指定顶点比较：两个时间位置上的分量都是恒等，即自反运输。 *)
 
 Definition nerve_homotopy_comparison
-  : VtxDiagramEq U (NaturalPrismF VtxNerveInvHomotopyN)
+  : VtxDiagramEq U (NatPrismF VtxNerveInvHomotopyN)
       NerveHomotopyAlignedF.
 Proof.
-  assert (e : ∀ z, (NaturalPrismF VtxNerveInvHomotopyN z : Y) ≈S
+  assert (e : ∀ z, (NatPrismF VtxNerveInvHomotopyN z : Y) ≈S
     NerveHomotopyAlignedF z).
   { intros [x [[] | [[] | []]]]; reflexivity. }
   apply (vertex_diagram_comparison U e NerveHomotopyComparisonN).
@@ -437,14 +437,14 @@ Proof.
     (VtxNerveHomotopyN α 1 z) (VtxNerveHomotopyN β 1 z)
     (reflexivity (F x : Y)) (reflexivity (G x : Y)) (E 1 z)) as S.
   change (U⟦reflexivity (G x : Y)⟧Ob ∘
-    fmap (NaturalPrismF α)
+    fmap (NatPrismF α)
       (X := (x, fin_first)) (Y := (x, fin_next fin_first))
       (id, ordinal_step fin_first) ≈
-    fmap (NaturalPrismF β)
+    fmap (NatPrismF β)
       (X := (x, fin_first)) (Y := (x, fin_next fin_first))
       (id, ordinal_step fin_first) ∘ U⟦reflexivity (F x : Y)⟧Ob) in S.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r in S.
-  transitivity (fmap (NaturalPrismF α)
+  transitivity (fmap (NatPrismF α)
     (X := (x, fin_first)) (Y := (x, fin_next fin_first))
     (id, ordinal_step fin_first)).
   - symmetry. apply natural_prism_step.

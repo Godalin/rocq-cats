@@ -60,7 +60,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   intros h. refine {|lower := _|}.
-  exact (lower (nt_naturality
+  exact (lower (nat_naturality
     (HomProfMapN (@BinoidalLeftF C MC Z)) f h)).
 Defined.
 

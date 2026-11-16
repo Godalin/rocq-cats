@@ -34,9 +34,9 @@ Program Definition ProfCompInputN@{u p +} {C D E : Cat}
   |}.
 Next Obligation.
   intros [x y]. split.
-  - exact (nt_naturality α
+  - exact (nat_naturality α
       (X := (X,snd X0)) (Y := (X,snd Y)) (id,snd f) x).
-  - exact (nt_naturality β
+  - exact (nat_naturality β
       (X := (fst X0,Z)) (Y := (fst Y,Z)) (fst f,id) y).
 Defined.
 
@@ -79,7 +79,7 @@ Lemma prof_comp_input_id
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
     (X : @Ob C) (Z : @Ob E)
-  : ProfCompInputN (idN (F := Q)) (idN (F := P)) X Z ≈N idN.
+  : ProfCompInputN (IdN (F := Q)) (IdN (F := P)) X Z ≈N IdN.
 Proof. intros [A B] [x y]. split; reflexivity. Defined.
 
 (** Successive input transformations compose coordinatewise. *)
@@ -187,13 +187,13 @@ Lemma prof_comp_map_id
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
     `{HC : !HasProfComp C D E Q P}
-  : ProfCompMapN (idN (F := Q)) (idN (F := P)) ≈N idN.
+  : ProfCompMapN (IdN (F := Q)) (IdN (F := P)) ≈N IdN.
 Proof.
   intros [X Z].
   transitivity (@coend_map D SetCat
     (ProfCompKernel Q P X Z) (ProfCompKernel Q P X Z)
     (@hasProfCompCoend C D E Q P HC X Z)
-    (@hasProfCompCoend C D E Q P HC X Z) idN).
+    (@hasProfCompCoend C D E Q P HC X Z) IdN).
   - apply (@coend_map_proper D SetCat). apply prof_comp_input_id.
   - apply (@coend_map_id D SetCat).
 Defined.
@@ -241,19 +241,19 @@ Proof.
       ((β ^-1N Hβ) ∘Nv β) ((α ^-1N Hα) ∘Nv α) (X,Z)).
     + symmetry. exact (@prof_comp_map_comp
         Q Q' Q P P' P HC HC' HC (β ^-1N Hβ) β (α ^-1N Hα) α (X,Z)).
-    + transitivity (ProfCompMapN (idN (F := Q)) (idN (F := P)) (X,Z)).
+    + transitivity (ProfCompMapN (IdN (F := Q)) (IdN (F := P)) (X,Z)).
       * exact (@prof_comp_map_proper Q Q P P HC HC
-          ((β ^-1N Hβ) ∘Nv β) idN (λ U, fst (Hβ U).2)
-          ((α ^-1N Hα) ∘Nv α) idN (λ U, fst (Hα U).2) (X,Z)).
+          ((β ^-1N Hβ) ∘Nv β) IdN (λ U, fst (Hβ U).2)
+          ((α ^-1N Hα) ∘Nv α) IdN (λ U, fst (Hα U).2) (X,Z)).
       * exact (@prof_comp_map_id Q P HC (X,Z)).
   - transitivity (ProfCompMapN
       (β ∘Nv (β ^-1N Hβ)) (α ∘Nv (α ^-1N Hα)) (X,Z)).
     + symmetry. exact (@prof_comp_map_comp
         Q' Q Q' P' P P' HC' HC HC' β (β ^-1N Hβ) α (α ^-1N Hα) (X,Z)).
-    + transitivity (ProfCompMapN (idN (F := Q')) (idN (F := P')) (X,Z)).
+    + transitivity (ProfCompMapN (IdN (F := Q')) (IdN (F := P')) (X,Z)).
       * exact (@prof_comp_map_proper Q' Q' P' P' HC' HC'
-          (β ∘Nv (β ^-1N Hβ)) idN (λ U, snd (Hβ U).2)
-          (α ∘Nv (α ^-1N Hα)) idN (λ U, snd (Hα U).2) (X,Z)).
+          (β ∘Nv (β ^-1N Hβ)) IdN (λ U, snd (Hβ U).2)
+          (α ∘Nv (α ^-1N Hα)) IdN (λ U, snd (Hα U).2) (X,Z)).
       * exact (@prof_comp_map_id Q' P' HC' (X,Z)).
 Defined.
 

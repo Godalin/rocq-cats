@@ -298,7 +298,7 @@ Proof. reflexivity. Qed.
 
 Example vertex_functor_reconstruction_computes
   : fmap (VtxNerveInvF
-      (idN : BoolVtxNerve ⇒ BoolVtxNerve))
+      (IdN : BoolVtxNerve ⇒ BoolVtxNerve))
       (true : (@Hom (VtxCat (MonoidObjF BoolS_Monoid))) tt tt) = true.
 Proof. reflexivity. Qed.
 

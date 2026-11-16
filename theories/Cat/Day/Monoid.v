@@ -72,7 +72,7 @@ Local Program Definition DayUnitOpN (η : DayUnitF I ⇒ F)
   {|nt X := _
   |}.
 Next Obligation. exact (η X). Defined.
-Next Obligation. exact (nt_naturality η f). Defined.
+Next Obligation. exact (nat_naturality η f). Defined.
 
 (** Extension after evaluation reuses presheaf Yoneda on the opposite,
     just as the existing lifted covariant construction does. *)
@@ -127,7 +127,7 @@ Program Definition LaxDayTensorN (L : LaxMonoidalFct MC SM)
   |}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
-  pose proof (nt_naturality (lax_tensorN L)
+  pose proof (nat_naturality (lax_tensorN L)
     (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) as H.
   change (lax_tensorN L (Y1,Y2) ∘
     @tensor_map SetCat SM _ _ _ _ (fmap L f) (fmap L g) ≈
@@ -153,7 +153,7 @@ Next Obligation.
     @tensor_map SetCat SM _ _ _ _ (fmap F f) (fmap F g) ≈
     fmap F (fmap (tensorF MC) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
       β (X1,X2)).
-  intros [x y]. exact (nt_naturality β (f,g) (x,y)).
+  intros [x y]. exact (nat_naturality β (f,g) (x,y)).
 Defined.
 
 (** A unit value defines the constant map from the selected terminal setoid. *)
@@ -209,14 +209,14 @@ Context (F : Fct C (SetCat@{u p _ _ _ _ _}))
 
 Lemma day_unit_l_compute (X : @Ob C) (x : F X)
   : μ X (DayMapN T (HD := HD (DayUnitF I) F) (HD' := HD F F)
-      η (idN (F := F)) X (day_left_unitor_inv T L F X x)) ≈S
+      η (IdN (F := F)) X (day_left_unitor_inv T L F X x)) ≈S
     fmap F (L.1 X)
       (DayRestrictN T μ (I,X) (day_unit_value I F η,x)).
 Proof.
   transitivity (μ X (day_inject T F F (I,X) (L.1 X)
     (η I {|lower := id|},x))).
   - apply (@func_proper _ _ (μ X)).
-    exact (day_map_inject T η (idN (F := F))
+    exact (day_map_inject T η (IdN (F := F))
       (I,X) (L.1 X) {|lower := id|} x).
   - exact (day_transform_inject T μ (I,X) (L.1 X)
       (day_unit_value I F η,x)).
@@ -228,14 +228,14 @@ Defined.
 
 Lemma day_unit_r_compute (X : @Ob C) (x : F X)
   : μ X (DayMapN T (HD := HD F (DayUnitF I)) (HD' := HD F F)
-      (idN (F := F)) η X (day_right_unitor_inv T R F X x)) ≈S
+      (IdN (F := F)) η X (day_right_unitor_inv T R F X x)) ≈S
     fmap F (R.1 X)
       (DayRestrictN T μ (X,I) (x,day_unit_value I F η)).
 Proof.
   transitivity (μ X (day_inject T F F (X,I) (R.1 X)
     (x,η I {|lower := id|}))).
   - apply (@func_proper _ _ (μ X)).
-    exact (day_map_inject T (idN (F := F)) η
+    exact (day_map_inject T (IdN (F := F)) η
       (X,I) (R.1 X) x {|lower := id|}).
   - exact (day_transform_inject T μ (X,I) (R.1 X)
       (x,day_unit_value I F η)).
@@ -247,13 +247,13 @@ Defined.
 
 Theorem day_unit_l_law
   : ((μ ∘Nv DayMapN T (HD := HD (DayUnitF I) F) (HD' := HD F F)
-        η (idN (F := F))) ≈N DayLeftUnitorN T L F) ↔
+        η (IdN (F := F))) ≈N DayLeftUnitorN T L F) ↔
     (∀ X (x : F X), fmap F (L.1 X)
       (DayRestrictN T μ (I,X) (day_unit_value I F η,x)) ≈S x).
 Proof.
   split; intros H.
   - intros X x.
-    transitivity (μ X (DayMapN T η (idN (F := F)) X
+    transitivity (μ X (DayMapN T η (IdN (F := F)) X
       (day_left_unitor_inv T L F X x))).
     + symmetry. exact (day_unit_l_compute X x).
     + transitivity (DayLeftUnitorN T L F X
@@ -276,13 +276,13 @@ Defined.
 
 Theorem day_unit_r_law
   : ((μ ∘Nv DayMapN T (HD := HD F (DayUnitF I)) (HD' := HD F F)
-        (idN (F := F)) η) ≈N DayRightUnitorN T R F) ↔
+        (IdN (F := F)) η) ≈N DayRightUnitorN T R F) ↔
     (∀ X (x : F X), fmap F (R.1 X)
       (DayRestrictN T μ (X,I) (x,day_unit_value I F η)) ≈S x).
 Proof.
   split; intros H.
   - intros X x.
-    transitivity (μ X (DayMapN T (idN (F := F)) η X
+    transitivity (μ X (DayMapN T (IdN (F := F)) η X
       (day_right_unitor_inv T R F X x))).
     + symmetry. exact (day_unit_r_compute X x).
     + transitivity (DayRightUnitorN T R F X
@@ -331,11 +331,11 @@ Let β
 Let ML
   : DayF T (DayF T F F) F ⇒ F
   := μ ∘Nv DayMapN T (HD := HD (DayF T F F) F) (HD' := HD F F)
-      μ (idN (F := F)).
+      μ (IdN (F := F)).
 Let MR
   : DayF T F (DayF T F F) ⇒ F
   := μ ∘Nv DayMapN T (HD := HD F (DayF T F F)) (HD' := HD F F)
-      (idN (F := F)) μ.
+      (IdN (F := F)) μ.
 
 (** Restriction exposes multiplication on an identity generator. *)
 
@@ -358,7 +358,7 @@ Proof.
     (day_inject T F F (T (a,b),c) id
       (μ (T (a,b)) (DayGenN T F F (a,b) (x,y)),z))).
   - apply (@func_proper _ _ (μ (T (T (a,b),c)))).
-    exact (day_map_inject T μ (idN (F := F)) (T (a,b),c) id
+    exact (day_map_inject T μ (IdN (F := F)) (T (a,b),c) id
       (DayGenN T F F (a,b) (x,y)) z).
   - transitivity (β (T (a,b),c)
       (μ (T (a,b)) (DayGenN T F F (a,b) (x,y)),z)).
@@ -381,7 +381,7 @@ Proof.
     (day_inject T F F (a,T (b,c)) id
       (x,μ (T (b,c)) (DayGenN T F F (b,c) (y,z))))).
   - apply (@func_proper _ _ (μ (T (a,T (b,c))))).
-    exact (day_map_inject T (idN (F := F)) μ (a,T (b,c)) id
+    exact (day_map_inject T (IdN (F := F)) μ (a,T (b,c)) id
       x (DayGenN T F F (b,c) (y,z))).
   - transitivity (β (a,T (b,c))
       (x,μ (T (b,c)) (DayGenN T F F (b,c) (y,z)))).
@@ -410,7 +410,7 @@ Proof.
   - transitivity (fmap F (A.1 ((a,b),c))
       (ML (T (T (a,b),c))
         (DayTripleLeftGenN T F F F ((a,b),c) ((x,y),z)))).
-    + exact (nt_naturality ML (A.1 ((a,b),c))
+    + exact (nat_naturality ML (A.1 ((a,b),c))
         (DayTripleLeftGenN T F F F ((a,b),c) ((x,y),z))).
     + exact (@func_proper _ _ (fmap F (A.1 ((a,b),c))) _ _
         (day_mul_l_compute a b c x y z)).
@@ -636,19 +636,19 @@ Proof.
   unfold is_monoid_object, is_day_lax.
   split; intros [Hl [Hr Ha]]; (split; [| split]).
   - apply (fst (day_unit_l_law MC HD F η μ)).
-    rewrite <- (day_object_tensor_map η (idN (F := F))). exact Hl.
+    rewrite <- (day_object_tensor_map η (IdN (F := F))). exact Hl.
   - apply (fst (day_unit_r_law MC HD F η μ)).
-    rewrite <- (day_object_tensor_map (idN (F := F)) η). exact Hr.
+    rewrite <- (day_object_tensor_map (IdN (F := F)) η). exact Hr.
   - apply (fst (day_mul_assoc_law MC HD F μ)).
-    rewrite <- (day_object_tensor_map μ (idN (F := F))),
-      <- (day_object_tensor_map (idN (F := F)) μ). exact Ha.
+    rewrite <- (day_object_tensor_map μ (IdN (F := F))),
+      <- (day_object_tensor_map (IdN (F := F)) μ). exact Ha.
   - pose proof (snd (day_unit_l_law MC HD F η μ) Hl) as K.
-    rewrite <- (day_object_tensor_map η (idN (F := F))) in K. exact K.
+    rewrite <- (day_object_tensor_map η (IdN (F := F))) in K. exact K.
   - pose proof (snd (day_unit_r_law MC HD F η μ) Hr) as K.
-    rewrite <- (day_object_tensor_map (idN (F := F)) η) in K. exact K.
+    rewrite <- (day_object_tensor_map (IdN (F := F)) η) in K. exact K.
   - pose proof (snd (day_mul_assoc_law MC HD F μ) Ha) as K.
-    rewrite <- (day_object_tensor_map μ (idN (F := F))),
-      <- (day_object_tensor_map (idN (F := F)) μ) in K. exact K.
+    rewrite <- (day_object_tensor_map μ (IdN (F := F))),
+      <- (day_object_tensor_map (IdN (F := F)) μ) in K. exact K.
 Defined.
 
 End MonoidCharacterization.

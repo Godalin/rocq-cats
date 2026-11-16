@@ -81,7 +81,7 @@ Lemma lax_tensor_natural {C D : Cat}
   : φ₂[L; X'; Y'] ∘ (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L g)) ≈
       fmap L (@tensor_map C MC _ _ _ _ f g) ∘ φ₂[L; X; Y].
 Proof.
-  exact (nt_naturality (lax_tensorN L)
+  exact (nat_naturality (lax_tensorN L)
     (X := (X, Y)) (Y := (X', Y')) (f, g)).
 Qed.
 

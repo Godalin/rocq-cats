@@ -74,7 +74,7 @@ Example enabling_comparison_keeps_boundary_witness_data
 Proof. vm_compute. reflexivity. Defined.
 
 Definition mapped
-  := two_sphere_cylinder_map_resp (idN : W ⇒ W) false
+  := two_sphere_cylinder_map_resp (IdN : W ⇒ W) false
       (choices fin_first true) (choices fin_first⁺ false)
       (choices fin_first false) (choices fin_first⁺ true).
 
@@ -114,7 +114,7 @@ Fail Definition specified_boundary_is_not_native
   := ltac:(vm_compute; reflexivity).
 
 Definition natural_witness
-  := two_sphere_cylinder_map_natural (idN : W ⇒ W) false
+  := two_sphere_cylinder_map_natural (IdN : W ⇒ W) false
       (choices fin_first true) (choices fin_first⁺ false)
       (choices fin_first false) (choices fin_first⁺ true) y.
 

@@ -76,7 +76,7 @@ Lemma nt_naturality_boundary {C D : Cat}
   : a Y ∘ fmap F' f ≈ fmap G' f ∘ a X.
 Proof.
   apply (iso_cancel_l (j.1 Y; j.2 Y)).
-  rewrite <- comp_assoc, Ha, comp_assoc, (nt_naturality i f).
-  rewrite <- comp_assoc, (nt_naturality β f), comp_assoc, <- Ha.
-  rewrite <- !comp_assoc, (nt_naturality j.1 f). reflexivity.
+  rewrite <- comp_assoc, Ha, comp_assoc, (nat_naturality i f).
+  rewrite <- comp_assoc, (nat_naturality β f), comp_assoc, <- Ha.
+  rewrite <- !comp_assoc, (nat_naturality j.1 f). reflexivity.
 Qed.

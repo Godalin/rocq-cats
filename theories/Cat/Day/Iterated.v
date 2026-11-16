@@ -65,7 +65,7 @@ Next Obligation.
       (fmap (DayValuesF F G) f xy,w)
       (fmap (DayValuesF F G) f xy,fmap H (@id Z) w)
       (reflexivity _, symmetry (@functor_id C SetCat H Z w))).
-  - exact (nt_naturality β (X := (X,Z)) (Y := (Y,Z)) (f,id) (xy,w)).
+  - exact (nat_naturality β (X := (X,Z)) (Y := (Y,Z)) (f,id) (xy,w)).
 Defined.
 
 (** Varying the third object changes parameters and outputs coherently. *)
@@ -88,7 +88,7 @@ Proof.
   - transitivity (fmap K
       (fmap T (X := (T q,Z)) (Y := (T q,Z')) (fmap T (@id q),g))
         (β (q,Z) (xy,w))).
-    + exact (nt_naturality β (X := (q,Z)) (Y := (q,Z')) (id,g) (xy,w)).
+    + exact (nat_naturality β (X := (q,Z)) (Y := (q,Z')) (id,g) (xy,w)).
     + apply (@functor_fmap_proper C SetCat K). apply functor_fmap_proper.
       split; [apply functor_id | reflexivity].
 Defined.
@@ -113,7 +113,7 @@ Next Obligation.
   transitivity (fmap K (fmap T (X := (a,b')) (Y := (a',b')) (f,id))
     (DayParameterExtendN T (H b') (DayTripleLeftSliceN b') a
       (z, fmap H g w))).
-  - exact (nt_naturality (DayParameterExtendN T (H b')
+  - exact (nat_naturality (DayParameterExtendN T (H b')
       (DayTripleLeftSliceN b')) f (z, fmap H g w)).
   - transitivity (fmap K (fmap T (X := (a,b')) (Y := (a',b')) (f,id))
       (fmap K (fmap T (X := (a,b)) (Y := (a,b')) (id,g))
@@ -224,7 +224,7 @@ Next Obligation.
       ((x,fmap G f y),fmap H g z)
       ((fmap F (@id X) x,fmap G f y),fmap H g z)
       ((symmetry (@functor_id C SetCat F X x),reflexivity _),reflexivity _)).
-  - exact (nt_naturality β (X := ((X,a),b)) (Y := ((X,a'),b'))
+  - exact (nat_naturality β (X := ((X,a),b)) (Y := ((X,a'),b'))
       ((id,f),g) ((x,y),z)).
 Defined.
 
@@ -249,7 +249,7 @@ Proof.
   - transitivity (fmap K
       (fmap T (X := (X,T (Y,Z))) (Y := (X',T (Y,Z)))
         (f,fmap T (@Cat.Core.id (C ×C C) (Y,Z)))) (β ((X,Y),Z) ((x,y),z))).
-    + exact (nt_naturality β (X := ((X,Y),Z)) (Y := ((X',Y),Z))
+    + exact (nat_naturality β (X := ((X,Y),Z)) (Y := ((X',Y),Z))
         ((f,id),id) ((x,y),z)).
     + apply (@functor_fmap_proper C SetCat K). apply functor_fmap_proper.
       split; [reflexivity | apply functor_id].
@@ -282,7 +282,7 @@ Next Obligation.
   transitivity (fmap K (fmap T (X := (a',b)) (Y := (a',b')) (id,g))
     (DayParameterExtendN T (F a') (DayTripleRightSliceN a') b
       (z,fmap F f x))).
-  - exact (nt_naturality (DayParameterExtendN T (F a')
+  - exact (nat_naturality (DayParameterExtendN T (F a')
       (DayTripleRightSliceN a')) g (z,fmap F f x)).
   - transitivity (fmap K (fmap T (X := (a',b)) (Y := (a',b')) (id,g))
       (fmap K (fmap T (X := (a,b)) (Y := (a',b)) (f,id))
@@ -387,9 +387,9 @@ Next Obligation.
       (day_inject T F G (a',b') id (fmap F f x,fmap G g y),fmap H h z)
       (fmap (DayF T F G) (fmap T (X := (a,b)) (Y := (a',b')) (f,g))
         (day_inject T F G (a,b) id (x,y)),fmap H h z)
-      (nt_naturality (DayGenN T F G)
+      (nat_naturality (DayGenN T F G)
         (X := (a,b)) (Y := (a',b')) (f,g) (x,y),reflexivity _)).
-  - exact (nt_naturality (DayGenN T (DayF T F G) H)
+  - exact (nat_naturality (DayGenN T (DayF T F G) H)
       (X := (T (a,b),d)) (Y := (T (a',b'),d'))
       (fmap T (X := (a,b)) (Y := (a',b')) (f,g),h)
       (day_inject T F G (a,b) id (x,y),z)).
@@ -471,13 +471,13 @@ Proof.
     exact (day_triple_left_inject h k x y z).
   - transitivity (fmap K w
       (α (T (T (A,B),D)) (DayTripleLeftGenN ((A,B),D) ((x,y),z)))).
-    + exact (nt_naturality α w (DayTripleLeftGenN ((A,B),D) ((x,y),z))).
+    + exact (nat_naturality α w (DayTripleLeftGenN ((A,B),D) ((x,y),z))).
     + transitivity (fmap K w
         (γ (T (T (A,B),D)) (DayTripleLeftGenN ((A,B),D) ((x,y),z)))).
       * exact (@func_proper _ _ (fmap K w) _ _ (P ((A,B),D) ((x,y),z))).
       * transitivity (γ Z (fmap (DayF T (DayF T F G) H) w
           (DayTripleLeftGenN ((A,B),D) ((x,y),z)))).
-        -- symmetry. exact (nt_naturality γ w
+        -- symmetry. exact (nat_naturality γ w
              (DayTripleLeftGenN ((A,B),D) ((x,y),z))).
         -- apply (@func_proper _ _ (γ Z)).
            exact (day_triple_left_inject h k x y z).
@@ -534,9 +534,9 @@ Next Obligation.
       (fmap F f x,fmap (DayF T G H)
         (fmap T (X := (b,d)) (Y := (b',d')) (g,h))
         (day_inject T G H (b,d) id (y,z)))
-      (reflexivity _,nt_naturality (DayGenN T G H)
+      (reflexivity _,nat_naturality (DayGenN T G H)
         (X := (b,d)) (Y := (b',d')) (g,h) (y,z))).
-  - exact (nt_naturality (DayGenN T F (DayF T G H))
+  - exact (nat_naturality (DayGenN T F (DayF T G H))
       (X := (a,T (b,d))) (Y := (a',T (b',d')))
       (f,fmap T (X := (b,d)) (Y := (b',d')) (g,h))
       (x,day_inject T G H (b,d) id (y,z))).
@@ -628,13 +628,13 @@ Proof.
     exact (day_triple_right_inject h k x y z).
   - transitivity (fmap K w
       (α (T (A,T (B,D))) (DayTripleRightGenN ((A,B),D) ((x,y),z)))).
-    + exact (nt_naturality α w (DayTripleRightGenN ((A,B),D) ((x,y),z))).
+    + exact (nat_naturality α w (DayTripleRightGenN ((A,B),D) ((x,y),z))).
     + transitivity (fmap K w
         (γ (T (A,T (B,D))) (DayTripleRightGenN ((A,B),D) ((x,y),z)))).
       * exact (@func_proper _ _ (fmap K w) _ _ (P ((A,B),D) ((x,y),z))).
       * transitivity (γ Z (fmap (DayF T F (DayF T G H)) w
           (DayTripleRightGenN ((A,B),D) ((x,y),z)))).
-        -- symmetry. exact (nt_naturality γ w
+        -- symmetry. exact (nat_naturality γ w
              (DayTripleRightGenN ((A,B),D) ((x,y),z))).
         -- apply (@func_proper _ _ (γ Z)).
            exact (day_triple_right_inject h k x y z).

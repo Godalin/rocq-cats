@@ -22,7 +22,7 @@ Definition DayInputN@{u p +} {C : Cat} (T : Fct (C ×C C) C)
     {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})} (α : F ⇒ F') (β : G ⇒ G')
     (Z : @Ob C)
   : DayKernel T F G Z ⇒ DayKernel T F' G' Z
-  := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _ idN
+  := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _ IdN
       ((@PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _
         (α ∘Nr FstF C C) (β ∘Nr SndF C C))
         ∘Nr SndF ((C ×C C)^op) (C ×C C)).
@@ -58,7 +58,7 @@ Defined.
 (** 输入恒等映射在每个坐标上恒等作用。 *)
 
 Lemma day_input_id (F G : Fct C (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
-  : DayInputN T (idN (F := F)) (idN (F := G)) Z ≈N idN.
+  : DayInputN T (IdN (F := F)) (IdN (F := G)) Z ≈N IdN.
 Proof. intros [[X Y] [X' Y']] [h [x y]]. repeat split; reflexivity. Defined.
 
 (** Input composition agrees with vertical composition of kernel maps. *)
@@ -137,10 +137,10 @@ Defined.
 (** 输入恒等自然变换给出恒等卷积映射。 *)
 
 Lemma day_map_id (F G : Fct C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}
-  : DayMapN T (idN (F := F)) (idN (F := G)) ≈N idN.
+  : DayMapN T (IdN (F := F)) (IdN (F := G)) ≈N IdN.
 Proof.
-  intros Z. change (coend_map (DayInputN T idN idN Z) ≈ id).
-  transitivity (coend_map (idN (F := DayKernel T F G Z))).
+  intros Z. change (coend_map (DayInputN T IdN IdN Z) ≈ id).
+  transitivity (coend_map (IdN (F := DayKernel T F G Z))).
   - apply (@coend_map_proper (C ×C C) SetCat). apply day_input_id.
   - apply (@coend_map_id (C ×C C) SetCat).
 Defined.

@@ -113,7 +113,7 @@ Definition independent_maps
 Definition changing_restriction_natural
   : descended 1 (fmap W (ConstF [Ord 1] (C := [Ord 0]) fin_first) true) ≈S
       fmap W (ConstF [Ord 1] (C := [Ord 0]) fin_first) (descended 0 true)
-  := nt_naturality descended (ConstF [Ord 1] (C := [Ord 0]) fin_first) true.
+  := nat_naturality descended (ConstF [Ord 1] (C := [Ord 0]) fin_first) true.
 
 (** A cover may also choose native-distinct indices for source elements
     which are equal only in their specified relation. *)

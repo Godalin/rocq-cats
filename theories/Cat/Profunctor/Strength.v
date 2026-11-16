@@ -121,7 +121,7 @@ Lemma prof_strength_natural {C : Cat} {MC : MonoidalCat C}
   : (pstrength[S; Z] ∘r dimap[P; f; g]) ≈f
       (dimap[P; Z ⊲ f; Z ⊲ g] ∘r pstrength[S; Z]).
 Proof.
-  exact (nt_naturality (prof_strengthN S Z)
+  exact (nat_naturality (prof_strengthN S Z)
     (X := (X,Y)) (Y := (X',Y')) (f,g)).
 Defined.
 

@@ -181,7 +181,7 @@ Context (KC : ∀ s, HasHornFillers X
 
 Lemma two_sphere_cylinder_map_id (x : TwoSphereS X b)
   : TwoSphereCylinderHomotopy X b
-      (two_sphere_cylinder_map_resp idN b KR KC KR KC x) x.
+      (two_sphere_cylinder_map_resp IdN b KR KC KR KC x) x.
 Proof.
   exact (@func_proper _ _ (two_sphere_cylinder_of_class_resp X b KR KC) _ _
     (two_sphere_class_map_id b x)).

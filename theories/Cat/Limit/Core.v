@@ -220,7 +220,7 @@ Qed.
 (** [limit_map] 与恒等的相容性。 *)
 
 Lemma limit_map_id {D : Fct J C}
-  : limit_map (idN (F := D)) ≈ id.
+  : limit_map (IdN (F := D)) ≈ id.
 Proof.
   unfold limit_map. rewrite <- (limit_η (@id (lim D))).
   apply limit_lift_proper. intros j. cbn. carw.

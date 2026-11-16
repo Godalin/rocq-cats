@@ -61,7 +61,7 @@ Proof.
   - split.
     + intros f. change (f ∘ id ≈ f). apply comp_id_r.
     + intros α Z h. change (α X id ∘ h ≈ α Z h).
-      pose proof (nt_naturality α (X := X) (Y := Z) h) as Hα.
+      pose proof (nat_naturality α (X := X) (Y := Z) h) as Hα.
       specialize (Hα id). simpl in Hα. rewrite comp_id_l in Hα.
       symmetry. exact Hα.
 Defined.

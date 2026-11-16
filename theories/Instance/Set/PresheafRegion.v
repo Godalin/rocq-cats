@@ -147,7 +147,7 @@ Program Definition RegionFactorN {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}
   :=
   {|nt X := subset_pair_resp (α X) (H X)
   |}.
-Next Obligation. intros x. exact (nt_naturality α f x). Defined.
+Next Obligation. intros x. exact (nat_naturality α f x). Defined.
 
 (** The lift has exactly the given underlying map. *)
 

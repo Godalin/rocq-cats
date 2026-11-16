@@ -31,7 +31,7 @@ Program Definition ArrowFreyd
   : FreydCat C K
   :=
   {|FreydF := A
-  ; hasCartesian := {|hasTerminal := HT; hasProduct := HP|}
+  ; hasCartCat := {|hasTerminal := HT; hasProduct := HP|}
   ; hasSymmetricPremonoidal := ArrowSymmetricPremonoidal A
   ; freyd_tensor_objects X Y := eq_refl
   ; freyd_unit_object := eq_refl
