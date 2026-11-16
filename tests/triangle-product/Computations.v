@@ -165,14 +165,14 @@ Proof. vm_compute. reflexivity. Defined.
 
 Definition actual_identity_factor
   := simplex_triangle_product_eval_factor
-      (idN : triangle_product ⇒ triangle_product)
+      (IdN : triangle_product ⇒ triangle_product)
       (lower (fst actual_input)) (lower (snd actual_input)).
 
 Definition actual_maps_determined
   := snd (simplex_triangle_product_map_eq_iff
-      (idN : triangle_product ⇒ triangle_product) idN)
+      (IdN : triangle_product ⇒ triangle_product) IdN)
       (λ i, reflexivity (simplex_triangle_product_eval
-        (idN : triangle_product ⇒ triangle_product) i)).
+        (IdN : triangle_product ⇒ triangle_product) i)).
 
 Fail Definition no_automatic_Kan
   : HasKanFillers triangle_product

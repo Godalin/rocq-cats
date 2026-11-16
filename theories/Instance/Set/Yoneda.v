@@ -38,7 +38,7 @@ Definition is_representable {C : Cat} (F : Fct C SetCat)
 
 Proposition represents_self {C : Cat} {X : @Ob C}
   : X ⦂ Rep Hom(X,-).
-Proof. exists idN. intros Y. exists id. cato. Defined.
+Proof. exists IdN. intros Y. exists id. cato. Defined.
 
 
 
@@ -124,7 +124,7 @@ Theorem yoneda_func_inv_func {X : @Ob C} (α : Hom(X,-) ⇒ F)
   : yoneda_func_inv (yoneda_func α) ≈N α.
 Proof.
   intros Y f.
-  exact (transitivity (symmetry (nt_naturality α f id))
+  exact (transitivity (symmetry (nat_naturality α f id))
     (@func_proper _ _ (α Y) (f ∘ id) f (comp_id_r f))).
 Defined.
 
@@ -173,7 +173,7 @@ Theorem yoneda_func_natural_object {C : Cat} {F : Fct C SetCat}
     (α : Hom(X,-) ⇒ F)
   : yoneda_func (α ∘Nv f ^*N) ≈S fmap F f (yoneda_func α).
 Proof.
-  pose proof (nt_naturality α f) as Hα.
+  pose proof (nat_naturality α f) as Hα.
   specialize (Hα id). simpl in Hα. rewrite comp_id_r in Hα.
   simpl. rewrite comp_id_l. exact Hα.
 Qed.
@@ -236,7 +236,7 @@ Proof.
   intros Y [f].
   transitivity (α Y {|lower := id ∘ f
                     |}).
-  - symmetry. exact (nt_naturality α f {|lower := id
+  - symmetry. exact (nat_naturality α f {|lower := id
                                        |}).
   - apply func_proper. exact {|lower := comp_id_l f
                              |}.
@@ -302,6 +302,6 @@ Proof.
                       |}).
     + apply func_proper. exact {|lower := symmetry (comp_id_l f)
                                |}.
-    + exact (nt_naturality α f {|lower := id
+    + exact (nat_naturality α f {|lower := id
                                |}).
 Qed.

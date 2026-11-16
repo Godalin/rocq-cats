@@ -29,7 +29,7 @@ Definition colimit_transport {J C : Cat} {D E : Fct J C}
     (α : D ⇒ E) (Hα : α ⦂ D ≅N E) {L : @Ob C}
     {κ : E ⇒∇ L} (Hκ : is_colimit κ)
   : is_colimit (κ ∘∇ α)
-  := limit_transport (α^opN) (nt_op_NatIso α Hα) Hκ.
+  := limit_transport (α^opN) (nat_op_iso α Hα) Hκ.
 
 (** Selected colimits transport contravariantly in an invertible diagram
     transformation, retaining the selected apex and mediator data. *)
@@ -40,5 +40,5 @@ Program Definition TransportedColimit {J C : Cat} {D E : Fct J C}
     (α : D ⇒ E) (Hα : α ⦂ D ≅N E) `{HC : !HasColimit C E}
   : HasColimit C D
   :=
-  {|hasOpLimit := TransportedLimit (α^opN) (nt_op_NatIso α Hα)
+  {|hasOpLimit := TransportedLimit (α^opN) (nat_op_iso α Hα)
   |}.

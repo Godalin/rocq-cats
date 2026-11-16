@@ -153,7 +153,7 @@ Definition vertex_diagram_comparison {J : Cat}
   : VtxDiagramEq F G.
 Proof.
   exists e. intros i j f. rewrite <- (H i), <- (H j).
-  apply nt_naturality.
+  apply nat_naturality.
 Defined.
 
 (** Labelled diagrams form a setoid. Objects, homs, and the two equality

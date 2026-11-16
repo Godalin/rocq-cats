@@ -55,7 +55,7 @@ Proof. intros α β H [X Y]. exact (H (X, Y)). Qed.
 (** 反转变元后恒等自然变换仍为恒等。 *)
 
 Lemma bifunctor_op_nt_id {C D : Cat} {F : Fct ((C^op) ×C C) D}
-  : bifunctor_op_nt (idN (F := F)) ≈N idN.
+  : bifunctor_op_nt (IdN (F := F)) ≈N IdN.
 Proof. intros [X Y]. reflexivity. Qed.
 
 (** Reversing variance reverses vertical composition. *)
@@ -75,4 +75,4 @@ Proof. intros [X Y]. reflexivity. Qed.
 Definition bifunctor_op_nt_NatIso {C D : Cat}
     {F G : Fct ((C^op) ×C C) D} (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : bifunctor_op_nt α ⦂ BifunctorOpF G ≅N BifunctorOpF F.
-Proof. intros [X Y]. exact (nt_op_NatIso α Hα (X, Y)). Defined.
+Proof. intros [X Y]. exact (nat_op_iso α Hα (X, Y)). Defined.

@@ -31,6 +31,6 @@ Lemma free_cone_edge {G : Graph} {C : Cat} {D : Fct (FreeCat G) C}
     {X : @Ob C} (κ : X ⇒Δ D) {x y} (e : Edge x y)
   : fmap D (path_edge e) ∘ κ x ≈ κ y.
 Proof.
-  pose proof (nt_naturality κ (path_edge e)) as H.
+  pose proof (nat_naturality κ (path_edge e)) as H.
   cbn in H. rewrite comp_id_r in H. symmetry. exact H.
 Qed.

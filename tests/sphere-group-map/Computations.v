@@ -258,16 +258,16 @@ Definition bool_product
 Definition bool_values (a b : bool)
   : bool * bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
-        (two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+        (two_sphere_class_map_resp IdN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
           (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
             bool_product (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
             (cocycle_two_sphere_resp (M := BoolS_Monoid) b))),
       (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
         (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
           bool_product
-          (two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+          (two_sphere_class_map_resp IdN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
             (cocycle_two_sphere_resp (M := BoolS_Monoid) a))
-          (two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+          (two_sphere_class_map_resp IdN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
             (cocycle_two_sphere_resp (M := BoolS_Monoid) b)))).
 
 Example actual_bool_products_compute
@@ -277,6 +277,6 @@ Example actual_bool_products_compute
 Proof. vm_compute. reflexivity. Defined.
 
 Definition actual_bool_map_product (a b : bool)
-  := two_sphere_class_map_mul idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+  := two_sphere_class_map_mul IdN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_product bool_product (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
       (cocycle_two_sphere_resp (M := BoolS_Monoid) b).

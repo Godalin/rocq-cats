@@ -217,7 +217,7 @@ Program Definition ProductUnitBoundaryN
       (@CompF SetCat SetCat SetCat (ConstF SetCat UnitS) (@IdF SetCat))
   :=
   {|nt X := @term SetCat SetCat_HasTerminal X
-  ; nt_naturality X Y f x := tt
+  ; nat_naturality X Y f x := tt
   |}.
 
 (** An inverse would send the same unit value to both zero and one. *)
@@ -466,7 +466,7 @@ Program Definition NonproductBaseBoundaryN
         (ConstF SetCat BoolS))
   :=
   {|nt X := @term SetCat SetCat_HasTerminal X
-  ; nt_naturality X Y f x := tt
+  ; nat_naturality X Y f x := tt
   |}.
 
 (** The actual compatible Gluing change is still a functor. *)

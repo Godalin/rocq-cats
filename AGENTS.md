@@ -53,7 +53,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 ## Structural hierarchies
 
 - Name complete mathematical structures directly, as in `Monoid`, `Group`,
-  `CartesianCat`, `MonoidalCat` and `CCC`. Keep `Has*` for the existence and
+  `CartCat`, `MonoidalCat` and `CCC`. Keep `Has*` for the existence and
   selection of the corresponding constructions on supplied data:
   `HasProduct C` provides a chosen product for every pair of objects.
   These interfaces retain Type-valued computational witnesses.
@@ -72,7 +72,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   and verify converging ancestor paths by conversion, including actual Rocq
   coercion behavior. Do not add duplicate selections to create a diamond.
 - If the parent view must also support instance search, register the same
-  projection with `#[export] Existing Instance CCCC`; `:>` alone does not
+  projection with `#[export] Existing Instance CCCToCartCat`; `:>` alone does not
   register an inherited instance. Supplementary chosen structures/properties
   use named `has*`/`is*` fields and `::`.
 - Tie dependent constructions to those same inherited choices. For example,
@@ -187,8 +187,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   for the distinct Hom-transposition operations. Use `Diag` for `Diagonal`,
   `Gen` for `Generator`/`Generators`, `Obj` for `Object`/`Objects`,
   and `Vtx` for `Vertex`, retaining kind suffixes such as `S` for setoids.
-  Maintain the
-  exact public rename map and pending families in
+  Maintain the exact public rename map and pending families in
   [the abbreviation guide](docs/Abbreviations.md),
   updating bilingual docs and clients with each batch. Keep module paths
   and descriptive helper names unless individually reviewed.
@@ -197,7 +196,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   constructions, `Cart` for reviewed cartesian constructions, and `Prof` /
   `prof_` for the reviewed profunctor family, including public operations,
   laws and fields. Retain `HasExponential` and the complete parameterized
-  `CartesianCat` hierarchy; module paths and existing notation stay unchanged.
+  `CartCat` hierarchy; module paths and existing notation stay unchanged.
+- Use the direct natural-transformation constructions `IdN`, `CompN`,
+  `InvN`, `WhiskerLN`, `WhiskerRN`, `HCompN` and `OpN`, with
+  `NatOfComponents` as the record constructor. Use `nat_*` for reviewed
+  laws and `NatPrism*` for the prism family; keep the component view `nt`.
+  Use `CartCat`, `CartCatToCat` and `CCCToCartCat`; its fixed-category
+  choice interface remains until a separately bounded bundle migration.
 - Use `Comm` for reviewed `Commutative` names and `Ext` / `ext` for
   reviewed `Extension` / `extension` names. Use `Of` rather than `From`
   in names for constructing one presentation from supplied data, as in

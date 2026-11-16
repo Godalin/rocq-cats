@@ -73,7 +73,7 @@ Context (f : B ⇒ N) (g : N ⇒ B).
 (** 生成关系包含每份柱同伦的两个方向，但无法将此往返与恒等映射等同。 *)
 
 Definition bool_cocycle_no_nerve_homotopy_retract
-  : ¬ (g ∘Nv f : @CocycleHomotopyMapS BoolS_Monoid B) ≈S idN.
+  : ¬ (g ∘Nv f : @CocycleHomotopyMapS BoolS_Monoid B) ≈S IdN.
 Proof.
   apply (cocycle_no_nerve_homotopy_retract T f g true).
   intros E. discriminate E.
@@ -84,7 +84,7 @@ Defined.
 (** 特别地，单个正向柱不能给出该收缩。 *)
 
 Definition bool_cocycle_no_nerve_forward_homotopy
-  : ¬ SimplicialHomotopy (g ∘Nv f) idN.
+  : ¬ SimplicialHomotopy (g ∘Nv f) IdN.
 Proof.
   intros H. apply bool_cocycle_no_nerve_homotopy_retract.
   exact (cocycle_homotopy_map_step H).
@@ -96,7 +96,7 @@ Defined.
 (** 反向柱也被排除：反转其保留链见证即可，无须构造区间反转。 *)
 
 Definition bool_cocycle_no_nerve_backward_homotopy
-  : ¬ SimplicialHomotopy idN (g ∘Nv f).
+  : ¬ SimplicialHomotopy IdN (g ∘Nv f).
 Proof.
   intros H. apply bool_cocycle_no_nerve_homotopy_retract.
   symmetry. exact (cocycle_homotopy_map_step H).

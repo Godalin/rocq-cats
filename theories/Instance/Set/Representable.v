@@ -258,7 +258,7 @@ Program Definition represents_op_covariant {X : @Ob C} (R : X ⦂ Repᵒᵖ P)
   : @represents (C^op) P X
   := (R.1 ∘Nv (hom_op_nat_iso X).1; _).
 Next Obligation.
-  exact (nt_comp_v_NatIso R.1 (hom_op_nat_iso X).1 R.2 (hom_op_nat_iso X).2).
+  exact (nat_comp_iso R.1 (hom_op_nat_iso X).1 R.2 (hom_op_nat_iso X).2).
 Defined.
 
 (** Extract the generic element from a contravariant representation. *)
@@ -396,7 +396,7 @@ Program Definition LiftedYonedaN {X : @Ob C} (x : F X)
       (P := F ∘F FromDoubleOpF) x Y
   |}.
 Next Obligation.
-  exact (nt_naturality (presheaf_yoneda_inv_resp (C := C^op)
+  exact (nat_naturality (presheaf_yoneda_inv_resp (C := C^op)
     (P := F ∘F FromDoubleOpF) x) f).
 Defined.
 
@@ -458,7 +458,7 @@ Proof.
                        |}).
   - apply func_proper. exact {|lower := symmetry (comp_id_r f)
                              |}.
-  - exact (nt_naturality R.1 f {|lower := id
+  - exact (nat_naturality R.1 f {|lower := id
                                |}).
 Defined.
 

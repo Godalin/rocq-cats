@@ -142,7 +142,7 @@ Proof.
   - intros X μ. apply indexed_product_hom_ext. intros a.
     unfold diagram_product_source, diagram_product_target.
     rewrite <- !comp_assoc, !indexed_product_β, comp_assoc, !indexed_product_β.
-    pose proof (nt_naturality μ (arrow_map a)) as Hμ.
+    pose proof (nat_naturality μ (arrow_map a)) as Hμ.
     cbn in Hμ. rewrite comp_id_r in Hμ.
     transitivity (μ (arrow_cod a)).
     + symmetry. exact Hμ.

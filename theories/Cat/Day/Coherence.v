@@ -94,7 +94,7 @@ Lemma day_triangle_insertion (X Y Z : @Ob C) (j : Hom I Y)
     fmap T (X := (X,Z)) (Y := (T (X,Y),Z))
       (day_right_arrow T R X j,id).
 Proof.
-  pose proof (nt_naturality (NatIso_inv A.1 A.2)
+  pose proof (nat_naturality (InvN A.1 A.2)
     (X := ((X,I),Z)) (Y := ((X,Y),Z)) ((id,j),id)) as Hn.
   change ((A.2 ((X,Y),Z)).1 ∘
     fmap T (X := (X,T (I,Z))) (Y := (X,T (Y,Z)))
@@ -211,9 +211,9 @@ Context (F G : Fct C (SetCat@{u p _ _ _ _ _}))
 (** 三角形两路在指定的自然相等下相同。 *)
 
 Lemma day_triangle
-  : (DayMapN T (idN (F := F)) (DayLeftUnitorN T L G) ∘Nv
+  : (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) ∘Nv
       DayAssociatorN T A F (DayUnitF I) G) ≈N
-    DayMapN T (DayRightUnitorN T R F) (idN (F := G)).
+    DayMapN T (DayRightUnitorN T R F) (IdN (F := G)).
 Proof.
   apply (day_triple_left_nat_ext T F (DayUnitF I) G).
   intros [[X Y] Z] [[x [j]] y].
@@ -234,12 +234,12 @@ Proof.
     - exact (@functor_fmap_proper C SetCat F _ _ _ _ (comp_id_l r) x). }
   transitivity (day_inject T F G (X,Z)
     (fmap T (X := (X,Z)) (Y := (T (X,Y),Z)) (r,id)) (x,y)).
-  - transitivity (DayMapN T (idN (F := F)) (DayLeftUnitorN T L G) (T (T (X,Y),Z))
+  - transitivity (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) (T (T (X,Y),Z))
       (fmap (DayF T F (DayF T (DayUnitF I) G)) ((A.2 ((X,Y),Z)).1)
         (DayTripleRightGenN T F (DayUnitF I) G ((X,Y),Z)
           ((x,{|lower := j|}),y)))).
     + exact (@func_proper _ _
-        (DayMapN T (idN (F := F)) (DayLeftUnitorN T L G) (T (T (X,Y),Z)))
+        (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) (T (T (X,Y),Z)))
         (DayAssociatorN T A F (DayUnitF I) G (T (T (X,Y),Z))
           (DayTripleLeftGenN T F (DayUnitF I) G ((X,Y),Z)
             ((x,{|lower := j|}),y)))
@@ -249,10 +249,10 @@ Proof.
         (day_associator_gen T A F (DayUnitF I) G ((X,Y),Z)
           ((x,{|lower := j|}),y))).
     + transitivity (fmap (DayF T F G) ((A.2 ((X,Y),Z)).1)
-        (DayMapN T (idN (F := F)) (DayLeftUnitorN T L G) (T (X,T (Y,Z)))
+        (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) (T (X,T (Y,Z)))
           (DayTripleRightGenN T F (DayUnitF I) G ((X,Y),Z)
             ((x,{|lower := j|}),y)))).
-      * exact (nt_naturality (DayMapN T (idN (F := F)) (DayLeftUnitorN T L G))
+      * exact (nat_naturality (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G))
           ((A.2 ((X,Y),Z)).1)
           (DayTripleRightGenN T F (DayUnitF I) G ((X,Y),Z)
             ((x,{|lower := j|}),y))).
@@ -264,7 +264,7 @@ Proof.
              (x,DayLeftUnitorN T L G (T (Y,Z))
                (day_inject T (DayUnitF I) G (Y,Z) id
                  ({|lower := j|},y)))).
-           ++ exact (day_map_inject T (idN (F := F)) (DayLeftUnitorN T L G)
+           ++ exact (day_map_inject T (IdN (F := F)) (DayLeftUnitorN T L G)
                 (X,T (Y,Z)) id x
                 (day_inject T (DayUnitF I) G (Y,Z) id ({|lower := j|},y))).
            ++ exact (@func_proper _ _ (day_inject T F G (X,T (Y,Z)) id)
@@ -288,7 +288,7 @@ Proof.
   - symmetry. transitivity (day_inject T F G (T (X,Y),Z) id
       (DayRightUnitorN T R F (T (X,Y))
         (day_inject T F (DayUnitF I) (X,Y) id (x,{|lower := j|})),y)).
-    + exact (day_map_inject T (DayRightUnitorN T R F) (idN (F := G))
+    + exact (day_map_inject T (DayRightUnitorN T R F) (IdN (F := G))
         (T (X,Y),Z) id
         (day_inject T F (DayUnitF I) (X,Y) id (x,{|lower := j|})) y).
     + transitivity (day_inject T F G (T (X,Y),Z) id (fmap F r x,y)).
@@ -308,9 +308,9 @@ Defined.
 
 Lemma day_triangle_at (Z : @Ob C)
     (v : DayF T (DayF T F (DayUnitF I)) G Z)
-  : DayMapN T (idN (F := F)) (DayLeftUnitorN T L G) Z
+  : DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) Z
       (DayAssociatorN T A F (DayUnitF I) G Z v) ≈S
-    DayMapN T (DayRightUnitorN T R F) (idN (F := G)) Z v.
+    DayMapN T (DayRightUnitorN T R F) (IdN (F := G)) Z v.
 Proof.
   pose proof (day_triangle Z v) as H.
   rewrite day_nat_comp_at in H. exact H.
@@ -422,7 +422,7 @@ Proof.
         + symmetry. exact (day_gen_post T F G (a,b) h (x,y)).
         + symmetry. exact (@functor_id C SetCat H c z0).
         + symmetry. exact (@functor_id C SetCat K d w0).
-      - exact (nt_naturality (DayTripleLeftGenN T (DayF T F G) H K)
+      - exact (nat_naturality (DayTripleLeftGenN T (DayF T F G) H K)
           (X := ((T (a,b),c),d)) (Y := ((U,c),d)) ((h,id),id)
           ((v0,z0),w0)). }
     change (α (T (T (U,c),d))
@@ -435,12 +435,12 @@ Proof.
     - transitivity (α (T (T (U,c),d))
         (fmap (DayF T (DayF T (DayF T F G) H) K) k s)).
       + exact (@func_proper _ _ (α (T (T (U,c),d))) _ _ J).
-      + exact (nt_naturality α k s).
+      + exact (nat_naturality α k s).
     - transitivity (fmap E k (β (T (T (T (a,b),c),d)) s)).
       + exact (@func_proper _ _ (fmap E k) _ _ (P a b c d x y z0 w0)).
       + transitivity (β (T (T (U,c),d))
           (fmap (DayF T (DayF T (DayF T F G) H) K) k s)).
-        * symmetry. exact (nt_naturality β k s).
+        * symmetry. exact (nat_naturality β k s).
         * exact (@func_proper _ _ (β (T (T (U,c),d))) _ _ (symmetry J)). }
   exact (Q (v,(z,w))).
 Defined.
@@ -632,11 +632,11 @@ Context (F G H K : Fct C (SetCat@{u p _ _ _ _ _}))
 Lemma day_pentagon
   : (DayAssociatorN T A F G (DayF T H K) ∘Nv
       DayAssociatorN T A (DayF T F G) H K) ≈N
-    (DayMapN T (HD := H4) (HD' := H2) (idN (F := F))
+    (DayMapN T (HD := H4) (HD' := H2) (IdN (F := F))
         (DayAssociatorN T A G H K) ∘Nv
       (DayAssociatorN T A F (DayF T G H) K ∘Nv
         DayMapN T (HD := H0) (HD' := H3)
-          (DayAssociatorN T A F G H) (idN (F := K)))).
+          (DayAssociatorN T A F G H) (IdN (F := K)))).
 Proof.
   apply (day_quad_left_nat_ext T F G H K).
   intros a b c d x y z w.
@@ -674,45 +674,45 @@ Proof.
     pose (u := day_inject T F (DayF T G H) (a,T (b,c)) i (x,vGH)).
     pose (v := DayGenN T (DayF T G H) K (T (b,c),d) (vGH,w)).
     assert (M : DayMapN T (HD := H0) (HD' := H3)
-          (DayAssociatorN T A F G H) (idN (F := K)) B v0 ≈S
+          (DayAssociatorN T A F G H) (IdN (F := K)) B v0 ≈S
       day_inject T (DayF T F (DayF T G H)) K
         (T (T (a,b),c),d) id (u,w)).
     { transitivity (DayMapN T (HD := H0) (HD' := H3)
-          (DayAssociatorN T A F G H) (idN (F := K)) B
+          (DayAssociatorN T A F G H) (IdN (F := K)) B
         (day_inject T (DayF T (DayF T F G) H) K
           (T (T (a,b),c),d) id (vL,w))).
       - apply (@func_proper _ _
           (DayMapN T (HD := H0) (HD' := H3)
-          (DayAssociatorN T A F G H) (idN (F := K)) B)).
+          (DayAssociatorN T A F G H) (IdN (F := K)) B)).
         reflexivity.
       - transitivity (day_inject T (DayF T F (DayF T G H)) K
           (T (T (a,b),c),d) id (DayAssociatorN T A F G H (T (T (a,b),c)) vL,w)).
         + exact (day_map_inject T (DayAssociatorN T A F G H)
-            (idN (F := K)) (T (T (a,b),c),d) id vL w).
+            (IdN (F := K)) (T (T (a,b),c),d) id vL w).
         + apply (@func_proper _ _
             (day_inject T (DayF T F (DayF T G H)) K (T (T (a,b),c),d) id)).
           split; [exact (day_associator_outer T A F G H id x y z) | reflexivity]. }
-    transitivity (DayMapN T (HD := H4) (HD' := H2) (idN (F := F))
+    transitivity (DayMapN T (HD := H4) (HD' := H2) (IdN (F := F))
         (DayAssociatorN T A G H K) B
       (DayAssociatorN T A F (DayF T G H) K B
         (day_inject T (DayF T F (DayF T G H)) K
           (T (T (a,b),c),d) id (u,w)))).
     + apply (@func_proper _ _
-        (DayMapN T (HD := H4) (HD' := H2) (idN (F := F))
+        (DayMapN T (HD := H4) (HD' := H2) (IdN (F := F))
         (DayAssociatorN T A G H K) B)).
       exact (@func_proper _ _ (DayAssociatorN T A F (DayF T G H) K B) _ _ M).
-    + transitivity (DayMapN T (HD := H4) (HD' := H2) (idN (F := F))
+    + transitivity (DayMapN T (HD := H4) (HD' := H2) (IdN (F := F))
         (DayAssociatorN T A G H K) B
         (day_inject T F (DayF T (DayF T G H) K)
           (a,T (T (b,c),d)) j (x,v))).
       * apply (@func_proper _ _
-          (DayMapN T (HD := H4) (HD' := H2) (idN (F := F))
+          (DayMapN T (HD := H4) (HD' := H2) (IdN (F := F))
         (DayAssociatorN T A G H K) B)).
         exact (day_associator_inject T A F (DayF T G H) K id i x vGH w).
       * transitivity (day_inject T F (DayF T G (DayF T H K))
           (a,T (T (b,c),d)) j
           (x,DayAssociatorN T A G H K (T (T (b,c),d)) v)).
-        -- exact (day_map_inject T (idN (F := F)) (DayAssociatorN T A G H K)
+        -- exact (day_map_inject T (IdN (F := F)) (DayAssociatorN T A G H K)
              (a,T (T (b,c),d)) j x v).
         -- transitivity (day_inject T F (DayF T G (DayF T H K))
              (a,T (T (b,c),d)) j
@@ -768,11 +768,11 @@ Lemma day_pentagon_at (Z : @Ob C)
     (v : DayF T (DayF T (DayF T F G) H) K Z)
   : DayAssociatorN T A F G (DayF T H K) Z
       (DayAssociatorN T A (DayF T F G) H K Z v) ≈S
-    DayMapN T (HD := H4) (HD' := H2) (idN (F := F))
+    DayMapN T (HD := H4) (HD' := H2) (IdN (F := F))
       (DayAssociatorN T A G H K) Z
       (DayAssociatorN T A F (DayF T G H) K Z
         (DayMapN T (HD := H0) (HD' := H3)
-          (DayAssociatorN T A F G H) (idN (F := K)) Z v)).
+          (DayAssociatorN T A F G H) (IdN (F := K)) Z v)).
 Proof.
   pose proof (day_pentagon Z v) as Hpath.
   rewrite !day_nat_comp_at in Hpath. exact Hpath.

@@ -134,7 +134,7 @@ Lemma ordinal_radial_natural {n : nat} {F G : Fct [Ord n] C}
   : α j ∘ ordinal_radial F i j ≈ ordinal_radial G i j ∘ α i.
 Proof.
   apply (star_transition_square _ _ _ _ _ _ (α fin_first));
-    apply nt_naturality.
+    apply nat_naturality.
 Defined.
 
 (** Radial transitions commute with ordinal substitution, even when the

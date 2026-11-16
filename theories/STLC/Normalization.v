@@ -422,7 +422,7 @@ Next Obligation. intros t. apply nf_rename. Defined.
 (** 正规嵌入后接正规化，是全部正规形上的恒等自然变换。 *)
 
 Definition normalize_embed_triangle (A : Ty B)
-  : (NormalizeN A ∘Nv NfEmbedN A) ≈N idN.
+  : (NormalizeN A ∘Nv NfEmbedN A) ≈N IdN.
 Proof. intros Γ v. apply nf_embed_nf. Defined.
 
 (** The opposite composite is the identity in beta/eta equality. *)
@@ -430,7 +430,7 @@ Proof. intros Γ v. apply nf_embed_nf. Defined.
 (** 反向复合在 βη 相等下是恒等变换。 *)
 
 Definition embed_normalize_triangle (A : Ty B)
-  : (NfEmbedN A ∘Nv NormalizeN A) ≈N idN.
+  : (NfEmbedN A ∘Nv NormalizeN A) ≈N IdN.
 Proof. intros Γ t. symmetry. apply nf_sound. Defined.
 
 (** The normal and equational term presheaves are naturally isomorphic.

@@ -243,14 +243,14 @@ Definition triangle_cylinder
   := SimplicialCylinderF (Δ[2]).
 
 Definition actual_values
-  := simplex_prism_eval (idN : triangle_cylinder ⇒ triangle_cylinder).
+  := simplex_prism_eval (IdN : triangle_cylinder ⇒ triangle_cylinder).
 
 Definition actual_first_equation
-  := simplex_prism_values_adjacent (idN : triangle_cylinder ⇒ triangle_cylinder)
+  := simplex_prism_values_adjacent (IdN : triangle_cylinder ⇒ triangle_cylinder)
       fin_first.
 
 Definition actual_second_equation
-  := simplex_prism_values_adjacent (idN : triangle_cylinder ⇒ triangle_cylinder)
+  := simplex_prism_values_adjacent (IdN : triangle_cylinder ⇒ triangle_cylinder)
       fin_first⁺.
 
 Definition actual_cylinder_outer_overlap

@@ -82,7 +82,7 @@ Program Definition PointwisePairN {F G H : Fct J C}
   {|nt i := ⟨α i, β i⟩
   |}.
 Next Obligation.
-  rewrite product_comp_r, product_comp_l, !nt_naturality. reflexivity.
+  rewrite product_comp_r, product_comp_l, !nat_naturality. reflexivity.
 Defined.
 
 (** The pointwise cone satisfies the full product universal property. *)

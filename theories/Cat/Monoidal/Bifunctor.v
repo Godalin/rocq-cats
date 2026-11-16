@@ -49,8 +49,8 @@ Program Definition BifunctorMonoidal
       ; premonoidal_assoc_central X Y Z := bifunctor_arrow_central T _
       ; premonoidal_unit_l_central X := bifunctor_arrow_central T _
       ; premonoidal_unit_r_central X := bifunctor_arrow_central T _
-      ; premonoidal_unit_l_natural X Y f := nt_naturality L.1 f
-      ; premonoidal_unit_r_natural X Y f := nt_naturality R.1 f
+      ; premonoidal_unit_l_natural X Y f := nat_naturality L.1 f
+      ; premonoidal_unit_r_natural X Y f := nat_naturality R.1 f
       ; premonoidal_pentagon := Hp
       ; premonoidal_triangle := Ht
       |}
@@ -58,7 +58,7 @@ Program Definition BifunctorMonoidal
       fst (bifunctor_arrow_central T f Y Y' g)
   |}.
 Next Obligation.
-  pose proof (nt_naturality A.1
+  pose proof (nat_naturality A.1
     (X := ((X, Y), Z)) (Y := ((X', Y), Z)) ((f, id), id)) as H.
   cbn in H. etransitivity; [exact H |].
   apply comp_proper; [| reflexivity].
@@ -66,11 +66,11 @@ Next Obligation.
     [reflexivity | exact (@functor_id _ _ T (Y, Z))].
 Defined.
 Next Obligation.
-  exact (nt_naturality A.1
+  exact (nat_naturality A.1
     (X := ((X, Y), Z)) (Y := ((X, Y'), Z)) ((id, g), id)).
 Defined.
 Next Obligation.
-  pose proof (nt_naturality A.1
+  pose proof (nat_naturality A.1
     (X := ((X, Y), Z)) (Y := ((X, Y), Z')) ((id, id), h)) as H.
   cbn in H. etransitivity; [| exact H].
   apply comp_proper; [reflexivity |].

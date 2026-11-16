@@ -211,7 +211,7 @@ Program Definition PreHomotopy {W X Y : @Ob C} {f g : Hom X Y}
 Next Obligation.
   change ((homotopy_map H ∘ fmap CylinderF a) ∘ CylinderEndpointN b W ≈
     if b then g ∘ a else f ∘ a).
-  rewrite comp_assoc, <- (nt_naturality (CylinderEndpointN b) a),
+  rewrite comp_assoc, <- (nat_naturality (CylinderEndpointN b) a),
     <- comp_assoc, homotopy_endpoint. destruct b; reflexivity.
 Defined.
 

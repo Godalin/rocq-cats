@@ -169,7 +169,7 @@ Proof. reflexivity. Qed.
 Example eta_naturality_interface (A : Ty B) (ρ : Ren Δ Γ) (n : Ne Γ A)
   : NeutralEtaN A Δ (fmap (NePsh A) ρ n) =
       fmap (NfPsh A) ρ (NeutralEtaN A Γ n).
-Proof. exact (nt_naturality (NeutralEtaN A) ρ n). Qed.
+Proof. exact (nat_naturality (NeutralEtaN A) ρ n). Qed.
 
 End Computations.
 

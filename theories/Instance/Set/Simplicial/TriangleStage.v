@@ -180,7 +180,7 @@ Definition triangle_horn_cell_image_iso
   : TriangleHornCellImageN ⦂
       Δ[S (simplex_triangle_horn_face_dim s)] ≅N RegionPsh TriangleHornCellRegion.
 Proof.
-  apply is_iso_NatIso. exists TriangleHornCellInverseN. split.
+  apply is_iso_nat_iso. exists TriangleHornCellInverseN. split.
   - intros n [h]. reflexivity.
   - intros n [[[a] [b]] [h [A B]]].
     split; refine {|lower := _|}; symmetry; assumption.
@@ -263,7 +263,7 @@ Definition triangle_horn_next_union_iso
   : TriangleHornNextUnionN ⦂ TriangleHornStage r (S (fin_rank s)) ≅N
       TriangleHornStepUnion.
 Proof.
-  apply is_iso_NatIso. exists TriangleHornUnionNextN.
+  apply is_iso_nat_iso. exists TriangleHornUnionNextN.
   split; intros n [x H]; change (x ≈S x); reflexivity.
 Defined.
 
@@ -324,7 +324,7 @@ End StageCell.
 Definition TriangleHornFinalN@{u p +} (r : Ordinal 2)
   : (TriangleHornAmbient : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       TriangleHornStage r 9
-  := RegionFactorN (TriangleHornRegion r 9) idN
+  := RegionFactorN (TriangleHornRegion r 9) IdN
       (λ n x, triangle_horn_stage_complete r (lower (fst x)) (lower (snd x))).
 
 (** Thus the final stage recovers the full actual product naturally,
@@ -337,7 +337,7 @@ Definition triangle_horn_final_iso@{u p +} (r : Ordinal 2)
       (TriangleHornStage r 9 : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       TriangleHornAmbient.
 Proof.
-  apply is_iso_NatIso. exists (TriangleHornFinalN r). split.
+  apply is_iso_nat_iso. exists (TriangleHornFinalN r). split.
   - intros n [x H]. change (x ≈S x). reflexivity.
   - intros n x. change (x ≈S x). reflexivity.
 Defined.

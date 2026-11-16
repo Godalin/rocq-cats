@@ -36,14 +36,14 @@ Lemma vertex_prism_square {x x' y y' : X} {i j : Ordinal 1}
     (p : x ≈S x') (q : y ≈S y')
     (f : (@Hom (VtxCat T)) x y)
     (g : (@Hom (VtxCat T)) x' y') (a : (@Hom [Ord 1]) i j)
-    (r : (NaturalPrismF α (x, i) : Y) ≈S
-      NaturalPrismF α (x', i))
-    (s : (NaturalPrismF α (y, j) : Y) ≈S
-      NaturalPrismF α (y', j))
+    (r : (NatPrismF α (x, i) : Y) ≈S
+      NatPrismF α (x', i))
+    (s : (NatPrismF α (y, j) : Y) ≈S
+      NatPrismF α (y', j))
     (H : T⟦q⟧Ob ∘ f ≈ g ∘ T⟦p⟧Ob)
   : U⟦s⟧Ob ∘
-      fmap (NaturalPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈
-      fmap (NaturalPrismF α) (X := (x', i)) (Y := (y', j)) (g, a) ∘
+      fmap (NatPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈
+      fmap (NatPrismF α) (X := (x', i)) (Y := (y', j)) (g, a) ∘
         U⟦r⟧Ob.
 Proof.
   assert (K : ∀ A : T →ᵥ U,
@@ -63,7 +63,7 @@ Proof.
     change (@HomEq (VtxCat U) (F x) (G y')
       (fmap G T⟦q⟧Ob ∘ (fmap G f ∘ α x))
       ((fmap G g ∘ α x') ∘ fmap F T⟦p⟧Ob)).
-    rewrite comp_assoc, (nt_naturality α T⟦p⟧Ob), <- !comp_assoc.
+    rewrite comp_assoc, (nat_naturality α T⟦p⟧Ob), <- !comp_assoc.
     apply (@comp_r (VtxCat U)).
     exact (K G).
   - rewrite <- (vertex_functor_transport_witness G p r),
@@ -123,15 +123,15 @@ Lemma vertex_prism_time_square {X Y : SetC} {C D : Cat}
     {i i' j j' : Ordinal 1} (e : i = i') (d : j = j')
     (f : (@Hom (VtxCat T)) x y)
     (a : (@Hom [Ord 1]) i j) (b : (@Hom [Ord 1]) i' j')
-    (r : (NaturalPrismF α (x, i) : Y) ≈S NaturalPrismF α (x, i'))
-    (s : (NaturalPrismF α (y, j) : Y) ≈S NaturalPrismF α (y, j'))
+    (r : (NatPrismF α (x, i) : Y) ≈S NatPrismF α (x, i'))
+    (s : (NatPrismF α (y, j) : Y) ≈S NatPrismF α (y, j'))
   : U⟦s⟧Ob ∘
-      fmap (NaturalPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈
-      fmap (NaturalPrismF α) (X := (x, i')) (Y := (y, j')) (f, b) ∘
+      fmap (NatPrismF α) (X := (x, i)) (Y := (y, j)) (f, a) ≈
+      fmap (NatPrismF α) (X := (x, i')) (Y := (y, j')) (f, b) ∘
         U⟦r⟧Ob.
 Proof.
   destruct e, d. rewrite !vertex_transport_id, comp_id_l, comp_id_r.
-  exact (@functor_fmap_proper _ _ (NaturalPrismF α) (x, i) (y, j)
+  exact (@functor_fmap_proper _ _ (NatPrismF α) (x, i) (y, j)
     (f, a) (f, b) (reflexivity f, tt)).
 Defined.
 
@@ -184,9 +184,9 @@ Lemma vertex_prism_id_square {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     (F : T →ᵥ U) {x y : X} {i j : Ordinal 1}
     (f : (@Hom (VtxCat T)) x y) (a : (@Hom [Ord 1]) i j)
-    (r : (NaturalPrismF (F := F) idN (x, i) : Y) ≈S F x)
-    (s : (NaturalPrismF (F := F) idN (y, j) : Y) ≈S F y)
-  : U⟦s⟧Ob ∘ fmap (NaturalPrismF (F := F) idN)
+    (r : (NatPrismF (F := F) IdN (x, i) : Y) ≈S F x)
+    (s : (NatPrismF (F := F) IdN (y, j) : Y) ≈S F y)
+  : U⟦s⟧Ob ∘ fmap (NatPrismF (F := F) IdN)
       (X := (x, i)) (Y := (y, j)) (f, a) ≈ fmap F f ∘ U⟦r⟧Ob.
 Proof.
   destruct i as [[] | [[] | []]], j as [[] | [[] | []]];
@@ -204,9 +204,9 @@ Lemma vertex_prism_id {X Y : SetC} {C D J : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     (F : T →ᵥ U) (P : Fct J (VtxCat T))
     (θ : Fct J [Ord 1])
-  : VtxDiagramEq U (PrismDiagramF (F := F) idN P θ) (F ∘F P).
+  : VtxDiagramEq U (PrismDiagramF (F := F) IdN P θ) (F ∘F P).
 Proof.
-  assert (d : ∀ i, (PrismDiagramF (F := F) idN P θ i : Y) ≈S F (P i)).
+  assert (d : ∀ i, (PrismDiagramF (F := F) IdN P θ i : Y) ≈S F (P i)).
   { intros i. cbn. destruct (θ i) as [[] | [[] | []]]; reflexivity. }
   exists d. intros i j a.
   exact (vertex_prism_id_square F (fmap P a) (fmap θ a) (d i) (d j)).

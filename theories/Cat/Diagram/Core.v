@@ -57,7 +57,7 @@ Lemma cone_naturality {J C : Cat} {D : Fct J C} {X}
     (κ : X ⇒Δ D) {i j : @Ob J} (f : Hom i j)
   : κ j ≈ fmap D f ∘ κ i.
 Proof.
-  pose proof (nt_naturality κ f) as H. cbn in H.
+  pose proof (nat_naturality κ f) as H. cbn in H.
   rewrite comp_id_r in H. exact H.
 Qed.
 
@@ -110,7 +110,7 @@ Program Definition MapCone {J C E : Cat} (F : Fct C E)
 Next Obligation.
   rewrite comp_id_r, <- (functor_comp C E F).
   apply functor_fmap_proper.
-  pose proof (nt_naturality κ f) as H. cbn in H.
+  pose proof (nat_naturality κ f) as H. cbn in H.
   rewrite comp_id_r in H. exact H.
 Qed.
 

@@ -367,7 +367,7 @@ Definition GZ
 
 Definition model_mapped
   : CZ →r CZ
-  := two_sphere_cylinder_map_resp (idN : Z ⇒ Z) b
+  := two_sphere_cylinder_map_resp (IdN : Z ⇒ Z) b
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺).
 
@@ -402,7 +402,7 @@ Proof. vm_compute. reflexivity. Defined.
 (** 像乘积方块是一份真实 cocycle 柱。 *)
 
 Definition cocycle_product_cylinder
-  := two_sphere_cylinder_map_mul (idN : Z ⇒ Z) b
+  := two_sphere_cylinder_map_mul (IdN : Z ⇒ Z) b
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       product_choice product_choice bool_cocycle_sphere bool_cocycle_sphere.
@@ -412,7 +412,7 @@ Definition cocycle_product_cylinder
 (** 其像逆方块也是真实柱。 *)
 
 Definition cocycle_inverse_cylinder
-  := two_sphere_cylinder_map_left_inverse (idN : Z ⇒ Z) b
+  := two_sphere_cylinder_map_left_inverse (IdN : Z ⇒ Z) b
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       left_choice product_choice left_choice right_choice bool_cocycle_sphere.

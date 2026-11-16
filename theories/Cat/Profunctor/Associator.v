@@ -511,7 +511,7 @@ Lemma profunctor_associator_inv_natural
   : ((j.1 ^-1N j.2) ∘Nv αR) ≈N (αL ∘Nv (i.1 ^-1N i.2)).
 Proof.
   exact (@iso_square_inv (FctCat ((C^op) ×C B) SetCat) _ _ _ _
-    (a; NatIso_is_iso a i.2) (a'; NatIso_is_iso a' j.2)
+    (a; nat_iso_is_iso a i.2) (a'; nat_iso_is_iso a' j.2)
     αL αR profunctor_associator_natural).
 Defined.
 

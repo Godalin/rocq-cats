@@ -135,7 +135,7 @@ Program Definition RestrictGenF (G : Graph) (C : Cat)
   ; F1 F H α := {|generator_component := α
                   |}
   |}.
-Next Obligation. exact (nt_naturality α (path_edge e)). Defined.
+Next Obligation. exact (nat_naturality α (path_edge e)). Defined.
 Next Obligation. intros α β E x. exact (E x). Defined.
 Next Obligation. intros x. reflexivity. Defined.
 Next Obligation. intros x. reflexivity. Defined.
@@ -245,7 +245,7 @@ Definition generator_adj_counit_iso (G : Graph) (C : Cat)
   : adj_counit (GenFreeAdj G C)
       ⦂ (ExtendGenF G C ∘F RestrictGenF G C) ≅N IdF.
 Proof.
-  intros F. apply NatIso_is_iso. intros x.
+  intros F. apply nat_iso_is_iso. intros x.
   exact ((free_extend_nat_iso F).2 x).
 Defined.
 

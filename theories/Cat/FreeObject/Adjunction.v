@@ -229,7 +229,7 @@ Next Obligation.
     (AdjFreeObj A) X (F Y)).
   change (fmap U (fmap F f) ∘ adj_unit A X ≈
     adj_unit A Y ∘ f).
-  symmetry. exact (nt_naturality (adj_unit A) f).
+  symmetry. exact (nat_naturality (adj_unit A) f).
 Defined.
 
 (** The rebuilt left adjoint is naturally isomorphic to the original one.

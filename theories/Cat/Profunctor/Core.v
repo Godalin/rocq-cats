@@ -202,7 +202,7 @@ Defined.
 Lemma prof_interchange {X X' : @Ob C} {Y Y' : @Ob D}
     (f : Hom X' X) (g : Hom Y Y')
   : (lmap[P; f] ∘r rmap[P; g]) ≈f (rmap[P; g] ∘r lmap[P; f]).
-Proof. exact (nt_naturality (ProfLmapN f) g). Defined.
+Proof. exact (nat_naturality (ProfLmapN f) g). Defined.
 
 (** A two-sided action first postprocesses, then preprocesses. *)
 
@@ -278,7 +278,7 @@ Definition prof_reindex_iso
     {P Q : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _})}
     (α : P ⇒ Q) (Hα : α ⦂ P ≅N Q)
   : ProfReindexN α ⦂ ProfReindex P ≅N ProfReindex Q
-  := nt_whisker_r_NatIso α (F^opF ×F G) Hα.
+  := nat_whisker_r_iso α (F^opF ×F G) Hα.
 
 (** Restrict the existing horizontal-composition functor at this precomposition.
     Its laws and specified equality come from that functor category. *)
@@ -318,4 +318,4 @@ Lemma prof_natural {C D : Cat} {P Q : Fct ((C^op) ×C D) SetCat}
     (α : P ⇒ Q) {X X' : @Ob C} {Y Y' : @Ob D}
     (f : Hom X' X) (g : Hom Y Y')
   : (α (X',Y') ∘r dimap[P; f; g]) ≈f (dimap[Q; f; g] ∘r α (X,Y)).
-Proof. exact (nt_naturality α (X := (X,Y)) (Y := (X',Y')) (f,g)). Defined.
+Proof. exact (nat_naturality α (X := (X,Y)) (Y := (X',Y')) (f,g)). Defined.

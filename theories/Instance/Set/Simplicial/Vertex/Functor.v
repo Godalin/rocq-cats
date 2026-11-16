@@ -107,7 +107,7 @@ Program Definition vertex_nerve_resp@{u p +} {X Y : SetC} {C D : Cat}
 Lemma vertex_nerve_id@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : (VtxNerveN (VtxIdF T) :
-      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N idN.
+      (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N IdN.
 Proof.
   intros n [P]. refine {|lower := _
                        |}.

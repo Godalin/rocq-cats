@@ -149,14 +149,14 @@ Next Obligation. intros z z' E. exact true. Defined.
 Next Obligation. intros z. exact false. Defined.
 
 Program Definition left_homotopy
-  : SimplicialHomotopy ((idN : W ⇒ W) ∘Nv FlipN) idN
+  : SimplicialHomotopy ((IdN : W ⇒ W) ∘Nv FlipN) IdN
   :=
   {|homotopy_map := MovingN
   |}.
 Next Obligation. intros n z. exact true. Defined.
 
 Program Definition right_homotopy
-  : SimplicialHomotopy (FlipN ∘Nv (idN : W ⇒ W)) idN
+  : SimplicialHomotopy (FlipN ∘Nv (IdN : W ⇒ W)) IdN
   :=
   {|homotopy_map := MovingN
   |}.
@@ -194,7 +194,7 @@ Definition forward
 
 Definition backward
   : Q true true false →r Q false false true
-  := two_sphere_cylinder_homotopy_inverse_resp FlipN idN false
+  := two_sphere_cylinder_homotopy_inverse_resp FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -207,7 +207,7 @@ Definition product_cylinder
   : TwoSphereCylinderHomotopy W false
       (backward (@mul _ (hasMagma (G true true false true)) z z))
       (@mul _ (hasMagma (G false false true false)) (backward z) (backward z))
-  := two_sphere_cylinder_homotopy_inverse_mul FlipN idN false
+  := two_sphere_cylinder_homotopy_inverse_mul FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -221,7 +221,7 @@ Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W false
       (backward (@inv _ (hasGroup (G true true false true)) z))
       (@inv _ (hasGroup (G false false true false)) (backward z))
-  := two_sphere_cylinder_homotopy_inverse_left_inverse FlipN idN false
+  := two_sphere_cylinder_homotopy_inverse_left_inverse FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -236,7 +236,7 @@ Definition unit_cylinder
   : TwoSphereCylinderHomotopy W false
       (backward (@mul_unit _ (hasMonoid (G true true false true))))
       (@mul_unit _ (hasMonoid (G false false true false)))
-  := two_sphere_cylinder_homotopy_inverse_unit FlipN idN false
+  := two_sphere_cylinder_homotopy_inverse_unit FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -247,14 +247,14 @@ Definition unit_cylinder
 
 Definition left_cylinder
   : TwoSphereCylinderHomotopy W false (backward (forward x)) x
-  := two_sphere_cylinder_homotopy_inverse_l FlipN idN false
+  := two_sphere_cylinder_homotopy_inverse_l FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false) x.
 
 Definition right_cylinder
   : TwoSphereCylinderHomotopy W true (forward (backward z)) z
-  := two_sphere_cylinder_homotopy_inverse_r FlipN idN false
+  := two_sphere_cylinder_homotopy_inverse_r FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -273,7 +273,7 @@ Definition mapped_input_cylinder
 (** 反映消费一份实际像柱，不使用右同伦。 *)
 
 Definition reflected_cylinder
-  := two_sphere_cylinder_homotopy_reflect FlipN idN false
+  := two_sphere_cylinder_homotopy_reflect FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -286,7 +286,7 @@ Definition reflected_cylinder
 (** 共同提升同构复用原类比较。 *)
 
 Definition comparison
-  := two_sphere_cylinder_homotopy_iso FlipN idN false
+  := two_sphere_cylinder_homotopy_iso FlipN IdN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -297,7 +297,7 @@ Definition comparison
 (** 读取非平凡基点校正及各原生不同的定律端点。 *)
 
 Example base_and_operations_compute
-  : ((idN : W ⇒ W) 0 (FlipN 0 false), false,
+  : ((IdN : W ⇒ W) 0 (FlipN 0 false), false,
      (backward (forward x)).1, x.1,
      (forward (backward z)).1, z.1,
      (backward (@mul _ (hasMagma (G true true false true)) z z)).1,
@@ -346,7 +346,7 @@ Definition backward_is_same_map (a : Q true true false)
 (** 校正逆在代表上也按定义就是原类逆，包括边界证明，不只是值。 *)
 
 Definition backward_is_old_class_map (a : Q true true false)
-  : backward a = two_sphere_class_homotopy_inverse_resp FlipN idN false
+  : backward a = two_sphere_class_homotopy_inverse_resp FlipN IdN false
       left_homotopy left_trajectory a
   := eq_refl.
 
@@ -499,10 +499,10 @@ Definition GZ
 
 Program Definition bool_identity_homotopy
   : SimplicialHomotopy
-      ((idN : BoolCocycleModel ⇒ BoolCocycleModel) ∘Nv idN) idN
+      ((IdN : BoolCocycleModel ⇒ BoolCocycleModel) ∘Nv IdN) IdN
   :=
   {|homotopy_map := homotopy_map
-      (SimplicialConstantHomotopy (idN : BoolCocycleModel ⇒ BoolCocycleModel))
+      (SimplicialConstantHomotopy (IdN : BoolCocycleModel ⇒ BoolCocycleModel))
   |}.
 Next Obligation.
   match goal with t : bool |- _ => destruct t end;
@@ -522,7 +522,7 @@ Proof. reflexivity. Defined.
 
 Definition model_backward
   : CZ →r CZ
-  := two_sphere_cylinder_homotopy_inverse_resp (idN : Z ⇒ Z) idN b
+  := two_sphere_cylinder_homotopy_inverse_resp (IdN : Z ⇒ Z) IdN b
       bool_identity_homotopy bool_identity_trajectory
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺).
@@ -558,14 +558,14 @@ Proof. vm_compute. reflexivity. Defined.
 (** 两项运算定律在真实 Kan 模型中产生实际柱。 *)
 
 Definition cocycle_product_cylinder
-  := two_sphere_cylinder_homotopy_inverse_mul (idN : Z ⇒ Z) idN b
+  := two_sphere_cylinder_homotopy_inverse_mul (IdN : Z ⇒ Z) IdN b
       bool_identity_homotopy bool_identity_trajectory
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       product_choice product_choice bool_cocycle_sphere bool_cocycle_sphere.
 
 Definition cocycle_inverse_cylinder
-  := two_sphere_cylinder_homotopy_inverse_left_inverse (idN : Z ⇒ Z) idN b
+  := two_sphere_cylinder_homotopy_inverse_left_inverse (IdN : Z ⇒ Z) IdN b
       bool_identity_homotopy bool_identity_trajectory
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
@@ -597,17 +597,17 @@ Defined.
 
 Definition forward_image_nonzero_by_reflection
   : ¬ TwoSphereCylinderHomotopy Z b
-      (two_sphere_cylinder_map_resp (idN : Z ⇒ Z) b
+      (two_sphere_cylinder_map_resp (IdN : Z ⇒ Z) b
         (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
         (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
         bool_cocycle_sphere)
-      (two_sphere_cylinder_map_resp (idN : Z ⇒ Z) b
+      (two_sphere_cylinder_map_resp (IdN : Z ⇒ Z) b
         (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
         (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
         (two_sphere_base Z b)).
 Proof.
   intros W.
-  pose proof (two_sphere_cylinder_homotopy_reflect idN idN b
+  pose proof (two_sphere_cylinder_homotopy_reflect IdN IdN b
     bool_identity_homotopy bool_identity_trajectory
     (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
     (cocycle_choices fin_first) (cocycle_choices fin_first⁺)

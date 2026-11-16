@@ -158,7 +158,7 @@ Proof.
   apply (that _ _ (cartesian_factor_unique (slice_reindex_square_cartesian f B)
     (slice_to_square h ∘Arr slice_reindex_square f A) id
     (transitivity (comp_id_r f) (symmetry (comp_id_l f))))).
-  split; [reflexivity | exact (nt_naturality (SliceReindexSquareN f) h)].
+  split; [reflexivity | exact (nat_naturality (SliceReindexSquareN f) h)].
 Qed.
 
 (** The existing unit and composition comparisons are the cartesian

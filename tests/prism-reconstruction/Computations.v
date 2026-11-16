@@ -44,11 +44,11 @@ Proof. intros H. exact (H false).1. Defined.
 (** 提取的边界保留两个不同的具体对象。 *)
 
 Example initial_boundary_computes
-  : π1F (NaturalPrismF DirectedN) fin_first true = false.
+  : π1F (NatPrismF DirectedN) fin_first true = false.
 Proof. reflexivity. Qed.
 
 Example final_boundary_computes
-  : π1F (NaturalPrismF DirectedN) (fin_next fin_first) false = true.
+  : π1F (NatPrismF DirectedN) (fin_next fin_first) false = true.
 Proof. reflexivity. Qed.
 
 (** Extraction returns the actual noninvertible witness. Native equality
@@ -58,7 +58,7 @@ Proof. reflexivity. Qed.
     的具体 Hom。 *)
 
 Example directed_time_edge_computes
-  : PrismTransformationN (NaturalPrismF DirectedN) false = tt.
+  : PrismTransformationN (NatPrismF DirectedN) false = tt.
 Proof. reflexivity. Qed.
 
 (** The inverse of reconstruction remains an explicitly stored identity. *)
@@ -66,6 +66,6 @@ Proof. reflexivity. Qed.
 (** 重建的逆仍为显式存储的恒等。 *)
 
 Example reconstruction_inverse_computes
-  : ((prism_reconstruction_iso (NaturalPrismF DirectedN)).2
+  : ((prism_reconstruction_iso (NatPrismF DirectedN)).2
       (false, fin_first)).1 = tt.
 Proof. reflexivity. Qed.

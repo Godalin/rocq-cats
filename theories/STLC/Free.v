@@ -89,12 +89,12 @@ Proof.
   apply (product_cone_ext (@functor_product (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B)
     (@isCartF _ _ F _ _ HF) X Y)).
-  - rewrite <- (nt_naturality α (@Cats.Cat.Product.Core.π1
+  - rewrite <- (nat_naturality α (@Cats.Cat.Product.Core.π1
       (TyCat@{b e l} B) (TyCat_HasProduct B) X Y)).
     rewrite <- comp_assoc, (fst (functor_product_inv_β F X Y)),
       cross_η, product_β1.
     apply comp_proper; [reflexivity |]. exact (type_interp_π1 I X Y).
-  - rewrite <- (nt_naturality α (@Cats.Cat.Product.Core.π2
+  - rewrite <- (nat_naturality α (@Cats.Cat.Product.Core.π2
       (TyCat@{b e l} B) (TyCat_HasProduct B) X Y)).
     rewrite <- comp_assoc, (snd (functor_product_inv_β F X Y)),
       cross_η, product_β2.
@@ -112,7 +112,7 @@ Lemma type_natural_eval (α : TypeInterpretF I ⇒ F) (A U : Ty B)
       (α (ty_arr A U) × α A) ≈ α U ∘ eval.
 Proof.
   rewrite comp_assoc, <- type_natural_product.
-  rewrite <- (nt_naturality α (@Cats.Cat.Exponential.Core.eval
+  rewrite <- (nat_naturality α (@Cats.Cat.Exponential.Core.eval
     (TyCat@{b e l} B) (TyCat_HasProduct B) (TyCat_HasExponential B) A U)).
   apply comp_proper; [reflexivity |]. exact (type_interp_eval I A U).
 Qed.

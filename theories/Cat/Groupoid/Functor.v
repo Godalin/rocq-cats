@@ -77,7 +77,7 @@ Program Definition FctCat_IsGpd (C D : Cat) `{HD : !IsGpd D}
   : FctCat C D ⦂ Gpd
   :=
   {|gpd_iso F G α :=
-      NatIso_is_iso α (λ X, gpd_iso (α X))
+      nat_iso_is_iso α (λ X, gpd_iso (α X))
   |}.
 
 (** A category which is a retract of a groupoid up to natural isomorphism
@@ -98,7 +98,7 @@ Next Obligation.
   pose (L := is_iso_comp (iso_symm (α.1 X; α.2 X)).2 K).
   refine (is_iso_equiv _ L).
   change ((α.1 Y ∘ fmap G (fmap F f)) ∘ (α.2 X).1 ≈ f).
-  rewrite (nt_naturality α.1 f).
+  rewrite (nat_naturality α.1 f).
   cbn. rewrite comp_assoc, (snd (α.2 X).2), comp_id_r. reflexivity.
 Defined.
 

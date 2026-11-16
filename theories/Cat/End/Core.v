@@ -18,7 +18,8 @@ From Cats Require Import
 (** end 是使每个楔都唯一分解的楔。量词与唯一性见证均为 Type 值；存在性是
     假设，并非全局完备性断言。 *)
 
-Definition is_end {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
+Definition is_end {C D : Cat}
+    {F : Fct ((C^op) ×C C) D} {E}
     (κ : Wedge F E)
   := ∀ W (μ : Wedge F W),
     ∃ h : Hom W E, is_unique (λ h, κ ∘Wedge h ≈W μ) h.
@@ -236,7 +237,7 @@ Qed.
 
 Lemma end_map_id {C D : Cat} {F : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F}
-  : end_map (idN (F := F)) ≈ id.
+  : end_map (IdN (F := F)) ≈ id.
 Proof. apply end_hom_ext. intros X. rewrite end_map_β. cbn. carw. Qed.
 
 (** Vertical composition induces composition of end maps. *)
@@ -265,10 +266,10 @@ Definition end_map_is_iso {C D : Cat} {F G : Fct ((C^op) ×C C) D}
 Proof.
   exists (end_map (α^-1N Hα)).
   split; unfold is_linv_of, is_rinv_of; rewrite <- end_map_comp.
-  - transitivity (end_map (idN (F := F))).
+  - transitivity (end_map (IdN (F := F))).
     + apply end_map_proper. intros X. exact (fst (Hα X).2).
     + apply end_map_id.
-  - transitivity (end_map (idN (F := G))).
+  - transitivity (end_map (IdN (F := G))).
     + apply end_map_proper. intros X. exact (snd (Hα X).2).
     + apply end_map_id.
 Defined.

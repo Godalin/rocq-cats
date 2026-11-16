@@ -125,7 +125,7 @@ Definition IndexedCoproductOpProduct {C : Cat} {I : Type}
       ((discrete_functor_nat_iso ((DiscreteF D)^opF ∘F OpDiscreteF I)).1
         ^-1N (discrete_functor_nat_iso
           ((DiscreteF D)^opF ∘F OpDiscreteF I)).2)
-      (NatIso_inv_NatIso _ (discrete_functor_nat_iso
+      (nat_inv_iso _ (discrete_functor_nat_iso
         ((DiscreteF D)^opF ∘F OpDiscreteF I)).2)
       (@RestrictedLimit (DiscreteCat I) ((DiscreteCat I)^op) (C^op)
         (OpDiscreteF I) (op_discrete_full I)

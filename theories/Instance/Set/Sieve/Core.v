@@ -222,11 +222,11 @@ Proof.
     + apply func_proper. exact {|lower := E
                                |}.
     + transitivity (fmap P h (α (D i) a)).
-      * exact (nt_naturality α h a).
+      * exact (nat_naturality α h a).
       * transitivity (fmap P h (β (D i) a)).
         -- apply func_proper. exact (H i).
         -- transitivity (β X (fmap (SievePsh (GeneratedSieve D g)) h a)).
-           ++ symmetry. exact (nt_naturality β h a).
+           ++ symmetry. exact (nat_naturality β h a).
            ++ apply func_proper. exact {|lower := symmetry E
                                        |}.
 Defined.

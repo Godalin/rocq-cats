@@ -100,7 +100,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 
 Lemma applicative_pure_natural {X Y : @Ob C} (f : Hom X Y)
   : pure[A] Y ∘ f ≈ fmap A f ∘ pure[A] X.
-Proof. exact (nt_naturality (pure[A]) f). Qed.
+Proof. exact (nat_naturality (pure[A]) f). Qed.
 
 (** Lifting an operation over two pure inputs preserves its result. *)
 

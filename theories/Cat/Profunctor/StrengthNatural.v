@@ -85,7 +85,7 @@ Defined.
 Lemma prof_strength_hom_id
     {P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})}
     (SP : HasProfStrength MC P)
-  : is_prof_strength_hom SP SP idN.
+  : is_prof_strength_hom SP SP IdN.
 Proof. intros Z X Y v. reflexivity. Defined.
 
 (** The two supplied context squares compose pointwise; the underlying
@@ -178,7 +178,7 @@ Definition StrongProfHomS (P Q : StrongProf MC)
 
 Definition strong_prof_id (P : StrongProf MC)
   : StrongProfHomS P P
-  := (idN; prof_strength_hom_id (hasProfStrength P)).
+  := (IdN; prof_strength_hom_id (hasProfStrength P)).
 
 (** Lift the original vertical composition, with its two preservation proofs. *)
 

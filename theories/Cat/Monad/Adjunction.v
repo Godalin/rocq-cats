@@ -33,7 +33,7 @@ Program Definition AdjMonadMul
   {|nt X := (U ∘Nl (adj_counit A ∘Nr F)) X
   |}.
 Next Obligation.
-  exact (nt_naturality (U ∘Nl (adj_counit A ∘Nr F)) f).
+  exact (nat_naturality (U ∘Nl (adj_counit A ∘Nr F)) f).
 Defined.
 
 (** Every chosen ordinary adjunction supplies an actual monad. The first
@@ -60,7 +60,7 @@ Next Obligation.
     fmap U (adj_counit A (F X)) ∘
       fmap U (fmap F (fmap U (adj_counit A (F X))))).
   rewrite <- !functor_comp. apply functor_fmap_proper.
-  symmetry. exact (nt_naturality (adj_counit A)
+  symmetry. exact (nat_naturality (adj_counit A)
     (adj_counit A (F X))).
 Defined.
 

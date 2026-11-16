@@ -168,7 +168,7 @@ Lemma cocycle_sieve_value_restrict {m k : nat}
 Proof.
   transitivity (b k (fmap (SievePsh R) θ {|lower := (f; H)
                                         |})).
-  - symmetry. apply (nt_naturality b θ).
+  - symmetry. apply (nat_naturality b θ).
   - apply func_proper. exact {|lower := E
                              |}.
 Defined.

@@ -119,41 +119,41 @@ Definition region_union_compatible (a : RegionPsh R ⇒ P) (b : RegionPsh S ⇒ 
 Proof.
   intros X [[Y x] | [Y x]] [[Z y] | [Z y]] f g E.
   - transitivity (a X (fmap (RegionPsh R) f x)).
-    + symmetry. exact (nt_naturality a f x).
+    + symmetry. exact (nat_naturality a f x).
     + transitivity (a X (fmap (RegionPsh R) g y)).
       * apply func_proper. exact E.
-      * exact (nt_naturality a g y).
+      * exact (nat_naturality a g y).
   - pose (K := snd (region_member_proper S _ _ E)
       (region_precomp S g y.1 y.2)).
     pose (z := (fmap Q f x.1; (region_precomp R f x.1 x.2, K))
       : RegionPsh (RegionIntersection R S) X).
     transitivity (a X (fmap (RegionPsh R) f x)).
-    + symmetry. exact (nt_naturality a f x).
+    + symmetry. exact (nat_naturality a f x).
     + transitivity (a X (RegionInterLeftN R S X z)).
       * apply func_proper. reflexivity.
       * transitivity (b X (RegionInterRightN R S X z)).
         -- exact (H X z).
         -- transitivity (b X (fmap (RegionPsh S) g y)).
            ++ apply func_proper. exact E.
-           ++ exact (nt_naturality b g y).
+           ++ exact (nat_naturality b g y).
   - pose (K := snd (region_member_proper R _ _ E)
       (region_precomp R g y.1 y.2)).
     pose (z := (fmap Q f x.1; (K, region_precomp S f x.1 x.2))
       : RegionPsh (RegionIntersection R S) X).
     transitivity (b X (fmap (RegionPsh S) f x)).
-    + symmetry. exact (nt_naturality b f x).
+    + symmetry. exact (nat_naturality b f x).
     + transitivity (b X (RegionInterRightN R S X z)).
       * apply func_proper. reflexivity.
       * transitivity (a X (RegionInterLeftN R S X z)).
         -- symmetry. exact (H X z).
         -- transitivity (a X (fmap (RegionPsh R) g y)).
            ++ apply func_proper. exact E.
-           ++ exact (nt_naturality a g y).
+           ++ exact (nat_naturality a g y).
   - transitivity (b X (fmap (RegionPsh S) f x)).
-    + symmetry. exact (nt_naturality b f x).
+    + symmetry. exact (nat_naturality b f x).
     + transitivity (b X (fmap (RegionPsh S) g y)).
       * apply func_proper. exact E.
-      * exact (nt_naturality b g y).
+      * exact (nat_naturality b g y).
 Defined.
 
 (** Reuse descent for the actual cover and overlap compatibility. *)

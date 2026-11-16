@@ -76,8 +76,8 @@ Definition low_value_constant
   := SimplicialConstantHomotopy f.
 
 Definition low_value_precomposition
-  : (f ∘Nv idN) ∼Δ (g ∘Nv idN)
-  := SimplicialPreHomotopy H idN.
+  : (f ∘Nv IdN) ∼Δ (g ∘Nv IdN)
+  := SimplicialPreHomotopy H IdN.
 
 Definition low_value_postcomposition
   : (a ∘Nv f) ∼Δ (a ∘Nv g)

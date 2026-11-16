@@ -238,10 +238,10 @@ Qed.
 
 Lemma coend_map_id {C D : Cat} {F : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F}
-  : coend_map (idN (F := F)) ≈ id.
+  : coend_map (IdN (F := F)) ≈ id.
 Proof.
   transitivity (@end_map (C^op) (D^op)
-    (BifunctorOpF F) (BifunctorOpF F) _ _ idN).
+    (BifunctorOpF F) (BifunctorOpF F) _ _ IdN).
   - apply (@end_map_proper (C^op) (D^op)). apply bifunctor_op_nt_id.
   - apply (@end_map_id (C^op) (D^op)).
 Qed.

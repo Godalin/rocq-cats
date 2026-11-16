@@ -59,7 +59,7 @@ Definition MonadHomS (M N : Monad C)
 Definition monad_hom_id (M : Monad C)
   : MonadHomS M M.
 Proof.
-  exists idN. split; intros X.
+  exists IdN. split; intros X.
   - exact (comp_id_l (η[M] X)).
   - cbn. rewrite functor_id, !comp_id_l, !comp_id_r. reflexivity.
 Defined.
@@ -79,7 +79,7 @@ Proof.
     rewrite comp_assoc, (Hαu X). exact (Hβu X).
   - change ((β X ∘ α X) ∘ μ[M] X ≈
       μ[P] X ∘ ((β ∘Nv α) ∘Nh (β ∘Nv α)) X).
-    rewrite (nt_comp_h_interchange β α β α X).
+    rewrite (nat_hcomp_interchange β α β α X).
     change ((β X ∘ α X) ∘ μ[M] X ≈
       μ[P] X ∘ ((β ∘Nh β) X ∘ (α ∘Nh α) X)).
     transitivity (β X ∘ (μ[N] X ∘ (α ∘Nh α) X)).

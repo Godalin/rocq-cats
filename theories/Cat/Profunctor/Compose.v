@@ -81,7 +81,7 @@ Defined.
 (** 恒等改变就是原单侧恒等映射。 *)
 
 Lemma prof_comp_boundary_id (X : @Ob C) (Z : @Ob E)
-  : ProfCompBoundaryN (@id X) (@id Z) ≈N idN.
+  : ProfCompBoundaryN (@id X) (@id Z) ≈N IdN.
 Proof.
   intros [A B] [x y]. split.
   - exact (prof_lmap_id P X B x).
@@ -154,7 +154,7 @@ Next Obligation.
   exact (@prof_comp_boundary_proper C D E Q P _ _ _ _ f f' H g g' K).
 Defined.
 Next Obligation.
-  transitivity (coend_map (idN
+  transitivity (coend_map (IdN
     (F := ProfCompKernel Q P (fst X) (snd X)))).
   - apply (@coend_map_proper D SetCat). apply prof_comp_boundary_id.
   - apply (@coend_map_id D SetCat).

@@ -17,8 +17,9 @@ From Cats Require Import Cat.Functor.Core.
     对象像。自然性使各分量相容，组成函子之间的同一个变换。分量无须可逆，
     其两端也无须是相等的对象。 *)
 
-Class Nat {C D : Cat} (F G : Fct C D)
-  := mkNat
+Record Nat {C D : Cat} (F G : Fct C D)
+  := NatOfComponents
+
   (** [nt X] is the component from [F X] to [G X]. The [:>] coercion lets
       a transformation [α] act as a component family, written [α X]. *)
 
@@ -27,24 +28,24 @@ Class Nat {C D : Cat} (F G : Fct C D)
 
   { nt (X : @Ob C) :> (@Hom D) (F X) (G X)
 
-  (** [nt_naturality] requires [α Y ∘ fmap F f ≈ fmap G f ∘ α X].
+  (** [nat_naturality] requires [α Y ∘ fmap F f ≈ fmap G f ∘ α X].
       Both sides go from [F X] to [G Y]: one first follows [F] along [f]
       and then changes to [G]; the other first changes to [G] and then
       follows [G] along [f]. The paths agree in [D]'s hom equality. *)
 
-  (** [nt_naturality] 要求 [α Y ∘ fmap F f ≈ fmap G f ∘ α X]。
+  (** [nat_naturality] 要求 [α Y ∘ fmap F f ≈ fmap G f ∘ α X]。
       两侧都是从 [F X] 到 [G Y] 的箭头：一条先沿 [F] 映射的 [f] 前进，
       再切换到 [G]；另一条先切换到 [G]，再沿 [G] 映射的 [f] 前进。
       两条路径在 [D] 的 Hom 相等下相等。 *)
 
-  ; nt_naturality
+  ; nat_naturality
     : ∀ X Y : @Ob C, ∀ f : Hom X Y,
       nt Y ∘ fmap F f ≈ fmap G f ∘ nt X
   }.
 
-Arguments mkNat {_ _ _ _} _ _.
+Arguments NatOfComponents {_ _ _ _} _ _.
 Arguments nt {_ _ _ _} _ _.
-Arguments nt_naturality {_ _ _ _} _ {_ _} _.
+Arguments nat_naturality {_ _ _ _} _ {_ _} _.
 
 Notation "F ⇒ G" := (Nat F G)
   (at level 50, no associativity) : type_scope.
@@ -79,7 +80,7 @@ Next Obligation. repeat intro. transitivity (y X1); auto. Qed.
 
 (** 给定自然变换的每个分量都可逆。 *)
 
-Definition is_NatIso_of {C D : Cat} (F G : Fct C D)
+Definition is_nat_iso {C D : Cat} (F G : Fct C D)
     (α : F ⇒ G)
   : Type
   := ∀ X, is_iso (α X).
@@ -97,9 +98,9 @@ Definition is_NatIso_of {C D : Cat} (F G : Fct C D)
     不要求对象映射或定律字段相等。 *)
 
 Definition NatIso {C D : Cat} (F G : Fct C D)
-  := ∃ α : F ⇒ G, is_NatIso_of F G α.
+  := ∃ α : F ⇒ G, is_nat_iso F G α.
 
-Notation "α '⦂' F '≅N' G" := (is_NatIso_of F G α)
+Notation "α '⦂' F '≅N' G" := (is_nat_iso F G α)
   (at level 50, no associativity,
     F at level 49, G at level 49) : cat_scope.
 
@@ -111,8 +112,8 @@ Infix "≅N" := NatIso
 
 (** 逐分量取逆，自然性由原变换导出。 *)
 
-Program Definition NatIso_inv {C D : Cat} {F G : Fct C D}
-    (α : F ⇒ G) (Niso : is_NatIso_of F G α)
+Program Definition InvN {C D : Cat} {F G : Fct C D}
+    (α : F ⇒ G) (Niso : is_nat_iso F G α)
   : G ⇒ F
   :=
   {|nt := λ X, (Niso X).1
@@ -122,17 +123,17 @@ Next Obligation.
   simpl in Hid.
   rewrite <- comp_id_r. cacr.
   rewrite <- (snd (Hid X)).
-  cacl (fmap G f). rewrite <- nt_naturality.
+  cacl (fmap G f). rewrite <- nat_naturality.
   cacl. cacl. rewrite (fst (Hid Y)). carw.
 Qed.
 
-Notation "α '^-1N'" := (NatIso_inv α).
+Notation "α '^-1N'" := (InvN α).
 
 (** The inverse natural transformation also has invertible components. *)
 
 (** 逆自然变换也具有可逆分量。 *)
 
-Proposition NatIso_inv_NatIso {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
+Proposition nat_inv_iso {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
     (Niso : α ⦂ F ≅N G)
   : (α ^-1N Niso) ⦂ G ≅N F.
 Proof. intro X. exists (α X). apply is_inv_of_comm.
@@ -143,10 +144,11 @@ Defined.
 
 (** 恒等自然变换。 *)
 
-Program Instance nt_id {C D : Cat} {F : Fct C D}
+Program Definition IdN {C D : Cat} {F : Fct C D}
   : F ⇒ F
   :=
-  { nt _ := id }.
+  {|nt _ := id
+  |}.
 Next Obligation.
   rewrite comp_id_l.
   rewrite comp_id_r.
@@ -162,23 +164,22 @@ Qed.
     [α X ∘ β X]。依次使用两者的自然性即可证明复合的自然性。这称为垂直复合，
     记为 [α ∘Nv β]；整个过程保持源范畴和目标范畴不变。 *)
 
-Program Instance nt_comp_v {C D : Cat} {F G H : Fct C D}
+Program Definition CompN {C D : Cat} {F G H : Fct C D}
     (α : G ⇒ H) (β : F ⇒ G)
   : F ⇒ H
   :=
-  { nt X := (α X) ∘ (β X) }.
+  {|nt X := (α X) ∘ (β X)
+  |}.
 Next Obligation.
   rewrite comp_assoc.
-  rewrite (nt_naturality β f).
+  rewrite (nat_naturality β f).
   rewrite <- (comp_assoc) at 1.
-  rewrite (nt_naturality α f).
+  rewrite (nat_naturality α f).
   rewrite comp_assoc.
   reflexivity.
 Qed.
 
-Notation idN := nt_id.
-
-Infix "∘Nv" := nt_comp_v
+Infix "∘Nv" := CompN
   (at level 51, right associativity).
 
 
@@ -221,13 +222,13 @@ Program Canonical FctCat (C D : Cat)
 
   (** 恒等自然变换在每个对象处的分量都是恒等箭头。 *)
 
-  ; id _ := idN
+  ; id _ := IdN
 
   (** Composition is vertical composition, performed at each object. *)
 
   (** 复合是垂直复合，在每个对象处逐分量进行。 *)
 
-  ; comp _ _ _ := nt_comp_v
+  ; comp _ _ _ := CompN
   |}.
 Next Obligation.
   intros a a' Ha b b' Hb O.
@@ -243,8 +244,8 @@ Qed.
 
 (** 垂直复合保持自然变换的相等。 *)
 
-Global Instance nt_comp_v_proper {C D : Cat} {F G H : Fct C D}
-  : Proper (NatEq ==> NatEq ==> NatEq) (@nt_comp_v C D F G H).
+Global Instance nat_comp_proper {C D : Cat} {F G H : Fct C D}
+  : Proper (NatEq ==> NatEq ==> NatEq) (@CompN C D F G H).
 Proof.
   intros α α' Eα β β' Eβ X.
   exact (comp_proper (α X) (α' X) (Eα X) (β X) (β' X) (Eβ X)).
@@ -267,7 +268,7 @@ Context {C D : Cat} {F G : Fct C D}.
 
 (** 将函子范畴同构与逐分量自然同构对应。 *)
 
-Theorem iso_NatIso
+Theorem fct_iso_iff_nat_iso
   : F ≅[FctCat C D] G ↔ F ≅N G.
 Proof. split.
   - intros (a & b & H1 & H2); simpl in *.
@@ -282,7 +283,7 @@ End FctCat.
 
 (** 将自然同构视为函子范畴中的可逆态射。 *)
 
-Definition NatIso_is_iso {C D : Cat} {F G : Fct C D}
+Definition nat_iso_is_iso {C D : Cat} {F G : Fct C D}
     (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : @is_iso (FctCat C D) F G α.
 Proof.
@@ -297,7 +298,7 @@ Defined.
 
 (** 函子范畴中的逆直接给出逐分量的逆。 *)
 
-Definition is_iso_NatIso {C D : Cat} {F G : Fct C D}
+Definition is_iso_nat_iso {C D : Cat} {F G : Fct C D}
     (α : F ⇒ G) (Hα : @is_iso (FctCat C D) F G α)
   : α ⦂ F ≅N G.
 Proof.
@@ -315,15 +316,15 @@ Defined.
 
     比较保留自然变换及各分量的逆，不要求对象或函子定律字段原生相等。 *)
 
-Definition nt_id_NatIso {C D : Cat} (F : Fct C D)
-  : idN ⦂ F ≅N F.
+Definition nat_id_iso {C D : Cat} (F : Fct C D)
+  : IdN ⦂ F ≅N F.
 Proof. intros X. exists id. split; cbn; apply comp_id_l. Defined.
 
 (** Vertical composition preserves invertibility of natural transformations. *)
 
 (** 垂直复合保持自然变换的可逆性。 *)
 
-Definition nt_comp_v_NatIso {C D : Cat} {F G H : Fct C D}
+Definition nat_comp_iso {C D : Cat} {F G H : Fct C D}
     (β : G ⇒ H) (α : F ⇒ G) (Hβ : β ⦂ G ≅N H) (Hα : α ⦂ F ≅N G)
   : (β ∘Nv α) ⦂ F ≅N H.
 Proof.
@@ -342,11 +343,11 @@ Global Instance NatIso_Equivalence {C D : Cat}
   : Equivalence (@NatIso C D).
 Proof.
   split.
-  - intros F. exists idN. apply nt_id_NatIso.
+  - intros F. exists IdN. apply nat_id_iso.
   - intros F G [α Hα]. exists (α ^-1N Hα).
-    apply NatIso_inv_NatIso.
+    apply nat_inv_iso.
   - intros F G H [α Hα] [β Hβ]. exists (β ∘Nv α).
-    exact (nt_comp_v_NatIso β α Hβ Hα).
+    exact (nat_comp_iso β α Hβ Hα).
 Defined.
 
 (** Whiskering applies a functor to a natural transformation, or evaluates
@@ -354,7 +355,7 @@ Defined.
 
 (** 须化将函子作用于自然变换，或将自然变换沿另一个函子求值。 *)
 
-Program Definition nt_whisker_l {C D E : Cat} (G : Fct D E)
+Program Definition WhiskerLN {C D E : Cat} (G : Fct D E)
     {F F' : Fct C D} (α : F ⇒ F')
   : (G ∘F F) ⇒ (G ∘F F')
   :=
@@ -363,32 +364,32 @@ Program Definition nt_whisker_l {C D E : Cat} (G : Fct D E)
 Next Obligation.
   rewrite <- (@functor_comp D E G _ _ _ (α Y) (fmap F f)),
     <- (@functor_comp D E G _ _ _ (fmap F' f) (α X)).
-  apply functor_fmap_proper. apply nt_naturality.
+  apply functor_fmap_proper. apply nat_naturality.
 Qed.
 
 (** Evaluate a natural transformation after a source functor. *)
 
 (** 沿源函子求值自然变换。 *)
 
-Program Definition nt_whisker_r {C D E : Cat} {G G' : Fct D E}
+Program Definition WhiskerRN {C D E : Cat} {G G' : Fct D E}
     (β : G ⇒ G') (F : Fct C D)
   : (G ∘F F) ⇒ (G' ∘F F)
   :=
   {|nt X := β (F X)
   |}.
-Next Obligation. apply nt_naturality. Qed.
+Next Obligation. apply nat_naturality. Qed.
 
-Infix "∘Nl" := nt_whisker_l (at level 51, right associativity) : cat_scope.
-Infix "∘Nr" := nt_whisker_r (at level 51, right associativity) : cat_scope.
+Infix "∘Nl" := WhiskerLN (at level 51, right associativity) : cat_scope.
+Infix "∘Nr" := WhiskerRN (at level 51, right associativity) : cat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance nt_whisker_l_proper {C D E : Cat}
+Global Instance nat_whisker_l_proper {C D E : Cat}
     (G : Fct D E) {F F' : Fct C D}
   : Proper (NatEq ==> NatEq)
-      (@nt_whisker_l C D E G F F').
+      (@WhiskerLN C D E G F F').
 Proof.
   intros α β H X. change (fmap G (α X) ≈ fmap G (β X)).
   apply functor_fmap_proper. exact (H X).
@@ -398,7 +399,7 @@ Qed.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance nt_whisker_r_proper {C D E : Cat}
+Global Instance nat_whisker_r_proper {C D E : Cat}
     {G G' : Fct D E} (F : Fct C D)
   : Proper (NatEq ==> NatEq)
       (λ β : G ⇒ G', β ∘Nr F).
@@ -408,7 +409,7 @@ Proof. intros α β H X. exact (H (F X)). Qed.
 
 (** 左须化保持逐分量可逆性。 *)
 
-Definition nt_whisker_l_NatIso {C D E : Cat}
+Definition nat_whisker_l_iso {C D E : Cat}
     (G : Fct D E) {F F' : Fct C D}
     (α : F ⇒ F') (Hα : α ⦂ F ≅N F')
   : (G ∘Nl α) ⦂ (G ∘F F) ≅N (G ∘F F').
@@ -420,7 +421,7 @@ Defined.
 
 (** 右须化保持逐分量可逆性。 *)
 
-Definition nt_whisker_r_NatIso {C D E : Cat}
+Definition nat_whisker_r_iso {C D E : Cat}
     {G G' : Fct D E} (β : G ⇒ G')
     (F : Fct C D) (Hβ : β ⦂ G ≅N G')
   : (β ∘Nr F) ⦂ (G ∘F F) ≅N (G' ∘F F).
@@ -434,48 +435,48 @@ Proof. intros X. exact (Hβ (F X)). Defined.
 
 (** 由须化与垂直复合构造水平复合。 *)
 
-Definition nt_comp_h {C D E : Cat}
+Definition HCompN {C D E : Cat}
     {G G' : Fct D E} {F F' : Fct C D}
     (β : G ⇒ G') (α : F ⇒ F')
   : (G ∘F F) ⇒ (G' ∘F F')
   := (β ∘Nr F') ∘Nv (G ∘Nl α).
 
-Infix "∘Nh" := nt_comp_h
+Infix "∘Nh" := HCompN
   (at level 50, left associativity) : cat_scope.
 
 (** The two whiskering orders give equal horizontal composites. *)
 
 (** 两种须化次序给出相等的水平复合。 *)
 
-Theorem nt_comp_h_alt {C D E : Cat}
+Theorem nat_hcomp_alt {C D E : Cat}
     {G G' : Fct D E} {F F' : Fct C D}
     (β : G ⇒ G') (α : F ⇒ F')
   : (β ∘Nh α) ≈N ((G' ∘Nl α) ∘Nv (β ∘Nr F)).
 Proof.
-  intros X. exact (nt_naturality β (α X)).
+  intros X. exact (nat_naturality β (α X)).
 Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance nt_comp_h_proper {C D E : Cat}
+Global Instance nat_hcomp_proper {C D E : Cat}
     {G G' : Fct D E} {F F' : Fct C D}
   : Proper (NatEq ==> NatEq ==> NatEq)
-      (@nt_comp_h C D E G G' F F').
+      (@HCompN C D E G G' F F').
 Proof.
   intros β β' Hβ α α' Hα X.
   change (β (F' X) ∘ fmap G (α X) ≈ β' (F' X) ∘ fmap G (α' X)).
   apply comp_proper; [apply Hβ | apply functor_fmap_proper; apply Hα].
 Qed.
 
-(** Compatibility with identities for [nt_comp_h]. *)
+(** Compatibility with identities for [HCompN]. *)
 
-(** [nt_comp_h] 与恒等的相容性。 *)
+(** [HCompN] 与恒等的相容性。 *)
 
-Theorem nt_comp_h_id {C D E : Cat}
+Theorem nat_hcomp_id {C D E : Cat}
     (G : Fct D E) (F : Fct C D)
-  : (idN (F := G) ∘Nh idN (F := F)) ≈N idN.
+  : (IdN (F := G) ∘Nh IdN (F := F)) ≈N IdN.
 Proof.
   intros X.
   change (id ∘ fmap G (@id (F X)) ≈ @id (G (F X))).
@@ -486,7 +487,7 @@ Qed.
 
 (** 水平与垂直复合满足交换律。 *)
 
-Theorem nt_comp_h_interchange {C D E : Cat}
+Theorem nat_hcomp_interchange {C D E : Cat}
     {G0 G1 G2 : Fct D E} {F0 F1 F2 : Fct C D}
     (β2 : G1 ⇒ G2) (β1 : G0 ⇒ G1) (α2 : F1 ⇒ F2) (α1 : F0 ⇒ F1)
   : ((β2 ∘Nv β1) ∘Nh (α2 ∘Nv α1)) ≈N
@@ -496,7 +497,7 @@ Proof.
   change ((β2 (F2 X) ∘ β1 (F2 X)) ∘ fmap G0 (α2 X ∘ α1 X) ≈
     (β2 (F2 X) ∘ fmap G1 (α2 X)) ∘ (β1 (F1 X) ∘ fmap G0 (α1 X))).
   rewrite functor_comp, !comp_assoc.
-  rewrite <- (comp_assoc (β1 (F2 X))), (nt_naturality β1 (α2 X)).
+  rewrite <- (comp_assoc (β1 (F2 X))), (nat_naturality β1 (α2 X)).
   rewrite comp_assoc. reflexivity.
 Qed.
 
@@ -512,23 +513,23 @@ Program Definition CompNF (C D E : Cat)
   |}.
 Next Obligation.
   intros [β α] [β' α'] [Hβ Hα].
-  exact (nt_comp_h_proper β β' Hβ α α' Hα).
+  exact (nat_hcomp_proper β β' Hβ α α' Hα).
 Defined.
-Next Obligation. apply nt_comp_h_id. Defined.
-Next Obligation. apply nt_comp_h_interchange. Defined.
+Next Obligation. apply nat_hcomp_id. Defined.
+Next Obligation. apply nat_hcomp_interchange. Defined.
 
 (** Horizontal composition preserves natural isomorphisms. *)
 
 (** 水平复合保持自然同构。 *)
 
-Definition nt_comp_h_NatIso {C D E : Cat}
+Definition nat_hcomp_iso {C D E : Cat}
     {G G' : Fct D E} {F F' : Fct C D}
     (β : G ⇒ G') (α : F ⇒ F') (Hβ : β ⦂ G ≅N G') (Hα : α ⦂ F ≅N F')
   : (β ∘Nh α) ⦂ (G ∘F F) ≅N (G' ∘F F').
 Proof.
-  apply nt_comp_v_NatIso.
-  - exact (nt_whisker_r_NatIso β F' Hβ).
-  - exact (nt_whisker_l_NatIso G α Hα).
+  apply nat_comp_iso.
+  - exact (nat_whisker_r_iso β F' Hβ).
+  - exact (nat_whisker_l_iso G α Hα).
 Defined.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -539,7 +540,7 @@ Global Instance CompF_proper {C D E : Cat}
   : Proper (NatIso ==> NatIso ==> NatIso) (@CompF C D E).
 Proof.
   intros G G' [β Hβ] F F' [α Hα].
-  exists (β ∘Nh α). exact (nt_comp_h_NatIso β α Hβ Hα).
+  exists (β ∘Nh α). exact (nat_hcomp_iso β α Hβ Hα).
 Defined.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -553,7 +554,7 @@ Proof.
   unshelve notypeclasses refine (({|nt := _
                                   |}); _).
   - exact (λ c, α (c, d)).
-  - intros X Y f. exact (nt_naturality α (X := (X, d)) (Y := (Y, d)) (f, id)).
+  - intros X Y f. exact (nat_naturality α (X := (X, d)) (Y := (Y, d)) (f, id)).
   - intros X. exact (Hα (X, d)).
 Defined.
 
@@ -569,7 +570,7 @@ Proof.
   unshelve notypeclasses refine (({|nt := _
                                   |}); _).
   - exact (λ d, α (c, d)).
-  - intros X Y f. exact (nt_naturality α (X := (c, X)) (Y := (c, Y)) (id, f)).
+  - intros X Y f. exact (nat_naturality α (X := (c, X)) (Y := (c, Y)) (id, f)).
   - intros X. exact (Hα (c, X)).
 Defined.
 
@@ -625,41 +626,41 @@ Defined.
 
     分量保留底层态射，但其方向和垂直复合的次序在反范畴中反转。 *)
 
-Program Definition nt_op {C D : Cat}
+Program Definition OpN {C D : Cat}
   {F G : Fct C D} (α : F ⇒ G)
   : G^opF ⇒ F^opF
   :=
   {|nt X := α X
   |}.
 Next Obligation. symmetry.
-  exact (nt_naturality α f).
+  exact (nat_naturality α f).
 Qed.
 
-Notation "α '^opN'" := (nt_op α)
+Notation "α '^opN'" := (OpN α)
   (at level 35) : cat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance nt_op_proper {C D : Cat}
+Global Instance nat_op_proper {C D : Cat}
     {F G : Fct C D}
-  : Proper (NatEq ==> NatEq) (@nt_op C D F G).
+  : Proper (NatEq ==> NatEq) (@OpN C D F G).
 Proof. intros α β Hαβ X. exact (Hαβ X). Qed.
 
-(** Compatibility with identities for [nt_op]. *)
+(** Compatibility with identities for [OpN]. *)
 
-(** [nt_op] 与恒等的相容性。 *)
+(** [OpN] 与恒等的相容性。 *)
 
-Theorem nt_op_id {C D : Cat} {F : Fct C D}
-  : (idN (F := F))^opN ≈N idN.
+Theorem nat_op_id {C D : Cat} {F : Fct C D}
+  : (IdN (F := F))^opN ≈N IdN.
 Proof. intros X. reflexivity. Qed.
 
-(** Compatibility with vertical composition for [nt_op]. *)
+(** Compatibility with vertical composition for [OpN]. *)
 
-(** [nt_op] 与垂直复合的相容性。 *)
+(** [OpN] 与垂直复合的相容性。 *)
 
-Theorem nt_op_comp_v {C D : Cat} {F G H : Fct C D}
+Theorem nat_op_comp {C D : Cat} {F G H : Fct C D}
     (β : G ⇒ H) (α : F ⇒ G)
   : (β ∘Nv α) ^opN ≈N (α ^opN ∘Nv β ^opN).
 Proof. intros X. reflexivity. Qed.
@@ -675,14 +676,14 @@ Program Definition OpFctCatF {C D : Cat}
   {|F0 F := F^opF
   ; F1 F G α := α^opN
   |}.
-Next Obligation. apply nt_op_id. Qed.
-Next Obligation. apply nt_op_comp_v. Qed.
+Next Obligation. apply nat_op_id. Qed.
+Next Obligation. apply nat_op_comp. Qed.
 
 (** Taking opposites preserves natural isomorphisms. *)
 
 (** 取反保持自然同构。 *)
 
-Definition nt_op_NatIso {C D : Cat} {F G : Fct C D}
+Definition nat_op_iso {C D : Cat} {F G : Fct C D}
     (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : α ^opN ⦂ G^opF ≅N F^opF.
 Proof.
@@ -698,7 +699,7 @@ Defined.
 Global Instance OpF_proper {C D : Cat}
   : Proper (NatIso ==> NatIso) (@OpF C D).
 Proof.
-  intros F G [α Hα]. symmetry. exists (α ^opN). exact (nt_op_NatIso α Hα).
+  intros F G [α Hα]. symmetry. exists (α ^opN). exact (nat_op_iso α Hα).
 Defined.
 
 (** Compatibility with identities for [OpF]. *)

@@ -24,5 +24,5 @@ Definition left_adjoint_preserves_colimit {C D J : Cat}
   : is_colimit (MapCocone F κ)
   := limit_transport
       ((OpF_comp F K).1 ^-1N (OpF_comp F K).2)
-      (NatIso_inv_NatIso (OpF_comp F K).1 (OpF_comp F K).2)
+      (nat_inv_iso (OpF_comp F K).1 (OpF_comp F K).2)
       (right_adjoint_preserves_limit (OpAdj A) Hκ).

@@ -47,7 +47,7 @@ Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
 Definition DayAssociatorOperationN
   : DayTripleValuesF F G H ⇒
       (DayF T F (DayF T G H) ∘F TensorLeftF T)
-  := (DayF T F (DayF T G H) ∘Nl NatIso_inv A.1 A.2)
+  := (DayF T F (DayF T G H) ∘Nl InvN A.1 A.2)
       ∘Nv DayTripleRightGenN T F G H.
 
 (** Extend the transported operation through the left nested convolution. *)
@@ -106,7 +106,7 @@ Defined.
 (** 两层泛性质将左逆律归约到基逆律。 *)
 
 Lemma day_associator_inv_l
-  : (DayAssociatorInvN ∘Nv DayAssociatorN) ≈N idN.
+  : (DayAssociatorInvN ∘Nv DayAssociatorN) ≈N IdN.
 Proof.
   apply (day_triple_left_nat_ext T F G H). intros q xyz.
   transitivity (DayAssociatorInvN (TensorLeftF T q)
@@ -117,7 +117,7 @@ Proof.
   - transitivity (fmap (DayF T (DayF T F G) H) ((A.2 q).1)
       (DayAssociatorInvN (TensorRightF T q)
         (DayTripleRightGenN T F G H q xyz))).
-    + exact (nt_naturality DayAssociatorInvN ((A.2 q).1)
+    + exact (nat_naturality DayAssociatorInvN ((A.2 q).1)
         (DayTripleRightGenN T F G H q xyz)).
     + transitivity (fmap (DayF T (DayF T F G) H) ((A.2 q).1)
         (fmap (DayF T (DayF T F G) H) (A.1 q)
@@ -139,7 +139,7 @@ Defined.
 (** 右逆来自另一条基逆方程。 *)
 
 Lemma day_associator_inv_r
-  : (DayAssociatorN ∘Nv DayAssociatorInvN) ≈N idN.
+  : (DayAssociatorN ∘Nv DayAssociatorInvN) ≈N IdN.
 Proof.
   apply (day_triple_right_nat_ext T F G H). intros q xyz.
   transitivity (DayAssociatorN (TensorRightF T q)
@@ -150,7 +150,7 @@ Proof.
   - transitivity (fmap (DayF T F (DayF T G H)) (A.1 q)
       (DayAssociatorN (TensorLeftF T q)
         (DayTripleLeftGenN T F G H q xyz))).
-    + exact (nt_naturality DayAssociatorN (A.1 q)
+    + exact (nat_naturality DayAssociatorN (A.1 q)
         (DayTripleLeftGenN T F G H q xyz)).
     + transitivity (fmap (DayF T F (DayF T G H)) (A.1 q)
         (fmap (DayF T F (DayF T G H)) ((A.2 q).1)
@@ -259,7 +259,7 @@ Proof.
       * transitivity (DayTripleRightMapN T α β γ (T (T (a,b),d))
           (fmap (DayF T F (DayF T G H)) ((A.2 ((a,b),d)).1)
             (DayTripleRightGenN T F G H ((a,b),d) ((x,y),z)))).
-        -- symmetry. exact (nt_naturality (DayTripleRightMapN T α β γ)
+        -- symmetry. exact (nat_naturality (DayTripleRightMapN T α β γ)
              ((A.2 ((a,b),d)).1)
              (DayTripleRightGenN T F G H ((a,b),d) ((x,y),z))).
         -- exact (@func_proper _ _
@@ -338,7 +338,7 @@ Definition DayAssociatorFct
   : TensorLeftF (DayTensorF T HD) ≅N TensorRightF (DayTensorF T HD).
 Proof.
   exists DayAssociatorFctN. intros [[F G] H].
-  exact (NatIso_is_iso _ (@DayAssociator C T A F G H (HD F G) (HD G H)
+  exact (nat_iso_is_iso _ (@DayAssociator C T A F G H (HD F G) (HD G H)
     (HD (@DayF C T F G (HD F G)) H)
     (HD F (@DayF C T G H (HD G H)))).2).
 Defined.

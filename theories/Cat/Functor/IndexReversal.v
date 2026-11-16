@@ -49,7 +49,7 @@ Proof. intros [X Y]. exact (H (Y,X)). Defined.
 
 Lemma bifunctor_index_op_nt_id {C D : Cat}
     {F : Fct ((C^op) ×C C) D}
-  : bifunctor_index_op_nt (idN (F := F)) ≈N idN.
+  : bifunctor_index_op_nt (IdN (F := F)) ≈N IdN.
 Proof. intros [X Y]. reflexivity. Defined.
 
 (** Vertical composition keeps its order because the codomain is unchanged. *)
@@ -70,5 +70,5 @@ Definition bifunctor_index_op_nt_NatIso {C D : Cat}
     {F G : Fct ((C^op) ×C C) D} (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : bifunctor_index_op_nt α ⦂ BifunctorIndexOpF F ≅N
       BifunctorIndexOpF G
-  := nt_whisker_r_NatIso α (PairF (SndF ((C^op)^op) (C^op))
+  := nat_whisker_r_iso α (PairF (SndF ((C^op)^op) (C^op))
       (FromDoubleOpF ∘F FstF ((C^op)^op) (C^op))) Hα.

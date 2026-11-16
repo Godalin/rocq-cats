@@ -59,7 +59,7 @@ Section SphereHomotopyEquivalence.
 Universes u p.
 Context {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}.
 Context (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0).
-Context (H : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X)).
+Context (H : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X)).
 Context (E : homotopy_map H 1 (simplex_constant X b 1, simplex_generic 1)
   ≈S simplex_constant X b 1).
 
@@ -94,12 +94,12 @@ Proof.
     symmetry. apply two_sphere_class_map_comp.
   - transitivity (two_sphere_class_change_base_resp X
       (sphere_homotopy_base H b b E true)
-      (two_sphere_class_map_resp (idN : X ⇒ X) b x)).
+      (two_sphere_class_map_resp (IdN : X ⇒ X) b x)).
     + exact (two_sphere_class_map_homotopy H b b E x).
     + transitivity (two_sphere_class_change_base_resp X (reflexivity b)
-        (two_sphere_class_map_resp (idN : X ⇒ X) b x)).
+        (two_sphere_class_map_resp (IdN : X ⇒ X) b x)).
       * apply two_sphere_class_change_base_witness.
-      * transitivity (two_sphere_class_map_resp (idN : X ⇒ X) b x).
+      * transitivity (two_sphere_class_map_resp (IdN : X ⇒ X) b x).
         -- apply two_sphere_class_change_base_id.
         -- apply two_sphere_class_map_id.
 Defined.
@@ -135,7 +135,7 @@ Defined.
     派生校正与首个校正的像对齐，不要求两个同伦或其证明字段之间的方程。 *)
 
 Lemma two_sphere_class_homotopy_inverse_r
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -163,14 +163,14 @@ Proof.
       * apply two_sphere_class_change_base_witness.
       * transitivity (two_sphere_class_change_base_resp Y
           (sphere_homotopy_base K (f 0 b) (f 0 b) F true)
-          (two_sphere_class_map_resp (idN : Y ⇒ Y) (f 0 b) y)).
+          (two_sphere_class_map_resp (IdN : Y ⇒ Y) (f 0 b) y)).
         -- exact (two_sphere_class_map_homotopy K (f 0 b) (f 0 b) F y).
         -- transitivity (two_sphere_class_change_base_resp Y
             (reflexivity (f 0 b))
-            (two_sphere_class_map_resp (idN : Y ⇒ Y) (f 0 b) y)).
+            (two_sphere_class_map_resp (IdN : Y ⇒ Y) (f 0 b) y)).
            ++ apply two_sphere_class_change_base_witness.
            ++ transitivity
-               (two_sphere_class_map_resp (idN : Y ⇒ Y) (f 0 b) y).
+               (two_sphere_class_map_resp (IdN : Y ⇒ Y) (f 0 b) y).
               ** apply two_sphere_class_change_base_id.
               ** apply two_sphere_class_map_id.
 Defined.
@@ -183,7 +183,7 @@ Defined.
     f 映射与校正 g 映射，无需大小重设、群或严格逆。 *)
 
 Definition two_sphere_class_homotopy_iso@{v q +}
-    (K : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (K : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map K 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)

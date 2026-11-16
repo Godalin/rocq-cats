@@ -168,10 +168,10 @@ Lemma lax_monoidal_monoid_hom (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
 Proof.
   destruct Hα as [Hu Ht]. split; cbn.
   - unfold lax_monoid_unit.
-    rewrite <- comp_assoc, (nt_naturality α e[A]), comp_assoc, Hu.
+    rewrite <- comp_assoc, (nat_naturality α e[A]), comp_assoc, Hu.
     reflexivity.
   - unfold lax_monoid_mul.
-    rewrite <- comp_assoc, (nt_naturality α m[A]), comp_assoc,
+    rewrite <- comp_assoc, (nat_naturality α m[A]), comp_assoc,
       (Ht (MonoidCarrier A) (MonoidCarrier A)).
     rewrite <- comp_assoc. reflexivity.
 Defined.
@@ -186,7 +186,7 @@ Program Definition LaxMonoidN (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
   :=
   {|nt A := (α A; lax_monoidal_monoid_hom L K α Hα A)
   |}.
-Next Obligation. exact (nt_naturality α f.1). Defined.
+Next Obligation. exact (nat_naturality α f.1). Defined.
 
 (** Equality compares the same components regardless of preservation
     witnesses. This is natural equality in the target monoid category. *)
@@ -204,7 +204,7 @@ Proof. intros A. exact (E A). Defined.
 (** 传输保持恒等幺半变换。 *)
 
 Lemma lax_monoid_nt_id (L : LaxMonoidalFct MC MD)
-  : LaxMonoidN L L idN (lax_monoidal_hom_id L) ≈N idN.
+  : LaxMonoidN L L IdN (lax_monoidal_hom_id L) ≈N IdN.
 Proof.
   intros A. change (@Cat.Core.id D (L A) ≈ @Cat.Core.id D (L A)). reflexivity.
 Defined.

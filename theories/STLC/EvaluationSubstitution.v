@@ -122,7 +122,7 @@ Defined.
 (** 恒等替换保持语义环境不变。 *)
 
 Lemma eval_sub_id (Γ : Ctx B)
-  : EvalSubN Γ Γ idSub ≈N idN.
+  : EvalSubN Γ Γ idSub ≈N IdN.
 Proof.
   intros Θ γ. apply env_ext. intros A x.
   exact (eval_sub_lookup Γ Γ Θ idSub γ A x).
@@ -178,7 +178,7 @@ Proof.
       eval t Ξ (fmap (EnvF Γ) τ (EvalSubN Γ Δ σ Θ γ), a)).
     etransitivity; [apply IH |]. apply eval_proper.
     etransitivity; [apply eval_sub_lift |]. split.
-    + exact (nt_naturality (EvalSubN Γ Δ σ) τ γ).
+    + exact (nat_naturality (EvalSubN Γ Δ σ) τ γ).
     + reflexivity.
   - apply kripke_eval_proper; [apply IHf | apply IHa].
 Defined.

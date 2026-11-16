@@ -696,6 +696,68 @@ is claimed for this slice.
 八项闭合假设报告。上方全量构建记录属于此前检查点；此片段不声称重新跑过
 完整库或全部测试。
 
+## Natural transformations as records / 自然变换作为记录
+
+The `828db11` follow-up changes `Nat F G` from a class into a record.
+Its endpoints remain supplied functors; the component family `nt` is
+the unique function view, and `nat_naturality` stores the same Type-valued
+hom equations. No category, component family or law is duplicated.
+Naturality is not rebuilt by clients, and pointwise equality continues to
+ignore native equality of component functions and law fields.
+
+`828db11` 后续将 `Nat F G` 从类改为记录。两端仍由给定函子索引，
+分量族 `nt` 是唯一函数视图，`nat_naturality` 保存同样的 Type 值
+Hom 方程，不重复保存范畴、分量族或定律。客户端无须重建自然性，
+逐点相等仍不要求分量函数或定律字段原生相等。
+
+`IdN` and `CompN` are transparent definitions, with no notation wrapper
+or global instance choosing a transformation. Inverse, whiskering,
+horizontal composition and opposite transformations use direct N-suffixed
+construction names. The `NatPrism*` clients and all affected consumers
+follow the exact map in [the naming guide](./Abbreviations.md).
+The foundational regression checks that fixing endpoints does not make
+instance search select even the identity transformation.
+
+`IdN`、`CompN` 是透明定义，不通过记号包装，也不通过全局实例默认选择
+自然变换。取逆、须化、水平复合及取反同样使用直接的 N 后缀构造名。
+`NatPrism*` 客户端及受影响消费者按[命名指南](./Abbreviations.md)的精确
+映射迁移。基础回归检查：指定两端函子后，实例搜索也不得默认选出恒等自然变换。
+
+`CartesianCat` is renamed `CartCat`; its current category parameter,
+choices and class status remain. Its computed category view is
+`CartCatToCat`; the CCC parent becomes `CCCToCartCat`, and that same
+projection remains registered for inherited instance search.
+CCC exponentials still use its parent's selected products. Complete
+`CartCat` / `CCC` bundling remains the next structural slice.
+
+`CartesianCat` 改为 `CartCat`，当前范畴参数、选择及类的地位不变。
+计算得到的范畴视图名为 `CartCatToCat`，CCC 父视图改为
+`CCCToCartCat`，仍注册同一投影供继承实例搜索使用。
+CCC 指数继续使用父结构选定的积，完整 `CartCat`／`CCC` 打包留待下一结构片段。
+
+Local validation used the project switch (Rocq 9.3.0, Stdlib 9.2.0 and
+Dune 3.23.1). `@check-library @check-tests` passed with `-j 2`, selecting
+605 theory and 172 test modules, in 19 minutes 6 seconds. Subsequent
+whitespace-only edits in `Cartesian/Core.v` and `End/{Core,Wedge}.v`
+and formatting in `Bicategory/Cat.v` were preserved and checked with
+the affected modules, `@check-core`,
+Set/CCC, Topos/ETCS, STLC/CCC, Coend, Day and the computation regression.
+Temporary audits also passed: strict independent universes, actual
+coercions, component reduction and distinct selected inverse witnesses;
+all eight semantic assumption reports and forty rename reports were
+closed. These audits are temporary checks, not additional committed
+tests. No HTML/PDF export or CI result is claimed.
+
+本地验证使用项目 switch（Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1）。
+`@check-library @check-tests` 以 `-j 2` 通过，选择 605 个理论模块及
+172 个测试模块，耗时 19 分 6 秒。保留随后对 `Cartesian/Core.v` 及
+`End/{Core,Wedge}.v`、`Bicategory/Cat.v` 的纯空白调整，
+并补验相关模块、`@check-core`、
+Set/CCC、Topos/ETCS、STLC/CCC、Coend、Day 及计算回归。临时审计也已通过：
+严格分离的宇宙、实际强制转换、分量归约及不同的选定逆见证；八项语义检查
+与四十项改名检查的假设报告全部闭合。这些属于临时检查，不是新增已提交测试。
+不声称 HTML/PDF 导出或 CI 结果。
+
 ## Groupoid Record follow-up
 
 ## 群胚 Record 后续
@@ -1107,8 +1169,8 @@ in a term. Neither mechanism should choose a model's structure by import.
 | [Cocone](../theories/Cat/Diagram/Dual.v), [Nat](../theories/Cat/Natural.v) | `Cocone → Nat → component function` / 余锥经自然变换到分量函数 | Already complete; keep the opposite-cone construction underneath / 已完整，底层保留反范畴上的锥构造 |
 | [Sub and Mono](../theories/Cat/Morphism.v), [SliceHom](../theories/Cat/Slice/Core.v) | Subobjects reach a monomorphism, then its ambient arrow; `Mono` also exposes its domain object / 子对象经单态射到所在范畴的箭头，单态射还暴露定义域对象 | Preserve existing targets; check both paths before extending / 保留现有目标，扩展前核对两条路径 |
 | [MonoidObj](../theories/Cat/Monoidal/Monoid.v) | The carrier target is `@Ob C`, not a fixed record such as `SetC` / 载体目标是所在范畴的对象类型，而非固定广集记录 | Dependent targets can stop chaining; use `MonoidCarrier A` when a concrete further view is needed / 依赖目标可能中断连续转换，具体底层视图需要时显式使用载体投影 |
-| [CCC](../theories/Cat/CCC.v) | `CCC → CartesianCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
-| [Topos](../theories/Topos/Core.v), [ETCS](../theories/Topos/ETCS.v) | `ETCS → Topos → CCC → CartesianCat → Cat` | `ETCSC` and `ToposC` each store one immediate parent; terminal-dependent fields use that same inherited terminal / `ETCSC` 与 `ToposC` 各保存唯一直接父结构，依赖终对象的字段使用同一继承终对象 |
+| [CCC](../theories/Cat/CCC.v) | `CCC → CartCat → Cat`; the parent shares terminal and product choices / 经笛卡尔父结构到普通范畴，共享终对象与积选择 | Implemented in the cumulative hierarchy below; no direct bypass / 已在下述累次层级中实现，不增加直接旁路 |
+| [Topos](../theories/Topos/Core.v), [ETCS](../theories/Topos/ETCS.v) | `ETCS → Topos → CCC → CartCat → Cat` | `ETCSC` and `ToposC` each store one immediate parent; terminal-dependent fields use that same inherited terminal / `ETCSC` 与 `ToposC` 各保存唯一直接父结构，依赖终对象的字段使用同一继承终对象 |
 | [Group](../theories/Algebra/Group/Core.v), [Monoid](../theories/Algebra/Monoid/Core.v), [Semigroup](../theories/Algebra/Semigroup/Core.v), [Magma](../theories/Algebra/Magma/Core.v) | `Group → Monoid → Semigroup → Magma → SetC → Type`; each parent is an inherited instance / 群经幺半群、半群、原群、广集到载体类型，各父结构均为继承实例 | Implemented in the algebra hierarchy slice below, sharing one multiplication and named setoid / 已在下述代数层级批次中实现，共享唯一乘法及具名广集 |
 | [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Witnesses on a fixed category/bicategory, including designated equality and comparison data / 固定范畴或双范畴上的见证，含指定相等及比较数据 | A parameter view is possible, but needs a client; do not collapse higher structure or change coherence / 参数视图技术上可行，待具体客户端；不折叠高阶结构、不改变相干性 |
 | [Dual chosen structures](../theories/Cat/Colimit/Core.v), [HasInitial](../theories/Cat/Terminal.v), [HasCoproduct](../theories/Cat/Coproduct/Core.v), [HasCoequalizer](../theories/Cat/Coequalizer.v), [HasPushout](../theories/Cat/Pushout.v) | `::` inherits the original theory on opposite categories / 用实例继承反范畴上的原理论 | Keep the dual presentation and ordinary wrappers; these are choices on named data, not missing carrier bundles / 保留对偶呈现及通常包装，这是具名数据上的选择，不是缺少载体的结构包 |
@@ -1173,31 +1235,31 @@ PDF 留待下一集成批次统一导出。以上为本地验证结果，不代�
 
 ## 笛卡尔与 CCC 的累次层级
 
-[CartesianCat C](../theories/Cat/Cartesian/Core.v) stores the selected
+[CartCat C](../theories/Cat/Cartesian/Core.v) stores the selected
 terminal object and binary products, including their computational universal
-properties. Its computed field `CartesianC :> Cat := C` exposes the named
+properties. Its computed field `CartCatToCat :> Cat := C` exposes the named
 category. [CCC C](../theories/Cat/CCC.v) then stores one
-`CCCC :> CartesianCat C` parent and exponentials relative to
+`CCCToCartCat :> CartCat C` parent and exponentials relative to
 that parent's products. The parent field directly supplies
-the unique chain `CCC → CartesianCat → Cat`; there is no direct
+the unique chain `CCC → CartCat → Cat`; there is no direct
 CCC-to-category bypass and no repeated terminal/product data.
 
-[CartesianCat C](../theories/Cat/Cartesian/Core.v) 保存选定终对象和
-二元积，包含其可计算泛性质。计算字段 `CartesianC :> Cat := C` 暴露具名
+[CartCat C](../theories/Cat/Cartesian/Core.v) 保存选定终对象和
+二元积，包含其可计算泛性质。计算字段 `CartCatToCat :> Cat := C` 暴露具名
 范畴。[CCC C](../theories/Cat/CCC.v) 再保存一个
-`CCCC :> CartesianCat C` 父结构及相对于其积的指数。父字段直接
-给出唯一链 `CCC → CartesianCat → Cat`；不添加
+`CCCToCartCat :> CartCat C` 父结构及相对于其积的指数。父字段直接
+给出唯一链 `CCC → CartCat → Cat`；不添加
 CCC 直接到普通范畴的旁路，也不重复保存终对象或积。
 
 The following client illustrates both mechanisms. Expected types insert
 the successive coercions, while `Local Existing Instance HC` makes the
 same stored choices available to instance search. `:>` supplies the
-conversion; `Existing Instance CCCC` additionally registers the same
+conversion; `Existing Instance CCCToCartCat` additionally registers the same
 parent for instance search, without choosing another cartesian structure.
 
 下面的客户端同时展示两种机制：期望类型插入逐层强制转换，
 `Local Existing Instance HC` 则将同一份保存选择提供给实例搜索。
-`:>` 提供转换；`Existing Instance CCCC` 另外将同一父结构注册给实例搜索，
+`:>` 提供转换；`Existing Instance CCCToCartCat` 另外将同一父结构注册给实例搜索，
 不另选一个笛卡尔结构。
 
 ```coq
@@ -1213,7 +1275,7 @@ Context {C : Cat} (HC : CCC C).
 Local Existing Instance HC.
 
 Definition cartesian_view
-  : CartesianCat C
+  : CartCat C
   := HC.
 Definition category_view
   : Cat
@@ -1423,7 +1485,7 @@ first／second／分开组合／扇出均为导出运算。具体
 
 | Candidate / 候选 | Current boundary / 当前边界 | Proposed treatment / 建议处理 | Main clients and risk / 主要客户端及风险 |
 | --- | --- | --- | --- |
-| [iso](../theories/Cat/Core.v), [NatIso](../theories/Cat/Natural.v) | Sigma bundles with `.1`/`.2` projections; unique forward arrow/transformation / 通过 `.1`、`.2` 访问的依赖和，具有明确正向箭头／自然变换 | Consider named records with a forward-map coercion while retaining `is_iso` and `is_NatIso_of` / 可考虑具名前向映射的记录，同时保留固定映射上的可逆性接口 | Foundation-wide migration, including [CatCat equivalence](../theories/Cat/CatCat.v) and [representations](../theories/Instance/Set/Representable.v); separate prerequisite task, not a local rename / 牵涉范畴等价及表示，须作为独立前置任务 |
+| [iso](../theories/Cat/Core.v), [NatIso](../theories/Cat/Natural.v) | Sigma bundles with `.1`/`.2` projections; unique forward arrow/transformation / 通过 `.1`、`.2` 访问的依赖和，具有明确正向箭头／自然变换 | Consider named records with a forward-map coercion while retaining `is_iso` and `is_nat_iso` / 可考虑具名前向映射的记录，同时保留固定映射上的可逆性接口 | Foundation-wide migration, including [CatCat equivalence](../theories/Cat/CatCat.v) and [representations](../theories/Instance/Set/Representable.v); separate prerequisite task, not a local rename / 牵涉范畴等价及表示，须作为独立前置任务 |
 | [SectionOfS](../theories/Cat/Section.v) | Setoid carrier is a map plus its right-inverse witness / 广集载体为映射及其右逆见证 | Optional named bundled section with an arrow coercion; reuse current equality / 可增加具名截面记录及箭头强制转换，复用当前相等 | [family sections](../theories/Instance/Set/Fam/Section.v); lower priority until repeated projection access motivates it / 待重复投影使用显现需求后处理 |
 | [Comprehension](../theories/Cat/Comprehension.v) | Fixed projection `P`, additional `ExtF`, natural projection and cartesian/pullback preservation / 固定投影 `P`，另含 `ExtF`、自然投影及保持性 | Decide which mathematical view is primary before adding a coercion / 添加强制转换前先确定主要数学视图 | `P`, `ExtF` and derived `ComprehensionF : E → Arr B` have different roles; no automatic choice between them / 三个函子职责不同，不能自动替选 |
 
@@ -1545,16 +1607,16 @@ implements Magma and Semigroup in the library with actual clients.
 ### 按接口职责命名
 
 A public mathematical structure uses its mathematical name: `Monoid`,
-`Group`, `CartesianCat`, `CCC`, `Monad`, `Applicative`, `Arrow` or `CwF`.
+`Group`, `CartCat`, `CCC`, `Monad`, `Applicative`, `Arrow` or `CwF`.
 A named ambient parameter fixes its carrier or category; a computed view
 can expose that same parameter. A stored primary parent uses a kind-based
 projection and `:>`, with a separate inherited-instance registration when
-needed. `CCCC :> CartesianCat C` is the implemented category example.
+needed. `CCCToCartCat :> CartCat C` is the implemented category example.
 
-公共数学结构直接使用数学结构名，例如 `Monoid`、`Group`、`CartesianCat`、
+公共数学结构直接使用数学结构名，例如 `Monoid`、`Group`、`CartCat`、
 `CCC`、`Monad`、`Applicative`、`Arrow` 或 `CwF`。具名环境参数固定载体或
 范畴，计算视图可以暴露同一参数。保存的主要父结构使用按数学种类命名的投影
-及 `:>`，需要时另外注册继承实例。`CCCC :> CartesianCat C` 是已实现的
+及 `:>`，需要时另外注册继承实例。`CCCToCartCat :> CartCat C` 是已实现的
 范畴例子。
 
 The existing `Has*` interfaces choose objects, operations or families of
@@ -1621,8 +1683,8 @@ flowchart LR
   SetC -->|carrier| Type
   ETCS -->|ETCSC| Topos
   Topos -->|ToposC| CCC
-  CCC -->|CCCC| CartesianCat
-  CartesianCat -->|CartesianC, computed| Cat
+  CCC -->|CCCToCartCat| CartCat
+  CartCat -->|CartCatToCat, computed| Cat
   Gpd -->|GpdC| Cat
   Cat -->|Ob| Type
   MonoidalCat -->|MonoidalP| PremonoidalCat
@@ -1661,7 +1723,7 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 | Priority / 次序 | Evidence / 证据 | Proposed treatment / 建议处理 |
 | --- | --- | --- |
 | 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
-| 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartesianCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | The first slice unified names; the current parent chain is `MonoidalP` → `PremonoidalB` → `BinoidalC` / 首批统一名称；当前父链为 `MonoidalP` → `PremonoidalB` → `BinoidalC` |
+| 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | The first slice unified names; the current parent chain is `MonoidalP` → `PremonoidalB` → `BinoidalC` / 首批统一名称；当前父链为 `MonoidalP` → `PremonoidalB` → `BinoidalC` |
 | 3 | [ETCS](../theories/Topos/ETCS.v) stores `ETCSC :> Topos C`, whose `ToposC :> CCC C` shares the cartesian closed choices / ETCS 经唯一 Topos 父结构共享 CCC 选择 | Topos owns pullbacks and the classifier; ETCS adds its set-theory axioms, with dependent fields on the same terminal / Topos 持有拉回与分类子，ETCS 增加集合论公理，各依赖字段使用同一终对象 |
 | 4 | [Monoid](../theories/Algebra/Monoid/Core.v) inherits [Semigroup](../theories/Algebra/Semigroup/Core.v), which inherits [Magma](../theories/Algebra/Magma/Core.v) / 幺半群继承半群，半群继承原群 | Implemented in the algebra slice with weaker multiplication maps, composition laws, Boolean and endomorphism models / 代数批次已实施，包含较弱前提的乘法映射、复合律、布尔及自态射模型 |
 | 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/Topos/ETCS.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
@@ -1746,7 +1808,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [BinoidalCat](../theories/Cat/Binoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [CCC](../theories/Cat/CCC.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [CartesianCat](../theories/Cat/Cartesian/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [CartCat](../theories/Cat/Cartesian/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [Chain](../theories/Cat/Chain.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
 | [HasCoequalizer](../theories/Cat/Coequalizer.v) | `Class` | Chosen construction / 选定构造 |
 | [HasColimit](../theories/Cat/Colimit/Core.v) | `Class` | Chosen construction / 选定构造 |
@@ -1915,13 +1977,13 @@ The user explicitly approved this serial continuation from `a70a0a2` on
 `monoidal-cat-view`, before integrating its prerequisite hierarchy changes.
 [ETCS](../theories/Topos/ETCS.v) now stores one `ETCSC :> CCC C` parent
 and registers that same projection for instance search. Its only category
-view follows `ETCS → CCC → CartesianCat → Cat`; no direct ancestor bypass
+view follows `ETCS → CCC → CartCat → Cat`; no direct ancestor bypass
 or additional terminal, product or exponential choice is stored.
 
 用户明确批准在前置层级变更集成前，从 `monoidal-cat-view` 上的 `a70a0a2`
 串行继续。[ETCS](../theories/Topos/ETCS.v) 现只保存 `ETCSC :> CCC C`
 父结构，并将同一投影注册到实例搜索。唯一范畴视图沿
-`ETCS → CCC → CartesianCat → Cat` 转换，不增加直接祖先旁路，也不另存
+`ETCS → CCC → CartCat → Cat` 转换，不增加直接祖先旁路，也不另存
 终对象、积或指数选择。
 
 The subobject classifier, well-pointedness and natural-numbers object are
@@ -2263,7 +2325,7 @@ explicitly select this extension of their existing parent.
 ambient functor `FreydF :> Fct C K` as its unique primary view.
 Its computed `FreydComputations` reindexes ambient hom-sets by value
 objects, rather than choosing a second category. Supplementary named
-`hasCartesian` and `hasSymmetricPremonoidal` fields select the value and
+`hasCartCat` and `hasSymmetricPremonoidal` fields select the value and
 computation structures. `FreydPureF` uses the shared
 [InducedF](../theories/Cat/Induced.v) and has identity object map.
 Tensor/unit object equalities determine every boundary transport in its
@@ -2272,7 +2334,7 @@ laws use specified hom equality, with no equality of functions or records.
 
 [FreydCat C K](../theories/Cat/Computational/Freyd/Core.v) 以纯环境函子
 `FreydF :> Fct C K` 为唯一主要视图。计算性 `FreydComputations`
-按值对象重索引环境 Hom 广集，不额外选取范畴。辅助具名字段 `hasCartesian`
+按值对象重索引环境 Hom 广集，不额外选取范畴。辅助具名字段 `hasCartCat`
 及 `hasSymmetricPremonoidal` 选定值与计算结构。`FreydPureF` 使用共享
 [InducedF](../theories/Cat/Induced.v)，对象映射为恒等。张量／单位对象的
 相等确定上下文、结合子、单位子及对称性保持律中的全部边界运输。所有态射
@@ -2969,14 +3031,14 @@ No new interface or shared test configuration is introduced by this adaptation.
 [ETCS](../theories/Topos/ETCS.v). Its one immediate parent is `ToposC :> CCC C`;
 pullbacks and the classifier are supplementary chosen structures. The classifier
 is indexed by the same terminal object inherited through `CCC` and
-`CartesianCat`. ETCS stores `ETCSC :> Topos C`, retaining its chosen initial
+`CartCat`. ETCS stores `ETCSC :> Topos C`, retaining its chosen initial
 object, well-pointedness, epi-splitting and NNO. No terminal, product, exponential,
 pullback or classifier choice is duplicated. Each parent projection is also
 registered as an inherited instance.
 
 [Topos](../theories/Topos/Core.v) 现持有 [ETCS](../theories/Topos/ETCS.v)
 中的初等拓扑斯部分。唯一直接父结构为 `ToposC :> CCC C`，拉回与分类子为
-补充选定结构；分类子以经 `CCC` 和 `CartesianCat` 继承的同一终对象为索引。
+补充选定结构；分类子以经 `CCC` 和 `CartCat` 继承的同一终对象为索引。
 ETCS 保存 `ETCSC :> Topos C`，保留选定始对象、良点性、满态射分裂和
 自然数对象。不重复选择终对象、积、指数、拉回或分类子；各父投影同时注册
 为继承实例。
@@ -3533,7 +3595,7 @@ from pointwise object images.
 
 `PreorderNatIso F G H` accepts both comparisons at every object and retains
 both as its forward/inverse components. Inverse naturality comes from the
-existing `NatIso_inv` construction. Public native equations expose the
+existing `InvN` construction. Public native equations expose the
 supplied components definitionally. The inverse laws use target `HomEq`,
 without native inverse equations between comparison witnesses or native
 equality of the functors' object maps. `preorder_nat_eq` compares arbitrary
@@ -3557,7 +3619,7 @@ arbitrary-arrow quantifiers, Beck–Chevalley or Frobenius.
 逐点对象像反推函子数据。
 
 `PreorderNatIso F G H` 接受每个对象处的双向比较，并将其保留为正／反分量；
-逆的自然性来自既有 `NatIso_inv`。公开原生方程给出这些分量与给定见证的
+逆的自然性来自既有 `InvN`。公开原生方程给出这些分量与给定见证的
 定义相等。互逆律使用目标 `HomEq`，不要求比较见证原生互逆或函子对象映射
 原生相等。`preorder_nat_eq` 以既有 `NatEq` 比较任意平行变换，不用 Rocq
 相等识别分量函数或证明记录。
@@ -3585,7 +3647,7 @@ compares reindexing by the context identity with `IdF`;
 `PredicateReindexCompIso k l` compares `Rk ∘F Rl` with `R(l ∘ k)`.
 All three directly use `PreorderNatIso` with explicit functor endpoints.
 Six public native equations retain the forward factor and the factor
-computed by the general `NatIso_inv` construction.
+computed by the general `InvN` construction.
 
 The two unit diagrams compare the composite comparison followed by
 base unit-law transport with whiskering of the identity comparison
@@ -3622,7 +3684,7 @@ remains outside Topos.
 `PredicateReindexIdIso X` 将上下文恒等重索引与 `IdF` 比较；
 `PredicateReindexCompIso k l` 将 `Rk ∘F Rl` 与 `R(l ∘ k)` 比较。
 三者均显式给出函子端点并直接应用 `PreorderNatIso`。六个公开原生方程
-保留正向因子，以及一般 `NatIso_inv` 构造算出的反向因子。
+保留正向因子，以及一般 `InvN` 构造算出的反向因子。
 
 两张单位图比较以下路径：复合比较后沿基范畴单位律运输；恒等比较的
 whiskering 后接对应既有函子单位比较。结合图比较三次代入的两条路径，

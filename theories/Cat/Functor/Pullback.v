@@ -53,12 +53,12 @@ Next Obligation.
   destruct (snd (HP Y) (Q Y) (u Y) (v Y) (Hu Y)).2
     as [[HY1 HY2] HY_unique].
   apply (pullback_hom_ext (HP Y)).
-  - rewrite <- comp_assoc, HY1, (nt_naturality u f).
-    rewrite <- comp_assoc, (nt_naturality p f), comp_assoc,
+  - rewrite <- comp_assoc, HY1, (nat_naturality u f).
+    rewrite <- comp_assoc, (nat_naturality p f), comp_assoc,
       HX1.
     reflexivity.
-  - rewrite <- comp_assoc, HY2, (nt_naturality v f).
-    rewrite <- comp_assoc, (nt_naturality q f), comp_assoc,
+  - rewrite <- comp_assoc, HY2, (nat_naturality v f).
+    rewrite <- comp_assoc, (nat_naturality q f), comp_assoc,
       HX2.
     reflexivity.
 Defined.
@@ -111,8 +111,8 @@ Lemma pointwise_pullback_map_square {i j : @Ob J} (f : Hom i j)
   : α j ∘ (fmap F f ∘ pb1 (α i) (β i)) ≈
       β j ∘ (fmap G f ∘ pb2 (α i) (β i)).
 Proof.
-  rewrite <- comp_assoc, (nt_naturality α f), comp_assoc,
-    pullback_comm, <- comp_assoc, <- (nt_naturality β f), comp_assoc.
+  rewrite <- comp_assoc, (nat_naturality α f), comp_assoc,
+    pullback_comm, <- comp_assoc, <- (nat_naturality β f), comp_assoc.
   reflexivity.
 Defined.
 

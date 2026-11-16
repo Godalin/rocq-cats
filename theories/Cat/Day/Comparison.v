@@ -82,7 +82,7 @@ Next Obligation. intros Q x. reflexivity. Defined.
 (** Lax 往返比较保持单位与张量子。 *)
 
 Lemma day_lax_roundtrip_hom (L : LaxMonoidalFct MC SM)
-  : is_lax_monoidal_hom (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) L idN.
+  : is_lax_monoidal_hom (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) L IdN.
 Proof.
   split.
   - intros []. exact (day_lax_unit_roundtrip MC HD L tt).
@@ -94,12 +94,12 @@ Defined.
 (** 对其逆复用一般的指定逆保持性定理。 *)
 
 Lemma day_lax_roundtrip_inv_hom (L : LaxMonoidalFct MC SM)
-  : is_lax_monoidal_hom L (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) idN.
+  : is_lax_monoidal_hom L (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) IdN.
 Proof.
   exact (lax_monoidal_hom_inverse
-    (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) L idN
+    (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) L IdN
     (day_lax_roundtrip_hom L)
-    (nt_id_NatIso L)).
+    (nat_id_iso L)).
 Defined.
 
 (** The Day round trip preserves both operations in designated equality. *)
@@ -107,13 +107,13 @@ Defined.
 (** Day 往返按指定相等保持两项运算。 *)
 
 Lemma day_monoid_roundtrip_hom (M : MonoidObj DM)
-  : is_monoid_hom (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) M idN.
+  : is_monoid_hom (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) M IdN.
 Proof.
   split.
   - intros X x. exact (day_monoid_unit_roundtrip MC HD M X x).
   - change (monoid_object_mul
       (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv @tensor_map _ DM _ _ _ _ idN idN)).
+      (monoid_object_mul M ∘Nv @tensor_map _ DM _ _ _ _ IdN IdN)).
     rewrite (@tensor_map_id _ DM (MonoidCarrier M) (MonoidCarrier M)).
     intros X x. exact (day_monoid_mul_roundtrip MC HD M X x).
 Defined.
@@ -123,13 +123,13 @@ Defined.
 (** 反向恒等分量使用相同的往返方程。 *)
 
 Lemma day_monoid_roundtrip_inv_hom (M : MonoidObj DM)
-  : is_monoid_hom M (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) idN.
+  : is_monoid_hom M (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) IdN.
 Proof.
   split.
   - intros X x. symmetry. exact (day_monoid_unit_roundtrip MC HD M X x).
   - change (monoid_object_mul M ≈N
       (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        @tensor_map _ DM _ _ _ _ idN idN)).
+        @tensor_map _ DM _ _ _ _ IdN IdN)).
     rewrite (@tensor_map_id _ DM
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
@@ -154,7 +154,7 @@ Defined.
 Program Definition DayLaxRoundtripN
   : (DayMonoidLaxF ∘F LaxDayMonoidF) ⇒ (@IdF (LaxMonoidalFctCat MC SM))
   :=
-  {|nt L := (idN; day_lax_roundtrip_hom L)
+  {|nt L := (IdN; day_lax_roundtrip_hom L)
   |}.
 Next Obligation. intros Q x. reflexivity. Defined.
 
@@ -165,7 +165,7 @@ Next Obligation. intros Q x. reflexivity. Defined.
 Program Definition DayLaxRoundtripInvN
   : (@IdF (LaxMonoidalFctCat MC SM)) ⇒ (DayMonoidLaxF ∘F LaxDayMonoidF)
   :=
-  {|nt L := (idN; day_lax_roundtrip_inv_hom L)
+  {|nt L := (IdN; day_lax_roundtrip_inv_hom L)
   |}.
 Next Obligation. intros Q x. reflexivity. Defined.
 
@@ -190,11 +190,11 @@ Program Definition DayMonoidRoundtripN
   {|nt M := _
   |}.
 Next Obligation.
-  refine (idN; _). split.
+  refine (IdN; _). split.
   - intros Q x. exact (day_monoid_unit_roundtrip MC HD M Q x).
   - change (monoid_object_mul
       (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv @tensor_map _ DM _ _ _ _ idN idN)).
+      (monoid_object_mul M ∘Nv @tensor_map _ DM _ _ _ _ IdN IdN)).
     rewrite (@tensor_map_id _ DM (MonoidCarrier M) (MonoidCarrier M)).
     intros Q x. exact (day_monoid_mul_roundtrip MC HD M Q x).
 Defined.
@@ -210,11 +210,11 @@ Program Definition DayMonoidRoundtripInvN
   {|nt M := _
   |}.
 Next Obligation.
-  refine (idN; _). split.
+  refine (IdN; _). split.
   - intros Q x. symmetry. exact (day_monoid_unit_roundtrip MC HD M Q x).
   - change (monoid_object_mul M ≈N
       (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        @tensor_map _ DM _ _ _ _ idN idN)).
+        @tensor_map _ DM _ _ _ _ IdN IdN)).
     rewrite (@tensor_map_id _ DM
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).

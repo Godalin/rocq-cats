@@ -37,7 +37,7 @@ Next Obligation.
   rewrite (@functor_comp B C (F a'') b b' b'' v' v).
   repeat rewrite comp_assoc.
   rewrite <- (comp_assoc (fmap (F a'') v) (fmap F u' b) (fmap F u b)).
-  rewrite <- (nt_naturality (fmap F u') v).
+  rewrite <- (nat_naturality (fmap F u') v).
   repeat rewrite comp_assoc. reflexivity.
 Defined.
 
@@ -55,13 +55,13 @@ Program Definition UncurryN {A B C : Cat} {F G : Fct A (FctCat B C)}
   |}.
 Next Obligation.
   destruct X as [a b], Y as [a' b'], f as [u v]. cbn.
-  pose proof (nt_naturality α u b) as Hu. cbn in Hu.
+  pose proof (nat_naturality α u b) as Hu. cbn in Hu.
   change (α a' b' ∘ (fmap (F a') v ∘ fmap F u b) ≈
     (fmap (G a') v ∘ fmap G u b) ∘ α a b).
   transitivity (fmap (G a') v ∘ (α a' b ∘ fmap F u b)).
   - rewrite <- (comp_assoc (fmap (G a') v) (α a' b) (fmap F u b)),
       <- (comp_assoc (α a' b') (fmap (F a') v) (fmap F u b)).
-    apply comp_r. exact (nt_naturality (α a') v).
+    apply comp_r. exact (nat_naturality (α a') v).
   - transitivity (fmap (G a') v ∘ (fmap G u b ∘ α a b)).
     + apply comp_l. exact Hu.
     + symmetry. apply comp_assoc.
@@ -85,5 +85,5 @@ Global Instance UncurryF_proper {A B C : Cat}
   : Proper (NatIso ==> NatIso) (@UncurryF A B C).
 Proof.
   intros F G [α Hα]. exists (α^uncN). intros [a b].
-  exact (is_iso_NatIso (α a) (Hα a) b).
+  exact (is_iso_nat_iso (α a) (Hα a) b).
 Defined.

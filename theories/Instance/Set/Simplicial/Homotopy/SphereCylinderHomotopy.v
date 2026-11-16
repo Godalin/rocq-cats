@@ -78,7 +78,7 @@ Section CylinderHomotopyComparison.
 Universes u p.
 Context {X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}}.
 Context (f : X ⇒ Y) (g : Y ⇒ X) (b : X 0).
-Context (T : SimplicialHomotopy (g ∘Nv f) (idN : X ⇒ X)).
+Context (T : SimplicialHomotopy (g ∘Nv f) (IdN : X ⇒ X)).
 Context (E : homotopy_map T 1 (simplex_constant X b 1, simplex_generic 1)
   ≈S simplex_constant X b 1).
 Context (KRX : ∀ s, HasHornFillers X
@@ -124,7 +124,7 @@ Defined.
 (** 原正向映射在校正后恢复每个目标球面。 *)
 
 Lemma two_sphere_cylinder_homotopy_inverse_r
-    (U : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (U : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map U 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)
@@ -265,7 +265,7 @@ Defined.
     校正逆代表。 *)
 
 Definition two_sphere_cylinder_homotopy_iso@{v q +}
-    (U : SimplicialHomotopy (f ∘Nv g) (idN : Y ⇒ Y))
+    (U : SimplicialHomotopy (f ∘Nv g) (IdN : Y ⇒ Y))
     (F : homotopy_map U 1
       (simplex_constant Y (f 0 b) 1, simplex_generic 1)
       ≈S simplex_constant Y (f 0 b) 1)

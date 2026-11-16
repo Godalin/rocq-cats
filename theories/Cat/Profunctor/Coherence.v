@@ -50,9 +50,9 @@ Let a := @ProfunctorAssociatorN C D D E Q (HomProf D) P
 Let ρ := @ProfRightUnitorN D E Q HQ.
 Let λP := @ProfLeftUnitorN C D P HP.
 Let left_route := @ProfCompMapN C D E
-  (Q ∘Pr HomProf D) Q P P HR HPQ ρ (idN (F := P)).
+  (Q ∘Pr HomProf D) Q P P HR HPQ ρ (IdN (F := P)).
 Let right_route := @ProfCompMapN C D E
-  Q Q (HomProf D ∘Pr P) P HL HPQ (idN (F := Q)) λP.
+  Q Q (HomProf D ∘Pr P) P HL HPQ (IdN (F := Q)) λP.
 
 (** The two ways of eliminating the middle Hom agree as transformations
     on the complete composites, not only on native representatives. *)
@@ -83,7 +83,7 @@ Proof.
         (x,ρ (Y,W)
           (ιPr[Q; HomProf D; Z] ({|lower := h|},y)))).
       * exact (@prof_comp_map_inject C D E
-          (Q ∘Pr HomProf D) Q P P HR HPQ ρ (idN (F := P)) X Y W x
+          (Q ∘Pr HomProf D) Q P P HR HPQ ρ (IdN (F := P)) X Y W x
           (ιPr[Q; HomProf D; Z] ({|lower := h|},y))).
       * apply func_proper. split; [reflexivity |].
         exact (prof_right_unit_β Q Y W Z h y).
@@ -95,7 +95,7 @@ Proof.
         (λP (X,Z)
           (ιPr[HomProf D; P; Y] (x,{|lower := h|})),y)).
       * exact (@prof_comp_map_inject C D E Q Q
-          (HomProf D ∘Pr P) P HL HPQ (idN (F := Q)) λP X Z W
+          (HomProf D ∘Pr P) P HL HPQ (IdN (F := Q)) λP X Z W
           (ιPr[HomProf D; P; Y] (x,{|lower := h|})) y).
       * apply func_proper. split; [| reflexivity].
         exact (prof_left_unit_β P X Z Y x h).
@@ -221,7 +221,7 @@ Let long_first
   : S ∘Pr (R ∘Pr (Q ∘Pr P)) ⇒ S ∘Pr ((R ∘Pr Q) ∘Pr P)
   := @ProfCompMapN C B A S S
     (R ∘Pr (Q ∘Pr P)) ((R ∘Pr Q) ∘Pr P) H0 H2
-    (idN (F := S)) inner_first.
+    (IdN (F := S)) inner_first.
 Let long_middle
   : S ∘Pr ((R ∘Pr Q) ∘Pr P) ⇒ (S ∘Pr (R ∘Pr Q)) ∘Pr P
   := @ProfunctorAssociatorN C D B A S (R ∘Pr Q) P
@@ -230,7 +230,7 @@ Let long_last
   : (S ∘Pr (R ∘Pr Q)) ∘Pr P ⇒ ((S ∘Pr R) ∘Pr Q) ∘Pr P
   := @ProfCompMapN C D A
     (S ∘Pr (R ∘Pr Q)) ((S ∘Pr R) ∘Pr Q) P P H3 H4
-    inner_last (idN (F := P)).
+    inner_last (IdN (F := P)).
 
 (** Two reassociations preserve all four values and their original order. *)
 
@@ -294,7 +294,7 @@ Proof.
             (ιPr[Q; P; Y] (x,y),z)),w)).
     - exact (@prof_comp_map_inject C B A S S
         (R ∘Pr (Q ∘Pr P)) ((R ∘Pr Q) ∘Pr P) H0 H2
-        (idN (F := S)) inner_first
+        (IdN (F := S)) inner_first
         X W V
         (ιcoend[ProfCompKernel R (Q ∘Pr P) X W] Z
           (ιPr[Q; P; Y] (x,y),z)) w).
@@ -324,7 +324,7 @@ Proof.
           (ιPr[S; R ∘Pr Q; W] (ιPr[R; Q; Z] (y,z),w)))).
     + exact (@prof_comp_map_inject C D A
         (S ∘Pr (R ∘Pr Q)) ((S ∘Pr R) ∘Pr Q) P P H3 H4
-        inner_last (idN (F := P))
+        inner_last (IdN (F := P))
         X Y V x (ιPr[S; R ∘Pr Q; W] (ιPr[R; Q; Z] (y,z),w))).
     + apply func_proper. split; [reflexivity |].
       exact (@profunctor_associator_β D E B A S R Q

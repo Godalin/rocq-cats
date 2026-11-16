@@ -51,7 +51,7 @@ Class FreydCat (C K : Cat)
 
   (** 选定笛卡尔值结构及对称预幺半计算结构。 *)
 
-  ; hasCartesian :: CartesianCat C
+  ; hasCartCat :: CartCat C
   ; hasSymmetricPremonoidal :: SymmetricPremonoidalCat FreydComputations
 
   (** Tensor and unit agree on objects. The chosen equality witnesses

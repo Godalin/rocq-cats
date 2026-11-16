@@ -162,19 +162,19 @@ Definition triangle_cylinder
   := SimplicialCylinderF (Δ[2]).
 
 Definition identity_cylinder_factor
-  := simplex_prism_eval_factor (idN : triangle_cylinder ⇒ triangle_cylinder)
+  := simplex_prism_eval_factor (IdN : triangle_cylinder ⇒ triangle_cylinder)
       repeated_space repeated_time.
 
 Definition identity_cylinder_determined
   := snd (simplex_prism_map_eq_iff
-      (idN : triangle_cylinder ⇒ triangle_cylinder) idN)
+      (IdN : triangle_cylinder ⇒ triangle_cylinder) IdN)
       (λ k, reflexivity (simplex_prism_eval
-        (idN : triangle_cylinder ⇒ triangle_cylinder) k)).
+        (IdN : triangle_cylinder ⇒ triangle_cylinder) k)).
 
 Definition reconstructed_product_value
   : triangle_cylinder 5
   := triangle_cylinder[SimplexPrismIndexF repeated_space repeated_time]Δ
-      (simplex_prism_eval (idN : triangle_cylinder ⇒ triangle_cylinder)
+      (simplex_prism_eval (IdN : triangle_cylinder ⇒ triangle_cylinder)
         (simplex_prism_pivot repeated_space repeated_time)).
 
 Example actual_product_coordinates_compute

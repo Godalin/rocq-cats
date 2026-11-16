@@ -72,7 +72,7 @@ Next Obligation. intros z z' E. exact true. Defined.
 Next Obligation. intros z. exact false. Defined.
 
 Program Definition moving_homotopy
-  : SimplicialHomotopy (idN : WitnessX ⇒ WitnessX) FlipN
+  : SimplicialHomotopy (IdN : WitnessX ⇒ WitnessX) FlipN
   :=
   {|homotopy_map := MovingN
   |}.
@@ -107,7 +107,7 @@ Definition true_cylinder
 (** 不同轨迹见证保留同一实际柱映射。 *)
 
 Example trajectory_and_endpoints_compute
-  : ((idN : WitnessX ⇒ WitnessX) 0 false, FlipN 0 (false : WitnessX 0),
+  : ((IdN : WitnessX ⇒ WitnessX) 0 false, FlipN 0 (false : WitnessX 0),
      homotopy_map moving_homotopy 1
        (simplex_constant WitnessX false 1, simplex_generic 1),
      simplex_constant WitnessX true 1) = (false, true, false, true).
@@ -218,8 +218,8 @@ Definition interval_base
   := SimplicialIntervalPointN false 0 tt.
 
 Definition constant_interval_homotopy
-  : SimplicialHomotopy (idN : interval_model ⇒ interval_model) idN
-  := SimplicialConstantHomotopy idN.
+  : SimplicialHomotopy (IdN : interval_model ⇒ interval_model) IdN
+  := SimplicialConstantHomotopy IdN.
 
 Definition constant_interval_trace
   : homotopy_map constant_interval_homotopy 1

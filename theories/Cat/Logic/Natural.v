@@ -75,7 +75,7 @@ Definition preorder_nat_iso_data
 
 Definition preorder_nat_iso_inv_data
     (H : ∀ c, R (F c) (G c) ∧ R (G c) (F c)) (c : @Ob C)
-  : NatIso_inv (PreorderNatIso H).1 (PreorderNatIso H).2 c = snd (H c)
+  : InvN (PreorderNatIso H).1 (PreorderNatIso H).2 c = snd (H c)
   := eq_refl.
 
 (** All parallel natural transformations agree in the existing [NatEq].

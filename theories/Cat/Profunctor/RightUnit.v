@@ -379,20 +379,20 @@ Lemma prof_right_unit_out_input (X : @Ob C) (Z : @Ob D)
     `{HP : !HasCoend SetCat (ProfCompKernel P (HomProf C) X Z)}
     `{HQ : !HasCoend SetCat (ProfCompKernel Q (HomProf C) X Z)}
   : (prof_right_unit_out Q X Z ∘r
-      coend_map (ProfCompInputN α (idN (F := HomProf C)) X Z))
+      coend_map (ProfCompInputN α (IdN (F := HomProf C)) X Z))
       ≈f (α (X,Z) ∘r prof_right_unit_out P X Z).
 Proof.
   refine (@coend_hom_ext C (SetCat@{u p _ _ _ _ _})
     (ProfCompKernel P (HomProf C) X Z) HP (Q (X,Z))
     (prof_right_unit_out Q X Z ∘r coend_map
-      (ProfCompInputN α (idN (F := HomProf C)) X Z))
+      (ProfCompInputN α (IdN (F := HomProf C)) X Z))
     (α (X,Z) ∘r prof_right_unit_out P X Z) _).
   intros Y [[h] x].
   transitivity (prof_right_unit_out Q X Z
     (ιcoend[ProfCompKernel Q (HomProf C) X Z] Y
       ({|lower := h|},α (Y,Z) x))).
   - apply (@func_proper _ _ (prof_right_unit_out Q X Z)).
-    exact (coend_map_β (ProfCompInputN α (idN (F := HomProf C)) X Z)
+    exact (coend_map_β (ProfCompInputN α (IdN (F := HomProf C)) X Z)
       Y ({|lower := h|},x)).
   - transitivity (lmap[Q; h] (α (Y,Z) x)).
     + exact (prof_right_unit_β Q X Z Y h (α (Y,Z) x)).
@@ -409,7 +409,7 @@ Defined.
 Lemma prof_right_unitor_natural
     `{HP : !HasProfComp C C D P (HomProf C)}
     `{HQ : !HasProfComp C C D Q (HomProf C)}
-  : (ProfRightUnitorN Q ∘Nv ProfCompMapN α idN) ≈N
+  : (ProfRightUnitorN Q ∘Nv ProfCompMapN α IdN) ≈N
       (α ∘Nv ProfRightUnitorN P).
 Proof. intros [X Z]. exact (prof_right_unit_out_input X Z). Defined.
 
@@ -422,11 +422,11 @@ Lemma prof_right_unitor_inv_natural
     `{HQ : !HasProfComp C C D Q (HomProf C)}
     (X : @Ob C) (Z : @Ob D)
   : (ProfRightUnitorInvN Q (X,Z) ∘r α (X,Z)) ≈f
-      (ProfCompMapN α idN (X,Z) ∘r ProfRightUnitorInvN P (X,Z)).
+      (ProfCompMapN α IdN (X,Z) ∘r ProfRightUnitorInvN P (X,Z)).
 Proof.
   exact (@iso_square_inv SetCat _ _ _ _
     (ProfRightUnitIso P X Z) (ProfRightUnitIso Q X Z)
-    (ProfCompMapN α idN (X,Z)) (α (X,Z))
+    (ProfCompMapN α IdN (X,Z)) (α (X,Z))
     (prof_right_unitor_natural (X,Z))).
 Defined.
 

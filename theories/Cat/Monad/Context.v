@@ -179,7 +179,7 @@ Lemma context_bind_map {W X Y : @Ob C}
 Proof.
   pose proof (context_bind_post u (η[M] X ∘ π2) f) as H.
   rewrite context_bind_unit, <- comp_assoc,
-    <- (nt_naturality (η[M]) f), comp_assoc in H. symmetry. exact H.
+    <- (nat_naturality (η[M]) f), comp_assoc in H. symmetry. exact H.
 Qed.
 
 (** Mapping the bound input can be absorbed into the continuation. *)

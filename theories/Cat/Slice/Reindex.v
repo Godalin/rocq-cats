@@ -349,7 +349,7 @@ Proof. intros A. apply slice_reindex_hom_ext. cbn. rewrite !pb_β2. reflexivity.
 (** [slice_reindex_equiv] 与恒等的相容性。 *)
 
 Theorem slice_reindex_equiv_id {X Y : @Ob C} {f : Hom X Y} (H : f ≈ f)
-  : SliceReindexEqN H ≈N idN.
+  : SliceReindexEqN H ≈N IdN.
 Proof.
   intros A. apply slice_reindex_hom_ext. cbn. rewrite pb_β2, comp_id_r. reflexivity.
 Qed.

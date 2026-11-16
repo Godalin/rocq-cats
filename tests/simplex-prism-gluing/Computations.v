@@ -79,7 +79,7 @@ Example high_degenerate_values_compute
 Proof. vm_compute. reflexivity. Defined.
 
 Definition restriction_is_natural
-  := nt_naturality glued first_position
+  := nat_naturality glued first_position
       ({|lower := repeated_space|}, {|lower := repeated_time|}).
 
 Definition independent_equation_witnesses
@@ -170,13 +170,13 @@ Definition Q
 
 Definition identity_values
   : Ordinal 2 → Q 3
-  := simplex_prism_eval (idN : Q ⇒ Q).
+  := simplex_prism_eval (IdN : Q ⇒ Q).
 
 Definition product_glued
   : Q ⇒ Q
   := SimplexTrianglePrismGluingN identity_values
-      (simplex_prism_values_adjacent (idN : Q ⇒ Q) fin_first)
-      (simplex_prism_values_adjacent (idN : Q ⇒ Q) fin_first⁺).
+      (simplex_prism_values_adjacent (IdN : Q ⇒ Q) fin_first)
+      (simplex_prism_values_adjacent (IdN : Q ⇒ Q) fin_first⁺).
 
 Definition six_ranks {m : nat} (f : (@Hom Δ) 5 m)
   : nat * nat * nat * nat * nat * nat
@@ -192,8 +192,8 @@ Example actual_product_reconstructed_compute
 Proof. vm_compute. reflexivity. Defined.
 
 Definition product_reconstructed
-  : product_glued ≈N (idN : Q ⇒ Q)
-  := simplex_triangle_prism_gluing_η (idN : Q ⇒ Q).
+  : product_glued ≈N (IdN : Q ⇒ Q)
+  := simplex_triangle_prism_gluing_η (IdN : Q ⇒ Q).
 
 (** A zero-dimensional spatial source has just one staircase. *)
 
@@ -205,8 +205,8 @@ Definition Q0
 
 Definition point_product_glued
   : Q0 ⇒ Q0
-  := SimplexPrismGluingN (simplex_prism_eval (idN : Q0 ⇒ Q0))
-      (simplex_prism_values_compatible (idN : Q0 ⇒ Q0)).
+  := SimplexPrismGluingN (simplex_prism_eval (IdN : Q0 ⇒ Q0))
+      (simplex_prism_values_compatible (IdN : Q0 ⇒ Q0)).
 
 Example point_cylinder_reconstructed_compute
   : let z := point_product_glued 1

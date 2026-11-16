@@ -305,7 +305,7 @@ Proof. exact (day_applicative_lift2_roundtrip A eval_resp). Defined.
 
 Lemma day_applicative_roundtrip_hom
     (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-  : is_applicative_hom (DayMonoidA (ApplicativeDayMonoid A)) A idN.
+  : is_applicative_hom (DayMonoidA (ApplicativeDayMonoid A)) A IdN.
 Proof.
   split.
   - intros X x. exact (day_applicative_pure_roundtrip A X x).
@@ -318,10 +318,10 @@ Defined.
 
 Lemma day_applicative_roundtrip_inv_hom
     (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-  : is_applicative_hom A (DayMonoidA (ApplicativeDayMonoid A)) idN.
+  : is_applicative_hom A (DayMonoidA (ApplicativeDayMonoid A)) IdN.
 Proof.
-  exact (applicative_hom_inverse (DayMonoidA (ApplicativeDayMonoid A)) A idN
-    (day_applicative_roundtrip_hom A) (nt_id_NatIso A)).
+  exact (applicative_hom_inverse (DayMonoidA (ApplicativeDayMonoid A)) A IdN
+    (day_applicative_roundtrip_hom A) (nat_id_iso A)).
 Defined.
 
 (** The original Day unit is recovered by the accepted monoid round trip. *)
@@ -347,7 +347,7 @@ Proof. exact (day_monoid_mul_roundtrip SM HD M). Defined.
 (** 复用已有保持运算的 Day 恒等比较。 *)
 
 Lemma applicative_day_roundtrip_hom (M : MonoidObj DM)
-  : is_monoid_hom (ApplicativeDayMonoid (DayMonoidA M)) M idN.
+  : is_monoid_hom (ApplicativeDayMonoid (DayMonoidA M)) M IdN.
 Proof. exact (day_monoid_roundtrip_hom SM HD M). Defined.
 
 (** The reverse identity also reuses its existing preservation witness. *)
@@ -355,7 +355,7 @@ Proof. exact (day_monoid_roundtrip_hom SM HD M). Defined.
 (** 反向恒等也复用已有保持性见证。 *)
 
 Lemma applicative_day_roundtrip_inv_hom (M : MonoidObj DM)
-  : is_monoid_hom M (ApplicativeDayMonoid (DayMonoidA M)) idN.
+  : is_monoid_hom M (ApplicativeDayMonoid (DayMonoidA M)) IdN.
 Proof. exact (day_monoid_roundtrip_inv_hom SM HD M). Defined.
 
 End Structures.

@@ -39,11 +39,13 @@ Arguments wedge_comm {_ _ _ _} _ {_ _} _.
 
 (** 仅用值域的指定相等比较各条腿。 *)
 
-Definition WedgeEq {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
+Definition WedgeEq {C D : Cat}
+    {F : Fct ((C^op) ×C C) D} {W}
     (κ μ : Wedge F W)
   := ∀ X, κ X ≈ μ X.
 
-Infix "≈W" := WedgeEq (at level 50, no associativity) : cat_scope.
+Infix "≈W" := WedgeEq
+  (at level 50, no associativity) : cat_scope.
 
 (** Pointwise equality of wedge legs is an equivalence relation. *)
 
@@ -55,7 +57,8 @@ Proof.
   split.
   - intros κ X. reflexivity.
   - intros κ μ H X. symmetry. exact (H X).
-  - intros κ μ ν H K X. transitivity (μ X); [apply H | apply K].
+  - intros κ μ ν H K X. transitivity (μ X);
+      [apply H | apply K].
 Defined.
 
 (** Precompose all legs by an apex map. *)
@@ -84,13 +87,17 @@ Global Instance wedge_comp_proper {C D : Cat}
     {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
   : Proper (WedgeEq ==> @HomEq[V, W] ==> WedgeEq)
       (@wedge_comp C D F W V).
-Proof. intros κ μ H f g K X. cbn. rewrite (H X), K. reflexivity. Qed.
+Proof.
+  intros κ μ H f g K X. cbn.
+  rewrite (H X), K. reflexivity.
+Qed.
 
 (** Precomposing by the identity recovers the original wedge. *)
 
 (** 用恒等预合成恢复原楔。 *)
 
-Lemma wedge_comp_id {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
+Lemma wedge_comp_id {C D : Cat}
+    {F : Fct ((C^op) ×C C) D} {W}
     (κ : Wedge F W)
   : κ ∘Wedge id ≈W κ.
 Proof. intros X. apply comp_id_r. Qed.
@@ -118,7 +125,7 @@ Program Definition wedge_map {C D : Cat}
   {|wedge_leg X := α (X, X) ∘ κ X
   |}.
 Next Obligation.
-  rewrite <- !comp_assoc, <- !nt_naturality, !comp_assoc,
+  rewrite <- !comp_assoc, <- !nat_naturality, !comp_assoc,
     (wedge_comm κ f). reflexivity.
 Qed.
 
@@ -128,7 +135,8 @@ Qed.
 
 Global Instance wedge_map_proper {C D : Cat}
     {F G : Fct ((C^op) ×C C) D} {W}
-  : Proper (NatEq ==> WedgeEq ==> WedgeEq) (@wedge_map C D F G W).
+  : Proper (NatEq ==> WedgeEq ==> WedgeEq)
+      (@wedge_map C D F G W).
 Proof.
   intros α β H κ μ K X. cbn. rewrite (H (X, X)), (K X). reflexivity.
 Qed.
@@ -137,14 +145,16 @@ Qed.
 
 (** 楔范畴的对象保留顶点及其楔。 *)
 
-Definition WedgeOb {C D : Cat} (F : Fct ((C^op) ×C C) D)
+Definition WedgeOb {C D : Cat}
+    (F : Fct ((C^op) ×C C) D)
   := ∃ W : @Ob D, Wedge F W.
 
 (** A wedge morphism retains an apex map and commuting triangles. *)
 
 (** 楔态射保留顶点映射及交换三角形。 *)
 
-Definition WedgeMap {C D : Cat} {F : Fct ((C^op) ×C C) D}
+Definition WedgeMap {C D : Cat}
+    {F : Fct ((C^op) ×C C) D}
     (κ μ : WedgeOb F)
   := ∃ f : Hom κ.1 μ.1, μ.2 ∘Wedge f ≈W κ.2.
 
@@ -153,7 +163,8 @@ Definition WedgeMap {C D : Cat} {F : Fct ((C^op) ×C C) D}
 
 (** 楔态射按顶点映射比较，不比较保留的交换性见证。 *)
 
-Program Definition WedgeCat {C D : Cat} (F : Fct ((C^op) ×C C) D)
+Program Definition WedgeCat {C D : Cat}
+    (F : Fct ((C^op) ×C C) D)
   : Cat
   :=
   {|Ob := WedgeOb F
@@ -174,7 +185,10 @@ Next Obligation. apply wedge_comp_id. Defined.
 Next Obligation.
   rewrite <- wedge_comp_assoc, g.2, f.2. reflexivity.
 Defined.
-Next Obligation. intros f f' H g g' K. cbn in *. rewrite H, K. reflexivity. Qed.
+Next Obligation.
+  intros f f' H g g' K. cbn in *.
+  rewrite H, K. reflexivity.
+Qed.
 Next Obligation. apply comp_id_r. Qed.
 Next Obligation. apply comp_id_l. Qed.
 Next Obligation. apply comp_assoc. Qed.
@@ -183,7 +197,8 @@ Next Obligation. apply comp_assoc. Qed.
 
 (** 忘掉楔，保留顶点及顶点映射。 *)
 
-Program Definition WedgeApexF {C D : Cat} (F : Fct ((C^op) ×C C) D)
+Program Definition WedgeApexF {C D : Cat}
+    (F : Fct ((C^op) ×C C) D)
   : Fct (WedgeCat F) D
   :=
   {|F0 κ := κ.1

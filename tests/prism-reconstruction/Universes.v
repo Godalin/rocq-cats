@@ -33,7 +33,7 @@ Context (C : Cat@{o h e l l}) (D : Cat@{h e o l l})
 (** 重建任意棱柱保留独立的原生大小。 *)
 
 Definition independent_reconstruction
-  : NaturalPrismF (PrismTransformationN K) ≅N K
+  : NatPrismF (PrismTransformationN K) ≅N K
   := prism_reconstruction_iso K.
 
 (** The transformation round trip also works in these size profiles. *)
@@ -41,9 +41,9 @@ Definition independent_reconstruction
 (** 自然变换的往返律也适用于这些大小配置。 *)
 
 Definition independent_transformation_roundtrip
-  : (NaturalPrismBoundaryN α (fin_next fin_first) ∘Nv
-      PrismTransformationN (NaturalPrismF α)) ≈N
-      (α ∘Nv NaturalPrismBoundaryN α fin_first)
+  : (NatPrismBoundaryN α (fin_next fin_first) ∘Nv
+      PrismTransformationN (NatPrismF α)) ≈N
+      (α ∘Nv NatPrismBoundaryN α fin_first)
   := natural_prism_transformation_β α.
 
 (** The universal property uses Type-valued equality at its own level. *)

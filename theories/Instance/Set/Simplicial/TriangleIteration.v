@@ -141,9 +141,9 @@ Definition triangle_horn_chain_segment_comm (i j : Ordinal 9)
       chain_segment c i j f) ≈N
       RegionInclusionN (TriangleHornRegion r (fin_rank i)).
 Proof.
-  transitivity (idN ∘Nv
+  transitivity (IdN ∘Nv
     RegionInclusionN (TriangleHornRegion r (fin_rank i))).
-  - exact (nt_naturality chain_inclusions f).
+  - exact (nat_naturality chain_inclusions f).
   - intros n x. reflexivity.
 Defined.
 

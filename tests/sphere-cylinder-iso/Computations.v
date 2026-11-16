@@ -420,7 +420,7 @@ Definition GZ
 
 Definition model_backward
   : CZ →r CZ
-  := two_sphere_cylinder_inverse_resp (idN : Z ⇒ Z) (nt_id_NatIso Z) b
+  := two_sphere_cylinder_inverse_resp (IdN : Z ⇒ Z) (nat_id_iso Z) b
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺).
 
@@ -455,13 +455,13 @@ Proof. vm_compute. reflexivity. Defined.
 (** 两项运算定律在真实 Kan 模型中产生实际柱。 *)
 
 Definition cocycle_product_cylinder
-  := two_sphere_cylinder_inverse_mul (idN : Z ⇒ Z) (nt_id_NatIso Z) b
+  := two_sphere_cylinder_inverse_mul (IdN : Z ⇒ Z) (nat_id_iso Z) b
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       product_choice product_choice bool_cocycle_sphere bool_cocycle_sphere.
 
 Definition cocycle_inverse_cylinder
-  := two_sphere_cylinder_inverse_left_inverse (idN : Z ⇒ Z) (nt_id_NatIso Z) b
+  := two_sphere_cylinder_inverse_left_inverse (IdN : Z ⇒ Z) (nat_id_iso Z) b
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
       left_choice product_choice left_choice right_choice bool_cocycle_sphere.

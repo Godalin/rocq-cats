@@ -39,7 +39,7 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
 
 Definition native_prism
   : Fct (VtxCat T ×C [Ord 1]) (VtxCat U)
-  := NaturalPrismF α.
+  := NatPrismF α.
 
 (** Value equality can lie strictly below the value carrier. *)
 
@@ -83,7 +83,7 @@ Definition high_value_nerve_endpoint
 
 Definition low_value_nerve_identity
   : HomotopyEq
-      (VtxNerveHomotopy (F := F) (idN : F ⇒ F) :
+      (VtxNerveHomotopy (F := F) (IdN : F ⇒ F) :
         SimplicialHomotopy
           (VtxNerveN F :
             (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒ Nᵥ(U))

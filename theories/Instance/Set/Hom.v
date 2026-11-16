@@ -93,7 +93,7 @@ Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
 (** [nt_comp_pre] 与恒等的相容性。 *)
 
 Theorem nt_comp_pre_id {C : Cat} {X : @Ob C}
-  : (@id X) ^*N ≈N idN.
+  : (@id X) ^*N ≈N IdN.
 Proof. intros Z h. simpl. apply comp_id_r. Qed.
 
 (** Compatibility with composition for [nt_comp_pre]. *)
@@ -132,7 +132,7 @@ Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
 (** [nt_comp_post] 与恒等的相容性。 *)
 
 Theorem nt_comp_post_id {C : Cat} {X : @Ob C}
-  : (@id X) _*N ≈N idN.
+  : (@id X) _*N ≈N IdN.
 Proof. intros Z h. simpl. apply comp_id_l. Qed.
 
 (** Compatibility with composition for [nt_comp_post]. *)

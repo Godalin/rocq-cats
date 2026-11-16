@@ -243,7 +243,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   transitivity (α Z (fmap H g (fmap H f h), fmap F g x)).
-  - symmetry. exact (nt_naturality α g (fmap H f h, x)).
+  - symmetry. exact (nat_naturality α g (fmap H f h, x)).
   - apply func_proper. split.
     + symmetry. exact (functor_comp _ _ H g f h).
     + reflexivity.
@@ -327,7 +327,7 @@ Next Obligation.
                                 |})) (fmap F f x)).
   - apply kripke_eval_reindex.
   - apply kripke_eval_proper; [| reflexivity].
-    symmetry. exact (nt_naturality β f {|lower := h
+    symmetry. exact (nat_naturality β f {|lower := h
                                       |}).
 Defined.
 
@@ -354,7 +354,7 @@ Proof.
   intros X [h] Y f x. cbn.
   transitivity (β X {|lower := h
                     |} Y (f ∘ id) x).
-  - exact (nt_naturality β f {|lower := h
+  - exact (nat_naturality β f {|lower := h
                             |} Y id x).
   - apply kripke_apply_proper; [apply comp_id_r | reflexivity].
 Defined.

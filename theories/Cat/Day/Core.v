@@ -74,7 +74,7 @@ Definition DayPostN {Z Z' : @Ob C} (f : Hom Z Z')
   : DayKernel T F G Z ⇒ DayKernel T F G Z'
   := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _
       (((LiftF ∘Nl (f _*N)) ∘Nr (T^opF))
-        ∘Nr FstF ((C ×C C)^op) (C ×C C)) idN.
+        ∘Nr FstF ((C ×C C)^op) (C ×C C)) IdN.
 
 (** Equal target arrows induce equal kernel transformations. *)
 
@@ -93,7 +93,7 @@ Defined.
 (** 恒等后合成保持核不变。 *)
 
 Lemma day_post_id (Z : @Ob C)
-  : DayPostN (@id Z) ≈N idN.
+  : DayPostN (@id Z) ≈N IdN.
 Proof.
   intros [[X Y] [X' Y']] [h [x y]].
   split; [exact {|lower := comp_id_l (lower h)|} | split; reflexivity].
@@ -156,7 +156,7 @@ Next Obligation.
     (DayPostN T f) (DayPostN T g) (@day_post_proper C T F G X Y f g H)).
 Defined.
 Next Obligation.
-  transitivity (coend_map (idN (F := DayKernel T F G X))).
+  transitivity (coend_map (IdN (F := DayKernel T F G X))).
   - apply (@coend_map_proper (C ×C C) SetCat). apply day_post_id.
   - apply (@coend_map_id (C ×C C) SetCat).
 Defined.

@@ -170,7 +170,7 @@ Proof. reflexivity. Qed.
 Example identity_component_is_constant
   : fmap (lower (homotopy_map
       (VtxNerveHomotopy (F := BooleanIdentityF)
-        (idN : BooleanIdentityF ⇒ BooleanIdentityF) :
+        (IdN : BooleanIdentityF ⇒ BooleanIdentityF) :
           SimplicialHomotopy
             (VtxNerveN BooleanIdentityF :
               BooleanVertexNerve ⇒ BooleanVertexNerve)

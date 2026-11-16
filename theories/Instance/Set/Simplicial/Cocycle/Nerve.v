@@ -119,7 +119,7 @@ Defined.
     自由球面和常值球面；不预设逆见证运输或一般同伦群不变性。 *)
 
 Lemma cocycle_nerve_homotopy_retract_trivial
-    (H : (g ∘Nv f : @CocycleHomotopyMapS M Z) ≈S idN) (a : M)
+    (H : (g ∘Nv f : @CocycleHomotopyMapS M Z) ≈S IdN) (a : M)
   : a ≈S 1.
 Proof.
   pose (b := (two_cocycle_simplex_unit 0 : Z 0)).
@@ -149,7 +149,7 @@ Defined.
 (** 一份系数非单位的见证排除每个这样的往返。 *)
 
 Definition cocycle_no_nerve_homotopy_retract (a : M) (Ha : ¬ a ≈S 1)
-  : ¬ (g ∘Nv f : @CocycleHomotopyMapS M Z) ≈S idN.
+  : ¬ (g ∘Nv f : @CocycleHomotopyMapS M Z) ≈S IdN.
 Proof.
   intros H. exact (Ha (cocycle_nerve_homotopy_retract_trivial H a)).
 Defined.

@@ -83,7 +83,7 @@ Program Definition action_nat_fam_map {X : SetC}
   :=
   {|fam_map x := α x
   |}.
-Next Obligation. exact (nt_naturality α p a). Defined.
+Next Obligation. exact (nat_naturality α p a). Defined.
 
 (** Families and their maps form a functor into the action category. *)
 
@@ -186,7 +186,7 @@ Definition action_fam_action_iso {X : SetC}
     (F : Fct (EqGpd X) SetCat)
   : @is_iso (FctCat (EqGpd X) SetCat) _ _ (ActionFamMapN F).
 Proof.
-  apply NatIso_is_iso. intros x.
+  apply nat_iso_is_iso. intros x.
   exists id_resp. split; intros a; reflexivity.
 Defined.
 

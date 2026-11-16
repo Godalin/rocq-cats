@@ -198,8 +198,8 @@ Program Definition RelationGluingPairN
   |}.
 Next Obligation. intros x y h. split; apply func_proper; exact h. Defined.
 Next Obligation.
-  intros x. split; [exact (nt_naturality α f x) |
-    exact (nt_naturality β f x)].
+  intros x. split; [exact (nat_naturality α f x) |
+    exact (nat_naturality β f x)].
 Defined.
 
 (** The left projection recovers the first natural map. *)

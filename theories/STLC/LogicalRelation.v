@@ -250,7 +250,7 @@ Proof.
   intros A x.
   refine (realizes_sem_eq A Θ (σ A x)⟨ρ⟩ _ _ _
     (realizes_rename A Δ Θ ρ (σ A x) _ (h A x))).
-  symmetry. exact (nt_naturality (EnvLookupN Γ A x) ρ γ).
+  symmetry. exact (nat_naturality (EnvLookupN Γ A x) ρ γ).
 Defined.
 
 (** Extending both assignments by a related term/value preserves their

@@ -190,7 +190,7 @@ Proof. reflexivity. Defined.
 Definition nerve_equiv_iso@{u p +} {C D : Cat} (e : C ≃C D)
   : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅(D).
 Proof.
-  exists N≅[e.1]. apply is_iso_NatIso.
+  exists N≅[e.1]. apply is_iso_nat_iso.
   exact (functor_is_iso DiagramNerveF e.1 e.2).
 Defined.
 
@@ -234,7 +234,7 @@ Definition standard_nerve_nat_iso@{u p +}
       (DiagramNerveF ∘F SimplexInclusionF).
 Proof.
   exists StandardNerveN. intros n.
-  exact (NatIso_is_iso (standard_nerve_iso n).1 (standard_nerve_iso n).2).
+  exact (nat_iso_is_iso (standard_nerve_iso n).1 (standard_nerve_iso n).2).
 Defined.
 
 (** * Equality Boundary for Groupoids
@@ -263,7 +263,7 @@ Proof.
         (ordinal_first_initial n) (lower x)).
     + transitivity (ConstF [Ord n] (lower y fin_first)).
       * exists (fmap (DiagF [Ord n] C) e.1).
-        apply is_iso_NatIso.
+        apply is_iso_nat_iso.
         exact (functor_is_iso (DiagF [Ord n] C) e.1 e.2).
       * exact (gpd_initial_diagram_iso
           (ordinal_first_initial n) (lower y)).

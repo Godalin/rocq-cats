@@ -170,12 +170,12 @@ Proof.
   intros n [[m [a t]] | [j [Hj [m [a t]]]]]
     [[l [a' t']] | [k [Hk [l [a' t']]]]] f g E.
   - transitivity (B n (fmap Bdy f (a, t))).
-    + symmetry. exact (nt_naturality B f (a, t)).
+    + symmetry. exact (nat_naturality B f (a, t)).
     + transitivity (B n (fmap Bdy g (a', t'))).
       * apply func_proper. exact E.
-      * exact (nt_naturality B g (a', t')).
+      * exact (nat_naturality B g (a', t')).
   - transitivity (B n (fmap Bdy f (a, t))).
-    + symmetry. exact (nt_naturality B f (a, t)).
+    + symmetry. exact (nat_naturality B f (a, t)).
     + transitivity (B n (fst (fmap Bdy f (a, t)),
         fmap StandardSimplexF δ[1; k] n (snd (fmap Cyl g (a', t'))))).
       * apply func_proper. split; [reflexivity |].
@@ -188,10 +188,10 @@ Proof.
         -- apply EB. exact Hk.
         -- transitivity (H k n (fmap Cyl g (a', t'))).
            ++ apply func_proper. split; [exact (fst E) | reflexivity].
-           ++ exact (nt_naturality (H k) g (a', t')).
+           ++ exact (nat_naturality (H k) g (a', t')).
   - symmetry.
     transitivity (B n (fmap Bdy g (a', t'))).
-    + symmetry. exact (nt_naturality B g (a', t')).
+    + symmetry. exact (nat_naturality B g (a', t')).
     + transitivity (B n (fst (fmap Bdy g (a', t')),
         fmap StandardSimplexF δ[1; j] n (snd (fmap Cyl f (a, t))))).
       * apply func_proper. split; [reflexivity |].
@@ -204,9 +204,9 @@ Proof.
         -- apply EB. exact Hj.
         -- transitivity (H j n (fmap Cyl f (a, t))).
            ++ apply func_proper. split; [symmetry; exact (fst E) | reflexivity].
-           ++ exact (nt_naturality (H j) f (a, t)).
+           ++ exact (nat_naturality (H j) f (a, t)).
   - transitivity (H j n (fmap Cyl f (a, t))).
-    + symmetry. exact (nt_naturality (H j) f (a, t)).
+    + symmetry. exact (nat_naturality (H j) f (a, t)).
     + transitivity (H k n (fst (fmap Cyl f (a, t)),
         snd (fmap Cyl g (a', t')))).
       * apply EH; [exact Hj | exact Hk |].
@@ -217,7 +217,7 @@ Proof.
            ++ apply comp_assoc.
       * transitivity (H k n (fmap Cyl g (a', t'))).
         -- apply func_proper. split; [exact (fst E) | reflexivity].
-        -- exact (nt_naturality (H k) g (a', t')).
+        -- exact (nat_naturality (H k) g (a', t')).
 Defined.
 
 (** The complete initial map is the existing descended mediator. *)

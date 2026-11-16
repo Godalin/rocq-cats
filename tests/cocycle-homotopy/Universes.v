@@ -137,7 +137,7 @@ Definition lower_equality_nerve_obstruction
     (f : (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒
       (VtxNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
     (g : VtxNerve T ⇒ Z²(BoolS_Monoid))
-  : ¬ SimplicialHomotopy (g ∘Nv f) idN
+  : ¬ SimplicialHomotopy (g ∘Nv f) IdN
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 
 (** The higher ambient equality admits the obstruction for arbitrary maps. *)
@@ -148,7 +148,7 @@ Definition higher_equality_nerve_obstruction
     (f : (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
     (g : VtxNerve T ⇒ Z²(BoolS_Monoid))
-  : ¬ SimplicialHomotopy (g ∘Nv f) idN
+  : ¬ SimplicialHomotopy (g ∘Nv f) IdN
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 
 End NerveSizes.

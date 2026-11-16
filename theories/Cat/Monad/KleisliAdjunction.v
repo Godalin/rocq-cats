@@ -140,7 +140,7 @@ Defined.
 
 Program Definition KleisliMonadFrom
   : MonadHomS M KleisliMonad
-  := (NatIso_inv (KleisliCompositeIso M).1 (KleisliCompositeIso M).2; _).
+  := (InvN (KleisliCompositeIso M).1 (KleisliCompositeIso M).2; _).
 Next Obligation.
   split; intros X.
   - change (id ∘ η[M] X ≈ η[KleisliMonad] X).

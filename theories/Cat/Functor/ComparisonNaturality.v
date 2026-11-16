@@ -52,11 +52,11 @@ Lemma preserved_product_inv_boundary (X Y : C)
       preserved_product_inv G preservesG X Y ∘ (α X × α Y).
 Proof.
   apply (product_cone_ext (preservesG X Y)).
-  - rewrite <- !comp_assoc, <- (nt_naturality α π1), comp_assoc,
+  - rewrite <- !comp_assoc, <- (nat_naturality α π1), comp_assoc,
       (fst (preserved_product_inv_β F preservesF X Y)),
       (fst (preserved_product_inv_β G preservesG X Y)), cross_η, product_β1.
     reflexivity.
-  - rewrite <- !comp_assoc, <- (nt_naturality α π2), comp_assoc,
+  - rewrite <- !comp_assoc, <- (nat_naturality α π2), comp_assoc,
       (snd (preserved_product_inv_β F preservesF X Y)),
       (snd (preserved_product_inv_β G preservesG X Y)), cross_η, product_β2.
     reflexivity.
@@ -161,7 +161,7 @@ Proof.
   rewrite !(@comp_assoc D), <- cross_comp, comp_id_r, comp_id_l.
   rewrite <- (comp_assoc (α Y) (fmap F eval)
     (preserved_product_inv F preservesF ((Y ^ X)%ob) X)).
-  rewrite (nt_naturality α eval), comp_assoc,
+  rewrite (nat_naturality α eval), comp_assoc,
     (preserved_product_inv_boundary F G preservesF preservesG α).
   reflexivity.
 Defined.

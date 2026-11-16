@@ -244,7 +244,7 @@ Next Obligation.
         fmap H h (β Y (fmap (DayValuesF F G) f xy))).
       transitivity (fmap H h (fmap H (fmap T f) (β X xy))).
       * exact (@functor_comp C SetCat H _ _ _ h (fmap T f) (β X xy)).
-      * apply func_proper. symmetry. exact (nt_naturality β f xy).
+      * apply func_proper. symmetry. exact (nat_naturality β f xy).
     + symmetry. exact (@func_proper _ _ (day_extend_leg Z Y) _ _
         (day_weight_post T F G Y f h xy)).
 Defined.
@@ -374,7 +374,7 @@ Proof.
   change (fmap H h ∘ (α (T q) ∘ day_inject T F G q id) ≈
     α Z ∘ day_inject T F G q h).
   transitivity ((α Z ∘ fmap (DayF T F G) h) ∘ day_inject T F G q id).
-  - rewrite (nt_naturality α h), comp_assoc. reflexivity.
+  - rewrite (nat_naturality α h), comp_assoc. reflexivity.
   - rewrite comp_assoc, day_inject_post, comp_id_r. reflexivity.
 Defined.
 

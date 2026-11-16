@@ -63,7 +63,7 @@ Next Obligation.
   exact (@func_proper _ _ (β q) (xy,w) (xy',w) (H, reflexivity w)).
 Defined.
 Next Obligation.
-  intros xy. exact (nt_naturality β f (xy,w)).
+  intros xy. exact (nat_naturality β f (xy,w)).
 Defined.
 
 (** The weighted cowedges form a respectful family in the parameter. *)
@@ -102,7 +102,7 @@ Program Definition DayParameterExtendN
   |}.
 Next Obligation.
   intros [z w].
-  exact (nt_naturality (DayExtendN T (DayParameterSliceN w)) f z).
+  exact (nat_naturality (DayExtendN T (DayParameterSliceN w)) f z).
 Defined.
 
 (** Extension evaluates each weighted pair and leaves its parameter fixed. *)
@@ -193,7 +193,7 @@ Proof.
       * apply (@day_inject_proper C T F G HD q Z).
         symmetry. apply comp_id_r.
       * symmetry. exact (day_inject_post T F G q h id xy).
-    + exact (nt_naturality α h (day_inject T F G q id xy,w)).
+    + exact (nat_naturality α h (day_inject T F G q id xy,w)).
   - transitivity (fmap K h (β q (xy,w))).
     + exact (@func_proper _ _ (fmap K h) _ _ (H q xy w)).
     + symmetry. exact (day_parameter_extend_β T W β q h xy w).

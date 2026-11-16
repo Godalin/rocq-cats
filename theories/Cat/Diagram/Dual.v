@@ -156,7 +156,7 @@ Program Definition CoconeOfN {J C : Cat} {D : Fct J C} {X : @Ob C}
       |}
   |}.
 Next Obligation.
-  pose proof (nt_naturality κ f) as H. cbn in H.
+  pose proof (nat_naturality κ f) as H. cbn in H.
   rewrite comp_id_l in H. rewrite comp_id_l. symmetry. exact H.
 Qed.
 
@@ -173,7 +173,7 @@ Program Definition ConeOp {J C : Cat} {D : Fct J C} {X : @Ob C}
       {|nt j := κ j
       |}
   |}.
-Next Obligation. exact (nt_naturality κ f). Qed.
+Next Obligation. exact (nat_naturality κ f). Qed.
 
 (** Read an opposite-target diagram as an ordinary diagram of opposite
     shape, retaining its object and arrow maps. *)
@@ -197,7 +197,7 @@ Program Definition DualCone {J C : Cat} {D : Fct J (C^op)} {X}
       {|nt j := κ j
       |}
   |}.
-Next Obligation. exact (nt_naturality κ f). Qed.
+Next Obligation. exact (nat_naturality κ f). Qed.
 
 (** Recover the original cone presentation from the double-opposite one. *)
 
@@ -209,7 +209,7 @@ Program Definition ConeUnop {J C : Cat} {D : Fct J C} {X : @Ob C}
   :=
   {|nt j := κ j
   |}.
-Next Obligation. exact (nt_naturality (op_cone κ) f). Qed.
+Next Obligation. exact (nat_naturality (op_cone κ) f). Qed.
 
 (** Cocone objects and morphisms are supplied by the opposite cone category. *)
 

@@ -58,7 +58,7 @@ Qed.
 (** 恒等是保持运算的比较。 *)
 
 Lemma applicative_hom_id (A : Applicative C HT HP)
-  : is_applicative_hom A A idN.
+  : is_applicative_hom A A IdN.
 Proof.
   split; intros; cbn; rewrite ?cross_id, ?comp_id_l, ?comp_id_r;
     reflexivity.
@@ -104,7 +104,7 @@ Lemma applicative_hom_lift2 (A B : Applicative C HT HP) (α : A ⇒ B)
     {X Y Z : @Ob C} (h : Hom (X × Y) Z)
   : α Z ∘ lift₂[A; h] ≈ lift₂[B; h] ∘ (α X × α Y).
 Proof.
-  unfold lax_lift2. rewrite <- comp_assoc, (nt_naturality α h),
+  unfold lax_lift2. rewrite <- comp_assoc, (nat_naturality α h),
     comp_assoc, (snd Hα X Y), comp_assoc. reflexivity.
 Qed.
 

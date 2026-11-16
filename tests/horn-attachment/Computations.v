@@ -155,8 +155,8 @@ Program Definition one_horn_choice (v : bool)
 Next Obligation. intros m z. exact true. Defined.
 
 Definition witness_attachment (v : bool)
-  := HornAttachmentExtension (idN : Λ[3; fin_first⁺⁺] ⇒ _)
-      ιΛ[3; fin_first⁺⁺] idN
+  := HornAttachmentExtension (IdN : Λ[3; fin_first⁺⁺] ⇒ _)
+      ιΛ[3; fin_first⁺⁺] IdN
       (pushout_id (C := FctCat (Δ^op) SetCat) ιΛ[3; fin_first⁺⁺])
       (one_horn_choice v) old_horn.
 
@@ -173,10 +173,10 @@ Definition specified_new_cell_equation
 
 Definition old_relative_values_preserved
   := horn_attachment_extension_relative
-      (idN : Λ[3; fin_first⁺⁺] ⇒ _) ιΛ[3; fin_first⁺⁺] idN
+      (IdN : Λ[3; fin_first⁺⁺] ⇒ _) ιΛ[3; fin_first⁺⁺] IdN
       (pushout_id (C := FctCat (Δ^op) SetCat) ιΛ[3; fin_first⁺⁺])
       (one_horn_choice false) old_horn
-      idN old_horn (λ m z, true).
+      IdN old_horn (λ m z, true).
 
 Definition chosen_cell_equality (m : nat) (z : (Δ[3]) m)
   : (horn_extension_target W 3 fin_first⁺⁺ (one_horn_choice false) old_horn).1 m z
@@ -185,7 +185,7 @@ Definition chosen_cell_equality (m : nat) (z : (Δ[3]) m)
 
 Definition comparison_requires_chosen_cell_equation
   := horn_attachment_extension_proper
-      (idN : Λ[3; fin_first⁺⁺] ⇒ _) ιΛ[3; fin_first⁺⁺] idN
+      (IdN : Λ[3; fin_first⁺⁺] ⇒ _) ιΛ[3; fin_first⁺⁺] IdN
       (pushout_id (C := FctCat (Δ^op) SetCat) ιΛ[3; fin_first⁺⁺])
       (one_horn_choice false) (one_horn_choice true) old_horn old_horn
       (λ m z, false) chosen_cell_equality.
@@ -224,8 +224,8 @@ Definition coefficient_choice
   := @hasHornFillers BoolCocycleModel BoolCocycleModel_HasKanFillers 2 fin_first⁺⁺.
 
 Definition coefficient_attachment
-  := HornAttachmentExtension (idN : Λ[3; fin_first⁺⁺] ⇒ _)
-      ιΛ[3; fin_first⁺⁺] idN
+  := HornAttachmentExtension (IdN : Λ[3; fin_first⁺⁺] ⇒ _)
+      ιΛ[3; fin_first⁺⁺] IdN
       (pushout_id (C := FctCat (Δ^op) SetCat) ιΛ[3; fin_first⁺⁺])
       coefficient_choice coefficient_horn.
 
@@ -249,7 +249,7 @@ Definition all_degree_horn_preserved
 
 Definition chosen_cell_determines_attachment
   := horn_attachment_extension_unique
-      (idN : Λ[3; fin_first⁺⁺] ⇒ _) ιΛ[3; fin_first⁺⁺] idN
+      (IdN : Λ[3; fin_first⁺⁺] ⇒ _) ιΛ[3; fin_first⁺⁺] IdN
       (pushout_id (C := FctCat (Δ^op) SetCat) ιΛ[3; fin_first⁺⁺])
       coefficient_choice coefficient_horn
       coefficient_attachment.1 (fst coefficient_attachment.2)
