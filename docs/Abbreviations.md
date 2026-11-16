@@ -1173,6 +1173,178 @@ with no full build, push or integration handoff.
 证明排版已保留；证据位于 `/tmp/hierarchy42-parent-constructors`。
 本批仍未提交，未运行全库构建、推送或交集成。
 
+## Groupoid parent and constructor / 群胚父结构与构造器
+
+The user-authorized follow-up on `4788f85` migrates the complete `Gpd`
+from `Class` to `Record` and applies these two names. This is a separate
+bounded map, outside the 54-row algebra map and the historical abbreviation
+batches. `GpdOfCat` directly constructs the record; no packing wrapper or
+compatibility alias remains. `IsGroupoid C`, ordinary theory names and
+module paths are unchanged. See the [structure follow-up](./BundledInterfaces.md#groupoid-record-follow-up).
+
+用户授权在 `4788f85` 上将完整 `Gpd` 从 `Class` 改为 `Record`，并应用以下
+两项命名。本表是独立的有界迁移，不扩充 54 行代数表及历史缩写批次。
+`GpdOfCat` 直接构造记录，不保留打包包装或兼容别名；`IsGroupoid C`、通常
+理论名称及模块路径不变，详见[结构后续](./BundledInterfaces.md#groupoid-record-follow-up)。
+
+| Previous / 前名 | Current / 当前名 | Source / 源码 |
+| --- | --- | --- |
+| `GpdC` | `GpdToCat` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `GpdFromProperty` | `GpdOfCat` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+
+Actual clients and the bundled-groupoid regression migrate together.
+Sixteen concrete project-switch targets pass; nine temporary assumption
+reports are closed. The two retired names fail lookup, and fixed-category
+inverse theory remains byte-for-byte unchanged. The changes remain
+uncommitted for user review, with no push or integration handoff.
+
+实际客户端及群胚接口回归同步迁移。项目 switch 下 16 个具体目标通过，
+九项临时假设报告闭合；两个退役名查找失败，固定范畴逆理论逐字不变。修改
+保持未提交，等待用户审核，未推送或交集成。
+
+## Groupoid interface names / 群胚接口命名
+
+The user expanded the pending groupoid review batch to use `IsGpd`,
+`isGpd` and `gpd_*` throughout the public family, including related instance
+and Boolean model names. The exact 48-name map below is separate from the
+two parent/constructor names above and the 54-row algebra map. Module paths
+and ordinary English/Chinese prose retain their descriptive spelling.
+Earlier statements that `IsGroupoid` was unchanged describe the pre-rename
+checkpoints, not the current interface.
+
+用户扩大待审群胚批次，统一公共词族中的 `IsGpd`、`isGpd` 及 `gpd_*`，
+同步相关实例和布尔模型名称。下方精确 48 项表独立于此前父投影／构造器两项
+及 54 行代数表；模块路径及普通中英文保留描述性拼写。更早关于
+`IsGroupoid` 未改的陈述对应改名前检查点，不代表当前接口。
+
+| Previous / 前名 | Current / 当前名 | Source / 源码 |
+| --- | --- | --- |
+| `BoolGroupoid` | `BoolGpd` | [Instance/Bool/Action.v](../theories/Instance/Bool/Action.v) |
+| `BoolGroupoid_IsGroupoid` | `BoolGpd_IsGpd` | [Instance/Bool/Action.v](../theories/Instance/Bool/Action.v) |
+| `CodiscreteCat_IsGroupoid` | `CodiscreteCat_IsGpd` | [Cat/Groupoid/Preorder.v](../theories/Cat/Groupoid/Preorder.v) |
+| `EqGpd_IsGroupoid` | `EqGpd_IsGpd` | [Instance/Set/Groupoid.v](../theories/Instance/Set/Groupoid.v) |
+| `FctCat_IsGroupoid` | `FctCat_IsGpd` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `IsGroupoid` | `IsGpd` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `IsoShape_IsGroupoid` | `IsoShape_IsGpd` | [Cat/Shape/Order.v](../theories/Cat/Shape/Order.v) |
+| `MonoidCat_IsGroupoid` | `MonoidCat_IsGpd` | [Algebra/Group/Category.v](../theories/Algebra/Group/Category.v) |
+| `PreorderCat_IsGroupoid` | `PreorderCat_IsGpd` | [Cat/Groupoid/Preorder.v](../theories/Cat/Groupoid/Preorder.v) |
+| `ProdCat_IsGroupoid` | `ProdCat_IsGpd` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `VtxCat_IsGroupoid` | `VtxCat_IsGpd` | [Instance/Set/Simplicial/Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) |
+| `equivalence_IsGroupoid` | `equivalence_IsGpd` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `fully_faithful_IsGroupoid` | `fully_faithful_IsGpd` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `groupoid_HasLeftDivision` | `gpd_HasLeftDivision` | [Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v) |
+| `groupoid_HasRightDivision` | `gpd_HasRightDivision` | [Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v) |
+| `groupoid_arrow_iso` | `gpd_arrow_iso` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_fmap_inv` | `gpd_fmap_inv` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `groupoid_fmap_iso` | `gpd_fmap_iso` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `groupoid_initial_diagram_iso` | `gpd_initial_diagram_iso` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `groupoid_inv` | `gpd_inv` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_comp` | `gpd_inv_comp` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_id` | `gpd_inv_id` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_inv` | `gpd_inv_inv` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_l` | `gpd_inv_l` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_proper` | `gpd_inv_proper` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_r` | `gpd_inv_r` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_resp` | `gpd_inv_resp` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inv_unique` | `gpd_inv_unique` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `groupoid_inverse_square` | `gpd_inverse_square` | [Cat/Groupoid/Star.v](../theories/Cat/Groupoid/Star.v) |
+| `groupoid_iso` | `gpd_iso` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `horn2_0_IsGroupoid` | `horn2_0_IsGpd` | [Instance/Set/Simplicial/Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) |
+| `horn2_2_IsGroupoid` | `horn2_2_IsGpd` | [Instance/Set/Simplicial/Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) |
+| `isGroupoid` | `isGpd` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `left_division_IsGroupoid` | `left_division_IsGpd` | [Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v) |
+| `left_division_groupoid_iff` | `left_division_gpd_iff` | [Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v) |
+| `nerve_groupoid_eq_iff` | `nerve_gpd_eq_iff` | [Instance/Set/Simplicial/Nerve.v](../theories/Instance/Set/Simplicial/Nerve.v) |
+| `op_IsGroupoid` | `op_IsGpd` | [Cat/Groupoid/Core.v](../theories/Cat/Groupoid/Core.v) |
+| `outer_horn2_groupoid_iff` | `outer_horn2_gpd_iff` | [Instance/Set/Simplicial/Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) |
+| `retract_IsGroupoid` | `retract_IsGpd` | [Cat/Groupoid/Functor.v](../theories/Cat/Groupoid/Functor.v) |
+| `right_division_IsGroupoid` | `right_division_IsGpd` | [Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v) |
+| `right_division_groupoid_iff` | `right_division_gpd_iff` | [Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v) |
+| `vertex_groupoid_HasKanFillers` | `vertex_gpd_HasKanFillers` | [Instance/Set/Simplicial/Vertex/Kan.v](../theories/Instance/Set/Simplicial/Vertex/Kan.v) |
+| `vertex_groupoid_higher_HasFillers` | `vertex_gpd_higher_HasFillers` | [Instance/Set/Simplicial/Vertex/Kan.v](../theories/Instance/Set/Simplicial/Vertex/Kan.v) |
+| `vertex_groupoid_horn2_HasFillers` | `vertex_gpd_horn2_HasFillers` | [Instance/Set/Simplicial/Vertex/Filling.v](../theories/Instance/Set/Simplicial/Vertex/Filling.v) |
+| `vertex_kan_IsGroupoid` | `vertex_kan_IsGpd` | [Instance/Set/Simplicial/Vertex/Outer.v](../theories/Instance/Set/Simplicial/Vertex/Outer.v) |
+| `vertex_kan_groupoid_iff` | `vertex_kan_gpd_iff` | [Instance/Set/Simplicial/Vertex/Kan.v](../theories/Instance/Set/Simplicial/Vertex/Kan.v) |
+| `vertex_outer_horn2_IsGroupoid` | `vertex_outer_horn2_IsGpd` | [Instance/Set/Simplicial/Vertex/Outer.v](../theories/Instance/Set/Simplicial/Vertex/Outer.v) |
+| `vertex_outer_horn2_groupoid_iff` | `vertex_outer_horn2_gpd_iff` | [Instance/Set/Simplicial/Vertex/Outer.v](../theories/Instance/Set/Simplicial/Vertex/Outer.v) |
+
+The former complete-bundle helper `gpd_inv` is removed; that name now
+belongs to the general inverse operation on a supplied category with
+`IsGpd` evidence. Choice-sensitive bundle clients explicitly pass their
+stored `isGpd` witness. This retains one operation at the weakest layer,
+with no forwarding alias. All changes remain uncommitted for review.
+
+原完整结构包上的 `gpd_inv` 辅助包装已移除，该名称现用于给定范畴及
+`IsGpd` 见证上的一般逆运算。需要固定选择的结构包客户端显式传入保存的
+`isGpd` 见证，在最弱层保留唯一操作，不增加转发别名。全部修改仍未提交，
+等待审核。
+
+The final naming batch passes 28 concrete targets and 48 closed public
+signature/assumption reports; all 48 retired-name checks pass. Twenty ordinary
+clients are exact substitutions; the core and bundle regression additionally
+consolidate inverse access. Evidence: `/tmp/hierarchy42-gpd-names`. No full
+build, commit, push or integration handoff is included.
+
+最终命名批次通过 28 个具体目标及 48 项闭合公开签名／假设报告，48 项退役名
+负检查通过。20 个普通客户端为精确替换；核心及结构包回归另统一了逆的访问。
+证据位于 `/tmp/hierarchy42-gpd-names`；未执行全库构建、提交、推送或交接。
+
+## Division names / 除法名称
+
+After the 48-name groupoid-family checkpoint above, the user approved
+`Div` / `div` with right/left suffixes `R` / `L` and `_r` / `_l`. The nine
+exact changes below include six intermediate targets from that earlier
+checkpoint and three additional division-interface names. The earlier map
+remains a historical step; this table specifies the current division names.
+The `Division.v` path and descriptive prose are unchanged. No aliases remain.
+
+上方 48 项群胚词族检查点之后，用户批准使用 `Div`／`div`，右／左方向使用
+`R`／`L` 及 `_r`／`_l` 后缀。下方精确九项含早前检查点中的六个中间目标，
+另有三个除法接口名称；早前表保留历史步骤，本表给出当前除法名称。
+`Division.v` 路径及描述性文字不变，不保留别名。
+
+| Previous / 前名 | Current / 当前名 |
+| --- | --- |
+| `HasRightDivision` | `HasDivR` |
+| `HasLeftDivision` | `HasDivL` |
+| `right_division` | `div_r` |
+| `gpd_HasRightDivision` | `gpd_HasDivR` |
+| `gpd_HasLeftDivision` | `gpd_HasDivL` |
+| `right_division_IsGpd` | `div_r_IsGpd` |
+| `left_division_IsGpd` | `div_l_IsGpd` |
+| `right_division_gpd_iff` | `div_r_gpd_iff` |
+| `left_division_gpd_iff` | `div_l_gpd_iff` |
+
+`HasDivL C` remains `HasDivR (C^op)` by definition. The ordinary word
+right/left specifies which factor is divided; `_resp` remains the suffix
+for respectful maps. All declarations are in
+[Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v); the horn client
+[Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) migrates
+with the same equations and witnesses. This remains uncommitted review work.
+
+`HasDivL C` 按定义仍为 `HasDivR (C^op)`。右／左表示被除的因子方向，
+保相等映射仍使用 `_resp`。全部声明位于
+[Cat/Groupoid/Division.v](../theories/Cat/Groupoid/Division.v)，horn 客户端
+[Vertex/Horn2.v](../theories/Instance/Set/Simplicial/Vertex/Horn2.v) 同步迁移，
+方程及见证不变。本批仍为未提交待审成果。
+
+This nine-name step passes six concrete targets, nine full public
+signature/retired-name checks and ten closed temporary assumption reports
+including the opposite-definition identity. Both Rocq files are exact
+substitutions. Evidence: `/tmp/hierarchy42-div-names`; uncommitted for review.
+
+本步九项改名通过六个具体目标、九项完整公开签名／退役名检查及十项闭合临时
+假设报告，包含反范畴定义等式。两个 Rocq 文件为精确替换；证据位于
+`/tmp/hierarchy42-div-names`，修改保持未提交供审核。
+
+User review of the groupoid/division batch is complete and a local
+checkpoint commit is authorized. Earlier uncommitted-status notes retain
+their historical meaning. The recorded targeted checks are reused for
+unchanged inputs; this does not claim full-library integration acceptance.
+
+用户已完成群胚／除法批次审核并批准保存本地提交。早前未提交状态保留其历史
+含义，未变输入复用已记录的定向检查，不表示完成全库集成验收。
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.
@@ -1184,7 +1356,7 @@ work follows the separate user-authorized bundled-interface migration.
 
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
-| Optional names / 可选名称 | `BoolGroupoid → BoolGpd`, `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
+| Optional names / 可选名称 | `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
 | Complete hierarchies / 完整层级 | `CartesianCat`, groupoid/monoidal/CCC bundling / 群胚、幺半及 CCC 打包 | Separately authorized; Cat/Gpd first slice in progress / 已独立授权，Cat/Gpd 首片进行中 |
 | Other notation / 其他记号 | Repository-wide reserved syntax beyond the algebra slice above / 上述代数片段以外的全库预留语法 | Separate review; no replay of #31 / 单独审阅，不重放 #31 |
 
@@ -1195,8 +1367,9 @@ work follows the separate user-authorized bundled-interface migration.
 - The current structures are parameterized `MonoidalCat C`, `CartesianCat C`
   and `CCC C`; the historical name `MonoidalCategory C` in #38 is stale.
   This batch does not change their parameters, parents, fields or choices.
-- Keep `IsGroupoid C`; bundled groupoid/category coercion experiments and
-  `Reserved Notation` work are separate tasks.
+- The fixed-category property interface is now `IsGpd C`; the complete
+  groupoid and its naming follow-up have separate review records above.
+  Repository-wide `Reserved Notation` work remains separate.
 - Keep the natural-number setoid `NatS`; a natural-transformation setoid
   cannot be renamed to it. Keep `EndofunctorMonoidal` distinct from
   `EndoMonoidal`. The two existing `MonoidCat` declarations remain in their
@@ -1208,7 +1381,8 @@ work follows the separate user-authorized bundled-interface migration.
 - 保留原文件及导入路径；路径不是声明名，不能按标识符对照表机械替换。
 - 当前 `MonoidalCat C`、`CartesianCat C`、`CCC C` 均有具名范畴参数；#38 的
   旧 `MonoidalCategory C` 描述已过时。本批不改变参数、父结构、字段或选定数据。
-- 保留 `IsGroupoid C`；群胚打包、范畴强制转换实验及预留记号属于独立任务。
+- 固定范畴性质接口现为 `IsGpd C`；完整群胚及其命名后续在上方单独记录。
+  全库预留记号工作仍为独立任务。
 - 避开自然数广集 `NatS`，区分 `EndofunctorMonoidal` 与 `EndoMonoidal`；
   两个已有 `MonoidCat` 仍保留各自命名空间。
 - 保持 Type 值相等／见证、宇宙、透明计算、数学陈述、规范结构／实例注册和

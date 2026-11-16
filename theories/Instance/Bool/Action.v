@@ -18,7 +18,7 @@ From Cats Require Import
 
 (** 异或群的单对象范畴保留两条不同的环路。 *)
 
-Definition BoolGroupoid
+Definition BoolGpd
   : Gpd
   := GroupGpd BoolS_Group.
 
@@ -26,16 +26,16 @@ Definition BoolGroupoid
 
 (** 读取异或群结构包保存的同一群胚见证。 *)
 
-Definition BoolGroupoid_IsGroupoid
-  : BoolGroupoid ⦂ Gpd
-  := @isGroupoid BoolGroupoid.
+Definition BoolGpd_IsGpd
+  : BoolGpd ⦂ Gpd
+  := @isGpd BoolGpd.
 
 (** The nonidentity loop of the boolean groupoid. *)
 
 (** 布尔群胚的非恒等环路。 *)
 
 Definition bool_loop
-  : (@Hom BoolGroupoid) tt tt
+  : (@Hom BoolGpd) tt tt
   := true.
 
 (** The two loops remain distinct under the specified categorical equality. *)
@@ -43,7 +43,7 @@ Definition bool_loop
 (** 两条环路在指定的范畴相等下仍不同。 *)
 
 Lemma bool_loop_not_id
-  : bool_loop ≉ @Cats.Cat.Core.id BoolGroupoid tt.
+  : bool_loop ≉ @Cats.Cat.Core.id BoolGpd tt.
 Proof. intros H. discriminate H. Qed.
 
 (** The regular action specializes the generic covariant hom construction. *)
@@ -51,7 +51,7 @@ Proof. intros H. discriminate H. Qed.
 (** 正则作用直接实例化通用的协变 Hom 构造。 *)
 
 Definition BoolActionF
-  : Fct BoolGroupoid SetCat
+  : Fct BoolGpd SetCat
   := RegularActionF BoolS_Monoid.
 
 (** Faithfulness follows from the general regular-action argument. *)
@@ -85,7 +85,7 @@ Proof. intros H. specialize (H false). discriminate H. Qed.
 
 Definition bool_action_loop_iso
   : is_iso (fmap BoolActionF bool_loop)
-  := groupoid_fmap_iso BoolActionF bool_loop.
+  := gpd_fmap_iso BoolActionF bool_loop.
 
 (** Applying the loop twice is the identity, by the original inverse laws. *)
 

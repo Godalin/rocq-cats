@@ -13,21 +13,22 @@ From Cats Require Import
     对称性给出预序范畴的逆箭头。平行关系见证已在 Hom 广集中相等，无需证明
     无关性。 *)
 
-Program Definition PreorderCat_IsGroupoid {X : Type} (R : crelation X)
+Program Definition PreorderCat_IsGpd {X : Type}
+    (R : crelation X)
     `{HR : !PreOrder R} `{HS : !Symmetric R}
   : PreorderCat R ⦂ Gpd
   :=
-  {|groupoid_iso x y f := (symmetry f; (tt, tt))
+  {|gpd_iso x y f := (symmetry f; (tt, tt))
   |}.
 
 (** A codiscrete category is a groupoid, with the unique reverse arrow. *)
 
 (** 余离散范畴是群胚，以唯一的反向箭头为逆。 *)
 
-Program Definition CodiscreteCat_IsGroupoid (X : Type)
+Program Definition CodiscreteCat_IsGpd (X : Type)
   : CodiscreteCat X ⦂ Gpd
   :=
-  {|groupoid_iso x y f := (tt; (tt, tt))
+  {|gpd_iso x y f := (tt; (tt, tt))
   |}.
 
 (** A symmetric preorder gives a complete thin groupoid, using its original
@@ -38,7 +39,7 @@ Program Definition CodiscreteCat_IsGroupoid (X : Type)
 Definition PreorderGpd {X : Type} (R : crelation X)
     `{HR : !PreOrder R} `{HS : !Symmetric R}
   : Gpd
-  := GpdFromProperty (PreorderCat R) (PreorderCat_IsGroupoid R).
+  := GpdOfCat (PreorderCat R) (PreorderCat_IsGpd R).
 
 (** Package the codiscrete category with its unique reverse arrows. *)
 
@@ -46,4 +47,5 @@ Definition PreorderGpd {X : Type} (R : crelation X)
 
 Definition CodiscreteGpd (X : Type)
   : Gpd
-  := GpdFromProperty (CodiscreteCat X) (CodiscreteCat_IsGroupoid X).
+  := GpdOfCat (CodiscreteCat X)
+    (CodiscreteCat_IsGpd X).

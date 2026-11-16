@@ -16,35 +16,35 @@ From Cats Require Export
 
 (** 右除法选取缺失的后续箭头。 *)
 
-Class HasRightDivision (C : Cat)
+Class HasDivR (C : Cat)
   :=
-  { right_division {X Y Z : @Ob C} (f : Hom X Y) (h : Hom X Z)
+  { div_r {X Y Z : @Ob C} (f : Hom X Y) (h : Hom X Z)
     : ∃ g : Hom Y Z, g ∘ f ≈ h
   }.
 
-Arguments right_division {_ _ _ _ _} _ _.
+Arguments div_r {_ _ _ _ _} _ _.
 
 (** Left division is right division in the opposite. *)
 
 (** 左除法为反范畴中的右除法。 *)
 
-Definition HasLeftDivision (C : Cat)
+Definition HasDivL (C : Cat)
   : Type
-  := HasRightDivision (C^op).
+  := HasDivR (C^op).
 
 (** A groupoid solves right division by composing with the inverse. Enable
     the chosen division structure explicitly. *)
 
 (** 群胚通过与逆复合求解右除法；选定除法结构须显式启用。 *)
 
-Program Definition groupoid_HasRightDivision (C : Cat)
-    `{HC : !IsGroupoid C}
-  : HasRightDivision C
+Program Definition gpd_HasDivR (C : Cat)
+    `{HC : !IsGpd C}
+  : HasDivR C
   :=
-  {|right_division X Y Z f h := (h ∘ f⁻¹; _)
+  {|div_r X Y Z f h := (h ∘ f⁻¹; _)
   |}.
 Next Obligation.
-  destruct (iso_precomp_universal (groupoid_arrow_iso f) h) as [H _].
+  destruct (iso_precomp_universal (gpd_arrow_iso f) h) as [H _].
   exact H.
 Defined.
 
@@ -53,9 +53,9 @@ Defined.
 
 (** 左除法结构为反范畴中的右除法结构，保留同一逆数据并交换互逆定律。 *)
 
-Definition groupoid_HasLeftDivision (C : Cat) `{HC : !IsGroupoid C}
-  : HasLeftDivision C
-  := @groupoid_HasRightDivision (C^op) (op_IsGroupoid C).
+Definition gpd_HasDivL (C : Cat) `{HC : !IsGpd C}
+  : HasDivL C
+  := @gpd_HasDivR (C^op) (op_IsGpd C).
 
 (** Right division alone supplies a left inverse for every arrow. Applying
     it once more to that inverse and using inverse uniqueness gives both
@@ -64,17 +64,17 @@ Definition groupoid_HasLeftDivision (C : Cat) `{HC : !IsGroupoid C}
 (** 仅有右除法即可为每条箭头给出左逆；再对该左逆应用除法，并复用逆唯一性，
     得到两条互逆方程。不要求原始选择的唯一性。 *)
 
-Program Definition right_division_IsGroupoid (C : Cat)
-    `{HD : !HasRightDivision C}
+Program Definition div_r_IsGpd (C : Cat)
+    `{HD : !HasDivR C}
   : C ⦂ Gpd
   :=
-  {|groupoid_iso X Y f := ((right_division f (@id X)).1; _)
+  {|gpd_iso X Y f := ((div_r f (@id X)).1; _)
   |}.
 Next Obligation.
-  pose (g := (right_division f (@id X)).1).
-  pose proof (right_division f (@id X)).2 as Hg.
+  pose (g := (div_r f (@id X)).1).
+  pose proof (div_r f (@id X)).2 as Hg.
   split; [exact Hg |].
-  destruct (right_division g (@id Y)) as [k Hk].
+  destruct (div_r g (@id Y)) as [k Hk].
   pose proof (inverse_unique g k f Hk Hg) as H.
   change (f ∘ g ≈ id). rewrite <- H. exact Hk.
 Defined.
@@ -83,17 +83,16 @@ Defined.
 
 (** 对右除法结论取对偶得到左除法判据。 *)
 
-Program Definition left_division_IsGroupoid (C : Cat)
-    `{HD : !HasLeftDivision C}
+Program Definition div_l_IsGpd (C : Cat)
+    `{HD : !HasDivL C}
   : C ⦂ Gpd
   :=
-  {|groupoid_iso X Y f :=
-      ((@groupoid_iso (C^op)
-        (@right_division_IsGroupoid (C^op) HD) Y X f).1; _)
+  {|gpd_iso X Y f := ((@gpd_iso (C^op)
+      (@div_r_IsGpd (C^op) HD) Y X f).1; _)
   |}.
 Next Obligation.
-  pose (H := @groupoid_iso (C^op)
-    (@right_division_IsGroupoid (C^op) HD) Y X f).
+  pose (H := @gpd_iso (C^op)
+    (@div_r_IsGpd (C^op) HD) Y X f).
   split; [exact (snd H.2) | exact (fst H.2)].
 Defined.
 
@@ -101,20 +100,20 @@ Defined.
 
 (** 选定右除法与群胚结构相互导出。 *)
 
-Definition right_division_groupoid_iff (C : Cat)
-  : HasRightDivision C ↔ C ⦂ Gpd.
+Definition div_r_gpd_iff (C : Cat)
+  : HasDivR C ↔ C ⦂ Gpd.
 Proof.
-  split; [intros H; exact (@right_division_IsGroupoid C H) |
-    intros H; exact (@groupoid_HasRightDivision C H)].
+  split; [intros H; exact (@div_r_IsGpd C H) |
+    intros H; exact (@gpd_HasDivR C H)].
 Defined.
 
 (** The same characterization holds for left division. *)
 
 (** 左除法具有同样的刻画。 *)
 
-Definition left_division_groupoid_iff (C : Cat)
-  : HasLeftDivision C ↔ C ⦂ Gpd.
+Definition div_l_gpd_iff (C : Cat)
+  : HasDivL C ↔ C ⦂ Gpd.
 Proof.
-  split; [intros H; exact (@left_division_IsGroupoid C H) |
-    intros H; exact (@groupoid_HasLeftDivision C H)].
+  split; [intros H; exact (@div_l_IsGpd C H) |
+    intros H; exact (@gpd_HasDivL C H)].
 Defined.

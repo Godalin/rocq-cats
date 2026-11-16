@@ -14,10 +14,10 @@ Local Open Scope algebra_scope.
 
     复用幺半群范畴，以群逆作为箭头的逆，所得群胚结构须显式启用。 *)
 
-Program Definition MonoidCat_IsGroupoid (G : Group)
+Program Definition MonoidCat_IsGpd (G : Group)
   : B(G) ⦂ Gpd
   :=
-  {|groupoid_iso X Y g :=
+  {|gpd_iso X Y g :=
       (g⁻¹; (mul_inv_l g, mul_inv_r g))
   |}.
 
@@ -28,7 +28,7 @@ Program Definition MonoidCat_IsGroupoid (G : Group)
 
 Definition GroupGpd (G : Group)
   : Gpd
-  := GpdFromProperty B(G) (MonoidCat_IsGroupoid G).
+  := GpdOfCat B(G) (MonoidCat_IsGpd G).
 
 (** Endomorphisms at any specified object of a groupoid form a group.
     This construction requires no equality of object representatives. *)
@@ -36,13 +36,13 @@ Definition GroupGpd (G : Group)
 (** 群胚任意指定对象处的自态射构成群，不要求对象代表之间原生相等。 *)
 
 Program Definition EndHasGroup (C : Cat)
-    `{HC : !IsGroupoid C} (X : @Ob C)
+    `{HC : !IsGpd C} (X : @Ob C)
   : HasGroup (EndMonoid C X)
   :=
-  {|inv f := @groupoid_inv C HC X X f
+  {|inv f := @gpd_inv C HC X X f
   ; isGroup :=
-      {|mul_inv_l := @groupoid_inv_l C HC X X
-      ; mul_inv_r := @groupoid_inv_r C HC X X
+      {|mul_inv_l := @gpd_inv_l C HC X X
+      ; mul_inv_r := @gpd_inv_r C HC X X
       |}
   |}.
 
@@ -50,6 +50,6 @@ Program Definition EndHasGroup (C : Cat)
 
 (** 现有自态射群读取恰好该幺半群及扩充。 *)
 
-Definition EndGroup (C : Cat) `{HC : !IsGroupoid C} (X : @Ob C)
+Definition EndGroup (C : Cat) `{HC : !IsGpd C} (X : @Ob C)
   : Group
   := GroupOfMonoid (EndMonoid C X) (EndHasGroup C X).

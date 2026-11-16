@@ -24,7 +24,7 @@ Local Open Scope nat_scope.
 Section RadialComparisons.
 Universes u p.
 Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C)
-    `{HC : !IsGroupoid (VtxCat T)}.
+    `{HC : !IsGpd (VtxCat T)}.
 
 (** A labelled diagram equality compares radial transitions using any
     witnesses of the same specified endpoint equalities. *)
@@ -143,7 +143,7 @@ Proof.
   destruct (le_dec (fin_rank a) (fin_rank c)) as [H | H].
   - exact (horn_radial_overlap_ordered Hj Hk h a b c d Ea Ec H e f).
   - assert (K : fin_rank c ≤ fin_rank a) by lia.
-    pose proof (groupoid_inverse_square _ _ _ _
+    pose proof (gpd_inverse_square _ _ _ _
       (horn_radial_overlap_ordered Hj Hk h c d a b Ec Ea K f e)) as L.
     rewrite !ordinal_radial_inv in L. exact L.
 Defined.

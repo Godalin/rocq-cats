@@ -207,7 +207,7 @@ See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
   compare these transitions using the specified vertex transport.
   [Kan filling](./theories/Instance/Set/Simplicial/Vertex/Kan.v) then glues a common
   star in every dimension at least two, and fills one-horns by identity edges.
-  Thus `HasKanFillers (Nᵥ(T))` is equivalent to `IsGroupoid (VtxCat T)`,
+  Thus `HasKanFillers (Nᵥ(T))` is equivalent to `IsGpd (VtxCat T)`,
   with explicit witnesses in both directions and no choice axiom.
   The same star comparison proves the full universal property: every actual
   horn in dimension at least two has a unique filler in the specified equality.

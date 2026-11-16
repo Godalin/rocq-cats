@@ -196,35 +196,35 @@ Defined.
 
 (** 仅一类实际外填充便蕴涵群胚；证明调用一般右除法判据。 *)
 
-Definition vertex_outer_horn2_IsGroupoid
+Definition vertex_outer_horn2_IsGpd
     `{HF : !HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
   : VtxCat T ⦂ Gpd
-  := @horn2_0_IsGroupoid (VtxCat T) vertex_outer_horn2_HasLocalFillers.
+  := @horn2_0_IsGpd (VtxCat T) vertex_outer_horn2_HasLocalFillers.
 
 (** The actual first outer two-horn filling structure characterizes the
     groupoid on the selected objects, rather than on an arbitrary ambient C. *)
 
 (** 实际第一类二维外 horn 填充刻画选定对象上的群胚，而非任意的环境 C。 *)
 
-Definition vertex_outer_horn2_groupoid_iff
+Definition vertex_outer_horn2_gpd_iff
   : HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first ↔
       VtxCat T ⦂ Gpd.
 Proof.
   split.
-  - intros H. exact (@vertex_outer_horn2_IsGroupoid H).
-  - intros H. exact (@vertex_groupoid_horn2_HasFillers _ _ T H fin_first).
+  - intros H. exact (@vertex_outer_horn2_IsGpd H).
+  - intros H. exact (@vertex_gpd_horn2_HasFillers _ _ T H fin_first).
 Defined.
 
 (** Chosen Kan filling therefore gives inverses for every selected arrow. *)
 
 (** 因而选定 Kan 填充为每条选定箭头给出逆。 *)
 
-Definition vertex_kan_IsGroupoid
+Definition vertex_kan_IsGpd
     `{HK : !HasKanFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})}
   : VtxCat T ⦂ Gpd
-  := @vertex_outer_horn2_IsGroupoid (@hasHornFillers _ HK 1 fin_first).
+  := @vertex_outer_horn2_IsGpd (@hasHornFillers _ HK 1 fin_first).
 
 End OuterHorns.

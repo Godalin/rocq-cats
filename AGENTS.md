@@ -58,7 +58,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `HasProduct C` provides a chosen product for every pair of objects.
   These interfaces retain Type-valued computational witnesses.
 - Complete structures are moving to bundles that own one underlying carrier
-  or category. `Gpd` stores `GpdC :> Cat`; `Cat` exposes `Ob :> Type`.
+  or category. `Gpd` stores `GpdToCat :> Cat`; `Cat` exposes `Ob :> Type`.
   Migrate the remaining parameterized hierarchies in bounded steps; do not
   duplicate a carrier or category during that migration. Fixed-data `Has*`
   choices and `Is*` properties keep their named ambient parameters.
@@ -193,11 +193,20 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   in names for constructing one presentation from supplied data, as in
   `MonoidOfSemigroup`. Migrate existing families in bounded steps; module paths,
   descriptive prose and Rocq's `From ... Require` command are unaffected.
-- Name the reviewed complete algebra record constructors `TargetOfParent`,
+- Name the reviewed complete algebra/groupoid constructors `TargetOfParent`,
   matching their `TargetToParent` projections: `MagmaOfSetC`,
-  `SemigroupOfMagma`, `MonoidOfSemigroup` and `GroupOfMonoid`.
+  `SemigroupOfMagma`, `MonoidOfSemigroup`, `GroupOfMonoid` and `GpdOfCat`.
   Constructors take the parent and its extension/property witness directly;
   do not add a separate definition that only repacks those fields.
+- Use `Gpd`, `IsGpd`, `isGpd` and `gpd_*` for the reviewed groupoid
+  interface, laws and operations; use `_IsGpd` in related instance names.
+  Keep one inverse operation on the fixed-category property interface;
+  bundle clients pass their stored witness when selecting evidence explicitly.
+  Module paths and descriptive prose retain `Groupoid` / groupoid.
+- Use `Div` / `div` for the reviewed division interface: `HasDivR`,
+  `HasDivL` and `div_r`. Direction is the `R`/`L` or `_r`/`_l` suffix;
+  respectful maps retain `_resp`. Left division stays the same right-division
+  theory on the opposite category. Keep the `Division.v` module path.
 - Prefix laws by their mathematical subject, not `axiom_`. Reuse descriptive
   endings (`_id`, `_comp`, `_inv`, `_iso`, `_unique`, `_β1`, `_η`).
   Define an operation once at its weakest structure, with a short subject

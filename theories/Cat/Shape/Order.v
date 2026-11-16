@@ -105,6 +105,6 @@ Definition walking_iso
 
 (** 步行同构形状具有显式启用的群胚结构。 *)
 
-Definition IsoShape_IsGroupoid
+Definition IsoShape_IsGpd
   : IsoShape ⦂ Gpd
-  := CodiscreteCat_IsGroupoid bool.
+  := CodiscreteCat_IsGpd bool.

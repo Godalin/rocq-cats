@@ -201,10 +201,10 @@ Section ConcreteChange.
 (** 常值左边界忘却布尔实参。 *)
 
 Program Definition NoninvertLeftN
-  : (@CompF BoolGroupoid BoolGroupoid SetCat
-        (ConstF BoolGroupoid (C := SetCat) BoolS) (@IdF BoolGroupoid)) ⇒
-      (CompF (C := BoolGroupoid) (@IdF SetCat)
-        (ConstF BoolGroupoid TaggedGluingS))
+  : (@CompF BoolGpd BoolGpd SetCat
+        (ConstF BoolGpd (C := SetCat) BoolS) (@IdF BoolGpd)) ⇒
+      (CompF (C := BoolGpd) (@IdF SetCat)
+        (ConstF BoolGpd TaggedGluingS))
   :=
   {|nt X := {|func b := (0, false)
              |}
@@ -216,10 +216,10 @@ Next Obligation. intros b. exact (eq_refl, false). Defined.
 (** 右边界忘却全部标签数据。 *)
 
 Program Definition NoninvertRightN
-  : (CompF (C := BoolGroupoid) (@IdF SetCat)
-        (ConstF BoolGroupoid (C := SetCat) TaggedGluingS)) ⇒
-      (@CompF BoolGroupoid BoolGroupoid SetCat
-        (ConstF BoolGroupoid UnitS) (@IdF BoolGroupoid))
+  : (CompF (C := BoolGpd) (@IdF SetCat)
+        (ConstF BoolGpd (C := SetCat) TaggedGluingS)) ⇒
+      (@CompF BoolGpd BoolGpd SetCat
+        (ConstF BoolGpd UnitS) (@IdF BoolGpd))
   :=
   {|nt X := {|func x := tt
              |}
@@ -244,8 +244,8 @@ Defined.
 (** 在源图式中保留实际改变标签的结构箭头。 *)
 
 Program Definition ConstantCommaOb
-  : Comma (A := BoolGroupoid) (B := BoolGroupoid) (C := SetCat)
-      (ConstF BoolGroupoid TaggedGluingS) (ConstF BoolGroupoid TaggedGluingS)
+  : Comma (A := BoolGpd) (B := BoolGpd) (C := SetCat)
+      (ConstF BoolGpd TaggedGluingS) (ConstF BoolGpd TaggedGluingS)
   :=
   {|comma_left_ob := tt
   ; comma_right_ob := tt
@@ -270,11 +270,11 @@ Next Obligation. intros [n b]. exact (eq_refl, true). Defined.
 
 Definition NoninvertCommaF
   : Fct
-      (Comma (A := BoolGroupoid) (B := BoolGroupoid) (C := SetCat)
-        (ConstF BoolGroupoid TaggedGluingS) (ConstF BoolGroupoid TaggedGluingS))
-      (Comma (A := BoolGroupoid) (B := BoolGroupoid) (C := SetCat)
-        (ConstF BoolGroupoid BoolS) (ConstF BoolGroupoid UnitS))
-  := CommaChangeF (@IdF BoolGroupoid) (@IdF BoolGroupoid) (@IdF SetCat)
+      (Comma (A := BoolGpd) (B := BoolGpd) (C := SetCat)
+        (ConstF BoolGpd TaggedGluingS) (ConstF BoolGpd TaggedGluingS))
+      (Comma (A := BoolGpd) (B := BoolGpd) (C := SetCat)
+        (ConstF BoolGpd BoolS) (ConstF BoolGpd UnitS))
+  := CommaChangeF (@IdF BoolGpd) (@IdF BoolGpd) (@IdF SetCat)
       NoninvertLeftN NoninvertRightN.
 
 (** The mapped structural arrow computes from Boolean to unit. *)
@@ -299,7 +299,7 @@ Proof. reflexivity. Defined.
 (** 恒等变化保留原结构箭头改变标签的计算。 *)
 
 Example identity_change_computes
-  : comma_arrow (CommaChangeF (@IdF BoolGroupoid) (@IdF BoolGroupoid) (@IdF SetCat)
+  : comma_arrow (CommaChangeF (@IdF BoolGpd) (@IdF BoolGpd) (@IdF SetCat)
       (CommaChangeIdLeftN _) (CommaChangeIdRightN _) ConstantCommaOb)
       (3, false) = (3, true).
 Proof. reflexivity. Defined.
@@ -309,10 +309,10 @@ Proof. reflexivity. Defined.
 (** 只改变左边界中被忽略的标签。 *)
 
 Program Definition TaggedAlternativeN
-  : (@CompF BoolGroupoid BoolGroupoid SetCat
-        (ConstF BoolGroupoid (C := SetCat) BoolS) (@IdF BoolGroupoid)) ⇒
-      (CompF (C := BoolGroupoid) (@IdF SetCat)
-        (ConstF BoolGroupoid TaggedGluingS))
+  : (@CompF BoolGpd BoolGpd SetCat
+        (ConstF BoolGpd (C := SetCat) BoolS) (@IdF BoolGpd)) ⇒
+      (CompF (C := BoolGpd) (@IdF SetCat)
+        (ConstF BoolGpd TaggedGluingS))
   :=
   {|nt X := {|func b := (0, true)
              |}
@@ -341,9 +341,9 @@ Proof. reflexivity. Defined.
 
 Definition tagged_change_comparison
   : NoninvertCommaF ≅N
-      CommaChangeF (@IdF BoolGroupoid) (@IdF BoolGroupoid) (@IdF SetCat)
+      CommaChangeF (@IdF BoolGpd) (@IdF BoolGpd) (@IdF SetCat)
         TaggedAlternativeN NoninvertRightN
-  := comma_change_equiv_iso (@IdF BoolGroupoid) (@IdF BoolGroupoid)
+  := comma_change_equiv_iso (@IdF BoolGpd) (@IdF BoolGpd)
       (@IdF SetCat) tagged_boundary_equal
       (λ X, reflexivity (NoninvertRightN X)).
 
@@ -362,10 +362,10 @@ Proof. reflexivity. Defined.
 (** 下一变化将单位源常值映入布尔源。 *)
 
 Program Definition SecondLeftN
-  : (@CompF BoolGroupoid BoolGroupoid SetCat
-        (ConstF BoolGroupoid (C := SetCat) UnitS) (@IdF BoolGroupoid)) ⇒
-      (CompF (C := BoolGroupoid) (@IdF SetCat)
-        (ConstF BoolGroupoid BoolS))
+  : (@CompF BoolGpd BoolGpd SetCat
+        (ConstF BoolGpd (C := SetCat) UnitS) (@IdF BoolGpd)) ⇒
+      (CompF (C := BoolGpd) (@IdF SetCat)
+        (ConstF BoolGpd BoolS))
   :=
   {|nt X := {|func x := false
              |}
@@ -378,10 +378,10 @@ Next Obligation. intros x. reflexivity. Defined.
 (** 其右边界在布尔目标中选择真。 *)
 
 Program Definition SecondRightN
-  : (CompF (C := BoolGroupoid) (@IdF SetCat)
-        (ConstF BoolGroupoid (C := SetCat) UnitS)) ⇒
-      (@CompF BoolGroupoid BoolGroupoid SetCat
-        (ConstF BoolGroupoid BoolS) (@IdF BoolGroupoid))
+  : (CompF (C := BoolGpd) (@IdF SetCat)
+        (ConstF BoolGpd (C := SetCat) UnitS)) ⇒
+      (@CompF BoolGpd BoolGpd SetCat
+        (ConstF BoolGpd BoolS) (@IdF BoolGpd))
   :=
   {|nt X := {|func x := true
              |}
@@ -394,17 +394,17 @@ Next Obligation. intros x. reflexivity. Defined.
 (** 实际复合比较保留透明恒等侧边映射。 *)
 
 Definition NoninvertCompositeIso
-  : (CommaChangeF (@IdF BoolGroupoid) (@IdF BoolGroupoid) (@IdF SetCat)
+  : (CommaChangeF (@IdF BoolGpd) (@IdF BoolGpd) (@IdF SetCat)
       SecondLeftN SecondRightN ∘F NoninvertCommaF) ≅N
       CommaChangeF
-        ((@IdF BoolGroupoid) ∘F IdF) ((@IdF BoolGroupoid) ∘F IdF)
+        ((@IdF BoolGpd) ∘F IdF) ((@IdF BoolGpd) ∘F IdF)
         ((@IdF SetCat) ∘F IdF)
-        (CommaChangeCompLeftN (@IdF BoolGroupoid) (@IdF SetCat)
-          (@IdF BoolGroupoid) (@IdF SetCat) NoninvertLeftN SecondLeftN)
-        (CommaChangeCompRightN (@IdF BoolGroupoid) (@IdF SetCat)
-          (@IdF BoolGroupoid) (@IdF SetCat) NoninvertRightN SecondRightN)
-  := comma_change_comp_iso (@IdF BoolGroupoid) (@IdF BoolGroupoid)
-      (@IdF SetCat) (@IdF BoolGroupoid) (@IdF BoolGroupoid) (@IdF SetCat)
+        (CommaChangeCompLeftN (@IdF BoolGpd) (@IdF SetCat)
+          (@IdF BoolGpd) (@IdF SetCat) NoninvertLeftN SecondLeftN)
+        (CommaChangeCompRightN (@IdF BoolGpd) (@IdF SetCat)
+          (@IdF BoolGpd) (@IdF SetCat) NoninvertRightN SecondRightN)
+  := comma_change_comp_iso (@IdF BoolGpd) (@IdF BoolGpd)
+      (@IdF SetCat) (@IdF BoolGpd) (@IdF BoolGpd) (@IdF SetCat)
       NoninvertLeftN NoninvertRightN SecondLeftN SecondRightN.
 
 (** The direct composite structural arrow computes the supplied true value. *)
@@ -413,12 +413,12 @@ Definition NoninvertCompositeIso
 
 Example composite_change_arrow_computes
   : comma_arrow (CommaChangeF
-      ((@IdF BoolGroupoid) ∘F IdF) ((@IdF BoolGroupoid) ∘F IdF)
+      ((@IdF BoolGpd) ∘F IdF) ((@IdF BoolGpd) ∘F IdF)
       ((@IdF SetCat) ∘F IdF)
-      (CommaChangeCompLeftN (@IdF BoolGroupoid) (@IdF SetCat)
-        (@IdF BoolGroupoid) (@IdF SetCat) NoninvertLeftN SecondLeftN)
-      (CommaChangeCompRightN (@IdF BoolGroupoid) (@IdF SetCat)
-        (@IdF BoolGroupoid) (@IdF SetCat) NoninvertRightN SecondRightN)
+      (CommaChangeCompLeftN (@IdF BoolGpd) (@IdF SetCat)
+        (@IdF BoolGpd) (@IdF SetCat) NoninvertLeftN SecondLeftN)
+      (CommaChangeCompRightN (@IdF BoolGpd) (@IdF SetCat)
+        (@IdF BoolGpd) (@IdF SetCat) NoninvertRightN SecondRightN)
       ConstantCommaOb) tt = true.
 Proof. reflexivity. Defined.
 

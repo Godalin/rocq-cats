@@ -23,7 +23,7 @@ Fail Definition unchosen_groupoid_bundle
   := ltac:(typeclasses eauto).
 
 Fail Definition unchosen_set_groupoid
-  : IsGroupoid SetCat
+  : IsGpd SetCat
   := ltac:(typeclasses eauto).
 
 (** ** Inherited Inverse Witnesses
@@ -40,15 +40,15 @@ Context (G : Gpd) {X Y : G}.
 
 Definition inferred_inverse (f : Hom X Y)
   : Hom Y X
-  := groupoid_inv f.
+  := gpd_inv f.
 
 Definition inferred_inverse_l (f : Hom X Y)
   : inferred_inverse f ∘ f ≈ id
-  := groupoid_inv_l f.
+  := gpd_inv_l f.
 
 Definition inferred_inverse_r (f : Hom X Y)
   : f ∘ inferred_inverse f ≈ id
-  := groupoid_inv_r f.
+  := gpd_inv_r f.
 
 End BundledInverses.
 
@@ -62,16 +62,29 @@ End BundledInverses.
     打包任一给定性质时须恰好保留其自己的逆计算，不假定两份性质记录相等。 *)
 
 Section IndependentChoices.
-Context (C : Cat) (H K : IsGroupoid C) {X Y : C} (f : Hom X Y).
+Context (C : Cat) (H K : IsGpd C) {X Y : C} (f : Hom X Y).
+
+(** The constructor preserves both its category and its supplied property
+    by conversion, independently of other witnesses on that category. *)
+
+(** 构造器按定义保留底层范畴及给定性质，不受同一范畴上其他见证的影响。 *)
+
+Example first_parent_is_selected
+  : GpdToCat (GpdOfCat C H) = C.
+Proof. reflexivity. Qed.
+
+Example first_property_is_selected
+  : isGpd (GpdOfCat C H) = H.
+Proof. reflexivity. Qed.
 
 Example first_inverse_is_selected
-  : gpd_inv (GpdFromProperty C H) f =
-      @groupoid_inv C H X Y f.
+  : @gpd_inv _ (isGpd (GpdOfCat C H)) X Y f =
+      @gpd_inv C H X Y f.
 Proof. reflexivity. Qed.
 
 Example second_inverse_is_selected
-  : gpd_inv (GpdFromProperty C K) f =
-      @groupoid_inv C K X Y f.
+  : @gpd_inv _ (isGpd (GpdOfCat C K)) X Y f =
+      @gpd_inv C K X Y f.
 Proof. reflexivity. Qed.
 
 End IndependentChoices.
@@ -86,15 +99,15 @@ End IndependentChoices.
     复用反范畴／乘积构造须保持透明的异或群逆；相等群胚的对象仍是原广集元素。 *)
 
 Example bool_inverse_computes
-  : @groupoid_inv BoolGroupoid _ tt tt bool_loop = true.
+  : @gpd_inv BoolGpd _ tt tt bool_loop = true.
 Proof. reflexivity. Qed.
 
 Example opposite_inverse_computes
-  : @groupoid_inv (OpGpd BoolGroupoid) _ tt tt true = true.
+  : @gpd_inv (OpGpd BoolGpd) _ tt tt true = true.
 Proof. reflexivity. Qed.
 
 Example product_inverse_computes
-  : @groupoid_inv (ProdGpd BoolGroupoid BoolGroupoid) _
+  : @gpd_inv (ProdGpd BoolGpd BoolGpd) _
       (tt,tt) (tt,tt) (true,false) = (true,false).
 Proof. reflexivity. Qed.
 
@@ -138,15 +151,15 @@ Universes o h p l.
 Constraint h < p.
 Constraint p < l.
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l})
-    (HC : IsGroupoid C) (HD : IsGroupoid D).
+    (HC : IsGpd C) (HD : IsGpd D).
 
 Definition high_equality_bundle
   : Gpd
-  := GpdFromProperty C HC.
+  := GpdOfCat C HC.
 
 Definition low_equality_bundle
   : Gpd
-  := GpdFromProperty D HD.
+  := GpdOfCat D HD.
 
 Definition mixed_size_bundle
   : Gpd

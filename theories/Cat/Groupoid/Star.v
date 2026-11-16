@@ -15,7 +15,7 @@ From Cats Require Import
     群胚中，从一个中心出发的箭头确定全部过渡；序数图式的首顶点提供这种描述。 *)
 
 Section Stars.
-Context {C : Cat} `{HC : !IsGroupoid C}.
+Context {C : Cat} `{HC : !IsGpd C}.
 
 (** A star gives a diagram on any indexing category. Each transition
     follows the inverse incoming leg and then the outgoing leg. *)
@@ -30,10 +30,11 @@ Program Definition StarF (J : Cat) (A : @Ob C)
   ; F1 i j f := s j ∘ (s i)⁻¹
   |}.
 Next Obligation. intros f g H. reflexivity. Defined.
-Next Obligation. apply groupoid_inv_r. Defined.
+Next Obligation. apply gpd_inv_r. Defined.
 Next Obligation.
-  rewrite comp_assoc, <- (comp_assoc (s Y)⁻¹), groupoid_inv_l,
-    comp_id_l. reflexivity.
+  rewrite comp_assoc, <- (comp_assoc (s Y)⁻¹),
+    gpd_inv_l, comp_id_l.
+  reflexivity.
 Defined.
 
 (** Two stars commute on every transition if their legs commute with one
@@ -47,23 +48,26 @@ Lemma star_transition_square {A B V W V' W' : @Ob C}
     (Hs : a ∘ s ≈ s' ∘ c) (Ht : b ∘ t ≈ t' ∘ c)
   : b ∘ (t ∘ s⁻¹) ≈ (t' ∘ (s')⁻¹) ∘ a.
 Proof.
-  apply (iso_cancel_r (groupoid_arrow_iso s)).
-  rewrite !comp_assoc, groupoid_inv_l, comp_id_r, Hs,
-    <- (comp_assoc (s')⁻¹), groupoid_inv_l, comp_id_l. exact Ht.
+  apply (iso_cancel_r (gpd_arrow_iso s)).
+  rewrite !comp_assoc, gpd_inv_l, comp_id_r, Hs,
+    <- (comp_assoc (s')⁻¹), gpd_inv_l, comp_id_l.
+  exact Ht.
 Defined.
 
 (** A commuting square of invertible arrows also commutes backwards. *)
 
 (** 可逆箭头的交换方块在反向也交换。 *)
 
-Lemma groupoid_inverse_square {A B A' B' : @Ob C}
-    (f : Hom A B) (g : Hom A' B') (a : Hom A A') (b : Hom B B')
+Lemma gpd_inverse_square {A B A' B' : @Ob C}
+    (f : Hom A B) (g : Hom A' B')
+    (a : Hom A A') (b : Hom B B')
     (H : b ∘ f ≈ g ∘ a)
   : a ∘ f⁻¹ ≈ g⁻¹ ∘ b.
 Proof.
-  apply (iso_cancel_r (groupoid_arrow_iso f)).
-  rewrite !comp_assoc, groupoid_inv_l, comp_id_r, H,
-    <- comp_assoc, groupoid_inv_l, comp_id_l. reflexivity.
+  apply (iso_cancel_r (gpd_arrow_iso f)).
+  rewrite !comp_assoc, gpd_inv_l, comp_id_r, H,
+    <- comp_assoc, gpd_inv_l, comp_id_l.
+  reflexivity.
 Defined.
 
 (** Extend an ordinal diagram to transitions between arbitrary positions,
@@ -71,10 +75,11 @@ Defined.
 
 (** 将序数图式延拓到任意位置间的过渡，包括逆向过渡；全部逆选择来自 C。 *)
 
-Definition ordinal_radial {n : nat} (F : Fct [Ord n] C)
-    (i j : Ordinal n)
+Definition ordinal_radial {n : nat}
+    (F : Fct [Ord n] C) (i j : Ordinal n)
   : Hom (F i) (F j)
-  := fmap F (ordinal_from_first j) ∘ (fmap F (ordinal_from_first i))⁻¹.
+  := fmap F (ordinal_from_first j)
+      ∘ (fmap F (ordinal_from_first i))⁻¹.
 
 (** Existing directed arrows are exactly these transitions. *)
 
@@ -85,8 +90,8 @@ Lemma ordinal_radial_arrow {n : nat} (F : Fct [Ord n] C)
   : fmap F f ≈ ordinal_radial F i j.
 Proof.
   unfold ordinal_radial.
-  apply (iso_cancel_r (groupoid_arrow_iso (fmap F (ordinal_from_first i)))).
-  rewrite comp_assoc, groupoid_inv_l, comp_id_r.
+  apply (iso_cancel_r (gpd_arrow_iso (fmap F (ordinal_from_first i)))).
+  rewrite comp_assoc, gpd_inv_l, comp_id_r.
   transitivity (fmap F (f ∘ ordinal_from_first i)).
   - symmetry. exact (@functor_comp [Ord n] C F fin_first i j
       f (ordinal_from_first i)).
@@ -103,7 +108,8 @@ Lemma ordinal_radial_comp {n : nat} (F : Fct [Ord n] C)
 Proof.
   unfold ordinal_radial.
   rewrite comp_assoc, <- (comp_assoc (fmap F (ordinal_from_first j))⁻¹),
-    groupoid_inv_l, comp_id_l. reflexivity.
+    gpd_inv_l, comp_id_l.
+  reflexivity.
 Defined.
 
 (** Reversing a radial transition gives its selected inverse. *)
@@ -114,7 +120,8 @@ Lemma ordinal_radial_inv {n : nat} (F : Fct [Ord n] C)
     (i j : Ordinal n)
   : (ordinal_radial F i j)⁻¹ ≈ ordinal_radial F j i.
 Proof.
-  unfold ordinal_radial. rewrite groupoid_inv_comp, groupoid_inv_inv.
+  unfold ordinal_radial.
+  rewrite gpd_inv_comp, gpd_inv_inv.
   reflexivity.
 Defined.
 
@@ -143,8 +150,8 @@ Proof.
   assert (H : ∀ k, id ∘ fmap (F ∘F Q) (ordinal_from_first k) ≈
       fmap F (ordinal_from_first (Q k)) ∘ c⁻¹).
   { intros k. rewrite comp_id_l.
-    apply (iso_cancel_r (groupoid_arrow_iso c)).
-    rewrite comp_assoc, groupoid_inv_l, comp_id_r.
+    apply (iso_cancel_r (gpd_arrow_iso c)).
+    rewrite comp_assoc, gpd_inv_l, comp_id_r.
     change (fmap F (fmap Q (ordinal_from_first k)) ∘
       fmap F (ordinal_from_first (Q fin_first)) ≈
       fmap F (ordinal_from_first (Q k))).

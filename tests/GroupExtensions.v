@@ -166,8 +166,8 @@ Proof. reflexivity. Qed.
 (** 实际单对象群胚保留选定的逆及定律。 *)
 
 Example groupoid_inverse_uses_stored_choices
-  : let i := @groupoid_iso (MonoidCat FirstGroup)
-      (MonoidCat_IsGroupoid FirstGroup) tt tt true in
+  : let i := @gpd_iso (MonoidCat FirstGroup)
+      (MonoidCat_IsGpd FirstGroup) tt tt true in
       (i.1, i.2) = (false, (false, true)).
 Proof. reflexivity. Qed.
 
