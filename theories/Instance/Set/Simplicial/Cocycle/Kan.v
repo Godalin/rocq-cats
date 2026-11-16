@@ -338,7 +338,7 @@ End GroupFillers.
 
 Section KanFilling.
 Universes u p.
-Context {M : Group} `{HC : !IsCommutativeMonoid M}.
+Context {M : Group} `{HC : !IsCommMonoid M}.
 
 (** Retain the selected three-dimensional fillers as the existing interface. *)
 

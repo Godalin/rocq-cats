@@ -68,29 +68,23 @@ Arguments mul_unit_r {SG e IsMonoid} x.
 (** 完整幺半群拥有一个半群及一份选定单位扩充。 *)
 
 Record Monoid@{u p l}
-  :=
+  := MonoidOfSemigroup
   { MonoidToSemigroup :> Semigroup@{u p l}
   ; hasMonoid :: HasMonoid MonoidToSemigroup
   }.
 
-(** Pack a supplied semigroup and its chosen extension transparently. *)
+(** The record constructor takes its parent and witness explicitly. *)
 
-(** 将给定半群及其选定扩充透明打包。 *)
+(** 记录构造器显式接受父结构及其见证。 *)
 
-Program Definition MonoidFromExtension (SG : Semigroup)
-    (HM : HasMonoid SG)
-  : Monoid
-  :=
-  {|MonoidToSemigroup := SG
-  ; hasMonoid := HM
-  |}.
+Arguments MonoidOfSemigroup _ _ : clear implicits.
 
 (** The numeral reads the complete monoid's selected unit. Fixed-parent
-    clients can use the transparent [MonoidFromExtension] view to specify
+    clients can use the [MonoidOfSemigroup] constructor to specify
     their supplied choice. Ordinary expressions infer the monoid. *)
 
-(** 数字记号读取完整幺半群选定的单位元。固定父结构客户端可用透明的
-    [MonoidFromExtension] 视图指定给定选择；普通表达式会推断幺半群。 *)
+(** 数字记号读取完整幺半群选定的单位元。固定父结构客户端可用
+    [MonoidOfSemigroup] 构造器指定给定选择；普通表达式会推断幺半群。 *)
 
 Notation "1" := (@mul_unit _ (hasMonoid _)) : algebra_scope.
 
@@ -110,14 +104,16 @@ Proof.
 Qed.
 
 (** A left and a right inverse agree using only a chosen unit extension
-    of the specified semigroup. *)
+    of the specified semigroup. Typing the elements in its monoid view
+    fixes that same unit for both inverse equations. *)
 
-(** 左逆与右逆相等只需指定半群上的选定单位扩充。 *)
+(** 左逆与右逆相等只需指定半群上的选定单位扩充。元素类型使用其幺半群
+    视图，使两条逆方程均读取同一选定单位元。 *)
 
-Lemma mul_extension_inv_unique (SG : Semigroup)
-    (HM : HasMonoid SG) (x y z : SG)
-    (Hy : (y ⋅ x) ≈S (1 : MonoidFromExtension SG HM))
-    (Hz : (x ⋅ z) ≈S (1 : MonoidFromExtension SG HM))
+Lemma mul_ext_inv_unique (SG : Semigroup)
+    (HM : HasMonoid SG)
+    (x y z : MonoidOfSemigroup SG HM)
+    (Hy : y ⋅ x ≈S 1) (Hz : x ⋅ z ≈S 1)
   : y ≈S z.
 Proof.
   transitivity (y ⋅ (x ⋅ z)).
@@ -136,6 +132,6 @@ Lemma mul_inv_unique {M : Monoid}
     (x y z : M) (Hy : y ⋅ x ≈S 1) (Hz : x ⋅ z ≈S 1)
   : y ≈S z.
 Proof.
-  exact (mul_extension_inv_unique (MonoidToSemigroup M)
+  exact (mul_ext_inv_unique (MonoidToSemigroup M)
     (hasMonoid M) x y z Hy Hz).
 Qed.

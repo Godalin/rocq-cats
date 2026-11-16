@@ -115,7 +115,7 @@ Definition lower_inverse_value
 
 Definition lower_commutative_product
     (M : Monoid@{h e _})
-    `{HC : !IsCommutativeMonoid M}
+    `{HC : !IsCommMonoid M}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
     (x y : TwoSphereClassS
@@ -131,7 +131,7 @@ Definition lower_commutative_product
 
 Definition lower_commutative_monoid
     (M : Monoid@{h e _})
-    `{HC : !IsCommutativeMonoid M}
+    `{HC : !IsCommMonoid M}
     `{HX2 : !HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 4 fin_first⁺⁺}
     `{HX3 : !HasHornFillers
@@ -140,8 +140,8 @@ Definition lower_commutative_monoid
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 4 fin_first⁺⁺⁺⁺}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
-  : @IsCommutativeMonoid (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
-  := cocycle_kan_IsCommutativeMonoid H.
+  : @IsCommMonoid (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
+  := cocycle_kan_IsCommMonoid H.
 
 (** Reuse the existing isomorphism at independent common upward bounds. *)
 
@@ -240,7 +240,7 @@ Definition higher_inverse_value
 
 Definition higher_commutative_product
     (M : Monoid@{e h _})
-    `{HC : !IsCommutativeMonoid M}
+    `{HC : !IsCommMonoid M}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
     (x y : TwoSphereClassS
@@ -256,7 +256,7 @@ Definition higher_commutative_product
 
 Definition higher_commutative_monoid
     (M : Monoid@{e h _})
-    `{HC : !IsCommutativeMonoid M}
+    `{HC : !IsCommMonoid M}
     `{HX2 : !HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 fin_first⁺⁺}
     `{HX3 : !HasHornFillers
@@ -265,8 +265,8 @@ Definition higher_commutative_monoid
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 fin_first⁺⁺⁺⁺}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
-  : @IsCommutativeMonoid (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
-  := cocycle_kan_IsCommutativeMonoid H.
+  : @IsCommMonoid (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
+  := cocycle_kan_IsCommMonoid H.
 
 (** Reuse the existing isomorphism at independent common upward bounds. *)
 

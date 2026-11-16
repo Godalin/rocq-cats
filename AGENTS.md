@@ -19,6 +19,15 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   prove operations respectful (`Proper`). Compare functors by natural isomorphism.
   Do not require equality of functions or proof fields when the mathematical
   interface only needs equivalence.
+- Before requiring an operation's respectfulness (`Proper`) or analogous
+  well-definedness/compatibility evidence, check whether it follows from
+  the existing defining laws. When derivable, prove it under the weakest
+  sufficient assumptions and expose a derived instance where appropriate,
+  rather than adding a field or hypothesis for callers to supply. Use the
+  specified equality and preserve required computational transparency and
+  universe independence. This concerns operational admissibility; it does
+  not require minimizing characteristic mathematical axioms or replacing
+  ordinary theory development with interface requirements.
 - Families require coherent transport. Distinguish strict equations from laws
   up to equivalence/isomorphism, and invertible higher cells from strict equality.
   Specify the coherence needed by each construction.
@@ -179,6 +188,16 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `prof_` for the reviewed profunctor family, including public operations,
   laws and fields. Retain `HasExponential` and the complete parameterized
   `CartesianCat` hierarchy; module paths and existing notation stay unchanged.
+- Use `Comm` for reviewed `Commutative` names and `Ext` / `ext` for
+  reviewed `Extension` / `extension` names. Use `Of` rather than `From`
+  in names for constructing one presentation from supplied data, as in
+  `MonoidOfSemigroup`. Migrate existing families in bounded steps; module paths,
+  descriptive prose and Rocq's `From ... Require` command are unaffected.
+- Name the reviewed complete algebra record constructors `TargetOfParent`,
+  matching their `TargetToParent` projections: `MagmaOfSetC`,
+  `SemigroupOfMagma`, `MonoidOfSemigroup` and `GroupOfMonoid`.
+  Constructors take the parent and its extension/property witness directly;
+  do not add a separate definition that only repacks those fields.
 - Prefix laws by their mathematical subject, not `axiom_`. Reuse descriptive
   endings (`_id`, `_comp`, `_inv`, `_iso`, `_unique`, `_β1`, `_η`).
   Define an operation once at its weakest structure, with a short subject
@@ -221,8 +240,16 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   before diagnosing failures. Do not change global shell settings or upgrade
   shared environments without explicit authorization.
 - Build with the existing VS Code task or `dune build`. Compile affected modules
-  and dependents; broaden validation after interface changes. Inspect
-  `Print Assumptions` for foundational proofs or suspected hidden axioms.
+  and representative dependents during editing, using concrete targets rather
+  than full-library/test/install checks after every small change. For broad
+  foundational/API refactors, settle the design and naming before running the
+  necessary full validation for the stable submission. Repeat checks only for
+  changed relevant inputs, failures or unresolved concerns; reuse results when
+  source/dependencies, toolchain and check inputs are unchanged. Build required
+  dependencies before temporary audits. Use `Print Assumptions`, strict-universe
+  and computation checks where the change can affect them, without mechanically
+  rerunning every historical audit. Integration still validates its exact
+  resulting SHA.
 - Prefer general proofs and temporary checks to redundant tests. Retain tests
   only for concrete interface regressions; keep reusable mathematics in theory
   modules and routine assumption output out of compiled sources.

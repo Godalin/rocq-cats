@@ -18,7 +18,7 @@ Fail Definition unchosen_boolean_group
   := ltac:(typeclasses eauto).
 
 Fail Definition unchosen_boolean_commutativity
-  : IsCommutativeMonoid BoolS_Monoid
+  : IsCommMonoid BoolS_Monoid
   := ltac:(typeclasses eauto).
 
 (** ** Computing the Selected Solutions
@@ -31,7 +31,7 @@ Fail Definition unchosen_boolean_commutativity
     局部启用已有异或群及其交换性见证，检查两者使用同一底层乘法。 *)
 
 Section BooleanComputations.
-Local Existing Instance BoolS_IsCommutativeMonoid.
+Local Existing Instance BoolS_IsCommMonoid.
 
 Example left_solution_computes
   : (GroupMulLSolution (G := BoolS_Group) true false).1 = true.

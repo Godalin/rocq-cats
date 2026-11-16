@@ -63,22 +63,16 @@ Arguments mul_inv_r {M inv IsGroup} x.
 (** 完整群拥有一个幺半群及一份逆扩充。 *)
 
 Record Group@{u p l}
-  :=
+  := GroupOfMonoid
   { GroupToMonoid :> Monoid@{u p l}
   ; hasGroup :: HasGroup GroupToMonoid
   }.
 
-(** Pack a supplied monoid and its chosen inverse extension transparently. *)
+(** The record constructor takes its parent and witness explicitly. *)
 
-(** 将给定幺半群及其选定逆扩充透明打包。 *)
+(** 记录构造器显式接受父结构及其见证。 *)
 
-Program Definition GroupFromExtension (M : Monoid)
-    (HG : HasGroup M)
-  : Group
-  :=
-  {|GroupToMonoid := M
-  ; hasGroup := HG
-  |}.
+Arguments GroupOfMonoid _ _ : clear implicits.
 
 (** The inverse notation reads the complete group's stored choice. *)
 
@@ -96,8 +90,24 @@ Lemma inv_candidates_equiv (M : Monoid)
     (i j : M → M) (Hi : IsGroup M i) (Hj : IsGroup M j)
   : i ≈f j.
 Proof.
-  intros x. exact (@mul_inv_unique M x (i x) (j x)
-    (@mul_inv_l M i Hi x) (@mul_inv_r M j Hj x)).
+  intros x. apply (mul_inv_unique x).
+  - rewrite mul_inv_l. reflexivity.
+  - rewrite mul_inv_r. reflexivity.
+Qed.
+
+(** Any supplied two-sided inverse respects the monoid's specified
+    equality. No selected inverse extension or complete group is needed. *)
+
+(** 任意给定双侧逆保持幺半群指定的相等，无须选定逆扩充或完整群。 *)
+
+Global Instance inv_proper
+    {M : Monoid} {i : M → M}
+    `{Hi : !IsGroup M i}
+  : Proper (carrier_equiv M ==> carrier_equiv M) i.
+Proof.
+  intros x y H. apply (mul_inv_unique y).
+  - rewrite <- H, mul_inv_l. reflexivity.
+  - rewrite mul_inv_r. reflexivity.
 Qed.
 
 (** A left inverse agrees with the selected inverse using only the
@@ -105,13 +115,13 @@ Qed.
 
 (** 左逆仅需指定幺半群上的扩充，就与选定逆相等。 *)
 
-Lemma inv_extension_unique (M : Monoid)
+Lemma inv_ext_unique (M : Monoid)
     (HG : HasGroup M) (x y : M)
     (H : (y ⋅ x) ≈S 1)
   : y ≈S @inv M HG x.
 Proof.
-  exact (@mul_inv_unique M x y _ H
-    (@mul_inv_r M _ (@isGroup M HG) x)).
+  eapply mul_inv_unique; [exact H |].
+  rewrite mul_inv_r. reflexivity.
 Qed.
 
 (** ** Inverse Laws in a Group
@@ -134,18 +144,7 @@ Context {G : Group}.
 Lemma inv_unique (x y : G) (H : y ⋅ x ≈S 1)
   : y ≈S x⁻¹.
 Proof.
-  exact (inv_extension_unique (GroupToMonoid G) (hasGroup G) x y H).
-Qed.
-
-(** Inversion respects the specified setoid equality. *)
-
-(** 取逆保持指定的广集相等。 *)
-
-Global Instance inv_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G) (@inv _ (hasGroup G)).
-Proof.
-  intros x y H. apply inv_unique.
-  rewrite <- H. apply mul_inv_l.
+  exact (inv_ext_unique (GroupToMonoid G) (hasGroup G) x y H).
 Qed.
 
 (** The unit is its own inverse. *)
@@ -165,7 +164,10 @@ Qed.
 
 Lemma inv_inv (x : G)
   : (x⁻¹)⁻¹ ≈S x.
-Proof. symmetry. apply inv_unique. apply mul_inv_r. Qed.
+Proof.
+  symmetry. apply inv_unique.
+  rewrite mul_inv_r. reflexivity.
+Qed.
 
 (** The inverse of a product reverses the order of its factors. *)
 
@@ -176,8 +178,7 @@ Lemma inv_mul (x y : G)
 Proof.
   symmetry. apply inv_unique.
   rewrite mul_assoc, <- (mul_assoc x⁻¹), mul_inv_l.
-  rewrite mul_unit_l.
-  apply mul_inv_l.
+  rewrite mul_unit_l, mul_inv_l. reflexivity.
 Qed.
 
 (** Group inversion packaged as a respectful map. *)
@@ -188,6 +189,8 @@ Program Definition inv_resp
   : G →r G
   :=
   {|func x := x⁻¹
+  ; func_proper :=
+    @inv_proper _ _ (@isGroup _ (hasGroup G))
   |}.
 
 End Group.

@@ -22,7 +22,7 @@ Local Open Scope algebra_scope.
     合并三角形标签时，有时需要交换四个系数中间两个的位置。下方的交换定律
     单独刻画这一步所需的交换性，不要求存在逆。 *)
 
-Class IsCommutativeMonoid (M : Monoid)
+Class IsCommMonoid (M : Monoid)
   :=
   { mul_comm (x y : M)
     : x ⋅ y ≈S y ⋅ x
@@ -39,7 +39,7 @@ Class IsCommutativeMonoid (M : Monoid)
     的一对因子。 *)
 
 Section Interchange.
-Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
+Context {M : Monoid} `{HC : !IsCommMonoid M}.
 
 (** Multiplying two pairs can be regrouped by their first and second entries. *)
 
@@ -48,8 +48,9 @@ Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
 Lemma mul_interchange (a b c d : M)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d).
 Proof.
-  rewrite mul_assoc, <- (mul_assoc b c d), (mul_comm b c), (mul_assoc c b
-    d), <- mul_assoc.
+  rewrite mul_assoc, <- (mul_assoc b c d),
+    (mul_comm b c), (mul_assoc c b d),
+    <- mul_assoc.
   reflexivity.
 Defined.
 

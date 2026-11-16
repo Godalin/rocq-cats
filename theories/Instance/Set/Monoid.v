@@ -78,7 +78,9 @@ Next Obligation.
   change (set_magma_mul_resp M ∘ (set_magma_mul_resp M × id) ≈
     set_magma_mul_resp M ∘ (id × set_magma_mul_resp M) ∘
       (@product_assoc SetCat SetCat_HasProduct M M M).1).
-  rewrite !cross_η. intros [[x y] z]. exact (mul_assoc x y z).
+  rewrite !cross_η. intros [[x y] z].
+  change (x ⋅ y ⋅ z ≈S x ⋅ (y ⋅ z)).
+  rewrite mul_assoc. reflexivity.
 Defined.
 
 End SetMonoid.

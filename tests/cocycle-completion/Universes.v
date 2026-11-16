@@ -96,7 +96,7 @@ Section Consistency.
 Universes e h.
 Constraint e < h.
 Context (M : Group@{h e _}) (N : Group@{e h _})
-    `{CM : !IsCommutativeMonoid M} `{CN : !IsCommutativeMonoid N}.
+    `{CM : !IsCommMonoid M} `{CN : !IsCommMonoid N}.
 
 (** The last tetrahedron equation keeps the lower equality universe. *)
 

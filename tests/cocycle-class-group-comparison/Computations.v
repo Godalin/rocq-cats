@@ -21,7 +21,7 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_IsCommutativeMonoid.
+Local Existing Instance BoolS_IsCommMonoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Fail Definition unchosen_group
@@ -60,12 +60,12 @@ Definition class_magma
     完全相同父结构。 *)
 
 Fail Definition unchosen_commutativity
-  : @IsCommutativeMonoid (GroupToMonoid class_group)
+  : @IsCommMonoid (GroupToMonoid class_group)
   := _.
 
 Definition class_commutativity
-  : @IsCommutativeMonoid (GroupToMonoid class_group)
-  := cocycle_kan_IsCommutativeMonoid three_choice.
+  : @IsCommMonoid (GroupToMonoid class_group)
+  := cocycle_kan_IsCommMonoid three_choice.
 
 (** The general comparison consumes the exact generic group multiplication. *)
 

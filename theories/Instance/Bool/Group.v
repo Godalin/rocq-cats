@@ -71,7 +71,7 @@ Next Obligation. destruct x; reflexivity. Defined.
 
 Definition BoolS_Monoid
   : Monoid
-  := MonoidFromExtension BoolS_Semigroup BoolS_HasMonoid.
+  := MonoidOfSemigroup BoolS_Semigroup BoolS_HasMonoid.
 
 (** Inversion is the identity function, extending the same selected monoid. *)
 
@@ -95,4 +95,4 @@ Next Obligation. destruct x; reflexivity. Defined.
 
 Definition BoolS_Group
   : Group
-  := GroupFromExtension BoolS_Monoid BoolS_HasGroup.
+  := GroupOfMonoid BoolS_Monoid BoolS_HasGroup.

@@ -198,7 +198,7 @@ End KanInverses.
 
 Section KanCommutativity.
 Universes u p.
-Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
+Context {M : Monoid} `{HC : !IsCommMonoid M}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -231,9 +231,9 @@ Context `{HX4 : !HasHornFillers Z 4 fin_first⁺⁺⁺⁺}.
 
 (** 交换性性质绑定到通用幺半群中完全相同的选定乘法，不另选第二结构。 *)
 
-Program Definition cocycle_kan_IsCommutativeMonoid
+Program Definition cocycle_kan_IsCommMonoid
     (H : HasHornFillers Z 3 fin_first⁺⁺)
-  : IsCommutativeMonoid
+  : IsCommMonoid
       (TwoSphereClassMonoid Z (two_cocycle_simplex_unit 0) H)
   :=
   {|mul_comm := cocycle_kan_mul_comm H

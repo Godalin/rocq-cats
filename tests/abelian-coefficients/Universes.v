@@ -17,7 +17,7 @@ Section Sizes.
 Universes e h.
 Constraint e < h.
 Context (M : Group@{h e _}) (N : Group@{e h _})
-    `{CM : !IsCommutativeMonoid M} `{CN : !IsCommutativeMonoid N}.
+    `{CM : !IsCommMonoid M} `{CN : !IsCommMonoid N}.
 
 (** Low equality still retains an actual selected solution and uniqueness. *)
 

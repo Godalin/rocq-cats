@@ -27,21 +27,16 @@ Class IsSemigroup (M : Magma)
 (** 完整半群恰好保存一次直接父结构。 *)
 
 Record Semigroup@{u p l}
-  :=
+  := SemigroupOfMagma
   { SemigroupToMagma :> Magma@{u p l}
   ; isSemigroup :: IsSemigroup SemigroupToMagma
   }.
 
-(** Reuse an explicitly supplied parent and associativity witness. *)
+(** The record constructor takes its parent and witness explicitly. *)
 
-(** 复用显式给定的父结构及结合律见证。 *)
+(** 记录构造器显式接受父结构及其见证。 *)
 
-Program Definition SemigroupFromProperty (M : Magma) (HM : IsSemigroup M)
-  : Semigroup
-  :=
-  {|SemigroupToMagma := M
-  ; isSemigroup := HM
-  |}.
+Arguments SemigroupOfMagma _ _ : clear implicits.
 
 (** ** Associative Multiplication
 
@@ -62,7 +57,9 @@ Context {S : Semigroup}.
 
 Lemma mul_l_comp (x y : S)
   : ((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−)).
-Proof. intros z. apply mul_assoc. Qed.
+Proof. intros z. cbn. rewrite mul_assoc.
+  reflexivity.
+Qed.
 
 (** Right multiplication reverses the order in the corresponding
     composition law. *)
@@ -71,7 +68,9 @@ Proof. intros z. apply mul_assoc. Qed.
 
 Lemma mul_r_comp (x y : S)
   : (−⋅ (x ⋅ y)) ≈f ((−⋅ y) ∘r (−⋅ x)).
-Proof. intros z. symmetry. apply mul_assoc. Qed.
+Proof. intros z. cbn. rewrite mul_assoc.
+  reflexivity.
+Qed.
 
 (** Left and right multiplication commute as maps, without requiring a
     commutative multiplication operation. *)
@@ -80,6 +79,8 @@ Proof. intros z. symmetry. apply mul_assoc. Qed.
 
 Lemma mul_lr_comm (x y : S)
   : ((x ⋅−) ∘r (−⋅ y)) ≈f ((−⋅ y) ∘r (x ⋅−)).
-Proof. intros z. symmetry. apply mul_assoc. Qed.
+Proof. intros z. cbn. rewrite mul_assoc.
+  reflexivity.
+Qed.
 
 End Multiplication.

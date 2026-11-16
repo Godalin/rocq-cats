@@ -141,7 +141,7 @@ Defined.
 Program Definition cocycle_two_sphere_Semigroup
   : Semigroup
   :=
-  {|SemigroupToMagma := MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma)
+  {|SemigroupToMagma := MagmaOfSetC Q (hasMagma cocycle_two_sphere_Magma)
   ; isSemigroup :=
       {|mul_assoc (x y z : Q) := cocycle_two_sphere_mul_assoc x y z|}
   |}.
@@ -191,8 +191,8 @@ Defined.
 Program Definition cocycle_two_sphere_Monoid
   : Monoid
   :=
-  {|MonoidToSemigroup := SemigroupFromProperty
-      (MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma))
+  {|MonoidToSemigroup := SemigroupOfMagma
+      (MagmaOfSetC Q (hasMagma cocycle_two_sphere_Magma))
       (isSemigroup cocycle_two_sphere_Semigroup)
   ; hasMonoid :=
       {|mul_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
@@ -521,9 +521,9 @@ Defined.
 Program Definition cocycle_two_sphere_Group
   : Group
   :=
-  {|GroupToMonoid := MonoidFromExtension
-      (SemigroupFromProperty
-        (MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma))
+  {|GroupToMonoid := MonoidOfSemigroup
+      (SemigroupOfMagma
+        (MagmaOfSetC Q (hasMagma cocycle_two_sphere_Magma))
         (isSemigroup cocycle_two_sphere_Semigroup))
       (hasMonoid cocycle_two_sphere_Monoid)
   ; hasGroup :=
@@ -561,7 +561,7 @@ End SphereGroup.
 
 Section SphereCommutativity.
 Universes u p.
-Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
+Context {M : Monoid} `{HC : !IsCommMonoid M}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -588,11 +588,11 @@ Defined.
 
 (** 同一选定类幺半群上的交换性。 *)
 
-Program Definition cocycle_two_sphere_IsCommutativeMonoid
-  : IsCommutativeMonoid
-      (MonoidFromExtension
-        (SemigroupFromProperty
-          (MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma))
+Program Definition cocycle_two_sphere_IsCommMonoid
+  : IsCommMonoid
+      (MonoidOfSemigroup
+        (SemigroupOfMagma
+          (MagmaOfSetC Q (hasMagma cocycle_two_sphere_Magma))
           (isSemigroup cocycle_two_sphere_Semigroup))
         (hasMonoid cocycle_two_sphere_Monoid))
   :=

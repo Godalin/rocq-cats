@@ -176,7 +176,7 @@ Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W false
       (@inv _ (hasGroup (G false true)) x)
       (@inv _ (hasGroup (G false true)) y)
-  := @inv_proper (G false true) x y input_cylinder.
+  := @inv_proper _ _ (@isGroup _ (hasGroup (G false true))) x y input_cylinder.
 
 (** Generic left unit returns a cylinder between native-distinct values. *)
 

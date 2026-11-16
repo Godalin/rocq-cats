@@ -140,7 +140,7 @@ Proof. reflexivity. Qed.
 Definition inverse_proper_client
   : @inv _ (hasGroup TaggedGroup) (false, 5) ≈S
       @inv _ (hasGroup TaggedGroup) (false, 81)
-  := @inv_proper TaggedGroup
+  := @inv_proper _ _ (@isGroup _ (hasGroup TaggedGroup))
       (false, 5) (false, 81) (eq_refl, true).
 
 (** Generic involution recovers the target element in specified equality. *)

@@ -38,7 +38,8 @@ Context (f : B →r A) (g : A →r B).
     {{ coqref: Cats.Algebra.Monoid.Transport.MonoidTransport }} 中的选择，
     选定逆计算为 [g ((f x)⁻¹)]。 *)
 
-Program Definition HasGroupTransport (Hfg : (f ∘r g) ≈f id_resp)
+Program Definition HasGroupTransport
+    (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
   : HasGroup (MonoidTransport A f g Hfg Hgf)
   :=
@@ -68,10 +69,11 @@ Defined.
 
 (** 从恰好同一运输幺半群及其选定逆扩充恢复现有群呈现。 *)
 
-Definition GroupTransport (Hfg : (f ∘r g) ≈f id_resp)
+Definition GroupTransport
+    (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
   : Group
-  := GroupFromExtension (MonoidTransport A f g Hfg Hgf)
+  := GroupOfMonoid (MonoidTransport A f g Hfg Hgf)
       (HasGroupTransport Hfg Hgf).
 
 (** The forward map preserves the selected inverse, in addition to the
@@ -79,8 +81,10 @@ Definition GroupTransport (Hfg : (f ∘r g) ≈f id_resp)
 
 (** 除前面运输层的乘积及单位方程外，正向映射还保持选定逆。 *)
 
-Lemma group_transport_map_inv (Hfg : (f ∘r g) ≈f id_resp)
-    (Hgf : (g ∘r f) ≈f id_resp) (x : B)
+Lemma group_transport_map_inv
+    (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp)
+    (x : B)
   : f ((x : GroupTransport Hfg Hgf)⁻¹) ≈S (f x)⁻¹.
 Proof. exact (Hfg ((f x)⁻¹)). Defined.
 
