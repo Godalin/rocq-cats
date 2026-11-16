@@ -21,10 +21,7 @@ Local Open Scope computation_scope.
 
 Section Reconstruction.
 Context {C K : Cat} (F : FreydCat C K).
-Let CC
-  : CartCat C
-  := @hasCartCat C K F.
-Local Existing Instance CC.
+Local Existing Instance F.
 Let D
   : Cat
   := FreydComputations F.
@@ -35,7 +32,7 @@ Let D
 (** 重建作用为沿选定张量边界的共轭，其见证及反向边界映射保持透明。 *)
 
 Program Definition FreydArrow
-  : Arrow C D (@CartMonoidal C hasTerminal hasProduct)
+  : Arrow C D (@CartMonoidal C (@hasValueTerminal C K F) (@hasValueProduct C K F))
   :=
   {|ArrowF := FreydPureF F
   ; arrow_context X Y Z f := freyd_context F Z f
@@ -46,7 +43,7 @@ Program Definition FreydArrow
   |}.
 Next Obligation.
   etransitivity; [exact (freyd_context_pure F Z f) |].
-  pose proof (@cartesian_tensor_map C hasTerminal hasProduct
+  pose proof (@cartesian_tensor_map C (@hasValueTerminal C K F) (@hasValueProduct C K F)
     Z Z X Y (@id Z) f) as H. symmetry in H.
   exact (@functor_fmap_proper C K F _ _ _ _ H).
 Defined.

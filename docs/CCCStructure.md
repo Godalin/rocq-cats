@@ -5,18 +5,96 @@
 The first structural milestone of [#23](https://github.com/Godalin/rocq-cats/issues/23)
 connects exponential identities, their hom-setoid computations, limit preservation,
 cartesian closed functor composition and internal composition. The selected
-[CCC interface](../theories/Cat/CCC.v) extends a chosen
+[CCC interface](../theories/Cat/CCC/Core.v) extends a chosen
 [cartesian structure](../theories/Cat/Cartesian/Core.v) by exponentials for
 its inherited products. The unique underlying-view chain is
-`CCC → CartesianCat → Cat`. Individual theorems use weaker assumptions
+`CCC → CartCat → Cat`. Individual theorems use weaker assumptions
 where possible; extracting this parent does not add hypotheses to them.
 
 [#23](https://github.com/Godalin/rocq-cats/issues/23) 的首个结构里程碑连接指数恒等、
 Hom 广集计算、极限保持性、笛卡尔闭函子复合及内部复合。
-[CCC 接口](../theories/Cat/CCC.v) 为选定的
+[CCC 接口](../theories/Cat/CCC/Core.v) 为选定的
 [笛卡尔结构](../theories/Cat/Cartesian/Core.v) 增加相对于继承积的指数，
-唯一底层视图链为 `CCC → CartesianCat → Cat`。各个定理在可行时仍使用
+唯一底层视图链为 `CCC → CartCat → Cat`。各个定理在可行时仍使用
 更弱的假设；抽取父结构不为它们增加前提。
+
+`CartCat`, `CCC`, `Topos` and `ETCS` are complete records, each storing
+one immediate parent. `CCC` stores `CCCToCartCat :> CartCat` and
+`hasExponential : HasExponential (hasProduct CCCToCartCat)`.
+Its underlying category comes from that parent, and no second terminal,
+product or category is stored. Generic theorems continue to use their
+fixed-category `Has*` assumptions. `IsCCCF` and `CCCFct` take the selected
+complete CCC endpoints, while the underlying functor remains ordinary `Fct`.
+
+`CartCat`、`CCC`、`Topos`、`ETCS` 均为完整记录，各只保存一个直接父结构。
+`CCC` 保存 `CCCToCartCat :> CartCat` 及绑定该父结构积选择的指数；
+底层范畴也来自同一父结构，不重复保存终对象、积或范畴。
+一般定理继续使用固定范畴上的 `Has*` 假设。`IsCCCF` 与 `CCCFct` 接收
+选定的完整 CCC 两端，底层函子仍为普通 `Fct`。
+
+## CCC modules and the category of CCCs
+
+## CCC 模块及 CCC 的范畴
+
+The theory is organized by mathematical subject:
+
+这条理论按数学主题组织：
+
+| Module / 模块 | Responsibility / 职责 |
+| --- | --- |
+| [CCC/Core.v](../theories/Cat/CCC/Core.v) | The complete CCC record and inherited choices / 完整 CCC 记录及继承选择 |
+| [CCC/Functor.v](../theories/Cat/CCC/Functor.v) | `IsCCCF`, `CCCFct`, its parent view `CCCF`, identity and composition / 保持性、打包函子、父视图及恒等与复合 |
+| [CCC/Category.v](../theories/Cat/CCC/Category.v) | `CCCCat`, hom equality and the forgetful functor / CCC 范畴、Hom 相等及忘却函子 |
+| [Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) | General comparison, evaluation and currying, with weaker hypotheses / 较弱假设下的一般比较、求值及柯里化 |
+
+`CCCCat` has complete `CCC` bundles as objects and `CCCFct C D` as
+arrows. `CCCFctEq` compares only their underlying functors by a Type-valued
+natural isomorphism. Preservation witnesses remain stored but are not
+compared. Identity and composition reuse `IdCCCF` and `CompCCCF`; the
+unit/associativity laws reuse the existing natural comparisons for `CompF`.
+No native equality of object maps, functors or law records is required.
+
+`CCCCat` 以完整 `CCC` 结构包为对象，以 `CCCFct C D` 为态射；
+`CCCFctEq` 只通过 Type 值自然同构比较底层函子，保留但不比较保持性见证。
+恒等及复合复用 `IdCCCF`、`CompCCCF`，单位及结合律复用 `CompF` 的
+已有自然比较，不要求对象映射、函子或定律记录原生相等。
+
+`CCCForgetF : Fct CCCCat CatCat` keeps the underlying category and functor.
+It is faithful for the specified natural-isomorphism equality. Both its
+respectfulness and `ccc_forget_faithful` retain the comparison components
+and their selected inverses transparently. `CCCCatHom` reuses `CatCatHom`
+to admit existing CCC functors with larger auxiliary proof bounds, keeping
+object/arrow maps, product witnesses and exponential inverses.
+
+`CCCForgetF : Fct CCCCat CatCat` 保留底层范畴及函子，对指定的自然同构
+相等忠实。其保相等性及 `ccc_forget_faithful` 透明保留比较分量及选定逆。
+`CCCCatHom` 复用 `CatCatHom`，将辅助证明界较大的已有 CCC 函子装入 Hom，
+保留对象／箭头映射、积见证及指数逆。
+
+For each universe profile `o h p l`, `CCCCat` contains CCCs at
+`CCC@{o h p l l}` and itself lives at larger bounds. This is a
+universe-polymorphic family, not a type containing categories from every
+universe. Both strict hom/equality size orders remain supported.
+`tests/CCCCategory.v` exercises categorical notation and composition
+rewriting, distinct terminal choices over one category, concrete forgetting
+and the larger auxiliary-bound interface.
+
+每个宇宙配置 `o h p l` 下，`CCCCat` 包含 `CCC@{o h p l l}` 的结构包，
+自身位于更大的大小界。这是宇宙多态的一族，不将全部宇宙的范畴放入一个类型。
+Hom／相等大小的两种严格次序均保留。`tests/CCCCategory.v` 检查普通范畴
+记号、复合重写、同一范畴上的不同终对象选择、具体忘却计算及较大辅助界接口。
+
+The two object-level universe checks `CatCat : @Ob CatCat` and
+`CCCCat : @Ob CatCat` are retained in `tests/CCCCategory.v`, with distinct
+universe instances. The latter does not assert a CCC structure on CCCCat.
+Local validation passed all 606 theory and 174 test modules, followed by
+the affected test after adding these two probes. The 23 temporary universe,
+assumption and witness-computation checks are closed.
+
+两个对象级宇宙检查 `CatCat : @Ob CatCat`、`CCCCat : @Ob CatCat` 保存在
+`tests/CCCCategory.v`，各处采用不同宇宙实例；后者不声称 CCCCat 自身具有
+CCC 结构。本地通过全部 606 个理论及 174 个测试模块，随后补验新增这两个
+检查的测试文件；二十三项临时宇宙、假设及见证计算检查全部闭合。
 
 ## Classical isomorphisms
 
@@ -144,11 +222,11 @@ independent of its hom carrier/equality levels.
 [Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) first extends preservation
 of the selected terminal/product objects to arbitrary candidates using their
 universal isomorphisms. This gives `CompF_IsCartF` and the inverse-product
-comparison equation. [Functor.Closed](../theories/Cat/Functor/Closed.v) proves:
+comparison equation. [CCC.Functor](../theories/Cat/CCC/Functor.v) proves:
 
 [Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 先通过泛同构，将选定
 终对象／积的保持性推广到任意候选，进而得到 `CompF_IsCartF` 及逆向积比较
-的复合方程。[Functor.Closed](../theories/Cat/Functor/Closed.v) 证明：
+的复合方程。[CCC.Functor](../theories/Cat/CCC/Functor.v) 证明：
 
 ```text
 comparison_(G∘F)(X,Y) ≈ comparison_G(FX,FY) ∘ G(comparison_F(X,Y))
@@ -168,14 +246,14 @@ proofs remain explicitly enabled.
 [CartFct](../theories/Cat/Functor/Cartesian.v) stores one underlying
 `Fct` and its `IsCartF` evidence for named source terminal and product
 structures. No chosen target products are needed until an operation uses them.
-[CCCFct](../theories/Cat/Functor/Closed.v) adds invertibility of the canonical
+[CCCFct](../theories/Cat/CCC/Functor.v) adds invertibility of the canonical
 exponential comparison to that same cartesian bundle. Its unique coercion chain
 is `CCCFct → CartFct → Fct`; the derived `CCCFct_IsCCCF`
 instance reuses the stored cartesian witnesses.
 
 [CartFct](../theories/Cat/Functor/Cartesian.v) 保存一个底层 `Fct`
 及其相对于具名来源终对象和积结构的 `IsCartF` 证据；仅在运算实际需要时
-才引入目标选定积。[CCCFct](../theories/Cat/Functor/Closed.v) 在同一个
+才引入目标选定积。[CCCFct](../theories/Cat/CCC/Functor.v) 在同一个
 笛卡尔包上增加规范指数比较的可逆性。唯一强制转换链为
 `CCCFct → CartFct → Fct`；派生实例 `CCCFct_IsCCCF`
 复用保存的笛卡尔见证。

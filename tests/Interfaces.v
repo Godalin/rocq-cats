@@ -131,10 +131,10 @@ Fail Definition unchosen_free_objects
   := ltac:(typeclasses eauto).
 
 From Cats Require Import
-  Cat.Functor.Closed
+  Cat.CCC.Functor
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC
+  Cat.CCC.Core
   Instance.Set.CCC.
 
 (** Bundled preservation does not select concrete cartesian or CCC functors
@@ -168,15 +168,13 @@ End BundledCartesianInference.
 (** 给定 CCC 包通过单一函子强制转换链，支持两个继承接口及已有柯里化定理。 *)
 
 Section BundledCCCInference.
-Context {C D : Cat} {HC : CCC C} {HD : CCC D} (F : CCCFct HC HD).
-Local Existing Instance HC.
-Local Existing Instance HD.
+Context {C D : CCC} (F : CCCFct C D).
 
 Definition inferred_ccc_preservation
-  : IsCCCF F HC HD
+  : @IsCCCF C D F
   := ltac:(typeclasses eauto).
 Definition inferred_ccc_cartesian_preservation
-  : IsCartF F (@hasTerminal C HC) (@hasProduct C HC)
+  : IsCartF F (hasTerminal C) (hasProduct C)
   := ltac:(typeclasses eauto).
 Definition bundled_functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
   : functor_exponential_comparison F X Y ∘ fmap F (ƛ f) ≈

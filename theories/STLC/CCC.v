@@ -1,5 +1,5 @@
 From Cats Require Export STLC.Exponential.
-From Cats Require Import Cat.CCC.
+From Cats Require Import Cat.CCC.Core.
 
 (** * The Syntactic Cartesian Closed Category *)
 
@@ -35,9 +35,10 @@ From Cats Require Import Cat.CCC.
 (** 不要求指数，打包选定空上下文及连接积；此模型结构须显式启用。 *)
 
 Program Definition CtxCat_Cart@{b e l +} (B : Type@{b})
-  : CartCat (CtxCat@{b e l} B)
+  : CartCat@{l b b e l}
   :=
-  {|hasTerminal := CtxCat_HasTerminal B
+  {|CartCatToCat := CtxCat@{b e l} B
+  ; hasTerminal := CtxCat_HasTerminal B
   ; hasProduct := CtxCat_HasProduct B
   |}.
 
@@ -46,7 +47,7 @@ Program Definition CtxCat_Cart@{b e l +} (B : Type@{b})
 (** 为相同有限积选择增加打包函数上下文。 *)
 
 Program Definition CtxCat_CCC@{b e l +} (B : Type@{b})
-  : CCC (CtxCat@{b e l} B)
+  : CCC@{b b e l l}
   :=
   {|CCCToCartCat := CtxCat_Cart B
   ; hasExponential := CtxCat_HasExponential B

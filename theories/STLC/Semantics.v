@@ -4,7 +4,7 @@ From Cats Require Import
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC
+  Cat.CCC.Core
   Cat.Functor.Core.
 
 (** * Interpretation in a Cartesian Closed Category
@@ -63,7 +63,7 @@ Local Open Scope cat_scope.
 
 Section Semantics.
 Universes b e.
-Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).
+Context {B : Type@{b}} {C : CCC} (I : B → @Ob C).
 
 (** Interpret the type constructors by the selected CCC structures. *)
 

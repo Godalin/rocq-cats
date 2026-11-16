@@ -3,7 +3,7 @@ From Cats Require Import
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.Functor.Closed
+  Cat.CCC.Functor
   Cat.Functor.ExponentialComparison
   Cat.Diagram.Core
   Instance.Set.Core

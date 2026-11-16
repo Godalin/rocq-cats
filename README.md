@@ -61,7 +61,7 @@ See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
 
 - Modularity with sub-/super- type classes [see here](/theories/Cat/Core.v).
 
-- [CCC](./theories/Cat/CCC.v), [Topos](./theories/Topos/Core.v) and
+- [CCC](./theories/Cat/CCC/Core.v), [Topos](./theories/Topos/Core.v) and
   [ETCS](./theories/Topos/ETCS.v) build on this modularity.
 
 - A Fully formalized category of sets `SetCat` [see here](./theories/Instance/Set/Core.v)
@@ -240,9 +240,21 @@ See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
   Symmetry and transitivity are not assumed for arbitrary simplicial setoids.
   Examples with nontrivial higher homotopy remain a separate goal.
 
+The [CCC theory](./docs/CCCStructure.md#ccc-modules-and-the-category-of-cccs)
+separates its [complete bundle](./theories/Cat/CCC/Core.v),
+[structured functors](./theories/Cat/CCC/Functor.v) and
+[category of CCCs](./theories/Cat/CCC/Category.v). `CCCCat` has CCC bundles
+as objects, preserving functors as arrows and natural-isomorphism equality;
+`CCCForgetF` is its faithful forgetful functor to `CatCat`.
+
+[CCC 理论](./docs/CCCStructure.md#ccc-modules-and-the-category-of-cccs)区分
+[完整结构包](./theories/Cat/CCC/Core.v)、[保结构函子](./theories/Cat/CCC/Functor.v)
+及 [CCC 范畴](./theories/Cat/CCC/Category.v)。`CCCCat` 以 CCC 结构包为对象，
+以保结构函子为态射，按自然同构比较；`CCCForgetF` 是到 `CatCat` 的忠实忘却函子。
+
 ### Topos and ETCS
 
-`Topos C` extends one chosen `CCC C` with pullbacks and a subobject classifier.
+`Topos` stores one chosen `CCC` with pullbacks and a subobject classifier.
 Its classifier uses the inherited terminal object. Import `Cats.Topos.Core`
 for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
@@ -319,7 +331,7 @@ common upper bounds using implication. Its transparent introductions and
 least-upper-bound correspondence retain entailment factors; substitution,
 monotonicity and the join laws reuse the same chosen data.
 
-`Topos C` 为一个选定 `CCC C` 增加拉回和子对象分类子，分类子使用继承的
+`Topos` 为其保存的选定 `CCC` 增加拉回和子对象分类子，分类子使用继承的
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
@@ -373,14 +385,14 @@ Type 值子对象预序范畴的二元积给出；其
 上界作量化。透明的引入和最小上界对应保留蕴含因子；代入、单调性及并定律
 复用同一组选定数据。
 
-`ETCS C` extends `Topos C` with well-pointedness, split epimorphisms and a
+`ETCS` extends its stored `Topos` with well-pointedness, split epimorphisms and a
 natural-numbers object, retaining the existing chosen initial-object field.
 The single parent chain is `ETCS → Topos → CCC → CartCat → Cat`;
 terminal-dependent fields all use that same inherited choice. The optional
 [initial-object theorem](./theories/Topos/Initial.v) now derives an initial
 object from the Topos structure; this batch preserves the existing ETCS field.
 
-`ETCS C` 为 `Topos C` 增加良点性、满态射分裂和自然数对象，并保留原有的
+`ETCS` 为其保存的 `Topos` 增加良点性、满态射分裂和自然数对象，并保留原有的
 选定始对象字段。唯一父链为 `ETCS → Topos → CCC → CartCat → Cat`；
 依赖终对象的字段均使用同一继承选择。可选的
 [始对象定理](./theories/Topos/Initial.v)现已从拓扑斯结构推导始对象；本批保留
@@ -479,7 +491,7 @@ The [abbreviation guide](./docs/Abbreviations.md) records public name migrations
 and the remaining naming families.
 
 The [cartesian](./theories/Cat/Functor/Cartesian.v) and
-[CCC functor bundles](./theories/Cat/Functor/Closed.v) extend this approach
+[CCC functor bundles](./theories/Cat/CCC/Functor.v) extend this approach
 through one inheritance chain. Their preservation adapters, identity and
 composition constructors reuse the existing fixed-functor theory. See
 [CCC structure](./docs/CCCStructure.md) for the interfaces and assumptions.
@@ -495,7 +507,7 @@ Monad–Applicative–Arrow 工作从
 [缩写对照](./docs/Abbreviations.md)记录公共名称迁移及后续待整理词族。
 
 [笛卡尔](./theories/Cat/Functor/Cartesian.v)及
-[CCC 函子包](./theories/Cat/Functor/Closed.v)通过单一继承链延续这一做法；
+[CCC 函子包](./theories/Cat/CCC/Functor.v)通过单一继承链延续这一做法；
 保持性适配器、恒等及复合构造复用已有固定函子理论。接口及假设详见
 [CCC 结构说明](./docs/CCCStructure.md)。
 
@@ -670,7 +682,7 @@ Monad–Applicative–Arrow 工作从
   [Initial](./theories/Instance/Set/Initial.v) provide the unit and empty objects.
   [Exponential](./theories/Instance/Set/Exponential.v) constructs respectful-map
   exponentials; [CCC](./theories/Instance/Set/CCC.v) assembles the cartesian
-  closed structure `SetCat_CCC : CCC SetCat` without additional axioms.
+  closed structure `SetCat_CCC : CCC`, whose underlying category is `SetCat`, without additional axioms.
   [Nat](./theories/Instance/Set/Nat.v) provides a natural-numbers object with
   computational recursion.
   [CwF](./theories/Instance/Set/CwF.v) constructs `SetCwF El` from a chosen
@@ -772,11 +784,20 @@ Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasPullback.
 ```
 
-The complete cartesian closed structure can also be enabled as a bundle:
+The complete cartesian closed model is an explicit record. Pass it to clients
+that take a CCC; importing it does not enable SetCat choices globally.
+
+完整笛卡尔闭模型是显式记录，传给接收 CCC 的客户端；导入不会全局启用
+SetCat 的选择。
 
 ```coq
-From Cats Require Import Instance.Set.CCC.
-Local Existing Instance SetCat_CCC.
+From Cats Require Import
+  Cat.CCC.Core
+  Instance.Set.CCC.
+
+Definition chosen_model
+  : CCC
+  := SetCat_CCC.
 ```
 
 The [CCC/STLC research note](./docs/CCCAndSTLC.md) explains the interpretation

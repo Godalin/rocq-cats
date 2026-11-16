@@ -1,5 +1,5 @@
 From Cats Require Export
-  Cat.CCC
+  Cat.CCC.Core
   Topos.Sub.
 From Cats Require Import
   Cat.Core
@@ -19,35 +19,28 @@ From Cats Require Import
     分类子使用父结构选定的终对象；良点性、选择和自然数是额外结构，
     并非初等拓扑斯的要求。 *)
 
-Class Topos (C : Cat)
-  :=
+Record Topos
+  := ToposOfCCC
+
   (** Share the selected finite products and exponentials through one
       immediate parent, without choosing any of them again. *)
 
   (** 通过唯一直接父结构共享选定的有限积和指数，不重复作出选择。 *)
 
-  { ToposC :> CCC C
+  { ToposToCCC :> CCC
 
   (** Together with the inherited finite products, pullbacks provide
       finite limits. *)
 
   (** 拉回与继承的有限积共同给出有限极限。 *)
 
-  ; hasPullback :: HasPullback C
+  ; hasPullback :: HasPullback ToposToCCC
 
   (** Classify subobjects relative to that same terminal choice. *)
 
   (** 相对于同一终对象选择分类子对象。 *)
 
   ; hasSubObjClassifier
-    :: HasSubObjClassifier C (@hasTerminal C ToposC)
+    :: HasSubObjClassifier ToposToCCC
+        (hasTerminal ToposToCCC)
   }.
-
-Arguments ToposC {_} _.
-
-(** Expose the same parent to instance search; the coercion chain already
-    supplies its unique underlying category view. *)
-
-(** 将同一父结构提供给实例搜索；强制转换链已给出唯一底层范畴视图。 *)
-
-#[export] Existing Instance ToposC.

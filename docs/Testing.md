@@ -58,7 +58,8 @@ opam exec --switch=rocq-cats -- dune build @tests/horn-attachment/runtest
 ```
 
 `@check-core` contains `CoreInterfaces`, `AlgebraNotation`,
-`MonoidExtensions`, `GroupExtensions` and `BundledGroupoid`. It checks
+`MonoidExtensions`, `GroupExtensions`, `BundledGroupoid` and
+`BundledCartesian`. It checks
 selected category/algebra interfaces and their actual clients; it is not a
 universal substitute for selecting tests. Add the relevant module or test
 family for products, monads, Topos, DTT, STLC or simplicial constructions.
@@ -66,7 +67,8 @@ The category/functor/transformation regressions can also be built as
 `tests/CoreInterfaces.vo`; it does not import the broad `Interfaces` suite.
 
 `@check-core` 包含 `CoreInterfaces`、`AlgebraNotation`、
-`MonoidExtensions`、`GroupExtensions` 和 `BundledGroupoid`，
+`MonoidExtensions`、`GroupExtensions`、`BundledGroupoid` 和
+`BundledCartesian`，
 覆盖选定范畴／代数接口及其实际客户端，不是通用的测试选择替代品。
 修改积、Monad、Topos、DTT、STLC 或单纯集构造时，另选相关模块或测试词族。
 基础范畴／函子／自然变换回归也可单独构建 `tests/CoreInterfaces.vo`，不导入广泛的

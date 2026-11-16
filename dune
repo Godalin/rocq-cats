@@ -17,4 +17,5 @@
   tests/AlgebraNotation.vo
   tests/MonoidExtensions.vo
   tests/GroupExtensions.vo
-  tests/BundledGroupoid.vo))
+  tests/BundledGroupoid.vo
+  tests/BundledCartesian.vo))

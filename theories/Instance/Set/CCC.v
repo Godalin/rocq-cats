@@ -1,4 +1,4 @@
-From Cats Require Import Cat.CCC.
+From Cats Require Import Cat.CCC.Core.
 From Cats Require Import
   Instance.Set.Core
   Instance.Set.Terminal
@@ -16,7 +16,7 @@ From Cats Require Import
 (** 为选定笛卡尔广集模型增加指数；显式启用此结构，沿用相同终对象与积。 *)
 
 Program Definition SetCat_CCC
-  : CCC SetCat
+  : CCC
   :=
   {|CCCToCartCat := SetCat_Cart
   ; hasExponential := SetCat_HasExponential

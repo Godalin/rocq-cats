@@ -72,8 +72,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   and verify converging ancestor paths by conversion, including actual Rocq
   coercion behavior. Do not add duplicate selections to create a diamond.
 - If the parent view must also support instance search, register the same
-  projection with `#[export] Existing Instance CCCToCartCat`; `:>` alone does not
-  register an inherited instance. Supplementary chosen structures/properties
+  projection with `#[export] Existing Instance MonoidalP`; `:>` alone does not
+  register an inherited instance. Record-valued parents are not classes;
+  their chosen `Has*` fields supply inherited instances directly.
+  Supplementary chosen structures/properties
   use named `has*`/`is*` fields and `::`.
 - Tie dependent constructions to those same inherited choices. For example,
   a CCC's exponentials use its cartesian parent's selected products.
@@ -195,14 +197,18 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   for packaged relation-closure operators. Use `Exp` for named exponential
   constructions, `Cart` for reviewed cartesian constructions, and `Prof` /
   `prof_` for the reviewed profunctor family, including public operations,
-  laws and fields. Retain `HasExponential` and the complete parameterized
-  `CartCat` hierarchy; module paths and existing notation stay unchanged.
+  laws and fields. Retain fixed-data `HasExponential`; module paths and
+  existing notation stay unchanged.
 - Use the direct natural-transformation constructions `IdN`, `CompN`,
   `InvN`, `WhiskerLN`, `WhiskerRN`, `HCompN` and `OpN`, with
   `NatOfComponents` as the record constructor. Use `nat_*` for reviewed
   laws and `NatPrism*` for the prism family; keep the component view `nt`.
-  Use `CartCat`, `CartCatToCat` and `CCCToCartCat`; its fixed-category
-  choice interface remains until a separately bounded bundle migration.
+  Use `CartCat`, `CCC`, `Topos` and `ETCS` for complete records, with the
+  single parent chain `ETCS → Topos → CCC → CartCat → Cat`. Name their
+  projections `ETCSToTopos`, `ToposToCCC`, `CCCToCartCat`, `CartCatToCat`,
+  and constructors `TargetOfParent`. Keep fixed-category choices as `Has*`;
+  Freyd values select `hasValueTerminal` and `hasValueProduct` on their
+  named category rather than storing another category bundle.
 - Use `Comm` for reviewed `Commutative` names and `Ext` / `ext` for
   reviewed `Extension` / `extension` names. Use `Of` rather than `From`
   in names for constructing one presentation from supplied data, as in
