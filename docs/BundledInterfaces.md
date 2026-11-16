@@ -86,8 +86,25 @@ further integration submission.
 源码、回归与安装验证，
 不是已接收结果；用户要求进一步提交集成前先审阅。
 
+The ergonomic follow-up starts at published review commit `e30adfa`, applying
+the new directional-parent and operation-subject rules from #42. Its exact
+44-name map is recorded separately in
+[the naming guide](./Abbreviations.md#algebra-interface-ergonomics--代数接口易用性)
+and [#38's naming review](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626).
+The earlier 195-entry abbreviation table and frozen sources are preserved.
+This follow-up has passed local validation and is retained for user review;
+it is not an integration result.
+
+易用性后续从已发布审阅提交 `e30adfa` 开始，落实 #42 新增的方向父投影及
+运算主题命名规则。44 项精确对照单独记录在
+[命名指南](./Abbreviations.md#algebra-interface-ergonomics--代数接口易用性)及
+[#38 命名审阅](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626)，
+保全此前 195 项缩写表及冻结来源。此后续已完成本地验证，作为当前用户
+审阅检查点保留，不是集成结果。
+
 The four complete interfaces are unparameterized `Record` objects. Each stores
-its immediate parent once: `MagmaS`, `SemigroupM`, `MonoidSG`, `GroupM`.
+its immediate parent once: `MagmaToSetC`, `SemigroupToMagma`,
+`MonoidToSemigroup`, `GroupToMonoid`.
 There is one coercion chain to `SetC` and its carrier, without a bypass to a
 weaker ancestor. Fixed-parent classes store only the added operations and
 laws: `HasMagma` selects respectful multiplication; `IsSemigroup` states
@@ -101,7 +118,8 @@ records live in `Type@{max(u+1,p+1,l)}`. Packing adds no strict inequalities
 ordinary bounds `u <= l` and `p <= l`.
 
 四个完整接口采用无参数 `Record`，每个直接父结构只保存一次，依次为
-`MagmaS`、`SemigroupM`、`MonoidSG`、`GroupM`。到 `SetC` 及其载体只有一条
+`MagmaToSetC`、`SemigroupToMagma`、`MonoidToSemigroup`、`GroupToMonoid`。
+到 `SetC` 及其载体只有一条
 继承转换链，不另加绕过直接父结构的祖先转换。固定父结构类只保存新增运算与
 定律：`HasMagma` 选择保相等乘法，`IsSemigroup` 规定选定原群的结合律，
 `HasMonoid` 选择单位元及其 `IsMonoid` 定律，`HasGroup` 选择逆及其
@@ -112,12 +130,12 @@ ordinary bounds `u <= l` and `p <= l`.
 `Proper` 见证仍需通常的 `u <= l`、`p <= l` 上界。
 
 In [the monoid core](../theories/Algebra/Monoid/Core.v), `monoid_unit` is the
-actual `HasMonoid` field; `monoid_unit_l/r` are the actual `IsMonoid` fields.
+actual `HasMonoid` field; `mul_unit_l/r` are the actual `IsMonoid` fields.
 There are no additional exported definitions to emulate the old unit APIs.
 The numeral notation explicitly uses the complete monoid's stored evidence.
 Fixed-parent clients use these same fields with their supplied evidence.
-Likewise `magma_mul`, `magma_mul_proper`, `semigroup_assoc`, `group_inv` and
-`group_inv_l/r` are the actual extension/property fields, without `chosen`
+Likewise `mul`, `mul_proper`, `mul_assoc`, `inv` and
+`mul_inv_l/r` are the actual extension/property fields, without `chosen`
 intermediate names or same-name forwarding definitions. Multiplication and
 inverse notation pass the complete object's stored evidence explicitly.
 Respectful maps and derived inverse laws remain genuine constructions; no
@@ -129,16 +147,30 @@ provide these notations; their composites use ordinary `∘r`. For example,
 associativity gives `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`.
 
 [幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`monoid_unit` 直接是
-`HasMonoid` 字段，`monoid_unit_l/r` 直接是 `IsMonoid` 字段，不另导出定义
+`HasMonoid` 字段，`mul_unit_l/r` 直接是 `IsMonoid` 字段，不另导出定义
 模拟旧单位接口。数字记号显式读取完整幺半群保存的见证；固定父结构客户端
-使用同一批字段并传入给定见证。同样，`magma_mul`、`magma_mul_proper`、`semigroup_assoc`、`group_inv` 及
-`group_inv_l/r` 直接作为扩充／性质字段，不保留带 `chosen` 的中间名称及同名
+使用同一批字段并传入给定见证。同样，`mul`、`mul_proper`、`mul_assoc`、`inv` 及
+`mul_inv_l/r` 直接作为扩充／性质字段，不保留带 `chosen` 的中间名称及同名
 转发定义。乘法与逆记号显式传入完整对象保存的见证。保相等映射及导出的逆律
 仍是实际数学构造，所有视图均不重新定义运算或重证定律。
 
 乘法偏应用 `(x ⋅−)` 与 `(−⋅ y)` 分别表示既有的左乘及右乘保相等映射。
 `magma_scope` 与 `monoid_scope` 均提供这组记号，复合仍使用普通 `∘r`。
 例如结合律给出 `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`。
+
+The selected inverse is the single `inv` field. The unit remains
+`monoid_unit`: the bare name `unit` already denotes Rocq's one-element type.
+Neither stronger structures nor notation duplicate these choices. Where
+short names conflict with other theories, use qualified access such as
+`Cats.Algebra.Magma.Core.mul`, or supply the selected `HasMagma` explicitly.
+Historical source-pinned sections below retain their original names; use
+the current map when reading them against this branch.
+
+选定逆直接保存为唯一的 `inv` 字段；单位仍使用 `monoid_unit`，因为无前缀的
+`unit` 已指 Rocq 的单元素类型。更强结构及记号均不重复保存这些选择。
+短名与其他理论冲突时，使用 `Cats.Algebra.Magma.Core.mul` 等限定名称，
+或显式传入选定的 `HasMagma`。以下固定历史来源的章节保留原名，阅读时按
+当前对照表迁移到本分支。
 
 The [boolean](../theories/Instance/Bool/Group.v), endomorphism
 ([magma](../theories/Algebra/Magma/Category.v),
@@ -149,7 +181,8 @@ The [boolean](../theories/Instance/Bool/Group.v), endomorphism
 migrated together in this local batch. Transport takes its complete source
 before the two maps; each stronger transport reuses the exact preceding parent. The batch
 adds neither categories of complete algebraic objects nor an unrelated
-multiple-parent diamond, and does not expand the exact abbreviation map.
+multiple-parent diamond, and does not expand Batch 4's historical 195-entry
+abbreviation map.
 Sphere regressions fix both strict input carrier/equality orders and verify
 by conversion that the complete object stores the specified class setoid.
 The derived sphere carrier contains boundary data, and its generated equality
@@ -164,9 +197,13 @@ On Rocq 9.3.0 / Stdlib 9.2.0, the local batch passed
 `dune build -j2 @all @runtest @install`. Regressions cover distinct choices on
 the same parent, inherited law tokens, strict native universe orders, the
 transparent parent chain, actual transport and sphere computations, and
-explicit model enabling. Temporary assumption audits checked 104 algebra and
-58 model declarations, all closed; a separate temporary check rejected all
-nine retired transitional names. No HTML/PDF export was performed.
+explicit model enabling. Temporary audits checked 104 algebra declarations,
+58 model declarations, 44 current public names, four notation computations
+and eight instance/composition probes: all 218 reports are closed. Negative
+checks reject all 44 retired public names and nine older transitional names.
+The 63 migrated Rocq files follow the exact identifier map, apart from three
+formula line wraps; imports and mathematical content are unchanged. No
+HTML/PDF export was performed.
 
 [布尔](../theories/Instance/Bool/Group.v)、自态射
 （[原群](../theories/Algebra/Magma/Category.v)、
@@ -175,7 +212,8 @@ nine retired transitional names. No HTML/PDF export was performed.
 [群](../theories/Algebra/Group/Category.v)）、
 [运输](../theories/Algebra/Group/Transport.v)及球面客户端在本批同步迁移。
 运输先接受完整来源结构，再接受两个映射；更强层的运输复用恰好前一层的父
-结构。本片不增加完整代数对象的范畴或无关多父菱形，不扩充精确缩写表。
+结构。本片不增加完整代数对象的范畴或无关多父菱形；历史第四批 195 项表
+不变，新的 44 项代数接口名称单列记录。
 球面回归固定输入载体／相等的两种严格次序，以定义转换确认完整对象保存指定
 类广集。派生球面载体含边界数据，生成相等也含见证，其大小界不必等于输入
 单纯广集的界。交换性比较现在通过可复用乘积引理直接使用系数定律，不再为
@@ -185,8 +223,10 @@ nine retired transitional names. No HTML/PDF export was performed.
 本地批次已在 Rocq 9.3.0／Stdlib 9.2.0 下通过
 `dune build -j2 @all @runtest @install`。回归覆盖同父结构上的竞争选择、继承
 定律的计算标记、原生宇宙的严格次序、透明父链、实际运输与球面计算及模型的
-显式启用。临时假设审计覆盖 104 项代数及 58 项模型声明，全部闭合；另以临时
-负检查确认九个过渡名称均已移除。未执行 HTML／PDF 导出。
+显式启用。临时审计覆盖 104 项代数声明、58 项模型声明、44 个当前公开名、
+四项记号计算及八项实例／复合检查，218 项全部闭合；负检查确认 44 个旧公开
+名称及九个更早过渡名均已退役。63 个迁移后的 Rocq 文件符合精确标识符表，
+除三处公式换行外无额外改动，导入及数学内容不变。未执行 HTML／PDF 导出。
 
 ### Historical first-slice evidence
 

@@ -113,7 +113,7 @@ Defined.
 (** A generated cylinder-homotopy retraction would force every
     coefficient to be the unit. Evaluate the same map-chain on the free
     sphere and the constant sphere; no transport of inverse witnesses
-    or general homotopy-group invariance is assumed. *)
+    or general homotopy-invariance is assumed. *)
 
 (** 生成柱同伦意义下的收缩会迫使每个系数为单位。将同一映射链分别作用于
     自由球面和常值球面；不预设逆见证运输或一般同伦群不变性。 *)

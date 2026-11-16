@@ -162,7 +162,7 @@ Lemma cocycle_kan_left_inverse_eq
   : ((@SphereKanLeftInverse Z (two_cocycle_simplex_unit 0) K x).1 : Q) ≈S
       cocycle_two_sphere_inv x.
 Proof.
-  refine (@group_inv_unique cocycle_two_sphere_Group x
+  refine (@inv_unique cocycle_two_sphere_Group x
     (@SphereKanLeftInverse Z (two_cocycle_simplex_unit 0) K x).1 _).
   symmetry. exact (cocycle_two_sphere_composite_unique _ x _
     (@SphereKanLeftInverse Z (two_cocycle_simplex_unit 0) K x).2).
@@ -236,7 +236,7 @@ Program Definition cocycle_kan_IsCommutativeMonoid
   : IsCommutativeMonoid
       (TwoSphereClassMonoid Z (two_cocycle_simplex_unit 0) H)
   :=
-  {|monoid_mul_comm := cocycle_kan_mul_comm H
+  {|mul_comm := cocycle_kan_mul_comm H
   |}.
 
 End KanCommutativity.

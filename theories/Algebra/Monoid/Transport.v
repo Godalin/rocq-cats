@@ -41,23 +41,23 @@ Program Definition HasMonoidTransport (Hfg : (f ∘r g) ≈f id_resp)
   :=
   {|monoid_unit := g (@monoid_unit _ (hasMonoid A))
   ; isMonoid :=
-      {|monoid_unit_l := _
-      ; monoid_unit_r := _
+      {|mul_unit_l := _
+      ; mul_unit_r := _
       |}
   |}.
 Next Obligation.
-  change (g (@magma_mul _ (hasMagma A) (f (g (@monoid_unit _ (hasMonoid A)))) (f x)) ≈S x).
+  change (g (@mul _ (hasMagma A) (f (g (@monoid_unit _ (hasMonoid A)))) (f x)) ≈S x).
   transitivity (g (f x)); [apply (@func_proper _ _ g) | apply Hgf].
-  transitivity (@magma_mul _ (hasMagma A) (@monoid_unit _ (hasMonoid A)) (f x)).
-  - apply (@magma_mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
-  - exact (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid A)) (f x)).
+  transitivity (@mul _ (hasMagma A) (@monoid_unit _ (hasMonoid A)) (f x)).
+  - apply (@mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
+  - exact (@mul_unit_l _ _ (@isMonoid _ (hasMonoid A)) (f x)).
 Defined.
 Next Obligation.
-  change (g (@magma_mul _ (hasMagma A) (f x) (f (g (@monoid_unit _ (hasMonoid A))))) ≈S x).
+  change (g (@mul _ (hasMagma A) (f x) (f (g (@monoid_unit _ (hasMonoid A))))) ≈S x).
   transitivity (g (f x)); [apply (@func_proper _ _ g) | apply Hgf].
-  transitivity (@magma_mul _ (hasMagma A) (f x) (@monoid_unit _ (hasMonoid A))).
-  - apply (@magma_mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
-  - exact (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid A)) (f x)).
+  transitivity (@mul _ (hasMagma A) (f x) (@monoid_unit _ (hasMonoid A))).
+  - apply (@mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
+  - exact (@mul_unit_r _ _ (@isMonoid _ (hasMonoid A)) (f x)).
 Defined.
 
 (** Pack the transported semigroup and its chosen unit extension. *)

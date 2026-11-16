@@ -24,10 +24,10 @@ Program Definition MonoidCat (M : Monoid)
   ; HomSet _ _ := M
   ; id _ := 1
   ; comp _ _ _ g f := g ⋅ f
-  ; comp_proper _ _ _ := (@magma_mul_proper _ (hasMagma M))
-  ; comp_id_r _ _ := (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M)))
-  ; comp_id_l _ _ := (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M)))
-  ; comp_assoc _ _ _ _ := (@semigroup_assoc _ (isSemigroup M))
+  ; comp_proper _ _ _ := (@mul_proper _ (hasMagma M))
+  ; comp_id_r _ _ := (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M)))
+  ; comp_id_l _ _ := (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M)))
+  ; comp_assoc _ _ _ _ := (@mul_assoc _ (isSemigroup M))
   |}.
 
 Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
@@ -44,8 +44,8 @@ Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
   :=
   {|monoid_unit := @id X
   ; isMonoid :=
-      {|monoid_unit_l := comp_id_l
-      ; monoid_unit_r := comp_id_r
+      {|mul_unit_l := comp_id_l
+      ; mul_unit_r := comp_id_r
       |}
   |}.
 

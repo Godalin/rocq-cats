@@ -42,27 +42,27 @@ Program Definition HasGroupTransport (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
   : HasGroup (MonoidTransport A f g Hfg Hgf)
   :=
-  {|group_inv x := g (@group_inv _ (hasGroup A) (f x))
+  {|inv x := g (@inv _ (hasGroup A) (f x))
   ; isGroup :=
-      {|group_inv_l := _
-      ; group_inv_r := _
+      {|mul_inv_l := _
+      ; mul_inv_r := _
       |}
   |}.
 Next Obligation.
-  change (g (@magma_mul _ (hasMagma A)
-    (f (g (@group_inv _ (hasGroup A) (f x)))) (f x)) ≈S g (@monoid_unit _ (hasMonoid A))).
+  change (g (@mul _ (hasMagma A)
+    (f (g (@inv _ (hasGroup A) (f x)))) (f x)) ≈S g (@monoid_unit _ (hasMonoid A))).
   apply (@func_proper _ _ g).
-  transitivity (@magma_mul _ (hasMagma A) (@group_inv _ (hasGroup A) (f x)) (f x)).
-  - apply (@magma_mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
-  - exact (@group_inv_l _ _ (@isGroup _ (hasGroup A)) (f x)).
+  transitivity (@mul _ (hasMagma A) (@inv _ (hasGroup A) (f x)) (f x)).
+  - apply (@mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
+  - exact (@mul_inv_l _ _ (@isGroup _ (hasGroup A)) (f x)).
 Defined.
 Next Obligation.
-  change (g (@magma_mul _ (hasMagma A)
-    (f x) (f (g (@group_inv _ (hasGroup A) (f x))))) ≈S g (@monoid_unit _ (hasMonoid A))).
+  change (g (@mul _ (hasMagma A)
+    (f x) (f (g (@inv _ (hasGroup A) (f x))))) ≈S g (@monoid_unit _ (hasMonoid A))).
   apply (@func_proper _ _ g).
-  transitivity (@magma_mul _ (hasMagma A) (f x) (@group_inv _ (hasGroup A) (f x))).
-  - apply (@magma_mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
-  - exact (@group_inv_r _ _ (@isGroup _ (hasGroup A)) (f x)).
+  transitivity (@mul _ (hasMagma A) (f x) (@inv _ (hasGroup A) (f x))).
+  - apply (@mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
+  - exact (@mul_inv_r _ _ (@isGroup _ (hasGroup A)) (f x)).
 Defined.
 
 (** Recover the existing group presentation from the exact transported
@@ -83,8 +83,8 @@ Definition GroupTransport (Hfg : (f ∘r g) ≈f id_resp)
 
 Lemma group_transport_map_inv (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp) (x : B)
-  : f (@group_inv _ (hasGroup (GroupTransport Hfg Hgf)) x) ≈S
-      @group_inv _ (hasGroup A) (f x).
-Proof. exact (Hfg (@group_inv _ (hasGroup A) (f x))). Defined.
+  : f (@inv _ (hasGroup (GroupTransport Hfg Hgf)) x) ≈S
+      @inv _ (hasGroup A) (f x).
+Proof. exact (Hfg (@inv _ (hasGroup A) (f x))). Defined.
 
 End Transport.

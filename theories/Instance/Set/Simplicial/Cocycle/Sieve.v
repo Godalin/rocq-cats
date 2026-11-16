@@ -101,13 +101,13 @@ Next Obligation.
   transitivity
     (t (Q ∘F δ[2; fin_first⁺⁺⁺]) ⋅
       t (Q ∘F δ[2; fin_first⁺])).
-  - apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+  - apply (@mul_proper _ (hasMagma M)); apply t_proper;
       apply (snd (simplex_eq_iff _ _));
       intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity (t (Q ∘F δ[2; fin_first]) ⋅
       t (Q ∘F δ[2; fin_first⁺⁺])).
     + apply t_tetrahedron.
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
 Defined.
@@ -279,12 +279,12 @@ Proof.
   pose (d := ordinal_step (n := 3) (fin_next (fin_first))).
   pose (e := ordinal_step (n := 3) (fin_next (fin_next (fin_first)))).
   transitivity (c⟦a, d⟧₂ ⋅ c⟦d ∘ a, e⟧₂).
-  - apply (@magma_mul_proper _ (hasMagma M));
+  - apply (@mul_proper _ (hasMagma M));
       (etransitivity; [apply cocycle_sieve_triangle_restrict |]);
       cbn; apply two_cocycle_triangle_proper; exact tt.
   - transitivity (c⟦d, e⟧₂ ⋅ c⟦a, e ∘ d⟧₂).
     + apply two_cocycle_tetrahedron.
-    + apply (@magma_mul_proper _ (hasMagma M)); symmetry;
+    + apply (@mul_proper _ (hasMagma M)); symmetry;
         (etransitivity; [apply cocycle_sieve_triangle_restrict |]);
         cbn; apply two_cocycle_triangle_proper; exact tt.
 Defined.

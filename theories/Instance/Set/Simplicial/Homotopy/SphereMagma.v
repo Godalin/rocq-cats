@@ -201,14 +201,14 @@ Program Definition TwoSphereClassMagma
     (H : HasHornFillers X 3 fin_first⁺⁺)
   : Magma
   :=
-  {|MagmaS := TwoSphereClassS X b
+  {|MagmaToSetC := TwoSphereClassS X b
   ; hasMagma :=
-      {|magma_mul := two_sphere_kan_mul H
-      ; magma_mul_proper := two_sphere_kan_mul_proper H
+      {|mul := two_sphere_kan_mul H
+      ; mul_proper := two_sphere_kan_mul_proper H
       |}
   |}.
 
-(** The two magma multiplications agree as respectful maps from the
+(** The two multiplications agree as respectful maps from the
     product setoid. No equality of selections or structure records occurs. *)
 
 (** 两个原群乘法作为积广集出发的保相等映射一致，不等同选择或结构记录。 *)
@@ -228,7 +228,7 @@ Defined.
 
 Lemma two_sphere_class_magma_first_eq
     (H : HasHornFillers X 3 fin_first⁺⁺) (y : TwoSphereClassS X b)
-  : @magma_mul_r_resp (TwoSphereClassMagma H) y ≈f
+  : @mul_r_resp (TwoSphereClassMagma H) y ≈f
       two_sphere_kan_composite_first_resp X b H y.
 Proof. intros x. reflexivity. Defined.
 
@@ -238,7 +238,7 @@ Proof. intros x. reflexivity. Defined.
 
 Lemma two_sphere_class_magma_second_eq
     (H : HasHornFillers X 3 fin_first⁺⁺) (x : TwoSphereClassS X b)
-  : @magma_mul_l_resp (TwoSphereClassMagma H) x ≈f
+  : @mul_l_resp (TwoSphereClassMagma H) x ≈f
       two_sphere_kan_composite_second_resp X b H x.
 Proof. intros y. reflexivity. Defined.
 

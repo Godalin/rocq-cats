@@ -39,22 +39,22 @@ Context (f : B →r A) (g : A →r B).
 Program Definition SemigroupTransport (Hfg : (f ∘r g) ≈f id_resp)
   : Semigroup
   :=
-  {|SemigroupM := MagmaTransport A f g
-  ; isSemigroup := {|semigroup_assoc := _|}
+  {|SemigroupToMagma := MagmaTransport A f g
+  ; isSemigroup := {|mul_assoc := _|}
   |}.
 Next Obligation.
-  change (g (@magma_mul _ (hasMagma A)
-      (f (g (@magma_mul _ (hasMagma A) (f x) (f y)))) (f z)) ≈S
-    g (@magma_mul _ (hasMagma A) (f x)
-      (f (g (@magma_mul _ (hasMagma A) (f y) (f z)))))).
+  change (g (@mul _ (hasMagma A)
+      (f (g (@mul _ (hasMagma A) (f x) (f y)))) (f z)) ≈S
+    g (@mul _ (hasMagma A) (f x)
+      (f (g (@mul _ (hasMagma A) (f y) (f z)))))).
   apply (@func_proper _ _ g).
-  transitivity (@magma_mul _ (hasMagma A)
-    (@magma_mul _ (hasMagma A) (f x) (f y)) (f z)).
-  - apply (@magma_mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
-  - transitivity (@magma_mul _ (hasMagma A)
-      (f x) (@magma_mul _ (hasMagma A) (f y) (f z))).
-    + exact (@semigroup_assoc _ (isSemigroup A) (f x) (f y) (f z)).
-    + apply (@magma_mul_proper _ (hasMagma A)); [reflexivity | symmetry; apply Hfg].
+  transitivity (@mul _ (hasMagma A)
+    (@mul _ (hasMagma A) (f x) (f y)) (f z)).
+  - apply (@mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
+  - transitivity (@mul _ (hasMagma A)
+      (f x) (@mul _ (hasMagma A) (f y) (f z))).
+    + exact (@mul_assoc _ (isSemigroup A) (f x) (f y) (f z)).
+    + apply (@mul_proper _ (hasMagma A)); [reflexivity | symmetry; apply Hfg].
 Defined.
 
 End Transport.

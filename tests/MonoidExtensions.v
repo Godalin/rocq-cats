@@ -36,7 +36,7 @@ Section IndependentChoices.
 Context (SG : Semigroup) (H K : HasMonoid SG).
 
 Example first_parent_is_preserved
-  : MonoidSG (MonoidFromExtension SG H) = SG.
+  : MonoidToSemigroup (MonoidFromExtension SG H) = SG.
 Proof. reflexivity. Qed.
 
 Example first_extension_is_preserved
@@ -51,7 +51,7 @@ Proof. reflexivity. Qed.
 Example selected_units_are_equivalent
   : @monoid_unit SG H ≈S @monoid_unit SG K.
 Proof.
-  exact (monoid_units_equiv SG _ _ (@isMonoid SG H) (@isMonoid SG K)).
+  exact (units_equiv SG _ _ (@isMonoid SG H) (@isMonoid SG K)).
 Qed.
 
 End IndependentChoices.
@@ -77,18 +77,18 @@ Next Obligation. split; repeat intro; exact true. Defined.
 Program Definition ConstantBoolMagma
   : Magma
   :=
-  {|MagmaS := IndiscreteBoolS
+  {|MagmaToSetC := IndiscreteBoolS
   ; hasMagma :=
-      {|magma_mul _ _ := false
-      ; magma_mul_proper _ _ _ _ _ _ := true
+      {|mul _ _ := false
+      ; mul_proper _ _ _ _ _ _ := true
       |}
   |}.
 
 Program Definition ConstantBoolSemigroup
   : Semigroup
   :=
-  {|SemigroupM := ConstantBoolMagma
-  ; isSemigroup := {|semigroup_assoc _ _ _ := true|}
+  {|SemigroupToMagma := ConstantBoolMagma
+  ; isSemigroup := {|mul_assoc _ _ _ := true|}
   |}.
 
 (** Different operations and associativity witnesses on the same carrier
@@ -99,8 +99,8 @@ Program Definition ConstantBoolSemigroup
 Program Definition TrueMultiplication
   : HasMagma IndiscreteBoolS
   :=
-  {|magma_mul _ _ := true
-  ; magma_mul_proper _ _ _ _ _ _ := false
+  {|mul _ _ := true
+  ; mul_proper _ _ _ _ _ _ := false
   |}.
 
 Definition TrueMagma
@@ -111,7 +111,7 @@ Local Existing Instance TrueMultiplication.
 
 Program Definition OtherAssociativity
   : IsSemigroup ConstantBoolMagma
-  := {|semigroup_assoc _ _ _ := false|}.
+  := {|mul_assoc _ _ _ := false|}.
 
 Local Existing Instance OtherAssociativity.
 
@@ -120,13 +120,13 @@ Definition OtherSemigroup
   := SemigroupFromProperty ConstantBoolMagma OtherAssociativity.
 
 Example stored_multiplications_compute
-  : (@magma_mul _ (hasMagma ConstantBoolMagma) false false,
-      @magma_mul _ (hasMagma TrueMagma) false false) = (false, true).
+  : (@mul _ (hasMagma ConstantBoolMagma) false false,
+      @mul _ (hasMagma TrueMagma) false false) = (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_associativities_compute
-  : (@semigroup_assoc _ (isSemigroup ConstantBoolSemigroup) true false true,
-      @semigroup_assoc _ (isSemigroup OtherSemigroup) true false true) = (true, false).
+  : (@mul_assoc _ (isSemigroup ConstantBoolSemigroup) true false true,
+      @mul_assoc _ (isSemigroup OtherSemigroup) true false true) = (true, false).
 Proof. reflexivity. Qed.
 
 Example inherited_magma_carrier
@@ -138,8 +138,8 @@ Program Definition BoolUnitExtension (e t : bool)
   :=
   {|monoid_unit := e
   ; isMonoid :=
-      {|monoid_unit_l _ := t
-      ; monoid_unit_r _ := negb t
+      {|mul_unit_l _ := t
+      ; mul_unit_r _ := negb t
       |}
   |}.
 
@@ -168,14 +168,14 @@ Example stored_units_compute
 Proof. reflexivity. Qed.
 
 Example stored_left_laws_compute
-  : (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid FirstMonoid)) false,
-      @monoid_unit_l _ _ (@isMonoid _ (hasMonoid SecondMonoid)) false) =
+  : (@mul_unit_l _ _ (@isMonoid _ (hasMonoid FirstMonoid)) false,
+      @mul_unit_l _ _ (@isMonoid _ (hasMonoid SecondMonoid)) false) =
       (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_right_laws_compute
-  : (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid FirstMonoid)) true,
-      @monoid_unit_r _ _ (@isMonoid _ (hasMonoid SecondMonoid)) true) =
+  : (@mul_unit_r _ _ (@isMonoid _ (hasMonoid FirstMonoid)) true,
+      @mul_unit_r _ _ (@isMonoid _ (hasMonoid SecondMonoid)) true) =
       (true, false).
 Proof. reflexivity. Qed.
 
@@ -209,7 +209,7 @@ Example xor_unit_computes
 Proof. reflexivity. Qed.
 
 Example endomorphism_parent_computes (C : Cat) (X : C)
-  : MonoidSG (EndMonoid C X) = EndSemigroup C X.
+  : MonoidToSemigroup (EndMonoid C X) = EndSemigroup C X.
 Proof. reflexivity. Qed.
 
 Example endomorphism_unit_computes (C : Cat) (X : C)

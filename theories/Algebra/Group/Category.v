@@ -7,7 +7,7 @@ Local Open Scope monoid_scope.
 
 (** * Groups as Single-Object Groupoids
 
-    Reuse the monoid category, selecting group inverses as arrow inverses.
+    Reuse the monoid category, selecting inverses as arrow inverses.
     Enable the resulting groupoid structure explicitly. *)
 
 (** * 群的单对象群胚解释
@@ -18,11 +18,11 @@ Program Definition MonoidCat_IsGroupoid (G : Group)
   : B(G) ⦂ Gpd
   :=
   {|groupoid_iso X Y g :=
-      (g⁻¹; (@group_inv_l _ _ (@isGroup _ (hasGroup G)) g,
-              @group_inv_r _ _ (@isGroup _ (hasGroup G)) g))
+      (g⁻¹; (@mul_inv_l _ _ (@isGroup _ (hasGroup G)) g,
+              @mul_inv_r _ _ (@isGroup _ (hasGroup G)) g))
   |}.
 
-(** Bundle the original one-object category and its group inverses.
+(** Bundle the original one-object category and its inverses.
     This keeps the specified setoid equality and stores no second operation. *)
 
 (** 将原单对象范畴与其群逆打包，保留指定广集相等，不另存运算。 *)
@@ -40,10 +40,10 @@ Program Definition EndHasGroup (C : Cat) `{HC : !IsGroupoid C}
     (X : @Ob C)
   : HasGroup (EndMonoid C X)
   :=
-  {|group_inv f := @groupoid_inv C HC X X f
+  {|inv f := @groupoid_inv C HC X X f
   ; isGroup :=
-      {|group_inv_l := @groupoid_inv_l C HC X X
-      ; group_inv_r := @groupoid_inv_r C HC X X
+      {|mul_inv_l := @groupoid_inv_l C HC X X
+      ; mul_inv_r := @groupoid_inv_r C HC X X
       |}
   |}.
 

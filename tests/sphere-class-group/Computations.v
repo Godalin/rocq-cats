@@ -60,7 +60,7 @@ Definition class_group
 
 Definition class_magma
   : Magma
-  := SemigroupM (MonoidSG (GroupM class_group)).
+  := SemigroupToMagma (MonoidToSemigroup (GroupToMonoid class_group)).
 
 (** Compute multiplication through the inherited parent and inversion
     through the group interface, without coefficient-operation replacements. *)
@@ -70,19 +70,19 @@ Definition class_magma
 Definition product_value (a b : bool)
   : bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
-      (@magma_mul _ (hasMagma class_magma)
+      (@mul _ (hasMagma class_magma)
         (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b)).
 
 Definition inverse_value (a : bool)
   : bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
-      (@group_inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)).
+      (@inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)).
 
 Example parent_and_inverse_compute
   : (product_value false false, product_value false true,
      product_value true false, product_value true true,
      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
-       (@monoid_unit _ (hasMonoid (GroupM class_group))),
+       (@monoid_unit _ (hasMonoid (GroupToMonoid class_group))),
      inverse_value false, inverse_value true)
       = (false, true, true, false, false, false, true).
 Proof. vm_compute. reflexivity. Defined.
@@ -144,13 +144,13 @@ Definition input_chain
             (two_sphere_class_step BoolCocycleModel
               (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy)))).
 
-(** Generic group inversion respects that entire generated derivation. *)
+(** Generic inversion respects that entire generated derivation. *)
 
 (** 通用群逆保持这条完整生成推导。 *)
 
 Example inverse_preserves_chain
-  : @group_inv_resp class_group selected_input.1 ≈S
-      @group_inv_resp class_group direct_input.
+  : @inv_resp class_group selected_input.1 ≈S
+      @inv_resp class_group direct_input.
 Proof. apply func_proper. exact input_chain. Defined.
 
 (** Existing group uniqueness and involution work without sphere-specific
@@ -159,20 +159,20 @@ Proof. apply func_proper. exact input_chain. Defined.
 (** 既有群唯一性及对合律直接适用，不用球面专用证明替代其代数证明。 *)
 
 Example inverse_unique (x y : BoolCocycleSphereClassS)
-    (E : @magma_mul _ (hasMagma class_magma) y x ≈S
-      @monoid_unit _ (hasMonoid (GroupM class_group)))
-  : y ≈S @group_inv _ (hasGroup class_group) x.
-Proof. exact (@group_inv_unique class_group x y E). Defined.
+    (E : @mul _ (hasMagma class_magma) y x ≈S
+      @monoid_unit _ (hasMonoid (GroupToMonoid class_group)))
+  : y ≈S @inv _ (hasGroup class_group) x.
+Proof. exact (@inv_unique class_group x y E). Defined.
 
 Example inverse_involutive (x : BoolCocycleSphereClassS)
-  : @group_inv _ (hasGroup class_group) (@group_inv _ (hasGroup class_group) x) ≈S x.
-Proof. exact (@group_inv_inv class_group x). Defined.
+  : @inv _ (hasGroup class_group) (@inv _ (hasGroup class_group) x) ≈S x.
+Proof. exact (@inv_inv class_group x). Defined.
 
 Example inverse_product (x y : BoolCocycleSphereClassS)
-  : @group_inv _ (hasGroup class_group) (@magma_mul _ (hasMagma class_magma) x y) ≈S
-      @magma_mul _ (hasMagma class_magma)
-        (@group_inv _ (hasGroup class_group) y) (@group_inv _ (hasGroup class_group) x).
-Proof. exact (@group_inv_mul class_group x y). Defined.
+  : @inv _ (hasGroup class_group) (@mul _ (hasMagma class_magma) x y) ≈S
+      @mul _ (hasMagma class_magma)
+        (@inv _ (hasGroup class_group) y) (@inv _ (hasGroup class_group) x).
+Proof. exact (@inv_mul class_group x y). Defined.
 
 (** The chosen left inverse agrees with the independently supplied right
     candidate in the generated class relation. *)
@@ -180,7 +180,7 @@ Proof. exact (@group_inv_mul class_group x y). Defined.
 (** 选定左逆与独立给定右候选在生成类关系下相等。 *)
 
 Example right_candidate_agrees (x : BoolCocycleSphereClassS)
-  : @group_inv _ (hasGroup class_group) x ≈S (@SphereKanRightInverse BoolCocycleModel
+  : @inv _ (hasGroup class_group) x ≈S (@SphereKanRightInverse BoolCocycleModel
       (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) right_choice x).1.
 Proof.
   exact (two_sphere_inverse_candidates_eq BoolCocycleModel

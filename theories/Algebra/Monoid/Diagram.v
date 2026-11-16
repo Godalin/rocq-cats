@@ -31,13 +31,13 @@ Program Definition monoid_diagram_iso@{u p +}
       |}; _).
 Next Obligation.
   change (1 ⋅ fmap F f ≈S fmap G f ⋅ 1).
-  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
   apply H.
 Defined.
 Next Obligation.
   intros j. exists 1. split; change (1 ⋅ 1 ≈S (1 : M));
-    apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+    apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
 Defined.
 
 (** Interpret every ordered interval as its product in the arrow chain.

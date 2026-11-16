@@ -103,7 +103,7 @@ Proof. apply cocycle_two_sphere_class_β. Defined.
 Global Instance cocycle_two_sphere_mul_proper
   : Proper ([≈S] ==> [≈S] ==> [≈S]) cocycle_two_sphere_mul.
 Proof.
-  intros x x' E y y' F. apply func_proper. apply (@magma_mul_proper _ (hasMagma M));
+  intros x x' E y y' F. apply func_proper. apply (@mul_proper _ (hasMagma M));
     apply func_proper; assumption.
 Defined.
 
@@ -114,10 +114,10 @@ Defined.
 Program Definition cocycle_two_sphere_Magma
   : Magma
   :=
-  {|MagmaS := Q
+  {|MagmaToSetC := Q
   ; hasMagma :=
-      {|magma_mul := cocycle_two_sphere_mul
-      ; magma_mul_proper := _
+      {|mul := cocycle_two_sphere_mul
+      ; mul_proper := _
       |}
   |}.
 
@@ -131,7 +131,7 @@ Lemma cocycle_two_sphere_mul_assoc (x y z : Q)
 Proof.
   apply (snd (cocycle_two_sphere_class_eq_iff _ _)).
   repeat rewrite cocycle_two_sphere_mul_value.
-  apply (@semigroup_assoc _ (isSemigroup M)).
+  apply (@mul_assoc _ (isSemigroup M)).
 Defined.
 
 (** Keep exactly the selected magma as the semigroup's parent. *)
@@ -141,9 +141,9 @@ Defined.
 Program Definition cocycle_two_sphere_Semigroup
   : Semigroup
   :=
-  {|SemigroupM := MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma)
+  {|SemigroupToMagma := MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma)
   ; isSemigroup :=
-      {|semigroup_assoc (x y z : Q) := cocycle_two_sphere_mul_assoc x y z|}
+      {|mul_assoc (x y z : Q) := cocycle_two_sphere_mul_assoc x y z|}
   |}.
 
 (** The constant sphere is a left unit in generated class equality. *)
@@ -162,7 +162,7 @@ Proof.
     cocycle_two_sphere_class_value_resp x).
   change ((1 : M) ⋅ cocycle_two_sphere_class_value_resp x ≈S
     cocycle_two_sphere_class_value_resp x).
-  apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+  apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
 Defined.
 
 (** The same constant sphere is a right unit. *)
@@ -181,7 +181,7 @@ Proof.
     cocycle_two_sphere_class_value_resp x).
   change (cocycle_two_sphere_class_value_resp x ⋅ (1 : M) ≈S
     cocycle_two_sphere_class_value_resp x).
-  apply (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+  apply (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
 Defined.
 
 (** A chosen monoid with the actual base sphere as its unit. *)
@@ -191,14 +191,14 @@ Defined.
 Program Definition cocycle_two_sphere_Monoid
   : Monoid
   :=
-  {|MonoidSG := SemigroupFromProperty
+  {|MonoidToSemigroup := SemigroupFromProperty
       (MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma))
       (isSemigroup cocycle_two_sphere_Semigroup)
   ; hasMonoid :=
       {|monoid_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
       ; isMonoid :=
-          {|monoid_unit_l := cocycle_two_sphere_unit_l
-          ; monoid_unit_r := cocycle_two_sphere_unit_r
+          {|mul_unit_l := cocycle_two_sphere_unit_l
+          ; mul_unit_r := cocycle_two_sphere_unit_r
           |}
       |}
   |}.
@@ -241,11 +241,11 @@ Proof.
     two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺] w) ≈S
     two_cocycle_triangle_value_resp (d[Z; 2; fin_first] w) ⋅
     two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺] w)) in E.
-  rewrite V0, (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))) in E.
+  rewrite V0, (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))) in E.
   transitivity (two_cocycle_triangle_value_resp
       (d[Z; 2; fin_first⁺⁺⁺] w) ⋅
     two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺] w)).
-  - apply (@magma_mul_proper _ (hasMagma M)); symmetry; apply func_proper; assumption.
+  - apply (@mul_proper _ (hasMagma M)); symmetry; apply func_proper; assumption.
   - transitivity (two_cocycle_triangle_value_resp
       (d[Z; 2; fin_first⁺⁺] w)); [exact E |].
     apply func_proper. exact H2.
@@ -264,7 +264,7 @@ Proof.
   assert (E : cocycle_two_sphere_value_resp x ⋅
       cocycle_two_sphere_value_resp y ≈S
       1 ⋅ cocycle_two_sphere_value_resp z).
-  { rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))). exact H. }
+  { rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))). exact H. }
   exists {|lower := TetrahedronTwoCocycle
     (cocycle_two_sphere_value_resp x) (cocycle_two_sphere_value_resp y)
     1 (cocycle_two_sphere_value_resp z) E
@@ -482,7 +482,7 @@ Proof. apply cocycle_two_sphere_class_β. Defined.
 Global Instance cocycle_two_sphere_inv_proper
   : Proper ([≈S] ==> [≈S]) cocycle_two_sphere_inv.
 Proof.
-  intros x y H. apply func_proper. apply group_inv_proper.
+  intros x y H. apply func_proper. apply inv_proper.
   apply func_proper. exact H.
 Defined.
 
@@ -496,7 +496,7 @@ Lemma cocycle_two_sphere_inv_l (x : Q)
 Proof.
   apply (snd (cocycle_two_sphere_class_eq_iff _ _)).
   rewrite cocycle_two_sphere_mul_value, cocycle_two_sphere_inv_value,
-    (@group_inv_l _ _ (@isGroup _ (hasGroup M))).
+    (@mul_inv_l _ _ (@isGroup _ (hasGroup M))).
   symmetry. apply cocycle_constant_triangle_value.
 Defined.
 
@@ -510,7 +510,7 @@ Lemma cocycle_two_sphere_inv_r (x : Q)
 Proof.
   apply (snd (cocycle_two_sphere_class_eq_iff _ _)).
   rewrite cocycle_two_sphere_mul_value, cocycle_two_sphere_inv_value,
-    (@group_inv_r _ _ (@isGroup _ (hasGroup M))).
+    (@mul_inv_r _ _ (@isGroup _ (hasGroup M))).
   symmetry. apply cocycle_constant_triangle_value.
 Defined.
 
@@ -521,16 +521,16 @@ Defined.
 Program Definition cocycle_two_sphere_Group
   : Group
   :=
-  {|GroupM := MonoidFromExtension
+  {|GroupToMonoid := MonoidFromExtension
       (SemigroupFromProperty
         (MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma))
         (isSemigroup cocycle_two_sphere_Semigroup))
       (hasMonoid cocycle_two_sphere_Monoid)
   ; hasGroup :=
-      {|group_inv (x : Q) := cocycle_two_sphere_inv x
+      {|inv (x : Q) := cocycle_two_sphere_inv x
       ; isGroup :=
-          {|group_inv_l (x : Q) := cocycle_two_sphere_inv_l x
-          ; group_inv_r (x : Q) := cocycle_two_sphere_inv_r x
+          {|mul_inv_l (x : Q) := cocycle_two_sphere_inv_l x
+          ; mul_inv_r (x : Q) := cocycle_two_sphere_inv_r x
           |}
       |}
   |}.
@@ -581,7 +581,7 @@ Lemma cocycle_two_sphere_mul_comm (x y : Q)
 Proof.
   apply (snd (cocycle_two_sphere_class_eq_iff _ _)).
   repeat rewrite cocycle_two_sphere_mul_value.
-  exact (@monoid_mul_comm M HC _ _).
+  exact (@mul_comm M HC _ _).
 Defined.
 
 (** Commutativity on the same selected class monoid. *)
@@ -596,7 +596,7 @@ Program Definition cocycle_two_sphere_IsCommutativeMonoid
           (isSemigroup cocycle_two_sphere_Semigroup))
         (hasMonoid cocycle_two_sphere_Monoid))
   :=
-  {|monoid_mul_comm (x y : Q) := cocycle_two_sphere_mul_comm x y
+  {|mul_comm (x y : Q) := cocycle_two_sphere_mul_comm x y
   |}.
 
 End SphereCommutativity.

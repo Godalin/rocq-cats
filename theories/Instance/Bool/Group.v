@@ -30,10 +30,10 @@ Program Definition BoolS
 Program Definition BoolS_Magma
   : Magma
   :=
-  {|MagmaS := BoolS
+  {|MagmaToSetC := BoolS
   ; hasMagma :=
-      {|magma_mul := xorb
-      ; magma_mul_proper := _
+      {|mul := xorb
+      ; mul_proper := _
       |}
   |}.
 
@@ -44,8 +44,8 @@ Program Definition BoolS_Magma
 Program Definition BoolS_Semigroup
   : Semigroup
   :=
-  {|SemigroupM := BoolS_Magma
-  ; isSemigroup := {|semigroup_assoc := _|}
+  {|SemigroupToMagma := BoolS_Magma
+  ; isSemigroup := {|mul_assoc := _|}
   |}.
 Next Obligation. destruct x, y, z; reflexivity. Defined.
 
@@ -58,8 +58,8 @@ Program Definition BoolS_HasMonoid
   :=
   {|monoid_unit := false
   ; isMonoid :=
-      {|monoid_unit_l := _
-      ; monoid_unit_r := _
+      {|mul_unit_l := _
+      ; mul_unit_r := _
       |}
   |}.
 Next Obligation. destruct x; reflexivity. Defined.
@@ -80,10 +80,10 @@ Definition BoolS_Monoid
 Program Definition BoolS_HasGroup
   : HasGroup BoolS_Monoid
   :=
-  {|group_inv x := x
+  {|inv x := x
   ; isGroup :=
-      {|group_inv_l := _
-      ; group_inv_r := _
+      {|mul_inv_l := _
+      ; mul_inv_r := _
       |}
   |}.
 Next Obligation. destruct x; reflexivity. Defined.

@@ -15,9 +15,9 @@ From Cats Require Import
 Program Definition EndMagma (C : Cat) (X : @Ob C)
   : Magma
   :=
-  {|MagmaS := HomSet X X
+  {|MagmaToSetC := HomSet X X
   ; hasMagma :=
-      {|magma_mul g f := g ∘ f
-      ; magma_mul_proper := comp_proper
+      {|mul g f := g ∘ f
+      ; mul_proper := comp_proper
       |}
   |}.

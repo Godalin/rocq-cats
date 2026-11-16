@@ -96,7 +96,7 @@ Proof. vm_compute. reflexivity. Defined.
 
 Definition product_value (x y : BoolCocycleSphereClassS)
   : bool
-  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (@magma_mul _ (hasMagma class_magma) x y).
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (@mul _ (hasMagma class_magma) x y).
 
 Example products_compute
   : (product_value (two_sphere_base BoolCocycleModel
@@ -113,7 +113,7 @@ Proof. vm_compute. reflexivity. Defined.
 (** 一般类定律适用于完全相同的选定乘法。 *)
 
 Example left_unit_client
-  : @magma_mul _ (hasMagma class_magma) (two_sphere_base BoolCocycleModel
+  : @mul _ (hasMagma class_magma) (two_sphere_base BoolCocycleModel
       (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true) ≈S
       (cocycle_two_sphere_resp (M := BoolS_Monoid) true : BoolCocycleSphereClassS).
 Proof.
@@ -122,7 +122,7 @@ Proof.
 Defined.
 
 Example right_unit_client
-  : @magma_mul _ (hasMagma class_magma) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+  : @mul _ (hasMagma class_magma) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
       (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)) ≈S
       (cocycle_two_sphere_resp (M := BoolS_Monoid) true : BoolCocycleSphereClassS).
 Proof.
@@ -131,7 +131,7 @@ Proof.
 Defined.
 
 Example left_inverse_client
-  : @magma_mul _ (hasMagma class_magma) left_candidate.1
+  : @mul _ (hasMagma class_magma) left_candidate.1
       (cocycle_two_sphere_resp (M := BoolS_Monoid) true) ≈S
       (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         : BoolCocycleSphereClassS).
@@ -142,7 +142,7 @@ Proof.
 Defined.
 
 Example right_inverse_client
-  : @magma_mul _ (hasMagma class_magma) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+  : @mul _ (hasMagma class_magma) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
       right_candidate.1 ≈S
       (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         : BoolCocycleSphereClassS).

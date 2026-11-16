@@ -18,10 +18,10 @@ From Cats.Set Require Export
 
 Class HasMagma (S : SetC)
   :=
-  { magma_mul : S → S → S
-  ; magma_mul_proper
+  { mul : S → S → S
+  ; mul_proper
     :: Proper (carrier_equiv S ==> carrier_equiv S ==> carrier_equiv S)
-        magma_mul
+        mul
   }.
 
 (** A complete magma owns its setoid and one multiplication extension. *)
@@ -30,8 +30,8 @@ Class HasMagma (S : SetC)
 
 Record Magma@{u p l}
   :=
-  { MagmaS :> SetC@{u p}
-  ; hasMagma :: HasMagma@{l u p} MagmaS
+  { MagmaToSetC :> SetC@{u p}
+  ; hasMagma :: HasMagma@{l u p} MagmaToSetC
   }.
 
 (** Pack a fixed-setoid choice without copying its multiplication. *)
@@ -41,13 +41,13 @@ Record Magma@{u p l}
 Program Definition MagmaFromExtension (S : SetC) (HM : HasMagma S)
   : Magma
   :=
-  {|MagmaS := S
+  {|MagmaToSetC := S
   ; hasMagma := HM
   |}.
 
 Declare Scope magma_scope.
 Delimit Scope magma_scope with magma.
-Infix "⋅" := (@magma_mul _ (hasMagma _))
+Infix "⋅" := (@mul _ (hasMagma _))
   (at level 40, left associativity) : magma_scope.
 Local Open Scope magma_scope.
 
@@ -56,26 +56,26 @@ Local Open Scope magma_scope.
 
 (** 左乘保持相等，无须结合律或单位元前提。 *)
 
-Program Definition magma_mul_l_resp {M : Magma} (x : M)
+Program Definition mul_l_resp {M : Magma} (x : M)
   : M →r M
   :=
   {|func y := x ⋅ y
   |}.
 Next Obligation.
-  intros y z H. apply (@magma_mul_proper _ (hasMagma M)); [reflexivity | exact H].
+  intros y z H. apply (@mul_proper _ (hasMagma M)); [reflexivity | exact H].
 Defined.
 
 (** Right multiplication is respectful under the same weak assumptions. *)
 
 (** 右乘在同样的较弱前提下保持相等。 *)
 
-Program Definition magma_mul_r_resp {M : Magma} (y : M)
+Program Definition mul_r_resp {M : Magma} (y : M)
   : M →r M
   :=
   {|func x := x ⋅ y
   |}.
 Next Obligation.
-  intros x z H. apply (@magma_mul_proper _ (hasMagma M)); [exact H | reflexivity].
+  intros x z H. apply (@mul_proper _ (hasMagma M)); [exact H | reflexivity].
 Defined.
 
 (** Sections of multiplication denote respectful maps: [(x ⋅−)] sends
@@ -85,28 +85,28 @@ Defined.
 (** 乘法的偏应用记号表示保相等映射：[(x ⋅−)] 将 [y] 送到 [x ⋅ y]，
     [(−⋅ y)] 将 [x] 送到 [x ⋅ y]；空位表示映射的输入。 *)
 
-Notation "'(' x '⋅−)'" := (magma_mul_l_resp x) : magma_scope.
-Notation "'(−⋅' y ')'" := (magma_mul_r_resp y) : magma_scope.
+Notation "'(' x '⋅−)'" := (mul_l_resp x) : magma_scope.
+Notation "'(−⋅' y ')'" := (mul_r_resp y) : magma_scope.
 
 (** Left multiplication also respects its fixed factor, using pointwise
     equality of respectful maps rather than equality of function records. *)
 
 (** 左乘也保持固定因子的相等，使用保相等映射的逐点相等，不比较函数记录。 *)
 
-Global Instance magma_mul_l_proper {M : Magma}
+Global Instance mul_l_proper {M : Magma}
   : Proper (carrier_equiv M ==> carrier_equiv (M →S M))
       (λ x : M, (x ⋅−)).
 Proof.
-  intros x y H z. apply (@magma_mul_proper _ (hasMagma M)); [exact H | reflexivity].
+  intros x y H z. apply (@mul_proper _ (hasMagma M)); [exact H | reflexivity].
 Qed.
 
 (** Right multiplication respects its fixed factor pointwise. *)
 
 (** 右乘逐点保持固定因子的相等。 *)
 
-Global Instance magma_mul_r_proper {M : Magma}
+Global Instance mul_r_proper {M : Magma}
   : Proper (carrier_equiv M ==> carrier_equiv (M →S M))
       (λ y : M, (−⋅ y)).
 Proof.
-  intros x y H z. apply (@magma_mul_proper _ (hasMagma M)); [reflexivity | exact H].
+  intros x y H z. apply (@mul_proper _ (hasMagma M)); [reflexivity | exact H].
 Qed.

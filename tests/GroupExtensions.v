@@ -46,16 +46,16 @@ Next Obligation. split; repeat intro; exact true. Defined.
 Program Definition TokenMagma
   : Magma
   :=
-  {|MagmaS := TokenS
-  ; hasMagma := {|magma_mul _ _ := false; magma_mul_proper := _|}
+  {|MagmaToSetC := TokenS
+  ; hasMagma := {|mul _ _ := false; mul_proper := _|}
   |}.
 Next Obligation. repeat intro; exact true. Defined.
 
 Program Definition TokenSemigroup
   : Semigroup
   :=
-  {|SemigroupM := TokenMagma
-  ; isSemigroup := {|semigroup_assoc _ _ _ := true|}
+  {|SemigroupToMagma := TokenMagma
+  ; isSemigroup := {|mul_assoc _ _ _ := true|}
   |}.
 
 Program Definition TokenHasMonoid
@@ -63,8 +63,8 @@ Program Definition TokenHasMonoid
   :=
   {|monoid_unit := false
   ; isMonoid :=
-      {|monoid_unit_l _ := true
-      ; monoid_unit_r _ := true
+      {|mul_unit_l _ := true
+      ; mul_unit_r _ := true
       |}
   |}.
 
@@ -75,10 +75,10 @@ Definition TokenMonoid
 Program Definition TokenExtension (e t : bool)
   : HasGroup TokenMonoid
   :=
-  {|group_inv _ := e
+  {|inv _ := e
   ; isGroup :=
-      {|group_inv_l _ := t
-      ; group_inv_r _ := negb t
+      {|mul_inv_l _ := t
+      ; mul_inv_r _ := negb t
       |}
   |}.
 
@@ -102,7 +102,7 @@ Definition SecondGroup
   := GroupFromExtension TokenMonoid TrueExtension.
 
 Example stored_parent
-  : GroupM FirstGroup = TokenMonoid.
+  : GroupToMonoid FirstGroup = TokenMonoid.
 Proof. reflexivity. Qed.
 
 Example stored_extension
@@ -115,18 +115,18 @@ Example stored_units
 Proof. reflexivity. Qed.
 
 Example stored_inverses
-  : (@group_inv _ (hasGroup FirstGroup) true, @group_inv _ (hasGroup SecondGroup) true) =
+  : (@inv _ (hasGroup FirstGroup) true, @inv _ (hasGroup SecondGroup) true) =
       (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_left_tokens
-  : (@group_inv_l _ _ (@isGroup _ (hasGroup FirstGroup)) true,
-      @group_inv_l _ _ (@isGroup _ (hasGroup SecondGroup)) true) = (false, true).
+  : (@mul_inv_l _ _ (@isGroup _ (hasGroup FirstGroup)) true,
+      @mul_inv_l _ _ (@isGroup _ (hasGroup SecondGroup)) true) = (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_right_tokens
-  : (@group_inv_r _ _ (@isGroup _ (hasGroup FirstGroup)) false,
-      @group_inv_r _ _ (@isGroup _ (hasGroup SecondGroup)) false) = (true, false).
+  : (@mul_inv_r _ _ (@isGroup _ (hasGroup FirstGroup)) false,
+      @mul_inv_r _ _ (@isGroup _ (hasGroup SecondGroup)) false) = (true, false).
 Proof. reflexivity. Qed.
 
 (** The actual one-object groupoid keeps the selected inverse and laws. *)
@@ -140,20 +140,20 @@ Example groupoid_inverse_uses_stored_choices
 Proof. reflexivity. Qed.
 
 Example candidate_inverses_agree
-  : @group_inv _ (hasGroup FirstGroup) ≈f @group_inv _ (hasGroup SecondGroup).
+  : @inv _ (hasGroup FirstGroup) ≈f @inv _ (hasGroup SecondGroup).
 Proof.
-  exact (group_inverse_candidates_equiv TokenMonoid _ _
+  exact (inv_candidates_equiv TokenMonoid _ _
     (@isGroup TokenMonoid FalseExtension)
     (@isGroup TokenMonoid TrueExtension)).
 Qed.
 
 Fail Definition native_inverses_equal
-  : @group_inv _ (hasGroup FirstGroup) true = @group_inv _ (hasGroup SecondGroup) true
+  : @inv _ (hasGroup FirstGroup) true = @inv _ (hasGroup SecondGroup) true
   := eq_refl.
 
 Fail Definition native_left_tokens_equal
-  : @group_inv_l _ _ (@isGroup _ (hasGroup FirstGroup)) true =
-      @group_inv_l _ _ (@isGroup _ (hasGroup SecondGroup)) true
+  : @mul_inv_l _ _ (@isGroup _ (hasGroup FirstGroup)) true =
+      @mul_inv_l _ _ (@isGroup _ (hasGroup SecondGroup)) true
   := eq_refl.
 
 (** ** Strict Independent Levels

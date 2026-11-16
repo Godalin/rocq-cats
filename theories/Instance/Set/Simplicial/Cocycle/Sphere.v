@@ -115,11 +115,11 @@ Proof.
     (lower w)⟦fmap δ[2; fin_first] a, fmap δ[2; fin_first] b⟧₂ ⋅
     (lower w)⟦fmap δ[2; fin_first⁺⁺] a, fmap δ[2; fin_first⁺⁺] b⟧₂).
   transitivity ((lower w)⟦f, g⟧₂ ⋅ (lower w)⟦g ∘ f, h⟧₂).
-  - apply (@magma_mul_proper _ (hasMagma M)); apply ordinal_cocycle_triangle_transport;
+  - apply (@mul_proper _ (hasMagma M)); apply ordinal_cocycle_triangle_transport;
       reflexivity.
   - transitivity ((lower w)⟦g, h⟧₂ ⋅ (lower w)⟦f, h ∘ g⟧₂).
     + apply two_cocycle_tetrahedron.
-    + apply (@magma_mul_proper _ (hasMagma M)); apply ordinal_cocycle_triangle_transport;
+    + apply (@mul_proper _ (hasMagma M)); apply ordinal_cocycle_triangle_transport;
         reflexivity.
 Defined.
 
@@ -159,8 +159,8 @@ Proof.
     - apply cocycle_constant_triangle_value. }
   rewrite V0,
     V1,
-    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))) in E.
+    (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in E.
   transitivity (two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺] w)).
   - symmetry. apply func_proper. exact H2.
   - transitivity (two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺⁺] w)).
@@ -180,8 +180,8 @@ Definition CocycleTwoSphereHomotopy
 Proof.
   assert (E : cocycle_two_sphere_value_resp y ⋅ 1 ≈S
       1 ⋅ cocycle_two_sphere_value_resp x).
-  { rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))). symmetry. exact H. }
+  { rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))). symmetry. exact H. }
   exists {|lower := TetrahedronTwoCocycle
     (cocycle_two_sphere_value_resp y) 1 1 (cocycle_two_sphere_value_resp x) E
     |}.

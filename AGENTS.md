@@ -54,7 +54,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   duplicate a carrier or category during that migration. Fixed-data `Has*`
   choices and `Is*` properties keep their named ambient parameters.
 - Store each immediate parent once. When it is the unique underlying view,
-  declare it with `:>` and a kind-based name such as `GroupM` or `CCCC`.
+  declare it with `:>`. Prefer directional `SourceToTarget` names for
+  reviewed parent projections, as in `GroupToMonoid` or `SemigroupToMagma`;
+  migrate existing names in bounded steps rather than adding aliases.
   Reach weaker structures through that parent; add no direct bypass to an
   ancestor and do not duplicate inherited operations or universal choices.
   Meaningful multiple parent views are allowed: derive them from shared data
@@ -158,6 +160,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `CartesianCat` hierarchy; module paths and existing notation stay unchanged.
 - Prefix laws by their mathematical subject, not `axiom_`. Reuse descriptive
   endings (`_id`, `_comp`, `_inv`, `_iso`, `_unique`, `_β1`, `_η`).
+  Define an operation once at its weakest structure, with a short subject
+  name such as `mul`; stronger structures inherit that same field. Name its
+  laws `mul_proper`, `mul_assoc`, `mul_unit_l/r`, `mul_inv_l/r`, while laws
+  about inverse itself use `inv_inv`, `inv_mul`, etc. Do not generate
+  structure-prefixed forwarding aliases at each inheritance level. Review
+  collisions, qualification and selected evidence before shortening names.
   `_universal` denotes the full universal property; distinguish mediator
   uniqueness from object uniqueness. Follow local spelling; update references
   together when renaming, without unnecessary compatibility aliases.

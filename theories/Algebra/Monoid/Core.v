@@ -3,10 +3,10 @@ From Cats Require Export
 
 Declare Scope monoid_scope.
 Delimit Scope monoid_scope with monoid.
-Infix "⋅" := (@magma_mul _ (hasMagma _))
+Infix "⋅" := (@mul _ (hasMagma _))
   (at level 40, left associativity) : monoid_scope.
-Notation "'(' x '⋅−)'" := (magma_mul_l_resp x) : monoid_scope.
-Notation "'(−⋅' y ')'" := (magma_mul_r_resp y) : monoid_scope.
+Notation "'(' x '⋅−)'" := (mul_l_resp x) : monoid_scope.
+Notation "'(−⋅' y ')'" := (mul_r_resp y) : monoid_scope.
 Local Open Scope monoid_scope.
 
 (** * Monoids on Sets
@@ -40,8 +40,8 @@ Context (SG : Semigroup).
 
 Class IsMonoid (e : SG)
   :=
-  { monoid_unit_l x : e ⋅ x ≈S x
-  ; monoid_unit_r x : x ⋅ e ≈S x
+  { mul_unit_l x : e ⋅ x ≈S x
+  ; mul_unit_r x : x ⋅ e ≈S x
   }.
 
 (** Choose a unit on this exact parent, retaining its Type-valued laws. *)
@@ -67,8 +67,8 @@ End UnitExtension.
 
 Record Monoid@{u p l}
   :=
-  { MonoidSG :> Semigroup@{u p l}
-  ; hasMonoid :: HasMonoid MonoidSG
+  { MonoidToSemigroup :> Semigroup@{u p l}
+  ; hasMonoid :: HasMonoid MonoidToSemigroup
   }.
 
 (** Pack a supplied semigroup and its chosen extension transparently. *)
@@ -79,7 +79,7 @@ Program Definition MonoidFromExtension (SG : Semigroup)
     (HM : HasMonoid SG)
   : Monoid
   :=
-  {|MonoidSG := SG
+  {|MonoidToSemigroup := SG
   ; hasMonoid := HM
   |}.
 
@@ -97,13 +97,13 @@ Notation "1" := (@monoid_unit _ (hasMonoid _)) : monoid_scope.
 (** 同一选定半群的任意两个指定单位元在其广集相等下相等，无须记录或载体值
     的原生相等。 *)
 
-Lemma monoid_units_equiv (SG : Semigroup) (e f : SG)
+Lemma units_equiv (SG : Semigroup) (e f : SG)
     (He : IsMonoid SG e) (Hf : IsMonoid SG f)
   : e ≈S f.
 Proof.
-  transitivity (@magma_mul _ (hasMagma SG) e f).
-  - symmetry. exact (@monoid_unit_r SG f Hf e).
-  - exact (@monoid_unit_l SG e He f).
+  transitivity (@mul _ (hasMagma SG) e f).
+  - symmetry. exact (@mul_unit_r SG f Hf e).
+  - exact (@mul_unit_l SG e He f).
 Qed.
 
 (** A left and a right inverse agree using only a chosen unit extension
@@ -111,16 +111,16 @@ Qed.
 
 (** 左逆与右逆相等只需指定半群上的选定单位扩充。 *)
 
-Lemma monoid_extension_inverse_unique (SG : Semigroup)
+Lemma mul_extension_inv_unique (SG : Semigroup)
     (HM : HasMonoid SG) (x y z : SG)
-    (Hy : @magma_mul _ (hasMagma SG) y x ≈S @monoid_unit SG HM)
-    (Hz : @magma_mul _ (hasMagma SG) x z ≈S @monoid_unit SG HM)
+    (Hy : @mul _ (hasMagma SG) y x ≈S @monoid_unit SG HM)
+    (Hz : @mul _ (hasMagma SG) x z ≈S @monoid_unit SG HM)
   : y ≈S z.
 Proof.
-  transitivity (@magma_mul _ (hasMagma SG) y (@magma_mul _ (hasMagma SG) x z)).
-  - rewrite Hz. symmetry. exact (@monoid_unit_r SG _ (@isMonoid SG HM) y).
-  - rewrite <- (@semigroup_assoc _ (isSemigroup SG)), Hy.
-    exact (@monoid_unit_l SG _ (@isMonoid SG HM) z).
+  transitivity (@mul _ (hasMagma SG) y (@mul _ (hasMagma SG) x z)).
+  - rewrite Hz. symmetry. exact (@mul_unit_r SG _ (@isMonoid SG HM) y).
+  - rewrite <- (@mul_assoc _ (isSemigroup SG)), Hy.
+    exact (@mul_unit_l SG _ (@isMonoid SG HM) z).
 Qed.
 
 (** The complete monoid uses the inverse-uniqueness theorem for its
@@ -128,10 +128,10 @@ Qed.
 
 (** 完整幺半群使用保存扩充的同一逆唯一性定理。 *)
 
-Lemma monoid_inverse_unique {M : Monoid}
+Lemma mul_inv_unique {M : Monoid}
     (x y z : M) (Hy : y ⋅ x ≈S 1) (Hz : x ⋅ z ≈S 1)
   : y ≈S z.
 Proof.
-  exact (monoid_extension_inverse_unique (MonoidSG M)
+  exact (mul_extension_inv_unique (MonoidToSemigroup M)
     (hasMonoid M) x y z Hy Hz).
 Qed.

@@ -24,7 +24,7 @@ Local Open Scope monoid_scope.
 
 Class IsCommutativeMonoid (M : Monoid)
   :=
-  { monoid_mul_comm (x y : M)
+  { mul_comm (x y : M)
     : x ⋅ y ≈S y ⋅ x
   }.
 
@@ -45,13 +45,13 @@ Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
 
 (** 两对元素的乘积可以按各自的第一、第二分量重新分组。 *)
 
-Lemma monoid_mul_interchange (a b c d : M)
+Lemma mul_interchange (a b c d : M)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d).
 Proof.
-  rewrite (@semigroup_assoc _ (isSemigroup M)),
-    <- ((@semigroup_assoc _ (isSemigroup M)) b c d),
-    (monoid_mul_comm b c),
-    ((@semigroup_assoc _ (isSemigroup M)) c b d), <- (@semigroup_assoc _ (isSemigroup M)).
+  rewrite (@mul_assoc _ (isSemigroup M)),
+    <- ((@mul_assoc _ (isSemigroup M)) b c d),
+    (mul_comm b c),
+    ((@mul_assoc _ (isSemigroup M)) c b d), <- (@mul_assoc _ (isSemigroup M)).
   reflexivity.
 Defined.
 
