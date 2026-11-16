@@ -30,6 +30,13 @@ Lax monoidal 接口现已将底层函子及结构打包在同一个类中，只�
 `Fct` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
 笛卡尔闭函子。已有固定数据保持性接口继续与打包接口共存，服务于一般定理。
 
+The [structured-category universes](./StructureUniverses.md) now build a
+cartesian category of cartesian categories and a groupoid of groupoids and
+equivalences. Both support self-membership at distinct universe instances.
+
+[结构范畴宇宙](./StructureUniverses.md)现已构造笛卡尔范畴组成的笛卡尔范畴，
+以及群胚和等价组成的群胚；两者均支持不同宇宙实例间的自身成员关系。
+
 ## Pre-stable refactoring policy
 
 ## 稳定版前的重构政策

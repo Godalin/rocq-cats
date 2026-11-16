@@ -21,20 +21,6 @@ From CatsTests Require Import
     检查普通范畴记号、广集重写及保结构函子的忘却。同一范畴上的两个结构包
     保留不同选择，同时具有实际的保结构连接态射。 *)
 
-(** Both category constructions are objects of a CatCat at larger
-    universe bounds. The occurrences of CatCat are instantiated independently. *)
-
-(** 两个范畴构造都可作为更大宇宙界上的 CatCat 的对象。
-    各处 CatCat 分别实例化其宇宙。 *)
-
-Definition catcat_as_object
-  : @Ob CatCat
-  := CatCat.
-
-Definition ccccat_as_object
-  : @Ob CatCat
-  := CCCCat.
-
 (** ** Ordinary Categorical Clients
 
     Fix three objects of CCCCat and arrows between them. The canonical

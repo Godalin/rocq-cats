@@ -256,3 +256,55 @@ Next Obligation.
     (fmap F' f × fmap G' f) ∘ (α X × β X)).
   rewrite <- !cross_comp, !nat_naturality. reflexivity.
 Defined.
+
+(** ** Natural Comparisons of Product-Valued Functors
+
+    Projection comparisons determine a comparison into a product category.
+    Retain each supplied component and inverse without identifying objects
+    or functor records by native equality. *)
+
+(** ** 积值函子的自然比较
+
+    投影上的比较决定到乘积范畴的比较。保留给定分量及逆，
+    不以原生相等识别对象或函子记录。 *)
+
+(** Pair the two prescribed natural-isomorphism components. *)
+
+(** 配对两份指定自然同构的分量。 *)
+
+Program Definition ProdNatIso {J C D : Cat} {H K : Fct J (C ×C D)}
+    (α : (FstF C D ∘F H) ≅N (FstF C D ∘F K))
+    (β : (SndF C D ∘F H) ≅N (SndF C D ∘F K))
+  : H ≅N K
+  := ({|nt X := (α.1 X, β.1 X)
+       |}; λ X, (((α.2 X).1, (β.2 X).1); _)).
+Next Obligation.
+  split; [exact (nat_naturality α.1 f) | exact (nat_naturality β.1 f)].
+Defined.
+Next Obligation.
+  split; split;
+    [exact (fst (α.2 _).2) | exact (fst (β.2 _).2) |
+      exact (snd (α.2 _).2) | exact (snd (β.2 _).2)].
+Defined.
+
+(** The first projection of a paired functor recovers its first factor. *)
+
+(** 配对函子的第一投影恢复其第一因子。 *)
+
+Program Definition FstPairIso {J C D : Cat} (F : Fct J C) (G : Fct J D)
+  : (FstF C D ∘F PairF F G) ≅N F
+  := ({|nt X := id
+       |}; _).
+Next Obligation. cbn. carw. Defined.
+Next Obligation. intro X. exists id. split; apply comp_id_l. Defined.
+
+(** The second projection recovers the second factor. *)
+
+(** 第二投影恢复第二因子。 *)
+
+Program Definition SndPairIso {J C D : Cat} (F : Fct J C) (G : Fct J D)
+  : (SndF C D ∘F PairF F G) ≅N G
+  := ({|nt X := id
+       |}; _).
+Next Obligation. cbn. carw. Defined.
+Next Obligation. intro X. exists id. split; apply comp_id_l. Defined.

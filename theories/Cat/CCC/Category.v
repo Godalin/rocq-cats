@@ -75,6 +75,13 @@ Next Obligation. exact (CompF_id_r f). Defined.
 Next Obligation. exact (CompF_id_l f). Defined.
 Next Obligation. exact (CompF_assoc f g h). Defined.
 
+(** This category of CCCs is an object of a larger category of categories.
+    The type coercion selects the object type of [CatCat]. *)
+
+(** 此 CCC 组成的范畴是更大范畴之范畴的对象；类型强制转换选取 [CatCat] 的对象类型。 *)
+
+Check CCCCat : CatCat.
+
 (** Forget the chosen structures and preservation evidence, keeping the
     underlying category, functor and natural-isomorphism witnesses. *)
 

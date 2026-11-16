@@ -59,6 +59,28 @@ name being replaced. These are migration entries, not compatibility aliases.
 后续批次继续缩短先前目标时，旧表的新名栏同步更新到当前最终名称；新批次也
 记录被替换的中间名称。这些是迁移对照，不是兼容别名。
 
+## Structured-category universes / 结构范畴宇宙
+
+The user-approved `Univ` stem applies to the two new complete universes.
+The checked examples use the existing object-type coercion directly, and
+remain immediately below their constructions. Module paths are unchanged;
+there are no compatibility aliases.
+
+用户确认的 `Univ` 词根用于两个新构造的完整宇宙。可编译示例直接使用已有
+对象类型强制转换，放在对应构造之后。模块路径不变，不保留兼容别名。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
+| --- | --- | --- |
+| `CartUniverse` | `CartUniv` | [Cat.Cartesian.Category](../theories/Cat/Cartesian/Category.v) |
+| `GpdUniverse` | `GpdUniv` | [Cat.Groupoid.Category](../theories/Cat/Groupoid/Category.v) |
+
+Both category modules and `tests/StructureUniverses.vo` pass targeted
+builds. The two `Check` commands elaborate through the existing coercions
+to their object types at distinct universe instances.
+
+两个范畴模块及 `tests/StructureUniverses.vo` 均通过定向构建。两个 `Check`
+命令通过已有强制转换解释为不同宇宙实例间的对象类型检查。
+
 ## Stem policy / 词根规范
 
 The stems below follow the naming discussion in #38. Only the exact rows in
@@ -73,6 +95,7 @@ the implemented batch have migrated; the remaining families are tracked below.
 | Functor / 函子 | `Fct` | `F` remains the construction suffix / 构造后缀仍用 `F` |
 | Functor category / 函子范畴 | `FctCat` | Distinct from the functor type / 区别于函子类型 |
 | Natural transformation and isomorphism / 自然变换及同构 | `Nat`, `NatIso` | Retain suffix `N` / 保留 `N` 后缀 |
+| Universe / 宇宙 | `Univ` | Reviewed structured-category universes; module paths stay unchanged / 已审阅结构范畴宇宙，模块路径不变 |
 | Adjunction / 伴随 | `Adj` | Retain notation `⊣` / 保留记号 |
 | Cartesian / 笛卡尔 | `Cart` | Retain the complete `CartesianCat` hierarchy / 完整结构层级另行审阅 |
 | Diagonal / 对角 | `Diag` | Keep the existing diagonal notation / 保留已有对角记号 |
