@@ -2971,3 +2971,100 @@ Topos 实际客户端提供 `ProductPullbackEqualizer`，一般证明复用既�
 全局实例、Proper 注册、记号或改变原有选择。本批交付最小像及满—单分解；
 像的拉回稳定性／正则性、有限余积／余等化子、有意义模型及进一步量词稳定性
 仍在 #16 中开放。
+
+
+## Ambient finite coproducts / 环境有限余积
+
+[Cat.Exponential.DoubleDual](../theories/Cat/Exponential/DoubleDual.v)
+defines `ExpDoubleDualUnit R X : X → R^(R^X)` in any category with named
+products and relative exponentials. Its application and naturality laws use
+the existing exponential bifunctor and specified hom equality. This general
+construction needs neither a terminal object nor a classifier; the following
+Topos construction is its actual client.
+
+[Topos.Coproduct](../theories/Topos/Coproduct.v) derives binary coproducts
+from the same named terminal object, classifier, pullbacks, products and
+exponentials as an elementary Topos. It assumes no initial object, coproduct,
+NNO, well-pointedness, classical principle or splitting of epis.
+
+At the classifier `Ω`, double-dual evaluation is monic: the classifier of
+the equalizer of the product projections supplies singleton tests. Applying
+two equal evaluations to the same singleton test detects equality of their
+inputs. `ToposDoubleDualMono X` retains the general evaluation arrow.
+
+For `A` and `B`, set `P = (Ω^A) × (Ω^B)`. Each double evaluation extends
+along its respective projection into `Ω^P`. `ToposCoproductSub A B`
+classifies the join of these two image predicates; `ToposCoproduct A B` is
+its underlying object. The image factors and join introductions give actual
+injections `topos_inl` and `topos_inr`. Image minimality and the join
+universal property retain a factor into every subobject containing both
+raw inputs.
+
+Given `f : A → Z` and `g : B → Z`, precomposition of predicates gives
+`Ω^Z → P`, hence a lift `Ω^P → Ω^(Ω^Z)`. Naturality of double evaluation
+shows that both raw inputs land in `ToposDoubleDualMono Z`. Minimality
+of their support therefore lets the lift factor through that mono.
+`topos_copair f g` is this retained classifier factor, with both beta laws.
+For uniqueness, equalize two proposed arrows out of the support. Agreement
+on the injections puts both raw inputs in the composite subobject, and
+minimality splits the equalizer. Its equation gives equality of the arrows.
+
+`topos_coproduct_universal` exposes the full Type-valued coproduct property.
+The optional `Topos_HasCoproduct` packages it through the existing opposite
+product interface, without rebuilding dual theory. Its object, injections
+and copair reduce to the same constructed data; the existing coproduct
+Proper and composition laws apply after explicit selection.
+
+`ToposFiniteCoproductColimits n` combines that binary choice with
+`Topos_HasInitial` through the existing opposite finite-product construction.
+It supplies all colimits of `DiscreteCat (Fin n)`, including the empty
+shape. The existing `FiniteCoproduct`, injections, copairs, beta laws and
+uniqueness remain available with these explicitly supplied choices.
+Neither importing this module nor having a Topos registers initial objects
+or coproducts globally, and a previously chosen coproduct can coexist.
+
+This delivers ambient finite coproducts. It does not establish their
+disjointness or pullback stability, coequalizers or all finite colimits,
+image stability/regularity, further quantifier stability or a meaningful
+model. No old mathematical interface, universe contract or choice changes.
+
+[Cat.Exponential.DoubleDual](../theories/Cat/Exponential/DoubleDual.v)
+在具有具名积及相对指数的任意范畴中定义
+`ExpDoubleDualUnit R X : X → R^(R^X)`。其应用与自然性定律复用既有指数
+双函子及指定 Hom 相等，不要求终对象或分类子；下面的 Topos 构造是其实际
+客户端。
+
+[Topos.Coproduct](../theories/Topos/Coproduct.v) 从初等 Topos 的同一具名
+终对象、分类子、拉回、积及指数推导二元余积，不假设始对象、余积、NNO、
+良点性、经典原则或满态射分裂。
+
+在分类子 `Ω` 处，双对偶求值为单态射：两个积投影的等化子的分类箭头给出
+单元素测试。将两个相等求值应用于同一单元素测试，便检测输入相等。
+`ToposDoubleDualMono X` 保留一般求值箭头。
+
+对 `A`、`B`，取 `P = (Ω^A) × (Ω^B)`，两侧双重求值沿各自投影扩展到
+`Ω^P`。`ToposCoproductSub A B` 分类这两个像谓词的并，
+`ToposCoproduct A B` 是其底层对象。像分解与并引入给出实际注入
+`topos_inl`、`topos_inr`。像最小性与并泛性质保留进入任意包含两侧原输入
+的子对象的因子。
+
+给定 `f : A → Z`、`g : B → Z`，谓词预合成给出 `Ω^Z → P`，从而得到
+提升 `Ω^P → Ω^(Ω^Z)`。双重求值的自然性说明两侧原输入均落入
+`ToposDoubleDualMono Z`，支撑最小性遂使提升经此单态射分解。
+`topos_copair f g` 就是这一保留的分类子因子，并满足两条 β 律。
+唯一性对支撑上的两个候选出发箭头取等化子；它们在注入上相等，使两侧原输入
+进入复合子对象，最小性于是分裂等化子，其方程给出两箭头相等。
+
+`topos_coproduct_universal` 暴露完整 Type 值余积性质。可选
+`Topos_HasCoproduct` 经既有反积接口打包，不重建对偶理论；其对象、注入与
+余配对原生归约到同一构造数据，显式选择后即可用既有余积 Proper 及复合律。
+
+`ToposFiniteCoproductColimits n` 经既有反有限积构造，将此二元选择与
+`Topos_HasInitial` 组合，提供包括空形状在内的 `DiscreteCat (Fin n)`
+全部余极限。既有 `FiniteCoproduct`、注入、余配对、β 律及唯一性仍可显式
+传入这些选择后使用。导入或具有 Topos 均不全局注册始对象或余积；已有余积
+选择可共存。
+
+本批交付环境有限余积，不计其不交性或拉回稳定性、余等化子或全部有限余极限、
+像稳定性／正则性、进一步量词稳定性或有意义模型完成。不改变旧数学接口、
+宇宙契约或选择。
