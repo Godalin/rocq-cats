@@ -120,6 +120,27 @@ Type 值广集相等下原生不同的布尔单位元、显式保存的选择、
 显式 `Monoid@{u p l}` 参数保留原有载体／相等／定律次序，不依赖重构后
 重新推断的次序。
 
+The compatibility correction preserves the old explicit universe order of
+`monoid_unit_l/r` (carrier, equality, law), `monoid_inverse_unique` (law,
+carrier, equality), and all fifteen positions and constraints of
+`MonoidTransport`, including its returned monoid and recovery-map bound.
+The three unit interfaces retain their named implicit argument `Monoid`.
+The unit and law projections are now transparent wrappers over the stored
+extension. Independent old-call regressions and complete signature comparisons
+also cover `Monoid`, `MonoidSG`, `monoid_unit`, `MonoidCat`, `EndMonoid` and
+`monoid_transport_map_unit`; these additional signatures remain unchanged.
+The original `128774b` checkpoint missed four explicit universe API changes
+and the named arguments; it is preserved, with the correction appended.
+
+兼容修订保留 `monoid_unit_l/r` 原显式宇宙次序（载体、相等、定律）、
+`monoid_inverse_unique` 原次序（定律、载体、相等），以及 `MonoidTransport`
+全部十五个位置与约束，包含返回幺半群和恢复映射的辅助界。三个单位接口保留
+原命名隐式参数 `Monoid`；单位元与定律投影现在是读取保存扩充的透明包装。
+独立旧调用回归及完整签名比较也覆盖 `Monoid`、`MonoidSG`、`monoid_unit`、
+`MonoidCat`、`EndMonoid` 和 `monoid_transport_map_unit`，这些附加签名保持。
+原 `128774b` 检查点漏查四项显式宇宙 API 变化及命名参数；该来源原样保留，
+兼容修订以追加提交处理。
+
 Validation on the `3a1991a`-based source tree passed the project-switch
 `dune build -j2 @all @runtest @install`, the new extension regression, original
 algebra-transport checks, original strict cocycle-model checks and eight
@@ -137,6 +158,20 @@ is pending.
 回归保留原先独立的定律上界。文档目标及空白检查通过，精确缩写指南逐字不变。
 工具链为 Rocq 9.3.0、Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1；无导出或
 共享环境变更，串行集成验收待完成。
+
+The appended compatibility repair also passed the full library/test/install
+build, ten complete old/new public-signature comparisons, six old core calls
+and the strict fifteen-universe transport call. The latter succeeds with the
+old and repaired implementations and fails with the original `128774b`
+implementation. The original 30+2 assumption checks and three competing-choice
+unit/law computations all remain closed. After erasing universe annotations,
+argument-name directives and comments, both changed theory modules match
+`128774b` exactly.
+
+追加兼容修订也通过全库／测试／安装、十项新旧完整公开签名比较、六个旧核心
+调用及严格十五宇宙运输调用。运输调用在旧版与修复版通过，在原 `128774b`
+实现上失败；原 30+2 项假设检查及三项竞争选择的单位元／定律计算全部闭合。
+除去宇宙标注、参数名指令与注释，两份修改后的理论模块与 `128774b` 完全一致。
 
 This step does not yet replace the parameterized algebra hierarchy with
 unparameterized complete records, introduce an arbitrary hierarchy diamond,

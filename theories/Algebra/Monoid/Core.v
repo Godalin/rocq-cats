@@ -103,9 +103,12 @@ Program Definition MonoidFromExtension {M : SetC} (SG : Semigroup M)
 (** 显式读取此幺半群保存的扩充中的单位元。同一半群上的另一扩充不能改变该
     计算选择。 *)
 
-Definition monoid_unit {M : SetC} `{HM : !Monoid M}
+Definition monoid_unit@{u p l} {M : SetC@{u p}}
+    `{HM : !Monoid@{u p l} M}
   : M
   := @monoid_chosen_unit M (@MonoidSG M HM) (@hasMonoid M HM).
+
+Arguments monoid_unit {M Monoid} : rename.
 
 Notation "1" := monoid_unit : monoid_scope.
 
@@ -113,17 +116,23 @@ Notation "1" := monoid_unit : monoid_scope.
 
 (** 从同一份保存的见证恢复左单位律。 *)
 
-Definition monoid_unit_l {M : SetC} `{HM : !Monoid M} (x : M)
+Definition monoid_unit_l@{u p l} {M : SetC@{u p}}
+    `{HM : !Monoid@{u p l} M} (x : M)
   : 1 ⋅ x ≈S x
   := @monoid_unit_left M _ _ (@isMonoid M _ (@hasMonoid M HM)) x.
+
+Arguments monoid_unit_l {M Monoid} x : rename.
 
 (** Recover the right unit law without searching for another extension. *)
 
 (** 恢复右单位律，不搜索另一份扩充。 *)
 
-Definition monoid_unit_r {M : SetC} `{HM : !Monoid M} (x : M)
+Definition monoid_unit_r@{u p l} {M : SetC@{u p}}
+    `{HM : !Monoid@{u p l} M} (x : M)
   : x ⋅ 1 ≈S x
   := @monoid_unit_right M _ _ (@isMonoid M _ (@hasMonoid M HM)) x.
+
+Arguments monoid_unit_r {M Monoid} x : rename.
 
 (** Any two specified units of the same selected semigroup agree in its
     setoid equality. Their records and native carrier values need not agree. *)
@@ -162,7 +171,8 @@ Qed.
 
 (** 固定广集的幺半群视图从保存的扩充恢复同一逆唯一性定理。 *)
 
-Lemma monoid_inverse_unique {M : SetC} `{HM : !Monoid M}
+Lemma monoid_inverse_unique@{l u p} {M : SetC@{u p}}
+    `{HM : !Monoid@{u p l} M}
     (x y z : M) (Hy : y ⋅ x ≈S 1) (Hz : x ⋅ z ≈S 1)
   : y ≈S z.
 Proof.

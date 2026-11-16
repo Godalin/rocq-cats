@@ -62,15 +62,23 @@ Next Obligation.
 Defined.
 
 (** Recover the existing transported-monoid presentation from the same
-    transported parent and its chosen unit extension. *)
+    transported parent and its chosen unit extension. Explicit local universe
+    positions and bounds retain the original fifteen-argument public API. *)
 
-(** 从同一运输父结构及其选定单位扩充恢复现有运输幺半群呈现。 *)
+(** 从同一运输父结构及其选定单位扩充恢复现有运输幺半群呈现。显式的局部
+    宇宙位置及约束保留原有十五参数公开 API。 *)
 
-Definition MonoidTransport (HA : Monoid A)
-    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
-  : Monoid B
+Definition MonoidTransport@{t0 t1 t2 t3 t4 t5 t6 t7 |
+      r < t4, s < t0, Set <= t2, Set <= t6,
+      a <= t5, a <= t6, a <= t7, r <= t6, r <= t7,
+      b <= t1, b <= t2, b <= t3, s <= t2, s <= t3,
+      t0 <= t1, t4 <= t5}
+    (HA : Monoid@{a r t7} A)
+    (Hfg : (f ∘r g) ≈f id_resp@{t7 a r})
+    (Hgf : (g ∘r f) ≈f id_resp@{t3 b s})
+  : Monoid@{b s t3} B
   := MonoidFromExtension (SemigroupTransport f g HA Hfg)
-      (HasMonoidTransport HA Hfg Hgf).
+      (HasMonoidTransport@{t0 t1 t2 t3 t4 t5 t6 t7} HA Hfg Hgf).
 
 (** The forward map preserves this same selected unit. *)
 
