@@ -248,3 +248,15 @@ Proof.
 Defined.
 
 End CylinderBaseCoherence.
+
+(** The next chapter uses this specified-equality transport to correct the
+    inverse natural transformation in
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderIso.two_sphere_cylinder_inverse_resp}
+    {%[two_sphere_cylinder_inverse_resp]%}%. Its round trips and operation
+    laws compare actual cylinders without identifying the inverse-image base
+    vertex natively. *)
+
+(** 下一章在
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderIso.two_sphere_cylinder_inverse_resp}
+    {%[two_sphere_cylinder_inverse_resp]%}% 中用此指定相等运输校正逆自然变换；
+    往返及运算定律按实际柱比较，不将逆像基点顶点原生等同。 *)
