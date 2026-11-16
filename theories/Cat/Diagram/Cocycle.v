@@ -3,7 +3,7 @@ From Cats Require Export
   Cat.Core
   Cat.Functor.Core.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Normalized Triangle Data
 

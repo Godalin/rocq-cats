@@ -6,7 +6,7 @@ From Cats Require Import
   Algebra.Group.Cocycle
   Cat.Chain.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 Local Open Scope ordinal_scope.
 
 (** * The Missing Tetrahedron Equation

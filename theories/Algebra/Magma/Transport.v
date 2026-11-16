@@ -1,7 +1,7 @@
 From Cats Require Export
   Algebra.Magma.Core.
 
-Local Open Scope magma_scope.
+Local Open Scope algebra_scope.
 
 (** * Transporting a Multiplication
 
@@ -36,17 +36,18 @@ Context (f : B →r A) (g : A →r B).
 
 (** 运输后的运算为 [g (f x ⋅ f y)]，其保相等性只使用给定两映射及原运算。 *)
 
-Program Definition MagmaTransport : Magma
+Program Definition MagmaTransport
+  : Magma
   :=
   {|MagmaToSetC := B
   ; hasMagma :=
-      {|mul x y := g (@mul _ (hasMagma A) (f x) (f y))
+      {|mul x y := g (f x ⋅ f y)
       ; mul_proper := _
       |}
   |}.
 Next Obligation.
   intros x x' Hx y y' Hy. apply (@func_proper _ _ g).
-  apply (@mul_proper _ (hasMagma A)); apply (@func_proper _ _ f); assumption.
+  apply mul_proper; apply (@func_proper _ _ f); assumption.
 Defined.
 
 (** If [f] recovers elements returned by [g], it preserves the transported
@@ -69,8 +70,7 @@ A\times A \arrow[r, "\mu_A"'] & A
 *)
 
 Lemma magma_transport_map_mul (Hfg : (f ∘r g) ≈f id_resp) (x y : B)
-  : f (@mul _ (hasMagma (MagmaTransport)) x y) ≈S
-      @mul _ (hasMagma A) (f x) (f y).
-Proof. exact (Hfg (@mul _ (hasMagma A) (f x) (f y))). Defined.
+  : f ((x : MagmaTransport) ⋅ y) ≈S f x ⋅ f y.
+Proof. exact (Hfg (f x ⋅ f y)). Defined.
 
 End Transport.

@@ -112,7 +112,7 @@ Program Definition TwoSphereClassMonoid
   :=
   {|MonoidToSemigroup := TwoSphereClassSemigroup H
   ; hasMonoid :=
-      {|monoid_unit := two_sphere_base X b
+      {|mul_unit := two_sphere_base X b
       ; isMonoid :=
           {|mul_unit_l := two_sphere_kan_mul_unit_l X b H
           ; mul_unit_r := two_sphere_kan_mul_unit_r X b H

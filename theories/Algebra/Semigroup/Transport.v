@@ -3,7 +3,7 @@ From Cats Require Export
 From Cats Require Export
   Algebra.Magma.Transport.
 
-Local Open Scope magma_scope.
+Local Open Scope algebra_scope.
 
 (** * Transporting Associativity
 
@@ -43,18 +43,14 @@ Program Definition SemigroupTransport (Hfg : (f ∘r g) ≈f id_resp)
   ; isSemigroup := {|mul_assoc := _|}
   |}.
 Next Obligation.
-  change (g (@mul _ (hasMagma A)
-      (f (g (@mul _ (hasMagma A) (f x) (f y)))) (f z)) ≈S
-    g (@mul _ (hasMagma A) (f x)
-      (f (g (@mul _ (hasMagma A) (f y) (f z)))))).
+  change (g (f (g (f x ⋅ f y)) ⋅ f z) ≈S
+    g (f x ⋅ f (g (f y ⋅ f z)))).
   apply (@func_proper _ _ g).
-  transitivity (@mul _ (hasMagma A)
-    (@mul _ (hasMagma A) (f x) (f y)) (f z)).
-  - apply (@mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
-  - transitivity (@mul _ (hasMagma A)
-      (f x) (@mul _ (hasMagma A) (f y) (f z))).
-    + exact (@mul_assoc _ (isSemigroup A) (f x) (f y) (f z)).
-    + apply (@mul_proper _ (hasMagma A)); [reflexivity | symmetry; apply Hfg].
+  transitivity ((f x ⋅ f y) ⋅ f z).
+  - apply mul_proper; [apply Hfg | reflexivity].
+  - transitivity (f x ⋅ (f y ⋅ f z)).
+    + apply mul_assoc.
+    + apply mul_proper; [reflexivity | symmetry; apply Hfg].
 Defined.
 
 End Transport.

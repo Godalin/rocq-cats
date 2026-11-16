@@ -2,7 +2,7 @@ From Cats Require Import
   Algebra.Group.Equation
   Instance.Bool.Commutative.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Explicitly Selected Boolean Coefficients
 

@@ -3,7 +3,7 @@ From Cats Require Export
 From Cats Require Export
   Algebra.Semigroup.Transport.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Transporting a Unit
 
@@ -39,25 +39,25 @@ Program Definition HasMonoidTransport (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
   : HasMonoid (SemigroupTransport A f g Hfg)
   :=
-  {|monoid_unit := g (@monoid_unit _ (hasMonoid A))
+  {|mul_unit := g 1
   ; isMonoid :=
       {|mul_unit_l := _
       ; mul_unit_r := _
       |}
   |}.
 Next Obligation.
-  change (g (@mul _ (hasMagma A) (f (g (@monoid_unit _ (hasMonoid A)))) (f x)) ≈S x).
+  change (g (f (g 1) ⋅ f x) ≈S x).
   transitivity (g (f x)); [apply (@func_proper _ _ g) | apply Hgf].
-  transitivity (@mul _ (hasMagma A) (@monoid_unit _ (hasMonoid A)) (f x)).
-  - apply (@mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
-  - exact (@mul_unit_l _ _ (@isMonoid _ (hasMonoid A)) (f x)).
+  transitivity (1 ⋅ f x).
+  - apply mul_proper; [apply Hfg | reflexivity].
+  - exact (mul_unit_l (f x)).
 Defined.
 Next Obligation.
-  change (g (@mul _ (hasMagma A) (f x) (f (g (@monoid_unit _ (hasMonoid A))))) ≈S x).
+  change (g (f x ⋅ f (g 1)) ≈S x).
   transitivity (g (f x)); [apply (@func_proper _ _ g) | apply Hgf].
-  transitivity (@mul _ (hasMagma A) (f x) (@monoid_unit _ (hasMonoid A))).
-  - apply (@mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
-  - exact (@mul_unit_r _ _ (@isMonoid _ (hasMonoid A)) (f x)).
+  transitivity (f x ⋅ 1).
+  - apply mul_proper; [reflexivity | apply Hfg].
+  - exact (mul_unit_r (f x)).
 Defined.
 
 (** Pack the transported semigroup and its chosen unit extension. *)
@@ -77,8 +77,7 @@ Definition MonoidTransport
 
 Lemma monoid_transport_map_unit (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
-  : f (@monoid_unit _ (hasMonoid (MonoidTransport Hfg Hgf))) ≈S
-      @monoid_unit _ (hasMonoid A).
-Proof. exact (Hfg (@monoid_unit _ (hasMonoid A))). Defined.
+  : f (1 : MonoidTransport Hfg Hgf) ≈S 1.
+Proof. exact (Hfg 1). Defined.
 
 End Transport.

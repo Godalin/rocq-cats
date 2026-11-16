@@ -1,7 +1,7 @@
 From Cats Require Export
   Algebra.Monoid.Core.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Commutative Coefficients
 
@@ -48,10 +48,8 @@ Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
 Lemma mul_interchange (a b c d : M)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d).
 Proof.
-  rewrite (@mul_assoc _ (isSemigroup M)),
-    <- ((@mul_assoc _ (isSemigroup M)) b c d),
-    (mul_comm b c),
-    ((@mul_assoc _ (isSemigroup M)) c b d), <- (@mul_assoc _ (isSemigroup M)).
+  rewrite mul_assoc, <- (mul_assoc b c d), (mul_comm b c), (mul_assoc c b
+    d), <- mul_assoc.
   reflexivity.
 Defined.
 

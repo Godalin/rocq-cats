@@ -26,7 +26,12 @@ a genuine multiple-parent diamond remain further work.
 Reviewed algebra parent projections use directional names such as
 `GroupToMonoid`. Multiplication is the single inherited `mul` field; laws
 such as `mul_assoc` and `mul_inv_l/r` follow their subject operation, while
-`inv_inv` describes inversion. There are no per-layer forwarding aliases.
+`inv_inv` describes inversion. The selected multiplicative unit is `mul_unit`.
+There are no per-layer forwarding aliases.
+The algebra chain shares `algebra_scope` (`%alg`): notation is defined once
+where its operation appears and inherited through `Require Export`. Import
+the group core and locally open that scope to use multiplication, its two
+respectful sections, the unit and inverse together.
 
 结构设计区分指定数据的 `Is*` 性质、固定父结构上的 `Has*` 选择及完整打包的
 `Record` 对象；只添加性质时无须额外选择接口。共享祖先只保存一次，有意义的
@@ -36,7 +41,10 @@ such as `mul_assoc` and `mul_inv_l/r` follow their subject operation, while
 
 本批代数父投影采用 `GroupToMonoid` 等方向名称。乘法只定义为一个继承的
 `mul` 字段，`mul_assoc`、`mul_inv_l/r` 等定律按其运算命名，`inv_inv`
-则描述取逆；不增加逐层转发别名。
+则描述取逆；选定乘法单位元命名为 `mul_unit`，不增加逐层转发别名。
+整条代数链共用 `algebra_scope`（`%alg`），记号只在首次引入运算的模块定义，
+通过 `Require Export` 继承。导入群核心并局部打开该作用域，即可一同使用
+乘法、两种保相等偏应用、单位元及逆的记号。
 
 See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
 [development rules](./AGENTS.md) and the

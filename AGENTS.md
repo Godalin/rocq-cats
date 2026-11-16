@@ -118,6 +118,27 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   rather than using alternative long-arrow Unicode characters. Distinct
   symbols may express distinct meanings, such as `↣` for monomorphisms.
   Use `∏`/`∐` for indexed products/coproducts; reserve `Π` for Pi-types.
+- Keep mathematical clients concise. First try implicit inference for parents,
+  structures, instances, elements and types; expose inferable theorem parameters
+  as implicit. Add explicit arguments or type annotations only where inference
+  fails or a particular choice must be distinguished. Do not introduce local
+  forwarding `Let` bindings for operations or laws that can be used directly.
+- Use `rewrite` with public algebra laws in ordinary equational proofs, as in
+  `rewrite mul_assoc, mul_unit_l`. Check `Proper` instances with actual setoid
+  rewriting through operations and their clients, rather than only applying
+  preservation lemmas or checking instance search. Where direct primitive
+  applications are needed to preserve transparent Type-valued witness
+  computations, keep them and verify those computations explicitly.
+- For the multiplicative algebra chain, declare each notation once in the
+  Core module that introduces its operation, share `algebra_scope` (`%alg`),
+  and inherit declarations through `Require Export`. Child layers add only
+  their new operations' notation, without per-layer scopes or Notations
+  modules. Open the scope locally in each client. `Reserved Notation` /
+  `Reserved Infix` fix grammar before interpretation when declaration order
+  or shared syntax warrants it; they neither bind an operation nor export
+  or open a scope. Do not reserve common numerals merely for uniformity.
+  Rocq 9.3 rejects `where` clauses on `Record`/`Class`; bind these interfaces'
+  notation after the declaration, preserving explicitly selected evidence.
 - Fixed-data category extensions take a named category parameter; complete
   bundles expose their stored category through one underlying view. Declare
   chosen dependencies by name; use named `!Has*` constraints in clients. Primary
@@ -161,7 +182,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Prefix laws by their mathematical subject, not `axiom_`. Reuse descriptive
   endings (`_id`, `_comp`, `_inv`, `_iso`, `_unique`, `_β1`, `_η`).
   Define an operation once at its weakest structure, with a short subject
-  name such as `mul`; stronger structures inherit that same field. Name its
+  name such as `mul`; stronger structures inherit that same field. Name the
+  selected multiplicative unit `mul_unit`. Name multiplication's
   laws `mul_proper`, `mul_assoc`, `mul_unit_l/r`, `mul_inv_l/r`, while laws
   about inverse itself use `inv_inv`, `inv_mul`, etc. Do not generate
   structure-prefixed forwarding aliases at each inheritance level. Review

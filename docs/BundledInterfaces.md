@@ -88,7 +88,7 @@ further integration submission.
 
 The ergonomic follow-up starts at published review commit `e30adfa`, applying
 the new directional-parent and operation-subject rules from #42. Its exact
-44-name map is recorded separately in
+45-name map is recorded separately in
 [the naming guide](./Abbreviations.md#algebra-interface-ergonomics--代数接口易用性)
 and [#38's naming review](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626).
 The earlier 195-entry abbreviation table and frozen sources are preserved.
@@ -96,7 +96,7 @@ This follow-up has passed local validation and is retained for user review;
 it is not an integration result.
 
 易用性后续从已发布审阅提交 `e30adfa` 开始，落实 #42 新增的方向父投影及
-运算主题命名规则。44 项精确对照单独记录在
+运算主题命名规则。45 项精确对照单独记录在
 [命名指南](./Abbreviations.md#algebra-interface-ergonomics--代数接口易用性)及
 [#38 命名审阅](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626)，
 保全此前 195 项缩写表及冻结来源。此后续已完成本地验证，作为当前用户
@@ -129,7 +129,7 @@ ordinary bounds `u <= l` and `p <= l`.
 `Type@{max(u+1,p+1,l)}`。打包不额外要求 `u < l` 或 `p < l`；乘法的
 `Proper` 见证仍需通常的 `u <= l`、`p <= l` 上界。
 
-In [the monoid core](../theories/Algebra/Monoid/Core.v), `monoid_unit` is the
+In [the monoid core](../theories/Algebra/Monoid/Core.v), `mul_unit` is the
 actual `HasMonoid` field; `mul_unit_l/r` are the actual `IsMonoid` fields.
 There are no additional exported definitions to emulate the old unit APIs.
 The numeral notation explicitly uses the complete monoid's stored evidence.
@@ -142,11 +142,11 @@ Respectful maps and derived inverse laws remain genuine constructions; no
 view independently redefines an operation or proves its laws again.
 
 Multiplication sections `(x ⋅−)` and `(−⋅ y)` denote the existing respectful
-left- and right-multiplication maps. Both `magma_scope` and `monoid_scope`
-provide these notations; their composites use ordinary `∘r`. For example,
+left- and right-multiplication maps. The shared `algebra_scope` provides
+these notations; their composites use ordinary `∘r`. For example,
 associativity gives `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`.
 
-[幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`monoid_unit` 直接是
+[幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`mul_unit` 直接是
 `HasMonoid` 字段，`mul_unit_l/r` 直接是 `IsMonoid` 字段，不另导出定义
 模拟旧单位接口。数字记号显式读取完整幺半群保存的见证；固定父结构客户端
 使用同一批字段并传入给定见证。同样，`mul`、`mul_proper`、`mul_assoc`、`inv` 及
@@ -155,21 +155,96 @@ associativity gives `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`.
 仍是实际数学构造，所有视图均不重新定义运算或重证定律。
 
 乘法偏应用 `(x ⋅−)` 与 `(−⋅ y)` 分别表示既有的左乘及右乘保相等映射。
-`magma_scope` 与 `monoid_scope` 均提供这组记号，复合仍使用普通 `∘r`。
+共用的 `algebra_scope` 提供这组记号，复合仍使用普通 `∘r`。
 例如结合律给出 `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`。
 
-The selected inverse is the single `inv` field. The unit remains
-`monoid_unit`: the bare name `unit` already denotes Rocq's one-element type.
+All four cores share that one scope, delimited by `%alg`. The magma core
+fixes multiplication's common grammar with `Reserved Infix` before the
+operation is defined, then binds its interpretation once the complete
+magma's stored evidence is available. It also defines both respectful
+sections once. The semigroup core re-exports them; the monoid and group
+cores add only `1` and `x⁻¹`, respectively. Their `Require Export` chain
+exposes the whole family when importing only `Algebra.Group.Core`.
+Each client uses `Local Open Scope algebra_scope`, or explicit `%alg`;
+importing a core does not open the algebra scope for its clients.
+No Notations module, automatic scope binding or repeated inherited
+interpretation is needed. The old `magma_scope` / `monoid_scope` and
+their `%magma` / `%monoid` delimiters are removed.
+
+四个核心模块共用这一个作用域，以 `%alg` 显式限定。原群核心在定义运算前
+用 `Reserved Infix` 固定共用乘法语法，待完整原群的保存见证可用后只绑定
+一次解释，并只定义一次两种保相等偏应用。半群核心重新导出这些记号；
+幺半群和群核心分别只新增 `1` 与 `x⁻¹`。`Require Export` 链使只导入
+`Algebra.Group.Core` 即可获得整组声明。客户端自行使用
+`Local Open Scope algebra_scope` 或显式 `%alg`；导入核心不会替客户端
+打开代数作用域。不增加 Notations 模块、自动作用域绑定或重复的继承解释。
+旧 `magma_scope`／`monoid_scope` 及 `%magma`／`%monoid` 分隔符均移除。
+
+Reservations declare grammar only. They do not make an operation, scope
+interpretation or instance available before its definition. Reserve only
+the shared multiplication grammar here; ordinary declarations suffice for
+the closed sections, unit and inverse. In particular, do not reserve the
+preexisting numeral `1`. A compiled prototype also confirms that Rocq 9.3
+rejects `where` clauses on `Record`/`Class`; reserve syntax and bind it
+after the declaration instead of adding a staging interface or alias.
+The [group-only import regression](../tests/AlgebraNotation.v) checks
+all five forms, precedence, explicit delimiters and local scope lifetime.
+
+预留只声明语法，不使运算、作用域解释或实例提前可用。本片只预留共用乘法
+语法；封闭偏应用、单位元及逆使用普通记号声明即可。尤其不预留已有数字 `1`，
+编译原型还确认 Rocq 9.3 拒绝 `Record`／`Class` 上的 `where` 子句；应预留
+语法并在声明后绑定，不为此增加暂存接口或别名。
+[只导入群核心的回归](../tests/AlgebraNotation.v) 检查五类记号、优先级、
+显式分隔符与局部作用域的生效范围。
+
+The selected inverse is the single `inv` field. The unit is named
+`mul_unit`: the bare name `unit` already denotes Rocq's one-element type.
 Neither stronger structures nor notation duplicate these choices. Where
 short names conflict with other theories, use qualified access such as
 `Cats.Algebra.Magma.Core.mul`, or supply the selected `HasMagma` explicitly.
+Routine expressions use `⋅`, `1` and `⁻¹`, not repeated explicit projection
+applications. For example, the transported operation is simply
+`g (f x ⋅ f y)`. Ordinary law applications use inference directly, as in
+`rewrite mul_assoc` in ordinary equational proofs; do not introduce local
+forwarding bindings when the selected structure is already inferred. Supply factor
+arguments only to identify a particular rewrite site. Unit and inverse laws
+likewise infer their parent and operation; write `rewrite mul_unit_l` rather
+than expanding projection parameters. `units_equiv` infers its semigroup,
+elements and unit witnesses from the expected equality. Ordinary uses of `1`
+need no type annotation when the expression determines its monoid. When inference cannot
+identify the intended evidence, select it explicitly, without a forwarding
+binding. Actual `rewrite` clients check multiplication and both section
+instances through map composition. The general `func_apply_proper` instance
+allows a varying bundled map to be rewritten after evaluation.
+Transport laws apply the primitive preservation witnesses directly: setoid
+rewriting can insert opaque standard-library helpers into Type-valued proof
+data, blocking their previously transparent computations.
+At a boundary between two structures on one carrier, annotate the intended
+bundle, as in `f ((x : MagmaTransport) ⋅ y)`. Fixed-parent candidate theorems
+still pass their independently supplied choices explicitly.
+
 Historical source-pinned sections below retain their original names; use
 the current map when reading them against this branch.
 
-选定逆直接保存为唯一的 `inv` 字段；单位仍使用 `monoid_unit`，因为无前缀的
+选定逆直接保存为唯一的 `inv` 字段；单位使用 `mul_unit`，因为无前缀的
 `unit` 已指 Rocq 的单元素类型。更强结构及记号均不重复保存这些选择。
 短名与其他理论冲突时，使用 `Cats.Algebra.Magma.Core.mul` 等限定名称，
-或显式传入选定的 `HasMagma`。以下固定历史来源的章节保留原名，阅读时按
+或显式传入选定的 `HasMagma`。
+
+普通表达式使用 `⋅`、`1` 和 `⁻¹`，不反复显式展开投影；例如运输乘法直接写成
+`g (f x ⋅ f y)`。普通等式证明用公开定律直接重写，如 `rewrite mul_assoc`；
+能推断选定结构时不增加本地转发绑定，仅为定位特定改写位置才传入因子参数。单位律及逆元定律同样推断父结构和运算，直接写
+`rewrite mul_unit_l`，不展开投影参数。`units_equiv` 从目标相等推断半群、
+元素和单位律见证。普通表达式已经确定幺半群时，`1` 无须
+类型标注。推断无法确定目标见证时再显式选择，不增加转发绑定。
+实际 `rewrite` 客户端检查乘法及两种偏应用在映射复合中的重写；通用
+`func_apply_proper` 实例允许对变化的打包映射求值后继续重写。
+运输定律直接应用基本保相等见证：广集重写可能向 Type 值证明数据引入
+标准库的不透明辅助项，阻断原本透明的计算。
+同一载体上的不同结构交界处注明目标包，如 `f ((x : MagmaTransport) ⋅ y)`；
+固定父结构的候选定理仍显式传入各自独立给定的选择。
+
+以下固定历史来源的章节保留原名，阅读时按
 当前对照表迁移到本分支。
 
 The [boolean](../theories/Instance/Bool/Group.v), endomorphism
@@ -193,7 +268,7 @@ just to prove a law. Cylinder comparisons state the actual product, constant
 unit and selected inverse directly, with only the choices needed by each
 operation; the packed operations still reduce to these same data.
 
-On Rocq 9.3.0 / Stdlib 9.2.0, the local batch passed
+At published checkpoint `77a7cf0`, on Rocq 9.3.0 / Stdlib 9.2.0, the batch passed
 `dune build -j2 @all @runtest @install`. Regressions cover distinct choices on
 the same parent, inherited law tokens, strict native universe orders, the
 transparent parent chain, actual transport and sphere computations, and
@@ -213,20 +288,61 @@ HTML/PDF export was performed.
 [运输](../theories/Algebra/Group/Transport.v)及球面客户端在本批同步迁移。
 运输先接受完整来源结构，再接受两个映射；更强层的运输复用恰好前一层的父
 结构。本片不增加完整代数对象的范畴或无关多父菱形；历史第四批 195 项表
-不变，新的 44 项代数接口名称单列记录。
+不变，新的 45 项代数接口名称单列记录。
 球面回归固定输入载体／相等的两种严格次序，以定义转换确认完整对象保存指定
 类广集。派生球面载体含边界数据，生成相等也含见证，其大小界不必等于输入
 单纯广集的界。交换性比较现在通过可复用乘积引理直接使用系数定律，不再为
 证明一条定律而选取完整幺半群。柱比较直接陈述实际乘法、常值单位及选定逆，
 每条只需相应运算所用的选择；打包运算仍归约至同一批数据。
 
-本地批次已在 Rocq 9.3.0／Stdlib 9.2.0 下通过
+已发布检查点 `77a7cf0` 在 Rocq 9.3.0／Stdlib 9.2.0 下通过
 `dune build -j2 @all @runtest @install`。回归覆盖同父结构上的竞争选择、继承
 定律的计算标记、原生宇宙的严格次序、透明父链、实际运输与球面计算及模型的
 显式启用。临时审计覆盖 104 项代数声明、58 项模型声明、44 个当前公开名、
 四项记号计算及八项实例／复合检查，218 项全部闭合；负检查确认 44 个旧公开
 名称及九个更早过渡名均已退役。63 个迁移后的 Rocq 文件符合精确标识符表，
 除三处公式换行外无额外改动，导入及数学内容不变。未执行 HTML／PDF 导出。
+
+Earlier notation and unit-renaming checkpoints passed full build/tests/install.
+The notation checkpoint retained 218 closed temporary reports and added 12;
+the later unit-name checkpoint had 231 closed reports. These are historical
+results for those exact inputs, rather than reruns of the current source.
+The historical 195-entry table is unchanged; the current algebra map has 45
+identifiers and four scope/delimiter migrations.
+
+此前记号及单位字段改名检查点分别通过全库／测试／安装。记号检查点保留
+218 项闭合临时报告并新增 12 项；后续单位字段改名检查点共 231 项闭合报告。
+这些是对应精确输入的历史结果，不表示已对当前源码重跑。历史 195 项表不变；
+当前代数表包含 45 项标识符及四项作用域／分隔符迁移。
+
+The current review checkpoint removes the 26 explicit multiplication
+applications and all 30 proposed local law bindings. Algebra laws infer
+ordinary parameters, including all arguments of `units_equiv`. The reusable
+`func_apply_proper` instance supports actual rewriting through varying
+bundled maps; four regression examples exercise products, both multiplication
+sections under composition and inferred unit laws. Transport constructions
+retain direct primitive applications to preserve selected witness reduction.
+
+当前待审检查点去掉 26 处显式乘法应用及此前提出的全部 30 个局部定律绑定。
+代数定律推断普通参数，`units_equiv` 的参数全部隐式。可复用的
+`func_apply_proper` 实例支持对变化的打包映射作实际重写；四个回归检查乘积、
+复合中的两种乘法偏应用及隐式单位律。运输构造保留直接基本定律应用，使
+选定见证保持可归约。
+
+Following the user-directed editing validation trial, the final affected
+algebra targets, Set/Bool models and representative interface/transport
+regressions pass with `-j2`. Sixteen temporary reports are closed: eight
+rewriting/instance checks, five inferred-witness/strict-universe/assumption
+checks, and three observable transport-witness computations. An interrupted
+broad build is not counted as successful; full delivery validation remains
+separate. This branch is saved for user review, with no integration handoff,
+export or shared-environment change.
+
+按用户指定的编辑期验证试行，最终受影响的代数目标、Set／Bool 模型及代表性
+接口／运输回归以 `-j2` 通过。16 项临时报告闭合：八项重写／实例检查、
+五项隐式见证／严格宇宙／假设检查及三项可观察运输见证计算。已中断的宽构建
+不计成功；完整交付验证另行执行。本分支保存供用户审核，未交集成、导出或
+修改共享环境。
 
 ### Historical first-slice evidence
 

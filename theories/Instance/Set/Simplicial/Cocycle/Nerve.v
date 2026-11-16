@@ -14,7 +14,7 @@ Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 Import Cats.Instance.Set.Simplicial.Vertex.Sphere (vertex_two_sphere_unique).
 
 Local Open Scope nat_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * An Ordinary Nerve Cannot Recover Nontrivial Sphere Coefficients
 

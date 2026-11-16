@@ -8,7 +8,7 @@ From Cats Require Import
   Instance.Set.Terminal.
 
 Local Open Scope nat_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Single-Object Chains in the Vertex Nerve *)
 

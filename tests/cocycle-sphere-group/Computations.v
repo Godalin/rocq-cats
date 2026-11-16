@@ -2,7 +2,7 @@ From Cats Require Import
   Instance.Bool.CocycleSphereGroup.
 
 Local Open Scope ordinal_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Explicit Selection and Geometric Computation
 

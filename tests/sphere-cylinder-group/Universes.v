@@ -119,7 +119,7 @@ Definition lower_product_value (x y : C)
 (** 单位元为原常值球面。 *)
 
 Definition lower_unit_value
-  : @monoid_unit _ (hasMonoid lower_group) = two_sphere_base X b
+  : @mul_unit _ (hasMonoid lower_group) = two_sphere_base X b
   := eq_refl.
 
 (** Inverse is the original actual left-candidate representative. *)
@@ -149,7 +149,7 @@ Defined.
 
 Definition lower_unit_comparison
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@monoid_unit _ (hasMonoid lower_group)) ≈S two_sphere_base X b.
+      (@mul_unit _ (hasMonoid lower_group)) ≈S two_sphere_base X b.
 Proof.
   rewrite lower_unit_value.
   exact (two_sphere_cylinder_class_unit X b KR KC).
@@ -332,7 +332,7 @@ Definition higher_product_value (x y : C)
 (** 单位元为原常值球面。 *)
 
 Definition higher_unit_value
-  : @monoid_unit _ (hasMonoid higher_group) = two_sphere_base X b
+  : @mul_unit _ (hasMonoid higher_group) = two_sphere_base X b
   := eq_refl.
 
 (** Inverse is the original actual left-candidate representative. *)
@@ -362,7 +362,7 @@ Defined.
 
 Definition higher_unit_comparison
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@monoid_unit _ (hasMonoid higher_group)) ≈S two_sphere_base X b.
+      (@mul_unit _ (hasMonoid higher_group)) ≈S two_sphere_base X b.
 Proof.
   rewrite higher_unit_value.
   exact (two_sphere_cylinder_class_unit X b KR KC).

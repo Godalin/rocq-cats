@@ -6,7 +6,7 @@ From Cats Require Import
 
 Local Open Scope nat_scope.
 Local Open Scope ordinal_scope.
-Local Open Scope magma_scope.
+Local Open Scope algebra_scope.
 
 (** * A Binary Operation on Sphere Classes
 

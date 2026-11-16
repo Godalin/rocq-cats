@@ -5,4 +5,5 @@
 (alias
  (name runtest)
  (deps Interfaces.vo Universes.vo Computations.vo Cones.vo Closure.vo
-       BundledGroupoid.vo MonoidExtensions.vo GroupExtensions.vo))
+       BundledGroupoid.vo MonoidExtensions.vo GroupExtensions.vo
+       AlgebraNotation.vo))

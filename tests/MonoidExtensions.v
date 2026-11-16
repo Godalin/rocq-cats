@@ -4,7 +4,7 @@ From Cats Require Import
   Algebra.Monoid.Transport
   Instance.Bool.Group.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Complete Monoids and Fixed-Parent Choices
 
@@ -44,14 +44,14 @@ Example first_extension_is_preserved
 Proof. reflexivity. Qed.
 
 Example first_unit_is_selected
-  : @monoid_unit _ (hasMonoid (MonoidFromExtension SG H)) =
-      @monoid_unit SG H.
+  : @mul_unit _ (hasMonoid (MonoidFromExtension SG H)) =
+      @mul_unit SG H.
 Proof. reflexivity. Qed.
 
 Example selected_units_are_equivalent
-  : @monoid_unit SG H ≈S @monoid_unit SG K.
+  : @mul_unit SG H ≈S @mul_unit SG K.
 Proof.
-  exact (units_equiv SG _ _ (@isMonoid SG H) (@isMonoid SG K)).
+  exact units_equiv.
 Qed.
 
 End IndependentChoices.
@@ -124,6 +124,18 @@ Example stored_multiplications_compute
       @mul _ (hasMagma TrueMagma) false false) = (false, true).
 Proof. reflexivity. Qed.
 
+(** Shared notation follows the typed magma, including both respectful
+    sections, even with another multiplication on the same setoid. *)
+
+(** 同一广集存在另一份乘法时，共用记号及两种保相等偏应用均读取指定原群。 *)
+
+Example notation_stored_multiplications
+  : ((false : ConstantBoolMagma) ⋅ false,
+      (false : TrueMagma) ⋅ false,
+      ((false : ConstantBoolMagma) ⋅−) false,
+      (−⋅ (false : TrueMagma)) false) = (false, true, false, true).
+Proof. reflexivity. Qed.
+
 Example stored_associativities_compute
   : (@mul_assoc _ (isSemigroup ConstantBoolSemigroup) true false true,
       @mul_assoc _ (isSemigroup OtherSemigroup) true false true) = (true, false).
@@ -136,7 +148,7 @@ Proof. reflexivity. Qed.
 Program Definition BoolUnitExtension (e t : bool)
   : HasMonoid ConstantBoolSemigroup
   :=
-  {|monoid_unit := e
+  {|mul_unit := e
   ; isMonoid :=
       {|mul_unit_l _ := t
       ; mul_unit_r _ := negb t
@@ -163,8 +175,16 @@ Definition SecondMonoid
   := MonoidFromExtension ConstantBoolSemigroup TrueUnit.
 
 Example stored_units_compute
-  : (@monoid_unit _ (hasMonoid FirstMonoid),
-      @monoid_unit _ (hasMonoid SecondMonoid)) = (false, true).
+  : (@mul_unit _ (hasMonoid FirstMonoid),
+      @mul_unit _ (hasMonoid SecondMonoid)) = (false, true).
+Proof. reflexivity. Qed.
+
+(** The same numeral reads different units from the explicitly typed bundles. *)
+
+(** 同一数字记号从显式指定的结构包读取不同的单位元。 *)
+
+Example notation_stored_units
+  : ((1 : FirstMonoid), (1 : SecondMonoid)) = (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_left_laws_compute
@@ -191,8 +211,8 @@ Example category_laws_use_stored_choices
 Proof. reflexivity. Qed.
 
 Fail Definition native_units_equal
-  : @monoid_unit _ (hasMonoid FirstMonoid) =
-      @monoid_unit _ (hasMonoid SecondMonoid)
+  : @mul_unit _ (hasMonoid FirstMonoid) =
+      @mul_unit _ (hasMonoid SecondMonoid)
   := eq_refl.
 
 (** ** Concrete Clients and Independent Sizes
@@ -205,7 +225,7 @@ Fail Definition native_units_equal
     实际模型投影可计算；严格大小检查数学上的独立性，不维护历史宇宙参数位置。 *)
 
 Example xor_unit_computes
-  : @monoid_unit _ (hasMonoid BoolS_Monoid) = false.
+  : @mul_unit _ (hasMonoid BoolS_Monoid) = false.
 Proof. reflexivity. Qed.
 
 Example endomorphism_parent_computes (C : Cat) (X : C)
@@ -213,7 +233,7 @@ Example endomorphism_parent_computes (C : Cat) (X : C)
 Proof. reflexivity. Qed.
 
 Example endomorphism_unit_computes (C : Cat) (X : C)
-  : @monoid_unit _ (hasMonoid (EndMonoid C X)) = @id X.
+  : @mul_unit _ (hasMonoid (EndMonoid C X)) = @id X.
 Proof. reflexivity. Qed.
 
 Section IndependentUniverses.

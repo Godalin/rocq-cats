@@ -3,7 +3,7 @@ From Cats Require Export
   Algebra.Monoid.Category
   Cat.Groupoid.Core.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Groups as Single-Object Groupoids
 

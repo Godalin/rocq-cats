@@ -9,7 +9,7 @@ From Cats Require Import
   Instance.Nat.Order.
 
 Local Open Scope nat_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Arrow Chains as Single-Object Diagrams *)
 
@@ -31,13 +31,13 @@ Program Definition monoid_diagram_iso@{u p +}
       |}; _).
 Next Obligation.
   change (1 ⋅ fmap F f ≈S fmap G f ⋅ 1).
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+  rewrite mul_unit_l,
+    mul_unit_r.
   apply H.
 Defined.
 Next Obligation.
   intros j. exists 1. split; change (1 ⋅ 1 ≈S (1 : M));
-    apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+    rewrite mul_unit_l; reflexivity.
 Defined.
 
 (** Interpret every ordered interval as its product in the arrow chain.

@@ -2,7 +2,7 @@ From Cats Require Import
   Algebra.Group.Cocycle
   Instance.Bool.Commutative.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Actual Boolean Completion Labels
 

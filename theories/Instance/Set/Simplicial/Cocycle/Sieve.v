@@ -7,7 +7,7 @@ From Cats Require Import
 From Stdlib Require Import
   Lia.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 Local Open Scope ordinal_scope.
 
 (** * Reconstructing Cocycles from Triangle Restrictions

@@ -3,7 +3,7 @@ From Stdlib Require Import
 From Cats Require Import
   Algebra.Group.Core.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * The Cyclic Group of Order Two
 
@@ -56,7 +56,7 @@ Next Obligation. destruct x, y, z; reflexivity. Defined.
 Program Definition BoolS_HasMonoid
   : HasMonoid BoolS_Semigroup
   :=
-  {|monoid_unit := false
+  {|mul_unit := false
   ; isMonoid :=
       {|mul_unit_l := _
       ; mul_unit_r := _

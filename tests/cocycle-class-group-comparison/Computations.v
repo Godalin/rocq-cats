@@ -4,7 +4,7 @@ From Cats Require Import
 
 Local Open Scope nat_scope.
 Local Open Scope ordinal_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * The Same Boolean Model, Two Descriptions of Its Group
 

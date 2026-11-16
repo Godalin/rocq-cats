@@ -2,7 +2,7 @@ From Cats Require Import
   Algebra.Group.Equation
   Algebra.Monoid.Commutative.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Coefficients with Independent Equality Sizes
 
