@@ -184,8 +184,16 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   before diagnosing failures. Do not change global shell settings or upgrade
   shared environments without explicit authorization.
 - Build with the existing VS Code task or `dune build`. Compile affected modules
-  and dependents; broaden validation after interface changes. Inspect
-  `Print Assumptions` for foundational proofs or suspected hidden axioms.
+  and representative dependents during editing, using concrete targets rather
+  than full-library/test/install checks after every small change. For broad
+  foundational/API refactors, settle the design and naming before running the
+  necessary full validation for the stable submission. Repeat checks only for
+  changed relevant inputs, failures or unresolved concerns; reuse results when
+  source/dependencies, toolchain and check inputs are unchanged. Build required
+  dependencies before temporary audits. Use `Print Assumptions`, strict-universe
+  and computation checks where the change can affect them, without mechanically
+  rerunning every historical audit. Integration still validates its exact
+  resulting SHA.
 - Prefer general proofs and temporary checks to redundant tests. Retain tests
   only for concrete interface regressions; keep reusable mathematics in theory
   modules and routine assumption output out of compiled sources.

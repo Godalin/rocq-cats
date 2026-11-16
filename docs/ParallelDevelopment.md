@@ -33,6 +33,23 @@ integrate before dependent branches start, following the existing rules.
 不需要启动握手。共享基础和全局重命名仍按原有规则确定唯一所有者，先集成，
 再启动依赖分支。
 
+During editing, build concrete affected targets and representative consumers.
+For broad foundational/API refactors, settle design and naming before running
+the necessary full validation for the stable submission; do not rerun
+`@all @runtest @install` after each small edit. Reuse passed checks when their
+source/dependencies, toolchain and check inputs are unchanged; rerun for relevant
+changes, failures or unresolved concerns. Build dependencies before temporary
+audits. Select assumption, strict-universe and computation checks by impact,
+without mechanically repeating every historical audit. The integrator still
+validates the exact resulting SHA under the acceptance rule below.
+
+编辑期间编译具体受影响目标及代表性消费者。基础／API 大范围重构先稳定设计和
+命名，再为稳定交付执行必要的完整验证，不在每次小改后重跑
+`@all @runtest @install`。源码／依赖、工具链及检查输入未变时复用通过结果；
+相关输入改变、失败或仍有疑点时再复验。临时审计先等所需依赖构建完成，按实际
+影响选择假设、严格宇宙及计算检查，不机械重跑全部历史审计。集成侧仍按下文
+验收规则验证重基后的精确结果 SHA。
+
 ## 2. Integration request and reply / 集成请求与回复
 
 Use an ordinary message containing three things:
