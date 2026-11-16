@@ -60,7 +60,7 @@ Program Definition SetPureN
 Next Obligation.
   intros x. change (fmap F (const_resp UnitS (f x)) e ≈S
     fmap F f (fmap F (const_resp UnitS x) e)).
-  transitivity (fmap F (f ∘ const_resp UnitS x) e).
+  transitivity (fmap F (f ∘r const_resp UnitS x) e).
   - apply (@functor_fmap_proper SetCat SetCat F _ _).
     intros []. reflexivity.
   - exact (@functor_comp SetCat SetCat F _ _ _ _ _ e).
@@ -156,7 +156,7 @@ Proof.
   - apply func_proper. symmetry. exact Hu.
   - transitivity (fmap L (const_resp UnitS x × const_resp UnitS y)
       (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt))).
-    + transitivity (fmap L (const_resp UnitS (x,y) ∘
+    + transitivity (fmap L (const_resp UnitS (x,y) ∘r
         (π2 : UnitS ×S UnitS →r UnitS))
         (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt))).
       * symmetry. exact (@functor_comp SetCat SetCat L _ _ _ _ _ _).

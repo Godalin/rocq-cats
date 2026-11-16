@@ -14,8 +14,8 @@ From Cats Require Import
 
 (** 对每个交换锥具有唯一中介的候选交换方形。 *)
 
-Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
-  := λ P : Ob, λ p1 : Hom P X, λ p2 : Hom P Y,
+Definition is_pullback {C : Cat} {X Y Z : C} (f : Hom X Z) (g : Hom Y Z)
+  := λ P : C, λ p1 : Hom P X, λ p2 : Hom P Y,
     f ∘ p1 ≈ g ∘ p2 ∧
       ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
       → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
@@ -26,10 +26,10 @@ Definition is_pullback {C : Cat} {X Y Z : Ob} (f : Hom X Z) (g : Hom Y Z)
 
 Class HasPullback (C : Cat)
   :=
-  { Pb {X Y Z} : Hom X Z → Hom Y Z → Ob
-  ; pb1 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
-  ; pb2 {X Y Z} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
-  ; pullback_universal {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+  { Pb {X Y Z : C} : Hom X Z → Hom Y Z → C
+  ; pb1 {X Y Z : C} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X
+  ; pb2 {X Y Z : C} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) Y
+  ; pullback_universal {X Y Z : C} {f : Hom X Z} {g : Hom Y Z}
     : is_pullback f g (Pb f g) (pb1 f g) (pb2 f g)
   }.
 
@@ -37,8 +37,8 @@ Class HasPullback (C : Cat)
 
 (** 指向选定拉回的泛中介。 *)
 
-Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z}
-    {f : Hom X Z} {g : Hom Y Z} {P}
+Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z : C}
+    {f : Hom X Z} {g : Hom Y Z} {P : C}
     (p1 : Hom P X) (p2 : Hom P Y) (HP : f ∘ p1 ≈ g ∘ p2)
   : Hom P (Pb f g)
   := (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).1.
@@ -48,7 +48,7 @@ Definition pb {C : Cat} `{HPb : !HasPullback C} {X Y Z}
 (** 选定拉回方形交换。 *)
 
 Theorem pullback_comm {C : Cat} `{HPb : !HasPullback C}
-    {X Y Z} {f : Hom X Z} {g : Hom Y Z}
+    {X Y Z : C} {f : Hom X Z} {g : Hom Y Z}
   : f ∘ pb1 f g ≈ g ∘ pb2 f g.
 Proof. exact (fst (pullback_universal (f := f) (g := g))). Qed.
 
@@ -57,8 +57,8 @@ Proof. exact (fst (pullback_universal (f := f) (g := g))). Qed.
 (** 拉回中介在给定两个投影下唯一。 *)
 
 Theorem pullback_mediator_unique {C : Cat} `{HPb : !HasPullback C}
-    {X Y Z} {f : Hom X Z} {g : Hom Y Z}
-    {P} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
+    {X Y Z : C} {f : Hom X Z} {g : Hom Y Z}
+    {P : C} {p1 : Hom P X} {p2 : Hom P Y} (HP : f ∘ p1 ≈ g ∘ p2)
   : is_unique (λ h, pb1 f g ∘ h ≈ p1 ∧ pb2 f g ∘ h ≈ p2)
       (pb p1 p2 HP).
 Proof. exact (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).2. Qed.
@@ -151,9 +151,9 @@ Context {C : Cat}.
 
 (** 同一余跨度的两个拉回同构。 *)
 
-Theorem pullback_unique {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}
-    {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}
-    {Q : Ob} {q1 : Hom Q X} {q2 : Hom Q Y}
+Theorem pullback_unique {X Y Z : C} {f : Hom X Z} {g : Hom Y Z}
+    {P : C} {p1 : Hom P X} {p2 : Hom P Y}
+    {Q : C} {q1 : Hom Q X} {q2 : Hom Q Y}
   : is_pullback f g P p1 p2 → is_pullback f g Q q1 q2
   → P ≅ Q.
 Proof.
@@ -303,9 +303,9 @@ Definition pullback_base_boundary {C : Cat}
 
 Section Pullback.
 Context {C : Cat} `{H : !HasPullback C}.
-Context {X Y Z : Ob} {f : Hom X Z} {g : Hom Y Z}.
+Context {X Y Z : C} {f : Hom X Z} {g : Hom Y Z}.
 
-Context {P : Ob} {p1 : Hom P X} {p2 : Hom P Y}.
+Context {P : C} {p1 : Hom P X} {p2 : Hom P Y}.
 Context (HP : f ∘ p1 ≈ g ∘ p2).
 
 (** The first projection of the pullback mediator is the prescribed arrow. *)
@@ -371,7 +371,7 @@ Hint Rewrite @pb_β2 : cat.
 
 Section Pullback.
 Context {C : Cat}.
-Context {X Y Z W} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
+Context {X Y Z W : C} {f : Hom X Z} {g : Hom Y Z} {h : Hom W X}.
 
 (** Pullback alone [id]. *)
 
@@ -388,7 +388,7 @@ Defined.
 
 (** 沿公共边粘合两个拉回方形。 *)
 
-Theorem pullback_comp {P Q : Ob}
+Theorem pullback_comp {P Q : C}
     {p1 : Hom P X} {p2 : Hom P Y} {q1 : Hom Q W} {q2 : Hom Q P}
   : is_pullback f g P p1 p2
   → is_pullback h p1 Q q1 q2
@@ -444,7 +444,7 @@ End Pullback.
 Section Product.
 Context {C : Cat}.
 Context `{HT : !HasTerminal C} `{HPb : !HasPullback C}.
-Context {X Y : Ob}.
+Context {X Y : C}.
 
 (** If a category has a terminal object and all pullbacks, it has all product
     objects. *)

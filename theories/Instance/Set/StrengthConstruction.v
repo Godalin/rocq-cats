@@ -72,9 +72,9 @@ Next Obligation.
     fmap F (@tensor_map SetCat SetCartMonoidal _ _ _ _ f g)
       (fmap F ⟨const_resp X2 x, id⟩ v)).
   transitivity (fmap F (f × g) (fmap F ⟨const_resp X2 x, id⟩ v)).
-  - transitivity (fmap F (⟨const_resp Y2 (f x), id⟩ ∘ g) v).
+  - transitivity (fmap F (⟨const_resp Y2 (f x), id⟩ ∘r g) v).
     + symmetry. exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
-    + transitivity (fmap F ((f × g) ∘ ⟨const_resp X2 x, id⟩) v).
+    + transitivity (fmap F ((f × g) ∘r ⟨const_resp X2 x, id⟩) v).
       * apply (@functor_fmap_proper SetCat SetCat F _ _).
         intros y. split; reflexivity.
       * exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
@@ -98,7 +98,7 @@ Next Obligation.
   change (fmap F (π2 : UnitS ×S Y →r Y)
     (fmap F ⟨@const_resp Y UnitS tt, id⟩ v) ≈S v).
   transitivity (fmap F (@id Y) v).
-  - transitivity (fmap F ((π2 : UnitS ×S Y →r Y) ∘
+  - transitivity (fmap F ((π2 : UnitS ×S Y →r Y) ∘r
       ⟨@const_resp Y UnitS tt, id⟩) v).
     + symmetry. exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
     + apply (@functor_fmap_proper SetCat SetCat F _ _).
@@ -112,10 +112,10 @@ Next Obligation.
     (fmap F ⟨const_resp Z (x,y), id⟩ v) ≈S
     fmap F ⟨const_resp (Y ×S Z) x, id⟩
       (fmap F ⟨const_resp Z y, id⟩ v)).
-  transitivity (fmap F ((@product_assoc SetCat SetCat_HasProduct X Y Z).1 ∘
+  transitivity (fmap F ((@product_assoc SetCat SetCat_HasProduct X Y Z).1 ∘r
     ⟨const_resp Z (x,y), id⟩) v).
   - symmetry. exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
-  - transitivity (fmap F (⟨const_resp (Y ×S Z) x, id⟩ ∘
+  - transitivity (fmap F (⟨const_resp (Y ×S Z) x, id⟩ ∘r
       ⟨const_resp Z y, id⟩) v).
     + apply (@functor_fmap_proper SetCat SetCat F _ _).
       intros z. split; [reflexivity|split; reflexivity].
@@ -167,7 +167,7 @@ Next Obligation.
     (fmap M (fmap M ⟨const_resp Y x, id⟩) v)).
   - symmetry. exact (nt_naturality (μ[M]) ⟨const_resp Y x, id⟩ v).
   - apply (@func_proper _ _ (μ[M] (X ×S Y))).
-    transitivity (fmap M (set_strength_map M X Y ∘
+    transitivity (fmap M (set_strength_map M X Y ∘r
       ⟨const_resp (M Y) x, id⟩) v).
     + apply (@functor_fmap_proper SetCat SetCat M _ _).
       intros w. reflexivity.

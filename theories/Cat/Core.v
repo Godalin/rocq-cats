@@ -47,7 +47,7 @@ Open Scope cat_scope.
 
 (** ** Reading the Category Interface
 
-    A model must construct all these witnesses. Class law fields are
+    A model must construct all these witnesses. Record law fields are
     requirements on a structure, not globally asserted axioms. For example,
     replacing a factor in a composite uses [comp_proper], while removing an
     identity uses one of the unit laws. The equivalence laws needed to join
@@ -65,7 +65,7 @@ Open Scope cat_scope.
 
 (** ** 范畴接口逐项解读
 
-    模型必须构造全部见证；类的定律字段是结构应满足的要求，不是全局断言的
+    模型必须构造全部见证；记录的定律字段是结构应满足的要求，不是全局断言的
     公理。例如，替换复合中的因子使用 [comp_proper]，去掉恒等箭头使用相应的
     单位律；串接这些推理步骤所需的等价律已由 [HomSet] 提供。
 
@@ -77,7 +77,7 @@ Open Scope cat_scope.
     它的箭头是保相等映射，方程就是逐点集合相等。此处的一般理论已能直接操作
     Hom 广集，不必导入这个具体模型。 *)
 
-Class Cat@{o h p +}
+Record Cat@{o h p +}
   :=
   (** [Ob] is the type of objects and the category's unique sort view.
       A term [X : C] is an object of [C], also written [X : @Ob C]. *)
@@ -92,14 +92,17 @@ Class Cat@{o h p +}
 
   (** [HomSet X Y] 是从 [X] 到 [Y] 的箭头广集，包含指定等价关系及其等价律。 *)
 
-  ; HomSet : Ob → Ob → SetC@{h p}
+  ; #[canonical=no] HomSet : Ob → Ob → SetC@{h p}
+
   (** [Hom X Y] is the carrier of the hom-set: the type of individual arrows.
       It is computed from [HomSet], rather than supplied separately. *)
 
   (** [Hom X Y] 是 Hom 广集的载体，即单条箭头所属的类型。它由 [HomSet]
       计算得到，无须单独提供。 *)
 
-  ; Hom (X Y : Ob) : Type@{h} := carrier (HomSet X Y)
+  ; Hom (X Y : Ob) : Type@{h}
+      := carrier (HomSet X Y)
+
   (** [HomEq f g] is the specified equality of parallel arrows, written
       [f ≈ g] below. It is computed from [HomSet]. Its witnesses live in
       [Type], so the interface retains their data. *)
@@ -134,7 +137,10 @@ Class Cat@{o h p +}
       得到 [f ∘ g ≈ f' ∘ g']。[::] 将此字段注册为继承实例，供广集重写使用。 *)
 
   ; comp_proper {X Y Z}
-    :: Proper (@HomEq Y Z ==> @HomEq X Y ==> @HomEq X Z) comp
+    :: Proper (@HomEq Y Z
+          ==> @HomEq X Y
+          ==> @HomEq X Z)
+        comp
 
   (** [comp_id_r] states [f ∘ id ≈ f], using the identity at the source. *)
 
@@ -160,6 +166,24 @@ Class Cat@{o h p +}
       (f : Hom Z W) (g : Hom Y Z) (h : Hom X Y)
     : HomEq (comp (comp f g) h) (comp f (comp g h))
   }.
+
+(** Category parameters of arrow operations remain implicit and are
+    inferred from their objects; the category itself is explicit data.
+    Canonical category values use the object view as their primary key;
+    hom-set constructors do not select an ambient category. *)
+
+(** 态射运算的范畴参数保持隐式并由对象推断，范畴本身为显式数据。
+    规范范畴值以对象视图为主键，不以 Hom 广集构造器选取环境范畴。 *)
+
+Arguments HomSet {C} _ _ : rename.
+Arguments Hom {_} _ _.
+Arguments HomEq {_ _ _} _ _.
+Arguments id {_ _}.
+Arguments comp {_ _ _ _} _ _.
+Arguments comp_proper {_ _ _ _}.
+Arguments comp_id_r {_ _ _} _.
+Arguments comp_id_l {_ _ _} _.
+Arguments comp_assoc {_ _ _ _ _} _ _ _.
 
 (** Reflexivity, symmetry and transitivity come directly from the hom-set.
     A category need not provide a second equivalence structure for [HomEq].
@@ -198,7 +222,9 @@ Notation "'@Ob' C" := (@Ob C)
 Notation "'@Hom' C" := (@Hom C)
   (at level 35) : cat_scope.
 
-Notation "'@HomEq[' X ',' Y  ']'" := (@HomEq _ X Y) : cat_scope.
+Notation "'@HomEq[' X ',' Y  ']'"
+  := (@HomEq _ X Y)
+  : cat_scope.
 
 (** [f ≈ g] compares parallel arrows using their hom-set equality, the
     same relation that [≈S] reads from [HomSet]. Composition [f ∘ g]
@@ -273,7 +299,7 @@ Hint Rewrite @comp_id_r : cat.
     固定范畴 [C] 及对象 [X]、[Y]，为两者之间的箭头给出左右恒等律的反向形式。 *)
 
 Section CatBasic.
-Context {C : Cat} {X Y : Ob}.
+Context {C : Cat} {X Y : C}.
 
 (** Reverse the left identity equation. *)
 
@@ -297,7 +323,8 @@ End CatBasic.
 
 (** 两个交换方块可沿其水平态射复合。 *)
 
-Lemma comp_square {C : Cat} {X0 X1 X2 Y0 Y1 Y2 : @Ob C}
+Lemma comp_square {C : Cat}
+  {X0 X1 X2 Y0 Y1 Y2 : @Ob C}
     (a : Hom X0 Y0) (b : Hom X1 Y1) (c : Hom X2 Y2)
     (f : Hom X0 X1) (g : Hom X1 X2)
     (f' : Hom Y0 Y1) (g' : Hom Y1 Y2)
@@ -332,7 +359,8 @@ Hint Resolve symm_id_r : cat.
     这些引理只处理对象的原生相等，不将任意对象同构转为原生相等；结论中的
     态射方程仍使用对应 Hom 广集的指定相等。 *)
 
-Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y)
+Definition eq_to_hom {C : Cat} {X Y : @Ob C}
+    (p : X = Y)
   : Hom X Y
   := match p with eq_refl => id end.
 
@@ -340,27 +368,37 @@ Definition eq_to_hom {C : Cat} {X Y : @Ob C} (p : X = Y)
 
 (** [eq_to_hom] 与复合的相容性。 *)
 
-Lemma eq_to_hom_comp {C : Cat} {X Y Z : @Ob C} (p : X = Y) (q : Y = Z)
-  : eq_to_hom (eq_trans p q) ≈ eq_to_hom q ∘ eq_to_hom p.
-Proof. destruct p, q. simpl. symmetry. apply comp_id_l. Qed.
+Lemma eq_to_hom_comp {C : Cat} {X Y Z : @Ob C}
+    (p : X = Y) (q : Y = Z)
+  : eq_to_hom (eq_trans p q)
+    ≈ eq_to_hom q ∘ eq_to_hom p.
+Proof. destruct p, q. simpl.
+  symmetry. apply comp_id_l.
+Qed.
 
 (** Transported identities along opposite native equalities cancel on the
     left. *)
 
 (** 沿反向原生相等运输的恒等态射在左侧抵消。 *)
 
-Lemma eq_to_hom_inv_l {C : Cat} {X Y : @Ob C} (p : X = Y)
+Lemma eq_to_hom_inv_l {C : Cat} {X Y : @Ob C}
+    (p : X = Y)
   : eq_to_hom (eq_sym p) ∘ eq_to_hom p ≈ id.
-Proof. destruct p. simpl. apply comp_id_l. Qed.
+Proof. destruct p. simpl.
+  apply comp_id_l.
+Qed.
 
 (** Transported identities along opposite native equalities cancel on the
     right. *)
 
 (** 沿反向原生相等运输的恒等态射在右侧抵消。 *)
 
-Lemma eq_to_hom_inv_r {C : Cat} {X Y : @Ob C} (p : X = Y)
+Lemma eq_to_hom_inv_r {C : Cat} {X Y : @Ob C}
+    (p : X = Y)
   : eq_to_hom p ∘ eq_to_hom (eq_sym p) ≈ id.
-Proof. destruct p. simpl. apply comp_id_l. Qed.
+Proof. destruct p. simpl.
+  apply comp_id_l.
+Qed.
 
 
 
@@ -368,14 +406,15 @@ Proof. destruct p. simpl. apply comp_id_l. Qed.
 
 (** 将态射与固定箭头预合成。 *)
 
-Definition comp_pre `{C : Cat} {X Y Z : Ob} (f : Hom X Y)
+Definition comp_pre {C : Cat} {X Y Z : C}
+    (f : Hom X Y)
   := (λ g : Hom Y Z, g ∘ f).
 
 (** Postcompose a morphism with a fixed arrow. *)
 
 (** 将态射与固定箭头后合成。 *)
 
-Definition comp_post `{C : Cat} {X Y Z : Ob} (f : Hom Y Z)
+Definition comp_post {C : Cat} {X Y Z : C} (f : Hom Y Z)
   := (λ g : Hom X Y, f ∘ g).
 
 Arguments comp_pre {_ _ _ _} _ _ /.
@@ -393,7 +432,7 @@ Notation "f _*" := (comp_post f) (at level 35).
     [HomSet X Y →r HomSet X Z]。其保相等证明来自 [comp_proper]。这在构造以
     集合范畴为目标的 Hom 函子之前，就给出了任意范畴复合的集合层作用。 *)
 
-Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
+Program Canonical comp_l_resp {C : Cat} {X Y Z : C}
     {f : Hom Y Z}
   : HomSet X Y →r HomSet X Z
   :=
@@ -408,7 +447,7 @@ Program Canonical comp_l_resp {C : Cat} {X Y Z : Ob}
     [HomSet Y Z →r HomSet X Z]。它反转变动来源对象的方向，为反变 Hom 构造
     提供所需作用。 *)
 
-Program Canonical comp_r_resp {C : Cat} {X Y Z : Ob}
+Program Canonical comp_r_resp {C : Cat} {X Y Z : C}
     {f : Hom X Y}
   : HomSet Y Z →r HomSet X Z
   :=
@@ -441,7 +480,7 @@ Qed.
 Program Definition op (C : Cat)
   : Cat
   :=
-  {|Ob := Ob
+  {|Ob := C
   ; HomSet X Y := HomSet Y X
   ; id _ := id
   ; comp _ _ _ f g := comp g f
@@ -534,7 +573,7 @@ Context {C : Cat}.
 
 (** 后合成保持指定态射相等。 *)
 
-Proposition comp_l {X Y Z} (f : Hom Y Z) {x y : Hom X Y}
+Proposition comp_l {X Y Z : C} (f : Hom Y Z) {x y : Hom X Y}
   : x ≈ y → f ∘ x ≈ f ∘ y.
 Proof. intros Heq. rewrite Heq. cato. Qed.
 
@@ -542,7 +581,7 @@ Proof. intros Heq. rewrite Heq. cato. Qed.
 
 (** 预合成保持指定态射相等。 *)
 
-Proposition comp_r {X Y Z} (f : Hom X Y) {x y : Hom Y Z}
+Proposition comp_r {X Y Z : C} (f : Hom X Y) {x y : Hom Y Z}
   : x ≈ y → x ∘ f ≈ y ∘ f.
 Proof. intros Heq. rewrite Heq. cato. Qed.
 
@@ -556,21 +595,21 @@ Proof. intros Heq. rewrite Heq. cato. Qed.
 
 (** 第二条箭头是第一条的左逆。 *)
 
-Definition is_linv_of {X Y} (f : Hom X Y) (g : Hom Y X)
+Definition is_linv_of {X Y : C} (f : Hom X Y) (g : Hom Y X)
   := g ∘ f ≈ id.
 
 (** The second arrow is a right inverse of the first. *)
 
 (** 第二条箭头是第一条的右逆。 *)
 
-Definition is_rinv_of {X Y} (f : Hom X Y) (g : Hom Y X)
+Definition is_rinv_of {X Y : C} (f : Hom X Y) (g : Hom Y X)
   := f ∘ g ≈ id.
 
 (** The two arrows are mutually inverse under specified hom equality. *)
 
 (** 两条箭头在指定 Hom 相等下互逆。 *)
 
-Definition is_inv_of {X Y} (f : Hom X Y) (g : Hom Y X)
+Definition is_inv_of {X Y : C} (f : Hom X Y) (g : Hom Y X)
   := is_linv_of f g ∧ is_rinv_of f g.
 
 (** An arrow with a chosen inverse and both inverse equations. The
@@ -582,7 +621,7 @@ Definition is_inv_of {X Y} (f : Hom X Y) (g : Hom Y X)
     保存实际的逆，不只是 [Prop] 中的存在断言。两条互逆方程均使用 Hom 广集
     的指定相等。 *)
 
-Definition is_iso {X Y} (f : Hom X Y)
+Definition is_iso {X Y : C} (f : Hom X Y)
   := ∃ g, is_inv_of f g.
 
 (** An isomorphism retains its forward arrow, inverse and inverse laws.
@@ -598,14 +637,14 @@ Definition is_iso {X Y} (f : Hom X Y)
 
     这里通过可逆箭头比较对象，不断言对象原生相等，也不构造对象类型的商。 *)
 
-Definition iso X Y
+Definition iso (X Y : C)
   := ∃ f : Hom X Y, is_iso f.
 
 (** Interchange the two arrows of an inverse pair. *)
 
 (** 交换互逆对中的两条箭头。 *)
 
-Theorem is_inv_of_comm {X Y} (f : Hom X Y) (g : Hom Y X)
+Theorem is_inv_of_comm {X Y : C} (f : Hom X Y) (g : Hom Y X)
   : is_inv_of f g → is_inv_of g f.
 Proof. intros [H1 H2]. split; auto. Qed.
 
@@ -656,7 +695,7 @@ Context {C : Cat}.
 
 (** 每个对象都与自身同构。 *)
 
-Theorem iso_refl {X}
+Theorem iso_refl {X : C}
   : X ≅ X.
 Proof. exists id, id. cato. Defined.
 
@@ -665,7 +704,7 @@ Proof. exists id, id. cato. Defined.
 
 (** 反转对象同构，保持交换后的见证箭头可计算。 *)
 
-Theorem iso_symm {X Y}
+Theorem iso_symm {X Y : C}
   : X ≅ Y → Y ≅ X.
 Proof.
   intros i. exists i.2.1, i.1.
@@ -679,7 +718,7 @@ Defined.
 (** 复合对象同构：正向箭头顺序复合，逆箭头逆序复合。透明证明保留这些计算
     得到的箭头，互逆方程由范畴定律推出。 *)
 
-Theorem iso_trans {X Y Z}
+Theorem iso_trans {X Y Z : C}
   : X ≅ Y → Y ≅ Z → X ≅ Z.
 Proof.
   intros i j. exists (j.1 ∘ i.1), (i.2.1 ∘ j.2.1).
@@ -698,7 +737,7 @@ Defined.
 (** [iso] 是等价关系。 *)
 
 Global Instance iso_Equivalence
-  : Equivalence iso.
+  : Equivalence (@iso C).
 Proof.
   split.
   - intros x. apply iso_refl.

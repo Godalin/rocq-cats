@@ -29,7 +29,7 @@ Class HasPushout (C : Cat)
 
 (** 选定推出对象就是反范畴中的拉回对象。 *)
 
-Definition Po {C : Cat} `{HP : !HasPushout C} {X Y Z}
+Definition Po {C : Cat} `{HP : !HasPushout C} {X Y Z : C}
     (f : Hom Z X) (g : Hom Z Y)
   : @Ob C
   := @Pb (C^op) (@hasOpPullback C HP) X Y Z f g.
@@ -41,7 +41,7 @@ Notation "X '⊔[' f ',' g ']' Y" := (@Po _ _ X Y _ f g)
 
 (** 第一注入就是原反范畴中的第一投影。 *)
 
-Definition po1 {C : Cat} `{HP : !HasPushout C} {X Y Z}
+Definition po1 {C : Cat} `{HP : !HasPushout C} {X Y Z : C}
     (f : Hom Z X) (g : Hom Z Y)
   : Hom X (X ⊔[f,g] Y)
   := @Cat.Pullback.pb1 (C^op) (@hasOpPullback C HP) X Y Z f g.
@@ -52,7 +52,7 @@ Notation "'ιpo1[' f ',' g ']'" := (po1 f g) : hom_scope.
 
 (** 第二注入就是原反范畴中的第二投影。 *)
 
-Definition po2 {C : Cat} `{HP : !HasPushout C} {X Y Z}
+Definition po2 {C : Cat} `{HP : !HasPushout C} {X Y Z : C}
     (f : Hom Z X) (g : Hom Z Y)
   : Hom Y (X ⊔[f,g] Y)
   := @Cat.Pullback.pb2 (C^op) (@hasOpPullback C HP) X Y Z f g.
@@ -64,7 +64,7 @@ Notation "'ιpo2[' f ',' g ']'" := (po2 f g) : hom_scope.
 (** 完整推出性质继承自存储的拉回。 *)
 
 Definition pushout_universal {C : Cat} `{HP : !HasPushout C}
-    {X Y Z} {f : Hom Z X} {g : Hom Z Y}
+    {X Y Z : C} {f : Hom Z X} {g : Hom Z Y}
   : is_pushout f g (X ⊔[f,g] Y) ιpo1[f,g] ιpo2[f,g]
   := @pullback_universal (C^op) (@hasOpPullback C HP) X Y Z f g.
 
@@ -73,8 +73,8 @@ Definition pushout_universal {C : Cat} `{HP : !HasPushout C}
 
 (** 从推出出发的泛映射就是原拉回中介；交换性见证仍为计算数据。 *)
 
-Definition po {C : Cat} `{HP : !HasPushout C} {X Y Z}
-    {f : Hom Z X} {g : Hom Z Y} {P}
+Definition po {C : Cat} `{HP : !HasPushout C} {X Y Z : C}
+    {f : Hom Z X} {g : Hom Z Y} {P : C}
     (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
   : Hom (X ⊔[f,g] Y) P
   := @pb (C^op) (@hasOpPullback C HP) X Y Z f g P i j H.
@@ -92,7 +92,7 @@ Notation "'po⟨' i ',' j ',' H '⟩'" := (po i j H) : hom_scope.
 
 Section Pushout.
 Context {C : Cat} `{HP : !HasPushout C}.
-Context {X Y Z} {f : Hom Z X} {g : Hom Z Y}.
+Context {X Y Z : C} {f : Hom Z X} {g : Hom Z Y}.
 
 (** The selected pushout square commutes. *)
 
@@ -106,7 +106,7 @@ Proof. exact (@pullback_comm (C^op) (@hasOpPullback C HP) X Y Z f g). Qed.
 
 (** 中介由其与两个注入的指定复合唯一确定。 *)
 
-Theorem pushout_mediator_unique {P} {i : Hom X P} {j : Hom Y P}
+Theorem pushout_mediator_unique {P : C} {i : Hom X P} {j : Hom Y P}
     (H : i ∘ f ≈ j ∘ g)
   : is_unique (λ h, h ∘ ιpo1[f,g] ≈ i ∧ h ∘ ιpo2[f,g] ≈ j) po⟨i,j,H⟩.
 Proof.
@@ -118,7 +118,7 @@ Qed.
 
 (** 第一注入后接中介得到第一条映射。 *)
 
-Theorem po_β1 {P} (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
+Theorem po_β1 {P : C} (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
   : po⟨i,j,H⟩ ∘ ιpo1[f,g] ≈ i.
 Proof. exact (@pb_β1 (C^op) (@hasOpPullback C HP) X Y Z f g P i j H). Qed.
 
@@ -126,7 +126,7 @@ Proof. exact (@pb_β1 (C^op) (@hasOpPullback C HP) X Y Z f g P i j H). Qed.
 
 (** 第二注入后接中介得到第二条映射。 *)
 
-Theorem po_β2 {P} (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
+Theorem po_β2 {P : C} (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
   : po⟨i,j,H⟩ ∘ ιpo2[f,g] ≈ j.
 Proof. exact (@pb_β2 (C^op) (@hasOpPullback C HP) X Y Z f g P i j H). Qed.
 
@@ -134,7 +134,7 @@ Proof. exact (@pb_β2 (C^op) (@hasOpPullback C HP) X Y Z f g P i j H). Qed.
 
 (** 两个注入方程刻画选定中介。 *)
 
-Theorem po_η {P} (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
+Theorem po_η {P : C} (i : Hom X P) (j : Hom Y P) (H : i ∘ f ≈ j ∘ g)
     (h : Hom (X ⊔[f,g] Y) P)
   : h ∘ ιpo1[f,g] ≈ i ∧ h ∘ ιpo2[f,g] ≈ j → h ≈ po⟨i,j,H⟩.
 Proof. exact (@pb_η (C^op) (@hasOpPullback C HP) X Y Z f g P i j H h). Qed.
@@ -144,7 +144,7 @@ Proof. exact (@pb_η (C^op) (@hasOpPullback C HP) X Y Z f g P i j H h). Qed.
 
 (** 相等的输入映射给出相等的中介，无需比较交换性见证。 *)
 
-Theorem po_proper {P} {i i' : Hom X P} {j j' : Hom Y P}
+Theorem po_proper {P : C} {i i' : Hom X P} {j j' : Hom Y P}
     (H : i ∘ f ≈ j ∘ g) (H' : i' ∘ f ≈ j' ∘ g)
     (Hi : i ≈ i') (Hj : j ≈ j')
   : po⟨i,j,H⟩ ≈ po⟨i',j',H'⟩.
@@ -157,7 +157,7 @@ Qed.
 
 (** 中介不依赖所选交换性见证。 *)
 
-Theorem po_witness_independent {P} (i : Hom X P) (j : Hom Y P)
+Theorem po_witness_independent {P : C} (i : Hom X P) (j : Hom Y P)
     (H H' : i ∘ f ≈ j ∘ g)
   : po⟨i,j,H⟩ ≈ po⟨i,j,H'⟩.
 Proof.

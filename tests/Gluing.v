@@ -267,7 +267,7 @@ Definition tagged_gluing_not_terminal (H : is_terminal TaggedGluingS)
   : Empty_set.
 Proof.
   destruct (H UnitS) as [h unique].
-  assert (same : tagged_gluing_point 0 ≈ tagged_gluing_point 1).
+  assert (same : tagged_gluing_point 0 ≈f tagged_gluing_point 1).
   { transitivity h; [apply unique; exact I |
       symmetry; apply unique; exact I]. }
   destruct (same tt) as [impossible token]. discriminate impossible.

@@ -194,7 +194,7 @@ Defined.
 Definition SymClosOp@{a r +} (A : Type@{a})
   : Clos (@subrelation@{a r r} A).
 Proof.
-  refine (@ClosFromUniversal (A → A → Type@{r})
+  refine (@ClosOfUniversal (A → A → Type@{r})
     (@subrelation@{a r r} A) (RelationInclusionPreorder A)
     (λ S, Symmetric S) (@SymClos@{a r} A) _).
   intros R. split.
@@ -214,7 +214,7 @@ Defined.
 Definition ReflTransClosOp@{a r +} (A : Type@{a})
   : Clos (@subrelation@{a r r} A).
 Proof.
-  refine (@ClosFromUniversal (A → A → Type@{r})
+  refine (@ClosOfUniversal (A → A → Type@{r})
     (@subrelation@{a r r} A) (RelationInclusionPreorder A)
     (λ S, PreOrder S) (@ReflTransClos@{a r r} A) _).
   intros R. split.

@@ -575,6 +575,127 @@ preserved.
 仍是该精确历史结果的有效证据；当时的签名及宇宙位置比较不对当前完整对象
 迁移施加兼容义务。冻结来源及其引用继续保全。
 
+## Cat Record foundation and Adj naming follow-up
+
+## Cat Record 基础及 Adj 命名后续
+
+The user requested continuing from categories themselves while completing
+the remaining adjunction abbreviations. On `9dd8b86`, the first bounded
+foundation changes complete `Cat` from `Class` to `Record`. It owns the same
+object type, hom-setoids, identities, composition and laws once. `Ob :> Type`
+remains its sole sort view; `Hom` and `HomEq` are still computed from the
+same `HomSet`. Composition respectfulness remains a defining field, not an
+extra equivalence or unproved assumption. No staging data record or chosen
+category class is introduced.
+
+用户要求补齐伴随缩写，并从范畴本身继续底层重构。在 `9dd8b86` 上，首个有界
+基础批次将完整 `Cat` 从 `Class` 改为 `Record`；对象类型、Hom 广集、恒等、
+复合及定律仍只保存一份。`Ob :> Type` 仍为唯一类型视图，`Hom` 与 `HomEq`
+仍由同一 `HomSet` 计算。复合保相等性保留为定义字段，不增加额外等价结构或
+未证假设，也不引入分阶段数据记录或选定范畴类。
+
+Generic objects use their named category (`X : C`, or explicit `@Ob C`)
+where the former ambient-class default supplied it. Arrow projections keep
+implicit category parameters inferred from those object types. Fixed-data
+`Has*` and `Is*` extensions retain their category parameters and classes;
+their operations and choices are not repacked. `SetCat`, `FctCat`, `CatCat`
+and `FamCat`, the former `Cat` instances, become canonical record values.
+Canonical inference uses their `Ob` projections; `HomSet` is marked
+`canonical=no` so common hom-set constructors do not select a category.
+This removes global ambient-category choice while retaining the object view.
+The interface regression rejects selecting an ambient category merely by
+class search after importing the set model. The named ambient argument of
+`HomSet` is now `C`; former explicit `Cat := ...` callers are updated.
+
+先前由环境类默认补出的对象类型改为使用具名范畴（`X : C`，或显式
+`@Ob C`）；态射投影仍从对象类型推断隐式范畴参数。固定数据的 `Has*`／`Is*`
+扩充保留其范畴参数及类，运算与选择不重新打包。此前作为 `Cat` 实例的
+`SetCat`、`FctCat`、`CatCat` 和 `FamCat` 改为规范记录值。规范推断使用其
+`Ob` 投影；`HomSet` 标为 `canonical=no`，不让共用的 Hom 广集构造器
+选取范畴。这在保留对象视图的同时移除全局环境范畴选择。接口回归检查导入
+集合模型后，类搜索不能默认选取环境范畴。`HomSet` 的具名环境参数现在为
+`C`，先前显式写作 `Cat := ...` 的调用同步更新。
+
+The independent 34-name `Adj` / `Of` map is recorded in the naming guide.
+It shortens the remaining `adjunction` components and updates the selected
+constructors `AdjOfHom`, `FreeObjOfUniversal` and `ClosOfUniversal`, while
+retaining the mathematical transposition names `adjunct` and `unadjunct`.
+Actual clients and bilingual code references migrate together. `Cat`, its
+models and affected consumers are validated before any wider
+cartesian, monoidal, Topos or CwF hierarchy migration. The user approved
+saving this reviewed batch, the lift follow-up and development-check rules
+as a local checkpoint. No push or integration handoff is included.
+
+独立的 34 项 `Adj`／`Of` 表记录于命名指南，缩写剩余 `adjunction` 片段，
+更新指定构造器 `AdjOfHom`、`FreeObjOfUniversal`、`ClosOfUniversal`，并保留
+`adjunct`／`unadjunct` 的数学转置名称。实际客户端及双语代码引用同步迁移。
+本批先验证 `Cat`、模型及受影响消费者，再考虑更广的笛卡尔、幺半、Topos
+或 CwF 层级迁移。用户已批准将本批、提升映射后续及开发检查规则一同保存为
+本地检查点；未推送或交接。
+
+Validation uses Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1 in the existing
+`rocq-cats` switch. At the Cat Record/Adj naming checkpoint, before the
+lift follow-up, the incremental build passed all 776 `.vo`
+targets (605 theory modules and 171 tests), with unchanged source/build
+inputs during that pass. Temporary audits check the 34 renamed signatures
+and retired names; all 34 assumption reports close under the global context.
+A separate Cat audit passes strict hom/equality universe orderings, the four
+canonical object/Hom views, transparent set-model computations and 13 closed
+assumption reports. The ambient-category rejection now lives in
+`tests/CoreInterfaces.v`; temporary audit files stay outside the repository.
+`git diff --check` passes. No HTML/PDF export or CI claim is included.
+
+验证使用现有 `rocq-cats` switch 中的 Rocq 9.3.0、Stdlib 9.2.0 和
+Dune 3.23.1。在提升映射后续之前，Cat Record／Adj 命名检查点的增量构建
+通过全部 776 个 `.vo` 目标（605 个理论模块及
+171 个测试），该轮源码及构建输入未变化。临时审计检查 34 项新名签名及旧名
+退役，34 项假设报告均闭合。独立 Cat 审计通过 Hom／相等见证宇宙的严格
+双向排列、四个规范对象／Hom 视图、集合模型计算透明性及 13 项闭合假设报告。
+环境范畴拒绝回归现位于 `tests/CoreInterfaces.v`；临时审计文件位于仓库外。
+`git diff --check` 通过；未导出 HTML／PDF，也不声称 CI 通过。
+
+## Native maps across universe lifts / 跨宇宙提升的原生映射
+
+`LiftT` exposes the constructor `Lift`, so single-field values and
+equality tokens use `Lift x` instead of a record literal.
+`Set.Morphism.unlift_resp`, written `f^↓S`, recovers a native respectful
+map from a map between lifted sets. Its source and target lift bounds are
+independent, and its native Proper bound stays independent of both.
+`unlift_resp_apply` handles arbitrary wrapped inputs;
+`unlift_lift_resp` recovers a lifted native map pointwise. Their statements
+use specified set equality, without comparing preservation records.
+
+`LiftT` 暴露构造器 `Lift`，单字段值及相等标记写作 `Lift x`。
+`Set.Morphism.unlift_resp`（记作 `f^↓S`）从提升后集合间的映射恢复原生
+保相等映射。源、目标提升的上界独立，原生 Proper 上界也独立于两者。
+`unlift_resp_apply` 处理任意包装输入，`unlift_lift_resp` 逐点恢复提升前的
+原生映射。定律使用指定集合相等，不比较保相等记录。
+
+Both adjunction hom maps now use this common recovery operation.
+Their inverse equations reuse `unlift_resp_apply`, and naturality uses
+the short `Lift` constructor at the remaining universe boundary.
+The forward and inverse maps, including their preservation witnesses,
+remain transparent.
+
+伴随的正反 Hom 映射共用此恢复操作，互逆方程复用 `unlift_resp_apply`，
+自然性在剩余宇宙边界使用简短的 `Lift` 构造器。正反映射及其保相等见证
+保持透明。
+
+This later local slice uses targeted validation: `@check-core`, the set
+adjunction model, adjunction-induced monads, free-object adjunctions,
+exponential Hom and closure regressions. Temporary audits check strictly
+separated native/lift/Proper levels, both hom/equality level orderings,
+rewriting, identity-adjunction reduction, observable equality-token reduction
+and eight closed assumption reports. The earlier full-build record above
+belongs to its preceding checkpoint; no new full-library or full-test run
+is claimed for this slice.
+
+此后续本地片段使用定向验证：`@check-core`、集合伴随模型、伴随诱导 Monad、
+自由对象伴随、指数 Hom 及闭包回归。临时审计检查原生／提升／Proper 层级严格
+分离、Hom／相等层级的两种排列、重写、恒等伴随归约、可观察相等标记归约及
+八项闭合假设报告。上方全量构建记录属于此前检查点；此片段不声称重新跑过
+完整库或全部测试。
+
 ## Groupoid Record follow-up
 
 ## 群胚 Record 后续

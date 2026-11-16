@@ -41,7 +41,7 @@ Definition separated_closed_category
 
 (** 反射与幂等乘法在相同的分离层级工作，不对闭对象见证作大小重设。 *)
 
-Definition separated_closure_adjunction
+Definition separated_closure_adj
   := ClosAdj c.
 Definition separated_closure_monad_iso (x : X)
   := closure_monad_mul_iso c x.

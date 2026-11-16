@@ -28,7 +28,7 @@ Context {C D : Cat} {F : Fct C D} {U : Fct D C} (A : F ⊣ U).
 
 (** 逆转置将 Kleisli 复合变为目标复合。乘法为余单位的像，证明复用逆转置自然性。 *)
 
-Lemma adjunction_kleisli_unadjunct_comp {X Y Z : @Ob C}
+Lemma adj_kleisli_unadjunct_comp {X Y Z : @Ob C}
     (f : Hom Y (U (F Z))) (g : Hom X (U (F Y)))
   : (f ∘K[AdjMonad A] g)^♭[A] ≈ f^♭[A] ∘ g^♭[A].
 Proof.
@@ -50,9 +50,9 @@ Program Definition AdjKleisliF
   ; F1 X Y f := f^♭[A]
   ; functor_fmap_proper X Y := unadjunct_proper A
   |}.
-Next Obligation. exact (adjunction_β A (@id (F X))). Defined.
+Next Obligation. exact (adj_β A (@id (F X))). Defined.
 
-Next Obligation. exact (adjunction_kleisli_unadjunct_comp f g). Defined.
+Next Obligation. exact (adj_kleisli_unadjunct_comp f g). Defined.
 
 (** Transposition supplies computational fullness witnesses and reflects
     equality through the two inverse laws. The target need not consist only
@@ -61,16 +61,16 @@ Next Obligation. exact (adjunction_kleisli_unadjunct_comp f g). Defined.
 (** 转置提供可计算满性见证，并由两条互逆律反映相等。目标不必只有像对象，
     因此这里不宣称本质满。 *)
 
-Definition adjunction_kleisli_fully_faithful
+Definition adj_kleisli_fully_faithful
   : is_fully_faithful AdjKleisliF.
 Proof.
   split.
-  - intros X Y f. exists (f^♯[A]). exact (adjunction_β A f).
+  - intros X Y f. exists (f^♯[A]). exact (adj_β A f).
   - intros X Y f g E.
-    transitivity ((f^♭[A])^♯[A]); [symmetry; exact (adjunction_η A f)|].
+    transitivity ((f^♭[A])^♯[A]); [symmetry; exact (adj_η A f)|].
     transitivity ((g^♭[A])^♯[A]).
     + exact (@adjunct_proper C D F U A X (F Y) _ _ E).
-    + exact (adjunction_η A g).
+    + exact (adj_η A g).
 Defined.
 
 End Comparison.

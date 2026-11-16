@@ -30,7 +30,7 @@ Context {C : Cat} (M : Monad C).
 
 Program Definition KleisliAdj
   : KleisliPureF M ⊣ KleisliExtendF M
-  := AdjFromHom (KleisliPureF M) (KleisliExtendF M)
+  := AdjOfHom (KleisliPureF M) (KleisliExtendF M)
       (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -57,7 +57,7 @@ Proof. reflexivity. Qed.
 
 (** 单位是原 Monad 单位，由转置 Kleisli 恒等得到。 *)
 
-Lemma kleisli_adjunction_unit (X : @Ob C)
+Lemma kleisli_adj_unit (X : @Ob C)
   : adj_unit KleisliAdj X ≈ η[M] X.
 Proof. reflexivity. Qed.
 
@@ -66,7 +66,7 @@ Proof. reflexivity. Qed.
 
 (** [X] 处的余单位是 [M X] 上的基底恒等，视为从 [M X] 到 [X] 的 Kleisli 箭头。 *)
 
-Lemma kleisli_adjunction_counit (X : @Ob C)
+Lemma kleisli_adj_counit (X : @Ob C)
   : (adj_counit KleisliAdj X : Hom (M X) (M X)) ≈ id.
 Proof. reflexivity. Qed.
 
@@ -75,7 +75,7 @@ Proof. reflexivity. Qed.
 
 (** 左三角使用 Kleisli 复合及其恒等，证明继承自一般 Hom 对应理论。 *)
 
-Lemma kleisli_adjunction_triangle_l (X : @Ob C)
+Lemma kleisli_adj_triangle_l (X : @Ob C)
   : adj_counit KleisliAdj X ∘K[M]
       return[M; adj_unit KleisliAdj X] ≈ η[M] X.
 Proof. exact (adj_triangle_l KleisliAdj X). Qed.
@@ -84,7 +84,7 @@ Proof. exact (adj_triangle_l KleisliAdj X). Qed.
 
 (** 右三角在基底范畴中成立。 *)
 
-Lemma kleisli_adjunction_triangle_r (X : @Ob C)
+Lemma kleisli_adj_triangle_r (X : @Ob C)
   : kleisli_extend M (adj_counit KleisliAdj X) ∘
       adj_unit KleisliAdj (M X) ≈ id.
 Proof. exact (adj_triangle_r KleisliAdj X). Qed.
@@ -104,7 +104,7 @@ Definition KleisliMonad
 
 Lemma kleisli_monad_unit (X : @Ob C)
   : η[KleisliMonad] X ≈ η[M] X.
-Proof. exact (kleisli_adjunction_unit X). Qed.
+Proof. exact (kleisli_adj_unit X). Qed.
 
 (** Extending the identity computation recovers the original multiplication. *)
 

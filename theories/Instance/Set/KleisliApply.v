@@ -40,7 +40,7 @@ Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
 (** 运行所给 Kleisli 箭头，不附加另一层效应；结果已经位于原 Monad 中。 *)
 
 Program Definition kleisli_apply (X Y : SetC@{u u})
-  : (HomSet (Cat := KleisliCat M) X Y ×S X) →r M Y
+  : (HomSet (C := KleisliCat M) X Y ×S X) →r M Y
   :=
   {|func p := fst p (snd p)
   |}.
@@ -70,23 +70,23 @@ Next Obligation.
   change (kleisli_apply X Z ∘K[M]
     return[M; comp_r_resp (C := KleisliCat M) (f := g) × id_resp] ≈
     kleisli_apply Y Z ∘K[M]
-      kleisli_context M (HomSet (Cat := KleisliCat M) Y Z) g).
+      kleisli_context M (HomSet (C := KleisliCat M) Y Z) g).
   rewrite kleisli_comp_pure_r. intros [f x].
   change (kleisli_extend M f (g x) ≈S
     kleisli_extend M (kleisli_apply Y Z)
-      (kleisli_context M (HomSet (Cat := KleisliCat M) Y Z) g (f,x))).
+      (kleisli_context M (HomSet (C := KleisliCat M) Y Z) g (f,x))).
   etransitivity.
   - exact (@kleisli_extend_proper SetCat M _ _ f
-      (kleisli_apply Y Z ∘ ⟨const_resp Y f, id⟩)
+      (kleisli_apply Y Z ∘r ⟨const_resp Y f, id⟩)
       (λ y, reflexivity _) (g x)).
   - etransitivity.
     + exact (@kleisli_extend_pre SetCat M _ _ _ (kleisli_apply Y Z)
         ⟨const_resp Y f, id⟩ (g x)).
     + apply (@func_proper
-        (M (HomSet (Cat := KleisliCat M) Y Z ×S Y)) (M Z)
+        (M (HomSet (C := KleisliCat M) Y Z ×S Y)) (M Z)
         (kleisli_extend M (kleisli_apply Y Z)) _ _). symmetry.
       change (strengthN (hasStrength M)
-        (HomSet (Cat := KleisliCat M) Y Z, Y) (f,g x) ≈S
+        (HomSet (C := KleisliCat M) Y Z, Y) (f,g x) ≈S
         fmap M ⟨const_resp Y f, id⟩ (g x)).
       apply set_strength_value.
 Defined.

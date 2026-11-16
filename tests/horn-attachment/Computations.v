@@ -104,7 +104,8 @@ Proof.
 Defined.
 
 Definition composite_extension_operation
-  := map_extension_target_comp (id_resp : BoolS →r BoolS) ιpo1[flip,diagonal]
+  := map_extension_target_comp (C := SetCat)
+      (id_resp : BoolS →r BoolS) ιpo1[flip,diagonal]
       (map_extension_target_id (C := SetCat) BoolS BoolS) (pushout_extension_target
         (pushout_universal (f := flip) (g := diagonal)) first_target).
 

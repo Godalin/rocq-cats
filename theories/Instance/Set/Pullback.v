@@ -56,7 +56,7 @@ Defined.
 (** 配对锥的两个坐标并保留交换性见证。 *)
 
 Program Definition pb_resp {X Y Z P : SetC} {f : X →r Z} {g : Y →r Z}
-    (p1 : P →r X) (p2 : P →r Y) (HP : f ∘ p1 ≈ g ∘ p2)
+    (p1 : P →r X) (p2 : P →r Y) (HP : (f ∘r p1) ≈f (g ∘r p2))
   : P →r PbS f g
   :=
   {|func u := (p1 u; (p2 u; HP u))

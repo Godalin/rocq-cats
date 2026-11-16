@@ -118,7 +118,7 @@ End FreeObjects.
 
 (** 直接泛箭头组装为选定始对象；选取箭头的函数显式给出，不使用选择公理。 *)
 
-Program Definition FreeObjFromUniversal {C D : Cat} (U : Fct D C)
+Program Definition FreeObjOfUniversal {C D : Cat} (U : Fct D C)
     (A : @Ob C → @Ob D) (η : ∀ X, Hom X (U (A X)))
     (Hη : ∀ X, η X ⦂ UnivArr(U))
   : HasFreeObj U

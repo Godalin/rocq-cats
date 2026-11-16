@@ -1,0 +1,20 @@
+; Explicit validation scopes; see docs/Testing.md.
+; 验证范围见 docs/Testing.md；库入口不包含 Rocq 回归理论。
+(alias
+ (name check-library)
+ (deps (alias_rec theories/all)))
+
+(alias
+ (name check-tests)
+ (deps
+  (alias_rec tests/all)
+  (alias_rec tests/runtest)))
+
+(alias
+ (name check-core)
+ (deps
+  tests/CoreInterfaces.vo
+  tests/AlgebraNotation.vo
+  tests/MonoidExtensions.vo
+  tests/GroupExtensions.vo
+  tests/BundledGroupoid.vo))

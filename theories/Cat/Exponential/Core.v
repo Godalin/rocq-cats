@@ -13,7 +13,7 @@ From Cats Require Import
 (** 求值表示从与固定参数对象取积后出发的映射。 *)
 
 Definition is_exponential {C : Cat} `{HP : !HasProduct C}
-    (X Y E : Ob) (ev : Hom (E × X) Y)
+    (X Y E : C) (ev : Hom (E × X) Y)
   := ∀ Z (f : Hom (Z × X) Y),
     ∃ h : Hom Z E, is_unique (λ h, ev ∘ (h × id) ≈ f) h.
 
@@ -23,10 +23,10 @@ Definition is_exponential {C : Cat} `{HP : !HasProduct C}
 
 Class HasExponential {C : Cat} (HP : HasProduct C)
   :=
-  { exp : Ob → Ob → Ob
-  ; eval {X Y} : Hom (exp Y X × X) Y
+  { exp : C → C → C
+  ; eval {X Y : C} : Hom (exp Y X × X) Y
 
-  ; exponential_universal {X Y} : is_exponential X Y (exp Y X) eval
+  ; exponential_universal {X Y : C} : is_exponential X Y (exp Y X) eval
   }.
 
 Arguments exponential_universal {_ _ _ _ _} _ _.
@@ -39,7 +39,7 @@ Notation "X '^' Y" := (exp X Y)
 (** 将从积出发的映射转置到选定指数中。 *)
 
 Definition curry {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
-    {X Y Z} (f : Hom (Z × X) Y)
+    {X Y Z : C} (f : Hom (Z × X) Y)
   : Hom Z (Y ^ X)
   := (exponential_universal Z f).1.
 
@@ -51,7 +51,7 @@ Notation "'ƛ' f" := (curry f)
 (** 柯里化是具有给定求值行为的唯一转置。 *)
 
 Theorem exponential_curry_unique {C : Cat}
-    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z : C}
     (f : Hom (Z × X) Y)
   : is_unique (λ h, eval ∘ (h × id) ≈ f) (ƛ f).
 Proof. exact (exponential_universal Z f).2. Qed.
@@ -61,7 +61,7 @@ Proof. exact (exponential_universal Z f).2. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance exponential_curry_proper {C : Cat}
-    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z : C}
   : Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, Y ^ X]) curry.
 Proof.
   intros f g Hfg.
@@ -88,7 +88,7 @@ Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** 通过求值恢复从积出发的映射。 *)
 
-Definition uncurry {X Y Z} (g : Hom Z (Y ^ X))
+Definition uncurry {X Y Z : C} (g : Hom Z (Y ^ X))
   : Hom (Z × X) Y
   := eval ∘ (g × id).
 
@@ -96,7 +96,7 @@ Definition uncurry {X Y Z} (g : Hom Z (Y ^ X))
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance exponential_uncurry_proper {X Y Z}
+Global Instance exponential_uncurry_proper {X Y Z : C}
   : Proper (@HomEq[Z, Y ^ X] ==> @HomEq[Z × X, Y]) uncurry.
 Proof. intros f g Hfg. unfold uncurry. rewrite Hfg. reflexivity. Qed.
 
@@ -104,7 +104,7 @@ Proof. intros f g Hfg. unfold uncurry. rewrite Hfg. reflexivity. Qed.
 
 (** 先柯里化再反柯里化恢复原映射。 *)
 
-Theorem exponential_β {X Y Z} (f : Hom (Z × X) Y)
+Theorem exponential_β {X Y Z : C} (f : Hom (Z × X) Y)
   : uncurry (ƛ f) ≈ f.
 Proof. exact (@this _ _ _ _ _ (exponential_curry_unique f)). Qed.
 
@@ -112,7 +112,7 @@ Proof. exact (@this _ _ _ _ _ (exponential_curry_unique f)). Qed.
 
 (** 先反柯里化再柯里化恢复指数值映射。 *)
 
-Theorem exponential_η {X Y Z} (g : Hom Z (Y ^ X))
+Theorem exponential_η {X Y Z : C} (g : Hom Z (Y ^ X))
   : ƛ (uncurry g) ≈ g.
 Proof. symmetry. apply (exponential_curry_unique (uncurry g)). reflexivity. Qed.
 
@@ -121,7 +121,7 @@ Proof. symmetry. apply (exponential_curry_unique (uncurry g)). reflexivity. Qed.
 
 (** 两个保相等映射与互逆律给出 Hom 广集对应，并保留可计算的见证函数。 *)
 
-Program Definition exponential_curry_resp {X Y Z}
+Program Definition exponential_curry_resp {X Y Z : C}
   : HomSet (Z × X) Y →r HomSet Z (Y ^ X)
   :=
   {|func := curry
@@ -131,7 +131,7 @@ Program Definition exponential_curry_resp {X Y Z}
 
 (** 反柯里化作为 Hom 广集间的保相等映射。 *)
 
-Program Definition exponential_uncurry_resp {X Y Z}
+Program Definition exponential_uncurry_resp {X Y Z : C}
   : HomSet Z (Y ^ X) →r HomSet (Z × X) Y
   :=
   {|func := uncurry
@@ -141,7 +141,7 @@ Program Definition exponential_uncurry_resp {X Y Z}
 
 (** 反柯里化与上下文中的预合成交换。 *)
 
-Lemma exponential_uncurry_comp_r {X Y Z W}
+Lemma exponential_uncurry_comp_r {X Y Z W : C}
     (g : Hom Z (Y ^ X)) (σ : Hom W Z)
   : uncurry (g ∘ σ) ≈ uncurry g ∘ (σ × id).
 Proof.
@@ -152,7 +152,7 @@ Qed.
 
 (** 柯里化与上下文中的预合成交换。 *)
 
-Lemma exponential_curry_comp_r {X Y Z W}
+Lemma exponential_curry_comp_r {X Y Z W : C}
     (f : Hom (Z × X) Y) (σ : Hom W Z)
   : ƛ (f ∘ (σ × id)) ≈ (ƛ f) ∘ σ.
 Proof.
@@ -165,7 +165,7 @@ Qed.
 
 (** 固定参数对象后，指数在结果类型上的协变作用。 *)
 
-Definition exponential_map {X Y Y'} (f : Hom Y Y')
+Definition exponential_map {X Y Y' : C} (f : Hom Y Y')
   : Hom (Y ^ X) (Y' ^ X)
   := ƛ (f ∘ eval).
 
@@ -173,7 +173,7 @@ Definition exponential_map {X Y Y'} (f : Hom Y Y')
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance exponential_map_proper {X Y Y'}
+Global Instance exponential_map_proper {X Y Y' : C}
   : Proper (@HomEq[Y, Y'] ==> @HomEq[Y ^ X, Y' ^ X]) exponential_map.
 Proof. intros f g Hfg. unfold exponential_map. rewrite Hfg. reflexivity. Qed.
 
@@ -181,7 +181,7 @@ Proof. intros f g Hfg. unfold exponential_map. rewrite Hfg. reflexivity. Qed.
 
 (** 反柯里化与结果对象上的诱导映射交换。 *)
 
-Lemma exponential_uncurry_comp_l {X Y Y' Z}
+Lemma exponential_uncurry_comp_l {X Y Y' Z : C}
     (f : Hom Y Y') (g : Hom Z (Y ^ X))
   : uncurry (exponential_map f ∘ g) ≈ f ∘ uncurry g.
 Proof.
@@ -193,7 +193,7 @@ Qed.
 
 (** 柯里化与结果对象上的后合成交换。 *)
 
-Lemma exponential_curry_comp_l {X Y Y' Z}
+Lemma exponential_curry_comp_l {X Y Y' Z : C}
     (f : Hom Y Y') (g : Hom (Z × X) Y)
   : ƛ (f ∘ g) ≈ exponential_map f ∘ (ƛ g).
 Proof.
@@ -206,7 +206,7 @@ Qed.
 
 (** [exponential_map] 与恒等的相容性。 *)
 
-Lemma exponential_map_id {X Y}
+Lemma exponential_map_id {X Y : C}
   : exponential_map (@id Y) ≈ @id (Y ^ X).
 Proof.
   unfold exponential_map. rewrite comp_id_l.
@@ -220,7 +220,7 @@ Qed.
 
 (** [exponential_map] 与复合的相容性。 *)
 
-Lemma exponential_map_comp {X Y Y' Y''} (g : Hom Y' Y'') (f : Hom Y Y')
+Lemma exponential_map_comp {X Y Y' Y'' : C} (g : Hom Y' Y'') (f : Hom Y Y')
   : exponential_map (X := X) (g ∘ f) ≈ exponential_map g ∘ exponential_map f.
 Proof.
   unfold exponential_map at 1 3. rewrite comp_assoc.
@@ -232,7 +232,7 @@ Qed.
 
 (** 应用是在共同上下文中的求值；这些方程用于函数的 β、η 律和同时替换的语义。 *)
 
-Definition app {X Y Z} (f : Hom Z (Y ^ X)) (a : Hom Z X)
+Definition app {X Y Z : C} (f : Hom Z (Y ^ X)) (a : Hom Z X)
   : Hom Z Y
   := eval ∘ ⟨f, a⟩.
 
@@ -240,7 +240,7 @@ Definition app {X Y Z} (f : Hom Z (Y ^ X)) (a : Hom Z X)
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance exponential_app_proper {X Y Z}
+Global Instance exponential_app_proper {X Y Z : C}
   : Proper (@HomEq[Z, Y ^ X] ==> @HomEq[Z, X] ==> @HomEq[Z, Y]) app.
 Proof. intros f f' Hf a a' Ha. unfold app. rewrite Hf, Ha. reflexivity. Qed.
 
@@ -249,7 +249,7 @@ Proof. intros f f' Hf a a' Ha. unfold app. rewrite Hf, Ha. reflexivity. Qed.
 
 (** 应用与函数及参数的同时替换交换。 *)
 
-Lemma exponential_app_comp {X Y Z W}
+Lemma exponential_app_comp {X Y Z W : C}
     (f : Hom Z (Y ^ X)) (a : Hom Z X) (σ : Hom W Z)
   : app f a ∘ σ ≈ app (f ∘ σ) (a ∘ σ).
 Proof. unfold app. rewrite comp_assoc, product_comp_r. reflexivity. Qed.
@@ -258,7 +258,7 @@ Proof. unfold app. rewrite comp_assoc, product_comp_r. reflexivity. Qed.
 
 (** 柯里化映射的应用按替换计算。 *)
 
-Lemma exponential_app_β {X Y Z} (f : Hom (Z × X) Y) (a : Hom Z X)
+Lemma exponential_app_β {X Y Z : C} (f : Hom (Z × X) Y) (a : Hom Z X)
   : app (ƛ f) a ≈ f ∘ ⟨id, a⟩.
 Proof.
   rewrite <- (exponential_β f) at 2. unfold app, uncurry.
@@ -269,7 +269,7 @@ Qed.
 
 (** 函数由其应用的抽象恢复。 *)
 
-Lemma exponential_app_η {X Y Z} (f : Hom Z (Y ^ X))
+Lemma exponential_app_η {X Y Z : C} (f : Hom Z (Y ^ X))
   : ƛ (app (f ∘ π1) π2) ≈ f.
 Proof.
   transitivity (ƛ (uncurry f)).
@@ -309,7 +309,7 @@ Definition ProdExpAdj {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} (X : @Ob C)
   : (-× X) ⊣ (-^ X).
 Proof.
-  refine (AdjFromHom (-× X) (-^ X)
+  refine (AdjOfHom (-× X) (-^ X)
     (λ Z Y, exponential_curry_resp) (λ Z Y, exponential_uncurry_resp)
     _ _ _ _).
   - intros Z Y f. apply exponential_β.
@@ -323,20 +323,20 @@ Defined.
 (** 积与指数伴随的正向转置就是柯里化。 *)
 
 Theorem exponential_adjunct {C : Cat}
-    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z : C}
     (f : Hom (Z × X) Y)
   : f^♯[ProdExpAdj X] ≈ ƛ f.
-Proof. apply adjunct_from_hom. Qed.
+Proof. apply adjunct_of_hom. Qed.
 
 (** The inverse product-exponential adjunct is uncurrying. *)
 
 (** 积与指数伴随的逆向转置就是反柯里化。 *)
 
 Theorem exponential_unadjunct {C : Cat}
-    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z}
+    `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z : C}
     (g : Hom Z (Y ^ X))
   : g^♭[ProdExpAdj X] ≈ uncurry g.
-Proof. apply unadjunct_from_hom. Qed.
+Proof. apply unadjunct_of_hom. Qed.
 
 (** Transposing evaluation gives the identity on the exponential. *)
 

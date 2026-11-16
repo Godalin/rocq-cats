@@ -202,7 +202,7 @@ Definition empty_constant_exponential_comparison
 (** 它的逆将把恒等函数送到一个空载体的元素。 *)
 
 Definition empty_constant_comparison_not_iso
-    (H : is_iso empty_constant_exponential_comparison)
+    (H : is_iso (C := SetCat) empty_constant_exponential_comparison)
   : Empty_set
   := H.1 id_resp.
 

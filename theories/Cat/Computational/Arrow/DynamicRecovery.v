@@ -78,7 +78,7 @@ Definition DynamicEvaluationF
 
 Definition dynamic_evaluation_fully_faithful
   : is_fully_faithful DynamicEvaluationF
-  := adjunction_kleisli_fully_faithful (ArrowApplyAdj AA).
+  := adj_kleisli_fully_faithful (ArrowApplyAdj AA).
 
 (** Name original computations as reconstructed Kleisli arrows. Both
     functor laws are inherited from the general full-faithful inverse. *)

@@ -29,14 +29,17 @@ Proof.
   - rewrite cross_η, product_β1. reflexivity.
   - intros Q q r Hq. exists ⟨r, π2 ∘ q⟩. split.
     + split.
-      * rewrite product_comp_l, comp_id_l, <- Hq.
+      * rewrite product_comp_l, comp_id_l,
+          <- Hq.
         symmetry. apply product_η.
       * apply product_β1.
-    + intros k [Hk Hr]. apply product_pair_unique. split.
+    + intros k [Hk Hr].
+      apply product_pair_unique. split.
       * exact Hr.
       * transitivity (π2 ∘ ((m × id) ∘ k)).
-        -- rewrite <- comp_assoc, cross_η, product_β2, comp_id_l.
-           reflexivity.
+        -- rewrite <- comp_assoc,
+          cross_η, product_β2, comp_id_l.
+          reflexivity.
         -- rewrite Hk. reflexivity.
 Defined.
 

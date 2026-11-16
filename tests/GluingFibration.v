@@ -156,7 +156,7 @@ Definition tagged_reindex_cartesian
 Definition tagged_factor
   : (@Hom (Gluing (@IdF SetCat))) TaggedGluingObj TaggedReindexedOb
   := cartesian_factor tagged_reindex_cartesian tagged_gluing_toggle id
-      (comp_id_r gluing_toggle).
+      (comp_resp_id_r gluing_toggle).
 
 (** Its top map computes both pullback coordinates. *)
 

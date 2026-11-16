@@ -54,10 +54,10 @@ Proof.
     + symmetry. apply adjunct_comp_l.
     + transitivity (((μ j)^♭[A])^♯[A]).
       * apply (adjunct_proper A). exact (@this _ _ _ _ _ Hf j).
-      * apply adjunction_η.
+      * apply adj_η.
   - intros g Hg.
     transitivity ((g^♭[A])^♯[A]).
-    + symmetry. apply adjunction_η.
+    + symmetry. apply adj_η.
     + apply (adjunct_proper A). apply (@that _ _ _ _ _ Hf). intros j.
       change (κ j ∘ g^♭[A] ≈ (μ j)^♭[A]).
       transitivity ((fmap G (κ j) ∘ g)^♭[A]).

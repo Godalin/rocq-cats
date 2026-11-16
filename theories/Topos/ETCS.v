@@ -16,7 +16,7 @@ From Cats Require Import
 
 Class IsWellPointed (C : Cat) (HT : HasTerminal C)
   :=
-  { well_pointed_ext {X Y} {f g : Hom X Y}
+  { well_pointed_ext {X Y : C} {f g : Hom X Y}
     : (∀ x : Hom 1 X, f ∘ x ≈ g ∘ x) → f ≈ g
   }.
 
@@ -26,7 +26,7 @@ Class IsWellPointed (C : Cat) (HT : HasTerminal C)
 
 Class HasAxiomChoice (C : Cat)
   :=
-  { choice_split_epi {X Y} {f : Hom X Y}
+  { choice_split_epi {X Y : C} {f : Hom X Y}
     : is_epi f → ∃ g, is_rinv_of f g
   }.
 

@@ -190,7 +190,7 @@ Defined.
 
 Definition GenFreeObj (G : Graph) (C : Cat)
   : HasFreeObj (RestrictGenF G C)
-  := FreeObjFromUniversal (RestrictGenF G C) FreeF GenUnit
+  := FreeObjOfUniversal (RestrictGenF G C) FreeF GenUnit
       generator_unit_universal.
 
 (** The free functor extends interpretations and generator transformations. *)
@@ -228,7 +228,7 @@ Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
 
 (** 伴随单位逐点可逆，并带有显式逆数据。 *)
 
-Definition generator_adjunction_unit_iso (G : Graph) (C : Cat)
+Definition generator_adj_unit_iso (G : Graph) (C : Cat)
   : adj_unit (GenFreeAdj G C)
       ⦂ IdF ≅N (RestrictGenF G C ∘F ExtendGenF G C).
 Proof.
@@ -241,7 +241,7 @@ Defined.
 
 (** 余单位使用已有路径延拓比较，其顶点分量为恒等，但函子记录无需相等。 *)
 
-Definition generator_adjunction_counit_iso (G : Graph) (C : Cat)
+Definition generator_adj_counit_iso (G : Graph) (C : Cat)
   : adj_counit (GenFreeAdj G C)
       ⦂ (ExtendGenF G C ∘F RestrictGenF G C) ≅N IdF.
 Proof.
@@ -258,6 +258,6 @@ Definition generator_diagram_equiv (G : Graph) (C : Cat)
   : GenDiagramCat G C ≃C FctCat (FreeCat G) C
   := (ExtendGenF G C; (RestrictGenF G C;
       (symmetry (adj_unit (GenFreeAdj G C);
-         generator_adjunction_unit_iso G C),
+         generator_adj_unit_iso G C),
        (adj_counit (GenFreeAdj G C);
-         generator_adjunction_counit_iso G C)))).
+         generator_adj_counit_iso G C)))).

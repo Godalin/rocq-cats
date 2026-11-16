@@ -19,13 +19,16 @@ From Cats Require Import
     [NatIso_inv] 导出逆向自然性。环境广集的宇宙仅为独立上界，不把两侧原有的
     Hom 大小等同。 *)
 
-Class Adj@{u p +} {C D : Cat} (F : Fct C D) (G : Fct D C)
+Class Adj@{u p +} {C D : Cat}
+    (F : Fct C D) (G : Fct D C)
   :=
   { adj_hom : @NatIso _ SetCat@{u p _ _ _ _ _}
-      (LeftHomF F) (RightHomF G) }.
+      (LeftHomF F) (RightHomF G)
+  }.
 
 Arguments adj_hom {_ _ _ _} _.
-Infix "⊣" := Adj (at level 50, no associativity) : cat_scope.
+Infix "⊣" := Adj
+  (at level 50, no associativity) : cat_scope.
 
 (** ** Transposition along an Adjunction
 
@@ -37,45 +40,25 @@ Infix "⊣" := Adj (at level 50, no associativity) : cat_scope.
     固定函子 [F]、[G] 及伴随 [A : F ⊣ G]，提取两个 Hom 映射、互逆与自然性定律，以及单位和余单位。 *)
 
 Section Transposition.
-Context {C D : Cat} {F : Fct C D} {G : Fct D C} (A : F ⊣ G).
+Context {C D : Cat}
+  {F : Fct C D} {G : Fct D C}
+  (A : F ⊣ G).
 
 (** The forward hom-setoid map of an adjunction. *)
 
 (** 伴随 Hom 对应的正向保相等映射。 *)
 
-Program Definition adjunct_resp@{s +} {X Y}
+Definition adjunct_resp@{s +} {X Y}
   : FunS_resp@{s _ _ _ _ _} (HomSet (F X) Y) (HomSet X (G Y))
-  :=
-  {|func f := lower ((adj_hom A).1 (X, Y) {|lower := f
-                                          |})
-  |}.
-Next Obligation.
-  intros f g H.
-  exact (lower (@func_proper _ _ ((adj_hom A).1 (X, Y))
-    {|lower := f
-    |} {|lower := g
-       |} {|lower := H
-          |})).
-Defined.
+  := ((adj_hom A).1 (X, Y))^↓S.
 
 (** The inverse hom-setoid map of an adjunction. *)
 
 (** 伴随 Hom 对应的逆向保相等映射。 *)
 
-Program Definition unadjunct_resp@{s +} {X Y}
+Definition unadjunct_resp@{s +} {X Y}
   : FunS_resp@{s _ _ _ _ _} (HomSet X (G Y)) (HomSet (F X) Y)
-  :=
-  {|func g := lower (((adj_hom A).2 (X, Y)).1 {|lower := g
-                                              |})
-  |}.
-Next Obligation.
-  intros f g H.
-  exact (lower (@func_proper _ _ ((adj_hom A).2 (X, Y)).1
-    {|lower := f
-    |} {|lower := g
-       |} {|lower := H
-          |})).
-Defined.
+  := (((adj_hom A).2 (X, Y)).1)^↓S.
 
 (** Transpose a morphism along the forward adjunction correspondence. *)
 
@@ -84,6 +67,7 @@ Defined.
 Definition adjunct {X Y} (f : Hom (F X) Y)
   : Hom X (G Y)
   := adjunct_resp f.
+
 (** Transpose a morphism along the inverse adjunction correspondence. *)
 
 (** 沿伴随逆向对应转置态射。 *)
@@ -97,7 +81,8 @@ Definition unadjunct {X Y} (g : Hom X (G Y))
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance adjunct_proper {X Y}
-  : Proper (@HomEq[F X, Y] ==> @HomEq[X, G Y]) adjunct.
+  : Proper (@HomEq[F X, Y] ==> @HomEq[X, G Y])
+    adjunct.
 Proof. apply func_proper. Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -105,70 +90,57 @@ Proof. apply func_proper. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance unadjunct_proper {X Y}
-  : Proper (@HomEq[X, G Y] ==> @HomEq[F X, Y]) unadjunct.
+  : Proper (@HomEq[X, G Y] ==> @HomEq[F X, Y])
+    unadjunct.
 Proof. apply func_proper. Qed.
 
 (** The forward and inverse transposes cancel on one hom-setoid. *)
 
 (** 正向与逆向转置在一侧 Hom 广集上互相抵消。 *)
 
-Theorem adjunction_β {X Y} (f : Hom (F X) Y)
+Theorem adj_β {X Y} (f : Hom (F X) Y)
   : unadjunct (adjunct f) ≈ f.
 Proof.
-  pose proof (fst ((adj_hom A).2 (X, Y)).2 {|lower := f
-                                           |}) as H.
   etransitivity.
-  - exact (lower (@func_proper _ _ ((adj_hom A).2 (X, Y)).1
-      {|lower := lower ((adj_hom A).1 (X, Y) {|lower := f
-                                             |})
-      |}
-      ((adj_hom A).1 (X, Y) {|lower := f
-                            |})
-      {|lower := reflexivity _
-      |})).
-  - exact (lower H).
+  - exact (unlift_resp_apply ((adj_hom A).2 (X, Y)).1
+      ((adj_hom A).1 (X, Y) (Lift f))).
+  - exact (lower (fst ((adj_hom A).2 (X, Y)).2 (Lift f))).
 Qed.
 
 (** The inverse and forward transposes cancel on the other hom-setoid. *)
 
 (** 逆向与正向转置在另一侧 Hom 广集上互相抵消。 *)
 
-Theorem adjunction_η {X Y} (g : Hom X (G Y))
+Theorem adj_η {X Y} (g : Hom X (G Y))
   : adjunct (unadjunct g) ≈ g.
 Proof.
-  pose proof (snd ((adj_hom A).2 (X, Y)).2 {|lower := g
-                                           |}) as H.
   etransitivity.
-  - exact (lower (@func_proper _ _ ((adj_hom A).1 (X, Y))
-      {|lower := lower (((adj_hom A).2 (X, Y)).1 {|lower := g
-                                                 |})
-      |}
-      (((adj_hom A).2 (X, Y)).1 {|lower := g
-                                |})
-      {|lower := reflexivity _
-      |})).
-  - exact (lower H).
+  - exact (unlift_resp_apply ((adj_hom A).1 (X, Y))
+      (((adj_hom A).2 (X, Y)).1 (Lift g))).
+  - exact (lower (snd ((adj_hom A).2 (X, Y)).2 (Lift g))).
 Qed.
 
 (** The forward transpose is natural in both hom variables. *)
 
 (** 正向转置在两个 Hom 变量上自然。 *)
 
-Lemma adjunct_naturality {X X' : @Ob C} {Y Y' : @Ob D}
+Lemma adjunct_naturality
+    {X X' : @Ob C} {Y Y' : @Ob D}
     (h : Hom X' X) (k : Hom Y Y')
     (f : Hom (F X) Y)
-  : adjunct (k ∘ f ∘ fmap F h) ≈ fmap G k ∘ adjunct f ∘ h.
+  : adjunct (k ∘ f ∘ fmap F h)
+    ≈ fmap G k ∘ adjunct f ∘ h.
 Proof.
   exact (lower (nt_naturality (adj_hom A).1
-    (X := (X, Y)) (Y := (X', Y')) (h, k) {|lower := f
-                                         |})).
+    (X := (X, Y)) (Y := (X', Y')) (h, k) (Lift f))).
 Qed.
 
 (** Compatibility with precomposition for [adjunct]. *)
 
 (** [adjunct] 与预合成的相容性。 *)
 
-Lemma adjunct_comp_r {X X' Y} (f : Hom (F X) Y) (h : Hom X' X)
+Lemma adjunct_comp_r {X X' Y}
+    (f : Hom (F X) Y) (h : Hom X' X)
   : adjunct (f ∘ fmap F h) ≈ adjunct f ∘ h.
 Proof.
   pose proof (adjunct_naturality h id f) as H.
@@ -196,26 +168,28 @@ Lemma unadjunct_naturality {X X' : @Ob C} {Y Y' : @Ob D}
 Proof.
   exact (lower (nt_naturality
     (NatIso_inv (adj_hom A).1 (adj_hom A).2)
-    (X := (X, Y)) (Y := (X', Y')) (h, k) {|lower := g
-                                         |})).
+    (X := (X, Y)) (Y := (X', Y')) (h, k) (Lift g))).
 Qed.
 
 (** Compatibility with precomposition for [unadjunct]. *)
 
 (** [unadjunct] 与预合成的相容性。 *)
 
-Lemma unadjunct_comp_r {X X' Y} (g : Hom X (G Y)) (h : Hom X' X)
+Lemma unadjunct_comp_r {X X' Y}
+    (g : Hom X (G Y)) (h : Hom X' X)
   : unadjunct (g ∘ h) ≈ unadjunct g ∘ fmap F h.
 Proof.
   pose proof (unadjunct_naturality h id g) as H.
-  rewrite (functor_id D C G), !comp_id_l in H. exact H.
+  rewrite (functor_id D C G), !comp_id_l in H.
+  exact H.
 Qed.
 
 (** Compatibility with postcomposition for [unadjunct]. *)
 
 (** [unadjunct] 与后合成的相容性。 *)
 
-Lemma unadjunct_comp_l {X Y Y'} (k : Hom Y Y') (g : Hom X (G Y))
+Lemma unadjunct_comp_l {X Y Y'}
+    (k : Hom Y Y') (g : Hom X (G Y))
   : unadjunct (fmap G k ∘ g) ≈ k ∘ unadjunct g.
 Proof.
   pose proof (unadjunct_naturality id k g) as H.
@@ -226,12 +200,13 @@ Qed.
 
 (** 伴随方程等价于其逆转置方程。 *)
 
-Theorem adjunct_iff {X Y} (f : Hom (F X) Y) (g : Hom X (G Y))
+Theorem adjunct_iff {X Y}
+    (f : Hom (F X) Y) (g : Hom X (G Y))
   : adjunct f ≈ g ↔ f ≈ unadjunct g.
 Proof.
   split; intros H.
-  - rewrite <- (adjunction_β f), H. reflexivity.
-  - rewrite H, adjunction_η. reflexivity.
+  - rewrite <- (adj_β f), H. reflexivity.
+  - rewrite H, adj_η. reflexivity.
 Qed.
 
 (** Unit and counit are transposed identities, with naturality inherited from
@@ -296,7 +271,7 @@ Theorem adj_triangle_l (X : @Ob C)
 Proof.
   transitivity (unadjunct (adjunct (@id (F X)))).
   - symmetry. apply unadjunct_counit.
-  - apply adjunction_β.
+  - apply adj_β.
 Qed.
 
 (** The unit and counit satisfy the right triangle equation. *)
@@ -308,7 +283,7 @@ Theorem adj_triangle_r (Y : @Ob D)
 Proof.
   transitivity (adjunct (unadjunct (@id (G Y)))).
   - symmetry. apply adjunct_unit.
-  - apply adjunction_η.
+  - apply adj_η.
 Qed.
 
 (** The unit is universal among arrows into images of the right adjoint. *)
@@ -316,12 +291,13 @@ Qed.
 (** 单位对指向右伴随像的箭头具有泛性质。 *)
 
 Theorem adj_unit_universal {X Y} (g : Hom X (G Y))
-  : is_unique (λ f, fmap G f ∘ adj_unit X ≈ g) (unadjunct g).
+  : is_unique (λ f, fmap G f ∘ adj_unit X ≈ g)
+      (unadjunct g).
 Proof.
   refine {|this := _
          ; that := _
          |}.
-  - rewrite <- adjunct_unit. apply adjunction_η.
+  - rewrite <- adjunct_unit. apply adj_η.
   - intros f H. apply (fst (adjunct_iff f g)). rewrite adjunct_unit. exact H.
 Defined.
 
@@ -330,20 +306,23 @@ Defined.
 (** 余单位对从左伴随像出发的箭头具有泛性质。 *)
 
 Theorem adj_counit_universal {X Y} (f : Hom (F X) Y)
-  : is_unique (λ g, adj_counit Y ∘ fmap F g ≈ f) (adjunct f).
+  : is_unique (λ g, adj_counit Y ∘ fmap F g ≈ f)
+      (adjunct f).
 Proof.
   refine {|this := _
          ; that := _
          |}.
-  - rewrite <- unadjunct_counit. apply adjunction_β.
+  - rewrite <- unadjunct_counit. apply adj_β.
   - intros g H. symmetry. apply (snd (adjunct_iff f g)).
     rewrite unadjunct_counit. symmetry. exact H.
 Defined.
 
 End Transposition.
 
-Notation "f '^♯[' A ']'" := (adjunct A f) (at level 35) : hom_scope.
-Notation "g '^♭[' A ']'" := (unadjunct A g) (at level 35) : hom_scope.
+Notation "f '^♯[' A ']'" := (adjunct A f)
+  (at level 35) : hom_scope.
+Notation "g '^♭[' A ']'" := (unadjunct A g)
+  (at level 35) : hom_scope.
 
 (** ** Building the Natural Isomorphism from Native Hom Maps
 
@@ -386,7 +365,7 @@ Defined.
 
 (** 由互逆的原生 Hom 映射构造伴随。 *)
 
-Definition AdjFromHom
+Definition AdjOfHom
   : F ⊣ G.
 Proof.
   refine {|adj_hom := (HomAdjunctN; _)
@@ -399,17 +378,17 @@ Defined.
 
 (** 构造的伴随保留给定正向 Hom 映射。 *)
 
-Theorem adjunct_from_hom {X Y} (f : Hom (F X) Y)
-  : f^♯[AdjFromHom] ≈ φ X Y f.
-Proof. reflexivity. Qed.
+Theorem adjunct_of_hom {X Y} (f : Hom (F X) Y)
+  : f^♯[AdjOfHom] ≈ φ X Y f.
+Proof. exact (unlift_lift_resp (φ X Y) f). Qed.
 
 (** The constructed adjunction retains the supplied inverse hom map. *)
 
 (** 构造的伴随保留给定逆向 Hom 映射。 *)
 
-Theorem unadjunct_from_hom {X Y} (g : Hom X (G Y))
-  : g^♭[AdjFromHom] ≈ ψ X Y g.
-Proof. reflexivity. Qed.
+Theorem unadjunct_of_hom {X Y} (g : Hom X (G Y))
+  : g^♭[AdjOfHom] ≈ ψ X Y g.
+Proof. exact (unlift_lift_resp (ψ X Y) g). Qed.
 
 End HomCorrespondence.
 
@@ -422,11 +401,11 @@ Definition OpAdj {C D : Cat}
     {F : Fct C D} {G : Fct D C} (A : F ⊣ G)
   : G^opF ⊣ F^opF.
 Proof.
-  refine (AdjFromHom (G^opF) (F^opF)
+  refine (AdjOfHom (G^opF) (F^opF)
     (λ X Y, unadjunct_resp A (X := Y) (Y := X))
     (λ X Y, adjunct_resp A (X := Y) (Y := X)) _ _ _ _).
-  - intros X Y f. exact (@adjunction_η C D F G A Y X f).
-  - intros X Y g. exact (@adjunction_β C D F G A Y X g).
+  - intros X Y f. exact (@adj_η C D F G A Y X f).
+  - intros X Y g. exact (@adj_β C D F G A Y X g).
   - intros X X' Y f h.
     exact (@unadjunct_comp_l C D F G A Y X X' h f).
   - intros X Y Y' k f.
@@ -478,7 +457,7 @@ Proof. reflexivity. Qed.
 Definition IdAdj (C : Cat)
   : (@IdF C) ⊣ IdF.
 Proof.
-  refine (AdjFromHom IdF IdF (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _);
+  refine (AdjOfHom IdF IdF (λ X Y, id_resp) (λ X Y, id_resp) _ _ _ _);
     intros; reflexivity.
 Defined.
 
@@ -491,15 +470,15 @@ Definition CompAdj {C D E : Cat}
     {L : Fct D E} {R : Fct E D} (B : L ⊣ R) (A : F ⊣ G)
   : (L ∘F F) ⊣ (G ∘F R).
 Proof.
-  refine (AdjFromHom (L ∘F F) (G ∘F R)
+  refine (AdjOfHom (L ∘F F) (G ∘F R)
     (λ X Y, adjunct_resp A ∘r adjunct_resp B)
     (λ X Y, unadjunct_resp B ∘r unadjunct_resp A) _ _ _ _).
   - intros X Y f.
     change (unadjunct B (unadjunct A (adjunct A (adjunct B f))) ≈ f).
-    rewrite (adjunction_β A), (adjunction_β B). reflexivity.
+    rewrite (adj_β A), (adj_β B). reflexivity.
   - intros X Y g.
     change (adjunct A (adjunct B (unadjunct B (unadjunct A g))) ≈ g).
-    rewrite (adjunction_η B), (adjunction_η A). reflexivity.
+    rewrite (adj_η B), (adj_η A). reflexivity.
   - intros X X' Y f h.
     change (adjunct A (adjunct B (f ∘ fmap L (fmap F h))) ≈
       adjunct A (adjunct B f) ∘ h).

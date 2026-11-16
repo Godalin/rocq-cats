@@ -23,9 +23,9 @@ Notation "e '⦂' 'Eq(' f ',' g ')'" := (is_equalizer f g _ e)
 
 Class HasEqualizer (C : Cat)
   :=
-  { EqObj {X Y} : Hom X Y → Hom X Y → Ob
-  ; eqι {X Y} (f g : Hom X Y) : Hom (EqObj f g) X
-  ; equalizer_universal {X Y} {f g : Hom X Y}
+  { EqObj {X Y : C} : Hom X Y → Hom X Y → C
+  ; eqι {X Y : C} (f g : Hom X Y) : Hom (EqObj f g) X
+  ; equalizer_universal {X Y : C} {f g : Hom X Y}
     : is_equalizer f g (EqObj f g) (eqι f g)
   }.
 
@@ -37,7 +37,7 @@ Notation "'ιeq[' f ',' g ']'" := (eqι f g) : hom_scope.
 (** 经过选定等化子的泛分解。 *)
 
 Definition equalize {C : Cat} `{HE : !HasEqualizer C}
-    {X Y Q} {f g : Hom X Y} (q : Hom Q X) (H : f ∘ q ≈ g ∘ q)
+    {X Y Q : C} {f g : Hom X Y} (q : Hom Q X) (H : f ∘ q ≈ g ∘ q)
   : Hom Q Eq[f, g]
   := (snd (equalizer_universal (f := f) (g := g)) Q q H).1.
 
@@ -59,7 +59,7 @@ Context {C : Cat} `{HE : !HasEqualizer C}.
 
 (** 等化子包含箭头等化给定平行箭头。 *)
 
-Theorem equalizer_comm {X Y} {f g : Hom X Y}
+Theorem equalizer_comm {X Y : C} {f g : Hom X Y}
   : f ∘ ιeq[f, g] ≈ g ∘ ιeq[f, g].
 Proof. exact (fst (equalizer_universal (f := f) (g := g))). Qed.
 
@@ -67,7 +67,7 @@ Proof. exact (fst (equalizer_universal (f := f) (g := g))). Qed.
 
 (** 等化子分解由其与包含箭头的复合唯一确定。 *)
 
-Theorem equalizer_mediator_unique {X Y Q} {f g : Hom X Y}
+Theorem equalizer_mediator_unique {X Y Q : C} {f g : Hom X Y}
     (q : Hom Q X) (H : f ∘ q ≈ g ∘ q)
   : is_unique (λ h, ιeq[f, g] ∘ h ≈ q) eq⟨q,H⟩.
 Proof. exact (snd (equalizer_universal (f := f) (g := g)) Q q H).2. Qed.
@@ -76,7 +76,7 @@ Proof. exact (snd (equalizer_universal (f := f) (g := g)) Q q H).2. Qed.
 
 (** 分解与包含箭头复合后恢复给定箭头。 *)
 
-Theorem equalizer_β {X Y Q} {f g : Hom X Y}
+Theorem equalizer_β {X Y Q : C} {f g : Hom X Y}
     (q : Hom Q X) (H : f ∘ q ≈ g ∘ q)
   : ιeq[f, g] ∘ eq⟨q,H⟩ ≈ q.
 Proof. exact (@this _ _ _ _ _ (equalizer_mediator_unique q H)). Qed.
@@ -86,7 +86,7 @@ Proof. exact (@this _ _ _ _ _ (equalizer_mediator_unique q H)). Qed.
 
 (** 相等的中介数据不要求其交换性见证相等。 *)
 
-Theorem equalizer_proper {X Y Q} {f g : Hom X Y} {q q' : Hom Q X}
+Theorem equalizer_proper {X Y Q : C} {f g : Hom X Y} {q q' : Hom Q X}
     (H : f ∘ q ≈ g ∘ q) (H' : f ∘ q' ≈ g ∘ q') (Hq : q ≈ q')
   : eq⟨q,H⟩ ≈ eq⟨q',H'⟩.
 Proof. apply equalizer_mediator_unique. rewrite equalizer_β. exact Hq. Qed.
@@ -95,7 +95,7 @@ Proof. apply equalizer_mediator_unique. rewrite equalizer_β. exact Hq. Qed.
 
 (** 等化子的泛分解与预合成交换。 *)
 
-Lemma equalizer_comp {X Y Q R} {f g : Hom X Y} (q : Hom Q X)
+Lemma equalizer_comp {X Y Q R : C} {f g : Hom X Y} (q : Hom Q X)
     (H : f ∘ q ≈ g ∘ q) (k : Hom R Q)
     (Hk : f ∘ (q ∘ k) ≈ g ∘ (q ∘ k))
   : eq⟨q ∘ k,Hk⟩ ≈ eq⟨q,H⟩ ∘ k.
@@ -126,7 +126,7 @@ Qed.
 (** 分解一个包含箭头的复合后恢复原分解。 *)
 
 Theorem equalizer_η {C : Cat} `{HE : !HasEqualizer C}
-    {X Y Q} {f g : Hom X Y} (h : Hom Q Eq[f, g])
+    {X Y Q : C} {f g : Hom X Y} (h : Hom Q Eq[f, g])
     (H : f ∘ (ιeq[f, g] ∘ h) ≈ g ∘ (ιeq[f, g] ∘ h))
   : eq⟨ιeq[f, g] ∘ h, H⟩ ≈ h.
 Proof. apply (equalizer_hom_ext equalizer_universal). apply equalizer_β. Qed.

@@ -30,7 +30,7 @@ Context {C : Cat}.
 
 (** 指定真值箭头通过拉回方形泛地分类单态射。 *)
 
-Definition is_subobject_classifier (Ω : Ob) (Ω0 : Sub Ω)
+Definition is_subobject_classifier (Ω : C) (Ω0 : Sub Ω)
   := ∀ A (A0 : Sub A), ∃ χ,
     is_unique (λ χ, ∃ a, is_pullback χ Ω0 A0 A0 a) χ.
 
@@ -38,7 +38,7 @@ Definition is_subobject_classifier (Ω : Ob) (Ω0 : Sub Ω)
 
 (** 分类子的真值单态射的定义域是终对象。 *)
 
-Proposition sub_subobject_1 {Ω : Ob} {Ω0 : Sub Ω}
+Proposition sub_subobject_1 {Ω : C} {Ω0 : Sub Ω}
   : is_subobject_classifier Ω Ω0
     → is_terminal Ω0.
 Proof. unfold is_subobject_classifier. intros HSubOC.
@@ -66,7 +66,7 @@ End SubObjectClassifier.
 
 Class HasSubObjClassifier (C : Cat) (HT : HasTerminal C)
   :=
-  { SubOC : Ob
+  { SubOC : C
   ; truth : Hom 1 SubOC
   ; classifier_universal : is_subobject_classifier SubOC (term_Sub truth)
   }.
@@ -78,7 +78,7 @@ Arguments classifier_universal {_ _ _} _ _.
 (** 由选定分类子给出的子对象特征箭头。 *)
 
 Definition char {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} {X Y} (m : X ↣ Y)
+    `{HSC : !HasSubObjClassifier C HT} {X Y : C} (m : X ↣ Y)
   : Hom Y SubOC
   := (classifier_universal Y {|sub := X
                              ; sub_mono := m
@@ -93,7 +93,7 @@ Notation χ := char.
 (** 特征箭头由分类拉回唯一确定。 *)
 
 Theorem classifier_char_unique {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} {X Y} {m : Mono X Y}
+    `{HSC : !HasSubObjClassifier C HT} {X Y : C} {m : Mono X Y}
   : is_unique (λ c, is_pullback c truth X m !) (χ m).
 Proof.
   destruct (classifier_universal Y {|sub := X
@@ -132,7 +132,7 @@ Context {C : Cat} `{HT : !HasTerminal C}
 
 (** 同一子对象的等价表示具有按指定 Hom 相等相等的特征箭头。 *)
 
-Theorem classifier_char_subobject_proper {Y} (i j : Sub Y)
+Theorem classifier_char_subobject_proper {Y : C} (i j : Sub Y)
     (H : i ~Sub j)
   : χ (sub_mono _ i) ≈ χ (sub_mono _ j).
 Proof.
@@ -149,7 +149,7 @@ Qed.
 
 (** 按指定箭头相等改变单态射或其单态性见证，特征箭头仍相等。 *)
 
-Theorem classifier_char_proper {X Y} (m n : X ↣ Y) (H : m ≈ n)
+Theorem classifier_char_proper {X Y : C} (m n : X ↣ Y) (H : m ≈ n)
   : χ m ≈ χ n.
 Proof.
   apply (classifier_char_subobject_proper
@@ -167,7 +167,7 @@ Qed.
 
 (** 注册保相等性，使特征箭头可沿底层单态射相等重写。 *)
 
-Global Instance char_proper {X Y}
+Global Instance char_proper {X Y : C}
   : Proper ((λ (m n : X ↣ Y), m ≈ n) ==> @HomEq[Y, Ω]) char.
 Proof. intros m n H. exact (classifier_char_proper m n H). Qed.
 
@@ -176,7 +176,7 @@ Proof. intros m n H. exact (classifier_char_proper m n H). Qed.
 
 (** 相等的特征箭头也给出相互分解，因此恰好检测指定的子对象等价。 *)
 
-Theorem classifier_char_subobject_eq {Y} (i j : Sub Y)
+Theorem classifier_char_subobject_eq {Y : C} (i j : Sub Y)
   : i ~Sub j ↔ χ (sub_mono _ i) ≈ χ (sub_mono _ j).
 Proof.
   split; [apply classifier_char_subobject_proper | intros H].

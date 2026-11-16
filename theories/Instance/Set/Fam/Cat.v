@@ -182,7 +182,7 @@ Qed.
 
 (** 相干广集族及族态射组成的范畴。 *)
 
-Global Instance FamCat
+Canonical Structure FamCat
   : Cat
   :=
   {|Ob := FamC

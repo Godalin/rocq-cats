@@ -377,7 +377,8 @@ object from the Topos structure; this batch preserves the existing ETCS field.
 ## Building
 
 Requires Rocq 9.3 or later, Stdlib 9.2 or later and Dune 3.23 or later.
-With these tools available, run `dune build @all @runtest @install`.
+Use targeted checks during editing. Full repository/package validation is
+`dune build @all @runtest @install`; it is not the default development loop.
 
 Local development uses the `rocq-cats` opam switch with Rocq 9.3.0,
 Stdlib 9.2.0 and Dune 3.23.1. CI checks Rocq 9.3; Rocq 9.0–9.2 are no longer
@@ -391,7 +392,7 @@ stop builds and language servers before updating a shared switch:
 ```sh
 opam pin add --switch=rocq-cats --no-action rocq-core 9.3.0
 opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1
-opam exec --switch=rocq-cats -- dune build @all @runtest @install
+opam exec --switch=rocq-cats -- dune build @check-core
 ```
 
 Run all project commands through this switch, without changing the global
@@ -408,6 +409,18 @@ Dune 3.23.1；CI 检查 Rocq 9.3，不再支持 Rocq 9.0–9.2。
 所有项目命令均通过上述 switch 运行，无须更改全局 opam 选择。
 VS Code 的 `vsrocq.path` 应指向该 switch
 中的 `vsrocqtop`，并使用与 VsRocq 扩展版本匹配的 `vsrocq-language-server`。
+
+Daily checks are documented in [the testing guide](./docs/Testing.md):
+build explicit `theories/...vo` and selected test targets during editing;
+`@check-core` runs foundational regressions, `@check-library` builds only
+the complete library, and `@check-tests` builds every Rocq regression.
+Integration requires the library and relevant regressions; CI retains complete
+repository/test/install checks. Existing build artifacts are reused.
+
+日常验证见[测试指南](./docs/Testing.md)：编辑时构建明确的
+`theories/...vo` 及选定测试目标；`@check-core` 跑基础回归，
+`@check-library` 只构建完整库，`@check-tests` 构建全部 Rocq 回归。
+集成要求库及相关回归通过，CI 保留完整仓库／测试／安装检查；复用已有构建产物。
 
 ## Documentation
 

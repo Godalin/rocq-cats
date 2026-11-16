@@ -15,7 +15,7 @@ From Cats Require Import Cat.Core.
 
     [SetCat] 承担普通数学中集合范畴的作用；[SetC] 也用于 Yoneda 引理。 *)
 
-Program Instance SetCat@{u p +}
+Program Canonical SetCat@{u p +}
   : Cat
   :=
   {|Ob := SetC@{u p}

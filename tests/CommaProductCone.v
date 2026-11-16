@@ -195,7 +195,7 @@ Program Definition SuppliedTaggedProduct
   :=
   {|comma_left_ob := (TaggedGluingS × TaggedGluingS)%ob
   ; comma_right_ob := (TaggedGluingS × TaggedGluingS)%ob
-  ; comma_arrow := ⟨gluing_toggle ∘ π1, gluing_toggle ∘ π2⟩
+  ; comma_arrow := ⟨gluing_toggle ∘r π1, gluing_toggle ∘r π2⟩
   |}.
 
 (** The first projection carries a true commutativity token. *)

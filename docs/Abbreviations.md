@@ -1345,6 +1345,80 @@ unchanged inputs; this does not claim full-library integration acceptance.
 用户已完成群胚／除法批次审核并批准保存本地提交。早前未提交状态保留其历史
 含义，未变输入复用已记录的定向检查，不表示完成全库集成验收。
 
+## Adj and Of follow-up / Adj 及 Of 后续
+
+The user authorized completing the remaining `Adj` / `adj` family together
+with the reviewed `From → Of` constructors. The exact 34-name table below
+includes mathematical declarations and their directly named regression
+helpers. Earlier tables that retained descriptive `adjunction_*` names are
+historical checkpoints superseded for these reviewed entries. `adjunct`
+and `unadjunct` retain their distinct Hom-transposition meaning; their
+`from_hom` helpers become `of_hom`. Module paths and ordinary prose do not
+change. This step is implemented alongside the first `Cat` Record slice,
+without compatibility aliases. The user approved saving the reviewed work
+as a local checkpoint; no push or integration handoff is included.
+
+用户授权补齐剩余 `Adj`／`adj` 词族，并实施已审阅构造名中的 `From → Of`。
+下方精确 34 项包含数学声明及直接命名的回归辅助项。早前保留描述性
+`adjunction_*` 名称的表格是历史检查点，本次审阅项按下表更新。
+`adjunct` 与 `unadjunct` 保留 Hom 转置的独立数学含义，其中 `from_hom`
+辅助名改为 `of_hom`。模块路径及普通文字不变。本步与首片 `Cat` Record
+迁移一同实施，不留兼容别名。用户已批准将审核后的成果保存为本地检查点；
+未推送或交集成。
+
+| Previous / 前名 | Current / 当前名 | Source / 源码 |
+| --- | --- | --- |
+| `AdjFromHom` | `AdjOfHom` | [Cat/Adjunction.v](../theories/Cat/Adjunction.v) |
+| `ClosFromUniversal` | `ClosOfUniversal` | [Set/Closure/Core.v](../theories/Set/Closure/Core.v) |
+| `FreeObjFromUniversal` | `FreeObjOfUniversal` | [Cat/FreeObject/Core.v](../theories/Cat/FreeObject/Core.v) |
+| `IdentityFromAdjunction` | `IdentityOfAdj` | [tests/Computations.v](../tests/Computations.v) |
+| `adjunct_from_hom` | `adjunct_of_hom` | [Cat/Adjunction.v](../theories/Cat/Adjunction.v) |
+| `adjunction_free_roundtrip_iso` | `adj_free_roundtrip_iso` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
+| `adjunction_hom_iso` | `adj_hom_iso` | [Instance/Set/Adjunction.v](../theories/Instance/Set/Adjunction.v) |
+| `adjunction_hom_nat_iso` | `adj_hom_nat_iso` | [Instance/Set/Adjunction.v](../theories/Instance/Set/Adjunction.v) |
+| `adjunction_kleisli_fully_faithful` | `adj_kleisli_fully_faithful` | [Cat/Monad/KleisliComparison.v](../theories/Cat/Monad/KleisliComparison.v) |
+| `adjunction_kleisli_unadjunct_comp` | `adj_kleisli_unadjunct_comp` | [Cat/Monad/KleisliComparison.v](../theories/Cat/Monad/KleisliComparison.v) |
+| `adjunction_monad_mul` | `adj_monad_mul` | [Cat/Monad/Adjunction.v](../theories/Cat/Monad/Adjunction.v) |
+| `adjunction_β` | `adj_β` | [Cat/Adjunction.v](../theories/Cat/Adjunction.v) |
+| `adjunction_η` | `adj_η` | [Cat/Adjunction.v](../theories/Cat/Adjunction.v) |
+| `free_adjunction_counit` | `free_adj_counit` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
+| `free_adjunction_unit` | `free_adj_unit` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
+| `generator_adjunction_counit_iso` | `generator_adj_counit_iso` | [Cat/Diagram/Generator.v](../theories/Cat/Diagram/Generator.v) |
+| `generator_adjunction_unit_iso` | `generator_adj_unit_iso` | [Cat/Diagram/Generator.v](../theories/Cat/Diagram/Generator.v) |
+| `high_eq_adjunction_hom` | `high_eq_adj_hom` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_colimit_adjunction` | `high_eq_colimit_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_adjunction` | `high_eq_exponential_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_limit_adjunction` | `high_eq_limit_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `kleisli_adjunction_counit` | `kleisli_adj_counit` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
+| `kleisli_adjunction_triangle_l` | `kleisli_adj_triangle_l` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
+| `kleisli_adjunction_triangle_r` | `kleisli_adj_triangle_r` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
+| `kleisli_adjunction_unit` | `kleisli_adj_unit` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
+| `low_eq_adjunction_hom` | `low_eq_adj_hom` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_colimit_adjunction` | `low_eq_colimit_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_adjunction` | `low_eq_exponential_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_limit_adjunction` | `low_eq_limit_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `mixed_adjunction_comp` | `mixed_adj_comp` | [tests/Universes.v](../tests/Universes.v) |
+| `mixed_free_adjunction` | `mixed_free_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `preorder_adjunction_correspondence` | `preorder_adj_correspondence` | [Cat/Logic/Adjunction.v](../theories/Cat/Logic/Adjunction.v) |
+| `separated_closure_adjunction` | `separated_closure_adj` | [tests/Closure.v](../tests/Closure.v) |
+| `unadjunct_from_hom` | `unadjunct_of_hom` | [Cat/Adjunction.v](../theories/Cat/Adjunction.v) |
+
+## LiftT constructor / LiftT 构造器
+
+Single-field universe wrappers now have the explicit constructor `Lift`.
+Use `Lift x` for a value or equality witness. The wrapper type,
+projection `lower` and independent universe bounds are unchanged; no
+compatibility alias for the autogenerated constructor is retained.
+Native map recovery is exposed separately as `unlift_resp` / `f^↓S`.
+
+单字段宇宙包装现有显式构造器 `Lift`，值或相等见证写作 `Lift x`。
+包装类型、投影 `lower` 及独立宇宙上界不变，不保留旧自动生成构造器的兼容
+别名。原生映射恢复单独通过 `unlift_resp`／`f^↓S` 暴露。
+
+| Previous / 前名 | Current / 当前名 | Source / 源码 |
+| --- | --- | --- |
+| `Build_LiftT` | `Lift` | [Set/Core.v](../theories/Set/Core.v) |
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.
@@ -1357,7 +1431,7 @@ work follows the separate user-authorized bundled-interface migration.
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
 | Optional names / 可选名称 | `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
-| Complete hierarchies / 完整层级 | `CartesianCat`, groupoid/monoidal/CCC bundling / 群胚、幺半及 CCC 打包 | Separately authorized; Cat/Gpd first slice in progress / 已独立授权，Cat/Gpd 首片进行中 |
+| Complete hierarchies / 完整层级 | `CartesianCat`, monoidal/CCC bundling / 幺半及 CCC 打包 | Gpd complete; Cat Record slice in review / Gpd 已完成，Cat Record 片段待审 |
 | Other notation / 其他记号 | Repository-wide reserved syntax beyond the algebra slice above / 上述代数片段以外的全库预留语法 | Separate review; no replay of #31 / 单独审阅，不重放 #31 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突
