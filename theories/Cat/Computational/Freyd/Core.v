@@ -35,6 +35,7 @@ Local Open Scope premonoidal_scope.
 
 Class FreydCat (C K : Cat)
   :=
+
   (** The pure functor is the unique primary view. *)
 
   (** 纯函子是唯一主要视图。 *)
@@ -51,8 +52,10 @@ Class FreydCat (C K : Cat)
 
   (** 选定笛卡尔值结构及对称预幺半计算结构。 *)
 
-  ; hasCartCat :: CartCat C
-  ; hasSymmetricPremonoidal :: SymmetricPremonoidalCat FreydComputations
+  ; hasValueTerminal :: HasTerminal C
+  ; hasValueProduct :: HasProduct C
+  ; hasSymmetricPremonoidal
+    :: SymmetricPremonoidalCat FreydComputations
 
   (** Tensor and unit agree on objects. The chosen equality witnesses
       determine every boundary transport below. *)
@@ -60,18 +63,20 @@ Class FreydCat (C K : Cat)
   (** 张量及单位在对象上一致。选定相等见证确定以下全部边界运输。 *)
 
   ; freyd_tensor_objects (X Y : @Ob C)
-    : @Prod C hasProduct X Y =
-        @binoidal_tensor FreydComputations hasSymmetricPremonoidal X Y
+    : @Prod C hasValueProduct X Y =
+        @binoidal_tensor FreydComputations
+          hasSymmetricPremonoidal X Y
   ; freyd_unit_object
-    : @Term C hasTerminal = PremonoidalUnit hasSymmetricPremonoidal
+    : @Term C hasValueTerminal =
+        PremonoidalUnit hasSymmetricPremonoidal
 
   (** Pure maps commute with arbitrary computations in both positions. *)
 
   (** 纯映射在两个位置均与任意计算交换。 *)
 
   ; freyd_pure_central {X Y : @Ob C} (f : Hom X Y)
-    : @is_central FreydComputations hasSymmetricPremonoidal
-        X Y (fmap FreydF f)
+    : @is_central FreydComputations
+        hasSymmetricPremonoidal X Y (fmap FreydF f)
 
   (** Preserve each context action across the same object boundaries. *)
 
@@ -120,7 +125,7 @@ Class FreydCat (C K : Cat)
         (eq_trans (freyd_tensor_objects X (Y × Z)%ob)
           (f_equal (λ Q, @binoidal_tensor FreydComputations
             hasSymmetricPremonoidal X Q) (freyd_tensor_objects Y Z))) ∘
-        fmap FreydF (@product_assoc C hasProduct X Y Z).1 ≈
+        fmap FreydF (@product_assoc C hasValueProduct X Y Z).1 ≈
         (@premonoidal_associator FreydComputations
           hasSymmetricPremonoidal X Y Z).1 ∘
           @eq_to_hom FreydComputations _ _

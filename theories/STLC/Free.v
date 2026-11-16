@@ -10,8 +10,8 @@ From Cats Require Import
   Cat.Product.Transport
   Cat.Exponential.Core
   Cat.Exponential.Transport
-  Cat.CCC
-  Cat.Functor.Closed.
+  Cat.CCC.Core
+  Cat.CCC.Functor.
 
 (** * The Free Cartesian Closed Universal Property
 
@@ -70,14 +70,27 @@ Local Open Scope cat_scope.
 
 Section FreeCCC.
 Universes b e l.
-Context {B : Type@{b}} {C : Cat} `{HC : !CCC C}
+Context {B : Type@{b}} {C : CCC}
     (F : Fct (TyCat@{b e l} B) C)
-    `{HF : !IsCCCF F (TyCat_CCC B) HC}
+    `{HF : !@IsCCCF (TyCat_CCC B) C F}
     (I : B → @Ob C) (β : ∀ b, I b ≅ F (ty_base b)).
-Local Instance source_ccc
-  : CCC (TyCat@{b e l} B)
-  := TyCat_CCC B.
-Local Existing Instance HC.
+
+Local Instance source_HasTerminal
+  : HasTerminal (TyCat@{b e l} B)
+  := TyCat_HasTerminal B.
+Local Instance source_HasProduct
+  : HasProduct (TyCat@{b e l} B)
+  := TyCat_HasProduct B.
+Local Instance source_HasExponential
+  : HasExponential source_HasProduct
+  := TyCat_HasExponential B.
+Local Instance target_HasExponential
+  : HasExponential (hasProduct C)
+  := hasExponential C.
+Local Instance source_IsCartF
+  : IsCartF F source_HasTerminal source_HasProduct
+  := @isCartF (TyCat_CCC B) C F HF.
+
 
 (** Naturality at both projections determines a transformation on products. *)
 
@@ -88,7 +101,7 @@ Lemma type_natural_product (α : TypeInterpretF I ⇒ F) (X Y : Ty B)
 Proof.
   apply (product_cone_ext (@functor_product (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B)
-    (@isCartF _ _ F _ _ HF) X Y)).
+    (@isCartF (TyCat_CCC B) C F HF) X Y)).
   - rewrite <- (nat_naturality α (@Cats.Cat.Product.Core.π1
       (TyCat@{b e l} B) (TyCat_HasProduct B) X Y)).
     rewrite <- comp_assoc, (fst (functor_product_inv_β F X Y)),
@@ -136,10 +149,10 @@ Lemma type_functor_exponential_ext {A U : Ty B} {Z : @Ob C}
 Proof.
   pose proof (@functor_eval (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B) (TyCat_HasExponential B)
-    (@hasProduct C HC) (@hasExponential C HC)
-    (@isCartF _ _ F _ _ HF) A U) as Ev.
+    (hasProduct C) (hasExponential C)
+    (@isCartF (TyCat_CCC B) C F HF) A U) as Ev.
   apply (iso_mono (functor_exponential_comparison F A U)
-    (@functor_exponential _ _ F _ _ HF A U)).
+    (@functor_exponential (TyCat_CCC B) C F HF A U)).
   apply (exponential_ext_iso (type_compare F I β A)).
   transitivity ((eval ∘ (functor_exponential_comparison F A U × id)) ∘
     (f × (type_compare F I β A).1)).
@@ -188,7 +201,7 @@ Proof.
   - exact (Hbase b0).
   - destruct (@functor_terminal (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B)
-      (@isCartF _ _ F _ _ HF) (TyI I ty_unit)) as [h [_ Hu]].
+      (@isCartF (TyCat_CCC B) C F HF) (TyI I ty_unit)) as [h [_ Hu]].
     transitivity h; [apply Hu | symmetry; apply Hu]; constructor.
   - change (α (ty_prod A U) ≈ (type_compare F I β (ty_prod A U)).1).
     rewrite type_natural_product, type_compare_product.

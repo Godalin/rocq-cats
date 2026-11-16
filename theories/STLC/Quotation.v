@@ -3,7 +3,7 @@ From Cats Require Import
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC.
+  Cat.CCC.Core.
 
 (** * Evaluation in the Literal Type Presentation
 
@@ -63,9 +63,6 @@ Local Open Scope stlc_ren_scope.
 Section Quotation.
 Universes b e l.
 Context {B : Type@{b}}.
-Local Instance type_ccc
-  : CCC (TyCat@{b e l} B)
-  := TyCat_CCC B.
 
 (** Variable assignments by arrows of the literal type category. *)
 

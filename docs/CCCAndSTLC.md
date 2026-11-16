@@ -14,7 +14,7 @@ STLC 的 βη 可靠性、共同宇宙界内的模型完备性及自由 CCC 泛�
 
 ## 1. 已有基础与本次增量
 
-[CCC](../theories/Cat/CCC.v) 已组合选定的终对象、二元积和指数对象。
+[CCC](../theories/Cat/CCC/Core.v) 已组合选定的终对象、二元积和指数对象。
 这些结构都从 Type 值泛性质提取中介态射。
 态射相等是 `HomSet` 指定的 `HomEq`，无需比较函数或证明字段的 Rocq 相等。
 
@@ -138,7 +138,7 @@ A ::= base b | 1 | A × A | A → A
 以后加入类型为 A 的闭常量 c 时，
 签名解释额外选择 `I(c) : Hom 1 ⟦A⟧`；在上下文中以 `I(c) ∘ !` 解释。
 
-给定任意 `C : Cat`、显式的 `CCC C` 及基类型解释 `I : B → Ob C`，
+给定任意完整模型 `C : CCC` 及基类型解释 `I : B → Ob C`，
 后续语义解释按下表定义；本轮还没有实现这些解释函数：
 
 | 语法 | 解释 |
@@ -497,7 +497,7 @@ CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境�
 ### 保持结构的函子与解释比较
 
 [Functor.Cartesian](../theories/Cat/Functor/Cartesian.v) 的 `IsCartF`
-要求像终对象和像积满足完整泛性质。[Functor.Closed](../theories/Cat/Functor/Closed.v)
+要求像终对象和像积满足完整泛性质。[CCC.Functor](../theories/Cat/CCC/Functor.v)
 的 `IsCCCF` 再要求规范指数比较可逆。积的比较、逆比较及其自然性均由泛性质
 导出；指数比较由像求值转置而得。它们不要求选定对象或函子记录原生相等。
 `functor_pair`、`functor_curry` 与 `functor_eval` 给出通常的保持方程。
@@ -558,7 +558,7 @@ Hom／相等见证大小排列下通过临时验证；常驻测试仅补充一�
 只在 `SetCat` 模型中相等不能直接使用此论证，因为量化中必须包含语法模型。
 
 形式陈述时采用宇宙多态的一族定理，明确模型大小界并容纳语法 CCC；
-`TmModelEq` 量化 `Cat@{b b e l l}` 以及该界内任意选定 CCC 与基类型解释。
+`TmModelEq` 量化 `CCC@{b b e l l}` 以及该界内任意基类型解释。
 此共同界明确包含语法模型；一般可靠性仍适用于其他大小排列的模型。
 不假设能在一个小宇宙内收集所有 CCC，也不通过 resizing 合并大小。
 态射载体、相等见证以及定律辅助宇宙保持独立。
@@ -574,12 +574,12 @@ nonemptiness assertion. The two constructive directions are
 `tm_inhabitation_soundness_iff_completeness`:
 
 ```text
-Tm Γ A ↔ ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → Ob C),
+Tm Γ A ↔ ∀ (C : CCC@{b b e l l}) (I : B → Ob C),
             Hom_C (CtxI I Γ) (TyI I A)
 ```
 
 Soundness evaluates the term with `tm_interp`. Completeness instantiates
-the family with `TyCat B`, `TyCat_CCC B` and `ty_base`. The existing
+the family with `TyCat_CCC B` and `ty_base`. The existing
 `type_compare` and inverse `context_compare` maps for `IdF` turn the chosen
 semantic morphism into a literal arrow `CtxTy Γ → A`. This arrow is a
 singleton-context substitution; taking its `var_zero` component and

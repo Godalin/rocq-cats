@@ -8,8 +8,8 @@ From Cats Require Import
   Cat.Product.Core
   Cat.Product.Transport
   Cat.Exponential.Core
-  Cat.CCC
-  Cat.Functor.Closed.
+  Cat.CCC.Core
+  Cat.CCC.Functor.
 
 (** * Interpreting the Type Presentation *)
 
@@ -57,7 +57,7 @@ Local Open Scope cat_scope.
 
 Section TypeInterpretation.
 Universes b e l.
-Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).
+Context {B : Type@{b}} {C : CCC} (I : B → @Ob C).
 
 (** The single input variable denotes the identity, without a terminal factor. *)
 
@@ -146,16 +146,16 @@ Lemma type_interp_eval (X Y : Ty B)
   : fmap TypeInterpretF (@Cats.Cat.Exponential.Core.eval
       (TyCat@{b e l} B) (TyCat_HasProduct B)
       (TyCat_HasExponential B) X Y) ≈
-      @Cats.Cat.Exponential.Core.eval C (@hasProduct C HC)
-        (@hasExponential C HC) (TyI I X) (TyI I Y).
+      @Cats.Cat.Exponential.Core.eval C (hasProduct C)
+        (hasExponential C) (TyI I X) (TyI I Y).
 Proof.
   change (app
     (π1 (C := C) (X := (TyI I Y ^ TyI I X)%ob) (Y := TyI I X) ∘ id)
     (π2 ∘ id) ≈ @Cats.Cat.Exponential.Core.eval C
-      (@hasProduct C HC) (@hasExponential C HC) (TyI I X) (TyI I Y)).
+      (hasProduct C) (hasExponential C) (TyI I X) (TyI I Y)).
   rewrite !(@comp_id_r C). unfold app.
   transitivity (@Cats.Cat.Exponential.Core.eval C
-    (@hasProduct C HC) (@hasExponential C HC) (TyI I X) (TyI I Y) ∘ id).
+    (hasProduct C) (hasExponential C) (TyI I X) (TyI I Y) ∘ id).
   - apply comp_proper; [reflexivity |].
     symmetry. apply product_pair_unique. split; apply comp_id_r.
   - apply comp_id_r.
@@ -168,11 +168,11 @@ Qed.
 Program Definition TypeInterpretF_IsCartF
   : IsCartF TypeInterpretF (TyCat_HasTerminal B) (TyCat_HasProduct B)
   :=
-  {|functor_terminal := @terminal_universal C (@hasTerminal C HC)
+  {|functor_terminal := @terminal_universal C (hasTerminal C)
   |}.
 Next Obligation.
   refine (product_cone_equiv _ _ (@product_universal C
-    (@hasProduct C HC) (TyI I X) (TyI I Y))).
+    (hasProduct C) (TyI I X) (TyI I Y))).
   - symmetry. apply comp_id_r.
   - symmetry. apply comp_id_r.
 Defined.
@@ -191,7 +191,7 @@ End TypeInterpretation.
 
 Section TypeStructurePreservation.
 Universes b e l.
-Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).
+Context {B : Type@{b}} {C : CCC} (I : B → @Ob C).
 Let F
   : Fct (TyCat@{b e l} B) C
   := TypeInterpretF I.
@@ -204,11 +204,11 @@ Local Existing Instance TypeInterpretF_IsCartF.
 Lemma type_interp_product_inv (X Y : Ty B)
   : functor_product_inv F
       (TC := TyCat_HasTerminal B) (PC := TyCat_HasProduct B)
-      (PD := @hasProduct C HC) X Y ≈ id.
+      (PD := hasProduct C) X Y ≈ id.
 Proof.
   pose proof (functor_product_inv_β F
     (TC := TyCat_HasTerminal B) (PC := TyCat_HasProduct B)
-    (PD := @hasProduct C HC)
+    (PD := hasProduct C)
     X Y) as [H1 H2].
   assert (P1 : fmap F (@Cats.Cat.Product.Core.π1
     (TyCat@{b e l} B) (TyCat_HasProduct B) X Y) ≈
@@ -232,21 +232,23 @@ Lemma type_interp_exponential_comparison (X Y : Ty B)
   : functor_exponential_comparison F
       (TC := TyCat_HasTerminal B) (PC := TyCat_HasProduct B)
       (EC := TyCat_HasExponential B)
-      (PD := @hasProduct C HC) (ED := @hasExponential C HC) X Y ≈ id.
+      (PD := hasProduct C) (ED := hasExponential C) X Y ≈ id.
 Proof.
   assert (Pev : fmap F (@Cats.Cat.Exponential.Core.eval
     (TyCat@{b e l} B) (TyCat_HasProduct B) (TyCat_HasExponential B) X Y) ≈
-    @Cats.Cat.Exponential.Core.eval C (@hasProduct C HC)
-      (@hasExponential C HC) (TyI I X) (TyI I Y)).
+    @Cats.Cat.Exponential.Core.eval C (hasProduct C)
+      (hasExponential C) (TyI I X) (TyI I Y)).
   { exact (type_interp_eval I X Y). }
-  unfold functor_exponential_comparison.
-  rewrite type_interp_product_inv, Pev.
+  pose proof (type_interp_product_inv (ty_arr X Y) X) as HP.
+  unfold functor_product_inv in HP.
+  unfold functor_exponential_comparison, preserved_exponential_comparison.
+  rewrite HP, Pev.
   etransitivity.
-  - apply (@exponential_curry_proper C (@hasProduct C HC)
-      (@hasExponential C HC) (TyI I X) (TyI I Y)
+  - apply (@exponential_curry_proper C (hasProduct C)
+      (hasExponential C) (TyI I X) (TyI I Y)
       (TyI I Y ^ TyI I X)%ob).
     exact (@comp_id_r C _ _ (@Cats.Cat.Exponential.Core.eval C
-      (@hasProduct C HC) (@hasExponential C HC) (TyI I X) (TyI I Y))).
+      (hasProduct C) (hasExponential C) (TyI I X) (TyI I Y))).
   - apply exponential_curry_eval.
 Qed.
 
@@ -255,7 +257,7 @@ Qed.
 (** 递归构造的解释是 CCC 函子。 *)
 
 Program Definition TypeInterpretF_IsCCCF
-  : IsCCCF F (TyCat_CCC B) HC
+  : @IsCCCF (TyCat_CCC B) C F
   :=
   {|isCartF := TypeInterpretF_IsCartF I
   |}.

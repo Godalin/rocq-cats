@@ -4,7 +4,7 @@ From Cats Require Import
   Cat.Core
   Cat.Natural
   Cat.Gluing.Core
-  Cat.CCC
+  Cat.CCC.Core
   Cat.Exponential.Core
   Cat.Product.Core
   Cat.Functor.FiniteProducts
@@ -166,10 +166,18 @@ Context (B : Type@{b}).
 (** 在原生世界层级实例化完整箭头范畴 CCC。 *)
 
 Definition categorical_large_law_ccc
-  : CCC (Gluing (@IdF (FctCat
-      ((RenamingCat B : Cat@{b b r l l})^op)
-        SetCat@{u u _ _ _ _ _})))
+  : CCC
   := RenamingGluing_CCC B.
+
+(** The complete bundle retains the original category at these native bounds. *)
+
+(** 完整结构包在这些原生大小界下保留原范畴。 *)
+
+Example categorical_large_law_ccc_category
+  : (RenamingGluing_CCC B : Cat) = Gluing (@IdF (FctCat
+      ((RenamingCat B : Cat@{b b r l l})^op)
+        SetCat@{u u _ _ _ _ _})).
+Proof. reflexivity. Qed.
 
 (** Application compares with the selected evaluation at these bounds. *)
 
@@ -207,10 +215,18 @@ Context (B : Type@{b}).
 (** 相反的严格次序也可实例化完整结构。 *)
 
 Definition categorical_small_law_ccc
-  : CCC (Gluing (@IdF (FctCat
-      ((RenamingCat B : Cat@{b b r l l})^op)
-        SetCat@{u u _ _ _ _ _})))
+  : CCC
   := RenamingGluing_CCC B.
+
+(** The complete bundle retains the original category at these native bounds. *)
+
+(** 完整结构包在这些原生大小界下保留原范畴。 *)
+
+Example categorical_small_law_ccc_category
+  : (RenamingGluing_CCC B : Cat) = Gluing (@IdF (FctCat
+      ((RenamingCat B : Cat@{b b r l l})^op)
+        SetCat@{u u _ _ _ _ _})).
+Proof. reflexivity. Qed.
 
 (** The natural isomorphism uses the same selected exponential object. *)
 
@@ -246,7 +262,7 @@ Definition categorical_small_law_curry (A U : Ty B)
 (** 正规化同构属于这个同一个显式选定 CCC，无需另一选择或重建范畴。 *)
 
 Definition categorical_selected_normalization_iso (A : Ty B)
-  : @is_iso (categorical_small_law_ccc : Cat) _ _
+  : @is_iso (RenamingGluing_CCC B : Cat) _ _
       (CategoricalNormalizeM A)
   := categorical_normalization_iso A.
 

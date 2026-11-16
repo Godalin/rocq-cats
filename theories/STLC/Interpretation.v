@@ -5,7 +5,7 @@ From Cats Require Import
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC
+  Cat.CCC.Core
   Cat.Functor.Core.
 
 (** * Context Interpretation and Semantic Substitution *)
@@ -55,7 +55,7 @@ Local Open Scope cat_scope.
 
 Section Interpretation.
 Universes b e l.
-Context {B : Type@{b}} {C : Cat} `{HC : !CCC C} (I : B → @Ob C).
+Context {B : Type@{b}} {C : CCC} (I : B → @Ob C).
 
 (** Assemble variable assignments into their representing context product. *)
 

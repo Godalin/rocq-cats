@@ -1,4 +1,6 @@
-From Cats Require Export Cat.Functor.Cartesian.
+From Cats Require Export
+  Cat.Functor.Cartesian
+  Cat.Functor.ExponentialComparison.
 From Cats Require Import
   Cat.Core
   Cat.Isomorphism
@@ -6,7 +8,7 @@ From Cats Require Import
   Cat.Product.Core
   Cat.Exponential.Core
   Cat.Exponential.Functor
-  Cat.CCC
+  Cat.CCC.Core
   Cat.Functor.ExponentialComparison.
 
 (** * Cartesian Closed Functors
@@ -25,84 +27,42 @@ From Cats Require Import
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 
-(** ** Comparing Exponentials along a Functor
-
-    Fix source terminal and product structures, products in the target, and
-    exponentials in both categories. For a cartesian functor [F], construct
-    the exponential comparison and its evaluation and currying equations. *)
-
-(** ** 沿函子比较指数对象
-
-    固定来源的终对象与积、目标的积以及两侧的指数结构，为笛卡尔函子 [F] 构造指数比较，并给出求值和柯里化方程。 *)
-
-Section ExponentialComparison.
-Context {C D : Cat} (F : Fct C D)
-    `{TC : !HasTerminal C} `{PC : !HasProduct C}
-    `{EC : !HasExponential PC}
-    `{PD : !HasProduct D} `{ED : !HasExponential PD}
-    `{HF : !IsCartF F TC PC}.
-
-(** Transpose the image evaluation after the inverse product comparison. *)
-
-(** 像求值与逆向积比较复合后转置。 *)
-
-Definition functor_exponential_comparison (X Y : @Ob C)
-  : Hom (F ((Y ^ X)%ob)) (F Y ^ F X)
-  := ƛ (fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X).
-
-(** Currying is preserved through the canonical comparisons. *)
-
-(** 柯里化通过规范比较得到保持。 *)
-
-Lemma functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
-  : functor_exponential_comparison X Y ∘ fmap F (ƛ f) ≈
-      ƛ (fmap F f ∘ functor_product_inv F Z X).
-Proof. apply preserved_curry. Qed.
-
-(** Evaluation is preserved in the same comparison square. *)
-
-(** 求值在同一比较方形中得到保持。 *)
-
-Lemma functor_eval (X Y : @Ob C)
-  : eval ∘ (functor_exponential_comparison X Y × id) ≈
-      fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X.
-Proof. apply preserved_eval. Qed.
-
-End ExponentialComparison.
-
 (** A CCC functor preserves finite products and has invertible exponential
     comparisons. All structures are named and explicitly supplied. *)
 
 (** CCC 函子保持有限积，并具有可逆的指数比较；所有结构具名且显式提供。 *)
 
-Class IsCCCF {C D : Cat} (F : Fct C D) (HC : CCC C) (HD : CCC D)
+Class IsCCCF {C D : CCC} (F : Fct C D)
   :=
-  { isCartF :: IsCartF F (@hasTerminal C HC) (@hasProduct C HC)
+  { isCartF :: IsCartF F (hasTerminal C) (hasProduct C)
   ; functor_exponential X Y
-      : is_iso (@functor_exponential_comparison C D F
-          (@hasTerminal C HC) (@hasProduct C HC) (@hasExponential C HC)
-          (@hasProduct D HD) (@hasExponential D HD) isCartF X Y)
+    : is_iso (@functor_exponential_comparison C D F
+        (hasTerminal C) (hasProduct C)
+        (hasExponential C)
+        (hasProduct D) (hasExponential D) isCartF X Y)
   }.
 
 (** Identity functors are cartesian closed relative to the same choices. *)
 
 (** 对同一选定结构，恒等函子是笛卡尔闭函子。 *)
 
-Program Definition IdF_IsCCCF (C : Cat) (HC : CCC C)
-  : IsCCCF (@IdF C) HC HC
+Program Definition IdF_IsCCCF (C : CCC)
+  : @IsCCCF C C (@IdF C)
   :=
-  {|isCartF := IdF_IsCartF C (@hasTerminal C HC) (@hasProduct C HC)
+  {|isCartF := IdF_IsCartF C (hasTerminal C) (hasProduct C)
   |}.
 Next Obligation.
   assert (H : functor_exponential_comparison (@IdF C)
-    (TC := @hasTerminal C HC) (PC := @hasProduct C HC)
-    (EC := @hasExponential C HC) (PD := @hasProduct C HC)
-    (ED := @hasExponential C HC)
-    (HF := IdF_IsCartF C (@hasTerminal C HC) (@hasProduct C HC))
+    (TC := hasTerminal C) (PC := hasProduct C)
+    (EC := hasExponential C) (PD := hasProduct C)
+    (ED := hasExponential C)
+    (HF := IdF_IsCartF C (hasTerminal C) (hasProduct C))
     X Y ≈ id).
-  { unfold functor_exponential_comparison.
-    rewrite id_functor_product_inv, comp_id_r.
-    apply exponential_curry_eval. }
+  { pose proof (id_functor_product_inv C (hasTerminal C) (hasProduct C)
+      ((Y ^ X)%ob) X) as HP.
+    unfold functor_product_inv in HP.
+    unfold functor_exponential_comparison, preserved_exponential_comparison.
+    rewrite HP, comp_id_r. apply exponential_curry_eval. }
   exists id. split; unfold is_linv_of, is_rinv_of;
     [rewrite comp_id_l | rewrite comp_id_r]; exact H.
 Defined.
@@ -112,12 +72,8 @@ Defined.
 (** ** 笛卡尔闭函子的复合 *)
 
 Section ClosedFunctorComposition.
-Context {C D E : Cat} (F : Fct C D) (G : Fct D E)
-    (HC : CCC C) (HD : CCC D) (HE : CCC E)
-    (HF : IsCCCF F HC HD) (HG : IsCCCF G HD HE).
-Local Existing Instance HC.
-Local Existing Instance HD.
-Local Existing Instance HE.
+Context {C D E : CCC} (F : Fct C D) (G : Fct D E)
+    (HF : @IsCCCF C D F) (HG : @IsCCCF D E G).
 Local Existing Instance HF.
 Local Existing Instance HG.
 
@@ -138,7 +94,7 @@ Proof. apply preserved_exponential_comparison_comp. Qed.
 (** 选定的 CCC 保持证明可以复合，不启用全局实例。 *)
 
 Program Definition CompF_IsCCCF
-  : IsCCCF (G ∘F F) HC HE
+  : @IsCCCF C E (G ∘F F)
   :=
   {|isCartF := CompF_IsCartF F G
   |}.
@@ -146,8 +102,8 @@ Next Obligation.
   refine (is_iso_equiv (symmetry (functor_exponential_comparison_comp X Y)) _).
   apply is_iso_comp.
   - apply (@functor_is_iso D E G).
-    exact (@functor_exponential C D F HC HD HF X Y).
-  - exact (@functor_exponential D E G HD HE HG (F X) (F Y)).
+    exact (@functor_exponential C D F HF X Y).
+  - exact (@functor_exponential D E G HG (F X) (F Y)).
 Defined.
 
 End ClosedFunctorComposition.
@@ -164,19 +120,19 @@ End ClosedFunctorComposition.
 (** CCC 函子为一个笛卡尔函子增加规范指数比较的可逆性；强制转换经
     [CartFct] 到达 [Fct]，不另存函子或另一份笛卡尔保持性见证。 *)
 
-Class CCCFct {C D : Cat} (HC : CCC C) (HD : CCC D)
+Class CCCFct (C D : CCC)
   :=
   { CCCF :> @CartFct C D
-      (@hasTerminal C HC) (@hasProduct C HC)
+      (hasTerminal C) (hasProduct C)
   ; ccc_functor_exponential (X Y : @Ob C)
     : is_iso (@functor_exponential_comparison C D CCCF
-        (@hasTerminal C HC) (@hasProduct C HC) (@hasExponential C HC)
-        (@hasProduct D HD) (@hasExponential D HD)
+        (hasTerminal C) (hasProduct C) (hasExponential C)
+        (hasProduct D) (hasExponential D)
         (cartesian_isCartF CCCF) X Y)
   }.
 
-Arguments CCCF {_ _ _ _} _.
-Arguments ccc_functor_exponential {_ _ _ _} _ _ _.
+Arguments CCCF {_ _} _.
+Arguments ccc_functor_exponential {_ _} _ _ _.
 
 (** Recover the fixed-functor presentation from the stored data. This
     generic inherited instance needs an explicit bundled functor; it does
@@ -185,9 +141,9 @@ Arguments ccc_functor_exponential {_ _ _ _} _ _ _.
 (** 从保存的数据恢复固定函子呈现。这个通用继承实例需要显式的打包函子，
     不选取具体模型；笛卡尔证据在定义上共享。 *)
 
-Program Instance CCCFct_IsCCCF {C D : Cat} {HC : CCC C} {HD : CCC D}
-    (F : CCCFct HC HD)
-  : IsCCCF F HC HD
+Program Instance CCCFct_IsCCCF {C D : CCC}
+    (F : CCCFct C D)
+  : @IsCCCF C D F
   :=
   {|isCartF := cartesian_isCartF (CCCF F)
   ; functor_exponential := ccc_functor_exponential F
@@ -198,31 +154,30 @@ Program Instance CCCFct_IsCCCF {C D : Cat} {HC : CCC C} {HD : CCC D}
 
 (** 打包已有 CCC 保持性证据，不改变底层函子、积中介或指数比较的逆。 *)
 
-Program Definition CCCFctFromPreservation {C D : Cat}
-    {HC : CCC C} {HD : CCC D} (F : Fct C D) (HF : IsCCCF F HC HD)
-  : CCCFct HC HD
+Program Definition CCCFctFromPreservation {C D : CCC}
+    (F : Fct C D) (HF : @IsCCCF C D F)
+  : CCCFct C D
   :=
-  {|CCCF := CartFctFromPreservation F (@isCartF _ _ F HC HD HF)
-  ; ccc_functor_exponential := @functor_exponential _ _ F HC HD HF
+  {|CCCF := CartFctFromPreservation F (@isCartF C D F HF)
+  ; ccc_functor_exponential := @functor_exponential C D F HF
   |}.
 
 (** The bundled identity uses the existing CCC-preservation theorem. *)
 
 (** 打包的恒等函子使用已有 CCC 保持性定理。 *)
 
-Program Definition IdCCCF (C : Cat) (HC : CCC C)
-  : CCCFct HC HC
-  := CCCFctFromPreservation IdF (IdF_IsCCCF C HC).
+Program Definition IdCCCF (C : CCC)
+  : CCCFct C C
+  := CCCFctFromPreservation IdF (IdF_IsCCCF C).
 
 (** Compose bundled CCC functors using the established comparison and
     preservation proofs; the underlying functor is ordinary composition. *)
 
 (** 用已确立的比较及保持性证明复合打包 CCC 函子；底层函子仍为普通复合。 *)
 
-Program Definition CompCCCF {C D E : Cat}
-    {HC : CCC C} {HD : CCC D} {HE : CCC E}
-    (G : CCCFct HD HE) (F : CCCFct HC HD)
-  : CCCFct HC HE
+Program Definition CompCCCF {C D E : CCC}
+    (G : CCCFct D E) (F : CCCFct C D)
+  : CCCFct C E
   := CCCFctFromPreservation (G ∘F F)
-      (CompF_IsCCCF F G HC HD HE
+      (CompF_IsCCCF F G
         (CCCFct_IsCCCF F) (CCCFct_IsCCCF G)).

@@ -1,8 +1,8 @@
 From Cats Require Export STLC.Comparison.
 From Cats Require Import
   Cat.Core
-  Cat.CCC
-  Cat.Functor.Closed.
+  Cat.CCC.Core
+  Cat.CCC.Functor.
 
 (** * Equational Soundness and Completeness
 
@@ -61,14 +61,11 @@ Section CanonicalModel.
 Universes b e l.
 Context {B : Type@{b}}.
 Let C
-  : Cat
-  := TyCat@{b e l} B.
-Local Instance canonical_ccc
-  : CCC C
+  : CCC@{b b e l l}
   := TyCat_CCC B.
 Local Instance canonical_identity
-  : IsCCCF (@IdF C) canonical_ccc canonical_ccc
-  := IdF_IsCCCF C canonical_ccc.
+  : @IsCCCF C C (@IdF C)
+  := IdF_IsCCCF C.
 Let β (b : B)
   : ty_base b ≅[C] ty_base b
   := iso_refl.
@@ -99,22 +96,22 @@ Let β (b : B)
 
 Theorem tm_interp_canonical_reflect {Γ : Ctx B} {A : Ty B}
     {t u : Tm Γ A}
-    (H : tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) t ≈
-      tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) u)
+    (H : tm_interp (C := C) (@ty_base B) t ≈
+      tm_interp (C := C) (@ty_base B) u)
   : TmEq@{b e _} t u.
 Proof.
-  pose (z := @context_compare B C canonical_ccc (@IdF C)
+  pose (z := @context_compare B C (@IdF C)
     canonical_identity (@ty_base B) β Γ).
-  pose proof (@context_compare_term B C canonical_ccc (@IdF C)
+  pose proof (@context_compare_term B C (@IdF C)
     canonical_identity (@ty_base B) β Γ A t) as Ht.
-  pose proof (@context_compare_term B C canonical_ccc (@IdF C)
+  pose proof (@context_compare_term B C (@IdF C)
     canonical_identity (@ty_base B) β Γ A u) as Hu.
   assert (Hq : SubTmEq (quote_tm t ∘Sub z.1)
     (quote_tm u ∘Sub z.1)).
   { transitivity (sub_comp
-      (@type_compare B C canonical_ccc (@IdF C)
+      (@type_compare B C (@IdF C)
         canonical_identity (@ty_base B) β A).1
-      (tm_interp (C := C) (HC := canonical_ccc) (@ty_base B) t)).
+      (tm_interp (C := C) (@ty_base B) t)).
     - symmetry. exact Ht.
     - rewrite H. exact Hu. }
   assert (Hz : SubTmEq (z.1 ∘Sub z.2.1) sub_id).
@@ -137,9 +134,9 @@ End CanonicalModel.
 Definition TmModelEq@{b e l +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} (t u : Tm Γ A)
   : Type
-  := ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
-      @HomEq C _ _ (@tm_interp B C HC I Γ A t)
-        (@tm_interp B C HC I Γ A u).
+  := ∀ (C : CCC@{b b e l l}) (I : B → @Ob C),
+      @HomEq C _ _ (@tm_interp B C I Γ A t)
+        (@tm_interp B C I Γ A u).
 
 Notation "t '≈CCC' u" := (TmModelEq t u)
   (at level 50, no associativity) : stlc_tm_scope.
@@ -173,7 +170,7 @@ Theorem tm_soundness_iff_completeness@{b e l +} {B : Type@{b}}
   : TmEq@{b e _} t u ↔ TmModelEq t u.
 Proof.
   split.
-  - intros H C HC I. exact (@tm_interp_sound B C HC I Γ A t u H).
+  - intros H C I. exact (@tm_interp_sound B C I Γ A t u H).
   - intros H. apply tm_interp_canonical_reflect.
-    exact (H (TyCat@{b e l} B) (TyCat_CCC B) (@ty_base B)).
+    exact (H (TyCat_CCC B : CCC@{b b e l l}) (@ty_base B)).
 Defined.

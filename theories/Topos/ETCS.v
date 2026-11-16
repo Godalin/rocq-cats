@@ -2,7 +2,7 @@ From Cats Require Export
   Topos.Core.
 From Cats Require Import
   Cat.Core
-  Cat.CCC
+  Cat.CCC.Core
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
@@ -38,50 +38,44 @@ Class HasAxiomChoice (C : Cat)
 (** 为一个初等拓扑斯增加选定始对象、良点性、满态射分裂及自然数对象。
     所有依赖终对象的字段均使用父结构的同一终对象选择。 *)
 
-Class ETCS (C : Cat)
-  :=
+Record ETCS
+  := ETCSOfTopos
+
   (** The unique parent shares the classifier and pullbacks as well as
       the existing [CCC] and [CartCat] choices. *)
 
   (** 唯一父结构共享分类子、拉回及已有 [CCC] 与 [CartCat] 的各项选择。 *)
 
-  { ETCSC :> Topos C
+  { ETCSToTopos :> Topos
 
   (** Retain the additional chosen initial object. *)
 
   (** 保留额外选定的始对象。 *)
 
-  ; hasInitial :: HasInitial C
+  ; hasInitial :: HasInitial ETCSToTopos
 
   (** Global points from that same terminal detect equality of arrows. *)
 
   (** 来自同一终对象的全局点能够检测态射相等。 *)
 
-  ; isWellPointed :: IsWellPointed C (@hasTerminal C ETCSC)
+  ; isWellPointed
+    :: IsWellPointed ETCSToTopos
+        (hasTerminal ETCSToTopos)
 
   (** Retain the Type-valued choice of a right inverse for each epi. *)
 
   (** 保留为每个满态射选取右逆的 Type 值见证。 *)
 
-  ; hasAxiomChoice :: HasAxiomChoice C
+  ; hasAxiomChoice :: HasAxiomChoice ETCSToTopos
 
   (** Zero and recursion use exactly the inherited terminal choice. *)
 
   (** 零与递归恰好使用继承的终对象选择。 *)
 
   ; hasNaturalNumbersObj
-    :: HasNaturalNumbersObj C (@hasTerminal C ETCSC)
+    :: HasNaturalNumbersObj ETCSToTopos
+        (hasTerminal ETCSToTopos)
   }.
-
-Arguments ETCSC {_} _.
-
-(** Register the same parent for instance search, without selecting any
-    concrete ETCS model or adding a second path to the category. *)
-
-(** 将同一父结构注册到实例搜索，不选定具体 ETCS 模型，也不增加第二条
-    到底层范畴的路径。 *)
-
-#[export] Existing Instance ETCSC.
 
 Declare Scope etcs_scope.
 Open Scope etcs_scope.
@@ -93,16 +87,16 @@ Notation "'∈' X" := (Hom 1 X)
 
 (** ** The ETCS Environment
 
-    Fix a category [C] equipped with [ETCS C]. This opens the categorical
+    Fix an [ETCS] model [C]. This opens the categorical
     set-theory environment for the elementary set constructions discussed
     below. *)
 
 (** ** ETCS 环境
 
-    固定带有 [ETCS C] 结构的范畴 [C]，为下文讨论基本集合构造设定范畴集合论环境。 *)
+    固定 [ETCS] 模型 [C]，为下文讨论基本集合构造设定范畴集合论环境。 *)
 
 Section ETCS.
-Context {C : Cat} `{Axioms : !ETCS C}.
+Context {C : ETCS}.
 
 (** Let's do _Set Theory_ (in [ETCS]) ! *)
 

@@ -115,9 +115,9 @@ renamed bundles and adjunctions have consistent direct clients.
 | `FreeFunctorChoiceN` | `FreeFctChoiceN` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
 | `CartesianFunctor` | `CartFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CartesianFunctorFromPreservation` | `CartFctFromPreservation` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `CCCFunctor` | `CCCFct` | [Cat/Functor/Closed.v](../theories/Cat/Functor/Closed.v) |
-| `CCCFunctorFromPreservation` | `CCCFctFromPreservation` | [Cat/Functor/Closed.v](../theories/Cat/Functor/Closed.v) |
-| `CCCFunctor_IsCCCF` | `CCCFct_IsCCCF` | [Cat/Functor/Closed.v](../theories/Cat/Functor/Closed.v) |
+| `CCCFunctor` | `CCCFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFunctorFromPreservation` | `CCCFctFromPreservation` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFunctor_IsCCCF` | `CCCFct_IsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `LaxMonoidalFunctor` | `LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
 | `IdF_LaxMonoidalFunctor` | `IdF_LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
 | `ConstF_LaxMonoidalFunctor` | `ConstF_LaxMonoidalFct` | [Cat/Monoidal/Constant.v](../theories/Cat/Monoidal/Constant.v) |
@@ -146,7 +146,7 @@ renamed bundles and adjunctions have consistent direct clients.
 | `IdCartesianF` | `IdCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CompCartesianF` | `CompCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `cartesian_isCartesianF` | `cartesian_isCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `isCartesianF` | `isCartF` | [Cat/Functor/Closed.v](../theories/Cat/Functor/Closed.v) |
+| `isCartesianF` | `isCartF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `TypeInterpretF_IsCartesianF` | `TypeInterpretF_IsCartF` | [STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
 | `VertexNerveF_IsCartesianF` | `VtxNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
 | `ExponentialF_IsCartesianF` | `ExpF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
@@ -1458,7 +1458,7 @@ aliases are added.
 | Previous / 前名 | Current / 当前名 | Source / 源码 |
 | --- | --- | --- |
 | `Build_CartesianCat` | `Build_CartCat` | [Cat/Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
-| `CCCC` | `CCCToCartCat` | [Cat/CCC.v](../theories/Cat/CCC.v) |
+| `CCCC` | `CCCToCartCat` | [Cat/CCC/Core.v](../theories/Cat/CCC/Core.v) |
 | `CartesianC` | `CartCatToCat` | [Cat/Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
 | `CartesianCat` | `CartCat` | [Cat/Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
 | `Gluing_CartesianCat` | `Gluing_CartCat` | [Cat/Gluing/Cartesian.v](../theories/Cat/Gluing/Cartesian.v) |
@@ -1498,6 +1498,73 @@ aliases are added.
 | `nt_whisker_r_NatIso` | `nat_whisker_r_iso` | [Cat/Natural.v](../theories/Cat/Natural.v) |
 | `nt_whisker_r_proper` | `nat_whisker_r_proper` | [Cat/Natural.v](../theories/Cat/Natural.v) |
 
+## Packed cartesian and topos chain / 打包的笛卡尔及拓扑斯链
+
+The `ca985e0` follow-up makes `CartCat`, `CCC`, `Topos` and `ETCS`
+complete records without category parameters. Each constructor directly
+extends its stored parent. The following names supersede their earlier
+entries; there are no compatibility aliases. See
+[the hierarchy guide](./BundledInterfaces.md#packed-cartesian-and-topos-hierarchy)
+for selected dependencies, fixed-data clients and universe boundaries.
+
+`ca985e0` 后续将 `CartCat`、`CCC`、`Topos`、`ETCS` 改为无范畴参数的
+完整记录，各构造器直接扩充保存的父结构。下表取代此前同名条目，不增加兼容
+别名。选择依赖、固定数据客户端及宇宙边界见
+[层级指南](./BundledInterfaces.md#packed-cartesian-and-topos-hierarchy)。
+
+| Previous / 前名 | Current / 当前名 | Source / 源码 |
+| --- | --- | --- |
+| `Build_CartCat` | `CartCatOfCat` | [Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
+| `Build_CCC` | `CCCOfCartCat` | [CCC/Core.v](../theories/Cat/CCC/Core.v) |
+| `Build_Topos` | `ToposOfCCC` | [Topos/Core.v](../theories/Topos/Core.v) |
+| `Build_ETCS` | `ETCSOfTopos` | [Topos/ETCS.v](../theories/Topos/ETCS.v) |
+| `ToposC` | `ToposToCCC` | [Topos/Core.v](../theories/Topos/Core.v) |
+| `ETCSC` | `ETCSToTopos` | [Topos/ETCS.v](../theories/Topos/ETCS.v) |
+
+The fixed-category Freyd field `hasCartCat` is removed. Its terminal and
+product selections are retained separately as `hasValueTerminal` and
+`hasValueProduct`; this changes the presentation, not their mathematical
+requirements. Complete-model choices remain explicitly enabled.
+
+移除固定范畴 Freyd 字段 `hasCartCat`，将其终对象及积选择分别保存为
+`hasValueTerminal`、`hasValueProduct`；改变的是呈现，不是数学要求。
+完整模型的选择仍须显式启用。
+
+## CCC theory module organization / CCC 理论模块组织
+
+The user reviewed the following module moves with the CCC-category
+construction. Declaration names stay unchanged; all clients and current
+source links move together, with no compatibility modules.
+
+构造 CCC 范畴时，用户审阅了以下模块调整；声明名不变，客户端及当前源码链接
+一同迁移，不保留兼容模块。
+
+| Previous module / 原模块 | Current module / 当前模块 |
+| --- | --- |
+| `Cat.CCC` | `Cat.CCC.Core` |
+| `Cat.Functor.Closed` | `Cat.CCC.Functor` |
+
+The three general wrappers `functor_exponential_comparison`, `functor_curry`
+and `functor_eval` move from the former Closed module to
+`Cat.Functor.ExponentialComparison`. Their weaker hypotheses and public
+names remain; the comparison is a transparent view of the existing
+`preserved_exponential_comparison` construction.
+
+三个通用包装 `functor_exponential_comparison`、`functor_curry`、`functor_eval`
+从原 Closed 模块移到 `Cat.Functor.ExponentialComparison`，保留较弱假设及
+公开名称；比较是已有 `preserved_exponential_comparison` 构造的透明视图。
+
+New declarations in `Cat.CCC.Category` are `CCCFctEq`,
+`CCCFctEq_Equivalence`, `CCCFctS`, `CCCCat`, `CCCForgetF`,
+`ccc_forget_faithful` and `CCCCatHom`. `CCCCat` concatenates `CCC` and
+`Cat` (four leading Cs); the forgetful functor uses the subject prefix
+and `F` suffix. No alternative spelling or extra notation is introduced.
+
+`Cat.CCC.Category` 新增 `CCCFctEq`、`CCCFctEq_Equivalence`、`CCCFctS`、
+`CCCCat`、`CCCForgetF`、`ccc_forget_faithful`、`CCCCatHom`。
+`CCCCat` 由 `CCC` 与 `Cat` 组合，开头为四个 C；忘却函子采用主体前缀及
+`F` 后缀。不引入其他拼写或额外记号。
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.
@@ -1510,14 +1577,15 @@ work follows the separate user-authorized bundled-interface migration.
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
 | Optional names / 可选名称 | `IsStrictTwoCat → IsStrict2Cat`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
-| Complete hierarchies / 完整层级 | `CartCat`, monoidal/CCC bundling / 幺半及 CCC 打包 | Cat/Gpd/Nat record slices implemented / Cat/Gpd/Nat 记录片段已实现 |
+| Complete hierarchies / 完整层级 | monoidal bundling / 幺半层级打包 | CartCat/CCC/Topos/ETCS record slice accepted locally / 笛卡尔至 ETCS 记录片段已本地验收 |
+| Remaining lowercase names / 剩余小写名称 | `exponential_* → exp_*`, including CCC preservation fields / 含 CCC 保持性字段 | Follow-up naming batch; not included in this checkpoint / 后续命名批次，不计入本检查点 |
 | Other notation / 其他记号 | Repository-wide reserved syntax beyond the algebra slice above / 上述代数片段以外的全库预留语法 | Separate review; no replay of #31 / 单独审阅，不重放 #31 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突
 
 - Keep source paths such as `Cat/Functor/Core.v`, `Cat/Adjunction.v` and
   `Instance/Set/Vertex/Functor.v`. Import paths are not public declaration names.
-- The current structures are parameterized `MonoidalCat C`, `CartCat C`
+- At the Batch 4 checkpoint, the structures were parameterized `MonoidalCat C`, `CartCat C`
   and `CCC C`; the historical name `MonoidalCategory C` in #38 is stale.
   This batch does not change their parameters, parents, fields or choices.
 - The fixed-category property interface is now `IsGpd C`; the complete
@@ -1532,7 +1600,7 @@ work follows the separate user-authorized bundled-interface migration.
   enabling of model choices.
 
 - 保留原文件及导入路径；路径不是声明名，不能按标识符对照表机械替换。
-- 当前 `MonoidalCat C`、`CartCat C`、`CCC C` 均有具名范畴参数；#38 的
+- 第四批检查点的 `MonoidalCat C`、`CartCat C`、`CCC C` 均有具名范畴参数；#38 的
   旧 `MonoidalCategory C` 描述已过时。本批不改变参数、父结构、字段或选定数据。
 - 固定范畴性质接口现为 `IsGpd C`；完整群胚及其命名后续在上方单独记录。
   全库预留记号工作仍为独立任务。

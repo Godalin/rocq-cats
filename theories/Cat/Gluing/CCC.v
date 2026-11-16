@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Gluing.Exponential
-  Cat.CCC.
+  Cat.CCC.Core.
 From Cats Require Import
   Cat.Core
   Cat.Terminal
@@ -70,7 +70,7 @@ Program Definition Gluing_HasExponential
 (** 仅加入基终对象即可补全继承的笛卡尔结构，仍不需要目标终对象。 *)
 
 Program Definition Gluing_CCC `{TC : !HasTerminal C}
-  : CCC (Gluing F)
+  : CCC
   :=
   {|CCCToCartCat := Gluing_CartCat F preserves
   ; hasExponential := Gluing_HasExponential
@@ -126,7 +126,7 @@ Definition GluingPullback_HasExponential
     都是输入。 *)
 
 Definition GluingPullback_CCC `{TC : !HasTerminal C}
-  : CCC (Gluing F)
+  : CCC
   := Gluing_CCC F preserves GluingExpPullback.
 
 End AllTargetPullbacks.

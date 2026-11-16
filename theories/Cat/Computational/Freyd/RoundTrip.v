@@ -86,10 +86,7 @@ Context {C K : Cat} (F : FreydCat C K).
 Let D
   : Cat
   := FreydComputations F.
-Let CC
-  : CartCat C
-  := @hasCartCat C K F.
-Local Existing Instance CC.
+Local Existing Instance F.
 Let SP
   : SymmetricPremonoidalCat D
   := @hasSymmetricPremonoidal C K F.
@@ -269,7 +266,7 @@ Lemma freyd_round_trip_unit_r (X : @Ob C)
         (@hasSymmetricPremonoidal _ _ FreydRoundTrip) X).1 ≈
       (@premonoidal_right_unitor D SP X).1 ∘
         @eq_to_hom D _ _
-          (eq_trans (@freyd_tensor_objects C K F X (@Term C hasTerminal))
+          (eq_trans (@freyd_tensor_objects C K F X (@Term C (@hasValueTerminal C K F)))
             (f_equal (λ Q, @binoidal_tensor D SP X Q)
               (@freyd_unit_object C K F))).
 Proof. exact (@freyd_unit_r C K F X). Qed.

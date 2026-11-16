@@ -6,7 +6,7 @@ From Cats Require Import
   Cat.Natural
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC
+  Cat.CCC.Core
   Instance.Set.Core
   Instance.Set.Product
   Instance.Set.Terminal
@@ -232,10 +232,11 @@ Next Obligation. apply psh_exponential_universal. Defined.
 (** 将已选定的逐点终对象/积与所构造的指数组合；导入该值不启用模型选择。 *)
 
 Program Definition Psh_CCC@{o h e l u +} (C : Cat@{o h e l l})
-  : CCC (FctCat (C^op) SetCat@{u u _ _ _ _ _})
+  : CCC
   :=
   {|CCCToCartCat :=
-    {|hasTerminal := @FctCat_HasTerminal _ _ SetCat_HasTerminal
+    {|CartCatToCat := FctCat (C^op) SetCat@{u u _ _ _ _ _}
+    ; hasTerminal := @FctCat_HasTerminal _ _ SetCat_HasTerminal
     ; hasProduct := @FctCat_HasProduct _ _ SetCat_HasProduct
     |}
   ; hasExponential := Psh_HasExponential C

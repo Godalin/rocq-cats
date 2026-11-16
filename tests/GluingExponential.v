@@ -65,7 +65,7 @@ Definition gluing_exponential_large_equality
 (** 只加入基终对象即可得到完整 CCC 结构。 *)
 
 Definition gluing_ccc_large_equality `{TC : !HasTerminal C}
-  : CCC (Gluing F)
+  : CCC
   := Gluing_CCC F preserves pullbacks.
 
 End LargeEquality.
@@ -103,7 +103,7 @@ Definition gluing_exponential_small_equality
 (** CCC 包装不需要目标终对象。 *)
 
 Definition gluing_ccc_small_equality `{TC : !HasTerminal C}
-  : CCC (Gluing F)
+  : CCC
   := GluingPullback_CCC F preserves.
 
 End SmallEquality.
@@ -232,7 +232,7 @@ Definition tagged_gluing_curry_witness_retained
     拉回条件下，其粘合仍然是 CCC。 *)
 
 Definition empty_constant_gluing_ccc
-  : CCC (Gluing (ConstF SetCat EmptyS))
+  : CCC
   := GluingPullback_CCC (ConstF SetCat EmptyS)
       empty_constant_preserves_products (TC := SetCat_HasTerminal).
 

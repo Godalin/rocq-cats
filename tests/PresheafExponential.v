@@ -5,7 +5,7 @@ From Cats Require Import
   Cat.Natural
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC
+  Cat.CCC.Core
   Cat.Induced
   Instance.Set.Core
   Instance.Set.Product
@@ -55,8 +55,16 @@ Definition presheaf_large_law_exponentials
 (** 完整 CCC 保持同样独立的世界与值界限。 *)
 
 Definition presheaf_large_law_ccc
-  : CCC (FctCat (C^op) SetCat@{u u _ _ _ _ _})
+  : CCC
   := Psh_CCC C.
+
+(** The complete bundle retains the original category at these native bounds. *)
+
+(** 完整结构包在这些原生大小界下保留原范畴。 *)
+
+Example presheaf_large_law_ccc_category
+  : (Psh_CCC C : Cat) = FctCat (C^op) SetCat@{u u _ _ _ _ _}.
+Proof. reflexivity. Qed.
 
 End LargeLaws.
 
@@ -81,8 +89,16 @@ Context (C : Cat@{o h e l l}).
 (** 相反的严格次序也能实例化选定 CCC。 *)
 
 Definition presheaf_small_law_ccc
-  : CCC (FctCat (C^op) SetCat@{u u _ _ _ _ _})
+  : CCC
   := Psh_CCC C.
+
+(** The complete bundle retains the original category at these native bounds. *)
+
+(** 完整结构包在这些原生大小界下保留原范畴。 *)
+
+Example presheaf_small_law_ccc_category
+  : (Psh_CCC C : Cat) = FctCat (C^op) SetCat@{u u _ _ _ _ _}.
+Proof. reflexivity. Qed.
 
 End SmallLaws.
 

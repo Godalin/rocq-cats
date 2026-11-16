@@ -11,8 +11,8 @@ From Cats Require Import
   Cat.Exponential.Core
   Cat.Exponential.Functor
   Cat.Exponential.Transport
-  Cat.CCC
-  Cat.Functor.Closed.
+  Cat.CCC.Core
+  Cat.CCC.Functor.
 
 (** * Comparing Structure-Preserving Interpretations
 
@@ -93,15 +93,28 @@ Local Open Scope cat_scope.
 
 Section Comparison.
 Universes b e l.
-Context {B : Type@{b}} {C : Cat} `{HC : !CCC C}
+Context {B : Type@{b}} {C : CCC}
     (F : Fct (TyCat@{b e l} B) C)
-    `{HF : !IsCCCF F (TyCat_CCC B) HC}
+    `{HF : !@IsCCCF (TyCat_CCC B) C F}
     (I : B → @Ob C) (β : ∀ b, I b ≅ F (ty_base b)).
 
-Local Instance source_ccc
-  : CCC (TyCat@{b e l} B)
-  := TyCat_CCC B.
-Local Existing Instance HC.
+Local Instance source_HasTerminal
+  : HasTerminal (TyCat@{b e l} B)
+  := TyCat_HasTerminal B.
+Local Instance source_HasProduct
+  : HasProduct (TyCat@{b e l} B)
+  := TyCat_HasProduct B.
+Local Instance source_HasExponential
+  : HasExponential source_HasProduct
+  := TyCat_HasExponential B.
+Local Instance target_HasExponential
+  : HasExponential (hasProduct C)
+  := hasExponential C.
+Local Instance source_IsCartF
+  : IsCartF F source_HasTerminal source_HasProduct
+  := @isCartF (TyCat_CCC B) C F HF.
+
+
 
 
 (** Recursive comparison at types, obtained solely from preservation of
@@ -113,15 +126,15 @@ Fixpoint type_compare (A : Ty B)
   : TyI I A ≅ F A
   := match A as A return TyI I A ≅ F A with
   | ty_base b => β b
-  | ty_unit => terminal_unique (@terminal_universal C (@hasTerminal C HC))
+  | ty_unit => terminal_unique (@terminal_universal C (hasTerminal C))
       (@functor_terminal (TyCat@{b e l} B) C F (TyCat_HasTerminal B)
-        (TyCat_HasProduct B) (@isCartF _ _ F _ _ HF))
+        (TyCat_HasProduct B) (@isCartF (TyCat_CCC B) C F HF))
   | ty_prod A U => iso_trans (product_iso (type_compare A) (type_compare U))
       (iso_symm (functor_product_iso F A U))
   | ty_arr A U => iso_trans
       (exponential_iso (type_compare A) (type_compare U))
       (iso_symm (existT _ (functor_exponential_comparison F A U)
-        (@functor_exponential _ _ F _ _ HF A U)))
+        (@functor_exponential (TyCat_CCC B) C F HF A U)))
   end.
 
 (** The product component is the canonical inverse comparison after the
@@ -171,10 +184,10 @@ Lemma type_compare_function (A U : Ty B)
       (exponential_iso (type_compare A) (type_compare U)).1.
 Proof.
   change (functor_exponential_comparison F A U ∘
-    ((@functor_exponential _ _ F _ _ HF A U).1 ∘
+    ((@functor_exponential (TyCat_CCC B) C F HF A U).1 ∘
       (exponential_iso (type_compare A) (type_compare U)).1) ≈
     (exponential_iso (type_compare A) (type_compare U)).1).
-  rewrite <- comp_assoc, (snd (@functor_exponential _ _ F _ _ HF A U).2),
+  rewrite <- comp_assoc, (snd (@functor_exponential (TyCat_CCC B) C F HF A U).2),
     comp_id_l. reflexivity.
 Qed.
 
@@ -191,8 +204,8 @@ Lemma type_compare_eval (A U : Ty B)
 Proof.
   rewrite <- (@functor_eval (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B) (TyCat_HasExponential B)
-    (@hasProduct C HC) (@hasExponential C HC)
-    (@isCartF _ _ F _ _ HF) A U), comp_assoc, <- cross_comp,
+    (hasProduct C) (hasExponential C)
+    (@isCartF (TyCat_CCC B) C F HF) A U), comp_assoc, <- cross_comp,
     type_compare_function, comp_id_l.
   apply exponential_iso_eval.
 Qed.
@@ -211,10 +224,10 @@ Lemma type_compare_curry {Z A U : Ty B} {X : @Ob C}
         (TyCat_HasExponential B) A U Z f) ∘ z.
 Proof.
   apply (iso_mono (functor_exponential_comparison F A U)
-    (@functor_exponential _ _ F _ _ HF A U)).
+    (@functor_exponential (TyCat_CCC B) C F HF A U)).
   rewrite <- !comp_assoc, type_compare_function, functor_curry.
   change (( (type_compare U).1 ^ (type_compare A).2.1)%hom ∘ (ƛ g) ≈
-    (ƛ (fmap F f ∘ functor_product_inv F Z A)) ∘ z).
+    curry (C := C) (fmap F f ∘ functor_product_inv F Z A) ∘ z).
   rewrite <- exponential_curry_dimap, <- exponential_curry_comp_r.
   apply exponential_curry_proper.
   rewrite H, !comp_assoc, <- cross_comp,
@@ -269,19 +282,19 @@ Proof.
   induction t; intros Z X η ρ z H; cbn [tm_eval syntax_eval].
   - apply H.
   - destruct (@functor_terminal (TyCat@{b e l} B) C F (TyCat_HasTerminal B)
-      (TyCat_HasProduct B) (@isCartF _ _ F _ _ HF) X)
+      (TyCat_HasProduct B) (@isCartF (TyCat_CCC B) C F HF) X)
       as [h [_ Hu]].
     transitivity h; [apply Hu | symmetry; apply Hu]; constructor.
   - rewrite type_compare_product, comp_assoc.
-    rewrite (@product_comp_l C (@hasProduct C HC) _ _ _ _ _
+    rewrite (@product_comp_l C (hasProduct C) _ _ _ _ _
       (tm_eval I t1 ρ) (tm_eval I t2 ρ)
       (type_compare A).1 (type_compare U).1).
     rewrite (IHt1 Z X η ρ z H), (IHt2 Z X η ρ z H).
     rewrite <- (product_comp_r (fmap F (syntax_eval t1 η))
       (fmap F (syntax_eval t2 η)) z), <- comp_assoc.
     rewrite <- (@functor_pair (TyCat@{b e l} B) C F
-      (TyCat_HasTerminal B) (TyCat_HasProduct B) (@hasProduct C HC)
-      (@isCartF _ _ F _ _ HF) A U Z
+      (TyCat_HasTerminal B) (TyCat_HasProduct B) (hasProduct C)
+      (@isCartF (TyCat_CCC B) C F HF) A U Z
       (syntax_eval t1 η) (syntax_eval t2 η)).
     reflexivity.
   - rewrite <- comp_assoc, <- type_compare_π1, comp_assoc,
@@ -292,7 +305,7 @@ Proof.
     rewrite comp_assoc. apply IHt. apply type_compare_environment. exact H.
   - unfold app.
     rewrite <- comp_assoc, <- type_compare_eval, !comp_assoc.
-    rewrite (@product_comp_l C (@hasProduct C HC) _ _ _ _ _
+    rewrite (@product_comp_l C (hasProduct C) _ _ _ _ _
       (tm_eval I t1 ρ) (tm_eval I t2 ρ)
       (type_compare (ty_arr A U)).1 (type_compare A).1).
     rewrite (IHt1 Z X η ρ z H), (IHt2 Z X η ρ z H).
@@ -305,8 +318,8 @@ Proof.
       (@pair (TyCat@{b e l} B) (TyCat_HasProduct B)
         (ty_arr A U) A Z (syntax_eval t1 η) (syntax_eval t2 η))).
     rewrite (@functor_pair (TyCat@{b e l} B) C F
-      (TyCat_HasTerminal B) (TyCat_HasProduct B) (@hasProduct C HC)
-      (@isCartF _ _ F _ _ HF) (ty_arr A U) A Z
+      (TyCat_HasTerminal B) (TyCat_HasProduct B) (hasProduct C)
+      (@isCartF (TyCat_CCC B) C F HF) (ty_arr A U) A Z
       (syntax_eval t1 η) (syntax_eval t2 η)).
     rewrite !comp_assoc.
     reflexivity.

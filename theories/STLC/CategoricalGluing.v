@@ -334,7 +334,7 @@ Local Instance ambient_pullbacks
     预层箭头，而不仅是实现关系的投影。 *)
 
 Definition RenamingGluing_CCC
-  : CCC (Gluing (@IdF P))
+  : CCC
   := GluingPullback_CCC (@IdF P) (λ A U, product_universal).
 
 End ChosenAmbientCCC.

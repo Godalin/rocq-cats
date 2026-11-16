@@ -1,8 +1,8 @@
 From Cats Require Export STLC.Comparison.
 From Cats Require Import
   Cat.Core
-  Cat.CCC
-  Cat.Functor.Closed.
+  Cat.CCC.Core
+  Cat.CCC.Functor.
 
 (** * Inhabitation Soundness and Completeness
 
@@ -69,14 +69,11 @@ Section CanonicalInhabitation.
 Universes b e l.
 Context {B : Type@{b}}.
 Let C
-  : Cat
-  := TyCat@{b e l} B.
-Local Instance canonical_ccc
-  : CCC C
+  : CCC@{b b e l l}
   := TyCat_CCC B.
 Local Instance canonical_identity
-  : IsCCCF (@IdF C) canonical_ccc canonical_ccc
-  := IdF_IsCCCF C canonical_ccc.
+  : @IsCCCF C C (@IdF C)
+  := IdF_IsCCCF C.
 Let β (b : B)
   : ty_base b ≅[C] ty_base b
   := iso_refl.
@@ -109,13 +106,13 @@ Let β (b : B)
     的无类型语法、类型推断、正规化或选择。 *)
 
 Definition tm_interp_canonical_inhabited {Γ : Ctx B} {A : Ty B}
-    (f : Hom (CtxI (HC := canonical_ccc) (@ty_base B) Γ)
-      (TyI (HC := canonical_ccc) (@ty_base B) A))
+    (f : Hom (CtxI (C := C) (@ty_base B) Γ)
+      (TyI (C := C) (@ty_base B) A))
   : Tm Γ A.
 Proof.
-  pose (z := @context_compare B C canonical_ccc (@IdF C)
+  pose (z := @context_compare B C (@IdF C)
     canonical_identity (@ty_base B) β Γ).
-  pose (a := @type_compare B C canonical_ccc (@IdF C)
+  pose (a := @type_compare B C (@IdF C)
     canonical_identity (@ty_base B) β A).
   pose (σ := a.1 ∘ f ∘ z.2.1).
   exact (subst (σ A var_zero) (ctx_pack_sub Γ)).
@@ -139,8 +136,8 @@ End CanonicalInhabitation.
 Definition TmModelInhabited@{b e l +} {B : Type@{b}}
     (Γ : Ctx B) (A : Ty B)
   : Type
-  := ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
-      (@Hom C) (@CtxI B C HC I Γ) (@TyI B C HC I A).
+  := ∀ (C : CCC@{b b e l l}) (I : B → @Ob C),
+      (@Hom C) (@CtxI B C I Γ) (@TyI B C I A).
 
 (** Interpret an intrinsically typed term in each chosen CCC model. *)
 
@@ -148,8 +145,8 @@ Definition TmModelInhabited@{b e l +} {B : Type@{b}}
 
 Definition tm_inhabitation_soundness@{b e l +} {B : Type@{b}}
     {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
-  : TmModelInhabited@{b e l _ _ _ _} Γ A
-  := λ C HC I, @tm_interp B C HC I Γ A t.
+  : TmModelInhabited@{b e l _ _ _} Γ A
+  := λ C I, @tm_interp B C I Γ A t.
 
 (** Instantiate the model family with the syntactic CCC and recover a term
     using the canonical comparison maps. No normalization or choice is needed. *)
@@ -162,7 +159,7 @@ Definition tm_inhabitation_completeness@{b e l +} {B : Type@{b}}
     (H : TmModelInhabited Γ A)
   : Tm Γ A
   := tm_interp_canonical_inhabited
-      (H (TyCat@{b e l} B) (TyCat_CCC B) (@ty_base B)).
+      (H (TyCat_CCC B : CCC@{b b e l l}) (@ty_base B)).
 
 (** This Type-valued equivalence bundles the two constructive maps; it makes
     no claim that terms or families of semantic witnesses are equal. Under
@@ -179,5 +176,5 @@ Definition tm_inhabitation_completeness@{b e l +} {B : Type@{b}}
 
 Definition tm_inhabitation_soundness_iff_completeness@{b e l +}
     {B : Type@{b}} (Γ : Ctx B) (A : Ty B)
-  : Tm Γ A ↔ TmModelInhabited@{b e l _ _ _ _} Γ A
+  : Tm Γ A ↔ TmModelInhabited@{b e l _ _ _} Γ A
   := (tm_inhabitation_soundness, tm_inhabitation_completeness).

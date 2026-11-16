@@ -27,11 +27,11 @@ From Cats Require Import
   Cat.Core
   Cat.CatCat
   Cat.Functor.Core
-  Cat.Functor.Closed
+  Cat.CCC.Functor
   Cat.Natural
   Cat.Bicategory.Core
   Cat.Bicategory.Thin.
-From Cats Require Import Cat.CCC.
+From Cats Require Import Cat.CCC.Core.
 From Cats Require Import
   Cat.Product.Core
   Cat.Exponential.Core
@@ -289,10 +289,14 @@ Definition high_eq_functors
   := FctCat C C.
 Definition low_eq_functors
   := FctCat D D.
-Definition high_eq_ccc
-  := CCC C.
-Definition low_eq_ccc
-  := CCC D.
+Definition high_eq_ccc (HT : HasTerminal C) (HP : HasProduct C)
+    (HE : HasExponential HP)
+  : CCC@{o h p l l}
+  := CCCOfCartCat (CartCatOfCat C HT HP) HE.
+Definition low_eq_ccc (HT : HasTerminal D) (HP : HasProduct D)
+    (HE : HasExponential HP)
+  : CCC@{o p h l l}
+  := CCCOfCartCat (CartCatOfCat D HT HP) HE.
 Definition high_eq_cwf
   := CwF C.
 Definition low_eq_cwf
@@ -346,8 +350,7 @@ Universe o h p l.
 Constraint Set < h.
 Constraint h < p.
 Constraint p < l.
-Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
-Context `{HC : !CCC C} `{HD : !CCC D}.
+Context (C : CCC@{o h p l l}) (D : CCC@{o p h l l}).
 
 Definition high_eq_curry (X Y Z : @Ob C)
   : HomSet (Z × X) Y →r HomSet Z (Y ^ X)
@@ -443,7 +446,7 @@ Definition low_eq_double_curry (A B Y Z : @Ob D)
   := exponential_curry_twice_β f.
 
 Context (F : Fct C D) (G : Fct D C)
-    (HF : IsCCCF F HC HD) (HG : IsCCCF G HD HC).
+    (HF : @IsCCCF C D F) (HG : @IsCCCF D C G).
 
 (** CCC-preservation composition permits different hom/equality orderings
     in its intermediate category. *)
@@ -451,25 +454,25 @@ Context (F : Fct C D) (G : Fct D C)
 (** CCC 保持性的复合允许中间范畴具有不同的 Hom／相等层级排列。 *)
 
 Definition mixed_levels_closed_composite
-  : IsCCCF (G ∘F F) HC HC
-  := CompF_IsCCCF F G HC HD HC HF HG.
+  : @IsCCCF C C (G ∘F F)
+  := CompF_IsCCCF F G HF HG.
 
 (** Bundling and composing preserve both strict hom/equality orderings. *)
 
 (** 打包及复合保持 Hom／相等层级的两种严格排列。 *)
 
 Definition high_eq_bundled_closed_functor
-  : CCCFct HC HD
+  : CCCFct C D
   := CCCFctFromPreservation F HF.
 Definition low_eq_bundled_closed_functor
-  : CCCFct HD HC
+  : CCCFct D C
   := CCCFctFromPreservation G HG.
 Definition mixed_levels_bundled_closed_composite
-  : CCCFct HC HC
+  : CCCFct C C
   := CompCCCF low_eq_bundled_closed_functor high_eq_bundled_closed_functor.
 Definition mixed_levels_bundled_cartesian_composite
-  : @CartFct C C (@Cats.Cat.Cartesian.Core.hasTerminal C HC)
-      (@Cats.Cat.Cartesian.Core.hasProduct C HC)
+  : @CartFct C C (Cats.Cat.Cartesian.Core.hasTerminal C)
+      (Cats.Cat.Cartesian.Core.hasProduct C)
   := CompCartF (CCCF low_eq_bundled_closed_functor)
       (CCCF high_eq_bundled_closed_functor).
 
@@ -1494,15 +1497,15 @@ Definition separated_syntactic_packing (Γ : Ctx B)
   : Γ ≅[separated_syntactic_category] ctx_snoc ctx_empty (CtxTy Γ)
   := ctx_pack_iso Γ.
 Definition separated_syntactic_ccc
-  : CCC separated_syntactic_category
+  : CCC@{b b e l l}
   := CtxCat_CCC B.
 Definition separated_type_syntactic_ccc
-  : CCC (TyCat@{b e l} B)
+  : CCC@{b b e l l}
   := TyCat_CCC B.
 
 Definition separated_stlc_completeness (Γ : Ctx B) (A : STLC.Syntax.Ty B)
     (t u : STLC.Syntax.Tm Γ A)
-  : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _ _} t u
+  : TmEq@{b e _} t u ↔ TmModelEq@{b e l _ _ _} t u
   := tm_soundness_iff_completeness t u.
 
 (** Inhabitation uses the same separated model bounds and retains a chosen
@@ -1513,8 +1516,8 @@ Definition separated_stlc_completeness (Γ : Ctx B) (A : STLC.Syntax.Ty B)
 
 Definition separated_stlc_inhabitation (Γ : Ctx B) (A : STLC.Syntax.Ty B)
   : STLC.Syntax.Tm Γ A ↔
-      ∀ (C : Cat@{b b e l l}) (HC : CCC C) (I : B → @Ob C),
-      (@Hom C) (@CtxI B C HC I Γ) (@TyI B C HC I A)
+      ∀ (C : CCC@{b b e l l}) (I : B → @Ob C),
+      (@Hom C) (@CtxI B C I Γ) (@TyI B C I A)
   := tm_inhabitation_soundness_iff_completeness Γ A.
 
 Definition separated_stlc_presentations
@@ -1533,10 +1536,8 @@ Constraint b < e.
 Constraint e < l.
 Constraint h < p.
 Constraint p < a.
-Context (B : Type@{b}) (C : Cat@{o h p a a})
-    (D : Cat@{o p h a a}) (HC : CCC C) (HD : CCC D).
-Local Existing Instance HC.
-Local Existing Instance HD.
+Context (B : Type@{b}) (C : CCC@{o h p a a})
+    (D : CCC@{o p h a a}).
 Context (I : B → @Ob C) (J : B → @Ob D).
 
 Definition high_eq_stlc_interpretation
@@ -1552,14 +1553,14 @@ Definition low_eq_stlc_interpretation
 (** 已有解释保持性可直接打包，不改变语法层级，也不要求迁移固定函子客户端。 *)
 
 Definition high_eq_bundled_type_interpretation
-  : CCCFct (TyCat_CCC B) HC
-  := CCCFctFromPreservation (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
+  : CCCFct (TyCat_CCC B) C
+  := CCCFctFromPreservation (C := TyCat_CCC B) (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
 Definition low_eq_bundled_type_interpretation
-  : CCCFct (TyCat_CCC B) HD
-  := CCCFctFromPreservation (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
+  : CCCFct (TyCat_CCC B) D
+  := CCCFctFromPreservation (C := TyCat_CCC B) (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
 
 Context (F : Fct (TyCat@{b e l} B) C)
-    (HF : IsCCCF F (TyCat_CCC B) HC).
+    (HF : @IsCCCF (TyCat_CCC B) C F).
 Local Existing Instance HF.
 Context (β : ∀ b, I b ≅[C] F (ty_base b)).
 

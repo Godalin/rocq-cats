@@ -1,8 +1,10 @@
 From Cats Require Export Cat.Functor.ProductPreservation.
 From Cats Require Import
   Cat.Core
+  Cat.Terminal
   Cat.Product.Core
-  Cat.Exponential.Core.
+  Cat.Exponential.Core
+  Cat.Functor.Cartesian.
 
 (** * Exponential Comparisons without Terminal Preservation
 
@@ -131,3 +133,49 @@ Proof.
 Defined.
 
 End ExponentialComposition.
+
+(** ** Comparing Exponentials along a Functor
+
+    Fix source terminal and product structures, products in the target, and
+    exponentials in both categories. For a cartesian functor [F], construct
+    the exponential comparison and its evaluation and currying equations. *)
+
+(** ** 沿函子比较指数对象
+
+    固定来源的终对象与积、目标的积以及两侧的指数结构，为笛卡尔函子 [F] 构造指数比较，并给出求值和柯里化方程。 *)
+
+Section ExponentialComparison.
+Context {C D : Cat} (F : Fct C D)
+    `{TC : !HasTerminal C} `{PC : !HasProduct C}
+    `{EC : !HasExponential PC}
+    `{PD : !HasProduct D} `{ED : !HasExponential PD}
+    `{HF : !IsCartF F TC PC}.
+
+(** Transpose the image evaluation after the inverse product comparison. *)
+
+(** 像求值与逆向积比较复合后转置。 *)
+
+Definition functor_exponential_comparison (X Y : @Ob C)
+  : Hom (F ((Y ^ X)%ob)) (F Y ^ F X)
+  := preserved_exponential_comparison F
+    (functor_product (F := F)) X Y.
+
+(** Currying is preserved through the canonical comparisons. *)
+
+(** 柯里化通过规范比较得到保持。 *)
+
+Lemma functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
+  : functor_exponential_comparison X Y ∘ fmap F (ƛ f) ≈
+      ƛ (fmap F f ∘ functor_product_inv F Z X).
+Proof. apply preserved_curry. Qed.
+
+(** Evaluation is preserved in the same comparison square. *)
+
+(** 求值在同一比较方形中得到保持。 *)
+
+Lemma functor_eval (X Y : @Ob C)
+  : eval ∘ (functor_exponential_comparison X Y × id) ≈
+      fmap F eval ∘ functor_product_inv F ((Y ^ X)%ob) X.
+Proof. apply preserved_eval. Qed.
+
+End ExponentialComparison.

@@ -4,7 +4,7 @@ From Cats Require Import
   Cat.Terminal
   Cat.Product.Core
   Cat.Exponential.Core
-  Cat.CCC.
+  Cat.CCC.Core.
 
 (** * The Type Presentation of the Syntactic Category
 
@@ -228,9 +228,10 @@ Program Definition TyCat_HasExponential@{b e l +} (B : Type@{b})
 (** 类型呈现具有选定的单位类型与积类型构造器；此笛卡尔模型须显式启用。 *)
 
 Program Definition TyCat_Cart@{b e l +} (B : Type@{b})
-  : CartCat (TyCat@{b e l} B)
+  : CartCat@{l b b e l}
   :=
-  {|hasTerminal := TyCat_HasTerminal B
+  {|CartCatToCat := TyCat@{b e l} B
+  ; hasTerminal := TyCat_HasTerminal B
   ; hasProduct := TyCat_HasProduct B
   |}.
 
@@ -239,7 +240,7 @@ Program Definition TyCat_Cart@{b e l +} (B : Type@{b})
 (** 类型呈现沿用相同积并增加函数类型。 *)
 
 Program Definition TyCat_CCC@{b e l +} (B : Type@{b})
-  : CCC (TyCat@{b e l} B)
+  : CCC@{b b e l l}
   :=
   {|CCCToCartCat := TyCat_Cart B
   ; hasExponential := TyCat_HasExponential B

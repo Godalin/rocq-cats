@@ -16,8 +16,9 @@ From Cats Require Import
     模型实例。 *)
 
 Program Definition SetCat_Cart
-  : CartCat SetCat
+  : CartCat
   :=
-  {|hasTerminal := SetCat_HasTerminal
+  {|CartCatToCat := SetCat
+  ; hasTerminal := SetCat_HasTerminal
   ; hasProduct := SetCat_HasProduct
   |}.
