@@ -161,3 +161,54 @@ Definition low_equality_monoid
   := MonoidFromExtension SB HB.
 
 End IndependentUniverses.
+
+(** ** Legacy Explicit Arguments
+
+    Keep the original public universe positions and named structure argument.
+    These calls use a strict law bound, so a reordered instance cannot pass
+    merely by identifying universe levels. *)
+
+(** ** 原显式参数
+
+    保留原公共宇宙位置与具名结构参数。这些调用使用严格的定律上界，不能通过
+    等同宇宙层级来容忍次序变化。 *)
+
+Section LegacyArguments.
+Universes u p l.
+Constraint u < p, p < l.
+Context (A : SetC@{u p}) (HA : Monoid@{u p l} A) (x y z : A).
+Context (Hy : @magma_mul A HA y x ≈S @monoid_unit A HA)
+    (Hz : @magma_mul A HA x z ≈S @monoid_unit A HA).
+
+Check (@monoid_unit_l@{u p l} A HA x).
+Check (@monoid_unit_r@{u p l} A HA x).
+Check (@monoid_inverse_unique@{l u p} A HA x y z Hy Hz).
+Check (monoid_unit (M := A) (Monoid := HA)).
+Check (monoid_unit_l (M := A) (Monoid := HA) x).
+Check (monoid_unit_r (M := A) (Monoid := HA) x).
+
+End LegacyArguments.
+
+(** ** Legacy Transport Universes
+
+    Separate the composition bounds from the returned monoid's law universe.
+    The complete fifteen-argument instance retains its previous positions. *)
+
+(** ** 原运输宇宙参数
+
+    区分复合辅助界与返回幺半群的定律宇宙；完整十五参数实例保留原有位置。 *)
+
+Section LegacyTransportArguments.
+Universes u p q l k.
+Constraint u < p, p < q, q < l, l < k.
+Context (A B : SetC@{u p})
+    (f : FunS_resp@{k k u p u p} B A)
+    (g : FunS_resp@{k k u p u p} A B)
+    (HA : Monoid@{u p l} A)
+    (Hfg : (f ∘r g) ≈f id_resp@{l u p})
+    (Hgf : (g ∘r f) ≈f id_resp@{k u p}).
+Definition legacy_transport_universe_arguments
+  : Monoid@{u p k} B
+  := @MonoidTransport@{u p u p k k k q q l k q q l l}
+      A B f g HA Hfg Hgf.
+End LegacyTransportArguments.
