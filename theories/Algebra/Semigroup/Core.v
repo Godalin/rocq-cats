@@ -61,8 +61,8 @@ Context {S : Semigroup}.
 (** 左乘将乘积送到保相等映射的复合，这是左正则作用中不依赖单位元的部分。 *)
 
 Lemma semigroup_mul_l_comp (x y : S)
-  : magma_mul_l_resp (x ⋅ y) ≈f
-      (magma_mul_l_resp x ∘r magma_mul_l_resp y).
+  : ((x ⋅ y) ⋅−) ≈f
+      ((x ⋅−) ∘r (y ⋅−)).
 Proof. intros z. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
 
 (** Right multiplication reverses the order in the corresponding
@@ -71,8 +71,8 @@ Proof. intros z. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
 (** 右乘在相应复合律中反转次序。 *)
 
 Lemma semigroup_mul_r_comp (x y : S)
-  : magma_mul_r_resp (x ⋅ y) ≈f
-      (magma_mul_r_resp y ∘r magma_mul_r_resp x).
+  : (−⋅ (x ⋅ y)) ≈f
+      ((−⋅ y) ∘r (−⋅ x)).
 Proof. intros z. symmetry. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
 
 (** Left and right multiplication commute as maps, without requiring a
@@ -81,8 +81,8 @@ Proof. intros z. symmetry. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
 (** 左乘与右乘作为映射交换，无须乘法运算本身满足交换律。 *)
 
 Lemma semigroup_mul_lr_comm (x y : S)
-  : (magma_mul_l_resp x ∘r magma_mul_r_resp y) ≈f
-      (magma_mul_r_resp y ∘r magma_mul_l_resp x).
+  : ((x ⋅−) ∘r (−⋅ y)) ≈f
+      ((−⋅ y) ∘r (x ⋅−)).
 Proof. intros z. symmetry. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
 
 End Multiplication.

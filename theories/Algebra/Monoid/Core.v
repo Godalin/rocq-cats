@@ -5,6 +5,8 @@ Declare Scope monoid_scope.
 Delimit Scope monoid_scope with monoid.
 Infix "⋅" := (@magma_mul _ (hasMagma _))
   (at level 40, left associativity) : monoid_scope.
+Notation "'(' x '⋅−)'" := (magma_mul_l_resp x) : monoid_scope.
+Notation "'(−⋅' y ')'" := (magma_mul_r_resp y) : monoid_scope.
 Local Open Scope monoid_scope.
 
 (** * Monoids on Sets
