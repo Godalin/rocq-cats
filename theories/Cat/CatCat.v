@@ -16,7 +16,7 @@ From Cats Require Import
     态射相等保留自然同构数据，因而此范畴中的同构是带拟逆函子及两个复合自然同构
     的范畴等价。这是一维影子；全部自然变换另由 [CatBicat] 的 Hom 范畴保留。 *)
 
-Global Instance CatCat
+Canonical Structure CatCat
   : Cat
   :=
   {|Ob := Cat

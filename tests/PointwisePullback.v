@@ -159,7 +159,7 @@ Proof. split; exact (eq_refl, true). Defined.
 
 Example tagged_pullback_index_equal
   : fmap TaggedPullbackDiagram (X := false) (Y := true) gluing_toggle ≈
-      fmap TaggedPullbackDiagram (X := false) (Y := true) id.
+      fmap TaggedPullbackDiagram (X := false) (Y := true) id_resp.
 Proof.
   apply functor_fmap_proper. intros [n b]. exact (eq_refl, true).
 Defined.

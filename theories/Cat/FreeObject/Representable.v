@@ -100,7 +100,7 @@ Definition PointwiseFreeObj
     (R : ∀ X : @Ob C, ∃ A : @Ob D,
       A ⦂ Rep↑ (FreeHomF U X : Fct D SetCat@{u p _ _ _ _ _}))
   : HasFreeObj U
-  := FreeObjFromUniversal U (λ X, (R X).1)
+  := FreeObjOfUniversal U (λ X, (R X).1)
       (λ X, (representation_universal_arrow (R X).2).1)
       (λ X, (representation_universal_arrow (R X).2).2).
 

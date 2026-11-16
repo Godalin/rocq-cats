@@ -48,7 +48,7 @@ Next Obligation. intros f g H j. cbn. rewrite H. reflexivity. Defined.
 Definition LimAdj
   : Δ[J,C] ⊣ LimF.
 Proof.
-  refine (AdjFromHom Δ[J,C] LimF
+  refine (AdjOfHom Δ[J,C] LimF
     (λ X D, limit_lift_resp) (λ X D, limit_cone_resp) _ _ _ _).
   - intros X D κ. apply limit_β.
   - intros X D f. apply limit_η.
@@ -85,7 +85,7 @@ Next Obligation.
                                       |}.
   - intros j.
     exact (transitivity (symmetry (unadjunct_counit A (κ^♯[A]) j))
-      (adjunction_β A κ j)).
+      (adj_β A κ j)).
   - intros f H. symmetry. apply (snd (adjunct_iff A κ f)).
     transitivity (adj_counit A D ∘Nv fmap Δ[J,C] f).
     + symmetry. exact H.

@@ -72,7 +72,7 @@ Next Obligation. repeat intro; exact tt. Defined.
 Definition PreorderAdj
   : F ⊣ G.
 Proof.
-  refine (AdjFromHom F G preorder_adjunct_resp preorder_unadjunct_resp
+  refine (AdjOfHom F G preorder_adjunct_resp preorder_unadjunct_resp
     _ _ _ _); repeat intro; exact tt.
 Defined.
 
@@ -122,7 +122,7 @@ Context {F : Fct C D} {G : Fct D C} (A : F ⊣ G).
 
 (** 用原生转置取回 Type 值蕴含对应。 *)
 
-Definition preorder_adjunction_correspondence (x : X) (y : Y)
+Definition preorder_adj_correspondence (x : X) (y : Y)
   : S (F x) y ↔ R x (G y)
   := (adjunct A, unadjunct A).
 

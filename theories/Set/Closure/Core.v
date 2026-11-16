@@ -275,7 +275,7 @@ Definition closure_is_universal (c : Clos R)
 (** 选定泛扩张满足闭包律。此构造不将 [P] 与不动对象谓词直接识别；要作这种
     识别，还须假设 [P] 在双向比较下保持。 *)
 
-Program Definition ClosFromUniversal (P : X → Type) (c : X → X)
+Program Definition ClosOfUniversal (P : X → Type) (c : X → X)
     (h : is_closure_universal P c)
   : Clos R
   :=

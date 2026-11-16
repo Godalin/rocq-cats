@@ -82,16 +82,55 @@ Program Definition lift_resp@{v q s +} {X Y : SetC}
     (f : FunS_resp@{s _ _ _ _ _} X Y)
   : LiftS@{_ _ v q} X →r LiftS@{_ _ v q} Y
   :=
-  {|func x :=
-     {|lower := f (lower x)
-     |}
+  {|func x := Lift (f (lower x))
   |}.
 Next Obligation.
-  intros [x] [y] [H]. exact {|lower := @func_proper _ _ f x y H
-                            |}.
+  intros [x] [y] [H]. exact (Lift (@func_proper _ _ f x y H)).
 Defined.
 
 Notation "f '^↑S'" := (lift_resp f) (at level 35) : set_scope.
+
+(** Recover a native respectful map from a map between lifted sets.
+    The source and target lifts may use different carrier and equality
+    bounds. The native map's Proper bound [s] is independent of those lifts.
+    This unwraps existing values and witnesses; it is not resizing. *)
+
+(** 从提升后集合间的映射恢复原生保相等映射。源、目标提升可使用不同的载体及
+    相等见证上界；原生映射的 Proper 上界 [s] 独立于这些提升。这里只拆开已有
+    值和见证，不是大小重设。 *)
+
+Program Definition unlift_resp@{v q w r s +} {X : SetC} {Y : SetC}
+    (f : LiftS@{_ _ v q} X →r LiftS@{_ _ w r} Y)
+  : FunS_resp@{s _ _ _ _ _} X Y
+  :=
+  {|func x := lower (f (Lift x))
+  |}.
+Next Obligation.
+  intros x y H.
+  exact (lower (@func_proper _ _ f (Lift x) (Lift y) (Lift H))).
+Defined.
+
+Notation "f '^↓S'" := (unlift_resp f) (at level 35) : set_scope.
+
+(** Evaluating a recovered map at the value stored in any lifted input
+    agrees with evaluating the lifted map and unwrapping its result. *)
+
+(** 恢复后的映射作用于任意提升输入所保存的值，等于原提升映射求值后拆开结果。 *)
+
+Lemma unlift_resp_apply@{v q w r +} {X : SetC} {Y : SetC}
+    (f : LiftS@{_ _ v q} X →r LiftS@{_ _ w r} Y)
+    (x : LiftS@{_ _ v q} X)
+  : (f^↓S) (lower x) ≈S lower (f x).
+Proof. destruct x. reflexivity. Qed.
+
+(** Lifting a native map and recovering it preserves its pointwise action;
+    no equality of the stored preservation proofs is required. *)
+
+(** 原生映射提升再恢复后保持逐点作用，无须比较保存的保相等证明。 *)
+
+Lemma unlift_lift_resp@{v q +} {X : SetC} {Y : SetC} (f : X →r Y)
+  : (f^↑S : LiftS@{_ _ v q} X →r LiftS@{_ _ v q} Y)^↓S ≈f f.
+Proof. intro x. reflexivity. Qed.
 
 (** The set of respectful maps, with pointwise equality. Equal maps need
     not be native-equal records: equality examines their values, without
@@ -143,8 +182,18 @@ Global Instance lift_resp_proper@{v q +} {X Y : SetC}
   : Proper (carrier_equiv (X →S Y) ==>
       carrier_equiv (LiftS@{_ _ v q} X →S LiftS@{_ _ v q} Y))
       (λ f, (f^↑S : LiftS@{_ _ v q} X →r LiftS@{_ _ v q} Y)).
-Proof. intros f g H [x]. exact {|lower := H x
-                               |}. Defined.
+Proof. intros f g H [x]. exact (Lift (H x)). Defined.
+
+(** Recovering native maps preserves pointwise equality of lifted maps. *)
+
+(** 恢复原生映射保持提升映射间的逐点相等。 *)
+
+Global Instance unlift_resp_proper@{v q w r +} {X : SetC} {Y : SetC}
+  : Proper (carrier_equiv
+      (LiftS@{_ _ v q} X →S LiftS@{_ _ w r} Y) ==>
+      carrier_equiv (X →S Y))
+      (λ f, f^↓S).
+Proof. intros f g H x. exact (lower (H (Lift x))). Defined.
 
 (** The identity respectful map returns its input and preserves each
     equality witness unchanged. *)

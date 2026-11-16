@@ -30,7 +30,7 @@ Class HasCoequalizer (C : Cat)
 
 (** 选定余等化子对象就是反范畴中的等化子对象。 *)
 
-Definition CoeqObj {C : Cat} `{HC : !HasCoequalizer C} {X Y}
+Definition CoeqObj {C : Cat} `{HC : !HasCoequalizer C} {X Y : C}
     (f g : Hom X Y)
   : @Ob C
   := @EqObj (C^op) (@hasOpEqualizer C HC) Y X f g.
@@ -41,7 +41,7 @@ Notation "'Coeq[' f ',' g ']'" := (CoeqObj f g) : ob_scope.
 
 (** 余等化子投影就是反范畴中的等化子包含箭头。 *)
 
-Definition coeqπ {C : Cat} `{HC : !HasCoequalizer C} {X Y}
+Definition coeqπ {C : Cat} `{HC : !HasCoequalizer C} {X Y : C}
     (f g : Hom X Y)
   : Hom Y Coeq[f,g]
   := @eqι (C^op) (@hasOpEqualizer C HC) Y X f g.
@@ -53,7 +53,7 @@ Notation "'πcoeq[' f ',' g ']'" := (coeqπ f g) : hom_scope.
 (** 完整泛性质直接继承，不增加数据。 *)
 
 Definition coequalizer_universal {C : Cat} `{HC : !HasCoequalizer C}
-    {X Y} {f g : Hom X Y}
+    {X Y : C} {f g : Hom X Y}
   : is_coequalizer f g Coeq[f,g] πcoeq[f,g]
   := @equalizer_universal (C^op) (@hasOpEqualizer C HC) Y X f g.
 
@@ -62,7 +62,7 @@ Definition coequalizer_universal {C : Cat} `{HC : !HasCoequalizer C}
 (** 使用原等化子中介分解余等化箭头。 *)
 
 Definition coequalize {C : Cat} `{HC : !HasCoequalizer C}
-    {X Y Q} {f g : Hom X Y} (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
+    {X Y Q : C} {f g : Hom X Y} (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
   : Hom Coeq[f,g] Q
   := @equalize (C^op) (@hasOpEqualizer C HC) Y X Q f g q H.
 
@@ -85,7 +85,7 @@ Context {C : Cat} `{HC : !HasCoequalizer C}.
 
 (** 选定投影余等化给定平行箭头对。 *)
 
-Theorem coequalizer_comm {X Y} {f g : Hom X Y}
+Theorem coequalizer_comm {X Y : C} {f g : Hom X Y}
   : πcoeq[f,g] ∘ f ≈ πcoeq[f,g] ∘ g.
 Proof. exact (@equalizer_comm (C^op) (@hasOpEqualizer C HC) Y X f g). Qed.
 
@@ -93,7 +93,7 @@ Proof. exact (@equalizer_comm (C^op) (@hasOpEqualizer C HC) Y X f g). Qed.
 
 (** 分解由其与投影的指定复合唯一确定。 *)
 
-Theorem coequalizer_mediator_unique {X Y Q} {f g : Hom X Y}
+Theorem coequalizer_mediator_unique {X Y Q : C} {f g : Hom X Y}
     (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
   : is_unique (λ h, h ∘ πcoeq[f,g] ≈ q) coeq⟨q,H⟩.
 Proof.
@@ -105,7 +105,7 @@ Qed.
 
 (** 分解后与投影复合恢复原箭头。 *)
 
-Theorem coequalizer_β {X Y Q} {f g : Hom X Y}
+Theorem coequalizer_β {X Y Q : C} {f g : Hom X Y}
     (q : Hom Y Q) (H : q ∘ f ≈ q ∘ g)
   : coeq⟨q,H⟩ ∘ πcoeq[f,g] ≈ q.
 Proof. exact (@equalizer_β (C^op) (@hasOpEqualizer C HC) Y X Q f g q H). Qed.
@@ -114,7 +114,7 @@ Proof. exact (@equalizer_β (C^op) (@hasOpEqualizer C HC) Y X Q f g q H). Qed.
 
 (** 保相等性不比较交换性见证。 *)
 
-Theorem coequalizer_proper {X Y Q} {f g : Hom X Y} {q q' : Hom Y Q}
+Theorem coequalizer_proper {X Y Q : C} {f g : Hom X Y} {q q' : Hom Y Q}
     (H : q ∘ f ≈ q ∘ g) (H' : q' ∘ f ≈ q' ∘ g) (Hq : q ≈ q')
   : coeq⟨q,H⟩ ≈ coeq⟨q',H'⟩.
 Proof.
@@ -139,7 +139,7 @@ Qed.
 
 (** 分解投影复合后恢复原分解。 *)
 
-Theorem coequalizer_η {X Y Q} {f g : Hom X Y}
+Theorem coequalizer_η {X Y Q : C} {f g : Hom X Y}
     (h : Hom Coeq[f,g] Q)
     (H : (h ∘ πcoeq[f,g]) ∘ f ≈ (h ∘ πcoeq[f,g]) ∘ g)
   : coeq⟨h ∘ πcoeq[f,g],H⟩ ≈ h.

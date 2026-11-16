@@ -91,17 +91,19 @@ Infix "≈S" := (carrier_equiv _)
 
 (** Explicit wrappers raise carrier and equality-witness levels separately.
     [LiftT] stores an [A] inside a target universe large enough to contain
-    it, and [lower] projects the stored value. This is an explicit wrapper,
+    it. [Lift] wraps a value and [lower] projects the stored value. This is
+    an explicit wrapper,
     not a principle that arbitrary large types can be resized downward. *)
 
 (** 显式包装用于分别提升载体与相等见证的层级。[LiftT] 将 [A] 存入足以容纳它
-    的目标宇宙，[lower] 投影出已保存的值。这是显式包装，不是将任意大类型向下
-    重设大小的原理。 *)
+    的目标宇宙；[Lift] 包装值，[lower] 投影出已保存的值。这是显式包装，不是
+    将任意大类型向下重设大小的原理。 *)
 
 Record LiftT@{u v} (A : Type@{u})
   : Type@{v}
-  :=
+  := Lift
   { lower : A }.
+Arguments Lift {_} _.
 Arguments lower {_} _.
 
 (** Lift the carrier of [X] and its equality witnesses independently.
@@ -123,12 +125,9 @@ Program Definition LiftS@{u p v q +} (X : SetC@{u p})
   |}.
 Next Obligation.
   split.
-  - intros [x]. exact {|lower := reflexivity x
-                      |}.
-  - intros [x] [y] [H]. exact {|lower := symmetry H
-                              |}.
-  - intros [x] [y] [z] [H] [K]. exact {|lower := transitivity H K
-                                      |}.
+  - intros [x]. exact (Lift (reflexivity x)).
+  - intros [x] [y] [H]. exact (Lift (symmetry H)).
+  - intros [x] [y] [z] [H] [K]. exact (Lift (transitivity H K)).
 Defined.
 
 Notation "'↑S' X" := (LiftS X) (at level 35) : set_scope.

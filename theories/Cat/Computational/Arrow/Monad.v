@@ -44,7 +44,7 @@ Context {K : Cat@{o u p _ _}} (AA : ArrowApply K).
 
 Program Definition ArrowApplyAdj
   : InducedF AA ⊣ (@ℎ1F (ComputationCat AA) UnitS)
-  := AdjFromHom (InducedF AA) (@ℎ1F (ComputationCat AA) UnitS)
+  := AdjOfHom (InducedF AA) (@ℎ1F (ComputationCat AA) UnitS)
       (arrow_dynamic_name_resp AA) (arrow_dynamic_eval_resp AA) _ _ _ _.
 Next Obligation. exact (arrow_dynamic_eval_name AA f). Defined.
 Next Obligation. exact (arrow_dynamic_name_eval AA g). Defined.

@@ -13,20 +13,20 @@ From Cats Require Import Instance.Set.Lift.
 
 (** 固定源对象的 Hom 广集族。 *)
 
-Definition ℎ1 {C : Cat} (X : Ob)
+Definition ℎ1 {C : Cat} (X : C)
   := λ Y, HomSet X Y.
 (** The hom-setoid family with its target fixed. *)
 
 (** 固定目标对象的 Hom 广集族。 *)
 
-Definition ℎ2 {C : Cat} (X : Ob)
+Definition ℎ2 {C : Cat} (X : C)
   := λ Y, HomSet Y X.
 
 (** Postcomposition gives the covariant hom functor with a fixed source. *)
 
 (** 后合成给出固定源对象的协变 Hom 函子。 *)
 
-Program Definition ℎ1F {C : Cat} (X : Ob)
+Program Definition ℎ1F {C : Cat} (X : C)
   : Fct C SetCat
   :=
   {|F0 := ℎ1 X
@@ -42,7 +42,7 @@ Notation "'Hom(' X  ',-)'" := (ℎ1F X).
 
 (** 预合成给出固定目标对象的反变 Hom 函子。 *)
 
-Program Definition ℎ2F {C : Cat} (X : Ob)
+Program Definition ℎ2F {C : Cat} (X : C)
   : Fct (op C) SetCat
   :=
   {|F0 := ℎ2 X

@@ -38,15 +38,15 @@ Example monoid_object_mul_computes
   : monoid_object_mul BoolObject (true, false) = true.
 Proof. reflexivity. Qed.
 
-Definition IdentityFromAdjunction
+Definition IdentityOfAdj
   := AdjMonad (IdAdj SetCat).
 
 Example adjunction_monad_unit_computes
-  : monad_unit IdentityFromAdjunction BoolS true = true.
+  : monad_unit IdentityOfAdj BoolS true = true.
 Proof. reflexivity. Qed.
 
 Example adjunction_monad_mul_computes
-  : monad_mul IdentityFromAdjunction BoolS false = false.
+  : monad_mul IdentityOfAdj BoolS false = false.
 Proof. reflexivity. Qed.
 
 (** Converting through the categorical characterization preserves both
@@ -55,8 +55,8 @@ Proof. reflexivity. Qed.
 (** 经过范畴刻画的转换保持两个运算的计算，不依赖重新构造的定律见证。 *)
 
 Example monad_monoid_roundtrip_computes
-  : (monad_unit (MonoidMonad (MonadMonoid IdentityFromAdjunction)) BoolS true,
-      monad_mul (MonoidMonad (MonadMonoid IdentityFromAdjunction)) BoolS false)
+  : (monad_unit (MonoidMonad (MonadMonoid IdentityOfAdj)) BoolS true,
+      monad_mul (MonoidMonad (MonadMonoid IdentityOfAdj)) BoolS false)
       = (true, false).
 Proof. reflexivity. Qed.
 

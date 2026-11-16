@@ -68,7 +68,7 @@ Defined.
 
 (** 乘法计算为余单位分量的像。 *)
 
-Lemma adjunction_monad_mul (X : @Ob C)
+Lemma adj_monad_mul (X : @Ob C)
   : μ[AdjMonad] X ≈ fmap U (adj_counit A (F X)).
 Proof. reflexivity. Qed.
 

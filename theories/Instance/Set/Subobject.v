@@ -25,7 +25,7 @@ Context {C : Cat} `{H : !HasPullback C}.
 
 (** 以相互分解为相等的子对象广集。 *)
 
-Program Canonical SubObjS Z
+Program Canonical SubObjS (Z : C)
   : SetC
   :=
   {|carrier := Sub Z
@@ -46,7 +46,7 @@ sX ------> sY
 
 (** 将 Y 的子对象 s 沿 f 拉回，得到 X 的子对象及其指向 s 的比较映射。 *)
 
-Program Definition Sub_fmap {X Y : Ob}
+Program Definition Sub_fmap {X Y : C}
     (f : Hom X Y) (sY : Sub Y)
   : Sub X
   :=
@@ -59,7 +59,7 @@ Program Definition Sub_fmap {X Y : Ob}
 
 (** 选定逆像子对象以指定拉回作为定义域。 *)
 
-Proposition Sub_fmap_Ob {X Y} {f : Hom X Y} {r : Sub Y}
+Proposition Sub_fmap_Ob {X Y : C} {f : Hom X Y} {r : Sub Y}
   : sub (Sub_fmap f r) = X ×[f,r] (sub r).
 Proof. simpl. auto. Qed.
 

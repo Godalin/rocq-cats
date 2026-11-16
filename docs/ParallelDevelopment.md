@@ -162,7 +162,9 @@ does not require removing worktrees or clearing their reusable build caches.
    前声称远端已发布。
 
 Integration acceptance requires the library to build successfully with the
-project toolchain: `opam exec --switch=rocq-cats -- dune build @all`. A library
+project toolchain: `opam exec --switch=rocq-cats -- dune build @check-library`,
+plus relevant regressions selected by [the testing guide](./Testing.md).
+Task checkpoints use affected targets; complete tests remain in CI. A library
 build failure blocks acceptance until repaired. HTML/PDF exports are separate
 documentation tasks, performed when requested according to
 [the documentation guide](./Documentation.md); they are not routine integration
@@ -170,7 +172,9 @@ or batch acceptance requirements. Preserve integrated history and distinguish
 local validation from CI.
 
 集成验收以项目工具链下库构建通过为准：
-`opam exec --switch=rocq-cats -- dune build @all`。库构建失败时须先修复，
+`opam exec --switch=rocq-cats -- dune build @check-library`，加上
+[测试指南](./Testing.md)选取的相关回归。任务检查点使用受影响目标，全部测试留在
+CI。库构建失败时须先修复，
 再完成验收。HTML／PDF 导出作为独立文档任务，在有要求时按
 [文档指南](./Documentation.md)执行，不作为常规集成或批次验收要求。
 保留已集成历史，区分本地验证和 CI。

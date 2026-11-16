@@ -94,7 +94,7 @@ Program Definition free_unadjunct_resp (X : @Ob C) (A : @Ob D)
 Definition FreeAdj
   : FreeFct ⊣ U.
 Proof.
-  refine (AdjFromHom FreeFct U
+  refine (AdjOfHom FreeFct U
     free_adjunct_resp free_unadjunct_resp _ _ _ _).
   - intros X A g. apply free_object_extend_η.
   - intros X A f. apply free_object_extend_β.
@@ -111,7 +111,7 @@ Defined.
 
 (** 伴随构造按 Hom 相等保留选定单位。 *)
 
-Lemma free_adjunction_unit (X : @Ob C)
+Lemma free_adj_unit (X : @Ob C)
   : adj_unit FreeAdj X ≈ free_unit U X.
 Proof.
   change (fmap U id ∘ free_unit U X ≈ free_unit U X).
@@ -122,7 +122,7 @@ Qed.
 
 (** 其余单位是各 [U] 的像处恒等箭头的延拓。 *)
 
-Lemma free_adjunction_counit (A : @Ob D)
+Lemma free_adj_counit (A : @Ob D)
   : adj_counit FreeAdj A ≈ free_object_extend U (@id (U A)).
 Proof. reflexivity. Qed.
 
@@ -145,7 +145,7 @@ Definition AdjFreeObj {C D : Cat}
     {F : Fct C D} {U : Fct D C} (A : F ⊣ U)
   : HasFreeObj U.
 Proof.
-  refine (FreeObjFromUniversal U F (adj_unit A) _).
+  refine (FreeObjOfUniversal U F (adj_unit A) _).
   intros X B f. exists (unadjunct A f). exact (adj_unit_universal A f).
 Defined.
 
@@ -237,7 +237,7 @@ Defined.
 
 (** 重建左伴随与原左伴随自然同构，不要求函子或伴随证明字段相等。 *)
 
-Definition adjunction_free_roundtrip_iso {C D : Cat}
+Definition adj_free_roundtrip_iso {C D : Cat}
     {F : Fct C D} {U : Fct D C} (A : F ⊣ U)
   : @FreeFct C D U (AdjFreeObj A) ≅N F.
 Proof.
@@ -269,12 +269,12 @@ Definition CofreeAdj {C D : Cat} (U : Fct D C)
   : U ⊣ (@FreeFct (C^op) (D^op) (U^opF) HF)^unopF.
 Proof.
   pose (A := OpAdj (@FreeAdj (C^op) (D^op) (U^opF) HF)).
-  refine (AdjFromHom U
+  refine (AdjOfHom U
     ((@FreeFct (C^op) (D^op) (U^opF) HF)^unopF)
     (λ X Y, adjunct_resp A (X := X) (Y := Y))
     (λ X Y, unadjunct_resp A (X := X) (Y := Y)) _ _ _ _).
-  - intros X Y f. exact (adjunction_β A f).
-  - intros X Y g. exact (adjunction_η A g).
+  - intros X Y f. exact (adj_β A f).
+  - intros X Y g. exact (adj_η A g).
   - intros X X' Y f h. exact (adjunct_comp_r A f h).
   - intros X Y Y' k f. exact (adjunct_comp_l A k f).
 Defined.

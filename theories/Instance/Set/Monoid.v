@@ -65,20 +65,31 @@ Program Definition SetMonoidObj
   ; monoid_object_mul := set_magma_mul_resp M
   |}.
 Next Obligation.
-  change (set_magma_mul_resp M ∘ (set_monoid_unit_resp × id) ≈ π2).
-  rewrite cross_η. intros [u x].
+  intros [u x].
+  change (set_magma_mul_resp M
+    ((set_monoid_unit_resp × id_resp) (u, x)) ≈S x).
+  rewrite (cross_η (C := SetCat) (HP := SetCat_HasProduct)
+    set_monoid_unit_resp id_resp (u, x)).
   change (1 ⋅ x ≈S x). rewrite mul_unit_l. reflexivity.
 Defined.
 Next Obligation.
-  change (set_magma_mul_resp M ∘ (id × set_monoid_unit_resp) ≈ π1).
-  rewrite cross_η. intros [x u].
+  intros [x u].
+  change (set_magma_mul_resp M
+    ((id_resp × set_monoid_unit_resp) (x, u)) ≈S x).
+  rewrite (cross_η (C := SetCat) (HP := SetCat_HasProduct)
+    id_resp set_monoid_unit_resp (x, u)).
   change (x ⋅ 1 ≈S x). rewrite mul_unit_r. reflexivity.
 Defined.
 Next Obligation.
-  change (set_magma_mul_resp M ∘ (set_magma_mul_resp M × id) ≈
-    set_magma_mul_resp M ∘ (id × set_magma_mul_resp M) ∘
-      (@product_assoc SetCat SetCat_HasProduct M M M).1).
-  rewrite !cross_η. intros [[x y] z].
+  intros [[x y] z].
+  change (set_magma_mul_resp M
+    ((set_magma_mul_resp M × id_resp) ((x, y), z)) ≈S
+    set_magma_mul_resp M
+      ((id_resp × set_magma_mul_resp M) (x, (y, z)))).
+  rewrite (cross_η (C := SetCat) (HP := SetCat_HasProduct)
+    (set_magma_mul_resp M) id_resp ((x, y), z)),
+    (cross_η (C := SetCat) (HP := SetCat_HasProduct)
+      id_resp (set_magma_mul_resp M) (x, (y, z))).
   change (x ⋅ y ⋅ z ≈S x ⋅ (y ⋅ z)).
   rewrite mul_assoc. reflexivity.
 Defined.

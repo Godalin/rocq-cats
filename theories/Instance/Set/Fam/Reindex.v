@@ -114,7 +114,7 @@ Qed.
 
 Program Definition fam_reindex_pair_resp {X Q : SetC} (U : FamC)
     (f : X →r famC_base U) (q1 : Q →r X) (q2 : Q →r SigS (famC_base U) U)
-    (Hq : f ∘ q1 ≈ sig_base_resp U ∘ q2)
+    (Hq : (f ∘r q1) ≈f (sig_base_resp U ∘r q2))
   : Q →r SigS X U[f]S
   :=
   {|func z := (q1 z; transpS U (symmetry (Hq z)) (q2 z).2)

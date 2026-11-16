@@ -33,21 +33,21 @@ Context {C : Cat}.
     消去性质构造性地推出其逆否形式；一般情况下，反方向需要额外假设，故两种性质
     分开并使用最弱的充分假设。满态射也有类似定义。 *)
 
-Definition is_mono {Y Z} (f : Hom Y Z)
+Definition is_mono {Y Z : C} (f : Hom Y Z)
   := ∀ X, ∀ x y : Hom X Y, f ∘ x ≈ f ∘ y → x ≈ y.
 
 (** Distinct parallel inputs remain distinct after postcomposition. *)
 
 (** 后合成后，不同的平行输入仍然不同。 *)
 
-Definition is_mono_contrapositive {Y Z} (f : Hom Y Z)
+Definition is_mono_contrapositive {Y Z : C} (f : Hom Y Z)
   := ∀ X, ∀ x y : Hom X Y, x ≉ y → f ∘ x ≉ f ∘ y.
 
 (** Left cancellation implies preservation of inequality constructively. *)
 
 (** 左消去构造性地推出保持不相等。 *)
 
-Proposition mono_implies_contrapositive {Y Z} (f : Hom Y Z)
+Proposition mono_implies_contrapositive {Y Z : C} (f : Hom Y Z)
   : is_mono f → is_mono_contrapositive f.
 Proof. firstorder. Qed.
 
@@ -55,7 +55,7 @@ Proof. firstorder. Qed.
 
 (** 恒等箭头是单态射。 *)
 
-Proposition mono_id {X}
+Proposition mono_id {X : C}
   : is_mono (@id X).
 Proof. intros Y x y Heq.
   rewrite comp_id_l in Heq.
@@ -66,7 +66,7 @@ Qed.
 
 (** 单态射的复合仍为单态射。 *)
 
-Proposition mono_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+Proposition mono_comp {X Y Z : C} (f : Hom X Y) (g : Hom Y Z)
   : is_mono f → is_mono g → is_mono (g ∘ f).
 Proof. intros Hf Hg W x y Heq.
   apply Hf. apply Hg.
@@ -77,7 +77,7 @@ Qed.
 
 (** 单态射的逆否性质在复合下封闭。 *)
 
-Proposition mono_contrapositive_comp {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+Proposition mono_contrapositive_comp {X Y Z : C} (f : Hom X Y) (g : Hom Y Z)
   : is_mono_contrapositive f → is_mono_contrapositive g
     → is_mono_contrapositive (g ∘ f).
 Proof. intros Hf Hg W x y Hneq.
@@ -91,7 +91,7 @@ Qed.
 
 (** 复合为单态射时，先作用的因子也是单态射。 *)
 
-Proposition mono_cancel_l {X Y Z} (f : Hom X Y) (g : Hom Y Z)
+Proposition mono_cancel_l {X Y Z : C} (f : Hom X Y) (g : Hom Y Z)
   : is_mono (g ∘ f) → is_mono f.
 Proof. intros Hgf W x y Hf.
   apply (comp_l g) in Hf. apply Hgf.
@@ -103,7 +103,7 @@ Qed.
 
 (** 每条可逆箭头都是单态射。消去保持透明，使可计算的锥见证能使用给定互逆律。 *)
 
-Proposition iso_mono {X Y} (f : Hom X Y)
+Proposition iso_mono {X Y : C} (f : Hom X Y)
   : is_iso f → is_mono f.
 Proof.
   intros [fi [H1 H2]] Z x y H.
@@ -125,7 +125,7 @@ Defined.
 
 (** 箭头及其左消去性质的组合。 *)
 
-Record Mono (X Y : Ob)
+Record Mono (X Y : C)
   :=
   { mor :> Hom X Y
   ; mor_mono : is_mono mor
@@ -138,7 +138,7 @@ Notation "X ↣ Y" := (Mono X Y)
 
 (** 将恒等箭头组合为单态射。 *)
 
-Program Canonical Mono_id {X}
+Program Canonical Mono_id {X : C}
   :=
   {|mor := @id X
   |}.
@@ -148,7 +148,7 @@ Next Obligation. apply mono_id. Qed.
 
 (** 复合两个组合单态射。 *)
 
-Program Canonical Mono_comp {X Y Z} (f : Y ↣ Z) (g : X ↣ Y)
+Program Canonical Mono_comp {X Y Z : C} (f : Y ↣ Z) (g : X ↣ Y)
   :=
   {|mor := f ∘ g
   |}.
@@ -160,7 +160,7 @@ Qed.
 
 (** 从终对象出发的箭头是单态射。 *)
 
-Program Canonical Mono_term `{HT : !HasTerminal C} {X} (f : Hom 1 X)
+Program Canonical Mono_term `{HT : !HasTerminal C} {X : C} (f : Hom 1 X)
   :=
   {|mor := f
   |}.
@@ -172,14 +172,14 @@ Qed.
 
 (** 箭头经过另一条箭头分解，并保留分解见证。 *)
 
-Definition is_factored_through {X Y Z} (g : Hom Y Z) (f : Hom X Z)
+Definition is_factored_through {X Y Z : C} (g : Hom Y Z) (f : Hom X Z)
   := ∃ h, f ≈ g ∘ h.
 
 (** Monic arrows factoring through each other have isomorphic domains. *)
 
 (** 彼此分解的单态射具有同构定义域。 *)
 
-Proposition iso_by_factor {X Y Z} {f : X ↣ Z} {g : Y ↣ Z}
+Proposition iso_by_factor {X Y Z : C} {f : X ↣ Z} {g : Y ↣ Z}
   : is_factored_through g f → is_factored_through f g
   → X ≅ Y.
 Proof. intros [h1 H1] [h2 H2].
@@ -202,9 +202,9 @@ Qed.
 
 (** 对象及其指向环境对象的单态射。 *)
 
-Record Sub (X : Ob)
+Record Sub (X : C)
   :=
-  { sub : Ob
+  { sub : C
   ; sub_mono :> sub ↣ X
   }.
 
@@ -212,7 +212,7 @@ Record Sub (X : Ob)
 
 (** 组合单态射的定义域对象。 *)
 
-Definition object_of_Sub {X Y} (f : X ↣ Y)
+Definition object_of_Sub {X Y : C} (f : X ↣ Y)
   := X.
 Coercion object_of_Sub : Mono >-> Ob.
 
@@ -220,7 +220,7 @@ Coercion object_of_Sub : Mono >-> Ob.
 
 (** 由恒等单态射表示的最大子对象。 *)
 
-Program Canonical id_Sub {X : Ob}
+Program Canonical id_Sub {X : C}
   : Sub X
   :=
   {|sub := X
@@ -232,7 +232,7 @@ Program Canonical id_Sub {X : Ob}
 (** 将全局点视为子对象。 *)
 
 Program Canonical term_Sub
-    `{HT : !HasTerminal C} {X : Ob} (f : Hom 1 X)
+    `{HT : !HasTerminal C} {X : C} (f : Hom 1 X)
   : Sub X
   :=
   {|sub := 1
@@ -269,7 +269,7 @@ Infix "~Sub[ Z  ]" := (Sub_eq Z)
 
 (** [Sub_le] 是自反的。 *)
 
-Global Program Instance Sub_le_Reflexive {Z}
+Global Program Instance Sub_le_Reflexive {Z : C}
   : Reflexive (Sub_le Z).
 Next Obligation. exists id. cato. Qed.
 
@@ -277,7 +277,7 @@ Next Obligation. exists id. cato. Qed.
 
 (** [Sub_le] 是传递的。 *)
 
-Global Program Instance Sub_le_Transitive {Z}
+Global Program Instance Sub_le_Transitive {Z : C}
   : Transitive (Sub_le Z).
 Next Obligation. destruct X as [g Hg]. destruct X0 as [h Hh].
   exists (h ∘ g).
@@ -289,14 +289,14 @@ Qed.
 
 (** [Sub_le] 是预序。 *)
 
-Global Program Instance Sub_le_PreOrder {Z}
+Global Program Instance Sub_le_PreOrder {Z : C}
   : PreOrder (Sub_le Z).
 
 (** Sub_eq is [Equivalence] *)
 
 (** [Sub_eq] 是 [Equivalence]。 *)
 
-Global Program Instance Sub_eq_Reflexive {Z}
+Global Program Instance Sub_eq_Reflexive {Z : C}
   : Reflexive (Sub_eq Z).
 Next Obligation. split; reflexivity. Qed.
 
@@ -304,7 +304,7 @@ Next Obligation. split; reflexivity. Qed.
 
 (** [Sub_eq] 是对称的。 *)
 
-Global Program Instance Sub_eq_Symmetric {Z}
+Global Program Instance Sub_eq_Symmetric {Z : C}
   : Symmetric (Sub_eq Z).
 Next Obligation. destruct X. split; auto. Qed.
 
@@ -312,7 +312,7 @@ Next Obligation. destruct X. split; auto. Qed.
 
 (** [Sub_eq] 是传递的。 *)
 
-Global Program Instance Sub_eq_Transitive {Z}
+Global Program Instance Sub_eq_Transitive {Z : C}
   : Transitive (Sub_eq Z).
 Next Obligation. destruct X, X0. split; transitivity y; auto. Qed.
 
@@ -320,14 +320,14 @@ Next Obligation. destruct X, X0. split; transitivity y; auto. Qed.
 
 (** [Sub_eq] 是等价关系。 *)
 
-Global Program Instance Sub_eq_Equivalence {Z}
+Global Program Instance Sub_eq_Equivalence {Z : C}
   : Equivalence (Sub_eq Z).
 
 (** The factor between two subobjects is monic. *)
 
 (** 两个子对象之间的分解映射为单态射。 *)
 
-Proposition Sub_le_Mono {Z} {i j : Sub Z}
+Proposition Sub_le_Mono {Z : C} {i j : Sub Z}
   : i ≲Sub j → ∃ k : Hom i j, is_mono k.
 Proof. intros [h H].
   assert (Hmi : is_mono (j ∘ h)).
@@ -348,7 +348,7 @@ Qed.
 
 (** 等价子对象具有同构的表示定义域。 *)
 
-Proposition iso_by_Sub_eq {Z} {i j : Sub Z}
+Proposition iso_by_Sub_eq {Z : C} {i j : Sub Z}
   : i ~Sub j → i ≅ j .
 Proof. intros [H1 H2]. eapply iso_by_factor; eauto. Qed.
 
@@ -363,21 +363,21 @@ Proof. intros [H1 H2]. eapply iso_by_factor; eauto. Qed.
 
     与单态射一样，消去性质与其逆否形式分开。 *)
 
-Definition is_epi {X Y} (f : Hom X Y)
+Definition is_epi {X Y : C} (f : Hom X Y)
   := ∀ Z, ∀ x y : Hom Y Z, x ∘ f ≈ y ∘ f → x ≈ y.
 
 (** Distinct parallel outputs remain distinct after precomposition. *)
 
 (** 预合成后，不同的平行输出仍然不同。 *)
 
-Definition is_epi_contrapositive {X Y} (f : Hom X Y)
+Definition is_epi_contrapositive {X Y : C} (f : Hom X Y)
   := ∀ Z, ∀ x y : Hom Y Z, x ≉ y → x ∘ f ≉ y ∘ f.
 
 (** Right cancellation implies its contrapositive constructively. *)
 
 (** 右消去构造性地推出其逆否形式。 *)
 
-Proposition epi_implies_contrapositive {X Y} (f : Hom X Y)
+Proposition epi_implies_contrapositive {X Y : C} (f : Hom X Y)
   : is_epi f → is_epi_contrapositive f.
 Proof. firstorder. Qed.
 

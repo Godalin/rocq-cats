@@ -115,7 +115,7 @@ Next Obligation. repeat intro; exact tt. Defined.
 Definition ClosAdj
   : ClosF ⊣ ClosedInclusionF.
 Proof.
-  refine (AdjFromHom ClosF ClosedInclusionF
+  refine (AdjOfHom ClosF ClosedInclusionF
     closure_adjunct_resp closure_unadjunct_resp _ _ _ _);
     repeat intro; exact tt.
 Defined.

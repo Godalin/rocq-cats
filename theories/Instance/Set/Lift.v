@@ -17,11 +17,7 @@ Program Definition LiftF@{u p +}
   :=
   {|F0 X := LiftS@{_ _ u p} X
   ; F1 X Y f := f^↑S
-  ; functor_fmap_proper X Y f g H x :=
-      {|lower := H (lower x)
-      |}
+  ; functor_fmap_proper X Y f g H x := Lift (H (lower x))
   |}.
-Next Obligation. intros [x]. exact {|lower := reflexivity x
-                                   |}. Defined.
-Next Obligation. intros [x]. exact {|lower := reflexivity (f (g x))
-                                   |}. Defined.
+Next Obligation. intros [x]. exact (Lift (reflexivity x)). Defined.
+Next Obligation. intros [x]. exact (Lift (reflexivity (f (g x)))). Defined.

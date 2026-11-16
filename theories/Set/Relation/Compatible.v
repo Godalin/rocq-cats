@@ -157,7 +157,7 @@ Definition CompatibleClosOp {I : Type} {A : I → Type}
     (K : ContextSystem A)
   : Clos (@RelationFamilyLe I A).
 Proof.
-  refine (@ClosFromUniversal (RelationFamily A)
+  refine (@ClosOfUniversal (RelationFamily A)
     (@RelationFamilyLe I A) (RelationFamilyPreorder A)
     (is_compatible K) (ContextClos K) _).
   intros R. split.

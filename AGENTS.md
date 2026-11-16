@@ -116,6 +116,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   bar, write `:=| Constructor`: no space before that first `|`, one space
   after it. Use ordinary `| Constructor` syntax for subsequent branches,
   aligning their bars with the first bar in the source.
+- Follow the reviewed [source layout](docs/CodeStyle.md). Group declaration
+  parameters by mathematical role rather than filling lines to 80 columns:
+  ordinary parameter continuations use four spaces, `Context` groups two.
+  Nest proofs by two spaces; keep short related tactics together and split
+  longer terms or new proof phases. Multi-line proofs close with `Qed.` or
+  `Defined.` on their own line. Preserve reviewed local layout and avoid
+  unrelated reformatting while changing mathematical code.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
   Prefer existing public mathematical notation throughout declarations,
   construction bodies and proofs; use underlying names and explicit arguments
@@ -161,10 +168,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   with `Record`/`Class`; keep registrations unambiguous and retain explicit
   enabling of chosen model structures.
 - Use `Program Definition`/`Program Instance`/`Program Canonical` with named
-  record fields for data, then explicit `Next Obligation` proofs. The default
-  `cats_obligation` only introduces parameters and runs `cbn`; do not restore
-  automatic destruction of dependent witnesses. For staged proofs, use named
-  fields with `refine`, avoiding positional constructors.
+  record fields for data, then explicit `Next Obligation` proofs. For
+  single-field wrappers, prefer a short named constructor such as `Lift x`.
+  The default `cats_obligation` only introduces parameters and runs `cbn`;
+  do not restore automatic destruction of dependent witnesses. For staged
+  proofs, use named fields with `refine`, avoiding positional constructors.
 - Keep computational witnesses transparent (`Defined`), especially inverse
   maps, transports, and universal mediators. Never finish with `Admitted`,
   `Admit Obligations`, or new axioms. Make any additional assumptions explicit.
@@ -175,9 +183,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `N` = natural transformation, `r`/`resp` = respectful, `v` = vertical.
   `_resp` names respectful maps; `_proper` names preservation laws.
 - Use `Fct` for the functor type, `FctCat` for functor categories, and `Adj`
-  for adjunction constructions. Use `Diag` for `Diagonal`, `Gen` for
-  `Generator`/`Generators`, `Obj` for `Object`/`Objects`, and `Vtx` for
-  `Vertex`, retaining kind suffixes such as `S` for setoids. Maintain the
+  / `adj` for the reviewed adjunction family; retain `adjunct` / `unadjunct`
+  for the distinct Hom-transposition operations. Use `Diag` for `Diagonal`,
+  `Gen` for `Generator`/`Generators`, `Obj` for `Object`/`Objects`,
+  and `Vtx` for `Vertex`, retaining kind suffixes such as `S` for setoids.
+  Maintain the
   exact public rename map and pending families in
   [the abbreviation guide](docs/Abbreviations.md),
   updating bilingual docs and clients with each batch. Keep module paths
@@ -248,17 +258,24 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `opam exec --switch=rocq-cats -- <command>`. Check tool resolution and versions
   before diagnosing failures. Do not change global shell settings or upgrade
   shared environments without explicit authorization.
-- Build with the existing VS Code task or `dune build`. Compile affected modules
-  and representative dependents during editing, using concrete targets rather
-  than full-library/test/install checks after every small change. For broad
-  foundational/API refactors, settle the design and naming before running the
-  necessary full validation for the stable submission. Repeat checks only for
-  changed relevant inputs, failures or unresolved concerns; reuse results when
-  source/dependencies, toolchain and check inputs are unchanged. Build required
-  dependencies before temporary audits. Use `Print Assumptions`, strict-universe
-  and computation checks where the change can affect them, without mechanically
-  rerunning every historical audit. Integration still validates its exact
-  resulting SHA.
+- Follow [development checks](docs/Testing.md). During editing, build changed
+  modules, representative consumers and relevant regression targets. Do not
+  require full-library/test/install/export checks after routine edits, local
+  proof changes or formatting. `@check-core` is an optional foundational
+  regression set, not a replacement for selecting tests by semantic impact.
+- Stable task checkpoints normally require affected theory/test targets, not
+  an automatic full build before every local commit. For broad foundational/API
+  changes, settle interfaces, names and formatting before one full library
+  check plus relevant regressions; run `@check-tests` when many test families
+  are affected or the consumer boundary is uncertain. Integration requires
+  `@check-library` plus relevant regressions at the exact candidate SHA;
+  complete tests remain in CI. `@all` includes tests and is not library-only.
+- Repeat checks only for changed relevant inputs, failures or unresolved
+  concerns; reuse results when source/dependencies, toolchain and check inputs
+  are unchanged. Do not add routine formatting during expensive validation.
+  Build required dependencies before temporary audits. Use `Print Assumptions`,
+  strict-universe and computation checks where the change can affect them,
+  without mechanically rerunning every historical audit. Report actual coverage.
 - Prefer general proofs and temporary checks to redundant tests. Retain tests
   only for concrete interface regressions; keep reusable mathematics in theory
   modules and routine assumption output out of compiled sources.
@@ -311,9 +328,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `typeprop`. Any worker-owned published history rewrite still requires
   coordination and `--force-with-lease`; avoid repeated cherry-picks.
 - Write bilingual documentation with the code. Integration acceptance requires
-  a successful library build with the project toolchain. HTML/PDF exports are
-  separate documentation tasks, performed when requested; they are not routine
-  integration or batch acceptance requirements.
+  a successful `@check-library` build and relevant regressions with the project
+  toolchain at the exact candidate SHA. Full tests remain in CI. HTML/PDF
+  exports are separate documentation tasks, performed when requested; they are
+  not routine integration or batch acceptance requirements.
 - Git commits and branch refs record integration state. Coordinate ongoing work
   through direct session messages; keep no separate coordination issue or runtime
   registry. Workers alone write their assigned source branches/worktrees;

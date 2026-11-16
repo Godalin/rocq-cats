@@ -367,10 +367,10 @@ Definition high_eq_exponential_hom (X Y Z : @Ob C)
 Definition low_eq_exponential_hom (X Y Z : @Ob D)
   : HomSet (Z × X) Y ≅[SetCat@{p h _ _ _ _ _}] HomSet Z (Y ^ X)
   := exponential_hom_iso.
-Definition high_eq_exponential_adjunction (X : @Ob C)
+Definition high_eq_exponential_adj (X : @Ob C)
   : (-× X) ⊣ (-^ X)
   := ProdExpAdj X.
-Definition low_eq_exponential_adjunction (X : @Ob D)
+Definition low_eq_exponential_adj (X : @Ob D)
   : (-× X) ⊣ (-^ X)
   := ProdExpAdj X.
 Definition high_eq_exponential_nat (X : @Ob C)
@@ -513,15 +513,15 @@ Definition mixed_adjunct (X : @Ob C) (Y : @Ob D)
 Definition mixed_unadjunct (X : @Ob C) (Y : @Ob D)
   : HomSet X (G Y) →r HomSet (F X) Y
   := unadjunct_resp A.
-Definition mixed_adjunction_comp
+Definition mixed_adj_comp
   : (F ∘F IdF) ⊣ (IdF ∘F G)
   := CompAdj A (IdAdj C).
-Definition high_eq_adjunction_hom
+Definition high_eq_adj_hom
   : @NatIso _ SetCat@{n e _ _ _ _ _} (LeftHomF F) (RightHomF G)
-  := adjunction_hom_nat_iso A.
-Definition low_eq_adjunction_hom
+  := adj_hom_nat_iso A.
+Definition low_eq_adj_hom
   : @NatIso _ SetCat@{e n _ _ _ _ _} (LeftHomF F) (RightHomF G)
-  := adjunction_hom_nat_iso A.
+  := adj_hom_nat_iso A.
 End AdjunctionLevels.
 
 (** Large diagram shapes may raise cone and law levels, without identifying
@@ -543,9 +543,9 @@ Definition high_eq_limit_functor
   := @LimF J C HC.
 Definition low_eq_limit_functor
   := @LimF J D HD.
-Definition high_eq_limit_adjunction
+Definition high_eq_limit_adj
   := @LimAdj J C HC.
-Definition low_eq_limit_adjunction
+Definition low_eq_limit_adj
   := @LimAdj J D HD.
 Definition high_eq_limit_converse
   := limits_iff_diagonal_right_adjoint J C.
@@ -577,12 +577,12 @@ Constraint n < l.
 Context (J : Cat@{n h p l l}).
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 
-Definition high_eq_colimit_adjunction
+Definition high_eq_colimit_adj
   : HasColimitsOfShape C J ↔
       ∃ L : Fct (FctCat J C) C, L ⊣ Δ[J,C]
   := colimits_iff_diagonal_left_adjoint J C.
 
-Definition low_eq_colimit_adjunction
+Definition low_eq_colimit_adj
   : HasColimitsOfShape D J ↔
       ∃ L : Fct (FctCat J D) D, L ⊣ Δ[J,D]
   := colimits_iff_diagonal_left_adjoint J D.
@@ -2181,7 +2181,7 @@ Definition comma_low_side_equality
 
 Context (U : Fct D A) `{HF : !HasFreeObj U}.
 
-Definition mixed_free_adjunction
+Definition mixed_free_adj
   : FreeFct U ⊣ U
   := FreeAdj U.
 

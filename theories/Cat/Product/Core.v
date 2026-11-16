@@ -11,7 +11,7 @@ From Cats Require Import
 
 (** 对象对上的每个锥到候选积都有唯一中介。 *)
 
-Definition is_product {C : Cat} (X Y P : Ob)
+Definition is_product {C : Cat} (X Y P : C)
     (p : Hom P X) (q : Hom P Y)
   := ∀ Z (f : Hom Z X) (g : Hom Z Y),
     ∃ h : Hom Z P, is_unique (λ h, p ∘ h ≈ f ∧ q ∘ h ≈ g) h.
@@ -22,11 +22,11 @@ Definition is_product {C : Cat} (X Y P : Ob)
 
 Class HasProduct (C : Cat)
   :=
-  { Prod : Ob → Ob → Ob
-  ; π1 {X Y} : Hom (Prod X Y) X
-  ; π2 {X Y} : Hom (Prod X Y) Y
+  { Prod : C → C → C
+  ; π1 {X Y : C} : Hom (Prod X Y) X
+  ; π2 {X Y : C} : Hom (Prod X Y) Y
 
-  ; product_universal {X Y} : is_product X Y (Prod X Y) π1 π2
+  ; product_universal {X Y : C} : is_product X Y (Prod X Y) π1 π2
   }.
 
 Arguments Prod {_ _} _%_ob _%_ob.
@@ -41,7 +41,7 @@ Notation "X '×' Y" := (Prod X Y)
 
 (** Type 值泛性质给出选定中介。 *)
 
-Definition pair {C : Cat} `{HP : !HasProduct C} {X Y Z}
+Definition pair {C : Cat} `{HP : !HasProduct C} {X Y Z : C}
     (f : Hom Z X) (g : Hom Z Y)
   : Hom Z (X × Y)
   := (product_universal Z f g).1.
@@ -55,7 +55,7 @@ Notation "'⟨' f ',' g '⟩'" := (pair f g)
 
 (** 配对是具有给定两个投影的唯一箭头。 *)
 
-Theorem product_pair_unique {C : Cat} `{HP : !HasProduct C} {X Y Z}
+Theorem product_pair_unique {C : Cat} `{HP : !HasProduct C} {X Y Z : C}
     {f : Hom Z X} {g : Hom Z Y}
   : is_unique (λ h, π1 ∘ h ≈ f ∧ π2 ∘ h ≈ g) ⟨f,g⟩.
 Proof. exact (product_universal Z f g).2. Qed.
@@ -66,7 +66,7 @@ Arguments product_pair_unique {_ _ _ _} _ _ _.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance product_pair_proper {C : Cat} `{HP : !HasProduct C} {X Y Z}
+Global Instance product_pair_proper {C : Cat} `{HP : !HasProduct C} {X Y Z : C}
   : Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,X × Y]) pair.
 Proof.
   intros f f' Hf g g' Hg.
@@ -103,7 +103,7 @@ Tactic Notation "elim_product" constr(H) "as" ident(h) :=
   let Hh_unique := fresh "H" h "_unique" in
   destruct H as (h & (Hh1 & Hh2) & Hh_unique).
 
-Context {X Y P Q : Ob}.
+Context {X Y P Q : C}.
 Context {p1 : Hom P X} {p2 : Hom P Y}.
 Context {q1 : Hom Q X} {q2 : Hom Q Y}.
 
@@ -159,7 +159,7 @@ Context {C : Cat} `{HP : !HasProduct C}.
 
 (** 配对的第一投影是其第一分量。 *)
 
-Proposition product_β1 {X Y Z}
+Proposition product_β1 {X Y Z : C}
     (f : Hom Z X) (g : Hom Z Y)
   : π1 ∘ ⟨f,g⟩ ≈ f.
 Proof.
@@ -172,7 +172,7 @@ Qed.
 
 (** 配对的第二投影是其第二分量。 *)
 
-Proposition product_β2 {X Y Z}
+Proposition product_β2 {X Y Z : C}
     (f : Hom Z X) (g : Hom Z Y)
   : π2 ∘ ⟨f,g⟩ ≈ g.
 Proof.
@@ -185,7 +185,7 @@ Qed.
 
 (** 预合成分配到配对的两个分量。 *)
 
-Lemma product_comp_r {X Y Z W}
+Lemma product_comp_r {X Y Z W : C}
     (f : Hom Z X) (g : Hom Z Y) (h : Hom W Z)
   : ⟨f , g⟩ ∘ h ≈ ⟨f ∘ h , g ∘ h⟩.
 Proof.
@@ -199,7 +199,7 @@ Qed.
 
 (** 指向积的每条映射都是其投影的配对。 *)
 
-Lemma product_η {X Y Z} (h : Hom Z (X × Y))
+Lemma product_η {X Y Z : C} (h : Hom Z (X × Y))
   : h ≈ ⟨ π1 ∘ h , π2 ∘ h ⟩.
 Proof.
   apply product_pair_unique; split; cato.
@@ -209,7 +209,7 @@ Qed.
 
 (** 通过同构交换选定二元积的因子。 *)
 
-Lemma product_comm {X Y}
+Lemma product_comm {X Y : C}
   : X × Y ≅ Y × X.
 Proof.
   exists ⟨π2, π1⟩, ⟨π2, π1⟩.
@@ -255,7 +255,7 @@ Context {C : Cat} `{H : !HasProduct C}.
 
 (** 分别将一条箭头作用于二元积的各因子。 *)
 
-Definition cross {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
+Definition cross {X Y X' Y' : C} (f : Hom X X') (g : Hom Y Y')
   : Hom (X × Y) (X' × Y')
   := ⟨ f ∘ π1 , g ∘ π2 ⟩.
 
@@ -285,7 +285,7 @@ Context {C : Cat} `{HP : !HasProduct C}.
 
 (** 逐分量积映射由两个投影确定。 *)
 
-Lemma cross_η {X Y X' Y'} (f : Hom X X') (g : Hom Y Y')
+Lemma cross_η {X Y X' Y' : C} (f : Hom X X') (g : Hom Y Y')
   : f × g ≈ ⟨ f ∘ π1 , g ∘ π2 ⟩.
 Proof. cato. Qed.
 
@@ -293,7 +293,7 @@ Proof. cato. Qed.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance cross_proper {X Y X' Y'}
+Global Instance cross_proper {X Y X' Y' : C}
   : Proper (@HomEq[X, X'] ==> @HomEq[Y, Y'] ==>
       @HomEq[X × Y, X' × Y']) cross.
 Proof.
@@ -304,7 +304,7 @@ Qed.
 
 (** [cross] 与恒等的相容性。 *)
 
-Lemma cross_id {X Y}
+Lemma cross_id {X Y : C}
   : (@id X) × (@id Y) ≈ id.
 Proof.
   rewrite cross_η, !comp_id_l. symmetry.
@@ -315,7 +315,7 @@ Qed.
 
 (** [cross] 与复合的相容性。 *)
 
-Lemma cross_comp {X Y X' Y' X'' Y''}
+Lemma cross_comp {X Y X' Y' X'' Y'' : C}
     (f' : Hom X' X'') (g' : Hom Y' Y'')
     (f : Hom X X') (g : Hom Y Y')
   : (f' ∘ f) × (g' ∘ g) ≈ (f' × g') ∘ (f × g).
@@ -329,7 +329,7 @@ Qed.
 
 (** 两个因子上的独立作用彼此交换。 *)
 
-Lemma cross_exchange {X X' Y Y'} (f : Hom X X') (g : Hom Y Y')
+Lemma cross_exchange {X X' Y Y' : C} (f : Hom X X') (g : Hom Y Y')
   : (id × g) ∘ (f × id) ≈ (f × id) ∘ (id × g).
 Proof.
   rewrite <- !cross_comp, !comp_id_l, !comp_id_r. reflexivity.
@@ -339,7 +339,7 @@ Qed.
 
 (** 积映射的后合成分别作用于配对的两个分量。 *)
 
-Lemma product_comp_l {X Y X' Y' Z}
+Lemma product_comp_l {X Y X' Y' Z : C}
     (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
   : (f' × g') ∘ ⟨f , g⟩ ≈ ⟨f' ∘ f , g' ∘ g⟩.
 Proof.
@@ -383,7 +383,7 @@ Context `{HP : !HasProduct C}.
 
 (** 左侧与终对象取积同构于原对象。 *)
 
-Theorem term_prod_id_l {X}
+Theorem term_prod_id_l {X : C}
   : 1 × X ≅ X.
 Proof.
   exists π2, ⟨!,id⟩; simpl.
@@ -402,7 +402,7 @@ Qed.
 
 (** 右侧与终对象取积同构于原对象。 *)
 
-Theorem term_prod_id_r {X}
+Theorem term_prod_id_r {X : C}
   : X × 1 ≅ X.
 Proof.
   rewrite product_comm.
@@ -413,7 +413,7 @@ Qed.
 
 (** 终对象上的终箭头就是其恒等态射。 *)
 
-Example term_1_1 {X}
+Example term_1_1 {X : C}
   : (X × 1) × 1 ≅ X.
 Proof.
   rewrite term_prod_id_r.

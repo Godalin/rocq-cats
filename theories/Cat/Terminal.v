@@ -15,7 +15,7 @@ From Cats Require Import Cat.Core.
     位于 [Type]，因而保留可使用的箭头。这个性质检验给定对象，不负责从范畴
     中选出对象。 *)
 
-Definition is_terminal {C : Cat} (T : Ob)
+Definition is_terminal {C : Cat} (T : C)
   := ∀ X, ∃ h : Hom X T, is_unique_element h.
 
 (** Clients name a [HasTerminal C] instance when they need a chosen
@@ -33,7 +33,7 @@ Class HasTerminal (C : Cat)
 
   (** [Term] 选出终对象。 *)
 
-  { Term : Ob
+  { Term : C
   (** [terminal_universal] supplies a universal arrow to [Term] from every
       object, together with its uniqueness under hom equality. *)
 
@@ -50,7 +50,7 @@ Arguments terminal_universal {_ _} _.
 
 (** 指向选定终对象的泛箭头。 *)
 
-Definition term {C : Cat} `{HT : !HasTerminal C} {X}
+Definition term {C : Cat} `{HT : !HasTerminal C} {X : C}
   : Hom X Term
   := (terminal_universal X).1.
 
@@ -58,7 +58,7 @@ Definition term {C : Cat} `{HT : !HasTerminal C} {X}
 
 (** 选定终箭头满足完整唯一性性质。 *)
 
-Theorem terminal_arrow_unique {C : Cat} `{HT : !HasTerminal C} {X}
+Theorem terminal_arrow_unique {C : Cat} `{HT : !HasTerminal C} {X : C}
   : is_unique_element (@term C _ X).
 Proof. exact (terminal_universal X).2. Qed.
 
@@ -91,7 +91,7 @@ Tactic Notation "elim_terminal" constr(H) "as" ident(h) :=
 
 (** 终对象的每个自同态射都等于其恒等态射。 *)
 
-Proposition term_id {T}
+Proposition term_id {T : C}
   : is_terminal T
   → ∀ h : Hom T T, h ≈ id.
 Proof.
@@ -106,7 +106,7 @@ Qed.
 
 (** 两个终对象通过其泛箭头同构。 *)
 
-Theorem terminal_unique {T1 T2 : Ob}
+Theorem terminal_unique {T1 T2 : C}
   : is_terminal T1 → is_terminal T2
   → T1 ≅ T2.
 Proof.
@@ -152,7 +152,7 @@ Context {C : Cat} `{HT : !HasTerminal C}.
 
 (** 指向选定终对象的任意箭头都等于泛箭头。 *)
 
-Proposition term_η {X} (h : Hom X 1)
+Proposition term_η {X : C} (h : Hom X 1)
   : h ≈ !.
 Proof. apply terminal_arrow_unique. trivial. Qed.
 
@@ -160,7 +160,7 @@ Proof. apply terminal_arrow_unique. trivial. Qed.
 
 (** 终箭头预合成后仍为其源的终箭头。 *)
 
-Proposition term_comp_l {X Y} (h : Hom X Y)
+Proposition term_comp_l {X Y : C} (h : Hom X Y)
   : ! ∘ h ≈ !.
 Proof. rewrite (term_η (! ∘ _)). cato. Qed.
 
@@ -201,7 +201,7 @@ Context {C : Cat}.
 
 (** 候选对象到每个对象都有唯一箭头。 *)
 
-Definition is_initial (X : Ob)
+Definition is_initial (X : C)
   := @is_terminal (op C) X.
 
 Context `{HI : !HasInitial C}.
@@ -218,7 +218,7 @@ Definition Init
 
 (** 从选定始对象出发的泛箭头。 *)
 
-Definition init {X}
+Definition init {X : C}
   : (@Hom C) Init X
   := @term (C^op) (@hasOpTerminal C HI) X.
 
@@ -235,7 +235,7 @@ Proof. exact (@terminal_universal (C^op) (@hasOpTerminal C HI)). Defined.
 
 (** 始箭头唯一性就是反范畴中的终箭头唯一性。 *)
 
-Theorem initial_arrow_unique {X}
+Theorem initial_arrow_unique {X : C}
   : is_unique_element (@init X).
 Proof. exact (@terminal_arrow_unique (C^op) (@hasOpTerminal C HI) X). Qed.
 
@@ -243,7 +243,7 @@ Proof. exact (@terminal_arrow_unique (C^op) (@hasOpTerminal C HI) X). Qed.
 
 (** 从选定始对象出发的任意箭头等于其泛箭头。 *)
 
-Theorem init_η {X} (f : Hom Init X)
+Theorem init_η {X : C} (f : Hom Init X)
   : f ≈ init.
 Proof. exact (@term_η (C^op) (@hasOpTerminal C HI) X f). Qed.
 
@@ -251,7 +251,7 @@ Proof. exact (@term_η (C^op) (@hasOpTerminal C HI) X f). Qed.
 
 (** 始箭头后合成后仍为始箭头。 *)
 
-Theorem init_comp_r {X Y} (f : Hom X Y)
+Theorem init_comp_r {X Y : C} (f : Hom X Y)
   : f ∘ init ≈ init.
 Proof. exact (@term_comp_l (C^op) (@hasOpTerminal C HI) Y X f). Qed.
 

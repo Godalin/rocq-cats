@@ -44,12 +44,12 @@ Defined.
 
 (** 在选定环境集合宇宙中表达伴随的 Hom 自然同构。 *)
 
-Definition adjunction_hom_nat_iso@{u p +}
+Definition adj_hom_nat_iso@{u p +}
   : @NatIso _ SetCat@{u p _ _ _ _ _} (LeftHomF F) (RightHomF G).
 Proof.
   exists AdjunctN. intros [X Y].
   exists ((unadjunct_resp A)^↑S). split; intros [f];
-    constructor; [exact (adjunction_β A f) | exact (adjunction_η A f)].
+    constructor; [exact (adj_β A f) | exact (adj_η A f)].
 Defined.
 
 (** The component hom-setoid isomorphism of the lifted adjunction
@@ -57,9 +57,9 @@ Defined.
 
 (** 提升后的伴随对应在各分量上的 Hom 广集同构。 *)
 
-Definition adjunction_hom_iso@{u p +} (X : @Ob C) (Y : @Ob D)
+Definition adj_hom_iso@{u p +} (X : @Ob C) (Y : @Ob D)
   : LiftS@{_ _ u p} (HomSet (F X) Y) ≅[SetCat]
       LiftS@{_ _ u p} (HomSet X (G Y))
-  := (AdjunctN (X, Y); adjunction_hom_nat_iso.2 (X, Y)).
+  := (AdjunctN (X, Y); adj_hom_nat_iso.2 (X, Y)).
 
 End AdjunctionSets.

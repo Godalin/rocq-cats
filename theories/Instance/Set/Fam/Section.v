@@ -150,7 +150,7 @@ Next Obligation. destruct p as [q Hq]. exact Hq. Defined.
 Definition section_pair_universal {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S)
   : ∃ h : X →r SigS Y A,
-      is_unique (λ h : X →r SigS Y A, ∃ p : sig_base_resp A ∘ h ≈ f,
+      is_unique (λ h : X →r SigS Y A, ∃ p : sig_base_resp A ∘r h ≈f f,
         ∀ x, transpS A (p x) (h x).2 ≈S s x) h.
 Proof.
   unshelve notypeclasses refine (({|func := _
@@ -189,7 +189,7 @@ Qed.
 
 Theorem section_pair_β1 {X Y : SetC} (A : FamS Y) (f : X →r Y)
     (s : SectionS_resp A[f]S)
-  : sig_base_resp A ∘ section_pair_resp A f s ≈ f.
+  : sig_base_resp A ∘r section_pair_resp A f s ≈f f.
 Proof. intros x. reflexivity. Qed.
 
 (** After aligning the base projection, section pairing recovers its section
@@ -207,7 +207,7 @@ Proof. reflexivity. Qed.
 (** 全空间映射由基底投影与纤维截面恢复。 *)
 
 Theorem section_pair_η {X Y : SetC} (A : FamS Y) (h : X →r SigS Y A)
-  : h ≈ section_pair_resp A (sig_base_resp A ∘r h) (section_of_total A h).
+  : h ≈f section_pair_resp A (sig_base_resp A ∘r h) (section_of_total A h).
 Proof.
   intros x. change (h x ≈ΣS ((h x).1; (h x).2)).
   destruct (h x) as [y a]. reflexivity.
@@ -223,7 +223,7 @@ Qed.
     范畴截面保留右逆见证，其相等只比较底层映射，与所选见证无关。 *)
 
 Program Definition section_to_projection_resp {X : SetC} (A : FamS X)
-  : SectionS A →r Sec(sig_base_resp A)
+  : SectionS A →r SectionOfS (C := SetCat) (sig_base_resp A)
   :=
   {|func s := (section_pair_resp A (id_resp (X := X)) (section_reindex s id_resp);
      section_pair_β1 A id_resp (section_reindex s id_resp))
@@ -240,7 +240,7 @@ Defined.
 (** 范畴截面的像可能仅落在与参数等价的基底代表上，其右逆见证提供所需运输。 *)
 
 Program Definition section_from_projection {X : SetC} (A : FamS X)
-    (s : Sec(sig_base_resp A))
+    (s : SectionOfS (C := SetCat) (sig_base_resp A))
   : SectionS_resp A
   :=
   {|section x := transpS A (s.2 x) (s.1 x).2
@@ -262,7 +262,7 @@ Defined.
 (** 从全空间投影的范畴截面恢复相干纤维截面。 *)
 
 Program Definition section_from_projection_resp {X : SetC} (A : FamS X)
-  : Sec(sig_base_resp A) →r SectionS A
+  : SectionOfS (C := SetCat) (sig_base_resp A) →r SectionS A
   :=
   {|func := section_from_projection A
   |}.
@@ -280,7 +280,7 @@ Defined.
 (** 相干截面同构于全空间投影的范畴截面。 *)
 
 Definition section_projection_iso {X : SetC} (A : FamS X)
-  : SectionS A ≅[SetCat] Sec(sig_base_resp A).
+  : SectionS A ≅[SetCat] SectionOfS (C := SetCat) (sig_base_resp A).
 Proof.
   exists (section_to_projection_resp A), (section_from_projection_resp A). split.
   - intros s x. apply transpS_id.

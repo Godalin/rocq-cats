@@ -55,13 +55,13 @@ Defined.
 Definition ColimAdj
   : ColimF ⊣ Δ[J,C].
 Proof.
-  refine (AdjFromHom ColimF Δ[J,C]
+  refine (AdjOfHom ColimF Δ[J,C]
     (λ D X, colimit_cocone_resp) (λ D X, colimit_desc_resp) _ _ _ _).
   - intros D X f.
     transitivity (adjunct A (unadjunct A f)).
     + apply (adjunct_proper A). intros j. reflexivity.
-    + exact (adjunction_η A f).
-  - intros D X κ j. exact (adjunction_β A (op_cone (CoconeOfN κ)) j).
+    + exact (adj_η A f).
+  - intros D X κ j. exact (adj_β A (op_cone (CoconeOfN κ)) j).
   - intros D E X f α j. exact (unadjunct_comp_l A (α^opN) f j).
   - intros D X Y k f j. exact (unadjunct_comp_r A f k j).
 Defined.
