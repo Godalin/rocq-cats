@@ -198,7 +198,7 @@ for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
 in `Cats.Topos.Nat`, and the stronger set-theory bundle in `Cats.Topos.ETCS`.
-All eighteen modules are under `Topos/`; there are no ETCS compatibility imports.
+All nineteen modules are under `Topos/`; there are no ETCS compatibility imports.
 Characteristic arrows respect monomorphism equality, detect subobject
 equivalence and turn pullback into precomposition. These laws need only a
 chosen terminal object and classifier; [pullback monicity](./theories/Cat/Subobject.v)
@@ -255,6 +255,13 @@ coproduct theory with the derived initial object for finite discrete colimits.
 These choices are explicitly enabled. General
 [double-dual evaluation](./theories/Cat/Exponential/DoubleDual.v) stays outside
 Topos; no coproduct axiom is added.
+The optional [coequalizer construction](./theories/Topos/Coequalizer.v)
+evaluates on predicates identifying a parallel pair and takes the image.
+It retains actual descent and proves its full universal property. Its
+[general equalizing-test construction](./theories/Cat/Exponential/Equalizing.v)
+stays outside Topos. The existing finite-colimit conversion then supplies
+pushouts and all colimits of a shape with an explicit finite hom cover or
+finite generating graph. All these derived choices are explicitly enabled.
 The optional [implication laws](./theories/Topos/ImplicationLaws.v) exchange
 antecedents and eliminate a true antecedent, without exponentials.
 The optional [disjunction module](./theories/Topos/Disjunction.v) quantifies
@@ -266,7 +273,7 @@ monotonicity and the join laws reuse the same chosen data.
 终对象。导入 `Cats.Topos.Core` 即可开展不要求良点性、选择或自然数对象的
 初等拓扑斯理论。分类子接口及已有证明直接导入 `Cats.Topos.Sub`；可选自然数
 结构位于 `Cats.Topos.Nat`，较强的集合论公理束位于 `Cats.Topos.ETCS`。
-十八个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
+十九个模块统一放在 `Topos/` 下，不保留 ETCS 兼容导入。
 特征箭头保持单态射相等、检测子对象等价，并将拉回变为预合成。这些律只需要
 选定终对象及分类子；[拉回单态性](./theories/Cat/Subobject.v) 对任意范畴中的
 给定拉回方形成立。
@@ -306,6 +313,11 @@ Type 值子对象预序范畴的二元积给出；其
 得到有限离散余极限。这些选择均显式启用；一般
 [双对偶求值](./theories/Cat/Exponential/DoubleDual.v)保持在 Topos 之外，
 不增加余积公理。
+可选的[余等化子构造](./theories/Topos/Coequalizer.v)在识别平行箭头对的
+谓词上求值并取像，保留实际下降及完整泛性质；其
+[一般等化测试构造](./theories/Cat/Exponential/Equalizing.v)保持在 Topos 之外。
+既有有限余极限转换随后给出推出，以及带显式有限 Hom 覆盖或有限生成图的
+形状的全部余极限。这些推导选择均显式启用。
 可选的[蕴含定律](./theories/Topos/ImplicationLaws.v)交换前件并消去真前件，
 不要求指数。可选的[析取模块](./theories/Topos/Disjunction.v)借助蕴含对共同
 上界作量化。透明的引入和最小上界对应保留蕴含因子；代入、单调性及并定律

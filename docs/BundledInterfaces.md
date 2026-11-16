@@ -3177,10 +3177,11 @@ uniqueness remain available with these explicitly supplied choices.
 Neither importing this module nor having a Topos registers initial objects
 or coproducts globally, and a previously chosen coproduct can coexist.
 
-This delivers ambient finite coproducts. It does not establish their
-disjointness or pullback stability, coequalizers or all finite colimits,
-image stability/regularity, further quantifier stability or a meaningful
-model. No old mathematical interface, universe contract or choice changes.
+This delivers ambient finite coproducts; the next section adds coequalizers
+and finite-shape colimits. Coproduct disjointness/pullback stability, image
+stability/regularity, further quantifier stability and meaningful models
+remain separate. No old mathematical interface, universe contract or choice
+changes.
 
 [Cat.Exponential.DoubleDual](../theories/Cat/Exponential/DoubleDual.v)
 在具有具名积及相对指数的任意范畴中定义
@@ -3219,6 +3220,105 @@ model. No old mathematical interface, universe contract or choice changes.
 传入这些选择后使用。导入或具有 Topos 均不全局注册始对象或余积；已有余积
 选择可共存。
 
-本批交付环境有限余积，不计其不交性或拉回稳定性、余等化子或全部有限余极限、
-像稳定性／正则性、进一步量词稳定性或有意义模型完成。不改变旧数学接口、
-宇宙契约或选择。
+此构造交付环境有限余积；下一节再给出余等化子及有限形状余极限。余积不交性／
+拉回稳定性、像稳定性／正则性、进一步量词稳定性及有意义模型仍单独保留。
+不改变旧数学接口、宇宙契约或选择。
+
+
+## Coequalizers and finite colimits / 余等化子与有限余极限
+
+[Cat.Exponential.Equalizing](../theories/Cat/Exponential/Equalizing.v)
+works in an arbitrary category with named products, relative exponentials
+and equalizers. For `f, g : A → B` and any result object `R`,
+`EqualizingTests R f g` equalizes precomposition by `f` and `g` from
+`R^B` to `R^A`. Its original equalizer inclusion is retained as
+`EqualizingTestMono`. `EqualizingEvaluation R f g` restricts double
+evaluation to these tests and identifies `f` with `g`.
+
+If `h : B → Z` also identifies the pair, precomposition with `h` factors
+through the same test equalizer. `EqualizingTestFactor R h Hh` retains
+that equalizer mediator. Exponential contravariance gives `EqualizingLift`;
+its composite with restricted evaluation is double evaluation after `h`.
+The proof reuses exponential functoriality and double-dual naturality,
+without terminal objects, classifiers, images or a Topos assumption.
+
+[Topos.Coequalizer](../theories/Topos/Coequalizer.v) specializes these
+tests to the classifier `Ω` with equalizers derived from the same named
+products and pullbacks. `ToposCoequalizerSub f g` is the image of the
+restricted evaluation, `ToposCoequalizer f g` is its domain, and
+`topos_coeq f g` is the retained image factor. Monicity of the image
+inclusion transfers the identifying equation to that factor.
+
+For an identifying `h`, compose its lift with the characteristic arrow of
+`ToposDoubleDualMono Z`. This predicate contains restricted evaluation;
+image minimality therefore makes it true on the whole image. Classification
+retains the actual factor through double evaluation, read as
+`topos_coequalize h Hh`. Monicity proves the beta law. The already proved
+epimorphic property of the image factor proves uniqueness, without a
+section, a quotient axiom, image pullback stability or regularity.
+
+`topos_coequalizer_universal` supplies the full Type-valued coequalizer
+property. Optional `Topos_HasCoequalizer` packages it through the existing
+opposite equalizer interface; its projection and descent reduce to the
+same constructed maps. Existing coequalizer equations and equality
+preservation apply, without requiring equality between law witnesses.
+No old mathematical interface, universe contract, choice or opacity changes.
+
+The optional `Topos_HasPushout` uses `CoproductCoequalizerPushout` with the
+already accepted coproducts. `ToposFiniteColimits` uses `FiniteColimits`
+with a supplied `HasFiniteHomCover J`, retaining object-isomorphism and
+hom-equality covering witnesses in Type. `ToposGeneratedColimits` uses
+`GeneratedColimits` with a supplied `HasFiniteGen J`; even a finite
+generating graph with cycles is permitted. These conversions reuse the
+original opposite finite-limit constructions, including their actual
+cocones, descent maps and laws. Enable the shape choice explicitly to
+use the standard `hasColimit`, `colimit_desc`, beta and uniqueness APIs.
+Raw shape size, ambient hom size and equality-witness size are not
+identified; finite covers or generators are explicit additional shape data.
+
+Thus the elementary Topos choices construct coequalizers, pushouts and
+finite-shape colimits. This does not establish coproduct disjointness or
+pullback stability, image stability/regularity, effectiveness of arbitrary
+equivalence relations, further quantifier stability or meaningful models.
+Existing initial/coproduct/coequalizer choices can coexist; import does
+not automatically select any of these derived structures.
+
+[Cat.Exponential.Equalizing](../theories/Cat/Exponential/Equalizing.v)
+在具有具名积、相对指数及等化子的任意范畴中工作。对 `f, g : A → B` 与任意
+结果对象 `R`，`EqualizingTests R f g` 等化从 `R^B` 到 `R^A` 的两条预合成
+映射，`EqualizingTestMono` 保留原等化子包含。`EqualizingEvaluation R f g`
+将双重求值限制到这些测试并识别 `f`、`g`。
+
+若 `h : B → Z` 也识别该箭头对，沿 `h` 的预合成经同一测试等化子分解；
+`EqualizingTestFactor R h Hh` 保留该等化子中介。指数反变性给出
+`EqualizingLift`，它与限制求值的复合等于先沿 `h` 再双重求值。证明复用
+指数函子性及双对偶自然性，不要求终对象、分类子、像或 Topos。
+
+[Topos.Coequalizer](../theories/Topos/Coequalizer.v) 将测试专化到分类子
+`Ω`，等化子由同一具名积与拉回推导。`ToposCoequalizerSub f g` 是限制求值
+的像，`ToposCoequalizer f g` 是其定义域，`topos_coeq f g` 是保留的像分解
+因子。像包含的单态性将识别方程传给该因子。
+
+给定识别映射 `h`，将其提升与 `ToposDoubleDualMono Z` 的特征箭头复合，
+所得谓词包含限制求值；像最小性使其在整个像上为真。分类保留经双重求值的
+实际因子，读取为 `topos_coequalize h Hh`。单态性给出 β 律，已证明的像
+分解满性给出唯一性；不使用截面、商公理、像拉回稳定性或正则性。
+
+`topos_coequalizer_universal` 提供完整 Type 值余等化子性质；可选
+`Topos_HasCoequalizer` 经既有反等化子接口打包，投影与下降原生归约到同一
+构造映射。既有余等化子方程与保相等性适用，不要求定律见证相等。不改变旧
+数学接口、宇宙契约、选择或透明状态。
+
+可选 `Topos_HasPushout` 将已接收余积传给 `CoproductCoequalizerPushout`。
+`ToposFiniteColimits` 将给定 `HasFiniteHomCover J` 传给 `FiniteColimits`，
+在 Type 中保留对象同构及 Hom 相等覆盖见证。`ToposGeneratedColimits` 将
+给定 `HasFiniteGen J` 传给 `GeneratedColimits`；允许带循环的有限生成图。
+这些转换复用原反有限极限构造及其实际余锥、下降映射和定律。显式启用形状
+选择后，即可使用标准 `hasColimit`、`colimit_desc`、β 与唯一性接口。
+形状原始大小、环境 Hom 大小及相等见证大小不合并；有限覆盖或生成元是显式
+额外形状数据。
+
+由此初等 Topos 的选定结构构造余等化子、推出及有限形状余极限。本批不计余积
+不交性／拉回稳定性、像稳定性／正则性、任意等价关系有效性、进一步量词稳定性
+或有意义模型完成。原有始对象／余积／余等化子选择可共存；导入不自动选择这些
+推导结构。
