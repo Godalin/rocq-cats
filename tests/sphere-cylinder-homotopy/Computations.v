@@ -1,0 +1,627 @@
+From Cats Require Import
+  Instance.Set.Simplicial.Homotopy.SphereCylinderHomotopy
+  Instance.Bool.CocycleSphere
+  Cat.Diagram.Core.
+
+Local Open Scope nat_scope.
+Local Open Scope ordinal_scope.
+
+(** * Actual Homotopy Inverses and Non-Native Recovery
+
+    Negation and identity have actual time-varying composite homotopies in
+    this Type-valued witness setoid. Distinct constant-trajectory witnesses
+    are supplied explicitly. The inverse-image base and both round trips
+    differ natively, while actual-cylinder recovery remains available.
+    Presentation choices alone supply the required homotopy comparisons. *)
+
+(** * 实际同伦逆及非原生恢复
+
+    取反与恒等在此 Type 值见证广集中有实际随时间变化的复合同伦。显式给出
+    不同常值轨迹见证；逆像基点和两个往返均原生不同，仍可按实际柱恢复。
+    呈现选择本身提供所需同伦比较。 *)
+
+Program Definition WitnessS
+  : SetC
+  :=
+  {|carrier := bool
+  ; carrier_equiv x y := bool
+  |}.
+Next Obligation. split; red; intros; exact true. Defined.
+
+(** Retain the witness setoid in every degree. *)
+
+(** 在每一维保留该见证广集。 *)
+
+Definition W
+  : Fct (Δ^op) SetCat
+  := ConstF (Δ^op) WitnessS.
+
+(** The original input retains its boundary witnesses. *)
+
+(** 原输入保留自己的边界见证。 *)
+
+Definition x
+  : TwoSphereS W false
+  := (false; λ i, true).
+
+(** Constant prescribed fillers are genuine choices, not unique or Proper. *)
+
+(** 指定常值填充是真实选择，不要求唯一或 Proper。 *)
+
+Program Definition one_choice (n : nat) (i : Ordinal n) (v : bool)
+  : HasHornFillers W n i
+  :=
+  {|horn_fill h := (v; _)
+  |}.
+Next Obligation. intros m z. exact true. Defined.
+
+(** Independent presentation families need not be carried to each other. *)
+
+(** 独立呈现族不要求经映射对应。 *)
+
+Definition choices (r : Ordinal 2) (v : bool) (s : Ordinal 8)
+  : HasHornFillers W (S (simplex_triangle_horn_face_dim s))
+      (simplex_triangle_horn_missing r s)
+  := one_choice _ _ v.
+
+(** Supply only the four-dimensional choices used by the actual groups. *)
+
+(** 只提供实际群使用的四维选择。 *)
+
+Local Definition four2
+  : HasHornFillers W 4 fin_first⁺⁺
+  := one_choice _ _ false.
+
+(** Associativity retains its own choice. *)
+
+(** 结合律保留自己的选择。 *)
+
+Local Definition four3
+  : HasHornFillers W 4 fin_first⁺⁺⁺
+  := one_choice _ _ true.
+
+(** Input descent retains its other choice. *)
+
+(** 输入下降保留另一选择。 *)
+
+Local Definition four4
+  : HasHornFillers W 4 fin_first⁺⁺⁺⁺
+  := one_choice _ _ false.
+
+Local Existing Instance four2.
+Local Existing Instance four3.
+Local Existing Instance four4.
+
+(** The basepoint and the presentation choices are independent parameters. *)
+
+(** 基点和呈现选择是独立参数。 *)
+
+Definition Q (b r c : bool)
+  : SetC
+  := TwoSphereCylinderS W b (choices fin_first r) (choices fin_first⁺ c).
+
+(** Product and left candidate use the supplied value; the right candidate
+    is independently false. No chosen model is registered. *)
+
+(** 乘积和左候选使用给定值，右候选独立为 false；不注册选定模型。 *)
+
+Definition G (b r c v : bool)
+  : Group (Q b r c)
+  := TwoSphereCylinderGroup W b (choices fin_first r) (choices fin_first⁺ c)
+      (one_choice _ _ v) (one_choice _ _ v) (one_choice _ _ false).
+
+(** Negation is respectful in every degree. *)
+
+(** 取反在每一维保相等。 *)
+
+Program Definition flip_resp
+  : WitnessS →r WitnessS
+  :=
+  {|func := negb
+  |}.
+Next Obligation. intros a c E. exact E. Defined.
+
+(** A constant component is natural for the constant simplicial object. *)
+
+(** 对常值单纯对象，常值分量自然。 *)
+
+Program Definition FlipN
+  : W ⇒ W
+  :=
+  {|nt n := flip_resp
+  |}.
+Next Obligation. intros a. exact true. Defined.
+
+(** The actual maps are negation and identity; time variation and the
+    two constant-trajectory witnesses are independent supplied data. *)
+
+(** 实际映射为取反及恒等；时间变化及两条常值轨迹见证为独立给定数据。 *)
+
+Program Definition MovingN
+  : SimplicialCylinderF W ⇒ W
+  :=
+  {|nt n :=
+      {|func z := if Nat.eqb (fin_rank (lower (snd z) fin_first)) 0
+          then negb (fst z) else fst z
+      |}
+  |}.
+Next Obligation. intros z z' E. exact true. Defined.
+Next Obligation. intros z. exact false. Defined.
+
+Program Definition left_homotopy
+  : SimplicialHomotopy ((idN : W ⇒ W) ∘Nv FlipN) idN
+  :=
+  {|homotopy_map := MovingN
+  |}.
+Next Obligation. intros n z. exact true. Defined.
+
+Program Definition right_homotopy
+  : SimplicialHomotopy (FlipN ∘Nv (idN : W ⇒ W)) idN
+  :=
+  {|homotopy_map := MovingN
+  |}.
+Next Obligation. intros n z. exact false. Defined.
+
+Definition left_trajectory
+  : homotopy_map left_homotopy 1
+      (simplex_constant W false 1, simplex_generic 1) ≈S
+      simplex_constant W false 1
+  := false.
+
+Definition right_trajectory
+  : homotopy_map right_homotopy 1
+      (simplex_constant W (FlipN 0 false) 1, simplex_generic 1) ≈S
+      simplex_constant W (FlipN 0 false) 1
+  := true.
+
+(** A sphere at the image vertex has its own boundary witnesses. *)
+
+(** 像顶点处的球面具有自己的边界见证。 *)
+
+Definition z
+  : TwoSphereS W true
+  := (true; λ i, false).
+
+(** Use the original forward map and new corrected inverse. *)
+
+(** 使用原正向映射及新校正逆。 *)
+
+Definition forward
+  : Q false false true →r Q true true false
+  := two_sphere_cylinder_map_resp FlipN false
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false).
+
+Definition backward
+  : Q true true false →r Q false false true
+  := two_sphere_cylinder_homotopy_inverse_resp FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false).
+
+(** The inverse product law uses exactly the selected group parent operations. *)
+
+(** 逆映射乘积律恰好使用选定群父运算。 *)
+
+Definition product_cylinder
+  : TwoSphereCylinderHomotopy W false
+      (backward (@magma_mul _ (G true true false true) z z))
+      (@magma_mul _ (G false false true false) (backward z) (backward z))
+  := two_sphere_cylinder_homotopy_inverse_mul FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false)
+      (one_choice _ _ true) (one_choice _ _ false) z z.
+
+(** Left-candidate preservation consumes the same two group inverses. *)
+
+(** 左候选保持消费相同的两个群逆。 *)
+
+Definition inverse_cylinder
+  : TwoSphereCylinderHomotopy W false
+      (backward (@group_inv _ (G true true false true) z))
+      (@group_inv _ (G false false true false) (backward z))
+  := two_sphere_cylinder_homotopy_inverse_left_inverse FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false)
+      (one_choice _ _ true) (one_choice _ _ false)
+      (one_choice _ _ false) (one_choice _ _ false) z.
+
+(** Unit preservation really corrects true to false. *)
+
+(** 单位保持确实将 true 校正到 false。 *)
+
+Definition unit_cylinder
+  : TwoSphereCylinderHomotopy W false
+      (backward (@monoid_unit _ (G true true false true)))
+      (@monoid_unit _ (G false false true false))
+  := two_sphere_cylinder_homotopy_inverse_unit FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false).
+
+(** Both round trips compare the actual original representatives. *)
+
+(** 两种往返比较实际原代表。 *)
+
+Definition left_cylinder
+  : TwoSphereCylinderHomotopy W false (backward (forward x)) x
+  := two_sphere_cylinder_homotopy_inverse_l FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false) x.
+
+Definition right_cylinder
+  : TwoSphereCylinderHomotopy W true (forward (backward z)) z
+  := two_sphere_cylinder_homotopy_inverse_r FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false)
+      right_homotopy right_trajectory z.
+
+(** The respectful inverse consumes an actual input cylinder. *)
+
+(** 保相等逆消费实际输入柱。 *)
+
+Definition mapped_input_cylinder
+  := @func_proper _ _ backward z (two_sphere_base W true)
+      (TwoSphereConstantCylinder W true z (two_sphere_base W true) true).
+
+(** Reflection consumes an actual image cylinder, without a right homotopy. *)
+
+(** 反映消费一份实际像柱，不使用右同伦。 *)
+
+Definition reflected_cylinder
+  := two_sphere_cylinder_homotopy_reflect FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false)
+      x (true; λ i, false)
+      (TwoSphereConstantCylinder W true (forward x)
+        (forward (true; λ i, false)) true).
+
+(** A common-lift isomorphism reuses the original class comparison. *)
+
+(** 共同提升同构复用原类比较。 *)
+
+Definition comparison
+  := two_sphere_cylinder_homotopy_iso FlipN idN false
+      left_homotopy left_trajectory
+      (choices fin_first false) (choices fin_first⁺ true)
+      (choices fin_first true) (choices fin_first⁺ false)
+      right_homotopy right_trajectory.
+
+(** Read the nontrivial base correction and all native-distinct law endpoints. *)
+
+(** 读取非平凡基点校正及各原生不同的定律端点。 *)
+
+Example base_and_operations_compute
+  : ((idN : W ⇒ W) 0 (FlipN 0 false), false,
+     (backward (forward x)).1, x.1,
+     (forward (backward z)).1, z.1,
+     (backward (@magma_mul _ (G true true false true) z z)).1,
+     (@magma_mul _ (G false false true false) (backward z) (backward z)).1,
+     (backward (@group_inv _ (G true true false true) z)).1,
+     (@group_inv _ (G false false true false) (backward z)).1,
+     (backward (@monoid_unit _ (G true true false true))).1,
+     (@monoid_unit _ (G false false true false)).1) =
+    (true, false, true, false, false, true, true, false,
+     true, false, true, false).
+Proof. vm_compute. reflexivity. Defined.
+
+(** Evaluate both supplied trajectories in the actual time-varying map. *)
+
+(** 在实际随时间变化的映射中求值两条给定轨迹。 *)
+
+Example trajectory_data_compute
+  : (left_trajectory, right_trajectory,
+     homotopy_map left_homotopy 1
+       (simplex_constant W false 1, simplex_generic 1),
+     homotopy_map right_homotopy 1
+       (simplex_constant W true 1, simplex_generic 1)) =
+    (false, true, true, false).
+Proof. vm_compute. reflexivity. Defined.
+
+(** Both isomorphism directions retain the expected representative functions. *)
+
+(** 同构两个方向保留预期的代表函数。 *)
+
+Example iso_directions_compute
+  : ((lower (comparison.1 {|lower := x|})).1,
+     (lower (comparison.2.1 {|lower := z|})).1) = (true, true).
+Proof. vm_compute. reflexivity. Defined.
+
+Definition forward_is_same_map (a : Q false false true)
+  : lower (comparison.1 {|lower := a|}) = forward a
+  := eq_refl.
+
+Definition backward_is_same_map (a : Q true true false)
+  : lower (comparison.2.1 {|lower := a|}) = backward a
+  := eq_refl.
+
+(** The corrected inverse is also definitionally the old class inverse
+    on representatives, including its boundary proof rather than just values. *)
+
+(** 校正逆在代表上也按定义就是原类逆，包括边界证明，不只是值。 *)
+
+Definition backward_is_old_class_map (a : Q true true false)
+  : backward a = two_sphere_class_homotopy_inverse_resp FlipN idN false
+      left_homotopy left_trajectory a
+  := eq_refl.
+
+(** A boundary shape is independent of its varying time coordinate. *)
+
+(** 边界形状独立于其变化的时间坐标。 *)
+
+Definition boundary_space
+  : (∂Δ[2]) 5
+  := {|lower := (δ[1; fin_first⁺] ∘
+        SimplexPrismTimeF (fin_first⁺⁺ : Ordinal 4);
+      sieve_precomp (BoundarySieve 2) δ[1; fin_first⁺]
+        (SimplexPrismTimeF (fin_first⁺⁺ : Ordinal 4))
+        (boundary_face_member fin_first⁺))|}.
+
+(** Time varies through a separate simplex operator. *)
+
+(** 时间通过另一个单形算子变化。 *)
+
+Definition varying_time
+  : (Δ[1]) 5
+  := {|lower := SimplexPrismTimeF (fin_first⁺ : Ordinal 4)|}.
+
+Local Opaque TwoSphereClassCylinder TwoSphereCylinderEquivalence.
+
+(** All five law cylinders and input Proper have full varying-time boundaries. *)
+
+(** 五项定律柱及输入 Proper 均具有完整变化时间边界。 *)
+
+Definition all_seven_full_boundaries
+  := (product_cylinder.2 5 boundary_space varying_time,
+      inverse_cylinder.2 5 boundary_space varying_time,
+      unit_cylinder.2 5 boundary_space varying_time,
+      left_cylinder.2 5 boundary_space varying_time,
+      right_cylinder.2 5 boundary_space varying_time,
+      mapped_input_cylinder.2 5 boundary_space varying_time,
+      reflected_cylinder.2 5 boundary_space varying_time).
+
+Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
+
+(** Specified inverse equations and operation laws do not imply native ones. *)
+
+(** 指定互逆方程及运算定律不蕴含原生方程。 *)
+
+Fail Definition left_not_native
+  : backward (forward x) = x
+  := ltac:(vm_compute; reflexivity).
+Fail Definition right_not_native
+  : forward (backward z) = z
+  := ltac:(vm_compute; reflexivity).
+Fail Definition product_not_native
+  : backward (@magma_mul _ (G true true false true) z z) =
+      @magma_mul _ (G false false true false) (backward z) (backward z)
+  := ltac:(vm_compute; reflexivity).
+Fail Definition inverse_not_native
+  : backward (@group_inv _ (G true true false true) z) =
+      @group_inv _ (G false false true false) (backward z)
+  := ltac:(vm_compute; reflexivity).
+Fail Definition unit_not_native
+  : backward (@monoid_unit _ (G true true false true)) =
+      @monoid_unit _ (G false false true false)
+  := ltac:(vm_compute; reflexivity).
+
+(** The reflected actual cylinder also has native-distinct source endpoints. *)
+
+(** 反映得到的实际柱同样具有原生不同的来源端点。 *)
+
+Fail Definition reflected_not_native
+  : x = (true; λ i, false)
+  := ltac:(vm_compute; reflexivity).
+
+(** ** Real Nonzero Cocycle Consumers
+
+    Actual identity homotopies use the actual Kan fillers, selected
+    cylinder group and coefficient decoder. This is a model regression,
+    without replacing the corrected inverse or its operation witnesses. *)
+
+(** ** 真实非零 Cocycle 消费者
+
+    实际恒等同伦使用实际 Kan 填充、选定柱群及系数读取。这是模型回归，不替换
+    校正逆或其运算见证。 *)
+
+Local Existing Instance BoolS_Monoid.
+Local Existing Instance BoolCocycleModel_HasKanFillers.
+
+Definition Z
+  : Fct (Δ^op) SetCat
+  := BoolCocycleModel.
+
+(** Keep the original unit basepoint. *)
+
+(** 保持原单位基点。 *)
+
+Definition b
+  : Z 0
+  := two_cocycle_simplex_unit 0.
+
+(** Select the actual model's presentation fillers explicitly. *)
+
+(** 显式选择实际模型的呈现填充。 *)
+
+Definition cocycle_choices (r : Ordinal 2) (s : Ordinal 8)
+  := @hasHornFillers Z BoolCocycleModel_HasKanFillers
+      (simplex_triangle_horn_face_dim s) (simplex_triangle_horn_missing r s).
+
+(** The target equality remains actual full relative cylinders. *)
+
+(** 目标相等仍为实际完整相对柱。 *)
+
+Definition CZ
+  : SetC
+  := TwoSphereCylinderS Z b (cocycle_choices fin_first)
+      (cocycle_choices fin_first⁺).
+
+(** Supply the actual product choice. *)
+
+(** 提供实际乘法选择。 *)
+
+Definition product_choice
+  : HasHornFillers Z 3 fin_first⁺⁺
+  := _.
+
+(** Supply the actual left-candidate choice separately. *)
+
+(** 单独提供实际左候选选择。 *)
+
+Definition left_choice
+  : HasHornFillers Z 3 fin_first⁺⁺⁺
+  := _.
+
+(** The right choice remains a separate argument. *)
+
+(** 右选择保持为单独参数。 *)
+
+Definition right_choice
+  : HasHornFillers Z 3 fin_first⁺
+  := _.
+
+(** Choose the exact same original cylinder group. *)
+
+(** 选择完全相同的原柱群。 *)
+
+Definition GZ
+  : Group CZ
+  := TwoSphereCylinderGroup Z b (cocycle_choices fin_first)
+      (cocycle_choices fin_first⁺) product_choice left_choice right_choice.
+
+(** Retain an actual constant homotopy and its explicit base trajectory. *)
+
+(** 保留实际常值同伦及显式基点轨迹。 *)
+
+Program Definition bool_identity_homotopy
+  : SimplicialHomotopy
+      ((idN : BoolCocycleModel ⇒ BoolCocycleModel) ∘Nv idN) idN
+  :=
+  {|homotopy_map := homotopy_map
+      (SimplicialConstantHomotopy (idN : BoolCocycleModel ⇒ BoolCocycleModel))
+  |}.
+Next Obligation.
+  match goal with t : bool |- _ => destruct t end;
+    intros n z; reflexivity.
+Defined.
+
+Definition bool_identity_trajectory
+  : homotopy_map bool_identity_homotopy 1
+      (simplex_constant BoolCocycleModel (two_cocycle_simplex_unit 0) 1,
+       simplex_generic 1) ≈S
+      simplex_constant BoolCocycleModel (two_cocycle_simplex_unit 0) 1.
+Proof. reflexivity. Defined.
+
+(** Use the actual corrected inverse determined by the first homotopy. *)
+
+(** 使用第一个同伦确定的实际校正逆。 *)
+
+Definition model_backward
+  : CZ →r CZ
+  := two_sphere_cylinder_homotopy_inverse_resp (idN : Z ⇒ Z) idN b
+      bool_identity_homotopy bool_identity_trajectory
+      (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+      (cocycle_choices fin_first) (cocycle_choices fin_first⁺).
+
+(** Decode through the original class comparison, retaining the new map's
+    actual output rather than replacing its selected operation. *)
+
+(** 经原类比较读取，保留新映射的实际输出，不替换选定运算。 *)
+
+Definition value
+  : CZ →r BoolS
+  := cocycle_two_sphere_class_value_resp ∘r
+      two_sphere_class_of_cylinder_resp Z b (cocycle_choices fin_first)
+        (cocycle_choices fin_first⁺).
+
+(** Coefficients remain those of the actual product and inverse outputs. *)
+
+(** 系数仍为实际乘积与逆输出的系数。 *)
+
+Example nonzero_inverse_map_compute
+  : (value (model_backward bool_cocycle_sphere),
+     value (model_backward
+       (@magma_mul CZ GZ bool_cocycle_sphere bool_cocycle_sphere)),
+     value (@magma_mul CZ GZ (model_backward bool_cocycle_sphere)
+       (model_backward bool_cocycle_sphere)),
+     value (model_backward (@group_inv CZ GZ bool_cocycle_sphere)),
+     value (@group_inv CZ GZ (model_backward bool_cocycle_sphere))) =
+    (true, false, false, true, true).
+Proof. vm_compute. reflexivity. Defined.
+
+(** Both operation laws produce actual cylinders in the real Kan model. *)
+
+(** 两项运算定律在真实 Kan 模型中产生实际柱。 *)
+
+Definition cocycle_product_cylinder
+  := two_sphere_cylinder_homotopy_inverse_mul (idN : Z ⇒ Z) idN b
+      bool_identity_homotopy bool_identity_trajectory
+      (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+      (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+      product_choice product_choice bool_cocycle_sphere bool_cocycle_sphere.
+
+Definition cocycle_inverse_cylinder
+  := two_sphere_cylinder_homotopy_inverse_left_inverse (idN : Z ⇒ Z) idN b
+      bool_identity_homotopy bool_identity_trajectory
+      (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+      (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+      left_choice product_choice left_choice right_choice bool_cocycle_sphere.
+
+Local Opaque TwoSphereClassCylinder TwoSphereCylinderEquivalence.
+
+Definition cocycle_full_boundaries
+  := (cocycle_product_cylinder.2 5 boundary_space varying_time,
+      cocycle_inverse_cylinder.2 5 boundary_space varying_time).
+
+Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
+
+(** A nonzero actual inverse image still cannot equal the unit by a cylinder. *)
+
+(** 实际非零逆像仍不能由柱等于单位。 *)
+
+Definition inverse_image_nonzero_not_unit
+  : ¬ ((model_backward bool_cocycle_sphere : CZ) ≈S @monoid_unit CZ GZ).
+Proof.
+  intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
+  change (true = false) in H. discriminate H.
+Defined.
+
+(** Reflection rules out an actual image cylinder to the image of the unit,
+    consuming only the first real identity homotopy and its constant track. *)
+
+(** 反映排除实际像到单位像的柱，只消费首个真实恒等同伦及其常值轨迹。 *)
+
+Definition forward_image_nonzero_by_reflection
+  : ¬ TwoSphereCylinderHomotopy Z b
+      (two_sphere_cylinder_map_resp (idN : Z ⇒ Z) b
+        (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+        (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+        bool_cocycle_sphere)
+      (two_sphere_cylinder_map_resp (idN : Z ⇒ Z) b
+        (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+        (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+        (two_sphere_base Z b)).
+Proof.
+  intros W.
+  pose proof (two_sphere_cylinder_homotopy_reflect idN idN b
+    bool_identity_homotopy bool_identity_trajectory
+    (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+    (cocycle_choices fin_first) (cocycle_choices fin_first⁺)
+    bool_cocycle_sphere (two_sphere_base Z b) W) as C.
+  pose proof (@func_proper CZ BoolS value _ _ C) as H.
+  change (true = false) in H. discriminate H.
+Defined.
+
+(** Even full Kan still does not select Group or raw cylinder Equivalence. *)
+
+(** 即使完整 Kan 仍不选择群或原始柱等价。 *)
+
+Fail Definition full_Kan_no_group : Group CZ := ltac:(typeclasses eauto).
+Fail Definition full_Kan_no_raw_equivalence
+  : Equivalence (TwoSphereCylinderHomotopy Z b)
+  := ltac:(typeclasses eauto).

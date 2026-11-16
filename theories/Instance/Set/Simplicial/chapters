@@ -69,6 +69,7 @@ Homotopy/SphereCylinderBase.v
 Homotopy/SphereCylinderIso.v
 Homotopy/SphereBasedHomotopyClass.v
 Homotopy/SphereHomotopyEquivalence.v
+Homotopy/SphereCylinderHomotopy.v
 Homotopy/OneReduced.v
 Vertex/Ordinal.v
 Vertex/Homotopy.v
