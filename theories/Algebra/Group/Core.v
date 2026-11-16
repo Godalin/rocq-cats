@@ -30,8 +30,8 @@ Context (M : Monoid).
 
 Class IsGroup (inv : M → M)
   :=
-  { group_inv_l x : inv x ⋅ x ≈S 1
-  ; group_inv_r x : x ⋅ inv x ≈S 1
+  { mul_inv_l x : inv x ⋅ x ≈S 1
+  ; mul_inv_r x : x ⋅ inv x ≈S 1
   }.
 
 (** Choose an inverse on this parent, retaining its Type-valued laws. *)
@@ -40,13 +40,13 @@ Class IsGroup (inv : M → M)
 
 Class HasGroup
   :=
-  { group_inv : M → M
+  { inv : M → M
 
   (** The laws refer to the stored inverse and the supplied monoid. *)
 
   (** 定律指向保存的逆及给定幺半群。 *)
 
-  ; isGroup :: IsGroup group_inv
+  ; isGroup :: IsGroup inv
   }.
 
 End InverseExtension.
@@ -57,8 +57,8 @@ End InverseExtension.
 
 Record Group@{u p l}
   :=
-  { GroupM :> Monoid@{u p l}
-  ; hasGroup :: HasGroup GroupM
+  { GroupToMonoid :> Monoid@{u p l}
+  ; hasGroup :: HasGroup GroupToMonoid
   }.
 
 (** Pack a supplied monoid and its chosen inverse extension transparently. *)
@@ -69,7 +69,7 @@ Program Definition GroupFromExtension (M : Monoid)
     (HG : HasGroup M)
   : Group
   :=
-  {|GroupM := M
+  {|GroupToMonoid := M
   ; hasGroup := HG
   |}.
 
@@ -77,7 +77,7 @@ Program Definition GroupFromExtension (M : Monoid)
 
 (** 逆记号读取完整群保存的选择。 *)
 
-Notation "x '⁻¹'" := (@group_inv _ (hasGroup _) x)
+Notation "x '⁻¹'" := (@inv _ (hasGroup _) x)
   (at level 9) : monoid_scope.
 
 (** Candidate inverse maps agree pointwise in the specified equality;
@@ -85,12 +85,12 @@ Notation "x '⁻¹'" := (@group_inv _ (hasGroup _) x)
 
 (** 逆候选映射在指定相等下逐点相等，不等同原生函数或其定律见证。 *)
 
-Lemma group_inverse_candidates_equiv (M : Monoid)
+Lemma inv_candidates_equiv (M : Monoid)
     (i j : M → M) (Hi : IsGroup M i) (Hj : IsGroup M j)
   : i ≈f j.
 Proof.
-  intros x. exact (@monoid_inverse_unique M x (i x) (j x)
-    (@group_inv_l M i Hi x) (@group_inv_r M j Hj x)).
+  intros x. exact (@mul_inv_unique M x (i x) (j x)
+    (@mul_inv_l M i Hi x) (@mul_inv_r M j Hj x)).
 Qed.
 
 (** A left inverse agrees with the selected inverse using only the
@@ -98,13 +98,13 @@ Qed.
 
 (** 左逆仅需指定幺半群上的扩充，就与选定逆相等。 *)
 
-Lemma group_extension_inv_unique (M : Monoid)
+Lemma inv_extension_unique (M : Monoid)
     (HG : HasGroup M) (x y : M)
-    (H : @magma_mul _ (hasMagma M) y x ≈S @monoid_unit _ (hasMonoid M))
-  : y ≈S @group_inv M HG x.
+    (H : @mul _ (hasMagma M) y x ≈S @monoid_unit _ (hasMonoid M))
+  : y ≈S @inv M HG x.
 Proof.
-  exact (@monoid_inverse_unique M x y _ H
-    (@group_inv_r M _ (@isGroup M HG) x)).
+  exact (@mul_inv_unique M x y _ H
+    (@mul_inv_r M _ (@isGroup M HG) x)).
 Qed.
 
 (** ** Inverse Laws in a Group
@@ -120,66 +120,66 @@ Qed.
 Section Group.
 Context {G : Group}.
 
-(** A left inverse agrees with the selected group inverse. *)
+(** A left inverse agrees with the selected inverse. *)
 
 (** 左逆与选定群逆相等。 *)
 
-Lemma group_inv_unique (x y : G) (H : y ⋅ x ≈S 1)
+Lemma inv_unique (x y : G) (H : y ⋅ x ≈S 1)
   : y ≈S x⁻¹.
 Proof.
-  exact (group_extension_inv_unique (GroupM G) (hasGroup G) x y H).
+  exact (inv_extension_unique (GroupToMonoid G) (hasGroup G) x y H).
 Qed.
 
 (** Inversion respects the specified setoid equality. *)
 
 (** 取逆保持指定的广集相等。 *)
 
-Global Instance group_inv_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G) (@group_inv _ (hasGroup G)).
+Global Instance inv_proper
+  : Proper (carrier_equiv G ==> carrier_equiv G) (@inv _ (hasGroup G)).
 Proof.
-  intros x y H. apply group_inv_unique.
-  rewrite <- H. apply (@group_inv_l _ _ (@isGroup _ (hasGroup G))).
+  intros x y H. apply inv_unique.
+  rewrite <- H. apply (@mul_inv_l _ _ (@isGroup _ (hasGroup G))).
 Qed.
 
 (** The unit is its own inverse. *)
 
 (** 单位元的逆仍是单位元。 *)
 
-Lemma group_inv_unit
+Lemma inv_unit
   : (1 : G)⁻¹ ≈S 1.
 Proof.
-  symmetry. apply group_inv_unique.
-  exact (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G)) _).
+  symmetry. apply inv_unique.
+  exact (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G)) _).
 Qed.
 
 (** Taking inverses twice recovers the original element. *)
 
 (** 连续取逆两次恢复原元素。 *)
 
-Lemma group_inv_inv (x : G)
+Lemma inv_inv (x : G)
   : (x⁻¹)⁻¹ ≈S x.
-Proof. symmetry. apply group_inv_unique. apply (@group_inv_r _ _ (@isGroup _ (hasGroup G))). Qed.
+Proof. symmetry. apply inv_unique. apply (@mul_inv_r _ _ (@isGroup _ (hasGroup G))). Qed.
 
 (** The inverse of a product reverses the order of its factors. *)
 
 (** 乘积的逆反转因子次序。 *)
 
-Lemma group_inv_mul (x y : G)
+Lemma inv_mul (x y : G)
   : (x ⋅ y)⁻¹ ≈S y⁻¹ ⋅ x⁻¹.
 Proof.
-  symmetry. apply group_inv_unique.
-  rewrite (@semigroup_assoc _ (isSemigroup G)),
-    <- ((@semigroup_assoc _ (isSemigroup G)) x⁻¹),
-    (@group_inv_l _ _ (@isGroup _ (hasGroup G))).
-  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))).
-  apply (@group_inv_l _ _ (@isGroup _ (hasGroup G))).
+  symmetry. apply inv_unique.
+  rewrite (@mul_assoc _ (isSemigroup G)),
+    <- ((@mul_assoc _ (isSemigroup G)) x⁻¹),
+    (@mul_inv_l _ _ (@isGroup _ (hasGroup G))).
+  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G))).
+  apply (@mul_inv_l _ _ (@isGroup _ (hasGroup G))).
 Qed.
 
 (** Group inversion packaged as a respectful map. *)
 
 (** 将群逆组合为保相等映射。 *)
 
-Program Definition group_inv_resp
+Program Definition inv_resp
   : G →r G
   :=
   {|func x := x⁻¹

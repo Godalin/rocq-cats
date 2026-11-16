@@ -43,7 +43,7 @@ Definition BoolCocycleSphereClassS_Group
 (** 交换性针对该群的同一个幺半群父结构。 *)
 
 Definition BoolCocycleSphereClassS_IsCommutativeMonoid
-  : @IsCommutativeMonoid (GroupM BoolCocycleSphereClassS_Group)
+  : @IsCommutativeMonoid (GroupToMonoid BoolCocycleSphereClassS_Group)
   := (cocycle_two_sphere_IsCommutativeMonoid (M := BoolS_Monoid)).
 
 (** The inverse coefficient is the original Boolean coefficient. *)

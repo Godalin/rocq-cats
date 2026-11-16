@@ -155,11 +155,11 @@ Definition mapped
 (** 乘积及逆方块的两侧确实原生不同。 *)
 
 Example operation_square_endpoints_compute
-  : ((mapped (@magma_mul _ (hasMagma (G false false true)) x y)).1,
-     (@magma_mul _ (hasMagma (G true true false))
+  : ((mapped (@mul _ (hasMagma (G false false true)) x y)).1,
+     (@mul _ (hasMagma (G true true false))
        (mapped x) (mapped y)).1,
-     (mapped (@group_inv _ (hasGroup (G false false true)) x)).1,
-     (@group_inv _ (hasGroup (G true true false)) (mapped x)).1,
+     (mapped (@inv _ (hasGroup (G false false true)) x)).1,
+     (@inv _ (hasGroup (G true true false)) (mapped x)).1,
      (mapped (@monoid_unit _ (hasMonoid (G false false true)))).1,
      (@monoid_unit _ (hasMonoid (G true true false))).1) =
     (false, true, false, true, true, true).
@@ -171,21 +171,21 @@ Proof. vm_compute. reflexivity. Defined.
 
 Definition product_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@magma_mul _ (hasMagma (G false false true)) x y))
-      (@magma_mul _ (hasMagma (G true true false)) (mapped x) (mapped y))
+      (mapped (@mul _ (hasMagma (G false false true)) x y))
+      (@mul _ (hasMagma (G true true false)) (mapped x) (mapped y))
   := two_sphere_cylinder_map_mul FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
       (one_choice _ _ true) (one_choice _ _ true) x y.
 
-(** Inverse preservation compares the two actual selected group inverses. *)
+(** Inverse preservation compares the two actual selected inverses. *)
 
 (** 逆保持比较两个实际选定群逆。 *)
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@group_inv _ (hasGroup (G false false true)) x))
-      (@group_inv _ (hasGroup (G true true false)) (mapped x))
+      (mapped (@inv _ (hasGroup (G false false true)) x))
+      (@inv _ (hasGroup (G true true false)) (mapped x))
   := two_sphere_cylinder_map_left_inverse FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -278,12 +278,12 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际见证不蕴含原生端点相等。 *)
 
 Fail Definition product_square_is_not_native
-  : mapped (@magma_mul _ (hasMagma (G false false true)) x y) =
-      @magma_mul _ (hasMagma (G true true false)) (mapped x) (mapped y)
+  : mapped (@mul _ (hasMagma (G false false true)) x y) =
+      @mul _ (hasMagma (G true true false)) (mapped x) (mapped y)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_square_is_not_native
-  : mapped (@group_inv _ (hasGroup (G false false true)) x) =
-      @group_inv _ (hasGroup (G true true false)) (mapped x)
+  : mapped (@inv _ (hasGroup (G false false true)) x) =
+      @inv _ (hasGroup (G true true false)) (mapped x)
   := ltac:(vm_compute; reflexivity).
 
 (** ** Mapping the Actual Nonzero Cocycle Group
@@ -388,11 +388,11 @@ Definition value
 
 Example nonzero_map_squares_compute
   : (value (model_mapped
-       (@magma_mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
-     value (@magma_mul _ (hasMagma GZ) (model_mapped bool_cocycle_sphere)
+       (@mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
+     value (@mul _ (hasMagma GZ) (model_mapped bool_cocycle_sphere)
        (model_mapped bool_cocycle_sphere)),
-     value (model_mapped (@group_inv _ (hasGroup GZ) bool_cocycle_sphere)),
-     value (@group_inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere)),
+     value (model_mapped (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
+     value (@inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere)),
      value (model_mapped (@monoid_unit _ (hasMonoid GZ))),
      value (@monoid_unit _ (hasMonoid GZ))) = (false, false, true, true, false, false).
 Proof. vm_compute. reflexivity. Defined.

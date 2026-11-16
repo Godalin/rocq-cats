@@ -22,5 +22,5 @@ Program Definition set_magma_mul_resp (M : Magma)
   |}.
 Next Obligation.
   intros [x y] [x' y'] [Hx Hy].
-  exact (@magma_mul_proper _ (hasMagma M) x x' Hx y y' Hy).
+  exact (@mul_proper _ (hasMagma M) x x' Hx y y' Hy).
 Defined.

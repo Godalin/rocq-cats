@@ -65,7 +65,7 @@ Context `{HC : !IsCommutativeMonoid M} `{HD : !IsCommutativeMonoid N}.
 
 Definition lower_ambient_commutativity
   : @IsCommutativeMonoid
-      (GroupM lower_native_lower_ambient_group.1)
+      (GroupToMonoid lower_native_lower_ambient_group.1)
   := cocycle_two_sphere_IsCommutativeMonoid.
 
 (** The opposite native profile accepts higher ambient equality too. *)
@@ -74,7 +74,7 @@ Definition lower_ambient_commutativity
 
 Definition higher_ambient_commutativity
   : @IsCommutativeMonoid
-      (GroupM higher_native_higher_ambient_group.1)
+      (GroupToMonoid higher_native_higher_ambient_group.1)
   := cocycle_two_sphere_IsCommutativeMonoid.
 
 End GroupSizes.

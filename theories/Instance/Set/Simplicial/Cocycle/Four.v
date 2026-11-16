@@ -130,112 +130,112 @@ Proof.
     split; cbn [pentachoron_face_equation]; intros H.
   - transitivity ((t (δ[3; fin_first] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first])) ⋅
       (t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺])) ⋅
       (t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺])) ⋅
       (t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺])) ⋅
       (t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺]))).
-    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+    + apply (@mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
     + transitivity ((t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first])) ⋅
         (t (δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺]))).
       * exact H.
-      * apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
+      * apply (@mul_proper _ (hasMagma M)); apply t_proper;
           apply (snd (simplex_eq_iff _ _));
           intros [[] | [[] | [[] | []]]]; reflexivity.
 Defined.

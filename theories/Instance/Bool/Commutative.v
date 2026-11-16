@@ -21,6 +21,6 @@ From Cats Require Export
 Program Definition BoolS_IsCommutativeMonoid
   : @IsCommutativeMonoid BoolS_Monoid
   :=
-  {|monoid_mul_comm x y := _
+  {|mul_comm x y := _
   |}.
 Next Obligation. destruct x, y; reflexivity. Defined.

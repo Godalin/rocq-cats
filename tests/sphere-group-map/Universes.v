@@ -84,7 +84,7 @@ Definition lower_given_inverse
     (x y : TwoSphereS Y c)
     (W : TwoSphereComposite Y c y x (two_sphere_base Y c))
   : (y : TwoSphereClassS Y c) ≈S
-      @group_inv _ (hasGroup (TwoSphereClassGroup Y c H K L)) x
+      @inv _ (hasGroup (TwoSphereClassGroup Y c H K L)) x
   := two_sphere_composite_group_inverse Y c H K L W.
 
 (** Only the source left-candidate choice enters inverse mapping. *)
@@ -102,7 +102,7 @@ Definition lower_map_inverse
     (L : HasHornFillers Y 3 fin_first⁺)
     (x : TwoSphereClassS X b)
   : two_sphere_class_map_resp α b (@SphereKanLeftInverse X b I x).1 ≈S
-      @group_inv _ (hasGroup (TwoSphereClassGroup Y (α 0 b) H K L))
+      @inv _ (hasGroup (TwoSphereClassGroup Y (α 0 b) H K L))
         (two_sphere_class_map_resp α b x)
   := two_sphere_class_map_left_inverse α b I H K L x.
 
@@ -122,7 +122,7 @@ Definition lower_base_inverse
     (x : TwoSphereClassS X b)
   : two_sphere_class_change_base_resp X E
       (@SphereKanLeftInverse X b I x).1 ≈S
-      @group_inv _ (hasGroup (TwoSphereClassGroup X c H K L))
+      @inv _ (hasGroup (TwoSphereClassGroup X c H K L))
         (two_sphere_class_change_base_resp X E x)
   := two_sphere_class_change_base_left_inverse X E I H K L x.
 
@@ -198,7 +198,7 @@ Definition higher_given_inverse
     (x y : TwoSphereS Y c)
     (W : TwoSphereComposite Y c y x (two_sphere_base Y c))
   : (y : TwoSphereClassS Y c) ≈S
-      @group_inv _ (hasGroup (TwoSphereClassGroup Y c H K L)) x
+      @inv _ (hasGroup (TwoSphereClassGroup Y c H K L)) x
   := two_sphere_composite_group_inverse Y c H K L W.
 
 (** Only the source left-candidate choice enters inverse mapping. *)
@@ -216,7 +216,7 @@ Definition higher_map_inverse
     (L : HasHornFillers Y 3 fin_first⁺)
     (x : TwoSphereClassS X b)
   : two_sphere_class_map_resp α b (@SphereKanLeftInverse X b I x).1 ≈S
-      @group_inv _ (hasGroup (TwoSphereClassGroup Y (α 0 b) H K L))
+      @inv _ (hasGroup (TwoSphereClassGroup Y (α 0 b) H K L))
         (two_sphere_class_map_resp α b x)
   := two_sphere_class_map_left_inverse α b I H K L x.
 
@@ -236,7 +236,7 @@ Definition higher_base_inverse
     (x : TwoSphereClassS X b)
   : two_sphere_class_change_base_resp X E
       (@SphereKanLeftInverse X b I x).1 ≈S
-      @group_inv _ (hasGroup (TwoSphereClassGroup X c H K L))
+      @inv _ (hasGroup (TwoSphereClassGroup X c H K L))
         (two_sphere_class_change_base_resp X E x)
   := two_sphere_class_change_base_left_inverse X E I H K L x.
 

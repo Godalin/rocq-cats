@@ -132,8 +132,8 @@ Definition moved (E : @carrier_equiv WitnessS false true)
 
 Definition product_cylinder
   : TwoSphereCylinderHomotopy W true
-      (moved true (@magma_mul _ (hasMagma (G false false true false)) x y))
-      (@magma_mul _ (hasMagma (G true true false true)) (moved true x) (moved true y))
+      (moved true (@mul _ (hasMagma (G false false true false)) x y))
+      (@mul _ (hasMagma (G true true false true)) (moved true x) (moved true y))
   := two_sphere_cylinder_change_base_mul W
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false) true
@@ -145,8 +145,8 @@ Definition product_cylinder
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W true
-      (moved false (@group_inv _ (hasGroup (G false false true false)) x))
-      (@group_inv _ (hasGroup (G true true false true)) (moved false x))
+      (moved false (@inv _ (hasGroup (G false false true false)) x))
+      (@inv _ (hasGroup (G true true false true)) (moved false x))
   := two_sphere_cylinder_change_base_left_inverse W
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false) false
@@ -216,10 +216,10 @@ Definition comparison
 
 Example transport_and_operations_compute
   : ((moved true y).1, (moved false y).1,
-     (moved true (@magma_mul _ (hasMagma (G false false true false)) x y)).1,
-     (@magma_mul _ (hasMagma (G true true false true)) (moved true x) (moved true y)).1,
-     (moved false (@group_inv _ (hasGroup (G false false true false)) x)).1,
-     (@group_inv _ (hasGroup (G true true false true)) (moved false x)).1,
+     (moved true (@mul _ (hasMagma (G false false true false)) x y)).1,
+     (@mul _ (hasMagma (G true true false true)) (moved true x) (moved true y)).1,
+     (moved false (@inv _ (hasGroup (G false false true false)) x)).1,
+     (@inv _ (hasGroup (G true true false true)) (moved false x)).1,
      (moved true (@monoid_unit _ (hasMonoid (G false false true false)))).1,
      (@monoid_unit _ (hasMonoid (G true true false true))).1) =
     (true, true, false, true, false, true, false, true).
@@ -286,12 +286,12 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际柱方程不蕴含原生端点相等。 *)
 
 Fail Definition product_not_native
-  : moved true (@magma_mul _ (hasMagma (G false false true false)) x y) =
-      @magma_mul _ (hasMagma (G true true false true)) (moved true x) (moved true y)
+  : moved true (@mul _ (hasMagma (G false false true false)) x y) =
+      @mul _ (hasMagma (G true true false true)) (moved true x) (moved true y)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_not_native
-  : moved false (@group_inv _ (hasGroup (G false false true false)) x) =
-      @group_inv _ (hasGroup (G true true false true)) (moved false x)
+  : moved false (@inv _ (hasGroup (G false false true false)) x) =
+      @inv _ (hasGroup (G true true false true)) (moved false x)
   := ltac:(vm_compute; reflexivity).
 Fail Definition unit_not_native
   : moved true (@monoid_unit _ (hasMonoid (G false false true false))) =
@@ -400,8 +400,8 @@ Definition value
 
 Example nonzero_transport_compute
   : (value (model_mapped bool_cocycle_sphere),
-     value (model_mapped (@group_inv _ (hasGroup GZ) bool_cocycle_sphere)),
-     value (@group_inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere))) =
+     value (model_mapped (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
+     value (@inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere))) =
     (true, true, true).
 Proof. vm_compute. reflexivity. Defined.
 

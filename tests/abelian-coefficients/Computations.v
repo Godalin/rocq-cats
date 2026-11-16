@@ -42,11 +42,11 @@ Example right_solution_computes
 Proof. reflexivity. Qed.
 
 Example left_solution_map_computes
-  : (group_mul_l_solve_resp (G := BoolS_Group)) true true = false.
+  : (mul_l_solve_resp (G := BoolS_Group)) true true = false.
 Proof. reflexivity. Qed.
 
 Example right_solution_map_computes
-  : (group_mul_r_solve_resp (G := BoolS_Group)) false true = true.
+  : (mul_r_solve_resp (G := BoolS_Group)) false true = true.
 Proof. reflexivity. Qed.
 
 (** The group and commutativity witnesses infer coherently without a second
@@ -55,10 +55,10 @@ Proof. reflexivity. Qed.
 (** 群和交换性见证能够相干推断，无须再显式启用第二个幺半群实例。 *)
 
 Definition boolean_interchange (a b c d : BoolS)
-  : @magma_mul _ (hasMagma BoolS_Monoid)
-      (@magma_mul _ (hasMagma BoolS_Monoid) a b) (@magma_mul _ (hasMagma BoolS_Monoid) c d) ≈S
-      @magma_mul _ (hasMagma BoolS_Monoid)
-        (@magma_mul _ (hasMagma BoolS_Monoid) a c) (@magma_mul _ (hasMagma BoolS_Monoid) b d)
-  := monoid_mul_interchange a b c d.
+  : @mul _ (hasMagma BoolS_Monoid)
+      (@mul _ (hasMagma BoolS_Monoid) a b) (@mul _ (hasMagma BoolS_Monoid) c d) ≈S
+      @mul _ (hasMagma BoolS_Monoid)
+        (@mul _ (hasMagma BoolS_Monoid) a c) (@mul _ (hasMagma BoolS_Monoid) b d)
+  := mul_interchange a b c d.
 
 End BooleanComputations.

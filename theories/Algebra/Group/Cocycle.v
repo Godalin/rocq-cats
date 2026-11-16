@@ -122,9 +122,9 @@ Global Instance cocycle012_solution_proper
       carrier_equiv G) (λ q r s, (Cocycle012Solution q r s).1).
 Proof.
   intros q q' Hq r r' Hr s s' Hs. cbn.
-  apply (@magma_mul_proper _ (hasMagma G)).
-  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
-  - apply group_inv_proper. exact Hq.
+  apply (@mul_proper _ (hasMagma G)).
+  - apply (@mul_proper _ (hasMagma G)); assumption.
+  - apply inv_proper. exact Hq.
 Defined.
 
 (** The second selected label also respects all three inputs. *)
@@ -136,9 +136,9 @@ Global Instance cocycle023_solution_proper
       carrier_equiv G) (λ p r s, (Cocycle023Solution p r s).1).
 Proof.
   intros p p' Hp r r' Hr s s' Hs. cbn.
-  apply (@magma_mul_proper _ (hasMagma G)).
-  - apply group_inv_proper. exact Hp.
-  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
+  apply (@mul_proper _ (hasMagma G)).
+  - apply inv_proper. exact Hp.
+  - apply (@mul_proper _ (hasMagma G)); assumption.
 Defined.
 
 (** Respectfulness compares labels, without comparing uniqueness witnesses. *)
@@ -150,9 +150,9 @@ Global Instance cocycle123_solution_proper
       carrier_equiv G) (λ p q s, (Cocycle123Solution p q s).1).
 Proof.
   intros p p' Hp q q' Hq s s' Hs. cbn.
-  apply (@magma_mul_proper _ (hasMagma G)).
-  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
-  - apply group_inv_proper. exact Hs.
+  apply (@mul_proper _ (hasMagma G)).
+  - apply (@mul_proper _ (hasMagma G)); assumption.
+  - apply inv_proper. exact Hs.
 Defined.
 
 (** The last selected label has the same pointwise preservation law. *)
@@ -164,9 +164,9 @@ Global Instance cocycle013_solution_proper
       carrier_equiv G) (λ p q r, (Cocycle013Solution p q r).1).
 Proof.
   intros p p' Hp q q' Hq r r' Hr. cbn.
-  apply (@magma_mul_proper _ (hasMagma G)).
-  - apply group_inv_proper. exact Hr.
-  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
+  apply (@mul_proper _ (hasMagma G)).
+  - apply inv_proper. exact Hr.
+  - apply (@mul_proper _ (hasMagma G)); assumption.
 Defined.
 
 End Completion.
@@ -233,13 +233,13 @@ Lemma cocycle_tetrahedron_1234
     (H3 : a ⋅ e ≈S h ⋅ c) (H4 : a ⋅ d ≈S g ⋅ b)
   : g ⋅ i ≈S j ⋅ h.
 Proof.
-  apply (group_mul_cancel_r c).
-  rewrite (@semigroup_assoc _ (isSemigroup G)),
+  apply (mul_cancel_r c).
+  rewrite (@mul_assoc _ (isSemigroup G)),
     <- H2,
-    <- (@semigroup_assoc _ (isSemigroup G)),
+    <- (@mul_assoc _ (isSemigroup G)),
     <- H4,
-    (@semigroup_assoc _ (isSemigroup G)), H1, <- ((@semigroup_assoc _ (isSemigroup G)) a j e),
-    (monoid_mul_comm a j), (@semigroup_assoc _ (isSemigroup G)), H3, <- (@semigroup_assoc _ (isSemigroup G)).
+    (@mul_assoc _ (isSemigroup G)), H1, <- ((@mul_assoc _ (isSemigroup G)) a j e),
+    (mul_comm a j), (@mul_assoc _ (isSemigroup G)), H3, <- (@mul_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -252,13 +252,13 @@ Lemma cocycle_tetrahedron_0234
     (H3 : a ⋅ e ≈S h ⋅ c) (H4 : a ⋅ d ≈S g ⋅ b)
   : d ⋅ f ≈S j ⋅ e.
 Proof.
-  apply (group_mul_cancel_l a).
-  rewrite <- (@semigroup_assoc _ (isSemigroup G)),
+  apply (mul_cancel_l a).
+  rewrite <- (@mul_assoc _ (isSemigroup G)),
     H4,
-    (@semigroup_assoc _ (isSemigroup G)),
+    (@mul_assoc _ (isSemigroup G)),
     H2,
-    <- (@semigroup_assoc _ (isSemigroup G)), H0, (@semigroup_assoc _ (isSemigroup G)), <- H3,
-    <- ((@semigroup_assoc _ (isSemigroup G)) j a e), (monoid_mul_comm j a), (@semigroup_assoc _ (isSemigroup G)).
+    <- (@mul_assoc _ (isSemigroup G)), H0, (@mul_assoc _ (isSemigroup G)), <- H3,
+    <- ((@mul_assoc _ (isSemigroup G)) j a e), (mul_comm j a), (@mul_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -271,13 +271,13 @@ Lemma cocycle_tetrahedron_0134
     (H3 : a ⋅ e ≈S h ⋅ c) (H4 : a ⋅ d ≈S g ⋅ b)
   : b ⋅ f ≈S i ⋅ c.
 Proof.
-  apply (group_mul_cancel_l g).
-  rewrite <- (@semigroup_assoc _ (isSemigroup G)),
+  apply (mul_cancel_l g).
+  rewrite <- (@mul_assoc _ (isSemigroup G)),
     <- H4,
-    (@semigroup_assoc _ (isSemigroup G)),
+    (@mul_assoc _ (isSemigroup G)),
     H1,
-    <- ((@semigroup_assoc _ (isSemigroup G)) a j e), (monoid_mul_comm a j), (@semigroup_assoc _ (isSemigroup G)),
-    H3, <- (@semigroup_assoc _ (isSemigroup G)), <- H0, (@semigroup_assoc _ (isSemigroup G)).
+    <- ((@mul_assoc _ (isSemigroup G)) a j e), (mul_comm a j), (@mul_assoc _ (isSemigroup G)),
+    H3, <- (@mul_assoc _ (isSemigroup G)), <- H0, (@mul_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -290,12 +290,12 @@ Lemma cocycle_tetrahedron_0124
     (H2 : b ⋅ f ≈S i ⋅ c) (H4 : a ⋅ d ≈S g ⋅ b)
   : a ⋅ e ≈S h ⋅ c.
 Proof.
-  apply (group_mul_cancel_l j).
-  rewrite <- ((@semigroup_assoc _ (isSemigroup G)) j a e),
-    (monoid_mul_comm j a),
-    (@semigroup_assoc _ (isSemigroup G)),
-    <- H1, <- (@semigroup_assoc _ (isSemigroup G)), H4, (@semigroup_assoc _ (isSemigroup G)), H2,
-    <- (@semigroup_assoc _ (isSemigroup G)), H0, (@semigroup_assoc _ (isSemigroup G)).
+  apply (mul_cancel_l j).
+  rewrite <- ((@mul_assoc _ (isSemigroup G)) j a e),
+    (mul_comm j a),
+    (@mul_assoc _ (isSemigroup G)),
+    <- H1, <- (@mul_assoc _ (isSemigroup G)), H4, (@mul_assoc _ (isSemigroup G)), H2,
+    <- (@mul_assoc _ (isSemigroup G)), H0, (@mul_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -308,12 +308,12 @@ Lemma cocycle_tetrahedron_0123
     (H2 : b ⋅ f ≈S i ⋅ c) (H3 : a ⋅ e ≈S h ⋅ c)
   : a ⋅ d ≈S g ⋅ b.
 Proof.
-  apply (group_mul_cancel_r f).
-  rewrite (@semigroup_assoc _ (isSemigroup G)),
+  apply (mul_cancel_r f).
+  rewrite (@mul_assoc _ (isSemigroup G)),
     H1,
-    <- ((@semigroup_assoc _ (isSemigroup G)) a j e),
-    (monoid_mul_comm a j), (@semigroup_assoc _ (isSemigroup G)), H3,
-    <- (@semigroup_assoc _ (isSemigroup G)), <- H0, (@semigroup_assoc _ (isSemigroup G)), <- H2, <- (@semigroup_assoc _ (isSemigroup G)).
+    <- ((@mul_assoc _ (isSemigroup G)) a j e),
+    (mul_comm a j), (@mul_assoc _ (isSemigroup G)), H3,
+    <- (@mul_assoc _ (isSemigroup G)), <- H0, (@mul_assoc _ (isSemigroup G)), <- H2, <- (@mul_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 

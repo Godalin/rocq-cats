@@ -64,18 +64,18 @@ Program Definition SetMonoidObj
 Next Obligation.
   change (set_magma_mul_resp M ∘ (set_monoid_unit_resp × id) ≈ π2).
   rewrite cross_η. intros [u x].
-  exact (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M)) x).
+  exact (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M)) x).
 Defined.
 Next Obligation.
   change (set_magma_mul_resp M ∘ (id × set_monoid_unit_resp) ≈ π1).
   rewrite cross_η. intros [x u].
-  exact (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M)) x).
+  exact (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M)) x).
 Defined.
 Next Obligation.
   change (set_magma_mul_resp M ∘ (set_magma_mul_resp M × id) ≈
     set_magma_mul_resp M ∘ (id × set_magma_mul_resp M) ∘
       (@product_assoc SetCat SetCat_HasProduct M M M).1).
-  rewrite !cross_η. intros [[x y] z]. exact ((@semigroup_assoc _ (isSemigroup M)) x y z).
+  rewrite !cross_η. intros [[x y] z]. exact ((@mul_assoc _ (isSemigroup M)) x y z).
 Defined.
 
 End SetMonoid.

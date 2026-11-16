@@ -205,22 +205,22 @@ Definition backward
 
 Definition product_cylinder
   : TwoSphereCylinderHomotopy W false
-      (backward (@magma_mul _ (hasMagma (G true true false true)) z z))
-      (@magma_mul _ (hasMagma (G false false true false)) (backward z) (backward z))
+      (backward (@mul _ (hasMagma (G true true false true)) z z))
+      (@mul _ (hasMagma (G false false true false)) (backward z) (backward z))
   := two_sphere_cylinder_homotopy_inverse_mul FlipN idN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
       (one_choice _ _ true) (one_choice _ _ false) z z.
 
-(** Left-candidate preservation consumes the same two group inverses. *)
+(** Left-candidate preservation consumes the same two inverses. *)
 
 (** 左候选保持消费相同的两个群逆。 *)
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W false
-      (backward (@group_inv _ (hasGroup (G true true false true)) z))
-      (@group_inv _ (hasGroup (G false false true false)) (backward z))
+      (backward (@inv _ (hasGroup (G true true false true)) z))
+      (@inv _ (hasGroup (G false false true false)) (backward z))
   := two_sphere_cylinder_homotopy_inverse_left_inverse FlipN idN false
       left_homotopy left_trajectory
       (choices fin_first false) (choices fin_first⁺ true)
@@ -300,10 +300,10 @@ Example base_and_operations_compute
   : ((idN : W ⇒ W) 0 (FlipN 0 false), false,
      (backward (forward x)).1, x.1,
      (forward (backward z)).1, z.1,
-     (backward (@magma_mul _ (hasMagma (G true true false true)) z z)).1,
-     (@magma_mul _ (hasMagma (G false false true false)) (backward z) (backward z)).1,
-     (backward (@group_inv _ (hasGroup (G true true false true)) z)).1,
-     (@group_inv _ (hasGroup (G false false true false)) (backward z)).1,
+     (backward (@mul _ (hasMagma (G true true false true)) z z)).1,
+     (@mul _ (hasMagma (G false false true false)) (backward z) (backward z)).1,
+     (backward (@inv _ (hasGroup (G true true false true)) z)).1,
+     (@inv _ (hasGroup (G false false true false)) (backward z)).1,
      (backward (@monoid_unit _ (hasMonoid (G true true false true)))).1,
      (@monoid_unit _ (hasMonoid (G false false true false))).1) =
     (true, false, true, false, false, true, true, false,
@@ -398,12 +398,12 @@ Fail Definition right_not_native
   : forward (backward z) = z
   := ltac:(vm_compute; reflexivity).
 Fail Definition product_not_native
-  : backward (@magma_mul _ (hasMagma (G true true false true)) z z) =
-      @magma_mul _ (hasMagma (G false false true false)) (backward z) (backward z)
+  : backward (@mul _ (hasMagma (G true true false true)) z z) =
+      @mul _ (hasMagma (G false false true false)) (backward z) (backward z)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_not_native
-  : backward (@group_inv _ (hasGroup (G true true false true)) z) =
-      @group_inv _ (hasGroup (G false false true false)) (backward z)
+  : backward (@inv _ (hasGroup (G true true false true)) z) =
+      @inv _ (hasGroup (G false false true false)) (backward z)
   := ltac:(vm_compute; reflexivity).
 Fail Definition unit_not_native
   : backward (@monoid_unit _ (hasMonoid (G true true false true))) =
@@ -545,11 +545,11 @@ Definition value
 Example nonzero_inverse_map_compute
   : (value (model_backward bool_cocycle_sphere),
      value (model_backward
-       (@magma_mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
-     value (@magma_mul _ (hasMagma GZ) (model_backward bool_cocycle_sphere)
+       (@mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
+     value (@mul _ (hasMagma GZ) (model_backward bool_cocycle_sphere)
        (model_backward bool_cocycle_sphere)),
-     value (model_backward (@group_inv _ (hasGroup GZ) bool_cocycle_sphere)),
-     value (@group_inv _ (hasGroup GZ) (model_backward bool_cocycle_sphere))) =
+     value (model_backward (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
+     value (@inv _ (hasGroup GZ) (model_backward bool_cocycle_sphere))) =
     (true, false, false, true, true).
 Proof. vm_compute. reflexivity. Defined.
 

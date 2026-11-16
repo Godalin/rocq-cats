@@ -181,7 +181,7 @@ Definition TwoSphereCylinderMonoid (H : HasHornFillers X 3 fin_first⁺⁺)
       (two_sphere_class_cylinder_recovery X b KR KC).
 
 (** Transport the existing class group, choosing its very same actual left
-    candidate as inverse. Generic group inverse theory applies unchanged. *)
+    candidate as inverse. Generic inverse theory applies unchanged. *)
 
 (** 运输既有类群，以完全相同的实际左候选为逆；通用群逆理论原样适用。 *)
 

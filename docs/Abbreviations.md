@@ -906,6 +906,99 @@ remain temporary checks; no new permanent tests or HTML/PDF export.
 退役名及新旧 scope 检查也通过。原表、源码逆向、指南链接及差异空白检查
 通过。均为临时检查，未增加永久测试或导出 HTML/PDF。
 
+## Algebra interface ergonomics / 代数接口易用性
+
+This separate exact map implements the user-authorized ergonomic follow-up
+to [architecture #42](https://github.com/Godalin/rocq-cats/issues/42), with
+implementation in [#15](https://github.com/Godalin/rocq-cats/issues/15) and
+[naming review in #38](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626).
+It starts at `hierarchy-packed-algebra-42@e30adfa`; the 44 entries below are
+implemented and locally validated for the current user-review checkpoint.
+This is not an extension of the historical 195-entry Batch 4 abbreviation
+table or an integration
+submission. Module paths, chosen data and multiplication notations stay
+unchanged; no compatibility aliases are introduced.
+
+本独立精确表落实用户授权的 [#42 架构易用性后续](https://github.com/Godalin/rocq-cats/issues/42)，
+具体实现归 [#15](https://github.com/Godalin/rocq-cats/issues/15)，
+[命名审阅归 #38](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626)。
+从 `hierarchy-packed-algebra-42@e30adfa` 开始，以下 44 项已完成本地实施及
+验证，作为当前用户审阅检查点；不扩充历史第四批 195 项缩写表，也不表示提交
+集成。模块路径、选定数据及乘法记号保持不变，不增加兼容别名。
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `MagmaS` | `MagmaToSetC` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `SemigroupM` | `SemigroupToMagma` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
+| `MonoidSG` | `MonoidToSemigroup` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `GroupM` | `GroupToMonoid` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `magma_mul` | `mul` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `magma_mul_proper` | `mul_proper` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `semigroup_assoc` | `mul_assoc` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
+| `monoid_unit_l` | `mul_unit_l` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `monoid_unit_r` | `mul_unit_r` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `group_inv_l` | `mul_inv_l` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_r` | `mul_inv_r` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `magma_mul_l_resp` | `mul_l_resp` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `magma_mul_r_resp` | `mul_r_resp` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `magma_mul_l_proper` | `mul_l_proper` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `magma_mul_r_proper` | `mul_r_proper` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `group_inv` | `inv` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_unique` | `inv_unique` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_proper` | `inv_proper` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_unit` | `inv_unit` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_inv` | `inv_inv` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_mul` | `inv_mul` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_inv_resp` | `inv_resp` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `semigroup_mul_l_comp` | `mul_l_comp` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
+| `semigroup_mul_r_comp` | `mul_r_comp` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
+| `semigroup_mul_lr_comm` | `mul_lr_comm` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
+| `monoid_units_equiv` | `units_equiv` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `monoid_extension_inverse_unique` | `mul_extension_inv_unique` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `monoid_inverse_unique` | `mul_inv_unique` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `group_inverse_candidates_equiv` | `inv_candidates_equiv` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `group_extension_inv_unique` | `inv_extension_unique` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `monoid_mul_comm` | `mul_comm` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
+| `monoid_mul_interchange` | `mul_interchange` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
+| `group_mul_cancel_l` | `mul_cancel_l` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_cancel_r` | `mul_cancel_r` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_l_solution` | `mul_l_solution` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_r_solution` | `mul_r_solution` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_l_solve_resp` | `mul_l_solve_resp` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_r_solve_resp` | `mul_r_solve_resp` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_l_solve_proper` | `mul_l_solve_proper` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_r_solve_proper` | `mul_r_solve_proper` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_l_solve_β` | `mul_l_solve_β` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_l_solve_η` | `mul_l_solve_η` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_r_solve_β` | `mul_r_solve_β` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+| `group_mul_r_solve_η` | `mul_r_solve_η` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
+
+Each parent name denotes the same immediate `:>` projection; no direct
+ancestor bypass is added. All stronger structures inherit one `mul` and
+its laws from the weakest defining layer. `inv` is the one selected inverse;
+`monoid_unit` is retained because the short name `unit` conflicts with Rocq's
+one-element type. When another theory uses a short name, qualify the algebra
+declaration rather than adding a structure-specific alias.
+
+每个方向父名称仍为原来的直接 `:>` 投影，不增加绕过直接父结构的祖先转换。
+更强结构从最弱定义层继承同一个 `mul` 及其定律；`inv` 为唯一的选定逆。
+保留 `monoid_unit`，避免与 Rocq 单元素类型 `unit` 冲突。短名与其他理论
+重叠时使用限定名称，不另设带结构前缀的别名。
+
+Validation with Rocq 9.3.0 / Stdlib 9.2.0: `dune build -j2 @all @runtest
+@install` passed; 218 temporary assumption reports are closed, including all
+44 public names. All 44 retired-name probes and nine earlier transitional-name
+probes passed. The 63 Rocq files contain only the mapped renames and three
+formula line wraps; imports are unchanged. See the
+[structure guide](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration)
+for the full validation scope. No export or shared environment changes.
+
+Rocq 9.3.0／Stdlib 9.2.0 下的全库、测试、安装检查通过，218 项临时假设
+报告全部闭合，含全部 44 个公开名；44 个退役名及九个更早过渡名负探针通过。
+63 个 Rocq 文件只有表内改名及三处公式换行，导入不变。完整验证范围见
+[结构指南](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration)，
+无导出或共享环境改动。
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.

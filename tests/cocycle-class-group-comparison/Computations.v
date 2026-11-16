@@ -51,7 +51,7 @@ Definition class_group
 
 Definition class_magma
   : Magma
-  := SemigroupM (MonoidSG (GroupM class_group)).
+  := SemigroupToMagma (MonoidToSemigroup (GroupToMonoid class_group)).
 
 (** Even coefficient commutativity and full Kan do not enable the new
     class property globally. Its monoid parameter is the exact Group parent. *)
@@ -60,11 +60,11 @@ Definition class_magma
     完全相同父结构。 *)
 
 Fail Definition unchosen_commutativity
-  : @IsCommutativeMonoid (GroupM class_group)
+  : @IsCommutativeMonoid (GroupToMonoid class_group)
   := _.
 
 Definition class_commutativity
-  : @IsCommutativeMonoid (GroupM class_group)
+  : @IsCommutativeMonoid (GroupToMonoid class_group)
   := cocycle_kan_IsCommutativeMonoid three_choice.
 
 (** The general comparison consumes the exact generic group multiplication. *)
@@ -72,11 +72,11 @@ Definition class_commutativity
 (** 一般比较消费通用群中完全相同的乘法。 *)
 
 Example products_agree (x y : BoolCocycleSphereClassS)
-  : @magma_mul _ (hasMagma class_magma) x y ≈S (cocycle_two_sphere_mul (M := BoolS_Monoid)) x y.
+  : @mul _ (hasMagma class_magma) x y ≈S (cocycle_two_sphere_mul (M := BoolS_Monoid)) x y.
 Proof. exact (cocycle_kan_mul_eq three_choice x y). Defined.
 
 Example inverses_agree (x : BoolCocycleSphereClassS)
-  : @group_inv _ (hasGroup class_group) x ≈S (cocycle_two_sphere_inv (M := BoolS_Group)) x.
+  : @inv _ (hasGroup class_group) x ≈S (cocycle_two_sphere_inv (M := BoolS_Group)) x.
 Proof. exact (cocycle_kan_left_inverse_eq (M := BoolS_Group) left_choice x). Defined.
 
 (** The existing classification maps now preserve the generic product. *)
@@ -84,14 +84,14 @@ Proof. exact (cocycle_kan_left_inverse_eq (M := BoolS_Group) left_choice x). Def
 (** 既有分类映射现在保持通用乘积。 *)
 
 Example decoding_preserves_product (x y : BoolCocycleSphereClassS)
-  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (@magma_mul _ (hasMagma class_magma) x y) ≈S
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (@mul _ (hasMagma class_magma) x y) ≈S
       (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) x ⋅
         (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) y.
 Proof. exact (cocycle_kan_mul_value three_choice x y). Defined.
 
 Example encoding_preserves_product (a b : bool)
   : (cocycle_two_sphere_class_resp (M := BoolS_Monoid)) ((a : BoolS_Monoid) ⋅ b) ≈S
-      @magma_mul _ (hasMagma class_magma)
+      @mul _ (hasMagma class_magma)
         (cocycle_two_sphere_class_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_class_resp (M := BoolS_Monoid) b).
 Proof. exact (cocycle_kan_class_mul three_choice a b). Defined.
 
@@ -100,9 +100,9 @@ Proof. exact (cocycle_kan_class_mul three_choice a b). Defined.
 (** 新性质在同一个继承原群上证明模型定律。 *)
 
 Example model_multiplication_commutes (x y : BoolCocycleSphereClassS)
-  : @magma_mul _ (hasMagma class_magma) x y ≈S @magma_mul _ (hasMagma class_magma) y x.
+  : @mul _ (hasMagma class_magma) x y ≈S @mul _ (hasMagma class_magma) y x.
 Proof.
-  exact (@monoid_mul_comm (GroupM class_group) class_commutativity x y).
+  exact (@mul_comm (GroupToMonoid class_group) class_commutativity x y).
 Defined.
 
 (** Preserve actual Kan computations while reading their coefficients. *)
@@ -112,7 +112,7 @@ Defined.
 Definition product_values (a b : bool)
   : bool * bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
-        (@magma_mul _ (hasMagma class_magma)
+        (@mul _ (hasMagma class_magma)
           (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b)),
       (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
         (cocycle_two_sphere_mul (M := BoolS_Monoid)
@@ -121,7 +121,7 @@ Definition product_values (a b : bool)
 Definition inverse_values (a : bool)
   : bool * bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
-        (@group_inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)),
+        (@inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)),
       (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
         (cocycle_two_sphere_inv (M := BoolS_Group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a))).
 

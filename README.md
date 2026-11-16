@@ -23,11 +23,20 @@ The complete algebra chain `Magma → Semigroup → Monoid → Group` now owns i
 carrier through one immediate parent at each step; categorical hierarchies and
 a genuine multiple-parent diamond remain further work.
 
+Reviewed algebra parent projections use directional names such as
+`GroupToMonoid`. Multiplication is the single inherited `mul` field; laws
+such as `mul_assoc` and `mul_inv_l/r` follow their subject operation, while
+`inv_inv` describes inversion. There are no per-layer forwarding aliases.
+
 结构设计区分指定数据的 `Is*` 性质、固定父结构上的 `Has*` 选择及完整打包的
 `Record` 对象；只添加性质时无须额外选择接口。共享祖先只保存一次，有意义的
 多父视图须通过定义相等汇合。[完整群胚](./theories/Cat/Groupoid/Core.v) 已拥有
 其底层范畴；完整代数链 `Magma → Semigroup → Monoid → Group` 现通过每层
 唯一的直接父结构拥有载体，范畴层级及真实多父菱形仍属后续工作。
+
+本批代数父投影采用 `GroupToMonoid` 等方向名称。乘法只定义为一个继承的
+`mul` 字段，`mul_assoc`、`mul_inv_l/r` 等定律按其运算命名，`inv_inv`
+则描述取逆；不增加逐层转发别名。
 
 See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
 [development rules](./AGENTS.md) and the

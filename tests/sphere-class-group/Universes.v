@@ -7,7 +7,7 @@ Local Open Scope ordinal_scope.
 (** * Independently Sized Groups and Inverse Witnesses
 
     Keep simplex equality strictly below or above its carrier. All model
-    choices are explicit; inherited group inverse theory must remain
+    choices are explicit; inherited inverse theory must remain
     usable on the very same generated class setoid. *)
 
 (** * 大小独立的群与逆见证
@@ -99,7 +99,7 @@ Definition lower_inverse_resp
     (K : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L : HasHornFillers X 3 fin_first⁺)
   : TwoSphereClassS X b →r TwoSphereClassS X b
-  := @group_inv_resp (TwoSphereClassGroup X b H K L).
+  := @inv_resp (TwoSphereClassGroup X b H K L).
 
 (** Six independent choices induce pointwise equal inverse maps. *)
 
@@ -113,8 +113,8 @@ Definition lower_choice
     (H H' : HasHornFillers X 3 fin_first⁺⁺)
     (K K' : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L L' : HasHornFillers X 3 fin_first⁺)
-  : @group_inv_resp (TwoSphereClassGroup X b H K L) ≈f
-      @group_inv_resp (TwoSphereClassGroup X b H' K' L')
+  : @inv_resp (TwoSphereClassGroup X b H K L) ≈f
+      @inv_resp (TwoSphereClassGroup X b H' K' L')
   := two_sphere_class_group_inverse_choice_eq X b H H' K K' L L'.
 
 (** A supplied left inverse is compared by existing group uniqueness. *)
@@ -132,8 +132,8 @@ Definition lower_unique
     (x y : TwoSphereClassS X b)
     (E : two_sphere_kan_mul X b H y x ≈S
       (two_sphere_base X b : TwoSphereClassS X b))
-  : y ≈S @group_inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x
-  := @group_inv_unique (TwoSphereClassGroup X b H K L) x y E.
+  : y ≈S @inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x
+  := @inv_unique (TwoSphereClassGroup X b H K L) x y E.
 
 (** The existing Semigroup interface retains independently sized classes. *)
 
@@ -206,7 +206,7 @@ Definition higher_inverse_resp
     (K : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L : HasHornFillers X 3 fin_first⁺)
   : TwoSphereClassS X b →r TwoSphereClassS X b
-  := @group_inv_resp (TwoSphereClassGroup X b H K L).
+  := @inv_resp (TwoSphereClassGroup X b H K L).
 
 (** Six independent choices induce pointwise equal inverse maps. *)
 
@@ -220,8 +220,8 @@ Definition higher_choice
     (H H' : HasHornFillers X 3 fin_first⁺⁺)
     (K K' : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L L' : HasHornFillers X 3 fin_first⁺)
-  : @group_inv_resp (TwoSphereClassGroup X b H K L) ≈f
-      @group_inv_resp (TwoSphereClassGroup X b H' K' L')
+  : @inv_resp (TwoSphereClassGroup X b H K L) ≈f
+      @inv_resp (TwoSphereClassGroup X b H' K' L')
   := two_sphere_class_group_inverse_choice_eq X b H H' K K' L L'.
 
 (** A supplied left inverse is compared by existing group uniqueness. *)
@@ -239,7 +239,7 @@ Definition higher_unique
     (x y : TwoSphereClassS X b)
     (E : two_sphere_kan_mul X b H y x ≈S
       (two_sphere_base X b : TwoSphereClassS X b))
-  : y ≈S @group_inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x
-  := @group_inv_unique (TwoSphereClassGroup X b H K L) x y E.
+  : y ≈S @inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x
+  := @inv_unique (TwoSphereClassGroup X b H K L) x y E.
 
 End StrictSizes.

@@ -19,7 +19,7 @@ Local Open Scope magma_scope.
 
 Class IsSemigroup (M : Magma)
   :=
-  { semigroup_assoc (x y z : M) : (x ⋅ y) ⋅ z ≈S x ⋅ (y ⋅ z)
+  { mul_assoc (x y z : M) : (x ⋅ y) ⋅ z ≈S x ⋅ (y ⋅ z)
   }.
 
 (** The complete semigroup stores its immediate parent exactly once. *)
@@ -28,8 +28,8 @@ Class IsSemigroup (M : Magma)
 
 Record Semigroup@{u p l}
   :=
-  { SemigroupM :> Magma@{u p l}
-  ; isSemigroup :: IsSemigroup SemigroupM
+  { SemigroupToMagma :> Magma@{u p l}
+  ; isSemigroup :: IsSemigroup SemigroupToMagma
   }.
 
 (** Reuse an explicitly supplied parent and associativity witness. *)
@@ -39,7 +39,7 @@ Record Semigroup@{u p l}
 Program Definition SemigroupFromProperty (M : Magma) (HM : IsSemigroup M)
   : Semigroup
   :=
-  {|SemigroupM := M
+  {|SemigroupToMagma := M
   ; isSemigroup := HM
   |}.
 
@@ -60,29 +60,26 @@ Context {S : Semigroup}.
 
 (** 左乘将乘积送到保相等映射的复合，这是左正则作用中不依赖单位元的部分。 *)
 
-Lemma semigroup_mul_l_comp (x y : S)
-  : ((x ⋅ y) ⋅−) ≈f
-      ((x ⋅−) ∘r (y ⋅−)).
-Proof. intros z. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
+Lemma mul_l_comp (x y : S)
+  : ((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−)).
+Proof. intros z. apply (@mul_assoc _ (isSemigroup S)). Qed.
 
 (** Right multiplication reverses the order in the corresponding
     composition law. *)
 
 (** 右乘在相应复合律中反转次序。 *)
 
-Lemma semigroup_mul_r_comp (x y : S)
-  : (−⋅ (x ⋅ y)) ≈f
-      ((−⋅ y) ∘r (−⋅ x)).
-Proof. intros z. symmetry. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
+Lemma mul_r_comp (x y : S)
+  : (−⋅ (x ⋅ y)) ≈f ((−⋅ y) ∘r (−⋅ x)).
+Proof. intros z. symmetry. apply (@mul_assoc _ (isSemigroup S)). Qed.
 
 (** Left and right multiplication commute as maps, without requiring a
     commutative multiplication operation. *)
 
 (** 左乘与右乘作为映射交换，无须乘法运算本身满足交换律。 *)
 
-Lemma semigroup_mul_lr_comm (x y : S)
-  : ((x ⋅−) ∘r (−⋅ y)) ≈f
-      ((−⋅ y) ∘r (x ⋅−)).
-Proof. intros z. symmetry. apply (@semigroup_assoc _ (isSemigroup S)). Qed.
+Lemma mul_lr_comm (x y : S)
+  : ((x ⋅−) ∘r (−⋅ y)) ≈f ((−⋅ y) ∘r (x ⋅−)).
+Proof. intros z. symmetry. apply (@mul_assoc _ (isSemigroup S)). Qed.
 
 End Multiplication.

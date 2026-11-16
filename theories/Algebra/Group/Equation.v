@@ -15,10 +15,10 @@ Local Open Scope monoid_scope.
     [G]. Their composites equal the identity pointwise, by associativity
     and the two inverse laws. Thus multiplying by [a] is reversible even
     when [G] is not commutative. The forward map is
-    %\coqref{Cats.Algebra.Magma.Core.magma mul l resp}
+    %\coqref{Cats.Algebra.Magma.Core.mul l resp}
     {%[(a ⋅−)]%}%; its inverse is
-    %\coqref{Cats.Algebra.Group.Equation.group mul l solve resp}
-    {%[group_mul_l_solve_resp]%}% below.
+    %\coqref{Cats.Algebra.Group.Equation.mul l solve resp}
+    {%[mul_l_solve_resp]%}% below.
 
     For a later equation [p ⋅ q ≈S r ⋅ s], fixing three labels reduces
     solving for the fourth to one of these two equations. This algebraic
@@ -33,10 +33,10 @@ Local Open Scope monoid_scope.
 
     图中两条箭头是同一个广集 [G] 上实际的保相等函数。由结合律和两条逆律，
     它们的复合逐点等于恒等函数。因此，即使 [G] 不交换，乘以 [a] 也可逆。
-    正向映射为 %\coqref{Cats.Algebra.Magma.Core.magma mul l resp}
+    正向映射为 %\coqref{Cats.Algebra.Magma.Core.mul l resp}
     {%[(a ⋅−)]%}%，逆映射为下方的
-    %\coqref{Cats.Algebra.Group.Equation.group mul l solve resp}
-    {%[group_mul_l_solve_resp]%}%。
+    %\coqref{Cats.Algebra.Group.Equation.mul l solve resp}
+    {%[mul_l_solve_resp]%}%。
 
     对后续的方程 [p ⋅ q ≈S r ⋅ s]，固定三个标签后，求第四个就归结为这两类
     方程之一。这一步代数求解本身尚未构造相容的单纯形面族。 *)
@@ -67,60 +67,60 @@ Context {G : Group}.
 
 (** 乘以选定的逆，消去固定的左因子。 *)
 
-Lemma group_mul_cancel_l (a x y : G) (H : a ⋅ x ≈S a ⋅ y)
+Lemma mul_cancel_l (a x y : G) (H : a ⋅ x ≈S a ⋅ y)
   : x ≈S y.
 Proof.
   transitivity (a⁻¹ ⋅ (a ⋅ x)).
-  - symmetry. rewrite <- (@semigroup_assoc _ (isSemigroup G)),
-    (@group_inv_l _ _ (@isGroup _ (hasGroup G))),
-    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))).
+  - symmetry. rewrite <- (@mul_assoc _ (isSemigroup G)),
+    (@mul_inv_l _ _ (@isGroup _ (hasGroup G))),
+    (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G))).
     reflexivity.
   - rewrite H,
-    <- (@semigroup_assoc _ (isSemigroup G)),
-    (@group_inv_l _ _ (@isGroup _ (hasGroup G))),
-    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
+    <- (@mul_assoc _ (isSemigroup G)),
+    (@mul_inv_l _ _ (@isGroup _ (hasGroup G))),
+    (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** Cancel a fixed right factor; no exchange of factors is used. *)
 
 (** 消去固定的右因子，不交换因子。 *)
 
-Lemma group_mul_cancel_r (a x y : G) (H : x ⋅ a ≈S y ⋅ a)
+Lemma mul_cancel_r (a x y : G) (H : x ⋅ a ≈S y ⋅ a)
   : x ≈S y.
 Proof.
   transitivity ((x ⋅ a) ⋅ a⁻¹).
-  - symmetry. rewrite (@semigroup_assoc _ (isSemigroup G)),
-    (@group_inv_r _ _ (@isGroup _ (hasGroup G))),
-    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid G))).
+  - symmetry. rewrite (@mul_assoc _ (isSemigroup G)),
+    (@mul_inv_r _ _ (@isGroup _ (hasGroup G))),
+    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid G))).
     reflexivity.
   - rewrite H,
-    (@semigroup_assoc _ (isSemigroup G)),
-    (@group_inv_r _ _ (@isGroup _ (hasGroup G))),
-    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
+    (@mul_assoc _ (isSemigroup G)),
+    (@mul_inv_r _ _ (@isGroup _ (hasGroup G))),
+    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** The inverse on the left gives an actual solution of left multiplication. *)
 
 (** 在左侧乘以逆，给出左乘方程的实际解。 *)
 
-Lemma group_mul_l_solution (a b : G)
+Lemma mul_l_solution (a b : G)
   : a ⋅ (a⁻¹ ⋅ b) ≈S b.
 Proof.
-  rewrite <- (@semigroup_assoc _ (isSemigroup G)),
-    (@group_inv_r _ _ (@isGroup _ (hasGroup G))),
-    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
+  rewrite <- (@mul_assoc _ (isSemigroup G)),
+    (@mul_inv_r _ _ (@isGroup _ (hasGroup G))),
+    (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** The inverse on the right solves right multiplication. *)
 
 (** 在右侧乘以逆，解出右乘方程。 *)
 
-Lemma group_mul_r_solution (a b : G)
+Lemma mul_r_solution (a b : G)
   : (b ⋅ a⁻¹) ⋅ a ≈S b.
 Proof.
-  rewrite (@semigroup_assoc _ (isSemigroup G)),
-    (@group_inv_l _ _ (@isGroup _ (hasGroup G))),
-    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
+  rewrite (@mul_assoc _ (isSemigroup G)),
+    (@mul_inv_l _ _ (@isGroup _ (hasGroup G))),
+    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** Select the left-multiplication solution, its equation and its full
@@ -135,9 +135,9 @@ Proof.
   refine {|this := _
           ; that := _
           |}.
-  - apply group_mul_l_solution.
-  - intros x H. apply (group_mul_cancel_l a).
-    rewrite H. symmetry. apply group_mul_l_solution.
+  - apply mul_l_solution.
+  - intros x H. apply (mul_cancel_l a).
+    rewrite H. symmetry. apply mul_l_solution.
 Defined.
 
 (** Select the right-multiplication solution in the same specified equality.
@@ -152,9 +152,9 @@ Proof.
   refine {|this := _
           ; that := _
           |}.
-  - apply group_mul_r_solution.
-  - intros x H. apply (group_mul_cancel_r a).
-    rewrite H. symmetry. apply group_mul_r_solution.
+  - apply mul_r_solution.
+  - intros x H. apply (mul_cancel_r a).
+    rewrite H. symmetry. apply mul_r_solution.
 Defined.
 
 (** Varying the right-hand side preserves its equality. The selected inverse
@@ -162,64 +162,64 @@ Defined.
 
 (** 改变方程右端保持其相等；复用固定因子已选定的逆，不重新作选择。 *)
 
-Program Definition group_mul_l_solve_resp (a : G)
+Program Definition mul_l_solve_resp (a : G)
   : G →r G
   :=
   {|func b := (GroupMulLSolution a b).1
   |}.
 Next Obligation.
-  intros b c H. apply (@magma_mul_proper _ (hasMagma G)); [reflexivity | exact H].
+  intros b c H. apply (@mul_proper _ (hasMagma G)); [reflexivity | exact H].
 Defined.
 
 (** Respectful solution map for a fixed right factor. *)
 
 (** 固定右因子时的保相等求解映射。 *)
 
-Program Definition group_mul_r_solve_resp (a : G)
+Program Definition mul_r_solve_resp (a : G)
   : G →r G
   :=
   {|func b := (GroupMulRSolution a b).1
   |}.
 Next Obligation.
-  intros b c H. apply (@magma_mul_proper _ (hasMagma G)); [exact H | reflexivity].
+  intros b c H. apply (@mul_proper _ (hasMagma G)); [exact H | reflexivity].
 Defined.
 
 (** Changing the fixed left factor also preserves the solution map. *)
 
 (** 改变固定左因子也保持求解映射的相等。 *)
 
-Global Instance group_mul_l_solve_proper
-  : Proper (carrier_equiv G ==> FunEq) group_mul_l_solve_resp.
+Global Instance mul_l_solve_proper
+  : Proper (carrier_equiv G ==> FunEq) mul_l_solve_resp.
 Proof.
-  intros a a' H b. cbn. apply (@magma_mul_proper _ (hasMagma G));
-    [apply group_inv_proper; exact H | reflexivity].
+  intros a a' H b. cbn. apply (@mul_proper _ (hasMagma G));
+    [apply inv_proper; exact H | reflexivity].
 Defined.
 
 (** Changing the fixed right factor preserves the right-solution map. *)
 
 (** 改变固定右因子保持右乘求解映射的相等。 *)
 
-Global Instance group_mul_r_solve_proper
-  : Proper (carrier_equiv G ==> FunEq) group_mul_r_solve_resp.
+Global Instance mul_r_solve_proper
+  : Proper (carrier_equiv G ==> FunEq) mul_r_solve_resp.
 Proof.
-  intros a a' H b. cbn. apply (@magma_mul_proper _ (hasMagma G));
-    [reflexivity | apply group_inv_proper; exact H].
+  intros a a' H b. cbn. apply (@mul_proper _ (hasMagma G));
+    [reflexivity | apply inv_proper; exact H].
 Defined.
 
 (** Multiplying the selected left solution recovers the right-hand side. *)
 
 (** 对选定左乘解作乘法，恢复方程右端。 *)
 
-Lemma group_mul_l_solve_β (a : G)
-  : (a ⋅−) ∘r group_mul_l_solve_resp a ≈f id_resp.
+Lemma mul_l_solve_β (a : G)
+  : (a ⋅−) ∘r mul_l_solve_resp a ≈f id_resp.
 Proof. intro b. exact (@this _ _ _ _ _ (GroupMulLSolution a b).2). Defined.
 
 (** Solving after left multiplication recovers the input, by uniqueness. *)
 
 (** 由唯一性，先左乘再求解即可恢复输入。 *)
 
-Lemma group_mul_l_solve_η (a : G)
-  : group_mul_l_solve_resp a ∘r (a ⋅−) ≈f id_resp.
+Lemma mul_l_solve_η (a : G)
+  : mul_l_solve_resp a ∘r (a ⋅−) ≈f id_resp.
 Proof.
   intro x. symmetry.
   apply (@that _ _ _ _ _ (GroupMulLSolution a (a ⋅ x)).2 x).
@@ -230,16 +230,16 @@ Defined.
 
 (** 右乘方程的解满足同样的求值律。 *)
 
-Lemma group_mul_r_solve_β (a : G)
-  : (−⋅ a) ∘r group_mul_r_solve_resp a ≈f id_resp.
+Lemma mul_r_solve_β (a : G)
+  : (−⋅ a) ∘r mul_r_solve_resp a ≈f id_resp.
 Proof. intro b. exact (@this _ _ _ _ _ (GroupMulRSolution a b).2). Defined.
 
 (** Uniqueness also gives the right-multiplication round trip. *)
 
 (** 唯一性也给出右乘情形的往返律。 *)
 
-Lemma group_mul_r_solve_η (a : G)
-  : group_mul_r_solve_resp a ∘r (−⋅ a) ≈f id_resp.
+Lemma mul_r_solve_η (a : G)
+  : mul_r_solve_resp a ∘r (−⋅ a) ≈f id_resp.
 Proof.
   intro x. symmetry.
   apply (@that _ _ _ _ _ (GroupMulRSolution a (x ⋅ a)).2 x).

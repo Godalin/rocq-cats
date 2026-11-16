@@ -94,10 +94,10 @@ Definition TaggedGroup
 (** 计算四个乘积，检查实际运输运算而非继承定律的证明；载荷由返回映射选择。 *)
 
 Example product_table
-  : (@magma_mul _ (hasMagma TaggedGroup) (false, 4) (false, 7),
-     @magma_mul _ (hasMagma TaggedGroup) (false, 4) (true, 7),
-     @magma_mul _ (hasMagma TaggedGroup) (true, 4) (false, 7),
-     @magma_mul _ (hasMagma TaggedGroup) (true, 4) (true, 7)) =
+  : (@mul _ (hasMagma TaggedGroup) (false, 4) (false, 7),
+     @mul _ (hasMagma TaggedGroup) (false, 4) (true, 7),
+     @mul _ (hasMagma TaggedGroup) (true, 4) (false, 7),
+     @mul _ (hasMagma TaggedGroup) (true, 4) (true, 7)) =
     ((true, 0), (false, 0), (false, 0), (true, 0)).
 Proof. vm_compute. reflexivity. Qed.
 
@@ -107,8 +107,8 @@ Proof. vm_compute. reflexivity. Qed.
 
 Example unit_inverse_values
   : (@monoid_unit _ (hasMonoid TaggedGroup),
-     @group_inv _ (hasGroup TaggedGroup) (false, 19),
-     @group_inv _ (hasGroup TaggedGroup) (true, 23)) =
+     @inv _ (hasGroup TaggedGroup) (false, 19),
+     @inv _ (hasGroup TaggedGroup) (true, 23)) =
     ((true, 0), (false, 0), (true, 0)).
 Proof. vm_compute. reflexivity. Qed.
 
@@ -128,7 +128,7 @@ Proof. vm_compute. reflexivity. Qed.
 (** 穿过群包后，选定乘积和单位仍按定义是运输父幺半群的选择。 *)
 
 Example actual_parent
-  : GroupM TaggedGroup = MonoidTransport BoolS_Group to_bool from_bool
+  : GroupToMonoid TaggedGroup = MonoidTransport BoolS_Group to_bool from_bool
       source_recovery target_recovery.
 Proof. reflexivity. Qed.
 
@@ -138,9 +138,9 @@ Proof. reflexivity. Qed.
 (** 既有逆 Proper 运输真实的非原生相等，容许不同标签及不同相等见证标记。 *)
 
 Definition inverse_proper_client
-  : @group_inv _ (hasGroup TaggedGroup) (false, 5) ≈S
-      @group_inv _ (hasGroup TaggedGroup) (false, 81)
-  := @group_inv_proper TaggedGroup
+  : @inv _ (hasGroup TaggedGroup) (false, 5) ≈S
+      @inv _ (hasGroup TaggedGroup) (false, 81)
+  := @inv_proper TaggedGroup
       (false, 5) (false, 81) (eq_refl, true).
 
 (** Generic involution recovers the target element in specified equality. *)
@@ -148,36 +148,36 @@ Definition inverse_proper_client
 (** 通用对合律在指定相等下恢复目标元素。 *)
 
 Definition involution_client (x : TaggedS)
-  : @group_inv _ (hasGroup TaggedGroup) (@group_inv _ (hasGroup TaggedGroup) x) ≈S x
-  := @group_inv_inv TaggedGroup x.
+  : @inv _ (hasGroup TaggedGroup) (@inv _ (hasGroup TaggedGroup) x) ≈S x
+  := @inv_inv TaggedGroup x.
 
 (** Inverse uniqueness uses the exact inherited monoid and its laws. *)
 
 (** 逆唯一性使用原样继承的幺半群及其定律。 *)
 
 Definition uniqueness_client (x y : TaggedS)
-    (H : @magma_mul _ (hasMagma TaggedGroup) y x ≈S
+    (H : @mul _ (hasMagma TaggedGroup) y x ≈S
       @monoid_unit _ (hasMonoid TaggedGroup))
-  : y ≈S @group_inv _ (hasGroup TaggedGroup) x
-  := @group_inv_unique TaggedGroup x y H.
+  : y ≈S @inv _ (hasGroup TaggedGroup) x
+  := @inv_unique TaggedGroup x y H.
 
 (** Generic inversion of a product applies without another inverse proof. *)
 
 (** 通用乘积取逆律直接适用，不需要另一套逆证明。 *)
 
 Definition product_inverse_client (x y : TaggedS)
-  : @group_inv _ (hasGroup TaggedGroup) (@magma_mul _ (hasMagma TaggedGroup) x y) ≈S
-      @magma_mul _ (hasMagma TaggedGroup)
-        (@group_inv _ (hasGroup TaggedGroup) y) (@group_inv _ (hasGroup TaggedGroup) x)
-  := @group_inv_mul TaggedGroup x y.
+  : @inv _ (hasGroup TaggedGroup) (@mul _ (hasMagma TaggedGroup) x y) ≈S
+      @mul _ (hasMagma TaggedGroup)
+        (@inv _ (hasGroup TaggedGroup) y) (@inv _ (hasGroup TaggedGroup) x)
+  := @inv_mul TaggedGroup x y.
 
 (** The three forward comparison equations apply to the very same group. *)
 
 (** 三个正向比较方程适用于完全相同的群。 *)
 
 Definition product_comparison_client (x y : TaggedS)
-  : to_bool (@magma_mul _ (hasMagma TaggedGroup) x y) ≈S
-      @magma_mul _ (hasMagma BoolS_Group) (to_bool x) (to_bool y)
+  : to_bool (@mul _ (hasMagma TaggedGroup) x y) ≈S
+      @mul _ (hasMagma BoolS_Group) (to_bool x) (to_bool y)
   := magma_transport_map_mul BoolS_Group to_bool from_bool
       source_recovery x y.
 
@@ -196,8 +196,8 @@ Definition unit_comparison_client
 (** 逆比较读出原来源逆。 *)
 
 Definition inverse_comparison_client (x : TaggedS)
-  : to_bool (@group_inv _ (hasGroup TaggedGroup) x) ≈S
-      @group_inv _ (hasGroup BoolS_Group) (to_bool x)
+  : to_bool (@inv _ (hasGroup TaggedGroup) x) ≈S
+      @inv _ (hasGroup BoolS_Group) (to_bool x)
   := group_transport_map_inv BoolS_Group to_bool from_bool
       source_recovery target_recovery x.
 
@@ -209,7 +209,7 @@ Fail Definition native_recovery
   : from_bool (to_bool (false, 17)) = (false, 17)
   := eq_refl.
 Fail Definition native_unit_law
-  : @magma_mul _ (hasMagma TaggedGroup) (@monoid_unit _ (hasMonoid TaggedGroup))
+  : @mul _ (hasMagma TaggedGroup) (@monoid_unit _ (hasMonoid TaggedGroup))
       (false, 17) = (false, 17)
   := eq_refl.
 Fail Definition no_implicit_model : HasGroup BoolS_Monoid := ltac:(typeclasses eauto).
@@ -269,11 +269,11 @@ Definition NativeTaggedSemigroup
 (** 所需定律来自该实际半群。 *)
 
 Definition native_associativity_client (x y z : NativeTaggedS)
-  : @magma_mul _ (hasMagma NativeTaggedSemigroup)
-      (@magma_mul _ (hasMagma NativeTaggedSemigroup) x y) z ≈S
-      @magma_mul _ (hasMagma NativeTaggedSemigroup) x
-        (@magma_mul _ (hasMagma NativeTaggedSemigroup) y z)
-  := @semigroup_assoc _ (isSemigroup NativeTaggedSemigroup) x y z.
+  : @mul _ (hasMagma NativeTaggedSemigroup)
+      (@mul _ (hasMagma NativeTaggedSemigroup) x y) z ≈S
+      @mul _ (hasMagma NativeTaggedSemigroup) x
+        (@mul _ (hasMagma NativeTaggedSemigroup) y z)
+  := @mul_assoc _ (isSemigroup NativeTaggedSemigroup) x y z.
 
 (** Every possible left factor produces tag zero, so no left unit can
     recover the element with tag one. This is a genuine missing hypothesis. *)
@@ -282,7 +282,7 @@ Definition native_associativity_client (x y z : NativeTaggedS)
     缺失的前提。 *)
 
 Example no_native_left_unit (e : NativeTaggedS)
-  : @magma_mul _ (hasMagma NativeTaggedSemigroup) e (false, 1%nat) ≠ (false, 1%nat).
+  : @mul _ (hasMagma NativeTaggedSemigroup) e (false, 1%nat) ≠ (false, 1%nat).
 Proof. intros H. pose proof (f_equal snd H) as K. discriminate K. Qed.
 
 (** The omitted target recovery cannot be supplied by native reflexivity. *)

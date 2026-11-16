@@ -41,5 +41,5 @@ Definition regular_action_faithful (M : Monoid)
 Proof.
   intros [] [] x y H. specialize (H 1).
   change (x ⋅ 1 ≈S y ⋅ 1) in H.
-  rewrite !(@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
+  rewrite !(@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
 Defined.

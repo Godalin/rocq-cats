@@ -78,15 +78,15 @@ Definition transported_group
   := GroupTransport A f g Hfg Hgf.
 
 Example group_parent
-  : GroupM transported_group = MonoidTransport A f g Hfg Hgf.
+  : GroupToMonoid transported_group = MonoidTransport A f g Hfg Hgf.
 Proof. reflexivity. Qed.
 
 Example monoid_parent
-  : MonoidSG transported_group = SemigroupTransport A f g Hfg.
+  : MonoidToSemigroup transported_group = SemigroupTransport A f g Hfg.
 Proof. reflexivity. Qed.
 
 Example semigroup_parent
-  : SemigroupM transported_group = MagmaTransport A f g.
+  : SemigroupToMagma transported_group = MagmaTransport A f g.
 Proof. reflexivity. Qed.
 
 Example actual_carrier
@@ -94,7 +94,7 @@ Example actual_carrier
 Proof. reflexivity. Qed.
 
 Example selected_product (x y : B)
-  : @magma_mul _ (hasMagma transported_group) x y = g (@magma_mul _ (hasMagma A) (f x) (f y)).
+  : @mul _ (hasMagma transported_group) x y = g (@mul _ (hasMagma A) (f x) (f y)).
 Proof. reflexivity. Qed.
 
 Example selected_unit
@@ -103,11 +103,11 @@ Example selected_unit
 Proof. reflexivity. Qed.
 
 Example selected_inverse (x : B)
-  : @group_inv _ (hasGroup transported_group) x = g (@group_inv _ (hasGroup A) (f x)).
+  : @inv _ (hasGroup transported_group) x = g (@inv _ (hasGroup A) (f x)).
 Proof. reflexivity. Qed.
 
 Definition forward_product (x y : B)
-  : f (@magma_mul _ (hasMagma transported_group) x y) ≈S @magma_mul _ (hasMagma A) (f x) (f y)
+  : f (@mul _ (hasMagma transported_group) x y) ≈S @mul _ (hasMagma A) (f x) (f y)
   := magma_transport_map_mul A f g Hfg x y.
 
 Definition forward_unit
@@ -116,23 +116,23 @@ Definition forward_unit
   := monoid_transport_map_unit A f g Hfg Hgf.
 
 Definition forward_inverse (x : B)
-  : f (@group_inv _ (hasGroup transported_group) x) ≈S @group_inv _ (hasGroup A) (f x)
+  : f (@inv _ (hasGroup transported_group) x) ≈S @inv _ (hasGroup A) (f x)
   := group_transport_map_inv A f g Hfg Hgf x.
 
 Definition actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
-      (@group_inv _ (hasGroup transported_group))
-  := @group_inv_proper transported_group.
+      (@inv _ (hasGroup transported_group))
+  := @inv_proper transported_group.
 
 Definition actual_inverse_involution (x : B)
-  : @group_inv _ (hasGroup transported_group) (@group_inv _ (hasGroup transported_group) x) ≈S x
-  := @group_inv_inv transported_group x.
+  : @inv _ (hasGroup transported_group) (@inv _ (hasGroup transported_group) x) ≈S x
+  := @inv_inv transported_group x.
 
 Definition actual_inverse_unique (x y : B)
-    (H : @magma_mul _ (hasMagma transported_group) y x ≈S
+    (H : @mul _ (hasMagma transported_group) y x ≈S
       @monoid_unit _ (hasMonoid transported_group))
-  : y ≈S @group_inv _ (hasGroup transported_group) x
-  := @group_inv_unique transported_group x y H.
+  : y ≈S @inv _ (hasGroup transported_group) x
+  := @inv_unique transported_group x y H.
 
 Fail Definition missing_source_recovery
   : Semigroup
@@ -224,15 +224,15 @@ Definition high_transported_group
   := GroupTransport A f g Hfg Hgf.
 
 Example high_group_parent
-  : GroupM high_transported_group = MonoidTransport A f g Hfg Hgf.
+  : GroupToMonoid high_transported_group = MonoidTransport A f g Hfg Hgf.
 Proof. reflexivity. Qed.
 
 Example high_monoid_parent
-  : MonoidSG high_transported_group = SemigroupTransport A f g Hfg.
+  : MonoidToSemigroup high_transported_group = SemigroupTransport A f g Hfg.
 Proof. reflexivity. Qed.
 
 Example high_semigroup_parent
-  : SemigroupM high_transported_group = MagmaTransport A f g.
+  : SemigroupToMagma high_transported_group = MagmaTransport A f g.
 Proof. reflexivity. Qed.
 
 Example high_actual_carrier
@@ -240,7 +240,7 @@ Example high_actual_carrier
 Proof. reflexivity. Qed.
 
 Example high_selected_product (x y : B)
-  : @magma_mul _ (hasMagma high_transported_group) x y = g (@magma_mul _ (hasMagma A) (f x) (f y)).
+  : @mul _ (hasMagma high_transported_group) x y = g (@mul _ (hasMagma A) (f x) (f y)).
 Proof. reflexivity. Qed.
 
 Example high_selected_unit
@@ -249,11 +249,11 @@ Example high_selected_unit
 Proof. reflexivity. Qed.
 
 Example high_selected_inverse (x : B)
-  : @group_inv _ (hasGroup high_transported_group) x = g (@group_inv _ (hasGroup A) (f x)).
+  : @inv _ (hasGroup high_transported_group) x = g (@inv _ (hasGroup A) (f x)).
 Proof. reflexivity. Qed.
 
 Definition high_forward_product (x y : B)
-  : f (@magma_mul _ (hasMagma high_transported_group) x y) ≈S @magma_mul _ (hasMagma A) (f x) (f y)
+  : f (@mul _ (hasMagma high_transported_group) x y) ≈S @mul _ (hasMagma A) (f x) (f y)
   := magma_transport_map_mul A f g Hfg x y.
 
 Definition high_forward_unit
@@ -262,23 +262,23 @@ Definition high_forward_unit
   := monoid_transport_map_unit A f g Hfg Hgf.
 
 Definition high_forward_inverse (x : B)
-  : f (@group_inv _ (hasGroup high_transported_group) x) ≈S @group_inv _ (hasGroup A) (f x)
+  : f (@inv _ (hasGroup high_transported_group) x) ≈S @inv _ (hasGroup A) (f x)
   := group_transport_map_inv A f g Hfg Hgf x.
 
 Definition high_actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
-      (@group_inv _ (hasGroup high_transported_group))
-  := @group_inv_proper high_transported_group.
+      (@inv _ (hasGroup high_transported_group))
+  := @inv_proper high_transported_group.
 
 Definition high_actual_inverse_involution (x : B)
-  : @group_inv _ (hasGroup high_transported_group) (@group_inv _ (hasGroup high_transported_group) x) ≈S x
-  := @group_inv_inv high_transported_group x.
+  : @inv _ (hasGroup high_transported_group) (@inv _ (hasGroup high_transported_group) x) ≈S x
+  := @inv_inv high_transported_group x.
 
 Definition high_actual_inverse_unique (x y : B)
-    (H : @magma_mul _ (hasMagma high_transported_group) y x ≈S
+    (H : @mul _ (hasMagma high_transported_group) y x ≈S
       @monoid_unit _ (hasMonoid high_transported_group))
-  : y ≈S @group_inv _ (hasGroup high_transported_group) x
-  := @group_inv_unique high_transported_group x y H.
+  : y ≈S @inv _ (hasGroup high_transported_group) x
+  := @inv_unique high_transported_group x y H.
 
 Fail Definition high_missing_source_recovery
   : Semigroup

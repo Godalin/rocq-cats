@@ -41,7 +41,7 @@ Definition high_equality_solution (a b : N)
 
 Definition low_equality_solution_map (a : M)
   : M →r M
-  := group_mul_r_solve_resp a.
+  := mul_r_solve_resp a.
 
 (** Check the opposite size profile for the other respectful solution map. *)
 
@@ -49,7 +49,7 @@ Definition low_equality_solution_map (a : M)
 
 Definition high_equality_solution_map (a : N)
   : N →r N
-  := group_mul_l_solve_resp a.
+  := mul_l_solve_resp a.
 
 (** Commutativity uses the monoid inherited from the already chosen group. *)
 
@@ -57,7 +57,7 @@ Definition high_equality_solution_map (a : N)
 
 Definition low_equality_interchange (a b c d : M)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d)
-  := monoid_mul_interchange a b c d.
+  := mul_interchange a b c d.
 
 (** Interchange also works with higher equality witnesses. *)
 
@@ -65,22 +65,22 @@ Definition low_equality_interchange (a b c d : M)
 
 Definition high_equality_interchange (a b c d : N)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d)
-  := monoid_mul_interchange a b c d.
+  := mul_interchange a b c d.
 
 (** The inverse-map comparison retains the lower equality level. *)
 
 (** 逆映射的比较保留较低相等层级。 *)
 
 Definition low_equality_round_trip (a : M)
-  : group_mul_l_solve_resp a ∘r (a ⋅−) ≈f id_resp
-  := group_mul_l_solve_η a.
+  : mul_l_solve_resp a ∘r (a ⋅−) ≈f id_resp
+  := mul_l_solve_η a.
 
 (** Test the other direction with higher equality witnesses. *)
 
 (** 用较高的相等见证测试另一个方向。 *)
 
 Definition high_equality_evaluation (a : N)
-  : (−⋅ a) ∘r group_mul_r_solve_resp a ≈f id_resp
-  := group_mul_r_solve_β a.
+  : (−⋅ a) ∘r mul_r_solve_resp a ≈f id_resp
+  := mul_r_solve_β a.
 
 End Sizes.

@@ -163,8 +163,8 @@ Definition class_magma
       three_choice.
 
 Example magma_associates (x y z : BoolCocycleSphereClassS)
-  : @magma_mul _ (hasMagma class_magma) (@magma_mul _ (hasMagma class_magma) x y) z ≈S
-      @magma_mul _ (hasMagma class_magma) x (@magma_mul _ (hasMagma class_magma) y z).
+  : @mul _ (hasMagma class_magma) (@mul _ (hasMagma class_magma) x y) z ≈S
+      @mul _ (hasMagma class_magma) x (@mul _ (hasMagma class_magma) y z).
 Proof.
   exact (two_sphere_kan_mul_assoc BoolCocycleModel
     (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) three_choice x y z).
