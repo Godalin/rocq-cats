@@ -240,3 +240,14 @@ Proof.
 Defined.
 
 End CylinderMapComposition.
+
+(** Specified-equality base correction for these same operations is supplied
+    next by
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderBase.two_sphere_cylinder_change_base_resp}
+    {%[two_sphere_cylinder_change_base_resp]%}%. It retains the triangle and
+    compares actual cylinders, without arbitrary-path transport. *)
+
+(** 下一章的
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderBase.two_sphere_cylinder_change_base_resp}
+    {%[two_sphere_cylinder_change_base_resp]%}% 为同一运算提供指定相等的基点校正，
+    保留三角形并按实际柱比较，不涉及任意路径运输。 *)
