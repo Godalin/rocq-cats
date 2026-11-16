@@ -31,6 +31,28 @@ Context `{PC : !HasProduct C} `{PD : !HasProduct D}.
 Context (preserves : ∀ X Y : @Ob C,
     is_product (F X) (F Y) (F ((X × Y)%ob)) (fmap F π1) (fmap F π2)).
 
+(** Preservation of the chosen cones extends to any candidate product.
+    Transport through its canonical apex isomorphism; no target product
+    choice, terminal structure or equality of witnesses is needed. *)
+
+(** 选定锥的保持性推广到任意候选积。沿规范顶点同构运输，不需要目标积
+    选择、终对象结构或见证相等。 *)
+
+Definition preserved_product_cone {X Y P : C}
+    {p : Hom P X} {q : Hom P Y} (HP : is_product X Y P p q)
+  : is_product (F X) (F Y) (F P) (fmap F p) (fmap F q).
+Proof.
+  pose (i := product_unique (@product_universal C PC X Y) HP).
+  refine (product_apex_iso (preserves X Y)
+    (fmap F i.1; functor_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
+  - change (fmap F p ∘ fmap F i.1 ≈ fmap F π1).
+    rewrite <- functor_comp. apply functor_fmap_proper.
+    exact (fst (@this _ _ _ _ _ (HP _ π1 π2).2)).
+  - change (fmap F q ∘ fmap F i.1 ≈ fmap F π2).
+    rewrite <- functor_comp. apply functor_fmap_proper.
+    exact (snd (@this _ _ _ _ _ (HP _ π1 π2).2)).
+Defined.
+
 (** The two product universal properties determine the canonical isomorphism. *)
 
 (** 两个积泛性质确定规范同构。 *)
@@ -91,3 +113,67 @@ Proof.
 Qed.
 
 End ProductPreservation.
+
+(** ** Composition with Binary Products Only
+
+    Fix three categories with independently chosen products and two
+    functors preserving their source cones. Candidate preservation gives
+    the composite cones. Its inverse comparison is independent, up to
+    specified equality, of the supplied composite preservation witness. *)
+
+(** ** 只依赖二元积的复合
+
+    固定三个具有独立积选择的范畴及两个保持来源锥的函子。候选保持性给出
+    复合锥。按指定相等，复合的逆比较不依赖另给的复合保持见证。 *)
+
+Section ProductComposition.
+Context {C D E : Cat} (F : Fct C D) (G : Fct D E).
+Context `{PC : !HasProduct C} `{PD : !HasProduct D}.
+Context (preservesF : ∀ X Y : C,
+    is_product (F X) (F Y) (F ((X × Y)%ob)) (fmap F π1) (fmap F π2)).
+Context (preservesG : ∀ X Y : D,
+    is_product (G X) (G Y) (G ((X × Y)%ob)) (fmap G π1) (fmap G π2)).
+
+(** Choose the composite candidate by the existing apex transport. There
+    is no new choice of products or implicit preservation instance. *)
+
+(** 通过既有顶点运输给出复合候选，不另选积，也不隐式注册保持实例。 *)
+
+Definition preserved_product_comp (X Y : C)
+  : is_product ((G ∘F F) X) ((G ∘F F) Y)
+      ((G ∘F F) ((X × Y)%ob))
+      (fmap (G ∘F F) π1) (fmap (G ∘F F) π2)
+  := preserved_product_cone G preservesG (preservesF X Y).
+
+Context `{PE : !HasProduct E}.
+Context (preservesGF : ∀ X Y : C,
+    is_product ((G ∘F F) X) ((G ∘F F) Y)
+      ((G ∘F F) ((X × Y)%ob))
+      (fmap (G ∘F F) π1) (fmap (G ∘F F) π2)).
+
+(** Any supplied composite witness has the same inverse comparison as
+    the two consecutive comparisons. The witnesses need not be equal. *)
+
+(** 任意指定复合见证的逆比较均与连续两次比较相等，无需见证本身相等。 *)
+
+Lemma preserved_product_inv_comp (X Y : C)
+  : preserved_product_inv (G ∘F F) preservesGF X Y ≈
+      fmap G (preserved_product_inv F preservesF X Y) ∘
+        preserved_product_inv G preservesG (F X) (F Y).
+Proof.
+  symmetry. apply (preservesGF X Y _ π1 π2).2. split.
+  - change (fmap G (fmap F π1) ∘
+      (fmap G (preserved_product_inv F preservesF X Y) ∘
+        preserved_product_inv G preservesG (F X) (F Y)) ≈ π1).
+    rewrite <- comp_assoc, <- functor_comp,
+      (fst (preserved_product_inv_β F preservesF X Y)).
+    exact (fst (preserved_product_inv_β G preservesG (F X) (F Y))).
+  - change (fmap G (fmap F π2) ∘
+      (fmap G (preserved_product_inv F preservesF X Y) ∘
+        preserved_product_inv G preservesG (F X) (F Y)) ≈ π2).
+    rewrite <- comp_assoc, <- functor_comp,
+      (snd (preserved_product_inv_β F preservesF X Y)).
+    exact (snd (preserved_product_inv_β G preservesG (F X) (F Y))).
+Defined.
+
+End ProductComposition.
