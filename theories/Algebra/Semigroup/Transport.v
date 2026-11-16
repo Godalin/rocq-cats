@@ -28,8 +28,7 @@ Local Open Scope magma_scope.
     保持两广集及映射独立；不要求单位元、逆或恢复 [B] 元素的方程。 *)
 
 Section Transport.
-Universe a r b s.
-Context {A : SetC@{a r}} {B : SetC@{b s}}.
+Context (A : Semigroup) {B : SetC}.
 Context (f : B →r A) (g : A →r B).
 
 (** The unique immediate parent is the previously transported magma,
@@ -37,25 +36,25 @@ Context (f : B →r A) (g : A →r B).
 
 (** 唯一直接父结构就是先前运输的原群，乘法原样保留。 *)
 
-Program Definition SemigroupTransport (HA : Semigroup A)
-    (Hfg : (f ∘r g) ≈f id_resp)
-  : Semigroup B
+Program Definition SemigroupTransport (Hfg : (f ∘r g) ≈f id_resp)
+  : Semigroup
   :=
-  {|SemigroupM := MagmaTransport f g HA
+  {|SemigroupM := MagmaTransport A f g
+  ; isSemigroup := {|semigroup_assoc := _|}
   |}.
 Next Obligation.
-  change (g (@magma_mul A HA
-      (f (g (@magma_mul A HA (f x) (f y)))) (f z)) ≈S
-    g (@magma_mul A HA (f x)
-      (f (g (@magma_mul A HA (f y) (f z)))))).
+  change (g (@magma_mul _ (hasMagma A)
+      (f (g (@magma_mul _ (hasMagma A) (f x) (f y)))) (f z)) ≈S
+    g (@magma_mul _ (hasMagma A) (f x)
+      (f (g (@magma_mul _ (hasMagma A) (f y) (f z)))))).
   apply (@func_proper _ _ g).
-  transitivity (@magma_mul A HA
-    (@magma_mul A HA (f x) (f y)) (f z)).
-  - apply (@magma_mul_proper A HA); [apply Hfg | reflexivity].
-  - transitivity (@magma_mul A HA
-      (f x) (@magma_mul A HA (f y) (f z))).
-    + exact (@semigroup_assoc A HA (f x) (f y) (f z)).
-    + apply (@magma_mul_proper A HA); [reflexivity | symmetry; apply Hfg].
+  transitivity (@magma_mul _ (hasMagma A)
+    (@magma_mul _ (hasMagma A) (f x) (f y)) (f z)).
+  - apply (@magma_mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
+  - transitivity (@magma_mul _ (hasMagma A)
+      (f x) (@magma_mul _ (hasMagma A) (f y) (f z))).
+    + exact (@semigroup_assoc _ (isSemigroup A) (f x) (f y) (f z)).
+    + apply (@magma_mul_proper _ (hasMagma A)); [reflexivity | symmetry; apply Hfg].
 Defined.
 
 End Transport.

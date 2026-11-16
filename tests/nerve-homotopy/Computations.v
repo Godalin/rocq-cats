@@ -130,12 +130,11 @@ Qed.
 
 (** 非薄目标还可检验实际分量箭头。异或幺半群的非恒等中心环路定义一个自变换。 *)
 
-Local Existing Instance BoolS_Monoid.
 
 Definition BooleanObjectsF
   : Fct (EqGpd UnitS@{Set Set})
-      B(BoolS)
-  := MonoidObjF BoolS (HM := BoolS_Monoid).
+      B(BoolS_Monoid)
+  := MonoidObjF BoolS_Monoid.
 
 Definition BooleanIdentityF
   : BooleanObjectsF →ᵥ BooleanObjectsF

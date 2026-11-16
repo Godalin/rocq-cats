@@ -1,23 +1,22 @@
 From Cats Require Import
   Cat.Core
-  Algebra.Monoid.Core
   Algebra.Monoid.Category
   Algebra.Monoid.Transport
   Instance.Bool.Group.
 
 Local Open Scope monoid_scope.
 
-(** * Fixed-Parent Monoid Extensions
+(** * Complete Monoids and Fixed-Parent Choices
 
-    A chosen unit belongs to one specified semigroup. Repacking it must
-    preserve both that parent and its own computational selection. *)
+    Complete objects own their carrier. Extensions remain indexed by one
+    selected parent; importing a model must not select an extension. *)
 
-(** * 固定父结构的幺半群扩充
+(** * 完整幺半群与固定父结构选择
 
-    选定单位元属于一个指定半群。重新包装须保留该父结构及其自身的计算选择。 *)
+    完整对象拥有其载体；扩充仍以一个选定父结构索引，导入模型不应选择扩充。 *)
 
 Section UnchosenExtension.
-Context {M : SetC} (SG : Semigroup M).
+Context (SG : Semigroup).
 
 Fail Definition unchosen_monoid_extension
   : HasMonoid SG
@@ -27,113 +26,186 @@ End UnchosenExtension.
 
 (** ** Two Extensions of One Parent
 
-    Keep both choices available and pass their evidence explicitly. A second
-    local choice must not change the first monoid's stored unit or laws. *)
+    Both choices stay available; packing reads the supplied evidence. *)
 
 (** ** 同一父结构的两份扩充
 
-    同时保留两份选择并显式传递见证；另一局部选择不得改变首个幺半群保存的
-    单位元或定律。 *)
+    两份选择同时存在，打包只读取给定见证。 *)
 
 Section IndependentChoices.
-Context {M : SetC} (SG : Semigroup M) (H K : HasMonoid SG).
+Context (SG : Semigroup) (H K : HasMonoid SG).
 
 Example first_parent_is_preserved
   : MonoidSG (MonoidFromExtension SG H) = SG.
 Proof. reflexivity. Qed.
 
 Example first_extension_is_preserved
-  : @hasMonoid M (MonoidFromExtension SG H) = H.
+  : hasMonoid (MonoidFromExtension SG H) = H.
 Proof. reflexivity. Qed.
 
 Example first_unit_is_selected
-  : @monoid_unit M (MonoidFromExtension SG H) =
-      @monoid_chosen_unit M SG H.
+  : @monoid_unit _ (hasMonoid (MonoidFromExtension SG H)) =
+      @monoid_unit SG H.
 Proof. reflexivity. Qed.
-
-Example second_unit_is_selected
-  : @monoid_unit M (MonoidFromExtension SG K) =
-      @monoid_chosen_unit M SG K.
-Proof. reflexivity. Qed.
-
-Example selected_left_law (x : M)
-  : @magma_mul M SG (@monoid_chosen_unit M SG H) x ≈S x
-  := @monoid_unit_l M (MonoidFromExtension SG H) x.
 
 Example selected_units_are_equivalent
-  : @monoid_chosen_unit M SG H ≈S @monoid_chosen_unit M SG K.
+  : @monoid_unit SG H ≈S @monoid_unit SG K.
 Proof.
-  exact (monoid_units_equiv SG _ _ (@isMonoid M SG H) (@isMonoid M SG K)).
+  exact (monoid_units_equiv SG _ _ (@isMonoid SG H) (@isMonoid SG K)).
 Qed.
 
 End IndependentChoices.
 
 (** ** Distinct Computational Choices
 
-    Indiscrete setoid equality permits native-distinct chosen units on one
-    constant semigroup. Their algebraic equivalence does not identify their
-    boolean computations or their law records. *)
+    Bool-valued indiscrete equality permits different native units and law
+    tokens. Competing local instances must not replace stored selections. *)
 
 (** ** 不同计算选择
 
-    全关系广集相等允许同一常值半群具有原生不同的选定单位元；代数相等不会
-    等同其布尔计算或定律记录。 *)
+    bool 值全关系相等允许原生不同的单位及定律标记；竞争局部实例不能替换保存
+    的选择。 *)
 
 Program Definition IndiscreteBoolS
   : SetC
   :=
   {|carrier := bool
-  ; carrier_equiv _ _ := unit
+  ; carrier_equiv _ _ := bool
   |}.
-Next Obligation. split; repeat intro; exact tt. Defined.
+Next Obligation. split; repeat intro; exact true. Defined.
 
 Program Definition ConstantBoolMagma
-  : Magma IndiscreteBoolS
+  : Magma
   :=
-  {|magma_mul _ _ := false
-  |}.
-Next Obligation. repeat intro; exact tt. Defined.
-
-Program Definition ConstantBoolSemigroup
-  : Semigroup IndiscreteBoolS
-  :=
-  {|SemigroupM := ConstantBoolMagma
-  ; semigroup_assoc _ _ _ := tt
-  |}.
-
-Program Definition BoolUnitExtension (e : bool)
-  : HasMonoid ConstantBoolSemigroup
-  :=
-  {|monoid_chosen_unit := e
-  ; isMonoid :=
-      {|monoid_unit_left _ := tt
-      ; monoid_unit_right _ := tt
+  {|MagmaS := IndiscreteBoolS
+  ; hasMagma :=
+      {|magma_mul _ _ := false
+      ; magma_mul_proper _ _ _ _ _ _ := true
       |}
   |}.
 
-Example false_unit_computes
-  : @monoid_unit _
-      (MonoidFromExtension ConstantBoolSemigroup (BoolUnitExtension false))
-      = false.
+Program Definition ConstantBoolSemigroup
+  : Semigroup
+  :=
+  {|SemigroupM := ConstantBoolMagma
+  ; isSemigroup := {|semigroup_assoc _ _ _ := true|}
+  |}.
+
+(** Different operations and associativity witnesses on the same carrier
+    remain separate computational choices. *)
+
+(** 同一载体上的不同运算与结合律见证仍是分离的计算选择。 *)
+
+Program Definition TrueMultiplication
+  : HasMagma IndiscreteBoolS
+  :=
+  {|magma_mul _ _ := true
+  ; magma_mul_proper _ _ _ _ _ _ := false
+  |}.
+
+Definition TrueMagma
+  : Magma
+  := MagmaFromExtension IndiscreteBoolS TrueMultiplication.
+
+Local Existing Instance TrueMultiplication.
+
+Program Definition OtherAssociativity
+  : IsSemigroup ConstantBoolMagma
+  := {|semigroup_assoc _ _ _ := false|}.
+
+Local Existing Instance OtherAssociativity.
+
+Definition OtherSemigroup
+  : Semigroup
+  := SemigroupFromProperty ConstantBoolMagma OtherAssociativity.
+
+Example stored_multiplications_compute
+  : (@magma_mul _ (hasMagma ConstantBoolMagma) false false,
+      @magma_mul _ (hasMagma TrueMagma) false false) = (false, true).
 Proof. reflexivity. Qed.
 
-Example true_unit_computes
-  : @monoid_unit _
-      (MonoidFromExtension ConstantBoolSemigroup (BoolUnitExtension true))
-      = true.
+Example stored_associativities_compute
+  : (@semigroup_assoc _ (isSemigroup ConstantBoolSemigroup) true false true,
+      @semigroup_assoc _ (isSemigroup OtherSemigroup) true false true) = (true, false).
 Proof. reflexivity. Qed.
 
-(** ** Existing Concrete Clients and Independent Sizes
+Example inherited_magma_carrier
+  : (ConstantBoolSemigroup : SetC) = IndiscreteBoolS.
+Proof. reflexivity. Qed.
 
-    The original xor and endomorphism units still compute. Both strict size
-    orders remain available for extensions and their fixed-setoid views. *)
+Program Definition BoolUnitExtension (e t : bool)
+  : HasMonoid ConstantBoolSemigroup
+  :=
+  {|monoid_unit := e
+  ; isMonoid :=
+      {|monoid_unit_l _ := t
+      ; monoid_unit_r _ := negb t
+      |}
+  |}.
 
-(** ** 已有具体客户端与独立大小
+Definition FalseUnit
+  : HasMonoid ConstantBoolSemigroup
+  := BoolUnitExtension false false.
 
-    原异或与自态射单位元仍可计算；扩充及其固定广集视图仍支持两种严格大小次序。 *)
+Definition TrueUnit
+  : HasMonoid ConstantBoolSemigroup
+  := BoolUnitExtension true true.
+
+Local Existing Instance FalseUnit.
+Local Existing Instance TrueUnit.
+
+Definition FirstMonoid
+  : Monoid
+  := MonoidFromExtension ConstantBoolSemigroup FalseUnit.
+
+Definition SecondMonoid
+  : Monoid
+  := MonoidFromExtension ConstantBoolSemigroup TrueUnit.
+
+Example stored_units_compute
+  : (@monoid_unit _ (hasMonoid FirstMonoid),
+      @monoid_unit _ (hasMonoid SecondMonoid)) = (false, true).
+Proof. reflexivity. Qed.
+
+Example stored_left_laws_compute
+  : (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid FirstMonoid)) false,
+      @monoid_unit_l _ _ (@isMonoid _ (hasMonoid SecondMonoid)) false) =
+      (false, true).
+Proof. reflexivity. Qed.
+
+Example stored_right_laws_compute
+  : (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid FirstMonoid)) true,
+      @monoid_unit_r _ _ (@isMonoid _ (hasMonoid SecondMonoid)) true) =
+      (true, false).
+Proof. reflexivity. Qed.
+
+(** The actual category constructor reads these same stored law tokens. *)
+
+(** 实际范畴构造器读取同一批保存的定律标记。 *)
+
+Example category_laws_use_stored_choices
+  : (@comp_id_l (MonoidCat FirstMonoid) tt tt false,
+      @comp_id_r (MonoidCat FirstMonoid) tt tt false,
+      @comp_assoc (MonoidCat FirstMonoid) tt tt tt tt false false false) =
+      (false, true, true).
+Proof. reflexivity. Qed.
+
+Fail Definition native_units_equal
+  : @monoid_unit _ (hasMonoid FirstMonoid) =
+      @monoid_unit _ (hasMonoid SecondMonoid)
+  := eq_refl.
+
+(** ** Concrete Clients and Independent Sizes
+
+    Actual model projections compute. Strict sizes concern mathematical
+    independence, not historical universe-argument positions. *)
+
+(** ** 具体客户端与独立大小
+
+    实际模型投影可计算；严格大小检查数学上的独立性，不维护历史宇宙参数位置。 *)
 
 Example xor_unit_computes
-  : @monoid_unit BoolS BoolS_Monoid = false.
+  : @monoid_unit _ (hasMonoid BoolS_Monoid) = false.
 Proof. reflexivity. Qed.
 
 Example endomorphism_parent_computes (C : Cat) (X : C)
@@ -141,74 +213,29 @@ Example endomorphism_parent_computes (C : Cat) (X : C)
 Proof. reflexivity. Qed.
 
 Example endomorphism_unit_computes (C : Cat) (X : C)
-  : @monoid_unit (HomSet X X) (EndMonoid C X) = @id X.
+  : @monoid_unit _ (hasMonoid (EndMonoid C X)) = @id X.
 Proof. reflexivity. Qed.
 
 Section IndependentUniverses.
 Universes u p l.
-Constraint u < p.
-Constraint p < l.
-Context (A : SetC@{u p}) (B : SetC@{p u})
-    (SA : Semigroup@{l u p} A) (SB : Semigroup@{l p u} B)
+Constraint u < p, p < l.
+Context (SA : Semigroup@{u p l}) (SB : Semigroup@{p u l})
     (HA : HasMonoid SA) (HB : HasMonoid SB).
 
 Definition high_equality_monoid
-  : Monoid@{u p l} A
+  : Monoid@{u p l}
   := MonoidFromExtension SA HA.
 
 Definition low_equality_monoid
-  : Monoid@{p u l} B
+  : Monoid@{p u l}
   := MonoidFromExtension SB HB.
 
+Example high_carrier_coercion
+  : (high_equality_monoid : SetC@{u p}) = (SA : SetC@{u p}).
+Proof. reflexivity. Qed.
+
+Example low_carrier_coercion
+  : (low_equality_monoid : SetC@{p u}) = (SB : SetC@{p u}).
+Proof. reflexivity. Qed.
+
 End IndependentUniverses.
-
-(** ** Legacy Explicit Arguments
-
-    Keep the original public universe positions and named structure argument.
-    These calls use a strict law bound, so a reordered instance cannot pass
-    merely by identifying universe levels. *)
-
-(** ** 原显式参数
-
-    保留原公共宇宙位置与具名结构参数。这些调用使用严格的定律上界，不能通过
-    等同宇宙层级来容忍次序变化。 *)
-
-Section LegacyArguments.
-Universes u p l.
-Constraint u < p, p < l.
-Context (A : SetC@{u p}) (HA : Monoid@{u p l} A) (x y z : A).
-Context (Hy : @magma_mul A HA y x ≈S @monoid_unit A HA)
-    (Hz : @magma_mul A HA x z ≈S @monoid_unit A HA).
-
-Check (@monoid_unit_l@{u p l} A HA x).
-Check (@monoid_unit_r@{u p l} A HA x).
-Check (@monoid_inverse_unique@{l u p} A HA x y z Hy Hz).
-Check (monoid_unit (M := A) (Monoid := HA)).
-Check (monoid_unit_l (M := A) (Monoid := HA) x).
-Check (monoid_unit_r (M := A) (Monoid := HA) x).
-
-End LegacyArguments.
-
-(** ** Legacy Transport Universes
-
-    Separate the composition bounds from the returned monoid's law universe.
-    The complete fifteen-argument instance retains its previous positions. *)
-
-(** ** 原运输宇宙参数
-
-    区分复合辅助界与返回幺半群的定律宇宙；完整十五参数实例保留原有位置。 *)
-
-Section LegacyTransportArguments.
-Universes u p q l k.
-Constraint u < p, p < q, q < l, l < k.
-Context (A B : SetC@{u p})
-    (f : FunS_resp@{k k u p u p} B A)
-    (g : FunS_resp@{k k u p u p} A B)
-    (HA : Monoid@{u p l} A)
-    (Hfg : (f ∘r g) ≈f id_resp@{l u p})
-    (Hgf : (g ∘r f) ≈f id_resp@{k u p}).
-Definition legacy_transport_universe_arguments
-  : Monoid@{u p k} B
-  := @MonoidTransport@{u p u p k k k q q l k q q l l}
-      A B f g HA Hfg Hgf.
-End LegacyTransportArguments.

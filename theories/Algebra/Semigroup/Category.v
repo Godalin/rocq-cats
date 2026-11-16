@@ -19,8 +19,8 @@ From Cats Require Import
 (** 范畴复合的结合律扩展同一个原群。 *)
 
 Program Definition EndSemigroup (C : Cat) (X : @Ob C)
-  : Semigroup (HomSet X X)
+  : Semigroup
   :=
   {|SemigroupM := EndMagma C X
-  ; semigroup_assoc := comp_assoc
+  ; isSemigroup := {|semigroup_assoc := comp_assoc|}
   |}.

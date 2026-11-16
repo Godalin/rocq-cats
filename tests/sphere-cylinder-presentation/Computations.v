@@ -136,7 +136,6 @@ Definition representative_round_trip_is_native (a : TwoSphereS W false)
     复合通用呈现比较与既有布尔系数同构，分类此模型的柱相等；不推出一般π₂
     或弱等价识别。 *)
 
-Local Existing Instance BoolS_Monoid.
 Local Opaque two_sphere_cylinder_class_iso cocycle_two_sphere_class_iso.
 
 Definition Z
@@ -145,7 +144,7 @@ Definition Z
 
 Definition b
   : Z 0
-  := two_cocycle_simplex_unit 0.
+  := (two_cocycle_simplex_unit (M := BoolS_Monoid)) 0.
 
 Definition cocycle_choices (r : Ordinal 2) (s : Ordinal 8)
   := @hasHornFillers Z BoolCocycleModel_HasKanFillers
@@ -157,13 +156,13 @@ Definition geometric_bool_iso
   := iso_trans
       (iso_symm (two_sphere_cylinder_class_iso Z b
         (cocycle_choices fin_first) (cocycle_choices fin_first⁺)))
-      (@cocycle_two_sphere_class_iso BoolS BoolS_Monoid).
+      (@cocycle_two_sphere_class_iso BoolS_Monoid).
 
 Local Transparent two_sphere_cylinder_class_iso cocycle_two_sphere_class_iso.
 
 Example actual_geometric_classifier_computes
   : (lower (geometric_bool_iso.1 {|lower := bool_cocycle_sphere|}),
-     two_cocycle_triangle_value_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
        (lower (geometric_bool_iso.2.1 {|lower := false|})).1) = (true, false).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -196,7 +195,7 @@ Local Program Instance witness_Kan
   |}.
 
 Fail Definition no_automatic_cylinder_group
-  : Group (Q true false)
+  : HasMagma (Q true false)
   := ltac:(typeclasses eauto).
 
 Fail Definition no_automatic_raw_equivalence

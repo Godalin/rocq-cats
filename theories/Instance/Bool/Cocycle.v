@@ -54,14 +54,13 @@ Context {J : Cat}
 Arguments b {_ _} _.
 
 Local Existing Instance b_proper.
-Local Existing Instance BoolS_Monoid.
 
 (** The xor of the two short-edge bits and the long-edge bit. *)
 
 (** 两条短边与一条长边上布尔位的异或。 *)
 
 Program Definition BoolCoboundary
-  : TwoCocycle J BoolS
+  : TwoCocycle J BoolS_Monoid
   :=
   {|two_cocycle_triangle x y z f g := xorb (b f) (xorb (b g) (b (g ∘ f)))
   |}.
@@ -158,6 +157,6 @@ Proof. destruct x as [[] | [[] | [[] | []]]]; reflexivity. Defined.
 (** 对这些边标签应用一般的布尔余边界构造。 *)
 
 Definition BoolTriangleCocycle
-  : @TwoCocycle [Ord 2] BoolS BoolS_Monoid
+  : @TwoCocycle [Ord 2] BoolS_Monoid
   := BoolCoboundary (@bool_triangle_edge) bool_triangle_edge_proper
       bool_triangle_edge_id.

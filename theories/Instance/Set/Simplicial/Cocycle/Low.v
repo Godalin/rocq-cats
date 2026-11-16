@@ -50,7 +50,7 @@ Local Open Scope monoid_scope.
     系数保留自身的指定相等。 *)
 
 Section NativeLow.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** Every zero-dimensional cocycle is equal to the unit-labelled one. *)
 
@@ -112,7 +112,8 @@ Next Obligation.
   destruct x as [[] | [[] | [[] | []]]], y as [[] | [[] | [[] | []]]],
     z as [[] | [[] | [[] | []]]], w as [[] | [[] | [[] | []]]];
     cbn in *; try solve [destruct f | destruct g | destruct h];
-    rewrite ?monoid_unit_l, ?monoid_unit_r; reflexivity.
+    rewrite ?(@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+      ?(@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))); reflexivity.
 Defined.
 
 (** Read the single strictly increasing triangle coefficient. *)
@@ -161,7 +162,7 @@ End NativeLow.
 
 Section SimplicialLow.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** All vertices are equal. *)
 
@@ -173,7 +174,7 @@ Lemma two_cocycle_zero_unique
 Proof.
   refine {|lower := _
           |}.
-  transitivity (@UnitTwoCocycle [Ord 0] M HM);
+  transitivity (@UnitTwoCocycle [Ord 0] M);
     [apply ordinal_cocycle_zero_unit | symmetry; apply ordinal_cocycle_zero_unit].
 Defined.
 
@@ -187,7 +188,7 @@ Lemma two_cocycle_one_unique
 Proof.
   refine {|lower := _
           |}.
-  transitivity (@UnitTwoCocycle [Ord 1] M HM);
+  transitivity (@UnitTwoCocycle [Ord 1] M);
     [apply ordinal_cocycle_one_unit | symmetry; apply ordinal_cocycle_one_unit].
 Defined.
 

@@ -24,17 +24,17 @@ Definition SetCartMonoidal
 
 (** ** Setoid Monoids as Monoid Objects
 
-    Fix a monoid structure [HM] on [M]. Explicitly enable the setoid
+    Fix a complete monoid [M]. Explicitly enable the setoid
     category's terminal and product choices to realize this algebra as a
     cartesian monoid object. *)
 
 (** ** 广集幺半群作为幺半群对象
 
-    固定 [M] 上的幺半群结构 [HM]，显式启用广集范畴的终对象和积选择，将该代数实现为笛卡尔幺半群对象。 *)
+    固定完整幺半群 [M]，显式启用广集范畴的终对象和积选择，将该代数
+    实现为笛卡尔幺半群对象。 *)
 
 Section SetMonoid.
-Context {M : SetC} (HM : Monoid M).
-Local Existing Instance HM.
+Context (M : Monoid).
 Local Existing Instance SetCat_HasTerminal.
 Local Existing Instance SetCat_HasProduct.
 
@@ -45,7 +45,7 @@ Local Existing Instance SetCat_HasProduct.
 Program Definition set_monoid_unit_resp
   : UnitS →r M
   :=
-  {|func _ := monoid_unit
+  {|func _ := @monoid_unit _ (hasMonoid M)
   |}.
 Next Obligation. intros x y H. reflexivity. Defined.
 
@@ -59,21 +59,23 @@ Program Definition SetMonoidObj
   :=
   {|MonoidCarrier := M
   ; monoid_object_unit := set_monoid_unit_resp
-  ; monoid_object_mul := set_magma_mul_resp HM
+  ; monoid_object_mul := set_magma_mul_resp M
   |}.
 Next Obligation.
-  change (set_magma_mul_resp HM ∘ (set_monoid_unit_resp × id) ≈ π2).
-  rewrite cross_η. intros [u x]. exact (monoid_unit_l x).
+  change (set_magma_mul_resp M ∘ (set_monoid_unit_resp × id) ≈ π2).
+  rewrite cross_η. intros [u x].
+  exact (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M)) x).
 Defined.
 Next Obligation.
-  change (set_magma_mul_resp HM ∘ (id × set_monoid_unit_resp) ≈ π1).
-  rewrite cross_η. intros [x u]. exact (monoid_unit_r x).
+  change (set_magma_mul_resp M ∘ (id × set_monoid_unit_resp) ≈ π1).
+  rewrite cross_η. intros [x u].
+  exact (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M)) x).
 Defined.
 Next Obligation.
-  change (set_magma_mul_resp HM ∘ (set_magma_mul_resp HM × id) ≈
-    set_magma_mul_resp HM ∘ (id × set_magma_mul_resp HM) ∘
+  change (set_magma_mul_resp M ∘ (set_magma_mul_resp M × id) ≈
+    set_magma_mul_resp M ∘ (id × set_magma_mul_resp M) ∘
       (@product_assoc SetCat SetCat_HasProduct M M M).1).
-  rewrite !cross_η. intros [[x y] z]. exact (semigroup_assoc x y z).
+  rewrite !cross_η. intros [[x y] z]. exact ((@semigroup_assoc _ (isSemigroup M)) x y z).
 Defined.
 
 End SetMonoid.

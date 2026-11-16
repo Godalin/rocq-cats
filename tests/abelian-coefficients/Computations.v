@@ -14,11 +14,11 @@ Local Open Scope monoid_scope.
     导入系数不得自动选取其结构。局部启用后，解的投影应计算出实际布尔位。 *)
 
 Fail Definition unchosen_boolean_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := ltac:(typeclasses eauto).
 
 Fail Definition unchosen_boolean_commutativity
-  : @IsCommutativeMonoid BoolS BoolS_Monoid
+  : IsCommutativeMonoid BoolS_Monoid
   := ltac:(typeclasses eauto).
 
 (** ** Computing the Selected Solutions
@@ -31,23 +31,22 @@ Fail Definition unchosen_boolean_commutativity
     局部启用已有异或群及其交换性见证，检查两者使用同一底层乘法。 *)
 
 Section BooleanComputations.
-Local Existing Instance BoolS_Group.
 Local Existing Instance BoolS_IsCommutativeMonoid.
 
 Example left_solution_computes
-  : (GroupMulLSolution (G := BoolS) true false).1 = true.
+  : (GroupMulLSolution (G := BoolS_Group) true false).1 = true.
 Proof. reflexivity. Qed.
 
 Example right_solution_computes
-  : (GroupMulRSolution (G := BoolS) true false).1 = true.
+  : (GroupMulRSolution (G := BoolS_Group) true false).1 = true.
 Proof. reflexivity. Qed.
 
 Example left_solution_map_computes
-  : group_mul_l_solve_resp (G := BoolS) true true = false.
+  : (group_mul_l_solve_resp (G := BoolS_Group)) true true = false.
 Proof. reflexivity. Qed.
 
 Example right_solution_map_computes
-  : group_mul_r_solve_resp (G := BoolS) false true = true.
+  : (group_mul_r_solve_resp (G := BoolS_Group)) false true = true.
 Proof. reflexivity. Qed.
 
 (** The group and commutativity witnesses infer coherently without a second
@@ -56,7 +55,10 @@ Proof. reflexivity. Qed.
 (** 群和交换性见证能够相干推断，无须再显式启用第二个幺半群实例。 *)
 
 Definition boolean_interchange (a b c d : BoolS)
-  : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d)
+  : @magma_mul _ (hasMagma BoolS_Monoid)
+      (@magma_mul _ (hasMagma BoolS_Monoid) a b) (@magma_mul _ (hasMagma BoolS_Monoid) c d) ≈S
+      @magma_mul _ (hasMagma BoolS_Monoid)
+        (@magma_mul _ (hasMagma BoolS_Monoid) a c) (@magma_mul _ (hasMagma BoolS_Monoid) b d)
   := monoid_mul_interchange a b c d.
 
 End BooleanComputations.

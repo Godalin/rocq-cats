@@ -22,7 +22,7 @@ Local Open Scope monoid_scope.
     段积记作 [xs⟦i, j⟧⋅]，替换记作 [xs[f]M]。 *)
 
 Section Chain.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** The product of the half-open arrow segment from vertex i to vertex j.
     Unordered endpoints return the unit; laws only use ordered endpoints. *)
@@ -54,7 +54,7 @@ Proof.
   - reflexivity.
   - destruct i as [[] | i], j as [[] | j]; cbn [monoid_segment].
     + reflexivity.
-    + apply magma_mul_proper.
+    + apply (@magma_mul_proper _ (hasMagma M)).
       * apply IH. apply tuple_tail_proper. exact H.
       * exact (H fin_first).
     + reflexivity.
@@ -85,7 +85,7 @@ Proof.
   destruct i as [[] | i].
   - change (monoid_segment (tuple_tail xs) fin_first fin_first ⋅
       tuple_head xs ≈S tuple_head xs).
-    rewrite monoid_segment_id. apply monoid_unit_l.
+    rewrite monoid_segment_id. apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
   - apply IH.
 Defined.
 
@@ -100,14 +100,14 @@ Lemma monoid_segment_comp {n : nat} (xs : M ^S n)
       monoid_segment xs j k ⋅ monoid_segment xs i j.
 Proof.
   induction n as [|n IH] in xs, i, j, k, Hij, Hjk |- *.
-  - symmetry. apply monoid_unit_l.
+  - symmetry. apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
   - destruct i as [[] | i], j as [[] | j], k as [[] | k];
       cbn [fin_rank] in Hij, Hjk; try lia;
       cbn [monoid_segment].
-    + symmetry. apply monoid_unit_l.
-    + symmetry. apply monoid_unit_r.
+    + symmetry. apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+    + symmetry. apply (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))).
     + rewrite (IH (tuple_tail xs) fin_first j k).
-      * apply semigroup_assoc.
+      * apply (@semigroup_assoc _ (isSemigroup M)).
       * cbn. lia.
       * cbn. lia.
     + apply IH; cbn in *; lia.

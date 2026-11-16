@@ -16,8 +16,7 @@ Local Open Scope monoid_scope.
 Section Sizes.
 Universes e h.
 Constraint e < h.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Group M} `{HN : !Group N}
+Context (M : Group@{h e _}) (N : Group@{e h _})
     `{CM : !IsCommutativeMonoid M} `{CN : !IsCommutativeMonoid N}.
 
 (** Low equality still retains an actual selected solution and uniqueness. *)

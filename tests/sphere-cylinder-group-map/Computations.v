@@ -136,7 +136,7 @@ Definition Q (b r c : bool)
 (** 乘积和左候选都选择 true，右候选独立为 false；不注册选定模型。 *)
 
 Definition G (b r c : bool)
-  : Group (Q b r c)
+  : Group
   := TwoSphereCylinderGroup W b (choices fin_first r) (choices fin_first⁺ c)
       (one_choice _ _ true) (one_choice _ _ true) (one_choice _ _ false).
 
@@ -155,13 +155,13 @@ Definition mapped
 (** 乘积及逆方块的两侧确实原生不同。 *)
 
 Example operation_square_endpoints_compute
-  : ((mapped (@magma_mul (Q false false true) (G false false true) x y)).1,
-     (@magma_mul (Q true true false) (G true true false)
+  : ((mapped (@magma_mul _ (hasMagma (G false false true)) x y)).1,
+     (@magma_mul _ (hasMagma (G true true false))
        (mapped x) (mapped y)).1,
-     (mapped (@group_inv (Q false false true) (G false false true) x)).1,
-     (@group_inv (Q true true false) (G true true false) (mapped x)).1,
-     (mapped (@monoid_unit (Q false false true) (G false false true))).1,
-     (@monoid_unit (Q true true false) (G true true false)).1) =
+     (mapped (@group_inv _ (hasGroup (G false false true)) x)).1,
+     (@group_inv _ (hasGroup (G true true false)) (mapped x)).1,
+     (mapped (@monoid_unit _ (hasMonoid (G false false true)))).1,
+     (@monoid_unit _ (hasMonoid (G true true false))).1) =
     (false, true, false, true, true, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -171,8 +171,8 @@ Proof. vm_compute. reflexivity. Defined.
 
 Definition product_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@magma_mul (Q false false true) (G false false true) x y))
-      (@magma_mul (Q true true false) (G true true false) (mapped x) (mapped y))
+      (mapped (@magma_mul _ (hasMagma (G false false true)) x y))
+      (@magma_mul _ (hasMagma (G true true false)) (mapped x) (mapped y))
   := two_sphere_cylinder_map_mul FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -184,8 +184,8 @@ Definition product_cylinder
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@group_inv (Q false false true) (G false false true) x))
-      (@group_inv (Q true true false) (G true true false) (mapped x))
+      (mapped (@group_inv _ (hasGroup (G false false true)) x))
+      (@group_inv _ (hasGroup (G true true false)) (mapped x))
   := two_sphere_cylinder_map_left_inverse FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -198,8 +198,8 @@ Definition inverse_cylinder
 
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@monoid_unit (Q false false true) (G false false true)))
-      (@monoid_unit (Q true true false) (G true true false))
+      (mapped (@monoid_unit _ (hasMonoid (G false false true))))
+      (@monoid_unit _ (hasMonoid (G true true false)))
   := two_sphere_cylinder_map_unit FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -278,12 +278,12 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际见证不蕴含原生端点相等。 *)
 
 Fail Definition product_square_is_not_native
-  : mapped (@magma_mul (Q false false true) (G false false true) x y) =
-      @magma_mul (Q true true false) (G true true false) (mapped x) (mapped y)
+  : mapped (@magma_mul _ (hasMagma (G false false true)) x y) =
+      @magma_mul _ (hasMagma (G true true false)) (mapped x) (mapped y)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_square_is_not_native
-  : mapped (@group_inv (Q false false true) (G false false true) x) =
-      @group_inv (Q true true false) (G true true false) (mapped x)
+  : mapped (@group_inv _ (hasGroup (G false false true)) x) =
+      @group_inv _ (hasGroup (G true true false)) (mapped x)
   := ltac:(vm_compute; reflexivity).
 
 (** ** Mapping the Actual Nonzero Cocycle Group
@@ -297,7 +297,6 @@ Fail Definition inverse_square_is_not_native
     恒等单纯映射仍消费真实模型填充及实际选定群运算。非零元素的逆仍非零，
     只有两个非零元素的异或乘积成为单位。 *)
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Definition Z
@@ -310,7 +309,7 @@ Definition Z
 
 Definition b
   : Z 0
-  := two_cocycle_simplex_unit 0.
+  := (two_cocycle_simplex_unit (M := BoolS_Monoid)) 0.
 
 (** Select the actual model's presentation fillers explicitly. *)
 
@@ -358,7 +357,7 @@ Definition right_choice
 (** 选择完全相同的原柱群。 *)
 
 Definition GZ
-  : Group CZ
+  : Group
   := TwoSphereCylinderGroup Z b (cocycle_choices fin_first)
       (cocycle_choices fin_first⁺) product_choice left_choice right_choice.
 
@@ -379,7 +378,7 @@ Definition model_mapped
 
 Definition value
   : CZ →r BoolS
-  := cocycle_two_sphere_class_value_resp ∘r
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) ∘r
       two_sphere_class_of_cylinder_resp Z b (cocycle_choices fin_first)
         (cocycle_choices fin_first⁺).
 
@@ -389,13 +388,13 @@ Definition value
 
 Example nonzero_map_squares_compute
   : (value (model_mapped
-       (@magma_mul CZ GZ bool_cocycle_sphere bool_cocycle_sphere)),
-     value (@magma_mul CZ GZ (model_mapped bool_cocycle_sphere)
+       (@magma_mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
+     value (@magma_mul _ (hasMagma GZ) (model_mapped bool_cocycle_sphere)
        (model_mapped bool_cocycle_sphere)),
-     value (model_mapped (@group_inv CZ GZ bool_cocycle_sphere)),
-     value (@group_inv CZ GZ (model_mapped bool_cocycle_sphere)),
-     value (model_mapped (@monoid_unit CZ GZ)),
-     value (@monoid_unit CZ GZ)) = (false, false, true, true, false, false).
+     value (model_mapped (@group_inv _ (hasGroup GZ) bool_cocycle_sphere)),
+     value (@group_inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere)),
+     value (model_mapped (@monoid_unit _ (hasMonoid GZ))),
+     value (@monoid_unit _ (hasMonoid GZ))) = (false, false, true, true, false, false).
 Proof. vm_compute. reflexivity. Defined.
 
 (** The mapped product square is a real cocycle cylinder. *)
@@ -435,7 +434,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际非零像仍不能通过柱等于群单位。 *)
 
 Definition mapped_nonzero_not_unit
-  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @monoid_unit CZ GZ).
+  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @monoid_unit _ (hasMonoid GZ)).
 Proof.
   intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
   change (true = false) in H. discriminate H.
@@ -445,7 +444,7 @@ Defined.
 
 (** 启用完整 Kan 仍不注册群或原始等价。 *)
 
-Fail Definition full_Kan_no_group : Group CZ := ltac:(typeclasses eauto).
+Fail Definition full_Kan_no_group : HasMagma CZ := ltac:(typeclasses eauto).
 Fail Definition full_Kan_no_raw_equivalence
   : Equivalence (TwoSphereCylinderHomotopy Z b)
   := ltac:(typeclasses eauto).

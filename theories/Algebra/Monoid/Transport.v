@@ -27,8 +27,7 @@ Local Open Scope monoid_scope.
     仍然独立。 *)
 
 Section Transport.
-Universe a r b s.
-Context {A : SetC@{a r}} {B : SetC@{b s}}.
+Context (A : Monoid) {B : SetC}.
 Context (f : B →r A) (g : A →r B).
 
 (** Retain the immediate semigroup parent, with unit explicitly computed
@@ -36,58 +35,50 @@ Context (f : B →r A) (g : A →r B).
 
 (** 保留直接半群父结构，单位元由给定来源幺半群显式计算。 *)
 
-Program Definition HasMonoidTransport (HA : Monoid A)
-    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
-  : HasMonoid (SemigroupTransport f g HA Hfg)
+Program Definition HasMonoidTransport (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp)
+  : HasMonoid (SemigroupTransport A f g Hfg)
   :=
-  {|monoid_chosen_unit := g (@monoid_unit A HA)
+  {|monoid_unit := g (@monoid_unit _ (hasMonoid A))
   ; isMonoid :=
-      {|monoid_unit_left := _
-      ; monoid_unit_right := _
+      {|monoid_unit_l := _
+      ; monoid_unit_r := _
       |}
   |}.
 Next Obligation.
-  change (g (@magma_mul A HA (f (g (@monoid_unit A HA))) (f x)) ≈S x).
+  change (g (@magma_mul _ (hasMagma A) (f (g (@monoid_unit _ (hasMonoid A)))) (f x)) ≈S x).
   transitivity (g (f x)); [apply (@func_proper _ _ g) | apply Hgf].
-  transitivity (@magma_mul A HA (@monoid_unit A HA) (f x)).
-  - apply (@magma_mul_proper A HA); [apply Hfg | reflexivity].
-  - exact (@monoid_unit_l A HA (f x)).
+  transitivity (@magma_mul _ (hasMagma A) (@monoid_unit _ (hasMonoid A)) (f x)).
+  - apply (@magma_mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
+  - exact (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid A)) (f x)).
 Defined.
 Next Obligation.
-  change (g (@magma_mul A HA (f x) (f (g (@monoid_unit A HA)))) ≈S x).
+  change (g (@magma_mul _ (hasMagma A) (f x) (f (g (@monoid_unit _ (hasMonoid A))))) ≈S x).
   transitivity (g (f x)); [apply (@func_proper _ _ g) | apply Hgf].
-  transitivity (@magma_mul A HA (f x) (@monoid_unit A HA)).
-  - apply (@magma_mul_proper A HA); [reflexivity | apply Hfg].
-  - exact (@monoid_unit_r A HA (f x)).
+  transitivity (@magma_mul _ (hasMagma A) (f x) (@monoid_unit _ (hasMonoid A))).
+  - apply (@magma_mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
+  - exact (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid A)) (f x)).
 Defined.
 
-(** Recover the existing transported-monoid presentation from the same
-    transported parent and its chosen unit extension. Explicit local universe
-    positions and bounds retain the original fifteen-argument public API. *)
+(** Pack the transported semigroup and its chosen unit extension. *)
 
-(** 从同一运输父结构及其选定单位扩充恢复现有运输幺半群呈现。显式的局部
-    宇宙位置及约束保留原有十五参数公开 API。 *)
+(** 将运输半群及其选定单位扩充打包。 *)
 
-Definition MonoidTransport@{t0 t1 t2 t3 t4 t5 t6 t7 |
-      r < t4, s < t0, Set <= t2, Set <= t6,
-      a <= t5, a <= t6, a <= t7, r <= t6, r <= t7,
-      b <= t1, b <= t2, b <= t3, s <= t2, s <= t3,
-      t0 <= t1, t4 <= t5}
-    (HA : Monoid@{a r t7} A)
-    (Hfg : (f ∘r g) ≈f id_resp@{t7 a r})
-    (Hgf : (g ∘r f) ≈f id_resp@{t3 b s})
-  : Monoid@{b s t3} B
-  := MonoidFromExtension (SemigroupTransport f g HA Hfg)
-      (HasMonoidTransport@{t0 t1 t2 t3 t4 t5 t6 t7} HA Hfg Hgf).
+Definition MonoidTransport
+    (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp)
+  : Monoid
+  := MonoidFromExtension (SemigroupTransport A f g Hfg)
+      (HasMonoidTransport Hfg Hgf).
 
 (** The forward map preserves this same selected unit. *)
 
 (** 正向映射保持这个同一选定单位元。 *)
 
-Lemma monoid_transport_map_unit (HA : Monoid A)
-    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
-  : f (@monoid_unit B (MonoidTransport HA Hfg Hgf)) ≈S
-      @monoid_unit A HA.
-Proof. exact (Hfg (@monoid_unit A HA)). Defined.
+Lemma monoid_transport_map_unit (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp)
+  : f (@monoid_unit _ (hasMonoid (MonoidTransport Hfg Hgf))) ≈S
+      @monoid_unit _ (hasMonoid A).
+Proof. exact (Hfg (@monoid_unit _ (hasMonoid A))). Defined.
 
 End Transport.

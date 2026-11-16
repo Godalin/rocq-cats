@@ -210,7 +210,6 @@ Fail Definition no_other_horn_selected
 
     只使用三维缺第二面的填充；显式传入选定模型，不通过导入成为实例。 *)
 
-Local Existing Instance BoolS_Monoid.
 
 Definition coefficient_tetrahedron
   := (CocycleTwoSphereHomotopy bool_cocycle_sphere bool_cocycle_sphere eq_refl).1.
@@ -233,13 +232,13 @@ Definition coefficient_cell
   := coefficient_attachment.1 3 (simplex_generic 3).
 
 Example actual_cocycle_filler_faces_compute
-  : (two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
        (d[BoolCocycleModel; 2; fin_first] coefficient_cell),
-     two_cocycle_triangle_value_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
        (d[BoolCocycleModel; 2; fin_first⁺] coefficient_cell),
-     two_cocycle_triangle_value_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
        (d[BoolCocycleModel; 2; fin_first⁺⁺] coefficient_cell),
-     two_cocycle_triangle_value_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
        (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] coefficient_cell)) =
       (false, false, true, true).
 Proof. vm_compute. reflexivity. Defined.

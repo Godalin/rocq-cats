@@ -30,159 +30,175 @@ Lax monoidal 接口现已将底层函子及结构打包在同一个类中，只�
 `Fct` 的强制转换。全库调查后的首项后续工作现已添加打包的笛卡尔函子及
 笛卡尔闭函子。已有固定数据保持性接口继续与打包接口共存，服务于一般定理。
 
-## Fixed-parent monoid extensions: architecture transition
+## Pre-stable refactoring policy
 
-## 固定父结构的幺半群扩充：架构过渡
+## 稳定版前的重构政策
 
-[Issue #42](https://github.com/Godalin/rocq-cats/issues/42) is the normative
-architecture issue; [issue #15](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6905019620)
-records this algebra-specific implementation. The user authorized incremental
-implementation and serial integration on 2026-11-16, without requiring a
-broadcast for now. The first bounded step starts at `3a1991a` on
-`hierarchy-monoid-extensions-42`; it is separate from the naming-only #38 work.
+[Issue #42](https://github.com/Godalin/rocq-cats/issues/42) is the sole
+repository-wide structure architecture issue. Before a stable release, prefer
+clean mathematical interfaces over historical source compatibility. Migrate
+actual clients, proofs, models, tests and bilingual documentation together.
+Remove obsolete compatibility aliases, transitional classes and wrappers;
+do not preserve constructor shapes, implicit argument forms or universe
+argument positions solely because previous releases used them. Useful
+mathematical views remain justified by their actual clients, rather than by
+compatibility. The [README](../README.md) states the public policy and
+[AGENTS.md](../AGENTS.md) gives the development rules.
 
-[议题 #42](https://github.com/Godalin/rocq-cats/issues/42) 是规范架构的唯一总议题；
-[议题 #15](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6905019620)
-记录本片具体代数实现。用户于 2026-11-16 授权逐步实施、串行集成，暂不要求
-广播。首片在 `hierarchy-monoid-extensions-42` 从 `3a1991a` 开始，与仅负责
-命名的 #38 工作分开。
+[议题 #42](https://github.com/Godalin/rocq-cats/issues/42) 是全库结构架构的唯一
+总议题。稳定版前优先选择清晰的数学接口，不以历史源码兼容为约束。同步迁移
+实际客户端、证明、模型、测试与双语文档，移除过时的兼容别名、过渡类及包装；
+不因旧版本用过某种构造器、隐式参数形式或宇宙参数位置就继续保留。有实际
+客户端的数学视图仍有其价值，不能只因它最初来自包装就机械删除。
+[README](../README.md) 说明公开政策，[AGENTS.md](../AGENTS.md) 给出开发规则。
 
-The architecture distinguishes properties of specified candidate data (`Is*`),
-chosen extensions of exact parents (`Has*`), and first-class complete objects
-(`Record`). A property-only extension need not have another choice wrapper.
-Meaningful multiple parent views are permitted when shared ancestors are stored
-once and the converging paths are definitionally coherent. Fixed-ancestor
-fibers are introduced only for actual mathematical clients. Existing complete
-`Class` interfaces below describe earlier migration checkpoints; they are not
-the final representation mandated by #42. The adjunction interface retains its
-two specified functors as parameters.
+This policy relaxes backward compatibility, not mathematical correctness.
+Preserve specified setoid equality, Type-valued computational witnesses,
+coherent inheritance, intended independent universe bounds, transparency and
+absence of unintended axioms. Universe *positions* may change; needed size
+independence must still be verified. Keep bounded changes and serial
+integration instead of attempting an all-library rewrite in one batch.
 
-该架构区分指定候选数据的性质（`Is*`）、恰好指定父结构上的选定扩充（`Has*`）
-及作为数学对象的完整包（`Record`）。仅增添性质的扩充无须额外选择包装。
-有数学意义的多父视图允许共存，但共享祖先只保存一次，汇合路径须定义相等。
-固定祖先纤维仅按实际数学客户端需要引入。下文已有完整 `Class` 接口属于先前
-迁移检查点，并非 #42 规定的最终表示。伴随接口保留两个指定函子作为参数。
+该政策放宽向后兼容要求，不放宽数学正确性。继续验证指定广集相等、Type 值
+计算见证、相干继承、所需的独立宇宙上界、透明性及没有意外公理。宇宙参数的
+位置可以改变，数学所需的大小独立性仍须验证。继续采用有界修改与串行集成，
+不把全库重写混为一个批次。
 
-In [the monoid core](../theories/Algebra/Monoid/Core.v), `IsMonoid SG e`
-asserts the two unit laws for exactly the selected semigroup `SG` and candidate
-`e`. `HasMonoid SG` stores `monoid_chosen_unit` and its `isMonoid` evidence.
-The existing parameterized `Monoid M` now stores `MonoidSG` and one
-`hasMonoid` extension indexed by that parent. `MonoidFromExtension` transparently
-recovers this existing view. The ordinary `monoid_unit`, `monoid_unit_l` and
-`monoid_unit_r` operations read its stored evidence explicitly; they do not ask
-instance search to select another extension on the same parent. The laws are
-fields only in `IsMonoid`, and the unit is stored only in `HasMonoid`.
+## Complete algebra hierarchy: current migration
 
-[幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`IsMonoid SG e` 表示恰好
-选定半群 `SG` 上候选 `e` 的双侧单位律。`HasMonoid SG` 保存
-`monoid_chosen_unit` 及其 `isMonoid` 见证。现有具参 `Monoid M` 改为保存
-`MonoidSG` 及以该父结构索引的一份 `hasMonoid` 扩充，`MonoidFromExtension`
-透明恢复此现有视图。通常的 `monoid_unit`、`monoid_unit_l`、`monoid_unit_r`
-显式读取保存的见证，不让实例搜索在同一父结构上另选扩充。定律仅在 `IsMonoid`
-中作为字段，单位元仅在 `HasMonoid` 中保存。
+## 完整代数层级：当前迁移
 
-`monoid_units_equiv` compares two candidate units by specified setoid equality;
-`monoid_extension_inverse_unique` needs only the fixed-parent extension. The
-existing inverse theorem delegates to it. The
-[boolean](../theories/Instance/Bool/Group.v),
-[endomorphism](../theories/Algebra/Monoid/Category.v) and
-[transport](../theories/Algebra/Monoid/Transport.v) constructors provide actual
-chosen-extension clients, retaining their original computations. The two
-existing sphere-monoid constructors in
-[Cocycle.SphereGroup](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v)
-and [Homotopy.SphereGroup](../theories/Instance/Set/Simplicial/Homotopy/SphereGroup.v)
-only regroup their original unit and law fields inside `hasMonoid`; their
-mathematical proofs are unchanged. Direct monoid record constructors now supply
-`hasMonoid` or use `MonoidFromExtension`; this is a source-breaking constructor
-change, while ordinary operation/law signatures are retained. The
-[interface regression](../tests/MonoidExtensions.v) checks two extensions of one
-parent, distinct native boolean units under Type-valued setoid equality,
-explicit stored selection, negative unchosen-instance search, transparent
-parent/unit projections, both strict carrier/equality size orders and a
-strictly larger law universe. Explicit `Monoid@{u p l}` arguments keep their
-original carrier/equality/law order; the refactor does not rely on a newly
-inferred order.
+The concrete algebra work is recorded in
+[issue #15](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6906208038).
+The current local batch starts at `aa66f9a`, following accepted monoid
+prerequisite `b9b357b`, on `hierarchy-packed-algebra-42`. The user expanded its
+scope from fixed-parent group extensions to the whole existing vertical chain
+`Magma → Semigroup → Monoid → Group`, with its actual clients. This local
+batch has passed source, regression and installation validation;
+it is not an accepted integration result. The user requested review before a
+further integration submission.
 
-`monoid_units_equiv` 用指定广集相等比较两个候选单位元；
-`monoid_extension_inverse_unique` 仅需固定父结构上的扩充，已有逆唯一性定理
-委托给它。[布尔](../theories/Instance/Bool/Group.v)、
-[自态射](../theories/Algebra/Monoid/Category.v) 及
-[运输](../theories/Algebra/Monoid/Transport.v) 构造作为实际选定扩充客户端，
-保留原计算。已有
-[Cocycle.SphereGroup](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v)
-及 [Homotopy.SphereGroup](../theories/Instance/Set/Simplicial/Homotopy/SphereGroup.v)
-中的两个球面幺半群构造器仅把原单位元与定律字段重组进 `hasMonoid`，数学
-证明保持。直接记录构造器现须提供 `hasMonoid` 或使用 `MonoidFromExtension`；
-这属于构造器源码 breaking，普通运算／定律签名保留。
-[接口回归](../tests/MonoidExtensions.v) 检查同一父结构的两份扩充、
-Type 值广集相等下原生不同的布尔单位元、显式保存的选择、未选定实例负检查、
-透明父结构／单位元投影、两种严格的载体／相等大小次序及更大的定律宇宙。
-显式 `Monoid@{u p l}` 参数保留原有载体／相等／定律次序，不依赖重构后
-重新推断的次序。
+具体代数工作记录在
+[议题 #15](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6906208038)。
+当前本地批次在已接收幺半群前置 `b9b357b` 之后，从 `aa66f9a` 开始，分支为
+`hierarchy-packed-algebra-42`。用户将范围从固定父结构的群扩充扩大至已有完整
+纵链 `Magma → Semigroup → Monoid → Group` 及实际客户端。本片已通过本地
+源码、回归与安装验证，
+不是已接收结果；用户要求进一步提交集成前先审阅。
 
-The compatibility correction preserves the old explicit universe order of
-`monoid_unit_l/r` (carrier, equality, law), `monoid_inverse_unique` (law,
-carrier, equality), and all fifteen positions and constraints of
-`MonoidTransport`, including its returned monoid and recovery-map bound.
-The three unit interfaces retain their named implicit argument `Monoid`.
-The unit and law projections are now transparent wrappers over the stored
-extension. Independent old-call regressions and complete signature comparisons
-also cover `Monoid`, `MonoidSG`, `monoid_unit`, `MonoidCat`, `EndMonoid` and
-`monoid_transport_map_unit`; these additional signatures remain unchanged.
-The original `128774b` checkpoint missed four explicit universe API changes
-and the named arguments; it is preserved, with the correction appended.
+The four complete interfaces are unparameterized `Record` objects. Each stores
+its immediate parent once: `MagmaS`, `SemigroupM`, `MonoidSG`, `GroupM`.
+There is one coercion chain to `SetC` and its carrier, without a bypass to a
+weaker ancestor. Fixed-parent classes store only the added operations and
+laws: `HasMagma` selects respectful multiplication; `IsSemigroup` states
+associativity of the selected magma; `HasMonoid` selects a unit with
+`IsMonoid` laws; `HasGroup` selects an inverse with `IsGroup` laws. A separate
+`HasSemigroup` would add no choice and is omitted.
 
-兼容修订保留 `monoid_unit_l/r` 原显式宇宙次序（载体、相等、定律）、
-`monoid_inverse_unique` 原次序（定律、载体、相等），以及 `MonoidTransport`
-全部十五个位置与约束，包含返回幺半群和恢复映射的辅助界。三个单位接口保留
-原命名隐式参数 `Monoid`；单位元与定律投影现在是读取保存扩充的透明包装。
-独立旧调用回归及完整签名比较也覆盖 `Monoid`、`MonoidSG`、`monoid_unit`、
-`MonoidCat`、`EndMonoid` 和 `monoid_transport_map_unit`，这些附加签名保持。
-原 `128774b` 检查点漏查四项显式宇宙 API 变化及命名参数；该来源原样保留，
-兼容修订以追加提交处理。
+For native carrier/equality levels `u` and `p` and law bound `l`, the complete
+records live in `Type@{max(u+1,p+1,l)}`. Packing adds no strict inequalities
+`u < l` or `p < l`; multiplication's `Proper` evidence still requires the
+ordinary bounds `u <= l` and `p <= l`.
 
-Validation on the `3a1991a`-based source tree passed the project-switch
-`dune build -j2 @all @runtest @install`, the new extension regression, original
-algebra-transport checks, original strict cocycle-model checks and eight
-sphere-related targets. Temporary checks passed 30 core/model signatures and
-two sphere-constructor signatures, all with closed assumption reports. The
-explicit universe-order regression retains the original distinct law bound.
-Document targets and whitespace checks passed; the exact abbreviation guide
-is byte-for-byte unchanged. Rocq 9.3.0, Stdlib 9.2.0, OCaml 5.3.0 and Dune
-3.23.1; no exports or shared-environment changes. Serial integration acceptance
-is pending.
+四个完整接口采用无参数 `Record`，每个直接父结构只保存一次，依次为
+`MagmaS`、`SemigroupM`、`MonoidSG`、`GroupM`。到 `SetC` 及其载体只有一条
+继承转换链，不另加绕过直接父结构的祖先转换。固定父结构类只保存新增运算与
+定律：`HasMagma` 选择保相等乘法，`IsSemigroup` 规定选定原群的结合律，
+`HasMonoid` 选择单位元及其 `IsMonoid` 定律，`HasGroup` 选择逆及其
+`IsGroup` 定律。额外的 `HasSemigroup` 不增添选择，因而省略。
 
-基于 `3a1991a` 的源码树使用项目 switch 通过全库／测试／安装、新扩充回归、
-原代数运输检查、原严格 cocycle 模型检查及八个球面相关目标。临时检查的
-30 项核心／模型签名和两个球面构造器签名的假设报告全部闭合；显式宇宙次序
-回归保留原先独立的定律上界。文档目标及空白检查通过，精确缩写指南逐字不变。
-工具链为 Rocq 9.3.0、Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1；无导出或
-共享环境变更，串行集成验收待完成。
+原生载体／相等层级为 `u`、`p`，定律界为 `l` 时，完整记录位于
+`Type@{max(u+1,p+1,l)}`。打包不额外要求 `u < l` 或 `p < l`；乘法的
+`Proper` 见证仍需通常的 `u <= l`、`p <= l` 上界。
 
-The appended compatibility repair also passed the full library/test/install
-build, ten complete old/new public-signature comparisons, six old core calls
-and the strict fifteen-universe transport call. The latter succeeds with the
-old and repaired implementations and fails with the original `128774b`
-implementation. The original 30+2 assumption checks and three competing-choice
-unit/law computations all remain closed. After erasing universe annotations,
-argument-name directives, comments and whitespace, both changed theory modules
-match `128774b` exactly.
+In [the monoid core](../theories/Algebra/Monoid/Core.v), `monoid_unit` is the
+actual `HasMonoid` field; `monoid_unit_l/r` are the actual `IsMonoid` fields.
+There are no additional exported definitions to emulate the old unit APIs.
+The numeral notation explicitly uses the complete monoid's stored evidence.
+Fixed-parent clients use these same fields with their supplied evidence.
+Likewise `magma_mul`, `magma_mul_proper`, `semigroup_assoc`, `group_inv` and
+`group_inv_l/r` are the actual extension/property fields, without `chosen`
+intermediate names or same-name forwarding definitions. Multiplication and
+inverse notation pass the complete object's stored evidence explicitly.
+Respectful maps and derived inverse laws remain genuine constructions; no
+view independently redefines an operation or proves its laws again.
 
-追加兼容修订也通过全库／测试／安装、十项新旧完整公开签名比较、六个旧核心
-调用及严格十五宇宙运输调用。运输调用在旧版与修复版通过，在原 `128774b`
-实现上失败；原 30+2 项假设检查及三项竞争选择的单位元／定律计算全部闭合。
-除去宇宙标注、参数名指令、注释及空白，两份修改后的理论模块与 `128774b`
-完全一致。
+[幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`monoid_unit` 直接是
+`HasMonoid` 字段，`monoid_unit_l/r` 直接是 `IsMonoid` 字段，不另导出定义
+模拟旧单位接口。数字记号显式读取完整幺半群保存的见证；固定父结构客户端
+使用同一批字段并传入给定见证。同样，`magma_mul`、`magma_mul_proper`、`semigroup_assoc`、`group_inv` 及
+`group_inv_l/r` 直接作为扩充／性质字段，不保留带 `chosen` 的中间名称及同名
+转发定义。乘法与逆记号显式传入完整对象保存的见证。保相等映射及导出的逆律
+仍是实际数学构造，所有视图均不重新定义运算或重证定律。
 
-This step does not yet replace the parameterized algebra hierarchy with
-unparameterized complete records, introduce an arbitrary hierarchy diamond,
-or build categories of complete structures. Those are subsequent separately
-validated slices. Module paths, the approved abbreviation table, chosen
-setoid equality and functor/adjunction endpoints remain unchanged.
+The [boolean](../theories/Instance/Bool/Group.v), endomorphism
+([magma](../theories/Algebra/Magma/Category.v),
+[semigroup](../theories/Algebra/Semigroup/Category.v),
+[monoid](../theories/Algebra/Monoid/Category.v),
+[group](../theories/Algebra/Group/Category.v)),
+[transport](../theories/Algebra/Group/Transport.v), and sphere clients are
+migrated together in this local batch. Transport takes its complete source
+before the two maps; each stronger transport reuses the exact preceding parent. The batch
+adds neither categories of complete algebraic objects nor an unrelated
+multiple-parent diamond, and does not expand the exact abbreviation map.
+Sphere regressions fix both strict input carrier/equality orders and verify
+by conversion that the complete object stores the specified class setoid.
+The derived sphere carrier contains boundary data, and its generated equality
+contains witnesses; their bounds need not equal those of the input simplicial
+setoid. The commutativity comparison now uses the coefficient law directly,
+through a reusable product lemma, rather than selecting a complete monoid
+just to prove a law. Cylinder comparisons state the actual product, constant
+unit and selected inverse directly, with only the choices needed by each
+operation; the packed operations still reduce to these same data.
 
-本片尚未把具参代数层级替换为无参数完整记录，也不引入任意层级菱形或构造
-完整结构的范畴；这些留给后续独立验证的批次。模块路径、已批准缩写表、选定
-广集相等及函子／伴随端点保持。
+On Rocq 9.3.0 / Stdlib 9.2.0, the local batch passed
+`dune build -j2 @all @runtest @install`. Regressions cover distinct choices on
+the same parent, inherited law tokens, strict native universe orders, the
+transparent parent chain, actual transport and sphere computations, and
+explicit model enabling. Temporary assumption audits checked 104 algebra and
+58 model declarations, all closed; a separate temporary check rejected all
+nine retired transitional names. No HTML/PDF export was performed.
+
+[布尔](../theories/Instance/Bool/Group.v)、自态射
+（[原群](../theories/Algebra/Magma/Category.v)、
+[半群](../theories/Algebra/Semigroup/Category.v)、
+[幺半群](../theories/Algebra/Monoid/Category.v)、
+[群](../theories/Algebra/Group/Category.v)）、
+[运输](../theories/Algebra/Group/Transport.v)及球面客户端在本批同步迁移。
+运输先接受完整来源结构，再接受两个映射；更强层的运输复用恰好前一层的父
+结构。本片不增加完整代数对象的范畴或无关多父菱形，不扩充精确缩写表。
+球面回归固定输入载体／相等的两种严格次序，以定义转换确认完整对象保存指定
+类广集。派生球面载体含边界数据，生成相等也含见证，其大小界不必等于输入
+单纯广集的界。交换性比较现在通过可复用乘积引理直接使用系数定律，不再为
+证明一条定律而选取完整幺半群。柱比较直接陈述实际乘法、常值单位及选定逆，
+每条只需相应运算所用的选择；打包运算仍归约至同一批数据。
+
+本地批次已在 Rocq 9.3.0／Stdlib 9.2.0 下通过
+`dune build -j2 @all @runtest @install`。回归覆盖同父结构上的竞争选择、继承
+定律的计算标记、原生宇宙的严格次序、透明父链、实际运输与球面计算及模型的
+显式启用。临时假设审计覆盖 104 项代数及 58 项模型声明，全部闭合；另以临时
+负检查确认九个过渡名称均已移除。未执行 HTML／PDF 导出。
+
+### Historical first-slice evidence
+
+### 首片历史证据
+
+The earlier fixed-parent monoid slice was accepted as `b9b357b` from frozen
+`4a2cf72`, after appended compatibility corrections to original `128774b`.
+Its full library/tests/install, 35 closed probes, ten complete old/new API
+comparisons and seven old calls passed. The
+[independent acceptance record](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6906061569)
+remains valid for that precise historical result. Those old signature and
+universe-position comparisons do not impose compatibility obligations on the
+current complete-object migration. Frozen sources and their refs remain
+preserved.
+
+此前固定父结构的幺半群首片由冻结来源 `4a2cf72` 接收为 `b9b357b`，来源中
+保留对原 `128774b` 的追加兼容修正。其全库／测试／安装、35 项闭合探针、
+十项完整新旧 API 比较及七个旧调用通过。
+[独立验收记录](https://github.com/Godalin/rocq-cats/issues/15#issuecomment-6906061569)
+仍是该精确历史结果的有效证据；当时的签名及宇宙位置比较不对当前完整对象
+迁移施加兼容义务。冻结来源及其引用继续保全。
 
 ## Complete category bundles: first slice
 
@@ -608,6 +624,14 @@ PDF 仍由集成批次统一导出。
 
 ## 计算模型接口后续工作
 
+**Historical checkpoint:** the parameterized algebra interfaces and parent
+instance registrations described in this section belong to the named earlier
+baseline. For the current complete-record migration, use the
+[current algebra section](#complete-algebra-hierarchy-current-migration).
+
+**历史检查点：** 本节具参代数接口及父实例注册属于下方注明的旧基线。
+当前完整记录迁移见[当前代数章节](#complete-algebra-hierarchy-current-migration)。
+
 The continuation on `monoidal-cat-view`, following `3a47f38`, applies the
 same design to the algebraic foundations of the computational models.
 [Monoid M](../theories/Algebra/Monoid/Core.v) originally had the computed
@@ -768,7 +792,7 @@ candidates require separate interface decisions and clients.
 | [Adj F G](../theories/Cat/Adjunction.v) | Relates two specified functors; keep left/right views explicit / 关联两个指定函子，左右视图应显式访问 |
 | [HasCartLift P](../theories/Cat/Fibration.v), [HasFreeObj U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
 | [HasDisplay](../theories/DTT/Display/Core.v), [HasContextExtension and CwF](../theories/DTT/CwF.v), [HasContextRepresentation](../theories/DTT/Context/Representation.v) | Describe interchangeable presentations over a fixed presheaf/family functor; CwF already supplies the complete bundled object / 描述固定预层／族函子上的可互换呈现，完整打包对象已有 CwF |
-| [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Selected algebraic structure on a fixed setoid; `GroupM :>` and its instance registration share one monoid; [SetMonoidObj](../theories/Instance/Set/Monoid.v) already supplies a bundled carrier presentation / 固定广集上的选定代数结构，已有继承及带载体的幺半群对象呈现 |
+| [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Historically fixed-setoid classes; the current local migration replaces them with complete records sharing one immediate parent / 历史版本为固定广集类，当前本地迁移改为共享一个直接父结构的完整记录 |
 | [MonoidalCat](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC.v), [ETCS](../theories/Topos/ETCS.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
 | `HasTerminal`, products, coproducts, exponentials, (co)equalizers, pullbacks/pushouts, [HasLimit and HasLimitsOfShape](../theories/Cat/Limit/Core.v), [colimit interfaces](../theories/Cat/Colimit/Core.v) | Choose constructions for fixed categories/diagrams; their derived functors remain derived / 为固定范畴／图式选择构造，其诱导函子仍是派生构造 |
 | [HasFiniteCover](../theories/Set/Finite.v), [finite generators/covers](../theories/Cat/Shape/Finite.v), [horn fillers](../theories/Instance/Set/Simplicial/Horn.v), [two-horn fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v), [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | Additional evidence or choices for fixed sets/categories/simplicial objects / 固定集合、范畴或单纯对象上的额外证据或选择 |
@@ -1158,6 +1182,14 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 
 ## 首批层级规范化
 
+**Historical checkpoint:** the parameterized algebra interfaces and parent
+instance registrations described in this section belong to the named earlier
+baseline. For the current complete-record migration, use the
+[current algebra section](#complete-algebra-hierarchy-current-migration).
+
+**历史检查点：** 本节具参代数接口及父实例注册属于下方注明的旧基线。
+当前完整记录迁移见[当前代数章节](#complete-algebra-hierarchy-current-migration)。
+
 The user-approved serial slice starts from `1d29636` on `monoidal-cat-view`.
 [AGENTS.md](../AGENTS.md#structural-hierarchies) now records the hierarchy
 rules: mathematical structure names, retained `Has*` construction interfaces,
@@ -1286,6 +1318,14 @@ session. Magma/Semigroup extraction remains a separate subsequent task.
 ## Algebra hierarchy slice
 
 ## 代数层级批次
+
+**Historical checkpoint:** the parameterized algebra interfaces and parent
+instance registrations described in this section belong to the named earlier
+baseline. For the current complete-record migration, use the
+[current algebra section](#complete-algebra-hierarchy-current-migration).
+
+**历史检查点：** 本节具参代数接口及父实例注册属于下方注明的旧基线。
+当前完整记录迁移见[当前代数章节](#complete-algebra-hierarchy-current-migration)。
 
 The user-approved serial continuation starts from `c3fa956` on
 `monoidal-cat-view`. [Magma](../theories/Algebra/Magma/Core.v) now stores

@@ -67,7 +67,7 @@ Z^2(M)_m \arrow[d,"{\varphi^*}"] \\
     标签则使用 [M] 的指定相等。因此可以代换相等端点，而不识别任意相等见证。 *)
 
 Section OrdinalRestriction.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** Equal finite endpoints give equal labels. Parallel ordinal arrows are
     compared by their already specified thin hom equality. *)
@@ -94,7 +94,7 @@ Defined.
 Program Definition OrdinalCocycleF
   : Fct (Δ^op) SetCat
   :=
-  {|F0 n := @TwoCocycleS [Ord n] M HM
+  {|F0 n := @TwoCocycleS [Ord n] M
   ; F1 n m θ := two_cocycle_pullback_resp θ
   |}.
 Next Obligation.
@@ -113,7 +113,7 @@ End OrdinalRestriction.
 
 (** 实际的单纯集合，复用已有提升函子，独立提升原生载体及相等见证。 *)
 
-Definition TwoCocycleSimplicial@{u p +} (M : SetC) `{HM : !Monoid M}
+Definition TwoCocycleSimplicial@{u p +} (M : Monoid)
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   := LiftF ∘F OrdinalCocycleF (M := M).
 
@@ -124,7 +124,7 @@ Notation "'Z²(' M ')'" := (TwoCocycleSimplicial M) : ob_scope.
 (** 全部标签为单位的 cocycle 给出每一维的一个指定单形。 *)
 
 Definition two_cocycle_simplex_unit@{u p +}
-    {M : SetC} `{HM : !Monoid M} (n : nat)
+    {M : Monoid} (n : nat)
   : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
   {|lower := UnitTwoCocycle
@@ -135,7 +135,7 @@ Definition two_cocycle_simplex_unit@{u p +}
 (** 限制通过将形状算子作用于两条箭头来计算。 *)
 
 Lemma two_cocycle_simplex_restrict@{u p +}
-    {M : SetC} `{HM : !Monoid M} {m n : nat}
+    {M : Monoid} {m n : nat}
     (θ : (@Hom Δ) m n)
     (c : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
     {x y z : Ordinal m}
@@ -149,7 +149,7 @@ Proof. reflexivity. Defined.
 (** 每个限制都保持指定的单位单形。 *)
 
 Lemma two_cocycle_simplex_unit_restrict@{u p +}
-    {M : SetC} `{HM : !Monoid M} {m n : nat}
+    {M : Monoid} {m n : nat}
     (θ : (@Hom Δ) m n)
   : Z²(M)[θ]Δ (two_cocycle_simplex_unit n) ≈S
       (two_cocycle_simplex_unit m :

@@ -199,7 +199,7 @@ Defined.
 (** 实际 Kan 延拓保持旧二维单形上的真系数，使用完整给定映射而非单位值。 *)
 
 Example actual_nonzero_old_value_computes
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       ((actual_kan_extension fin_first fin_first).1 2
         (TriangleHornStageInclusionN fin_first fin_first 2
           (cocycle_old_point fin_first))) = true.

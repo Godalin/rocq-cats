@@ -23,7 +23,7 @@ Local Open Scope monoid_scope.
     充分条件，不另定义函子相等。 *)
 
 Program Definition monoid_diagram_iso@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     {J : Cat} (F G : Fct J B(M))
     (H : ∀ i j (f : (@Hom J) i j), fmap F f ≈S fmap G f)
   : F ≅N G
@@ -31,11 +31,13 @@ Program Definition monoid_diagram_iso@{u p +}
       |}; _).
 Next Obligation.
   change (1 ⋅ fmap F f ≈S fmap G f ⋅ 1).
-  rewrite monoid_unit_l, monoid_unit_r. apply H.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+  apply H.
 Defined.
 Next Obligation.
   intros j. exists 1. split; change (1 ⋅ 1 ≈S (1 : M));
-    apply monoid_unit_l.
+    apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
 Defined.
 
 (** Interpret every ordered interval as its product in the arrow chain.
@@ -44,7 +46,7 @@ Defined.
 (** 将每个有序区间解释为箭头链中的段积。对象映射为常映射，不需要比较对象。 *)
 
 Program Definition MonoidChainF@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     {n : nat} (xs : M ^S n)
   : Fct [Ord n] B(M)
   :=
@@ -52,9 +54,9 @@ Program Definition MonoidChainF@{u p +}
   ; F1 i j f := xs⟦i, j⟧⋅
   |}.
 Next Obligation. intros f g H. reflexivity. Defined.
-Next Obligation. apply monoid_segment_id. Defined.
+Next Obligation. exact (@monoid_segment_id M _ xs _). Defined.
 Next Obligation.
-  apply monoid_segment_comp; apply nat_le_to_le; assumption.
+  apply (@monoid_segment_comp M); apply nat_le_to_le; assumption.
 Defined.
 
 (** Equal chains give naturally isomorphic diagrams. *)
@@ -62,12 +64,12 @@ Defined.
 (** 相等的箭头链给出自然同构的图式。 *)
 
 Global Instance MonoidChainF_proper@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     {n : nat}
-  : Proper (carrier_equiv (M ^S n) ==> NatIso) (@MonoidChainF M HM n).
+  : Proper (carrier_equiv (M ^S n) ==> NatIso) (@MonoidChainF M n).
 Proof.
   intros xs ys H. apply monoid_diagram_iso. intros i j f.
-  apply monoid_segment_proper; [exact H | reflexivity | reflexivity].
+  apply (@monoid_segment_proper M); [exact H | reflexivity | reflexivity].
 Defined.
 
 (** Chain substitution agrees with precomposition of the associated
@@ -76,12 +78,12 @@ Defined.
 (** 箭头链替换与对应图式的预复合相容；比较使用段积的细分定律。 *)
 
 Definition monoid_chain_sub_iso@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     {m n : nat} (f : Fct [Ord m] [Ord n]) (xs : M ^S n)
   : MonoidChainF xs[f]M ≅N (MonoidChainF xs ∘F f).
 Proof.
   apply monoid_diagram_iso. intros i j a.
-  apply monoid_segment_sub.
+  apply (@monoid_segment_sub M).
   - exact (ordinal_functor_monotone f).
   - exact (nat_le_to_le a).
 Defined.

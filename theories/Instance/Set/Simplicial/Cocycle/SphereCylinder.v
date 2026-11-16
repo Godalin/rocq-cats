@@ -71,7 +71,7 @@ c(x) \arrow[r,equal,"{w_2}"] & c(D_{001})
 
 Section CocycleCylinderComparison.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -119,8 +119,10 @@ Proof.
   change ((1 : M) ⋅ v b ≈S v y.1 ⋅ 1) in E0.
   change ((1 : M) ⋅ v b ≈S 1 ⋅ v a) in E1.
   change (v x.1 ⋅ 1 ≈S 1 ⋅ v a) in E2.
-  rewrite monoid_unit_l, monoid_unit_r in E0, E2.
-  rewrite !monoid_unit_l in E1.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))) in E0,
+    E2.
+  rewrite !(@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))) in E1.
   change (v x.1 ≈S v y.1).
   transitivity (v a); [exact E2 |].
   transitivity (v b); [symmetry; exact E1 | exact E0].

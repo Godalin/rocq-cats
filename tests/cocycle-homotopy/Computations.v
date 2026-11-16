@@ -18,18 +18,17 @@ Local Open Scope nat_scope.
     保留非平凡链见证时对映射求值。 *)
 
 Fail Definition unchosen_coefficient_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
 Fail Definition unchosen_class_group
-  : Group BoolCocycleSphereClassS
+  : HasMagma BoolCocycleSphereClassS
   := _.
 
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 
 (** Evaluate the original constant homotopy restricted to a free sphere. *)
 
@@ -37,11 +36,11 @@ Local Existing Instance BoolS_Monoid.
 
 Example restricted_homotopy_computes (a : bool)
     (t : (@Hom Δ) 2 1%nat)
-  : two_cocycle_triangle_value_resp
-      (two_sphere_cylinder_eval BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
+      (two_sphere_cylinder_eval BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         (CocycleHomotopySphereCylinder
           (SimplicialConstantHomotopy (idN : BoolCocycleModel ⇒ BoolCocycleModel))
-          (two_cocycle_simplex_unit 0) (cocycle_two_sphere_resp a)) id t) = a.
+          (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)) id t) = a.
 Proof. reflexivity. Defined.
 
 (** A finite chain retains both a whole homotopy and natural equality,
@@ -50,7 +49,7 @@ Proof. reflexivity. Defined.
 (** 有限链保留整份同伦与自然相等，还包含反向步；不反转单纯区间。 *)
 
 Definition identity_chain
-  : (idN : @CocycleHomotopyMapS BoolS BoolS_Monoid BoolCocycleModel) ≈S idN.
+  : (idN : @CocycleHomotopyMapS BoolS_Monoid BoolCocycleModel) ≈S idN.
 Proof.
   transitivity (idN : BoolCocycleModel ⇒ BoolCocycleModel).
   - exact (cocycle_homotopy_map_step (SimplicialConstantHomotopy idN)).
@@ -62,8 +61,8 @@ Defined.
 (** 求值在该链的任一代表上仍可计算。 *)
 
 Example chain_evaluation_computes (a : bool)
-  : @cocycle_homotopy_evaluation_resp BoolS BoolS_Monoid BoolCocycleModel
-      (two_cocycle_simplex_unit 0) (cocycle_two_sphere_resp a) idN = a.
+  : @cocycle_homotopy_evaluation_resp BoolS_Monoid BoolCocycleModel
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (cocycle_two_sphere_resp (M := BoolS_Monoid) a) idN = a.
 Proof. reflexivity. Defined.
 
 (** Consume the chain through respectfulness, without discarding it or
@@ -74,6 +73,6 @@ Proof. reflexivity. Defined.
 Definition chain_evaluation_equality (a : bool)
   : a = a
   := @func_proper _ _
-      (@cocycle_homotopy_evaluation_resp BoolS BoolS_Monoid BoolCocycleModel
-        (two_cocycle_simplex_unit 0) (cocycle_two_sphere_resp a))
+      (@cocycle_homotopy_evaluation_resp BoolS_Monoid BoolCocycleModel
+        (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (cocycle_two_sphere_resp (M := BoolS_Monoid) a))
       _ _ identity_chain.

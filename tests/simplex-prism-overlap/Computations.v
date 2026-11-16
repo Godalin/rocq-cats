@@ -262,7 +262,6 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 
 Definition constant_sphere_map
   : SimplicialCylinderF (Δ[2]) ⇒ BoolCocycleModel

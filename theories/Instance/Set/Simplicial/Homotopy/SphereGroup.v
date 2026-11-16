@@ -95,10 +95,11 @@ Let Q
 
 Program Definition TwoSphereClassSemigroup
     (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Semigroup Q
+  : Semigroup
   :=
   {|SemigroupM := TwoSphereClassMagma X b H
-  ; semigroup_assoc := two_sphere_kan_mul_assoc X b H
+  ; isSemigroup :=
+      {|semigroup_assoc := two_sphere_kan_mul_assoc X b H|}
   |}.
 
 (** Keep that same semigroup and the actual constant sphere as unit. *)
@@ -107,14 +108,14 @@ Program Definition TwoSphereClassSemigroup
 
 Program Definition TwoSphereClassMonoid
     (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Monoid Q
+  : Monoid
   :=
   {|MonoidSG := TwoSphereClassSemigroup H
   ; hasMonoid :=
-      {|monoid_chosen_unit := two_sphere_base X b
+      {|monoid_unit := two_sphere_base X b
       ; isMonoid :=
-          {|monoid_unit_left := two_sphere_kan_mul_unit_l X b H
-          ; monoid_unit_right := two_sphere_kan_mul_unit_r X b H
+          {|monoid_unit_l := two_sphere_kan_mul_unit_l X b H
+          ; monoid_unit_r := two_sphere_kan_mul_unit_r X b H
           |}
       |}
   |}.
@@ -131,7 +132,7 @@ Lemma two_sphere_inverse_candidates_eq
   : ((@SphereKanLeftInverse X b K x).1 : Q) ≈S
       (@SphereKanRightInverse X b L x).1.
 Proof.
-  exact (@monoid_inverse_unique Q (TwoSphereClassMonoid H) x
+  exact (@monoid_inverse_unique (TwoSphereClassMonoid H) x
     (@SphereKanLeftInverse X b K x).1 (@SphereKanRightInverse X b L x).1
     (two_sphere_kan_mul_inverse_l X b H K x)
     (two_sphere_kan_mul_inverse_r X b H L x)).
@@ -148,11 +149,16 @@ Program Definition TwoSphereClassGroup
     (H : HasHornFillers X 3 fin_first⁺⁺)
     (K : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L : HasHornFillers X 3 fin_first⁺)
-  : Group Q
+  : Group
   :=
   {|GroupM := TwoSphereClassMonoid H
-  ; group_inv x := (@SphereKanLeftInverse X b K x).1
-  ; group_inv_l := two_sphere_kan_mul_inverse_l X b H K
+  ; hasGroup :=
+      {|group_inv x := (@SphereKanLeftInverse X b K x).1
+      ; isGroup :=
+          {|group_inv_l := two_sphere_kan_mul_inverse_l X b H K
+          ; group_inv_r := _
+          |}
+      |}
   |}.
 Next Obligation.
   transitivity (two_sphere_kan_mul X b H x
@@ -173,15 +179,15 @@ Lemma two_sphere_class_group_inverse_choice_eq
     (H H' : HasHornFillers X 3 fin_first⁺⁺)
     (K K' : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L L' : HasHornFillers X 3 fin_first⁺)
-  : @group_inv_resp Q (TwoSphereClassGroup H K L) ≈f
-      @group_inv_resp Q (TwoSphereClassGroup H' K' L').
+  : @group_inv_resp (TwoSphereClassGroup H K L) ≈f
+      @group_inv_resp (TwoSphereClassGroup H' K' L').
 Proof.
-  intros x. refine (@group_inv_unique Q (TwoSphereClassGroup H' K' L') x
-    (@group_inv Q (TwoSphereClassGroup H K L) x) _).
+  intros x. refine (@group_inv_unique (TwoSphereClassGroup H' K' L') x
+    (@group_inv _ (hasGroup (TwoSphereClassGroup H K L)) x) _).
   transitivity (two_sphere_kan_mul X b H
-    (@group_inv Q (TwoSphereClassGroup H K L) x) x).
+    (@group_inv _ (hasGroup (TwoSphereClassGroup H K L)) x) x).
   - exact (two_sphere_kan_composite_choice_eq X b H' H _ x).
-  - exact (@group_inv_l Q (TwoSphereClassGroup H K L) x).
+  - exact (@group_inv_l _ _ (@isGroup _ (hasGroup (TwoSphereClassGroup H K L))) x).
 Defined.
 
 End SphereClassGroup.

@@ -163,9 +163,9 @@ Context (H : HasHornFillers Y 3 fin_first⁺⁺)
 Lemma two_sphere_composite_group_inverse {x y : TwoSphereS Y c}
     (W : TwoSphereComposite Y c y x (two_sphere_base Y c))
   : (y : TwoSphereClassS Y c) ≈S
-      @group_inv _ (TwoSphereClassGroup Y c H K L) x.
+      @group_inv _ (hasGroup (TwoSphereClassGroup Y c H K L)) x.
 Proof.
-  apply (@group_inv_unique _ (TwoSphereClassGroup Y c H K L) x y).
+  apply (@group_inv_unique (TwoSphereClassGroup Y c H K L) x y).
   exact (two_sphere_composite_output_eq Y c
     (TwoSphereKanMulComposite Y c H y x) W).
 Defined.
@@ -202,7 +202,7 @@ Lemma two_sphere_class_map_left_inverse (α : X ⇒ Y) (b : X 0)
     (L : HasHornFillers Y 3 fin_first⁺)
     (x : TwoSphereClassS X b)
   : two_sphere_class_map_resp α b (@SphereKanLeftInverse X b I x).1 ≈S
-      @group_inv _ (TwoSphereClassGroup Y (α 0 b) H K L)
+      @group_inv _ (hasGroup (TwoSphereClassGroup Y (α 0 b) H K L))
         (two_sphere_class_map_resp α b x).
 Proof.
   apply (two_sphere_composite_group_inverse Y (α 0 b) H K L).
@@ -244,7 +244,7 @@ Lemma two_sphere_class_change_base_left_inverse {b c : X 0} (E : b ≈S c)
     (x : TwoSphereClassS X b)
   : two_sphere_class_change_base_resp X E
       (@SphereKanLeftInverse X b I x).1 ≈S
-      @group_inv _ (TwoSphereClassGroup X c H K L)
+      @group_inv _ (hasGroup (TwoSphereClassGroup X c H K L))
         (two_sphere_class_change_base_resp X E x).
 Proof.
   apply (two_sphere_composite_group_inverse X c H K L).

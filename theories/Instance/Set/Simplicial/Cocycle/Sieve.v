@@ -57,7 +57,7 @@ Defined.
     固定序数及保持形状映射相等的标签。两条归一化假设分别覆盖两种重复位置。 *)
 
 Section Reconstruction.
-Context {M : SetC} `{HM : !Monoid M} {n : nat}
+Context {M : Monoid} {n : nat}
     (t : (@Hom Δ) 2 n → M)
     (t_proper : Proper (HomEq ==> carrier_equiv M) t)
     (t_unit : ∀ (f : (@Hom Δ) 1%nat n) (i : Ordinal 1%nat),
@@ -101,13 +101,13 @@ Next Obligation.
   transitivity
     (t (Q ∘F δ[2; fin_first⁺⁺⁺]) ⋅
       t (Q ∘F δ[2; fin_first⁺])).
-  - apply magma_mul_proper; apply t_proper;
+  - apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
       apply (snd (simplex_eq_iff _ _));
       intros [[] | [[] | [[] | []]]]; reflexivity.
   - transitivity (t (Q ∘F δ[2; fin_first]) ⋅
       t (Q ∘F δ[2; fin_first⁺⁺])).
     + apply t_tetrahedron.
-    + apply magma_mul_proper; apply t_proper;
+    + apply (@magma_mul_proper _ (hasMagma M)); apply t_proper;
         apply (snd (simplex_eq_iff _ _));
         intros [[] | [[] | [[] | []]]]; reflexivity.
 Defined.
@@ -143,7 +143,7 @@ End Reconstruction.
 
 Section SieveValues.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M} {n : nat} (R : Sieve Δ n)
+Context {M : Monoid} {n : nat} (R : Sieve Δ n)
     (b : SievePsh R ⇒ (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
 
 (** Evaluate at a member with its explicit factorization witness. *)
@@ -255,7 +255,7 @@ Proof.
     (Z²(M)[σ[1; i]]Δ
       (cocycle_sieve_value f (cocycle_sieve_edge_member f)))).
   - apply cocycle_sieve_triangle_restrict.
-  - transitivity (two_cocycle_triangle_value_resp
+  - transitivity (two_cocycle_triangle_value_resp (M := M)
       (two_cocycle_simplex_unit 2)).
     + apply func_proper. apply two_cocycle_degenerate_one.
     + reflexivity.
@@ -279,12 +279,12 @@ Proof.
   pose (d := ordinal_step (n := 3) (fin_next (fin_first))).
   pose (e := ordinal_step (n := 3) (fin_next (fin_next (fin_first)))).
   transitivity (c⟦a, d⟧₂ ⋅ c⟦d ∘ a, e⟧₂).
-  - apply magma_mul_proper;
+  - apply (@magma_mul_proper _ (hasMagma M));
       (etransitivity; [apply cocycle_sieve_triangle_restrict |]);
       cbn; apply two_cocycle_triangle_proper; exact tt.
   - transitivity (c⟦d, e⟧₂ ⋅ c⟦a, e ∘ d⟧₂).
     + apply two_cocycle_tetrahedron.
-    + apply magma_mul_proper; symmetry;
+    + apply (@magma_mul_proper _ (hasMagma M)); symmetry;
         (etransitivity; [apply cocycle_sieve_triangle_restrict |]);
         cbn; apply two_cocycle_triangle_proper; exact tt.
 Defined.

@@ -27,8 +27,7 @@ Local Open Scope monoid_scope.
     映射保持大小独立的指定相等。群结构须显式选取；导入模块不选择目标代数。 *)
 
 Section Transport.
-Universe a r b s.
-Context {A : SetC@{a r}} {B : SetC@{b s}}.
+Context (A : Group) {B : SetC}.
 Context (f : B →r A) (g : A →r B).
 
 (** Multiplication and unit are definitionally those of
@@ -39,39 +38,53 @@ Context (f : B →r A) (g : A →r B).
     {{ coqref: Cats.Algebra.Monoid.Transport.MonoidTransport }} 中的选择，
     选定逆计算为 [g ((f x)⁻¹)]。 *)
 
-Program Definition GroupTransport (HA : Group A)
-    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
-  : Group B
+Program Definition HasGroupTransport (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp)
+  : HasGroup (MonoidTransport A f g Hfg Hgf)
   :=
-  {|GroupM := MonoidTransport f g HA Hfg Hgf
-  ; group_inv x := g (@group_inv A HA (f x))
+  {|group_inv x := g (@group_inv _ (hasGroup A) (f x))
+  ; isGroup :=
+      {|group_inv_l := _
+      ; group_inv_r := _
+      |}
   |}.
 Next Obligation.
-  change (g (@magma_mul A HA
-    (f (g (@group_inv A HA (f x)))) (f x)) ≈S g (@monoid_unit A HA)).
+  change (g (@magma_mul _ (hasMagma A)
+    (f (g (@group_inv _ (hasGroup A) (f x)))) (f x)) ≈S g (@monoid_unit _ (hasMonoid A))).
   apply (@func_proper _ _ g).
-  transitivity (@magma_mul A HA (@group_inv A HA (f x)) (f x)).
-  - apply (@magma_mul_proper A HA); [apply Hfg | reflexivity].
-  - exact (@group_inv_l A HA (f x)).
+  transitivity (@magma_mul _ (hasMagma A) (@group_inv _ (hasGroup A) (f x)) (f x)).
+  - apply (@magma_mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
+  - exact (@group_inv_l _ _ (@isGroup _ (hasGroup A)) (f x)).
 Defined.
 Next Obligation.
-  change (g (@magma_mul A HA
-    (f x) (f (g (@group_inv A HA (f x))))) ≈S g (@monoid_unit A HA)).
+  change (g (@magma_mul _ (hasMagma A)
+    (f x) (f (g (@group_inv _ (hasGroup A) (f x))))) ≈S g (@monoid_unit _ (hasMonoid A))).
   apply (@func_proper _ _ g).
-  transitivity (@magma_mul A HA (f x) (@group_inv A HA (f x))).
-  - apply (@magma_mul_proper A HA); [reflexivity | apply Hfg].
-  - exact (@group_inv_r A HA (f x)).
+  transitivity (@magma_mul _ (hasMagma A) (f x) (@group_inv _ (hasGroup A) (f x))).
+  - apply (@magma_mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
+  - exact (@group_inv_r _ _ (@isGroup _ (hasGroup A)) (f x)).
 Defined.
+
+(** Recover the existing group presentation from the exact transported
+    monoid and its chosen inverse extension. *)
+
+(** 从恰好同一运输幺半群及其选定逆扩充恢复现有群呈现。 *)
+
+Definition GroupTransport (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp)
+  : Group
+  := GroupFromExtension (MonoidTransport A f g Hfg Hgf)
+      (HasGroupTransport Hfg Hgf).
 
 (** The forward map preserves the selected inverse, in addition to the
     product and unit equations from the preceding transport layers. *)
 
 (** 除前面运输层的乘积及单位方程外，正向映射还保持选定逆。 *)
 
-Lemma group_transport_map_inv (HA : Group A)
-    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp) (x : B)
-  : f (@group_inv B (GroupTransport HA Hfg Hgf) x) ≈S
-      @group_inv A HA (f x).
-Proof. exact (Hfg (@group_inv A HA (f x))). Defined.
+Lemma group_transport_map_inv (Hfg : (f ∘r g) ≈f id_resp)
+    (Hgf : (g ∘r f) ≈f id_resp) (x : B)
+  : f (@group_inv _ (hasGroup (GroupTransport Hfg Hgf)) x) ≈S
+      @group_inv _ (hasGroup A) (f x).
+Proof. exact (Hfg (@group_inv _ (hasGroup A) (f x))). Defined.
 
 End Transport.

@@ -2,7 +2,6 @@ From Cats Require Export
   Instance.Set.Simplicial.Cocycle.Low
   Instance.Bool.Group.
 
-Local Existing Instance BoolS_Monoid.
 
 (** * A Boolean Cocycle Simplicial Set
 
@@ -40,7 +39,7 @@ Local Existing Instance BoolS_Monoid.
 
 Definition BoolCocycleModel
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
-  := Z²(BoolS).
+  := Z²(BoolS_Monoid).
 
 (** A two-simplex whose increasing triangle has coefficient [true]. *)
 
@@ -48,7 +47,7 @@ Definition BoolCocycleModel
 
 Definition bool_cocycle_triangle
   : BoolCocycleModel 2
-  := two_cocycle_triangle_resp true.
+  := (two_cocycle_triangle_resp (M := BoolS_Monoid)) true.
 
 (** The distinguished unit-labelled two-simplex. *)
 
@@ -56,14 +55,14 @@ Definition bool_cocycle_triangle
 
 Definition bool_cocycle_unit_triangle
   : BoolCocycleModel 2
-  := two_cocycle_simplex_unit 2.
+  := (two_cocycle_simplex_unit (M := BoolS_Monoid)) 2.
 
 (** The actual label computes, rather than being recovered by choice. *)
 
 (** 实际标签可以直接计算，而非依靠选择来恢复。 *)
 
 Lemma bool_cocycle_triangle_value
-  : two_cocycle_triangle_value_resp bool_cocycle_triangle = true.
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) bool_cocycle_triangle = true.
 Proof. reflexivity. Defined.
 
 (** The two triangles remain distinct in the model's specified equality. *)

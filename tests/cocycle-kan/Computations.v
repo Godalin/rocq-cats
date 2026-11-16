@@ -16,18 +16,17 @@ Local Open Scope ordinal_scope.
     中实际选定的单形。 *)
 
 Fail Definition unchosen_boolean_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
 Fail Definition unchosen_boolean_commutativity
-  : @IsCommutativeMonoid BoolS BoolS_Monoid
+  : IsCommutativeMonoid BoolS_Monoid
   := _.
 
 Fail Definition unchosen_boolean_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Group.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** Fill the actual restriction of a supplied simplex. The theorem does
@@ -45,7 +44,7 @@ Definition bool_chosen_filler {n : nat} (i : Ordinal (S n))
 (** 一维分支选取单位边。 *)
 
 Example one_horn_computes (i : Ordinal 1)
-  : (lower (bool_chosen_filler i (two_cocycle_simplex_unit 1)))⟦
+  : (lower (bool_chosen_filler i (two_cocycle_simplex_unit (M := BoolS_Monoid) 1)))⟦
       ordinal_step fin_first,
       (@Cat.Core.id [Ord 1] (fin_next fin_first))⟧₂ = false.
 Proof. reflexivity. Defined.
@@ -56,7 +55,7 @@ Proof. reflexivity. Defined.
 (** 二维 horn 只看到边，因此选定三角形的标签可以与原三角形不同。 *)
 
 Example two_horn_computes (i : Ordinal 2)
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (bool_chosen_filler i bool_cocycle_triangle) = false.
 Proof. reflexivity. Defined.
 
@@ -67,7 +66,7 @@ Proof. reflexivity. Defined.
 Definition bool_tetrahedron
   : BoolCocycleModel 3
   :=
-  {|lower := TetrahedronTwoCocycle false true true false eq_refl
+  {|lower := (TetrahedronTwoCocycle (M := BoolS_Monoid)) false true true false eq_refl
   |}.
 
 (** Every three-horn completion computes all four original coefficients,
@@ -76,16 +75,16 @@ Definition bool_tetrahedron
 (** 每个三维 horn 补全均计算出原来的四个系数，也包括缺失面而不只是保留面。 *)
 
 Example three_horns_compute (i : Ordinal 3)
-  : (two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
         (d[BoolCocycleModel; 2; fin_first]
           (bool_chosen_filler i bool_tetrahedron)),
-      two_cocycle_triangle_value_resp
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺]
           (bool_chosen_filler i bool_tetrahedron)),
-      two_cocycle_triangle_value_resp
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺]
           (bool_chosen_filler i bool_tetrahedron)),
-      two_cocycle_triangle_value_resp
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺]
           (bool_chosen_filler i bool_tetrahedron))) =
       (true, true, false, false).
@@ -99,7 +98,7 @@ Proof. destruct i as [[] | [[] | [[] | [[] | []]]]]; reflexivity. Defined.
 Definition bool_four_simplex
   : BoolCocycleModel 4
   :=
-  {|lower := PentachoronTwoCocycle true false false true true
+  {|lower := (PentachoronTwoCocycle (M := BoolS_Monoid)) true false false true true
       false false false false false
       eq_refl eq_refl eq_refl eq_refl eq_refl
   |}.
@@ -110,7 +109,7 @@ Definition bool_four_simplex
 (** 即使省去包含它的某个四面体，三角形 012 仍被保留，其系数计算为原值。 *)
 
 Example four_horns_compute (i : Ordinal 4)
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (BoolCocycleModel[δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺]]Δ
         (bool_chosen_filler i bool_four_simplex)) = true.
 Proof.
@@ -123,10 +122,10 @@ Defined.
 (** 每个五维 horn 分支均从实际限制重构单位表，检查两个外索引及全部内索引。 *)
 
 Example five_horns_compute (i : Ordinal 5)
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (BoolCocycleModel[δ[4; fin_first⁺⁺⁺⁺⁺] ∘F
         δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺]]Δ
-        (bool_chosen_filler i (two_cocycle_simplex_unit 5))) = false.
+        (bool_chosen_filler i (two_cocycle_simplex_unit (M := BoolS_Monoid) 5))) = false.
 Proof.
   destruct i as [[] | [[] | [[] | [[] | [[] | [[] | []]]]]]]; reflexivity.
 Defined.
@@ -137,9 +136,9 @@ Defined.
 (** 更大的稳定维度沿递归族计算，而非沿有限个写死的维度列表计算。 *)
 
 Example six_horn_computes
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (BoolCocycleModel[δ[5; fin_first⁺⁺⁺⁺⁺⁺] ∘F δ[4; fin_first⁺⁺⁺⁺⁺] ∘F
         δ[3; fin_first⁺⁺⁺⁺] ∘F δ[2; fin_first⁺⁺⁺]]Δ
         (bool_chosen_filler fin_first⁺⁺⁺
-          (two_cocycle_simplex_unit 6))) = false.
+          (two_cocycle_simplex_unit (M := BoolS_Monoid) 6))) = false.
 Proof. reflexivity. Defined.

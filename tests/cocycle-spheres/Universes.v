@@ -23,8 +23,7 @@ Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 Section CoefficientSizes.
 Universes e h l u p v q.
 Constraint e < h, h < l, l < u, u < p, p < v, v < q.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Monoid M} `{HN : !Monoid N}.
+Context (M : Monoid@{h e _}) (N : Monoid@{e h _}).
 
 (** Lower native equality and lower ambient equality. *)
 
@@ -98,7 +97,6 @@ End CoefficientSizes.
     障碍不迫使 Hom 相等与 Hom 载体大小相同，两种严格环境相等次序均可使用。 *)
 
 Section NerveSizes.
-Local Existing Instance BoolS_Monoid.
 Universes e h o l u p.
 Constraint e < h, h < o, o < l, l < u, u < p.
 Context (A : SetC@{o e}) (C : Cat@{o h e l l})
@@ -109,7 +107,7 @@ Context (A : SetC@{o e}) (C : Cat@{o h e l l})
 (** 较低环境相等保留该障碍。 *)
 
 Definition lower_equality_nerve_obstruction
-  : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N
+  : ¬ ((Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ≅N
       (VtxNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
   := bool_cocycle_not_vertex_nerve T.
 
@@ -118,7 +116,7 @@ Definition lower_equality_nerve_obstruction
 (** 较高环境相等也保留同样的障碍。 *)
 
 Definition higher_equality_nerve_obstruction
-  : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+  : ¬ ((Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
   := bool_cocycle_not_vertex_nerve T.
 

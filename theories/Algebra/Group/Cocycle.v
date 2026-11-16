@@ -58,7 +58,7 @@ Local Open Scope monoid_scope.
     唯一性。因子次序有意义，不能随意交换逆因子的位置。 *)
 
 Section Completion.
-Context {G : SetC} `{HG : !Group G}.
+Context {G : Group}.
 
 (** Solve for [c012], the first factor on the left. *)
 
@@ -122,8 +122,8 @@ Global Instance cocycle012_solution_proper
       carrier_equiv G) (λ q r s, (Cocycle012Solution q r s).1).
 Proof.
   intros q q' Hq r r' Hr s s' Hs. cbn.
-  apply magma_mul_proper.
-  - apply magma_mul_proper; assumption.
+  apply (@magma_mul_proper _ (hasMagma G)).
+  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
   - apply group_inv_proper. exact Hq.
 Defined.
 
@@ -136,9 +136,9 @@ Global Instance cocycle023_solution_proper
       carrier_equiv G) (λ p r s, (Cocycle023Solution p r s).1).
 Proof.
   intros p p' Hp r r' Hr s s' Hs. cbn.
-  apply magma_mul_proper.
+  apply (@magma_mul_proper _ (hasMagma G)).
   - apply group_inv_proper. exact Hp.
-  - apply magma_mul_proper; assumption.
+  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
 Defined.
 
 (** Respectfulness compares labels, without comparing uniqueness witnesses. *)
@@ -150,8 +150,8 @@ Global Instance cocycle123_solution_proper
       carrier_equiv G) (λ p q s, (Cocycle123Solution p q s).1).
 Proof.
   intros p p' Hp q q' Hq s s' Hs. cbn.
-  apply magma_mul_proper.
-  - apply magma_mul_proper; assumption.
+  apply (@magma_mul_proper _ (hasMagma G)).
+  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
   - apply group_inv_proper. exact Hs.
 Defined.
 
@@ -164,9 +164,9 @@ Global Instance cocycle013_solution_proper
       carrier_equiv G) (λ p q r, (Cocycle013Solution p q r).1).
 Proof.
   intros p p' Hp q q' Hq r r' Hr. cbn.
-  apply magma_mul_proper.
+  apply (@magma_mul_proper _ (hasMagma G)).
   - apply group_inv_proper. exact Hr.
-  - apply magma_mul_proper; assumption.
+  - apply (@magma_mul_proper _ (hasMagma G)); assumption.
 Defined.
 
 End Completion.
@@ -221,7 +221,7 @@ End Completion.
 \end{center}% *)
 
 Section FiveVertices.
-Context {G : SetC} `{HG : !Group G} `{HC : !IsCommutativeMonoid G}.
+Context {G : Group} `{HC : !IsCommutativeMonoid G}.
 Context (a b c d e f g h i j : G).
 
 (** Recover the equation on vertices [1,2,3,4] by cancelling [c014]. *)
@@ -234,9 +234,12 @@ Lemma cocycle_tetrahedron_1234
   : g ⋅ i ≈S j ⋅ h.
 Proof.
   apply (group_mul_cancel_r c).
-  rewrite semigroup_assoc, <- H2, <- semigroup_assoc, <- H4,
-    semigroup_assoc, H1, <- (semigroup_assoc a j e),
-    (monoid_mul_comm a j), semigroup_assoc, H3, <- semigroup_assoc.
+  rewrite (@semigroup_assoc _ (isSemigroup G)),
+    <- H2,
+    <- (@semigroup_assoc _ (isSemigroup G)),
+    <- H4,
+    (@semigroup_assoc _ (isSemigroup G)), H1, <- ((@semigroup_assoc _ (isSemigroup G)) a j e),
+    (monoid_mul_comm a j), (@semigroup_assoc _ (isSemigroup G)), H3, <- (@semigroup_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -250,9 +253,12 @@ Lemma cocycle_tetrahedron_0234
   : d ⋅ f ≈S j ⋅ e.
 Proof.
   apply (group_mul_cancel_l a).
-  rewrite <- semigroup_assoc, H4, semigroup_assoc, H2,
-    <- semigroup_assoc, H0, semigroup_assoc, <- H3,
-    <- (semigroup_assoc j a e), (monoid_mul_comm j a), semigroup_assoc.
+  rewrite <- (@semigroup_assoc _ (isSemigroup G)),
+    H4,
+    (@semigroup_assoc _ (isSemigroup G)),
+    H2,
+    <- (@semigroup_assoc _ (isSemigroup G)), H0, (@semigroup_assoc _ (isSemigroup G)), <- H3,
+    <- ((@semigroup_assoc _ (isSemigroup G)) j a e), (monoid_mul_comm j a), (@semigroup_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -266,9 +272,12 @@ Lemma cocycle_tetrahedron_0134
   : b ⋅ f ≈S i ⋅ c.
 Proof.
   apply (group_mul_cancel_l g).
-  rewrite <- semigroup_assoc, <- H4, semigroup_assoc, H1,
-    <- (semigroup_assoc a j e), (monoid_mul_comm a j), semigroup_assoc,
-    H3, <- semigroup_assoc, <- H0, semigroup_assoc.
+  rewrite <- (@semigroup_assoc _ (isSemigroup G)),
+    <- H4,
+    (@semigroup_assoc _ (isSemigroup G)),
+    H1,
+    <- ((@semigroup_assoc _ (isSemigroup G)) a j e), (monoid_mul_comm a j), (@semigroup_assoc _ (isSemigroup G)),
+    H3, <- (@semigroup_assoc _ (isSemigroup G)), <- H0, (@semigroup_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -282,9 +291,11 @@ Lemma cocycle_tetrahedron_0124
   : a ⋅ e ≈S h ⋅ c.
 Proof.
   apply (group_mul_cancel_l j).
-  rewrite <- (semigroup_assoc j a e), (monoid_mul_comm j a), semigroup_assoc,
-    <- H1, <- semigroup_assoc, H4, semigroup_assoc, H2,
-    <- semigroup_assoc, H0, semigroup_assoc.
+  rewrite <- ((@semigroup_assoc _ (isSemigroup G)) j a e),
+    (monoid_mul_comm j a),
+    (@semigroup_assoc _ (isSemigroup G)),
+    <- H1, <- (@semigroup_assoc _ (isSemigroup G)), H4, (@semigroup_assoc _ (isSemigroup G)), H2,
+    <- (@semigroup_assoc _ (isSemigroup G)), H0, (@semigroup_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 
@@ -298,9 +309,11 @@ Lemma cocycle_tetrahedron_0123
   : a ⋅ d ≈S g ⋅ b.
 Proof.
   apply (group_mul_cancel_r f).
-  rewrite semigroup_assoc, H1, <- (semigroup_assoc a j e),
-    (monoid_mul_comm a j), semigroup_assoc, H3,
-    <- semigroup_assoc, <- H0, semigroup_assoc, <- H2, <- semigroup_assoc.
+  rewrite (@semigroup_assoc _ (isSemigroup G)),
+    H1,
+    <- ((@semigroup_assoc _ (isSemigroup G)) a j e),
+    (monoid_mul_comm a j), (@semigroup_assoc _ (isSemigroup G)), H3,
+    <- (@semigroup_assoc _ (isSemigroup G)), <- H0, (@semigroup_assoc _ (isSemigroup G)), <- H2, <- (@semigroup_assoc _ (isSemigroup G)).
   reflexivity.
 Defined.
 

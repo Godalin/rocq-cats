@@ -15,12 +15,12 @@ Local Open Scope magma_scope.
 (** 原群乘法给出从乘积广集出发的保相等映射。此构造无须结合律或单位元；
     内部幺半群对象通过继承的原群复用它。 *)
 
-Program Definition set_magma_mul_resp {M : SetC} (HM : Magma M)
+Program Definition set_magma_mul_resp (M : Magma)
   : M ×S M →r M
   :=
   {|func p := fst p ⋅ snd p
   |}.
 Next Obligation.
   intros [x y] [x' y'] [Hx Hy].
-  exact (@magma_mul_proper M HM x x' Hx y y' Hy).
+  exact (@magma_mul_proper _ (hasMagma M) x x' Hx y y' Hy).
 Defined.

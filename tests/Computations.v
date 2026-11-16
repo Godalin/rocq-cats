@@ -286,7 +286,7 @@ Proof. reflexivity. Qed.
 (** 单对象比较的逆经过一般顶点 nerve 及显式大小包装，仍提取出原来的环路。 *)
 
 Example vertex_nerve_monoid_inverse_computes
-  : lower (((monoid_vertex_iso (M := BoolS)).2 1%nat).1
+  : lower (((monoid_vertex_iso (M := BoolS_Monoid)).2 1%nat).1
       (BoolVtxComparison 1%nat {|lower := bool_nerve_loop
                                |})) fin_first = true.
 Proof. reflexivity. Qed.
@@ -299,7 +299,7 @@ Proof. reflexivity. Qed.
 Example vertex_functor_reconstruction_computes
   : fmap (VtxNerveInvF
       (idN : BoolVtxNerve ⇒ BoolVtxNerve))
-      (true : (@Hom (VtxCat (MonoidObjF BoolS))) tt tt) = true.
+      (true : (@Hom (VtxCat (MonoidObjF BoolS_Monoid))) tt tt) = true.
 Proof. reflexivity. Qed.
 
 (** The chosen spine inverse reconstructs the original arrow by interval
@@ -309,7 +309,7 @@ Proof. reflexivity. Qed.
 
 Example vertex_spine_inverse_computes
   : let e := vertex_spine_iso
-      (MonoidObjF BoolS (HM := BoolS_Monoid)) 1%nat in
+      (MonoidObjF BoolS_Monoid) 1%nat in
     fmap (lower (e.2.1 (e.1
       (BoolVtxComparison 1%nat {|lower := bool_nerve_loop
                                |})))) (ordinal_step fin_first) = true.
@@ -323,7 +323,7 @@ Module LocalHornComputation.
 (** 对偶外填充经过反转、限制取逆及脊实现，仍保留缺失先行箭头的计算。 *)
 
 Definition T
-  := MonoidObjF BoolS (HM := BoolS_Monoid).
+  := MonoidObjF BoolS_Monoid.
 
 Local Instance chosen_groupoid
   : VtxCat T ⦂ Gpd
@@ -375,7 +375,7 @@ End HornFaceComputation.
 (** 实际外 horn 经重构、局部填充及再次实现后，缺失边的计算仍不受阻碍。 *)
 
 Example actual_outer_horn2_filler_computes
-  : let T := MonoidObjF BoolS (HM := BoolS_Monoid) in
+  : let T := MonoidObjF BoolS_Monoid in
     let x := (△₂[T; tt; tt; tt] : _ →r
       (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat) (true, true) in
     let HF := vertex_groupoid_horn2_HasFillers T
@@ -390,7 +390,7 @@ Proof. reflexivity. Qed.
 (** 在给出任何填充或逆之前，匹配下降即可计算指定长边。 *)
 
 Example actual_outer_horn2_descent_computes
-  : let T := MonoidObjF BoolS (HM := BoolS_Monoid) in
+  : let T := MonoidObjF BoolS_Monoid in
     let h := (OuterHorn2N T (A := tt) (B := tt) (D := tt) true false :
       HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2%nat fin_first) in
     fmap (lower (h 1%nat

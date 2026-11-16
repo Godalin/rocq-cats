@@ -19,10 +19,7 @@ Constraint h < o.
 Constraint o < l.
 Constraint l < u.
 Constraint u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    (HM : Monoid@{h e l} M) (HN : Monoid@{e h l} N).
-Local Existing Instance HM.
-Local Existing Instance HN.
+Context (M : Monoid@{h e l}) (N : Monoid@{e h l}).
 
 (** Ambient equality below the carrier, with lower native equality. *)
 

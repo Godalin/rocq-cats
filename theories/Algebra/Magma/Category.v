@@ -13,8 +13,11 @@ From Cats Require Import
 (** 复合是自态射上的保相等二元运算。此第一层不使用结合律或恒等箭头。 *)
 
 Program Definition EndMagma (C : Cat) (X : @Ob C)
-  : Magma (HomSet X X)
+  : Magma
   :=
-  {|magma_mul g f := g ∘ f
-  ; magma_mul_proper := comp_proper
+  {|MagmaS := HomSet X X
+  ; hasMagma :=
+      {|magma_mul g f := g ∘ f
+      ; magma_mul_proper := comp_proper
+      |}
   |}.

@@ -23,7 +23,7 @@ Local Open Scope nat_scope.
 
 Definition BooleanPresentation
   : VtxPresentation@{Set Set Set Set Set Set Set Set}
-  := VtxPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
+  := VtxPresentationOf (MonoidObjF BoolS_Monoid).
 
 (** All values remain at the small carrier and equality levels. *)
 
@@ -50,7 +50,7 @@ Definition BooleanNerveFullyFaithful
 Definition BooleanIdentity
   : (@Hom VtxPresentationCat) BooleanPresentation BooleanPresentation
   := VtxPresentationMap
-      (VtxIdF (MonoidObjF BoolS (HM := BoolS_Monoid))).
+      (VtxIdF (MonoidObjF BoolS_Monoid)).
 
 Example bundled_existing_map_computes
   : fmap BooleanIdentity

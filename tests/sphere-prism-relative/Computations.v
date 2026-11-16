@@ -155,19 +155,18 @@ Fail Definition unchosen_horn
   : HasHornFillers BoolCocycleModel 4 fin_first
   := _.
 
-Local Existing Instance BoolS_Monoid.
 
 Definition coefficient_native_equal
   : (bool_cocycle_sphere : TwoSphereS BoolCocycleModel
-      (two_cocycle_simplex_unit 0)) ≈S bool_cocycle_sphere.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)) ≈S bool_cocycle_sphere.
 Proof. reflexivity. Defined.
 
 Definition coefficient_cylinder
-  := TwoSphereConstantCylinder BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := TwoSphereConstantCylinder BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere bool_cocycle_sphere coefficient_native_equal.
 
 Definition coefficient_reconstructed
-  := SpherePrismReconstruct BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SpherePrismReconstruct BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       coefficient_cylinder.
 
 Definition coefficient_map
@@ -175,13 +174,13 @@ Definition coefficient_map
 
 Definition coefficient_side (j : Ordinal 2) (k : Ordinal 1)
   : bool
-  := two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (two_sphere_boundary_prism_value BoolCocycleModel coefficient_map j k).
 
 Example coefficient_endpoints_retained
-  : (two_cocycle_triangle_value_resp (simplex_element_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (simplex_element_resp
        (coefficient_map ∘Nv SimplicialEndpointN (Δ[2]) false)),
-     two_cocycle_triangle_value_resp (simplex_element_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (simplex_element_resp
        (coefficient_map ∘Nv SimplicialEndpointN (Δ[2]) true))) = (true, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -198,7 +197,7 @@ Proof. vm_compute. reflexivity. Defined.
 Definition coefficient_roundtrip
   : coefficient_map ≈N homotopy_map coefficient_cylinder.1
   := two_sphere_prism_reconstruct_map BoolCocycleModel
-      (two_cocycle_simplex_unit 0) coefficient_cylinder.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) coefficient_cylinder.
 
 (** ** Boundary Constancy Is a Genuine Additional Condition
 

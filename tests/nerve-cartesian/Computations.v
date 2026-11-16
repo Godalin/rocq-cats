@@ -53,7 +53,7 @@ Proof. exact vertex_nerve_fully_faithful. Qed.
 
 Definition BooleanPresentation
   : VtxPresentation@{Set Set Set Set Set Set Set Set}
-  := VtxPresentationOf (MonoidObjF BoolS (HM := BoolS_Monoid)).
+  := VtxPresentationOf (MonoidObjF BoolS_Monoid).
 
 (** The actual source product mediator retains both nonidentity arrows. *)
 

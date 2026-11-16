@@ -2,7 +2,6 @@ From Cats Require Export
   Instance.Bool.CocycleSphere
   Instance.Set.Simplicial.Cocycle.SphereGroup.
 
-Local Existing Instance BoolS_Group.
 Local Existing Instance BoolS_IsCommutativeMonoid.
 Local Open Scope monoid_scope.
 
@@ -36,27 +35,26 @@ Local Open Scope monoid_scope.
 (** 选择既有类广集上的群，不全局启用。 *)
 
 Definition BoolCocycleSphereClassS_Group
-  : Group BoolCocycleSphereClassS
-  := cocycle_two_sphere_Group.
+  : Group
+  := (cocycle_two_sphere_Group (M := BoolS_Group)).
 
 (** Commutativity refers to that group's very same monoid parent. *)
 
 (** 交换性针对该群的同一个幺半群父结构。 *)
 
 Definition BoolCocycleSphereClassS_IsCommutativeMonoid
-  : @IsCommutativeMonoid BoolCocycleSphereClassS
-      (GroupM BoolCocycleSphereClassS_Group)
-  := cocycle_two_sphere_IsCommutativeMonoid.
+  : @IsCommutativeMonoid (GroupM BoolCocycleSphereClassS_Group)
+  := (cocycle_two_sphere_IsCommutativeMonoid (M := BoolS_Monoid)).
 
 (** The inverse coefficient is the original Boolean coefficient. *)
 
 (** 逆系数就是原布尔系数。 *)
 
 Lemma bool_cocycle_sphere_class_inv (x : BoolCocycleSphereClassS)
-  : cocycle_two_sphere_inv x ≈S x.
+  : (cocycle_two_sphere_inv (M := BoolS_Group)) x ≈S x.
 Proof.
   apply (snd (cocycle_two_sphere_class_eq_iff _ _)).
-  rewrite cocycle_two_sphere_inv_value. reflexivity.
+  rewrite (cocycle_two_sphere_inv_value (M := BoolS_Group)). reflexivity.
 Defined.
 
 (** Two copies of the nonzero class compose to the constant sphere. *)
@@ -64,12 +62,12 @@ Defined.
 (** 非零类的两个副本合成为常值球面。 *)
 
 Lemma bool_cocycle_sphere_square
-  : cocycle_two_sphere_mul bool_cocycle_sphere bool_cocycle_sphere ≈S
-      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : (cocycle_two_sphere_mul (M := BoolS_Monoid)) bool_cocycle_sphere bool_cocycle_sphere ≈S
+      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         : BoolCocycleSphereClassS).
 Proof.
   apply (snd (cocycle_two_sphere_class_eq_iff _ _)).
-  rewrite cocycle_two_sphere_mul_value. reflexivity.
+  rewrite (cocycle_two_sphere_mul_value (M := BoolS_Monoid)). reflexivity.
 Defined.
 
 (** The order-two law has a retained tetrahedron with exactly these faces. *)
@@ -77,8 +75,8 @@ Defined.
 (** 二阶定律具有恰以这些球面为面的保留四面体。 *)
 
 Definition BoolCocycleSphereSquare
-  : TwoSphereComposite BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere bool_cocycle_sphere
-      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0))
-  := CocycleTwoSphereComposite bool_cocycle_sphere bool_cocycle_sphere
-      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0)) eq_refl.
+      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0))
+  := (CocycleTwoSphereComposite (M := BoolS_Monoid)) bool_cocycle_sphere bool_cocycle_sphere
+      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)) eq_refl.

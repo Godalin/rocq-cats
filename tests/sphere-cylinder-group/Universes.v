@@ -55,7 +55,7 @@ Let C
 (** 四层结构都保留原生大小的代表。 *)
 
 Definition lower_magma
-  : Magma C
+  : Magma
   := TwoSphereCylinderMagma X b KR KC H.
 
 (** Associativity uses the transported magma. *)
@@ -63,7 +63,7 @@ Definition lower_magma
 (** 结合律使用运输的原群。 *)
 
 Definition lower_semigroup
-  : Semigroup C
+  : Semigroup
   := TwoSphereCylinderSemigroup X b KR KC H.
 
 (** Unit laws use the same transported semigroup. *)
@@ -71,7 +71,7 @@ Definition lower_semigroup
 (** 单位律使用相同运输半群。 *)
 
 Definition lower_monoid
-  : Monoid C
+  : Monoid
   := TwoSphereCylinderMonoid X b KR KC H.
 
 (** Inverse laws use the same transported monoid. *)
@@ -79,7 +79,7 @@ Definition lower_monoid
 (** 逆律使用相同运输幺半群。 *)
 
 Definition lower_group
-  : Group C
+  : Group
   := TwoSphereCylinderGroup X b KR KC H K L.
 
 (** Each immediate parent is retained by native conversion. *)
@@ -111,7 +111,7 @@ Definition lower_semigroup_parent
 (** 实际乘法就是原来选定的 Kan 输出。 *)
 
 Definition lower_product_value (x y : C)
-  : @magma_mul C lower_group x y = two_sphere_kan_mul X b H x y
+  : @magma_mul _ (hasMagma lower_group) x y = two_sphere_kan_mul X b H x y
   := eq_refl.
 
 (** The unit is the original constant sphere. *)
@@ -119,7 +119,7 @@ Definition lower_product_value (x y : C)
 (** 单位元为原常值球面。 *)
 
 Definition lower_unit_value
-  : @monoid_unit C lower_group = two_sphere_base X b
+  : @monoid_unit _ (hasMonoid lower_group) = two_sphere_base X b
   := eq_refl.
 
 (** Inverse is the original actual left-candidate representative. *)
@@ -127,7 +127,7 @@ Definition lower_unit_value
 (** 逆为原实际左候选代表。 *)
 
 Definition lower_inverse_value (x : C)
-  : @group_inv C lower_group x = (@SphereKanLeftInverse X b K x).1
+  : @group_inv _ (hasGroup lower_group) x = (@SphereKanLeftInverse X b K x).1
   := eq_refl.
 
 (** The existing map back to generated classes preserves multiplication. *)
@@ -136,8 +136,12 @@ Definition lower_inverse_value (x : C)
 
 Definition lower_product_comparison (x y : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@magma_mul C lower_group x y) ≈S two_sphere_kan_mul X b H x y
-  := two_sphere_cylinder_class_mul X b KR KC H x y.
+      (@magma_mul _ (hasMagma lower_group) x y) ≈S two_sphere_kan_mul X b H x y.
+Proof.
+  rewrite lower_product_value.
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (two_sphere_kan_mul X b H x y)).
+Defined.
 
 (** The same comparison preserves the constant unit. *)
 
@@ -145,8 +149,11 @@ Definition lower_product_comparison (x y : C)
 
 Definition lower_unit_comparison
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@monoid_unit C lower_group) ≈S two_sphere_base X b
-  := two_sphere_cylinder_class_unit X b KR KC H.
+      (@monoid_unit _ (hasMonoid lower_group)) ≈S two_sphere_base X b.
+Proof.
+  rewrite lower_unit_value.
+  exact (two_sphere_cylinder_class_unit X b KR KC).
+Defined.
 
 (** The same comparison preserves the selected inverse. *)
 
@@ -154,9 +161,13 @@ Definition lower_unit_comparison
 
 Definition lower_inverse_comparison (x : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@group_inv C lower_group x) ≈S
-      @group_inv _ (TwoSphereClassGroup X b H K L) x
-  := two_sphere_cylinder_class_inv X b KR KC H K L x.
+      (@group_inv _ (hasGroup lower_group) x) ≈S
+      @group_inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x.
+Proof.
+  rewrite lower_inverse_value.
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (@SphereKanLeftInverse X b K x).1).
+Defined.
 
 (** Source recovery retains the complete pointwise interface. *)
 
@@ -182,8 +193,8 @@ Definition lower_target_recovery (x : C)
 Definition lower_inverse_proper (x y : C)
     (E : TwoSphereCylinderHomotopy X b x y)
   : TwoSphereCylinderHomotopy X b
-      (@group_inv C lower_group x) (@group_inv C lower_group y)
-  := @group_inv_proper C lower_group x y E.
+      (@group_inv _ (hasGroup lower_group) x) (@group_inv _ (hasGroup lower_group) y)
+  := @group_inv_proper lower_group x y E.
 
 (** Generic involution returns an actual full relative cylinder. *)
 
@@ -191,8 +202,8 @@ Definition lower_inverse_proper (x y : C)
 
 Definition lower_involution (x : C)
   : TwoSphereCylinderHomotopy X b
-      (@group_inv C lower_group (@group_inv C lower_group x)) x
-  := @group_inv_inv C lower_group x.
+      (@group_inv _ (hasGroup lower_group) (@group_inv _ (hasGroup lower_group) x)) x
+  := @group_inv_inv lower_group x.
 
 (** Generic associativity is available on the same selected parent. *)
 
@@ -200,22 +211,22 @@ Definition lower_involution (x : C)
 
 Definition lower_associativity (x y z : C)
   : TwoSphereCylinderHomotopy X b
-      (@magma_mul C lower_group (@magma_mul C lower_group x y) z)
-      (@magma_mul C lower_group x (@magma_mul C lower_group y z))
-  := @semigroup_assoc C lower_group x y z.
+      (@magma_mul _ (hasMagma lower_group) (@magma_mul _ (hasMagma lower_group) x y) z)
+      (@magma_mul _ (hasMagma lower_group) x (@magma_mul _ (hasMagma lower_group) y z))
+  := @semigroup_assoc _ (isSemigroup lower_group) x y z.
 
 (** Algebra and full Kan are still not selected by import. *)
 
 (** 导入仍不选择代数或完整 Kan。 *)
 
-Fail Definition lower_no_automatic_group : Group C
+Fail Definition lower_no_automatic_group : HasMagma C
   := ltac:(typeclasses eauto).
 Fail Definition lower_no_raw_equivalence
   : Equivalence (TwoSphereCylinderHomotopy X b)
   := ltac:(typeclasses eauto).
 Fail Definition lower_no_full_Kan : HasKanFillers X
   := ltac:(typeclasses eauto).
-Fail Definition lower_missing_candidates : Group C
+Fail Definition lower_missing_candidates : Group
   := TwoSphereCylinderGroup X b KR KC H.
 
 End Lower.
@@ -257,7 +268,7 @@ Let C
 (** 四层结构都保留原生大小的代表。 *)
 
 Definition higher_magma
-  : Magma C
+  : Magma
   := TwoSphereCylinderMagma X b KR KC H.
 
 (** Associativity uses the transported magma. *)
@@ -265,7 +276,7 @@ Definition higher_magma
 (** 结合律使用运输的原群。 *)
 
 Definition higher_semigroup
-  : Semigroup C
+  : Semigroup
   := TwoSphereCylinderSemigroup X b KR KC H.
 
 (** Unit laws use the same transported semigroup. *)
@@ -273,7 +284,7 @@ Definition higher_semigroup
 (** 单位律使用相同运输半群。 *)
 
 Definition higher_monoid
-  : Monoid C
+  : Monoid
   := TwoSphereCylinderMonoid X b KR KC H.
 
 (** Inverse laws use the same transported monoid. *)
@@ -281,7 +292,7 @@ Definition higher_monoid
 (** 逆律使用相同运输幺半群。 *)
 
 Definition higher_group
-  : Group C
+  : Group
   := TwoSphereCylinderGroup X b KR KC H K L.
 
 (** Each immediate parent is retained by native conversion. *)
@@ -313,7 +324,7 @@ Definition higher_semigroup_parent
 (** 实际乘法就是原来选定的 Kan 输出。 *)
 
 Definition higher_product_value (x y : C)
-  : @magma_mul C higher_group x y = two_sphere_kan_mul X b H x y
+  : @magma_mul _ (hasMagma higher_group) x y = two_sphere_kan_mul X b H x y
   := eq_refl.
 
 (** The unit is the original constant sphere. *)
@@ -321,7 +332,7 @@ Definition higher_product_value (x y : C)
 (** 单位元为原常值球面。 *)
 
 Definition higher_unit_value
-  : @monoid_unit C higher_group = two_sphere_base X b
+  : @monoid_unit _ (hasMonoid higher_group) = two_sphere_base X b
   := eq_refl.
 
 (** Inverse is the original actual left-candidate representative. *)
@@ -329,7 +340,7 @@ Definition higher_unit_value
 (** 逆为原实际左候选代表。 *)
 
 Definition higher_inverse_value (x : C)
-  : @group_inv C higher_group x = (@SphereKanLeftInverse X b K x).1
+  : @group_inv _ (hasGroup higher_group) x = (@SphereKanLeftInverse X b K x).1
   := eq_refl.
 
 (** The existing map back to generated classes preserves multiplication. *)
@@ -338,8 +349,12 @@ Definition higher_inverse_value (x : C)
 
 Definition higher_product_comparison (x y : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@magma_mul C higher_group x y) ≈S two_sphere_kan_mul X b H x y
-  := two_sphere_cylinder_class_mul X b KR KC H x y.
+      (@magma_mul _ (hasMagma higher_group) x y) ≈S two_sphere_kan_mul X b H x y.
+Proof.
+  rewrite higher_product_value.
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (two_sphere_kan_mul X b H x y)).
+Defined.
 
 (** The same comparison preserves the constant unit. *)
 
@@ -347,8 +362,11 @@ Definition higher_product_comparison (x y : C)
 
 Definition higher_unit_comparison
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@monoid_unit C higher_group) ≈S two_sphere_base X b
-  := two_sphere_cylinder_class_unit X b KR KC H.
+      (@monoid_unit _ (hasMonoid higher_group)) ≈S two_sphere_base X b.
+Proof.
+  rewrite higher_unit_value.
+  exact (two_sphere_cylinder_class_unit X b KR KC).
+Defined.
 
 (** The same comparison preserves the selected inverse. *)
 
@@ -356,9 +374,13 @@ Definition higher_unit_comparison
 
 Definition higher_inverse_comparison (x : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@group_inv C higher_group x) ≈S
-      @group_inv _ (TwoSphereClassGroup X b H K L) x
-  := two_sphere_cylinder_class_inv X b KR KC H K L x.
+      (@group_inv _ (hasGroup higher_group) x) ≈S
+      @group_inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x.
+Proof.
+  rewrite higher_inverse_value.
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (@SphereKanLeftInverse X b K x).1).
+Defined.
 
 (** Source recovery retains the complete pointwise interface. *)
 
@@ -384,8 +406,8 @@ Definition higher_target_recovery (x : C)
 Definition higher_inverse_proper (x y : C)
     (E : TwoSphereCylinderHomotopy X b x y)
   : TwoSphereCylinderHomotopy X b
-      (@group_inv C higher_group x) (@group_inv C higher_group y)
-  := @group_inv_proper C higher_group x y E.
+      (@group_inv _ (hasGroup higher_group) x) (@group_inv _ (hasGroup higher_group) y)
+  := @group_inv_proper higher_group x y E.
 
 (** Generic involution returns an actual full relative cylinder. *)
 
@@ -393,8 +415,8 @@ Definition higher_inverse_proper (x y : C)
 
 Definition higher_involution (x : C)
   : TwoSphereCylinderHomotopy X b
-      (@group_inv C higher_group (@group_inv C higher_group x)) x
-  := @group_inv_inv C higher_group x.
+      (@group_inv _ (hasGroup higher_group) (@group_inv _ (hasGroup higher_group) x)) x
+  := @group_inv_inv higher_group x.
 
 (** Generic associativity is available on the same selected parent. *)
 
@@ -402,22 +424,22 @@ Definition higher_involution (x : C)
 
 Definition higher_associativity (x y z : C)
   : TwoSphereCylinderHomotopy X b
-      (@magma_mul C higher_group (@magma_mul C higher_group x y) z)
-      (@magma_mul C higher_group x (@magma_mul C higher_group y z))
-  := @semigroup_assoc C higher_group x y z.
+      (@magma_mul _ (hasMagma higher_group) (@magma_mul _ (hasMagma higher_group) x y) z)
+      (@magma_mul _ (hasMagma higher_group) x (@magma_mul _ (hasMagma higher_group) y z))
+  := @semigroup_assoc _ (isSemigroup higher_group) x y z.
 
 (** Algebra and full Kan are still not selected by import. *)
 
 (** 导入仍不选择代数或完整 Kan。 *)
 
-Fail Definition higher_no_automatic_group : Group C
+Fail Definition higher_no_automatic_group : HasMagma C
   := ltac:(typeclasses eauto).
 Fail Definition higher_no_raw_equivalence
   : Equivalence (TwoSphereCylinderHomotopy X b)
   := ltac:(typeclasses eauto).
 Fail Definition higher_no_full_Kan : HasKanFillers X
   := ltac:(typeclasses eauto).
-Fail Definition higher_missing_candidates : Group C
+Fail Definition higher_missing_candidates : Group
   := TwoSphereCylinderGroup X b KR KC H.
 
 End Higher.

@@ -11,7 +11,6 @@ From Cats Require Import
 Import Cats.Instance.Set.Groupoid (EqGpd).
 Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 
-Local Existing Instance BoolS_Monoid.
 Local Open Scope nat_scope.
 
 (** * The Boolean Model Cannot Retract through an Ordinary Nerve
@@ -60,7 +59,7 @@ Context {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 Let B
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
-  := Z²(BoolS).
+  := Z²(BoolS_Monoid).
 
 Let N
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -74,7 +73,7 @@ Context (f : B ⇒ N) (g : N ⇒ B).
 (** 生成关系包含每份柱同伦的两个方向，但无法将此往返与恒等映射等同。 *)
 
 Definition bool_cocycle_no_nerve_homotopy_retract
-  : ¬ (g ∘Nv f : @CocycleHomotopyMapS BoolS BoolS_Monoid B) ≈S idN.
+  : ¬ (g ∘Nv f : @CocycleHomotopyMapS BoolS_Monoid B) ≈S idN.
 Proof.
   apply (cocycle_no_nerve_homotopy_retract T f g true).
   intros E. discriminate E.

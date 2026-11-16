@@ -14,10 +14,12 @@ Local Open Scope monoid_scope.
 
     复用幺半群范畴，以群逆作为箭头的逆，所得群胚结构须显式启用。 *)
 
-Program Definition MonoidCat_IsGroupoid (G : SetC) `{HG : !Group G}
+Program Definition MonoidCat_IsGroupoid (G : Group)
   : B(G) ⦂ Gpd
   :=
-  {|groupoid_iso X Y g := (g⁻¹; (group_inv_l g, group_inv_r g))
+  {|groupoid_iso X Y g :=
+      (g⁻¹; (@group_inv_l _ _ (@isGroup _ (hasGroup G)) g,
+              @group_inv_r _ _ (@isGroup _ (hasGroup G)) g))
   |}.
 
 (** Bundle the original one-object category and its group inverses.
@@ -25,7 +27,7 @@ Program Definition MonoidCat_IsGroupoid (G : SetC) `{HG : !Group G}
 
 (** 将原单对象范畴与其群逆打包，保留指定广集相等，不另存运算。 *)
 
-Definition GroupGpd (G : SetC) `{HG : !Group G}
+Definition GroupGpd (G : Group)
   : Gpd
   := GpdFromProperty B(G) (MonoidCat_IsGroupoid G).
 
@@ -34,11 +36,21 @@ Definition GroupGpd (G : SetC) `{HG : !Group G}
 
 (** 群胚任意指定对象处的自态射构成群，不要求对象代表之间原生相等。 *)
 
-Program Definition EndGroup (C : Cat) `{HC : !IsGroupoid C} (X : @Ob C)
-  : Group (HomSet X X)
+Program Definition EndHasGroup (C : Cat) `{HC : !IsGroupoid C}
+    (X : @Ob C)
+  : HasGroup (EndMonoid C X)
   :=
-  {|GroupM := EndMonoid C X
-  ; group_inv f := @groupoid_inv C HC X X f
-  ; group_inv_l := @groupoid_inv_l C HC X X
-  ; group_inv_r := @groupoid_inv_r C HC X X
+  {|group_inv f := @groupoid_inv C HC X X f
+  ; isGroup :=
+      {|group_inv_l := @groupoid_inv_l C HC X X
+      ; group_inv_r := @groupoid_inv_r C HC X X
+      |}
   |}.
+
+(** The existing endomorphism group reads this exact monoid and extension. *)
+
+(** 现有自态射群读取恰好该幺半群及扩充。 *)
+
+Definition EndGroup (C : Cat) `{HC : !IsGroupoid C} (X : @Ob C)
+  : Group
+  := GroupFromExtension (EndMonoid C X) (EndHasGroup C X).

@@ -105,7 +105,7 @@ Definition lower_lower_final_iso
 
 (** 不选择代数、完整 Kan 或原始柱等价。 *)
 
-Fail Definition lower_no_group : Group (TwoSphereCylinderS X b KR KC)
+Fail Definition lower_no_group : HasMagma (TwoSphereCylinderS X b KR KC)
   := ltac:(typeclasses eauto).
 Fail Definition lower_no_full_Kan : HasKanFillers X
   := ltac:(typeclasses eauto).
@@ -204,7 +204,7 @@ Definition higher_lower_final_iso
 
 (** 不选择代数、完整 Kan 或原始柱等价。 *)
 
-Fail Definition higher_no_group : Group (TwoSphereCylinderS X b KR KC)
+Fail Definition higher_no_group : HasMagma (TwoSphereCylinderS X b KR KC)
   := ltac:(typeclasses eauto).
 Fail Definition higher_no_full_Kan : HasKanFillers X
   := ltac:(typeclasses eauto).

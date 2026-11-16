@@ -29,7 +29,7 @@ Local Open Scope ordinal_scope.
     固定系数幺半群。给定四面体方程后，保存标签表不要求群结构或交换性。 *)
 
 Section Tables.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** Assign the 4 increasing triangles their coefficients. *)
 
@@ -70,7 +70,8 @@ Next Obligation.
   destruct x as [[] | [[] | [[] | [[] | []]]]], y as [[] | [[] | [[] | [[] | []]]]],
     z as [[] | [[] | [[] | [[] | []]]]], w as [[] | [[] | [[] | [[] | []]]]];
     cbn in *; try solve [destruct f | destruct g | destruct h];
-    rewrite ?monoid_unit_l, ?monoid_unit_r; try reflexivity;
+    rewrite ?(@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+      ?(@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))); try reflexivity;
     assumption.
 Defined.
 
@@ -124,7 +125,8 @@ Next Obligation.
     y as [[] | [[] | [[] | [[] | [[] | []]]]]],
     z as [[] | [[] | [[] | [[] | [[] | []]]]]], w as [[] | [[] | [[] | [[] | [[] | []]]]]];
     cbn in *; try solve [destruct f0 | destruct g0 | destruct h0];
-    rewrite ?monoid_unit_l, ?monoid_unit_r; try reflexivity;
+    rewrite ?(@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+      ?(@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))); try reflexivity;
     assumption.
 Defined.
 
@@ -141,7 +143,7 @@ End Tables.
     重复位置的标签已由归一化确定。 *)
 
 Section TetrahedronEquality.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** Face coefficients suffice; no equality of record fields is required. *)
 
@@ -174,7 +176,7 @@ End TetrahedronEquality.
 (** 两个实际三角形的递增系数相等就足以判等，由低维描述的两条往返律推出。 *)
 
 Lemma cocycle_triangle_eq_of_value@{u p +}
-    {M : SetC} `{HM : !Monoid M}
+    {M : Monoid}
     (x y : (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2)
     (H : two_cocycle_triangle_value_resp x ≈S
       two_cocycle_triangle_value_resp y)
@@ -200,7 +202,7 @@ Defined.
     相邻位置相等就足以识别这种退化算子。 *)
 
 Section RepeatedPositions.
-Context {M : SetC} `{HM : !Monoid M} {n : nat}
+Context {M : Monoid} {n : nat}
     (t : (@Hom Δ) 2 n → M)
     (t_proper : Proper (HomEq ==> carrier_equiv M) t)
     (t_unit : ∀ (f : (@Hom Δ) 1%nat n) (i : Ordinal 1%nat),
@@ -244,7 +246,7 @@ End RepeatedPositions.
     规范十项表恢复每个算子的标签，也包括全部重复位置情形。 *)
 
 Section FourSimplexLabels.
-Context {M : SetC} `{HM : !Monoid M}
+Context {M : Monoid}
     (t : (@Hom Δ) 2 4 → M)
     (t_proper : Proper (HomEq ==> carrier_equiv M) t)
     (t_unit : ∀ (f : (@Hom Δ) 1%nat 4) (i : Ordinal 1%nat),

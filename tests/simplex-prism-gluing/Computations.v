@@ -236,11 +236,10 @@ Fail Definition unchosen_horn
   : HasHornFillers BoolCocycleModel 4 fin_first
   := _.
 
-Local Existing Instance BoolS_Monoid.
 
 Definition coefficient_triangle
   : BoolCocycleModel 2
-  := (cocycle_two_sphere_resp true).1.
+  := (cocycle_two_sphere_resp (M := BoolS_Monoid) true).1.
 
 Definition coefficient_values (i : Ordinal 2)
   : BoolCocycleModel 3
@@ -262,10 +261,10 @@ Definition coefficient_glued
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
-  := (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 Example coefficient_tetrahedra_compute
   : (face_values (simplex_prism_eval coefficient_glued fin_first),
