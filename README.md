@@ -64,6 +64,13 @@ See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
 - [CCC](./theories/Cat/CCC/Core.v), [Topos](./theories/Topos/Core.v) and
   [ETCS](./theories/Topos/ETCS.v) build on this modularity.
 
+- [Universes of structured categories](./docs/StructureUniverses.md):
+  cartesian categories form a cartesian category, and groupoids with
+  equivalences form a groupoid, with self-membership across universe levels.
+
+- [结构范畴宇宙](./docs/StructureUniverses.md)：笛卡尔范畴组成笛卡尔范畴，
+  群胚及等价组成群胚，支持跨宇宙层级的自身成员关系。
+
 - A Fully formalized category of sets `SetCat` [see here](./theories/Instance/Set/Core.v)
   - with the following the Rocq features
     - setoid as sets
