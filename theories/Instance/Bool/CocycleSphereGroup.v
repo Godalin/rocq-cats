@@ -3,7 +3,7 @@ From Cats Require Export
   Instance.Set.Simplicial.Cocycle.SphereGroup.
 
 Local Existing Instance BoolS_IsCommutativeMonoid.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * The Order-Two Group of Boolean Sphere Classes
 

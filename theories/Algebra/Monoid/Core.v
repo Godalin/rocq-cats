@@ -1,13 +1,7 @@
 From Cats Require Export
   Algebra.Semigroup.Core.
 
-Declare Scope monoid_scope.
-Delimit Scope monoid_scope with monoid.
-Infix "⋅" := (@mul _ (hasMagma _))
-  (at level 40, left associativity) : monoid_scope.
-Notation "'(' x '⋅−)'" := (mul_l_resp x) : monoid_scope.
-Notation "'(−⋅' y ')'" := (mul_r_resp y) : monoid_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Monoids on Sets
 
@@ -50,16 +44,24 @@ Class IsMonoid (e : SG)
 
 Class HasMonoid
   :=
-  { monoid_unit : SG
+  { mul_unit : SG
 
   (** The laws refer to the stored element and the supplied semigroup. *)
 
   (** 定律指向保存的元素及给定半群。 *)
 
-  ; isMonoid :: IsMonoid monoid_unit
+  ; isMonoid :: IsMonoid mul_unit
   }.
 
 End UnitExtension.
+
+(** Unit laws infer the parent and selected unit from the expression.
+    Candidate comparisons can still supply their law witness by name. *)
+
+(** 单位律从表达式推断父结构和选定单位元；比较候选时仍可按名称指定见证。 *)
+
+Arguments mul_unit_l {SG e IsMonoid} x.
+Arguments mul_unit_r {SG e IsMonoid} x.
 
 (** A complete monoid owns one semigroup and one chosen unit extension. *)
 
@@ -83,13 +85,14 @@ Program Definition MonoidFromExtension (SG : Semigroup)
   ; hasMonoid := HM
   |}.
 
-(** The numeral reads the unit selected by the complete monoid. Raw
-    fixed-parent clients use the same public field with their own evidence. *)
+(** The numeral reads the complete monoid's selected unit. Fixed-parent
+    clients can use the transparent [MonoidFromExtension] view to specify
+    their supplied choice. Ordinary expressions infer the monoid. *)
 
-(** 数字记号读取完整幺半群选定的单位元；固定父结构客户端直接使用同一公开
-    字段并传入自己的见证。 *)
+(** 数字记号读取完整幺半群选定的单位元。固定父结构客户端可用透明的
+    [MonoidFromExtension] 视图指定给定选择；普通表达式会推断幺半群。 *)
 
-Notation "1" := (@monoid_unit _ (hasMonoid _)) : monoid_scope.
+Notation "1" := (@mul_unit _ (hasMonoid _)) : algebra_scope.
 
 (** Any two specified units of the same selected semigroup agree in its
     setoid equality. Their records and native carrier values need not agree. *)
@@ -97,13 +100,13 @@ Notation "1" := (@monoid_unit _ (hasMonoid _)) : monoid_scope.
 (** 同一选定半群的任意两个指定单位元在其广集相等下相等，无须记录或载体值
     的原生相等。 *)
 
-Lemma units_equiv (SG : Semigroup) (e f : SG)
-    (He : IsMonoid SG e) (Hf : IsMonoid SG f)
+Lemma units_equiv {SG : Semigroup} {e f : SG}
+    `{He : !IsMonoid SG e} `{Hf : !IsMonoid SG f}
   : e ≈S f.
 Proof.
-  transitivity (@mul _ (hasMagma SG) e f).
-  - symmetry. exact (@mul_unit_r SG f Hf e).
-  - exact (@mul_unit_l SG e He f).
+  transitivity (e ⋅ f).
+  - symmetry. rewrite mul_unit_r. reflexivity.
+  - rewrite mul_unit_l. reflexivity.
 Qed.
 
 (** A left and a right inverse agree using only a chosen unit extension
@@ -113,14 +116,15 @@ Qed.
 
 Lemma mul_extension_inv_unique (SG : Semigroup)
     (HM : HasMonoid SG) (x y z : SG)
-    (Hy : @mul _ (hasMagma SG) y x ≈S @monoid_unit SG HM)
-    (Hz : @mul _ (hasMagma SG) x z ≈S @monoid_unit SG HM)
+    (Hy : (y ⋅ x) ≈S (1 : MonoidFromExtension SG HM))
+    (Hz : (x ⋅ z) ≈S (1 : MonoidFromExtension SG HM))
   : y ≈S z.
 Proof.
-  transitivity (@mul _ (hasMagma SG) y (@mul _ (hasMagma SG) x z)).
-  - rewrite Hz. symmetry. exact (@mul_unit_r SG _ (@isMonoid SG HM) y).
-  - rewrite <- (@mul_assoc _ (isSemigroup SG)), Hy.
-    exact (@mul_unit_l SG _ (@isMonoid SG HM) z).
+  transitivity (y ⋅ (x ⋅ z)).
+  - rewrite Hz. symmetry.
+    rewrite mul_unit_r. reflexivity.
+  - rewrite <- mul_assoc, Hy.
+    rewrite mul_unit_l. reflexivity.
 Qed.
 
 (** The complete monoid uses the inverse-uniqueness theorem for its

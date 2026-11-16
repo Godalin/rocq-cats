@@ -1,7 +1,7 @@
 From Cats Require Import
   Algebra.Group.Transport.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Transport at Strict Independent Sizes
 
@@ -98,8 +98,8 @@ Example selected_product (x y : B)
 Proof. reflexivity. Qed.
 
 Example selected_unit
-  : @monoid_unit _ (hasMonoid transported_group) =
-      g (@monoid_unit _ (hasMonoid A)).
+  : @mul_unit _ (hasMonoid transported_group) =
+      g (@mul_unit _ (hasMonoid A)).
 Proof. reflexivity. Qed.
 
 Example selected_inverse (x : B)
@@ -111,8 +111,8 @@ Definition forward_product (x y : B)
   := magma_transport_map_mul A f g Hfg x y.
 
 Definition forward_unit
-  : f (@monoid_unit _ (hasMonoid transported_group)) ≈S
-      @monoid_unit _ (hasMonoid A)
+  : f (@mul_unit _ (hasMonoid transported_group)) ≈S
+      @mul_unit _ (hasMonoid A)
   := monoid_transport_map_unit A f g Hfg Hgf.
 
 Definition forward_inverse (x : B)
@@ -130,7 +130,7 @@ Definition actual_inverse_involution (x : B)
 
 Definition actual_inverse_unique (x y : B)
     (H : @mul _ (hasMagma transported_group) y x ≈S
-      @monoid_unit _ (hasMonoid transported_group))
+      @mul_unit _ (hasMonoid transported_group))
   : y ≈S @inv _ (hasGroup transported_group) x
   := @inv_unique transported_group x y H.
 
@@ -244,8 +244,8 @@ Example high_selected_product (x y : B)
 Proof. reflexivity. Qed.
 
 Example high_selected_unit
-  : @monoid_unit _ (hasMonoid high_transported_group) =
-      g (@monoid_unit _ (hasMonoid A)).
+  : @mul_unit _ (hasMonoid high_transported_group) =
+      g (@mul_unit _ (hasMonoid A)).
 Proof. reflexivity. Qed.
 
 Example high_selected_inverse (x : B)
@@ -257,8 +257,8 @@ Definition high_forward_product (x y : B)
   := magma_transport_map_mul A f g Hfg x y.
 
 Definition high_forward_unit
-  : f (@monoid_unit _ (hasMonoid high_transported_group)) ≈S
-      @monoid_unit _ (hasMonoid A)
+  : f (@mul_unit _ (hasMonoid high_transported_group)) ≈S
+      @mul_unit _ (hasMonoid A)
   := monoid_transport_map_unit A f g Hfg Hgf.
 
 Definition high_forward_inverse (x : B)
@@ -276,7 +276,7 @@ Definition high_actual_inverse_involution (x : B)
 
 Definition high_actual_inverse_unique (x y : B)
     (H : @mul _ (hasMagma high_transported_group) y x ≈S
-      @monoid_unit _ (hasMonoid high_transported_group))
+      @mul_unit _ (hasMonoid high_transported_group))
   : y ≈S @inv _ (hasGroup high_transported_group) x
   := @inv_unique high_transported_group x y H.
 

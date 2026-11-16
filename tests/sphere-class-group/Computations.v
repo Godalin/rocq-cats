@@ -4,7 +4,7 @@ From Cats Require Import
 
 Local Open Scope nat_scope.
 Local Open Scope ordinal_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Actual Group Computation and Generic Inverse Theory
 
@@ -82,7 +82,7 @@ Example parent_and_inverse_compute
   : (product_value false false, product_value false true,
      product_value true false, product_value true true,
      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
-       (@monoid_unit _ (hasMonoid (GroupToMonoid class_group))),
+       (@mul_unit _ (hasMonoid (GroupToMonoid class_group))),
      inverse_value false, inverse_value true)
       = (false, true, true, false, false, false, true).
 Proof. vm_compute. reflexivity. Defined.
@@ -160,7 +160,7 @@ Proof. apply func_proper. exact input_chain. Defined.
 
 Example inverse_unique (x y : BoolCocycleSphereClassS)
     (E : @mul _ (hasMagma class_magma) y x ≈S
-      @monoid_unit _ (hasMonoid (GroupToMonoid class_group)))
+      @mul_unit _ (hasMonoid (GroupToMonoid class_group)))
   : y ≈S @inv _ (hasGroup class_group) x.
 Proof. exact (@inv_unique class_group x y E). Defined.
 

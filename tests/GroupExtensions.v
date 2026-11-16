@@ -3,7 +3,7 @@ From Cats Require Import
   Algebra.Group.Transport
   Instance.Bool.Group.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Fixed-Parent Group Extensions
 
@@ -61,7 +61,7 @@ Program Definition TokenSemigroup
 Program Definition TokenHasMonoid
   : HasMonoid TokenSemigroup
   :=
-  {|monoid_unit := false
+  {|mul_unit := false
   ; isMonoid :=
       {|mul_unit_l _ := true
       ; mul_unit_r _ := true
@@ -110,13 +110,22 @@ Example stored_extension
 Proof. reflexivity. Qed.
 
 Example stored_units
-  : (@monoid_unit _ (hasMonoid FirstGroup), @monoid_unit _ (hasMonoid SecondGroup)) =
+  : (@mul_unit _ (hasMonoid FirstGroup), @mul_unit _ (hasMonoid SecondGroup)) =
       (false, false).
 Proof. reflexivity. Qed.
 
 Example stored_inverses
   : (@inv _ (hasGroup FirstGroup) true, @inv _ (hasGroup SecondGroup) true) =
       (false, true).
+Proof. reflexivity. Qed.
+
+(** Shared notation keeps the explicitly typed group's inverse even when
+    another extension on the same parent is available to instance search. *)
+
+(** 同一父结构上的另一扩充可被实例搜索找到时，共用记号仍保留显式指定群的逆。 *)
+
+Example notation_stored_inverses
+  : ((true : FirstGroup)⁻¹, (true : SecondGroup)⁻¹) = (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_left_tokens

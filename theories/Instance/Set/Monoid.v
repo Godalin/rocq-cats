@@ -7,6 +7,8 @@ From Cats Require Import
   Cat.Product.Transport
   Cat.Monoidal.Cartesian.
 
+Local Open Scope algebra_scope.
+
 (** * Setoid Monoids as Cartesian Monoid Objects
 
     This constructs an instance of the general monoidal interface from
@@ -35,6 +37,7 @@ Definition SetCartMonoidal
 
 Section SetMonoid.
 Context (M : Monoid).
+
 Local Existing Instance SetCat_HasTerminal.
 Local Existing Instance SetCat_HasProduct.
 
@@ -45,7 +48,7 @@ Local Existing Instance SetCat_HasProduct.
 Program Definition set_monoid_unit_resp
   : UnitS →r M
   :=
-  {|func _ := @monoid_unit _ (hasMonoid M)
+  {|func _ := 1
   |}.
 Next Obligation. intros x y H. reflexivity. Defined.
 
@@ -64,18 +67,18 @@ Program Definition SetMonoidObj
 Next Obligation.
   change (set_magma_mul_resp M ∘ (set_monoid_unit_resp × id) ≈ π2).
   rewrite cross_η. intros [u x].
-  exact (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M)) x).
+  change (1 ⋅ x ≈S x). rewrite mul_unit_l. reflexivity.
 Defined.
 Next Obligation.
   change (set_magma_mul_resp M ∘ (id × set_monoid_unit_resp) ≈ π1).
   rewrite cross_η. intros [x u].
-  exact (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M)) x).
+  change (x ⋅ 1 ≈S x). rewrite mul_unit_r. reflexivity.
 Defined.
 Next Obligation.
   change (set_magma_mul_resp M ∘ (set_magma_mul_resp M × id) ≈
     set_magma_mul_resp M ∘ (id × set_magma_mul_resp M) ∘
       (@product_assoc SetCat SetCat_HasProduct M M M).1).
-  rewrite !cross_η. intros [[x y] z]. exact ((@mul_assoc _ (isSemigroup M)) x y z).
+  rewrite !cross_η. intros [[x y] z]. exact (mul_assoc x y z).
 Defined.
 
 End SetMonoid.

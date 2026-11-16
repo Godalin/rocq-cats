@@ -1,7 +1,7 @@
 From Cats Require Export
   Algebra.Magma.Core.
 
-Local Open Scope magma_scope.
+Local Open Scope algebra_scope.
 
 (** * Semigroups on Sets
 
@@ -62,7 +62,7 @@ Context {S : Semigroup}.
 
 Lemma mul_l_comp (x y : S)
   : ((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−)).
-Proof. intros z. apply (@mul_assoc _ (isSemigroup S)). Qed.
+Proof. intros z. apply mul_assoc. Qed.
 
 (** Right multiplication reverses the order in the corresponding
     composition law. *)
@@ -71,7 +71,7 @@ Proof. intros z. apply (@mul_assoc _ (isSemigroup S)). Qed.
 
 Lemma mul_r_comp (x y : S)
   : (−⋅ (x ⋅ y)) ≈f ((−⋅ y) ∘r (−⋅ x)).
-Proof. intros z. symmetry. apply (@mul_assoc _ (isSemigroup S)). Qed.
+Proof. intros z. symmetry. apply mul_assoc. Qed.
 
 (** Left and right multiplication commute as maps, without requiring a
     commutative multiplication operation. *)
@@ -80,6 +80,6 @@ Proof. intros z. symmetry. apply (@mul_assoc _ (isSemigroup S)). Qed.
 
 Lemma mul_lr_comm (x y : S)
   : ((x ⋅−) ∘r (−⋅ y)) ≈f ((−⋅ y) ∘r (x ⋅−)).
-Proof. intros z. symmetry. apply (@mul_assoc _ (isSemigroup S)). Qed.
+Proof. intros z. symmetry. apply mul_assoc. Qed.
 
 End Multiplication.

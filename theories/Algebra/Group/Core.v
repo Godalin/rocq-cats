@@ -1,7 +1,7 @@
 From Cats Require Export
   Algebra.Monoid.Core.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Groups on Sets
 
@@ -51,6 +51,13 @@ Class HasGroup
 
 End InverseExtension.
 
+(** Inverse laws infer their fixed parent and inverse operation. *)
+
+(** 逆元定律推断其固定父结构和逆运算。 *)
+
+Arguments mul_inv_l {M inv IsGroup} x.
+Arguments mul_inv_r {M inv IsGroup} x.
+
 (** A complete group owns one monoid and one inverse extension. *)
 
 (** 完整群拥有一个幺半群及一份逆扩充。 *)
@@ -78,7 +85,7 @@ Program Definition GroupFromExtension (M : Monoid)
 (** 逆记号读取完整群保存的选择。 *)
 
 Notation "x '⁻¹'" := (@inv _ (hasGroup _) x)
-  (at level 9) : monoid_scope.
+  (at level 9) : algebra_scope.
 
 (** Candidate inverse maps agree pointwise in the specified equality;
     neither their native functions nor their law witnesses are identified. *)
@@ -100,7 +107,7 @@ Qed.
 
 Lemma inv_extension_unique (M : Monoid)
     (HG : HasGroup M) (x y : M)
-    (H : @mul _ (hasMagma M) y x ≈S @monoid_unit _ (hasMonoid M))
+    (H : (y ⋅ x) ≈S 1)
   : y ≈S @inv M HG x.
 Proof.
   exact (@mul_inv_unique M x y _ H
@@ -138,7 +145,7 @@ Global Instance inv_proper
   : Proper (carrier_equiv G ==> carrier_equiv G) (@inv _ (hasGroup G)).
 Proof.
   intros x y H. apply inv_unique.
-  rewrite <- H. apply (@mul_inv_l _ _ (@isGroup _ (hasGroup G))).
+  rewrite <- H. apply mul_inv_l.
 Qed.
 
 (** The unit is its own inverse. *)
@@ -149,7 +156,7 @@ Lemma inv_unit
   : (1 : G)⁻¹ ≈S 1.
 Proof.
   symmetry. apply inv_unique.
-  exact (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G)) _).
+  rewrite mul_unit_l. reflexivity.
 Qed.
 
 (** Taking inverses twice recovers the original element. *)
@@ -158,7 +165,7 @@ Qed.
 
 Lemma inv_inv (x : G)
   : (x⁻¹)⁻¹ ≈S x.
-Proof. symmetry. apply inv_unique. apply (@mul_inv_r _ _ (@isGroup _ (hasGroup G))). Qed.
+Proof. symmetry. apply inv_unique. apply mul_inv_r. Qed.
 
 (** The inverse of a product reverses the order of its factors. *)
 
@@ -168,11 +175,9 @@ Lemma inv_mul (x y : G)
   : (x ⋅ y)⁻¹ ≈S y⁻¹ ⋅ x⁻¹.
 Proof.
   symmetry. apply inv_unique.
-  rewrite (@mul_assoc _ (isSemigroup G)),
-    <- ((@mul_assoc _ (isSemigroup G)) x⁻¹),
-    (@mul_inv_l _ _ (@isGroup _ (hasGroup G))).
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid G))).
-  apply (@mul_inv_l _ _ (@isGroup _ (hasGroup G))).
+  rewrite mul_assoc, <- (mul_assoc x⁻¹), mul_inv_l.
+  rewrite mul_unit_l.
+  apply mul_inv_l.
 Qed.
 
 (** Group inversion packaged as a respectful map. *)

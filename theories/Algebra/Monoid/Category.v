@@ -4,7 +4,7 @@ From Cats Require Export
 From Cats Require Import
   Cat.Core.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Monoids and Single-Object Categories
 
@@ -25,9 +25,9 @@ Program Definition MonoidCat (M : Monoid)
   ; id _ := 1
   ; comp _ _ _ g f := g ⋅ f
   ; comp_proper _ _ _ := (@mul_proper _ (hasMagma M))
-  ; comp_id_r _ _ := (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M)))
-  ; comp_id_l _ _ := (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M)))
-  ; comp_assoc _ _ _ _ := (@mul_assoc _ (isSemigroup M))
+  ; comp_id_r _ _ := mul_unit_r
+  ; comp_id_l _ _ := mul_unit_l
+  ; comp_assoc _ _ _ _ := mul_assoc
   |}.
 
 Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
@@ -42,7 +42,7 @@ Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
 Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
   : HasMonoid (EndSemigroup C X)
   :=
-  {|monoid_unit := @id X
+  {|mul_unit := @id X
   ; isMonoid :=
       {|mul_unit_l := comp_id_l
       ; mul_unit_r := comp_id_r

@@ -3,7 +3,7 @@ From Cats Require Export
 From Cats Require Export
   Algebra.Monoid.Transport.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Transporting a Group
 
@@ -42,27 +42,25 @@ Program Definition HasGroupTransport (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
   : HasGroup (MonoidTransport A f g Hfg Hgf)
   :=
-  {|inv x := g (@inv _ (hasGroup A) (f x))
+  {|inv x := g ((f x)⁻¹)
   ; isGroup :=
       {|mul_inv_l := _
       ; mul_inv_r := _
       |}
   |}.
 Next Obligation.
-  change (g (@mul _ (hasMagma A)
-    (f (g (@inv _ (hasGroup A) (f x)))) (f x)) ≈S g (@monoid_unit _ (hasMonoid A))).
+  change (g (f (g ((f x)⁻¹)) ⋅ f x) ≈S g 1).
   apply (@func_proper _ _ g).
-  transitivity (@mul _ (hasMagma A) (@inv _ (hasGroup A) (f x)) (f x)).
-  - apply (@mul_proper _ (hasMagma A)); [apply Hfg | reflexivity].
-  - exact (@mul_inv_l _ _ (@isGroup _ (hasGroup A)) (f x)).
+  transitivity ((f x)⁻¹ ⋅ f x).
+  - apply mul_proper; [apply Hfg | reflexivity].
+  - exact (mul_inv_l (f x)).
 Defined.
 Next Obligation.
-  change (g (@mul _ (hasMagma A)
-    (f x) (f (g (@inv _ (hasGroup A) (f x))))) ≈S g (@monoid_unit _ (hasMonoid A))).
+  change (g (f x ⋅ f (g ((f x)⁻¹))) ≈S g 1).
   apply (@func_proper _ _ g).
-  transitivity (@mul _ (hasMagma A) (f x) (@inv _ (hasGroup A) (f x))).
-  - apply (@mul_proper _ (hasMagma A)); [reflexivity | apply Hfg].
-  - exact (@mul_inv_r _ _ (@isGroup _ (hasGroup A)) (f x)).
+  transitivity (f x ⋅ (f x)⁻¹).
+  - apply mul_proper; [reflexivity | apply Hfg].
+  - exact (mul_inv_r (f x)).
 Defined.
 
 (** Recover the existing group presentation from the exact transported
@@ -83,8 +81,7 @@ Definition GroupTransport (Hfg : (f ∘r g) ≈f id_resp)
 
 Lemma group_transport_map_inv (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp) (x : B)
-  : f (@inv _ (hasGroup (GroupTransport Hfg Hgf)) x) ≈S
-      @inv _ (hasGroup A) (f x).
-Proof. exact (Hfg (@inv _ (hasGroup A) (f x))). Defined.
+  : f ((x : GroupTransport Hfg Hgf)⁻¹) ≈S (f x)⁻¹.
+Proof. exact (Hfg ((f x)⁻¹)). Defined.
 
 End Transport.

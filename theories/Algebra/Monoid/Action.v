@@ -6,7 +6,7 @@ From Cats Require Import
   Instance.Set.Core
   Instance.Set.Hom.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * The Left Regular Action
 
@@ -41,5 +41,5 @@ Definition regular_action_faithful (M : Monoid)
 Proof.
   intros [] [] x y H. specialize (H 1).
   change (x ⋅ 1 ≈S y ⋅ 1) in H.
-  rewrite !(@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
+  rewrite !mul_unit_r in H. exact H.
 Defined.

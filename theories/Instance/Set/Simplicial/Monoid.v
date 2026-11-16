@@ -9,7 +9,7 @@ From Cats Require Import
   Instance.Set.Simplicial.Nerve.
 
 Local Open Scope nat_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * The Arrow-Chain Nerve of a Monoid
 

@@ -2,7 +2,7 @@ From Cats Require Import
   Algebra.Magma.Core
   Instance.Set.Product.
 
-Local Open Scope magma_scope.
+Local Open Scope algebra_scope.
 
 (** * Magma Multiplication on a Product Set *)
 

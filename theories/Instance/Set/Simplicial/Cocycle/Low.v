@@ -2,7 +2,7 @@ From Cats Require Export
   Instance.Set.Simplicial.Cocycle.Core
   Instance.Set.Simplicial.Operators.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Points, Edges and Freely Labelled Triangles
 

@@ -160,8 +160,8 @@ Example operation_square_endpoints_compute
        (mapped x) (mapped y)).1,
      (mapped (@inv _ (hasGroup (G false false true)) x)).1,
      (@inv _ (hasGroup (G true true false)) (mapped x)).1,
-     (mapped (@monoid_unit _ (hasMonoid (G false false true)))).1,
-     (@monoid_unit _ (hasMonoid (G true true false))).1) =
+     (mapped (@mul_unit _ (hasMonoid (G false false true)))).1,
+     (@mul_unit _ (hasMonoid (G true true false))).1) =
     (false, true, false, true, true, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -198,8 +198,8 @@ Definition inverse_cylinder
 
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@monoid_unit _ (hasMonoid (G false false true))))
-      (@monoid_unit _ (hasMonoid (G true true false)))
+      (mapped (@mul_unit _ (hasMonoid (G false false true))))
+      (@mul_unit _ (hasMonoid (G true true false)))
   := two_sphere_cylinder_map_unit FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -393,8 +393,8 @@ Example nonzero_map_squares_compute
        (model_mapped bool_cocycle_sphere)),
      value (model_mapped (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
      value (@inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere)),
-     value (model_mapped (@monoid_unit _ (hasMonoid GZ))),
-     value (@monoid_unit _ (hasMonoid GZ))) = (false, false, true, true, false, false).
+     value (model_mapped (@mul_unit _ (hasMonoid GZ))),
+     value (@mul_unit _ (hasMonoid GZ))) = (false, false, true, true, false, false).
 Proof. vm_compute. reflexivity. Defined.
 
 (** The mapped product square is a real cocycle cylinder. *)
@@ -434,7 +434,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际非零像仍不能通过柱等于群单位。 *)
 
 Definition mapped_nonzero_not_unit
-  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @monoid_unit _ (hasMonoid GZ)).
+  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @mul_unit _ (hasMonoid GZ)).
 Proof.
   intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
   change (true = false) in H. discriminate H.

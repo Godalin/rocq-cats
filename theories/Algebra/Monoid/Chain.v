@@ -8,7 +8,7 @@ From Stdlib Require Import
   Lia.
 
 Local Open Scope nat_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Products of Consecutive Arrows in a Monoid
 
@@ -54,9 +54,10 @@ Proof.
   - reflexivity.
   - destruct i as [[] | i], j as [[] | j]; cbn [monoid_segment].
     + reflexivity.
-    + apply (@mul_proper _ (hasMagma M)).
-      * apply IH. apply tuple_tail_proper. exact H.
-      * exact (H fin_first).
+    + assert (Ht : monoid_segment (tuple_tail xs) fin_first j ≈S
+          monoid_segment (tuple_tail ys) fin_first j).
+      { apply IH. apply tuple_tail_proper. exact H. }
+      rewrite Ht, (H fin_first). reflexivity.
     + reflexivity.
     + apply IH. apply tuple_tail_proper. exact H.
 Defined.
@@ -85,7 +86,7 @@ Proof.
   destruct i as [[] | i].
   - change (monoid_segment (tuple_tail xs) fin_first fin_first ⋅
       tuple_head xs ≈S tuple_head xs).
-    rewrite monoid_segment_id. apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+    rewrite monoid_segment_id, mul_unit_l. reflexivity.
   - apply IH.
 Defined.
 
@@ -100,14 +101,14 @@ Lemma monoid_segment_comp {n : nat} (xs : M ^S n)
       monoid_segment xs j k ⋅ monoid_segment xs i j.
 Proof.
   induction n as [|n IH] in xs, i, j, k, Hij, Hjk |- *.
-  - symmetry. apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+  - rewrite mul_unit_l. reflexivity.
   - destruct i as [[] | i], j as [[] | j], k as [[] | k];
       cbn [fin_rank] in Hij, Hjk; try lia;
       cbn [monoid_segment].
-    + symmetry. apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
-    + symmetry. apply (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+    + rewrite mul_unit_l. reflexivity.
+    + rewrite mul_unit_r. reflexivity.
     + rewrite (IH (tuple_tail xs) fin_first j k).
-      * apply (@mul_assoc _ (isSemigroup M)).
+      * apply mul_assoc.
       * cbn. lia.
       * cbn. lia.
     + apply IH; cbn in *; lia.
@@ -209,6 +210,6 @@ Defined.
 End Chain.
 
 Notation "xs '⟦' i ',' j '⟧⋅'" := (monoid_segment xs i j)
-  (at level 8, left associativity, format "xs ⟦ i , j ⟧⋅") : monoid_scope.
+  (at level 8, left associativity, format "xs ⟦ i , j ⟧⋅") : algebra_scope.
 Notation "xs '[' f ']M'" := (monoid_chain_sub f xs)
-  (at level 8, left associativity, format "xs [ f ]M") : monoid_scope.
+  (at level 8, left associativity, format "xs [ f ]M") : algebra_scope.

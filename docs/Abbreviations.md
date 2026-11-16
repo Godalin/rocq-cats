@@ -912,7 +912,7 @@ This separate exact map implements the user-authorized ergonomic follow-up
 to [architecture #42](https://github.com/Godalin/rocq-cats/issues/42), with
 implementation in [#15](https://github.com/Godalin/rocq-cats/issues/15) and
 [naming review in #38](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626).
-It starts at `hierarchy-packed-algebra-42@e30adfa`; the 44 entries below are
+It starts at `hierarchy-packed-algebra-42@e30adfa`; the 45 entries below are
 implemented and locally validated for the current user-review checkpoint.
 This is not an extension of the historical 195-entry Batch 4 abbreviation
 table or an integration
@@ -922,7 +922,7 @@ unchanged; no compatibility aliases are introduced.
 本独立精确表落实用户授权的 [#42 架构易用性后续](https://github.com/Godalin/rocq-cats/issues/42)，
 具体实现归 [#15](https://github.com/Godalin/rocq-cats/issues/15)，
 [命名审阅归 #38](https://github.com/Godalin/rocq-cats/issues/38#issuecomment-6908412626)。
-从 `hierarchy-packed-algebra-42@e30adfa` 开始，以下 44 项已完成本地实施及
+从 `hierarchy-packed-algebra-42@e30adfa` 开始，以下 45 项已完成本地实施及
 验证，作为当前用户审阅检查点；不扩充历史第四批 195 项缩写表，也不表示提交
 集成。模块路径、选定数据及乘法记号保持不变，不增加兼容别名。
 
@@ -933,6 +933,7 @@ unchanged; no compatibility aliases are introduced.
 | `MonoidSG` | `MonoidToSemigroup` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
 | `GroupM` | `GroupToMonoid` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
 | `magma_mul` | `mul` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `monoid_unit` | `mul_unit` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
 | `magma_mul_proper` | `mul_proper` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
 | `semigroup_assoc` | `mul_assoc` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
 | `monoid_unit_l` | `mul_unit_l` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
@@ -976,16 +977,17 @@ unchanged; no compatibility aliases are introduced.
 Each parent name denotes the same immediate `:>` projection; no direct
 ancestor bypass is added. All stronger structures inherit one `mul` and
 its laws from the weakest defining layer. `inv` is the one selected inverse;
-`monoid_unit` is retained because the short name `unit` conflicts with Rocq's
-one-element type. When another theory uses a short name, qualify the algebra
+`mul_unit` names the selected multiplicative unit; bare `unit` conflicts
+with Rocq's one-element type. When another theory uses a short name, qualify the algebra
 declaration rather than adding a structure-specific alias.
 
 每个方向父名称仍为原来的直接 `:>` 投影，不增加绕过直接父结构的祖先转换。
 更强结构从最弱定义层继承同一个 `mul` 及其定律；`inv` 为唯一的选定逆。
-保留 `monoid_unit`，避免与 Rocq 单元素类型 `unit` 冲突。短名与其他理论
-重叠时使用限定名称，不另设带结构前缀的别名。
+选定乘法单位元命名为 `mul_unit`，避免与 Rocq 单元素类型 `unit` 冲突。
+短名与其他理论重叠时使用限定名称，不另设带结构前缀的别名。
 
-Validation with Rocq 9.3.0 / Stdlib 9.2.0: `dune build -j2 @all @runtest
+Checkpoint `77a7cf0` validation with Rocq 9.3.0 / Stdlib 9.2.0:
+`dune build -j2 @all @runtest
 @install` passed; 218 temporary assumption reports are closed, including all
 44 public names. All 44 retired-name probes and nine earlier transitional-name
 probes passed. The 63 Rocq files contain only the mapped renames and three
@@ -993,11 +995,78 @@ formula line wraps; imports are unchanged. See the
 [structure guide](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration)
 for the full validation scope. No export or shared environment changes.
 
-Rocq 9.3.0／Stdlib 9.2.0 下的全库、测试、安装检查通过，218 项临时假设
+检查点 `77a7cf0` 在 Rocq 9.3.0／Stdlib 9.2.0 下的全库、测试、安装检查
+通过，218 项临时假设
 报告全部闭合，含全部 44 个公开名；44 个退役名及九个更早过渡名负探针通过。
 63 个 Rocq 文件只有表内改名及三处公式换行，导入不变。完整验证范围见
 [结构指南](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration)，
 无导出或共享环境改动。
+
+### Shared algebra scope / 共用代数作用域
+
+The user-authorized follow-up to #42 combines the above field names with
+one inherited notation scope. This is a separate scope migration, not an
+extension of the historical 195-entry Batch 4 table. The identifier map
+above now has 45 entries, including the later user-requested `monoid_unit → mul_unit` change; scope changes are:
+
+用户授权的 #42 后续将上述字段名称与唯一继承记号作用域合并实施。本节独立
+记录作用域迁移，不扩充历史第四批 195 项表。上方现有 45 项标识符改名，
+含用户后续指定的 `monoid_unit → mul_unit`；
+作用域的源码 breaking 变化如下：
+
+| Old / 旧名 | New / 新名 | Source / 源码 |
+| --- | --- | --- |
+| `magma_scope` | `algebra_scope` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `monoid_scope` | `algebra_scope` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `%magma` | `%alg` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `%monoid` | `%alg` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+
+The multiplication and section glyphs are unchanged. Their interpretations
+are declared once in the magma core and inherited by `Require Export`;
+monoid and group add only unit and inverse notation in the same scope.
+Local opening is explicit. No compatibility scopes or Notations modules
+are retained; the chain-specific segment/substitution notations also move
+to `algebra_scope`. The separate repository-wide reserved-notation work
+is not replayed or taken over by this bounded algebra follow-up.
+
+乘法与偏应用符号不变，解释只在原群核心声明一次，通过 `Require Export`
+继承；幺半群与群分别只在同一作用域增加单位元与逆记号，作用域须显式局部
+打开。不保留兼容作用域或增加 Notations 模块；连续乘积／替换记号也迁入
+`algebra_scope`。本有界代数后续不重放或接管独立的全库预留记号工作。
+
+The local follow-up passes full build/tests/install, the original 218 closed
+reports and 12 new notation reports. Old scopes are rejected; no mathematical
+definitions, laws, parent projections or identifiers change in this follow-up.
+This notation checkpoint was local review work, not an integration submission.
+
+本地后续通过全库／测试／安装、原 218 项闭合报告及新增 12 项记号报告，旧作用域
+被拒绝；该记号检查点不改数学定义、定律、父投影或标识符，仅为本地待审成果，
+不是集成候选。
+
+### Selected multiplicative unit / 选定乘法单位元
+
+At the unit-renaming checkpoint, the user-requested `monoid_unit → mul_unit`
+entry above was implemented
+on the same local WIP, without a compatibility alias. The earlier 44 names
+are unchanged; the current map has 45 entries. All 21 affected Rocq files
+contain only this exact token replacement relative to the notation WIP.
+Final full build/tests/install passed; the expanded audit has 231 closed
+reports, and the retired unit name fails as intended. This was a local
+review checkpoint, with no integration handoff.
+
+在单位字段改名检查点，用户指定的 `monoid_unit → mul_unit` 在同一本地 WIP
+实施，不保留
+兼容别名。此前 44 项名称不变，当前对照表共 45 项；21 个受影响 Rocq 文件
+相对前一步记号 WIP 只有该精确词元替换。最终全库／测试／安装通过，扩展审计
+共 231 项报告全部闭合，旧单位字段名按预期退役；该检查点仅为本地待审成果，
+未交集成。
+
+The subsequent readability cleanup uses the same 45 identifiers and scope
+map; mathematical notation, inferred law arguments and actual rewriting
+are simplified without local forwarding bindings. See the [structure guide](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration).
+
+后续可读性整理沿用这 45 项名称及作用域表，简化数学记号、定律隐式参数及
+实际重写，不增加局部转发绑定，详见[结构指南](./BundledInterfaces.md#complete-algebra-hierarchy-current-migration)。
 
 ## Pending batches / 后续批次
 
@@ -1012,7 +1081,7 @@ work follows the separate user-authorized bundled-interface migration.
 | --- | --- | --- |
 | Optional names / 可选名称 | `BoolGroupoid → BoolGpd`, `IsStrictTwoCat → IsStrict2Cat`, `NaturalPrismF → NatPrismF`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
 | Complete hierarchies / 完整层级 | `CartesianCat`, groupoid/monoidal/CCC bundling / 群胚、幺半及 CCC 打包 | Separately authorized; Cat/Gpd first slice in progress / 已独立授权，Cat/Gpd 首片进行中 |
-| Notation / 记号 | `Reserved Notation` / `where` | Separate review / 单独审阅 |
+| Other notation / 其他记号 | Repository-wide reserved syntax beyond the algebra slice above / 上述代数片段以外的全库预留语法 | Separate review; no replay of #31 / 单独审阅，不重放 #31 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突
 

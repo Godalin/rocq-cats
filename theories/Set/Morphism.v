@@ -122,6 +122,19 @@ Defined.
 
 Infix "→S" := FunS (at level 99).
 
+(** Evaluation respects both pointwise equality of maps and equality of
+    inputs. This lets setoid rewriting pass through a varying bundled map. *)
+
+(** 求值同时保持映射的逐点相等和输入相等，使广集重写能够穿过变化的打包映射。 *)
+
+Global Instance func_apply_proper {X Y : SetC}
+  : Proper (carrier_equiv (X →S Y) ==> carrier_equiv X ==>
+      carrier_equiv Y) (@func X Y).
+Proof.
+  intros f g Hf x y Hx.
+  transitivity (f y); [apply func_proper; exact Hx | exact (Hf y)].
+Defined.
+
 (** The operation respects the specified equivalences of its arguments. *)
 
 (** 该运算保持各参数指定的等价关系。 *)

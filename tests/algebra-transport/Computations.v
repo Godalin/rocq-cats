@@ -5,7 +5,7 @@ From Cats Require Import
 From Cats Require Import
   Instance.Bool.Group.
 
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * A Transport Which Changes Representatives and the Unit
 
@@ -106,7 +106,7 @@ Proof. vm_compute. reflexivity. Qed.
 (** 运输单位元及两个逆元都是实际返回值。 *)
 
 Example unit_inverse_values
-  : (@monoid_unit _ (hasMonoid TaggedGroup),
+  : (@mul_unit _ (hasMonoid TaggedGroup),
      @inv _ (hasGroup TaggedGroup) (false, 19),
      @inv _ (hasGroup TaggedGroup) (true, 23)) =
     ((true, 0), (false, 0), (true, 0)).
@@ -157,7 +157,7 @@ Definition involution_client (x : TaggedS)
 
 Definition uniqueness_client (x y : TaggedS)
     (H : @mul _ (hasMagma TaggedGroup) y x ≈S
-      @monoid_unit _ (hasMonoid TaggedGroup))
+      @mul_unit _ (hasMonoid TaggedGroup))
   : y ≈S @inv _ (hasGroup TaggedGroup) x
   := @inv_unique TaggedGroup x y H.
 
@@ -186,8 +186,8 @@ Definition product_comparison_client (x y : TaggedS)
 (** 单位比较读出原来源单位。 *)
 
 Definition unit_comparison_client
-  : to_bool (@monoid_unit _ (hasMonoid TaggedGroup)) ≈S
-      @monoid_unit _ (hasMonoid BoolS_Group)
+  : to_bool (@mul_unit _ (hasMonoid TaggedGroup)) ≈S
+      @mul_unit _ (hasMonoid BoolS_Group)
   := monoid_transport_map_unit BoolS_Group to_bool from_bool
       source_recovery target_recovery.
 
@@ -209,7 +209,7 @@ Fail Definition native_recovery
   : from_bool (to_bool (false, 17)) = (false, 17)
   := eq_refl.
 Fail Definition native_unit_law
-  : @mul _ (hasMagma TaggedGroup) (@monoid_unit _ (hasMonoid TaggedGroup))
+  : @mul _ (hasMagma TaggedGroup) (@mul_unit _ (hasMonoid TaggedGroup))
       (false, 17) = (false, 17)
   := eq_refl.
 Fail Definition no_implicit_model : HasGroup BoolS_Monoid := ltac:(typeclasses eauto).

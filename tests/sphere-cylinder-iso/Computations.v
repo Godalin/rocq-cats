@@ -197,8 +197,8 @@ Definition inverse_cylinder
 
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W false
-      (backward (@monoid_unit _ (hasMonoid (G true true false true))))
-      (@monoid_unit _ (hasMonoid (G false false true false)))
+      (backward (@mul_unit _ (hasMonoid (G true true false true))))
+      (@mul_unit _ (hasMonoid (G false false true false)))
   := two_sphere_cylinder_inverse_unit FlipN flip_iso false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -248,8 +248,8 @@ Example base_and_operations_compute
      (@mul _ (hasMagma (G false false true false)) (backward z) (backward z)).1,
      (backward (@inv _ (hasGroup (G true true false true)) z)).1,
      (@inv _ (hasGroup (G false false true false)) (backward z)).1,
-     (backward (@monoid_unit _ (hasMonoid (G true true false true)))).1,
-     (@monoid_unit _ (hasMonoid (G false false true false))).1) =
+     (backward (@mul_unit _ (hasMonoid (G true true false true)))).1,
+     (@mul_unit _ (hasMonoid (G false false true false))).1) =
     (true, false, true, false, false, true, true, false,
      true, false, true, false).
 Proof. vm_compute. reflexivity. Defined.
@@ -335,8 +335,8 @@ Fail Definition inverse_not_native
       @inv _ (hasGroup (G false false true false)) (backward z)
   := ltac:(vm_compute; reflexivity).
 Fail Definition unit_not_native
-  : backward (@monoid_unit _ (hasMonoid (G true true false true))) =
-      @monoid_unit _ (hasMonoid (G false false true false))
+  : backward (@mul_unit _ (hasMonoid (G true true false true))) =
+      @mul_unit _ (hasMonoid (G false false true false))
   := ltac:(vm_compute; reflexivity).
 
 (** ** Real Nonzero Cocycle Consumers
@@ -479,7 +479,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际非零逆像仍不能由柱等于单位。 *)
 
 Definition inverse_image_nonzero_not_unit
-  : ¬ ((model_backward bool_cocycle_sphere : CZ) ≈S @monoid_unit _ (hasMonoid GZ)).
+  : ¬ ((model_backward bool_cocycle_sphere : CZ) ≈S @mul_unit _ (hasMonoid GZ)).
 Proof.
   intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
   change (true = false) in H. discriminate H.

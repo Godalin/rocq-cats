@@ -8,7 +8,7 @@ From Cats Require Import
 
 Local Open Scope nat_scope.
 Local Open Scope ordinal_scope.
-Local Open Scope monoid_scope.
+Local Open Scope algebra_scope.
 
 (** * Multiplication of Cocycle Sphere Classes
 
@@ -195,7 +195,7 @@ Program Definition cocycle_two_sphere_Monoid
       (MagmaFromExtension Q (hasMagma cocycle_two_sphere_Magma))
       (isSemigroup cocycle_two_sphere_Semigroup)
   ; hasMonoid :=
-      {|monoid_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
+      {|mul_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
       ; isMonoid :=
           {|mul_unit_l := cocycle_two_sphere_unit_l
           ; mul_unit_r := cocycle_two_sphere_unit_r
