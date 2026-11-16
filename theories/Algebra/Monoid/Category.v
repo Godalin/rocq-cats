@@ -39,11 +39,21 @@ Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
 (** 恒等箭头将已有自态射半群扩展为幺半群；特别地，这给出指定单对象范畴的
     反向构造，不重复保存复合。 *)
 
-Program Definition EndMonoid (C : Cat) (X : @Ob C)
-  : Monoid (HomSet X X)
+Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
+  : HasMonoid (EndSemigroup C X)
   :=
-  {|MonoidSG := EndSemigroup C X
-  ; monoid_unit := @id X
-  ; monoid_unit_l := comp_id_l
-  ; monoid_unit_r := comp_id_r
+  {|monoid_chosen_unit := @id X
+  ; isMonoid :=
+      {|monoid_unit_left := comp_id_l
+      ; monoid_unit_right := comp_id_r
+      |}
   |}.
+
+(** The existing monoid presentation reuses the selected endomorphism
+    semigroup and its identity extension without rebuilding composition. *)
+
+(** 现有幺半群呈现复用选定自态射半群及恒等扩充，不重建复合。 *)
+
+Definition EndMonoid (C : Cat) (X : @Ob C)
+  : Monoid (HomSet X X)
+  := MonoidFromExtension (EndSemigroup C X) (EndHasMonoid C X).

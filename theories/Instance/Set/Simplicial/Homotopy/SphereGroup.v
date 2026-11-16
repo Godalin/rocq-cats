@@ -110,9 +110,13 @@ Program Definition TwoSphereClassMonoid
   : Monoid Q
   :=
   {|MonoidSG := TwoSphereClassSemigroup H
-  ; monoid_unit := two_sphere_base X b
-  ; monoid_unit_l := two_sphere_kan_mul_unit_l X b H
-  ; monoid_unit_r := two_sphere_kan_mul_unit_r X b H
+  ; hasMonoid :=
+      {|monoid_chosen_unit := two_sphere_base X b
+      ; isMonoid :=
+          {|monoid_unit_left := two_sphere_kan_mul_unit_l X b H
+          ; monoid_unit_right := two_sphere_kan_mul_unit_r X b H
+          |}
+      |}
   |}.
 
 (** General monoid inverse uniqueness identifies the two independent

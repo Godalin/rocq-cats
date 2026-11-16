@@ -27,8 +27,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 - Separate candidate universal properties (`is_*`) from chosen structures
   (`Has*`); use the weakest sufficient assumptions. Chosen model structures
   must be explicitly enabled, not registered globally by import.
-- Bundle category-like data and laws in one `Class`, without a staging `*Data`
-  record. Keep derived operations separate.
+- Follow [issue #42](https://github.com/Godalin/rocq-cats/issues/42): use
+  `Class` for properties of specified data and chosen extensions over fixed
+  parents; use `Record` for first-class complete mathematical objects. Keep
+  operations and laws defined once, without a staging `*Data` record, and
+  expose other presentations through transparent views. Existing interfaces
+  migrate in bounded steps; an `Is`/`Has` split is not a compulsory template.
 
 ## Structural hierarchies
 
@@ -46,6 +50,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   declare it with `:>` and a kind-based name such as `GroupM` or `CCCC`.
   Reach weaker structures through that parent; add no direct bypass to an
   ancestor and do not duplicate inherited operations or universal choices.
+  Meaningful multiple parent views are allowed: derive them from shared data
+  and verify converging ancestor paths by conversion, including actual Rocq
+  coercion behavior. Do not add duplicate selections to create a diamond.
 - If the parent view must also support instance search, register the same
   projection with `#[export] Existing Instance GroupM`; `:>` alone does not
   register an inherited instance. Supplementary chosen structures/properties

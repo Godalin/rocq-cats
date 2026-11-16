@@ -36,12 +36,15 @@ Context (f : B →r A) (g : A →r B).
 
 (** 保留直接半群父结构，单位元由给定来源幺半群显式计算。 *)
 
-Program Definition MonoidTransport (HA : Monoid A)
+Program Definition HasMonoidTransport (HA : Monoid A)
     (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
-  : Monoid B
+  : HasMonoid (SemigroupTransport f g HA Hfg)
   :=
-  {|MonoidSG := SemigroupTransport f g HA Hfg
-  ; monoid_unit := g (@monoid_unit A HA)
+  {|monoid_chosen_unit := g (@monoid_unit A HA)
+  ; isMonoid :=
+      {|monoid_unit_left := _
+      ; monoid_unit_right := _
+      |}
   |}.
 Next Obligation.
   change (g (@magma_mul A HA (f (g (@monoid_unit A HA))) (f x)) ≈S x).
@@ -57,6 +60,17 @@ Next Obligation.
   - apply (@magma_mul_proper A HA); [reflexivity | apply Hfg].
   - exact (@monoid_unit_r A HA (f x)).
 Defined.
+
+(** Recover the existing transported-monoid presentation from the same
+    transported parent and its chosen unit extension. *)
+
+(** 从同一运输父结构及其选定单位扩充恢复现有运输幺半群呈现。 *)
+
+Definition MonoidTransport (HA : Monoid A)
+    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
+  : Monoid B
+  := MonoidFromExtension (SemigroupTransport f g HA Hfg)
+      (HasMonoidTransport HA Hfg Hgf).
 
 (** The forward map preserves this same selected unit. *)
 
