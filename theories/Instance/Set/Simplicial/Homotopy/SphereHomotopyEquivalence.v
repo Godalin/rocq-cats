@@ -203,3 +203,15 @@ Proof.
 Defined.
 
 End SphereHomotopyEquivalence.
+
+(** The actual-cylinder presentation of these same corrected maps and round
+    trips is developed in
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderHomotopy.two_sphere_cylinder_homotopy_iso}
+    {%[two_sphere_cylinder_homotopy_iso]%}%. That comparison reuses the
+    missing-face-one/two choices already contained in its presentations;
+    both constant-trajectory hypotheses remain explicit. *)
+
+(** 同样校正映射及往返的实际柱呈现见
+    %\coqref{Cats.Instance.Set.Simplicial.Homotopy.SphereCylinderHomotopy.two_sphere_cylinder_homotopy_iso}
+    {%[two_sphere_cylinder_homotopy_iso]%}%。该比较复用呈现中已有的缺第一／第二面
+    选择，并显式保留两个常值轨迹前提。 *)
