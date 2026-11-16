@@ -165,13 +165,14 @@ and the strict fifteen-universe transport call. The latter succeeds with the
 old and repaired implementations and fails with the original `128774b`
 implementation. The original 30+2 assumption checks and three competing-choice
 unit/law computations all remain closed. After erasing universe annotations,
-argument-name directives and comments, both changed theory modules match
-`128774b` exactly.
+argument-name directives, comments and whitespace, both changed theory modules
+match `128774b` exactly.
 
 追加兼容修订也通过全库／测试／安装、十项新旧完整公开签名比较、六个旧核心
 调用及严格十五宇宙运输调用。运输调用在旧版与修复版通过，在原 `128774b`
 实现上失败；原 30+2 项假设检查及三项竞争选择的单位元／定律计算全部闭合。
-除去宇宙标注、参数名指令与注释，两份修改后的理论模块与 `128774b` 完全一致。
+除去宇宙标注、参数名指令、注释及空白，两份修改后的理论模块与 `128774b`
+完全一致。
 
 This step does not yet replace the parameterized algebra hierarchy with
 unparameterized complete records, introduce an arbitrary hierarchy diamond,
