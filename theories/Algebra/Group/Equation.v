@@ -16,7 +16,7 @@ Local Open Scope monoid_scope.
     and the two inverse laws. Thus multiplying by [a] is reversible even
     when [G] is not commutative. The forward map is
     %\coqref{Cats.Algebra.Magma.Core.magma mul l resp}
-    {%[magma_mul_l_resp]%}%; its inverse is
+    {%[(a ⋅−)]%}%; its inverse is
     %\coqref{Cats.Algebra.Group.Equation.group mul l solve resp}
     {%[group_mul_l_solve_resp]%}% below.
 
@@ -34,7 +34,7 @@ Local Open Scope monoid_scope.
     图中两条箭头是同一个广集 [G] 上实际的保相等函数。由结合律和两条逆律，
     它们的复合逐点等于恒等函数。因此，即使 [G] 不交换，乘以 [a] 也可逆。
     正向映射为 %\coqref{Cats.Algebra.Magma.Core.magma mul l resp}
-    {%[magma_mul_l_resp]%}%，逆映射为下方的
+    {%[(a ⋅−)]%}%，逆映射为下方的
     %\coqref{Cats.Algebra.Group.Equation.group mul l solve resp}
     {%[group_mul_l_solve_resp]%}%。
 
@@ -211,7 +211,7 @@ Defined.
 (** 对选定左乘解作乘法，恢复方程右端。 *)
 
 Lemma group_mul_l_solve_β (a : G)
-  : magma_mul_l_resp a ∘r group_mul_l_solve_resp a ≈f id_resp.
+  : (a ⋅−) ∘r group_mul_l_solve_resp a ≈f id_resp.
 Proof. intro b. exact (@this _ _ _ _ _ (GroupMulLSolution a b).2). Defined.
 
 (** Solving after left multiplication recovers the input, by uniqueness. *)
@@ -219,7 +219,7 @@ Proof. intro b. exact (@this _ _ _ _ _ (GroupMulLSolution a b).2). Defined.
 (** 由唯一性，先左乘再求解即可恢复输入。 *)
 
 Lemma group_mul_l_solve_η (a : G)
-  : group_mul_l_solve_resp a ∘r magma_mul_l_resp a ≈f id_resp.
+  : group_mul_l_solve_resp a ∘r (a ⋅−) ≈f id_resp.
 Proof.
   intro x. symmetry.
   apply (@that _ _ _ _ _ (GroupMulLSolution a (a ⋅ x)).2 x).
@@ -231,7 +231,7 @@ Defined.
 (** 右乘方程的解满足同样的求值律。 *)
 
 Lemma group_mul_r_solve_β (a : G)
-  : magma_mul_r_resp a ∘r group_mul_r_solve_resp a ≈f id_resp.
+  : (−⋅ a) ∘r group_mul_r_solve_resp a ≈f id_resp.
 Proof. intro b. exact (@this _ _ _ _ _ (GroupMulRSolution a b).2). Defined.
 
 (** Uniqueness also gives the right-multiplication round trip. *)
@@ -239,7 +239,7 @@ Proof. intro b. exact (@this _ _ _ _ _ (GroupMulRSolution a b).2). Defined.
 (** 唯一性也给出右乘情形的往返律。 *)
 
 Lemma group_mul_r_solve_η (a : G)
-  : group_mul_r_solve_resp a ∘r magma_mul_r_resp a ≈f id_resp.
+  : group_mul_r_solve_resp a ∘r (−⋅ a) ≈f id_resp.
 Proof.
   intro x. symmetry.
   apply (@that _ _ _ _ _ (GroupMulRSolution a (x ⋅ a)).2 x).

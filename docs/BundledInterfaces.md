@@ -123,6 +123,11 @@ inverse notation pass the complete object's stored evidence explicitly.
 Respectful maps and derived inverse laws remain genuine constructions; no
 view independently redefines an operation or proves its laws again.
 
+Multiplication sections `(x ⋅−)` and `(−⋅ y)` denote the existing respectful
+left- and right-multiplication maps. Both `magma_scope` and `monoid_scope`
+provide these notations; their composites use ordinary `∘r`. For example,
+associativity gives `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`.
+
 [幺半群核心](../theories/Algebra/Monoid/Core.v) 中，`monoid_unit` 直接是
 `HasMonoid` 字段，`monoid_unit_l/r` 直接是 `IsMonoid` 字段，不另导出定义
 模拟旧单位接口。数字记号显式读取完整幺半群保存的见证；固定父结构客户端
@@ -130,6 +135,10 @@ view independently redefines an operation or proves its laws again.
 `group_inv_l/r` 直接作为扩充／性质字段，不保留带 `chosen` 的中间名称及同名
 转发定义。乘法与逆记号显式传入完整对象保存的见证。保相等映射及导出的逆律
 仍是实际数学构造，所有视图均不重新定义运算或重证定律。
+
+乘法偏应用 `(x ⋅−)` 与 `(−⋅ y)` 分别表示既有的左乘及右乘保相等映射。
+`magma_scope` 与 `monoid_scope` 均提供这组记号，复合仍使用普通 `∘r`。
+例如结合律给出 `((x ⋅ y) ⋅−) ≈f ((x ⋅−) ∘r (y ⋅−))`。
 
 The [boolean](../theories/Instance/Bool/Group.v), endomorphism
 ([magma](../theories/Algebra/Magma/Category.v),
