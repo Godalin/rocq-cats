@@ -11,7 +11,6 @@ Import Cats.Instance.Set.Groupoid (EqGpd).
 Import Cats.Instance.Set.Simplicial.Vertex.Core (VtxNerve).
 Import Cats.Instance.Set.Simplicial.Vertex.Sphere (vertex_two_sphere_unique).
 
-Local Existing Instance BoolS_Monoid.
 
 (** * Two Sphere Classes in an Actual Kan Model
 
@@ -51,7 +50,7 @@ Local Existing Instance BoolS_Monoid.
 
 Definition BoolCocycleSphereClassS
   : SetC
-  := TwoSphereClassS BoolCocycleModel (two_cocycle_simplex_unit 0).
+  := TwoSphereClassS BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0).
 
 (** The true coefficient gives a specified based sphere. *)
 
@@ -59,7 +58,7 @@ Definition BoolCocycleSphereClassS
 
 Definition bool_cocycle_sphere
   : BoolCocycleSphereClassS
-  := cocycle_two_sphere_resp true.
+  := (cocycle_two_sphere_resp (M := BoolS_Monoid)) true.
 
 (** This sphere is not null under the entire generated relation. *)
 
@@ -67,10 +66,10 @@ Definition bool_cocycle_sphere
 
 Lemma bool_cocycle_sphere_not_null
   : ¬ (bool_cocycle_sphere ≈S
-      two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0)).
+      two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)).
 Proof.
   intros H.
-  pose proof (@func_proper _ _ cocycle_two_sphere_class_value_resp _ _ H) as E.
+  pose proof (@func_proper _ _ (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) _ _ H) as E.
   change (true = false) in E. discriminate E.
 Defined.
 
@@ -97,13 +96,13 @@ Context {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
     二维分量的逆反映其被迫成立的相等。 *)
 
 Lemma bool_cocycle_not_vertex_nerve
-  : ¬ ((Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
+  : ¬ ((Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
 Proof.
   intros [α Hα].
-  pose (B := (Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
-  pose (b := (two_cocycle_simplex_unit 0 : B 0)).
-  pose (f := (cocycle_two_sphere_resp : BoolS →r TwoSphereS B b)).
+  pose (B := (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})).
+  pose (b := (two_cocycle_simplex_unit (M := BoolS_Monoid) 0 : B 0)).
+  pose (f := (cocycle_two_sphere_resp (M := BoolS_Monoid) : BoolS →r TwoSphereS B b)).
   pose (x := f true). pose (y := f false).
   pose proof (vertex_two_sphere_unique T (α 0 b)
     (two_sphere_map_resp α b x) (two_sphere_map_resp α b y)) as E.
@@ -113,7 +112,7 @@ Proof.
     - transitivity ((Hα 2).1 (α 2 y.1)).
       + exact (@func_proper _ _ (Hα 2).1 _ _ E).
       + exact (fst (Hα 2).2 y.1). }
-  pose proof (@func_proper _ _ two_cocycle_triangle_value_resp _ _ Q) as K.
+  pose proof (@func_proper _ _ (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) _ _ Q) as K.
   change (true = false) in K. discriminate K.
 Defined.
 

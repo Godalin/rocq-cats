@@ -151,20 +151,20 @@ Let C
 (** 只运输既有选定乘法及其 Proper 字段，计算结果是原 Kan 合成代表。 *)
 
 Definition TwoSphereCylinderMagma (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Magma C
-  := MagmaTransport (two_sphere_class_of_cylinder_resp X b KR KC)
-      (two_sphere_cylinder_of_class_resp X b KR KC)
-      (TwoSphereClassMagma X b H).
+  : Magma
+  := MagmaTransport (TwoSphereClassMagma X b H)
+      (two_sphere_class_of_cylinder_resp X b KR KC)
+      (two_sphere_cylinder_of_class_resp X b KR KC).
 
 (** General transport supplies associativity on that exact magma. *)
 
 (** 通用运输为完全相同的原群提供结合律。 *)
 
 Definition TwoSphereCylinderSemigroup (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Semigroup C
-  := SemigroupTransport (two_sphere_class_of_cylinder_resp X b KR KC)
+  : Semigroup
+  := SemigroupTransport (TwoSphereClassSemigroup X b H)
+      (two_sphere_class_of_cylinder_resp X b KR KC)
       (two_sphere_cylinder_of_class_resp X b KR KC)
-      (TwoSphereClassSemigroup X b H)
       (two_sphere_cylinder_class_recovery X b KR KC).
 
 (** Keep that semigroup and the actual constant sphere as unit. The second
@@ -173,10 +173,10 @@ Definition TwoSphereCylinderSemigroup (H : HasHornFillers X 3 fin_first⁺⁺)
 (** 保留该半群，以实际常值球面为单位；第二个元素恢复方程给出两个实际柱单位律。 *)
 
 Definition TwoSphereCylinderMonoid (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Monoid C
-  := MonoidTransport (two_sphere_class_of_cylinder_resp X b KR KC)
+  : Monoid
+  := MonoidTransport (TwoSphereClassMonoid X b H)
+      (two_sphere_class_of_cylinder_resp X b KR KC)
       (two_sphere_cylinder_of_class_resp X b KR KC)
-      (TwoSphereClassMonoid X b H)
       (two_sphere_cylinder_class_recovery X b KR KC)
       (two_sphere_class_cylinder_recovery X b KR KC).
 
@@ -189,60 +189,56 @@ Definition TwoSphereCylinderGroup
     (H : HasHornFillers X 3 fin_first⁺⁺)
     (K : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L : HasHornFillers X 3 fin_first⁺)
-  : Group C
-  := GroupTransport (two_sphere_class_of_cylinder_resp X b KR KC)
+  : Group
+  := GroupTransport (TwoSphereClassGroup X b H K L)
+      (two_sphere_class_of_cylinder_resp X b KR KC)
       (two_sphere_cylinder_of_class_resp X b KR KC)
-      (TwoSphereClassGroup X b H K L)
       (two_sphere_cylinder_class_recovery X b KR KC)
       (two_sphere_class_cylinder_recovery X b KR KC).
 
-(** The original comparison back to generated classes preserves this
-    exact multiplication, by the generic transport equation. *)
+(** The comparison preserves the actual chosen product. No associativity
+    or inverse choices are needed for this pointwise data equation. *)
 
-(** 返回生成类的原比较映射保持此同一乘法，直接使用通用运输方程。 *)
+(** 比较保持实际选定乘积；此逐点数据方程不要求结合律或逆的选择。 *)
 
 Lemma two_sphere_cylinder_class_mul (H : HasHornFillers X 3 fin_first⁺⁺)
     (x y : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@magma_mul C (TwoSphereCylinderMagma H) x y) ≈S
+      (two_sphere_kan_mul X b H x y) ≈S
       two_sphere_kan_mul X b H
         (two_sphere_class_of_cylinder_resp X b KR KC x)
         (two_sphere_class_of_cylinder_resp X b KR KC y).
 Proof.
-  exact (magma_transport_map_mul _ _ (TwoSphereClassMagma X b H)
-    (two_sphere_cylinder_class_recovery X b KR KC) x y).
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (two_sphere_kan_mul X b H x y)).
 Defined.
 
-(** Unit comparison uses the exact transported monoid and source unit. *)
+(** The actual unit comparison needs no multiplication choice. *)
 
-(** 单位比较使用完全相同的运输幺半群及来源单位。 *)
+(** 实际单位的比较不要求乘法选择。 *)
 
-Lemma two_sphere_cylinder_class_unit (H : HasHornFillers X 3 fin_first⁺⁺)
-  : two_sphere_class_of_cylinder_resp X b KR KC
-      (@monoid_unit C (TwoSphereCylinderMonoid H)) ≈S two_sphere_base X b.
+Lemma two_sphere_cylinder_class_unit
+  : two_sphere_class_of_cylinder_resp X b KR KC (two_sphere_base X b) ≈S
+      two_sphere_base X b.
 Proof.
-  exact (monoid_transport_map_unit _ _ (TwoSphereClassMonoid X b H)
-    (two_sphere_cylinder_class_recovery X b KR KC)
-    (two_sphere_class_cylinder_recovery X b KR KC)).
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (two_sphere_base X b)).
 Defined.
 
-(** Inverse comparison keeps the exact supplied product and both candidate
-    selections; it does not compare selected equality witnesses. *)
+(** The selected inverse comparison needs only the left-candidate choice;
+    product and right-inverse choices belong to the stronger group laws. *)
 
-(** 逆比较保留给定同一乘法及两份候选选择，不比较选定相等见证。 *)
+(** 选定逆的比较只需左候选选择；乘法及右逆选择属于更强的群定律。 *)
 
 Lemma two_sphere_cylinder_class_inv
-    (H : HasHornFillers X 3 fin_first⁺⁺)
-    (K : HasHornFillers X 3 fin_first⁺⁺⁺)
-    (L : HasHornFillers X 3 fin_first⁺) (x : C)
+    (K : HasHornFillers X 3 fin_first⁺⁺⁺) (x : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@group_inv C (TwoSphereCylinderGroup H K L) x) ≈S
-      @group_inv _ (TwoSphereClassGroup X b H K L)
-        (two_sphere_class_of_cylinder_resp X b KR KC x).
+      (@SphereKanLeftInverse X b K x).1 ≈S
+      (@SphereKanLeftInverse X b K
+        (two_sphere_class_of_cylinder_resp X b KR KC x)).1.
 Proof.
-  exact (group_transport_map_inv _ _ (TwoSphereClassGroup X b H K L)
-    (two_sphere_cylinder_class_recovery X b KR KC)
-    (two_sphere_class_cylinder_recovery X b KR KC) x).
+  exact (two_sphere_cylinder_class_recovery X b KR KC
+    (@SphereKanLeftInverse X b K x).1).
 Defined.
 
 End CylinderAlgebra.

@@ -135,7 +135,6 @@ Fail Definition computed_recovery_is_not_native
 
     已有正向下降给出实际三步推导；用显式Kan选择将该链本身折叠回来。 *)
 
-Local Existing Instance BoolS_Monoid.
 Local Opaque TwoSphereClassCylinder two_sphere_cylinder_class
   two_sphere_cylinder_class_iff.
 
@@ -145,7 +144,7 @@ Definition Z
 
 Definition b
   : Z 0
-  := two_cocycle_simplex_unit 0.
+  := (two_cocycle_simplex_unit (M := BoolS_Monoid)) 0.
 
 Definition Sph
   : TwoSphereS Z b
@@ -176,13 +175,13 @@ Definition real_fold_boundary
 Definition nonzero_endpoint_from (M : SimplicialCylinderF (Δ[2]) ⇒ Z)
     (E : (M ∘Nv SimplicialEndpointN (Δ[2]) false) ≈N
       (@simplex_map_resp Z 2 Sph.1))
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (simplex_element_resp (M ∘Nv SimplicialEndpointN (Δ[2]) false)) = true.
 Proof.
-  transitivity (two_cocycle_triangle_value_resp
+  transitivity (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
     ((@simplex_map_resp Z 2 Sph.1) 2 (simplex_generic 2))).
   - exact (@func_proper (Z 2) BoolS
-      (@two_cocycle_triangle_value_resp BoolS BoolS_Monoid) _ _
+      (@two_cocycle_triangle_value_resp BoolS_Monoid) _ _
       (E 2 (simplex_generic 2))).
   - reflexivity.
 Defined.

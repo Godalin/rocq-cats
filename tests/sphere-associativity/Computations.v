@@ -22,7 +22,6 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** Proving associativity does not register stronger selected structures. *)
@@ -30,11 +29,11 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 (** 证明结合律不会注册更强的选定结构。 *)
 
 Fail Definition unchosen_semigroup
-  : Semigroup BoolCocycleSphereClassS
+  : HasMagma BoolCocycleSphereClassS
   := _.
 
 Fail Definition unchosen_group
-  : Group BoolCocycleSphereClassS
+  : HasMagma BoolCocycleSphereClassS
   := _.
 
 (** Three true-labelled inputs have false-labelled intermediate products. *)
@@ -42,24 +41,24 @@ Fail Definition unchosen_group
 (** 三个 true 标签输入具有 false 标签中间乘积。 *)
 
 Definition first_composite
-  := CocycleTwoSphereMul (cocycle_two_sphere_resp true)
-      (cocycle_two_sphere_resp true).
+  := (CocycleTwoSphereMul (M := BoolS_Monoid)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 Definition second_composite
-  := CocycleTwoSphereMul (cocycle_two_sphere_resp true)
-      (cocycle_two_sphere_resp true).
+  := (CocycleTwoSphereMul (M := BoolS_Monoid)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 Definition left_composite
-  := CocycleTwoSphereMul
-      (cocycle_two_sphere_mul (cocycle_two_sphere_resp true)
-        (cocycle_two_sphere_resp true)) (cocycle_two_sphere_resp true).
+  := (CocycleTwoSphereMul (M := BoolS_Monoid))
+      (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) true)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 (** Retain the actual horn and its selected four-simplex filler. *)
 
 (** 保留实际 horn 及其选定四维单形填充。 *)
 
 Definition assoc_horn
-  := SphereAssociativityHornN BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SphereAssociativityHornN BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       first_composite second_composite left_composite.
 
 Definition assoc_filler
@@ -71,11 +70,11 @@ Definition assoc_filler
 
 Definition given_rebracketing
   := SphereCompositeReassociateOfFiller BoolCocycleModel
-      (two_cocycle_simplex_unit 0) first_composite second_composite
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) first_composite second_composite
       left_composite assoc_filler.1 assoc_filler.2.
 
 Definition chosen_rebracketing
-  := SphereCompositeReassociate BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SphereCompositeReassociate BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       first_composite second_composite left_composite.
 
 (** Inspect the four triangular faces of a tetrahedron. *)
@@ -84,10 +83,10 @@ Definition chosen_rebracketing
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
-  := (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-      two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 Example actual_horn_computes
@@ -112,18 +111,18 @@ Definition three_choice
 
 Definition bracket_values (a b c : bool)
   : bool * bool
-  := (cocycle_two_sphere_class_value_resp
-        (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
+        (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
           three_choice
-          (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit 0)
-            three_choice (cocycle_two_sphere_resp a)
-            (cocycle_two_sphere_resp b))
-          (cocycle_two_sphere_resp c)),
-      cocycle_two_sphere_class_value_resp
-        (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit 0)
-          three_choice (cocycle_two_sphere_resp a)
-          (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit 0)
-            three_choice (cocycle_two_sphere_resp b) (cocycle_two_sphere_resp c)))).
+          (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+            three_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+            (cocycle_two_sphere_resp (M := BoolS_Monoid) b))
+          (cocycle_two_sphere_resp (M := BoolS_Monoid) c)),
+      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+        (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+          three_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+          (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+            three_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) b) (cocycle_two_sphere_resp (M := BoolS_Monoid) c)))).
 
 Example all_bracketings_compute
   : (bracket_values false false false, bracket_values false false true,
@@ -139,19 +138,19 @@ Proof. vm_compute. reflexivity. Defined.
 (** 经实际 horn 证明比较无关构造的给定合成。 *)
 
 Example supplied_outputs_associate
-  : (cocycle_two_sphere_mul
-        (cocycle_two_sphere_mul (cocycle_two_sphere_resp true)
-          (cocycle_two_sphere_resp true)) (cocycle_two_sphere_resp true)
+  : (cocycle_two_sphere_mul (M := BoolS_Monoid)
+        (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+          (cocycle_two_sphere_resp (M := BoolS_Monoid) true)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
       : BoolCocycleSphereClassS) ≈S
-      cocycle_two_sphere_mul (cocycle_two_sphere_resp true)
-        (cocycle_two_sphere_mul (cocycle_two_sphere_resp true)
-          (cocycle_two_sphere_resp true)).
+      (cocycle_two_sphere_mul (M := BoolS_Monoid)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+        (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+          (cocycle_two_sphere_resp (M := BoolS_Monoid) true)).
 Proof.
   exact (two_sphere_composite_assoc BoolCocycleModel
-    (two_cocycle_simplex_unit 0) first_composite second_composite left_composite
-    (CocycleTwoSphereMul (cocycle_two_sphere_resp true)
-      (cocycle_two_sphere_mul (cocycle_two_sphere_resp true)
-        (cocycle_two_sphere_resp true)))).
+    (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) first_composite second_composite left_composite
+    (CocycleTwoSphereMul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+      (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) true)))).
 Defined.
 
 (** Use exactly the existing selected magma, without choosing a semigroup. *)
@@ -159,14 +158,14 @@ Defined.
 (** 使用完全相同的既有选定原群，不选择半群。 *)
 
 Definition class_magma
-  : Magma BoolCocycleSphereClassS
-  := TwoSphereClassMagma BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : Magma
+  := TwoSphereClassMagma BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       three_choice.
 
 Example magma_associates (x y z : BoolCocycleSphereClassS)
-  : @magma_mul _ class_magma (@magma_mul _ class_magma x y) z ≈S
-      @magma_mul _ class_magma x (@magma_mul _ class_magma y z).
+  : @magma_mul _ (hasMagma class_magma) (@magma_mul _ (hasMagma class_magma) x y) z ≈S
+      @magma_mul _ (hasMagma class_magma) x (@magma_mul _ (hasMagma class_magma) y z).
 Proof.
   exact (two_sphere_kan_mul_assoc BoolCocycleModel
-    (two_cocycle_simplex_unit 0) three_choice x y z).
+    (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) three_choice x y z).
 Defined.

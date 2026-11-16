@@ -17,17 +17,17 @@ Local Open Scope monoid_scope.
     乘法 [g ⋅ f] 解释为范畴复合 [g ∘ f]。对象类型确为 [unit]，无需等同任意
     同构对象；箭头相等直接使用原广集的相等。 *)
 
-Program Definition MonoidCat (M : SetC) `{HM : !Monoid M}
+Program Definition MonoidCat (M : Monoid)
   : Cat
   :=
   {|Ob := unit
   ; HomSet _ _ := M
   ; id _ := 1
   ; comp _ _ _ g f := g ⋅ f
-  ; comp_proper _ _ _ := magma_mul_proper
-  ; comp_id_r _ _ := monoid_unit_r
-  ; comp_id_l _ _ := monoid_unit_l
-  ; comp_assoc _ _ _ _ := semigroup_assoc
+  ; comp_proper _ _ _ := (@magma_mul_proper _ (hasMagma M))
+  ; comp_id_r _ _ := (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M)))
+  ; comp_id_l _ _ := (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M)))
+  ; comp_assoc _ _ _ _ := (@semigroup_assoc _ (isSemigroup M))
   |}.
 
 Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
@@ -42,10 +42,10 @@ Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
 Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
   : HasMonoid (EndSemigroup C X)
   :=
-  {|monoid_chosen_unit := @id X
+  {|monoid_unit := @id X
   ; isMonoid :=
-      {|monoid_unit_left := comp_id_l
-      ; monoid_unit_right := comp_id_r
+      {|monoid_unit_l := comp_id_l
+      ; monoid_unit_r := comp_id_r
       |}
   |}.
 
@@ -55,5 +55,5 @@ Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
 (** 现有幺半群呈现复用选定自态射半群及恒等扩充，不重建复合。 *)
 
 Definition EndMonoid (C : Cat) (X : @Ob C)
-  : Monoid (HomSet X X)
+  : Monoid
   := MonoidFromExtension (EndSemigroup C X) (EndHasMonoid C X).

@@ -24,7 +24,7 @@ Local Open Scope nat_scope.
 (** 异或幺半群提供具有不同环路的单元素呈现。 *)
 
 Definition BooleanPresentation
-  := MonoidObjF BoolS (HM := BoolS_Monoid).
+  := MonoidObjF BoolS_Monoid.
 
 (** Pairing retains both distinct boolean components. *)
 

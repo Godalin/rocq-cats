@@ -18,7 +18,7 @@ Local Open Scope ordinal_scope.
     比较使用通用四维 horn 填充，不以系数相等代替同伦。 *)
 
 Fail Definition unchosen_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
 Fail Definition unchosen_Kan
@@ -29,7 +29,6 @@ Fail Definition unchosen_four_horn
   : HasHornFillers BoolCocycleModel 4 fin_first⁺⁺
   := _.
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** The generic selected composite, retaining its tetrahedron. *)
@@ -37,35 +36,35 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 (** 保留四面体的通用选定合成。 *)
 
 Definition selected (a b : bool)
-  : ∃ z : TwoSphereS BoolCocycleModel (two_cocycle_simplex_unit 0),
-      TwoSphereComposite BoolCocycleModel (two_cocycle_simplex_unit 0)
-        (cocycle_two_sphere_resp a) (cocycle_two_sphere_resp b) z
-  := SphereKanComposite BoolCocycleModel (two_cocycle_simplex_unit 0)
-      (cocycle_two_sphere_resp a) (cocycle_two_sphere_resp b).
+  : ∃ z : TwoSphereS BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0),
+      TwoSphereComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b) z
+  := SphereKanComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b).
 
 (** The direct product composite uses the existing coefficient construction. *)
 
 (** 直接乘积合成使用既有系数构造。 *)
 
 Definition direct (a b : bool)
-  : TwoSphereComposite BoolCocycleModel (two_cocycle_simplex_unit 0)
-      (cocycle_two_sphere_resp a) (cocycle_two_sphere_resp b)
-      (cocycle_two_sphere_mul (cocycle_two_sphere_resp a)
-        (cocycle_two_sphere_resp b))
-  := CocycleTwoSphereMul (cocycle_two_sphere_resp a)
-      (cocycle_two_sphere_resp b).
+  : TwoSphereComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b)
+      (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) b))
+  := (CocycleTwoSphereMul (M := BoolS_Monoid)) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) b).
 
 (** Retain the elementary comparison homotopy itself. *)
 
 (** 保留初等比较同伦本身。 *)
 
 Definition comparison (a b : bool)
-  : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       (selected a b).1
-      (cocycle_two_sphere_mul (cocycle_two_sphere_resp a)
-        (cocycle_two_sphere_resp b))
+      (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) b))
   := SphereCompositeOutputHomotopy BoolCocycleModel
-      (two_cocycle_simplex_unit 0) (selected a b).2 (direct a b).
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (selected a b).2 (direct a b).
 
 (** Read the four actual triangle faces of a tetrahedron. *)
 
@@ -73,10 +72,10 @@ Definition comparison (a b : bool)
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
-  := (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-      two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 (** All four products give homotopies with two constant faces and the two
@@ -100,7 +99,7 @@ Proof. vm_compute. reflexivity. Defined.
 Definition comparison_volume (a b : bool)
   : BoolCocycleModel 4
   := (horn_fill (SphereCompositeComparisonHornN BoolCocycleModel
-      (two_cocycle_simplex_unit 0) (selected a b).2 (direct a b))).1.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (selected a b).2 (direct a b))).1.
 
 (** All five tetrahedra compute, including the formerly omitted homotopy. *)
 
@@ -128,11 +127,11 @@ Proof. vm_compute. reflexivity. Defined.
 (** 既有系数求值消费新的生成类方程；没有等同两个填充记录的公理。 *)
 
 Example comparison_class_evaluates (a b : bool)
-  : cocycle_two_sphere_class_value_resp (selected a b).1 ≈S
-      cocycle_two_sphere_class_value_resp
-        (cocycle_two_sphere_mul (cocycle_two_sphere_resp a)
-          (cocycle_two_sphere_resp b)).
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (selected a b).1 ≈S
+      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+        (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+          (cocycle_two_sphere_resp (M := BoolS_Monoid) b)).
 Proof.
   apply func_proper. exact (two_sphere_composite_output_eq BoolCocycleModel
-    (two_cocycle_simplex_unit 0) (selected a b).2 (direct a b)).
+    (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (selected a b).2 (direct a b)).
 Defined.

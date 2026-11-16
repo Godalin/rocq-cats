@@ -16,21 +16,20 @@ Local Open Scope monoid_scope.
     标签，而不比较证明字段。 *)
 
 Fail Definition unchosen_boolean_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
 Fail Definition unchosen_boolean_commutativity
-  : @IsCommutativeMonoid BoolS BoolS_Monoid
+  : IsCommutativeMonoid BoolS_Monoid
   := _.
 
-Local Existing Instance BoolS_Group.
 
 (** The first projection computes without unfolding an opaque theorem. *)
 
 (** 第一投影不需要展开不透明定理即可计算。 *)
 
 Example first_label_computes
-  : (Cocycle012Solution true true false).1 = false.
+  : (Cocycle012Solution (G := BoolS_Group) true true false).1 = false.
 Proof. reflexivity. Defined.
 
 (** Solving for the second label retains a nonunit answer. *)
@@ -38,7 +37,7 @@ Proof. reflexivity. Defined.
 (** 第二个标签的求解保留非单位答案。 *)
 
 Example second_label_computes
-  : (Cocycle023Solution true false false).1 = true.
+  : (Cocycle023Solution (G := BoolS_Group) true false false).1 = true.
 Proof. reflexivity. Defined.
 
 (** Reorienting the equation does not obscure the third computation. *)
@@ -46,7 +45,7 @@ Proof. reflexivity. Defined.
 (** 方程换向不遮蔽第三个计算。 *)
 
 Example third_label_computes
-  : (Cocycle123Solution true true false).1 = false.
+  : (Cocycle123Solution (G := BoolS_Group) true true false).1 = false.
 Proof. reflexivity. Defined.
 
 (** The fourth completion also remains transparent. *)
@@ -54,5 +53,5 @@ Proof. reflexivity. Defined.
 (** 第四个补全也保持透明。 *)
 
 Example last_label_computes
-  : (Cocycle013Solution false true false).1 = true.
+  : (Cocycle013Solution (G := BoolS_Group) false true false).1 = true.
 Proof. reflexivity. Defined.

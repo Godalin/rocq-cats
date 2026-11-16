@@ -99,7 +99,7 @@ Defined.
 
 Section MonoidFillers.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 (** Every one-horn is filled by the unit edge, since all vertices agree. *)
 
@@ -188,7 +188,7 @@ End MonoidFillers.
 
 Section GroupFillers.
 Universes u p.
-Context {M : SetC} `{HG : !Group M}.
+Context {M : Group}.
 
 (** The selected coefficient solution gives a filler of the whole horn. *)
 
@@ -338,7 +338,7 @@ End GroupFillers.
 
 Section KanFilling.
 Universes u p.
-Context {M : SetC} `{HG : !Group M} `{HC : !IsCommutativeMonoid M}.
+Context {M : Group} `{HC : !IsCommutativeMonoid M}.
 
 (** Retain the selected three-dimensional fillers as the existing interface. *)
 

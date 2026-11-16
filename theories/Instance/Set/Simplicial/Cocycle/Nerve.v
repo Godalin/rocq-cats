@@ -81,7 +81,7 @@ a \arrow[r,mapsto,"{g f}"] & c(gf(x_a))
 
 Section NerveRetraction.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}
+Context {M : Monoid}
     {A : SetC} {C : Cat} (T : Fct (EqGpd A) C).
 
 Let Z
@@ -119,16 +119,16 @@ Defined.
     自由球面和常值球面；不预设逆见证运输或一般同伦群不变性。 *)
 
 Lemma cocycle_nerve_homotopy_retract_trivial
-    (H : (g ∘Nv f : @CocycleHomotopyMapS M HM Z) ≈S idN) (a : M)
+    (H : (g ∘Nv f : @CocycleHomotopyMapS M Z) ≈S idN) (a : M)
   : a ≈S 1.
 Proof.
   pose (b := (two_cocycle_simplex_unit 0 : Z 0)).
   pose (x := (cocycle_two_sphere_resp a : TwoSphereS Z b)).
   pose (y := two_sphere_base Z b).
   pose proof (@func_proper _ _
-    (@cocycle_homotopy_evaluation_resp M HM Z b x) _ _ H) as Ex.
+    (@cocycle_homotopy_evaluation_resp M Z b x) _ _ H) as Ex.
   pose proof (@func_proper _ _
-    (@cocycle_homotopy_evaluation_resp M HM Z b y) _ _ H) as Ey.
+    (@cocycle_homotopy_evaluation_resp M Z b y) _ _ H) as Ey.
   change (two_cocycle_triangle_value_resp (g 2 (f 2 x.1)) ≈S
     two_cocycle_triangle_value_resp x.1) in Ex.
   change (two_cocycle_triangle_value_resp (g 2 (f 2 y.1)) ≈S
@@ -149,7 +149,7 @@ Defined.
 (** 一份系数非单位的见证排除每个这样的往返。 *)
 
 Definition cocycle_no_nerve_homotopy_retract (a : M) (Ha : ¬ a ≈S 1)
-  : ¬ (g ∘Nv f : @CocycleHomotopyMapS M HM Z) ≈S idN.
+  : ¬ (g ∘Nv f : @CocycleHomotopyMapS M Z) ≈S idN.
 Proof.
   intros H. exact (Ha (cocycle_nerve_homotopy_retract_trivial H a)).
 Defined.

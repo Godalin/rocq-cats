@@ -2,7 +2,6 @@ From Cats Require Export
   Instance.Bool.CocycleSphereGroup
   Instance.Set.Simplicial.Cocycle.SphereCylinder.
 
-Local Existing Instance BoolS_Monoid.
 
 (** * The Nonzero Sphere Also Survives Relative Cylinders
 
@@ -32,9 +31,9 @@ Local Existing Instance BoolS_Monoid.
 (** 相对柱收缩会与先前证明的非零生成类相矛盾。 *)
 
 Lemma bool_cocycle_sphere_no_relative_cylinder
-  : ¬ TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : ¬ TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere
-      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0)).
+      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)).
 Proof.
   intros H. apply bool_cocycle_sphere_not_null.
   exact (cocycle_two_sphere_cylinder_class _ _ H).

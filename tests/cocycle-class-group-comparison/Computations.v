@@ -21,13 +21,11 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
-Local Existing Instance BoolS_Group.
 Local Existing Instance BoolS_IsCommutativeMonoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Fail Definition unchosen_group
-  : Group BoolCocycleSphereClassS
+  : HasMagma BoolCocycleSphereClassS
   := _.
 
 (** Supply the three choices explicitly, retaining the actual model fillers. *)
@@ -47,12 +45,12 @@ Definition right_choice
   := _.
 
 Definition class_group
-  : Group BoolCocycleSphereClassS
-  := TwoSphereClassGroup BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : Group
+  := TwoSphereClassGroup BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       three_choice left_choice right_choice.
 
 Definition class_magma
-  : Magma BoolCocycleSphereClassS
+  : Magma
   := SemigroupM (MonoidSG (GroupM class_group)).
 
 (** Even coefficient commutativity and full Kan do not enable the new
@@ -62,11 +60,11 @@ Definition class_magma
     完全相同父结构。 *)
 
 Fail Definition unchosen_commutativity
-  : @IsCommutativeMonoid BoolCocycleSphereClassS (GroupM class_group)
+  : @IsCommutativeMonoid (GroupM class_group)
   := _.
 
 Definition class_commutativity
-  : @IsCommutativeMonoid BoolCocycleSphereClassS (GroupM class_group)
+  : @IsCommutativeMonoid (GroupM class_group)
   := cocycle_kan_IsCommutativeMonoid three_choice.
 
 (** The general comparison consumes the exact generic group multiplication. *)
@@ -74,27 +72,27 @@ Definition class_commutativity
 (** 一般比较消费通用群中完全相同的乘法。 *)
 
 Example products_agree (x y : BoolCocycleSphereClassS)
-  : @magma_mul _ class_magma x y ≈S cocycle_two_sphere_mul x y.
+  : @magma_mul _ (hasMagma class_magma) x y ≈S (cocycle_two_sphere_mul (M := BoolS_Monoid)) x y.
 Proof. exact (cocycle_kan_mul_eq three_choice x y). Defined.
 
 Example inverses_agree (x : BoolCocycleSphereClassS)
-  : @group_inv _ class_group x ≈S cocycle_two_sphere_inv x.
-Proof. exact (cocycle_kan_left_inverse_eq left_choice x). Defined.
+  : @group_inv _ (hasGroup class_group) x ≈S (cocycle_two_sphere_inv (M := BoolS_Group)) x.
+Proof. exact (cocycle_kan_left_inverse_eq (M := BoolS_Group) left_choice x). Defined.
 
 (** The existing classification maps now preserve the generic product. *)
 
 (** 既有分类映射现在保持通用乘积。 *)
 
 Example decoding_preserves_product (x y : BoolCocycleSphereClassS)
-  : cocycle_two_sphere_class_value_resp (@magma_mul _ class_magma x y) ≈S
-      cocycle_two_sphere_class_value_resp x ⋅
-        cocycle_two_sphere_class_value_resp y.
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (@magma_mul _ (hasMagma class_magma) x y) ≈S
+      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) x ⋅
+        (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) y.
 Proof. exact (cocycle_kan_mul_value three_choice x y). Defined.
 
 Example encoding_preserves_product (a b : bool)
-  : cocycle_two_sphere_class_resp (a ⋅ b) ≈S
-      @magma_mul _ class_magma
-        (cocycle_two_sphere_class_resp a) (cocycle_two_sphere_class_resp b).
+  : (cocycle_two_sphere_class_resp (M := BoolS_Monoid)) ((a : BoolS_Monoid) ⋅ b) ≈S
+      @magma_mul _ (hasMagma class_magma)
+        (cocycle_two_sphere_class_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_class_resp (M := BoolS_Monoid) b).
 Proof. exact (cocycle_kan_class_mul three_choice a b). Defined.
 
 (** The new property proves the model law on that same inherited magma. *)
@@ -102,9 +100,9 @@ Proof. exact (cocycle_kan_class_mul three_choice a b). Defined.
 (** 新性质在同一个继承原群上证明模型定律。 *)
 
 Example model_multiplication_commutes (x y : BoolCocycleSphereClassS)
-  : @magma_mul _ class_magma x y ≈S @magma_mul _ class_magma y x.
+  : @magma_mul _ (hasMagma class_magma) x y ≈S @magma_mul _ (hasMagma class_magma) y x.
 Proof.
-  exact (@monoid_mul_comm _ (GroupM class_group) class_commutativity x y).
+  exact (@monoid_mul_comm (GroupM class_group) class_commutativity x y).
 Defined.
 
 (** Preserve actual Kan computations while reading their coefficients. *)
@@ -113,19 +111,19 @@ Defined.
 
 Definition product_values (a b : bool)
   : bool * bool
-  := (cocycle_two_sphere_class_value_resp
-        (@magma_mul _ class_magma
-          (cocycle_two_sphere_resp a) (cocycle_two_sphere_resp b)),
-      cocycle_two_sphere_class_value_resp
-        (cocycle_two_sphere_mul
-          (cocycle_two_sphere_resp a) (cocycle_two_sphere_resp b))).
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
+        (@magma_mul _ (hasMagma class_magma)
+          (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b)),
+      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+        (cocycle_two_sphere_mul (M := BoolS_Monoid)
+          (cocycle_two_sphere_resp (M := BoolS_Monoid) a) (cocycle_two_sphere_resp (M := BoolS_Monoid) b))).
 
 Definition inverse_values (a : bool)
   : bool * bool
-  := (cocycle_two_sphere_class_value_resp
-        (@group_inv _ class_group (cocycle_two_sphere_resp a)),
-      cocycle_two_sphere_class_value_resp
-        (cocycle_two_sphere_inv (cocycle_two_sphere_resp a))).
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
+        (@group_inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)),
+      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+        (cocycle_two_sphere_inv (M := BoolS_Group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a))).
 
 Example operations_compute
   : (product_values false false, product_values false true,
@@ -145,11 +143,11 @@ Definition underlying_iso
 
 Definition iso_decode (a : bool)
   : bool
-  := lower (underlying_iso.1 {|lower := cocycle_two_sphere_resp a|}).
+  := lower (underlying_iso.1 {|lower := (cocycle_two_sphere_resp (M := BoolS_Monoid)) a|}).
 
 Definition iso_encode_value (a : bool)
   : bool
-  := cocycle_two_sphere_class_value_resp
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
       (lower (underlying_iso.2.1 {|lower := a|})).
 
 Example original_iso_computes

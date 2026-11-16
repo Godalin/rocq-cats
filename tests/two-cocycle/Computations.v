@@ -20,7 +20,7 @@ From Cats Require Import
 (** 导入例子不得隐式选定系数幺半群。 *)
 
 Fail Definition unchosen_boolean_monoid
-  : Monoid BoolS
+  : HasMonoid BoolS_Semigroup
   := ltac:(typeclasses eauto).
 
 Example triangle_label_computes
@@ -40,7 +40,7 @@ Example pulled_back_label_computes
 Proof. reflexivity. Qed.
 
 Example constant_label_computes
-  : (@UnitTwoCocycle [Ord 2] BoolS BoolS_Monoid)⟦
+  : (@UnitTwoCocycle [Ord 2] BoolS_Monoid)⟦
       ordinal_step (@fin_first 1),
       ordinal_step (fin_next (@fin_first 0))⟧₂ = false.
 Proof. reflexivity. Qed.

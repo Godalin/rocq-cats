@@ -57,7 +57,7 @@ c_{012}c_{023}=c_{123}c_{013}.
 \]
 % *)
 
-Record TwoCocycle (J : Cat) (M : SetC) `{HM : !Monoid M}
+Record TwoCocycle (J : Cat) (M : Monoid)
   :=
   { two_cocycle_triangle :> ∀ {x y z : @Ob J},
       Hom x y → Hom y z → M
@@ -74,7 +74,7 @@ Record TwoCocycle (J : Cat) (M : SetC) `{HM : !Monoid M}
         two_cocycle_triangle g h ⋅ two_cocycle_triangle f (h ∘ g)
   }.
 
-Arguments two_cocycle_triangle {_ _ _} _ {_ _ _} _ _.
+Arguments two_cocycle_triangle {_ _} _ {_ _ _} _ _.
 
 (** Apply the underlying label function to a composable pair. Endpoints
     are inferred from the two arrows. *)
@@ -96,7 +96,7 @@ Notation "c '⟦' f ',' g '⟧₂'" := (c _ _ _ f g)
     相等比较 cocycle。保相等及定律见证仍是数据，相等不比较这些字段。 *)
 
 Section Equality.
-Context {J : Cat} {M : SetC} `{HM : !Monoid M}.
+Context {J : Cat} {M : Monoid}.
 
 (** Pointwise equality of triangle labels, valued in [Type]. *)
 
@@ -172,7 +172,7 @@ End Equality.
     广集中逐点比较。 *)
 
 Section Pullback.
-Context {I J : Cat} {M : SetC} `{HM : !Monoid M}.
+Context {I J : Cat} {M : Monoid}.
 
 (** Precompose the two arrow inputs with the functor's arrow map. *)
 
@@ -197,12 +197,12 @@ Defined.
 Next Obligation.
   transitivity (c⟦fmap F f, fmap F g⟧₂ ⋅
     c⟦fmap F g ∘ fmap F f, fmap F h⟧₂).
-  - apply magma_mul_proper; [reflexivity |].
+  - apply (@magma_mul_proper _ (hasMagma M)); [reflexivity |].
     apply two_cocycle_triangle_proper; [apply functor_comp | reflexivity].
   - transitivity (c⟦fmap F g, fmap F h⟧₂ ⋅
       c⟦fmap F f, fmap F h ∘ fmap F g⟧₂).
     + apply two_cocycle_tetrahedron.
-    + apply magma_mul_proper; [reflexivity |].
+    + apply (@magma_mul_proper _ (hasMagma M)); [reflexivity |].
       apply two_cocycle_triangle_proper;
         [reflexivity | symmetry; apply functor_comp].
 Defined.
@@ -212,7 +212,7 @@ Defined.
 (** 拉回保持 cocycle 的相等，并保留相等见证。 *)
 
 Program Definition two_cocycle_pullback_resp (F : Fct I J)
-  : @TwoCocycleS J M HM →r @TwoCocycleS I M HM
+  : @TwoCocycleS J M →r @TwoCocycleS I M
   :=
   {|func c := TwoCocyclePullback F c
   |}.
@@ -232,7 +232,7 @@ End Pullback.
 
 (** 沿恒等函子拉回后，每个三角形的标签相等。 *)
 
-Lemma two_cocycle_pullback_id {J : Cat} {M : SetC} `{HM : !Monoid M}
+Lemma two_cocycle_pullback_id {J : Cat} {M : Monoid}
     (c : TwoCocycle J M)
   : TwoCocycleEq (TwoCocyclePullback IdF c) c.
 Proof. intros x y z f g. reflexivity. Defined.
@@ -243,8 +243,7 @@ Proof. intros x y z f g. reflexivity. Defined.
 (** 沿复合拉回，等于先沿 [G] 再沿 [F] 拉回；只比较标签，不比较保存的函子律
     见证。 *)
 
-Lemma two_cocycle_pullback_comp {I J K : Cat} {M : SetC}
-    `{HM : !Monoid M} (F : Fct I J) (G : Fct J K)
+Lemma two_cocycle_pullback_comp {I J K : Cat} {M : Monoid} (F : Fct I J) (G : Fct J K)
     (c : TwoCocycle K M)
   : TwoCocycleEq (TwoCocyclePullback (G ∘F F) c)
       (TwoCocyclePullback F (TwoCocyclePullback G c)).

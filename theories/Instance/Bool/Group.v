@@ -28,9 +28,13 @@ Program Definition BoolS
 (** 异或原群须显式选择，不全局注册。 *)
 
 Program Definition BoolS_Magma
-  : Magma BoolS
+  : Magma
   :=
-  {|magma_mul := xorb
+  {|MagmaS := BoolS
+  ; hasMagma :=
+      {|magma_mul := xorb
+      ; magma_mul_proper := _
+      |}
   |}.
 
 (** Associativity extends that same operation to a semigroup. *)
@@ -38,9 +42,10 @@ Program Definition BoolS_Magma
 (** 结合律将同一运算扩展为半群。 *)
 
 Program Definition BoolS_Semigroup
-  : Semigroup BoolS
+  : Semigroup
   :=
   {|SemigroupM := BoolS_Magma
+  ; isSemigroup := {|semigroup_assoc := _|}
   |}.
 Next Obligation. destruct x, y, z; reflexivity. Defined.
 
@@ -51,10 +56,10 @@ Next Obligation. destruct x, y, z; reflexivity. Defined.
 Program Definition BoolS_HasMonoid
   : HasMonoid BoolS_Semigroup
   :=
-  {|monoid_chosen_unit := false
+  {|monoid_unit := false
   ; isMonoid :=
-      {|monoid_unit_left := _
-      ; monoid_unit_right := _
+      {|monoid_unit_l := _
+      ; monoid_unit_r := _
       |}
   |}.
 Next Obligation. destruct x; reflexivity. Defined.
@@ -65,18 +70,29 @@ Next Obligation. destruct x; reflexivity. Defined.
 (** 现有幺半群视图保留同一半群及扩充。 *)
 
 Definition BoolS_Monoid
-  : Monoid BoolS
+  : Monoid
   := MonoidFromExtension BoolS_Semigroup BoolS_HasMonoid.
 
 (** Inversion is the identity function, extending the same selected monoid. *)
 
 (** 取逆为恒等函数，扩展同一个选定幺半群。 *)
 
-Program Definition BoolS_Group
-  : Group BoolS
+Program Definition BoolS_HasGroup
+  : HasGroup BoolS_Monoid
   :=
-  {|GroupM := BoolS_Monoid
-  ; group_inv x := x
+  {|group_inv x := x
+  ; isGroup :=
+      {|group_inv_l := _
+      ; group_inv_r := _
+      |}
   |}.
 Next Obligation. destruct x; reflexivity. Defined.
 Next Obligation. destruct x; reflexivity. Defined.
+
+(** Retain the same monoid and its explicitly chosen identity inverse. *)
+
+(** 保留同一幺半群及其显式选定的恒等逆。 *)
+
+Definition BoolS_Group
+  : Group
+  := GroupFromExtension BoolS_Monoid BoolS_HasGroup.

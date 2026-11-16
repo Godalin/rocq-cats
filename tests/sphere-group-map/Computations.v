@@ -120,15 +120,15 @@ Definition true_right
 (** 既有层级仍须显式选择。 *)
 
 Fail Definition unchosen_group
-  : Group (TwoSphereClassS WitnessX true)
+  : HasMagma (TwoSphereClassS WitnessX true)
   := _.
 
 Definition witness_group (b : WitnessX 0)
-  : Group (TwoSphereClassS WitnessX b)
+  : Group
   := TwoSphereClassGroup WitnessX b false_product false_left true_right.
 
 Fail Definition unchosen_group_after_definition
-  : Group (TwoSphereClassS WitnessX true)
+  : HasMagma (TwoSphereClassS WitnessX true)
   := _.
 
 Definition sphere_at_false
@@ -156,7 +156,7 @@ Example mapped_operations_compute
         (two_sphere_class_map_resp FlipN false sphere_at_false)).1,
      (two_sphere_class_map_resp FlipN false
         (@SphereKanLeftInverse WitnessX false false_left sphere_at_false).1).1,
-     (@group_inv _ (witness_group true)
+     (@group_inv _ (hasGroup (witness_group true))
         (two_sphere_class_map_resp FlipN false sphere_at_false)).1)
       = (true, false, true, false).
 Proof. vm_compute. reflexivity. Defined.
@@ -172,7 +172,7 @@ Example transported_operations_compute
           sphere_at_false)).1,
      (two_sphere_class_change_base_resp WitnessX base_equality
         (@SphereKanLeftInverse WitnessX false true_left sphere_at_false).1).1,
-     (@group_inv _ (witness_group true)
+     (@group_inv _ (hasGroup (witness_group true))
         (two_sphere_class_change_base_resp WitnessX base_equality
           sphere_at_false)).1,
      (two_sphere_class_change_base_resp WitnessX base_equality
@@ -216,8 +216,8 @@ Definition corrected_inverse_product
 
 Example group_inverse_natural (x : TwoSphereClassS WitnessX false)
   : two_sphere_class_map_resp FlipN false
-      (@group_inv _ (witness_group false) x) ≈S
-      @group_inv _ (witness_group true)
+      (@group_inv _ (hasGroup (witness_group false)) x) ≈S
+      @group_inv _ (hasGroup (witness_group true))
         (two_sphere_class_map_resp FlipN false x).
 Proof.
   exact (two_sphere_class_map_left_inverse FlipN false false_left
@@ -249,7 +249,6 @@ Proof. vm_compute. reflexivity. Defined.
     同时保留非平凡布尔系数模型中的计算。在此类相等区分真、假球面；恒等映射
     保留全部四个实际选定 Kan 乘积。 *)
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Definition bool_product
@@ -258,18 +257,18 @@ Definition bool_product
 
 Definition bool_values (a b : bool)
   : bool * bool
-  := (cocycle_two_sphere_class_value_resp
-        (two_sphere_class_map_resp idN (two_cocycle_simplex_unit 0)
-          (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit 0)
-            bool_product (cocycle_two_sphere_resp a)
-            (cocycle_two_sphere_resp b))),
-      cocycle_two_sphere_class_value_resp
-        (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
+        (two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+          (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+            bool_product (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+            (cocycle_two_sphere_resp (M := BoolS_Monoid) b))),
+      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+        (two_sphere_kan_mul BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
           bool_product
-          (two_sphere_class_map_resp idN (two_cocycle_simplex_unit 0)
-            (cocycle_two_sphere_resp a))
-          (two_sphere_class_map_resp idN (two_cocycle_simplex_unit 0)
-            (cocycle_two_sphere_resp b)))).
+          (two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+            (cocycle_two_sphere_resp (M := BoolS_Monoid) a))
+          (two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+            (cocycle_two_sphere_resp (M := BoolS_Monoid) b)))).
 
 Example actual_bool_products_compute
   : (bool_values false false, bool_values false true,
@@ -278,6 +277,6 @@ Example actual_bool_products_compute
 Proof. vm_compute. reflexivity. Defined.
 
 Definition actual_bool_map_product (a b : bool)
-  := two_sphere_class_map_mul idN (two_cocycle_simplex_unit 0)
-      bool_product bool_product (cocycle_two_sphere_resp a)
-      (cocycle_two_sphere_resp b).
+  := two_sphere_class_map_mul idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+      bool_product bool_product (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) b).

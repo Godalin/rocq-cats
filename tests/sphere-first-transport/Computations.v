@@ -20,7 +20,7 @@ Local Open Scope ordinal_scope.
     计算其返回四面体实际消费既有闭包折叠。 *)
 
 Fail Definition unchosen_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
 Fail Definition unchosen_Kan
@@ -31,7 +31,6 @@ Fail Definition unchosen_forward_horn
   : HasHornFillers BoolCocycleModel 4 fin_first⁺⁺⁺
   := _.
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** The two input representatives have coefficient true, but come from
@@ -40,31 +39,31 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 (** 两个输入代表的系数为 true，但来自不同构造；保留其边界见证。 *)
 
 Definition selected_input
-  := SphereKanComposite BoolCocycleModel (two_cocycle_simplex_unit 0)
-      (cocycle_two_sphere_resp false) (cocycle_two_sphere_resp true).
+  := SphereKanComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) false) (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 Definition direct_input
-  := cocycle_two_sphere_mul
-      (cocycle_two_sphere_resp false) (cocycle_two_sphere_resp true).
+  := (cocycle_two_sphere_mul (M := BoolS_Monoid))
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) false) (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 (** The input homotopy is an actual tetrahedron from the earlier comparison. *)
 
 (** 输入同伦是先前比较给出的实际四面体。 *)
 
 Definition input_homotopy
-  : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       selected_input.1 direct_input
   := SphereCompositeOutputHomotopy BoolCocycleModel
-      (two_cocycle_simplex_unit 0) selected_input.2
-      (CocycleTwoSphereMul (cocycle_two_sphere_resp false)
-        (cocycle_two_sphere_resp true)).
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) selected_input.2
+      (CocycleTwoSphereMul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) false)
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) true)).
 
 (** Compose the first representative with the true-labelled sphere. *)
 
 (** 将第一个代表与 true 标签球面合成。 *)
 
 Definition initial_composite
-  := CocycleTwoSphereMul selected_input.1 (cocycle_two_sphere_resp true).
+  := (CocycleTwoSphereMul (M := BoolS_Monoid)) selected_input.1 (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 (** Transport forward, then back, retaining the same output representative. *)
 
@@ -72,11 +71,11 @@ Definition initial_composite
 
 Definition forward_composite
   := SphereCompositeFirstHomotopy BoolCocycleModel
-      (two_cocycle_simplex_unit 0) input_homotopy initial_composite.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy initial_composite.
 
 Definition backward_composite
   := SphereCompositeFirstHomotopyBack BoolCocycleModel
-      (two_cocycle_simplex_unit 0) input_homotopy forward_composite.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy forward_composite.
 
 (** Keep an explicit generated derivation; it is not replaced by reflexivity. *)
 
@@ -86,13 +85,13 @@ Definition input_chain
   : (selected_input.1 : BoolCocycleSphereClassS) ≈S direct_input
   := closure_trans (closure_refl selected_input.1)
       (closure_trans (two_sphere_class_eq BoolCocycleModel
-        (two_cocycle_simplex_unit 0) (reflexivity selected_input.1))
+        (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) (reflexivity selected_input.1))
         (closure_trans (two_sphere_class_step BoolCocycleModel
-          (two_cocycle_simplex_unit 0) input_homotopy)
+          (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy)
           (closure_trans (closure_sym (two_sphere_class_step BoolCocycleModel
-            (two_cocycle_simplex_unit 0) input_homotopy))
+            (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy))
             (two_sphere_class_step BoolCocycleModel
-              (two_cocycle_simplex_unit 0) input_homotopy)))).
+              (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy)))).
 
 (** Fold the whole chain into a new actual composite tetrahedron. *)
 
@@ -100,9 +99,9 @@ Definition input_chain
 
 Definition chain_composite
   := fst (two_sphere_composite_first_class BoolCocycleModel
-      (two_cocycle_simplex_unit 0) input_chain
-      (cocycle_two_sphere_resp true)
-      (cocycle_two_sphere_mul selected_input.1 (cocycle_two_sphere_resp true)))
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_chain
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
+      (cocycle_two_sphere_mul (M := BoolS_Monoid) selected_input.1 (cocycle_two_sphere_resp (M := BoolS_Monoid) true)))
       initial_composite.
 
 (** Read all triangle faces, including nonconstant input and context faces. *)
@@ -111,10 +110,10 @@ Definition chain_composite
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
-  := (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-      two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 Example transports_compute
@@ -138,10 +137,10 @@ Definition three_choice
 
 Definition partial_value (a b : bool)
   : bool
-  := cocycle_two_sphere_class_value_resp
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
       (two_sphere_kan_composite_first_resp BoolCocycleModel
-        (two_cocycle_simplex_unit 0) three_choice
-        (cocycle_two_sphere_resp b) (cocycle_two_sphere_resp a)).
+        (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) three_choice
+        (cocycle_two_sphere_resp (M := BoolS_Monoid) b) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)).
 
 Example partial_operation_computes
   : (partial_value false false, partial_value false true,
@@ -155,9 +154,9 @@ Proof. vm_compute. reflexivity. Defined.
 
 Example partial_preserves_chain
   : two_sphere_kan_composite_first_resp BoolCocycleModel
-      (two_cocycle_simplex_unit 0) three_choice (cocycle_two_sphere_resp true)
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) three_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
       selected_input.1 ≈S
       two_sphere_kan_composite_first_resp BoolCocycleModel
-        (two_cocycle_simplex_unit 0) three_choice (cocycle_two_sphere_resp true)
+        (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) three_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
         direct_input.
 Proof. apply func_proper. exact input_chain. Defined.

@@ -19,18 +19,17 @@ Local Open Scope ordinal_scope.
     归一化相等见证，也不丢失空间／时间坐标。 *)
 
 Fail Definition unchosen_coefficient_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
 Fail Definition unchosen_class_group
-  : Group BoolCocycleSphereClassS
+  : HasMagma BoolCocycleSphereClassS
   := _.
 
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 
 (** Freely label a retained representative at the model's native sizes. *)
 
@@ -38,7 +37,7 @@ Local Existing Instance BoolS_Monoid.
 
 Definition label_sphere (a : bool)
   : BoolCocycleSphereClassS
-  := cocycle_two_sphere_class_resp a.
+  := (cocycle_two_sphere_class_resp (M := BoolS_Monoid)) a.
 
 (** An actual elementary tetrahedron gives the class witness supplied to
     the reverse cylinder comparison. *)
@@ -46,10 +45,10 @@ Definition label_sphere (a : bool)
 (** 实际初等四面体给出传入反向柱比较的类见证。 *)
 
 Definition label_cylinder (a : bool)
-  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       (label_sphere a) (label_sphere a)
   := CocycleTwoSphereCylinder (label_sphere a) (label_sphere a)
-      (two_sphere_class_step BoolCocycleModel (two_cocycle_simplex_unit 0)
+      (two_sphere_class_step BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         (CocycleTwoSphereHomotopy (label_sphere a) (label_sphere a) eq_refl)).
 
 (** Every time operator computes the same triangle coefficient. *)
@@ -57,8 +56,8 @@ Definition label_cylinder (a : bool)
 (** 每个时间算子都计算出同一个三角形系数。 *)
 
 Example cylinder_value_computes (a : bool) (t : (@Hom Δ) 2 1%nat)
-  : two_cocycle_triangle_value_resp
-      (two_sphere_cylinder_eval BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
+      (two_sphere_cylinder_eval BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         (label_cylinder a) id t) = a.
 Proof. reflexivity. Defined.
 
@@ -68,7 +67,7 @@ Proof. reflexivity. Defined.
 
 Definition prism_face_value (a : bool) (i : Ordinal 2) (j : Ordinal 3)
   : bool
-  := two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (d[BoolCocycleModel; 2; j] (two_sphere_prism (label_cylinder a) i)).
 
 (** All twelve coefficients compute with the expected staircase orientation.

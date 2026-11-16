@@ -24,21 +24,20 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Definition label_sphere
-  : TwoSphereS BoolCocycleModel (two_cocycle_simplex_unit 0)
-  := cocycle_two_sphere_resp true.
+  : TwoSphereS BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+  := (cocycle_two_sphere_resp (M := BoolS_Monoid)) true.
 
 (** Keep an actual relative cylinder, not a substituted degeneracy value. *)
 
 (** 保留实际相对柱，不以退化值替代。 *)
 
 Definition actual_cylinder
-  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       label_sphere label_sphere
-  := TwoSphereConstantCylinder BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := TwoSphereConstantCylinder BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       label_sphere label_sphere (reflexivity label_sphere).
 
 Definition first_prism
@@ -53,7 +52,7 @@ Definition first_prism
     恒等式，不比较证明字段。 *)
 
 Definition prism_low_homotopy
-  : TwoSphereLowHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereLowHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       label_sphere label_sphere.
 Proof.
   exists first_prism. split; [| split; [| split]].
@@ -66,29 +65,29 @@ Proof.
     exact (simplex_face_degeneracy_next (X := BoolCocycleModel)
       (fin_first : Ordinal 2) label_sphere.1).
   - exact (sphere_degenerate_first_high BoolCocycleModel
-      (two_cocycle_simplex_unit 0) label_sphere fin_first).
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) label_sphere fin_first).
   - exact (sphere_degenerate_first_high BoolCocycleModel
-      (two_cocycle_simplex_unit 0) label_sphere fin_first⁺).
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) label_sphere fin_first⁺).
 Defined.
 
 Definition actual_horn
-  := SphereLowHomotopyHornN BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SphereLowHomotopyHornN BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       prism_low_homotopy.
 
 Definition actual_filler
   := horn_fill actual_horn.
 
 Definition supplied_homotopy
-  := SphereLowHomotopyOfFiller BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SphereLowHomotopyOfFiller BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       prism_low_homotopy actual_filler.1 actual_filler.2.
 
 Definition chosen_homotopy
-  := SphereLowHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SphereLowHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       prism_low_homotopy.
 
 Definition prism_class_step
   := two_sphere_low_homotopy_class BoolCocycleModel
-      (two_cocycle_simplex_unit 0) prism_low_homotopy.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) prism_low_homotopy.
 
 (** Reading all triangular faces checks their orientation and labels. *)
 
@@ -96,10 +95,10 @@ Definition prism_class_step
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
-  := (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-      two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 Example prism_faces_compute

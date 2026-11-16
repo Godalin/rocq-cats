@@ -209,21 +209,20 @@ Fail Definition no_reverse_from_initial_data
     使用真系数球面的时间无关柱。初始映射在保留时间边上保持该球面，整个空间
     边界则取实际基点；不消费Kan选择。 *)
 
-Local Existing Instance BoolS_Monoid.
 
 Definition nonzero_cylinder
-  := TwoSphereConstantCylinder BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := TwoSphereConstantCylinder BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere bool_cocycle_sphere (ltac:(reflexivity)).
 
 Definition nonzero_input
-  := SphereReverseTriangleInput BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := SphereReverseTriangleInput BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       nonzero_cylinder.
 
 Example nonzero_coefficients_are_preserved
-  : (two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
        (nonzero_input 2 (face_point fin_first fin_first⁺
          (ltac:(discriminate)))),
-     two_cocycle_triangle_value_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
        (nonzero_input 2 (face_point fin_first fin_first⁺⁺
          (ltac:(discriminate))))) = (true, true).
 Proof. vm_compute. reflexivity. Defined.

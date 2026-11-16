@@ -15,8 +15,7 @@ From Cats Require Import
 Section MonoidRange.
 Universes e h o u p.
 Constraint e < h, h < o, o < u, u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Monoid M} `{HN : !Monoid N}.
+Context (M : Monoid@{h e _}) (N : Monoid@{e h _}).
 
 (** Every stable dimension works with lower ambient equality. *)
 
@@ -53,8 +52,7 @@ End MonoidRange.
 Section GroupRange.
 Universes e h o u p.
 Constraint e < h, h < o, o < u, u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Group M} `{HN : !Group N}.
+Context (M : Group@{h e _}) (N : Group@{e h _}).
 
 (** The missing coefficient can have lower native equality. *)
 
@@ -90,8 +88,7 @@ End GroupRange.
 Section KanSizes.
 Universes e h o u p.
 Constraint e < h, h < o, o < u, u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Group M} `{HN : !Group N}
+Context (M : Group@{h e _}) (N : Group@{e h _})
     `{CM : !IsCommutativeMonoid M} `{CN : !IsCommutativeMonoid N}.
 
 (** Lower coefficient and ambient equality. *)

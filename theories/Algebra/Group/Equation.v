@@ -61,7 +61,7 @@ G \arrow[l,shift left=1,"{y\mapsto a^{-1}\cdot y}"]
     保留在 [Type] 中。 *)
 
 Section Equations.
-Context {G : SetC} `{HG : !Group G}.
+Context {G : Group}.
 
 (** Cancel a fixed left factor by multiplying with its selected inverse. *)
 
@@ -71,9 +71,14 @@ Lemma group_mul_cancel_l (a x y : G) (H : a ⋅ x ≈S a ⋅ y)
   : x ≈S y.
 Proof.
   transitivity (a⁻¹ ⋅ (a ⋅ x)).
-  - symmetry. rewrite <- semigroup_assoc, group_inv_l, monoid_unit_l.
+  - symmetry. rewrite <- (@semigroup_assoc _ (isSemigroup G)),
+    (@group_inv_l _ _ (@isGroup _ (hasGroup G))),
+    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))).
     reflexivity.
-  - rewrite H, <- semigroup_assoc, group_inv_l, monoid_unit_l. reflexivity.
+  - rewrite H,
+    <- (@semigroup_assoc _ (isSemigroup G)),
+    (@group_inv_l _ _ (@isGroup _ (hasGroup G))),
+    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** Cancel a fixed right factor; no exchange of factors is used. *)
@@ -84,9 +89,14 @@ Lemma group_mul_cancel_r (a x y : G) (H : x ⋅ a ≈S y ⋅ a)
   : x ≈S y.
 Proof.
   transitivity ((x ⋅ a) ⋅ a⁻¹).
-  - symmetry. rewrite semigroup_assoc, group_inv_r, monoid_unit_r.
+  - symmetry. rewrite (@semigroup_assoc _ (isSemigroup G)),
+    (@group_inv_r _ _ (@isGroup _ (hasGroup G))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid G))).
     reflexivity.
-  - rewrite H, semigroup_assoc, group_inv_r, monoid_unit_r. reflexivity.
+  - rewrite H,
+    (@semigroup_assoc _ (isSemigroup G)),
+    (@group_inv_r _ _ (@isGroup _ (hasGroup G))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** The inverse on the left gives an actual solution of left multiplication. *)
@@ -96,7 +106,9 @@ Defined.
 Lemma group_mul_l_solution (a b : G)
   : a ⋅ (a⁻¹ ⋅ b) ≈S b.
 Proof.
-  rewrite <- semigroup_assoc, group_inv_r, monoid_unit_l. reflexivity.
+  rewrite <- (@semigroup_assoc _ (isSemigroup G)),
+    (@group_inv_r _ _ (@isGroup _ (hasGroup G))),
+    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** The inverse on the right solves right multiplication. *)
@@ -106,7 +118,9 @@ Defined.
 Lemma group_mul_r_solution (a b : G)
   : (b ⋅ a⁻¹) ⋅ a ≈S b.
 Proof.
-  rewrite semigroup_assoc, group_inv_l, monoid_unit_r. reflexivity.
+  rewrite (@semigroup_assoc _ (isSemigroup G)),
+    (@group_inv_l _ _ (@isGroup _ (hasGroup G))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid G))). reflexivity.
 Defined.
 
 (** Select the left-multiplication solution, its equation and its full
@@ -154,7 +168,7 @@ Program Definition group_mul_l_solve_resp (a : G)
   {|func b := (GroupMulLSolution a b).1
   |}.
 Next Obligation.
-  intros b c H. apply magma_mul_proper; [reflexivity | exact H].
+  intros b c H. apply (@magma_mul_proper _ (hasMagma G)); [reflexivity | exact H].
 Defined.
 
 (** Respectful solution map for a fixed right factor. *)
@@ -167,7 +181,7 @@ Program Definition group_mul_r_solve_resp (a : G)
   {|func b := (GroupMulRSolution a b).1
   |}.
 Next Obligation.
-  intros b c H. apply magma_mul_proper; [exact H | reflexivity].
+  intros b c H. apply (@magma_mul_proper _ (hasMagma G)); [exact H | reflexivity].
 Defined.
 
 (** Changing the fixed left factor also preserves the solution map. *)
@@ -177,7 +191,7 @@ Defined.
 Global Instance group_mul_l_solve_proper
   : Proper (carrier_equiv G ==> FunEq) group_mul_l_solve_resp.
 Proof.
-  intros a a' H b. cbn. apply magma_mul_proper;
+  intros a a' H b. cbn. apply (@magma_mul_proper _ (hasMagma G));
     [apply group_inv_proper; exact H | reflexivity].
 Defined.
 
@@ -188,7 +202,7 @@ Defined.
 Global Instance group_mul_r_solve_proper
   : Proper (carrier_equiv G ==> FunEq) group_mul_r_solve_resp.
 Proof.
-  intros a a' H b. cbn. apply magma_mul_proper;
+  intros a a' H b. cbn. apply (@magma_mul_proper _ (hasMagma G));
     [reflexivity | apply group_inv_proper; exact H].
 Defined.
 

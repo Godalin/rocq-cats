@@ -57,7 +57,7 @@ Local Open Scope monoid_scope.
 
 Section CocycleSpheres.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -73,7 +73,7 @@ Program Definition cocycle_two_sphere_resp
   {|func a := (two_cocycle_triangle_resp a; _)
   |}.
 Next Obligation.
-  intros i. exact (@two_cocycle_one_unique M HM
+  intros i. exact (@two_cocycle_one_unique M
     (d[Z; 1; i] (two_cocycle_triangle_resp a))
     (simplex_constant Z (two_cocycle_simplex_unit 0) 1)).
 Defined.
@@ -115,11 +115,11 @@ Proof.
     (lower w)⟦fmap δ[2; fin_first] a, fmap δ[2; fin_first] b⟧₂ ⋅
     (lower w)⟦fmap δ[2; fin_first⁺⁺] a, fmap δ[2; fin_first⁺⁺] b⟧₂).
   transitivity ((lower w)⟦f, g⟧₂ ⋅ (lower w)⟦g ∘ f, h⟧₂).
-  - apply magma_mul_proper; apply ordinal_cocycle_triangle_transport;
+  - apply (@magma_mul_proper _ (hasMagma M)); apply ordinal_cocycle_triangle_transport;
       reflexivity.
   - transitivity ((lower w)⟦g, h⟧₂ ⋅ (lower w)⟦f, h ∘ g⟧₂).
     + apply two_cocycle_tetrahedron.
-    + apply magma_mul_proper; apply ordinal_cocycle_triangle_transport;
+    + apply (@magma_mul_proper _ (hasMagma M)); apply ordinal_cocycle_triangle_transport;
         reflexivity.
 Defined.
 
@@ -157,7 +157,10 @@ Proof.
       (simplex_constant Z (two_cocycle_simplex_unit 0) 2)).
     - apply func_proper. exact H1.
     - apply cocycle_constant_triangle_value. }
-  rewrite V0, V1, monoid_unit_l, monoid_unit_r in E.
+  rewrite V0,
+    V1,
+    (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))) in E.
   transitivity (two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺] w)).
   - symmetry. apply func_proper. exact H2.
   - transitivity (two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺⁺] w)).
@@ -177,7 +180,8 @@ Definition CocycleTwoSphereHomotopy
 Proof.
   assert (E : cocycle_two_sphere_value_resp y ⋅ 1 ≈S
       1 ⋅ cocycle_two_sphere_value_resp x).
-  { rewrite monoid_unit_l, monoid_unit_r. symmetry. exact H. }
+  { rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))),
+    (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))). symmetry. exact H. }
   exists {|lower := TetrahedronTwoCocycle
     (cocycle_two_sphere_value_resp y) 1 1 (cocycle_two_sphere_value_resp x) E
     |}.

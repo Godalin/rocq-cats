@@ -48,7 +48,7 @@ Local Open Scope nat_scope.
 
 Section CocycleHomotopies.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}

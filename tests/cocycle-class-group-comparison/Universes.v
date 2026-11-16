@@ -35,7 +35,7 @@ Constraint e < h, h < l, l < u, u < p, p < v, v < q.
 (** 乘积比较不需群、交换性或四维选择。 *)
 
 Definition lower_product
-    (M : SetC@{h e}) `{HM : !Monoid M}
+    (M : Monoid@{h e _})
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
     (x y : TwoSphereClassS
@@ -50,7 +50,7 @@ Definition lower_product
 (** 读取在原生系数大小下保持实际乘积。 *)
 
 Definition lower_decode
-    (M : SetC@{h e}) `{HM : !Monoid M}
+    (M : Monoid@{h e _})
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
     (x y : TwoSphereClassS
@@ -67,7 +67,7 @@ Definition lower_decode
 (** 编码保持乘积，不需任何四维选择。 *)
 
 Definition lower_encode
-    (M : SetC@{h e}) `{HM : !Monoid M}
+    (M : Monoid@{h e _})
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
     (a b : M)
@@ -81,7 +81,7 @@ Definition lower_encode
 (** 逆比较仅需自身三维选择。 *)
 
 Definition lower_inverse
-    (M : SetC@{h e}) `{HG : !Group M}
+    (M : Group@{h e _})
     (K : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺⁺)
     (x : TwoSphereClassS
@@ -98,7 +98,7 @@ Definition lower_inverse
 (** 实际逆在独立系数大小下读取。 *)
 
 Definition lower_inverse_value
-    (M : SetC@{h e}) `{HG : !Group M}
+    (M : Group@{h e _})
     (K : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺⁺)
     (x : TwoSphereClassS
@@ -114,7 +114,7 @@ Definition lower_inverse_value
 (** 模型原始交换律不需群或四维选择。 *)
 
 Definition lower_commutative_product
-    (M : SetC@{h e}) `{HM : !Monoid M}
+    (M : Monoid@{h e _})
     `{HC : !IsCommutativeMonoid M}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
@@ -130,7 +130,7 @@ Definition lower_commutative_product
 (** 性质恰针对通用选定类幺半群。 *)
 
 Definition lower_commutative_monoid
-    (M : SetC@{h e}) `{HM : !Monoid M}
+    (M : Monoid@{h e _})
     `{HC : !IsCommutativeMonoid M}
     `{HX2 : !HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 4 fin_first⁺⁺}
@@ -140,10 +140,7 @@ Definition lower_commutative_monoid
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 4 fin_first⁺⁺⁺⁺}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) 3 fin_first⁺⁺)
-  : @IsCommutativeMonoid (TwoSphereClassS
-      (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
-      (two_cocycle_simplex_unit 0))
-      (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
+  : @IsCommutativeMonoid (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
   := cocycle_kan_IsCommutativeMonoid H.
 
 (** Reuse the existing isomorphism at independent common upward bounds. *)
@@ -151,7 +148,7 @@ Definition lower_commutative_monoid
 (** 在独立共同向上界复用既有同构。 *)
 
 Definition lower_common_iso
-    (M : SetC@{h e}) `{HM : !Monoid M}
+    (M : Monoid@{h e _})
   : LiftS@{_ _ v q} (TwoSphereClassS
       (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
       (two_cocycle_simplex_unit 0)) ≅[SetCat]
@@ -163,7 +160,7 @@ Definition lower_common_iso
 (** 乘积比较不需群、交换性或四维选择。 *)
 
 Definition higher_product
-    (M : SetC@{e h}) `{HM : !Monoid M}
+    (M : Monoid@{e h _})
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
     (x y : TwoSphereClassS
@@ -178,7 +175,7 @@ Definition higher_product
 (** 读取在原生系数大小下保持实际乘积。 *)
 
 Definition higher_decode
-    (M : SetC@{e h}) `{HM : !Monoid M}
+    (M : Monoid@{e h _})
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
     (x y : TwoSphereClassS
@@ -195,7 +192,7 @@ Definition higher_decode
 (** 编码保持乘积，不需任何四维选择。 *)
 
 Definition higher_encode
-    (M : SetC@{e h}) `{HM : !Monoid M}
+    (M : Monoid@{e h _})
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
     (a b : M)
@@ -209,7 +206,7 @@ Definition higher_encode
 (** 逆比较仅需自身三维选择。 *)
 
 Definition higher_inverse
-    (M : SetC@{e h}) `{HG : !Group M}
+    (M : Group@{e h _})
     (K : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺⁺)
     (x : TwoSphereClassS
@@ -226,7 +223,7 @@ Definition higher_inverse
 (** 实际逆在独立系数大小下读取。 *)
 
 Definition higher_inverse_value
-    (M : SetC@{e h}) `{HG : !Group M}
+    (M : Group@{e h _})
     (K : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺⁺)
     (x : TwoSphereClassS
@@ -242,7 +239,7 @@ Definition higher_inverse_value
 (** 模型原始交换律不需群或四维选择。 *)
 
 Definition higher_commutative_product
-    (M : SetC@{e h}) `{HM : !Monoid M}
+    (M : Monoid@{e h _})
     `{HC : !IsCommutativeMonoid M}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
@@ -258,7 +255,7 @@ Definition higher_commutative_product
 (** 性质恰针对通用选定类幺半群。 *)
 
 Definition higher_commutative_monoid
-    (M : SetC@{e h}) `{HM : !Monoid M}
+    (M : Monoid@{e h _})
     `{HC : !IsCommutativeMonoid M}
     `{HX2 : !HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 fin_first⁺⁺}
@@ -268,10 +265,7 @@ Definition higher_commutative_monoid
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 fin_first⁺⁺⁺⁺}
     (H : HasHornFillers
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 3 fin_first⁺⁺)
-  : @IsCommutativeMonoid (TwoSphereClassS
-      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-      (two_cocycle_simplex_unit 0))
-      (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
+  : @IsCommutativeMonoid (TwoSphereClassMonoid _ (two_cocycle_simplex_unit 0) H)
   := cocycle_kan_IsCommutativeMonoid H.
 
 (** Reuse the existing isomorphism at independent common upward bounds. *)
@@ -279,7 +273,7 @@ Definition higher_commutative_monoid
 (** 在独立共同向上界复用既有同构。 *)
 
 Definition higher_common_iso
-    (M : SetC@{e h}) `{HM : !Monoid M}
+    (M : Monoid@{e h _})
   : LiftS@{_ _ q v} (TwoSphereClassS
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
       (two_cocycle_simplex_unit 0)) ≅[SetCat]

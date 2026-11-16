@@ -82,7 +82,7 @@ Definition lower_magma
     `{HX3 : !HasHornFillers X 4 fin_first⁺⁺⁺}
     `{HX4 : !HasHornFillers X 4 fin_first⁺⁺⁺⁺}
     (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Magma (TwoSphereClassS X b)
+  : Magma
   := TwoSphereClassMagma X b H.
 
 (** Independent three-horn choices give equal product-setoid maps. *)
@@ -151,7 +151,7 @@ Definition higher_magma
     `{HX3 : !HasHornFillers X 4 fin_first⁺⁺⁺}
     `{HX4 : !HasHornFillers X 4 fin_first⁺⁺⁺⁺}
     (H : HasHornFillers X 3 fin_first⁺⁺)
-  : Magma (TwoSphereClassS X b)
+  : Magma
   := TwoSphereClassMagma X b H.
 
 (** Independent three-horn choices give equal product-setoid maps. *)

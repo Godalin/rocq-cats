@@ -13,7 +13,6 @@ From Cats Require Import
 
 (** * 非薄群胚及其布尔作用 *)
 
-Local Existing Instance BoolS_Group.
 
 (** The one-object category of the xor group retains two distinct loops. *)
 
@@ -21,7 +20,7 @@ Local Existing Instance BoolS_Group.
 
 Definition BoolGroupoid
   : Gpd
-  := GroupGpd BoolS.
+  := GroupGpd BoolS_Group.
 
 (** Read the same groupoid witnesses stored by the xor-group bundle. *)
 
@@ -53,7 +52,7 @@ Proof. intros H. discriminate H. Qed.
 
 Definition BoolActionF
   : Fct BoolGroupoid SetCat
-  := RegularActionF BoolS.
+  := RegularActionF BoolS_Monoid.
 
 (** Faithfulness follows from the general regular-action argument. *)
 
@@ -61,7 +60,7 @@ Definition BoolActionF
 
 Definition bool_action_faithful
   : is_faithful BoolActionF
-  := regular_action_faithful BoolS.
+  := regular_action_faithful BoolS_Monoid.
 
 (** The nonidentity loop swaps boolean elements. *)
 

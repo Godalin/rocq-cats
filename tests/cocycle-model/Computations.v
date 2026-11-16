@@ -14,7 +14,7 @@ From Cats Require Import
     不仅是先前独立的 cocycle。 *)
 
 Fail Definition unchosen_boolean_monoid
-  : Monoid BoolS
+  : HasMonoid BoolS_Semigroup
   := ltac:(typeclasses eauto).
 
 (** A simplicial model alone does not implicitly select Kan fillers. *)
@@ -30,15 +30,15 @@ Fail Definition unchosen_boolean_cocycle_fillers
 (** 严格递增三角形保留实际的布尔系数。 *)
 
 Example triangle_label_computes
-  : two_cocycle_triangle_value_resp bool_cocycle_triangle = true.
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) bool_cocycle_triangle = true.
 Proof. reflexivity. Qed.
 
 Example unit_label_computes
-  : two_cocycle_triangle_value_resp bool_cocycle_unit_triangle = false.
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) bool_cocycle_unit_triangle = false.
 Proof. reflexivity. Qed.
 
 Example identity_restriction_computes
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (BoolCocycleModel[(id : (@Hom Δ) 2 2)]Δ bool_cocycle_triangle) = true.
 Proof. reflexivity. Qed.
 
@@ -53,8 +53,8 @@ Example face_labels_compute (i : Fin@{Set} 3)
 Proof. destruct i as [[] | [[] | [[] | []]]]; reflexivity. Qed.
 
 Example degenerate_triangle_labels_compute (i : Fin@{Set} 2)
-  : two_cocycle_triangle_value_resp
-      (s[BoolCocycleModel; 1; i] (two_cocycle_simplex_unit 1)) = false.
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
+      (s[BoolCocycleModel; 1; i] (two_cocycle_simplex_unit (M := BoolS_Monoid) 1)) = false.
 Proof. destruct i as [[] | [[] | []]]; reflexivity. Qed.
 
 (** Selection after repetition reads positions 0,0,2, so it is normalized. *)
@@ -62,7 +62,7 @@ Proof. destruct i as [[] | [[] | []]]; reflexivity. Qed.
 (** 重复之后再选择，读取位置 0、0、2，因此由归一化得到单位。 *)
 
 Example collapsed_operator_computes
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (BoolCocycleModel[δ[1; fin_next fin_first] ∘ σ[1; fin_first]]Δ
         bool_cocycle_triangle) = false.
 Proof. reflexivity. Qed.

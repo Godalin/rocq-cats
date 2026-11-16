@@ -191,18 +191,18 @@ Defined.
 Definition nonzero_recovery_from (b : TriangleHornAmbient ⇒ BoolCocycleModel)
     (E : (b ∘Nv RegionInclusionN (TriangleHornRegion fin_first 0)) ≈N
       (nonzero_total ∘Nv RegionInclusionN (TriangleHornRegion fin_first 0)))
-  : two_cocycle_triangle_value_resp (b 2 cocycle_old_point.1) = true.
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (b 2 cocycle_old_point.1) = true.
 Proof.
-  transitivity (two_cocycle_triangle_value_resp
+  transitivity (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
     (nonzero_total 2 cocycle_old_point.1)).
   - exact (@func_proper (BoolCocycleModel 2) BoolS
-      (@two_cocycle_triangle_value_resp BoolS BoolS_Monoid) _ _
+      (@two_cocycle_triangle_value_resp BoolS_Monoid) _ _
       (E 2 cocycle_old_point)).
   - reflexivity.
 Defined.
 
 Definition actual_nonzero_recovery
-  : two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       ((actual_extension fin_first).1 2 cocycle_old_point.1) = true
   := nonzero_recovery_from (actual_extension fin_first).1
       (actual_recovery fin_first).

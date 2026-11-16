@@ -235,17 +235,16 @@ Lemma two_sphere_cylinder_homotopy_inverse_left_inverse
   : TwoSphereCylinderHomotopy X b
       (two_sphere_cylinder_homotopy_inverse_resp
         (@SphereKanLeftInverse Y (f 0 b) I x).1)
-      (@group_inv _ (TwoSphereCylinderGroup X b KRX KCX H K L)
+      (@group_inv _ (hasGroup (TwoSphereCylinderGroup X b KRX KCX H K L))
         (two_sphere_cylinder_homotopy_inverse_resp x)).
 Proof.
   assert (G : (two_sphere_class_homotopy_inverse_resp f g b T E
       (@SphereKanLeftInverse Y (f 0 b) I x).1 : TwoSphereClassS X b) ≈S
-      @group_inv _ (TwoSphereClassGroup X b H K L)
+      @group_inv _ (hasGroup (TwoSphereClassGroup X b H K L))
         (two_sphere_class_homotopy_inverse_resp f g b T E x)).
   { unfold two_sphere_class_homotopy_inverse_resp.
     transitivity (two_sphere_class_change_base_resp X (sphere_homotopy_base T b b E false)
-      (@group_inv _
-        (TwoSphereClassGroup X (g 0 (f 0 b)) H K L)
+      (@group_inv _ (hasGroup (TwoSphereClassGroup X (g 0 (f 0 b)) H K L))
         (two_sphere_class_map_resp g (f 0 b) x))).
     - exact (@func_proper _ _
         (two_sphere_class_change_base_resp X

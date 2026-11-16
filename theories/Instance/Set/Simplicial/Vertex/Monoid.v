@@ -19,8 +19,7 @@ Local Open Scope monoid_scope.
 
 (** 单元素对象集合的运输为恒等；它识别顶点，但不识别幺半群 Hom 广集中的不同元素。 *)
 
-Definition MonoidObjF@{v q +} (M : SetC@{v q})
-    `{HM : !Monoid M}
+Definition MonoidObjF@{v q +} (M : Monoid@{v q _})
   : Fct (EqGpd UnitS@{Set Set}) B(M)
   := ConstF (EqGpd UnitS@{Set Set}) (C := B(M)) tt.
 
@@ -29,8 +28,7 @@ Definition MonoidObjF@{v q +} (M : SetC@{v q})
 
 (** 将幺半群范畴看成带单元素对象标签的诱导范畴；保留全部箭头数据及运算。 *)
 
-Program Definition MonoidVtxF@{v q +} (M : SetC@{v q})
-    `{HM : !Monoid M}
+Program Definition MonoidVtxF@{v q +} (M : Monoid@{v q _})
   : Fct B(M) (VtxCat (MonoidObjF M))
   :=
   {|F0 x := x
@@ -45,8 +43,7 @@ Next Obligation. reflexivity. Defined.
 
 (** 将元组 nerve 解释到一般顶点 nerve；自然性就是已有的段积细分定律。 *)
 
-Program Definition MonoidVtxN@{u p v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M}
+Program Definition MonoidVtxN@{u p v q +} {M : Monoid@{v q _}}
   : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       Nᵥ(MonoidObjF M)
   :=
@@ -59,7 +56,7 @@ Next Obligation.
                               |}.
   exists (λ i, tt). intros i j a.
   change (1 ⋅ xs⟦i, j⟧⋅ ≈S ys⟦i, j⟧⋅ ⋅ 1).
-  rewrite monoid_unit_l, monoid_unit_r.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))).
   apply monoid_segment_proper; [exact H | reflexivity | reflexivity].
 Defined.
 Next Obligation.
@@ -67,7 +64,7 @@ Next Obligation.
                       |}.
   exists (λ i, tt). intros i j a.
   change (1 ⋅ xs[f]M⟦i, j⟧⋅ ≈S xs⟦f i, f j⟧⋅ ⋅ 1).
-  rewrite monoid_unit_l, monoid_unit_r.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))).
   apply monoid_segment_sub.
   - apply ordinal_functor_monotone.
   - exact (nat_le_to_le a).
@@ -78,8 +75,7 @@ Defined.
 
 (** 一般顶点 nerve 反映原来的元组相等，因此此比较不压缩不同的幺半群环路或箭头链。 *)
 
-Lemma monoid_vertex_reflects@{u p v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M} {n : nat} (xs ys : M ^S n)
+Lemma monoid_vertex_reflects@{u p v q +} {M : Monoid@{v q _}} {n : nat} (xs ys : M ^S n)
   : (MonoidVtxN : (LiftF ∘F Nₘ(M) :
       Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) n
         {|lower := xs
@@ -89,7 +85,7 @@ Proof.
   intros [[e H]] i. specialize (H _ _ (ordinal_step i)).
   change (1 ⋅ xs⟦fin_weaken i, fin_next i⟧⋅ ≈S
     ys⟦fin_weaken i, fin_next i⟧⋅ ⋅ 1) in H.
-  rewrite monoid_unit_l, monoid_unit_r, !monoid_segment_step in H.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))), !monoid_segment_step in H.
   exact H.
 Defined.
 
@@ -97,8 +93,7 @@ Defined.
 
 (** 忘却标签与原来的箭头链到图式映射相容。 *)
 
-Lemma monoid_vertex_diagram@{u p v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M}
+Lemma monoid_vertex_diagram@{u p v q +} {M : Monoid@{v q _}}
   : (VtxDiagramN (MonoidObjF M) ∘Nv MonoidVtxN :
       (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒ _) ≈N
       MonoidDiagramN.
@@ -112,8 +107,7 @@ Defined.
 
 (** 从带单元素对象标签的图式提取相邻箭头。 *)
 
-Definition monoid_vertex_chain@{v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M} {n : nat}
+Definition monoid_vertex_chain@{v q +} {M : Monoid@{v q _}} {n : nat}
     (F : Fct [Ord n] (VtxCat (MonoidObjF M)))
   : M ^S n
   := λ i, fmap F (ordinal_step i).
@@ -123,8 +117,7 @@ Definition monoid_vertex_chain@{v q +} {M : SetC@{v q}}
 
 (** 从相邻箭头重构图式得到带标签的相等；更长区间全部由序数自然性导出。 *)
 
-Definition monoid_vertex_reconstruct@{v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M} {n : nat}
+Definition monoid_vertex_reconstruct@{v q +} {M : Monoid@{v q _}} {n : nat}
     (F : Fct [Ord n] (VtxCat (MonoidObjF M)))
   : VtxDiagramEq (MonoidObjF M)
       (MonoidVtxF M ∘F MonoidChainF (monoid_vertex_chain F)) F.
@@ -132,30 +125,28 @@ Proof.
   exists (λ i, tt). apply ordinal_naturality_steps. intros i.
   change (1 ⋅ (monoid_vertex_chain F)⟦fin_weaken i, fin_next i⟧⋅ ≈S
     fmap F (ordinal_step i) ⋅ 1).
-  rewrite monoid_unit_l, monoid_unit_r, monoid_segment_step. reflexivity.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))), monoid_segment_step. reflexivity.
 Defined.
 
 (** Every diagram arrow is the segment product of its adjacent arrows. *)
 
 (** 每条图式箭头均为其相邻箭头的段积。 *)
 
-Lemma monoid_vertex_segment@{v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M} {n : nat}
+Lemma monoid_vertex_segment@{v q +} {M : Monoid@{v q _}} {n : nat}
     (F : Fct [Ord n] (VtxCat (MonoidObjF M)))
     (i j : Ordinal n) (f : (@Hom [Ord n]) i j)
   : (monoid_vertex_chain F)⟦i, j⟧⋅ ≈S fmap F f.
 Proof.
   pose proof ((monoid_vertex_reconstruct F).2 i j f) as H.
   change (1 ⋅ (monoid_vertex_chain F)⟦i, j⟧⋅ ≈S fmap F f ⋅ 1) in H.
-  rewrite monoid_unit_l, monoid_unit_r in H. exact H.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
 Defined.
 
 (** Adjacent-arrow extraction commutes with arbitrary simplex restriction. *)
 
 (** 相邻箭头提取与任意单纯限制交换。 *)
 
-Program Definition VtxMonoidN@{u p v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M}
+Program Definition VtxMonoidN@{u p v q +} {M : Monoid@{v q _}}
   : (Nᵥ(MonoidObjF M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       (LiftF ∘F Nₘ(M))
   :=
@@ -171,7 +162,7 @@ Next Obligation.
   intros i. specialize (H _ _ (ordinal_step i)).
   change (1 ⋅ fmap F (ordinal_step i) ≈S
     fmap G (ordinal_step i) ⋅ 1) in H.
-  rewrite monoid_unit_l, monoid_unit_r in H. exact H.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@monoid_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
 Defined.
 Next Obligation.
   intros [F]. refine {|lower := _
@@ -185,8 +176,7 @@ Defined.
 
 (** 在共同值大小中，单对象特化通过自然同构恰好恢复原来的元组 nerve。 *)
 
-Definition monoid_vertex_iso@{u p v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M}
+Definition monoid_vertex_iso@{u p v q +} {M : Monoid@{v q _}}
   : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N
       Nᵥ(MonoidObjF M).
 Proof.

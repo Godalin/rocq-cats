@@ -211,7 +211,6 @@ Proof. vm_compute. reflexivity. Defined.
     布尔 cocycle 类仍可区分。显式启用既有 Kan 模型后，将一般同构应用于实际
     恒等同伦；无需类群结构。 *)
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Program Definition bool_identity_homotopy
@@ -225,20 +224,20 @@ Next Obligation. destruct b; intros n z; reflexivity. Defined.
 
 Definition bool_identity_trajectory
   : homotopy_map bool_identity_homotopy 1
-      (simplex_constant BoolCocycleModel (two_cocycle_simplex_unit 0) 1,
+      (simplex_constant BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) 1,
        simplex_generic 1) ≈S
-      simplex_constant BoolCocycleModel (two_cocycle_simplex_unit 0) 1.
+      simplex_constant BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) 1.
 Proof. reflexivity. Defined.
 
 Definition bool_class_iso
-  := two_sphere_class_homotopy_iso idN idN (two_cocycle_simplex_unit 0)
+  := two_sphere_class_homotopy_iso idN idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_identity_homotopy bool_identity_trajectory
       bool_identity_homotopy bool_identity_trajectory.
 
 Example nontrivial_maps_compute
-  : (cocycle_two_sphere_class_value_resp
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
        (lower (bool_class_iso.1 {|lower := bool_cocycle_sphere|})),
-     cocycle_two_sphere_class_value_resp
+     (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
        (lower (bool_class_iso.2.1 {|lower := bool_cocycle_sphere|})))
       = (true, true).
 Proof. vm_compute. reflexivity. Defined.
@@ -256,12 +255,12 @@ Definition nontrivial_right_roundtrip
 
 Example non_null_image
   : ¬ (two_sphere_class_map_resp (idN : BoolCocycleModel ⇒ BoolCocycleModel)
-      (two_cocycle_simplex_unit 0) bool_cocycle_sphere ≈S
-      two_sphere_class_map_resp idN (two_cocycle_simplex_unit 0)
-        (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0))).
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) bool_cocycle_sphere ≈S
+      two_sphere_class_map_resp idN (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+        (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0))).
 Proof.
   intros F. apply bool_cocycle_sphere_not_null.
   exact (two_sphere_class_map_homotopy_reflect idN idN
-    (two_cocycle_simplex_unit 0) bool_identity_homotopy
+    (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) bool_identity_homotopy
     bool_identity_trajectory _ _ F).
 Defined.

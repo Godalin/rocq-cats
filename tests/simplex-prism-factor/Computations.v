@@ -187,10 +187,9 @@ Fail Definition unchosen_Boolean_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 
 Definition actual_sphere_cylinder
-  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere bool_cocycle_sphere.
 Proof.
   apply TwoSphereConstantCylinder.

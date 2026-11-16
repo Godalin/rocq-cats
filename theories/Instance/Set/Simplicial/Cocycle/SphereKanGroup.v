@@ -72,7 +72,7 @@ M\times M \arrow[r,"\cdot"'] & M
 
 Section KanProducts.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M}.
+Context {M : Monoid}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -140,7 +140,7 @@ End KanProducts.
 
 Section KanInverses.
 Universes u p.
-Context {M : SetC} `{HG : !Group M}.
+Context {M : Group}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -162,7 +162,7 @@ Lemma cocycle_kan_left_inverse_eq
   : ((@SphereKanLeftInverse Z (two_cocycle_simplex_unit 0) K x).1 : Q) ≈S
       cocycle_two_sphere_inv x.
 Proof.
-  refine (@group_inv_unique Q cocycle_two_sphere_Group x
+  refine (@group_inv_unique cocycle_two_sphere_Group x
     (@SphereKanLeftInverse Z (two_cocycle_simplex_unit 0) K x).1 _).
   symmetry. exact (cocycle_two_sphere_composite_unique _ x _
     (@SphereKanLeftInverse Z (two_cocycle_simplex_unit 0) K x).2).
@@ -198,7 +198,7 @@ End KanInverses.
 
 Section KanCommutativity.
 Universes u p.
-Context {M : SetC} `{HM : !Monoid M} `{HC : !IsCommutativeMonoid M}.
+Context {M : Monoid} `{HC : !IsCommutativeMonoid M}.
 
 Let Z
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
@@ -218,8 +218,7 @@ Lemma cocycle_kan_mul_comm (H : HasHornFillers Z 3 fin_first⁺⁺) (x y : Q)
 Proof.
   transitivity (cocycle_two_sphere_mul x y); [apply cocycle_kan_mul_eq |].
   transitivity (cocycle_two_sphere_mul y x).
-  - exact (@monoid_mul_comm Q cocycle_two_sphere_Monoid
-      cocycle_two_sphere_IsCommutativeMonoid x y).
+  - exact (cocycle_two_sphere_mul_comm (M := M) x y).
   - symmetry. apply cocycle_kan_mul_eq.
 Defined.
 
@@ -234,7 +233,7 @@ Context `{HX4 : !HasHornFillers Z 4 fin_first⁺⁺⁺⁺}.
 
 Program Definition cocycle_kan_IsCommutativeMonoid
     (H : HasHornFillers Z 3 fin_first⁺⁺)
-  : @IsCommutativeMonoid Q
+  : IsCommutativeMonoid
       (TwoSphereClassMonoid Z (two_cocycle_simplex_unit 0) H)
   :=
   {|monoid_mul_comm := cocycle_kan_mul_comm H

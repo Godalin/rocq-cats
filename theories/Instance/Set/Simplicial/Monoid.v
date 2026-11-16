@@ -22,8 +22,7 @@ Local Open Scope monoid_scope.
     n-单形是带逐项指定相等的 n 元组。单纯算子通过其有限顶点映射替换，并复合
     各像段中的箭头；六类单纯恒等式全部由函子性导出。 *)
 
-Program Definition MonoidNerve@{u p +} (M : SetC@{u p})
-    `{HM : !Monoid M}
+Program Definition MonoidNerve@{u p +} (M : Monoid@{u p _})
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   :=
   {|F0 n := M ^S n
@@ -49,7 +48,7 @@ Notation "'Nₘ(' M ')'" := (MonoidNerve M) : ob_scope.
 (** 限制对原箭头链中像端点之间的各段取积。 *)
 
 Lemma monoid_nerve_restrict@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     {m n : nat} (θ : (@Hom Δ) m n) (xs : Nₘ(M) n)
     (i : Fin@{Set} m)
   : Nₘ(M)[θ]Δ xs i ≈S xs⟦θ (fin_weaken i), θ (fin_next i)⟧⋅.
@@ -60,7 +59,7 @@ Proof. reflexivity. Defined.
 (** 零维单形因定义域为空而全部相等。 *)
 
 Lemma monoid_nerve_zero_unique@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     (x y : Nₘ(M) 0)
   : x ≈S y.
 Proof. intros i. destruct i. Defined.
@@ -71,7 +70,7 @@ Proof. intros i. destruct i. Defined.
 (** 一维单形恰按原分量比较，因此保留幺半群指定相等对环路的区别。 *)
 
 Lemma monoid_nerve_one_eq_iff@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     (xs ys : Nₘ(M) 1%nat)
   : xs ≈S ys ↔ xs fin_first ≈S ys fin_first.
 Proof.
@@ -86,7 +85,7 @@ Defined.
 (** 首面删除首箭头；其他面按同一个限制公式复合像段。 *)
 
 Lemma monoid_nerve_face_first@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
     {n : nat} (xs : Nₘ(M) (S n))
   : d[Nₘ(M); n; fin_first] xs ≈S tuple_tail xs.
 Proof.
@@ -100,12 +99,12 @@ Defined.
 (** 二元组的中间面复合两个箭头，后走的箭头乘在左侧。 *)
 
 Lemma monoid_nerve_face_middle@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M} (a b : M)
+    {M : Monoid@{u p _}} (a b : M)
   : d[Nₘ(M); 1%nat; fin_next fin_first] (a ∷S b ∷S []S) ≈S
       ((b ⋅ a) ∷S []S).
 Proof.
   intros [[] | []]. change ((1 ⋅ b) ⋅ a ≈S b ⋅ a).
-  rewrite monoid_unit_l. reflexivity.
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))). reflexivity.
 Defined.
 
 (** The last face of a pair removes its second arrow. *)
@@ -113,17 +112,17 @@ Defined.
 (** 二元组的末面删除第二个箭头。 *)
 
 Lemma monoid_nerve_face_last_pair@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M} (a b : M)
+    {M : Monoid@{u p _}} (a b : M)
   : d[Nₘ(M); 1%nat; fin_next (fin_next fin_first)] (a ∷S b ∷S []S) ≈S
       (a ∷S []S).
-Proof. intros [[] | []]. change (1 ⋅ a ≈S a). apply monoid_unit_l. Defined.
+Proof. intros [[] | []]. change (1 ⋅ a ≈S a). apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))). Defined.
 
 (** Degenerating the empty chain gives the identity arrow. *)
 
 (** 退化空链得到恒等箭头。 *)
 
 Lemma monoid_nerve_degeneracy_zero@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M}
+    {M : Monoid@{u p _}}
   : s[Nₘ(M); 0; fin_first] []S ≈S ((1 : M) ∷S []S).
 Proof. intros [[] | []]. reflexivity. Defined.
 
@@ -132,11 +131,11 @@ Proof. intros [[] | []]. reflexivity. Defined.
 (** 重复源顶点，在单箭头前插入单位元。 *)
 
 Lemma monoid_nerve_degeneracy_first@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M} (a : M)
+    {M : Monoid@{u p _}} (a : M)
   : s[Nₘ(M); 1%nat; fin_first] (a ∷S []S) ≈S (1 ∷S a ∷S []S).
 Proof.
   intros [[] | [[] | []]]; [reflexivity |].
-  change (1 ⋅ a ≈S a). apply monoid_unit_l.
+  change (1 ⋅ a ≈S a). apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
 Defined.
 
 (** Repeating the target vertex inserts a unit after a single arrow. *)
@@ -144,11 +143,11 @@ Defined.
 (** 重复目标顶点，在单箭头后插入单位元。 *)
 
 Lemma monoid_nerve_degeneracy_last@{u p +}
-    {M : SetC@{u p}} `{HM : !Monoid M} (a : M)
+    {M : Monoid@{u p _}} (a : M)
   : s[Nₘ(M); 1%nat; fin_next fin_first] (a ∷S []S) ≈S (a ∷S 1 ∷S []S).
 Proof.
   intros [[] | [[] | []]]; [|reflexivity].
-  change (1 ⋅ a ≈S a). apply monoid_unit_l.
+  change (1 ⋅ a ≈S a). apply (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid M))).
 Defined.
 
 (** * Comparison with the Diagram Nerve
@@ -160,8 +159,7 @@ Defined.
 
     图式值可以大于原生箭头链广集；显式提升源，保持其自身载体与相等层级独立。 *)
 
-Program Definition MonoidDiagramN@{u p v q +} {M : SetC@{v q}}
-    `{HM : !Monoid M}
+Program Definition MonoidDiagramN@{u p v q +} {M : Monoid@{v q _}}
   : (LiftF ∘F Nₘ(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       N≅(B(M))
   :=

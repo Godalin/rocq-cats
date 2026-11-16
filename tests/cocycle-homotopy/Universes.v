@@ -23,8 +23,7 @@ Local Open Scope nat_scope.
 Section CoefficientSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Monoid M} `{HN : !Monoid N}.
+Context (M : Monoid@{h e _}) (N : Monoid@{e h _}).
 
 (** The lower native / lower ambient evaluation
     retains the whole generated map relation. *)
@@ -34,7 +33,7 @@ Context (M : SetC@{h e}) (N : SetC@{e h})
 Definition lower_native_lower_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     (x : TwoSphereS X b)
-  : @CocycleHomotopyMapS M _ X →r M
+  : @CocycleHomotopyMapS M X →r M
   := cocycle_homotopy_evaluation_resp b x.
 
 (** The lower native / higher ambient evaluation
@@ -45,7 +44,7 @@ Definition lower_native_lower_ambient_evaluation
 Definition lower_native_higher_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     (x : TwoSphereS X b)
-  : @CocycleHomotopyMapS M _ X →r M
+  : @CocycleHomotopyMapS M X →r M
   := cocycle_homotopy_evaluation_resp b x.
 
 (** The higher native / lower ambient evaluation
@@ -56,7 +55,7 @@ Definition lower_native_higher_ambient_evaluation
 Definition higher_native_lower_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     (x : TwoSphereS X b)
-  : @CocycleHomotopyMapS N _ X →r N
+  : @CocycleHomotopyMapS N X →r N
   := cocycle_homotopy_evaluation_resp b x.
 
 (** The higher native / higher ambient evaluation
@@ -67,7 +66,7 @@ Definition higher_native_lower_ambient_evaluation
 Definition higher_native_higher_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     (x : TwoSphereS X b)
-  : @CocycleHomotopyMapS N _ X →r N
+  : @CocycleHomotopyMapS N X →r N
   := cocycle_homotopy_evaluation_resp b x.
 
 End CoefficientSizes.
@@ -125,7 +124,6 @@ End GenericSizes.
     普通范畴 Hom 相等保持小于其载体；两种环境相等次序都保留更强映射障碍。 *)
 
 Section NerveSizes.
-Local Existing Instance BoolS_Monoid.
 Universes e h o l u p.
 Constraint e < h, h < o, o < l, l < u, u < p.
 Context (A : SetC@{o e}) (C : Cat@{o h e l l})
@@ -136,9 +134,9 @@ Context (A : SetC@{o e}) (C : Cat@{o h e l l})
 (** 此环境相等界接受任意映射的障碍。 *)
 
 Definition lower_equality_nerve_obstruction
-    (f : (Z²(BoolS) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒
+    (f : (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒
       (VtxNerve T : Fct (Δ^op) SetCat@{u o _ _ _ _ _}))
-    (g : VtxNerve T ⇒ Z²(BoolS))
+    (g : VtxNerve T ⇒ Z²(BoolS_Monoid))
   : ¬ SimplicialHomotopy (g ∘Nv f) idN
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 
@@ -147,9 +145,9 @@ Definition lower_equality_nerve_obstruction
 (** 此环境相等界接受任意映射的障碍。 *)
 
 Definition higher_equality_nerve_obstruction
-    (f : (Z²(BoolS) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
+    (f : (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒
       (VtxNerve T : Fct (Δ^op) SetCat@{u p _ _ _ _ _}))
-    (g : VtxNerve T ⇒ Z²(BoolS))
+    (g : VtxNerve T ⇒ Z²(BoolS_Monoid))
   : ¬ SimplicialHomotopy (g ∘Nv f) idN
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 

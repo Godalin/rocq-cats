@@ -11,7 +11,6 @@ From Cats Require Import
   Instance.Set.Simplicial.Nerve.
 
 Local Open Scope nat_scope.
-Local Existing Instance BoolS_Monoid.
 
 (** * A Nerve with Two Distinct Boolean Loops *)
 
@@ -24,7 +23,7 @@ Local Existing Instance BoolS_Monoid.
 
 Definition BoolNerve
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
-  := Nₘ(BoolS).
+  := Nₘ(BoolS_Monoid).
 
 (** The identity one-simplex. *)
 
@@ -99,7 +98,7 @@ Defined.
 
 Definition BoolVtxNerve
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
-  := Nᵥ(MonoidObjF BoolS).
+  := Nᵥ(MonoidObjF BoolS_Monoid).
 
 (** The vertex nerve of the xor group has chosen fillers in every
     positive dimension, while retaining its distinct loops. Enable this
@@ -109,8 +108,8 @@ Definition BoolVtxNerve
 
 Definition BoolVtxNerve_HasKanFillers
   : HasKanFillers BoolVtxNerve
-  := vertex_groupoid_HasKanFillers (MonoidObjF BoolS)
-      (HC := VtxCat_IsGroupoid (MonoidObjF BoolS)
+  := vertex_groupoid_HasKanFillers (MonoidObjF BoolS_Monoid)
+      (HC := VtxCat_IsGroupoid (MonoidObjF BoolS_Monoid)
         (HC := BoolGroupoid_IsGroupoid)).
 
 (** Every compatible boolean-nerve boundary above dimension two has a
@@ -120,7 +119,7 @@ Definition BoolVtxNerve_HasKanFillers
 
 Definition BoolVtxNerve_IsCoskeletal
   : BoolVtxNerve ⦂ Cosk[2]
-  := vertex_IsCoskeletal (MonoidObjF BoolS).
+  := vertex_IsCoskeletal (MonoidObjF BoolS_Monoid).
 
 (** The tuple interpretation is a map into the general construction. *)
 

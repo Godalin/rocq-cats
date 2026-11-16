@@ -114,9 +114,9 @@ Definition lower_minimal_inverse
 
 (** 导入映射定律不选择代数模型或原始等价。 *)
 
-Fail Definition lower_no_group_source : Group CX
+Fail Definition lower_no_group_source : HasMagma CX
   := ltac:(typeclasses eauto).
-Fail Definition lower_no_group_target : Group CY
+Fail Definition lower_no_group_target : HasMagma CY
   := ltac:(typeclasses eauto).
 Fail Definition lower_no_full_Kan : HasKanFillers X
   := ltac:(typeclasses eauto).
@@ -221,9 +221,9 @@ Definition higher_minimal_inverse
 
 (** 导入映射定律不选择代数模型或原始等价。 *)
 
-Fail Definition higher_no_group_source : Group CX
+Fail Definition higher_no_group_source : HasMagma CX
   := ltac:(typeclasses eauto).
-Fail Definition higher_no_group_target : Group CY
+Fail Definition higher_no_group_target : HasMagma CY
   := ltac:(typeclasses eauto).
 Fail Definition higher_no_full_Kan : HasKanFillers X
   := ltac:(typeclasses eauto).

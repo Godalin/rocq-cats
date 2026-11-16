@@ -116,7 +116,7 @@ Definition Q (r c : bool)
 (** 乘法、左右逆选择分别是独立数据 true、false、true，不导出实例。 *)
 
 Definition G (r c : bool)
-  : Group (Q r c)
+  : Group
   := TwoSphereCylinderGroup W false
       (choices fin_first r) (choices fin_first⁺ c)
       (one_choice _ _ true) (one_choice _ _ false) (one_choice _ _ true).
@@ -126,11 +126,11 @@ Definition G (r c : bool)
 (** 经完整选定父链计算，不替换成另一公式。 *)
 
 Example selected_operations_compute
-  : ((@magma_mul (Q false true) (G false true) x y).1,
-     (@magma_mul (Q false true) (G false true) y x).1,
-     (@monoid_unit (Q false true) (G false true)).1,
-     (@group_inv (Q false true) (G false true) x).1,
-     (@group_inv (Q false true) (G false true) y).1) =
+  : ((@magma_mul _ (hasMagma (G false true)) x y).1,
+     (@magma_mul _ (hasMagma (G false true)) y x).1,
+     (@monoid_unit _ (hasMonoid (G false true))).1,
+     (@group_inv _ (hasGroup (G false true)) x).1,
+     (@group_inv _ (hasGroup (G false true)) y).1) =
     (true, true, false, false, false).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -140,12 +140,12 @@ Proof. vm_compute. reflexivity. Defined.
 (** 只改变呈现选择时，整个选定输出代表按定义不变，包括其边界数据。 *)
 
 Example presentation_choices_keep_values
-  : ((@magma_mul (Q false true) (G false true) x y : TwoSphereS W false),
-     (@monoid_unit (Q false true) (G false true) : TwoSphereS W false),
-     (@group_inv (Q false true) (G false true) y : TwoSphereS W false)) =
-    ((@magma_mul (Q true false) (G true false) x y : TwoSphereS W false),
-     (@monoid_unit (Q true false) (G true false) : TwoSphereS W false),
-     (@group_inv (Q true false) (G true false) y : TwoSphereS W false)).
+  : ((@magma_mul _ (hasMagma (G false true)) x y : TwoSphereS W false),
+     (@monoid_unit _ (hasMonoid (G false true)) : TwoSphereS W false),
+     (@group_inv _ (hasGroup (G false true)) y : TwoSphereS W false)) =
+    ((@magma_mul _ (hasMagma (G true false)) x y : TwoSphereS W false),
+     (@monoid_unit _ (hasMonoid (G true false)) : TwoSphereS W false),
+     (@group_inv _ (hasGroup (G true false)) y : TwoSphereS W false)).
 Proof. vm_compute. reflexivity. Defined.
 
 (** Recovery preserves the original triangle and its native boundary witness. *)
@@ -174,9 +174,9 @@ Definition input_cylinder
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W false
-      (@group_inv (Q false true) (G false true) x)
-      (@group_inv (Q false true) (G false true) y)
-  := @group_inv_proper _ (G false true) x y input_cylinder.
+      (@group_inv _ (hasGroup (G false true)) x)
+      (@group_inv _ (hasGroup (G false true)) y)
+  := @group_inv_proper (G false true) x y input_cylinder.
 
 (** Generic left unit returns a cylinder between native-distinct values. *)
 
@@ -184,9 +184,9 @@ Definition inverse_cylinder
 
 Definition left_unit_cylinder
   : TwoSphereCylinderHomotopy W false
-      (@magma_mul (Q false true) (G false true)
-        (@monoid_unit (Q false true) (G false true)) x) x
-  := @monoid_unit_l _ (G false true) x.
+      (@magma_mul _ (hasMagma (G false true))
+        (@monoid_unit _ (hasMonoid (G false true))) x) x
+  := @monoid_unit_l _ _ (@isMonoid _ (hasMonoid (G false true))) x.
 
 (** The right-unit law is the inherited law of that same monoid. *)
 
@@ -194,9 +194,9 @@ Definition left_unit_cylinder
 
 Definition right_unit_cylinder
   : TwoSphereCylinderHomotopy W false
-      (@magma_mul (Q false true) (G false true) y
-        (@monoid_unit (Q false true) (G false true))) y
-  := @monoid_unit_r _ (G false true) y.
+      (@magma_mul _ (hasMagma (G false true)) y
+        (@monoid_unit _ (hasMonoid (G false true)))) y
+  := @monoid_unit_r _ _ (@isMonoid _ (hasMonoid (G false true))) y.
 
 (** Both inverse equations return actual cylinders, including the independently
     chosen right-candidate comparison already proved in the source group. *)
@@ -204,36 +204,36 @@ Definition right_unit_cylinder
 (** 两个逆方程都返回实际柱，包括来源群已证的独立右候选比较。 *)
 
 Definition left_inverse_cylinder
-  := @group_inv_l _ (G false true) y.
+  := @group_inv_l _ _ (@isGroup _ (hasGroup (G false true))) y.
 
 (** Read the right law from the same selected group. *)
 
 (** 从同一选定群读取右律。 *)
 
 Definition right_inverse_cylinder
-  := @group_inv_r _ (G false true) y.
+  := @group_inv_r _ _ (@isGroup _ (hasGroup (G false true))) y.
 
 (** The actual associativity law is obtained from its same inherited parent. *)
 
 (** 实际结合律来自其同一继承父结构。 *)
 
 Definition associative_cylinder
-  := @semigroup_assoc _ (G false true) x y x.
+  := @semigroup_assoc _ (isSemigroup (G false true)) x y x.
 
 (** Generic involution and uniqueness require no sphere-specific proofs. *)
 
 (** 通用对合及唯一性不要求球面专门证明。 *)
 
 Definition involution_cylinder
-  := @group_inv_inv _ (G false true) y.
+  := @group_inv_inv (G false true) y.
 
 (** Use the actual left-inverse cylinder as input to generic uniqueness. *)
 
 (** 用实际左逆柱作为通用唯一性的输入。 *)
 
 Definition uniqueness_cylinder
-  := @group_inv_unique _ (G false true) y
-      (@group_inv (Q false true) (G false true) y) left_inverse_cylinder.
+  := @group_inv_unique (G false true) y
+      (@group_inv _ (hasGroup (G false true)) y) left_inverse_cylinder.
 
 (** A five-dimensional boundary shape and independently varying time exercise
     the entire relative law, rather than just its vertices. *)
@@ -279,10 +279,10 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 群律是指定柱相等，不是原生三角形相等。 *)
 
 Fail Definition unit_law_is_not_native
-  : @magma_mul (Q false true) (G false true)
-      (@monoid_unit (Q false true) (G false true)) x = x
+  : @magma_mul _ (hasMagma (G false true))
+      (@monoid_unit _ (hasMonoid (G false true))) x = x
   := eq_refl.
-Fail Definition unchosen_model : Group (Q false true)
+Fail Definition unchosen_model : HasMagma (Q false true)
   := ltac:(typeclasses eauto).
 Fail Definition unchosen_raw_equivalence
   : Equivalence (TwoSphereCylinderHomotopy W false)
@@ -299,7 +299,6 @@ Fail Definition unchosen_raw_equivalence
     显式提供既有布尔模型及 Kan 选择，读取实际运输群运算并消费实际柱定律；
     不识别一般 π₂ 或一般 Kan 交换性。 *)
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Definition Z
@@ -312,7 +311,7 @@ Definition Z
 
 Definition b
   : Z 0
-  := two_cocycle_simplex_unit 0.
+  := (two_cocycle_simplex_unit (M := BoolS_Monoid)) 0.
 
 (** Select the same actual model fillers for presentation equivalence. *)
 
@@ -360,7 +359,7 @@ Definition right_choice
 (** 在全部模型选择之后显式选取运输群。 *)
 
 Definition GZ
-  : Group CZ
+  : Group
   := TwoSphereCylinderGroup Z b (cocycle_choices fin_first)
       (cocycle_choices fin_first⁺) product_choice left_choice right_choice.
 
@@ -370,7 +369,7 @@ Definition GZ
 
 Definition value
   : CZ →r BoolS
-  := cocycle_two_sphere_class_value_resp ∘r
+  := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) ∘r
       two_sphere_class_of_cylinder_resp Z b (cocycle_choices fin_first)
         (cocycle_choices fin_first⁺).
 
@@ -380,8 +379,8 @@ Definition value
 
 Definition product_value (a c : bool)
   : bool
-  := value (@magma_mul CZ GZ (cocycle_two_sphere_resp a)
-      (cocycle_two_sphere_resp c)).
+  := value (@magma_mul _ (hasMagma GZ) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)
+      (cocycle_two_sphere_resp (M := BoolS_Monoid) c)).
 
 (** Actual selected inverses retain their coefficient values. *)
 
@@ -389,12 +388,12 @@ Definition product_value (a c : bool)
 
 Definition inverse_value (a : bool)
   : bool
-  := value (@group_inv CZ GZ (cocycle_two_sphere_resp a)).
+  := value (@group_inv _ (hasGroup GZ) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)).
 
 Example cocycle_group_computes
   : (product_value false false, product_value false true,
      product_value true false, product_value true true,
-     value (@monoid_unit CZ GZ), inverse_value false, inverse_value true) =
+     value (@monoid_unit _ (hasMonoid GZ)), inverse_value false, inverse_value true) =
     (false, true, true, false, false, false, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -403,8 +402,8 @@ Proof. vm_compute. reflexivity. Defined.
 (** 系数乘法保持复用原 Kan 比较。 *)
 
 Definition value_product_client (a c : CZ)
-  : value (@magma_mul CZ GZ a c) ≈S
-      @magma_mul BoolS BoolS_Monoid (value a) (value c)
+  : value (@magma_mul _ (hasMagma GZ) a c) ≈S
+      @magma_mul _ (hasMagma BoolS_Group) (value a) (value c)
   := cocycle_kan_mul_value product_choice a c.
 
 (** Inverse preservation reuses the old actual left-candidate comparison. *)
@@ -412,9 +411,9 @@ Definition value_product_client (a c : CZ)
 (** 逆保持复用原实际左候选比较。 *)
 
 Definition value_inverse_client (a : CZ)
-  : value (@group_inv CZ GZ a) ≈S
-      @group_inv BoolS BoolS_Group (value a)
-  := @cocycle_kan_left_inverse_value BoolS BoolS_Group left_choice a.
+  : value (@group_inv _ (hasGroup GZ) a) ≈S
+      @group_inv _ (hasGroup BoolS_Group) (value a)
+  := @cocycle_kan_left_inverse_value BoolS_Group left_choice a.
 
 (** A genuine nonzero sphere is not equal to the unit even by an actual
     cylinder; use the accepted comparison to the original nonzero theorem. *)
@@ -422,7 +421,7 @@ Definition value_inverse_client (a : CZ)
 (** 真实非零球面即使按实际柱也不等于单位；经已接收比较复用原非零定理。 *)
 
 Definition geometric_nonzero_not_unit
-  : ¬ ((bool_cocycle_sphere : CZ) ≈S @monoid_unit CZ GZ).
+  : ¬ ((bool_cocycle_sphere : CZ) ≈S @monoid_unit _ (hasMonoid GZ)).
 Proof.
   intros H. apply bool_cocycle_sphere_not_null.
   exact (@func_proper _ _
@@ -436,9 +435,9 @@ Defined.
 
 Definition cocycle_inverse_cylinder
   : TwoSphereCylinderHomotopy Z b
-      (@magma_mul CZ GZ (@group_inv CZ GZ bool_cocycle_sphere)
-        bool_cocycle_sphere) (@monoid_unit CZ GZ)
-  := @group_inv_l CZ GZ bool_cocycle_sphere.
+      (@magma_mul _ (hasMagma GZ) (@group_inv _ (hasGroup GZ) bool_cocycle_sphere)
+        bool_cocycle_sphere) (@monoid_unit _ (hasMonoid GZ))
+  := @group_inv_l _ _ (@isGroup _ (hasGroup GZ)) bool_cocycle_sphere.
 
 Local Opaque TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 
@@ -456,7 +455,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 
 (** 即使显式启用完整 Kan，仍不选择柱群、交换性质或原始有向柱等价结构。 *)
 
-Fail Definition full_Kan_no_group : Group CZ := ltac:(typeclasses eauto).
+Fail Definition full_Kan_no_group : HasMagma CZ := ltac:(typeclasses eauto).
 Fail Definition full_Kan_no_raw_equivalence
   : Equivalence (TwoSphereCylinderHomotopy Z b)
   := ltac:(typeclasses eauto).

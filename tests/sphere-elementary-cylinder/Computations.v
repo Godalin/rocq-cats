@@ -161,15 +161,14 @@ Fail Definition unproved_cylinder_equivalence
     给定已有初等 cocycle 见证本身；新构造使用其数据，不使用系数特有的柱定理
     或选定 Kan 结构。 *)
 
-Local Existing Instance BoolS_Monoid.
 
 Definition coefficient_elementary
-  : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere bool_cocycle_sphere
   := CocycleTwoSphereHomotopy bool_cocycle_sphere bool_cocycle_sphere eq_refl.
 
 Definition coefficient_cylinder
-  := TwoSphereHomotopyCylinder BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := TwoSphereHomotopyCylinder BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       coefficient_elementary.
 
 Definition coefficient_map
@@ -178,10 +177,10 @@ Definition coefficient_map
 Definition coefficient_faces (i : Ordinal 2)
   : bool * bool * bool * bool
   := let w := simplex_prism_eval coefficient_map i in
-      (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-       two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-       two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-       two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+       (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+       (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+       (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 Example twelve_actual_cocycle_face_coefficients
   : (coefficient_faces fin_first, coefficient_faces fin_first⁺,
@@ -191,8 +190,8 @@ Example twelve_actual_cocycle_face_coefficients
 Proof. vm_compute. reflexivity. Defined.
 
 Example cocycle_endpoints_keep_the_nonzero_label
-  : (two_cocycle_triangle_value_resp (simplex_element_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (simplex_element_resp
        (coefficient_map ∘Nv SimplicialEndpointN (Δ[2]) false)),
-     two_cocycle_triangle_value_resp (simplex_element_resp
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (simplex_element_resp
        (coefficient_map ∘Nv SimplicialEndpointN (Δ[2]) true))) = (true, true).
 Proof. vm_compute. reflexivity. Defined.

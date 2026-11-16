@@ -19,7 +19,7 @@ From Cats Require Export
     导入模块不会全局选定系数群或交换性见证。 *)
 
 Program Definition BoolS_IsCommutativeMonoid
-  : @IsCommutativeMonoid BoolS BoolS_Monoid
+  : @IsCommutativeMonoid BoolS_Monoid
   :=
   {|monoid_mul_comm x y := _
   |}.

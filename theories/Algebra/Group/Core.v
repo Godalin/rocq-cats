@@ -12,37 +12,100 @@ Local Open Scope monoid_scope.
 
     群为选定幺半群增加可计算的逆，逆的保相等性与相干性由唯一性导出而不另存。 *)
 
-Class Group (G : SetC)
+(** ** Inverses on a Fixed Monoid
+
+    Fix the multiplication and its chosen unit before specifying inverse
+    candidates. Every law below refers to this exact parent. *)
+
+(** ** 固定幺半群上的逆
+
+    先固定乘法及其选定单位元，再指定逆候选；以下每条定律均指向恰好该父结构。 *)
+
+Section InverseExtension.
+Context (M : Monoid).
+
+(** A supplied operation is a two-sided inverse for the selected monoid. *)
+
+(** 给定运算是选定幺半群的双侧逆。 *)
+
+Class IsGroup (inv : M → M)
   :=
-  (** Reuse the selected monoid both as an inherited instance and as the
-      unique underlying view; its setoid view then recovers [G]. *)
-
-  (** 选定幺半群同时作为继承实例和唯一底层视图，其广集视图继而恢复 [G]。 *)
-
-  { GroupM :> Monoid G
-
-  (** The inverse operation is additional data on the same carrier. *)
-
-  (** 逆运算是同一载体上的额外数据。 *)
-
-  ; group_inv : G → G
-  ; group_inv_l x : group_inv x ⋅ x ≈S 1
-  ; group_inv_r x : x ⋅ group_inv x ≈S 1
+  { group_inv_l x : inv x ⋅ x ≈S 1
+  ; group_inv_r x : x ⋅ inv x ≈S 1
   }.
 
-Arguments GroupM {_} _.
+(** Choose an inverse on this parent, retaining its Type-valued laws. *)
 
-(** Expose the same parent to instance search. The [:>] field already
-    supplies the unique chain through [Monoid], [Semigroup] and [Magma]
-    to [SetC] and its carrier; this registration selects no further monoid. *)
+(** 在该父结构上选取逆，并保留其 Type 值定律。 *)
 
-(** 将同一父结构提供给实例搜索。[:>] 字段已给出经 [Monoid]、[Semigroup]、
-    [Magma] 到 [SetC] 及其载体的唯一转换链；此注册不再选择其他幺半群。 *)
+Class HasGroup
+  :=
+  { group_inv : M → M
 
-#[export] Existing Instance GroupM.
+  (** The laws refer to the stored inverse and the supplied monoid. *)
 
-Notation "x '⁻¹'" := (group_inv x)
+  (** 定律指向保存的逆及给定幺半群。 *)
+
+  ; isGroup :: IsGroup group_inv
+  }.
+
+End InverseExtension.
+
+(** A complete group owns one monoid and one inverse extension. *)
+
+(** 完整群拥有一个幺半群及一份逆扩充。 *)
+
+Record Group@{u p l}
+  :=
+  { GroupM :> Monoid@{u p l}
+  ; hasGroup :: HasGroup GroupM
+  }.
+
+(** Pack a supplied monoid and its chosen inverse extension transparently. *)
+
+(** 将给定幺半群及其选定逆扩充透明打包。 *)
+
+Program Definition GroupFromExtension (M : Monoid)
+    (HG : HasGroup M)
+  : Group
+  :=
+  {|GroupM := M
+  ; hasGroup := HG
+  |}.
+
+(** The inverse notation reads the complete group's stored choice. *)
+
+(** 逆记号读取完整群保存的选择。 *)
+
+Notation "x '⁻¹'" := (@group_inv _ (hasGroup _) x)
   (at level 9) : monoid_scope.
+
+(** Candidate inverse maps agree pointwise in the specified equality;
+    neither their native functions nor their law witnesses are identified. *)
+
+(** 逆候选映射在指定相等下逐点相等，不等同原生函数或其定律见证。 *)
+
+Lemma group_inverse_candidates_equiv (M : Monoid)
+    (i j : M → M) (Hi : IsGroup M i) (Hj : IsGroup M j)
+  : i ≈f j.
+Proof.
+  intros x. exact (@monoid_inverse_unique M x (i x) (j x)
+    (@group_inv_l M i Hi x) (@group_inv_r M j Hj x)).
+Qed.
+
+(** A left inverse agrees with the selected inverse using only the
+    extension of the specified monoid. *)
+
+(** 左逆仅需指定幺半群上的扩充，就与选定逆相等。 *)
+
+Lemma group_extension_inv_unique (M : Monoid)
+    (HG : HasGroup M) (x y : M)
+    (H : @magma_mul _ (hasMagma M) y x ≈S @monoid_unit _ (hasMonoid M))
+  : y ≈S @group_inv M HG x.
+Proof.
+  exact (@monoid_inverse_unique M x y _ H
+    (@group_inv_r M _ (@isGroup M HG) x)).
+Qed.
 
 (** ** Inverse Laws in a Group
 
@@ -55,7 +118,7 @@ Notation "x '⁻¹'" := (group_inv x)
     固定带选定群结构的广集 [G]，由逆的唯一性导出保相等性及单位、对合和乘法定律。 *)
 
 Section Group.
-Context {G : SetC} `{HG : !Group G}.
+Context {G : Group}.
 
 (** A left inverse agrees with the selected group inverse. *)
 
@@ -63,17 +126,19 @@ Context {G : SetC} `{HG : !Group G}.
 
 Lemma group_inv_unique (x y : G) (H : y ⋅ x ≈S 1)
   : y ≈S x⁻¹.
-Proof. exact (monoid_inverse_unique x y x⁻¹ H (group_inv_r x)). Qed.
+Proof.
+  exact (group_extension_inv_unique (GroupM G) (hasGroup G) x y H).
+Qed.
 
 (** Inversion respects the specified setoid equality. *)
 
 (** 取逆保持指定的广集相等。 *)
 
 Global Instance group_inv_proper
-  : Proper (carrier_equiv G ==> carrier_equiv G) (@group_inv G HG).
+  : Proper (carrier_equiv G ==> carrier_equiv G) (@group_inv _ (hasGroup G)).
 Proof.
   intros x y H. apply group_inv_unique.
-  rewrite <- H. apply group_inv_l.
+  rewrite <- H. apply (@group_inv_l _ _ (@isGroup _ (hasGroup G))).
 Qed.
 
 (** The unit is its own inverse. *)
@@ -82,7 +147,10 @@ Qed.
 
 Lemma group_inv_unit
   : (1 : G)⁻¹ ≈S 1.
-Proof. symmetry. apply group_inv_unique. apply monoid_unit_l. Qed.
+Proof.
+  symmetry. apply group_inv_unique.
+  exact (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G)) _).
+Qed.
 
 (** Taking inverses twice recovers the original element. *)
 
@@ -90,7 +158,7 @@ Proof. symmetry. apply group_inv_unique. apply monoid_unit_l. Qed.
 
 Lemma group_inv_inv (x : G)
   : (x⁻¹)⁻¹ ≈S x.
-Proof. symmetry. apply group_inv_unique. apply group_inv_r. Qed.
+Proof. symmetry. apply group_inv_unique. apply (@group_inv_r _ _ (@isGroup _ (hasGroup G))). Qed.
 
 (** The inverse of a product reverses the order of its factors. *)
 
@@ -100,8 +168,11 @@ Lemma group_inv_mul (x y : G)
   : (x ⋅ y)⁻¹ ≈S y⁻¹ ⋅ x⁻¹.
 Proof.
   symmetry. apply group_inv_unique.
-  rewrite semigroup_assoc, <- (semigroup_assoc x⁻¹), group_inv_l, monoid_unit_l.
-  apply group_inv_l.
+  rewrite (@semigroup_assoc _ (isSemigroup G)),
+    <- ((@semigroup_assoc _ (isSemigroup G)) x⁻¹),
+    (@group_inv_l _ _ (@isGroup _ (hasGroup G))).
+  rewrite (@monoid_unit_l _ _ (@isMonoid _ (hasMonoid G))).
+  apply (@group_inv_l _ _ (@isGroup _ (hasGroup G))).
 Qed.
 
 (** Group inversion packaged as a respectful map. *)

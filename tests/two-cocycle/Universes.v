@@ -17,8 +17,8 @@ Constraint h < o.
 Constraint o < l.
 Context (I : Cat@{o h e l l}) (J : Cat@{e h o l l})
     (F : Fct I J) (G : Fct J I)
-    (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Monoid M} `{HN : !Monoid N}
+    (M : Monoid@{h e _}) (N : Monoid@{e h _})
+
     (c : TwoCocycle J M) (d : TwoCocycle I N).
 
 (** Pullback accepts coefficient equality below its carrier. *)
@@ -42,7 +42,7 @@ Definition high_equality_pullback
 (** 保相等映射也保留这些独立层级。 *)
 
 Definition low_equality_map
-  : @TwoCocycleS J M HM →r @TwoCocycleS I M HM
+  : @TwoCocycleS J M →r @TwoCocycleS I M
   := two_cocycle_pullback_resp F.
 
 (** Composition compares labels in the lower coefficient equality. *)

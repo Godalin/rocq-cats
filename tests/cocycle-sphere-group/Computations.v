@@ -17,23 +17,17 @@ Local Open Scope monoid_scope.
     乘法须计算异或，实际保留合成四面体须计算全部四个面标签。 *)
 
 Fail Definition unchosen_coefficient_group
-  : Group BoolS
+  : HasGroup BoolS_Monoid
   := _.
 
-Fail Definition unchosen_class_monoid
-  : Monoid BoolCocycleSphereClassS
-  := _.
-
-Fail Definition unchosen_class_group
-  : Group BoolCocycleSphereClassS
+Fail Definition unchosen_class_magma
+  : HasMagma BoolCocycleSphereClassS
   := _.
 
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Group.
-Local Existing Instance BoolCocycleSphereClassS_Group.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** The bundled multiplication computes xor on any two Boolean labels. *)
@@ -41,9 +35,9 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 (** 打包乘法在任意两个布尔标签上计算异或。 *)
 
 Example class_product_computes (a b : bool)
-  : cocycle_two_sphere_class_value_resp
-      ((@cocycle_two_sphere_class_resp BoolS BoolS_Monoid a : BoolCocycleSphereClassS) ⋅
-        @cocycle_two_sphere_class_resp BoolS BoolS_Monoid b) = xorb a b.
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+      ((@cocycle_two_sphere_class_resp BoolS_Monoid a : BoolCocycleSphereClassS_Group) ⋅
+        @cocycle_two_sphere_class_resp BoolS_Monoid b) = xorb a b.
 Proof. reflexivity. Defined.
 
 (** The bundled inverse is computational, with no opaque inverse choice. *)
@@ -51,8 +45,8 @@ Proof. reflexivity. Defined.
 (** 打包逆可计算，不带不透明的逆选择。 *)
 
 Example class_inverse_computes (a : bool)
-  : cocycle_two_sphere_class_value_resp
-      ((@cocycle_two_sphere_class_resp BoolS BoolS_Monoid a : BoolCocycleSphereClassS)⁻¹) = a.
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
+      ((@cocycle_two_sphere_class_resp BoolS_Monoid a : BoolCocycleSphereClassS_Group)⁻¹) = a.
 Proof. reflexivity. Defined.
 
 (** The actual constant sphere is the bundled unit. *)
@@ -60,7 +54,7 @@ Proof. reflexivity. Defined.
 (** 实际常值球面就是打包单位。 *)
 
 Example class_unit_computes
-  : cocycle_two_sphere_class_value_resp (1 : BoolCocycleSphereClassS) = false.
+  : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (1 : BoolCocycleSphereClassS_Group) = false.
 Proof. reflexivity. Defined.
 
 (** The square tetrahedron retains one constant face, the product face,
@@ -69,13 +63,13 @@ Proof. reflexivity. Defined.
 (** 平方四面体按预期定向保留一个常值面、乘积面及两个非零输入面。 *)
 
 Example square_faces_compute
-  : (two_cocycle_triangle_value_resp
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
         (d[BoolCocycleModel; 2; fin_first] BoolCocycleSphereSquare.1),
-      two_cocycle_triangle_value_resp
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺] BoolCocycleSphereSquare.1),
-      two_cocycle_triangle_value_resp
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺] BoolCocycleSphereSquare.1),
-      two_cocycle_triangle_value_resp
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] BoolCocycleSphereSquare.1)) =
       (false, true, false, true).
 Proof. reflexivity. Defined.
@@ -89,9 +83,9 @@ Example chosen_Kan_product_class
   : (cocycle_two_sphere_face
       (horn_fill (cocycle_two_sphere_horn
         bool_cocycle_sphere bool_cocycle_sphere)).1
-      : BoolCocycleSphereClassS) ≈S 1.
+      : BoolCocycleSphereClassS_Group) ≈S 1.
 Proof.
-  transitivity (cocycle_two_sphere_mul bool_cocycle_sphere bool_cocycle_sphere).
+  transitivity (cocycle_two_sphere_mul (M := BoolS_Monoid) bool_cocycle_sphere bool_cocycle_sphere).
   - apply cocycle_two_sphere_horn_unique. apply (horn_fill _).2.
   - exact bool_cocycle_sphere_square.
 Defined.

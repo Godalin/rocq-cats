@@ -17,8 +17,7 @@ Local Open Scope nat_scope.
 Section CoefficientSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Monoid M} `{HN : !Monoid N}.
+Context (M : Monoid@{h e _}) (N : Monoid@{e h _}).
 
 (** Lower native and lower ambient equality. *)
 

@@ -3,6 +3,39 @@
 
 A category theory library for self study.
 
+## Status and structure design / 状态与结构设计
+
+Rocq-Cats is a pre-stable research library. Public interfaces, hierarchy and
+source organization may change without historical API compatibility. Refactors
+migrate the library's clients and remove obsolete compatibility layers while
+checking mathematical correctness, independent universes and computations.
+
+Rocq-Cats 是尚未发布稳定版的研究库，公开接口、层级和源码组织可以发生破坏性
+变更，不保证历史 API 兼容。重构会同步迁移库内使用者、移除过时兼容层，并验证
+数学正确性、独立宇宙及计算行为。
+
+The structure design distinguishes `Is*` properties of specified data,
+`Has*` choices over fixed parents and complete packed `Record` objects. A
+property-only extension needs no extra choice interface. Each shared ancestor
+is stored once; meaningful multiple parent views must converge by conversion.
+The [complete groupoid](./theories/Cat/Groupoid/Core.v) already owns its category.
+The complete algebra chain `Magma → Semigroup → Monoid → Group` now owns its
+carrier through one immediate parent at each step; categorical hierarchies and
+a genuine multiple-parent diamond remain further work.
+
+结构设计区分指定数据的 `Is*` 性质、固定父结构上的 `Has*` 选择及完整打包的
+`Record` 对象；只添加性质时无须额外选择接口。共享祖先只保存一次，有意义的
+多父视图须通过定义相等汇合。[完整群胚](./theories/Cat/Groupoid/Core.v) 已拥有
+其底层范畴；完整代数链 `Magma → Semigroup → Monoid → Group` 现通过每层
+唯一的直接父结构拥有载体，范畴层级及真实多父菱形仍属后续工作。
+
+See [architecture issue #42](https://github.com/Godalin/rocq-cats/issues/42),
+[development rules](./AGENTS.md) and the
+[structure guide](./docs/BundledInterfaces.md) for the design and dated progress.
+
+设计与注明基线的进展见[架构议题 #42](https://github.com/Godalin/rocq-cats/issues/42)、
+[开发规则](./AGENTS.md)及[结构指南](./docs/BundledInterfaces.md)。
+
 ## Key Features
 
 ### Category Theory

@@ -33,6 +33,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   operations and laws defined once, without a staging `*Data` record, and
   expose other presentations through transparent views. Existing interfaces
   migrate in bounded steps; an `Is`/`Has` split is not a compulsory template.
+- Before a stable release, prefer a clean mathematical interface to historical
+  source compatibility. Migrate actual clients together and remove obsolete
+  compatibility layers; do not retain old signatures, constructors, implicit
+  argument forms or universe argument positions solely for compatibility.
+  Keep useful mathematical views and verify universe independence, selected
+  witnesses and transparent computations. Earlier compatibility audits are
+  historical evidence, not obligations for subsequent refactors.
 
 ## Structural hierarchies
 
@@ -54,7 +61,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   and verify converging ancestor paths by conversion, including actual Rocq
   coercion behavior. Do not add duplicate selections to create a diamond.
 - If the parent view must also support instance search, register the same
-  projection with `#[export] Existing Instance GroupM`; `:>` alone does not
+  projection with `#[export] Existing Instance CCCC`; `:>` alone does not
   register an inherited instance. Supplementary chosen structures/properties
   use named `has*`/`is*` fields and `::`.
 - Tie dependent constructions to those same inherited choices. For example,

@@ -1643,10 +1643,7 @@ Section GroupDeloopingLevels.
 Universes u p l.
 Constraint u < p.
 Constraint p < l.
-Context (X : SetC@{u p}) (Y : SetC@{p u})
-    (GX : Group@{u p l} X) (GY : Group@{p u l} Y).
-Local Existing Instance GX.
-Local Existing Instance GY.
+Context (X : Group@{u p l}) (Y : Group@{p u l}).
 
 Definition high_eq_group_category
   : Cat@{Set u p l l}
@@ -1673,14 +1670,22 @@ Definition low_eq_regular_action
   := RegularActionF Y.
 
 Definition high_eq_endomorphism_group
-  : Group X
+  : Group@{u p l}
   := EndGroup (HC := high_eq_group_category_structure)
       high_eq_group_category tt.
 
 Definition low_eq_endomorphism_group
-  : Group Y
+  : Group@{p u l}
   := EndGroup (HC := low_eq_group_category_structure)
       low_eq_group_category tt.
+
+Example high_eq_endomorphism_carrier
+  : (high_eq_endomorphism_group : SetC@{u p}) = (X : SetC@{u p}).
+Proof. reflexivity. Qed.
+
+Example low_eq_endomorphism_carrier
+  : (low_eq_endomorphism_group : SetC@{p u}) = (Y : SetC@{p u}).
+Proof. reflexivity. Qed.
 End GroupDeloopingLevels.
 
 (** Family-action equivalence allows base carrier and equality levels above
@@ -1817,8 +1822,7 @@ Universes u p c e.
 Constraint u < p.
 Constraint p < c.
 Constraint c < e.
-Context (M : SetC@{u p}) (N : SetC@{p u})
-    `{HM : !Monoid M} `{HN : !Monoid N}.
+Context (M : Monoid@{u p _}) (N : Monoid@{p u _}).
 
 Definition high_eq_monoid_nerve
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}

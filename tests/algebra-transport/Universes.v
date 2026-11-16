@@ -3,395 +3,305 @@ From Cats Require Import
 
 Local Open Scope monoid_scope.
 
-(** * Native-Size Transport Interfaces
+(** * Transport at Strict Independent Sizes
 
-    These clients keep all four carrier/equality levels strictly distinct.
-    We also check the minimal hypotheses at each layer and native conversion
-    of the immediate parent chain. No target model is enabled by import. *)
+    Check the weakest input at each layer, actual parent conversion and
+    independent source/target law bounds. No historical argument order is
+    required; each source is a complete mathematical object. *)
 
-(** * 原生大小的运输接口
+(** * 严格独立大小下的运输
 
-    以下客户端令四个载体／相等层级严格不同，同时检查各层最小前提和直接父链
-    的原生定义转换。导入模块不启用任何目标模型。 *)
+    检查各层最弱输入、实际父结构转换及独立的来源／目标定律界。不维护历史参数
+    次序，每个来源都是完整数学对象。 *)
 
-(** ** LowHigh: Independent Source and Target Sizes
+(** ** LowHigh: Native Carrier and Equality Levels
 
-    The source and target put equality on opposite sides of their carriers.
-    Auxiliary bounds for laws remain inferred independently. *)
+    Separate all four native levels and both auxiliary law bounds. *)
 
-(** ** LowHigh：来源和目标的独立大小
+(** ** LowHigh：原生载体与相等层级
 
-    来源与目标的相等分别处于载体的相反侧，定律的辅助上界保持独立推断。 *)
+    分离全部四个原生层级及两个定律辅助界。 *)
 
 Section LowHigh.
-Universes l0 l1 l2 l3.
-Constraint l0 < l1, l1 < l2, l2 < l3.
-Context {A : SetC@{l0 l3}} {B : SetC@{l2 l1}}.
-Context (f : B →r A) (g : A →r B).
+Universes l0 l1 l2 l3 lawlo lawhi.
+Constraint l0 < l1, l1 < l2, l2 < l3, l3 < lawlo, lawlo < lawhi.
 
-(** Raw multiplication requires neither inverse equation. *)
+(** Raw multiplication needs only a magma and two respectful maps. *)
 
-(** 原始乘法不要求任何逆方程。 *)
+(** 原始乘法只需原群及两个保相等映射。 *)
 
-Definition raw_magma (H : Magma A)
-  : Magma B
-  := MagmaTransport f g H.
+Definition raw_magma (A : Magma@{l0 l3 lawlo})
+    (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
+  : Magma@{l2 l1 lawlo}
+  := MagmaTransport A f g.
 
-(** Associativity needs only the source recovery equation. *)
+Example raw_carrier (A : Magma@{l0 l3 lawlo})
+    (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
+  : (raw_magma A B f g : SetC@{l2 l1}) = B.
+Proof. reflexivity. Qed.
 
-(** 结合律只需来源恢复方程。 *)
+(** Associativity needs just source recovery, without unit or inverse. *)
 
-Definition one_sided_semigroup (H : Semigroup A)
+(** 结合律只需来源恢复，不要求单位元或逆。 *)
+
+Definition one_sided_semigroup (A : Semigroup@{l0 l3 lawlo})
+    (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
     (Hfg : (f ∘r g) ≈f id_resp)
-  : Semigroup B
-  := SemigroupTransport f g H Hfg.
+  : Semigroup@{l2 l1 lawlo}
+  := SemigroupTransport A f g Hfg.
 
+(** A unit needs target recovery too, but no inverse operation. *)
+
+(** 单位元还需目标恢复，但不要求逆运算。 *)
+
+Definition two_sided_monoid (A : Monoid@{l0 l3 lawlo})
+    (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
+    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
+  : Monoid@{l2 l1 lawlo}
+  := MonoidTransport A f g Hfg Hgf.
+
+(** ** Selected Group Parents and Operations
+
+    The full chain shares its transported multiplication and unit. *)
+
+(** ** 选定群父结构与运算
+
+    完整链共享运输后的乘法与单位。 *)
+
+Section GroupClients.
+Context (A : Group@{l0 l3 lawhi}) (B : SetC@{l2 l1}).
+Context (f : B →r A) (g : A →r B).
 Context (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp).
 
-(** A monoid retains both independent specified equalities. *)
+Definition transported_group
+  : Group@{l2 l1 lawlo}
+  := GroupTransport A f g Hfg Hgf.
 
-(** 幺半群保留两个独立的指定相等。 *)
+Example group_parent
+  : GroupM transported_group = MonoidTransport A f g Hfg Hgf.
+Proof. reflexivity. Qed.
 
-Definition two_sided_monoid (H : Monoid A)
-  : Monoid B
-  := MonoidTransport f g H Hfg Hgf.
+Example monoid_parent
+  : MonoidSG transported_group = SemigroupTransport A f g Hfg.
+Proof. reflexivity. Qed.
 
-(** The group uses the same maps, with no new law field. *)
+Example semigroup_parent
+  : SemigroupM transported_group = MagmaTransport A f g.
+Proof. reflexivity. Qed.
 
-(** 群使用相同映射，不增加新的定律字段。 *)
+Example actual_carrier
+  : (transported_group : SetC@{l2 l1}) = B.
+Proof. reflexivity. Qed.
 
-Definition two_sided_group (H : Group A)
-  : Group B
-  := GroupTransport f g H Hfg Hgf.
+Example selected_product (x y : B)
+  : @magma_mul _ (hasMagma transported_group) x y = g (@magma_mul _ (hasMagma A) (f x) (f y)).
+Proof. reflexivity. Qed.
 
-(** Immediate parents are the exact preceding constructions. *)
+Example selected_unit
+  : @monoid_unit _ (hasMonoid transported_group) =
+      g (@monoid_unit _ (hasMonoid A)).
+Proof. reflexivity. Qed.
 
-(** 直接父结构按定义就是前一层构造。 *)
+Example selected_inverse (x : B)
+  : @group_inv _ (hasGroup transported_group) x = g (@group_inv _ (hasGroup A) (f x)).
+Proof. reflexivity. Qed.
 
-Definition group_parent (H : Group A)
-  : GroupM (GroupTransport f g H Hfg Hgf) =
-      MonoidTransport f g H Hfg Hgf
-  := eq_refl.
+Definition forward_product (x y : B)
+  : f (@magma_mul _ (hasMagma transported_group) x y) ≈S @magma_mul _ (hasMagma A) (f x) (f y)
+  := magma_transport_map_mul A f g Hfg x y.
 
-(** The monoid keeps its transported semigroup. *)
+Definition forward_unit
+  : f (@monoid_unit _ (hasMonoid transported_group)) ≈S
+      @monoid_unit _ (hasMonoid A)
+  := monoid_transport_map_unit A f g Hfg Hgf.
 
-(** 幺半群保留其运输半群。 *)
+Definition forward_inverse (x : B)
+  : f (@group_inv _ (hasGroup transported_group) x) ≈S @group_inv _ (hasGroup A) (f x)
+  := group_transport_map_inv A f g Hfg Hgf x.
 
-Definition monoid_parent (H : Monoid A)
-  : MonoidSG (MonoidTransport f g H Hfg Hgf) =
-      SemigroupTransport f g H Hfg
-  := eq_refl.
-
-(** The semigroup keeps its transported magma. *)
-
-(** 半群保留其运输原群。 *)
-
-Definition semigroup_parent (H : Semigroup A)
-  : SemigroupM (SemigroupTransport f g H Hfg) = MagmaTransport f g H
-  := eq_refl.
-
-(** Selected multiplication is unchanged through the entire group chain. *)
-
-(** 选定乘法贯穿整个群父链而不改变。 *)
-
-Definition group_multiplication (H : Group A) (x y : B)
-  : @magma_mul B (GroupTransport f g H Hfg Hgf) x y =
-      g (@magma_mul A H (f x) (f y))
-  := eq_refl.
-
-(** The unit is the returned source unit. *)
-
-(** 单位元就是返回的来源单位元。 *)
-
-Definition group_unit (H : Group A)
-  : @monoid_unit B (GroupTransport f g H Hfg Hgf) =
-      g (@monoid_unit A H)
-  := eq_refl.
-
-(** The chosen inverse returns the source inverse. *)
-
-(** 选定逆返回来源逆。 *)
-
-Definition group_inverse (H : Group A) (x : B)
-  : @group_inv B (GroupTransport f g H Hfg Hgf) x =
-      g (@group_inv A H (f x))
-  := eq_refl.
-
-(** The forward map preserves multiplication with just one recovery law. *)
-
-(** 正向映射只需一侧恢复律就保持乘法。 *)
-
-Definition forward_multiplication (H : Magma A) (x y : B)
-  : f (@magma_mul B (MagmaTransport f g H) x y) ≈S
-      @magma_mul A H (f x) (f y)
-  := magma_transport_map_mul f g H Hfg x y.
-
-(** The forward map preserves the unit of the actual parent monoid. *)
-
-(** 正向映射保持实际父幺半群的单位元。 *)
-
-Definition forward_unit (H : Monoid A)
-  : f (@monoid_unit B (MonoidTransport f g H Hfg Hgf)) ≈S
-      @monoid_unit A H
-  := monoid_transport_map_unit f g H Hfg Hgf.
-
-(** The forward map preserves the actual selected group inverse. *)
-
-(** 正向映射保持实际选定群逆。 *)
-
-Definition forward_inverse (H : Group A) (x : B)
-  : f (@group_inv B (GroupTransport f g H Hfg Hgf) x) ≈S
-      @group_inv A H (f x)
-  := group_transport_map_inv f g H Hfg Hgf x.
-
-(** Inverse Proper is inherited from the existing generic theory. *)
-
-(** 逆的 Proper 从既有通用理论继承。 *)
-
-Definition generic_inverse_proper (H : Group A)
+Definition actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
-      (@group_inv B (GroupTransport f g H Hfg Hgf))
-  := @group_inv_proper B (GroupTransport f g H Hfg Hgf).
+      (@group_inv _ (hasGroup transported_group))
+  := @group_inv_proper transported_group.
 
-(** The same generic involution law applies to the transported structure. *)
+Definition actual_inverse_involution (x : B)
+  : @group_inv _ (hasGroup transported_group) (@group_inv _ (hasGroup transported_group) x) ≈S x
+  := @group_inv_inv transported_group x.
 
-(** 同一通用对合律适用于运输结构。 *)
+Definition actual_inverse_unique (x y : B)
+    (H : @magma_mul _ (hasMagma transported_group) y x ≈S
+      @monoid_unit _ (hasMonoid transported_group))
+  : y ≈S @group_inv _ (hasGroup transported_group) x
+  := @group_inv_unique transported_group x y H.
 
-Definition generic_inverse_involution (H : Group A) (x : B)
-  : @group_inv B (GroupTransport f g H Hfg Hgf)
-      (@group_inv B (GroupTransport f g H Hfg Hgf) x) ≈S x
-  := @group_inv_inv B (GroupTransport f g H Hfg Hgf) x.
+Fail Definition missing_source_recovery
+  : Semigroup
+  := SemigroupTransport A f g.
 
-(** Unit and inverse uniqueness still use that same selected monoid. *)
+Fail Definition missing_target_recovery
+  : Monoid
+  := MonoidTransport A f g Hfg.
 
-(** 单位及逆唯一性仍使用同一选定幺半群。 *)
+Fail Definition no_automatic_target_multiplication
+  : HasMagma B
+  := ltac:(typeclasses eauto).
 
-Definition generic_inverse_unique (H : Group A) (x y : B)
-    (Hy : @magma_mul B (GroupTransport f g H Hfg Hgf) y x ≈S
-      @monoid_unit B (GroupTransport f g H Hfg Hgf))
-  : y ≈S @group_inv B (GroupTransport f g H Hfg Hgf) x
-  := @group_inv_unique B (GroupTransport f g H Hfg Hgf) x y Hy.
+End GroupClients.
 
-(** Importing transport or even supplying its inputs enables no model. *)
+(** The target law bound may also be larger than the source bound. *)
 
-(** 导入运输模块乃至提供其输入也不会启用模型。 *)
+(** 目标定律界也可以大于来源界。 *)
 
-Fail Definition no_automatic_magma : Magma B := ltac:(typeclasses eauto).
-Fail Definition no_automatic_group : Group B := ltac:(typeclasses eauto).
-Fail Definition missing_source_recovery (H : Semigroup A) : Semigroup B
-  := SemigroupTransport f g H.
-Fail Definition missing_target_recovery (H : Monoid A) : Monoid B
-  := MonoidTransport f g H Hfg.
-
-(** Source and target law bounds can be strictly ordered either way,
-    independently of all four native carrier/equality levels. *)
-
-(** 来源和目标定律上界可严格按任一方向排列，并独立于四个原生载体／相等层级。 *)
-
-Universes lawlo lawhi.
-Constraint l3 < lawlo, lawlo < lawhi.
-
-Definition larger_target_law_bound (H : Group@{l0 l3 lawlo} A)
-  : Group@{l2 l1 lawhi} B
-  := GroupTransport f g H Hfg Hgf.
-
-(** The target law bound need not dominate the source structure bound. *)
-
-(** 目标定律上界不必支配来源结构上界。 *)
-
-Definition smaller_target_law_bound (H : Group@{l0 l3 lawhi} A)
-  : Group@{l2 l1 lawlo} B
-  := GroupTransport f g H Hfg Hgf.
+Definition larger_target_law_bound (A : Group@{l0 l3 lawlo})
+    (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
+    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
+  : Group@{l2 l1 lawhi}
+  := GroupTransport A f g Hfg Hgf.
 
 End LowHigh.
 
-(** ** HighLow: Independent Source and Target Sizes
+(** ** HighLow: Native Carrier and Equality Levels
 
-    The source and target put equality on opposite sides of their carriers.
-    Auxiliary bounds for laws remain inferred independently. *)
+    Separate all four native levels and both auxiliary law bounds. *)
 
-(** ** HighLow：来源和目标的独立大小
+(** ** HighLow：原生载体与相等层级
 
-    来源与目标的相等分别处于载体的相反侧，定律的辅助上界保持独立推断。 *)
+    分离全部四个原生层级及两个定律辅助界。 *)
 
 Section HighLow.
-Universes l0 l1 l2 l3.
-Constraint l0 < l1, l1 < l2, l2 < l3.
-Context {A : SetC@{l3 l0}} {B : SetC@{l1 l2}}.
-Context (f : B →r A) (g : A →r B).
+Universes l0 l1 l2 l3 lawlo lawhi.
+Constraint l0 < l1, l1 < l2, l2 < l3, l3 < lawlo, lawlo < lawhi.
 
-(** Raw multiplication requires neither inverse equation. *)
+(** Raw multiplication needs only a magma and two respectful maps. *)
 
-(** 原始乘法不要求任何逆方程。 *)
+(** 原始乘法只需原群及两个保相等映射。 *)
 
-Definition high_raw_magma (H : Magma A)
-  : Magma B
-  := MagmaTransport f g H.
+Definition high_raw_magma (A : Magma@{l3 l0 lawlo})
+    (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
+  : Magma@{l1 l2 lawlo}
+  := MagmaTransport A f g.
 
-(** Associativity needs only the source recovery equation. *)
+Example high_raw_carrier (A : Magma@{l3 l0 lawlo})
+    (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
+  : (high_raw_magma A B f g : SetC@{l1 l2}) = B.
+Proof. reflexivity. Qed.
 
-(** 结合律只需来源恢复方程。 *)
+(** Associativity needs just source recovery, without unit or inverse. *)
 
-Definition high_one_sided_semigroup (H : Semigroup A)
+(** 结合律只需来源恢复，不要求单位元或逆。 *)
+
+Definition high_one_sided_semigroup (A : Semigroup@{l3 l0 lawlo})
+    (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
     (Hfg : (f ∘r g) ≈f id_resp)
-  : Semigroup B
-  := SemigroupTransport f g H Hfg.
+  : Semigroup@{l1 l2 lawlo}
+  := SemigroupTransport A f g Hfg.
 
+(** A unit needs target recovery too, but no inverse operation. *)
+
+(** 单位元还需目标恢复，但不要求逆运算。 *)
+
+Definition high_two_sided_monoid (A : Monoid@{l3 l0 lawlo})
+    (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
+    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
+  : Monoid@{l1 l2 lawlo}
+  := MonoidTransport A f g Hfg Hgf.
+
+(** ** Selected Group Parents and Operations
+
+    The full chain shares its transported multiplication and unit. *)
+
+(** ** 选定群父结构与运算
+
+    完整链共享运输后的乘法与单位。 *)
+
+Section GroupClients.
+Context (A : Group@{l3 l0 lawhi}) (B : SetC@{l1 l2}).
+Context (f : B →r A) (g : A →r B).
 Context (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp).
 
-(** A monoid retains both independent specified equalities. *)
+Definition high_transported_group
+  : Group@{l1 l2 lawlo}
+  := GroupTransport A f g Hfg Hgf.
 
-(** 幺半群保留两个独立的指定相等。 *)
+Example high_group_parent
+  : GroupM high_transported_group = MonoidTransport A f g Hfg Hgf.
+Proof. reflexivity. Qed.
 
-Definition high_two_sided_monoid (H : Monoid A)
-  : Monoid B
-  := MonoidTransport f g H Hfg Hgf.
+Example high_monoid_parent
+  : MonoidSG high_transported_group = SemigroupTransport A f g Hfg.
+Proof. reflexivity. Qed.
 
-(** The group uses the same maps, with no new law field. *)
+Example high_semigroup_parent
+  : SemigroupM high_transported_group = MagmaTransport A f g.
+Proof. reflexivity. Qed.
 
-(** 群使用相同映射，不增加新的定律字段。 *)
+Example high_actual_carrier
+  : (high_transported_group : SetC@{l1 l2}) = B.
+Proof. reflexivity. Qed.
 
-Definition high_two_sided_group (H : Group A)
-  : Group B
-  := GroupTransport f g H Hfg Hgf.
+Example high_selected_product (x y : B)
+  : @magma_mul _ (hasMagma high_transported_group) x y = g (@magma_mul _ (hasMagma A) (f x) (f y)).
+Proof. reflexivity. Qed.
 
-(** Immediate parents are the exact preceding constructions. *)
+Example high_selected_unit
+  : @monoid_unit _ (hasMonoid high_transported_group) =
+      g (@monoid_unit _ (hasMonoid A)).
+Proof. reflexivity. Qed.
 
-(** 直接父结构按定义就是前一层构造。 *)
+Example high_selected_inverse (x : B)
+  : @group_inv _ (hasGroup high_transported_group) x = g (@group_inv _ (hasGroup A) (f x)).
+Proof. reflexivity. Qed.
 
-Definition high_group_parent (H : Group A)
-  : GroupM (GroupTransport f g H Hfg Hgf) =
-      MonoidTransport f g H Hfg Hgf
-  := eq_refl.
+Definition high_forward_product (x y : B)
+  : f (@magma_mul _ (hasMagma high_transported_group) x y) ≈S @magma_mul _ (hasMagma A) (f x) (f y)
+  := magma_transport_map_mul A f g Hfg x y.
 
-(** The monoid keeps its transported semigroup. *)
+Definition high_forward_unit
+  : f (@monoid_unit _ (hasMonoid high_transported_group)) ≈S
+      @monoid_unit _ (hasMonoid A)
+  := monoid_transport_map_unit A f g Hfg Hgf.
 
-(** 幺半群保留其运输半群。 *)
+Definition high_forward_inverse (x : B)
+  : f (@group_inv _ (hasGroup high_transported_group) x) ≈S @group_inv _ (hasGroup A) (f x)
+  := group_transport_map_inv A f g Hfg Hgf x.
 
-Definition high_monoid_parent (H : Monoid A)
-  : MonoidSG (MonoidTransport f g H Hfg Hgf) =
-      SemigroupTransport f g H Hfg
-  := eq_refl.
-
-(** The semigroup keeps its transported magma. *)
-
-(** 半群保留其运输原群。 *)
-
-Definition high_semigroup_parent (H : Semigroup A)
-  : SemigroupM (SemigroupTransport f g H Hfg) = MagmaTransport f g H
-  := eq_refl.
-
-(** Selected multiplication is unchanged through the entire group chain. *)
-
-(** 选定乘法贯穿整个群父链而不改变。 *)
-
-Definition high_group_multiplication (H : Group A) (x y : B)
-  : @magma_mul B (GroupTransport f g H Hfg Hgf) x y =
-      g (@magma_mul A H (f x) (f y))
-  := eq_refl.
-
-(** The unit is the returned source unit. *)
-
-(** 单位元就是返回的来源单位元。 *)
-
-Definition high_group_unit (H : Group A)
-  : @monoid_unit B (GroupTransport f g H Hfg Hgf) =
-      g (@monoid_unit A H)
-  := eq_refl.
-
-(** The chosen inverse returns the source inverse. *)
-
-(** 选定逆返回来源逆。 *)
-
-Definition high_group_inverse (H : Group A) (x : B)
-  : @group_inv B (GroupTransport f g H Hfg Hgf) x =
-      g (@group_inv A H (f x))
-  := eq_refl.
-
-(** The forward map preserves multiplication with just one recovery law. *)
-
-(** 正向映射只需一侧恢复律就保持乘法。 *)
-
-Definition high_forward_multiplication (H : Magma A) (x y : B)
-  : f (@magma_mul B (MagmaTransport f g H) x y) ≈S
-      @magma_mul A H (f x) (f y)
-  := magma_transport_map_mul f g H Hfg x y.
-
-(** The forward map preserves the unit of the actual parent monoid. *)
-
-(** 正向映射保持实际父幺半群的单位元。 *)
-
-Definition high_forward_unit (H : Monoid A)
-  : f (@monoid_unit B (MonoidTransport f g H Hfg Hgf)) ≈S
-      @monoid_unit A H
-  := monoid_transport_map_unit f g H Hfg Hgf.
-
-(** The forward map preserves the actual selected group inverse. *)
-
-(** 正向映射保持实际选定群逆。 *)
-
-Definition high_forward_inverse (H : Group A) (x : B)
-  : f (@group_inv B (GroupTransport f g H Hfg Hgf) x) ≈S
-      @group_inv A H (f x)
-  := group_transport_map_inv f g H Hfg Hgf x.
-
-(** Inverse Proper is inherited from the existing generic theory. *)
-
-(** 逆的 Proper 从既有通用理论继承。 *)
-
-Definition high_generic_inverse_proper (H : Group A)
+Definition high_actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
-      (@group_inv B (GroupTransport f g H Hfg Hgf))
-  := @group_inv_proper B (GroupTransport f g H Hfg Hgf).
+      (@group_inv _ (hasGroup high_transported_group))
+  := @group_inv_proper high_transported_group.
 
-(** The same generic involution law applies to the transported structure. *)
+Definition high_actual_inverse_involution (x : B)
+  : @group_inv _ (hasGroup high_transported_group) (@group_inv _ (hasGroup high_transported_group) x) ≈S x
+  := @group_inv_inv high_transported_group x.
 
-(** 同一通用对合律适用于运输结构。 *)
+Definition high_actual_inverse_unique (x y : B)
+    (H : @magma_mul _ (hasMagma high_transported_group) y x ≈S
+      @monoid_unit _ (hasMonoid high_transported_group))
+  : y ≈S @group_inv _ (hasGroup high_transported_group) x
+  := @group_inv_unique high_transported_group x y H.
 
-Definition high_generic_inverse_involution (H : Group A) (x : B)
-  : @group_inv B (GroupTransport f g H Hfg Hgf)
-      (@group_inv B (GroupTransport f g H Hfg Hgf) x) ≈S x
-  := @group_inv_inv B (GroupTransport f g H Hfg Hgf) x.
+Fail Definition high_missing_source_recovery
+  : Semigroup
+  := SemigroupTransport A f g.
 
-(** Unit and inverse uniqueness still use that same selected monoid. *)
+Fail Definition high_missing_target_recovery
+  : Monoid
+  := MonoidTransport A f g Hfg.
 
-(** 单位及逆唯一性仍使用同一选定幺半群。 *)
+Fail Definition high_no_automatic_target_multiplication
+  : HasMagma B
+  := ltac:(typeclasses eauto).
 
-Definition high_generic_inverse_unique (H : Group A) (x y : B)
-    (Hy : @magma_mul B (GroupTransport f g H Hfg Hgf) y x ≈S
-      @monoid_unit B (GroupTransport f g H Hfg Hgf))
-  : y ≈S @group_inv B (GroupTransport f g H Hfg Hgf) x
-  := @group_inv_unique B (GroupTransport f g H Hfg Hgf) x y Hy.
+End GroupClients.
 
-(** Importing transport or even supplying its inputs enables no model. *)
+(** The target law bound may also be larger than the source bound. *)
 
-(** 导入运输模块乃至提供其输入也不会启用模型。 *)
+(** 目标定律界也可以大于来源界。 *)
 
-Fail Definition high_no_automatic_magma : Magma B := ltac:(typeclasses eauto).
-Fail Definition high_no_automatic_group : Group B := ltac:(typeclasses eauto).
-Fail Definition high_missing_source_recovery (H : Semigroup A) : Semigroup B
-  := SemigroupTransport f g H.
-Fail Definition high_missing_target_recovery (H : Monoid A) : Monoid B
-  := MonoidTransport f g H Hfg.
-
-(** Source and target law bounds can be strictly ordered either way,
-    independently of all four native carrier/equality levels. *)
-
-(** 来源和目标定律上界可严格按任一方向排列，并独立于四个原生载体／相等层级。 *)
-
-Universes lawlo lawhi.
-Constraint l3 < lawlo, lawlo < lawhi.
-
-Definition high_larger_target_law_bound (H : Group@{l3 l0 lawlo} A)
-  : Group@{l1 l2 lawhi} B
-  := GroupTransport f g H Hfg Hgf.
-
-(** The target law bound need not dominate the source structure bound. *)
-
-(** 目标定律上界不必支配来源结构上界。 *)
-
-Definition high_smaller_target_law_bound (H : Group@{l3 l0 lawhi} A)
-  : Group@{l1 l2 lawlo} B
-  := GroupTransport f g H Hfg Hgf.
+Definition high_larger_target_law_bound (A : Group@{l3 l0 lawlo})
+    (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
+    (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
+  : Group@{l1 l2 lawhi}
+  := GroupTransport A f g Hfg Hgf.
 
 End HighLow.

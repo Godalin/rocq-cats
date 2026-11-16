@@ -28,8 +28,7 @@ Local Open Scope magma_scope.
     不会注册目标结构。 *)
 
 Section Transport.
-Universe a r b s.
-Context {A : SetC@{a r}} {B : SetC@{b s}}.
+Context (A : Magma) {B : SetC}.
 Context (f : B →r A) (g : A →r B).
 
 (** The transported operation is [g (f x ⋅ f y)]. Its respectfulness uses
@@ -37,14 +36,17 @@ Context (f : B →r A) (g : A →r B).
 
 (** 运输后的运算为 [g (f x ⋅ f y)]，其保相等性只使用给定两映射及原运算。 *)
 
-Program Definition MagmaTransport (HA : Magma A)
-  : Magma B
+Program Definition MagmaTransport : Magma
   :=
-  {|magma_mul x y := g (@magma_mul A HA (f x) (f y))
+  {|MagmaS := B
+  ; hasMagma :=
+      {|magma_mul x y := g (@magma_mul _ (hasMagma A) (f x) (f y))
+      ; magma_mul_proper := _
+      |}
   |}.
 Next Obligation.
   intros x x' Hx y y' Hy. apply (@func_proper _ _ g).
-  apply (@magma_mul_proper A HA); apply (@func_proper _ _ f); assumption.
+  apply (@magma_mul_proper _ (hasMagma A)); apply (@func_proper _ _ f); assumption.
 Defined.
 
 (** If [f] recovers elements returned by [g], it preserves the transported
@@ -66,10 +68,9 @@ A\times A \arrow[r, "\mu_A"'] & A
 \end{center}%
 *)
 
-Lemma magma_transport_map_mul (HA : Magma A)
-    (Hfg : (f ∘r g) ≈f id_resp) (x y : B)
-  : f (@magma_mul B (MagmaTransport HA) x y) ≈S
-      @magma_mul A HA (f x) (f y).
-Proof. exact (Hfg (@magma_mul A HA (f x) (f y))). Defined.
+Lemma magma_transport_map_mul (Hfg : (f ∘r g) ≈f id_resp) (x y : B)
+  : f (@magma_mul _ (hasMagma (MagmaTransport)) x y) ≈S
+      @magma_mul _ (hasMagma A) (f x) (f y).
+Proof. exact (Hfg (@magma_mul _ (hasMagma A) (f x) (f y))). Defined.
 
 End Transport.

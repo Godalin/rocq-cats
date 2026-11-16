@@ -23,11 +23,10 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_Monoid.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Definition actual_cylinder
-  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere bool_cocycle_sphere.
 Proof.
   apply TwoSphereConstantCylinder.
@@ -35,41 +34,41 @@ Proof.
 Defined.
 
 Definition diagonal (i : Ordinal 1)
-  := TwoSphereCylinderDiagonal BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := TwoSphereCylinderDiagonal BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       actual_cylinder i.
 
 Definition first_low
   := SphereCylinderFirstLowHomotopy BoolCocycleModel
-      (two_cocycle_simplex_unit 0) actual_cylinder.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) actual_cylinder.
 
 Definition middle_composite
   := SphereCylinderMiddleComposite BoolCocycleModel
-      (two_cocycle_simplex_unit 0) actual_cylinder.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) actual_cylinder.
 
 Definition last_homotopy
   := SphereCylinderLastHomotopy BoolCocycleModel
-      (two_cocycle_simplex_unit 0) actual_cylinder.
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) actual_cylinder.
 
 Definition converted_first
-  := SphereLowHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0) first_low.
+  := SphereLowHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) first_low.
 
 Definition middle_comparison
   := SphereCompositeOutputHomotopy BoolCocycleModel
-      (two_cocycle_simplex_unit 0)
-      (SphereLeftUnitComposite BoolCocycleModel (two_cocycle_simplex_unit 0)
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
+      (SphereLeftUnitComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
         (diagonal fin_first⁺)) middle_composite.
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
-  := (two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺] w),
-      two_cocycle_triangle_value_resp (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
-      two_cocycle_triangle_value_resp
+  := (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (d[BoolCocycleModel; 2; fin_first] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺] w),
+      (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
         (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 Example actual_prisms_compute
-  : (two_cocycle_triangle_value_resp (diagonal fin_first).1,
-     two_cocycle_triangle_value_resp (diagonal fin_first⁺).1,
+  : (two_cocycle_triangle_value_resp (M := BoolS_Monoid) (diagonal fin_first).1,
+     (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (diagonal fin_first⁺).1,
      face_values first_low.1, face_values middle_composite.1,
      face_values last_homotopy.1)
       = (true, true, (true, true, false, false),
@@ -87,11 +86,11 @@ Proof. vm_compute. reflexivity. Defined.
 
 Definition actual_class_chain
   : bool_cocycle_sphere ≈S bool_cocycle_sphere
-  := two_sphere_cylinder_class BoolCocycleModel (two_cocycle_simplex_unit 0)
+  := two_sphere_cylinder_class BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       actual_cylinder.
 
 Definition decoded_class_chain
-  := @func_proper _ _ cocycle_two_sphere_class_value_resp _ _
+  := @func_proper _ _ (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) _ _
       actual_class_chain.
 
 (** The generic theorem alone transfers the existing non-null class result
@@ -102,13 +101,13 @@ Definition decoded_class_chain
     特定的柱分类。 *)
 
 Example no_relative_contraction
-  : ¬ TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit 0)
+  : ¬ TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       bool_cocycle_sphere
-      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit 0)).
+      (two_sphere_base BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)).
 Proof.
   intros H. exact (bool_cocycle_sphere_not_null
     (two_sphere_cylinder_class BoolCocycleModel
-      (two_cocycle_simplex_unit 0) H)).
+      (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) H)).
 Defined.
 
 (** ** A Nonconstant Time Map with Boolean-Valued Equality
@@ -221,7 +220,7 @@ Fail Definition unchosen_full_Kan
   := _.
 
 Fail Definition unchosen_class_group
-  : Group (TwoSphereClassS WitnessX false)
+  : HasMagma (TwoSphereClassS WitnessX false)
   := _.
 
 (** The time-dependent diagonal values remain visible through the subset. *)

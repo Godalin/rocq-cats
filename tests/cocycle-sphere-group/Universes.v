@@ -15,48 +15,47 @@ From Cats Require Import
 Section GroupSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
-Context (M : SetC@{h e}) (N : SetC@{e h})
-    `{HM : !Group M} `{HN : !Group N}.
+Context (M : Group@{h e _}) (N : Group@{e h _}).
 
 (** Lower native and lower ambient equality. *)
 
 (** 较低原生相等与较低环境相等。 *)
 
 Definition lower_native_lower_ambient_group
-  : Group (TwoSphereClassS
-      (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
-      (two_cocycle_simplex_unit 0))
-  := cocycle_two_sphere_Group.
+  : ∃ G : Group, (G : SetC) =
+      TwoSphereClassS (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
+        (two_cocycle_simplex_unit 0)
+  := (cocycle_two_sphere_Group (M := M); eq_refl).
 
 (** Lower native and higher ambient equality. *)
 
 (** 较低原生相等与较高环境相等。 *)
 
 Definition lower_native_higher_ambient_group
-  : Group (TwoSphereClassS
-      (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-      (two_cocycle_simplex_unit 0))
-  := cocycle_two_sphere_Group.
+  : ∃ G : Group, (G : SetC) =
+      TwoSphereClassS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
+        (two_cocycle_simplex_unit 0)
+  := (cocycle_two_sphere_Group (M := M); eq_refl).
 
 (** Higher native and lower ambient equality. *)
 
 (** 较高原生相等与较低环境相等。 *)
 
 Definition higher_native_lower_ambient_group
-  : Group (TwoSphereClassS
-      (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
-      (two_cocycle_simplex_unit 0))
-  := cocycle_two_sphere_Group.
+  : ∃ G : Group, (G : SetC) =
+      TwoSphereClassS (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
+        (two_cocycle_simplex_unit 0)
+  := (cocycle_two_sphere_Group (M := N); eq_refl).
 
 (** Higher native and higher ambient equality. *)
 
 (** 较高原生相等与较高环境相等。 *)
 
 Definition higher_native_higher_ambient_group
-  : Group (TwoSphereClassS
-      (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-      (two_cocycle_simplex_unit 0))
-  := cocycle_two_sphere_Group.
+  : ∃ G : Group, (G : SetC) =
+      TwoSphereClassS (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
+        (two_cocycle_simplex_unit 0)
+  := (cocycle_two_sphere_Group (M := N); eq_refl).
 
 Context `{HC : !IsCommutativeMonoid M} `{HD : !IsCommutativeMonoid N}.
 
@@ -66,10 +65,7 @@ Context `{HC : !IsCommutativeMonoid M} `{HD : !IsCommutativeMonoid N}.
 
 Definition lower_ambient_commutativity
   : @IsCommutativeMonoid
-      (TwoSphereClassS
-        (Z²(M) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
-        (two_cocycle_simplex_unit 0))
-      (GroupM lower_native_lower_ambient_group)
+      (GroupM lower_native_lower_ambient_group.1)
   := cocycle_two_sphere_IsCommutativeMonoid.
 
 (** The opposite native profile accepts higher ambient equality too. *)
@@ -78,10 +74,7 @@ Definition lower_ambient_commutativity
 
 Definition higher_ambient_commutativity
   : @IsCommutativeMonoid
-      (TwoSphereClassS
-        (Z²(N) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
-        (two_cocycle_simplex_unit 0))
-      (GroupM higher_native_higher_ambient_group)
+      (GroupM higher_native_higher_ambient_group.1)
   := cocycle_two_sphere_IsCommutativeMonoid.
 
 End GroupSizes.
@@ -98,7 +91,7 @@ End GroupSizes.
 Section FillerSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
-Context (M : SetC@{h e}) `{HM : !Monoid M}.
+Context (M : Monoid@{h e _}).
 
 (** Lower ambient equality with retained simplex data. *)
 
