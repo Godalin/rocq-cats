@@ -181,13 +181,14 @@ Defined.
 
 (** 对象为较小笛卡尔范畴的完整笛卡尔范畴；底层范畴及泛性质选择均仅保存一次。 *)
 
-Definition CartUniv
+Definition CartCatCartCat
   : CartCat
   := CartCatOfCat CartCatCat CartCatCat_HasTerminal CartCatCat_HasProduct.
 
-(** A smaller instance is an object of a larger one. The coercion to the
-    object type follows the unique underlying category view. *)
+(** Smaller instances are objects of larger ones. Each right-associated
+    annotation uses a fresh universe instance and the object-type coercion. *)
 
-(** 较小实例是较大实例的对象；到对象类型的强制转换沿唯一底层范畴视图进行。 *)
+(** 较小实例是较大实例的对象；每个右结合的类型标注使用新的宇宙实例，
+    并通过强制转换取得对象类型。 *)
 
-Check CartUniv : CartUniv.
+Check CartCatCartCat : CartCatCartCat : CartCatCartCat : CartCatCartCat.

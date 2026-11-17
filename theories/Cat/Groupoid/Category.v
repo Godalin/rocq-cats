@@ -30,21 +30,22 @@ Definition GpdCat
 
 (** 等价组成核心，其逆数据保持透明。 *)
 
-Definition GpdUniv
+Definition GpdGpd
   : Gpd
   := CoreGpd GpdCat.
 
-(** A smaller instance is an object of a larger one. The coercion to the
-    object type follows the unique underlying category view. *)
+(** Smaller instances are objects of larger ones. Each right-associated
+    annotation uses a fresh universe instance and the object-type coercion. *)
 
-(** 较小实例是较大实例的对象；到对象类型的强制转换沿唯一底层范畴视图进行。 *)
+(** 较小实例是较大实例的对象；每个右结合的类型标注使用新的宇宙实例，
+    并通过强制转换取得对象类型。 *)
 
-Check GpdUniv : GpdUniv.
+Check GpdGpd : GpdGpd : GpdGpd : GpdGpd.
 
 (** Forget inverse data and then the groupoid structures. *)
 
 (** 先忘掉逆数据，再忘掉群胚结构。 *)
 
 Definition GpdForgetF
-  : Fct GpdUniv CatCat
+  : Fct GpdGpd CatCat
   := InducedInclusionF (C := CatCat) Gpd GpdToCat ∘F CoreInclusionF GpdCat.

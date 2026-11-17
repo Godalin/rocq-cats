@@ -61,25 +61,33 @@ name being replaced. These are migration entries, not compatibility aliases.
 
 ## Structured-category universes / 结构范畴宇宙
 
-The user-approved `Univ` stem applies to the two new complete universes.
-The checked examples use the existing object-type coercion directly, and
-remain immediately below their constructions. Module paths are unchanged;
-there are no compatibility aliases.
+The complete structures now name both their object kind and their result
+kind. `GpdCat : Cat` has groupoids and ordinary functors;
+`GpdGpd : Gpd` retains equivalences. `CartCatCat : Cat` is the underlying
+category of cartesian categories; `CartCatCartCat : CartCat` packages its
+chosen finite products. The checked examples form right-associated chains
+with fresh universe instances, immediately below their constructions.
+Module paths are unchanged; there are no compatibility aliases.
 
-用户确认的 `Univ` 词根用于两个新构造的完整宇宙。可编译示例直接使用已有
-对象类型强制转换，放在对应构造之后。模块路径不变，不保留兼容别名。
+完整结构现在同时命名对象种类及结果结构种类。`GpdCat : Cat` 以群胚及普通
+函子组成范畴，`GpdGpd : Gpd` 保留等价；`CartCatCat : Cat` 是笛卡尔范畴
+组成的底层范畴，`CartCatCartCat : CartCat` 打包其选定有限积。可编译示例
+在构造下方以新的宇宙实例形成右结合链条。模块路径不变，不保留兼容别名。
 
 | Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
 | --- | --- | --- |
-| `CartUniverse` | `CartUniv` | [Cat.Cartesian.Category](../theories/Cat/Cartesian/Category.v) |
-| `GpdUniverse` | `GpdUniv` | [Cat.Groupoid.Category](../theories/Cat/Groupoid/Category.v) |
+| `CartUniverse` | `CartCatCartCat` | [Cat.Cartesian.Category](../theories/Cat/Cartesian/Category.v) |
+| `GpdUniverse` | `GpdGpd` | [Cat.Groupoid.Category](../theories/Cat/Groupoid/Category.v) |
+| `CartUniv` | `CartCatCartCat` | [Cat.Cartesian.Category](../theories/Cat/Cartesian/Category.v) |
+| `GpdUniv` | `GpdGpd` | [Cat.Groupoid.Category](../theories/Cat/Groupoid/Category.v) |
 
-Both category modules and `tests/StructureUniverses.vo` pass targeted
-builds. The two `Check` commands elaborate through the existing coercions
-to their object types at distinct universe instances.
+All four category modules and the `CCCCategory` and `StructureUniverses`
+regressions pass targeted builds. Each construction's `Check` now contains
+four category occurrences, using right-associated annotations at fresh
+universe instances.
 
-两个范畴模块及 `tests/StructureUniverses.vo` 均通过定向构建。两个 `Check`
-命令通过已有强制转换解释为不同宇宙实例间的对象类型检查。
+四个范畴模块及 `CCCCategory`、`StructureUniverses` 回归均通过定向构建。
+每个构造的 `Check` 现含四处范畴实例，以新的宇宙实例形成右结合标注。
 
 ## Stem policy / 词根规范
 
@@ -95,7 +103,7 @@ the implemented batch have migrated; the remaining families are tracked below.
 | Functor / 函子 | `Fct` | `F` remains the construction suffix / 构造后缀仍用 `F` |
 | Functor category / 函子范畴 | `FctCat` | Distinct from the functor type / 区别于函子类型 |
 | Natural transformation and isomorphism / 自然变换及同构 | `Nat`, `NatIso` | Retain suffix `N` / 保留 `N` 后缀 |
-| Universe / 宇宙 | `Univ` | Reviewed structured-category universes; module paths stay unchanged / 已审阅结构范畴宇宙，模块路径不变 |
+| Universe / 宇宙 | `Univ` | Generic term; complete structure names specify object and result kinds / 通用术语；完整结构名称注明对象及结果种类 |
 | Adjunction / 伴随 | `Adj` | Retain notation `⊣` / 保留记号 |
 | Cartesian / 笛卡尔 | `Cart` | Retain the complete `CartesianCat` hierarchy / 完整结构层级另行审阅 |
 | Diagonal / 对角 | `Diag` | Keep the existing diagonal notation / 保留已有对角记号 |

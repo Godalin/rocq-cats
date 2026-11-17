@@ -19,19 +19,22 @@ From Cats Require Import
   Cat.Groupoid.Core
   Cat.Groupoid.Category.
 
-Check CartUniv : CartUniv.
-Check GpdUniv : GpdUniv.
+Check CartCatCartCat : CartCatCartCat : CartCatCartCat : CartCatCartCat.
+Check GpdGpd : GpdGpd : GpdGpd : GpdGpd.
 ```
 
 These checks appear immediately after the corresponding constructions.
+The annotations associate to the right, and each occurrence receives a fresh
+universe instance subject to the required size bounds.
 The type coercion interprets the right-hand bundle as its object type, so
-`CartUniv : CartUniv` elaborates to `CartUniv : @Ob CartUniv`; similarly for
-`GpdUniv`. Import the corresponding `Core` modules to bring the coercions
+`CartCatCartCat : CartCatCartCat` elaborates to `CartCatCartCat : @Ob CartCatCartCat`; similarly for
+`GpdGpd`. Import the corresponding `Core` modules to bring the coercions
 into scope in clients.
 
-这两个检查直接放在对应构造之后。类型强制转换将右侧结构包解释为其对象类型，
-因此 `CartUniv : CartUniv` 展开为 `CartUniv : @Ob CartUniv`，
-`GpdUniv` 同理。客户端导入相应 `Core` 模块以启用这些强制转换。
+这两个检查直接放在对应构造之后。类型标注按右结合解释，每处取得受所需大小
+约束的新宇宙实例。类型强制转换将右侧结构包解释为其对象类型，
+因此 `CartCatCartCat : CartCatCartCat` 展开为 `CartCatCartCat : @Ob CartCatCartCat`，
+`GpdGpd` 同理。客户端导入相应 `Core` 模块以启用这些强制转换。
 
 ## Cartesian categories
 
@@ -52,13 +55,13 @@ components and their inverses without comparing preservation records.
 componentwise finite products of its two parents. `TerminalCartF`,
 `FstCartF`, `SndCartF` and `PairCartF` provide the terminal arrow, projections
 and product mediator. Their universal properties compare functors by natural
-isomorphism. `CartUniv : CartCat` packages these choices over `CartCatCat`
+isomorphism. `CartCatCartCat : CartCat` packages these choices over `CartCatCat`
 through its single inherited category; importing the module registers no
 chosen `HasTerminal` or `HasProduct` model on an unrelated category.
 
 `TerminalCart` 为单点范畴，`ProdCart C D` 逐分量使用两个父结构的有限积。
 `TerminalCartF`、`FstCartF`、`SndCartF` 和 `PairCartF` 分别给出终箭头、
-两个投影及积中介；其泛性质通过自然同构比较函子。`CartUniv : CartCat`
+两个投影及积中介；其泛性质通过自然同构比较函子。`CartCatCartCat : CartCat`
 通过唯一继承范畴，将这些选择连同 `CartCatCat` 打包。导入模块不为无关范畴
 注册选定的 `HasTerminal` 或 `HasProduct` 模型。
 
@@ -95,15 +98,15 @@ and its core share the same object type.
 
 [GpdCat](../theories/Cat/Groupoid/Category.v) has groupoids as objects and
 ordinary functors as arrows, compared by natural isomorphism. Consequently
-`GpdUniv := CoreGpd GpdCat` has groupoid equivalences as arrows: each
+`GpdGpd := CoreGpd GpdCat` has groupoid equivalences as arrows: each
 carries a quasi-inverse and two natural isomorphisms. This reuses the existing
 isomorphism theory rather than defining a second equivalence interface.
-`GpdForgetF : Fct GpdUniv CatCat` retains the forward functor.
+`GpdForgetF : Fct GpdGpd CatCat` retains the forward functor.
 
 [GpdCat](../theories/Cat/Groupoid/Category.v) 以群胚为对象、普通函子为态射，
-通过自然同构比较函子。因此 `GpdUniv := CoreGpd GpdCat` 的态射为群胚
+通过自然同构比较函子。因此 `GpdGpd := CoreGpd GpdCat` 的态射为群胚
 等价，每条均携带拟逆及两份自然同构。这复用已有同构理论，不另定义一份等价
-接口。`GpdForgetF : Fct GpdUniv CatCat` 保留正向函子。
+接口。`GpdForgetF : Fct GpdGpd CatCat` 保留正向函子。
 
 ## Checks
 

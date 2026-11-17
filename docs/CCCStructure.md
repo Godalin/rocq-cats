@@ -84,8 +84,10 @@ and the larger auxiliary-bound interface.
 Hom／相等大小的两种严格次序均保留。`tests/CCCCategory.v` 检查普通范畴
 记号、复合重写、同一范畴上的不同终对象选择、具体忘却计算及较大辅助界接口。
 
-The object-level universe checks `Check CatCat : CatCat` and
-`Check CCCCat : CatCat` now appear immediately below their constructions
+The object-level universe checks
+`Check CatCat : CatCat : CatCat : CatCat` and
+`Check CCCCat : CatCat : CatCat : CatCat` now appear immediately below
+their constructions
 in `Cat.CatCat` and `Cat.CCC.Category`. They use the object-type coercion
 and distinct universe instances; the latter does not assert a CCC structure
 on CCCCat. At published checkpoint `70792e0`, local validation passed all
@@ -93,19 +95,21 @@ on CCCCat. At published checkpoint `70792e0`, local validation passed all
 the original two probes. The 23 temporary universe, assumption and
 witness-computation checks are closed.
 
-两个对象级宇宙检查 `Check CatCat : CatCat`、`Check CCCCat : CatCat`
+两个对象级宇宙检查
+`Check CatCat : CatCat : CatCat : CatCat`、
+`Check CCCCat : CatCat : CatCat : CatCat`
 现直接放在 `Cat.CatCat`、`Cat.CCC.Category` 的对应构造下方，使用对象类型
 强制转换及不同宇宙实例；后者不声称 CCCCat 自身具有 CCC 结构。已发布检查点
 `70792e0` 本地通过全部 606 个理论及 174 个测试模块，随后补验新增原两个
 检查的测试文件；二十三项临时宇宙、假设及见证计算检查全部闭合。
 
 For self-membership within a complete cartesian structure, use
-`CartUniv : CartUniv`; groupoids admit the analogous
-`GpdUniv : GpdUniv`. See the
+`CartCatCartCat : CartCatCartCat`; groupoids admit the analogous
+`GpdGpd : GpdGpd`. See the
 [constructions and universe distinction](./StructureUniverses.md).
 
-完整笛卡尔结构内的自身成员关系使用 `CartUniv : CartUniv`；
-群胚有对应的 `GpdUniv : GpdUniv`。
+完整笛卡尔结构内的自身成员关系使用 `CartCatCartCat : CartCatCartCat`；
+群胚有对应的 `GpdGpd : GpdGpd`。
 [构造及宇宙区别](./StructureUniverses.md)另行说明。
 
 ## Classical isomorphisms
