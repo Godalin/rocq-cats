@@ -36,13 +36,13 @@ From Cats Require Import
     保存的积选择提供普通配对及其定律。对象本身为结构包，故显式指定环境范畴。 *)
 
 Section CartesianClients.
-Context (S C D : @Ob CartUniv)
-    (F F' : (@Hom CartUniv) S C) (G : (@Hom CartUniv) S D).
-Let HP := hasProduct CartUniv.
+Context (S C D : @Ob CartCatCartCat)
+    (F F' : (@Hom CartCatCartCat) S C) (G : (@Hom CartCatCartCat) S D).
+Let HP := hasProduct CartCatCartCat.
 Local Existing Instance HP.
 
 Definition universe_pair
-  : (@Hom CartUniv) S (C × D)
+  : (@Hom CartCatCartCat) S (C × D)
   := ⟨F,G⟩.
 
 Example universe_pair_rewrites (H : F ≈ F')
@@ -57,7 +57,7 @@ Example universe_pair_second
   : π2 ∘ universe_pair ≈ G.
 Proof. apply product_β2. Qed.
 
-Example universe_pair_unique (K : (@Hom CartUniv) S (C × D))
+Example universe_pair_unique (K : (@Hom CartCatCartCat) S (C × D))
     (H1 : π1 ∘ K ≈ F) (H2 : π2 ∘ K ≈ G)
   : K ≈ universe_pair.
 Proof. apply (product_pair_unique S F G). split; assumption. Qed.
@@ -102,8 +102,9 @@ Next Obligation.
 Defined.
 
 Definition ChangePair
-  : (@Hom CartUniv) Left (ProdCart Left Right)
-  := @Cats.Cat.Product.Core.pair CartUniv (hasProduct CartUniv) Left Right Left
+  : (@Hom CartCatCartCat) Left (ProdCart Left Right)
+  := @Cats.Cat.Product.Core.pair CartCatCartCat
+    (hasProduct CartCatCartCat) Left Right Left
     (IdCartF Left (hasTerminal Left) (hasProduct Left)) Change.
 
 Example terminal_choices_compute
@@ -125,7 +126,7 @@ Example mediator_arrow_computes
 Proof. reflexivity. Qed.
 
 Example terminal_functor_computes
-  : (@term CartUniv (hasTerminal CartUniv) Left) true = tt.
+  : (@term CartCatCartCat (hasTerminal CartCatCartCat) Left) true = tt.
 Proof. reflexivity. Qed.
 
 End CartesianComputation.
@@ -156,7 +157,7 @@ Next Obligation. exact tt. Defined.
 Next Obligation. exact tt. Defined.
 
 Definition SwapEquivalence
-  : (@Hom GpdUniv) Two Two
+  : (@Hom GpdGpd) Two Two
   := (Swap; (Swap;
       (CodiscreteNatIso (Swap ∘F Swap) IdF,
        CodiscreteNatIso (Swap ∘F Swap) IdF))).
@@ -203,19 +204,19 @@ Definition mixed_size_product
   := ProdCart C D.
 
 Definition high_equality_cartesian_object
-  : @Ob CartUniv
+  : @Ob CartCatCartCat
   := C.
 
 Definition low_equality_cartesian_object
-  : @Ob CartUniv
+  : @Ob CartCatCartCat
   := D.
 
 Definition high_equality_groupoid_object
-  : @Ob GpdUniv
+  : @Ob GpdGpd
   := G.
 
 Definition low_equality_groupoid_object
-  : @Ob GpdUniv
+  : @Ob GpdGpd
   := H.
 
 End IndependentSizes.

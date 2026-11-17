@@ -33,12 +33,14 @@ Canonical Structure CatCat
   ; comp_assoc _ _ _ _ := CompF_assoc
   |}.
 
-(** A smaller category of categories is an object of a larger one.
-    The type coercion selects its object type at a distinct universe instance. *)
+(** Successively larger categories of categories contain smaller ones.
+    Right-associated annotations use fresh universe instances and the
+    object-type coercion at each level. *)
 
-(** 较小的范畴之范畴是较大者的对象；类型强制转换选取不同宇宙实例的对象类型。 *)
+(** 逐层增大的范畴之范畴包含较小者；右结合的类型标注在每层使用新的宇宙实例，
+    并通过强制转换取得对象类型。 *)
 
-Check CatCat : CatCat.
+Check CatCat : CatCat : CatCat : CatCat.
 
 Notation "C '≃C' D" := (C ≅[CatCat] D)
   (at level 70, no associativity) : cat_scope.
