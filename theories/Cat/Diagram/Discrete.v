@@ -37,7 +37,7 @@ Definition DiscreteF {C : Cat} {V : Type} (D : V → @Ob C)
 
 (** 每个离散图式都自然同构于其对象族的规范图式；比较的分量为恒等。 *)
 
-Definition discrete_functor_nat_iso {C : Cat} {I : Type}
+Definition discrete_fct_nat_iso {C : Cat} {I : Type}
     (D : Fct (DiscreteCat I) C)
   : DiscreteF (λ i, D i) ≅N D.
 Proof.

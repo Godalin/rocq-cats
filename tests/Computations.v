@@ -148,12 +148,12 @@ Example bundled_ccc_fmap_computes
 Proof. reflexivity. Qed.
 
 Example bundled_ccc_product_inverse_computes
-  : functor_product_inv CompositeCCC BoolS BoolS (true, false)
+  : fct_product_inv CompositeCCC BoolS BoolS (true, false)
       = (true, false).
 Proof. reflexivity. Qed.
 
-Example bundled_ccc_exponential_inverse_computes
-  : (@functor_exponential SetCat_CCC SetCat_CCC CompositeCCC
+Example bundled_ccc_exp_inverse_computes
+  : (@fct_exp SetCat_CCC SetCat_CCC CompositeCCC
       (CCCFct_IsCCCF CompositeCCC) BoolS BoolS).1 id_resp true = true.
 Proof. reflexivity. Qed.
 End BundledCCCComputations.
@@ -265,7 +265,7 @@ Proof. reflexivity. Qed.
 (** 恒等律的比较经过一般诱导嵌入和探测预层构造后，仍保留其逆的计算。 *)
 
 Example nerve_identity_inverse_computes
-  : ((lower (functor_id _ _ (N≅([Ord 1%nat]))
+  : ((lower (fct_id _ _ (N≅([Ord 1%nat]))
       ⟨@IdF [Ord 1%nat]⟩N)).2 fin_first).1 = tt.
 Proof. reflexivity. Qed.
 
@@ -295,7 +295,7 @@ Proof. reflexivity. Qed.
 
 (** 重构在非恒等布尔环路上穿过一般逆的自然性见证及端点运输进行计算。 *)
 
-Example vertex_functor_reconstruction_computes
+Example vertex_fct_reconstruction_computes
   : fmap (VtxNerveInvF
       (IdN : BoolVtxNerve ⇒ BoolVtxNerve))
       (true : (@Hom (VtxCat (MonoidObjF BoolS_Monoid))) tt tt) = true.

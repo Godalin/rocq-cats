@@ -82,8 +82,8 @@ Lemma arrow_exchange_inv (X Y : @Ob C)
   : arr[A; (⟨π2, π1⟩ : Hom (Y × X) (X × Y))] ∘
       arr[A; (⟨π2, π1⟩ : Hom (X × Y) (Y × X))] ≈ id.
 Proof.
-  rewrite <- functor_comp, product_comp_r, product_β1, product_β2,
-    product_pair_η, functor_id. reflexivity.
+  rewrite <- fct_comp, product_comp_r, product_β1, product_β2,
+    product_pair_η, fct_id. reflexivity.
 Qed.
 
 (** Left-context action on pure arrows is the ordinary product map. *)
@@ -126,8 +126,8 @@ Qed.
 Lemma arrow_first_arr {X Y : @Ob C} (f : Hom X Y) (Z : @Ob C)
   : first[A; arr[A; f]; Z] ≈ arr[A; f × @id Z].
 Proof.
-  unfold arrow_first. rewrite arrow_second_arr, <- !functor_comp.
-  apply functor_fmap_proper.
+  unfold arrow_first. rewrite arrow_second_arr, <- !fct_comp.
+  apply fct_fmap_proper.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -164,9 +164,9 @@ Proof.
   pose proof (arrow_second_natural f (! : Hom Z 1)) as Hn.
   transitivity ((arr[A; (π2 : Hom (1 × Y) Y)] ∘
     arr[A; (! : Hom Z 1) × @id Y]) ∘ second[A; f; Z]).
-  - rewrite <- functor_comp, cross_η, product_β2, comp_id_l. reflexivity.
+  - rewrite <- fct_comp, cross_η, product_β2, comp_id_l. reflexivity.
   - rewrite comp_assoc, Hn, <- comp_assoc, Hu,
-      comp_assoc, <- functor_comp, cross_η, product_β2, comp_id_l.
+      comp_assoc, <- fct_comp, cross_η, product_β2, comp_id_l.
     reflexivity.
 Qed.
 
@@ -179,9 +179,9 @@ Lemma arrow_first_projection {X Y : @Ob C}
   : arr[A; (π1 : Hom (Y × Z) Y)] ∘ first[A; f; Z] ≈
       f ∘ arr[A; (π1 : Hom (X × Z) X)].
 Proof.
-  unfold arrow_first. rewrite <- !comp_assoc, <- functor_comp, product_β1.
+  unfold arrow_first. rewrite <- !comp_assoc, <- fct_comp, product_β1.
   rewrite arrow_second_projection,
-    comp_assoc, <- functor_comp, product_β2. reflexivity.
+    comp_assoc, <- fct_comp, product_β2. reflexivity.
 Qed.
 
 (** Ordinary maps of the right context commute with the computation. *)
@@ -197,7 +197,7 @@ Proof.
     arr[A; (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z))] ≈
     arr[A; (⟨π2, π1⟩ : Hom (W × Y) (Y × W))] ∘
     arr[A; h × @id Y]).
-  { rewrite <- !functor_comp. apply functor_fmap_proper.
+  { rewrite <- !fct_comp. apply fct_fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
@@ -205,7 +205,7 @@ Proof.
     arr[A; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))] ≈
     arr[A; (⟨π2, π1⟩ : Hom (X × W) (W × X))] ∘
     arr[A; @id X × h]).
-  { rewrite <- !functor_comp. apply functor_fmap_proper.
+  { rewrite <- !fct_comp. apply fct_fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
@@ -233,8 +233,8 @@ Proof.
   transitivity ((second[A; second[A; f; W]; Z] ∘
     arr[A; (@product_assoc C HP Z W X).1]) ∘
     arr[A; (@product_assoc C HP Z W X).2.1]).
-  - rewrite comp_assoc, <- functor_comp,
-      (snd (@product_assoc C HP Z W X).2.2), functor_id, comp_id_r.
+  - rewrite comp_assoc, <- fct_comp,
+      (snd (@product_assoc C HP Z W X).2.2), fct_id, comp_id_r.
     reflexivity.
   - rewrite <- H. reflexivity.
 Qed.
@@ -246,7 +246,7 @@ Qed.
 Local Lemma arr_comp_post {U : @Ob K} {X Y Z : @Ob C}
     (p : Hom Y Z) (q : Hom X Y) (k : Hom U (A X))
   : arr[A; p] ∘ (arr[A; q] ∘ k) ≈ arr[A; p ∘ q] ∘ k.
-Proof. rewrite <- comp_assoc, <- functor_comp. reflexivity. Qed.
+Proof. rewrite <- comp_assoc, <- fct_comp. reflexivity. Qed.
 
 (** Reassociate computations and fuse adjacent pure maps, leaving all
     effectful computations abstract. *)
@@ -255,7 +255,7 @@ Proof. rewrite <- comp_assoc, <- functor_comp. reflexivity. Qed.
 
 Local Ltac normalize_arr :=
   repeat first [rewrite comp_assoc | rewrite arr_comp_post |
-    rewrite <- functor_comp].
+    rewrite <- fct_comp].
 
 (** Nested right contexts agree with one extension by their product. *)
 
@@ -291,7 +291,7 @@ Proof.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  rewrite Ho, functor_comp. repeat rewrite comp_assoc.
+  rewrite Ho, fct_comp. repeat rewrite comp_assoc.
   rewrite <- (comp_assoc
     arr[A; ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × @id Y)]
     (second[A; f; (W × Z)%ob])
@@ -338,7 +338,7 @@ Proof.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  rewrite Ho, functor_comp. repeat rewrite comp_assoc.
+  rewrite Ho, fct_comp. repeat rewrite comp_assoc.
   rewrite <- (comp_assoc
     arr[A; ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y')]
     (second[A; f; (Z × X)%ob])

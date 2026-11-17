@@ -113,17 +113,17 @@ Program Definition VtxRelabelF {J : Cat}
   ; F1 i j f := vertex_rebase_resp (e i) (e j) (fmap F f)
   |}.
 Next Obligation.
-  intros f g H. rewrite (@functor_fmap_proper _ _ F X0 Y f g H).
+  intros f g H. rewrite (@fct_fmap_proper _ _ F X0 Y f g H).
   reflexivity.
 Defined.
 Next Obligation.
   change (T⟦symmetry (e X0)⟧Ob ∘ fmap F id ∘ T⟦e X0⟧Ob ≈ id).
-  rewrite functor_id, comp_id_r. apply vertex_transport_inv.
+  rewrite fct_id, comp_id_r. apply vertex_transport_inv.
 Defined.
 Next Obligation.
   transitivity (vertex_rebase_resp (e X0) (e Z) (fmap F f ∘ fmap F g)).
   - exact (@func_proper _ _ (vertex_rebase_resp (e X0) (e Z)) _ _
-      (@functor_comp _ _ F X0 Y Z f g)).
+      (@fct_comp _ _ F X0 Y Z f g)).
   - exact (vertex_rebase_comp (e X0) (e Y) (e Z) (fmap F g) (fmap F f)).
 Defined.
 

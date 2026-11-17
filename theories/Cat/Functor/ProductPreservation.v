@@ -14,6 +14,8 @@ From Cats Require Import
     保持性以一族候选泛性质给出，不需要终对象或终对象保持性。比较映射使用
     原有的透明积中介。 *)
 
+Local Open Scope ob_scope.
+
 (** ** Comparing Chosen Products
 
     Fix chosen binary products in both categories and a functor preserving
@@ -29,7 +31,7 @@ Section ProductPreservation.
 Context {C D : Cat} (F : Fct C D).
 Context `{PC : !HasProduct C} `{PD : !HasProduct D}.
 Context (preserves : ∀ X Y : @Ob C,
-    is_product (F X) (F Y) (F ((X × Y)%ob)) (fmap F π1) (fmap F π2)).
+    is_product (F X) (F Y) (F (X × Y)) (fmap F π1) (fmap F π2)).
 
 (** Preservation of the chosen cones extends to any candidate product.
     Transport through its canonical apex isomorphism; no target product
@@ -44,12 +46,12 @@ Definition preserved_product_cone {X Y P : C}
 Proof.
   pose (i := product_unique (@product_universal C PC X Y) HP).
   refine (product_apex_iso (preserves X Y)
-    (fmap F i.1; functor_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
+    (fmap F i.1; fct_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
   - change (fmap F p ∘ fmap F i.1 ≈ fmap F π1).
-    rewrite <- functor_comp. apply functor_fmap_proper.
+    rewrite <- fct_comp. apply fct_fmap_proper.
     exact (fst (@this _ _ _ _ _ (HP _ π1 π2).2)).
   - change (fmap F q ∘ fmap F i.1 ≈ fmap F π2).
-    rewrite <- functor_comp. apply functor_fmap_proper.
+    rewrite <- fct_comp. apply fct_fmap_proper.
     exact (snd (@this _ _ _ _ _ (HP _ π1 π2).2)).
 Defined.
 
@@ -58,7 +60,7 @@ Defined.
 (** 两个积泛性质确定规范同构。 *)
 
 Definition preserved_product_iso (X Y : @Ob C)
-  : F ((X × Y)%ob) ≅ (F X × F Y)%ob
+  : F (X × Y) ≅ (F X × F Y)
   := product_unique (preserves X Y) product_universal.
 
 (** The inverse comparison is the mediator into the image product cone. *)
@@ -66,7 +68,7 @@ Definition preserved_product_iso (X Y : @Ob C)
 (** 逆比较是指向像积锥的中介。 *)
 
 Definition preserved_product_inv (X Y : @Ob C)
-  : Hom (F X × F Y)%ob (F ((X × Y)%ob))
+  : Hom (F X × F Y) (F (X × Y))
   := (preserves X Y _ π1 π2).1.
 
 (** Its projections are the chosen target projections in specified equality. *)
@@ -86,9 +88,9 @@ Lemma preserved_pair {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
   : fmap F ⟨f, g⟩ ≈ preserved_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
 Proof.
   apply (product_cone_ext (preserves X Y)).
-  - rewrite <- !comp_assoc, <- functor_comp, product_β1,
+  - rewrite <- !comp_assoc, <- fct_comp, product_β1,
       (fst (preserved_product_inv_β X Y)), product_β1. reflexivity.
-  - rewrite <- !comp_assoc, <- functor_comp, product_β2,
+  - rewrite <- !comp_assoc, <- fct_comp, product_β2,
       (snd (preserved_product_inv_β X Y)), product_β2. reflexivity.
 Qed.
 
@@ -102,12 +104,12 @@ Lemma preserved_product_inv_natural {X Y X' Y' : @Ob C}
       preserved_product_inv X' Y' ∘ (fmap F f × fmap F g).
 Proof.
   apply (product_cone_ext (preserves X' Y')).
-  - rewrite <- !comp_assoc, <- functor_comp, cross_η, product_β1,
-      functor_comp, comp_assoc, (fst (preserved_product_inv_β X Y)),
+  - rewrite <- !comp_assoc, <- fct_comp, cross_η, product_β1,
+      fct_comp, comp_assoc, (fst (preserved_product_inv_β X Y)),
       (fst (preserved_product_inv_β X' Y')), cross_η, product_β1.
     reflexivity.
-  - rewrite <- !comp_assoc, <- functor_comp, cross_η, product_β2,
-      functor_comp, comp_assoc, (snd (preserved_product_inv_β X Y)),
+  - rewrite <- !comp_assoc, <- fct_comp, cross_η, product_β2,
+      fct_comp, comp_assoc, (snd (preserved_product_inv_β X Y)),
       (snd (preserved_product_inv_β X' Y')), cross_η, product_β2.
     reflexivity.
 Qed.
@@ -130,9 +132,9 @@ Section ProductComposition.
 Context {C D E : Cat} (F : Fct C D) (G : Fct D E).
 Context `{PC : !HasProduct C} `{PD : !HasProduct D}.
 Context (preservesF : ∀ X Y : C,
-    is_product (F X) (F Y) (F ((X × Y)%ob)) (fmap F π1) (fmap F π2)).
+    is_product (F X) (F Y) (F (X × Y)) (fmap F π1) (fmap F π2)).
 Context (preservesG : ∀ X Y : D,
-    is_product (G X) (G Y) (G ((X × Y)%ob)) (fmap G π1) (fmap G π2)).
+    is_product (G X) (G Y) (G (X × Y)) (fmap G π1) (fmap G π2)).
 
 (** Choose the composite candidate by the existing apex transport. There
     is no new choice of products or implicit preservation instance. *)
@@ -141,14 +143,14 @@ Context (preservesG : ∀ X Y : D,
 
 Definition preserved_product_comp (X Y : C)
   : is_product ((G ∘F F) X) ((G ∘F F) Y)
-      ((G ∘F F) ((X × Y)%ob))
+      ((G ∘F F) (X × Y))
       (fmap (G ∘F F) π1) (fmap (G ∘F F) π2)
   := preserved_product_cone G preservesG (preservesF X Y).
 
 Context `{PE : !HasProduct E}.
 Context (preservesGF : ∀ X Y : C,
     is_product ((G ∘F F) X) ((G ∘F F) Y)
-      ((G ∘F F) ((X × Y)%ob))
+      ((G ∘F F) (X × Y))
       (fmap (G ∘F F) π1) (fmap (G ∘F F) π2)).
 
 (** Any supplied composite witness has the same inverse comparison as
@@ -165,13 +167,13 @@ Proof.
   - change (fmap G (fmap F π1) ∘
       (fmap G (preserved_product_inv F preservesF X Y) ∘
         preserved_product_inv G preservesG (F X) (F Y)) ≈ π1).
-    rewrite <- comp_assoc, <- functor_comp,
+    rewrite <- comp_assoc, <- fct_comp,
       (fst (preserved_product_inv_β F preservesF X Y)).
     exact (fst (preserved_product_inv_β G preservesG (F X) (F Y))).
   - change (fmap G (fmap F π2) ∘
       (fmap G (preserved_product_inv F preservesF X Y) ∘
         preserved_product_inv G preservesG (F X) (F Y)) ≈ π2).
-    rewrite <- comp_assoc, <- functor_comp,
+    rewrite <- comp_assoc, <- fct_comp,
       (snd (preserved_product_inv_β F preservesF X Y)).
     exact (snd (preserved_product_inv_β G preservesG (F X) (F Y))).
 Defined.

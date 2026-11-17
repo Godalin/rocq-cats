@@ -90,9 +90,9 @@ Definition region_union_cover
 Proof.
   intros X [x [H | H]].
   - exists (inl (X; (x; H))), (id : (@Hom C) X X).
-    change (fmap Q (id : (@Hom C) X X) x ≈S x). exact (functor_id _ _ Q x).
+    change (fmap Q (id : (@Hom C) X X) x ≈S x). exact (fct_id _ _ Q x).
   - exists (inr (X; (x; H))), (id : (@Hom C) X X).
-    change (fmap Q (id : (@Hom C) X X) x ≈S x). exact (functor_id _ _ Q x).
+    change (fmap Q (id : (@Hom C) X X) x ≈S x). exact (fct_id _ _ Q x).
 Defined.
 
 Context {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}.

@@ -238,14 +238,14 @@ Program Definition kripke_curry_at
   |}.
 Next Obligation.
   intros f g p x y q. apply func_proper. split.
-  - exact (@functor_fmap_proper (C^op) SetCat H X Y f g p h).
+  - exact (@fct_fmap_proper (C^op) SetCat H X Y f g p h).
   - exact q.
 Defined.
 Next Obligation.
   transitivity (α Z (fmap H g (fmap H f h), fmap F g x)).
   - symmetry. exact (nat_naturality α g (fmap H f h, x)).
   - apply func_proper. split.
-    + symmetry. exact (functor_comp _ _ H g f h).
+    + symmetry. exact (fct_comp _ _ H g f h).
     + reflexivity.
 Defined.
 
@@ -273,7 +273,7 @@ Lemma kripke_curry_at_reindex (α : PointwiseProductF H F ⇒ G)
       (kripke_curry_at α Y (fmap H f h)).
 Proof.
   intros Z g x. cbn. apply func_proper. split.
-  - exact (functor_comp _ _ H g f h).
+  - exact (fct_comp _ _ H g f h).
   - reflexivity.
 Defined.
 
@@ -339,7 +339,7 @@ Lemma kripke_curry_β (α : PointwiseProductF H F ⇒ G)
   : KripkeUncurryN (KripkeCurryN α) ≈N α.
 Proof.
   intros X [h x]. cbn. apply func_proper. split.
-  - exact (functor_id _ _ H h).
+  - exact (fct_id _ _ H h).
   - reflexivity.
 Defined.
 

@@ -40,9 +40,9 @@ Proof.
       fmap A (internal_context_right Z X Y) ∘ f).
   rewrite static_comp_pure_r, static_comp_pure_l.
   unfold static_context, internal_context_right.
-  rewrite <- !comp_assoc, <- !functor_comp.
-  apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
-  rewrite <- exponential_dimap_id_r, <- exponential_dimap_comp,
+  rewrite <- !comp_assoc, <- !fct_comp.
+  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  rewrite <- exp_dimap_id_r, <- exp_dimap_comp,
     !comp_id_l. reflexivity.
 Qed.
 
@@ -54,14 +54,14 @@ Qed.
 Lemma static_split {X Y X' Y' : @Ob C}
     (f : Hom 1 (A (Y ^ X)%ob)) (g : Hom 1 (A (Y' ^ X')%ob))
   : f ***[StaticArrow A] g ≈
-      lift₂[A; (exponential_product_iso (X × X') Y Y').2.1 ∘
-        (exponential_dimap π1 id × exponential_dimap π2 id); f; g].
+      lift₂[A; (exp_product_iso (X × X') Y Y').2.1 ∘
+        (exp_dimap π1 id × exp_dimap π2 id); f; g].
 Proof.
   unfold arrow_split. rewrite static_first.
   change (static_context A Y g ∘ˢ[A]
     (fmap A (internal_context_right X' X Y) ∘ f) ≈
-      lift₂[A; (exponential_product_iso (X × X') Y Y').2.1 ∘
-        (exponential_dimap π1 id × exponential_dimap π2 id); f; g]).
+      lift₂[A; (exp_product_iso (X × X') Y Y').2.1 ∘
+        (exp_dimap π1 id × exp_dimap π2 id); f; g]).
   unfold static_comp, static_context. rewrite applicative_combine_pre.
   apply applicative_combine_proper;
     [apply internal_context_split | reflexivity | reflexivity].
@@ -76,17 +76,17 @@ Qed.
 Lemma static_fanout {X Y Z : @Ob C}
     (f : Hom 1 (A (Y ^ X)%ob)) (g : Hom 1 (A (Z ^ X)%ob))
   : f &&&[StaticArrow A] g ≈
-      lift₂[A; (exponential_product_iso X Y Z).2.1; f; g].
+      lift₂[A; (exp_product_iso X Y Z).2.1; f; g].
 Proof.
   unfold arrow_fanout, arrow_split.
   change ((second[StaticArrow A; g; Y] ∘ˢ[A]
     first[StaticArrow A; f; X]) ∘ˢ[A] static_arr A ⟨id, id⟩ ≈
-      lift₂[A; (exponential_product_iso X Y Z).2.1; f; g]).
+      lift₂[A; (exp_product_iso X Y Z).2.1; f; g]).
   rewrite static_comp_pure_r, static_first.
-  change (fmap A (exponential_dimap ⟨id, id⟩ id) ∘
+  change (fmap A (exp_dimap ⟨id, id⟩ id) ∘
     (static_context A Y g ∘ˢ[A]
       (fmap A (internal_context_right X X Y) ∘ f)) ≈
-      lift₂[A; (exponential_product_iso X Y Z).2.1; f; g]).
+      lift₂[A; (exp_product_iso X Y Z).2.1; f; g]).
   unfold static_context, static_comp.
   rewrite applicative_combine_pre, applicative_combine_post.
   apply applicative_combine_proper; [| reflexivity | reflexivity].
@@ -105,7 +105,7 @@ Proof.
   rewrite static_fanout. unfold static_value.
   rewrite applicative_combine_post, applicative_combine_pre, comp_id_l.
   apply applicative_combine_proper;
-    [apply exponential_unit_product | reflexivity | reflexivity].
+    [apply exp_unit_product | reflexivity | reflexivity].
 Qed.
 
 (** The inverse value comparison turns Applicative pairing back into the

@@ -68,7 +68,7 @@ Proof.
       fmap (ArrowCodF D) (fmap (GluingDiagramF F) g)).
   { change (fmap F (comma_right f) ∘ fmap F u ≈
       fmap F (comma_right g)).
-    rewrite <- functor_comp. apply functor_fmap_proper. exact H. }
+    rewrite <- fct_comp. apply fct_fmap_proper. exact H. }
   pose (a := cartesian_factor HA (fmap (GluingDiagramF F) g)
     (fmap F u) Himage).
   assert (square : fmap F u ∘ comma_arrow Z ≈
@@ -93,11 +93,11 @@ Proof.
         (fmap (GluingDiagramF F) g) (fmap F u) Himage)).
       split.
       - change (fmap F (comma_right k) ≈ fmap F u).
-        exact (@functor_fmap_proper C D F _ _ _ _ Hbase).
+        exact (@fct_fmap_proper C D F _ _ _ _ Hbase).
       - change (fmap (GluingDiagramF F) f ∘
           fmap (GluingDiagramF F) k ≈ fmap (GluingDiagramF F) g).
-        rewrite <- functor_comp.
-        exact (@functor_fmap_proper _ _ (GluingDiagramF F) _ _ _ _ Hcomp). }
+        rewrite <- fct_comp.
+        exact (@fct_fmap_proper _ _ (GluingDiagramF F) _ _ _ _ Hcomp). }
     exact (fst Hk, Hbase).
 Defined.
 
@@ -138,15 +138,15 @@ Proof.
       * symmetry. exact (comma_comm h).
       * transitivity (fmap F id ∘ q1).
         -- apply comp_proper.
-           ++ exact (@functor_fmap_proper C D F _ _ _ _ Hb).
+           ++ exact (@fct_fmap_proper C D F _ _ _ _ Hb).
            ++ reflexivity.
         -- transitivity (id ∘ q1).
-           ++ apply comp_proper; [apply functor_id | reflexivity].
+           ++ apply comp_proper; [apply fct_id | reflexivity].
            ++ apply comp_id_l.
     + exact (fst (cartesian_factor_comp Hf g id Hbase)).
   - intros k [H1 H2].
     assert (square : fmap F id ∘ q1 ≈ comma_arrow X ∘ k).
-    { rewrite functor_id, comp_id_l. symmetry. exact H1. }
+    { rewrite fct_id, comp_id_l. symmetry. exact H1. }
     pose (l := (ltac:(unshelve refine
       {|comma_left := _
       ; comma_right := _

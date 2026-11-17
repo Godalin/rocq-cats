@@ -32,7 +32,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 
 Definition static_value {W Y : @Ob C} (f : Hom W (A (Y ^ 1)%ob))
   : Hom W (A Y)
-  := fmap A (exponential_unit_iso Y).1 ∘ f.
+  := fmap A (exp_unit_iso Y).1 ∘ f.
 
 (** Abstract a contextual effectful value as a terminal-input function. *)
 
@@ -40,7 +40,7 @@ Definition static_value {W Y : @Ob C} (f : Hom W (A (Y ^ 1)%ob))
 
 Definition static_function {W Y : @Ob C} (v : Hom W (A Y))
   : Hom W (A (Y ^ 1)%ob)
-  := fmap A (exponential_unit_iso Y).2.1 ∘ v.
+  := fmap A (exp_unit_iso Y).2.1 ∘ v.
 
 (** Evaluation respects the specified equality, including in external contexts. *)
 
@@ -66,7 +66,7 @@ Lemma static_value_function {W Y : @Ob C} (v : Hom W (A Y))
   : static_value (static_function v) ≈ v.
 Proof.
   unfold static_value, static_function. rewrite <- comp_assoc,
-    <- functor_comp, (snd (exponential_unit_iso Y).2.2), functor_id,
+    <- fct_comp, (snd (exp_unit_iso Y).2.2), fct_id,
     comp_id_l. reflexivity.
 Qed.
 
@@ -78,7 +78,7 @@ Lemma static_function_value {W Y : @Ob C} (f : Hom W (A (Y ^ 1)%ob))
   : static_function (static_value f) ≈ f.
 Proof.
   unfold static_value, static_function. rewrite <- comp_assoc,
-    <- functor_comp, (fst (exponential_unit_iso Y).2.2), functor_id,
+    <- fct_comp, (fst (exp_unit_iso Y).2.2), fct_id,
     comp_id_l. reflexivity.
 Qed.
 
@@ -110,7 +110,7 @@ Proof.
   unfold static_value, static_arr, applicative_pure_value.
   rewrite <- comp_assoc, <- applicative_pure_natural, comp_assoc.
   apply comp_proper; [reflexivity |].
-  apply exponential_unit_name.
+  apply exp_unit_name.
 Qed.
 
 (** Pure postcomposition recovers the Applicative result map. *)
@@ -122,9 +122,9 @@ Lemma static_value_map {Y Z : @Ob C} (g : Hom Y Z)
   : static_value (static_arr A g ∘ˢ[A] f) ≈ fmap A g ∘ static_value f.
 Proof.
   rewrite static_comp_pure_l. unfold static_value.
-  rewrite <- !comp_assoc, <- !functor_comp.
-  apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
-  exact (exponential_unit_natural g).
+  rewrite <- !comp_assoc, <- !fct_comp.
+  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  exact (exp_unit_natural g).
 Qed.
 
 (** Sequential composition recovers binary Applicative application with the
@@ -142,10 +142,10 @@ Proof.
   unfold static_value, static_comp.
   rewrite applicative_combine_post.
   transitivity (lift₂[A; (app π2 π1) ∘
-    (exponential_unit_eval Y × id); f; g]).
+    (exp_unit_eval Y × id); f; g]).
   - apply applicative_combine_proper;
-      [apply exponential_unit_then | reflexivity | reflexivity].
-  - rewrite <- applicative_combine_pre, functor_id, comp_id_l. reflexivity.
+      [apply exp_unit_then | reflexivity | reflexivity].
+  - rewrite <- applicative_combine_pre, fct_id, comp_id_l. reflexivity.
 Qed.
 
 (** Equality of evaluated values reflects equality of the static functions. *)
@@ -217,8 +217,8 @@ Proof.
   rewrite static_value_comp, static_value_function.
   transitivity (lift₂[A; app π2 π1; fmap A id ∘ u;
     fmap A (ƛ (h ∘ ⟨π2, π1⟩)) ∘ v]).
-  - rewrite functor_id, comp_id_l. reflexivity.
-  - rewrite applicative_combine_pre, exponential_binary_apply. reflexivity.
+  - rewrite fct_id, comp_id_l. reflexivity.
+  - rewrite applicative_combine_pre, exp_binary_apply. reflexivity.
 Qed.
 
 (** The inverse comparison recovers that same sequential representation. *)

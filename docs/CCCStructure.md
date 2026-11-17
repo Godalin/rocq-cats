@@ -32,6 +32,33 @@ complete CCC endpoints, while the underlying functor remains ordinary `Fct`.
 一般定理继续使用固定范畴上的 `Has*` 假设。`IsCCCF` 与 `CCCFct` 接收
 选定的完整 CCC 两端，底层函子仍为普通 `Fct`。
 
+`CartFct` and `CCCFct` are complete records with the unique parent chain
+`CCCFctToCartFct` then `CartFctToFct`. The direct constructors
+`CCCFctOfCartFct` and `CartFctOfFct` retain the supplied parent and evidence;
+`CCCFctOfFct` exposes fixed-functor preservation evidence as the same bundle.
+`exp_cmp` names the general exponential comparison, and `fct_exp_cmp`
+is its cartesian-functor adapter. Other lowercase
+functor/exponential identifier segments use `fct`/`exp`; module paths and
+`HasExponential` stay unchanged.
+
+`CartFct`、`CCCFct` 为完整记录，唯一父链经 `CCCFctToCartFct`、
+`CartFctToFct`。直接构造器 `CCCFctOfCartFct`、`CartFctOfFct` 保留给定
+父结构及证据，`CCCFctOfFct` 将固定函子保持性证据呈现为同一结构包。
+`exp_cmp` 命名通用指数比较，`fct_exp_cmp` 为其笛卡尔函子适配，其余小写函子／指数标识符
+词段使用 `fct`／`exp`；模块路径及 `HasExponential` 不变。
+
+The cartesian and CCC functor modules, product preservation and exponential
+comparison now locally default to object notation. Expressions such as
+`F (X × Y)` and `fmap F (f × g)` coexist without `%ob` or `%hom`; the latter
+uses the existing hom argument scope of `fmap`. These local settings do not
+change the importing module's default. See the
+[object/morphism notation convention](./CodeStyle.md#object-and-morphism-products--对象积与态射积).
+
+笛卡尔／CCC 函子、积保持及指数比较模块现局部默认使用对象记号，
+`F (X × Y)` 与 `fmap F (f × g)` 可不加 `%ob`、`%hom` 地共存，后者沿用
+`fmap` 的 Hom 参数作用域。局部设置不改变导入模块的默认解释，详见
+[对象／态射记号约定](./CodeStyle.md#object-and-morphism-products--对象积与态射积)。
+
 ## CCC modules and the category of CCCs
 
 ## CCC 模块及 CCC 的范畴
@@ -43,7 +70,7 @@ The theory is organized by mathematical subject:
 | Module / 模块 | Responsibility / 职责 |
 | --- | --- |
 | [CCC/Core.v](../theories/Cat/CCC/Core.v) | The complete CCC record and inherited choices / 完整 CCC 记录及继承选择 |
-| [CCC/Functor.v](../theories/Cat/CCC/Functor.v) | `IsCCCF`, `CCCFct`, its parent view `CCCF`, identity and composition / 保持性、打包函子、父视图及恒等与复合 |
+| [CCC/Functor.v](../theories/Cat/CCC/Functor.v) | `IsCCCF`, `CCCFct`, its parent view `CCCFctToCartFct`, identity and composition / 保持性、打包函子、父视图及恒等与复合 |
 | [CCC/Category.v](../theories/Cat/CCC/Category.v) | `CCCCat`, hom equality and the forgetful functor / CCC 范畴、Hom 相等及忘却函子 |
 | [Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) | General comparison, evaluation and currying, with weaker hypotheses / 较弱假设下的一般比较、求值及柯里化 |
 
@@ -122,10 +149,10 @@ For self-membership within a complete cartesian structure, use
 
 | Isomorphism / 同构 | Construction / 构造 |
 | --- | --- |
-| `(X × Y)^A ≅ X^A × Y^A` | `exponential_product_iso A X Y` |
-| `(Y^A)^B ≅ Y^(A × B)` | `exponential_iterated_iso A B Y` |
-| `Y^1 ≅ Y` | `exponential_unit_iso Y` |
-| `1^A ≅ 1` | `exponential_terminal_iso A` |
+| `(X × Y)^A ≅ X^A × Y^A` | `exp_product_iso A X Y` |
+| `(Y^A)^B ≅ Y^(A × B)` | `exp_iterated_iso A B Y` |
+| `Y^1 ≅ Y` | `exp_unit_iso Y` |
+| `1^A ≅ 1` | `exp_terminal_iso A` |
 
 The product and terminal-result isomorphisms come from the existing
 product–exponential adjunction and the general right-adjoint preservation
@@ -193,9 +220,9 @@ routine calculations. All equalities are the designated setoid/hom equality.
 | [`iso_cancel_l`, `iso_cancel_r`](../theories/Cat/Isomorphism.v) | Cancel an invertible composite / 消去可逆复合 |
 | [`iso_move_l`, `iso_move_r`](../theories/Cat/Isomorphism.v) | Move an isomorphism across an equation / 同构移项 |
 | [`product_eq_iff`](../theories/Cat/Product/Transport.v) | Split an equation into projection equations / 将等式拆成投影等式 |
-| [`exponential_curry_iff`](../theories/Cat/Exponential/Core.v) | `ƛ f ≈ g ↔ f ≈ uncurry g` |
-| [`exponential_curry_eq_iff`, `exponential_uncurry_eq_iff`](../theories/Cat/Exponential/Core.v) | Detect equations before/after transposition / 在转置前后检测等式 |
-| [`exponential_uncurry_app`](../theories/Cat/Exponential/Core.v) | Express uncurrying by contextual application / 以上下文应用表达反柯里化 |
+| [`exp_curry_iff`](../theories/Cat/Exponential/Core.v) | `ƛ f ≈ g ↔ f ≈ uncurry g` |
+| [`exp_curry_eq_iff`, `exp_uncurry_eq_iff`](../theories/Cat/Exponential/Core.v) | Detect equations before/after transposition / 在转置前后检测等式 |
+| [`exp_uncurry_app`](../theories/Cat/Exponential/Core.v) | Express uncurrying by contextual application / 以上下文应用表达反柯里化 |
 
 [ProductHom](../theories/Instance/Set/ProductHom.v) and
 [ExponentialHom](../theories/Instance/Set/ExponentialHom.v) package the actual
@@ -274,14 +301,14 @@ instance reuses the stored cartesian witnesses.
 `CCCFct → CartFct → Fct`；派生实例 `CCCFct_IsCCCF`
 复用保存的笛卡尔见证。
 
-`CartFctFromPreservation` and `CCCFctFromPreservation` package
+`CartFctOfFct` and `CCCFctOfFct` package
 existing evidence transparently. `IdCartF`, `CompCartF`, `IdCCCF`
 and `CompCCCF` reuse the identity and composition theorems above. Clients can
 write `F X`, `fmap F f` and apply the existing comparison/curry laws directly.
 The fixed-functor interfaces remain available to general theorems and STLC
 clients; constructors do not register chosen model functors globally.
 
-`CartFctFromPreservation` 及 `CCCFctFromPreservation` 透明地
+`CartFctOfFct` 及 `CCCFctOfFct` 透明地
 打包已有证据。`IdCartF`、`CompCartF`、`IdCCCF`、`CompCCCF` 复用
 上述恒等和复合定理。客户端可直接写 `F X`、`fmap F f` 并应用已有比较／
 柯里化定律。固定函子接口继续服务于一般定理和 STLC 客户端；构造器不会全局

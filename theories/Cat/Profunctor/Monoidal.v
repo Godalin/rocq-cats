@@ -54,9 +54,9 @@ Program Definition ProfTensorF
   :=
   {|F0 (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
   ; F1 QP QP' βα := ProfCompMapN (fst βα) (snd βα)
-  ; functor_fmap_proper := @functor_fmap_proper _ _ (ProfCompF C C C HC)
-  ; functor_id := @functor_id _ _ (ProfCompF C C C HC)
-  ; functor_comp := @functor_comp _ _ (ProfCompF C C C HC)
+  ; fct_fmap_proper := @fct_fmap_proper _ _ (ProfCompF C C C HC)
+  ; fct_id := @fct_id _ _ (ProfCompF C C C HC)
+  ; fct_comp := @fct_comp _ _ (ProfCompF C C C HC)
   |}.
 
 (** The inverse reassociation is natural on triples of endoprofunctors. *)
@@ -200,9 +200,9 @@ Local Program Definition AssemblyTensorF
   :=
   {|F0 (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
   ; F1 QP QP' βα := ProfCompMapN (fst βα) (snd βα)
-  ; functor_fmap_proper := @functor_fmap_proper _ _ (ProfCompF C C C HC)
-  ; functor_id := @functor_id _ _ (ProfCompF C C C HC)
-  ; functor_comp := @functor_comp _ _ (ProfCompF C C C HC)
+  ; fct_fmap_proper := @fct_fmap_proper _ _ (ProfCompF C C C HC)
+  ; fct_id := @fct_id _ _ (ProfCompF C C C HC)
+  ; fct_comp := @fct_comp _ _ (ProfCompF C C C HC)
   |}.
 
 Let I

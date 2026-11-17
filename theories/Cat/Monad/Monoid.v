@@ -62,7 +62,7 @@ Proof.
     intros X.
     change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id).
-    rewrite (@functor_id C C T (T X)), (@functor_id C C T (T (T X))).
+    rewrite (@fct_id C C T (T X)), (@fct_id C C T (T (T X))).
     rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
       (comp_id_r (μ X ∘ fmap T (μ X))). apply Ha.
   - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ η id) in Hu.
@@ -81,7 +81,7 @@ Proof.
     specialize (Ha X).
     change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id) in Ha.
-    rewrite (@functor_id C C T (T X)), (@functor_id C C T (T (T X))) in Ha.
+    rewrite (@fct_id C C T (T X)), (@fct_id C C T (T (T X))) in Ha.
     rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
       (comp_id_r (μ X ∘ fmap T (μ X))) in Ha. exact Ha.
 Defined.

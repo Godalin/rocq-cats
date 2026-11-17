@@ -34,7 +34,7 @@ Proof.
     arrow_first_arr, arrow_second_arr.
   transitivity ((arr[A; id × q] ∘ arr[A; p × id]) ∘
     (second[A; g; Y] ∘ first[A; f; X'])).
-  - rewrite <- functor_comp, <- cross_comp, comp_id_l, comp_id_r.
+  - rewrite <- fct_comp, <- cross_comp, comp_id_l, comp_id_r.
     reflexivity.
   - rewrite !comp_assoc.
     rewrite <- (comp_assoc arr[A; p × id] (second[A; g; Y])
@@ -55,7 +55,7 @@ Proof.
     arrow_first_arr, arrow_second_arr.
   transitivity ((second[A; g; Y] ∘ first[A; f; X']) ∘
     (arr[A; id × q] ∘ arr[A; p × id])).
-  - rewrite <- functor_comp, <- cross_comp, comp_id_l, comp_id_r.
+  - rewrite <- fct_comp, <- cross_comp, comp_id_l, comp_id_r.
     reflexivity.
   - rewrite <- !comp_assoc.
     rewrite (comp_assoc (second[A; g; Y]) (first[A; f; X'])
@@ -113,7 +113,7 @@ Proof.
   unfold arrow_fanout.
   transitivity (((f ***[A] g) ∘ arr[A; p × p]) ∘ arr[A; ⟨id, id⟩]).
   - rewrite !comp_assoc. apply comp_proper; [reflexivity |].
-    rewrite <- !functor_comp. apply functor_fmap_proper.
+    rewrite <- !fct_comp. apply fct_fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -128,8 +128,8 @@ Lemma arrow_fanout_pure {W X Y : @Ob C} (f : Hom W X) (g : Hom W Y)
   : arr[A; f] &&&[A] arr[A; g] ≈ arr[A; ⟨f, g⟩].
 Proof.
   unfold arrow_fanout, arrow_split.
-  rewrite arrow_second_arr, arrow_first_arr, <- !functor_comp.
-  apply functor_fmap_proper.
+  rewrite arrow_second_arr, arrow_first_arr, <- !fct_comp.
+  apply fct_fmap_proper.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -156,7 +156,7 @@ Proof.
   unfold arrow_fanout. rewrite <- Hl, <- Hr, <- !comp_assoc,
     arrow_split_assoc, !comp_assoc.
   apply comp_proper; [reflexivity |].
-  rewrite <- !functor_comp. apply functor_fmap_proper.
+  rewrite <- !fct_comp. apply fct_fmap_proper.
   unfold product_assoc. cbn [projT1].
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
@@ -173,7 +173,7 @@ Proof.
   unfold arrow_fanout, arrow_split.
   rewrite <- (arrow_arr_id A 1), arrow_first_arr, cross_id, arrow_arr_id,
     comp_id_r, <- comp_assoc, arrow_second_projection, comp_assoc,
-    <- functor_comp, product_β2, arrow_arr_id, comp_id_r. reflexivity.
+    <- fct_comp, product_β2, arrow_arr_id, comp_id_r. reflexivity.
 Qed.
 
 (** For terminal-input computations, pure identity is also the right unit. *)
@@ -186,7 +186,7 @@ Proof.
   unfold arrow_fanout, arrow_split.
   rewrite <- (arrow_arr_id A 1), arrow_second_arr, cross_id, arrow_arr_id,
     comp_id_l, <- comp_assoc, arrow_first_projection, comp_assoc,
-    <- functor_comp, product_β1, arrow_arr_id, comp_id_r. reflexivity.
+    <- fct_comp, product_β1, arrow_arr_id, comp_id_r. reflexivity.
 Qed.
 
 End Pairing.

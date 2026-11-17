@@ -271,9 +271,9 @@ Lemma pentachoron_label_read (f : (@Hom Δ) 2 4)
       (f fin_first) (f (fin_first⁺))
       (f (fin_first⁺⁺)) ≈S t f.
 Proof.
-  pose proof (ordinal_functor_monotone f fin_first (fin_first⁺)
+  pose proof (ordinal_fct_monotone f fin_first (fin_first⁺)
     (ltac:(cbn; lia))) as Hxy.
-  pose proof (ordinal_functor_monotone f (fin_first⁺)
+  pose proof (ordinal_fct_monotone f (fin_first⁺)
     (fin_first⁺⁺) (ltac:(cbn; lia))) as Hyz.
   remember (f fin_first) as x eqn:Ex.
   remember (f (fin_first⁺)) as y eqn:Ey.

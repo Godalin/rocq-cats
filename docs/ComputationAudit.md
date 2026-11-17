@@ -1074,7 +1074,7 @@ without new choices or a direct ancestor bypass.
 
 The associator and both unitors, including their inverse maps, are pure
 images of the same selected value isomorphisms through `ArrowPureF A`.
-The existing `functor_is_iso` theorem supplies the inverse equations;
+The existing `fct_is_iso` theorem supplies the inverse equations;
 `arrow_pure_central` supplies all three centrality witnesses. Unit
 naturality reuses the two projection laws. The associator's left/right
 naturality reuses `arrow_first_assoc` and `arrow_context_assoc`; the new
@@ -1087,7 +1087,7 @@ centrality and naturality laws then follow from the general premonoidal
 theory, with no duplicate structure fields.
 
 结合子及两个单位子，包括其逆映射，均为同一选定值同构沿 `ArrowPureF A`
-的纯像。已有 `functor_is_iso` 定理提供互逆方程，`arrow_pure_central`
+的纯像。已有 `fct_is_iso` 定理提供互逆方程，`arrow_pure_central`
 提供三种中心性见证。单位子自然性复用两个投影律；结合子左右自然性复用
 `arrow_first_assoc` 及 `arrow_context_assoc`。新增
 [arrow_middle_assoc](../theories/Cat/Computational/Arrow/Cartesian.v)

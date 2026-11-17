@@ -95,9 +95,9 @@ Program Definition BinoidalLeftF (Z : @Ob C)
   :=
   {|F0 X := Z ⊗ X
   ; F1 X Y f := Z ⊲ f
-  ; functor_fmap_proper X Y := binoidal_left_proper Z
-  ; functor_id X := binoidal_left_id Z X
-  ; functor_comp X Y W g f := binoidal_left_comp Z g f
+  ; fct_fmap_proper X Y := binoidal_left_proper Z
+  ; fct_id X := binoidal_left_id Z X
+  ; fct_comp X Y W g f := binoidal_left_comp Z g f
   |}.
 
 (** Tensor with a fixed object on the right. *)
@@ -109,9 +109,9 @@ Program Definition BinoidalRightF (Z : @Ob C)
   :=
   {|F0 X := X ⊗ Z
   ; F1 X Y f := f ⊳ Z
-  ; functor_fmap_proper X Y := binoidal_right_proper Z
-  ; functor_id X := binoidal_right_id Z X
-  ; functor_comp X Y W g f := binoidal_right_comp Z g f
+  ; fct_fmap_proper X Y := binoidal_right_proper Z
+  ; fct_id X := binoidal_right_id Z X
+  ; fct_comp X Y W g f := binoidal_right_comp Z g f
   |}.
 
 (** Run the left factor before the right factor on separate inputs. *)

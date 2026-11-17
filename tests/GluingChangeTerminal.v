@@ -375,7 +375,7 @@ Definition empty_stable_target_not_terminal
 (** 保存的有限积保持值保留其基中介。 *)
 
 Example empty_stable_terminal_base_computes
-  : comma_right (@functor_terminal _ _ _ _ _ empty_stable_cartesian
+  : comma_right (@fct_terminal _ _ _ _ _ empty_stable_cartesian
       (GluingTerminal (ConstF SetCat EmptyS) UnitS)).1 tt = tt.
 Proof. reflexivity. Defined.
 

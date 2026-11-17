@@ -59,9 +59,9 @@ Definition StaticRecoveredA
 
 Definition StaticRecoveryIso (X : @Ob C)
   : StaticRecoveredA X ≅[C] B X
-  := iso_trans (exponential_unit_iso (B (X ^ 1)%ob))
-    (fmap B (exponential_unit_iso X).1;
-      functor_is_iso B (exponential_unit_iso X).1 (exponential_unit_iso X).2).
+  := iso_trans (exp_unit_iso (B (X ^ 1)%ob))
+    (fmap B (exp_unit_iso X).1;
+      fct_is_iso B (exp_unit_iso X).1 (exp_unit_iso X).2).
 
 (** The recovery maps are natural by the existing static result-map law. *)
 
@@ -113,7 +113,7 @@ Lemma static_recovery_pair (X Y : @Ob C)
 Proof.
   intros [f g].
   etransitivity; [exact (static_value_fanout B f g tt) |].
-  exact (@functor_id C C B (X × Y)%ob
+  exact (@fct_id C C B (X × Y)%ob
     (φ₂[B; X; Y] (static_value B f tt, static_value B g tt))).
 
 Qed.

@@ -57,10 +57,10 @@ Program Definition PairF {J : Cat} {C : Cat} {D : Cat}
   ; F1 i j f := (fmap F f, fmap G f)
   |}.
 Next Obligation.
-  intros f g H. split; apply functor_fmap_proper; exact H.
+  intros f g H. split; apply fct_fmap_proper; exact H.
 Defined.
-Next Obligation. split; apply functor_id. Defined.
-Next Obligation. split; apply functor_comp. Defined.
+Next Obligation. split; apply fct_id. Defined.
+Next Obligation. split; apply fct_comp. Defined.
 
 (** ** Fixing the Second Product Coordinate
 
@@ -90,7 +90,7 @@ Program Definition ProductAtN {b b' : @Ob B} (a : Hom b b')
   {|nt x := fmap K (X := (x, b)) (Y := (x, b')) (id, a)
   |}.
 Next Obligation.
-  cbn. rewrite <- !functor_comp. apply functor_fmap_proper.
+  cbn. rewrite <- !fct_comp. apply fct_fmap_proper.
   split; carw.
 Defined.
 
@@ -101,7 +101,7 @@ Defined.
 Global Instance product_at_proper {b b' : @Ob B}
   : Proper (@HomEq B b b' ==> NatEq) (@ProductAtN b b').
 Proof.
-  intros a a' H x. cbn. apply functor_fmap_proper.
+  intros a a' H x. cbn. apply fct_fmap_proper.
   split; [reflexivity | exact H].
 Defined.
 
@@ -111,7 +111,7 @@ Defined.
 
 Lemma product_at_id (b : @Ob B)
   : ProductAtN (@Cat.Core.id B b) ≈N IdN.
-Proof. intros x. exact (@functor_id _ _ K (x, b)). Defined.
+Proof. intros x. exact (@fct_id _ _ K (x, b)). Defined.
 
 (** Composition in the parameter becomes vertical composition. *)
 
@@ -121,7 +121,7 @@ Lemma product_at_comp {b b' b'' : @Ob B}
     (a' : Hom b' b'') (a : Hom b b')
   : ProductAtN (a' ∘ a) ≈N (ProductAtN a' ∘Nv ProductAtN a).
 Proof.
-  intros x. cbn. rewrite <- functor_comp. apply functor_fmap_proper.
+  intros x. cbn. rewrite <- fct_comp. apply fct_fmap_proper.
   split; cbn; carw; reflexivity.
 Defined.
 
@@ -134,7 +134,7 @@ Lemma product_at_map {x y : @Ob A} {b b' : @Ob B}
   : fmap K (X := (x, b)) (Y := (y, b')) (f, a) ≈
       fmap (π1F K b') f ∘ ProductAtN a x.
 Proof.
-  cbn. rewrite <- functor_comp. apply functor_fmap_proper.
+  cbn. rewrite <- fct_comp. apply fct_fmap_proper.
   split; cbn; carw; reflexivity.
 Defined.
 

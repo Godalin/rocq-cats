@@ -110,8 +110,8 @@ Program Definition GluingRight_IsCartF
   : IsCartF (GluingRightF F) (Gluing_HasTerminal F)
       (Gluing_HasProduct F preserves)
   :=
-  {|functor_terminal := terminal_universal
-  ; functor_product := gluing_right_product F preserves
+  {|fct_terminal := terminal_universal
+  ; fct_product := gluing_right_product F preserves
   |}.
 
 (** Left preservation requires the image terminal to be terminal in [D].
@@ -123,8 +123,8 @@ Program Definition GluingLeft_IsCartF (image_terminal : is_terminal (F 1))
   : IsCartF (GluingLeftF F) (Gluing_HasTerminal F)
       (Gluing_HasProduct F preserves)
   :=
-  {|functor_terminal := image_terminal
-  ; functor_product := gluing_left_product F preserves
+  {|fct_terminal := image_terminal
+  ; fct_product := gluing_left_product F preserves
   |}.
 
 End GluingCartesian.

@@ -43,8 +43,8 @@ Context (pullbacks : ∀ X Y : @Ob (Gluing F),
     ∃ E : @Ob D,
     ∃ p : Hom E (comma_left_ob Y ^ comma_left_ob X),
     ∃ q : Hom E (F ((comma_right_ob Y ^ comma_right_ob X)%ob)),
-      is_pullback (gluing_exponential_result F X Y)
-        (gluing_exponential_base F preserves X Y) E p q).
+      is_pullback (gluing_exp_result F X Y)
+        (gluing_exp_base F preserves X Y) E p q).
 
 (** The candidate proof supplies the full selected exponential structure
     for exactly the previously constructed gluing products. *)
@@ -59,7 +59,7 @@ Program Definition Gluing_HasExponential
   ; eval X Y := gluing_eval F preserves X Y
       (pullbacks X Y).1 (pullbacks X Y).2.1
       (pullbacks X Y).2.2.1 (pullbacks X Y).2.2.2
-  ; exponential_universal X Y := gluing_exponential_universal F preserves
+  ; exp_universal X Y := gluing_exp_universal F preserves
       X Y (pullbacks X Y).1 (pullbacks X Y).2.1
       (pullbacks X Y).2.2.1 (pullbacks X Y).2.2.2
   |}.
@@ -105,10 +105,10 @@ Definition GluingExpPullback (X Y : @Ob (Gluing F))
   : ∃ E : @Ob D,
     ∃ p : Hom E (comma_left_ob Y ^ comma_left_ob X),
     ∃ q : Hom E (F ((comma_right_ob Y ^ comma_right_ob X)%ob)),
-      is_pullback (gluing_exponential_result F X Y)
-        (gluing_exponential_base F preserves X Y) E p q
-  := (Pb (gluing_exponential_result F X Y)
-        (gluing_exponential_base F preserves X Y);
+      is_pullback (gluing_exp_result F X Y)
+        (gluing_exp_base F preserves X Y) E p q
+  := (Pb (gluing_exp_result F X Y)
+        (gluing_exp_base F preserves X Y);
       (pb1 _ _; (pb2 _ _; pullback_universal))).
 
 (** Enable the resulting exponentials explicitly, using the same mediators. *)

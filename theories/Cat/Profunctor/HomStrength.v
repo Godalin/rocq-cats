@@ -55,7 +55,7 @@ Program Definition HomProfStrengthN (Z : @Ob C)
   |}.
 Next Obligation.
   intros f g E. refine {|lower := _|}.
-  exact (@functor_fmap_proper C C (@BinoidalLeftF C MC Z)
+  exact (@fct_fmap_proper C C (@BinoidalLeftF C MC Z)
     _ _ (lower f) (lower g) (lower E)).
 Defined.
 Next Obligation.

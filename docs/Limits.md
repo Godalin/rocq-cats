@@ -276,14 +276,14 @@ through `lower`; no new notion of cones is introduced.
 实际锥分量通过 `lower` 读取，没有引入新的锥概念。
 
 For `HG : HasFiniteGen J`, `generated_cone_nat_iso D` specializes the
-comparison to `generator_functor`. Equations on generating edges suffice
+comparison to `generator_fct`. Equations on generating edges suffice
 to build a cone on the restricted diagram by `FreeCone`, and extension gives
 a cone on `D`. Here `D` is already a functor on `J`: its respectfulness
 already handles the extra path equations. This does not make an arbitrary
 assignment of graph edges descend to `J`.
 
 对于 `HG : HasFiniteGen J`，`generated_cone_nat_iso D` 将比较特化到
-`generator_functor`。生成边上的方程足以通过 `FreeCone` 构造限制图式上的锥，
+`generator_fct`。生成边上的方程足以通过 `FreeCone` 构造限制图式上的锥，
 再延拓为 D 上的锥。这里 D 已经是 J 上的函子，其保相等性已经处理额外路径方程；
 这一结论不会使任意的图边赋值自动下降为 J 上的图式。
 
@@ -311,7 +311,7 @@ finite_cover x : ∃ i, finite_enum i ≈S x
 [Shape.Finite](../theories/Cat/Shape/Finite.v) 区分两种选定数据：
 
 - `HasFiniteGen J`：有限顶点及有限生成边，连同满且本质满的路径解释
-  `generator_functor : FreeCat (FiniteGraph k) → J`。
+  `generator_fct : FreeCat (FiniteGraph k) → J`。
 - `HasFiniteHomCover J`：有限对象代表、每个对象到代表的选定同构，
   以及代表对象之间各个 Hom 广集的 `HasFiniteCover`。
 

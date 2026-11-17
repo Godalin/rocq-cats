@@ -91,8 +91,8 @@ Qed.
 Theorem forall_truth_curry (A X : C)
   : (ƛ (truth ∘ ! : Hom (X × A) Ω)) ≈ ForallTruth A ∘ !.
 Proof.
-  unfold ForallTruth. rewrite <- exponential_curry_comp_r.
-  apply exponential_curry_proper.
+  unfold ForallTruth. rewrite <- exp_curry_comp_r.
+  apply exp_curry_proper.
   rewrite comp_assoc, (term_η (! ∘ (! × id))). reflexivity.
 Qed.
 
@@ -106,7 +106,7 @@ Theorem forall_predicate_comp (A : C) {X Y : C}
   : (∀Ω[A] f) ∘ k ≈ ∀Ω[A] (f ∘ (k × id)).
 Proof.
   unfold forall_predicate.
-  rewrite comp_assoc, exponential_curry_comp_r. reflexivity.
+  rewrite comp_assoc, exp_curry_comp_r. reflexivity.
 Qed.
 
 (** Universal quantification is true precisely when the original
@@ -120,7 +120,7 @@ Proof.
   pose (F := classifier_char_factor (Mono_term (ForallTruth A)) (ƛ f)).
   split.
   - intros H. destruct (fst F H) as [k Hk].
-    apply (fst (exponential_curry_eq_iff f (truth ∘ !))).
+    apply (fst (exp_curry_eq_iff f (truth ∘ !))).
     transitivity (ForallTruth A ∘ (! : Hom X 1)).
     + rewrite Hk, (term_η k). reflexivity.
     + symmetry. apply forall_truth_curry.

@@ -50,12 +50,12 @@ Qed.
 (** 解释纯命名函数，恢复原来的纯箭头。 *)
 
 Lemma arrow_static_eval_pure {X Y : @Ob C} (f : Hom X Y)
-  : arrow_static_eval arr[A; exponential_name f] ≈ arr[A; f].
+  : arrow_static_eval arr[A; exp_name f] ≈ arr[A; f].
 Proof.
-  unfold arrow_static_eval. rewrite arrow_global_context_pure, <- functor_comp.
-  apply functor_fmap_proper.
-  rewrite exponential_app_comp, product_β1, product_β2.
-  rewrite exponential_name_app, comp_id_r. reflexivity.
+  unfold arrow_static_eval. rewrite arrow_global_context_pure, <- fct_comp.
+  apply fct_fmap_proper.
+  rewrite exp_app_comp, product_β1, product_β2.
+  rewrite exp_name_app, comp_id_r. reflexivity.
 Qed.
 
 (** A pure map selecting internal functions can be fused into ordinary
@@ -70,9 +70,9 @@ Lemma arrow_static_eval_map {P X Y : @Ob C} (h : Hom P (Y ^ X))
         arrow_global_context A X f.
 Proof.
   unfold arrow_static_eval. rewrite arrow_global_context_map, <- comp_assoc,
-    <- functor_comp. apply comp_proper; [| reflexivity].
-  apply functor_fmap_proper.
-  rewrite exponential_app_comp.
+    <- fct_comp. apply comp_proper; [| reflexivity].
+  apply fct_fmap_proper.
+  rewrite exp_app_comp.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -96,9 +96,9 @@ Proof.
     arrow_global_context_pre.
   rewrite <- !comp_assoc.
   apply comp_proper; [| reflexivity]. apply comp_proper; [| reflexivity].
-  rewrite <- !functor_comp. apply functor_fmap_proper.
+  rewrite <- !fct_comp. apply fct_fmap_proper.
   unfold product_assoc. cbn [projT1].
-  repeat first [rewrite internal_then_app | rewrite exponential_app_comp |
+  repeat first [rewrite internal_then_app | rewrite exp_app_comp |
     rewrite cross_η | rewrite product_comp_r | rewrite comp_assoc | rewrite product_β1 |
     rewrite product_β2 | rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
 Qed.
@@ -122,10 +122,10 @@ Proof.
   rewrite arrow_second_comp, arrow_second_arr, arrow_global_context_nested,
     <- !comp_assoc.
   apply comp_proper; [| reflexivity].
-  rewrite <- functor_comp. apply functor_fmap_proper.
+  rewrite <- fct_comp. apply fct_fmap_proper.
   rewrite internal_context_app.
   unfold product_assoc. cbn [projT1].
-  repeat first [rewrite internal_then_app | rewrite exponential_app_comp |
+  repeat first [rewrite internal_then_app | rewrite exp_app_comp |
     rewrite cross_η | rewrite product_comp_r | rewrite comp_assoc | rewrite product_β1 |
     rewrite product_β2 | rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
 Qed.

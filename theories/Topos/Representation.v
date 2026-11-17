@@ -54,7 +54,7 @@ Global Instance ClassifiedSub_proper {X : @Ob C}
   : Proper (@HomEq[X, Ω] ==> Sub_eq X) ClassifiedSub.
 Proof.
   intros f g H.
-  exact (functor_fmap_proper (C^op) SetCat (@SubF C HPb)
+  exact (fct_fmap_proper (C^op) SetCat (@SubF C HPb)
     f g H (term_Sub truth)).
 Qed.
 

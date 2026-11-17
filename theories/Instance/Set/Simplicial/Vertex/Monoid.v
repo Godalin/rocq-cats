@@ -66,7 +66,7 @@ Next Obligation.
   change (1 ⋅ xs[f]M⟦i, j⟧⋅ ≈S xs⟦f i, f j⟧⋅ ⋅ 1).
   rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
   apply monoid_segment_sub.
-  - apply ordinal_functor_monotone.
+  - apply ordinal_fct_monotone.
   - exact (nat_le_to_le a).
 Defined.
 

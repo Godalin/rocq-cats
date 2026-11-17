@@ -28,10 +28,10 @@ Proof.
   rewrite !cartesian_tensor_map in H.
   change (st[S; 1; Y] ∘ (! × fmap F (@id Y)) ≈
     fmap F (! × @id Y) ∘ st[S; X; Y]) in H.
-  rewrite functor_id in H.
+  rewrite fct_id in H.
   transitivity ((fmap F (π2 : Hom (1 × Y) Y) ∘ st[S; 1; Y]) ∘
     ((! : Hom X 1) × @id (F Y))).
-  - rewrite comp_assoc, H, <- comp_assoc, <- functor_comp,
+  - rewrite comp_assoc, H, <- comp_assoc, <- fct_comp,
       cross_η, product_β2, comp_id_l. reflexivity.
   - rewrite (strength_unit S Y). cbn.
     rewrite cross_η, product_β2, comp_id_l.

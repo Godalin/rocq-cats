@@ -70,7 +70,7 @@ Proof.
   unfold arrow_static_eval, arrow_global_context.
   apply comp_proper; [reflexivity |]. apply comp_proper; [| reflexivity].
   apply arrow_second_proper.
-  apply (@functor_fmap_proper C K A UnitS (Y ^ X)%ob). intros [].
+  apply (@fct_fmap_proper C K A UnitS (Y ^ X)%ob). intros [].
   intros x. reflexivity.
 Qed.
 
@@ -116,12 +116,12 @@ Program Definition StaticInterpretF
   :=
   {|F0 := A
   ; F1 X Y f := static_interpret f
-  ; functor_fmap_proper X Y := static_interpret_proper
+  ; fct_fmap_proper X Y := static_interpret_proper
   |}.
 Next Obligation.
   change (static_interpret
     (static_arr (ArrowA K A) (id_resp (X := X))) ≈ @id (A X)).
-  rewrite static_interpret_arr. exact (@functor_id C K A X).
+  rewrite static_interpret_arr. exact (@fct_id C K A X).
 Defined.
 Next Obligation. exact (static_interpret_comp f g). Defined.
 

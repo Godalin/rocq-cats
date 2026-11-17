@@ -51,14 +51,14 @@ Program Definition ActionFamS {X : SetC}
   |}.
 Next Obligation.
   transitivity (fmap F (@Cats.Cat.Core.id (EqGpd X) x) v).
-  - apply (@functor_fmap_proper _ _ F x x p
+  - apply (@fct_fmap_proper _ _ F x x p
       (@Cats.Cat.Core.id (EqGpd X) x) tt).
-  - exact (@functor_id _ _ F x v).
+  - exact (@fct_id _ _ F x v).
 Defined.
 Next Obligation.
   transitivity (fmap F (transitivity p q) v).
-  - apply (@functor_fmap_proper _ _ F x z r (transitivity p q) tt).
-  - exact (@functor_comp _ _ F x y z q p v).
+  - apply (@fct_fmap_proper _ _ F x z r (transitivity p q) tt).
+  - exact (@fct_comp _ _ F x y z q p v).
 Defined.
 
 (** A fiberwise family map is a natural transformation of the corresponding

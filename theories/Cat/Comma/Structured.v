@@ -138,7 +138,7 @@ Definition universal_arrow_iso {C D : Cat} (U : Fct D C)
 Proof.
   pose (i := initial_unique (universal_arrow_is_initial U Hη)
     (universal_arrow_is_initial U Hθ)).
-  exists (comma_right i.1; functor_is_iso (CommaRightF _ U) i.1 i.2).
+  exists (comma_right i.1; fct_is_iso (CommaRightF _ U) i.1 i.2).
   pose proof (comma_comm i.1) as E.
   change (fmap U (comma_right i.1) ∘ η ≈ θ ∘ id) in E.
   rewrite comp_id_r in E. exact E.

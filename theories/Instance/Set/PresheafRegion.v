@@ -86,10 +86,10 @@ Program Definition RegionPsh (R : PresheafRegion Q)
   |}.
 Next Obligation. intros x y E. exact (@func_proper _ _ (fmap Q f) _ _ E). Defined.
 Next Obligation.
-  intros f g E x. exact (functor_fmap_proper _ _ Q f g E x.1).
+  intros f g E x. exact (fct_fmap_proper _ _ Q f g E x.1).
 Defined.
-Next Obligation. intros x. exact (functor_id _ _ Q x.1). Defined.
-Next Obligation. intros x. exact (functor_comp _ _ Q f g x.1). Defined.
+Next Obligation. intros x. exact (fct_id _ _ Q x.1). Defined.
+Next Obligation. intros x. exact (fct_comp _ _ Q f g x.1). Defined.
 
 (** Forget membership by the original respectful subset inclusion. *)
 

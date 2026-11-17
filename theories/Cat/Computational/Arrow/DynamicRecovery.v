@@ -90,15 +90,15 @@ Program Definition DynamicNamingF
   :=
   {|F0 X := X
   ; F1 X Y f := arrow_dynamic_name AA f
-  ; functor_fmap_proper X Y := arrow_dynamic_name_proper AA
+  ; fct_fmap_proper X Y := arrow_dynamic_name_proper AA
   |}.
 Next Obligation.
-  exact (@functor_id _ _ (FullyFaithfulInverseF DynamicEvaluationF
+  exact (@fct_id _ _ (FullyFaithfulInverseF DynamicEvaluationF
     dynamic_evaluation_fully_faithful) X).
 Defined.
 
 Next Obligation.
-  exact (@functor_comp _ _ (FullyFaithfulInverseF DynamicEvaluationF
+  exact (@fct_comp _ _ (FullyFaithfulInverseF DynamicEvaluationF
     dynamic_evaluation_fully_faithful) X Y Z f g).
 Defined.
 
@@ -154,7 +154,7 @@ Proof.
   intros x. transitivity (arrow_value_pure K AA Y (f x)).
   - change (arr[AA; f] ∘ arr[AA; const_resp UnitS x] ≈
       arr[AA; const_resp UnitS (f x)]).
-    rewrite <- functor_comp. apply functor_fmap_proper. intros []. reflexivity.
+    rewrite <- fct_comp. apply fct_fmap_proper. intros []. reflexivity.
   - symmetry. exact (arrow_monad_unit AA Y (f x)).
 Qed.
 
@@ -181,7 +181,7 @@ Lemma dynamic_naming_comp {X Y Z : SetC@{u p}}
   : arrow_dynamic_name AA (g ∘ f) ≈f
     arrow_dynamic_name AA g ∘K[ArrowMonad AA] arrow_dynamic_name AA f.
 Proof.
-  exact (@functor_comp (ComputationCat AA) (KleisliCat (ArrowMonad AA))
+  exact (@fct_comp (ComputationCat AA) (KleisliCat (ArrowMonad AA))
     DynamicNamingF X Y Z g f).
 Qed.
 
@@ -216,7 +216,7 @@ Lemma dynamic_evaluation_comp {X Y Z : SetC@{u p}}
   : arrow_dynamic_eval AA (g ∘K[ArrowMonad AA] f) ≈
     arrow_dynamic_eval AA g ∘ arrow_dynamic_eval AA f.
 Proof.
-  exact (@functor_comp (KleisliCat (ArrowMonad AA)) (ComputationCat AA)
+  exact (@fct_comp (KleisliCat (ArrowMonad AA)) (ComputationCat AA)
     DynamicEvaluationF X Y Z g f).
 Qed.
 
@@ -285,9 +285,9 @@ Proof.
   change (apply[AA; X; Y] ∘ arr[AA; const_resp UnitS (f,x)] ≈
     f ∘ arr[AA; const_resp UnitS x]).
   transitivity (arrow_apply_const AA f ∘ arr[AA; const_resp UnitS x]).
-  - unfold arrow_apply_const. rewrite comp_assoc, <- functor_comp.
+  - unfold arrow_apply_const. rewrite comp_assoc, <- fct_comp.
     apply comp_proper; [reflexivity|].
-    apply functor_fmap_proper. intros []. split; reflexivity.
+    apply fct_fmap_proper. intros []. split; reflexivity.
   - rewrite arrow_apply_const_value. reflexivity.
 Qed.
 

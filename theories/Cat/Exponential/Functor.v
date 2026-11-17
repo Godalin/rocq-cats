@@ -22,22 +22,22 @@ Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** 通过指数泛性质，将参数预合成与结果后合成提升到指数对象之间。 *)
 
-Definition exponential_dimap {X X' Y Y'} (u : Hom X' X) (v : Hom Y Y')
+Definition exp_dimap {X X' Y Y'} (u : Hom X' X) (v : Hom Y Y')
   : Hom (Y ^ X) (Y' ^ X')
   := ƛ (v ∘ eval ∘ (id × u)).
 
-Notation "v '^' u" := (exponential_dimap u v)
+Notation "v '^' u" := (exp_dimap u v)
   (at level 30, right associativity) : hom_scope.
 
 (** Changing either map by its specified equality preserves the induced map. *)
 
 (** 任一侧映射按指定相等改变时，诱导的指数映射仍相等。 *)
 
-Global Instance exponential_dimap_proper {X X' Y Y'}
+Global Instance exp_dimap_proper {X X' Y Y'}
   : Proper (@HomEq[X', X] ==> @HomEq[Y, Y'] ==>
-      @HomEq[Y ^ X, Y' ^ X']) exponential_dimap.
+      @HomEq[Y ^ X, Y' ^ X']) exp_dimap.
 Proof.
-  intros u u' Hu v v' Hv. unfold exponential_dimap.
+  intros u u' Hu v v' Hv. unfold exp_dimap.
   rewrite Hu, Hv. reflexivity.
 Qed.
 
@@ -46,20 +46,20 @@ Qed.
 
 (** 求值给出双变量作用的计算律；参数反变通过右侧输入上的预合成表达。 *)
 
-Lemma exponential_dimap_eval {X X' Y Y'}
+Lemma exp_dimap_eval {X X' Y Y'}
     (u : Hom X' X) (v : Hom Y Y')
   : eval ∘ ((v ^ u) × id) ≈ v ∘ eval ∘ (id × u).
-Proof. apply exponential_β. Qed.
+Proof. apply exp_β. Qed.
 
 (** With the argument map fixed to identity, recover the existing covariant
     action on result objects. *)
 
 (** 参数映射取恒等时，恢复已有的结果对象协变作用。 *)
 
-Lemma exponential_dimap_id_r {X Y Y'} (v : Hom Y Y')
-  : v ^ (@id X) ≈ exponential_map v.
+Lemma exp_dimap_id_r {X Y Y'} (v : Hom Y Y')
+  : v ^ (@id X) ≈ exp_map v.
 Proof.
-  unfold exponential_dimap, exponential_map.
+  unfold exp_dimap, exp_map.
   rewrite cross_id, comp_id_r. reflexivity.
 Qed.
 
@@ -67,20 +67,20 @@ Qed.
 
 (** 两侧恒等映射诱导指数对象上的恒等映射。 *)
 
-Lemma exponential_dimap_id {X Y}
+Lemma exp_dimap_id {X Y}
   : (@id Y) ^ (@id X) ≈ @id (Y ^ X).
-Proof. rewrite exponential_dimap_id_r. apply exponential_map_id. Qed.
+Proof. rewrite exp_dimap_id_r. apply exp_map_id. Qed.
 
 (** Uncurrying commutes with changing the argument and result objects. *)
 
 (** 反柯里化与参数对象及结果对象的变换相容。 *)
 
-Lemma exponential_uncurry_dimap {X X' Y Y' Z}
+Lemma exp_uncurry_dimap {X X' Y Y' Z}
     (u : Hom X' X) (v : Hom Y Y') (g : Hom Z (Y ^ X))
   : uncurry ((v ^ u) ∘ g) ≈ v ∘ uncurry g ∘ (id × u).
 Proof.
-  rewrite exponential_uncurry_comp_r.
-  unfold exponential_dimap. rewrite exponential_β. unfold uncurry.
+  rewrite exp_uncurry_comp_r.
+  unfold exp_dimap. rewrite exp_β. unfold uncurry.
   rewrite !comp_assoc, <- !cross_comp, !comp_id_l, !comp_id_r.
   reflexivity.
 Qed.
@@ -89,29 +89,29 @@ Qed.
 
 (** 柯里化与参数对象及结果对象的变换相容。 *)
 
-Lemma exponential_curry_dimap {X X' Y Y' Z}
+Lemma exp_curry_dimap {X X' Y Y' Z}
     (u : Hom X' X) (v : Hom Y Y') (f : Hom (Z × X) Y)
   : ƛ (v ∘ f ∘ (id × u)) ≈ (v ^ u) ∘ ƛ f.
 Proof.
-  symmetry. apply exponential_curry_unique.
+  symmetry. apply exp_curry_unique.
   change (uncurry ((v ^ u) ∘ ƛ f) ≈ v ∘ f ∘ (id × u)).
-  rewrite exponential_uncurry_dimap, exponential_β. reflexivity.
+  rewrite exp_uncurry_dimap, exp_β. reflexivity.
 Qed.
 
 (** Composition reverses in the argument and preserves order in the result. *)
 
 (** 复合在参数侧反向，在结果侧保持顺序。 *)
 
-Lemma exponential_dimap_comp {X X' X'' Y Y' Y''}
+Lemma exp_dimap_comp {X X' X'' Y Y' Y''}
     (u : Hom X' X) (u' : Hom X'' X')
     (v : Hom Y Y') (v' : Hom Y' Y'')
   : (v' ∘ v) ^ (u ∘ u') ≈ (v' ^ u') ∘ (v ^ u).
 Proof.
-  symmetry. apply exponential_curry_unique.
+  symmetry. apply exp_curry_unique.
   change (uncurry ((v' ^ u') ∘ (v ^ u)) ≈
     (v' ∘ v) ∘ eval ∘ (id × (u ∘ u'))).
-  rewrite exponential_uncurry_dimap.
-  unfold exponential_dimap. rewrite exponential_β.
+  rewrite exp_uncurry_dimap.
+  unfold exp_dimap. rewrite exp_β.
   rewrite !comp_assoc, <- cross_comp, comp_id_l. reflexivity.
 Qed.
 
@@ -120,7 +120,7 @@ Qed.
 
 (** 在共同上下文中，应用按参数预合成和结果后合成计算。 *)
 
-Lemma exponential_app_dimap {X X' Y Y' Z}
+Lemma exp_app_dimap {X X' Y Y' Z}
     (u : Hom X' X) (v : Hom Y Y')
     (g : Hom Z (Y ^ X)) (a : Hom Z X')
   : app ((v ^ u) ∘ g) a ≈ v ∘ app g (u ∘ a).
@@ -128,7 +128,7 @@ Proof.
   unfold app.
   transitivity ((eval ∘ ((v ^ u) × id)) ∘ ⟨g, a⟩).
   - rewrite comp_assoc, product_comp_l, comp_id_l. reflexivity.
-  - rewrite exponential_dimap_eval, !comp_assoc,
+  - rewrite exp_dimap_eval, !comp_assoc,
       product_comp_l, comp_id_l. reflexivity.
 Qed.
 
@@ -143,10 +143,10 @@ Program Definition ExpBiF
   ; F1 X Y f := (snd f ^ fst f)%hom
   |}.
 Next Obligation.
-  intros [u v] [u' v'] [Hu Hv]. apply exponential_dimap_proper; assumption.
+  intros [u v] [u' v'] [Hu Hv]. apply exp_dimap_proper; assumption.
 Qed.
-Next Obligation. apply exponential_dimap_id. Qed.
-Next Obligation. apply exponential_dimap_comp. Qed.
+Next Obligation. apply exp_dimap_id. Qed.
+Next Obligation. apply exp_dimap_comp. Qed.
 
 (** Fix the result object to obtain contravariant exponentiation. *)
 
@@ -167,7 +167,7 @@ Program Definition ExpFixedN (X : @Ob C)
   {|nt Y := id
   |}.
 Next Obligation.
-  rewrite comp_id_l, comp_id_r. apply exponential_dimap_id_r.
+  rewrite comp_id_l, comp_id_r. apply exp_dimap_id_r.
 Qed.
 
 (** The comparison has invertible identity components; no equality of
@@ -175,7 +175,7 @@ Qed.
 
 (** 比较的恒等分量可逆，不要求函子记录或其定律字段相等。 *)
 
-Definition exponential_fixed_nat_iso (X : @Ob C)
+Definition exp_fixed_nat_iso (X : @Ob C)
   : π2F ExpBiF X ≅N ExpF X.
 Proof.
   exists (ExpFixedN X). intros Y.
@@ -184,7 +184,7 @@ Defined.
 
 End ExponentialBifunctor.
 
-Notation "v '^' u" := (exponential_dimap u v)
+Notation "v '^' u" := (exp_dimap u v)
   (at level 30, right associativity) : hom_scope.
 Notation "'(-^-)'" := ExpBiF : cat_scope.
 Notation "'(' Y '^-)'" := (ExpContraF Y) : cat_scope.

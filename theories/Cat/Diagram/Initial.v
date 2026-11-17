@@ -24,7 +24,7 @@ Program Definition InitialCone {J C : Cat} {j : @Ob J}
   {|nt k := fmap F (Hj k).1
   |}.
 Next Obligation.
-  rewrite comp_id_r, <- functor_comp.
-  apply functor_fmap_proper. symmetry.
+  rewrite comp_id_r, <- fct_comp.
+  apply fct_fmap_proper. symmetry.
   exact (@that _ _ _ _ _ (Hj Y).2 _ I).
 Defined.

@@ -49,14 +49,14 @@ Context (pullbacks : ∀ X Y : @Ob (Gluing F),
     ∃ E : @Ob D,
     ∃ p : Hom E (comma_left_ob Y ^ comma_left_ob X),
     ∃ q : Hom E (F ((comma_right_ob Y ^ comma_right_ob X)%ob)),
-      is_pullback (gluing_exponential_result F X Y)
-        (gluing_exponential_base F preserves X Y) E p q).
+      is_pullback (gluing_exp_result F X Y)
+        (gluing_exp_base F preserves X Y) E p q).
 
 (** The weaker selected-family interface accepts strict independent levels. *)
 
 (** 较弱的选定族接口接受严格独立的层级。 *)
 
-Definition gluing_exponential_large_equality
+Definition gluing_exp_large_equality
   : HasExponential (Gluing_HasProduct F preserves)
   := Gluing_HasExponential F preserves pullbacks.
 
@@ -94,7 +94,7 @@ Context (preserves : ∀ A B : @Ob C,
 
 (** 便捷包装保持反向分离。 *)
 
-Definition gluing_exponential_small_equality
+Definition gluing_exp_small_equality
   : HasExponential (Gluing_HasProduct F preserves)
   := GluingPullback_HasExponential F preserves.
 
@@ -209,7 +209,7 @@ Example tagged_gluing_curry_respects
   : ƛ tagged_gluing_function ≈ ƛ (π1 : (@Hom (Gluing (@IdF SetCat)))
       ((TaggedGluingObj × TaggedGluingObj)%ob) TaggedGluingObj).
 Proof.
-  apply exponential_curry_proper.
+  apply exp_curry_proper.
   unfold tagged_gluing_function.
   rewrite tagged_gluing_toggle_equal, comp_id_l. reflexivity.
 Defined.

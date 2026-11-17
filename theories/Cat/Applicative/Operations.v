@@ -370,7 +370,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 
 Lemma applicative_roundtrip_tensor (X Y : @Ob C)
   : φ₂[OperationsA (ApplicativeOperations A); X; Y] ≈ φ₂[A; X; Y].
-Proof. cbn. unfold lax_lift2. rewrite functor_id, comp_id_l. reflexivity. Qed.
+Proof. cbn. unfold lax_lift2. rewrite fct_id, comp_id_l. reflexivity. Qed.
 
 (** The structural round trip recovers the selected unit by its pure law. *)
 

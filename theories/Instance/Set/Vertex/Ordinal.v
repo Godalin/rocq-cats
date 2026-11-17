@@ -46,7 +46,7 @@ Program Definition OrdinalVtxPointF (n : nat) (i : Ordinal n)
   : VtxTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
       OrdinalObjF n
   :=
-  {|vertex_functor := ConstF
+  {|vertex_fct := ConstF
       (VtxCat VtxTerminalObjF@{Set Set Set Set Set Set Set Set})
       (C := VtxCat (OrdinalObjF n)) i
   |}.
@@ -108,7 +108,7 @@ Program Definition vertex_ordinal_diagram_resp (m n : nat)
   {|func P := OrdinalVtxF n ∘F P
   |}.
 Next Obligation.
-  intros P Q H. apply (snd (ordinal_functor_iso_iff _ _)).
+  intros P Q H. apply (snd (ordinal_fct_iso_iff _ _)).
   exact (fst (vertex_ordinal_diagram_eq_iff n P Q) H).
 Defined.
 
@@ -124,7 +124,7 @@ Program Definition vertex_ordinal_diagram_inv_resp (m n : nat)
   |}.
 Next Obligation.
   intros P Q H. apply (snd (vertex_ordinal_diagram_eq_iff n _ _)).
-  exact (fst (ordinal_functor_iso_iff P Q) H).
+  exact (fst (ordinal_fct_iso_iff P Q) H).
 Defined.
 
 (** Every monotone map preserves the specified ordinal transport. *)
@@ -135,7 +135,7 @@ Program Definition OrdinalVtxMapF {m n : nat}
     (θ : Fct [Ord m] [Ord n])
   : OrdinalObjF m →ᵥ OrdinalObjF n
   :=
-  {|vertex_functor := OrdinalVtxInvF n ∘F θ ∘F OrdinalVtxF m
+  {|vertex_fct := OrdinalVtxInvF n ∘F θ ∘F OrdinalVtxF m
   |}.
 Next Obligation. exact tt. Defined.
 
@@ -149,7 +149,7 @@ Global Instance ordinal_vertex_map_proper {m n : nat}
 Proof.
   intros θ φ H.
   apply (snd (vertex_ordinal_diagram_eq_iff n _ _)).
-  exact (fst (ordinal_functor_iso_iff θ φ) H).
+  exact (fst (ordinal_fct_iso_iff θ φ) H).
 Defined.
 
 (** Identity ordinal maps induce identity presentation maps. *)

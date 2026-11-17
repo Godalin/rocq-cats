@@ -125,5 +125,5 @@ Definition ConeExtendN {I J C : Cat} {Q : Fct I J}
 
 Definition generated_cone_nat_iso {J C : Cat}
     `{HG : !HasFiniteGen J} (D : Fct J C)
-  : Cone(-,D) ≅N Cone(-,D ∘F generator_functor)
+  : Cone(-,D) ≅N Cone(-,D ∘F generator_fct)
   := cone_reindex_nat_iso generator_full generator_essentially_surjective D.

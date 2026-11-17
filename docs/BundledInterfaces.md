@@ -37,6 +37,22 @@ equivalences. Both support self-membership at distinct universe instances.
 [结构范畴宇宙](./StructureUniverses.md)现已构造笛卡尔范畴组成的笛卡尔范畴，
 以及群胚和等价组成的群胚；两者均支持不同宇宙实例间的自身成员关系。
 
+The current local follow-up also makes `CartFct` and `CCCFct`
+complete records. Their unique parent projections are `CartFctToFct` and
+`CCCFctToCartFct`; `CartFctOfFct` and `CCCFctOfCartFct` are direct
+constructors. `CCCFctOfFct` retains the useful fixed-functor preservation
+presentation. `IsCartF` and `IsCCCF` remain classes. `functor_*` and
+`exponential_*` identifier segments now use `fct` and `exp`, with the exact
+map in [the naming guide](./Abbreviations.md). Historical class inventories
+below describe their dated baselines.
+
+当前本地后续还将 `CartFct`、`CCCFct` 改为完整记录。唯一父投影为
+`CartFctToFct`、`CCCFctToCartFct`，直接构造器为 `CartFctOfFct`、
+`CCCFctOfCartFct`；`CCCFctOfFct` 保留有实际用途的固定函子保持性呈现。
+`IsCartF`、`IsCCCF` 仍为类。标识符中的 `functor_*`、`exponential_*`
+词段现统一为 `fct`、`exp`，精确对照见[命名指南](./Abbreviations.md)。
+下方历史类清单仍描述其注明日期的基线。
+
 ## Pre-stable refactoring policy
 
 ## 稳定版前的重构政策
@@ -1783,8 +1799,8 @@ flowchart LR
   BinoidalCat -->|BinoidalC, computed| Cat
   StrongMonad -->|StrongMonadM| Monad
   Monad -->|MonadF| Fct
-  CCCFct -->|CCCF| CartFct
-  CartFct -->|CartF| Fct
+  CCCFct -->|CCCFctToCartFct| CartFct
+  CartFct -->|CartFctToFct| Fct
   Applicative -->|ApplicativeLax| LaxMonoidalFct
   LaxMonoidalFct -->|LaxMonoidalF| Fct
   ApplicativeOps -->|OpsF| Fct
@@ -3893,7 +3909,7 @@ show this intersection true on `f`. Quantification ranges over objects
 of the category, without testing only global points or adding a new
 power-object or existential-quantifier interface.
 
-Any containing predicate `q` has an existing `exponential_name q`.
+Any containing predicate `q` has an existing `exp_name q`.
 Its evaluation law shows that name factors through `ImagePredicates f`.
 Instantiating the intersection by this retained factor proves
 `image_predicate f ⊢Ω q`. Classifying the intersection gives `ToposImage f`;
@@ -3945,7 +3961,7 @@ Topos 之外，保留经候选单态射的因子及进入任意其他包含子�
 既有全称为真判据、代入律及积交换证明此交在 `f` 上为真。量化范围是范畴
 中的对象，不只测试全局点，也不增加幂对象或存在量词接口。
 
-每个包含谓词 `q` 都有既有名称 `exponential_name q`；其求值律证明名称经
+每个包含谓词 `q` 都有既有名称 `exp_name q`；其求值律证明名称经
 `ImagePredicates f` 分解。用此保留的因子实例化交，得到
 `image_predicate f ⊢Ω q`。分类此交得到 `ToposImage f`，分类还给出实际
 箭头 `topos_image_factor f`，与像包含的复合按指定 HomEq 等于 `f`。

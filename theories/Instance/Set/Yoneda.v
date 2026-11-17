@@ -106,7 +106,7 @@ Next Obligation.
 Qed.
 Next Obligation. intros g.
   assert (H : fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g).
-  { rewrite functor_comp. cato. }
+  { rewrite fct_comp. cato. }
   specialize (H x). cato.
 Qed.
 Next Obligation.
@@ -134,7 +134,7 @@ Defined.
 
 Theorem yoneda_func_func_inv {X : @Ob C} (x : F X)
   : yoneda_func (yoneda_func_inv x) ≈S x.
-Proof. exact (functor_id C SetCat F x). Defined.
+Proof. exact (fct_id C SetCat F x). Defined.
 
 (** Natural transformations can be larger than values of F. Lift both sets
     into a common ambient category without identifying their native sizes. *)
@@ -158,7 +158,7 @@ End Yoneda.
 
 (** Yoneda 求值与目标函子的自然变换交换。 *)
 
-Theorem yoneda_func_natural_functor {C : Cat} {F G : Fct C SetCat}
+Theorem yoneda_func_natural_fct {C : Cat} {F G : Fct C SetCat}
     {X : @Ob C}
     (β : F ⇒ G) (α : Hom(X,-) ⇒ F)
   : yoneda_func (β ∘Nv α) ≈S β X (yoneda_func α).
@@ -216,10 +216,10 @@ Program Definition presheaf_yoneda_inv_resp {X : @Ob C}
     |}
   |}.
 Next Obligation.
-  intros [f] [g] [H]. exact (functor_fmap_proper _ _ P _ _ H x).
+  intros [f] [g] [H]. exact (fct_fmap_proper _ _ P _ _ H x).
 Defined.
 Next Obligation.
-  intros [g]. exact (functor_comp _ _ P f g x).
+  intros [g]. exact (fct_comp _ _ P f g x).
 Defined.
 Next Obligation.
   intros x y H Y [f]. exact (@func_proper _ _ (fmap P f) x y H).
@@ -248,7 +248,7 @@ Defined.
 
 Lemma presheaf_yoneda_β {X : @Ob C} (x : P X)
   : presheaf_yoneda_resp (presheaf_yoneda_inv_resp x) ≈S x.
-Proof. exact (functor_id _ _ P x). Defined.
+Proof. exact (fct_id _ _ P x). Defined.
 
 (** Package the correspondence as an isomorphism at a common ambient size,
     keeping the native transformation and element universes independent. *)

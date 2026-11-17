@@ -86,10 +86,10 @@ Definition Right
 Program Definition Change
   : CartFctS Left Right
   :=
-  {|CartF := @IdF Left
-  ; cartesian_isCartF :=
-    {|functor_terminal := _
-    ; functor_product X Y := _
+  {|CartFctToFct := @IdF Left
+  ; isCartF :=
+    {|fct_terminal := _
+    ; fct_product X Y := _
     |}
   |}.
 Next Obligation.
@@ -125,7 +125,7 @@ Example mediator_arrow_computes
   : fmap ChangePair (X := false) (Y := true) tt = (tt,tt).
 Proof. reflexivity. Qed.
 
-Example terminal_functor_computes
+Example terminal_fct_computes
   : (@term CartCatCartCat (hasTerminal CartCatCartCat) Left) true = tt.
 Proof. reflexivity. Qed.
 

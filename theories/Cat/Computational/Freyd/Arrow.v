@@ -37,15 +37,15 @@ Program Definition FreydArrow
   {|ArrowF := FreydPureF F
   ; arrow_context X Y Z f := freyd_context F Z f
   ; arrow_context_proper X Y Z :=
-      @functor_fmap_proper D D (FreydContextF F Z) X Y
+      @fct_fmap_proper D D (FreydContextF F Z) X Y
   ; arrow_context_comp X Y W Z g f :=
-      @functor_comp D D (FreydContextF F Z) X Y W g f
+      @fct_comp D D (FreydContextF F Z) X Y W g f
   |}.
 Next Obligation.
   etransitivity; [exact (freyd_context_pure F Z f) |].
   pose proof (@cartesian_tensor_map C (@hasValueTerminal C K F) (@hasValueProduct C K F)
     Z Z X Y (@id Z) f) as H. symmetry in H.
-  exact (@functor_fmap_proper C K F _ _ _ _ H).
+  exact (@fct_fmap_proper C K F _ _ _ _ H).
 Defined.
 Next Obligation.
   pose proof (freyd_context_natural F f h) as H.

@@ -34,7 +34,7 @@ Lemma adj_kleisli_unadjunct_comp {X Y Z : @Ob C}
 Proof.
   change ((fmap U (adj_counit A (F Z)) ∘
     fmap U (fmap F f) ∘ g)^♭[A] ≈ f^♭[A] ∘ g^♭[A]).
-  rewrite <- functor_comp, <- (unadjunct_counit A f).
+  rewrite <- fct_comp, <- (unadjunct_counit A f).
   apply unadjunct_comp_l.
 Qed.
 
@@ -48,7 +48,7 @@ Program Definition AdjKleisliF
   :=
   {|F0 := F
   ; F1 X Y f := f^♭[A]
-  ; functor_fmap_proper X Y := unadjunct_proper A
+  ; fct_fmap_proper X Y := unadjunct_proper A
   |}.
 Next Obligation. exact (adj_β A (@id (F X))). Defined.
 

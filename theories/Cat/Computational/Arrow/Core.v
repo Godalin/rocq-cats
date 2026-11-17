@@ -138,7 +138,7 @@ Definition ComputationCat
 
 Lemma arrow_arr_id (X : @Ob C)
   : arr[A; @id X] ≈ id.
-Proof. apply functor_id. Qed.
+Proof. apply fct_id. Qed.
 
 (** Pure lifting preserves ordinary composition. *)
 
@@ -146,7 +146,7 @@ Proof. apply functor_id. Qed.
 
 Lemma arrow_arr_comp {X Y Z : @Ob C} (g : Hom Y Z) (f : Hom X Y)
   : arr[A; g ∘ f] ≈ arr[A; g] ∘ arr[A; f].
-Proof. apply functor_comp. Qed.
+Proof. apply fct_comp. Qed.
 
 (** Fixed-context extension is a functor on computations. *)
 
@@ -157,12 +157,12 @@ Program Definition ContextF (Z : @Ob C)
   :=
   {|F0 X := Z ⊗ X
   ; F1 X Y f := context[A; Z; f]
-  ; functor_fmap_proper X Y := arrow_context_proper A Z
+  ; fct_fmap_proper X Y := arrow_context_proper A Z
   |}.
 Next Obligation.
   change (context[A; Z; @id (A X)] ≈ id).
   rewrite <- (arrow_arr_id X), arrow_context_arr,
-    tensor_map_id, functor_id. reflexivity.
+    tensor_map_id, fct_id. reflexivity.
 Defined.
 Next Obligation. exact (arrow_context_comp A Z f g). Defined.
 

@@ -30,10 +30,10 @@ Program Definition TransportF
   |}.
 Next Obligation. intros f g H. rewrite H. reflexivity. Defined.
 Next Obligation.
-  rewrite functor_id, comp_id_r. exact (fst (e X).2.2).
+  rewrite fct_id, comp_id_r. exact (fst (e X).2.2).
 Defined.
 Next Obligation.
-  rewrite functor_comp, !comp_assoc.
+  rewrite fct_comp, !comp_assoc.
   rewrite <- (comp_assoc (e Y).1), (snd (e Y).2.2), comp_id_l.
   reflexivity.
 Defined.

@@ -212,7 +212,7 @@ Program Canonical fmap_resp {C D : Cat} (F : Fct C D) {X Y : @Ob C}
 
 (** 函子全忠实，当且仅当其指定 Hom 映射可逆。 *)
 
-Theorem functor_fully_faithful_iff_hom_iso {C D : Cat} (F : Fct C D)
+Theorem fct_fully_faithful_iff_hom_iso {C D : Cat} (F : Fct C D)
   : is_fully_faithful F ↔
       ∀ X Y, @is_iso SetCat _ _ (fmap_resp F (X := X) (Y := Y)).
 Proof. split.
@@ -246,7 +246,7 @@ Definition hom_iso {C : Cat} {X X' Y Y' : @Ob C}
   : HomSet X Y ≅[SetCat] HomSet X' Y'.
 Proof.
   refine (bi_comp i.1 j.1; _).
-  apply (@functor_is_iso (C^op ×C C) SetCat HomF
+  apply (@fct_is_iso (C^op ×C C) SetCat HomF
     (X, Y) (X', Y') (i.1, j.1)).
   exists (i.2.1, j.2.1). split; split;
     [exact (snd i.2.2) | exact (fst j.2.2) |

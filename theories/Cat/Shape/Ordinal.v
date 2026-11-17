@@ -114,7 +114,7 @@ Definition OrdinalF {n m : nat} (f : Ordinal n → Ordinal m)
 
 (** 每个有限序数函子都保持编号的算术顺序。 *)
 
-Definition ordinal_functor_monotone {n m : nat}
+Definition ordinal_fct_monotone {n m : nat}
     (F : Fct [Ord n] [Ord m]) (x y : Ordinal n)
     (H : fin_rank x ≤ fin_rank y)
   : fin_rank (F x) ≤ fin_rank (F y).
@@ -160,7 +160,7 @@ Next Obligation. exact tt. Defined.
 
 (** 编号相等提供可逆的自然比较。 *)
 
-Definition ordinal_functor_rank_iso {n m : nat}
+Definition ordinal_fct_rank_iso {n m : nat}
     (F G : Fct [Ord n] [Ord m])
     (H : ∀ x, fin_rank (F x) = fin_rank (G x))
   : F ≅N G.
@@ -175,13 +175,13 @@ Defined.
 
 (** 对于这些有限顺序，自然同构恰为位置上的逐点相等，不等同函子记录。 *)
 
-Definition ordinal_functor_iso_iff {n m : nat}
+Definition ordinal_fct_iso_iff {n m : nat}
     (F G : Fct [Ord n] [Ord m])
   : F ≅N G ↔ ∀ x, F x = G x.
 Proof.
   split.
   - intros [α Hα] x. exact (ordinal_iso_eq (α x; Hα x)).
-  - intros H. apply ordinal_functor_rank_iso. intros x. now rewrite H.
+  - intros H. apply ordinal_fct_rank_iso. intros x. now rewrite H.
 Defined.
 
 (** Rebuilding a functor from its monotone object map loses no information
@@ -190,10 +190,10 @@ Defined.
 (** 从保序对象映射重建函子，在自然同构下不丢失信息；不比较箭头映射或定律
     字段的原生相等。 *)
 
-Definition ordinal_functor_rebuild_iso {n m : nat}
+Definition ordinal_fct_rebuild_iso {n m : nat}
     (F : Fct [Ord n] [Ord m])
-  : OrdinalF F (ordinal_functor_monotone F) ≅N F.
-Proof. apply ordinal_functor_rank_iso. intros x. reflexivity. Defined.
+  : OrdinalF F (ordinal_fct_monotone F) ≅N F.
+Proof. apply ordinal_fct_rank_iso. intros x. reflexivity. Defined.
 
 (** The arrow between consecutive positions of a finite ordinal. *)
 
@@ -224,11 +224,11 @@ Proof.
       (β : ∀ i, Hom (P i) (Q i)) i (f : (@Hom [Ord m]) i i),
       β i ∘ fmap P f ≈ fmap Q f ∘ β i).
   { intros m P Q β i f.
-    rewrite (@functor_fmap_proper _ _ P i i f
+    rewrite (@fct_fmap_proper _ _ P i i f
       (@Cats.Cat.Core.id [Ord m] i) tt),
-      (@functor_fmap_proper _ _ Q i i f
+      (@fct_fmap_proper _ _ Q i i f
       (@Cats.Cat.Core.id [Ord m] i) tt),
-      !functor_id, comp_id_l, comp_id_r. reflexivity. }
+      !fct_id, comp_id_l, comp_id_r. reflexivity. }
   induction n as [|n IH] in F, G, α, H |- *.
   - intros [[] | []] [[] | []] f. apply Hid.
   - assert (Hnext : ∀ i j : Ordinal n,
@@ -244,9 +244,9 @@ Proof.
         fmap F (fmap Q (ordinal_step i)) ≈
         fmap G (fmap Q (ordinal_step i)) ∘
           α (fin_next (fin_weaken i))).
-      rewrite (@functor_fmap_proper _ _ F _ _
+      rewrite (@fct_fmap_proper _ _ F _ _
         (fmap Q (ordinal_step i)) (ordinal_step (fin_next i)) tt),
-        (@functor_fmap_proper _ _ G _ _
+        (@fct_fmap_proper _ _ G _ _
         (fmap Q (ordinal_step i)) (ordinal_step (fin_next i)) tt).
       exact (H (fin_next i)). }
     intros [[] | i] [[] | j] f.
@@ -256,8 +256,8 @@ Proof.
       transitivity (α (fin_next j) ∘ (fmap F b ∘ fmap F a)).
       * apply comp_proper; [reflexivity |].
         transitivity (fmap F (b ∘ a)).
-        -- apply functor_fmap_proper. exact tt.
-        -- exact (@functor_comp _ _ F _ _ _ b a).
+        -- apply fct_fmap_proper. exact tt.
+        -- exact (@fct_comp _ _ F _ _ _ b a).
       * transitivity ((α (fin_next j) ∘ fmap F b) ∘ fmap F a).
         { symmetry. apply comp_assoc. }
         transitivity ((fmap G b ∘ α (fin_next fin_first)) ∘ fmap F a).
@@ -270,10 +270,10 @@ Proof.
         { symmetry. apply comp_assoc. }
         apply comp_proper; [|reflexivity]. symmetry.
         transitivity (fmap G (b ∘ a)).
-        -- apply functor_fmap_proper. exact tt.
-        -- exact (@functor_comp _ _ G _ _ _ b a).
+        -- apply fct_fmap_proper. exact tt.
+        -- exact (@fct_comp _ _ G _ _ _ b a).
     + destruct f.
-    + rewrite (@functor_fmap_proper _ _ F _ _ f (fmap Q f) tt),
-        (@functor_fmap_proper _ _ G _ _ f (fmap Q f) tt).
+    + rewrite (@fct_fmap_proper _ _ F _ _ f (fmap Q f) tt),
+        (@fct_fmap_proper _ _ G _ _ f (fmap Q f) tt).
       exact (Htail i j f).
 Defined.

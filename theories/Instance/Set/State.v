@@ -83,9 +83,9 @@ Program Definition StateF@{r e u p +} (R : SetC@{r e})
   :=
   {|F0 X := R →S (X ×S R)
   ; F1 X Y f := state_map f
-  ; functor_fmap_proper X Y := state_map_proper
-  ; functor_id X := state_map_id
-  ; functor_comp X Y Z f g := state_map_comp f g
+  ; fct_fmap_proper X Y := state_map_proper
+  ; fct_id X := state_map_id
+  ; fct_comp X Y Z f g := state_map_comp f g
   |}.
 
 (** Return a value without changing the state. *)

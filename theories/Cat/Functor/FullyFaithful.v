@@ -68,17 +68,17 @@ Program Definition FullyFaithfulInverseF
   :=
   {|F0 X := X
   ; F1 X Y f := fully_faithful_preimage f
-  ; functor_fmap_proper X Y := fully_faithful_preimage_proper
+  ; fct_fmap_proper X Y := fully_faithful_preimage_proper
   |}.
 Next Obligation.
   change (fully_faithful_preimage (@id (F X)) ≈ @id X).
   apply (snd H X X). rewrite fully_faithful_image_preimage.
-  symmetry. apply functor_id.
+  symmetry. apply fct_id.
 Defined.
 Next Obligation.
   change (fully_faithful_preimage (f ∘ g) ≈
     fully_faithful_preimage f ∘ fully_faithful_preimage g).
-  apply (snd H X Z). rewrite fully_faithful_image_preimage, functor_comp,
+  apply (snd H X Z). rewrite fully_faithful_image_preimage, fct_comp,
     !fully_faithful_image_preimage. reflexivity.
 Defined.
 

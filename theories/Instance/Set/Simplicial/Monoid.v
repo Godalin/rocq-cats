@@ -38,7 +38,7 @@ Defined.
 Next Obligation. intros xs. apply monoid_chain_sub_id. Defined.
 Next Obligation.
   intros xs. symmetry. apply monoid_chain_sub_comp;
-    apply ordinal_functor_monotone.
+    apply ordinal_fct_monotone.
 Defined.
 
 Notation "'Nₘ(' M ')'" := (MonoidNerve M) : ob_scope.

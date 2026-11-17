@@ -19,7 +19,7 @@ From Cats Require Import
 Definition gpd_fmap_iso {C D : Cat} `{HC : !IsGpd C}
     (F : Fct C D) {X Y : @Ob C} (f : Hom X Y)
   : is_iso (fmap F f)
-  := functor_is_iso F f (gpd_iso f).
+  := fct_is_iso F f (gpd_iso f).
 
 (** Functors between groupoids preserve the selected inverses up to hom
     equality; no compatibility of the inverse choices is assumed. *)
@@ -32,7 +32,7 @@ Lemma gpd_fmap_inv {C D : Cat}
   : fmap F f⁻¹ ≈ (fmap F f)⁻¹.
 Proof.
   apply gpd_inv_unique.
-  rewrite <- functor_comp, gpd_inv_l. apply functor_id.
+  rewrite <- fct_comp, gpd_inv_l. apply fct_id.
 Qed.
 
 (** Inversion is a contravariant functor, not an endofunctor with the same
@@ -65,7 +65,7 @@ Program Definition fully_faithful_IsGpd {C D : Cat}
   : C ⦂ Gpd
   :=
   {|gpd_iso X Y f :=
-      functor_reflects_iso F HF f (gpd_iso _)
+      fct_reflects_iso F HF f (gpd_iso _)
   |}.
 
 (** A functor category with groupoid target is a groupoid. Inverses are the
@@ -93,7 +93,7 @@ Program Definition retract_IsGpd {C D : Cat}
   {|gpd_iso X Y f := _
   |}.
 Next Obligation.
-  pose (H := functor_is_iso G (fmap F f) (gpd_iso (fmap F f))).
+  pose (H := fct_is_iso G (fmap F f) (gpd_iso (fmap F f))).
   pose (K := is_iso_comp H (α.2 Y)).
   pose (L := is_iso_comp (iso_symm (α.1 X; α.2 X)).2 K).
   refine (is_iso_equiv _ L).

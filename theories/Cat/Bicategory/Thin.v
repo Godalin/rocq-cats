@@ -122,7 +122,7 @@ Program Definition FromThinHomotopyF (C : Cat)
   :=
   {|F0 X := X
   ; F1 X Y f := f
-  ; functor_fmap_proper X Y f g H := fst (thin_hom_iso_eq (C := C) f g) H
+  ; fct_fmap_proper X Y f g H := fst (thin_hom_iso_eq (C := C) f g) H
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -136,7 +136,7 @@ Program Definition ToThinHomotopyF (C : Cat)
   :=
   {|F0 X := X
   ; F1 X Y f := f
-  ; functor_fmap_proper X Y f g H := snd (thin_hom_iso_eq (C := C) f g) H
+  ; fct_fmap_proper X Y f g H := snd (thin_hom_iso_eq (C := C) f g) H
   |}.
 Next Obligation. apply (snd (thin_hom_iso_eq (C := C) _ _)). reflexivity. Defined.
 Next Obligation. apply (snd (thin_hom_iso_eq (C := C) _ _)). reflexivity. Defined.

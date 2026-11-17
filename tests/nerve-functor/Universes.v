@@ -29,7 +29,7 @@ Constraint u < p.
 
 (** 值相等严格低于载体，且原生 Hom 相等也低于其原生箭头载体。 *)
 
-Definition low_eq_nerve_functor
+Definition low_eq_nerve_fct
   : Fct
       VtxPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
@@ -39,7 +39,7 @@ Definition low_eq_nerve_functor
 
 (** 同一源也支持严格高于值载体的相等。 *)
 
-Definition high_eq_nerve_functor
+Definition high_eq_nerve_fct
   : Fct
       VtxPresentationCat@{o e o h e l h e _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u p _ _ _ _ _})
@@ -49,7 +49,7 @@ Definition high_eq_nerve_functor
 
 (** 反转两个原生载体／相等大小配置。 *)
 
-Definition reverse_native_nerve_functor
+Definition reverse_native_nerve_fct
   : Fct
       VtxPresentationCat@{e o e h o l o o _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
@@ -60,15 +60,15 @@ Definition reverse_native_nerve_functor
 (** 全忠实性保留全部这些独立大小。 *)
 
 Definition low_eq_fully_faithful
-  : is_fully_faithful low_eq_nerve_functor
+  : is_fully_faithful low_eq_nerve_fct
   := vertex_nerve_fully_faithful.
 
 Definition high_eq_fully_faithful
-  : is_fully_faithful high_eq_nerve_functor
+  : is_fully_faithful high_eq_nerve_fct
   := vertex_nerve_fully_faithful.
 
 Definition reverse_native_fully_faithful
-  : is_fully_faithful reverse_native_nerve_functor
+  : is_fully_faithful reverse_native_nerve_fct
   := vertex_nerve_fully_faithful.
 
 (** Repack action laws from strictly larger auxiliary bounds, including

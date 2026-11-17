@@ -45,15 +45,15 @@ Next Obligation.
     second[A; arr[A; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))]; Y] ∘
       (arr[A; (@product_assoc C HP Y X Z).1] ∘
         first[A; arr[A; (⟨π2, π1⟩ : Hom (X × Y) (Y × X))]; Z])).
-  rewrite arrow_second_arr, arrow_first_arr, <- !functor_comp.
-  apply functor_fmap_proper.
+  rewrite arrow_second_arr, arrow_first_arr, <- !fct_comp.
+  apply fct_fmap_proper.
   exact (@premonoidal_symmetry_hexagon C
     (@CartSymmetricPremonoidal C HT HP) X Y Z).
 Defined.
 Next Obligation.
   change (arr[A; (π2 : Hom (1 × X) X)] ∘ arr[A; ⟨π2, π1⟩] ≈
     arr[A; (π1 : Hom (X × 1) X)]).
-  rewrite <- functor_comp. apply functor_fmap_proper.
+  rewrite <- fct_comp. apply fct_fmap_proper.
   exact (@premonoidal_symmetry_unit C
     (@CartSymmetricPremonoidal C HT HP) X).
 Defined.

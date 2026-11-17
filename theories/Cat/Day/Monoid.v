@@ -59,7 +59,7 @@ Definition DayUnitExtendN (e : F I)
 
 Lemma day_unit_value_extend (e : F I)
   : day_unit_value (DayUnitExtendN e) ≈S e.
-Proof. exact (@functor_id C SetCat F I e). Defined.
+Proof. exact (@fct_id C SetCat F I e). Defined.
 
 (** Reindex the same components along the double opposite for Yoneda. *)
 

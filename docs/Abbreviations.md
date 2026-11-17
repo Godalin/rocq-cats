@@ -103,6 +103,7 @@ the implemented batch have migrated; the remaining families are tracked below.
 | Functor / 函子 | `Fct` | `F` remains the construction suffix / 构造后缀仍用 `F` |
 | Functor category / 函子范畴 | `FctCat` | Distinct from the functor type / 区别于函子类型 |
 | Natural transformation and isomorphism / 自然变换及同构 | `Nat`, `NatIso` | Retain suffix `N` / 保留 `N` 后缀 |
+| Comparison / 比较 | `cmp` | Reviewed exponential-comparison identifiers; module paths and prose stay unchanged / 已审阅指数比较标识符；模块路径及正文不变 |
 | Universe / 宇宙 | `Univ` | Generic term; complete structure names specify object and result kinds / 通用术语；完整结构名称注明对象及结果种类 |
 | Adjunction / 伴随 | `Adj` | Retain notation `⊣` / 保留记号 |
 | Cartesian / 笛卡尔 | `Cart` | Retain the complete `CartesianCat` hierarchy / 完整结构层级另行审阅 |
@@ -145,9 +146,9 @@ renamed bundles and adjunctions have consistent direct clients.
 | `FreeFunctor` | `FreeFct` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
 | `FreeFunctorChoiceN` | `FreeFctChoiceN` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
 | `CartesianFunctor` | `CartFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `CartesianFunctorFromPreservation` | `CartFctFromPreservation` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CartesianFunctorFromPreservation` | `CartFctOfFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CCCFunctor` | `CCCFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `CCCFunctorFromPreservation` | `CCCFctFromPreservation` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFunctorFromPreservation` | `CCCFctOfFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `CCCFunctor_IsCCCF` | `CCCFct_IsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `LaxMonoidalFunctor` | `LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
 | `IdF_LaxMonoidalFunctor` | `IdF_LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
@@ -173,11 +174,11 @@ renamed bundles and adjunctions have consistent direct clients.
 | `IsCartesianF` | `IsCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `IdF_IsCartesianF` | `IdF_IsCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CompF_IsCartesianF` | `CompF_IsCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `CartesianF` | `CartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CartesianF` | `CartFctToFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `IdCartesianF` | `IdCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CompCartesianF` | `CompCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `cartesian_isCartesianF` | `cartesian_isCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `isCartesianF` | `isCartF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `cartesian_isCartesianF` | `isCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `isCartesianF` | `ccc_isCartF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `TypeInterpretF_IsCartesianF` | `TypeInterpretF_IsCartF` | [STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
 | `VertexNerveF_IsCartesianF` | `VtxNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
 | `ExponentialF_IsCartesianF` | `ExpF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
@@ -1418,7 +1419,7 @@ as a local checkpoint; no push or integration handoff is included.
 | `generator_adjunction_unit_iso` | `generator_adj_unit_iso` | [Cat/Diagram/Generator.v](../theories/Cat/Diagram/Generator.v) |
 | `high_eq_adjunction_hom` | `high_eq_adj_hom` | [tests/Universes.v](../tests/Universes.v) |
 | `high_eq_colimit_adjunction` | `high_eq_colimit_adj` | [tests/Universes.v](../tests/Universes.v) |
-| `high_eq_exponential_adjunction` | `high_eq_exponential_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_adjunction` | `high_eq_exp_adj` | [tests/Universes.v](../tests/Universes.v) |
 | `high_eq_limit_adjunction` | `high_eq_limit_adj` | [tests/Universes.v](../tests/Universes.v) |
 | `kleisli_adjunction_counit` | `kleisli_adj_counit` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
 | `kleisli_adjunction_triangle_l` | `kleisli_adj_triangle_l` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
@@ -1426,7 +1427,7 @@ as a local checkpoint; no push or integration handoff is included.
 | `kleisli_adjunction_unit` | `kleisli_adj_unit` | [Cat/Monad/KleisliAdjunction.v](../theories/Cat/Monad/KleisliAdjunction.v) |
 | `low_eq_adjunction_hom` | `low_eq_adj_hom` | [tests/Universes.v](../tests/Universes.v) |
 | `low_eq_colimit_adjunction` | `low_eq_colimit_adj` | [tests/Universes.v](../tests/Universes.v) |
-| `low_eq_exponential_adjunction` | `low_eq_exponential_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_adjunction` | `low_eq_exp_adj` | [tests/Universes.v](../tests/Universes.v) |
 | `low_eq_limit_adjunction` | `low_eq_limit_adj` | [tests/Universes.v](../tests/Universes.v) |
 | `mixed_adjunction_comp` | `mixed_adj_comp` | [tests/Universes.v](../tests/Universes.v) |
 | `mixed_free_adjunction` | `mixed_free_adj` | [tests/Universes.v](../tests/Universes.v) |
@@ -1596,6 +1597,373 @@ and `F` suffix. No alternative spelling or extra notation is introduced.
 `CCCCat` 由 `CCC` 与 `Cat` 组合，开头为四个 C；忘却函子采用主体前缀及
 `F` 后缀。不引入其他拼写或额外记号。
 
+## Cartesian/CCC functor records and fct/exp names
+
+## 笛卡尔／CCC 函子记录及 fct/exp 名称
+
+This local follow-up starts at `8aa3506`. `CartFct` and `CCCFct` are
+complete `Record` objects, with one stored parent each:
+`CCCFctToCartFct :> CartFct` and `CartFctToFct :> Fct`.
+`CartFctOfFct` is now the direct record constructor, replacing the old
+preservation adapter. `CCCFctOfCartFct` directly extends a supplied cartesian
+functor; `CCCFctOfFct` packages fixed-functor `IsCCCF` evidence. The two
+presentations share their selected cartesian witnesses by conversion.
+`IsCartF` and `IsCCCF` remain fixed-functor property classes. Complete
+structured functors are supplied explicitly, not selected by importing models.
+
+这个本地后续从 `8aa3506` 开始。`CartFct` 与 `CCCFct` 是完整 `Record`
+对象，各保存唯一父结构：`CCCFctToCartFct :> CartFct` 及
+`CartFctToFct :> Fct`。`CartFctOfFct` 现为直接记录构造器，替代旧保持性
+适配器；`CCCFctOfCartFct` 直接扩充给定笛卡尔函子，`CCCFctOfFct` 则打包
+固定函子的 `IsCCCF` 证据。两种呈现通过定义相等共享选定笛卡尔见证。
+`IsCartF`、`IsCCCF` 继续作为固定函子上的性质类；完整保结构函子须显式给出，
+不由模型导入自动选取。
+
+The exact six structural renames and 228 fct/exp identifier renames are
+listed below, including actual test clients and local helpers. Replace
+snake-case `functor` and `exponential` segments by `fct` and `exp`.
+Use `cmp` for the reviewed exponential-comparison family, `fmap` for arrow
+maps, `F` for concrete functor
+suffixes, `HasExponential` and `hasExponential` for the existing choice
+interface/field, and all module paths. Ordinary English prose and unreviewed
+compound families such as `bifunctor_*` remain unchanged. No compatibility
+aliases are introduced. The `isCartF` old-name row refers to the projection
+in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
+
+下表列出六项结构重命名及 228 项 fct/exp 精确标识符迁移，含实际测试客户端及
+局部辅助名称。将蛇形名称中的 `functor`、`exponential` 词段统一为 `fct`、
+`exp`，已审阅指数比较族使用 `cmp`，保留箭头作用的 `fmap`、具体函子的 `F` 后缀、
+已有选择接口／字段 `HasExponential`、`hasExponential` 及全部模块路径。
+普通英文及未经审阅的 `bifunctor_*` 等复合词族不变，不引入兼容别名。
+旧名 `isCartF` 一行指 `Cat.CCC.Functor` 中的投影；新 `isCartF` 字段则属于
+`CartFct`。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
+| --- | --- | --- |
+| `CartF` | `CartFctToFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CCCF` | `CCCFctToCartFct` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `cartesian_isCartF` | `isCartF` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `isCartF` | `ccc_isCartF` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CartFctFromPreservation` | `CartFctOfFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CCCFctFromPreservation` | `CCCFctOfFct` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `boolean_vertex_functor_round_trip` | `boolean_vertex_fct_round_trip` | [theories/Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
+| `bundled_ccc_exponential_inverse_computes` | `bundled_ccc_exp_inverse_computes` | [tests/Computations.v](../tests/Computations.v) |
+| `bundled_functor_curry` | `bundled_fct_curry` | [tests/Interfaces.v](../tests/Interfaces.v) |
+| `cartesian_exponential_computes` | `cartesian_exp_computes` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `ccc_functor_exponential` | `ccc_fct_exp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `comparison_unit_exponential_law` | `comparison_unit_exp_law` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `composition_empty_exponential_law` | `composition_empty_exp_law` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
+| `composition_readers_exponential_law` | `composition_readers_exp_law` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
+| `ctx_exponential` | `ctx_exp` | [theories/STLC/Exponential.v](../theories/STLC/Exponential.v) |
+| `discrete_functor_nat_iso` | `discrete_fct_nat_iso` | [theories/Cat/Diagram/Discrete.v](../theories/Cat/Diagram/Discrete.v) |
+| `empty_constant_exponential_comparison` | `empty_constant_exp_cmp` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `exponential_adjunct` | `exp_adjunct` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_app_comp` | `exp_app_comp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_app_dimap` | `exp_app_dimap` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_app_proper` | `exp_app_proper` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_app_β` | `exp_app_β` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_app_η` | `exp_app_η` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_binary_apply` | `exp_binary_apply` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_comp` | `exp_comp` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comp_app` | `exp_comp_app` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comp_assoc` | `exp_comp_assoc` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comp_id_l` | `exp_comp_id_l` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comp_id_r` | `exp_comp_id_r` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comp_proper` | `exp_comp_proper` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comp_sub` | `exp_comp_sub` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_comparison_large_equality` | `exp_cmp_large_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `exponential_comparison_small_equality` | `exp_cmp_small_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `exponential_curry_comp_l` | `exp_curry_comp_l` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_comp_r` | `exp_curry_comp_r` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_dimap` | `exp_curry_dimap` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_curry_eq_iff` | `exp_curry_eq_iff` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_eval` | `exp_curry_eval` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_iff` | `exp_curry_iff` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_proper` | `exp_curry_proper` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_resp` | `exp_curry_resp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_curry_twice` | `exp_curry_twice` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_curry_twice_proper` | `exp_curry_twice_proper` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_curry_twice_β` | `exp_curry_twice_β` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_curry_twice_η` | `exp_curry_twice_η` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_curry_unique` | `exp_curry_unique` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_dimap` | `exp_dimap` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_dimap_comp` | `exp_dimap_comp` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_dimap_eval` | `exp_dimap_eval` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_dimap_id` | `exp_dimap_id` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_dimap_id_r` | `exp_dimap_id_r` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_dimap_proper` | `exp_dimap_proper` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_eval_equiv` | `exp_eval_equiv` | [theories/Cat/Exponential/Transport.v](../theories/Cat/Exponential/Transport.v) |
+| `exponential_expand` | `exp_expand` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_expand_comp` | `exp_expand_comp` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_expand_proper` | `exp_expand_proper` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_expand_resp` | `exp_expand_resp` | [theories/Instance/Set/ExponentialHom.v](../theories/Instance/Set/ExponentialHom.v) |
+| `exponential_ext` | `exp_ext` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_ext_iso` | `exp_ext_iso` | [theories/Cat/Exponential/Transport.v](../theories/Cat/Exponential/Transport.v) |
+| `exponential_fixed_nat_iso` | `exp_fixed_nat_iso` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_flatten` | `exp_flatten` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_flatten_comp` | `exp_flatten_comp` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_flatten_map` | `exp_flatten_map` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_flatten_proper` | `exp_flatten_proper` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_flatten_resp` | `exp_flatten_resp` | [theories/Instance/Set/ExponentialHom.v](../theories/Instance/Set/ExponentialHom.v) |
+| `exponential_flatten_β` | `exp_flatten_β` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_flatten_η` | `exp_flatten_η` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_hom_iso` | `exp_hom_iso` | [theories/Instance/Set/ExponentialHom.v](../theories/Instance/Set/ExponentialHom.v) |
+| `exponential_hom_nat_iso` | `exp_hom_nat_iso` | [theories/Instance/Set/ExponentialHom.v](../theories/Instance/Set/ExponentialHom.v) |
+| `exponential_id` | `exp_id` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_id_app` | `exp_id_app` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_id_comp` | `exp_id_comp` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
+| `exponential_iso` | `exp_iso` | [theories/Cat/Exponential/Transport.v](../theories/Cat/Exponential/Transport.v) |
+| `exponential_iso_eval` | `exp_iso_eval` | [theories/Cat/Exponential/Transport.v](../theories/Cat/Exponential/Transport.v) |
+| `exponential_iterated_comp` | `exp_iterated_comp` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_iterated_curry` | `exp_iterated_curry` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_iterated_hom_iso` | `exp_iterated_hom_iso` | [theories/Instance/Set/ExponentialHom.v](../theories/Instance/Set/ExponentialHom.v) |
+| `exponential_iterated_iso` | `exp_iterated_iso` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_iterated_nat_iso` | `exp_iterated_nat_iso` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_map` | `exp_map` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_map_comp` | `exp_map_comp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_map_id` | `exp_map_id` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_map_proper` | `exp_map_proper` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_name` | `exp_name` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_name_app` | `exp_name_app` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_name_id` | `exp_name_id` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_name_proper` | `exp_name_proper` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_preserves_equalizer` | `exp_preserves_equalizer` | [theories/Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `exponential_preserves_limit` | `exp_preserves_limit` | [theories/Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `exponential_preserves_product` | `exp_preserves_product` | [theories/Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `exponential_preserves_pullback` | `exp_preserves_pullback` | [theories/Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `exponential_preserves_terminal` | `exp_preserves_terminal` | [theories/Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
+| `exponential_product_app` | `exp_product_app` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_curry` | `exp_product_curry` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_eval` | `exp_product_eval` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_inv_curry` | `exp_product_inv_curry` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_iso` | `exp_product_iso` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_nat_iso` | `exp_product_nat_iso` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_natural` | `exp_product_natural` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_β1` | `exp_product_β1` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_product_β2` | `exp_product_β2` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_terminal_iso` | `exp_terminal_iso` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_transport` | `exp_transport` | [theories/Cat/Exponential/Transport.v](../theories/Cat/Exponential/Transport.v) |
+| `exponential_unadjunct` | `exp_unadjunct` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_app` | `exp_uncurry_app` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_comp_l` | `exp_uncurry_comp_l` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_comp_r` | `exp_uncurry_comp_r` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_dimap` | `exp_uncurry_dimap` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
+| `exponential_uncurry_eq_iff` | `exp_uncurry_eq_iff` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_proper` | `exp_uncurry_proper` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_resp` | `exp_uncurry_resp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_uncurry_twice` | `exp_uncurry_twice` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_uncurry_twice_comp` | `exp_uncurry_twice_comp` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_uncurry_twice_ext` | `exp_uncurry_twice_ext` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_uncurry_twice_proper` | `exp_uncurry_twice_proper` | [theories/Cat/Exponential/Currying.v](../theories/Cat/Exponential/Currying.v) |
+| `exponential_unit_eval` | `exp_unit_eval` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_unit_eval_curry` | `exp_unit_eval_curry` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_unit_iso` | `exp_unit_iso` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_unit_name` | `exp_unit_name` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_unit_nat_iso` | `exp_unit_nat_iso` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_unit_natural` | `exp_unit_natural` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_unit_product` | `exp_unit_product` | [theories/Cat/Exponential/Laws.v](../theories/Cat/Exponential/Laws.v) |
+| `exponential_unit_then` | `exp_unit_then` | [theories/Cat/Exponential/Context.v](../theories/Cat/Exponential/Context.v) |
+| `exponential_universal` | `exp_universal` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_β` | `exp_β` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `exponential_η` | `exp_η` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `forward_vertex_functor_set` | `forward_vertex_fct_set` | [tests/Universes.v](../tests/Universes.v) |
+| `free_functor_choice_iso` | `free_fct_choice_iso` | [theories/Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
+| `free_functor_unit` | `free_fct_unit` | [theories/Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
+| `functor_comp` | `fct_comp` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_curry` | `fct_curry` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `functor_eval` | `fct_eval` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `functor_exponential` | `fct_exp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `functor_exponential_comparison` | `fct_exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `functor_exponential_comparison_comp` | `fct_exp_cmp_comp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `functor_fmap_proper` | `fct_fmap_proper` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_fully_faithful_iff_hom_iso` | `fct_fully_faithful_iff_hom_iso` | [theories/Instance/Set/Hom.v](../theories/Instance/Set/Hom.v) |
+| `functor_id` | `fct_id` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_is_iso` | `fct_is_iso` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_op_essentially_surjective` | `fct_op_essentially_surjective` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_op_full` | `fct_op_full` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_pair` | `fct_pair` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_postcomp_proper` | `fct_postcomp_proper` | [theories/Instance/Set/Functor.v](../theories/Instance/Set/Functor.v) |
+| `functor_postcomp_resp` | `fct_postcomp_resp` | [theories/Instance/Set/Functor.v](../theories/Instance/Set/Functor.v) |
+| `functor_precomp_proper` | `fct_precomp_proper` | [theories/Instance/Set/Functor.v](../theories/Instance/Set/Functor.v) |
+| `functor_precomp_resp` | `fct_precomp_resp` | [theories/Instance/Set/Functor.v](../theories/Instance/Set/Functor.v) |
+| `functor_product` | `fct_product` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_product_inv` | `fct_product_inv` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_product_inv_comp` | `fct_product_inv_comp` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_product_inv_natural` | `fct_product_inv_natural` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_product_inv_β` | `fct_product_inv_β` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_product_iso` | `fct_product_iso` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `functor_reflects_iso` | `fct_reflects_iso` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_terminal` | `fct_terminal` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `generator_functor` | `generator_fct` | [theories/Cat/Shape/Finite.v](../theories/Cat/Shape/Finite.v) |
+| `gluing_exponential_base` | `gluing_exp_base` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
+| `gluing_exponential_base_eval` | `gluing_exp_base_eval` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
+| `gluing_exponential_large_equality` | `gluing_exp_large_equality` | [tests/GluingExponential.v](../tests/GluingExponential.v) |
+| `gluing_exponential_result` | `gluing_exp_result` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
+| `gluing_exponential_small_equality` | `gluing_exp_small_equality` | [tests/GluingExponential.v](../tests/GluingExponential.v) |
+| `gluing_exponential_unique` | `gluing_exp_unique` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
+| `gluing_exponential_universal` | `gluing_exp_universal` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
+| `gluing_exponential_β` | `gluing_exp_β` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
+| `high_eq_bundled_closed_functor` | `high_eq_bundled_closed_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_contravariant_exponential` | `high_eq_contravariant_exp` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_adj` | `high_eq_exp_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_bifunctor` | `high_eq_exp_bifunctor` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_hom` | `high_eq_exp_hom` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_laws` | `high_eq_exp_laws` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_limit` | `high_eq_exp_limit` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_exponential_nat` | `high_eq_exp_nat` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_family_functor` | `high_eq_family_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_fixed_exponential` | `high_eq_fixed_exp` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_lax_monoid_functor` | `high_eq_lax_monoid_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_limit_functor` | `high_eq_limit_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_nerve_functor` | `high_eq_nerve_fct` | [tests/nerve-functor/Universes.v](../tests/nerve-functor/Universes.v) |
+| `high_eq_vertex_functor_inverse` | `high_eq_vertex_fct_inverse` | [tests/Universes.v](../tests/Universes.v) |
+| `high_eq_vertex_functor_map` | `high_eq_vertex_fct_map` | [tests/Universes.v](../tests/Universes.v) |
+| `id_functor_product_inv` | `id_fct_product_inv` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `independent_exponential_boundary` | `independent_exp_boundary` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `independent_exponential_comp` | `independent_exp_comp` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
+| `independent_exponential_natural` | `independent_exp_natural` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `is_exponential` | `is_exp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
+| `low_eq_bundled_closed_functor` | `low_eq_bundled_closed_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_contravariant_exponential` | `low_eq_contravariant_exp` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_adj` | `low_eq_exp_adj` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_bifunctor` | `low_eq_exp_bifunctor` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_hom` | `low_eq_exp_hom` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_laws` | `low_eq_exp_laws` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_limit` | `low_eq_exp_limit` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_exponential_nat` | `low_eq_exp_nat` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_family_functor` | `low_eq_family_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_fixed_exponential` | `low_eq_fixed_exp` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_functor_groupoid` | `low_eq_fct_groupoid` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_groupoid_inverse_functor` | `low_eq_groupoid_inverse_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_lax_monoid_functor` | `low_eq_lax_monoid_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_limit_functor` | `low_eq_limit_fct` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_nerve_functor` | `low_eq_nerve_fct` | [tests/nerve-functor/Universes.v](../tests/nerve-functor/Universes.v) |
+| `low_eq_vertex_functor_inverse` | `low_eq_vertex_fct_inverse` | [tests/Universes.v](../tests/Universes.v) |
+| `low_eq_vertex_functor_map` | `low_eq_vertex_fct_map` | [tests/Universes.v](../tests/Universes.v) |
+| `naturality_does_not_imply_exponential_preservation` | `naturality_does_not_imply_exp_preservation` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `ordinal_functor_iso_iff` | `ordinal_fct_iso_iff` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
+| `ordinal_functor_monotone` | `ordinal_fct_monotone` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
+| `ordinal_functor_rank_iso` | `ordinal_fct_rank_iso` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
+| `ordinal_functor_rebuild_iso` | `ordinal_fct_rebuild_iso` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
+| `preserved_exponential_boundary` | `exp_cmp_boundary` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
+| `preserved_exponential_comparison` | `exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `preserved_exponential_comparison_comp` | `exp_cmp_comp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `preserved_exponential_computes` | `preserved_exp_computes` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `preserved_exponential_natural` | `exp_cmp_natural` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
+| `psh_exponential_unique` | `psh_exp_unique` | [theories/Instance/Set/PresheafExponential.v](../theories/Instance/Set/PresheafExponential.v) |
+| `psh_exponential_universal` | `psh_exp_universal` | [theories/Instance/Set/PresheafExponential.v](../theories/Instance/Set/PresheafExponential.v) |
+| `psh_exponential_β` | `psh_exp_β` | [theories/Instance/Set/PresheafExponential.v](../theories/Instance/Set/PresheafExponential.v) |
+| `reverse_native_nerve_functor` | `reverse_native_nerve_fct` | [tests/nerve-functor/Universes.v](../tests/nerve-functor/Universes.v) |
+| `reverse_vertex_functor_inverse` | `reverse_vertex_fct_inverse` | [tests/Universes.v](../tests/Universes.v) |
+| `reverse_vertex_functor_set` | `reverse_vertex_fct_set` | [tests/Universes.v](../tests/Universes.v) |
+| `reversed_exponential_boundary` | `reversed_exp_boundary` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `reversed_exponential_comp` | `reversed_exp_comp` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
+| `reversed_exponential_natural` | `reversed_exp_natural` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `singleton_exponential` | `singleton_exp` | [theories/STLC/Exponential.v](../theories/STLC/Exponential.v) |
+| `terminal_functor_computes` | `terminal_fct_computes` | [tests/StructureUniverses.v](../tests/StructureUniverses.v) |
+| `type_exponential` | `type_exp` | [theories/STLC/TypeCategory.v](../theories/STLC/TypeCategory.v) |
+| `type_functor_exponential_ext` | `type_fct_exp_ext` | [theories/STLC/Free.v](../theories/STLC/Free.v) |
+| `type_interp_exponential_comparison` | `type_interp_exp_cmp` | [theories/STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
+| `unchosen_set_cartesian_functor` | `unchosen_set_cartesian_fct` | [tests/Interfaces.v](../tests/Interfaces.v) |
+| `unchosen_set_ccc_functor` | `unchosen_set_ccc_fct` | [tests/Interfaces.v](../tests/Interfaces.v) |
+| `vertex_functor` | `vertex_fct` | [theories/Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `vertex_functor_iso` | `vertex_fct_iso` | [theories/Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `vertex_functor_ob_proper` | `vertex_fct_ob_proper` | [theories/Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `vertex_functor_ob_resp` | `vertex_fct_ob_resp` | [theories/Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `vertex_functor_reconstruction_computes` | `vertex_fct_reconstruction_computes` | [tests/Computations.v](../tests/Computations.v) |
+| `vertex_functor_transport` | `vertex_fct_transport` | [theories/Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `vertex_functor_transport_witness` | `vertex_fct_transport_witness` | [theories/Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
+| `yoneda_func_natural_functor` | `yoneda_func_natural_fct` | [theories/Instance/Set/Yoneda.v](../theories/Instance/Set/Yoneda.v) |
+
+The record/naming checkpoint passed all 612 theory and 175 test modules with
+`opam exec --switch=rocq-cats -- dune build -j 2 @check-library @check-tests`
+(Rocq 9.3.0, Stdlib 9.2.0, Dune 3.23.1). Sixteen temporary assumption
+reports are closed. Conversion checks retain constructor parents, selected
+cartesian evidence and exponential inverses. The concise `1`, product and
+projection notation still uses the supplied terminal/product choices, even
+with alternative choices in scope. Both strict hom/equality size orders and
+larger auxiliary functor bounds pass. Two explicit `CCCFct` universe instances
+follow its newly inferred parameter order; they retain the strict bounds.
+Source auditing separates exact identifier substitutions from the
+record/notation/local-scope changes and explicit universe-instance updates;
+a concurrent layout-only edit is preserved. No retired source identifiers remain. This batch is a local review checkpoint;
+HTML/PDF export and installation are outside this validation.
+
+记录／命名检查点以 Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1 执行
+`opam exec --switch=rocq-cats -- dune build -j 2 @check-library @check-tests`，
+全部 612 个理论及 175 个测试模块通过，十六项临时假设报告闭合。转换检查保留
+构造器父结构、选定笛卡尔证据及指数逆；即使环境中存在其他选择，简洁的 `1`、
+积及投影记号仍使用给定终对象／积选择。Hom 与相等大小的两种严格次序及更大
+函子辅助界均通过。两处显式 `CCCFct` 宇宙实例按新推断的参数次序调整，保留
+原严格大小界。源码审计区分精确标识符替换与记录／
+记号／局部作用域及宇宙实例调整，并保留同时发生的纯排版修改；源码中没有遗留退役标识符。本批作为本地审阅检查点保留，
+HTML／PDF 导出及安装不在此次验证范围内。
+
+The subsequent local-scope cleanup removes 29 `%ob` delimiters across
+`Cat.Functor.Cartesian`, `ProductPreservation`, `ExponentialComparison` and
+`Cat.CCC.Functor`. Eight public signatures and their universe constraints
+are identical after excluding declaration locations. Temporary clients check
+import isolation and mixed object/morphism product notation; the sixteen
+choice, inverse and strict-universe reports were rechecked and are closed.
+Affected modules and `Interfaces`, `Computations`, `Universes`, `CCCCategory`
+and `StructureUniverses` regressions pass. The preserved `Uncurry.v`
+layout edit and its universe client were also checked. This notation-only
+step reuses the
+preceding full-library/test result; it does not repeat the entire build.
+
+后续局部作用域整理在 `Cat.Functor.Cartesian`、`ProductPreservation`、
+`ExponentialComparison`、`Cat.CCC.Functor` 中去掉 29 处 `%ob`。排除声明
+位置后，八个公开签名及宇宙约束完全一致。临时客户端验证导入隔离及对象／态射
+积混合记号；十六项选择、逆及严格宇宙报告复验闭合。受影响模块及
+`Interfaces`、`Computations`、`Universes`、`CCCCategory`、
+`StructureUniverses` 回归通过，另补验保留的 `Uncurry.v` 排版调整及其宇宙
+客户端。本次纯记号调整复用此前全库／测试结果，
+不重复整库构建。
+
+## Exponential comparison maps: cmp / 指数比较映射：cmp
+
+The user now selects `cmp` for comparison identifiers. The general map is
+`exp_cmp`; its laws form the `exp_cmp_*` family. `fct_exp_cmp` is the
+transparent adapter for `IsCartF`. Both retain their existing hypotheses,
+universe independence and computational witnesses. This bounded follow-up
+renames the twelve exact identifiers below, with no compatibility aliases.
+Module paths, ordinary English and other comparison families are unchanged.
+The earlier fct/exp table's targets are updated to these final names.
+
+用户现选择 `cmp` 作为比较标识符词根。通用映射为 `exp_cmp`，定律使用
+`exp_cmp_*` 词族；`fct_exp_cmp` 是 `IsCartF` 接口的透明适配。两者保留原有
+假设、宇宙独立性及计算见证。本次有界后续迁移下列十二项精确标识符，
+不保留兼容别名；模块路径、普通英文及其他比较词族不变。此前 fct/exp 表的
+目标列同步更新为最终名称。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
+| --- | --- | --- |
+| `preserved_exp_comparison` | `exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `preserved_exp_comparison_comp` | `exp_cmp_comp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `preserved_eval` | `exp_cmp_eval` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `preserved_curry` | `exp_cmp_curry` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `preserved_exp_natural` | `exp_cmp_natural` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
+| `preserved_exp_boundary` | `exp_cmp_boundary` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
+| `fct_exp_comparison` | `fct_exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
+| `fct_exp_comparison_comp` | `fct_exp_cmp_comp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `empty_constant_exp_comparison` | `empty_constant_exp_cmp` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `exp_comparison_large_equality` | `exp_cmp_large_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `exp_comparison_small_equality` | `exp_cmp_small_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `type_interp_exp_comparison` | `type_interp_exp_cmp` | [theories/STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
+
+The cmp follow-up passes all fifteen concrete affected-module/regression
+build targets. All eleven modified Rocq files are exact identifier
+substitutions from the preceding worktree state. Eight public signatures
+and universe profiles are unchanged after renaming and excluding declaration
+locations; eight assumption reports are closed. No retired identifiers in
+this reviewed family remain in source. This step reuses the preceding broad
+validation, keeps user formatting and is retained as a local review checkpoint.
+
+cmp 后续通过全部十五个具体受影响模块／回归目标。十一份 Rocq 文件相对此前
+工作区均为精确标识符替换；重命名并排除声明位置后，八个公开签名及宇宙配置
+保持一致，八项假设报告闭合。源码中没有遗留本次审阅词族的退役标识符。
+本步复用此前广泛验证、保留用户排版，作为本地审阅检查点保留。
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.
@@ -1609,7 +1977,6 @@ work follows the separate user-authorized bundled-interface migration.
 | --- | --- | --- |
 | Optional names / 可选名称 | `IsStrictTwoCat → IsStrict2Cat`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
 | Complete hierarchies / 完整层级 | monoidal bundling / 幺半层级打包 | CartCat/CCC/Topos/ETCS record slice accepted locally / 笛卡尔至 ETCS 记录片段已本地验收 |
-| Remaining lowercase names / 剩余小写名称 | `exponential_* → exp_*`, including CCC preservation fields / 含 CCC 保持性字段 | Follow-up naming batch; not included in this checkpoint / 后续命名批次，不计入本检查点 |
 | Other notation / 其他记号 | Repository-wide reserved syntax beyond the algebra slice above / 上述代数片段以外的全库预留语法 | Separate review; no replay of #31 / 单独审阅，不重放 #31 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突

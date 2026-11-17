@@ -46,18 +46,18 @@ Next Obligation.
 Defined.
 Next Obligation.
   intros A. cbn. rewrite comp_id_l, comp_id_r,
-  functor_comp, comp_assoc.
+  fct_comp, comp_assoc.
 reflexivity.
 Defined.
 Next Obligation. intros A. cbn. carw. Defined.
 Next Obligation. intros A. cbn.
-  rewrite functor_id. carw.
+  rewrite fct_id. carw.
 Defined.
 Next Obligation. intros A. cbn.
-  repeat rewrite functor_id. carw.
+  repeat rewrite fct_id. carw.
 Defined.
 Next Obligation. intros A. cbn.
-  repeat rewrite functor_id. carw.
+  repeat rewrite fct_id. carw.
 Defined.
 
 (** Bicategorical left whiskering in Cat agrees with functor whiskering. *)
@@ -82,7 +82,7 @@ Theorem cat_whisker_r {C D E : Cat}
 Proof.
   intros X.
   change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).
-  rewrite functor_id. apply comp_id_r.
+  rewrite fct_id. apply comp_id_r.
 Qed.
 
 (** ** Comparison with the Existing Category of Categories *)
@@ -112,7 +112,7 @@ Program Definition ToCatCatF
   :=
   {|F0 C := C
   ; F1 C D F := F
-  ; functor_fmap_proper C D F G H :=
+  ; fct_fmap_proper C D F G H :=
       fst (cat_bicat_homotopy_eq F G) H
   |}.
 Next Obligation. reflexivity. Defined.
@@ -127,7 +127,7 @@ Program Definition FromCatCatF
   :=
   {|F0 C := C
   ; F1 C D F := F
-  ; functor_fmap_proper C D F G H :=
+  ; fct_fmap_proper C D F G H :=
       snd (cat_bicat_homotopy_eq F G) H
   |}.
 Next Obligation. reflexivity. Defined.

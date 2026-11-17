@@ -97,7 +97,7 @@ Global Instance prof_dimap_proper {X X' : @Ob C} {Y Y' : @Ob D}
       (@prof_dimap C D P X X' Y Y').
 Proof.
   intros f f' E g g' H.
-  apply (@functor_fmap_proper _ _ P _ _). split; assumption.
+  apply (@fct_fmap_proper _ _ P _ _). split; assumption.
 Defined.
 
 (** Identity preprocessing and postprocessing leave the value unchanged. *)
@@ -106,7 +106,7 @@ Defined.
 
 Lemma prof_dimap_id (X : @Ob C) (Y : @Ob D)
   : dimap[P; @Cat.Core.id C X; @Cat.Core.id D Y] ≈f id_resp.
-Proof. exact (@functor_id _ _ P (X,Y)). Defined.
+Proof. exact (@fct_id _ _ P (X,Y)). Defined.
 
 (** Input composition reverses its action order; output composition keeps
     its ordinary order. Both are the original product-functor law. *)
@@ -117,7 +117,7 @@ Lemma prof_dimap_comp {X X' X'' : @Ob C} {Y Y' Y'' : @Ob D}
     (f : Hom X' X) (f' : Hom X'' X') (g : Hom Y Y') (g' : Hom Y' Y'')
   : dimap[P; f ∘ f'; g' ∘ g] ≈f (dimap[P; f'; g'] ∘r dimap[P; f; g]).
 Proof.
-  exact (@functor_comp ((C^op) ×C D) SetCat P
+  exact (@fct_comp ((C^op) ×C D) SetCat P
     (X,Y) (X',Y') (X'',Y'') (f',g') (f,g)).
 Defined.
 
@@ -181,7 +181,7 @@ Lemma prof_lmap_comp {X X' X'' : @Ob C} (Y : @Ob D)
     (f : Hom X' X) (f' : Hom X'' X')
   : lmap[P; f ∘ f'] ≈f (lmap[P; f'] ∘r (@prof_lmap C D P Y _ _ f)).
 Proof.
-  exact (@functor_comp (C^op) SetCat (π1F P Y) X X' X'' f' f).
+  exact (@fct_comp (C^op) SetCat (π1F P Y) X X' X'' f' f).
 Defined.
 
 (** Postprocessing is covariantly functorial. *)
@@ -192,7 +192,7 @@ Lemma prof_rmap_comp (X : @Ob C) {Y Y' Y'' : @Ob D}
     (g : Hom Y Y') (g' : Hom Y' Y'')
   : rmap[P; g' ∘ g] ≈f (rmap[P; g'] ∘r (@prof_rmap C D P X _ _ g)).
 Proof.
-  exact (@functor_comp D SetCat (π2F P X) Y Y' Y'' g' g).
+  exact (@fct_comp D SetCat (π2F P X) Y Y' Y'' g' g).
 Defined.
 
 (** The two actions commute by naturality of the input comparison. *)
@@ -303,7 +303,7 @@ Proof.
   change (α (F X,G Y) (fmap P
     (@Cat.Core.id ((C^op) ×C D) (F X,G Y)) h) ≈S α (F X,G Y) h).
   apply (@func_proper _ _ (α (F X,G Y))).
-  exact (@functor_id _ _ P (F X,G Y) h).
+  exact (@fct_id _ _ P (F X,G Y) h).
 Defined.
 
 End Reindexing.

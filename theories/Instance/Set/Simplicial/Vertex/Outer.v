@@ -153,7 +153,7 @@ Proof.
         (ordinal_step fin_first)) ∘ T⟦p0⟧Ob).
     + exact K.
     + apply comp_proper; [| reflexivity].
-      exact (@functor_fmap_proper [Ord 2] (VtxCat T) (lower x)
+      exact (@fct_fmap_proper [Ord 2] (VtxCat T) (lower x)
         fin_first (fin_next fin_first) _ _ tt).
   - transitivity (T⟦p0; b ∘ a; p2⟧Ar).
     + symmetry. exact (vertex_rebase_comp T p0 p1 p2 a b).
@@ -161,8 +161,8 @@ Proof.
         (ordinal_step fin_first))).
       transitivity T⟦p0; c; p2⟧Ar.
       * apply (@func_proper _ _ (vertex_rebase_resp T p0 p2)).
-        unfold a, b, c. rewrite <- functor_comp.
-        exact (@functor_fmap_proper [Ord 2] (VtxCat T) (lower x)
+        unfold a, b, c. rewrite <- fct_comp.
+        exact (@fct_fmap_proper [Ord 2] (VtxCat T) (lower x)
           fin_first (fin_next (fin_next fin_first)) _ _ tt).
       * symmetry. apply (vertex_rebase_of_square T p0 p2 h c).
         pose proof (Hh _ _ (ordinal_step fin_first)) as K.

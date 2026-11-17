@@ -56,9 +56,9 @@ Definition product_comparison_large_equality (X Y : @Ob C)
 
 (** 指数比较接受同样独立的相等界。 *)
 
-Definition exponential_comparison_large_equality (X Y : @Ob C)
+Definition exp_cmp_large_equality (X Y : @Ob C)
   : Hom (F ((Y ^ X)%ob)) (F Y ^ F X)
-  := preserved_exponential_comparison F preserves X Y.
+  := exp_cmp F preserves X Y.
 
 End LargeEquality.
 
@@ -93,9 +93,9 @@ Definition product_comparison_small_equality (X Y : @Ob C)
 
 (** 指数比较保留反向的严格分离。 *)
 
-Definition exponential_comparison_small_equality (X Y : @Ob C)
+Definition exp_cmp_small_equality (X Y : @Ob C)
   : Hom (F ((Y ^ X)%ob)) (F Y ^ F X)
-  := preserved_exponential_comparison F preserves X Y.
+  := exp_cmp F preserves X Y.
 
 End SmallEquality.
 
@@ -127,8 +127,8 @@ Proof. reflexivity. Defined.
 
 (** 弱指数比较对原函数求值。 *)
 
-Example preserved_exponential_computes
-  : preserved_exponential_comparison (@IdF SetCat)
+Example preserved_exp_computes
+  : exp_cmp (@IdF SetCat)
       (λ X Y, product_universal) BoolS BoolS id_resp true = true.
 Proof. reflexivity. Defined.
 
@@ -137,7 +137,7 @@ Proof. reflexivity. Defined.
 (** 提取证明后，已有接口仍保持原生计算。 *)
 
 Example cartesian_product_computes
-  : @functor_product_inv SetCat SetCat IdF SetCat_HasTerminal
+  : @fct_product_inv SetCat SetCat IdF SetCat_HasTerminal
       SetCat_HasProduct SetCat_HasProduct
       (IdF_IsCartF SetCat SetCat_HasTerminal SetCat_HasProduct)
       BoolS BoolS (false, true) = (false, true).
@@ -147,8 +147,8 @@ Proof. reflexivity. Defined.
 
 (** 原指数比较保留同样透明的数据。 *)
 
-Example cartesian_exponential_computes
-  : @functor_exponential_comparison SetCat SetCat IdF
+Example cartesian_exp_computes
+  : @fct_exp_cmp SetCat SetCat IdF
       SetCat_HasTerminal SetCat_HasProduct SetCat_HasExponential
       SetCat_HasProduct SetCat_HasExponential
       (IdF_IsCartF SetCat SetCat_HasTerminal SetCat_HasProduct)
@@ -192,9 +192,9 @@ Definition empty_constant_not_terminal (H : is_terminal EmptyS)
 
 (** 对此函子，弱指数比较仍然存在。 *)
 
-Definition empty_constant_exponential_comparison
+Definition empty_constant_exp_cmp
   : EmptyS →r (EmptyS →S EmptyS)
-  := preserved_exponential_comparison (ConstF SetCat EmptyS)
+  := exp_cmp (ConstF SetCat EmptyS)
       empty_constant_preserves_products BoolS BoolS.
 
 (** Its inverse would send the identity function to an empty element. *)
@@ -202,7 +202,7 @@ Definition empty_constant_exponential_comparison
 (** 它的逆将把恒等函数送到一个空载体的元素。 *)
 
 Definition empty_constant_comparison_not_iso
-    (H : is_iso (C := SetCat) empty_constant_exponential_comparison)
+    (H : is_iso (C := SetCat) empty_constant_exp_cmp)
   : Empty_set
   := H.1 id_resp.
 

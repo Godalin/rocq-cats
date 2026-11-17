@@ -157,7 +157,7 @@ Definition limit_unique {J C : Cat} {D : Fct J C} {L M : @Ob C}
 Proof.
   pose (i := terminal_unique (limit_terminal Hκ) (limit_terminal Hμ)).
   exists (fmap (ConeApexF D) i.1).
-  exact (functor_is_iso (ConeApexF D) i.1 i.2).
+  exact (fct_is_iso (ConeApexF D) i.1 i.2).
 Defined.
 
 (** Choose a limit for every diagram of the specified shape. *)

@@ -72,7 +72,7 @@ Next Obligation.
       arr[A; @tensor_map C (@CartMonoidal C HT HP) _ _ _ _ f g] ∘
         (u &&&[A] v)).
     etransitivity; [symmetry; apply arrow_fanout_post |].
-    apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
+    apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
     symmetry. apply cartesian_tensor_map.
 
 Defined.

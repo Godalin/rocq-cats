@@ -100,8 +100,8 @@ Proof.
   rewrite (cone_naturality κ g).
   change (fmap D (HQ j).2.1 ∘ (fmap D (fmap Q g) ∘ κ i) ≈
     fmap D f ∘ κ i).
-  rewrite <- comp_assoc, <- functor_comp.
-  apply comp_r. apply functor_fmap_proper.
+  rewrite <- comp_assoc, <- fct_comp.
+  apply comp_r. apply fct_fmap_proper.
   rewrite Hg, <- comp_assoc, (snd (HQ j).2.2.2), comp_id_l.
   reflexivity.
 Qed.
@@ -118,7 +118,7 @@ Program Definition ExtendCone {X} (κ : X ⇒Δ (D ∘F Q))
   |}.
 Next Obligation.
   rewrite comp_id_r. unfold cone_extend_leg at 2.
-  rewrite <- comp_assoc, <- functor_comp.
+  rewrite <- comp_assoc, <- fct_comp.
   symmetry. apply cone_extend_leg_comm.
 Qed.
 
@@ -158,7 +158,7 @@ Lemma cone_restrict_extend {X} (κ : X ⇒Δ (D ∘F Q))
 Proof.
   intros i. symmetry.
   transitivity (fmap D (@id (Q i)) ∘ κ i).
-  - rewrite functor_id, comp_id_l. reflexivity.
+  - rewrite fct_id, comp_id_l. reflexivity.
   - apply cone_extend_leg_comm.
 Qed.
 
@@ -190,8 +190,8 @@ Definition ExtendCocone {I J C : Cat} {Q : Fct I J}
     {D : Fct J C} {X : @Ob C} (κ : (D ∘F Q) ⇒∇ X)
   : D ⇒∇ X
   :=
-  {|op_cone := ExtendCone (functor_op_full HF)
-      (functor_op_essentially_surjective HQ)
+  {|op_cone := ExtendCone (fct_op_full HF)
+      (fct_op_essentially_surjective HQ)
       ((OpF_comp D Q).1 ∘Nv op_cone κ)
   |}.
 
@@ -216,7 +216,7 @@ Lemma cocone_restrict_reflects {I J C : Cat} {Q : Fct I J}
   : κ ∘∇F Q ≈N μ ∘∇F Q → κ ≈N μ.
 Proof.
   intros H. apply (cone_restrict_reflects
-    (functor_op_essentially_surjective HQ) (op_cone κ) (op_cone μ)).
+    (fct_op_essentially_surjective HQ) (op_cone κ) (op_cone μ)).
   intros i. specialize (H i). cbn in H. rewrite !comp_id_r in H. exact H.
 Qed.
 
@@ -234,7 +234,7 @@ Proof.
   change (NatEq (op_cone (ExtendCocone HF HQ κ))
     (op_cone (ExtendCocone HF HQ μ))).
   apply (@cone_extend_proper (I^op) (J^op) (C^op) (Q^opF)
-    (functor_op_full HF) (functor_op_essentially_surjective HQ) (D^opF) X).
+    (fct_op_full HF) (fct_op_essentially_surjective HQ) (D^opF) X).
   intros i. cbn. rewrite (H i). reflexivity.
 Qed.
 
@@ -249,8 +249,8 @@ Lemma cocone_extend_restrict {I J C : Cat} {Q : Fct I J}
 Proof.
   change (NatEq (op_cone (ExtendCocone HF HQ (κ ∘∇F Q))) (op_cone κ)).
   transitivity
-    (ExtendCone (functor_op_full HF)
-      (functor_op_essentially_surjective HQ) (op_cone κ ∘Δ Q^opF)).
+    (ExtendCone (fct_op_full HF)
+      (fct_op_essentially_surjective HQ) (op_cone κ ∘Δ Q^opF)).
   - apply cone_extend_proper. intros i. cbn. rewrite !comp_id_r. reflexivity.
   - apply cone_extend_restrict.
 Qed.
@@ -265,8 +265,8 @@ Lemma cocone_restrict_extend {I J C : Cat} {Q : Fct I J}
   : ExtendCocone HF HQ κ ∘∇F Q ≈N κ.
 Proof.
   intros i.
-  pose proof (cone_restrict_extend (functor_op_full HF)
-    (functor_op_essentially_surjective HQ)
+  pose proof (cone_restrict_extend (fct_op_full HF)
+    (fct_op_essentially_surjective HQ)
     ((OpF_comp D Q).1 ∘Nv op_cone κ) i) as H.
   cbn in *. rewrite !comp_id_r in H |- *. exact H.
 Qed.

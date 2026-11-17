@@ -79,7 +79,7 @@ Program Definition OpCatF
   :=
   {|F0 := op
   ; F1 C D F := F^opF
-  ; functor_fmap_proper C D := @OpF_proper C D
+  ; fct_fmap_proper C D := @OpF_proper C D
   |}.
 Next Obligation. apply OpF_id. Defined.
 Next Obligation. apply OpF_comp. Defined.
@@ -125,8 +125,8 @@ Program Definition CatCatHom@{o h p l m n +}
   :=
   {|F0 X := F X
   ; F1 X Y f := fmap F f
-  ; functor_fmap_proper X Y f g H :=
-      @functor_fmap_proper C D F X Y f g H
+  ; fct_fmap_proper X Y f g H :=
+      @fct_fmap_proper C D F X Y f g H
   |}.
-Next Obligation. exact (@functor_id C D F X). Qed.
-Next Obligation. exact (@functor_comp C D F X Y Z f g). Qed.
+Next Obligation. exact (@fct_id C D F X). Qed.
+Next Obligation. exact (@fct_comp C D F X Y Z f g). Qed.

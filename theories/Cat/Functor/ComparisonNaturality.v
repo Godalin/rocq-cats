@@ -87,24 +87,24 @@ Context (preserves : ∀ X Y : C,
 
 (** 参数变换反变而结果变换协变，两侧均保留原有箭头作用。 *)
 
-Lemma preserved_exponential_natural {X X' Y Y' : C}
+Lemma exp_cmp_natural {X X' Y Y' : C}
     (u : Hom X' X) (v : Hom Y Y')
-  : preserved_exponential_comparison F preserves X' Y' ∘ fmap F (v ^ u) ≈
+  : exp_cmp F preserves X' Y' ∘ fmap F (v ^ u) ≈
       (fmap F v ^ fmap F u) ∘
-        preserved_exponential_comparison F preserves X Y.
+        exp_cmp F preserves X Y.
 Proof.
-  unfold exponential_dimap at 1. rewrite preserved_curry.
-  symmetry. apply exponential_curry_unique.
+  unfold exp_dimap at 1. rewrite exp_cmp_curry.
+  symmetry. apply exp_curry_unique.
   change (uncurry ((fmap F v ^ fmap F u) ∘
-      preserved_exponential_comparison F preserves X Y) ≈
+      exp_cmp F preserves X Y) ≈
     fmap F (v ∘ eval ∘ (id × u)) ∘
       preserved_product_inv F preserves ((Y ^ X)%ob) X').
-  rewrite exponential_uncurry_dimap.
-  unfold uncurry. rewrite (preserved_eval F preserves X Y).
+  rewrite exp_uncurry_dimap.
+  unfold uncurry. rewrite (exp_cmp_eval F preserves X Y).
   pose proof (preserved_product_inv_natural F preserves
     (@id ((Y ^ X)%ob)) u) as HP.
-  rewrite (@functor_id C D F) in HP.
-  rewrite !(@functor_comp C D F), !(@comp_assoc D), HP. reflexivity.
+  rewrite (@fct_id C D F) in HP.
+  rewrite !(@fct_comp C D F), !(@comp_assoc D), HP. reflexivity.
 Defined.
 
 End ExponentialNaturality.
@@ -138,26 +138,26 @@ Context (α : F ⇒ G).
 
 (** 求值的自然性及前述积边界律给出相容性，无需任何分量的逆。 *)
 
-Lemma preserved_exponential_boundary (X Y : C)
+Lemma exp_cmp_boundary (X Y : C)
   : (α Y ^ (@id (F X))) ∘
-      preserved_exponential_comparison F preservesF X Y ≈
+      exp_cmp F preservesF X Y ≈
       ((@id (G Y)) ^ α X) ∘
-        preserved_exponential_comparison G preservesG X Y ∘
+        exp_cmp G preservesG X Y ∘
         α ((Y ^ X)%ob).
 Proof.
-  apply exponential_ext.
+  apply exp_ext.
   change (uncurry ((α Y ^ (@id (F X))) ∘
-      preserved_exponential_comparison F preservesF X Y) ≈
+      exp_cmp F preservesF X Y) ≈
     uncurry (((@id (G Y)) ^ α X) ∘
-      preserved_exponential_comparison G preservesG X Y ∘
+      exp_cmp G preservesG X Y ∘
       α ((Y ^ X)%ob))).
   rewrite (comp_assoc (((@id (G Y)) ^ α X))
-    (preserved_exponential_comparison G preservesG X Y)
+    (exp_cmp G preservesG X Y)
     (α ((Y ^ X)%ob))).
-  rewrite !exponential_uncurry_dimap, exponential_uncurry_comp_r.
+  rewrite !exp_uncurry_dimap, exp_uncurry_comp_r.
   unfold uncurry.
-  rewrite (preserved_eval F preservesF X Y),
-    (preserved_eval G preservesG X Y), cross_id, comp_id_r, comp_id_l.
+  rewrite (exp_cmp_eval F preservesF X Y),
+    (exp_cmp_eval G preservesG X Y), cross_id, comp_id_r, comp_id_l.
   rewrite !(@comp_assoc D), <- cross_comp, comp_id_r, comp_id_l.
   rewrite <- (comp_assoc (α Y) (fmap F eval)
     (preserved_product_inv F preservesF ((Y ^ X)%ob) X)).

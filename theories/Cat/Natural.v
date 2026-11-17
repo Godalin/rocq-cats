@@ -362,9 +362,9 @@ Program Definition WhiskerLN {C D E : Cat} (G : Fct D E)
   {|nt X := fmap G (α X)
   |}.
 Next Obligation.
-  rewrite <- (@functor_comp D E G _ _ _ (α Y) (fmap F f)),
-    <- (@functor_comp D E G _ _ _ (fmap F' f) (α X)).
-  apply functor_fmap_proper. apply nat_naturality.
+  rewrite <- (@fct_comp D E G _ _ _ (α Y) (fmap F f)),
+    <- (@fct_comp D E G _ _ _ (fmap F' f) (α X)).
+  apply fct_fmap_proper. apply nat_naturality.
 Qed.
 
 (** Evaluate a natural transformation after a source functor. *)
@@ -392,7 +392,7 @@ Global Instance nat_whisker_l_proper {C D E : Cat}
       (@WhiskerLN C D E G F F').
 Proof.
   intros α β H X. change (fmap G (α X) ≈ fmap G (β X)).
-  apply functor_fmap_proper. exact (H X).
+  apply fct_fmap_proper. exact (H X).
 Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -414,7 +414,7 @@ Definition nat_whisker_l_iso {C D E : Cat}
     (α : F ⇒ F') (Hα : α ⦂ F ≅N F')
   : (G ∘Nl α) ⦂ (G ∘F F) ≅N (G ∘F F').
 Proof. intros X.
-  exact (functor_is_iso G (α X) (Hα X)).
+  exact (fct_is_iso G (α X) (Hα X)).
 Defined.
 
 (** Right whiskering preserves componentwise invertibility. *)
@@ -467,7 +467,7 @@ Global Instance nat_hcomp_proper {C D E : Cat}
 Proof.
   intros β β' Hβ α α' Hα X.
   change (β (F' X) ∘ fmap G (α X) ≈ β' (F' X) ∘ fmap G (α' X)).
-  apply comp_proper; [apply Hβ | apply functor_fmap_proper; apply Hα].
+  apply comp_proper; [apply Hβ | apply fct_fmap_proper; apply Hα].
 Qed.
 
 (** Compatibility with identities for [HCompN]. *)
@@ -480,7 +480,7 @@ Theorem nat_hcomp_id {C D E : Cat}
 Proof.
   intros X.
   change (id ∘ fmap G (@id (F X)) ≈ @id (G (F X))).
-  rewrite functor_id. apply comp_id_l.
+  rewrite fct_id. apply comp_id_l.
 Qed.
 
 (** Horizontal and vertical composition satisfy the interchange law. *)
@@ -496,7 +496,7 @@ Proof.
   intros X.
   change ((β2 (F2 X) ∘ β1 (F2 X)) ∘ fmap G0 (α2 X ∘ α1 X) ≈
     (β2 (F2 X) ∘ fmap G1 (α2 X)) ∘ (β1 (F1 X) ∘ fmap G0 (α1 X))).
-  rewrite functor_comp, !comp_assoc.
+  rewrite fct_comp, !comp_assoc.
   rewrite <- (comp_assoc (β1 (F2 X))), (nat_naturality β1 (α2 X)).
   rewrite comp_assoc. reflexivity.
 Qed.

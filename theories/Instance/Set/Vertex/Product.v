@@ -54,7 +54,7 @@ Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
 Program Definition VtxFstF
   : VtxProductObjF T U →ᵥ T
   :=
-  {|vertex_functor := FstF (VtxCat T) (VtxCat U) ∘F
+  {|vertex_fct := FstF (VtxCat T) (VtxCat U) ∘F
       InducedProductF X Y T U
   |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact p. Defined.
@@ -67,7 +67,7 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 Program Definition VtxSndF
   : VtxProductObjF T U →ᵥ U
   :=
-  {|vertex_functor := SndF (VtxCat T) (VtxCat U) ∘F
+  {|vertex_fct := SndF (VtxCat T) (VtxCat U) ∘F
       InducedProductF X Y T U
   |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact q. Defined.
@@ -81,12 +81,12 @@ Program Definition VtxPairF {Z : SetC} {E : Cat}
     {V : Fct (EqGpd Z) E} (F : V →ᵥ T) (G : V →ᵥ U)
   : V →ᵥ VtxProductObjF T U
   :=
-  {|vertex_functor := InducedProductInvF X Y T U ∘F PairF F G
+  {|vertex_fct := InducedProductInvF X Y T U ∘F PairF F G
   |}.
 Next Obligation.
-  intros x y p. split; apply vertex_functor_ob_proper; exact p.
+  intros x y p. split; apply vertex_fct_ob_proper; exact p.
 Defined.
-Next Obligation. split; apply vertex_functor_transport_witness. Defined.
+Next Obligation. split; apply vertex_fct_transport_witness. Defined.
 
 (** Split a labelled diagram by respectful postcomposition with projections. *)
 
@@ -135,8 +135,8 @@ Proof.
   - intros F.
     assert (e : ∀ i, ((fst (F i), snd (F i)) : X ×S Y) ≈S F i).
     { intros i. destruct (F i). split; reflexivity. }
-    pose (e1 := λ i, vertex_functor_ob_proper VtxFstF _ _ (e i)).
-    pose (e2 := λ i, vertex_functor_ob_proper VtxSndF _ _ (e i)).
+    pose (e1 := λ i, vertex_fct_ob_proper VtxFstF _ _ (e i)).
+    pose (e2 := λ i, vertex_fct_ob_proper VtxSndF _ _ (e i)).
     exists e. intros i j f. split.
     + change (T⟦e1 j⟧Ob ∘ fst (fmap F f) ≈
         fst (fmap F f) ∘ T⟦e1 i⟧Ob).

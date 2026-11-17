@@ -104,7 +104,7 @@ Proof.
       ∘ (ImagePredicates f × (@Cats.Cat.Core.id C X)))
     ∘ ⟨π2, π1⟩).
   - unfold image_body, image_containing_body.
-    rewrite !exponential_app_comp, !cross_η, !comp_assoc.
+    rewrite !exp_app_comp, !cross_η, !comp_assoc.
     rewrite !product_comp_r, !comp_assoc,
       !product_β1, !product_β2, !comp_id_l. reflexivity.
   - rewrite H, comp_assoc, term_comp_l. reflexivity.
@@ -117,16 +117,16 @@ Qed.
 
 Definition image_predicates_name {X Y : C} (f : Hom X Y)
     (q : Hom Y Ω) (Hq : q ∘ f ≈ truth ∘ !)
-  : is_factored_through (ImagePredicates f) (exponential_name q).
+  : is_factored_through (ImagePredicates f) (exp_name q).
 Proof.
   apply (fst (classifier_char_factor
-    (sub_mono _ (ImagePredicates f)) (exponential_name q))).
+    (sub_mono _ (ImagePredicates f)) (exp_name q))).
   unfold ImagePredicates. rewrite classified_sub_char.
   unfold image_contains. rewrite forall_predicate_comp.
   apply (snd (forall_predicate_true X _)).
   unfold image_containing_body.
-  rewrite exponential_app_comp, cross_η, !comp_assoc,
-    product_β1, product_β2, comp_id_l, exponential_name_app.
+  rewrite exp_app_comp, cross_η, !comp_assoc,
+    product_β1, product_β2, comp_id_l, exp_name_app.
   rewrite <- comp_assoc, Hq, comp_assoc, term_comp_l. reflexivity.
 Defined.
 
@@ -144,8 +144,8 @@ Proof.
     (image_body f) (s ∘ !)).
   assert (K : image_body f ∘ ⟨(@Cats.Cat.Core.id C Y), s ∘ !⟩ ≈ q).
   { unfold image_body.
-    rewrite exponential_app_comp, !comp_assoc, product_β1, product_β2.
-    rewrite <- comp_assoc, <- Hs, exponential_name_app, comp_id_r.
+    rewrite exp_app_comp, !comp_assoc, product_β1, product_β2.
+    rewrite <- comp_assoc, <- Hs, exp_name_app, comp_id_r.
     reflexivity. }
   exact (sub_factor_comp H (fst (classified_sub_congr K))).
 Defined.

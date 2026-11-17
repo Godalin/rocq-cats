@@ -80,7 +80,7 @@ Next Obligation.
   rewrite kleisli_comp_pure_l, kleisli_comp_pure_r.
   unfold kleisli_context.
   rewrite <- comp_assoc, <- (strength_natural (hasStrength M) h (@id Y)),
-    functor_id, !comp_assoc.
+    fct_id, !comp_assoc.
   apply comp_proper; [reflexivity |].
   transitivity (h ⊗m f).
   - pose proof (@tensor_map_comp C MC Z Z W X (M Y) (M Y)

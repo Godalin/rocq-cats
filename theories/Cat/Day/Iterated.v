@@ -64,7 +64,7 @@ Next Obligation.
   - exact (@func_proper _ _ (β (Y,Z))
       (fmap (DayValuesF F G) f xy,w)
       (fmap (DayValuesF F G) f xy,fmap H (@id Z) w)
-      (reflexivity _, symmetry (@functor_id C SetCat H Z w))).
+      (reflexivity _, symmetry (@fct_id C SetCat H Z w))).
   - exact (nat_naturality β (X := (X,Z)) (Y := (Y,Z)) (f,id) (xy,w)).
 Defined.
 
@@ -83,14 +83,14 @@ Proof.
   - exact (@func_proper _ _ (β (q,Z'))
       (xy,fmap H g w)
       (fmap (DayValuesF F G) (@id q) xy,fmap H g w)
-      (symmetry (@functor_id (C ×C C) SetCat (DayValuesF F G) q xy),
+      (symmetry (@fct_id (C ×C C) SetCat (DayValuesF F G) q xy),
         reflexivity _)).
   - transitivity (fmap K
       (fmap T (X := (T q,Z)) (Y := (T q,Z')) (fmap T (@id q),g))
         (β (q,Z) (xy,w))).
     + exact (nat_naturality β (X := (q,Z)) (Y := (q,Z')) (id,g) (xy,w)).
-    + apply (@functor_fmap_proper C SetCat K). apply functor_fmap_proper.
-      split; [apply functor_id | reflexivity].
+    + apply (@fct_fmap_proper C SetCat K). apply fct_fmap_proper.
+      split; [apply fct_id | reflexivity].
 Defined.
 
 Context `{HFG : !HasDay C T F G}.
@@ -127,8 +127,8 @@ Next Obligation.
         (fmap T (X := (a,b')) (Y := (a',b')) (f,id) ∘
           fmap T (X := (a,b)) (Y := (a,b')) (id,g))
           (DayParameterExtendN T (H b) (DayTripleLeftSliceN b) a (z,w))).
-      * symmetry. apply (@functor_comp C SetCat K).
-      * apply (@functor_fmap_proper C SetCat K).
+      * symmetry. apply (@fct_comp C SetCat K).
+      * apply (@fct_fmap_proper C SetCat K).
         symmetry. exact (product_at_map T f g).
 Defined.
 
@@ -176,7 +176,7 @@ Proof.
     + apply (@func_proper _ _ (fmap K h)).
       exact (day_parameter_extend_β T (H D) (DayTripleLeftSliceN D)
         (A,B) k (x,y) z).
-    + symmetry. apply (@functor_comp C SetCat K).
+    + symmetry. apply (@fct_comp C SetCat K).
 Defined.
 
 End LeftSlice.
@@ -223,7 +223,7 @@ Next Obligation.
   - exact (@func_proper _ _ (β ((X,a'),b'))
       ((x,fmap G f y),fmap H g z)
       ((fmap F (@id X) x,fmap G f y),fmap H g z)
-      ((symmetry (@functor_id C SetCat F X x),reflexivity _),reflexivity _)).
+      ((symmetry (@fct_id C SetCat F X x),reflexivity _),reflexivity _)).
   - exact (nat_naturality β (X := ((X,a),b)) (Y := ((X,a'),b'))
       ((id,f),g) ((x,y),z)).
 Defined.
@@ -244,15 +244,15 @@ Proof.
   - exact (@func_proper _ _ (β ((X',Y),Z))
       ((fmap F f x,y),z)
       ((fmap F f x,fmap G (@id Y) y),fmap H (@id Z) z)
-      ((reflexivity _,symmetry (@functor_id C SetCat G Y y)),
-        symmetry (@functor_id C SetCat H Z z))).
+      ((reflexivity _,symmetry (@fct_id C SetCat G Y y)),
+        symmetry (@fct_id C SetCat H Z z))).
   - transitivity (fmap K
       (fmap T (X := (X,T (Y,Z))) (Y := (X',T (Y,Z)))
         (f,fmap T (@Cat.Core.id (C ×C C) (Y,Z)))) (β ((X,Y),Z) ((x,y),z))).
     + exact (nat_naturality β (X := ((X,Y),Z)) (Y := ((X',Y),Z))
         ((f,id),id) ((x,y),z)).
-    + apply (@functor_fmap_proper C SetCat K). apply functor_fmap_proper.
-      split; [reflexivity | apply functor_id].
+    + apply (@fct_fmap_proper C SetCat K). apply fct_fmap_proper.
+      split; [reflexivity | apply fct_id].
 Defined.
 
 Context `{HGH : !HasDay C T G H}.
@@ -296,9 +296,9 @@ Next Obligation.
         (fmap T (X := (a',b)) (Y := (a',b')) (id,g) ∘
           fmap T (X := (a,b)) (Y := (a',b)) (f,id))
           (DayParameterExtendN T (F a) (DayTripleRightSliceN a) b (z,x))).
-      * symmetry. apply (@functor_comp C SetCat K).
-      * apply (@functor_fmap_proper C SetCat K).
-        rewrite <- functor_comp. apply functor_fmap_proper.
+      * symmetry. apply (@fct_comp C SetCat K).
+      * apply (@fct_fmap_proper C SetCat K).
+        rewrite <- fct_comp. apply fct_fmap_proper.
         split; cbn; carw.
 Defined.
 
@@ -335,7 +335,7 @@ Proof.
     + apply (@func_proper _ _ (fmap K h)).
       exact (day_parameter_extend_β T (F A) (DayTripleRightSliceN A)
         (B,D) k (y,z) x).
-    + symmetry. apply (@functor_comp C SetCat K).
+    + symmetry. apply (@fct_comp C SetCat K).
 Defined.
 
 End RightSlice.
@@ -425,7 +425,7 @@ Proof.
       (p := (T (A,B),D)) (q := (U,D)) (k,id) h
       (day_inject T F G (A,B) id (x,y),z)).
   - apply (@func_proper _ _ (day_inject T (DayF T F G) H (U,D) h)).
-    split; [| exact (@functor_id C SetCat H D z)].
+    split; [| exact (@fct_id C SetCat H D z)].
     transitivity (day_inject T F G (A,B) (k ∘ id) (x,y)).
     + exact (day_inject_post T F G (A,B) k id (x,y)).
     + exact (@day_inject_proper C T F G HFG (A,B) U _ _
@@ -572,7 +572,7 @@ Proof.
       (p := (A,T (B,D))) (q := (A,U)) (id,k) h
       (x,day_inject T G H (B,D) id (y,z))).
   - apply (@func_proper _ _ (day_inject T F (DayF T G H) (A,U) h)).
-    split; [exact (@functor_id C SetCat F A x) |].
+    split; [exact (@fct_id C SetCat F A x) |].
     transitivity (day_inject T G H (B,D) (k ∘ id) (y,z)).
     + exact (day_inject_post T G H (B,D) k id (y,z)).
     + exact (@day_inject_proper C T G H HGH (B,D) U _ _
@@ -676,9 +676,9 @@ Proof.
   - exact (day_triple_left_extend_β T β id id x y z).
   - transitivity (fmap K (@id (T (T (a,b),d)))
       (β ((a,b),d) ((x,y),z))).
-    + apply (@functor_fmap_proper C SetCat K).
-      rewrite functor_id, comp_id_l. reflexivity.
-    + exact (@functor_id C SetCat K _ (β ((a,b),d) ((x,y),z))).
+    + apply (@fct_fmap_proper C SetCat K).
+      rewrite fct_id, comp_id_l. reflexivity.
+    + exact (@fct_id C SetCat K _ (β ((a,b),d) ((x,y),z))).
 Defined.
 
 (** The left ternary operation determines its natural extension uniquely. *)
@@ -716,9 +716,9 @@ Proof.
   - exact (day_triple_right_extend_β T β id id x y z).
   - transitivity (fmap K (@id (T (a,T (b,d))))
       (β ((a,b),d) ((x,y),z))).
-    + apply (@functor_fmap_proper C SetCat K).
-      rewrite functor_id, comp_id_l. reflexivity.
-    + exact (@functor_id C SetCat K _ (β ((a,b),d) ((x,y),z))).
+    + apply (@fct_fmap_proper C SetCat K).
+      rewrite fct_id, comp_id_l. reflexivity.
+    + exact (@fct_id C SetCat K _ (β ((a,b),d) ((x,y),z))).
 Defined.
 
 (** The right ternary operation also determines its natural extension uniquely. *)

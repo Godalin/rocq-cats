@@ -152,35 +152,35 @@ Qed.
 
 (** 将函数与结果结构箭头后合成。 *)
 
-Definition gluing_exponential_result (X Y : @Ob (Gluing F))
+Definition gluing_exp_result (X Y : @Ob (Gluing F))
   : Hom (comma_left_ob Y ^ comma_left_ob X)
       (F (comma_right_ob Y) ^ comma_left_ob X)
-  := exponential_map (comma_arrow Y).
+  := exp_map (comma_arrow Y).
 
 (** Transport base functions and restrict their inputs along the structure
     arrow of the argument. The comparison need not be invertible. *)
 
 (** 运输基函数，并沿参数的结构箭头限制输入；比较无需可逆。 *)
 
-Definition gluing_exponential_base (X Y : @Ob (Gluing F))
+Definition gluing_exp_base (X Y : @Ob (Gluing F))
   : Hom (F ((comma_right_ob Y ^ comma_right_ob X)%ob))
       (F (comma_right_ob Y) ^ comma_left_ob X)
-  := (id ^ comma_arrow X) ∘ preserved_exponential_comparison F preserves
+  := (id ^ comma_arrow X) ∘ exp_cmp F preserves
       (comma_right_ob X) (comma_right_ob Y).
 
 (** Uncurrying the base comparison computes transported evaluation. *)
 
 (** 基比较的反柯里化计算出运输后的求值。 *)
 
-Lemma gluing_exponential_base_eval (X Y : @Ob (Gluing F))
-  : uncurry (gluing_exponential_base X Y) ≈
+Lemma gluing_exp_base_eval (X Y : @Ob (Gluing F))
+  : uncurry (gluing_exp_base X Y) ≈
       fmap F eval ∘ preserved_product_inv F preserves
         ((comma_right_ob Y ^ comma_right_ob X)%ob) (comma_right_ob X) ∘
       (id × comma_arrow X).
 Proof.
-  unfold gluing_exponential_base.
-  rewrite exponential_uncurry_dimap, comp_id_l.
-  unfold uncurry at 1. rewrite preserved_eval. reflexivity.
+  unfold gluing_exp_base.
+  rewrite exp_uncurry_dimap, comp_id_l.
+  unfold uncurry at 1. rewrite exp_cmp_eval. reflexivity.
 Qed.
 
 (** ** A Supplied Pullback Represents the Exponential
@@ -198,8 +198,8 @@ Context (X Y : @Ob (Gluing F)).
 Context (E : @Ob D)
     (p : Hom E (comma_left_ob Y ^ comma_left_ob X))
     (q : Hom E (F ((comma_right_ob Y ^ comma_right_ob X)%ob))).
-Context (pullback : is_pullback (gluing_exponential_result X Y)
-    (gluing_exponential_base X Y) E p q).
+Context (pullback : is_pullback (gluing_exp_result X Y)
+    (gluing_exp_base X Y) E p q).
 
 (** The supplied pullback is the left object, without a second choice. *)
 
@@ -227,12 +227,12 @@ Next Obligation.
   change (fmap F eval ∘ comma_arrow ((GluingExp × X)%ob) ≈
     comma_arrow Y ∘ (eval ∘ (p × id))).
   rewrite gluing_product_arrow.
-  assert (H : uncurry (gluing_exponential_result X Y ∘ p) ≈
-      uncurry (gluing_exponential_base X Y ∘ q)).
-  { apply exponential_uncurry_proper. exact (fst pullback). }
-  unfold gluing_exponential_result in H.
-  rewrite exponential_uncurry_comp_l, exponential_uncurry_comp_r,
-    gluing_exponential_base_eval in H.
+  assert (H : uncurry (gluing_exp_result X Y ∘ p) ≈
+      uncurry (gluing_exp_base X Y ∘ q)).
+  { apply exp_uncurry_proper. exact (fst pullback). }
+  unfold gluing_exp_result in H.
+  rewrite exp_uncurry_comp_l, exp_uncurry_comp_r,
+    gluing_exp_base_eval in H.
   unfold uncurry in H.
   rewrite !comp_assoc, <- cross_comp, comp_id_l, comp_id_r in H.
   symmetry. exact H.
@@ -244,19 +244,19 @@ Defined.
 
 Lemma gluing_curry_square {Z : @Ob (Gluing F)}
     (f : (@Hom (Gluing F)) ((Z × X)%ob) Y)
-  : gluing_exponential_result X Y ∘ (ƛ (comma_left f)) ≈
-      gluing_exponential_base X Y ∘
+  : gluing_exp_result X Y ∘ (ƛ (comma_left f)) ≈
+      gluing_exp_base X Y ∘
         (fmap F (ƛ (comma_right f)) ∘ comma_arrow Z).
 Proof.
-  unfold gluing_exponential_base.
+  unfold gluing_exp_base.
   rewrite (comp_assoc (id ^ comma_arrow X)).
-  rewrite <- (comp_assoc (preserved_exponential_comparison F preserves
+  rewrite <- (comp_assoc (exp_cmp F preserves
     (comma_right_ob X) (comma_right_ob Y))).
-  rewrite preserved_curry.
-  apply exponential_ext. unfold gluing_exponential_result.
-  rewrite exponential_uncurry_comp_l, exponential_β,
-    exponential_uncurry_dimap, comp_id_l,
-    exponential_uncurry_comp_r, exponential_β.
+  rewrite exp_cmp_curry.
+  apply exp_ext. unfold gluing_exp_result.
+  rewrite exp_uncurry_comp_l, exp_β,
+    exp_uncurry_dimap, comp_id_l,
+    exp_uncurry_comp_r, exp_β.
   rewrite !comp_assoc, <- cross_comp, comp_id_l, comp_id_r.
   rewrite <- (gluing_product_arrow Z X).
   symmetry. exact (comma_comm f).
@@ -307,7 +307,7 @@ Defined.
 
 (** 转置后求值恢复方形的两个分量。 *)
 
-Lemma gluing_exponential_β {Z : @Ob (Gluing F)}
+Lemma gluing_exp_β {Z : @Ob (Gluing F)}
     (f : (@Hom (Gluing F)) ((Z × X)%ob) Y)
   : gluing_eval ∘ (gluing_curry f × id) ≈ f.
 Proof.
@@ -319,10 +319,10 @@ Proof.
     rewrite comp_assoc, <- cross_comp, comp_id_l.
     change (uncurry (p ∘ gluing_curry_left f) ≈ comma_left f).
     rewrite (fst (@this _ _ _ _ _ (gluing_curry_left_unique f))).
-    apply exponential_β.
+    apply exp_β.
   - change (comma_right gluing_eval ∘
       comma_right (gluing_curry f × id) ≈ comma_right f).
-    rewrite gluing_cross_right. apply exponential_β.
+    rewrite gluing_cross_right. apply exp_β.
 Qed.
 
 (** A square with the same evaluation has the same base transpose and
@@ -330,20 +330,20 @@ Qed.
 
 (** 具有相同求值的方形具有相同基转置及两个拉回投影，因此等于选定转置。 *)
 
-Lemma gluing_exponential_unique {Z : @Ob (Gluing F)}
+Lemma gluing_exp_unique {Z : @Ob (Gluing F)}
     (f : (@Hom (Gluing F)) ((Z × X)%ob) Y)
     (k : (@Hom (Gluing F)) Z GluingExp)
     (H : gluing_eval ∘ (k × id) ≈ f)
   : k ≈ gluing_curry f.
 Proof.
   assert (right : comma_right k ≈ ƛ (comma_right f)).
-  { apply exponential_curry_unique.
+  { apply exp_curry_unique.
     transitivity (comma_right gluing_eval ∘
       comma_right (k × (@Cats.Cat.Core.id (Gluing F) X))).
     - rewrite gluing_cross_right. reflexivity.
     - exact (snd H). }
   assert (left : p ∘ comma_left k ≈ ƛ (comma_left f)).
-  { apply exponential_curry_unique.
+  { apply exp_curry_unique.
     transitivity (comma_left gluing_eval ∘
       comma_left (k × (@Cats.Cat.Core.id (Gluing F) X))).
     - rewrite gluing_cross_left.
@@ -367,8 +367,8 @@ Global Instance gluing_curry_proper {Z : @Ob (Gluing F)}
   : Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, GluingExp])
       (@gluing_curry Z).
 Proof.
-  intros f g H. apply gluing_exponential_unique.
-  rewrite gluing_exponential_β. exact H.
+  intros f g H. apply gluing_exp_unique.
+  rewrite gluing_exp_β. exact H.
 Qed.
 
 (** The supplied pullback proves the full candidate exponential property.
@@ -376,15 +376,15 @@ Qed.
 
 (** 指定拉回给出完整候选指数泛性质。中介透明，且不使用方形证明的相等。 *)
 
-Definition gluing_exponential_universal
-  : @is_exponential (Gluing F) PG X Y GluingExp gluing_eval.
+Definition gluing_exp_universal
+  : @is_exp (Gluing F) PG X Y GluingExp gluing_eval.
 Proof.
   intros Z f. exists (gluing_curry f).
   refine {|this := _
          ; that := _
          |}.
-  - exact (gluing_exponential_β f).
-  - intros k H. exact (gluing_exponential_unique f k H).
+  - exact (gluing_exp_β f).
+  - intros k H. exact (gluing_exp_unique f k H).
 Defined.
 
 End GluingExp.

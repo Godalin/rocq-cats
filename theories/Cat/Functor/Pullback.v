@@ -167,17 +167,17 @@ Next Obligation.
 Defined.
 Next Obligation.
   apply (pullback_hom_ext pullback_universal).
-  - rewrite pointwise_pullback_map_β1, functor_id. carw.
-  - rewrite pointwise_pullback_map_β2, functor_id. carw.
+  - rewrite pointwise_pullback_map_β1, fct_id. carw.
+  - rewrite pointwise_pullback_map_β2, fct_id. carw.
 Defined.
 Next Obligation.
   apply (pullback_hom_ext pullback_universal).
   - rewrite pointwise_pullback_map_β1, <- comp_assoc,
       pointwise_pullback_map_β1, comp_assoc,
-      pointwise_pullback_map_β1, functor_comp, comp_assoc. reflexivity.
+      pointwise_pullback_map_β1, fct_comp, comp_assoc. reflexivity.
   - rewrite pointwise_pullback_map_β2, <- comp_assoc,
       pointwise_pullback_map_β2, comp_assoc,
-      pointwise_pullback_map_β2, functor_comp, comp_assoc. reflexivity.
+      pointwise_pullback_map_β2, fct_comp, comp_assoc. reflexivity.
 Defined.
 
 (** The first component projections are natural by the mediator equation. *)

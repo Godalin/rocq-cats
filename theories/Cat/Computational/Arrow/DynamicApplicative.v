@@ -52,13 +52,13 @@ Proof.
     first[ArrowKleisli AA; arrow_dynamic_name AA f; Z]).
   unfold arrow_first, arrow_second.
   etransitivity.
-  - exact (@functor_comp (ComputationCat AA)
+  - exact (@fct_comp (ComputationCat AA)
       (KleisliCat (ArrowMonad AA)) (DynamicNamingF AA)
       (X ×S Z) (Z ×S X) (Y ×S Z) _ _).
   - apply (@comp_proper (KleisliCat (ArrowMonad AA))
       (X ×S Z) (Z ×S X) (Y ×S Z)).
     + etransitivity.
-      * exact (@functor_comp (ComputationCat AA)
+      * exact (@fct_comp (ComputationCat AA)
           (KleisliCat (ArrowMonad AA)) (DynamicNamingF AA)
           (Z ×S X) (Z ×S Y) (Y ×S Z) _ _).
       * apply (@comp_proper (KleisliCat (ArrowMonad AA))
@@ -82,7 +82,7 @@ Proof.
     (arrow_dynamic_name AA f ***[ArrowKleisli AA] arrow_dynamic_name AA g)).
   unfold arrow_split, arrow_second.
   etransitivity.
-  - exact (@functor_comp (ComputationCat AA)
+  - exact (@fct_comp (ComputationCat AA)
       (KleisliCat (ArrowMonad AA)) (DynamicNamingF AA)
       (X ×S X') (Y ×S X') (Y ×S Y') _ _).
   - apply (@comp_proper (KleisliCat (ArrowMonad AA))
@@ -106,7 +106,7 @@ Proof.
     (arrow_dynamic_name AA f &&&[ArrowKleisli AA] arrow_dynamic_name AA g)).
   unfold arrow_fanout.
   etransitivity.
-  - exact (@functor_comp (ComputationCat AA)
+  - exact (@fct_comp (ComputationCat AA)
       (KleisliCat (ArrowMonad AA)) (DynamicNamingF AA)
       W (W ×S W) (X ×S Y) _ _).
   - apply (@comp_proper (KleisliCat (ArrowMonad AA)) W (W ×S W) (X ×S Y)).

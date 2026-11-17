@@ -168,7 +168,7 @@ Qed.
 Program Definition TypeInterpretF_IsCartF
   : IsCartF TypeInterpretF (TyCat_HasTerminal B) (TyCat_HasProduct B)
   :=
-  {|functor_terminal := @terminal_universal C (hasTerminal C)
+  {|fct_terminal := @terminal_universal C (hasTerminal C)
   |}.
 Next Obligation.
   refine (product_cone_equiv _ _ (@product_universal C
@@ -202,11 +202,11 @@ Local Existing Instance TypeInterpretF_IsCartF.
 (** 积比较在指定相等下为恒等。 *)
 
 Lemma type_interp_product_inv (X Y : Ty B)
-  : functor_product_inv F
+  : fct_product_inv F
       (TC := TyCat_HasTerminal B) (PC := TyCat_HasProduct B)
       (PD := hasProduct C) X Y ≈ id.
 Proof.
-  pose proof (functor_product_inv_β F
+  pose proof (fct_product_inv_β F
     (TC := TyCat_HasTerminal B) (PC := TyCat_HasProduct B)
     (PD := hasProduct C)
     X Y) as [H1 H2].
@@ -228,8 +228,8 @@ Qed.
 
 (** 指数比较也在指定相等下为恒等。 *)
 
-Lemma type_interp_exponential_comparison (X Y : Ty B)
-  : functor_exponential_comparison F
+Lemma type_interp_exp_cmp (X Y : Ty B)
+  : fct_exp_cmp F
       (TC := TyCat_HasTerminal B) (PC := TyCat_HasProduct B)
       (EC := TyCat_HasExponential B)
       (PD := hasProduct C) (ED := hasExponential C) X Y ≈ id.
@@ -240,16 +240,16 @@ Proof.
       (hasExponential C) (TyI I X) (TyI I Y)).
   { exact (type_interp_eval I X Y). }
   pose proof (type_interp_product_inv (ty_arr X Y) X) as HP.
-  unfold functor_product_inv in HP.
-  unfold functor_exponential_comparison, preserved_exponential_comparison.
+  unfold fct_product_inv in HP.
+  unfold fct_exp_cmp, exp_cmp.
   rewrite HP, Pev.
   etransitivity.
-  - apply (@exponential_curry_proper C (hasProduct C)
+  - apply (@exp_curry_proper C (hasProduct C)
       (hasExponential C) (TyI I X) (TyI I Y)
       (TyI I Y ^ TyI I X)%ob).
     exact (@comp_id_r C _ _ (@Cats.Cat.Exponential.Core.eval C
       (hasProduct C) (hasExponential C) (TyI I X) (TyI I Y))).
-  - apply exponential_curry_eval.
+  - apply exp_curry_eval.
 Qed.
 
 (** The recursively constructed interpretation is a CCC functor. *)
@@ -259,12 +259,12 @@ Qed.
 Program Definition TypeInterpretF_IsCCCF
   : @IsCCCF (TyCat_CCC B) C F
   :=
-  {|isCartF := TypeInterpretF_IsCartF I
+  {|ccc_isCartF := TypeInterpretF_IsCartF I
   |}.
 Next Obligation.
   exists id. split; unfold is_linv_of, is_rinv_of;
     [rewrite (@comp_id_l C) | rewrite (@comp_id_r C)];
-    apply type_interp_exponential_comparison.
+    apply type_interp_exp_cmp.
 Defined.
 
 End TypeStructurePreservation.

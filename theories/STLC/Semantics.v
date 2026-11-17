@@ -158,12 +158,12 @@ Proof.
   - apply product_pair_proper; auto.
   - rewrite (IHt X ρ τ H). reflexivity.
   - rewrite (IHt X ρ τ H). reflexivity.
-  - apply exponential_curry_proper. apply IHt.
+  - apply exp_curry_proper. apply IHt.
     intros V [x | x].
     + cbn [env_lift env_extend]. unfold env_lift, env_extend, env_comp; cbn.
       rewrite (H V x). reflexivity.
     + destruct x. reflexivity.
-  - apply exponential_app_proper; auto.
+  - apply exp_app_proper; auto.
 Qed.
 
 (** Evaluation commutes with reindexing the environment. This is the first
@@ -189,7 +189,7 @@ Proof.
   - rewrite IHt, comp_assoc. reflexivity.
   - rewrite IHt, comp_assoc. reflexivity.
   - transitivity (ƛ (tm_eval t (env_lift ρ) ∘ (f × id))).
-    + apply exponential_curry_proper.
+    + apply exp_curry_proper.
       transitivity (tm_eval t (env_comp (env_lift ρ) (f × id))).
       * apply tm_eval_ext. intros V [x | x]; cbn.
         -- unfold env_lift, env_extend, env_comp; cbn.
@@ -198,8 +198,8 @@ Proof.
           rewrite cross_η, product_β2, comp_id_l.
            reflexivity.
       * apply IHt.
-    + apply exponential_curry_comp_r.
-  - rewrite IHt1, IHt2, exponential_app_comp. reflexivity.
+    + apply exp_curry_comp_r.
+  - rewrite IHt1, IHt2, exp_app_comp. reflexivity.
 Qed.
 
 (** Renaming acts by selecting the corresponding environment assignments. *)
@@ -216,7 +216,7 @@ Proof.
   - rewrite IHt1, IHt2. reflexivity.
   - rewrite IHt. reflexivity.
   - rewrite IHt. reflexivity.
-  - apply exponential_curry_proper. rewrite IHt.
+  - apply exp_curry_proper. rewrite IHt.
     apply tm_eval_ext. intros V [x | x]; reflexivity.
   - rewrite IHt1, IHt2. reflexivity.
 Qed.
@@ -238,7 +238,7 @@ Proof.
   - rewrite IHt1, IHt2. reflexivity.
   - rewrite IHt. reflexivity.
   - rewrite IHt. reflexivity.
-  - apply exponential_curry_proper. rewrite IHt.
+  - apply exp_curry_proper. rewrite IHt.
     apply tm_eval_ext. intros V [x | x]; cbn.
     + rewrite tm_eval_rename.
       change (tm_eval (σ V x) (env_comp ρ (π1 (X := X) (Y := TyI A))) ≈ tm_eval (σ V x) ρ ∘ π1).
@@ -271,13 +271,13 @@ Proof.
   - rewrite IHTmEq1, IHTmEq2. reflexivity.
   - rewrite IHTmEq. reflexivity.
   - rewrite IHTmEq. reflexivity.
-  - apply exponential_curry_proper. apply IHTmEq.
+  - apply exp_curry_proper. apply IHTmEq.
   - rewrite IHTmEq1, IHTmEq2. reflexivity.
   - apply term_η.
   - apply product_β1.
   - apply product_β2.
   - symmetry. apply product_η.
-  - rewrite exponential_app_β, tm_eval_subst.
+  - rewrite exp_app_β, tm_eval_subst.
     transitivity (tm_eval t (env_comp (env_lift ρ)
       (⟨id, tm_eval u ρ⟩)%hom)).
     + symmetry. apply tm_eval_comp.
@@ -289,7 +289,7 @@ Proof.
   - rewrite tm_eval_rename.
     change (ƛ (app (tm_eval t (env_comp ρ
       (π1 (X := X) (Y := TyI A)))) π2) ≈ tm_eval t ρ).
-    rewrite tm_eval_comp. apply exponential_app_η.
+    rewrite tm_eval_comp. apply exp_app_η.
 Qed.
 
 (** Contexts are interpreted by nested chosen products, starting at terminal. *)

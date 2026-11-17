@@ -25,17 +25,17 @@ From Cats Require Import
 Record VtxFct {X Y : SetC} {C D : Cat}
     (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
   :=
-  { vertex_functor :> Fct (VtxCat T) (VtxCat U)
-  ; vertex_functor_ob_proper
-    :: Proper (carrier_equiv X ==> carrier_equiv Y) vertex_functor
-  ; vertex_functor_transport {x y : X} (p : x ≈S y)
-    : fmap vertex_functor T⟦p⟧Ob ≈
-        U⟦vertex_functor_ob_proper x y p⟧Ob
+  { vertex_fct :> Fct (VtxCat T) (VtxCat U)
+  ; vertex_fct_ob_proper
+    :: Proper (carrier_equiv X ==> carrier_equiv Y) vertex_fct
+  ; vertex_fct_transport {x y : X} (p : x ≈S y)
+    : fmap vertex_fct T⟦p⟧Ob ≈
+        U⟦vertex_fct_ob_proper x y p⟧Ob
   }.
 
-Arguments vertex_functor {_ _ _ _ _ _} _.
-Arguments vertex_functor_ob_proper {_ _ _ _ _ _} _ _ _ _.
-Arguments vertex_functor_transport {_ _ _ _ _ _} _ {_ _} _.
+Arguments vertex_fct {_ _ _ _ _ _} _.
+Arguments vertex_fct_ob_proper {_ _ _ _ _ _} _ _ _ _.
+Arguments vertex_fct_transport {_ _ _ _ _ _} _ {_ _} _.
 
 Notation "T '→ᵥ' U" := (VtxFct T U)
   (at level 99, right associativity) : type_scope.
@@ -45,25 +45,25 @@ Notation "T '→ᵥ' U" := (VtxFct T U)
 
 (** 保相等对象映射的视图保持显式，从而函子仍为唯一强制转换，不引入竞争函数路径。 *)
 
-Program Definition vertex_functor_ob_resp {X Y : SetC} {C D : Cat}
+Program Definition vertex_fct_ob_resp {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : X →r Y
   :=
   {|func := F
-  ; func_proper := vertex_functor_ob_proper F
+  ; func_proper := vertex_fct_ob_proper F
   |}.
 
 (** The transport equation holds for every parallel target witness. *)
 
 (** 运输方程对任意平行目标见证均成立。 *)
 
-Lemma vertex_functor_transport_witness {X Y : SetC} {C D : Cat}
+Lemma vertex_fct_transport_witness {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
     {x y : X} (p : x ≈S y) (q : (F x : Y) ≈S F y)
   : fmap F T⟦p⟧Ob ≈ U⟦q⟧Ob.
 Proof.
-  transitivity U⟦vertex_functor_ob_proper F x y p⟧Ob.
-  - exact (vertex_functor_transport F p).
+  transitivity U⟦vertex_fct_ob_proper F x y p⟧Ob.
+  - exact (vertex_fct_transport F p).
   - apply vertex_transport_witness_independent.
 Defined.
 
@@ -75,7 +75,7 @@ Program Canonical VtxIdF {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : T →ᵥ T
   :=
-  {|vertex_functor := IdF
+  {|vertex_fct := IdF
   |}.
 Next Obligation. intros x y p. exact p. Defined.
 Next Obligation. apply vertex_transport_witness_independent. Defined.
@@ -90,16 +90,16 @@ Program Canonical VtxCompF {X Y Z : SetC} {C D E : Cat}
     {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
   : T →ᵥ V
   :=
-  {|vertex_functor := G ∘F F
+  {|vertex_fct := G ∘F F
   |}.
 Next Obligation.
   intros x y p.
-  exact (vertex_functor_ob_proper G _ _ (vertex_functor_ob_proper F x y p)).
+  exact (vertex_fct_ob_proper G _ _ (vertex_fct_ob_proper F x y p)).
 Defined.
 Next Obligation.
-  transitivity (fmap G U⟦vertex_functor_ob_proper F x y p⟧Ob).
-  - apply functor_fmap_proper. exact (vertex_functor_transport F p).
-  - apply vertex_functor_transport_witness.
+  transitivity (fmap G U⟦vertex_fct_ob_proper F x y p⟧Ob).
+  - apply fct_fmap_proper. exact (vertex_fct_transport F p).
+  - apply vertex_fct_transport_witness.
 Defined.
 
 Infix "∘Fᵥ" := VtxCompF (at level 40) : cat_scope.
@@ -149,7 +149,7 @@ Program Canonical VtxFctS {X Y : SetC} {C D : Cat}
 
 (** 忘却分量的指定条件，得到底层函子之间的普通自然同构。 *)
 
-Definition vertex_functor_iso {X Y : SetC} {C D : Cat}
+Definition vertex_fct_iso {X Y : SetC} {C D : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {F G : T →ᵥ U} (H : VtxFctEq F G)
   : F ≅N G
@@ -169,13 +169,13 @@ Program Definition vertex_diagram_postcomp_resp {X Y : SetC} {C D : Cat}
   |}.
 Next Obligation.
   intros P Q [e H].
-  exists (λ j, vertex_functor_ob_proper F _ _ (e j)).
+  exists (λ j, vertex_fct_ob_proper F _ _ (e j)).
   intros i j f.
-  change (U⟦vertex_functor_ob_proper F _ _ (e j)⟧Ob ∘
+  change (U⟦vertex_fct_ob_proper F _ _ (e j)⟧Ob ∘
       fmap F (fmap P f) ≈
-    fmap F (fmap Q f) ∘ U⟦vertex_functor_ob_proper F _ _ (e i)⟧Ob).
-  rewrite <- !vertex_functor_transport, <- !functor_comp.
-  apply functor_fmap_proper. exact (H i j f).
+    fmap F (fmap Q f) ∘ U⟦vertex_fct_ob_proper F _ _ (e i)⟧Ob).
+  rewrite <- !vertex_fct_transport, <- !fct_comp.
+  apply fct_fmap_proper. exact (H i j f).
 Defined.
 
 (** Equal functors induce pointwise equal postcomposition maps. *)

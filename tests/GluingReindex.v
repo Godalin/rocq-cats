@@ -200,7 +200,7 @@ Proof.
   - exact tagged_vertical_square_roundtrip.
   - transitivity (@id TaggedGluingObj);
       [exact tagged_gluing_toggle_equal |].
-    symmetry. apply functor_id.
+    symmetry. apply fct_id.
 Defined.
 
 End TaggedVertical.

@@ -42,7 +42,7 @@ Lemma internal_then_app {W X Y Z : @Ob C}
   : app (internal_then X Y Z ∘ u) a ≈
       app (π2 ∘ u) (app (π1 ∘ u) a).
 Proof.
-  unfold internal_then. rewrite exponential_comp_sub, exponential_comp_app.
+  unfold internal_then. rewrite exp_comp_sub, exp_comp_app.
   reflexivity.
 Qed.
 
@@ -63,9 +63,9 @@ Lemma internal_context_app {W X Y : @Ob C} (Z : @Ob C)
   : app (internal_context Z X Y ∘ f) a ≈
       ⟨π1 ∘ a, app f (π2 ∘ a)⟩.
 Proof.
-  unfold internal_context. rewrite <- exponential_curry_comp_r,
-    exponential_app_β.
-  repeat first [rewrite exponential_app_comp | rewrite product_comp_r |
+  unfold internal_context. rewrite <- exp_curry_comp_r,
+    exp_app_β.
+  repeat first [rewrite exp_app_comp | rewrite product_comp_r |
     rewrite cross_η | rewrite comp_assoc | rewrite product_β1 |
     rewrite product_β2 | rewrite comp_id_l | rewrite comp_id_r].
   reflexivity.
@@ -78,7 +78,7 @@ Qed.
 
 Definition internal_context_right (Z X Y : @Ob C)
   : Hom (Y ^ X) ((Y × Z) ^ (X × Z))
-  := exponential_dimap ⟨π2, π1⟩ ⟨π2, π1⟩ ∘ internal_context Z X Y.
+  := exp_dimap ⟨π2, π1⟩ ⟨π2, π1⟩ ∘ internal_context Z X Y.
 
 (** Right context remains unchanged while the first factor is evaluated. *)
 
@@ -89,7 +89,7 @@ Lemma internal_context_right_app {W X Y : @Ob C} (Z : @Ob C)
   : app (internal_context_right Z X Y ∘ f) a ≈
       ⟨app f (π1 ∘ a), π2 ∘ a⟩.
 Proof.
-  unfold internal_context_right. rewrite comp_assoc, exponential_app_dimap,
+  unfold internal_context_right. rewrite comp_assoc, exp_app_dimap,
     internal_context_app.
   repeat first [rewrite comp_assoc | rewrite product_comp_r |
     rewrite product_comp_l | rewrite product_β1 | rewrite product_β2 |
@@ -99,8 +99,8 @@ Qed.
 Local Ltac context_simpl :=
   repeat first [rewrite comp_assoc | rewrite internal_context_right_app |
     rewrite internal_context_app |
-    rewrite internal_then_app | rewrite exponential_app_dimap |
-    rewrite exponential_app_comp | rewrite product_comp_r |
+    rewrite internal_then_app | rewrite exp_app_dimap |
+    rewrite exp_app_comp | rewrite product_comp_r |
     rewrite cross_η | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r].
 
@@ -114,7 +114,7 @@ Lemma internal_then_assoc (X Y Z T : @Ob C)
       internal_then X Y T ∘ (id × internal_then Y Z T) ∘
         (@product_assoc C HP (Y ^ X) (Z ^ Y) (T ^ Z)).1.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
+  apply exp_ext. rewrite !exp_uncurry_app.
   unfold product_assoc. cbn [projT1]. context_simpl. reflexivity.
 Qed.
 
@@ -127,7 +127,7 @@ Lemma internal_context_then (W X Y Z : @Ob C)
       internal_then (W × X) (W × Y) (W × Z) ∘
         (internal_context W X Y × internal_context W Y Z).
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
+  apply exp_ext. rewrite !exp_uncurry_app.
   context_simpl. reflexivity.
 Qed.
 
@@ -137,11 +137,11 @@ Qed.
 
 Lemma internal_context_natural {Z W : @Ob C} (h : Hom Z W)
     (X Y : @Ob C)
-  : exponential_map (h × @id Y) ∘ internal_context Z X Y ≈
-      exponential_dimap (h × @id X) id ∘ internal_context W X Y.
+  : exp_map (h × @id Y) ∘ internal_context Z X Y ≈
+      exp_dimap (h × @id X) id ∘ internal_context W X Y.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  rewrite <- !exponential_dimap_id_r. context_simpl. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  rewrite <- !exp_dimap_id_r. context_simpl. reflexivity.
 Qed.
 
 (** A binary operation applies the function selected by its second factor
@@ -151,11 +151,11 @@ Qed.
 (** 二元运算将由第二因子选定的函数应用于第一因子。这是通常积与指数的图，
     不依赖终对象或效应。 *)
 
-Lemma exponential_binary_apply {X Y Z : @Ob C} (h : Hom (X × Y) Z)
+Lemma exp_binary_apply {X Y Z : @Ob C} (h : Hom (X × Y) Z)
   : (app π2 π1) ∘ (id × (ƛ (h ∘ ⟨π2, π1⟩))) ≈ h.
 Proof.
-  rewrite exponential_app_comp, cross_η, product_β1, product_β2, comp_id_l.
-  rewrite <- exponential_curry_comp_r, exponential_app_β.
+  rewrite exp_app_comp, cross_η, product_β1, product_β2, comp_id_l.
+  rewrite <- exp_curry_comp_r, exp_app_β.
   repeat first [rewrite comp_assoc | rewrite product_comp_l |
     rewrite product_comp_r | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r].
@@ -172,11 +172,11 @@ Qed.
 Lemma internal_context_split (X Y X' Y' : @Ob C)
   : internal_then (X × X') (Y × X') (Y × Y') ∘
       (internal_context_right X' X Y × internal_context Y X' Y') ≈
-      (exponential_product_iso (X × X') Y Y').2.1 ∘
-        (exponential_dimap π1 id × exponential_dimap π2 id).
+      (exp_product_iso (X × X') Y Y').2.1 ∘
+        (exp_dimap π1 id × exp_dimap π2 id).
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app, !comp_assoc,
-    exponential_product_app.
+  apply exp_ext. rewrite !exp_uncurry_app, !comp_assoc,
+    exp_product_app.
   context_simpl. reflexivity.
 Qed.
 
@@ -186,13 +186,13 @@ Qed.
 (** 顺序扩展上下文后复制共同输入，恰好得到已有内部配对比较。此图不涉及效应。 *)
 
 Lemma internal_context_fanout (X Y Z : @Ob C)
-  : exponential_dimap ⟨id, id⟩ id ∘
+  : exp_dimap ⟨id, id⟩ id ∘
       internal_then (X × X) (Y × X) (Y × Z) ∘
       (internal_context_right X X Y × internal_context Y X Z) ≈
-      (exponential_product_iso X Y Z).2.1.
+      (exp_product_iso X Y Z).2.1.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  rewrite exponential_product_app. context_simpl. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  rewrite exp_product_app. context_simpl. reflexivity.
 Qed.
 
 Context `{HT : !HasTerminal C}.
@@ -201,7 +201,7 @@ Context `{HT : !HasTerminal C}.
 
 (** 将通常态射命名为全局内部函数。 *)
 
-Definition exponential_name {X Y : @Ob C} (f : Hom X Y)
+Definition exp_name {X Y : @Ob C} (f : Hom X Y)
   : Hom 1 (Y ^ X)
   := ƛ (f ∘ π2).
 
@@ -209,21 +209,21 @@ Definition exponential_name {X Y : @Ob C} (f : Hom X Y)
 
 (** 命名保持指定态射相等。 *)
 
-Global Instance exponential_name_proper {X Y : @Ob C}
-  : Proper (HomEq ==> HomEq) (@exponential_name X Y).
-Proof. intros f g H. unfold exponential_name. rewrite H. reflexivity. Qed.
+Global Instance exp_name_proper {X Y : @Ob C}
+  : Proper (HomEq ==> HomEq) (@exp_name X Y).
+Proof. intros f g H. unfold exp_name. rewrite H. reflexivity. Qed.
 
 (** A named function evaluates in every context, with no well-pointedness
     assumption or equality of functions. *)
 
 (** 命名函数可在每个上下文中求值，不要求良点性或函数原生相等。 *)
 
-Lemma exponential_name_app {W X Y : @Ob C} (f : Hom X Y)
+Lemma exp_name_app {W X Y : @Ob C} (f : Hom X Y)
     (σ : Hom W 1) (a : Hom W X)
-  : app (exponential_name f ∘ σ) a ≈ f ∘ a.
+  : app (exp_name f ∘ σ) a ≈ f ∘ a.
 Proof.
-  unfold exponential_name. rewrite <- exponential_curry_comp_r,
-    exponential_app_β. context_simpl. reflexivity.
+  unfold exp_name. rewrite <- exp_curry_comp_r,
+    exp_app_β. context_simpl. reflexivity.
 Qed.
 
 (** Naming a global value and evaluating at the terminal argument
@@ -231,10 +231,10 @@ Qed.
 
 (** 命名全局值后在终参数处求值返回原值，只使用终对象唯一性。 *)
 
-Lemma exponential_unit_name {Y : @Ob C} (y : Hom 1 Y)
-  : exponential_unit_eval Y ∘ exponential_name y ≈ y.
+Lemma exp_unit_name {Y : @Ob C} (y : Hom 1 Y)
+  : exp_unit_eval Y ∘ exp_name y ≈ y.
 Proof.
-  unfold exponential_name. rewrite exponential_unit_eval_curry,
+  unfold exp_name. rewrite exp_unit_eval_curry,
     comp_assoc, product_β2.
   rewrite <- (term_η (@id (@Term C HT))), comp_id_r. reflexivity.
 Qed.
@@ -244,34 +244,34 @@ Qed.
 
 (** 在终输入处，内部顺序组合就是通常应用，先产生值，再应用后续内部函数。 *)
 
-Lemma exponential_unit_then (Y Z : @Ob C)
-  : exponential_unit_eval Z ∘ internal_then 1 Y Z ≈
-      (app π2 π1) ∘ (exponential_unit_eval Y × id).
+Lemma exp_unit_then (Y Z : @Ob C)
+  : exp_unit_eval Z ∘ internal_then 1 Y Z ≈
+      (app π2 π1) ∘ (exp_unit_eval Y × id).
 Proof.
-  unfold exponential_unit_eval, internal_then.
-  rewrite exponential_app_comp, comp_id_l, exponential_comp_app.
-  rewrite exponential_app_comp, cross_η, product_β1, product_β2, comp_id_l.
-  rewrite exponential_app_comp, comp_id_l, !term_comp_l. reflexivity.
+  unfold exp_unit_eval, internal_then.
+  rewrite exp_app_comp, comp_id_l, exp_comp_app.
+  rewrite exp_app_comp, cross_η, product_β1, product_β2, comp_id_l.
+  rewrite exp_app_comp, comp_id_l, !term_comp_l. reflexivity.
 Qed.
 
 (** The name of identity is the existing internal identity. *)
 
 (** 恒等的命名就是已有内部恒等。 *)
 
-Lemma exponential_name_id (X : @Ob C)
-  : exponential_name (@id X) ≈ idᴱ[X].
-Proof. unfold exponential_name, exponential_id. rewrite comp_id_l. reflexivity. Qed.
+Lemma exp_name_id (X : @Ob C)
+  : exp_name (@id X) ≈ idᴱ[X].
+Proof. unfold exp_name, exp_id. rewrite comp_id_l. reflexivity. Qed.
 
 (** A named first function is ordinary precomposition. *)
 
 (** 第一个函数为命名函数时，顺序组合就是通常预合成。 *)
 
 Lemma internal_then_name_l {X Y : @Ob C} (f : Hom X Y) (Z : @Ob C)
-  : internal_then X Y Z ∘ (exponential_name f × id) ≈
-      exponential_dimap f id ∘ π2.
+  : internal_then X Y Z ∘ (exp_name f × id) ≈
+      exp_dimap f id ∘ π2.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  context_simpl. rewrite exponential_name_app. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  context_simpl. rewrite exp_name_app. reflexivity.
 Qed.
 
 (** A named second function is ordinary postcomposition. *)
@@ -279,12 +279,12 @@ Qed.
 (** 第二个函数为命名函数时，顺序组合就是通常后合成。 *)
 
 Lemma internal_then_name_r {Y Z : @Ob C} (g : Hom Y Z) (X : @Ob C)
-  : internal_then X Y Z ∘ (id × exponential_name g) ≈
-      exponential_map g ∘ π1.
+  : internal_then X Y Z ∘ (id × exp_name g) ≈
+      exp_map g ∘ π1.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  rewrite <- exponential_dimap_id_r. context_simpl.
-  rewrite exponential_name_app. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  rewrite <- exp_dimap_id_r. context_simpl.
+  rewrite exp_name_app. reflexivity.
 Qed.
 
 (** Naming preserves ordinary composition in its sequential presentation. *)
@@ -292,11 +292,11 @@ Qed.
 (** 命名在顺序呈现下保持通常复合。 *)
 
 Lemma internal_then_names {X Y Z : @Ob C} (g : Hom Y Z) (f : Hom X Y)
-  : internal_then X Y Z ∘ ⟨exponential_name f, exponential_name g⟩ ≈
-      exponential_name (g ∘ f).
+  : internal_then X Y Z ∘ ⟨exp_name f, exp_name g⟩ ≈
+      exp_name (g ∘ f).
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  context_simpl. rewrite !exponential_name_app, comp_assoc. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  context_simpl. rewrite !exp_name_app, comp_assoc. reflexivity.
 Qed.
 
 (** Naming a context-extended function agrees with extending its name. *)
@@ -304,11 +304,11 @@ Qed.
 (** 命名上下文扩展函数，等于扩展其命名。 *)
 
 Lemma internal_context_name {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
-  : internal_context Z X Y ∘ exponential_name f ≈
-      exponential_name (@id Z × f).
+  : internal_context Z X Y ∘ exp_name f ≈
+      exp_name (@id Z × f).
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  context_simpl. rewrite !exponential_name_app. context_simpl. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  context_simpl. rewrite !exp_name_app. context_simpl. reflexivity.
 Qed.
 
 (** The terminal context is removed by the ordinary projection unitor. *)
@@ -316,11 +316,11 @@ Qed.
 (** 终上下文通过通常投影单位子移去。 *)
 
 Lemma internal_context_unit (X Y : @Ob C)
-  : exponential_map (π2 : Hom (1 × Y) Y) ∘ internal_context 1 X Y ≈
-      exponential_dimap (π2 : Hom (1 × X) X) id.
+  : exp_map (π2 : Hom (1 × Y) Y) ∘ internal_context 1 X Y ≈
+      exp_dimap (π2 : Hom (1 × X) X) id.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  rewrite <- exponential_dimap_id_r. context_simpl. reflexivity.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  rewrite <- exp_dimap_id_r. context_simpl. reflexivity.
 Qed.
 
 (** Nested ordinary contexts agree with a product context after the same
@@ -329,13 +329,13 @@ Qed.
 (** 嵌套通常上下文经参数及结果上的同一组选定括号重排后，等于积上下文。 *)
 
 Lemma internal_context_assoc (Z W X Y : @Ob C)
-  : exponential_map (@product_assoc C HP Z W Y).1 ∘
+  : exp_map (@product_assoc C HP Z W Y).1 ∘
       internal_context (Z × W) X Y ≈
-      exponential_dimap (@product_assoc C HP Z W X).1 id ∘
+      exp_dimap (@product_assoc C HP Z W X).1 id ∘
         internal_context Z (W × X) (W × Y) ∘ internal_context W X Y.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  rewrite <- exponential_dimap_id_r.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  rewrite <- exp_dimap_id_r.
   unfold product_assoc. cbn [projT1]. context_simpl. reflexivity.
 Qed.
 

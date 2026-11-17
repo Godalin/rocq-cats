@@ -27,7 +27,7 @@ Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** 将右伴随定理用于指定极限锥，不要求选择全部极限或终对象。 *)
 
-Definition exponential_preserves_limit (A : @Ob C) {J : Cat}
+Definition exp_preserves_limit (A : @Ob C) {J : Cat}
     {D : Fct J C} {L : @Ob C} {κ : L ⇒Δ D} (Hκ : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
   := right_adjoint_preserves_limit (ProdExpAdj A) Hκ.
@@ -36,7 +36,7 @@ Definition exponential_preserves_limit (A : @Ob C) {J : Cat}
 
 (** 任意终对象取指数后仍为终对象。 *)
 
-Definition exponential_preserves_terminal (A : @Ob C) {T : @Ob C}
+Definition exp_preserves_terminal (A : @Ob C) {T : @Ob C}
     (HT : is_terminal T)
   : is_terminal (T ^ A)
   := right_adjoint_preserves_terminal (ProdExpAdj A) HT.
@@ -45,7 +45,7 @@ Definition exponential_preserves_terminal (A : @Ob C) {T : @Ob C}
 
 (** 指数保持候选积的完整泛性质。 *)
 
-Definition exponential_preserves_product (A : @Ob C) {X Y P : @Ob C}
+Definition exp_preserves_product (A : @Ob C) {X Y P : @Ob C}
     {p : Hom P X} {q : Hom P Y} (H : is_product X Y P p q)
   : is_product (X ^ A) (Y ^ A) (P ^ A)
       (fmap (-^ A) p) (fmap (-^ A) q)
@@ -55,7 +55,7 @@ Definition exponential_preserves_product (A : @Ob C) {X Y P : @Ob C}
 
 (** 保持已有等化子；CCC 不必具有全部等化子。 *)
 
-Definition exponential_preserves_equalizer (A : @Ob C) {X Y E : @Ob C}
+Definition exp_preserves_equalizer (A : @Ob C) {X Y E : @Ob C}
     {f g : Hom X Y} {e : Hom E X} (H : is_equalizer f g E e)
   : is_equalizer (fmap (-^ A) f) (fmap (-^ A) g)
       (E ^ A) (fmap (-^ A) e)
@@ -65,7 +65,7 @@ Definition exponential_preserves_equalizer (A : @Ob C) {X Y E : @Ob C}
 
 (** 在候选泛性质的假设下保持已有拉回。 *)
 
-Definition exponential_preserves_pullback (A : @Ob C)
+Definition exp_preserves_pullback (A : @Ob C)
     {X Y Z P : @Ob C} {f : Hom X Z} {g : Hom Y Z}
     {p : Hom P X} {q : Hom P Y} (H : is_pullback f g P p q)
   : is_pullback (fmap (-^ A) f) (fmap (-^ A) g) (P ^ A)
@@ -81,8 +81,8 @@ Program Definition ExpF_IsCartF `{HT : !HasTerminal C}
     (A : @Ob C)
   : IsCartF (-^ A) HT HP
   :=
-  {|functor_terminal := exponential_preserves_terminal A terminal_universal
-  ; functor_product X Y := exponential_preserves_product A product_universal
+  {|fct_terminal := exp_preserves_terminal A terminal_universal
+  ; fct_product X Y := exp_preserves_product A product_universal
   |}.
 
 End ExponentialLimits.

@@ -43,7 +43,7 @@ Program Definition arrow_value_pure (X : SetC@{u p})
   {|func x := arr[A; const_resp UnitS x]
   |}.
 Next Obligation.
-  intros x y H. apply functor_fmap_proper. intros z. exact H.
+  intros x y H. apply fct_fmap_proper. intros z. exact H.
 Defined.
 
 (** Pure constant computations are natural in ordinary respectful maps. *)
@@ -59,7 +59,7 @@ Next Obligation.
   intros x.
   change (arr[A; const_resp UnitS (f x)] ≈
     arr[A; f] ∘ arr[A; const_resp UnitS x]).
-  rewrite <- functor_comp. apply functor_fmap_proper. intros z. reflexivity.
+  rewrite <- fct_comp. apply fct_fmap_proper. intros z. reflexivity.
 Defined.
 
 (** The generic global-computation lax functor is an endofunctor here.
@@ -78,13 +78,13 @@ Program Definition ArrowA
 Next Obligation.
   intros x. change (arr[A; const_resp UnitS x] ≈ @id (A UnitS)).
   transitivity (arr[A; (id_resp (X := UnitS))]).
-  - apply functor_fmap_proper. intros z. exact tt.
+  - apply fct_fmap_proper. intros z. exact tt.
   - exact (arrow_arr_id A UnitS).
 Defined.
 Next Obligation.
   intros [x y]. change (arr[A; const_resp UnitS (x,y)] ≈
     arr[A; const_resp UnitS x] &&&[A] arr[A; const_resp UnitS y]).
-  rewrite arrow_fanout_pure. apply functor_fmap_proper. intros z.
+  rewrite arrow_fanout_pure. apply fct_fmap_proper. intros z.
   split; reflexivity.
 Defined.
 

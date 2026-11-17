@@ -306,7 +306,7 @@ Proof.
   pose proof (cartesian_factor_comp (context_type_reindex_cartesian Y σ) f id H) as Hcomp.
   change (context_map_base k ≈ id) in Hbase.
   eapply (pullback_iso (C := C) (p1 := context_proj T Y.2[σ]Ty[T])
-    (p2 := σ^+[T, Y.2]) (fmap (CwFExtF T) k) (functor_is_iso (CwFExtF T) k Hiso)).
+    (p2 := σ^+[T, Y.2]) (fmap (CwFExtF T) k) (fct_is_iso (CwFExtF T) k Hiso)).
   - transitivity (context_map_base k ∘ context_proj T X.2).
     + exact (context_map_comm k).
     + rewrite Hbase, comp_id_l. reflexivity.

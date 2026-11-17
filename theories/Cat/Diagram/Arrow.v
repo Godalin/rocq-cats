@@ -49,11 +49,11 @@ Next Obligation.
   destruct X, Y; cbn in *; destruct f.
   - change (b ∘ fmap F (@Cat.Core.id ArrowShape true) ≈
       fmap G (@Cat.Core.id ArrowShape true) ∘ b).
-    rewrite !functor_id. carw.
+    rewrite !fct_id. carw.
   - exact H.
   - change (a ∘ fmap F (@Cat.Core.id ArrowShape false) ≈
       fmap G (@Cat.Core.id ArrowShape false) ∘ a).
-    rewrite !functor_id. carw.
+    rewrite !fct_id. carw.
 Defined.
 
 (** The operation respects the specified equivalences of its arguments. *)

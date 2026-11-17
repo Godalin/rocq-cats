@@ -75,7 +75,7 @@ Lemma natural_prism_step {C D : Cat} {F G : Fct C D}
   : fmap (NatPrismF α)
       (X := (x, fin_first)) (Y := (x, fin_next fin_first))
       (id, ordinal_step fin_first) ≈ α x.
-Proof. cbn. rewrite functor_id. apply comp_id_l. Defined.
+Proof. cbn. rewrite fct_id. apply comp_id_l. Defined.
 
 (** Componentwise equal transformations give equal prism arrows. Their
     object maps are definitionally the same, so only hom equality is used. *)

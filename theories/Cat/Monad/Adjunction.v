@@ -51,15 +51,15 @@ Next Obligation. exact (adj_triangle_r A (F X)). Defined.
 Next Obligation.
   change (fmap U (adj_counit A (F X)) ∘
     fmap U (fmap F (adj_unit A X)) ≈ id).
-  rewrite <- functor_comp, (adj_triangle_l A X).
-  apply functor_id.
+  rewrite <- fct_comp, (adj_triangle_l A X).
+  apply fct_id.
 Defined.
 Next Obligation.
   change (fmap U (adj_counit A (F X)) ∘
     fmap U (adj_counit A (F (U (F X)))) ≈
     fmap U (adj_counit A (F X)) ∘
       fmap U (fmap F (fmap U (adj_counit A (F X))))).
-  rewrite <- !functor_comp. apply functor_fmap_proper.
+  rewrite <- !fct_comp. apply fct_fmap_proper.
   symmetry. exact (nat_naturality (adj_counit A)
     (adj_counit A (F X))).
 Defined.

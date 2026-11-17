@@ -154,7 +154,7 @@ Qed.
 (** 纯箭头的恢复是该通常箭头的纯命名。 *)
 
 Lemma arrow_reify_arr {X Y : @Ob C} (f : Hom X Y)
-  : arrow_reify A H arr[A; f] ≈ arr[A; exponential_name f].
+  : arrow_reify A H arr[A; f] ≈ arr[A; exp_name f].
 Proof.
   apply arrow_static_eval_reflects.
   rewrite arrow_eval_reify, arrow_static_eval_pure. reflexivity.
@@ -224,14 +224,14 @@ Proof.
     (static_context B X f ∘ˢ[B] static_arr B ⟨id, !⟩) ≈ static_value B f).
   rewrite static_comp_pure_r, static_comp_pure_l.
   unfold static_context, static_value.
-  rewrite <- !comp_assoc, <- !functor_comp.
-  apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
-  rewrite <- exponential_dimap_id_r.
-  apply exponential_ext. rewrite !exponential_uncurry_app.
-  unfold exponential_unit_iso. cbn [projT1].
-  unfold exponential_unit_eval.
-  repeat first [rewrite exponential_app_dimap | rewrite internal_context_app |
-    rewrite exponential_app_comp | rewrite cross_η |
+  rewrite <- !comp_assoc, <- !fct_comp.
+  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  rewrite <- exp_dimap_id_r.
+  apply exp_ext. rewrite !exp_uncurry_app.
+  unfold exp_unit_iso. cbn [projT1].
+  unfold exp_unit_eval.
+  repeat first [rewrite exp_app_dimap | rewrite internal_context_app |
+    rewrite exp_app_comp | rewrite cross_η |
     rewrite product_comp_r | rewrite comp_assoc | rewrite product_β1 |
     rewrite product_β2 | rewrite comp_id_l | rewrite comp_id_r |
     rewrite term_comp_l]. reflexivity.

@@ -43,7 +43,7 @@ Program Definition arrow_apply_pair (X Y : SetC@{u p})
   {|func x := arr[A; ⟨const_resp Y x, id⟩]
   |}.
 Next Obligation.
-  intros x x' H. apply functor_fmap_proper. intros y.
+  intros x x' H. apply fct_fmap_proper. intros y.
   split; [exact H | reflexivity].
 Defined.
 
@@ -161,7 +161,7 @@ Global Instance arrow_apply_const_proper {X Y : SetC@{u p}}
   : Proper (HomEq ==> HomEq) (@arrow_apply_const X Y).
 Proof.
   intros f g H. unfold arrow_apply_const.
-  apply comp_proper; [reflexivity |]. apply functor_fmap_proper.
+  apply comp_proper; [reflexivity |]. apply fct_fmap_proper.
   intros x. split; [exact H | reflexivity].
 Qed.
 
@@ -177,8 +177,8 @@ Proof.
   transitivity ((apply[AA; X; Z] ∘
     arr[AA; comp_l_resp (f := h) × id_resp]) ∘
       arr[AA; ⟨const_resp X f, id⟩]).
-  - rewrite comp_assoc, <- functor_comp. apply comp_proper;
-      [reflexivity |]. apply functor_fmap_proper. intros x.
+  - rewrite comp_assoc, <- fct_comp. apply comp_proper;
+      [reflexivity |]. apply fct_fmap_proper. intros x.
     split; reflexivity.
   - rewrite arrow_apply_post, comp_assoc. reflexivity.
 Qed.
@@ -196,14 +196,14 @@ Proof.
   { unfold arrow_apply_const.
     transitivity ((apply[AA; X; UnitS ×S X] ∘
       arr[AA; arrow_apply_pair AA UnitS X × id_resp]) ∘ arr[AA; j]).
-    - rewrite comp_assoc, <- functor_comp. apply comp_proper;
-        [reflexivity |]. apply functor_fmap_proper. intros x.
+    - rewrite comp_assoc, <- fct_comp. apply comp_proper;
+        [reflexivity |]. apply fct_fmap_proper. intros x.
       split; reflexivity.
     - rewrite arrow_apply_pair_id, comp_id_l. reflexivity. }
   assert (Hqj : arr[AA; q] ∘ arr[AA; j] ≈ @id (AA X)).
-  { rewrite <- functor_comp. transitivity (arr[AA; id_resp (X := X)]).
-    - apply functor_fmap_proper. intros x. reflexivity.
-    - apply functor_id. }
+  { rewrite <- fct_comp. transitivity (arr[AA; id_resp (X := X)]).
+    - apply fct_fmap_proper. intros x. reflexivity.
+    - apply fct_id. }
   transitivity (arrow_apply_const (arr[AA; q] ∘ arr[AA; j])).
   - apply arrow_apply_const_proper. symmetry. exact Hqj.
   - rewrite arrow_apply_const_post, Hj. exact Hqj.

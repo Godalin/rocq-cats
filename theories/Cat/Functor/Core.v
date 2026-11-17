@@ -31,30 +31,30 @@ Record Fct (C D : Cat)
 
   ; F1 {X Y : @Ob C} : Hom X Y → Hom (F0 X) (F0 Y)
 
-  (** [functor_fmap_proper] sends equal source arrows to equal target
+  (** [fct_fmap_proper] sends equal source arrows to equal target
       arrows. The two categories use their own specified hom equalities;
       these need not be native equality or the same relation. *)
 
-  (** [functor_fmap_proper] 将源范畴中相等的箭头送到目标范畴中相等的箭头。
+  (** [fct_fmap_proper] 将源范畴中相等的箭头送到目标范畴中相等的箭头。
       两侧使用各自指定的 Hom 相等，不必是原生相等，也不必是同一个关系。 *)
 
-  ; functor_fmap_proper {X Y}
+  ; fct_fmap_proper {X Y}
     :: Proper (@HomEq[X, Y] ==> @HomEq[F0 X, F0 Y]) F1
 
-  (** [functor_id] states [fmap F (@id X) ≈ @id (F X)]. *)
+  (** [fct_id] states [fmap F (@id X) ≈ @id (F X)]. *)
 
-  (** [functor_id] 给出 [fmap F (@id X) ≈ @id (F X)]。 *)
+  (** [fct_id] 给出 [fmap F (@id X) ≈ @id (F X)]。 *)
 
-  ; functor_id {X}
+  ; fct_id {X}
     : F1 (@id X) ≈ @id (F0 X)
 
-  (** [functor_comp] states [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]. A path
+  (** [fct_comp] states [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]. A path
       can be composed before or after applying the functor, with equal results. *)
 
-  (** [functor_comp] 给出 [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]：
+  (** [fct_comp] 给出 [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]：
       先复合再映射，与先映射再复合，得到相等的箭头。 *)
 
-  ; functor_comp {X Y Z} (f : Hom Y Z) (g : Hom X Y)
+  ; fct_comp {X Y Z} (f : Hom Y Z) (g : Hom X Y)
     : F1 (f ∘ g) ≈ F1 f ∘ F1 g
   }.
 
@@ -100,14 +100,14 @@ Definition is_essentially_surjective {C D : Cat} (F : Fct C D)
 
 (** 函子将可逆箭头送到可逆箭头。 *)
 
-Definition functor_is_iso {C D : Cat} (F : Fct C D)
+Definition fct_is_iso {C D : Cat} (F : Fct C D)
     {X Y : @Ob C} (f : Hom X Y) (Hf : is_iso f)
   : is_iso (fmap F f).
 Proof.
   exists (fmap F Hf.1). split;
     unfold is_linv_of, is_rinv_of in *;
-    rewrite <- functor_comp;
-    [rewrite (fst Hf.2) | rewrite (snd Hf.2)]; apply functor_id.
+    rewrite <- fct_comp;
+    [rewrite (fst Hf.2) | rewrite (snd Hf.2)]; apply fct_id.
 Defined.
 
 (** A fully faithful functor reflects invertibility. Fullness supplies an
@@ -115,13 +115,13 @@ Defined.
 
 (** 全忠实函子反映可逆性：满性提供逆的原像，忠实性反映两条互逆方程。 *)
 
-Definition functor_reflects_iso {C D : Cat} (F : Fct C D)
+Definition fct_reflects_iso {C D : Cat} (F : Fct C D)
     (HF : is_fully_faithful F) {X Y : @Ob C} (f : Hom X Y)
     (Hf : is_iso (fmap F f))
   : is_iso f.
 Proof.
   destruct (fst HF Y X Hf.1) as [g Hg].
-  exists g. split; apply (snd HF); rewrite functor_comp, Hg, functor_id;
+  exists g. split; apply (snd HF); rewrite fct_comp, Hg, fct_id;
     [exact (fst Hf.2) | exact (snd Hf.2)].
 Defined.
 
@@ -156,14 +156,14 @@ Program Canonical CompF {C D E : Cat}
   ; F1 _ _ f := fmap G (fmap F f)
   |}.
 Next Obligation. intros f g H.
-  rewrite functor_fmap_proper. reflexivity.
-  rewrite functor_fmap_proper. reflexivity. auto.
+  rewrite fct_fmap_proper. reflexivity.
+  rewrite fct_fmap_proper. reflexivity. auto.
 Qed.
 Next Obligation.
-  repeat rewrite functor_id. reflexivity.
+  repeat rewrite fct_id. reflexivity.
 Qed.
 Next Obligation.
-  repeat rewrite functor_comp. reflexivity.
+  repeat rewrite fct_comp. reflexivity.
 Qed.
 
 (** ** Fixing One Argument of a Functor from a Product Category *)
@@ -184,11 +184,11 @@ Program Definition π1F (F : Fct (C ×C D) E) (d : @Ob D)
   ; F1 X Y f := fmap F (X := (X, d)) (Y := (Y, d)) (f, id)
   |}.
 Next Obligation.
-  intros u v Huv. apply functor_fmap_proper. split; cato.
+  intros u v Huv. apply fct_fmap_proper. split; cato.
 Qed.
-Next Obligation. apply functor_id. Qed.
+Next Obligation. apply fct_id. Qed.
 Next Obligation.
-  rewrite <- functor_comp. apply functor_fmap_proper. split; cato.
+  rewrite <- fct_comp. apply fct_fmap_proper. split; cato.
 Qed.
 
 (** Vary the second argument, keeping the first fixed. *)
@@ -202,11 +202,11 @@ Program Definition π2F (F : Fct (C ×C D) E) (c : @Ob C)
   ; F1 X Y f := fmap F (X := (c, X)) (Y := (c, Y)) (id, f)
   |}.
 Next Obligation.
-  intros u v Huv. apply functor_fmap_proper. split; cato.
+  intros u v Huv. apply fct_fmap_proper. split; cato.
 Qed.
-Next Obligation. apply functor_id. Qed.
+Next Obligation. apply fct_id. Qed.
 Next Obligation.
-  rewrite <- functor_comp. apply functor_fmap_proper. split; cato.
+  rewrite <- fct_comp. apply fct_fmap_proper. split; cato.
 Qed.
 
 End PartialFunctor.
@@ -226,11 +226,11 @@ Program Definition ProdF {C D E K : Cat} (F : Fct C D) (G : Fct E K)
   |}.
 Next Obligation.
   intros [f g] [f' g'] [Hf Hg]. split; cbn.
-  - exact (@functor_fmap_proper _ _ F _ _ f f' Hf).
-  - exact (@functor_fmap_proper _ _ G _ _ g g' Hg).
+  - exact (@fct_fmap_proper _ _ F _ _ f f' Hf).
+  - exact (@fct_fmap_proper _ _ G _ _ g g' Hg).
 Qed.
-Next Obligation. split; apply functor_id. Qed.
-Next Obligation. split; apply functor_comp. Qed.
+Next Obligation. split; apply fct_id. Qed.
+Next Obligation. split; apply fct_comp. Qed.
 
 Infix "×F" := ProdF (at level 41) : cat_scope.
 
@@ -241,7 +241,7 @@ Infix "×F" := ProdF (at level 41) : cat_scope.
 Lemma fmap_eq_to_hom {C D : Cat} (F : Fct C D)
     {X Y : @Ob C} (p : X = Y)
   : fmap F (eq_to_hom p) ≈ eq_to_hom (f_equal F p).
-Proof. destruct p. simpl. apply functor_id. Qed.
+Proof. destruct p. simpl. apply fct_id. Qed.
 
 (** ** Opposite Functors
 
@@ -261,10 +261,10 @@ Program Definition OpF {C D : Cat} (F : Fct C D)
   ; F1 X Y f := fmap F f
   |}.
 Next Obligation.
-  intros u v Huv. exact (@functor_fmap_proper C D F Y X u v Huv).
+  intros u v Huv. exact (@fct_fmap_proper C D F Y X u v Huv).
 Qed.
-Next Obligation. exact (@functor_id C D F X). Qed.
-Next Obligation. exact (@functor_comp C D F Z Y X g f). Qed.
+Next Obligation. exact (@fct_id C D F X). Qed.
+Next Obligation. exact (@fct_comp C D F Z Y X g f). Qed.
 
 Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
 
@@ -272,7 +272,7 @@ Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
 
 (** 取反保留选定的箭头原像。 *)
 
-Definition functor_op_full {C D : Cat} {F : Fct C D}
+Definition fct_op_full {C D : Cat} {F : Fct C D}
     (HF : is_full F)
   : is_full (F^opF)
   := λ X Y f, HF Y X f.
@@ -282,7 +282,7 @@ Definition functor_op_full {C D : Cat} {F : Fct C D}
 
 (** 反转代表同构给出反范畴中的本质满性，并保留原对象代表。 *)
 
-Definition functor_op_essentially_surjective {C D : Cat}
+Definition fct_op_essentially_surjective {C D : Cat}
     {F : Fct C D} (HF : is_essentially_surjective F)
   : is_essentially_surjective (F^opF).
 Proof.
@@ -301,11 +301,11 @@ Program Definition UnopF {C D : Cat} (F : Fct (C^op) (D^op))
   :=
   {|F0 X := F X
   ; F1 X Y f := fmap F f
-  ; functor_fmap_proper X Y f g H :=
-      @functor_fmap_proper (C^op) (D^op) F Y X f g H
+  ; fct_fmap_proper X Y f g H :=
+      @fct_fmap_proper (C^op) (D^op) F Y X f g H
   |}.
-Next Obligation. exact (@functor_id (C^op) (D^op) F X). Qed.
-Next Obligation. exact (@functor_comp (C^op) (D^op) F Z Y X g f). Qed.
+Next Obligation. exact (@fct_id (C^op) (D^op) F X). Qed.
+Next Obligation. exact (@fct_comp (C^op) (D^op) F Z Y X g f). Qed.
 
 Notation "F '^unopF'" := (UnopF F) (at level 35) : cat_scope.
 

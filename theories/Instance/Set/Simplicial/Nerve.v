@@ -191,7 +191,7 @@ Definition nerve_equiv_iso@{u p +} {C D : Cat} (e : C ≃C D)
   : (N≅(C) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅(D).
 Proof.
   exists N≅[e.1]. apply is_iso_nat_iso.
-  exact (functor_is_iso DiagramNerveF e.1 e.2).
+  exact (fct_is_iso DiagramNerveF e.1 e.2).
 Defined.
 
 (** * Standard Simplices Are Nerves of Finite Ordinals *)
@@ -264,7 +264,7 @@ Proof.
     + transitivity (ConstF [Ord n] (lower y fin_first)).
       * exists (fmap (DiagF [Ord n] C) e.1).
         apply is_iso_nat_iso.
-        exact (functor_is_iso (DiagF [Ord n] C) e.1 e.2).
+        exact (fct_is_iso (DiagF [Ord n] C) e.1 e.2).
       * exact (gpd_initial_diagram_iso
           (ordinal_first_initial n) (lower y)).
 Defined.

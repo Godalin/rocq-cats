@@ -47,13 +47,13 @@ Program Definition ArrowPremonoidal
   ; PremonoidalUnit := PremonoidalUnit V
   ; premonoidal_associator X Y Z :=
       let i := @premonoidal_associator C V X Y Z in
-      (fmap J i.1; functor_is_iso J i.1 i.2)
+      (fmap J i.1; fct_is_iso J i.1 i.2)
   ; premonoidal_left_unitor X :=
       let i := @premonoidal_left_unitor C V X in
-      (fmap J i.1; functor_is_iso J i.1 i.2)
+      (fmap J i.1; fct_is_iso J i.1 i.2)
   ; premonoidal_right_unitor X :=
       let i := @premonoidal_right_unitor C V X in
-      (fmap J i.1; functor_is_iso J i.1 i.2)
+      (fmap J i.1; fct_is_iso J i.1 i.2)
   ; premonoidal_assoc_central X Y Z := arrow_pure_central A _
   ; premonoidal_unit_l_central X := arrow_pure_central A _
   ; premonoidal_unit_r_central X := arrow_pure_central A _
@@ -69,16 +69,16 @@ Next Obligation.
     second[A; arr[A; (@product_assoc C HP X Y Z).1]; W] ∘
       (arr[A; (@product_assoc C HP W (X × Y) Z).1] ∘
         first[A; arr[A; (@product_assoc C HP W X Y).1]; Z])).
-  rewrite arrow_second_arr, arrow_first_arr, <- !functor_comp.
-  apply functor_fmap_proper.
+  rewrite arrow_second_arr, arrow_first_arr, <- !fct_comp.
+  apply fct_fmap_proper.
   exact (@premonoidal_pentagon C V W X Y Z).
 Defined.
 Next Obligation.
   change (second[A; arr[A; (π2 : Hom (1 × Y) Y)]; X] ∘
     arr[A; (@product_assoc C HP X 1 Y).1] ≈
     first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
-  rewrite arrow_second_arr, arrow_first_arr, <- functor_comp.
-  apply functor_fmap_proper.
+  rewrite arrow_second_arr, arrow_first_arr, <- fct_comp.
+  apply fct_fmap_proper.
   exact (@premonoidal_triangle C V X Y).
 Defined.
 

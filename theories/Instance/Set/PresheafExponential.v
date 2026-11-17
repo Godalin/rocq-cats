@@ -155,7 +155,7 @@ Next Obligation. intros [z]. exact (nat_naturality k f z). Defined.
 
 (** 原 β 律按定义就是所需的原生求值律。 *)
 
-Lemma psh_exponential_β (t : PointwiseProductF Z A ⇒ B)
+Lemma psh_exp_β (t : PointwiseProductF Z A ⇒ B)
   : (PshEvalN ∘Nv PointwiseProductN (PshCurryN t) (IdN (F := A))) ≈N t.
 Proof. exact (kripke_curry_β A B Z t). Qed.
 
@@ -165,7 +165,7 @@ Proof. exact (kripke_curry_β A B Z t). Qed.
 (** 既有转置唯一性应用于提升的上下文，在包装元素处求值就给出原生上下文中的
     唯一性。 *)
 
-Lemma psh_exponential_unique (t : PointwiseProductF Z A ⇒ B)
+Lemma psh_exp_unique (t : PointwiseProductF Z A ⇒ B)
     (k : Z ⇒ B ^K A)
     (Hk : (PshEvalN ∘Nv PointwiseProductN k (IdN (F := A))) ≈N t)
   : k ≈N PshCurryN t.
@@ -195,16 +195,16 @@ Local Instance psh_products
 
 (** 原转置定律给出完整的指数泛性质。 *)
 
-Definition psh_exponential_universal
-  : @is_exponential (FctCat (C^op) SetCat) psh_products
+Definition psh_exp_universal
+  : @is_exp (FctCat (C^op) SetCat) psh_products
       A B (B ^K A) PshEvalN.
 Proof.
   intros Z t. exists (PshCurryN t).
   refine {|this := _
          ; that := _
          |}.
-  - exact (psh_exponential_β t).
-  - intros k Hk. apply psh_exponential_unique. exact Hk.
+  - exact (psh_exp_β t).
+  - intros k Hk. apply psh_exp_unique. exact Hk.
 Defined.
 
 End PresheafExponential.
@@ -224,7 +224,7 @@ Program Definition Psh_HasExponential@{o h e l u +}
   {|exp B A := B ^K A
   ; eval A B := PshEvalN C A B
   |}.
-Next Obligation. apply psh_exponential_universal. Defined.
+Next Obligation. apply psh_exp_universal. Defined.
 
 (** Combine the already chosen pointwise terminal/products with the
     constructed exponentials. Importing this value enables no model choice. *)

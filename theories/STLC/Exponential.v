@@ -157,8 +157,8 @@ Defined.
 
 (** 函数 β 证明求值方程，函数 η 给出抽象的唯一性；不使用替换函数相等。 *)
 
-Definition singleton_exponential (A U : Ty B)
-  : @is_exponential (CtxCat@{b e l} B) syntactic_products
+Definition singleton_exp (A U : Ty B)
+  : @is_exp (CtxCat@{b e l} B) syntactic_products
       (∅ ▻ A) (∅ ▻ U) (∅ ▻ (A ⇒ U)) (singleton_eval A U).
 Proof.
   intros Γ f. exists (ƛSub f).
@@ -183,20 +183,20 @@ Defined.
 
 (** 上下文打包沿两个端点运输单变量指数泛性质；求值相等保持同一个泛中介。 *)
 
-Definition ctx_exponential (Γ Δ : Ctx B)
-  : @is_exponential (CtxCat@{b e l} B) syntactic_products
+Definition ctx_exp (Γ Δ : Ctx B)
+  : @is_exp (CtxCat@{b e l} B) syntactic_products
       Γ Δ (Δ ^Ctx Γ) (ctx_eval Γ Δ).
 Proof.
-  refine (exponential_eval_equiv
+  refine (exp_eval_equiv
     (C := CtxCat@{b e l} B) (HP := syntactic_products)
     (ev := ctx_unpack_sub Δ ∘Sub singleton_eval ⟦Γ⟧Ty ⟦Δ⟧Ty ∘Sub
       @cross (CtxCat@{b e l} B) syntactic_products
         (Δ ^Ctx Γ) Γ (Δ ^Ctx Γ) (∅ ▻ ⟦Γ⟧Ty) sub_id (ctx_pack_sub Γ))
     _ _).
   - rewrite cross_η, comp_id_l. reflexivity.
-  - exact (exponential_transport (ctx_pack_iso Γ)
+  - exact (exp_transport (ctx_pack_iso Γ)
       (iso_symm (ctx_pack_iso Δ)) (singleton_eval ⟦Γ⟧Ty ⟦Δ⟧Ty)
-      (singleton_exponential ⟦Γ⟧Ty ⟦Δ⟧Ty)).
+      (singleton_exp ⟦Γ⟧Ty ⟦Δ⟧Ty)).
 Defined.
 
 End SyntacticExponentials.
@@ -211,5 +211,5 @@ Program Definition CtxCat_HasExponential@{b e l +} (B : Type@{b})
   :=
   {|exp := CtxExp
   ; eval Γ Δ := ctx_eval Γ Δ
-  ; exponential_universal Γ Δ := ctx_exponential Γ Δ
+  ; exp_universal Γ Δ := ctx_exp Γ Δ
   |}.

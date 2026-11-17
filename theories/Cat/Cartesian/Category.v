@@ -75,11 +75,11 @@ Definition TerminalCart@{o h p l}
 Program Definition TerminalCartF@{o h p l +} (C : CartCat@{l o h p l})
   : CartFctS C TerminalCart@{o h p l}
   :=
-  {|CartF := ConstF C (C := TerminalCart@{o h p l}) tt
-  ; cartesian_isCartF :=
-    {|functor_terminal := @terminal_universal TerminalCart@{o h p l}
+  {|CartFctToFct := ConstF C (C := TerminalCart@{o h p l}) tt
+  ; isCartF :=
+    {|fct_terminal := @terminal_universal TerminalCart@{o h p l}
         (hasTerminal TerminalCart@{o h p l})
-    ; functor_product X Y := @product_universal TerminalCart@{o h p l}
+    ; fct_product X Y := @product_universal TerminalCart@{o h p l}
         (hasProduct TerminalCart@{o h p l}) tt tt
     |}
   |}.
@@ -91,10 +91,10 @@ Program Definition TerminalCartF@{o h p l +} (C : CartCat@{l o h p l})
 Program Definition FstCartF (C D : CartCat)
   : CartFctS (ProdCart C D) C
   :=
-  {|CartF := FstF C D
-  ; cartesian_isCartF :=
-    {|functor_terminal := @terminal_universal C (hasTerminal C)
-    ; functor_product X Y := @product_universal C (hasProduct C)
+  {|CartFctToFct := FstF C D
+  ; isCartF :=
+    {|fct_terminal := @terminal_universal C (hasTerminal C)
+    ; fct_product X Y := @product_universal C (hasProduct C)
         (fst X) (fst Y)
     |}
   |}.
@@ -106,10 +106,10 @@ Program Definition FstCartF (C D : CartCat)
 Program Definition SndCartF (C D : CartCat)
   : CartFctS (ProdCart C D) D
   :=
-  {|CartF := SndF C D
-  ; cartesian_isCartF :=
-    {|functor_terminal := @terminal_universal D (hasTerminal D)
-    ; functor_product X Y := @product_universal D (hasProduct D)
+  {|CartFctToFct := SndF C D
+  ; isCartF :=
+    {|fct_terminal := @terminal_universal D (hasTerminal D)
+    ; fct_product X Y := @product_universal D (hasProduct D)
         (snd X) (snd Y)
     |}
   |}.
@@ -122,18 +122,18 @@ Program Definition PairCartF {S C D : CartCat}
     (F : CartFctS S C) (G : CartFctS S D)
   : CartFctS S (ProdCart C D)
   :=
-  {|CartF := PairF F G
-  ; cartesian_isCartF :=
-    {|functor_terminal := prod_is_terminal
-        (@functor_terminal S C F (hasTerminal S) (hasProduct S)
-          (cartesian_isCartF F))
-        (@functor_terminal S D G (hasTerminal S) (hasProduct S)
-          (cartesian_isCartF G))
-    ; functor_product X Y := prod_is_product
-        (@functor_product S C F (hasTerminal S) (hasProduct S)
-          (cartesian_isCartF F) X Y)
-        (@functor_product S D G (hasTerminal S) (hasProduct S)
-          (cartesian_isCartF G) X Y)
+  {|CartFctToFct := PairF F G
+  ; isCartF :=
+    {|fct_terminal := prod_is_terminal
+        (@fct_terminal S C F (hasTerminal S) (hasProduct S)
+          (isCartF F))
+        (@fct_terminal S D G (hasTerminal S) (hasProduct S)
+          (isCartF G))
+    ; fct_product X Y := prod_is_product
+        (@fct_product S C F (hasTerminal S) (hasProduct S)
+          (isCartF F) X Y)
+        (@fct_product S D G (hasTerminal S) (hasProduct S)
+          (isCartF G) X Y)
     |}
   |}.
 

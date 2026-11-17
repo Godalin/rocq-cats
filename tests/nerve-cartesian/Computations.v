@@ -88,9 +88,9 @@ Proof. reflexivity. Qed.
 
 Example stored_product_inverse_computes
   : let P := BooleanPresentation in
-    let inverse := @functor_product_inv _ _ SmallNerve
+    let inverse := @fct_product_inv _ _ SmallNerve
       SmallTerminal SmallProducts SmallPointwiseProducts
-      (cartesian_isCartF SmallNerve) P P in
+      (isCartF SmallNerve) P P in
     fmap (lower (inverse 1 (△₁[P; tt; tt] true, △₁[P; tt; tt] false)))
       (ordinal_step fin_first) = (true, false).
 Proof. reflexivity. Qed.
@@ -101,7 +101,7 @@ Proof. reflexivity. Qed.
 
 Example stored_terminal_arrow_computes
   : let P := BooleanPresentation in
-    let terminal := @functor_terminal _ _ SmallNerve
-      SmallTerminal SmallProducts (cartesian_isCartF SmallNerve) in
+    let terminal := @fct_terminal _ _ SmallNerve
+      SmallTerminal SmallProducts (isCartF SmallNerve) in
     lower ((terminal (SmallNerve P)).1 1 (△₁[P; tt; tt] true)) fin_first = tt.
 Proof. reflexivity. Qed.
