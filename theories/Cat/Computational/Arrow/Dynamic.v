@@ -45,7 +45,7 @@ Program Definition arrow_dynamic_name {X Y : SetC@{u p}}
   |}.
 Next Obligation.
   intros x x' H. apply comp_proper; [reflexivity |].
-  apply functor_fmap_proper. intros z. exact H.
+  apply fct_fmap_proper. intros z. exact H.
 Defined.
 
 (** Naming respects native computation equality. *)
@@ -68,8 +68,8 @@ Lemma arrow_dynamic_name_pre {X X' Y : SetC@{u p}}
 Proof.
   intros x. change ((f ∘ arr[A; h]) ∘ arr[A; const_resp UnitS x] ≈
     f ∘ arr[A; const_resp UnitS (h x)]).
-  rewrite comp_assoc, <- functor_comp. apply comp_proper;
-    [reflexivity |]. apply functor_fmap_proper. intros []. reflexivity.
+  rewrite comp_assoc, <- fct_comp. apply comp_proper;
+    [reflexivity |]. apply fct_fmap_proper. intros []. reflexivity.
 Qed.
 
 (** An arbitrary following computation postcomposes every named value. *)
@@ -108,7 +108,7 @@ Proof.
   change (f ∘ arr[A; @const_resp UnitS UnitS tt] ≈ f).
   transitivity (f ∘ arr[A; (id_resp (X := UnitS))]).
   - apply comp_proper; [reflexivity|].
-    apply functor_fmap_proper. intros []. exact tt.
+    apply fct_fmap_proper. intros []. exact tt.
   - rewrite arrow_arr_id, comp_id_r. reflexivity.
 Qed.
 
@@ -129,10 +129,10 @@ Proof.
       (f ∘ arr[A; const_resp UnitS x])).
   pose proof (iso_square_inv
     (arr[A; (π2 : UnitS ×S X →r X)];
-      functor_is_iso A _ (@tensor_unit_l_iso SetCat
+      fct_is_iso A _ (@tensor_unit_l_iso SetCat
         (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) X))
     (arr[A; (π2 : UnitS ×S Y →r Y)];
-      functor_is_iso A _ (@tensor_unit_l_iso SetCat
+      fct_is_iso A _ (@tensor_unit_l_iso SetCat
         (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct) Y))
     (second[A; f; UnitS]) f (arrow_context_unit A f)) as Hu.
   change (arr[A; (⟨!,id⟩ : Y →r UnitS ×S Y)] ∘ f ≈
@@ -141,10 +141,10 @@ Proof.
     (second[A; f; UnitS] ∘ arr[A; (⟨!,id⟩ : X →r UnitS ×S X)]) ∘
       arr[A; const_resp UnitS x]).
   - symmetry. rewrite <- !comp_assoc, arrow_second_natural, !comp_assoc,
-      <- !functor_comp. apply comp_proper; [reflexivity|].
-    apply functor_fmap_proper. intros []. split; reflexivity.
-  - rewrite <- Hu, <- !comp_assoc, <- functor_comp, !comp_assoc.
-    apply comp_proper; [|reflexivity]. apply functor_fmap_proper.
+      <- !fct_comp. apply comp_proper; [reflexivity|].
+    apply fct_fmap_proper. intros []. split; reflexivity.
+  - rewrite <- Hu, <- !comp_assoc, <- fct_comp, !comp_assoc.
+    apply comp_proper; [|reflexivity]. apply fct_fmap_proper.
     intros y. split; reflexivity.
 Qed.
 
@@ -180,8 +180,8 @@ Proof.
   transitivity ((apply[AA; Y; Z] ∘
     arr[AA; comp_l_resp (f := k) × id_resp]) ∘
       arr[AA; arrow_apply_pair AA X Y × id_resp]).
-  - rewrite comp_assoc, <- functor_comp. apply comp_proper;
-      [reflexivity |]. apply functor_fmap_proper. intros [x y].
+  - rewrite comp_assoc, <- fct_comp. apply comp_proper;
+      [reflexivity |]. apply fct_fmap_proper. intros [x y].
     split; reflexivity.
   - rewrite arrow_apply_post, comp_assoc, arrow_apply_pair_id, comp_id_r.
     reflexivity.
@@ -205,7 +205,7 @@ Global Instance arrow_dynamic_eval_proper {X Y : SetC@{u p}}
       (@arrow_dynamic_eval X Y).
 Proof.
   intros f g H. unfold arrow_dynamic_eval. apply comp_proper;
-    [reflexivity |]. apply functor_fmap_proper. intros x.
+    [reflexivity |]. apply fct_fmap_proper. intros x.
   split; [exact (H x)|exact tt].
 Qed.
 
@@ -224,19 +224,19 @@ Proof.
     (comp_l_resp (f := k) ∘r arrow_apply_pair AA X UnitS) × id_resp]) ∘
       arr[AA; j]).
   - unfold arrow_dynamic_eval.
-    rewrite comp_assoc, <- functor_comp. apply comp_proper;
-      [reflexivity |]. apply functor_fmap_proper. intros x. split.
+    rewrite comp_assoc, <- fct_comp. apply comp_proper;
+      [reflexivity |]. apply fct_fmap_proper. intros x. split.
     + change (f ∘ arr[AA; const_resp UnitS x] ≈
         (f ∘ arr[AA; q]) ∘ arr[AA; ⟨const_resp UnitS x, id⟩]).
-      rewrite comp_assoc, <- functor_comp. apply comp_proper;
-        [reflexivity |]. apply functor_fmap_proper. intros []. reflexivity.
+      rewrite comp_assoc, <- fct_comp. apply comp_proper;
+        [reflexivity |]. apply fct_fmap_proper. intros []. reflexivity.
     + exact tt.
   - rewrite arrow_apply_pair_post. unfold k.
-    rewrite comp_assoc, <- functor_comp.
+    rewrite comp_assoc, <- fct_comp.
     transitivity (f ∘ arr[AA; id_resp (X := X)]).
-    + apply comp_proper; [reflexivity |]. apply functor_fmap_proper.
+    + apply comp_proper; [reflexivity |]. apply fct_fmap_proper.
       intros x. reflexivity.
-    + rewrite functor_id, comp_id_r. reflexivity.
+    + rewrite fct_id, comp_id_r. reflexivity.
 Qed.
 
 (** Naming the evaluated computation returns the supplied name pointwise. *)
@@ -248,10 +248,10 @@ Lemma arrow_dynamic_name_eval {X Y : SetC@{u p}}
   : arrow_dynamic_name AA (arrow_dynamic_eval f) ≈f f.
 Proof.
   intros x. unfold arrow_dynamic_name, arrow_dynamic_eval. cbn [func].
-  rewrite comp_assoc, <- functor_comp.
+  rewrite comp_assoc, <- fct_comp.
   transitivity (arrow_apply_const AA (f x)).
   - unfold arrow_apply_const. apply comp_proper; [reflexivity |].
-    apply functor_fmap_proper. intros []. split; [reflexivity|exact tt].
+    apply fct_fmap_proper. intros []. split; [reflexivity|exact tt].
   - apply arrow_apply_const_value.
 Qed.
 

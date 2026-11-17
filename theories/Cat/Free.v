@@ -120,7 +120,7 @@ Program Definition RestrictGraph {G : Graph} {C : Cat}
       {|func e := fmap F (path_edge e)
       |}
   |}.
-Next Obligation. intros e f H. apply functor_fmap_proper. apply path_edge_equiv. exact H. Qed.
+Next Obligation. intros e f H. apply fct_fmap_proper. apply path_edge_equiv. exact H. Qed.
 
 (** Restriction followed by free extension recovers the original path action. *)
 
@@ -131,9 +131,9 @@ Lemma free_extend_η {G : Graph} {C : Cat} (F : Fct (FreeCat G) C)
   : fmap (FreeF (RestrictGraph F)) p ≈ fmap F p.
 Proof.
   induction p; cbn.
-  - symmetry. apply functor_id.
+  - symmetry. apply fct_id.
   - reflexivity.
-  - rewrite IHp1, IHp2. symmetry. apply functor_comp.
+  - rewrite IHp1, IHp2. symmetry. apply fct_comp.
 Qed.
 
 (** Naturality on generators extends to every path. This is shared by cones
@@ -153,10 +153,10 @@ Program Definition FreeN {G : Graph} {C : Cat}
   |}.
 Next Obligation.
   induction f; cbn.
-  - rewrite !functor_id. rewrite comp_id_r, comp_id_l. reflexivity.
+  - rewrite !fct_id. rewrite comp_id_r, comp_id_l. reflexivity.
   - apply Hα.
-  - rewrite (@functor_comp (FreeCat G) C F x y z f1 f2),
-      (@functor_comp (FreeCat G) C H x y z f1 f2).
+  - rewrite (@fct_comp (FreeCat G) C F x y z f1 f2),
+      (@fct_comp (FreeCat G) C H x y z f1 f2).
     rewrite <- comp_assoc, IHf1, comp_assoc, IHf2, <- comp_assoc.
     reflexivity.
 Defined.

@@ -31,8 +31,8 @@ Program Definition TensorRightF {C : Cat} (T : Fct (C ×C C) C)
   |}.
 Next Obligation.
   intros [[f g] h] [[f' g'] h'] [[Hf Hg] Hh]. cbn.
-  apply functor_fmap_proper. split; [exact Hf |].
-  exact (@functor_fmap_proper _ _ T
+  apply fct_fmap_proper. split; [exact Hf |].
+  exact (@fct_fmap_proper _ _ T
     (snd (fst X), snd X) (snd (fst Y), snd Y)
     (g, h) (g', h') (Hg, Hh)).
 Defined.
@@ -40,14 +40,14 @@ Next Obligation.
   transitivity (fmap T
     (X := (fst (fst X), T (snd (fst X), snd X)))
     (Y := (fst (fst X), T (snd (fst X), snd X))) (id, id)).
-  - apply functor_fmap_proper. split; [reflexivity |].
-    exact (@functor_id _ _ T (snd (fst X), snd X)).
-  - apply functor_id.
+  - apply fct_fmap_proper. split; [reflexivity |].
+    exact (@fct_id _ _ T (snd (fst X), snd X)).
+  - apply fct_id.
 Defined.
 Next Obligation.
-  etransitivity; [| apply functor_comp].
-  apply functor_fmap_proper. split; [reflexivity |].
-  exact (@functor_comp _ _ T
+  etransitivity; [| apply fct_comp].
+  apply fct_fmap_proper. split; [reflexivity |].
+  exact (@fct_comp _ _ T
     (snd (fst X), snd X) (snd (fst Y), snd Y) (snd (fst Z), snd Z)
     (snd (fst f), snd f) (snd (fst g), snd g)).
 Defined.
@@ -76,19 +76,19 @@ Program Definition BifunctorBinoidal
   ; binoidal_right X Y Z f := fmap T (X := (X, Z)) (Y := (Y, Z)) (f, id)
   |}.
 Next Obligation.
-  intros f g H. apply functor_fmap_proper. split; [reflexivity | exact H].
+  intros f g H. apply fct_fmap_proper. split; [reflexivity | exact H].
 Defined.
 Next Obligation.
-  intros f g H. apply functor_fmap_proper. split; [exact H | reflexivity].
+  intros f g H. apply fct_fmap_proper. split; [exact H | reflexivity].
 Defined.
-Next Obligation. apply functor_id. Defined.
-Next Obligation. apply functor_id. Defined.
+Next Obligation. apply fct_id. Defined.
+Next Obligation. apply fct_id. Defined.
 Next Obligation.
-  rewrite <- functor_comp. apply functor_fmap_proper.
+  rewrite <- fct_comp. apply fct_fmap_proper.
   split; [symmetry; apply comp_id_l | reflexivity].
 Defined.
 Next Obligation.
-  rewrite <- functor_comp. apply functor_fmap_proper.
+  rewrite <- fct_comp. apply fct_fmap_proper.
   split; [reflexivity | symmetry; apply comp_id_l].
 Defined.
 
@@ -104,15 +104,15 @@ Proof.
       fmap T (X := (X, Z)) (Y := (X, W)) (id, g) ≈
       fmap T (X := (Y, Z)) (Y := (Y, W)) (id, g) ∘
       fmap T (X := (X, Z)) (Y := (Y, Z)) (f, id)).
-    rewrite <- !functor_comp.
-    apply functor_fmap_proper. split; rewrite comp_id_l, comp_id_r;
+    rewrite <- !fct_comp.
+    apply fct_fmap_proper. split; rewrite comp_id_l, comp_id_r;
       reflexivity.
   - change (fmap T (X := (W, X)) (Y := (W, Y)) (id, f) ∘
       fmap T (X := (Z, X)) (Y := (W, X)) (g, id) ≈
       fmap T (X := (Z, Y)) (Y := (W, Y)) (g, id) ∘
       fmap T (X := (Z, X)) (Y := (Z, Y)) (id, f)).
-    rewrite <- !functor_comp.
-    apply functor_fmap_proper. split; rewrite comp_id_l, comp_id_r;
+    rewrite <- !fct_comp.
+    apply fct_fmap_proper. split; rewrite comp_id_l, comp_id_r;
       reflexivity.
 Defined.
 
@@ -129,7 +129,7 @@ Proof.
   change (fmap T (X := (X', Y)) (Y := (X', Y')) (id, g) ∘
     fmap T (X := (X, Y)) (Y := (X', Y)) (f, id) ≈
     fmap T (X := (X, Y)) (Y := (X', Y')) (f, g)).
-  rewrite <- functor_comp. apply functor_fmap_proper.
+  rewrite <- fct_comp. apply fct_fmap_proper.
   split; [apply comp_id_l | apply comp_id_r].
 Qed.
 

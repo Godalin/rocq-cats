@@ -25,15 +25,15 @@ Class HasFiniteGen (J : Cat)
   :=
   { generator_count : nat
   ; generator_edges : Fin generator_count → Fin generator_count → nat
-  ; generator_functor : Fct (FreeCat (FiniteGraph generator_edges)) J
-  ; generator_full : is_full generator_functor
+  ; generator_fct : Fct (FreeCat (FiniteGraph generator_edges)) J
+  ; generator_full : is_full generator_fct
   ; generator_essentially_surjective
-      : is_essentially_surjective generator_functor
+      : is_essentially_surjective generator_fct
   }.
 
 Arguments generator_count {_} {_}.
 Arguments generator_edges {_} {_} _ _.
-Arguments generator_functor {_} {_}.
+Arguments generator_fct {_} {_}.
 Arguments generator_full {_} {_} _ _ _.
 Arguments generator_essentially_surjective {_} {_} _.
 
@@ -48,7 +48,7 @@ Program Definition FiniteGraphGen {n : nat}
   :=
   {|generator_count := n
   ; generator_edges := k
-  ; generator_functor := IdF
+  ; generator_fct := IdF
   |}.
 Next Obligation. intros i j f. exists f. reflexivity. Defined.
 Next Obligation.
@@ -146,7 +146,7 @@ Program Definition FiniteHomGen
   :=
   {|generator_count := finite_object_count
   ; generator_edges := FiniteHomEdges
-  ; generator_functor := FiniteHomF
+  ; generator_fct := FiniteHomF
   ; generator_full := finite_hom_full
   ; generator_essentially_surjective := finite_hom_essentially_surjective
   |}.
@@ -185,17 +185,17 @@ Program Definition OpFiniteGen {J : Cat}
   :=
   {|generator_count := @generator_count J HJ
   ; generator_edges i j := @generator_edges J HJ j i
-  ; generator_functor := (@generator_functor J HJ)^opF
+  ; generator_fct := (@generator_fct J HJ)^opF
       ∘F OpFreeF (FiniteGraph (@generator_edges J HJ))
   |}.
 Next Obligation.
   intros i j f.
-  destruct (functor_op_full (@generator_full J HJ) i j f) as [p Hp].
+  destruct (fct_op_full (@generator_full J HJ) i j f) as [p Hp].
   destruct (op_free_full (FiniteGraph (@generator_edges J HJ)) i j p)
     as [q Hq].
   exists q. cbn. rewrite Hq. exact Hp.
 Defined.
 Next Obligation.
-  exact (functor_op_essentially_surjective
+  exact (fct_op_essentially_surjective
     (@generator_essentially_surjective J HJ)).
 Defined.

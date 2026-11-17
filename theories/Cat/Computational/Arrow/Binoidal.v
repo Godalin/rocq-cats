@@ -35,11 +35,11 @@ Program Definition ArrowBinoidal
   ; binoidal_left_proper X Y Z := arrow_second_proper A Z
   ; binoidal_right_proper X Y Z := arrow_first_proper A Z
   |}.
-Next Obligation. exact (@functor_id _ _ (ContextF A Z) X). Defined.
+Next Obligation. exact (@fct_id _ _ (ContextF A Z) X). Defined.
 Next Obligation.
   change (first[A; @id (A X); Z] ≈ id).
   rewrite <- (arrow_arr_id A X), arrow_first_arr,
-    cross_id, functor_id. reflexivity.
+    cross_id, fct_id. reflexivity.
 Defined.
 Next Obligation. exact (arrow_second_comp A g f Z). Defined.
 Next Obligation. exact (arrow_first_comp A g f Z). Defined.

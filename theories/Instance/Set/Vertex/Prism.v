@@ -49,25 +49,25 @@ Proof.
   assert (K : ∀ A : T →ᵥ U,
     fmap A T⟦q⟧Ob ∘ fmap A f ≈ fmap A g ∘ fmap A T⟦p⟧Ob).
   { intros A. transitivity (fmap A (T⟦q⟧Ob ∘ f)).
-    - symmetry. exact (@functor_comp _ _ A x y y' T⟦q⟧Ob f).
+    - symmetry. exact (@fct_comp _ _ A x y y' T⟦q⟧Ob f).
     - transitivity (fmap A (g ∘ T⟦p⟧Ob)).
-      + exact (@functor_fmap_proper _ _ A x y' _ _ H).
-      + exact (@functor_comp _ _ A x x' y' g T⟦p⟧Ob). }
+      + exact (@fct_fmap_proper _ _ A x y' _ _ H).
+      + exact (@fct_comp _ _ A x x' y' g T⟦p⟧Ob). }
   destruct i as [[] | [[] | []]], j as [[] | [[] | []]];
     cbn in *; try solve [destruct a].
-  - rewrite <- (vertex_functor_transport_witness F p r),
-      <- (vertex_functor_transport_witness F q s), !comp_id_r.
+  - rewrite <- (vertex_fct_transport_witness F p r),
+      <- (vertex_fct_transport_witness F q s), !comp_id_r.
     exact (K F).
-  - rewrite <- (vertex_functor_transport_witness F p r),
-      <- (vertex_functor_transport_witness G q s).
+  - rewrite <- (vertex_fct_transport_witness F p r),
+      <- (vertex_fct_transport_witness G q s).
     change (@HomEq (VtxCat U) (F x) (G y')
       (fmap G T⟦q⟧Ob ∘ (fmap G f ∘ α x))
       ((fmap G g ∘ α x') ∘ fmap F T⟦p⟧Ob)).
     rewrite comp_assoc, (nat_naturality α T⟦p⟧Ob), <- !comp_assoc.
     apply (@comp_r (VtxCat U)).
     exact (K G).
-  - rewrite <- (vertex_functor_transport_witness G p r),
-      <- (vertex_functor_transport_witness G q s), !comp_id_r.
+  - rewrite <- (vertex_fct_transport_witness G p r),
+      <- (vertex_fct_transport_witness G q s), !comp_id_r.
     exact (K G).
 Defined.
 
@@ -86,8 +86,8 @@ Proof.
   assert (d : ∀ i, (PrismDiagramF α P θ i : Y) ≈S
     PrismDiagramF α Q θ i).
   { intros i. cbn. destruct (θ i) as [[] | [[] | []]]; cbn.
-    - exact (vertex_functor_ob_proper F _ _ (e i)).
-    - exact (vertex_functor_ob_proper G _ _ (e i)). }
+    - exact (vertex_fct_ob_proper F _ _ (e i)).
+    - exact (vertex_fct_ob_proper G _ _ (e i)). }
   exists d.
   intros i j a.
   exact (vertex_prism_square (e i) (e j) (fmap P a) (fmap Q a)
@@ -131,7 +131,7 @@ Lemma vertex_prism_time_square {X Y : SetC} {C D : Cat}
         U⟦r⟧Ob.
 Proof.
   destruct e, d. rewrite !vertex_transport_id, comp_id_l, comp_id_r.
-  exact (@functor_fmap_proper _ _ (NatPrismF α) (x, i) (y, j)
+  exact (@fct_fmap_proper _ _ (NatPrismF α) (x, i) (y, j)
     (f, a) (f, b) (reflexivity f, tt)).
 Defined.
 

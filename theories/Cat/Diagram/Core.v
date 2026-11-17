@@ -108,8 +108,8 @@ Program Definition MapCone {J C E : Cat} (F : Fct C E)
   {|nt j := fmap F (κ j)
   |}.
 Next Obligation.
-  rewrite comp_id_r, <- (functor_comp C E F).
-  apply functor_fmap_proper.
+  rewrite comp_id_r, <- (fct_comp C E F).
+  apply fct_fmap_proper.
   pose proof (nat_naturality κ f) as H. cbn in H.
   rewrite comp_id_r in H. exact H.
 Qed.

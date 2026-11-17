@@ -50,16 +50,16 @@ Next Obligation.
 Defined.
 Next Obligation.
   transitivity (fmap (ExtF K) (element_map_id P (Γ; A))).
-  - apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  - apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
     change (@id Γ ≈ id). reflexivity.
-  - apply functor_id.
+  - apply fct_id.
 Defined.
 Next Obligation.
   transitivity (fmap (ExtF K)
     (element_map_comp P (element_conv P d) (element_conv P e))).
-  - apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  - apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
     change (@id Γ ≈ id ∘ id). symmetry. apply comp_id_l.
-  - exact (functor_comp (ElementsCat P) C (ExtF K)
+  - exact (fct_comp (ElementsCat P) C (ExtF K)
       (element_conv P d) (element_conv P e)).
 Defined.
 Next Obligation.
@@ -67,24 +67,24 @@ Next Obligation.
     (element_map_cartesian P (element_lift P σ A))).
 Defined.
 Next Obligation.
-  apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
   change (@id Γ ≈ id). reflexivity.
 Defined.
 Next Obligation.
-  rewrite <- !(functor_comp (ElementsCat P) C (ExtF K)).
-  apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- !(fct_comp (ElementsCat P) C (ExtF K)).
+  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
   change (σ ∘ τ ≈ (σ ∘ τ) ∘ id).
   symmetry. apply comp_id_r.
 Defined.
 Next Obligation.
-  rewrite <- (functor_comp (ElementsCat P) C (ExtF K)).
-  apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- (fct_comp (ElementsCat P) C (ExtF K)).
+  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
   change (σ ≈ σ' ∘ id).
   transitivity σ'; [exact H | symmetry; apply comp_id_r].
 Defined.
 Next Obligation.
-  rewrite <- !(functor_comp (ElementsCat P) C (ExtF K)).
-  apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- !(fct_comp (ElementsCat P) C (ExtF K)).
+  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
   change (σ ∘ id ≈ id ∘ σ).
   transitivity σ; [apply comp_id_r | symmetry; apply comp_id_l].
 Defined.
@@ -307,8 +307,8 @@ Proof.
   change (fmap (ExtF K) (element_lift P (element_map_base P f) B) ∘
     fmap (ExtF K) (element_conv P (element_map_eq P f))
       ≈ fmap (ExtF K) f).
-  rewrite <- (functor_comp (ElementsCat P) C (ExtF K)).
-  apply (@functor_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- (fct_comp (ElementsCat P) C (ExtF K)).
+  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
   change (element_map_base P f ∘ id ≈ element_map_base P f).
   apply comp_id_r.
 Defined.

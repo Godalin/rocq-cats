@@ -49,7 +49,7 @@ Program Definition set_strength_map (X Y : SetC)
 Next Obligation.
   intros [x v] [y w] [E H].
   transitivity (fmap F ⟨const_resp Y y, id⟩ v).
-  - apply (@functor_fmap_proper SetCat SetCat F _ _).
+  - apply (@fct_fmap_proper SetCat SetCat F _ _).
     intros a. split; [exact E|reflexivity].
   - apply func_proper. exact H.
 Defined.
@@ -73,12 +73,12 @@ Next Obligation.
       (fmap F ⟨const_resp X2 x, id⟩ v)).
   transitivity (fmap F (f × g) (fmap F ⟨const_resp X2 x, id⟩ v)).
   - transitivity (fmap F (⟨const_resp Y2 (f x), id⟩ ∘r g) v).
-    + symmetry. exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
+    + symmetry. exact (@fct_comp SetCat SetCat F _ _ _ _ _ v).
     + transitivity (fmap F ((f × g) ∘r ⟨const_resp X2 x, id⟩) v).
-      * apply (@functor_fmap_proper SetCat SetCat F _ _).
+      * apply (@fct_fmap_proper SetCat SetCat F _ _).
         intros y. split; reflexivity.
-      * exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
-  - symmetry. exact (@functor_fmap_proper SetCat SetCat F _ _ _ _
+      * exact (@fct_comp SetCat SetCat F _ _ _ _ _ v).
+  - symmetry. exact (@fct_fmap_proper SetCat SetCat F _ _ _ _
       (@cartesian_tensor_map SetCat SetCat_HasTerminal SetCat_HasProduct
         _ _ _ _ f g) (fmap F ⟨const_resp X2 x, id⟩ v)).
 Defined.
@@ -100,10 +100,10 @@ Next Obligation.
   transitivity (fmap F (@id Y) v).
   - transitivity (fmap F ((π2 : UnitS ×S Y →r Y) ∘r
       ⟨@const_resp Y UnitS tt, id⟩) v).
-    + symmetry. exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
-    + apply (@functor_fmap_proper SetCat SetCat F _ _).
+    + symmetry. exact (@fct_comp SetCat SetCat F _ _ _ _ _ v).
+    + apply (@fct_fmap_proper SetCat SetCat F _ _).
       intros y. reflexivity.
-  - exact (@functor_id SetCat SetCat F Y v).
+  - exact (@fct_id SetCat SetCat F Y v).
 Defined.
 
 Next Obligation.
@@ -114,12 +114,12 @@ Next Obligation.
       (fmap F ⟨const_resp Z y, id⟩ v)).
   transitivity (fmap F ((@product_assoc SetCat SetCat_HasProduct X Y Z).1 ∘r
     ⟨const_resp Z (x,y), id⟩) v).
-  - symmetry. exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
+  - symmetry. exact (@fct_comp SetCat SetCat F _ _ _ _ _ v).
   - transitivity (fmap F (⟨const_resp (Y ×S Z) x, id⟩ ∘r
       ⟨const_resp Z y, id⟩) v).
-    + apply (@functor_fmap_proper SetCat SetCat F _ _).
+    + apply (@fct_fmap_proper SetCat SetCat F _ _).
       intros z. split; [reflexivity|split; reflexivity].
-    + exact (@functor_comp SetCat SetCat F _ _ _ _ _ v).
+    + exact (@fct_comp SetCat SetCat F _ _ _ _ _ v).
 Defined.
 
 End Construction.
@@ -169,9 +169,9 @@ Next Obligation.
   - apply (@func_proper _ _ (μ[M] (X ×S Y))).
     transitivity (fmap M (set_strength_map M X Y ∘r
       ⟨const_resp (M Y) x, id⟩) v).
-    + apply (@functor_fmap_proper SetCat SetCat M _ _).
+    + apply (@fct_fmap_proper SetCat SetCat M _ _).
       intros w. reflexivity.
-    + exact (@functor_comp SetCat SetCat M _ _ _ _ _ v).
+    + exact (@fct_comp SetCat SetCat M _ _ _ _ _ v).
 Defined.
 
 End Monads.

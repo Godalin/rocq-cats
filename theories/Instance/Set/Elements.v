@@ -69,7 +69,7 @@ Program Definition element_map_id (X : PshElement)
   :=
   {|element_map_base := id
   |}.
-Next Obligation. exact (symmetry (functor_id (C^op) SetCat P X.2)). Defined.
+Next Obligation. exact (symmetry (fct_id (C^op) SetCat P X.2)). Defined.
 
 (** Composition uses restriction respectfulness and the presheaf law. *)
 
@@ -87,7 +87,7 @@ Next Obligation.
   - transitivity (fmap P (element_map_base f)
       (fmap P (element_map_base g) Z.2)).
     + apply func_proper. exact (element_map_eq g).
-    + exact (symmetry (functor_comp (C^op) SetCat P
+    + exact (symmetry (fct_comp (C^op) SetCat P
         (element_map_base f) (element_map_base g) Z.2)).
 Defined.
 
@@ -139,7 +139,7 @@ Program Definition element_conv {Γ : @Ob C} {A B : P Γ} (e : A ≈S B)
   |}.
 Next Obligation.
   transitivity B; [exact e |].
-  exact (symmetry (functor_id (C^op) SetCat P B)).
+  exact (symmetry (fct_id (C^op) SetCat P B)).
 Defined.
 
 (** Restriction gives the canonical arrow over a supplied substitution. *)
@@ -188,10 +188,10 @@ Next Obligation.
   transitivity (fmap P (element_map_base P g) Y.2).
   - exact (element_map_eq P g).
   - transitivity (fmap P (element_map_base P f ∘ u) Y.2).
-    + exact (@functor_fmap_proper (C^op) SetCat P _ _ _ _
+    + exact (@fct_fmap_proper (C^op) SetCat P _ _ _ _
         (symmetry H) Y.2).
     + transitivity (fmap P u (fmap P (element_map_base P f) Y.2)).
-      * exact (functor_comp (C^op) SetCat P
+      * exact (fct_comp (C^op) SetCat P
           u (element_map_base P f) Y.2).
       * apply func_proper. symmetry. exact (element_map_eq P f).
 Defined.

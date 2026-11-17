@@ -64,16 +64,16 @@ Import SeparateChoices.
 Program Definition ChoiceChangePreservation
   : @IsCCCF (TokenCCC false) (TokenCCC true) IdF
   :=
-  {|isCartF := @isCartF (TokenCCC false) (TokenCCC false) IdF
+  {|ccc_isCartF := @ccc_isCartF (TokenCCC false) (TokenCCC false) IdF
       (IdF_IsCCCF (TokenCCC false))
-  ; functor_exponential :=
-      @functor_exponential (TokenCCC false) (TokenCCC false) IdF
+  ; fct_exp :=
+      @fct_exp (TokenCCC false) (TokenCCC false) IdF
         (IdF_IsCCCF (TokenCCC false))
   |}.
 
 Definition ChoiceChange
   : (@Hom CCCCat) (TokenCCC false) (TokenCCC true)
-  := CCCFctFromPreservation
+  := CCCFctOfFct
     (C := TokenCCC false) (D := TokenCCC true) IdF ChoiceChangePreservation.
 
 Example forget_choice_change_computes
@@ -109,15 +109,15 @@ Constraint l < m.
 Constraint m < n.
 Constraint n < o.
 Context (C D : CCC@{o h p l l})
-    (F : CCCFct@{o h p l l l m n o h p l} C D).
+    (F : CCCFct@{o h p l l l o h p l m n} C D).
 
 Definition larger_proof_hom
   : (@Hom CCCCat) C D
   := CCCCatHom F.
 
 Example larger_proof_inverse_kept (X Y : C)
-  : (ccc_functor_exponential larger_proof_hom X Y).1
-      = (ccc_functor_exponential F X Y).1.
+  : (ccc_fct_exp larger_proof_hom X Y).1
+      = (ccc_fct_exp F X Y).1.
 Proof. reflexivity. Qed.
 
 End ProofBounds.

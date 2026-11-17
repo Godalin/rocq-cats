@@ -188,10 +188,10 @@ Program Definition NatArrowF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
       |}
   |}.
 Next Obligation.
-  intros f g H. exact (@functor_fmap_proper C D F X Y f g H,
-    @functor_fmap_proper C D G X Y f g H).
+  intros f g H. exact (@fct_fmap_proper C D F X Y f g H,
+    @fct_fmap_proper C D G X Y f g H).
 Defined.
-Next Obligation. exact (@functor_id C D F X, @functor_id C D G X). Defined.
+Next Obligation. exact (@fct_id C D F X, @fct_id C D G X). Defined.
 Next Obligation.
-  exact (@functor_comp C D F X Y Z f g, @functor_comp C D G X Y Z f g).
+  exact (@fct_comp C D F X Y Z f g, @fct_comp C D G X Y Z f g).
 Defined.

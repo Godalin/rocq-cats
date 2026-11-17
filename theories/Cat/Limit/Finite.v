@@ -162,7 +162,7 @@ Context `{HE : !HasEqualizer C}.
 
 Definition GeneratedLimits {J : Cat} `{HG : !HasFiniteGen J}
   : HasLimitsOfShape C J
-  := @ReindexedLimits _ J C generator_functor generator_full
+  := @ReindexedLimits _ J C generator_fct generator_full
     generator_essentially_surjective (FiniteGraphLimits generator_edges).
 
 (** Finite object representatives and finite hom covers suffice for every

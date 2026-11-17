@@ -122,10 +122,10 @@ Definition IndexedCoproductOpProduct {C : Cat} {I : Type}
   : HasLimit (C^op) (@DiscreteF (C^op) I D)
   := @TransportedLimit (DiscreteCat I) (C^op)
       ((DiscreteF D)^opF ∘F OpDiscreteF I) (@DiscreteF (C^op) I D)
-      ((discrete_functor_nat_iso ((DiscreteF D)^opF ∘F OpDiscreteF I)).1
-        ^-1N (discrete_functor_nat_iso
+      ((discrete_fct_nat_iso ((DiscreteF D)^opF ∘F OpDiscreteF I)).1
+        ^-1N (discrete_fct_nat_iso
           ((DiscreteF D)^opF ∘F OpDiscreteF I)).2)
-      (nat_inv_iso _ (discrete_functor_nat_iso
+      (nat_inv_iso _ (discrete_fct_nat_iso
         ((DiscreteF D)^opF ∘F OpDiscreteF I)).2)
       (@RestrictedLimit (DiscreteCat I) ((DiscreteCat I)^op) (C^op)
         (OpDiscreteF I) (op_discrete_full I)

@@ -43,17 +43,17 @@ Next Obligation.
 Defined.
 Next Obligation.
   intros [f g] [f' g'] [H K] [x h]. split.
-  - exact (@functor_fmap_proper C SetCat F _ _ g g' K x).
+  - exact (@fct_fmap_proper C SetCat F _ _ g g' K x).
   - refine {|lower := _|}. apply comp_proper; [reflexivity | exact H].
 Defined.
 Next Obligation.
   intros [x h]. split.
-  - exact (@functor_id C SetCat F _ x).
+  - exact (@fct_id C SetCat F _ x).
   - exact {|lower := comp_id_r (lower h)|}.
 Defined.
 Next Obligation.
   intros [x h]. split.
-  - exact (@functor_comp C SetCat F _ _ _ (snd f) (snd g) x).
+  - exact (@fct_comp C SetCat F _ _ _ (snd f) (snd g) x).
   - refine {|lower := _|}. symmetry. apply comp_assoc.
 Defined.
 
@@ -87,7 +87,7 @@ Program Definition coyoneda_eval (Y : @Ob C)
 Next Obligation.
   intros [x h] [y k] [Hx Hh].
   transitivity (fmap F (lower k) x).
-  - exact (@functor_fmap_proper C SetCat F _ _ _ _ (lower Hh) x).
+  - exact (@fct_fmap_proper C SetCat F _ _ _ _ (lower Hh) x).
   - exact (@func_proper _ _ (fmap F (lower k)) x y Hx).
 Defined.
 
@@ -104,10 +104,10 @@ Next Obligation.
     fmap F (h ∘ (@id Y)) (fmap F f x)).
   transitivity (fmap F (h ∘ f) x).
   - exact (@func_proper _ _ (fmap F (h ∘ f)) _ _
-      (@functor_id C SetCat F X x)).
+      (@fct_id C SetCat F X x)).
   - transitivity (fmap F h (fmap F f x)).
-    + exact (@functor_comp C SetCat F X Y Z h f x).
-    + symmetry. exact (@functor_fmap_proper C SetCat F Y Z _ _
+    + exact (@fct_comp C SetCat F X Y Z h f x).
+    + symmetry. exact (@fct_fmap_proper C SetCat F Y Z _ _
         (comp_id_r h) (fmap F f x)).
 Defined.
 
@@ -139,7 +139,7 @@ Proof.
   - transitivity (κ Y (fmap F (@id Y) x,{|lower := (@id Z) ∘ h|})).
     + symmetry. exact (cowedge_comm κ h (x,{|lower := @id Z|})).
     + apply (@func_proper _ _ (κ Y)). split.
-      * exact (@functor_id C SetCat F Y x).
+      * exact (@fct_id C SetCat F Y x).
       * exact {|lower := comp_id_l h|}.
 Defined.
 
@@ -171,7 +171,7 @@ Proof.
   refine {|this := coyoneda_desc_β κ; that := _|}.
   intros f H x.
   transitivity (f (fmap F (@id Z) x)).
-  - apply (@func_proper _ _ f). symmetry. exact (@functor_id C SetCat F Z x).
+  - apply (@func_proper _ _ f). symmetry. exact (@fct_id C SetCat F Z x).
   - exact (H Z (coyoneda_seed x)).
 Defined.
 
@@ -256,7 +256,7 @@ Lemma coyoneda_out_in
 Proof.
   intros x. transitivity (fmap F (@id Z) x).
   - exact (coyoneda_out_β Z x (@id Z)).
-  - exact (@functor_id C SetCat F Z x).
+  - exact (@fct_id C SetCat F Z x).
 Defined.
 
 (** Evaluation followed by insertion fixes the whole coend by generator
@@ -363,7 +363,7 @@ Lemma coyoneda_eval_post
   : (fmap F f ∘r coyoneda_eval F Z Y) ≈f
       (coyoneda_eval F Z' Y ∘r CoyonedaPostN F f (Y,Y)).
 Proof.
-  intros [x [h]]. symmetry. exact (@functor_comp C SetCat F Y Z Z' f h x).
+  intros [x [h]]. symmetry. exact (@fct_comp C SetCat F Y Z Z' f h x).
 Defined.
 
 End KernelMaps.

@@ -29,7 +29,7 @@ Program Definition BicatHomotopyCat (K : Bicat)
 Next Obligation.
   intros g g' Hg f f' Hf.
   exists (Hg.1 ⋆ Hf.1).
-  apply (functor_is_iso (comp1F X Y Z)
+  apply (fct_is_iso (comp1F X Y Z)
     (X := (g, f)) (Y := (g', f')) (Hg.1, Hf.1)).
   exists (Hg.2.1, Hf.2.1). split; split.
   - exact (fst Hg.2.2).

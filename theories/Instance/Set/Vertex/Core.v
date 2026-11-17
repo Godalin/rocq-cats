@@ -63,7 +63,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
 Lemma vertex_transport_witness_independent {x y : X} (p q : x ≈S y)
   : T⟦p⟧Ob ≈ T⟦q⟧Ob.
-Proof. exact (@functor_fmap_proper _ _ T x y p q tt). Defined.
+Proof. exact (@fct_fmap_proper _ _ T x y p q tt). Defined.
 
 (** Every reflexive witness acts as an identity. *)
 
@@ -74,7 +74,7 @@ Lemma vertex_transport_id {x : X} (p : x ≈S x)
 Proof.
   transitivity (fmap T (@Cats.Cat.Core.id (EqGpd X) x)).
   - apply vertex_transport_witness_independent.
-  - exact (@functor_id _ _ T x).
+  - exact (@fct_id _ _ T x).
 Defined.
 
 (** Any composite witness gives the composite of its transports. *)
@@ -87,7 +87,7 @@ Lemma vertex_transport_comp {x y z : X}
 Proof.
   transitivity (fmap T (@comp (EqGpd X) x y z q p)).
   - apply vertex_transport_witness_independent.
-  - exact (@functor_comp _ _ T x y z q p).
+  - exact (@fct_comp _ _ T x y z q p).
 Defined.
 
 (** Opposite equality witnesses give inverse transports. *)

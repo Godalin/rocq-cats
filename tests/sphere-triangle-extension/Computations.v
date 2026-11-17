@@ -261,7 +261,7 @@ Proof.
   { pose (E := transitivity (symmetry (F fin_first⁺))
       (E02 1 (point 1, simplex_generic 1))).
     exact (fst (simplex_eq_iff _ _) (lower E) fin_first⁺). }
-  pose proof (ordinal_functor_monotone v fin_first⁺ fin_first⁺⁺
+  pose proof (ordinal_fct_monotone v fin_first⁺ fin_first⁺⁺
     ltac:(cbn; repeat constructor)) as L.
   rewrite G1, G2 in L. cbn in L. lia.
 Defined.

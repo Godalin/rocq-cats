@@ -68,10 +68,10 @@ Next Obligation.
     β (comma_right_ob Y) ∘ fmap K (comma_arrow Y) ∘
     α (comma_left_ob Y) ∘ fmap F' (fmap L (comma_left h))).
   rewrite (comp_assoc (β (comma_right_ob Y))).
-  rewrite <- (@functor_comp C C' K _ _ _
+  rewrite <- (@fct_comp C C' K _ _ _
     (fmap G (comma_right h)) (comma_arrow X)).
   rewrite (comma_comm h).
-  rewrite (@functor_comp C C' K _ _ _
+  rewrite (@fct_comp C C' K _ _ _
     (comma_arrow Y) (fmap F (comma_left h))).
   rewrite !(@comp_assoc C'), (nat_naturality α (comma_left h)).
   reflexivity.
@@ -88,10 +88,10 @@ Program Definition CommaChangeF
   ; F1 X Y := comma_change_map
   |}.
 Next Obligation.
-  intros h k [Hl Hr]. split; apply functor_fmap_proper; assumption.
+  intros h k [Hl Hr]. split; apply fct_fmap_proper; assumption.
 Defined.
-Next Obligation. split; apply functor_id. Defined.
-Next Obligation. split; apply functor_comp. Defined.
+Next Obligation. split; apply fct_id. Defined.
+Next Obligation. split; apply fct_comp. Defined.
 
 (** The left projection comparison keeps an identity component. *)
 
@@ -183,7 +183,7 @@ Program Definition CommaChangeEqN (Hα : α ≈N α') (Hβ : β ≈N β')
              |}
   |}.
 Next Obligation.
-  rewrite (@functor_id B' C' G'), (@functor_id A' C' F'),
+  rewrite (@fct_id B' C' G'), (@fct_id A' C' F'),
     comp_id_l, comp_id_r.
   exact (comma_change_equiv_arrow Hα Hβ X).
 Defined.
@@ -204,7 +204,7 @@ Program Definition comma_change_equiv_inverse
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite (@functor_id B' C' G'), (@functor_id A' C' F'),
+  rewrite (@fct_id B' C' G'), (@fct_id A' C' F'),
     comp_id_l, comp_id_r.
   symmetry. exact (comma_change_equiv_arrow Hα Hβ X).
 Defined.
@@ -283,7 +283,7 @@ Program Definition CommaChangeIdN
              |}
   |}.
 Next Obligation.
-  rewrite (@functor_id B C G), (@functor_id A C F).
+  rewrite (@fct_id B C G), (@fct_id A C F).
   cbn. rewrite !comp_id_l, !comp_id_r. reflexivity.
 Defined.
 Next Obligation.
@@ -302,7 +302,7 @@ Program Definition comma_change_id_inverse (X : F ↓C G)
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite (@functor_id B C G), (@functor_id A C F).
+  rewrite (@fct_id B C G), (@fct_id A C F).
   cbn. rewrite !comp_id_l, !comp_id_r. reflexivity.
 Defined.
 
@@ -360,9 +360,9 @@ Next Obligation.
     (fmap K' (fmap F' (fmap L f)) ∘ α' (L X)) ≈
     fmap K' (fmap K (fmap F f)) ∘ (fmap K' (α X) ∘ α' (L X))).
   rewrite <- (comp_assoc (fmap K' (α Y))).
-  rewrite <- (@functor_comp C' C'' K' _ _ _
+  rewrite <- (@fct_comp C' C'' K' _ _ _
     (α Y) (fmap F' (fmap L f))), (nat_naturality α f).
-  rewrite (@functor_comp C' C'' K' _ _ _
+  rewrite (@fct_comp C' C'' K' _ _ _
     (fmap K (fmap F f)) (α X)), (@comp_assoc C'').
   reflexivity.
 Defined.
@@ -379,9 +379,9 @@ Program Definition CommaChangeCompRightN
   |}.
 Next Obligation.
   rewrite (comp_assoc (β' (R Y))).
-  rewrite <- (@functor_comp C' C'' K' _ _ _
+  rewrite <- (@fct_comp C' C'' K' _ _ _
     (β Y) (fmap K (fmap G f))), (nat_naturality β f).
-  rewrite (@functor_comp C' C'' K' _ _ _
+  rewrite (@fct_comp C' C'' K' _ _ _
     (fmap G' (fmap R f)) (β X)).
   change (β' (R Y) ∘ (fmap K' (fmap G' (fmap R f)) ∘ fmap K' (β X)) ≈
     fmap G'' (fmap R' (fmap R f)) ∘ (β' (R X) ∘ fmap K' (β X))).
@@ -401,10 +401,10 @@ Definition comma_change_comp_arrow (X : F ↓C G)
       CommaChangeCompLeftN CommaChangeCompRightN X).
 Proof.
   cbn.
-  rewrite (@functor_comp C' C'' K' _ _ _
+  rewrite (@fct_comp C' C'' K' _ _ _
     (β (comma_right_ob X) ∘ fmap K (comma_arrow X))
     (α (comma_left_ob X))).
-  rewrite (@functor_comp C' C'' K' _ _ _
+  rewrite (@fct_comp C' C'' K' _ _ _
     (β (comma_right_ob X)) (fmap K (comma_arrow X))).
   rewrite !(@comp_assoc C''). reflexivity.
 Defined.
@@ -423,7 +423,7 @@ Program Definition CommaChangeCompN
              |}
   |}.
 Next Obligation.
-  rewrite (@functor_id B'' C'' G''), (@functor_id A'' C'' F''),
+  rewrite (@fct_id B'' C'' G''), (@fct_id A'' C'' F''),
     comp_id_l, comp_id_r.
   exact (comma_change_comp_arrow X).
 Defined.
@@ -445,7 +445,7 @@ Program Definition comma_change_comp_inverse (X : F ↓C G)
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite (@functor_id B'' C'' G''), (@functor_id A'' C'' F''),
+  rewrite (@fct_id B'' C'' G''), (@fct_id A'' C'' F''),
     comp_id_l, comp_id_r.
   symmetry. exact (comma_change_comp_arrow X).
 Defined.

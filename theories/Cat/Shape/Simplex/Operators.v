@@ -79,7 +79,7 @@ Next Obligation.
     fin_rank (@fin_skip (S n) i
       (@fin_unskip (S n) i (f y) (H y)).1)).
   rewrite !(@fin_unskip (S n) _ _ _).2.
-  exact (ordinal_functor_monotone f x y H0).
+  exact (ordinal_fct_monotone f x y H0).
 Defined.
 
 (** Composing the preimage with the coface recovers the operator. *)

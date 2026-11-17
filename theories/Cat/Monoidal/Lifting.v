@@ -42,7 +42,7 @@ Proof. intros f g H. unfold lax_lift2. rewrite H. reflexivity. Qed.
 Lemma lax_lift2_post {X Y Z W : @Ob C}
     (f : Hom (@tensor C MC X Y) Z) (g : Hom Z W)
   : fmap L g ∘ lax_lift2 f ≈ lax_lift2 (g ∘ f).
-Proof. unfold lax_lift2. rewrite <- comp_assoc, <- functor_comp. reflexivity. Qed.
+Proof. unfold lax_lift2. rewrite <- comp_assoc, <- fct_comp. reflexivity. Qed.
 
 (** Naturality moves ordinary maps on the two inputs inside the lifting. *)
 
@@ -55,7 +55,7 @@ Lemma lax_lift2_pre {X Y X' Y' Z : @Ob C}
       lax_lift2 (f ∘ (@tensor_map C MC _ _ _ _ g h)).
 Proof.
   unfold lax_lift2. rewrite comp_assoc, (lax_tensor_natural L g h),
-    <- comp_assoc, <- functor_comp. reflexivity.
+    <- comp_assoc, <- fct_comp. reflexivity.
 Qed.
 
 (** A lifted operation can be substituted in the left input. *)
@@ -72,7 +72,7 @@ Proof.
   assert (H : @tensor_map D MD _ _ _ _ (lax_lift2 f) id ≈
       (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L (@id Z))) ∘
         (@tensor_map D MD _ _ _ _ φ₂[L; X; Y] id)).
-  { rewrite functor_id, <- tensor_map_comp, comp_id_l.
+  { rewrite fct_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
   rewrite H, <- comp_assoc, (lax_lift2_pre g f id). reflexivity.
 Qed.
@@ -91,7 +91,7 @@ Proof.
   assert (H : @tensor_map D MD _ _ _ _ id (lax_lift2 f) ≈
       (@tensor_map D MD _ _ _ _ (fmap L (@id X)) (fmap L f)) ∘
         (@tensor_map D MD _ _ _ _ id φ₂[L; Y; Z])).
-  { rewrite functor_id, <- tensor_map_comp, comp_id_l.
+  { rewrite fct_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
   rewrite H, <- comp_assoc, (lax_lift2_pre g id f). reflexivity.
 Qed.
@@ -113,7 +113,7 @@ Lemma lax_lift2_assoc {X Y Z U V T : @Ob C}
         (@tensor_assoc D MD (L X) (L Y) (L Z)).
 Proof.
   rewrite lax_lift2_left, lax_lift2_right.
-  unfold lax_lift2. rewrite H, functor_comp.
+  unfold lax_lift2. rewrite H, fct_comp.
   rewrite !comp_assoc. apply comp_proper; [reflexivity |].
   rewrite <- !comp_assoc. exact (lax_assoc L X Y Z).
 Qed.

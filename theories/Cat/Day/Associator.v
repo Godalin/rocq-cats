@@ -126,12 +126,12 @@ Proof.
           _ _ (day_associator_inv_gen q xyz)).
       * transitivity (fmap (DayF T (DayF T F G) H)
           ((A.2 q).1 ∘ A.1 q) (DayTripleLeftGenN T F G H q xyz)).
-        -- symmetry. apply (@functor_comp C SetCat (DayF T (DayF T F G) H)).
+        -- symmetry. apply (@fct_comp C SetCat (DayF T (DayF T F G) H)).
         -- transitivity (fmap (DayF T (DayF T F G) H) id
              (DayTripleLeftGenN T F G H q xyz)).
-           ++ exact (@functor_fmap_proper C SetCat (DayF T (DayF T F G) H)
+           ++ exact (@fct_fmap_proper C SetCat (DayF T (DayF T F G) H)
                 _ _ _ _ (fst (A.2 q).2) (DayTripleLeftGenN T F G H q xyz)).
-           ++ apply (@functor_id C SetCat (DayF T (DayF T F G) H)).
+           ++ apply (@fct_id C SetCat (DayF T (DayF T F G) H)).
 Defined.
 
 (** The right inverse follows from the other base inverse equation. *)
@@ -159,12 +159,12 @@ Proof.
           _ _ (day_associator_gen q xyz)).
       * transitivity (fmap (DayF T F (DayF T G H))
           (A.1 q ∘ (A.2 q).1) (DayTripleRightGenN T F G H q xyz)).
-        -- symmetry. apply (@functor_comp C SetCat (DayF T F (DayF T G H))).
+        -- symmetry. apply (@fct_comp C SetCat (DayF T F (DayF T G H))).
         -- transitivity (fmap (DayF T F (DayF T G H)) id
              (DayTripleRightGenN T F G H q xyz)).
-           ++ exact (@functor_fmap_proper C SetCat (DayF T F (DayF T G H))
+           ++ exact (@fct_fmap_proper C SetCat (DayF T F (DayF T G H))
                 _ _ _ _ (snd (A.2 q).2) (DayTripleRightGenN T F G H q xyz)).
-           ++ apply (@functor_id C SetCat (DayF T F (DayF T G H))).
+           ++ apply (@fct_id C SetCat (DayF T F (DayF T G H))).
 Defined.
 
 (** The pointwise left inverse keeps its value abstract before a concrete

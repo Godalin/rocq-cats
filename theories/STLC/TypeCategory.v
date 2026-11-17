@@ -169,13 +169,13 @@ Qed.
 
 (** 函数类型通过积比较继承上下文呈现的完整指数泛性质，不重复证明函数 η。 *)
 
-Definition type_exponential@{b e l +} {B : Type@{b}} (A U : Ty B)
-  : @is_exponential (TyCat@{b e l} B) (TyCat_HasProduct B)
+Definition type_exp@{b e l +} {B : Type@{b}} (A U : Ty B)
+  : @is_exp (TyCat@{b e l} B) (TyCat_HasProduct B)
       A U (A ⇒ U)
       (singleton_eval A U ∘Sub type_split_sub (A ⇒ U) A).
 Proof.
   intros Z f.
-  destruct (@singleton_exponential@{b e l _ _} B A U (∅ ▻ Z)
+  destruct (@singleton_exp@{b e l _ _} B A U (∅ ▻ Z)
     (f ∘Sub type_pair_sub Z A)) as [h [Hh Hu]].
   exists h.
   refine {|this := _
@@ -219,7 +219,7 @@ Program Definition TyCat_HasExponential@{b e l +} (B : Type@{b})
   :=
   {|exp U A := ty_arr A U
   ; eval A U := singleton_eval A U ∘Sub type_split_sub (A ⇒ U) A
-  ; exponential_universal A U := type_exponential A U
+  ; exp_universal A U := type_exp A U
   |}.
 
 (** The type presentation has the selected unit and product type

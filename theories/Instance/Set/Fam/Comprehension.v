@@ -40,12 +40,12 @@ Proof.
   { exact (cartesian_factor_comp (fam_reindex_cartesian V f) φ id H). }
   eapply (pullback_iso (C := SetCat) (p1 := sig_base_resp V[f]S)
     (p2 := fam_total_resp (fam_reindex V f))
-    (fmap FamTotalF k) (functor_is_iso FamTotalF k Hk_iso)).
+    (fmap FamTotalF k) (fct_is_iso FamTotalF k Hk_iso)).
   - transitivity (fmap FamBaseF k ∘ FamProjectionN U).
     + exact (nat_naturality FamProjectionN k).
     + rewrite Hk_base, comp_id_l. reflexivity.
   - change (fmap FamTotalF (fam_reindex V f) ∘ fmap FamTotalF k ≈ fmap FamTotalF φ).
-    rewrite <- functor_comp, Hk_comp. reflexivity.
+    rewrite <- fct_comp, Hk_comp. reflexivity.
   - apply fam_reindex_pullback.
 Defined.
 

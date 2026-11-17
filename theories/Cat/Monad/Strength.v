@@ -149,7 +149,7 @@ Proof.
         id id (μ[M] Z) (fmap M f)), comp_id_l. reflexivity.
   - rewrite (strongmonad_mul M X Z), !comp_assoc,
       (strength_natural (hasStrength M) (@id X) f),
-      (@functor_comp C C M _ _ _ st[hasStrength M; X; Z]
+      (@fct_comp C C M _ _ _ st[hasStrength M; X; Z]
         (@tensor_map C MC _ _ _ _ id f)), <- !comp_assoc. reflexivity.
 Qed.
 

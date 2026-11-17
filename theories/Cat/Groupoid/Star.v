@@ -93,9 +93,9 @@ Proof.
   apply (iso_cancel_r (gpd_arrow_iso (fmap F (ordinal_from_first i)))).
   rewrite comp_assoc, gpd_inv_l, comp_id_r.
   transitivity (fmap F (f ∘ ordinal_from_first i)).
-  - symmetry. exact (@functor_comp [Ord n] C F fin_first i j
+  - symmetry. exact (@fct_comp [Ord n] C F fin_first i j
       f (ordinal_from_first i)).
-  - exact (@functor_fmap_proper [Ord n] C F fin_first j _ _ tt).
+  - exact (@fct_fmap_proper [Ord n] C F fin_first j _ _ tt).
 Defined.
 
 (** Radial transitions compose without any ordering hypothesis. *)
@@ -157,8 +157,8 @@ Proof.
       fmap F (ordinal_from_first (Q k))).
     transitivity (fmap F (fmap Q (ordinal_from_first k) ∘
       ordinal_from_first (Q fin_first))).
-    - symmetry. exact (@functor_comp [Ord n] C F _ _ _ _ _).
-    - exact (@functor_fmap_proper [Ord n] C F _ _ _ _ tt). }
+    - symmetry. exact (@fct_comp [Ord n] C F _ _ _ _ _).
+    - exact (@fct_fmap_proper [Ord n] C F _ _ _ _ tt). }
   pose proof (star_transition_square _ _ _ _ id id c⁻¹ (H i) (H j)) as K.
   rewrite comp_id_l, comp_id_r in K. exact K.
 Defined.

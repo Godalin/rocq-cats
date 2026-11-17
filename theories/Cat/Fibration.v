@@ -107,7 +107,7 @@ Defined.
 Definition cartesian_id {E B : Cat} (P : Fct E B) (X : @Ob E)
   : (@id X) ⦂ Cart(P).
 Proof.
-  intros Z g u H. rewrite functor_id, comp_id_l in H.
+  intros Z g u H. rewrite fct_id, comp_id_l in H.
   exists g. split.
   - split; [symmetry; exact H | apply comp_id_l].
   - intros h [_ Hh]. rewrite comp_id_l in Hh. exact Hh.
@@ -124,7 +124,7 @@ Definition cartesian_comp {E B : Cat} {P : Fct E B}
 Proof.
   intros Z q u H.
   assert (Hgq : fmap P g ∘ (fmap P f ∘ u) ≈ fmap P q).
-  { rewrite <- comp_assoc, <- functor_comp. exact H. }
+  { rewrite <- comp_assoc, <- fct_comp. exact H. }
   destruct (Hg Z q (fmap P f ∘ u) Hgq) as [v [[Hv_base Hv_comp] Hv_unique]].
   assert (Hfv : fmap P f ∘ u ≈ fmap P v) by (symmetry; exact Hv_base).
   destruct (Hf Z v u Hfv) as [h [[Hh_base Hh_comp] Hh_unique]].
@@ -132,7 +132,7 @@ Proof.
   - split. exact Hh_base. rewrite comp_assoc, Hh_comp. exact Hv_comp.
   - intros k [Hk_base Hk_comp]. apply Hh_unique. split. exact Hk_base.
     apply Hv_unique. split.
-    + rewrite functor_comp, Hk_base. reflexivity.
+    + rewrite fct_comp, Hk_base. reflexivity.
     + rewrite <- comp_assoc. exact Hk_comp.
 Defined.
 
@@ -148,7 +148,7 @@ Theorem cartesian_cancel {E B : Cat} {P : Fct E B}
 Proof.
   intros Hbase Hcomp.
   assert (H : fmap P f ∘ fmap P k ≈ fmap P (f ∘ k)).
-  { symmetry. apply functor_comp. }
+  { symmetry. apply fct_comp. }
   destruct (Hf Z (f ∘ k) (fmap P k) H) as [t [_ Ht]].
   transitivity t.
   - apply Ht. split; assumption.
@@ -173,17 +173,17 @@ Proof.
   { rewrite <- H, comp_assoc, Hu, comp_id_r. reflexivity. }
   exists (cartesian_factor Hf g ui H'). split.
   - apply (cartesian_cancel Hf).
-    + rewrite functor_comp. transitivity (ui ∘ u).
+    + rewrite fct_comp. transitivity (ui ∘ u).
       * apply comp_proper; apply cartesian_factor_base.
-      * transitivity (@id (P X)); [exact Hui | symmetry; apply functor_id].
+      * transitivity (@id (P X)); [exact Hui | symmetry; apply fct_id].
     + etransitivity; [symmetry; apply comp_assoc |].
       etransitivity.
       * apply comp_proper; [apply cartesian_factor_comp | reflexivity].
       * etransitivity; [apply cartesian_factor_comp | symmetry; apply comp_id_r].
   - apply (cartesian_cancel Hg).
-    + rewrite functor_comp. transitivity (u ∘ ui).
+    + rewrite fct_comp. transitivity (u ∘ ui).
       * apply comp_proper; apply cartesian_factor_base.
-      * transitivity (@id (P X')); [exact Hu | symmetry; apply functor_id].
+      * transitivity (@id (P X')); [exact Hu | symmetry; apply fct_id].
     + etransitivity; [symmetry; apply comp_assoc |].
       etransitivity.
       * apply comp_proper; [apply cartesian_factor_comp | reflexivity].

@@ -106,7 +106,7 @@ Definition context_elements_ty_tm_iso@{v q +}
       ∘F @DisplayTyTmF C P HD).
 Proof.
   exists ContextElementsTyTmN. intros Γ.
-  exact (functor_is_iso (FamFixedF (Ty T Γ))
+  exact (fct_is_iso (FamFixedF (Ty T Γ))
     (ContextElementsFiberMap Γ) (context_elements_fiber_map_iso Γ)).
 Defined.
 

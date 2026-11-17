@@ -74,7 +74,7 @@ Definition tm_conv {Γ : @Ob C} {A B : Ty Γ} (e : A ≈S B)
 
 Definition ty_sub_id {Γ : @Ob C} (A : Ty Γ)
   : ty_sub id A ≈S A
-  := (functor_id (C^op) FamCat T).1 A.
+  := (fct_id (C^op) FamCat T).1 A.
 
 (** Compatibility with composition for [ty_sub]. *)
 
@@ -83,7 +83,7 @@ Definition ty_sub_id {Γ : @Ob C} (A : Ty Γ)
 Definition ty_sub_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ)
     (A : Ty Γ)
   : ty_sub τ (ty_sub σ A) ≈S ty_sub (σ ∘ τ) A
-  := (symmetry (functor_comp (C^op) FamCat T τ σ)).1 A.
+  := (symmetry (fct_comp (C^op) FamCat T τ σ)).1 A.
 
 (** Equal context substitutions give equal substituted types. *)
 
@@ -92,7 +92,7 @@ Definition ty_sub_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ)
 Definition ty_sub_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ')
     (A : Ty Γ)
   : ty_sub σ A ≈S ty_sub σ' A
-  := (@functor_fmap_proper (C^op) FamCat T Γ Δ σ σ' H).1 A.
+  := (@fct_fmap_proper (C^op) FamCat T Γ Δ σ σ' H).1 A.
 
 (** Combine composition and base equality into the required type comparison. *)
 
@@ -160,7 +160,7 @@ Proof. exact (famF_naturality (fmap T σ) e t). Qed.
 
 Theorem tm_sub_id {Γ : @Ob C} {A : Ty Γ} (t : Tm Γ A)
   : tm_conv (ty_sub_id A) (tm_sub id t) ≈S t.
-Proof. exact ((functor_id (C^op) FamCat T).2 A t). Qed.
+Proof. exact ((fct_id (C^op) FamCat T).2 A t). Qed.
 
 (** Compatibility with composition for [tm_sub]. *)
 
@@ -169,7 +169,7 @@ Proof. exact ((functor_id (C^op) FamCat T).2 A t). Qed.
 Theorem tm_sub_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ)
     {A : Ty Γ} (t : Tm Γ A)
   : tm_conv (ty_sub_comp σ τ A) (tm_sub τ (tm_sub σ t)) ≈S tm_sub (σ ∘ τ) t.
-Proof. exact ((symmetry (functor_comp (C^op) FamCat T τ σ)).2 A t). Qed.
+Proof. exact ((symmetry (fct_comp (C^op) FamCat T τ σ)).2 A t). Qed.
 
 (** Equal substitutions act equally after converting their term types. *)
 
@@ -178,7 +178,7 @@ Proof. exact ((symmetry (functor_comp (C^op) FamCat T τ σ)).2 A t). Qed.
 Theorem tm_sub_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ')
     {A : Ty Γ} (t : Tm Γ A)
   : tm_conv (ty_sub_equiv H A) (tm_sub σ t) ≈S tm_sub σ' t.
-Proof. exact ((@functor_fmap_proper (C^op) FamCat T Γ Δ σ σ' H).2 A t). Qed.
+Proof. exact ((@fct_fmap_proper (C^op) FamCat T Γ Δ σ σ' H).2 A t). Qed.
 
 End TypesAndTerms.
 

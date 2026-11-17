@@ -29,7 +29,7 @@ Program Definition VtxNerveF@{u r x e o h p l a b +}
   :=
   {|F0 P := Nᵥ(P)
   ; F1 P Q F := VtxNerveN F
-  ; functor_fmap_proper P Q F G H := vertex_nerve_proper F G H
+  ; fct_fmap_proper P Q F G H := vertex_nerve_proper F G H
   |}.
 Next Obligation. exact (vertex_nerve_id X). Defined.
 Next Obligation. exact (vertex_nerve_comp f g). Defined.

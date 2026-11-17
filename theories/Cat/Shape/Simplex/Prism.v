@@ -84,8 +84,8 @@ Next Obligation.
   change (fin_rank (simplex_prism_position (a x) (t x)) ≤
     fin_rank (simplex_prism_position (a y) (t y))).
   rewrite !simplex_prism_position_rank.
-  pose proof (ordinal_functor_monotone a x y H).
-  pose proof (ordinal_functor_monotone t x y H). lia.
+  pose proof (ordinal_fct_monotone a x y H).
+  pose proof (ordinal_fct_monotone t x y H). lia.
 Defined.
 
 (** Restriction commutes with the interleaved factor. The pivot selected
@@ -170,8 +170,8 @@ Proof.
   - assert (H : fin_rank i ≤ fin_rank j).
     { destruct (Nat.le_ge_cases (fin_rank i) (fin_rank j)) as [H | H].
       - exact H.
-      - pose proof (ordinal_functor_monotone t j i H). lia. }
-    exact (ordinal_functor_monotone a i j H).
+      - pose proof (ordinal_fct_monotone t j i H). lia. }
+    exact (ordinal_fct_monotone a i j H).
   - cbn. lia.
 Defined.
 

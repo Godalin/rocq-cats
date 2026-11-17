@@ -54,7 +54,7 @@ Lemma day_weight_pre {Z : @Ob C} {p p' : @Ob (C ×C C)}
     ≈ day_weight T F G p' q (h ∘ fmap T f).
 Proof.
   intros xy. split; [reflexivity |].
-  exact (@functor_id (C ×C C) SetCat (DayValuesF F G) q xy).
+  exact (@fct_id (C ×C C) SetCat (DayValuesF F G) q xy).
 Defined.
 
 (** A covariant change acts on the value pair and leaves the weight fixed. *)
@@ -69,7 +69,7 @@ Lemma day_weight_post {Z : @Ob C} (p : @Ob (C ×C C))
 Proof.
   intros xy. split; [| reflexivity].
   refine {|lower := _|}. cbn.
-  rewrite (@functor_id (C ×C C) C T p), comp_id_r. reflexivity.
+  rewrite (@fct_id (C ×C C) C T p), comp_id_r. reflexivity.
 Defined.
 
 End WeightLaws.
@@ -219,7 +219,7 @@ Program Definition day_extend_leg (Z : @Ob C) (p : @Ob (C ×C C))
 Next Obligation.
   intros [h xy] [h' xy'] [Hh Hxy].
   transitivity (fmap H (lower h') (β p xy)).
-  - exact (@functor_fmap_proper C SetCat H _ _ _ _ (lower Hh) (β p xy)).
+  - exact (@fct_fmap_proper C SetCat H _ _ _ _ (lower Hh) (β p xy)).
   - apply func_proper. apply func_proper. exact Hxy.
 Defined.
 
@@ -243,7 +243,7 @@ Next Obligation.
     + change (fmap H (h ∘ fmap T f) (β X xy) ≈S
         fmap H h (β Y (fmap (DayValuesF F G) f xy))).
       transitivity (fmap H h (fmap H (fmap T f) (β X xy))).
-      * exact (@functor_comp C SetCat H _ _ _ h (fmap T f) (β X xy)).
+      * exact (@fct_comp C SetCat H _ _ _ h (fmap T f) (β X xy)).
       * apply func_proper. symmetry. exact (nat_naturality β f xy).
     + symmetry. exact (@func_proper _ _ (day_extend_leg Z Y) _ _
         (day_weight_post T F G Y f h xy)).
@@ -275,7 +275,7 @@ Next Obligation.
   change (coend⟨DayExtendCowedge X⟩ ∘ ιcoend[DayKernel T F G X] p
     ≈ day_extend_leg X p) in HX.
   rewrite HY, HX.
-  intros [[h] xy]. exact (@functor_comp C SetCat H _ _ _ f h (β p xy)).
+  intros [[h] xy]. exact (@fct_comp C SetCat H _ _ _ f h (β p xy)).
 Defined.
 
 End Extension.
@@ -359,7 +359,7 @@ Proof.
   intros q.
   change (DayExtendN T β (T q) ∘ day_inject T F G q id ≈ β q).
   rewrite day_extend_β. intros xy.
-  exact (@functor_id C SetCat H (T q) (β q xy)).
+  exact (@fct_id C SetCat H (T q) (β q xy)).
 Defined.
 
 (** Every outgoing transformation is recovered from its generating pairs. *)

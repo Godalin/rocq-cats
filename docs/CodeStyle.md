@@ -106,6 +106,44 @@ Infix "∘Nh" := HCompN
   (at level 50, left associativity) : cat_scope.
 ```
 
+## Object and morphism products / 对象积与态射积
+
+In functor/product theory that mixes object and morphism products, put
+`Local Open Scope ob_scope.` after the other local scope openings. This
+lets a coerced functor application such as `F (X × Y)` use object notation.
+The existing argument scopes of `fmap`, composition and hom equality select
+morphism notation for their arrow arguments, so the same formula can use
+both products without explicit delimiters. Keep this default local to the
+module or section; importing the theory retains the caller's scope choices.
+
+在同时使用对象积与态射积的函子／积理论中，将
+`Local Open Scope ob_scope.` 放在其他局部作用域打开命令之后，
+使经强制转换的函子应用 `F (X × Y)` 使用对象记号。`fmap`、复合及 Hom 相等
+已有的参数作用域会为其箭头参数选择态射记号，因此同一公式可不加显式分隔符
+地使用两种积。这个默认设置限于当前模块或节；导入理论后保留调用方自己的
+作用域选择。
+
+```coq
+Local Open Scope ob_scope.
+
+Definition mapped_product {C D : Cat} `{PC : !HasProduct C}
+    (F : Fct C D) {X Y X' Y' : C}
+    (f : Hom X X') (g : Hom Y Y')
+  : Hom (F (X × Y)) (F (X' × Y'))
+  := fmap F (f × g).
+```
+
+A bare morphism product outside an argument with a known hom scope may
+still need `%hom`. Give new operation arguments their mathematical scopes
+through their types or `Arguments`, and keep bundle-owned choices explicit
+where multiple choices share a category. Scope defaults choose notation;
+the supplied terminal/product evidence still determines the construction.
+
+没有已知 Hom 参数作用域的独立态射积仍可能需要 `%hom`。新增运算通过参数
+类型或 `Arguments` 指定相应数学作用域；同一范畴有多份选择时，结构包拥有的
+选择仍须显式固定。默认作用域决定记号解释，构造所用终对象／积仍由给定证据
+决定。
+
 Keep the existing separate English/Chinese coqdoc blocks and blank lines
 around comments. Apply layout changes to the requested region, rather than
 reflowing unrelated source while editing mathematics. Settle formatting

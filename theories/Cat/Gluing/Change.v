@@ -179,7 +179,7 @@ Proof.
   - apply comma_change_comp_iso.
   - apply comma_change_equiv_iso.
     + intro X. change (fmap K' (@id (K X)) ∘ id ≈ id).
-      rewrite functor_id, comp_id_l. reflexivity.
+      rewrite fct_id, comp_id_l. reflexivity.
     + intro X. reflexivity.
 Defined.
 

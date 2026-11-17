@@ -277,8 +277,8 @@ Definition unit_changed_product (X Y : Gluing (@IdF SetCat))
 Program Definition unit_interpretation_cartesian
   : IsCartF (ConstF SetCat UnitS) SetCat_HasTerminal binary_set_products
   :=
-  {|functor_terminal := @terminal_universal SetCat SetCat_HasTerminal
-  ; functor_product := unit_model_product
+  {|fct_terminal := @terminal_universal SetCat SetCat_HasTerminal
+  ; fct_product := unit_model_product
   |}.
 
 (** The stronger wrapper supplies only the missing image-product input. *)
@@ -428,7 +428,7 @@ Example unit_changed_pair_respects
   : fmap UnitProductChangeF ⟨tagged_gluing_toggle, tagged_gluing_toggle⟩ ≈
       fmap UnitProductChangeF ⟨id, id⟩.
 Proof.
-  apply functor_fmap_proper. apply product_pair_proper;
+  apply fct_fmap_proper. apply product_pair_proper;
     exact tagged_gluing_toggle_equal.
 Defined.
 

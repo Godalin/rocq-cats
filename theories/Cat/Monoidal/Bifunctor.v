@@ -62,8 +62,8 @@ Next Obligation.
     (X := ((X, Y), Z)) (Y := ((X', Y), Z)) ((f, id), id)) as H.
   cbn in H. etransitivity; [exact H |].
   apply comp_proper; [| reflexivity].
-  apply functor_fmap_proper. split;
-    [reflexivity | exact (@functor_id _ _ T (Y, Z))].
+  apply fct_fmap_proper. split;
+    [reflexivity | exact (@fct_id _ _ T (Y, Z))].
 Defined.
 Next Obligation.
   exact (nat_naturality A.1
@@ -74,8 +74,8 @@ Next Obligation.
     (X := ((X, Y), Z)) (Y := ((X, Y), Z')) ((id, id), h)) as H.
   cbn in H. etransitivity; [| exact H].
   apply comp_proper; [reflexivity |].
-  apply functor_fmap_proper. split;
-    [symmetry; exact (@functor_id _ _ T (X, Y)) | reflexivity].
+  apply fct_fmap_proper. split;
+    [symmetry; exact (@fct_id _ _ T (X, Y)) | reflexivity].
 Defined.
 
 (** The reconstructed bimap agrees with the original functor action.

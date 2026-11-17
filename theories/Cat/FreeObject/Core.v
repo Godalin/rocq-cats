@@ -108,7 +108,7 @@ Lemma free_object_extend_comp_l {X : @Ob C} {A B : @Ob D}
   : g ∘ free_object_extend f ≈ free_object_extend (fmap U g ∘ f).
 Proof.
   apply free_object_extend_unique.
-  rewrite functor_comp, comp_assoc, free_object_extend_β. reflexivity.
+  rewrite fct_comp, comp_assoc, free_object_extend_β. reflexivity.
 Qed.
 
 End FreeObjects.

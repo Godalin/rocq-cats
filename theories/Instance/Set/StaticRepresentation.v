@@ -50,7 +50,7 @@ Context (K : Cat)
 
 Definition static_interpret_hom_iso (H : is_static_arrow A) (X Y : @Ob C)
   : @HomSet (StaticCat (ArrowA K A)) X Y ≅[SetCat] HomSet (A X) (A Y)
-  := @iso_trans SetCat _ _ _ (exponential_unit_iso (HomSet (A 1) (A (Y ^ X)%ob)))
+  := @iso_trans SetCat _ _ _ (exp_unit_iso (HomSet (A 1) (A (Y ^ X)%ob)))
       (arrow_static_eval_resp A X Y; H X Y).
 
 (** Static representation implies full faithfulness by the existing Hom-
@@ -61,7 +61,7 @@ Definition static_interpret_hom_iso (H : is_static_arrow A) (X Y : @Ob C)
 Definition static_interpret_fully_faithful (H : is_static_arrow A)
   : is_fully_faithful (StaticInterpretF K A).
 Proof.
-  apply (snd (functor_fully_faithful_iff_hom_iso (StaticInterpretF K A))).
+  apply (snd (fct_fully_faithful_iff_hom_iso (StaticInterpretF K A))).
   intros X Y. exact (static_interpret_hom_iso H X Y).2.
 Defined.
 
@@ -76,9 +76,9 @@ Definition static_interpret_static_of_fully_faithful
 Proof.
   intros X Y.
   exact (@iso_trans SetCat _ _ _
-    (@iso_symm SetCat _ _ (exponential_unit_iso (HomSet (A 1) (A (Y ^ X)%ob))))
+    (@iso_symm SetCat _ _ (exp_unit_iso (HomSet (A 1) (A (Y ^ X)%ob))))
     (fmap_resp (StaticInterpretF K A);
-      fst (functor_fully_faithful_iff_hom_iso (StaticInterpretF K A)) H X Y)).2.
+      fst (fct_fully_faithful_iff_hom_iso (StaticInterpretF K A)) H X Y)).2.
 Defined.
 
 (** These are equivalent conditions for this particular static
@@ -171,7 +171,7 @@ Lemma static_reify_arr {X Y : @Ob C} (f : Hom X Y)
 Proof.
   transitivity (fmap StaticReifyF
     (static_interpret K A (static_arr (ArrowA K A) f))).
-  - apply functor_fmap_proper. symmetry. exact (static_interpret_arr K A f).
+  - apply fct_fmap_proper. symmetry. exact (static_interpret_arr K A f).
   - apply static_representation_η.
 Qed.
 

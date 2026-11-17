@@ -34,7 +34,7 @@ Program Definition ConstLaxTensorN
   {|nt p := m[A]
   |}.
 Next Obligation.
-  rewrite (@functor_id _ _ (tensorF MD)
+  rewrite (@fct_id _ _ (tensorF MD)
     (MonoidCarrier A, MonoidCarrier A)), comp_id_r, comp_id_l.
   reflexivity.
 Defined.

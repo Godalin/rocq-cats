@@ -89,7 +89,7 @@ Local Instance target_HasExponential
   := hasExponential C.
 Local Instance source_IsCartF
   : IsCartF F source_HasTerminal source_HasProduct
-  := @isCartF (TyCat_CCC B) C F HF.
+  := @ccc_isCartF (TyCat_CCC B) C F HF.
 
 
 (** Naturality at both projections determines a transformation on products. *)
@@ -97,19 +97,19 @@ Local Instance source_IsCartF
 (** 两个投影处的自然性确定变换在积上的分量。 *)
 
 Lemma type_natural_product (α : TypeInterpretF I ⇒ F) (X Y : Ty B)
-  : α (ty_prod X Y) ≈ functor_product_inv F X Y ∘ (α X × α Y).
+  : α (ty_prod X Y) ≈ fct_product_inv F X Y ∘ (α X × α Y).
 Proof.
-  apply (product_cone_ext (@functor_product (TyCat@{b e l} B) C F
+  apply (product_cone_ext (@fct_product (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B)
-    (@isCartF (TyCat_CCC B) C F HF) X Y)).
+    (@ccc_isCartF (TyCat_CCC B) C F HF) X Y)).
   - rewrite <- (nat_naturality α (@Cats.Cat.Product.Core.π1
       (TyCat@{b e l} B) (TyCat_HasProduct B) X Y)).
-    rewrite <- comp_assoc, (fst (functor_product_inv_β F X Y)),
+    rewrite <- comp_assoc, (fst (fct_product_inv_β F X Y)),
       cross_η, product_β1.
     apply comp_proper; [reflexivity |]. exact (type_interp_π1 I X Y).
   - rewrite <- (nat_naturality α (@Cats.Cat.Product.Core.π2
       (TyCat@{b e l} B) (TyCat_HasProduct B) X Y)).
-    rewrite <- comp_assoc, (snd (functor_product_inv_β F X Y)),
+    rewrite <- comp_assoc, (snd (fct_product_inv_β F X Y)),
       cross_η, product_β2.
     apply comp_proper; [reflexivity |]. exact (type_interp_π2 I X Y).
 Qed.
@@ -121,7 +121,7 @@ Qed.
 Lemma type_natural_eval (α : TypeInterpretF I ⇒ F) (A U : Ty B)
   : fmap F (@Cats.Cat.Exponential.Core.eval (TyCat@{b e l} B)
       (TyCat_HasProduct B) (TyCat_HasExponential B) A U) ∘
-      functor_product_inv F (ty_arr A U) A ∘
+      fct_product_inv F (ty_arr A U) A ∘
       (α (ty_arr A U) × α A) ≈ α U ∘ eval.
 Proof.
   rewrite comp_assoc, <- type_natural_product.
@@ -135,26 +135,26 @@ Qed.
 
 (** 规范指数比较可逆且参数比较为同构时，像求值可检测箭头相等。 *)
 
-Lemma type_functor_exponential_ext {A U : Ty B} {Z : @Ob C}
+Lemma type_fct_exp_ext {A U : Ty B} {Z : @Ob C}
     {f g : Hom Z (F (ty_arr A U))}
     (H : fmap F (@Cats.Cat.Exponential.Core.eval (TyCat@{b e l} B)
       (TyCat_HasProduct B) (TyCat_HasExponential B) A U) ∘
-      functor_product_inv F (ty_arr A U) A ∘
+      fct_product_inv F (ty_arr A U) A ∘
       (f × (type_compare F I β A).1) ≈
       fmap F (@Cats.Cat.Exponential.Core.eval (TyCat@{b e l} B)
         (TyCat_HasProduct B) (TyCat_HasExponential B) A U) ∘
-      functor_product_inv F (ty_arr A U) A ∘
+      fct_product_inv F (ty_arr A U) A ∘
       (g × (type_compare F I β A).1))
   : f ≈ g.
 Proof.
-  pose proof (@functor_eval (TyCat@{b e l} B) C F
+  pose proof (@fct_eval (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B) (TyCat_HasExponential B)
     (hasProduct C) (hasExponential C)
-    (@isCartF (TyCat_CCC B) C F HF) A U) as Ev.
-  apply (iso_mono (functor_exponential_comparison F A U)
-    (@functor_exponential (TyCat_CCC B) C F HF A U)).
-  apply (exponential_ext_iso (type_compare F I β A)).
-  transitivity ((eval ∘ (functor_exponential_comparison F A U × id)) ∘
+    (@ccc_isCartF (TyCat_CCC B) C F HF) A U) as Ev.
+  apply (iso_mono (fct_exp_cmp F A U)
+    (@fct_exp (TyCat_CCC B) C F HF A U)).
+  apply (exp_ext_iso (type_compare F I β A)).
+  transitivity ((eval ∘ (fct_exp_cmp F A U × id)) ∘
     (f × (type_compare F I β A).1)).
   - rewrite comp_assoc, <- cross_comp, comp_id_l. reflexivity.
   - rewrite Ev, H, <- Ev,
@@ -166,7 +166,7 @@ Qed.
     For products, naturality at the two projections fixes both components;
     product uniqueness fixes the whole arrow. For function types, naturality
     at evaluation fixes the behavior after an argument is supplied.
-    [type_functor_exponential_ext] detects equality from that behavior,
+    [type_fct_exp_ext] detects equality from that behavior,
     using the invertible argument comparison. The terminal case has only
     one arrow. These three facts make induction on types possible.
 
@@ -180,7 +180,7 @@ Qed.
 
     对积，两个投影处的自然性固定两个分量，再由积唯一性固定整条箭头。对函数
     类型，求值处的自然性固定提供参数之后的行为；
-    [type_functor_exponential_ext] 借助可逆的参数比较，从该行为检测相等。
+    [type_fct_exp_ext] 借助可逆的参数比较，从该行为检测相等。
     终对象情形只有一条箭头。这三点使对类型的归纳成为可能。
 
     结论覆盖全部具有指定基类型分量的自然变换，无须预先假设变换保持选定 CCC
@@ -199,15 +199,15 @@ Theorem type_comparison_unique (α : TypeInterpretF I ⇒ F)
 Proof.
   intros A. induction A as [b0 | | A IH1 U IH2 | A IH1 U IH2].
   - exact (Hbase b0).
-  - destruct (@functor_terminal (TyCat@{b e l} B) C F
+  - destruct (@fct_terminal (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B)
-      (@isCartF (TyCat_CCC B) C F HF) (TyI I ty_unit)) as [h [_ Hu]].
+      (@ccc_isCartF (TyCat_CCC B) C F HF) (TyI I ty_unit)) as [h [_ Hu]].
     transitivity h; [apply Hu | symmetry; apply Hu]; constructor.
   - change (α (ty_prod A U) ≈ (type_compare F I β (ty_prod A U)).1).
     rewrite type_natural_product, type_compare_product.
     apply comp_proper; [reflexivity |]. apply cross_proper; assumption.
   - change (α (ty_arr A U) ≈ (type_compare F I β (ty_arr A U)).1).
-    apply type_functor_exponential_ext.
+    apply type_fct_exp_ext.
     rewrite <- IH1, (type_natural_eval α A U), IH2, IH1.
     symmetry. apply type_compare_eval.
 Qed.

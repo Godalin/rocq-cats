@@ -184,7 +184,7 @@ Definition end_unique {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
 Proof.
   pose (i := terminal_unique (end_terminal Hκ) (end_terminal Hμ)).
   exists (fmap (WedgeApexF F) i.1).
-  exact (functor_is_iso (WedgeApexF F) i.1 i.2).
+  exact (fct_is_iso (WedgeApexF F) i.1 i.2).
 Defined.
 
 (** The unique comparison respects every projection of the two candidates. *)

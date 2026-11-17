@@ -266,7 +266,7 @@ Proof.
     (X := (x, simplex_interval_position t))
     (Y := (y, simplex_interval_position t))
     (fmap (lower e) (ordinal_step fin_first), id); b⟧Ar).
-  - apply func_proper. apply functor_fmap_proper. split.
+  - apply func_proper. apply fct_fmap_proper. split.
     + symmetry. apply edge_simplex_arrow.
     + exact tt.
   - transitivity (U⟦reflexivity
@@ -278,7 +278,7 @@ Proof.
     + exact (vertex_rebase_eq U a b _ _ (E.1 fin_first)
         (E.1 (fin_next fin_first)) _ _ (E.2 _ _ (ordinal_step fin_first))).
     + etransitivity; [apply vertex_rebase_id |].
-      apply functor_fmap_proper. apply edge_simplex_arrow.
+      apply fct_fmap_proper. apply edge_simplex_arrow.
 Defined.
 
 (** The aligned boundary arrows are the original functor arrows. Its

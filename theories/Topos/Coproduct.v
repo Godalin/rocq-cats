@@ -88,7 +88,7 @@ Local Theorem coproduct_singleton_app {Q X : C} (f g : Hom Q X)
     ≈ coproduct_equality X ∘ ⟨f, g⟩.
 Proof.
   unfold coproduct_singleton.
-  rewrite <- exponential_curry_comp_r, exponential_app_β.
+  rewrite <- exp_curry_comp_r, exp_app_β.
   rewrite ?comp_assoc, ?cross_η, ?product_comp_r, ?comp_assoc,
     ?product_β1, ?product_β2, ?comp_id_l, ?comp_id_r.
   reflexivity.
@@ -138,7 +138,7 @@ Definition CoproductAmbient (A B : C)
 
 Definition coproduct_raw_left (A B : C)
   : Hom A (CoproductAmbient A B)
-  := exponential_dimap
+  := exp_dimap
       (π1 : Hom (CoproductPredicates A B) (Ω ^ A))
       (@Cats.Cat.Core.id C Ω) ∘ ExpDoubleDualUnit Ω A.
 
@@ -148,7 +148,7 @@ Definition coproduct_raw_left (A B : C)
 
 Definition coproduct_raw_right (A B : C)
   : Hom B (CoproductAmbient A B)
-  := exponential_dimap
+  := exp_dimap
       (π2 : Hom (CoproductPredicates A B) (Ω ^ B))
       (@Cats.Cat.Core.id C Ω) ∘ ExpDoubleDualUnit Ω B.
 
@@ -159,8 +159,8 @@ Definition coproduct_raw_right (A B : C)
 
 Definition CoproductPredicateMap {A B Z : C} (f : Hom A Z) (g : Hom B Z)
   : Hom (Ω ^ Z) (CoproductPredicates A B)
-  := ⟨exponential_dimap f (@Cats.Cat.Core.id C Ω),
-      exponential_dimap g (@Cats.Cat.Core.id C Ω)⟩.
+  := ⟨exp_dimap f (@Cats.Cat.Core.id C Ω),
+      exp_dimap g (@Cats.Cat.Core.id C Ω)⟩.
 
 (** Contravariance lifts an arbitrary element of the ambient object to
     the target's double power object. *)
@@ -169,7 +169,7 @@ Definition CoproductPredicateMap {A B Z : C} (f : Hom A Z) (g : Hom B Z)
 
 Definition coproduct_lift {A B Z : C} (f : Hom A Z) (g : Hom B Z)
   : Hom (CoproductAmbient A B) (Ω ^ (Ω ^ Z))
-  := exponential_dimap (CoproductPredicateMap f g) (@Cats.Cat.Core.id C Ω).
+  := exp_dimap (CoproductPredicateMap f g) (@Cats.Cat.Core.id C Ω).
 
 (** The lift agrees with target evaluation on the left input. *)
 
@@ -181,20 +181,20 @@ Theorem coproduct_lift_left {A B Z : C} (f : Hom A Z) (g : Hom B Z)
 Proof.
   unfold coproduct_lift, coproduct_raw_left.
   rewrite <- comp_assoc.
-  pose (H := @exponential_dimap_comp C HP HX
+  pose (H := @exp_dimap_comp C HP HX
     (Ω ^ A) (CoproductPredicates A B) (Ω ^ Z) Ω Ω Ω
     (π1 : Hom (CoproductPredicates A B) (Ω ^ A))
     (CoproductPredicateMap f g) (@Cats.Cat.Core.id C Ω)
     (@Cats.Cat.Core.id C Ω)).
   rewrite <- H, comp_id_l.
-  transitivity (exponential_dimap
-    (exponential_dimap f (@Cats.Cat.Core.id C Ω))
+  transitivity (exp_dimap
+    (exp_dimap f (@Cats.Cat.Core.id C Ω))
     (@Cats.Cat.Core.id C Ω) ∘ ExpDoubleDualUnit Ω A).
   - apply comp_proper; [| reflexivity].
-    apply exponential_dimap_proper; [| reflexivity].
+    apply exp_dimap_proper; [| reflexivity].
     exact (@product_β1 C HP (Ω ^ A) (Ω ^ B) (Ω ^ Z)
-      (exponential_dimap f (@Cats.Cat.Core.id C Ω))
-      (exponential_dimap g (@Cats.Cat.Core.id C Ω))).
+      (exp_dimap f (@Cats.Cat.Core.id C Ω))
+      (exp_dimap g (@Cats.Cat.Core.id C Ω))).
   - apply exp_double_dual_natural.
 Qed.
 
@@ -208,20 +208,20 @@ Theorem coproduct_lift_right {A B Z : C} (f : Hom A Z) (g : Hom B Z)
 Proof.
   unfold coproduct_lift, coproduct_raw_right.
   rewrite <- comp_assoc.
-  pose (H := @exponential_dimap_comp C HP HX
+  pose (H := @exp_dimap_comp C HP HX
     (Ω ^ B) (CoproductPredicates A B) (Ω ^ Z) Ω Ω Ω
     (π2 : Hom (CoproductPredicates A B) (Ω ^ B))
     (CoproductPredicateMap f g) (@Cats.Cat.Core.id C Ω)
     (@Cats.Cat.Core.id C Ω)).
   rewrite <- H, comp_id_l.
-  transitivity (exponential_dimap
-    (exponential_dimap g (@Cats.Cat.Core.id C Ω))
+  transitivity (exp_dimap
+    (exp_dimap g (@Cats.Cat.Core.id C Ω))
     (@Cats.Cat.Core.id C Ω) ∘ ExpDoubleDualUnit Ω B).
   - apply comp_proper; [| reflexivity].
-    apply exponential_dimap_proper; [| reflexivity].
+    apply exp_dimap_proper; [| reflexivity].
     exact (@product_β2 C HP (Ω ^ A) (Ω ^ B) (Ω ^ Z)
-      (exponential_dimap f (@Cats.Cat.Core.id C Ω))
-      (exponential_dimap g (@Cats.Cat.Core.id C Ω))).
+      (exp_dimap f (@Cats.Cat.Core.id C Ω))
+      (exp_dimap g (@Cats.Cat.Core.id C Ω))).
   - apply exp_double_dual_natural.
 Qed.
 

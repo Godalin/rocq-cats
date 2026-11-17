@@ -126,18 +126,18 @@ Program Definition RelationGluingF
   |}.
 Next Obligation.
   intros f g h [[x y] r]. split.
-  - exact (@functor_fmap_proper J SetCat F X Y f g h x).
-  - exact (@functor_fmap_proper J SetCat G X Y f g h y).
+  - exact (@fct_fmap_proper J SetCat F X Y f g h x).
+  - exact (@fct_fmap_proper J SetCat G X Y f g h y).
 Defined.
 Next Obligation.
   intros [[x y] h]. split.
-  - exact (@functor_id J SetCat F X x).
-  - exact (@functor_id J SetCat G X y).
+  - exact (@fct_id J SetCat F X x).
+  - exact (@fct_id J SetCat G X y).
 Defined.
 Next Obligation.
   intros [[x y] h]. split.
-  - exact (@functor_comp J SetCat F X Y Z f g x).
-  - exact (@functor_comp J SetCat G X Y Z f g y).
+  - exact (@fct_comp J SetCat F X Y Z f g x).
+  - exact (@fct_comp J SetCat G X Y Z f g y).
 Defined.
 
 (** Forget the semantic/right value and the relation witness. *)

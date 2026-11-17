@@ -39,7 +39,7 @@ Definition TerminalObjectsF
 Program Definition EndpointVertexF (b : bool)
   : TerminalObjectsF →ᵥ ArrowObjectsF
   :=
-  {|vertex_functor := ConstF (VtxCat TerminalObjectsF)
+  {|vertex_fct := ConstF (VtxCat TerminalObjectsF)
       (C := VtxCat ArrowObjectsF) b
   |}.
 Next Obligation. intros x y p. reflexivity. Defined.

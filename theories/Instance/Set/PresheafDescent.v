@@ -165,8 +165,8 @@ Next Obligation.
     transitivity (fmap Q f x); [exact F |].
     transitivity (fmap Q f (fmap Q h (e i))).
     + apply func_proper. symmetry. exact E.
-    + symmetry. exact (functor_comp _ _ Q f h (e i)).
-  - exact (functor_comp _ _ P f h (a i)).
+    + symmetry. exact (fct_comp _ _ Q f h (e i)).
+  - exact (fct_comp _ _ P f h (a i)).
 Defined.
 
 (** Any valid factorization computes the descended value, irrespective of
@@ -193,8 +193,8 @@ Lemma presheaf_descend_β (cover : is_presheaf_cover)
   : PresheafDescendN cover a H (D i) (e i) ≈S a i.
 Proof.
   transitivity (fmap P (@Cat.Core.id C (D i)) (a i)).
-  - apply presheaf_descend_factor. exact (functor_id _ _ Q (e i)).
-  - exact (functor_id _ _ P (a i)).
+  - apply presheaf_descend_factor. exact (fct_id _ _ Q (e i)).
+  - exact (fct_id _ _ P (a i)).
 Defined.
 
 (** Descending the values of an existing map recovers that map. *)

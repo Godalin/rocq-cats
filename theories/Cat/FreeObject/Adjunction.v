@@ -34,11 +34,11 @@ Next Obligation.
 Defined.
 Next Obligation.
   symmetry. apply free_object_extend_unique.
-  rewrite functor_id, comp_id_l, comp_id_r. reflexivity.
+  rewrite fct_id, comp_id_l, comp_id_r. reflexivity.
 Defined.
 Next Obligation.
   symmetry. apply free_object_extend_unique.
-  rewrite functor_comp, comp_assoc, (free_object_extend_β U).
+  rewrite fct_comp, comp_assoc, (free_object_extend_β U).
   rewrite <- comp_assoc, (free_object_extend_β U), comp_assoc. reflexivity.
 Defined.
 
@@ -46,7 +46,7 @@ Defined.
 
 (** 定义所用分解方程正是单位自然性。 *)
 
-Lemma free_functor_unit {X Y : @Ob C} (f : Hom X Y)
+Lemma free_fct_unit {X Y : @Ob C} (f : Hom X Y)
   : fmap U (fmap FreeFct f) ∘ free_unit U X ≈ free_unit U Y ∘ f.
 Proof. apply free_object_extend_β. Qed.
 
@@ -59,7 +59,7 @@ Program Definition FreeUnitN
   :=
   {|nt := free_unit U
   |}.
-Next Obligation. symmetry. apply free_functor_unit. Defined.
+Next Obligation. symmetry. apply free_fct_unit. Defined.
 
 (** Factorization gives the forward hom map. *)
 
@@ -101,10 +101,10 @@ Proof.
   - intros X X' A g f.
     change (fmap U (g ∘ fmap FreeFct f) ∘ free_unit U X' ≈
       (fmap U g ∘ free_unit U X) ∘ f).
-    rewrite functor_comp, comp_assoc, free_functor_unit, comp_assoc.
+    rewrite fct_comp, comp_assoc, free_fct_unit, comp_assoc.
     reflexivity.
   - intros X A B k g. cbn.
-    rewrite functor_comp, comp_assoc. reflexivity.
+    rewrite fct_comp, comp_assoc. reflexivity.
 Defined.
 
 (** The adjunction construction retains the selected unit up to hom equality. *)
@@ -115,7 +115,7 @@ Lemma free_adj_unit (X : @Ob C)
   : adj_unit FreeAdj X ≈ free_unit U X.
 Proof.
   change (fmap U id ∘ free_unit U X ≈ free_unit U X).
-  rewrite functor_id, comp_id_l. reflexivity.
+  rewrite fct_id, comp_id_l. reflexivity.
 Qed.
 
 (** Its counit is the extension of the identity at each [U]-image. *)
@@ -186,17 +186,17 @@ Program Definition FreeFctChoiceN {C D : Cat} (U : Fct D C)
   |}.
 Next Obligation.
   apply (universal_arrow_hom_unique U (@free_universal C D U K X)).
-  rewrite (@functor_comp D C U _ _ _
+  rewrite (@fct_comp D C U _ _ _
     (free_object_choice_iso U K L Y).1.1
     (fmap (@FreeFct C D U K) f)).
-  rewrite (@functor_comp D C U _ _ _
+  rewrite (@fct_comp D C U _ _ _
     (fmap (@FreeFct C D U L) f)
     (free_object_choice_iso U K L X).1.1).
   rewrite !comp_assoc.
-  rewrite (@free_functor_unit C D U K X Y f),
+  rewrite (@free_fct_unit C D U K X Y f),
     (free_object_choice_iso U K L X).2.
   rewrite <- comp_assoc, (free_object_choice_iso U K L Y).2.
-  symmetry. apply free_functor_unit.
+  symmetry. apply free_fct_unit.
 Defined.
 
 (** All choices of free objects yield naturally isomorphic left adjoints;
@@ -204,7 +204,7 @@ Defined.
 
 (** 所有自由对象选取都给出自然同构的左伴随；这也比较自由对象／伴随的往返。 *)
 
-Definition free_functor_choice_iso {C D : Cat} (U : Fct D C)
+Definition free_fct_choice_iso {C D : Cat} (U : Fct D C)
     (K L : HasFreeObj U)
   : @FreeFct C D U K ≅N @FreeFct C D U L
   := (FreeFctChoiceN U K L;

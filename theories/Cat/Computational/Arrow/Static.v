@@ -31,7 +31,7 @@ Definition static_arr {C : Cat}
     {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
     (A : Applicative C HT HP) {X Y : @Ob C} (f : Hom X Y)
   : Hom 1 (A (Y ^ X)%ob)
-  := pure[A; exponential_name f].
+  := pure[A; exp_name f].
 
 (** Sequential lifting keeps the right-hand computation's effects first. *)
 
@@ -82,10 +82,10 @@ Proof. intros g g' H f f' K. unfold static_comp. rewrite H, K. reflexivity. Qed.
 
 Lemma static_comp_pure_r {X Y Z : @Ob C}
     (g : Hom 1 (A (Z ^ Y)%ob)) (f : Hom X Y)
-  : g ∘ˢ[A] static_arr A f ≈ fmap A (exponential_dimap f id) ∘ g.
+  : g ∘ˢ[A] static_arr A f ≈ fmap A (exp_dimap f id) ∘ g.
 Proof.
   exact (applicative_combine_pure_l A (internal_then X Y Z)
-    (exponential_name f) (exponential_dimap f id)
+    (exp_name f) (exp_dimap f id)
     (internal_then_name_l f Z) g).
 Qed.
 
@@ -95,10 +95,10 @@ Qed.
 
 Lemma static_comp_pure_l {X Y Z : @Ob C}
     (g : Hom Y Z) (f : Hom 1 (A (Y ^ X)%ob))
-  : static_arr A g ∘ˢ[A] f ≈ fmap A (exponential_map g) ∘ f.
+  : static_arr A g ∘ˢ[A] f ≈ fmap A (exp_map g) ∘ f.
 Proof.
   exact (applicative_combine_pure_r A (internal_then X Y Z)
-    (exponential_name g) (exponential_map g) (internal_then_name_r g X) f).
+    (exp_name g) (exp_map g) (internal_then_name_r g X) f).
 Qed.
 
 (** Pure identity is neutral on the input side. *)
@@ -108,7 +108,7 @@ Qed.
 Lemma static_comp_id_r {X Y : @Ob C} (f : Hom 1 (A (Y ^ X)%ob))
   : f ∘ˢ[A] static_arr A (@id X) ≈ f.
 Proof.
-  rewrite static_comp_pure_r, exponential_dimap_id, functor_id, comp_id_l.
+  rewrite static_comp_pure_r, exp_dimap_id, fct_id, comp_id_l.
   reflexivity.
 Qed.
 
@@ -119,7 +119,7 @@ Qed.
 Lemma static_comp_id_l {X Y : @Ob C} (f : Hom 1 (A (Y ^ X)%ob))
   : static_arr A (@id Y) ∘ˢ[A] f ≈ f.
 Proof.
-  rewrite static_comp_pure_l, exponential_map_id, functor_id, comp_id_l.
+  rewrite static_comp_pure_l, exp_map_id, fct_id, comp_id_l.
   reflexivity.
 Qed.
 
@@ -177,7 +177,7 @@ Program Definition StaticPureF
   :=
   {|F0 X := X
   ; F1 X Y f := static_arr A f
-  ; functor_fmap_proper X Y := @static_arr_proper X Y
+  ; fct_fmap_proper X Y := @static_arr_proper X Y
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. exact (static_arr_comp f g). Defined.
@@ -248,16 +248,16 @@ Next Obligation.
   change (static_arr A (h × @id Y) ∘ˢ[A] static_context Z f ≈
     static_context W f ∘ˢ[A] static_arr A (h × @id X)).
   rewrite static_comp_pure_l, static_comp_pure_r.
-  unfold static_context. rewrite <- !comp_assoc, <- !functor_comp.
-  apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
+  unfold static_context. rewrite <- !comp_assoc, <- !fct_comp.
+  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
   exact (internal_context_natural h X Y).
 Defined.
 Next Obligation.
   change (static_arr A (π2 : Hom (1 × Y) Y) ∘ˢ[A] static_context 1 f ≈
     f ∘ˢ[A] static_arr A (π2 : Hom (1 × X) X)).
   rewrite static_comp_pure_l, static_comp_pure_r.
-  unfold static_context. rewrite <- comp_assoc, <- functor_comp.
-  apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
+  unfold static_context. rewrite <- comp_assoc, <- fct_comp.
+  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
   exact (internal_context_unit X Y).
 Defined.
 Next Obligation.
@@ -266,8 +266,8 @@ Next Obligation.
     static_context Z (static_context W f) ∘ˢ[A]
       static_arr A (@product_assoc C HP Z W X).1).
   rewrite static_comp_pure_l, static_comp_pure_r.
-  unfold static_context. rewrite <- !comp_assoc, <- !functor_comp.
-  apply comp_proper; [| reflexivity]. apply functor_fmap_proper.
+  unfold static_context. rewrite <- !comp_assoc, <- !fct_comp.
+  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
   exact (internal_context_assoc Z W X Y).
 Defined.
 

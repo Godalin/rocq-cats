@@ -57,16 +57,16 @@ Program Definition HomProfMapN@{u p a b +} {C D : Cat}
   |}.
 Next Obligation.
   intros h k E. refine {|lower := _|}.
-  exact (@functor_fmap_proper C D F _ _ (lower h) (lower k) (lower E)).
+  exact (@fct_fmap_proper C D F _ _ (lower h) (lower k) (lower E)).
 Defined.
 Next Obligation.
   intros h. refine {|lower := _|}.
   change (fmap F (snd f ∘ lower h ∘ fst f) ≈
     fmap F (snd f) ∘ fmap F (lower h) ∘ fmap F (fst f)).
   transitivity (fmap F (snd f ∘ lower h) ∘ fmap F (fst f)).
-  - exact (@functor_comp C D F _ _ _ (snd f ∘ lower h) (fst f)).
+  - exact (@fct_comp C D F _ _ _ (snd f ∘ lower h) (fst f)).
   - apply comp_proper; [|reflexivity].
-    exact (@functor_comp C D F _ _ _ (snd f) (lower h)).
+    exact (@fct_comp C D F _ _ _ (snd f) (lower h)).
 Defined.
 
 (** ** Hom Action in the Declared Bounds

@@ -102,7 +102,7 @@ Qed.
 Lemma kleisli_extend_pre {X Y Z : @Ob C}
     (f : Hom Y (M Z)) (g : Hom X Y)
   : kleisli_extend (f ∘ g) ≈ kleisli_extend f ∘ fmap M g.
-Proof. unfold kleisli_extend. rewrite functor_comp. symmetry. apply comp_assoc. Qed.
+Proof. unfold kleisli_extend. rewrite fct_comp. symmetry. apply comp_assoc. Qed.
 
 (** Ordinary output mapping commutes with extension. *)
 
@@ -112,7 +112,7 @@ Lemma kleisli_extend_post {X Y Z : @Ob C}
     (f : Hom Y Z) (g : Hom X (M Y))
   : fmap M f ∘ kleisli_extend g ≈ kleisli_extend (fmap M f ∘ g).
 Proof.
-  unfold kleisli_extend. rewrite functor_comp, <- !comp_assoc,
+  unfold kleisli_extend. rewrite fct_comp, <- !comp_assoc,
     (nat_naturality (μ[M]) f). reflexivity.
 Qed.
 
@@ -126,8 +126,8 @@ Lemma kleisli_extend_assoc {X Y Z : @Ob C}
       kleisli_extend g ∘ kleisli_extend f.
 Proof.
   unfold kleisli_extend.
-  rewrite (@functor_comp C C M _ _ _ (μ[M] Z ∘ fmap M g) f),
-    (@functor_comp C C M _ _ _ (μ[M] Z) (fmap M g)), <- !comp_assoc,
+  rewrite (@fct_comp C C M _ _ _ (μ[M] Z ∘ fmap M g) f),
+    (@fct_comp C C M _ _ _ (μ[M] Z) (fmap M g)), <- !comp_assoc,
     <- (monad_assoc_component M Z).
   rewrite (comp_assoc (μ[M] Z) (μ[M] (M Z))),
     (nat_naturality (μ[M]) g), <- comp_assoc. reflexivity.

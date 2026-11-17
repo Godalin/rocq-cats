@@ -28,40 +28,40 @@ STLC 的 βη 可靠性、共同宇宙界内的模型完备性及自由 CCC 泛�
 
 ```text
 uncurry g := eval ∘ (g × id)
-exponential_β: uncurry (curry f) ≈ f
-exponential_η: curry (uncurry g) ≈ g
+exp_β: uncurry (curry f) ≈ f
+exp_η: curry (uncurry g) ≈ g
 
-exponential_curry_comp_r:
+exp_curry_comp_r:
   curry (f ∘ (σ × id)) ≈ curry f ∘ σ
 
-exponential_map k := curry (k ∘ eval)
-exponential_curry_comp_l:
-  curry (k ∘ f) ≈ exponential_map k ∘ curry f
+exp_map k := curry (k ∘ eval)
+exp_curry_comp_l:
+  curry (k ∘ f) ≈ exp_map k ∘ curry f
 ```
 
-`curry`、`uncurry`、`exponential_map` 均尊重指定相等；
-`exponential_map` 还满足单位与复合律。
+`curry`、`uncurry`、`exp_map` 均尊重指定相等；
+`exp_map` 还满足单位与复合律。
 这些结果只需要选定的积与指数对象，无需终对象或完整 CCC。
 
 [ExponentialHom](../theories/Instance/Set/ExponentialHom.v) 将这两个尊重映射
 及 βη 打包为任意源范畴 C 的广集同构：
 
 ```text
-exponential_hom_iso:
+exp_hom_iso:
   HomSet (Z × X) Y ≅[SetCat] HomSet Z (Y ^ X)
 ```
 
 此处 `SetCat` 只用于表达 hom 广集之间的同构，不选择 C 为集合模型，
 也不启用 `SetCat_CCC`。上面的两条 `curry_comp` 定律分别给出 Z 的逆变
-和 Y 的协变自然性方程；`exponential_hom_nat_iso` 通过通用伴随理论
+和 Y 的协变自然性方程；`exp_hom_nat_iso` 通过通用伴随理论
 将它们打包为双函子之间的自然同构，必要时显式提升到共同的广集宇宙。
 X 在这个伴随问题中固定；让 X 也变化的指数双函子见下一节。
 
 ### 指数的同构运输与双函子
 
 [Exponential.Transport](../theories/Cat/Exponential/Transport.v) 先提供两个一般
-泛性质运输定理：`exponential_eval_equiv` 沿指定相等更换求值箭头，
-`exponential_transport` 则对参数反变、对结果协变地沿同构运输。给定
+泛性质运输定理：`exp_eval_equiv` 沿指定相等更换求值箭头，
+`exp_transport` 则对参数反变、对结果协变地沿同构运输。给定
 `i : X' ≅ X`、`j : Y ≅ Y'` 和原求值 `ev : Hom (E × X) Y`，新求值为
 `j.1 ∘ ev ∘ (id × i.1)`，表示对象仍为 E。中介从原泛性质提取；输入变换写成
 显式配对，避免通用积映射的封装阻挡具体模型的直接计算。
@@ -75,10 +75,10 @@ X 在这个伴随问题中固定；让 X 也变化的指数双函子见下一节
 v ^ u : Hom (Y ^ X) (Y' ^ X')
 v ^ u := ƛ (v ∘ eval ∘ (id × u))
 
-exponential_dimap_eval:
+exp_dimap_eval:
   eval ∘ ((v ^ u) × id) ≈ v ∘ eval ∘ (id × u)
 
-exponential_dimap_comp:
+exp_dimap_comp:
   (v' ∘ v) ^ (u ∘ u') ≈ (v' ^ u') ∘ (v ^ u)
 ```
 
@@ -87,8 +87,8 @@ exponential_dimap_comp:
 上面的求值方程刻画同一构造。respectfulness、单位律和复合律均由已有
 柯里化、积的函子性及指数 βη 导出，不新增结构字段或假设。
 
-`exponential_curry_dimap`、`exponential_uncurry_dimap` 和
-`exponential_app_dimap` 分别给出柯里化、反柯里化及应用的相容性：
+`exp_curry_dimap`、`exp_uncurry_dimap` 和
+`exp_app_dimap` 分别给出柯里化、反柯里化及应用的相容性：
 
 ```text
 ƛ (v ∘ f ∘ (id × u)) ≈ (v ^ u) ∘ ƛ f
@@ -108,7 +108,7 @@ ExpContraF Y     : Fct (C^op) C
 ```
 
 反变截面直接使用通用的 `π1F`。固定参数对象得到的 `π2F (-^-) X`
-与原有的 `(-^ X)` 通过 `exponential_fixed_nat_iso X` 比较，分量均为恒等态射；
+与原有的 `(-^ X)` 通过 `exp_fixed_nat_iso X` 比较，分量均为恒等态射；
 这不要求函子记录或定律字段原生相等。原有 `ExpF` 与积－指数伴随接口保留。
 
 ## 2. 从类型、上下文和项得到态射
@@ -212,8 +212,8 @@ t[RenSub ρ] = t⟨ρ⟩
 ```
 
 绑定变量下的提升 `σ⁺ : Δ,A ⇒ Γ,A` 解释为 `⟦σ⟧ × id`。
-因此 λ 分支所需的等式恰好是 `exponential_curry_comp_r`。
-应用分支由已有的新定理 `exponential_app_comp` 给出：
+因此 λ 分支所需的等式恰好是 `exp_curry_comp_r`。
+应用分支由已有的新定理 `exp_app_comp` 给出：
 
 ```text
 app f a ∘ σ ≈ app (f ∘ σ) (a ∘ σ)
@@ -225,14 +225,14 @@ app f a ∘ σ ≈ app (f ∘ σ) (a ∘ σ)
 
 ## 4. βη 可靠性如何归约到泛性质
 
-函数 β 对应本次的 `exponential_app_β`：
+函数 β 对应本次的 `exp_app_β`：
 
 ```text
 app (curry f) a ≈ f ∘ ⟨id, a⟩
 ```
 
 右侧正是把最新变量替换为 a、其余环境保持不变的解释。
-函数 η 的范畴形式由 `exponential_app_η` 给出：
+函数 η 的范畴形式由 `exp_app_η` 给出：
 
 ```text
 curry (app (f ∘ π1) π2) ≈ f
@@ -330,7 +330,7 @@ C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
 提升由 `LiftT` 包装和投影计算，不使用 resizing。
 
 固定 X 后，`ProductRF X`（记号 `(-× X)`）与 `ExpF X`
-（记号 `(-^ X)`）的态射作用分别为 `σ × id` 和 `exponential_map`。
+（记号 `(-^ X)`）的态射作用分别为 `σ × id` 和 `exp_map`。
 `ProductF` 还给出两个参数同时变化的积双函子。
 `ProdExpAdj X` 将 `curry` / `uncurry` 实例化为通用伴随：
 
@@ -338,7 +338,7 @@ C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
 (-) × X ⊣ (-)^X
 ```
 
-`exponential_adjunct` / `exponential_unadjunct` 将通用转置与原有
+`exp_adjunct` / `exp_unadjunct` 将通用转置与原有
 `curry` / `uncurry` 对齐。这里仅需要积与指数对象，无需终对象；
 具体广集模型及其选定 CCC 仍须显式启用。
 
@@ -435,7 +435,7 @@ ctx_unpack_subst:  (⌞t⌟[Γ]) ∘Sub σ ≈Sub ⌞t[σ]⌟[Γ]
 泛性质：参数为 `∅ ▻ A`，结果为 `∅ ▻ U`，表示对象为 `∅ ▻ (A ⇒ U)`。
 `singleton_eval` 应用函数变量于参数变量，`singleton_curry`（`ƛSub f`）抽象
 f 的最新输入。函数 β 及原始替换律 `rename_lift_single` 给出求值方程，
-函数 η 给出转置唯一性，形成完整的 `singleton_exponential`。
+函数 η 给出转置唯一性，形成完整的 `singleton_exp`。
 
 对任意上下文，`CtxExp Δ Γ`（`Δ ^Ctx Γ`）定义为
 
@@ -444,7 +444,7 @@ f 的最新输入。函数 β 及原始替换律 `rename_lift_single` 给出求�
 ```
 
 `ctx_eval Γ Δ` 打包参数块、执行单变量求值、再拆包结果。其数据使用透明的
-替换复合与赋值配对。`ctx_exponential` 利用上下文打包同构及上述一般运输定理
+替换复合与赋值配对。`ctx_exp` 利用上下文打包同构及上述一般运输定理
 得到完整泛性质，没有为任意上下文重复证明函数 βη 或唯一性。
 
 `CtxCat_HasExponential` 将这些数据组装为相对于既有连接积的选定指数结构。
@@ -458,7 +458,7 @@ f 的最新输入。函数 β 及原始替换律 `rename_lift_single` 给出求�
 范畴数据复用一般的 [InducedCat](../theories/Cat/Induced.v)；选定终对象、积与
 指数分别是语法单位、积与函数类型。`singleton_product` 对任意源上下文证明
 积类型的泛性质；函数类型沿 `type_pair_iso` 的积比较继承已有的
-`singleton_exponential`，没有重复证明函数 η。
+`singleton_exp`，没有重复证明函数 η。
 
 [STLC.Quotation](../theories/STLC/Quotation.v) 的 `syntax_eval` 按字面类型的
 CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境中的各个项；
@@ -482,7 +482,7 @@ CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境�
 证明先对任意源对象 X 上的环境 `Env I X Γ` 进行。`tm_eval_comp`、
 `tm_eval_rename` 与 `tm_eval_subst` 分别处理预合成、重命名和同时替换，
 绑定情形使用积投影与指数转置的自然性。`tm_eval_sound` 按 βη 推导归纳，
-其函数 β/η 分别复用一般的 `exponential_app_β`／`exponential_app_η`。
+其函数 β/η 分别复用一般的 `exp_app_β`／`exp_app_η`。
 
 [STLC.Interpretation](../theories/STLC/Interpretation.v) 用 `env_tuple` 表示环境，
 以 β/η 给出投影与元组的互逆行为。于是 `sub_interp` 把同时替换解释为上下文
@@ -500,7 +500,7 @@ CCC 运算求值。`syntax_eval_quote` 证明结果恰好是原项替换环境�
 要求像终对象和像积满足完整泛性质。[CCC.Functor](../theories/Cat/CCC/Functor.v)
 的 `IsCCCF` 再要求规范指数比较可逆。积的比较、逆比较及其自然性均由泛性质
 导出；指数比较由像求值转置而得。它们不要求选定对象或函子记录原生相等。
-`functor_pair`、`functor_curry` 与 `functor_eval` 给出通常的保持方程。
+`fct_pair`、`fct_curry` 与 `fct_eval` 给出通常的保持方程。
 
 [STLC.TypeInterpretation](../theories/STLC/TypeInterpretation.v) 构造类型呈现上的
 `TypeInterpretF`，并证明 `TypeInterpretF_IsCCCF`。单变量直接在其类型对象上

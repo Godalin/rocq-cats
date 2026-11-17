@@ -51,7 +51,7 @@ Definition gluing_change_terminal_arrow
 Proof.
   etransitivity; [apply gluing_change_arrow |].
   change (α T ∘ fmap K (@id (F T)) ≈ α T).
-  rewrite (@functor_id D D' K), comp_id_r. reflexivity.
+  rewrite (@fct_id D D' K), comp_id_r. reflexivity.
 Defined.
 
 (** The forward comparison uses the boundary and an identity base map. *)
@@ -66,7 +66,7 @@ Program Definition gluing_change_terminal_map
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite functor_id, comp_id_l, comp_id_l.
+  rewrite fct_id, comp_id_l, comp_id_l.
   exact gluing_change_terminal_arrow.
 Defined.
 
@@ -82,7 +82,7 @@ Program Definition gluing_change_terminal_inverse (Hα : is_iso (α T))
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite functor_id, comp_id_l, gluing_change_terminal_arrow.
+  rewrite fct_id, comp_id_l, gluing_change_terminal_arrow.
   symmetry. exact (snd Hα.2).
 Defined.
 
@@ -156,8 +156,8 @@ Program Definition GluingChange_IsCartF
   : IsCartF (GluingChangeF H K α) (Gluing_HasTerminal F)
       (Gluing_HasProduct F source)
   :=
-  {|functor_terminal := gluing_change_terminal H K α (@Term C TC) HT Hα
-  ; functor_product := gluing_change_product H K α source base target image
+  {|fct_terminal := gluing_change_terminal H K α (@Term C TC) HT Hα
+  ; fct_product := gluing_change_product H K α source base target image
   |}.
 
 End GluingChangeCartesian.

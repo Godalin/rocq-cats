@@ -51,7 +51,7 @@ Program Definition VtxTerminalF {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : T →ᵥ VtxTerminalObjF@{x e o h p l a b}
   :=
-  {|vertex_functor := ConstF (VtxCat T)
+  {|vertex_fct := ConstF (VtxCat T)
       (C := VtxCat VtxTerminalObjF@{x e o h p l a b}) tt
   |}.
 Next Obligation. intros x y p. exact tt. Defined.

@@ -84,6 +84,6 @@ Definition monoid_chain_sub_iso@{u p +}
 Proof.
   apply monoid_diagram_iso. intros i j a.
   apply (@monoid_segment_sub M).
-  - exact (ordinal_functor_monotone f).
+  - exact (ordinal_fct_monotone f).
   - exact (nat_le_to_le a).
 Defined.

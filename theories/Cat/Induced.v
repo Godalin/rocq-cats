@@ -37,9 +37,9 @@ Program Definition InducedF {C D : Cat} (F : Fct C D)
   :=
   {|F0 X := X
   ; F1 X Y f := fmap F f
-  ; functor_fmap_proper X Y := @functor_fmap_proper C D F X Y
-  ; functor_id X := @functor_id C D F X
-  ; functor_comp X Y Z g f := @functor_comp C D F X Y Z g f
+  ; fct_fmap_proper X Y := @fct_fmap_proper C D F X Y
+  ; fct_id X := @fct_id C D F X
+  ; fct_comp X Y Z g f := @fct_comp C D F X Y Z g f
   |}.
 
 (** The inclusion acts identically on every hom-set. Its laws remain

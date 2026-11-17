@@ -87,8 +87,8 @@ Program Definition VtxNerveF_IsCartF
         (FctCat (Δ^op) SetCat@{u r _ _ _ _ _}))
       VtxPresentationCat_HasTerminal VtxPresentationCat_HasProduct
   :=
-  {|functor_terminal := vertex_nerve_terminal_universal
-  ; functor_product := vertex_nerve_product_universal
+  {|fct_terminal := vertex_nerve_terminal_universal
+  ; fct_product := vertex_nerve_product_universal
   |}.
 
 (** Bundle exactly the existing nerve and its preservation evidence. *)
@@ -100,6 +100,6 @@ Definition VtxNerveCartF
       VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
       VtxPresentationCat_HasTerminal VtxPresentationCat_HasProduct
-  := CartFctFromPreservation VtxNerveF VtxNerveF_IsCartF.
+  := CartFctOfFct VtxNerveF VtxNerveF_IsCartF.
 
 End Cartesian.

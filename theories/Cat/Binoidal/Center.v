@@ -107,12 +107,12 @@ Definition central_inv {X Y : @Ob C} (i : X ≅ Y)
 Proof.
   intros Z W g. destruct (Hi Z W g) as [H1 H2]. split.
   - exact (iso_square_inv
-      (i.1 ⊳ Z; functor_is_iso (BinoidalRightF Z) i.1 i.2)
-      (i.1 ⊳ W; functor_is_iso (BinoidalRightF W) i.1 i.2)
+      (i.1 ⊳ Z; fct_is_iso (BinoidalRightF Z) i.1 i.2)
+      (i.1 ⊳ W; fct_is_iso (BinoidalRightF W) i.1 i.2)
       (X ⊲ g) (Y ⊲ g) H1).
   - exact (iso_square_inv
-      (Z ⊲ i.1; functor_is_iso (BinoidalLeftF Z) i.1 i.2)
-      (W ⊲ i.1; functor_is_iso (BinoidalLeftF W) i.1 i.2)
+      (Z ⊲ i.1; fct_is_iso (BinoidalLeftF Z) i.1 i.2)
+      (W ⊲ i.1; fct_is_iso (BinoidalLeftF W) i.1 i.2)
       (g ⊳ X) (g ⊳ Y) H2).
 Defined.
 

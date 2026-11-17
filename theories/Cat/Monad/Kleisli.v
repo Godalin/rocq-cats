@@ -130,7 +130,7 @@ Program Definition KleisliPureF
   :=
   {|F0 X := X
   ; F1 X Y f := return[M; f]
-  ; functor_fmap_proper X Y := @monad_return_proper C M X Y
+  ; fct_fmap_proper X Y := @monad_return_proper C M X Y
   |}.
 Next Obligation. exact (monad_return_id M X). Defined.
 Next Obligation.
@@ -148,7 +148,7 @@ Program Definition KleisliExtendF
   :=
   {|F0 X := M X
   ; F1 X Y f := kleisli_extend M f
-  ; functor_fmap_proper X Y := @kleisli_extend_proper C M X Y
+  ; fct_fmap_proper X Y := @kleisli_extend_proper C M X Y
   |}.
 Next Obligation. exact (kleisli_extend_unit M X). Defined.
 Next Obligation. exact (kleisli_extend_assoc M g f). Defined.

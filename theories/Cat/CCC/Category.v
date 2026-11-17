@@ -118,17 +118,17 @@ Proof. intros C D F G H. exact H. Defined.
 
 Program Definition CCCCatHom@{o h p l m n +}
     {C D : CCC@{o h p l l}}
-    (F : CCCFct@{o h p l l l m n o h p l} C D)
+    (F : CCCFct@{o h p l l l o h p l m n} C D)
   : (@Hom CCCCat) C D
   :=
-  {|CCCF :=
-    {|CartF := CatCatHom (F : Fct C D)
-    ; cartesian_isCartF :=
-      {|functor_terminal := @functor_terminal C D F
-          (hasTerminal C) (hasProduct C) (cartesian_isCartF (CCCF F))
-      ; functor_product := @functor_product C D F
-          (hasTerminal C) (hasProduct C) (cartesian_isCartF (CCCF F))
+  {|CCCFctToCartFct :=
+    {|CartFctToFct := CatCatHom (F : Fct C D)
+    ; isCartF :=
+      {|fct_terminal := @fct_terminal C D F
+          (hasTerminal C) (hasProduct C) (isCartF (CCCFctToCartFct F))
+      ; fct_product := @fct_product C D F
+          (hasTerminal C) (hasProduct C) (isCartF (CCCFctToCartFct F))
       |}
     |}
-  ; ccc_functor_exponential := ccc_functor_exponential F
+  ; ccc_fct_exp := ccc_fct_exp F
   |}.

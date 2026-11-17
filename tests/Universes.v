@@ -354,68 +354,68 @@ Context (C : CCC@{o h p l l}) (D : CCC@{o p h l l}).
 
 Definition high_eq_curry (X Y Z : @Ob C)
   : HomSet (Z × X) Y →r HomSet Z (Y ^ X)
-  := exponential_curry_resp.
+  := exp_curry_resp.
 Definition low_eq_curry (X Y Z : @Ob D)
   : HomSet (Z × X) Y →r HomSet Z (Y ^ X)
-  := exponential_curry_resp.
+  := exp_curry_resp.
 Definition high_eq_uncurry (X Y Z : @Ob C)
   : HomSet Z (Y ^ X) →r HomSet (Z × X) Y
-  := exponential_uncurry_resp.
+  := exp_uncurry_resp.
 Definition low_eq_uncurry (X Y Z : @Ob D)
   : HomSet Z (Y ^ X) →r HomSet (Z × X) Y
-  := exponential_uncurry_resp.
-Definition high_eq_exponential_hom (X Y Z : @Ob C)
+  := exp_uncurry_resp.
+Definition high_eq_exp_hom (X Y Z : @Ob C)
   : HomSet (Z × X) Y ≅[SetCat@{h p _ _ _ _ _}] HomSet Z (Y ^ X)
-  := exponential_hom_iso.
-Definition low_eq_exponential_hom (X Y Z : @Ob D)
+  := exp_hom_iso.
+Definition low_eq_exp_hom (X Y Z : @Ob D)
   : HomSet (Z × X) Y ≅[SetCat@{p h _ _ _ _ _}] HomSet Z (Y ^ X)
-  := exponential_hom_iso.
-Definition high_eq_exponential_adj (X : @Ob C)
+  := exp_hom_iso.
+Definition high_eq_exp_adj (X : @Ob C)
   : (-× X) ⊣ (-^ X)
   := ProdExpAdj X.
-Definition low_eq_exponential_adj (X : @Ob D)
+Definition low_eq_exp_adj (X : @Ob D)
   : (-× X) ⊣ (-^ X)
   := ProdExpAdj X.
-Definition high_eq_exponential_nat (X : @Ob C)
+Definition high_eq_exp_nat (X : @Ob C)
   : @NatIso _ SetCat@{h p _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
-  := exponential_hom_nat_iso X.
-Definition low_eq_exponential_nat (X : @Ob D)
+  := exp_hom_nat_iso X.
+Definition low_eq_exp_nat (X : @Ob D)
   : @NatIso _ SetCat@{p h _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
-  := exponential_hom_nat_iso X.
-Definition high_eq_exponential_bifunctor
+  := exp_hom_nat_iso X.
+Definition high_eq_exp_bifunctor
   : Fct (C^op ×C C) C
   := (-^-).
-Definition low_eq_exponential_bifunctor
+Definition low_eq_exp_bifunctor
   : Fct (D^op ×C D) D
   := (-^-).
-Definition high_eq_contravariant_exponential (Y : @Ob C)
+Definition high_eq_contravariant_exp (Y : @Ob C)
   : Fct (C^op) C
   := (Y ^-).
-Definition low_eq_contravariant_exponential (Y : @Ob D)
+Definition low_eq_contravariant_exp (Y : @Ob D)
   : Fct (D^op) D
   := (Y ^-).
-Definition high_eq_fixed_exponential (X : @Ob C)
+Definition high_eq_fixed_exp (X : @Ob C)
   : π2F (-^-) X ≅N (-^ X)
-  := exponential_fixed_nat_iso X.
-Definition low_eq_fixed_exponential (X : @Ob D)
+  := exp_fixed_nat_iso X.
+Definition low_eq_fixed_exp (X : @Ob D)
   : π2F (-^-) X ≅N (-^ X)
-  := exponential_fixed_nat_iso X.
+  := exp_fixed_nat_iso X.
 (** Structural isomorphisms keep the two hom/equality orderings distinct. *)
 
 (** 结构同构保持两种 Hom／相等层级排列的分离。 *)
 
-Definition high_eq_exponential_laws (X Y Z : @Ob C)
+Definition high_eq_exp_laws (X Y Z : @Ob C)
   : (((X × Y) ^ Z) ≅ ((X ^ Z) × (Y ^ Z))) ∧
       (((Y ^ X) ^ Z) ≅ (Y ^ (X × Z))) ∧ ((Y ^ 1) ≅ Y) ∧ ((1 ^ X) ≅ 1)
-  := (exponential_product_iso Z X Y,
-      (exponential_iterated_iso X Z Y,
-        (exponential_unit_iso Y, exponential_terminal_iso X))).
-Definition low_eq_exponential_laws (X Y Z : @Ob D)
+  := (exp_product_iso Z X Y,
+      (exp_iterated_iso X Z Y,
+        (exp_unit_iso Y, exp_terminal_iso X))).
+Definition low_eq_exp_laws (X Y Z : @Ob D)
   : (((X × Y) ^ Z) ≅ ((X ^ Z) × (Y ^ Z))) ∧
       (((Y ^ X) ^ Z) ≅ (Y ^ (X × Z))) ∧ ((Y ^ 1) ≅ Y) ∧ ((1 ^ X) ≅ 1)
-  := (exponential_product_iso Z X Y,
-      (exponential_iterated_iso X Z Y,
-        (exponential_unit_iso Y, exponential_terminal_iso X))).
+  := (exp_product_iso Z X Y,
+      (exp_iterated_iso X Z Y,
+        (exp_unit_iso Y, exp_terminal_iso X))).
 Definition high_eq_product_hom (X Y Z : @Ob C)
   : HomSet Z (X × Y) ≅[SetCat@{h p _ _ _ _ _}]
       (HomSet Z X ×S HomSet Z Y)
@@ -427,11 +427,11 @@ Definition low_eq_product_hom (X Y Z : @Ob D)
 Definition high_eq_iterated_hom (X Y Z W : @Ob C)
   : HomSet W ((Y ^ X) ^ Z) ≅[SetCat@{h p _ _ _ _ _}]
       HomSet W (Y ^ (X × Z))
-  := exponential_iterated_hom_iso X Z Y W.
+  := exp_iterated_hom_iso X Z Y W.
 Definition low_eq_iterated_hom (X Y Z W : @Ob D)
   : HomSet W ((Y ^ X) ^ Z) ≅[SetCat@{p h _ _ _ _ _}]
       HomSet W (Y ^ (X × Z))
-  := exponential_iterated_hom_iso X Z Y W.
+  := exp_iterated_hom_iso X Z Y W.
 
 (** Public notation survives section closure and imports. *)
 
@@ -439,11 +439,11 @@ Definition low_eq_iterated_hom (X Y Z W : @Ob D)
 
 Definition high_eq_internal_unit (X Y Z : @Ob C) (f : Hom Z (Y ^ X))
   : idᴱ[Y] ∘ᴱ f ≈ f
-  := exponential_comp_id_l f.
+  := exp_comp_id_l f.
 Definition low_eq_double_curry (A B Y Z : @Ob D)
     (f : Hom (Z × (A × B)) Y)
   : (ƛ₂ f)^♭₂ ≈ f
-  := exponential_curry_twice_β f.
+  := exp_curry_twice_β f.
 
 Context (F : Fct C D) (G : Fct D C)
     (HF : @IsCCCF C D F) (HG : @IsCCCF D C G).
@@ -461,20 +461,20 @@ Definition mixed_levels_closed_composite
 
 (** 打包及复合保持 Hom／相等层级的两种严格排列。 *)
 
-Definition high_eq_bundled_closed_functor
+Definition high_eq_bundled_closed_fct
   : CCCFct C D
-  := CCCFctFromPreservation F HF.
-Definition low_eq_bundled_closed_functor
+  := CCCFctOfFct F HF.
+Definition low_eq_bundled_closed_fct
   : CCCFct D C
-  := CCCFctFromPreservation G HG.
+  := CCCFctOfFct G HG.
 Definition mixed_levels_bundled_closed_composite
   : CCCFct C C
-  := CompCCCF low_eq_bundled_closed_functor high_eq_bundled_closed_functor.
+  := CompCCCF low_eq_bundled_closed_fct high_eq_bundled_closed_fct.
 Definition mixed_levels_bundled_cartesian_composite
   : @CartFct C C (Cats.Cat.Cartesian.Core.hasTerminal C)
       (Cats.Cat.Cartesian.Core.hasProduct C)
-  := CompCartF (CCCF low_eq_bundled_closed_functor)
-      (CCCF high_eq_bundled_closed_functor).
+  := CompCartF (CCCFctToCartFct low_eq_bundled_closed_fct)
+      (CCCFctToCartFct high_eq_bundled_closed_fct).
 
 Universe s.
 Constraint l < s.
@@ -484,14 +484,14 @@ Context (J : Cat@{s s s _ _}).
 
 (** 极限保持性不对形状施加索引大小界。 *)
 
-Definition high_eq_exponential_limit (A : @Ob C)
+Definition high_eq_exp_limit (A : @Ob C)
     (K : Fct J C) (L : @Ob C) (κ : L ⇒Δ K) (H : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
-  := exponential_preserves_limit A H.
-Definition low_eq_exponential_limit (A : @Ob D)
+  := exp_preserves_limit A H.
+Definition low_eq_exp_limit (A : @Ob D)
     (K : Fct J D) (L : @Ob D) (κ : L ⇒Δ K) (H : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
-  := exponential_preserves_limit A H.
+  := exp_preserves_limit A H.
 End ExponentialLevels.
 
 (** An adjunction can relate categories whose two hom levels are reversed.
@@ -542,9 +542,9 @@ Context (J : Cat@{n h p l l}).
 Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
 Context `{HC : !HasLimitsOfShape C J} `{HD : !HasLimitsOfShape D J}.
 
-Definition high_eq_limit_functor
+Definition high_eq_limit_fct
   := @LimF J C HC.
-Definition low_eq_limit_functor
+Definition low_eq_limit_fct
   := @LimF J D HD.
 Definition high_eq_limit_adj
   := @LimAdj J C HC.
@@ -1554,10 +1554,10 @@ Definition low_eq_stlc_interpretation
 
 Definition high_eq_bundled_type_interpretation
   : CCCFct (TyCat_CCC B) C
-  := CCCFctFromPreservation (C := TyCat_CCC B) (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
+  := CCCFctOfFct (C := TyCat_CCC B) (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
 Definition low_eq_bundled_type_interpretation
   : CCCFct (TyCat_CCC B) D
-  := CCCFctFromPreservation (C := TyCat_CCC B) (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
+  := CCCFctOfFct (C := TyCat_CCC B) (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
 
 Context (F : Fct (TyCat@{b e l} B) C)
     (HF : @IsCCCF (TyCat_CCC B) C F).
@@ -1593,7 +1593,7 @@ Definition high_eq_groupoid_inverse {X Y : @Ob C} (f : Hom X Y)
   : Hom Y X
   := f⁻¹.
 
-Definition low_eq_groupoid_inverse_functor
+Definition low_eq_groupoid_inverse_fct
   : Fct (D^op) D
   := InvF D.
 
@@ -1605,7 +1605,7 @@ Definition mixed_groupoid_product
   : (C ×C D) ⦂ Gpd
   := ProdCat_IsGpd C D.
 
-Definition low_eq_functor_groupoid
+Definition low_eq_fct_groupoid
   : FctCat C D ⦂ Gpd
   := FctCat_IsGpd C D.
 End GroupoidLevels.
@@ -1867,11 +1867,11 @@ Context (X : SetC@{o e}) (Y : SetC@{e o})
 
 (** 保运输函子使态射比较大小独立于所保存的函子定律；交换源与目标大小后亦如此。 *)
 
-Definition forward_vertex_functor_set
+Definition forward_vertex_fct_set
   : SetC@{l o}
   := VtxFctS T S.
 
-Definition reverse_vertex_functor_set
+Definition reverse_vertex_fct_set
   : SetC@{l h}
   := VtxFctS S T.
 
@@ -1880,12 +1880,12 @@ Definition reverse_vertex_functor_set
 
 (** nerve 映射允许共同值相等严格低于或高于值载体，且原生源与目标 Hom 大小独立。 *)
 
-Definition low_eq_vertex_functor_map
+Definition low_eq_vertex_fct_map
   : VtxFctS T S →r Nat_SetS
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S))
   := vertex_nerve_resp T S.
 
-Definition high_eq_vertex_functor_map
+Definition high_eq_vertex_fct_map
   : VtxFctS T S →r Nat_SetS
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S))
   := vertex_nerve_resp T S.
@@ -1895,17 +1895,17 @@ Definition high_eq_vertex_functor_map
 
 (** 无论 nerve 相等宇宙低于或高于载体宇宙，重构均返回原生态射广集。 *)
 
-Definition low_eq_vertex_functor_inverse
+Definition low_eq_vertex_fct_inverse
   : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)) →r
       VtxFctS T S
   := vertex_nerve_inv_resp T S.
 
-Definition high_eq_vertex_functor_inverse
+Definition high_eq_vertex_fct_inverse
   : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (Nᵥ(S)) →r
       VtxFctS T S
   := vertex_nerve_inv_resp T S.
 
-Definition reverse_vertex_functor_inverse
+Definition reverse_vertex_fct_inverse
   : Nat_SetS (Nᵥ(S) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(T)) →r
       VtxFctS S T
   := vertex_nerve_inv_resp S T.
@@ -2260,23 +2260,23 @@ Definition high_eq_lax_underlying
   : Fct C0 C1
   := L01.
 
-Definition low_eq_lax_monoid_functor
+Definition low_eq_lax_monoid_fct
   : Fct (MonoidCat MC1) (MonoidCat MC0)
   := LaxMonoidF L10.
 
-Definition high_eq_lax_monoid_functor
+Definition high_eq_lax_monoid_fct
   : Fct (MonoidCat MC0) (MonoidCat MC1)
   := LaxMonoidF L01.
 
 Definition low_eq_lax_monoid_map {A B : MonoidObj MC1}
     (f g : (@Hom (MonoidCat MC1)) A B)
   : Type@{e}
-  := fmap low_eq_lax_monoid_functor f ≈ fmap low_eq_lax_monoid_functor g.
+  := fmap low_eq_lax_monoid_fct f ≈ fmap low_eq_lax_monoid_fct g.
 
 Definition high_eq_lax_monoid_map {A B : MonoidObj MC0}
     (f g : (@Hom (MonoidCat MC0)) A B)
   : Type@{p}
-  := fmap high_eq_lax_monoid_functor f ≈ fmap high_eq_lax_monoid_functor g.
+  := fmap high_eq_lax_monoid_fct f ≈ fmap high_eq_lax_monoid_fct g.
 
 Definition mixed_constant_lax (A : MonoidObj MC0)
   : LaxMonoidalFct MC1 MC0
@@ -2590,25 +2590,25 @@ Definition low_eq_family_map (f : FamF W Z)
   : FamF (LiftFamC W : FamC@{p u l d c})
       (LiftFamC Z : FamC@{p u l d c})
   := lift_fam_map f.
-Definition high_eq_family_functor
+Definition high_eq_family_fct
   : Fct FamCat@{o l l o l u p l a b l l l l l l}
       FamCat@{o l l o l u p l c d l l l l l l}
   := FamLiftF.
-Definition low_eq_family_functor
+Definition low_eq_family_fct
   : Fct FamCat@{o l l o l p u l b a l l l l l l}
       FamCat@{o l l o l p u l d c l l l l l l}
   := FamLiftF.
 Definition high_eq_base_comparison
-  : (FamBaseF ∘F high_eq_family_functor) ⇒ FamBaseF
+  : (FamBaseF ∘F high_eq_family_fct) ⇒ FamBaseF
   := FamLiftBaseN.
 Definition low_eq_base_comparison
-  : (FamBaseF ∘F low_eq_family_functor) ⇒ FamBaseF
+  : (FamBaseF ∘F low_eq_family_fct) ⇒ FamBaseF
   := FamLiftBaseN.
 Definition high_eq_base_iso
-  : (FamBaseF ∘F high_eq_family_functor) ≅N FamBaseF
+  : (FamBaseF ∘F high_eq_family_fct) ≅N FamBaseF
   := fam_lift_base_iso.
 Definition low_eq_base_iso
-  : (FamBaseF ∘F low_eq_family_functor) ≅N FamBaseF
+  : (FamBaseF ∘F low_eq_family_fct) ≅N FamBaseF
   := fam_lift_base_iso.
 Definition high_aux_family_map
     (f : FamF@{_ _ _ _ _ _ _ _ l _ _ _ _ _} U V)

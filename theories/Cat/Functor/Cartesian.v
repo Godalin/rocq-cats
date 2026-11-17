@@ -21,18 +21,21 @@ From Cats Require Import
 
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
+Local Open Scope ob_scope.
 
-(** Preserve the selected terminal and binary-product cones as full cones. *)
+(** Preserve the selected terminal and binary-product cones as full cones.
+    Object notation uses the supplied [TC] and [PC]; projection inference
+    uses that same selected product. *)
 
-(** 将选定终对象与二元积锥保持为具有完整泛性质的锥。 *)
+(** 将选定终对象与二元积锥保持为具有完整泛性质的锥。
+    对象记号使用给定的 [TC]、[PC]，投影的推断使用同一选定积。 *)
 
 Class IsCartF {C D : Cat} (F : Fct C D)
     (TC : HasTerminal C) (PC : HasProduct C)
   :=
-  { functor_terminal : is_terminal (F (@Term C TC))
-  ; functor_product X Y : is_product (F X) (F Y)
-      (F (@Prod C PC X Y)) (fmap F (@Cats.Cat.Product.Core.π1 C PC X Y))
-      (fmap F (@Cats.Cat.Product.Core.π2 C PC X Y))
+  { fct_terminal : is_terminal (F 1)
+  ; fct_product X Y : is_product (F X) (F Y)
+      (F (X × Y)) (fmap F π1) (fmap F π2)
   }.
 
 (** ** Product Comparisons for a Cartesian Functor
@@ -55,45 +58,45 @@ Context {C D : Cat} (F : Fct C D)
 
 (** 像积与目标选定积之间具有规范同构。 *)
 
-Definition functor_product_iso (X Y : @Ob C)
-  : F ((X × Y)%ob) ≅ (F X × F Y)%ob.
+Definition fct_product_iso (X Y : @Ob C)
+  : F (X × Y) ≅ (F X × F Y).
 Proof.
-  exact (preserved_product_iso F (functor_product (F := F)) X Y).
+  exact (preserved_product_iso F (fct_product (F := F)) X Y).
 Defined.
 
 (** The inverse comparison is the mediator of the preserved product. *)
 
 (** 逆向比较是保持积的泛中介。 *)
 
-Definition functor_product_inv (X Y : @Ob C)
-  : Hom (F X × F Y)%ob (F ((X × Y)%ob))
-  := preserved_product_inv F (functor_product (F := F)) X Y.
+Definition fct_product_inv (X Y : @Ob C)
+  : Hom (F X × F Y) (F (X × Y))
+  := preserved_product_inv F (fct_product (F := F)) X Y.
 
 (** Both projections of the inverse comparison compute. *)
 
 (** 逆向比较的两个投影均满足计算方程。 *)
 
-Lemma functor_product_inv_β (X Y : @Ob C)
-  : (fmap F π1 ∘ functor_product_inv X Y ≈ π1) ∧
-    (fmap F π2 ∘ functor_product_inv X Y ≈ π2).
+Lemma fct_product_inv_β (X Y : @Ob C)
+  : (fmap F π1 ∘ fct_product_inv X Y ≈ π1) ∧
+    (fmap F π2 ∘ fct_product_inv X Y ≈ π2).
 Proof. apply preserved_product_inv_β. Qed.
 
 (** Pairing is preserved through the product comparison. *)
 
 (** 配对通过积比较得到保持。 *)
 
-Lemma functor_pair {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
-  : fmap F ⟨f, g⟩ ≈ functor_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
+Lemma fct_pair {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
+  : fmap F ⟨f, g⟩ ≈ fct_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
 Proof. apply preserved_pair. Qed.
 
 (** The inverse comparison is natural in both factors. *)
 
 (** 逆向比较在两个因子上自然。 *)
 
-Lemma functor_product_inv_natural {X Y X' Y' : @Ob C}
+Lemma fct_product_inv_natural {X Y X' Y' : @Ob C}
     (f : Hom X X') (g : Hom Y Y')
-  : fmap F (f × g) ∘ functor_product_inv X Y ≈
-      functor_product_inv X' Y' ∘ (fmap F f × fmap F g).
+  : fmap F (f × g) ∘ fct_product_inv X Y ≈
+      fct_product_inv X' Y' ∘ (fmap F f × fmap F g).
 Proof. apply preserved_product_inv_natural. Qed.
 
 End CartFct.
@@ -106,17 +109,17 @@ Program Definition IdF_IsCartF (C : Cat)
     (TC : HasTerminal C) (PC : HasProduct C)
   : IsCartF (@IdF C) TC PC
   :=
-  {|functor_terminal := @terminal_universal C TC
-  ; functor_product := @product_universal C PC
+  {|fct_terminal := @terminal_universal C TC
+  ; fct_product := @product_universal C PC
   |}.
 
 (** The identity functor's inverse product comparison is the identity arrow. *)
 
 (** 恒等函子的逆向积比较等于恒等箭头。 *)
 
-Lemma id_functor_product_inv (C : Cat) (TC : HasTerminal C)
+Lemma id_fct_product_inv (C : Cat) (TC : HasTerminal C)
     (PC : HasProduct C) (X Y : @Ob C)
-  : @functor_product_inv C C (@IdF C) TC PC PC
+  : @fct_product_inv C C (@IdF C) TC PC PC
       (IdF_IsCartF C TC PC) X Y ≈ id.
 Proof.
   symmetry. apply product_pair_unique. split; apply comp_id_r.
@@ -133,8 +136,8 @@ Definition cartesian_preserves_terminal {C D : Cat} (F : Fct C D)
   : is_terminal (F T).
 Proof.
   pose (i := terminal_unique (@terminal_universal C TC) HT).
-  pose (j := functor_is_iso F i.1 i.2).
-  intros X. destruct (functor_terminal X) as [h Hh].
+  pose (j := fct_is_iso F i.1 i.2).
+  intros X. destruct (fct_terminal X) as [h Hh].
   exists (fmap F i.1 ∘ h). split; [exact I |].
   intros k _.
   assert (H : j.1 ∘ k ≈ h) by (apply Hh; exact I).
@@ -153,13 +156,13 @@ Definition cartesian_preserves_product {C D : Cat} (F : Fct C D)
   : is_product (F X) (F Y) (F P) (fmap F p) (fmap F q).
 Proof.
   pose (i := product_unique (@product_universal C PC X Y) HP).
-  refine (product_apex_iso (functor_product X Y)
-    (fmap F i.1; functor_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
+  refine (product_apex_iso (fct_product X Y)
+    (fmap F i.1; fct_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
   - change (fmap F p ∘ fmap F i.1 ≈ fmap F π1).
-    rewrite <- functor_comp. apply functor_fmap_proper.
+    rewrite <- fct_comp. apply fct_fmap_proper.
     exact (fst (@this _ _ _ _ _ (HP _ π1 π2).2)).
   - change (fmap F q ∘ fmap F i.1 ≈ fmap F π2).
-    rewrite <- functor_comp. apply functor_fmap_proper.
+    rewrite <- fct_comp. apply fct_fmap_proper.
     exact (snd (@this _ _ _ _ _ (HP _ π1 π2).2)).
 Defined.
 
@@ -174,42 +177,42 @@ Program Definition CompF_IsCartF {C D E : Cat}
     `{HF : !IsCartF F TC PC} `{HG : !IsCartF G TD PD}
   : IsCartF (G ∘F F) TC PC
   :=
-  {|functor_terminal := cartesian_preserves_terminal G
-      (@functor_terminal _ _ F TC PC HF)
-  ; functor_product X Y := cartesian_preserves_product G
-      (@functor_product _ _ F TC PC HF X Y)
+  {|fct_terminal := cartesian_preserves_terminal G
+      (@fct_terminal _ _ F TC PC HF)
+  ; fct_product X Y := cartesian_preserves_product G
+      (@fct_product _ _ F TC PC HF X Y)
   |}.
 
 (** Inverse product comparisons compose through the second functor. *)
 
 (** 逆向积比较通过第二个函子复合。 *)
 
-Lemma functor_product_inv_comp {C D E : Cat}
+Lemma fct_product_inv_comp {C D E : Cat}
     (F : Fct C D) (G : Fct D E)
     `{TC : !HasTerminal C} `{PC : !HasProduct C}
     `{TD : !HasTerminal D} `{PD : !HasProduct D}
     `{PE : !HasProduct E}
     `{HF : !IsCartF F TC PC} `{HG : !IsCartF G TD PD}
     (X Y : @Ob C)
-  : @functor_product_inv _ _ (G ∘F F) TC PC PE
+  : @fct_product_inv _ _ (G ∘F F) TC PC PE
       (CompF_IsCartF F G) X Y ≈
-      fmap G (functor_product_inv F X Y) ∘ functor_product_inv G (F X) (F Y).
+      fmap G (fct_product_inv F X Y) ∘ fct_product_inv G (F X) (F Y).
 Proof.
-  symmetry. apply (functor_product (F := G ∘F F)
+  symmetry. apply (fct_product (F := G ∘F F)
     (IsCartF := CompF_IsCartF F G) X Y _ π1 π2).2.
   split.
   - change (fmap G (fmap F π1) ∘
-      (fmap G (functor_product_inv F X Y) ∘
-        functor_product_inv G (F X) (F Y)) ≈ π1).
-    rewrite <- comp_assoc, <- functor_comp,
-      (fst (functor_product_inv_β F X Y)).
-    exact (fst (functor_product_inv_β G (F X) (F Y))).
+      (fmap G (fct_product_inv F X Y) ∘
+        fct_product_inv G (F X) (F Y)) ≈ π1).
+    rewrite <- comp_assoc, <- fct_comp,
+      (fst (fct_product_inv_β F X Y)).
+    exact (fst (fct_product_inv_β G (F X) (F Y))).
   - change (fmap G (fmap F π2) ∘
-      (fmap G (functor_product_inv F X Y) ∘
-        functor_product_inv G (F X) (F Y)) ≈ π2).
-    rewrite <- comp_assoc, <- functor_comp,
-      (snd (functor_product_inv_β F X Y)).
-    exact (snd (functor_product_inv_β G (F X) (F Y))).
+      (fmap G (fct_product_inv F X Y) ∘
+        fct_product_inv G (F X) (F Y)) ≈ π2).
+    rewrite <- comp_assoc, <- fct_comp,
+      (snd (fct_product_inv_β F X Y)).
+    exact (snd (fct_product_inv_β G (F X) (F Y))).
 Qed.
 
 (** ** Bundled Cartesian Functors *)
@@ -224,29 +227,21 @@ Qed.
 (** 函子及其对具名来源终对象和积的保持性；不要求目标具有全局选定的积。
     唯一强制转换暴露底层函子，继承的保持性证据可用于上述固定函子定理。 *)
 
-Class CartFct {C D : Cat}
+Record CartFct {C D : Cat}
     (TC : HasTerminal C) (PC : HasProduct C)
-  :=
-  { CartF :> Fct C D
-  ; cartesian_isCartF :: IsCartF CartF TC PC
+  := CartFctOfFct
+  { CartFctToFct :> Fct C D
+  ; isCartF :: IsCartF CartFctToFct TC PC
   }.
 
-Arguments CartF {_ _ _ _} _.
-Arguments cartesian_isCartF {_ _ _ _} _.
+Arguments CartFctToFct {_ _ _ _} _.
+Arguments isCartF {_ _ _ _} _.
 
-(** Bundle an existing functor and its preservation evidence, retaining
-    exactly their original computational data. *)
+(** The direct constructor retains the supplied functor and evidence. *)
 
-(** 打包已有函子及其保持性证据，保留原有计算数据。 *)
+(** 直接构造器保留给定函子及证据。 *)
 
-Program Definition CartFctFromPreservation {C D : Cat}
-    {TC : HasTerminal C} {PC : HasProduct C}
-    (F : Fct C D) (HF : IsCartF F TC PC)
-  : @CartFct C D TC PC
-  :=
-  {|CartF := F
-  ; cartesian_isCartF := HF
-  |}.
+Arguments CartFctOfFct {_ _ _ _} _ _.
 
 (** The bundled identity reuses the existing preservation proof. Chosen
     functors are constructed explicitly, not selected by import. *)
@@ -256,7 +251,7 @@ Program Definition CartFctFromPreservation {C D : Cat}
 Program Definition IdCartF (C : Cat)
     (TC : HasTerminal C) (PC : HasProduct C)
   : @CartFct C C TC PC
-  := CartFctFromPreservation IdF (IdF_IsCartF C TC PC).
+  := CartFctOfFct IdF (IdF_IsCartF C TC PC).
 
 (** Composition needs only the chosen source structures of its two factors.
     Its preservation evidence is the existing generic composition theorem. *)
@@ -268,6 +263,6 @@ Program Definition CompCartF {C D E : Cat}
     {TD : HasTerminal D} {PD : HasProduct D}
     (G : @CartFct D E TD PD) (F : @CartFct C D TC PC)
   : @CartFct C E TC PC
-  := CartFctFromPreservation (G ∘F F)
+  := CartFctOfFct (G ∘F F)
       (@CompF_IsCartF C D E F G TC PC TD PD
-        (cartesian_isCartF F) (cartesian_isCartF G)).
+        (isCartF F) (isCartF G)).

@@ -60,7 +60,7 @@ Proof.
   - split; [exact I |]. intros f _. split; cbn.
     + pose proof (comma_comm f) as comm. cbn in comm.
       rewrite comp_id_l in comm. rewrite <- comm.
-      apply comp_proper; [apply functor_fmap_proper; apply Hg; exact I |
+      apply comp_proper; [apply fct_fmap_proper; apply Hg; exact I |
         reflexivity].
     + apply Hg. exact I.
 Defined.

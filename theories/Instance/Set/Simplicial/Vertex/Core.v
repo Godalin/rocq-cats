@@ -86,8 +86,8 @@ Proof.
   generalize (e i), (α i). rewrite <- (H i). intros p a.
   rewrite vertex_transport_id.
   transitivity (fmap F (@Cats.Cat.Core.id [Ord n] (θ i))).
-  - apply functor_fmap_proper. exact tt.
-  - apply functor_id.
+  - apply fct_fmap_proper. exact tt.
+  - apply fct_id.
 Defined.
 
 (** Constant restrictions compare by their single vertex. Their arrows
@@ -113,9 +113,9 @@ Proof.
   generalize (d i), (d j), (fmap u f), (fmap v f).
   rewrite (Hu i), (Hu j), (Hv i), (Hv j).
   intros p q g h.
-  rewrite (@functor_fmap_proper _ _ F a a g id tt),
-    (@functor_fmap_proper _ _ G b b h id tt),
-    !functor_id, comp_id_l, comp_id_r.
+  rewrite (@fct_fmap_proper _ _ F a a g id tt),
+    (@fct_fmap_proper _ _ G b b h id tt),
+    !fct_id, comp_id_l, comp_id_r.
   apply vertex_transport_witness_independent.
 Defined.
 

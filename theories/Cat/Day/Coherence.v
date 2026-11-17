@@ -59,27 +59,27 @@ Proof.
   rewrite <- comp_assoc, (snd (A.2 ((X,I),Z)).2), comp_id_l.
   apply (iso_cancel_l
     (fmap (π2F T X) (L.1 Z);
-      functor_is_iso (π2F T X) (L.1 Z) (L.2 Z))).
+      fct_is_iso (π2F T X) (L.1 Z) (L.2 Z))).
   change (fmap T (X := (X,T (I,Z))) (Y := (X,Z)) (id,L.1 Z) ∘
     fmap T (X := (X,Z)) (Y := (X,T (I,Z))) (id,(L.2 Z).1) ≈
     fmap T (X := (X,T (I,Z))) (Y := (X,Z)) (id,L.1 Z) ∘
       (A.1 ((X,I),Z) ∘
         fmap T (X := (X,Z)) (Y := (T (X,I),Z)) ((R.2 X).1,id))).
-  rewrite <- comp_assoc, Ht, <- !functor_comp.
+  rewrite <- comp_assoc, Ht, <- !fct_comp.
   transitivity (@id (T (X,Z))).
   - transitivity (fmap T (X := (X,Z)) (Y := (X,Z)) (id,id)).
-    + apply (@functor_fmap_proper (C ×C C) C T). split; cbn;
+    + apply (@fct_fmap_proper (C ×C C) C T). split; cbn;
         [apply comp_id_l | exact (snd (L.2 Z).2)].
-    + apply functor_id.
+    + apply fct_id.
   - symmetry.
     transitivity (fmap T (X := (X,Z)) (Y := (X,Z)) (id,id)).
     + transitivity (fmap T (X := (X,Z)) (Y := (X,Z))
         (R.1 X ∘ (R.2 X).1,(@id Z) ∘ id)).
-      * symmetry. exact (@functor_comp (C ×C C) C T
+      * symmetry. exact (@fct_comp (C ×C C) C T
           (X,Z) (T (X,I),Z) (X,Z) (R.1 X,id) ((R.2 X).1,id)).
-      * apply (@functor_fmap_proper (C ×C C) C T). split; cbn;
+      * apply (@fct_fmap_proper (C ×C C) C T). split; cbn;
           [exact (snd (R.2 X).2) | apply comp_id_l].
-    + apply functor_id.
+    + apply fct_id.
 Defined.
 
 (** Transporting a left insertion by the inverse associator gives the
@@ -108,17 +108,17 @@ Proof.
       (id,fmap T (X := (I,Z)) (Y := (Y,Z)) (j,id)) ∘
     fmap T (X := (X,Z)) (Y := (X,T (I,Z))) (id,(L.2 Z).1))).
   - apply comp_proper; [reflexivity |].
-    rewrite <- (@functor_comp (C ×C C) C T). apply (@functor_fmap_proper (C ×C C) C T).
+    rewrite <- (@fct_comp (C ×C C) C T). apply (@fct_fmap_proper (C ×C C) C T).
     split; cbn; [symmetry; apply comp_id_l | reflexivity].
   - rewrite <- comp_assoc, Hn, comp_assoc, day_triangle_unit_insertion.
     transitivity (fmap T (X := (X,Z)) (Y := (T (X,Y),Z))
       (fmap T (X := (X,I)) (Y := (X,Y)) (id,j) ∘ (R.2 X).1,
         (@id Z) ∘ id)).
-    + symmetry. exact (@functor_comp (C ×C C) C T
+    + symmetry. exact (@fct_comp (C ×C C) C T
         (X,Z) (T (X,I),Z) (T (X,Y),Z)
         (fmap T (X := (X,I)) (Y := (X,Y)) (id,j),id)
         ((R.2 X).1,id)).
-    + apply (@functor_fmap_proper (C ×C C) C T).
+    + apply (@fct_fmap_proper (C ×C C) C T).
       split; cbn; [reflexivity | apply comp_id_l].
 Defined.
 
@@ -155,7 +155,7 @@ Proof.
       (f,id) h (x,y)).
   - exact (@func_proper _ _ (day_inject T F G (X',Y) h)
       (fmap F f x,fmap G id y) (fmap F f x,y)
-      (reflexivity _,@functor_id C SetCat G Y y)).
+      (reflexivity _,@fct_id C SetCat G Y y)).
 Defined.
 
 (** Move the second input action without a symmetry assumption. *)
@@ -174,7 +174,7 @@ Proof.
       (id,g) h (x,y)).
   - exact (@func_proper _ _ (day_inject T F G (X,Y') h)
       (fmap F id x,fmap G g y) (x,fmap G g y)
-      (@functor_id C SetCat F X x,reflexivity _)).
+      (@fct_id C SetCat F X x,reflexivity _)).
 Defined.
 
 End InputWeights.
@@ -225,13 +225,13 @@ Proof.
     fmap G l y).
   { transitivity (fmap G (id ∘ l) y).
     - exact (day_left_unitor_β T L G id j y).
-    - exact (@functor_fmap_proper C SetCat G _ _ _ _ (comp_id_l l) y). }
+    - exact (@fct_fmap_proper C SetCat G _ _ _ _ (comp_id_l l) y). }
   assert (Hright : DayRightUnitorN T R F (T (X,Y))
     (day_inject T F (DayUnitF I) (X,Y) id (x,{|lower := j|})) ≈S
     fmap F r x).
   { transitivity (fmap F (id ∘ r) x).
     - exact (day_right_unitor_β T R F id x j).
-    - exact (@functor_fmap_proper C SetCat F _ _ _ _ (comp_id_l r) x). }
+    - exact (@fct_fmap_proper C SetCat F _ _ _ _ (comp_id_l r) x). }
   transitivity (day_inject T F G (X,Z)
     (fmap T (X := (X,Z)) (Y := (T (X,Y),Z)) (r,id)) (x,y)).
   - transitivity (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) (T (T (X,Y),Z))
@@ -420,8 +420,8 @@ Proof.
           (DayTripleLeftGenN T (DayF T F G) H K ((U,c),d))).
         split; [split |].
         + symmetry. exact (day_gen_post T F G (a,b) h (x,y)).
-        + symmetry. exact (@functor_id C SetCat H c z0).
-        + symmetry. exact (@functor_id C SetCat K d w0).
+        + symmetry. exact (@fct_id C SetCat H c z0).
+        + symmetry. exact (@fct_id C SetCat K d w0).
       - exact (nat_naturality (DayTripleLeftGenN T (DayF T F G) H K)
           (X := ((T (a,b),c),d)) (Y := ((U,c),d)) ((h,id),id)
           ((v0,z0),w0)). }
@@ -484,9 +484,9 @@ Proof.
   pose (Hs := is_iso_comp (A.2 ((T (a,b),c),d))
     (A.2 ((a,b),T (c,d)))).
   pose (Hl := is_iso_comp
-    (functor_is_iso (π1F T d) (A.1 ((a,b),c)) (A.2 ((a,b),c)))
+    (fct_is_iso (π1F T d) (A.1 ((a,b),c)) (A.2 ((a,b),c)))
     (is_iso_comp (A.2 ((a,T (b,c)),d))
-      (functor_is_iso (π2F T a) (A.1 ((b,c),d)) (A.2 ((b,c),d))))).
+      (fct_is_iso (π2F T a) (A.1 ((b,c),d)) (A.2 ((b,c),d))))).
   assert (Heq :
     (fmap (π2F T a) (A.1 ((b,c),d)) ∘ A.1 ((a,T (b,c)),d)) ∘
       fmap (π1F T d) (A.1 ((a,b),c)) ≈
@@ -540,7 +540,7 @@ Proof.
   - transitivity (fmap (DayF T F (DayF T G H))
       (w ∘ (A.2 ((a,b),c)).1)
       (DayTripleRightGenN T F G H ((a,b),c) ((x,y),z))).
-    + symmetry. exact (@functor_comp C SetCat (DayF T F (DayF T G H))
+    + symmetry. exact (@fct_comp C SetCat (DayF T F (DayF T G H))
         _ _ _ w ((A.2 ((a,b),c)).1)
         (DayTripleRightGenN T F G H ((a,b),c) ((x,y),z))).
     + exact (day_gen_post T F (DayF T G H) (a,T (b,c))
@@ -585,7 +585,7 @@ Proof.
       (A.2 ((a,b),c)).1) (x,DayGenN T G H (b,c) (y,z))).
   - exact (day_associator_inject T A F G H h id x y z).
   - apply (@day_inject_proper C T F (DayF T G H) HR (a,T (b,c))).
-    rewrite functor_id, comp_id_r. reflexivity.
+    rewrite fct_id, comp_id_r. reflexivity.
 Defined.
 
 End OuterWeight.
@@ -751,10 +751,10 @@ Proof.
                            (Y := (a,T (T (b,c),d)))
                            (id,(A.2 ((b,c),d)).1))).
                      { apply comp_proper.
-                       { apply (@functor_fmap_proper (C ×C C) C T).
+                       { apply (@fct_fmap_proper (C ×C C) C T).
                          split; [apply comp_id_l | reflexivity]. }
                        { apply comp_proper; [reflexivity |].
-                         apply (@functor_fmap_proper (C ×C C) C T).
+                         apply (@fct_fmap_proper (C ×C C) C T).
                          split; [reflexivity | apply comp_id_l]. } }
                      { symmetry. exact (day_pentagon_weight T A Hp a b c d). }
 Defined.

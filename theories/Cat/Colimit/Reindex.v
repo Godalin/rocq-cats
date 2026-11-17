@@ -25,8 +25,8 @@ Definition restrict_colimit {I J C : Cat} {Q : Fct I J}
   : is_colimit (κ ∘∇F Q)
   := limit_transport ((OpF_comp D Q).1 ^-1N (OpF_comp D Q).2)
       (nat_inv_iso (OpF_comp D Q).1 (OpF_comp D Q).2)
-      (restrict_limit (functor_op_full HF)
-        (functor_op_essentially_surjective HQ) Hκ).
+      (restrict_limit (fct_op_full HF)
+        (fct_op_essentially_surjective HQ) Hκ).
 
 (** Essential surjectivity alone detects colimiting cocones. *)
 
@@ -38,7 +38,7 @@ Definition colimit_of_restrict {I J C : Cat} {Q : Fct I J}
     (Hκ : is_colimit (κ ∘∇F Q))
   : is_colimit κ.
 Proof.
-  apply (limit_of_restrict (functor_op_essentially_surjective HQ)).
+  apply (limit_of_restrict (fct_op_essentially_surjective HQ)).
   refine (limit_cone_equiv
     (limit_transport (OpF_comp D Q).1 (OpF_comp D Q).2 Hκ) _).
   intros i. cbn. rewrite !comp_id_r. reflexivity.
@@ -65,8 +65,8 @@ Definition extend_colimit {I J C : Cat} {Q : Fct I J}
     {D : Fct J C} {L : @Ob C} {κ : (D ∘F Q) ⇒∇ L}
     (Hκ : is_colimit κ)
   : is_colimit (ExtendCocone HF HQ κ)
-  := extend_limit (functor_op_full HF)
-      (functor_op_essentially_surjective HQ)
+  := extend_limit (fct_op_full HF)
+      (fct_op_essentially_surjective HQ)
       (limit_transport (OpF_comp D Q).1 (OpF_comp D Q).2 Hκ).
 
 (** Select a colimit by extending its original opposite limit. *)
@@ -79,7 +79,7 @@ Program Definition ReindexedColimit {I J C : Cat} {Q : Fct I J}
   : HasColimit C D
   :=
   {|hasOpLimit := @ReindexedLimit (I^op) (J^op) (C^op) (Q^opF)
-      (functor_op_full HF) (functor_op_essentially_surjective HQ) (D^opF)
+      (fct_op_full HF) (fct_op_essentially_surjective HQ) (D^opF)
       (TransportedLimit (OpF_comp D Q).1 (OpF_comp D Q).2)
   |}.
 
@@ -95,8 +95,8 @@ Program Definition RestrictedColimit {I J C : Cat} {Q : Fct I J}
   {|hasOpLimit := @TransportedLimit (I^op) (C^op) _ _
       ((OpF_comp D Q).1 ^-1N (OpF_comp D Q).2)
       (nat_inv_iso (OpF_comp D Q).1 (OpF_comp D Q).2)
-      (RestrictedLimit (functor_op_full HF)
-        (functor_op_essentially_surjective HQ) (D^opF))
+      (RestrictedLimit (fct_op_full HF)
+        (fct_op_essentially_surjective HQ) (D^opF))
   |}.
 
 (** Transfer all selected colimits of a shape by the original opposite
@@ -109,6 +109,6 @@ Program Definition ReindexedColimits {I J C : Cat} {Q : Fct I J}
     `{HC : !HasColimitsOfShape C I}
   : HasColimitsOfShape C J
   :=
-  {|hasOpLimits := ReindexedLimits (functor_op_full HF)
-      (functor_op_essentially_surjective HQ)
+  {|hasOpLimits := ReindexedLimits (fct_op_full HF)
+      (fct_op_essentially_surjective HQ)
   |}.

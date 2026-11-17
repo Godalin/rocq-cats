@@ -38,8 +38,8 @@ Theorem exp_double_dual_app {R X Q : C}
   : app (ExpDoubleDualUnit R X ∘ a) p ≈ app p a.
 Proof.
   unfold ExpDoubleDualUnit.
-  rewrite <- exponential_curry_comp_r, exponential_app_β,
-    !exponential_app_comp.
+  rewrite <- exp_curry_comp_r, exp_app_β,
+    !exp_app_comp.
   rewrite ?comp_assoc, ?cross_η, ?product_comp_r, ?comp_assoc,
     ?product_β1, ?product_β2, ?comp_id_l, ?comp_id_r.
   reflexivity.
@@ -51,13 +51,13 @@ Qed.
 (** 双重反变使求值对给定箭头自然，复用既有指数双函子。 *)
 
 Theorem exp_double_dual_natural {R X Y : C} (f : Hom X Y)
-  : exponential_dimap (exponential_dimap f (@Cats.Cat.Core.id C R))
+  : exp_dimap (exp_dimap f (@Cats.Cat.Core.id C R))
       (@Cats.Cat.Core.id C R) ∘ ExpDoubleDualUnit R X
     ≈ ExpDoubleDualUnit R Y ∘ f.
 Proof.
-  apply exponential_ext. rewrite !exponential_uncurry_app, !comp_assoc.
-  rewrite exponential_app_dimap, comp_id_l, exp_double_dual_app,
-    exponential_app_dimap, comp_id_l, exp_double_dual_app.
+  apply exp_ext. rewrite !exp_uncurry_app, !comp_assoc.
+  rewrite exp_app_dimap, comp_id_l, exp_double_dual_app,
+    exp_app_dimap, comp_id_l, exp_double_dual_app.
   reflexivity.
 Qed.
 

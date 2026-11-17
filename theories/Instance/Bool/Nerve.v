@@ -188,7 +188,7 @@ Next Obligation. exact tt. Defined.
 Program Definition ConstantVtxF (b : bool)
   : BooleanLabels →ᵥ BooleanLabels
   :=
-  {|vertex_functor := ConstF (VtxCat BooleanLabels)
+  {|vertex_fct := ConstF (VtxCat BooleanLabels)
       (C := VtxCat BooleanLabels) b
   |}.
 Next Obligation. intros; reflexivity. Defined.
@@ -263,7 +263,7 @@ Proof. exact (vertex_nerve_β α). Defined.
 
 (** 另一侧往返使用 [VtxFctEq]，不会识别上面两个不同的常值函子。 *)
 
-Example boolean_vertex_functor_round_trip (F : BooleanLabels →ᵥ BooleanLabels)
+Example boolean_vertex_fct_round_trip (F : BooleanLabels →ᵥ BooleanLabels)
   : VtxFctEq (VtxNerveInvF (VtxNerveN F :
       (Nᵥ(BooleanLabels) : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) ⇒ _)) F.
 Proof. exact (vertex_nerve_η F). Defined.

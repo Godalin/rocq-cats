@@ -144,7 +144,7 @@ Lemma adjunct_comp_r {X X' Y}
   : adjunct (f ∘ fmap F h) ≈ adjunct f ∘ h.
 Proof.
   pose proof (adjunct_naturality h id f) as H.
-  rewrite (functor_id D C G), !comp_id_l in H. exact H.
+  rewrite (fct_id D C G), !comp_id_l in H. exact H.
 Qed.
 
 (** Compatibility with postcomposition for [adjunct]. *)
@@ -156,7 +156,7 @@ Lemma adjunct_comp_l {X Y Y'}
   : adjunct (k ∘ f) ≈ fmap G k ∘ adjunct f.
 Proof.
   pose proof (adjunct_naturality id k f) as H.
-  rewrite (functor_id C D F), !comp_id_r in H. exact H.
+  rewrite (fct_id C D F), !comp_id_r in H. exact H.
 Qed.
 
 (** The inverse transpose is natural in both hom variables. *)
@@ -181,7 +181,7 @@ Lemma unadjunct_comp_r {X X' Y}
   : unadjunct (g ∘ h) ≈ unadjunct g ∘ fmap F h.
 Proof.
   pose proof (unadjunct_naturality h id g) as H.
-  rewrite (functor_id D C G), !comp_id_l in H.
+  rewrite (fct_id D C G), !comp_id_l in H.
   exact H.
 Qed.
 
@@ -194,7 +194,7 @@ Lemma unadjunct_comp_l {X Y Y'}
   : unadjunct (fmap G k ∘ g) ≈ k ∘ unadjunct g.
 Proof.
   pose proof (unadjunct_naturality id k g) as H.
-  rewrite (functor_id C D F), !comp_id_r in H. exact H.
+  rewrite (fct_id C D F), !comp_id_r in H. exact H.
 Qed.
 
 (** An adjunction equation is equivalent to its inverse-transpose equation. *)

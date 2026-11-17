@@ -59,7 +59,7 @@ Global Instance day_left_arrow_proper {X : @Ob C} (Y : @Ob C)
 Proof.
   intros j k H. unfold day_left_arrow.
   apply comp_proper; [| reflexivity].
-  apply functor_fmap_proper. split; [exact H | reflexivity].
+  apply fct_fmap_proper. split; [exact H | reflexivity].
 Defined.
 
 (** Changing either coordinate commutes with the insertion. *)
@@ -76,9 +76,9 @@ Proof.
     fmap T (X := (I,Y)) (Y := (I,Y')) (id,g) ∘ (L.2 Y).1) in Hinv.
   unfold day_left_arrow. rewrite comp_assoc.
   rewrite Hinv.
-  rewrite <- !comp_assoc, <- !functor_comp.
+  rewrite <- !comp_assoc, <- !fct_comp.
   apply comp_proper; [| reflexivity].
-  apply functor_fmap_proper. split; cbn; carw.
+  apply fct_fmap_proper. split; cbn; carw.
 Defined.
 
 (** The identity representable arrow leaves just the inverse unitor. *)
@@ -87,7 +87,7 @@ Defined.
 
 Lemma day_left_arrow_id (Y : @Ob C)
   : day_left_arrow Y (@id I) ≈ (L.2 Y).1.
-Proof. unfold day_left_arrow. rewrite functor_id, comp_id_l. reflexivity. Defined.
+Proof. unfold day_left_arrow. rewrite fct_id, comp_id_l. reflexivity. Defined.
 
 (** Eliminating an inserted identity unit recovers the value arrow. *)
 
@@ -142,7 +142,7 @@ Global Instance day_right_arrow_proper (X : @Ob C) {Y : @Ob C}
 Proof.
   intros j k H. unfold day_right_arrow.
   apply comp_proper; [| reflexivity].
-  apply functor_fmap_proper. split; [reflexivity | exact H].
+  apply fct_fmap_proper. split; [reflexivity | exact H].
 Defined.
 
 (** Naturality uses the inverse right unitor and the bifunctor laws. *)
@@ -159,9 +159,9 @@ Proof.
     fmap T (X := (X,I)) (Y := (X',I)) (f,id) ∘ (R.2 X).1) in Hinv.
   unfold day_right_arrow. rewrite comp_assoc.
   rewrite Hinv.
-  rewrite <- !comp_assoc, <- !functor_comp.
+  rewrite <- !comp_assoc, <- !fct_comp.
   apply comp_proper; [| reflexivity].
-  apply functor_fmap_proper. split; cbn; carw.
+  apply fct_fmap_proper. split; cbn; carw.
 Defined.
 
 (** An identity right insertion is the inverse unitor. *)
@@ -170,7 +170,7 @@ Defined.
 
 Lemma day_right_arrow_id (X : @Ob C)
   : day_right_arrow X (@id I) ≈ (R.2 X).1.
-Proof. unfold day_right_arrow. rewrite functor_id, comp_id_l. reflexivity. Defined.
+Proof. unfold day_right_arrow. rewrite fct_id, comp_id_l. reflexivity. Defined.
 
 (** Eliminating the right identity unit gives the identity. *)
 
@@ -226,7 +226,7 @@ Next Obligation.
     |}.
   intros [j x] [k y] [Hj Hx].
   transitivity (fmap F (day_left_arrow T L Y (lower k)) x).
-  - exact (@functor_fmap_proper C SetCat F _ _ _ _
+  - exact (@fct_fmap_proper C SetCat F _ _ _ _
       (@day_left_arrow_proper C T I L X Y _ _ (lower Hj)) x).
   - exact (@func_proper _ _ (fmap F (day_left_arrow T L Y (lower k)))
       x y Hx).
@@ -237,13 +237,13 @@ Next Obligation.
     ≈S fmap F (fmap T (X := (a,b)) (Y := (a',b')) (f,g))
       (fmap F (day_left_arrow T L b (lower j)) y)).
   transitivity (fmap F (day_left_arrow T L b' (f ∘ lower j) ∘ g) y).
-  - symmetry. exact (@functor_comp C SetCat F _ _ _
+  - symmetry. exact (@fct_comp C SetCat F _ _ _
       (day_left_arrow T L b' (f ∘ lower j)) g y).
   - transitivity (fmap F (fmap T (X := (a,b)) (Y := (a',b')) (f,g)
         ∘ day_left_arrow T L b (lower j)) y).
-    + exact (@functor_fmap_proper C SetCat F _ _ _ _
+    + exact (@fct_fmap_proper C SetCat F _ _ _ _
         (day_left_arrow_natural T L f g (lower j)) y).
-    + exact (@functor_comp C SetCat F _ _ _
+    + exact (@fct_comp C SetCat F _ _ _
         (fmap T (X := (a,b)) (Y := (a',b')) (f,g))
         (day_left_arrow T L b (lower j)) y).
 Defined.
@@ -282,7 +282,7 @@ Next Obligation.
     |}.
   intros [x j] [y k] [Hx Hj].
   transitivity (fmap F (day_right_arrow T R X (lower k)) x).
-  - exact (@functor_fmap_proper C SetCat F _ _ _ _
+  - exact (@fct_fmap_proper C SetCat F _ _ _ _
       (@day_right_arrow_proper C T I R X Y _ _ (lower Hj)) x).
   - exact (@func_proper _ _ (fmap F (day_right_arrow T R X (lower k)))
       x y Hx).
@@ -293,13 +293,13 @@ Next Obligation.
     ≈S fmap F (fmap T (X := (a,b)) (Y := (a',b')) (f,g))
       (fmap F (day_right_arrow T R a (lower j)) x)).
   transitivity (fmap F (day_right_arrow T R a' (g ∘ lower j) ∘ f) x).
-  - symmetry. exact (@functor_comp C SetCat F _ _ _
+  - symmetry. exact (@fct_comp C SetCat F _ _ _
       (day_right_arrow T R a' (g ∘ lower j)) f x).
   - transitivity (fmap F (fmap T (X := (a,b)) (Y := (a',b')) (f,g)
         ∘ day_right_arrow T R a (lower j)) x).
-    + exact (@functor_fmap_proper C SetCat F _ _ _ _
+    + exact (@fct_fmap_proper C SetCat F _ _ _ _
         (day_right_arrow_natural T R f g (lower j)) x).
-    + exact (@functor_comp C SetCat F _ _ _
+    + exact (@fct_comp C SetCat F _ _ _
         (fmap T (X := (a,b)) (Y := (a',b')) (f,g))
         (day_right_arrow T R a (lower j)) x).
 Defined.
@@ -367,7 +367,7 @@ Proof.
   transitivity (fmap F h (fmap F (day_left_arrow T L Y j) y)).
   - exact (day_extend_β T (DayLeftOperationN T L F)
       (X,Y) h ({|lower := j|}, y)).
-  - symmetry. exact (@functor_comp C SetCat F _ _ _
+  - symmetry. exact (@fct_comp C SetCat F _ _ _
       h (day_left_arrow T L Y j) y).
 Defined.
 
@@ -409,9 +409,9 @@ Proof.
   transitivity (fmap F (L.1 Z ∘ day_left_arrow T L Z (@id I)) x).
   - exact (day_left_unitor_β (L.1 Z) (@id I) x).
   - transitivity (fmap F (@id Z) x).
-    + exact (@functor_fmap_proper C SetCat F _ _ _ _
+    + exact (@fct_fmap_proper C SetCat F _ _ _ _
         (day_left_arrow_unit T L Z) x).
-    + exact (@functor_id C SetCat F Z x).
+    + exact (@fct_id C SetCat F Z x).
 Defined.
 
 (** Evaluating and reinserting a generator recovers it by two gluing
@@ -450,7 +450,7 @@ Proof.
             (day_inject T (DayUnitF I) F (X,Y) h)).
            split.
            ++ refine {|lower := _|}. apply comp_id_r.
-           ++ exact (@functor_id C SetCat F Y y).
+           ++ exact (@fct_id C SetCat F Y y).
 Defined.
 
 (** The computed inverse proves the natural left unitor invertible. *)
@@ -524,7 +524,7 @@ Proof.
   transitivity (fmap F h (fmap F (day_right_arrow T R X j) x)).
   - exact (day_extend_β T (DayRightOperationN T R F)
       (X,Y) h (x, {|lower := j|})).
-  - symmetry. exact (@functor_comp C SetCat F _ _ _
+  - symmetry. exact (@fct_comp C SetCat F _ _ _
       h (day_right_arrow T R X j) x).
 Defined.
 
@@ -565,9 +565,9 @@ Proof.
   transitivity (fmap F (R.1 Z ∘ day_right_arrow T R Z (@id I)) x).
   - exact (day_right_unitor_β (R.1 Z) x (@id I)).
   - transitivity (fmap F (@id Z) x).
-    + exact (@functor_fmap_proper C SetCat F _ _ _ _
+    + exact (@fct_fmap_proper C SetCat F _ _ _ _
         (day_right_arrow_unit T R Z) x).
-    + exact (@functor_id C SetCat F Z x).
+    + exact (@fct_id C SetCat F Z x).
 Defined.
 
 (** The other right inverse law follows from weighted generators and gluing. *)
@@ -604,7 +604,7 @@ Proof.
         -- apply (@func_proper _ _
             (day_inject T F (DayUnitF I) (X,Y) h)).
            split.
-           ++ exact (@functor_id C SetCat F X x).
+           ++ exact (@fct_id C SetCat F X x).
            ++ refine {|lower := _|}. apply comp_id_r.
 Defined.
 

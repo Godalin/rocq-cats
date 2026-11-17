@@ -57,12 +57,12 @@ Proof.
   assert (square : fmap G r ∘ comma_arrow Z ≈
       comma_arrow P ∘ fmap F l).
   { apply (product_cone_ext image).
-    - rewrite <- comp_assoc, <- functor_comp, r1, (comma_comm f).
+    - rewrite <- comp_assoc, <- fct_comp, r1, (comma_comm f).
       rewrite <- comp_assoc, (comma_comm p).
-      rewrite comp_assoc, <- functor_comp, l1. reflexivity.
-    - rewrite <- comp_assoc, <- functor_comp, r2, (comma_comm g).
+      rewrite comp_assoc, <- fct_comp, l1. reflexivity.
+    - rewrite <- comp_assoc, <- fct_comp, r2, (comma_comm g).
       rewrite <- comp_assoc, (comma_comm q).
-      rewrite comp_assoc, <- functor_comp, l2. reflexivity. }
+      rewrite comp_assoc, <- fct_comp, l2. reflexivity. }
   unshelve refine (existT _
     {|comma_left := _
     ; comma_right := _

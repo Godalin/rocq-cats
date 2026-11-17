@@ -116,7 +116,7 @@ Global Instance comp2_h_proper {K : Bicat} {X Y Z : ObB K}
   : Proper (Cell2Eq ==> Cell2Eq ==> Cell2Eq) (@comp2_h K X Y Z g g' f f').
 Proof.
   intros β β' Hβ α α' Hα.
-  exact (@functor_fmap_proper _ _ (comp1F X Y Z) (g, f) (g', f')
+  exact (@fct_fmap_proper _ _ (comp1F X Y Z) (g, f) (g', f')
     (β, α) (β', α') (Hβ, Hα)).
 Qed.
 
@@ -154,7 +154,7 @@ Proof. exact (comp_assoc γ β α). Qed.
 Theorem comp2_h_id {K : Bicat} {X Y Z : ObB K}
     (g : Cell1 Y Z) (f : Cell1 X Y)
   : (𝟙₂ g ⋆ 𝟙₂ f) ≈₂ 𝟙₂ (g ∘₁ f).
-Proof. exact (@functor_id _ _ (comp1F X Y Z) (g, f)). Qed.
+Proof. exact (@fct_id _ _ (comp1F X Y Z) (g, f)). Qed.
 
 (** Horizontal composition commutes with vertical composition of two-cell
     pairs. *)
@@ -166,7 +166,7 @@ Theorem comp2_interchange {K : Bicat} {X Y Z : ObB K}
     (β2 : g1 ⇒₂ g2) (β1 : g0 ⇒₂ g1) (α2 : f1 ⇒₂ f2) (α1 : f0 ⇒₂ f1)
   : ((β2 ∘₂ β1) ⋆ (α2 ∘₂ α1)) ≈₂ ((β2 ⋆ α2) ∘₂ (β1 ⋆ α1)).
 Proof.
-  exact (@functor_comp _ _ (comp1F X Y Z) (g0, f0) (g1, f1) (g2, f2)
+  exact (@fct_comp _ _ (comp1F X Y Z) (g0, f0) (g1, f1) (g2, f2)
     (β2, α2) (β1, α1)).
 Qed.
 

@@ -26,6 +26,7 @@ From Cats Require Import
 
 Local Open Scope hom_scope.
 Local Open Scope cat_scope.
+Local Open Scope ob_scope.
 
 (** A CCC functor preserves finite products and has invertible exponential
     comparisons. All structures are named and explicitly supplied. *)
@@ -34,12 +35,12 @@ Local Open Scope cat_scope.
 
 Class IsCCCF {C D : CCC} (F : Fct C D)
   :=
-  { isCartF :: IsCartF F (hasTerminal C) (hasProduct C)
-  ; functor_exponential X Y
-    : is_iso (@functor_exponential_comparison C D F
+  { ccc_isCartF :: IsCartF F (hasTerminal C) (hasProduct C)
+  ; fct_exp X Y
+    : is_iso (@fct_exp_cmp C D F
         (hasTerminal C) (hasProduct C)
         (hasExponential C)
-        (hasProduct D) (hasExponential D) isCartF X Y)
+        (hasProduct D) (hasExponential D) ccc_isCartF X Y)
   }.
 
 (** Identity functors are cartesian closed relative to the same choices. *)
@@ -49,20 +50,20 @@ Class IsCCCF {C D : CCC} (F : Fct C D)
 Program Definition IdF_IsCCCF (C : CCC)
   : @IsCCCF C C (@IdF C)
   :=
-  {|isCartF := IdF_IsCartF C (hasTerminal C) (hasProduct C)
+  {|ccc_isCartF := IdF_IsCartF C (hasTerminal C) (hasProduct C)
   |}.
 Next Obligation.
-  assert (H : functor_exponential_comparison (@IdF C)
+  assert (H : fct_exp_cmp (@IdF C)
     (TC := hasTerminal C) (PC := hasProduct C)
     (EC := hasExponential C) (PD := hasProduct C)
     (ED := hasExponential C)
     (HF := IdF_IsCartF C (hasTerminal C) (hasProduct C))
     X Y ≈ id).
-  { pose proof (id_functor_product_inv C (hasTerminal C) (hasProduct C)
-      ((Y ^ X)%ob) X) as HP.
-    unfold functor_product_inv in HP.
-    unfold functor_exponential_comparison, preserved_exponential_comparison.
-    rewrite HP, comp_id_r. apply exponential_curry_eval. }
+  { pose proof (id_fct_product_inv C (hasTerminal C) (hasProduct C)
+      (Y ^ X) X) as HP.
+    unfold fct_product_inv in HP.
+    unfold fct_exp_cmp, exp_cmp.
+    rewrite HP, comp_id_r. apply exp_curry_eval. }
   exists id. split; unfold is_linv_of, is_rinv_of;
     [rewrite comp_id_l | rewrite comp_id_r]; exact H.
 Defined.
@@ -82,12 +83,12 @@ Local Existing Instance HG.
 
 (** 复合函子的规范比较在指定 Hom 相等下为规范比较的复合。 *)
 
-Lemma functor_exponential_comparison_comp (X Y : @Ob C)
-  : functor_exponential_comparison (G ∘F F)
+Lemma fct_exp_cmp_comp (X Y : @Ob C)
+  : fct_exp_cmp (G ∘F F)
       (HF := CompF_IsCartF F G) X Y ≈
-      functor_exponential_comparison G (F X) (F Y) ∘
-        fmap G (functor_exponential_comparison F X Y).
-Proof. apply preserved_exponential_comparison_comp. Qed.
+      fct_exp_cmp G (F X) (F Y) ∘
+        fmap G (fct_exp_cmp F X Y).
+Proof. apply exp_cmp_comp. Qed.
 
 (** Chosen CCC-preservation proofs compose; no global instance is enabled. *)
 
@@ -96,14 +97,14 @@ Proof. apply preserved_exponential_comparison_comp. Qed.
 Program Definition CompF_IsCCCF
   : @IsCCCF C E (G ∘F F)
   :=
-  {|isCartF := CompF_IsCartF F G
+  {|ccc_isCartF := CompF_IsCartF F G
   |}.
 Next Obligation.
-  refine (is_iso_equiv (symmetry (functor_exponential_comparison_comp X Y)) _).
+  refine (is_iso_equiv (symmetry (fct_exp_cmp_comp X Y)) _).
   apply is_iso_comp.
-  - apply (@functor_is_iso D E G).
-    exact (@functor_exponential C D F HF X Y).
-  - exact (@functor_exponential D E G HG (F X) (F Y)).
+  - apply (@fct_is_iso D E G).
+    exact (@fct_exp C D F HF X Y).
+  - exact (@fct_exp D E G HG (F X) (F Y)).
 Defined.
 
 End ClosedFunctorComposition.
@@ -120,19 +121,20 @@ End ClosedFunctorComposition.
 (** CCC 函子为一个笛卡尔函子增加规范指数比较的可逆性；强制转换经
     [CartFct] 到达 [Fct]，不另存函子或另一份笛卡尔保持性见证。 *)
 
-Class CCCFct (C D : CCC)
-  :=
-  { CCCF :> @CartFct C D
+Record CCCFct (C D : CCC)
+  := CCCFctOfCartFct
+  { CCCFctToCartFct :> @CartFct C D
       (hasTerminal C) (hasProduct C)
-  ; ccc_functor_exponential (X Y : @Ob C)
-    : is_iso (@functor_exponential_comparison C D CCCF
+  ; ccc_fct_exp (X Y : @Ob C)
+    : is_iso (@fct_exp_cmp C D CCCFctToCartFct
         (hasTerminal C) (hasProduct C) (hasExponential C)
         (hasProduct D) (hasExponential D)
-        (cartesian_isCartF CCCF) X Y)
+        (isCartF CCCFctToCartFct) X Y)
   }.
 
-Arguments CCCF {_ _} _.
-Arguments ccc_functor_exponential {_ _} _ _ _.
+Arguments CCCFctOfCartFct {_ _} _ _.
+Arguments CCCFctToCartFct {_ _} _.
+Arguments ccc_fct_exp {_ _} _ _ _.
 
 (** Recover the fixed-functor presentation from the stored data. This
     generic inherited instance needs an explicit bundled functor; it does
@@ -145,8 +147,8 @@ Program Instance CCCFct_IsCCCF {C D : CCC}
     (F : CCCFct C D)
   : @IsCCCF C D F
   :=
-  {|isCartF := cartesian_isCartF (CCCF F)
-  ; functor_exponential := ccc_functor_exponential F
+  {|ccc_isCartF := isCartF (CCCFctToCartFct F)
+  ; fct_exp := ccc_fct_exp F
   |}.
 
 (** Bundle existing CCC-preservation evidence without changing the
@@ -154,13 +156,11 @@ Program Instance CCCFct_IsCCCF {C D : CCC}
 
 (** 打包已有 CCC 保持性证据，不改变底层函子、积中介或指数比较的逆。 *)
 
-Program Definition CCCFctFromPreservation {C D : CCC}
+Program Definition CCCFctOfFct {C D : CCC}
     (F : Fct C D) (HF : @IsCCCF C D F)
   : CCCFct C D
-  :=
-  {|CCCF := CartFctFromPreservation F (@isCartF C D F HF)
-  ; ccc_functor_exponential := @functor_exponential C D F HF
-  |}.
+  := CCCFctOfCartFct
+    (CartFctOfFct F (@ccc_isCartF C D F HF)) (@fct_exp C D F HF).
 
 (** The bundled identity uses the existing CCC-preservation theorem. *)
 
@@ -168,7 +168,7 @@ Program Definition CCCFctFromPreservation {C D : CCC}
 
 Program Definition IdCCCF (C : CCC)
   : CCCFct C C
-  := CCCFctFromPreservation IdF (IdF_IsCCCF C).
+  := CCCFctOfFct IdF (IdF_IsCCCF C).
 
 (** Compose bundled CCC functors using the established comparison and
     preservation proofs; the underlying functor is ordinary composition. *)
@@ -178,6 +178,6 @@ Program Definition IdCCCF (C : CCC)
 Program Definition CompCCCF {C D E : CCC}
     (G : CCCFct D E) (F : CCCFct C D)
   : CCCFct C E
-  := CCCFctFromPreservation (G ∘F F)
+  := CCCFctOfFct (G ∘F F)
       (CompF_IsCCCF F G
         (CCCFct_IsCCCF F) (CCCFct_IsCCCF G)).

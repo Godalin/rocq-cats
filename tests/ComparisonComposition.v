@@ -94,11 +94,11 @@ Context {EE : HasExponential PE}.
 
 (** 指数复合不需要终对象或逆数据。 *)
 
-Definition independent_exponential_comp (X Y : C)
-  : preserved_exponential_comparison (G ∘F F) preservesGF X Y ≈
-      preserved_exponential_comparison G preservesG (F X) (F Y) ∘
-        fmap G (preserved_exponential_comparison F preservesF X Y)
-  := preserved_exponential_comparison_comp F G
+Definition independent_exp_comp (X Y : C)
+  : exp_cmp (G ∘F F) preservesGF X Y ≈
+      exp_cmp G preservesG (F X) (F Y) ∘
+        fmap G (exp_cmp F preservesF X Y)
+  := exp_cmp_comp F G
       preservesF preservesG preservesGF X Y.
 
 End IndependentComposition.
@@ -169,11 +169,11 @@ Context {EE : HasExponential PE}.
 
 (** 指数复合不需要终对象或逆数据。 *)
 
-Definition reversed_exponential_comp (X Y : C)
-  : preserved_exponential_comparison (G ∘F F) preservesGF X Y ≈
-      preserved_exponential_comparison G preservesG (F X) (F Y) ∘
-        fmap G (preserved_exponential_comparison F preservesF X Y)
-  := preserved_exponential_comparison_comp F G
+Definition reversed_exp_comp (X Y : C)
+  : exp_cmp (G ∘F F) preservesGF X Y ≈
+      exp_cmp G preservesG (F X) (F Y) ∘
+        fmap G (exp_cmp F preservesF X Y)
+  := exp_cmp_comp F G
       preservesF preservesG preservesGF X Y.
 
 End ReversedComposition.
@@ -229,7 +229,7 @@ Definition composition_reader_products (X Y : SetC)
   : is_product (CompositionReaderF X) (CompositionReaderF Y)
       (CompositionReaderF ((X × Y)%ob))
       (fmap CompositionReaderF π1) (fmap CompositionReaderF π2)
-  := exponential_preserves_product BoolS product_universal.
+  := exp_preserves_product BoolS product_universal.
 
 (** Compose the supplied cones, without a CCC-functor input. *)
 
@@ -263,15 +263,15 @@ Definition composition_readers_product_law (X Y : SetC)
 
 (** 指数分解使用相同的指定比较。 *)
 
-Definition composition_readers_exponential_law (X Y : SetC)
-  : preserved_exponential_comparison
+Definition composition_readers_exp_law (X Y : SetC)
+  : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
-      X Y ≈ preserved_exponential_comparison CompositionReaderF
+      X Y ≈ exp_cmp CompositionReaderF
         composition_reader_products (CompositionReaderF X)
           (CompositionReaderF Y) ∘ fmap CompositionReaderF
-        (preserved_exponential_comparison CompositionReaderF
+        (exp_cmp CompositionReaderF
           composition_reader_products X Y)
-  := preserved_exponential_comparison_comp CompositionReaderF
+  := exp_cmp_comp CompositionReaderF
       CompositionReaderF composition_reader_products
       composition_reader_products composition_readers_products X Y.
 
@@ -308,7 +308,7 @@ Program Definition composition_reader_argument
 (** 直接比较保留两个环境的位置。 *)
 
 Example composition_reader_direct_computes
-  : preserved_exponential_comparison
+  : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
       TaggedGluingS TaggedGluingS composition_reader_functions
       composition_reader_argument true false = (3%nat, false).
@@ -319,10 +319,10 @@ Proof. reflexivity. Defined.
 (** 比较的分解在这些位置计算出相同结果。 *)
 
 Example composition_reader_factored_computes
-  : (preserved_exponential_comparison CompositionReaderF
+  : (exp_cmp CompositionReaderF
       composition_reader_products (CompositionReaderF TaggedGluingS)
         (CompositionReaderF TaggedGluingS) ∘
-      fmap CompositionReaderF (preserved_exponential_comparison
+      fmap CompositionReaderF (exp_cmp
         CompositionReaderF composition_reader_products
         TaggedGluingS TaggedGluingS)) composition_reader_functions
       composition_reader_argument true false = (3%nat, false).
@@ -347,7 +347,7 @@ Program Definition composition_reader_constant_argument
 (** 改变参数会显露两个环境的作用。 *)
 
 Example composition_reader_environment_computes
-  : preserved_exponential_comparison
+  : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
       TaggedGluingS TaggedGluingS composition_reader_functions
       composition_reader_constant_argument true false = (3%nat, true).
@@ -399,10 +399,10 @@ Program Definition composition_reader_identity_functions
 (** 复合比较保持 Type 值函数相等，不识别函数或定律记录。 *)
 
 Example composition_reader_function_equality
-  : preserved_exponential_comparison
+  : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
       TaggedGluingS TaggedGluingS composition_reader_functions ≈S
-      preserved_exponential_comparison
+      exp_cmp
         (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
         TaggedGluingS TaggedGluingS composition_reader_identity_functions.
 Proof.
@@ -414,7 +414,7 @@ Defined.
 (** 指定相等仍保留代表可观察的差异。 *)
 
 Example composition_reader_distinct_tags_compute
-  : preserved_exponential_comparison
+  : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
       TaggedGluingS TaggedGluingS composition_reader_identity_functions
       composition_reader_argument true false = (3%nat, true).
@@ -458,16 +458,16 @@ Definition composition_empty_product_law (X Y : SetC)
 
 (** 指数比较的逆不进入复合定理。 *)
 
-Definition composition_empty_exponential_law (X Y : SetC)
-  : preserved_exponential_comparison
+Definition composition_empty_exp_law (X Y : SetC)
+  : exp_cmp
       (ConstF SetCat EmptyS ∘F (@IdF SetCat))
       empty_constant_preserves_products X Y ≈
-      preserved_exponential_comparison (ConstF SetCat EmptyS)
+      exp_cmp (ConstF SetCat EmptyS)
         empty_constant_preserves_products X Y ∘
       fmap (ConstF SetCat EmptyS)
-        (preserved_exponential_comparison (@IdF SetCat)
+        (exp_cmp (@IdF SetCat)
           (λ X Y, product_universal) X Y)
-  := preserved_exponential_comparison_comp (@IdF SetCat)
+  := exp_cmp_comp (@IdF SetCat)
       (ConstF SetCat EmptyS) (λ X Y, product_universal)
       empty_constant_preserves_products empty_constant_preserves_products X Y.
 
@@ -476,7 +476,7 @@ Definition composition_empty_exponential_law (X Y : SetC)
 (** 逆将构造出空载体的元素。 *)
 
 Definition composition_comparison_not_iso
-  : is_iso (preserved_exponential_comparison
+  : is_iso (exp_cmp
       (ConstF SetCat EmptyS ∘F (@IdF SetCat))
       empty_constant_preserves_products BoolS BoolS) → Empty_set
   := empty_constant_comparison_not_iso.

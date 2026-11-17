@@ -142,10 +142,10 @@ From Cats Require Import
 
 (** 导入打包保持性接口不会自动选定具体笛卡尔或 CCC 函子。 *)
 
-Fail Definition unchosen_set_cartesian_functor
+Fail Definition unchosen_set_cartesian_fct
   : @CartFct SetCat SetCat SetCat_HasTerminal SetCat_HasProduct
   := ltac:(typeclasses eauto).
-Fail Definition unchosen_set_ccc_functor
+Fail Definition unchosen_set_ccc_fct
   : CCCFct SetCat_CCC SetCat_CCC
   := ltac:(typeclasses eauto).
 
@@ -176,8 +176,8 @@ Definition inferred_ccc_preservation
 Definition inferred_ccc_cartesian_preservation
   : IsCartF F (hasTerminal C) (hasProduct C)
   := ltac:(typeclasses eauto).
-Definition bundled_functor_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
-  : functor_exponential_comparison F X Y ∘ fmap F (ƛ f) ≈
-      ƛ (fmap F f ∘ functor_product_inv F Z X)
-  := functor_curry F f.
+Definition bundled_fct_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
+  : fct_exp_cmp F X Y ∘ fmap F (ƛ f) ≈
+      ƛ (fmap F f ∘ fct_product_inv F Z X)
+  := fct_curry F f.
 End BundledCCCInference.

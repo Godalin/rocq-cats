@@ -17,7 +17,7 @@ From Cats Require Import
 Definition free_generated_cones {n : nat} (k : Fin n → Fin n → nat)
     {C : Cat} (D : Fct (FreeCat (FiniteGraph k)) C)
   : ConeF D ≅N ConeF (D ∘F
-      @generator_functor _ (FiniteGraphGen k))
+      @generator_fct _ (FiniteGraphGen k))
   := generated_cone_nat_iso (HG := FiniteGraphGen k) D.
 
 (** Interpret paths of underlying square arrows back in the commuting square.

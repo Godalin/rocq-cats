@@ -77,7 +77,7 @@ Definition simplex_inclusion_fully_faithful
 
 Definition simplex_eq_iff {n m : nat} (f g : (@Hom Δ) n m)
   : @HomEq Δ n m f g ↔ ∀ x, f x = g x
-  := ordinal_functor_iso_iff f g.
+  := ordinal_fct_iso_iff f g.
 
 (** Rank equations provide computational natural-isomorphism witnesses for
     simplex-arrow equations. *)
@@ -87,4 +87,4 @@ Definition simplex_eq_iff {n m : nat} (f g : (@Hom Δ) n m)
 Definition simplex_eq_of_rank {n m : nat} (f g : (@Hom Δ) n m)
     (H : ∀ x, fin_rank (f x) = fin_rank (g x))
   : @HomEq Δ n m f g
-  := ordinal_functor_rank_iso f g H.
+  := ordinal_fct_rank_iso f g H.

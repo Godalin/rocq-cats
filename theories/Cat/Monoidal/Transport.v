@@ -63,20 +63,20 @@ Next Obligation.
   unfold lax_monoid_mul, lax_monoid_unit.
   transitivity (fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A] ∘
     ((fmap L e[A] ⊗m fmap L id) ∘ (φ₀[L] ⊗m id))).
-  - rewrite <- tensor_map_comp, functor_id, comp_id_l. reflexivity.
+  - rewrite <- tensor_map_comp, fct_id, comp_id_l. reflexivity.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
-      (lax_tensor_natural L e[A] id), <- !comp_assoc, <- functor_comp.
+      (lax_tensor_natural L e[A] id), <- !comp_assoc, <- fct_comp.
     rewrite (monoid_object_unit_l A). apply lax_unit_l.
 Defined.
 Next Obligation.
   unfold lax_monoid_mul, lax_monoid_unit.
   transitivity (fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A] ∘
     ((fmap L id ⊗m fmap L e[A]) ∘ (id ⊗m φ₀[L]))).
-  - rewrite <- tensor_map_comp, functor_id, comp_id_l. reflexivity.
+  - rewrite <- tensor_map_comp, fct_id, comp_id_l. reflexivity.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
-      (lax_tensor_natural L id e[A]), <- !comp_assoc, <- functor_comp.
+      (lax_tensor_natural L id e[A]), <- !comp_assoc, <- fct_comp.
     rewrite (monoid_object_unit_r A). apply lax_unit_r.
 Defined.
 Next Obligation.
@@ -84,11 +84,11 @@ Next Obligation.
   transitivity (fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A] ∘
     ((fmap L m[A] ⊗m fmap L id) ∘
       (φ₂[L; MonoidCarrier A; MonoidCarrier A] ⊗m id))).
-  - rewrite <- tensor_map_comp, functor_id, comp_id_l. reflexivity.
+  - rewrite <- tensor_map_comp, fct_id, comp_id_l. reflexivity.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
-      (lax_tensor_natural L m[A] id), <- !comp_assoc, <- functor_comp.
-    rewrite (monoid_object_assoc A), !(@functor_comp _ _ L), !comp_assoc.
+      (lax_tensor_natural L m[A] id), <- !comp_assoc, <- fct_comp.
+    rewrite (monoid_object_assoc A), !(@fct_comp _ _ L), !comp_assoc.
     rewrite <- (comp_assoc (fmap L (@tensor_assoc C MC A A A))).
     rewrite (lax_assoc L A A A).
     rewrite !comp_assoc.
@@ -99,7 +99,7 @@ Next Obligation.
     rewrite <- (comp_assoc
       (@tensor_map D MD _ _ _ _
         (fmap L (@id A)) (fmap L m[A]))).
-    rewrite <- tensor_map_comp, functor_id, comp_id_l.
+    rewrite <- tensor_map_comp, fct_id, comp_id_l.
     reflexivity.
 Defined.
 
@@ -114,10 +114,10 @@ Lemma lax_monoid_hom {A B : MonoidObj MC}
   : is_monoid_hom (LaxMonoidObj A) (LaxMonoidObj B) (fmap L f).
 Proof.
   destruct Hf as [He Hm]. split; cbn.
-  - unfold lax_monoid_unit. rewrite <- comp_assoc, <- functor_comp, He.
+  - unfold lax_monoid_unit. rewrite <- comp_assoc, <- fct_comp, He.
     reflexivity.
   - unfold lax_monoid_mul.
-    rewrite <- comp_assoc, <- functor_comp, Hm, functor_comp, comp_assoc.
+    rewrite <- comp_assoc, <- fct_comp, Hm, fct_comp, comp_assoc.
     rewrite <- (lax_tensor_natural L f f), <- comp_assoc. reflexivity.
 Qed.
 
@@ -134,10 +134,10 @@ Program Definition LaxMonoidF
   |}.
 Next Obligation.
   intros [f Hf] [g Hg] E.
-  exact (@functor_fmap_proper C D L _ _ f g E).
+  exact (@fct_fmap_proper C D L _ _ f g E).
 Defined.
-Next Obligation. apply functor_id. Defined.
-Next Obligation. apply functor_comp. Defined.
+Next Obligation. apply fct_id. Defined.
+Next Obligation. apply fct_comp. Defined.
 
 End LaxMonoidTransport.
 

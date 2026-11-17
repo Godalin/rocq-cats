@@ -115,7 +115,7 @@ Proof.
         (pure[A] (Y ^ X) ∘ (ƛ (f ∘ π2) : Hom 1 (Y ^ X))) id).
     + rewrite comp_id_l, comp_assoc. reflexivity.
   - rewrite (applicative_lift2_pure_l A (eval (X := X) (Y := Y))
-      (ƛ (f ∘ π2)) f (exponential_β (f ∘ π2))).
+      (ƛ (f ∘ π2)) f (exp_β (f ∘ π2))).
     rewrite comp_assoc, product_β2. reflexivity.
 Qed.
 
@@ -131,7 +131,7 @@ Proof.
   rewrite comp_id_l in H.
   change ((pure[A] (X ^ X) ∘ (idᴱ[X] ∘ !)) ⋆[A] u ≈
     fmap A (@id X) ∘ u) in H.
-  rewrite exponential_id_comp, functor_id, comp_id_l in H. exact H.
+  rewrite exp_id_comp, fct_id, comp_id_l in H. exact H.
 Qed.
 
 (** Interchange: a fixed pure argument can be applied after mapping
@@ -190,7 +190,7 @@ Proof.
   - rewrite !comp_assoc. apply comp_proper; [reflexivity |].
     symmetry. etransitivity.
     + exact (product_comp_l u v (fmap A f) (fmap A (@id Y))).
-    + rewrite functor_id, comp_id_l. reflexivity.
+    + rewrite fct_id, comp_id_l. reflexivity.
   - apply comp_proper; [| reflexivity].
     exact (cartesian_lift2_pre A (eval (X := Y) (Y := Z)) f (@id Y)).
 Qed.
@@ -242,7 +242,7 @@ Proof.
   rewrite applicative_pure_map, applicative_apply_fmap.
   change ((lift₂[A; uncurry (ƛ (internal_comp X Y Z))] ∘ ⟨u, v⟩)
     ⋆[A] w ≈ u ⋆[A] (v ⋆[A] w)).
-  rewrite (exponential_β (internal_comp X Y Z)).
+  rewrite (exp_β (internal_comp X Y Z)).
   apply applicative_composition_eval.
 Qed.
 

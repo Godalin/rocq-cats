@@ -68,24 +68,24 @@ Context {EC : HasExponential PC} {ED : HasExponential PD}.
 
 (** 不同参数／结果对象检查两个变型。 *)
 
-Definition independent_exponential_natural {X X' Y Y' : C}
+Definition independent_exp_natural {X X' Y Y' : C}
     (u : Hom X' X) (v : Hom Y Y')
-  : preserved_exponential_comparison F preservesF X' Y' ∘ fmap F (v ^ u) ≈
+  : exp_cmp F preservesF X' Y' ∘ fmap F (v ^ u) ≈
       (fmap F v ^ fmap F u) ∘
-        preserved_exponential_comparison F preservesF X Y
-  := preserved_exponential_natural F preservesF u v.
+        exp_cmp F preservesF X Y
+  := exp_cmp_natural F preservesF u v.
 
 (** The mixed endpoint is [G Y ^ F X], without inverse components. *)
 
 (** 混合端点为[G Y ^ F X]，不提供逆分量。 *)
 
-Definition independent_exponential_boundary (X Y : C)
+Definition independent_exp_boundary (X Y : C)
   : (α Y ^ (@id (F X))) ∘
-      preserved_exponential_comparison F preservesF X Y ≈
+      exp_cmp F preservesF X Y ≈
       ((@id (G Y)) ^ α X) ∘
-        preserved_exponential_comparison G preservesG X Y ∘
+        exp_cmp G preservesG X Y ∘
         α ((Y ^ X)%ob)
-  := preserved_exponential_boundary F G preservesF preservesG α X Y.
+  := exp_cmp_boundary F G preservesF preservesG α X Y.
 
 End IndependentNaturality.
 
@@ -127,24 +127,24 @@ Context {EC : HasExponential PC} {ED : HasExponential PD}.
 
 (** 不同参数／结果对象检查两个变型。 *)
 
-Definition reversed_exponential_natural {X X' Y Y' : C}
+Definition reversed_exp_natural {X X' Y Y' : C}
     (u : Hom X' X) (v : Hom Y Y')
-  : preserved_exponential_comparison F preservesF X' Y' ∘ fmap F (v ^ u) ≈
+  : exp_cmp F preservesF X' Y' ∘ fmap F (v ^ u) ≈
       (fmap F v ^ fmap F u) ∘
-        preserved_exponential_comparison F preservesF X Y
-  := preserved_exponential_natural F preservesF u v.
+        exp_cmp F preservesF X Y
+  := exp_cmp_natural F preservesF u v.
 
 (** The mixed endpoint is [G Y ^ F X], without inverse components. *)
 
 (** 混合端点为[G Y ^ F X]，不提供逆分量。 *)
 
-Definition reversed_exponential_boundary (X Y : C)
+Definition reversed_exp_boundary (X Y : C)
   : (α Y ^ (@id (F X))) ∘
-      preserved_exponential_comparison F preservesF X Y ≈
+      exp_cmp F preservesF X Y ≈
       ((@id (G Y)) ^ α X) ∘
-        preserved_exponential_comparison G preservesG X Y ∘
+        exp_cmp G preservesG X Y ∘
         α ((Y ^ X)%ob)
-  := preserved_exponential_boundary F G preservesF preservesG α X Y.
+  := exp_cmp_boundary F G preservesF preservesG α X Y.
 
 End ReversedNaturality.
 
@@ -232,28 +232,28 @@ Definition comparison_unit_product_law
 (** 结果作用与参数作用具有不同端点类型。 *)
 
 Definition comparison_argument_result_law
-  : preserved_exponential_comparison (@IdF SetCat)
+  : exp_cmp (@IdF SetCat)
       (λ X Y, product_universal) BoolS TaggedGluingS ∘
       (gluing_toggle ^ comparison_argument) ≈
       (gluing_toggle ^ comparison_argument) ∘
-      preserved_exponential_comparison (@IdF SetCat)
+      exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) TaggedGluingS TaggedGluingS
-  := preserved_exponential_natural (@IdF SetCat)
+  := exp_cmp_natural (@IdF SetCat)
       (λ X Y, product_universal) comparison_argument gluing_toggle.
 
 (** The boundary law uses a mixed unit-result/Boolean-argument exponential. *)
 
 (** 边界律使用单位结果／布尔参数的混合指数。 *)
 
-Definition comparison_unit_exponential_law
+Definition comparison_unit_exp_law
   : (ComparisonUnitN TaggedGluingS ^ (@id BoolS)) ∘
-      preserved_exponential_comparison (@IdF SetCat)
+      exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) BoolS TaggedGluingS ≈
       ((@id UnitS) ^ ComparisonUnitN BoolS) ∘
-        preserved_exponential_comparison (ConstF SetCat UnitS)
+        exp_cmp (ConstF SetCat UnitS)
           unit_model_product BoolS TaggedGluingS ∘
         ComparisonUnitN ((TaggedGluingS ^ BoolS)%ob)
-  := preserved_exponential_boundary (@IdF SetCat) (ConstF SetCat UnitS)
+  := exp_cmp_boundary (@IdF SetCat) (ConstF SetCat UnitS)
       (λ X Y, product_universal) unit_model_product ComparisonUnitN _ _.
 
 (** The inverse product comparison on the left computes before collapse. *)
@@ -282,7 +282,7 @@ Proof. reflexivity. Defined.
 (** 改变结果在布尔参数之后给出实际标签翻转。 *)
 
 Example comparison_natural_left_computes
-  : (preserved_exponential_comparison (@IdF SetCat)
+  : (exp_cmp (@IdF SetCat)
       (λ X Y, product_universal) BoolS TaggedGluingS ∘
       (gluing_toggle ^ comparison_argument)) id_resp false = (3, true).
 Proof. reflexivity. Defined.
@@ -293,7 +293,7 @@ Proof. reflexivity. Defined.
 
 Example comparison_natural_right_computes
   : ((gluing_toggle ^ comparison_argument) ∘
-      preserved_exponential_comparison (@IdF SetCat)
+      exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) TaggedGluingS TaggedGluingS)
       id_resp true = (3, false).
 Proof. reflexivity. Defined.
@@ -304,7 +304,7 @@ Proof. reflexivity. Defined.
 
 Example comparison_boundary_left_computes
   : ((ComparisonUnitN TaggedGluingS ^ (@id BoolS)) ∘
-      preserved_exponential_comparison (@IdF SetCat)
+      exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) BoolS TaggedGluingS)
       comparison_argument true = tt.
 Proof. reflexivity. Defined.
@@ -315,7 +315,7 @@ Proof. reflexivity. Defined.
 
 Example comparison_boundary_right_computes
   : (((@id UnitS) ^ ComparisonUnitN BoolS) ∘
-      preserved_exponential_comparison (ConstF SetCat UnitS)
+      exp_cmp (ConstF SetCat UnitS)
         unit_model_product BoolS TaggedGluingS ∘
       ComparisonUnitN ((TaggedGluingS ^ BoolS)%ob))
       comparison_argument false = tt.
@@ -326,9 +326,9 @@ Proof. reflexivity. Defined.
 (** 既有比较保持非平凡指定函数相等。 *)
 
 Example comparison_respects_tagged_functions
-  : preserved_exponential_comparison (@IdF SetCat)
+  : exp_cmp (@IdF SetCat)
       (λ X Y, product_universal) TaggedGluingS TaggedGluingS gluing_toggle ≈S
-      preserved_exponential_comparison (@IdF SetCat)
+      exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) TaggedGluingS TaggedGluingS id_resp.
 Proof.
   apply func_proper. intros [n b]. exact (eq_refl, true).
@@ -339,10 +339,10 @@ Defined.
 (** 指定函数相等不会擦除原生不同的标签。 *)
 
 Example comparison_distinct_functions_compute
-  : (preserved_exponential_comparison (@IdF SetCat)
+  : (exp_cmp (@IdF SetCat)
       (λ X Y, product_universal) TaggedGluingS TaggedGluingS
       gluing_toggle (3, false),
-      preserved_exponential_comparison (@IdF SetCat)
+      exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) TaggedGluingS TaggedGluingS
         id_resp (3, false)) = ((3, true), (3, false)).
 Proof. reflexivity. Defined.
@@ -351,8 +351,8 @@ Proof. reflexivity. Defined.
 
 (** 这些弱自然性方程不使比较可逆。 *)
 
-Definition naturality_does_not_imply_exponential_preservation
-  : is_iso (preserved_exponential_comparison (ConstF SetCat EmptyS)
+Definition naturality_does_not_imply_exp_preservation
+  : is_iso (exp_cmp (ConstF SetCat EmptyS)
       empty_constant_preserves_products BoolS BoolS) → Empty_set
   := empty_constant_comparison_not_iso.
 

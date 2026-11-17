@@ -74,7 +74,7 @@ Defined.
 Theorem embedding_fully_faithful
   : is_fully_faithful Embedding.
 Proof.
-  apply (snd (functor_fully_faithful_iff_hom_iso Embedding)).
+  apply (snd (fct_fully_faithful_iff_hom_iso Embedding)).
   intros X Y. apply embedding_hom_iso.
 Defined.
 

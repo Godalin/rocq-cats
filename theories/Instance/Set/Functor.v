@@ -28,7 +28,7 @@ Program Definition FctS (C D : Cat)
 
 (** 预复合是函子广集之间的保相等映射。 *)
 
-Program Definition functor_precomp_resp {A B C : Cat} (F : Fct A B)
+Program Definition fct_precomp_resp {A B C : Cat} (F : Fct A B)
   : FctS B C →r FctS A C
   :=
   {|func G := G ∘F F
@@ -41,7 +41,7 @@ Defined.
 
 (** 后复合是函子广集之间的保相等映射。 *)
 
-Program Definition functor_postcomp_resp {A B C : Cat} (G : Fct B C)
+Program Definition fct_postcomp_resp {A B C : Cat} (G : Fct B C)
   : FctS A B →r FctS A C
   :=
   {|func F := G ∘F F
@@ -54,8 +54,8 @@ Defined.
 
 (** 自然同构的预复合函子诱导相等的映射。 *)
 
-Global Instance functor_precomp_proper {A B C : Cat}
-  : Proper (NatIso ==> FunEq) (@functor_precomp_resp A B C).
+Global Instance fct_precomp_proper {A B C : Cat}
+  : Proper (NatIso ==> FunEq) (@fct_precomp_resp A B C).
 Proof.
   intros F G H K. exact (CompF_proper K K (reflexivity K) F G H).
 Defined.
@@ -64,8 +64,8 @@ Defined.
 
 (** 自然同构的后复合函子诱导相等的映射。 *)
 
-Global Instance functor_postcomp_proper {A B C : Cat}
-  : Proper (NatIso ==> FunEq) (@functor_postcomp_resp A B C).
+Global Instance fct_postcomp_proper {A B C : Cat}
+  : Proper (NatIso ==> FunEq) (@fct_postcomp_resp A B C).
 Proof.
   intros F G H K. exact (CompF_proper F G H K K (reflexivity K)).
 Defined.
@@ -86,25 +86,25 @@ Program Definition FctPsh@{u p +} {S : Cat}
   : Fct (S^op) SetCat@{u p _ _ _ _ _}
   :=
   {|F0 s := LiftS (FctS (J s) C)
-  ; F1 s t θ := (functor_precomp_resp (fmap J θ))^↑S
+  ; F1 s t θ := (fct_precomp_resp (fmap J θ))^↑S
   |}.
 Next Obligation.
   intros θ φ H [F]. refine {|lower := _
                            |}.
-  apply CompF_proper. reflexivity. exact (functor_fmap_proper _ _ J _ _ H).
+  apply CompF_proper. reflexivity. exact (fct_fmap_proper _ _ J _ _ H).
 Defined.
 Next Obligation.
   intros [F]. refine {|lower := _
                      |}.
   transitivity (F ∘F IdF).
-  - apply CompF_proper. reflexivity. exact (functor_id _ _ J).
+  - apply CompF_proper. reflexivity. exact (fct_id _ _ J).
   - apply CompF_id_r.
 Defined.
 Next Obligation.
   intros [F]. refine {|lower := _
                      |}.
   transitivity (F ∘F (fmap J g ∘F fmap J f)).
-  - apply CompF_proper. reflexivity. exact (functor_comp _ _ J g f).
+  - apply CompF_proper. reflexivity. exact (fct_comp _ _ J g f).
   - symmetry. apply CompF_assoc.
 Defined.
 
@@ -117,7 +117,7 @@ Program Definition FctPshN@{u p +} {S : Cat}
   : (FctPsh J C : Fct (S^op) SetCat@{u p _ _ _ _ _}) ⇒
       FctPsh J D
   :=
-  {|nt s := (functor_postcomp_resp F)^↑S
+  {|nt s := (fct_postcomp_resp F)^↑S
   |}.
 Next Obligation.
   intros [G]. refine {|lower := _
