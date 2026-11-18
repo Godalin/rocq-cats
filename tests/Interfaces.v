@@ -84,6 +84,48 @@ Fail Definition unchosen_set_monoidal
   : MonoidalCat SetCat
   := ltac:(typeclasses eauto).
 
+(** The weaker tensor choices also require explicit selection. *)
+
+(** 较弱的张量选择同样须显式提供。 *)
+
+Fail Definition unchosen_set_binoidal
+  : HasBinoidal SetCat
+  := ltac:(typeclasses eauto).
+
+From Cats Require Import
+  Cat.Premonoidal.Core.
+
+(** ** Independent Premonoidal Choices
+
+    A fixed tensor may have only an associator or only unitors. Inheriting
+    one package must not select the other or a complete extension. *)
+
+(** ** 独立的预幺半选择
+
+    固定张量可以只具有结合子或单位子；继承一份选择不得选定另一份或完整扩展。 *)
+
+Section AssociatorChoice.
+Context {C : Cat} `{BC : !HasBinoidal C} `{AC : !HasAssociator C BC}.
+
+Fail Definition unchosen_unitors
+  : HasUnitors C BC
+  := ltac:(typeclasses eauto).
+
+End AssociatorChoice.
+
+(** Unit choices alone likewise select no associator. *)
+
+(** 同样，单独的单位选择不选定结合子。 *)
+
+Section UnitorChoice.
+Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !HasUnitors C BC}.
+
+Fail Definition unchosen_associator
+  : HasAssociator C BC
+  := ltac:(typeclasses eauto).
+
+End UnitorChoice.
+
 From Cats Require Import
   Cat.Monoidal.Constant.
 
@@ -95,6 +137,25 @@ From Cats Require Import
 
 Fail Definition unchosen_set_lax_monoidal
   : LaxMonoidalFct SetCartMonoidal SetCartMonoidal
+  := ltac:(typeclasses eauto).
+
+(** Adding invertible comparisons must not choose a monoidal functor. *)
+
+(** 增加比较的可逆性不得自动选取幺半函子。 *)
+
+Fail Definition unchosen_set_monoidal_fct
+  : MonoidalFct SetCartMonoidal SetCartMonoidal
+  := ltac:(typeclasses eauto).
+
+From Cats Require Import
+  Cat.Applicative.Core.
+
+(** Importing the theory must not select an Applicative on the model. *)
+
+(** 导入理论不得为模型自动选定 Applicative。 *)
+
+Fail Definition unchosen_set_applicative
+  : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
   := ltac:(typeclasses eauto).
 
 From Cats Require Import

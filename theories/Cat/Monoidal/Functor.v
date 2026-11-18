@@ -21,43 +21,79 @@ Local Open Scope monoidal_scope.
     transformation supplies the tensorator's naturality in both arguments.
     The three remaining
     diagrams retain the chosen associators and unitors explicitly.
-    A strong monoidal functor would additionally require invertible
-    comparisons; an oplax structure reverses both comparison maps. *)
+    [MonoidalFct] below additionally requires invertible comparisons;
+    an oplax structure reverses both comparison maps. *)
 
 (** 函子及其相对于具名幺半结构 [MC]、[MD] 的 lax 结构打包在一起；唯一的
     强制转换暴露底层函子，客户端可写 [L X]、[fmap L f]。
     自然变换提供 tensorator 在两个变量上的自然性，另外三幅交换图显式保留
-    选定的结合子及单位子。Strong monoidal 函子还须比较可逆，oplax 结构则
-    将两个比较映射反向。 *)
+    选定的结合子及单位子。下文的 [MonoidalFct] 还要求比较可逆；
+    oplax 结构则将两个比较映射反向。 *)
 
-Class LaxMonoidalFct {C D : Cat}
+Record LaxMonoidalFct {C D : Cat}
     (MC : MonoidalCat C) (MD : MonoidalCat D)
-  :=
-  { LaxMonoidalF :> Fct C D
-  ; lax_unit : Hom (I⊗[MD]) (LaxMonoidalF (I⊗[MC]))
-  ; lax_tensorN : (tensorF MD ∘F (LaxMonoidalF ×F LaxMonoidalF)) ⇒
-      (LaxMonoidalF ∘F tensorF MC)
+  := LaxMonoidalFctOfFct
+
+  (** Store the supplied functor once as the unique underlying view. *)
+
+  (** 将给定函子保存一次，作为唯一底层视图。 *)
+
+  { LaxMonoidalFctToFct :> Fct C D
+
+  (** The unit comparison points into the source unit's image. *)
+
+  (** 单位比较指向来源单位对象的像。 *)
+
+  ; lax_unit : Hom (I⊗[MD]) (LaxMonoidalFctToFct (I⊗[MC]))
+
+  (** The tensorator retains its component maps and their naturality. *)
+
+  (** 张量子保留分量映射及其自然性。 *)
+
+  ; lax_tensorN : (tensorF MD ∘F (LaxMonoidalFctToFct ×F LaxMonoidalFctToFct)) ⇒
+      (LaxMonoidalFctToFct ∘F tensorF MC)
+
+  (** Left-unit coherence uses the supplied source and target unitors. *)
+
+  (** 左单位相干律使用给定的来源及目标单位子。 *)
+
   ; lax_unit_l (X : @Ob C)
-    : fmap LaxMonoidalF (@tensor_unit_l C MC X) ∘
+    : fmap LaxMonoidalFctToFct (@tensor_unit_l C MC X) ∘
         lax_tensorN (I⊗[MC], X) ∘
         (@tensor_map D MD _ _ _ _ lax_unit id) ≈
-        @tensor_unit_l D MD (LaxMonoidalF X)
+        @tensor_unit_l D MD (LaxMonoidalFctToFct X)
+
+  (** Right-unit coherence uses those same named monoidal structures. *)
+
+  (** 右单位相干律使用同一对具名幺半结构。 *)
+
   ; lax_unit_r (X : @Ob C)
-    : fmap LaxMonoidalF (@tensor_unit_r C MC X) ∘
+    : fmap LaxMonoidalFctToFct (@tensor_unit_r C MC X) ∘
         lax_tensorN (X, I⊗[MC]) ∘
         (@tensor_map D MD _ _ _ _ id lax_unit) ≈
-        @tensor_unit_r D MD (LaxMonoidalF X)
+        @tensor_unit_r D MD (LaxMonoidalFctToFct X)
+
+  (** Associativity coherence retains the selected associators. *)
+
+  (** 结合相干律保留选定的结合子。 *)
+
   ; lax_assoc (X Y Z : @Ob C)
-    : fmap LaxMonoidalF (@tensor_assoc C MC X Y Z) ∘
+    : fmap LaxMonoidalFctToFct (@tensor_assoc C MC X Y Z) ∘
         lax_tensorN (@tensor C MC X Y, Z) ∘
         (@tensor_map D MD _ _ _ _ (lax_tensorN (X, Y)) id) ≈
         lax_tensorN (X, @tensor C MC Y Z) ∘
         (@tensor_map D MD _ _ _ _ id (lax_tensorN (Y, Z))) ∘
         @tensor_assoc D MD
-          (LaxMonoidalF X) (LaxMonoidalF Y) (LaxMonoidalF Z)
+          (LaxMonoidalFctToFct X) (LaxMonoidalFctToFct Y) (LaxMonoidalFctToFct Z)
   }.
 
-Arguments LaxMonoidalF {_ _ _ _} _.
+(** The direct constructor keeps the supplied functor, comparisons and
+    coherence witnesses; no chosen lax structure is enabled by import. *)
+
+(** 直接构造器保留给定函子、比较及相干见证；导入不启用选定 lax 结构。 *)
+
+Arguments LaxMonoidalFctOfFct {_ _ _ _} _ _ _ _ _ _.
+Arguments LaxMonoidalFctToFct {_ _ _ _} _.
 Arguments lax_unit {_ _ _ _} _.
 Arguments lax_tensorN {_ _ _ _} _.
 Arguments lax_unit_l {_ _ _ _} _ _.
@@ -106,11 +142,11 @@ Defined.
 
 (** 每个幺半结构都给出须显式选择的 lax 恒等函子；导入本模块不会启用选定结构。 *)
 
-Program Definition IdF_LaxMonoidalFct {C : Cat}
+Program Definition IdLaxMonoidalF {C : Cat}
     (MC : MonoidalCat C)
   : LaxMonoidalFct MC MC
   :=
-  {|LaxMonoidalF := IdF
+  {|LaxMonoidalFctToFct := IdF
   ; lax_unit := id
   ; lax_tensorN := IdLaxTensorN MC
   |}.
@@ -123,3 +159,93 @@ Defined.
 Next Obligation.
   rewrite !tensor_map_id, !comp_id_r, !comp_id_l. reflexivity.
 Defined.
+
+
+(** ** Monoidal Functors
+
+    Here an unqualified monoidal functor means a strong monoidal functor.
+    Fix the same named source and target monoidal structures as for lax
+    functors. Add chosen inverses to the existing comparisons; their forward
+    maps, naturality and coherence are inherited from one lax parent.
+    This is distinct from a functor equipped with tensorial strength. *)
+
+(** ** 幺半函子
+
+    本库中不加限定的幺半函子指 strong monoidal functor。固定与 lax 函子
+    相同的具名来源及目标幺半结构，为已有比较补充选定的逆；正向映射、自然性
+    及相干律均继承自唯一 lax 父结构。这与带张量强度的函子是不同概念。 *)
+
+Record MonoidalFct {C D : Cat}
+    (MC : MonoidalCat C) (MD : MonoidalCat D)
+  := MonoidalFctOfLaxMonoidalFct
+
+  (** Inherit the functor and both comparisons through this single parent. *)
+
+  (** 通过唯一父结构继承函子及两个比较。 *)
+
+  { MonoidalFctToLaxMonoidalFct :> LaxMonoidalFct MC MD
+
+  (** The unit witness inverts the parent's exact unit comparison. *)
+
+  (** 单位见证为父结构原有的单位比较提供逆。 *)
+
+  ; monoidal_unit_iso : is_iso φ₀[MonoidalFctToLaxMonoidalFct]
+
+  (** Tensorator inverses retain Type-valued inverse equations. Their
+      naturality follows from the parent's natural transformation. *)
+
+  (** 张量子之逆保留 Type 值互逆方程；其自然性由父结构的自然变换推出。 *)
+
+  ; monoidal_tensor_iso (X Y : @Ob C)
+    : is_iso φ₂[MonoidalFctToLaxMonoidalFct; X; Y]
+  }.
+
+Arguments MonoidalFctOfLaxMonoidalFct {_ _ _ _} _ _ _.
+Arguments MonoidalFctToLaxMonoidalFct {_ _ _ _} _.
+Arguments monoidal_unit_iso {_ _ _ _} _.
+Arguments monoidal_tensor_iso {_ _ _ _} _ _ _.
+
+(** The unit isomorphism exposes the stored forward map and inverse. *)
+
+(** 单位同构暴露保存的正向映射及逆。 *)
+
+Definition MonoidalUnitIso {C D : Cat}
+    {MC : MonoidalCat C} {MD : MonoidalCat D} (F : MonoidalFct MC MD)
+  : I⊗[MD] ≅ F (I⊗[MC])
+  := (φ₀[F]; monoidal_unit_iso F).
+
+(** The natural isomorphism is a transparent view of the parent's tensorator
+    and the supplied component inverses. *)
+
+(** 自然同构是父结构张量子及给定分量之逆的透明视图。 *)
+
+Definition MonoidalTensorIso {C D : Cat}
+    {MC : MonoidalCat C} {MD : MonoidalCat D} (F : MonoidalFct MC MD)
+  : (tensorF MD ∘F (F ×F F)) ≅N (F ∘F tensorF MC).
+Proof.
+  exists (lax_tensorN F). intros [X Y].
+  exact (monoidal_tensor_iso F X Y).
+Defined.
+
+(** The inverse tensorator reuses general inverse naturality, without
+    requiring another naturality field or any additional coherence. *)
+
+(** 逆张量子复用一般的逆自然性，无须额外的自然性字段或相干要求。 *)
+
+Definition MonoidalTensorInvN {C D : Cat}
+    {MC : MonoidalCat C} {MD : MonoidalCat D} (F : MonoidalFct MC MD)
+  : (F ∘F tensorF MC) ⇒ (tensorF MD ∘F (F ×F F))
+  := (MonoidalTensorIso F).1 ^-1N (MonoidalTensorIso F).2.
+
+(** The monoidal identity extends the exact lax identity with identity
+    inverses; clients select this construction explicitly. *)
+
+(** 幺半恒等函子为原有 lax 恒等函子补充恒等逆；由客户端显式选择此构造。 *)
+
+Program Definition IdMonoidalF {C : Cat} (MC : MonoidalCat C)
+  : MonoidalFct MC MC
+  :=
+  {|MonoidalFctToLaxMonoidalFct := IdLaxMonoidalF MC
+  |}.
+Next Obligation. exists id. split; apply comp_id_l. Defined.
+Next Obligation. exists id. split; apply comp_id_l. Defined.

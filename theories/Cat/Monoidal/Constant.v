@@ -44,10 +44,10 @@ Defined.
 
 (** 三条 lax 相干图恰好是 [A] 的幺半群定律；结构须显式选择，不在导入时注册。 *)
 
-Program Definition ConstF_LaxMonoidalFct
+Program Definition ConstLaxMonoidalF
   : LaxMonoidalFct MC MD
   :=
-  {|LaxMonoidalF := ConstF C (MonoidCarrier A)
+  {|LaxMonoidalFctToFct := ConstF C (MonoidCarrier A)
   ; lax_unit := e[A]
   ; lax_tensorN := ConstLaxTensorN
   |}.

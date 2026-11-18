@@ -16,7 +16,7 @@ Local Open Scope binoidal_scope.
     中心态射可在张量的任意一侧与另一任意态射交换执行次序。这是指定态射的
     额外证据，不是任意计算之间的交换律。 *)
 
-Definition is_central {C : Cat} `{BC : !BinoidalCat C}
+Definition is_central {C : Cat} `{BC : !HasBinoidal C}
     {X Y : @Ob C} (f : Hom X Y)
   := ∀ Z W (g : Hom Z W),
     (f ⊳ W) ∘ (X ⊲ g) ≈ (Y ⊲ g) ∘ (f ⊳ Z) ∧
@@ -32,7 +32,7 @@ Definition is_central {C : Cat} `{BC : !BinoidalCat C}
     固定双侧张量范畴，导出中心态射的闭包与取逆定律，再构造具有继承作用的中心范畴。 *)
 
 Section CentralLaws.
-Context {C : Cat} `{BC : !BinoidalCat C}.
+Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** Centrality is invariant under specified hom equality. *)
 
@@ -66,7 +66,7 @@ Definition central_id (X : @Ob C)
   : is_central (@id X).
 Proof.
   intros Z W g. split;
-    rewrite ?binoidal_left_id, ?binoidal_right_id,
+    rewrite ?binoidal_l_id, ?binoidal_r_id,
       comp_id_l, comp_id_r; reflexivity.
 Defined.
 
@@ -89,9 +89,9 @@ Definition central_comp {X Y U : @Ob C}
 Proof.
   intros Z W h. destruct (Hg Z W h) as [Hg1 Hg2].
   destruct (Hf Z W h) as [Hf1 Hf2]. split.
-  - rewrite !binoidal_right_comp, comp_assoc, Hf1,
+  - rewrite !binoidal_r_comp, comp_assoc, Hf1,
       <- comp_assoc, Hg1, comp_assoc. reflexivity.
-  - rewrite !binoidal_left_comp, comp_assoc, Hf2,
+  - rewrite !binoidal_l_comp, comp_assoc, Hf2,
       <- comp_assoc, Hg2, comp_assoc. reflexivity.
 Defined.
 
@@ -107,12 +107,12 @@ Definition central_inv {X Y : @Ob C} (i : X ≅ Y)
 Proof.
   intros Z W g. destruct (Hi Z W g) as [H1 H2]. split.
   - exact (iso_square_inv
-      (i.1 ⊳ Z; fct_is_iso (BinoidalRightF Z) i.1 i.2)
-      (i.1 ⊳ W; fct_is_iso (BinoidalRightF W) i.1 i.2)
+      (i.1 ⊳ Z; fct_is_iso (BinoidalRF Z) i.1 i.2)
+      (i.1 ⊳ W; fct_is_iso (BinoidalRF W) i.1 i.2)
       (X ⊲ g) (Y ⊲ g) H1).
   - exact (iso_square_inv
-      (Z ⊲ i.1; fct_is_iso (BinoidalLeftF Z) i.1 i.2)
-      (W ⊲ i.1; fct_is_iso (BinoidalLeftF W) i.1 i.2)
+      (Z ⊲ i.1; fct_is_iso (BinoidalLF Z) i.1 i.2)
+      (W ⊲ i.1; fct_is_iso (BinoidalLF W) i.1 i.2)
       (g ⊳ X) (g ⊳ Y) H2).
 Defined.
 
@@ -143,7 +143,7 @@ End CentralLaws.
 (** 后执行的左态射可与先执行的右态射交换时，有序张量保持复合；不需其他
     中心性条件。 *)
 
-Lemma central_sequence_comp {C : Cat} `{BC : !BinoidalCat C}
+Lemma central_sequence_comp {C : Cat} `{BC : !HasBinoidal C}
     {X X' X'' Y Y' Y'' : @Ob C}
     (f' : Hom X' X'') (f : Hom X X')
     (g' : Hom Y' Y'') (g : Hom Y Y') (Hf' : is_central f')
@@ -151,7 +151,7 @@ Lemma central_sequence_comp {C : Cat} `{BC : !BinoidalCat C}
       binoidal_sequence f' g' ∘ binoidal_sequence f g.
 Proof.
   unfold binoidal_sequence.
-  rewrite binoidal_left_comp, binoidal_right_comp, !comp_assoc.
+  rewrite binoidal_l_comp, binoidal_r_comp, !comp_assoc.
   rewrite <- (comp_assoc (X'' ⊲ g) (f' ⊳ Y) (f ⊳ Y)),
     <- (fst (Hf' Y Y' g)), comp_assoc. reflexivity.
 Qed.

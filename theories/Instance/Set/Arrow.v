@@ -72,7 +72,7 @@ Defined.
 Program Definition ArrowA
   : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
   :=
-  {|ApplicativeLax := ArrowGlobalLax A
+  {|ApplicativeToLaxMonoidalFct := ArrowGlobalLax A
   ; applicative_pure := ArrowValuePureN
   |}.
 Next Obligation.

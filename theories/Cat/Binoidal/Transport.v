@@ -13,23 +13,23 @@ Local Open Scope binoidal_scope.
 (** 固定双侧张量范畴，比较相等运输与各上下文函子，并导出固定上下文变化时的自然性。 *)
 
 Section Transport.
-Context {C : Cat} `{BC : !BinoidalCat C}.
+Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** Each context functor preserves transported identities. *)
 
 (** 每个上下文函子保持运输后的恒等态射。 *)
 
-Lemma binoidal_left_eq_to_hom (Z : @Ob C) {X Y : @Ob C} (p : X = Y)
+Lemma binoidal_l_eq_to_hom (Z : @Ob C) {X Y : @Ob C} (p : X = Y)
   : Z ⊲ eq_to_hom p ≈ eq_to_hom (f_equal (λ Q, Z ⊗ Q) p).
-Proof. exact (fmap_eq_to_hom (BinoidalLeftF Z) p). Qed.
+Proof. exact (fmap_eq_to_hom (BinoidalLF Z) p). Qed.
 
 (** The same statement holds for a context on the right. *)
 
 (** 对右侧上下文有同样的结论。 *)
 
-Lemma binoidal_right_eq_to_hom (Z : @Ob C) {X Y : @Ob C} (p : X = Y)
+Lemma binoidal_r_eq_to_hom (Z : @Ob C) {X Y : @Ob C} (p : X = Y)
   : eq_to_hom p ⊳ Z ≈ eq_to_hom (f_equal (λ Q, Q ⊗ Z) p).
-Proof. exact (fmap_eq_to_hom (BinoidalRightF Z) p). Qed.
+Proof. exact (fmap_eq_to_hom (BinoidalRF Z) p). Qed.
 
 (** Changing the fixed context along an equality is natural in an arbitrary
     computation, by centrality of the transported identity. *)
@@ -42,7 +42,7 @@ Lemma binoidal_context_eq {Z W : @Ob C} (p : Z = W)
       (W ⊲ f) ∘ eq_to_hom (f_equal (λ Q, Q ⊗ X) p).
 Proof.
   pose proof (fst (eq_to_hom_central p X Y f)) as H.
-  rewrite !binoidal_right_eq_to_hom in H. exact H.
+  rewrite !binoidal_r_eq_to_hom in H. exact H.
 Qed.
 
 End Transport.

@@ -24,13 +24,17 @@ Class SymmetricPremonoidalCat (C : Cat)
 
   (** 从唯一父结构继承单位、张量作用及相干性。 *)
 
-  { SymmetricPremonoidalP :> PremonoidalCat C
+  { SymmetricPremonoidalToCat :> Cat := C
+  ; symmetric_hasBinoidal :> HasBinoidal C
+  ; SymmetricPremonoidalToHasPremonoidal
+    :> HasPremonoidal C symmetric_hasBinoidal
 
   (** The exchange maps are central and reverse each other. *)
 
   (** 交换映射为中心态射，彼此互逆。 *)
 
-  ; premonoidal_symmetry (X Y : @Ob C) : Hom (X ⊗ Y) (Y ⊗ X)
+  ; premonoidal_symmetry (X Y : @Ob C)
+    : Hom (X ⊗ Y) (Y ⊗ X)
   ; premonoidal_symmetry_central (X Y : @Ob C)
     : is_central (premonoidal_symmetry X Y)
   ; premonoidal_symmetry_involutive (X Y : @Ob C)
@@ -55,17 +59,19 @@ Class SymmetricPremonoidalCat (C : Cat)
         (Y ⊲ premonoidal_symmetry X Z) ∘
           (αₚ[Y; X; Z] ∘ (premonoidal_symmetry X Y ⊳ Z))
   ; premonoidal_symmetry_unit (X : @Ob C)
-    : λₚ[X] ∘ premonoidal_symmetry X (Iₚ[SymmetricPremonoidalP]) ≈ ρₚ[X]
+    : λₚ[X] ∘ premonoidal_symmetry X (Iₚ[SymmetricPremonoidalToHasPremonoidal]) ≈ ρₚ[X]
   }.
 
-Arguments SymmetricPremonoidalP {_} _.
+Arguments symmetric_hasBinoidal {_} _.
+Arguments SymmetricPremonoidalToHasPremonoidal {_} _.
 Arguments premonoidal_symmetry {_ _} _ _.
 
 (** Register the same parent for inherited instance search. *)
 
 (** 为继承实例搜索注册同一个父结构。 *)
 
-#[export] Existing Instance SymmetricPremonoidalP.
+#[export] Existing Instance symmetric_hasBinoidal.
+#[export] Existing Instance SymmetricPremonoidalToHasPremonoidal.
 
 Notation "'σₚ[' X ';' Y ']'" := (premonoidal_symmetry X Y)
   : premonoidal_scope.
@@ -109,7 +115,7 @@ Qed.
 
 (** 沿交换共轭，从左作用恢复右作用。 *)
 
-Lemma premonoidal_right_symmetry {X Y : @Ob C}
+Lemma premonoidal_r_symmetry {X Y : @Ob C}
     (Z : @Ob C) (f : Hom X Y)
   : f ⊳ Z ≈ σₚ[Z; Y] ∘ ((Z ⊲ f) ∘ σₚ[X; Z]).
 Proof.

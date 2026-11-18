@@ -20,7 +20,8 @@ Local Open Scope monoidal_scope.
     指数或强度。 *)
 
 Section Lifting.
-Context {C D : Cat} `{TC : !HasTerminal C} `{PC : !HasProduct C}
+Context {C D : Cat}
+    `{TC : !HasTerminal C} `{PC : !HasProduct C}
     `{TD : !HasTerminal D} `{PD : !HasProduct D}
     (L : LaxMonoidalFct
       (@CartMonoidal C TC PC) (@CartMonoidal D TD PD)).
@@ -31,8 +32,8 @@ Context {C D : Cat} `{TC : !HasTerminal C} `{PC : !HasProduct C}
 
 Lemma cartesian_lift2_pre {X Y X' Y' Z : @Ob C}
     (f : Hom (X' × Y') Z) (g : Hom X X') (h : Hom Y Y')
-  : lift₂[L; f] ∘ (@cross D PD _ _ _ _ (fmap L g) (fmap L h)) ≈
-      lift₂[L; f ∘ (@cross C PC _ _ _ _ g h)].
+  : lift₂[L; f] ∘ (@cross D PD _ _ _ _ (fmap L g) (fmap L h))
+    ≈ lift₂[L; f ∘ (@cross C PC _ _ _ _ g h)].
 Proof.
   pose proof (lax_lift2_pre L f g h) as H.
   rewrite !cartesian_tensor_map in H. exact H.

@@ -40,28 +40,22 @@ Let J
     双侧张量父结构恰好为 [ArrowBinoidal A]，故不重复上下文运算或张量选择。
     导入本模块不会选定默认计算结构。 *)
 
-Program Definition ArrowPremonoidal
-  : PremonoidalCat (ComputationCat A)
+Program Definition ArrowHasAssociator
+  : HasAssociator (ComputationCat A) (ArrowHasBinoidal A)
   :=
-  {|PremonoidalB := ArrowBinoidal A
-  ; PremonoidalUnit := PremonoidalUnit V
-  ; premonoidal_associator X Y Z :=
-      let i := @premonoidal_associator C V X Y Z in
-      (fmap J i.1; fct_is_iso J i.1 i.2)
-  ; premonoidal_left_unitor X :=
-      let i := @premonoidal_left_unitor C V X in
-      (fmap J i.1; fct_is_iso J i.1 i.2)
-  ; premonoidal_right_unitor X :=
-      let i := @premonoidal_right_unitor C V X in
-      (fmap J i.1; fct_is_iso J i.1 i.2)
-  ; premonoidal_assoc_central X Y Z := arrow_pure_central A _
-  ; premonoidal_unit_l_central X := arrow_pure_central A _
-  ; premonoidal_unit_r_central X := arrow_pure_central A _
-  ; premonoidal_unit_l_natural X Y f := arrow_second_projection A f 1
-  ; premonoidal_unit_r_natural X Y f := arrow_first_projection A f 1
-  ; premonoidal_assoc_natural_l X X' Y Z f := arrow_first_assoc A f
-  ; premonoidal_assoc_natural_m Y Y' X Z g := arrow_middle_assoc A g
-  ; premonoidal_assoc_natural_r Z Z' X Y h := arrow_context_assoc A h
+  {|PremonoidalAssocRIso X Y :=
+      ({|nt Z := fmap J (@premonoidal_associator C _ V X Y Z).1
+        ; nat_naturality Z Z' h := arrow_context_assoc A h
+        |}; λ Z,
+          let i := @premonoidal_associator C _ V X Y Z in
+          fct_is_iso J i.1 i.2)
+  ; isAssociator :=
+      {|assoc_natural_l Y Z :=
+          {|nat_iso_naturality X X' f := arrow_first_assoc A f|}
+      ; assoc_natural_m X Z :=
+          {|nat_iso_naturality Y Y' g := arrow_middle_assoc A g|}
+      ; assoc_central X Y Z := arrow_pure_central A _
+      |}
   |}.
 Next Obligation.
   change (arr[A; (@product_assoc C HP W X (Y × Z)).1] ∘
@@ -71,15 +65,64 @@ Next Obligation.
         first[A; arr[A; (@product_assoc C HP W X Y).1]; Z])).
   rewrite arrow_second_arr, arrow_first_arr, <- !fct_comp.
   apply fct_fmap_proper.
-  exact (@premonoidal_pentagon C V W X Y Z).
+  exact (@premonoidal_pentagon C _ V W X Y Z).
 Defined.
+
+(** Lift only the unitors, with no dependence on the computation
+    associator. Their naturality follows from the projection laws. *)
+
+(** 只提升单位子，不依赖计算结合子；其自然性来自投影定律。 *)
+
+Program Definition ArrowHasUnitors
+  : HasUnitors (ComputationCat A) (ArrowHasBinoidal A)
+  :=
+  {|PremonoidalUnit := PremonoidalUnit V
+  ; PremonoidalUnitorLIso :=
+      ({|nt X := fmap J (@premonoidal_unitor_l C _ V X).1
+        ; nat_naturality X Y f := arrow_second_projection A f 1
+        |}; λ X,
+          let i := @premonoidal_unitor_l C _ V X in
+          fct_is_iso J i.1 i.2)
+  ; PremonoidalUnitorRIso :=
+      ({|nt X := fmap J (@premonoidal_unitor_r C _ V X).1
+        ; nat_naturality X Y f := arrow_first_projection A f 1
+        |}; λ X,
+          let i := @premonoidal_unitor_r C _ V X in
+          fct_is_iso J i.1 i.2)
+  ; isUnitors :=
+      {|unitor_l_central X := arrow_pure_central A _
+      ; unitor_r_central X := arrow_pure_central A _
+      |}
+  |}.
+
+(** Their compatibility is the pure image of the value triangle. *)
+
+(** 二者的相容性是值三角形的纯像。 *)
+
+Program Definition ArrowHasPremonoidal
+  : HasPremonoidal (ComputationCat A) (ArrowHasBinoidal A)
+  :=
+  {|hasAssociator := ArrowHasAssociator
+  ; hasUnitors := ArrowHasUnitors
+  ; isPremonoidal :=
+      ({|premonoidal_compatible_triangle := _|}
+        : IsPremonoidal ArrowHasAssociator ArrowHasUnitors)
+  |}.
 Next Obligation.
   change (second[A; arr[A; (π2 : Hom (1 × Y) Y)]; X] ∘
     arr[A; (@product_assoc C HP X 1 Y).1] ≈
     first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
   rewrite arrow_second_arr, arrow_first_arr, <- fct_comp.
   apply fct_fmap_proper.
-  exact (@premonoidal_triangle C V X Y).
+  exact (@premonoidal_triangle C _ V X Y).
 Defined.
+
+(** The complete bundle reuses the same binoidal parent. *)
+
+(** 完整打包复用同一双侧张量父结构。 *)
+
+Definition ArrowPremonoidal
+  : PremonoidalCat
+  := PremonoidalCatOfBinoidalCat (ArrowBinoidal A) ArrowHasPremonoidal.
 
 End Cartesian.

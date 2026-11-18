@@ -27,7 +27,9 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 Program Definition CartSymmetricPremonoidal
   : SymmetricPremonoidalCat C
   :=
-  {|SymmetricPremonoidalP := MonoidalP CartMonoidal
+  {|symmetric_hasBinoidal := monoidal_hasBinoidal CartMonoidal
+  ; SymmetricPremonoidalToHasPremonoidal :=
+      MonoidalToHasPremonoidal CartMonoidal
   ; premonoidal_symmetry X Y := ⟨π2, π1⟩
   ; premonoidal_symmetry_central X Y :=
       @monoidal_arrow_central C CartMonoidal _ _ _

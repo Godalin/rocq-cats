@@ -26,7 +26,7 @@ Context (B : Bicat) (X : ObB B).
 (** 将双范畴结合子组织为自同态三元组上的自然变换。 *)
 
 Program Definition EndoAssociatorN
-  : TensorLeftF (@comp1F B X X X) ⇒ TensorRightF (@comp1F B X X X)
+  : TensorLF (@comp1F B X X X) ⇒ TensorRF (@comp1F B X X X)
   :=
   {|nt '((h, g), f) := @associator B X X X X h g f
   |}.

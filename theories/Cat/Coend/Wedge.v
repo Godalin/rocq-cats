@@ -17,7 +17,7 @@ From Cats Require Export
 (** 余楔只存储反双函子的楔，其通常方向的腿从 [F (X,X)] 指向顶点。 *)
 
 Record Cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
-  :=
+  := CowedgeOfOpWedge
   (** The sole stored presentation is a wedge in the opposite categories. *)
 
   (** 唯一存储的表示是反范畴中的楔。 *)
@@ -25,6 +25,7 @@ Record Cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
   { op_wedge : @Wedge (C^op) (D^op) (BifunctorOpF F) W
   }.
 
+Arguments CowedgeOfOpWedge {_ _ _ _} _.
 Arguments op_wedge {_ _ _ _} _.
 
 (** Read the same stored legs in the original category. *)
@@ -102,9 +103,7 @@ Definition cowedge_comp {C D : Cat}
     {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
     (f : Hom W V) (κ : Cowedge F W)
   : Cowedge F V
-  :=
-  {|op_wedge := op_wedge κ ∘Wedge f
-  |}.
+  := CowedgeOfOpWedge (op_wedge κ ∘Wedge f).
 
 Infix "∘Cowedge" := cowedge_comp
   (at level 40, left associativity) : cat_scope.
@@ -151,9 +150,7 @@ Definition cowedge_precompose {C D : Cat}
     {F G : Fct ((C^op) ×C C) D} {W}
     (κ : Cowedge G W) (α : F ⇒ G)
   : Cowedge F W
-  :=
-  {|op_wedge := wedge_map (bifunctor_op_nt α) (op_wedge κ)
-  |}.
+  := CowedgeOfOpWedge (wedge_map (bifunctor_op_nt α) (op_wedge κ)).
 
 (** Precomposition respects both cowedge and transformation equality. *)
 

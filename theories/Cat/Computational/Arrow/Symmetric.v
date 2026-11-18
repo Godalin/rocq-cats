@@ -27,7 +27,8 @@ Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 Program Definition ArrowSymmetricPremonoidal
   : SymmetricPremonoidalCat (ComputationCat A)
   :=
-  {|SymmetricPremonoidalP := ArrowPremonoidal A
+  {|symmetric_hasBinoidal := ArrowHasBinoidal A
+  ; SymmetricPremonoidalToHasPremonoidal := ArrowHasPremonoidal A
   ; premonoidal_symmetry X Y := arr[A; ⟨π2, π1⟩]
   ; premonoidal_symmetry_central X Y := arrow_pure_central A _
   ; premonoidal_symmetry_involutive X Y := arrow_exchange_inv A X Y

@@ -1,130 +1,89 @@
 From Cats Require Export
-  Cat.Binoidal.Center.
+  Cat.Premonoidal.Associator
+  Cat.Premonoidal.Unitor.
 
 Local Open Scope binoidal_scope.
+Local Open Scope premonoidal_scope.
 
 (** * Premonoidal Categories
 
-    A premonoidal category adds a unit and central structural isomorphisms
-    to one binoidal structure. Naturality is stated one variable at a time:
-    computations on different inputs need not exchange their order.
-    Pentagon and triangle compare arrows using specified hom equality. *)
+    Combine an independently chosen associator and unitors on the same
+    tensor actions. Their triangle is the only additional compatibility
+    condition; pentagon belongs to the associator characterization. *)
 
 (** * 预幺半范畴
 
-    预幺半范畴为一个双侧张量结构增加单位对象及中心结构同构。自然性逐变量
-    表述：不同输入上的计算不必交换执行次序。五边形与三角形使用指定的
-    Hom 相等比较态射。 *)
+    在同一张量作用上组合独立选择的结合子和单位子。三角形是唯一新增相容条件；
+    五边形属于结合子的刻画。 *)
 
-Class PremonoidalCat (C : Cat)
+(** ** Compatibility of Fixed Choices
+
+    Fix the same named category and tensor for both packages. The triangle
+    compares their existing maps without choosing a new one. *)
+
+(** ** 固定选择的相容性
+
+    为两份选择固定同一具名范畴及张量；三角形比较已有映射，不作新的选择。 *)
+
+Section Compatibility.
+Context {C : Cat} `{BC : !HasBinoidal C}
+  (AC : HasAssociator C BC) (UC : HasUnitors C BC).
+Local Existing Instance AC.
+Local Existing Instance UC.
+
+Class IsPremonoidal
   :=
-  (** The only parent view supplies both actions and their shared tensor. *)
-
-  (** 唯一父视图提供两种作用及其共享张量。 *)
-
-  { PremonoidalB :> BinoidalCat C
-
-  (** A chosen unit object is part of the structure. *)
-
-  (** 单位对象是结构中的选定数据。 *)
-
-  ; PremonoidalUnit : @Ob C
-
-  (** Rebracket three objects, retaining the computational inverse. *)
-
-  (** 对三个对象重新加括号，保留可计算的逆。 *)
-
-  ; premonoidal_associator (X Y Z : @Ob C)
-    : ((X ⊗ Y) ⊗ Z) ≅ (X ⊗ (Y ⊗ Z))
-
-  (** Remove the unit on either side, with chosen inverse insertions. *)
-
-  (** 移除任一侧的单位对象，并保留反向插入的选择。 *)
-
-  ; premonoidal_left_unitor (X : @Ob C)
-    : (PremonoidalUnit ⊗ X) ≅ X
-  ; premonoidal_right_unitor (X : @Ob C)
-    : (X ⊗ PremonoidalUnit) ≅ X
-
-  (** Only forward centrality is stored; centrality of inverses follows. *)
-
-  (** 仅保存正向中心性；逆的中心性由此导出。 *)
-
-  ; premonoidal_assoc_central (X Y Z : @Ob C)
-    : is_central (premonoidal_associator X Y Z).1
-  ; premonoidal_unit_l_central (X : @Ob C)
-    : is_central (premonoidal_left_unitor X).1
-  ; premonoidal_unit_r_central (X : @Ob C)
-    : is_central (premonoidal_right_unitor X).1
-
-  (** Each unitor is natural in its sole variable. *)
-
-  (** 每个单位子在其唯一变量上自然。 *)
-
-  ; premonoidal_unit_l_natural {X Y : @Ob C} (f : Hom X Y)
-    : (premonoidal_left_unitor Y).1 ∘ (PremonoidalUnit ⊲ f) ≈
-        f ∘ (premonoidal_left_unitor X).1
-  ; premonoidal_unit_r_natural {X Y : @Ob C} (f : Hom X Y)
-    : (premonoidal_right_unitor Y).1 ∘ (f ⊳ PremonoidalUnit) ≈
-        f ∘ (premonoidal_right_unitor X).1
-
-  (** The associator is separately natural in all three positions. *)
-
-  (** 结合子在三个位置上分别自然。 *)
-
-  ; premonoidal_assoc_natural_l {X X' : @Ob C}
-      (Y Z : @Ob C) (f : Hom X X')
-    : (premonoidal_associator X' Y Z).1 ∘ ((f ⊳ Y) ⊳ Z) ≈
-        (f ⊳ (Y ⊗ Z)) ∘ (premonoidal_associator X Y Z).1
-  ; premonoidal_assoc_natural_m {Y Y' : @Ob C}
-      (X Z : @Ob C) (g : Hom Y Y')
-    : (premonoidal_associator X Y' Z).1 ∘ ((X ⊲ g) ⊳ Z) ≈
-        (X ⊲ (g ⊳ Z)) ∘ (premonoidal_associator X Y Z).1
-  ; premonoidal_assoc_natural_r {Z Z' : @Ob C}
-      (X Y : @Ob C) (h : Hom Z Z')
-    : (premonoidal_associator X Y Z').1 ∘ ((X ⊗ Y) ⊲ h) ≈
-        (X ⊲ (Y ⊲ h)) ∘ (premonoidal_associator X Y Z).1
-
-  (** Coherence uses single context actions, never an interchange axiom. *)
-
-  (** 相干性使用单侧上下文作用，不引入交换公理。 *)
-
-  ; premonoidal_pentagon (W X Y Z : @Ob C)
-    : (premonoidal_associator W X (Y ⊗ Z)).1 ∘
-        (premonoidal_associator (W ⊗ X) Y Z).1 ≈
-        (W ⊲ (premonoidal_associator X Y Z).1) ∘
-          ((premonoidal_associator W (X ⊗ Y) Z).1 ∘
-            ((premonoidal_associator W X Y).1 ⊳ Z))
-  ; premonoidal_triangle (X Y : @Ob C)
-    : (X ⊲ (premonoidal_left_unitor Y).1) ∘
-        (premonoidal_associator X PremonoidalUnit Y).1 ≈
-        (premonoidal_right_unitor X).1 ⊳ Y
+  { premonoidal_compatible_triangle (X Y : C)
+    : (X ⊲ λₚ[Y]) ∘ αₚ[X; Iₚ[UC]; Y] ≈ ρₚ[X] ⊳ Y
   }.
 
-Arguments PremonoidalB {_} _.
-Arguments PremonoidalUnit {_} _.
-Arguments premonoidal_associator {_ _} _ _ _.
-Arguments premonoidal_left_unitor {_ _} _.
-Arguments premonoidal_right_unitor {_ _} _.
+End Compatibility.
 
-(** Register that same parent for inherited instance search. *)
+Arguments premonoidal_compatible_triangle
+  {C BC AC UC IsPremonoidal} _ _.
 
-(** 为继承实例搜索注册同一个父结构。 *)
+(** The fixed-parent extension stores each package once. Their shared
+    tensor is an index, not an additional selected field. *)
 
-#[export] Existing Instance PremonoidalB.
+(** 固定父结构上的扩展各保存一份选择；共享张量作为索引，不另存一份选择。 *)
 
-Declare Scope premonoidal_scope.
-Delimit Scope premonoidal_scope with premonoidal.
-Notation "'Iₚ[' P ']'" := (PremonoidalUnit P) : premonoidal_scope.
-Notation "'αₚ[' X ';' Y ';' Z ']'" :=
-  (premonoidal_associator X Y Z).1 : premonoidal_scope.
-Notation "'λₚ[' X ']'" := (premonoidal_left_unitor X).1
-  : premonoidal_scope.
-Notation "'ρₚ[' X ']'" := (premonoidal_right_unitor X).1
-  : premonoidal_scope.
-Notation "'αₚ⁻¹[' X ';' Y ';' Z ']'" :=
-  (premonoidal_associator X Y Z).2.1 : premonoidal_scope.
-Notation "'λₚ⁻¹[' X ']'" := (premonoidal_left_unitor X).2.1
-  : premonoidal_scope.
-Notation "'ρₚ⁻¹[' X ']'" := (premonoidal_right_unitor X).2.1
-  : premonoidal_scope.
+Class HasPremonoidal (C : Cat) (BC : HasBinoidal C)
+  :=
+  { hasAssociator :> HasAssociator C BC
+  ; hasUnitors :> HasUnitors C BC
+  ; isPremonoidal :: IsPremonoidal hasAssociator hasUnitors
+  }.
+
+Arguments hasAssociator {_ _} _.
+Arguments hasUnitors {_ _} _.
+Arguments isPremonoidal {_ _ _}.
+#[export] Existing Instance hasAssociator.
+#[export] Existing Instance hasUnitors.
+
+(** A complete category owns one binoidal parent and its extension. Its
+    constructor and projections already supply the inheritance conversions. *)
+
+(** 完整范畴拥有唯一双侧张量父结构及其扩展；构造器和投影已提供继承转换。 *)
+
+Record PremonoidalCat
+  := PremonoidalCatOfBinoidalCat
+  { PremonoidalCatToBinoidalCat :> BinoidalCat
+
+  ; hasPremonoidal
+    :: HasPremonoidal PremonoidalCatToBinoidalCat
+        (hasBinoidal PremonoidalCatToBinoidalCat)
+  }.
+
+Arguments PremonoidalCatOfBinoidalCat _ _ : clear implicits.
+
+(** The selected packages satisfy their supplied triangle. *)
+
+(** 选定的两份结构满足给定三角形。 *)
+
+Lemma premonoidal_triangle {C : Cat} `{BC : !HasBinoidal C}
+    `{PC : !HasPremonoidal C BC} (X Y : C)
+  : (X ⊲ λₚ[Y]) ∘ αₚ[X; Iₚ[PC]; Y] ≈ ρₚ[X] ⊳ Y.
+Proof.
+  exact (premonoidal_compatible_triangle
+    (IsPremonoidal := isPremonoidal) X Y).
+Qed.

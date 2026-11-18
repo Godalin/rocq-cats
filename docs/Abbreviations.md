@@ -151,8 +151,8 @@ renamed bundles and adjunctions have consistent direct clients.
 | `CCCFunctorFromPreservation` | `CCCFctOfFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `CCCFunctor_IsCCCF` | `CCCFct_IsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `LaxMonoidalFunctor` | `LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
-| `IdF_LaxMonoidalFunctor` | `IdF_LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
-| `ConstF_LaxMonoidalFunctor` | `ConstF_LaxMonoidalFct` | [Cat/Monoidal/Constant.v](../theories/Cat/Monoidal/Constant.v) |
+| `IdF_LaxMonoidalFunctor` | `IdLaxMonoidalF` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
+| `ConstF_LaxMonoidalFunctor` | `ConstLaxMonoidalF` | [Cat/Monoidal/Constant.v](../theories/Cat/Monoidal/Constant.v) |
 | `VertexFunctor` | `VtxFct` | [Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
 | `VertexFunctorEq` | `VtxFctEq` | [Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
 | `VertexFunctorEq_Equivalence` | `VtxFctEq_Equivalence` | [Instance/Set/Vertex/Functor.v](../theories/Instance/Set/Vertex/Functor.v) |
@@ -1964,6 +1964,209 @@ cmp 后续通过全部十五个具体受影响模块／回归目标。十一份 
 保持一致，八项假设报告闭合。源码中没有遗留本次审阅词族的退役标识符。
 本步复用此前广泛验证、保留用户排版，作为本地审阅检查点保留。
 
+## Lax monoidal functor record / Lax 幺半函子记录
+
+This uncommitted bounded follow-up starts at `728ab7c`.
+`LaxMonoidalFct` now uses `Record` and the direct constructor
+`LaxMonoidalFctOfFct`. Its single stored functor is exposed through
+`LaxMonoidalFctToFct :> Fct`. The existing unit comparison, natural tensorator
+and left-unit, right-unit and associativity laws are retained once; no
+staging data record or additional property/choice layer is introduced.
+The identity and constant constructions use value names rather than the old
+class-style suffix. Concrete `ReaderLax`, `MonadLax` and Day/Arrow clients
+retain their data. At that checkpoint, `Applicative` and the monoidal
+category hierarchy remained for later bounded migrations; the subsequent
+Applicative record migration is documented below. Module paths and
+comparison notation are unchanged.
+Earlier target columns are updated to the final identifiers below.
+
+这个未提交的有界后续从 `728ab7c` 开始。`LaxMonoidalFct` 现使用 `Record`，
+直接构造器为 `LaxMonoidalFctOfFct`，通过 `LaxMonoidalFctToFct :> Fct`
+暴露唯一保存的函子。单位比较、自然张量子及左右单位／结合相干律各保留一份，
+不增加分阶段数据记录或性质／选择层。恒等及常值构造采用值名称，替代旧类式
+后缀；具体 `ReaderLax`、`MonadLax`、Day／Arrow 客户端保留原有数据。
+该检查点尚未迁移 `Applicative` 及幺半范畴层级；后续 Applicative 记录迁移
+见下文。模块路径与比较记号不变。
+早前表格的目标列同步为以下最终标识符。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
+| --- | --- | --- |
+| `LaxMonoidalF` | `LaxMonoidalFctToFct` | [Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v) |
+| `IdF_LaxMonoidalFct` | `IdLaxMonoidalF` | [Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v) |
+| `ConstF_LaxMonoidalFct` | `ConstLaxMonoidalF` | [Cat.Monoidal.Constant](../theories/Cat/Monoidal/Constant.v) |
+
+All twenty direct-interface and representative module/regression targets
+pass with the project switch (Rocq 9.3.0, Stdlib 9.2.0, Dune 3.23.1).
+Eleven public types are alpha-equivalent after the reviewed renames, and
+all eleven universe profiles are identical. The generated self-argument
+name changes from `LaxMonoidalFct` to `l`; no compatibility name is added.
+All core proof blocks are unchanged. Nine other Rocq files are exact
+identifier substitutions. Ten temporary assumption reports are closed,
+covering constructor parent/unit/tensorator retention, ordinary functor and
+object coercions, identity computations and both strict hom/equality orders
+with object bounds strictly larger than law bounds. `tests/Interfaces.v`
+still rejects implicit model selection; `tests/Computations.v` retains the
+noninvertible constant comparisons and transported operations. Temporary
+audits are not added as redundant permanent tests. No full-library/test,
+export, install, commit or push is included in this task checkpoint.
+
+使用项目 switch（Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1）通过全部二十个
+直接接口及代表性模块／回归目标。重命名后十一个公开类型按绑定变量换名等价，
+十一个宇宙配置完全一致。自动生成的自身参数名由 `LaxMonoidalFct` 变为 `l`，
+不添加兼容名称。核心证明未变，其余九份 Rocq 文件均为精确标识符替换。
+十项临时假设报告闭合，检查构造器父结构／单位／张量子保留、普通函子及对象
+强制转换、恒等计算，以及对象界严格高于定律界时 Hom／相等的两种严格次序。
+`tests/Interfaces.v` 继续拒绝隐式模型选择，`tests/Computations.v` 保留不可逆
+常值比较及传输运算检查。临时审计不作为冗余常驻测试加入；本任务检查点未运行
+全库／全测试、导出、安装，也未提交或推送。
+
+## Monoidal functors / 幺半函子
+
+The unqualified name `MonoidalFct` denotes a strong monoidal functor in
+[Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v).
+It extends `LaxMonoidalFct` with invertibility of its existing comparisons;
+`LaxMonoidalFct` retains its explicit qualifier. No `StrongMonoidalFct`
+alias is introduced. Tensorial strength is a different notion.
+
+在 [Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v) 中，不加限定的
+`MonoidalFct` 表示 strong monoidal functor，为 `LaxMonoidalFct` 的已有比较
+补充可逆性；`LaxMonoidalFct` 保留明确限定。不增加 `StrongMonoidalFct` 别名。
+张量强度是不同概念。
+
+| Public name / 公共名称 | Role / 作用 |
+| --- | --- |
+| `MonoidalFctOfLaxMonoidalFct` | Direct constructor / 直接构造器 |
+| `MonoidalFctToLaxMonoidalFct` | Unique parent projection / 唯一父投影 |
+| `monoidal_unit_iso`, `monoidal_tensor_iso` | Inverse witnesses for the parent's comparisons / 父结构比较的逆见证 |
+| `MonoidalUnitIso`, `MonoidalTensorIso` | Transparent isomorphism views / 透明同构视图 |
+| `MonoidalTensorInvN` | Derived natural inverse tensorator / 导出的自然逆张量子 |
+| `IdMonoidalF` | Explicitly selected monoidal identity / 显式选择的幺半恒等函子 |
+
+## Applicative record / Applicative 记录
+
+`Applicative` is a complete record extending one cartesian
+`LaxMonoidalFct`. Its direct constructor is `ApplicativeOfLaxMonoidalFct`;
+the natural pure map and both compatibility laws remain on that exact
+parent. The `ReaderA`, `MonadA`, `ArrowA`, `SetLaxA` and `OperationsA`
+clients migrate together. Module paths and operation notation stay unchanged;
+no compatibility projection or record-parent instance is added.
+
+`Applicative` 现为扩展唯一笛卡尔 `LaxMonoidalFct` 的完整记录，直接构造器为
+`ApplicativeOfLaxMonoidalFct`；自然纯值映射及两条相容律仍基于该父结构。
+`ReaderA`、`MonadA`、`ArrowA`、`SetLaxA`、`OperationsA` 同步迁移。
+模块路径与运算记号不变，不增加兼容投影或记录父结构实例。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
+| --- | --- | --- |
+| `ApplicativeLax` | `ApplicativeToLaxMonoidalFct` | [Cat.Applicative.Core](../theories/Cat/Applicative/Core.v) |
+
+The Applicative record checkpoint passes all thirty-five direct and
+representative targets with the project switch (Rocq 9.3.0, Stdlib 9.2.0,
+Dune 3.23.1). Ten public types are alpha-equivalent after the projection
+rename and generated self-binder change; their ten universe profiles are
+identical. Existing core proofs are unchanged, and the five direct
+construction clients are exact projection substitutions. Temporary audits
+check exact parent/pure retention, Reader and State reductions, operation
+reconstruction, native environment levels and both strict Hom/equality
+orders with larger object universes. All seventeen assumption reports are
+closed. The retained interface regression rejects implicit Applicative
+selection. No full-library build, export, commit or push is included.
+
+Applicative 记录检查点使用项目 switch（Rocq 9.3.0、Stdlib 9.2.0、
+Dune 3.23.1）通过全部三十五个直接及代表性目标。父投影及自动自身绑定变量
+改名后，十个公开类型按绑定变量换名等价，十个宇宙配置完全一致。
+原有核心证明未变，五处直接构造客户端均为精确投影替换。临时审计检查父结构／
+纯值按定义保留、Reader 与 State 归约、运算重建、原生环境层级，以及对象
+宇宙高于定律宇宙时 Hom／相等的两种严格次序；十七项假设报告均闭合。
+保留的接口回归拒绝隐式选定 Applicative。本检查点不含全库构建、导出、提交或推送。
+
+## Binoidal choices and complete categories / 双侧张量选择与完整范畴
+
+`BinoidalCat` now names the complete record owning one category and one
+`HasBinoidal` choice. `HasBinoidal C` retains the named-category extension.
+The reusable `IsFct` property on fixed maps groups each context action's
+respectfulness, identity and composition laws; the transparent `FctOfMaps`
+view recovers ordinary functors. Existing `Fct` fields are unchanged.
+
+`BinoidalCat` 现命名拥有唯一范畴及唯一 `HasBinoidal` 选择的完整记录，
+`HasBinoidal C` 保留具名范畴上的扩展接口。固定映射性质 `IsFct` 分组每种
+上下文作用的保相等、恒等及复合定律；透明视图 `FctOfMaps` 恢复普通函子。
+已有 `Fct` 字段保持不变。
+
+| Earlier presentation / 先前呈现 | Current presentation / 当前呈现 |
+| --- | --- |
+| `BinoidalCat C` | `HasBinoidal C`; the complete `BinoidalCat` owns `C` / 完整 `BinoidalCat` 拥有 `C` |
+| `BinoidalC` | Stored `BinoidalCatToCat` / 保存的 `BinoidalCatToCat` |
+| `PremonoidalB` | `PremonoidalCatToBinoidalCat` on the complete record / 完整记录上的父投影 |
+| Fixed-category `BifunctorBinoidal` / 固定范畴呈现 | `BifunctorHasBinoidal`; `BifunctorBinoidal` is the complete bundle / 后者为完整打包 |
+| Fixed-category `ArrowBinoidal` / 固定范畴呈现 | `ArrowHasBinoidal`; `ArrowBinoidal` is the complete bundle / 后者为完整打包 |
+
+`BinoidalCatOfCat` is the direct constructor. `hasBinoidal` selects the
+stored extension; `isBinoidalL` and `isBinoidalR` retain its two
+`IsFct` law groups. Subject-specific `binoidal_*` laws remain derived
+public mathematics, not compatibility projections. The premonoidal record now uses independent associator and unitor
+choices; the monoidal category bundle remains a subsequent bounded migration.
+
+直接构造器为 `BinoidalCatOfCat`，`hasBinoidal` 提供保存的扩展，
+`isBinoidalL`、`isBinoidalR` 保留两组 `IsFct` 定律。按主题命名的
+`binoidal_*` 定律作为导出的公共数学保留，不增加兼容投影。预幺半记录现采用独立的结合子及单位子选择；幺半范畴
+完整打包留待后续有界迁移。
+
+The same batch normalizes left/right names to `l/r` in helpers and
+`L/R` in constructions and chosen-evidence fields. Module paths stay
+unchanged; the exact coordinated map is below.
+
+本批同时将辅助名称中的左右统一为 `l/r`，构造及选定证据字段中的左右统一为
+`L/R`；模块路径不变，精确协调对照如下。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 |
+| --- | --- |
+| `BinoidalLeftF` | `BinoidalLF` |
+| `BinoidalRightF` | `BinoidalRF` |
+| `TensorLeftF` | `TensorLF` |
+| `TensorRightF` | `TensorRF` |
+| `isBinoidalLeft` | `isBinoidalL` |
+| `isBinoidalRight` | `isBinoidalR` |
+| `binoidal_left` | `binoidal_l` |
+| `binoidal_right` | `binoidal_r` |
+| `binoidal_left_eq_to_hom` | `binoidal_l_eq_to_hom` |
+| `binoidal_right_eq_to_hom` | `binoidal_r_eq_to_hom` |
+| `binoidal_left_proper` | `binoidal_l_proper` |
+| `binoidal_right_proper` | `binoidal_r_proper` |
+| `binoidal_left_id` | `binoidal_l_id` |
+| `binoidal_right_id` | `binoidal_r_id` |
+| `binoidal_left_comp` | `binoidal_l_comp` |
+| `binoidal_right_comp` | `binoidal_r_comp` |
+
+The stable binoidal/RL checkpoint passes the complete library build
+(613 theory modules) and `Interfaces`, `Computations`, `Universes` regression
+targets with Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1. This incremental
+validation took about 6 minutes 10 seconds; it is not a clean-build benchmark.
+Temporary checks cover actual category/object coercions, converging
+premonoidal/monoidal choices, explicit stored evidence beside another choice
+on the same category, setoid rewriting, concrete left/right computations,
+and opposite strict hom/equality orders with larger object universes.
+All twenty assumption reports are closed. Twenty Rocq files in the RL
+follow-up are exact identifier substitutions from their pre-rename state.
+The Core file additionally retains the final notation-line wrap; its token
+sequence matches the library-validated version and the current module was
+recompiled in a temporary output tree.
+The Day round-trip proof also fixes its supplied functors and Day choice to
+avoid expensive inference through reconstructed structures. No HTML/PDF,
+installation, full test suite, commit or push is part of this checkpoint.
+
+稳定的双侧张量／RL 检查点使用 Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1
+通过完整库构建（613 个理论模块）及 `Interfaces`、`Computations`、
+`Universes` 三个回归目标。本次增量校验约 6 分 10 秒，不作为干净构建基准。
+临时检查覆盖实际范畴／对象强制转换、预幺半／幺半选择路径的转换一致性、
+同一范畴存在另一选择时显式使用保存的证据、广集重写、左右作用具体计算，
+以及对象宇宙更高时 Hom／相等的相反严格次序。二十项假设报告均闭合。
+RL 后续中的二十份 Rocq 文件相对改名前状态均为精确标识符替换；Core 文件
+另保留最后的记号行换行。其词法序列与全库已验证版本一致，当前模块已在临时
+输出树中单独重新编译。
+Day 往返证明另行固定给定函子及 Day 选择，避免反推重建结构造成的高开销。
+本检查点不含 HTML／PDF、安装、全测试、提交或推送。
+
 ## Pending batches / 后续批次
 
 The approved Clos/ClosOp, Exp, Cart and Prof work is integrated in Batch 4 above.
@@ -2043,3 +2246,55 @@ second batch has its own validation record above.
 - 文档 69 项精确映射与实际迁移一致，源码链接及所属模块内新名称均已核对，
   `git diff --check` 通过。临时审计不作为已提交回归；未运行 HTML/PDF 导出。
 - 首批起初保留在本地；后续用户指令授权将两批完成内容一同交付。
+
+
+## Premonoidal choices and natural-isomorphism views
+
+## 预幺半选择及自然同构视图
+
+`PremonoidalCat` now names the complete record; `HasPremonoidal C BC`
+selects compatible associator and unitors on the exact supplied tensor.
+`HasAssociator` and `HasUnitors` are independent choices, with properties
+`IsAssociator` and `IsUnitors`. `IsPremonoidal` is only triangle
+compatibility. Constructors and stored parent projections supply ordinary
+inheritance conversions without forwarding wrappers.
+
+`PremonoidalCat` 现命名完整记录；`HasPremonoidal C BC` 在给定的同一张量上
+选择相容的结合子及单位子。`HasAssociator`、`HasUnitors` 是独立选择，性质
+分别为 `IsAssociator`、`IsUnitors`；`IsPremonoidal` 只刻画三角形相容性。
+构造器及保存的父投影提供普通继承转换，不增加转发包装。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 |
+| --- | --- |
+| `PremonoidalCat C` | `HasPremonoidal C BC`; complete `PremonoidalCat` owns its parent / 完整记录拥有父结构 |
+| `PremonoidalB` | `PremonoidalCatToBinoidalCat` |
+| `MonoidalP` | `MonoidalToHasPremonoidal` with `monoidal_hasBinoidal` / 以同一双侧张量选择为索引 |
+| `SymmetricPremonoidalP` | `SymmetricPremonoidalToHasPremonoidal` with `symmetric_hasBinoidal` / 以同一双侧张量选择为索引 |
+| `premonoidal_left_unitor` | `premonoidal_unitor_l` |
+| `premonoidal_right_unitor` | `premonoidal_unitor_r` |
+| `PremonoidalLeftUnitorN` | `(PremonoidalUnitorLIso UC).1` |
+| `PremonoidalContextAssociatorN` | `(PremonoidalAssocRIso X Y).1` |
+| `premonoidal_right_symmetry` | `premonoidal_r_symmetry` |
+| Fixed-category `ArrowPremonoidal` / 固定范畴呈现 | `ArrowHasPremonoidal`; `ArrowPremonoidal` is the complete bundle / 后者为完整打包 |
+
+`PremonoidalAssocRIso` stores the primary last-variable natural
+isomorphism. `PremonoidalAssocLIso` and `PremonoidalAssocMIso` derive the
+other two views with the same components and inverses, using the general
+`IsNatIso` and `NatIsoOfComponents` interface. `PremonoidalUnitorLIso` and
+`PremonoidalUnitorRIso` are stored directly. Module paths remain unchanged;
+new associator, unitor and bifunctor assembly modules keep these independent
+constructions close to their theory.
+
+`PremonoidalAssocRIso` 保存主要的最后变量自然同构，
+`PremonoidalAssocLIso`、`PremonoidalAssocMIso` 通过一般 `IsNatIso` 与
+`NatIsoOfComponents` 接口导出另两种视图，共享同一分量及逆。
+`PremonoidalUnitorLIso`、`PremonoidalUnitorRIso` 直接保存。原模块路径不变；
+新增结合子、单位子及双函子装配模块，将独立构造放在其所属理论内。
+
+## Wedge and coend constructors / 楔与 coend 构造器
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 |
+| --- | --- |
+| `Build_Wedge` | `WedgeOfLegs` |
+| `Build_Cowedge` | `CowedgeOfOpWedge` |
+| `Build_HasCoend`, `OpEndCoend` | `HasCoendOfOpEnd` with explicit opposite-end evidence / 显式传入反 end 见证 |

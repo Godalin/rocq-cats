@@ -98,7 +98,7 @@ Program Definition MonadLax
   : LaxMonoidalFct (@CartMonoidal C HT HP)
       (@CartMonoidal C HT HP)
   :=
-  {|LaxMonoidalF := M
+  {|LaxMonoidalFctToFct := M
   ; lax_unit := monad_return M (@id 1)
   ; lax_tensorN := MonadTensorN
   |}.
@@ -151,7 +151,7 @@ Local Transparent monad_pair.
 Program Definition MonadA
   : Applicative C HT HP
   :=
-  {|ApplicativeLax := MonadLax
+  {|ApplicativeToLaxMonoidalFct := MonadLax
   ; applicative_pure := η[M]
   |}.
 Next Obligation. symmetry. apply monad_return_id. Defined.

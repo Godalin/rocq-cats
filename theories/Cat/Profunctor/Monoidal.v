@@ -64,7 +64,7 @@ Program Definition ProfTensorF
 (** 逆重结合在自 profunctor 三元组上自然。 *)
 
 Program Definition ProfAssociatorFctN
-  : TensorLeftF ProfTensorF ⇒ TensorRightF ProfTensorF
+  : TensorLF ProfTensorF ⇒ TensorRF ProfTensorF
   :=
   {|nt '((R,Q),P) := @ProfunctorAssociatorInvN C C C C R Q P
       (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)
@@ -83,7 +83,7 @@ Defined.
 (** 反转同一个对象同构，以原正向重结合作为计算逆。 *)
 
 Definition ProfAssociatorFct
-  : TensorLeftF ProfTensorF ≅N TensorRightF ProfTensorF.
+  : TensorLF ProfTensorF ≅N TensorRF ProfTensorF.
 Proof.
   exists ProfAssociatorFctN. intros [[R Q] P].
   pose (i := @ProfunctorAssociator C C C C R Q P

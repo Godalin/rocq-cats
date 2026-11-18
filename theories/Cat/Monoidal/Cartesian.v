@@ -26,7 +26,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 (** 积的括号重排在三个因子上自然。 *)
 
 Program Definition CartAssociatorN
-  : TensorLeftF ProductF ⇒ TensorRightF ProductF
+  : TensorLF ProductF ⇒ TensorRF ProductF
   :=
   {|nt '((X, Y), Z) := (@product_assoc C HP X Y Z).1
   |}.

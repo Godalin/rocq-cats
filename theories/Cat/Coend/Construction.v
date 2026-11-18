@@ -119,10 +119,9 @@ Program Definition CoproductsCoequalizerCoendOf {E : @Ob D}
     (e : Hom ∐[CoendDiag F] E)
     (HE : is_coequalizer coend_coproduct_target coend_coproduct_source E e)
   : HasCoend D F
-  :=
-  {|hasOpEnd := @ProductsEqualizerEndOf (C^op) (D^op) (BifunctorOpF F)
-      coend_diagonal_product coend_sources_product E e HE
-  |}.
+  := HasCoendOfOpEnd
+      (@ProductsEqualizerEndOf (C^op) (D^op) (BifunctorOpF F)
+        coend_diagonal_product coend_sources_product E e HE).
 
 (** Two coproducts and chosen coequalizers select a coend. Its sole stored
     universal object is the end already constructed in the opposite category. *)

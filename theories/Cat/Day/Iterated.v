@@ -46,7 +46,7 @@ Section LeftSlice.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
 Context {F G H K : Fct C (SetCat@{u p _ _ _ _ _})}.
-Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLeftF T)).
+Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T)).
 
 (** Fix the third object while retaining its value as a parameter. *)
 
@@ -196,7 +196,7 @@ Section RightSlice.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
 Context {F G H K : Fct C (SetCat@{u p _ _ _ _ _})}.
-Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRightF T)).
+Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T)).
 
 (** Retain the first value as an external parameter of the remaining pair. *)
 
@@ -362,7 +362,7 @@ Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
 (** 用恒等权重插入两个值对。 *)
 
 Program Definition DayTripleLeftGenN
-  : DayTripleValuesF F G H ⇒ (DayF T (DayF T F G) H ∘F TensorLeftF T)
+  : DayTripleValuesF F G H ⇒ (DayF T (DayF T F G) H ∘F TensorLF T)
   :=
   {|nt q := _
   |}.
@@ -458,8 +458,8 @@ Defined.
 Lemma day_triple_left_nat_ext {K : Fct C (SetCat@{u p _ _ _ _ _})}
     (α γ : DayF T (DayF T F G) H ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorLeftF T q) (DayTripleLeftGenN q xyz) ≈S
-      γ (TensorLeftF T q) (DayTripleLeftGenN q xyz))
+      α (TensorLF T q) (DayTripleLeftGenN q xyz) ≈S
+      γ (TensorLF T q) (DayTripleLeftGenN q xyz))
   : α ≈N γ.
 Proof.
   intros Z. apply (@day_triple_left_hom_ext Z (K Z) (α Z) (γ Z)).
@@ -507,7 +507,7 @@ Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
 (** 将第二个值对嵌套在第一对之内，保留相同输入顺序。 *)
 
 Program Definition DayTripleRightGenN
-  : DayTripleValuesF F G H ⇒ (DayF T F (DayF T G H) ∘F TensorRightF T)
+  : DayTripleValuesF F G H ⇒ (DayF T F (DayF T G H) ∘F TensorRF T)
   :=
   {|nt q := _
   |}.
@@ -615,8 +615,8 @@ Defined.
 Lemma day_triple_right_nat_ext {K : Fct C (SetCat@{u p _ _ _ _ _})}
     (α γ : DayF T F (DayF T G H) ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorRightF T q) (DayTripleRightGenN q xyz) ≈S
-      γ (TensorRightF T q) (DayTripleRightGenN q xyz))
+      α (TensorRF T q) (DayTripleRightGenN q xyz) ≈S
+      γ (TensorRF T q) (DayTripleRightGenN q xyz))
   : α ≈N γ.
 Proof.
   intros Z. apply (@day_triple_right_hom_ext Z (K Z) (α Z) (γ Z)).
@@ -664,9 +664,9 @@ Context {F G H K : Fct C (SetCat@{u p _ _ _ _ _})}.
 
 Lemma day_triple_left_extend_gen
     `{HFG : !HasDay C T F G} `{HL : !HasDay C T (DayF T F G) H}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLeftF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T))
     (q : @Ob ((C ×C C) ×C C)) (xyz : DayTripleValuesF F G H q)
-  : DayTripleLeftExtendN T β (TensorLeftF T q)
+  : DayTripleLeftExtendN T β (TensorLF T q)
       (DayTripleLeftGenN T F G H q xyz) ≈S β q xyz.
 Proof.
   destruct q as [[a b] d], xyz as [[x y] z].
@@ -687,10 +687,10 @@ Defined.
 
 Lemma day_triple_left_extend_unique
     `{HFG : !HasDay C T F G} `{HL : !HasDay C T (DayF T F G) H}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLeftF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T))
     (α : DayF T (DayF T F G) H ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorLeftF T q) (DayTripleLeftGenN T F G H q xyz) ≈S β q xyz)
+      α (TensorLF T q) (DayTripleLeftGenN T F G H q xyz) ≈S β q xyz)
   : α ≈N DayTripleLeftExtendN T β.
 Proof.
   apply (day_triple_left_nat_ext T F G H). intros q xyz.
@@ -704,9 +704,9 @@ Defined.
 
 Lemma day_triple_right_extend_gen
     `{HGH : !HasDay C T G H} `{HR : !HasDay C T F (DayF T G H)}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRightF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T))
     (q : @Ob ((C ×C C) ×C C)) (xyz : DayTripleValuesF F G H q)
-  : DayTripleRightExtendN T β (TensorRightF T q)
+  : DayTripleRightExtendN T β (TensorRF T q)
       (DayTripleRightGenN T F G H q xyz) ≈S β q xyz.
 Proof.
   destruct q as [[a b] d], xyz as [[x y] z].
@@ -727,10 +727,10 @@ Defined.
 
 Lemma day_triple_right_extend_unique
     `{HGH : !HasDay C T G H} `{HR : !HasDay C T F (DayF T G H)}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRightF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T))
     (α : DayF T F (DayF T G H) ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorRightF T q) (DayTripleRightGenN T F G H q xyz) ≈S β q xyz)
+      α (TensorRF T q) (DayTripleRightGenN T F G H q xyz) ≈S β q xyz)
   : α ≈N DayTripleRightExtendN T β.
 Proof.
   apply (day_triple_right_nat_ext T F G H). intros q xyz.
