@@ -151,6 +151,41 @@ universal-pair criterion and lifted representation, as implemented below.
 `E ⦂ Rep↑ ContextPairF T A`，不假定 resizing 或函子记录相等。
 下述显示恢复使用这里的一般泛配对准则及提升表示。
 
+[LiftedRepresentation](../theories/DTT/Context/LiftedRepresentation.v)
+provides the chosen-extension representation with both presheaves explicitly
+raised. `ContextPairLiftN` maps lifted substitution-term pairs to lifted native
+context arrows. `context_pair_lifted_nat_iso` uses the existing pair-data
+criterion and extension universal property for its inverse laws;
+`ContextUnpairLiftN` derives inverse naturality through `InvN`. Its components
+are the lifted original unpairing maps, retaining computational witnesses.
+The carrier bound and equality-witness bound are independent common upper
+bounds; the native Hom and term sizes need not agree. This does not resize
+values downward or choose a terminal context, global pullbacks or native
+representations by import.
+
+The native representation remains a useful view when its ambient constraints
+hold. A fixed equal-level control instantiates it successfully; two fixed
+large-input configurations above both Hom levels reject it. The lifted
+construction covers both configurations, with two strict orders of its output
+carrier/equality bounds. Twelve positive configurations and two downward-bound
+failures distinguish explicit upward lifting from resizing. The next canonical
+pair-presheaf comparison can reuse this general prerequisite without invoking
+the native wrapper outside its size boundary.
+
+[LiftedRepresentation](../theories/DTT/Context/LiftedRepresentation.v) 给出两侧
+预层均显式提升的选定扩张表示。`ContextPairLiftN` 将提升的替换—项配对送到提升
+的原生上下文态射；`context_pair_lifted_nat_iso` 复用已有配对数据准则及扩张泛性质
+证明互逆律，`ContextUnpairLiftN` 通过 `InvN` 导出逆自然性。其分量为原逆配对
+映射的提升，保留计算见证。载体上界与相等见证上界相互独立，两者分别共同覆盖
+两侧原大小，无需原生 Hom 与项大小相等。这不向下重设大小，也不因导入而选择
+终上下文、全局拉回或原生表示。
+
+原生表示在其环境约束成立时仍是有用视图：固定同层正控制能够实例化它，两个
+输入高于双 Hom 层级的固定配置则拒绝该包装。提升构造覆盖这两个配置，并分别
+检查目标载体／相等上界的两种严格次序。十二项正配置与两个向下界失败区分显式
+向上提升和大小重设。后续规范配对预层比较可复用此前置，避免超出原生包装的
+适用大小边界。
+
 ## 3. 显示映射接口与截面项预层
 
 [Display](../theories/DTT/Display/Core.v) 已将以下输入实现为单个

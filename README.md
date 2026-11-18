@@ -757,6 +757,11 @@ Monad–Applicative–Arrow 工作从
   Its candidate-level universal-pair criterion also works when native hom
   and term carriers have different sizes; lifted Hom provides the corresponding
   representation without resizing.
+  [LiftedContextRepresentation](./theories/DTT/Context/LiftedRepresentation.v)
+  raises both pair and Hom presheaves to common independent carrier/equality
+  bounds; pairing is a natural isomorphism with transparent unpairing inverse.
+  将配对与 Hom 预层一同提升至相互独立的共同载体／相等上界，配对给出自然同构，
+  其逆配对分量保持透明。
   The [recovery design](./docs/CwFRecovery.md) separates this criterion from the
   additional data needed to recover types and coherent terms from comprehension.
   [ContextConversion](./theories/DTT/Context/Conversion.v) derives context-extension
