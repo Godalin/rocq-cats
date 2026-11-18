@@ -2943,3 +2943,61 @@ Definition canonical_large_action_low_eq_terms (Γ : @Ob D) (A : Ty U Γ)
   := @DisplayTerms D (FamBaseF ∘F U)
       (@ContextElements_HasDisplay D U HU) Γ A.
 End CanonicalContextActionLargeInputLevels.
+
+(** Canonical cone transport and factor comparison retain fixed original
+    type/term sizes above both hom levels. *)
+
+(** 规范锥运输与分解比较保留高于两个 Hom 层级的固定原类型／项大小。 *)
+
+Section CanonicalPullbackFactorLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < a.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint d < l.
+Constraint l < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition canonical_factor_high_eq_cone
+  := @context_elements_lift_cone C T HC.
+Definition canonical_factor_low_eq_cone
+  := @context_elements_lift_cone D U HU.
+Definition canonical_factor_high_eq_mediator
+  := @context_elements_context_factor C T HC.
+Definition canonical_factor_low_eq_mediator
+  := @context_elements_context_factor D U HU.
+End CanonicalPullbackFactorLevels.
+
+(** Original type and term bounds may independently exceed the auxiliary
+    bounds of the base-category laws in both hom orders. *)
+
+(** 两种 Hom 次序下，原类型与项的界可独立高于基底范畴定律的辅助界。 *)
+
+Section CanonicalPullbackFactorLargeInputLevels.
+Universes o h p a b c d l.
+Constraint Set < h.
+Constraint h < p.
+Constraint p < l.
+Constraint a < b.
+Constraint b < c.
+Constraint c < d.
+Constraint l < a.
+Constraint d < o.
+Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l}).
+Context (T : Fct (C^op) FamCat@{_ _ _ _ _ a c _ b d _ _ _ _ _ _})
+    (U : Fct (D^op) FamCat@{_ _ _ _ _ c a _ d b _ _ _ _ _ _}).
+Context (HC : HasContextExtension T) (HU : HasContextExtension U).
+Definition canonical_large_factor_high_eq_cone
+  := @context_elements_lift_cone C T HC.
+Definition canonical_large_factor_low_eq_cone
+  := @context_elements_lift_cone D U HU.
+Definition canonical_large_factor_high_eq_mediator
+  := @context_elements_context_factor C T HC.
+Definition canonical_large_factor_low_eq_mediator
+  := @context_elements_context_factor D U HU.
+End CanonicalPullbackFactorLargeInputLevels.

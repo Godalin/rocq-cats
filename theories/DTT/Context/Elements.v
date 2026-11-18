@@ -560,3 +560,64 @@ Proof.
 Defined.
 
 End ContextElementsActions.
+
+(** ** Canonical Pullback Factors
+
+    Keep the chosen context extensions and their canonical recovery.
+    Transport a commuting cone across the projection boundary. The existing
+    pullback-factor uniqueness then compares the two universal mediators,
+    for arbitrary supplied cone witnesses, without a terminal context. *)
+
+(** ** 规范拉回分解
+
+    固定选定上下文扩张及其规范恢复，跨投影边界运输交换锥，再由已有拉回分解
+    唯一性比较两个泛中介。锥见证可任意给定，不需要终上下文。 *)
+
+Section ContextElementsFactors.
+Context {C : Cat} (T : Fct (C^op) FamCat)
+    `{HC : !HasContextExtension T}.
+Let P := FamBaseF ∘F T.
+Let HD := @ContextElements_HasDisplay C T HC.
+Let R := @DisplayTyTmF C P HD.
+Let HR := @Display_HasContextExtension C P HD.
+
+(** A cone over the original projection gives a cone over the recovered
+    projection in the specified Type-valued hom equality. *)
+
+(** 原投影上的交换锥按指定 Type 值 Hom 相等给出恢复投影上的交换锥。 *)
+
+Definition context_elements_lift_cone {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ)
+    (A : Ty T Γ) (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A))
+    (H : σ ∘ u ≈ context_proj T A ∘ v)
+  : σ ∘ u ≈ @context_proj C R HR Γ A ∘ v.
+Proof.
+  transitivity (context_proj T A ∘ v).
+  - exact H.
+  - apply comp_r. symmetry. apply context_elements_context_proj.
+Defined.
+
+(** Recovered and original pullback factors agree for any two supplied
+    cone witnesses; no equality of these witnesses or chosen laws is used. *)
+
+(** 对任意两份给定锥见证，恢复与原拉回分解一致，不要求锥见证或选定定律相等。 *)
+
+Theorem context_elements_context_factor {Γ Δ Θ : @Ob C}
+    (σ : Hom Δ Γ) (A : Ty T Γ) (u : Hom Θ Δ)
+    (v : Hom Θ (Γ ▹[T] A))
+    (H : σ ∘ u ≈ context_proj T A ∘ v)
+    (K : σ ∘ u ≈ @context_proj C R HR Γ A ∘ v)
+  : @context_lift_factor C R HR Γ Δ Θ σ A u v K ≈
+      @context_lift_factor C T HC Γ Δ Θ σ A u v H.
+Proof.
+  apply (@context_lift_factor_η C T HC Γ Δ Θ σ A u v H).
+  - transitivity (@context_proj C R HR Δ A[σ]Ty[T] ∘
+      @context_lift_factor C R HR Γ Δ Θ σ A u v K).
+    + apply comp_r. symmetry. apply context_elements_context_proj.
+    + exact (@context_lift_factor_β1 C R HR Γ Δ Θ σ A u v K).
+  - transitivity (@context_lift C R HR Γ Δ σ A ∘
+      @context_lift_factor C R HR Γ Δ Θ σ A u v K).
+    + apply comp_r. symmetry. apply context_elements_context_lift.
+    + exact (@context_lift_factor_β2 C R HR Γ Δ Θ σ A u v K).
+Defined.
+
+End ContextElementsFactors.

@@ -734,6 +734,9 @@ Monad–Applicative–Arrow 工作从
   Derived context conversion and substitution lifts also agree with the
   original operations by the general display-to-context comparison.
   复用一般显示到上下文比较，导出的上下文转换与替换提升也与原操作相容。
+  Transporting cones across the projection boundary also compares their
+  pullback factors for arbitrary supplied cone witnesses.
+  跨投影边界运输交换锥后，任意给定锥见证的拉回分解也在指定相等下相容。
   [Context/Comparison](./theories/DTT/Context/Comparison.v) assembles these
   maps into a natural isomorphism of the original and recovered type-and-term
   functors after explicit fiber lifting, retaining the type base.

@@ -682,6 +682,27 @@ types/terms both below and above the auxiliary bound of the base laws.
 共同大小界。十二项固定回归在两种 Hom 次序中保留独立原输入与恢复项界，
 并将原类型／项大小分别置于基底律辅助界的下方与上方。
 
+
+`context_elements_lift_cone` transports an original pullback cone across the
+recovered projection equality. `context_elements_context_factor` compares the
+recovered and original universal mediators for any independently supplied
+witnesses of the two cone equations. The original cone always supplies a
+recovered one through the transport helper; requiring a supplied witness does
+not impose a new semantic condition. The proof reuses original factor
+uniqueness after aligning the recovered projection and lift by the accepted
+canonical comparisons. Computational mediators stay transparent, and no cone
+or pullback-law witnesses are identified. Eight fixed configurations keep the
+original type/term sizes independent of both Hom levels and the base-law
+auxiliary bound in both strict orders. Neither terminal objects nor globally
+chosen pullbacks are needed.
+
+`context_elements_lift_cone` 沿恢复投影相等运输原拉回交换锥；
+`context_elements_context_factor` 对两份独立给定锥见证比较恢复与原泛中介。
+运输辅助运算总能由原锥给出恢复锥，因此显式提供见证不增加语义条件。证明先用
+已验收规范比较对齐投影与提升，再复用原分解唯一性。计算中介保持透明，不识别
+锥见证或拉回定律见证。八项固定配置在两序中保留原类型／项大小与两个 Hom
+层级及基底律辅助界的独立性；不需要终对象或全局选定拉回。
+
 ## 8. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
