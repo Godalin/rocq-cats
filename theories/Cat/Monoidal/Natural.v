@@ -188,7 +188,7 @@ Defined.
 Program Definition LaxMonoidalForgetF
   : Fct LaxMonoidalFctCat (FctCat C D)
   :=
-  {|F0 := LaxMonoidalF
+  {|F0 := LaxMonoidalFctToFct
   ; F1 L K α := α.1
   |}.
 Next Obligation. intros α β E. exact E. Defined.

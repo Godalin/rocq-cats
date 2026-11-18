@@ -81,7 +81,7 @@ Definition BoolObject
   := SetMonoidObj BoolS_Monoid.
 
 Definition BoolConstantLax
-  := ConstF_LaxMonoidalFct SetCartMonoidal BoolObject.
+  := ConstLaxMonoidalF SetCartMonoidal BoolObject.
 
 Definition BoolConstantImage
   := LaxMonoidObj BoolConstantLax BoolObject.
@@ -125,6 +125,93 @@ Example transported_constant_mul_computes
 Proof. reflexivity. Qed.
 
 End LaxMonoidalComputations.
+
+(** A monoidal functor inherits lax computations, while its inverse
+    tensorator must also reduce through the derived natural transformation. *)
+
+(** 幺半函子继承 lax 计算；其逆张量子也须能穿过导出的自然变换归约。 *)
+
+Module MonoidalFctComputations.
+Local Open Scope monoidal_scope.
+
+Definition SetIdentity
+  := IdMonoidalF SetCartMonoidal.
+
+Example monoidal_identity_fmap_computes
+  : fmap SetIdentity (@Cats.Cat.Core.id SetCat BoolS) true = true.
+Proof. reflexivity. Qed.
+
+Example monoidal_identity_unit_inverse_computes
+  : (MonoidalUnitIso SetIdentity).2.1 tt = tt.
+Proof. reflexivity. Qed.
+
+Example monoidal_identity_tensor_computes
+  : (MonoidalTensorIso SetIdentity).1 (BoolS, BoolS) (true, false)
+      = (true, false).
+Proof. reflexivity. Qed.
+
+Example monoidal_identity_tensor_inverse_computes
+  : MonoidalTensorInvN SetIdentity (BoolS, BoolS) (false, true)
+      = (false, true).
+Proof. reflexivity. Qed.
+
+End MonoidalFctComputations.
+
+From Cats Require Import
+  Algebra.Magma.Core
+  Cat.Product.Core
+  Cat.Binoidal.Bifunctor.
+
+(** Grouping the context laws must preserve which tensor factor is mapped. *)
+
+(** 对上下文定律分组后，仍须保留各作用所映射的张量因子。 *)
+
+Module BinoidalComputations.
+
+Definition ProductBinoidal
+  := BifunctorBinoidal (@ProductF SetCat SetCat_HasProduct).
+
+Definition Flip
+  := mul_l_resp (M := BoolS_Magma) true.
+
+Example left_context_computes
+  : fmap (@BinoidalLF SetCat (hasBinoidal ProductBinoidal) BoolS)
+      Flip (true, false) = (true, true).
+Proof. reflexivity. Qed.
+
+Example right_context_computes
+  : fmap (@BinoidalRF SetCat (hasBinoidal ProductBinoidal) BoolS)
+      Flip (true, false) = (false, false).
+Proof. reflexivity. Qed.
+
+End BinoidalComputations.
+
+(** Shared natural-isomorphism views and the complete bundle retain the
+    original structural inverses through the new intermediate packages. *)
+
+(** 共享自然同构视图与完整打包经过新的中间选择后，仍保留原结构逆的计算。 *)
+
+Module PremonoidalComputations.
+
+Definition ProductPremonoidal
+  : PremonoidalCat
+  := PremonoidalCatOfBinoidalCat
+      (BinoidalCatOfCat SetCat (monoidal_hasBinoidal SetCartMonoidal))
+      (MonoidalToHasPremonoidal SetCartMonoidal).
+
+Example middle_associator_inverse_computes
+  : ((@PremonoidalAssocMIso SetCat _
+      (hasAssociator (hasPremonoidal ProductPremonoidal)) BoolS BoolS).2
+      BoolS).1 (true, (false, true)) = ((true, false), true).
+Proof. reflexivity. Qed.
+
+Example bundled_unitor_inverse_computes
+  : ((@PremonoidalUnitorLIso SetCat _
+      (hasUnitors (hasPremonoidal ProductPremonoidal))).2
+      BoolS).1 false = (tt, false).
+Proof. reflexivity. Qed.
+
+End PremonoidalComputations.
 
 From Cats Require Import
   Cat.CCC.Functor

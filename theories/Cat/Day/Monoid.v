@@ -320,7 +320,7 @@ Let T
   : Fct (C ×C C) C
   := tensorF MC.
 Let A
-  : TensorLeftF T ≅N TensorRightF T
+  : TensorLF T ≅N TensorRF T
   := @monoidal_associator C MC.
 Context (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 Local Existing Instance HD.
@@ -525,7 +525,7 @@ Program Definition DayOperationLax
     (H : is_day_lax F e β)
   : LaxMonoidalFct MC SM
   :=
-  {|LaxMonoidalF := F
+  {|LaxMonoidalFctToFct := F
   ; lax_unit := DayLaxUnit MC e
   ; lax_tensorN := DayLaxTensorN MC β
   |}.
@@ -742,7 +742,10 @@ Lemma day_monoid_mul_roundtrip (M : MonoidObj DM)
 Proof.
   transitivity (DayExtendN (tensorF MC)
     (DayRestrictN (tensorF MC) (monoid_object_mul M))).
-  - apply day_extend_proper. intros [X Y] [x y]. reflexivity.
+  - apply (day_extend_proper (tensorF MC)
+      (F := MonoidCarrier M) (G := MonoidCarrier M)
+      (H := MonoidCarrier M) (HD := HD _ _)).
+    intros [X Y] [x y]. reflexivity.
   - exact (day_extend_restrict (tensorF MC) (monoid_object_mul M)).
 Defined.
 

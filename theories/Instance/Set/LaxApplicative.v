@@ -179,7 +179,7 @@ Program Definition SetLaxA
   : Applicative (SetCat@{u p _ _ _ _ _})
       SetCat_HasTerminal SetCat_HasProduct
   :=
-  {|ApplicativeLax := L
+  {|ApplicativeToLaxMonoidalFct := L
   ; applicative_pure := SetLaxPureN
   ; applicative_pure_unit := set_lax_pure_unit
   ; applicative_pure_product := set_lax_pure_product

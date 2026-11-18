@@ -38,7 +38,7 @@ Proof. reflexivity. Defined.
 
 Section UnitInsertion.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}
-    (A : TensorLeftF T ≅N TensorRightF T)
+    (A : TensorLF T ≅N TensorRF T)
     (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
@@ -193,7 +193,7 @@ End InputWeights.
 Section Triangle.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}
-    (A : TensorLeftF T ≅N TensorRightF T)
+    (A : TensorLF T ≅N TensorRF T)
     (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
@@ -460,7 +460,7 @@ End FourInputs.
 
 Section BasePentagon.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLeftF T ≅N TensorRightF T).
+    (A : TensorLF T ≅N TensorRF T).
 Context (Hp : ∀ a b c d : @Ob C,
     A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d) ≈
       fmap T (X := (a,T (T (b,c),d))) (Y := (a,T (b,T (c,d))))
@@ -510,7 +510,7 @@ End BasePentagon.
 Section AssociatorWeights.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLeftF T ≅N TensorRightF T)
+    (A : TensorLF T ≅N TensorRF T)
     (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
     `{HFG : !HasDay C T F G} `{HGH : !HasDay C T G H}
     `{HL : !HasDay C T (DayF T F G) H}
@@ -562,7 +562,7 @@ End AssociatorWeights.
 Section OuterWeight.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLeftF T ≅N TensorRightF T)
+    (A : TensorLF T ≅N TensorRF T)
     (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
     `{HFG : !HasDay C T F G} `{HGH : !HasDay C T G H}
     `{HL : !HasDay C T (DayF T F G) H}
@@ -604,7 +604,7 @@ End OuterWeight.
 Section Pentagon.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLeftF T ≅N TensorRightF T).
+    (A : TensorLF T ≅N TensorRF T).
 Context (Hp : ∀ a b c d : @Ob C,
     A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d) ≈
       fmap T (X := (a,T (T (b,c),d))) (Y := (a,T (b,T (c,d))))

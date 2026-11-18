@@ -2280,7 +2280,7 @@ Definition high_eq_lax_monoid_map {A B : MonoidObj MC0}
 
 Definition mixed_constant_lax (A : MonoidObj MC0)
   : LaxMonoidalFct MC1 MC0
-  := ConstF_LaxMonoidalFct MC1 A.
+  := ConstLaxMonoidalF MC1 A.
 End LaxMonoidalLevels.
 
 (** Restriction compares bases naturally while retaining independent hom

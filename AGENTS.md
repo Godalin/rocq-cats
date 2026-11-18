@@ -71,8 +71,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   Meaningful multiple parent views are allowed: derive them from shared data
   and verify converging ancestor paths by conversion, including actual Rocq
   coercion behavior. Do not add duplicate selections to create a diamond.
+- Within one inheritance chain, use structure constructors and existing
+  parent projections directly as conversions. Do not add forwarding
+  conversion functions or additional coercions that merely reapply them.
+  Write manual conversions only across distinct inheritance paths when the
+  existing constructor/projection chain does not provide the required map.
 - If the parent view must also support instance search, register the same
-  projection with `#[export] Existing Instance MonoidalP`; `:>` alone does not
+  projection with `#[export] Existing Instance MonoidalToHasPremonoidal`; `:>` alone does not
   register an inherited instance. Record-valued parents are not classes;
   their chosen `Has*` fields supply inherited instances directly.
   Supplementary chosen structures/properties
@@ -155,8 +160,15 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `Reserved Infix` fix grammar before interpretation when declaration order
   or shared syntax warrants it; they neither bind an operation nor export
   or open a scope. Do not reserve common numerals merely for uniformity.
-  Rocq 9.3 rejects `where` clauses on `Record`/`Class`; bind these interfaces'
-  notation after the declaration, preserving explicitly selected evidence.
+  Rocq 9.3 accepts `where` immediately after a `Record`/`Class` field;
+  this interpretation is local to subsequent fields. A `where` clause after
+  the whole record/class is rejected. Bind public notation after the
+  declaration as well, preserving explicitly selected evidence.
+  Follow nearby hand-formatted notation: keep short interpretations after
+  `:=` on the same line, put a field `where`/`and` scope on the next line
+  indented two spaces further, and wrap long reserved declarations before
+  their precedence/modifier list. Apply the same layout consistently within
+  each notation family.
 - Fixed-data category extensions take a named category parameter; complete
   bundles expose their stored category through one underlying view. Declare
   chosen dependencies by name; use named `!Has*` constraints in clients. Primary

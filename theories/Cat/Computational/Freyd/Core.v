@@ -85,13 +85,13 @@ Class FreydCat (C K : Cat)
   ; freyd_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z Y) ∘
         fmap FreydF (@id Z × f) ≈
-        @binoidal_left FreydComputations hasSymmetricPremonoidal
+        @binoidal_l FreydComputations hasSymmetricPremonoidal
           X Y Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z X)
   ; freyd_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Y Z) ∘
         fmap FreydF (f × @id Z) ≈
-        @binoidal_right FreydComputations hasSymmetricPremonoidal
+        @binoidal_r FreydComputations hasSymmetricPremonoidal
           X Y Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects X Z)
 
@@ -101,7 +101,7 @@ Class FreydCat (C K : Cat)
 
   ; freyd_unit_l (X : @Ob C)
     : fmap FreydF (π2 : Hom (1 × X) X) ≈
-        (@premonoidal_left_unitor FreydComputations
+        (@premonoidal_unitor_l FreydComputations _
           hasSymmetricPremonoidal X).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects 1 X)
@@ -109,7 +109,7 @@ Class FreydCat (C K : Cat)
                 hasSymmetricPremonoidal Q X) freyd_unit_object))
   ; freyd_unit_r (X : @Ob C)
     : fmap FreydF (π1 : Hom (X × 1) X) ≈
-        (@premonoidal_right_unitor FreydComputations
+        (@premonoidal_unitor_r FreydComputations _
           hasSymmetricPremonoidal X).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects X 1)
@@ -126,7 +126,7 @@ Class FreydCat (C K : Cat)
           (f_equal (λ Q, @binoidal_tensor FreydComputations
             hasSymmetricPremonoidal X Q) (freyd_tensor_objects Y Z))) ∘
         fmap FreydF (@product_assoc C hasValueProduct X Y Z).1 ≈
-        (@premonoidal_associator FreydComputations
+        (@premonoidal_associator FreydComputations _
           hasSymmetricPremonoidal X Y Z).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects (X × Y)%ob Z)

@@ -109,7 +109,7 @@ endofunctor and a natural pure map. Its two additional laws identify the pure
 terminal component with the lax unit and identify the pure product component
 with tensorial combination of pure components. Thus the pure map is monoidal.
 No exponential structure is required by this interface. The unique coercion
-chain is `Applicative → LaxMonoidalFunctor → Functor → object function`;
+chain is `Applicative → LaxMonoidalFct → Fct → object function`;
 arrow maps retain `fmap`, and concrete choices remain explicit.
 
 `1495819` 之后的串行后续工作增加
@@ -117,8 +117,21 @@ arrow maps retain `fmap`, and concrete choices remain explicit.
 它保存一个笛卡尔 lax 幺半自函子及自然纯值映射。两条新增定律分别将纯终值分量
 与 lax 单位关联，将纯积分量与两个纯分量的张量组合关联，因此纯值映射是幺半的。
 基础接口不要求指数结构。唯一强制转换链为
-`Applicative → LaxMonoidalFunctor → Functor → object function`；
+`Applicative → LaxMonoidalFct → Fct → object function`；
 态射映射保留 `fmap`，具体选择继续显式启用。
+
+The current record migration exposes the direct
+`ApplicativeOfLaxMonoidalFct` constructor and the unique
+`ApplicativeToLaxMonoidalFct` parent projection. It keeps the selected
+lax functor, pure map and compatibility laws together. `SetLaxA` still
+recovers pure values only in the native setoid model; the general category
+interface retains its supplied natural pure map. The complete record is
+not a typeclass and importing it does not select a concrete Applicative.
+
+当前记录迁移提供直接构造器 `ApplicativeOfLaxMonoidalFct` 及唯一父投影
+`ApplicativeToLaxMonoidalFct`，将选定 lax 函子、纯值映射及相容律保存在一起。
+`SetLaxA` 仍只在原生广集模型中恢复纯值；一般范畴接口保留给定的自然纯值映射。
+完整记录不再是类型类，导入不会自动选定具体 Applicative。
 
 [Binary lifting](../theories/Cat/Monoidal/Lifting.v) is first developed for
 arbitrary lax monoidal functors and operations. Naturality, unary-map
@@ -677,11 +690,11 @@ model were inspected in both languages.
    的待办。
 
 The implemented interface is
-[LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v), bundling
-the underlying functor through `LaxMonoidalF :> Functor C D`. Clients use
+[LaxMonoidalFct MC MD](../theories/Cat/Monoidal/Functor.v), bundling
+the underlying functor through `LaxMonoidalFctToFct :> Fct C D`. Clients use
 `L X` and `fmap L f`; comparison notation is `φ₀[L]` and `φ₂[L; X; Y]`
 in `monoidal_scope`.
-[ConstF_LaxMonoidalFunctor](../theories/Cat/Monoidal/Constant.v) supplies
+[ConstLaxMonoidalF](../theories/Cat/Monoidal/Constant.v) supplies
 a general constant example from any target monoid. Chosen identity and
 constant structures are definitions that clients select explicitly.
 [LaxMonoidF](../theories/Cat/Monoidal/Transport.v) maps the existing monoid
@@ -691,15 +704,46 @@ coercion from the lax structure. The broader interface survey is recorded in
 [BundledInterfaces.md](./BundledInterfaces.md).
 
 已实现的接口为
-[LaxMonoidalFunctor MC MD](../theories/Cat/Monoidal/Functor.v)，
-用 `LaxMonoidalF :> Functor C D` 打包底层函子，客户端使用 `L X`、`fmap L f`。
+[LaxMonoidalFct MC MD](../theories/Cat/Monoidal/Functor.v)，
+用 `LaxMonoidalFctToFct :> Fct C D` 打包底层函子，客户端使用 `L X`、`fmap L f`。
 `monoidal_scope` 中的比较记号为 `φ₀[L]`、`φ₂[L; X; Y]`。
-[ConstF_LaxMonoidalFunctor](../theories/Cat/Monoidal/Constant.v) 从任意目标
+[ConstLaxMonoidalF](../theories/Cat/Monoidal/Constant.v) 从任意目标
 幺半群给出通用常值实例。恒等及常值结构均为须由客户端显式选择的定义。
 [LaxMonoidF](../theories/Cat/Monoidal/Transport.v) 用 `fmap L` 映射已有幺半群
 对象范畴，保留指定相等及 Type 值见证。诱导函子仍为派生构造，不作为 lax
 结构的第二条强制转换。全库接口调查记录在
 [BundledInterfaces.md](./BundledInterfaces.md)。
+
+The local record follow-up from `728ab7c` preserves these computational
+choices through the direct `LaxMonoidalFctOfFct` constructor. Unit and
+tensorator projections recover the exact supplied data. The identity unit
+and tensorator compute on setoids; the existing Boolean constant examples
+still demonstrate noninvertible comparisons. See the
+[current record/naming checkpoint](./Abbreviations.md#lax-monoidal-functor-record--lax-幺半函子记录).
+
+从 `728ab7c` 开始的本地记录后续通过直接构造器 `LaxMonoidalFctOfFct`
+保留这些计算选择。单位及张量子投影恢复精确的给定数据；恒等单位比较及张量子
+可在广集上计算，已有布尔常值例子仍检验不可逆比较。详见
+[当前记录／命名检查点](./Abbreviations.md#lax-monoidal-functor-record--lax-幺半函子记录)。
+
+The strong extension `MonoidalFct` keeps its exact lax parent and adds
+Type-valued inverses. `MonoidalTensorInvN` uses the general `InvN`
+construction, which derives inverse naturality. The retained identity
+regressions in `Computations.v` check inherited `fmap`, the inverse unit,
+and both forward and inverse tensorators by reduction. A separate temporary
+audit checks constructor retention, the inverse equations and naturality,
+and both strict Hom/equality orders with object universes larger than law
+universes; all twelve assumption reports are closed. All twenty affected
+and representative targets pass with Rocq 9.3.0, Stdlib 9.2.0 and Dune
+3.23.1. This bounded checkpoint does not include a full-library build.
+
+强版本 `MonoidalFct` 保留原有 lax 父结构，只增加 Type 值逆见证。
+`MonoidalTensorInvN` 使用一般的 `InvN` 构造，由其导出逆自然性。
+`Computations.v` 保留的恒等回归通过归约检查继承的 `fmap`、逆单位比较，
+以及正向和逆向张量子。另以临时审计检查构造器保留、互逆方程、自然性，
+以及对象宇宙高于定律宇宙时 Hom／相等的两种严格次序；十二项假设报告均闭合。
+使用 Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1 通过全部二十个受影响及代表性
+目标。本次有界检查点不包含全库构建。
 
 Retained regressions check that the Boolean-xor constant functor's unit
 and tensor comparisons are not invertible, that transported operations
@@ -749,6 +793,128 @@ with `e < h < p` hom/equality levels. See
 [u-kl]: https://github.com/UniMath/UniMath/blob/7a4b03cce49449f45ce0d4285615165172f50546/UniMath/CategoryTheory/Monads/Kleisli.v
 [u-mm]: https://github.com/UniMath/UniMath/blob/7a4b03cce49449f45ce0d4285615165172f50546/UniMath/CategoryTheory/Monoidal/Examples/MonadsAsMonoidsElementary.v
 [paper]: https://arxiv.org/abs/1406.4823v1
+
+## Independent associator and unitor choices
+
+## 独立的结合子及单位子选择
+
+The premonoidal migration extracts [associators](../theories/Cat/Premonoidal/Associator.v)
+and [unitors](../theories/Cat/Premonoidal/Unitor.v) on the same fixed
+`HasBinoidal` choice. A last-variable natural isomorphism fixes all
+associator components and inverses. The general `IsNatIso` property and
+`NatIsoOfComponents` view recover first- and middle-variable natural
+isomorphisms on those same components. The pentagon requires no unit;
+the unitor package requires no associator. Only triangle compatibility is
+added by `IsPremonoidal` when `HasPremonoidal` combines the packages.
+
+预幺半迁移在同一固定 `HasBinoidal` 选择上抽出
+[结合子](../theories/Cat/Premonoidal/Associator.v)及
+[单位子](../theories/Cat/Premonoidal/Unitor.v)。最后变量自然同构固定全部结合子
+分量及逆，一般 `IsNatIso` 性质与 `NatIsoOfComponents` 视图为同一组分量给出
+第一及中间变量自然同构。五边形无需单位，单位子选择无需结合子；
+`HasPremonoidal` 组合两份选择时，`IsPremonoidal` 只增加三角形相容性。
+
+`PremonoidalCat` is now a complete record with one binoidal parent.
+Its constructor and parent projections provide the inheritance conversions;
+no forwarding conversion function or extra coercion is introduced.
+[Bifunctor assembly](../theories/Cat/Premonoidal/Bifunctor.v) and
+[Arrow computations](../theories/Cat/Computational/Arrow/Premonoidal.v)
+construct the two packages independently and combine their original
+selected maps. Monoidal and symmetric clients retain their parameterized
+interfaces while selecting one tensor and its indexed extension.
+
+`PremonoidalCat` 现为拥有唯一双侧张量父结构的完整记录；其构造器及父投影已
+提供继承转换，不增加转发转换函数或额外强制转换。
+[双函子装配](../theories/Cat/Premonoidal/Bifunctor.v)及
+[Arrow 计算](../theories/Cat/Computational/Arrow/Premonoidal.v)独立构造两份选择，
+再组合原有选定映射。幺半及对称客户端暂保留参数化接口，保存一份张量及以它为
+索引的扩展。
+
+The retained interface checks reject automatic selection of unitors from
+an associator alone, or an associator from unitors alone. Concrete Boolean
+regressions compute a middle-variable inverse and a bundled unitor inverse
+by reflexivity. A temporary audit checks conversion of the three
+associator views, actual category and instance coercions, explicit choice
+isolation on one category, and strict levels `h < p < l < o` in both
+Hom/equality orders. All 23 assumption reports are closed, including the
+new builders and Freyd context unit/associativity clients. Native equality
+appears only in temporary conversion checks and concrete regression values;
+the mathematical interfaces continue to use specified Hom equality.
+
+保留的接口检查拒绝从单独结合子自动选出单位子，或从单独单位子自动选出结合子。
+具体布尔回归通过反身性计算中间变量逆及打包单位子的逆。临时审计检查三种结合子
+视图的转换一致性、实际范畴及实例强制转换、同一范畴上显式选择的隔离，以及
+`h < p < l < o` 下两种 Hom／相等大小次序。全部 23 项假设报告均闭合，覆盖
+新增装配及 Freyd 上下文单位／结合性客户端。原生相等只用于临时转换检查及
+具体回归值；数学接口仍使用指定 Hom 相等。
+
+The stable checkpoint builds all 617 library modules and
+`tests/Interfaces.vo`, `tests/Computations.vo`, `tests/Universes.vo` with
+Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1 in the `rocq-cats` switch.
+The incremental command `dune build -j2 theories tests/Interfaces.vo
+tests/Computations.vo tests/Universes.vo` takes 340.141 seconds on this
+worktree. This includes cached dependencies; it is not a clean-build
+benchmark. Sources remain unchanged during validation. No HTML/PDF export,
+install check or full test alias is included. The audit is temporary;
+interface and computation regressions remain in the repository.
+
+稳定检查点使用 `rocq-cats` switch 中的 Rocq 9.3.0、Stdlib 9.2.0 及
+Dune 3.23.1，通过全部 617 个库模块及 `tests/Interfaces.vo`、
+`tests/Computations.vo`、`tests/Universes.vo`。本 worktree 中上述
+`dune build -j2` 增量命令耗时 340.141 秒，复用了已有依赖缓存，不是干净构建
+基准；验证期间源码未改变。不包含 HTML／PDF 导出、安装检查或完整测试别名。
+审计为临时检查，接口及计算回归保留在仓库内。
+
+## Binoidal record and fixed-map laws
+
+## 双侧张量记录与固定映射定律
+
+The binoidal checkpoint separated the complete `BinoidalCat` record
+from the chosen `HasBinoidal C` extension. Left and right actions share one
+object tensor. Each has an `IsFct` witness on its fixed maps, reusing
+[Cat.Functor.Laws](../theories/Cat/Functor/Laws.v). `FctOfMaps` supplies the
+ordinary context functors transparently. Respectfulness remains required:
+identity and composition preservation do not by themselves ensure that an
+operation descends to the specified hom equality.
+
+`BifunctorHasBinoidal` and `ArrowHasBinoidal` retain the original maps and
+proofs, grouped by context side. Their complete bundles store the same
+category and evidence. At that checkpoint the parameterized premonoidal
+layer read that same choice through `PremonoidalToHasBinoidal` and its
+transparent `PremonoidalToBinoidalCat` view; the following premonoidal
+migration replaces that interim view with a stored parent projection. No interchange, symmetry, unit, associator,
+function equality or proof irrelevance is added to the binoidal interface.
+The retained Boolean computations distinguish the two actions using a
+nonidentity map; import regression checks keep model selection explicit.
+
+双侧张量检查点将完整 `BinoidalCat` 记录与选定扩展 `HasBinoidal C` 分离。
+左右作用共享唯一对象张量，各自通过 [Cat.Functor.Laws](../theories/Cat/Functor/Laws.v)
+为固定映射提供 `IsFct` 见证；`FctOfMaps` 透明地给出普通上下文函子。
+保相等性仍是必要条件：仅保持恒等和复合，并不能保证运算良定义于指定 Hom 相等。
+
+`BifunctorHasBinoidal`、`ArrowHasBinoidal` 保留原有映射及证明，按上下文两侧
+分组，完整打包保存同一范畴和证据。当时参数化预幺半层通过
+`PremonoidalToHasBinoidal` 及透明的 `PremonoidalToBinoidalCat` 视图读取同一
+选择；随后预幺半迁移用保存的父投影替代该过渡视图。双侧张量接口不增加交换律、对称、单位元、结合子、函数相等或证明无关性。
+保留的布尔计算通过非恒等映射区分两种作用，导入回归保持模型选择显式。
+
+The binoidal checkpoint built all 613 library modules and the three
+representative regression targets. Twenty temporary assumption reports are
+closed, including strict size, conversion, same-category choice isolation
+and computational-map checks. No additional global assumptions are used.
+The `day_monoid_mul_roundtrip` proof pins the tensor, participating functors
+and existing Day choice when applying `day_extend_proper`; inference through
+reconstructed bundles otherwise unfolds large structures. In a temporary
+statement-timing audit, that explicit application takes about 0.002 seconds.
+The theorem's assumptions, conclusion and computational constructions stay
+the same; no opacity is introduced.
+
+双侧张量检查点通过全部 613 个库模块及三个代表性回归目标。二十项临时假设报告
+均闭合，覆盖严格大小、转换、同一范畴上的选择隔离及可计算映射，不使用额外
+全局假设。`day_monoid_mul_roundtrip` 在应用 `day_extend_proper` 时固定张量、
+参与函子及原有 Day 选择，避免反推重建打包时展开大结构。临时逐语句计时中，
+该显式应用约耗时 0.002 秒。定理的假设、结论及可计算构造保持不变，不引入
+不透明性。
 
 ## Two-sided context and centrality prerequisite
 
@@ -3773,13 +3939,13 @@ later work in the agreed semantic endpoint.
 left-context action to a supplied profunctor over a named monoidal category.
 For each context, it stores an ordinary natural transformation into
 `ProfunctorContext`, which reuses the existing reindexing along the same
-`BinoidalLeftF` at both ends. Naturality in input and output is inherited
+`BinoidalLF` at both ends. Naturality in input and output is inherited
 from that transformation, rather than stored again as separate laws.
 The derived `pstrength` notation is confined to `profunctor_scope`.
 
 [强度接口](../theories/Cat/Profunctor/Strength.v)在具名幺半范畴上，为给定
 profunctor 添加选定左上下文作用。每个上下文存储一个到 `ProfunctorContext`
-的通常自然变换；该目标复用沿两端同一 `BinoidalLeftF` 的已有重索引。
+的通常自然变换；该目标复用沿两端同一 `BinoidalLF` 的已有重索引。
 输入及输出自然性从此变换继承，不另存一套定律。导出 `pstrength` 记号
 局限在 `profunctor_scope` 中。
 

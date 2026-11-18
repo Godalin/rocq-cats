@@ -96,7 +96,7 @@ Next Obligation. intros x y H. reflexivity. Defined.
 Program Definition ArrowGlobalLax
   : LaxMonoidalFct (@CartMonoidal C HT HP)
       (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)
-  := {|LaxMonoidalF := ArrowGlobalF
+  := {|LaxMonoidalFctToFct := ArrowGlobalF
      ; lax_unit := arrow_global_unit
      ; lax_tensorN := ArrowGlobalTensorN|}.
 Next Obligation.

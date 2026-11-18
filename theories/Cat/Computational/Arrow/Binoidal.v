@@ -26,23 +26,35 @@ Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 
 (** 计算对象就是值对象本身，故底层张量无需对象映射的相等或运输。 *)
 
-Program Definition ArrowBinoidal
-  : BinoidalCat (ComputationCat A)
+Program Definition ArrowHasBinoidal
+  : HasBinoidal (ComputationCat A)
   :=
   {|binoidal_tensor X Y := @Prod C HP X Y
-  ; binoidal_left X Y Z f := second[A; f; Z]
-  ; binoidal_right X Y Z f := first[A; f; Z]
-  ; binoidal_left_proper X Y Z := arrow_second_proper A Z
-  ; binoidal_right_proper X Y Z := arrow_first_proper A Z
+  ; binoidal_l X Y Z f := second[A; f; Z]
+  ; binoidal_r X Y Z f := first[A; f; Z]
+  ; isBinoidalL Z :=
+      {|fct_map_proper X Y := arrow_second_proper A Z
+      |}
+  ; isBinoidalR Z :=
+      {|fct_map_proper X Y := arrow_first_proper A Z
+      |}
   |}.
 Next Obligation. exact (@fct_id _ _ (ContextF A Z) X). Defined.
+Next Obligation. exact (arrow_second_comp A g f Z). Defined.
 Next Obligation.
   change (first[A; @id (A X); Z] ≈ id).
   rewrite <- (arrow_arr_id A X), arrow_first_arr,
     cross_id, fct_id. reflexivity.
 Defined.
-Next Obligation. exact (arrow_second_comp A g f Z). Defined.
 Next Obligation. exact (arrow_first_comp A g f Z). Defined.
+
+(** Bundle the computation category and the same chosen context actions. *)
+
+(** 打包计算范畴及同一份选定上下文作用。 *)
+
+Definition ArrowBinoidal
+  : BinoidalCat
+  := BinoidalCatOfCat (ComputationCat A) ArrowHasBinoidal.
 
 (** Lift the same pure-arrow action into the reindexed category. Objects
     are mapped identically and no additional computation data is stored. *)
@@ -60,7 +72,7 @@ Definition ArrowPureF
 (** 纯映射在两个张量位置都与任意计算交换，证明复用已有两种上下文自然性律。 *)
 
 Definition arrow_pure_central {X Y : @Ob C} (f : Hom X Y)
-  : @is_central (ComputationCat A) ArrowBinoidal X Y (arr[A; f]).
+  : @is_central (ComputationCat A) ArrowHasBinoidal X Y (arr[A; f]).
 Proof.
   intros Z W g. split.
   - change (first[A; arr[A; f]; W] ∘ second[A; g; X] ≈
@@ -78,7 +90,7 @@ Defined.
 
 Lemma arrow_binoidal_sequence {X Y Z W : @Ob C}
     (f : Hom (A X) (A Y)) (g : Hom (A Z) (A W))
-  : @binoidal_sequence (ComputationCat A) ArrowBinoidal X Y Z W f g
+  : @binoidal_sequence (ComputationCat A) ArrowHasBinoidal X Y Z W f g
       ≈ f ***[A] g.
 Proof. reflexivity. Qed.
 

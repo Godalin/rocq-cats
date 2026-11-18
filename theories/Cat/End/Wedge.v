@@ -15,8 +15,9 @@ From Cats Require Import
 (** 楔具有固定顶点及对角腿。对于箭头 [f : X → Y]，两条腿映射到 [F (X,Y)] 后
     相等。这种特殊的双自然性足以定义 end，不假定任意双自然变换可复合。 *)
 
-Class Wedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
-  :=
+Record Wedge {C D : Cat}
+  (F : Fct ((C^op) ×C C) D) (W : @Ob D)
+  := WedgeOfLegs
   (** The primary view is the family of arrows to diagonal values. *)
 
   (** 主视图是指向对角值的箭头族。 *)
@@ -32,6 +33,7 @@ Class Wedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
       ≈ fmap F (X := (Y, Y)) (Y := (X, Y)) (f, id) ∘ wedge_leg Y
   }.
 
+Arguments WedgeOfLegs {_ _ _ _} _ _.
 Arguments wedge_leg {_ _ _ _} _ _.
 Arguments wedge_comm {_ _ _ _} _ {_ _} _.
 

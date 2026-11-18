@@ -280,7 +280,7 @@ Program Definition OperationsLax
   : LaxMonoidalFct (@CartMonoidal C HT HP)
       (@CartMonoidal C HT HP)
   :=
-  {|LaxMonoidalF := O
+  {|LaxMonoidalFctToFct := O
   ; lax_unit := pureᵒ[O] 1
   ; lax_tensorN := OperationsTensorN
   |}.
@@ -323,7 +323,7 @@ Defined.
 Program Definition OperationsA
   : Applicative C HT HP
   :=
-  {|ApplicativeLax := OperationsLax
+  {|ApplicativeToLaxMonoidalFct := OperationsLax
   ; applicative_pure := pureᵒ[O]
   |}.
 Next Obligation. reflexivity. Defined.

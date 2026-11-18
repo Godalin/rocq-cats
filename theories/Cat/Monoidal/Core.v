@@ -23,7 +23,10 @@ Class MonoidalCat (C : Cat)
 
   (** 唯一父结构保存张量作用及结构选择。 *)
 
-  { MonoidalP :> PremonoidalCat C
+  { MonoidalToCat :> Cat := C
+  ; monoidal_hasBinoidal :> HasBinoidal C
+  ; MonoidalToHasPremonoidal
+    :> HasPremonoidal C monoidal_hasBinoidal
 
   (** The two orders agree for arbitrary arrows. The other centrality
       square follows by exchanging the roles of the two arrows. *)
@@ -35,13 +38,15 @@ Class MonoidalCat (C : Cat)
     : (f ⊳ Y') ∘ (X ⊲ g) ≈ (X' ⊲ g) ∘ (f ⊳ Y)
   }.
 
-Arguments MonoidalP {_} _.
+Arguments monoidal_hasBinoidal {_} _.
+Arguments MonoidalToHasPremonoidal {_} _.
 
 (** Register the same immediate parent for inherited instance search. *)
 
 (** 为继承实例搜索注册同一个直接父结构。 *)
 
-#[export] Existing Instance MonoidalP.
+#[export] Existing Instance monoidal_hasBinoidal.
+#[export] Existing Instance MonoidalToHasPremonoidal.
 
 (** ** Tensor Operations and Interchange
 
@@ -98,7 +103,7 @@ Definition tensor_assoc (X Y Z : @Ob C)
 
 Definition tensor_unit_l (X : @Ob C)
   : Hom (binoidal_tensor (PremonoidalUnit MC) X) X
-  := (premonoidal_left_unitor X).1.
+  := (premonoidal_unitor_l X).1.
 
 (** The right unitor uses the same inherited unit. *)
 
@@ -106,7 +111,7 @@ Definition tensor_unit_l (X : @Ob C)
 
 Definition tensor_unit_r (X : @Ob C)
   : Hom (binoidal_tensor X (PremonoidalUnit MC)) X
-  := (premonoidal_right_unitor X).1.
+  := (premonoidal_unitor_r X).1.
 
 End TensorOperations.
 
@@ -159,7 +164,7 @@ Lemma tensor_map_id (X Y : @Ob C)
   : (@id X ⊗m @id Y) ≈ @id (X ⊗ Y).
 Proof.
   unfold tensor_map, binoidal_sequence.
-  rewrite binoidal_left_id, binoidal_right_id, comp_id_l. reflexivity.
+  rewrite binoidal_l_id, binoidal_r_id, comp_id_l. reflexivity.
 Qed.
 
 (** A fixed identity on the left recovers left context action. *)
@@ -170,7 +175,7 @@ Lemma tensor_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
   : (@id Z ⊗m f) ≈ Z ⊲ f.
 Proof.
   unfold tensor_map, binoidal_sequence.
-  rewrite binoidal_right_id, comp_id_r. reflexivity.
+  rewrite binoidal_r_id, comp_id_r. reflexivity.
 Qed.
 
 (** A fixed identity on the right recovers right context action. *)
@@ -181,7 +186,7 @@ Lemma tensor_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
   : (f ⊗m @id Z) ≈ f ⊳ Z.
 Proof.
   unfold tensor_map, binoidal_sequence.
-  rewrite binoidal_left_id, comp_id_l. reflexivity.
+  rewrite binoidal_l_id, comp_id_l. reflexivity.
 Qed.
 
 (** Interchange makes ordered tensoring jointly functorial. *)
@@ -238,7 +243,7 @@ Definition tensor_assoc_iso (X Y Z : @Ob C)
 
 Definition tensor_unit_l_iso (X : @Ob C)
   : is_iso λ⊗[X]
-  := (premonoidal_left_unitor X).2.
+  := (premonoidal_unitor_l X).2.
 
 (** The original computational inverse of the right unitor. *)
 
@@ -246,7 +251,7 @@ Definition tensor_unit_l_iso (X : @Ob C)
 
 Definition tensor_unit_r_iso (X : @Ob C)
   : is_iso ρ⊗[X]
-  := (premonoidal_right_unitor X).2.
+  := (premonoidal_unitor_r X).2.
 
 (** The inherited pentagon expressed with the derived bimap. *)
 
@@ -307,7 +312,7 @@ Context {C : Cat} `{MC : !MonoidalCat C}.
 (** 将导出的联合自然性与继承结合子打包。 *)
 
 Program Definition MonoidalAssociatorN
-  : TensorLeftF (tensorF MC) ⇒ TensorRightF (tensorF MC)
+  : TensorLF (tensorF MC) ⇒ TensorRF (tensorF MC)
   :=
   {|nt p := α⊗[fst (fst p); snd (fst p); snd p]
   |}.
@@ -321,7 +326,7 @@ Defined.
 (** 自然同构保留相同的分量逆。 *)
 
 Definition monoidal_associator
-  : TensorLeftF (tensorF MC) ≅N TensorRightF (tensorF MC)
+  : TensorLF (tensorF MC) ≅N TensorRF (tensorF MC)
   := (MonoidalAssociatorN;
       λ p, tensor_assoc_iso (fst (fst p)) (snd (fst p)) (snd p)).
 

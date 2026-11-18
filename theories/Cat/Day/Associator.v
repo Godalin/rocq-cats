@@ -34,7 +34,7 @@ From Cats Require Export
 Section Associator.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
-Context (A : TensorLeftF T ≅N TensorRightF T).
+Context (A : TensorLF T ≅N TensorRF T).
 Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
     `{HFG : !HasDay C T F G} `{HGH : !HasDay C T G H}
     `{HL : !HasDay C T (DayF T F G) H}
@@ -46,7 +46,7 @@ Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
 
 Definition DayAssociatorOperationN
   : DayTripleValuesF F G H ⇒
-      (DayF T F (DayF T G H) ∘F TensorLeftF T)
+      (DayF T F (DayF T G H) ∘F TensorLF T)
   := (DayF T F (DayF T G H) ∘Nl InvN A.1 A.2)
       ∘Nv DayTripleRightGenN T F G H.
 
@@ -64,7 +64,7 @@ Definition DayAssociatorN
 
 Definition DayAssociatorInvOperationN
   : DayTripleValuesF F G H ⇒
-      (DayF T (DayF T F G) H ∘F TensorRightF T)
+      (DayF T (DayF T F G) H ∘F TensorRF T)
   := (DayF T (DayF T F G) H ∘Nl A.1) ∘Nv DayTripleLeftGenN T F G H.
 
 (** The reverse map is another transparent universal extension. *)
@@ -81,7 +81,7 @@ Definition DayAssociatorInvN
 
 Lemma day_associator_gen (q : @Ob ((C ×C C) ×C C))
     (xyz : DayTripleValuesF F G H q)
-  : DayAssociatorN (TensorLeftF T q) (DayTripleLeftGenN T F G H q xyz)
+  : DayAssociatorN (TensorLF T q) (DayTripleLeftGenN T F G H q xyz)
     ≈S fmap (DayF T F (DayF T G H)) ((A.2 q).1)
       (DayTripleRightGenN T F G H q xyz).
 Proof.
@@ -94,7 +94,7 @@ Defined.
 
 Lemma day_associator_inv_gen (q : @Ob ((C ×C C) ×C C))
     (xyz : DayTripleValuesF F G H q)
-  : DayAssociatorInvN (TensorRightF T q) (DayTripleRightGenN T F G H q xyz)
+  : DayAssociatorInvN (TensorRF T q) (DayTripleRightGenN T F G H q xyz)
     ≈S fmap (DayF T (DayF T F G) H) (A.1 q)
       (DayTripleLeftGenN T F G H q xyz).
 Proof.
@@ -109,13 +109,13 @@ Lemma day_associator_inv_l
   : (DayAssociatorInvN ∘Nv DayAssociatorN) ≈N IdN.
 Proof.
   apply (day_triple_left_nat_ext T F G H). intros q xyz.
-  transitivity (DayAssociatorInvN (TensorLeftF T q)
+  transitivity (DayAssociatorInvN (TensorLF T q)
     (fmap (DayF T F (DayF T G H)) ((A.2 q).1)
       (DayTripleRightGenN T F G H q xyz))).
-  - exact (@func_proper _ _ (DayAssociatorInvN (TensorLeftF T q))
+  - exact (@func_proper _ _ (DayAssociatorInvN (TensorLF T q))
       _ _ (day_associator_gen q xyz)).
   - transitivity (fmap (DayF T (DayF T F G) H) ((A.2 q).1)
-      (DayAssociatorInvN (TensorRightF T q)
+      (DayAssociatorInvN (TensorRF T q)
         (DayTripleRightGenN T F G H q xyz))).
     + exact (nat_naturality DayAssociatorInvN ((A.2 q).1)
         (DayTripleRightGenN T F G H q xyz)).
@@ -142,13 +142,13 @@ Lemma day_associator_inv_r
   : (DayAssociatorN ∘Nv DayAssociatorInvN) ≈N IdN.
 Proof.
   apply (day_triple_right_nat_ext T F G H). intros q xyz.
-  transitivity (DayAssociatorN (TensorRightF T q)
+  transitivity (DayAssociatorN (TensorRF T q)
     (fmap (DayF T (DayF T F G) H) (A.1 q)
       (DayTripleLeftGenN T F G H q xyz))).
-  - exact (@func_proper _ _ (DayAssociatorN (TensorRightF T q))
+  - exact (@func_proper _ _ (DayAssociatorN (TensorRF T q))
       _ _ (day_associator_inv_gen q xyz)).
   - transitivity (fmap (DayF T F (DayF T G H)) (A.1 q)
-      (DayAssociatorN (TensorLeftF T q)
+      (DayAssociatorN (TensorLF T q)
         (DayTripleLeftGenN T F G H q xyz))).
     + exact (nat_naturality DayAssociatorN (A.1 q)
         (DayTripleLeftGenN T F G H q xyz)).
@@ -214,7 +214,7 @@ End Associator.
 Section AssociatorInputs.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
-Context (A : TensorLeftF T ≅N TensorRightF T).
+Context (A : TensorLF T ≅N TensorRF T).
 Context {F G H F' G' H' : Fct C (SetCat@{u p _ _ _ _ _})}
     `{HFG : !HasDay C T F G} `{HGH : !HasDay C T G H}
     `{HL : !HasDay C T (DayF T F G) H}
@@ -304,14 +304,14 @@ Section FunctorCategoryAssociator.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
 Context (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
-Context (A : TensorLeftF T ≅N TensorRightF T).
+Context (A : TensorLF T ≅N TensorRF T).
 
 (** The family of associators is natural on the triple functor category. *)
 
 (** 结合子族在三重函子范畴上自然。 *)
 
 Program Definition DayAssociatorFctN
-  : TensorLeftF (DayTensorF T HD) ⇒ TensorRightF (DayTensorF T HD)
+  : TensorLF (DayTensorF T HD) ⇒ TensorRF (DayTensorF T HD)
   :=
   {|nt q := _
   |}.
@@ -335,7 +335,7 @@ Defined.
 (** 分量逆保留计算得到的泛延拓。 *)
 
 Definition DayAssociatorFct
-  : TensorLeftF (DayTensorF T HD) ≅N TensorRightF (DayTensorF T HD).
+  : TensorLF (DayTensorF T HD) ≅N TensorRF (DayTensorF T HD).
 Proof.
   exists DayAssociatorFctN. intros [[F G] H].
   exact (nat_iso_is_iso _ (@DayAssociator C T A F G H (HD F G) (HD G H)

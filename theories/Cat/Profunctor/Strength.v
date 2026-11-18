@@ -30,7 +30,7 @@ Local Open Scope prof_scope.
 Definition ProfContext@{u p +} {C : Cat} (MC : MonoidalCat C)
     (P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
   : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
-  := ProfReindex (@BinoidalLeftF C MC Z) (@BinoidalLeftF C MC Z) P.
+  := ProfReindex (@BinoidalLF C MC Z) (@BinoidalLF C MC Z) P.
 
 (** ** Chosen Strength on a Supplied Profunctor
 
@@ -139,7 +139,7 @@ Proof.
   transitivity (dimap[P; Z ⊲ f; Z ⊲ @id Y] ∘r pstrength[S; Z]).
   - exact (prof_strength_natural S Z f (@id Y)).
   - intros v. apply prof_dimap_proper; [reflexivity |].
-    exact (binoidal_left_id Z Y).
+    exact (binoidal_l_id Z Y).
 Defined.
 
 (** Output naturality is the other single-sided specialization, with no
@@ -156,5 +156,5 @@ Proof.
   transitivity (dimap[P; Z ⊲ @id X; Z ⊲ g] ∘r pstrength[S; Z]).
   - exact (prof_strength_natural S Z (@id X) g).
   - intros v. apply prof_dimap_proper; [| reflexivity].
-    exact (binoidal_left_id Z X).
+    exact (binoidal_l_id Z X).
 Defined.

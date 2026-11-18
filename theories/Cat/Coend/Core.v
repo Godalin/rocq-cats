@@ -40,7 +40,7 @@ Defined.
 (** 选定 coend 仅存储反范畴中的一个选定 end。 *)
 
 Class HasCoend (D : Cat) {C : Cat} (F : Fct ((C^op) ×C C) D)
-  :=
+  := HasCoendOfOpEnd
   (** Inherit exactly the chosen opposite end and its witnesses. *)
 
   (** 恰好继承选定反 end 及其见证。 *)
@@ -48,17 +48,7 @@ Class HasCoend (D : Cat) {C : Cat} (F : Fct ((C^op) ×C C) D)
   { hasOpEnd :: HasEnd (D^op) (BifunctorOpF F)
   }.
 
-(** Enable a supplied opposite end as a coend. *)
-
-(** 将给定反 end 启用为 coend。 *)
-
-Program Definition OpEndCoend {C D : Cat}
-    {F : Fct ((C^op) ×C C) D}
-    `{HE : !HasEnd (D^op) (BifunctorOpF F)}
-  : HasCoend D F
-  :=
-  {|hasOpEnd := HE
-  |}.
+Arguments HasCoendOfOpEnd {_ _ _} _.
 
 (** The selected coend object is the same selected opposite-end object. *)
 
@@ -79,9 +69,7 @@ Notation "'coend[' F ']'" := (CoendObj F) : ob_scope.
 Definition coend_cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D)
     `{HC : !HasCoend D F}
   : Cowedge F (coend[F])
-  :=
-  {|op_wedge := πend[BifunctorOpF F]
-  |}.
+  := CowedgeOfOpWedge πend[BifunctorOpF F].
 
 Arguments coend_cowedge {_ _} _ {_}.
 Notation "'ιcoend[' F ']'" := (coend_cowedge F) : hom_scope.

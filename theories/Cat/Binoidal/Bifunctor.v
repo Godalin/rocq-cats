@@ -10,7 +10,7 @@ From Cats Require Export
 
 (** 三个对象上的左括号张量函子。 *)
 
-Definition TensorLeftF {C : Cat} (T : Fct (C ×C C) C)
+Definition TensorLF {C : Cat} (T : Fct (C ×C C) C)
   : Fct ((C ×C C) ×C C) C
   := T ∘F (T ×F IdF).
 
@@ -18,7 +18,7 @@ Definition TensorLeftF {C : Cat} (T : Fct (C ×C C) C)
 
 (** 在同一个三重乘积来源上的右括号张量函子。 *)
 
-Program Definition TensorRightF {C : Cat} (T : Fct (C ×C C) C)
+Program Definition TensorRF {C : Cat} (T : Fct (C ×C C) C)
   : Fct ((C ×C C) ×C C) C
   :=
   {|F0 p := T (fst (fst p), T (snd (fst p), snd p))
@@ -68,36 +68,54 @@ Context {C : Cat} (T : Fct (C ×C C) C).
 
 (** 复用同一对象张量，每次固定一侧恒等态射。 *)
 
-Program Definition BifunctorBinoidal
-  : BinoidalCat C
+Program Definition BifunctorHasBinoidal
+  : HasBinoidal C
   :=
   {|binoidal_tensor X Y := T (X, Y)
-  ; binoidal_left X Y Z f := fmap T (X := (Z, X)) (Y := (Z, Y)) (id, f)
-  ; binoidal_right X Y Z f := fmap T (X := (X, Z)) (Y := (Y, Z)) (f, id)
+  ; binoidal_l X Y Z f := fmap T (X := (Z, X)) (Y := (Z, Y)) (id, f)
+  ; binoidal_r X Y Z f := fmap T (X := (X, Z)) (Y := (Y, Z)) (f, id)
+  ; isBinoidalL Z :=
+      {|fct_map_proper := _
+      ; fct_map_id := _
+      ; fct_map_comp := _
+      |}
+  ; isBinoidalR Z :=
+      {|fct_map_proper := _
+      ; fct_map_id := _
+      ; fct_map_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H. apply fct_fmap_proper. split; [reflexivity | exact H].
 Defined.
-Next Obligation.
-  intros f g H. apply fct_fmap_proper. split; [exact H | reflexivity].
-Defined.
-Next Obligation. apply fct_id. Defined.
 Next Obligation. apply fct_id. Defined.
 Next Obligation.
   rewrite <- fct_comp. apply fct_fmap_proper.
   split; [symmetry; apply comp_id_l | reflexivity].
 Defined.
 Next Obligation.
+  intros f g H. apply fct_fmap_proper. split; [exact H | reflexivity].
+Defined.
+Next Obligation. apply fct_id. Defined.
+Next Obligation.
   rewrite <- fct_comp. apply fct_fmap_proper.
   split; [reflexivity | symmetry; apply comp_id_l].
 Defined.
+
+(** The complete bundle retains this exact category and chosen extension. *)
+
+(** 完整打包保留同一范畴及选定扩展。 *)
+
+Definition BifunctorBinoidal
+  : BinoidalCat
+  := BinoidalCatOfCat C BifunctorHasBinoidal.
 
 (** Both execution orders agree by bifunctoriality alone. *)
 
 (** 仅由双函子性，两种执行次序相等。 *)
 
 Definition bifunctor_arrow_central {X Y : @Ob C} (f : Hom X Y)
-  : @is_central C BifunctorBinoidal X Y f.
+  : @is_central C BifunctorHasBinoidal X Y f.
 Proof.
   intros Z W g. split.
   - change (fmap T (X := (X, W)) (Y := (Y, W)) (f, id) ∘
@@ -123,7 +141,7 @@ Defined.
 
 Lemma bifunctor_sequence {X X' Y Y' : @Ob C}
     (f : Hom X X') (g : Hom Y Y')
-  : @binoidal_sequence C BifunctorBinoidal X X' Y Y' f g ≈
+  : @binoidal_sequence C BifunctorHasBinoidal X X' Y Y' f g ≈
       fmap T (X := (X, Y)) (Y := (X', Y')) (f, g).
 Proof.
   change (fmap T (X := (X', Y)) (Y := (X', Y')) (id, g) ∘

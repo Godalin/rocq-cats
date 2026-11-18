@@ -93,7 +93,7 @@ Program Definition ReaderLax@{r e u p +} (R : SetC@{r e})
       (D := SetCat@{u p _ _ _ _ _})
       SetCartMonoidal SetCartMonoidal
   :=
-  {|LaxMonoidalF := ReaderF R
+  {|LaxMonoidalFctToFct := ReaderF R
   ; lax_unit := reader_pure R UnitS
   ; lax_tensorN := ReaderTensorN R
   |}.
@@ -129,7 +129,7 @@ Program Definition ReaderA@{r e u p +} (R : SetC@{r e})
   : Applicative (SetCat@{u p _ _ _ _ _})
       SetCat_HasTerminal SetCat_HasProduct
   :=
-  {|ApplicativeLax := ReaderLax R
+  {|ApplicativeToLaxMonoidalFct := ReaderLax R
   ; applicative_pure := ReaderPureN R
   |}.
 Next Obligation. intros [] r. reflexivity. Defined.
