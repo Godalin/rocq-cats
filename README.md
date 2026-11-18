@@ -746,6 +746,10 @@ Monad–Applicative–Arrow 工作从
   substitution-term pairs in both directions, retaining their base maps and
   commuting with reindexing without a common native term-size bound.
   双向比较替换—项配对，保留基底映射并与重索引交换，不要求原生项大小共同界。
+  [Context/PairNatural](./theories/DTT/Context/PairNatural.v) assembles the
+  explicitly lifted pair-presheaf comparison and its pairing/unpairing squares
+  as equations of natural transformations.
+  显式提升配对预层比较，并以自然变换方程表达配对／逆配对表示方块。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)

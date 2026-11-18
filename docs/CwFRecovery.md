@@ -759,6 +759,38 @@ Hom levels and the base-law auxiliary bound, in both strict Hom orders.
 主函子的比较仍使用上方提升后的自然同构。十二项固定配置在两种严格 Hom 次序中，
 将原类型／项界置于两个 Hom 层级及基底律辅助界之上。
 
+[Context/PairNatural](../theories/DTT/Context/PairNatural.v) assembles the
+accepted pair maps into `ContextElementsPairN`, its natural isomorphism and
+`ContextElementsPairInvN`. For fixed Γ and A, naturality is in the varying
+source context Δ. Both pair presheaves are explicitly raised to
+independent common carrier/equality bounds. Components retain the accepted
+forward and backward maps, including their unchanged native base coordinate.
+The lifted representations above give a common Hom-presheaf endpoint, with
+natural-transformation equations
+`Pair_R ∘Nv Compare ≈N Pair_T` and
+`Compare ∘Nv Unpair_T ≈N Unpair_R`.
+The first is the accepted canonical pairing law; the second inverts its two
+representation isomorphisms by `iso_square_inv` in the functor category.
+There is no additional naturality or universal-property hypothesis, no native
+identification of law witnesses and no terminal-context requirement. Twenty
+fixed configurations retain both native Hom orders and both strict target
+carrier/equality orders; smaller targets are rejected. These are comparisons
+of pair presheaves and their representations, not of CwF records or the full
+source category. The primary functor comparison remains the earlier lifted
+family-valued natural isomorphism.
+
+[Context/PairNatural](../theories/DTT/Context/PairNatural.v) 将已有配对映射组装为
+`ContextElementsPairN`、其自然同构及 `ContextElementsPairInvN`。固定 Γ 与 A 后，
+自然性针对变化的源上下文 Δ；两侧配对预层
+显式提升至相互独立的共同载体／相等上界，分量保留已有双向映射，包括原生基底
+坐标按定义不变。上方提升表示提供共同 Hom 预层端点，以自然变换方程表达
+`Pair_R ∘Nv Compare ≈N Pair_T` 及
+`Compare ∘Nv Unpair_T ≈N Unpair_R`。前者复用已有规范配对律，后者在函子
+范畴中由 `iso_square_inv` 将两个表示同构取逆，不增加自然性或泛性质假设，
+不按原生相等识别律见证，也不要求终上下文。二十项固定配置保留两种原生 Hom
+次序及两种严格目标载体／相等次序，并拒绝过小目标。结论只比较配对预层及其
+表示，不识别 CwF 记录或整个源范畴；主函子比较仍是前述提升的族值自然同构。
+
 ## 8. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
