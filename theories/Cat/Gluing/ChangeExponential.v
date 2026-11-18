@@ -64,7 +64,7 @@ Context (target : ∀ U V : D,
 Definition gluing_change_exp_left (X Y : Gluing F)
   : Hom (K ((comma_left_ob Y ^ comma_left_ob X)%ob))
       (K (comma_left_ob Y) ^ K (comma_left_ob X))
-  := preserved_exponential_comparison K target
+  := exp_cmp K target
       (comma_left_ob X) (comma_left_ob Y).
 
 (** The common target also changes the result through the boundary. *)
@@ -74,8 +74,8 @@ Definition gluing_change_exp_left (X Y : Gluing F)
 Definition gluing_change_exp_tip (X Y : Gluing F)
   : Hom (K ((F (comma_right_ob Y) ^ comma_left_ob X)%ob))
       (F' (H (comma_right_ob Y)) ^ K (comma_left_ob X))
-  := exponential_map (α (comma_right_ob Y)) ∘
-      preserved_exponential_comparison K target
+  := exp_map (α (comma_right_ob Y)) ∘
+      exp_cmp K target
         (comma_left_ob X) (F (comma_right_ob Y)).
 
 (** The right comparison changes the represented base exponential.
@@ -87,7 +87,7 @@ Definition gluing_change_exp_tip (X Y : Gluing F)
 Definition gluing_change_exp_right (X Y : Gluing F)
   : Hom (K (F ((comma_right_ob Y ^ comma_right_ob X)%ob)))
       (F' ((H (comma_right_ob Y) ^ H (comma_right_ob X))%ob))
-  := fmap F' (preserved_exponential_comparison H base
+  := fmap F' (exp_cmp H base
       (comma_right_ob X) (comma_right_ob Y)) ∘
       α ((comma_right_ob Y ^ comma_right_ob X)%ob).
 
@@ -99,26 +99,26 @@ Definition gluing_change_exp_right (X Y : Gluing F)
 
 Lemma gluing_change_exp_boundary (A B : C)
   : (α B ^ (@id (K (F A)))) ∘
-      preserved_exponential_comparison K target (F A) (F B) ∘
-      fmap K (preserved_exponential_comparison F source A B) ≈
+      exp_cmp K target (F A) (F B) ∘
+      fmap K (exp_cmp F source A B) ≈
       ((@id (F' (H B))) ^ α A) ∘
-      preserved_exponential_comparison F' interpretation (H A) (H B) ∘
-      fmap F' (preserved_exponential_comparison H base A B) ∘
+      exp_cmp F' interpretation (H A) (H B) ∘
+      fmap F' (exp_cmp H base A B) ∘
       α ((B ^ A)%ob).
 Proof.
   transitivity ((α B ^ (@id (K (F A)))) ∘
-    preserved_exponential_comparison (K ∘F F)
+    exp_cmp (K ∘F F)
       (preserved_product_comp F K source target) A B).
   - rewrite comp_assoc. apply comp_l. symmetry.
-    apply preserved_exponential_comparison_comp.
+    apply exp_cmp_comp.
   - transitivity (((@id (F' (H B))) ^ α A) ∘
-      preserved_exponential_comparison (F' ∘F H)
+      exp_cmp (F' ∘F H)
         (preserved_product_comp H F' base interpretation) A B ∘
       α ((B ^ A)%ob)).
-    + exact (preserved_exponential_boundary (K ∘F F) (F' ∘F H)
+    + exact (exp_cmp_boundary (K ∘F F) (F' ∘F H)
         (preserved_product_comp F K source target)
         (preserved_product_comp H F' base interpretation) α A B).
-    + rewrite (preserved_exponential_comparison_comp H F'
+    + rewrite (exp_cmp_comp H F'
         base interpretation
         (preserved_product_comp H F' base interpretation) A B).
       rewrite !comp_assoc. reflexivity.
@@ -131,17 +131,17 @@ Defined.
 
 Lemma gluing_change_exp_result (X Y : Gluing F)
   : gluing_change_exp_tip X Y ∘
-      fmap K (gluing_exponential_result F X Y) ≈
-      gluing_exponential_result F'
+      fmap K (gluing_exp_result F X Y) ≈
+      gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y) ∘
       gluing_change_exp_left X Y.
 Proof.
-  pose proof (preserved_exponential_natural K target
+  pose proof (exp_cmp_natural K target
     (@id (comma_left_ob X)) (comma_arrow Y)) as N.
-  rewrite (@functor_id D D' K), !exponential_dimap_id_r in N.
+  rewrite (@fct_id D D' K), !exp_dimap_id_r in N.
   unfold gluing_change_exp_tip, gluing_change_exp_left,
-    gluing_exponential_result.
-  rewrite comp_assoc, N, <- comp_assoc, <- exponential_map_comp,
+    gluing_exp_result.
+  rewrite comp_assoc, N, <- comp_assoc, <- exp_map_comp,
     (gluing_change_arrow H K α Y). reflexivity.
 Defined.
 
@@ -151,35 +151,35 @@ Defined.
 
 Lemma gluing_change_exp_base (X Y : Gluing F)
   : gluing_change_exp_tip X Y ∘
-      fmap K (gluing_exponential_base F source X Y) ≈
-      gluing_exponential_base F' interpretation
+      fmap K (gluing_exp_base F source X Y) ≈
+      gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y) ∘
       gluing_change_exp_right X Y.
 Proof.
-  pose proof (preserved_exponential_natural K target
+  pose proof (exp_cmp_natural K target
     (comma_arrow X) (@id (F (comma_right_ob Y)))) as N.
-  rewrite (@functor_id D D' K) in N.
+  rewrite (@fct_id D D' K) in N.
   unfold gluing_change_exp_tip, gluing_change_exp_right,
-    gluing_exponential_base.
-  rewrite (@functor_comp D D' K).
+    gluing_exp_base.
+  rewrite (@fct_comp D D' K).
   rewrite !comp_assoc.
   rewrite <- (comp_assoc
-    (preserved_exponential_comparison K target
+    (exp_cmp K target
       (comma_left_ob X) (F (comma_right_ob Y)))).
   rewrite N.
   rewrite <- !comp_assoc.
-  assert (E : exponential_map (α (comma_right_ob Y)) ∘
+  assert (E : exp_map (α (comma_right_ob Y)) ∘
       ((@id (K (F (comma_right_ob Y)))) ^ fmap K (comma_arrow X)) ≈
       ((@id (F' (H (comma_right_ob Y)))) ^ fmap K (comma_arrow X)) ∘
       (α (comma_right_ob Y) ^ (@id (K (F (comma_right_ob X)))))).
-  { rewrite <- exponential_dimap_id_r, <- !exponential_dimap_comp.
+  { rewrite <- exp_dimap_id_r, <- !exp_dimap_comp.
     rewrite !comp_id_l, !comp_id_r. reflexivity. }
   rewrite E.
   rewrite !comp_assoc.
   rewrite <- (comp_assoc (α (comma_right_ob Y) ^
     (@id (K (F (comma_right_ob X)))))).
   rewrite gluing_change_exp_boundary.
-  rewrite <- !comp_assoc, <- exponential_dimap_comp,
+  rewrite <- !comp_assoc, <- exp_dimap_comp,
     comp_id_l, (gluing_change_arrow H K α X).
   reflexivity.
 Defined.
@@ -196,26 +196,26 @@ Defined.
     三个映射，并复用一般的路径自然性构造。 *)
 
 Definition GluingExpChangeN (X Y : Gluing F)
-  : (K ∘F ⟨gluing_exponential_result F X Y →←
-        gluing_exponential_base F source X Y⟩D) ⇒
-      ⟨gluing_exponential_result F'
+  : (K ∘F ⟨gluing_exp_result F X Y →←
+        gluing_exp_base F source X Y⟩D) ⇒
+      ⟨gluing_exp_result F'
           (GluingChangeF H K α X) (GluingChangeF H K α Y) →←
-        gluing_exponential_base F' interpretation
+        gluing_exp_base F' interpretation
           (GluingChangeF H K α X) (GluingChangeF H K α Y)⟩D.
 Proof.
   refine (@FreeN CospanGraph D'
-    (K ∘F CospanDiagram (gluing_exponential_result F X Y)
-      (gluing_exponential_base F source X Y))
-    (CospanDiagram (gluing_exponential_result F'
+    (K ∘F CospanDiagram (gluing_exp_result F X Y)
+      (gluing_exp_base F source X Y))
+    (CospanDiagram (gluing_exp_result F'
       (GluingChangeF H K α X) (GluingChangeF H K α Y))
-      (gluing_exponential_base F' interpretation
+      (gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y)))
     (λ v, match v as w return Hom
-      (K (CospanDiagram (gluing_exponential_result F X Y)
-        (gluing_exponential_base F source X Y) w))
-      (CospanDiagram (gluing_exponential_result F'
+      (K (CospanDiagram (gluing_exp_result F X Y)
+        (gluing_exp_base F source X Y) w))
+      (CospanDiagram (gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
-        (gluing_exponential_base F' interpretation
+        (gluing_exp_base F' interpretation
           (GluingChangeF H K α X) (GluingChangeF H K α Y)) w) with
     | cospan_left => gluing_change_exp_left X Y
     | cospan_right => gluing_change_exp_right X Y
@@ -247,10 +247,10 @@ Defined.
 
 Definition gluing_change_exp_tip_iso (X Y : Gluing F)
     (boundary : is_iso (α (comma_right_ob Y)))
-    (comparison : is_iso (preserved_exponential_comparison K target
+    (comparison : is_iso (exp_cmp K target
       (comma_left_ob X) (F (comma_right_ob Y))))
   : is_iso (gluing_change_exp_tip X Y)
-  := is_iso_comp comparison (functor_is_iso (-^ K (comma_left_ob X))
+  := is_iso_comp comparison (fct_is_iso (-^ K (comma_left_ob X))
       (α (comma_right_ob Y)) boundary).
 
 (** On the right, use only the base comparison and the boundary at the
@@ -260,11 +260,11 @@ Definition gluing_change_exp_tip_iso (X Y : Gluing F)
 
 Definition gluing_change_exp_right_iso (X Y : Gluing F)
     (boundary : is_iso (α ((comma_right_ob Y ^ comma_right_ob X)%ob)))
-    (comparison : is_iso (preserved_exponential_comparison H base
+    (comparison : is_iso (exp_cmp H base
       (comma_right_ob X) (comma_right_ob Y)))
   : is_iso (gluing_change_exp_right X Y)
-  := is_iso_comp boundary (functor_is_iso F'
-      (preserved_exponential_comparison H base
+  := is_iso_comp boundary (fct_is_iso F'
+      (exp_cmp H base
         (comma_right_ob X) (comma_right_ob Y)) comparison).
 
 (** ** Transport of a Supplied Image Pullback
@@ -293,22 +293,22 @@ Context (X Y : Gluing F) (E : D)
 
 Definition gluing_change_exp_pullback
     (image : is_pullback
-      (fmap K (gluing_exponential_result F X Y))
-      (fmap K (gluing_exponential_base F source X Y))
+      (fmap K (gluing_exp_result F X Y))
+      (fmap K (gluing_exp_base F source X Y))
       (K E) (fmap K p) (fmap K q))
     (left : is_iso (gluing_change_exp_left X Y))
     (right : is_iso (gluing_change_exp_right X Y))
     (tip : is_iso (gluing_change_exp_tip X Y))
-  : is_pullback (gluing_exponential_result F'
+  : is_pullback (gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
-      (gluing_exponential_base F' interpretation
+      (gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
       (K E) (gluing_change_exp_left X Y ∘ fmap K p)
       (gluing_change_exp_right X Y ∘ fmap K q).
 Proof.
   pose (κ := @CospanConeOver D'
-    (K ∘F CospanDiagram (gluing_exponential_result F X Y)
-      (gluing_exponential_base F source X Y))
+    (K ∘F CospanDiagram (gluing_exp_result F X Y)
+      (gluing_exp_base F source X Y))
     (K E) (fmap K p) (fmap K q) (fst image)).
   exact (limit_pullback (GluingExpChangeN X Y ∘Nv κ)
     (limit_transport (GluingExpChangeN X Y)
@@ -327,13 +327,13 @@ Defined.
 
 Definition gluing_change_exp_universal
     (image : is_pullback
-      (fmap K (gluing_exponential_result F X Y))
-      (fmap K (gluing_exponential_base F source X Y))
+      (fmap K (gluing_exp_result F X Y))
+      (fmap K (gluing_exp_base F source X Y))
       (K E) (fmap K p) (fmap K q))
     (left : is_iso (gluing_change_exp_left X Y))
     (right : is_iso (gluing_change_exp_right X Y))
     (tip : is_iso (gluing_change_exp_tip X Y))
-  : @is_exponential (Gluing F') (Gluing_HasProduct F' interpretation)
+  : @is_exp (Gluing F') (Gluing_HasProduct F' interpretation)
       (GluingChangeF H K α X) (GluingChangeF H K α Y)
       (GluingExp F' (GluingChangeF H K α X) (GluingChangeF H K α Y)
         (K E) (gluing_change_exp_right X Y ∘ fmap K q))
@@ -342,7 +342,7 @@ Definition gluing_change_exp_universal
         (K E) (gluing_change_exp_left X Y ∘ fmap K p)
         (gluing_change_exp_right X Y ∘ fmap K q)
         (gluing_change_exp_pullback image left right tip))
-  := gluing_exponential_universal F' interpretation
+  := gluing_exp_universal F' interpretation
       (GluingChangeF H K α X) (GluingChangeF H K α Y)
       (K E) (gluing_change_exp_left X Y ∘ fmap K p)
       (gluing_change_exp_right X Y ∘ fmap K q)

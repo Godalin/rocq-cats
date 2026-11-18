@@ -100,11 +100,11 @@ Definition independent_exp_right
 
 Definition independent_exp_boundary (A B : C)
   : (α B ^ (@id (K (F A)))) ∘
-      preserved_exponential_comparison K target (F A) (F B) ∘
-      fmap K (preserved_exponential_comparison F source A B) ≈
+      exp_cmp K target (F A) (F B) ∘
+      fmap K (exp_cmp F source A B) ≈
       ((@id (F' (H B))) ^ α A) ∘
-      preserved_exponential_comparison F' interpretation (H A) (H B) ∘
-      fmap F' (preserved_exponential_comparison H base A B) ∘
+      exp_cmp F' interpretation (H A) (H B) ∘
+      fmap F' (exp_cmp H base A B) ∘
       α ((B ^ A)%ob)
   := gluing_change_exp_boundary H K α source interpretation base target A B.
 
@@ -114,8 +114,8 @@ Definition independent_exp_boundary (A B : C)
 
 Definition independent_exp_result
   : gluing_change_exp_tip H K α target X Y ∘
-      fmap K (gluing_exponential_result F X Y) ≈
-      gluing_exponential_result F'
+      fmap K (gluing_exp_result F X Y) ≈
+      gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y) ∘
       gluing_change_exp_left K target X Y
   := gluing_change_exp_result H K α target X Y.
@@ -126,8 +126,8 @@ Definition independent_exp_result
 
 Definition independent_exp_base
   : gluing_change_exp_tip H K α target X Y ∘
-      fmap K (gluing_exponential_base F source X Y) ≈
-      gluing_exponential_base F' interpretation
+      fmap K (gluing_exp_base F source X Y) ≈
+      gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y) ∘
       gluing_change_exp_right H K α base X Y
   := gluing_change_exp_base H K α source interpretation base target X Y.
@@ -137,11 +137,11 @@ Definition independent_exp_base
 (** 自然性沿既有余跨度路径延拓。 *)
 
 Definition independent_exp_cospan
-  : (K ∘F ⟨gluing_exponential_result F X Y →←
-        gluing_exponential_base F source X Y⟩D) ⇒
-      ⟨gluing_exponential_result F'
+  : (K ∘F ⟨gluing_exp_result F X Y →←
+        gluing_exp_base F source X Y⟩D) ⇒
+      ⟨gluing_exp_result F'
           (GluingChangeF H K α X) (GluingChangeF H K α Y) →←
-        gluing_exponential_base F' interpretation
+        gluing_exp_base F' interpretation
           (GluingChangeF H K α X) (GluingChangeF H K α Y)⟩D
   := GluingExpChangeN H K α source interpretation base target X Y.
 
@@ -149,9 +149,9 @@ Context (left : is_iso (gluing_change_exp_left K target X Y)).
 Context (boundaryY : is_iso (α (comma_right_ob Y))).
 Context (boundaryExp : is_iso
     (α ((comma_right_ob Y ^ comma_right_ob X)%ob))).
-Context (baseExp : is_iso (preserved_exponential_comparison H base
+Context (baseExp : is_iso (exp_cmp H base
     (comma_right_ob X) (comma_right_ob Y))).
-Context (targetExp : is_iso (preserved_exponential_comparison K target
+Context (targetExp : is_iso (exp_cmp K target
     (comma_left_ob X) (F (comma_right_ob Y)))).
 
 (** The right inverse retains the mapped base inverse. *)
@@ -183,8 +183,8 @@ Context (E : D)
     (p : Hom E (comma_left_ob Y ^ comma_left_ob X))
     (q : Hom E (F ((comma_right_ob Y ^ comma_right_ob X)%ob))).
 Context (image : is_pullback
-    (fmap K (gluing_exponential_result F X Y))
-    (fmap K (gluing_exponential_base F source X Y))
+    (fmap K (gluing_exp_result F X Y))
+    (fmap K (gluing_exp_base F source X Y))
     (K E) (fmap K p) (fmap K q)).
 
 (** Only this image cone must be a pullback; no global selection occurs. *)
@@ -192,9 +192,9 @@ Context (image : is_pullback
 (** 只有此像锥须为拉回，不作全局选择。 *)
 
 Definition independent_exp_pullback
-  : is_pullback (gluing_exponential_result F'
+  : is_pullback (gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
-      (gluing_exponential_base F' interpretation
+      (gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
       (K E) (gluing_change_exp_left K target X Y ∘ fmap K p)
       (gluing_change_exp_right H K α base X Y ∘ fmap K q)
@@ -212,7 +212,7 @@ Definition independent_exp_candidate
         (GluingExp F' (GluingChangeF H K α X) (GluingChangeF H K α Y)
           (K E) (gluing_change_exp_right H K α base X Y ∘ fmap K q))
         (GluingChangeF H K α X)) (GluingChangeF H K α Y),
-      @is_exponential (Gluing F') (Gluing_HasProduct F' interpretation)
+      @is_exp (Gluing F') (Gluing_HasProduct F' interpretation)
         (GluingChangeF H K α X) (GluingChangeF H K α Y)
         (GluingExp F' (GluingChangeF H K α X) (GluingChangeF H K α Y)
           (K E) (gluing_change_exp_right H K α base X Y ∘ fmap K q)) ev
@@ -291,11 +291,11 @@ Definition reversed_exp_right
 
 Definition reversed_exp_boundary (A B : C)
   : (α B ^ (@id (K (F A)))) ∘
-      preserved_exponential_comparison K target (F A) (F B) ∘
-      fmap K (preserved_exponential_comparison F source A B) ≈
+      exp_cmp K target (F A) (F B) ∘
+      fmap K (exp_cmp F source A B) ≈
       ((@id (F' (H B))) ^ α A) ∘
-      preserved_exponential_comparison F' interpretation (H A) (H B) ∘
-      fmap F' (preserved_exponential_comparison H base A B) ∘
+      exp_cmp F' interpretation (H A) (H B) ∘
+      fmap F' (exp_cmp H base A B) ∘
       α ((B ^ A)%ob)
   := gluing_change_exp_boundary H K α source interpretation base target A B.
 
@@ -305,8 +305,8 @@ Definition reversed_exp_boundary (A B : C)
 
 Definition reversed_exp_result
   : gluing_change_exp_tip H K α target X Y ∘
-      fmap K (gluing_exponential_result F X Y) ≈
-      gluing_exponential_result F'
+      fmap K (gluing_exp_result F X Y) ≈
+      gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y) ∘
       gluing_change_exp_left K target X Y
   := gluing_change_exp_result H K α target X Y.
@@ -317,8 +317,8 @@ Definition reversed_exp_result
 
 Definition reversed_exp_base
   : gluing_change_exp_tip H K α target X Y ∘
-      fmap K (gluing_exponential_base F source X Y) ≈
-      gluing_exponential_base F' interpretation
+      fmap K (gluing_exp_base F source X Y) ≈
+      gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y) ∘
       gluing_change_exp_right H K α base X Y
   := gluing_change_exp_base H K α source interpretation base target X Y.
@@ -328,11 +328,11 @@ Definition reversed_exp_base
 (** 自然性沿既有余跨度路径延拓。 *)
 
 Definition reversed_exp_cospan
-  : (K ∘F ⟨gluing_exponential_result F X Y →←
-        gluing_exponential_base F source X Y⟩D) ⇒
-      ⟨gluing_exponential_result F'
+  : (K ∘F ⟨gluing_exp_result F X Y →←
+        gluing_exp_base F source X Y⟩D) ⇒
+      ⟨gluing_exp_result F'
           (GluingChangeF H K α X) (GluingChangeF H K α Y) →←
-        gluing_exponential_base F' interpretation
+        gluing_exp_base F' interpretation
           (GluingChangeF H K α X) (GluingChangeF H K α Y)⟩D
   := GluingExpChangeN H K α source interpretation base target X Y.
 
@@ -340,9 +340,9 @@ Context (left : is_iso (gluing_change_exp_left K target X Y)).
 Context (boundaryY : is_iso (α (comma_right_ob Y))).
 Context (boundaryExp : is_iso
     (α ((comma_right_ob Y ^ comma_right_ob X)%ob))).
-Context (baseExp : is_iso (preserved_exponential_comparison H base
+Context (baseExp : is_iso (exp_cmp H base
     (comma_right_ob X) (comma_right_ob Y))).
-Context (targetExp : is_iso (preserved_exponential_comparison K target
+Context (targetExp : is_iso (exp_cmp K target
     (comma_left_ob X) (F (comma_right_ob Y)))).
 
 (** The right inverse retains the mapped base inverse. *)
@@ -374,8 +374,8 @@ Context (E : D)
     (p : Hom E (comma_left_ob Y ^ comma_left_ob X))
     (q : Hom E (F ((comma_right_ob Y ^ comma_right_ob X)%ob))).
 Context (image : is_pullback
-    (fmap K (gluing_exponential_result F X Y))
-    (fmap K (gluing_exponential_base F source X Y))
+    (fmap K (gluing_exp_result F X Y))
+    (fmap K (gluing_exp_base F source X Y))
     (K E) (fmap K p) (fmap K q)).
 
 (** Only this image cone must be a pullback; no global selection occurs. *)
@@ -383,9 +383,9 @@ Context (image : is_pullback
 (** 只有此像锥须为拉回，不作全局选择。 *)
 
 Definition reversed_exp_pullback
-  : is_pullback (gluing_exponential_result F'
+  : is_pullback (gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
-      (gluing_exponential_base F' interpretation
+      (gluing_exp_base F' interpretation
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
       (K E) (gluing_change_exp_left K target X Y ∘ fmap K p)
       (gluing_change_exp_right H K α base X Y ∘ fmap K q)
@@ -403,7 +403,7 @@ Definition reversed_exp_candidate
         (GluingExp F' (GluingChangeF H K α X) (GluingChangeF H K α Y)
           (K E) (gluing_change_exp_right H K α base X Y ∘ fmap K q))
         (GluingChangeF H K α X)) (GluingChangeF H K α Y),
-      @is_exponential (Gluing F') (Gluing_HasProduct F' interpretation)
+      @is_exp (Gluing F') (Gluing_HasProduct F' interpretation)
         (GluingChangeF H K α X) (GluingChangeF H K α Y)
         (GluingExp F' (GluingChangeF H K α X) (GluingChangeF H K α Y)
           (K E) (gluing_change_exp_right H K α base X Y ∘ fmap K q)) ev
@@ -462,7 +462,7 @@ Definition exp_change_reader_products (A B : SetC)
   : is_product (ExpChangeReaderF A) (ExpChangeReaderF B)
       (ExpChangeReaderF ((A × B)%ob))
       (fmap ExpChangeReaderF π1) (fmap ExpChangeReaderF π2)
-  := exponential_preserves_product BoolS product_universal.
+  := exp_preserves_product BoolS product_universal.
 
 (** Reverse the environment without changing the value setoid. Its
     respectful action retains the input Type-valued witness at that index. *)
@@ -501,7 +501,7 @@ Defined.
 (** 对这些具体选择，恒等比较具有透明的恒等逆映射；不注册一般模型实例。 *)
 
 Definition exp_change_identity_comparison (A B : SetC)
-  : is_iso (preserved_exponential_comparison (@IdF SetCat)
+  : is_iso (exp_cmp (@IdF SetCat)
       (λ A B, product_universal) A B).
 Proof. exists id. split; intros f a; reflexivity. Defined.
 
@@ -537,8 +537,8 @@ Program Definition ExpChangeProbe
 
 Definition ExpChangeSourcePb
   : SetC
-  := Pb (gluing_exponential_result ExpChangeReaderF ExpChangeProbe ExpChangeProbe)
-      (gluing_exponential_base ExpChangeReaderF exp_change_reader_products
+  := Pb (gluing_exp_result ExpChangeReaderF ExpChangeProbe ExpChangeProbe)
+      (gluing_exp_base ExpChangeReaderF exp_change_reader_products
         ExpChangeProbe ExpChangeProbe).
 
 (** The first leg keeps the original function. *)
@@ -564,10 +564,10 @@ Definition exp_change_source_q
 Definition exp_change_image_pullback
   : is_pullback
       (fmap (@IdF SetCat)
-        (gluing_exponential_result ExpChangeReaderF
+        (gluing_exp_result ExpChangeReaderF
           ExpChangeProbe ExpChangeProbe))
       (fmap (@IdF SetCat)
-        (gluing_exponential_base ExpChangeReaderF exp_change_reader_products
+        (gluing_exp_base ExpChangeReaderF exp_change_reader_products
           ExpChangeProbe ExpChangeProbe))
       ExpChangeSourcePb exp_change_source_p exp_change_source_q
   := pullback_universal.
@@ -603,10 +603,10 @@ Definition exp_change_tip_inverse
 
 Definition exp_change_transported_pullback
   : is_pullback
-      (gluing_exponential_result ExpChangeReaderF
+      (gluing_exp_result ExpChangeReaderF
         (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe)
         (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe))
-      (gluing_exponential_base ExpChangeReaderF exp_change_reader_products
+      (gluing_exp_base ExpChangeReaderF exp_change_reader_products
         (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe)
         (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe))
       ExpChangeSourcePb
@@ -673,13 +673,13 @@ Next Obligation. intros x y H. split; reflexivity. Defined.
 (** 运输后锥的交换性来自其给定拉回，不比较交换方形见证。 *)
 
 Definition exp_change_test_cone_comm
-  : gluing_exponential_result ExpChangeReaderF
+  : gluing_exp_result ExpChangeReaderF
       (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe)
       (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe) ∘
       ((gluing_change_exp_left IdF (λ A B, product_universal)
         ExpChangeProbe ExpChangeProbe ∘ exp_change_source_p) ∘
         exp_change_point_map) ≈
-    gluing_exponential_base ExpChangeReaderF exp_change_reader_products
+    gluing_exp_base ExpChangeReaderF exp_change_reader_products
       (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe)
       (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe) ∘
       ((gluing_change_exp_right IdF IdF ExpChangeSwapN
@@ -845,7 +845,7 @@ Program Definition ExpEmptyBoundaryN
       (@CompF SetCat SetCat SetCat (ConstF SetCat EmptyS) IdF)
   :=
   {|nt X := id
-  ; nt_naturality X Y f x := tt
+  ; nat_naturality X Y f x := tt
   |}.
 
 (** This boundary has explicit identity inverse components. *)
@@ -863,15 +863,15 @@ Definition exp_empty_boundary_iso
 Definition ExpEmptyCospanN
   : @Nat CospanShape SetCat
       (@CompF CospanShape SetCat SetCat (ConstF SetCat EmptyS)
-      ⟨gluing_exponential_result IdF ExpEmptyProbe ExpEmptyProbe →←
-        gluing_exponential_base IdF (λ A B, product_universal)
+      ⟨gluing_exp_result IdF ExpEmptyProbe ExpEmptyProbe →←
+        gluing_exp_base IdF (λ A B, product_universal)
           ExpEmptyProbe ExpEmptyProbe⟩D)
-      ⟨gluing_exponential_result (ConstF SetCat EmptyS)
+      ⟨gluing_exp_result (ConstF SetCat EmptyS)
           (GluingChangeF IdF (ConstF SetCat EmptyS)
             ExpEmptyBoundaryN ExpEmptyProbe)
           (GluingChangeF IdF (ConstF SetCat EmptyS)
             ExpEmptyBoundaryN ExpEmptyProbe) →←
-        gluing_exponential_base (ConstF SetCat EmptyS)
+        gluing_exp_base (ConstF SetCat EmptyS)
           empty_constant_preserves_products
           (GluingChangeF IdF (ConstF SetCat EmptyS)
             ExpEmptyBoundaryN ExpEmptyProbe)

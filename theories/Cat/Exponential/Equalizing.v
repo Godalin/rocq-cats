@@ -35,8 +35,8 @@ Context {C : Cat} `{HP : !HasProduct C} `{HX : !HasExponential HP}
 
 Definition EqualizingTests (R : C) {A B : C} (f g : Hom A B)
   : C
-  := Eq[exponential_dimap f (@Cats.Cat.Core.id C R),
-      exponential_dimap g (@Cats.Cat.Core.id C R)].
+  := Eq[exp_dimap f (@Cats.Cat.Core.id C R),
+      exp_dimap g (@Cats.Cat.Core.id C R)].
 
 (** Retain the original equalizer inclusion and its monicity. *)
 
@@ -45,8 +45,8 @@ Definition EqualizingTests (R : C) {A B : C} (f g : Hom A B)
 Definition EqualizingTestMono (R : C) {A B : C} (f g : Hom A B)
   : EqualizingTests R f g ↣ (R ^ B)
   := EqualizerMono (equalizer_universal
-      (f := exponential_dimap f (@Cats.Cat.Core.id C R))
-      (g := exponential_dimap g (@Cats.Cat.Core.id C R))).
+      (f := exp_dimap f (@Cats.Cat.Core.id C R))
+      (g := exp_dimap g (@Cats.Cat.Core.id C R))).
 
 (** Restrict double evaluation to those equalizing tests. *)
 
@@ -54,7 +54,7 @@ Definition EqualizingTestMono (R : C) {A B : C} (f g : Hom A B)
 
 Definition EqualizingEvaluation (R : C) {A B : C} (f g : Hom A B)
   : Hom B (R ^ EqualizingTests R f g)
-  := exponential_dimap (EqualizingTestMono R f g)
+  := exp_dimap (EqualizingTestMono R f g)
       (@Cats.Cat.Core.id C R) ∘ ExpDoubleDualUnit R B.
 
 (** The evaluation map identifies the original pair by the equation
@@ -66,17 +66,17 @@ Theorem equalizing_evaluation_comm (R : C) {A B : C} (f g : Hom A B)
   : EqualizingEvaluation R f g ∘ f ≈ EqualizingEvaluation R f g ∘ g.
 Proof.
   pose (i := EqualizingTestMono R f g).
-  assert (K : exponential_dimap f (@Cats.Cat.Core.id C R) ∘ i
-    ≈ exponential_dimap g (@Cats.Cat.Core.id C R) ∘ i).
-  { exact (equalizer_comm (f := exponential_dimap f (@Cats.Cat.Core.id C R))
-      (g := exponential_dimap g (@Cats.Cat.Core.id C R))). }
-  assert (H : app ((exponential_dimap f (@Cats.Cat.Core.id C R) ∘ i) ∘ π2)
-      π1 ≈ app ((exponential_dimap g (@Cats.Cat.Core.id C R) ∘ i) ∘ π2) π1).
+  assert (K : exp_dimap f (@Cats.Cat.Core.id C R) ∘ i
+    ≈ exp_dimap g (@Cats.Cat.Core.id C R) ∘ i).
+  { exact (equalizer_comm (f := exp_dimap f (@Cats.Cat.Core.id C R))
+      (g := exp_dimap g (@Cats.Cat.Core.id C R))). }
+  assert (H : app ((exp_dimap f (@Cats.Cat.Core.id C R) ∘ i) ∘ π2)
+      π1 ≈ app ((exp_dimap g (@Cats.Cat.Core.id C R) ∘ i) ∘ π2) π1).
   { rewrite K. reflexivity. }
-  rewrite !comp_assoc, !exponential_app_dimap, !comp_id_l in H.
-  apply exponential_ext. unfold EqualizingEvaluation.
-  rewrite !exponential_uncurry_app, !comp_assoc,
-    !exponential_app_dimap, !comp_id_l, !exp_double_dual_app.
+  rewrite !comp_assoc, !exp_app_dimap, !comp_id_l in H.
+  apply exp_ext. unfold EqualizingEvaluation.
+  rewrite !exp_uncurry_app, !comp_assoc,
+    !exp_app_dimap, !comp_id_l, !exp_double_dual_app.
   exact H.
 Qed.
 
@@ -89,10 +89,10 @@ Definition EqualizingTestFactor (R : C) {A B Z : C} {f g : Hom A B}
     (h : Hom B Z) (Hh : h ∘ f ≈ h ∘ g)
   : Hom (R ^ Z) (EqualizingTests R f g).
 Proof.
-  apply (equalize (exponential_dimap h (@Cats.Cat.Core.id C R))).
-  apply exponential_ext.
-  rewrite !exponential_uncurry_app, !comp_assoc,
-    !exponential_app_dimap, !comp_id_l.
+  apply (equalize (exp_dimap h (@Cats.Cat.Core.id C R))).
+  apply exp_ext.
+  rewrite !exp_uncurry_app, !comp_assoc,
+    !exp_app_dimap, !comp_id_l.
   rewrite <- !comp_assoc, Hh. reflexivity.
 Defined.
 
@@ -103,7 +103,7 @@ Defined.
 Theorem equalizing_test_factor_comm (R : C) {A B Z : C}
     {f g : Hom A B} (h : Hom B Z) (Hh : h ∘ f ≈ h ∘ g)
   : EqualizingTestMono R f g ∘ EqualizingTestFactor R h Hh
-    ≈ exponential_dimap h (@Cats.Cat.Core.id C R).
+    ≈ exp_dimap h (@Cats.Cat.Core.id C R).
 Proof. apply equalizer_β. Qed.
 
 (** Restriction of tests induces a map to the target double power. *)
@@ -113,7 +113,7 @@ Proof. apply equalizer_β. Qed.
 Definition EqualizingLift (R : C) {A B Z : C} {f g : Hom A B}
     (h : Hom B Z) (Hh : h ∘ f ≈ h ∘ g)
   : Hom (R ^ EqualizingTests R f g) (R ^ (R ^ Z))
-  := exponential_dimap (EqualizingTestFactor R h Hh)
+  := exp_dimap (EqualizingTestFactor R h Hh)
       (@Cats.Cat.Core.id C R).
 
 (** The lift extends double evaluation of the identifying map; the
@@ -127,16 +127,16 @@ Theorem equalizing_lift_comm (R : C) {A B Z : C}
     ≈ ExpDoubleDualUnit R Z ∘ h.
 Proof.
   unfold EqualizingLift, EqualizingEvaluation. rewrite <- comp_assoc.
-  pose (H := @exponential_dimap_comp C HP HX
+  pose (H := @exp_dimap_comp C HP HX
     (R ^ B) (EqualizingTests R f g) (R ^ Z) R R R
     (EqualizingTestMono R f g) (EqualizingTestFactor R h Hh)
     (@Cats.Cat.Core.id C R) (@Cats.Cat.Core.id C R)).
   rewrite <- H, comp_id_l.
-  transitivity (exponential_dimap
-    (exponential_dimap h (@Cats.Cat.Core.id C R))
+  transitivity (exp_dimap
+    (exp_dimap h (@Cats.Cat.Core.id C R))
     (@Cats.Cat.Core.id C R) ∘ ExpDoubleDualUnit R B).
   - apply comp_proper; [| reflexivity].
-    apply exponential_dimap_proper; [| reflexivity].
+    apply exp_dimap_proper; [| reflexivity].
     apply equalizing_test_factor_comm.
   - apply exp_double_dual_natural.
 Qed.

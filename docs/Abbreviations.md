@@ -2298,3 +2298,19 @@ constructions close to their theory.
 | `Build_Wedge` | `WedgeOfLegs` |
 | `Build_Cowedge` | `CowedgeOfOpWedge` |
 | `Build_HasCoend`, `OpEndCoend` | `HasCoendOfOpEnd` with explicit opposite-end evidence / 显式传入反 end 见证 |
+
+## Clients added after the packed-hierarchy baseline / 打包层级基线后新增的客户端
+
+`Cat.Exponential.Equalizing`, `Cat.Gluing.ChangeExponential` and
+`tests/GluingChangeExponential.v` use the existing exact mappings above for
+`exp_*`, `exp_cmp*`, `gluing_exp_*`, `is_exp`, `fct_*` and `nat_naturality`.
+Their module paths and the current functor type `Fct` are unchanged. This
+client migration adds no rename family or compatibility alias; the equalizing
+tests, transported pullback choices and downstream Topos coequalizers retain
+their original mathematics.
+
+`Cat.Exponential.Equalizing`、`Cat.Gluing.ChangeExponential` 和
+`tests/GluingChangeExponential.v` 按上文既有精确表使用 `exp_*`、`exp_cmp*`、
+`gluing_exp_*`、`is_exp`、`fct_*` 及 `nat_naturality`。模块路径及当前函子类型
+`Fct` 不变；本次客户端迁移不增加改名词族或兼容别名，等化测试、运输拉回选择
+及下游 Topos 余等化子保留原数学。
