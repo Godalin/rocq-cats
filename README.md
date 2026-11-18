@@ -742,6 +742,10 @@ Monad–Applicative–Arrow 工作从
   functors after explicit fiber lifting, retaining the type base.
   显式提升纤维后，以自然同构比较原类型—项函子与恢复函子，保留类型基底；
   比较无需终上下文，完整 CwF 仍需独立的终上下文选择。
+  [Context/PairComparison](./theories/DTT/Context/PairComparison.v) compares
+  substitution-term pairs in both directions, retaining their base maps and
+  commuting with reindexing without a common native term-size bound.
+  双向比较替换—项配对，保留基底映射并与重索引交换，不要求原生项大小共同界。
   [CwF](./theories/DTT/CwF.v) organizes types, terms and coherent substitution
   through a family-valued presheaf, with context extensions specified by a
   universal property. [ContextExtension](./theories/DTT/Context/Extension.v)

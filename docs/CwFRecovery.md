@@ -703,6 +703,27 @@ chosen pullbacks are needed.
 锥见证或拉回定律见证。八项固定配置在两序中保留原类型／项大小与两个 Hom
 层级及基底律辅助界的独立性；不需要终对象或全局选定拉回。
 
+[Context/PairComparison](../theories/DTT/Context/PairComparison.v) applies the
+forward and backward term maps to substitution-term pairs. Both respectful
+maps retain the base substitution by conversion. Their respectfulness follows
+from the accepted conversion coherence, and their two inverse laws follow
+fiberwise. Both maps commute with pair reindexing, including the composition
+conversion on its term coordinate. Original and recovered conversion witnesses
+are aligned by coherent transport, not identified by native equality. This
+compares the dependent-sum data used by the extension representation; it does
+not identify CwF records or impose a common native term-carrier bound. The
+lifted natural isomorphism above remains the comparison of primary functors.
+Twelve fixed configurations place the original type/term bounds above both
+Hom levels and the base-law auxiliary bound, in both strict Hom orders.
+
+[Context/PairComparison](../theories/DTT/Context/PairComparison.v) 将双向项映射
+作用于替换—项配对。两个保相等映射按定义保留基底替换；保相等性由已有转换
+相干律导出，两条互逆律逐纤维成立。两个方向均与配对重索引及项坐标上的复合
+转换交换。原侧与恢复侧的转换见证通过相干运输对齐，不按原生相等识别。这比较
+扩张表示所使用的依赖和数据，不识别 CwF 记录，也不要求原生项载体具有共同界；
+主函子的比较仍使用上方提升后的自然同构。十二项固定配置在两种严格 Hom 次序中，
+将原类型／项界置于两个 Hom 层级及基底律辅助界之上。
+
 ## 8. 宇宙与验证
 
 表示准则不合并上下文 hom、类型、项及其相等见证的层级。
