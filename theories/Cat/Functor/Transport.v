@@ -15,7 +15,7 @@ From Cats Require Export
     映射或定律记录相等。 *)
 
 Section Transport.
-Context {C D : Cat} (F : Fct C D) (j : @Ob C → @Ob D)
+Context {C D : Cat} (F : Fct C D) (j : C → D)
     (e : ∀ X, j X ≅ F X).
 
 (** Change representatives, keeping the supplied inverse maps transparent. *)
@@ -72,7 +72,7 @@ Lemma nt_naturality_boundary {C D : Cat}
     {F G F' G' : Fct C D} (i : F' ⇒ F) (j : G' ≅N G)
     (β : F ⇒ G) (a : ∀ X, Hom (F' X) (G' X))
     (Ha : ∀ X, j.1 X ∘ a X ≈ β X ∘ i X)
-    {X Y : @Ob C} (f : Hom X Y)
+    {X Y : C} (f : Hom X Y)
   : a Y ∘ fmap F' f ≈ fmap G' f ∘ a X.
 Proof.
   apply (iso_cancel_l (j.1 Y; j.2 Y)).

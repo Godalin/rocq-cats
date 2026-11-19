@@ -23,7 +23,7 @@ Next Obligation.
   intros [u v] [u' v'] [Hu Hv]. cbn in *.
   apply comp_proper.
   - apply fct_fmap_proper. exact Hv.
-  - exact (@fct_fmap_proper A (FctCat B C) F _ _ u u' Hu (snd X)).
+  - exact (fct_fmap_proper _ _ F u u' Hu (snd X)).
 Defined.
 Next Obligation.
   destruct X as [a b]. cbn.
@@ -33,8 +33,8 @@ Defined.
 Next Obligation.
   destruct X as [a b], Y as [a' b'], Z as [a'' b''], f as [u' v'], g as [u v].
   cbn.
-  rewrite (@fct_comp A (FctCat B C) F a a' a'' u' u b). cbn.
-  rewrite (@fct_comp B C (F a'') b b' b'' v' v).
+  rewrite (fct_comp _ _ F u' u b). cbn.
+  rewrite (fct_comp _ _ (F a'') v' v).
   repeat rewrite comp_assoc.
   rewrite <- (comp_assoc (fmap (F a'') v) (fmap F u' b) (fmap F u b)).
   rewrite <- (nat_naturality (fmap F u') v).

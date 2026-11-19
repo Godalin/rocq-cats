@@ -63,12 +63,12 @@ Lemma prof_comp_gluing {Y Y' : @Ob D} (h : Hom Y Y')
       ιPr[Q; P; Y'] (rmap[P; h] x,y).
 Proof.
   transitivity (ιPr[Q; P; Y]
-    (dimap[P; @id X; @id Y] x,lmap[Q; h] y)).
+    (dimap[P; id[X]; id[Y]] x,lmap[Q; h] y)).
   - apply (@func_proper _ _ (ιPr[Q; P; Y])). split.
     + symmetry. exact (prof_dimap_id P X Y x).
     + reflexivity.
   - transitivity (ιPr[Q; P; Y']
-      (rmap[P; h] x,dimap[Q; @id Y'; @id Z] y)).
+      (rmap[P; h] x,dimap[Q; id[Y']; id[Z]] y)).
     + exact (cowedge_comm ιcoend[ProfCompKernel Q P X Z] h (x,y)).
     + apply (@func_proper _ _ (ιPr[Q; P; Y'])). split.
       * reflexivity.

@@ -109,8 +109,8 @@ Lemma prof_comp_input_boundary
         ProfCompInputN β α X Z).
 Proof.
   intros [A B] [x y]. split.
-  - exact (prof_natural α f (@id B) x).
-  - exact (prof_natural β (@id A) g y).
+  - exact (prof_natural α f (id[B]) x).
+  - exact (prof_natural β (id[A]) g y).
 Defined.
 
 End InputLaws.

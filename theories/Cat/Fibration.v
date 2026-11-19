@@ -105,7 +105,7 @@ Defined.
 (** 每条恒等箭头都是笛卡尔的。 *)
 
 Definition cartesian_id {E B : Cat} (P : Fct E B) (X : @Ob E)
-  : (@id X) ⦂ Cart(P).
+  : (id[X]) ⦂ Cart(P).
 Proof.
   intros Z g u H. rewrite fct_id, comp_id_l in H.
   exists g. split.
@@ -175,7 +175,7 @@ Proof.
   - apply (cartesian_cancel Hf).
     + rewrite fct_comp. transitivity (ui ∘ u).
       * apply comp_proper; apply cartesian_factor_base.
-      * transitivity (@id (P X)); [exact Hui | symmetry; apply fct_id].
+      * transitivity (id[P X]); [exact Hui | symmetry; apply fct_id].
     + etransitivity; [symmetry; apply comp_assoc |].
       etransitivity.
       * apply comp_proper; [apply cartesian_factor_comp | reflexivity].
@@ -183,7 +183,7 @@ Proof.
   - apply (cartesian_cancel Hg).
     + rewrite fct_comp. transitivity (u ∘ ui).
       * apply comp_proper; apply cartesian_factor_base.
-      * transitivity (@id (P X')); [exact Hu | symmetry; apply fct_id].
+      * transitivity (id[P X']); [exact Hu | symmetry; apply fct_id].
     + etransitivity; [symmetry; apply comp_assoc |].
       etransitivity.
       * apply comp_proper; [apply cartesian_factor_comp | reflexivity].

@@ -71,11 +71,11 @@ Lemma arrow_global_context_post {P X Y : @Ob C}
     (g : Hom (A 1) (A P)) (k : Hom (A X) (A Y))
   : arrow_global_context Y g ∘ k ≈ k &&&[A] (g ∘ arr[A; !]).
 Proof.
-  pose proof (arrow_split_pre A k g (@id X) (! : Hom X 1)) as H.
+  pose proof (arrow_split_pre A k g (id[X]) (! : Hom X 1)) as H.
   rewrite arrow_arr_id, comp_id_r in H.
   unfold arrow_global_context, arrow_fanout. rewrite <- H.
   unfold arrow_split. rewrite !comp_assoc, <- fct_comp.
-  assert (Hi : ((@id X × (! : Hom X 1)) ∘ ⟨id, id⟩) ≈
+  assert (Hi : ((id[X] × (! : Hom X 1)) ∘ ⟨id, id⟩) ≈
     (⟨id, !⟩ : Hom X (X × 1))).
   { repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
@@ -90,9 +90,9 @@ Qed.
 
 Lemma arrow_global_context_fanout {P : @Ob C} (X : @Ob C)
     (f : Hom (A 1) (A P))
-  : arrow_global_context X f ≈ @id (A X) &&&[A] (f ∘ arr[A; !]).
+  : arrow_global_context X f ≈ id[A X] &&&[A] (f ∘ arr[A; !]).
 Proof.
-  pose proof (arrow_global_context_post f (@id (A X))) as H.
+  pose proof (arrow_global_context_post f (id[A X])) as H.
   rewrite comp_id_r in H. exact H.
 Qed.
 
@@ -118,7 +118,7 @@ Qed.
 Lemma arrow_global_context_map {P Q : @Ob C} (X : @Ob C)
     (f : Hom (A 1) (A P)) (h : Hom P Q)
   : arrow_global_context X (arr[A; h] ∘ f) ≈
-      arr[A; @id X × h] ∘ arrow_global_context X f.
+      arr[A; id[X] × h] ∘ arrow_global_context X f.
 Proof.
   unfold arrow_global_context. rewrite arrow_second_comp,
     arrow_second_arr, comp_assoc. reflexivity.
@@ -132,10 +132,10 @@ Qed.
 Lemma arrow_global_context_pre {P X Y : @Ob C}
     (f : Hom (A 1) (A P)) (h : Hom X Y)
   : arrow_global_context Y f ∘ arr[A; h] ≈
-      arr[A; h × @id P] ∘ arrow_global_context X f.
+      arr[A; h × id[P]] ∘ arrow_global_context X f.
 Proof.
   unfold arrow_global_context. rewrite !comp_assoc.
-  rewrite <- (comp_assoc arr[A; h × @id P] (second[A; f; X])),
+  rewrite <- (comp_assoc arr[A; h × id[P]] (second[A; f; X])),
     arrow_second_natural, !comp_assoc.
   apply comp_proper; [reflexivity |].
   rewrite <- !fct_comp. apply fct_fmap_proper.

@@ -147,9 +147,9 @@ Lemma arrow_fanout_assoc {W X Y Z : @Ob C}
       f &&&[A] (g &&&[A] h).
 Proof.
   pose proof (arrow_split_pre (f ***[A] g) h
-    (⟨id, id⟩ : Hom W (W × W)) (@id W)) as Hl.
+    (⟨id, id⟩ : Hom W (W × W)) (id[W])) as Hl.
   pose proof (arrow_split_pre f (g ***[A] h)
-    (@id W) (⟨id, id⟩ : Hom W (W × W))) as Hr.
+    (id[W]) (⟨id, id⟩ : Hom W (W × W))) as Hr.
   rewrite arrow_arr_id in Hl, Hr.
   try rewrite comp_id_r in Hl.
   try rewrite comp_id_r in Hr.
@@ -168,7 +168,7 @@ Qed.
 (** 对于终输入计算，纯恒等为配对的左单位。 *)
 
 Lemma arrow_fanout_unit_l {X : @Ob C} (f : Hom (A 1) (A X))
-  : arr[A; (π2 : Hom (1 × X) X)] ∘ ((@id (A 1)) &&&[A] f) ≈ f.
+  : arr[A; (π2 : Hom (1 × X) X)] ∘ ((id[A 1]) &&&[A] f) ≈ f.
 Proof.
   unfold arrow_fanout, arrow_split.
   rewrite <- (arrow_arr_id A 1), arrow_first_arr, cross_id, arrow_arr_id,
@@ -181,7 +181,7 @@ Qed.
 (** 对于终输入计算，纯恒等也为配对的右单位。 *)
 
 Lemma arrow_fanout_unit_r {X : @Ob C} (f : Hom (A 1) (A X))
-  : arr[A; (π1 : Hom (X × 1) X)] ∘ (f &&&[A] (@id (A 1))) ≈ f.
+  : arr[A; (π1 : Hom (X × 1) X)] ∘ (f &&&[A] (id[A 1])) ≈ f.
 Proof.
   unfold arrow_fanout, arrow_split.
   rewrite <- (arrow_arr_id A 1), arrow_second_arr, cross_id, arrow_arr_id,

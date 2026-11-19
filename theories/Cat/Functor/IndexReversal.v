@@ -21,8 +21,8 @@ From Cats Require Import
 
 Definition BifunctorIndexOpF {C D : Cat} (F : Fct ((C^op) ×C C) D)
   : Fct (((C^op)^op) ×C (C^op)) D
-  := F ∘F PairF (SndF ((C^op)^op) (C^op))
-      (FromDoubleOpF ∘F FstF ((C^op)^op) (C^op)).
+  := F ∘F PairF (π2F ((C^op)^op) (C^op))
+      (FromDoubleOpF ∘F π1F ((C^op)^op) (C^op)).
 
 (** Reindex a comparison without reversing its direction or its components. *)
 
@@ -31,8 +31,8 @@ Definition BifunctorIndexOpF {C D : Cat} (F : Fct ((C^op) ×C C) D)
 Definition bifunctor_index_op_nt {C D : Cat}
     {F G : Fct ((C^op) ×C C) D} (α : F ⇒ G)
   : BifunctorIndexOpF F ⇒ BifunctorIndexOpF G
-  := α ∘Nr PairF (SndF ((C^op)^op) (C^op))
-      (FromDoubleOpF ∘F FstF ((C^op)^op) (C^op)).
+  := α ∘Nr PairF (π2F ((C^op)^op) (C^op))
+      (FromDoubleOpF ∘F π1F ((C^op)^op) (C^op)).
 
 (** Reindexing respects the original specified component equality. *)
 
@@ -70,5 +70,5 @@ Definition bifunctor_index_op_nt_NatIso {C D : Cat}
     {F G : Fct ((C^op) ×C C) D} (α : F ⇒ G) (Hα : α ⦂ F ≅N G)
   : bifunctor_index_op_nt α ⦂ BifunctorIndexOpF F ≅N
       BifunctorIndexOpF G
-  := nat_whisker_r_iso α (PairF (SndF ((C^op)^op) (C^op))
-      (FromDoubleOpF ∘F FstF ((C^op)^op) (C^op))) Hα.
+  := nat_whisker_r_iso α (PairF (π2F ((C^op)^op) (C^op))
+      (FromDoubleOpF ∘F π1F ((C^op)^op) (C^op))) Hα.

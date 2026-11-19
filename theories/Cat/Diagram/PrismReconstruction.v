@@ -54,7 +54,7 @@ Context {C D : Cat} (K : Fct (C ×C [Ord 1]) D).
     可逆的假设。 *)
 
 Definition PrismTransformationN
-  : π1F K fin_first ⇒ π1F K (fin_next fin_first)
+  : AtRF K fin_first ⇒ AtRF K (fin_next fin_first)
   := ProductAtN K (ordinal_step fin_first).
 
 (** Each prism arrow is recovered by the parameter-first factorization of
@@ -118,7 +118,7 @@ Context {C D : Cat} {F G : Fct C D} (α : F ⇒ G).
 (** 在任一时间位置的限制与对应边界函子比较，分量保留为透明恒等。 *)
 
 Program Definition NatPrismBoundaryN (i : Ordinal 1)
-  : π1F (NatPrismF α) i ⇒
+  : AtRF (NatPrismF α) i ⇒
       (if ordinal_interval_side i then G else F)
   :=
   {|nt x := _
@@ -136,7 +136,7 @@ Defined.
 (** 边界比较是带显式逆的自然同构。 *)
 
 Definition natural_prism_boundary_iso (i : Ordinal 1)
-  : π1F (NatPrismF α) i ≅N
+  : AtRF (NatPrismF α) i ≅N
       (if ordinal_interval_side i then G else F).
 Proof.
   exists (NatPrismBoundaryN i). intros x.
@@ -205,7 +205,7 @@ Definition NatPrismN
   : NatPrismF α ⇒ NatPrismF β
   := (@ArrowN (FctCat C D) (@ArrowDiagram (FctCat C D) F G α)
       (@ArrowDiagram (FctCat C D) F' G' β) a b H)^uncN
-      ∘Nr PairF (OrdinalArrowF ∘F SndF C [Ord 1]) (FstF C [Ord 1]).
+      ∘Nr PairF (OrdinalArrowF ∘F π2F C [Ord 1]) (π1F C [Ord 1]).
 
 (** The extension has precisely the prescribed initial boundary. *)
 
@@ -268,8 +268,8 @@ Defined.
 Section PrescribedPrism.
 Context {C D : Cat} (K : Fct (C ×C [Ord 1]) D)
     {F G : Fct C D} (α : F ⇒ G)
-    (a : F ⇒ π1F K fin_first)
-    (b : G ⇒ π1F K (fin_next fin_first))
+    (a : F ⇒ AtRF K fin_first)
+    (b : G ⇒ AtRF K (fin_next fin_first))
     (H : (b ∘Nv α) ≈N (PrismTransformationN K ∘Nv a)).
 
 (** Compose extension of the boundary square with prism reconstruction. *)
@@ -312,8 +312,8 @@ Defined.
 (** 若指定的边界是自然同构，则唯一比较也是自然同构，逆分量保留为计算见证。 *)
 
 Definition prism_comparison_NatIso
-    (Ha : a ⦂ F ≅N π1F K fin_first)
-    (Hb : b ⦂ G ≅N π1F K (fin_next fin_first))
+    (Ha : a ⦂ F ≅N AtRF K fin_first)
+    (Hb : b ⦂ G ≅N AtRF K (fin_next fin_first))
   : PrismComparisonN ⦂ NatPrismF α ≅N K.
 Proof.
   apply nat_comp_iso.

@@ -63,7 +63,7 @@ Defined.
 (** 恒等态射在两个位置都与任意计算交换。 *)
 
 Definition central_id (X : @Ob C)
-  : is_central (@id X).
+  : is_central (id[X]).
 Proof.
   intros Z W g. split;
     rewrite ?binoidal_l_id, ?binoidal_r_id,

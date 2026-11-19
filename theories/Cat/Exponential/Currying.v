@@ -43,8 +43,8 @@ Notation "f '^♭₂'" := (exp_uncurry_twice f)
 (** 迭代抽象保持指定箭头相等。 *)
 
 Global Instance exp_curry_twice_proper {A B Y Z : @Ob C}
-  : Proper (@HomEq[Z × (A × B), Y] ==>
-      @HomEq[Z, (Y ^ A) ^ B]) exp_curry_twice.
+  : Proper (≈[Z × (A × B), Y] ==>
+      ≈[Z, (Y ^ A) ^ B]) exp_curry_twice.
 Proof. intros f g H. unfold exp_curry_twice. rewrite H. reflexivity. Qed.
 
 (** Iterated evaluation preserves specified arrow equality. *)
@@ -52,8 +52,8 @@ Proof. intros f g H. unfold exp_curry_twice. rewrite H. reflexivity. Qed.
 (** 迭代求值保持指定箭头相等。 *)
 
 Global Instance exp_uncurry_twice_proper {A B Y Z : @Ob C}
-  : Proper (@HomEq[Z, (Y ^ A) ^ B] ==>
-      @HomEq[Z × (A × B), Y]) exp_uncurry_twice.
+  : Proper (≈[Z, (Y ^ A) ^ B] ==>
+      ≈[Z × (A × B), Y]) exp_uncurry_twice.
 Proof. intros f g H. unfold exp_uncurry_twice. rewrite H. reflexivity. Qed.
 
 (** Double evaluation cancels double abstraction. *)
@@ -130,7 +130,7 @@ Definition exp_expand {A B Y Z : @Ob C}
 (** 展平保持 Hom 相等。 *)
 
 Global Instance exp_flatten_proper {A B Y Z : @Ob C}
-  : Proper (@HomEq[Z, (Y ^ A) ^ B] ==> @HomEq[Z, Y ^ (A × B)])
+  : Proper (≈[Z, (Y ^ A) ^ B] ==> ≈[Z, Y ^ (A × B)])
       exp_flatten.
 Proof. intros f g H. unfold exp_flatten. rewrite H. reflexivity. Qed.
 
@@ -139,7 +139,7 @@ Proof. intros f g H. unfold exp_flatten. rewrite H. reflexivity. Qed.
 (** 展开保持 Hom 相等。 *)
 
 Global Instance exp_expand_proper {A B Y Z : @Ob C}
-  : Proper (@HomEq[Z, Y ^ (A × B)] ==> @HomEq[Z, (Y ^ A) ^ B])
+  : Proper (≈[Z, Y ^ (A × B)] ==> ≈[Z, (Y ^ A) ^ B])
       exp_expand.
 Proof. intros f g H. unfold exp_expand. rewrite H. reflexivity. Qed.
 

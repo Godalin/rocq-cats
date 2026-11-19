@@ -383,10 +383,10 @@ Definition low_eq_exp_nat (X : @Ob D)
   : @NatIso _ SetCat@{p h _ _ _ _ _} (LeftHomF (-× X)) (RightHomF (-^ X))
   := exp_hom_nat_iso X.
 Definition high_eq_exp_bifunctor
-  : Fct (C^op ×C C) C
+  : Fct ((C^op) ×C C) C
   := (-^-).
 Definition low_eq_exp_bifunctor
-  : Fct (D^op ×C D) D
+  : Fct ((D^op) ×C D) D
   := (-^-).
 Definition high_eq_contravariant_exp (Y : @Ob C)
   : Fct (C^op) C
@@ -395,10 +395,10 @@ Definition low_eq_contravariant_exp (Y : @Ob D)
   : Fct (D^op) D
   := (Y ^-).
 Definition high_eq_fixed_exp (X : @Ob C)
-  : π2F (-^-) X ≅N (-^ X)
+  : AtLF (-^-) X ≅N (-^ X)
   := exp_fixed_nat_iso X.
 Definition low_eq_fixed_exp (X : @Ob D)
-  : π2F (-^-) X ≅N (-^ X)
+  : AtLF (-^-) X ≅N (-^ X)
   := exp_fixed_nat_iso X.
 (** Structural isomorphisms keep the two hom/equality orderings distinct. *)
 
@@ -1598,7 +1598,7 @@ Definition low_eq_groupoid_inverse_fct
   := InvF D.
 
 Definition high_eq_opposite_groupoid
-  : C^op ⦂ Gpd
+  : (C^op) ⦂ Gpd
   := op_IsGpd C.
 
 Definition mixed_groupoid_product

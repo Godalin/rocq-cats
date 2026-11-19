@@ -81,7 +81,7 @@ Definition unadjunct {X Y} (g : Hom X (G Y))
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance adjunct_proper {X Y}
-  : Proper (@HomEq[F X, Y] ==> @HomEq[X, G Y])
+  : Proper (≈[F X, Y] ==> ≈[X, G Y])
     adjunct.
 Proof. apply func_proper. Qed.
 
@@ -90,7 +90,7 @@ Proof. apply func_proper. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance unadjunct_proper {X Y}
-  : Proper (@HomEq[X, G Y] ==> @HomEq[F X, Y])
+  : Proper (≈[X, G Y] ==> ≈[F X, Y])
     unadjunct.
 Proof. apply func_proper. Qed.
 
@@ -235,8 +235,8 @@ Program Definition adj_counit
   {|nt Y := unadjunct id
   |}.
 Next Obligation.
-  rewrite <- (unadjunct_comp_r (@id (G Y)) (fmap G f)), comp_id_l.
-  rewrite <- (unadjunct_comp_l f (@id (G X))), comp_id_r. reflexivity.
+  rewrite <- (unadjunct_comp_r (id[G Y]) (fmap G f)), comp_id_l.
+  rewrite <- (unadjunct_comp_l f (id[G X])), comp_id_r. reflexivity.
 Qed.
 
 (** The forward transpose is composition with the unit after applying the
@@ -247,8 +247,8 @@ Qed.
 Lemma adjunct_unit {X Y} (f : Hom (F X) Y)
   : adjunct f ≈ fmap G f ∘ adj_unit X.
 Proof.
-  change (adjunct f ≈ fmap G f ∘ adjunct (@id (F X))).
-  rewrite <- (adjunct_comp_l f (@id (F X))), comp_id_r. reflexivity.
+  change (adjunct f ≈ fmap G f ∘ adjunct (id[F X])).
+  rewrite <- (adjunct_comp_l f (id[F X])), comp_id_r. reflexivity.
 Qed.
 
 (** The inverse transpose is composition with the counit after applying the
@@ -259,8 +259,8 @@ Qed.
 Lemma unadjunct_counit {X Y} (g : Hom X (G Y))
   : unadjunct g ≈ adj_counit Y ∘ fmap F g.
 Proof.
-  change (unadjunct g ≈ unadjunct (@id (G Y)) ∘ fmap F g).
-  rewrite <- (unadjunct_comp_r (@id (G Y)) g), comp_id_l. reflexivity.
+  change (unadjunct g ≈ unadjunct (id[G Y]) ∘ fmap F g).
+  rewrite <- (unadjunct_comp_r (id[G Y]) g), comp_id_l. reflexivity.
 Qed.
 
 (** The unit and counit satisfy the left triangle equation. *)
@@ -270,7 +270,7 @@ Qed.
 Theorem adj_triangle_l (X : @Ob C)
   : adj_counit (F X) ∘ fmap F (adj_unit X) ≈ id.
 Proof.
-  transitivity (unadjunct (adjunct (@id (F X)))).
+  transitivity (unadjunct (adjunct (id[F X]))).
   - symmetry. apply unadjunct_counit.
   - apply adj_β.
 Qed.
@@ -282,7 +282,7 @@ Qed.
 Theorem adj_triangle_r (Y : @Ob D)
   : fmap G (adj_counit Y) ∘ adj_unit (G Y) ≈ id.
 Proof.
-  transitivity (adjunct (unadjunct (@id (G Y)))).
+  transitivity (adjunct (unadjunct (id[G Y]))).
   - symmetry. apply adjunct_unit.
   - apply adj_η.
 Qed.

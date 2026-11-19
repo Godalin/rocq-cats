@@ -18,7 +18,7 @@ Local Open Scope binoidal_scope.
 Section Assembly.
 Context {C : Cat} (T : Fct (C ×C C) C) (I : @Ob C)
     (A : TensorLF T ≅N TensorRF T)
-    (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
+    (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 
 Let BC
   : HasBinoidal C

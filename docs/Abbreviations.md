@@ -2298,3 +2298,42 @@ constructions close to their theory.
 | `Build_Wedge` | `WedgeOfLegs` |
 | `Build_Cowedge` | `CowedgeOfOpWedge` |
 | `Build_HasCoend`, `OpEndCoend` | `HasCoendOfOpEnd` with explicit opposite-end evidence / 显式传入反 end 见证 |
+
+## Product projections and partial application / 积投影与偏应用
+
+The index of `π1F` or `π2F` now denotes the component projected from a
+product category. The side in `AtLF` or `AtRF` denotes where an object is
+supplied to a bifunctor.
+
+`π1F`、`π2F` 的下标现表示从积范畴投影出的分量；`AtLF`、`AtRF`
+的方向表示将对象代入双函子的哪一侧。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 |
+| --- | --- |
+| `FstF C D` | `π1F C D` |
+| `SndF C D` | `π2F C D` |
+| `π2F F X` | `AtLF F X`, the functor `F(X,-)` / 左侧代入 |
+| `π1F F Y` | `AtRF F Y`, the functor `F(-,Y)` / 右侧代入 |
+| `π2F_proper` | `AtLF_proper` |
+| `π1F_proper` | `AtRF_proper` |
+
+## Explicit arguments in category notation / 范畴记号的显式参数
+
+Square brackets mark the supplied object, endpoint or choice. Native Rocq
+explicit applications such as `@id C X`, `@Hom C X Y` and `@Ob C` use the
+original projections.
+
+方括号标记给定的对象、端点或选择。Rocq 原生显式应用
+`@id C X`、`@Hom C X Y`、`@Ob C` 使用原有投影。
+
+| Previous notation / 原记号 | Current notation / 当前记号 |
+| --- | --- |
+| `@id X` | `id[X]` |
+| `@Hom C` as notation / 作为记号 | `Hom[C]` |
+| `@Ob C` as notation / 作为记号 | `Ob C` or the category coercion in type position / 或类型位置的范畴强制转换 |
+| `@HomEq[X,Y]` | `≈[X,Y]` |
+| `@! X` | `![X]` |
+| `@π1 X Y`, `@π2 X Y` | `π1[X,Y]`, `π2[X,Y]` |
+| `@eval X Y` | `eval[X,Y]` |
+| `@×[f,g]` | `Pb[f,g]` |
+| `@pb1 f g`, `@pb2 f g` | `pb1[f,g]`, `pb2[f,g]` |

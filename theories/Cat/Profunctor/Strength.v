@@ -65,8 +65,8 @@ Class HasProfStrength
 
   ; prof_strength_context {Z W : @Ob C} (h : Hom Z W)
       (X Y : @Ob C)
-      : (lmap[P; h ⊗m @id X] ∘r prof_strengthN W (X,Y)) ≈f
-          (rmap[P; h ⊗m @id Y] ∘r prof_strengthN Z (X,Y))
+      : (lmap[P; h ⊗m id[X]] ∘r prof_strengthN W (X,Y)) ≈f
+          (rmap[P; h ⊗m id[Y]] ∘r prof_strengthN Z (X,Y))
 
   (** Remove the unit through the two specified left-unitor boundaries. *)
 
@@ -136,8 +136,8 @@ Lemma prof_strength_lmap {C : Cat} {MC : MonoidalCat C}
   : (pstrength[S; Z] ∘r (@prof_lmap C C P Y X X' f)) ≈f
       (lmap[P; Z ⊲ f] ∘r pstrength[S; Z]).
 Proof.
-  transitivity (dimap[P; Z ⊲ f; Z ⊲ @id Y] ∘r pstrength[S; Z]).
-  - exact (prof_strength_natural S Z f (@id Y)).
+  transitivity (dimap[P; Z ⊲ f; Z ⊲ id[Y]] ∘r pstrength[S; Z]).
+  - exact (prof_strength_natural S Z f (id[Y])).
   - intros v. apply prof_dimap_proper; [reflexivity |].
     exact (binoidal_l_id Z Y).
 Defined.
@@ -153,8 +153,8 @@ Lemma prof_strength_rmap {C : Cat} {MC : MonoidalCat C}
   : (pstrength[S; Z] ∘r (@prof_rmap C C P X Y Y' g)) ≈f
       (rmap[P; Z ⊲ g] ∘r pstrength[S; Z]).
 Proof.
-  transitivity (dimap[P; Z ⊲ @id X; Z ⊲ g] ∘r pstrength[S; Z]).
-  - exact (prof_strength_natural S Z (@id X) g).
+  transitivity (dimap[P; Z ⊲ id[X]; Z ⊲ g] ∘r pstrength[S; Z]).
+  - exact (prof_strength_natural S Z (id[X]) g).
   - intros v. apply prof_dimap_proper; [| reflexivity].
     exact (binoidal_l_id Z X).
 Defined.

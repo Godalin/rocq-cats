@@ -80,7 +80,7 @@ Local Open Scope stlc_sub_scope.
 
 Definition singleton_eval {B : Type} (A U : Ty B)
   : Sub ((∅ ▻ (A ⇒ U)) ▻ A) (∅ ▻ U)
-  := sub_empty ▻Sub ((# (↑v 𝟘)) · # 𝟘).
+  := sub_empty ▻Sub ((# (↑v 𝟘)) · (# 𝟘)).
 
 (** Transpose a singleton-valued assignment by abstracting its newest input. *)
 
@@ -145,7 +145,7 @@ Definition singleton_eval_comp {Γ : Ctx B} {A U : Ty B}
       (singleton_eval A U ∘Sub
         @cross (CtxCat@{b e l} B) syntactic_products
           Γ (∅ ▻ A) (∅ ▻ (A ⇒ U)) (∅ ▻ A) h sub_id)
-      (sub_empty ▻Sub ((h (A ⇒ U) 𝟘)⟨wkRen⟩ · # 𝟘)).
+      (sub_empty ▻Sub ((h (A ⇒ U) 𝟘)⟨wkRen⟩ · (# 𝟘))).
 Proof.
   rewrite cross_η.
   intros V [x | x]; [destruct x | destruct x].
@@ -173,7 +173,7 @@ Proof.
   - intros k Hk. rewrite (singleton_eval_comp k) in Hk.
     specialize (Hk U 𝟘). cbn in Hk.
     intros V [x | x]; [destruct x | destruct x]. cbn.
-    transitivity (ƛ ((k (A ⇒ U) 𝟘)⟨wkRen⟩ · # 𝟘)).
+    transitivity (ƛ ((k (A ⇒ U) 𝟘)⟨wkRen⟩ · (# 𝟘))).
     + apply tm_eq_sym. apply tm_eq_function_η.
     + apply tm_eq_lam. exact Hk.
 Defined.

@@ -100,8 +100,8 @@ Program Definition CoyonedaCowedge
   := CowedgeOf (D := SetCat) (coyoneda_eval) _.
 Next Obligation.
   intros [x [h]].
-  change (fmap F (h ∘ f) (fmap F (@id X) x) ≈S
-    fmap F (h ∘ (@id Y)) (fmap F f x)).
+  change (fmap F (h ∘ f) (fmap F (id[X]) x) ≈S
+    fmap F (h ∘ (id[Y])) (fmap F f x)).
   transitivity (fmap F (h ∘ f) x).
   - exact (@func_proper _ _ (fmap F (h ∘ f)) _ _
       (@fct_id C SetCat F X x)).
@@ -118,10 +118,10 @@ Defined.
 Program Definition coyoneda_seed
   : F Z →r CoyonedaKernel F Z (Z,Z)
   :=
-  {|func x := (x,{|lower := @id Z|})
+  {|func x := (x,{|lower := id[Z]|})
   |}.
 Next Obligation.
-  intros x y H. split; [exact H | exact {|lower := reflexivity (@id Z)|}].
+  intros x y H. split; [exact H | exact {|lower := reflexivity (id[Z])|}].
 Defined.
 
 (** Every cowedge value is determined by its identity component. *)
@@ -133,11 +133,11 @@ Lemma coyoneda_cowedge_factor {W : SetC}
     (x : F Y) (h : Hom Y Z)
   : κ Z (coyoneda_seed (fmap F h x)) ≈S κ Y (x,{|lower := h|}).
 Proof.
-  transitivity (κ Z (fmap F h x,{|lower := (@id Z) ∘ (@id Z)|})).
+  transitivity (κ Z (fmap F h x,{|lower := (id[Z]) ∘ (id[Z])|})).
   - apply (@func_proper _ _ (κ Z)). split; [reflexivity |].
     refine {|lower := _|}. symmetry. apply comp_id_l.
-  - transitivity (κ Y (fmap F (@id Y) x,{|lower := (@id Z) ∘ h|})).
-    + symmetry. exact (cowedge_comm κ h (x,{|lower := @id Z|})).
+  - transitivity (κ Y (fmap F (id[Y]) x,{|lower := (id[Z]) ∘ h|})).
+    + symmetry. exact (cowedge_comm κ h (x,{|lower := id[Z]|})).
     + apply (@func_proper _ _ (κ Y)). split.
       * exact (@fct_id C SetCat F Y x).
       * exact {|lower := comp_id_l h|}.
@@ -170,7 +170,7 @@ Definition coyoneda_desc_unique {W : SetC}
 Proof.
   refine {|this := coyoneda_desc_β κ; that := _|}.
   intros f H x.
-  transitivity (f (fmap F (@id Z) x)).
+  transitivity (f (fmap F (id[Z]) x)).
   - apply (@func_proper _ _ f). symmetry. exact (@fct_id C SetCat F Z x).
   - exact (H Z (coyoneda_seed x)).
 Defined.
@@ -254,8 +254,8 @@ Definition coyoneda_in
 Lemma coyoneda_out_in
   : (coyoneda_out ∘r coyoneda_in) ≈f id_resp.
 Proof.
-  intros x. transitivity (fmap F (@id Z) x).
-  - exact (coyoneda_out_β Z x (@id Z)).
+  intros x. transitivity (fmap F (id[Z]) x).
+  - exact (coyoneda_out_β Z x (id[Z])).
   - exact (@fct_id C SetCat F Z x).
 Defined.
 

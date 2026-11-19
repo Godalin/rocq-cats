@@ -99,7 +99,7 @@ Proof.
       (display_pair_proj A (τ; t)))).
   exists K. change (type_sub_equiv P K A ▸D[P] s ≈S t).
   apply (pullback_hom_ext (display_lift_universal τ A)).
-  - transitivity (@id Δ).
+  - transitivity (id[Δ]).
     + exact (type_sub_equiv P K A ▸D[P] s).2.
     + symmetry. exact t.2.
   - change (τ^D[P, A] ∘ ((type_sub_equiv P K A)^D[P] ∘ s.1)

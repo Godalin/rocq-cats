@@ -18,7 +18,8 @@ Definition is_limit {J C : Cat} {D : Fct J C} {L : @Ob C} (κ : L ⇒Δ D)
   := ∀ X (μ : X ⇒Δ D), ∃ h : Hom X L, is_unique (λ h, κ ∘Cone h ≈N μ) h.
 
 Notation "κ '⦂' 'Lim(' D ')'" := (@is_limit _ _ D _ κ)
-  (at level 50, no associativity) : cat_scope.
+  (at level 50, no associativity)
+  : cat_scope.
 
 (** A selected apex and cone with its full limiting universal property. *)
 
@@ -33,8 +34,12 @@ Class HasLimit (C : Cat) {J : Cat} (D : Fct J C)
 Arguments Lim {_ _} _ {_}.
 Arguments limit_cone {_ _} _ {_}.
 Arguments limit_universal {_ _} _ {_} _ _.
-Notation "'lim' D" := (Lim D) (at level 35) : ob_scope.
-Notation "'πlim[' D ']'" := (limit_cone D) : hom_scope.
+Notation "'lim' D" := (Lim D)
+  (at level 35)
+  : ob_scope.
+Notation "'πlim[' D ']'" := (limit_cone D)
+  (at level 0, format "πlim[ D ]")
+  : hom_scope.
 
 (** The unique mediator from a cone to the selected limiting cone. *)
 
@@ -45,7 +50,9 @@ Definition limit_lift {J C : Cat} {D : Fct J C}
   : Hom X (lim D)
   := (limit_universal D X κ).1.
 
-Notation "'lim⟨' κ '⟩'" := (limit_lift κ) (at level 35) : hom_scope.
+Notation "'lim⟨' κ '⟩'" := (limit_lift κ)
+  (at level 0, format "lim⟨ κ ⟩")
+  : hom_scope.
 
 (** ** Lifting into a Chosen Limit
 
@@ -88,7 +95,7 @@ Proof. symmetry. apply limit_lift_unique. reflexivity. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance limit_lift_proper {X}
-  : Proper (NatEq ==> @HomEq[X, lim D]) (@limit_lift J C D HL X).
+  : Proper (NatEq ==> ≈[X, lim D]) (@limit_lift J C D HL X).
 Proof.
   intros κ μ H. apply limit_lift_unique. rewrite limit_β. exact H.
 Qed.
@@ -210,7 +217,7 @@ Proof. exact (limit_map_comm α j). Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance limit_map_proper {D E : Fct J C}
-  : Proper (NatEq ==> @HomEq[lim D, lim E]) (@limit_map D E).
+  : Proper (NatEq ==> ≈[lim D, lim E]) (@limit_map D E).
 Proof.
   intros α β H. apply limit_lift_proper. intros j. cbn. rewrite (H j). reflexivity.
 Qed.
@@ -222,7 +229,7 @@ Qed.
 Lemma limit_map_id {D : Fct J C}
   : limit_map (IdN (F := D)) ≈ id.
 Proof.
-  unfold limit_map. rewrite <- (limit_η (@id (lim D))).
+  unfold limit_map. rewrite <- (limit_η (id[lim D])).
   apply limit_lift_proper. intros j. cbn. carw.
 Qed.
 

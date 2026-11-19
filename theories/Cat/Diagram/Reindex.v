@@ -157,7 +157,7 @@ Lemma cone_restrict_extend {X} (κ : X ⇒Δ (D ∘F Q))
   : ExtendCone κ ∘Δ Q ≈N κ.
 Proof.
   intros i. symmetry.
-  transitivity (fmap D (@id (Q i)) ∘ κ i).
+  transitivity (fmap D (id[Q i]) ∘ κ i).
   - rewrite fct_id, comp_id_l. reflexivity.
   - apply cone_extend_leg_comm.
 Qed.

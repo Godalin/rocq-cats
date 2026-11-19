@@ -364,7 +364,7 @@ Qed.
 (** 候选转置保持 Hom 相等，无须比较交换方形或拉回的见证。 *)
 
 Global Instance gluing_curry_proper {Z : @Ob (Gluing F)}
-  : Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, GluingExp])
+  : Proper (≈[Z × X, Y] ==> ≈[Z, GluingExp])
       (@gluing_curry Z).
 Proof.
   intros f g H. apply gluing_exp_unique.

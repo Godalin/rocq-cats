@@ -120,7 +120,7 @@ Program Definition StaticInterpretF
   |}.
 Next Obligation.
   change (static_interpret
-    (static_arr (ArrowA K A) (id_resp (X := X))) ≈ @id (A X)).
+    (static_arr (ArrowA K A) (id_resp (X := X))) ≈ id[A X]).
   rewrite static_interpret_arr. exact (@fct_id C K A X).
 Defined.
 Next Obligation. exact (static_interpret_comp f g). Defined.

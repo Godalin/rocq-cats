@@ -21,13 +21,13 @@ Class IsFct {C D : Cat} (obj : C → D)
   (** 保持每个 Hom 广集的指定相等。 *)
 
   { fct_map_proper {X Y : C}
-    :: Proper (@HomEq C X Y ==> @HomEq D (obj X) (obj Y)) (@map X Y)
+    :: Proper (≈[X,Y] ==> ≈[obj X,obj Y]) (@map X Y)
 
   (** Preserve identities and composition on these same maps. *)
 
   (** 在同一组映射上保持恒等及复合。 *)
 
-  ; fct_map_id (X : C) : map (@id X) ≈ @id (obj X)
+  ; fct_map_id (X : C) : map (id[X]) ≈ id[obj X]
   ; fct_map_comp {X Y Z : C} (g : Hom Y Z) (f : Hom X Y)
     : map (g ∘ f) ≈ map g ∘ map f
   }.
@@ -57,5 +57,5 @@ Program Definition Fct_IsFct {C D : Cat} (F : Fct C D)
   :=
   {|fct_map_proper X Y := @fct_fmap_proper C D F X Y
   ; fct_map_id X := @fct_id C D F X
-  ; fct_map_comp X Y Z g f := @fct_comp C D F X Y Z g f
+  ; fct_map_comp _ _ _ g f := fct_comp _ _ F g f
   |}.

@@ -113,7 +113,7 @@ Proof. exact (kleisli_adj_unit X). Qed.
 Lemma kleisli_monad_mul (X : @Ob C)
   : μ[KleisliMonad] X ≈ μ[M] X.
 Proof.
-  change (kleisli_extend M (@id (M X)) ≈ μ[M] X).
+  change (kleisli_extend M (id[M X]) ≈ μ[M] X).
   unfold kleisli_extend. rewrite fct_id, comp_id_r. reflexivity.
 Qed.
 
@@ -130,7 +130,7 @@ Next Obligation.
   - change (id ∘ η[KleisliMonad] X ≈ η[M] X).
     rewrite comp_id_l. apply kleisli_monad_unit.
   - change (id ∘ μ[KleisliMonad] X ≈
-      μ[M] X ∘ (id ∘ fmap KleisliMonad (@id (M X)))).
+      μ[M] X ∘ (id ∘ fmap KleisliMonad (id[M X]))).
     rewrite fct_id, !comp_id_l, comp_id_r. apply kleisli_monad_mul.
 Defined.
 
@@ -146,7 +146,7 @@ Next Obligation.
   - change (id ∘ η[M] X ≈ η[KleisliMonad] X).
     rewrite comp_id_l. symmetry. apply kleisli_monad_unit.
   - change (id ∘ μ[M] X ≈
-      μ[KleisliMonad] X ∘ (id ∘ fmap M (@id (M X)))).
+      μ[KleisliMonad] X ∘ (id ∘ fmap M (id[M X]))).
     rewrite fct_id, !comp_id_l, comp_id_r.
     symmetry. apply kleisli_monad_mul.
 Defined.
@@ -160,7 +160,7 @@ Program Definition KleisliMonadIso
   : KleisliMonad ≅[MonadCat C] M
   := (KleisliMonadTo; (KleisliMonadFrom; _)).
 Next Obligation.
-  split; intros X; change ((@id (M X)) ∘ id ≈ id); apply comp_id_l.
+  split; intros X; change ((id[M X]) ∘ id ≈ id); apply comp_id_l.
 Defined.
 
 End KleisliAdj.

@@ -15,7 +15,9 @@ From Cats Require Export
 
     选定结构是 [HasLimit C (DiscreteF D)]；不重复保存泛性质、中介或相干律。 *)
 
-Notation "'∏[' D ']'" := (Lim (DiscreteF D)) : ob_scope.
+Notation "'∏[' D ']'" := (Lim (DiscreteF D))
+  (at level 0, format "∏[ D ]")
+  : ob_scope.
 
 (** ** Laws of an Indexed Product
 
@@ -106,5 +108,9 @@ Qed.
 
 End IndexedProduct.
 
-Notation "'π∏[' D ']'" := (indexed_proj (D := D)) : hom_scope.
-Notation "'∏⟨' κ '⟩'" := (indexed_pair κ) : hom_scope.
+Notation "'π∏[' D ']'" := (indexed_proj (D := D))
+  (at level 0, format "π∏[ D ]")
+  : hom_scope.
+Notation "'∏⟨' κ '⟩'" := (indexed_pair κ)
+  (at level 0, format "∏⟨ κ ⟩")
+  : hom_scope.

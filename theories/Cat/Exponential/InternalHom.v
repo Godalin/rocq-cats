@@ -57,8 +57,8 @@ Infix "∘ᴱ" := exp_comp
 (** 上下文复合保持两个映射的指定相等。 *)
 
 Global Instance exp_comp_proper {W X Y Z : @Ob C}
-  : Proper (@HomEq[W, Z ^ Y] ==> @HomEq[W, Y ^ X] ==>
-      @HomEq[W, Z ^ X]) exp_comp.
+  : Proper (≈[W, Z ^ Y] ==> ≈[W, Y ^ X] ==>
+      ≈[W, Z ^ X]) exp_comp.
 Proof. intros g g' H f f' K. unfold exp_comp. rewrite H, K. reflexivity. Qed.
 
 (** Internal identities compute on arguments. *)

@@ -50,10 +50,10 @@ Lemma prof_comp_cowedge_gluing
     (x : P (X,Y)) (y : Q (Y',Z))
   : κ Y (x,lmap[Q; h] y) ≈S κ Y' (rmap[P; h] x,y).
 Proof.
-  transitivity (κ Y (dimap[P; @id X; @id Y] x,lmap[Q; h] y)).
+  transitivity (κ Y (dimap[P; id[X]; id[Y]] x,lmap[Q; h] y)).
   - apply func_proper. split; [| reflexivity].
     symmetry. exact (prof_dimap_id P X Y x).
-  - transitivity (κ Y' (rmap[P; h] x,dimap[Q; @id Y'; @id Z] y)).
+  - transitivity (κ Y' (rmap[P; h] x,dimap[Q; id[Y']; id[Z]] y)).
     + exact (cowedge_comm κ h (x,y)).
     + apply func_proper. split; [reflexivity |].
       exact (prof_dimap_id Q Y' Z y).

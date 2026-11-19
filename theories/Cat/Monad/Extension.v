@@ -57,7 +57,7 @@ Qed.
 (** 返回恒等箭头，恢复单位分量。 *)
 
 Lemma monad_return_id (X : @Ob C)
-  : monad_return (@id X) ≈ η[M] X.
+  : monad_return (id[X]) ≈ η[M] X.
 Proof. unfold monad_return. apply comp_id_r. Qed.
 
 (** Extend a computation from ordinary inputs to monadic inputs. *)

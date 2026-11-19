@@ -84,7 +84,9 @@ Record SetC
     任意指定相等本身并不会自动给出所有依赖族中的运输；相应的运输及其相干性
     是后面的集合族接口须另外提供的结构。 *)
 
-Notation "[≈S]" := (carrier_equiv _).
+Notation "[≈S]" := (carrier_equiv _)
+  (at level 0)
+  : set_scope.
 
 Infix "≈S" := (carrier_equiv _)
   (at level 50) : set_scope.

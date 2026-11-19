@@ -39,11 +39,11 @@ Program Definition ArrowFreyd
   ; freyd_pure_central X Y f := arrow_pure_central A f
   |}.
 Next Obligation.
-  change (id ∘ arr[A; @id Z × f] ≈ second[A; arr[A; f]; Z] ∘ id).
+  change (id ∘ arr[A; id[Z] × f] ≈ second[A; arr[A; f]; Z] ∘ id).
   rewrite comp_id_l, comp_id_r. symmetry. apply arrow_second_arr.
 Defined.
 Next Obligation.
-  change (id ∘ arr[A; f × @id Z] ≈ first[A; arr[A; f]; Z] ∘ id).
+  change (id ∘ arr[A; f × id[Z]] ≈ first[A; arr[A; f]; Z] ∘ id).
   rewrite comp_id_l, comp_id_r. symmetry. apply arrow_first_arr.
 Defined.
 Next Obligation. symmetry. apply comp_id_r. Defined.

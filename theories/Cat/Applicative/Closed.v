@@ -126,11 +126,11 @@ Qed.
 Lemma applicative_identity {W X : @Ob C} (u : Hom W (A X))
   : pure[A; (idᴱ[X] : Hom W (X ^ X))] ⋆[A] u ≈ u.
 Proof.
-  pose proof (applicative_pure_map (@id X) u) as H.
+  pose proof (applicative_pure_map (id[X]) u) as H.
   unfold applicative_pure_value in *.
   rewrite comp_id_l in H.
   change ((pure[A] (X ^ X) ∘ (idᴱ[X] ∘ !)) ⋆[A] u ≈
-    fmap A (@id X) ∘ u) in H.
+    fmap A (id[X]) ∘ u) in H.
   rewrite exp_id_comp, fct_id, comp_id_l in H. exact H.
 Qed.
 
@@ -186,13 +186,13 @@ Lemma applicative_apply_fmap {W X Y Z : @Ob C}
 Proof.
   unfold applicative_apply, applicative_ap.
   transitivity ((lift₂[A; (eval (X := Y) (Y := Z))] ∘
-    (fmap A f × fmap A (@id Y))) ∘ ⟨u, v⟩).
+    (fmap A f × fmap A (id[Y]))) ∘ ⟨u, v⟩).
   - rewrite !comp_assoc. apply comp_proper; [reflexivity |].
     symmetry. etransitivity.
-    + exact (product_comp_l u v (fmap A f) (fmap A (@id Y))).
+    + exact (product_comp_l u v (fmap A f) (fmap A (id[Y]))).
     + rewrite fct_id, comp_id_l. reflexivity.
   - apply comp_proper; [| reflexivity].
-    exact (cartesian_lift2_pre A (eval (X := Y) (Y := Z)) f (@id Y)).
+    exact (cartesian_lift2_pre A (eval (X := Y) (Y := Z)) f (id[Y])).
 Qed.
 
 (** The uncurried composition equation is a lifted evaluation diagram.

@@ -137,7 +137,7 @@ Definition ComputationCat
 (** 纯恒等就是计算恒等。 *)
 
 Lemma arrow_arr_id (X : @Ob C)
-  : arr[A; @id X] ≈ id.
+  : arr[A; id[X]] ≈ id.
 Proof. apply fct_id. Qed.
 
 (** Pure lifting preserves ordinary composition. *)
@@ -160,7 +160,7 @@ Program Definition ContextF (Z : @Ob C)
   ; fct_fmap_proper X Y := arrow_context_proper A Z
   |}.
 Next Obligation.
-  change (context[A; Z; @id (A X)] ≈ id).
+  change (context[A; Z; id[A X]] ≈ id).
   rewrite <- (arrow_arr_id X), arrow_context_arr,
     tensor_map_id, fct_id. reflexivity.
 Defined.

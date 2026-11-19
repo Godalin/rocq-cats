@@ -56,7 +56,7 @@ Proof. firstorder. Qed.
 (** 恒等箭头是单态射。 *)
 
 Proposition mono_id {X : C}
-  : is_mono (@id X).
+  : is_mono (id[X]).
 Proof. intros Y x y Heq.
   rewrite comp_id_l in Heq.
   rewrite comp_id_l in Heq. auto.
@@ -140,7 +140,7 @@ Notation "X ↣ Y" := (Mono X Y)
 
 Program Canonical Mono_id {X : C}
   :=
-  {|mor := @id X
+  {|mor := id[X]
   |}.
 Next Obligation. apply mono_id. Qed.
 

@@ -35,7 +35,8 @@ Arguments π2 {_ _ _ _}.
 Arguments product_universal {_ _ _ _} _ _ _.
 
 Notation "X '×' Y" := (Prod X Y)
-  (at level 41, right associativity) : ob_scope.
+  (at level 41, right associativity)
+  : ob_scope.
 
 (** The Type-valued universal property supplies the chosen mediator. *)
 
@@ -49,7 +50,8 @@ Definition pair {C : Cat} `{HP : !HasProduct C} {X Y Z : C}
 Arguments pair {_ _ _ _ _} _ _.
 
 Notation "'⟨' f ',' g '⟩'" := (pair f g)
-  (format "'⟨' f  ','  g '⟩'") : hom_scope.
+  (at level 0, format "⟨ f , g ⟩")
+  : hom_scope.
 
 (** Pairing is the unique arrow with the given two projections. *)
 
@@ -66,8 +68,9 @@ Arguments product_pair_unique {_ _ _ _} _ _ _.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance product_pair_proper {C : Cat} `{HP : !HasProduct C} {X Y Z : C}
-  : Proper (@HomEq[Z,X] ==> @HomEq[Z,Y] ==> @HomEq[Z,X × Y]) pair.
+Global Instance product_pair_proper {C : Cat}
+    `{HP : !HasProduct C} {X Y Z : C}
+  : Proper (≈[Z,X] ==> ≈[Z,Y] ==> ≈[Z,X × Y]) pair.
 Proof.
   intros f f' Hf g g' Hg.
   destruct (product_pair_unique Z f g) as [[H1 H2] _].
@@ -76,11 +79,13 @@ Proof.
   - transitivity g; assumption.
 Qed.
 
-Notation "'@π1' X Y" := (@π1 _ _ _ X Y)
-  (at level 35) : hom_scope.
+Notation "'π1[' X ',' Y ']'" := (@π1 _ _ X Y)
+  (at level 0, format "π1[ X , Y ]")
+  : hom_scope.
 
-Notation "'@π2' X Y" := (@π2 _ _ _ X Y)
-  (at level 35) : hom_scope.
+Notation "'π2[' X ',' Y ']'" := (@π2 _ _ X Y)
+  (at level 0, format "π2[ X , Y ]")
+  : hom_scope.
 
 
 
@@ -139,7 +144,8 @@ End Product.
 
 Notation "P '⦂' '≅' X '×' Y 'with' p1 ',' p2"
   := (is_product X Y P p1 p2)
-  (at level 50).
+  (at level 50)
+  : cat_scope.
 
 
 
@@ -255,7 +261,8 @@ Context {C : Cat} `{H : !HasProduct C}.
 
 (** 分别将一条箭头作用于二元积的各因子。 *)
 
-Definition cross {X Y X' Y' : C} (f : Hom X X') (g : Hom Y Y')
+Definition cross {X Y X' Y' : C}
+    (f : Hom X X') (g : Hom Y Y')
   : Hom (X × Y) (X' × Y')
   := ⟨ f ∘ π1 , g ∘ π2 ⟩.
 
@@ -264,7 +271,8 @@ Opaque cross.
 End Cross.
 
 Notation "f '×' g" := (cross f g)
-  (at level 41, right associativity) : hom_scope.
+  (at level 41, right associativity)
+  : hom_scope.
 
 
 
@@ -294,8 +302,9 @@ Proof. cato. Qed.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance cross_proper {X Y X' Y' : C}
-  : Proper (@HomEq[X, X'] ==> @HomEq[Y, Y'] ==>
-      @HomEq[X × Y, X' × Y']) cross.
+  : Proper (≈[X, X'] ==> ≈[Y, Y']
+        ==> ≈[X × Y, X' × Y'])
+      cross.
 Proof.
   intros f f' Hf g g' Hg. rewrite !cross_η, Hf, Hg. reflexivity.
 Qed.
@@ -305,7 +314,7 @@ Qed.
 (** [cross] 与恒等的相容性。 *)
 
 Lemma cross_id {X Y : C}
-  : (@id X) × (@id Y) ≈ id.
+  : (id[X]) × (id[Y]) ≈ id.
 Proof.
   rewrite cross_η, !comp_id_l. symmetry.
   apply product_pair_unique. split; apply comp_id_r.
@@ -329,7 +338,8 @@ Qed.
 
 (** 两个因子上的独立作用彼此交换。 *)
 
-Lemma cross_exchange {X X' Y Y' : C} (f : Hom X X') (g : Hom Y Y')
+Lemma cross_exchange {X X' Y Y' : C}
+    (f : Hom X X') (g : Hom Y Y')
   : (id × g) ∘ (f × id) ≈ (f × id) ∘ (id × g).
 Proof.
   rewrite <- !cross_comp, !comp_id_l, !comp_id_r. reflexivity.
@@ -340,7 +350,8 @@ Qed.
 (** 积映射的后合成分别作用于配对的两个分量。 *)
 
 Lemma product_comp_l {X Y X' Y' Z : C}
-    (f : Hom Z X) (g : Hom Z Y) (f' : Hom X X') (g' : Hom Y Y')
+    (f : Hom Z X) (g : Hom Z Y)
+    (f' : Hom X X') (g' : Hom Y Y')
   : (f' × g') ∘ ⟨f , g⟩ ≈ ⟨f' ∘ f , g' ∘ g⟩.
 Proof.
   apply product_pair_unique.
@@ -439,12 +450,28 @@ Qed.
 Next Obligation. apply cross_id. Qed.
 Next Obligation. apply cross_comp. Qed.
 
+(** The product functor with its left factor fixed. *)
+
+(** 固定左因子的积函子。 *)
+
+Definition ProductLF {C : Cat}
+    `{HP : !HasProduct C} (X : C)
+  : Fct C C
+  := AtLF (@ProductF C HP) X.
+
+Notation "'(' X '×-)'" := (ProductLF X)
+  (at level 0, format "( X  ×-)")
+  : cat_scope.
+
 (** The product functor with its right factor fixed. *)
 
 (** 固定右因子的积函子。 *)
 
-Definition ProductRF {C : Cat} `{HP : !HasProduct C} (X : @Ob C)
+Definition ProductRF {C : Cat}
+    `{HP : !HasProduct C} (X : C)
   : Fct C C
-  := π1F ProductF X.
+  := AtRF ProductF X.
 
-Notation "'(-×' X ')'" := (ProductRF X) : cat_scope.
+Notation "'(-×' X ')'" := (ProductRF X)
+  (at level 0, format "(-×  X )")
+  : cat_scope.

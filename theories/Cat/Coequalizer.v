@@ -15,7 +15,8 @@ Definition is_coequalizer {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
   := @is_equalizer (C^op) Y X f g Q q.
 
 Notation "q '⦂' 'Coeq(' f ',' g ')'" := (is_coequalizer f g _ q)
-  (at level 50, no associativity) : cat_scope.
+  (at level 50, no associativity)
+  : cat_scope.
 
 (** Store only the chosen equalizers of the opposite category. *)
 
@@ -35,7 +36,9 @@ Definition CoeqObj {C : Cat} `{HC : !HasCoequalizer C} {X Y : C}
   : @Ob C
   := @EqObj (C^op) (@hasOpEqualizer C HC) Y X f g.
 
-Notation "'Coeq[' f ',' g ']'" := (CoeqObj f g) : ob_scope.
+Notation "'Coeq[' f ',' g ']'" := (CoeqObj f g)
+  (at level 0, format "Coeq[ f , g ]")
+  : ob_scope.
 
 (** The coequalizer projection is the opposite equalizer inclusion. *)
 
@@ -46,7 +49,9 @@ Definition coeqπ {C : Cat} `{HC : !HasCoequalizer C} {X Y : C}
   : Hom Y Coeq[f,g]
   := @eqι (C^op) (@hasOpEqualizer C HC) Y X f g.
 
-Notation "'πcoeq[' f ',' g ']'" := (coeqπ f g) : hom_scope.
+Notation "'πcoeq[' f ',' g ']'" := (coeqπ f g)
+  (at level 0, format "πcoeq[ f , g ]")
+  : hom_scope.
 
 (** The full universal property is inherited without additional data. *)
 
@@ -66,7 +71,9 @@ Definition coequalize {C : Cat} `{HC : !HasCoequalizer C}
   : Hom Coeq[f,g] Q
   := @equalize (C^op) (@hasOpEqualizer C HC) Y X Q f g q H.
 
-Notation "'coeq⟨' q ',' H '⟩'" := (coequalize q H) : hom_scope.
+Notation "'coeq⟨' q ',' H '⟩'" := (coequalize q H)
+  (at level 0, format "coeq⟨ q , H ⟩")
+  : hom_scope.
 
 (** ** Laws of Chosen Coequalizers
 

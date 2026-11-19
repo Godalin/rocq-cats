@@ -205,24 +205,24 @@ Defined.
 
 Lemma prof_comp_strength_context {Z W : @Ob C} (h : Hom Z W)
     (X Y : @Ob C)
-  : (lmap[Q ∘Pr P; h ⊗m @id X] ∘r prof_comp_strength W X Y) ≈f
-      (rmap[Q ∘Pr P; h ⊗m @id Y] ∘r prof_comp_strength Z X Y).
+  : (lmap[Q ∘Pr P; h ⊗m id[X]] ∘r prof_comp_strength W X Y) ≈f
+      (rmap[Q ∘Pr P; h ⊗m id[Y]] ∘r prof_comp_strength Z X Y).
 Proof.
   apply (@prof_comp_hom_ext C C C Q P X Y
     (@hasProfCompCoend C C C Q P HC X Y)). intros B [x y].
-  change (lmap[Q ∘Pr P; h ⊗m @id X]
+  change (lmap[Q ∘Pr P; h ⊗m id[X]]
     (prof_comp_strength W X Y (ιPr[Q; P; B] (x,y))) ≈S
-    rmap[Q ∘Pr P; h ⊗m @id Y]
+    rmap[Q ∘Pr P; h ⊗m id[Y]]
       (prof_comp_strength Z X Y (ιPr[Q; P; B] (x,y)))).
   rewrite !prof_comp_strength_inject.
   rewrite profunctor_comp_lmap_inject, profunctor_comp_rmap_inject.
   transitivity (ιPr[Q; P; W ⊗ B]
-    (rmap[P; h ⊗m @id B] (pstrength[SP; Z] x),pstrength[SQ; W] y)).
+    (rmap[P; h ⊗m id[B]] (pstrength[SP; Z] x),pstrength[SQ; W] y)).
   - apply func_proper. split; [| reflexivity].
     exact (prof_strength_context SP h X B x).
   - transitivity (ιPr[Q; P; Z ⊗ B]
-      (pstrength[SP; Z] x,lmap[Q; h ⊗m @id B] (pstrength[SQ; W] y))).
-    + symmetry. exact (prof_comp_gluing Q P (h ⊗m @id B)
+      (pstrength[SP; Z] x,lmap[Q; h ⊗m id[B]] (pstrength[SQ; W] y))).
+    + symmetry. exact (prof_comp_gluing Q P (h ⊗m id[B])
         (pstrength[SP; Z] x) (pstrength[SQ; W] y)).
     + apply func_proper. split; [reflexivity |].
       exact (prof_strength_context SQ h B Y y).

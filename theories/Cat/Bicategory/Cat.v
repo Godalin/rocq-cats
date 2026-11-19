@@ -81,7 +81,7 @@ Theorem cat_whisker_r {C D E : Cat}
   : whisker_r (K := CatBicat) β F ≈N (β ∘Nr F).
 Proof.
   intros X.
-  change (β (F X) ∘ fmap G (@id (F X)) ≈ β (F X)).
+  change (β (F X) ∘ fmap G (id[F X]) ≈ β (F X)).
   rewrite fct_id. apply comp_id_r.
 Qed.
 

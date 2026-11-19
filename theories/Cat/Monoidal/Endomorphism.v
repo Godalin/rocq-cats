@@ -41,7 +41,7 @@ Defined.
 (** 双范畴左单位子在自同态范畴上自然。 *)
 
 Program Definition EndoLeftUnitorN
-  : π2F (@comp1F B X X X) (id1 (Bicat := B) X) ⇒ IdF
+  : AtLF (@comp1F B X X X) (id1 (Bicat := B) X) ⇒ IdF
   :=
   {|nt f := @left_unitor B X X f
   |}.
@@ -52,7 +52,7 @@ Next Obligation. exact (@left_unitor_naturality B X X _ _ f). Defined.
 (** 双范畴右单位子在自同态范畴上自然。 *)
 
 Program Definition EndoRightUnitorN
-  : π1F (@comp1F B X X X) (id1 (Bicat := B) X) ⇒ IdF
+  : AtRF (@comp1F B X X X) (id1 (Bicat := B) X) ⇒ IdF
   :=
   {|nt f := @right_unitor B X X f
   |}.

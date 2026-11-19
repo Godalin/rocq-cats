@@ -193,10 +193,10 @@ Let I
   : @Ob C
   := TensorUnit MC.
 Let L
-  : π2F T I ≅N IdF
+  : AtLF T I ≅N IdF
   := @monoidal_left_unitor C MC.
 Let R
-  : π1F T I ≅N IdF
+  : AtRF T I ≅N IdF
   := @monoidal_right_unitor C MC.
 Context (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 Local Existing Instance HD.

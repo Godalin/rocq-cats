@@ -44,7 +44,7 @@ Program Definition FreydArrow
 Next Obligation.
   etransitivity; [exact (freyd_context_pure F Z f) |].
   pose proof (@cartesian_tensor_map C (@hasValueTerminal C K F) (@hasValueProduct C K F)
-    Z Z X Y (@id Z) f) as H. symmetry in H.
+    Z Z X Y (id[Z]) f) as H. symmetry in H.
   exact (@fct_fmap_proper C K F _ _ _ _ H).
 Defined.
 Next Obligation.

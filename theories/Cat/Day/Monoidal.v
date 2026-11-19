@@ -27,7 +27,7 @@ Section DayMonoidal.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) (I : @Ob C)
     (A : TensorLF T ≅N TensorRF T)
-    (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
+    (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 Context (Hp : ∀ a b c d : @Ob C,
     A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d) ≈
       fmap T (X := (a,T (T (b,c),d))) (Y := (a,T (b,T (c,d))))

@@ -32,7 +32,7 @@ Definition ProfCompKernel@{u p +} {C D E : Cat}
     (X : @Ob C) (Z : @Ob E)
   : Fct ((D^op) ×C D) (SetCat@{u p _ _ _ _ _})
   := @PointwiseProductF _ SetCat SetCat_HasProduct
-      (π2F P X ∘F SndF (D^op) D) (π1F Q Z ∘F FstF (D^op) D).
+      (AtLF P X ∘F π2F (D^op) D) (AtRF Q Z ∘F π1F (D^op) D).
 
 (** ** Changing the Outer Boundaries
 
@@ -59,8 +59,8 @@ Definition ProfCompBoundaryN {X X' : @Ob C} {Z Z' : @Ob E}
     (f : Hom X' X) (g : Hom Z Z')
   : ProfCompKernel Q P X Z ⇒ ProfCompKernel Q P X' Z'
   := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _
-      (ProfLmapN P f ∘Nr SndF (D^op) D)
-      (ProfRmapN Q g ∘Nr FstF (D^op) D).
+      (ProfLmapN P f ∘Nr π2F (D^op) D)
+      (ProfRmapN Q g ∘Nr π1F (D^op) D).
 
 (** Boundary changes respect the two categories' specified arrow equality. *)
 
@@ -81,7 +81,7 @@ Defined.
 (** 恒等改变就是原单侧恒等映射。 *)
 
 Lemma prof_comp_boundary_id (X : @Ob C) (Z : @Ob E)
-  : ProfCompBoundaryN (@id X) (@id Z) ≈N IdN.
+  : ProfCompBoundaryN (id[X]) (id[Z]) ≈N IdN.
 Proof.
   intros [A B] [x y]. split.
   - exact (prof_lmap_id P X B x).

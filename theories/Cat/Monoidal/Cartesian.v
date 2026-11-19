@@ -42,7 +42,7 @@ Defined.
 (** 从左侧带终对象的积取投影。 *)
 
 Program Definition CartLeftUnitorN
-  : π2F ProductF 1 ⇒ IdF
+  : (1 ×-) ⇒ IdF
   :=
   {|nt X := π2
   |}.
@@ -55,7 +55,7 @@ Defined.
 (** 从右侧带终对象的积取投影。 *)
 
 Program Definition CartRightUnitorN
-  : π1F ProductF 1 ⇒ IdF
+  : (-× 1) ⇒ IdF
   :=
   {|nt X := π1
   |}.
@@ -69,7 +69,7 @@ Defined.
 (** 左单位子的逆将终箭头与恒等配对；这个见证保持透明，也适用于具体模型计算。 *)
 
 Definition CartLeftUnitorIso
-  : π2F ProductF 1 ≅N IdF.
+  : (1 ×-) ≅N IdF.
 Proof.
   exists CartLeftUnitorN. intros X. exists ⟨!, id⟩. split.
   - change ((⟨!, id⟩ : Hom X (1 × X)) ∘ π2 ≈ id).
@@ -86,7 +86,7 @@ Defined.
 (** 右单位子的逆将恒等与终箭头配对。 *)
 
 Definition CartRightUnitorIso
-  : π1F ProductF 1 ≅N IdF.
+  : (-× 1) ≅N IdF.
 Proof.
   exists CartRightUnitorN. intros X. exists ⟨id, !⟩. split.
   - change ((⟨id, !⟩ : Hom X (X × 1)) ∘ π1 ≈ id).
@@ -159,7 +159,7 @@ Proof.
     apply comp_proper; [reflexivity |].
     etransitivity.
     + exact (product_comp_l (! : Hom (MonoidCarrier A) 1)
-        (@id (MonoidCarrier A)) e[A] (@id (MonoidCarrier A))).
+        (id[MonoidCarrier A]) e[A] (id[MonoidCarrier A])).
     + rewrite comp_id_l. reflexivity.
   - rewrite H. apply product_β2.
 Qed.
@@ -179,8 +179,8 @@ Proof.
   - symmetry. rewrite comp_assoc.
     apply comp_proper; [reflexivity |].
     etransitivity.
-    + exact (product_comp_l (@id (MonoidCarrier A))
-        (! : Hom (MonoidCarrier A) 1) (@id (MonoidCarrier A)) e[A]).
+    + exact (product_comp_l (id[MonoidCarrier A])
+        (! : Hom (MonoidCarrier A) 1) (id[MonoidCarrier A]) e[A]).
     + rewrite comp_id_l. reflexivity.
   - rewrite H. apply product_β1.
 Qed.

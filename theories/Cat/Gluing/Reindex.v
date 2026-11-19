@@ -239,7 +239,7 @@ Definition gluing_fiber_reindex_equiv_iso {A B : C} {f g : Hom A B}
 (** 先比较 [D] 中的恒等重索引，再沿 [F] 恒等律的逆方向改变基箭头。 *)
 
 Definition GluingFiberReindexIdN (A : C)
-  : (@IdF (GluingFiber F A)) ⇒ GluingFiberReindexF (@id A)
+  : (@IdF (GluingFiber F A)) ⇒ GluingFiberReindexF (id[A])
   := SliceReindexEqN (symmetry (@fct_id C D F A)) ∘Nv
       SliceReindexIdN (F A).
 
@@ -248,7 +248,7 @@ Definition GluingFiberReindexIdN (A : C)
 (** 恒等比较保留既有透明逆映射。 *)
 
 Definition gluing_fiber_reindex_id_iso (A : C)
-  : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF (@id A).
+  : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF (id[A]).
 Proof.
   exists (GluingFiberReindexIdN A). apply nat_comp_iso.
   - intro R. apply slice_reindex_equiv_iso.
@@ -309,10 +309,10 @@ Definition gluing_fiber_reindex_equiv_β2 {A B : C} {f g : Hom A B}
 (** 恒等比较后接其提升投影得到恒等。 *)
 
 Definition gluing_fiber_reindex_id_β2 (A : C) (R : GluingFiber F A)
-  : pb2 (fmap F (@id A)) (slice_arrow R) ∘
+  : pb2 (fmap F (id[A])) (slice_arrow R) ∘
       slice_map (GluingFiberReindexIdN A R) ≈ id.
 Proof.
-  change (pb2 (fmap F (@id A)) (slice_arrow R) ∘
+  change (pb2 (fmap F (id[A])) (slice_arrow R) ∘
     (slice_map (slice_reindex_equiv (symmetry (@fct_id C D F A)) R)
       ∘ slice_map (slice_reindex_id R)) ≈ id).
   rewrite <- comp_assoc, slice_reindex_equiv_β2.
@@ -435,7 +435,7 @@ Defined.
 (** 恒等重索引后接其比较，恢复恒等。 *)
 
 Definition gluing_fiber_lift_id (A : C) (R : GluingFiber F A)
-  : gluing_fiber_lift (@id A) R ∘
+  : gluing_fiber_lift (id[A]) R ∘
       fmap (GluingFiberInclusionF F A) (GluingFiberReindexIdN A R) ≈ id.
 Proof.
   split.
@@ -492,7 +492,7 @@ Proof.
     pb2 (fmap F f) (slice_arrow R) ∘ id).
   rewrite <- !(@comp_assoc D), gluing_fiber_reindex_equiv_β2,
     gluing_fiber_reindex_comp_β2.
-  rewrite (comp_assoc (pb2 (fmap F (@id B)) (slice_arrow R))),
+  rewrite (comp_assoc (pb2 (fmap F (id[B])) (slice_arrow R))),
     (slice_reindex_map_β2 (fmap F f) (GluingFiberReindexIdN B R)),
     <- comp_assoc,
     gluing_fiber_reindex_id_β2, comp_id_l, comp_id_r. reflexivity.

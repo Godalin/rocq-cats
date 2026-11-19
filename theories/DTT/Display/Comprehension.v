@@ -51,14 +51,14 @@ Defined.
 Next Obligation.
   transitivity (fmap (ExtF K) (element_map_id P (Γ; A))).
   - apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
-    change (@id Γ ≈ id). reflexivity.
+    change (id[Γ] ≈ id). reflexivity.
   - apply fct_id.
 Defined.
 Next Obligation.
   transitivity (fmap (ExtF K)
     (element_map_comp P (element_conv P d) (element_conv P e))).
   - apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
-    change (@id Γ ≈ id ∘ id). symmetry. apply comp_id_l.
+    change (id[Γ] ≈ id ∘ id). symmetry. apply comp_id_l.
   - exact (fct_comp (ElementsCat P) C (ExtF K)
       (element_conv P d) (element_conv P e)).
 Defined.
@@ -68,7 +68,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
-  change (@id Γ ≈ id). reflexivity.
+  change (id[Γ] ≈ id). reflexivity.
 Defined.
 Next Obligation.
   rewrite <- !(fct_comp (ElementsCat P) C (ExtF K)).

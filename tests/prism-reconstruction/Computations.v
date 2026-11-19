@@ -44,11 +44,11 @@ Proof. intros H. exact (H false).1. Defined.
 (** 提取的边界保留两个不同的具体对象。 *)
 
 Example initial_boundary_computes
-  : π1F (NatPrismF DirectedN) fin_first true = false.
+  : AtRF (NatPrismF DirectedN) fin_first true = false.
 Proof. reflexivity. Qed.
 
 Example final_boundary_computes
-  : π1F (NatPrismF DirectedN) (fin_next fin_first) false = true.
+  : AtRF (NatPrismF DirectedN) (fin_next fin_first) false = true.
 Proof. reflexivity. Qed.
 
 (** Extraction returns the actual noninvertible witness. Native equality

@@ -24,8 +24,8 @@ Constraint o < l.
 Context (C : Cat@{o h e l l}) (D : Cat@{h e o l l})
     (K : Fct (C ×C [Ord 1]) D)
     (F G : Fct C D) (α : F ⇒ G)
-    (a : F ⇒ π1F K fin_first)
-    (b : G ⇒ π1F K (fin_next fin_first))
+    (a : F ⇒ AtRF K fin_first)
+    (b : G ⇒ AtRF K (fin_next fin_first))
     (H : (b ∘Nv α) ≈N (PrismTransformationN K ∘Nv a)).
 
 (** Rebuilding an arbitrary prism retains independent native sizes. *)

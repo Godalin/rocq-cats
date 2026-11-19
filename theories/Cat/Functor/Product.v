@@ -21,7 +21,7 @@ From Cats Require Import
 
 (** 第一投影保留对象及箭头的第一分量。 *)
 
-Program Definition FstF (C : Cat) (D : Cat)
+Program Definition π1F (C : Cat) (D : Cat)
   : Fct (C ×C D) C
   :=
   {|F0 := fst
@@ -35,7 +35,7 @@ Next Obligation. reflexivity. Defined.
 
 (** 第二投影保留第二分量。 *)
 
-Program Definition SndF (C : Cat) (D : Cat)
+Program Definition π2F (C : Cat) (D : Cat)
   : Fct (C ×C D) D
   :=
   {|F0 := snd
@@ -65,7 +65,7 @@ Next Obligation. split; apply fct_comp. Defined.
 (** ** Fixing the Second Product Coordinate
 
     For categories [A], [B], [C] and [K : Fct (A ×C B) C], fixing
-    an object of [B] gives the existing restriction [π1F K b] on [A].
+    an object of [B] gives the existing restriction [AtRF K b] on [A].
     An arrow of [B] then gives a natural transformation between these
     restrictions. This uses product
     categories, without choosing products inside any of the three categories. *)
@@ -73,7 +73,7 @@ Next Obligation. split; apply fct_comp. Defined.
 (** ** 固定积的第二坐标
 
     给定范畴 [A]、[B]、[C] 及 [K : Fct (A ×C B) C]，固定 [B] 的一个
-    对象就得到已有的限制函子 [π1F K b]；[B] 中的箭头随后给出这些限制之间
+    对象就得到已有的限制函子 [AtRF K b]；[B] 中的箭头随后给出这些限制之间
     的自然变换。
     此处使用积范畴，不在这三个范畴内选取积结构。 *)
 
@@ -84,8 +84,8 @@ Context {A B C : Cat} (K : Fct (A ×C B) C).
 
 (** 第二坐标的箭头在每个第一坐标对象处作用。 *)
 
-Program Definition ProductAtN {b b' : @Ob B} (a : Hom b b')
-  : π1F K b ⇒ π1F K b'
+Program Definition ProductAtN {b b' : B} (a : Hom b b')
+  : AtRF K b ⇒ AtRF K b'
   :=
   {|nt x := fmap K (X := (x, b)) (Y := (x, b')) (id, a)
   |}.
@@ -117,11 +117,13 @@ Proof. intros x. exact (@fct_id _ _ K (x, b)). Defined.
 
 (** 参数中的复合变成自然变换的垂直复合。 *)
 
-Lemma product_at_comp {b b' b'' : @Ob B}
+Lemma product_at_comp {b b' b'' : B}
     (a' : Hom b' b'') (a : Hom b b')
-  : ProductAtN (a' ∘ a) ≈N (ProductAtN a' ∘Nv ProductAtN a).
+  : ProductAtN (a' ∘ a)
+    ≈N (ProductAtN a' ∘Nv ProductAtN a).
 Proof.
-  intros x. cbn. rewrite <- fct_comp. apply fct_fmap_proper.
+  intros x. cbn. rewrite <- fct_comp.
+  apply fct_fmap_proper.
   split; cbn; carw; reflexivity.
 Defined.
 
@@ -129,10 +131,10 @@ Defined.
 
 (** 积中的箭头可先改变参数，再改变第一坐标。 *)
 
-Lemma product_at_map {x y : @Ob A} {b b' : @Ob B}
+Lemma product_at_map {x y : A} {b b' : B}
     (f : Hom x y) (a : Hom b b')
-  : fmap K (X := (x, b)) (Y := (y, b')) (f, a) ≈
-      fmap (π1F K b') f ∘ ProductAtN a x.
+  : fmap K (X := (x, b)) (Y := (y, b')) (f, a)
+    ≈ fmap (AtRF K b') f ∘ ProductAtN a x.
 Proof.
   cbn. rewrite <- fct_comp. apply fct_fmap_proper.
   split; cbn; carw; reflexivity.
@@ -146,14 +148,14 @@ End ProductRestrictions.
 (** 改变第一坐标给出另一参数自然变换；通过显式翻转图式，复用第二坐标自然性。 *)
 
 Program Definition ProductFirstAtN {A B C : Cat}
-    (K : Fct (A ×C B) C) {a a' : @Ob A} (f : Hom a a')
-  : π2F K a ⇒ π2F K a'
+    (K : Fct (A ×C B) C) {a a' : A} (f : Hom a a')
+  : AtLF K a ⇒ AtLF K a'
   :=
   {|nt b := fmap K (X := (a,b)) (Y := (a',b)) (f,id)
   |}.
 Next Obligation.
   exact (nat_naturality
-    (ProductAtN (K ∘F PairF (SndF B A) (FstF B A)) f) f0).
+    (ProductAtN (K ∘F PairF (π2F B A) (π1F B A)) f) f0).
 Defined.
 
 (** Restrict a natural comparison to one parameter value. *)
@@ -162,7 +164,7 @@ Defined.
 
 Program Definition ProductRestrictionN {A B C : Cat}
     {K L : Fct (A ×C B) C} (β : K ⇒ L) (b : @Ob B)
-  : π1F K b ⇒ π1F L b
+  : AtRF K b ⇒ AtRF L b
   :=
   {|nt x := β (x, b)
   |}.
@@ -175,8 +177,9 @@ Defined.
 (** 限制保持比较所指定的逐点相等。 *)
 
 Global Instance product_restriction_proper {A B C : Cat}
-    {K L : Fct (A ×C B) C} (b : @Ob B)
-  : Proper (NatEq ==> NatEq) (λ β : K ⇒ L, ProductRestrictionN β b).
+    {K L : Fct (A ×C B) C} (b : B)
+  : Proper (NatEq ==> NatEq)
+    (λ β : K ⇒ L, ProductRestrictionN β b).
 Proof. intros β γ H x. exact (H (x, b)). Defined.
 
 (** A natural comparison of product functors intertwines their parameter
@@ -188,7 +191,7 @@ Proof. intros β γ H x. exact (H (x, b)). Defined.
 
 Lemma product_at_natural {A B C : Cat}
     {K L : Fct (A ×C B) C} (β : K ⇒ L)
-    {b b' : @Ob B} (a : Hom b b')
+    {b b' : B} (a : Hom b b')
   : (ProductRestrictionN β b' ∘Nv ProductAtN K a) ≈N
       (ProductAtN L a ∘Nv ProductRestrictionN β b).
 Proof.
@@ -202,10 +205,11 @@ Defined.
 (** 将带积标签的诱导范畴重新包装为诱导范畴的积。对象及箭头映射均为恒等，
     不要求范畴定律字段原生相等。 *)
 
-Program Definition InducedProductF {C : Cat} {D : Cat} (X : Type) (Y : Type)
-    (j : X → @Ob C) (k : Y → @Ob D)
+Program Definition InducedProductF
+    {C : Cat} {D : Cat} (X : Type) (Y : Type)
+    (j : X → C) (k : Y → D)
   : Fct (InducedCat (C := C ×C D) (X * Y)
-      (λ xy, (j (fst xy), k (snd xy))))
+        (λ xy, (j (fst xy), k (snd xy))))
       (InducedCat X j ×C InducedCat Y k)
   :=
   {|F0 xy := xy
@@ -219,8 +223,9 @@ Next Obligation. split; reflexivity. Defined.
 
 (** 反向重新包装保留相同的计算数据。 *)
 
-Program Definition InducedProductInvF {C : Cat} {D : Cat} (X : Type) (Y : Type)
-    (j : X → @Ob C) (k : Y → @Ob D)
+Program Definition InducedProductInvF
+    {C : Cat} {D : Cat} (X : Type) (Y : Type)
+    (j : X → C) (k : Y → D)
   : Fct (InducedCat X j ×C InducedCat Y k)
       (InducedCat (C := C ×C D) (X * Y)
         (λ xy, (j (fst xy), k (snd xy))))
@@ -236,8 +241,8 @@ Next Obligation. split; reflexivity. Defined.
 
 (** 逐点积复用目标范畴的选定积双函子。 *)
 
-Definition PointwiseProductF {J : Cat} {C : Cat} `{HP : !HasProduct C}
-    (F G : Fct J C)
+Definition PointwiseProductF {J : Cat} {C : Cat}
+    `{HP : !HasProduct C} (F G : Fct J C)
   : Fct J C
   := ProductF ∘F PairF F G.
 
@@ -245,8 +250,9 @@ Definition PointwiseProductF {J : Cat} {C : Cat} `{HP : !HasProduct C}
 
 (** 分量映射诱导逐点积之间的映射。 *)
 
-Program Definition PointwiseProductN {J : Cat} {C : Cat} `{HP : !HasProduct C}
-    {F F' G G' : Fct J C} (α : F ⇒ F') (β : G ⇒ G')
+Program Definition PointwiseProductN {J : Cat} {C : Cat}
+    `{HP : !HasProduct C} {F F' G G' : Fct J C}
+    (α : F ⇒ F') (β : G ⇒ G')
   : PointwiseProductF F G ⇒ PointwiseProductF F' G'
   :=
   {|nt i := α i × β i
@@ -272,9 +278,10 @@ Defined.
 
 (** 配对两份指定自然同构的分量。 *)
 
-Program Definition ProdNatIso {J C D : Cat} {H K : Fct J (C ×C D)}
-    (α : (FstF C D ∘F H) ≅N (FstF C D ∘F K))
-    (β : (SndF C D ∘F H) ≅N (SndF C D ∘F K))
+Program Definition ProdNatIso {J C D : Cat}
+    {H K : Fct J (C ×C D)}
+    (α : (π1F C D ∘F H) ≅N (π1F C D ∘F K))
+    (β : (π2F C D ∘F H) ≅N (π2F C D ∘F K))
   : H ≅N K
   := ({|nt X := (α.1 X, β.1 X)
        |}; λ X, (((α.2 X).1, (β.2 X).1); _)).
@@ -291,20 +298,28 @@ Defined.
 
 (** 配对函子的第一投影恢复其第一因子。 *)
 
-Program Definition FstPairIso {J C D : Cat} (F : Fct J C) (G : Fct J D)
-  : (FstF C D ∘F PairF F G) ≅N F
+Program Definition FstPairIso {J C D : Cat}
+    (F : Fct J C) (G : Fct J D)
+  : (π1F C D ∘F PairF F G) ≅N F
   := ({|nt X := id
        |}; _).
 Next Obligation. cbn. carw. Defined.
-Next Obligation. intro X. exists id. split; apply comp_id_l. Defined.
+Next Obligation.
+  intro X. exists id.
+  split; apply comp_id_l.
+Defined.
 
 (** The second projection recovers the second factor. *)
 
 (** 第二投影恢复第二因子。 *)
 
-Program Definition SndPairIso {J C D : Cat} (F : Fct J C) (G : Fct J D)
-  : (SndF C D ∘F PairF F G) ≅N G
+Program Definition SndPairIso {J C D : Cat}
+    (F : Fct J C) (G : Fct J D)
+  : (π2F C D ∘F PairF F G) ≅N G
   := ({|nt X := id
        |}; _).
 Next Obligation. cbn. carw. Defined.
-Next Obligation. intro X. exists id. split; apply comp_id_l. Defined.
+Next Obligation.
+  intro X. exists id.
+  split; apply comp_id_l.
+Defined.

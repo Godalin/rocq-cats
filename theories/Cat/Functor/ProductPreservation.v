@@ -30,7 +30,7 @@ Local Open Scope ob_scope.
 Section ProductPreservation.
 Context {C D : Cat} (F : Fct C D).
 Context `{PC : !HasProduct C} `{PD : !HasProduct D}.
-Context (preserves : ∀ X Y : @Ob C,
+Context (preserves : ∀ X Y : C,
     is_product (F X) (F Y) (F (X × Y)) (fmap F π1) (fmap F π2)).
 
 (** Preservation of the chosen cones extends to any candidate product.
@@ -59,7 +59,7 @@ Defined.
 
 (** 两个积泛性质确定规范同构。 *)
 
-Definition preserved_product_iso (X Y : @Ob C)
+Definition preserved_product_iso (X Y : C)
   : F (X × Y) ≅ (F X × F Y)
   := product_unique (preserves X Y) product_universal.
 
@@ -67,7 +67,7 @@ Definition preserved_product_iso (X Y : @Ob C)
 
 (** 逆比较是指向像积锥的中介。 *)
 
-Definition preserved_product_inv (X Y : @Ob C)
+Definition preserved_product_inv (X Y : C)
   : Hom (F X × F Y) (F (X × Y))
   := (preserves X Y _ π1 π2).1.
 
@@ -75,7 +75,7 @@ Definition preserved_product_inv (X Y : @Ob C)
 
 (** 按指定相等，其两个投影就是选定的目标投影。 *)
 
-Lemma preserved_product_inv_β (X Y : @Ob C)
+Lemma preserved_product_inv_β (X Y : C)
   : (fmap F π1 ∘ preserved_product_inv X Y ≈ π1) ∧
     (fmap F π2 ∘ preserved_product_inv X Y ≈ π2).
 Proof. exact (@this _ _ _ _ _ (preserves X Y _ π1 π2).2). Qed.
@@ -84,7 +84,7 @@ Proof. exact (@this _ _ _ _ _ (preserves X Y _ π1 π2).2). Qed.
 
 (** 配对的像通过逆比较分解。 *)
 
-Lemma preserved_pair {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
+Lemma preserved_pair {X Y Z : C} (f : Hom Z X) (g : Hom Z Y)
   : fmap F ⟨f, g⟩ ≈ preserved_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
 Proof.
   apply (product_cone_ext (preserves X Y)).
@@ -98,7 +98,7 @@ Qed.
 
 (** 逆比较在两个因子上自然。 *)
 
-Lemma preserved_product_inv_natural {X Y X' Y' : @Ob C}
+Lemma preserved_product_inv_natural {X Y X' Y' : C}
     (f : Hom X X') (g : Hom Y Y')
   : fmap F (f × g) ∘ preserved_product_inv X Y ≈
       preserved_product_inv X' Y' ∘ (fmap F f × fmap F g).

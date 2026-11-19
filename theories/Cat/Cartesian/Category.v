@@ -91,7 +91,7 @@ Program Definition TerminalCartF@{o h p l +} (C : CartCat@{l o h p l})
 Program Definition FstCartF (C D : CartCat)
   : CartFctS (ProdCart C D) C
   :=
-  {|CartFctToFct := FstF C D
+  {|CartFctToFct := π1F C D
   ; isCartF :=
     {|fct_terminal := @terminal_universal C (hasTerminal C)
     ; fct_product X Y := @product_universal C (hasProduct C)
@@ -106,7 +106,7 @@ Program Definition FstCartF (C D : CartCat)
 Program Definition SndCartF (C D : CartCat)
   : CartFctS (ProdCart C D) D
   :=
-  {|CartFctToFct := SndF C D
+  {|CartFctToFct := π2F C D
   ; isCartF :=
     {|fct_terminal := @terminal_universal D (hasTerminal D)
     ; fct_product X Y := @product_universal D (hasProduct D)

@@ -90,7 +90,7 @@ Proof.
   pose proof (ops_pre (IsApplicativeOps := operations_laws O)
     (eval (X := Y) (Y := Z)) (ƛ f) id) as H.
   change (lift₂ᵒ[O; (eval (X := Y) (Y := Z))] ∘
-    (fmap O (ƛ f) × fmap O (@id Y)) ≈ lift₂ᵒ[O; uncurry (ƛ f)]) in H.
+    (fmap O (ƛ f) × fmap O (id[Y])) ≈ lift₂ᵒ[O; uncurry (ƛ f)]) in H.
   rewrite fct_id, exp_β in H. symmetry. exact H.
 Qed.
 
@@ -318,9 +318,9 @@ Lemma applicative_application_roundtrip_tensor (A : Applicative C HT HP)
   : φ₂[ApplicationA (ApplicativeApplication A); X; Y] ≈ φ₂[A; X; Y].
 Proof.
   change (lift₂ᵒ[ApplicationOperations (ApplicativeApplication A);
-    (@id (X × Y))] ≈ φ₂[A; X; Y]).
+    (id[X × Y])] ≈ φ₂[A; X; Y]).
   rewrite (application_roundtrip_lift (ApplicativeOperations A)
-    (@id (X × Y))).
+    (id[X × Y])).
   unfold operations_lift, ApplicativeOperations, lax_lift2.
   rewrite fct_id, comp_id_l. reflexivity.
 Qed.

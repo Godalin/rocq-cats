@@ -126,7 +126,9 @@ Notation "A '[' f ']S'" := (ReindexFamS A f)
 Definition SigEq {X : SetC} {Y : FamS X} (a b : ∃ x : X, Y x)
   := ∃ p : a.1 ≈S b.1, transpS Y p a.2 ≈S b.2.
 
-Infix "≈ΣS" := SigEq (at level 50).
+Infix "≈ΣS" := SigEq
+  (at level 50)
+  : set_scope.
 
 (** [SigEq] is an equivalence relation. *)
 

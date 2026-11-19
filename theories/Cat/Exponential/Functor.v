@@ -34,8 +34,8 @@ Notation "v '^' u" := (exp_dimap u v)
 (** 任一侧映射按指定相等改变时，诱导的指数映射仍相等。 *)
 
 Global Instance exp_dimap_proper {X X' Y Y'}
-  : Proper (@HomEq[X', X] ==> @HomEq[Y, Y'] ==>
-      @HomEq[Y ^ X, Y' ^ X']) exp_dimap.
+  : Proper (≈[X', X] ==> ≈[Y, Y'] ==>
+      ≈[Y ^ X, Y' ^ X']) exp_dimap.
 Proof.
   intros u u' Hu v v' Hv. unfold exp_dimap.
   rewrite Hu, Hv. reflexivity.
@@ -57,7 +57,7 @@ Proof. apply exp_β. Qed.
 (** 参数映射取恒等时，恢复已有的结果对象协变作用。 *)
 
 Lemma exp_dimap_id_r {X Y Y'} (v : Hom Y Y')
-  : v ^ (@id X) ≈ exp_map v.
+  : v ^ (id[X]) ≈ exp_map v.
 Proof.
   unfold exp_dimap, exp_map.
   rewrite cross_id, comp_id_r. reflexivity.
@@ -68,7 +68,7 @@ Qed.
 (** 两侧恒等映射诱导指数对象上的恒等映射。 *)
 
 Lemma exp_dimap_id {X Y}
-  : (@id Y) ^ (@id X) ≈ @id (Y ^ X).
+  : (id[Y]) ^ (id[X]) ≈ id[Y ^ X].
 Proof. rewrite exp_dimap_id_r. apply exp_map_id. Qed.
 
 (** Uncurrying commutes with changing the argument and result objects. *)
@@ -137,7 +137,7 @@ Qed.
 (** 将双变量作用组装为乘积范畴上的函子。 *)
 
 Program Definition ExpBiF
-  : Fct (C^op ×C C) C
+  : Fct ((C^op) ×C C) C
   :=
   {|F0 p := (snd p ^ fst p)%ob
   ; F1 X Y f := (snd f ^ fst f)%hom
@@ -154,7 +154,7 @@ Next Obligation. apply exp_dimap_comp. Qed.
 
 Definition ExpContraF (Y : @Ob C)
   : Fct (C^op) C
-  := π1F ExpBiF Y.
+  := AtRF ExpBiF Y.
 
 (** Fixing the argument gives the existing covariant exponential functor,
     compared by identity components and specified morphism equality. *)
@@ -162,7 +162,7 @@ Definition ExpContraF (Y : @Ob C)
 (** 固定参数后，以恒等分量及指定态射相等比较双函子的截面与已有协变指数函子。 *)
 
 Program Definition ExpFixedN (X : @Ob C)
-  : π2F ExpBiF X ⇒ ExpF X
+  : AtLF ExpBiF X ⇒ ExpF X
   :=
   {|nt Y := id
   |}.
@@ -176,7 +176,7 @@ Qed.
 (** 比较的恒等分量可逆，不要求函子记录或其定律字段相等。 *)
 
 Definition exp_fixed_nat_iso (X : @Ob C)
-  : π2F ExpBiF X ≅N ExpF X.
+  : AtLF ExpBiF X ≅N ExpF X.
 Proof.
   exists (ExpFixedN X). intros Y.
   exists id. split; apply comp_id_l.

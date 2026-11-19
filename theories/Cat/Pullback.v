@@ -65,23 +65,31 @@ Proof. exact (snd (pullback_universal (f := f) (g := g)) P p1 p2 HP).2. Qed.
 
 Notation "X '×[' f ',' g ']' Y" := (@Pb _ _ X Y _ f g)
   (at level 52, no associativity,
-    format "X '×[' f ',' g ] Y") : ob_scope.
+    format "X '×[' f ',' g ] Y")
+  : ob_scope.
 
-Notation "'@×[' f ',' g ']'" := (@Pb _ _ _ _ _ f g)
-  (at level 52, no associativity,
-    format "'@×[' f ',' g ]") : ob_scope.
+Notation "'Pb[' f ',' g ']'" := (@Pb _ _ _ _ _ f g)
+  (at level 0, format "Pb[ f , g ]")
+  : ob_scope.
 
 Notation "X '×[' f '→' Z '←' g ']' Y" := (@Pb _ _ X Y Z f g)
   (at level 52, no associativity,
-    format "X  '×[' f  '→'  Z  '←'  g ]  Y") : ob_scope.
+    format "X  '×[' f  '→'  Z  '←'  g ]  Y")
+  : ob_scope.
 
-Notation "#pb1" := (pb1 _ _) : hom_scope.
-Notation "#pb2" := (pb2 _ _) : hom_scope.
+Notation "#pb1" := (pb1 _ _)
+  (at level 0)
+  : hom_scope.
+Notation "#pb2" := (pb2 _ _)
+  (at level 0)
+  : hom_scope.
 
-Notation "@pb1 f g" := (pb1 f g)
-  (at level 60) : hom_scope.
-Notation "@pb2 f g" := (pb2 f g)
-  (at level 60) : hom_scope.
+Notation "'pb1[' f ',' g ']'" := (pb1 f g)
+  (at level 0, format "pb1[ f , g ]")
+  : hom_scope.
+Notation "'pb2[' f ',' g ']'" := (pb2 f g)
+  (at level 0, format "pb2[ f , g ]")
+  : hom_scope.
 
 Hint Resolve pullback_comm : cat.
 
@@ -92,7 +100,7 @@ Hint Resolve pullback_comm : cat.
 (** 沿四条边的指定相等传递候选拉回方形，保留原中介；不要求相等见证本身
     相等，也不要求全局选定拉回。 *)
 
-Definition pullback_congr {C : Cat} {X Y Z P : @Ob C}
+Definition pullback_congr {C : Cat} {X Y Z P : C}
     {f f' : Hom X Z} {g g' : Hom Y Z}
     {p1 p1' : Hom P X} {p2 p2' : Hom P Y}
     (Hf : f ≈ f') (Hg : g ≈ g')
@@ -118,7 +126,7 @@ Defined.
 
 (** 指向拉回的两条态射在两个投影下都相等时，它们相等。 *)
 
-Theorem pullback_hom_ext {C : Cat} {X Y Z P Q : @Ob C}
+Theorem pullback_hom_ext {C : Cat} {X Y Z P Q : C}
     {f : Hom X Z} {g : Hom Y Z} {p1 : Hom P X} {p2 : Hom P Y}
     (HP : is_pullback f g P p1 p2) (u v : Hom Q P)
     (H1 : p1 ∘ u ≈ p1 ∘ v) (H2 : p2 ∘ u ≈ p2 ∘ v)
@@ -151,7 +159,8 @@ Context {C : Cat}.
 
 (** 同一余跨度的两个拉回同构。 *)
 
-Theorem pullback_unique {X Y Z : C} {f : Hom X Z} {g : Hom Y Z}
+Theorem pullback_unique {X Y Z : C}
+    {f : Hom X Z} {g : Hom Y Z}
     {P : C} {p1 : Hom P X} {p2 : Hom P Y}
     {Q : C} {q1 : Hom Q X} {q2 : Hom Q Y}
   : is_pullback f g P p1 p2 → is_pullback f g Q q1 q2
@@ -186,9 +195,11 @@ End Pullback.
 
 (** 沿拉回顶点的同构传递泛性质。 *)
 
-Definition pullback_iso {C : Cat} {X Y Z : @Ob C} {f : Hom X Z} {g : Hom Y Z}
-    {P Q : @Ob C} {p1 : Hom P X} {p2 : Hom P Y}
-    {q1 : Hom Q X} {q2 : Hom Q Y} (i : Hom Q P) (Hi : is_iso i)
+Definition pullback_iso {C : Cat} {X Y Z : C}
+    {f : Hom X Z} {g : Hom Y Z}
+    {P Q : C} {p1 : Hom P X} {p2 : Hom P Y}
+    {q1 : Hom Q X} {q2 : Hom Q Y} (i : Hom Q P)
+    (Hi : is_iso i)
     (H1 : p1 ∘ i ≈ q1) (H2 : p2 ∘ i ≈ q2)
     (HP : is_pullback f g P p1 p2)
   : is_pullback f g Q q1 q2.
@@ -213,7 +224,7 @@ Defined.
 (** 沿同构改变一个基底对象并保留拉回顶点，第一个投影与给定同构复合。
     锥的运输使用透明定律，使中介可读取 Type 值见证。 *)
 
-Definition pullback_base_iso {C : Cat} {X X' Y Z P : @Ob C}
+Definition pullback_base_iso {C : Cat} {X X' Y Z P : C}
     {f : Hom X Z} {g : Hom Y Z} {h : Hom X' Z}
     {p1 : Hom P X'} {p2 : Hom P Y}
     (i : Hom X' X) (Hi : is_iso i) (H : h ≈ f ∘ i)
@@ -256,8 +267,8 @@ Defined.
 (** 将余跨度两边后合成同一单态射。消去性恢复原锥方程，故保留顶点及中介；
     不要求出边界可逆。 *)
 
-Definition pullback_postcompose_mono {C : Cat} {X Y Z Z' P : @Ob C}
-    {f : Hom X Z} {g : Hom Y Z}
+Definition pullback_postcompose_mono {C : Cat}
+    {X Y Z Z' P : C} {f : Hom X Z} {g : Hom Y Z}
     {p1 : Hom P X} {p2 : Hom P Y}
     (i : Hom Z Z') (Hi : is_mono i)
     (HP : is_pullback f g P p1 p2)
@@ -279,7 +290,7 @@ Defined.
     拉回顶点及第二投影保持不变。 *)
 
 Definition pullback_base_boundary {C : Cat}
-    {X X' Y Z Z' P : @Ob C}
+    {X X' Y Z Z' P : C}
     {f : Hom X Z} {f' : Hom X' Z'} {g : Hom Y Z}
     {p1 : Hom P X} {p2 : Hom P Y}
     (i : Hom X X') (Hi : is_iso i)
@@ -287,7 +298,8 @@ Definition pullback_base_boundary {C : Cat}
     (H : j ∘ f ≈ f' ∘ i)
     (HP : is_pullback f g P p1 p2)
   : is_pullback f' (j ∘ g) P (i ∘ p1) p2
-  := pullback_base_iso i Hi H (pullback_postcompose_mono j Hj HP).
+  := pullback_base_iso i Hi H
+    (pullback_postcompose_mono j Hj HP).
 
 
 

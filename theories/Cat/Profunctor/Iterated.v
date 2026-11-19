@@ -82,8 +82,8 @@ Lemma profunctor_comp_lmap_inject {X X' : @Ob C} {Z : @Ob E}
   : lmap[Q ∘Pr P; f] (ιPr[Q; P; Y] (x,y)) ≈S
       ιPr[Q; P; Y] (lmap[P; f] x,y).
 Proof.
-  transitivity (ιPr[Q; P; Y] (lmap[P; f] x,rmap[Q; @id Z] y)).
-  - exact (prof_comp_dimap_inject Q P f (@id Z) Y x y).
+  transitivity (ιPr[Q; P; Y] (lmap[P; f] x,rmap[Q; id[Z]] y)).
+  - exact (prof_comp_dimap_inject Q P f (id[Z]) Y x y).
   - apply func_proper. split; [reflexivity |].
     exact (prof_rmap_id Q Y Z y).
 Defined.
@@ -97,8 +97,8 @@ Lemma profunctor_comp_rmap_inject {X : @Ob C} {Z Z' : @Ob E}
   : rmap[Q ∘Pr P; g] (ιPr[Q; P; Y] (x,y)) ≈S
       ιPr[Q; P; Y] (x,rmap[Q; g] y).
 Proof.
-  transitivity (ιPr[Q; P; Y] (lmap[P; @id X] x,rmap[Q; g] y)).
-  - exact (prof_comp_dimap_inject Q P (@id X) g Y x y).
+  transitivity (ιPr[Q; P; Y] (lmap[P; id[X]] x,rmap[Q; g] y)).
+  - exact (prof_comp_dimap_inject Q P (id[X]) g Y x y).
   - apply func_proper. split; [| reflexivity].
     exact (prof_lmap_id P X Y x).
 Defined.
@@ -180,12 +180,12 @@ Proof.
   symmetry.
   refine (prof_comp_parameter_boundary Q P μ
     (ProfunctorTripleLeftSlice Z') Hμ
-    (profunctor_triple_left_slice_proper Z') (@id X) h
+    (profunctor_triple_left_slice_proper Z') (id[X]) h
     id_resp id_resp _ t z).
   intros Y x y v.
   transitivity (κ Y Z' ((x,rmap[Q; h] y),v)).
   - exact (@func_proper _ _ (κ Y Z')
-      ((lmap[P; @id X] x,rmap[Q; h] y),v)
+      ((lmap[P; id[X]] x,rmap[Q; h] y),v)
       ((x,rmap[Q; h] y),v)
       ((prof_lmap_id P X Y x,reflexivity _),reflexivity v)).
   - symmetry. exact (triple_cowedge_gluing_r κ Y Z Z' h x y v).
@@ -368,12 +368,12 @@ Proof.
     exact (@func_proper _ _ (rmap[P; h]) v v' Hv). }
   refine (prof_comp_parameter_boundary R Q μ
     (ProfunctorTripleRightSlice Y) Hμ
-    (profunctor_triple_right_slice_proper Y) h (@id W)
+    (profunctor_triple_right_slice_proper Y) h (id[W])
     id_resp id_resp _ t x).
   intros Z y z v.
   transitivity (κ Y Z ((v,lmap[Q; h] y),z)).
   - exact (@func_proper _ _ (κ Y Z)
-      ((v,lmap[Q; h] y),rmap[R; @id W] z)
+      ((v,lmap[Q; h] y),rmap[R; id[W]] z)
       ((v,lmap[Q; h] y),z)
       (reflexivity _,prof_rmap_id R Z W z)).
   - exact (triple_cowedge_gluing_l κ Y Y' Z h v y z).

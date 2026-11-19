@@ -137,8 +137,8 @@ Qed.
 
 Lemma internal_context_natural {Z W : @Ob C} (h : Hom Z W)
     (X Y : @Ob C)
-  : exp_map (h × @id Y) ∘ internal_context Z X Y ≈
-      exp_dimap (h × @id X) id ∘ internal_context W X Y.
+  : exp_map (h × id[Y]) ∘ internal_context Z X Y ≈
+      exp_dimap (h × id[X]) id ∘ internal_context W X Y.
 Proof.
   apply exp_ext. rewrite !exp_uncurry_app.
   rewrite <- !exp_dimap_id_r. context_simpl. reflexivity.
@@ -236,7 +236,7 @@ Lemma exp_unit_name {Y : @Ob C} (y : Hom 1 Y)
 Proof.
   unfold exp_name. rewrite exp_unit_eval_curry,
     comp_assoc, product_β2.
-  rewrite <- (term_η (@id (@Term C HT))), comp_id_r. reflexivity.
+  rewrite <- (term_η (id[@Term C HT])), comp_id_r. reflexivity.
 Qed.
 
 (** At terminal input, internal sequencing is ordinary application, with
@@ -259,7 +259,7 @@ Qed.
 (** 恒等的命名就是已有内部恒等。 *)
 
 Lemma exp_name_id (X : @Ob C)
-  : exp_name (@id X) ≈ idᴱ[X].
+  : exp_name (id[X]) ≈ idᴱ[X].
 Proof. unfold exp_name, exp_id. rewrite comp_id_l. reflexivity. Qed.
 
 (** A named first function is ordinary precomposition. *)
@@ -305,7 +305,7 @@ Qed.
 
 Lemma internal_context_name {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
   : internal_context Z X Y ∘ exp_name f ≈
-      exp_name (@id Z × f).
+      exp_name (id[Z] × f).
 Proof.
   apply exp_ext. rewrite !exp_uncurry_app.
   context_simpl. rewrite !exp_name_app. context_simpl. reflexivity.

@@ -70,7 +70,7 @@ Lemma lax_lift2_left {X Y Z U V : @Ob C}
         (@tensor_map D MD _ _ _ _ φ₂[L; X; Y] id).
 Proof.
   assert (H : @tensor_map D MD _ _ _ _ (lax_lift2 f) id ≈
-      (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L (@id Z))) ∘
+      (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L (id[Z]))) ∘
         (@tensor_map D MD _ _ _ _ φ₂[L; X; Y] id)).
   { rewrite fct_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
@@ -89,7 +89,7 @@ Lemma lax_lift2_right {X Y Z U V : @Ob C}
         (@tensor_map D MD _ _ _ _ id φ₂[L; Y; Z]).
 Proof.
   assert (H : @tensor_map D MD _ _ _ _ id (lax_lift2 f) ≈
-      (@tensor_map D MD _ _ _ _ (fmap L (@id X)) (fmap L f)) ∘
+      (@tensor_map D MD _ _ _ _ (fmap L (id[X])) (fmap L f)) ∘
         (@tensor_map D MD _ _ _ _ id φ₂[L; Y; Z])).
   { rewrite fct_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }

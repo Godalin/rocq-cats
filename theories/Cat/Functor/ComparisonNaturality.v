@@ -102,7 +102,7 @@ Proof.
   rewrite exp_uncurry_dimap.
   unfold uncurry. rewrite (exp_cmp_eval F preserves X Y).
   pose proof (preserved_product_inv_natural F preserves
-    (@id ((Y ^ X)%ob)) u) as HP.
+    (id[(Y ^ X)%ob]) u) as HP.
   rewrite (@fct_id C D F) in HP.
   rewrite !(@fct_comp C D F), !(@comp_assoc D), HP. reflexivity.
 Defined.
@@ -139,19 +139,19 @@ Context (α : F ⇒ G).
 (** 求值的自然性及前述积边界律给出相容性，无需任何分量的逆。 *)
 
 Lemma exp_cmp_boundary (X Y : C)
-  : (α Y ^ (@id (F X))) ∘
+  : (α Y ^ (id[F X])) ∘
       exp_cmp F preservesF X Y ≈
-      ((@id (G Y)) ^ α X) ∘
+      ((id[G Y]) ^ α X) ∘
         exp_cmp G preservesG X Y ∘
         α ((Y ^ X)%ob).
 Proof.
   apply exp_ext.
-  change (uncurry ((α Y ^ (@id (F X))) ∘
+  change (uncurry ((α Y ^ (id[F X])) ∘
       exp_cmp F preservesF X Y) ≈
-    uncurry (((@id (G Y)) ^ α X) ∘
+    uncurry (((id[G Y]) ^ α X) ∘
       exp_cmp G preservesG X Y ∘
       α ((Y ^ X)%ob))).
-  rewrite (comp_assoc (((@id (G Y)) ^ α X))
+  rewrite (comp_assoc (((id[G Y]) ^ α X))
     (exp_cmp G preservesG X Y)
     (α ((Y ^ X)%ob))).
   rewrite !exp_uncurry_dimap, exp_uncurry_comp_r.

@@ -153,7 +153,7 @@ Proof.
   - change (short.2.1 ≈ long.2.1).
     apply (@inverse_unique A F short.1 short.2.1 long.2.1).
     + exact (fst short.2.2).
-    + change ((j.1 ∘ i.1) ∘ long.2.1 ≈ @id F).
+    + change ((j.1 ∘ i.1) ∘ long.2.1 ≈ id[F]).
       rewrite H. exact (snd long.2.2).
   - apply comp_assoc.
 Defined.

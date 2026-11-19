@@ -84,13 +84,13 @@ Class FreydCat (C K : Cat)
 
   ; freyd_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z Y) ∘
-        fmap FreydF (@id Z × f) ≈
+        fmap FreydF (id[Z] × f) ≈
         @binoidal_l FreydComputations hasSymmetricPremonoidal
           X Y Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z X)
   ; freyd_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Y Z) ∘
-        fmap FreydF (f × @id Z) ≈
+        fmap FreydF (f × id[Z]) ≈
         @binoidal_r FreydComputations hasSymmetricPremonoidal
           X Y Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects X Z)

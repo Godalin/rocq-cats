@@ -215,7 +215,7 @@ Let I
 (** 原左单位子由已有输入自然性组成自 profunctor 范畴上的自然变换。 *)
 
 Program Definition ProfLeftUnitorFctN
-  : π2F AssemblyTensorF I ⇒ IdF
+  : AtLF AssemblyTensorF I ⇒ IdF
   :=
   {|nt P := @ProfLeftUnitorN C C P (HC I P)
   |}.
@@ -228,7 +228,7 @@ Defined.
 (** 在每个 profunctor 处保留原恒等插入逆。 *)
 
 Definition ProfLeftUnitorFct
-  : π2F AssemblyTensorF I ≅N IdF.
+  : AtLF AssemblyTensorF I ≅N IdF.
 Proof.
   exists ProfLeftUnitorFctN. intros P.
   exact (nat_iso_is_iso _ (@ProfLeftUnitor C C P (HC I P)).2).
@@ -239,7 +239,7 @@ Defined.
 (** 右单位子组成相应的自然族。 *)
 
 Program Definition ProfRightUnitorFctN
-  : π1F AssemblyTensorF I ⇒ IdF
+  : AtRF AssemblyTensorF I ⇒ IdF
   :=
   {|nt P := @ProfRightUnitorN C C P (HC P I)
   |}.
@@ -252,7 +252,7 @@ Defined.
 (** 其选定逆仍为原恒等插入。 *)
 
 Definition ProfRightUnitorFct
-  : π1F AssemblyTensorF I ≅N IdF.
+  : AtRF AssemblyTensorF I ≅N IdF.
 Proof.
   exists ProfRightUnitorFctN. intros P.
   exact (nat_iso_is_iso _ (@ProfRightUnitor C C P (HC P I)).2).

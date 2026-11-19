@@ -48,7 +48,7 @@ Lemma kleisli_arrow_second {X Y : @Ob C} (f : Hom X (M Y)) (Z : @Ob C)
       bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]].
 Proof.
   change (st[hasStrength M; Z; Y] ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _ (@id Z) f) ≈
+    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _ (id[Z]) f) ≈
     bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]).
   rewrite cartesian_tensor_map, context_bind_pair, cross_η, comp_id_l.
   reflexivity.
@@ -112,7 +112,7 @@ Qed.
 (** 将分开组合特化到两个计算值输入，恢复已有带定律 Applicative 的 tensorator。 *)
 
 Lemma kleisli_arrow_applicative_pair (X Y : @Ob C)
-  : (@id (M X)) ***[KleisliArrow M] (@id (M Y)) ≈
+  : (id[M X]) ***[KleisliArrow M] (id[M Y]) ≈
       φ₂[MonadA M; X; Y].
 Proof.
   rewrite kleisli_arrow_split, cross_id, comp_id_r. reflexivity.

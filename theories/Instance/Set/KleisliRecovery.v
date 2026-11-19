@@ -239,9 +239,9 @@ Proof.
     transitivity (fmap M (KleisliRecoveryN X ∘ KleisliRecoveryInvN X) m).
     + symmetry. exact (@fct_comp SetCat SetCat M _ _ _
         (KleisliRecoveryN X) (KleisliRecoveryInvN X) m).
-    + transitivity (fmap M (@id (M X)) m).
+    + transitivity (fmap M (id[M X]) m).
       * assert (E : KleisliRecoveryN X ∘ KleisliRecoveryInvN X ≈
-          @id (M X)) by (intros v; reflexivity).
+          id[M X]) by (intros v; reflexivity).
         exact (@fct_fmap_proper SetCat SetCat M _ _ _ _ E m).
       * exact (@fct_id SetCat SetCat M (M X) m).
 Qed.

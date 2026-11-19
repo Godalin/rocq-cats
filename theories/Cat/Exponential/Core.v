@@ -32,7 +32,8 @@ Class HasExponential {C : Cat} (HP : HasProduct C)
 Arguments exp_universal {_ _ _ _ _} _ _.
 
 Notation "X '^' Y" := (exp X Y)
-  (at level 30, right associativity): ob_scope.
+  (at level 30, right associativity)
+  : ob_scope.
 
 (** Transpose a map out of a product into the chosen exponential. *)
 
@@ -44,7 +45,8 @@ Definition curry {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
   := (exp_universal Z f).1.
 
 Notation "'ƛ' f" := (curry f)
-  (at level 35) : hom_scope.
+  (at level 35)
+  : hom_scope.
 
 (** Currying is the unique transpose with the prescribed evaluation. *)
 
@@ -62,15 +64,16 @@ Proof. exact (exp_universal Z f).2. Qed.
 
 Global Instance exp_curry_proper {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} {X Y Z : C}
-  : Proper (@HomEq[Z × X, Y] ==> @HomEq[Z, Y ^ X]) curry.
+  : Proper (≈[Z × X, Y] ==> ≈[Z, Y ^ X]) curry.
 Proof.
   intros f g Hfg.
   destruct (exp_curry_unique f) as [Hf _].
   apply (exp_curry_unique g). transitivity f; assumption.
 Qed.
 
-Notation "'@eval' X Y" := (@eval _ _ _ _ X Y)
-  (at level 35) : hom_scope.
+Notation "'eval[' X ',' Y ']'" := (@eval _ _ _ X Y)
+  (at level 0, format "eval[ X , Y ]")
+  : hom_scope.
 
 (** ** Transposition and Substitution
 
@@ -97,7 +100,7 @@ Definition uncurry {X Y Z : C} (g : Hom Z (Y ^ X))
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance exp_uncurry_proper {X Y Z : C}
-  : Proper (@HomEq[Z, Y ^ X] ==> @HomEq[Z × X, Y]) uncurry.
+  : Proper (≈[Z, Y ^ X] ==> ≈[Z × X, Y]) uncurry.
 Proof. intros f g Hfg. unfold uncurry. rewrite Hfg. reflexivity. Qed.
 
 (** Uncurrying after currying recovers the original map. *)
@@ -174,7 +177,7 @@ Definition exp_map {X Y Y' : C} (f : Hom Y Y')
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance exp_map_proper {X Y Y' : C}
-  : Proper (@HomEq[Y, Y'] ==> @HomEq[Y ^ X, Y' ^ X]) exp_map.
+  : Proper (≈[Y, Y'] ==> ≈[Y ^ X, Y' ^ X]) exp_map.
 Proof. intros f g Hfg. unfold exp_map. rewrite Hfg. reflexivity. Qed.
 
 (** Uncurrying commutes with the induced map on result objects. *)
@@ -207,10 +210,10 @@ Qed.
 (** [exp_map] 与恒等的相容性。 *)
 
 Lemma exp_map_id {X Y : C}
-  : exp_map (@id Y) ≈ @id (Y ^ X).
+  : exp_map (id[Y]) ≈ id[Y ^ X].
 Proof.
   unfold exp_map. rewrite comp_id_l.
-  transitivity (ƛ (uncurry (@id (Y ^ X)))).
+  transitivity (ƛ (uncurry (id[Y ^ X]))).
   - apply exp_curry_proper. unfold uncurry.
     rewrite cross_id, comp_id_r. reflexivity.
   - apply exp_η.
@@ -241,7 +244,7 @@ Definition app {X Y Z : C} (f : Hom Z (Y ^ X)) (a : Hom Z X)
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance exp_app_proper {X Y Z : C}
-  : Proper (@HomEq[Z, Y ^ X] ==> @HomEq[Z, X] ==> @HomEq[Z, Y]) app.
+  : Proper (≈[Z, Y ^ X] ==> ≈[Z, X] ==> ≈[Z, Y]) app.
 Proof. intros f f' Hf a a' Ha. unfold app. rewrite Hf, Ha. reflexivity. Qed.
 
 (** Application commutes with simultaneous substitution of function and
@@ -298,7 +301,9 @@ Program Definition ExpF {C : Cat}
 Next Obligation. apply exp_map_id. Qed.
 Next Obligation. apply exp_map_comp. Qed.
 
-Notation "'(-^' X ')'" := (ExpF X) : cat_scope.
+Notation "'(-^' X ')'" := (ExpF X)
+  (at level 0)
+  : cat_scope.
 
 (** The natural hom correspondence gives product left adjoint to
     exponentiation. *)

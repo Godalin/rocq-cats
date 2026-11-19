@@ -24,8 +24,8 @@ Definition DayInputN@{u p +} {C : Cat} (T : Fct (C ×C C) C)
   : DayKernel T F G Z ⇒ DayKernel T F' G' Z
   := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _ IdN
       ((@PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _
-        (α ∘Nr FstF C C) (β ∘Nr SndF C C))
-        ∘Nr SndF ((C ×C C)^op) (C ×C C)).
+        (α ∘Nr π1F C C) (β ∘Nr π2F C C))
+        ∘Nr π2F ((C ×C C)^op) (C ×C C)).
 
 (** ** Kernel Map Laws
 
