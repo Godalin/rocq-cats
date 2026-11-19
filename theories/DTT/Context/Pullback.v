@@ -274,7 +274,7 @@ Proof. exact (snd (context_lift_pullback σ A) Θ u v H).2. Defined.
 Definition context_lift_factor_β1 {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A)) (H : σ ∘ u ≈ context_proj T A ∘ v)
   : context_proj T A[σ]Ty[T] ∘ context_lift_factor σ A u v H ≈ u
-  := fst (@this _ _ _ _ _ (context_lift_factor_unique σ A u v H)).
+  := fst (this (context_lift_factor_unique σ A u v H)).
 
 (** The lifted projection of the display-pullback factor is the chosen upper
     map. *)
@@ -284,7 +284,7 @@ Definition context_lift_factor_β1 {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T
 Theorem context_lift_factor_β2 {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
     (u : Hom Θ Δ) (v : Hom Θ (Γ ▹[T] A)) (H : σ ∘ u ≈ context_proj T A ∘ v)
   : σ^+[T, A] ∘ context_lift_factor σ A u v H ≈ v.
-Proof. exact (snd (@this _ _ _ _ _ (context_lift_factor_unique σ A u v H))). Qed.
+Proof. exact (snd (this (context_lift_factor_unique σ A u v H))). Qed.
 
 (** The two pullback equations characterize the display factor uniquely. *)
 
@@ -296,7 +296,7 @@ Theorem context_lift_factor_η {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
   : context_proj T A[σ]Ty[T] ∘ h ≈ u → σ^+[T, A] ∘ h ≈ v
     → h ≈ context_lift_factor σ A u v H.
 Proof.
-  intros Hbase Hlift. apply (@that _ _ _ _ _ (context_lift_factor_unique σ A u v H)).
+  intros Hbase Hlift. apply (that (context_lift_factor_unique σ A u v H)).
   split; assumption.
 Qed.
 

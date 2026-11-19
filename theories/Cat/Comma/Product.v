@@ -134,7 +134,7 @@ Program Definition comma_product_π1
   ; comma_right := q1
   |}.
 Next Obligation.
-  exact (fst (@this _ _ _ _ _
+  exact (fst (this
     (image (F P) (comma_arrow X ∘ fmap F p1)
       (comma_arrow Y ∘ fmap F p2)).2)).
 Defined.
@@ -150,7 +150,7 @@ Program Definition comma_product_π2
   ; comma_right := q2
   |}.
 Next Obligation.
-  exact (snd (@this _ _ _ _ _
+  exact (snd (this
     (image (F P) (comma_arrow X ∘ fmap F p1)
       (comma_arrow Y ∘ fmap F p2)).2)).
 Defined.

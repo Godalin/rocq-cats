@@ -35,9 +35,9 @@ Proof.
   - intros b. destruct b.
     + transitivity ((fmap D (path_edge parallel_l) ∘ κ false) ∘ h).
       * apply comp_r. symmetry. exact (free_cone_edge κ parallel_l).
-      * rewrite comp_assoc, (@this _ _ _ _ _ Hh). exact (free_cone_edge μ parallel_l).
-    + exact (@this _ _ _ _ _ Hh).
-  - intros k Hk. apply (@that _ _ _ _ _ Hh). exact (Hk false).
+      * rewrite comp_assoc, (this Hh). exact (free_cone_edge μ parallel_l).
+    + exact (this Hh).
+  - intros k Hk. apply (that Hh). exact (Hk false).
 Defined.
 
 (** A limit of the parallel-pair diagram satisfies the equalizer property. *)
@@ -53,8 +53,8 @@ Proof.
   exists h. refine {|this := _
                    ; that := _
                    |}.
-  - exact (@this _ _ _ _ _ Hh false).
-  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+  - exact (this Hh false).
+  - intros k Hk. apply (that Hh).
     intros b. destruct b; cbn; [| exact Hk].
     transitivity ((fmap D (path_edge parallel_l) ∘ κ false) ∘ k).
     + apply comp_r. symmetry. exact (free_cone_edge κ parallel_l).

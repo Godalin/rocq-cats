@@ -32,13 +32,13 @@ Proof.
                    ; that := _
                    |}.
   - intros v. destruct v; cbn.
-    + exact (fst (@this _ _ _ _ _ Hh)).
-    + exact (snd (@this _ _ _ _ _ Hh)).
+    + exact (fst (this Hh)).
+    + exact (snd (this Hh)).
     + transitivity ((fmap D (path_edge cospan_l) ∘ κ cospan_left) ∘ h).
       * apply comp_r. symmetry. exact (free_cone_edge κ cospan_l).
-      * rewrite comp_assoc, (fst (@this _ _ _ _ _ Hh)).
+      * rewrite comp_assoc, (fst (this Hh)).
         exact (free_cone_edge μ cospan_l).
-  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+  - intros k Hk. apply (that Hh).
     split; [exact (Hk cospan_left) | exact (Hk cospan_right)].
 Defined.
 
@@ -56,8 +56,8 @@ Proof.
   exists h. refine {|this := _
                    ; that := _
                    |}.
-  - split; [exact (@this _ _ _ _ _ Hh cospan_left) | exact (@this _ _ _ _ _ Hh cospan_right)].
-  - intros k [Hk1 Hk2]. apply (@that _ _ _ _ _ Hh).
+  - split; [exact (this Hh cospan_left) | exact (this Hh cospan_right)].
+  - intros k [Hk1 Hk2]. apply (that Hh).
     intros v. destruct v; cbn; [exact Hk1 | exact Hk2 |].
     transitivity (fmap D (path_edge cospan_l) ∘ κ cospan_left ∘ k).
     + apply comp_r. symmetry. exact (free_cone_edge κ cospan_l).

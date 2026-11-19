@@ -88,7 +88,7 @@ Proof.
     rewrite comp_id_r in E. exact E.
   - intros g Hg.
     pose (K := StructuredMap U Z (StructuredOb U f) g Hg).
-    exact (snd (@that _ _ _ _ _ Hh K I)).
+    exact (snd (that Hh K I)).
 Defined.
 
 (** A direct universal arrow is initial in its comma category. *)
@@ -101,12 +101,12 @@ Definition universal_arrow_is_initial {C D : Cat} (U : Fct D C)
   : @is_initial (X ↓[U]) (StructuredOb U η).
 Proof.
   intros Z. destruct (Hη (comma_right_ob Z) (comma_arrow Z)) as [g Hg].
-  pose (h := StructuredMap U (StructuredOb U η) Z g (@this _ _ _ _ _ Hg)).
+  pose (h := StructuredMap U (StructuredOb U η) Z g (this Hg)).
   exists h. refine {|this := I
                    ; that := _
                    |}.
   intros k _. split; [exact tt |].
-  apply (@that _ _ _ _ _ Hg).
+  apply (that Hg).
   pose proof (comma_comm k) as E.
   change (fmap U (comma_right k) ∘ η ≈ comma_arrow Z ∘ id) in E.
   rewrite comp_id_r in E. exact E.
@@ -157,8 +157,8 @@ Lemma universal_arrow_hom_unique {C D : Cat} (U : Fct D C)
 Proof.
   destruct (Hη B (fmap U g ∘ η)) as [h Hh].
   transitivity h.
-  - apply (@that _ _ _ _ _ Hh). exact E.
-  - symmetry. apply (@that _ _ _ _ _ Hh). reflexivity.
+  - apply (that Hh). exact E.
+  - symmetry. apply (that Hh). reflexivity.
 Qed.
 
 (** The comparison is unique among arrows preserving the two units. *)

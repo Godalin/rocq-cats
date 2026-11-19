@@ -129,7 +129,7 @@ Theorem fam_reindex_map_factor {X : SetC} {U V : FamC} (φ : FamF U V)
       (cartesian_factor (fam_reindex_cartesian V (famF_base φ ∘r f))
         (fam_comp φ (fam_reindex U f)) id H).
 Proof.
-  apply (that _ _ (cartesian_factor_unique
+  apply (that (cartesian_factor_unique
     (fam_reindex_cartesian V (famF_base φ ∘r f))
     (fam_comp φ (fam_reindex U f)) id H)). split.
   - intros x. reflexivity.

@@ -59,8 +59,8 @@ Definition is_iso_of_unique_fibers {A B : SetC} (f : A →r B)
 Proof.
   unshelve notypeclasses refine (({|func b := (H b).1|}); _).
   - intros b b' Hb. symmetry. apply (H b).2.
-    transitivity b'; [exact (@this _ _ _ _ _ (H b').2) | symmetry; exact Hb].
+    transitivity b'; [exact (this (H b').2) | symmetry; exact Hb].
   - split.
     + intros a. symmetry. apply (H (f a)).2. reflexivity.
-    + intros b. exact (@this _ _ _ _ _ (H b).2).
+    + intros b. exact (this (H b).2).
 Defined.

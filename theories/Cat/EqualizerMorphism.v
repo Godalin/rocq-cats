@@ -40,5 +40,5 @@ Proof.
   - intros [h Hh]. change (q ≈ e ∘ h) in Hh.
     rewrite Hh, <- !comp_assoc, (fst HE). reflexivity.
   - intros Hq. pose (u := snd HE Q q Hq).
-    exists u.1. symmetry. exact (this _ _ u.2).
+    exists u.1. symmetry. exact (this u.2).
 Defined.

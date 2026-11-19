@@ -101,10 +101,10 @@ Program Definition coskeletal_fill_resp (n : nat)
   |}.
 Next Obligation.
   intros b c E.
-  apply (that _ _ (coskeletal_boundary_universal n c).2).
+  apply (that (coskeletal_boundary_universal n c).2).
   unfold is_boundary_filler.
   transitivity b;
-    [exact (this _ _ (coskeletal_boundary_universal n b).2) | exact E].
+    [exact (this (coskeletal_boundary_universal n b).2) | exact E].
 Defined.
 
 End CoskeletalFilling.
@@ -132,7 +132,7 @@ Context {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {k : nat}
 
 Lemma coskeletal_fill_β (n : nat) (b : BoundaryS X (S (k + n)))
   : (fill∂[X; k; n] b)↾∂[X; S (k + n)] ≈S b.
-Proof. exact (this _ _ (coskeletal_boundary_universal n b).2). Defined.
+Proof. exact (this (coskeletal_boundary_universal n b).2). Defined.
 
 (** Filling the boundary of a simplex recovers that simplex. *)
 
@@ -141,7 +141,7 @@ Proof. exact (this _ _ (coskeletal_boundary_universal n b).2). Defined.
 Lemma coskeletal_fill_η (n : nat) (x : X (S (k + n)))
   : fill∂[X; k; n] (x↾∂[X; S (k + n)]) ≈S x.
 Proof.
-  symmetry. apply (that _ _ (coskeletal_boundary_universal n
+  symmetry. apply (that (coskeletal_boundary_universal n
     (x↾∂[X; S (k + n)])).2).
   unfold is_boundary_filler. reflexivity.
 Defined.
@@ -184,9 +184,9 @@ Definition boundary_reflects_from_horns@{u p +}
 Proof.
   pose (h := y↾Λ[X; n; i]).
   transitivity (U h).1.
-  - apply (that _ _ (U h).2). intros m a.
+  - apply (that (U h).2). intros m a.
     exact (E m (HornBoundaryN n i m a)).
-  - symmetry. apply (that _ _ (U h).2).
+  - symmetry. apply (that (U h).2).
     unfold is_horn_filler, h. reflexivity.
 Defined.
 
@@ -214,7 +214,7 @@ Proof.
   { intros j. assert (Hj : ¬ j⁺ = (fin_first : Ordinal (S (S n))))
       by discriminate.
     transitivity (face[fin_first; j⁺; Hj] h).
-    - exact (fst (horn_filler_faces_iff h x) (this _ _ Hx) j⁺ Hj).
+    - exact (fst (horn_filler_faces_iff h x) (this Hx) j⁺ Hj).
     - exact (boundary_horn_face fin_first j⁺ Hj b). }
   assert (B : is_boundary_filler b x).
   { apply (snd (boundary_filler_faces_iff b x)). intros [[] | j].

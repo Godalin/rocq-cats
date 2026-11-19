@@ -414,7 +414,7 @@ Proof. reflexivity. Defined.
 (** 像锥的投影方程保留布尔相等标记。 *)
 
 Example unit_image_projection_token_computes
-  : snd (fst (fst (@this _ _ _ _ _
+  : snd (fst (fst (this
       (unit_changed_product TaggedGluingObj TaggedGluingObj _
         (fmap UnitProductChangeF tagged_gluing_toggle)
         (fmap UnitProductChangeF id)).2)) (3, false)) = false.

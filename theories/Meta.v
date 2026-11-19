@@ -144,6 +144,9 @@ Record is_unique {X R} `{Equivalence X R}
   ; that : ∀ y : X, P y → R y x
   }.
 
+Arguments this {_ _ _ _ _} _.
+Arguments that {_ _ _ _ _} _ _ _.
+
 (** ** Uniqueness under a Specified Equivalence
 
     Fix a type [X] and a Type-valued equivalence relation [R]. Relate

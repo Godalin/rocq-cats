@@ -28,9 +28,9 @@ Proof.
   exists h. refine {|this := _
                    ; that := _
                    |}.
-  - intros i. rewrite comp_assoc, (@this _ _ _ _ _ Hh).
+  - intros i. rewrite comp_assoc, (this Hh).
     apply indexed_product_β.
-  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+  - intros k Hk. apply (that Hh).
     apply indexed_product_hom_ext. intros i.
     rewrite <- comp_assoc. transitivity (μ i).
     + exact (Hk i).

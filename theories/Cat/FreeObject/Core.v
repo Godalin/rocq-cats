@@ -69,7 +69,7 @@ Definition free_object_extend {X : @Ob C} {A : @Ob D} (f : Hom X (U A))
 
 Lemma free_object_extend_β {X : @Ob C} {A : @Ob D} (f : Hom X (U A))
   : fmap U (free_object_extend f) ∘ free_unit X ≈ f.
-Proof. exact (@this _ _ _ _ _ (free_universal X A f).2). Qed.
+Proof. exact (this (free_universal X A f).2). Qed.
 
 (** Any factorization is the selected extension. *)
 
@@ -78,7 +78,7 @@ Proof. exact (@this _ _ _ _ _ (free_universal X A f).2). Qed.
 Lemma free_object_extend_unique {X : @Ob C} {A : @Ob D} (f : Hom X (U A))
     (g : Hom (FreeOb X) A) (H : fmap U g ∘ free_unit X ≈ f)
   : g ≈ free_object_extend f.
-Proof. exact (@that _ _ _ _ _ (free_universal X A f).2 g H). Qed.
+Proof. exact (that (free_universal X A f).2 g H). Qed.
 
 (** Extending a unit-factorized arrow recovers the arrow. *)
 

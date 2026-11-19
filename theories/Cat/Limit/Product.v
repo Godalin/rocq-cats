@@ -29,8 +29,8 @@ Proof.
   exists h. refine {|this := _
                    ; that := _
                    |}.
-  - intros []; [exact (snd (@this _ _ _ _ _ Hh)) | exact (fst (@this _ _ _ _ _ Hh))].
-  - intros g Hg. apply (@that _ _ _ _ _ Hh). split; [exact (Hg false) | exact (Hg true)].
+  - intros []; [exact (snd (this Hh)) | exact (fst (this Hh))].
+  - intros g Hg. apply (that Hh). split; [exact (Hg false) | exact (Hg true)].
 Defined.
 
 (** A limit of the two-object discrete diagram satisfies the binary product
@@ -48,8 +48,8 @@ Proof.
   exists h. refine {|this := _
                    ; that := _
                    |}.
-  - split; [exact (@this _ _ _ _ _ Hh false) | exact (@this _ _ _ _ _ Hh true)].
-  - intros k [Hf Hg]. apply (@that _ _ _ _ _ Hh).
+  - split; [exact (this Hh false) | exact (this Hh true)].
+  - intros k [Hf Hg]. apply (that Hh).
     intros []; [exact Hg | exact Hf].
 Defined.
 

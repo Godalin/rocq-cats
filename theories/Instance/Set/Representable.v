@@ -48,8 +48,8 @@ Theorem universal_element_hom_ext {X Y : @Ob C} {u : F X}
 Proof.
   intros H. destruct (Hu Y (fmap F g u)) as [h Hh].
   transitivity h.
-  - apply (@that _ _ _ _ _ Hh). exact H.
-  - symmetry. apply (@that _ _ _ _ _ Hh). reflexivity.
+  - apply (that Hh). exact H.
+  - symmetry. apply (that Hh). reflexivity.
 Qed.
 
 (** Send a value to its unique representing arrow. *)
@@ -63,8 +63,8 @@ Program Definition universal_element_inverse_resp {X : @Ob C} {u : F X}
   {|func y := (Hu Y y).1
   |}.
 Next Obligation.
-  intros y z H. apply (@that _ _ _ _ _ (Hu Y z).2).
-  transitivity y; [exact (@this _ _ _ _ _ (Hu Y y).2) | exact H].
+  intros y z H. apply (that (Hu Y z).2).
+  transitivity y; [exact (this (Hu Y y).2) | exact H].
 Defined.
 
 (** A universal element gives a natural representation by a hom functor. *)
@@ -77,8 +77,8 @@ Definition universal_element_representation {X : @Ob C} {u : F X}
 Proof.
   exists (yoneda_func_inv u). intros Y.
   exists (universal_element_inverse_resp Hu Y). split.
-  - intros f. symmetry. apply (@that _ _ _ _ _ (Hu Y (fmap F f u)).2). reflexivity.
-  - intros y. exact (@this _ _ _ _ _ (Hu Y y).2).
+  - intros f. symmetry. apply (that (Hu Y (fmap F f u)).2). reflexivity.
+  - intros y. exact (this (Hu Y y).2).
 Defined.
 
 (** Two universal elements for one functor have isomorphic carrier objects. *)
@@ -94,17 +94,17 @@ Proof.
     transitivity (fmap F (Hv X u).1 (fmap F (Hu Y v).1 u)).
     + exact (fct_comp C SetCat F _ _ u).
     + transitivity (fmap F (Hv X u).1 v).
-      * apply func_proper. exact (@this _ _ _ _ _ (Hu Y v).2).
+      * apply func_proper. exact (this (Hu Y v).2).
       * transitivity u.
-        -- exact (@this _ _ _ _ _ (Hv X u).2).
+        -- exact (this (Hv X u).2).
         -- symmetry. exact (fct_id C SetCat F u).
   - apply (universal_element_hom_ext Hv).
     transitivity (fmap F (Hu Y v).1 (fmap F (Hv X u).1 v)).
     + exact (fct_comp C SetCat F _ _ v).
     + transitivity (fmap F (Hu Y v).1 u).
-      * apply func_proper. exact (@this _ _ _ _ _ (Hv X u).2).
+      * apply func_proper. exact (this (Hv X u).2).
       * transitivity v.
-        -- exact (@this _ _ _ _ _ (Hu Y v).2).
+        -- exact (this (Hu Y v).2).
         -- symmetry. exact (fct_id C SetCat F v).
 Defined.
 
@@ -431,9 +431,9 @@ Proof.
   exists (universal_element_lifted_inverse_resp Hx Y). split.
   - intros [f]. refine {|lower := _
                         |}.
-    symmetry. apply (@that _ _ _ _ _ (Hx Y (fmap F f x)).2).
+    symmetry. apply (that (Hx Y (fmap F f x)).2).
     reflexivity.
-  - intros y. exact (@this _ _ _ _ _ (Hx Y y).2).
+  - intros y. exact (this (Hx Y y).2).
 Defined.
 
 (** Evaluate a lifted representation at the wrapped identity. *)

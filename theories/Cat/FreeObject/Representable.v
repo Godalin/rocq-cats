@@ -46,10 +46,10 @@ Definition universal_arrow_element {X : @Ob C} {A : @Ob D}
       (FreeHomF U X : Fct D SetCat@{u p _ _ _ _ _})).
 Proof.
   intros B [f]. destruct (Hη B f) as [g Hg]. exists g.
-  refine {|this := {|lower := @this _ _ _ _ _ Hg|}
+  refine {|this := {|lower := this Hg|}
           ; that := _
           |}.
-  intros k Hk. exact (@that _ _ _ _ _ Hg k (lower Hk)).
+  intros k Hk. exact (that Hg k (lower Hk)).
 Defined.
 
 (** Unwrapping a universal element recovers the direct universal arrow. *)
@@ -65,8 +65,8 @@ Proof.
   refine {|this := _
           ; that := _
           |}.
-  - exact (lower (@this _ _ _ _ _ Hg)).
-  - intros k Hk. apply (@that _ _ _ _ _ Hg k).
+  - exact (lower (this Hg)).
+  - intros k Hk. apply (that Hg k).
     exact {|lower := Hk|}.
 Defined.
 

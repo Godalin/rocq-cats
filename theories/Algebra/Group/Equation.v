@@ -196,7 +196,7 @@ Defined.
 
 Lemma mul_l_solve_β (a : G)
   : (a ⋅−) ∘r mul_l_solve_resp a ≈f id_resp.
-Proof. intro b. exact (@this _ _ _ _ _ (GroupMulLSolution a b).2). Defined.
+Proof. intro b. exact (this (GroupMulLSolution a b).2). Defined.
 
 (** Solving after left multiplication recovers the input, by uniqueness. *)
 
@@ -206,7 +206,7 @@ Lemma mul_l_solve_η (a : G)
   : mul_l_solve_resp a ∘r (a ⋅−) ≈f id_resp.
 Proof.
   intro x. symmetry.
-  apply (@that _ _ _ _ _ (GroupMulLSolution a (a ⋅ x)).2 x).
+  apply (that (GroupMulLSolution a (a ⋅ x)).2 x).
   reflexivity.
 Defined.
 
@@ -216,7 +216,7 @@ Defined.
 
 Lemma mul_r_solve_β (a : G)
   : (−⋅ a) ∘r mul_r_solve_resp a ≈f id_resp.
-Proof. intro b. exact (@this _ _ _ _ _ (GroupMulRSolution a b).2). Defined.
+Proof. intro b. exact (this (GroupMulRSolution a b).2). Defined.
 
 (** Uniqueness also gives the right-multiplication round trip. *)
 
@@ -226,7 +226,7 @@ Lemma mul_r_solve_η (a : G)
   : mul_r_solve_resp a ∘r (−⋅ a) ≈f id_resp.
 Proof.
   intro x. symmetry.
-  apply (@that _ _ _ _ _ (GroupMulRSolution a (x ⋅ a)).2 x).
+  apply (that (GroupMulRSolution a (x ⋅ a)).2 x).
   reflexivity.
 Defined.
 

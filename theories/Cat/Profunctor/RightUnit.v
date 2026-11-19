@@ -138,8 +138,8 @@ Proof.
   pose (U := coyoneda_desc_unique (AtRF P Z) X
     (cowedge_precompose κ ProfRightUnitKernelInvN)).
   refine {|this := _; that := _|}.
-  - intros Y [[h] x]. exact (@this _ _ _ _ _ U Y (x,{|lower := h|})).
-  - intros f H. apply (@that _ _ _ _ _ U f).
+  - intros Y [[h] x]. exact (this U Y (x,{|lower := h|})).
+  - intros f H. apply (that U f).
     intros Y [x [h]]. exact (H Y ({|lower := h|},x)).
 Defined.
 

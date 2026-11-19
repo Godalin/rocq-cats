@@ -37,9 +37,9 @@ Proof.
     exists h. refine {|this := _
                      ; that := _
                      |}.
-    + split; rewrite comp_assoc, (@this _ _ _ _ _ Hh);
+    + split; rewrite comp_assoc, (this Hh);
         [apply product_β1 | apply product_β2].
-    + intros k [Hk1 Hk2]. apply (@that _ _ _ _ _ Hh).
+    + intros k [Hk1 Hk2]. apply (that Hh).
       rewrite (product_η (e ∘ k)), <- !comp_assoc, Hk1, Hk2. reflexivity.
 Defined.
 
@@ -97,8 +97,8 @@ Proof.
     exists h. refine {|this := _
                      ; that := _
                      |}.
-    + exact (fst (@this _ _ _ _ _ Hh)).
-    + intros k Hk. apply (@that _ _ _ _ _ Hh). split; [exact Hk |].
+    + exact (fst (this Hh)).
+    + intros k Hk. apply (that Hh). split; [exact Hk |].
       rewrite <- Hf, comp_assoc, Hk. reflexivity.
 Defined.
 

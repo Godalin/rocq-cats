@@ -22,8 +22,8 @@ Proof.
   exists h. refine {|this := _
                    ; that := _
                    |}.
-  - intros j. cbn. rewrite <- (H j). exact (@this _ _ _ _ _ Hh j).
-  - intros g Hg. apply (@that _ _ _ _ _ Hh).
+  - intros j. cbn. rewrite <- (H j). exact (this Hh j).
+  - intros g Hg. apply (that Hh).
     intros j. cbn. rewrite (H j). exact (Hg j).
 Defined.
 
@@ -44,10 +44,10 @@ Proof.
                    |}.
   - intros j.
     change ((α j ∘ κ j) ∘ h ≈ μ j).
-    rewrite comp_assoc, (@this _ _ _ _ _ Hh j).
+    rewrite comp_assoc, (this Hh j).
     change (α j ∘ ((Hα j).1 ∘ μ j) ≈ μ j).
     rewrite <- comp_assoc, (snd (Hα j).2), comp_id_l. reflexivity.
-  - intros g Hg. apply (@that _ _ _ _ _ Hh). intros j.
+  - intros g Hg. apply (that Hh). intros j.
     change (κ j ∘ g ≈ (Hα j).1 ∘ μ j).
     rewrite <- (Hg j).
     change (κ j ∘ g ≈ (Hα j).1 ∘ ((α j ∘ κ j) ∘ g)).

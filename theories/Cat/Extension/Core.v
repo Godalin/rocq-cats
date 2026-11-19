@@ -123,7 +123,7 @@ Definition PushoutMapExtension (a : Hom A Q)
   : ∃ k : Hom P Q, (k ∘ i ≈ a) ∧ (k ∘ j ≈ b.1).
 Proof.
   pose (e := snd HP Q a b.1 (symmetry b.2)).
-  exists e.1. exact (@this _ _ _ _ _ e.2).
+  exists e.1. exact (this e.2).
 Defined.
 
 (** Pushout stability gives an actual extension for every old-region map. *)

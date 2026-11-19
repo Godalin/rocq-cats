@@ -56,8 +56,8 @@ Proof.
                    |}.
   - intros j.
     change (κ j ∘ h ≈ μ j).
-    rewrite (Hκ j). exact (@this _ _ _ _ _ Hh j).
-  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+    rewrite (Hκ j). exact (this Hh j).
+  - intros k Hk. apply (that Hh).
     intros j. rewrite <- (Hκ j). exact (Hk j).
 Defined.
 

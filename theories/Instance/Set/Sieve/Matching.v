@@ -252,7 +252,7 @@ Proof.
   - intros α H.
     transitivity (PresheafDescendN _ (generated_sieve_cover g)
       (λ i, a i) (sieve_matching_compatible a)).
-    + exact (@that _ _ _ _ _ (presheaf_descend_universal _ (generated_sieve_cover g)
+    + exact (that (presheaf_descend_universal _ (generated_sieve_cover g)
         (λ i, a i) (sieve_matching_compatible a)) α H).
     + apply sieve_matching_descend_eq.
 Defined.
