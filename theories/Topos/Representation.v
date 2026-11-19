@@ -51,7 +51,7 @@ Definition ClassifiedSub {X : @Ob C} (f : Hom X Ω)
 (** 相等的分类箭头给出等价逆像。 *)
 
 Global Instance ClassifiedSub_proper {X : @Ob C}
-  : Proper (@HomEq[X, Ω] ==> Sub_eq X) ClassifiedSub.
+  : Proper (≈[X, Ω] ==> Sub_eq X) ClassifiedSub.
 Proof.
   intros f g H.
   exact (fct_fmap_proper (C^op) SetCat (@SubF C HPb)

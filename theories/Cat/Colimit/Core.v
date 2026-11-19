@@ -21,7 +21,8 @@ Definition is_colimit {J C : Cat} {D : Fct J C} {L : @Ob C}
   := is_limit (op_cone κ).
 
 Notation "κ '⦂' 'Colim(' D ')'" := (@is_colimit _ _ D _ κ)
-  (at level 50, no associativity) : cat_scope.
+  (at level 50, no associativity)
+  : cat_scope.
 
 (** Expose the same universal property with arrows in [C]. No second
     universal property or comparison construction is stored. *)
@@ -81,7 +82,9 @@ Definition Colim {J C : Cat} (D : Fct J C) `{HC : !HasColimit C D}
   := lim (D^opF).
 
 Arguments Colim {_ _} _ {_}.
-Notation "'colim' D" := (Colim D) (at level 35) : ob_scope.
+Notation "'colim' D" := (Colim D)
+  (at level 35)
+  : ob_scope.
 
 (** The injections are the original opposite-limit cone legs. *)
 
@@ -95,7 +98,9 @@ Definition colimit_cocone {J C : Cat} (D : Fct J C)
   |}.
 
 Arguments colimit_cocone {_ _} _ {_}.
-Notation "'ιcolim[' D ']'" := (colimit_cocone D) : hom_scope.
+Notation "'ιcolim[' D ']'" := (colimit_cocone D)
+  (at level 0, format "ιcolim[ D ]")
+  : hom_scope.
 
 (** Universality is inherited without rebuilding mediator witnesses. *)
 
@@ -118,7 +123,8 @@ Definition colimit_desc {J C : Cat} {D : Fct J C}
   := lim⟨op_cone κ⟩.
 
 Notation "'colim⟨' κ '⟩'" := (colimit_desc κ)
-  (at level 35) : hom_scope.
+  (at level 0, format "colim⟨ κ ⟩")
+  : hom_scope.
 
 (** ** Descent from a Chosen Colimit
 
@@ -164,7 +170,7 @@ Qed.
 (** 下降映射的保相等性直接使用已有提升映射定律。 *)
 
 Global Instance colimit_desc_proper {X}
-  : Proper ((λ κ μ : D ⇒∇ X, κ ≈N μ) ==> @HomEq[colim D, X])
+  : Proper ((λ κ μ : D ⇒∇ X, κ ≈N μ) ==> ≈[colim D, X])
       (@colimit_desc J C D HC X).
 Proof.
   intros κ μ H.
@@ -273,7 +279,7 @@ Proof. exact (limit_map_β (α^opN) j). Qed.
 (** 继承的函子作用保持自然变换相等。 *)
 
 Global Instance colimit_map_proper {D E : Fct J C}
-  : Proper (NatEq ==> @HomEq[colim D, colim E]) (@colimit_map D E).
+  : Proper (NatEq ==> ≈[colim D, colim E]) (@colimit_map D E).
 Proof. exact (@fct_fmap_proper (FctCat J C) C ColimF D E). Qed.
 
 (** The identity law is inherited from the composite opposite functor. *)

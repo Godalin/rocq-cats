@@ -94,7 +94,7 @@ Context (R : DiagramRelation F G).
 
 (** 子集继承逐分量广集相等；隶属证据可以大于该相等。 *)
 
-Definition RelationGluingS (X : @Ob J)
+Definition RelationGluingS (X : J)
   : SetC@{u q}
   := SubsetS (F X ×S G X) (λ p, R X (fst p) (snd p)).
 
@@ -102,7 +102,7 @@ Definition RelationGluingS (X : @Ob J)
 
 (** 映射两个值，并保留给定的隶属运输。 *)
 
-Program Definition relation_gluing_map {X Y : @Ob J} (f : Hom X Y)
+Program Definition relation_gluing_map {X Y : J} (f : Hom X Y)
   : RelationGluingS X →r RelationGluingS Y
   :=
   {|func p := ((fmap F f (fst p.1), fmap G f (snd p.1));
@@ -126,8 +126,8 @@ Program Definition RelationGluingF
   |}.
 Next Obligation.
   intros f g h [[x y] r]. split.
-  - exact (@fct_fmap_proper J SetCat F X Y f g h x).
-  - exact (@fct_fmap_proper J SetCat G X Y f g h y).
+  - exact (fct_fmap_proper _ _ F f g h x).
+  - exact (fct_fmap_proper _ _ G f g h y).
 Defined.
 Next Obligation.
   intros [[x y] h]. split.
@@ -136,8 +136,8 @@ Next Obligation.
 Defined.
 Next Obligation.
   intros [[x y] h]. split.
-  - exact (@fct_comp J SetCat F X Y Z f g x).
-  - exact (@fct_comp J SetCat G X Y Z f g y).
+  - exact (fct_comp _ _ F f g x).
+  - exact (fct_comp _ _ G f g y).
 Defined.
 
 (** Forget the semantic/right value and the relation witness. *)

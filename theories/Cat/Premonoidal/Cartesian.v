@@ -38,8 +38,8 @@ Next Obligation.
   rewrite product_comp_r, product_β1, product_β2. apply product_pair_η.
 Defined.
 Next Obligation.
-  change (⟨π2, π1⟩ ∘ (f × @id Y) ≈
-    (@id Y × f) ∘ ⟨π2, π1⟩).
+  change (⟨π2, π1⟩ ∘ (f × id[Y]) ≈
+    (id[Y] × f) ∘ ⟨π2, π1⟩).
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -47,8 +47,8 @@ Defined.
 Next Obligation.
   change ((@product_assoc C HP Y Z X).1 ∘
     (⟨π2, π1⟩ ∘ (@product_assoc C HP X Y Z).1) ≈
-    (@id Y × ⟨π2, π1⟩) ∘
-      ((@product_assoc C HP Y X Z).1 ∘ (⟨π2, π1⟩ × @id Z))).
+    (id[Y] × ⟨π2, π1⟩) ∘
+      ((@product_assoc C HP Y X Z).1 ∘ (⟨π2, π1⟩ × id[Z]))).
   unfold product_assoc. cbn.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |

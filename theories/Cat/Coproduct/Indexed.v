@@ -13,7 +13,9 @@ From Cats Require Export
 
 (** * 指标余积作为离散余极限 *)
 
-Notation "'∐[' D ']'" := (Colim (DiscreteF D)) : ob_scope.
+Notation "'∐[' D ']'" := (Colim (DiscreteF D))
+  (at level 0, format "∐[ D ]")
+  : ob_scope.
 
 (** The injection is the selected discrete colimit's leg. *)
 
@@ -24,7 +26,9 @@ Definition indexed_inj {C : Cat} {I : Type} {D : I → @Ob C}
   : Hom (D i) ∐[D]
   := ιcolim[DiscreteF D] i.
 
-Notation "'ι∐[' D ']'" := (indexed_inj (D := D)) : hom_scope.
+Notation "'ι∐[' D ']'" := (indexed_inj (D := D))
+  (at level 0, format "ι∐[ D ]")
+  : hom_scope.
 
 (** Copair a family of arrows with common codomain by the original opposite
     limit mediator. *)
@@ -38,7 +42,9 @@ Definition indexed_copair {C : Cat} {I : Type} {D : I → @Ob C}
   := @colimit_desc (DiscreteCat I) C (DiscreteF D) HC X
       (@DiscreteCocone C I (DiscreteF D) X κ).
 
-Notation "'∐⟨' κ '⟩'" := (indexed_copair κ) : hom_scope.
+Notation "'∐⟨' κ '⟩'" := (indexed_copair κ)
+  (at level 0, format "∐⟨ κ ⟩")
+  : hom_scope.
 
 (** ** Laws of an Indexed Coproduct
 

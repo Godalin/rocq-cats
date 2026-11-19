@@ -70,7 +70,7 @@ Program Definition PushoutCoproduct {C : Cat}
 
 Definition pushout_coequalizer {C : Cat} `{HC : !HasCoproduct C}
     {X Y E : @Ob C} {f g : Hom X Y} {e : Hom Y E} {d : Hom X E}
-    (HP : is_pushout ⦗f,g⦘ ⦗(@id X),(@id X)⦘ E e d)
+    (HP : is_pushout ⦗f,g⦘ ⦗(id[X]),(id[X])⦘ E e d)
   : is_coequalizer f g E e
   := @pullback_equalizer (C^op) (@hasOpProduct C HC) Y X E f g e d HP.
 

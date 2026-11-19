@@ -39,7 +39,7 @@ Definition DayUnitF@{u p +} {C : Cat} (I : @Ob C)
 
 Section LeftArrows.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
-Context (L : π2F T I ≅N IdF).
+Context (L : AtLF T I ≅N IdF).
 
 (** Introduce the left unit, then apply the representable arrow. *)
 
@@ -86,7 +86,7 @@ Defined.
 (** 可表恒等箭头只留下单位子的逆。 *)
 
 Lemma day_left_arrow_id (Y : @Ob C)
-  : day_left_arrow Y (@id I) ≈ (L.2 Y).1.
+  : day_left_arrow Y (id[I]) ≈ (L.2 Y).1.
 Proof. unfold day_left_arrow. rewrite fct_id, comp_id_l. reflexivity. Defined.
 
 (** Eliminating an inserted identity unit recovers the value arrow. *)
@@ -94,7 +94,7 @@ Proof. unfold day_left_arrow. rewrite fct_id, comp_id_l. reflexivity. Defined.
 (** 消去插入的恒等单位恢复值箭头。 *)
 
 Lemma day_left_arrow_unit (Y : @Ob C)
-  : L.1 Y ∘ day_left_arrow Y (@id I) ≈ id.
+  : L.1 Y ∘ day_left_arrow Y (id[I]) ≈ id.
 Proof. rewrite day_left_arrow_id. exact (snd (L.2 Y).2). Defined.
 
 (** Reinserting a unit after elimination recovers the tensor action. *)
@@ -122,7 +122,7 @@ End LeftArrows.
 
 Section RightArrows.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
-Context (R : π1F T I ≅N IdF).
+Context (R : AtRF T I ≅N IdF).
 
 (** Introduce the right unit before applying its representable arrow. *)
 
@@ -169,7 +169,7 @@ Defined.
 (** 右侧恒等插入就是单位子的逆。 *)
 
 Lemma day_right_arrow_id (X : @Ob C)
-  : day_right_arrow X (@id I) ≈ (R.2 X).1.
+  : day_right_arrow X (id[I]) ≈ (R.2 X).1.
 Proof. unfold day_right_arrow. rewrite fct_id, comp_id_l. reflexivity. Defined.
 
 (** Eliminating the right identity unit gives the identity. *)
@@ -177,7 +177,7 @@ Proof. unfold day_right_arrow. rewrite fct_id, comp_id_l. reflexivity. Defined.
 (** 消去右侧恒等单位得到恒等映射。 *)
 
 Lemma day_right_arrow_unit (X : @Ob C)
-  : R.1 X ∘ day_right_arrow X (@id I) ≈ id.
+  : R.1 X ∘ day_right_arrow X (id[I]) ≈ id.
 Proof. rewrite day_right_arrow_id. exact (snd (R.2 X).2). Defined.
 
 (** Right insertion cancels its initial unitor. *)
@@ -206,7 +206,7 @@ End RightArrows.
 Section LeftOperation.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
-Context (L : π2F T I ≅N IdF).
+Context (L : AtLF T I ≅N IdF).
 Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 
 (** The left operation is natural before any coend is selected. *)
@@ -262,7 +262,7 @@ End LeftOperation.
 Section RightOperation.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
-Context (R : π1F T I ≅N IdF).
+Context (R : AtRF T I ≅N IdF).
 Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 
 (** Right insertion gives the natural operation for the other unitor. *)
@@ -320,7 +320,7 @@ End RightOperation.
 Section LeftUnitor.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
-Context (L : π2F T I ≅N IdF).
+Context (L : AtLF T I ≅N IdF).
 Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 Context `{HD : !HasDay C T (DayUnitF I) F}.
 
@@ -339,10 +339,10 @@ Definition DayLeftUnitorN
 Program Definition day_left_seed (Z : @Ob C)
   : F Z →r DayValuesF (DayUnitF I) F (I,Z)
   :=
-  {|func x := ({|lower := @id I|}, x)
+  {|func x := ({|lower := id[I]|}, x)
   |}.
 Next Obligation.
-  intros x y H. split; [exact {|lower := reflexivity (@id I)|} | exact H].
+  intros x y H. split; [exact {|lower := reflexivity (id[I])|} | exact H].
 Defined.
 
 (** Reinsert the identity representative with the original left unitor
@@ -379,23 +379,23 @@ Defined.
 Lemma day_left_unitor_inv_map {Y Z : @Ob C} (f : Hom Y Z) (y : F Y)
   : day_left_unitor_inv Z (fmap F f y) ≈S
       day_inject T (DayUnitF I) F (I,Y) (f ∘ L.1 Y)
-        ({|lower := @id I|}, y).
+        ({|lower := id[I]|}, y).
 Proof.
   transitivity (day_inject T (DayUnitF I) F (I,Z) (L.1 Z)
     (fmap (DayValuesF (DayUnitF I) F) (X := (I,Y)) (Y := (I,Z))
-      (id,f) ({|lower := @id I|}, y))).
+      (id,f) ({|lower := id[I]|}, y))).
   - apply (@func_proper _ _
       (day_inject T (DayUnitF I) F (I,Z) (L.1 Z))).
     split; [| reflexivity]. refine {|lower := _|}.
     symmetry. apply comp_id_l.
   - transitivity (day_inject T (DayUnitF I) F (I,Y)
       (L.1 Z ∘ fmap T (X := (I,Y)) (Y := (I,Z)) (id,f))
-        ({|lower := @id I|}, y)).
+        ({|lower := id[I]|}, y)).
     + symmetry. exact (day_inject_gluing T (DayUnitF I) F
         (p := (I,Y)) (q := (I,Z)) (id,f) (L.1 Z)
-          ({|lower := @id I|}, y)).
+          ({|lower := id[I]|}, y)).
     + exact (@day_inject_proper C T (DayUnitF I) F HD (I,Y) Z _ _
-        (nat_naturality L.1 f) ({|lower := @id I|}, y)).
+        (nat_naturality L.1 f) ({|lower := id[I]|}, y)).
 Defined.
 
 (** Inserting and then evaluating leaves the value unchanged. *)
@@ -406,9 +406,9 @@ Lemma day_left_unitor_inv_r (Z : @Ob C)
   : (DayLeftUnitorN Z ∘r day_left_unitor_inv Z) ≈f id_resp.
 Proof.
   intros x.
-  transitivity (fmap F (L.1 Z ∘ day_left_arrow T L Z (@id I)) x).
-  - exact (day_left_unitor_β (L.1 Z) (@id I) x).
-  - transitivity (fmap F (@id Z) x).
+  transitivity (fmap F (L.1 Z ∘ day_left_arrow T L Z (id[I])) x).
+  - exact (day_left_unitor_β (L.1 Z) (id[I]) x).
+  - transitivity (fmap F (id[Z]) x).
     + exact (@fct_fmap_proper C SetCat F _ _ _ _
         (day_left_arrow_unit T L Z) x).
     + exact (@fct_id C SetCat F Z x).
@@ -430,22 +430,22 @@ Proof.
       (day_left_unitor_β h j y)).
   - transitivity (day_inject T (DayUnitF I) F (I,Y)
       ((h ∘ day_left_arrow T L Y j) ∘ L.1 Y)
-        ({|lower := @id I|}, y)).
+        ({|lower := id[I]|}, y)).
     + exact (day_left_unitor_inv_map (h ∘ day_left_arrow T L Y j) y).
     + transitivity (day_inject T (DayUnitF I) F (I,Y)
         (h ∘ fmap T (X := (I,Y)) (Y := (X,Y)) (j,id))
-          ({|lower := @id I|}, y)).
+          ({|lower := id[I]|}, y)).
       * assert (Hw : (h ∘ day_left_arrow T L Y j) ∘ L.1 Y ≈
           h ∘ fmap T (X := (I,Y)) (Y := (X,Y)) (j,id)).
         { rewrite comp_assoc, day_left_arrow_cancel. reflexivity. }
         exact (@day_inject_proper C T (DayUnitF I) F HD (I,Y) Z
-          _ _ Hw ({|lower := @id I|}, y)).
+          _ _ Hw ({|lower := id[I]|}, y)).
       * transitivity (day_inject T (DayUnitF I) F (X,Y) h
           (fmap (DayValuesF (DayUnitF I) F) (X := (I,Y)) (Y := (X,Y))
-            (j,id) ({|lower := @id I|}, y))).
+            (j,id) ({|lower := id[I]|}, y))).
         -- exact (day_inject_gluing T (DayUnitF I) F
             (p := (I,Y)) (q := (X,Y)) (j,id) h
-              ({|lower := @id I|}, y)).
+              ({|lower := id[I]|}, y)).
         -- apply (@func_proper _ _
             (day_inject T (DayUnitF I) F (X,Y) h)).
            split.
@@ -478,7 +478,7 @@ End LeftUnitor.
 Section RightUnitor.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}.
-Context (R : π1F T I ≅N IdF).
+Context (R : AtRF T I ≅N IdF).
 Context (F : Fct C (SetCat@{u p _ _ _ _ _})).
 Context `{HD : !HasDay C T F (DayUnitF I)}.
 
@@ -497,10 +497,10 @@ Definition DayRightUnitorN
 Program Definition day_right_seed (Z : @Ob C)
   : F Z →r DayValuesF F (DayUnitF I) (Z,I)
   :=
-  {|func x := (x, {|lower := @id I|})
+  {|func x := (x, {|lower := id[I]|})
   |}.
 Next Obligation.
-  intros x y H. split; [exact H | exact {|lower := reflexivity (@id I)|}].
+  intros x y H. split; [exact H | exact {|lower := reflexivity (id[I])|}].
 Defined.
 
 (** Insert the identity on the right with the original right unitor weight. *)
@@ -535,23 +535,23 @@ Defined.
 Lemma day_right_unitor_inv_map {X Z : @Ob C} (f : Hom X Z) (x : F X)
   : day_right_unitor_inv Z (fmap F f x) ≈S
       day_inject T F (DayUnitF I) (X,I) (f ∘ R.1 X)
-        (x, {|lower := @id I|}).
+        (x, {|lower := id[I]|}).
 Proof.
   transitivity (day_inject T F (DayUnitF I) (Z,I) (R.1 Z)
     (fmap (DayValuesF F (DayUnitF I)) (X := (X,I)) (Y := (Z,I))
-      (f,id) (x, {|lower := @id I|}))).
+      (f,id) (x, {|lower := id[I]|}))).
   - apply (@func_proper _ _
       (day_inject T F (DayUnitF I) (Z,I) (R.1 Z))).
     split; [reflexivity |]. refine {|lower := _|}.
     symmetry. apply comp_id_l.
   - transitivity (day_inject T F (DayUnitF I) (X,I)
       (R.1 Z ∘ fmap T (X := (X,I)) (Y := (Z,I)) (f,id))
-        (x, {|lower := @id I|})).
+        (x, {|lower := id[I]|})).
     + symmetry. exact (day_inject_gluing T F (DayUnitF I)
         (p := (X,I)) (q := (Z,I)) (f,id) (R.1 Z)
-          (x, {|lower := @id I|})).
+          (x, {|lower := id[I]|})).
     + exact (@day_inject_proper C T F (DayUnitF I) HD (X,I) Z _ _
-        (nat_naturality R.1 f) (x, {|lower := @id I|})).
+        (nat_naturality R.1 f) (x, {|lower := id[I]|})).
 Defined.
 
 (** Inserting and evaluating on the right recovers the value. *)
@@ -562,9 +562,9 @@ Lemma day_right_unitor_inv_r (Z : @Ob C)
   : (DayRightUnitorN Z ∘r day_right_unitor_inv Z) ≈f id_resp.
 Proof.
   intros x.
-  transitivity (fmap F (R.1 Z ∘ day_right_arrow T R Z (@id I)) x).
-  - exact (day_right_unitor_β (R.1 Z) x (@id I)).
-  - transitivity (fmap F (@id Z) x).
+  transitivity (fmap F (R.1 Z ∘ day_right_arrow T R Z (id[I])) x).
+  - exact (day_right_unitor_β (R.1 Z) x (id[I])).
+  - transitivity (fmap F (id[Z]) x).
     + exact (@fct_fmap_proper C SetCat F _ _ _ _
         (day_right_arrow_unit T R Z) x).
     + exact (@fct_id C SetCat F Z x).
@@ -585,22 +585,22 @@ Proof.
       (day_right_unitor_β h x j)).
   - transitivity (day_inject T F (DayUnitF I) (X,I)
       ((h ∘ day_right_arrow T R X j) ∘ R.1 X)
-        (x, {|lower := @id I|})).
+        (x, {|lower := id[I]|})).
     + exact (day_right_unitor_inv_map (h ∘ day_right_arrow T R X j) x).
     + transitivity (day_inject T F (DayUnitF I) (X,I)
         (h ∘ fmap T (X := (X,I)) (Y := (X,Y)) (id,j))
-          (x, {|lower := @id I|})).
+          (x, {|lower := id[I]|})).
       * assert (Hw : (h ∘ day_right_arrow T R X j) ∘ R.1 X ≈
           h ∘ fmap T (X := (X,I)) (Y := (X,Y)) (id,j)).
         { rewrite comp_assoc, day_right_arrow_cancel. reflexivity. }
         exact (@day_inject_proper C T F (DayUnitF I) HD (X,I) Z
-          _ _ Hw (x, {|lower := @id I|})).
+          _ _ Hw (x, {|lower := id[I]|})).
       * transitivity (day_inject T F (DayUnitF I) (X,Y) h
           (fmap (DayValuesF F (DayUnitF I)) (X := (X,I)) (Y := (X,Y))
-            (id,j) (x, {|lower := @id I|}))).
+            (id,j) (x, {|lower := id[I]|}))).
         -- exact (day_inject_gluing T F (DayUnitF I)
             (p := (X,I)) (q := (X,Y)) (id,j) h
-              (x, {|lower := @id I|})).
+              (x, {|lower := id[I]|})).
         -- apply (@func_proper _ _
             (day_inject T F (DayUnitF I) (X,Y) h)).
            split.
@@ -639,7 +639,7 @@ Context {F G : Fct C (SetCat@{u p _ _ _ _ _})}.
 
 (** 左单位子与输入的自然变换交换。 *)
 
-Lemma day_left_unitor_natural (L : π2F T I ≅N IdF)
+Lemma day_left_unitor_natural (L : AtLF T I ≅N IdF)
     `{HF : !HasDay C T (DayUnitF I) F}
     `{HG : !HasDay C T (DayUnitF I) G} (α : F ⇒ G)
   : (DayLeftUnitorN T L G ∘Nv DayMapN T IdN α) ≈N
@@ -665,7 +665,7 @@ Defined.
 
 (** 左单位逆的自然性就是一般的逆方块定理。 *)
 
-Lemma day_left_unitor_inv_natural (L : π2F T I ≅N IdF)
+Lemma day_left_unitor_inv_natural (L : AtLF T I ≅N IdF)
     `{HF : !HasDay C T (DayUnitF I) F}
     `{HG : !HasDay C T (DayUnitF I) G} (α : F ⇒ G) (Z : @Ob C)
   : (day_left_unitor_inv T L G Z ∘r α Z) ≈f
@@ -681,7 +681,7 @@ Defined.
 
 (** 右单位子具有对应的输入自然性方块。 *)
 
-Lemma day_right_unitor_natural (R : π1F T I ≅N IdF)
+Lemma day_right_unitor_natural (R : AtRF T I ≅N IdF)
     `{HF : !HasDay C T F (DayUnitF I)}
     `{HG : !HasDay C T G (DayUnitF I)} (α : F ⇒ G)
   : (DayRightUnitorN T R G ∘Nv DayMapN T α IdN) ≈N
@@ -707,7 +707,7 @@ Defined.
 
 (** 右单位逆的自然性复用同一个一般方块定理。 *)
 
-Lemma day_right_unitor_inv_natural (R : π1F T I ≅N IdF)
+Lemma day_right_unitor_inv_natural (R : AtRF T I ≅N IdF)
     `{HF : !HasDay C T F (DayUnitF I)}
     `{HG : !HasDay C T G (DayUnitF I)} (α : F ⇒ G) (Z : @Ob C)
   : (day_right_unitor_inv T R G Z ∘r α Z) ≈f
@@ -741,8 +741,8 @@ Context (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 
 (** 左单位子族本身组成自然变换。 *)
 
-Program Definition DayLeftUnitorFctN (L : π2F T I ≅N IdF)
-  : π2F (DayTensorF T HD) (DayUnitF I) ⇒ IdF
+Program Definition DayLeftUnitorFctN (L : AtLF T I ≅N IdF)
+  : AtLF (DayTensorF T HD) (DayUnitF I) ⇒ IdF
   :=
   {|nt F := @DayLeftUnitorN C T I L F (HD (DayUnitF I) F)
   |}.
@@ -755,8 +755,8 @@ Defined.
 
 (** 分量逆将该族提升为函子范畴上的自然同构。 *)
 
-Definition DayLeftUnitorFct (L : π2F T I ≅N IdF)
-  : π2F (DayTensorF T HD) (DayUnitF I) ≅N IdF.
+Definition DayLeftUnitorFct (L : AtLF T I ≅N IdF)
+  : AtLF (DayTensorF T HD) (DayUnitF I) ≅N IdF.
 Proof.
   exists (DayLeftUnitorFctN L). intros F.
   exact (nat_iso_is_iso _ (@DayLeftUnitor C T I L F
@@ -767,8 +767,8 @@ Defined.
 
 (** 右单位子也组成函子上的自然变换。 *)
 
-Program Definition DayRightUnitorFctN (R : π1F T I ≅N IdF)
-  : π1F (DayTensorF T HD) (DayUnitF I) ⇒ IdF
+Program Definition DayRightUnitorFctN (R : AtRF T I ≅N IdF)
+  : AtRF (DayTensorF T HD) (DayUnitF I) ⇒ IdF
   :=
   {|nt F := @DayRightUnitorN C T I R F (HD F (DayUnitF I))
   |}.
@@ -781,8 +781,8 @@ Defined.
 
 (** 在每个函子处保留计算得到的逆。 *)
 
-Definition DayRightUnitorFct (R : π1F T I ≅N IdF)
-  : π1F (DayTensorF T HD) (DayUnitF I) ≅N IdF.
+Definition DayRightUnitorFct (R : AtRF T I ≅N IdF)
+  : AtRF (DayTensorF T HD) (DayUnitF I) ≅N IdF.
 Proof.
   exists (DayRightUnitorFctN R). intros F.
   exact (nat_iso_is_iso _ (@DayRightUnitor C T I R F

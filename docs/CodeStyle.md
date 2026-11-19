@@ -89,22 +89,47 @@ one tactic per line is not compulsory.
 
 ## Notation and records / 记号及记录
 
-Separate notation's interpretation from its parsing options when grouping
-helps reading. Keep options and the scope together when they remain short.
-For record literals, retain named fields, the first field immediately after
-`{|`, and aligned `;` and `|}`. Put a multiline record's closing delimiter on its
-own line. Prefer a short constructor for single-field wrappers, as in
-`Lift f` and `Lift H`, rather than a verbose field literal.
+Use brackets when a public term notation takes a selected object, boundary
+or other explicit data. Keep Rocq's `@` for explicit application of a name.
+For ordinary term `Notation`, `Infix` and `Reserved` grammar, write the
+precedence explicitly. Open `(at level …)` on its own line with two spaces
+of indentation. Break a long list of modifiers at commas and indent its
+continuation two more spaces. A scope starts on a separate line at two
+spaces, with the colon at the start of that line. Keep a short interpretation
+on the declaration line. For a long one, break before `:=` and indent it two
+spaces, with the interpretation beginning immediately after `:=`.
+Named abbreviations and tactic notation use their own grammar. A record
+field's `where` interpretation uses the precedence in its reserved grammar.
+Use level 0 for closed bracket notation and level 1 for new projection-like
+postfix notation. For an existing precedence, group terms explicitly when
+needed to avoid Rocq's deprecated level tolerance.
 
-记号的解释与解析选项按需分行；选项和作用域较短时可同行。
-记录字面量保留具名字段，首字段紧跟 `{|`，后续 `;` 和 `|}` 对齐；
-多行记录的闭合符另起一行。单字段包装优先用简短构造器，如 `Lift f`、`Lift H`，
-避免冗长的字段字面量。
+公共项记号若显式传入选定对象、端点或其他数据，用方括号标记；`@` 留给
+Rocq 原生的显式应用。普通项记号 `Notation`、`Infix` 及其 `Reserved`
+语法显式写优先级，`(at level …)` 另起一行，缩进两空格。
+选项列表过长时在逗号后换行，续行再缩进两空格。作用域在冒号前换行，
+缩进两空格。短解释与声明头同行，长解释在 `:=` 前换行并缩进两空格，
+解释紧跟 `:=`。具名简写和战术记号使用各自的语法。记录字段的
+`where` 解释沿用预留语法中的优先级。封闭方括号记号用级别 0，
+新的投影式后缀用级别 1。保留既有优先级时，必要处明确加括号，
+避免依赖 Rocq 将移除的宽松解析。
 
 ```coq
+Notation "'id[' X ']'" := (@id _ X)
+  (at level 0, format "id[ X ]")
+  : hom_scope.
+
 Infix "∘Nh" := HCompN
-  (at level 50, left associativity) : cat_scope.
+  (at level 50, left associativity)
+  : cat_scope.
 ```
+
+For record literals, keep named fields, the first field immediately after
+`{|`, and aligned `;` and `|}`. Put a multiline record's closing delimiter on
+its own line. Prefer a short constructor for a single-field wrapper.
+
+记录字面量保留具名字段，首字段紧跟 `{|`，后续 `;` 和 `|}` 对齐；
+多行记录的闭合符另起一行。单字段包装优先用简短构造器。
 
 ## Object and morphism products / 对象积与态射积
 

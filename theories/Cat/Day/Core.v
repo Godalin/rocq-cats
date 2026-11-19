@@ -34,7 +34,7 @@ Definition DayValuesF@{u p +} {C : Cat}
     (F G : Fct C (SetCat@{u p _ _ _ _ _}))
   : Fct (C ×C C) SetCat
   := @PointwiseProductF _ SetCat SetCat_HasProduct
-      (F ∘F FstF C C) (G ∘F SndF C C).
+      (F ∘F π1F C C) (G ∘F π2F C C).
 
 (** The contravariant coordinate contributes [Hom (T (X,Y)) Z]; the
     covariant coordinate contributes [F X] and [G Y]. Functoriality is
@@ -47,8 +47,8 @@ Definition DayKernel@{u p +} {C : Cat} (T : Fct (C ×C C) C)
     (F G : Fct C (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
   : Fct (((C ×C C)^op) ×C (C ×C C)) SetCat
   := @PointwiseProductF _ SetCat SetCat_HasProduct
-      (DayHomF T Z ∘F FstF ((C ×C C)^op) (C ×C C))
-      (DayValuesF F G ∘F SndF ((C ×C C)^op) (C ×C C)).
+      (DayHomF T Z ∘F π1F ((C ×C C)^op) (C ×C C))
+      (DayValuesF F G ∘F π2F ((C ×C C)^op) (C ×C C)).
 
 (** ** Target and Input Parameters
 
@@ -74,7 +74,7 @@ Definition DayPostN {Z Z' : @Ob C} (f : Hom Z Z')
   : DayKernel T F G Z ⇒ DayKernel T F G Z'
   := @PointwiseProductN _ SetCat SetCat_HasProduct _ _ _ _
       (((LiftF ∘Nl (f _*N)) ∘Nr (T^opF))
-        ∘Nr FstF ((C ×C C)^op) (C ×C C)) IdN.
+        ∘Nr π1F ((C ×C C)^op) (C ×C C)) IdN.
 
 (** Equal target arrows induce equal kernel transformations. *)
 
@@ -93,7 +93,7 @@ Defined.
 (** 恒等后合成保持核不变。 *)
 
 Lemma day_post_id (Z : @Ob C)
-  : DayPostN (@id Z) ≈N IdN.
+  : DayPostN (id[Z]) ≈N IdN.
 Proof.
   intros [[X Y] [X' Y']] [h [x y]].
   split; [exact {|lower := comp_id_l (lower h)|} | split; reflexivity].

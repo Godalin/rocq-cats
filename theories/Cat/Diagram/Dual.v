@@ -74,7 +74,7 @@ Infix "∘Cocone" := cocone_comp
 
 Global Instance cocone_comp_proper {J C : Cat} {D : Fct J C}
     {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==>
+  : Proper (≈[X, Y] ==>
       (λ κ μ : D ⇒∇ X, κ ≈N μ) ==>
       (λ κ μ : D ⇒∇ Y, κ ≈N μ))
       (@cocone_comp J C D X Y).

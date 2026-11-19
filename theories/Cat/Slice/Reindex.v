@@ -164,12 +164,12 @@ Definition slice_reindex_id_iso {X : @Ob C} (A : SliceOb C X)
 (** 恒等基变换比较组成自然变换。 *)
 
 Program Definition SliceReindexIdN (X : @Ob C)
-  : (@IdF (C /C X)) ⇒ (SliceReindexF (@id X))
+  : (@IdF (C /C X)) ⇒ (SliceReindexF (id[X]))
   :=
   {|nt := slice_reindex_id
   |}.
 Next Obligation.
-  apply (pullback_hom_ext (pullback_universal (f := @id X) (g := slice_arrow Y))).
+  apply (pullback_hom_ext (pullback_universal (f := id[X]) (g := slice_arrow Y))).
   - cbn. rewrite <- !comp_assoc, !pb_β1. apply slice_comm.
   - cbn. rewrite <- !comp_assoc, !pb_β2, comp_assoc, pb_β2. carw.
 Defined.
@@ -179,7 +179,7 @@ Defined.
 (** 恒等基变换自然同构于恒等函子。 *)
 
 Definition slice_reindex_id_nat_iso (X : @Ob C)
-  : (@IdF (C /C X)) ≅N (SliceReindexF (@id X))
+  : (@IdF (C /C X)) ≅N (SliceReindexF (id[X]))
   := (SliceReindexIdN X; slice_reindex_id_iso).
 
 (** Iterated base change itself satisfies the pullback property for the

@@ -16,21 +16,21 @@ From Cats Require Import
     相等。这种特殊的双自然性足以定义 end，不假定任意双自然变换可复合。 *)
 
 Record Wedge {C D : Cat}
-  (F : Fct ((C^op) ×C C) D) (W : @Ob D)
+  (F : Fct ((C^op) ×C C) D) (W : D)
   := WedgeOfLegs
   (** The primary view is the family of arrows to diagonal values. *)
 
   (** 主视图是指向对角值的箭头族。 *)
 
-  { wedge_leg (X : @Ob C) :> Hom W (F (X, X))
+  { wedge_leg (X : C) :> Hom W (F (X, X))
 
   (** The covariant and contravariant actions agree on the two legs. *)
 
   (** 协变和逆变作用将两条腿映成相等的箭头。 *)
 
-  ; wedge_comm {X Y : @Ob C} (f : Hom X Y)
-    : fmap F (X := (X, X)) (Y := (X, Y)) (id, f) ∘ wedge_leg X
-      ≈ fmap F (X := (Y, Y)) (Y := (X, Y)) (f, id) ∘ wedge_leg Y
+  ; wedge_comm {X Y : C} (f : Hom X Y)
+    : fmap (AtLF F X) f ∘ wedge_leg X
+      ≈ fmap (AtRF F Y) f ∘ wedge_leg Y
   }.
 
 Arguments WedgeOfLegs {_ _ _ _} _ _.
@@ -68,7 +68,7 @@ Defined.
 (** 用顶点映射预合成全部腿。 *)
 
 Program Definition wedge_comp {C D : Cat}
-    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
+    {F : Fct ((C^op) ×C C) D} {W V : D}
     (κ : Wedge F W) (f : Hom V W)
   : Wedge F V
   :=
@@ -86,8 +86,8 @@ Infix "∘Wedge" := wedge_comp
 (** 预合成保持楔相等和箭头相等。 *)
 
 Global Instance wedge_comp_proper {C D : Cat}
-    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
-  : Proper (WedgeEq ==> @HomEq[V, W] ==> WedgeEq)
+    {F : Fct ((C^op) ×C C) D} {W V : D}
+  : Proper (WedgeEq ==> ≈[V, W] ==> WedgeEq)
       (@wedge_comp C D F W V).
 Proof.
   intros κ μ H f g K X. cbn.
@@ -149,7 +149,7 @@ Qed.
 
 Definition WedgeOb {C D : Cat}
     (F : Fct ((C^op) ×C C) D)
-  := ∃ W : @Ob D, Wedge F W.
+  := ∃ W : D, Wedge F W.
 
 (** A wedge morphism retains an apex map and commuting triangles. *)
 

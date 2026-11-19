@@ -79,6 +79,6 @@ Program Definition OpShapeColimits {J C : Cat}
 Definition ColimitsOpShapeLimits {J C : Cat}
     `{HC : !HasColimitsOfShape C (J^op)}
   : HasLimitsOfShape (C^op) J
-  := @ReindexedLimits (J^op^op) J (C^op) FromDoubleOpF
+  := @ReindexedLimits ((J^op)^op) J (C^op) FromDoubleOpF
       from_double_op_full from_double_op_essentially_surjective
       (@hasOpLimits C (J^op) HC).

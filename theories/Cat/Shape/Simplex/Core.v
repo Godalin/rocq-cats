@@ -53,7 +53,7 @@ Definition SimplexCat
   : Cat
   := @InducedCat CatCat nat OrdinalShape.
 
-Notation Δ := SimplexCat.
+Abbreviation Δ := SimplexCat.
 
 (** The ordinal interpretation is the existing induced inclusion. *)
 

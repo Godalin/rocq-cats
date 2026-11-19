@@ -50,7 +50,7 @@ Context (X : @Ob C) (Z : @Ob D).
 
 Program Definition ProfRightUnitKernelN
   : BifunctorIndexOpF (ProfCompKernel P (HomProf C) X Z) ⇒
-      CoyonedaKernel (π1F P Z) X
+      CoyonedaKernel (AtRF P Z) X
   :=
   {|nt AB :=
       {|func w := (snd w,{|lower := lower (fst w)|})
@@ -72,7 +72,7 @@ Defined.
 Program Definition prof_right_unit_kernel_iso
   : ProfRightUnitKernelN ⦂
       BifunctorIndexOpF (ProfCompKernel P (HomProf C) X Z) ≅N
-      CoyonedaKernel (π1F P Z) X
+      CoyonedaKernel (AtRF P Z) X
   := λ AB,
       ({|func w := ({|lower := lower (snd w)|},fst w)|}; _).
 Next Obligation.
@@ -90,7 +90,7 @@ Defined.
 (** 反向核使用一般逆自然变换。 *)
 
 Definition ProfRightUnitKernelInvN
-  : CoyonedaKernel (π1F P Z) X ⇒
+  : CoyonedaKernel (AtRF P Z) X ⇒
       BifunctorIndexOpF (ProfCompKernel P (HomProf C) X Z)
   := ProfRightUnitKernelN ^-1N prof_right_unit_kernel_iso.
 
@@ -101,7 +101,7 @@ Definition ProfRightUnitKernelInvN
 Definition ProfRightUnitCowedge
   : Cowedge (ProfCompKernel P (HomProf C) X Z) (P (X,Z))
   := cowedge_index_unop
-      (cowedge_precompose (CoyonedaCowedge (π1F P Z) X)
+      (cowedge_precompose (CoyonedaCowedge (AtRF P Z) X)
         ProfRightUnitKernelN).
 
 (** The identity-component factorization is the original covariant law on
@@ -112,10 +112,10 @@ Definition ProfRightUnitCowedge
 Lemma prof_right_unit_factor {W : SetC}
     (κ : Cowedge (ProfCompKernel P (HomProf C) X Z) W)
     (Y : @Ob C) (h : Hom X Y) (x : P (Y,Z))
-  : κ X ({|lower := @id X|},lmap[P; h] x) ≈S
+  : κ X ({|lower := id[X]|},lmap[P; h] x) ≈S
       κ Y ({|lower := h|},x).
 Proof.
-  exact (coyoneda_cowedge_factor (π1F P Z) X
+  exact (coyoneda_cowedge_factor (AtRF P Z) X
     (cowedge_precompose (cowedge_index_op κ) ProfRightUnitKernelInvN)
     Y x h).
 Defined.
@@ -130,12 +130,12 @@ Definition prof_right_unit_universal
 Proof.
   apply coend_index_unop_universal.
   apply (snd (coend_universal_iff
-    (cowedge_precompose (CoyonedaCowedge (π1F P Z) X)
+    (cowedge_precompose (CoyonedaCowedge (AtRF P Z) X)
       ProfRightUnitKernelN))).
   intros W κ.
-  exists (coyoneda_desc (π1F P Z) X
+  exists (coyoneda_desc (AtRF P Z) X
     (cowedge_precompose κ ProfRightUnitKernelInvN)).
-  pose (U := coyoneda_desc_unique (π1F P Z) X
+  pose (U := coyoneda_desc_unique (AtRF P Z) X
     (cowedge_precompose κ ProfRightUnitKernelInvN)).
   refine {|this := _; that := _|}.
   - intros Y [[h] x]. exact (@this _ _ _ _ _ U Y (x,{|lower := h|})).
@@ -213,7 +213,7 @@ Definition prof_right_unit_in
   : P (X,Z) →r coend[ProfCompKernel P (HomProf C) X Z]
   := ιcoend[ProfCompKernel P (HomProf C) X Z] X ∘r
       (ProfRightUnitKernelInvN P X Z (X,X) ∘r
-        coyoneda_seed (π1F P Z) X).
+        coyoneda_seed (AtRF P Z) X).
 
 (** Evaluation after insertion recovers the value in specified equality. *)
 
@@ -222,8 +222,8 @@ Definition prof_right_unit_in
 Lemma prof_right_unit_out_in
   : (prof_right_unit_out ∘r prof_right_unit_in) ≈f id_resp.
 Proof.
-  intros x. transitivity (lmap[P; @id X] x).
-  - exact (prof_right_unit_β X (@id X) x).
+  intros x. transitivity (lmap[P; id[X]] x).
+  - exact (prof_right_unit_β X (id[X]) x).
   - exact (prof_lmap_id P X Z x).
 Defined.
 
@@ -397,7 +397,7 @@ Proof.
   - transitivity (lmap[Q; h] (α (Y,Z) x)).
     + exact (prof_right_unit_β Q X Z Y h (α (Y,Z) x)).
     + transitivity (α (X,Z) (lmap[P; h] x)).
-      * symmetry. exact (prof_natural α h (@id Z) x).
+      * symmetry. exact (prof_natural α h (id[Z]) x).
       * symmetry. exact (@func_proper _ _ (α (X,Z)) _ _
           (prof_right_unit_β P X Z Y h x)).
 Defined.

@@ -99,34 +99,34 @@ Program Definition MonadLax
       (@CartMonoidal C HT HP)
   :=
   {|LaxMonoidalFctToFct := M
-  ; lax_unit := monad_return M (@id 1)
+  ; lax_unit := monad_return M (id[1])
   ; lax_tensorN := MonadTensorN
   |}.
 Next Obligation.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
     (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-      (monad_return M (@id 1)) (@id (M X))) ≈ π2).
+      (monad_return M (id[1])) (id[M X])) ≈ π2).
   rewrite cartesian_tensor_map.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
-    (monad_return M (@id 1) × id) ≈ π2).
+    (monad_return M (id[1]) × id) ≈ π2).
   unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 Next Obligation.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
     (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-      (@id (M X)) (monad_return M (@id 1))) ≈ π1).
+      (id[M X]) (monad_return M (id[1]))) ≈ π1).
   rewrite cartesian_tensor_map.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
-    (id × monad_return M (@id 1)) ≈ π1).
+    (id × monad_return M (id[1])) ≈ π1).
   unfold monad_pair. monad_context_simpl M. reflexivity.
 Defined.
 Local Opaque monad_pair.
 Next Obligation.
   change (fmap M (@product_assoc C HP X Y Z).1 ∘ monad_pair ∘
     (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-      (@monad_pair X Y) (@id (M Z))) ≈ monad_pair ∘
+      (@monad_pair X Y) (id[M Z])) ≈ monad_pair ∘
     (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-      (@id (M X)) (@monad_pair Y Z)) ∘
+      (id[M X]) (@monad_pair Y Z)) ∘
     (@product_assoc C HP (M X) (M Y) (M Z)).1).
   rewrite !cartesian_tensor_map.
   change (fmap M (@product_assoc C HP X Y Z).1 ∘ monad_pair ∘
@@ -134,9 +134,9 @@ Next Obligation.
       (@product_assoc C HP (M X) (M Y) (M Z)).1).
   rewrite !comp_assoc,
     (monad_pair_pre (X := (X × Y)%ob) (Y := Z)
-      ((@monad_pair X Y) × @id (M Z))),
+      ((@monad_pair X Y) × id[M Z])),
     (monad_pair_pre (X := X) (Y := (Y × Z)%ob)
-      ((@id (M X) × @monad_pair Y Z) ∘
+      ((id[M X] × @monad_pair Y Z) ∘
         (@product_assoc C HP (M X) (M Y) (M Z)).1)).
   unfold product_assoc. cbn. normalize_pairing.
   unfold product_assoc. cbn. monad_context_simpl M. reflexivity.

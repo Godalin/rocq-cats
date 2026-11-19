@@ -30,7 +30,9 @@ From Cats.Set Require Export Core.
 Definition FunEq {X Y : SetC} (f g : X → Y)
   := ∀ x : X, f x ≈S g x.
 
-Infix "≈f" := FunEq (at level 50).
+Infix "≈f" := FunEq
+  (at level 50)
+  : set_scope.
 
 (** [FunEq] is an equivalence relation. *)
 
@@ -63,7 +65,9 @@ Record FunS_resp (X Y : SetC)
   ; func_proper :: Proper (carrier_equiv X ==> carrier_equiv Y) func
   }.
 
-Infix "→r" := FunS_resp (at level 99).
+Infix "→r" := FunS_resp
+  (at level 99)
+  : set_scope.
 
 (** Lift a respectful map by unwrapping its input, applying the original
     map, and wrapping the result. Preservation likewise wraps the original
@@ -159,7 +163,9 @@ Next Obligation. split.
   - intros f g h H1 H2 x. transitivity (g x); auto.
 Defined.
 
-Infix "→S" := FunS (at level 99).
+Infix "→S" := FunS
+  (at level 99)
+  : set_scope.
 
 (** Evaluation respects both pointwise equality of maps and equality of
     inputs. This lets setoid rewriting pass through a varying bundled map. *)
@@ -221,7 +227,9 @@ Program Definition comp_resp {X Y Z} (f : Y →r Z) (g : X →r Y)
   |}.
 Next Obligation. intros x x' Hx. rewrite Hx. reflexivity. Defined.
 
-Infix "∘r" := comp_resp (at level 50).
+Infix "∘r" := comp_resp
+  (at level 50)
+  : set_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 

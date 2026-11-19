@@ -141,6 +141,12 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   rather than using alternative long-arrow Unicode characters. Distinct
   symbols may express distinct meanings, such as `↣` for monomorphisms.
   Use `∏`/`∐` for indexed products/coproducts; reserve `Π` for Pi-types.
+- Use brackets for important explicit arguments of mathematical notation.
+  Keep `@` for Rocq's native explicit application. In term notation, put
+  explicit `(at level …)` and the final `: scope` on separate lines with
+  two spaces of indentation. Wrap long modifiers after commas, and long
+  interpretations before `:=`. Follow the examples and exceptions in
+  [the notation layout guide](docs/CodeStyle.md#notation-and-records--记号及记录).
 - Keep mathematical clients concise. First try implicit inference for parents,
   structures, instances, elements and types; expose inferable theorem parameters
   as implicit. Add explicit arguments or type annotations only where inference

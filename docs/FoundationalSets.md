@@ -40,7 +40,18 @@ The primitive field is `HomSet : Ob → Ob → SetC`. `Hom` and `HomEq` are
 computed record fields: they extract the carrier and equality of that set.
 They add no constructor arguments and make no additional choices. This keeps
 the existing named coercion targets used by bundled arrows and preserves
-`@Hom`, `@HomEq[X,Y]`, `≈`, `id` and `∘`.
+`≈`, `id` and `∘`. Write `Hom[C] X Y` to specify the ambient category
+and `id[X]` to specify the object of an identity. In relation arguments
+such as `Proper (≈[X,Y] ==> ≈[X,Y])`, `≈[X,Y]` denotes the fixed-endpoint
+`HomEq` relation. Arrow equations can be written `f ≈ g` and print with
+their endpoints as `f ≈ g ⦂ Hom(X,Y)`. Negated equality prints as
+`f ≉ g ⦂ Hom(X,Y)`.
+
+用 `Hom[C] X Y` 指定底层范畴，用 `id[X]` 指定恒等态射的对象。
+`≈[X,Y]` 是固定端点的 `HomEq` 关系，用于
+`Proper (≈[X,Y] ==> ≈[X,Y])` 等关系参数。源码中的箭头等式可写作
+`f ≈ g`，目标显示端点为 `f ≈ g ⦂ Hom(X,Y)`，否定显示为
+`f ≉ g ⦂ Hom(X,Y)`。
 
 Composition remains a dependent binary operation with `Proper`, so universal
 properties and their `is_*`/`Has*` separation keep the same mathematical shape.

@@ -39,7 +39,7 @@ Proof. reflexivity. Defined.
 Section UnitInsertion.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}
     (A : TensorLF T ≅N TensorRF T)
-    (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
+    (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
       A.1 ((X,I),Y) ≈
@@ -58,15 +58,15 @@ Proof.
   apply (iso_cancel_l (A.1 ((X,I),Z); A.2 ((X,I),Z))).
   rewrite <- comp_assoc, (snd (A.2 ((X,I),Z)).2), comp_id_l.
   apply (iso_cancel_l
-    (fmap (π2F T X) (L.1 Z);
-      fct_is_iso (π2F T X) (L.1 Z) (L.2 Z))).
+    (fmap (AtLF T X) (L.1 Z);
+      fct_is_iso (AtLF T X) (L.1 Z) (L.2 Z))).
   change (fmap T (X := (X,T (I,Z))) (Y := (X,Z)) (id,L.1 Z) ∘
     fmap T (X := (X,Z)) (Y := (X,T (I,Z))) (id,(L.2 Z).1) ≈
     fmap T (X := (X,T (I,Z))) (Y := (X,Z)) (id,L.1 Z) ∘
       (A.1 ((X,I),Z) ∘
         fmap T (X := (X,Z)) (Y := (T (X,I),Z)) ((R.2 X).1,id))).
   rewrite <- comp_assoc, Ht, <- !fct_comp.
-  transitivity (@id (T (X,Z))).
+  transitivity (id[T (X,Z)]).
   - transitivity (fmap T (X := (X,Z)) (Y := (X,Z)) (id,id)).
     + apply (@fct_fmap_proper (C ×C C) C T). split; cbn;
         [apply comp_id_l | exact (snd (L.2 Z).2)].
@@ -74,7 +74,7 @@ Proof.
   - symmetry.
     transitivity (fmap T (X := (X,Z)) (Y := (X,Z)) (id,id)).
     + transitivity (fmap T (X := (X,Z)) (Y := (X,Z))
-        (R.1 X ∘ (R.2 X).1,(@id Z) ∘ id)).
+        (R.1 X ∘ (R.2 X).1,(id[Z]) ∘ id)).
       * symmetry. exact (@fct_comp (C ×C C) C T
           (X,Z) (T (X,I),Z) (X,Z) (R.1 X,id) ((R.2 X).1,id)).
       * apply (@fct_fmap_proper (C ×C C) C T). split; cbn;
@@ -113,7 +113,7 @@ Proof.
   - rewrite <- comp_assoc, Hn, comp_assoc, day_triangle_unit_insertion.
     transitivity (fmap T (X := (X,Z)) (Y := (T (X,Y),Z))
       (fmap T (X := (X,I)) (Y := (X,Y)) (id,j) ∘ (R.2 X).1,
-        (@id Z) ∘ id)).
+        (id[Z]) ∘ id)).
     + symmetry. exact (@fct_comp (C ×C C) C T
         (X,Z) (T (X,I),Z) (T (X,Y),Z)
         (fmap T (X := (X,I)) (Y := (X,Y)) (id,j),id)
@@ -194,7 +194,7 @@ Section Triangle.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}
     (A : TensorLF T ≅N TensorRF T)
-    (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
+    (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
       A.1 ((X,I),Y) ≈
@@ -484,12 +484,12 @@ Proof.
   pose (Hs := is_iso_comp (A.2 ((T (a,b),c),d))
     (A.2 ((a,b),T (c,d)))).
   pose (Hl := is_iso_comp
-    (fct_is_iso (π1F T d) (A.1 ((a,b),c)) (A.2 ((a,b),c)))
+    (fct_is_iso (AtRF T d) (A.1 ((a,b),c)) (A.2 ((a,b),c)))
     (is_iso_comp (A.2 ((a,T (b,c)),d))
-      (fct_is_iso (π2F T a) (A.1 ((b,c),d)) (A.2 ((b,c),d))))).
+      (fct_is_iso (AtLF T a) (A.1 ((b,c),d)) (A.2 ((b,c),d))))).
   assert (Heq :
-    (fmap (π2F T a) (A.1 ((b,c),d)) ∘ A.1 ((a,T (b,c)),d)) ∘
-      fmap (π1F T d) (A.1 ((a,b),c)) ≈
+    (fmap (AtLF T a) (A.1 ((b,c),d)) ∘ A.1 ((a,T (b,c)),d)) ∘
+      fmap (AtRF T d) (A.1 ((a,b),c)) ≈
     A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d)).
   { rewrite comp_assoc. symmetry. exact (Hp a b c d). }
   exact (inverse_unique _ _ _ (fst Hs.2)

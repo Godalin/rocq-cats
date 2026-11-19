@@ -288,7 +288,7 @@ Defined.
 
 Lemma nerve_homotopy_aligned_0 {x y : X}
     (f : (@Hom (VtxCat T)) x y)
-  : fmap (π1F NerveHomotopyAlignedF fin_first) f ≈ fmap F f.
+  : fmap (AtRF NerveHomotopyAlignedF fin_first) f ≈ fmap F f.
 Proof.
   exact (nerve_homotopy_boundary_arrow false f
     (nerve_homotopy_label_eq (x, fin_first))
@@ -301,7 +301,7 @@ Defined.
 
 Lemma nerve_homotopy_aligned_1 {x y : X}
     (f : (@Hom (VtxCat T)) x y)
-  : fmap (π1F NerveHomotopyAlignedF (fin_next fin_first)) f ≈ fmap G f.
+  : fmap (AtRF NerveHomotopyAlignedF (fin_next fin_first)) f ≈ fmap G f.
 Proof.
   exact (nerve_homotopy_boundary_arrow true f
     (nerve_homotopy_label_eq (x, fin_next fin_first))
@@ -332,7 +332,7 @@ Defined.
 
 Program Definition NerveHomotopyBoundaryN (b : bool)
   : (if b then G else F) ⇒
-      π1F NerveHomotopyAlignedF (simplex_interval_position b)
+      AtRF NerveHomotopyAlignedF (simplex_interval_position b)
   :=
   {|nt x := _
   |}.
@@ -340,11 +340,11 @@ Next Obligation. destruct b; exact id. Defined.
 Next Obligation.
   destruct b.
   - change (id ∘ fmap G f ≈
-      fmap (π1F NerveHomotopyAlignedF (simplex_interval_position true)) f ∘ id).
+      fmap (AtRF NerveHomotopyAlignedF (simplex_interval_position true)) f ∘ id).
     rewrite comp_id_l, comp_id_r. symmetry.
     exact (nerve_homotopy_aligned_1 f).
   - change (id ∘ fmap F f ≈
-      fmap (π1F NerveHomotopyAlignedF (simplex_interval_position false)) f ∘ id).
+      fmap (AtRF NerveHomotopyAlignedF (simplex_interval_position false)) f ∘ id).
     rewrite comp_id_l, comp_id_r. symmetry.
     exact (nerve_homotopy_aligned_0 f).
 Defined.

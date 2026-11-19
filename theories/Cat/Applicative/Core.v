@@ -183,7 +183,7 @@ Lemma applicative_lift2_pure_l {X Y Z : @Ob C}
 Proof.
   rewrite (applicative_pure_natural x).
   assert (K : (fmap A x ∘ pure[A] 1) × id ≈
-      (fmap A x × fmap A (@id Y)) ∘ (pure[A] 1 × id)).
+      (fmap A x × fmap A (id[Y])) ∘ (pure[A] 1 × id)).
   { rewrite fct_id, <- cross_comp, comp_id_l.
     reflexivity. }
   rewrite K, <- comp_assoc,
@@ -209,7 +209,7 @@ Lemma applicative_lift2_pure_r {X Y Z : @Ob C}
 Proof.
   rewrite (applicative_pure_natural y).
   assert (K : id × (fmap A y ∘ pure[A] 1) ≈
-      (fmap A (@id X) × fmap A y) ∘ (id × pure[A] 1)).
+      (fmap A (id[X]) × fmap A y) ∘ (id × pure[A] 1)).
   { rewrite fct_id, <- cross_comp, comp_id_l. reflexivity. }
   rewrite K, <- comp_assoc, (cartesian_lift2_pre A f id y).
   transitivity

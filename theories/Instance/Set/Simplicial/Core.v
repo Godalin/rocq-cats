@@ -111,7 +111,7 @@ Definition SimplicialCat@{u p +}
   : Cat
   := FctCat (Δ^op) SetCat@{u p _ _ _ _ _}.
 
-Notation sSet := SimplicialCat.
+Abbreviation sSet := SimplicialCat.
 
 (** Restriction along a simplex operator reverses its direction. Its source
     and target are the original value setoids, with independent sizes. *)

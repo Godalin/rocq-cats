@@ -76,7 +76,7 @@ Program Definition ArrowA
   ; applicative_pure := ArrowValuePureN
   |}.
 Next Obligation.
-  intros x. change (arr[A; const_resp UnitS x] ≈ @id (A UnitS)).
+  intros x. change (arr[A; const_resp UnitS x] ≈ id[A UnitS]).
   transitivity (arr[A; (id_resp (X := UnitS))]).
   - apply fct_fmap_proper. intros z. exact tt.
   - exact (arrow_arr_id A UnitS).

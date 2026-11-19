@@ -54,7 +54,7 @@ Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
 Program Definition VtxFstF
   : VtxProductObjF T U →ᵥ T
   :=
-  {|vertex_fct := FstF (VtxCat T) (VtxCat U) ∘F
+  {|vertex_fct := π1F (VtxCat T) (VtxCat U) ∘F
       InducedProductF X Y T U
   |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact p. Defined.
@@ -67,7 +67,7 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 Program Definition VtxSndF
   : VtxProductObjF T U →ᵥ U
   :=
-  {|vertex_fct := SndF (VtxCat T) (VtxCat U) ∘F
+  {|vertex_fct := π2F (VtxCat T) (VtxCat U) ∘F
       InducedProductF X Y T U
   |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact q. Defined.

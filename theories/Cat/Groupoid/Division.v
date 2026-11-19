@@ -68,13 +68,13 @@ Program Definition div_r_IsGpd (C : Cat)
     `{HD : !HasDivR C}
   : C ⦂ Gpd
   :=
-  {|gpd_iso X Y f := ((div_r f (@id X)).1; _)
+  {|gpd_iso X Y f := ((div_r f (id[X])).1; _)
   |}.
 Next Obligation.
-  pose (g := (div_r f (@id X)).1).
-  pose proof (div_r f (@id X)).2 as Hg.
+  pose (g := (div_r f (id[X])).1).
+  pose proof (div_r f (id[X])).2 as Hg.
   split; [exact Hg |].
-  destruct (div_r g (@id Y)) as [k Hk].
+  destruct (div_r g (id[Y])) as [k Hk].
   pose proof (inverse_unique g k f Hk Hg) as H.
   change (f ∘ g ≈ id). rewrite <- H. exact Hk.
 Defined.

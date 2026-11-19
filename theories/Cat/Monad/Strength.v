@@ -148,7 +148,7 @@ Proof.
       <- (@tensor_map_comp C MC X X X (M Y) (M (M Z)) (M Z)
         id id (μ[M] Z) (fmap M f)), comp_id_l. reflexivity.
   - rewrite (strongmonad_mul M X Z), !comp_assoc,
-      (strength_natural (hasStrength M) (@id X) f),
+      (strength_natural (hasStrength M) (id[X]) f),
       (@fct_comp C C M _ _ _ st[hasStrength M; X; Z]
         (@tensor_map C MC _ _ _ _ id f)), <- !comp_assoc. reflexivity.
 Qed.
@@ -167,7 +167,7 @@ Proof.
   transitivity (kleisli_extend M g ∘
     (st[hasStrength M; X; U] ∘ (id ⊗m kleisli_extend M f)) ∘
     (id ⊗m st[hasStrength M; Y; Z]) ∘ α⊗[X; Y; M Z]).
-  - assert (K : ((@id X) ⊗m (kleisli_extend M f ∘
+  - assert (K : ((id[X]) ⊗m (kleisli_extend M f ∘
         st[hasStrength M; Y; Z])) ≈
         (id ⊗m kleisli_extend M f) ∘
           (id ⊗m st[hasStrength M; Y; Z])).

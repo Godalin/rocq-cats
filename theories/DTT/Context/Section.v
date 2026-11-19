@@ -77,7 +77,7 @@ Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 (** 从诱导截面提取项，恢复原项。 *)
 
 Theorem term_section_β {Γ : @Ob C} (A : Ty T Γ) (t : Tm T Γ A)
-  : t^Sec[T, A]^Tm[T, A] ≈S t.
+  : (t^Sec[T, A])^Tm[T, A] ≈S t.
 Proof.
   cbn.
   transitivity (ty_sub_id T A ▸[T]
@@ -98,7 +98,7 @@ Defined.
 (** 由提取项诱导的截面等于原截面。 *)
 
 Theorem term_section_η {Γ : @Ob C} (A : Ty T Γ) (s : Sec(context_proj T A))
-  : s^Tm[T, A]^Sec[T, A] ≈S s.
+  : (s^Tm[T, A])^Sec[T, A] ≈S s.
 Proof.
   change (⟨id; symmetry (ty_sub_id T A) ▸[T]
       (transitivity (ty_sub_comm T A (context_proj T A) s.1 s.2)

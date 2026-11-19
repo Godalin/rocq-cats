@@ -126,7 +126,7 @@ Defined.
 (** 输入箭头给出输出图式的自然比较。 *)
 
 Definition ProfLmapN {X X' : @Ob C} (f : Hom X' X)
-  : π2F P X ⇒ π2F P X'
+  : AtLF P X ⇒ AtLF P X'
   := ProductFirstAtN P f.
 
 (** An output arrow gives a natural comparison of the input diagrams. *)
@@ -134,7 +134,7 @@ Definition ProfLmapN {X X' : @Ob C} (f : Hom X' X)
 (** 输出箭头给出输入图式的自然比较。 *)
 
 Definition ProfRmapN {Y Y' : @Ob D} (g : Hom Y Y')
-  : π1F P Y ⇒ π1F P Y'
+  : AtRF P Y ⇒ AtRF P Y'
   := ProductAtN P g.
 
 (** The input restriction respects specified arrow equality. *)
@@ -181,7 +181,7 @@ Lemma prof_lmap_comp {X X' X'' : @Ob C} (Y : @Ob D)
     (f : Hom X' X) (f' : Hom X'' X')
   : lmap[P; f ∘ f'] ≈f (lmap[P; f'] ∘r (@prof_lmap C D P Y _ _ f)).
 Proof.
-  exact (@fct_comp (C^op) SetCat (π1F P Y) X X' X'' f' f).
+  exact (@fct_comp (C^op) SetCat (AtRF P Y) X X' X'' f' f).
 Defined.
 
 (** Postprocessing is covariantly functorial. *)
@@ -192,7 +192,7 @@ Lemma prof_rmap_comp (X : @Ob C) {Y Y' Y'' : @Ob D}
     (g : Hom Y Y') (g' : Hom Y' Y'')
   : rmap[P; g' ∘ g] ≈f (rmap[P; g'] ∘r (@prof_rmap C D P X _ _ g)).
 Proof.
-  exact (@fct_comp D SetCat (π2F P X) Y Y' Y'' g' g).
+  exact (@fct_comp D SetCat (AtLF P X) Y Y' Y'' g' g).
 Defined.
 
 (** The two actions commute by naturality of the input comparison. *)
@@ -287,7 +287,7 @@ Definition prof_reindex_iso
 
 Definition ProfReindexF
   : Fct (ProfCat C D) (ProfCat C' D')
-  := π1F (CompNF ((C'^op) ×C D') ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
+  := AtRF (CompNF ((C'^op) ×C D') ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
       (F^opF ×F G).
 
 (** The inherited functor action agrees with right whiskering in natural

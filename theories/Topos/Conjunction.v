@@ -121,7 +121,7 @@ Context {C : Cat} `{HT : !HasTerminal C}
 (** 等价谓词给出等价的合取。 *)
 
 Global Instance conjunction_proper {X : @Ob C}
-  : Proper (@HomEq[X, Ω] ==> @HomEq[X, Ω] ==> @HomEq[X, Ω]) conjunction.
+  : Proper (≈[X, Ω] ==> ≈[X, Ω] ==> ≈[X, Ω]) conjunction.
 Proof.
   intros f f' Hf g g' Hg. unfold conjunction.
   apply comp_proper; [reflexivity | apply product_pair_proper; assumption].

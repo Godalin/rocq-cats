@@ -61,7 +61,7 @@ Defined.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance ArrowDiagram_proper {C : Cat} {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==> NatIso) (@ArrowDiagram C X Y).
+  : Proper (≈[X, Y] ==> NatIso) (@ArrowDiagram C X Y).
 Proof.
   intros f g Hfg.
   unshelve refine ((@ArrowN C (ArrowDiagram f) (ArrowDiagram g) id id _); _).
@@ -117,7 +117,7 @@ Notation "'⟨' f '⇉' g '⟩D'" := (ParallelDiagram f g) : cat_scope.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance ParallelDiagram_proper {C : Cat} {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==> @HomEq[X, Y] ==> NatIso) (@ParallelDiagram C X Y).
+  : Proper (≈[X, Y] ==> ≈[X, Y] ==> NatIso) (@ParallelDiagram C X Y).
 Proof.
   intros f f' Hf g g' Hg.
   unshelve refine ((@FreeN ParallelGraph C (ParallelDiagram f g)

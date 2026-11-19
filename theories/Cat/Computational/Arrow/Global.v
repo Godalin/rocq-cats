@@ -83,7 +83,7 @@ Defined.
 
 Program Definition arrow_global_unit
   : UnitS →r ArrowGlobalF 1
-  := {|func _ := @id (A 1)|}.
+  := {|func _ := id[A 1]|}.
 Next Obligation. intros x y H. reflexivity. Defined.
 
 (** The terminal-input Hom functor is lax monoidal from values to setoids.
@@ -101,12 +101,12 @@ Program Definition ArrowGlobalLax
      ; lax_tensorN := ArrowGlobalTensorN|}.
 Next Obligation.
   intros [u f].
-  change (arr[A; (π2 : Hom (1 × X) X)] ∘ ((@id (A 1)) &&&[A] f) ≈ f).
+  change (arr[A; (π2 : Hom (1 × X) X)] ∘ ((id[A 1]) &&&[A] f) ≈ f).
   apply arrow_fanout_unit_l.
 Defined.
 Next Obligation.
   intros [f u].
-  change (arr[A; (π1 : Hom (X × 1) X)] ∘ (f &&&[A] (@id (A 1))) ≈ f).
+  change (arr[A; (π1 : Hom (X × 1) X)] ∘ (f &&&[A] (id[A 1])) ≈ f).
   apply arrow_fanout_unit_r.
 Defined.
 Next Obligation.

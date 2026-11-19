@@ -76,27 +76,27 @@ Program Definition HomProfStrength
   |}.
 Next Obligation.
   intros k. refine {|lower := _|}.
-  change ((@id (W ⊗ Y)) ∘ fmap (@BinoidalLF C MC W) (lower k) ∘
-      (h ⊗m @id X) ≈
-    (h ⊗m @id Y) ∘ fmap (@BinoidalLF C MC Z) (lower k) ∘
-      (@id (Z ⊗ X))).
+  change ((id[W ⊗ Y]) ∘ fmap (@BinoidalLF C MC W) (lower k) ∘
+      (h ⊗m id[X]) ≈
+    (h ⊗m id[Y]) ∘ fmap (@BinoidalLF C MC Z) (lower k) ∘
+      (id[Z ⊗ X])).
   rewrite comp_id_l, comp_id_r, !tensor_map_right.
   symmetry. apply monoidal_interchange.
 Defined.
 Next Obligation.
   intros k. refine {|lower := _|}.
   change (λ⊗[Y] ∘ fmap (@BinoidalLF C MC (I⊗[MC])) (lower k) ∘
-      (@id (I⊗[MC] ⊗ X)) ≈ (@id Y) ∘ lower k ∘ λ⊗[X]).
+      (id[I⊗[MC] ⊗ X]) ≈ (id[Y]) ∘ lower k ∘ λ⊗[X]).
   rewrite comp_id_l, comp_id_r.
   exact (premonoidal_unit_l_natural (lower k)).
 Defined.
 Next Obligation.
   intros k. refine {|lower := _|}.
-  change ((@id (Z ⊗ (W ⊗ Y))) ∘
+  change ((id[Z ⊗ (W ⊗ Y)]) ∘
       fmap (@BinoidalLF C MC Z)
         (fmap (@BinoidalLF C MC W) (lower k)) ∘ α⊗[Z; W; X] ≈
     α⊗[Z; W; Y] ∘ fmap (@BinoidalLF C MC (Z ⊗ W)) (lower k) ∘
-      (@id ((Z ⊗ W) ⊗ X))).
+      (id[(Z ⊗ W) ⊗ X])).
   rewrite comp_id_l, comp_id_r.
   symmetry. exact (premonoidal_assoc_natural_r Z W (lower k)).
 Defined.

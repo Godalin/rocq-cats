@@ -141,7 +141,7 @@ Theorem section_of_pullback_factor_unique (h : Hom Δ E)
   : t ≈S section_of_pullback_factor h H.
 Proof.
   apply (pullback_hom_ext HP).
-  - transitivity (@id Δ); [exact t.2 |
+  - transitivity (id[Δ]); [exact t.2 |
       symmetry; exact (section_of_pullback_factor h H).2].
   - transitivity h; [exact Ht |
       symmetry; apply section_of_pullback_factor_β].
@@ -182,7 +182,7 @@ Program Definition section_of_pullback_resp@{s +}
   |}.
 Next Obligation.
   intros s t Hst. apply (pullback_hom_ext HP).
-  - transitivity (@id Δ); [exact (section_of_pullback s).2 |
+  - transitivity (id[Δ]); [exact (section_of_pullback s).2 |
       symmetry; exact (section_of_pullback t).2].
   - rewrite !section_of_pullback_β. apply comp_r. exact Hst.
 Defined.

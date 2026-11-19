@@ -123,7 +123,7 @@ Qed.
 (** 其余单位是各 [U] 的像处恒等箭头的延拓。 *)
 
 Lemma free_adj_counit (A : @Ob D)
-  : adj_counit FreeAdj A ≈ free_object_extend U (@id (U A)).
+  : adj_counit FreeAdj A ≈ free_object_extend U (id[U A]).
 Proof. reflexivity. Qed.
 
 (** The free/forgetful monad reuses the general adjunction-to-monad theorem. *)

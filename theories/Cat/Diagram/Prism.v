@@ -54,7 +54,7 @@ Next Obligation. exact tt. Defined.
 Definition NatPrismF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
   : Fct (C ×C [Ord 1]) D
   := (@ArrowDiagram (FctCat C D) F G α)^uncF ∘F
-      PairF (OrdinalArrowF ∘F SndF C [Ord 1]) (FstF C [Ord 1]).
+      PairF (OrdinalArrowF ∘F π2F C [Ord 1]) (π1F C [Ord 1]).
 
 (** Restrict the prism along a diagram and a monotone time diagram.
     This also applies to shapes other than finite ordinals. *)

@@ -233,7 +233,7 @@ Example endomorphism_parent_computes (C : Cat) (X : C)
 Proof. reflexivity. Qed.
 
 Example endomorphism_unit_computes (C : Cat) (X : C)
-  : @mul_unit _ (hasMonoid (EndMonoid C X)) = @id X.
+  : @mul_unit _ (hasMonoid (EndMonoid C X)) = id[X].
 Proof. reflexivity. Qed.
 
 Section IndependentUniverses.

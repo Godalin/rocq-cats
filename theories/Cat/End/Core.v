@@ -34,7 +34,7 @@ Class HasEnd (D : Cat) {C : Cat} (F : Fct ((C^op) ×C C) D)
 
   (** 选定顶点是给定值域中的对象。 *)
 
-  { EndObj : @Ob D
+  { EndObj : D
 
   (** Its projections form one coherent wedge. *)
 
@@ -53,8 +53,12 @@ Arguments EndObj {_ _} _ {_}.
 Arguments end_wedge {_ _} _ {_}.
 Arguments end_universal {_ _} _ {_} _ _.
 
-Notation "'end[' F ']'" := (EndObj F) : ob_scope.
-Notation "'πend[' F ']'" := (end_wedge F) : hom_scope.
+Notation "'end[' F ']'" := (EndObj F)
+  (at level 0, format "end[ F ]")
+  : ob_scope.
+Notation "'πend[' F ']'" := (end_wedge F)
+  (at level 0, format "πend[ F ]")
+  : hom_scope.
 
 (** The universal property supplies a transparent mediator. *)
 
@@ -65,7 +69,9 @@ Definition end_lift {C D : Cat} {F : Fct ((C^op) ×C C) D}
   : Hom W (end[F])
   := (end_universal F W κ).1.
 
-Notation "'end⟨' κ '⟩'" := (end_lift κ) : hom_scope.
+Notation "'end⟨' κ '⟩'" := (end_lift κ)
+  (at level 0, format "end⟨ κ ⟩")
+  : hom_scope.
 
 (** ** Mediators into a Chosen End
 
@@ -108,7 +114,7 @@ Proof. symmetry. apply end_lift_unique. reflexivity. Qed.
 (** 中介保持输入楔的逐点相等。 *)
 
 Global Instance end_lift_proper {W}
-  : Proper (WedgeEq ==> @HomEq[W, end[F]]) (@end_lift C D F HE W).
+  : Proper (WedgeEq ==> ≈[W, end[F]]) (@end_lift C D F HE W).
 Proof. intros κ μ H. apply end_lift_unique. rewrite end_β. exact H. Qed.
 
 (** Mediators commute with precomposition of the input wedge. *)
@@ -193,7 +199,7 @@ Defined.
 
 Lemma end_unique_β {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
     {κ : Wedge F E} {μ : Wedge F K} (Hκ : is_end κ) (Hμ : is_end μ)
-    (X : @Ob C)
+    (X : C)
   : μ X ∘ (end_unique Hκ Hμ).1 ≈ κ X.
 Proof.
   exact ((terminal_unique (end_terminal Hκ) (end_terminal Hμ)).1.2 X).
@@ -214,7 +220,7 @@ Definition end_map {C D : Cat} {F G : Fct ((C^op) ×C C) D}
 (** 诱导映射与每个对角分量交换。 *)
 
 Lemma end_map_β {C D : Cat} {F G : Fct ((C^op) ×C C) D}
-    `{HF : !HasEnd D F} `{HG : !HasEnd D G} (α : F ⇒ G) (X : @Ob C)
+    `{HF : !HasEnd D F} `{HG : !HasEnd D G} (α : F ⇒ G) (X : C)
   : πend[G] X ∘ end_map α ≈ α (X, X) ∘ πend[F] X.
 Proof. exact (end_β (wedge_map α πend[F]) X). Qed.
 
@@ -225,7 +231,7 @@ Proof. exact (end_β (wedge_map α πend[F]) X). Qed.
 Global Instance end_map_proper {C D : Cat}
     {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasEnd D F} `{HG : !HasEnd D G}
-  : Proper (NatEq ==> @HomEq[end[F], end[G]]) (@end_map C D F G HF HG).
+  : Proper (NatEq ==> ≈[end[F], end[G]]) (@end_map C D F G HF HG).
 Proof.
   intros α β H. apply end_lift_proper. apply wedge_map_proper;
     [exact H | reflexivity].

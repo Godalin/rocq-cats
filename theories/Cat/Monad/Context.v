@@ -122,7 +122,7 @@ Lemma context_bind_comp {W V X Y : @Ob C}
       context_bind (u ∘ σ) (k ∘ (σ × id)).
 Proof.
   unfold context_bind.
-  transitivity ((context_extend k ∘ (σ × fmap M (@id X))) ∘
+  transitivity ((context_extend k ∘ (σ × fmap M (id[X]))) ∘
     ⟨id, u ∘ σ⟩).
   - rewrite fct_id, !comp_assoc.
     apply comp_proper; [reflexivity |].
@@ -233,7 +233,7 @@ Proof.
   - rewrite (context_extend_assoc k h).
     transitivity ((context_extend
       (context_extend h ∘ (id × k) ∘ (@product_assoc C HP W W X).1) ∘
-        (⟨id, id⟩ × fmap M (@id X))) ∘ ⟨id, u⟩).
+        (⟨id, id⟩ × fmap M (id[X]))) ∘ ⟨id, u⟩).
     + rewrite fct_id, !comp_assoc, product_comp_l,
         !comp_id_l, comp_id_r. reflexivity.
     + rewrite (context_extend_pre _ ⟨id, id⟩ id).
@@ -276,16 +276,16 @@ Lemma context_bind_pair {W V X : @Ob C}
       st[hasStrength M; V; X] ∘ ⟨σ, u⟩.
 Proof.
   unfold context_bind, monad_return. rewrite context_extend_return.
-  transitivity ((fmap M (σ × @id X) ∘
+  transitivity ((fmap M (σ × id[X]) ∘
     st[hasStrength M; W; X]) ∘ ⟨id, u⟩).
   - apply comp_proper; [| reflexivity].
     apply comp_proper; [| reflexivity].
     apply fct_fmap_proper. rewrite cross_η, comp_id_l. reflexivity.
-  - pose proof (strength_natural (hasStrength M) σ (@id X)) as H.
+  - pose proof (strength_natural (hasStrength M) σ (id[X])) as H.
     rewrite !cartesian_tensor_map in H.
     rewrite <- H, fct_id, comp_assoc.
     change (st[hasStrength M; V; X] ∘
-      ((σ × @id (M X)) ∘ ⟨id, u⟩) ≈
+      ((σ × id[M X]) ∘ ⟨id, u⟩) ≈
       st[hasStrength M; V; X] ∘ ⟨σ, u⟩).
     rewrite product_comp_l, comp_id_r, comp_id_l. reflexivity.
 Qed.

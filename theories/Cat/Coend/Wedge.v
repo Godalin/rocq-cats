@@ -16,7 +16,7 @@ From Cats Require Export
 
 (** 余楔只存储反双函子的楔，其通常方向的腿从 [F (X,X)] 指向顶点。 *)
 
-Record Cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : @Ob D)
+Record Cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D) (W : D)
   := CowedgeOfOpWedge
   (** The sole stored presentation is a wedge in the opposite categories. *)
 
@@ -33,7 +33,7 @@ Arguments op_wedge {_ _ _ _} _.
 (** 在原范畴中读取同一份腿。 *)
 
 Definition cowedge_leg {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
-    (κ : Cowedge F W) (X : @Ob C)
+    (κ : Cowedge F W) (X : C)
   : Hom (F (X, X)) W
   := op_wedge κ X.
 
@@ -44,7 +44,7 @@ Coercion cowedge_leg : Cowedge >-> Funclass.
 (** 余楔方程就是反楔方程的反向读取。 *)
 
 Lemma cowedge_comm {C D : Cat} {F : Fct ((C^op) ×C C) D} {W}
-    (κ : Cowedge F W) {X Y : @Ob C} (f : Hom X Y)
+    (κ : Cowedge F W) {X Y : C} (f : Hom X Y)
   : κ X ∘ fmap F (X := (Y, X)) (Y := (X, X)) (f, id)
     ≈ κ Y ∘ fmap F (X := (Y, X)) (Y := (Y, Y)) (id, f).
 Proof.
@@ -60,8 +60,8 @@ Qed.
 
 Program Definition CowedgeOf {C D : Cat}
     {F : Fct ((C^op) ×C C) D} {W}
-    (κ : ∀ X : @Ob C, Hom (F (X, X)) W)
-    (Hκ : ∀ (X Y : @Ob C) (f : Hom X Y),
+    (κ : ∀ X : C, Hom (F (X, X)) W)
+    (Hκ : ∀ (X Y : C) (f : Hom X Y),
       κ X ∘ fmap F (X := (Y, X)) (Y := (X, X)) (f, id)
       ≈ κ Y ∘ fmap F (X := (Y, X)) (Y := (Y, Y)) (id, f))
   : Cowedge F W
@@ -100,7 +100,7 @@ Defined.
 (** 后合成就是反范畴中的预合成。 *)
 
 Definition cowedge_comp {C D : Cat}
-    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
+    {F : Fct ((C^op) ×C C) D} {W V : D}
     (f : Hom W V) (κ : Cowedge F W)
   : Cowedge F V
   := CowedgeOfOpWedge (op_wedge κ ∘Wedge f).
@@ -113,8 +113,8 @@ Infix "∘Cowedge" := cowedge_comp
 (** 后合成保持两种继承的相等。 *)
 
 Global Instance cowedge_comp_proper {C D : Cat}
-    {F : Fct ((C^op) ×C C) D} {W V : @Ob D}
-  : Proper (@HomEq[W, V] ==> CowedgeEq ==> CowedgeEq)
+    {F : Fct ((C^op) ×C C) D} {W V : D}
+  : Proper (≈[W, V] ==> CowedgeEq ==> CowedgeEq)
       (@cowedge_comp C D F W V).
 Proof.
   intros f g H κ μ K.

@@ -72,7 +72,7 @@ Program Definition ThinBicat (C : Cat)
   :=
   {|ObB := @Ob C
   ; HomCat := ThinHomCat C
-  ; id1 X := @id X
+  ; id1 X := id[X]
   ; comp1F := thin_horizontalF C
   ; associator W X Y Z h g f := @comp_assoc C W X Y Z h g f
   ; left_unitor X Y f := @comp_id_l C X Y f
@@ -152,14 +152,14 @@ Proof.
   exists (FromThinHomotopyF C), (ToThinHomotopyF C). split.
   - unshelve notypeclasses refine (({|nt := _
                                     |}); _).
-    + exact (λ X, @id X).
+    + exact (λ X, id[X]).
     + intros X Y f. apply (snd (thin_hom_iso_eq (C := C) _ _)). cbn. carw.
-    + intros X. exists (@id X). split;
+    + intros X. exists (id[X]). split;
         apply (snd (thin_hom_iso_eq (C := C) _ _));
         exact (@comp_id_l C X X (@Cats.Cat.Core.id C X)).
   - unshelve notypeclasses refine (({|nt := _
                                     |}); _).
-    + exact (λ X, @id X).
+    + exact (λ X, id[X]).
     + intros X Y f. cbn. carw.
-    + intros X. exists (@id X). split; apply comp_id_l.
+    + intros X. exists (id[X]). split; apply comp_id_l.
 Defined.

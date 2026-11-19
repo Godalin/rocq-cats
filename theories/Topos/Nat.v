@@ -54,7 +54,7 @@ Proof. exact (nno_universal X z s).2. Qed.
 
 Global Instance nno_rec_proper {C : Cat} `{HT : !HasTerminal C}
     `{HNNO : !HasNaturalNumbersObj C HT} {X : C}
-  : Proper (@HomEq[1, X] ==> @HomEq[X, X] ==> @HomEq[NNO, X]) rec.
+  : Proper (≈[1, X] ==> ≈[X, X] ==> ≈[NNO, X]) rec.
 Proof.
   intros z z' Hz s s' Hs.
   destruct (nno_rec_unique z s) as [[H0 Hsucc] _].

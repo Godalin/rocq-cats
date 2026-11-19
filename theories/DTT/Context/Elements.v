@@ -475,7 +475,7 @@ Proof.
   - symmetry. apply (@context_pair_equiv C R HR Γ (Γ ▹[T] A) A
       _ _ H).
     apply tm_conv_witness_independent.
-  - transitivity (@id (Γ ▹[T] A)).
+  - transitivity (id[Γ ▹[T] A]).
     + exact (@display_pair_unpair C P HD Γ (Γ ▹[T] A) A id).
     + symmetry. transitivity ⟨context_proj T A; context_var T A⟩[T, A].
       * apply context_elements_pair.

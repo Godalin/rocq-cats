@@ -161,7 +161,7 @@ Proof. apply binoidal_sequence_proper. Qed.
 (** 仅通过分别作用的定律，张量保持恒等。 *)
 
 Lemma tensor_map_id (X Y : @Ob C)
-  : (@id X ⊗m @id Y) ≈ @id (X ⊗ Y).
+  : (id[X] ⊗m id[Y]) ≈ id[X ⊗ Y].
 Proof.
   unfold tensor_map, binoidal_sequence.
   rewrite binoidal_l_id, binoidal_r_id, comp_id_l. reflexivity.
@@ -172,7 +172,7 @@ Qed.
 (** 左侧固定恒等时，恢复左上下文作用。 *)
 
 Lemma tensor_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
-  : (@id Z ⊗m f) ≈ Z ⊲ f.
+  : (id[Z] ⊗m f) ≈ Z ⊲ f.
 Proof.
   unfold tensor_map, binoidal_sequence.
   rewrite binoidal_r_id, comp_id_r. reflexivity.
@@ -183,7 +183,7 @@ Qed.
 (** 右侧固定恒等时，恢复右上下文作用。 *)
 
 Lemma tensor_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
-  : (f ⊗m @id Z) ≈ f ⊳ Z.
+  : (f ⊗m id[Z]) ≈ f ⊳ Z.
 Proof.
   unfold tensor_map, binoidal_sequence.
   rewrite binoidal_l_id, comp_id_l. reflexivity.
@@ -218,7 +218,7 @@ Qed.
 (** 左单位子自然性使用继承的方程。 *)
 
 Lemma tensor_unit_l_natural {X Y : @Ob C} (f : Hom X Y)
-  : λ⊗[Y] ∘ (@id (I⊗[MC]) ⊗m f) ≈ f ∘ λ⊗[X].
+  : λ⊗[Y] ∘ (id[I⊗[MC]] ⊗m f) ≈ f ∘ λ⊗[X].
 Proof. rewrite tensor_map_left. apply premonoidal_unit_l_natural. Qed.
 
 (** Right-unitor naturality uses the inherited equation. *)
@@ -226,7 +226,7 @@ Proof. rewrite tensor_map_left. apply premonoidal_unit_l_natural. Qed.
 (** 右单位子自然性使用继承的方程。 *)
 
 Lemma tensor_unit_r_natural {X Y : @Ob C} (f : Hom X Y)
-  : ρ⊗[Y] ∘ (f ⊗m @id (I⊗[MC])) ≈ f ∘ ρ⊗[X].
+  : ρ⊗[Y] ∘ (f ⊗m id[I⊗[MC]]) ≈ f ∘ ρ⊗[X].
 Proof. rewrite tensor_map_right. apply premonoidal_unit_r_natural. Qed.
 
 (** The original computational inverse of the associator. *)
@@ -335,7 +335,7 @@ Definition monoidal_associator
 (** 将继承左单位子打包为自然变换。 *)
 
 Program Definition MonoidalLeftUnitorN
-  : π2F (tensorF MC) (I⊗[MC]) ⇒ IdF
+  : AtLF (tensorF MC) (I⊗[MC]) ⇒ IdF
   :=
   {|nt X := λ⊗[X]
   |}.
@@ -346,7 +346,7 @@ Next Obligation. apply tensor_unit_l_natural. Defined.
 (** 将继承右单位子打包为自然变换。 *)
 
 Program Definition MonoidalRightUnitorN
-  : π1F (tensorF MC) (I⊗[MC]) ⇒ IdF
+  : AtRF (tensorF MC) (I⊗[MC]) ⇒ IdF
   :=
   {|nt X := ρ⊗[X]
   |}.
@@ -357,7 +357,7 @@ Next Obligation. apply tensor_unit_r_natural. Defined.
 (** 左单位自然同构保留其选定逆。 *)
 
 Definition monoidal_left_unitor
-  : π2F (tensorF MC) (I⊗[MC]) ≅N IdF
+  : AtLF (tensorF MC) (I⊗[MC]) ≅N IdF
   := (MonoidalLeftUnitorN; tensor_unit_l_iso).
 
 (** The natural right-unitor isomorphism keeps its selected inverse. *)
@@ -365,7 +365,7 @@ Definition monoidal_left_unitor
 (** 右单位自然同构保留其选定逆。 *)
 
 Definition monoidal_right_unitor
-  : π1F (tensorF MC) (I⊗[MC]) ≅N IdF
+  : AtRF (tensorF MC) (I⊗[MC]) ≅N IdF
   := (MonoidalRightUnitorN; tensor_unit_r_iso).
 
 End NaturalIsomorphisms.

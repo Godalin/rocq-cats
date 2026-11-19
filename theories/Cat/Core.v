@@ -114,9 +114,9 @@ Record Cat@{o h p +}
   := carrier_equiv (HomSet X Y)
 
   (** [id] selects an identity arrow for each object. The object argument
-      is implicit; [@id X] below makes the intended object explicit. *)
+      is implicit; [id[X]] below makes the intended object explicit. *)
 
-  (** [id] 为每个对象选定恒等箭头。对象参数隐含传入；下文的 [@id X]
+  (** [id] 为每个对象选定恒等箭头。对象参数隐含传入；下文的 [id[X]]
       显式指定这个对象。 *)
 
   ; id {X} : Hom X X
@@ -216,14 +216,16 @@ Arguments comp_assoc {_ _ _ _ _} _ _ _.
 Bind Scope ob_scope with Ob.
 Bind Scope hom_scope with Hom.
 
-Notation "'@Ob' C" := (@Ob C)
-  (at level 35) : cat_scope.
+Notation "'Hom[' C ']'" := (@Hom C)
+  (at level 0, format "Hom[ C ]")
+  : cat_scope.
 
-Notation "'@Hom' C" := (@Hom C)
-  (at level 35) : cat_scope.
+(** The relation on a fixed Hom set, for use as a relation argument. *)
 
-Notation "'@HomEq[' X ',' Y  ']'"
-  := (@HomEq _ X Y)
+(** 固定 Hom 集合上的相等关系，可作为关系参数。 *)
+
+Notation "'≈[' X ',' Y ']'" := (@HomEq _ X Y)
+  (at level 0, format "≈[ X , Y ]")
   : cat_scope.
 
 (** [f ≈ g] compares parallel arrows using their hom-set equality, the
@@ -236,28 +238,50 @@ Notation "'@HomEq[' X ',' Y  ']'"
     相等箭头。 *)
 
 Infix "≈" := HomEq
-  (at level 50, no associativity) : cat_scope.
-
-Notation "f '≈' g '⦂' 'Hom(' X ',' Y ')'" := (@HomEq _ X Y f g)
-  (at level 50, no associativity, only printing,
-    format "f  '≈'  g  '⦂'  'Hom(' X  ','  Y )") : cat_scope.
+  (at level 50, no associativity)
+  : cat_scope.
 
 Notation "f '≉' g" := (¬ HomEq f g)
-  (at level 50, no associativity) : cat_scope.
+  (at level 50, no associativity)
+  : cat_scope.
 
-Notation "f '≉' g '⦂' 'Hom(' X ',' Y ')'" := (¬ @HomEq _ X Y f g)
-  (at level 50, no associativity, only printing,
-    format "f  '≉'  g  '⦂'  'Hom(' X  ','  Y )") : cat_scope.
+(** The endpoint suffix is for printing. Use equality precedence so a
+    comparison inside an application retains its parentheses. *)
 
-Notation "'@id' X" := (@id _ X)
-  (at level 35) : hom_scope.
+(** 端点后缀用于打印。使用等式的优先级，使作为应用参数的等式保留括号。 *)
+
+#[warnings="-postfix-notation-not-level-1"]
+Notation "f '≈' g '⦂' 'Hom(' X ',' Y ')'"
+  := (@HomEq _ X Y f g)
+  (at level 50, no associativity, g at next level,
+    only printing,
+    format "f  '≈'  g  '⦂'  'Hom(' X ',' Y )")
+  : cat_scope.
+
+#[warnings="-postfix-notation-not-level-1"]
+Notation "f '≉' g '⦂' 'Hom(' X ',' Y ')'"
+  := (¬ @HomEq _ X Y f g)
+  (at level 50, no associativity, g at next level,
+    only printing,
+    format "f  '≉'  g  '⦂'  'Hom(' X ',' Y )")
+  : cat_scope.
+
+Notation "'id[' X ']'" := (@id _ X)
+  (at level 0, format "id[ X ]")
+  : hom_scope.
 
 Notation "f '∘' g" := (comp f g)
-  (at level 40, left associativity) : hom_scope.
+  (at level 40, left associativity)
+  : hom_scope.
 
 (** Category auto & eauto *)
 
 (** 用于范畴目标的自动搜索策略。 *)
+
+Create HintDb cat.
+Hint Constants Opaque : cat.
+Hint Projections Opaque : cat.
+Hint Variables Opaque : cat.
 
 Ltac cato := auto with cat; try reflexivity.
 Ltac cate := eauto with cat; try reflexivity.
@@ -266,6 +290,8 @@ Ltac cate := eauto with cat; try reflexivity.
     simple η rules) *)
 
 (** 范畴自动重写策略，主动化简目标，使用 β 律及简单 η 律。 *)
+
+Create Rewrite HintDb cat.
 
 Ltac carw := autorewrite with cat using try reflexivity.
 
@@ -324,14 +350,15 @@ End CatBasic.
 (** 两个交换方块可沿其水平态射复合。 *)
 
 Lemma comp_square {C : Cat}
-  {X0 X1 X2 Y0 Y1 Y2 : @Ob C}
+    {X0 X1 X2 Y0 Y1 Y2 : C}
     (a : Hom X0 Y0) (b : Hom X1 Y1) (c : Hom X2 Y2)
     (f : Hom X0 X1) (g : Hom X1 X2)
     (f' : Hom Y0 Y1) (g' : Hom Y1 Y2)
     (Hf : b ∘ f ≈ f' ∘ a) (Hg : c ∘ g ≈ g' ∘ b)
   : c ∘ (g ∘ f) ≈ (g' ∘ f') ∘ a.
 Proof.
-  rewrite <- comp_assoc, Hg, comp_assoc, Hf, <- comp_assoc. reflexivity.
+  rewrite <- comp_assoc, Hg, comp_assoc, Hf,
+    <- comp_assoc. reflexivity.
 Qed.
 
 Hint Resolve symm_id_l : cat.
@@ -414,14 +441,19 @@ Definition comp_pre {C : Cat} {X Y Z : C}
 
 (** 将态射与固定箭头后合成。 *)
 
-Definition comp_post {C : Cat} {X Y Z : C} (f : Hom Y Z)
+Definition comp_post {C : Cat} {X Y Z : C}
+    (f : Hom Y Z)
   := (λ g : Hom X Y, f ∘ g).
 
 Arguments comp_pre {_ _ _ _} _ _ /.
 Arguments comp_post {_ _ _ _} _ _ /.
 
-Notation "f ^*" := (comp_pre f) (at level 35).
-Notation "f _*" := (comp_post f) (at level 35).
+Notation "f ^*" := (comp_pre f)
+  (at level 1)
+  : hom_scope.
+Notation "f _*" := (comp_post f)
+  (at level 1)
+  : hom_scope.
 
 (** Postcomposition by a fixed [f : Hom Y Z], bundled as a respectful
     map [HomSet X Y →r HomSet X Z]. Its preservation proof comes from
@@ -497,22 +529,23 @@ Next Obligation.
 Qed.
 
 Notation "C '^op'" := (op C)
-  (at level 60).
+  (at level 1, format "C '^op'")
+  : cat_scope.
 
 (** View an object in the opposite category. *)
 
 (** 将对象视为反范畴中的对象。 *)
 
-Definition ob_op {C : Cat} (X : @Ob C)
-  : (@Ob (C ^op))
+Definition ob_op {C : Cat} (X : C)
+  : (C^op)
   := X.
 
 (** Transport in the opposite category uses the reversed object equality. *)
 
 (** 反范畴中的运输使用反向对象相等。 *)
 
-Lemma eq_to_hom_op {C : Cat} {X Y : @Ob C} (p : X = Y)
-  : @eq_to_hom (C ^op) X Y p ≈ eq_to_hom (eq_sym p).
+Lemma eq_to_hom_op {C : Cat} {X Y : C} (p : X = Y)
+  : @eq_to_hom (C^op) X Y p ≈ eq_to_hom (eq_sym p).
 Proof. destruct p. reflexivity. Qed.
 
 
@@ -552,7 +585,8 @@ Next Obligation. destruct f. simpl. split; apply comp_id_l. Qed.
 Next Obligation. destruct f, g, h. simpl. split; apply comp_assoc. Qed.
 
 Infix "×C" := ProdCat
-  (at level 41).
+  (at level 41)
+  : cat_scope.
 
 
 
@@ -573,7 +607,8 @@ Context {C : Cat}.
 
 (** 后合成保持指定态射相等。 *)
 
-Proposition comp_l {X Y Z : C} (f : Hom Y Z) {x y : Hom X Y}
+Proposition comp_l {X Y Z : C}
+    (f : Hom Y Z) {x y : Hom X Y}
   : x ≈ y → f ∘ x ≈ f ∘ y.
 Proof. intros Heq. rewrite Heq. cato. Qed.
 
@@ -581,7 +616,8 @@ Proof. intros Heq. rewrite Heq. cato. Qed.
 
 (** 预合成保持指定态射相等。 *)
 
-Proposition comp_r {X Y Z : C} (f : Hom X Y) {x y : Hom Y Z}
+Proposition comp_r {X Y Z : C}
+    (f : Hom X Y) {x y : Hom Y Z}
   : x ≈ y → x ∘ f ≈ y ∘ f.
 Proof. intros Heq. rewrite Heq. cato. Qed.
 
@@ -595,21 +631,24 @@ Proof. intros Heq. rewrite Heq. cato. Qed.
 
 (** 第二条箭头是第一条的左逆。 *)
 
-Definition is_linv_of {X Y : C} (f : Hom X Y) (g : Hom Y X)
+Definition is_linv_of {X Y : C}
+    (f : Hom X Y) (g : Hom Y X)
   := g ∘ f ≈ id.
 
 (** The second arrow is a right inverse of the first. *)
 
 (** 第二条箭头是第一条的右逆。 *)
 
-Definition is_rinv_of {X Y : C} (f : Hom X Y) (g : Hom Y X)
+Definition is_rinv_of {X Y : C}
+    (f : Hom X Y) (g : Hom Y X)
   := f ∘ g ≈ id.
 
 (** The two arrows are mutually inverse under specified hom equality. *)
 
 (** 两条箭头在指定 Hom 相等下互逆。 *)
 
-Definition is_inv_of {X Y : C} (f : Hom X Y) (g : Hom Y X)
+Definition is_inv_of {X Y : C}
+    (f : Hom X Y) (g : Hom Y X)
   := is_linv_of f g ∧ is_rinv_of f g.
 
 (** An arrow with a chosen inverse and both inverse equations. The
@@ -644,7 +683,8 @@ Definition iso (X Y : C)
 
 (** 交换互逆对中的两条箭头。 *)
 
-Theorem is_inv_of_comm {X Y : C} (f : Hom X Y) (g : Hom Y X)
+Theorem is_inv_of_comm {X Y : C}
+    (f : Hom X Y) (g : Hom Y X)
   : is_inv_of f g → is_inv_of g f.
 Proof. intros [H1 H2]. split; auto. Qed.
 
@@ -661,15 +701,17 @@ Arguments is_inv_of {_ _ _} _ _ /.
 Arguments iso {_} _%_ob _%_ob.
 
 Notation "X '≅' Y" := (iso X Y)
-  (at level 70, no associativity) : type_scope.
+  (at level 70, no associativity)
+  : type_scope.
 
 Notation "X '≅[' C ']' Y" := (@iso C X Y)
-  (at level 70, no associativity,
-    format "X  ≅[ C ]  Y") : type_scope.
+  (at level 70, no associativity, format "X  ≅[ C ]  Y")
+  : type_scope.
 
 Notation "f '⦂' X '≅' Y" := (@is_iso _ X Y f)
   (at level 50, no associativity,
-    X at level 49, Y at level 49).
+    X at level 49, Y at level 49)
+  : cat_scope.
 
 Tactic Notation "elim_iso" ident(f) :=
   let fi := fresh f "i" in

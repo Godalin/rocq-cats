@@ -65,10 +65,15 @@ Proof. exact (terminal_universal X).2. Qed.
 Arguments term {_ _ _}.
 Arguments terminal_arrow_unique {_ _ _}.
 
-Notation "'1'" := Term : ob_scope.
-Notation "'!'" := term : hom_scope.
-Notation "'@!' X" := (@term _ _ _ X)
-  (at level 34) : hom_scope.
+Notation "'1'" := Term
+  (at level 0)
+  : ob_scope.
+Notation "'!'" := term
+  (at level 0)
+  : hom_scope.
+Notation "'![' X ']'" := (@term _ _ X)
+  (at level 0, format "![ X ]")
+  : hom_scope.
 
 (** ** Uniqueness of Terminal Objects
 
@@ -132,7 +137,8 @@ Proof.
 Defined.
 
 Notation "X '⦂' '≅' '1'" := (is_terminal X)
-  (at level 50).
+  (at level 50)
+  : cat_scope.
 
 
 
@@ -257,8 +263,12 @@ Proof. exact (@term_comp_l (C^op) (@hasOpTerminal C HI) Y X f). Qed.
 
 End Initial.
 
-Notation "0" := Init : ob_scope.
-Notation "¡" := init : hom_scope.
+Notation "0" := Init
+  (at level 0)
+  : ob_scope.
+Notation "¡" := init
+  (at level 0)
+  : hom_scope.
 
 (** Any two initial objects are isomorphic by opposite terminal uniqueness. *)
 

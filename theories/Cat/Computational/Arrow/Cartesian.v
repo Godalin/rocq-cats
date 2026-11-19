@@ -91,7 +91,7 @@ Qed.
 (** 纯箭头上的左上下文作用就是通常积映射。 *)
 
 Lemma arrow_second_arr {X Y : @Ob C} (f : Hom X Y) (Z : @Ob C)
-  : second[A; arr[A; f]; Z] ≈ arr[A; @id Z × f].
+  : second[A; arr[A; f]; Z] ≈ arr[A; id[Z] × f].
 Proof.
   pose proof (arrow_context_arr A Z f) as H.
   rewrite cartesian_tensor_map in H. exact H.
@@ -112,8 +112,8 @@ Proof. exact (arrow_context_comp A Z g f). Qed.
 
 Lemma arrow_second_natural {X Y Z W : @Ob C}
     (f : Hom (A X) (A Y)) (h : Hom Z W)
-  : arr[A; h × @id Y] ∘ second[A; f; Z] ≈
-      second[A; f; W] ∘ arr[A; h × @id X].
+  : arr[A; h × id[Y]] ∘ second[A; f; Z] ≈
+      second[A; f; W] ∘ arr[A; h × id[X]].
 Proof.
   pose proof (arrow_context_natural A f h) as H.
   rewrite !cartesian_tensor_map in H. exact H.
@@ -124,7 +124,7 @@ Qed.
 (** 纯右上下文扩展就是通常积映射。 *)
 
 Lemma arrow_first_arr {X Y : @Ob C} (f : Hom X Y) (Z : @Ob C)
-  : first[A; arr[A; f]; Z] ≈ arr[A; f × @id Z].
+  : first[A; arr[A; f]; Z] ≈ arr[A; f × id[Z]].
 Proof.
   unfold arrow_first. rewrite arrow_second_arr, <- !fct_comp.
   apply fct_fmap_proper.
@@ -163,7 +163,7 @@ Proof.
     f ∘ arr[A; (π2 : Hom (1 × X) X)]) in Hu.
   pose proof (arrow_second_natural f (! : Hom Z 1)) as Hn.
   transitivity ((arr[A; (π2 : Hom (1 × Y) Y)] ∘
-    arr[A; (! : Hom Z 1) × @id Y]) ∘ second[A; f; Z]).
+    arr[A; (! : Hom Z 1) × id[Y]]) ∘ second[A; f; Z]).
   - rewrite <- fct_comp, cross_η, product_β2, comp_id_l. reflexivity.
   - rewrite comp_assoc, Hn, <- comp_assoc, Hu,
       comp_assoc, <- fct_comp, cross_η, product_β2, comp_id_l.
@@ -190,27 +190,27 @@ Qed.
 
 Lemma arrow_first_natural {X Y Z W : @Ob C}
     (f : Hom (A X) (A Y)) (h : Hom Z W)
-  : arr[A; @id Y × h] ∘ first[A; f; Z] ≈
-      first[A; f; W] ∘ arr[A; @id X × h].
+  : arr[A; id[Y] × h] ∘ first[A; f; Z] ≈
+      first[A; f; W] ∘ arr[A; id[X] × h].
 Proof.
-  assert (Ho : arr[A; @id Y × h] ∘
+  assert (Ho : arr[A; id[Y] × h] ∘
     arr[A; (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z))] ≈
     arr[A; (⟨π2, π1⟩ : Hom (W × Y) (Y × W))] ∘
-    arr[A; h × @id Y]).
+    arr[A; h × id[Y]]).
   { rewrite <- !fct_comp. apply fct_fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  assert (Hi : arr[A; h × @id X] ∘
+  assert (Hi : arr[A; h × id[X]] ∘
     arr[A; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))] ≈
     arr[A; (⟨π2, π1⟩ : Hom (X × W) (W × X))] ∘
-    arr[A; @id X × h]).
+    arr[A; id[X] × h]).
   { rewrite <- !fct_comp. apply fct_fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
   unfold arrow_first. rewrite <- !comp_assoc, Ho, !comp_assoc.
-  rewrite <- (comp_assoc arr[A; h × @id Y] (second[A; f; Z])
+  rewrite <- (comp_assoc arr[A; h × id[Y]] (second[A; f; Z])
     arr[A; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))]),
     arrow_second_natural, !comp_assoc, Hi. reflexivity.
 Qed.
@@ -273,17 +273,17 @@ Proof.
   normalize_arr.
   assert (Ho : (@product_assoc C HP Y Z W).1 ∘
     ((⟨π2, π1⟩ : Hom (W × (Y × Z)) ((Y × Z) × W)) ∘
-      ((@id W × (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z))) ∘
+      ((id[W] × (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z))) ∘
         (@product_assoc C HP W Z Y).1)) ≈
     (⟨π2, π1⟩ : Hom ((Z × W) × Y) (Y × (Z × W))) ∘
-      ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × @id Y)).
+      ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × id[Y])).
   { unfold product_assoc. cbn.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  assert (Hi : ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × @id X) ∘
+  assert (Hi : ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × id[X]) ∘
     ((@product_assoc C HP W Z X).2.1 ∘
-      ((@id W × (⟨π2, π1⟩ : Hom (X × Z) (Z × X))) ∘
+      ((id[W] × (⟨π2, π1⟩ : Hom (X × Z) (Z × X))) ∘
         (⟨π2, π1⟩ : Hom ((X × Z) × W) (W × (X × Z))))) ≈
     (⟨π2, π1⟩ : Hom (X × (Z × W)) ((Z × W) × X)) ∘
       (@product_assoc C HP X Z W).1).
@@ -293,10 +293,10 @@ Proof.
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
   rewrite Ho, fct_comp. repeat rewrite comp_assoc.
   rewrite <- (comp_assoc
-    arr[A; ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × @id Y)]
+    arr[A; ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × id[Y])]
     (second[A; f; (W × Z)%ob])
     arr[A; (@product_assoc C HP W Z X).2.1 ∘
-      ((@id W × (⟨π2, π1⟩ : Hom (X × Z) (Z × X))) ∘
+      ((id[W] × (⟨π2, π1⟩ : Hom (X × Z) (Z × X))) ∘
         (⟨π2, π1⟩ : Hom ((X × Z) × W) (W × (X × Z))))]),
     arrow_second_natural.
   normalize_arr. rewrite Hi. reflexivity.
@@ -321,18 +321,18 @@ Proof.
   assert (Ho : (@product_assoc C HP X Y' Z).1 ∘
     ((⟨π2, π1⟩ : Hom (Z × (X × Y')) ((X × Y') × Z)) ∘
       (@product_assoc C HP Z X Y').1) ≈
-    ((@id X × (⟨π2, π1⟩ : Hom (Z × Y') (Y' × Z))) ∘
+    ((id[X] × (⟨π2, π1⟩ : Hom (Z × Y') (Y' × Z))) ∘
       (@product_assoc C HP X Z Y').1) ∘
-        ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y')).
+        ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × id[Y'])).
   { unfold product_assoc. cbn.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  assert (Hi : ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y) ∘
+  assert (Hi : ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × id[Y]) ∘
     ((@product_assoc C HP Z X Y).2.1 ∘
       (⟨π2, π1⟩ : Hom ((X × Y) × Z) (Z × (X × Y)))) ≈
     (@product_assoc C HP X Z Y).2.1 ∘
-      ((@id X × (⟨π2, π1⟩ : Hom (Y × Z) (Z × Y))) ∘
+      ((id[X] × (⟨π2, π1⟩ : Hom (Y × Z) (Z × Y))) ∘
         (@product_assoc C HP X Y Z).1)).
   { unfold product_assoc. cbn.
     repeat first [rewrite cross_η | rewrite product_comp_r |
@@ -340,7 +340,7 @@ Proof.
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
   rewrite Ho, fct_comp. repeat rewrite comp_assoc.
   rewrite <- (comp_assoc
-    arr[A; ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × @id Y')]
+    arr[A; ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × id[Y'])]
     (second[A; f; (Z × X)%ob])
     arr[A; (@product_assoc C HP Z X Y).2.1 ∘
       (⟨π2, π1⟩ : Hom ((X × Y) × Z) (Z × (X × Y)))]),

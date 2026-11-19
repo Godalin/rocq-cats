@@ -107,7 +107,7 @@ Context {F G H : Fct J C} (α : F ⇒ H) (β : G ⇒ H).
 
 (** 由自然性和源拉回方形，像锥交换。 *)
 
-Lemma pointwise_pullback_map_square {i j : @Ob J} (f : Hom i j)
+Lemma pointwise_pullback_map_square {i j : J} (f : Hom i j)
   : α j ∘ (fmap F f ∘ pb1 (α i) (β i)) ≈
       β j ∘ (fmap G f ∘ pb2 (α i) (β i)).
 Proof.
@@ -120,7 +120,7 @@ Defined.
 
 (** 作用透明地使用目标选定的拉回中介。 *)
 
-Definition pointwise_pullback_map {i j : @Ob J} (f : Hom i j)
+Definition pointwise_pullback_map {i j : J} (f : Hom i j)
   : Hom (Pb (α i) (β i)) (Pb (α j) (β j))
   := pb (fmap F f ∘ pb1 (α i) (β i))
       (fmap G f ∘ pb2 (α i) (β i))
@@ -130,7 +130,7 @@ Definition pointwise_pullback_map {i j : @Ob J} (f : Hom i j)
 
 (** 作用的第一投影是原图式作用。 *)
 
-Lemma pointwise_pullback_map_β1 {i j : @Ob J} (f : Hom i j)
+Lemma pointwise_pullback_map_β1 {i j : J} (f : Hom i j)
   : pb1 (α j) (β j) ∘ pointwise_pullback_map f ≈
       fmap F f ∘ pb1 (α i) (β i).
 Proof.
@@ -142,7 +142,7 @@ Qed.
 
 (** 另一投影保留第二个图式的作用。 *)
 
-Lemma pointwise_pullback_map_β2 {i j : @Ob J} (f : Hom i j)
+Lemma pointwise_pullback_map_β2 {i j : J} (f : Hom i j)
   : pb2 (α j) (β j) ∘ pointwise_pullback_map f ≈
       fmap G f ∘ pb2 (α i) (β i).
 Proof.

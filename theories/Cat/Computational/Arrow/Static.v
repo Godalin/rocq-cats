@@ -106,7 +106,7 @@ Qed.
 (** 纯恒等在输入侧为中性。 *)
 
 Lemma static_comp_id_r {X Y : @Ob C} (f : Hom 1 (A (Y ^ X)%ob))
-  : f ∘ˢ[A] static_arr A (@id X) ≈ f.
+  : f ∘ˢ[A] static_arr A (id[X]) ≈ f.
 Proof.
   rewrite static_comp_pure_r, exp_dimap_id, fct_id, comp_id_l.
   reflexivity.
@@ -117,7 +117,7 @@ Qed.
 (** 纯恒等在输出侧为中性。 *)
 
 Lemma static_comp_id_l {X Y : @Ob C} (f : Hom 1 (A (Y ^ X)%ob))
-  : static_arr A (@id Y) ∘ˢ[A] f ≈ f.
+  : static_arr A (id[Y]) ∘ˢ[A] f ≈ f.
 Proof.
   rewrite static_comp_pure_l, exp_map_id, fct_id, comp_id_l.
   reflexivity.
@@ -160,7 +160,7 @@ Program Definition StaticCat
   :=
   {|Ob := @Ob C
   ; HomSet X Y := @HomSet C 1 (A (Y ^ X)%ob)
-  ; id X := static_arr A (@id X)
+  ; id X := static_arr A (id[X])
   ; comp X Y Z g f := g ∘ˢ[A] f
   ; comp_proper X Y Z := @static_comp_proper X Y Z
   |}.
@@ -205,7 +205,7 @@ Proof. intros f g H. unfold static_context. rewrite H. reflexivity. Qed.
 (** 纯上下文扩展就是纯通常积映射。 *)
 
 Lemma static_context_arr {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
-  : static_context Z (static_arr A f) ≈ static_arr A (@id Z × f).
+  : static_context Z (static_arr A f) ≈ static_arr A (id[Z] × f).
 Proof.
   unfold static_context, static_arr, applicative_pure_value.
   rewrite <- comp_assoc, <- applicative_pure_natural, comp_assoc.
@@ -245,8 +245,8 @@ Next Obligation.
 Defined.
 Next Obligation.
   rewrite !cartesian_tensor_map.
-  change (static_arr A (h × @id Y) ∘ˢ[A] static_context Z f ≈
-    static_context W f ∘ˢ[A] static_arr A (h × @id X)).
+  change (static_arr A (h × id[Y]) ∘ˢ[A] static_context Z f ≈
+    static_context W f ∘ˢ[A] static_arr A (h × id[X])).
   rewrite static_comp_pure_l, static_comp_pure_r.
   unfold static_context. rewrite <- !comp_assoc, <- !fct_comp.
   apply comp_proper; [| reflexivity]. apply fct_fmap_proper.

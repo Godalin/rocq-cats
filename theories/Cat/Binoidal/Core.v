@@ -121,7 +121,7 @@ Qed.
 (** 左上下文保持恒等。 *)
 
 Lemma binoidal_l_id (Z X : C)
-  : Z ⊲ @id X ≈ id.
+  : Z ⊲ id[X] ≈ id.
 Proof.
   exact (fct_map_id (IsFct := isBinoidalL Z) X).
 Qed.
@@ -131,7 +131,7 @@ Qed.
 (** 右上下文保持恒等。 *)
 
 Lemma binoidal_r_id (Z X : C)
-  : @id X ⊳ Z ≈ id.
+  : id[X] ⊳ Z ≈ id.
 Proof.
   exact (fct_map_id (IsFct := isBinoidalR Z) X).
 Qed.

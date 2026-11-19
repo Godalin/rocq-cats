@@ -50,7 +50,7 @@ Program Definition AdjKleisliF
   ; F1 X Y f := f^♭[A]
   ; fct_fmap_proper X Y := unadjunct_proper A
   |}.
-Next Obligation. exact (adj_β A (@id (F X))). Defined.
+Next Obligation. exact (adj_β A (id[F X])). Defined.
 
 Next Obligation. exact (adj_kleisli_unadjunct_comp f g). Defined.
 

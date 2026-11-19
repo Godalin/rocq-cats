@@ -36,7 +36,9 @@ Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. exact (@comp_id_l C _ _ f). Qed.
 Next Obligation. intros x. exact (@comp_assoc C _ _ _ _ f g x). Qed.
 
-Notation "'Hom(' X  ',-)'" := (ℎ1F X).
+Notation "'Hom(' X  ',-)'" := (ℎ1F X)
+  (at level 0)
+  : cat_scope.
 
 (** Precomposition gives the contravariant hom functor with a fixed target. *)
 
@@ -52,7 +54,9 @@ Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. exact (@comp_id_r C _ _ f). Qed.
 Next Obligation. intros x. symmetry. exact (@comp_assoc C _ _ _ _ x g f). Qed.
 
-Notation "'Hom(-,'  X ')'" := (ℎ2F X).
+Notation "'Hom(-,'  X ')'" := (ℎ2F X)
+  (at level 0)
+  : cat_scope.
 
 (** Covariant Hom in the opposite category is contravariant Hom in C. Compare
     the functors explicitly, without equating their law fields. *)
@@ -85,7 +89,7 @@ Notation "f ^*N" := (nt_comp_pre f) (at level 35) : cat_scope.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance nt_comp_pre_proper {C : Cat} {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==> NatEq) (@nt_comp_pre C X Y).
+  : Proper (≈[X, Y] ==> NatEq) (@nt_comp_pre C X Y).
 Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
 
 (** Compatibility with identities for [nt_comp_pre]. *)
@@ -93,7 +97,7 @@ Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
 (** [nt_comp_pre] 与恒等的相容性。 *)
 
 Theorem nt_comp_pre_id {C : Cat} {X : @Ob C}
-  : (@id X) ^*N ≈N IdN.
+  : (id[X]) ^*N ≈N IdN.
 Proof. intros Z h. simpl. apply comp_id_r. Qed.
 
 (** Compatibility with composition for [nt_comp_pre]. *)
@@ -124,7 +128,7 @@ Notation "f _*N" := (nt_comp_post f) (at level 35) : cat_scope.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance nt_comp_post_proper {C : Cat} {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==> NatEq) (@nt_comp_post C X Y).
+  : Proper (≈[X, Y] ==> NatEq) (@nt_comp_post C X Y).
 Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
 
 (** Compatibility with identities for [nt_comp_post]. *)
@@ -132,7 +136,7 @@ Proof. intros f g Hfg Z h. simpl. rewrite Hfg. reflexivity. Qed.
 (** [nt_comp_post] 与恒等的相容性。 *)
 
 Theorem nt_comp_post_id {C : Cat} {X : @Ob C}
-  : (@id X) _*N ≈N IdN.
+  : (id[X]) _*N ≈N IdN.
 Proof. intros Z h. simpl. apply comp_id_l. Qed.
 
 (** Compatibility with composition for [nt_comp_post]. *)
@@ -149,7 +153,7 @@ Proof. intros W h. simpl. apply comp_assoc. Qed.
 (** 将 Hom 广集元素分别与给定的两条箭头预合成及后合成。 *)
 
 Program Canonical bi_comp {C : Cat} {X' X Y Y' : @Ob C}
-    (f : (@Hom op C) X X') (g : Hom Y Y')
+    (f : Hom[C^op] X X') (g : Hom Y Y')
   : HomSet X Y →r HomSet X' Y'
   :=
   {|func := λ h, g ∘ h ∘ f
@@ -182,7 +186,7 @@ Next Obligation. destruct f as [f1 f2], g as [g1 g2]. intros k. simpl. repeat ca
     [HomF] 和复合继承，不再重证。 *)
 
 Definition LeftHomF@{u p +} {C D : Cat} (F : Fct C D)
-  : Fct (C^op ×C D) SetCat@{u p _ _ _ _ _}
+  : Fct ((C^op) ×C D) SetCat@{u p _ _ _ _ _}
   := LiftF ∘F (HomF ∘F (F^opF ×F IdF)).
 
 (** The hom functor on the right side of an adjunction correspondence. *)
@@ -190,7 +194,7 @@ Definition LeftHomF@{u p +} {C D : Cat} (F : Fct C D)
 (** 伴随对应右侧的 Hom 函子。 *)
 
 Definition RightHomF@{u p +} {C D : Cat} (G : Fct D C)
-  : Fct (C^op ×C D) SetCat@{u p _ _ _ _ _}
+  : Fct ((C^op) ×C D) SetCat@{u p _ _ _ _ _}
   := LiftF ∘F (HomF ∘F (IdF ×F G)).
 
 (** * Morphism Maps of Functors
@@ -246,7 +250,7 @@ Definition hom_iso {C : Cat} {X X' Y Y' : @Ob C}
   : HomSet X Y ≅[SetCat] HomSet X' Y'.
 Proof.
   refine (bi_comp i.1 j.1; _).
-  apply (@fct_is_iso (C^op ×C C) SetCat HomF
+  apply (@fct_is_iso ((C^op) ×C C) SetCat HomF
     (X, Y) (X', Y') (i.1, j.1)).
   exists (i.2.1, j.2.1). split; split;
     [exact (snd i.2.2) | exact (fst j.2.2) |

@@ -22,7 +22,7 @@ Context {C D : Cat} (F : Fct C D) (H : is_fully_faithful F).
 
 (** 沿选定 Type 值满性见证提升目标箭头。 *)
 
-Definition fully_faithful_preimage {X Y : @Ob C}
+Definition fully_faithful_preimage {X Y : C}
     (f : Hom (F X) (F Y))
   : Hom X Y
   := (fst H X Y f).1.
@@ -31,7 +31,7 @@ Definition fully_faithful_preimage {X Y : @Ob C}
 
 (** 提升的箭头保持目标 Hom 广集相等。 *)
 
-Global Instance fully_faithful_preimage_proper {X Y : @Ob C}
+Global Instance fully_faithful_preimage_proper {X Y : C}
   : Proper (HomEq ==> HomEq) (@fully_faithful_preimage X Y).
 Proof.
   intros f g Hfg. apply (snd H X Y).
@@ -43,7 +43,7 @@ Qed.
 
 (** 提升像箭头，在指定相等下返回源箭头。 *)
 
-Lemma fully_faithful_preimage_image {X Y : @Ob C} (f : Hom X Y)
+Lemma fully_faithful_preimage_image {X Y : C} (f : Hom X Y)
   : fully_faithful_preimage (fmap F f) ≈ f.
 Proof.
   apply (snd H X Y). exact (fst H X Y (fmap F f)).2.
@@ -53,7 +53,7 @@ Qed.
 
 (** 映射提升后的箭头，恢复原目标箭头。 *)
 
-Lemma fully_faithful_image_preimage {X Y : @Ob C}
+Lemma fully_faithful_image_preimage {X Y : C}
     (f : Hom (F X) (F Y))
   : fmap F (fully_faithful_preimage f) ≈ f.
 Proof. exact (fst H X Y f).2. Qed.
@@ -64,14 +64,14 @@ Proof. exact (fst H X Y f).2. Qed.
 (** 逆函子保留值索引作为对象，只提升箭头。 *)
 
 Program Definition FullyFaithfulInverseF
-  : Fct (InducedCat (@Ob C) F) C
+  : Fct (InducedCat C F) C
   :=
   {|F0 X := X
   ; F1 X Y f := fully_faithful_preimage f
   ; fct_fmap_proper X Y := fully_faithful_preimage_proper
   |}.
 Next Obligation.
-  change (fully_faithful_preimage (@id (F X)) ≈ @id X).
+  change (fully_faithful_preimage (id[F X]) ≈ id[X]).
   apply (snd H X X). rewrite fully_faithful_image_preimage.
   symmetry. apply fct_id.
 Defined.
@@ -111,7 +111,7 @@ Defined.
 (** 恒等分量也比较索引像对象上的另一个复合。 *)
 
 Program Definition FullyFaithfulCounitN
-  : (InducedF F ∘F FullyFaithfulInverseF) ⇒ (@IdF (InducedCat (@Ob C) F))
+  : (InducedF F ∘F FullyFaithfulInverseF) ⇒ (@IdF (InducedCat C F))
   := {|nt X := id|}.
 Next Obligation.
   change (id ∘ fmap F (fully_faithful_preimage f) ≈ f ∘ id).
@@ -123,7 +123,7 @@ Defined.
 (** 目标比较保留同样的恒等逆数据。 *)
 
 Definition FullyFaithfulCounitIso
-  : (InducedF F ∘F FullyFaithfulInverseF) ≅N (@IdF (InducedCat (@Ob C) F)).
+  : (InducedF F ∘F FullyFaithfulInverseF) ≅N (@IdF (InducedCat C F)).
 Proof.
   exists FullyFaithfulCounitN. intro X. exists id. split; apply comp_id_l.
 Defined.

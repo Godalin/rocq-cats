@@ -80,9 +80,9 @@ Definition independent_exp_natural {X X' Y Y' : C}
 (** 混合端点为[G Y ^ F X]，不提供逆分量。 *)
 
 Definition independent_exp_boundary (X Y : C)
-  : (α Y ^ (@id (F X))) ∘
+  : (α Y ^ (id[F X])) ∘
       exp_cmp F preservesF X Y ≈
-      ((@id (G Y)) ^ α X) ∘
+      ((id[G Y]) ^ α X) ∘
         exp_cmp G preservesG X Y ∘
         α ((Y ^ X)%ob)
   := exp_cmp_boundary F G preservesF preservesG α X Y.
@@ -139,9 +139,9 @@ Definition reversed_exp_natural {X X' Y Y' : C}
 (** 混合端点为[G Y ^ F X]，不提供逆分量。 *)
 
 Definition reversed_exp_boundary (X Y : C)
-  : (α Y ^ (@id (F X))) ∘
+  : (α Y ^ (id[F X])) ∘
       exp_cmp F preservesF X Y ≈
-      ((@id (G Y)) ^ α X) ∘
+      ((id[G Y]) ^ α X) ∘
         exp_cmp G preservesG X Y ∘
         α ((Y ^ X)%ob)
   := exp_cmp_boundary F G preservesF preservesG α X Y.
@@ -246,10 +246,10 @@ Definition comparison_argument_result_law
 (** 边界律使用单位结果／布尔参数的混合指数。 *)
 
 Definition comparison_unit_exp_law
-  : (ComparisonUnitN TaggedGluingS ^ (@id BoolS)) ∘
+  : (ComparisonUnitN TaggedGluingS ^ (id[BoolS])) ∘
       exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) BoolS TaggedGluingS ≈
-      ((@id UnitS) ^ ComparisonUnitN BoolS) ∘
+      ((id[UnitS]) ^ ComparisonUnitN BoolS) ∘
         exp_cmp (ConstF SetCat UnitS)
           unit_model_product BoolS TaggedGluingS ∘
         ComparisonUnitN ((TaggedGluingS ^ BoolS)%ob)
@@ -303,7 +303,7 @@ Proof. reflexivity. Defined.
 (** 混合指数的左边界路径在布尔处求值。 *)
 
 Example comparison_boundary_left_computes
-  : ((ComparisonUnitN TaggedGluingS ^ (@id BoolS)) ∘
+  : ((ComparisonUnitN TaggedGluingS ^ (id[BoolS])) ∘
       exp_cmp (@IdF SetCat)
         (λ X Y, product_universal) BoolS TaggedGluingS)
       comparison_argument true = tt.
@@ -314,7 +314,7 @@ Proof. reflexivity. Defined.
 (** 右路径先塌缩表示对象，再限制参数。 *)
 
 Example comparison_boundary_right_computes
-  : (((@id UnitS) ^ ComparisonUnitN BoolS) ∘
+  : (((id[UnitS]) ^ ComparisonUnitN BoolS) ∘
       exp_cmp (ConstF SetCat UnitS)
         unit_model_product BoolS TaggedGluingS ∘
       ComparisonUnitN ((TaggedGluingS ^ BoolS)%ob))

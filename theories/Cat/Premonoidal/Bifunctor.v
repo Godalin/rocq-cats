@@ -90,7 +90,7 @@ End Associativity.
     的逆见证。 *)
 
 Section Unit.
-Context (I : C) (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF).
+Context (I : C) (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 
 (** No associativity or coherence with an associator is needed here. *)
 
@@ -125,7 +125,7 @@ End Unit.
 
 Section Compatibility.
 Context (I : C) (A : TensorLF T ≅N TensorRF T)
-    (L : π2F T I ≅N IdF) (R : π1F T I ≅N IdF)
+    (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF)
     (Hp : ∀ W X Y Z : C,
       A.1 ((W, X), Y ⊗ Z) ∘ A.1 ((W ⊗ X, Y), Z) ≈
         (W ⊲ A.1 ((X, Y), Z)) ∘

@@ -64,7 +64,8 @@ Definition NatEq {C D : Cat} {F G : Fct C D} (α β : F ⇒ G)
   := ∀ X, α X ≈ β X.
 
 Infix "≈N" := NatEq
-  (at level 50, no associativity).
+  (at level 50, no associativity)
+  : cat_scope.
 
 (** [NatEq] is an equivalence relation. *)
 
@@ -127,7 +128,9 @@ Next Obligation.
   cacl. cacl. rewrite (fst (Hid Y)). carw.
 Qed.
 
-Notation "α '^-1N'" := (InvN α).
+Notation "α '^-1N'" := (InvN α)
+  (at level 1)
+  : cat_scope.
 
 (** The inverse natural transformation also has invertible components. *)
 
@@ -180,7 +183,8 @@ Next Obligation.
 Qed.
 
 Infix "∘Nv" := CompN
-  (at level 51, right associativity).
+  (at level 51, right associativity)
+  : cat_scope.
 
 
 
@@ -479,7 +483,7 @@ Theorem nat_hcomp_id {C D E : Cat}
   : (IdN (F := G) ∘Nh IdN (F := F)) ≈N IdN.
 Proof.
   intros X.
-  change (id ∘ fmap G (@id (F X)) ≈ @id (G (F X))).
+  change (id ∘ fmap G (id[F X]) ≈ id[G (F X)]).
   rewrite fct_id. apply comp_id_l.
 Qed.
 
@@ -547,8 +551,8 @@ Defined.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance π1F_proper {C D E : Cat} (d : @Ob D)
-  : Proper (NatIso ==> NatIso) (λ F : Fct (C ×C D) E, π1F F d).
+Global Instance AtRF_proper {C D E : Cat} (d : @Ob D)
+  : Proper (NatIso ==> NatIso) (λ F : Fct (C ×C D) E, AtRF F d).
 Proof.
   intros F G [α Hα].
   unshelve notypeclasses refine (({|nt := _
@@ -562,9 +566,9 @@ Defined.
 
 (** 该运算保持各参数指定的等价关系。 *)
 
-Global Instance π2F_proper {C D E : Cat} (c : @Ob C)
+Global Instance AtLF_proper {C D E : Cat} (c : @Ob C)
   : Proper (NatIso ==> NatIso)
-    (λ F : Fct (C ×C D) E, π2F F c).
+    (λ F : Fct (C ×C D) E, AtLF F c).
 Proof.
   intros F G [α Hα].
   unshelve notypeclasses refine (({|nt := _
@@ -671,7 +675,7 @@ Proof. intros X. reflexivity. Qed.
 (** 将取反组织为对应函子范畴之间的函子。 *)
 
 Program Definition OpFctCatF {C D : Cat}
-  : Fct ((FctCat C D) ^op) (FctCat (C ^op) (D ^op))
+  : Fct ((FctCat C D)^op) (FctCat (C^op) (D^op))
   :=
   {|F0 F := F^opF
   ; F1 F G α := α^opN
@@ -707,7 +711,7 @@ Defined.
 (** [OpF] 与恒等的相容性。 *)
 
 Program Definition OpF_id {C : Cat}
-  : (@IdF C)^opF ≅N (@IdF (C ^op))
+  : (@IdF C)^opF ≅N (@IdF (C^op))
   := ({|nt X := id
       |}; _).
 Next Obligation. simpl. carw. Defined.
@@ -740,7 +744,7 @@ Defined.
 
 Program Definition OpF_involution {C D : Cat}
     (F : Fct C D)
-  : FromDoubleOpF ∘F (F^opF^opF ∘F ToDoubleOpF) ≅N F
+  : FromDoubleOpF ∘F ((F^opF)^opF ∘F ToDoubleOpF) ≅N F
   := ({|nt X := id
       |}; _).
 Next Obligation. simpl. carw. Defined.

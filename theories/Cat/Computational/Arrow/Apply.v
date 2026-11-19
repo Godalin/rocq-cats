@@ -188,7 +188,7 @@ Qed.
 (** 由配对律和纯投影得到恒等计算的应用。 *)
 
 Lemma arrow_apply_const_id (X : SetC@{u p})
-  : arrow_apply_const (@id (AA X)) ≈ id.
+  : arrow_apply_const (id[AA X]) ≈ id.
 Proof.
   pose (j := (⟨@const_resp X UnitS tt, id⟩ : X →r (UnitS ×S X))).
   pose (q := (π2 : (UnitS ×S X) →r X)).
@@ -200,7 +200,7 @@ Proof.
         [reflexivity |]. apply fct_fmap_proper. intros x.
       split; reflexivity.
     - rewrite arrow_apply_pair_id, comp_id_l. reflexivity. }
-  assert (Hqj : arr[AA; q] ∘ arr[AA; j] ≈ @id (AA X)).
+  assert (Hqj : arr[AA; q] ∘ arr[AA; j] ≈ id[AA X]).
   { rewrite <- fct_comp. transitivity (arr[AA; id_resp (X := X)]).
     - apply fct_fmap_proper. intros x. reflexivity.
     - apply fct_id. }
@@ -217,7 +217,7 @@ Lemma arrow_apply_const_value {X Y : SetC@{u p}}
     (f : Hom (AA X) (AA Y))
   : arrow_apply_const f ≈ f.
 Proof.
-  transitivity (arrow_apply_const (f ∘ @id (AA X))).
+  transitivity (arrow_apply_const (f ∘ id[AA X])).
   - apply arrow_apply_const_proper. symmetry. apply comp_id_r.
   - rewrite arrow_apply_const_post, arrow_apply_const_id, comp_id_r.
     reflexivity.

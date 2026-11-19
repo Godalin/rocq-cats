@@ -40,6 +40,7 @@ Canonical Structure CatCat
 (** 逐层增大的范畴之范畴包含较小者；右结合的类型标注在每层使用新的宇宙实例，
     并通过强制转换取得对象类型。 *)
 
+(* Set Printing Universes. *)
 Check CatCat : CatCat : CatCat : CatCat.
 
 Notation "C '≃C' D" := (C ≅[CatCat] D)
@@ -54,7 +55,7 @@ Notation "C '≃C' D" := (C ≅[CatCat] D)
 (** 范畴与其双重反范畴等价。 *)
 
 Definition op_involution (C : Cat)
-  : C ^op ^op ≃C C.
+  : (C^op)^op ≃C C.
 Proof.
   exists FromDoubleOpF, ToDoubleOpF. split.
   - unshelve notypeclasses refine (({|nt := _

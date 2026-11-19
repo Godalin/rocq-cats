@@ -66,7 +66,7 @@ Definition independent_fiber_reindex {A B : C} (f : Hom A B)
 (** 在这些严格层级下，恒等重索引具有自然同构。 *)
 
 Definition independent_fiber_unit (A : C)
-  : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF F (@id A)
+  : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF F (id[A])
   := gluing_fiber_reindex_id_iso F A.
 
 (** Composition includes the nondefinitional functor-law boundary. *)
@@ -112,7 +112,7 @@ Definition reversed_gluing_fiber (A : C)
 (** 恒等比较也接受反向配置。 *)
 
 Definition reversed_fiber_unit (A : C)
-  : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF F (@id A)
+  : (@IdF (GluingFiber F A)) ≅N GluingFiberReindexF F (id[A])
   := gluing_fiber_reindex_id_iso F A.
 
 (** Composite comparisons retain independent ambient boundaries. *)
@@ -198,7 +198,7 @@ Proof.
   apply (gluing_fiber_inclusion_faithful (@IdF SetCat) TaggedGluingS).
   transitivity tagged_gluing_toggle.
   - exact tagged_vertical_square_roundtrip.
-  - transitivity (@id TaggedGluingObj);
+  - transitivity (id[TaggedGluingObj]);
       [exact tagged_gluing_toggle_equal |].
     symmetry. apply fct_id.
 Defined.

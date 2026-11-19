@@ -28,8 +28,8 @@ Definition DayTripleValuesF@{u p +} {C : Cat}
     (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
   : Fct ((C ×C C) ×C C) SetCat
   := @PointwiseProductF _ SetCat SetCat_HasProduct
-      (DayValuesF F G ∘F FstF (C ×C C) C)
-      (H ∘F SndF (C ×C C) C).
+      (DayValuesF F G ∘F π1F (C ×C C) C)
+      (H ∘F π2F (C ×C C) C).
 
 (** ** Slicing a Left-Bracketed Operation
 
@@ -53,17 +53,17 @@ Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T)).
 (** 固定第三个对象，而将其值保留为参数。 *)
 
 Program Definition DayTripleLeftSliceN (Z : @Ob C)
-  : DayParameterF (H Z) (DayValuesF F G) ⇒ ((K ∘F π1F T Z) ∘F T)
+  : DayParameterF (H Z) (DayValuesF F G) ⇒ ((K ∘F AtRF T Z) ∘F T)
   :=
   {|nt q := β (q,Z)
   |}.
 Next Obligation.
   intros [xy w].
   transitivity (β (Y,Z)
-    (fmap (DayValuesF F G) f xy, fmap H (@id Z) w)).
+    (fmap (DayValuesF F G) f xy, fmap H (id[Z]) w)).
   - exact (@func_proper _ _ (β (Y,Z))
       (fmap (DayValuesF F G) f xy,w)
-      (fmap (DayValuesF F G) f xy,fmap H (@id Z) w)
+      (fmap (DayValuesF F G) f xy,fmap H (id[Z]) w)
       (reflexivity _, symmetry (@fct_id C SetCat H Z w))).
   - exact (nat_naturality β (X := (X,Z)) (Y := (Y,Z)) (f,id) (xy,w)).
 Defined.
@@ -79,14 +79,14 @@ Lemma day_triple_left_slice_change {Z Z' : @Ob C} (g : Hom Z Z')
         (DayTripleLeftSliceN Z q (xy,w)).
 Proof.
   transitivity (β (q,Z')
-    (fmap (DayValuesF F G) (@id q) xy, fmap H g w)).
+    (fmap (DayValuesF F G) (id[q]) xy, fmap H g w)).
   - exact (@func_proper _ _ (β (q,Z'))
       (xy,fmap H g w)
-      (fmap (DayValuesF F G) (@id q) xy,fmap H g w)
+      (fmap (DayValuesF F G) (id[q]) xy,fmap H g w)
       (symmetry (@fct_id (C ×C C) SetCat (DayValuesF F G) q xy),
         reflexivity _)).
   - transitivity (fmap K
-      (fmap T (X := (T q,Z)) (Y := (T q,Z')) (fmap T (@id q),g))
+      (fmap T (X := (T q,Z)) (Y := (T q,Z')) (fmap T (id[q]),g))
         (β (q,Z) (xy,w))).
     + exact (nat_naturality β (X := (q,Z)) (Y := (q,Z')) (id,g) (xy,w)).
     + apply (@fct_fmap_proper C SetCat K). apply fct_fmap_proper.
@@ -203,7 +203,7 @@ Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T)).
 (** 将第一个值保留为其余值对的外部参数。 *)
 
 Program Definition DayTripleRightSliceN (X : @Ob C)
-  : DayParameterF (F X) (DayValuesF G H) ⇒ ((K ∘F π2F T X) ∘F T)
+  : DayParameterF (F X) (DayValuesF G H) ⇒ ((K ∘F AtLF T X) ∘F T)
   :=
   {|nt q := _
   |}.
@@ -219,10 +219,10 @@ Next Obligation.
 Defined.
 Next Obligation.
   destruct X0 as [a b], Y as [a' b'], f as [f g]. intros [[y z] x].
-  transitivity (β ((X,a'),b') ((fmap F (@id X) x,fmap G f y),fmap H g z)).
+  transitivity (β ((X,a'),b') ((fmap F (id[X]) x,fmap G f y),fmap H g z)).
   - exact (@func_proper _ _ (β ((X,a'),b'))
       ((x,fmap G f y),fmap H g z)
-      ((fmap F (@id X) x,fmap G f y),fmap H g z)
+      ((fmap F (id[X]) x,fmap G f y),fmap H g z)
       ((symmetry (@fct_id C SetCat F X x),reflexivity _),reflexivity _)).
   - exact (nat_naturality β (X := ((X,a),b)) (Y := ((X,a'),b'))
       ((id,f),g) ((x,y),z)).
@@ -240,10 +240,10 @@ Lemma day_triple_right_slice_change {X X' : @Ob C} (f : Hom X X')
 Proof.
   destruct q as [Y Z], yz as [y z].
   transitivity (β ((X',Y),Z)
-    ((fmap F f x,fmap G (@id Y) y),fmap H (@id Z) z)).
+    ((fmap F f x,fmap G (id[Y]) y),fmap H (id[Z]) z)).
   - exact (@func_proper _ _ (β ((X',Y),Z))
       ((fmap F f x,y),z)
-      ((fmap F f x,fmap G (@id Y) y),fmap H (@id Z) z)
+      ((fmap F f x,fmap G (id[Y]) y),fmap H (id[Z]) z)
       ((reflexivity _,symmetry (@fct_id C SetCat G Y y)),
         symmetry (@fct_id C SetCat H Z z))).
   - transitivity (fmap K
@@ -674,7 +674,7 @@ Proof.
     (id ∘ fmap T (X := (T (a,b),d)) (Y := (T (a,b),d)) (id,id))
       (β ((a,b),d) ((x,y),z))).
   - exact (day_triple_left_extend_β T β id id x y z).
-  - transitivity (fmap K (@id (T (T (a,b),d)))
+  - transitivity (fmap K (id[T (T (a,b),d)])
       (β ((a,b),d) ((x,y),z))).
     + apply (@fct_fmap_proper C SetCat K).
       rewrite fct_id, comp_id_l. reflexivity.
@@ -714,7 +714,7 @@ Proof.
     (id ∘ fmap T (X := (a,T (b,d))) (Y := (a,T (b,d))) (id,id))
       (β ((a,b),d) ((x,y),z))).
   - exact (day_triple_right_extend_β T β id id x y z).
-  - transitivity (fmap K (@id (T (a,T (b,d))))
+  - transitivity (fmap K (id[T (a,T (b,d))])
       (β ((a,b),d) ((x,y),z))).
     + apply (@fct_fmap_proper C SetCat K).
       rewrite fct_id, comp_id_l. reflexivity.

@@ -77,7 +77,7 @@ Infix "∘Cone" := cone_comp (at level 40, left associativity) : cat_scope.
 (** 该运算保持各参数指定的等价关系。 *)
 
 Global Instance cone_comp_proper {J C : Cat} {D : Fct J C} {X Y : @Ob C}
-  : Proper (NatEq ==> @HomEq[Y, X] ==> NatEq) (@cone_comp J C D X Y).
+  : Proper (NatEq ==> ≈[Y, X] ==> NatEq) (@cone_comp J C D X Y).
 Proof. intros κ μ H f g K j. cbn. rewrite (H j), K. reflexivity. Qed.
 
 (** Compatibility with identities for [cone_comp]. *)

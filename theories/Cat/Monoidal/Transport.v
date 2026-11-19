@@ -98,7 +98,7 @@ Next Obligation.
     rewrite !comp_assoc.
     rewrite <- (comp_assoc
       (@tensor_map D MD _ _ _ _
-        (fmap L (@id A)) (fmap L m[A]))).
+        (fmap L (id[A])) (fmap L m[A]))).
     rewrite <- tensor_map_comp, fct_id, comp_id_l.
     reflexivity.
 Defined.

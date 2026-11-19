@@ -83,7 +83,7 @@ Context {C : Cat} `{HT : !HasTerminal C}
 (** 公式体在量化之前即对两个谓词保相等。 *)
 
 Global Instance disjunction_body_proper {X : C}
-  : Proper (@HomEq[X, Ω] ==> @HomEq[X, Ω] ==> @HomEq[X × Ω, Ω])
+  : Proper (≈[X, Ω] ==> ≈[X, Ω] ==> ≈[X × Ω, Ω])
       disjunction_body.
 Proof.
   intros f f' Hf g g' Hg. unfold disjunction_body.
@@ -95,7 +95,7 @@ Qed.
 (** 析取对两个谓词的指定相等均保相等。 *)
 
 Global Instance disjunction_proper {X : C}
-  : Proper (@HomEq[X, Ω] ==> @HomEq[X, Ω] ==> @HomEq[X, Ω]) disjunction.
+  : Proper (≈[X, Ω] ==> ≈[X, Ω] ==> ≈[X, Ω]) disjunction.
 Proof.
   intros f f' Hf g g' Hg. unfold disjunction.
   apply comp_proper; [reflexivity | apply product_pair_proper; assumption].

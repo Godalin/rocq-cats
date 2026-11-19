@@ -121,7 +121,7 @@ Proof.
   rewrite <- !comp_assoc, !indexed_product_β, !comp_assoc.
   rewrite (@indexed_product_β D _ (EndDiag F) HO W _ (arrow_dom a)).
   rewrite (@indexed_product_β D _ (EndDiag F) HO W _ (arrow_cod a)).
-  apply wedge_comm.
+  exact (wedge_comm κ (arrow_map a)).
 Qed.
 
 (** The full end property reuses unique factorization of constrained families. *)

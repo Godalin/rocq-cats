@@ -22,14 +22,14 @@ Record Fct (C D : Cat)
 
   (** [F0] 映射对象。[:>] 强制转换使其值可直接记为 [F X]。 *)
 
-  { F0 :> @Ob C → @Ob D
+  { F0 :> C → D
   (** [F1] maps [f : Hom X Y] to an arrow from [F X] to [F Y]. Below,
       [fmap F f] names this action. Its endpoints depend on [F0]. *)
 
   (** [F1] 将 [f : Hom X Y] 映为从 [F X] 到 [F Y] 的箭头，下文用
       [fmap F f] 表示这个作用。像箭头的端点由 [F0] 决定。 *)
 
-  ; F1 {X Y : @Ob C} : Hom X Y → Hom (F0 X) (F0 Y)
+  ; F1 {X Y : C} : Hom X Y → Hom (F0 X) (F0 Y)
 
   (** [fct_fmap_proper] sends equal source arrows to equal target
       arrows. The two categories use their own specified hom equalities;
@@ -39,14 +39,14 @@ Record Fct (C D : Cat)
       两侧使用各自指定的 Hom 相等，不必是原生相等，也不必是同一个关系。 *)
 
   ; fct_fmap_proper {X Y}
-    :: Proper (@HomEq[X, Y] ==> @HomEq[F0 X, F0 Y]) F1
+    :: Proper (≈[X, Y] ==> ≈[F0 X, F0 Y]) F1
 
-  (** [fct_id] states [fmap F (@id X) ≈ @id (F X)]. *)
+  (** [fct_id] states [fmap F (id[X]) ≈ id[F X]]. *)
 
-  (** [fct_id] 给出 [fmap F (@id X) ≈ @id (F X)]。 *)
+  (** [fct_id] 给出 [fmap F (id[X]) ≈ id[F X]]。 *)
 
   ; fct_id {X}
-    : F1 (@id X) ≈ @id (F0 X)
+    : F1 (id[X]) ≈ id[F0 X]
 
   (** [fct_comp] states [fmap F (f ∘ g) ≈ fmap F f ∘ fmap F g]. A path
       can be composed before or after applying the functor, with equal results. *)
@@ -58,7 +58,7 @@ Record Fct (C D : Cat)
     : F1 (f ∘ g) ≈ F1 f ∘ F1 g
   }.
 
-Notation fmap F := (@F1 _ _ F).
+Abbreviation fmap F := (@F1 _ _ F).
 
 (** ** Faithful and Full Functors
 
@@ -94,14 +94,14 @@ Definition is_fully_faithful {C D : Cat} (F : Fct C D)
 (** 本质满保留对象代表与同构，不要求对象原生相等，也不截断存在见证。 *)
 
 Definition is_essentially_surjective {C D : Cat} (F : Fct C D)
-  := ∀ Y : @Ob D, ∃ X : @Ob C, F X ≅ Y.
+  := ∀ Y : D, ∃ X : C, F X ≅ Y.
 
 (** A functor sends an invertible arrow to an invertible arrow. *)
 
 (** 函子将可逆箭头送到可逆箭头。 *)
 
 Definition fct_is_iso {C D : Cat} (F : Fct C D)
-    {X Y : @Ob C} (f : Hom X Y) (Hf : is_iso f)
+    {X Y : C} (f : Hom X Y) (Hf : is_iso f)
   : is_iso (fmap F f).
 Proof.
   exists (fmap F Hf.1). split;
@@ -116,7 +116,7 @@ Defined.
 (** 全忠实函子反映可逆性：满性提供逆的原像，忠实性反映两条互逆方程。 *)
 
 Definition fct_reflects_iso {C D : Cat} (F : Fct C D)
-    (HF : is_fully_faithful F) {X Y : @Ob C} (f : Hom X Y)
+    (HF : is_fully_faithful F) {X Y : C} (f : Hom X Y)
     (Hf : is_iso (fmap F f))
   : is_iso f.
 Proof.
@@ -173,29 +173,32 @@ Qed.
 Section PartialFunctor.
 Context {C D E : Cat}.
 
-(** Vary the first argument, keeping the second fixed. *)
+(** Apply at the right argument [d], leaving the left argument free. *)
 
-(** 改变第一个参数，固定第二个参数。 *)
+(** 在右侧代入对象 [d]，左侧仍为变量。 *)
 
-Program Definition π1F (F : Fct (C ×C D) E) (d : @Ob D)
+Program Definition AtRF
+    (F : Fct (C ×C D) E) (d : D)
   : Fct C E
   :=
   {|F0 c := F (c, d)
   ; F1 X Y f := fmap F (X := (X, d)) (Y := (Y, d)) (f, id)
   |}.
 Next Obligation.
-  intros u v Huv. apply fct_fmap_proper. split; cato.
+  intros u v Huv.
+  apply fct_fmap_proper. split; cato.
 Qed.
 Next Obligation. apply fct_id. Qed.
 Next Obligation.
   rewrite <- fct_comp. apply fct_fmap_proper. split; cato.
 Qed.
 
-(** Vary the second argument, keeping the first fixed. *)
+(** Apply at the left argument [c], leaving the right argument free. *)
 
-(** 改变第二个参数，固定第一个参数。 *)
+(** 在左侧代入对象 [c]，右侧仍为变量。 *)
 
-Program Definition π2F (F : Fct (C ×C D) E) (c : @Ob C)
+Program Definition AtLF
+    (F : Fct (C ×C D) E) (c : C)
   : Fct D E
   :=
   {|F0 d := F (c, d)
@@ -218,7 +221,8 @@ Infix "∘F" := CompF
 
 (** 两个独立函子在乘积范畴上逐分量作用。 *)
 
-Program Definition ProdF {C D E K : Cat} (F : Fct C D) (G : Fct E K)
+Program Definition ProdF {C D E K : Cat}
+    (F : Fct C D) (G : Fct E K)
   : Fct (C ×C E) (D ×C K)
   :=
   {|F0 p := (F (fst p), G (snd p))
@@ -226,8 +230,8 @@ Program Definition ProdF {C D E K : Cat} (F : Fct C D) (G : Fct E K)
   |}.
 Next Obligation.
   intros [f g] [f' g'] [Hf Hg]. split; cbn.
-  - exact (@fct_fmap_proper _ _ F _ _ f f' Hf).
-  - exact (@fct_fmap_proper _ _ G _ _ g g' Hg).
+  - exact (fct_fmap_proper _ _ F f f' Hf).
+  - exact (fct_fmap_proper _ _ G g g' Hg).
 Qed.
 Next Obligation. split; apply fct_id. Qed.
 Next Obligation. split; apply fct_comp. Qed.
@@ -239,7 +243,7 @@ Infix "×F" := ProdF (at level 41) : cat_scope.
 (** 函子保持沿对象原生相等运输的恒等态射。 *)
 
 Lemma fmap_eq_to_hom {C D : Cat} (F : Fct C D)
-    {X Y : @Ob C} (p : X = Y)
+    {X Y : C} (p : X = Y)
   : fmap F (eq_to_hom p) ≈ eq_to_hom (f_equal F p).
 Proof. destruct p. simpl. apply fct_id. Qed.
 
@@ -255,18 +259,20 @@ Proof. destruct p. simpl. apply fct_id. Qed.
     不要求范畴记录或定律证明原生相等。 *)
 
 Program Definition OpF {C D : Cat} (F : Fct C D)
-  : Fct (C ^op) (D ^op)
+  : Fct (C^op) (D^op)
   :=
   {|F0 X := F X
   ; F1 X Y f := fmap F f
   |}.
 Next Obligation.
-  intros u v Huv. exact (@fct_fmap_proper C D F Y X u v Huv).
+  intros u v Huv.
+  exact (fct_fmap_proper _ _ F u v Huv).
 Qed.
-Next Obligation. exact (@fct_id C D F X). Qed.
-Next Obligation. exact (@fct_comp C D F Z Y X g f). Qed.
+Next Obligation. exact (fct_id _ _ F (X := X)). Qed.
+Next Obligation. exact (fct_comp _ _ F g f). Qed.
 
-Notation "F '^opF'" := (OpF F) (at level 35) : cat_scope.
+Notation "F '^opF'" := (OpF F)
+  (at level 1) : cat_scope.
 
 (** Taking opposites preserves chosen arrow preimages. *)
 
@@ -301,20 +307,20 @@ Program Definition UnopF {C D : Cat} (F : Fct (C^op) (D^op))
   :=
   {|F0 X := F X
   ; F1 X Y f := fmap F f
-  ; fct_fmap_proper X Y f g H :=
-      @fct_fmap_proper (C^op) (D^op) F Y X f g H
+  ; fct_fmap_proper _ _ f g H := fct_fmap_proper _ _ F f g H
   |}.
-Next Obligation. exact (@fct_id (C^op) (D^op) F X). Qed.
-Next Obligation. exact (@fct_comp (C^op) (D^op) F Z Y X g f). Qed.
+Next Obligation. exact (fct_id _ _ F (X := X)). Qed.
+Next Obligation. exact (fct_comp _ _ F g f). Qed.
 
-Notation "F '^unopF'" := (UnopF F) (at level 35) : cat_scope.
+Notation "F '^unopF'" := (UnopF F)
+  (at level 1) : cat_scope.
 
 (** The identity action from a category to its double opposite. *)
 
 (** 从范畴到其双重反范畴的恒等作用。 *)
 
 Program Definition ToDoubleOpF {C : Cat}
-  : Fct C (C ^op ^op)
+  : Fct C ((C^op)^op)
   :=
   {|F0 X := X
   ; F1 X Y f := f
@@ -328,7 +334,7 @@ Next Obligation. reflexivity. Qed.
 (** 从双重反范畴返回原范畴的恒等作用。 *)
 
 Program Definition FromDoubleOpF {C : Cat}
-  : Fct (C ^op ^op) C
+  : Fct ((C^op)^op) C
   :=
   {|F0 X := X
   ; F1 X Y f := f
@@ -351,7 +357,10 @@ Proof. intros X Y f. exists f. reflexivity. Defined.
 
 Definition to_double_op_essentially_surjective {C : Cat}
   : is_essentially_surjective (@ToDoubleOpF C).
-Proof. intro X. exists X. exact (@iso_refl (C^op^op) X). Defined.
+Proof.
+  intro X. exists X.
+  exact iso_refl.
+Defined.
 
 (** Removing double opposition is full with the identity preimage map. *)
 
@@ -367,4 +376,4 @@ Proof. intros X Y f. exists f. reflexivity. Defined.
 
 Definition from_double_op_essentially_surjective {C : Cat}
   : is_essentially_surjective (@FromDoubleOpF C).
-Proof. intro X. exists X. exact (@iso_refl C X). Defined.
+Proof. intro X. exists X. exact iso_refl. Defined.

@@ -14,8 +14,9 @@ Definition is_coproduct {C : Cat} (X Y S : @Ob C)
     (i : Hom X S) (j : Hom Y S)
   := @is_product (C^op) X Y S i j.
 
-Notation "S '⦂' '≅' X '⊔' Y 'with' i ',' j"
-  := (is_coproduct X Y S i j) (at level 50).
+Notation "S '⦂' '≅' X '⊔' Y 'with' i ',' j" := (is_coproduct X Y S i j)
+  (at level 50)
+  : cat_scope.
 
 (** Store only the selected products of the opposite category. *)
 
@@ -35,7 +36,8 @@ Definition Coprod {C : Cat} `{HC : !HasCoproduct C} (X Y : @Ob C)
   := @Prod (C^op) (@hasOpProduct C HC) X Y.
 
 Notation "X '⊔' Y" := (Coprod X Y)
-  (at level 41, right associativity) : ob_scope.
+  (at level 41, right associativity)
+  : ob_scope.
 
 (** The first injection is the opposite first projection. *)
 
@@ -70,7 +72,9 @@ Definition copair {C : Cat} `{HC : !HasCoproduct C} {X Y Z}
   : Hom (X ⊔ Y) Z
   := @pair (C^op) (@hasOpProduct C HC) X Y Z f g.
 
-Notation "'⦗' f ',' g '⦘'" := (copair f g) : hom_scope.
+Notation "'⦗' f ',' g '⦘'" := (copair f g)
+  (at level 0, format "⦗ f , g ⦘")
+  : hom_scope.
 
 (** ** Copairing with Chosen Coproducts
 
@@ -97,8 +101,8 @@ Proof. exact (@product_pair_unique (C^op) (@hasOpProduct C HC) X Y Z f g). Qed.
 (** 余配对保持两侧指定的 Hom 相等。 *)
 
 Global Instance coproduct_copair_proper {X Y Z}
-  : Proper (@HomEq[X, Z] ==> @HomEq[Y, Z] ==>
-      @HomEq[X ⊔ Y, Z]) (@copair C HC X Y Z).
+  : Proper (≈[X, Z] ==> ≈[Y, Z] ==>
+      ≈[X ⊔ Y, Z]) (@copair C HC X Y Z).
 Proof. exact (@product_pair_proper (C^op) (@hasOpProduct C HC) X Y Z). Qed.
 
 (** Copairing after the first injection recovers its first component. *)

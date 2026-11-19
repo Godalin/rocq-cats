@@ -111,7 +111,7 @@ Defined.
 (** 将任一谓词换为相等谓词，运输其实际蕴含因子，不比较证明记录。 *)
 
 Global Instance predicate_le_proper {X : @Ob C}
-  : Proper (@HomEq[X, Ω] ==> @HomEq[X, Ω] ==> iffT) predicate_le.
+  : Proper (≈[X, Ω] ==> ≈[X, Ω] ==> iffT) predicate_le.
 Proof.
   intros f f' Hf g g' Hg.
   pose (F := classified_sub_congr Hf).

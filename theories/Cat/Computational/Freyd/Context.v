@@ -78,7 +78,7 @@ Qed.
 (** 运输后的纯映射恢复选定值积映射。 *)
 
 Lemma freyd_context_pure {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
-  : freyd_context Z (fmap (FreydPureF F) f) ≈ fmap (FreydPureF F) (@id Z × f).
+  : freyd_context Z (fmap (FreydPureF F) f) ≈ fmap (FreydPureF F) (id[Z] × f).
 Proof.
   apply (iso_cancel_l (FreydTensorIso Z Y)).
   rewrite freyd_context_boundary. symmetry.
@@ -92,7 +92,7 @@ Qed.
 
 Lemma freyd_pure_right_boundary {X Y : @Ob C} (Z : @Ob C)
     (f : Hom X Y)
-  : (FreydTensorIso Y Z).1 ∘ fmap (FreydPureF F) (f × @id Z) ≈
+  : (FreydTensorIso Y Z).1 ∘ fmap (FreydPureF F) (f × id[Z]) ≈
       (@binoidal_r D SP X Y Z (fmap (FreydPureF F) f)) ∘ (FreydTensorIso X Z).1.
 Proof. exact (@freyd_map_right C K F X Y Z f). Qed.
 
@@ -102,8 +102,8 @@ Proof. exact (@freyd_map_right C K F X Y Z f). Qed.
 
 Lemma freyd_context_natural {X Y Z W : @Ob C}
     (f : (@Hom D) X Y) (h : Hom Z W)
-  : fmap (FreydPureF F) (h × @id Y) ∘ freyd_context Z f ≈
-      freyd_context W f ∘ fmap (FreydPureF F) (h × @id X).
+  : fmap (FreydPureF F) (h × id[Y]) ∘ freyd_context Z f ≈
+      freyd_context W f ∘ fmap (FreydPureF F) (h × id[X]).
 Proof.
   assert (Hc :
     (@binoidal_r D SP Z W Y (fmap (FreydPureF F) h)) ∘

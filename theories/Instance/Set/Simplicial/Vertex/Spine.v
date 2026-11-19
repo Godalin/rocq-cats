@@ -143,7 +143,7 @@ Lemma spine_restrict@{u p +} {X : SetC} {C : Cat}
     {T : Fct (EqGpd X) C} {m n : nat} (θ : (@Hom Δ) m n)
     (x : (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n)
   : ⌊Nᵥ(T)[θ]Δ x⌋Sp[T; m] ≈S
-      (vertex_chain_reindex_resp T θ)^↑S ⌊x⌋Sp[T; n].
+      ((vertex_chain_reindex_resp T θ)^↑S) ⌊x⌋Sp[T; n].
 Proof.
   destruct x as [F]. refine {|lower := _
                             |}.

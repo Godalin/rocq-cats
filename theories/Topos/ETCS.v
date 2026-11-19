@@ -78,9 +78,12 @@ Record ETCS
   }.
 
 Declare Scope etcs_scope.
+Delimit Scope etcs_scope with etcs.
 Open Scope etcs_scope.
 
-Notation "'∅'" := Init.
+Notation "'∅'" := Init
+  (at level 0)
+  : etcs_scope.
 
 Notation "'∈' X" := (Hom 1 X)
   (at level 35) : etcs_scope.

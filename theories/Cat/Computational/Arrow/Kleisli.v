@@ -79,7 +79,7 @@ Next Obligation.
     kleisli_context W f ∘K[M] return[M; h ⊗m id]).
   rewrite kleisli_comp_pure_l, kleisli_comp_pure_r.
   unfold kleisli_context.
-  rewrite <- comp_assoc, <- (strength_natural (hasStrength M) h (@id Y)),
+  rewrite <- comp_assoc, <- (strength_natural (hasStrength M) h (id[Y])),
     fct_id, !comp_assoc.
   apply comp_proper; [reflexivity |].
   transitivity (h ⊗m f).

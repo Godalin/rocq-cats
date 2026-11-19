@@ -42,7 +42,7 @@ Notation "'B(' M ')'" := (MonoidCat M) : cat_scope.
 Program Definition EndHasMonoid (C : Cat) (X : @Ob C)
   : HasMonoid (EndSemigroup C X)
   :=
-  {|mul_unit := @id X
+  {|mul_unit := id[X]
   ; isMonoid :=
       {|mul_unit_l := comp_id_l
       ; mul_unit_r := comp_id_r

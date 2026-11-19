@@ -56,11 +56,13 @@ Arguments HasCoendOfOpEnd {_ _ _} _.
 
 Definition CoendObj {C D : Cat} (F : Fct ((C^op) ×C C) D)
     `{HC : !HasCoend D F}
-  : @Ob D
+  : D
   := end[BifunctorOpF F].
 
 Arguments CoendObj {_ _} _ {_}.
-Notation "'coend[' F ']'" := (CoendObj F) : ob_scope.
+Notation "'coend[' F ']'" := (CoendObj F)
+  (at level 0, format "coend[ F ]")
+  : ob_scope.
 
 (** The chosen cowedge reads the stored opposite-end projections as injections. *)
 
@@ -72,7 +74,9 @@ Definition coend_cowedge {C D : Cat} (F : Fct ((C^op) ×C C) D)
   := CowedgeOfOpWedge πend[BifunctorOpF F].
 
 Arguments coend_cowedge {_ _} _ {_}.
-Notation "'ιcoend[' F ']'" := (coend_cowedge F) : hom_scope.
+Notation "'ιcoend[' F ']'" := (coend_cowedge F)
+  (at level 0, format "ιcoend[ F ]")
+  : hom_scope.
 
 (** Universality reuses the same witness without rebuilding mediators. *)
 
@@ -92,7 +96,9 @@ Definition coend_desc {C D : Cat} {F : Fct ((C^op) ×C C) D}
   : Hom (coend[F]) W
   := end⟨op_wedge κ⟩.
 
-Notation "'coend⟨' κ '⟩'" := (coend_desc κ) : hom_scope.
+Notation "'coend⟨' κ '⟩'" := (coend_desc κ)
+  (at level 0, format "coend⟨ κ ⟩")
+  : hom_scope.
 
 (** ** Descending from a Chosen Coend
 
@@ -135,7 +141,7 @@ Proof. exact (@end_η (C^op) (D^op) (BifunctorOpF F) _ W f). Qed.
 (** 下降保持余楔逐点相等。 *)
 
 Global Instance coend_desc_proper {W}
-  : Proper (CowedgeEq ==> @HomEq[coend[F], W]) (@coend_desc C D F HC W).
+  : Proper (CowedgeEq ==> ≈[coend[F], W]) (@coend_desc C D F HC W).
 Proof.
   intros κ μ H.
   exact (@end_lift_proper (C^op) (D^op) (BifunctorOpF F) _ W
@@ -181,7 +187,7 @@ Defined.
 
 Lemma coend_unique_β {C D : Cat} {F : Fct ((C^op) ×C C) D} {E K}
     {κ : Cowedge F E} {μ : Cowedge F K}
-    (Hκ : is_coend κ) (Hμ : is_coend μ) (X : @Ob C)
+    (Hκ : is_coend κ) (Hμ : is_coend μ) (X : C)
   : (coend_unique Hκ Hμ).1 ∘ κ X ≈ μ X.
 Proof. exact (end_unique_β Hμ Hκ X). Qed.
 
@@ -200,7 +206,7 @@ Definition coend_map {C D : Cat} {F G : Fct ((C^op) ×C C) D}
 (** 诱导 coend 映射具有指定的注入分量。 *)
 
 Lemma coend_map_β {C D : Cat} {F G : Fct ((C^op) ×C C) D}
-    `{HF : !HasCoend D F} `{HG : !HasCoend D G} (α : F ⇒ G) (X : @Ob C)
+    `{HF : !HasCoend D F} `{HG : !HasCoend D G} (α : F ⇒ G) (X : C)
   : coend_map α ∘ ιcoend[F] X ≈ ιcoend[G] X ∘ α (X, X).
 Proof. exact (end_map_β (bifunctor_op_nt α) X). Qed.
 
@@ -211,7 +217,7 @@ Proof. exact (end_map_β (bifunctor_op_nt α) X). Qed.
 Global Instance coend_map_proper {C D : Cat}
     {F G : Fct ((C^op) ×C C) D}
     `{HF : !HasCoend D F} `{HG : !HasCoend D G}
-  : Proper (NatEq ==> @HomEq[coend[F], coend[G]])
+  : Proper (NatEq ==> ≈[coend[F], coend[G]])
       (@coend_map C D F G HF HG).
 Proof.
   intros α β H.

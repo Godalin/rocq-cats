@@ -246,7 +246,7 @@ Local Existing Instance O.
 (** 结果自然性使每个提升都由配对运算的提升确定；配对运算即选定积上的恒等。 *)
 
 Lemma operations_lift_pair {X Y Z : @Ob C} (f : Hom (X × Y) Z)
-  : lift₂ᵒ[O; f] ≈ fmap O f ∘ lift₂ᵒ[O; (@id (X × Y))].
+  : lift₂ᵒ[O; f] ≈ fmap O f ∘ lift₂ᵒ[O; (id[X × Y])].
 Proof.
   pose proof (ops_post (IsApplicativeOps := operations_laws O) id f) as H.
   rewrite comp_id_r in H. symmetry. exact H.
@@ -260,14 +260,14 @@ Program Definition OperationsTensorN
   : (tensorF (@CartMonoidal C HT HP) ∘F (O ×F O)) ⇒
       (O ∘F tensorF (@CartMonoidal C HT HP))
   :=
-  {|nt p := lift₂ᵒ[O; (@id (fst p × snd p))]
+  {|nt p := lift₂ᵒ[O; (id[fst p × snd p])]
   |}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
   rewrite (@cartesian_tensor_map C HT HP _ _ _ _ (fmap O f) (fmap O g)),
     (@cartesian_tensor_map C HT HP _ _ _ _ f g).
   pose proof (ops_pre (IsApplicativeOps := operations_laws O)
-    (@id (Y1 × Y2)) f g) as H.
+    (id[Y1 × Y2]) f g) as H.
   cbn in H. rewrite comp_id_l in H.
   rewrite H, <- operations_lift_pair. reflexivity.
 Defined.
@@ -285,29 +285,29 @@ Program Definition OperationsLax
   ; lax_tensorN := OperationsTensorN
   |}.
 Next Obligation.
-  change (fmap O (π2 : Hom (1 × X) X) ∘ lift₂ᵒ[O; (@id (1 × X))] ∘
+  change (fmap O (π2 : Hom (1 × X) X) ∘ lift₂ᵒ[O; (id[1 × X])] ∘
     (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-      (pureᵒ[O] 1) (@id (O X))) ≈ π2).
+      (pureᵒ[O] 1) (id[O X])) ≈ π2).
   rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
   exact (ops_unit_l (IsApplicativeOps := operations_laws O) X).
 Defined.
 Next Obligation.
-  change (fmap O (π1 : Hom (X × 1) X) ∘ lift₂ᵒ[O; (@id (X × 1))] ∘
+  change (fmap O (π1 : Hom (X × 1) X) ∘ lift₂ᵒ[O; (id[X × 1])] ∘
     (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-      (@id (O X)) (pureᵒ[O] 1)) ≈ π1).
+      (id[O X]) (pureᵒ[O] 1)) ≈ π1).
   rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
   exact (ops_unit_r (IsApplicativeOps := operations_laws O) X).
 Defined.
 Next Obligation.
   change (fmap O (@product_assoc C HP X Y Z).1 ∘
-    lift₂ᵒ[O; (@id ((X × Y) × Z))] ∘
+    lift₂ᵒ[O; (id[(X × Y) × Z])] ∘
       (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-        lift₂ᵒ[O; (@id (X × Y))] (@id (O Z))) ≈
-    lift₂ᵒ[O; (@id (X × (Y × Z)))] ∘
+        lift₂ᵒ[O; (id[X × Y])] (id[O Z])) ≈
+    lift₂ᵒ[O; (id[X × (Y × Z)])] ∘
       (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
-        (@id (O X)) lift₂ᵒ[O; (@id (Y × Z))]) ∘
+        (id[O X]) lift₂ᵒ[O; (id[Y × Z])]) ∘
       (@product_assoc C HP (O X) (O Y) (O Z)).1).
   rewrite !cartesian_tensor_map.
   rewrite <- operations_lift_pair.
@@ -329,7 +329,7 @@ Program Definition OperationsA
 Next Obligation. reflexivity. Defined.
 Next Obligation.
   symmetry. pose proof (ops_pure (IsApplicativeOps := operations_laws O)
-    (@id (X × Y))) as H.
+    (id[X × Y])) as H.
   rewrite comp_id_r in H. exact H.
 Defined.
 

@@ -42,7 +42,7 @@ Program Definition ArrowHasBinoidal
 Next Obligation. exact (@fct_id _ _ (ContextF A Z) X). Defined.
 Next Obligation. exact (arrow_second_comp A g f Z). Defined.
 Next Obligation.
-  change (first[A; @id (A X); Z] ≈ id).
+  change (first[A; id[A X]; Z] ≈ id).
   rewrite <- (arrow_arr_id A X), arrow_first_arr,
     cross_id, fct_id. reflexivity.
 Defined.

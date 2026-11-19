@@ -34,14 +34,14 @@ Section ExponentialComparison.
 Context {C D : Cat} (F : Fct C D).
 Context `{PC : !HasProduct C} `{EC : !HasExponential PC}
     `{PD : !HasProduct D} `{ED : !HasExponential PD}.
-Context (preserves : ∀ X Y : @Ob C,
+Context (preserves : ∀ X Y : C,
     is_product (F X) (F Y) (F (X × Y)) (fmap F π1) (fmap F π2)).
 
 (** Curry the image evaluation after the inverse product comparison. *)
 
 (** 将像求值与逆积比较的复合柯里化。 *)
 
-Definition exp_cmp (X Y : @Ob C)
+Definition exp_cmp (X Y : C)
   : Hom (F (Y ^ X)) (F Y ^ F X)
   := ƛ (fmap F eval ∘ preserved_product_inv F preserves (Y ^ X) X).
 
@@ -49,7 +49,7 @@ Definition exp_cmp (X Y : @Ob C)
 
 (** 求值恢复运输后的求值映射。 *)
 
-Lemma exp_cmp_eval (X Y : @Ob C)
+Lemma exp_cmp_eval (X Y : C)
   : eval ∘ (exp_cmp X Y × id) ≈
       fmap F eval ∘ preserved_product_inv F preserves (Y ^ X) X.
 Proof. apply exp_β. Qed.
@@ -58,7 +58,7 @@ Proof. apply exp_β. Qed.
 
 (** 经过比较时，上下文替换与转置交换。 *)
 
-Lemma exp_cmp_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
+Lemma exp_cmp_curry {X Y Z : C} (f : Hom (Z × X) Y)
   : exp_cmp X Y ∘ fmap F (ƛ f) ≈
       ƛ (fmap F f ∘ preserved_product_inv F preserves Z X).
 Proof.
@@ -157,7 +157,7 @@ Context {C D : Cat} (F : Fct C D)
 
 (** 像求值与逆向积比较复合后转置。 *)
 
-Definition fct_exp_cmp (X Y : @Ob C)
+Definition fct_exp_cmp (X Y : C)
   : Hom (F (Y ^ X)) (F Y ^ F X)
   := exp_cmp F
     (fct_product (F := F)) X Y.
@@ -166,7 +166,7 @@ Definition fct_exp_cmp (X Y : @Ob C)
 
 (** 柯里化通过规范比较得到保持。 *)
 
-Lemma fct_curry {X Y Z : @Ob C} (f : Hom (Z × X) Y)
+Lemma fct_curry {X Y Z : C} (f : Hom (Z × X) Y)
   : fct_exp_cmp X Y ∘ fmap F (ƛ f) ≈
       ƛ (fmap F f ∘ fct_product_inv F Z X).
 Proof. apply exp_cmp_curry. Qed.
@@ -175,7 +175,7 @@ Proof. apply exp_cmp_curry. Qed.
 
 (** 求值在同一比较方形中得到保持。 *)
 
-Lemma fct_eval (X Y : @Ob C)
+Lemma fct_eval (X Y : C)
   : eval ∘ (fct_exp_cmp X Y × id) ≈
       fmap F eval ∘ fct_product_inv F (Y ^ X) X.
 Proof. apply exp_cmp_eval. Qed.

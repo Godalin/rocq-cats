@@ -97,7 +97,7 @@ Next Obligation.
   intros [[] v].
   change (fmap F (π2 : UnitS ×S Y →r Y)
     (fmap F ⟨@const_resp Y UnitS tt, id⟩ v) ≈S v).
-  transitivity (fmap F (@id Y) v).
+  transitivity (fmap F (id[Y]) v).
   - transitivity (fmap F ((π2 : UnitS ×S Y →r Y) ∘r
       ⟨@const_resp Y UnitS tt, id⟩) v).
     + symmetry. exact (@fct_comp SetCat SetCat F _ _ _ _ _ v).

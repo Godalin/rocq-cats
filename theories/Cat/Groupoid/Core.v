@@ -108,7 +108,7 @@ Proof. exact (inverse_unique f g f⁻¹ H (gpd_inv_r f)). Qed.
 (** 取逆保持箭头指定的相等。 *)
 
 Global Instance gpd_inv_proper {X Y : @Ob C}
-  : Proper (@HomEq[X, Y] ==> @HomEq[Y, X]) (@gpd_inv X Y).
+  : Proper (≈[X, Y] ==> ≈[Y, X]) (@gpd_inv X Y).
 Proof.
   intros f g H. apply gpd_inv_unique.
   rewrite <- H. apply gpd_inv_l.
@@ -119,7 +119,7 @@ Qed.
 (** 恒等箭头的逆仍是恒等箭头。 *)
 
 Lemma gpd_inv_id {X : @Ob C}
-  : (@id X)⁻¹ ≈ id.
+  : (id[X])⁻¹ ≈ id.
 Proof. symmetry. apply gpd_inv_unique. apply comp_id_l. Qed.
 
 (** Inversion is involutive up to the specified equality. *)
@@ -171,7 +171,7 @@ Notation "f '⁻¹'" := (gpd_inv f)
 (** 反范畴继承相同的逆并交换两条互逆定律；在反范畴中使用时显式启用此结构。 *)
 
 Program Definition op_IsGpd (C : Cat) `{HC : !IsGpd C}
-  : C^op ⦂ Gpd
+  : (C^op) ⦂ Gpd
   :=
   {|gpd_iso X Y f :=
       (@gpd_inv C HC Y X f; _)

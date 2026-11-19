@@ -107,7 +107,7 @@ ExpContraF Y     : Fct (C^op) C
 (Y ^-)           表示 ExpContraF Y
 ```
 
-反变截面直接使用通用的 `π1F`。固定参数对象得到的 `π2F (-^-) X`
+反变截面直接使用通用的 `AtRF`。固定参数对象得到的 `AtLF (-^-) X`
 与原有的 `(-^ X)` 通过 `exp_fixed_nat_iso X` 比较，分量均为恒等态射；
 这不要求函子记录或定律字段原生相等。原有 `ExpF` 与积－指数伴随接口保留。
 
@@ -331,7 +331,8 @@ C、D 的 hom 载体，相等见证宇宙分别容纳两边的相等见证；
 
 固定 X 后，`ProductRF X`（记号 `(-× X)`）与 `ExpF X`
 （记号 `(-^ X)`）的态射作用分别为 `σ × id` 和 `exp_map`。
-`ProductF` 还给出两个参数同时变化的积双函子。
+`ProductLF X`（记号 `(X ×-)`）固定左因子，态射作用为 `id × σ`。
+`ProductF` 给出两个参数同时变化的积双函子。
 `ProdExpAdj X` 将 `curry` / `uncurry` 实例化为通用伴随：
 
 ```text

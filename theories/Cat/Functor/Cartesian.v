@@ -58,7 +58,7 @@ Context {C D : Cat} (F : Fct C D)
 
 (** 像积与目标选定积之间具有规范同构。 *)
 
-Definition fct_product_iso (X Y : @Ob C)
+Definition fct_product_iso (X Y : C)
   : F (X × Y) ≅ (F X × F Y).
 Proof.
   exact (preserved_product_iso F (fct_product (F := F)) X Y).
@@ -68,7 +68,7 @@ Defined.
 
 (** 逆向比较是保持积的泛中介。 *)
 
-Definition fct_product_inv (X Y : @Ob C)
+Definition fct_product_inv (X Y : C)
   : Hom (F X × F Y) (F (X × Y))
   := preserved_product_inv F (fct_product (F := F)) X Y.
 
@@ -76,7 +76,7 @@ Definition fct_product_inv (X Y : @Ob C)
 
 (** 逆向比较的两个投影均满足计算方程。 *)
 
-Lemma fct_product_inv_β (X Y : @Ob C)
+Lemma fct_product_inv_β (X Y : C)
   : (fmap F π1 ∘ fct_product_inv X Y ≈ π1) ∧
     (fmap F π2 ∘ fct_product_inv X Y ≈ π2).
 Proof. apply preserved_product_inv_β. Qed.
@@ -85,7 +85,7 @@ Proof. apply preserved_product_inv_β. Qed.
 
 (** 配对通过积比较得到保持。 *)
 
-Lemma fct_pair {X Y Z : @Ob C} (f : Hom Z X) (g : Hom Z Y)
+Lemma fct_pair {X Y Z : C} (f : Hom Z X) (g : Hom Z Y)
   : fmap F ⟨f, g⟩ ≈ fct_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
 Proof. apply preserved_pair. Qed.
 
@@ -93,7 +93,7 @@ Proof. apply preserved_pair. Qed.
 
 (** 逆向比较在两个因子上自然。 *)
 
-Lemma fct_product_inv_natural {X Y X' Y' : @Ob C}
+Lemma fct_product_inv_natural {X Y X' Y' : C}
     (f : Hom X X') (g : Hom Y Y')
   : fmap F (f × g) ∘ fct_product_inv X Y ≈
       fct_product_inv X' Y' ∘ (fmap F f × fmap F g).
@@ -118,7 +118,7 @@ Program Definition IdF_IsCartF (C : Cat)
 (** 恒等函子的逆向积比较等于恒等箭头。 *)
 
 Lemma id_fct_product_inv (C : Cat) (TC : HasTerminal C)
-    (PC : HasProduct C) (X Y : @Ob C)
+    (PC : HasProduct C) (X Y : C)
   : @fct_product_inv C C (@IdF C) TC PC PC
       (IdF_IsCartF C TC PC) X Y ≈ id.
 Proof.
@@ -132,7 +132,7 @@ Qed.
 
 Definition cartesian_preserves_terminal {C D : Cat} (F : Fct C D)
     `{TC : !HasTerminal C} `{PC : !HasProduct C}
-    `{HF : !IsCartF F TC PC} {T : @Ob C} (HT : is_terminal T)
+    `{HF : !IsCartF F TC PC} {T : C} (HT : is_terminal T)
   : is_terminal (F T).
 Proof.
   pose (i := terminal_unique (@terminal_universal C TC) HT).
@@ -151,7 +151,7 @@ Defined.
 
 Definition cartesian_preserves_product {C D : Cat} (F : Fct C D)
     `{TC : !HasTerminal C} `{PC : !HasProduct C}
-    `{HF : !IsCartF F TC PC} {X Y P : @Ob C}
+    `{HF : !IsCartF F TC PC} {X Y P : C}
     {p : Hom P X} {q : Hom P Y} (HP : is_product X Y P p q)
   : is_product (F X) (F Y) (F P) (fmap F p) (fmap F q).
 Proof.
@@ -193,7 +193,7 @@ Lemma fct_product_inv_comp {C D E : Cat}
     `{TD : !HasTerminal D} `{PD : !HasProduct D}
     `{PE : !HasProduct E}
     `{HF : !IsCartF F TC PC} `{HG : !IsCartF G TD PD}
-    (X Y : @Ob C)
+    (X Y : C)
   : @fct_product_inv _ _ (G ∘F F) TC PC PE
       (CompF_IsCartF F G) X Y ≈
       fmap G (fct_product_inv F X Y) ∘ fct_product_inv G (F X) (F Y).

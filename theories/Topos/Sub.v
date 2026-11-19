@@ -84,8 +84,8 @@ Definition char {C : Cat} `{HT : !HasTerminal C}
                              ; sub_mono := m
                              |}).1.
 
-Notation Ω := SubOC.
-Notation χ := char.
+Abbreviation Ω := SubOC.
+Abbreviation χ := char.
 
 (** The characteristic arrow is uniquely determined by the classifying
     pullback. *)
@@ -168,7 +168,7 @@ Qed.
 (** 注册保相等性，使特征箭头可沿底层单态射相等重写。 *)
 
 Global Instance char_proper {X Y : C}
-  : Proper ((λ (m n : X ↣ Y), m ≈ n) ==> @HomEq[Y, Ω]) char.
+  : Proper ((λ (m n : X ↣ Y), m ≈ n) ==> ≈[Y, Ω]) char.
 Proof. intros m n H. exact (classifier_char_proper m n H). Qed.
 
 (** Equal characteristic arrows also give mutual factorizations, so they

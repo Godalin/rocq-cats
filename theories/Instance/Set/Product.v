@@ -17,7 +17,9 @@ Program Canonical ProdS (X Y : SetC)
   ; carrier_equiv := ProdEq [≈S] [≈S]
   |}.
 
-Infix "×S" := ProdS (at level 40).
+Infix "×S" := ProdS
+  (at level 40)
+  : set_scope.
 
 (** Chosen products with computational mediators, extracted from their
     universal property. Equality is pointwise setoid equivalence. *)

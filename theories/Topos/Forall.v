@@ -78,7 +78,7 @@ Context {C : Cat} `{HT : !HasTerminal C}
 (** 全称量化保持谓词的指定相等。 *)
 
 Global Instance forall_predicate_proper (A X : C)
-  : Proper (@HomEq[X × A, Ω] ==> @HomEq[X, Ω]) (forall_predicate A).
+  : Proper (≈[X × A, Ω] ==> ≈[X, Ω]) (forall_predicate A).
 Proof.
   intros f g H. unfold forall_predicate. rewrite H. reflexivity.
 Qed.

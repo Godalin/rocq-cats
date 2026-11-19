@@ -90,19 +90,25 @@ Export Utf8.
   format "'[ ' '[ ' ∀ x .. y ']' , '/' P ']'") : type_scope. *)
 
 Local Disable Notation "∃ x .. y , P".
-Notation "∃ x .. y , P" := (sigT (λ x, .. (sigT (λ y, P))..))
+Notation "∃ x .. y , P"
+  := (sigT (λ x, .. (sigT (λ y, P))..))
   (at level 10, x binder, y binder, P at level 200,
-  format "'[ ' '[ ' ∃  x .. y ']' , '/' P ']'") : type_scope.
+    format "'[ ' '[ ' ∃  x .. y ']' , '/' P ']'")
+  : type_scope.
 
 Notation "x ∨ y" := (sum x y)
-  (at level 85, right associativity, only parsing) : type_scope.
+  (at level 85, right associativity, only parsing)
+  : type_scope.
 Notation "x ∧ y" := (prod x y)
-  (at level 80, right associativity, only parsing) : type_scope.
+  (at level 80, right associativity, only parsing)
+  : type_scope.
 
 Notation "x ↔ y" := (iffT x y)
-  (at level 95, no associativity, only parsing): type_scope.
+  (at level 95, no associativity, only parsing)
+  : type_scope.
 Notation "¬ x" := (x → Empty_set)
-  (at level 75, right associativity) : type_scope.
+  (at level 75, right associativity)
+  : type_scope.
 
 Export SigTNotations.
 Export Notations.

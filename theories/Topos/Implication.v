@@ -70,7 +70,7 @@ Context {C : Cat} `{HT : !HasTerminal C}
 (** 蕴含对两个谓词的指定相等均保相等。 *)
 
 Global Instance implication_proper {X : C}
-  : Proper (@HomEq[X, Ω] ==> @HomEq[X, Ω] ==> @HomEq[X, Ω]) implication.
+  : Proper (≈[X, Ω] ==> ≈[X, Ω] ==> ≈[X, Ω]) implication.
 Proof.
   intros f f' Hf g g' Hg. unfold implication.
   apply comp_proper; [reflexivity | apply product_pair_proper; assumption].

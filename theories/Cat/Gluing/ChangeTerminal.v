@@ -50,7 +50,7 @@ Definition gluing_change_terminal_arrow
   : comma_arrow (GluingChangeF H K α (GluingTerminal F T)) ≈ α T.
 Proof.
   etransitivity; [apply gluing_change_arrow |].
-  change (α T ∘ fmap K (@id (F T)) ≈ α T).
+  change (α T ∘ fmap K (id[F T]) ≈ α T).
   rewrite (@fct_id D D' K), comp_id_r. reflexivity.
 Defined.
 

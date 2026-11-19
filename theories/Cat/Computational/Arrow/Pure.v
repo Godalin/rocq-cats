@@ -37,7 +37,7 @@ Next Obligation.
 Defined.
 Next Obligation. apply tensor_unit_l_natural. Defined.
 Next Obligation.
-  pose proof (tensor_assoc_natural (@id Z) (@id W) f) as H.
+  pose proof (tensor_assoc_natural (id[Z]) (id[W]) f) as H.
   rewrite tensor_map_id in H. exact H.
 Defined.
 
