@@ -59,7 +59,7 @@ Defined.
 Definition universal_element_arrow {X : @Ob C} {A : @Ob D}
     {η : (FreeHomF U X : Fct D SetCat@{u p _ _ _ _ _}) A}
     (Hη : η ⦂ Univ(FreeHomF U X))
-  : lower η ⦂ UnivArr(U).
+  : (lower η) ⦂ UnivArr(U).
 Proof.
   intros B f. destruct (Hη B {|lower := f|}) as [g Hg]. exists g.
   refine {|this := _

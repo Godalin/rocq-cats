@@ -18,7 +18,7 @@ Definition is_limit {J C : Cat} {D : Fct J C} {L : @Ob C} (κ : L ⇒Δ D)
   := ∀ X (μ : X ⇒Δ D), ∃ h : Hom X L, is_unique (λ h, κ ∘Cone h ≈N μ) h.
 
 Notation "κ '⦂' 'Lim(' D ')'" := (@is_limit _ _ D _ κ)
-  (at level 50, no associativity)
+  (at level 1, no associativity)
   : cat_scope.
 
 (** A selected apex and cone with its full limiting universal property. *)

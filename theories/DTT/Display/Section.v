@@ -75,7 +75,8 @@ End DisplayTerms.
 Notation "e '▸D[' P ']' s" := (display_term_conv_resp P e s)
   (at level 40, left associativity, format "e  ▸D[ P ]  s") : cat_scope.
 Notation "s '[' σ ']TmD[' P ']'" := (display_term_sub_resp P σ s)
-  (at level 8, left associativity, format "s [ σ ]TmD[ P ]") : cat_scope.
+  (at level 1, left associativity, format "s [ σ ]TmD[ P ]")
+  : cat_scope.
 
 (** ** Substitution Laws for Display Terms
 

@@ -203,7 +203,8 @@ Definition ReindexContextType {C : Cat} (T : Fct (C^op) FamCat)
   := (Γ; Y.2[σ]Ty[T]).
 
 Notation "Y '[' σ ']Ctx[' T ']'" := (ReindexContextType T Y σ)
-  (at level 8, left associativity, format "Y [ σ ]Ctx[ T ]") : cat_scope.
+  (at level 1, left associativity, format "Y [ σ ]Ctx[ T ]")
+  : cat_scope.
 
 (** ** Comprehension from Context Extensions
 
@@ -270,7 +271,7 @@ Defined.
 
 Definition context_type_reindex_cartesian (Y : ContextType T) {Γ : @Ob C}
     (σ : Hom Γ Y.1)
-  : context_type_reindex Y σ ⦂ Cart(CwFBaseF T)
+  : (context_type_reindex Y σ) ⦂ Cart(CwFBaseF T)
   := context_map_pullback_cartesian (context_type_reindex Y σ) (context_lift_pullback T σ Y.2).
 
 (** Enable the chosen lifts explicitly; their base identification is

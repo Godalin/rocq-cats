@@ -42,7 +42,8 @@ Next Obligation.
 Defined.
 
 Notation "F '^uncF'" := (UncurryF F)
-  (at level 35) : cat_scope.
+  (at level 1)
+  : cat_scope.
 
 (** Uncurry a natural transformation between functor-valued functors. *)
 
@@ -69,7 +70,8 @@ Next Obligation.
 Defined.
 
 Notation "α '^uncN'" := (UncurryN α)
-  (at level 35) : cat_scope.
+  (at level 1)
+  : cat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 

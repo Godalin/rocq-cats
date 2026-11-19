@@ -25,7 +25,8 @@ Arguments closure_sym {_ _ _ _} _.
 Arguments closure_trans {_ _ _ _ _} _ _.
 
 Notation "R '^≈'" := (EquivClos R)
-  (at level 20) : set_scope.
+  (at level 1)
+  : set_scope.
 
 (** The closure constructors supply the specified equivalence laws. *)
 

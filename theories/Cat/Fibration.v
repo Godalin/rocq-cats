@@ -18,8 +18,9 @@ Definition is_cartesian {E B : Cat} (P : Fct E B)
     → ∃ h : Hom Z X, is_unique (λ h : Hom Z X, fmap P h ≈ u ∧ f ∘ h ≈ g) h.
 
 Notation "f '⦂' 'Cart(' P ')'" := (is_cartesian P f)
-  (at level 50, no associativity,
-    format "f  ⦂  Cart( P )") : cat_scope.
+  (at level 1, no associativity,
+    format "f  ⦂  Cart( P )")
+  : cat_scope.
 
 (** The unique factor through a cartesian arrow over a specified base factor. *)
 
@@ -104,7 +105,7 @@ Defined.
 
 (** 每条恒等箭头都是笛卡尔的。 *)
 
-Definition cartesian_id {E B : Cat} (P : Fct E B) (X : @Ob E)
+Definition cartesian_id {E B : Cat} (P : Fct E B) (X : E)
   : (id[X]) ⦂ Cart(P).
 Proof.
   intros Z g u H. rewrite fct_id, comp_id_l in H.
@@ -215,13 +216,16 @@ Definition cartesian_unique {E B : Cat} {P : Fct E B}
 
 Class HasCartLift {E B : Cat} (P : Fct E B)
   :=
-  { CartLift {Y : @Ob E} {X : @Ob B} (f : Hom X (P Y)) : @Ob E
-  ; cartesian_lift_base {Y X} (f : Hom X (P Y)) : P (CartLift f) = X
-  ; cartesian_lift {Y X} (f : Hom X (P Y)) : Hom (CartLift f) Y
+  { CartLift {Y : E} {X : B} (f : Hom X (P Y)) : E
+  ; cartesian_lift_base {Y X} (f : Hom X (P Y))
+    : P (CartLift f) = X
+  ; cartesian_lift {Y X} (f : Hom X (P Y))
+    : Hom (CartLift f) Y
   ; cartesian_lift_comm {Y X} (f : Hom X (P Y))
-    : fmap P (cartesian_lift f) ≈ f ∘ eq_to_hom (cartesian_lift_base f)
+    : fmap P (cartesian_lift f)
+        ≈ f ∘ eq_to_hom (cartesian_lift_base f)
   ; cartesian_lift_universal {Y X} (f : Hom X (P Y))
-    : cartesian_lift f ⦂ Cart(P)
+    : (cartesian_lift f) ⦂ Cart(P)
   }.
 
 Arguments CartLift {_ _ _ _ _ _} _.

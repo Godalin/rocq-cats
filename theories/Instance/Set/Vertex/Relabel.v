@@ -141,4 +141,5 @@ Proof. exists e. intros i j f. apply vertex_rebase_square. Defined.
 End Relabel.
 
 Notation "T '⟦' p ';' f ';' q '⟧Ar'" := (vertex_rebase_resp T p q f)
-  (at level 8, left associativity) : hom_scope.
+  (at level 1, left associativity)
+  : hom_scope.

@@ -51,7 +51,7 @@ Definition free_unit (X : @Ob C)
 (** 选定始对象满足直接泛性质。 *)
 
 Definition free_universal (X : @Ob C)
-  : free_unit X ⦂ UnivArr(U)
+  : (free_unit X) ⦂ UnivArr(U)
   := structured_initial_universal U _
       (@initial_universal (X ↓[U]) (free_initial X)).
 
@@ -120,7 +120,7 @@ End FreeObjects.
 
 Program Definition FreeObjOfUniversal {C D : Cat} (U : Fct D C)
     (A : @Ob C → @Ob D) (η : ∀ X, Hom X (U (A X)))
-    (Hη : ∀ X, η X ⦂ UnivArr(U))
+    (Hη : ∀ X, (η X) ⦂ UnivArr(U))
   : HasFreeObj U
   :=
   {|free_initial X :=

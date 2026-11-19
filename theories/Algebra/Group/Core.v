@@ -79,7 +79,8 @@ Arguments GroupOfMonoid _ _ : clear implicits.
 (** 逆记号读取完整群保存的选择。 *)
 
 Notation "x '⁻¹'" := (@inv _ (hasGroup _) x)
-  (at level 9) : algebra_scope.
+  (at level 1)
+  : algebra_scope.
 
 (** Candidate inverse maps agree pointwise in the specified equality;
     neither their native functions nor their law witnesses are identified. *)

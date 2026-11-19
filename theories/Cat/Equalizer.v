@@ -14,10 +14,9 @@ Definition is_equalizer {C : Cat} {X Y : C}
     ∀ Q (q : Hom Q X), f ∘ q ≈ g ∘ q
       → ∃ h : Hom Q E, is_unique (λ h, e ∘ h ≈ q) h.
 
-#[warnings="-postfix-notation-not-level-1"]
 Notation "e '⦂' 'Eq(' f ',' g ')'"
   := (is_equalizer f g _ e)
-  (at level 50, no associativity)
+  (at level 1, no associativity)
   : cat_scope.
 
 (** Selected equalizers with their inclusions and universal properties. *)

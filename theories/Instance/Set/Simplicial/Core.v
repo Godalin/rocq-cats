@@ -125,7 +125,8 @@ Definition simplex_restrict@{u p +}
   := fmap X θ.
 
 Notation "X '[' θ ']Δ'" := (simplex_restrict (X := X) θ)
-  (at level 8, left associativity, format "X [ θ ]Δ") : hom_scope.
+  (at level 1, left associativity, format "X [ θ ]Δ")
+  : hom_scope.
 
 (** Restriction along the identity is the identity map. *)
 

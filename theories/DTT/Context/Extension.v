@@ -75,8 +75,11 @@ Defined.
 
 End ContextPairs.
 
-Notation "x '[' τ ']Pair[' T ',' A ']'" := (context_pair_sub_resp T A τ x)
-  (at level 8, left associativity, format "x [ τ ]Pair[ T ,  A ]") : cat_scope.
+Notation "x '[' τ ']Pair[' T ',' A ']'"
+  := (context_pair_sub_resp T A τ x)
+  (at level 1, left associativity,
+    format "x [ τ ]Pair[ T ,  A ]")
+  : cat_scope.
 
 (** ** Substitution of Context-Term Pairs
 

@@ -26,7 +26,7 @@ Record Nat {C D : Cat} (F G : Fct C D)
   (** [nt X] 是从 [F X] 到 [G X] 的分量。[:>] 强制转换使自然变换 [α]
       可直接作为分量族使用，记作 [α X]。 *)
 
-  { nt (X : @Ob C) :> (@Hom D) (F X) (G X)
+  { nt (X : C) :> (@Hom D) (F X) (G X)
 
   (** [nat_naturality] requires [α Y ∘ fmap F f ≈ fmap G f ∘ α X].
       Both sides go from [F X] to [G Y]: one first follows [F] along [f]
@@ -641,7 +641,8 @@ Next Obligation. symmetry.
 Qed.
 
 Notation "α '^opN'" := (OpN α)
-  (at level 35) : cat_scope.
+  (at level 1)
+  : cat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 

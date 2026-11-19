@@ -30,7 +30,7 @@ Context {C E : Cat} (P : Fct (C^op) SetCat)
     {R T : Fct E C} (S : Fct (ElementsCat P) E)
     (β : (R ∘F S) ≅N ElementsBaseF P) (π : T ⇒ R)
     (Hπ : is_comprehension π)
-    (HS : ∀ X Y (f : ElementMap P X Y), fmap S f ⦂ Cart(R)).
+    (HS : ∀ X Y (f : ElementMap P X Y), (fmap S f) ⦂ Cart(R)).
 
 (** Restrict the candidate source comprehension. Every element arrow is
     cartesian, and canonical element lifts supply the target choice; no

@@ -30,7 +30,8 @@ Definition context_lift {Γ Δ : @Ob C} (σ : Hom Δ Γ) (A : Ty T Γ)
 End ContextLiftMap.
 
 Notation "σ '^+[' T ',' A ']'" := (context_lift T σ A)
-  (at level 35, format "σ ^+[ T ,  A ]") : cat_scope.
+  (at level 1, format "σ ^+[ T ,  A ]")
+  : cat_scope.
 
 (** ** Substitution Lifts of Context Extensions
 

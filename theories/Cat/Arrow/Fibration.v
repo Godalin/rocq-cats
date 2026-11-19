@@ -122,7 +122,7 @@ Next Obligation. symmetry. apply pullback_comm. Defined.
 
 Definition arrow_reindex_cartesian (B : ArrowOb C) {X : @Ob C}
     (σ : Hom X (arrow_cod B))
-  : arrow_reindex B σ ⦂ Cart(ArrowCodF C)
+  : (arrow_reindex B σ) ⦂ Cart(ArrowCodF C)
   := arrow_pullback_cartesian (arrow_reindex B σ) pullback_universal.
 
 (** This choice is enabled explicitly, not registered by import. *)
@@ -142,7 +142,8 @@ Next Obligation. apply arrow_reindex_cartesian. Defined.
 End PullbackLifts.
 
 Notation "B '[' σ ']Arr'" := (ArrowReindexOb B σ)
-  (at level 8, left associativity, format "B [ σ ]Arr") : cat_scope.
+  (at level 1, left associativity, format "B [ σ ]Arr")
+  : cat_scope.
 
 (** ** From Chosen Cartesian Lifts to Chosen Pullbacks *)
 

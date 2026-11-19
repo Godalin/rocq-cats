@@ -380,7 +380,7 @@ End KanFilling.
 Definition vertex_kan_gpd_iff@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ↔
-      VtxCat T ⦂ Gpd.
+      (VtxCat T) ⦂ Gpd.
 Proof.
   split.
   - intros H. exact (@vertex_kan_IsGpd _ _ T H).

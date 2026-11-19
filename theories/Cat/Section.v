@@ -190,7 +190,8 @@ Defined.
 End PullbackSections.
 
 Notation "s '[' HP ']Sec'" := (section_of_pullback_resp HP s)
-  (at level 8, left associativity, format "s [ HP ]Sec") : cat_scope.
+  (at level 1, left associativity, format "s [ HP ]Sec")
+  : cat_scope.
 
 (** ** Uniqueness of a Lifted Section
 

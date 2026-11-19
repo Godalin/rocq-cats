@@ -73,7 +73,8 @@ Class IsCoskeletal@{u p +}
   }.
 
 Notation "X '⦂' 'Cosk[' k ']'" := (IsCoskeletal X k)
-  (at level 50, no associativity) : type_scope.
+  (at level 1, no associativity)
+  : type_scope.
 
 (** ** Respectful Coskeletal Filling
 

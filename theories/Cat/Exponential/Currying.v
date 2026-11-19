@@ -18,49 +18,59 @@ Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** 转置两个参数，保留从 [(Z × B) × A] 到 [Z × (A × B)] 的显式置换。 *)
 
-Definition exp_curry_twice {A B Y Z : @Ob C}
+Definition exp_curry_twice {A B Y Z : C}
     (f : Hom (Z × (A × B)) Y)
   : Hom Z ((Y ^ A) ^ B)
   := ƛ (ƛ (f ∘ (@product_exchange C HP Z B A).1)).
 
 Notation "'ƛ₂' f" := (exp_curry_twice f)
-  (at level 35) : hom_scope.
+  (at level 35)
+  : hom_scope.
 
 (** Evaluate two arguments and return them to the product order. *)
 
 (** 求值两个参数，并将其恢复到积的顺序。 *)
 
-Definition exp_uncurry_twice {A B Y Z : @Ob C}
+Definition exp_uncurry_twice {A B Y Z : C}
     (g : Hom Z ((Y ^ A) ^ B))
   : Hom (Z × (A × B)) Y
   := uncurry (uncurry g) ∘ (@product_exchange C HP Z B A).2.1.
 
 Notation "f '^♭₂'" := (exp_uncurry_twice f)
-  (at level 35) : hom_scope.
+  (at level 1)
+  : hom_scope.
 
 (** Iterated abstraction preserves specified arrow equality. *)
 
 (** 迭代抽象保持指定箭头相等。 *)
 
-Global Instance exp_curry_twice_proper {A B Y Z : @Ob C}
-  : Proper (≈[Z × (A × B), Y] ==>
-      ≈[Z, (Y ^ A) ^ B]) exp_curry_twice.
-Proof. intros f g H. unfold exp_curry_twice. rewrite H. reflexivity. Qed.
+Global Instance exp_curry_twice_proper {A B Y Z : C}
+  : Proper (≈[Z × (A × B), Y]
+        ==> ≈[Z, (Y ^ A) ^ B])
+      exp_curry_twice.
+Proof.
+  intros f g H. unfold exp_curry_twice.
+  rewrite H. reflexivity.
+Qed.
 
 (** Iterated evaluation preserves specified arrow equality. *)
 
 (** 迭代求值保持指定箭头相等。 *)
 
-Global Instance exp_uncurry_twice_proper {A B Y Z : @Ob C}
-  : Proper (≈[Z, (Y ^ A) ^ B] ==>
-      ≈[Z × (A × B), Y]) exp_uncurry_twice.
-Proof. intros f g H. unfold exp_uncurry_twice. rewrite H. reflexivity. Qed.
+Global Instance exp_uncurry_twice_proper {A B Y Z : C}
+  : Proper (≈[Z, (Y ^ A) ^ B]
+        ==> ≈[Z × (A × B), Y])
+      exp_uncurry_twice.
+Proof.
+  intros f g H. unfold exp_uncurry_twice.
+  rewrite H. reflexivity.
+Qed.
 
 (** Double evaluation cancels double abstraction. *)
 
 (** 双重求值消去双重抽象。 *)
 
-Lemma exp_curry_twice_β {A B Y Z : @Ob C}
+Lemma exp_curry_twice_β {A B Y Z : C}
     (f : Hom (Z × (A × B)) Y)
   : (ƛ₂ f)^♭₂ ≈ f.
 Proof.
@@ -73,7 +83,7 @@ Qed.
 
 (** 双重抽象消去双重求值。 *)
 
-Lemma exp_curry_twice_η {A B Y Z : @Ob C}
+Lemma exp_curry_twice_η {A B Y Z : C}
     (g : Hom Z ((Y ^ A) ^ B))
   : ƛ₂ (g^♭₂) ≈ g.
 Proof.
@@ -86,7 +96,7 @@ Qed.
 
 (** 双重求值检测迭代指数映射之间的等式。 *)
 
-Lemma exp_uncurry_twice_ext {A B Y Z : @Ob C}
+Lemma exp_uncurry_twice_ext {A B Y Z : C}
     (f g : Hom Z ((Y ^ A) ^ B)) (H : f^♭₂ ≈ g^♭₂)
   : f ≈ g.
 Proof.
@@ -98,7 +108,7 @@ Qed.
 
 (** 双重求值与上下文变换交换。 *)
 
-Lemma exp_uncurry_twice_comp {A B Y Z W : @Ob C}
+Lemma exp_uncurry_twice_comp {A B Y Z W : C}
     (g : Hom Z ((Y ^ A) ^ B)) (σ : Hom W Z)
   : (g ∘ σ)^♭₂ ≈ g^♭₂ ∘ (σ × id).
 Proof.
@@ -111,7 +121,7 @@ Qed.
 
 (** 将两个指数参数展平为一个积参数。 *)
 
-Definition exp_flatten {A B Y Z : @Ob C}
+Definition exp_flatten {A B Y Z : C}
     (g : Hom Z ((Y ^ A) ^ B))
   : Hom Z (Y ^ (A × B))
   := ƛ (g^♭₂).
@@ -120,7 +130,7 @@ Definition exp_flatten {A B Y Z : @Ob C}
 
 (** 将积参数展开为两个指数参数。 *)
 
-Definition exp_expand {A B Y Z : @Ob C}
+Definition exp_expand {A B Y Z : C}
     (g : Hom Z (Y ^ (A × B)))
   : Hom Z ((Y ^ A) ^ B)
   := ƛ₂ (uncurry g).
@@ -129,7 +139,7 @@ Definition exp_expand {A B Y Z : @Ob C}
 
 (** 展平保持 Hom 相等。 *)
 
-Global Instance exp_flatten_proper {A B Y Z : @Ob C}
+Global Instance exp_flatten_proper {A B Y Z : C}
   : Proper (≈[Z, (Y ^ A) ^ B] ==> ≈[Z, Y ^ (A × B)])
       exp_flatten.
 Proof. intros f g H. unfold exp_flatten. rewrite H. reflexivity. Qed.
@@ -138,7 +148,7 @@ Proof. intros f g H. unfold exp_flatten. rewrite H. reflexivity. Qed.
 
 (** 展开保持 Hom 相等。 *)
 
-Global Instance exp_expand_proper {A B Y Z : @Ob C}
+Global Instance exp_expand_proper {A B Y Z : C}
   : Proper (≈[Z, Y ^ (A × B)] ==> ≈[Z, (Y ^ A) ^ B])
       exp_expand.
 Proof. intros f g H. unfold exp_expand. rewrite H. reflexivity. Qed.
@@ -147,7 +157,7 @@ Proof. intros f g H. unfold exp_expand. rewrite H. reflexivity. Qed.
 
 (** 展平后展开恢复原箭头。 *)
 
-Lemma exp_flatten_β {A B Y Z : @Ob C}
+Lemma exp_flatten_β {A B Y Z : C}
     (g : Hom Z ((Y ^ A) ^ B))
   : exp_expand (exp_flatten g) ≈ g.
 Proof.
@@ -159,7 +169,7 @@ Qed.
 
 (** 展开后展平恢复原箭头。 *)
 
-Lemma exp_flatten_η {A B Y Z : @Ob C}
+Lemma exp_flatten_η {A B Y Z : C}
     (g : Hom Z (Y ^ (A × B)))
   : exp_flatten (exp_expand g) ≈ g.
 Proof.
@@ -171,7 +181,7 @@ Qed.
 
 (** 展平在上下文上自然。 *)
 
-Lemma exp_flatten_comp {A B Y Z W : @Ob C}
+Lemma exp_flatten_comp {A B Y Z W : C}
     (g : Hom Z ((Y ^ A) ^ B)) (σ : Hom W Z)
   : exp_flatten (g ∘ σ) ≈ exp_flatten g ∘ σ.
 Proof.
@@ -183,7 +193,7 @@ Qed.
 
 (** 展开在上下文上自然。 *)
 
-Lemma exp_expand_comp {A B Y Z W : @Ob C}
+Lemma exp_expand_comp {A B Y Z W : C}
     (g : Hom Z (Y ^ (A × B))) (σ : Hom W Z)
   : exp_expand (g ∘ σ) ≈ exp_expand g ∘ σ.
 Proof.
@@ -199,7 +209,7 @@ Qed.
 
 (** 互逆的自然 Hom 操作给出迭代指数同构，并保留显式可计算箭头。 *)
 
-Definition exp_iterated_iso (A B Y : @Ob C)
+Definition exp_iterated_iso (A B Y : C)
   : ((Y ^ A) ^ B) ≅ (Y ^ (A × B)).
 Proof.
   exists (exp_flatten id), (exp_expand id).
@@ -214,7 +224,7 @@ Defined.
 
 (** 规范同构在每个 Hom 广集上实现展平。 *)
 
-Lemma exp_iterated_comp {A B Y Z : @Ob C}
+Lemma exp_iterated_comp {A B Y Z : C}
     (g : Hom Z ((Y ^ A) ^ B))
   : (exp_iterated_iso A B Y).1 ∘ g ≈ exp_flatten g.
 Proof. cbn. rewrite <- exp_flatten_comp, comp_id_l. reflexivity. Qed.
@@ -223,7 +233,7 @@ Proof. cbn. rewrite <- exp_flatten_comp, comp_id_l. reflexivity. Qed.
 
 (** 迭代比较将双重抽象送到通常抽象。 *)
 
-Lemma exp_iterated_curry {A B Y Z : @Ob C}
+Lemma exp_iterated_curry {A B Y Z : C}
     (f : Hom (Z × (A × B)) Y)
   : (exp_iterated_iso A B Y).1 ∘ (ƛ₂ f) ≈ ƛ f.
 Proof.
@@ -235,11 +245,10 @@ Qed.
 
 (** 展平与结果对象上的映射交换。 *)
 
-Lemma exp_flatten_map {A B Y Y' Z : @Ob C}
+Lemma exp_flatten_map {A B Y Y' Z : C}
     (f : Hom Y Y') (g : Hom Z ((Y ^ A) ^ B))
-  : exp_flatten
-      (exp_map (X := B) (exp_map (X := A) f) ∘ g) ≈
-      exp_map (X := A × B) f ∘ exp_flatten g.
+  : exp_flatten (exp_map (X := B) (exp_map (X := A) f) ∘ g)
+      ≈ exp_map (X := A × B) f ∘ exp_flatten g.
 Proof.
   unfold exp_flatten, exp_uncurry_twice.
   rewrite <- exp_curry_comp_l. apply exp_curry_proper.
@@ -250,7 +259,7 @@ Qed.
 
 (** 从迭代指数到积参数指数的自然变换。 *)
 
-Program Definition ExpIteratedN (A B : @Ob C)
+Program Definition ExpIteratedN (A B : C)
   : ((-^ B) ∘F (-^ A)) ⇒ (-^ (A × B))
   :=
   {|nt Y := (exp_iterated_iso A B Y).1
@@ -269,7 +278,7 @@ Qed.
 
 (** 迭代柯里化在结果对象上为自然同构。 *)
 
-Definition exp_iterated_nat_iso (A B : @Ob C)
+Definition exp_iterated_nat_iso (A B : C)
   : ((-^ B) ∘F (-^ A)) ≅N (-^ (A × B))
   := (ExpIteratedN A B; λ Y, (exp_iterated_iso A B Y).2).
 
@@ -278,4 +287,5 @@ End IteratedCurrying.
 Notation "'ƛ₂' f" := (exp_curry_twice f)
   (at level 35) : hom_scope.
 Notation "f '^♭₂'" := (exp_uncurry_twice f)
-  (at level 35) : hom_scope.
+  (at level 1)
+  : hom_scope.

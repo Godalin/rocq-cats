@@ -74,7 +74,7 @@ Program Definition fully_faithful_IsGpd {C D : Cat}
 (** 目标为群胚的函子范畴也是群胚，逆直接复用已有的逐分量逆自然变换。 *)
 
 Program Definition FctCat_IsGpd (C D : Cat) `{HD : !IsGpd D}
-  : FctCat C D ⦂ Gpd
+  : (FctCat C D) ⦂ Gpd
   :=
   {|gpd_iso F G α :=
       nat_iso_is_iso α (λ X, gpd_iso (α X))

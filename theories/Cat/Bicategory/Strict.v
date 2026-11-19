@@ -120,7 +120,8 @@ Definition cell2_transport {X Y} {f f' g g' : Cell1 X Y}
   := cmp X Y g g' q ∘₂ α ∘₂ cmp X Y f' f (symmetry p).
 
 Local Notation "α '⟦' p ',' q '⟧₂'" := (cell2_transport p q α)
-  (at level 8, left associativity) : bicat_scope.
+  (at level 1, left associativity)
+  : bicat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
@@ -235,4 +236,5 @@ Qed.
 End StrictTwoCat.
 
 Notation "α '⟦' p ',' q '⟧₂'" := (cell2_transport p q α)
-  (at level 8, left associativity) : bicat_scope.
+  (at level 1, left associativity)
+  : bicat_scope.

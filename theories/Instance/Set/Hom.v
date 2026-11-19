@@ -82,7 +82,9 @@ Program Definition nt_comp_pre {C : Cat} {X Y : @Ob C} (f : Hom X Y)
   |}.
 Next Obligation. intros h. simpl. apply comp_assoc. Qed.
 
-Notation "f ^*N" := (nt_comp_pre f) (at level 35) : cat_scope.
+Notation "f ^*N" := (nt_comp_pre f)
+  (at level 1)
+  : cat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
@@ -121,7 +123,9 @@ Program Definition nt_comp_post {C : Cat} {X Y : @Ob C} (f : Hom X Y)
   |}.
 Next Obligation. intros h. simpl. symmetry. apply comp_assoc. Qed.
 
-Notation "f _*N" := (nt_comp_post f) (at level 35) : cat_scope.
+Notation "f _*N" := (nt_comp_post f)
+  (at level 1)
+  : cat_scope.
 
 (** The operation respects the specified equivalences of its arguments. *)
 

@@ -104,7 +104,7 @@ Inductive TmEq@{b e +} {B : Type@{b}}
     | tm_eq_function_β {Γ A U} (t : Tm (Γ ▻ A) U) (u : Tm Γ A)
         : TmEq ((ƛ t) · u) t[u/]
     | tm_eq_function_η {Γ A U} (t : Tm Γ (A ⇒ U))
-        : TmEq (ƛ (t⟨wkRen⟩ · # var_zero)) t.
+        : TmEq (ƛ (t⟨wkRen⟩ · (# var_zero))) t.
 
 Infix "≈βη" := TmEq (at level 50, no associativity) : stlc_tm_scope.
 

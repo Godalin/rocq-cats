@@ -171,7 +171,7 @@ Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
 
 Definition generator_unit_universal {G : Graph} {C : Cat}
     (D : G →G UnderlyingGraph C)
-  : GenUnit D ⦂ UnivArr(RestrictGenF G C).
+  : (GenUnit D) ⦂ UnivArr(RestrictGenF G C).
 Proof.
   intros F α. exists (GenExtendN α).
   refine {|this := _

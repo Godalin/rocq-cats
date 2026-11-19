@@ -262,8 +262,10 @@ Program Definition fam_map_reindex_comp {X Y Z : SetC}
   |}.
 Next Obligation. apply transpS_witness_independent. Defined.
 
-Notation "A '⟨' f ',' g '⟩Fam'" := (fam_map_reindex_comp f g A)
-  (at level 8, left associativity, format "A ⟨ f ,  g ⟩Fam") : cat_scope.
+Notation "A '⟨' f ',' g '⟩Fam'"
+  := (fam_map_reindex_comp f g A)
+  (at level 1, left associativity, format "A ⟨ f ,  g ⟩Fam")
+  : cat_scope.
 
 (** The comparison between iterated and composite family reindexing is
     invertible. *)
@@ -323,7 +325,8 @@ Next Obligation.
 Defined.
 
 Notation "A '⟦' H '⟧Fam'" := (fam_map_reindex_equiv H A)
-  (at level 8, left associativity, format "A ⟦ H ⟧Fam") : cat_scope.
+  (at level 1, left associativity, format "A ⟦ H ⟧Fam")
+  : cat_scope.
 
 (** Transport along equality of base maps gives an invertible family map. *)
 

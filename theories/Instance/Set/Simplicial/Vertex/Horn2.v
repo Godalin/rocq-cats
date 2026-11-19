@@ -397,7 +397,7 @@ Proof. change (id ∘ fst p ≈ fst p). apply comp_id_l. Defined.
 
 Definition VtxCat_IsGpd {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C) `{HC : !IsGpd C}
-  : VtxCat T ⦂ Gpd
+  : (VtxCat T) ⦂ Gpd
   := @fully_faithful_IsGpd (VtxCat T) C (InducedInclusionF X T)
       (induced_inclusion_fully_faithful X T) HC.
 

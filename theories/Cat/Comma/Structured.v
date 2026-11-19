@@ -21,7 +21,8 @@ Definition StructuredArrow {C D : Cat} (U : Fct D C) (X : @Ob C)
   := ConstF (CodiscreteCat unit) X ↓C U.
 
 Notation "X '↓[' U ']'" := (StructuredArrow U X)
-  (at level 40, no associativity) : cat_scope.
+  (at level 1, no associativity)
+  : cat_scope.
 
 (** Package a candidate arrow with the unique left object. *)
 
@@ -66,8 +67,10 @@ Definition is_universal_arrow {C D : Cat} (U : Fct D C)
   := ∀ B (f : Hom X (U B)), ∃ g : Hom A B,
       is_unique (λ g, fmap U g ∘ η ≈ f) g.
 
-Notation "η '⦂' 'UnivArr(' U ')'" := (is_universal_arrow U η)
-  (at level 50, no associativity) : cat_scope.
+Notation "η '⦂' 'UnivArr(' U ')'"
+  := (is_universal_arrow U η)
+  (at level 1, no associativity)
+  : cat_scope.
 
 (** Initiality of any structured-arrow object supplies the direct property;
     the representative of the singleton left object is immaterial. *)
@@ -77,7 +80,7 @@ Notation "η '⦂' 'UnivArr(' U ')'" := (is_universal_arrow U η)
 Definition structured_initial_universal {C D : Cat} (U : Fct D C)
     {X : @Ob C} (Z : @Ob (X ↓[U]))
     (HZ : @is_initial (X ↓[U]) Z)
-  : comma_arrow Z ⦂ UnivArr(U).
+  : (comma_arrow Z) ⦂ UnivArr(U).
 Proof.
   intros B f. destruct (HZ (StructuredOb U f)) as [h Hh].
   exists (comma_right h). refine {|this := _

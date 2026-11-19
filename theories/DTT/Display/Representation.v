@@ -196,7 +196,7 @@ Defined.
 (** 对每个替换与项配对，泛配对具有唯一中介，即透明的显示配对。 *)
 
 Definition display_pair_universal {Γ : @Ob C} (A : P Γ)
-  : display_generic_pair A ⦂ Univ(ContextPairF (DisplayTyTmF P) A).
+  : (display_generic_pair A) ⦂ Univ(ContextPairF (DisplayTyTmF P) A).
 Proof.
   intros Δ x. exists (display_pair_resp A Δ x).
   refine {|this := _

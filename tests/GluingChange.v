@@ -90,7 +90,7 @@ Definition independent_gluing_cartesian {X Y : Gluing F} (h : Hom X Y)
       (fmap K (comma_arrow X)) (fmap K (comma_left h)))
     (Hi : is_iso (α (comma_right_ob X)))
     (Hj : is_mono (α (comma_right_ob Y)))
-  : fmap (GluingChangeF H K α) h ⦂ Cart(GluingRightF F')
+  : (fmap (GluingChangeF H K α) h) ⦂ Cart(GluingRightF F')
   := gluing_change_pullback_cartesian H K α h HP Hi Hj.
 
 End IndependentChange.
@@ -163,7 +163,7 @@ Definition reversed_gluing_cartesian {X Y : Gluing F} (h : Hom X Y)
       (fmap K (comma_arrow X)) (fmap K (comma_left h)))
     (Hi : is_iso (α (comma_right_ob X)))
     (Hj : is_mono (α (comma_right_ob Y)))
-  : fmap (GluingChangeF H K α) h ⦂ Cart(GluingRightF F')
+  : (fmap (GluingChangeF H K α) h) ⦂ Cart(GluingRightF F')
   := gluing_change_pullback_cartesian H K α h HP Hi Hj.
 
 End ReversedChange.
@@ -290,8 +290,8 @@ Example mono_boundary_target_not_iso
 (** 实际像箭头只用这些局部输入即为笛卡尔。 *)
 
 Definition monic_changed_cartesian
-  : fmap (GluingChangeF (@IdF ArrowShape) (@IdF SetCat) MonoBoundaryN)
-      unit_gluing_step ⦂ Cart(GluingRightF MonoModelF)
+  : (fmap (GluingChangeF (@IdF ArrowShape) (@IdF SetCat) MonoBoundaryN)
+      unit_gluing_step) ⦂ Cart(GluingRightF MonoModelF)
   := gluing_change_pullback_cartesian IdF IdF MonoBoundaryN
       unit_gluing_step
       (gluing_cartesian_pullback UnitModelF unit_gluing_step
@@ -368,8 +368,8 @@ Next Obligation. intros x. exact tt. Defined.
 (** 选择真的锥无法经常假边分解。 *)
 
 Example arbitrary_change_not_cartesian
-  : ¬ (fmap (GluingChangeF (@IdF ArrowShape) (@IdF SetCat)
-      CollapseBoundaryN) unit_gluing_step ⦂ Cart(GluingRightF CollapseModelF)).
+  : ¬ ((fmap (GluingChangeF (@IdF ArrowShape) (@IdF SetCat)
+      CollapseBoundaryN) unit_gluing_step) ⦂ Cart(GluingRightF CollapseModelF)).
 Proof.
   intro Hc.
   pose (HP := gluing_cartesian_pullback CollapseModelF
@@ -427,7 +427,7 @@ Definition TaggedChangeF
 (** 对此锥的恒等保持性应用同构推论。 *)
 
 Definition tagged_changed_cartesian
-  : fmap TaggedChangeF tagged_reindex_lift ⦂ Cart(GluingRightF (@IdF SetCat))
+  : (fmap TaggedChangeF tagged_reindex_lift) ⦂ Cart(GluingRightF (@IdF SetCat))
   := gluing_change_cartesian_iso IdF IdF TaggedBoundaryN tagged_reindex_lift
       tagged_boundary_iso (λ HP, HP) tagged_reindex_cartesian.
 

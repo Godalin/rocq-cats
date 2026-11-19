@@ -15,7 +15,7 @@ Definition is_coequalizer {C : Cat} {X Y : @Ob C} (f g : Hom X Y)
   := @is_equalizer (C^op) Y X f g Q q.
 
 Notation "q '⦂' 'Coeq(' f ',' g ')'" := (is_coequalizer f g _ q)
-  (at level 50, no associativity)
+  (at level 1, no associativity)
   : cat_scope.
 
 (** Store only the chosen equalizers of the opposite category. *)

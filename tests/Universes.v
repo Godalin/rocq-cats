@@ -1335,10 +1335,10 @@ Definition high_eq_universal_mediator
 Definition low_eq_universal_mediator
   := @context_extension_universal_mediator D U.
 Definition high_eq_display_universal {Γ : @Ob C} (A : P Γ)
-  : @display_generic_pair C P HD Γ A ⦂ Univ(ContextPairF T A)
+  : (@display_generic_pair C P HD Γ A) ⦂ Univ(ContextPairF T A)
   := @display_pair_universal C P HD Γ A.
 Definition low_eq_display_universal {Γ : @Ob D} (A : Q Γ)
-  : @display_generic_pair D Q HE Γ A ⦂ Univ(ContextPairF U A)
+  : (@display_generic_pair D Q HE Γ A) ⦂ Univ(ContextPairF U A)
   := @display_pair_universal D Q HE Γ A.
 Definition high_eq_display_lifted {Γ : @Ob C} (A : P Γ)
   : Display P A ⦂ Rep↑ ContextPairF T A
@@ -1606,7 +1606,7 @@ Definition mixed_groupoid_product
   := ProdCat_IsGpd C D.
 
 Definition low_eq_fct_groupoid
-  : FctCat C D ⦂ Gpd
+  : (FctCat C D) ⦂ Gpd
   := FctCat_IsGpd C D.
 End GroupoidLevels.
 
@@ -2304,7 +2304,7 @@ Context (P T : Fct E B) (Q : Fct D B) (S : Fct D E)
     (β : (P ∘F S) ≅N Q) (π : T ⇒ P)
     (Hπ : is_comprehension π)
     (HS : ∀ X Y (f : (@Hom D) X Y),
-      f ⦂ Cart(Q) → fmap S f ⦂ Cart(P)) (HQ : HasCartLift Q).
+      f ⦂ Cart(Q) → (fmap S f) ⦂ Cart(P)) (HQ : HasCartLift Q).
 Definition high_eq_restricted_projection
   : (T ∘F S) ⇒ Q
   := ComprehensionRestrictionN S β π.
@@ -2323,7 +2323,7 @@ Context (P' T' : Fct D B') (Q' : Fct E B') (S' : Fct E D)
     (β' : (P' ∘F S') ≅N Q') (π' : T' ⇒ P')
     (Hπ' : is_comprehension π')
     (HS' : ∀ X Y (f : (@Hom E) X Y),
-      f ⦂ Cart(Q') → fmap S' f ⦂ Cart(P')) (HQ' : HasCartLift Q').
+      f ⦂ Cart(Q') → (fmap S' f) ⦂ Cart(P')) (HQ' : HasCartLift Q').
 Definition low_eq_restricted_projection
   : (T' ∘F S') ⇒ Q'
   := ComprehensionRestrictionN S' β' π'.
@@ -2365,7 +2365,7 @@ Context (C : Cat@{o h p l l}) (D : Cat@{o p h l l})
 Context (P T : Fct E C) (S : Fct (ElementsCat A) E)
     (β : (P ∘F S) ≅N ElementsBaseF A)
     (π : T ⇒ P) (Hπ : is_comprehension π)
-    (HS : ∀ X Y (f : ElementMap A X Y), fmap S f ⦂ Cart(P)).
+    (HS : ∀ X Y (f : ElementMap A X Y), (fmap S f) ⦂ Cart(P)).
 Definition high_eq_interpreted_comprehension
   : Comprehension (ElementsBaseF A)
   := InterpretedElementsComprehension A S β π Hπ HS.
@@ -2382,7 +2382,7 @@ Definition high_eq_interpreted_comparison
 Context (P' T' : Fct E' D) (S' : Fct (ElementsCat A') E')
     (β' : (P' ∘F S') ≅N ElementsBaseF A')
     (π' : T' ⇒ P') (Hπ' : is_comprehension π')
-    (HS' : ∀ X Y (f : ElementMap A' X Y), fmap S' f ⦂ Cart(P')).
+    (HS' : ∀ X Y (f : ElementMap A' X Y), (fmap S' f) ⦂ Cart(P')).
 Definition low_eq_interpreted_comprehension
   : Comprehension (ElementsBaseF A')
   := InterpretedElementsComprehension A' S' β' π' Hπ' HS'.

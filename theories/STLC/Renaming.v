@@ -130,7 +130,9 @@ Definition ren_lift {B : Type} {Γ Δ : Ctx B} {A : Ty B} (ρ : Ren Δ Γ)
 
 Notation "'idRen'" := ren_id : stlc_ren_scope.
 Notation "'wkRen'" := ren_weaken : stlc_ren_scope.
-Notation "ρ '^↑Ren'" := (ren_lift ρ) (at level 35) : stlc_ren_scope.
+Notation "ρ '^↑Ren'" := (ren_lift ρ)
+  (at level 1)
+  : stlc_ren_scope.
 
 (** Composition preserves pointwise equality of both renamings. *)
 
@@ -211,7 +213,8 @@ Fixpoint rename {B : Type} {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   end ρ.
 
 Notation "t '⟨' ρ '⟩'" := (rename t ρ)
-  (at level 8, left associativity) : stlc_tm_scope.
+  (at level 1, left associativity)
+  : stlc_tm_scope.
 
 (** Term renaming depends only on the pointwise assignment. *)
 

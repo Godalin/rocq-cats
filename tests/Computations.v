@@ -412,7 +412,7 @@ Definition T
   := MonoidObjF BoolS_Monoid.
 
 Local Instance chosen_groupoid
-  : VtxCat T ⦂ Gpd
+  : (VtxCat T) ⦂ Gpd
   := VtxCat_IsGpd T (HC := BoolGpd_IsGpd).
 
 Example local_horn2_dual_computes
