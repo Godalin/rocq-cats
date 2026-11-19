@@ -28,7 +28,7 @@ Proof.
                    ; that := _
                    |}.
   - intros [].
-  - intros k _. exact (@that _ _ _ _ _ Hh k I).
+  - intros k _. exact (that Hh k I).
 Defined.
 
 (** The apex of an empty-diagram limit is terminal. *)
@@ -42,7 +42,7 @@ Proof.
   exists h. refine {|this := I
                    ; that := _
                    |}.
-  intros k _. apply (@that _ _ _ _ _ Hh). intros [].
+  intros k _. apply (that Hh). intros [].
 Defined.
 
 (** Terminality is equivalent to the empty-diagram limiting property. *)

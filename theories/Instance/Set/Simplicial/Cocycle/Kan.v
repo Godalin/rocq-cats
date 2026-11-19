@@ -169,7 +169,7 @@ Program Definition cocycle_higher_HasFillers (n : nat)
   {|horn_fill h := ((cocycle_higher_horn_universal n i h).1; _)
   |}.
 Next Obligation.
-  exact (@this _ _ _ _ _ (cocycle_higher_horn_universal n i h).2).
+  exact (this (cocycle_higher_horn_universal n i h).2).
 Defined.
 
 End MonoidFillers.
@@ -214,7 +214,7 @@ Proof.
       (face[fin_first; fin_first⁺⁺⁺; H3] h)).
     destruct (Cocycle123Solution c3 c1 c2) as [v Hv].
     exists {|lower := TetrahedronTwoCocycle c3 c1 v c2
-      (@this _ _ _ _ _ Hv)
+      (this Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
@@ -244,7 +244,7 @@ Proof.
       (face[fin_first⁺; fin_first⁺⁺⁺; H3] h)).
     destruct (Cocycle023Solution c3 c0 c2) as [v Hv].
     exists {|lower := TetrahedronTwoCocycle c3 v c0 c2
-      (@this _ _ _ _ _ Hv)
+      (this Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
@@ -274,7 +274,7 @@ Proof.
       (face[fin_first⁺⁺; fin_first⁺⁺⁺; H3] h)).
     destruct (Cocycle013Solution c3 c1 c0) as [v Hv].
     exists {|lower := TetrahedronTwoCocycle c3 c1 c0 v
-      (@this _ _ _ _ _ Hv)
+      (this Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
@@ -304,7 +304,7 @@ Proof.
       (face[fin_first⁺⁺⁺; fin_first⁺⁺; H2] h)).
     destruct (Cocycle012Solution c1 c0 c2) as [v Hv].
     exists {|lower := TetrahedronTwoCocycle v c1 c0 c2
-      (@this _ _ _ _ _ Hv)
+      (this Hv)
       |}.
     refine (snd (@horn_filler_faces_iff
       (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})

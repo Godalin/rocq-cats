@@ -134,7 +134,7 @@ Lemma pointwise_pullback_map_β1 {i j : J} (f : Hom i j)
   : pb1 (α j) (β j) ∘ pointwise_pullback_map f ≈
       fmap F f ∘ pb1 (α i) (β i).
 Proof.
-  exact (fst (@this _ _ _ _ _ (pullback_mediator_unique
+  exact (fst (this (pullback_mediator_unique
     (pointwise_pullback_map_square f)))).
 Qed.
 
@@ -146,7 +146,7 @@ Lemma pointwise_pullback_map_β2 {i j : J} (f : Hom i j)
   : pb2 (α j) (β j) ∘ pointwise_pullback_map f ≈
       fmap G f ∘ pb2 (α i) (β i).
 Proof.
-  exact (snd (@this _ _ _ _ _ (pullback_mediator_unique
+  exact (snd (this (pullback_mediator_unique
     (pointwise_pullback_map_square f)))).
 Qed.
 

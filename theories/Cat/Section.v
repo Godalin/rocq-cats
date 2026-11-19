@@ -120,7 +120,7 @@ Program Definition section_of_pullback_factor@{s +} (h : Hom Δ E)
   : SectionOfS@{s _ _ _ _} q
   := ((snd HP Δ id h H).1; _).
 Next Obligation.
-  exact (fst (@this _ _ _ _ _ (snd HP Δ id h H).2)).
+  exact (fst (this (snd HP Δ id h H).2)).
 Defined.
 
 (** The factored section recovers the supplied arrow along the top edge. *)
@@ -130,7 +130,7 @@ Defined.
 Definition section_of_pullback_factor_β (h : Hom Δ E)
     (H : σ ∘ id ≈ p ∘ h)
   : l ∘ (section_of_pullback_factor h H).1 ≈ h
-  := snd (@this _ _ _ _ _ (snd HP Δ id h H).2).
+  := snd (this (snd HP Δ id h H).2).
 
 (** The top edge determines this section, independently of cone witnesses. *)
 

@@ -83,9 +83,9 @@ Proof.
                    ; that := _
                    |}.
   - apply (fst (context_pair_data_iff A _ _ σ t h)).
-    exact (@this _ _ _ _ _ Hh).
+    exact (this Hh).
   - intros k Hk.
-    apply (@that _ _ _ _ _ Hh).
+    apply (that Hh).
     exact (snd (context_pair_data_iff A _ _ σ t k) Hk).
 Defined.
 
@@ -104,8 +104,8 @@ Proof.
                    ; that := _
                    |}.
   - exact (snd (context_pair_data_iff A u.1 u.2 σ t h)
-      (@this _ _ _ _ _ Hh)).
-  - intros k Hk. apply (@that _ _ _ _ _ Hh).
+      (this Hh)).
+  - intros k Hk. apply (that Hh).
     exact (fst (context_pair_data_iff A u.1 u.2 σ t k) Hk).
 Defined.
 

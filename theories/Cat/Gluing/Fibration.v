@@ -89,7 +89,7 @@ Proof.
     + exact H.
   - intros k [Hbase Hcomp].
     assert (Hk : fmap (GluingDiagramF F) k ≈ a).
-    { apply (that _ _ (cartesian_factor_unique HA
+    { apply (that (cartesian_factor_unique HA
         (fmap (GluingDiagramF F) g) (fmap F u) Himage)).
       split.
       - change (fmap F (comma_right k) ≈ fmap F u).
@@ -154,7 +154,7 @@ Proof.
       |}; [exact k | exact id | exact square]) : (@Hom (Gluing F)) Z X)).
     assert (Hl : fmap (GluingRightF F) l ≈ id ∧ f ∘ l ≈ g).
     { split; [reflexivity |]. split; [exact H2 | apply comp_id_r]. }
-    exact (fst (that _ _ (cartesian_factor_unique Hf g id Hbase) l Hl)).
+    exact (fst (that (cartesian_factor_unique Hf g id Hbase) l Hl)).
 Defined.
 
 (** This equivalence is candidate-level and needs no chosen pullbacks. *)

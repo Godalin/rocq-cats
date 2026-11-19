@@ -269,7 +269,7 @@ Proof. exact (context_extension_universal A Δ σ t).2. Defined.
 Definition context_pair_β1 {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
     (t : Tm T Δ A[σ]Ty[T])
   : context_proj A ∘ context_pair A σ t ≈ σ
-  := (@this _ _ _ _ _ (context_pair_universal A σ t)).1.
+  := (this (context_pair_universal A σ t)).1.
 
 (** The generic variable after pairing recovers the supplied term after type
     conversion. *)
@@ -281,7 +281,7 @@ Theorem context_pair_β2 {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
   : ty_sub_comm T A (context_proj A) (context_pair A σ t)
       (context_pair_β1 A σ t) ▸[T]
         (context_var A)[context_pair A σ t]Tm[T] ≈S t.
-Proof. exact (@this _ _ _ _ _ (context_pair_universal A σ t)).2. Qed.
+Proof. exact (this (context_pair_universal A σ t)).2. Qed.
 
 (** Any map satisfying both pairing equations equals the selected pairing. *)
 
@@ -291,7 +291,7 @@ Theorem context_pair_unique {Γ Δ : @Ob C} (A : Ty T Γ) (σ : Hom Δ Γ)
     (t : Tm T Δ A[σ]Ty[T]) (h : Hom Δ (Ext A))
   : is_context_pair A (context_proj A) (context_var A) σ t h
     → h ≈ context_pair A σ t.
-Proof. exact (@that _ _ _ _ _ (context_pair_universal A σ t) h). Qed.
+Proof. exact (that (context_pair_universal A σ t) h). Qed.
 
 (** Every map to an extension is reconstructed by its projected substitution
     and variable. *)

@@ -91,8 +91,8 @@ Proof.
   refine {|this := _
           ; that := _
           |}.
-  - symmetry. exact (@this _ _ _ _ _ (GroupMulRSolution s (p ⋅ q)).2).
-  - intros r H. apply (@that _ _ _ _ _ (GroupMulRSolution s (p ⋅ q)).2 r).
+  - symmetry. exact (this (GroupMulRSolution s (p ⋅ q)).2).
+  - intros r H. apply (that (GroupMulRSolution s (p ⋅ q)).2 r).
     symmetry. exact H.
 Defined.
 
@@ -108,8 +108,8 @@ Proof.
   refine {|this := _
           ; that := _
           |}.
-  - symmetry. exact (@this _ _ _ _ _ (GroupMulLSolution r (p ⋅ q)).2).
-  - intros s H. apply (@that _ _ _ _ _ (GroupMulLSolution r (p ⋅ q)).2 s).
+  - symmetry. exact (this (GroupMulLSolution r (p ⋅ q)).2).
+  - intros s H. apply (that (GroupMulLSolution r (p ⋅ q)).2 s).
     symmetry. exact H.
 Defined.
 

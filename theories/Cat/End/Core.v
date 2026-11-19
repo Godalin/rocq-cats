@@ -99,7 +99,7 @@ Proof. exact (end_universal F W κ).2. Defined.
 
 Theorem end_β {W} (κ : Wedge F W)
   : πend[F] ∘Wedge end⟨κ⟩ ≈W κ.
-Proof. exact (@this _ _ _ _ _ (end_lift_unique κ)). Qed.
+Proof. exact (this (end_lift_unique κ)). Qed.
 
 (** A map is recovered from its composites with all end projections. *)
 
@@ -149,11 +149,11 @@ Definition end_terminal {C D : Cat} {F : Fct ((C^op) ×C C) D} {E}
   : @is_terminal (WedgeCat F) (E; κ).
 Proof.
   intros [W μ]. destruct (Hκ W μ) as [f Hf].
-  exists (f; @this _ _ _ _ _ Hf).
+  exists (f; this Hf).
   refine {|this := I
          ; that := _
          |}. intros [g Hg] _.
-  exact (@that _ _ _ _ _ Hf g Hg).
+  exact (that Hf g Hg).
 Defined.
 
 (** Terminality recovers the same Type-valued universal property. *)
@@ -168,7 +168,7 @@ Proof.
   exists f.1. refine {|this := f.2
                      ; that := _
                      |}.
-  intros g Hg. exact (@that _ _ _ _ _ Hf (g; Hg) I).
+  intros g Hg. exact (that Hf (g; Hg) I).
 Defined.
 
 (** The characterization reuses the ordinary terminal-object theory. *)

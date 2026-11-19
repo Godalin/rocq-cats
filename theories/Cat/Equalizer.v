@@ -89,7 +89,7 @@ Proof. exact (snd equalizer_universal Q q H).2. Qed.
 Theorem equalizer_β {X Y Q : C} {f g : Hom X Y}
     (q : Hom Q X) (H : f ∘ q ≈ g ∘ q)
   : ιeq[f, g] ∘ eq⟨q,H⟩ ≈ q.
-Proof. exact (@this _ _ _ _ _ (equalizer_mediator_unique q H)). Qed.
+Proof. exact (this (equalizer_mediator_unique q H)). Qed.
 
 (** Equal mediating data need no equality between their commutativity
     witnesses. *)

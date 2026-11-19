@@ -69,7 +69,7 @@ Context {X Y : @Ob C} (m : X ↣ Y).
 (** 选定方形不能证明任意候选都分类给定单态射。 *)
 
 Fail Definition arbitrary_candidate_unique (c : Hom Y Ω) : c ≈ χ m :=
-  that _ _ (classifier_char_unique (m := m)) c (this _ _ (classifier_char_unique (m := m))).
+  that (classifier_char_unique (m := m)) c (this (classifier_char_unique (m := m))).
 
 End Classifier.
 

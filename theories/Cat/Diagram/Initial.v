@@ -26,5 +26,5 @@ Program Definition InitialCone {J C : Cat} {j : @Ob J}
 Next Obligation.
   rewrite comp_id_r, <- fct_comp.
   apply fct_fmap_proper. symmetry.
-  exact (@that _ _ _ _ _ (Hj Y).2 _ I).
+  exact (that (Hj Y).2 _ I).
 Defined.

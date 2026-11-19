@@ -25,7 +25,7 @@ Proof.
                    ; that := _
                    |}.
   - apply (cone_restrict_reflects HQ).
-    exact (@this _ _ _ _ _ Hh).
+    exact (this Hh).
   - intros g Hg. apply Hh. intros i. exact (Hg (Q i)).
 Defined.
 
@@ -44,7 +44,7 @@ Proof.
                    ; that := _
                    |}.
   - transitivity (ExtendCone HF HQ μ ∘Δ Q).
-    + intros i. exact (@this _ _ _ _ _ Hh (Q i)).
+    + intros i. exact (this Hh (Q i)).
     + apply cone_restrict_extend.
   - intros g Hg. apply Hh. apply (cone_restrict_reflects HQ).
     transitivity μ; [exact Hg | symmetry; apply cone_restrict_extend].
@@ -78,7 +78,7 @@ Proof.
                    |}.
   - intros i. change (ExtendCone HF HQ κ (Q i) ∘ h ≈ μ i).
     rewrite (cone_restrict_extend HF HQ κ i).
-    exact (@this _ _ _ _ _ Hh i).
+    exact (this Hh i).
   - intros g Hg. apply Hh. intros i.
     change (κ i ∘ g ≈ μ i).
     rewrite <- (cone_restrict_extend HF HQ κ i). exact (Hg i).

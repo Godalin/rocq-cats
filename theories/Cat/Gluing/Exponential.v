@@ -300,7 +300,7 @@ Program Definition gluing_curry {Z : @Ob (Gluing F)}
   ; comma_right := ƛ (comma_right f)
   |}.
 Next Obligation.
-  symmetry. exact (snd (@this _ _ _ _ _ (gluing_curry_left_unique f))).
+  symmetry. exact (snd (this (gluing_curry_left_unique f))).
 Defined.
 
 (** Evaluation after transposition recovers both components of the square. *)
@@ -318,7 +318,7 @@ Proof.
     change ((eval ∘ (p × id)) ∘ (gluing_curry_left f × id) ≈ comma_left f).
     rewrite comp_assoc, <- cross_comp, comp_id_l.
     change (uncurry (p ∘ gluing_curry_left f) ≈ comma_left f).
-    rewrite (fst (@this _ _ _ _ _ (gluing_curry_left_unique f))).
+    rewrite (fst (this (gluing_curry_left_unique f))).
     apply exp_β.
   - change (comma_right gluing_eval ∘
       comma_right (gluing_curry f × id) ≈ comma_right f).

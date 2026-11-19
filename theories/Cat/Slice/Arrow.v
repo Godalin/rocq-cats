@@ -155,7 +155,7 @@ Theorem slice_reindex_map_cartesian_factor {X Y : @Ob C} (f : Hom X Y)
       (slice_to_square h ∘Arr slice_reindex_square f A) id
       (transitivity (comp_id_r f) (symmetry (comp_id_l f))).
 Proof.
-  apply (that _ _ (cartesian_factor_unique (slice_reindex_square_cartesian f B)
+  apply (that (cartesian_factor_unique (slice_reindex_square_cartesian f B)
     (slice_to_square h ∘Arr slice_reindex_square f A) id
     (transitivity (comp_id_r f) (symmetry (comp_id_l f))))).
   split; [reflexivity | exact (nat_naturality (SliceReindexSquareN f) h)].
@@ -198,7 +198,7 @@ Theorem slice_reindex_id_cartesian_factor {X : @Ob C} (A : SliceOb C X)
     cartesian_factor (slice_reindex_square_cartesian id A) (arrow_id A^Arr) id
       (comp_id_l id).
 Proof.
-  apply (that _ _ (cartesian_factor_unique (slice_reindex_square_cartesian id A)
+  apply (that (cartesian_factor_unique (slice_reindex_square_cartesian id A)
     (arrow_id A^Arr) id (comp_id_l id))).
   split; [reflexivity | apply slice_reindex_square_id].
 Qed.
@@ -214,7 +214,7 @@ Theorem slice_reindex_comp_cartesian_factor {X Y Z : @Ob C}
       (slice_reindex_square f A ∘Arr slice_reindex_square g A[f]C) id
       (comp_id_r (f ∘ g)).
 Proof.
-  apply (that _ _ (cartesian_factor_unique (slice_reindex_square_cartesian (f ∘ g) A)
+  apply (that (cartesian_factor_unique (slice_reindex_square_cartesian (f ∘ g) A)
     (slice_reindex_square f A ∘Arr slice_reindex_square g A[f]C) id
     (comp_id_r (f ∘ g)))).
   split; [reflexivity | apply slice_reindex_square_comp].

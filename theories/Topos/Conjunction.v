@@ -43,10 +43,10 @@ Definition classifier_char_factor {X Y Q : @Ob C}
     (m : X ↣ Y) (f : Hom Q Y)
   : χ m ∘ f ≈ truth ∘ ! ↔ is_factored_through m f.
 Proof.
-  pose (HP := this _ _ (classifier_char_unique (m := m))). split.
+  pose (HP := this (classifier_char_unique (m := m))). split.
   - intros Hf.
     pose (u := snd HP Q f ! Hf).
-    exists u.1. symmetry. exact (fst (this _ _ u.2)).
+    exists u.1. symmetry. exact (fst (this u.2)).
   - intros [h Hh]. rewrite Hh, <- comp_assoc, (fst HP), comp_assoc.
     rewrite (term_η (! ∘ h)). reflexivity.
 Defined.

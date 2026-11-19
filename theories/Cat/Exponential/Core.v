@@ -109,7 +109,7 @@ Proof. intros f g Hfg. unfold uncurry. rewrite Hfg. reflexivity. Qed.
 
 Theorem exp_β {X Y Z : C} (f : Hom (Z × X) Y)
   : uncurry (ƛ f) ≈ f.
-Proof. exact (@this _ _ _ _ _ (exp_curry_unique f)). Qed.
+Proof. exact (this (exp_curry_unique f)). Qed.
 
 (** Currying after uncurrying recovers the exponential-valued map. *)
 

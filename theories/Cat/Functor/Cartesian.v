@@ -160,10 +160,10 @@ Proof.
     (fmap F i.1; fct_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
   - change (fmap F p ∘ fmap F i.1 ≈ fmap F π1).
     rewrite <- fct_comp. apply fct_fmap_proper.
-    exact (fst (@this _ _ _ _ _ (HP _ π1 π2).2)).
+    exact (fst (this (HP _ π1 π2).2)).
   - change (fmap F q ∘ fmap F i.1 ≈ fmap F π2).
     rewrite <- fct_comp. apply fct_fmap_proper.
-    exact (snd (@this _ _ _ _ _ (HP _ π1 π2).2)).
+    exact (snd (this (HP _ π1 π2).2)).
 Defined.
 
 (** Cartesian functors compose relative to their named source structures. *)

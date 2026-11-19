@@ -80,7 +80,7 @@ Proof. exact (limit_universal D X κ).2. Defined.
 
 Theorem limit_β {X} (κ : X ⇒Δ D)
   : πlim[D] ∘Cone lim⟨κ⟩ ≈N κ.
-Proof. exact (@this _ _ _ _ _ (limit_lift_unique κ)). Qed.
+Proof. exact (this (limit_lift_unique κ)). Qed.
 
 (** The mediator of a cone obtained by precomposition recovers that map. *)
 
@@ -123,11 +123,11 @@ Definition limit_terminal {J C : Cat} {D : Fct J C} {L : @Ob C}
   : @is_terminal (ConeCat D) (L; κ).
 Proof.
   intros [X μ]. destruct (Hκ X μ) as [f Hf].
-  exists (f; @this _ _ _ _ _ Hf).
+  exists (f; this Hf).
   refine {|this := I
          ; that := _
          |}. intros [g Hg] _.
-  exact (@that _ _ _ _ _ Hf g Hg).
+  exact (that Hf g Hg).
 Defined.
 
 (** The candidate terminal object property gives a limit of the empty diagram. *)
@@ -142,7 +142,7 @@ Proof.
   exists f.1. refine {|this := f.2
                      ; that := _
                      |}.
-  intros g Hg. exact (@that _ _ _ _ _ Hf (g; Hg) I).
+  intros g Hg. exact (that Hf (g; Hg) I).
 Defined.
 
 (** A cone is limiting exactly when it is terminal in its cone category. *)

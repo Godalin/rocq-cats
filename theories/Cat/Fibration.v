@@ -53,7 +53,7 @@ Theorem cartesian_factor_base {E B : Cat} {P : Fct E B}
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
   : fmap P (cartesian_factor Hf g u H) ≈ u.
-Proof. exact (fst (this _ _ (cartesian_factor_unique Hf g u H))). Qed.
+Proof. exact (fst (this (cartesian_factor_unique Hf g u H))). Qed.
 
 (** Compatibility with composition for [cartesian_factor]. *)
 
@@ -64,7 +64,7 @@ Theorem cartesian_factor_comp {E B : Cat} {P : Fct E B}
     {Z : @Ob E} (g : Hom Z Y) (u : Hom (P Z) (P X))
     (H : fmap P f ∘ u ≈ fmap P g)
   : f ∘ cartesian_factor Hf g u H ≈ g.
-Proof. exact (snd (this _ _ (cartesian_factor_unique Hf g u H))). Qed.
+Proof. exact (snd (this (cartesian_factor_unique Hf g u H))). Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
@@ -77,7 +77,7 @@ Theorem cartesian_factor_proper {E B : Cat} {P : Fct E B}
   : g ≈ g' → u ≈ u'
     → cartesian_factor Hf g u H ≈ cartesian_factor Hf g' u' H'.
 Proof.
-  intros Hg Hu. apply (that _ _ (cartesian_factor_unique Hf g' u' H')). split.
+  intros Hg Hu. apply (that (cartesian_factor_unique Hf g' u' H')). split.
   - transitivity u; [apply cartesian_factor_base | exact Hu].
   - transitivity g; [apply cartesian_factor_comp | exact Hg].
 Qed.
