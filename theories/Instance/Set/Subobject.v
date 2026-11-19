@@ -1,9 +1,10 @@
-From Cats Require Import Cat.Core.
-From Cats Require Import Cat.Pullback.
-From Cats Require Import Cat.Morphism.
-From Cats Require Import Cat.Subobject.
-From Cats Require Import Cat.Functor.Core.
-From Cats Require Import Instance.Set.Core.
+From Cats Require Export Cat.Subobject.
+From Cats Require Import
+  Cat.Core
+  Cat.Pullback
+  Cat.Morphism
+  Cat.Functor.Core
+  Instance.Set.Core.
 
 
 
@@ -31,38 +32,6 @@ Program Canonical SubObjS (Z : C)
   {|carrier := Sub Z
   |}.
 
-(** Pull back the displayed subobject along the base map.
-
-<<
-sX ------> sY
-    v          v
-    |          |
-    |          s
-    |          |
-    v          v
-    X ---f---> Y
->>
-*)
-
-(** 将 Y 的子对象 s 沿 f 拉回，得到 X 的子对象及其指向 s 的比较映射。 *)
-
-Program Definition Sub_fmap {X Y : C}
-    (f : Hom X Y) (sY : Sub Y)
-  : Sub X
-  :=
-  {|sub := Pb f sY
-  ; sub_mono := PullbackMono pullback_universal
-  |}.
-
-(** The chosen inverse-image subobject has the selected pullback as its
-    domain. *)
-
-(** 选定逆像子对象以指定拉回作为定义域。 *)
-
-Proposition Sub_fmap_Ob {X Y : C} {f : Hom X Y} {r : Sub Y}
-  : sub (Sub_fmap f r) = X ×[f,r] (sub r).
-Proof. simpl. auto. Qed.
-
 (** Subobject inverse image is a contravariant setoid-valued functor. *)
 
 (** 子对象逆像是反变广集值函子。 *)
@@ -75,16 +44,9 @@ Program Canonical SubF
       {|func := Sub_fmap f
       |}
   |}.
-Next Obligation. intros r s [[rs Hrs] [sr Hsr]].
-  split.
-  - assert (Hcone : f ∘ pb1 f r ≈ s ∘ (rs ∘ pb2 f r)).
-    { rewrite <- comp_assoc, <- Hrs. apply pullback_comm. }
-    exists (pb (pb1 f r) (rs ∘ pb2 f r) Hcone).
-    simpl. symmetry. apply pb_β1.
-  - assert (Hcone : f ∘ pb1 f s ≈ r ∘ (sr ∘ pb2 f s)).
-    { rewrite <- comp_assoc, <- Hsr. apply pullback_comm. }
-    exists (pb (pb1 f s) (sr ∘ pb2 f s) Hcone).
-    simpl. symmetry. apply pb_β1.
+Next Obligation.
+  intros r s [Hrs Hsr].
+  split; apply sub_inverse_le; assumption.
 Qed.
 Next Obligation.
   intros f g Hfg s. change ((@Hom C) Y X) in f, g. simpl. split.

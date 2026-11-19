@@ -1,9 +1,9 @@
+From Cats Require Export Cat.Subobject.
 From Cats Require Import
   Cat.Core
   Cat.Morphism
   Cat.Pullback
-  Cat.SubobjectIntersection
-  Instance.Set.Subobject.
+  Cat.SubobjectIntersection.
 
 (** * Inverse Images Preserve Finite Intersections
 
@@ -19,43 +19,6 @@ From Cats Require Import
 
 Section InverseImage.
 Context {C : Cat} `{HP : !HasPullback C}.
-
-(** A factor through an inverse image is exactly a factor of the composite
-    through the original subobject. Both directions keep their arrows. *)
-
-(** 经过逆像分解，恰好等价于复合后经过原子对象分解；两个方向均保留箭头。 *)
-
-Definition sub_inverse_factor {X Y} (f : Hom X Y)
-    (r : Sub X) (s : Sub Y)
-  : r ≲Sub Sub_fmap f s ↔ is_factored_through s (f ∘ r).
-Proof.
-  split.
-  - intros [k Hk].
-    change (r ≈ pb1 f s ∘ k) in Hk.
-    exists (pb2 f s ∘ k).
-    rewrite Hk, <- comp_assoc, pullback_comm, comp_assoc.
-    reflexivity.
-  - intros [k Hk]. exists (pb r k Hk).
-    simpl. symmetry. apply pb_β1.
-Defined.
-
-(** Inverse image preserves subobject inclusion with its chosen
-    factorization witness. *)
-
-(** 逆像保持子对象包含关系及其选定分解见证。 *)
-
-Definition sub_inverse_le {X Y} (f : Hom X Y) {s t : Sub Y}
-    (H : s ≲Sub t)
-  : Sub_fmap f s ≲Sub Sub_fmap f t.
-Proof.
-  apply (snd (sub_inverse_factor f (Sub_fmap f s) t)).
-  destruct H as [a Ha]. exists (a ∘ pb2 f s).
-  simpl. transitivity (s ∘ pb2 f s).
-  - apply pullback_comm.
-  - transitivity ((t ∘ a) ∘ pb2 f s).
-    + apply comp_proper; [exact Ha | reflexivity].
-    + apply comp_assoc.
-Defined.
 
 (** The largest subobject pulls back to the largest subobject, up to the
     specified mutual-factorization equality. *)
