@@ -3329,17 +3329,23 @@ the comparison factor and requires neither a classifier nor chosen
 pullbacks. The generic `pullback_congr` in
 [Cat.Pullback](../theories/Cat/Pullback.v) transports a square along specified
 arrow equalities while retaining its universal mediators.
-[Sub_fmap](../theories/Instance/Set/Subobject.v) now uses `PullbackMono`
-instead of proving monicity again; its domain and underlying arrow remain
-the chosen pullback and first projection by conversion.
+[Sub_fmap](../theories/Cat/Subobject.v) uses `PullbackMono`. Its domain and
+underlying arrow are the chosen pullback and its first projection by
+conversion. The same module proves the factorization correspondence
+`sub_inverse_factor` and monotonicity `sub_inverse_le`. The setoid-valued
+[SubF](../theories/Instance/Set/Subobject.v) applies monotonicity in both
+directions to preserve mutual factorization.
 
 [Cat.Subobject](../theories/Cat/Subobject.v) 对给定方形证明 `pullback_mono`，
 并以 `PullbackMono` 将第一投影组合成单态射。`pullback_subobject` 通过已有
 `pullback_iso` 构造将方形传到等价子对象表示，保留比较因子；不要求分类子或
 选定拉回。[Cat.Pullback](../theories/Cat/Pullback.v) 中的通用
 `pullback_congr` 沿指定箭头相等传递方形，保留其泛中介。
-[Sub_fmap](../theories/Instance/Set/Subobject.v) 改用 `PullbackMono`，不再重复
-证明单态性；其定义域及底层箭头仍定义转换为选定拉回及第一投影。
+[Sub_fmap](../theories/Cat/Subobject.v) 复用 `PullbackMono`，其定义域及底层
+箭头定义转换为选定拉回及第一投影。同一模块证明分解对应
+`sub_inverse_factor` 和单调性 `sub_inverse_le`。广集值函子
+[SubF](../theories/Instance/Set/Subobject.v) 分别在两个方向使用单调性，
+从而保持相互分解等价。
 
 [Topos.Sub](../theories/Topos/Sub.v) adds characteristic-arrow laws under
 only named terminal/classifier choices. `classifier_char_proper` and its
@@ -3370,7 +3376,7 @@ and ambient initiality; finite colimits and meaningful models remain open.
 
 [Topos.Representation](../theories/Topos/Representation.v) constructs
 `ClassifiedSub f` as the chosen inverse image of truth, reusing
-[Sub_fmap](../theories/Instance/Set/Subobject.v). Classifying this subobject
+[Sub_fmap](../theories/Cat/Subobject.v). Classifying this subobject
 recovers `f`; pulling back truth along a subobject's characteristic arrow
 recovers that subobject under mutual factorization. These laws make truth
 a universal element of the explicitly lifted `SubF` on the opposite category.
@@ -3386,7 +3392,7 @@ This optional module adds no model choice, structure field or global
 selection instance, and does not change the base Topos imports.
 
 [Topos.Representation](../theories/Topos/Representation.v) 复用
-[Sub_fmap](../theories/Instance/Set/Subobject.v)，以真子对象的选定逆像构造
+[Sub_fmap](../theories/Cat/Subobject.v)，以真子对象的选定逆像构造
 `ClassifiedSub f`。分类该子对象恢复 `f`；沿子对象的特征箭头拉回真子对象，
 在相互分解等价下恢复原子对象。因此包装后的真子对象是反范畴上显式提升的 `SubF` 的泛元素。
 `SubobjectRepresentation` 直接应用已有的
