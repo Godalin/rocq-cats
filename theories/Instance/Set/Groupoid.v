@@ -29,7 +29,7 @@ Definition EqGpd (X : SetC)
 (** 读取相等群胚已保存的逆；此显式性质视图使用恰好相同的范畴与对称见证。 *)
 
 Definition EqGpd_IsGpd (X : SetC)
-  : EqGpd X ⦂ Gpd
+  : (EqGpd X) ⦂ Gpd
   := @isGpd (EqGpd X).
 
 (** Parallel equality witnesses agree in the hom-setoid, regardless of their

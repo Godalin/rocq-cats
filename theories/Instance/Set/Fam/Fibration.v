@@ -49,7 +49,7 @@ Defined.
     较纤维。 *)
 
 Definition fam_reindex_cartesian {X : SetC} (U : FamC) (f : X →r famC_base U)
-  : fam_reindex U f ⦂ Cart(FamBaseF).
+  : (fam_reindex U f) ⦂ Cart(FamBaseF).
 Proof.
   intros V g u H. exists (fam_reindex_factor U f g u H). split.
   - split.
@@ -102,7 +102,8 @@ Next Obligation.
 Defined.
 
 Notation "φ '⟦' f '⟧'" := (fam_reindex_map φ f)
-  (at level 8, left associativity, format "φ ⟦ f ⟧") : cat_scope.
+  (at level 1, left associativity, format "φ ⟦ f ⟧")
+  : cat_scope.
 
 (** The reindexed family morphism commutes with the canonical reindexing
     arrows. *)

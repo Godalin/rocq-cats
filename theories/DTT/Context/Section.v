@@ -55,9 +55,11 @@ Defined.
 End ContextSections.
 
 Notation "t '^Sec[' T ',' A ']'" := (term_to_section_resp T A t)
-  (at level 35, format "t ^Sec[ T ,  A ]") : cat_scope.
+  (at level 1, format "t ^Sec[ T ,  A ]")
+  : cat_scope.
 Notation "s '^Tm[' T ',' A ']'" := (section_to_term_resp T A s)
-  (at level 35, format "s ^Tm[ T ,  A ]") : cat_scope.
+  (at level 1, format "s ^Tm[ T ,  A ]")
+  : cat_scope.
 
 (** ** Terms as Sections of Context Extensions
 

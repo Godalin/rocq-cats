@@ -140,7 +140,9 @@ Definition sub_lift {B : Type} {Γ Δ : Ctx B} {A : Ty B} (σ : Sub Δ Γ)
   end.
 
 Notation "'idSub'" := sub_id : stlc_sub_scope.
-Notation "σ '^↑Sub'" := (sub_lift σ) (at level 35) : stlc_sub_scope.
+Notation "σ '^↑Sub'" := (sub_lift σ)
+  (at level 1)
+  : stlc_sub_scope.
 
 (** Lifted substitutions preserve pointwise equality of their assignments. *)
 
@@ -184,7 +186,8 @@ Fixpoint subst {B : Type} {Γ : Ctx B} {A : Ty B} (t : Tm Γ A)
   end σ.
 
 Notation "t '[' σ ']'" := (subst t σ)
-  (at level 8, left associativity, format "t [ σ ]") : stlc_tm_scope.
+  (at level 1, left associativity, format "t [ σ ]")
+  : stlc_tm_scope.
 
 (** Term substitution depends only on pointwise variable assignments. *)
 
@@ -438,7 +441,8 @@ Global Instance sub_single_proper {B : Type} {Γ : Ctx B} {A : Ty B}
 Proof. intros t u H. destruct H. intros U x. reflexivity. Qed.
 
 Notation "t '[' u '/]'" := (subst t (sub_single u))
-  (at level 8, left associativity) : stlc_tm_scope.
+  (at level 1, left associativity)
+  : stlc_tm_scope.
 
 (** Substituting the newest input leaves a weakened old term unchanged. *)
 

@@ -171,7 +171,8 @@ Next Obligation.
 Defined.
 
 Notation "x '↾Sv[' P ';' S ']'" := (sieve_restrict_resp S (P := P) x)
-  (at level 8, left associativity, format "x ↾Sv[ P ;  S ]") : hom_scope.
+  (at level 1, left associativity, format "x ↾Sv[ P ;  S ]")
+  : hom_scope.
 
 (** Extending a sieve map to a representable is equivalent to finding an
     element with that restriction. This is Yoneda, with retained extensions. *)

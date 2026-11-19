@@ -39,7 +39,8 @@ Arguments projectionN {_ _ _} _.
 Arguments comprehension_universal {_ _ _} _ {_ _} _ _.
 
 Notation "A '^ext[' K ']'" := (ExtF K A)
-  (at level 35, no associativity, format "A ^ext[ K ]") : cat_scope.
+  (at level 1, no associativity, format "A ^ext[ K ]")
+  : cat_scope.
 Notation "'π[' K ']' A" := (projectionN K A)
   (at level 35, format "π[ K ]  A") : cat_scope.
 
@@ -96,7 +97,7 @@ Definition ComprehensionRestrictionN
 
 Definition comprehension_restrict_universal (Hπ : is_comprehension π)
     (HS : ∀ X Y (f : (@Hom D) X Y),
-      f ⦂ Cart(Q) → fmap S f ⦂ Cart(P))
+      f ⦂ Cart(Q) → (fmap S f) ⦂ Cart(P))
   : is_comprehension ComprehensionRestrictionN.
 Proof.
   intros X Y f Hf.
@@ -115,7 +116,7 @@ Defined.
 
 Program Definition RestrictedComprehension (Hπ : is_comprehension π)
     (HS : ∀ X Y (f : (@Hom D) X Y),
-      f ⦂ Cart(Q) → fmap S f ⦂ Cart(P))
+      f ⦂ Cart(Q) → (fmap S f) ⦂ Cart(P))
     (HQ : HasCartLift Q)
   : Comprehension Q
   :=

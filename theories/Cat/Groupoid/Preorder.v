@@ -16,7 +16,7 @@ From Cats Require Import
 Program Definition PreorderCat_IsGpd {X : Type}
     (R : crelation X)
     `{HR : !PreOrder R} `{HS : !Symmetric R}
-  : PreorderCat R ⦂ Gpd
+  : (PreorderCat R) ⦂ Gpd
   :=
   {|gpd_iso x y f := (symmetry f; (tt, tt))
   |}.
@@ -26,7 +26,7 @@ Program Definition PreorderCat_IsGpd {X : Type}
 (** 余离散范畴是群胚，以唯一的反向箭头为逆。 *)
 
 Program Definition CodiscreteCat_IsGpd (X : Type)
-  : CodiscreteCat X ⦂ Gpd
+  : (CodiscreteCat X) ⦂ Gpd
   :=
   {|gpd_iso x y f := (tt; (tt, tt))
   |}.

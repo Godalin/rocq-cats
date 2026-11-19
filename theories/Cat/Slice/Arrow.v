@@ -28,7 +28,9 @@ Program Definition SliceArrowOb {C : Cat} {X : @Ob C} (A : SliceOb C X)
   ; arrow_map := slice_arrow A
   |}.
 
-Notation "A '^Arr'" := (SliceArrowOb A) (at level 8, left associativity) : cat_scope.
+Notation "A '^Arr'" := (SliceArrowOb A)
+  (at level 1, left associativity)
+  : cat_scope.
 
 (** Regard a commuting slice triangle as a square over the identity. *)
 
@@ -125,7 +127,7 @@ Definition slice_reindex_square {X Y : @Ob C} (f : Hom X Y) (A : SliceOb C Y)
 
 Definition slice_reindex_square_cartesian {X Y : @Ob C} (f : Hom X Y)
     (A : SliceOb C Y)
-  : slice_reindex_square f A ⦂ Cart(ArrowCodF C)
+  : (slice_reindex_square f A) ⦂ Cart(ArrowCodF C)
   := arrow_reindex_cartesian A^Arr f.
 
 (** The chosen base-change squares assemble naturally over slice morphisms. *)

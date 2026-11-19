@@ -98,8 +98,10 @@ continuation two more spaces. A scope starts on a separate line at two
 spaces, with the colon at the start of that line. Keep a short interpretation
 on the declaration line. For a long one, break before `:=` and indent it two
 spaces, with the interpretation beginning immediately after `:=`.
-Named abbreviations and tactic notation use their own grammar. A record
-field's `where` interpretation uses the precedence in its reserved grammar.
+Numeral and string notations use Rocq's primitive grammar. Give them a scope
+without a precedence modifier. Named abbreviations and tactic notation use
+their own grammar. A record field's `where` interpretation uses the
+precedence in its reserved grammar.
 Use level 0 for closed bracket notation and level 1 for new projection-like
 postfix notation. For an existing precedence, group terms explicitly when
 needed to avoid Rocq's deprecated level tolerance.
@@ -109,7 +111,8 @@ Rocq 原生的显式应用。普通项记号 `Notation`、`Infix` 及其 `Reserv
 语法显式写优先级，`(at level …)` 另起一行，缩进两空格。
 选项列表过长时在逗号后换行，续行再缩进两空格。作用域在冒号前换行，
 缩进两空格。短解释与声明头同行，长解释在 `:=` 前换行并缩进两空格，
-解释紧跟 `:=`。具名简写和战术记号使用各自的语法。记录字段的
+解释紧跟 `:=`。数值和字符串记号使用 Rocq 的原生语法，声明作用域即可省去
+优先级选项。具名简写和战术记号使用各自的语法。记录字段的
 `where` 解释沿用预留语法中的优先级。封闭方括号记号用级别 0，
 新的投影式后缀用级别 1。保留既有优先级时，必要处明确加括号，
 避免依赖 Rocq 将移除的宽松解析。

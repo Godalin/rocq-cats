@@ -193,7 +193,7 @@ Definition gluing_fiber_lift {A B : C} (f : Hom A B)
 
 Definition gluing_fiber_lift_cartesian {A B : C} (f : Hom A B)
     (R : GluingFiber F B)
-  : gluing_fiber_lift f R ⦂ Cart(GluingRightF F)
+  : (gluing_fiber_lift f R) ⦂ Cart(GluingRightF F)
   := gluing_pullback_lift_cartesian F (GluingFiberInclusionF F B R) f
       (Pb (fmap F f) (slice_arrow R)) (pb1 _ _) (pb2 _ _)
       pullback_universal.

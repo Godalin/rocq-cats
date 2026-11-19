@@ -22,8 +22,9 @@ Definition is_universal_element {C : Cat} (F : Fct C SetCat)
   := ∀ Y (y : F Y), ∃ f : Hom X Y, is_unique (λ f, fmap F f u ≈S y) f.
 
 Notation "u '⦂' 'Univ(' F ')'" := (is_universal_element F u)
-  (at level 50, no associativity,
-    format "u  ⦂  Univ( F )") : cat_scope.
+  (at level 1, no associativity,
+    format "u  ⦂  Univ( F )")
+  : cat_scope.
 
 (** ** Representations from Universal Elements
 
@@ -146,7 +147,7 @@ Defined.
 (** 从表示提取的泛元素满足泛性质。 *)
 
 Definition representation_universal {X : @Ob C} (R : X ⦂ Rep F)
-  : representation_generic R ⦂ Univ(F).
+  : (representation_generic R) ⦂ Univ(F).
 Proof.
   intros Y y. exists ((R.2 Y).1 y). refine {|this := _
                                            ; that := _
@@ -284,7 +285,7 @@ Proof. exact (representation_at (represents_op_covariant R) f). Defined.
 (** 反变表示的泛元素在反范畴中满足泛性质。 *)
 
 Definition representation_op_universal {X : @Ob C} (R : X ⦂ Repᵒᵖ P)
-  : representation_op_generic R ⦂ Univ(P)
+  : (representation_op_generic R) ⦂ Univ(P)
   := representation_universal (represents_op_covariant R).
 
 (** A universal element in the opposite category supplies a contravariant
@@ -467,7 +468,7 @@ Defined.
 (** 泛元素满足泛性质，无需等同原生 Hom 大小。 *)
 
 Definition lifted_representation_universal {X : @Ob C} (R : X ⦂ Rep↑ F)
-  : lifted_representation_generic R ⦂ Univ(F).
+  : (lifted_representation_generic R) ⦂ Univ(F).
 Proof.
   intros Y y. exists (lower ((R.2 Y).1 y)).
   refine {|this := _

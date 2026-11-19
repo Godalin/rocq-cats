@@ -61,9 +61,11 @@ Definition type_sub_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ') 
 End TypePresheaf.
 
 Notation "A '[' σ ']TyF[' P ']'" := (type_sub P σ A)
-  (at level 8, left associativity, format "A [ σ ]TyF[ P ]") : cat_scope.
+  (at level 1, left associativity, format "A [ σ ]TyF[ P ]")
+  : cat_scope.
 Notation "e '[' σ ']EqF[' P ']'" := (type_eq_sub P σ e)
-  (at level 8, left associativity, format "e [ σ ]EqF[ P ]") : cat_scope.
+  (at level 1, left associativity, format "e [ σ ]EqF[ P ]")
+  : cat_scope.
 
 (** Selected display projections with coherent type conversion and
     substitution pullbacks. *)
@@ -106,9 +108,11 @@ Arguments display_lift {_} _ {_ _ _} _ _.
 Notation "Γ '▹D[' P ']' A" := (Display P (Γ := Γ) A)
   (at level 40, left associativity, format "Γ  ▹D[ P ]  A") : cat_scope.
 Notation "e '^D[' P ']'" := (display_conv P e)
-  (at level 35, format "e ^D[ P ]") : cat_scope.
+  (at level 1, format "e ^D[ P ]")
+  : cat_scope.
 Notation "σ '^D[' P ',' A ']'" := (display_lift P σ A)
-  (at level 35, format "σ ^D[ P ,  A ]") : cat_scope.
+  (at level 1, format "σ ^D[ P ,  A ]")
+  : cat_scope.
 
 (** ** Conversion and Lifting for Displays
 

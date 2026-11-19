@@ -188,11 +188,14 @@ End TypesAndTerms.
 (** 记号显式包含预层：对象映射未必唯一确定预层，候选性质也不要求完整的带族范畴。 *)
 
 Notation "A '[' σ ']Ty[' T ']'" := (ty_sub T σ A)
-  (at level 8, left associativity, format "A [ σ ]Ty[ T ]") : cat_scope.
+  (at level 1, left associativity, format "A [ σ ]Ty[ T ]")
+  : cat_scope.
 Notation "t '[' σ ']Tm[' T ']'" := (tm_sub T σ t)
-  (at level 8, left associativity, format "t [ σ ]Tm[ T ]") : cat_scope.
+  (at level 1, left associativity, format "t [ σ ]Tm[ T ]")
+  : cat_scope.
 Notation "e '[' σ ']Eq[' T ']'" := (ty_eq_sub T σ e)
-  (at level 8, left associativity, format "e [ σ ]Eq[ T ]") : cat_scope.
+  (at level 1, left associativity, format "e [ σ ]Eq[ T ]")
+  : cat_scope.
 Notation "e '▸[' T ']' t" := (tm_conv T e t)
   (at level 40, left associativity, format "e  ▸[ T ]  t") : cat_scope.
 

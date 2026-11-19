@@ -321,9 +321,11 @@ Defined.
 End Transposition.
 
 Notation "f '^♯[' A ']'" := (adjunct A f)
-  (at level 35) : hom_scope.
+  (at level 1)
+  : hom_scope.
 Notation "g '^♭[' A ']'" := (unadjunct A g)
-  (at level 35) : hom_scope.
+  (at level 1)
+  : hom_scope.
 
 (** ** Building the Natural Isomorphism from Native Hom Maps
 

@@ -17,7 +17,8 @@ Program Definition OpGraph (G : Graph)
   |}.
 
 Notation "G '^opG'" := (OpGraph G)
-  (at level 20, left associativity) : graph_scope.
+  (at level 1, left associativity)
+  : graph_scope.
 
 (** Reverse a path and its order of concatenation. *)
 
@@ -45,9 +46,11 @@ Fixpoint path_unop {G : Graph} {x y} (p : x →*[G^opG] y)
   end.
 
 Notation "p '^opP'" := (path_op p)
-  (at level 35) : graph_scope.
+  (at level 1)
+  : graph_scope.
 Notation "p '^unopP'" := (path_unop p)
-  (at level 35) : graph_scope.
+  (at level 1)
+  : graph_scope.
 
 (** Reversal preserves generated path equality, including the reversed
     unit and associativity laws. *)

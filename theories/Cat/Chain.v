@@ -232,7 +232,8 @@ Definition chain_reindex {C : Cat} {m n : nat}
   := ⌊⟦c⟧Ch ∘F Q⌋Ch.
 
 Notation "c '[' Q ']Ch'" := (chain_reindex Q c)
-  (at level 8, left associativity, format "c [ Q ]Ch") : cat_scope.
+  (at level 1, left associativity, format "c [ Q ]Ch")
+  : cat_scope.
 
 (** A single arrow forms a chain with its two specified endpoints. *)
 

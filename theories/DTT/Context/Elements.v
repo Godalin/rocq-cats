@@ -97,7 +97,7 @@ Defined.
 
 Definition context_elements_cartesian {X Y : PshElement P}
     (f : ElementMap P X Y)
-  : fmap ContextElementsF f ⦂ Cart(CwFBaseF T).
+  : (fmap ContextElementsF f) ⦂ Cart(CwFBaseF T).
 Proof.
   apply context_map_pullback_cartesian.
   exact (display_elements_comprehension_universal P X Y f

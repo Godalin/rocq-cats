@@ -29,7 +29,8 @@ Definition SliceReindexOb {X Y : @Ob C} (f : Hom X Y) (A : SliceOb C Y)
   |}.
 
 Notation "A '[' f ']C'" := (SliceReindexOb f A)
-  (at level 8, left associativity) : cat_scope.
+  (at level 1, left associativity)
+  : cat_scope.
 
 (** The universal slice arrow into the chosen base-change object. *)
 
@@ -209,7 +210,8 @@ Definition slice_reindex_comp {X Y Z : @Ob C}
     (fst (slice_reindex_comp_pullback f g A)).
 
 Notation "A '⟨' f ',' g '⟩C'" := (slice_reindex_comp f g A)
-  (at level 8, left associativity, format "A ⟨ f ,  g ⟩C") : cat_scope.
+  (at level 1, left associativity, format "A ⟨ f ,  g ⟩C")
+  : cat_scope.
 
 (** The comparison from iterated to composite base change is invertible. *)
 
@@ -280,7 +282,8 @@ Program Definition slice_reindex_equiv {X Y : @Ob C} {f g : Hom X Y}
 Next Obligation. rewrite <- H. apply pullback_comm. Defined.
 
 Notation "A '⟦' H '⟧C'" := (slice_reindex_equiv H A)
-  (at level 8, left associativity, format "A ⟦ H ⟧C") : cat_scope.
+  (at level 1, left associativity, format "A ⟦ H ⟧C")
+  : cat_scope.
 
 (** The base-equivalence comparison preserves the second projection. *)
 
@@ -439,10 +442,13 @@ Qed.
 End SliceReindex.
 
 Notation "A '[' f ']C'" := (SliceReindexOb f A)
-  (at level 8, left associativity, format "A [ f ]C") : cat_scope.
+  (at level 1, left associativity, format "A [ f ]C")
+  : cat_scope.
 
 Notation "A '⟦' H '⟧C'" := (slice_reindex_equiv H A)
-  (at level 8, left associativity, format "A ⟦ H ⟧C") : cat_scope.
+  (at level 1, left associativity, format "A ⟦ H ⟧C")
+  : cat_scope.
 
 Notation "A '⟨' f ',' g '⟩C'" := (slice_reindex_comp f g A)
-  (at level 8, left associativity, format "A ⟨ f ,  g ⟩C") : cat_scope.
+  (at level 1, left associativity, format "A ⟨ f ,  g ⟩C")
+  : cat_scope.

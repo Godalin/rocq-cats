@@ -16,8 +16,8 @@ From Cats Require Export
 
 Class IsGpd (C : Cat)
   :=
-  { gpd_iso {X Y : @Ob C} (f : Hom X Y)
-      : is_iso f
+  { gpd_iso {X Y : C} (f : Hom X Y)
+    : is_iso f
   }.
 
 (** A complete groupoid owns one category. Its inherited inverse witnesses
@@ -41,7 +41,6 @@ Record Gpd
   (** 在恰好该底层范畴上复用性质接口。 *)
 
   ; isGpd :: IsGpd GpdToCat
-
   }.
 
 (** The constructor takes the underlying category and its inverse witnesses
@@ -52,7 +51,8 @@ Record Gpd
 Arguments GpdOfCat _ _ : clear implicits.
 
 Notation "C '⦂' 'Gpd'" := (IsGpd C)
-  (at level 50, no associativity) : type_scope.
+  (at level 1, no associativity)
+  : type_scope.
 
 (** ** Inverse Arrows in a Groupoid
 
@@ -71,18 +71,19 @@ Context {C : Cat} `{HC : !IsGpd C}.
 
 (** 群胚结构选取的可计算逆。 *)
 
-Definition gpd_inv {X Y : @Ob C} (f : Hom X Y)
+Definition gpd_inv {X Y : C} (f : Hom X Y)
   : Hom Y X
   := (gpd_iso f).1.
 
 Notation "f '⁻¹'" := (gpd_inv f)
-  (at level 9) : hom_scope.
+  (at level 1)
+  : hom_scope.
 
 (** Left inverse equation in the hom-setoid. *)
 
 (** Hom 广集中的左逆方程。 *)
 
-Lemma gpd_inv_l {X Y : @Ob C} (f : Hom X Y)
+Lemma gpd_inv_l {X Y : C} (f : Hom X Y)
   : f⁻¹ ∘ f ≈ id.
 Proof. exact (fst (gpd_iso f).2). Qed.
 
@@ -90,7 +91,7 @@ Proof. exact (fst (gpd_iso f).2). Qed.
 
 (** Hom 广集中的右逆方程。 *)
 
-Lemma gpd_inv_r {X Y : @Ob C} (f : Hom X Y)
+Lemma gpd_inv_r {X Y : C} (f : Hom X Y)
   : f ∘ f⁻¹ ≈ id.
 Proof. exact (snd (gpd_iso f).2). Qed.
 
@@ -98,7 +99,7 @@ Proof. exact (snd (gpd_iso f).2). Qed.
 
 (** 任意左逆都与选定逆相等。 *)
 
-Lemma gpd_inv_unique {X Y : @Ob C} (f : Hom X Y) (g : Hom Y X)
+Lemma gpd_inv_unique {X Y : C} (f : Hom X Y) (g : Hom Y X)
     (H : g ∘ f ≈ id)
   : g ≈ f⁻¹.
 Proof. exact (inverse_unique f g f⁻¹ H (gpd_inv_r f)). Qed.
@@ -107,7 +108,7 @@ Proof. exact (inverse_unique f g f⁻¹ H (gpd_inv_r f)). Qed.
 
 (** 取逆保持箭头指定的相等。 *)
 
-Global Instance gpd_inv_proper {X Y : @Ob C}
+Global Instance gpd_inv_proper {X Y : C}
   : Proper (≈[X, Y] ==> ≈[Y, X]) (@gpd_inv X Y).
 Proof.
   intros f g H. apply gpd_inv_unique.
@@ -118,7 +119,7 @@ Qed.
 
 (** 恒等箭头的逆仍是恒等箭头。 *)
 
-Lemma gpd_inv_id {X : @Ob C}
+Lemma gpd_inv_id {X : C}
   : (id[X])⁻¹ ≈ id.
 Proof. symmetry. apply gpd_inv_unique. apply comp_id_l. Qed.
 
@@ -126,7 +127,7 @@ Proof. symmetry. apply gpd_inv_unique. apply comp_id_l. Qed.
 
 (** 连续取逆两次在指定相等下恢复原箭头。 *)
 
-Lemma gpd_inv_inv {X Y : @Ob C} (f : Hom X Y)
+Lemma gpd_inv_inv {X Y : C} (f : Hom X Y)
   : (f⁻¹)⁻¹ ≈ f.
 Proof. symmetry. apply gpd_inv_unique. apply gpd_inv_r. Qed.
 
@@ -134,7 +135,7 @@ Proof. symmetry. apply gpd_inv_unique. apply gpd_inv_r. Qed.
 
 (** 复合的逆反转两个因子的次序。 *)
 
-Lemma gpd_inv_comp {X Y Z : @Ob C} (g : Hom Y Z) (f : Hom X Y)
+Lemma gpd_inv_comp {X Y Z : C} (g : Hom Y Z) (f : Hom X Y)
   : (g ∘ f)⁻¹ ≈ f⁻¹ ∘ g⁻¹.
 Proof.
   symmetry. apply gpd_inv_unique.
@@ -146,7 +147,7 @@ Qed.
 
 (** 取逆是正向与反向 Hom 广集之间的保相等映射。 *)
 
-Program Definition gpd_inv_resp (X Y : @Ob C)
+Program Definition gpd_inv_resp (X Y : C)
   : HomSet X Y →r HomSet Y X
   :=
   {|func f := f⁻¹
@@ -156,14 +157,15 @@ Program Definition gpd_inv_resp (X Y : @Ob C)
 
 (** 每条箭头给出其端点之间的同构。 *)
 
-Definition gpd_arrow_iso {X Y : @Ob C} (f : Hom X Y)
+Definition gpd_arrow_iso {X Y : C} (f : Hom X Y)
   : X ≅ Y
   := (f; gpd_iso f).
 
 End Groupoid.
 
 Notation "f '⁻¹'" := (gpd_inv f)
-  (at level 9) : hom_scope.
+  (at level 1)
+  : hom_scope.
 
 (** Opposite categories inherit the same inverses with swapped inverse laws.
     Enable this structure explicitly when working in the opposite. *)

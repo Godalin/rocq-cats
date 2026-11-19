@@ -21,7 +21,7 @@ Definition is_colimit {J C : Cat} {D : Fct J C} {L : @Ob C}
   := is_limit (op_cone κ).
 
 Notation "κ '⦂' 'Colim(' D ')'" := (@is_colimit _ _ D _ κ)
-  (at level 50, no associativity)
+  (at level 1, no associativity)
   : cat_scope.
 
 (** Expose the same universal property with arrows in [C]. No second

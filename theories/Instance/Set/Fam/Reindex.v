@@ -22,7 +22,8 @@ Definition ReindexFamC {X : SetC} (U : FamC) (f : X →r famC_base U)
   |}.
 
 Notation "U '[' f ']'" := (ReindexFamC U f)
-  (at level 8, left associativity, format "U [ f ]") : cat_scope.
+  (at level 1, left associativity, format "U [ f ]")
+  : cat_scope.
 
 (** The canonical family morphism lies over [f] and is the identity on fibers. *)
 

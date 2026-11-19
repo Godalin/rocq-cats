@@ -199,7 +199,7 @@ Defined.
 Definition vertex_outer_horn2_IsGpd
     `{HF : !HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first}
-  : VtxCat T ⦂ Gpd
+  : (VtxCat T) ⦂ Gpd
   := @horn2_0_IsGpd (VtxCat T) vertex_outer_horn2_HasLocalFillers.
 
 (** The actual first outer two-horn filling structure characterizes the
@@ -210,7 +210,7 @@ Definition vertex_outer_horn2_IsGpd
 Definition vertex_outer_horn2_gpd_iff
   : HasHornFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 fin_first ↔
-      VtxCat T ⦂ Gpd.
+      (VtxCat T) ⦂ Gpd.
 Proof.
   split.
   - intros H. exact (@vertex_outer_horn2_IsGpd H).
@@ -224,7 +224,7 @@ Defined.
 Definition vertex_kan_IsGpd
     `{HK : !HasKanFillers
       (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})}
-  : VtxCat T ⦂ Gpd
+  : (VtxCat T) ⦂ Gpd
   := @vertex_outer_horn2_IsGpd (@hasHornFillers _ HK 1 fin_first).
 
 End OuterHorns.

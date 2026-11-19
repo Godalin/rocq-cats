@@ -66,7 +66,6 @@ Arguments term {_ _ _}.
 Arguments terminal_arrow_unique {_ _ _}.
 
 Notation "'1'" := Term
-  (at level 0)
   : ob_scope.
 Notation "'!'" := term
   (at level 0)
@@ -137,7 +136,7 @@ Proof.
 Defined.
 
 Notation "X '⦂' '≅' '1'" := (is_terminal X)
-  (at level 50)
+  (at level 1)
   : cat_scope.
 
 
@@ -264,7 +263,6 @@ Proof. exact (@term_comp_l (C^op) (@hasOpTerminal C HI) Y X f). Qed.
 End Initial.
 
 Notation "0" := Init
-  (at level 0)
   : ob_scope.
 Notation "¡" := init
   (at level 0)

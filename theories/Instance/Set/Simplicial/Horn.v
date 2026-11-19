@@ -87,7 +87,8 @@ Definition boundary_restrict_resp@{u p +}
   := sieve_restrict_resp (BoundarySieve n).
 
 Notation "x '↾∂[' X ';' n ']'" := (@boundary_restrict_resp X n x)
-  (at level 8, left associativity, format "x ↾∂[ X ;  n ]") : hom_scope.
+  (at level 1, left associativity, format "x ↾∂[ X ;  n ]")
+  : hom_scope.
 
 (** Restrict a simplex to a selected horn by the same construction. *)
 
@@ -99,7 +100,8 @@ Definition horn_restrict_resp@{u p +}
   := sieve_restrict_resp (HornSieve n i).
 
 Notation "x '↾Λ[' X ';' n ';' i ']'" := (@horn_restrict_resp X n i x)
-  (at level 8, left associativity, format "x ↾Λ[ X ;  n ;  i ]") : hom_scope.
+  (at level 1, left associativity, format "x ↾Λ[ X ;  n ;  i ]")
+  : hom_scope.
 
 (** A filler is an n-simplex whose entire restricted map is the given horn.
     There is no comparison of naturality proofs. *)

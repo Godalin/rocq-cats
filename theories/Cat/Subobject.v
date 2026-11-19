@@ -18,10 +18,11 @@ From Cats Require Import
 
 (** 单态射的拉回仍为单态射。 *)
 
-Theorem pullback_mono {C : Cat} {X Y Z P : @Ob C}
+Theorem pullback_mono {C : Cat} {X Y Z P : C}
     {f : Hom X Z} {g : Hom Y Z}
     {p1 : Hom P X} {p2 : Hom P Y}
-    (HP : is_pullback f g P p1 p2) (Hg : is_mono g)
+    (HP : is_pullback f g P p1 p2)
+    (Hg : is_mono g)
   : is_mono p1.
 Proof.
   intros Q x y Hxy. apply (pullback_hom_ext HP x y).

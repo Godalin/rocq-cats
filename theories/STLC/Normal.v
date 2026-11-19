@@ -114,12 +114,12 @@ with rename_nf {B : Type} {Γ : Ctx B} {A : Ty B} (v : Nf Γ A)
   | nf_lam v => λ ρ, nf_lam (rename_nf v (ρ^↑Ren))
   end ρ.
 
-Local Set Warnings "-postfix-notation-not-level-1".
 Notation "n '⟨' ρ '⟩ne'" := (rename_ne n ρ)
-  (at level 8, left associativity) : stlc_ren_scope.
+  (at level 1, left associativity)
+  : stlc_ren_scope.
 Notation "v '⟨' ρ '⟩nf'" := (rename_nf v ρ)
-  (at level 8, left associativity) : stlc_ren_scope.
-Local Set Warnings "+postfix-notation-not-level-1".
+  (at level 1, left associativity)
+  : stlc_ren_scope.
 
 (** Pointwise equality of variable assignments suffices to compare renamed
     trees; no function extensionality is needed. *)

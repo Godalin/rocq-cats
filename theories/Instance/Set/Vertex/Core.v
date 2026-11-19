@@ -42,7 +42,8 @@ Definition vertex_transport {x y : X} (p : x ≈S y)
 End VertexObjects.
 
 Notation "T '⟦' p '⟧Ob'" := (vertex_transport T p)
-  (at level 8, left associativity) : hom_scope.
+  (at level 1, left associativity)
+  : hom_scope.
 
 (** ** Equality of Labelled Vertex Diagrams
 

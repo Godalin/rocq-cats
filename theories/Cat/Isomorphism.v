@@ -171,7 +171,9 @@ Proof.
   exists i.1, i.2.1. split; [exact (snd i.2.2) | exact (fst i.2.2)].
 Defined.
 
-Notation "i '^opI'" := (iso_op i) (at level 35) : cat_scope.
+Notation "i '^opI'" := (iso_op i)
+  (at level 1)
+  : cat_scope.
 
 (** Postcomposition by an isomorphism has a unique solution for every
     target arrow. Its mediator is inverse composition. *)

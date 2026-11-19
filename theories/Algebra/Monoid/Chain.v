@@ -210,6 +210,8 @@ Defined.
 End Chain.
 
 Notation "xs '⟦' i ',' j '⟧⋅'" := (monoid_segment xs i j)
-  (at level 8, left associativity, format "xs ⟦ i , j ⟧⋅") : algebra_scope.
+  (at level 1, left associativity, format "xs ⟦ i , j ⟧⋅")
+  : algebra_scope.
 Notation "xs '[' f ']M'" := (monoid_chain_sub f xs)
-  (at level 8, left associativity, format "xs [ f ]M") : algebra_scope.
+  (at level 1, left associativity, format "xs [ f ]M")
+  : algebra_scope.

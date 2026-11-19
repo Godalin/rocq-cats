@@ -60,7 +60,8 @@ Definition context_conv {Γ : @Ob C} {A B : Ty T Γ} (e : A ≈S B)
 End ContextConversionMap.
 
 Notation "e '^Ext[' T ']'" := (context_conv T e)
-  (at level 35, format "e ^Ext[ T ]") : cat_scope.
+  (at level 1, format "e ^Ext[ T ]")
+  : cat_scope.
 
 (** ** Coherence of Context Conversion
 

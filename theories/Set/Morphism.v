@@ -92,7 +92,9 @@ Next Obligation.
   intros [x] [y] [H]. exact (Lift (@func_proper _ _ f x y H)).
 Defined.
 
-Notation "f '^↑S'" := (lift_resp f) (at level 35) : set_scope.
+Notation "f '^↑S'" := (lift_resp f)
+  (at level 1)
+  : set_scope.
 
 (** Recover a native respectful map from a map between lifted sets.
     The source and target lifts may use different carrier and equality
@@ -114,7 +116,9 @@ Next Obligation.
   exact (lower (@func_proper _ _ f (Lift x) (Lift y) (Lift H))).
 Defined.
 
-Notation "f '^↓S'" := (unlift_resp f) (at level 35) : set_scope.
+Notation "f '^↓S'" := (unlift_resp f)
+  (at level 1)
+  : set_scope.
 
 (** Evaluating a recovered map at the value stored in any lifted input
     agrees with evaluating the lifted map and unwrapping its result. *)

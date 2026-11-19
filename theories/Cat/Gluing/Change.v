@@ -217,7 +217,7 @@ Definition gluing_change_pullback_cartesian
       (fmap K (comma_arrow X)) (fmap K (comma_left h)))
     (Hi : is_iso (α (comma_right_ob X)))
     (Hj : is_mono (α (comma_right_ob Y)))
-  : fmap (GluingChangeF H K α) h ⦂ Cart(GluingRightF F').
+  : (fmap (GluingChangeF H K α) h) ⦂ Cart(GluingRightF F').
 Proof.
   apply (gluing_pullback_cartesian F').
   pose (P := pullback_base_boundary (α (comma_right_ob X)) Hi
@@ -241,7 +241,7 @@ Definition gluing_change_cartesian
     (Hi : is_iso (α (comma_right_ob X)))
     (Hj : is_mono (α (comma_right_ob Y)))
     (Hh : h ⦂ Cart(GluingRightF F))
-  : fmap (GluingChangeF H K α) h ⦂ Cart(GluingRightF F')
+  : (fmap (GluingChangeF H K α) h) ⦂ Cart(GluingRightF F')
   := gluing_change_pullback_cartesian
       (preserves (gluing_cartesian_pullback F h Hh)) Hi Hj.
 
@@ -258,7 +258,7 @@ Definition gluing_change_cartesian_iso
         (fmap K (comma_arrow Y)) (K (comma_left_ob X))
         (fmap K (comma_arrow X)) (fmap K (comma_left h)))
     (Hh : h ⦂ Cart(GluingRightF F))
-  : fmap (GluingChangeF H K α) h ⦂ Cart(GluingRightF F')
+  : (fmap (GluingChangeF H K α) h) ⦂ Cart(GluingRightF F')
   := gluing_change_cartesian preserves (Hα (comma_right_ob X))
       (iso_mono (α (comma_right_ob Y)) (Hα (comma_right_ob Y))) Hh.
 

@@ -85,8 +85,12 @@ Definition ordinal_next {n : nat} (i : Ordinal n)
 Declare Scope ordinal_scope.
 Delimit Scope ordinal_scope with ordinal.
 Bind Scope ordinal_scope with Ordinal.
-Notation "i '↑'" := (ordinal_weaken i) (at level 9) : ordinal_scope.
-Notation "i '⁺'" := (ordinal_next i) (at level 9) : ordinal_scope.
+Notation "i '↑'" := (ordinal_weaken i)
+  (at level 1)
+  : ordinal_scope.
+Notation "i '⁺'" := (ordinal_next i)
+  (at level 1)
+  : ordinal_scope.
 Local Open Scope ordinal_scope.
 
 (** End inclusion preserves the rank of a canonical ordinal position. *)
