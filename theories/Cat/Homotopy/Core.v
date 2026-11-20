@@ -81,7 +81,7 @@ Next Obligation.
     (f × id) ∘ ⟨id, interval_point I b ∘ !⟩).
   rewrite product_comp_r, product_comp_l, !comp_id_l, comp_id_r,
     comp_assoc, term_comp_l. reflexivity.
-Defined.
+Qed.
 
 (** The cylinder projection retracts both endpoint inclusions. *)
 
@@ -303,7 +303,7 @@ Lemma pre_homotopy_map_proper {W X Y : @Ob C} {f g : Hom X Y}
     (H : Homotopy f g) {a a' : Hom W X} (e : a ≈ a')
   : homotopy_map (PreHomotopy H a) ≈ homotopy_map (PreHomotopy H a').
 Proof.
-  apply comp_proper; [reflexivity | apply fct_fmap_proper; exact e].
+  apply comp_proper; [reflexivity | apply fmap_proper; exact e].
 Defined.
 
 (** Equal postcomposing maps likewise preserve the underlying comparison. *)

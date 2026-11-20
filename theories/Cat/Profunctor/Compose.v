@@ -144,27 +144,32 @@ Context `{HC : !HasProfComp C D E Q P}.
 Program Definition ProfComp
   : Fct ((C^op) ×C E) (SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 XZ := coend[ProfCompKernel Q P (fst XZ) (snd XZ)]
-  ; F1 XZ XZ' fg := coend_map (ProfCompBoundaryN Q P
+  {|fobj XZ := coend[ProfCompKernel Q P (fst XZ) (snd XZ)]
+  ; fmap XZ XZ' fg := coend_map (ProfCompBoundaryN Q P
       (fst fg) (snd fg))
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [f g] [f' g'] [H K].
   apply (@coend_map_proper D SetCat).
   exact (@prof_comp_boundary_proper C D E Q P _ _ _ _ f f' H g g' K).
-Defined.
+Qed.
 Next Obligation.
   transitivity (coend_map (IdN
     (F := ProfCompKernel Q P (fst X) (snd X)))).
   - apply (@coend_map_proper D SetCat). apply prof_comp_boundary_id.
   - apply (@coend_map_id D SetCat).
-Defined.
+Qed.
 Next Obligation.
   transitivity (coend_map (ProfCompBoundaryN Q P (fst f) (snd f)
     ∘Nv ProfCompBoundaryN Q P (fst g) (snd g))).
   - apply (@coend_map_proper D SetCat). apply prof_comp_boundary_comp.
   - apply (@coend_map_comp D SetCat).
-Defined.
+Qed.
 
 End ChosenComposition.
 

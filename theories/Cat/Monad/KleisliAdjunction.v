@@ -114,7 +114,7 @@ Lemma kleisli_monad_mul (X : @Ob C)
   : μ[KleisliMonad] X ≈ μ[M] X.
 Proof.
   change (kleisli_extend M (id[M X]) ≈ μ[M] X).
-  unfold kleisli_extend. rewrite fct_id, comp_id_r. reflexivity.
+  unfold kleisli_extend. rewrite fmap_id, comp_id_r. reflexivity.
 Qed.
 
 (** The existing comparison of underlying functors preserves both Monad
@@ -131,7 +131,7 @@ Next Obligation.
     rewrite comp_id_l. apply kleisli_monad_unit.
   - change (id ∘ μ[KleisliMonad] X ≈
       μ[M] X ∘ (id ∘ fmap KleisliMonad (id[M X]))).
-    rewrite fct_id, !comp_id_l, comp_id_r. apply kleisli_monad_mul.
+    rewrite fmap_id, !comp_id_l, comp_id_r. apply kleisli_monad_mul.
 Defined.
 
 (** The inverse natural comparison also preserves unit and multiplication. *)
@@ -147,7 +147,7 @@ Next Obligation.
     rewrite comp_id_l. symmetry. apply kleisli_monad_unit.
   - change (id ∘ μ[M] X ≈
       μ[KleisliMonad] X ∘ (id ∘ fmap M (id[M X]))).
-    rewrite fct_id, !comp_id_l, comp_id_r.
+    rewrite fmap_id, !comp_id_l, comp_id_r.
     symmetry. apply kleisli_monad_mul.
 Defined.
 

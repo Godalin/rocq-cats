@@ -103,8 +103,8 @@ Proof.
   unfold uncurry. rewrite (exp_cmp_eval F preserves X Y).
   pose proof (preserved_product_inv_natural F preserves
     (id[(Y ^ X)%ob]) u) as HP.
-  rewrite (@fct_id C D F) in HP.
-  rewrite !(@fct_comp C D F), !(@comp_assoc D), HP. reflexivity.
+  rewrite (@fmap_id _ _ _ _ (@isFct C D F)) in HP.
+  rewrite !(@fmap_comp _ _ _ _ (@isFct C D F)), !(@comp_assoc D), HP. reflexivity.
 Defined.
 
 End ExponentialNaturality.

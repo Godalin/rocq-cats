@@ -98,7 +98,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   transitivity (fmap G U⟦vertex_fct_ob_proper F x y p⟧Ob).
-  - apply fct_fmap_proper. exact (vertex_fct_transport F p).
+  - apply fmap_proper. exact (vertex_fct_transport F p).
   - apply vertex_fct_transport_witness.
 Defined.
 
@@ -174,8 +174,8 @@ Next Obligation.
   change (U⟦vertex_fct_ob_proper F _ _ (e j)⟧Ob ∘
       fmap F (fmap P f) ≈
     fmap F (fmap Q f) ∘ U⟦vertex_fct_ob_proper F _ _ (e i)⟧Ob).
-  rewrite <- !vertex_fct_transport, <- !fct_comp.
-  apply fct_fmap_proper. exact (H i j f).
+  rewrite <- !vertex_fct_transport, <- !fmap_comp.
+  apply fmap_proper. exact (H i j f).
 Defined.
 
 (** Equal functors induce pointwise equal postcomposition maps. *)

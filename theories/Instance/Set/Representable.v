@@ -93,20 +93,20 @@ Proof.
   exists (Hu Y v).1, (Hv X u).1. split.
   - apply (universal_element_hom_ext Hu).
     transitivity (fmap F (Hv X u).1 (fmap F (Hu Y v).1 u)).
-    + exact (fct_comp C SetCat F _ _ u).
+    + exact (fmap_comp (IsFct := @isFct C SetCat F) _ _ u).
     + transitivity (fmap F (Hv X u).1 v).
       * apply func_proper. exact (this (Hu Y v).2).
       * transitivity u.
         -- exact (this (Hv X u).2).
-        -- symmetry. exact (fct_id C SetCat F u).
+        -- symmetry. exact (fmap_id (IsFct := @isFct C SetCat F) u).
   - apply (universal_element_hom_ext Hv).
     transitivity (fmap F (Hu Y v).1 (fmap F (Hv X u).1 v)).
-    + exact (fct_comp C SetCat F _ _ v).
+    + exact (fmap_comp (IsFct := @isFct C SetCat F) _ _ v).
     + transitivity (fmap F (Hu Y v).1 u).
       * apply func_proper. exact (this (Hv X u).2).
       * transitivity v.
         -- exact (this (Hu Y v).2).
-        -- symmetry. exact (fct_id C SetCat F v).
+        -- symmetry. exact (fmap_id (IsFct := @isFct C SetCat F) v).
 Defined.
 
 End UniversalElements.
@@ -192,7 +192,7 @@ Proof. intros Y f. symmetry. apply representation_at. Qed.
 Theorem universal_element_generic {X : @Ob C} {u : F X}
     (Hu : u ⦂ Univ(F))
   : representation_generic (universal_element_representation F Hu) ≈S u.
-Proof. exact (fct_id C SetCat F u). Defined.
+Proof. exact (fmap_id (IsFct := @isFct C SetCat F) u). Defined.
 
 (** Two representations of a functor induce an isomorphism of representing
     objects. *)
@@ -328,7 +328,7 @@ Proof. intros Y f. symmetry. apply representation_op_at. Qed.
 Theorem universal_element_op_generic {X : @Ob C} {u : P X}
     (Hu : u ⦂ Univ(P))
   : representation_op_generic (universal_element_representation_op Hu) ≈S u.
-Proof. exact (fct_id (C^op) SetCat P u). Defined.
+Proof. exact (fmap_id (IsFct := @isFct (C^op) SetCat P) u). Defined.
 
 (** Two contravariant representations have isomorphic representing objects. *)
 
@@ -399,7 +399,7 @@ Program Definition LiftedYonedaN {X : @Ob C} (x : F X)
 Next Obligation.
   exact (nat_naturality (presheaf_yoneda_inv_resp (C := C^op)
     (P := F ∘F FromDoubleOpF) x) f).
-Defined.
+Qed.
 
 (** A universal element represents the functor by lifted native hom-sets.
     Its inverse is the existing unique mediator, wrapped at the ambient size. *)

@@ -23,7 +23,7 @@ Local Open Scope computation_scope.
 
 Definition arrow_second {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP))
+    (A : Arrow C K (@CartHasMonoidal C HT HP))
     {X Y : @Ob C} (Z : @Ob C) (f : Hom (A X) (A Y))
   : Hom (A (Z × X)%ob) (A (Z × Y)%ob)
   := context[A; Z; f].
@@ -37,7 +37,7 @@ Notation "'second[' A ';' f ';' Z ']'" := (arrow_second A Z f)
 
 Definition arrow_first {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP))
+    (A : Arrow C K (@CartHasMonoidal C HT HP))
     {X Y : @Ob C} (Z : @Ob C) (f : Hom (A X) (A Y))
   : Hom (A (X × Z)%ob) (A (Y × Z)%ob)
   := arr[A; ⟨π2, π1⟩] ∘ second[A; f; Z] ∘ arr[A; ⟨π2, π1⟩].
@@ -56,7 +56,7 @@ Notation "'first[' A ';' f ';' Z ']'" := (arrow_first A Z f)
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** The derived operations respect computation equality. *)
 
@@ -82,8 +82,8 @@ Lemma arrow_exchange_inv (X Y : @Ob C)
   : arr[A; (⟨π2, π1⟩ : Hom (Y × X) (X × Y))] ∘
       arr[A; (⟨π2, π1⟩ : Hom (X × Y) (Y × X))] ≈ id.
 Proof.
-  rewrite <- fct_comp, product_comp_r, product_β1, product_β2,
-    product_pair_η, fct_id. reflexivity.
+  rewrite <- fmap_comp, product_comp_r, product_β1, product_β2,
+    product_pair_η, fmap_id. reflexivity.
 Qed.
 
 (** Left-context action on pure arrows is the ordinary product map. *)
@@ -126,8 +126,8 @@ Qed.
 Lemma arrow_first_arr {X Y : @Ob C} (f : Hom X Y) (Z : @Ob C)
   : first[A; arr[A; f]; Z] ≈ arr[A; f × id[Z]].
 Proof.
-  unfold arrow_first. rewrite arrow_second_arr, <- !fct_comp.
-  apply fct_fmap_proper.
+  unfold arrow_first. rewrite arrow_second_arr, <- !fmap_comp.
+  apply fmap_proper.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -164,9 +164,9 @@ Proof.
   pose proof (arrow_second_natural f (! : Hom Z 1)) as Hn.
   transitivity ((arr[A; (π2 : Hom (1 × Y) Y)] ∘
     arr[A; (! : Hom Z 1) × id[Y]]) ∘ second[A; f; Z]).
-  - rewrite <- fct_comp, cross_η, product_β2, comp_id_l. reflexivity.
+  - rewrite <- fmap_comp, cross_η, product_β2, comp_id_l. reflexivity.
   - rewrite comp_assoc, Hn, <- comp_assoc, Hu,
-      comp_assoc, <- fct_comp, cross_η, product_β2, comp_id_l.
+      comp_assoc, <- fmap_comp, cross_η, product_β2, comp_id_l.
     reflexivity.
 Qed.
 
@@ -179,9 +179,9 @@ Lemma arrow_first_projection {X Y : @Ob C}
   : arr[A; (π1 : Hom (Y × Z) Y)] ∘ first[A; f; Z] ≈
       f ∘ arr[A; (π1 : Hom (X × Z) X)].
 Proof.
-  unfold arrow_first. rewrite <- !comp_assoc, <- fct_comp, product_β1.
+  unfold arrow_first. rewrite <- !comp_assoc, <- fmap_comp, product_β1.
   rewrite arrow_second_projection,
-    comp_assoc, <- fct_comp, product_β2. reflexivity.
+    comp_assoc, <- fmap_comp, product_β2. reflexivity.
 Qed.
 
 (** Ordinary maps of the right context commute with the computation. *)
@@ -197,7 +197,7 @@ Proof.
     arr[A; (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z))] ≈
     arr[A; (⟨π2, π1⟩ : Hom (W × Y) (Y × W))] ∘
     arr[A; h × id[Y]]).
-  { rewrite <- !fct_comp. apply fct_fmap_proper.
+  { rewrite <- !fmap_comp. apply fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
@@ -205,7 +205,7 @@ Proof.
     arr[A; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))] ≈
     arr[A; (⟨π2, π1⟩ : Hom (X × W) (W × X))] ∘
     arr[A; id[X] × h]).
-  { rewrite <- !fct_comp. apply fct_fmap_proper.
+  { rewrite <- !fmap_comp. apply fmap_proper.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
@@ -233,8 +233,8 @@ Proof.
   transitivity ((second[A; second[A; f; W]; Z] ∘
     arr[A; (@product_assoc C HP Z W X).1]) ∘
     arr[A; (@product_assoc C HP Z W X).2.1]).
-  - rewrite comp_assoc, <- fct_comp,
-      (snd (@product_assoc C HP Z W X).2.2), fct_id, comp_id_r.
+  - rewrite comp_assoc, <- fmap_comp,
+      (snd (@product_assoc C HP Z W X).2.2), fmap_id, comp_id_r.
     reflexivity.
   - rewrite <- H. reflexivity.
 Qed.
@@ -246,7 +246,7 @@ Qed.
 Local Lemma arr_comp_post {U : @Ob K} {X Y Z : @Ob C}
     (p : Hom Y Z) (q : Hom X Y) (k : Hom U (A X))
   : arr[A; p] ∘ (arr[A; q] ∘ k) ≈ arr[A; p ∘ q] ∘ k.
-Proof. rewrite <- comp_assoc, <- fct_comp. reflexivity. Qed.
+Proof. rewrite <- comp_assoc, <- fmap_comp. reflexivity. Qed.
 
 (** Reassociate computations and fuse adjacent pure maps, leaving all
     effectful computations abstract. *)
@@ -255,7 +255,7 @@ Proof. rewrite <- comp_assoc, <- fct_comp. reflexivity. Qed.
 
 Local Ltac normalize_arr :=
   repeat first [rewrite comp_assoc | rewrite arr_comp_post |
-    rewrite <- fct_comp].
+    rewrite <- fmap_comp].
 
 (** Nested right contexts agree with one extension by their product. *)
 
@@ -291,7 +291,7 @@ Proof.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  rewrite Ho, fct_comp. repeat rewrite comp_assoc.
+  rewrite Ho, fmap_comp. repeat rewrite comp_assoc.
   rewrite <- (comp_assoc
     arr[A; ((⟨π2, π1⟩ : Hom (W × Z) (Z × W)) × id[Y])]
     (second[A; f; (W × Z)%ob])
@@ -338,7 +338,7 @@ Proof.
     repeat first [rewrite cross_η | rewrite product_comp_r |
       rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
       rewrite comp_id_l | rewrite comp_id_r]. reflexivity. }
-  rewrite Ho, fct_comp. repeat rewrite comp_assoc.
+  rewrite Ho, fmap_comp. repeat rewrite comp_assoc.
   rewrite <- (comp_assoc
     arr[A; ((⟨π2, π1⟩ : Hom (Z × X) (X × Z)) × id[Y'])]
     (second[A; f; (Z × X)%ob])
@@ -357,7 +357,7 @@ End Cartesian.
 
 Definition arrow_split {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP))
+    (A : Arrow C K (@CartHasMonoidal C HT HP))
     {X Y X' Y' : @Ob C}
     (f : Hom (A X) (A Y)) (g : Hom (A X') (A Y'))
   : Hom (A (X × X')%ob) (A (Y × Y')%ob)
@@ -372,7 +372,7 @@ Notation "f '***[' A ']' g" := (arrow_split A f g)
 
 Definition arrow_fanout {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)) {X Y Z : @Ob C}
+    (A : Arrow C K (@CartHasMonoidal C HT HP)) {X Y Z : @Ob C}
     (f : Hom (A X) (A Y)) (g : Hom (A X) (A Z))
   : Hom (A X) (A (Y × Z)%ob)
   := (f ***[A] g) ∘ arr[A; ⟨id, id⟩].
@@ -386,7 +386,7 @@ Notation "f '&&&[' A ']' g" := (arrow_fanout A f g)
 
 Global Instance arrow_split_proper {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP))
+    (A : Arrow C K (@CartHasMonoidal C HT HP))
     {X Y X' Y' : @Ob C}
   : Proper (HomEq ==> HomEq ==> HomEq) (@arrow_split C K HT HP A X Y X' Y').
 Proof.
@@ -399,7 +399,7 @@ Qed.
 
 Global Instance arrow_fanout_proper {C K : Cat}
     `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)) {X Y Z : @Ob C}
+    (A : Arrow C K (@CartHasMonoidal C HT HP)) {X Y Z : @Ob C}
   : Proper (HomEq ==> HomEq ==> HomEq) (@arrow_fanout C K HT HP A X Y Z).
 Proof.
   intros f f' Hf g g' Hg. unfold arrow_fanout. rewrite Hf, Hg. reflexivity.

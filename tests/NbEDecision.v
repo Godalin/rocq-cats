@@ -88,7 +88,7 @@ Definition smaller_evidence_decision
   : Decision (TmEq@{b b _} t u)
   := tm_eq_decision@{b r s l b
       _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} d t u.
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} d t u.
 
 End SmallerEvidence.
 
@@ -120,7 +120,7 @@ Definition larger_evidence_decision
   : Decision (TmEq@{b e _} t u)
   := tm_eq_decision@{b r s l e
       _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} d t u.
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} d t u.
 
 End LargerEvidenceAndSmallerWorldLaws.
 

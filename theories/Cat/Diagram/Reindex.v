@@ -100,8 +100,8 @@ Proof.
   rewrite (cone_naturality κ g).
   change (fmap D (HQ j).2.1 ∘ (fmap D (fmap Q g) ∘ κ i) ≈
     fmap D f ∘ κ i).
-  rewrite <- comp_assoc, <- fct_comp.
-  apply comp_r. apply fct_fmap_proper.
+  rewrite <- comp_assoc, <- fmap_comp.
+  apply comp_r. apply fmap_proper.
   rewrite Hg, <- comp_assoc, (snd (HQ j).2.2.2), comp_id_l.
   reflexivity.
 Qed.
@@ -118,7 +118,7 @@ Program Definition ExtendCone {X} (κ : X ⇒Δ (D ∘F Q))
   |}.
 Next Obligation.
   rewrite comp_id_r. unfold cone_extend_leg at 2.
-  rewrite <- comp_assoc, <- fct_comp.
+  rewrite <- comp_assoc, <- fmap_comp.
   symmetry. apply cone_extend_leg_comm.
 Qed.
 
@@ -158,7 +158,7 @@ Lemma cone_restrict_extend {X} (κ : X ⇒Δ (D ∘F Q))
 Proof.
   intros i. symmetry.
   transitivity (fmap D (id[Q i]) ∘ κ i).
-  - rewrite fct_id, comp_id_l. reflexivity.
+  - rewrite fmap_id, comp_id_l. reflexivity.
   - apply cone_extend_leg_comm.
 Qed.
 

@@ -32,20 +32,20 @@ Let D
 (** 重建作用为沿选定张量边界的共轭，其见证及反向边界映射保持透明。 *)
 
 Program Definition FreydArrow
-  : Arrow C D (@CartMonoidal C (@hasValueTerminal C K F) (@hasValueProduct C K F))
+  : Arrow C D (@CartHasMonoidal C (@hasValueTerminal C K F) (@hasValueProduct C K F))
   :=
   {|ArrowF := FreydPureF F
   ; arrow_context X Y Z f := freyd_context F Z f
   ; arrow_context_proper X Y Z :=
-      @fct_fmap_proper D D (FreydContextF F Z) X Y
+      @fmap_proper _ _ _ _ (@isFct D D (FreydContextF F Z)) X Y
   ; arrow_context_comp X Y W Z g f :=
-      @fct_comp D D (FreydContextF F Z) X Y W g f
+      @fmap_comp _ _ _ _ (@isFct D D (FreydContextF F Z)) X Y W g f
   |}.
 Next Obligation.
   etransitivity; [exact (freyd_context_pure F Z f) |].
   pose proof (@cartesian_tensor_map C (@hasValueTerminal C K F) (@hasValueProduct C K F)
     Z Z X Y (id[Z]) f) as H. symmetry in H.
-  exact (@fct_fmap_proper C K F _ _ _ _ H).
+  exact (@fmap_proper _ _ _ _ (@isFct C K F) _ _ _ _ H).
 Defined.
 Next Obligation.
   pose proof (freyd_context_natural F f h) as H.

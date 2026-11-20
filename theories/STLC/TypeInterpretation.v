@@ -109,8 +109,13 @@ Qed.
 Program Definition TypeInterpretF
   : Fct (TyCat@{b e l} B) C
   :=
-  {|F0 := TyI I
-  ; F1 A U h := type_interp h
+  {|fobj := TyI I
+  ; fmap A U h := type_interp h
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H. apply tm_eval_sound. exact (H _ var_zero).

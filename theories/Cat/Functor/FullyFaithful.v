@@ -66,21 +66,25 @@ Proof. exact (fst H X Y f).2. Qed.
 Program Definition FullyFaithfulInverseF
   : Fct (InducedCat C F) C
   :=
-  {|F0 X := X
-  ; F1 X Y f := fully_faithful_preimage f
-  ; fct_fmap_proper X Y := fully_faithful_preimage_proper
+  {|fobj X := X
+  ; fmap X Y f := fully_faithful_preimage f
+  ; isFct :=
+      {|fmap_proper X Y := fully_faithful_preimage_proper
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   change (fully_faithful_preimage (id[F X]) ≈ id[X]).
   apply (snd H X X). rewrite fully_faithful_image_preimage.
-  symmetry. apply fct_id.
-Defined.
+  symmetry. apply fmap_id.
+Qed.
 Next Obligation.
   change (fully_faithful_preimage (f ∘ g) ≈
     fully_faithful_preimage f ∘ fully_faithful_preimage g).
-  apply (snd H X Z). rewrite fully_faithful_image_preimage, fct_comp,
+  apply (snd H X Z). rewrite fully_faithful_image_preimage, fmap_comp,
     !fully_faithful_image_preimage. reflexivity.
-Defined.
+Qed.
 
 (** Identity components compare lifting after the induced functor with
     identity. *)
@@ -93,7 +97,7 @@ Program Definition FullyFaithfulUnitN
 Next Obligation.
   change (id ∘ fully_faithful_preimage (fmap F f) ≈ f ∘ id).
   rewrite comp_id_l, comp_id_r. apply fully_faithful_preimage_image.
-Defined.
+Qed.
 
 (** The source comparison has transparent identity inverse components. *)
 
@@ -116,7 +120,7 @@ Program Definition FullyFaithfulCounitN
 Next Obligation.
   change (id ∘ fmap F (fully_faithful_preimage f) ≈ f ∘ id).
   rewrite comp_id_l, comp_id_r. apply fully_faithful_image_preimage.
-Defined.
+Qed.
 
 (** The target comparison retains the same identity inverse data. *)
 

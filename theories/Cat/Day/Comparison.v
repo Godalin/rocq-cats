@@ -27,16 +27,15 @@ From Cats Require Export
 
 Section Comparison.
 Universes u p.
-Context {C : Cat} (MC : MonoidalCat C)
-    (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF MC) F G).
-Local Existing Instance HD.
+Context {C : Cat} (MC : HasMonoidal C)
+    `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
+      HasDay C (tensorF (isMagmoidal MC)) F G).
 Let DM
-  : MonoidalCat (FctCat C (SetCat@{u p _ _ _ _ _}))
+  : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
 Let SM
-  : MonoidalCat (SetCat@{u p _ _ _ _ _})
-  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  : HasMonoidal (SetCat@{u p _ _ _ _ _})
+  := @CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** Extend lax functors and their monoidal transformations to Day monoids. *)
 
@@ -45,12 +44,17 @@ Let SM
 Program Definition LaxDayMonoidF
   : Fct (LaxMonoidalFctCat MC SM) (MonoidCat DM)
   :=
-  {|F0 := LaxDayMonoid MC HD
-  ; F1 L K α := (α.1; fst (lax_day_monoid_hom MC HD L K α.1) α.2)
+  {|fobj := LaxDayMonoid MC HD
+  ; fmap L K α := (α.1; fst (lax_day_monoid_hom MC HD L K α.1) α.2)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β E. exact E. Defined.
-Next Obligation. intros Q x. reflexivity. Defined.
-Next Obligation. intros Q x. reflexivity. Defined.
+Next Obligation. intros α β E. exact E. Qed.
+Next Obligation. intros Q x. reflexivity. Qed.
+Next Obligation. intros Q x. reflexivity. Qed.
 
 (** Restrict Day monoids and homomorphisms to the native lax presentation. *)
 
@@ -59,12 +63,17 @@ Next Obligation. intros Q x. reflexivity. Defined.
 Program Definition DayMonoidLaxF
   : Fct (MonoidCat DM) (LaxMonoidalFctCat MC SM)
   :=
-  {|F0 := DayMonoidLax MC HD
-  ; F1 M N α := (α.1; fst (day_monoid_hom_laws MC HD M N α.1) α.2)
+  {|fobj := DayMonoidLax MC HD
+  ; fmap M N α := (α.1; fst (day_monoid_hom_laws MC HD M N α.1) α.2)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β E. exact E. Defined.
-Next Obligation. intros Q x. reflexivity. Defined.
-Next Obligation. intros Q x. reflexivity. Defined.
+Next Obligation. intros α β E. exact E. Qed.
+Next Obligation. intros Q x. reflexivity. Qed.
+Next Obligation. intros Q x. reflexivity. Qed.
 
 (** ** Identity Components Preserve the Recovered Operations
 
@@ -113,8 +122,8 @@ Proof.
   - intros X x. exact (day_monoid_unit_roundtrip MC HD M X x).
   - change (monoid_object_mul
       (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv @tensor_map _ DM _ _ _ _ IdN IdN)).
-    rewrite (@tensor_map_id _ DM (MonoidCarrier M) (MonoidCarrier M)).
+      (monoid_object_mul M ∘Nv tensor_map (IM := isMagmoidal DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := isMagmoidal DM) (MonoidCarrier M) (MonoidCarrier M)).
     intros X x. exact (day_monoid_mul_roundtrip MC HD M X x).
 Defined.
 
@@ -129,8 +138,8 @@ Proof.
   - intros X x. symmetry. exact (day_monoid_unit_roundtrip MC HD M X x).
   - change (monoid_object_mul M ≈N
       (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        @tensor_map _ DM _ _ _ _ IdN IdN)).
-    rewrite (@tensor_map_id _ DM
+        tensor_map (IM := isMagmoidal DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := isMagmoidal DM)
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
     intros X x. symmetry. exact (day_monoid_mul_roundtrip MC HD M X x).
@@ -156,7 +165,7 @@ Program Definition DayLaxRoundtripN
   :=
   {|nt L := (IdN; day_lax_roundtrip_hom L)
   |}.
-Next Obligation. intros Q x. reflexivity. Defined.
+Next Obligation. intros Q x. reflexivity. Qed.
 
 (** Its reverse comparison keeps the same identity components. *)
 
@@ -167,7 +176,7 @@ Program Definition DayLaxRoundtripInvN
   :=
   {|nt L := (IdN; day_lax_roundtrip_inv_hom L)
   |}.
-Next Obligation. intros Q x. reflexivity. Defined.
+Next Obligation. intros Q x. reflexivity. Qed.
 
 (** Both chosen comparisons are inverse by the underlying identity laws. *)
 
@@ -194,11 +203,11 @@ Next Obligation.
   - intros Q x. exact (day_monoid_unit_roundtrip MC HD M Q x).
   - change (monoid_object_mul
       (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv @tensor_map _ DM _ _ _ _ IdN IdN)).
-    rewrite (@tensor_map_id _ DM (MonoidCarrier M) (MonoidCarrier M)).
+      (monoid_object_mul M ∘Nv tensor_map (IM := isMagmoidal DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := isMagmoidal DM) (MonoidCarrier M) (MonoidCarrier M)).
     intros Q x. exact (day_monoid_mul_roundtrip MC HD M Q x).
 Defined.
-Next Obligation. intros Q x. reflexivity. Defined.
+Next Obligation. intros Q x. reflexivity. Qed.
 
 (** The reverse comparison preserves the same chosen Day operations. *)
 
@@ -214,13 +223,13 @@ Next Obligation.
   - intros Q x. symmetry. exact (day_monoid_unit_roundtrip MC HD M Q x).
   - change (monoid_object_mul M ≈N
       (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        @tensor_map _ DM _ _ _ _ IdN IdN)).
-    rewrite (@tensor_map_id _ DM
+        tensor_map (IM := isMagmoidal DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := isMagmoidal DM)
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
     intros Q x. symmetry. exact (day_monoid_mul_roundtrip MC HD M Q x).
 Defined.
-Next Obligation. intros Q x. reflexivity. Defined.
+Next Obligation. intros Q x. reflexivity. Qed.
 
 (** The Day monoid comparison is a natural isomorphism, not record equality. *)
 

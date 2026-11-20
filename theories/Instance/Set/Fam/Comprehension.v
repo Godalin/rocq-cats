@@ -45,7 +45,7 @@ Proof.
     + exact (nat_naturality FamProjectionN k).
     + rewrite Hk_base, comp_id_l. reflexivity.
   - change (fmap FamTotalF (fam_reindex V f) ∘ fmap FamTotalF k ≈ fmap FamTotalF φ).
-    rewrite <- fct_comp, Hk_comp. reflexivity.
+    rewrite <- fmap_comp, Hk_comp. reflexivity.
   - apply fam_reindex_pullback.
 Defined.
 

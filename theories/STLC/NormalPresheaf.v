@@ -117,12 +117,17 @@ Program Definition NePsh (A : Ty B)
   : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b q _ _ _ _ _}
   :=
-  {|F0 Γ := NeS Γ A
-  ; F1 _ _ ρ := ne_rename_resp ρ
+  {|fobj Γ := NeS Γ A
+  ; fmap _ _ ρ := ne_rename_resp ρ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros ρ τ h n. apply rename_ne_ext. exact h. Defined.
-Next Obligation. intros n. apply rename_ne_id. Defined.
-Next Obligation. intros n. symmetry. apply rename_ne_comp. Defined.
+Next Obligation. intros ρ τ h n. apply rename_ne_ext. exact h. Qed.
+Next Obligation. intros n. apply rename_ne_id. Qed.
+Next Obligation. intros n. symmetry. apply rename_ne_comp. Qed.
 
 (** The normal presheaf has the same world category and its own carriers. *)
 
@@ -132,12 +137,17 @@ Program Definition NfPsh (A : Ty B)
   : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat@{b q _ _ _ _ _}
   :=
-  {|F0 Γ := NfS Γ A
-  ; F1 _ _ ρ := nf_rename_resp ρ
+  {|fobj Γ := NfS Γ A
+  ; fmap _ _ ρ := nf_rename_resp ρ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros ρ τ h v. apply rename_nf_ext. exact h. Defined.
-Next Obligation. intros v. apply rename_nf_id. Defined.
-Next Obligation. intros v. symmetry. apply rename_nf_comp. Defined.
+Next Obligation. intros ρ τ h v. apply rename_nf_ext. exact h. Qed.
+Next Obligation. intros v. apply rename_nf_id. Qed.
+Next Obligation. intros v. symmetry. apply rename_nf_comp. Qed.
 
 (** Raw terms with beta/eta equality also form a presheaf on these worlds.
     This does not allow arbitrary substitution into a normal-form tree. *)
@@ -149,16 +159,21 @@ Program Definition TmRenamingPsh (A : Ty B)
   : Fct ((RenamingCat B : Cat@{b b r l l})^op)
       SetCat
   :=
-  {|F0 Γ := TmS@{b q} Γ A
-  ; F1 _ _ ρ := tm_rename_resp ρ
+  {|fobj Γ := TmS@{b q} Γ A
+  ; fmap _ _ ρ := tm_rename_resp ρ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros ρ τ h t. apply tm_eq_of_eq. apply rename_ext. exact h.
-Defined.
-Next Obligation. intros t. apply tm_eq_of_eq. apply rename_id. Defined.
+Qed.
+Next Obligation. intros t. apply tm_eq_of_eq. apply rename_id. Qed.
 Next Obligation.
   intros t. apply tm_eq_of_eq. symmetry. apply rename_comp.
-Defined.
+Qed.
 
 (** Embed neutral syntax into the term setoid. *)
 
@@ -206,7 +221,7 @@ Program Definition NeEmbedN (A : Ty B)
   :=
   {|nt Γ := embed_ne_resp Γ A
   |}.
-Next Obligation. intros n. apply tm_eq_of_eq. apply embed_rename_ne. Defined.
+Next Obligation. intros n. apply tm_eq_of_eq. apply embed_rename_ne. Qed.
 
 (** The normal embedding is natural for the same reason. *)
 
@@ -217,7 +232,7 @@ Program Definition NfEmbedN (A : Ty B)
   :=
   {|nt Γ := embed_nf_resp Γ A
   |}.
-Next Obligation. intros v. apply tm_eq_of_eq. apply embed_rename_nf. Defined.
+Next Obligation. intros v. apply tm_eq_of_eq. apply embed_rename_nf. Qed.
 
 (** The strict eta-expansion/renaming law is exactly naturality. *)
 
@@ -228,7 +243,7 @@ Program Definition NeutralEtaN (A : Ty B)
   :=
   {|nt Γ := eta_expand_ne_resp Γ A
   |}.
-Next Obligation. intros n. apply eta_expand_ne_rename. Defined.
+Next Obligation. intros n. apply eta_expand_ne_rename. Qed.
 
 (** The two paths from neutral syntax to beta/eta terms agree as natural
     transformations. This is expansion correctness, not equality or inverse

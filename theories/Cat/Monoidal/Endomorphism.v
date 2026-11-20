@@ -1,5 +1,5 @@
 From Cats Require Export
-  Cat.Monoidal.Bifunctor.
+  Cat.Monoidal.Bifct.
 From Cats Require Import
   Cat.Bicategory.Core.
 
@@ -26,7 +26,7 @@ Context (B : Bicat) (X : ObB B).
 (** 将双范畴结合子组织为自同态三元组上的自然变换。 *)
 
 Program Definition EndoAssociatorN
-  : TensorLF (@comp1F B X X X) ⇒ TensorRF (@comp1F B X X X)
+  : Tensor3LF (@comp1F B X X X) ⇒ Tensor3RF (@comp1F B X X X)
   :=
   {|nt '((h, g), f) := @associator B X X X X h g f
   |}.
@@ -34,7 +34,7 @@ Next Obligation.
   destruct X0 as [[h g] f0], Y as [[h' g'] f1], f as [[γ β] α]. cbn.
   exact (@associator_naturality B X X X X _ _ _ _ _ _
     γ β α).
-Defined.
+Qed.
 
 (** The bicategory left unitor is natural on the endohom category. *)
 
@@ -45,7 +45,7 @@ Program Definition EndoLeftUnitorN
   :=
   {|nt f := @left_unitor B X X f
   |}.
-Next Obligation. exact (@left_unitor_naturality B X X _ _ f). Defined.
+Next Obligation. exact (@left_unitor_naturality B X X _ _ f). Qed.
 
 (** The bicategory right unitor is natural on the endohom category. *)
 
@@ -56,7 +56,7 @@ Program Definition EndoRightUnitorN
   :=
   {|nt f := @right_unitor B X X f
   |}.
-Next Obligation. exact (@right_unitor_naturality B X X _ _ f). Defined.
+Next Obligation. exact (@right_unitor_naturality B X X _ _ f). Qed.
 
 (** The endomorphism monoidal structure is an explicit choice. Tensor order
     is the composition order: the left factor follows the right factor.
@@ -66,8 +66,8 @@ Next Obligation. exact (@right_unitor_naturality B X X _ _ f). Defined.
     逆分量、自然性、五边形与三角形均从已有结构继承。 *)
 
 Program Definition EndoMonoidal
-  : MonoidalCat (@HomCat B X X)
-  := BifunctorMonoidal (@comp1F B X X X) (𝟙₁ X)
+  : HasMonoidal (@HomCat B X X)
+  := BifctHasMonoidal (@comp1F B X X X) (𝟙₁ X)
     (EndoAssociatorN;
       λ '((h, g), f), @associator_iso B X X X X h g f)
     (EndoLeftUnitorN;
@@ -75,8 +75,11 @@ Program Definition EndoMonoidal
     (EndoRightUnitorN;
       λ f, @right_unitor_iso B X X f)
     _ _.
-Next Obligation. exact (bicat_pentagon W X0 Y Z). Defined.
-Next Obligation. exact (bicat_triangle X0 Y). Defined.
+Next Obligation.
+  unfold is_tensor_pentagon. intros W X0 Y Z.
+  exact (bicat_pentagon W X0 Y Z).
+Qed.
+Next Obligation. exact (bicat_triangle X0 Y). Qed.
 
 (** The derived tensor of two cells agrees with horizontal composition. *)
 
@@ -84,8 +87,9 @@ Next Obligation. exact (bicat_triangle X0 Y). Defined.
 
 Lemma endomorphism_tensor_map {f f' g g' : Cell1 X X}
     (β : Cell2 g g') (α : Cell2 f f')
-  : @tensor_map (@HomCat B X X) EndoMonoidal g g' f f' β α ≈
+  : tensor_map (IM := isMagmoidal EndoMonoidal)
+      (X := g) (X' := g') (Y := f) (Y' := f') β α ≈
       comp2_h β α.
-Proof. apply bifunctor_monoidal_map. Qed.
+Proof. apply bifct_sequence. Qed.
 
 End Endomorphisms.

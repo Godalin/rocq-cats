@@ -108,7 +108,7 @@ Qed.
 Lemma static_comp_id_r {X Y : @Ob C} (f : Hom 1 (A (Y ^ X)%ob))
   : f ∘ˢ[A] static_arr A (id[X]) ≈ f.
 Proof.
-  rewrite static_comp_pure_r, exp_dimap_id, fct_id, comp_id_l.
+  rewrite static_comp_pure_r, exp_dimap_id, fmap_id, comp_id_l.
   reflexivity.
 Qed.
 
@@ -119,7 +119,7 @@ Qed.
 Lemma static_comp_id_l {X Y : @Ob C} (f : Hom 1 (A (Y ^ X)%ob))
   : static_arr A (id[Y]) ∘ˢ[A] f ≈ f.
 Proof.
-  rewrite static_comp_pure_l, exp_map_id, fct_id, comp_id_l.
+  rewrite static_comp_pure_l, exp_map_id, fmap_id, comp_id_l.
   reflexivity.
 Qed.
 
@@ -175,12 +175,16 @@ Next Obligation. apply static_comp_assoc. Defined.
 Program Definition StaticPureF
   : Fct C StaticCat
   :=
-  {|F0 X := X
-  ; F1 X Y f := static_arr A f
-  ; fct_fmap_proper X Y := @static_arr_proper X Y
+  {|fobj X := X
+  ; fmap X Y f := static_arr A f
+  ; isFct :=
+      {|fmap_proper X Y := @static_arr_proper X Y
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. reflexivity. Defined.
-Next Obligation. exact (static_arr_comp f g). Defined.
+Next Obligation. reflexivity. Qed.
+Next Obligation. exact (static_arr_comp f g). Qed.
 
 (** Context extension maps the ordinary internal context function. It
     neither runs another effect nor supplies a functor strength. *)
@@ -233,7 +237,7 @@ Qed.
     函子定律。 *)
 
 Program Definition StaticArrow
-  : Arrow C StaticCat (@CartMonoidal C HT HP)
+  : Arrow C StaticCat (@CartHasMonoidal C HT HP)
   :=
   {|ArrowF := StaticPureF
   ; arrow_context X Y Z f := static_context Z f
@@ -241,23 +245,28 @@ Program Definition StaticArrow
   ; arrow_context_comp X Y W Z g f := static_context_comp Z g f
   |}.
 Next Obligation.
+  change (static_context Z (static_arr A f) ≈
+    static_arr A (tensor_map (IM := isMagmoidal
+      (@CartHasMonoidal C HT HP)) (id[Z]) f)).
   rewrite cartesian_tensor_map. exact (static_context_arr Z f).
 Defined.
 Next Obligation.
-  rewrite !cartesian_tensor_map.
-  change (static_arr A (h × id[Y]) ∘ˢ[A] static_context Z f ≈
-    static_context W f ∘ˢ[A] static_arr A (h × id[X])).
+  pose (MC := @CartHasMonoidal C HT HP).
+  change (static_arr A (tensor_map (IM := isMagmoidal MC) h (id[Y]))
+    ∘ˢ[A] static_context Z f ≈ static_context W f ∘ˢ[A]
+      static_arr A (tensor_map (IM := isMagmoidal MC) h (id[X]))).
+  unfold MC. rewrite !cartesian_tensor_map.
   rewrite static_comp_pure_l, static_comp_pure_r.
-  unfold static_context. rewrite <- !comp_assoc, <- !fct_comp.
-  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  unfold static_context. rewrite <- !comp_assoc, <- !fmap_comp.
+  apply comp_proper; [| reflexivity]. apply fmap_proper.
   exact (internal_context_natural h X Y).
 Defined.
 Next Obligation.
   change (static_arr A (π2 : Hom (1 × Y) Y) ∘ˢ[A] static_context 1 f ≈
     f ∘ˢ[A] static_arr A (π2 : Hom (1 × X) X)).
   rewrite static_comp_pure_l, static_comp_pure_r.
-  unfold static_context. rewrite <- comp_assoc, <- fct_comp.
-  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  unfold static_context. rewrite <- comp_assoc, <- fmap_comp.
+  apply comp_proper; [| reflexivity]. apply fmap_proper.
   exact (internal_context_unit X Y).
 Defined.
 Next Obligation.
@@ -266,8 +275,8 @@ Next Obligation.
     static_context Z (static_context W f) ∘ˢ[A]
       static_arr A (@product_assoc C HP Z W X).1).
   rewrite static_comp_pure_l, static_comp_pure_r.
-  unfold static_context. rewrite <- !comp_assoc, <- !fct_comp.
-  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  unfold static_context. rewrite <- !comp_assoc, <- !fmap_comp.
+  apply comp_proper; [| reflexivity]. apply fmap_proper.
   exact (internal_context_assoc Z W X Y).
 Defined.
 

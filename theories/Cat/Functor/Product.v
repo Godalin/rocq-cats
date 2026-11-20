@@ -24,12 +24,17 @@ From Cats Require Import
 Program Definition π1F (C : Cat) (D : Cat)
   : Fct (C ×C D) C
   :=
-  {|F0 := fst
-  ; F1 X Y := fst
+  {|fobj := fst
+  ; fmap X Y := fst
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros [f g] [h k] [H K]. exact H. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros [f g] [h k] [H K]. exact H. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** The second projection keeps the second components. *)
 
@@ -38,12 +43,17 @@ Next Obligation. reflexivity. Defined.
 Program Definition π2F (C : Cat) (D : Cat)
   : Fct (C ×C D) D
   :=
-  {|F0 := snd
-  ; F1 X Y := snd
+  {|fobj := snd
+  ; fmap X Y := snd
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros [f g] [h k] [H K]. exact K. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros [f g] [h k] [H K]. exact K. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Pair two diagrams with a common source, retaining both arrow maps. *)
 
@@ -53,14 +63,19 @@ Program Definition PairF {J : Cat} {C : Cat} {D : Cat}
     (F : Fct J C) (G : Fct J D)
   : Fct J (C ×C D)
   :=
-  {|F0 i := (F i, G i)
-  ; F1 i j f := (fmap F f, fmap G f)
+  {|fobj i := (F i, G i)
+  ; fmap i j f := (fmap F f, fmap G f)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
-  intros f g H. split; apply fct_fmap_proper; exact H.
-Defined.
-Next Obligation. split; apply fct_id. Defined.
-Next Obligation. split; apply fct_comp. Defined.
+  intros f g H. split; apply fmap_proper; exact H.
+Qed.
+Next Obligation. split; apply fmap_id. Qed.
+Next Obligation. split; apply fmap_comp. Qed.
 
 (** ** Fixing the Second Product Coordinate
 
@@ -90,9 +105,9 @@ Program Definition ProductAtN {b b' : B} (a : Hom b b')
   {|nt x := fmap K (X := (x, b)) (Y := (x, b')) (id, a)
   |}.
 Next Obligation.
-  cbn. rewrite <- !fct_comp. apply fct_fmap_proper.
+  cbn. rewrite <- !fmap_comp. apply fmap_proper.
   split; carw.
-Defined.
+Qed.
 
 (** Equal parameter arrows induce pointwise equal transformations. *)
 
@@ -101,7 +116,7 @@ Defined.
 Global Instance product_at_proper {b b' : @Ob B}
   : Proper (@HomEq B b b' ==> NatEq) (@ProductAtN b b').
 Proof.
-  intros a a' H x. cbn. apply fct_fmap_proper.
+  intros a a' H x. cbn. apply fmap_proper.
   split; [reflexivity | exact H].
 Defined.
 
@@ -111,7 +126,7 @@ Defined.
 
 Lemma product_at_id (b : @Ob B)
   : ProductAtN (@Cat.Core.id B b) ≈N IdN.
-Proof. intros x. exact (@fct_id _ _ K (x, b)). Defined.
+Proof. intros x. exact (@fmap_id _ _ _ _ (isFct K) (x, b)). Defined.
 
 (** Composition in the parameter becomes vertical composition. *)
 
@@ -122,8 +137,8 @@ Lemma product_at_comp {b b' b'' : B}
   : ProductAtN (a' ∘ a)
     ≈N (ProductAtN a' ∘Nv ProductAtN a).
 Proof.
-  intros x. cbn. rewrite <- fct_comp.
-  apply fct_fmap_proper.
+  intros x. cbn. rewrite <- fmap_comp.
+  apply fmap_proper.
   split; cbn; carw; reflexivity.
 Defined.
 
@@ -136,7 +151,7 @@ Lemma product_at_map {x y : A} {b b' : B}
   : fmap K (X := (x, b)) (Y := (y, b')) (f, a)
     ≈ fmap (AtRF K b') f ∘ ProductAtN a x.
 Proof.
-  cbn. rewrite <- fct_comp. apply fct_fmap_proper.
+  cbn. rewrite <- fmap_comp. apply fmap_proper.
   split; cbn; carw; reflexivity.
 Defined.
 
@@ -156,7 +171,7 @@ Program Definition ProductFirstAtN {A B C : Cat}
 Next Obligation.
   exact (nat_naturality
     (ProductAtN (K ∘F PairF (π2F B A) (π1F B A)) f) f0).
-Defined.
+Qed.
 
 (** Restrict a natural comparison to one parameter value. *)
 
@@ -170,7 +185,7 @@ Program Definition ProductRestrictionN {A B C : Cat}
   |}.
 Next Obligation.
   exact (nat_naturality β (X := (X, b)) (Y := (Y, b)) (f, id)).
-Defined.
+Qed.
 
 (** Restriction preserves the specified pointwise equality of comparisons. *)
 
@@ -212,12 +227,17 @@ Program Definition InducedProductF
         (λ xy, (j (fst xy), k (snd xy))))
       (InducedCat X j ×C InducedCat Y k)
   :=
-  {|F0 xy := xy
-  ; F1 x y f := f
+  {|fobj xy := xy
+  ; fmap x y f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. split; reflexivity. Defined.
-Next Obligation. split; reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. split; reflexivity. Qed.
+Next Obligation. split; reflexivity. Qed.
 
 (** The reverse repackaging retains the same computational data. *)
 
@@ -230,12 +250,17 @@ Program Definition InducedProductInvF
       (InducedCat (C := C ×C D) (X * Y)
         (λ xy, (j (fst xy), k (snd xy))))
   :=
-  {|F0 xy := xy
-  ; F1 x y f := f
+  {|fobj xy := xy
+  ; fmap x y f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. split; reflexivity. Defined.
-Next Obligation. split; reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. split; reflexivity. Qed.
+Next Obligation. split; reflexivity. Qed.
 
 (** Pointwise products reuse the chosen product bifunctor of the target. *)
 
@@ -261,7 +286,7 @@ Next Obligation.
   change ((α Y × β Y) ∘ (fmap F f × fmap G f) ≈
     (fmap F' f × fmap G' f) ∘ (α X × β X)).
   rewrite <- !cross_comp, !nat_naturality. reflexivity.
-Defined.
+Qed.
 
 (** ** Natural Comparisons of Product-Valued Functors
 
@@ -287,12 +312,12 @@ Program Definition ProdNatIso {J C D : Cat}
        |}; λ X, (((α.2 X).1, (β.2 X).1); _)).
 Next Obligation.
   split; [exact (nat_naturality α.1 f) | exact (nat_naturality β.1 f)].
-Defined.
+Qed.
 Next Obligation.
   split; split;
     [exact (fst (α.2 _).2) | exact (fst (β.2 _).2) |
       exact (snd (α.2 _).2) | exact (snd (β.2 _).2)].
-Defined.
+Qed.
 
 (** The first projection of a paired functor recovers its first factor. *)
 
@@ -303,7 +328,7 @@ Program Definition FstPairIso {J C D : Cat}
   : (π1F C D ∘F PairF F G) ≅N F
   := ({|nt X := id
        |}; _).
-Next Obligation. cbn. carw. Defined.
+Next Obligation. cbn. carw. Qed.
 Next Obligation.
   intro X. exists id.
   split; apply comp_id_l.
@@ -318,7 +343,7 @@ Program Definition SndPairIso {J C D : Cat}
   : (π2F C D ∘F PairF F G) ≅N G
   := ({|nt X := id
        |}; _).
-Next Obligation. cbn. carw. Defined.
+Next Obligation. cbn. carw. Qed.
 Next Obligation.
   intro X. exists id.
   split; apply comp_id_l.

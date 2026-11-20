@@ -702,7 +702,7 @@ WitnessClosure 保留；模块路径、Section 名及普通数学叙述不改。
 | `CartesianMonoidal` | `CartMonoidal` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CartesianRightUnitorIso` | `CartRightUnitorIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CartesianRightUnitorN` | `CartRightUnitorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianSymmetricPremonoidal` | `CartSymmetricPremonoidal` | [Cat/Premonoidal/Cartesian.v](../theories/Cat/Premonoidal/Cartesian.v) |
+| `CartesianSymmetricPremonoidal` | `CartSymmetricPremonoidal` | [Cat/Monoidal/CartesianSymmetric.v](../theories/Cat/Monoidal/CartesianSymmetric.v) |
 | `CtxCat_Cartesian` | `CtxCat_Cart` | [STLC/CCC.v](../theories/STLC/CCC.v) |
 | `CwFBaseF_HasCartesianLift` | `CwFBaseF_HasCartLift` | [DTT/Comprehension.v](../theories/DTT/Comprehension.v) |
 | `FamBaseF_HasCartesianLift` | `FamBaseF_HasCartLift` | [Instance/Set/Fam/Fibration.v](../theories/Instance/Set/Fam/Fibration.v) |
@@ -1769,15 +1769,25 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `forward_vertex_functor_set` | `forward_vertex_fct_set` | [tests/Universes.v](../tests/Universes.v) |
 | `free_functor_choice_iso` | `free_fct_choice_iso` | [theories/Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
 | `free_functor_unit` | `free_fct_unit` | [theories/Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
-| `functor_comp` | `fct_comp` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `FctOfMaps` | `MakeFct` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `F0` | `fobj` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `F1` | `fmap` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `Fct_IsFct` | `isFct` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `fct_map_comp` | `fmap_comp` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `fct_map_id` | `fmap_id` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `fct_map_proper` | `fmap_proper` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `fct_comp` | `fmap_comp` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `fct_id` | `fmap_id` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `fct_fmap_proper` | `fmap_proper` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_comp` | `fmap_comp` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
 | `functor_curry` | `fct_curry` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
 | `functor_eval` | `fct_eval` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
 | `functor_exponential` | `fct_exp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `functor_exponential_comparison` | `fct_exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
 | `functor_exponential_comparison_comp` | `fct_exp_cmp_comp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `functor_fmap_proper` | `fct_fmap_proper` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_fmap_proper` | `fmap_proper` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
 | `functor_fully_faithful_iff_hom_iso` | `fct_fully_faithful_iff_hom_iso` | [theories/Instance/Set/Hom.v](../theories/Instance/Set/Hom.v) |
-| `functor_id` | `fct_id` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
+| `functor_id` | `fmap_id` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
 | `functor_is_iso` | `fct_is_iso` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
 | `functor_op_essentially_surjective` | `fct_op_essentially_surjective` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
 | `functor_op_full` | `fct_op_full` | [theories/Cat/Functor/Core.v](../theories/Cat/Functor/Core.v) |
@@ -2085,12 +2095,12 @@ Dune 3.23.1）通过全部三十五个直接及代表性目标。父投影及自
 `BinoidalCat` now names the complete record owning one category and one
 `HasBinoidal` choice. `HasBinoidal C` retains the named-category extension.
 The reusable `IsFct` property on fixed maps groups each context action's
-respectfulness, identity and composition laws; the transparent `FctOfMaps`
+respectfulness, identity and composition laws; the transparent `MakeFct`
 view recovers ordinary functors. Existing `Fct` fields are unchanged.
 
 `BinoidalCat` 现命名拥有唯一范畴及唯一 `HasBinoidal` 选择的完整记录，
 `HasBinoidal C` 保留具名范畴上的扩展接口。固定映射性质 `IsFct` 分组每种
-上下文作用的保相等、恒等及复合定律；透明视图 `FctOfMaps` 恢复普通函子。
+上下文作用的保相等、恒等及复合定律；`MakeFct` 构造器装配普通函子。
 已有 `Fct` 字段保持不变。
 
 | Earlier presentation / 先前呈现 | Current presentation / 当前呈现 |
@@ -2098,7 +2108,7 @@ view recovers ordinary functors. Existing `Fct` fields are unchanged.
 | `BinoidalCat C` | `HasBinoidal C`; the complete `BinoidalCat` owns `C` / 完整 `BinoidalCat` 拥有 `C` |
 | `BinoidalC` | Stored `BinoidalCatToCat` / 保存的 `BinoidalCatToCat` |
 | `PremonoidalB` | `PremonoidalCatToBinoidalCat` on the complete record / 完整记录上的父投影 |
-| Fixed-category `BifunctorBinoidal` / 固定范畴呈现 | `BifunctorHasBinoidal`; `BifunctorBinoidal` is the complete bundle / 后者为完整打包 |
+| Fixed-category `BifunctorBinoidal` / 固定范畴呈现 | `BifctHasBinoidal`; `BifctBinoidal` is the complete bundle / 后者为完整打包 |
 | Fixed-category `ArrowBinoidal` / 固定范畴呈现 | `ArrowHasBinoidal`; `ArrowBinoidal` is the complete bundle / 后者为完整打包 |
 
 `BinoidalCatOfCat` is the direct constructor. `hasBinoidal` selects the
@@ -2123,8 +2133,8 @@ unchanged; the exact coordinated map is below.
 | --- | --- |
 | `BinoidalLeftF` | `BinoidalLF` |
 | `BinoidalRightF` | `BinoidalRF` |
-| `TensorLeftF` | `TensorLF` |
-| `TensorRightF` | `TensorRF` |
+| `TensorLeftF` | `Tensor3LF` |
+| `TensorRightF` | `Tensor3RF` |
 | `isBinoidalLeft` | `isBinoidalL` |
 | `isBinoidalRight` | `isBinoidalR` |
 | `binoidal_left` | `binoidal_l` |
@@ -2179,7 +2189,6 @@ work follows the separate user-authorized bundled-interface migration.
 | Family / 词族 | Pending examples / 待处理示例 | Boundary / 边界 |
 | --- | --- | --- |
 | Optional names / 可选名称 | `IsStrictTwoCat → IsStrict2Cat`, `ContextCategoryEquivalence → CtxCatEquiv`, NNO | Separate user approval / 用户另行批准 |
-| Complete hierarchies / 完整层级 | monoidal bundling / 幺半层级打包 | CartCat/CCC/Topos/ETCS record slice accepted locally / 笛卡尔至 ETCS 记录片段已本地验收 |
 | Other notation / 其他记号 | Repository-wide reserved syntax beyond the algebra slice above / 上述代数片段以外的全库预留语法 | Separate review; no replay of #31 / 单独审阅，不重放 #31 |
 
 ## Preserved interfaces and collisions / 保留接口与冲突
@@ -2254,14 +2263,14 @@ second batch has its own validation record above.
 
 `PremonoidalCat` now names the complete record; `HasPremonoidal C BC`
 selects compatible associator and unitors on the exact supplied tensor.
-`HasAssociator` and `HasUnitors` are independent choices, with properties
-`IsAssociator` and `IsUnitors`. `IsPremonoidal` is only triangle
+`HasAssoc` and `HasUnitors` are independent choices, with properties
+`IsAssoc` and `IsUnitors`. `IsPremonoidal` is only triangle
 compatibility. Constructors and stored parent projections supply ordinary
 inheritance conversions without forwarding wrappers.
 
 `PremonoidalCat` 现命名完整记录；`HasPremonoidal C BC` 在给定的同一张量上
-选择相容的结合子及单位子。`HasAssociator`、`HasUnitors` 是独立选择，性质
-分别为 `IsAssociator`、`IsUnitors`；`IsPremonoidal` 只刻画三角形相容性。
+选择相容的结合子及单位子。`HasAssoc`、`HasUnitors` 是独立选择，性质
+分别为 `IsAssoc`、`IsUnitors`；`IsPremonoidal` 只刻画三角形相容性。
 构造器及保存的父投影提供普通继承转换，不增加转发包装。
 
 | Previous identifier / 原标识符 | Current identifier / 当前标识符 |
@@ -2290,6 +2299,101 @@ constructions close to their theory.
 `NatIsoOfComponents` 接口导出另两种视图，共享同一分量及逆。
 `PremonoidalUnitorLIso`、`PremonoidalUnitorRIso` 直接保存。原模块路径不变；
 新增结合子、单位子及双函子装配模块，将独立构造放在其所属理论内。
+
+## Monoidal categories and fixed choices / 幺半范畴与固定选择
+
+`MonoidalCat` is the complete record. Its constructor
+`MonoidalCatOfPremonoidalCat` takes one `PremonoidalCat` and an
+`IsMagmoidal` witness on that parent's tensor actions.
+`HasMonoidal C` selects the same kind of data on a supplied category, and
+`hasMonoidal M` reads those choices from a complete category `M`. Both
+views use the same tensor, unit and coherence witnesses.
+
+`MonoidalCat` 表示完整记录。构造器 `MonoidalCatOfPremonoidalCat`
+接收一个 `PremonoidalCat` 及针对该父结构张量作用的 `IsMagmoidal` 交换律见证。
+`HasMonoidal C` 在给定范畴上选择同类数据。`hasMonoidal M` 读取完整范畴
+`M` 的固定范畴视图，两种视图使用同一份张量、单位及相干性见证。
+
+| Previous interface / 原接口 | Current interface / 当前接口 |
+| --- | --- |
+| `MonoidalCat C` | `HasMonoidal C` |
+| `MonoidalToHasPremonoidal` | `monoidal_hasPremonoidal` |
+| `BifunctorMonoidal` on a fixed category / 固定范畴构造 | `BifctHasMonoidal` |
+| `CartMonoidal` on a fixed category / 固定范畴构造 | `CartHasMonoidal` |
+| `binoidal_scope`, `premonoidal_scope` | `monoidal_scope` (`%monoidal`) |
+| `⊗m` | `⊗` in `hom_scope` / `hom_scope` 中的 `⊗` |
+| `IsAssociator`, `HasAssociator`, `isAssociator`, `hasAssociator` | `IsAssoc`, `HasAssoc`, `isAssoc`, `hasAssoc` |
+| `BifunctorHasAssociator` | `BifctHasAssoc` |
+| `binoidal_tensor`, `binoidal_l`, `binoidal_r` | `tensor`, `tensor_l`, `tensor_r` |
+| `binoidal_l_*`, `binoidal_r_*`, `binoidal_context_eq` | `tensor_l_*`, `tensor_r_*`, `tensor_context_eq` |
+| `BinoidalLF`, `BinoidalRF` | `TensorAtLF`, `TensorAtRF` |
+| `binoidal_sequence` and its laws / 及其定律 | `tensor_sequence`, `tensor_sequence_*` |
+| `PremonoidalUnit` | `tensor_unit` (notation / 记号 `𝐈[...]`) |
+| `premonoidal_associator`, `premonoidal_assoc_*`, `premonoidal_pentagon` | `tensor_assoc`, `tensor_assoc_*`, `tensor_assoc_pentagon` |
+| `PremonoidalAssocLIso`, `PremonoidalAssocMIso`, `PremonoidalAssocRIso` | `TensorAssocLIso`, `TensorAssocMIso`, `TensorAssocRIso` |
+| `premonoidal_unitor_l/r`, `premonoidal_unit_l/r_*` | `tensor_unitor_l/r`, `tensor_unitor_l/r_*` |
+| `PremonoidalUnitorLIso`, `PremonoidalUnitorRIso` | `TensorUnitorLIso`, `TensorUnitorRIso` |
+| `premonoidal_compatible_triangle`, `premonoidal_triangle` | `tensor_triangle_coherence`, `tensor_triangle` |
+| `IsMonoidal`, `monoidal_interchange`, `monoidal_arrow_central` | `IsMagmoidal`, `tensor_interchange`, `tensor_arrow_central` |
+| `monoidal_isMonoidal`, `isMonoidal` | `isMagmoidal`, `monoidalCat_isMagmoidal` |
+| `monoidal_hasInterchange`, `monoidal_isMagmoidal` | `isMagmoidal` |
+| `monoidalCat_hasInterchange` | `monoidalCat_isMagmoidal` |
+| `monoidal_associator`, `monoidal_left_unitor`, `monoidal_right_unitor` | `TensorAssocIsoN`, `TensorUnitorLIsoN`, `TensorUnitorRIsoN` |
+| `monoidal_pentagon`, `monoidal_triangle` | `tensor_pentagon`, `tensor_map_triangle` |
+| `bifunctor_monoidal_iso` | `bifct_tensor_iso` |
+| `tensorF MC` for a fixed monoidal structure / 对固定幺半结构 | `tensorF (isMagmoidal MC)` |
+
+Use `Bifct` and `bifct_` for the reviewed Monoidal tensor family. This
+includes the assembly module `Bifct.v` under [Cat/Monoidal](../theories/Cat/Monoidal).
+
+Monoidal 张量族中的双函子标识符使用 `Bifct` 和 `bifct_`，包括
+[Cat/Monoidal](../theories/Cat/Monoidal) 下的装配模块 `Bifct.v`。
+
+| Previous identifier / 原标识符 | Current identifier / 当前标识符 |
+| --- | --- |
+| `BifunctorBinoidal` | `BifctBinoidal` |
+| `BifunctorHasAssoc` | `BifctHasAssoc` |
+| `BifunctorHasBinoidal` | `BifctHasBinoidal` |
+| `BifunctorHasMonoidal` | `BifctHasMonoidal` |
+| `BifunctorHasPremonoidal` | `BifctHasPremonoidal` |
+| `BifunctorHasUnitors` | `BifctHasUnitors` |
+| `BifunctorMonoidal` | `BifctMonoidal` |
+| `BifunctorTensorInterchange` | `BifctTensorInterchange` |
+| `BifunctorTensorN` | `BifctTensorN` |
+| `bifunctor_arrow_central` | `bifct_arrow_central` |
+| `bifunctor_sequence` | `bifct_sequence` |
+| `bifunctor_tensor_iso` | `bifct_tensor_iso` |
+
+The triple tensor functors `Tensor3LF` and `Tensor3RF` share the source
+`(C ×C C) ×C C`. In `monoidal_scope`, applying them to an explicit triple
+prints as `T (T (X, Y), Z)` and `T (X, T (Y, Z))` respectively.
+
+三重张量函子 `Tensor3LF` 和 `Tensor3RF` 共享源范畴 `(C ×C C) ×C C`。
+在 `monoidal_scope` 中，对显式三元组的作用分别打印为
+`T (T (X, Y), Z)` 和 `T (X, T (Y, Z))`。
+
+The functor `(X ⊗-)` fixes the left factor, and `(-⊗ X)` fixes the right.
+Both notations live in `monoidal_scope` and use the chosen binoidal actions.
+
+函子 `(X ⊗-)` 固定左因子，`(-⊗ X)` 固定右因子。两种记号都在
+`monoidal_scope` 中，沿用选定的双侧张量作用。
+
+The object tensor `X ⊗ Y` uses `ob_scope`. With interchange, the arrow
+notation `f ⊗ g` in `hom_scope` denotes `tensor_map f g`, which computes
+as `tensor_sequence f g`. The component notation `α`, `λ`, and
+`ρ` reads the forward arrows of the selected isomorphisms. Their inverse
+witnesses are the second projections of the same isomorphisms.
+
+对象张量 `X ⊗ Y` 使用 `ob_scope`。给出交换律后，`hom_scope` 内的
+`f ⊗ g` 表示 `tensor_map f g`，按 `tensor_sequence f g` 计算。分量记号 `α`、`λ`、`ρ`
+读取选定同构的正向态射。相应的逆见证取自同一批同构的第二投影。
+
+`BifctMonoidal` and `CartMonoidal` now return complete `MonoidalCat`
+values. Fixed-category clients such as strength and monoid objects take
+`HasMonoidal` on their supplied categories.
+
+`BifctMonoidal` 和 `CartMonoidal` 现在返回完整的 `MonoidalCat`。
+强度、幺半群对象等固定范畴客户端在给定范畴上取 `HasMonoidal`。
 
 ## Wedge and coend constructors / 楔与 coend 构造器
 

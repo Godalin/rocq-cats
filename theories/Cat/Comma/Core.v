@@ -88,7 +88,7 @@ Program Definition comma_id (X : CommaOb)
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite !fct_id, comp_id_l, comp_id_r. reflexivity.
+  rewrite !fmap_id, comp_id_l, comp_id_r. reflexivity.
 Defined.
 
 (** Paste two squares; only functoriality and associativity are needed. *)
@@ -103,8 +103,8 @@ Program Definition comma_comp {X Y Z : CommaOb}
   ; comma_right := comma_right g ∘ comma_right f
   |}.
 Next Obligation.
-  rewrite (@fct_comp B C G _ _ _ (comma_right g) (comma_right f)),
-    (@fct_comp A C F _ _ _ (comma_left g) (comma_left f)).
+  rewrite (@fmap_comp _ _ _ _ (@isFct B C G) _ _ _ (comma_right g) (comma_right f)),
+    (@fmap_comp _ _ _ _ (@isFct A C F) _ _ _ (comma_left g) (comma_left f)).
   rewrite comp_assoc, (comma_comm f), <- comp_assoc,
     (comma_comm g), comp_assoc. reflexivity.
 Defined.
@@ -152,12 +152,17 @@ Program Definition CommaLeftF {A B C : Cat}
     (F : Fct A C) (G : Fct B C)
   : Fct (F ↓C G) A
   :=
-  {|F0 := comma_left_ob
-  ; F1 X Y := comma_left
+  {|fobj := comma_left_ob
+  ; fmap X Y := comma_left
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact (fst H). Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact (fst H). Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Projection to the right endpoint category. *)
 
@@ -167,12 +172,17 @@ Program Definition CommaRightF {A B C : Cat}
     (F : Fct A C) (G : Fct B C)
   : Fct (F ↓C G) B
   :=
-  {|F0 := comma_right_ob
-  ; F1 X Y := comma_right
+  {|fobj := comma_right_ob
+  ; fmap X Y := comma_right
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact (snd H). Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact (snd H). Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** The stored arrows are a natural transformation between the projections. *)
 
@@ -184,4 +194,4 @@ Program Definition CommaSquareN {A B C : Cat}
   :=
   {|nt := comma_arrow
   |}.
-Next Obligation. symmetry. exact (comma_comm f). Defined.
+Next Obligation. symmetry. exact (comma_comm f). Qed.

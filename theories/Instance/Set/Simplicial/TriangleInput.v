@@ -107,11 +107,11 @@ Proof.
   intros n [[[a] [t]] M].
   destruct (fst (triangle_horn_stage_zero_iff r a t) M) as [A | H].
   - exists (inl (n; ({|lower := (a; A)|}, {|lower := t|}))),
-      (id : (@Hom Δ) n n).
+      (@Cat.Core.id Δ n).
     split; refine {|lower := _|}; apply comp_id_r.
   - destruct H as [[j Hj] [h E]].
     exists (inr (j; (Hj, (n; ({|lower := a|}, {|lower := h|}))))),
-      (id : (@Hom Δ) n n).
+      (@Cat.Core.id Δ n).
     split; [refine {|lower := _|}; apply comp_id_r |].
     refine {|lower := _|}.
     transitivity (δ[1; j] ∘ h); [apply comp_id_r | symmetry; exact E].

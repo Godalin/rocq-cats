@@ -86,7 +86,7 @@ Proof.
   intros f g H [[X Y] [X' Y']] [h [x y]].
   split; [exact {|lower := comp_proper _ _ H _ _ (reflexivity _)|} |
     split; reflexivity].
-Defined.
+Qed.
 
 (** Identity postcomposition leaves the kernel unchanged. *)
 
@@ -97,7 +97,7 @@ Lemma day_post_id (Z : @Ob C)
 Proof.
   intros [[X Y] [X' Y']] [h [x y]].
   split; [exact {|lower := comp_id_l (lower h)|} | split; reflexivity].
-Defined.
+Qed.
 
 (** Successive target changes compose by ordinary vertical composition. *)
 
@@ -110,7 +110,7 @@ Proof.
   intros [[X Y] [X' Y']] [h [x y]].
   split; [exact {|lower := comp_assoc g f (lower h)|} |
     split; reflexivity].
-Defined.
+Qed.
 
 End KernelMaps.
 
@@ -147,23 +147,28 @@ Context (F G : Fct C (SetCat@{u p _ _ _ _ _})) `{HD : !HasDay C T F G}.
 Program Definition DayF
   : Fct C (SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 Z := coend[DayKernel T F G Z]
-  ; F1 Z Z' f := coend_map (DayPostN T f)
+  {|fobj Z := coend[DayKernel T F G Z]
+  ; fmap Z Z' f := coend_map (DayPostN T f)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H.
   exact (@coend_map_proper (C ×C C) SetCat _ _ _ _
     (DayPostN T f) (DayPostN T g) (@day_post_proper C T F G X Y f g H)).
-Defined.
+Qed.
 Next Obligation.
   transitivity (coend_map (IdN (F := DayKernel T F G X))).
   - apply (@coend_map_proper (C ×C C) SetCat). apply day_post_id.
   - apply (@coend_map_id (C ×C C) SetCat).
-Defined.
+Qed.
 Next Obligation.
   transitivity (coend_map (DayPostN T f ∘Nv DayPostN T g)).
   - apply (@coend_map_proper (C ×C C) SetCat). apply day_post_comp.
   - apply (@coend_map_comp (C ×C C) SetCat).
-Defined.
+Qed.
 
 End ChosenDay.

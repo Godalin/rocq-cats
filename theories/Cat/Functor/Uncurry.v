@@ -16,30 +16,35 @@ Program Definition UncurryF {A B C : Cat}
     (F : Fct A (FctCat B C))
   : Fct (A ×C B) C
   :=
-  {|F0 p := F (fst p) (snd p)
-  ; F1 X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X)
+  {|fobj p := F (fst p) (snd p)
+  ; fmap X Y f := fmap (F (fst Y)) (snd f) ∘ (fmap F (fst f)) (snd X)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [u v] [u' v'] [Hu Hv]. cbn in *.
   apply comp_proper.
-  - apply fct_fmap_proper. exact Hv.
-  - exact (fct_fmap_proper _ _ F u u' Hu (snd X)).
-Defined.
+  - apply fmap_proper. exact Hv.
+  - exact (fmap_proper (IsFct := isFct F) u u' Hu (snd X)).
+Qed.
 Next Obligation.
   destruct X as [a b]. cbn.
-  rewrite (@fct_id A (FctCat B C) F a b). cbn.
-  rewrite fct_id, comp_id_r. reflexivity.
-Defined.
+  rewrite (@fmap_id _ _ _ _ (@isFct A (FctCat B C) F) a b). cbn.
+  rewrite fmap_id, comp_id_r. reflexivity.
+Qed.
 Next Obligation.
   destruct X as [a b], Y as [a' b'], Z as [a'' b''], f as [u' v'], g as [u v].
   cbn.
-  rewrite (fct_comp _ _ F u' u b). cbn.
-  rewrite (fct_comp _ _ (F a'') v' v).
+  rewrite (fmap_comp (IsFct := isFct F) u' u b). cbn.
+  rewrite (fmap_comp (IsFct := isFct (F a'')) v' v).
   repeat rewrite comp_assoc.
   rewrite <- (comp_assoc (fmap (F a'') v) (fmap F u' b) (fmap F u b)).
   rewrite <- (nat_naturality (fmap F u') v).
   repeat rewrite comp_assoc. reflexivity.
-Defined.
+Qed.
 
 Notation "F '^uncF'" := (UncurryF F)
   (at level 1)
@@ -67,7 +72,7 @@ Next Obligation.
   - transitivity (fmap (G a') v ∘ (fmap G u b ∘ α a b)).
     + apply comp_l. exact Hu.
     + symmetry. apply comp_assoc.
-Defined.
+Qed.
 
 Notation "α '^uncN'" := (UncurryN α)
   (at level 1)

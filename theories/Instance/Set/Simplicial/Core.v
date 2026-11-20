@@ -134,8 +134,8 @@ Notation "X '[' θ ']Δ'" := (simplex_restrict (X := X) θ)
 
 Lemma simplex_restrict_id@{u p +}
     {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} (n : nat)
-  : X[(id : (@Hom Δ) n n)]Δ ≈f id_resp.
-Proof. exact (fct_id _ _ X). Qed.
+  : X[(@Cat.Core.id Δ n)]Δ ≈f id_resp.
+Proof. exact (fmap_id (IsFct := isFct X)). Qed.
 
 (** Read this triangle from [X n]. The shape maps go from l to m
     to n, but their restrictions go from [X n] to [X m] to [X l]. Reading
@@ -169,7 +169,7 @@ Lemma simplex_restrict_comp@{u p +}
     {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {l m n : nat}
     (θ : (@Hom Δ) m n) (φ : (@Hom Δ) l m)
   : X[θ ∘ φ]Δ ≈f (X[φ]Δ ∘r X[θ]Δ).
-Proof. exact (fct_comp _ _ X φ θ). Qed.
+Proof. exact (fmap_comp (IsFct := isFct X) φ θ). Qed.
 
 (** Equivalent simplex operators induce equal restriction maps. *)
 
@@ -178,7 +178,7 @@ Proof. exact (fct_comp _ _ X φ θ). Qed.
 Global Instance simplex_restrict_proper@{u p +}
     {X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}} {m n : nat}
   : Proper (@HomEq Δ m n ==> FunEq) (@simplex_restrict X m n).
-Proof. exact (@fct_fmap_proper _ _ X n m). Qed.
+Proof. exact (@fmap_proper _ _ _ _ (isFct X) n m). Qed.
 
 (** ** The Compatibility Square for a Simplicial Map
 

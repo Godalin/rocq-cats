@@ -77,12 +77,17 @@ Next Obligation. apply ren_comp_assoc. Defined.
 Program Definition RenamingToContextF@{b r e l +} (B : Type@{b})
   : Fct (RenamingCat B : Cat@{b b r l l}) (CtxCat@{b e l} B)
   :=
-  {|F0 Γ := Γ
-  ; F1 _ _ ρ := RenSub ρ
+  {|fobj Γ := Γ
+  ; fmap _ _ ρ := RenSub ρ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros ρ τ h A x. apply tm_eq_of_eq.
   change (tm_var (ρ A x) = tm_var (τ A x)). now rewrite (h A x).
-Defined.
-Next Obligation. intros A x. apply tm_eq_refl. Defined.
-Next Obligation. intros A x. apply tm_eq_refl. Defined.
+Qed.
+Next Obligation. intros A x. apply tm_eq_refl. Qed.
+Next Obligation. intros A x. apply tm_eq_refl. Qed.

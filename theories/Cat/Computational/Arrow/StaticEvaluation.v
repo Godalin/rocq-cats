@@ -22,7 +22,7 @@ Local Open Scope computation_scope.
 Section StaticEvaluation.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** Interpret a global internal function by carrying its argument and
     applying ordinary evaluation. *)
@@ -52,8 +52,8 @@ Qed.
 Lemma arrow_static_eval_pure {X Y : @Ob C} (f : Hom X Y)
   : arrow_static_eval arr[A; exp_name f] ≈ arr[A; f].
 Proof.
-  unfold arrow_static_eval. rewrite arrow_global_context_pure, <- fct_comp.
-  apply fct_fmap_proper.
+  unfold arrow_static_eval. rewrite arrow_global_context_pure, <- fmap_comp.
+  apply fmap_proper.
   rewrite exp_app_comp, product_β1, product_β2.
   rewrite exp_name_app, comp_id_r. reflexivity.
 Qed.
@@ -70,8 +70,8 @@ Lemma arrow_static_eval_map {P X Y : @Ob C} (h : Hom P (Y ^ X))
         arrow_global_context A X f.
 Proof.
   unfold arrow_static_eval. rewrite arrow_global_context_map, <- comp_assoc,
-    <- fct_comp. apply comp_proper; [| reflexivity].
-  apply fct_fmap_proper.
+    <- fmap_comp. apply comp_proper; [| reflexivity].
+  apply fmap_proper.
   rewrite exp_app_comp.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
@@ -96,7 +96,7 @@ Proof.
     arrow_global_context_pre.
   rewrite <- !comp_assoc.
   apply comp_proper; [| reflexivity]. apply comp_proper; [| reflexivity].
-  rewrite <- !fct_comp. apply fct_fmap_proper.
+  rewrite <- !fmap_comp. apply fmap_proper.
   unfold product_assoc. cbn [projT1].
   repeat first [rewrite internal_then_app | rewrite exp_app_comp |
     rewrite cross_η | rewrite product_comp_r | rewrite comp_assoc | rewrite product_β1 |
@@ -122,7 +122,7 @@ Proof.
   rewrite arrow_second_comp, arrow_second_arr, arrow_global_context_nested,
     <- !comp_assoc.
   apply comp_proper; [| reflexivity].
-  rewrite <- fct_comp. apply fct_fmap_proper.
+  rewrite <- fmap_comp. apply fmap_proper.
   rewrite internal_context_app.
   unfold product_assoc. cbn [projT1].
   repeat first [rewrite internal_then_app | rewrite exp_app_comp |

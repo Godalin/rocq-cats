@@ -28,8 +28,13 @@ Local Open Scope monoidal_scope.
 Program Definition ReaderF@{r e u p +} (R : SetC@{r e})
   : Fct (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 X := R →S X
-  ; F1 X Y f := {|func g := f ∘r g|}
+  {|fobj X := R →S X
+  ; fmap X Y f := {|func g := f ∘r g|}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros g g' H. apply comp_resp_proper; [reflexivity | exact H].
@@ -73,16 +78,16 @@ Defined.
 (** 逐点配对就是 Reader 的自然 tensorator。 *)
 
 Program Definition ReaderTensorN@{r e u p +} (R : SetC@{r e})
-  : (tensorF SetCartMonoidal ∘F
+  : (tensorF (isMagmoidal SetCartMonoidal) ∘F
       (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF R)) ⇒
-      (ReaderF R ∘F tensorF SetCartMonoidal)
+      (ReaderF R ∘F tensorF (isMagmoidal SetCartMonoidal))
   :=
   {|nt p := reader_pair R (fst p) (snd p)
   |}.
 Next Obligation.
   destruct X as [P Q], Y as [P' Q'], f as [f g].
   intros [a b] r. split; reflexivity.
-Defined.
+Qed.
 
 (** The reader lax structure uses the existing cartesian monoidal model. *)
 
@@ -117,7 +122,7 @@ Program Definition ReaderPureN@{r e u p +} (R : SetC@{r e})
   :=
   {|nt X := reader_pure R X
   |}.
-Next Obligation. intros x r. reflexivity. Defined.
+Next Obligation. intros x r. reflexivity. Qed.
 
 (** Explicitly choose the lawful reader Applicative [ReaderA]. Pin the
     ambient levels independently of the environment throughout its data. *)

@@ -1,7 +1,7 @@
 From Cats Require Export
   Cat.Monoidal.Monoid.
 From Cats Require Import
-  Cat.Monoidal.Bifunctor
+  Cat.Monoidal.Bifct
   Cat.Terminal
   Cat.Product.Transport.
 
@@ -26,7 +26,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 (** 积的括号重排在三个因子上自然。 *)
 
 Program Definition CartAssociatorN
-  : TensorLF ProductF ⇒ TensorRF ProductF
+  : Tensor3LF ProductF ⇒ Tensor3RF ProductF
   :=
   {|nt '((X, Y), Z) := (@product_assoc C HP X Y Z).1
   |}.
@@ -35,7 +35,7 @@ Next Obligation.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2].
   reflexivity.
-Defined.
+Qed.
 
 (** Projection from a product with the terminal object on the left. *)
 
@@ -48,7 +48,7 @@ Program Definition CartLeftUnitorN
   |}.
 Next Obligation.
   rewrite cross_η, product_β2. reflexivity.
-Defined.
+Qed.
 
 (** Projection from a product with the terminal object on the right. *)
 
@@ -61,7 +61,7 @@ Program Definition CartRightUnitorN
   |}.
 Next Obligation.
   rewrite cross_η, product_β1. reflexivity.
-Defined.
+Qed.
 
 (** The inverse left unitor pairs the terminal arrow and identity.
     This witness remains transparent, including in concrete models. *)
@@ -104,23 +104,32 @@ Defined.
 (** 有限积给出选定幺半结构；导入本模块不会为 [C] 注册默认幺半结构。 *)
 
 Program Definition CartMonoidal
-  : MonoidalCat C
-  := BifunctorMonoidal ProductF 1
+  : MonoidalCat
+  := BifctMonoidal ProductF 1
     (CartAssociatorN;
       λ '((X, Y), Z), (@product_assoc C HP X Y Z).2)
     CartLeftUnitorIso CartRightUnitorIso _ _.
 Next Obligation.
+  unfold is_tensor_pentagon. intros W X Y Z.
   cbn. repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r].
   reflexivity.
-Defined.
+Qed.
 Next Obligation.
   cbn. repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r].
   reflexivity.
-Defined.
+Qed.
+
+(** Read the cartesian monoidal choices on the supplied category. *)
+
+(** 在给定范畴上读取所选取的笛卡尔幺半结构。 *)
+
+Definition CartHasMonoidal
+  : HasMonoidal C
+  := hasMonoidal CartMonoidal.
 
 (** The derived tensor action agrees with the selected product bimap. *)
 
@@ -128,8 +137,8 @@ Defined.
 
 Lemma cartesian_tensor_map {X X' Y Y' : @Ob C}
     (f : Hom X X') (g : Hom Y Y')
-  : @tensor_map C CartMonoidal X X' Y Y' f g ≈ f × g.
-Proof. apply bifunctor_monoidal_map. Qed.
+  : tensor_map (IM := isMagmoidal CartHasMonoidal) f g ≈ f × g.
+Proof. apply bifct_sequence. Qed.
 
 (** Internal monoids for finite products are a specialization of the same
     monoid-object definition. Their multiplication has type [M × M → M]
@@ -140,7 +149,7 @@ Proof. apply bifunctor_monoidal_map. Qed.
 
 Definition CartMonoid
   : Type
-  := MonoidObj CartMonoidal.
+  := MonoidObj CartHasMonoidal.
 
 (** In the familiar internal-monoid form, pairing with the unit on the
     left followed by multiplication is the identity. *)

@@ -366,9 +366,9 @@ Program Definition WhiskerLN {C D E : Cat} (G : Fct D E)
   {|nt X := fmap G (α X)
   |}.
 Next Obligation.
-  rewrite <- (@fct_comp D E G _ _ _ (α Y) (fmap F f)),
-    <- (@fct_comp D E G _ _ _ (fmap F' f) (α X)).
-  apply fct_fmap_proper. apply nat_naturality.
+  rewrite <- (@fmap_comp _ _ _ _ (@isFct D E G) _ _ _ (α Y) (fmap F f)),
+    <- (@fmap_comp _ _ _ _ (@isFct D E G) _ _ _ (fmap F' f) (α X)).
+  apply fmap_proper. apply nat_naturality.
 Qed.
 
 (** Evaluate a natural transformation after a source functor. *)
@@ -396,7 +396,7 @@ Global Instance nat_whisker_l_proper {C D E : Cat}
       (@WhiskerLN C D E G F F').
 Proof.
   intros α β H X. change (fmap G (α X) ≈ fmap G (β X)).
-  apply fct_fmap_proper. exact (H X).
+  apply fmap_proper. exact (H X).
 Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
@@ -471,7 +471,7 @@ Global Instance nat_hcomp_proper {C D E : Cat}
 Proof.
   intros β β' Hβ α α' Hα X.
   change (β (F' X) ∘ fmap G (α X) ≈ β' (F' X) ∘ fmap G (α' X)).
-  apply comp_proper; [apply Hβ | apply fct_fmap_proper; apply Hα].
+  apply comp_proper; [apply Hβ | apply fmap_proper; apply Hα].
 Qed.
 
 (** Compatibility with identities for [HCompN]. *)
@@ -484,7 +484,7 @@ Theorem nat_hcomp_id {C D E : Cat}
 Proof.
   intros X.
   change (id ∘ fmap G (id[F X]) ≈ id[G (F X)]).
-  rewrite fct_id. apply comp_id_l.
+  rewrite fmap_id. apply comp_id_l.
 Qed.
 
 (** Horizontal and vertical composition satisfy the interchange law. *)
@@ -500,7 +500,7 @@ Proof.
   intros X.
   change ((β2 (F2 X) ∘ β1 (F2 X)) ∘ fmap G0 (α2 X ∘ α1 X) ≈
     (β2 (F2 X) ∘ fmap G1 (α2 X)) ∘ (β1 (F1 X) ∘ fmap G0 (α1 X))).
-  rewrite fct_comp, !comp_assoc.
+  rewrite fmap_comp, !comp_assoc.
   rewrite <- (comp_assoc (β1 (F2 X))), (nat_naturality β1 (α2 X)).
   rewrite comp_assoc. reflexivity.
 Qed.
@@ -512,15 +512,20 @@ Qed.
 Program Definition CompNF (C D E : Cat)
   : Fct (FctCat D E ×C FctCat C D) (FctCat C E)
   :=
-  {|F0 p := fst p ∘F snd p
-  ; F1 p q α := fst α ∘Nh snd α
+  {|fobj p := fst p ∘F snd p
+  ; fmap p q α := fst α ∘Nh snd α
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [β α] [β' α'] [Hβ Hα].
   exact (nat_hcomp_proper β β' Hβ α α' Hα).
-Defined.
-Next Obligation. apply nat_hcomp_id. Defined.
-Next Obligation. apply nat_hcomp_interchange. Defined.
+Qed.
+Next Obligation. apply nat_hcomp_id. Qed.
+Next Obligation. apply nat_hcomp_interchange. Qed.
 
 (** Horizontal composition preserves natural isomorphisms. *)
 
@@ -588,7 +593,7 @@ Program Definition CompF_id_l {C D : Cat}
   : IdF ∘F F ≅N F
   := ({|nt X := id
       |}; _).
-Next Obligation. simpl. carw. Defined.
+Next Obligation. simpl. carw. Qed.
 Next Obligation. intros X. exists id.
   split; cbn; apply comp_id_l.
 Defined.
@@ -602,7 +607,7 @@ Program Definition CompF_id_r {C D : Cat}
   : F ∘F IdF ≅N F
   := ({|nt X := id
       |}; _).
-Next Obligation. simpl. carw. Defined.
+Next Obligation. simpl. carw. Qed.
 Next Obligation. intros X. exists id.
   split; cbn; apply comp_id_l.
 Defined.
@@ -616,7 +621,7 @@ Program Definition CompF_assoc {B C D E : Cat}
   : (H ∘F G) ∘F F ≅N H ∘F (G ∘F F)
   := ({|nt X := id
       |}; _).
-Next Obligation. simpl. carw. Defined.
+Next Obligation. simpl. carw. Qed.
 Next Obligation. intros X. exists id.
   split; cbn; apply comp_id_l.
 Defined.
@@ -678,8 +683,13 @@ Proof. intros X. reflexivity. Qed.
 Program Definition OpFctCatF {C D : Cat}
   : Fct ((FctCat C D)^op) (FctCat (C^op) (D^op))
   :=
-  {|F0 F := F^opF
-  ; F1 F G α := α^opN
+  {|fobj F := F^opF
+  ; fmap F G α := α^opN
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. apply nat_op_id. Qed.
 Next Obligation. apply nat_op_comp. Qed.
@@ -715,7 +725,7 @@ Program Definition OpF_id {C : Cat}
   : (@IdF C)^opF ≅N (@IdF (C^op))
   := ({|nt X := id
       |}; _).
-Next Obligation. simpl. carw. Defined.
+Next Obligation. simpl. carw. Qed.
 Next Obligation.
   intros X. exists id.
   split; exact (@comp_id_l C X X
@@ -731,7 +741,7 @@ Program Definition OpF_comp {C D E : Cat}
   : (G ∘F F)^opF ≅N (G^opF ∘F F^opF)
   := ({|nt X := id
       |}; _).
-Next Obligation. simpl. carw. Defined.
+Next Obligation. simpl. carw. Qed.
 Next Obligation.
   intros X. exists id. split;
     exact (@comp_id_l E (G (F X)) (G (F X))
@@ -748,7 +758,7 @@ Program Definition OpF_involution {C D : Cat}
   : FromDoubleOpF ∘F ((F^opF)^opF ∘F ToDoubleOpF) ≅N F
   := ({|nt X := id
       |}; _).
-Next Obligation. simpl. carw. Defined.
+Next Obligation. simpl. carw. Qed.
 Next Obligation.
   intros X. exists id.
   split; cbn; apply comp_id_l.
@@ -764,7 +774,7 @@ Program Definition OpUnopF {C D : Cat}
   : (F^unopF)^opF ≅N F
   := ({|nt X := id
       |}; _).
-Next Obligation. cbn. carw. Defined.
+Next Obligation. cbn. carw. Qed.
 Next Obligation.
   intros X. exists id. split;
     exact (@comp_id_l (D^op) (F X) (F X)

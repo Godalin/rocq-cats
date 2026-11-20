@@ -103,7 +103,7 @@ Next Obligation.
   - transitivity (coend_map (DayPostN T f ∘Nv DayInputN T α β X)).
     + apply (@coend_map_proper (C ×C C) SetCat). apply day_input_post.
     + apply (@coend_map_comp (C ×C C) SetCat).
-Defined.
+Qed.
 
 (** ** Maps between Chosen Convolutions
 
@@ -130,7 +130,7 @@ Proof.
   intros α α' H β β' K Z.
   apply (@coend_map_proper (C ×C C) SetCat).
   exact (@day_input_proper C T F F' G G' Z α α' H β β' K).
-Defined.
+Qed.
 
 (** Identity input transformations give the identity convolution map. *)
 
@@ -143,7 +143,7 @@ Proof.
   transitivity (coend_map (IdN (F := DayKernel T F G Z))).
   - apply (@coend_map_proper (C ×C C) SetCat). apply day_input_id.
   - apply (@coend_map_id (C ×C C) SetCat).
-Defined.
+Qed.
 
 (** Composition is preserved with only the three endpoint choices. *)
 
@@ -164,7 +164,7 @@ Proof.
     (DayInputN T α' β' Z ∘Nv DayInputN T α β Z)).
   - apply (@coend_map_proper (C ×C C) SetCat). apply day_input_comp.
   - apply (@coend_map_comp (C ×C C) SetCat).
-Defined.
+Qed.
 
 End MapLaws.
 
@@ -181,17 +181,22 @@ Program Definition DayTensorF@{u p +} {C : Cat}
     (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G)
   : Fct (FctCat C SetCat ×C FctCat C SetCat) (FctCat C SetCat)
   :=
-  {|F0 q := @DayF C T (fst q) (snd q) (HD (fst q) (snd q))
-  ; F1 q q' α := @DayMapN C T (fst q) (fst q') (snd q) (snd q')
+  {|fobj q := @DayF C T (fst q) (snd q) (HD (fst q) (snd q))
+  ; fmap q q' α := @DayMapN C T (fst q) (fst q') (snd q) (snd q')
       (HD (fst q) (snd q)) (HD (fst q') (snd q')) (fst α) (snd α)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [α β] [α' β'] [H K].
   exact (@day_map_proper C T _ _ _ _ _ _ α α' H β β' K).
-Defined.
-Next Obligation. destruct X as [F G]. apply day_map_id. Defined.
+Qed.
+Next Obligation. destruct X as [F G]. apply day_map_id. Qed.
 Next Obligation.
   destruct X as [F G], Y as [F' G'], Z as [F'' G''],
     f as [α' β'], g as [α β].
   apply day_map_comp.
-Defined.
+Qed.

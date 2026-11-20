@@ -210,12 +210,17 @@ Canonical Structure FamCat
 Program Definition FamBaseF
   : Fct FamCat SetCat
   :=
-  {|F0 := famC_base
-  ; F1 U V f := famF_base f
+  {|fobj := famC_base
+  ; fmap U V f := famF_base f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g [p Hp]. exact p. Defined.
-Next Obligation. intros x. reflexivity. Defined.
-Next Obligation. intros x. reflexivity. Defined.
+Next Obligation. intros f g [p Hp]. exact p. Qed.
+Next Obligation. intros x. reflexivity. Qed.
+Next Obligation. intros x. reflexivity. Qed.
 
 (** A family morphism acts on both coordinates. Its compatibility with
     transport makes this action respectful of dependent-sum equivalence. *)
@@ -252,12 +257,17 @@ Qed.
 Program Definition FamTotalF
   : Fct FamCat SetCat
   :=
-  {|F0 U := SigS (famC_base U) U
-  ; F1 U V f := fam_total_resp f
+  {|fobj U := SigS (famC_base U) U
+  ; fmap U V f := fam_total_resp f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g Hfg. exact (fam_total_resp_proper f g Hfg). Defined.
-Next Obligation. intros [x a]. reflexivity. Defined.
-Next Obligation. intros [x a]. reflexivity. Defined.
+Next Obligation. intros f g Hfg. exact (fam_total_resp_proper f g Hfg). Qed.
+Next Obligation. intros [x a]. reflexivity. Qed.
+Next Obligation. intros [x a]. reflexivity. Qed.
 
 (** Total-space projection commutes with every family morphism. *)
 
@@ -268,4 +278,4 @@ Program Definition FamProjectionN
   :=
   {|nt U := sig_base_resp U
   |}.
-Next Obligation. intros a. reflexivity. Defined.
+Next Obligation. intros a. reflexivity. Qed.

@@ -72,12 +72,17 @@ Definition closed_inclusion_fully_faithful
 Program Definition ClosF
   : Fct (PreorderCat R) ClosedCat
   :=
-  {|F0 x := (c x; closure_closed c x)
-  ; F1 x y h := closure_monotone c h
+  {|fobj x := (c x; closure_closed c x)
+  ; fmap x y h := closure_monotone c h
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. repeat intro; exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. repeat intro; exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 (** The forward hom map restricts along inflation. Its endpoint is a
     closed object, but restriction does not need its closedness witness. *)

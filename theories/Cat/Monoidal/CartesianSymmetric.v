@@ -1,5 +1,5 @@
 From Cats Require Export
-  Cat.Premonoidal.Symmetric
+  Cat.Monoidal.Symmetric
   Cat.Monoidal.Cartesian.
 From Cats Require Import
   Cat.Terminal
@@ -27,23 +27,23 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 Program Definition CartSymmetricPremonoidal
   : SymmetricPremonoidalCat C
   :=
-  {|symmetric_hasBinoidal := monoidal_hasBinoidal CartMonoidal
+  {|symmetric_hasBinoidal := monoidal_hasBinoidal CartHasMonoidal
   ; SymmetricPremonoidalToHasPremonoidal :=
-      MonoidalToHasPremonoidal CartMonoidal
+      monoidal_hasPremonoidal CartHasMonoidal
   ; premonoidal_symmetry X Y := ⟨π2, π1⟩
   ; premonoidal_symmetry_central X Y :=
-      @monoidal_arrow_central C CartMonoidal _ _ _
+      tensor_arrow_central (IM := isMagmoidal CartHasMonoidal) _
   |}.
 Next Obligation.
   rewrite product_comp_r, product_β1, product_β2. apply product_pair_η.
-Defined.
+Qed.
 Next Obligation.
   change (⟨π2, π1⟩ ∘ (f × id[Y]) ≈
     (id[Y] × f) ∘ ⟨π2, π1⟩).
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   change ((@product_assoc C HP Y Z X).1 ∘
     (⟨π2, π1⟩ ∘ (@product_assoc C HP X Y Z).1) ≈
@@ -53,7 +53,7 @@ Next Obligation.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
-Defined.
-Next Obligation. apply product_β2. Defined.
+Qed.
+Next Obligation. apply product_β2. Qed.
 
 End Cartesian.

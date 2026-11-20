@@ -49,10 +49,10 @@ Proof.
   assert (K : ∀ A : T →ᵥ U,
     fmap A T⟦q⟧Ob ∘ fmap A f ≈ fmap A g ∘ fmap A T⟦p⟧Ob).
   { intros A. transitivity (fmap A (T⟦q⟧Ob ∘ f)).
-    - symmetry. exact (@fct_comp _ _ A x y y' T⟦q⟧Ob f).
+    - symmetry. exact (@fmap_comp _ _ _ _ (isFct A) x y y' T⟦q⟧Ob f).
     - transitivity (fmap A (g ∘ T⟦p⟧Ob)).
-      + exact (@fct_fmap_proper _ _ A x y' _ _ H).
-      + exact (@fct_comp _ _ A x x' y' g T⟦p⟧Ob). }
+      + exact (@fmap_proper _ _ _ _ (isFct A) x y' _ _ H).
+      + exact (@fmap_comp _ _ _ _ (isFct A) x x' y' g T⟦p⟧Ob). }
   destruct i as [[] | [[] | []]], j as [[] | [[] | []]];
     cbn in *; try solve [destruct a].
   - rewrite <- (vertex_fct_transport_witness F p r),
@@ -131,7 +131,7 @@ Lemma vertex_prism_time_square {X Y : SetC} {C D : Cat}
         U⟦r⟧Ob.
 Proof.
   destruct e, d. rewrite !vertex_transport_id, comp_id_l, comp_id_r.
-  exact (@fct_fmap_proper _ _ (NatPrismF α) (x, i) (y, j)
+  exact (@fmap_proper _ _ _ _ (isFct (NatPrismF α)) (x, i) (y, j)
     (f, a) (f, b) (reflexivity f, tt)).
 Defined.
 

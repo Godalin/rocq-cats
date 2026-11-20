@@ -43,12 +43,17 @@ Next Obligation. lia. Defined.
 Program Definition nat_horizontalF
   : Fct (NatHomCat ×C NatHomCat) NatHomCat
   :=
-  {|F0 _ := tt
-  ; F1 _ _ p := fst p + snd p
+  {|fobj _ := tt
+  ; fmap _ _ p := fst p + snd p
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros [a b] [a' b'] [Ha Hb]. cbn in *. now subst. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. destruct f, g. cbn. lia. Defined.
+Next Obligation. intros [a b] [a' b'] [Ha Hb]. cbn in *. now subst. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. destruct f, g. cbn. lia. Qed.
 
 (** One zero-cell and one one-cell, with natural numbers as additive
     two-cells. *)

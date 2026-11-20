@@ -99,8 +99,8 @@ Lemma two_sphere_cylinder_diagonal_boundary (i : Ordinal 1) (j : Ordinal 2)
       simplex_constant X b 1.
 Proof.
   transitivity (two_sphere_cylinder_eval X b H
-    (id ∘ δ[1; j]) (σ[1; i] ∘ δ[1; j])).
-  - exact (two_sphere_cylinder_restrict X b H δ[1; j] id σ[1; i]).
+    ((@Cat.Core.id Δ 2) ∘ δ[1; j]) (σ[1; i] ∘ δ[1; j])).
+  - exact (two_sphere_cylinder_restrict X b H δ[1; j] (@Cat.Core.id Δ 2) σ[1; i]).
   - transitivity (two_sphere_cylinder_eval X b H
       δ[1; j] (σ[1; i] ∘ δ[1; j])).
     + apply two_sphere_cylinder_eval_proper; [apply comp_id_l | reflexivity].

@@ -17,8 +17,13 @@ From Cats Require Import
 Program Definition ArrowDiagram {C : Cat} {X Y : @Ob C} (f : Hom X Y)
   : Fct ArrowShape C
   :=
-  {|F0 b := if b then Y else X
-  ; F1 x y e := _
+  {|fobj b := if b then Y else X
+  ; fmap x y e := _
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   destruct x, y; cbn in *; destruct e.
@@ -32,7 +37,8 @@ Next Obligation.
   destruct X0, Y0, Z; cbn in *; destruct f0, g; cbn; carw.
 Defined.
 
-Notation "'⟨' f '⟩D'" := (ArrowDiagram f) : cat_scope.
+Notation "'⟨' f '⟩D'" := (ArrowDiagram f)
+  : cat_scope.
 
 (** A commuting square gives a natural transformation of arrow diagrams. *)
 
@@ -49,12 +55,12 @@ Next Obligation.
   destruct X, Y; cbn in *; destruct f.
   - change (b ∘ fmap F (@Cat.Core.id ArrowShape true) ≈
       fmap G (@Cat.Core.id ArrowShape true) ∘ b).
-    rewrite !fct_id. carw.
+    rewrite !fmap_id. carw.
   - exact H.
   - change (a ∘ fmap F (@Cat.Core.id ArrowShape false) ≈
       fmap G (@Cat.Core.id ArrowShape false) ∘ a).
-    rewrite !fct_id. carw.
-Defined.
+    rewrite !fmap_id. carw.
+Qed.
 
 (** The operation respects the specified equivalences of its arguments. *)
 
@@ -177,8 +183,13 @@ Qed.
 Program Definition IsoDiagram {C : Cat} {X Y : @Ob C} (i : X ≅[C] Y)
   : Fct IsoShape C
   :=
-  {|F0 b := if b then Y else X
-  ; F1 x y e := _
+  {|fobj b := if b then Y else X
+  ; fmap x y e := _
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   destruct x, y.

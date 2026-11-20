@@ -99,9 +99,14 @@ Notation "C '/C' X" := (Slice C X)
 Program Definition SliceDomF (C : Cat) (X : @Ob C)
   : Fct (C /C X) C
   :=
-  {|F0 := slice_dom
-  ; F1 A B := slice_map
+  {|fobj := slice_dom
+  ; fmap A B := slice_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.

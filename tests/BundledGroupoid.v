@@ -1,7 +1,7 @@
 From Cats Require Import
   Cat.Core
   Cat.CCC.Core
-  Cat.Monoidal.Core
+  Cat.Monoidal.Monoidal
   Cat.Groupoid.Core
   Cat.Groupoid.Preorder
   Instance.Set.Core
@@ -125,14 +125,14 @@ Definition equality_groupoid_object (X : SetC) (x : X)
     笛卡尔闭及幺半结构经已有唯一范畴链到达对象类型，无须额外类型转换边。 *)
 
 Section ExistingViews.
-Context (C : CCC) (MC : MonoidalCat C).
+Context (C : CCC) (MC : MonoidalCat).
 
 Definition closed_object_view (x : C)
   : C
   := x.
 
 Definition monoidal_object_view (x : MC)
-  : C
+  : MonoidalCatToPremonoidalCat MC
   := x.
 
 End ExistingViews.

@@ -44,7 +44,7 @@ Lemma set_strength_value (S : HasStrength SetCartMonoidal F)
 Proof.
   pose proof (strength_natural S (const_resp UnitS x) (id[Y])) as H.
   unfold SetCartMonoidal in H.
-  rewrite !cartesian_tensor_map, fct_id in H.
+  rewrite !cartesian_tensor_map, fmap_id in H.
   pose proof (H (tt,v)) as Hv.
   change (st[S; X; Y] (x,v) ≈S
     fmap F (const_resp UnitS x × id[Y]) (st[S; UnitS; Y] (tt,v))) in Hv.
@@ -56,9 +56,9 @@ Proof.
   change (fmap F (π2 : Hom (UnitS ×S Y) Y)
     (st[S; UnitS; Y] (tt,v)) ≈S v) in Hu.
   etransitivity.
-  - exact (@fct_fmap_proper SetCat SetCat F _ _ _ _ Hm (st[S; UnitS; Y] (tt,v))).
+  - exact (@fmap_proper _ _ _ _ (@isFct SetCat SetCat F) _ _ _ _ Hm (st[S; UnitS; Y] (tt,v))).
   - etransitivity.
-    + exact (@fct_comp SetCat SetCat F _ _ _ ⟨const_resp Y x, id⟩
+    + exact (@fmap_comp _ _ _ _ (@isFct SetCat SetCat F) _ _ _ ⟨const_resp Y x, id⟩
         (π2 : Hom (UnitS ×S Y) Y) (st[S; UnitS; Y] (tt,v))).
     + exact (@func_proper (F Y) (F (X ×S Y))
         (fmap F ⟨const_resp Y x, id⟩) _ _ Hu).

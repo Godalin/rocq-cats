@@ -30,7 +30,7 @@ Section SetBase.
 Universes o u p.
 Context (K : Cat@{o u p _ _})
     (A : Arrow (SetCat@{u p _ _ _ _ _}) K
-      (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Embed a setoid value as the pure constant computation from the
     singleton. Respectfulness compares constants pointwise. *)
@@ -43,7 +43,7 @@ Program Definition arrow_value_pure (X : SetC@{u p})
   {|func x := arr[A; const_resp UnitS x]
   |}.
 Next Obligation.
-  intros x y H. apply fct_fmap_proper. intros z. exact H.
+  intros x y H. apply fmap_proper. intros z. exact H.
 Defined.
 
 (** Pure constant computations are natural in ordinary respectful maps. *)
@@ -59,8 +59,8 @@ Next Obligation.
   intros x.
   change (arr[A; const_resp UnitS (f x)] ≈
     arr[A; f] ∘ arr[A; const_resp UnitS x]).
-  rewrite <- fct_comp. apply fct_fmap_proper. intros z. reflexivity.
-Defined.
+  rewrite <- fmap_comp. apply fmap_proper. intros z. reflexivity.
+Qed.
 
 (** The generic global-computation lax functor is an endofunctor here.
     Pure constants preserve its unit and pairing. The computation hom
@@ -78,13 +78,13 @@ Program Definition ArrowA
 Next Obligation.
   intros x. change (arr[A; const_resp UnitS x] ≈ id[A UnitS]).
   transitivity (arr[A; (id_resp (X := UnitS))]).
-  - apply fct_fmap_proper. intros z. exact tt.
+  - apply fmap_proper. intros z. exact tt.
   - exact (arrow_arr_id A UnitS).
 Defined.
 Next Obligation.
   intros [x y]. change (arr[A; const_resp UnitS (x,y)] ≈
     arr[A; const_resp UnitS x] &&&[A] arr[A; const_resp UnitS y]).
-  rewrite arrow_fanout_pure. apply fct_fmap_proper. intros z.
+  rewrite arrow_fanout_pure. apply fmap_proper. intros z.
   split; reflexivity.
 Defined.
 

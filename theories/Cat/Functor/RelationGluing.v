@@ -111,7 +111,7 @@ Program Definition relation_gluing_map {X Y : J} (f : Hom X Y)
 Next Obligation.
   intros [[x y] h] [[x' y'] h'] [hx hy]. split;
     apply func_proper; assumption.
-Defined.
+Qed.
 
 (** The two original functor laws prove all laws of the glued diagram;
     no equation between membership witnesses is asserted. *)
@@ -121,24 +121,29 @@ Defined.
 Program Definition RelationGluingF
   : Fct J SetCat@{u q _ _ _ _ _}
   :=
-  {|F0 := RelationGluingS
-  ; F1 X Y := relation_gluing_map
+  {|fobj := RelationGluingS
+  ; fmap X Y := relation_gluing_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g h [[x y] r]. split.
-  - exact (fct_fmap_proper _ _ F f g h x).
-  - exact (fct_fmap_proper _ _ G f g h y).
-Defined.
+  - exact (fmap_proper (IsFct := isFct F) f g h x).
+  - exact (fmap_proper (IsFct := isFct G) f g h y).
+Qed.
 Next Obligation.
   intros [[x y] h]. split.
-  - exact (@fct_id J SetCat F X x).
-  - exact (@fct_id J SetCat G X y).
-Defined.
+  - exact (@fmap_id _ _ _ _ (@isFct J SetCat F) X x).
+  - exact (@fmap_id _ _ _ _ (@isFct J SetCat G) X y).
+Qed.
 Next Obligation.
   intros [[x y] h]. split.
-  - exact (fct_comp _ _ F f g x).
-  - exact (fct_comp _ _ G f g y).
-Defined.
+  - exact (fmap_comp (IsFct := isFct F) f g x).
+  - exact (fmap_comp (IsFct := isFct G) f g y).
+Qed.
 
 (** Forget the semantic/right value and the relation witness. *)
 
@@ -151,8 +156,8 @@ Program Definition RelationGluingLeftN
      {|func p := fst p.1
      |}
   |}.
-Next Obligation. intros [[x y] h] [[x' y'] h'] [hx hy]. exact hx. Defined.
-Next Obligation. intros [[x y] h]. reflexivity. Defined.
+Next Obligation. intros [[x y] h] [[x' y'] h'] [hx hy]. exact hx. Qed.
+Next Obligation. intros [[x y] h]. reflexivity. Qed.
 
 (** Forget the syntactic/left value and the relation witness. *)
 
@@ -165,8 +170,8 @@ Program Definition RelationGluingRightN
      {|func p := snd p.1
      |}
   |}.
-Next Obligation. intros [[x y] h] [[x' y'] h'] [hx hy]. exact hy. Defined.
-Next Obligation. intros [[x y] h]. reflexivity. Defined.
+Next Obligation. intros [[x y] h] [[x' y'] h'] [hx hy]. exact hy. Qed.
+Next Obligation. intros [[x y] h]. reflexivity. Qed.
 
 (** ** Lifting Related Natural Maps
 
@@ -196,11 +201,11 @@ Program Definition RelationGluingPairN
      {|func x := ((α X x, β X x); related X x)
      |}
   |}.
-Next Obligation. intros x y h. split; apply func_proper; exact h. Defined.
+Next Obligation. intros x y h. split; apply func_proper; exact h. Qed.
 Next Obligation.
   intros x. split; [exact (nat_naturality α f x) |
     exact (nat_naturality β f x)].
-Defined.
+Qed.
 
 (** The left projection recovers the first natural map. *)
 

@@ -1,9 +1,9 @@
 From Cats Require Export
-  Cat.Binoidal.Core.
+  Cat.Monoidal.Binoidal.
 From Cats Require Import
   Cat.Isomorphism.
 
-Local Open Scope binoidal_scope.
+Local Open Scope monoidal_scope.
 
 (** * Central Arrows
 
@@ -17,7 +17,7 @@ Local Open Scope binoidal_scope.
     额外证据，不是任意计算之间的交换律。 *)
 
 Definition is_central {C : Cat} `{BC : !HasBinoidal C}
-    {X Y : @Ob C} (f : Hom X Y)
+    {X Y : C} (f : Hom X Y)
   := ∀ Z W (g : Hom Z W),
     (f ⊳ W) ∘ (X ⊲ g) ≈ (Y ⊲ g) ∘ (f ⊳ Z) ∧
     (W ⊲ f) ∘ (g ⊳ X) ≈ (g ⊳ Y) ∘ (Z ⊲ f).
@@ -38,62 +38,63 @@ Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** 中心性在指定 Hom 相等下不变。 *)
 
-Definition central_equiv {X Y : @Ob C} {f g : Hom X Y}
+Definition central_equiv {X Y : C} {f g : Hom X Y}
     (H : f ≈ g) (Hf : is_central f)
   : is_central g.
 Proof.
-  intros Z W h. destruct (Hf Z W h) as [H1 H2]. split;
-    rewrite <- H; assumption.
-Defined.
+  intros Z W h. destruct (Hf Z W h) as [H1 H2].
+  split; rewrite <- H; assumption.
+Qed.
 
 (** The same transport gives respectfulness in both directions. *)
 
 (** 同一运输给出双向保相等性。 *)
 
-Global Instance is_central_proper {X Y : @Ob C}
+Global Instance is_central_proper {X Y : C}
   : Proper (HomEq ==> iffT) (@is_central C BC X Y).
 Proof.
   intros f g H. split; intros Hf.
   - exact (central_equiv H Hf).
   - symmetry in H. exact (central_equiv H Hf).
-Defined.
+Qed.
 
 (** Identities commute with every computation in either position. *)
 
 (** 恒等态射在两个位置都与任意计算交换。 *)
 
-Definition central_id (X : @Ob C)
+Definition central_id (X : C)
   : is_central (id[X]).
 Proof.
   intros Z W g. split;
-    rewrite ?binoidal_l_id, ?binoidal_r_id,
+    rewrite ?tensor_l_id, ?tensor_r_id,
       comp_id_l, comp_id_r; reflexivity.
-Defined.
+Qed.
 
 (** An identity transported along native object equality remains central.
     Equality elimination introduces no uniqueness assumption on paths. *)
 
 (** 沿对象原生相等运输的恒等仍为中心态射；相等消去不引入路径唯一性假设。 *)
 
-Definition eq_to_hom_central {X Y : @Ob C} (p : X = Y)
+Definition eq_to_hom_central {X Y : C} (p : X = Y)
   : is_central (eq_to_hom p).
-Proof. destruct p. apply central_id. Defined.
+Proof. destruct p. apply central_id. Qed.
 
 (** Composing central arrows retains both exchange witnesses. *)
 
 (** 复合中心态射保留两种交换见证。 *)
 
-Definition central_comp {X Y U : @Ob C}
-    (g : Hom Y U) (f : Hom X Y) (Hg : is_central g) (Hf : is_central f)
+Definition central_comp {X Y U : C}
+    (g : Hom Y U) (f : Hom X Y)
+    (Hg : is_central g) (Hf : is_central f)
   : is_central (g ∘ f).
 Proof.
   intros Z W h. destruct (Hg Z W h) as [Hg1 Hg2].
   destruct (Hf Z W h) as [Hf1 Hf2]. split.
-  - rewrite !binoidal_r_comp, comp_assoc, Hf1,
+  - rewrite !tensor_r_comp, comp_assoc, Hf1,
       <- comp_assoc, Hg1, comp_assoc. reflexivity.
-  - rewrite !binoidal_l_comp, comp_assoc, Hf2,
+  - rewrite !tensor_l_comp, comp_assoc, Hf2,
       <- comp_assoc, Hg2, comp_assoc. reflexivity.
-Defined.
+Qed.
 
 (** The inverse of a central isomorphism is central. Each exchange square
     is inverted using functoriality of the corresponding context action. *)
@@ -101,38 +102,38 @@ Defined.
 (** 中心同构的逆仍为中心态射。借助相应上下文作用的函子性，分别反转两个
     交换方块。 *)
 
-Definition central_inv {X Y : @Ob C} (i : X ≅ Y)
+Definition central_inv {X Y : C} (i : X ≅ Y)
     (Hi : is_central i.1)
   : is_central i.2.1.
 Proof.
   intros Z W g. destruct (Hi Z W g) as [H1 H2]. split.
   - exact (iso_square_inv
-      (i.1 ⊳ Z; fct_is_iso (BinoidalRF Z) i.1 i.2)
-      (i.1 ⊳ W; fct_is_iso (BinoidalRF W) i.1 i.2)
+      (i.1 ⊳ Z; fct_is_iso (-⊗ Z) i.1 i.2)
+      (i.1 ⊳ W; fct_is_iso (-⊗ W) i.1 i.2)
       (X ⊲ g) (Y ⊲ g) H1).
   - exact (iso_square_inv
-      (Z ⊲ i.1; fct_is_iso (BinoidalLF Z) i.1 i.2)
-      (W ⊲ i.1; fct_is_iso (BinoidalLF W) i.1 i.2)
+      (Z ⊲ i.1; fct_is_iso (Z ⊗-) i.1 i.2)
+      (W ⊲ i.1; fct_is_iso (W ⊗-) i.1 i.2)
       (g ⊳ X) (g ⊳ Y) H2).
-Defined.
+Qed.
 
 (** Centrality equates the two execution orders with the central arrow
     in the first tensor position. *)
 
 (** 当中心态射位于张量第一位置时，中心性给出两种执行次序相等。 *)
 
-Lemma central_sequence {X Y Z W : @Ob C}
+Lemma central_sequence {X Y Z W : C}
     (f : Hom X Y) (g : Hom Z W) (Hf : is_central f)
-  : binoidal_sequence f g ≈ (f ⊳ W) ∘ (X ⊲ g).
+  : tensor_sequence f g ≈ (f ⊳ W) ∘ (X ⊲ g).
 Proof. symmetry. exact (fst (Hf Z W g)). Qed.
 
 (** Centrality of the other factor also suffices to exchange the order. *)
 
 (** 另一因子的中心性也足以交换执行次序。 *)
 
-Lemma central_sequence_r {X Y Z W : @Ob C}
+Lemma central_sequence_r {X Y Z W : C}
     (f : Hom X Y) (g : Hom Z W) (Hg : is_central g)
-  : binoidal_sequence f g ≈ (f ⊳ W) ∘ (X ⊲ g).
+  : tensor_sequence f g ≈ (f ⊳ W) ∘ (X ⊲ g).
 Proof. exact (snd (Hg X Y f)). Qed.
 
 End CentralLaws.
@@ -143,15 +144,17 @@ End CentralLaws.
 (** 后执行的左态射可与先执行的右态射交换时，有序张量保持复合；不需其他
     中心性条件。 *)
 
-Lemma central_sequence_comp {C : Cat} `{BC : !HasBinoidal C}
+Lemma central_sequence_comp {C : Cat}
+    `{BC : !HasBinoidal C}
     {X X' X'' Y Y' Y'' : @Ob C}
     (f' : Hom X' X'') (f : Hom X X')
-    (g' : Hom Y' Y'') (g : Hom Y Y') (Hf' : is_central f')
-  : binoidal_sequence (f' ∘ f) (g' ∘ g) ≈
-      binoidal_sequence f' g' ∘ binoidal_sequence f g.
+    (g' : Hom Y' Y'') (g : Hom Y Y')
+    (Hf' : is_central f')
+  : tensor_sequence (f' ∘ f) (g' ∘ g)
+    ≈ tensor_sequence f' g' ∘ tensor_sequence f g.
 Proof.
-  unfold binoidal_sequence.
-  rewrite binoidal_l_comp, binoidal_r_comp, !comp_assoc.
+  unfold tensor_sequence.
+  rewrite tensor_l_comp, tensor_r_comp, !comp_assoc.
   rewrite <- (comp_assoc (X'' ⊲ g) (f' ⊳ Y) (f ⊳ Y)),
     <- (fst (Hf' Y Y' g)), comp_assoc. reflexivity.
 Qed.

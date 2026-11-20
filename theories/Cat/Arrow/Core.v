@@ -148,12 +148,17 @@ Next Obligation. split; apply comp_assoc. Defined.
 Program Definition ArrowDomF (C : Cat)
   : Fct (Arr C) C
   :=
-  {|F0 := arrow_dom
-  ; F1 A B := arrow_top
+  {|fobj := arrow_dom
+  ; fmap A B := arrow_top
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact (fst H). Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact (fst H). Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Take the codomain object and the codomain side of a square. *)
 
@@ -162,12 +167,17 @@ Next Obligation. reflexivity. Defined.
 Program Definition ArrowCodF (C : Cat)
   : Fct (Arr C) C
   :=
-  {|F0 := arrow_cod
-  ; F1 A B := arrow_bottom
+  {|fobj := arrow_cod
+  ; fmap A B := arrow_bottom
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact (snd H). Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact (snd H). Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** A natural transformation is a functor into the arrow category. *)
 
@@ -176,22 +186,27 @@ Next Obligation. reflexivity. Defined.
 Program Definition NatArrowF {C D : Cat} {F G : Fct C D} (α : F ⇒ G)
   : Fct C (Arr D)
   :=
-  {|F0 X :=
+  {|fobj X :=
      {|arrow_dom := F X
      ; arrow_cod := G X
      ; arrow_map := α X
      |}
-  ; F1 X Y f :=
+  ; fmap X Y f :=
       {|arrow_top := fmap F f
       ; arrow_bottom := fmap G f
       ; arrow_comm := nat_naturality α f
       |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
-  intros f g H. exact (@fct_fmap_proper C D F X Y f g H,
-    @fct_fmap_proper C D G X Y f g H).
-Defined.
-Next Obligation. exact (@fct_id C D F X, @fct_id C D G X). Defined.
+  intros f g H. exact (@fmap_proper _ _ _ _ (@isFct C D F) X Y f g H,
+    @fmap_proper _ _ _ _ (@isFct C D G) X Y f g H).
+Qed.
+Next Obligation. exact (@fmap_id _ _ _ _ (@isFct C D F) X, @fmap_id _ _ _ _ (@isFct C D G) X). Qed.
 Next Obligation.
-  exact (@fct_comp C D F X Y Z f g, @fct_comp C D G X Y Z f g).
-Defined.
+  exact (@fmap_comp _ _ _ _ (@isFct C D F) X Y Z f g, @fmap_comp _ _ _ _ (@isFct C D G) X Y Z f g).
+Qed.

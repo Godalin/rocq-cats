@@ -249,8 +249,8 @@ Proof.
   { intros i. transitivity (T 1 ((SimplicialParameterF P 2)[δ[1; i]]Δ z)).
     - apply (@func_proper _ _ (T 1)). split; refine {|lower := _|}.
       + apply (snd (simplex_eq_iff _ _)). intros [[] | [[] | []]]; reflexivity.
-      + change (δ[1; i] ∘ (id : (@Hom Δ) 1%nat 1%nat) ≈
-          (id : (@Hom Δ) 2 2) ∘ δ[1; i]).
+      + change (δ[1; i] ∘ (@Cat.Core.id Δ 1%nat) ≈
+          (@Cat.Core.id Δ 2) ∘ δ[1; i]).
         rewrite comp_id_r, comp_id_l. reflexivity.
     - apply simplex_restrict_natural. }
   assert (G1 : v fin_first⁺ = fin_first⁺).

@@ -153,14 +153,19 @@ Defined.
 Program Definition ChainF {C : Cat} {n : nat} (c : Chain C n)
   : Fct [Ord n] C
   :=
-  {|F0 := c
-  ; F1 i j f := chain_segment c i j f
+  {|fobj := c
+  ; fmap i j f := chain_segment c i j f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H. apply chain_segment_witness_independent.
-Defined.
-Next Obligation. apply chain_segment_id. Defined.
-Next Obligation. apply chain_segment_comp. Defined.
+Qed.
+Next Obligation. apply chain_segment_id. Qed.
+Next Obligation. apply chain_segment_comp. Qed.
 
 Notation "'⟦' c '⟧Ch'" := (ChainF c) : cat_scope.
 
@@ -205,7 +210,7 @@ Next Obligation.
   change (α (fin_next i) ∘ chain_segment c _ _ (ordinal_step i) ≈
     fmap F (ordinal_step i) ∘ α (fin_weaken i)).
   rewrite chain_segment_step. apply H.
-Defined.
+Qed.
 
 (** Reconstructing an ordinal diagram from its chain gives an
     identity-component natural isomorphism, not equality of functor records. *)

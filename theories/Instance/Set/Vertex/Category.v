@@ -62,14 +62,18 @@ Program Definition VtxPresentationOf@{x e o h p l a b q c d}
   {|vertex_labels := X
   ; vertex_ambient := C
   ; vertex_action :=
-      {|F0 i := T i
-      ; F1 i j f := fmap T f
-      ; fct_fmap_proper i j f g H :=
-          @fct_fmap_proper _ _ T i j f g H
+      {|fobj i := T i
+      ; fmap i j f := fmap T f
+      ; isFct :=
+          {|fmap_proper i j f g H :=
+              @fmap_proper _ _ _ _ (isFct T) i j f g H
+          ; fmap_id := _
+          ; fmap_comp := _
+          |}
       |}
   |}.
-Next Obligation. exact (@fct_id _ _ T X0). Defined.
-Next Obligation. exact (@fct_comp _ _ T X0 Y Z f g). Defined.
+Next Obligation. exact (@fmap_id _ _ _ _ (isFct T) X0). Qed.
+Next Obligation. exact (@fmap_comp _ _ _ _ (isFct T) X0 Y Z f g). Qed.
 
 (** Presentations and their existing morphisms form a category. The
     native hom-setoid and all category laws reuse the vertex-functor theory;
@@ -105,15 +109,19 @@ Program Definition VtxPresentationMap@{x e o h p l a b +}
       VtxPresentationOf@{x e o h p l a b _ _ _} U
   :=
   {|vertex_fct :=
-      {|F0 i := F i
-      ; F1 i j f := fmap F f
-      ; fct_fmap_proper i j f g H :=
-          @fct_fmap_proper _ _ F i j f g H
+      {|fobj i := F i
+      ; fmap i j f := fmap F f
+      ; isFct :=
+          {|fmap_proper i j f g H :=
+              @fmap_proper _ _ _ _ (isFct F) i j f g H
+          ; fmap_id := _
+          ; fmap_comp := _
+          |}
       |}
   ; vertex_fct_ob_proper := vertex_fct_ob_proper F
   |}.
-Next Obligation. exact (@fct_id _ _ F X0). Defined.
-Next Obligation. exact (@fct_comp _ _ F X0 Y0 Z f g). Defined.
+Next Obligation. exact (@fmap_id _ _ _ _ (isFct F) X0). Defined.
+Next Obligation. exact (@fmap_comp _ _ _ _ (isFct F) X0 Y0 Z f g). Defined.
 Next Obligation. exact (vertex_fct_transport F p). Defined.
 
 (** Repackaging preserves prescribed-component comparisons, including

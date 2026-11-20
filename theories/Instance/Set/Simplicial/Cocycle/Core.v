@@ -94,17 +94,22 @@ Defined.
 Program Definition OrdinalCocycleF
   : Fct (Δ^op) SetCat
   :=
-  {|F0 n := @TwoCocycleS [Ord n] M
-  ; F1 n m θ := two_cocycle_pullback_resp θ
+  {|fobj n := @TwoCocycleS [Ord n] M
+  ; fmap n m θ := two_cocycle_pullback_resp θ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros θ φ H c x y z f g.
   change (c⟦fmap θ f, fmap θ g⟧₂ ≈S c⟦fmap φ f, fmap φ g⟧₂).
   apply ordinal_cocycle_triangle_transport;
     exact (fst (simplex_eq_iff θ φ) H _).
-Defined.
-Next Obligation. intros c. apply two_cocycle_pullback_id. Defined.
-Next Obligation. intros c. apply two_cocycle_pullback_comp. Defined.
+Qed.
+Next Obligation. intros c. apply two_cocycle_pullback_id. Qed.
+Next Obligation. intros c. apply two_cocycle_pullback_comp. Qed.
 
 End OrdinalRestriction.
 

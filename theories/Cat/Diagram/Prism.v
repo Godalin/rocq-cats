@@ -34,8 +34,13 @@ Definition ordinal_interval_side (i : Ordinal 1)
 Program Definition OrdinalArrowF
   : Fct [Ord 1] ArrowShape
   :=
-  {|F0 := ordinal_interval_side
-  ; F1 i j a := _
+  {|fobj := ordinal_interval_side
+  ; fmap i j a := _
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   destruct i as [[] | [[] | []]], j as [[] | [[] | []]];
@@ -75,7 +80,7 @@ Lemma natural_prism_step {C D : Cat} {F G : Fct C D}
   : fmap (NatPrismF α)
       (X := (x, fin_first)) (Y := (x, fin_next fin_first))
       (id, ordinal_step fin_first) ≈ α x.
-Proof. cbn. rewrite fct_id. apply comp_id_l. Defined.
+Proof. cbn. rewrite fmap_id. apply comp_id_l. Defined.
 
 (** Componentwise equal transformations give equal prism arrows. Their
     object maps are definitionally the same, so only hom equality is used. *)

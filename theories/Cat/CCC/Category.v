@@ -92,8 +92,13 @@ Check CCCCat : CatCat : CatCat : CatCat.
 Program Definition CCCForgetF
   : Fct CCCCat CatCat
   :=
-  {|F0 C := (C : Cat)
-  ; F1 C D F := (F : Fct C D)
+  {|fobj C := (C : Cat)
+  ; fmap C D F := (F : Fct C D)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros F G H. exact H. Defined.
 Next Obligation. reflexivity. Defined.

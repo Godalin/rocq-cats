@@ -73,9 +73,9 @@ Definition smaller_evidence_evaluation (h : TmEq@{b b _} t u)
 
 Definition smaller_evidence_invariance (h : TmEq@{b b _} t u)
   : nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t =
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t =
       nf@{b r s l
-        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} u
+        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} u
   := nf_tm_eq h.
 
 End SmallerEvidence.
@@ -127,9 +127,9 @@ Definition larger_evidence_evaluation (h : TmEq@{b e _} t u)
 
 Definition larger_evidence_invariance (h : TmEq@{b e _} t u)
   : nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t =
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t =
       nf@{b r s l
-        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} u
+        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} u
   := nf_tm_eq h.
 
 End LargerEvidenceAndSmallerWorldLaws.

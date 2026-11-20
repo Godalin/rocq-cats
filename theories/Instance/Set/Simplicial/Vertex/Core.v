@@ -86,8 +86,8 @@ Proof.
   generalize (e i), (α i). rewrite <- (H i). intros p a.
   rewrite vertex_transport_id.
   transitivity (fmap F (@Cats.Cat.Core.id [Ord n] (θ i))).
-  - apply fct_fmap_proper. exact tt.
-  - apply fct_id.
+  - apply fmap_proper. exact tt.
+  - apply fmap_id.
 Defined.
 
 (** Constant restrictions compare by their single vertex. Their arrows
@@ -113,9 +113,9 @@ Proof.
   generalize (d i), (d j), (fmap u f), (fmap v f).
   rewrite (Hu i), (Hu j), (Hv i), (Hv j).
   intros p q g h.
-  rewrite (@fct_fmap_proper _ _ F a a g id tt),
-    (@fct_fmap_proper _ _ G b b h id tt),
-    !fct_id, comp_id_l, comp_id_r.
+  rewrite (@fmap_proper _ _ _ _ (isFct F) a a g id tt),
+    (@fmap_proper _ _ _ _ (isFct G) b b h id tt),
+    !fmap_id, comp_id_l, comp_id_r.
   apply vertex_transport_witness_independent.
 Defined.
 
@@ -130,26 +130,31 @@ Program Definition VtxNerve@{u p +} {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 n := LiftS (VtxDiagramS T [Ord n])
-  ; F1 n m θ := (vertex_diagram_precomp_resp T θ)^↑S
+  {|fobj n := LiftS (VtxDiagramS T [Ord n])
+  ; fmap n m θ := (vertex_diagram_precomp_resp T θ)^↑S
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros θ φ H [F]. refine {|lower := _
                            |}.
   apply vertex_ordinal_precomp_eq. exact (fst (simplex_eq_iff θ φ) H).
-Defined.
+Qed.
 Next Obligation.
   intros [F]. refine {|lower := _
                      |}.
   exists (λ i, reflexivity (F i : X)). intros i j f.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   intros [F]. refine {|lower := _
                      |}.
   exists (λ i, reflexivity (F (g (f i)) : X)). intros i j a.
   rewrite !vertex_transport_id, comp_id_l, comp_id_r. reflexivity.
-Defined.
+Qed.
 
 Notation "'Nᵥ(' T ')'" := (VtxNerve T) : ob_scope.
 
@@ -267,4 +272,4 @@ Next Obligation.
   intros [F]. refine {|lower := _
                       |}.
   symmetry. apply CompF_assoc.
-Defined.
+Qed.

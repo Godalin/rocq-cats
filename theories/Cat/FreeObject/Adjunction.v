@@ -25,8 +25,13 @@ Context {C D : Cat} (U : Fct D C) `{HF : !HasFreeObj U}.
 Program Definition FreeFct
   : Fct C D
   :=
-  {|F0 := FreeOb U
-  ; F1 X Y f := free_object_extend U (free_unit U Y ∘ f)
+  {|fobj := FreeOb U
+  ; fmap X Y f := free_object_extend U (free_unit U Y ∘ f)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g E. apply free_object_extend_proper.
@@ -34,11 +39,11 @@ Next Obligation.
 Defined.
 Next Obligation.
   symmetry. apply free_object_extend_unique.
-  rewrite fct_id, comp_id_l, comp_id_r. reflexivity.
+  rewrite fmap_id, comp_id_l, comp_id_r. reflexivity.
 Defined.
 Next Obligation.
   symmetry. apply free_object_extend_unique.
-  rewrite fct_comp, comp_assoc, (free_object_extend_β U).
+  rewrite fmap_comp, comp_assoc, (free_object_extend_β U).
   rewrite <- comp_assoc, (free_object_extend_β U), comp_assoc. reflexivity.
 Defined.
 
@@ -59,7 +64,7 @@ Program Definition FreeUnitN
   :=
   {|nt := free_unit U
   |}.
-Next Obligation. symmetry. apply free_fct_unit. Defined.
+Next Obligation. symmetry. apply free_fct_unit. Qed.
 
 (** Factorization gives the forward hom map. *)
 
@@ -101,10 +106,10 @@ Proof.
   - intros X X' A g f.
     change (fmap U (g ∘ fmap FreeFct f) ∘ free_unit U X' ≈
       (fmap U g ∘ free_unit U X) ∘ f).
-    rewrite fct_comp, comp_assoc, free_fct_unit, comp_assoc.
+    rewrite fmap_comp, comp_assoc, free_fct_unit, comp_assoc.
     reflexivity.
   - intros X A B k g. cbn.
-    rewrite fct_comp, comp_assoc. reflexivity.
+    rewrite fmap_comp, comp_assoc. reflexivity.
 Defined.
 
 (** The adjunction construction retains the selected unit up to hom equality. *)
@@ -115,7 +120,7 @@ Lemma free_adj_unit (X : @Ob C)
   : adj_unit FreeAdj X ≈ free_unit U X.
 Proof.
   change (fmap U id ∘ free_unit U X ≈ free_unit U X).
-  rewrite fct_id, comp_id_l. reflexivity.
+  rewrite fmap_id, comp_id_l. reflexivity.
 Qed.
 
 (** Its counit is the extension of the identity at each [U]-image. *)
@@ -186,10 +191,10 @@ Program Definition FreeFctChoiceN {C D : Cat} (U : Fct D C)
   |}.
 Next Obligation.
   apply (universal_arrow_hom_unique U (@free_universal C D U K X)).
-  rewrite (@fct_comp D C U _ _ _
+  rewrite (@fmap_comp _ _ _ _ (@isFct D C U) _ _ _
     (free_object_choice_iso U K L Y).1.1
     (fmap (@FreeFct C D U K) f)).
-  rewrite (@fct_comp D C U _ _ _
+  rewrite (@fmap_comp _ _ _ _ (@isFct D C U) _ _ _
     (fmap (@FreeFct C D U L) f)
     (free_object_choice_iso U K L X).1.1).
   rewrite !comp_assoc.
@@ -197,7 +202,7 @@ Next Obligation.
     (free_object_choice_iso U K L X).2.
   rewrite <- comp_assoc, (free_object_choice_iso U K L Y).2.
   symmetry. apply free_fct_unit.
-Defined.
+Qed.
 
 (** All choices of free objects yield naturally isomorphic left adjoints;
     this also compares the free-object/adjunction round trip. *)
@@ -230,7 +235,7 @@ Next Obligation.
   change (fmap U (fmap F f) ∘ adj_unit A X ≈
     adj_unit A Y ∘ f).
   symmetry. exact (nat_naturality (adj_unit A) f).
-Defined.
+Qed.
 
 (** The rebuilt left adjoint is naturally isomorphic to the original one.
     Equality of functor or adjunction proof fields is not required. *)

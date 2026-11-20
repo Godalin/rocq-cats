@@ -7,6 +7,7 @@ From Cats Require Import
 
 Local Open Scope monoidal_scope.
 Local Open Scope prof_scope.
+Local Open Scope ob_scope.
 
 (** * Composition of Strength-Preserving Transformations
 
@@ -35,7 +36,7 @@ Local Open Scope prof_scope.
 
 Section FixedSquare.
 Universes u p.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 Context {Q Q' P P' : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})}.
 Context (SQ : HasProfStrength MC Q) (SQ' : HasProfStrength MC Q').
 Context (SP : HasProfStrength MC P) (SP' : HasProfStrength MC P').
@@ -100,7 +101,7 @@ End FixedSquare.
 
 Section Preservation.
 Universes u p.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 Context {Q Q' P P' : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})}.
 Context (SQ : HasProfStrength MC Q) (SQ' : HasProfStrength MC Q').
 Context (SP : HasProfStrength MC P) (SP' : HasProfStrength MC P').
@@ -137,7 +138,7 @@ End Preservation.
     所有投影使用同一选定 coend。 *)
 
 Section StrongOperations.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 
 (** Bundle the original composite functor and its accepted strength. *)
 
@@ -216,7 +217,7 @@ End StrongOperations.
     导入本模块不选择全局模型。 *)
 
 Section Bifunctor.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 Context (HC : ∀ Q P : StrongProf MC, HasProfComp C C C Q P).
 
 (** The two arguments retain ordinary composition order, left after right;
@@ -227,27 +228,32 @@ Context (HC : ∀ Q P : StrongProf MC, HasProfComp C C C Q P).
 Program Definition StrongProfCompF
   : Fct (StrongProfCat MC ×C StrongProfCat MC) (StrongProfCat MC)
   :=
-  {|F0 QP := @StrongProfComp C MC (fst QP) (snd QP)
+  {|fobj QP := @StrongProfComp C MC (fst QP) (snd QP)
       (HC (fst QP) (snd QP))
-  ; F1 QP QP' βα := @StrongProfCompMap C MC
+  ; fmap QP QP' βα := @StrongProfCompMap C MC
       (fst QP) (fst QP') (snd QP) (snd QP')
       (HC (fst QP) (snd QP)) (HC (fst QP') (snd QP'))
       (fst βα) (snd βα)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [β α] [β' α'] [H K].
   exact (@prof_comp_map_proper C C C _ _ _ _ _ _
     β.1 β'.1 H α.1 α'.1 K).
-Defined.
+Qed.
 Next Obligation.
   destruct X as [Q P]. exact (@prof_comp_map_id C C C Q P (HC Q P)).
-Defined.
+Qed.
 Next Obligation.
   destruct X as [Q P], Y as [Q' P'], Z as [Q'' P''],
     f as [β' α'], g as [β α].
   exact (@prof_comp_map_comp C C C Q Q' Q'' P P' P''
     (HC Q P) (HC Q' P') (HC Q'' P'') β'.1 β.1 α'.1 α.1).
-Defined.
+Qed.
 
 (** Forgetting the lifted arrow retains the original composite map in
     designated natural equality, independently of preservation witnesses. *)

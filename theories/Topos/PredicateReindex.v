@@ -30,10 +30,15 @@ Context {C : Cat} `{HT : !HasTerminal C}
 
 (** 相等上下文箭头给出相等的代入后分类箭头。 *)
 
-Definition predicate_reindex_eq {X Y : C} {k k' : Hom X Y}
+Definition predicate_reindex_eq {X Y : C}
+    {k k' : Hom X Y}
     (H : k ≈ k') (f : Hom Y Ω)
-  : PredicateReindexF k f ≈ PredicateReindexF k' f.
-Proof. unfold PredicateReindexF; cbn. now rewrite H. Defined.
+  : PredicateReindexF k f
+    ≈ PredicateReindexF k' f.
+Proof.
+  unfold PredicateReindexF; cbn.
+  now rewrite H.
+Defined.
 
 (** Transport along specified context-arrow equality keeps the two
     factors obtained by classifier reflection, even for reflexive [H]. *)

@@ -132,7 +132,6 @@ End LaxMonoidalComputations.
 (** 幺半函子继承 lax 计算；其逆张量子也须能穿过导出的自然变换归约。 *)
 
 Module MonoidalFctComputations.
-Local Open Scope monoidal_scope.
 
 Definition SetIdentity
   := IdMonoidalF SetCartMonoidal.
@@ -160,7 +159,8 @@ End MonoidalFctComputations.
 From Cats Require Import
   Algebra.Magma.Core
   Cat.Product.Core
-  Cat.Binoidal.Bifunctor.
+  Cat.Monoidal.Bifct
+  Cat.Monoidal.Cartesian.
 
 (** Grouping the context laws must preserve which tensor factor is mapped. *)
 
@@ -169,18 +169,18 @@ From Cats Require Import
 Module BinoidalComputations.
 
 Definition ProductBinoidal
-  := BifunctorBinoidal (@ProductF SetCat SetCat_HasProduct).
+  := BifctBinoidal (@ProductF SetCat SetCat_HasProduct).
 
 Definition Flip
   := mul_l_resp (M := BoolS_Magma) true.
 
 Example left_context_computes
-  : fmap (@BinoidalLF SetCat (hasBinoidal ProductBinoidal) BoolS)
+  : fmap (@TensorAtLF SetCat (hasBinoidal ProductBinoidal) BoolS)
       Flip (true, false) = (true, true).
 Proof. reflexivity. Qed.
 
 Example right_context_computes
-  : fmap (@BinoidalRF SetCat (hasBinoidal ProductBinoidal) BoolS)
+  : fmap (@TensorAtRF SetCat (hasBinoidal ProductBinoidal) BoolS)
       Flip (true, false) = (false, false).
 Proof. reflexivity. Qed.
 
@@ -195,18 +195,17 @@ Module PremonoidalComputations.
 
 Definition ProductPremonoidal
   : PremonoidalCat
-  := PremonoidalCatOfBinoidalCat
-      (BinoidalCatOfCat SetCat (monoidal_hasBinoidal SetCartMonoidal))
-      (MonoidalToHasPremonoidal SetCartMonoidal).
+  := MonoidalCatToPremonoidalCat
+      (@CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct).
 
 Example middle_associator_inverse_computes
-  : ((@PremonoidalAssocMIso SetCat _
-      (hasAssociator (hasPremonoidal ProductPremonoidal)) BoolS BoolS).2
+  : ((@TensorAssocMIso SetCat _
+      (hasAssoc (hasPremonoidal ProductPremonoidal)) BoolS BoolS).2
       BoolS).1 (true, (false, true)) = ((true, false), true).
 Proof. reflexivity. Qed.
 
 Example bundled_unitor_inverse_computes
-  : ((@PremonoidalUnitorLIso SetCat _
+  : ((@TensorUnitorLIso SetCat _
       (hasUnitors (hasPremonoidal ProductPremonoidal))).2
       BoolS).1 false = (tt, false).
 Proof. reflexivity. Qed.
@@ -352,7 +351,7 @@ Proof. reflexivity. Qed.
 (** 恒等律的比较经过一般诱导嵌入和探测预层构造后，仍保留其逆的计算。 *)
 
 Example nerve_identity_inverse_computes
-  : ((lower (fct_id _ _ (N≅([Ord 1%nat]))
+  : ((lower (fmap_id (IsFct := isFct (N≅([Ord 1%nat])))
       ⟨@IdF [Ord 1%nat]⟩N)).2 fin_first).1 = tt.
 Proof. reflexivity. Qed.
 

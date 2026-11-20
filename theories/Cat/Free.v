@@ -88,8 +88,13 @@ Defined.
 Program Definition FreeF
   : Fct (FreeCat G) C
   :=
-  {|F0 := vertex_map D
-  ; F1 x y := path_eval
+  {|fobj := vertex_map D
+  ; fmap x y := path_eval
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -120,7 +125,7 @@ Program Definition RestrictGraph {G : Graph} {C : Cat}
       {|func e := fmap F (path_edge e)
       |}
   |}.
-Next Obligation. intros e f H. apply fct_fmap_proper. apply path_edge_equiv. exact H. Qed.
+Next Obligation. intros e f H. apply fmap_proper. apply path_edge_equiv. exact H. Qed.
 
 (** Restriction followed by free extension recovers the original path action. *)
 
@@ -131,9 +136,10 @@ Lemma free_extend_η {G : Graph} {C : Cat} (F : Fct (FreeCat G) C)
   : fmap (FreeF (RestrictGraph F)) p ≈ fmap F p.
 Proof.
   induction p; cbn.
-  - symmetry. apply fct_id.
+  - symmetry. exact (fmap_id (IsFct := isFct F) (X := x)).
   - reflexivity.
-  - rewrite IHp1, IHp2. symmetry. apply fct_comp.
+  - rewrite IHp1, IHp2. symmetry.
+    apply (fmap_comp (IsFct := isFct F)).
 Qed.
 
 (** Naturality on generators extends to every path. This is shared by cones
@@ -153,13 +159,15 @@ Program Definition FreeN {G : Graph} {C : Cat}
   |}.
 Next Obligation.
   induction f; cbn.
-  - rewrite !fct_id. rewrite comp_id_r, comp_id_l. reflexivity.
+  - rewrite (fmap_id (IsFct := isFct F) (X := x)),
+      (fmap_id (IsFct := isFct H) (X := x)), comp_id_r, comp_id_l.
+    reflexivity.
   - apply Hα.
-  - rewrite (@fct_comp (FreeCat G) C F x y z f1 f2),
-      (@fct_comp (FreeCat G) C H x y z f1 f2).
+  - rewrite (@fmap_comp _ _ _ _ (@isFct (FreeCat G) C F) x y z f1 f2),
+      (@fmap_comp _ _ _ _ (@isFct (FreeCat G) C H) x y z f1 f2).
     rewrite <- comp_assoc, IHf1, comp_assoc, IHf2, <- comp_assoc.
     reflexivity.
-Defined.
+Qed.
 
 (** Compare restriction followed by extension to the original functor
     naturally. *)
@@ -182,8 +190,13 @@ Defined.
 Program Definition OpFreeF (G : Graph)
   : Fct (FreeCat (G^opG)) ((FreeCat G)^op)
   :=
-  {|F0 x := x
-  ; F1 x y := path_unop
+  {|fobj x := x
+  ; fmap x y := path_unop
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -211,8 +224,13 @@ Proof. intros x. exists x, id, id. split; apply comp_id_l. Defined.
 Program Definition UnopFreeF (G : Graph)
   : Fct ((FreeCat G)^op) (FreeCat (G^opG))
   :=
-  {|F0 x := x
-  ; F1 x y := path_op
+  {|fobj x := x
+  ; fmap x y := path_op
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.

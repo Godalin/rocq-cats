@@ -159,10 +159,10 @@ Proof.
   refine (product_apex_iso (fct_product X Y)
     (fmap F i.1; fct_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
   - change (fmap F p ∘ fmap F i.1 ≈ fmap F π1).
-    rewrite <- fct_comp. apply fct_fmap_proper.
+    rewrite <- fmap_comp. apply fmap_proper.
     exact (fst (this (HP _ π1 π2).2)).
   - change (fmap F q ∘ fmap F i.1 ≈ fmap F π2).
-    rewrite <- fct_comp. apply fct_fmap_proper.
+    rewrite <- fmap_comp. apply fmap_proper.
     exact (snd (this (HP _ π1 π2).2)).
 Defined.
 
@@ -204,13 +204,13 @@ Proof.
   - change (fmap G (fmap F π1) ∘
       (fmap G (fct_product_inv F X Y) ∘
         fct_product_inv G (F X) (F Y)) ≈ π1).
-    rewrite <- comp_assoc, <- fct_comp,
+    rewrite <- comp_assoc, <- fmap_comp,
       (fst (fct_product_inv_β F X Y)).
     exact (fst (fct_product_inv_β G (F X) (F Y))).
   - change (fmap G (fmap F π2) ∘
       (fmap G (fct_product_inv F X Y) ∘
         fct_product_inv G (F X) (F Y)) ≈ π2).
-    rewrite <- comp_assoc, <- fct_comp,
+    rewrite <- comp_assoc, <- fmap_comp,
       (snd (fct_product_inv_β F X Y)).
     exact (snd (fct_product_inv_β G (F X) (F Y))).
 Qed.

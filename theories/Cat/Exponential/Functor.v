@@ -139,8 +139,13 @@ Qed.
 Program Definition ExpBiF
   : Fct ((C^op) ×C C) C
   :=
-  {|F0 p := (snd p ^ fst p)%ob
-  ; F1 X Y f := (snd f ^ fst f)%hom
+  {|fobj p := (snd p ^ fst p)%ob
+  ; fmap X Y f := (snd f ^ fst f)%hom
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [u v] [u' v'] [Hu Hv]. apply exp_dimap_proper; assumption.

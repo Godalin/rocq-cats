@@ -171,15 +171,22 @@ Program Definition display_sub_fam {Γ Δ : @Ob C} (σ : Hom Δ Γ)
   |}.
 Next Obligation. apply display_term_sub_conv. Qed.
 
-(** Coherent display sections form a family-valued presheaf. *)
+(** Coherent display sections form a family-valued presheaf. Its
+    functoriality witnesses select the transports used by display
+    representation and substitution. *)
 
-(** 相干显示截面构成族值预层。 *)
+(** 相干显示截面构成族值预层。其函子律见证选定显示表示及替换使用的运输。 *)
 
 Program Definition DisplayTyTmF
   : Fct (C^op) FamCat
   :=
-  {|F0 := DisplayTyTm P
-  ; F1 Γ Δ σ := display_sub_fam σ
+  {|fobj := DisplayTyTm P
+  ; fmap Γ Δ σ := display_sub_fam σ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros σ σ' H. exists (λ A, type_sub_equiv P H A).

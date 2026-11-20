@@ -29,8 +29,13 @@ Definition ℎ2 {C : Cat} (X : C)
 Program Definition ℎ1F {C : Cat} (X : C)
   : Fct C SetCat
   :=
-  {|F0 := ℎ1 X
-  ; F1 Y Y' (f : Hom Y Y') := f _*
+  {|fobj := ℎ1 X
+  ; fmap Y Y' (f : Hom Y Y') := f _*
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. exact (@comp_id_l C _ _ f). Qed.
@@ -47,8 +52,13 @@ Notation "'Hom(' X  ',-)'" := (ℎ1F X)
 Program Definition ℎ2F {C : Cat} (X : C)
   : Fct (op C) SetCat
   :=
-  {|F0 := ℎ2 X
-  ; F1 Y Y' (f : (@Hom C) Y' Y) := f ^*
+  {|fobj := ℎ2 X
+  ; fmap Y Y' (f : (@Hom C) Y' Y) := f ^*
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f f' Hf g. simpl. rewrite Hf. cato. Qed.
 Next Obligation. intros f. exact (@comp_id_r C _ _ f). Qed.
@@ -172,8 +182,13 @@ Next Obligation. intros h h' Hh. rewrite Hh. cato. Qed.
 Program Definition HomF {C : Cat}
   : Fct (op C ×C C) SetCat
   :=
-  {|F0 X := (@HomSet C) (fst X) (snd X)
-  ; F1 _ _ f := bi_comp (fst f) (snd f)
+  {|fobj X := (@HomSet C) (fst X) (snd X)
+  ; fmap _ _ f := bi_comp (fst f) (snd f)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. simpl. intros [f g] [f' g'] [Hf Hg].
   simpl. intros h. simpl.

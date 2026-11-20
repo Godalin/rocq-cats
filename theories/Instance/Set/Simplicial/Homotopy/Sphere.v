@@ -77,7 +77,7 @@ Definition simplex_constant (n : nat)
 Lemma simplex_constant_zero
   : simplex_constant 0 ≈S b.
 Proof.
-  transitivity (X[(id : (@Hom Δ) 0 0)]Δ b).
+  transitivity (X[(@Cat.Core.id Δ 0)]Δ b).
   - apply simplex_restrict_proper.
     apply (snd (simplex_eq_iff _ _)). intros [[] | []]. reflexivity.
   - apply simplex_restrict_id.

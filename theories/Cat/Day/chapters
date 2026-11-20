@@ -6,6 +6,7 @@ Parameter.v
 Iterated.v
 Associator.v
 Coherence.v
+Semigroupal.v
 Monoidal.v
 Monoid.v
 Morphism.v

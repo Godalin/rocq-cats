@@ -161,7 +161,7 @@ Example tagged_pullback_index_equal
   : fmap TaggedPullbackDiagram (X := false) (Y := true) gluing_toggle ≈
       fmap TaggedPullbackDiagram (X := false) (Y := true) id_resp.
 Proof.
-  apply fct_fmap_proper. intros [n b]. exact (eq_refl, true).
+  apply fmap_proper. intros [n b]. exact (eq_refl, true).
 Defined.
 
 (** The mapped commuting-square witness remains accessible data; no native

@@ -50,16 +50,16 @@ Next Obligation.
 Defined.
 Next Obligation.
   transitivity (fmap (ExtF K) (element_map_id P (Γ; A))).
-  - apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  - apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
     change (id[Γ] ≈ id). reflexivity.
-  - apply fct_id.
+  - exact (fmap_id (IsFct := isFct (ExtF K)) (X := (Γ; A))).
 Defined.
 Next Obligation.
   transitivity (fmap (ExtF K)
     (element_map_comp P (element_conv P d) (element_conv P e))).
-  - apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  - apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
     change (id[Γ] ≈ id ∘ id). symmetry. apply comp_id_l.
-  - exact (fct_comp (ElementsCat P) C (ExtF K)
+  - exact (fmap_comp (IsFct := @isFct (ElementsCat P) C (ExtF K))
       (element_conv P d) (element_conv P e)).
 Defined.
 Next Obligation.
@@ -67,24 +67,24 @@ Next Obligation.
     (element_map_cartesian P (element_lift P σ A))).
 Defined.
 Next Obligation.
-  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
   change (id[Γ] ≈ id). reflexivity.
 Defined.
 Next Obligation.
-  rewrite <- !(fct_comp (ElementsCat P) C (ExtF K)).
-  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- !(fmap_comp (IsFct := @isFct (ElementsCat P) C (ExtF K))).
+  apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
   change (σ ∘ τ ≈ (σ ∘ τ) ∘ id).
   symmetry. apply comp_id_r.
 Defined.
 Next Obligation.
-  rewrite <- (fct_comp (ElementsCat P) C (ExtF K)).
-  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- (fmap_comp (IsFct := @isFct (ElementsCat P) C (ExtF K))).
+  apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
   change (σ ≈ σ' ∘ id).
   transitivity σ'; [exact H | symmetry; apply comp_id_r].
 Defined.
 Next Obligation.
-  rewrite <- !(fct_comp (ElementsCat P) C (ExtF K)).
-  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- !(fmap_comp (IsFct := @isFct (ElementsCat P) C (ExtF K))).
+  apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
   change (σ ∘ id ≈ id ∘ σ).
   transitivity σ; [apply comp_id_r | symmetry; apply comp_id_l].
 Defined.
@@ -197,14 +197,19 @@ Defined.
 Program Definition DisplayElementsF
   : Fct (ElementsCat P) C
   :=
-  {|F0 X := Display P X.2
-  ; F1 X Y := display_element_map
+  {|fobj X := Display P X.2
+  ; fmap X Y := display_element_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H. exact (display_element_map_proper f g H).
-Defined.
-Next Obligation. apply display_element_map_id. Defined.
-Next Obligation. apply display_element_map_comp. Defined.
+Qed.
+Next Obligation. apply display_element_map_id. Qed.
+Next Obligation. apply display_element_map_comp. Qed.
 
 (** Display projections are natural over the element-base projection. *)
 
@@ -215,7 +220,7 @@ Program Definition DisplayElementsProjectionN
   :=
   {|nt X := display_proj P X.2
   |}.
-Next Obligation. apply display_element_map_proj. Defined.
+Next Obligation. apply display_element_map_proj. Qed.
 
 (** Every element square is a display pullback transported by a conversion
     isomorphism. No additional pullback choice is made. *)
@@ -307,8 +312,8 @@ Proof.
   change (fmap (ExtF K) (element_lift P (element_map_base P f) B) ∘
     fmap (ExtF K) (element_conv P (element_map_eq P f))
       ≈ fmap (ExtF K) f).
-  rewrite <- (fct_comp (ElementsCat P) C (ExtF K)).
-  apply (@fct_fmap_proper (ElementsCat P) C (ExtF K)).
+  rewrite <- (fmap_comp (IsFct := @isFct (ElementsCat P) C (ExtF K))).
+  apply (@fmap_proper _ _ _ _ (@isFct (ElementsCat P) C (ExtF K))).
   change (element_map_base P f ∘ id ≈ element_map_base P f).
   apply comp_id_r.
 Defined.
@@ -339,7 +344,7 @@ Next Obligation.
   destruct X as [Γ A], Y as [Δ B].
   cbn [comprehension_display_component].
   rewrite comp_id_l, comp_id_r. apply comprehension_display_map.
-Defined.
+Qed.
 
 (** The total-space functors are naturally isomorphic, with transparent
     inverse components. No equality of functor or proof records is used. *)

@@ -38,7 +38,7 @@ Program Definition GluingChangeLeftBoundaryN {D D' : Cat} (K : Fct D D')
   :=
   {|nt X := id
   |}.
-Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
+Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Qed.
 
 (** ** The Induced Functor and Projections
 
@@ -179,7 +179,7 @@ Proof.
   - apply comma_change_comp_iso.
   - apply comma_change_equiv_iso.
     + intro X. change (fmap K' (id[K X]) ∘ id ≈ id).
-      rewrite fct_id, comp_id_l. reflexivity.
+      rewrite fmap_id, comp_id_l. reflexivity.
     + intro X. reflexivity.
 Defined.
 

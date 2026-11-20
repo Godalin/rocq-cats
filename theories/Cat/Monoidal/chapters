@@ -1,5 +1,15 @@
-Core.v
-Bifunctor.v
+Binoidal.v
+Center.v
+BinoidalTransport.v
+Magmoidal.v
+Associator.v
+Semigroupal.v
+Unitor.v
+Premonoidal.v
+PremonoidalLaws.v
+Monoidal.v
+Laws.v
+Bifct.v
 Strength.v
 Monoid.v
 Functor.v
@@ -10,4 +20,6 @@ Transport.v
 Cartesian.v
 CartesianLifting.v
 CartesianStrength.v
+Symmetric.v
+CartesianSymmetric.v
 Endomorphism.v

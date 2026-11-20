@@ -155,19 +155,24 @@ Defined.
 Program Definition FamFixedF (X : SetC)
   : Fct (FamSCat X) FamCat
   :=
-  {|F0 := FixedFamC
-  ; F1 A B := fam_map_to_fam
+  {|fobj := FixedFamC
+  ; fmap A B := fam_map_to_fam
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H. exists (λ x, reflS (x := x)). intros x a.
   transitivity (f x a); [apply transpS_id | exact (H x a)].
-Defined.
+Qed.
 Next Obligation.
   exists (λ x, reflS (x := x)). intros x a. apply transpS_id.
-Defined.
+Qed.
 Next Obligation.
   exists (λ x, reflS (x := x)). intros x a. apply transpS_id.
-Defined.
+Qed.
 
 (** A fixed-base family map induces a respectful map of total spaces. *)
 
@@ -197,12 +202,17 @@ Next Obligation. apply fam_map_naturality. Defined.
 Program Definition FamReindexF {X Y : SetC} (f : X →r Y)
   : Fct (FamSCat Y) (FamSCat X)
   :=
-  {|F0 A := A[f]S
-  ; F1 A B := fam_map_reindex f
+  {|fobj A := A[f]S
+  ; fmap A B := fam_map_reindex f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros φ ψ H x a. exact (H (f x) a). Defined.
-Next Obligation. intros x a. reflexivity. Defined.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros φ ψ H x a. exact (H (f x) a). Qed.
+Next Obligation. intros x a. reflexivity. Qed.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** Identity and composite substitution retain the same fiber values; their
     transport witnesses are compared by coherence. *)
@@ -239,7 +249,7 @@ Program Definition FamReindexIdN (X : SetC)
   :=
   {|nt := fam_map_reindex_id
   |}.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** Identity reindexing is naturally isomorphic to the identity on fixed-base
     families. *)
@@ -292,7 +302,7 @@ Program Definition FamReindexCompN {X Y Z : SetC} (f : Y →r Z) (g : X →r Y)
   :=
   {|nt A := A⟨f,g⟩Fam
   |}.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** Iterated family reindexing is naturally isomorphic to composite
     reindexing. *)
@@ -356,7 +366,7 @@ Program Definition FamReindexEqN {X Y : SetC} {f g : X →r Y} (H : f ≈f g)
   |}.
 Next Obligation.
   intros x a. cbn. symmetry. exact (fam_map_naturality f0 (H x) a).
-Defined.
+Qed.
 
 (** Equal base maps induce naturally isomorphic family-reindexing functors. *)
 

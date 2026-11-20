@@ -39,9 +39,14 @@ Program Canonical SubObjS (Z : C)
 Program Canonical SubF
   : Fct (op C) SetCat
   :=
-  {|F0 Z := SubObjS Z
-  ; F1 Y X (f : (@Hom C) X Y) :=
+  {|fobj Z := SubObjS Z
+  ; fmap Y X (f : (@Hom C) X Y) :=
       {|func := Sub_fmap f
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation.

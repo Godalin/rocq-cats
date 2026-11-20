@@ -54,9 +54,14 @@ Program Definition RelationSumF@{i a r +}
         RelationFamilyCat@{i a r _ _ _} A)
       (RelationFamilyCat@{i a r _ _ _} A)
   :=
-  {|F0 p := fst p ⊕ᵢ snd p
-  ; F1 R S h := family_relation_sum_map (fst h) (snd h)
+  {|fobj p := fst p ⊕ᵢ snd p
+  ; fmap R S h := family_relation_sum_map (fst h) (snd h)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. repeat intro; exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. repeat intro; exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.

@@ -120,7 +120,7 @@ Proof.
       vertex_sieve_label_value f H j⟧Ar).
   - exact (vertex_rebase_eq T _ _ _ _ (e fin_first)
       (e (fin_next fin_first)) _ _ (L _ _ (ordinal_step fin_first))).
-  - apply func_proper. apply fct_fmap_proper. exact tt.
+  - apply func_proper. apply fmap_proper. exact tt.
 Defined.
 
 (** Parallel order witnesses give equal arrows. *)
@@ -155,7 +155,7 @@ Proof.
   - change (T⟦symmetry (vertex_sieve_label_value f (V f) fin_first)⟧Ob ∘
       fmap (lower (vertex_sieve_value f (V f))) id ∘
         T⟦vertex_sieve_label_value f (V f) fin_first⟧Ob ≈ id).
-    rewrite fct_id, comp_id_r. apply vertex_transport_inv.
+    rewrite fmap_id, comp_id_r. apply vertex_transport_inv.
 Defined.
 
 (** Vertices and edges alone reflect simplex equality. This does not
@@ -185,12 +185,12 @@ Proof.
   transitivity (T⟦d (fin_next fin_first)⟧Ob ∘
     fmap (lower x) (fmap Q (ordinal_step fin_first))).
   - apply comp_proper; [reflexivity |].
-    apply fct_fmap_proper. exact tt.
+    apply fmap_proper. exact tt.
   - transitivity (fmap (lower y) (fmap Q (ordinal_step fin_first)) ∘
       T⟦d fin_first⟧Ob).
     + exact K.
     + apply comp_proper; [| reflexivity].
-      apply fct_fmap_proper. exact tt.
+      apply fmap_proper. exact tt.
 Defined.
 
 Context (D : ∀ f : (@Hom Δ) 2 n, f ∈Sv R).
@@ -213,7 +213,7 @@ Proof.
       fmap (lower (vertex_sieve_value f (D f))) c ∘
         fmap (lower (vertex_sieve_value f (D f))) a;
       vertex_sieve_label_value f (D f) (fin_next (fin_next fin_first))⟧Ar).
-    + apply func_proper. apply fct_comp.
+    + apply func_proper. apply fmap_comp.
     + etransitivity; [apply vertex_rebase_comp |].
       apply comp_proper; symmetry.
       * exact (vertex_sieve_arrow_value f (D f) _ _ c g).
@@ -227,14 +227,19 @@ Defined.
 Program Definition VtxSieveF
   : Fct [Ord n] (VtxCat T)
   :=
-  {|F0 := vertex_sieve_label
-  ; F1 i j h := vertex_sieve_arrow i j h
+  {|fobj := vertex_sieve_label
+  ; fmap i j h := vertex_sieve_arrow i j h
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H. exact (vertex_sieve_arrow_proper X0 Y f g).
-Defined.
-Next Obligation. exact (vertex_sieve_arrow_id X0). Defined.
-Next Obligation. exact (vertex_sieve_arrow_comp X0 Y Z f g). Defined.
+Qed.
+Next Obligation. exact (vertex_sieve_arrow_id X0). Qed.
+Next Obligation. exact (vertex_sieve_arrow_comp X0 Y Z f g). Qed.
 
 (** The reconstructed simplex restricts to the entire given sieve map. *)
 

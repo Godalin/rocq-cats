@@ -128,15 +128,19 @@ Qed.
 Program Definition KleisliPureF
   : Fct C KleisliCat
   :=
-  {|F0 X := X
-  ; F1 X Y f := return[M; f]
-  ; fct_fmap_proper X Y := @monad_return_proper C M X Y
+  {|fobj X := X
+  ; fmap X Y f := return[M; f]
+  ; isFct :=
+      {|fmap_proper X Y := @monad_return_proper C M X Y
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. exact (monad_return_id M X). Defined.
+Next Obligation. exact (monad_return_id M X). Qed.
 Next Obligation.
   change (return[M; f ∘ g] ≈ return[M; f] ∘K[M] return[M; g]).
   rewrite kleisli_comp_pure_r, monad_return_comp. reflexivity.
-Defined.
+Qed.
 
 (** Extend computations back into the base category. On objects this is
     the original Monad functor; on arrows it is Kleisli extension. *)
@@ -146,12 +150,16 @@ Defined.
 Program Definition KleisliExtendF
   : Fct KleisliCat C
   :=
-  {|F0 X := M X
-  ; F1 X Y f := kleisli_extend M f
-  ; fct_fmap_proper X Y := @kleisli_extend_proper C M X Y
+  {|fobj X := M X
+  ; fmap X Y f := kleisli_extend M f
+  ; isFct :=
+      {|fmap_proper X Y := @kleisli_extend_proper C M X Y
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. exact (kleisli_extend_unit M X). Defined.
-Next Obligation. exact (kleisli_extend_assoc M g f). Defined.
+Next Obligation. exact (kleisli_extend_unit M X). Qed.
+Next Obligation. exact (kleisli_extend_assoc M g f). Qed.
 
 (** The two functors recover the original endofunctor up to an identity-
     component natural isomorphism, without equating functor law records.

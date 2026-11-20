@@ -15,8 +15,13 @@ From Cats Require Import
 Program Definition ProductOpF (C D : Cat)
   : Fct ((C^op) ×C (D^op)) ((C ×C D)^op)
   :=
-  {|F0 X := X
-  ; F1 X Y f := f
+  {|fobj X := X
+  ; fmap X Y f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f g H. exact H. Qed.
 Next Obligation. split; reflexivity. Qed.

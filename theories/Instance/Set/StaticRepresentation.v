@@ -41,7 +41,7 @@ Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 Context (K : Cat)
     (A : Arrow C K
-      (@CartMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartHasMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Compose singleton evaluation with the supplied static evaluation
     isomorphism. *)
@@ -171,7 +171,7 @@ Lemma static_reify_arr {X Y : @Ob C} (f : Hom X Y)
 Proof.
   transitivity (fmap StaticReifyF
     (static_interpret K A (static_arr (ArrowA K A) f))).
-  - apply fct_fmap_proper. symmetry. exact (static_interpret_arr K A f).
+  - apply fmap_proper. symmetry. exact (static_interpret_arr K A f).
   - apply static_representation_η.
 Qed.
 

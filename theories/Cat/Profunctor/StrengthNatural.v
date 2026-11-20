@@ -8,6 +8,7 @@ From Cats Require Import
 
 Local Open Scope monoidal_scope.
 Local Open Scope prof_scope.
+Local Open Scope ob_scope.
 
 (** * Strength-Preserving Natural Transformations
 
@@ -35,7 +36,7 @@ Local Open Scope prof_scope.
 
 Section Preservation.
 Universes u p.
-Context {C : Cat} {MC : MonoidalCat C}.
+Context {C : Cat} {MC : HasMonoidal C}.
 
 (** Only the context square is new; endpoint naturality belongs to the
     original natural transformation and is not stored a second time. *)
@@ -133,7 +134,7 @@ End Preservation.
 
 (** 强 profunctor 保存唯一底层混合变元函子，以及相对于具名幺半结构的强度。 *)
 
-Class StrongProf@{u p +} {C : Cat} (MC : MonoidalCat C)
+Class StrongProf@{u p +} {C : Cat} (MC : HasMonoidal C)
   :=
   { StrongProfF :> Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
 
@@ -161,7 +162,7 @@ Arguments hasProfStrength {_ _} _.
     自然变换。恒等、复合及指定逆均保留其原可计算映射。 *)
 
 Section Categories.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 
 (** Cut out strength-preserving transformations in the original Hom setoid. *)
 
@@ -222,12 +223,17 @@ Defined.
 Program Definition StrongProfForgetF
   : Fct StrongProfCat (ProfCat C C)
   :=
-  {|F0 := StrongProfF
-  ; F1 P Q α := α.1
+  {|fobj := StrongProfF
+  ; fmap P Q α := α.1
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β E. exact E. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros α β E. exact E. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Faithfulness follows from inherited natural equality. *)
 

@@ -3,7 +3,7 @@ From Cats Require Import
   Cat.Functor.Core
   Cat.Functor.Product
   Cat.Natural
-  Cat.Binoidal.Bifunctor
+  Cat.Monoidal.Bifct
   Instance.Set.Core
   Instance.Set.Product.
 From Cats Require Export
@@ -46,7 +46,7 @@ Section LeftSlice.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
 Context {F G H K : Fct C (SetCat@{u p _ _ _ _ _})}.
-Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T)).
+Context (β : DayTripleValuesF F G H ⇒ (K ∘F Tensor3LF T)).
 
 (** Fix the third object while retaining its value as a parameter. *)
 
@@ -64,9 +64,9 @@ Next Obligation.
   - exact (@func_proper _ _ (β (Y,Z))
       (fmap (DayValuesF F G) f xy,w)
       (fmap (DayValuesF F G) f xy,fmap H (id[Z]) w)
-      (reflexivity _, symmetry (@fct_id C SetCat H Z w))).
+      (reflexivity _, symmetry (@fmap_id _ _ _ _ (@isFct C SetCat H) Z w))).
   - exact (nat_naturality β (X := (X,Z)) (Y := (Y,Z)) (f,id) (xy,w)).
-Defined.
+Qed.
 
 (** Varying the third object changes parameters and outputs coherently. *)
 
@@ -83,14 +83,15 @@ Proof.
   - exact (@func_proper _ _ (β (q,Z'))
       (xy,fmap H g w)
       (fmap (DayValuesF F G) (id[q]) xy,fmap H g w)
-      (symmetry (@fct_id (C ×C C) SetCat (DayValuesF F G) q xy),
+      (symmetry (@fmap_id _ _ _ _ (@isFct (C ×C C) SetCat (DayValuesF F G)) q xy),
         reflexivity _)).
   - transitivity (fmap K
       (fmap T (X := (T q,Z)) (Y := (T q,Z')) (fmap T (id[q]),g))
         (β (q,Z) (xy,w))).
     + exact (nat_naturality β (X := (q,Z)) (Y := (q,Z')) (id,g) (xy,w)).
-    + apply (@fct_fmap_proper C SetCat K). apply fct_fmap_proper.
-      split; [apply fct_id | reflexivity].
+    + apply (@fmap_proper _ _ _ _ (@isFct C SetCat K)).
+      apply (fmap_proper (IsFct := isFct T)).
+      split; [exact (fmap_id (IsFct := isFct T) (X := q)) | reflexivity].
 Defined.
 
 Context `{HFG : !HasDay C T F G}.
@@ -127,10 +128,10 @@ Next Obligation.
         (fmap T (X := (a,b')) (Y := (a',b')) (f,id) ∘
           fmap T (X := (a,b)) (Y := (a,b')) (id,g))
           (DayParameterExtendN T (H b) (DayTripleLeftSliceN b) a (z,w))).
-      * symmetry. apply (@fct_comp C SetCat K).
-      * apply (@fct_fmap_proper C SetCat K).
+      * symmetry. apply (@fmap_comp _ _ _ _ (@isFct C SetCat K)).
+      * apply (@fmap_proper _ _ _ _ (@isFct C SetCat K)).
         symmetry. exact (product_at_map T f g).
-Defined.
+Qed.
 
 (** ** Extending the Outer Left Convolution
 
@@ -176,7 +177,7 @@ Proof.
     + apply (@func_proper _ _ (fmap K h)).
       exact (day_parameter_extend_β T (H D) (DayTripleLeftSliceN D)
         (A,B) k (x,y) z).
-    + symmetry. apply (@fct_comp C SetCat K).
+    + symmetry. apply (@fmap_comp _ _ _ _ (@isFct C SetCat K)).
 Defined.
 
 End LeftSlice.
@@ -196,7 +197,7 @@ Section RightSlice.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C).
 Context {F G H K : Fct C (SetCat@{u p _ _ _ _ _})}.
-Context (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T)).
+Context (β : DayTripleValuesF F G H ⇒ (K ∘F Tensor3RF T)).
 
 (** Retain the first value as an external parameter of the remaining pair. *)
 
@@ -223,10 +224,10 @@ Next Obligation.
   - exact (@func_proper _ _ (β ((X,a'),b'))
       ((x,fmap G f y),fmap H g z)
       ((fmap F (id[X]) x,fmap G f y),fmap H g z)
-      ((symmetry (@fct_id C SetCat F X x),reflexivity _),reflexivity _)).
+      ((symmetry (@fmap_id _ _ _ _ (@isFct C SetCat F) X x),reflexivity _),reflexivity _)).
   - exact (nat_naturality β (X := ((X,a),b)) (Y := ((X,a'),b'))
       ((id,f),g) ((x,y),z)).
-Defined.
+Qed.
 
 (** Naturality of the ternary operation transports its first parameter. *)
 
@@ -244,15 +245,16 @@ Proof.
   - exact (@func_proper _ _ (β ((X',Y),Z))
       ((fmap F f x,y),z)
       ((fmap F f x,fmap G (id[Y]) y),fmap H (id[Z]) z)
-      ((reflexivity _,symmetry (@fct_id C SetCat G Y y)),
-        symmetry (@fct_id C SetCat H Z z))).
+      ((reflexivity _,symmetry (@fmap_id _ _ _ _ (@isFct C SetCat G) Y y)),
+        symmetry (@fmap_id _ _ _ _ (@isFct C SetCat H) Z z))).
   - transitivity (fmap K
       (fmap T (X := (X,T (Y,Z))) (Y := (X',T (Y,Z)))
         (f,fmap T (@Cat.Core.id (C ×C C) (Y,Z)))) (β ((X,Y),Z) ((x,y),z))).
     + exact (nat_naturality β (X := ((X,Y),Z)) (Y := ((X',Y),Z))
         ((f,id),id) ((x,y),z)).
-    + apply (@fct_fmap_proper C SetCat K). apply fct_fmap_proper.
-      split; [reflexivity | apply fct_id].
+    + apply (@fmap_proper _ _ _ _ (@isFct C SetCat K)).
+      apply (fmap_proper (IsFct := isFct T)).
+      split; [reflexivity | exact (fmap_id (IsFct := isFct T) (X := (Y, Z)))].
 Defined.
 
 Context `{HGH : !HasDay C T G H}.
@@ -296,11 +298,11 @@ Next Obligation.
         (fmap T (X := (a',b)) (Y := (a',b')) (id,g) ∘
           fmap T (X := (a,b)) (Y := (a',b)) (f,id))
           (DayParameterExtendN T (F a) (DayTripleRightSliceN a) b (z,x))).
-      * symmetry. apply (@fct_comp C SetCat K).
-      * apply (@fct_fmap_proper C SetCat K).
-        rewrite <- fct_comp. apply fct_fmap_proper.
+      * symmetry. apply (@fmap_comp _ _ _ _ (@isFct C SetCat K)).
+      * apply (@fmap_proper _ _ _ _ (@isFct C SetCat K)).
+        rewrite <- fmap_comp. apply fmap_proper.
         split; cbn; carw.
-Defined.
+Qed.
 
 Context `{HR : !HasDay C T F (DayF T G H)}.
 
@@ -335,7 +337,7 @@ Proof.
     + apply (@func_proper _ _ (fmap K h)).
       exact (day_parameter_extend_β T (F A) (DayTripleRightSliceN A)
         (B,D) k (y,z) x).
-    + symmetry. apply (@fct_comp C SetCat K).
+    + symmetry. apply (@fmap_comp _ _ _ _ (@isFct C SetCat K)).
 Defined.
 
 End RightSlice.
@@ -362,7 +364,7 @@ Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
 (** 用恒等权重插入两个值对。 *)
 
 Program Definition DayTripleLeftGenN
-  : DayTripleValuesF F G H ⇒ (DayF T (DayF T F G) H ∘F TensorLF T)
+  : DayTripleValuesF F G H ⇒ (DayF T (DayF T F G) H ∘F Tensor3LF T)
   :=
   {|nt q := _
   |}.
@@ -393,7 +395,7 @@ Next Obligation.
       (X := (T (a,b),d)) (Y := (T (a',b'),d'))
       (fmap T (X := (a,b)) (Y := (a',b')) (f,g),h)
       (day_inject T F G (a,b) id (x,y),z)).
-Defined.
+Qed.
 
 (** Move both weights into the output action by postcomposition and gluing. *)
 
@@ -425,7 +427,7 @@ Proof.
       (p := (T (A,B),D)) (q := (U,D)) (k,id) h
       (day_inject T F G (A,B) id (x,y),z)).
   - apply (@func_proper _ _ (day_inject T (DayF T F G) H (U,D) h)).
-    split; [| exact (@fct_id C SetCat H D z)].
+    split; [| exact (@fmap_id _ _ _ _ (@isFct C SetCat H) D z)].
     transitivity (day_inject T F G (A,B) (k ∘ id) (x,y)).
     + exact (day_inject_post T F G (A,B) k id (x,y)).
     + exact (@day_inject_proper C T F G HFG (A,B) U _ _
@@ -458,8 +460,8 @@ Defined.
 Lemma day_triple_left_nat_ext {K : Fct C (SetCat@{u p _ _ _ _ _})}
     (α γ : DayF T (DayF T F G) H ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorLF T q) (DayTripleLeftGenN q xyz) ≈S
-      γ (TensorLF T q) (DayTripleLeftGenN q xyz))
+      α (Tensor3LF T q) (DayTripleLeftGenN q xyz) ≈S
+      γ (Tensor3LF T q) (DayTripleLeftGenN q xyz))
   : α ≈N γ.
 Proof.
   intros Z. apply (@day_triple_left_hom_ext Z (K Z) (α Z) (γ Z)).
@@ -507,7 +509,7 @@ Context (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
 (** 将第二个值对嵌套在第一对之内，保留相同输入顺序。 *)
 
 Program Definition DayTripleRightGenN
-  : DayTripleValuesF F G H ⇒ (DayF T F (DayF T G H) ∘F TensorRF T)
+  : DayTripleValuesF F G H ⇒ (DayF T F (DayF T G H) ∘F Tensor3RF T)
   :=
   {|nt q := _
   |}.
@@ -540,7 +542,7 @@ Next Obligation.
       (X := (a,T (b,d))) (Y := (a',T (b',d')))
       (f,fmap T (X := (b,d)) (Y := (b',d')) (g,h))
       (x,day_inject T G H (b,d) id (y,z))).
-Defined.
+Qed.
 
 (** Move right nested weights into the output action by the same gluing laws. *)
 
@@ -572,7 +574,7 @@ Proof.
       (p := (A,T (B,D))) (q := (A,U)) (id,k) h
       (x,day_inject T G H (B,D) id (y,z))).
   - apply (@func_proper _ _ (day_inject T F (DayF T G H) (A,U) h)).
-    split; [exact (@fct_id C SetCat F A x) |].
+    split; [exact (@fmap_id _ _ _ _ (@isFct C SetCat F) A x) |].
     transitivity (day_inject T G H (B,D) (k ∘ id) (y,z)).
     + exact (day_inject_post T G H (B,D) k id (y,z)).
     + exact (@day_inject_proper C T G H HGH (B,D) U _ _
@@ -615,8 +617,8 @@ Defined.
 Lemma day_triple_right_nat_ext {K : Fct C (SetCat@{u p _ _ _ _ _})}
     (α γ : DayF T F (DayF T G H) ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorRF T q) (DayTripleRightGenN q xyz) ≈S
-      γ (TensorRF T q) (DayTripleRightGenN q xyz))
+      α (Tensor3RF T q) (DayTripleRightGenN q xyz) ≈S
+      γ (Tensor3RF T q) (DayTripleRightGenN q xyz))
   : α ≈N γ.
 Proof.
   intros Z. apply (@day_triple_right_hom_ext Z (K Z) (α Z) (γ Z)).
@@ -664,9 +666,9 @@ Context {F G H K : Fct C (SetCat@{u p _ _ _ _ _})}.
 
 Lemma day_triple_left_extend_gen
     `{HFG : !HasDay C T F G} `{HL : !HasDay C T (DayF T F G) H}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F Tensor3LF T))
     (q : @Ob ((C ×C C) ×C C)) (xyz : DayTripleValuesF F G H q)
-  : DayTripleLeftExtendN T β (TensorLF T q)
+  : DayTripleLeftExtendN T β (Tensor3LF T q)
       (DayTripleLeftGenN T F G H q xyz) ≈S β q xyz.
 Proof.
   destruct q as [[a b] d], xyz as [[x y] z].
@@ -676,9 +678,10 @@ Proof.
   - exact (day_triple_left_extend_β T β id id x y z).
   - transitivity (fmap K (id[T (T (a,b),d)])
       (β ((a,b),d) ((x,y),z))).
-    + apply (@fct_fmap_proper C SetCat K).
-      rewrite fct_id, comp_id_l. reflexivity.
-    + exact (@fct_id C SetCat K _ (β ((a,b),d) ((x,y),z))).
+    + apply (@fmap_proper _ _ _ _ (@isFct C SetCat K)).
+      rewrite (fmap_id (IsFct := isFct T) (X := (T (a,b),d))), comp_id_l.
+      reflexivity.
+    + exact (@fmap_id _ _ _ _ (@isFct C SetCat K) _ (β ((a,b),d) ((x,y),z))).
 Defined.
 
 (** The left ternary operation determines its natural extension uniquely. *)
@@ -687,10 +690,10 @@ Defined.
 
 Lemma day_triple_left_extend_unique
     `{HFG : !HasDay C T F G} `{HL : !HasDay C T (DayF T F G) H}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorLF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F Tensor3LF T))
     (α : DayF T (DayF T F G) H ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorLF T q) (DayTripleLeftGenN T F G H q xyz) ≈S β q xyz)
+      α (Tensor3LF T q) (DayTripleLeftGenN T F G H q xyz) ≈S β q xyz)
   : α ≈N DayTripleLeftExtendN T β.
 Proof.
   apply (day_triple_left_nat_ext T F G H). intros q xyz.
@@ -704,9 +707,9 @@ Defined.
 
 Lemma day_triple_right_extend_gen
     `{HGH : !HasDay C T G H} `{HR : !HasDay C T F (DayF T G H)}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F Tensor3RF T))
     (q : @Ob ((C ×C C) ×C C)) (xyz : DayTripleValuesF F G H q)
-  : DayTripleRightExtendN T β (TensorRF T q)
+  : DayTripleRightExtendN T β (Tensor3RF T q)
       (DayTripleRightGenN T F G H q xyz) ≈S β q xyz.
 Proof.
   destruct q as [[a b] d], xyz as [[x y] z].
@@ -716,9 +719,10 @@ Proof.
   - exact (day_triple_right_extend_β T β id id x y z).
   - transitivity (fmap K (id[T (a,T (b,d))])
       (β ((a,b),d) ((x,y),z))).
-    + apply (@fct_fmap_proper C SetCat K).
-      rewrite fct_id, comp_id_l. reflexivity.
-    + exact (@fct_id C SetCat K _ (β ((a,b),d) ((x,y),z))).
+    + apply (@fmap_proper _ _ _ _ (@isFct C SetCat K)).
+      rewrite (fmap_id (IsFct := isFct T) (X := (a,T (b,d)))), comp_id_l.
+      reflexivity.
+    + exact (@fmap_id _ _ _ _ (@isFct C SetCat K) _ (β ((a,b),d) ((x,y),z))).
 Defined.
 
 (** The right ternary operation also determines its natural extension uniquely. *)
@@ -727,10 +731,10 @@ Defined.
 
 Lemma day_triple_right_extend_unique
     `{HGH : !HasDay C T G H} `{HR : !HasDay C T F (DayF T G H)}
-    (β : DayTripleValuesF F G H ⇒ (K ∘F TensorRF T))
+    (β : DayTripleValuesF F G H ⇒ (K ∘F Tensor3RF T))
     (α : DayF T F (DayF T G H) ⇒ K)
     (P : ∀ q (xyz : DayTripleValuesF F G H q),
-      α (TensorRF T q) (DayTripleRightGenN T F G H q xyz) ≈S β q xyz)
+      α (Tensor3RF T q) (DayTripleRightGenN T F G H q xyz) ≈S β q xyz)
   : α ≈N DayTripleRightExtendN T β.
 Proof.
   apply (day_triple_right_nat_ext T F G H). intros q xyz.

@@ -249,7 +249,7 @@ Proof.
   intros U [x | x].
   - unfold env_lift, env_extend, env_comp, ty_env_lift; cbn.
     rewrite <- comp_assoc, (H U x).
-    rewrite (@fct_comp (TyCat@{b e l} B) C F
+    rewrite (@fmap_comp _ _ _ _ (@isFct (TyCat@{b e l} B) C F)
       (ty_prod Z A) Z U (η U x)
       (@Cats.Cat.Product.Core.π1 (TyCat@{b e l} B)
         (TyCat_HasProduct B) Z A)).
@@ -298,9 +298,9 @@ Proof.
       (syntax_eval t1 η) (syntax_eval t2 η)).
     reflexivity.
   - rewrite <- comp_assoc, <- type_compare_π1, comp_assoc,
-      (IHt Z X η ρ z H), <- comp_assoc, <- fct_comp. reflexivity.
+      (IHt Z X η ρ z H), <- comp_assoc, <- fmap_comp. reflexivity.
   - rewrite <- comp_assoc, <- type_compare_π2, comp_assoc,
-      (IHt Z X η ρ z H), <- comp_assoc, <- fct_comp. reflexivity.
+      (IHt Z X η ρ z H), <- comp_assoc, <- fmap_comp. reflexivity.
   - apply type_compare_curry.
     rewrite comp_assoc. apply IHt. apply type_compare_environment. exact H.
   - unfold app.
@@ -311,7 +311,7 @@ Proof.
     rewrite (IHt1 Z X η ρ z H), (IHt2 Z X η ρ z H).
     rewrite <- (product_comp_r (fmap F (syntax_eval t1 η))
       (fmap F (syntax_eval t2 η)) z).
-    rewrite (@fct_comp (TyCat@{b e l} B) C F
+    rewrite (@fmap_comp _ _ _ _ (@isFct (TyCat@{b e l} B) C F)
       Z (ty_prod (ty_arr A U) A) U
       (@Cats.Cat.Exponential.Core.eval (TyCat@{b e l} B)
         (TyCat_HasProduct B) (TyCat_HasExponential B) A U)
@@ -339,7 +339,7 @@ Proof.
   { intros V [x | x]; [destruct x | destruct x].
     change ((type_compare A).1 ∘ id ≈
       fmap F (@Cats.Cat.Core.id (TyCat@{b e l} B) A) ∘ (type_compare A).1).
-    rewrite fct_id, comp_id_l, comp_id_r. reflexivity. }
+    rewrite fmap_id, comp_id_l, comp_id_r. reflexivity. }
   pose proof (type_compare_eval_term (h U var_zero) A (TyI I A)
     (ty_single_env A) (single_env I A) (type_compare A).1 He) as H.
   rewrite syntax_eval_retract in H. exact H.
@@ -404,7 +404,7 @@ Proof.
     (context_compare Γ).1).
   - apply type_compare_eval_term. apply context_compare_environment.
   - apply comp_proper; [|reflexivity].
-    apply fct_fmap_proper. apply syntax_eval_packed.
+    apply fmap_proper. apply syntax_eval_packed.
 Qed.
 
 End Comparison.

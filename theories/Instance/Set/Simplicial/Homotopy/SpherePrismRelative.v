@@ -218,7 +218,7 @@ Lemma simplex_triangle_prism_endpoint (K : SimplicialCylinderF D ⇒ X)
       else d[X; 2; fin_first⁺⁺⁺] (simplex_prism_eval K fin_first⁺⁺).
 Proof.
   destruct t.
-  - change (K 2 ({|lower := (id : (@Hom Δ) 2 2)|},
+  - change (K 2 ({|lower := (@Cat.Core.id Δ 2)|},
       {|lower := ConstF [Ord 2] (C := [Ord 1]) fin_first⁺|}) ≈S
       d[X; 2; fin_first] (simplex_prism_eval K fin_first)).
     transitivity (K 2
@@ -229,7 +229,7 @@ Proof.
         destruct i as [[] | [[] | [[] | []]]]; reflexivity.
     + exact (simplex_restrict_natural K δ[2; fin_first]
         (simplex_prism_generator 2 fin_first)).
-  - change (K 2 ({|lower := (id : (@Hom Δ) 2 2)|},
+  - change (K 2 ({|lower := (@Cat.Core.id Δ 2)|},
       {|lower := ConstF [Ord 2] (C := [Ord 1]) fin_first|}) ≈S
       d[X; 2; fin_first⁺⁺⁺] (simplex_prism_eval K fin_first⁺⁺)).
     transitivity (K 2

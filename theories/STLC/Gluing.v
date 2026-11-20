@@ -105,7 +105,7 @@ Program Definition NormalizationRelation (A : Ty B)
   : DiagramRelation (GluingSyntaxF A) (GluingValuesF A)
   :=
   {|diagram_relation Γ t v := Realizes@{b r s l e
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _}
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _}
       A Γ (lower t) (lower v)
   ; diagram_relation_map Γ Δ ρ t v h :=
       realizes_rename A Γ Δ ρ (lower t) (lower v) h

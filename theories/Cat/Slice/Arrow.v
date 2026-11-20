@@ -52,12 +52,17 @@ Next Obligation. rewrite comp_id_l. apply slice_comm. Defined.
 Program Definition SliceArrowF (C : Cat) (X : @Ob C)
   : Fct (C /C X) (Arr C)
   :=
-  {|F0 := SliceArrowOb
-  ; F1 A B := slice_to_square
+  {|fobj := SliceArrowOb
+  ; fmap A B := slice_to_square
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros h k H. split; [exact H | reflexivity]. Defined.
-Next Obligation. split; reflexivity. Defined.
-Next Obligation. split; [reflexivity | symmetry; apply comp_id_l]. Defined.
+Next Obligation. intros h k H. split; [exact H | reflexivity]. Qed.
+Next Obligation. split; reflexivity. Qed.
+Next Obligation. split; [reflexivity | symmetry; apply comp_id_l]. Qed.
 
 (** The embedding of a slice into the arrow category reflects equality. *)
 
@@ -143,7 +148,7 @@ Next Obligation.
   split.
   - apply slice_reindex_map_β2.
   - change (f ∘ id ≈ id ∘ f). rewrite comp_id_r, comp_id_l. reflexivity.
-Defined.
+Qed.
 
 (** Reindexing a slice map is the cartesian factor of the corresponding
     square. *)

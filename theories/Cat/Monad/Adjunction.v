@@ -34,7 +34,7 @@ Program Definition AdjMonadMul
   |}.
 Next Obligation.
   exact (nat_naturality (U ∘Nl (adj_counit A ∘Nr F)) f).
-Defined.
+Qed.
 
 (** Every chosen ordinary adjunction supplies an actual monad. The first
     unit law uses the right triangle; the second uses the image of the
@@ -51,15 +51,15 @@ Next Obligation. exact (adj_triangle_r A (F X)). Defined.
 Next Obligation.
   change (fmap U (adj_counit A (F X)) ∘
     fmap U (fmap F (adj_unit A X)) ≈ id).
-  rewrite <- fct_comp, (adj_triangle_l A X).
-  apply fct_id.
+  rewrite <- fmap_comp, (adj_triangle_l A X).
+  apply fmap_id.
 Defined.
 Next Obligation.
   change (fmap U (adj_counit A (F X)) ∘
     fmap U (adj_counit A (F (U (F X)))) ≈
     fmap U (adj_counit A (F X)) ∘
       fmap U (fmap F (fmap U (adj_counit A (F X))))).
-  rewrite <- !fct_comp. apply fct_fmap_proper.
+  rewrite <- !fmap_comp. apply fmap_proper.
   symmetry. exact (nat_naturality (adj_counit A)
     (adj_counit A (F X))).
 Defined.

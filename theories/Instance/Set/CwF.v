@@ -69,15 +69,23 @@ Program Definition code_sub {Δ Γ : SetC} (σ : Δ →r Γ)
 Next Obligation. intros A B H δ. exact (H (σ δ)). Defined.
 Next Obligation. intros δ. cbn. apply transpS_witness_independent. Defined.
 
-(** Codes and decoded sections form the type-and-term family-valued presheaf. *)
+(** Codes and decoded sections form the type-and-term family-valued
+    presheaf. Its functoriality witnesses compute the transports for
+    identity and composite substitutions. *)
 
-(** 代码与解码截面组成类型和项的族值预层。 *)
+(** 代码与解码截面组成类型和项的族值预层。其函子律见证计算恒等与
+    复合替换的运输。 *)
 
 Program Definition CodeTyTmF
   : Fct (SetCat^op) FamCat
   :=
-  {|F0 := CodeFamily
-  ; F1 Γ Δ σ := code_sub σ
+  {|fobj := CodeFamily
+  ; fmap Γ Δ σ := code_sub σ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros σ τ H. exists (λ A δ, @func_proper _ _ A _ _ (H δ)).

@@ -171,12 +171,17 @@ Defined.
 Program Definition ContextPairF {Γ : @Ob C} (A : Ty T Γ)
   : Fct (C^op) SetCat
   :=
-  {|F0 := ContextPairS T A
-  ; F1 Δ Θ τ := context_pair_sub_resp T A τ
+  {|fobj := ContextPairS T A
+  ; fmap Δ Θ τ := context_pair_sub_resp T A τ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros τ τ' H x. exact (context_pair_sub_proper A τ τ' H x). Defined.
-Next Obligation. intros x. apply context_pair_sub_id. Defined.
-Next Obligation. intros x. apply context_pair_sub_comp. Defined.
+Next Obligation. intros τ τ' H x. exact (context_pair_sub_proper A τ τ' H x). Qed.
+Next Obligation. intros x. apply context_pair_sub_id. Qed.
+Next Obligation. intros x. apply context_pair_sub_comp. Qed.
 
 End ContextPairPresheaf.
 
@@ -291,7 +296,7 @@ Next Obligation.
   intros h. change ((context_proj T A; context_var T A)[h ∘ f]Pair[T, A]
     ≈S (context_proj T A; context_var T A)[h]Pair[T, A][f]Pair[T, A]).
   apply context_pair_sub_comp.
-Defined.
+Qed.
 
 (** The context-extension representation is natural in the source context. *)
 

@@ -1,9 +1,10 @@
 From Cats.Set Require Import
   Subset.
 From Cats Require Export
-  Cat.Monoidal.Core.
+  Cat.Monoidal.Monoidal.
 
 Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Monoid Objects
 
@@ -24,33 +25,33 @@ Local Open Scope monoidal_scope.
 (** 固定载体、单位和乘法上的幺半群定律；此谓词可比较不同呈现，而不必量化
     数据可能不同的完整结构包。 *)
 
-Definition is_monoid_object {C : Cat} (MC : MonoidalCat C)
-    (A : @Ob C) (e : Hom (I⊗[MC]) A) (m : Hom (A ⊗ A) A)
+Definition is_monoid_object {C : Cat} (MC : HasMonoidal C)
+    (A : @Ob C) (e : Hom (𝐈[MC]) A) (m : Hom (A ⊗ A) A)
   : Type
-  := (m ∘ (e ⊗m id) ≈ λ⊗[A]) ∧
-      (m ∘ (id ⊗m e) ≈ ρ⊗[A]) ∧
-      (m ∘ (m ⊗m id) ≈ m ∘ (id ⊗m m) ∘ α⊗[A; A; A]).
+  := (m ∘ (e ⊗ id) ≈ λ[A]) ∧
+      (m ∘ (id ⊗ e) ≈ ρ[A]) ∧
+      (m ∘ (m ⊗ id) ≈ m ∘ (id ⊗ m) ∘ α[A; A; A]).
 
 (** A chosen carrier and operations satisfying the monoid diagrams.
     Coercion exposes the carrier object in the ambient category. *)
 
 (** 满足幺半群交换图表的选定载体及运算；强制转换暴露所在范畴中的载体对象。 *)
 
-Class MonoidObj {C : Cat} (MC : MonoidalCat C)
+Class MonoidObj {C : Cat} (MC : HasMonoidal C)
   :=
   { MonoidCarrier :> @Ob C
-  ; monoid_object_unit : Hom (I⊗[MC]) MonoidCarrier
+  ; monoid_object_unit : Hom (𝐈[MC]) MonoidCarrier
   ; monoid_object_mul : Hom (MonoidCarrier ⊗ MonoidCarrier) MonoidCarrier
   ; monoid_object_unit_l
-    : monoid_object_mul ∘ (monoid_object_unit ⊗m id) ≈
-        λ⊗[MonoidCarrier]
+    : monoid_object_mul ∘ (monoid_object_unit ⊗ id) ≈
+        λ[MonoidCarrier]
   ; monoid_object_unit_r
-    : monoid_object_mul ∘ (id ⊗m monoid_object_unit) ≈
-        ρ⊗[MonoidCarrier]
+    : monoid_object_mul ∘ (id ⊗ monoid_object_unit) ≈
+        ρ[MonoidCarrier]
   ; monoid_object_assoc
-    : monoid_object_mul ∘ (monoid_object_mul ⊗m id) ≈
-        monoid_object_mul ∘ (id ⊗m monoid_object_mul) ∘
-          α⊗[MonoidCarrier; MonoidCarrier; MonoidCarrier]
+    : monoid_object_mul ∘ (monoid_object_mul ⊗ id) ≈
+        monoid_object_mul ∘ (id ⊗ monoid_object_mul) ∘
+          α[MonoidCarrier; MonoidCarrier; MonoidCarrier]
   }.
 
 Arguments MonoidCarrier {_ _} _.
@@ -64,7 +65,7 @@ Arguments monoid_object_assoc {_ _} _.
 
 (** 从选定幺半群对象中提取固定数据上的定律谓词。 *)
 
-Definition monoid_object_laws {C : Cat} {MC : MonoidalCat C}
+Definition monoid_object_laws {C : Cat} {MC : HasMonoidal C}
     (A : MonoidObj MC)
   : is_monoid_object MC (MonoidCarrier A)
       (monoid_object_unit A) (monoid_object_mul A)
@@ -85,7 +86,7 @@ Notation "'m[' A ']'" := (monoid_object_mul A) : monoidal_scope.
     固定 [C] 上的幺半结构 [MC]，以保持单位和乘法定义同态，比较底层箭头，并构造恒等与复合同态。 *)
 
 Section MonoidMorphisms.
-Context {C : Cat} {MC : MonoidalCat C}.
+Context {C : Cat} {MC : HasMonoidal C}.
 
 (** A homomorphism preserves the unit and multiplication. The commuting
     diagrams are Type-valued evidence, not an equality of structure records. *)
@@ -95,7 +96,7 @@ Context {C : Cat} {MC : MonoidalCat C}.
 Definition is_monoid_hom (A B : MonoidObj MC)
     (f : Hom (MonoidCarrier A) (MonoidCarrier B))
   : Type
-  := f ∘ e[A] ≈ e[B] ∧ f ∘ m[A] ≈ m[B] ∘ (f ⊗m f).
+  := f ∘ e[A] ≈ e[B] ∧ f ∘ m[A] ≈ m[B] ∘ (f ⊗ f).
 
 (** Equal arrows satisfy the same homomorphism diagrams. *)
 
@@ -171,7 +172,7 @@ Context {C : Cat}.
 
 (** 幺半群对象及保持运算箭头组成的范畴；Hom 相等继承自 [C]，不比较证明字段。 *)
 
-Program Definition MonoidCat (MC : MonoidalCat C)
+Program Definition MonoidCat (MC : HasMonoidal C)
   : Cat
   :=
   {|Ob := MonoidObj MC
@@ -182,31 +183,36 @@ Program Definition MonoidCat (MC : MonoidalCat C)
 Next Obligation.
   intros [g Hg] [g' Hg'] Eg [f Hf] [f' Hf'] Ef.
   exact (comp_proper g g' Eg f f' Ef).
-Defined.
-Next Obligation. exact (comp_id_r f.1). Defined.
-Next Obligation. exact (comp_id_l f.1). Defined.
-Next Obligation. exact (comp_assoc f.1 g.1 h.1). Defined.
+Qed.
+Next Obligation. exact (comp_id_r f.1). Qed.
+Next Obligation. exact (comp_id_l f.1). Qed.
+Next Obligation. exact (comp_assoc f.1 g.1 h.1). Qed.
 
 (** Forget a monoid's operations and a homomorphism's preservation proofs. *)
 
 (** 忘却幺半群的运算及同态的保持性证明。 *)
 
-Program Definition MonoidForgetF (MC : MonoidalCat C)
+Program Definition MonoidForgetF (MC : HasMonoidal C)
   : Fct (MonoidCat MC) C
   :=
-  {|F0 := MonoidCarrier
-  ; F1 A B f := f.1
+  {|fobj := MonoidCarrier
+  ; fmap A B f := f.1
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Forgetting a homomorphism is faithful because equality already compares
     only its underlying arrow. *)
 
 (** 同态的相等本就只比较底层箭头，因此忘却函子忠实。 *)
 
-Lemma monoid_forget_faithful (MC : MonoidalCat C)
+Lemma monoid_forget_faithful (MC : HasMonoidal C)
   : is_faithful (MonoidForgetF MC).
 Proof. intros A B f g H. exact H. Qed.
 

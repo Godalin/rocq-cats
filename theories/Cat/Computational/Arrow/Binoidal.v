@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Computational.Arrow.Cartesian
-  Cat.Binoidal.Center.
+  Cat.Monoidal.Center.
 
 Local Open Scope computation_scope.
 
@@ -19,7 +19,7 @@ Local Open Scope computation_scope.
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** The computation objects are the value objects themselves, so the
     underlying tensor needs no equality or transport of object maps. *)
@@ -29,24 +29,24 @@ Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 Program Definition ArrowHasBinoidal
   : HasBinoidal (ComputationCat A)
   :=
-  {|binoidal_tensor X Y := @Prod C HP X Y
-  ; binoidal_l X Y Z f := second[A; f; Z]
-  ; binoidal_r X Y Z f := first[A; f; Z]
+  {|tensor X Y := @Prod C HP X Y
+  ; tensor_l X Y Z f := second[A; f; Z]
+  ; tensor_r X Y Z f := first[A; f; Z]
   ; isBinoidalL Z :=
-      {|fct_map_proper X Y := arrow_second_proper A Z
+      {|fmap_proper X Y := arrow_second_proper A Z
       |}
   ; isBinoidalR Z :=
-      {|fct_map_proper X Y := arrow_first_proper A Z
+      {|fmap_proper X Y := arrow_first_proper A Z
       |}
   |}.
-Next Obligation. exact (@fct_id _ _ (ContextF A Z) X). Defined.
-Next Obligation. exact (arrow_second_comp A g f Z). Defined.
+Next Obligation. exact (@fmap_id _ _ _ _ (isFct (ContextF A Z)) X). Defined.
+Next Obligation. exact (arrow_second_comp A f g Z). Defined.
 Next Obligation.
   change (first[A; id[A X]; Z] ≈ id).
   rewrite <- (arrow_arr_id A X), arrow_first_arr,
-    cross_id, fct_id. reflexivity.
+    cross_id, fmap_id. reflexivity.
 Defined.
-Next Obligation. exact (arrow_first_comp A g f Z). Defined.
+Next Obligation. exact (arrow_first_comp A f g Z). Defined.
 
 (** Bundle the computation category and the same chosen context actions. *)
 
@@ -90,7 +90,7 @@ Defined.
 
 Lemma arrow_binoidal_sequence {X Y Z W : @Ob C}
     (f : Hom (A X) (A Y)) (g : Hom (A Z) (A W))
-  : @binoidal_sequence (ComputationCat A) ArrowHasBinoidal X Y Z W f g
+  : @tensor_sequence (ComputationCat A) ArrowHasBinoidal X Y Z W f g
       ≈ f ***[A] g.
 Proof. reflexivity. Qed.
 

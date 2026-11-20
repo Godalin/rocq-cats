@@ -37,7 +37,7 @@ Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 Context (K : Cat)
     (A : Arrow C K
-      (@CartMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
+      (@CartHasMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
 
 (** Evaluate the outer singleton argument, then reuse generic global-
     function interpretation. *)
@@ -70,7 +70,7 @@ Proof.
   unfold arrow_static_eval, arrow_global_context.
   apply comp_proper; [reflexivity |]. apply comp_proper; [| reflexivity].
   apply arrow_second_proper.
-  apply (@fct_fmap_proper C K A UnitS (Y ^ X)%ob). intros [].
+  apply (@fmap_proper _ _ _ _ (@isFct C K A) UnitS (Y ^ X)%ob). intros [].
   intros x. reflexivity.
 Qed.
 
@@ -114,16 +114,20 @@ Qed.
 Program Definition StaticInterpretF
   : Fct (StaticCat (ArrowA K A)) K
   :=
-  {|F0 := A
-  ; F1 X Y f := static_interpret f
-  ; fct_fmap_proper X Y := static_interpret_proper
+  {|fobj := A
+  ; fmap X Y f := static_interpret f
+  ; isFct :=
+      {|fmap_proper X Y := static_interpret_proper
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   change (static_interpret
     (static_arr (ArrowA K A) (id_resp (X := X))) ≈ id[A X]).
-  rewrite static_interpret_arr. exact (@fct_id C K A X).
-Defined.
-Next Obligation. exact (static_interpret_comp f g). Defined.
+  rewrite static_interpret_arr. exact (@fmap_id _ _ _ _ (@isFct C K A) X).
+Qed.
+Next Obligation. exact (static_interpret_comp f g). Qed.
 
 (** Interpreting the static pure inclusion compares naturally with the
     original pure functor, using identity components. *)
@@ -139,7 +143,7 @@ Next Obligation.
   change (id ∘ static_interpret (static_arr (ArrowA K A) f) ≈
     arr[A; f] ∘ id).
   rewrite comp_id_l, comp_id_r. apply static_interpret_arr.
-Defined.
+Qed.
 
 (** Identity inverse components give the pure-inclusion natural isomorphism. *)
 

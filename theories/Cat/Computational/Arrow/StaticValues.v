@@ -66,7 +66,7 @@ Lemma static_value_function {W Y : @Ob C} (v : Hom W (A Y))
   : static_value (static_function v) ≈ v.
 Proof.
   unfold static_value, static_function. rewrite <- comp_assoc,
-    <- fct_comp, (snd (exp_unit_iso Y).2.2), fct_id,
+    <- fmap_comp, (snd (exp_unit_iso Y).2.2), fmap_id,
     comp_id_l. reflexivity.
 Qed.
 
@@ -78,7 +78,7 @@ Lemma static_function_value {W Y : @Ob C} (f : Hom W (A (Y ^ 1)%ob))
   : static_function (static_value f) ≈ f.
 Proof.
   unfold static_value, static_function. rewrite <- comp_assoc,
-    <- fct_comp, (fst (exp_unit_iso Y).2.2), fct_id,
+    <- fmap_comp, (fst (exp_unit_iso Y).2.2), fmap_id,
     comp_id_l. reflexivity.
 Qed.
 
@@ -122,8 +122,8 @@ Lemma static_value_map {Y Z : @Ob C} (g : Hom Y Z)
   : static_value (static_arr A g ∘ˢ[A] f) ≈ fmap A g ∘ static_value f.
 Proof.
   rewrite static_comp_pure_l. unfold static_value.
-  rewrite <- !comp_assoc, <- !fct_comp.
-  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  rewrite <- !comp_assoc, <- !fmap_comp.
+  apply comp_proper; [| reflexivity]. apply fmap_proper.
   exact (exp_unit_natural g).
 Qed.
 
@@ -145,7 +145,7 @@ Proof.
     (exp_unit_eval Y × id); f; g]).
   - apply applicative_combine_proper;
       [apply exp_unit_then | reflexivity | reflexivity].
-  - rewrite <- applicative_combine_pre, fct_id, comp_id_l. reflexivity.
+  - rewrite <- applicative_combine_pre, fmap_id, comp_id_l. reflexivity.
 Qed.
 
 (** Equality of evaluated values reflects equality of the static functions. *)
@@ -217,7 +217,7 @@ Proof.
   rewrite static_value_comp, static_value_function.
   transitivity (lift₂[A; app π2 π1; fmap A id ∘ u;
     fmap A (ƛ (h ∘ ⟨π2, π1⟩)) ∘ v]).
-  - rewrite fct_id, comp_id_l. reflexivity.
+  - rewrite fmap_id, comp_id_l. reflexivity.
   - rewrite applicative_combine_pre, exp_binary_apply. reflexivity.
 Qed.
 

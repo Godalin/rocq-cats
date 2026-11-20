@@ -24,7 +24,7 @@ Context {C D : Cat}
     `{TC : !HasTerminal C} `{PC : !HasProduct C}
     `{TD : !HasTerminal D} `{PD : !HasProduct D}
     (L : LaxMonoidalFct
-      (@CartMonoidal C TC PC) (@CartMonoidal D TD PD)).
+      (@CartHasMonoidal C TC PC) (@CartHasMonoidal D TD PD)).
 
 (** Naturality at the ordinary product maps of both categories. *)
 
@@ -52,10 +52,11 @@ Lemma cartesian_lift2_assoc {X Y Z U V T : @Ob C}
       lift₂[L; k] ∘ (@cross D PD _ _ _ _ id lift₂[L; h]) ∘
         (@product_assoc D PD (L X) (L Y) (L Z)).1.
 Proof.
-  assert (K : g ∘ (@tensor_map C (@CartMonoidal C TC PC)
-    _ _ _ _ f id) ≈ k ∘ (@tensor_map C (@CartMonoidal C TC PC)
-      _ _ _ _ id h) ∘ (@tensor_assoc C (@CartMonoidal C TC PC) X Y Z)).
-  { rewrite !cartesian_tensor_map. exact H. }
+  pose (MC := @CartHasMonoidal C TC PC).
+  assert (K : g ∘ tensor_map (IM := isMagmoidal MC) f id ≈
+    k ∘ tensor_map (IM := isMagmoidal MC) id h ∘
+      (tensor_assoc (HasAssoc := MC) X Y Z).1).
+  { unfold MC. rewrite !cartesian_tensor_map. exact H. }
   pose proof (lax_lift2_assoc L f g h k K) as E.
   rewrite !cartesian_tensor_map in E. exact E.
 Qed.

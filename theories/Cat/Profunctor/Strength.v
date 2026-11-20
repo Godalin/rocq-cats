@@ -1,12 +1,12 @@
 From Cats Require Export
   Cat.Profunctor.Core
-  Cat.Monoidal.Core.
+  Cat.Monoidal.Monoidal.
 From Cats Require Import
   Instance.Set.Core.
 
-Local Open Scope binoidal_scope.
 Local Open Scope monoidal_scope.
 Local Open Scope prof_scope.
+Local Open Scope ob_scope.
 
 (** * Left-Context Profunctor Strength
 
@@ -27,10 +27,10 @@ Local Open Scope prof_scope.
 
 (** 用同一选定左上下文扩展 profunctor 两端；这只是值界显式的已有重索引。 *)
 
-Definition ProfContext@{u p +} {C : Cat} (MC : MonoidalCat C)
+Definition ProfContext@{u p +} {C : Cat} (MC : HasMonoidal C)
     (P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
   : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
-  := ProfReindex (@BinoidalLF C MC Z) (@BinoidalLF C MC Z) P.
+  := ProfReindex (@TensorAtLF C MC Z) (@TensorAtLF C MC Z) P.
 
 (** ** Chosen Strength on a Supplied Profunctor
 
@@ -45,7 +45,7 @@ Definition ProfContext@{u p +} {C : Cat} (MC : MonoidalCat C)
 
 Section Interface.
 Universes u p.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 Context (P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})).
 
 Class HasProfStrength
@@ -65,16 +65,16 @@ Class HasProfStrength
 
   ; prof_strength_context {Z W : @Ob C} (h : Hom Z W)
       (X Y : @Ob C)
-      : (lmap[P; h ⊗m id[X]] ∘r prof_strengthN W (X,Y)) ≈f
-          (rmap[P; h ⊗m id[Y]] ∘r prof_strengthN Z (X,Y))
+      : (lmap[P; h ⊗ id[X]] ∘r prof_strengthN W (X,Y)) ≈f
+          (rmap[P; h ⊗ id[Y]] ∘r prof_strengthN Z (X,Y))
 
   (** Remove the unit through the two specified left-unitor boundaries. *)
 
   (** 通过两端指定左单位子移去单位上下文。 *)
 
   ; prof_strength_unit (X Y : @Ob C)
-      : (rmap[P; λ⊗[Y]] ∘r prof_strengthN (I⊗[MC]) (X,Y)) ≈f
-          lmap[P; λ⊗[X]]
+      : (rmap[P; λ[Y]] ∘r prof_strengthN (𝐈[MC]) (X,Y)) ≈f
+          lmap[P; λ[X]]
 
   (** Nested contexts agree after the supplied associator boundaries;
       this law does not identify endpoints by native object equality. *)
@@ -82,10 +82,10 @@ Class HasProfStrength
   (** 嵌套上下文经给定结合子边界后相等，不用原生对象相等识别两端。 *)
 
   ; prof_strength_assoc (Z W X Y : @Ob C)
-      : (lmap[P; α⊗[Z; W; X]] ∘r
+      : (lmap[P; α[Z; W; X]] ∘r
           prof_strengthN Z (W ⊗ X,W ⊗ Y) ∘r
           prof_strengthN W (X,Y)) ≈f
-          (rmap[P; α⊗[Z; W; Y]] ∘r
+          (rmap[P; α[Z; W; Y]] ∘r
             prof_strengthN (Z ⊗ W) (X,Y))
   }.
 
@@ -101,7 +101,7 @@ Arguments prof_strength_assoc {_ _ _} _ _ _ _ _.
 
 (** 逐点作用保留分量已有的尊重映射。 *)
 
-Definition prof_strength {C : Cat} {MC : MonoidalCat C}
+Definition prof_strength {C : Cat} {MC : HasMonoidal C}
     {P : Fct ((C^op) ×C C) SetCat} (S : HasProfStrength MC P)
     (Z : @Ob C) {X Y : @Ob C}
   : P (X,Y) →r P (Z ⊗ X,Z ⊗ Y)
@@ -115,7 +115,7 @@ Notation "'pstrength[' S ';' Z ']'" := (prof_strength S Z)
 
 (** 两个 profunctor 变元的自然性均继承自唯一存储的变换，两端使用同一固定上下文函子。 *)
 
-Lemma prof_strength_natural {C : Cat} {MC : MonoidalCat C}
+Lemma prof_strength_natural {C : Cat} {MC : HasMonoidal C}
     {P : Fct ((C^op) ×C C) SetCat} (S : HasProfStrength MC P)
     (Z : @Ob C) {X X' Y Y' : @Ob C} (f : Hom X' X) (g : Hom Y Y')
   : (pstrength[S; Z] ∘r dimap[P; f; g]) ≈f
@@ -130,7 +130,7 @@ Defined.
 
 (** 输入自然性是输出取恒等的已有双侧方块；用指定相等消去上下文函子的恒等。 *)
 
-Lemma prof_strength_lmap {C : Cat} {MC : MonoidalCat C}
+Lemma prof_strength_lmap {C : Cat} {MC : HasMonoidal C}
     {P : Fct ((C^op) ×C C) SetCat} (S : HasProfStrength MC P)
     (Z : @Ob C) {X X' Y : @Ob C} (f : Hom X' X)
   : (pstrength[S; Z] ∘r (@prof_lmap C C P Y X X' f)) ≈f
@@ -139,7 +139,7 @@ Proof.
   transitivity (dimap[P; Z ⊲ f; Z ⊲ id[Y]] ∘r pstrength[S; Z]).
   - exact (prof_strength_natural S Z f (id[Y])).
   - intros v. apply prof_dimap_proper; [reflexivity |].
-    exact (binoidal_l_id Z Y).
+    exact (tensor_l_id Z Y).
 Defined.
 
 (** Output naturality is the other single-sided specialization, with no
@@ -147,7 +147,7 @@ Defined.
 
 (** 输出自然性是另一单侧特化；强度中不另存自然性见证。 *)
 
-Lemma prof_strength_rmap {C : Cat} {MC : MonoidalCat C}
+Lemma prof_strength_rmap {C : Cat} {MC : HasMonoidal C}
     {P : Fct ((C^op) ×C C) SetCat} (S : HasProfStrength MC P)
     (Z : @Ob C) {X Y Y' : @Ob C} (g : Hom Y Y')
   : (pstrength[S; Z] ∘r (@prof_rmap C C P X Y Y' g)) ≈f
@@ -156,5 +156,5 @@ Proof.
   transitivity (dimap[P; Z ⊲ id[X]; Z ⊲ g] ∘r pstrength[S; Z]).
   - exact (prof_strength_natural S Z (id[X]) g).
   - intros v. apply prof_dimap_proper; [| reflexivity].
-    exact (binoidal_l_id Z X).
+    exact (tensor_l_id Z X).
 Defined.

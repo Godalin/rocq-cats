@@ -92,7 +92,7 @@ Tensorial strength remains a separate notion.
 `Applicative` is now a complete record with the direct constructor
 `ApplicativeOfLaxMonoidalFct`. Its only parent projection is
 `ApplicativeToLaxMonoidalFct :> LaxMonoidalFct`, using the supplied terminal
-and product choices through `CartMonoidal`. The parent retains the functor,
+and product choices through `CartHasMonoidal`. The parent retains the functor,
 unit, tensorator and lax coherence; the extension retains the natural pure
 map and its unit/product compatibility. No strong-monoidal condition or
 extra functor copy is introduced. Reader, Monad, Arrow, native lax and
@@ -102,23 +102,31 @@ interfaces in this bounded migration.
 
 `Applicative` 现为完整记录，直接构造器为 `ApplicativeOfLaxMonoidalFct`。
 唯一父投影 `ApplicativeToLaxMonoidalFct :> LaxMonoidalFct` 通过
-`CartMonoidal` 使用给定的终对象及积选择。父结构保留函子、单位、张量子及
+`CartHasMonoidal` 使用给定的终对象及积选择。父结构保留函子、单位、张量子及
 lax 相干律；扩展层保留自然纯值映射及其单位／积相容律，不增加 strong
 幺半要求或另一份函子。Reader、Monad、Arrow、原生 lax 及运算重建客户端
 沿用相同的父结构。本次有界迁移保留 `ApplicativeOps`、`ApplicativeAp`
 两种替代呈现的已有接口。
 
 The binoidal migration starts the monoidal category hierarchy at its
-weakest layer. [IsFct](../theories/Cat/Functor/Laws.v) groups respectfulness,
+weakest layer. [IsFct](../theories/Cat/Functor/Core.v) groups respectfulness,
 identity and composition laws on supplied maps. `HasBinoidal C` selects one
 object tensor and two arrow actions; `isBinoidalL` and `isBinoidalR`
-apply that same law interface separately. The `FctOfMaps` view derives the
+apply that same law interface separately. The `MakeFct` constructor assembles the
 fixed-context functors without selecting another object map. `BinoidalCat`
 is now a complete record, with `BinoidalCatToCat :> Cat`, one `hasBinoidal`
 choice and direct constructor `BinoidalCatOfCat`.
 
-`BifunctorHasBinoidal` and `ArrowHasBinoidal` supply choices on fixed
-categories. `BifunctorBinoidal` and `ArrowBinoidal` bundle those exact choices
+[Functor.Core](../theories/Cat/Functor/Core.v) declares `MakeFct` with
+`fobj`, `fmap`, and the matching `isFct` witness. The laws
+`fmap_proper`, `fmap_id`, and `fmap_comp` come from that witness.
+
+[Functor.Core](../theories/Cat/Functor/Core.v) 的 `MakeFct` 接收
+`fobj`、`fmap` 及对应的 `isFct` 见证。定律 `fmap_proper`、
+`fmap_id` 和 `fmap_comp` 直接来自这份见证。
+
+`BifctHasBinoidal` and `ArrowHasBinoidal` supply choices on fixed
+categories. `BifctBinoidal` and `ArrowBinoidal` bundle those exact choices
 and categories. `PremonoidalCat` now owns one `BinoidalCat` parent, with
 `hasPremonoidal` indexed by that parent's exact tensor choice. Its
 constructor and projections already provide inheritance conversions;
@@ -127,15 +135,15 @@ The remaining parameterized monoidal and symmetric interfaces explicitly
 retain one `HasBinoidal` choice and its indexed premonoidal extension.
 
 双侧张量迁移从幺半范畴层级的最弱一层开始。
-[IsFct](../theories/Cat/Functor/Laws.v) 为给定映射分组保相等、恒等及复合定律。
+[IsFct](../theories/Cat/Functor/Core.v) 为给定映射分组保相等、恒等及复合定律。
 `HasBinoidal C` 选择唯一对象张量及两种态射作用；`isBinoidalL`、
-`isBinoidalR` 分别使用同一函子律接口。`FctOfMaps` 视图导出固定上下文
+`isBinoidalR` 分别使用同一函子律接口。`MakeFct` 构造器装配固定上下文
 函子，不另选对象映射。`BinoidalCat` 现为完整记录，保存
 `BinoidalCatToCat :> Cat`、唯一 `hasBinoidal` 选择，直接构造器为
 `BinoidalCatOfCat`。
 
-`BifunctorHasBinoidal`、`ArrowHasBinoidal` 给出固定范畴上的选择；
-`BifunctorBinoidal`、`ArrowBinoidal` 打包恰好这些选择及范畴。
+`BifctHasBinoidal`、`ArrowHasBinoidal` 给出固定范畴上的选择；
+`BifctBinoidal`、`ArrowBinoidal` 打包恰好这些选择及范畴。
 `PremonoidalCat` 现拥有唯一 `BinoidalCat` 父结构，`hasPremonoidal` 以父结构的
 同一张量选择为索引。构造器及投影已提供继承转换，无需转发转换函数或额外范畴
 强制转换。尚未迁移的参数化幺半及对称接口显式保留一份 `HasBinoidal` 选择及
@@ -1306,7 +1314,7 @@ audited individually.
 `ccc-equivalence-23` 任务，并补充上文的历史调查。所有声明的接口均已分类，
 继承字段和每个强制转换的来源均已核查；没有逐一审计证明体。
 
-[MonoidalCat C](../theories/Cat/Monoidal/Core.v) initially gained the computed
+[MonoidalCat C](../theories/Cat/Monoidal/Monoidal.v) initially gained the computed
 field `MonoidalC :> Cat := C`. It exposes the supplied category without
 storing another one or changing any constructor argument. Clients can write
 `Fct MC MD`, `@Ob MC` and `Fct (MC ×C MC) MC`. Tensor, associators,
@@ -1315,7 +1323,7 @@ Two monoidal structures on the same category remain distinct choices;
 recovering their category does not identify their tensor data. The conversion
 does not enable any concrete monoidal instance.
 
-[MonoidalCat C](../theories/Cat/Monoidal/Core.v) 起初通过计算字段
+[MonoidalCat C](../theories/Cat/Monoidal/Monoidal.v) 起初通过计算字段
 `MonoidalC :> Cat := C` 暴露给定范畴，不另存一个范畴，也不改变构造器参数。
 客户端可写 `Fct MC MD`、`@Ob MC`、`Fct (MC ×C MC) MC`。张量、
 结合子、单位子及其定律仍使用具名范畴和选定结构。同一范畴上的两个幺半结构
@@ -1725,7 +1733,7 @@ candidates require separate interface decisions and clients.
 | [HasCartLift P](../theories/Cat/Fibration.v), [HasFreeObj U](../theories/Cat/FreeObject/Core.v) | Choose lifts or universal arrows for the existing functor; a future bundled fibration/right-adjoint view can reuse these interfaces / 为已有函子选择提升或泛箭头，未来打包视图可复用这些接口 |
 | [HasDisplay](../theories/DTT/Display/Core.v), [HasContextExtension and CwF](../theories/DTT/CwF.v), [HasContextRepresentation](../theories/DTT/Context/Representation.v) | Describe interchangeable presentations over a fixed presheaf/family functor; CwF already supplies the complete bundled object / 描述固定预层／族函子上的可互换呈现，完整打包对象已有 CwF |
 | [Monoid](../theories/Algebra/Monoid/Core.v), [Group](../theories/Algebra/Group/Core.v) | Historically fixed-setoid classes; the current local migration replaces them with complete records sharing one immediate parent / 历史版本为固定广集类，当前本地迁移改为共享一个直接父结构的完整记录 |
-| [MonoidalCat](../theories/Cat/Monoidal/Core.v), [CCC](../theories/Cat/CCC/Core.v), [ETCS](../theories/Topos/ETCS.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
+| [HasMonoidal](../theories/Cat/Monoidal/Monoidal.v), [CCC](../theories/Cat/CCC/Core.v), [ETCS](../theories/Topos/ETCS.v), [IsGroupoid](../theories/Cat/Groupoid/Core.v), [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | Named-category/bicategory extensions; retain explicit chosen structures, equality relations and comparison maps / 具名范畴／双范畴上的扩展，保留显式结构、相等关系及比较映射 |
 | `HasTerminal`, products, coproducts, exponentials, (co)equalizers, pullbacks/pushouts, [HasLimit and HasLimitsOfShape](../theories/Cat/Limit/Core.v), [colimit interfaces](../theories/Cat/Colimit/Core.v) | Choose constructions for fixed categories/diagrams; their derived functors remain derived / 为固定范畴／图式选择构造，其诱导函子仍是派生构造 |
 | [HasFiniteCover](../theories/Set/Finite.v), [finite generators/covers](../theories/Cat/Shape/Finite.v), [horn fillers](../theories/Instance/Set/Simplicial/Horn.v), [two-horn fillers](../theories/Instance/Set/Simplicial/Vertex/Horn2.v), [IsCoskeletal](../theories/Instance/Set/Simplicial/Coskeletal.v) | Additional evidence or choices for fixed sets/categories/simplicial objects / 固定集合、范畴或单纯对象上的额外证据或选择 |
 | [ArrowHom](../theories/Cat/Arrow/Core.v), [CommaHom](../theories/Cat/Comma/Core.v), [ContextMap](../theories/DTT/Comprehension.v) | A commuting square retains two distinct side maps; choosing one as its universal arrow view would hide part of its structure / 交换方形保留两条不同侧边，任取一条作为通用底层箭头会遮蔽其结构 |
@@ -1907,11 +1915,15 @@ flowchart LR
   CartCat -->|CartCatToCat, computed| Cat
   Gpd -->|GpdC| Cat
   Cat -->|Ob| Type
-  MonoidalCat -->|monoidal_hasBinoidal| HasBinoidal
-  MonoidalCat -->|MonoidalToHasPremonoidal| HasPremonoidal
+  MonoidalCat -->|MonoidalCatToPremonoidalCat| PremonoidalCat
+  MonoidalCat -->|hasMonoidal, computed| HasMonoidal
+  MonoidalCat -->|monoidalCat_isMagmoidal| IsMagmoidal
+  HasMonoidal -->|monoidal_hasBinoidal| HasBinoidal
+  HasMonoidal -->|monoidal_hasPremonoidal| HasPremonoidal
+  HasMonoidal -->|isMagmoidal| IsMagmoidal
   PremonoidalCat -->|PremonoidalCatToBinoidalCat| BinoidalCat
   PremonoidalCat -->|hasPremonoidal| HasPremonoidal
-  HasPremonoidal -->|hasAssociator| HasAssociator
+  HasPremonoidal -->|hasAssoc| HasAssoc
   HasPremonoidal -->|hasUnitors| HasUnitors
   BinoidalCat -->|BinoidalCatToCat| Cat
   BinoidalCat -->|hasBinoidal| HasBinoidal
@@ -1948,7 +1960,7 @@ further coercion to `SetC` when `C` specializes to the setoid category.
 | Priority / 次序 | Evidence / 证据 | Proposed treatment / 建议处理 |
 | --- | --- | --- |
 | 1 | [Group](../theories/Algebra/Group/Core.v) now exposes `GroupM :> Monoid G` / 群现直接暴露幺半群父视图 | Implemented in the first slice, with explicit parent-instance registration and updated model constructors / 首批已实施，显式注册父实例并同步模型构造 |
-| 2 | [MonoidalCat](../theories/Cat/Monoidal/Core.v) and [CartCat](../theories/Cat/Cartesian/Core.v) now share the category suffix / 两者现统一范畴名称后缀 | The first slice unified names; the current fixed-parent extension is `MonoidalToHasPremonoidal` over `monoidal_hasBinoidal` / 当前固定父扩展为 `monoidal_hasBinoidal` 上的 `MonoidalToHasPremonoidal` |
+| 2 | [MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) owns one `PremonoidalCat` parent / 完整幺半范畴拥有唯一预幺半父结构 | `monoidalCat_isMagmoidal` supplies interchange for that parent's tensor actions. The fixed-category view `hasMonoidal` exposes the same witness as `isMagmoidal` / `monoidalCat_isMagmoidal` 约束父结构的张量作用，固定范畴视图 `hasMonoidal` 通过 `isMagmoidal` 读取同一份见证 |
 | 3 | [ETCS](../theories/Topos/ETCS.v) stores `ETCSC :> Topos C`, whose `ToposC :> CCC C` shares the cartesian closed choices / ETCS 经唯一 Topos 父结构共享 CCC 选择 | Topos owns pullbacks and the classifier; ETCS adds its set-theory axioms, with dependent fields on the same terminal / Topos 持有拉回与分类子，ETCS 增加集合论公理，各依赖字段使用同一终对象 |
 | 4 | [Monoid](../theories/Algebra/Monoid/Core.v) inherits [Semigroup](../theories/Algebra/Semigroup/Core.v), which inherits [Magma](../theories/Algebra/Magma/Core.v) / 幺半群继承半群，半群继承原群 | Implemented in the algebra slice with weaker multiplication maps, composition laws, Boolean and endomorphism models / 代数批次已实施，包含较弱前提的乘法映射、复合律、布尔及自态射模型 |
 | 5 | [HasStrength](../theories/Cat/Monoidal/Strength.v) and [HasAxiomChoice](../theories/Topos/ETCS.v) provide compatible strength and epi-splitting witnesses on fixed data / 在固定数据上提供相容强度及满态射分裂见证 | Keep these construction interfaces under the approved `Has*` convention; preserve their choices and explicit hypotheses / 按已确认的 `Has*` 构造接口规范保留名称、选择与显式前提 |
@@ -2031,7 +2043,7 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [ArrowHom](../theories/Cat/Arrow/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [Bicat](../theories/Cat/Bicategory/Core.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
 | [IsStrictTwoCat](../theories/Cat/Bicategory/Strict.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
-| [BinoidalCat](../theories/Cat/Binoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [CCC](../theories/Cat/CCC/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [CartCat](../theories/Cat/Cartesian/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [Chain](../theories/Cat/Chain.v) | `Record` | Foundations and basic maps / 基础与基本映射 |
@@ -2063,11 +2075,12 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [HasLimitsOfShape](../theories/Cat/Limit/Core.v) | `Class` | Chosen construction / 选定构造 |
 | [Monad](../theories/Cat/Monad/Core.v) | `Class` | Computational structures / 计算结构 |
 | [StrongMonad](../theories/Cat/Monad/Strength.v) | `Class` | Computational structures / 计算结构 |
-| [MonoidalCat](../theories/Cat/Monoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) | `Record` | Complete monoidal category / 完整幺半范畴 |
+| [HasMonoidal](../theories/Cat/Monoidal/Monoidal.v) | `Class` | Chosen monoidal data on a fixed category / 固定范畴上的选定幺半数据 |
 | [LaxMonoidalFct](../theories/Cat/Monoidal/Functor.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [MonoidObj](../theories/Cat/Monoidal/Monoid.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [PremonoidalCat](../theories/Cat/Premonoidal/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
-| [SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
+| [SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [FreydCat](../theories/Cat/Computational/Freyd/Core.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [HasStrength](../theories/Cat/Monoidal/Strength.v) | `Class` | Chosen construction / 选定构造 |
 | [Mono](../theories/Cat/Morphism.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
@@ -2144,7 +2157,7 @@ shared dependent choices and minimal assumptions in general theorems.
 inherited instance. The Boolean and endomorphism group constructors use
 the named parent field; existing inverse proofs and operations are reused.
 In that slice the monoidal category interface became
-[MonoidalCat](../theories/Cat/Monoidal/Core.v), retaining the named category,
+[MonoidalCat](../theories/Cat/Monoidal/Monoidal.v), retaining the named category,
 computed `MonoidalC`, tensor, natural isomorphisms and coherence laws. All
 clients and documentation use that name. No compatibility aliases or new
 intermediate algebra theories are introduced in this slice.
@@ -2152,7 +2165,7 @@ intermediate algebra theories are introduced in this slice.
 [Group](../theories/Algebra/Group/Core.v) 现直接声明 `GroupM :> Monoid G`，
 并将同一投影导出为继承实例。布尔群与自同态群的构造使用具名父字段，复用
 已有逆运算及证明。该批将幺半范畴接口改名为
-[MonoidalCat](../theories/Cat/Monoidal/Core.v)，保留具名范畴、计算性
+[MonoidalCat](../theories/Cat/Monoidal/Monoidal.v)，保留具名范畴、计算性
 `MonoidalC`、张量、自然同构及相干律；所有客户端和文档同步使用新名。
 本批没有添加兼容别名或新的代数中间理论。
 
@@ -2352,7 +2365,7 @@ and `typeprop` integration remain with the integration session.
 
 ## 双侧张量上下文前置基础
 
-The current [BinoidalCat](../theories/Cat/Binoidal/Core.v) record stores
+The current [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v) record stores
 `BinoidalCatToCat :> Cat` and one `HasBinoidal` choice. The original
 parameterized class used the computed `BinoidalC` view; that presentation
 has migrated to the named-category `HasBinoidal C` interface. Both context
@@ -2360,7 +2373,7 @@ law groups now use `IsFct` on the shared tensor's exact maps. Units and
 associators remain absent at this weakest layer; `is_central` still retains
 Type-valued witnesses separately from choosing the tensor.
 
-当前 [BinoidalCat](../theories/Cat/Binoidal/Core.v) 记录保存
+当前 [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v) 记录保存
 `BinoidalCatToCat :> Cat` 及唯一 `HasBinoidal` 选择。原参数化类使用计算性的
 `BinoidalC` 视图；该呈现现迁为具名范畴上的 `HasBinoidal C`。两组上下文
 定律现对共享张量的原映射使用 `IsFct`。最弱一层仍不要求单位元或结合子；
@@ -2396,46 +2409,46 @@ records the exact scope, state-order counterexample and remaining layers.
 
 ## 预幺半父结构层
 
-[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) is a complete record
+[PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) is a complete record
 with `PremonoidalCatToBinoidalCat :> BinoidalCat` and one indexed
 `hasPremonoidal` choice. Use `PremonoidalCatOfBinoidalCat` directly to
 assemble it; there is no extra conversion wrapper. The underlying category
 and tensor actions are inherited once.
 
-[HasAssociator](../theories/Cat/Premonoidal/Associator.v) chooses a
-last-variable natural isomorphism family. `IsAssociator` constrains its
+[HasAssoc](../theories/Cat/Monoidal/Associator.v) chooses a
+last-variable natural isomorphism family. `IsAssoc` constrains its
 same components by first- and middle-variable naturality, centrality and
-pentagon. `PremonoidalAssocLIso` and `PremonoidalAssocMIso` expose these
+pentagon. `TensorAssocLIso` and `TensorAssocMIso` expose these
 other natural-isomorphism views with exactly the stored inverses.
-[HasUnitors](../theories/Cat/Premonoidal/Unitor.v) independently chooses
+[HasUnitors](../theories/Cat/Monoidal/Unitor.v) independently chooses
 one unit and two central natural isomorphisms. `HasPremonoidal C BC`
 combines these two packages on the same fixed tensor; `IsPremonoidal`
 adds only their triangle compatibility. Inverse centrality and naturality
-remain [derived laws](../theories/Cat/Premonoidal/Laws.v), with only the
+remain [derived laws](../theories/Cat/Monoidal/PremonoidalLaws.v), with only the
 relevant associator or unitor assumption.
 
 `Reserved Notation` fixes grammar before the fields. Field-local `where`
-interpretations permit `Iₚ`, associator and unitor notation in subsequent
+interpretations permit `𝐈`, associator and unitor notation in subsequent
 fields; Rocq 9.3 does not export those interpretations. Public `Notation`
-bindings therefore remain necessary after the declarations. `Iₚ[P]`
-selects an explicit unit package; `Iₚ` infers the selected package.
+bindings therefore remain necessary after the declarations. `𝐈[P]`
+selects an explicit unit package; `𝐈` infers the selected package.
 
-[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) 现为完整记录，保存
+[PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) 现为完整记录，保存
 `PremonoidalCatToBinoidalCat :> BinoidalCat` 及唯一带索引的
 `hasPremonoidal` 选择。直接使用 `PremonoidalCatOfBinoidalCat` 装配，
 不增加转换包装；底层范畴与张量作用只继承一次。
 
-[HasAssociator](../theories/Cat/Premonoidal/Associator.v) 选择一族在最后变量上
-自然的同构；`IsAssociator` 为同一组分量规定第一、中间变量自然性、中心性及
-五边形。`PremonoidalAssocLIso`、`PremonoidalAssocMIso` 保留原逆，给出另两种
-自然同构视图。[HasUnitors](../theories/Cat/Premonoidal/Unitor.v) 独立选择唯一
+[HasAssoc](../theories/Cat/Monoidal/Associator.v) 选择一族在最后变量上
+自然的同构；`IsAssoc` 为同一组分量规定第一、中间变量自然性、中心性及
+五边形。`TensorAssocLIso`、`TensorAssocMIso` 保留原逆，给出另两种
+自然同构视图。[HasUnitors](../theories/Cat/Monoidal/Unitor.v) 独立选择唯一
 单位及两个中心自然同构。`HasPremonoidal C BC` 在同一固定张量上组合两份选择，
 `IsPremonoidal` 只增加三角形相容性。逆的中心性和自然性仍为
-[导出定律](../theories/Cat/Premonoidal/Laws.v)，只要求对应的结合子或单位子选择。
+[导出定律](../theories/Cat/Monoidal/PremonoidalLaws.v)，只要求对应的结合子或单位子选择。
 
 `Reserved Notation` 在字段前固定语法，字段局部 `where` 使后续字段可以使用
-`Iₚ`、结合子及单位子记号；Rocq 9.3 不导出这些解释，因此声明后的公开
-`Notation` 绑定仍然必要。`Iₚ[P]` 显式选定单位选择，`Iₚ` 推断该选择。
+`𝐈`、结合子及单位子记号；Rocq 9.3 不导出这些解释，因此声明后的公开
+`Notation` 绑定仍然必要。`𝐈[P]` 显式选定单位选择，`𝐈` 推断该选择。
 
 [MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) is an explicit
 adapter that reuses the existing tensor, unit, structure maps and inverse
@@ -2463,43 +2476,74 @@ records validation and remaining computational-category work.
 
 ## 幺半继承与导出张量
 
-[MonoidalCat](../theories/Cat/Monoidal/Core.v) remains parameterized in
-this bounded migration. It stores one `monoidal_hasBinoidal` and the
-indexed `MonoidalToHasPremonoidal` extension, plus interchange. The computed
-`MonoidalToCat` view is the supplied category. Tensor maps, the bifunctor,
-joint naturality and ordinary monoidal coherence remain derived.
+The tensor family lives under [Cat/Monoidal](../theories/Cat/Monoidal)
+following [issue #46](https://github.com/Godalin/rocq-cats/issues/46).
+Its three core interfaces share this directory. `Bifct.v` contains
+the triple tensor functors and assembles the separate actions, structural
+choices, and complete categories from the same supplied bifunctor.
 
-[MonoidalCat](../theories/Cat/Monoidal/Core.v) 在本次有界迁移中仍为参数化接口，
-保存一份 `monoidal_hasBinoidal`、以它为索引的 `MonoidalToHasPremonoidal`
-扩展及交换律。计算性的 `MonoidalToCat` 视图就是给定范畴。张量映射、双函子、
-联合自然性及通常幺半相干性仍由此导出。
+[Binoidal](../theories/Cat/Monoidal/Binoidal.v) supplies
+the object tensor `X ⊗ Y` in `ob_scope`, the left and right actions,
+and their ordered composition `tensor_sequence`.
+[Magmoidal](../theories/Cat/Monoidal/Magmoidal.v) adds interchange on those
+actions and derives `f ⊗ g` in `hom_scope` and the bifunctor `tensorF`.
+The action and coherence notation stays in `monoidal_scope`.
 
-[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) preserves the
-convenient assembly from a supplied bifunctor and natural structural
-isomorphisms. Cartesian and bicategory endomorphism models use it instead
-of duplicating the parent laws. Its reconstructed tensor is naturally
-isomorphic to the supplied functor with identity components; its arrow
-map is compared by specified hom equality. The former explicit monoidal
-to binoidal/premonoidal adapters are replaced by the actual parent chain.
+三个核心接口位于同一目录。`Bifct.v` 定义三重张量函子，并从同一给定双函子
+装配分别张量作用、结构选择及完整范畴。
 
-[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) 保留由给定双函子
-及自然结构同构装配模型的便利方式。笛卡尔与双范畴自同态模型复用它，不重复
-证明父层定律。重建张量与给定函子通过恒等分量自然同构，态射映射使用指定
-Hom 相等比较。先前显式的幺半到双侧张量／预幺半适配器已由实际父链替代。
+[Binoidal](../theories/Cat/Monoidal/Binoidal.v) 提供
+`ob_scope` 内的对象张量 `X ⊗ Y`、左右作用及其有序组合
+`tensor_sequence`。[Magmoidal](../theories/Cat/Monoidal/Magmoidal.v)
+在同一组作用上增加交换律，导出 `hom_scope` 内的 `f ⊗ g` 及张量双函子
+`tensorF`。作用和相干性记号使用 `monoidal_scope`。
+
+[Semigroupal tensor laws](../theories/Cat/Monoidal/Semigroupal.v) use
+the fixed tensor, its interchange witness `IsMagmoidal` and
+its choice of associator. [Day convolution](../theories/Cat/Day/Semigroupal.v)
+lifts the associator and pentagon to a choice on its derived tensor.
+
+[半群张量定律](../theories/Cat/Monoidal/Semigroupal.v) 使用固定张量、交换律
+见证 `IsMagmoidal` 及选定结合子。[Day 卷积](../theories/Cat/Day/Semigroupal.v)
+将结合子和五边形提升为导出张量上的选择。
+
+[Premonoidal](../theories/Cat/Monoidal/Premonoidal.v) combines
+its independently chosen associator and unitors with the triangle.
+[MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) stores a single
+premonoidal parent and interchange on that parent's tensor. Instance search
+can read the same interchange evidence through `HasMonoidal`.
+
+[Premonoidal](../theories/Cat/Monoidal/Premonoidal.v) 用三角形连接
+分别选定的结合子与单位子。[MonoidalCat](../theories/Cat/Monoidal/Monoidal.v)
+保存唯一预幺半父结构及该父结构张量上的交换律。实例搜索可通过
+`HasMonoidal` 读取同一交换律见证。
+
+[BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) assembles the
+complete category from a bifunctor and structural natural isomorphisms.
+`BifctHasMonoidal` exposes the same choices on the supplied category.
+`CartMonoidal` uses the first construction to own the parent and
+`CartHasMonoidal` reads the resulting fixed-category choices. The
+reconstructed tensor is compared to the supplied functor by a natural
+isomorphism with identity components.
+
+[BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) 从双函子和结构自然
+同构装配完整范畴。`BifctHasMonoidal` 在给定范畴上提供同一份选择。
+`CartMonoidal` 使用完整构造保存父结构，`CartHasMonoidal` 读取其固定范畴
+选择。重建的张量通过以恒等箭头为分量的自然同构与给定函子比较。
 
 [Cartesian lifting](../theories/Cat/Monoidal/CartesianLifting.v) retains
 ordinary product notation in weaker lax clients. Applicative, strength,
 Monad and Arrow specializations use the product/horizontal-composition
 comparison laws. Monad–monoid functors retain the same underlying natural
 transformations and transport their preservation witnesses explicitly.
-This migration changes no `Has*` naming or computational Arrow interchange
-assumptions. The [computation audit](./ComputationAudit.md#monoidal-parent-migration)
+The computational Arrow interchange assumptions come from the same
+fixed-category structure. The [computation audit](./ComputationAudit.md#monoidal-parent-migration)
 records validation and the remaining Arrow/Freyd work.
 
 [笛卡尔提升](../theories/Cat/Monoidal/CartesianLifting.v) 让较弱 lax 客户端
 继续使用通常积记号。Applicative、强度、Monad 及 Arrow 特化使用积／水平复合
 比较定律。Monad–幺半群函子保留同一底层自然变换，显式运输保持性见证。
-本迁移没有修改 `Has*` 命名或计算 Arrow 的效应交换前提。
+计算 Arrow 的交换前提来自同一固定范畴结构。
 [计算审计](./ComputationAudit.md#monoidal-parent-migration) 记录验证与剩余
 Arrow／Freyd 工作。
 
@@ -2550,21 +2594,21 @@ records the proof reuse, validation and remaining symmetric/Freyd work.
 
 ## 对称计算与 Freyd 嵌入
 
-[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v)
+[SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v)
 retains one `symmetric_hasBinoidal` choice and its indexed
 `SymmetricPremonoidalToHasPremonoidal` extension, both available to
 instance search. It stores central exchange, involution, one-variable
 naturality, hexagon and unit compatibility. The inverse is the opposite
 exchange; other-variable naturality and recovery of right action are
-derived. [Cartesian values](../theories/Cat/Premonoidal/Cartesian.v) and
+derived. [Cartesian values](../theories/Cat/Monoidal/CartesianSymmetric.v) and
 [computational Arrows](../theories/Cat/Computational/Arrow/Symmetric.v)
 explicitly select this extension of their existing parent.
 
-[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v)
+[SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v)
 保存唯一 `symmetric_hasBinoidal` 选择及以它为索引的
 `SymmetricPremonoidalToHasPremonoidal` 扩展，两者均供实例搜索使用。它保存中心交换、对合、单变量自然性、六边形及单位相容性。逆为反序
 交换；另一变量自然性及右作用的恢复均由此导出。
-[笛卡尔值](../theories/Cat/Premonoidal/Cartesian.v)及
+[笛卡尔值](../theories/Cat/Monoidal/CartesianSymmetric.v)及
 [计算 Arrow](../theories/Cat/Computational/Arrow/Symmetric.v)显式选定
 对其已有父层的这一扩展。
 
@@ -2611,12 +2655,12 @@ records validation and the remaining reverse translation/round trips.
 representatives along chosen isomorphisms, with a transparent natural
 isomorphism to the original functor. Its shared boundary-naturality lemma
 requires only a natural incoming boundary and an invertible outgoing one.
-[Tensor-boundary laws](../theories/Cat/Binoidal/Transport.v) reuse the
+[Tensor-boundary laws](../theories/Cat/Monoidal/BinoidalTransport.v) reuse the
 existing context functors and centrality of transported identities.
 
 [TransportF](../theories/Cat/Functor/Transport.v) 沿选定同构改变函子的对象
 代表，并以透明自然同构与原函子比较。共享的边界自然性引理只要求入边界
-自然、出边界可逆。[张量边界定律](../theories/Cat/Binoidal/Transport.v)
+自然、出边界可逆。[张量边界定律](../theories/Cat/Monoidal/BinoidalTransport.v)
 复用已有上下文函子及运输恒等的中心性。
 
 [FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v) reconstructs a

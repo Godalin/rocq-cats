@@ -295,8 +295,13 @@ Program Definition ExpF {C : Cat}
     `{HP : !HasProduct C} `{HE : !HasExponential HP} (X : @Ob C)
   : Fct C C
   :=
-  {|F0 Y := Y ^ X
-  ; F1 Y Y' f := exp_map f
+  {|fobj Y := Y ^ X
+  ; fmap Y Y' f := exp_map f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. apply exp_map_id. Qed.
 Next Obligation. apply exp_map_comp. Qed.

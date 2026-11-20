@@ -158,12 +158,17 @@ Next Obligation. split; apply comp_assoc. Defined.
 Program Definition CwFBaseF
   : Fct ContextTypeCat C
   :=
-  {|F0 X := X.1
-  ; F1 X Y := context_map_base
+  {|fobj X := X.1
+  ; fmap X Y := context_map_base
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact (fst H). Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact (fst H). Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Send a context-type pair to its context extension. *)
 
@@ -172,12 +177,17 @@ Next Obligation. reflexivity. Defined.
 Program Definition CwFExtF
   : Fct ContextTypeCat C
   :=
-  {|F0 X := X.1 ▹[T] X.2
-  ; F1 X Y := context_map_ext
+  {|fobj X := X.1 ▹[T] X.2
+  ; fmap X Y := context_map_ext
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact (snd H). Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact (snd H). Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Context-extension projections form a natural transformation to the base
     functor. *)
@@ -189,7 +199,7 @@ Program Definition CwFProjectionN
   :=
   {|nt X := context_proj T X.2
   |}.
-Next Obligation. apply context_map_comm. Defined.
+Next Obligation. apply context_map_comm. Qed.
 
 End ContextCategory.
 
