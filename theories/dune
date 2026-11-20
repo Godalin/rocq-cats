@@ -4,4 +4,5 @@
  (name Cats)
  (package rocq-cats)
  (synopsis rocq-cats)
- (theories Stdlib))
+ (theories Stdlib Minks elpi elpi_elpi)
+ (plugins rocq-elpi.elpi))

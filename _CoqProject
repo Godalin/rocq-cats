@@ -1,1 +1,3 @@
 -Q _build/default/theories Cats
+-Q _build/default/minks/theories Minks
+-arg "-require-import-from elpi elpi"

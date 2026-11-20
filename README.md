@@ -422,7 +422,7 @@ stop builds and language servers before updating a shared switch:
 
 ```sh
 opam pin add --switch=rocq-cats --no-action rocq-core 9.3.0
-opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1
+opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1 rocq-elpi.3.5.1
 opam exec --switch=rocq-cats -- dune build @check-core
 ```
 
@@ -430,11 +430,11 @@ Run all project commands through this switch, without changing the global
 opam selection. For VS Code, point `vsrocq.path` at this switch's `vsrocqtop`
 and install a `vsrocq-language-server` matching the VsRocq extension version.
 
-The [flat structure generator experiment](./minks/README.md) has its
-own package, `rocq-minks`, and build instructions.
+Cats depends on the independent [`rocq-minks` package](./minks/README.md).
+A build from the repository root uses the Minks sources in this checkout.
 
-[平铺结构生成器实验](./minks/README.md)使用独立的
-`rocq-minks` 包，构建命令见该目录的说明。
+Cats 依赖独立的 [`rocq-minks` 包](./minks/README.md)。
+从仓库根目录构建时，Dune 使用当前检出的 Minks 源码。
 
 项目要求 Rocq 9.3 起、Stdlib 9.2 起及 Dune 3.23 起。
 本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq 9.3.0、Stdlib 9.2.0 和
