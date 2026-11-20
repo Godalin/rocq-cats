@@ -85,7 +85,6 @@ Elpi Accumulate lp:{{
   main _ :- usage.
 }}.
 Elpi Accumulate Db minks.flat.db.
-Elpi Export minks.struct As Minks.Struct.
 
 Elpi Command minks.inspect.
 Elpi Accumulate Db Header minks.flat.db.
@@ -129,4 +128,3 @@ Elpi Accumulate lp:{{
   main _ :- coq.error "Usage: Minks.Inspect Name.".
 }}.
 Elpi Accumulate Db minks.flat.db.
-Elpi Export minks.inspect As Minks.Inspect.
