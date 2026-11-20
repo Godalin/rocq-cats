@@ -8,5 +8,7 @@
  (package rocq-minks)
  (deps
   Algebra.vo
+  Closure.vo
   Commands.vo
-  Lattice.vo))
+  Lattice.vo
+  Universes.vo))

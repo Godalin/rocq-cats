@@ -3,12 +3,12 @@ From Minks Require Import all.
 
 Set Universe Polymorphism.
 
-(** * A flat hierarchy experiment
+(** * Algebraic mixins and structures
 
     Mixins name their exact dependencies. Complete records and forgetful
     maps are generated below from the same component graph. *)
 
-(** * 平铺层级实验
+(** * 代数 Mixin 与结构
 
     Mixin 指明其依赖的具体选择。完整记录与忘却映射由同一份组件图生成。 *)
 
@@ -16,89 +16,101 @@ Set Universe Polymorphism.
 
 (** 在外部载体上选取 Type 值等价关系。 *)
 
-Class HasEquiv@{u e} (A : Type@{u})
+Minks.Mixin HasEquiv@{u e} (A : Type@{u})
   :=
   { equiv : A → A → Type@{e}
   ; equiv_refl : ∀ x, equiv x x
   ; equiv_sym : ∀ x y, equiv x y → equiv y x
   ; equiv_trans : ∀ x y z, equiv x y → equiv y z → equiv x z
   }.
-
 Arguments equiv {_ _} _ _.
+Infix "≈" := equiv (at level 50).
 
 (** Choose a multiplication respectful for the specified equivalence. *)
 
 (** 选取保持指定等价关系的乘法。 *)
 
-Class HasMagma@{u e} (A : Type@{u}) `(E : !HasEquiv@{u e} A)
+Minks.Mixin HasMagma
+  extends HasEquiv
   :=
-  { binop : A → A → A
-  ; mul : A → A → A := binop
+  { mul : A → A → A
   ; mul_proper
     : ∀ x x' y y',
       equiv x x' → equiv y y' → equiv (mul x y) (mul x' y')
   }.
-
 Arguments mul {_ _ _} _ _.
+Infix "*" := mul.
 
 (** Choose a point without requiring an equivalence on its carrier. *)
 
 (** 选取一个点，无须给载体指定等价关系。 *)
 
-Class HasPoint@{u} (A : Type@{u})
+Minks.Mixin HasPoint@{u} (A : Type@{u})
   :=
   { point : A
   }.
-
 Arguments point {_ _}.
 
 (** Require associativity of the selected multiplication. *)
 
 (** 要求所选乘法满足结合律。 *)
 
-Class IsSemigroup@{u e} (A : Type@{u}) `(E : !HasEquiv@{u e} A)
-    `(M : !HasMagma A E)
+Minks.Mixin IsSemigroup@{u e}
+  extends HasMagma@{u e}
   :=
-  { mul_assoc : ∀ x y z,
-      equiv (mul (mul x y) z) (mul x (mul y z))
+  { mul_assoc
+    : ∀ x y z, equiv (mul (mul x y) z) (mul x (mul y z))
   }.
 
 (** Choose a unit for the selected multiplication and witness both unit laws. *)
 
 (** 为选定乘法选取单位元，并提供左右单位律的见证。 *)
 
-Class HasUnit@{u e} (A : Type@{u}) `(E : !HasEquiv@{u e} A)
-    `(M : !HasMagma A E)
+Minks.Mixin HasUnit
+  extends HasMagma
   :=
   { unit : A
   ; mul_unit_l : ∀ x, equiv (mul unit x) x
   ; mul_unit_r : ∀ x, equiv (mul x unit) x
   }.
+Notation "1" := unit.
 
-(** Declare the component dependencies and the inheritance graph. *)
+(** ** Packing mixins into structures
 
-(** 声明组件依赖及继承图。 *)
+    Build the pointed and multiplicative branches from the same setoid. *)
+
+(** ** 将 Mixin 打包成结构
+
+    从同一个广集构造带点分支和乘法分支。 *)
 
 Minks.Struct SetC
-  with  hasEquiv : HasEquiv [carrier].
-Minks.Struct Magma extends SetC
-  with  hasMagma : HasMagma [carrier, hasEquiv].
-Minks.Struct PointedSetC extends SetC
-  with  hasPoint : HasPoint [carrier].
-Minks.Struct Semigroup extends Magma
-  with  isSemigroup : IsSemigroup [carrier, hasEquiv, hasMagma].
-Minks.Struct PointedMagma extends Magma, PointedSetC.
-Minks.Struct UMagma extends Magma
-  with  hasUnit : HasUnit [carrier, hasEquiv, hasMagma].
-Minks.Struct Monoid extends Semigroup, UMagma.
+  with  hasEquiv : HasEquiv.
 
+Minks.Struct Magma extends SetC
+  with  hasMagma : HasMagma.
+
+Minks.Struct PointedSetC extends SetC
+  with  hasPoint : HasPoint.
+
+Minks.Struct Semigroup extends Magma
+  with  isSemigroup : IsSemigroup.
+
+Minks.Struct PointedMagma
+  extends Magma, PointedSetC.
+
+Minks.Struct UMagma extends Magma
+  with  hasUnit : HasUnit.
+
+Minks.Struct Monoid extends Semigroup, UMagma.
 Minks.Inspect Monoid.
 
-Print MakeMonoid.
+(** ** Inherited choices
 
-(** Both paths use the same stored carrier, setoid and multiplication. *)
+    Both paths use the same stored carrier, setoid and multiplication. *)
 
-(** 两条路径读取同一份载体、广集相等及乘法。 *)
+(** ** 继承同一份选择
+
+    两条路径读取同一份载体、广集相等及乘法。 *)
 
 Definition pointed_magma_set_coherence (M : PointedMagma)
   : MagmaToSetC (PointedMagmaToMagma M)
@@ -143,7 +155,7 @@ Definition inferred_unit_l_uses_field (M : Monoid) (x : M)
 (** 两个组件类型相同，也不会因此被识别为同一份选择。 *)
 
 Minks.Struct TwoPoints extends PointedSetC
-  with  hasOtherPoint : HasPoint [carrier].
+  with  hasOtherPoint : HasPoint.
 
 (** Two unlabelled point choices do not provide a default instance. *)
 
@@ -188,11 +200,11 @@ End DistinctPoints.
 (** 检查载体与相等见证可按两种严格次序实例化。这里的宇宙参数位置仅用于实验。 *)
 
 Definition wider_equivalence@{u e r | u < e, e < r}
-    (A : Type@{u}) (E : HasEquiv@{u e} A) (M : HasMagma@{u e} A E)
+    (A : Type@{u}) (E : HasEquiv@{u e} A) (M : @HasMagma@{u e} A E)
   : Magma@{u r u e}
   := MakeMagma A E M.
 
 Definition wider_carrier@{u e r | e < u, u < r}
-    (A : Type@{u}) (E : HasEquiv@{u e} A) (M : HasMagma@{u e} A E)
+    (A : Type@{u}) (E : HasEquiv@{u e} A) (M : @HasMagma@{u e} A E)
   : Magma@{u r u e}
   := MakeMagma A E M.
