@@ -127,5 +127,5 @@ Proof.
   - apply edge_simplex_arrow.
   - change (fmap (lower x) h ≈
       fmap (lower x) (fmap (⟦ArrowChain h⟧Ch) (ordinal_step fin_first))).
-    exact (@fct_fmap_proper _ _ (lower x) _ _ _ _ tt).
+    exact (@fmap_proper _ _ _ _ (isFct (lower x)) _ _ _ _ tt).
 Defined.

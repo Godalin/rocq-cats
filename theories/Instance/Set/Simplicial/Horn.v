@@ -189,7 +189,7 @@ Lemma horn_restrict_face@{u p +}
   : simplex_element_resp
       (x↾Λ[X; S n; i] ∘Nv HornFaceN i j H) ≈S d[X; n; j] x.
 Proof.
-  change (X[δ[n; j] ∘ id]Δ x ≈S X[δ[n; j]]Δ x).
+  change (X[δ[n; j] ∘ (@Cat.Core.id Δ n)]Δ x ≈S X[δ[n; j]]Δ x).
   exact (simplex_restrict_proper _ _ (comp_id_r δ[n; j]) x).
 Defined.
 
@@ -203,6 +203,6 @@ Lemma boundary_restrict_face@{u p +}
   : simplex_element_resp
       (x↾∂[X; S n] ∘Nv BoundaryFaceN j) ≈S d[X; n; j] x.
 Proof.
-  change (X[δ[n; j] ∘ id]Δ x ≈S X[δ[n; j]]Δ x).
+  change (X[δ[n; j] ∘ (@Cat.Core.id Δ n)]Δ x ≈S X[δ[n; j]]Δ x).
   exact (simplex_restrict_proper _ _ (comp_id_r δ[n; j]) x).
 Defined.

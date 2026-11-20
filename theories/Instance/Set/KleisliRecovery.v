@@ -237,13 +237,13 @@ Proof.
       (fmap M (KleisliRecoveryInvN X) m)) ≈S μ[M] X m).
     apply (@func_proper _ _ (μ[M] X)).
     transitivity (fmap M (KleisliRecoveryN X ∘ KleisliRecoveryInvN X) m).
-    + symmetry. exact (@fct_comp SetCat SetCat M _ _ _
+    + symmetry. exact (@fmap_comp _ _ _ _ (@isFct SetCat SetCat M) _ _ _
         (KleisliRecoveryN X) (KleisliRecoveryInvN X) m).
     + transitivity (fmap M (id[M X]) m).
       * assert (E : KleisliRecoveryN X ∘ KleisliRecoveryInvN X ≈
           id[M X]) by (intros v; reflexivity).
-        exact (@fct_fmap_proper SetCat SetCat M _ _ _ _ E m).
-      * exact (@fct_id SetCat SetCat M (M X) m).
+        exact (@fmap_proper _ _ _ _ (@isFct SetCat SetCat M) _ _ _ _ E m).
+      * exact (@fmap_id _ _ _ _ (@isFct SetCat SetCat M) (M X) m).
 Qed.
 
 (** Package the inverse comparison as a fixed-base Monad morphism. *)

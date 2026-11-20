@@ -65,7 +65,7 @@ Definition space_boundary
   : (∂Δ[2]) 1%nat.
 Proof.
   refine {|lower := (δ[1; fin_first]; _)|}.
-  exists fin_first, (id : (@Hom Δ) 1%nat 1%nat). symmetry. apply comp_id_r.
+  exists fin_first, (@Cat.Core.id Δ 1%nat). symmetry. apply comp_id_r.
 Defined.
 
 Definition kept_face (r : Ordinal 2)

@@ -200,7 +200,10 @@ Proof.
   - exact tagged_vertical_square_roundtrip.
   - transitivity (id[TaggedGluingObj]);
       [exact tagged_gluing_toggle_equal |].
-    symmetry. apply fct_id.
+    symmetry.
+    exact (fmap_id (IsFct :=
+      isFct (GluingFiberInclusionF (@IdF SetCat) TaggedGluingS))
+      (X := TaggedFiberOb)).
 Defined.
 
 End TaggedVertical.

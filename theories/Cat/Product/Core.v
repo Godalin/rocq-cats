@@ -441,8 +441,13 @@ End Product.
 Program Definition ProductF {C : Cat} `{HP : !HasProduct C}
   : Fct (C ×C C) C
   :=
-  {|F0 p := (fst p × snd p)%ob
-  ; F1 X Y f := (fst f × snd f)%hom
+  {|fobj p := (fst p × snd p)%ob
+  ; fmap X Y f := (fst f × snd f)%hom
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [f g] [f' g'] [Hf Hg]. apply cross_proper; assumption.

@@ -80,7 +80,7 @@ Definition shared_left (e : Ordinal 5)
 Definition shared_right (e : Ordinal 5)
   : (@Hom Δ) 5 4
   := δ[3; snd (simplex_triangle_product_adjacency e)] ∘
-      ((id : (@Hom Δ) 3 3) ∘ repeated_shared).
+      ((@Cat.Core.id Δ 3) ∘ repeated_shared).
 
 Definition shared_space (e : Ordinal 5)
   : SimplexTriangleProductSpaceF

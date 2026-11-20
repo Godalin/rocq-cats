@@ -31,12 +31,17 @@ Definition MonoidObjF@{v q +} (M : Monoid@{v q _})
 Program Definition MonoidVtxF@{v q +} (M : Monoid@{v q _})
   : Fct B(M) (VtxCat (MonoidObjF M))
   :=
-  {|F0 x := x
-  ; F1 x y f := f
+  {|fobj x := x
+  ; fmap x y f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Interpret the tuple nerve in the general vertex nerve. Naturality is
     the already proved segment-subdivision law. *)

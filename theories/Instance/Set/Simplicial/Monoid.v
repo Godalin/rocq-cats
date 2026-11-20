@@ -25,21 +25,26 @@ Local Open Scope algebra_scope.
 Program Definition MonoidNerve@{u p +} (M : Monoid@{u p _})
   : Fct (Δ^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 n := M ^S n
-  ; F1 n m θ :=
+  {|fobj n := M ^S n
+  ; fmap n m θ :=
       {|func xs := xs[θ]M
       ; func_proper := monoid_chain_sub_proper θ
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation.
   intros θ φ H xs. apply monoid_chain_sub_map.
   exact (fst (simplex_eq_iff θ φ) H).
-Defined.
-Next Obligation. intros xs. apply monoid_chain_sub_id. Defined.
+Qed.
+Next Obligation. intros xs. apply monoid_chain_sub_id. Qed.
 Next Obligation.
   intros xs. symmetry. apply monoid_chain_sub_comp;
     apply ordinal_fct_monotone.
-Defined.
+Qed.
 
 Notation "'Nₘ(' M ')'" := (MonoidNerve M) : ob_scope.
 

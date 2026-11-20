@@ -798,8 +798,8 @@ with `e < h < p` hom/equality levels. See
 
 ## 独立的结合子及单位子选择
 
-The premonoidal migration extracts [associators](../theories/Cat/Premonoidal/Associator.v)
-and [unitors](../theories/Cat/Premonoidal/Unitor.v) on the same fixed
+The premonoidal migration extracts [associators](../theories/Cat/Monoidal/Associator.v)
+and [unitors](../theories/Cat/Monoidal/Unitor.v) on the same fixed
 `HasBinoidal` choice. A last-variable natural isomorphism fixes all
 associator components and inverses. The general `IsNatIso` property and
 `NatIsoOfComponents` view recover first- and middle-variable natural
@@ -808,8 +808,8 @@ the unitor package requires no associator. Only triangle compatibility is
 added by `IsPremonoidal` when `HasPremonoidal` combines the packages.
 
 预幺半迁移在同一固定 `HasBinoidal` 选择上抽出
-[结合子](../theories/Cat/Premonoidal/Associator.v)及
-[单位子](../theories/Cat/Premonoidal/Unitor.v)。最后变量自然同构固定全部结合子
+[结合子](../theories/Cat/Monoidal/Associator.v)及
+[单位子](../theories/Cat/Monoidal/Unitor.v)。最后变量自然同构固定全部结合子
 分量及逆，一般 `IsNatIso` 性质与 `NatIsoOfComponents` 视图为同一组分量给出
 第一及中间变量自然同构。五边形无需单位，单位子选择无需结合子；
 `HasPremonoidal` 组合两份选择时，`IsPremonoidal` 只增加三角形相容性。
@@ -817,7 +817,7 @@ added by `IsPremonoidal` when `HasPremonoidal` combines the packages.
 `PremonoidalCat` is now a complete record with one binoidal parent.
 Its constructor and parent projections provide the inheritance conversions;
 no forwarding conversion function or extra coercion is introduced.
-[Bifunctor assembly](../theories/Cat/Premonoidal/Bifunctor.v) and
+[Bifunctor assembly](../theories/Cat/Monoidal/Bifct.v) and
 [Arrow computations](../theories/Cat/Computational/Arrow/Premonoidal.v)
 construct the two packages independently and combine their original
 selected maps. Monoidal and symmetric clients retain their parameterized
@@ -825,7 +825,7 @@ interfaces while selecting one tensor and its indexed extension.
 
 `PremonoidalCat` 现为拥有唯一双侧张量父结构的完整记录；其构造器及父投影已
 提供继承转换，不增加转发转换函数或额外强制转换。
-[双函子装配](../theories/Cat/Premonoidal/Bifunctor.v)及
+[双函子装配](../theories/Cat/Monoidal/Bifct.v)及
 [Arrow 计算](../theories/Cat/Computational/Arrow/Premonoidal.v)独立构造两份选择，
 再组合原有选定映射。幺半及对称客户端暂保留参数化接口，保存一份张量及以它为
 索引的扩展。
@@ -872,12 +872,12 @@ Dune 3.23.1，通过全部 617 个库模块及 `tests/Interfaces.vo`、
 The binoidal checkpoint separated the complete `BinoidalCat` record
 from the chosen `HasBinoidal C` extension. Left and right actions share one
 object tensor. Each has an `IsFct` witness on its fixed maps, reusing
-[Cat.Functor.Laws](../theories/Cat/Functor/Laws.v). `FctOfMaps` supplies the
+[Cat.Functor.Core](../theories/Cat/Functor/Core.v). `MakeFct` supplies the
 ordinary context functors transparently. Respectfulness remains required:
 identity and composition preservation do not by themselves ensure that an
 operation descends to the specified hom equality.
 
-`BifunctorHasBinoidal` and `ArrowHasBinoidal` retain the original maps and
+`BifctHasBinoidal` and `ArrowHasBinoidal` retain the original maps and
 proofs, grouped by context side. Their complete bundles store the same
 category and evidence. At that checkpoint the parameterized premonoidal
 layer read that same choice through `PremonoidalToHasBinoidal` and its
@@ -888,11 +888,11 @@ The retained Boolean computations distinguish the two actions using a
 nonidentity map; import regression checks keep model selection explicit.
 
 双侧张量检查点将完整 `BinoidalCat` 记录与选定扩展 `HasBinoidal C` 分离。
-左右作用共享唯一对象张量，各自通过 [Cat.Functor.Laws](../theories/Cat/Functor/Laws.v)
-为固定映射提供 `IsFct` 见证；`FctOfMaps` 透明地给出普通上下文函子。
+左右作用共享唯一对象张量，各自通过 [Cat.Functor.Core](../theories/Cat/Functor/Core.v)
+为固定映射提供 `IsFct` 见证；`MakeFct` 透明地给出普通上下文函子。
 保相等性仍是必要条件：仅保持恒等和复合，并不能保证运算良定义于指定 Hom 相等。
 
-`BifunctorHasBinoidal`、`ArrowHasBinoidal` 保留原有映射及证明，按上下文两侧
+`BifctHasBinoidal`、`ArrowHasBinoidal` 保留原有映射及证明，按上下文两侧
 分组，完整打包保存同一范畴和证据。当时参数化预幺半层通过
 `PremonoidalToHasBinoidal` 及透明的 `PremonoidalToBinoidalCat` 视图读取同一
 选择；随后预幺半迁移用保存的父投影替代该过渡视图。双侧张量接口不增加交换律、对称、单位元、结合子、函数相等或证明无关性。
@@ -916,6 +916,65 @@ the same; no opacity is introduced.
 该显式应用约耗时 0.002 秒。定理的假设、结论及可计算构造保持不变，不引入
 不透明性。
 
+## Proof transparency in the functor and tensor migration
+
+## 函子与张量迁移中的证明透明性
+
+The [#47 audit](https://github.com/Godalin/rocq-cats/issues/47) closes
+proof-only respectfulness, functoriality, naturality, and coherence with
+`Qed`. The programs still expose their maps and structural projections.
+In particular, the component-construction obligations for
+`BifctTensorN` and `DayAssociatorFctN` use `Defined`, while their
+naturality obligations use `Qed`. The temporary constructor and
+semigroupal probes check definitional equality of data projections,
+instance search, independent universes and assumptions.
+
+[#47 审查](https://github.com/Godalin/rocq-cats/issues/47) 将纯保相等性、
+函子律、自然性及相干性证明用 `Qed` 收尾。外层构造仍暴露映射及结构投影。
+例如，`BifctTensorN` 和 `DayAssociatorFctN` 的分量构造义务用
+`Defined`，自然性义务用 `Qed`。临时的构造器和半群范畴检查覆盖数据投影
+的定义相等、实例搜索、独立宇宙及假设。
+
+The identity law of [`FctPsh`](../theories/Instance/Set/Functor.v)
+is a computational exception. Its lifted natural isomorphism has an inverse
+component that `nerve_identity_inverse_computes` projects and reduces.
+The probe-presheaf comparison obligations retain `Defined`.
+
+[`FctPsh`](../theories/Instance/Set/Functor.v) 的恒等律属于计算例外。
+`nerve_identity_inverse_computes` 要投影并归约其中提升后的自然同构的逆分量。
+探测预层的比较义务保留 `Defined`。
+
+With Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1, we compiled each module
+three times in each of two temporary source snapshots, alternating the
+order. Both snapshots include the removal of the `IdF` and `CompF`
+canonical registrations. Dune built the dependencies beforehand. The
+table gives median compiler CPU time in seconds for a single module with
+its dependencies already built. Other compilation was running, so
+elapsed time is excluded from the comparison. These measurements cover
+selected modules with warm dependencies.
+
+工具链为 Rocq 9.3.0、Stdlib 9.2.0 和 Dune 3.23.1。两个临时源码副本均已
+移除 `IdF`、`CompF` 的 canonical 注册。Dune 先构建依赖，再交替对每个
+版本的各模块重编三次。下表为依赖已构建时单个模块的编译器 CPU 时间中位数，
+单位为秒。测量期间还有其他构建，故比较仅使用 CPU 时间；结果覆盖依赖已缓存
+的代表性模块。
+
+| Module / 模块 | Before / 修改前 | After / 修改后 |
+| --- | ---: | ---: |
+| `Cat.Functor.Product` | 1.57 | 1.54 |
+| `Cat.Day.Universal` | 11.33 | 10.90 |
+| `Cat.Day.Map` | 14.22 | 7.38 |
+
+A temporary `Program` example under `Local Unset Transparent Obligations`
+made both an automatically solved law and an automatically solved data
+obligation opaque. The latter blocked reduction of its projection to a
+numeral. Providing the data explicitly recovered the reduction. The
+library uses explicit endings for the reviewed obligations.
+
+临时 `Program` 示例在 `Local Unset Transparent Obligations` 下自动求解
+一项定律和一项数据义务，两者都变成不透明常量。数据投影因此无法归约到预期
+数值，显式提供数据后恢复归约。本库逐条显式指定本批义务的收尾方式。
+
 ## Two-sided context and centrality prerequisite
 
 ## 双侧上下文与中心性前置基础
@@ -923,7 +982,7 @@ the same; no opacity is introduced.
 The user-approved serial slice starts from `751de86` on `monoidal-cat-view`.
 The existing generic Arrow has a left-context action over a named monoidal
 base; that alone does not specify a right-context action. This slice
-extracts [BinoidalCat](../theories/Cat/Binoidal/Core.v): one object tensor
+extracts [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v): one object tensor
 and two separately functorial arrow actions, without units, associators,
 symmetry or effect interchange. Derived fixed-context functors share that
 same object tensor. Public `binoidal_scope` notation writes the tensor as
@@ -931,19 +990,19 @@ same object tensor. Public `binoidal_scope` notation writes the tensor as
 
 用户授权的串行批次从 `monoidal-cat-view` 上的 `751de86` 开始。现有一般
 Arrow 在具名幺半基底上具有左上下文作用，但这本身尚未指定右上下文作用。
-本批抽出 [BinoidalCat](../theories/Cat/Binoidal/Core.v)：唯一对象张量与两种
+本批抽出 [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v)：唯一对象张量与两种
 分别具有函子性的态射作用，不要求单位元、结合子、对称性或效应交换律。
 导出的固定上下文函子共享同一对象张量。公开 `binoidal_scope` 中，张量写作
 `X ⊗ Y`，左上下文写作 `Z ⊲ f`，右上下文写作 `f ⊳ Z`。
 
-[Centrality](../theories/Cat/Binoidal/Center.v) is a Type-valued predicate
+[Centrality](../theories/Cat/Monoidal/Center.v) is a Type-valued predicate
 on an arrow: it supplies exchange with every partner, in either tensor
 position. Specified-equal arrows share centrality, and central arrows are
 closed under identity and composition. Ordered sequencing agrees with the
 opposite execution order when either factor is central. There is no
 principle asserting this for two arbitrary effects.
 
-[中心性](../theories/Cat/Binoidal/Center.v) 是态射上的 Type 值谓词，在两个
+[中心性](../theories/Cat/Monoidal/Center.v) 是态射上的 Type 值谓词，在两个
 张量位置都给出与任意另一态射交换的见证。指定相等的态射共享中心性，中心
 态射在恒等与复合下封闭。任一因子为中心态射时，有序组合与相反执行次序
 相等；没有断言两个任意效应都可如此交换。
@@ -1022,7 +1081,7 @@ for independent integration before further premonoidal/Freyd work.
 ## 预幺半结构前置基础
 
 This user-approved serial slice starts from `3fc3ffb` on `monoidal-cat-view`.
-[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) inherits one binoidal
+[PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) inherits one binoidal
 structure through `PremonoidalB :> BinoidalCat C`, with the same projection
 registered for instance search. It adds a chosen unit, central associator
 and unitors, their separate naturality, and pentagon/triangle coherence.
@@ -1031,7 +1090,7 @@ centrality witnesses remain Type-valued. No structural operations or
 underlying category are selected a second time.
 
 用户授权的本串行批次从 `monoidal-cat-view` 上的 `3fc3ffb` 开始。
-[PremonoidalCat](../theories/Cat/Premonoidal/Core.v) 通过
+[PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) 通过
 `PremonoidalB :> BinoidalCat C` 继承唯一双侧张量结构，同一投影注册为继承
 实例。新增选定单位对象、中心结合子与单位子、它们的分别自然性，以及五边形／
 三角形相干。载体、Hom 与相等大小保持独立；所有相等及中心性见证保持为
@@ -1039,9 +1098,9 @@ Type 值。不再次选取结构运算或底层范畴。
 
 The general [inverse-square lemma](../theories/Cat/Isomorphism.v) inverts
 the vertical isomorphisms of any commuting square using specified hom
-equality. [Centrality of an inverse](../theories/Cat/Binoidal/Center.v)
+equality. [Centrality of an inverse](../theories/Cat/Monoidal/Center.v)
 uses that lemma with the fixed-context functors. The
-[premonoidal inverse laws](../theories/Cat/Premonoidal/Laws.v) derive all
+[premonoidal inverse laws](../theories/Cat/Monoidal/PremonoidalLaws.v) derive all
 three inverse centrality witnesses and all five inverse naturality
 squares. Forward and inverse maps are projections of the same selected
 isomorphisms; inverse centrality/naturality are not duplicate class fields.
@@ -1049,9 +1108,9 @@ Public `premonoidal_scope` notation exposes the unit and both directions
 of each structural map; object tensor and contexts retain binoidal notation.
 
 一般[逆方块引理](../theories/Cat/Isomorphism.v) 使用指定 Hom 相等，对任意
-交换方块的竖直同构取逆。[逆的中心性](../theories/Cat/Binoidal/Center.v)
+交换方块的竖直同构取逆。[逆的中心性](../theories/Cat/Monoidal/Center.v)
 将该引理应用于固定上下文函子。
-[预幺半逆向定律](../theories/Cat/Premonoidal/Laws.v) 导出全部三种逆中心性
+[预幺半逆向定律](../theories/Cat/Monoidal/PremonoidalLaws.v) 导出全部三种逆中心性
 见证及五个逆自然性方块。正逆映射都是同一选定同构的投影；逆中心性／自然性
 不作为重复类字段保存。公开 `premonoidal_scope` 记号提供单位对象及每种
 结构映射的两个方向；对象张量及上下文沿用双侧张量记号。
@@ -1113,7 +1172,7 @@ session; this foundation can be integrated independently.
 ## 幺半父结构迁移
 
 This user-authorized serial slice starts from `0a41be9` on
-`monoidal-cat-view`. [MonoidalCat](../theories/Cat/Monoidal/Core.v) now
+`monoidal-cat-view`. [MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) now
 inherits one `PremonoidalCat C` through `MonoidalP :>`, exported as the
 inherited instance. A single interchange equation supplies centrality
 for every arrow; the other centrality square is obtained by swapping
@@ -1123,31 +1182,31 @@ while unit, associator/unitors, inverse components and coherence come
 from the same parent.
 
 本用户授权的串行批次从 `monoidal-cat-view` 上的 `0a41be9` 开始。
-[MonoidalCat](../theories/Cat/Monoidal/Core.v) 现在通过 `MonoidalP :>` 继承
+[MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) 现在通过 `MonoidalP :>` 继承
 唯一 `PremonoidalCat C`，并导出同一父实例。一条交换方程给出每条态射的
 中心性；另一中心性方块通过交换参数得到。不再保存张量双函子，也不保留
 直达范畴的旁路。导出张量函子顺序组合继承作用；单位、结合子／单位子、
 逆分量及相干性均来自同一父结构。
 
 Two proofs use weaker hypotheses than monoidal structure:
-[central_sequence_comp](../theories/Cat/Binoidal/Center.v) needs centrality
+[central_sequence_comp](../theories/Cat/Monoidal/Center.v) needs centrality
 only of the crossing arrow, and
-[premonoidal_assoc_sequence_natural](../theories/Cat/Premonoidal/Laws.v)
+[premonoidal_assoc_sequence_natural](../theories/Cat/Monoidal/PremonoidalLaws.v)
 uses only separate premonoidal naturality. The monoidal tensor functor
 and joint associator naturality reuse these proofs. Derived natural
 isomorphisms retain the original inverse components rather than storing
 new choices.
 
 两项证明使用比幺半结构更弱的前提：
-[central_sequence_comp](../theories/Cat/Binoidal/Center.v) 只要求需要交换的
+[central_sequence_comp](../theories/Cat/Monoidal/Center.v) 只要求需要交换的
 那条态射的中心性；
-[premonoidal_assoc_sequence_natural](../theories/Cat/Premonoidal/Laws.v)
+[premonoidal_assoc_sequence_natural](../theories/Cat/Monoidal/PremonoidalLaws.v)
 只使用预幺半的分别自然性。幺半张量函子及结合子的联合自然性复用这些证明。
 导出自然同构保留原逆分量，不保存新的选择。
 
-[BifunctorBinoidal](../theories/Cat/Binoidal/Bifunctor.v) extracts separate
+[BifctBinoidal](../theories/Cat/Monoidal/Bifct.v) extracts separate
 actions from any tensor bifunctor. The
-[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) assembly constructor
+[BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) assembly constructor
 then reuses supplied natural structural isomorphisms and two coherence
 proofs. It supplies a natural isomorphism between its derived tensor and
 the original bifunctor, with identity components. The two concrete model
@@ -1157,9 +1216,9 @@ functor/law records. The transitional `MonoidalBinoidal` and
 `MonoidalPremonoidal` adapters from earlier milestones are removed in
 favor of the inherited projections.
 
-[BifunctorBinoidal](../theories/Cat/Binoidal/Bifunctor.v) 从任意张量双函子
+[BifctBinoidal](../theories/Cat/Monoidal/Bifct.v) 从任意张量双函子
 抽出分别作用；
-[BifunctorMonoidal](../theories/Cat/Monoidal/Bifunctor.v) 装配器再复用给定
+[BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) 装配器再复用给定
 自然结构同构及两个相干证明，并通过恒等分量给出导出张量与原双函子的自然
 同构。两个具体模型族（笛卡尔及双范畴自同态，包括自函子）复用此构造器，
 没有分阶段数据记录或函子／定律记录的相等。先前批次中的过渡适配器
@@ -1330,21 +1389,21 @@ as a substitute for these requirements.
 重新核对。接口包括有限积值结构、对称预幺半计算结构、对象上恒等的中心
 嵌入及严格保持性，没有以较弱的第三方 effectful 接口替代这些条件。
 
-[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v)
+[SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v)
 inherits exactly one premonoidal parent. It stores central exchange,
 involution, left-variable naturality, the hexagon and unit compatibility.
 The symmetry isomorphism uses the opposite exchange as its transparent
 inverse; right-variable naturality follows by inverting the first square.
 A derived conjugation law recovers right action from left action.
-[CartesianSymmetricPremonoidal](../theories/Cat/Premonoidal/Cartesian.v)
+[CartesianSymmetricPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
 inherits the existing cartesian monoidal parent's premonoidal structure,
 proving only the new exchange equations from products.
 
-[SymmetricPremonoidalCat](../theories/Cat/Premonoidal/Symmetric.v) 恰好
+[SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v) 恰好
 继承一个预幺半父结构，保存中心交换、对合、左变量自然性、六边形及单位
 相容性。对称同构以反序交换为透明逆；右变量自然性通过对第一个方块取逆
 得到。导出的共轭律从左作用恢复右作用。
-[CartesianSymmetricPremonoidal](../theories/Cat/Premonoidal/Cartesian.v)
+[CartesianSymmetricPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
 继承已有笛卡尔幺半父层的预幺半结构，仅从积证明新增交换方程。
 
 [ArrowSymmetricPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
@@ -1467,7 +1526,7 @@ changes object representatives along chosen isomorphisms and supplies a
 natural isomorphism to the original functor. Its boundary-naturality lemma
 uses the weakest sufficient assumptions: a natural incoming boundary and
 an invertible outgoing one. General
-[tensor transport](../theories/Cat/Binoidal/Transport.v) uses context
+[tensor transport](../theories/Cat/Monoidal/BinoidalTransport.v) uses context
 functors and centrality of transported identities. Premonoidal associators
 and the left unitor now expose the natural transformations used by this
 argument. Equality isomorphisms, commuting-square composition and the
@@ -1476,7 +1535,7 @@ general category theories.
 
 可复用的[函子运输](../theories/Cat/Functor/Transport.v)沿选定同构改变对象
 代表，并提供到原函子的自然同构。其边界自然性引理只使用充分的最弱条件：
-入边界自然，出边界可逆。一般[张量运输](../theories/Cat/Binoidal/Transport.v)
+入边界自然，出边界可逆。一般[张量运输](../theories/Cat/Monoidal/BinoidalTransport.v)
 使用上下文函子及运输恒等的中心性。预幺半结合子及左单位子现在暴露此论证
 需要的自然变换。相等同构、交换方块复合及诱导分解的自然同构比较均放在
 相应一般范畴理论中。
@@ -3513,7 +3572,7 @@ witnesses. This theorem needs no unit, symmetry or strength.
 
 [Day monoidal assembly](../theories/Cat/Day/Monoidal.v) takes a coherent
 binary functor with unit and uniform explicit convolution choices. It reuses
-`BifunctorMonoidal`, the original `DayTensorF`, representable `DayUnitF`,
+`BifctMonoidal`, the original `DayTensorF`, representable `DayUnitF`,
 unitors and associator with their transparent inverses. Tensor interchange
 comes from the bifunctor; its reconstructed tensor action agrees with the
 supplied Day action in natural equality. Identity components compare the
@@ -3523,7 +3582,7 @@ reusing its existing bimap pentagon and triangle. Importing these modules
 registers no global convolution choices.
 
 [Day 幺半装配](../theories/Cat/Day/Monoidal.v)以带单位的相干二元函子及统一显式
-卷积选择为输入，复用 `BifunctorMonoidal`、原 `DayTensorF`、可表 `DayUnitF`、
+卷积选择为输入，复用 `BifctMonoidal`、原 `DayTensorF`、可表 `DayUnitF`、
 单位子和结合子及其透明逆。张量交换律来自双函子；重建张量作用在自然相等下
 等于给定 Day 作用。恒等分量比较导出的张量函子与原函子，不要求函子记录
 相等。`MonoidalDay` 还可直接从给定幺半范畴出发，复用已有二元映射的
@@ -4317,12 +4376,12 @@ pentagon is reversed by the general `iso_pentagon_inv`; the existing
 composition-map properness laws compare its whiskered inverses with the native
 inverse input maps. The Hom units retain their original identity-insertion
 inverses. Moving the old associator across the accepted triangle gives the
-triangle for the inverse associator. `BifunctorMonoidal` supplies interchange
+triangle for the inverse associator. `BifctMonoidal` supplies interchange
 and the remaining separate naturality, without re-proving coend universality.
 
 逆输入方块给出自然结合性。一般 `iso_pentagon_inv` 反转已验收的五边形，已有
 复合映射保相等律比较其须化逆与原生逆输入映射。Hom 单位保留原恒等插入逆；
-将原结合子移过已验收三角形，得到逆结合子的三角形。`BifunctorMonoidal` 提供
+将原结合子移过已验收三角形，得到逆结合子的三角形。`BifctMonoidal` 提供
 交换律及其余分别自然性，不重复证明 coend 泛性质。
 
 Associativity and its pentagon need no Hom-unit bounds. Full assembly requires

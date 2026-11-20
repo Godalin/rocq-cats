@@ -26,16 +26,21 @@ Program Definition StarF (J : Cat) (A : @Ob C)
     (v : @Ob J → @Ob C) (s : ∀ j, Hom A (v j))
   : Fct J C
   :=
-  {|F0 := v
-  ; F1 i j f := s j ∘ (s i)⁻¹
+  {|fobj := v
+  ; fmap i j f := s j ∘ (s i)⁻¹
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. reflexivity. Defined.
-Next Obligation. apply gpd_inv_r. Defined.
+Next Obligation. intros f g H. reflexivity. Qed.
+Next Obligation. apply gpd_inv_r. Qed.
 Next Obligation.
   rewrite comp_assoc, <- (comp_assoc (s Y)⁻¹),
     gpd_inv_l, comp_id_l.
   reflexivity.
-Defined.
+Qed.
 
 (** Two stars commute on every transition if their legs commute with one
     common centre map. No equality of centre or leg data is required. *)
@@ -93,9 +98,9 @@ Proof.
   apply (iso_cancel_r (gpd_arrow_iso (fmap F (ordinal_from_first i)))).
   rewrite comp_assoc, gpd_inv_l, comp_id_r.
   transitivity (fmap F (f ∘ ordinal_from_first i)).
-  - symmetry. exact (@fct_comp [Ord n] C F fin_first i j
+  - symmetry. exact (@fmap_comp _ _ _ _ (@isFct [Ord n] C F) fin_first i j
       f (ordinal_from_first i)).
-  - exact (@fct_fmap_proper [Ord n] C F fin_first j _ _ tt).
+  - exact (@fmap_proper _ _ _ _ (@isFct [Ord n] C F) fin_first j _ _ tt).
 Defined.
 
 (** Radial transitions compose without any ordering hypothesis. *)
@@ -157,8 +162,8 @@ Proof.
       fmap F (ordinal_from_first (Q k))).
     transitivity (fmap F (fmap Q (ordinal_from_first k) ∘
       ordinal_from_first (Q fin_first))).
-    - symmetry. exact (@fct_comp [Ord n] C F _ _ _ _ _).
-    - exact (@fct_fmap_proper [Ord n] C F _ _ _ _ tt). }
+    - symmetry. exact (@fmap_comp _ _ _ _ (@isFct [Ord n] C F) _ _ _ _ _).
+    - exact (@fmap_proper _ _ _ _ (@isFct [Ord n] C F) _ _ _ _ tt). }
   pose proof (star_transition_square _ _ _ _ id id c⁻¹ (H i) (H j)) as K.
   rewrite comp_id_l, comp_id_r in K. exact K.
 Defined.

@@ -51,23 +51,28 @@ Local Existing Instance HD.
 Program Definition ContextElementsF
   : Fct (ElementsCat P) (ContextTypeCat T)
   :=
-  {|F0 X := X
-  ; F1 X Y f :=
+  {|fobj X := X
+  ; fmap X Y f :=
       {|context_map_base := element_map_base P f
       ; context_map_ext := display_element_map P f
       ; context_map_comm := display_element_map_proj P f
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation.
   intros f g H. split; [exact H |].
   exact (display_element_map_proper P f g H).
-Defined.
+Qed.
 Next Obligation.
   split; [reflexivity | exact (@display_element_map_id C P HD X)].
-Defined.
+Qed.
 Next Obligation.
   split; [reflexivity | exact (@display_element_map_comp C P HD X Y Z f g)].
-Defined.
+Qed.
 
 (** The interpreted base is compared with the element projection by
     identity components, without equating functor records. *)

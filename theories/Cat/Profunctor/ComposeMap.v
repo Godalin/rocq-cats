@@ -38,7 +38,7 @@ Next Obligation.
       (X := (X,snd X0)) (Y := (X,snd Y)) (id,snd f) x).
   - exact (nat_naturality β
       (X := (fst X0,Z)) (Y := (fst Y,Z)) (fst f,id) y).
-Defined.
+Qed.
 
 (** ** Kernel Map Laws
 
@@ -142,7 +142,7 @@ Next Obligation.
         ∘Nv ProfCompInputN β α (fst X) (snd X))).
     + apply (@coend_map_proper D SetCat). apply prof_comp_input_boundary.
     + apply (@coend_map_comp D SetCat).
-Defined.
+Qed.
 
 (** ** Maps between Selected Composites
 
@@ -336,20 +336,25 @@ Program Definition ProfCompF@{u p +} (C D E : Cat)
       HasProfComp C D E Q P)
   : Fct (ProfCat D E ×C ProfCat C D) (ProfCat C E)
   :=
-  {|F0 QP := @ProfComp C D E (fst QP) (snd QP)
+  {|fobj QP := @ProfComp C D E (fst QP) (snd QP)
       (HC (fst QP) (snd QP))
-  ; F1 QP QP' βα := @ProfCompMapN C D E
+  ; fmap QP QP' βα := @ProfCompMapN C D E
       (fst QP) (fst QP') (snd QP) (snd QP')
       (HC (fst QP) (snd QP)) (HC (fst QP') (snd QP'))
       (fst βα) (snd βα)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [β α] [β' α'] [H K].
   exact (@prof_comp_map_proper C D E _ _ _ _ _ _ β β' H α α' K).
-Defined.
-Next Obligation. destruct X as [Q P]. apply prof_comp_map_id. Defined.
+Qed.
+Next Obligation. destruct X as [Q P]. apply prof_comp_map_id. Qed.
 Next Obligation.
   destruct X as [Q P], Y as [Q' P'], Z as [Q'' P''],
     f as [β' α'], g as [β α].
   apply prof_comp_map_comp.
-Defined.
+Qed.

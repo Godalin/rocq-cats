@@ -18,8 +18,8 @@ Local Open Scope monoidal_scope.
     可逆，也不要求张量强度。 *)
 
 Section ConstantLax.
-Context {C D : Cat} (MC : MonoidalCat C)
-    {MD : MonoidalCat D} (A : MonoidObj MD).
+Context {C D : Cat} (MC : HasMonoidal C)
+  {MD : HasMonoidal D} (A : MonoidObj MD).
 
 (** The multiplication of [A] is the constant tensorator. Naturality
     follows because every source arrow maps to an identity. *)
@@ -27,17 +27,17 @@ Context {C D : Cat} (MC : MonoidalCat C)
 (** [A] 的乘法就是常值 tensorator；每条来源箭头映为恒等，因而满足自然性。 *)
 
 Program Definition ConstLaxTensorN
-  : (tensorF MD ∘F (ConstF C (MonoidCarrier A) ×F
+  : (tensorF (isMagmoidal MD) ∘F (ConstF C (MonoidCarrier A) ×F
         ConstF C (MonoidCarrier A))) ⇒
-      (ConstF C (MonoidCarrier A) ∘F tensorF MC)
+      (ConstF C (MonoidCarrier A) ∘F tensorF (isMagmoidal MC))
   :=
   {|nt p := m[A]
   |}.
 Next Obligation.
-  rewrite (@fct_id _ _ (tensorF MD)
+  rewrite (@fmap_id _ _ _ _ (isFct (tensorF (isMagmoidal MD)))
     (MonoidCarrier A, MonoidCarrier A)), comp_id_r, comp_id_l.
   reflexivity.
-Defined.
+Qed.
 
 (** The three lax coherence diagrams are exactly the monoid laws of [A].
     The structure is selected explicitly, rather than registered on import. *)
@@ -51,8 +51,8 @@ Program Definition ConstLaxMonoidalF
   ; lax_unit := e[A]
   ; lax_tensorN := ConstLaxTensorN
   |}.
-Next Obligation. rewrite comp_id_l. apply monoid_object_unit_l. Defined.
-Next Obligation. rewrite comp_id_l. apply monoid_object_unit_r. Defined.
-Next Obligation. rewrite comp_id_l. apply monoid_object_assoc. Defined.
+Next Obligation. rewrite comp_id_l. apply monoid_object_unit_l. Qed.
+Next Obligation. rewrite comp_id_l. apply monoid_object_unit_r. Qed.
+Next Obligation. rewrite comp_id_l. apply monoid_object_assoc. Qed.
 
 End ConstantLax.

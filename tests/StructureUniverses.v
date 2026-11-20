@@ -149,12 +149,17 @@ Definition Two
 Program Definition Swap
   : Fct Two Two
   :=
-  {|F0 := negb
-  ; F1 X Y f := tt
+  {|fobj := negb
+  ; fmap X Y f := tt
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. intros f g H. exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 Definition SwapEquivalence
   : (@Hom GpdGpd) Two Two

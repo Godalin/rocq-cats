@@ -95,7 +95,7 @@ Proof.
     + symmetry. exact (simplex_constant_restrict X b τ).
     + refine {|lower := _
               |}. symmetry.
-      change (@HomEq Δ n 1%nat (id ∘ τ) τ). apply comp_id_l.
+      change (@HomEq Δ n 1%nat ((@Cat.Core.id Δ 1%nat) ∘ τ) τ). apply comp_id_l.
   - transitivity (Y[τ]Δ (homotopy_map H 1 z)).
     + exact (simplex_restrict_natural (homotopy_map H) τ z).
     + transitivity (Y[τ]Δ (simplex_constant Y c 1)).

@@ -21,8 +21,8 @@ Local Open Scope algebra_scope.
     不会全局选取这些结构。 *)
 
 Definition SetCartMonoidal
-  : MonoidalCat SetCat
-  := @CartMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
+  : HasMonoidal SetCat
+  := @CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct.
 
 (** ** Setoid Monoids as Monoid Objects
 

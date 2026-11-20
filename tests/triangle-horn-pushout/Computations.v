@@ -95,7 +95,7 @@ Definition old_point (r : Ordinal 2) (s : Ordinal 8)
   : TriangleHornStage r (fin_rank s) 2.
 Proof.
   refine (({|lower := boundary_space|},
-           {|lower := (id : (@Hom Δ) 2 2)|}); _).
+           {|lower := (@Cat.Core.id Δ 2)|}); _).
   left. left. exists (fin_first⁺⁺). exists boundary_factor. reflexivity.
 Defined.
 
@@ -185,7 +185,7 @@ Definition actual_kan_new_recovery (r : Ordinal 2) (s : Ordinal 8)
 Definition cocycle_old_point (s : Ordinal 8)
   : TriangleHornStage fin_first (fin_rank s) 2.
 Proof.
-  refine (({|lower := (id : (@Hom Δ) 2 2)|},
+  refine (({|lower := (@Cat.Core.id Δ 2)|},
            {|lower := δ[1; fin_first⁺] ∘ boundary_factor|}); _).
   left. right.
   assert (J : ¬ (fin_first⁺ : Ordinal 2) = fin_first).

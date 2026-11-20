@@ -40,8 +40,13 @@ Context {C : Cat}.
 Program Canonical Embedding
   : Fct C (Psh C)
   :=
-  {|F0 := ℎ2F
-  ; F1 X Y f := f _*N
+  {|fobj := ℎ2F
+  ; fmap X Y f := f _*N
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. apply nt_comp_post_id. Qed.
 Next Obligation. apply nt_comp_post_comp. Qed.
@@ -92,22 +97,27 @@ End Psh.
 Program Definition RaisedEmbedding@{u p +} {C : Cat}
   : Fct C (FctCat (C^op) SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 X := LiftF ∘F Hom(-,X)
-  ; F1 X Y f := LiftF ∘Nl f _*N
+  {|fobj X := LiftF ∘F Hom(-,X)
+  ; fmap X Y f := LiftF ∘Nl f _*N
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H Z [h].
   exact {|lower := @comp_proper C _ _ _ f g H h h (reflexivity h)
          |}.
-Defined.
+Qed.
 Next Obligation.
   intros Z [h]. exact {|lower := comp_id_l h
                       |}.
-Defined.
+Qed.
 Next Obligation.
   intros W [h]. exact {|lower := comp_assoc f g h
                       |}.
-Defined.
+Qed.
 
 (** Raising values preserves full faithfulness. Yoneda reconstruction gives
     fullness; identity evaluation recovers the original arrow for faithfulness. *)

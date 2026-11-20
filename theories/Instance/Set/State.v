@@ -81,11 +81,13 @@ Proof. intros k r. split; reflexivity. Defined.
 Program Definition StateF@{r e u p +} (R : SetC@{r e})
   : Fct (SetCat@{u p _ _ _ _ _}) (SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 X := R →S (X ×S R)
-  ; F1 X Y f := state_map f
-  ; fct_fmap_proper X Y := state_map_proper
-  ; fct_id X := state_map_id
-  ; fct_comp X Y Z f g := state_map_comp f g
+  {|fobj X := R →S (X ×S R)
+  ; fmap X Y f := state_map f
+  ; isFct :=
+      {|fmap_proper X Y := state_map_proper
+      ; fmap_id X := state_map_id
+      ; fmap_comp X Y Z f g := state_map_comp f g
+      |}
   |}.
 
 (** Return a value without changing the state. *)
@@ -133,7 +135,7 @@ Program Definition StatePureN@{r e u p +} (R : SetC@{r e})
   :=
   {|nt X := state_pure R X
   |}.
-Next Obligation. intros x r. split; reflexivity. Defined.
+Next Obligation. intros x r. split; reflexivity. Qed.
 
 (** Stateful flattening is natural in its ordinary result type. *)
 
@@ -145,7 +147,7 @@ Program Definition StateJoinN@{r e u p +} (R : SetC@{r e})
   :=
   {|nt X := state_join R X
   |}.
-Next Obligation. intros k r. split; reflexivity. Defined.
+Next Obligation. intros k r. split; reflexivity. Qed.
 
 (** Explicitly choose the ordinary state monad. *)
 
@@ -194,9 +196,9 @@ Defined.
 (** 状态强度在上下文及结果上均自然。 *)
 
 Program Definition StateStrengthN@{r e u p +} (R : SetC@{r e})
-  : (tensorF SetCartMonoidal ∘F
+  : (tensorF (isMagmoidal SetCartMonoidal) ∘F
       (IdF ×F StateF@{r e u p _ _ _ _} R)) ⇒
-      (StateF R ∘F tensorF SetCartMonoidal)
+      (StateF R ∘F tensorF (isMagmoidal SetCartMonoidal))
   :=
   {|nt p := state_strength R (fst p) (snd p)
   |}.
@@ -204,7 +206,7 @@ Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
   intros [x k] r. cbn.
   split; [split; reflexivity | reflexivity].
-Defined.
+Qed.
 
 (** Explicitly choose coherent strength for the state functor. *)
 

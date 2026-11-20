@@ -428,7 +428,7 @@ Example unit_changed_pair_respects
   : fmap UnitProductChangeF ⟨tagged_gluing_toggle, tagged_gluing_toggle⟩ ≈
       fmap UnitProductChangeF ⟨id, id⟩.
 Proof.
-  apply fct_fmap_proper. apply product_pair_proper;
+  apply fmap_proper. apply product_pair_proper;
     exact tagged_gluing_toggle_equal.
 Defined.
 

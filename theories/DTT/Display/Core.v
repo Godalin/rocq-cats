@@ -40,7 +40,7 @@ Definition type_eq_sub {Γ Δ : @Ob C} (σ : Hom Δ Γ) {A B : P Γ} (e : A ≈S
 
 Definition type_sub_id {Γ : @Ob C} (A : P Γ)
   : type_sub id A ≈S A
-  := fct_id (C^op) SetCat P A.
+  := fmap_id (IsFct := @isFct (C^op) SetCat P) A.
 
 (** Compatibility with composition for [type_sub]. *)
 
@@ -48,7 +48,7 @@ Definition type_sub_id {Γ : @Ob C} (A : P Γ)
 
 Definition type_sub_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ) (A : P Γ)
   : type_sub τ (type_sub σ A) ≈S type_sub (σ ∘ τ) A
-  := symmetry (fct_comp (C^op) SetCat P τ σ) A.
+  := symmetry (fmap_comp (IsFct := @isFct (C^op) SetCat P) τ σ) A.
 
 (** Equal substitutions induce equal type-presheaf actions. *)
 
@@ -56,7 +56,7 @@ Definition type_sub_comp {Γ Δ Θ : @Ob C} (σ : Hom Δ Γ) (τ : Hom Θ Δ) (A
 
 Definition type_sub_equiv {Γ Δ : @Ob C} {σ σ' : Hom Δ Γ} (H : σ ≈ σ') (A : P Γ)
   : type_sub σ A ≈S type_sub σ' A
-  := @fct_fmap_proper (C^op) SetCat P Γ Δ σ σ' H A.
+  := @fmap_proper _ _ _ _ (@isFct (C^op) SetCat P) Γ Δ σ σ' H A.
 
 End TypePresheaf.
 

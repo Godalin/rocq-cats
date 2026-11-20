@@ -81,7 +81,7 @@ From Cats Require Import
 (** 导入笛卡尔模型不得自动选定默认幺半结构。 *)
 
 Fail Definition unchosen_set_monoidal
-  : MonoidalCat SetCat
+  : HasMonoidal SetCat
   := ltac:(typeclasses eauto).
 
 (** The weaker tensor choices also require explicit selection. *)
@@ -93,7 +93,7 @@ Fail Definition unchosen_set_binoidal
   := ltac:(typeclasses eauto).
 
 From Cats Require Import
-  Cat.Premonoidal.Core.
+  Cat.Monoidal.Premonoidal.
 
 (** ** Independent Premonoidal Choices
 
@@ -105,7 +105,7 @@ From Cats Require Import
     固定张量可以只具有结合子或单位子；继承一份选择不得选定另一份或完整扩展。 *)
 
 Section AssociatorChoice.
-Context {C : Cat} `{BC : !HasBinoidal C} `{AC : !HasAssociator C BC}.
+Context {C : Cat} `{BC : !HasBinoidal C} `{AC : !HasAssoc C BC}.
 
 Fail Definition unchosen_unitors
   : HasUnitors C BC
@@ -121,7 +121,7 @@ Section UnitorChoice.
 Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !HasUnitors C BC}.
 
 Fail Definition unchosen_associator
-  : HasAssociator C BC
+  : HasAssoc C BC
   := ltac:(typeclasses eauto).
 
 End UnitorChoice.

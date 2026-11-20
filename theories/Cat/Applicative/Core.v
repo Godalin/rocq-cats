@@ -38,8 +38,8 @@ Record Applicative (C : Cat)
 
   { ApplicativeToLaxMonoidalFct
     :> LaxMonoidalFct
-        (@CartMonoidal C HT HP)
-        (@CartMonoidal C HT HP)
+        (@CartHasMonoidal C HT HP)
+        (@CartHasMonoidal C HT HP)
 
   (** Pure values commute with ordinary maps. *)
 
@@ -184,7 +184,7 @@ Proof.
   rewrite (applicative_pure_natural x).
   assert (K : (fmap A x ∘ pure[A] 1) × id ≈
       (fmap A x × fmap A (id[Y])) ∘ (pure[A] 1 × id)).
-  { rewrite fct_id, <- cross_comp, comp_id_l.
+  { rewrite fmap_id, <- cross_comp, comp_id_l.
     reflexivity. }
   rewrite K, <- comp_assoc,
     (cartesian_lift2_pre A f x id).
@@ -192,7 +192,7 @@ Proof.
     ∘ (pure[A] 1 × id)).
   - apply comp_proper; [| reflexivity].
     unfold lax_lift2. apply comp_proper;
-      [exact (@fct_fmap_proper C C A _ _ _ _ H)
+      [exact (@fmap_proper _ _ _ _ (@isFct C C A) _ _ _ _ H)
       | reflexivity].
   - rewrite <- (lax_lift2_post A (π2 : Hom (1 × Y) Y) g),
     comp_assoc, (applicative_unit_l Y). reflexivity.
@@ -210,13 +210,13 @@ Proof.
   rewrite (applicative_pure_natural y).
   assert (K : id × (fmap A y ∘ pure[A] 1) ≈
       (fmap A (id[X]) × fmap A y) ∘ (id × pure[A] 1)).
-  { rewrite fct_id, <- cross_comp, comp_id_l. reflexivity. }
+  { rewrite fmap_id, <- cross_comp, comp_id_l. reflexivity. }
   rewrite K, <- comp_assoc, (cartesian_lift2_pre A f id y).
   transitivity
     (lift₂[A; g ∘ (π1 : Hom (X × 1) X)] ∘ (id × pure[A] 1)).
   - apply comp_proper; [| reflexivity].
     unfold lax_lift2. apply comp_proper;
-      [exact (@fct_fmap_proper C C A _ _ _ _ H) | reflexivity].
+      [exact (@fmap_proper _ _ _ _ (@isFct C C A) _ _ _ _ H) | reflexivity].
   - rewrite <- (lax_lift2_post A (π1 : Hom (X × 1) X) g),
       comp_assoc, (applicative_unit_r X). reflexivity.
 Qed.

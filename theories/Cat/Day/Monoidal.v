@@ -2,12 +2,13 @@ From Cats Require Import
   Cat.Core
   Cat.Functor.Core
   Cat.Natural
-  Cat.Binoidal.Bifunctor
-  Cat.Monoidal.Bifunctor
-  Instance.Set.Core.
+  Cat.Monoidal.Bifct
+  Instance.Set.Core
+  Cat.Monoidal.Laws.
 From Cats Require Export
-  Cat.Day.Coherence.
+  Cat.Day.Semigroupal.
 
+Local Open Scope monoidal_scope.
 (** * The Day Monoidal Category *)
 
 (** * Day 幺半范畴 *)
@@ -26,21 +27,14 @@ From Cats Require Export
 Section DayMonoidal.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) (I : @Ob C)
-    (A : TensorLF T ≅N TensorRF T)
+    (A : Tensor3LF T ≅N Tensor3RF T)
     (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
-Context (Hp : ∀ a b c d : @Ob C,
-    A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d) ≈
-      fmap T (X := (a,T (T (b,c),d))) (Y := (a,T (b,T (c,d))))
-        (id,A.1 ((b,c),d)) ∘
-      (A.1 ((a,T (b,c)),d) ∘
-        fmap T (X := (T (T (a,b),c),d)) (Y := (T (a,T (b,c)),d))
-          (A.1 ((a,b),c),id))).
+Context (Hp : is_tensor_pentagon T A).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
       A.1 ((X,I),Y) ≈
     fmap T (X := (T (X,I),Y)) (Y := (X,Y)) (R.1 X,id)).
-Context (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
-Local Existing Instance HD.
+Context `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 
 (** Reuse the tensor, representable unit, natural isomorphisms and their
     computed inverses. Interchange is inherited from the tensor bifunctor. *)
@@ -48,14 +42,12 @@ Local Existing Instance HD.
 (** 复用张量、可表单位、自然同构及其计算逆；交换律继承自张量双函子。 *)
 
 Definition DayMonoidal
-  : MonoidalCat (FctCat C (SetCat@{u p _ _ _ _ _})).
-Proof.
-  refine (BifunctorMonoidal (DayTensorF T HD) (DayUnitF I)
-    (DayAssociatorFct T HD A)
-    (DayLeftUnitorFct T HD L) (DayRightUnitorFct T HD R) _ _).
-  - intros F G H K. exact (day_pentagon T A Hp F G H K).
-  - intros F G. exact (day_triangle T A L R Ht F G).
-Defined.
+  : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
+  := BifctHasMonoidal (DayTensorF T HD) (DayUnitF I)
+      (DayAssociatorFct T HD A)
+      (DayLeftUnitorFct T HD L) (DayRightUnitorFct T HD R)
+      (λ F G H K, day_pentagon T A Hp F G H K)
+      (λ F G, day_triangle T A L R Ht F G).
 
 (** The reconstructed tensor map agrees with the supplied Day bifunctor
     action in natural equality, without equality of functor records. *)
@@ -64,10 +56,11 @@ Defined.
 
 Lemma day_monoidal_map {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     (α : F ⇒ F') (β : G ⇒ G')
-  : @tensor_map _ DayMonoidal F F' G G' α β ≈N
+  : tensor_map (IM := isMagmoidal DayMonoidal)
+      (X := F) (X' := F') (Y := G) (Y' := G') α β ≈N
       @DayMapN C T F F' G G' (HD F G) (HD F' G') α β.
 Proof.
-  exact (@bifunctor_sequence (FctCat C SetCat) (DayTensorF T HD)
+  exact (@bifct_sequence (FctCat C SetCat) (DayTensorF T HD)
     F F' G G' α β).
 Defined.
 
@@ -77,10 +70,10 @@ Defined.
 (** 恒等分量比较导出的张量函子与原 Day 张量，保持选定 coend 与结构逆不变。 *)
 
 Definition DayTensorIso
-  : tensorF DayMonoidal ≅N DayTensorF T HD.
+  : tensorF (isMagmoidal DayMonoidal) ≅N DayTensorF T HD.
 Proof.
   unfold DayMonoidal.
-  apply (@bifunctor_monoidal_iso (FctCat C SetCat) (DayTensorF T HD)).
+  apply (@bifct_tensor_iso (FctCat C SetCat) (DayTensorF T HD)).
 Defined.
 
 End DayMonoidal.
@@ -98,19 +91,21 @@ End DayMonoidal.
 
 Section MonoidalBase.
 Universes u p.
-Context {C : Cat} (MC : MonoidalCat C)
+Context {C : Cat} (MC : HasMonoidal C)
     (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF MC) F G).
+      HasDay C (tensorF (isMagmoidal MC)) F G).
 
 (** The inherited pentagon and triangle enable the full Day structure. *)
 
 (** 继承的五边形与三角形启用完整 Day 结构。 *)
 
 Definition MonoidalDay
-  : MonoidalCat (FctCat C (SetCat@{u p _ _ _ _ _}))
-  := DayMonoidal (tensorF MC) (TensorUnit MC)
-      (@monoidal_associator C MC)
-      (@monoidal_left_unitor C MC) (@monoidal_right_unitor C MC)
-      (@monoidal_pentagon C MC) (@monoidal_triangle C MC) HD.
+  : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
+  := DayMonoidal (tensorF (isMagmoidal MC)) (𝐈[MC])
+      (TensorAssocIsoN (IM := isMagmoidal MC) (AC := MC))
+      (TensorUnitorLIsoN (IM := isMagmoidal MC) (UC := MC))
+      (TensorUnitorRIsoN (IM := isMagmoidal MC) (UC := MC))
+      (tensor_pentagon (IM := isMagmoidal MC) (AC := MC))
+      (tensor_map_triangle (IM := isMagmoidal MC) (PC := MC)) HD.
 
 End MonoidalBase.

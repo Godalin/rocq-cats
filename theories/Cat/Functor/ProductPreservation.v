@@ -48,10 +48,10 @@ Proof.
   refine (product_apex_iso (preserves X Y)
     (fmap F i.1; fct_is_iso F i.1 i.2) (fmap F p) (fmap F q) _ _).
   - change (fmap F p ∘ fmap F i.1 ≈ fmap F π1).
-    rewrite <- fct_comp. apply fct_fmap_proper.
+    rewrite <- fmap_comp. apply fmap_proper.
     exact (fst (this (HP _ π1 π2).2)).
   - change (fmap F q ∘ fmap F i.1 ≈ fmap F π2).
-    rewrite <- fct_comp. apply fct_fmap_proper.
+    rewrite <- fmap_comp. apply fmap_proper.
     exact (snd (this (HP _ π1 π2).2)).
 Defined.
 
@@ -88,9 +88,9 @@ Lemma preserved_pair {X Y Z : C} (f : Hom Z X) (g : Hom Z Y)
   : fmap F ⟨f, g⟩ ≈ preserved_product_inv X Y ∘ ⟨fmap F f, fmap F g⟩.
 Proof.
   apply (product_cone_ext (preserves X Y)).
-  - rewrite <- !comp_assoc, <- fct_comp, product_β1,
+  - rewrite <- !comp_assoc, <- fmap_comp, product_β1,
       (fst (preserved_product_inv_β X Y)), product_β1. reflexivity.
-  - rewrite <- !comp_assoc, <- fct_comp, product_β2,
+  - rewrite <- !comp_assoc, <- fmap_comp, product_β2,
       (snd (preserved_product_inv_β X Y)), product_β2. reflexivity.
 Qed.
 
@@ -104,12 +104,12 @@ Lemma preserved_product_inv_natural {X Y X' Y' : C}
       preserved_product_inv X' Y' ∘ (fmap F f × fmap F g).
 Proof.
   apply (product_cone_ext (preserves X' Y')).
-  - rewrite <- !comp_assoc, <- fct_comp, cross_η, product_β1,
-      fct_comp, comp_assoc, (fst (preserved_product_inv_β X Y)),
+  - rewrite <- !comp_assoc, <- fmap_comp, cross_η, product_β1,
+      fmap_comp, comp_assoc, (fst (preserved_product_inv_β X Y)),
       (fst (preserved_product_inv_β X' Y')), cross_η, product_β1.
     reflexivity.
-  - rewrite <- !comp_assoc, <- fct_comp, cross_η, product_β2,
-      fct_comp, comp_assoc, (snd (preserved_product_inv_β X Y)),
+  - rewrite <- !comp_assoc, <- fmap_comp, cross_η, product_β2,
+      fmap_comp, comp_assoc, (snd (preserved_product_inv_β X Y)),
       (snd (preserved_product_inv_β X' Y')), cross_η, product_β2.
     reflexivity.
 Qed.
@@ -167,13 +167,13 @@ Proof.
   - change (fmap G (fmap F π1) ∘
       (fmap G (preserved_product_inv F preservesF X Y) ∘
         preserved_product_inv G preservesG (F X) (F Y)) ≈ π1).
-    rewrite <- comp_assoc, <- fct_comp,
+    rewrite <- comp_assoc, <- fmap_comp,
       (fst (preserved_product_inv_β F preservesF X Y)).
     exact (fst (preserved_product_inv_β G preservesG (F X) (F Y))).
   - change (fmap G (fmap F π2) ∘
       (fmap G (preserved_product_inv F preservesF X Y) ∘
         preserved_product_inv G preservesG (F X) (F Y)) ≈ π2).
-    rewrite <- comp_assoc, <- fct_comp,
+    rewrite <- comp_assoc, <- fmap_comp,
       (snd (preserved_product_inv_β F preservesF X Y)).
     exact (snd (preserved_product_inv_β G preservesG (F X) (F Y))).
 Defined.

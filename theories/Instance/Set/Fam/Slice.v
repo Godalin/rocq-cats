@@ -43,15 +43,20 @@ Next Obligation. intros [x a]. reflexivity. Defined.
 Program Definition FamSumF (X : SetC)
   : Fct (FamSCat X) (SetCat /C X)
   :=
-  {|F0 := FamSumOb
-  ; F1 A B := fam_sum_map
+  {|fobj := FamSumOb
+  ; fmap A B := fam_sum_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H [x a]. exists (reflS (x := x)).
   transitivity (fam_map f x a); [apply transpS_id | exact (H x a)].
-Defined.
-Next Obligation. intros [x a]. reflexivity. Defined.
-Next Obligation. intros [x a]. reflexivity. Defined.
+Qed.
+Next Obligation. intros [x a]. reflexivity. Qed.
+Next Obligation. intros [x a]. reflexivity. Qed.
 
 (** The triangle witness determines fiber membership, not fiber equality. *)
 
@@ -87,12 +92,17 @@ Next Obligation. reflexivity. Defined.
 Program Definition SliceFamF (X : SetC)
   : Fct (SetCat /C X) (FamSCat X)
   :=
-  {|F0 A := FiberFamS (slice_arrow A)
-  ; F1 A B := slice_fiber_map
+  {|fobj A := FiberFamS (slice_arrow A)
+  ; fmap A B := slice_fiber_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H x a. exact (H a.1). Defined.
-Next Obligation. intros x a. cbn. reflexivity. Defined.
-Next Obligation. intros x a. cbn. reflexivity. Defined.
+Next Obligation. intros f g H x a. exact (H a.1). Qed.
+Next Obligation. intros x a. cbn. reflexivity. Qed.
+Next Obligation. intros x a. cbn. reflexivity. Qed.
 
 (** ** Total Space of a Fiber Family *)
 
@@ -144,7 +154,7 @@ Program Definition FamFiberTotalN@{u p +} (X : SetC@{u p})
   :=
   {|nt := fiber_total_slice
   |}.
-Next Obligation. intros a. reflexivity. Defined.
+Next Obligation. intros a. reflexivity. Qed.
 
 (** Taking fibers and then total spaces is naturally isomorphic to the slice
     identity. *)
@@ -240,7 +250,7 @@ Next Obligation.
   transitivity (transpS Y p (fam_map f y a)).
   - apply transpS_witness_independent.
   - symmetry. apply fam_map_naturality.
-Defined.
+Qed.
 
 (** Taking total spaces and then fibers is naturally isomorphic to the family
     identity. *)

@@ -40,8 +40,8 @@ Proof.
       fmap A (internal_context_right Z X Y) ∘ f).
   rewrite static_comp_pure_r, static_comp_pure_l.
   unfold static_context, internal_context_right.
-  rewrite <- !comp_assoc, <- !fct_comp.
-  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  rewrite <- !comp_assoc, <- !fmap_comp.
+  apply comp_proper; [| reflexivity]. apply fmap_proper.
   rewrite <- exp_dimap_id_r, <- exp_dimap_comp,
     !comp_id_l. reflexivity.
 Qed.

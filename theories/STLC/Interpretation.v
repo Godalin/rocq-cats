@@ -190,8 +190,13 @@ Qed.
 Program Definition InterpretF
   : Fct (CtxCat@{b e l} B) C
   :=
-  {|F0 := CtxI I
-  ; F1 Γ Δ σ := sub_interp σ
+  {|fobj := CtxI I
+  ; fmap Γ Δ σ := sub_interp σ
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros σ τ H. apply sub_interp_proper. exact H. Qed.
 Next Obligation. apply sub_interp_id. Qed.

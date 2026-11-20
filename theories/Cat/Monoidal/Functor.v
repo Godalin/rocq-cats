@@ -1,5 +1,5 @@
 From Cats Require Export
-  Cat.Monoidal.Core.
+  Cat.Monoidal.Monoidal.
 
 Local Open Scope monoidal_scope.
 
@@ -31,7 +31,7 @@ Local Open Scope monoidal_scope.
     oplax 结构则将两个比较映射反向。 *)
 
 Record LaxMonoidalFct {C D : Cat}
-    (MC : MonoidalCat C) (MD : MonoidalCat D)
+    (MC : HasMonoidal C) (MD : HasMonoidal D)
   := LaxMonoidalFctOfFct
 
   (** Store the supplied functor once as the unique underlying view. *)
@@ -44,47 +44,52 @@ Record LaxMonoidalFct {C D : Cat}
 
   (** 单位比较指向来源单位对象的像。 *)
 
-  ; lax_unit : Hom (I⊗[MD]) (LaxMonoidalFctToFct (I⊗[MC]))
+  ; lax_unit : Hom (𝐈[MD]) (LaxMonoidalFctToFct (𝐈[MC]))
 
   (** The tensorator retains its component maps and their naturality. *)
 
   (** 张量子保留分量映射及其自然性。 *)
 
-  ; lax_tensorN : (tensorF MD ∘F (LaxMonoidalFctToFct ×F LaxMonoidalFctToFct)) ⇒
-      (LaxMonoidalFctToFct ∘F tensorF MC)
+  ; lax_tensorN
+    : (tensorF (isMagmoidal MD) ∘F
+        (LaxMonoidalFctToFct ×F LaxMonoidalFctToFct)) ⇒
+      (LaxMonoidalFctToFct ∘F tensorF (isMagmoidal MC))
 
   (** Left-unit coherence uses the supplied source and target unitors. *)
 
   (** 左单位相干律使用给定的来源及目标单位子。 *)
 
   ; lax_unit_l (X : @Ob C)
-    : fmap LaxMonoidalFctToFct (@tensor_unit_l C MC X) ∘
-        lax_tensorN (I⊗[MC], X) ∘
-        (@tensor_map D MD _ _ _ _ lax_unit id) ≈
-        @tensor_unit_l D MD (LaxMonoidalFctToFct X)
+    : fmap LaxMonoidalFctToFct (tensor_unitor_l (HasUnitors := MC) X).1 ∘
+        lax_tensorN (𝐈[MC], X) ∘
+        (tensor_map (IM := isMagmoidal MD) lax_unit id) ≈
+        (tensor_unitor_l (HasUnitors := MD)
+          (LaxMonoidalFctToFct X)).1
 
   (** Right-unit coherence uses those same named monoidal structures. *)
 
   (** 右单位相干律使用同一对具名幺半结构。 *)
 
   ; lax_unit_r (X : @Ob C)
-    : fmap LaxMonoidalFctToFct (@tensor_unit_r C MC X) ∘
-        lax_tensorN (X, I⊗[MC]) ∘
-        (@tensor_map D MD _ _ _ _ id lax_unit) ≈
-        @tensor_unit_r D MD (LaxMonoidalFctToFct X)
+    : fmap LaxMonoidalFctToFct (tensor_unitor_r (HasUnitors := MC) X).1 ∘
+        lax_tensorN (X, 𝐈[MC]) ∘
+        (tensor_map (IM := isMagmoidal MD) id lax_unit) ≈
+        (tensor_unitor_r (HasUnitors := MD)
+          (LaxMonoidalFctToFct X)).1
 
   (** Associativity coherence retains the selected associators. *)
 
   (** 结合相干律保留选定的结合子。 *)
 
   ; lax_assoc (X Y Z : @Ob C)
-    : fmap LaxMonoidalFctToFct (@tensor_assoc C MC X Y Z) ∘
-        lax_tensorN (@tensor C MC X Y, Z) ∘
-        (@tensor_map D MD _ _ _ _ (lax_tensorN (X, Y)) id) ≈
-        lax_tensorN (X, @tensor C MC Y Z) ∘
-        (@tensor_map D MD _ _ _ _ id (lax_tensorN (Y, Z))) ∘
-        @tensor_assoc D MD
-          (LaxMonoidalFctToFct X) (LaxMonoidalFctToFct Y) (LaxMonoidalFctToFct Z)
+    : fmap LaxMonoidalFctToFct (tensor_assoc (HasAssoc := MC) X Y Z).1 ∘
+        lax_tensorN (tensor (HasBinoidal := MC) X Y, Z) ∘
+        (tensor_map (IM := isMagmoidal MD) (lax_tensorN (X, Y)) id) ≈
+        lax_tensorN (X, tensor (HasBinoidal := MC) Y Z) ∘
+        (tensor_map (IM := isMagmoidal MD) id (lax_tensorN (Y, Z))) ∘
+        (tensor_assoc (HasAssoc := MD)
+          (LaxMonoidalFctToFct X) (LaxMonoidalFctToFct Y)
+          (LaxMonoidalFctToFct Z)).1
   }.
 
 (** The direct constructor keeps the supplied functor, comparisons and
@@ -111,11 +116,11 @@ Notation "'φ₂[' L ';' X ';' Y ']'" := (lax_tensorN L (X, Y))
     相同时的歧义。 *)
 
 Lemma lax_tensor_natural {C D : Cat}
-    {MC : MonoidalCat C} {MD : MonoidalCat D}
+    {MC : HasMonoidal C} {MD : HasMonoidal D}
     (L : LaxMonoidalFct MC MD)
     {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
-  : φ₂[L; X'; Y'] ∘ (@tensor_map D MD _ _ _ _ (fmap L f) (fmap L g)) ≈
-      fmap L (@tensor_map C MC _ _ _ _ f g) ∘ φ₂[L; X; Y].
+  : φ₂[L; X'; Y'] ∘ (tensor_map (IM := isMagmoidal MD) (fmap L f) (fmap L g)) ≈
+      fmap L (tensor_map (IM := isMagmoidal MC) f g) ∘ φ₂[L; X; Y].
 Proof.
   exact (nat_naturality (lax_tensorN L)
     (X := (X, Y)) (Y := (X', Y')) (f, g)).
@@ -126,8 +131,8 @@ Qed.
 
 (** 恒等 tensorator 的分量为恒等态射，不要求来源与目标函子记录相等。 *)
 
-Program Definition IdLaxTensorN {C : Cat} (MC : MonoidalCat C)
-  : (tensorF MC ∘F (IdF ×F IdF)) ⇒ (IdF ∘F tensorF MC)
+Program Definition IdLaxTensorN {C : Cat} (MC : HasMonoidal C)
+  : (tensorF (isMagmoidal MC) ∘F (IdF ×F IdF)) ⇒ (IdF ∘F tensorF (isMagmoidal MC))
   :=
   {|nt p := _
   |}.
@@ -135,7 +140,7 @@ Next Obligation. destruct p as [X Y]. exact id. Defined.
 Next Obligation.
   destruct X as [x y], Y as [x' y'], f as [f g]; cbn.
   rewrite comp_id_l, comp_id_r. reflexivity.
-Defined.
+Qed.
 
 (** Every monoidal structure gives an explicitly selected lax identity
     functor. Importing this module does not enable a chosen structure. *)
@@ -143,7 +148,7 @@ Defined.
 (** 每个幺半结构都给出须显式选择的 lax 恒等函子；导入本模块不会启用选定结构。 *)
 
 Program Definition IdLaxMonoidalF {C : Cat}
-    (MC : MonoidalCat C)
+    (MC : HasMonoidal C)
   : LaxMonoidalFct MC MC
   :=
   {|LaxMonoidalFctToFct := IdF
@@ -152,13 +157,13 @@ Program Definition IdLaxMonoidalF {C : Cat}
   |}.
 Next Obligation.
   rewrite tensor_map_id, !comp_id_r. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   rewrite tensor_map_id, !comp_id_r. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   rewrite !tensor_map_id, !comp_id_r, !comp_id_l. reflexivity.
-Defined.
+Qed.
 
 
 (** ** Monoidal Functors
@@ -176,7 +181,7 @@ Defined.
     及相干律均继承自唯一 lax 父结构。这与带张量强度的函子是不同概念。 *)
 
 Record MonoidalFct {C D : Cat}
-    (MC : MonoidalCat C) (MD : MonoidalCat D)
+    (MC : HasMonoidal C) (MD : HasMonoidal D)
   := MonoidalFctOfLaxMonoidalFct
 
   (** Inherit the functor and both comparisons through this single parent. *)
@@ -210,8 +215,8 @@ Arguments monoidal_tensor_iso {_ _ _ _} _ _ _.
 (** 单位同构暴露保存的正向映射及逆。 *)
 
 Definition MonoidalUnitIso {C D : Cat}
-    {MC : MonoidalCat C} {MD : MonoidalCat D} (F : MonoidalFct MC MD)
-  : I⊗[MD] ≅ F (I⊗[MC])
+    {MC : HasMonoidal C} {MD : HasMonoidal D} (F : MonoidalFct MC MD)
+  : 𝐈[MD] ≅ F (𝐈[MC])
   := (φ₀[F]; monoidal_unit_iso F).
 
 (** The natural isomorphism is a transparent view of the parent's tensorator
@@ -220,8 +225,8 @@ Definition MonoidalUnitIso {C D : Cat}
 (** 自然同构是父结构张量子及给定分量之逆的透明视图。 *)
 
 Definition MonoidalTensorIso {C D : Cat}
-    {MC : MonoidalCat C} {MD : MonoidalCat D} (F : MonoidalFct MC MD)
-  : (tensorF MD ∘F (F ×F F)) ≅N (F ∘F tensorF MC).
+    {MC : HasMonoidal C} {MD : HasMonoidal D} (F : MonoidalFct MC MD)
+  : (tensorF (isMagmoidal MD) ∘F (F ×F F)) ≅N (F ∘F tensorF (isMagmoidal MC)).
 Proof.
   exists (lax_tensorN F). intros [X Y].
   exact (monoidal_tensor_iso F X Y).
@@ -233,8 +238,8 @@ Defined.
 (** 逆张量子复用一般的逆自然性，无须额外的自然性字段或相干要求。 *)
 
 Definition MonoidalTensorInvN {C D : Cat}
-    {MC : MonoidalCat C} {MD : MonoidalCat D} (F : MonoidalFct MC MD)
-  : (F ∘F tensorF MC) ⇒ (tensorF MD ∘F (F ×F F))
+    {MC : HasMonoidal C} {MD : HasMonoidal D} (F : MonoidalFct MC MD)
+  : (F ∘F tensorF (isMagmoidal MC)) ⇒ (tensorF (isMagmoidal MD) ∘F (F ×F F))
   := (MonoidalTensorIso F).1 ^-1N (MonoidalTensorIso F).2.
 
 (** The monoidal identity extends the exact lax identity with identity
@@ -242,7 +247,7 @@ Definition MonoidalTensorInvN {C D : Cat}
 
 (** 幺半恒等函子为原有 lax 恒等函子补充恒等逆；由客户端显式选择此构造。 *)
 
-Program Definition IdMonoidalF {C : Cat} (MC : MonoidalCat C)
+Program Definition IdMonoidalF {C : Cat} (MC : HasMonoidal C)
   : MonoidalFct MC MC
   :=
   {|MonoidalFctToLaxMonoidalFct := IdLaxMonoidalF MC

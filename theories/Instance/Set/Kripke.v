@@ -145,20 +145,25 @@ Program Definition kripke_reindex_resp {X Y : @Ob C} (f : Hom Y X)
 Program Definition KripkeFunctionF
   : Fct (C^op) SetCat
   :=
-  {|F0 := KripkeFunctionS
-  ; F1 _ _ f := kripke_reindex_resp f
+  {|fobj := KripkeFunctionS
+  ; fmap _ _ f := kripke_reindex_resp f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g p k. apply kripke_reindex_proper; [exact p | reflexivity].
-Defined.
+Qed.
 Next Obligation.
   intros k Y f x. cbn. apply kripke_apply_proper;
     [apply comp_id_l | reflexivity].
-Defined.
+Qed.
 Next Obligation.
   intros k W h x. cbn. apply kripke_apply_proper;
     [apply comp_assoc | reflexivity].
-Defined.
+Qed.
 
 (** Apply a function value in its current world by supplying the identity.
     Future-world application can equivalently restrict first, then apply. *)
@@ -238,14 +243,14 @@ Program Definition kripke_curry_at
   |}.
 Next Obligation.
   intros f g p x y q. apply func_proper. split.
-  - exact (@fct_fmap_proper (C^op) SetCat H X Y f g p h).
+  - exact (@fmap_proper _ _ _ _ (@isFct (C^op) SetCat H) X Y f g p h).
   - exact q.
 Defined.
 Next Obligation.
   transitivity (α Z (fmap H g (fmap H f h), fmap F g x)).
   - symmetry. exact (nat_naturality α g (fmap H f h, x)).
   - apply func_proper. split.
-    + symmetry. exact (fct_comp _ _ H g f h).
+    + symmetry. exact (fmap_comp (IsFct := isFct H) g f h).
     + reflexivity.
 Defined.
 
@@ -273,7 +278,7 @@ Lemma kripke_curry_at_reindex (α : PointwiseProductF H F ⇒ G)
       (kripke_curry_at α Y (fmap H f h)).
 Proof.
   intros Z g x. cbn. apply func_proper. split.
-  - exact (fct_comp _ _ H g f h).
+  - exact (fmap_comp (IsFct := isFct H) g f h).
   - reflexivity.
 Defined.
 
@@ -339,7 +344,7 @@ Lemma kripke_curry_β (α : PointwiseProductF H F ⇒ G)
   : KripkeUncurryN (KripkeCurryN α) ≈N α.
 Proof.
   intros X [h x]. cbn. apply func_proper. split.
-  - exact (fct_id _ _ H h).
+  - exact (fmap_id (IsFct := isFct H) h).
   - reflexivity.
 Defined.
 

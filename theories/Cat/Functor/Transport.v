@@ -25,18 +25,23 @@ Context {C D : Cat} (F : Fct C D) (j : C → D)
 Program Definition TransportF
   : Fct C D
   :=
-  {|F0 := j
-  ; F1 X Y f := (e Y).2.1 ∘ fmap F f ∘ (e X).1
+  {|fobj := j
+  ; fmap X Y f := (e Y).2.1 ∘ fmap F f ∘ (e X).1
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. rewrite H. reflexivity. Defined.
+Next Obligation. intros f g H. rewrite H. reflexivity. Qed.
 Next Obligation.
-  rewrite fct_id, comp_id_r. exact (fst (e X).2.2).
-Defined.
+  rewrite fmap_id, comp_id_r. exact (fst (e X).2.2).
+Qed.
 Next Obligation.
-  rewrite fct_comp, !comp_assoc.
+  rewrite fmap_comp, !comp_assoc.
   rewrite <- (comp_assoc (e Y).1), (snd (e Y).2.2), comp_id_l.
   reflexivity.
-Defined.
+Qed.
 
 (** The supplied forward maps form the comparison to the original functor. *)
 
@@ -49,7 +54,7 @@ Program Definition TransportN
   |}.
 Next Obligation.
   rewrite <- !comp_assoc, (snd (e Y).2.2), comp_id_l. reflexivity.
-Defined.
+Qed.
 
 (** No new inverse choice is introduced by the natural comparison. *)
 

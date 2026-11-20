@@ -28,8 +28,13 @@ From Cats Require Import
 Program Definition OrdinalObjF (n : nat)
   : Fct (EqGpd (FinS@{Set Set Set} (S n))) [Ord n]
   :=
-  {|F0 i := i
-  ; F1 i j p := _
+  {|fobj i := i
+  ; fmap i j p := _
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   destruct p. exact (@Cats.Cat.Core.id [Ord n] i).
@@ -61,12 +66,17 @@ Next Obligation. exact tt. Defined.
 Program Definition OrdinalVtxF (n : nat)
   : Fct (VtxCat (OrdinalObjF n)) [Ord n]
   :=
-  {|F0 i := i
-  ; F1 i j f := f
+  {|fobj i := i
+  ; fmap i j f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. intros f g H. exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 (** The inverse view retains the same computational data. *)
 
@@ -75,12 +85,17 @@ Next Obligation. exact tt. Defined.
 Program Definition OrdinalVtxInvF (n : nat)
   : Fct [Ord n] (VtxCat (OrdinalObjF n))
   :=
-  {|F0 i := i
-  ; F1 i j f := f
+  {|fobj i := i
+  ; fmap i j f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. intros f g H. exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 (** Labelled ordinal diagrams compare precisely by their positions;
     the transport squares hold in the thin target hom equality. *)

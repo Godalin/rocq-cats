@@ -18,7 +18,7 @@ Local Open Scope monad_scope.
 
 Section Context.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (M : StrongMonad C (@CartMonoidal C HT HP)).
+    (M : StrongMonad C (@CartHasMonoidal C HT HP)).
 
 (** The cartesian specialization exposes product endpoints directly.
     This keeps product rewriting independent of the chosen monoidal packaging. *)
@@ -124,7 +124,7 @@ Proof.
   unfold context_bind.
   transitivity ((context_extend k ∘ (σ × fmap M (id[X]))) ∘
     ⟨id, u ∘ σ⟩).
-  - rewrite fct_id, !comp_assoc.
+  - rewrite fmap_id, !comp_assoc.
     apply comp_proper; [reflexivity |].
     transitivity ⟨σ, u ∘ σ⟩.
     + rewrite product_comp_r, comp_id_l. reflexivity.
@@ -234,7 +234,7 @@ Proof.
     transitivity ((context_extend
       (context_extend h ∘ (id × k) ∘ (@product_assoc C HP W W X).1) ∘
         (⟨id, id⟩ × fmap M (id[X]))) ∘ ⟨id, u⟩).
-    + rewrite fct_id, !comp_assoc, product_comp_l,
+    + rewrite fmap_id, !comp_assoc, product_comp_l,
         !comp_id_l, comp_id_r. reflexivity.
     + rewrite (context_extend_pre _ ⟨id, id⟩ id).
       apply comp_proper; [| reflexivity].
@@ -244,7 +244,7 @@ Proof.
           rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
           rewrite comp_id_l | rewrite comp_id_r |
           rewrite product_pair_η]. reflexivity.
-      * rewrite <- (context_extend_pre h π1 id), fct_id, comp_assoc,
+      * rewrite <- (context_extend_pre h π1 id), fmap_id, comp_assoc,
           product_comp_l, comp_id_l, comp_id_r. reflexivity.
 Qed.
 
@@ -280,10 +280,10 @@ Proof.
     st[hasStrength M; W; X]) ∘ ⟨id, u⟩).
   - apply comp_proper; [| reflexivity].
     apply comp_proper; [| reflexivity].
-    apply fct_fmap_proper. rewrite cross_η, comp_id_l. reflexivity.
+    apply fmap_proper. rewrite cross_η, comp_id_l. reflexivity.
   - pose proof (strength_natural (hasStrength M) σ (id[X])) as H.
     rewrite !cartesian_tensor_map in H.
-    rewrite <- H, fct_id, comp_assoc.
+    rewrite <- H, fmap_id, comp_assoc.
     change (st[hasStrength M; V; X] ∘
       ((σ × id[M X]) ∘ ⟨id, u⟩) ≈
       st[hasStrength M; V; X] ∘ ⟨σ, u⟩).

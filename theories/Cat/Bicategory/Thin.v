@@ -55,13 +55,18 @@ Defined.
 Program Definition thin_horizontalF (C : Cat) (X Y Z : @Ob C)
   : Fct (ThinHomCat C Y Z ×C ThinHomCat C X Y) (ThinHomCat C X Z)
   :=
-  {|F0 p := fst p ∘ snd p
-  ; F1 u v α := @comp_proper C X Y Z
+  {|fobj p := fst p ∘ snd p
+  ; fmap u v α := @comp_proper C X Y Z
       (fst u) (fst v) (fst α) (snd u) (snd v) (snd α)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β H. exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. intros α β H. exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 (** Turn morphism equality into the two-cells of a locally thin bicategory. *)
 
@@ -120,9 +125,13 @@ Next Obligation. exact tt. Defined.
 Program Definition FromThinHomotopyF (C : Cat)
   : Fct (BicatHomotopyCat (ThinBicat C)) C
   :=
-  {|F0 X := X
-  ; F1 X Y f := f
-  ; fct_fmap_proper X Y f g H := fst (thin_hom_iso_eq (C := C) f g) H
+  {|fobj X := X
+  ; fmap X Y f := f
+  ; isFct :=
+      {|fmap_proper X Y f g H := fst (thin_hom_iso_eq (C := C) f g) H
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -134,9 +143,13 @@ Next Obligation. reflexivity. Defined.
 Program Definition ToThinHomotopyF (C : Cat)
   : Fct C (BicatHomotopyCat (ThinBicat C))
   :=
-  {|F0 X := X
-  ; F1 X Y f := f
-  ; fct_fmap_proper X Y f g H := snd (thin_hom_iso_eq (C := C) f g) H
+  {|fobj X := X
+  ; fmap X Y f := f
+  ; isFct :=
+      {|fmap_proper X Y f g H := snd (thin_hom_iso_eq (C := C) f g) H
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. apply (snd (thin_hom_iso_eq (C := C) _ _)). reflexivity. Defined.
 Next Obligation. apply (snd (thin_hom_iso_eq (C := C) _ _)). reflexivity. Defined.

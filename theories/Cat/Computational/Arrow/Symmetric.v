@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Computational.Arrow.Premonoidal
-  Cat.Premonoidal.Cartesian.
+  Cat.Monoidal.CartesianSymmetric.
 
 Local Open Scope computation_scope.
 
@@ -17,7 +17,7 @@ Local Open Scope computation_scope.
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** Keep exactly the same premonoidal parent and use pure exchange.
     Coherence is inherited under the pure functor from cartesian values. *)
@@ -46,15 +46,15 @@ Next Obligation.
     second[A; arr[A; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))]; Y] ∘
       (arr[A; (@product_assoc C HP Y X Z).1] ∘
         first[A; arr[A; (⟨π2, π1⟩ : Hom (X × Y) (Y × X))]; Z])).
-  rewrite arrow_second_arr, arrow_first_arr, <- !fct_comp.
-  apply fct_fmap_proper.
+  rewrite arrow_second_arr, arrow_first_arr, <- !fmap_comp.
+  apply fmap_proper.
   exact (@premonoidal_symmetry_hexagon C
     (@CartSymmetricPremonoidal C HT HP) X Y Z).
 Defined.
 Next Obligation.
   change (arr[A; (π2 : Hom (1 × X) X)] ∘ arr[A; ⟨π2, π1⟩] ≈
     arr[A; (π1 : Hom (X × 1) X)]).
-  rewrite <- fct_comp. apply fct_fmap_proper.
+  rewrite <- fmap_comp. apply fmap_proper.
   exact (@premonoidal_symmetry_unit C
     (@CartSymmetricPremonoidal C HT HP) X).
 Defined.

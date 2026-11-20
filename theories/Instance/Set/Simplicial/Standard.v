@@ -129,7 +129,7 @@ Proof. apply raised_embedding_fully_faithful. Defined.
 Definition simplex_generic@{u p +} (n : nat)
   : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) n
   :=
-  {|lower := (id : (@Hom Δ) n n)
+  {|lower := (@Cat.Core.id Δ n)
   |}.
 
 (** Every n-simplex of X determines a unique map from the standard n-simplex.

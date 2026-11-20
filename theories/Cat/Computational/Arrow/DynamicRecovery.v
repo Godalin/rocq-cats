@@ -88,19 +88,23 @@ Definition dynamic_evaluation_fully_faithful
 Program Definition DynamicNamingF
   : Fct (ComputationCat AA) (KleisliCat (ArrowMonad AA))
   :=
-  {|F0 X := X
-  ; F1 X Y f := arrow_dynamic_name AA f
-  ; fct_fmap_proper X Y := arrow_dynamic_name_proper AA
+  {|fobj X := X
+  ; fmap X Y f := arrow_dynamic_name AA f
+  ; isFct :=
+      {|fmap_proper X Y := arrow_dynamic_name_proper AA
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
-  exact (@fct_id _ _ (FullyFaithfulInverseF DynamicEvaluationF
-    dynamic_evaluation_fully_faithful) X).
-Defined.
+  exact (@fmap_id _ _ _ _ (isFct (FullyFaithfulInverseF DynamicEvaluationF
+    dynamic_evaluation_fully_faithful)) X).
+Qed.
 
 Next Obligation.
-  exact (@fct_comp _ _ (FullyFaithfulInverseF DynamicEvaluationF
-    dynamic_evaluation_fully_faithful) X Y Z f g).
-Defined.
+  exact (@fmap_comp _ _ _ _ (isFct (FullyFaithfulInverseF DynamicEvaluationF
+    dynamic_evaluation_fully_faithful)) X Y Z f g).
+Qed.
 
 (** Evaluation after naming is naturally isomorphic to the original
     indexed computation category identity, with transparent identity maps. *)
@@ -154,7 +158,7 @@ Proof.
   intros x. transitivity (arrow_value_pure K AA Y (f x)).
   - change (arr[AA; f] ∘ arr[AA; const_resp UnitS x] ≈
       arr[AA; const_resp UnitS (f x)]).
-    rewrite <- fct_comp. apply fct_fmap_proper. intros []. reflexivity.
+    rewrite <- fmap_comp. apply fmap_proper. intros []. reflexivity.
   - symmetry. exact (arrow_monad_unit AA Y (f x)).
 Qed.
 
@@ -181,8 +185,7 @@ Lemma dynamic_naming_comp {X Y Z : SetC@{u p}}
   : arrow_dynamic_name AA (g ∘ f) ≈f
     arrow_dynamic_name AA g ∘K[ArrowMonad AA] arrow_dynamic_name AA f.
 Proof.
-  exact (@fct_comp (ComputationCat AA) (KleisliCat (ArrowMonad AA))
-    DynamicNamingF X Y Z g f).
+  exact (@fmap_comp _ _ _ _ (@isFct (ComputationCat AA) (KleisliCat (ArrowMonad AA)) DynamicNamingF) X Y Z g f).
 Qed.
 
 (** Ordinary input substitution commutes with dynamic evaluation. *)
@@ -216,8 +219,7 @@ Lemma dynamic_evaluation_comp {X Y Z : SetC@{u p}}
   : arrow_dynamic_eval AA (g ∘K[ArrowMonad AA] f) ≈
     arrow_dynamic_eval AA g ∘ arrow_dynamic_eval AA f.
 Proof.
-  exact (@fct_comp (KleisliCat (ArrowMonad AA)) (ComputationCat AA)
-    DynamicEvaluationF X Y Z g f).
+  exact (@fmap_comp _ _ _ _ (@isFct (KleisliCat (ArrowMonad AA)) (ComputationCat AA) DynamicEvaluationF) X Y Z g f).
 Qed.
 
 (** The inverse comparison also preserves the original ordinary context
@@ -285,9 +287,9 @@ Proof.
   change (apply[AA; X; Y] ∘ arr[AA; const_resp UnitS (f,x)] ≈
     f ∘ arr[AA; const_resp UnitS x]).
   transitivity (arrow_apply_const AA f ∘ arr[AA; const_resp UnitS x]).
-  - unfold arrow_apply_const. rewrite comp_assoc, <- fct_comp.
+  - unfold arrow_apply_const. rewrite comp_assoc, <- fmap_comp.
     apply comp_proper; [reflexivity|].
-    apply fct_fmap_proper. intros []. split; reflexivity.
+    apply fmap_proper. intros []. split; reflexivity.
   - rewrite arrow_apply_const_value. reflexivity.
 Qed.
 

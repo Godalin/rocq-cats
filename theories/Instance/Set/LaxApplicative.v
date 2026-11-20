@@ -44,7 +44,7 @@ Program Definition set_pure_map (X : SetC@{u p})
   {|func x := fmap F (const_resp UnitS x) e
   |}.
 Next Obligation.
-  intros x y E. apply (@fct_fmap_proper SetCat SetCat F _ _).
+  intros x y E. apply (@fmap_proper _ _ _ _ (@isFct SetCat SetCat F) _ _).
   intros []. exact E.
 Defined.
 
@@ -61,10 +61,10 @@ Next Obligation.
   intros x. change (fmap F (const_resp UnitS (f x)) e ≈S
     fmap F f (fmap F (const_resp UnitS x) e)).
   transitivity (fmap F (f ∘r const_resp UnitS x) e).
-  - apply (@fct_fmap_proper SetCat SetCat F _ _).
+  - apply (@fmap_proper _ _ _ _ (@isFct SetCat SetCat F) _ _).
     intros []. reflexivity.
-  - exact (@fct_comp SetCat SetCat F _ _ _ _ _ e).
-Defined.
+  - exact (@fmap_comp _ _ _ _ (@isFct SetCat SetCat F) _ _ _ _ _ e).
+Qed.
 
 (** At the singleton, the chosen value is recovered in specified equality. *)
 
@@ -75,9 +75,9 @@ Lemma set_pure_unit
 Proof.
   intros []. change (fmap F (@const_resp UnitS UnitS tt) e ≈S e).
   transitivity (fmap F (@Cat.Core.id SetCat UnitS) e).
-  - apply (@fct_fmap_proper SetCat SetCat F _ _).
+  - apply (@fmap_proper _ _ _ _ (@isFct SetCat SetCat F) _ _).
     intros []. reflexivity.
-  - exact (@fct_id SetCat SetCat F UnitS e).
+  - exact (@fmap_id _ _ _ _ (@isFct SetCat SetCat F) UnitS e).
 Defined.
 
 (** Naturality at constants determines every supplied pure transformation
@@ -112,7 +112,7 @@ End Pure.
 Section Lax.
 Universes u p.
 Let SM
-  : MonoidalCat (SetCat@{u p _ _ _ _ _})
+  : HasMonoidal (SetCat@{u p _ _ _ _ _})
   := SetCartMonoidal.
 Context (L : LaxMonoidalFct SM SM).
 
@@ -159,8 +159,8 @@ Proof.
     + transitivity (fmap L (const_resp UnitS (x,y) ∘r
         (π2 : UnitS ×S UnitS →r UnitS))
         (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt))).
-      * symmetry. exact (@fct_comp SetCat SetCat L _ _ _ _ _ _).
-      * apply (@fct_fmap_proper SetCat SetCat L _ _).
+      * symmetry. exact (@fmap_comp _ _ _ _ (@isFct SetCat SetCat L) _ _ _ _ _ _).
+      * apply (@fmap_proper _ _ _ _ (@isFct SetCat SetCat L) _ _).
         intros [[] []]. split; reflexivity.
     + symmetry.
       pose proof (lax_tensor_natural L (const_resp UnitS x)
@@ -204,7 +204,7 @@ Let SC
   : Cat
   := SetCat@{u p _ _ _ _ _}.
 Let SM
-  : MonoidalCat SC
+  : HasMonoidal SC
   := SetCartMonoidal.
 
 (** Unit preservation already determines pure preservation pointwise. *)
@@ -246,7 +246,7 @@ Proof.
     + exact (set_lax_hom_pure L K α Hu).
     + intros X Y.
       transitivity (lax_tensorN K (X,Y) ∘
-        (@tensor_map SC SM _ _ _ _ (α X) (α Y))).
+        (tensor_map (IM := isMagmoidal SM) (α X) (α Y))).
       * exact (Ht X Y).
       * apply comp_proper; [reflexivity|].
         exact (@cartesian_tensor_map SC SetCat_HasTerminal

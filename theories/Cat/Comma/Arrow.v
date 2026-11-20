@@ -18,20 +18,25 @@ From Cats Require Import
 Program Definition CommaArrowF (C : Cat)
   : Fct ((@IdF C) ↓C IdF) (Arr C)
   :=
-  {|F0 X :=
+  {|fobj X :=
      {|arrow_dom := comma_left_ob X
      ; arrow_cod := comma_right_ob X
      ; arrow_map := comma_arrow X
      |}
-  ; F1 X Y f :=
+  ; fmap X Y f :=
       {|arrow_top := comma_left f
       ; arrow_bottom := comma_right f
       ; arrow_comm := symmetry (comma_comm f)
       |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. split; reflexivity. Defined.
-Next Obligation. split; reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. split; reflexivity. Qed.
+Next Obligation. split; reflexivity. Qed.
 
 (** Read an arrow-category square as an identity/identity comma square. *)
 
@@ -40,20 +45,25 @@ Next Obligation. split; reflexivity. Defined.
 Program Definition ArrowCommaF (C : Cat)
   : Fct (Arr C) ((@IdF C) ↓C IdF)
   :=
-  {|F0 X :=
+  {|fobj X :=
      {|comma_left_ob := arrow_dom X
      ; comma_right_ob := arrow_cod X
      ; comma_arrow := arrow_map X
      |}
-  ; F1 X Y f :=
+  ; fmap X Y f :=
       {|comma_left := arrow_top f
       ; comma_right := arrow_bottom f
       ; comma_comm := symmetry (arrow_comm f)
       |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. split; reflexivity. Defined.
-Next Obligation. split; reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. split; reflexivity. Qed.
+Next Obligation. split; reflexivity. Qed.
 
 (** Identity side maps compare the comma round trip to its original object. *)
 

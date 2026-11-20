@@ -1,14 +1,13 @@
 From Cats Require Export
   Cat.Computational.Freyd.Core
-  Cat.Binoidal.Transport
+  Cat.Monoidal.BinoidalTransport
   Cat.Functor.Transport.
 From Cats Require Import
   Cat.Terminal
   Cat.Product.Transport
   Cat.Monoidal.Cartesian.
 
-Local Open Scope binoidal_scope.
-Local Open Scope premonoidal_scope.
+Local Open Scope monoidal_scope.
 
 (** * Freyd Contexts at Value-Product Boundaries
 
@@ -38,7 +37,7 @@ Local Existing Instance SP.
 (** 张量边界恰好使用 Freyd 结构选定的路径。 *)
 
 Definition FreydTensorIso (X Y : @Ob C)
-  : (@Prod C (@hasValueProduct C K F) X Y) ≅[D] (@binoidal_tensor D SP X Y)
+  : (@Prod C (@hasValueProduct C K F) X Y) ≅[D] (@tensor D SP X Y)
   := @EqualityIso D _ _ (@freyd_tensor_objects C K F X Y).
 
 (** Conjugation makes the original left action a functor on value products. *)
@@ -47,7 +46,7 @@ Definition FreydTensorIso (X Y : @Ob C)
 
 Definition FreydContextF (Z : @Ob C)
   : Fct D D
-  := TransportF (@BinoidalLF D SP Z)
+  := TransportF (@TensorAtLF D SP Z)
     (λ X, @Prod C (@hasValueProduct C K F) Z X) (FreydTensorIso Z).
 
 (** The computation passes through the same forward and inverse boundaries. *)
@@ -66,10 +65,10 @@ Definition freyd_context {X Y : @Ob C} (Z : @Ob C)
 Lemma freyd_context_boundary {X Y : @Ob C} (Z : @Ob C)
     (f : (@Hom D) X Y)
   : (FreydTensorIso Z Y).1 ∘ freyd_context Z f ≈
-      (@binoidal_l D SP X Y Z f) ∘ (FreydTensorIso Z X).1.
+      (@tensor_l D SP X Y Z f) ∘ (FreydTensorIso Z X).1.
 Proof.
   exact (nat_naturality
-    (TransportN (@BinoidalLF D SP Z)
+    (TransportN (@TensorAtLF D SP Z)
       (λ X, @Prod C (@hasValueProduct C K F) Z X) (FreydTensorIso Z)) f).
 Qed.
 
@@ -93,7 +92,7 @@ Qed.
 Lemma freyd_pure_right_boundary {X Y : @Ob C} (Z : @Ob C)
     (f : Hom X Y)
   : (FreydTensorIso Y Z).1 ∘ fmap (FreydPureF F) (f × id[Z]) ≈
-      (@binoidal_r D SP X Y Z (fmap (FreydPureF F) f)) ∘ (FreydTensorIso X Z).1.
+      (@tensor_r D SP X Y Z (fmap (FreydPureF F) f)) ∘ (FreydTensorIso X Z).1.
 Proof. exact (@freyd_map_right C K F X Y Z f). Qed.
 
 (** Ordinary changes of context commute with an arbitrary computation. *)
@@ -106,10 +105,10 @@ Lemma freyd_context_natural {X Y Z W : @Ob C}
       freyd_context W f ∘ fmap (FreydPureF F) (h × id[X]).
 Proof.
   assert (Hc :
-    (@binoidal_r D SP Z W Y (fmap (FreydPureF F) h)) ∘
-      (@binoidal_l D SP X Y Z f) ≈
-    (@binoidal_l D SP X Y W f) ∘
-      (@binoidal_r D SP Z W X (fmap (FreydPureF F) h))).
+    (@tensor_r D SP Z W Y (fmap (FreydPureF F) h)) ∘
+      (@tensor_l D SP X Y Z f) ≈
+    (@tensor_l D SP X Y W f) ∘
+      (@tensor_r D SP Z W X (fmap (FreydPureF F) h))).
   { exact (fst (@freyd_pure_central C K F Z W h X Y f)). }
   apply (iso_cancel_l (FreydTensorIso W Y)).
   fold D.
@@ -126,10 +125,10 @@ Qed.
 (** 沿一个选定对象相等移动固定上下文。 *)
 
 Definition FreydContextBoundary {Z W : @Ob C} (p : Z = W) (X : @Ob C)
-  : (@Prod C (@hasValueProduct C K F) Z X) ≅[D] (@binoidal_tensor D SP W X)
+  : (@Prod C (@hasValueProduct C K F) Z X) ≅[D] (@tensor D SP W X)
   := @EqualityIso D _ _
     (eq_trans (@freyd_tensor_objects C K F Z X)
-      (f_equal (λ Q, @binoidal_tensor D SP Q X) p)).
+      (f_equal (λ Q, @tensor D SP Q X) p)).
 
 (** Decompose the boundary using the same context path and tensor path. *)
 
@@ -139,11 +138,11 @@ Lemma freyd_context_boundary_decompose {Z W : @Ob C}
     (p : Z = W) (X : @Ob C)
   : (FreydContextBoundary p X).1 ≈
       @eq_to_hom D _ _
-        (f_equal (λ Q, @binoidal_tensor D SP Q X) p) ∘
+        (f_equal (λ Q, @tensor D SP Q X) p) ∘
         (FreydTensorIso Z X).1.
 Proof.
   exact (@eq_to_hom_comp D _ _ _ (@freyd_tensor_objects C K F Z X)
-    (f_equal (λ Q, @binoidal_tensor D SP Q X) p)).
+    (f_equal (λ Q, @tensor D SP Q X) p)).
 Qed.
 
 (** The changed fixed context still has its natural boundary square. *)
@@ -153,10 +152,10 @@ Qed.
 Lemma freyd_context_changed_boundary {Z W X Y : @Ob C}
     (p : Z = W) (f : (@Hom D) X Y)
   : (FreydContextBoundary p Y).1 ∘ freyd_context Z f ≈
-      (@binoidal_l D SP X Y W f) ∘ (FreydContextBoundary p X).1.
+      (@tensor_l D SP X Y W f) ∘ (FreydContextBoundary p X).1.
 Proof.
   rewrite !freyd_context_boundary_decompose, (@comp_assoc D),
-    freyd_context_boundary, <- (@comp_assoc D), (@binoidal_context_eq D SP),
+    freyd_context_boundary, <- (@comp_assoc D), (@tensor_context_eq D SP),
     (@comp_assoc D). reflexivity.
 Qed.
 
@@ -165,11 +164,11 @@ Qed.
 (** 固定上下文的边界方块组成一个自然变换。 *)
 
 Program Definition FreydContextBoundaryN {Z W : @Ob C} (p : Z = W)
-  : FreydContextF Z ⇒ @BinoidalLF D SP W
+  : FreydContextF Z ⇒ @TensorAtLF D SP W
   :=
   {|nt X := (FreydContextBoundary p X).1
   |}.
-Next Obligation. exact (freyd_context_changed_boundary p f). Defined.
+Next Obligation. exact (freyd_context_changed_boundary p f). Qed.
 
 (** Two value contexts have a boundary into the nested computation tensor. *)
 
@@ -177,10 +176,10 @@ Next Obligation. exact (freyd_context_changed_boundary p f). Defined.
 
 Definition FreydNestedBoundary (Z W X : @Ob C)
   : (@Prod C (@hasValueProduct C K F) Z (@Prod C (@hasValueProduct C K F) W X)) ≅[D]
-      (@binoidal_tensor D SP Z (@binoidal_tensor D SP W X))
+      (@tensor D SP Z (@tensor D SP W X))
   := @EqualityIso D _ _
     (eq_trans (@freyd_tensor_objects C K F Z (@Prod C (@hasValueProduct C K F) W X))
-      (f_equal (λ Q, @binoidal_tensor D SP Z Q)
+      (f_equal (λ Q, @tensor D SP Z Q)
         (@freyd_tensor_objects C K F W X))).
 
 (** Nested boundaries compose the inner and outer selected boundaries. *)
@@ -189,24 +188,24 @@ Definition FreydNestedBoundary (Z W X : @Ob C)
 
 Lemma freyd_nested_boundary_decompose (Z W X : @Ob C)
   : (FreydNestedBoundary Z W X).1 ≈
-      (@binoidal_l D SP _ _ Z (FreydTensorIso W X).1) ∘
+      (@tensor_l D SP _ _ Z (FreydTensorIso W X).1) ∘
         (FreydTensorIso Z (@Prod C (@hasValueProduct C K F) W X)).1.
 Proof.
   change (@eq_to_hom D _ _
     (eq_trans (@freyd_tensor_objects C K F Z (@Prod C (@hasValueProduct C K F) W X))
-      (f_equal (λ Q, @binoidal_tensor D SP Z Q)
+      (f_equal (λ Q, @tensor D SP Z Q)
         (@freyd_tensor_objects C K F W X))) ≈
-    (@binoidal_l D SP _ _ Z
+    (@tensor_l D SP _ _ Z
       (@eq_to_hom D _ _ (@freyd_tensor_objects C K F W X))) ∘
       @eq_to_hom D _ _
         (@freyd_tensor_objects C K F Z (@Prod C (@hasValueProduct C K F) W X))).
   etransitivity.
   - exact (@eq_to_hom_comp D _ _ _
       (@freyd_tensor_objects C K F Z (@Prod C (@hasValueProduct C K F) W X))
-      (f_equal (λ Q, @binoidal_tensor D SP Z Q)
+      (f_equal (λ Q, @tensor D SP Z Q)
         (@freyd_tensor_objects C K F W X))).
   - apply (@comp_proper D); [| reflexivity]. symmetry.
-    exact (@binoidal_l_eq_to_hom D SP Z _ _
+    exact (@tensor_l_eq_to_hom D SP Z _ _
       (@freyd_tensor_objects C K F W X)).
 Qed.
 
@@ -218,12 +217,12 @@ Lemma freyd_nested_context_boundary {X Y : @Ob C}
     (Z W : @Ob C) (f : (@Hom D) X Y)
   : (FreydNestedBoundary Z W Y).1 ∘
       freyd_context Z (freyd_context W f) ≈
-      (@binoidal_l D SP _ _ Z (@binoidal_l D SP X Y W f)) ∘
+      (@tensor_l D SP _ _ Z (@tensor_l D SP X Y W f)) ∘
         (FreydNestedBoundary Z W X).1.
 Proof.
   rewrite !freyd_nested_boundary_decompose, (@comp_assoc D),
-    freyd_context_boundary, <- (@comp_assoc D), <- (@binoidal_l_comp D SP),
-    freyd_context_boundary, (@binoidal_l_comp D SP), (@comp_assoc D). reflexivity.
+    freyd_context_boundary, <- (@comp_assoc D), <- (@tensor_l_comp D SP),
+    freyd_context_boundary, (@tensor_l_comp D SP), (@comp_assoc D). reflexivity.
 Qed.
 
 (** Nested context boundaries form a natural isomorphism. *)
@@ -232,11 +231,11 @@ Qed.
 
 Program Definition FreydNestedBoundaryN (Z W : @Ob C)
   : (FreydContextF Z ∘F FreydContextF W) ⇒
-      (@BinoidalLF D SP Z ∘F @BinoidalLF D SP W)
+      (@TensorAtLF D SP Z ∘F @TensorAtLF D SP W)
   :=
   {|nt X := (FreydNestedBoundary Z W X).1
   |}.
-Next Obligation. exact (freyd_nested_context_boundary Z W f). Defined.
+Next Obligation. exact (freyd_nested_context_boundary Z W f). Qed.
 
 (** The inverse components are the same selected nested inverse boundaries. *)
 
@@ -244,7 +243,7 @@ Next Obligation. exact (freyd_nested_context_boundary Z W f). Defined.
 
 Definition FreydNestedBoundaryIso (Z W : @Ob C)
   : (FreydContextF Z ∘F FreydContextF W) ≅N
-      (@BinoidalLF D SP Z ∘F @BinoidalLF D SP W)
+      (@TensorAtLF D SP Z ∘F @TensorAtLF D SP W)
   := (FreydNestedBoundaryN Z W; λ X, (FreydNestedBoundary Z W X).2).
 
 (** The transported action obeys the value left-unit equation. *)
@@ -258,7 +257,7 @@ Proof.
   apply (nt_naturality_boundary
     (FreydContextBoundaryN (@freyd_unit_object C K F))
     (@IdN D D (@IdF D); nat_id_iso (@IdF D))
-    (@PremonoidalUnitorLIso D _ SP).1
+    (@TensorUnitorLIso D _ SP).1
     (λ T : @Ob C, fmap (FreydPureF F) (π2 : Hom (1 × T) T))).
   intro T. etransitivity.
   - exact (@comp_id_l D _ _ (fmap (FreydPureF F)
@@ -280,7 +279,7 @@ Proof.
   apply (nt_naturality_boundary
     (FreydContextBoundaryN (@freyd_tensor_objects C K F Z W))
     (FreydNestedBoundaryIso Z W)
-    (@PremonoidalAssocRIso D _ SP Z W).1
+    (@TensorAssocRIso D _ SP Z W).1
     (λ T : @Ob C, fmap (FreydPureF F)
       (@product_assoc C (@hasValueProduct C K F) Z W T).1)).
   intro T. exact (@freyd_assoc C K F Z W T).

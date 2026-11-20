@@ -51,7 +51,7 @@ Lemma application_lift_eval (X Y : @Ob C)
   : application_lift (eval (X := X) (Y := Y)) ≈ @a X Y.
 Proof.
   unfold application_lift.
-  rewrite exp_curry_eval, fct_id, cross_id, comp_id_r.
+  rewrite exp_curry_eval, fmap_id, cross_id, comp_id_r.
   reflexivity.
 Qed.
 
@@ -91,7 +91,7 @@ Proof.
     (eval (X := Y) (Y := Z)) (ƛ f) id) as H.
   change (lift₂ᵒ[O; (eval (X := Y) (Y := Z))] ∘
     (fmap O (ƛ f) × fmap O (id[Y])) ≈ lift₂ᵒ[O; uncurry (ƛ f)]) in H.
-  rewrite fct_id, exp_β in H. symmetry. exact H.
+  rewrite fmap_id, exp_β in H. symmetry. exact H.
 Qed.
 
 End OperationApplication.
@@ -322,7 +322,7 @@ Proof.
   rewrite (application_roundtrip_lift (ApplicativeOperations A)
     (id[X × Y])).
   unfold operations_lift, ApplicativeOperations, lax_lift2.
-  rewrite fct_id, comp_id_l. reflexivity.
+  rewrite fmap_id, comp_id_l. reflexivity.
 Qed.
 
 (** The unit comparison is recovered by the original pure-unit law. *)

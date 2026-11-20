@@ -63,12 +63,17 @@ Definition CoreGpd (C : Cat)
 Program Definition CoreInclusionF (C : Cat)
   : Fct (CoreCat C) C
   :=
-  {|F0 X := X
-  ; F1 X Y f := f.1
+  {|fobj X := X
+  ; fmap X Y f := f.1
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Inclusion reflects exactly the specified arrow equality. *)
 

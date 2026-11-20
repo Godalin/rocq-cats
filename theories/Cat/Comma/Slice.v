@@ -18,11 +18,16 @@ From Cats Require Import
 Program Definition SliceCommaF (C : Cat) (X : @Ob C)
   : Fct (C /C X) ((X ↓[(@IdF (C^op))])^op)
   :=
-  {|F0 A := @StructuredOb (C^op) (C^op) IdF X (slice_dom A)
+  {|fobj A := @StructuredOb (C^op) (C^op) IdF X (slice_dom A)
       (slice_arrow A)
-  ; F1 A B f :=
+  ; fmap A B f :=
       {|comma_left := tt
       ; comma_right := slice_map f
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation. rewrite comp_id_l. exact (slice_comm f). Defined.
@@ -37,11 +42,16 @@ Next Obligation. split; [exact tt | reflexivity]. Defined.
 Program Definition CommaSliceF (C : Cat) (X : @Ob C)
   : Fct ((X ↓[(@IdF (C^op))])^op) (C /C X)
   :=
-  {|F0 A := {|slice_dom := comma_right_ob A
+  {|fobj A := {|slice_dom := comma_right_ob A
              ; slice_arrow := comma_arrow A
              |}
-  ; F1 A B f := {|slice_map := comma_right f
+  ; fmap A B f := {|slice_map := comma_right f
                 |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   pose proof (comma_comm f) as E. cbn in E.

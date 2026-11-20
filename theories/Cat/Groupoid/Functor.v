@@ -32,7 +32,7 @@ Lemma gpd_fmap_inv {C D : Cat}
   : fmap F f⁻¹ ≈ (fmap F f)⁻¹.
 Proof.
   apply gpd_inv_unique.
-  rewrite <- fct_comp, gpd_inv_l. apply fct_id.
+  rewrite <- fmap_comp, gpd_inv_l. apply fmap_id.
 Qed.
 
 (** Inversion is a contravariant functor, not an endofunctor with the same
@@ -43,8 +43,13 @@ Qed.
 Program Definition InvF (C : Cat) `{HC : !IsGpd C}
   : Fct (C^op) C
   :=
-  {|F0 X := X
-  ; F1 X Y f := @gpd_inv C HC Y X f
+  {|fobj X := X
+  ; fmap X Y f := @gpd_inv C HC Y X f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g H.

@@ -72,7 +72,7 @@ Defined.
 Lemma simplex_prism_adjacent_space {m : nat} (i : Ordinal m)
   : σ[S m; i↑] ∘ δ[S m; i↑⁺] ≈ σ[S m; i⁺] ∘ δ[S m; i↑⁺].
 Proof.
-  transitivity (id : (@Hom Δ) (S m) (S m)).
+  transitivity (@Cat.Core.id Δ (S m)).
   - exact (@codegeneracy_coface_next (S m) i↑).
   - symmetry. exact (@codegeneracy_coface_id (S m) i⁺).
 Defined.

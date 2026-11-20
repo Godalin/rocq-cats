@@ -131,9 +131,14 @@ Next Obligation. intros x. apply comp_assoc. Defined.
 Program Definition RestrictGenF (G : Graph) (C : Cat)
   : Fct (FctCat (FreeCat G) C) (GenDiagramCat G C)
   :=
-  {|F0 := RestrictGraph
-  ; F1 F H α := {|generator_component := α
+  {|fobj := RestrictGraph
+  ; fmap F H α := {|generator_component := α
                   |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. exact (nat_naturality α (path_edge e)). Defined.
 Next Obligation. intros α β E x. exact (E x). Defined.

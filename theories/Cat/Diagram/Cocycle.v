@@ -153,7 +153,7 @@ End Equality.
     A functor [F : I → J] sends each triangle in [I] to one in [J].
     Read its old label there. The image of a composite agrees with the
     composite of the images by
-    %\coqref{Cats.Cat.Functor.Core.functor comp}{%[fct_comp]%}%.
+    %\coqref{Cats.Cat.Functor.Core.functor comp}{%[fmap_comp]%}%.
     Respectfulness of the labels converts that hom equality into coefficient
     equality. This is why the tetrahedron equation survives pullback.
 
@@ -164,7 +164,7 @@ End Equality.
 
     函子 [F : I → J] 将 [I] 的每个三角形送到 [J]，读取其原有标签即可。
     复合的像与像的复合由
-    %\coqref{Cats.Cat.Functor.Core.functor comp}{%[fct_comp]%}%
+    %\coqref{Cats.Cat.Functor.Core.functor comp}{%[fmap_comp]%}%
     相等；标签的保相等性再将此 Hom 相等转成系数相等。因此四面体方程在
     拉回后仍成立。
 
@@ -186,25 +186,25 @@ Program Definition TwoCocyclePullback (F : Fct I J)
   |}.
 Next Obligation.
   intros f f' Hf g g' Hg. apply two_cocycle_triangle_proper;
-    apply fct_fmap_proper; assumption.
+    apply fmap_proper; assumption.
 Defined.
 Next Obligation.
-  rewrite fct_id. apply two_cocycle_unit_l.
+  rewrite fmap_id. apply two_cocycle_unit_l.
 Defined.
 Next Obligation.
-  rewrite fct_id. apply two_cocycle_unit_r.
+  rewrite fmap_id. apply two_cocycle_unit_r.
 Defined.
 Next Obligation.
   transitivity (c⟦fmap F f, fmap F g⟧₂ ⋅
     c⟦fmap F g ∘ fmap F f, fmap F h⟧₂).
   - apply (@mul_proper _ (hasMagma M)); [reflexivity |].
-    apply two_cocycle_triangle_proper; [apply fct_comp | reflexivity].
+    apply two_cocycle_triangle_proper; [apply fmap_comp | reflexivity].
   - transitivity (c⟦fmap F g, fmap F h⟧₂ ⋅
       c⟦fmap F f, fmap F h ∘ fmap F g⟧₂).
     + apply two_cocycle_tetrahedron.
     + apply (@mul_proper _ (hasMagma M)); [reflexivity |].
       apply two_cocycle_triangle_proper;
-        [reflexivity | symmetry; apply fct_comp].
+        [reflexivity | symmetry; apply fmap_comp].
 Defined.
 
 (** Pullback preserves equality of cocycles, retaining its witness. *)

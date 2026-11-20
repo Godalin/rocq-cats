@@ -87,6 +87,43 @@ one tactic per line is not compulsory.
 证明体跨行后，`Qed.`／`Defined.` 独占一行。开头的短步骤可以接在
 `Proof.`／`Next Obligation.` 后，不强制每条战术都单占一行。
 
+## Proof transparency / 证明透明性
+
+Use `Qed` for laws whose statements suffice to use them. This includes
+`Proper`, preservation of identities and composition, naturality, coherence,
+and universal-property equations or uniqueness proofs used to rewrite.
+With `Program`, close these obligations individually and keep the enclosing
+structure transparent when its data projections compute.
+
+仅通过陈述使用的定律用 `Qed` 收尾。包括 `Proper`、恒等和复合的保持律、
+自然性、相干律，以及用于重写的泛性质方程或唯一性证明。使用 `Program` 时，
+逐条关闭这些义务；外层结构的数据投影需要计算时，外层定义仍保持透明。
+
+Use `Defined` for functions and witnesses whose bodies consumers need to
+reduce, such as inverse arrows, mediators, preimages, and selected data
+projected from `sig` or `sigT`. Classify the particular obligation by how it
+is used. A `Type`-valued Hom equality may serve solely as a rewrite rule.
+A proof in `Prop` may still drive dependent transport or be needed for
+conversion or guardedness. Document such a dependency near the proof and
+check the affected reduction or client.
+
+调用方需要对函数本体或见证归约时用 `Defined`，如逆态射、中介、原像，以及从
+`sig` 或 `sigT` 投影的选定数据。按义务的实际用途判断。取值于 `Type` 的
+Hom 相等可能只作为重写规则，`Prop` 中的证明也可能参与依赖运输、换算或递归
+守卫检查。这类依赖在证明旁说明，并检查受影响的归约或调用方。
+
+Audit transparency changes in small batches. Build affected consumers and
+exercise relevant rewriting, instance search, strict universes and concrete
+reduction. Compare timing with the same targets, toolchain and cache
+conditions. Keep `Unset Transparent Obligations` experiments local and
+verify which automatically solved obligations still need reduction.
+See [issue #47](https://github.com/Godalin/rocq-cats/issues/47).
+
+分批审查透明性改动。编译受影响的调用方，检查相关的重写、实例搜索、严格宇宙
+分层和具体归约。计时对比使用相同目标、工具链和缓存条件。`Unset Transparent
+Obligations` 限于局部实验，并检查自动解出的义务中哪些还需要归约。
+见 [#47](https://github.com/Godalin/rocq-cats/issues/47)。
+
 ## Notation and records / 记号及记录
 
 Use brackets when a public term notation takes a selected object, boundary
@@ -160,6 +197,15 @@ Definition mapped_product {C D : Cat} `{PC : !HasProduct C}
   : Hom (F (X × Y)) (F (X' × Y'))
   := fmap F (f × g).
 ```
+
+The tensor notation `⊗` follows the same object and morphism scope rule.
+For example, `F (X ⊗ Y)` uses the chosen object tensor, while
+`fmap F (f ⊗ g)` uses the corresponding joint arrow map.
+An isolated `Check (f ⊗ g)%hom` requests the arrow interpretation.
+
+张量记号 `⊗` 沿用同一套对象及态射作用域。例如 `F (X ⊗ Y)`
+使用选定的对象张量，`fmap F (f ⊗ g)` 使用相应的联合态射映射。
+独立检查可写 `Check (f ⊗ g)%hom` 取得态射解释。
 
 A bare morphism product outside an argument with a known hom scope may
 still need `%hom`. Give new operation arguments their mathematical scopes

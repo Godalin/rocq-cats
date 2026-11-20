@@ -359,7 +359,7 @@ Local Ltac triangle_shape_equations :=
 Local Ltac triangle_earlier_face s :=
   right; exists s; split; [cbn; lia |];
   first
-    [exists (id : (@Hom Δ) 3 3); triangle_shape_equations
+    [exists (@Cat.Core.id Δ 3); triangle_shape_equations
     |exists (δ[2; fin_first]); triangle_shape_equations
     |exists (δ[2; fin_first⁺]); triangle_shape_equations
     |exists (δ[2; fin_first⁺⁺]); triangle_shape_equations

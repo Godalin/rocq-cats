@@ -16,7 +16,7 @@ Local Open Scope computation_scope.
 
 Section GlobalContext.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** Run a global computation while carrying an ordinary input unchanged. *)
 
@@ -48,7 +48,7 @@ Proof.
   transitivity (arr[A; (⟨id, !⟩ : Hom Y (Y × 1))] ∘
     (arr[A; (π1 : Hom (Y × 1) Y)] ∘ first[A; k; 1]) ∘
       arr[A; (⟨id, !⟩ : Hom X (X × 1))]).
-  - rewrite <- comp_assoc, <- fct_comp.
+  - rewrite <- comp_assoc, <- fmap_comp.
     apply comp_proper; [| reflexivity].
     rewrite product_comp_r, comp_id_l.
     assert (Hu : (⟨π1, ! ∘ (π1 : Hom (Y × 1) Y)⟩ :
@@ -57,9 +57,9 @@ Proof.
       - rewrite product_β1, comp_id_r. reflexivity.
       - rewrite product_β2, comp_id_r. transitivity (! : Hom (Y × 1) 1);
           [apply term_η | symmetry; apply term_η]. }
-    rewrite Hu, fct_id, comp_id_l. reflexivity.
-  - rewrite arrow_first_projection, !comp_assoc, <- fct_comp,
-      product_β1, fct_id, comp_id_r. reflexivity.
+    rewrite Hu, fmap_id, comp_id_l. reflexivity.
+  - rewrite arrow_first_projection, !comp_assoc, <- fmap_comp,
+      product_β1, fmap_id, comp_id_r. reflexivity.
 Qed.
 
 (** A prior computation runs once; the global result is then paired with its
@@ -74,7 +74,7 @@ Proof.
   pose proof (arrow_split_pre A k g (id[X]) (! : Hom X 1)) as H.
   rewrite arrow_arr_id, comp_id_r in H.
   unfold arrow_global_context, arrow_fanout. rewrite <- H.
-  unfold arrow_split. rewrite !comp_assoc, <- fct_comp.
+  unfold arrow_split. rewrite !comp_assoc, <- fmap_comp.
   assert (Hi : ((id[X] × (! : Hom X 1)) ∘ ⟨id, id⟩) ≈
     (⟨id, !⟩ : Hom X (X × 1))).
   { repeat first [rewrite cross_η | rewrite product_comp_r |
@@ -138,7 +138,7 @@ Proof.
   rewrite <- (comp_assoc arr[A; h × id[P]] (second[A; f; X])),
     arrow_second_natural, !comp_assoc.
   apply comp_proper; [reflexivity |].
-  rewrite <- !fct_comp. apply fct_fmap_proper.
+  rewrite <- !fmap_comp. apply fmap_proper.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r | rewrite term_comp_l]. reflexivity.
@@ -151,8 +151,8 @@ Qed.
 Lemma arrow_global_context_pure {P : @Ob C} (X : @Ob C) (p : Hom 1 P)
   : arrow_global_context X arr[A; p] ≈ arr[A; ⟨id, p ∘ !⟩].
 Proof.
-  unfold arrow_global_context. rewrite arrow_second_arr, <- fct_comp.
-  apply fct_fmap_proper.
+  unfold arrow_global_context. rewrite arrow_second_arr, <- fmap_comp.
+  apply fmap_proper.
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
@@ -173,7 +173,7 @@ Proof.
     arrow_second_arr, arrow_second_nested, !comp_assoc.
   apply comp_proper; [reflexivity |].
   apply comp_proper; [reflexivity |].
-  rewrite <- fct_comp. apply fct_fmap_proper.
+  rewrite <- fmap_comp. apply fmap_proper.
   unfold product_assoc. cbn [projT1 projT2].
   repeat first [rewrite cross_η | rewrite product_comp_r |
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |

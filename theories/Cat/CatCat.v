@@ -78,9 +78,13 @@ Defined.
 Program Definition OpCatF
   : Fct CatCat CatCat
   :=
-  {|F0 := op
-  ; F1 C D F := F^opF
-  ; fct_fmap_proper C D := @OpF_proper C D
+  {|fobj := op
+  ; fmap C D F := F^opF
+  ; isFct :=
+      {|fmap_proper C D := @OpF_proper C D
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. apply OpF_id. Defined.
 Next Obligation. apply OpF_comp. Defined.
@@ -124,10 +128,14 @@ Program Definition CatCatHom@{o h p l m n +}
     {C D : Cat@{o h p l l}} (F : Fct@{o h p l m n o h p l} C D)
   : (@Hom CatCat) C D
   :=
-  {|F0 X := F X
-  ; F1 X Y f := fmap F f
-  ; fct_fmap_proper X Y f g H :=
-      @fct_fmap_proper C D F X Y f g H
+  {|fobj X := F X
+  ; fmap X Y f := fmap F f
+  ; isFct :=
+      {|fmap_proper X Y f g H :=
+          @fmap_proper _ _ _ _ (@isFct C D F) X Y f g H
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. exact (@fct_id C D F X). Qed.
-Next Obligation. exact (@fct_comp C D F X Y Z f g). Qed.
+Next Obligation. exact (@fmap_id _ _ _ _ (@isFct C D F) X). Qed.
+Next Obligation. exact (@fmap_comp _ _ _ _ (@isFct C D F) X Y Z f g). Qed.

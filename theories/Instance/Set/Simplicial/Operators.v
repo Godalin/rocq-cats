@@ -145,7 +145,7 @@ Lemma simplex_face_degeneracy_id@{u p +}
 Proof.
   unfold simplex_face, simplex_degeneracy.
   rewrite <- simplex_restrict_comp.
-  transitivity (X[(id : (@Hom Δ) n n)]Δ).
+  transitivity (X[(@Cat.Core.id Δ n)]Δ).
   - apply simplex_restrict_proper. apply codegeneracy_coface_id.
   - apply simplex_restrict_id.
 Qed.
@@ -161,7 +161,7 @@ Lemma simplex_face_degeneracy_next@{u p +}
 Proof.
   unfold simplex_face, simplex_degeneracy.
   rewrite <- simplex_restrict_comp.
-  transitivity (X[(id : (@Hom Δ) n n)]Δ).
+  transitivity (X[(@Cat.Core.id Δ n)]Δ).
   - apply simplex_restrict_proper. apply codegeneracy_coface_next.
   - apply simplex_restrict_id.
 Qed.

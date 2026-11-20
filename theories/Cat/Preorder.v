@@ -51,12 +51,17 @@ Program Definition PreorderF {X Y : Type} {R : crelation X} {S : crelation Y}
     (f : X → Y) (Hf : ∀ x y, R x y → S (f x) (f y))
   : Fct (PreorderCat R) (PreorderCat S)
   :=
-  {|F0 := f
-  ; F1 x y := Hf x y
+  {|fobj := f
+  ; fmap x y := Hf x y
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. repeat intro; exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. repeat intro; exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 (** Forget symmetry to view an equivalence relation as a preorder. *)
 

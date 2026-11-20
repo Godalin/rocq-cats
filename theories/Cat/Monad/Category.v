@@ -61,7 +61,7 @@ Definition monad_hom_id (M : Monad C)
 Proof.
   exists IdN. split; intros X.
   - exact (comp_id_l (η[M] X)).
-  - cbn. rewrite fct_id, !comp_id_l, !comp_id_r. reflexivity.
+  - cbn. rewrite fmap_id, !comp_id_l, !comp_id_r. reflexivity.
 Defined.
 
 (** Vertical composition preserves multiplication by interchange. *)

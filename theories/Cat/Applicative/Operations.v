@@ -191,7 +191,7 @@ Notation "'lift₂ᵒ[' O ';' f ']'" := (operations_lift O f)
 
 Global Instance operations_lift_proper {C : Cat}
     {HT : HasTerminal C} {HP : HasProduct C}
-    (O : ApplicativeOps C HT HP) {X Y Z : @Ob C}
+    `(O : !ApplicativeOps C HT HP) {X Y Z : @Ob C}
   : Proper (HomEq ==> HomEq) (@operations_lift C HT HP O X Y Z).
 Proof. exact (ops_proper (IsApplicativeOps := operations_laws O)). Qed.
 
@@ -238,7 +238,6 @@ Program Definition ApplicativeOperations {C : Cat}
 Section Reconstruction.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     (O : ApplicativeOps C HT HP).
-Local Existing Instance O.
 
 (** Result naturality determines every lifting from the lifted pairing
     operation, the identity on the chosen product. *)
@@ -257,8 +256,8 @@ Qed.
 (** 提升后的配对在两个积因子上自然。 *)
 
 Program Definition OperationsTensorN
-  : (tensorF (@CartMonoidal C HT HP) ∘F (O ×F O)) ⇒
-      (O ∘F tensorF (@CartMonoidal C HT HP))
+  : (tensorF (isMagmoidal (@CartHasMonoidal C HT HP)) ∘F (O ×F O)) ⇒
+      (O ∘F tensorF (isMagmoidal (@CartHasMonoidal C HT HP)))
   :=
   {|nt p := lift₂ᵒ[O; (id[fst p × snd p])]
   |}.
@@ -270,15 +269,15 @@ Next Obligation.
     (id[Y1 × Y2]) f g) as H.
   cbn in H. rewrite comp_id_l in H.
   rewrite H, <- operations_lift_pair. reflexivity.
-Defined.
+Qed.
 
 (** Reconstruct the lax structure from pure terminal value and lifted pairing. *)
 
 (** 从纯终值及提升后的配对恢复 lax 结构。 *)
 
 Program Definition OperationsLax
-  : LaxMonoidalFct (@CartMonoidal C HT HP)
-      (@CartMonoidal C HT HP)
+  : LaxMonoidalFct (@CartHasMonoidal C HT HP)
+      (@CartHasMonoidal C HT HP)
   :=
   {|LaxMonoidalFctToFct := O
   ; lax_unit := pureᵒ[O] 1
@@ -286,7 +285,7 @@ Program Definition OperationsLax
   |}.
 Next Obligation.
   change (fmap O (π2 : Hom (1 × X) X) ∘ lift₂ᵒ[O; (id[1 × X])] ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
       (pureᵒ[O] 1) (id[O X])) ≈ π2).
   rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
@@ -294,7 +293,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   change (fmap O (π1 : Hom (X × 1) X) ∘ lift₂ᵒ[O; (id[X × 1])] ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
       (id[O X]) (pureᵒ[O] 1)) ≈ π1).
   rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
@@ -303,10 +302,10 @@ Defined.
 Next Obligation.
   change (fmap O (@product_assoc C HP X Y Z).1 ∘
     lift₂ᵒ[O; (id[(X × Y) × Z])] ∘
-      (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+      (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
         lift₂ᵒ[O; (id[X × Y])] (id[O Z])) ≈
     lift₂ᵒ[O; (id[X × (Y × Z)])] ∘
-      (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+      (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
         (id[O X]) lift₂ᵒ[O; (id[Y × Z])]) ∘
       (@product_assoc C HP (O X) (O Y) (O Z)).1).
   rewrite !cartesian_tensor_map.
@@ -370,7 +369,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 
 Lemma applicative_roundtrip_tensor (X Y : @Ob C)
   : φ₂[OperationsA (ApplicativeOperations A); X; Y] ≈ φ₂[A; X; Y].
-Proof. cbn. unfold lax_lift2. rewrite fct_id, comp_id_l. reflexivity. Qed.
+Proof. cbn. unfold lax_lift2. rewrite fmap_id, comp_id_l. reflexivity. Qed.
 
 (** The structural round trip recovers the selected unit by its pure law. *)
 

@@ -73,7 +73,7 @@ Program Definition gluing_fiber_inclusion_map {R S : GluingFiber F A}
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite fct_id, comp_id_l. symmetry. exact (slice_comm h).
+  rewrite fmap_id, comp_id_l. symmetry. exact (slice_comm h).
 Defined.
 
 (** The inclusion keeps the original slice arrow action and equality. *)
@@ -83,12 +83,17 @@ Defined.
 Program Definition GluingFiberInclusionF
   : Fct (GluingFiber F A) (Gluing F)
   :=
-  {|F0 := GluingFiberInclusionOb
-  ; F1 R S := gluing_fiber_inclusion_map
+  {|fobj := GluingFiberInclusionOb
+  ; fmap R S := gluing_fiber_inclusion_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros h k H. exact (H, reflexivity _). Defined.
-Next Obligation. split; reflexivity. Defined.
-Next Obligation. split; [reflexivity | symmetry; apply comp_id_l]. Defined.
+Next Obligation. intros h k H. exact (H, reflexivity _). Qed.
+Next Obligation. split; reflexivity. Qed.
+Next Obligation. split; [reflexivity | symmetry; apply comp_id_l]. Qed.
 
 (** Equality of included squares reflects the original slice equality. *)
 
@@ -113,7 +118,7 @@ Program Definition gluing_fiber_vertical_map {R S : GluingFiber F A}
 Next Obligation.
   transitivity (fmap F (comma_right h) ∘ slice_arrow R).
   - symmetry. exact (comma_comm h).
-  - rewrite H, fct_id, comp_id_l. reflexivity.
+  - rewrite H, fmap_id, comp_id_l. reflexivity.
 Defined.
 
 (** Recovering a vertical square preserves both sides up to their specified
@@ -213,7 +218,7 @@ Next Obligation.
   - apply slice_reindex_map_β2.
   - change (f ∘ id ≈ id ∘ f).
     rewrite comp_id_l, comp_id_r. reflexivity.
-Defined.
+Qed.
 
 (** Equivalent base maps induce the old slice-equivalence comparison. *)
 
@@ -221,7 +226,7 @@ Defined.
 
 Definition GluingFiberReindexEqN {A B : C} {f g : Hom A B} (H : f ≈ g)
   : GluingFiberReindexF f ⇒ GluingFiberReindexF g
-  := SliceReindexEqN (@fct_fmap_proper C D F _ _ _ _ H).
+  := SliceReindexEqN (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H).
 
 (** This comparison is a natural isomorphism, not equality of functors. *)
 
@@ -231,7 +236,7 @@ Definition gluing_fiber_reindex_equiv_iso {A B : C} {f g : Hom A B}
     (H : f ≈ g)
   : GluingFiberReindexF f ≅N GluingFiberReindexF g
   := (GluingFiberReindexEqN H;
-      slice_reindex_equiv_iso (@fct_fmap_proper C D F _ _ _ _ H)).
+      slice_reindex_equiv_iso (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H)).
 
 (** First compare identity reindexing in [D], then change its base arrow
     along the inverse identity law of [F]. *)
@@ -240,7 +245,7 @@ Definition gluing_fiber_reindex_equiv_iso {A B : C} {f g : Hom A B}
 
 Definition GluingFiberReindexIdN (A : C)
   : (@IdF (GluingFiber F A)) ⇒ GluingFiberReindexF (id[A])
-  := SliceReindexEqN (symmetry (@fct_id C D F A)) ∘Nv
+  := SliceReindexEqN (symmetry (@fmap_id _ _ _ _ (@isFct C D F) A)) ∘Nv
       SliceReindexIdN (F A).
 
 (** The identity comparison retains the existing transparent inverse. *)
@@ -265,7 +270,7 @@ Definition GluingFiberReindexCompN {A B E : C} (f : Hom B E)
     (g : Hom A B)
   : (GluingFiberReindexF g ∘F GluingFiberReindexF f)
       ⇒ GluingFiberReindexF (f ∘ g)
-  := SliceReindexEqN (symmetry (@fct_comp C D F _ _ _ f g)) ∘Nv
+  := SliceReindexEqN (symmetry (@fmap_comp _ _ _ _ (@isFct C D F) _ _ _ f g)) ∘Nv
       SliceReindexCompN (fmap F f) (fmap F g).
 
 (** Its two factors are the existing slice isomorphisms. *)
@@ -302,7 +307,7 @@ Definition gluing_fiber_reindex_equiv_β2 {A B : C} {f g : Hom A B}
   : pb2 (fmap F g) (slice_arrow R) ∘
       slice_map (GluingFiberReindexEqN H R) ≈
     pb2 (fmap F f) (slice_arrow R)
-  := slice_reindex_equiv_β2 (@fct_fmap_proper C D F _ _ _ _ H) R.
+  := slice_reindex_equiv_β2 (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H) R.
 
 (** Identity comparison followed by its lifting projection is identity. *)
 
@@ -313,7 +318,7 @@ Definition gluing_fiber_reindex_id_β2 (A : C) (R : GluingFiber F A)
       slice_map (GluingFiberReindexIdN A R) ≈ id.
 Proof.
   change (pb2 (fmap F (id[A])) (slice_arrow R) ∘
-    (slice_map (slice_reindex_equiv (symmetry (@fct_id C D F A)) R)
+    (slice_map (slice_reindex_equiv (symmetry (@fmap_id _ _ _ _ (@isFct C D F) A)) R)
       ∘ slice_map (slice_reindex_id R)) ≈ id).
   rewrite <- comp_assoc, slice_reindex_equiv_β2.
   apply slice_reindex_lift_β2.
@@ -333,7 +338,7 @@ Definition gluing_fiber_reindex_comp_β2 {A B E : C} (f : Hom B E)
 Proof.
   change (pb2 (fmap F (f ∘ g)) (slice_arrow R) ∘
     (slice_map (slice_reindex_equiv
-      (symmetry (@fct_comp C D F _ _ _ f g)) R) ∘
+      (symmetry (@fmap_comp _ _ _ _ (@isFct C D F) _ _ _ f g)) R) ∘
       slice_map (slice_reindex_comp (fmap F f) (fmap F g) R)) ≈
     pb2 (fmap F f) (slice_arrow R) ∘
       pb2 (fmap F g) (slice_arrow (GluingFiberReindexF f R))).
@@ -358,8 +363,8 @@ Definition gluing_fiber_reindex_equiv_witness_independent {A B : C}
     {f g : Hom A B} (H K : f ≈ g)
   : GluingFiberReindexEqN H ≈N GluingFiberReindexEqN K
   := slice_reindex_equiv_witness_independent
-      (@fct_fmap_proper C D F _ _ _ _ H)
-      (@fct_fmap_proper C D F _ _ _ _ K).
+      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H)
+      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ K).
 
 (** A reflexive base comparison acts as identity in natural equality. *)
 
@@ -368,7 +373,7 @@ Definition gluing_fiber_reindex_equiv_witness_independent {A B : C}
 Definition gluing_fiber_reindex_equiv_id {A B : C} {f : Hom A B}
     (H : f ≈ f)
   : GluingFiberReindexEqN H ≈N IdN
-  := slice_reindex_equiv_id (@fct_fmap_proper C D F _ _ _ _ H).
+  := slice_reindex_equiv_id (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H).
 
 (** Base-comparison composition is coherent without equating witnesses. *)
 
@@ -379,9 +384,9 @@ Definition gluing_fiber_reindex_equiv_comp {A B : C}
   : GluingFiberReindexEqN L ≈N
       (GluingFiberReindexEqN K ∘Nv GluingFiberReindexEqN H)
   := slice_reindex_equiv_comp
-      (@fct_fmap_proper C D F _ _ _ _ H)
-      (@fct_fmap_proper C D F _ _ _ _ K)
-      (@fct_fmap_proper C D F _ _ _ _ L).
+      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H)
+      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ K)
+      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ L).
 
 (** Composition comparison respects specified equality of both base maps.
     The supplied composite boundary may be any witness of the same equation. *)

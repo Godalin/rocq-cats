@@ -6,9 +6,9 @@ From Cats Require Import
   Instance.Set.Core
   Instance.Set.Product.
 
-Local Open Scope binoidal_scope.
 Local Open Scope monoidal_scope.
 Local Open Scope prof_scope.
+Local Open Scope ob_scope.
 
 (** * Strength of a Specified Profunctor Composite
 
@@ -36,7 +36,7 @@ Local Open Scope prof_scope.
 
 Section CompositionStrength.
 Universes u p.
-Context {C : Cat} (MC : MonoidalCat C).
+Context {C : Cat} (MC : HasMonoidal C).
 Context (Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})).
 Context (SQ : HasProfStrength MC Q) (SP : HasProfStrength MC P).
 
@@ -196,7 +196,7 @@ Program Definition ProfCompStrengthN (Z : @Ob C)
   |}.
 Next Obligation.
   exact (prof_comp_strength_natural Z (fst f) (snd f)).
-Defined.
+Qed.
 
 (** Context substitution may be noninvertible. Its middle component moves
     between the factors by the same coend gluing equation. *)
@@ -205,24 +205,24 @@ Defined.
 
 Lemma prof_comp_strength_context {Z W : @Ob C} (h : Hom Z W)
     (X Y : @Ob C)
-  : (lmap[Q ∘Pr P; h ⊗m id[X]] ∘r prof_comp_strength W X Y) ≈f
-      (rmap[Q ∘Pr P; h ⊗m id[Y]] ∘r prof_comp_strength Z X Y).
+  : (lmap[Q ∘Pr P; h ⊗ id[X]] ∘r prof_comp_strength W X Y) ≈f
+      (rmap[Q ∘Pr P; h ⊗ id[Y]] ∘r prof_comp_strength Z X Y).
 Proof.
   apply (@prof_comp_hom_ext C C C Q P X Y
     (@hasProfCompCoend C C C Q P HC X Y)). intros B [x y].
-  change (lmap[Q ∘Pr P; h ⊗m id[X]]
+  change (lmap[Q ∘Pr P; h ⊗ id[X]]
     (prof_comp_strength W X Y (ιPr[Q; P; B] (x,y))) ≈S
-    rmap[Q ∘Pr P; h ⊗m id[Y]]
+    rmap[Q ∘Pr P; h ⊗ id[Y]]
       (prof_comp_strength Z X Y (ιPr[Q; P; B] (x,y)))).
   rewrite !prof_comp_strength_inject.
   rewrite profunctor_comp_lmap_inject, profunctor_comp_rmap_inject.
   transitivity (ιPr[Q; P; W ⊗ B]
-    (rmap[P; h ⊗m id[B]] (pstrength[SP; Z] x),pstrength[SQ; W] y)).
+    (rmap[P; h ⊗ id[B]] (pstrength[SP; Z] x),pstrength[SQ; W] y)).
   - apply func_proper. split; [| reflexivity].
     exact (prof_strength_context SP h X B x).
   - transitivity (ιPr[Q; P; Z ⊗ B]
-      (pstrength[SP; Z] x,lmap[Q; h ⊗m id[B]] (pstrength[SQ; W] y))).
-    + symmetry. exact (prof_comp_gluing Q P (h ⊗m id[B])
+      (pstrength[SP; Z] x,lmap[Q; h ⊗ id[B]] (pstrength[SQ; W] y))).
+    + symmetry. exact (prof_comp_gluing Q P (h ⊗ id[B])
         (pstrength[SP; Z] x) (pstrength[SQ; W] y)).
     + apply func_proper. split; [reflexivity |].
       exact (prof_strength_context SQ h B Y y).
@@ -234,23 +234,23 @@ Defined.
 (** 在各因子中移去单位上下文，并将中间单位子在它们之间粘合；只使用原选定单位边界。 *)
 
 Lemma prof_comp_strength_unit (X Y : @Ob C)
-  : (rmap[Q ∘Pr P; λ⊗[Y]] ∘r prof_comp_strength (I⊗[MC]) X Y) ≈f
-      lmap[Q ∘Pr P; λ⊗[X]].
+  : (rmap[Q ∘Pr P; λ[Y]] ∘r prof_comp_strength (𝐈[MC]) X Y) ≈f
+      lmap[Q ∘Pr P; λ[X]].
 Proof.
   apply (@prof_comp_hom_ext C C C Q P X Y
     (@hasProfCompCoend C C C Q P HC X Y)). intros B [x y].
-  change (rmap[Q ∘Pr P; λ⊗[Y]]
-    (prof_comp_strength (I⊗[MC]) X Y (ιPr[Q; P; B] (x,y))) ≈S
-    lmap[Q ∘Pr P; λ⊗[X]] (ιPr[Q; P; B] (x,y))).
+  change (rmap[Q ∘Pr P; λ[Y]]
+    (prof_comp_strength (𝐈[MC]) X Y (ιPr[Q; P; B] (x,y))) ≈S
+    lmap[Q ∘Pr P; λ[X]] (ιPr[Q; P; B] (x,y))).
   rewrite prof_comp_strength_inject.
   rewrite profunctor_comp_lmap_inject, profunctor_comp_rmap_inject.
-  transitivity (ιPr[Q; P; I⊗[MC] ⊗ B]
-    (pstrength[SP; I⊗[MC]] x,lmap[Q; λ⊗[B]] y)).
+  transitivity (ιPr[Q; P; 𝐈[MC] ⊗ B]
+    (pstrength[SP; 𝐈[MC]] x,lmap[Q; λ[B]] y)).
   - apply func_proper. split; [reflexivity |].
     exact (prof_strength_unit SQ B Y y).
   - transitivity (ιPr[Q; P; B]
-      (rmap[P; λ⊗[B]] (pstrength[SP; I⊗[MC]] x),y)).
-    + exact (prof_comp_gluing Q P (λ⊗[B]) (pstrength[SP; I⊗[MC]] x) y).
+      (rmap[P; λ[B]] (pstrength[SP; 𝐈[MC]] x),y)).
+    + exact (prof_comp_gluing Q P (λ[B]) (pstrength[SP; 𝐈[MC]] x) y).
     + apply func_proper. split; [| reflexivity].
       exact (prof_strength_unit SP X B x).
 Defined.
@@ -261,29 +261,29 @@ Defined.
 (** 嵌套上下文扩展使用两个原结合律；粘合它们的中间结合子保留同一组外部边界。 *)
 
 Lemma prof_comp_strength_assoc (Z W X Y : @Ob C)
-  : (lmap[Q ∘Pr P; α⊗[Z; W; X]] ∘r
+  : (lmap[Q ∘Pr P; α[Z; W; X]] ∘r
       prof_comp_strength Z (W ⊗ X) (W ⊗ Y) ∘r
       prof_comp_strength W X Y) ≈f
-      (rmap[Q ∘Pr P; α⊗[Z; W; Y]] ∘r prof_comp_strength (Z ⊗ W) X Y).
+      (rmap[Q ∘Pr P; α[Z; W; Y]] ∘r prof_comp_strength (Z ⊗ W) X Y).
 Proof.
   apply (@prof_comp_hom_ext C C C Q P X Y
     (@hasProfCompCoend C C C Q P HC X Y)). intros B [x y].
-  change (lmap[Q ∘Pr P; α⊗[Z; W; X]]
+  change (lmap[Q ∘Pr P; α[Z; W; X]]
     (prof_comp_strength Z (W ⊗ X) (W ⊗ Y)
       (prof_comp_strength W X Y (ιPr[Q; P; B] (x,y)))) ≈S
-    rmap[Q ∘Pr P; α⊗[Z; W; Y]]
+    rmap[Q ∘Pr P; α[Z; W; Y]]
       (prof_comp_strength (Z ⊗ W) X Y (ιPr[Q; P; B] (x,y)))).
   rewrite !prof_comp_strength_inject.
   rewrite profunctor_comp_lmap_inject, profunctor_comp_rmap_inject.
   transitivity (ιPr[Q; P; Z ⊗ (W ⊗ B)]
-    (rmap[P; α⊗[Z; W; B]] (pstrength[SP; Z ⊗ W] x),
+    (rmap[P; α[Z; W; B]] (pstrength[SP; Z ⊗ W] x),
       pstrength[SQ; Z] (pstrength[SQ; W] y))).
   - apply func_proper. split; [| reflexivity].
     exact (prof_strength_assoc SP Z W X B x).
   - transitivity (ιPr[Q; P; (Z ⊗ W) ⊗ B]
       (pstrength[SP; Z ⊗ W] x,
-        lmap[Q; α⊗[Z; W; B]] (pstrength[SQ; Z] (pstrength[SQ; W] y)))).
-    + symmetry. exact (prof_comp_gluing Q P (α⊗[Z; W; B])
+        lmap[Q; α[Z; W; B]] (pstrength[SQ; Z] (pstrength[SQ; W] y)))).
+    + symmetry. exact (prof_comp_gluing Q P (α[Z; W; B])
         (pstrength[SP; Z ⊗ W] x) (pstrength[SQ; Z] (pstrength[SQ; W] y))).
     + apply func_proper. split; [reflexivity |].
       exact (prof_strength_assoc SQ Z W B Y y).

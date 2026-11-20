@@ -1,13 +1,12 @@
 From Cats Require Export
   Cat.Cartesian.Core
-  Cat.Premonoidal.Symmetric
+  Cat.Monoidal.Symmetric
   Cat.Induced.
 From Cats Require Import
   Cat.Terminal
   Cat.Product.Transport.
 
-Local Open Scope binoidal_scope.
-Local Open Scope premonoidal_scope.
+Local Open Scope monoidal_scope.
 
 (** * Freyd Categories
 
@@ -64,11 +63,11 @@ Class FreydCat (C K : Cat)
 
   ; freyd_tensor_objects (X Y : @Ob C)
     : @Prod C hasValueProduct X Y =
-        @binoidal_tensor FreydComputations
+        @tensor FreydComputations
           hasSymmetricPremonoidal X Y
   ; freyd_unit_object
     : @Term C hasValueTerminal =
-        PremonoidalUnit hasSymmetricPremonoidal
+        tensor_unit hasSymmetricPremonoidal
 
   (** Pure maps commute with arbitrary computations in both positions. *)
 
@@ -85,13 +84,13 @@ Class FreydCat (C K : Cat)
   ; freyd_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z Y) ∘
         fmap FreydF (id[Z] × f) ≈
-        @binoidal_l FreydComputations hasSymmetricPremonoidal
+        @tensor_l FreydComputations hasSymmetricPremonoidal
           X Y Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z X)
   ; freyd_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Y Z) ∘
         fmap FreydF (f × id[Z]) ≈
-        @binoidal_r FreydComputations hasSymmetricPremonoidal
+        @tensor_r FreydComputations hasSymmetricPremonoidal
           X Y Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects X Z)
 
@@ -101,19 +100,19 @@ Class FreydCat (C K : Cat)
 
   ; freyd_unit_l (X : @Ob C)
     : fmap FreydF (π2 : Hom (1 × X) X) ≈
-        (@premonoidal_unitor_l FreydComputations _
+        (@tensor_unitor_l FreydComputations _
           hasSymmetricPremonoidal X).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects 1 X)
-              (f_equal (λ Q, @binoidal_tensor FreydComputations
+              (f_equal (λ Q, @tensor FreydComputations
                 hasSymmetricPremonoidal Q X) freyd_unit_object))
   ; freyd_unit_r (X : @Ob C)
     : fmap FreydF (π1 : Hom (X × 1) X) ≈
-        (@premonoidal_unitor_r FreydComputations _
+        (@tensor_unitor_r FreydComputations _
           hasSymmetricPremonoidal X).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects X 1)
-              (f_equal (λ Q, @binoidal_tensor FreydComputations
+              (f_equal (λ Q, @tensor FreydComputations
                 hasSymmetricPremonoidal X Q) freyd_unit_object))
 
   (** Both nested tensor boundaries are transported coherently. *)
@@ -123,14 +122,14 @@ Class FreydCat (C K : Cat)
   ; freyd_assoc (X Y Z : @Ob C)
     : @eq_to_hom FreydComputations _ _
         (eq_trans (freyd_tensor_objects X (Y × Z)%ob)
-          (f_equal (λ Q, @binoidal_tensor FreydComputations
+          (f_equal (λ Q, @tensor FreydComputations
             hasSymmetricPremonoidal X Q) (freyd_tensor_objects Y Z))) ∘
         fmap FreydF (@product_assoc C hasValueProduct X Y Z).1 ≈
-        (@premonoidal_associator FreydComputations _
+        (@tensor_assoc FreydComputations _
           hasSymmetricPremonoidal X Y Z).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects (X × Y)%ob Z)
-              (f_equal (λ Q, @binoidal_tensor FreydComputations
+              (f_equal (λ Q, @tensor FreydComputations
                 hasSymmetricPremonoidal Q Z) (freyd_tensor_objects X Y)))
 
   (** Preserve symmetry as well as the premonoidal structure. *)

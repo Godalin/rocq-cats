@@ -2,7 +2,7 @@ From Cats Require Export
   Cat.Profunctor.Coherence.
 From Cats Require Import
   Cat.Core
-  Cat.Monoidal.Bifunctor
+  Cat.Monoidal.Bifct
   Cat.Isomorphism
   Instance.Set.Core.
 
@@ -36,9 +36,8 @@ Local Open Scope prof_scope.
 Section Associativity.
 Universes u p.
 Context {C : Cat}.
-Context (HC : ∀ Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}),
+Context `(HC : ∀ Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}),
     HasProfComp C C C Q P).
-Local Existing Instance HC.
 
 Let K
   : Cat
@@ -52,11 +51,13 @@ Let K
 Program Definition ProfTensorF
   : Fct (K ×C K) K
   :=
-  {|F0 (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
-  ; F1 QP QP' βα := ProfCompMapN (fst βα) (snd βα)
-  ; fct_fmap_proper := @fct_fmap_proper _ _ (ProfCompF C C C HC)
-  ; fct_id := @fct_id _ _ (ProfCompF C C C HC)
-  ; fct_comp := @fct_comp _ _ (ProfCompF C C C HC)
+  {|fobj (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
+  ; fmap QP QP' βα := ProfCompMapN (fst βα) (snd βα)
+  ; isFct :=
+      {|fmap_proper := @fmap_proper _ _ _ _ (isFct (ProfCompF C C C HC))
+      ; fmap_id := @fmap_id _ _ _ _ (isFct (ProfCompF C C C HC))
+      ; fmap_comp := @fmap_comp _ _ _ _ (isFct (ProfCompF C C C HC))
+      |}
   |}.
 
 (** The inverse reassociation is natural on triples of endoprofunctors. *)
@@ -64,7 +65,7 @@ Program Definition ProfTensorF
 (** 逆重结合在自 profunctor 三元组上自然。 *)
 
 Program Definition ProfAssociatorFctN
-  : TensorLF ProfTensorF ⇒ TensorRF ProfTensorF
+  : Tensor3LF ProfTensorF ⇒ Tensor3RF ProfTensorF
   :=
   {|nt '((R,Q),P) := @ProfunctorAssociatorInvN C C C C R Q P
       (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)
@@ -75,7 +76,7 @@ Next Obligation.
     (HC Q P) (HC R Q) (HC R (Q ∘Pr P)) (HC (R ∘Pr Q) P)
     (HC Q' P') (HC R' Q') (HC R' (Q' ∘Pr P')) (HC (R' ∘Pr Q') P')
     α β γ).
-Defined.
+Qed.
 
 (** Reversing the same object isomorphism supplies the forward
     reassociation as its computed inverse. *)
@@ -83,7 +84,7 @@ Defined.
 (** 反转同一个对象同构，以原正向重结合作为计算逆。 *)
 
 Definition ProfAssociatorFct
-  : TensorLF ProfTensorF ≅N TensorRF ProfTensorF.
+  : Tensor3LF ProfTensorF ≅N Tensor3RF ProfTensorF.
 Proof.
   exists ProfAssociatorFctN. intros [[R Q] P].
   pose (i := @ProfunctorAssociator C C C C R Q P
@@ -180,9 +181,8 @@ End Associativity.
 Section MonoidalAssembly.
 Universes u p.
 Context {C : Cat}.
-Context (HC : ∀ Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}),
+Context `(HC : ∀ Q P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _}),
     HasProfComp C C C Q P).
-Local Existing Instance HC.
 
 Let K
   : Cat
@@ -198,11 +198,13 @@ Let K
 Local Program Definition AssemblyTensorF
   : Fct (K ×C K) K
   :=
-  {|F0 (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
-  ; F1 QP QP' βα := ProfCompMapN (fst βα) (snd βα)
-  ; fct_fmap_proper := @fct_fmap_proper _ _ (ProfCompF C C C HC)
-  ; fct_id := @fct_id _ _ (ProfCompF C C C HC)
-  ; fct_comp := @fct_comp _ _ (ProfCompF C C C HC)
+  {|fobj (QP : @Ob (K ×C K)) := fst QP ∘Pr snd QP
+  ; fmap QP QP' βα := ProfCompMapN (fst βα) (snd βα)
+  ; isFct :=
+      {|fmap_proper := @fmap_proper _ _ _ _ (isFct (ProfCompF C C C HC))
+      ; fmap_id := @fmap_id _ _ _ _ (isFct (ProfCompF C C C HC))
+      ; fmap_comp := @fmap_comp _ _ _ _ (isFct (ProfCompF C C C HC))
+      |}
   |}.
 
 Let I
@@ -221,7 +223,7 @@ Program Definition ProfLeftUnitorFctN
   |}.
 Next Obligation.
   exact (@prof_left_unitor_natural C C X Y f (HC I X) (HC I Y)).
-Defined.
+Qed.
 
 (** Retain the original identity-insertion inverses at every profunctor. *)
 
@@ -245,7 +247,7 @@ Program Definition ProfRightUnitorFctN
   |}.
 Next Obligation.
   exact (@prof_right_unitor_natural C C X Y f (HC X I) (HC Y I)).
-Defined.
+Qed.
 
 (** Its chosen inverses are again the original identity insertions. *)
 
@@ -286,9 +288,9 @@ Defined.
 (** 装配已有双函子、Hom 单位和结构逆；交换律及分别自然性来自一般构造器。 *)
 
 Definition ProfMonoidal
-  : MonoidalCat K.
+  : HasMonoidal K.
 Proof.
-  refine (BifunctorMonoidal AssemblyTensorF I (ProfAssociatorFct (C := C) HC)
+  refine (BifctHasMonoidal AssemblyTensorF I (ProfAssociatorFct (C := C) HC)
     ProfLeftUnitorFct ProfRightUnitorFct _ _).
   - exact (prof_monoidal_pentagon (C := C) HC).
   - exact prof_monoidal_triangle.
@@ -302,9 +304,10 @@ Defined.
 Lemma prof_monoidal_map
     {Q Q' P P' : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})}
     (β : Q ⇒ Q') (α : P ⇒ P')
-  : @tensor_map K ProfMonoidal Q Q' P P' β α ≈N
+  : tensor_map (IM := isMagmoidal ProfMonoidal)
+      (X := Q) (X' := Q') (Y := P) (Y' := P') β α ≈N
       @ProfCompMapN C C C Q Q' P P' (HC Q P) (HC Q' P') β α.
-Proof. exact (@bifunctor_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
+Proof. exact (@bifct_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
 
 (** Identity components compare the reconstructed tensor functor with
     the original composition bifunctor. Its naturality is the preceding
@@ -314,7 +317,7 @@ Proof. exact (@bifunctor_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
     不要求函子定律记录相等。 *)
 
 Program Definition ProfTensorN
-  : tensorF ProfMonoidal ⇒ ProfCompF C C C HC
+  : tensorF (isMagmoidal ProfMonoidal) ⇒ ProfCompF C C C HC
   :=
   {|nt p := _
   |}.
@@ -330,7 +333,7 @@ Defined.
 (** 比较及其逆在每个选定复合上计算为恒等变换，保留全部选定 coend。 *)
 
 Definition ProfTensorIso
-  : tensorF ProfMonoidal ≅N ProfCompF C C C HC.
+  : tensorF (isMagmoidal ProfMonoidal) ≅N ProfCompF C C C HC.
 Proof.
   exists ProfTensorN. intros [Q P].
   exists IdN. split; intros [X V] v; reflexivity.

@@ -24,8 +24,13 @@ Local Open Scope nat_scope.
 Program Definition ArrowObjectsF
   : Fct (EqGpd BoolS) ArrowShape
   :=
-  {|F0 b := b
-  ; F1 x y p := _
+  {|fobj b := b
+  ; fmap x y p := _
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. destruct p. destruct x; exact tt. Defined.
 Next Obligation. intros p q H. exact tt. Defined.
@@ -50,7 +55,7 @@ Program Definition ArrowTransformation
   :=
   {|nt x := tt
   |}.
-Next Obligation. exact tt. Defined.
+Next Obligation. exact tt. Qed.
 
 Definition ArrowNerve
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
@@ -145,7 +150,7 @@ Program Definition BooleanLoopTransformation
   :=
   {|nt x := true
   |}.
-Next Obligation. destruct f; reflexivity. Defined.
+Next Obligation. destruct f; reflexivity. Qed.
 
 Definition BooleanVertexNerve
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}

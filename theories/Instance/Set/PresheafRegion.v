@@ -79,17 +79,22 @@ Context {C : Cat} {Q : Fct (C^op) SetCat@{u p _ _ _ _ _}}.
 Program Definition RegionPsh (R : PresheafRegion Q)
   : Fct (C^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 X := SubsetS (Q X) (region_member R)
-  ; F1 X Y f :=
+  {|fobj X := SubsetS (Q X) (region_member R)
+  ; fmap X Y f :=
       {|func x := (fmap Q f x.1; region_precomp R f x.1 x.2)
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation. intros x y E. exact (@func_proper _ _ (fmap Q f) _ _ E). Defined.
 Next Obligation.
-  intros f g E x. exact (fct_fmap_proper _ _ Q f g E x.1).
+  intros f g E x. exact (fmap_proper (IsFct := isFct Q) f g E x.1).
 Defined.
-Next Obligation. intros x. exact (fct_id _ _ Q x.1). Defined.
-Next Obligation. intros x. exact (fct_comp _ _ Q f g x.1). Defined.
+Next Obligation. intros x. exact (fmap_id (IsFct := isFct Q) x.1). Defined.
+Next Obligation. intros x. exact (fmap_comp (IsFct := isFct Q) f g x.1). Defined.
 
 (** Forget membership by the original respectful subset inclusion. *)
 
@@ -100,7 +105,7 @@ Program Definition RegionInclusionN (R : PresheafRegion Q)
   :=
   {|nt X := subset_inclusion_resp
   |}.
-Next Obligation. intros x. reflexivity. Defined.
+Next Obligation. intros x. reflexivity. Qed.
 
 (** Containment changes only membership, retaining the underlying value. *)
 
@@ -147,7 +152,7 @@ Program Definition RegionFactorN {P : Fct (C^op) SetCat@{u p _ _ _ _ _}}
   :=
   {|nt X := subset_pair_resp (α X) (H X)
   |}.
-Next Obligation. intros x. exact (nat_naturality α f x). Defined.
+Next Obligation. intros x. exact (nat_naturality α f x). Qed.
 
 (** The lift has exactly the given underlying map. *)
 

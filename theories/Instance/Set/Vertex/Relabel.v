@@ -109,23 +109,28 @@ Program Definition VtxRelabelF {J : Cat}
     (e : ∀ j, v j ≈S F j)
   : Fct J (VtxCat T)
   :=
-  {|F0 := v
-  ; F1 i j f := vertex_rebase_resp (e i) (e j) (fmap F f)
+  {|fobj := v
+  ; fmap i j f := vertex_rebase_resp (e i) (e j) (fmap F f)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
-  intros f g H. rewrite (@fct_fmap_proper _ _ F X0 Y f g H).
+  intros f g H. rewrite (@fmap_proper _ _ _ _ (isFct F) X0 Y f g H).
   reflexivity.
-Defined.
+Qed.
 Next Obligation.
   change (T⟦symmetry (e X0)⟧Ob ∘ fmap F id ∘ T⟦e X0⟧Ob ≈ id).
-  rewrite fct_id, comp_id_r. apply vertex_transport_inv.
-Defined.
+  rewrite fmap_id, comp_id_r. apply vertex_transport_inv.
+Qed.
 Next Obligation.
   transitivity (vertex_rebase_resp (e X0) (e Z) (fmap F f ∘ fmap F g)).
   - exact (@func_proper _ _ (vertex_rebase_resp (e X0) (e Z)) _ _
-      (@fct_comp _ _ F X0 Y Z f g)).
+      (@fmap_comp _ _ _ _ (isFct F) X0 Y Z f g)).
   - exact (vertex_rebase_comp (e X0) (e Y) (e Z) (fmap F g) (fmap F f)).
-Defined.
+Qed.
 
 (** The relabelled diagram equals the original through the prescribed
     transport squares, without equality of functor records. *)

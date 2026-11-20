@@ -174,12 +174,17 @@ Qed.
 Program Definition BooleanLabels
   : Fct (EqGpd BoolS) (CodiscreteCat bool)
   :=
-  {|F0 b := b
-  ; F1 x y p := tt
+  {|fobj b := b
+  ; fmap x y p := tt
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros p q H. exact tt. Defined.
-Next Obligation. exact tt. Defined.
-Next Obligation. exact tt. Defined.
+Next Obligation. intros p q H. exact tt. Qed.
+Next Obligation. exact tt. Qed.
+Next Obligation. exact tt. Qed.
 
 (** A constant functor respects the object setoid and all transports. *)
 

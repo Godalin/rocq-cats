@@ -21,7 +21,7 @@ Local Open Scope applicative_scope.
 
 Section Applicative.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (M : StrongMonad C (@CartMonoidal C HT HP)).
+    (M : StrongMonad C (@CartHasMonoidal C HT HP)).
 
 (** Bind the left input, then the right, and return their ordinary pair. *)
 
@@ -77,8 +77,8 @@ Local Ltac normalize_pairing :=
 (** tensorator 打包自然的有序配对。 *)
 
 Program Definition MonadTensorN
-  : (tensorF (@CartMonoidal C HT HP) ∘F (M ×F M)) ⇒
-      (M ∘F tensorF (@CartMonoidal C HT HP))
+  : (tensorF (isMagmoidal (@CartHasMonoidal C HT HP)) ∘F (M ×F M)) ⇒
+      (M ∘F tensorF (isMagmoidal (@CartHasMonoidal C HT HP)))
   :=
   {|nt p := @monad_pair (fst p) (snd p)
   |}.
@@ -87,7 +87,7 @@ Next Obligation.
   rewrite (@cartesian_tensor_map C HT HP _ _ _ _ (fmap M f) (fmap M g)),
     (@cartesian_tensor_map C HT HP _ _ _ _ f g).
   exact (monad_pair_natural f g).
-Defined.
+Qed.
 
 (** Monad return at the terminal object and ordered pairing form a lax
     monoidal endofunctor. The proof retains the sequencing order. *)
@@ -95,8 +95,8 @@ Defined.
 (** 终对象处的 Monad 返回及有序配对组成 lax 幺半自函子，证明保留求值次序。 *)
 
 Program Definition MonadLax
-  : LaxMonoidalFct (@CartMonoidal C HT HP)
-      (@CartMonoidal C HT HP)
+  : LaxMonoidalFct (@CartHasMonoidal C HT HP)
+      (@CartHasMonoidal C HT HP)
   :=
   {|LaxMonoidalFctToFct := M
   ; lax_unit := monad_return M (id[1])
@@ -104,28 +104,28 @@ Program Definition MonadLax
   |}.
 Next Obligation.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
       (monad_return M (id[1])) (id[M X])) ≈ π2).
   rewrite cartesian_tensor_map.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
     (monad_return M (id[1]) × id) ≈ π2).
   unfold monad_pair. monad_context_simpl M. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
       (id[M X]) (monad_return M (id[1]))) ≈ π1).
   rewrite cartesian_tensor_map.
   change (fmap M (π1 : Hom (X × 1) X) ∘ monad_pair ∘
     (id × monad_return M (id[1])) ≈ π1).
   unfold monad_pair. monad_context_simpl M. reflexivity.
-Defined.
+Qed.
 Local Opaque monad_pair.
 Next Obligation.
   change (fmap M (@product_assoc C HP X Y Z).1 ∘ monad_pair ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
       (@monad_pair X Y) (id[M Z])) ≈ monad_pair ∘
-    (@tensor_map C (@CartMonoidal C HT HP) _ _ _ _
+    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
       (id[M X]) (@monad_pair Y Z)) ∘
     (@product_assoc C HP (M X) (M Y) (M Z)).1).
   rewrite !cartesian_tensor_map.
@@ -140,7 +140,7 @@ Next Obligation.
         (@product_assoc C HP (M X) (M Y) (M Z)).1)).
   unfold product_assoc. cbn. normalize_pairing.
   unfold product_assoc. cbn. monad_context_simpl M. reflexivity.
-Defined.
+Qed.
 
 Local Transparent monad_pair.
 
@@ -154,13 +154,13 @@ Program Definition MonadA
   {|ApplicativeToLaxMonoidalFct := MonadLax
   ; applicative_pure := η[M]
   |}.
-Next Obligation. symmetry. apply monad_return_id. Defined.
+Next Obligation. symmetry. apply monad_return_id. Qed.
 Next Obligation.
   change (η[M] (X × Y)%ob ≈ monad_pair ∘ (η[M] X × η[M] Y)).
   rewrite <- (monad_return_id M (X × Y)%ob),
     <- (monad_return_id M X), <- (monad_return_id M Y).
   unfold monad_pair. monad_context_simpl M. reflexivity.
-Defined.
+Qed.
 
 (** The induced pure operation is precisely the monad unit. *)
 

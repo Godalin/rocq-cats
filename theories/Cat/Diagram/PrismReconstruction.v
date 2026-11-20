@@ -75,13 +75,13 @@ Next Obligation.
   destruct X as [x [[] | [[] | []]]], Y as [y [[] | [[] | []]]],
     f as [f a]; cbn in *; try solve [destruct a].
   - rewrite !comp_id_l, !comp_id_r.
-    apply fct_fmap_proper. split; [reflexivity | exact tt].
+    apply fmap_proper. split; [reflexivity | exact tt].
   - rewrite comp_id_l, comp_id_r.
     destruct a. symmetry.
     exact (product_at_map K (b := fin_first)
       (b' := fin_next fin_first) f (ordinal_step fin_first)).
   - rewrite !comp_id_l, !comp_id_r.
-    apply fct_fmap_proper. split; [reflexivity | exact tt].
+    apply fmap_proper. split; [reflexivity | exact tt].
 Defined.
 
 (** The comparison components are identities at the two concrete time
@@ -153,7 +153,7 @@ Lemma natural_prism_transformation_β
       PrismTransformationN (NatPrismF α)) ≈N
       (α ∘Nv NatPrismBoundaryN fin_first).
 Proof.
-  intros x. cbn. rewrite !comp_id_l, !comp_id_r, fct_id.
+  intros x. cbn. rewrite !comp_id_l, !comp_id_r, fmap_id.
   apply comp_id_l.
 Defined.
 

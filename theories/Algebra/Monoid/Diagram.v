@@ -31,14 +31,14 @@ Program Definition monoid_diagram_iso@{u p +}
       |}; _).
 Next Obligation.
   change (1 ⋅ fmap F f ≈S fmap G f ⋅ 1).
-  rewrite mul_unit_l,
-    mul_unit_r.
+  rewrite mul_unit_l, mul_unit_r.
   apply H.
-Defined.
+Qed.
 Next Obligation.
-  intros j. exists 1. split; change (1 ⋅ 1 ≈S (1 : M));
+  intros j. exists 1.
+  split; change (1 ⋅ 1 ≈S (1 : M));
     rewrite mul_unit_l; reflexivity.
-Defined.
+Qed.
 
 (** Interpret every ordered interval as its product in the arrow chain.
     The object map is constant; no equality between objects is needed. *)
@@ -50,14 +50,23 @@ Program Definition MonoidChainF@{u p +}
     {n : nat} (xs : M ^S n)
   : Fct [Ord n] B(M)
   :=
-  {|F0 i := tt
-  ; F1 i j f := xs⟦i, j⟧⋅
+  {|fobj i := tt
+  ; fmap i j f := xs⟦i, j⟧⋅
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. reflexivity. Defined.
-Next Obligation. exact (@monoid_segment_id M _ xs _). Defined.
+Next Obligation.
+  intros f g H. reflexivity.
+Qed.
+Next Obligation.
+  exact (@monoid_segment_id M _ xs _).
+Qed.
 Next Obligation.
   apply (@monoid_segment_comp M); apply nat_le_to_le; assumption.
-Defined.
+Qed.
 
 (** Equal chains give naturally isomorphic diagrams. *)
 

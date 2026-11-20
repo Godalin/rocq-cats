@@ -14,8 +14,13 @@ From Cats Require Import
 Program Definition ConstF (J : Cat) {C : Cat} (X : @Ob C)
   : Fct J C
   :=
-  {|F0 j := X
-  ; F1 j k f := id
+  {|fobj j := X
+  ; fmap j k f := id
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f g H. reflexivity. Qed.
 Next Obligation. reflexivity. Qed.
@@ -28,9 +33,14 @@ Next Obligation. symmetry. apply comp_id_l. Qed.
 Program Definition DiagF (J C : Cat)
   : Fct C (FctCat J C)
   :=
-  {|F0 X := ConstF J X
-  ; F1 X Y f :=
+  {|fobj X := ConstF J X
+  ; fmap X Y f :=
       {|nt j := f
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation. carw. Qed.
@@ -108,8 +118,8 @@ Program Definition MapCone {J C E : Cat} (F : Fct C E)
   {|nt j := fmap F (κ j)
   |}.
 Next Obligation.
-  rewrite comp_id_r, <- (fct_comp C E F).
-  apply fct_fmap_proper.
+  rewrite comp_id_r, <- (fmap_comp (IsFct := @isFct C E F)).
+  apply fmap_proper.
   pose proof (nat_naturality κ f) as H. cbn in H.
   rewrite comp_id_r in H. exact H.
 Qed.
@@ -165,8 +175,13 @@ Next Obligation. apply comp_assoc. Qed.
 Program Definition ConeApexF {J C : Cat} (D : Fct J C)
   : Fct (ConeCat D) C
   :=
-  {|F0 κ := κ.1
-  ; F1 κ μ f := f.1
+  {|fobj κ := κ.1
+  ; fmap κ μ f := f.1
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f g H. exact H. Qed.
 Next Obligation. reflexivity. Qed.

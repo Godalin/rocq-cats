@@ -39,8 +39,8 @@ Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B) (t : Tm Γ A).
 Definition separated_evaluation
   : @Nat ((RenamingCat@{b r l _ _ _ _ _} B)^op)
       SetCat@{s s _ _ _ _ _}
-      (EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ)
-      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+      (EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ)
+      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
   := EvalN t.
 
 (** Initial environments use the same explicit semantic family. *)
@@ -48,7 +48,7 @@ Definition separated_evaluation
 (** 初始环境使用同一个显式语义族。 *)
 
 Definition separated_initial_environment
-  : EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ Γ
+  : EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ Γ
   := initial_env Γ.
 
 (** The complete executable pipeline and its renaming law retain these
@@ -60,15 +60,15 @@ Definition separated_initial_environment
 Definition separated_normalization
   : Nf Γ A
   := nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
 
 Definition separated_normalization_renaming (Δ : Ctx B) (ρ : Ren Δ Γ)
   : nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t⟨ρ⟩ =
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t⟨ρ⟩ =
       separated_normalization⟨ρ⟩nf.
 Proof.
   exact (nf_rename@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
 Defined.
 
 (** Variable eta expansion also retains the chosen universe bounds. *)
@@ -77,11 +77,11 @@ Defined.
 
 Definition separated_variable_normalization (x : Var Γ A)
   : nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} (# x) =
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} (# x) =
       eta_expand_ne (ne_var x).
 Proof.
   exact (nf_var@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
 Defined.
 
 End SeparatedBounds.
@@ -109,8 +109,8 @@ Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B) (t : Tm Γ A).
 Definition smaller_world_law_evaluation
   : @Nat ((RenamingCat@{b r l _ _ _ _ _} B)^op)
       SetCat@{s s _ _ _ _ _}
-      (EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ)
-      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+      (EnvF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} Γ)
+      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
   := EvalN t.
 
 (** The normalization function also accepts this ordering of bounds. *)
@@ -120,16 +120,16 @@ Definition smaller_world_law_evaluation
 Definition smaller_world_law_normalization
   : Nf Γ A
   := nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
 
 Definition smaller_world_law_normalization_renaming
     (Δ : Ctx B) (ρ : Ren Δ Γ)
   : nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t⟨ρ⟩ =
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t⟨ρ⟩ =
       smaller_world_law_normalization⟨ρ⟩nf.
 Proof.
   exact (nf_rename@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t Δ ρ).
 Defined.
 
 (** Variable eta expansion also retains the chosen universe bounds. *)
@@ -138,11 +138,11 @@ Defined.
 
 Definition smaller_world_law_variable_normalization (x : Var Γ A)
   : nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} (# x) =
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} (# x) =
       eta_expand_ne (ne_var x).
 Proof.
   exact (nf_var@{b r s l
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} x).
 Defined.
 
 End SmallerWorldLawBound.

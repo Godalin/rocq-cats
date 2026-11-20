@@ -27,12 +27,16 @@ Program Definition VtxNerveF@{u r x e o h p l a b +}
   : Fct VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
   :=
-  {|F0 P := Nᵥ(P)
-  ; F1 P Q F := VtxNerveN F
-  ; fct_fmap_proper P Q F G H := vertex_nerve_proper F G H
+  {|fobj P := Nᵥ(P)
+  ; fmap P Q F := VtxNerveN F
+  ; isFct :=
+      {|fmap_proper P Q F G H := vertex_nerve_proper F G H
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. exact (vertex_nerve_id X). Defined.
-Next Obligation. exact (vertex_nerve_comp f g). Defined.
+Next Obligation. exact (vertex_nerve_id X). Qed.
+Next Obligation. exact (vertex_nerve_comp f g). Qed.
 
 (** Every simplicial map between image nerves has the existing reconstructed
     presentation morphism as a chosen preimage. *)

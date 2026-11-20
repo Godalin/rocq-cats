@@ -69,21 +69,26 @@ Defined.
 Program Definition FamLiftF@{v q +}
   : Fct FamCat FamCat@{_ _ _ _ _ _ _ _ v q _ _ _ _ _ _}
   :=
-  {|F0 := LiftFamC
-  ; F1 U V f := lift_fam_map f
+  {|fobj := LiftFamC
+  ; fmap U V f := lift_fam_map f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g [p Hp]. exists p. intros x [a].
   constructor. exact (Hp x a).
-Defined.
+Qed.
 Next Obligation.
   exists (λ x, reflS (x := x)). intros x [a].
   constructor. apply transpS_id.
-Defined.
+Qed.
 Next Obligation.
   exists (λ x, reflS (x := f (g x))). intros x [a].
   constructor. apply transpS_id.
-Defined.
+Qed.
 
 (** Forgetting the base after fiber lifting has identity comparison
     components; naturality compares maps, not functor records. *)

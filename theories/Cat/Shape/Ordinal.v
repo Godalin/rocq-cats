@@ -224,11 +224,11 @@ Proof.
       (β : ∀ i, Hom (P i) (Q i)) i (f : (@Hom [Ord m]) i i),
       β i ∘ fmap P f ≈ fmap Q f ∘ β i).
   { intros m P Q β i f.
-    rewrite (@fct_fmap_proper _ _ P i i f
+    rewrite (@fmap_proper _ _ _ _ (isFct P) i i f
       (@Cats.Cat.Core.id [Ord m] i) tt),
-      (@fct_fmap_proper _ _ Q i i f
+      (@fmap_proper _ _ _ _ (isFct Q) i i f
       (@Cats.Cat.Core.id [Ord m] i) tt),
-      !fct_id, comp_id_l, comp_id_r. reflexivity. }
+      !fmap_id, comp_id_l, comp_id_r. reflexivity. }
   induction n as [|n IH] in F, G, α, H |- *.
   - intros [[] | []] [[] | []] f. apply Hid.
   - assert (Hnext : ∀ i j : Ordinal n,
@@ -244,9 +244,9 @@ Proof.
         fmap F (fmap Q (ordinal_step i)) ≈
         fmap G (fmap Q (ordinal_step i)) ∘
           α (fin_next (fin_weaken i))).
-      rewrite (@fct_fmap_proper _ _ F _ _
+      rewrite (@fmap_proper _ _ _ _ (isFct F) _ _
         (fmap Q (ordinal_step i)) (ordinal_step (fin_next i)) tt),
-        (@fct_fmap_proper _ _ G _ _
+        (@fmap_proper _ _ _ _ (isFct G) _ _
         (fmap Q (ordinal_step i)) (ordinal_step (fin_next i)) tt).
       exact (H (fin_next i)). }
     intros [[] | i] [[] | j] f.
@@ -256,8 +256,8 @@ Proof.
       transitivity (α (fin_next j) ∘ (fmap F b ∘ fmap F a)).
       * apply comp_proper; [reflexivity |].
         transitivity (fmap F (b ∘ a)).
-        -- apply fct_fmap_proper. exact tt.
-        -- exact (@fct_comp _ _ F _ _ _ b a).
+        -- apply fmap_proper. exact tt.
+        -- exact (@fmap_comp _ _ _ _ (isFct F) _ _ _ b a).
       * transitivity ((α (fin_next j) ∘ fmap F b) ∘ fmap F a).
         { symmetry. apply comp_assoc. }
         transitivity ((fmap G b ∘ α (fin_next fin_first)) ∘ fmap F a).
@@ -270,10 +270,10 @@ Proof.
         { symmetry. apply comp_assoc. }
         apply comp_proper; [|reflexivity]. symmetry.
         transitivity (fmap G (b ∘ a)).
-        -- apply fct_fmap_proper. exact tt.
-        -- exact (@fct_comp _ _ G _ _ _ b a).
+        -- apply fmap_proper. exact tt.
+        -- exact (@fmap_comp _ _ _ _ (isFct G) _ _ _ b a).
     + destruct f.
-    + rewrite (@fct_fmap_proper _ _ F _ _ f (fmap Q f) tt),
-        (@fct_fmap_proper _ _ G _ _ f (fmap Q f) tt).
+    + rewrite (@fmap_proper _ _ _ _ (isFct F) _ _ f (fmap Q f) tt),
+        (@fmap_proper _ _ _ _ (isFct G) _ _ f (fmap Q f) tt).
       exact (Htail i j f).
 Defined.

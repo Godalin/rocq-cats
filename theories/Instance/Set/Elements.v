@@ -69,7 +69,7 @@ Program Definition element_map_id (X : PshElement)
   :=
   {|element_map_base := id
   |}.
-Next Obligation. exact (symmetry (fct_id (C^op) SetCat P X.2)). Defined.
+Next Obligation. exact (symmetry (fmap_id (IsFct := @isFct (C^op) SetCat P) X.2)). Defined.
 
 (** Composition uses restriction respectfulness and the presheaf law. *)
 
@@ -87,7 +87,7 @@ Next Obligation.
   - transitivity (fmap P (element_map_base f)
       (fmap P (element_map_base g) Z.2)).
     + apply func_proper. exact (element_map_eq g).
-    + exact (symmetry (fct_comp (C^op) SetCat P
+    + exact (symmetry (fmap_comp (IsFct := @isFct (C^op) SetCat P)
         (element_map_base f) (element_map_base g) Z.2)).
 Defined.
 
@@ -121,12 +121,17 @@ Next Obligation. apply comp_assoc. Defined.
 Program Definition ElementsBaseF
   : Fct ElementsCat C
   :=
-  {|F0 X := X.1
-  ; F1 X Y := element_map_base
+  {|fobj X := X.1
+  ; fmap X Y := element_map_base
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros f g H. exact H. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros f g H. exact H. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Designated element equality gives a vertical arrow over identity. *)
 
@@ -139,7 +144,7 @@ Program Definition element_conv {Γ : @Ob C} {A B : P Γ} (e : A ≈S B)
   |}.
 Next Obligation.
   transitivity B; [exact e |].
-  exact (symmetry (fct_id (C^op) SetCat P B)).
+  exact (symmetry (fmap_id (IsFct := @isFct (C^op) SetCat P) B)).
 Defined.
 
 (** Restriction gives the canonical arrow over a supplied substitution. *)
@@ -188,10 +193,10 @@ Next Obligation.
   transitivity (fmap P (element_map_base P g) Y.2).
   - exact (element_map_eq P g).
   - transitivity (fmap P (element_map_base P f ∘ u) Y.2).
-    + exact (@fct_fmap_proper (C^op) SetCat P _ _ _ _
+    + exact (@fmap_proper _ _ _ _ (@isFct (C^op) SetCat P) _ _ _ _
         (symmetry H) Y.2).
     + transitivity (fmap P u (fmap P (element_map_base P f) Y.2)).
-      * exact (fct_comp (C^op) SetCat P
+      * exact (fmap_comp (IsFct := @isFct (C^op) SetCat P)
           u (element_map_base P f) Y.2).
       * apply func_proper. symmetry. exact (element_map_eq P f).
 Defined.

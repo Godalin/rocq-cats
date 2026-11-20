@@ -146,7 +146,7 @@ Defined.
 (** 合并消去同索引的余面。 *)
 
 Lemma codegeneracy_coface_id {n : nat} (i : Ordinal n)
-  : σ[n; i] ∘ δ[n; i↑] ≈ (id : (@Hom Δ) n n).
+  : σ[n; i] ∘ δ[n; i↑] ≈ (@Cat.Core.id Δ n).
 Proof.
   apply simplex_eq_of_rank. intros x.
   change (fin_rank (@fin_merge n i
@@ -160,7 +160,7 @@ Defined.
 (** 合并同样消去紧邻后继索引处的余面。 *)
 
 Lemma codegeneracy_coface_next {n : nat} (i : Ordinal n)
-  : σ[n; i] ∘ δ[n; i⁺] ≈ (id : (@Hom Δ) n n).
+  : σ[n; i] ∘ δ[n; i⁺] ≈ (@Cat.Core.id Δ n).
 Proof.
   apply simplex_eq_of_rank. intros x.
   change (fin_rank (@fin_merge n i

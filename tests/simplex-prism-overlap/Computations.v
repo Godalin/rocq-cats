@@ -30,7 +30,7 @@ Definition left_factor (i : Ordinal 1)
 
 Definition right_factor (i : Ordinal 1)
   : (@Hom Δ) 5 3
-  := δ[2; i↑⁺] ∘ ((id : (@Hom Δ) 2 2) ∘ repeated_shape).
+  := δ[2; i↑⁺] ∘ ((@Cat.Core.id Δ 2) ∘ repeated_shape).
 
 Definition common_space (i : Ordinal 1)
   : σ[2; i↑] ∘ left_factor i ≈ σ[2; i⁺] ∘ right_factor i.
@@ -98,7 +98,7 @@ Definition outer_left
 
 Definition outer_right
   : (@Hom Δ) 5 3
-  := outer_left ∘ (id : (@Hom Δ) 5 5).
+  := outer_left ∘ (@Cat.Core.id Δ 5).
 
 Definition outer_space
   : σ[2; fin_first] ∘ outer_left ≈ σ[2; fin_first⁺⁺] ∘ outer_right.

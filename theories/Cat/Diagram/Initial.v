@@ -17,14 +17,14 @@ From Cats Require Import
 (** 从始位置出发的唯一箭头给出以图式在该处的值为顶点的锥。只需候选泛性质，
     不要求选定的始对象结构。 *)
 
-Program Definition InitialCone {J C : Cat} {j : @Ob J}
+Program Definition InitialCone {J C : Cat} {j : J}
     (Hj : is_initial j) (F : Fct J C)
   : F j ⇒Δ F
   :=
   {|nt k := fmap F (Hj k).1
   |}.
 Next Obligation.
-  rewrite comp_id_r, <- fct_comp.
-  apply fct_fmap_proper. symmetry.
+  rewrite comp_id_r, <- fmap_comp.
+  apply fmap_proper. symmetry.
   exact (that (Hj Y).2 _ I).
 Defined.

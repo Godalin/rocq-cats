@@ -77,7 +77,7 @@ Next Obligation.
   change (static_value B (static_arr B f ∘ˢ[B] h) tt ≈S
     fmap B f (static_value B h tt)).
   exact (static_value_map B f h tt).
-Defined.
+Qed.
 
 (** The recovered and original functors are naturally isomorphic,
     without equality of functor or law records. *)
@@ -113,7 +113,7 @@ Lemma static_recovery_pair (X Y : @Ob C)
 Proof.
   intros [f g].
   etransitivity; [exact (static_value_fanout B f g tt) |].
-  exact (@fct_id C C B (X × Y)%ob
+  exact (@fmap_id _ _ _ _ (@isFct C C B) (X × Y)%ob
     (φ₂[B; X; Y] (static_value B f tt, static_value B g tt))).
 
 Qed.

@@ -44,7 +44,7 @@ Context (B : Type@{b}) (A : Ty B) (Γ : Ctx B).
 
 Definition separated_type_reification
   : Reification A
-      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
   := TypeReification A.
 
 (** Raise carrier and equality bounds separately, preserving the same
@@ -54,14 +54,14 @@ Definition separated_type_reification
 
 Definition separated_raised_reification
   : Reification A (LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F
-      SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+      SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
   := lift_reification separated_type_reification.
 
 Definition separated_raised_reify_transformation
   : @Nat ((RenamingCat@{b r l _ _ _ _ _} B)^op)
       SetCat@{u p _ _ _ _ _}
       (LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F
-        SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+        SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
       (LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F NfPsh A)
   := ReifyN separated_raised_reification.
 
@@ -98,7 +98,7 @@ Context (B : Type@{b}) (A : Ty B).
 
 Definition smaller_raised_equality_reification
   : Reification A (LiftF@{u p _ _ _ _ _ _ _ _ _ _ _ _ _} ∘F
-      SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+      SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
   := lift_reification (TypeReification A).
 
 Definition raised_semantic_family
@@ -132,7 +132,7 @@ Context (B : Type@{b}) (A : Ty B) (Γ : Ctx B).
 
 Definition smaller_world_law_reification
   : Reification A
-      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
+      (SemF@{b r s l _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} A)
   := TypeReification A.
 
 Definition same_level_neutral_soundness (n : Ne Γ A)

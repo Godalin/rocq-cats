@@ -83,7 +83,7 @@ Let evaluation (A : Ty B)
   := OpenEvaluationGlueN@{b r s l e u p
       _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
       _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-      _ _ _ _ _ _ _ _} A.
+      _ _ _ _ _ _ _} A.
 Let syntax (A : Ty B)
   : @Ob P
   := source (evaluation A).

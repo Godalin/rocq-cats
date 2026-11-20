@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Core
-  Cat.Functor.Laws.
+  Cat.Functor.Core.
 
 (** * Separately Functorial Tensor Contexts
 
@@ -19,13 +19,16 @@ From Cats Require Export
 
 (** 为字段内的局部解释预留张量与作用语法。 *)
 
-Declare Scope binoidal_scope.
-Delimit Scope binoidal_scope with binoidal.
-Reserved Infix "⊗" (at level 41, right associativity).
-Reserved Infix "⊲" (at level 40, left associativity).
+Declare Scope monoidal_scope.
+Delimit Scope monoidal_scope with monoidal.
+Reserved Infix "⊗"
+  (at level 41, right associativity).
+Reserved Infix "⊲"
+  (at level 40, left associativity).
 Reserved Notation "f '⊳' Z"
   (at level 40, left associativity).
-Local Open Scope binoidal_scope.
+Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** Choose one object tensor and its two separately functorial actions on
     the named category. Both law groups refer to these exact maps. *)
@@ -35,40 +38,48 @@ Local Open Scope binoidal_scope.
 
 Class HasBinoidal (C : Cat)
   :=
-  { binoidal_tensor : C → C → C
-    where "X '⊗' Y" := (binoidal_tensor X Y)
-      : binoidal_scope
+  { tensor : C → C → C
+    where "X '⊗' Y" := (tensor X Y)
+      : ob_scope
 
   (** Each action uses the same chosen tensor on objects. *)
 
   (** 每种作用使用同一选定对象张量。 *)
 
-  ; binoidal_l {X Y : C} (Z : C) (f : Hom X Y)
+  ; tensor_l {X Y : C} (Z : C) (f : Hom X Y)
     : Hom (Z ⊗ X) (Z ⊗ Y)
-    where "Z '⊲' f" := (binoidal_l Z f)
-      : binoidal_scope
-  ; binoidal_r {X Y : C} (Z : C) (f : Hom X Y)
+    where "Z '⊲' f" := (tensor_l Z f)
+      : monoidal_scope
+
+  ; tensor_r {X Y : C} (Z : C) (f : Hom X Y)
     : Hom (X ⊗ Z) (Y ⊗ Z)
-    where "f '⊳' Z" := (binoidal_r Z f)
-      : binoidal_scope
+    where "f '⊳' Z" := (tensor_r Z f)
+      : monoidal_scope
 
   (** Fixed left and right contexts use the reusable functor-law interface. *)
 
   (** 固定的左右上下文使用可复用的函子律接口。 *)
 
   ; isBinoidalL (Z : C)
-    :: IsFct (binoidal_tensor Z) (λ X Y, @binoidal_l X Y Z)
+    :: IsFct (tensor Z) (λ X Y, @tensor_l X Y Z)
+
   ; isBinoidalR (Z : C)
-    :: IsFct (λ X, X ⊗ Z) (λ X Y, @binoidal_r X Y Z)
+    :: IsFct (λ X, X ⊗ Z) (λ X Y, @tensor_r X Y Z)
   }.
 
-Arguments binoidal_tensor {_ _} _ _.
-Arguments binoidal_l {_ _ _ _} _ _.
-Arguments binoidal_r {_ _ _ _} _ _.
+Arguments tensor {_ _} _ _.
+Arguments tensor_l {_ _ _ _} _ _.
+Arguments tensor_r {_ _ _ _} _ _.
 
-Infix "⊗" := binoidal_tensor : binoidal_scope.
-Infix "⊲" := binoidal_l : binoidal_scope.
-Notation "f '⊳' Z" := (binoidal_r Z f) : binoidal_scope.
+Infix "⊗" := tensor
+  (at level 41, right associativity)
+  : ob_scope.
+Infix "⊲" := tensor_l
+  (at level 40, left associativity)
+  : monoidal_scope.
+Notation "f '⊳' Z" := (tensor_r Z f)
+  (at level 40, left associativity)
+  : monoidal_scope.
 
 (** A complete binoidal category stores its category once and selects one
     extension. Its inherited instance reads that same stored choice. *)
@@ -79,7 +90,8 @@ Notation "f '⊳' Z" := (binoidal_r Z f) : binoidal_scope.
 Record BinoidalCat
   := BinoidalCatOfCat
   { BinoidalCatToCat :> Cat
-  ; hasBinoidal :: HasBinoidal BinoidalCatToCat
+  ; hasBinoidal
+    :: HasBinoidal BinoidalCatToCat
   }.
 
 Arguments BinoidalCatOfCat _ _ : clear implicits.
@@ -100,62 +112,62 @@ Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** 每种上下文作用均保持 Hom 相等。 *)
 
-Global Instance binoidal_l_proper {X Y : C} (Z : C)
-  : Proper (HomEq ==> HomEq) (@binoidal_l C BC X Y Z).
+Global Instance tensor_l_proper {X Y : C} (Z : C)
+  : Proper (HomEq ==> HomEq) (@tensor_l C BC X Y Z).
 Proof.
-  exact (fct_map_proper (IsFct := isBinoidalL Z)).
+  exact (fmap_proper (IsFct := isBinoidalL Z)).
 Qed.
 
 (** The right-context action has the same respectfulness interface. *)
 
 (** 右上下文作用具有同样的保相等接口。 *)
 
-Global Instance binoidal_r_proper {X Y : C} (Z : C)
-  : Proper (HomEq ==> HomEq) (@binoidal_r C BC X Y Z).
+Global Instance tensor_r_proper {X Y : C} (Z : C)
+  : Proper (HomEq ==> HomEq) (@tensor_r C BC X Y Z).
 Proof.
-  exact (fct_map_proper (IsFct := isBinoidalR Z)).
+  exact (fmap_proper (IsFct := isBinoidalR Z)).
 Qed.
 
 (** Left context preserves identities. *)
 
 (** 左上下文保持恒等。 *)
 
-Lemma binoidal_l_id (Z X : C)
+Lemma tensor_l_id (Z X : C)
   : Z ⊲ id[X] ≈ id.
 Proof.
-  exact (fct_map_id (IsFct := isBinoidalL Z) X).
+  exact (fmap_id (IsFct := isBinoidalL Z) (X := X)).
 Qed.
 
 (** Right context preserves identities. *)
 
 (** 右上下文保持恒等。 *)
 
-Lemma binoidal_r_id (Z X : C)
+Lemma tensor_r_id (Z X : C)
   : id[X] ⊳ Z ≈ id.
 Proof.
-  exact (fct_map_id (IsFct := isBinoidalR Z) X).
+  exact (fmap_id (IsFct := isBinoidalR Z) (X := X)).
 Qed.
 
 (** Left context preserves composition. *)
 
 (** 左上下文保持复合。 *)
 
-Lemma binoidal_l_comp {X Y W : C} (Z : C)
+Lemma tensor_l_comp {X Y W : C} (Z : C)
     (g : Hom Y W) (f : Hom X Y)
   : Z ⊲ (g ∘ f) ≈ (Z ⊲ g) ∘ (Z ⊲ f).
 Proof.
-  exact (fct_map_comp (IsFct := isBinoidalL Z) g f).
+  exact (fmap_comp (IsFct := isBinoidalL Z) g f).
 Qed.
 
 (** Right context preserves composition. *)
 
 (** 右上下文保持复合。 *)
 
-Lemma binoidal_r_comp {X Y W : C} (Z : C)
+Lemma tensor_r_comp {X Y W : C} (Z : C)
     (g : Hom Y W) (f : Hom X Y)
   : (g ∘ f) ⊳ Z ≈ (g ⊳ Z) ∘ (f ⊳ Z).
 Proof.
-  exact (fct_map_comp (IsFct := isBinoidalR Z) g f).
+  exact (fmap_comp (IsFct := isBinoidalR Z) g f).
 Qed.
 
 End ActionLaws.
@@ -177,25 +189,25 @@ Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** 在左侧张量一个固定对象。对象映射从同一选定张量导出，不另作选择。 *)
 
-Definition BinoidalLF (Z : @Ob C)
+Definition TensorAtLF (Z : C)
   : Fct C C
-  := FctOfMaps (binoidal_tensor Z)
-    (λ X Y, @binoidal_l C BC X Y Z) (isBinoidalL Z).
+  := MakeFct (tensor Z)
+    (λ X Y, @tensor_l C BC X Y Z) (isBinoidalL Z).
 
 (** Tensor with a fixed object on the right. *)
 
 (** 在右侧张量一个固定对象。 *)
 
-Definition BinoidalRF (Z : @Ob C)
+Definition TensorAtRF (Z : @Ob C)
   : Fct C C
-  := FctOfMaps (λ X, X ⊗ Z)
-    (λ X Y, @binoidal_r C BC X Y Z) (isBinoidalR Z).
+  := MakeFct (λ X, X ⊗ Z)
+    (λ X Y, @tensor_r C BC X Y Z) (isBinoidalR Z).
 
 (** Run the left factor before the right factor on separate inputs. *)
 
 (** 在分开的输入上先运行左因子，再运行右因子。 *)
 
-Definition binoidal_sequence {X Y Z W : @Ob C}
+Definition tensor_sequence {X Y Z W : @Ob C}
     (f : Hom X Y) (g : Hom Z W)
   : Hom (X ⊗ Z) (Y ⊗ W)
   := (Y ⊲ g) ∘ (f ⊳ Z).
@@ -204,11 +216,68 @@ Definition binoidal_sequence {X Y Z W : @Ob C}
 
 (** 有序组合保持两个计算相等。 *)
 
-Global Instance binoidal_sequence_proper {X Y Z W : @Ob C}
-  : Proper (HomEq ==> HomEq ==> HomEq) (@binoidal_sequence X Y Z W).
+Global Instance tensor_sequence_proper {X Y Z W : @Ob C}
+  : Proper (HomEq ==> HomEq ==> HomEq) (@tensor_sequence X Y Z W).
 Proof.
-  intros f f' Hf g g' Hg. unfold binoidal_sequence.
+  intros f f' Hf g g' Hg. unfold tensor_sequence.
   rewrite Hf, Hg. reflexivity.
 Qed.
 
 End ContextFunctors.
+
+Notation "'(' Z '⊗-)'" := (TensorAtLF Z)
+  (at level 0, format "( Z  ⊗-)")
+  : monoidal_scope.
+Notation "'(-⊗' Z ')'" := (TensorAtRF Z)
+  (at level 0, format "(-⊗  Z )")
+  : monoidal_scope.
+
+(** ** Sequencing with Identities
+
+    For fixed separate actions, tensoring with an identity recovers an
+    action. Tensoring two identities gives an identity. *)
+
+(** ** 与恒等态射的组合
+
+    固定分别作用后，与恒等态射张量得到相应的作用。两个恒等态射的张量
+    仍为恒等态射。 *)
+
+Section SequenceIdentities.
+Context {C : Cat} `{BC : !HasBinoidal C}.
+
+(** Tensoring identities uses only the two separate functor laws. *)
+
+(** 张量两个恒等态射只需两条分别函子律。 *)
+
+Lemma tensor_sequence_id (X Y : C)
+  : tensor_sequence id[X] id[Y] ≈ id[X ⊗ Y].
+Proof.
+  unfold tensor_sequence.
+  rewrite tensor_l_id, tensor_r_id. apply comp_id_l.
+Qed.
+
+(** Tensoring with a left identity recovers the left context action. *)
+
+(** 在左侧张量恒等态射恢复左上下文作用。 *)
+
+Lemma tensor_sequence_left {X Y : C} (Z : C)
+    (f : Hom X Y)
+  : tensor_sequence id[Z] f ≈ Z ⊲ f.
+Proof.
+  unfold tensor_sequence. rewrite tensor_r_id.
+  apply comp_id_r.
+Qed.
+
+(** Tensoring with a right identity recovers the right context action. *)
+
+(** 在右侧张量恒等态射恢复右上下文作用。 *)
+
+Lemma tensor_sequence_right {X Y : C} (Z : C)
+    (f : Hom X Y)
+  : tensor_sequence f id[Z] ≈ f ⊳ Z.
+Proof.
+  unfold tensor_sequence. rewrite tensor_l_id.
+  apply comp_id_l.
+Qed.
+
+End SequenceIdentities.

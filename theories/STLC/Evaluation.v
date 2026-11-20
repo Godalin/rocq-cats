@@ -339,7 +339,7 @@ Proof.
   cbn [eval EvalN SemanticCurryN nt kripke_eval kripke_curry_at
     kripke_apply].
   apply func_proper. split.
-  - exact (fct_id _ _ (EnvF Γ) γ).
+  - exact (fmap_id (IsFct := isFct (EnvF Γ)) γ).
   - reflexivity.
 Defined.
 

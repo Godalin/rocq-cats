@@ -2127,7 +2127,7 @@ Constraint o < e.
 Constraint e < h.
 Constraint h < p.
 Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
-    (MC0 : MonoidalCat C0) (MC1 : MonoidalCat C1).
+    (MC0 : HasMonoidal C0) (MC1 : HasMonoidal C1).
 
 Definition low_eq_monoid_category
   : Cat@{_ _ e _ _}
@@ -2244,7 +2244,7 @@ Constraint o < e.
 Constraint e < h.
 Constraint h < p.
 Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
-    (MC0 : MonoidalCat C0) (MC1 : MonoidalCat C1)
+    (MC0 : HasMonoidal C0) (MC1 : HasMonoidal C1)
     (L01 : LaxMonoidalFct MC0 MC1)
     (L10 : LaxMonoidalFct MC1 MC0).
 

@@ -466,7 +466,7 @@ Example tagged_changed_square_equal
       (IdentityTaggedCommaF TaggedGluingObj)
       (fmap IdentityTaggedCommaF tagged_gluing_toggle)
       (fmap IdentityTaggedCommaF id).
-Proof. apply fct_fmap_proper. exact tagged_gluing_toggle_equal. Defined.
+Proof. apply fmap_proper. exact tagged_gluing_toggle_equal. Defined.
 
 (** Respecting equality keeps the actual changed tag in the mapped side. *)
 

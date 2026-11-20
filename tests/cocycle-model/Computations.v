@@ -39,7 +39,7 @@ Proof. reflexivity. Qed.
 
 Example identity_restriction_computes
   : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
-      (BoolCocycleModel[(id : (@Hom Δ) 2 2)]Δ bool_cocycle_triangle) = true.
+      (BoolCocycleModel[(@Cat.Core.id Δ 2)]Δ bool_cocycle_triangle) = true.
 Proof. reflexivity. Qed.
 
 (** Each of the three actual faces has the unit triangle label on its

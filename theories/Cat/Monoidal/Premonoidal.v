@@ -1,9 +1,8 @@
 From Cats Require Export
-  Cat.Premonoidal.Associator
-  Cat.Premonoidal.Unitor.
+  Cat.Monoidal.Associator
+  Cat.Monoidal.Unitor.
 
-Local Open Scope binoidal_scope.
-Local Open Scope premonoidal_scope.
+Local Open Scope monoidal_scope.
 
 (** * Premonoidal Categories
 
@@ -27,19 +26,18 @@ Local Open Scope premonoidal_scope.
 
 Section Compatibility.
 Context {C : Cat} `{BC : !HasBinoidal C}
-  (AC : HasAssociator C BC) (UC : HasUnitors C BC).
-Local Existing Instance AC.
-Local Existing Instance UC.
+    `{AC : !HasAssoc C BC} `{UC : !HasUnitors C BC}.
 
 Class IsPremonoidal
   :=
-  { premonoidal_compatible_triangle (X Y : C)
-    : (X ⊲ λₚ[Y]) ∘ αₚ[X; Iₚ[UC]; Y] ≈ ρₚ[X] ⊳ Y
+  { tensor_triangle_coherence (X Y : C)
+    : (X ⊲ λ[Y]) ∘ α[X; 𝐈[UC]; Y] ≈ ρ[X] ⊳ Y
   }.
 
 End Compatibility.
 
-Arguments premonoidal_compatible_triangle
+Arguments IsPremonoidal {_ _} _ _.
+Arguments tensor_triangle_coherence
   {C BC AC UC IsPremonoidal} _ _.
 
 (** The fixed-parent extension stores each package once. Their shared
@@ -49,15 +47,15 @@ Arguments premonoidal_compatible_triangle
 
 Class HasPremonoidal (C : Cat) (BC : HasBinoidal C)
   :=
-  { hasAssociator :> HasAssociator C BC
+  { hasAssoc :> HasAssoc C BC
   ; hasUnitors :> HasUnitors C BC
-  ; isPremonoidal :: IsPremonoidal hasAssociator hasUnitors
+  ; isPremonoidal :: IsPremonoidal hasAssoc hasUnitors
   }.
 
-Arguments hasAssociator {_ _} _.
+Arguments hasAssoc {_ _} _.
 Arguments hasUnitors {_ _} _.
 Arguments isPremonoidal {_ _ _}.
-#[export] Existing Instance hasAssociator.
+#[export] Existing Instance hasAssoc.
 #[export] Existing Instance hasUnitors.
 
 (** A complete category owns one binoidal parent and its extension. Its
@@ -80,10 +78,10 @@ Arguments PremonoidalCatOfBinoidalCat _ _ : clear implicits.
 
 (** 选定的两份结构满足给定三角形。 *)
 
-Lemma premonoidal_triangle {C : Cat} `{BC : !HasBinoidal C}
+Lemma tensor_triangle {C : Cat} `{BC : !HasBinoidal C}
     `{PC : !HasPremonoidal C BC} (X Y : C)
-  : (X ⊲ λₚ[Y]) ∘ αₚ[X; Iₚ[PC]; Y] ≈ ρₚ[X] ⊳ Y.
+  : (X ⊲ λ[Y]) ∘ α[X; 𝐈[PC]; Y] ≈ ρ[X] ⊳ Y.
 Proof.
-  exact (premonoidal_compatible_triangle
+  exact (tensor_triangle_coherence
     (IsPremonoidal := isPremonoidal) X Y).
 Qed.

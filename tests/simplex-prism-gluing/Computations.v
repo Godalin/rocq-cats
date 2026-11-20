@@ -211,7 +211,7 @@ Definition point_product_glued
 Example point_cylinder_reconstructed_compute
   : let z := point_product_glued 1
       ({|lower := ConstF [Ord 1] (C := [Ord 0]) fin_first|},
-       {|lower := (id : (@Hom Δ) 1%nat 1%nat)|}) in
+       {|lower := (@Cat.Core.id Δ 1%nat)|}) in
     (fin_rank (lower (fst z) fin_first),
      fin_rank (lower (snd z) fin_first),
      fin_rank (lower (snd z) fin_first⁺)) = (0, 0, 1).

@@ -1,8 +1,9 @@
 From Cats Require Export
-  Cat.Monoidal.Core
+  Cat.Monoidal.Monoidal
   Cat.Induced.
 
 Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Computation with Monoidal Contexts
 
@@ -20,7 +21,7 @@ Local Open Scope monoidal_scope.
     笛卡尔特化提供熟悉的 Haskell Arrow 运算。这不同于以箭头为对象的范畴。 *)
 
 Section Interface.
-Context (C K : Cat) `{MC : !MonoidalCat C}.
+Context (C K : Cat) `{MC : !HasMonoidal C}.
 
 Class Arrow
   :=
@@ -52,7 +53,7 @@ Class Arrow
   (** 扩展纯箭头就是纯张量映射。 *)
 
   ; arrow_context_arr {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
-    : arrow_context Z (fmap ArrowF f) ≈ fmap ArrowF (id ⊗m f)
+    : arrow_context Z (fmap ArrowF f) ≈ fmap ArrowF (id ⊗ f)
 
   (** Extending a sequence preserves its execution order. *)
 
@@ -69,8 +70,8 @@ Class Arrow
 
   ; arrow_context_natural {X Y Z W : @Ob C}
       (f : Hom (ArrowF X) (ArrowF Y)) (h : Hom Z W)
-    : fmap ArrowF (h ⊗m id) ∘ arrow_context Z f ≈
-        arrow_context W f ∘ fmap ArrowF (h ⊗m id)
+    : fmap ArrowF (h ⊗ id) ∘ arrow_context Z f ≈
+        arrow_context W f ∘ fmap ArrowF (h ⊗ id)
 
   (** A unit context can be removed by the pure left unitor. *)
 
@@ -78,8 +79,8 @@ Class Arrow
 
   ; arrow_context_unit {X Y : @Ob C}
       (f : Hom (ArrowF X) (ArrowF Y))
-    : fmap ArrowF λ⊗[Y] ∘ arrow_context (I⊗[MC]) f ≈
-        f ∘ fmap ArrowF λ⊗[X]
+    : fmap ArrowF λ[Y] ∘ arrow_context (𝐈[MC]) f ≈
+        f ∘ fmap ArrowF λ[X]
 
   (** Successive ordinary contexts agree with their tensor after pure
       reassociation. No two effectful computations are exchanged. *)
@@ -88,9 +89,9 @@ Class Arrow
 
   ; arrow_context_assoc {X Y Z W : @Ob C}
       (f : Hom (ArrowF X) (ArrowF Y))
-    : fmap ArrowF α⊗[Z; W; Y] ∘ arrow_context (Z ⊗ W) f ≈
+    : fmap ArrowF α[Z; W; Y] ∘ arrow_context (Z ⊗ W) f ≈
         arrow_context Z (arrow_context W f) ∘
-          fmap ArrowF α⊗[Z; W; X]
+          fmap ArrowF α[Z; W; X]
   }.
 
 End Interface.
@@ -122,7 +123,7 @@ Local Open Scope computation_scope.
     固定具名幺半范畴上的计算 Arrow，按值对象重索引计算，并导出纯态射及固定上下文函子。 *)
 
 Section Derived.
-Context {C K : Cat} `{MC : !MonoidalCat C} (A : Arrow C K MC).
+Context {C K : Cat} `{MC : !HasMonoidal C} (A : Arrow C K MC).
 
 (** Reindex the existing computation category by the pure object map. *)
 
@@ -138,7 +139,7 @@ Definition ComputationCat
 
 Lemma arrow_arr_id (X : @Ob C)
   : arr[A; id[X]] ≈ id.
-Proof. apply fct_id. Qed.
+Proof. apply fmap_id. Qed.
 
 (** Pure lifting preserves ordinary composition. *)
 
@@ -146,7 +147,7 @@ Proof. apply fct_id. Qed.
 
 Lemma arrow_arr_comp {X Y Z : @Ob C} (g : Hom Y Z) (f : Hom X Y)
   : arr[A; g ∘ f] ≈ arr[A; g] ∘ arr[A; f].
-Proof. apply fct_comp. Qed.
+Proof. apply fmap_comp. Qed.
 
 (** Fixed-context extension is a functor on computations. *)
 
@@ -155,15 +156,19 @@ Proof. apply fct_comp. Qed.
 Program Definition ContextF (Z : @Ob C)
   : Fct ComputationCat ComputationCat
   :=
-  {|F0 X := Z ⊗ X
-  ; F1 X Y f := context[A; Z; f]
-  ; fct_fmap_proper X Y := arrow_context_proper A Z
+  {|fobj X := Z ⊗ X
+  ; fmap X Y f := context[A; Z; f]
+  ; isFct :=
+      {|fmap_proper X Y := arrow_context_proper A Z
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   change (context[A; Z; id[A X]] ≈ id).
   rewrite <- (arrow_arr_id X), arrow_context_arr,
-    tensor_map_id, fct_id. reflexivity.
-Defined.
-Next Obligation. exact (arrow_context_comp A Z f g). Defined.
+    tensor_map_id, fmap_id. reflexivity.
+Qed.
+Next Obligation. exact (arrow_context_comp A Z f g). Qed.
 
 End Derived.

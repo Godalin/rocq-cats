@@ -203,8 +203,13 @@ Program Definition WedgeApexF {C D : Cat}
     (F : Fct ((C^op) ×C C) D)
   : Fct (WedgeCat F) D
   :=
-  {|F0 κ := κ.1
-  ; F1 κ μ f := f.1
+  {|fobj κ := κ.1
+  ; fmap κ μ f := f.1
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f g H. exact H. Qed.
 Next Obligation. reflexivity. Qed.

@@ -5,6 +5,7 @@ From Cats Require Export
   Cat.Monoidal.Monoid.
 
 Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Lax Monoidal Transport of Monoids
 
@@ -25,16 +26,15 @@ Local Open Scope monoidal_scope.
 
 Section LaxMonoidTransport.
 Context {C D : Cat}
-    {MC : MonoidalCat C} {MD : MonoidalCat D}
+    {MC : HasMonoidal C} `{MD : !HasMonoidal D}
     (L : LaxMonoidalFct MC MD).
-Local Existing Instance MD.
 
 (** The transported unit first inserts the lax unit comparison. *)
 
 (** 传输后的单位先插入 lax 单位比较。 *)
 
 Definition lax_monoid_unit (A : MonoidObj MC)
-  : Hom (I⊗[MD]) (L A)
+  : Hom (𝐈[MD]) (L A)
   := fmap L e[A] ∘ φ₀[L].
 
 (** The transported multiplication combines images before mapping the
@@ -62,46 +62,46 @@ Program Definition LaxMonoidObj (A : MonoidObj MC)
 Next Obligation.
   unfold lax_monoid_mul, lax_monoid_unit.
   transitivity (fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A] ∘
-    ((fmap L e[A] ⊗m fmap L id) ∘ (φ₀[L] ⊗m id))).
-  - rewrite <- tensor_map_comp, fct_id, comp_id_l. reflexivity.
+    ((fmap L e[A] ⊗ fmap L id) ∘ (φ₀[L] ⊗ id))).
+  - rewrite <- tensor_map_comp, fmap_id, comp_id_l. reflexivity.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
-      (lax_tensor_natural L e[A] id), <- !comp_assoc, <- fct_comp.
+      (lax_tensor_natural L e[A] id), <- !comp_assoc, <- fmap_comp.
     rewrite (monoid_object_unit_l A). apply lax_unit_l.
-Defined.
+Qed.
 Next Obligation.
   unfold lax_monoid_mul, lax_monoid_unit.
   transitivity (fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A] ∘
-    ((fmap L id ⊗m fmap L e[A]) ∘ (id ⊗m φ₀[L]))).
-  - rewrite <- tensor_map_comp, fct_id, comp_id_l. reflexivity.
+    ((fmap L id ⊗ fmap L e[A]) ∘ (id ⊗ φ₀[L]))).
+  - rewrite <- tensor_map_comp, fmap_id, comp_id_l. reflexivity.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
-      (lax_tensor_natural L id e[A]), <- !comp_assoc, <- fct_comp.
+      (lax_tensor_natural L id e[A]), <- !comp_assoc, <- fmap_comp.
     rewrite (monoid_object_unit_r A). apply lax_unit_r.
-Defined.
+Qed.
 Next Obligation.
   unfold lax_monoid_mul.
   transitivity (fmap L m[A] ∘ φ₂[L; MonoidCarrier A; MonoidCarrier A] ∘
-    ((fmap L m[A] ⊗m fmap L id) ∘
-      (φ₂[L; MonoidCarrier A; MonoidCarrier A] ⊗m id))).
-  - rewrite <- tensor_map_comp, fct_id, comp_id_l. reflexivity.
+    ((fmap L m[A] ⊗ fmap L id) ∘
+      (φ₂[L; MonoidCarrier A; MonoidCarrier A] ⊗ id))).
+  - rewrite <- tensor_map_comp, fmap_id, comp_id_l. reflexivity.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
-      (lax_tensor_natural L m[A] id), <- !comp_assoc, <- fct_comp.
-    rewrite (monoid_object_assoc A), !(@fct_comp _ _ L), !comp_assoc.
-    rewrite <- (comp_assoc (fmap L (@tensor_assoc C MC A A A))).
+      (lax_tensor_natural L m[A] id), <- !comp_assoc, <- fmap_comp.
+    rewrite (monoid_object_assoc A), !(@fmap_comp _ _ _ _ (isFct L)), !comp_assoc.
+    rewrite <- (comp_assoc (fmap L (tensor_assoc (HasAssoc := MC) A A A).1)).
     rewrite (lax_assoc L A A A).
     rewrite !comp_assoc.
     rewrite <- (comp_assoc
-      (fmap L (@tensor_map C MC _ _ _ _ id m[A]))).
+      (fmap L (tensor_map (IM := isMagmoidal MC) id m[A]))).
     rewrite <- (lax_tensor_natural L id m[A]).
     rewrite !comp_assoc.
     rewrite <- (comp_assoc
-      (@tensor_map D MD _ _ _ _
+      (tensor_map (IM := isMagmoidal MD)
         (fmap L (id[A])) (fmap L m[A]))).
-    rewrite <- tensor_map_comp, fct_id, comp_id_l.
+    rewrite <- tensor_map_comp, fmap_id, comp_id_l.
     reflexivity.
-Defined.
+Qed.
 
 (** Mapping an operation-preserving arrow preserves both transported
     operations. The proof is reusable independently of the bundled functor. *)
@@ -114,10 +114,10 @@ Lemma lax_monoid_hom {A B : MonoidObj MC}
   : is_monoid_hom (LaxMonoidObj A) (LaxMonoidObj B) (fmap L f).
 Proof.
   destruct Hf as [He Hm]. split; cbn.
-  - unfold lax_monoid_unit. rewrite <- comp_assoc, <- fct_comp, He.
+  - unfold lax_monoid_unit. rewrite <- comp_assoc, <- fmap_comp, He.
     reflexivity.
   - unfold lax_monoid_mul.
-    rewrite <- comp_assoc, <- fct_comp, Hm, fct_comp, comp_assoc.
+    rewrite <- comp_assoc, <- fmap_comp, Hm, fmap_comp, comp_assoc.
     rewrite <- (lax_tensor_natural L f f), <- comp_assoc. reflexivity.
 Qed.
 
@@ -129,15 +129,20 @@ Qed.
 Program Definition LaxMonoidF
   : Fct (MonoidCat MC) (MonoidCat MD)
   :=
-  {|F0 := LaxMonoidObj
-  ; F1 A B f := (fmap L f.1; lax_monoid_hom f.1 f.2)
+  {|fobj := LaxMonoidObj
+  ; fmap A B f := (fmap L f.1; lax_monoid_hom f.1 f.2)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [f Hf] [g Hg] E.
-  exact (@fct_fmap_proper C D L _ _ f g E).
-Defined.
-Next Obligation. apply fct_id. Defined.
-Next Obligation. apply fct_comp. Defined.
+  exact (@fmap_proper _ _ _ _ (@isFct C D L) _ _ f g E).
+Qed.
+Next Obligation. apply fmap_id. Qed.
+Next Obligation. apply fmap_comp. Qed.
 
 End LaxMonoidTransport.
 
@@ -155,7 +160,7 @@ End LaxMonoidTransport.
     区分开来。 *)
 
 Section LaxMonoidTransformations.
-Context {C D : Cat} {MC : MonoidalCat C} {MD : MonoidalCat D}.
+Context {C D : Cat} {MC : HasMonoidal C} {MD : HasMonoidal D}.
 
 (** Monoidal preservation and naturality give both monoid homomorphism
     diagrams, without unfolding or reproving transported monoid laws. *)
@@ -186,7 +191,7 @@ Program Definition LaxMonoidN (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
   :=
   {|nt A := (α A; lax_monoidal_monoid_hom L K α Hα A)
   |}.
-Next Obligation. exact (nat_naturality α f.1). Defined.
+Next Obligation. exact (nat_naturality α f.1). Qed.
 
 (** Equality compares the same components regardless of preservation
     witnesses. This is natural equality in the target monoid category. *)
@@ -231,15 +236,20 @@ Defined.
 Program Definition LaxMonoidTransportF
   : Fct (LaxMonoidalFctCat MC MD) (FctCat (MonoidCat MC) (MonoidCat MD))
   :=
-  {|F0 := LaxMonoidF
-  ; F1 L K α := LaxMonoidN L K α.1 α.2
+  {|fobj := LaxMonoidF
+  ; fmap L K α := LaxMonoidN L K α.1 α.2
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros [α Hα] [β Hβ] E. exact (lax_monoid_nt_proper X Y α β Hα Hβ E).
-Defined.
-Next Obligation. exact (lax_monoid_nt_id X). Defined.
+Qed.
+Next Obligation. exact (lax_monoid_nt_id X). Qed.
 Next Obligation.
   symmetry. exact (lax_monoid_nt_comp X Y Z f.1 g.1 f.2 g.2).
-Defined.
+Qed.
 
 End LaxMonoidTransformations.

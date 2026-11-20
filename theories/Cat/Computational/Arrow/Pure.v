@@ -3,6 +3,7 @@ From Cats Require Export
 
 Local Open Scope monoidal_scope.
 Local Open Scope computation_scope.
+Local Open Scope ob_scope.
 
 (** * Pure Computation with Monoidal Contexts *)
 
@@ -14,7 +15,7 @@ Local Open Scope computation_scope.
 (** 固定范畴及其选定幺半结构，用恒等纯嵌入及张量构造显式无效应 Arrow。 *)
 
 Section Pure.
-Context {C : Cat} `{MC : !MonoidalCat C}.
+Context {C : Cat} `{MC : !HasMonoidal C}.
 
 (** The identity functor with left tensoring is an explicit pure model.
     Neither binary products nor symmetry are needed. *)
@@ -25,7 +26,7 @@ Program Definition PureArrow
   : Arrow C C MC
   :=
   {|ArrowF := IdF
-  ; arrow_context X Y Z f := id ⊗m f
+  ; arrow_context X Y Z f := (id ⊗ f)%hom
   |}.
 Next Obligation. intros f g H. rewrite H. reflexivity. Defined.
 Next Obligation. reflexivity. Defined.
@@ -35,10 +36,12 @@ Defined.
 Next Obligation.
   rewrite <- !tensor_map_comp, !comp_id_l, !comp_id_r. reflexivity.
 Defined.
-Next Obligation. apply tensor_unit_l_natural. Defined.
 Next Obligation.
-  pose proof (tensor_assoc_natural (id[Z]) (id[W]) f) as H.
-  rewrite tensor_map_id in H. exact H.
+  unfold tensor_map. rewrite tensor_sequence_left. apply tensor_unitor_l_natural.
+Defined.
+Next Obligation.
+  pose proof (tensor_assoc_sequence_natural (id[Z]) (id[W]) f) as H.
+  rewrite tensor_sequence_id in H. exact H.
 Defined.
 
 End Pure.

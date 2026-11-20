@@ -2,7 +2,7 @@ From Cats Require Import
   Cat.Core
   Cat.Functor.Core
   Cat.Natural
-  Cat.Binoidal.Bifunctor
+  Cat.Monoidal.Bifct
   Instance.Set.Core
   Instance.Set.Product
   Cat.Isomorphism.
@@ -38,7 +38,7 @@ Proof. reflexivity. Defined.
 
 Section UnitInsertion.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}
-    (A : TensorLF T ≅N TensorRF T)
+    (A : Tensor3LF T ≅N Tensor3RF T)
     (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
@@ -65,21 +65,21 @@ Proof.
     fmap T (X := (X,T (I,Z))) (Y := (X,Z)) (id,L.1 Z) ∘
       (A.1 ((X,I),Z) ∘
         fmap T (X := (X,Z)) (Y := (T (X,I),Z)) ((R.2 X).1,id))).
-  rewrite <- comp_assoc, Ht, <- !fct_comp.
+  rewrite <- comp_assoc, Ht, <- !fmap_comp.
   transitivity (id[T (X,Z)]).
   - transitivity (fmap T (X := (X,Z)) (Y := (X,Z)) (id,id)).
-    + apply (@fct_fmap_proper (C ×C C) C T). split; cbn;
+    + apply (@fmap_proper _ _ _ _ (@isFct (C ×C C) C T)). split; cbn;
         [apply comp_id_l | exact (snd (L.2 Z).2)].
-    + apply fct_id.
+    + exact (fmap_id (IsFct := isFct T) (X := (X, Z))).
   - symmetry.
     transitivity (fmap T (X := (X,Z)) (Y := (X,Z)) (id,id)).
     + transitivity (fmap T (X := (X,Z)) (Y := (X,Z))
         (R.1 X ∘ (R.2 X).1,(id[Z]) ∘ id)).
-      * symmetry. exact (@fct_comp (C ×C C) C T
+      * symmetry. exact (@fmap_comp _ _ _ _ (@isFct (C ×C C) C T)
           (X,Z) (T (X,I),Z) (X,Z) (R.1 X,id) ((R.2 X).1,id)).
-      * apply (@fct_fmap_proper (C ×C C) C T). split; cbn;
+      * apply (@fmap_proper _ _ _ _ (@isFct (C ×C C) C T)). split; cbn;
           [exact (snd (R.2 X).2) | apply comp_id_l].
-    + apply fct_id.
+    + exact (fmap_id (IsFct := isFct T) (X := (X, Z))).
 Defined.
 
 (** Transporting a left insertion by the inverse associator gives the
@@ -108,17 +108,17 @@ Proof.
       (id,fmap T (X := (I,Z)) (Y := (Y,Z)) (j,id)) ∘
     fmap T (X := (X,Z)) (Y := (X,T (I,Z))) (id,(L.2 Z).1))).
   - apply comp_proper; [reflexivity |].
-    rewrite <- (@fct_comp (C ×C C) C T). apply (@fct_fmap_proper (C ×C C) C T).
+    rewrite <- (@fmap_comp _ _ _ _ (@isFct (C ×C C) C T)). apply (@fmap_proper _ _ _ _ (@isFct (C ×C C) C T)).
     split; cbn; [symmetry; apply comp_id_l | reflexivity].
   - rewrite <- comp_assoc, Hn, comp_assoc, day_triangle_unit_insertion.
     transitivity (fmap T (X := (X,Z)) (Y := (T (X,Y),Z))
       (fmap T (X := (X,I)) (Y := (X,Y)) (id,j) ∘ (R.2 X).1,
         (id[Z]) ∘ id)).
-    + symmetry. exact (@fct_comp (C ×C C) C T
+    + symmetry. exact (@fmap_comp _ _ _ _ (@isFct (C ×C C) C T)
         (X,Z) (T (X,I),Z) (T (X,Y),Z)
         (fmap T (X := (X,I)) (Y := (X,Y)) (id,j),id)
         ((R.2 X).1,id)).
-    + apply (@fct_fmap_proper (C ×C C) C T).
+    + apply (@fmap_proper _ _ _ _ (@isFct (C ×C C) C T)).
       split; cbn; [reflexivity | apply comp_id_l].
 Defined.
 
@@ -155,7 +155,7 @@ Proof.
       (f,id) h (x,y)).
   - exact (@func_proper _ _ (day_inject T F G (X',Y) h)
       (fmap F f x,fmap G id y) (fmap F f x,y)
-      (reflexivity _,@fct_id C SetCat G Y y)).
+      (reflexivity _,@fmap_id _ _ _ _ (@isFct C SetCat G) Y y)).
 Defined.
 
 (** Move the second input action without a symmetry assumption. *)
@@ -174,7 +174,7 @@ Proof.
       (id,g) h (x,y)).
   - exact (@func_proper _ _ (day_inject T F G (X,Y') h)
       (fmap F id x,fmap G g y) (x,fmap G g y)
-      (@fct_id C SetCat F X x,reflexivity _)).
+      (@fmap_id _ _ _ _ (@isFct C SetCat F) X x,reflexivity _)).
 Defined.
 
 End InputWeights.
@@ -193,7 +193,7 @@ End InputWeights.
 Section Triangle.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C) {I : @Ob C}
-    (A : TensorLF T ≅N TensorRF T)
+    (A : Tensor3LF T ≅N Tensor3RF T)
     (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 Context (Ht : ∀ X Y : @Ob C,
     fmap T (X := (X,T (I,Y))) (Y := (X,Y)) (id,L.1 Y) ∘
@@ -225,13 +225,13 @@ Proof.
     fmap G l y).
   { transitivity (fmap G (id ∘ l) y).
     - exact (day_left_unitor_β T L G id j y).
-    - exact (@fct_fmap_proper C SetCat G _ _ _ _ (comp_id_l l) y). }
+    - exact (@fmap_proper _ _ _ _ (@isFct C SetCat G) _ _ _ _ (comp_id_l l) y). }
   assert (Hright : DayRightUnitorN T R F (T (X,Y))
     (day_inject T F (DayUnitF I) (X,Y) id (x,{|lower := j|})) ≈S
     fmap F r x).
   { transitivity (fmap F (id ∘ r) x).
     - exact (day_right_unitor_β T R F id x j).
-    - exact (@fct_fmap_proper C SetCat F _ _ _ _ (comp_id_l r) x). }
+    - exact (@fmap_proper _ _ _ _ (@isFct C SetCat F) _ _ _ _ (comp_id_l r) x). }
   transitivity (day_inject T F G (X,Z)
     (fmap T (X := (X,Z)) (Y := (T (X,Y),Z)) (r,id)) (x,y)).
   - transitivity (DayMapN T (IdN (F := F)) (DayLeftUnitorN T L G) (T (T (X,Y),Z))
@@ -299,7 +299,7 @@ Proof.
         -- exact (day_inject_first T F G r id x y).
         -- exact (@day_inject_proper C T F G HFG (X,Z) _ _ _
              (comp_id_l _) (x,y)).
-Defined.
+Qed.
 
 (** A pointwise boundary keeps representatives abstract before concrete
     clients insert their computations. *)
@@ -314,7 +314,7 @@ Lemma day_triangle_at (Z : @Ob C)
 Proof.
   pose proof (day_triangle Z v) as H.
   rewrite day_nat_comp_at in H. exact H.
-Defined.
+Qed.
 
 End Triangle.
 
@@ -420,8 +420,8 @@ Proof.
           (DayTripleLeftGenN T (DayF T F G) H K ((U,c),d))).
         split; [split |].
         + symmetry. exact (day_gen_post T F G (a,b) h (x,y)).
-        + symmetry. exact (@fct_id C SetCat H c z0).
-        + symmetry. exact (@fct_id C SetCat K d w0).
+        + symmetry. exact (@fmap_id _ _ _ _ (@isFct C SetCat H) c z0).
+        + symmetry. exact (@fmap_id _ _ _ _ (@isFct C SetCat K) d w0).
       - exact (nat_naturality (DayTripleLeftGenN T (DayF T F G) H K)
           (X := ((T (a,b),c),d)) (Y := ((U,c),d)) ((h,id),id)
           ((v0,z0),w0)). }
@@ -460,7 +460,7 @@ End FourInputs.
 
 Section BasePentagon.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLF T ≅N TensorRF T).
+    (A : Tensor3LF T ≅N Tensor3RF T).
 Context (Hp : ∀ a b c d : @Ob C,
     A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d) ≈
       fmap T (X := (a,T (T (b,c),d))) (Y := (a,T (b,T (c,d))))
@@ -510,7 +510,7 @@ End BasePentagon.
 Section AssociatorWeights.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLF T ≅N TensorRF T)
+    (A : Tensor3LF T ≅N Tensor3RF T)
     (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
     `{HFG : !HasDay C T F G} `{HGH : !HasDay C T G H}
     `{HL : !HasDay C T (DayF T F G) H}
@@ -540,7 +540,7 @@ Proof.
   - transitivity (fmap (DayF T F (DayF T G H))
       (w ∘ (A.2 ((a,b),c)).1)
       (DayTripleRightGenN T F G H ((a,b),c) ((x,y),z))).
-    + symmetry. exact (@fct_comp C SetCat (DayF T F (DayF T G H))
+    + symmetry. exact (@fmap_comp _ _ _ _ (@isFct C SetCat (DayF T F (DayF T G H)))
         _ _ _ w ((A.2 ((a,b),c)).1)
         (DayTripleRightGenN T F G H ((a,b),c) ((x,y),z))).
     + exact (day_gen_post T F (DayF T G H) (a,T (b,c))
@@ -562,7 +562,7 @@ End AssociatorWeights.
 Section OuterWeight.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLF T ≅N TensorRF T)
+    (A : Tensor3LF T ≅N Tensor3RF T)
     (F G H : Fct C (SetCat@{u p _ _ _ _ _}))
     `{HFG : !HasDay C T F G} `{HGH : !HasDay C T G H}
     `{HL : !HasDay C T (DayF T F G) H}
@@ -585,7 +585,8 @@ Proof.
       (A.2 ((a,b),c)).1) (x,DayGenN T G H (b,c) (y,z))).
   - exact (day_associator_inject T A F G H h id x y z).
   - apply (@day_inject_proper C T F (DayF T G H) HR (a,T (b,c))).
-    rewrite fct_id, comp_id_r. reflexivity.
+    rewrite (fmap_id (IsFct := isFct T) (X := (T (a,b),c))), comp_id_r.
+    reflexivity.
 Defined.
 
 End OuterWeight.
@@ -604,7 +605,7 @@ End OuterWeight.
 Section Pentagon.
 Universes u p.
 Context {C : Cat} (T : Fct (C ×C C) C)
-    (A : TensorLF T ≅N TensorRF T).
+    (A : Tensor3LF T ≅N Tensor3RF T).
 Context (Hp : ∀ a b c d : @Ob C,
     A.1 ((a,b),T (c,d)) ∘ A.1 ((T (a,b),c),d) ≈
       fmap T (X := (a,T (T (b,c),d))) (Y := (a,T (b,T (c,d))))
@@ -751,13 +752,13 @@ Proof.
                            (Y := (a,T (T (b,c),d)))
                            (id,(A.2 ((b,c),d)).1))).
                      { apply comp_proper.
-                       { apply (@fct_fmap_proper (C ×C C) C T).
+                       { apply (@fmap_proper _ _ _ _ (@isFct (C ×C C) C T)).
                          split; [apply comp_id_l | reflexivity]. }
                        { apply comp_proper; [reflexivity |].
-                         apply (@fct_fmap_proper (C ×C C) C T).
+                         apply (@fmap_proper _ _ _ _ (@isFct (C ×C C) C T)).
                          split; [reflexivity | apply comp_id_l]. } }
                      { symmetry. exact (day_pentagon_weight T A Hp a b c d). }
-Defined.
+Qed.
 
 (** The pointwise pentagon exposes the three intermediate maps before
     a client supplies any large coend representative. *)
@@ -776,6 +777,6 @@ Lemma day_pentagon_at (Z : @Ob C)
 Proof.
   pose proof (day_pentagon Z v) as Hpath.
   rewrite !day_nat_comp_at in Hpath. exact Hpath.
-Defined.
+Qed.
 
 End Pentagon.

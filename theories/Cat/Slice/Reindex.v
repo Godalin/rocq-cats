@@ -98,23 +98,28 @@ Proof. apply slice_reindex_lift_β2. Qed.
 Program Definition SliceReindexF {X Y : @Ob C} (f : Hom X Y)
   : Fct (C /C Y) (C /C X)
   :=
-  {|F0 := SliceReindexOb f
-  ; F1 A B := slice_reindex_map f
+  {|fobj := SliceReindexOb f
+  ; fmap A B := slice_reindex_map f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros h k H. unfold slice_reindex_map. cbn.
   apply pb_proper; [reflexivity | rewrite H; reflexivity].
-Defined.
+Qed.
 Next Obligation.
   unfold slice_reindex_map. cbn. symmetry. apply pb_η. split.
   - rewrite comp_id_r. reflexivity.
   - rewrite comp_id_r, comp_id_l. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   unfold slice_reindex_map. cbn. symmetry. apply pb_η. split.
   - rewrite <- comp_assoc, !pb_β1. reflexivity.
   - rewrite <- comp_assoc, pb_β2, comp_assoc, pb_β2, <- comp_assoc. reflexivity.
-Defined.
+Qed.
 
 (** Any other pullback gives a specified isomorphism to the chosen one. *)
 
@@ -173,7 +178,7 @@ Next Obligation.
   apply (pullback_hom_ext (pullback_universal (f := id[X]) (g := slice_arrow Y))).
   - cbn. rewrite <- !comp_assoc, !pb_β1. apply slice_comm.
   - cbn. rewrite <- !comp_assoc, !pb_β2, comp_assoc, pb_β2. carw.
-Defined.
+Qed.
 
 (** Identity base change is naturally isomorphic to the identity functor. *)
 
@@ -240,7 +245,7 @@ Next Obligation.
   - cbn. repeat first [rewrite <- comp_assoc | rewrite pb_β2].
     rewrite !comp_assoc, pb_β2, <- !comp_assoc, pb_β2.
     rewrite !comp_assoc, pb_β2. reflexivity.
-Defined.
+Qed.
 
 (** Iterated and composite base change are naturally isomorphic. *)
 
@@ -320,7 +325,7 @@ Next Obligation.
     repeat first [rewrite <- comp_assoc | rewrite pb_β1 | rewrite pb_β2].
   - reflexivity.
   - rewrite comp_assoc, pb_β2. reflexivity.
-Defined.
+Qed.
 
 (** Equal base maps induce naturally isomorphic reindexing functors. *)
 

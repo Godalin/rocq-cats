@@ -131,7 +131,7 @@ Proof.
   rewrite comp_id_l in H.
   change ((pure[A] (X ^ X) ∘ (idᴱ[X] ∘ !)) ⋆[A] u ≈
     fmap A (id[X]) ∘ u) in H.
-  rewrite exp_id_comp, fct_id, comp_id_l in H. exact H.
+  rewrite exp_id_comp, fmap_id, comp_id_l in H. exact H.
 Qed.
 
 (** Interchange: a fixed pure argument can be applied after mapping
@@ -190,7 +190,7 @@ Proof.
   - rewrite !comp_assoc. apply comp_proper; [reflexivity |].
     symmetry. etransitivity.
     + exact (product_comp_l u v (fmap A f) (fmap A (id[Y]))).
-    + rewrite fct_id, comp_id_l. reflexivity.
+    + rewrite fmap_id, comp_id_l. reflexivity.
   - apply comp_proper; [| reflexivity].
     exact (cartesian_lift2_pre A (eval (X := Y) (Y := Z)) f (id[Y])).
 Qed.

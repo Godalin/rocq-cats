@@ -171,7 +171,7 @@ Proof.
       nerve_map_vertex x j⟧Ar).
   - exact (vertex_rebase_eq U _ _ _ _ (e fin_first)
       (e (fin_next fin_first)) _ _ (L _ _ (ordinal_step fin_first))).
-  - apply func_proper. apply fct_fmap_proper. exact tt.
+  - apply func_proper. apply fmap_proper. exact tt.
 Defined.
 
 (** Degenerate edges give the identity law. *)
@@ -188,7 +188,7 @@ Proof.
   - exact (nerve_map_arrow_simplex x _ _ id).
   - change (U⟦symmetry (nerve_map_vertex x fin_first)⟧Ob ∘
       fmap (lower (α 0 x)) id ∘ U⟦nerve_map_vertex x fin_first⟧Ob ≈ id).
-    rewrite fct_id, comp_id_r. apply vertex_transport_inv.
+    rewrite fmap_id, comp_id_r. apply vertex_transport_inv.
 Defined.
 
 (** Composition inside any simplex is preserved after endpoint alignment. *)
@@ -209,7 +209,7 @@ Proof.
   - transitivity (U⟦nerve_map_vertex x i;
         fmap (lower (α n x)) g ∘ fmap (lower (α n x)) f;
         nerve_map_vertex x k⟧Ar).
-    + apply func_proper. apply fct_comp.
+    + apply func_proper. apply fmap_comp.
     + etransitivity; [apply vertex_rebase_comp |].
       apply comp_proper; symmetry; apply nerve_map_arrow_simplex.
 Defined.
@@ -232,7 +232,7 @@ Proof.
   { exact (chain_diagram_β ⟨f, g⟩Ch (fin_next (@fin_first 0))). }
   transitivity (nerve_map_arrow (fmap (lower x) (b ∘ a))).
   - apply nerve_map_arrow_proper. symmetry.
-    etransitivity; [exact (@fct_comp _ _ (lower x) _ _ _ b a) |].
+    etransitivity; [exact (@fmap_comp _ _ _ _ (isFct (lower x)) _ _ _ b a) |].
     apply comp_proper; assumption.
   - etransitivity; [exact (nerve_map_simplex_comp x _ _ _ a b) |].
     apply comp_proper; apply nerve_map_arrow_proper; assumption.
@@ -261,8 +261,13 @@ Defined.
 Program Definition NerveMapF
   : Fct (VtxCat T) (VtxCat U)
   :=
-  {|F0 := nerve_map_ob_resp
-  ; F1 A B f := nerve_map_arrow f
+  {|fobj := nerve_map_ob_resp
+  ; fmap A B f := nerve_map_arrow f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. exact (nerve_map_arrow_id X0). Defined.
 Next Obligation. exact (nerve_map_arrow_comp g f). Defined.
@@ -359,7 +364,7 @@ Proof.
       nerve_map_vertex (VtxNerveN F) (△₁[T; A; B] f)
         (fin_next fin_first)⟧Ar ≈ fmap F f).
   etransitivity; [apply vertex_rebase_id |].
-  exact (@fct_fmap_proper _ _ F _ _ _ _ (edge_simplex_arrow f)).
+  exact (@fmap_proper _ _ _ _ (isFct F) _ _ _ _ (edge_simplex_arrow f)).
 Defined.
 
 (** Full faithfulness is a hom-setoid isomorphism for labelled object

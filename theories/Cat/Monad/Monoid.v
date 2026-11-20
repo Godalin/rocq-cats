@@ -35,7 +35,7 @@ Definition BicatMonad (B : Bicat) (X : ObB B)
 (** 复合是自函子的张量，恒等函子是其单位。 *)
 
 Definition EndofunctorMonoidal (C : Cat)
-  : MonoidalCat (FctCat C C)
+  : HasMonoidal (FctCat C C)
   := EndoMonoidal CatBicat C.
 
 (** Constructive equivalence of laws for the same [T], [η] and [μ]. The
@@ -62,7 +62,7 @@ Proof.
     intros X.
     change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id).
-    rewrite (@fct_id C C T (T X)), (@fct_id C C T (T (T X))).
+    rewrite (@fmap_id _ _ _ _ (@isFct C C T) (T X)), (@fmap_id _ _ _ _ (@isFct C C T) (T (T X))).
     rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
       (comp_id_r (μ X ∘ fmap T (μ X))). apply Ha.
   - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ η id) in Hu.
@@ -81,7 +81,7 @@ Proof.
     specialize (Ha X).
     change (μ X ∘ (μ (T X) ∘ fmap T (fmap T id)) ≈
       (μ X ∘ (id ∘ fmap T (μ X))) ∘ id) in Ha.
-    rewrite (@fct_id C C T (T X)), (@fct_id C C T (T (T X))) in Ha.
+    rewrite (@fmap_id _ _ _ _ (@isFct C C T) (T X)), (@fmap_id _ _ _ _ (@isFct C C T) (T (T X))) in Ha.
     rewrite (comp_id_r (μ (T X))), (comp_id_l (fmap T (μ X))),
       (comp_id_r (μ X ∘ fmap T (μ X))) in Ha. exact Ha.
 Defined.
@@ -145,12 +145,17 @@ Defined.
 Program Definition MonadMonoidF (C : Cat)
   : Fct (MonadCat C) (MonoidCat (EndofunctorMonoidal C))
   :=
-  {|F0 := MonadMonoid
-  ; F1 M N α := (α.1; fst (monad_monoid_hom M N α.1) α.2)
+  {|fobj := MonadMonoid
+  ; fmap M N α := (α.1; fst (monad_monoid_hom M N α.1) α.2)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β E. exact E. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros α β E. exact E. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** Recover ordinary monads and the same underlying homomorphisms. *)
 
@@ -159,13 +164,18 @@ Next Obligation. reflexivity. Defined.
 Program Definition MonoidMonadF (C : Cat)
   : Fct (MonoidCat (EndofunctorMonoidal C)) (MonadCat C)
   :=
-  {|F0 := MonoidMonad
-  ; F1 A B α := (α.1;
+  {|fobj := MonoidMonad
+  ; fmap A B α := (α.1;
       snd (monad_monoid_hom (MonoidMonad A) (MonoidMonad B) α.1) α.2)
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β E. exact E. Defined.
-Next Obligation. reflexivity. Defined.
-Next Obligation. reflexivity. Defined.
+Next Obligation. intros α β E. exact E. Qed.
+Next Obligation. reflexivity. Qed.
+Next Obligation. reflexivity. Qed.
 
 (** The Monad round trip has identity components: its operations are
     computationally unchanged, even though its law witnesses may differ. *)
@@ -179,7 +189,7 @@ Program Definition MonadMonoidRoundtripN (C : Cat)
   |}.
 Next Obligation.
   intros Z. cbn. rewrite comp_id_l, comp_id_r. reflexivity.
-Defined.
+Qed.
 
 (** The Monad round trip is naturally isomorphic to the identity. This
     specifies structural comparison without native equality of records. *)
@@ -206,7 +216,7 @@ Program Definition MonoidMonadRoundtripN (C : Cat)
   |}.
 Next Obligation.
   intros Z. cbn. rewrite comp_id_l, comp_id_r. reflexivity.
-Defined.
+Qed.
 
 (** The monoid round trip is naturally isomorphic to the identity. *)
 

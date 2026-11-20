@@ -280,7 +280,7 @@ Proof. exact (limit_map_β (α^opN) j). Qed.
 
 Global Instance colimit_map_proper {D E : Fct J C}
   : Proper (NatEq ==> ≈[colim D, colim E]) (@colimit_map D E).
-Proof. exact (@fct_fmap_proper (FctCat J C) C ColimF D E). Qed.
+Proof. exact (@fmap_proper _ _ _ _ (@isFct (FctCat J C) C ColimF) D E). Qed.
 
 (** The identity law is inherited from the composite opposite functor. *)
 
@@ -288,7 +288,7 @@ Proof. exact (@fct_fmap_proper (FctCat J C) C ColimF D E). Qed.
 
 Lemma colimit_map_id {D : Fct J C}
   : colimit_map (IdN (F := D)) ≈ id.
-Proof. exact (@fct_id (FctCat J C) C ColimF D). Qed.
+Proof. exact (@fmap_id _ _ _ _ (@isFct (FctCat J C) C ColimF) D). Qed.
 
 (** Composition is inherited from the composite opposite functor. *)
 
@@ -297,7 +297,7 @@ Proof. exact (@fct_id (FctCat J C) C ColimF D). Qed.
 Lemma colimit_map_comp {D E K : Fct J C}
     (β : E ⇒ K) (α : D ⇒ E)
   : colimit_map (β ∘Nv α) ≈ colimit_map β ∘ colimit_map α.
-Proof. exact (@fct_comp (FctCat J C) C ColimF D E K β α). Qed.
+Proof. exact (@fmap_comp _ _ _ _ (@isFct (FctCat J C) C ColimF) D E K β α). Qed.
 
 (** Transformation compatibility is the original limit lift-map law. *)
 

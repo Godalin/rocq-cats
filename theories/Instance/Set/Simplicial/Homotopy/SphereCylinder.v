@@ -243,15 +243,15 @@ Definition two_sphere_cylinder_boundary {x y : TwoSphereS X b}
 
 Lemma two_sphere_cylinder_endpoint {x y : TwoSphereS X b}
     (H : TwoSphereCylinderHomotopy x y) (t : bool)
-  : two_sphere_cylinder_eval H id
+  : two_sphere_cylinder_eval H (@Cat.Core.id Δ 2)
       (ConstF [Ord 2] (C := [Ord 1]) (simplex_interval_position t)) ≈S
       (if t then y.1 else x.1).
 Proof.
   destruct t.
-  - transitivity (X[(id : (@Hom Δ) 2 2)]Δ y.1).
+  - transitivity (X[(@Cat.Core.id Δ 2)]Δ y.1).
     + exact (simplicial_homotopy_1 H.1 2 (simplex_generic 2)).
     + apply simplex_restrict_id.
-  - transitivity (X[(id : (@Hom Δ) 2 2)]Δ x.1).
+  - transitivity (X[(@Cat.Core.id Δ 2)]Δ x.1).
     + exact (simplicial_homotopy_0 H.1 2 (simplex_generic 2)).
     + apply simplex_restrict_id.
 Defined.
@@ -324,7 +324,7 @@ Definition two_sphere_prism (i : Ordinal 2)
 
 Definition two_sphere_cylinder_diagonal (i : Ordinal 1)
   : X 2
-  := two_sphere_cylinder_eval X b H id σ[1; i].
+  := two_sphere_cylinder_eval X b H (@Cat.Core.id Δ 2) σ[1; i].
 
 (** All twelve faces are the endpoints, shared diagonals, or constant
     side faces. The table is in the original specified simplex equality. *)
@@ -353,13 +353,13 @@ Proof.
     all: try solve [apply two_sphere_cylinder_eval_proper;
       apply (snd (simplex_eq_iff _ _)); intros a;
       destruct a as [[] | [[] | [[] | []]]]; reflexivity].
-    all: try solve [transitivity (two_sphere_cylinder_eval X b H id
+    all: try solve [transitivity (two_sphere_cylinder_eval X b H (@Cat.Core.id Δ 2)
         (ConstF [Ord 2] (C := [Ord 1]) (simplex_interval_position true)));
       [apply two_sphere_cylinder_eval_proper;
         apply (snd (simplex_eq_iff _ _)); intros a;
         destruct a as [[] | [[] | [[] | []]]]; reflexivity
       | exact (two_sphere_cylinder_endpoint X b H true)]].
-    all: try solve [transitivity (two_sphere_cylinder_eval X b H id
+    all: try solve [transitivity (two_sphere_cylinder_eval X b H (@Cat.Core.id Δ 2)
         (ConstF [Ord 2] (C := [Ord 1]) (simplex_interval_position false)));
       [apply two_sphere_cylinder_eval_proper;
         apply (snd (simplex_eq_iff _ _)); intros a;

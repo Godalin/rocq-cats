@@ -32,9 +32,11 @@ Local Open Scope ob_scope.
 
 Section ExponentialComparison.
 Context {C D : Cat} (F : Fct C D).
-Context `{PC : !HasProduct C} `{EC : !HasExponential PC}
-    `{PD : !HasProduct D} `{ED : !HasExponential PD}.
-Context (preserves : ∀ X Y : C,
+Context
+  `{PC : !HasProduct C} `{EC : !HasExponential PC}
+  `{PD : !HasProduct D} `{ED : !HasExponential PD}.
+Context
+  (preserves : ∀ X Y : C,
     is_product (F X) (F Y) (F (X × Y)) (fmap F π1) (fmap F π2)).
 
 (** Curry the image evaluation after the inverse product comparison. *)
@@ -59,14 +61,15 @@ Proof. apply exp_β. Qed.
 (** 经过比较时，上下文替换与转置交换。 *)
 
 Lemma exp_cmp_curry {X Y Z : C} (f : Hom (Z × X) Y)
-  : exp_cmp X Y ∘ fmap F (ƛ f) ≈
-      ƛ (fmap F f ∘ preserved_product_inv F preserves Z X).
+  : exp_cmp X Y ∘ fmap F (ƛ f)
+    ≈ ƛ (fmap F f
+      ∘ preserved_product_inv F preserves Z X).
 Proof.
   unfold exp_cmp.
   rewrite <- exp_curry_comp_r. apply exp_curry_proper.
-  rewrite <- (@fct_id C D F X).
+  rewrite <- (@fmap_id _ _ _ _ (@isFct C D F) X).
   rewrite comp_assoc, <- preserved_product_inv_natural,
-    <- comp_assoc, <- fct_comp.
+    <- comp_assoc, <- fmap_comp.
   pose proof (@exp_β C PC EC X Y Z f) as Hβ.
   unfold uncurry in Hβ. rewrite Hβ. reflexivity.
 Qed.
@@ -124,14 +127,14 @@ Proof.
   transitivity (fmap G (fmap F eval ∘
       preserved_product_inv F preservesF (Y ^ X) X) ∘
     preserved_product_inv G preservesG (F (Y ^ X)) (F X)).
-  - rewrite fct_comp, comp_assoc. reflexivity.
-  - rewrite <- (exp_cmp_eval F preservesF X Y), fct_comp,
+  - rewrite fmap_comp, comp_assoc. reflexivity.
+  - rewrite <- (exp_cmp_eval F preservesF X Y), fmap_comp,
       !comp_assoc.
     apply comp_proper; [reflexivity |].
     pose proof (preserved_product_inv_natural G preservesG
       (exp_cmp F preservesF X Y)
       (@Cats.Cat.Core.id D (F X))) as H.
-    rewrite (@fct_id D E G) in H. exact H.
+    rewrite (@fmap_id _ _ _ _ (@isFct D E G)) in H. exact H.
 Defined.
 
 End ExponentialComposition.

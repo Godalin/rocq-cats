@@ -30,12 +30,17 @@ Program Definition SievePsh@{u p +} {C : Cat} {A : @Ob C}
     (S : Sieve C A)
   : Fct (C^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 X := LiftS (SubsetS (@HomSet C X A) (@sieve_member C A S X))
-  ; F1 X Y f :=
+  {|fobj X := LiftS (SubsetS (@HomSet C X A) (@sieve_member C A S X))
+  ; fmap X Y f :=
       {|func x :=
         {|lower := ((lower x).1 ∘ f;
             sieve_precomp S (lower x).1 f (lower x).2)
         |}
+      |}
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
       |}
   |}.
 Next Obligation.

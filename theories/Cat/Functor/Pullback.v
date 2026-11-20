@@ -61,7 +61,7 @@ Next Obligation.
     rewrite <- comp_assoc, (nat_naturality q f), comp_assoc,
       HX2.
     reflexivity.
-Defined.
+Qed.
 
 (** Componentwise pullback cones satisfy the full diagram pullback property. *)
 
@@ -157,28 +157,33 @@ Qed.
 Program Definition PointwisePullbackF
   : Fct J C
   :=
-  {|F0 i := Pb (α i) (β i)
-  ; F1 i j f := pointwise_pullback_map f
+  {|fobj i := Pb (α i) (β i)
+  ; fmap i j f := pointwise_pullback_map f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros f g Hfg. apply (pullback_hom_ext pullback_universal).
   - rewrite !pointwise_pullback_map_β1, Hfg. reflexivity.
   - rewrite !pointwise_pullback_map_β2, Hfg. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   apply (pullback_hom_ext pullback_universal).
-  - rewrite pointwise_pullback_map_β1, fct_id. carw.
-  - rewrite pointwise_pullback_map_β2, fct_id. carw.
-Defined.
+  - rewrite pointwise_pullback_map_β1, fmap_id. carw.
+  - rewrite pointwise_pullback_map_β2, fmap_id. carw.
+Qed.
 Next Obligation.
   apply (pullback_hom_ext pullback_universal).
   - rewrite pointwise_pullback_map_β1, <- comp_assoc,
       pointwise_pullback_map_β1, comp_assoc,
-      pointwise_pullback_map_β1, fct_comp, comp_assoc. reflexivity.
+      pointwise_pullback_map_β1, fmap_comp, comp_assoc. reflexivity.
   - rewrite pointwise_pullback_map_β2, <- comp_assoc,
       pointwise_pullback_map_β2, comp_assoc,
-      pointwise_pullback_map_β2, fct_comp, comp_assoc. reflexivity.
-Defined.
+      pointwise_pullback_map_β2, fmap_comp, comp_assoc. reflexivity.
+Qed.
 
 (** The first component projections are natural by the mediator equation. *)
 
@@ -189,7 +194,7 @@ Program Definition PointwisePullbackFstN
   :=
   {|nt i := pb1 (α i) (β i)
   |}.
-Next Obligation. apply pointwise_pullback_map_β1. Defined.
+Next Obligation. apply pointwise_pullback_map_β1. Qed.
 
 (** The second component projections form the other natural cone leg. *)
 
@@ -200,7 +205,7 @@ Program Definition PointwisePullbackSndN
   :=
   {|nt i := pb2 (α i) (β i)
   |}.
-Next Obligation. apply pointwise_pullback_map_β2. Defined.
+Next Obligation. apply pointwise_pullback_map_β2. Qed.
 
 End Chosen.
 

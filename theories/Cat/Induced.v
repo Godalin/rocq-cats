@@ -35,11 +35,13 @@ Next Obligation. apply comp_assoc. Qed.
 Program Definition InducedF {C D : Cat} (F : Fct C D)
   : Fct C (InducedCat (@Ob C) F)
   :=
-  {|F0 X := X
-  ; F1 X Y f := fmap F f
-  ; fct_fmap_proper X Y := @fct_fmap_proper C D F X Y
-  ; fct_id X := @fct_id C D F X
-  ; fct_comp X Y Z g f := @fct_comp C D F X Y Z g f
+  {|fobj X := X
+  ; fmap X Y f := fmap F f
+  ; isFct :=
+      {|fmap_proper X Y := @fmap_proper _ _ _ _ (@isFct C D F) X Y
+      ; fmap_id X := @fmap_id _ _ _ _ (@isFct C D F) X
+      ; fmap_comp X Y Z g f := @fmap_comp _ _ _ _ (@isFct C D F) X Y Z g f
+      |}
   |}.
 
 (** The inclusion acts identically on every hom-set. Its laws remain
@@ -50,8 +52,13 @@ Program Definition InducedF {C D : Cat} (F : Fct C D)
 Program Definition InducedInclusionF {C : Cat} (O : Type) (j : O → @Ob C)
   : Fct (InducedCat O j) C
   :=
-  {|F0 := j
-  ; F1 X Y f := f
+  {|fobj := j
+  ; fmap X Y f := f
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f g H. exact H. Defined.
 Next Obligation. reflexivity. Defined.
@@ -67,7 +74,7 @@ Program Definition InducedFactorN {C D : Cat} (F : Fct C D)
   :=
   {|nt X := id
   |}.
-Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
+Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Qed.
 
 (** The factorization comparison retains identity inverse components. *)
 
@@ -94,8 +101,13 @@ Context {C : Cat} (O : Type) (j : O → @Ob C)
 Program Definition InducedRepresentativesF
   : Fct C (InducedCat O j)
   :=
-  {|F0 := r
-  ; F1 X Y f := ((ε Y).2.1 ∘ f ∘ (ε X).1)%hom
+  {|fobj := r
+  ; fmap X Y f := ((ε Y).2.1 ∘ f ∘ (ε X).1)%hom
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. intros f g H. rewrite H. reflexivity. Qed.
 Next Obligation. rewrite comp_id_r. exact (fst (ε X).2.2). Qed.

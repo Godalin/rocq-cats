@@ -28,14 +28,19 @@ From Cats Require Import
 Program Definition FamActionF {X : SetC} (A : FamS X)
   : Fct (EqGpd X) SetCat
   :=
-  {|F0 x := A x
-  ; F1 x y p := transpS A p
+  {|fobj x := A x
+  ; fmap x y p := transpS A p
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros p q H. apply transpS_witness_independent.
-Defined.
-Next Obligation. intros a. apply transpS_id. Defined.
-Next Obligation. intros a. apply transpS_comp. Defined.
+Qed.
+Next Obligation. intros a. apply transpS_id. Qed.
+Next Obligation. intros a. apply transpS_comp. Qed.
 
 (** Thinness strengthens the ordinary functor laws to coherence for arbitrary
     base witnesses, including arbitrary loops and composite witnesses. *)
@@ -51,14 +56,14 @@ Program Definition ActionFamS {X : SetC}
   |}.
 Next Obligation.
   transitivity (fmap F (@Cats.Cat.Core.id (EqGpd X) x) v).
-  - apply (@fct_fmap_proper _ _ F x x p
+  - apply (@fmap_proper _ _ _ _ (isFct F) x x p
       (@Cats.Cat.Core.id (EqGpd X) x) tt).
-  - exact (@fct_id _ _ F x v).
+  - exact (@fmap_id _ _ _ _ (isFct F) x v).
 Defined.
 Next Obligation.
   transitivity (fmap F (transitivity p q) v).
-  - apply (@fct_fmap_proper _ _ F x z r (transitivity p q) tt).
-  - exact (@fct_comp _ _ F x y z q p v).
+  - apply (@fmap_proper _ _ _ _ (isFct F) x z r (transitivity p q) tt).
+  - exact (@fmap_comp _ _ _ _ (isFct F) x y z q p v).
 Defined.
 
 (** A fiberwise family map is a natural transformation of the corresponding
@@ -71,7 +76,7 @@ Program Definition FamMapActionN {X : SetC} {A B : FamS X} (φ : A →Fam B)
   :=
   {|nt x := fam_map φ x
   |}.
-Next Obligation. intros a. apply fam_map_naturality. Defined.
+Next Obligation. intros a. apply fam_map_naturality. Qed.
 
 (** Conversely, a natural transformation is a coherent fiberwise map. *)
 
@@ -92,12 +97,17 @@ Next Obligation. exact (nat_naturality α p a). Defined.
 Program Definition FamActionCatF (X : SetC)
   : Fct (FamSCat X) (FctCat (EqGpd X) SetCat)
   :=
-  {|F0 := FamActionF
-  ; F1 A B := FamMapActionN
+  {|fobj := FamActionF
+  ; fmap A B := FamMapActionN
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros φ ψ H x a. exact (H x a). Defined.
-Next Obligation. intros x a. reflexivity. Defined.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros φ ψ H x a. exact (H x a). Qed.
+Next Obligation. intros x a. reflexivity. Qed.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** Recover families functorially from actions and natural transformations. *)
 
@@ -106,12 +116,17 @@ Next Obligation. intros x a. reflexivity. Defined.
 Program Definition ActionFamCatF (X : SetC)
   : Fct (FctCat (EqGpd X) SetCat) (FamSCat X)
   :=
-  {|F0 := ActionFamS
-  ; F1 F G := action_nat_fam_map
+  {|fobj := ActionFamS
+  ; fmap F G := action_nat_fam_map
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros α β H x a. exact (H x a). Defined.
-Next Obligation. intros x a. reflexivity. Defined.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros α β H x a. exact (H x a). Qed.
+Next Obligation. intros x a. reflexivity. Qed.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** The family round trip keeps fibers and transports. Its comparison maps
     are identities on elements, without comparing coherence fields. *)
@@ -155,7 +170,7 @@ Program Definition FamActionFamN (X : SetC)
   :=
   {|nt := fam_action_fam_elim
   |}.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** Family to action to family is naturally isomorphic to the identity. *)
 
@@ -176,7 +191,7 @@ Program Definition ActionFamMapN {X : SetC}
   :=
   {|nt x := id_resp
   |}.
-Next Obligation. intros a. reflexivity. Defined.
+Next Obligation. intros a. reflexivity. Qed.
 
 (** The identity components make the action comparison invertible. *)
 
@@ -200,7 +215,7 @@ Program Definition ActionFamActionN (X : SetC)
   :=
   {|nt := ActionFamMapN
   |}.
-Next Obligation. intros x a. reflexivity. Defined.
+Next Obligation. intros x a. reflexivity. Qed.
 
 (** Action to family to action is naturally isomorphic to the identity. *)
 
@@ -233,7 +248,7 @@ Program Definition FamActionReindexN {X Y : SetC}
   :=
   {|nt x := id_resp
   |}.
-Next Obligation. intros a. reflexivity. Defined.
+Next Obligation. intros a. reflexivity. Qed.
 
 (** The reindexing comparison is a natural isomorphism. This compares the
     two actions; it does not assert a separate indexed-equivalence structure. *)

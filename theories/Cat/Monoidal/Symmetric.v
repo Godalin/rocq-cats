@@ -1,10 +1,10 @@
 From Cats Require Export
-  Cat.Premonoidal.Laws.
+  Cat.Monoidal.PremonoidalLaws.
 From Cats Require Import
   Cat.Isomorphism.
 
-Local Open Scope binoidal_scope.
-Local Open Scope premonoidal_scope.
+Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Symmetric Premonoidal Categories
 
@@ -54,12 +54,12 @@ Class SymmetricPremonoidalCat (C : Cat)
   (** 交换与括号重排及两个单位子相容。 *)
 
   ; premonoidal_symmetry_hexagon (X Y Z : @Ob C)
-    : αₚ[Y; Z; X] ∘
-        (premonoidal_symmetry X (Y ⊗ Z) ∘ αₚ[X; Y; Z]) ≈
+    : α[Y; Z; X] ∘
+        (premonoidal_symmetry X (Y ⊗ Z) ∘ α[X; Y; Z]) ≈
         (Y ⊲ premonoidal_symmetry X Z) ∘
-          (αₚ[Y; X; Z] ∘ (premonoidal_symmetry X Y ⊳ Z))
+          (α[Y; X; Z] ∘ (premonoidal_symmetry X Y ⊳ Z))
   ; premonoidal_symmetry_unit (X : @Ob C)
-    : λₚ[X] ∘ premonoidal_symmetry X (Iₚ[SymmetricPremonoidalToHasPremonoidal]) ≈ ρₚ[X]
+    : λ[X] ∘ premonoidal_symmetry X (𝐈[SymmetricPremonoidalToHasPremonoidal]) ≈ ρ[X]
   }.
 
 Arguments symmetric_hasBinoidal {_} _.
@@ -74,7 +74,7 @@ Arguments premonoidal_symmetry {_ _} _ _.
 #[export] Existing Instance SymmetricPremonoidalToHasPremonoidal.
 
 Notation "'σₚ[' X ';' Y ']'" := (premonoidal_symmetry X Y)
-  : premonoidal_scope.
+  : monoidal_scope.
 
 (** ** Derived Symmetry Laws
 

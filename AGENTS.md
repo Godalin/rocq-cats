@@ -77,7 +77,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   Write manual conversions only across distinct inheritance paths when the
   existing constructor/projection chain does not provide the required map.
 - If the parent view must also support instance search, register the same
-  projection with `#[export] Existing Instance MonoidalToHasPremonoidal`; `:>` alone does not
+  projection with `#[export] Existing Instance monoidal_hasPremonoidal`; `:>` alone does not
   register an inherited instance. Record-valued parents are not classes;
   their chosen `Has*` fields supply inherited instances directly.
   Supplementary chosen structures/properties
@@ -193,9 +193,17 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   The default `cats_obligation` only introduces parameters and runs `cbn`;
   do not restore automatic destruction of dependent witnesses. For staged
   proofs, use named fields with `refine`, avoiding positional constructors.
-- Keep computational witnesses transparent (`Defined`), especially inverse
-  maps, transports, and universal mediators. Never finish with `Admitted`,
-  `Admit Obligations`, or new axioms. Make any additional assumptions explicit.
+- Close proof-only lemmas and individual `Program` obligations with `Qed`,
+  including respectfulness, functor laws, naturality, and coherence.
+  Keep operations, inverse maps, transports, and projected computational
+  witnesses transparent. Use `Defined` when a caller needs reduction.
+  Decide by use, regardless of whether the goal lives in `Prop` or `Type`.
+  If dependent conversion or guardedness needs a proof body, record the
+  dependency beside the proof and check a representative consumer.
+  Keep the parent structure transparent when its operations compute.
+  See [Proof transparency](docs/CodeStyle.md#proof-transparency--证明透明性).
+  Never finish with `Admitted`, `Admit Obligations`, or new axioms.
+  Make any additional assumptions explicit.
 - Structures/constructions use capitalized names; helpers use `snake_case`.
   Use `is_*` for predicates, `Is*` for property classes, `Has*` for chosen
   structures, `*Eq` for equivalences, and `<subject>_<Class>` for instances.

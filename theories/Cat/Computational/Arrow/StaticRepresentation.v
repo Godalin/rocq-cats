@@ -20,7 +20,7 @@ Local Open Scope applicative_scope.
 Section General.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** The actual evaluation operation is a map of the native computation Hom
     setoids. *)
@@ -100,7 +100,7 @@ End General.
 Section UniversalCriterion.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 (** Supplied Type-valued unique representations construct the actual
     inverse, without an additional choice axiom. *)
@@ -224,8 +224,8 @@ Proof.
     (static_context B X f ∘ˢ[B] static_arr B ⟨id, !⟩) ≈ static_value B f).
   rewrite static_comp_pure_r, static_comp_pure_l.
   unfold static_context, static_value.
-  rewrite <- !comp_assoc, <- !fct_comp.
-  apply comp_proper; [| reflexivity]. apply fct_fmap_proper.
+  rewrite <- !comp_assoc, <- !fmap_comp.
+  apply comp_proper; [| reflexivity]. apply fmap_proper.
   rewrite <- exp_dimap_id_r.
   apply exp_ext. rewrite !exp_uncurry_app.
   unfold exp_unit_iso. cbn [projT1].

@@ -15,9 +15,13 @@ From Cats Require Import
 Program Definition LiftF@{u p +}
   : Fct SetCat SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 X := LiftS@{_ _ u p} X
-  ; F1 X Y f := f^↑S
-  ; fct_fmap_proper X Y f g H x := Lift (H (lower x))
+  {|fobj X := LiftS@{_ _ u p} X
+  ; fmap X Y f := f^↑S
+  ; isFct :=
+      {|fmap_proper X Y f g H x := Lift (H (lower x))
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. intros [x]. exact (Lift (reflexivity x)). Defined.
-Next Obligation. intros [x]. exact (Lift (reflexivity (f (g x)))). Defined.
+Next Obligation. intros [x]. exact (Lift (reflexivity x)). Qed.
+Next Obligation. intros [x]. exact (Lift (reflexivity (f (g x)))). Qed.

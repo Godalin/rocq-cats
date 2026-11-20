@@ -256,8 +256,13 @@ Qed.
 Program Definition LimF
   : Fct (FctCat J C) C
   :=
-  {|F0 D := lim D
-  ; F1 D E α := limit_map α
+  {|fobj D := lim D
+  ; fmap D E α := limit_map α
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation. apply limit_map_id. Qed.
 Next Obligation. apply limit_map_comp. Qed.

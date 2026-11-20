@@ -36,7 +36,7 @@ Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B).
 Let normalize (t : Tm Γ A)
   : Nf Γ A
   := nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
 
 (** Soundness constructs evidence at the signature bound, strictly below
     semantic values and world laws. *)
@@ -94,7 +94,7 @@ Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B).
 Let normalize (t : Tm Γ A)
   : Nf Γ A
   := nf@{b r s l
-      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
+      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _} t.
 
 Definition larger_evidence_soundness (t : Tm Γ A)
   : TmEq@{b e _} t (embed_nf (normalize t))

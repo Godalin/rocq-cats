@@ -34,7 +34,7 @@ Lemma adj_kleisli_unadjunct_comp {X Y Z : @Ob C}
 Proof.
   change ((fmap U (adj_counit A (F Z)) ∘
     fmap U (fmap F f) ∘ g)^♭[A] ≈ f^♭[A] ∘ g^♭[A]).
-  rewrite <- fct_comp, <- (unadjunct_counit A f).
+  rewrite <- fmap_comp, <- (unadjunct_counit A f).
   apply unadjunct_comp_l.
 Qed.
 
@@ -46,13 +46,17 @@ Qed.
 Program Definition AdjKleisliF
   : Fct (KleisliCat (AdjMonad A)) D
   :=
-  {|F0 := F
-  ; F1 X Y f := f^♭[A]
-  ; fct_fmap_proper X Y := unadjunct_proper A
+  {|fobj := F
+  ; fmap X Y f := f^♭[A]
+  ; isFct :=
+      {|fmap_proper X Y := unadjunct_proper A
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
-Next Obligation. exact (adj_β A (id[F X])). Defined.
+Next Obligation. exact (adj_β A (id[F X])). Qed.
 
-Next Obligation. exact (adj_kleisli_unadjunct_comp f g). Defined.
+Next Obligation. exact (adj_kleisli_unadjunct_comp f g). Qed.
 
 (** Transposition supplies computational fullness witnesses and reflects
     equality through the two inverse laws. The target need not consist only

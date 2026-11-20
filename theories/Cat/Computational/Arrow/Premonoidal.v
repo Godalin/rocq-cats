@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Computational.Arrow.Binoidal
-  Cat.Premonoidal.Laws.
+  Cat.Monoidal.PremonoidalLaws.
 
 Local Open Scope computation_scope.
 
@@ -20,11 +20,11 @@ Local Open Scope computation_scope.
 
 Section Cartesian.
 Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartMonoidal C HT HP)).
+    (A : Arrow C K (@CartHasMonoidal C HT HP)).
 
 Let V
-  : MonoidalCat C
-  := CartMonoidal.
+  : HasMonoidal C
+  := CartHasMonoidal.
 
 Let J
   : Fct C (ComputationCat A)
@@ -41,15 +41,15 @@ Let J
     导入本模块不会选定默认计算结构。 *)
 
 Program Definition ArrowHasAssociator
-  : HasAssociator (ComputationCat A) (ArrowHasBinoidal A)
+  : HasAssoc (ComputationCat A) (ArrowHasBinoidal A)
   :=
-  {|PremonoidalAssocRIso X Y :=
-      ({|nt Z := fmap J (@premonoidal_associator C _ V X Y Z).1
+  {|TensorAssocRIso X Y :=
+      ({|nt Z := fmap J (@tensor_assoc C _ V X Y Z).1
         ; nat_naturality Z Z' h := arrow_context_assoc A h
         |}; λ Z,
-          let i := @premonoidal_associator C _ V X Y Z in
+          let i := @tensor_assoc C _ V X Y Z in
           fct_is_iso J i.1 i.2)
-  ; isAssociator :=
+  ; isAssoc :=
       {|assoc_natural_l Y Z :=
           {|nat_iso_naturality X X' f := arrow_first_assoc A f|}
       ; assoc_natural_m X Z :=
@@ -63,9 +63,9 @@ Next Obligation.
     second[A; arr[A; (@product_assoc C HP X Y Z).1]; W] ∘
       (arr[A; (@product_assoc C HP W (X × Y) Z).1] ∘
         first[A; arr[A; (@product_assoc C HP W X Y).1]; Z])).
-  rewrite arrow_second_arr, arrow_first_arr, <- !fct_comp.
-  apply fct_fmap_proper.
-  exact (@premonoidal_pentagon C _ V W X Y Z).
+  rewrite arrow_second_arr, arrow_first_arr, <- !fmap_comp.
+  apply fmap_proper.
+  exact (@tensor_assoc_pentagon C _ V W X Y Z).
 Defined.
 
 (** Lift only the unitors, with no dependence on the computation
@@ -76,18 +76,18 @@ Defined.
 Program Definition ArrowHasUnitors
   : HasUnitors (ComputationCat A) (ArrowHasBinoidal A)
   :=
-  {|PremonoidalUnit := PremonoidalUnit V
-  ; PremonoidalUnitorLIso :=
-      ({|nt X := fmap J (@premonoidal_unitor_l C _ V X).1
+  {|tensor_unit := tensor_unit V
+  ; TensorUnitorLIso :=
+      ({|nt X := fmap J (@tensor_unitor_l C _ V X).1
         ; nat_naturality X Y f := arrow_second_projection A f 1
         |}; λ X,
-          let i := @premonoidal_unitor_l C _ V X in
+          let i := @tensor_unitor_l C _ V X in
           fct_is_iso J i.1 i.2)
-  ; PremonoidalUnitorRIso :=
-      ({|nt X := fmap J (@premonoidal_unitor_r C _ V X).1
+  ; TensorUnitorRIso :=
+      ({|nt X := fmap J (@tensor_unitor_r C _ V X).1
         ; nat_naturality X Y f := arrow_first_projection A f 1
         |}; λ X,
-          let i := @premonoidal_unitor_r C _ V X in
+          let i := @tensor_unitor_r C _ V X in
           fct_is_iso J i.1 i.2)
   ; isUnitors :=
       {|unitor_l_central X := arrow_pure_central A _
@@ -102,19 +102,19 @@ Program Definition ArrowHasUnitors
 Program Definition ArrowHasPremonoidal
   : HasPremonoidal (ComputationCat A) (ArrowHasBinoidal A)
   :=
-  {|hasAssociator := ArrowHasAssociator
+  {|hasAssoc := ArrowHasAssociator
   ; hasUnitors := ArrowHasUnitors
   ; isPremonoidal :=
-      ({|premonoidal_compatible_triangle := _|}
+      ({|tensor_triangle_coherence := _|}
         : IsPremonoidal ArrowHasAssociator ArrowHasUnitors)
   |}.
 Next Obligation.
   change (second[A; arr[A; (π2 : Hom (1 × Y) Y)]; X] ∘
     arr[A; (@product_assoc C HP X 1 Y).1] ≈
     first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
-  rewrite arrow_second_arr, arrow_first_arr, <- fct_comp.
-  apply fct_fmap_proper.
-  exact (@premonoidal_triangle C _ V X Y).
+  rewrite arrow_second_arr, arrow_first_arr, <- fmap_comp.
+  apply fmap_proper.
+  exact (@tensor_triangle C _ V X Y).
 Defined.
 
 (** The complete bundle reuses the same binoidal parent. *)

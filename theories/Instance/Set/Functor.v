@@ -70,6 +70,13 @@ Proof.
   intros F G H K. exact (CompF_proper F G H K K (reflexivity K)).
 Defined.
 
+(** Keep the comparison witnesses for precomposition, postcomposition
+    and probe presheaves transparent. They carry natural isomorphisms,
+    whose inverse components can be computed by nerve clients. *)
+
+(** 预复合、后复合及探测预层的比较见证保持透明。它们携带自然同构，
+    nerve 的调用方可以计算其中的逆分量。 *)
+
 (** * Presheaves Defined by Category Probes
 
     Given a family of probe categories organized by a functor J, restrict
@@ -85,26 +92,31 @@ Program Definition FctPsh@{u p +} {S : Cat}
     (J : Fct S CatCat) (C : Cat)
   : Fct (S^op) SetCat@{u p _ _ _ _ _}
   :=
-  {|F0 s := LiftS (FctS (J s) C)
-  ; F1 s t θ := (fct_precomp_resp (fmap J θ))^↑S
+  {|fobj s := LiftS (FctS (J s) C)
+  ; fmap s t θ := (fct_precomp_resp (fmap J θ))^↑S
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros θ φ H [F]. refine {|lower := _
                            |}.
-  apply CompF_proper. reflexivity. exact (fct_fmap_proper _ _ J _ _ H).
+  apply CompF_proper. reflexivity. exact (fmap_proper (IsFct := isFct J) _ _ H).
 Defined.
 Next Obligation.
   intros [F]. refine {|lower := _
                      |}.
   transitivity (F ∘F IdF).
-  - apply CompF_proper. reflexivity. exact (fct_id _ _ J).
+  - apply CompF_proper. reflexivity. exact (fmap_id (IsFct := isFct J)).
   - apply CompF_id_r.
 Defined.
 Next Obligation.
   intros [F]. refine {|lower := _
                      |}.
   transitivity (F ∘F (fmap J g ∘F fmap J f)).
-  - apply CompF_proper. reflexivity. exact (fct_comp _ _ J g f).
+  - apply CompF_proper. reflexivity. exact (fmap_comp (IsFct := isFct J) g f).
   - symmetry. apply CompF_assoc.
 Defined.
 
@@ -133,8 +145,13 @@ Program Definition FctPshF@{u p +} {S : Cat}
     (J : Fct S CatCat)
   : Fct CatCat (FctCat (S^op) SetCat@{u p _ _ _ _ _})
   :=
-  {|F0 C := FctPsh J C
-  ; F1 C D F := FctPshN J F
+  {|fobj C := FctPsh J C
+  ; fmap C D F := FctPshN J F
+  ; isFct :=
+      {|fmap_proper := _
+      ; fmap_id := _
+      ; fmap_comp := _
+      |}
   |}.
 Next Obligation.
   intros F G H s [K]. refine {|lower := _
