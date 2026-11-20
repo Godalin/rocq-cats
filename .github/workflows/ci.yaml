@@ -23,6 +23,9 @@ jobs:
             # The image pins an older Stdlib; use the package dependency bound.
             # 镜像固定了旧 Stdlib；解除固定后按项目依赖下界解析。
             opam pin remove --no-action --yes dune rocq-stdlib
+            # Resolve the independent Minks package from this checkout.
+            # 从本次检出的源码解析独立 Minks 包。
+            opam pin add --no-action --yes --kind=path rocq-minks "$WORKDIR/minks"
           before_script: |
             rocq --version
             dune --version

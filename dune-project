@@ -28,4 +28,5 @@
   (rocq-core
    (>= 9.3))
   (rocq-stdlib
-   (>= 9.2))))
+   (>= 9.2))
+  rocq-minks))

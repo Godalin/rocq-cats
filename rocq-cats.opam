@@ -12,6 +12,7 @@ depends: [
   "dune" {>= "3.23"}
   "rocq-core" {>= "9.3"}
   "rocq-stdlib" {>= "9.2"}
+  "rocq-minks"
   "odoc" {with-doc}
 ]
 build: [
