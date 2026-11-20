@@ -1,0 +1,74 @@
+DECLARE PLUGIN "rocq-minks.plugin"
+
+{
+open G_vernac
+open Procq.Prim
+open Procq.Constr
+
+let any_attribute = Attributes.make_attribute (fun atts -> [], atts)
+
+let mixin_declaration = Procq.Entry.make "minks_declaration"
+
+let record_name (name, universes) =
+  let universes = Option.map (fun decl ->
+    let open UState in
+    { decl with univdecl_instance = List.map (fun level -> level, None) decl.univdecl_instance }
+  ) universes in
+  name, universes
+
+let declare_mixin ~atts decl parents =
+  let parents = List.map Mixin_parameters.read_parent parents in
+  let decl, carrier_kind, inherited, added =
+    Mixin_parameters.add_to_declaration parents decl in
+  let kind = Vernacexpr.Class true in
+  let open Vernacentries.Preprocessed_Mind_decl in
+  let reference =
+    match Vernacentries.preprocess_inductive_decl ~atts kind [decl] with
+    | Record { flags; udecl; kind; primitive_proj; records } ->
+      (match Record.definition_structure ~flags udecl kind ~primitive_proj records with
+       | [reference] -> reference
+       | _ -> CErrors.anomaly Pp.(str "Expected exactly one mixin declaration."))
+    | Inductive _ -> CErrors.user_err Pp.(str "Expected a mixin with a record body.")
+  in
+  let module Elpi = Elpi_plugin.Rocq_elpi_vernacular in
+  let module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd in
+  let name = Libnames.string_of_path (Nametab.path_of_global reference) in
+  let values = Mixin_parameters.remember reference carrier_kind inherited added in
+  let args = Cmd.String name :: List.map (fun pos -> Cmd.Int pos) values @
+    List.map (fun (parent, _) -> Cmd.String (Libnames.string_of_qualid parent)) parents
+  in
+  (* The class and the metadata belong to the same vernacular transaction. *)
+  let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
+  let origin = CAst.make ("minks.declaration", Attributes.VernacFlagEmpty) in
+  Elpi.Interp.run_program ~loc ["minks"; "mixin"] ~atts:[origin] ~syndata:None args
+}
+
+GRAMMAR EXTEND Gram
+  GLOBAL: mixin_declaration;
+  mixin_declaration:
+    [ [ coercion = OPT ">"; name = ident_decl; parameters = binders;
+        parents = OPT [ "extends"; ps = LIST1 [ p = term LEVEL "0" -> { p } ] SEP "," -> { ps } ];
+        result = OPT [ ":"; ty = lconstr -> { ty } ]; ":=";
+        constructor = OPT identref; "{"; fields = mixin_fields; "}";
+        inhabitant = OPT [ "as"; name = identref -> { name } ];
+        notations = decl_notations ->
+        { let open Vernacexpr in
+          let coercion = if Option.has_some coercion then AddCoercion else NoCoercion in
+          let body = RecordDecl (constructor, fields, inhabitant) in
+          let decl = ((coercion, record_name name), (parameters, None), result, body) in
+          (decl, notations), Option.default [] parents } ] ];
+  mixin_fields:
+    [ RIGHTA [ field = record_field; ";"; more = mixin_fields -> { field :: more }
+             | field = record_field -> { [field] }
+             | -> { [] } ] ];
+END
+
+VERNAC ARGUMENT EXTEND minks_mixin_decl
+| [ mixin_declaration(decl) ] -> { decl }
+END
+
+VERNAC COMMAND EXTEND MinksMixin CLASSIFIED AS SIDEFF
+| #[ atts = any_attribute ] [ "Minks.Mixin" minks_mixin_decl(declaration) ] ->
+  { let decl, parents = declaration in
+    declare_mixin ~atts decl parents }
+END

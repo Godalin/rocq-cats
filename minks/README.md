@@ -34,11 +34,22 @@ into the switch. To install the local package, run
 `@install` 只准备安装文件。若要装入 switch，在本目录运行
 `opam install --switch=rocq-cats .`。
 
-Import [`Minks.all`](theories/all.v) to use `Minks.Struct` and `Minks.Inspect`.
+For an editor session using an uninstalled build, launch VsRocq with the
+workspace's Dune environment so it can load the `rocq-minks.plugin` parser.
+After building the local theory, use `opam exec --switch=rocq-cats -- dune
+exec -- vsrocqtop` from the same workspace root. This adds the workspace's
+local install library to `OCAMLPATH`.
+
+使用未安装的本地构建时，通过工作区的 Dune 环境启动 VsRocq，才能加载
+`rocq-minks.plugin` 语法插件。构建本地理论后，从同一工作区根目录运行
+`opam exec --switch=rocq-cats -- dune exec -- vsrocqtop`，Dune 会把
+工作区的本地安装库加入 `OCAMLPATH`。
+
+Import [`Minks.all`](theories/all.v) to use `Minks.Mixin`, `Minks.Struct`, and `Minks.Inspect`.
 [Spec.v](theories/Spec.v) handles component identity and inheritance;
 [Flat.v](theories/Flat.v) generates Rocq declarations.
 
-导入 [`Minks.all`](theories/all.v) 即可使用 `Minks.Struct` 和 `Minks.Inspect`。
+导入 [`Minks.all`](theories/all.v) 即可使用 `Minks.Mixin`、`Minks.Struct` 和 `Minks.Inspect`。
 [Spec.v](theories/Spec.v) 处理组件身份及继承，[Flat.v](theories/Flat.v)
 生成 Rocq 声明。
 
@@ -52,20 +63,156 @@ From Minks Require Import all.
 
 (* After declaring HasMagma and generating SetC: *)
 Minks.Struct Magma extends SetC
-  with  hasMagma : HasMagma [carrier, hasEquiv].
+  with  hasMagma : HasMagma.
 
 (* After generating both parents: *)
 Minks.Struct Monoid extends Semigroup, UMagma.
 Minks.Inspect Monoid.
 ```
 
-Both `extends` and `with` are optional. List parents and new components
-with commas; bracketed keys give the arguments to a mixin in order.
+Use `Minks.Mixin` in place of the usual class keyword. One declaration
+defines a Rocq typeclass and stores the mixin's direct dependencies.
+Minks reads the parameter order from the Rocq type, so a structure can omit
+component keys when its stored choices determine the dependencies uniquely.
+
+### Mixin parameters / Mixin 参数
+
+Write `extends` after the local parameters and before the definition body.
+The first parent supplies the carrier. Minks puts shared inherited
+parameters first, respecting their dependencies, then the remaining
+inherited parameters in the order of the parent list and the parents'
+declarations. Parameters written on the child are appended last, in
+declaration order. Their types may refer to the inherited parameters.
+
+An inherited mixin witness is shared when both paths refer to the same
+declaration and arguments. A value parameter is identified by its
+introducing declaration and position. Independent value parameters stay
+distinct even when their names and types coincide. An incompatible
+selection of the same ancestor is an error. Inheritance supplies the
+chosen witnesses as typeclass parameters.
+
+Carrier and value parameters retain the binder from their declaration.
+Parentheses make them explicit, and braces make them implicit. Inherited
+mixin witnesses are implicit typeclass arguments. For example, write
+`IsMonotone A f` to infer the order, or `@IsMonotone A O f` to select `O`.
+`Minks.Struct` selects dependencies in declaration order using the stored component keys.
+
+A shared ancestor has one universe instance. Other inherited universes
+follow their respective branches, and local parameters can introduce new
+universes. An explicit universe declaration fixes its own positional
+order, and an explicit parent instance such as `extends HasEquiv@{u p}` names the levels
+to use from that context. With inferred universes, Rocq determines the
+final universe list and constraints.
+
+`extends` 写在本层声明的参数之后、定义体之前。第一个父级提供载体。Minks 优先放置
+共享的继承参数，并满足它们的依赖顺序，再按父级列表及各父级的声明顺序放置
+其余继承参数。本层声明的参数按顺序追加到最后，其类型可以引用继承参数。
+
+两条路径引用同一 Mixin 声明与同一组实参时，共享一份见证。值参数由最初引入它的
+声明及位置确定。不同声明各自引入的参数保持独立，即使名字和类型相同。同一前驱
+的选择不相容时，声明报错。继承把这些选定见证作为类型类参数传入。
+
+载体和值参数保留声明时的括号属性，圆括号为显式，花括号为隐式。
+继承的 Mixin 见证默认作为隐式类型类参数。例如 `IsMonotone A f` 会搜索序，
+`@IsMonotone A O f` 则指定序 `O`。`Minks.Struct` 仍按声明顺序根据组件键选择依赖。
+
+共享前驱使用同一份宇宙实例，各分支拥有各自的其余继承宇宙，本层参数可以引入
+新的宇宙。显式宇宙声明按自身的书写顺序决定位置。例如 `extends HasEquiv@{u p}`
+指定父级从当前上下文使用哪些宇宙。省略标注时，最终的宇宙列表和约束由 Rocq 推断。
+
+```coq
+Minks.Mixin HasPoint (A : Type)
+  :=
+  { point : A }.
+
+Minks.Mixin HasSecondPoint extends HasPoint
+  :=
+  { second_point : A }.
+
+Minks.Struct Pointed
+  with  hasPoint : HasPoint.
+Minks.Struct TwoPoints extends Pointed
+  with  hasSecondPoint : HasSecondPoint.
+Minks.Inspect HasSecondPoint.
+```
+
+An indexed law can append a value parameter. To pack a selected value and
+its law, put both fields together in a mixin that a structure can select.
+
+依赖给定值的定律可以追加一个值参数。若要打包选定值及其定律，可以把两者放到
+同一个供结构使用的 Mixin 中。
+
+```coq
+Minks.Mixin IsNamedPoint (x : A) extends HasEquiv
+  :=
+  { named_point_refl : equiv x x }.
+```
+
+[The closure example](examples/Closure.v) appends a map and then a point
+to inherited parameters. [The universe example](examples/Universes.v)
+checks inferred, named, open and monomorphic instances and verifies that
+the two branches can vary their universe levels independently.
+
+[闭包算子示例](examples/Closure.v) 先追加一个映射，再在继承参数后追加一个点。
+[宇宙示例](examples/Universes.v) 检查推断、具名、开放和单态的实例，并验证
+两个分支的宇宙层级可以独立变化。
+
+### Struct packing and views / Struct 打包与转换
+
+When a declaration has one parent and one new mixin whose sole argument is
+that complete parent, `extends` stores the parent once. Its constructor
+and parent projection are named `ChildOfParent` and `ChildToParent`.
+
+若声明只有一个父结构和一个新 Mixin，且该 Mixin 的唯一参数就是完整父结构，
+`extends` 会保存一份父结构。构造器和父投影分别命名为
+`ChildOfParent` 和 `ChildToParent`。
+
+```coq
+Minks.Struct PointedSetC extends SetC
+  with  hasPoint : HasPoint.
+```
+
+When the mixins refer to inherited components, `extends` merges those
+components by key and shares the carrier. Inherited fields shared by
+multiple parents come first in dependency order. The other inherited
+fields follow parent and declaration order, followed by the local fields.
+A stored-parent bundle can also
+participate in this merge. For example, `MonoidalCat extends SemigroupalCat,
+PremonoidalCat` shares the tensor and associator of both parents.
+
+当 Mixin 依赖继承的组件时，`extends` 按键合并组件并共享载体。保存完整父结构
+的打包也可以参与合并。多条父级路径共享的继承字段按依赖顺序放在前面，
+其余继承字段按父级及声明顺序放置，最后追加本层字段。例如 `MonoidalCat extends SemigroupalCat, PremonoidalCat`
+共享两条分支的张量和结合子。
+
+Use `key as field : Mixin [dependencies]` to name a projection explicitly. Dependencies and
+merging still use the key. A directly stored parent uses its record
+projection. Minks constructs transparent views to all declared ancestors
+of a flat structure from the exact fields it stores.
+
+When a new flat structure is declared, Minks also checks both directions
+against earlier flat structures in the same module. A proper subset of component
+keys gives a view if the carrier, mixin identity and selected dependency
+keys agree and the reconstructed record typechecks. The view becomes
+available in the module where both structures first meet at a declaration,
+so a larger structure may be declared first. Identical component sets keep their distinct identities. The generated views are named
+`ChildToAncestor` and can be called explicitly.
+
+用 `key as field : Mixin [dependencies]` 可指定投影名。依赖和合并仍按键进行。直接保存的父级
+用记录投影。平铺结构到已声明祖先的透明转换从结构保存的字段重建目标。
+
+声明新的平铺结构时，Minks 也会与同一模块中先声明的平铺结构双向比较。目标组件键为严格
+子集、载体及 Mixin 标识和所选依赖键一致，且重建记录通过类型检查时，即可生成转换。
+转换在两者首次一起参与检查的声明所在模块可用，因此可以先声明较大的结构。组件集合
+相同的两个结构保留各自身份。生成的转换使用 `ChildToAncestor` 作为具名函数。
+
+In flat declarations, both `extends` and `with` are optional. Commas
+separate parents and components. Bracketed keys give mixin arguments in order.
 Parents must have been generated already. Earlier fields supply the
 dependencies of later fields. The examples build under `@runtest` and
 are not installed with the package.
 
-`extends` 和 `with` 均可省略。用逗号分隔父结构或新组件；方括号中的键
+在平铺声明中，`extends` 和 `with` 均可省略。用逗号分隔父结构或新组件。方括号中的键
 按顺序传给 Mixin。父结构须先生成，后续字段可依赖前面的字段。
 `@runtest` 编译例子，安装包时不包含它。
 
@@ -81,19 +228,16 @@ as in `TwoPoints`.
 就像 `HasBottom` 为已有的序选底元。`HasPoint` 用于带点结构；
 同一个类有多份选择时用不同的键区分，如 `TwoPoints`。
 
-Write named class dependencies with backtick parentheses, for example
-`` `(E : !HasEquiv A) `(M : !HasMagma A E) ``.
-The parameters remain explicit when applying the class, and their witnesses
-are available to instance search within the declaration. The `!` keeps the
-class application's supplied arguments. Rocq can still infer the instances
-on methods such as `mul_assoc x y z`. Bracketed keys in `Minks.Struct`
-connect the parameters to selected mixins.
+`Minks.Struct` accepts components declared with `Minks.Mixin`.
+An explicit bracketed list selects stored components when there is more
+than one matching choice, and each key is checked against the mixin's
+parameter metadata. For example, `hasMagma : HasMagma [carrier, hasOtherEquiv]`
+selects `hasOtherEquiv` as the equality for the multiplication.
 
-类依赖用反引号加圆括号，例如
-`` `(E : !HasEquiv A) `(M : !HasMagma A E) ``。
-应用类时参数依然显式，在声明内部这些见证可由类型类搜索找到。
-`!` 让类应用沿用给出的参数。调用 `mul_assoc x y z` 等方法时仍可推断实例。
-`Minks.Struct` 的方括号把这些参数接到各自选定的组件。
+`Minks.Struct` 的组件须由 `Minks.Mixin` 声明。若有多份匹配的选择，
+可以用方括号指定组件键，每个键都会按 Mixin 的参数元数据校验。
+例如 `hasMagma : HasMagma [carrier, hasOtherEquiv]` 使用
+`hasOtherEquiv` 作为乘法依赖的广集相等。
 
 Indent `with` by two spaces, leave two spaces after the keyword, and align
 continuation entries. A future alias block would use one `where` after
@@ -180,15 +324,15 @@ the instance selected for the carrier and order of `x`.
 在格的选定序上满足的界律。`leq bottom x` 根据 `x` 的载体和选定的序
 推断对应的底元实例。
 
-The prototype assumes one external carrier and takes explicit positional
-dependency mappings. It generates the packed record, its ordinary Rocq
-constructor, and `To` views. Fixed-parent `Of` and relative `Is` views,
+Flat generation takes one shared carrier and explicit positional dependency
+mappings. It generates the packed record, its ordinary Rocq constructor,
+and `To` views. Relative `Is` views,
 explicit universe-instance mappings, diagnostics for generated constraints
 and inference of omitted dependencies remain follow-up work. Rocq currently infers
 some additional upper bounds; the printed universe parameter positions
 are experimental.
 
-当前原型固定一个外部载体，并用显式的位置映射描述依赖。已生成平铺记录、
-普通 Rocq 构造器及 `To` 视图。固定父结构的 `Of`、相对 `Is` 视图、
+平铺生成固定一个外部载体，并用显式的位置映射描述依赖。已生成平铺记录、
+普通 Rocq 构造器及 `To` 视图。相对 `Is` 视图、
 显式宇宙实例映射、生成约束的诊断及省略依赖的推断留给后续。Rocq 目前会推断
 一些额外的上界，打印出的宇宙参数位置仍是实验接口。
