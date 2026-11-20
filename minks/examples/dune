@@ -1,0 +1,12 @@
+(rocq.theory
+ (name MinksExamples)
+ (theories Minks Stdlib elpi elpi_elpi)
+ (plugins rocq-elpi.elpi))
+
+(alias
+ (name runtest)
+ (package rocq-minks)
+ (deps
+  Algebra.vo
+  Commands.vo
+  Lattice.vo))

@@ -1,3 +1,7 @@
+; The Elpi experiment is a separate project with its own build.
+; Elpi 实验使用独立项目及构建入口。
+(dirs :standard \ minks)
+
 ; Explicit validation scopes; see docs/Testing.md.
 ; 验证范围见 docs/Testing.md；库入口不包含 Rocq 回归理论。
 (alias

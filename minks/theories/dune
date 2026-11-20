@@ -1,0 +1,6 @@
+(rocq.theory
+ (name Minks)
+ (package rocq-minks)
+ (synopsis "Experimental Rocq flat structure generator")
+ (theories elpi elpi_elpi)
+ (plugins rocq-elpi.elpi))

@@ -1,0 +1,30 @@
+(lang dune 3.23)
+
+(using rocq 0.11)
+
+(generate_opam_files)
+
+(subst disabled)
+
+(name rocq-minks)
+
+(version dev)
+
+(authors "Linyu Yang <yly1228@foxmail.com>")
+
+(maintainers "Linyu Yang <yly1228@foxmail.com>")
+
+(homepage https://github.com/Godalin/rocq-cats)
+
+(bug_reports https://github.com/Godalin/rocq-cats/issues/48)
+
+(license GPL-3.0-or-later)
+
+(package
+ (name rocq-minks)
+ (synopsis "Experimental Rocq flat structure generator")
+ (description "Generate flat universe-polymorphic structure hierarchies with Rocq-Elpi.")
+ (depends
+  (rocq-core (>= 9.3))
+  (rocq-elpi (>= 3.5.1))
+  (rocq-stdlib (and (>= 9.2) :with-test))))
