@@ -430,6 +430,12 @@ Run all project commands through this switch, without changing the global
 opam selection. For VS Code, point `vsrocq.path` at this switch's `vsrocqtop`
 and install a `vsrocq-language-server` matching the VsRocq extension version.
 
+The [flat structure generator experiment](./minks/README.md) has its
+own package, `rocq-minks`, and build instructions.
+
+[平铺结构生成器实验](./minks/README.md)使用独立的
+`rocq-minks` 包，构建命令见该目录的说明。
+
 项目要求 Rocq 9.3 起、Stdlib 9.2 起及 Dune 3.23 起。
 本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq 9.3.0、Stdlib 9.2.0 和
 Dune 3.23.1；CI 检查 Rocq 9.3，不再支持 Rocq 9.0–9.2。
