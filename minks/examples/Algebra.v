@@ -1,5 +1,5 @@
 From Stdlib Require Import Utf8.
-From Minks Require Import Struct.
+From Minks Require Import all.
 
 Set Universe Polymorphism.
 

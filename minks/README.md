@@ -2,12 +2,11 @@
 
 This is the first prototype for [issue #48](https://github.com/Godalin/rocq-cats/issues/48).
 It is packaged as `rocq-minks` in its own Dune project and exposes
-the Rocq entry point `Minks.Struct`. The main `rocq-cats` build does not
-visit this directory or require Elpi.
+the Rocq entry point `Minks.all`. Cats depends on this package.
 
 这是 [#48](https://github.com/Godalin/rocq-cats/issues/48) 的第一版原型。
 独立的 Dune 项目将它打包为 `rocq-minks`，提供 Rocq 模块
-`Minks.Struct`。主库 `rocq-cats` 的构建不扫描本目录，也不依赖 Elpi。
+`Minks.all`。Cats 依赖这个包。
 
 To build the package with Rocq 9.3.0 and Rocq-Elpi 3.5.1 in the project switch:
 
@@ -19,12 +18,14 @@ opam exec --switch=rocq-cats -- dune build
 ```
 
 If the current shell already uses the `rocq-cats` switch, run `dune build`
-directly. The local `dune-workspace` makes `minks/` the build root. Use
-`dune build @install` to check the package artifacts explicitly.
+directly. The local `dune-workspace` makes `minks/` the build root. From the
+repository root, Dune can also build Minks as part of the Cats workspace.
+Use `dune build @install` inside `minks/` to check its package artifacts.
 
 若当前 shell 已使用 `rocq-cats` switch，直接运行 `dune build` 即可。
-本目录的 `dune-workspace` 将 `minks/` 设为构建根。要单独检查打包产物，
-可用 `dune build @install`。
+本目录的 `dune-workspace` 将 `minks/` 设为构建根。从仓库根目录运行时，
+Dune 也可以在 Cats 工作区内构建 Minks。要单独检查打包产物，在
+`minks/` 内运行 `dune build @install`。
 
 The `@install` target prepares the package files without installing them
 into the switch. To install the local package, run
@@ -33,11 +34,11 @@ into the switch. To install the local package, run
 `@install` 只准备安装文件。若要装入 switch，在本目录运行
 `opam install --switch=rocq-cats .`。
 
-Import [`Minks.Struct`](theories/Struct.v) to use the public commands.
+Import [`Minks.all`](theories/all.v) to use `Minks.Struct` and `Minks.Inspect`.
 [Spec.v](theories/Spec.v) handles component identity and inheritance;
 [Flat.v](theories/Flat.v) generates Rocq declarations.
 
-导入 [`Minks.Struct`](theories/Struct.v) 即可使用公开命令。
+导入 [`Minks.all`](theories/all.v) 即可使用 `Minks.Struct` 和 `Minks.Inspect`。
 [Spec.v](theories/Spec.v) 处理组件身份及继承，[Flat.v](theories/Flat.v)
 生成 Rocq 声明。
 
@@ -47,7 +48,7 @@ examples such as:
 [examples/Algebra.v](examples/Algebra.v) 声明 Mixin，并给出如下示例：
 
 ```coq
-From Minks Require Import Struct.
+From Minks Require Import all.
 
 (* After declaring HasMagma and generating SetC: *)
 Minks.Struct Magma extends SetC
