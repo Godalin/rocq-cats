@@ -196,9 +196,9 @@ Defined.
 (** 状态强度在上下文及结果上均自然。 *)
 
 Program Definition StateStrengthN@{r e u p +} (R : SetC@{r e})
-  : (tensorF (isMagmoidal SetCartMonoidal) ∘F
+  : (tensorF (HasMonoidal_interchange SetCartMonoidal) ∘F
       (IdF ×F StateF@{r e u p _ _ _ _} R)) ⇒
-      (StateF R ∘F tensorF (isMagmoidal SetCartMonoidal))
+      (StateF R ∘F tensorF (HasMonoidal_interchange SetCartMonoidal))
   :=
   {|nt p := state_strength R (fst p) (snd p)
   |}.

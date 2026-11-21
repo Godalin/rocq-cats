@@ -14,11 +14,11 @@ Local Open Scope algebra_scope.
     导入系数不得自动选取其结构。局部启用后，解的投影应计算出实际布尔位。 *)
 
 Fail Definition unchosen_boolean_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := ltac:(typeclasses eauto).
 
 Fail Definition unchosen_boolean_commutativity
-  : IsCommMonoid BoolS_Monoid
+  : IsCommMagma BoolS_Monoid
   := ltac:(typeclasses eauto).
 
 (** ** Computing the Selected Solutions
@@ -31,7 +31,7 @@ Fail Definition unchosen_boolean_commutativity
     局部启用已有异或群及其交换性见证，检查两者使用同一底层乘法。 *)
 
 Section BooleanComputations.
-Local Existing Instance BoolS_IsCommMonoid.
+Local Existing Instance BoolS_IsCommMagma.
 
 Example left_solution_computes
   : (GroupMulLSolution (G := BoolS_Group) true false).1 = true.
@@ -59,6 +59,6 @@ Definition boolean_interchange (a b c d : BoolS)
       (@mul _ (hasMagma BoolS_Monoid) a b) (@mul _ (hasMagma BoolS_Monoid) c d) ≈S
       @mul _ (hasMagma BoolS_Monoid)
         (@mul _ (hasMagma BoolS_Monoid) a c) (@mul _ (hasMagma BoolS_Monoid) b d)
-  := mul_interchange a b c d.
+  := mul_interchange (M := BoolS_Semigroup) a b c d.
 
 End BooleanComputations.

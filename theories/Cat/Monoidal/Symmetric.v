@@ -18,110 +18,120 @@ Local Open Scope ob_scope.
     中心交换相干地互换通常张量位置。其自然性每次只使用一个计算，不主张
     两个效应的交换律。对合性提供逆，并导出另一变量的自然性，均不重复保存。 *)
 
-Class SymmetricPremonoidalCat (C : Cat)
+Minks.Mixin HasTensorSym (C : Cat)
+  extends HasBinoidal C
   :=
-  (** Inherit the unit, tensor actions and coherence from one parent. *)
-
-  (** 从唯一父结构继承单位、张量作用及相干性。 *)
-
-  { SymmetricPremonoidalToCat :> Cat := C
-  ; symmetric_hasBinoidal :> HasBinoidal C
-  ; SymmetricPremonoidalToHasPremonoidal
-    :> HasPremonoidal C symmetric_hasBinoidal
-
-  (** The exchange maps are central and reverse each other. *)
-
-  (** 交换映射为中心态射，彼此互逆。 *)
-
-  ; premonoidal_symmetry (X Y : @Ob C)
+  { tensor_sym (X Y : @Ob C)
     : Hom (X ⊗ Y) (Y ⊗ X)
-  ; premonoidal_symmetry_central (X Y : @Ob C)
-    : is_central (premonoidal_symmetry X Y)
-  ; premonoidal_symmetry_involutive (X Y : @Ob C)
-    : premonoidal_symmetry Y X ∘ premonoidal_symmetry X Y ≈ id
+  ; tensor_sym_central (X Y : @Ob C)
+    : is_central (tensor_sym X Y)
+  ; tensor_sym_involutive (X Y : @Ob C)
+    : tensor_sym Y X
+      ∘ tensor_sym X Y ≈ id
 
   (** Store naturality in the left position; right naturality is derived. *)
 
   (** 保存左位置自然性；右位置自然性随后导出。 *)
 
-  ; premonoidal_symmetry_natural_l {X X' : @Ob C}
+  ; tensor_sym_natural_l {X X' : @Ob C}
       (Y : @Ob C) (f : Hom X X')
-    : premonoidal_symmetry X' Y ∘ (f ⊳ Y) ≈
-        (Y ⊲ f) ∘ premonoidal_symmetry X Y
-
-  (** Exchange agrees with reassociation and the two unitors. *)
-
-  (** 交换与括号重排及两个单位子相容。 *)
-
-  ; premonoidal_symmetry_hexagon (X Y Z : @Ob C)
-    : α[Y; Z; X] ∘
-        (premonoidal_symmetry X (Y ⊗ Z) ∘ α[X; Y; Z]) ≈
-        (Y ⊲ premonoidal_symmetry X Z) ∘
-          (α[Y; X; Z] ∘ (premonoidal_symmetry X Y ⊳ Z))
-  ; premonoidal_symmetry_unit (X : @Ob C)
-    : λ[X] ∘ premonoidal_symmetry X (𝐈[SymmetricPremonoidalToHasPremonoidal]) ≈ ρ[X]
+    : tensor_sym X' Y ∘ (f ⊳ Y) ≈
+        (Y ⊲ f) ∘ tensor_sym X Y
   }.
 
-Arguments symmetric_hasBinoidal {_} _.
-Arguments SymmetricPremonoidalToHasPremonoidal {_} _.
-Arguments premonoidal_symmetry {_ _} _ _.
+Arguments tensor_sym {C BC S} _ _ : rename.
 
-(** Register the same parent for inherited instance search. *)
+(** The selected exchange agrees with the selected associator. *)
 
-(** 为继承实例搜索注册同一个父结构。 *)
+(** 选定交换与选定结合子满足六边形。 *)
 
-#[export] Existing Instance symmetric_hasBinoidal.
-#[export] Existing Instance SymmetricPremonoidalToHasPremonoidal.
+Minks.Mixin IsSymHexagon (C : Cat)
+  extends HasTensorSym C, HasTensorAssoc C
+  :=
+  { tensor_sym_hexagon (X Y Z : @Ob C)
+    : α[Y; Z; X] ∘
+        (tensor_sym X (Y ⊗ Z) ∘ α[X; Y; Z]) ≈
+        (Y ⊲ tensor_sym X Z) ∘
+          (α[Y; X; Z] ∘ (tensor_sym X Y ⊳ Z))
+  }.
 
-Notation "'σₚ[' X ';' Y ']'" := (premonoidal_symmetry X Y)
+Arguments tensor_sym_hexagon {C BC S AC H} _ _ _ : rename.
+
+(** The selected exchange agrees with the two selected unitors. *)
+
+(** 选定交换与两个选定单位子相容。 *)
+
+Minks.Mixin IsSymUnit (C : Cat)
+  extends HasTensorSym C, HasTensorUnitors C
+  :=
+  { tensor_sym_unit (X : @Ob C)
+    : λ[X] ∘ tensor_sym X (𝐈[hasTensorUnitors]) ≈ ρ[X]
+  }.
+
+Arguments tensor_sym_unit {C BC S UC H} _ : rename.
+
+(** Extend one premonoidal category by its chosen symmetric exchange. *)
+
+(** 在一份预幺半范畴上加入选定的对称交换。 *)
+
+Minks.Struct SymPremonoidalCat
+  extends PremonoidalCat
+  with  hasTensorSym : HasTensorSym,
+        isSymHexagon : IsSymHexagon,
+        isSymUnit : IsSymUnit
+  exports HasSymPremonoidal.
+
+Notation "'σₚ[' X ';' Y ']'" := (tensor_sym X Y)
   : monoidal_scope.
 
 (** ** Derived Symmetry Laws
 
-    Fix a symmetric premonoidal category. Derive inverse and other-variable
-    naturality laws, and recover the right action using symmetry. *)
+    Fix a symmetric exchange on the selected tensor. Derive the inverse
+    and other-variable naturality, and recover the right action. *)
 
 (** ** 导出的对称定律
 
-    固定对称预幺半范畴，导出取逆及另一变量的自然性定律，并用对称性恢复右作用。 *)
+    固定选定张量上的对称交换，导出取逆及另一变量的自然性，再用对称性恢复右作用。 *)
 
 Section Derived.
-Context {C : Cat} `{SP : !SymmetricPremonoidalCat C}.
+Context {C : Cat} `{BC : !HasBinoidal C}
+  `{S : !@HasTensorSym C BC}.
 
 (** The chosen inverse of exchange is exchange in the opposite order. *)
 
 (** 交换的选定逆就是反序交换。 *)
 
-Definition PremonoidalSymmetryIso (X Y : @Ob C)
+Definition TensorSymIso (X Y : @Ob C)
   : (X ⊗ Y) ≅ (Y ⊗ X)
   := (σₚ[X; Y]; (σₚ[Y; X];
-    (premonoidal_symmetry_involutive X Y,
-      premonoidal_symmetry_involutive Y X))).
+    (tensor_sym_involutive X Y,
+      tensor_sym_involutive Y X))).
 
 (** Invert the left-variable square to obtain right-variable naturality. *)
 
 (** 对左变量方块取逆，得到右变量自然性。 *)
 
-Lemma premonoidal_symmetry_natural_r {Y Y' : @Ob C}
+Lemma tensor_sym_natural_r {Y Y' : @Ob C}
     (X : @Ob C) (g : Hom Y Y')
   : σₚ[X; Y'] ∘ (X ⊲ g) ≈ (g ⊳ X) ∘ σₚ[X; Y].
 Proof.
-  exact (iso_square_inv (PremonoidalSymmetryIso Y X)
-    (PremonoidalSymmetryIso Y' X) (g ⊳ X) (X ⊲ g)
-    (premonoidal_symmetry_natural_l X g)).
+  exact (iso_square_inv (TensorSymIso Y X)
+    (TensorSymIso Y' X) (g ⊳ X) (X ⊲ g)
+    (tensor_sym_natural_l X g)).
 Qed.
 
 (** Conjugation by exchange recovers right action from left action. *)
 
 (** 沿交换共轭，从左作用恢复右作用。 *)
 
-Lemma premonoidal_r_symmetry {X Y : @Ob C}
+Lemma tensor_r_sym {X Y : @Ob C}
     (Z : @Ob C) (f : Hom X Y)
   : f ⊳ Z ≈ σₚ[Z; Y] ∘ ((Z ⊲ f) ∘ σₚ[X; Z]).
 Proof.
-  apply (iso_cancel_l (PremonoidalSymmetryIso Y Z)).
-  rewrite <- !comp_assoc, premonoidal_symmetry_involutive, comp_id_l.
-  exact (premonoidal_symmetry_natural_l Z f).
+  apply (iso_cancel_l (TensorSymIso Y Z)).
+  rewrite <- !comp_assoc,
+    (@tensor_sym_involutive C BC S Z Y), comp_id_l.
+  exact (tensor_sym_natural_l Z f).
 Qed.
 
 End Derived.

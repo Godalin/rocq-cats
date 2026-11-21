@@ -145,8 +145,8 @@ Definition product_cylinder
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W true
-      (moved false (@inv _ (hasGroup (G false false true false)) x))
-      (@inv _ (hasGroup (G true true false true)) (moved false x))
+      (moved false (@inv _ _ _ (hasInverse (G false false true false)) x))
+      (@inv _ _ _ (hasInverse (G true true false true)) (moved false x))
   := two_sphere_cylinder_change_base_left_inverse W
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false) false
@@ -159,8 +159,8 @@ Definition inverse_cylinder
 
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W true
-      (moved true (@mul_unit _ (hasMonoid (G false false true false))))
-      (@mul_unit _ (hasMonoid (G true true false true)))
+      (moved true (@mul_unit _ _ (hasUnit (G false false true false))))
+      (@mul_unit _ _ (hasUnit (G true true false true)))
   := @two_sphere_cylinder_change_base_unit W
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false) false true true.
@@ -218,10 +218,10 @@ Example transport_and_operations_compute
   : ((moved true y).1, (moved false y).1,
      (moved true (@mul _ (hasMagma (G false false true false)) x y)).1,
      (@mul _ (hasMagma (G true true false true)) (moved true x) (moved true y)).1,
-     (moved false (@inv _ (hasGroup (G false false true false)) x)).1,
-     (@inv _ (hasGroup (G true true false true)) (moved false x)).1,
-     (moved true (@mul_unit _ (hasMonoid (G false false true false)))).1,
-     (@mul_unit _ (hasMonoid (G true true false true))).1) =
+     (moved false (@inv _ _ _ (hasInverse (G false false true false)) x)).1,
+     (@inv _ _ _ (hasInverse (G true true false true)) (moved false x)).1,
+     (moved true (@mul_unit _ _ (hasUnit (G false false true false)))).1,
+     (@mul_unit _ _ (hasUnit (G true true false true))).1) =
     (true, true, false, true, false, true, false, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -290,12 +290,12 @@ Fail Definition product_not_native
       @mul _ (hasMagma (G true true false true)) (moved true x) (moved true y)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_not_native
-  : moved false (@inv _ (hasGroup (G false false true false)) x) =
-      @inv _ (hasGroup (G true true false true)) (moved false x)
+  : moved false (@inv _ _ _ (hasInverse (G false false true false)) x) =
+      @inv _ _ _ (hasInverse (G true true false true)) (moved false x)
   := ltac:(vm_compute; reflexivity).
 Fail Definition unit_not_native
-  : moved true (@mul_unit _ (hasMonoid (G false false true false))) =
-      @mul_unit _ (hasMonoid (G true true false true))
+  : moved true (@mul_unit _ _ (hasUnit (G false false true false))) =
+      @mul_unit _ _ (hasUnit (G true true false true))
   := ltac:(vm_compute; reflexivity).
 
 (** ** The Actual Nonzero Cocycle Sphere
@@ -400,8 +400,8 @@ Definition value
 
 Example nonzero_transport_compute
   : (value (model_mapped bool_cocycle_sphere),
-     value (model_mapped (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
-     value (@inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere))) =
+     value (model_mapped (@inv _ _ _ (hasInverse GZ) bool_cocycle_sphere)),
+     value (@inv _ _ _ (hasInverse GZ) (model_mapped bool_cocycle_sphere))) =
     (true, true, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -428,7 +428,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 运输后的实际非零球面仍不等于单位。 *)
 
 Definition transported_nonzero_not_unit
-  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @mul_unit _ (hasMonoid GZ)).
+  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @mul_unit _ _ (hasUnit GZ)).
 Proof.
   intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
   change (true = false) in H. discriminate H.

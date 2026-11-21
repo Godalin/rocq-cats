@@ -304,7 +304,7 @@ Defined.
 Lemma prof_monoidal_map
     {Q Q' P P' : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})}
     (β : Q ⇒ Q') (α : P ⇒ P')
-  : tensor_map (IM := isMagmoidal ProfMonoidal)
+  : tensor_map (IM := HasMonoidal_interchange ProfMonoidal)
       (X := Q) (X' := Q') (Y := P) (Y' := P') β α ≈N
       @ProfCompMapN C C C Q Q' P P' (HC Q P) (HC Q' P') β α.
 Proof. exact (@bifct_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
@@ -317,7 +317,7 @@ Proof. exact (@bifct_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
     不要求函子定律记录相等。 *)
 
 Program Definition ProfTensorN
-  : tensorF (isMagmoidal ProfMonoidal) ⇒ ProfCompF C C C HC
+  : tensorF (HasMonoidal_interchange ProfMonoidal) ⇒ ProfCompF C C C HC
   :=
   {|nt p := _
   |}.
@@ -333,7 +333,7 @@ Defined.
 (** 比较及其逆在每个选定复合上计算为恒等变换，保留全部选定 coend。 *)
 
 Definition ProfTensorIso
-  : tensorF (isMagmoidal ProfMonoidal) ≅N ProfCompF C C C HC.
+  : tensorF (HasMonoidal_interchange ProfMonoidal) ≅N ProfCompF C C C HC.
 Proof.
   exists ProfTensorN. intros [Q P].
   exists IdN. split; intros [X V] v; reflexivity.

@@ -119,10 +119,10 @@ Proof.
   change ((1 : M) ⋅ v b ≈S v y.1 ⋅ 1) in E0.
   change ((1 : M) ⋅ v b ≈S 1 ⋅ v a) in E1.
   change (v x.1 ⋅ 1 ≈S 1 ⋅ v a) in E2.
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in E0,
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))),
+    (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))) in E0,
     E2.
-  rewrite !(@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))) in E1.
+  rewrite !(@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))) in E1.
   change (v x.1 ≈S v y.1).
   transitivity (v a); [exact E2 |].
   transitivity (v b); [symmetry; exact E1 | exact E0].

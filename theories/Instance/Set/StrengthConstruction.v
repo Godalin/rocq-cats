@@ -60,8 +60,8 @@ Defined.
 (** 这些映射对两个变量自然；先比较派生张量作用与选定积映射，再使用函子复合。 *)
 
 Program Definition SetStrengthN
-  : (tensorF (isMagmoidal SetCartMonoidal) ∘F (IdF ×F F)) ⇒
-    (F ∘F tensorF (isMagmoidal SetCartMonoidal))
+  : (tensorF (HasMonoidal_interchange SetCartMonoidal) ∘F (IdF ×F F)) ⇒
+    (F ∘F tensorF (HasMonoidal_interchange SetCartMonoidal))
   :=
   {|nt p := set_strength_map (fst p) (snd p)
   |}.
@@ -69,7 +69,7 @@ Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
   intros [x v].
   change (fmap F ⟨const_resp Y2 (f x), id⟩ (fmap F g v) ≈S
-    fmap F (tensor_map (IM := isMagmoidal SetCartMonoidal) f g)
+    fmap F (tensor_map (IM := HasMonoidal_interchange SetCartMonoidal) f g)
       (fmap F ⟨const_resp X2 x, id⟩ v)).
   transitivity (fmap F (f × g) (fmap F ⟨const_resp X2 x, id⟩ v)).
   - transitivity (fmap F (⟨const_resp Y2 (f x), id⟩ ∘r g) v).

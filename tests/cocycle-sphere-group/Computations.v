@@ -17,7 +17,7 @@ Local Open Scope algebra_scope.
     乘法须计算异或，实际保留合成四面体须计算全部四个面标签。 *)
 
 Fail Definition unchosen_coefficient_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_class_magma

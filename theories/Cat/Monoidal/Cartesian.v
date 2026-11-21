@@ -98,10 +98,10 @@ Proof.
   - apply product_β1.
 Defined.
 
-(** Finite products define a chosen monoidal structure. Importing this
-    module does not register a default monoidal structure on [C]. *)
+(** Pack the chosen finite products and terminal object as a monoidal
+    category. *)
 
-(** 有限积给出选定幺半结构；导入本模块不会为 [C] 注册默认幺半结构。 *)
+(** 将选定的有限积及终对象打包为幺半范畴。 *)
 
 Program Definition CartMonoidal
   : MonoidalCat
@@ -123,13 +123,13 @@ Next Obligation.
   reflexivity.
 Qed.
 
-(** Read the cartesian monoidal choices on the supplied category. *)
+(** Read the cartesian monoidal structure on the fixed category. *)
 
-(** 在给定范畴上读取所选取的笛卡尔幺半结构。 *)
+(** 在固定范畴上读取笛卡尔幺半结构。 *)
 
 Definition CartHasMonoidal
   : HasMonoidal C
-  := hasMonoidal CartMonoidal.
+  := MonoidalCatToHasMonoidal CartMonoidal.
 
 (** The derived tensor action agrees with the selected product bimap. *)
 
@@ -137,7 +137,7 @@ Definition CartHasMonoidal
 
 Lemma cartesian_tensor_map {X X' Y Y' : @Ob C}
     (f : Hom X X') (g : Hom Y Y')
-  : tensor_map (IM := isMagmoidal CartHasMonoidal) f g ≈ f × g.
+  : tensor_map (IM := HasMonoidal_interchange CartHasMonoidal) f g ≈ f × g.
 Proof. apply bifct_sequence. Qed.
 
 (** Internal monoids for finite products are a specialization of the same
@@ -159,7 +159,7 @@ Definition CartMonoid
 Lemma cartesian_monoid_unit_l (A : CartMonoid)
   : m[A] ∘ ⟨e[A] ∘ !, id⟩ ≈ id.
 Proof.
-  pose proof (monoid_object_unit_l A) as H.
+  pose proof (monoid_object_unit_l (isMonoidObj A)) as H.
   rewrite cartesian_tensor_map in H.
   change (m[A] ∘ (e[A] × id) ≈ π2) in H.
   transitivity ((m[A] ∘ (e[A] × id)) ∘
@@ -180,7 +180,7 @@ Qed.
 Lemma cartesian_monoid_unit_r (A : CartMonoid)
   : m[A] ∘ ⟨id, e[A] ∘ !⟩ ≈ id.
 Proof.
-  pose proof (monoid_object_unit_r A) as H.
+  pose proof (monoid_object_unit_r (isMonoidObj A)) as H.
   rewrite cartesian_tensor_map in H.
   change (m[A] ∘ (id × e[A]) ≈ π1) in H.
   transitivity ((m[A] ∘ (id × e[A])) ∘
@@ -203,7 +203,7 @@ Lemma cartesian_monoid_assoc (A : CartMonoid)
       (@product_assoc C HP
         (MonoidCarrier A) (MonoidCarrier A) (MonoidCarrier A)).1.
 Proof.
-  pose proof (monoid_object_assoc A) as H.
+  pose proof (monoid_object_assoc (isMonoidObj A)) as H.
   rewrite !cartesian_tensor_map in H. exact H.
 Qed.
 

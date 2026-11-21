@@ -12,31 +12,24 @@ Local Open Scope algebra_scope.
 
     半群为一个选定原群增加结合律，原样继承其运算与相等，不要求单位元。 *)
 
-(** Associativity is a property of one specified magma. It selects no
-    additional operation, so no separate choice wrapper is needed. *)
+(** Associativity refers to the selected multiplication and setoid. *)
 
-(** 结合律是一个指定原群的性质，不选取额外运算，因而无须另加选择包装。 *)
+(** 结合律依赖选定的乘法及广集。 *)
 
-Class IsSemigroup (M : Magma)
+Minks.Mixin IsSemigroup (S : SetC)
+  extends HasMagma S
   :=
-  { mul_assoc (x y z : M) : (x ⋅ y) ⋅ z ≈S x ⋅ (y ⋅ z)
+  { mul_assoc (x y z : S)
+    : mul (mul x y) z ≈S mul x (mul y z)
   }.
 
-(** The complete semigroup stores its immediate parent exactly once. *)
+(** Pack one setoid, its multiplication and its associativity witness. *)
 
-(** 完整半群恰好保存一次直接父结构。 *)
+(** 将一份广集、乘法及结合律见证平铺打包。 *)
 
-Record Semigroup@{u p l}
-  := SemigroupOfMagma
-  { SemigroupToMagma :> Magma@{u p l}
-  ; isSemigroup :: IsSemigroup SemigroupToMagma
-  }.
-
-(** The record constructor takes its parent and witness explicitly. *)
-
-(** 记录构造器显式接受父结构及其见证。 *)
-
-Arguments SemigroupOfMagma _ _ : clear implicits.
+Minks.Struct Semigroup
+  extends Magma
+  with  isSemigroup as isSemigroup : IsSemigroup.
 
 (** ** Associative Multiplication
 

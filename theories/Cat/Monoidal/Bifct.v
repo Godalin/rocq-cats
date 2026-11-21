@@ -137,7 +137,7 @@ Qed.
 
 Definition BifctBinoidal
   : BinoidalCat
-  := BinoidalCatOfCat C BifctHasBinoidal.
+  := MakeBinoidalCat C BifctHasBinoidal.
 
 (** Both execution orders agree by bifunctoriality alone. *)
 
@@ -200,11 +200,19 @@ Context {C : Cat} (T : Fct (C ×C C) C).
 (** 交换律见证属于从 [T] 提取的张量作用。 *)
 
 Definition BifctTensorInterchange
-  : IsMagmoidal (BifctHasBinoidal T)
+  : @IsMagmoidal C (BifctHasBinoidal T)
   :=
   {|tensor_interchange X X' Y Y' f g :=
       fst (bifct_arrow_central T f Y Y' g)
   |}.
+
+(** Pack the tensor actions and their interchange. *)
+
+(** 打包张量作用及其交换律。 *)
+
+Definition BifctMagmoidal
+  : MagmoidalCat
+  := MagmoidalCatOfBinoidalCat (BifctBinoidal T) BifctTensorInterchange.
 
 (** Compare the reconstructed tensor functor with the supplied one by
     identity components, rather than equality of their records. *)
@@ -270,11 +278,11 @@ Context {C : Cat} (T : Fct (C ×C C) C)
 (** 最后变量族保存原映射及逆，其他方向约束同一组分量。 *)
 
 Program Definition BifctHasAssoc
-  : HasAssoc C (BifctHasBinoidal T)
+  : @HasTensorAssoc C (BifctHasBinoidal T)
   :=
   {|TensorAssocRIso X Y :=
       ({|nt Z := A.1 ((X, Y), Z)|}; λ Z, A.2 ((X, Y), Z))
-  ; isAssoc :=
+  ; isTensorAssoc :=
       {|assoc_natural_l Y Z := {|nat_iso_naturality X X' f := _|}
       ; assoc_natural_m X Z := {|nat_iso_naturality Y Y' g := _|}
       ; assoc_central X Y Z := bifct_arrow_central T _
@@ -301,6 +309,14 @@ Next Obligation.
   exact (nat_naturality A.1
     (X := ((X, Y), Z)) (Y := ((X, Y'), Z)) ((id, g), id)).
 Qed.
+
+(** Add the chosen associator to the magmoidal tensor. *)
+
+(** 为带交换律的张量加入选定的结合子。 *)
+
+Definition BifctSemigroupal
+  : SemigroupalCat
+  := SemigroupalCatOfMagmoidalCat (BifctMagmoidal T) BifctHasAssoc.
 
 End Associativity.
 
@@ -340,14 +356,14 @@ Context (I : C) (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 (** 此处无需结合性或与结合子的相干性。 *)
 
 Program Definition BifctHasUnitors
-  : HasUnitors C BC
+  : @HasTensorUnitors C BC
   :=
   {|tensor_unit := I
   ; TensorUnitorLIso :=
       ({|nt X := L.1 X|}; L.2)
   ; TensorUnitorRIso :=
       ({|nt X := R.1 X|}; R.2)
-  ; isUnitors :=
+  ; isTensorUnitors :=
       {|unitor_l_central X := bifct_arrow_central T _
       ; unitor_r_central X := bifct_arrow_central T _
       |}
@@ -373,21 +389,14 @@ Context (I : C) (A : Tensor3LF T ≅N Tensor3RF T)
     (Ht : ∀ X Y : C,
       fmap (AtLF T X) (L.1 Y) ∘ A.1 ((X, I), Y) ≈ fmap (AtRF T Y) (R.1 X)).
 
-(** Combine the two choices without selecting any additional operation. *)
+(** Check the triangle on the associator and unitors extracted from [T]. *)
 
-(** 组合两份选择，不另选运算。 *)
+(** 检查从 [T] 提取的结合子和单位子的三角形。 *)
 
-Program Definition BifctHasPremonoidal
-  : HasPremonoidal C BC
+Program Definition BifctIsPremonoidal
+  : @IsPremonoidal C BC (BifctHasAssoc T A Hp) (BifctHasUnitors I L R)
   :=
-  {|hasAssoc := BifctHasAssoc T A Hp
-  ; hasUnitors := BifctHasUnitors I L R
-  ; isPremonoidal :=
-      ({|tensor_triangle_coherence := _|}
-        : IsPremonoidal (BifctHasAssoc T A Hp)
-            (BifctHasUnitors I L R))
-  |}.
-
+  {|tensor_triangle := _|}.
 Next Obligation. exact (Ht X Y). Qed.
 
 End Compatibility.
@@ -396,13 +405,13 @@ End PremonoidalAssembly.
 (** * Assembly from a Tensor Bifunctor
 
     Existing models may supply one bifunctor and natural structural
-    isomorphisms. This constructor extracts their premonoidal parent and
-    proves interchange once, without storing a second tensor. *)
+    isomorphisms. This constructor obtains interchange and associativity
+    in the semigroupal parent, then adds the supplied unitors and triangle. *)
 
 (** * 从张量双函子装配
 
-    已有模型可以提供一个双函子及自然结构同构。本构造提取其预幺半父结构，
-    统一证明交换律，不另存第二个张量。 *)
+    已有模型可以提供一个双函子及自然结构同构。本构造在半群张量父结构中
+    提取交换律和结合子，再加入给定单位子及三角形。 *)
 
 Section MonoidalAssembly.
 Context {C : Cat} (T : Fct (C ×C C) C) (I : C)
@@ -420,24 +429,18 @@ Context
 
 (** 保留给定的全部对象与结构逆；仅重建导出的作用定律、中心性及分别自然性。 *)
 
-Definition BifctHasMonoidal
-  : HasMonoidal C
-  :=
-  {|monoidal_hasBinoidal := BifctHasBinoidal T
-  ; monoidal_hasPremonoidal := BifctHasPremonoidal T I A L R Hp Ht
-  ; isMagmoidal := BifctTensorInterchange T
-  |}.
-
-(** The complete category uses the same premonoidal choices and interchange. *)
-
-(** 完整范畴使用同一份预幺半选择和交换律。 *)
-
 Definition BifctMonoidal
   : MonoidalCat
-  := MonoidalCatOfPremonoidalCat
-      (PremonoidalCatOfBinoidalCat (BifctBinoidal T)
-        (monoidal_hasPremonoidal BifctHasMonoidal))
-      (isMagmoidal BifctHasMonoidal).
+  := MonoidalCatOfSemigroupalCat (BifctSemigroupal T A Hp)
+       (BifctHasUnitors T I L R) (BifctIsPremonoidal T I A L R Hp Ht).
+
+(** Read the same structure on the original fixed category. *)
+
+(** 在原固定范畴上读取同一结构。 *)
+
+Definition BifctHasMonoidal
+  : HasMonoidal C
+  := MonoidalCatToHasMonoidal BifctMonoidal.
 
 End MonoidalAssembly.
 
@@ -454,8 +457,8 @@ End MonoidalAssembly.
 
 Section JointAssociativity.
 Context {C : Cat}
-  `{BC : !HasBinoidal C} `{IM : !IsMagmoidal BC}
-  `{AC : !HasAssoc C BC}.
+  `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
+  `{AC : !@HasTensorAssoc C BC}.
 
 (** Package derived joint naturality with the inherited associator. *)
 

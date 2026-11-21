@@ -36,29 +36,23 @@ Reserved Notation "'ρ⁻¹[' X ']'"
 
     给定自然同构已包含其逆及自然性；这里只需正向中心性，逆的中心性由此推出。 *)
 
-Section Characterization.
-Context {C : Cat} `{BC : !HasBinoidal C} (I : C)
-  (L : (I ⊗-) ≅N IdF) (R : (-⊗ I) ≅N IdF).
-
-Class IsUnitors
+Minks.Mixin IsTensorUnitors (C : Cat) (I : C)
+    (L : (I ⊗-) ≅N IdF) (R : (-⊗ I) ≅N IdF)
+  extends HasBinoidal C
   :=
   { unitor_l_central (X : C) : is_central (L.1 X)
   ; unitor_r_central (X : C) : is_central (R.1 X)
   }.
 
-End Characterization.
-
-Arguments unitor_l_central {C BC I L R IsUnitors} _.
-Arguments unitor_r_central {C BC I L R IsUnitors} _.
+Arguments unitor_l_central {C hasBinoidal I L R IsTensorUnitors} _.
+Arguments unitor_r_central {C hasBinoidal I L R IsTensorUnitors} _.
 
 (** Choose one shared unit and the two natural isomorphisms. *)
 
 (** 选择唯一共享单位及两份自然同构。 *)
 
-Section Choice.
-Context (C : Cat) `{BC : !HasBinoidal C}.
-
-Class HasUnitors
+Minks.Mixin HasTensorUnitors (C : Cat)
+  extends HasBinoidal C
   :=
   { tensor_unit : C
     where "'𝐈'" := tensor_unit
@@ -87,19 +81,16 @@ Class HasUnitors
   ; tensor_unitor_r (X : C)
     : (X ⊗ 𝐈) ≅ X
     := (ρ[X]; TensorUnitorRIso.2 X)
-  ; isUnitors
-    :: IsUnitors 𝐈 TensorUnitorLIso TensorUnitorRIso
+  ; isTensorUnitors
+    :: @IsTensorUnitors C hasBinoidal 𝐈 TensorUnitorLIso TensorUnitorRIso
   }.
 
-End Choice.
-
-Arguments HasUnitors C BC : clear implicits.
 Arguments tensor_unit {_ _} _.
 Arguments TensorUnitorLIso {_ _} _.
 Arguments TensorUnitorRIso {_ _} _.
 Arguments tensor_unitor_l {_ _ _} _.
 Arguments tensor_unitor_r {_ _ _} _.
-Arguments isUnitors {_ _ _}.
+Arguments isTensorUnitors {_ _ _}.
 
 Notation "'𝐈'" := (tensor_unit _)
   (at level 0)
@@ -130,7 +121,7 @@ Notation "'ρ⁻¹[' X ']'" := (tensor_unitor_r X).2.1
     固定单位子，不假设结合性；分量中心性及自然性直接读取保存的证据。 *)
 
 Section Laws.
-Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !HasUnitors C BC}.
+Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !@HasTensorUnitors C BC}.
 
 (** The left unitor is central. *)
 

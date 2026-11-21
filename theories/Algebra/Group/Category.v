@@ -17,7 +17,7 @@ Local Open Scope algebra_scope.
 Program Definition MonoidCat_IsGpd (G : Group)
   : B(G) ⦂ Gpd
   :=
-  {|gpd_iso X Y g :=
+  {|gpd_iso X Y (g : G) :=
       (g⁻¹; (mul_inv_l g, mul_inv_r g))
   |}.
 
@@ -35,12 +35,12 @@ Definition GroupGpd (G : Group)
 
 (** 群胚任意指定对象处的自态射构成群，不要求对象代表之间原生相等。 *)
 
-Program Definition EndHasGroup (C : Cat)
+Program Definition EndHasInverse (C : Cat)
     `{HC : !IsGpd C} (X : @Ob C)
-  : HasGroup (EndMonoid C X)
+  : @HasInverse _ (Monoid_hasMagma (EndMonoid C X)) (hasUnit (EndMonoid C X))
   :=
   {|inv f := @gpd_inv C HC X X f
-  ; isGroup :=
+  ; isInverse :=
       {|mul_inv_l := @gpd_inv_l C HC X X
       ; mul_inv_r := @gpd_inv_r C HC X X
       |}
@@ -52,4 +52,4 @@ Program Definition EndHasGroup (C : Cat)
 
 Definition EndGroup (C : Cat) `{HC : !IsGpd C} (X : @Ob C)
   : Group
-  := GroupOfMonoid (EndMonoid C X) (EndHasGroup C X).
+  := GroupOfMonoid (EndMonoid C X) (EndHasInverse C X).

@@ -57,9 +57,9 @@ Defined.
     配对定律。 *)
 
 Program Definition ArrowGlobalTensorN
-  : (tensorF (isMagmoidal (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct))
+  : (tensorF (HasMonoidal_interchange (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct))
       ∘F (ArrowGlobalF ×F ArrowGlobalF)) ⇒
-      (ArrowGlobalF ∘F tensorF (isMagmoidal (@CartHasMonoidal C HT HP)))
+      (ArrowGlobalF ∘F tensorF (HasMonoidal_interchange (@CartHasMonoidal C HT HP)))
   := {|nt XY := arrow_global_pair (fst XY) (snd XY)|}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g]. intros [u v].
@@ -69,7 +69,7 @@ Next Obligation.
   etransitivity.
   - exact (@func_proper _ _ (arrow_global_pair Y1 Y2) _ _ Ht).
   - change ((arr[A; f] ∘ u) &&&[A] (arr[A; g] ∘ v) ≈
-      arr[A; tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP)) f g] ∘
+      arr[A; tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP)) f g] ∘
         (u &&&[A] v)).
     etransitivity; [symmetry; apply arrow_fanout_post |].
     apply comp_proper; [| reflexivity]. apply fmap_proper.

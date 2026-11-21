@@ -38,10 +38,11 @@ Context (f : B →r A) (g : A →r B).
 
 Program Definition SemigroupTransport (Hfg : (f ∘r g) ≈f id_resp)
   : Semigroup
-  :=
-  {|SemigroupToMagma := MagmaTransport A f g
-  ; isSemigroup := {|mul_assoc := _|}
-  |}.
+  := let M := MagmaTransport A f g in
+     {|SemigroupToSetC := M
+     ; Semigroup_hasMagma := hasMagma M
+     ; isSemigroup := {|mul_assoc := _|}
+     |}.
 Next Obligation.
   change (g (f (g (f x ⋅ f y)) ⋅ f z) ≈S
     g (f x ⋅ f (g (f y ⋅ f z)))).

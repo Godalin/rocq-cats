@@ -162,7 +162,7 @@ Lemma two_sphere_cylinder_change_base_left_inverse
   : TwoSphereCylinderHomotopy X c
       (two_sphere_cylinder_change_base_resp E
         (@SphereKanLeftInverse X b I x).1)
-      (@inv _ (hasGroup (TwoSphereCylinderGroup X c KR' KC' H K L))
+      (@inv _ _ _ (hasInverse (TwoSphereCylinderGroup X c KR' KC' H K L))
         (two_sphere_cylinder_change_base_resp E x)).
 Proof.
   exact (@func_proper _ _ (two_sphere_cylinder_of_class_resp X c KR' KC')

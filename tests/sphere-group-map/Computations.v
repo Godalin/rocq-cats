@@ -156,7 +156,7 @@ Example mapped_operations_compute
         (two_sphere_class_map_resp FlipN false sphere_at_false)).1,
      (two_sphere_class_map_resp FlipN false
         (@SphereKanLeftInverse WitnessX false false_left sphere_at_false).1).1,
-     (@inv _ (hasGroup (witness_group true))
+     (@inv _ _ _ (hasInverse (witness_group true))
         (two_sphere_class_map_resp FlipN false sphere_at_false)).1)
       = (true, false, true, false).
 Proof. vm_compute. reflexivity. Defined.
@@ -172,7 +172,7 @@ Example transported_operations_compute
           sphere_at_false)).1,
      (two_sphere_class_change_base_resp WitnessX base_equality
         (@SphereKanLeftInverse WitnessX false true_left sphere_at_false).1).1,
-     (@inv _ (hasGroup (witness_group true))
+     (@inv _ _ _ (hasInverse (witness_group true))
         (two_sphere_class_change_base_resp WitnessX base_equality
           sphere_at_false)).1,
      (two_sphere_class_change_base_resp WitnessX base_equality
@@ -216,8 +216,8 @@ Definition corrected_inverse_product
 
 Example group_inverse_natural (x : TwoSphereClassS WitnessX false)
   : two_sphere_class_map_resp FlipN false
-      (@inv _ (hasGroup (witness_group false)) x) ≈S
-      @inv _ (hasGroup (witness_group true))
+      (@inv _ _ _ (hasInverse (witness_group false)) x) ≈S
+      @inv _ _ _ (hasInverse (witness_group true))
         (two_sphere_class_map_resp FlipN false x).
 Proof.
   exact (two_sphere_class_map_left_inverse FlipN false false_left

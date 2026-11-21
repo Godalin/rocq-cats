@@ -158,10 +158,10 @@ Example operation_square_endpoints_compute
   : ((mapped (@mul _ (hasMagma (G false false true)) x y)).1,
      (@mul _ (hasMagma (G true true false))
        (mapped x) (mapped y)).1,
-     (mapped (@inv _ (hasGroup (G false false true)) x)).1,
-     (@inv _ (hasGroup (G true true false)) (mapped x)).1,
-     (mapped (@mul_unit _ (hasMonoid (G false false true)))).1,
-     (@mul_unit _ (hasMonoid (G true true false))).1) =
+     (mapped (@inv _ _ _ (hasInverse (G false false true)) x)).1,
+     (@inv _ _ _ (hasInverse (G true true false)) (mapped x)).1,
+     (mapped (@mul_unit _ _ (hasUnit (G false false true)))).1,
+     (@mul_unit _ _ (hasUnit (G true true false))).1) =
     (false, true, false, true, true, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -184,8 +184,8 @@ Definition product_cylinder
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@inv _ (hasGroup (G false false true)) x))
-      (@inv _ (hasGroup (G true true false)) (mapped x))
+      (mapped (@inv _ _ _ (hasInverse (G false false true)) x))
+      (@inv _ _ _ (hasInverse (G true true false)) (mapped x))
   := two_sphere_cylinder_map_left_inverse FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -198,8 +198,8 @@ Definition inverse_cylinder
 
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W true
-      (mapped (@mul_unit _ (hasMonoid (G false false true))))
-      (@mul_unit _ (hasMonoid (G true true false)))
+      (mapped (@mul_unit _ _ (hasUnit (G false false true))))
+      (@mul_unit _ _ (hasUnit (G true true false)))
   := two_sphere_cylinder_map_unit FlipN false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -282,8 +282,8 @@ Fail Definition product_square_is_not_native
       @mul _ (hasMagma (G true true false)) (mapped x) (mapped y)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_square_is_not_native
-  : mapped (@inv _ (hasGroup (G false false true)) x) =
-      @inv _ (hasGroup (G true true false)) (mapped x)
+  : mapped (@inv _ _ _ (hasInverse (G false false true)) x) =
+      @inv _ _ _ (hasInverse (G true true false)) (mapped x)
   := ltac:(vm_compute; reflexivity).
 
 (** ** Mapping the Actual Nonzero Cocycle Group
@@ -391,10 +391,10 @@ Example nonzero_map_squares_compute
        (@mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
      value (@mul _ (hasMagma GZ) (model_mapped bool_cocycle_sphere)
        (model_mapped bool_cocycle_sphere)),
-     value (model_mapped (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
-     value (@inv _ (hasGroup GZ) (model_mapped bool_cocycle_sphere)),
-     value (model_mapped (@mul_unit _ (hasMonoid GZ))),
-     value (@mul_unit _ (hasMonoid GZ))) = (false, false, true, true, false, false).
+     value (model_mapped (@inv _ _ _ (hasInverse GZ) bool_cocycle_sphere)),
+     value (@inv _ _ _ (hasInverse GZ) (model_mapped bool_cocycle_sphere)),
+     value (model_mapped (@mul_unit _ _ (hasUnit GZ))),
+     value (@mul_unit _ _ (hasUnit GZ))) = (false, false, true, true, false, false).
 Proof. vm_compute. reflexivity. Defined.
 
 (** The mapped product square is a real cocycle cylinder. *)
@@ -434,7 +434,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际非零像仍不能通过柱等于群单位。 *)
 
 Definition mapped_nonzero_not_unit
-  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @mul_unit _ (hasMonoid GZ)).
+  : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @mul_unit _ _ (hasUnit GZ)).
 Proof.
   intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
   change (true = false) in H. discriminate H.

@@ -51,8 +51,8 @@ Proof. unfold lax_lift2. rewrite <- comp_assoc, <- fmap_comp. reflexivity. Qed.
 Lemma lax_lift2_pre {X Y X' Y' Z : @Ob C}
     (f : Hom (tensor (HasBinoidal := MC) X' Y') Z)
     (g : Hom X X') (h : Hom Y Y')
-  : lax_lift2 f ∘ (tensor_map (IM := isMagmoidal MD) (fmap L g) (fmap L h)) ≈
-      lax_lift2 (f ∘ (tensor_map (IM := isMagmoidal MC) g h)).
+  : lax_lift2 f ∘ (tensor_map (IM := HasMonoidal_interchange MD) (fmap L g) (fmap L h)) ≈
+      lax_lift2 (f ∘ (tensor_map (IM := HasMonoidal_interchange MC) g h)).
 Proof.
   unfold lax_lift2. rewrite comp_assoc, (lax_tensor_natural L g h),
     <- comp_assoc, <- fmap_comp. reflexivity.
@@ -65,13 +65,13 @@ Qed.
 Lemma lax_lift2_left {X Y Z U V : @Ob C}
     (f : Hom (tensor (HasBinoidal := MC) X Y) U)
     (g : Hom (tensor (HasBinoidal := MC) U Z) V)
-  : lax_lift2 g ∘ (tensor_map (IM := isMagmoidal MD) (lax_lift2 f) id) ≈
-      lax_lift2 (g ∘ (tensor_map (IM := isMagmoidal MC) f id)) ∘
-        (tensor_map (IM := isMagmoidal MD) φ₂[L; X; Y] id).
+  : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id) ≈
+      lax_lift2 (g ∘ (tensor_map (IM := HasMonoidal_interchange MC) f id)) ∘
+        (tensor_map (IM := HasMonoidal_interchange MD) φ₂[L; X; Y] id).
 Proof.
-  assert (H : tensor_map (IM := isMagmoidal MD) (lax_lift2 f) id ≈
-      (tensor_map (IM := isMagmoidal MD) (fmap L f) (fmap L (id[Z]))) ∘
-        (tensor_map (IM := isMagmoidal MD) φ₂[L; X; Y] id)).
+  assert (H : tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id ≈
+      (tensor_map (IM := HasMonoidal_interchange MD) (fmap L f) (fmap L (id[Z]))) ∘
+        (tensor_map (IM := HasMonoidal_interchange MD) φ₂[L; X; Y] id)).
   { rewrite fmap_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
   rewrite H, <- comp_assoc, (lax_lift2_pre g f id). reflexivity.
@@ -84,13 +84,13 @@ Qed.
 Lemma lax_lift2_right {X Y Z U V : @Ob C}
     (f : Hom (tensor (HasBinoidal := MC) Y Z) U)
     (g : Hom (tensor (HasBinoidal := MC) X U) V)
-  : lax_lift2 g ∘ (tensor_map (IM := isMagmoidal MD) id (lax_lift2 f)) ≈
-      lax_lift2 (g ∘ (tensor_map (IM := isMagmoidal MC) id f)) ∘
-        (tensor_map (IM := isMagmoidal MD) id φ₂[L; Y; Z]).
+  : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 f)) ≈
+      lax_lift2 (g ∘ (tensor_map (IM := HasMonoidal_interchange MC) id f)) ∘
+        (tensor_map (IM := HasMonoidal_interchange MD) id φ₂[L; Y; Z]).
 Proof.
-  assert (H : tensor_map (IM := isMagmoidal MD) id (lax_lift2 f) ≈
-      (tensor_map (IM := isMagmoidal MD) (fmap L (id[X])) (fmap L f)) ∘
-        (tensor_map (IM := isMagmoidal MD) id φ₂[L; Y; Z])).
+  assert (H : tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 f) ≈
+      (tensor_map (IM := HasMonoidal_interchange MD) (fmap L (id[X])) (fmap L f)) ∘
+        (tensor_map (IM := HasMonoidal_interchange MD) id φ₂[L; Y; Z])).
   { rewrite fmap_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
   rewrite H, <- comp_assoc, (lax_lift2_pre g id f). reflexivity.
@@ -106,12 +106,12 @@ Lemma lax_lift2_assoc {X Y Z U V T : @Ob C}
     (g : Hom (tensor (HasBinoidal := MC) U Z) T)
     (h : Hom (tensor (HasBinoidal := MC) Y Z) V)
     (k : Hom (tensor (HasBinoidal := MC) X V) T)
-    (H : g ∘ (tensor_map (IM := isMagmoidal MC) f id) ≈
-      k ∘ tensor_map (IM := isMagmoidal MC) id h ∘
-        (tensor_assoc (HasAssoc := MC) X Y Z).1)
-  : lax_lift2 g ∘ (tensor_map (IM := isMagmoidal MD) (lax_lift2 f) id) ≈
-      lax_lift2 k ∘ (tensor_map (IM := isMagmoidal MD) id (lax_lift2 h)) ∘
-        (tensor_assoc (HasAssoc := MD) (L X) (L Y) (L Z)).1.
+    (H : g ∘ (tensor_map (IM := HasMonoidal_interchange MC) f id) ≈
+      k ∘ tensor_map (IM := HasMonoidal_interchange MC) id h ∘
+        (tensor_assoc (HasTensorAssoc := MC) X Y Z).1)
+  : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id) ≈
+      lax_lift2 k ∘ (tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 h)) ∘
+        (tensor_assoc (HasTensorAssoc := MD) (L X) (L Y) (L Z)).1.
 Proof.
   rewrite lax_lift2_left, lax_lift2_right.
   unfold lax_lift2. rewrite H, fmap_comp.
@@ -123,4 +123,5 @@ End Lifting.
 
 Arguments lax_lift2 {_ _ _ _} _ {_ _ _} _.
 
-Notation "'lift₂[' L ';' f ']'" := (lax_lift2 L f) : monoidal_scope.
+Notation "'lift₂[' L ';' f ']'" := (lax_lift2 L f)
+  : monoidal_scope.

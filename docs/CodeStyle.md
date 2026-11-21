@@ -37,6 +37,30 @@ Context {C D : Cat}
   (A : F ⊣ G).
 ```
 
+## Minks declarations / Minks 声明
+
+Start the `extends` clause of `Minks.Mixin` and `Minks.Struct` on a
+new line, indented two spaces from the declaration. Keep the first parent
+on that line. If the parent list wraps, break after a comma and align the
+continuation with the first parent.
+
+`Minks.Mixin` 和 `Minks.Struct` 的 `extends` 子句另起一行，相对于声明缩进
+两空格。第一个父项紧跟 `extends`。父项列表需要换行时，在逗号后断行，
+续行与第一个父项对齐。
+
+```coq
+Minks.Mixin IsUnit (S : SetC) (e : S)
+  extends HasMagma S
+  :=
+  { mul_unit_l x : mul e x ≈S x
+  ; mul_unit_r x : mul x e ≈S x
+  }.
+
+Minks.Struct MonoidalCat
+  extends SemigroupalCat, PremonoidalCat
+  exports HasMonoidal.
+```
+
 ## Types and terms / 类型及项
 
 Start the result-type `:` and definition-body `:=` on separate lines,

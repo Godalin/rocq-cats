@@ -106,9 +106,9 @@ Proof. vm_compute. reflexivity. Qed.
 (** 运输单位元及两个逆元都是实际返回值。 *)
 
 Example unit_inverse_values
-  : (@mul_unit _ (hasMonoid TaggedGroup),
-     @inv _ (hasGroup TaggedGroup) (false, 19),
-     @inv _ (hasGroup TaggedGroup) (true, 23)) =
+  : (@mul_unit _ _ (hasUnit TaggedGroup),
+     @inv _ _ _ (hasInverse TaggedGroup) (false, 19),
+     @inv _ _ _ (hasInverse TaggedGroup) (true, 23)) =
     ((true, 0), (false, 0), (true, 0)).
 Proof. vm_compute. reflexivity. Qed.
 
@@ -138,9 +138,9 @@ Proof. reflexivity. Qed.
 (** 既有逆 Proper 运输真实的非原生相等，容许不同标签及不同相等见证标记。 *)
 
 Definition inverse_proper_client
-  : @inv _ (hasGroup TaggedGroup) (false, 5) ≈S
-      @inv _ (hasGroup TaggedGroup) (false, 81)
-  := @inv_proper _ _ (@isGroup _ (hasGroup TaggedGroup))
+  : @inv _ _ _ (hasInverse TaggedGroup) (false, 5) ≈S
+      @inv _ _ _ (hasInverse TaggedGroup) (false, 81)
+  := @inv_proper (GroupToMonoid TaggedGroup) _ (@isInverse _ _ _ (hasInverse TaggedGroup))
       (false, 5) (false, 81) (eq_refl, true).
 
 (** Generic involution recovers the target element in specified equality. *)
@@ -148,7 +148,7 @@ Definition inverse_proper_client
 (** 通用对合律在指定相等下恢复目标元素。 *)
 
 Definition involution_client (x : TaggedS)
-  : @inv _ (hasGroup TaggedGroup) (@inv _ (hasGroup TaggedGroup) x) ≈S x
+  : @inv _ _ _ (hasInverse TaggedGroup) (@inv _ _ _ (hasInverse TaggedGroup) x) ≈S x
   := @inv_inv TaggedGroup x.
 
 (** Inverse uniqueness uses the exact inherited monoid and its laws. *)
@@ -157,8 +157,8 @@ Definition involution_client (x : TaggedS)
 
 Definition uniqueness_client (x y : TaggedS)
     (H : @mul _ (hasMagma TaggedGroup) y x ≈S
-      @mul_unit _ (hasMonoid TaggedGroup))
-  : y ≈S @inv _ (hasGroup TaggedGroup) x
+      @mul_unit _ _ (hasUnit TaggedGroup))
+  : y ≈S @inv _ _ _ (hasInverse TaggedGroup) x
   := @inv_unique TaggedGroup x y H.
 
 (** Generic inversion of a product applies without another inverse proof. *)
@@ -166,9 +166,9 @@ Definition uniqueness_client (x y : TaggedS)
 (** 通用乘积取逆律直接适用，不需要另一套逆证明。 *)
 
 Definition product_inverse_client (x y : TaggedS)
-  : @inv _ (hasGroup TaggedGroup) (@mul _ (hasMagma TaggedGroup) x y) ≈S
+  : @inv _ _ _ (hasInverse TaggedGroup) (@mul _ (hasMagma TaggedGroup) x y) ≈S
       @mul _ (hasMagma TaggedGroup)
-        (@inv _ (hasGroup TaggedGroup) y) (@inv _ (hasGroup TaggedGroup) x)
+        (@inv _ _ _ (hasInverse TaggedGroup) y) (@inv _ _ _ (hasInverse TaggedGroup) x)
   := @inv_mul TaggedGroup x y.
 
 (** The three forward comparison equations apply to the very same group. *)
@@ -186,8 +186,8 @@ Definition product_comparison_client (x y : TaggedS)
 (** 单位比较读出原来源单位。 *)
 
 Definition unit_comparison_client
-  : to_bool (@mul_unit _ (hasMonoid TaggedGroup)) ≈S
-      @mul_unit _ (hasMonoid BoolS_Group)
+  : to_bool (@mul_unit _ _ (hasUnit TaggedGroup)) ≈S
+      @mul_unit _ _ (hasUnit BoolS_Group)
   := monoid_transport_map_unit BoolS_Group to_bool from_bool
       source_recovery target_recovery.
 
@@ -196,8 +196,8 @@ Definition unit_comparison_client
 (** 逆比较读出原来源逆。 *)
 
 Definition inverse_comparison_client (x : TaggedS)
-  : to_bool (@inv _ (hasGroup TaggedGroup) x) ≈S
-      @inv _ (hasGroup BoolS_Group) (to_bool x)
+  : to_bool (@inv _ _ _ (hasInverse TaggedGroup) x) ≈S
+      @inv _ _ _ (hasInverse BoolS_Group) (to_bool x)
   := group_transport_map_inv BoolS_Group to_bool from_bool
       source_recovery target_recovery x.
 
@@ -209,10 +209,10 @@ Fail Definition native_recovery
   : from_bool (to_bool (false, 17)) = (false, 17)
   := eq_refl.
 Fail Definition native_unit_law
-  : @mul _ (hasMagma TaggedGroup) (@mul_unit _ (hasMonoid TaggedGroup))
+  : @mul _ (hasMagma TaggedGroup) (@mul_unit _ _ (hasUnit TaggedGroup))
       (false, 17) = (false, 17)
   := eq_refl.
-Fail Definition no_implicit_model : HasGroup BoolS_Monoid := ltac:(typeclasses eauto).
+Fail Definition no_implicit_model : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid) := ltac:(typeclasses eauto).
 
 (** Native pairs support the same one-sided associative transport, even
     though target recovery and a unit for all tags are impossible. *)
@@ -273,7 +273,7 @@ Definition native_associativity_client (x y z : NativeTaggedS)
       (@mul _ (hasMagma NativeTaggedSemigroup) x y) z ≈S
       @mul _ (hasMagma NativeTaggedSemigroup) x
         (@mul _ (hasMagma NativeTaggedSemigroup) y z)
-  := @mul_assoc _ (isSemigroup NativeTaggedSemigroup) x y z.
+  := @mul_assoc _ _ (isSemigroup NativeTaggedSemigroup) x y z.
 
 (** Every possible left factor produces tag zero, so no left unit can
     recover the element with tag one. This is a genuine missing hypothesis. *)

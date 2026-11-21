@@ -89,7 +89,7 @@ Section KanSizes.
 Universes e h o u p.
 Constraint e < h, h < o, o < u, u < p.
 Context (M : Group@{h e _}) (N : Group@{e h _})
-    `{CM : !IsCommMonoid M} `{CN : !IsCommMonoid N}.
+    `{CM : !IsCommMagma M} `{CN : !IsCommMagma N}.
 
 (** Lower coefficient and ambient equality. *)
 

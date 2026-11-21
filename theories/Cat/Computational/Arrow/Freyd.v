@@ -33,7 +33,9 @@ Program Definition ArrowFreyd
   {|FreydF := A
   ; hasValueTerminal := HT
   ; hasValueProduct := HP
-  ; hasSymmetricPremonoidal := ArrowSymmetricPremonoidal A
+  ; hasSymPremonoidal :=
+      SymPremonoidalCatToHasSymPremonoidal
+        (ArrowSymPremonoidal A)
   ; freyd_tensor_objects X Y := eq_refl
   ; freyd_unit_object := eq_refl
   ; freyd_pure_central X Y f := arrow_pure_central A f

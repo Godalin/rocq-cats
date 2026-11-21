@@ -76,9 +76,9 @@ Defined.
 
 Definition ApplicativeDayMulN
     (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-    `{HA : !HasDay SC (tensorF (isMagmoidal SM)) A A}
-  : DayF (tensorF (isMagmoidal SM)) A A ⇒ A
-  := DayExtendN (tensorF (isMagmoidal SM)) (LaxDayTensorN SM A).
+    `{HA : !HasDay SC (tensorF (HasMonoidal_interchange SM)) A A}
+  : DayF (tensorF (HasMonoidal_interchange SM)) A A ⇒ A
+  := DayExtendN (tensorF (HasMonoidal_interchange SM)) (LaxDayTensorN SM A).
 
 (** A weighted generator computes to the existing binary lifting. *)
 
@@ -86,12 +86,12 @@ Definition ApplicativeDayMulN
 
 Lemma applicative_day_mul_inject
     (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-    `{HA : !HasDay SC (tensorF (isMagmoidal SM)) A A}
+    `{HA : !HasDay SC (tensorF (HasMonoidal_interchange SM)) A A}
     {X Y Z : SetC@{u u}} (h : X ×S Y →r Z)
-  : ApplicativeDayMulN A Z ∘ day_inject (tensorF (isMagmoidal SM)) A A (X,Y) h ≈
+  : ApplicativeDayMulN A Z ∘ day_inject (tensorF (HasMonoidal_interchange SM)) A A (X,Y) h ≈
       lift₂[A; h].
 Proof.
-  exact (day_extend_β (tensorF (isMagmoidal SM))
+  exact (day_extend_β (tensorF (HasMonoidal_interchange SM))
     (LaxDayTensorN SM A) (X,Y) h).
 Defined.
 
@@ -135,38 +135,38 @@ Defined.
 
 Lemma applicative_day_mul_hom
     (A B : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
-    `{HA : !HasDay SC (tensorF (isMagmoidal SM)) A A}
-    `{HB : !HasDay SC (tensorF (isMagmoidal SM)) B B} (α : A ⇒ B)
+    `{HA : !HasDay SC (tensorF (HasMonoidal_interchange SM)) A A}
+    `{HB : !HasDay SC (tensorF (HasMonoidal_interchange SM)) B B} (α : A ⇒ B)
   : ((α ∘Nv ApplicativeDayMulN A) ≈N
       (ApplicativeDayMulN B ∘Nv
-        @DayMapN SC (tensorF (isMagmoidal SM)) A B A B HA HB α α)) ↔
+        @DayMapN SC (tensorF (HasMonoidal_interchange SM)) A B A B HA HB α α)) ↔
       (∀ X Y, α (X ×S Y) ∘ φ₂[A; X; Y] ≈
         φ₂[B; X; Y] ∘ (α X × α Y)).
 Proof.
-  pose proof (day_mul_hom_law (tensorF (isMagmoidal SM)) A B
+  pose proof (day_mul_hom_law (tensorF (HasMonoidal_interchange SM)) A B
     (ApplicativeDayMulN A) (ApplicativeDayMulN B) α) as H.
   split.
   - intros E X Y [x y].
     pose proof (fst H E X Y x y) as K.
     transitivity (α (X ×S Y)
-      (DayRestrictN (tensorF (isMagmoidal SM)) (ApplicativeDayMulN A) (X,Y) (x,y))).
+      (DayRestrictN (tensorF (HasMonoidal_interchange SM)) (ApplicativeDayMulN A) (X,Y) (x,y))).
     + apply (@func_proper _ _ (α (X ×S Y))). symmetry.
-      exact (day_restrict_extend (tensorF (isMagmoidal SM))
+      exact (day_restrict_extend (tensorF (HasMonoidal_interchange SM))
         (LaxDayTensorN SM A) (X,Y) (x,y)).
-    + transitivity (DayRestrictN (tensorF (isMagmoidal SM)) (ApplicativeDayMulN B)
+    + transitivity (DayRestrictN (tensorF (HasMonoidal_interchange SM)) (ApplicativeDayMulN B)
         (X,Y) (α X x,α Y y)).
       * exact K.
-      * exact (day_restrict_extend (tensorF (isMagmoidal SM)) (LaxDayTensorN SM B)
+      * exact (day_restrict_extend (tensorF (HasMonoidal_interchange SM)) (LaxDayTensorN SM B)
           (X,Y) (α X x,α Y y)).
   - intros E. apply (snd H). intros X Y x y.
     transitivity (α (X ×S Y) (φ₂[A; X; Y] (x,y))).
     + apply (@func_proper _ _ (α (X ×S Y))).
-      exact (day_restrict_extend (tensorF (isMagmoidal SM))
+      exact (day_restrict_extend (tensorF (HasMonoidal_interchange SM))
         (LaxDayTensorN SM A) (X,Y) (x,y)).
     + transitivity (φ₂[B; X; Y] (α X x,α Y y)).
       * exact (E X Y (x,y)).
       * symmetry.
-        exact (day_restrict_extend (tensorF (isMagmoidal SM)) (LaxDayTensorN SM B)
+        exact (day_restrict_extend (tensorF (HasMonoidal_interchange SM)) (LaxDayTensorN SM B)
           (X,Y) (α X x,α Y y)).
 Defined.
 
@@ -193,7 +193,7 @@ Let SC
 Let SM
   : HasMonoidal SC
   := SetCartMonoidal.
-Context `(HD : ∀ F G : Fct SC SC, HasDay SC (tensorF (isMagmoidal SM)) F G).
+Context `(HD : ∀ F G : Fct SC SC, HasDay SC (tensorF (HasMonoidal_interchange SM)) F G).
 Let DM
   : HasMonoidal (FctCat SC SC)
   := MonoidalDay SM HD.

@@ -63,6 +63,11 @@ Program Definition SetMonoidObj
   {|MonoidCarrier := M
   ; monoid_object_unit := set_monoid_unit_resp
   ; monoid_object_mul := set_magma_mul_resp M
+  ; isMonoidObj :=
+      {|monoid_object_unit_l := _
+      ; monoid_object_unit_r := _
+      ; monoid_object_assoc := _
+      |}
   |}.
 Next Obligation.
   intros [u x].

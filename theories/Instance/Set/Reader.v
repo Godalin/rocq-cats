@@ -78,9 +78,9 @@ Defined.
 (** 逐点配对就是 Reader 的自然 tensorator。 *)
 
 Program Definition ReaderTensorN@{r e u p +} (R : SetC@{r e})
-  : (tensorF (isMagmoidal SetCartMonoidal) ∘F
+  : (tensorF (HasMonoidal_interchange SetCartMonoidal) ∘F
       (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF R)) ⇒
-      (ReaderF R ∘F tensorF (isMagmoidal SetCartMonoidal))
+      (ReaderF R ∘F tensorF (HasMonoidal_interchange SetCartMonoidal))
   :=
   {|nt p := reader_pair R (fst p) (snd p)
   |}.

@@ -54,7 +54,7 @@ Next Obligation. exact (arrow_first_comp A f g Z). Defined.
 
 Definition ArrowBinoidal
   : BinoidalCat
-  := BinoidalCatOfCat (ComputationCat A) ArrowHasBinoidal.
+  := MakeBinoidalCat (ComputationCat A) ArrowHasBinoidal.
 
 (** Lift the same pure-arrow action into the reindexed category. Objects
     are mapped identically and no additional computation data is stored. *)

@@ -20,7 +20,7 @@ Local Open Scope ordinal_scope.
     对象的选择独立性。 *)
 
 Fail Definition unchosen_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_Kan

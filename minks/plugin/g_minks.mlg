@@ -18,7 +18,7 @@ let record_name (name, universes) =
 
 let declare_mixin ~atts decl parents =
   let parents = List.map Mixin_parameters.read_parent parents in
-  let decl, carrier_kind, inherited, added =
+  let decl, roles =
     Mixin_parameters.add_to_declaration parents decl in
   let kind = Vernacexpr.Class true in
   let open Vernacentries.Preprocessed_Mind_decl in
@@ -33,9 +33,9 @@ let declare_mixin ~atts decl parents =
   let module Elpi = Elpi_plugin.Rocq_elpi_vernacular in
   let module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd in
   let name = Libnames.string_of_path (Nametab.path_of_global reference) in
-  let values = Mixin_parameters.remember reference carrier_kind inherited added in
+  let values = Mixin_parameters.remember reference roles in
   let args = Cmd.String name :: List.map (fun pos -> Cmd.Int pos) values @
-    List.map (fun (parent, _) -> Cmd.String (Libnames.string_of_qualid parent)) parents
+    List.map (fun (parent, _, _) -> Cmd.String (Libnames.string_of_qualid parent)) parents
   in
   (* The class and the metadata belong to the same vernacular transaction. *)
   let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
@@ -47,7 +47,8 @@ GRAMMAR EXTEND Gram
   GLOBAL: mixin_declaration;
   mixin_declaration:
     [ [ coercion = OPT ">"; name = ident_decl; parameters = binders;
-        parents = OPT [ "extends"; ps = LIST1 [ p = term LEVEL "0" -> { p } ] SEP "," -> { ps } ];
+        parents = OPT [ "extends"; ps = LIST1 [ p = term LEVEL "10" -> { p } ] SEP ","
+          -> { ps } ];
         result = OPT [ ":"; ty = lconstr -> { ty } ]; ":=";
         constructor = OPT identref; "{"; fields = mixin_fields; "}";
         inhabitant = OPT [ "as"; name = identref -> { name } ];

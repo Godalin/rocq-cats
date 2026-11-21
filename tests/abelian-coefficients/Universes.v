@@ -17,7 +17,7 @@ Section Sizes.
 Universes e h.
 Constraint e < h.
 Context (M : Group@{h e _}) (N : Group@{e h _})
-    `{CM : !IsCommMonoid M} `{CN : !IsCommMonoid N}.
+    `{CM : !IsCommMagma M} `{CN : !IsCommMagma N}.
 
 (** Low equality still retains an actual selected solution and uniqueness. *)
 
@@ -51,13 +51,13 @@ Definition high_equality_solution_map (a : N)
   : N →r N
   := mul_l_solve_resp a.
 
-(** Commutativity uses the monoid inherited from the already chosen group. *)
+(** Interchange uses the semigroup inherited from the already chosen group. *)
 
-(** 交换性使用从已有选定群继承的幺半群。 *)
+(** 中间因子交换使用从已有选定群继承的半群。 *)
 
 Definition low_equality_interchange (a b c d : M)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d)
-  := mul_interchange a b c d.
+  := mul_interchange (M := GroupToSemigroup M) a b c d.
 
 (** Interchange also works with higher equality witnesses. *)
 
@@ -65,7 +65,7 @@ Definition low_equality_interchange (a b c d : M)
 
 Definition high_equality_interchange (a b c d : N)
   : (a ⋅ b) ⋅ (c ⋅ d) ≈S (a ⋅ c) ⋅ (b ⋅ d)
-  := mul_interchange a b c d.
+  := mul_interchange (M := GroupToSemigroup N) a b c d.
 
 (** The inverse-map comparison retains the lower equality level. *)
 

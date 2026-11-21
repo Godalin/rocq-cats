@@ -112,8 +112,8 @@ Next Obligation.
   destruct x as [[] | [[] | [[] | []]]], y as [[] | [[] | [[] | []]]],
     z as [[] | [[] | [[] | []]]], w as [[] | [[] | [[] | []]]];
     cbn in *; try solve [destruct f | destruct g | destruct h];
-    rewrite ?(@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-      ?(@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))); reflexivity.
+    rewrite ?(@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))),
+      ?(@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))); reflexivity.
 Defined.
 
 (** Read the single strictly increasing triangle coefficient. *)

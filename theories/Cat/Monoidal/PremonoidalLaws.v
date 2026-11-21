@@ -25,7 +25,7 @@ Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** 逆结合子是中心态射。 *)
 
-Definition tensor_assoc_inv_central `{AC : !HasAssoc C BC}
+Definition tensor_assoc_inv_central `{AC : !@HasTensorAssoc C BC}
     (X Y Z : @Ob C)
   : is_central α⁻¹[X; Y; Z]
   := central_inv (tensor_assoc X Y Z)
@@ -35,7 +35,7 @@ Definition tensor_assoc_inv_central `{AC : !HasAssoc C BC}
 
 (** 逆左单位子是中心态射。 *)
 
-Definition tensor_unitor_l_inv_central `{UC : !HasUnitors C BC}
+Definition tensor_unitor_l_inv_central `{UC : !@HasTensorUnitors C BC}
     (X : @Ob C)
   : is_central λ⁻¹[X]
   := central_inv (tensor_unitor_l X) (tensor_unitor_l_central X).
@@ -44,7 +44,7 @@ Definition tensor_unitor_l_inv_central `{UC : !HasUnitors C BC}
 
 (** 逆右单位子是中心态射。 *)
 
-Definition tensor_unitor_r_inv_central `{UC : !HasUnitors C BC}
+Definition tensor_unitor_r_inv_central `{UC : !@HasTensorUnitors C BC}
     (X : @Ob C)
   : is_central ρ⁻¹[X]
   := central_inv (tensor_unitor_r X) (tensor_unitor_r_central X).
@@ -53,7 +53,7 @@ Definition tensor_unitor_r_inv_central `{UC : !HasUnitors C BC}
 
 (** 逆左单位子在其变量上自然。 *)
 
-Lemma tensor_unitor_l_inv_natural `{UC : !HasUnitors C BC}
+Lemma tensor_unitor_l_inv_natural `{UC : !@HasTensorUnitors C BC}
     {X Y : @Ob C} (f : Hom X Y)
   : λ⁻¹[Y] ∘ f ≈ (𝐈[UC] ⊲ f) ∘ λ⁻¹[X].
 Proof.
@@ -66,7 +66,7 @@ Qed.
 
 (** 逆右单位子在其变量上自然。 *)
 
-Lemma tensor_unitor_r_inv_natural `{UC : !HasUnitors C BC}
+Lemma tensor_unitor_r_inv_natural `{UC : !@HasTensorUnitors C BC}
     {X Y : @Ob C} (f : Hom X Y)
   : ρ⁻¹[Y] ∘ f ≈ (f ⊳ 𝐈[UC]) ∘ ρ⁻¹[X].
 Proof.
@@ -79,7 +79,7 @@ Qed.
 
 (** 逆结合子在左侧位置自然。 *)
 
-Lemma tensor_assoc_inv_natural_l `{AC : !HasAssoc C BC}
+Lemma tensor_assoc_inv_natural_l `{AC : !@HasTensorAssoc C BC}
     {X X' : @Ob C}
     (Y Z : @Ob C) (f : Hom X X')
   : α⁻¹[X'; Y; Z] ∘ (f ⊳ (Y ⊗ Z)) ≈
@@ -95,7 +95,7 @@ Qed.
 
 (** 逆结合子在中间位置自然。 *)
 
-Lemma tensor_assoc_inv_natural_m `{AC : !HasAssoc C BC}
+Lemma tensor_assoc_inv_natural_m `{AC : !@HasTensorAssoc C BC}
     {Y Y' : @Ob C}
     (X Z : @Ob C) (g : Hom Y Y')
   : α⁻¹[X; Y'; Z] ∘ (X ⊲ (g ⊳ Z)) ≈
@@ -111,7 +111,7 @@ Qed.
 
 (** 逆结合子在右侧位置自然。 *)
 
-Lemma tensor_assoc_inv_natural_r `{AC : !HasAssoc C BC}
+Lemma tensor_assoc_inv_natural_r `{AC : !@HasTensorAssoc C BC}
     {Z Z' : @Ob C}
     (X Y : @Ob C) (h : Hom Z Z')
   : α⁻¹[X; Y; Z'] ∘ (X ⊲ (Y ⊲ h)) ≈

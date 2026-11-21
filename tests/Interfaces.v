@@ -105,10 +105,10 @@ From Cats Require Import
     固定张量可以只具有结合子或单位子；继承一份选择不得选定另一份或完整扩展。 *)
 
 Section AssociatorChoice.
-Context {C : Cat} `{BC : !HasBinoidal C} `{AC : !HasAssoc C BC}.
+Context {C : Cat} `{BC : !HasBinoidal C} `{AC : !@HasTensorAssoc C BC}.
 
 Fail Definition unchosen_unitors
-  : HasUnitors C BC
+  : @HasTensorUnitors C BC
   := ltac:(typeclasses eauto).
 
 End AssociatorChoice.
@@ -118,10 +118,10 @@ End AssociatorChoice.
 (** 同样，单独的单位选择不选定结合子。 *)
 
 Section UnitorChoice.
-Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !HasUnitors C BC}.
+Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !@HasTensorUnitors C BC}.
 
 Fail Definition unchosen_associator
-  : HasAssoc C BC
+  : @HasTensorAssoc C BC
   := ltac:(typeclasses eauto).
 
 End UnitorChoice.

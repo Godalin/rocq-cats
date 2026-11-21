@@ -225,7 +225,7 @@ End Completion.
 \end{center}% *)
 
 Section FiveVertices.
-Context {G : Group} `{HC : !IsCommMonoid G}.
+Context {G : Group} `{HC : !IsCommMagma G}.
 Context (a b c d e f g h i j : G).
 
 (** Recover the equation on vertices [1,2,3,4] by cancelling [c014]. *)
@@ -238,9 +238,9 @@ Lemma cocycle_tetrahedron_1234
   : g ⋅ i ≈S j ⋅ h.
 Proof.
   apply (mul_cancel_r c).
-  rewrite mul_assoc, <- H2, <- mul_assoc, <- H4,
-    mul_assoc, H1, <- (mul_assoc a j e),
-    (mul_comm a j), mul_assoc, H3, <- mul_assoc.
+  rewrite (mul_assoc g i c), <- H2, <- (mul_assoc g b f), <- H4,
+    (mul_assoc a d f), H1, <- (mul_assoc a j e), (mul_comm a j),
+    (mul_assoc j a e), H3, <- (mul_assoc j h c).
   reflexivity.
 Defined.
 
@@ -254,10 +254,9 @@ Lemma cocycle_tetrahedron_0234
   : d ⋅ f ≈S j ⋅ e.
 Proof.
   apply (mul_cancel_l a).
-  rewrite <- mul_assoc, H4, mul_assoc, H2,
-    <- mul_assoc, H0, mul_assoc, <- H3,
-    <- (mul_assoc j a e), (mul_comm j a),
-    mul_assoc.
+  rewrite <- (mul_assoc a d f), H4, (mul_assoc g b f), H2,
+    <- (mul_assoc g i c), H0, (mul_assoc j h c), <- H3,
+    <- (mul_assoc j a e), (mul_comm j a), (mul_assoc a j e).
   reflexivity.
 Defined.
 
@@ -271,9 +270,9 @@ Lemma cocycle_tetrahedron_0134
   : b ⋅ f ≈S i ⋅ c.
 Proof.
   apply (mul_cancel_l g).
-  rewrite <- mul_assoc, <- H4, mul_assoc, H1,
-    <- (mul_assoc a j e), (mul_comm a j),
-    mul_assoc, H3, <- mul_assoc, <- H0, mul_assoc.
+  rewrite <- (mul_assoc g b f), <- H4, (mul_assoc a d f), H1,
+    <- (mul_assoc a j e), (mul_comm a j), (mul_assoc j a e), H3,
+    <- (mul_assoc j h c), <- H0, (mul_assoc g i c).
   reflexivity.
 Defined.
 
@@ -287,9 +286,9 @@ Lemma cocycle_tetrahedron_0124
   : a ⋅ e ≈S h ⋅ c.
 Proof.
   apply (mul_cancel_l j).
-  rewrite <- (mul_assoc j a e), (mul_comm j a),
-    mul_assoc, <- H1, <- mul_assoc, H4, mul_assoc,
-    H2, <- mul_assoc, H0, mul_assoc.
+  rewrite <- (mul_assoc j a e), (mul_comm j a), (mul_assoc a j e),
+    <- H1, <- (mul_assoc a d f), H4, (mul_assoc g b f), H2,
+    <- (mul_assoc g i c), H0, (mul_assoc j h c).
   reflexivity.
 Defined.
 
@@ -303,9 +302,9 @@ Lemma cocycle_tetrahedron_0123
   : a ⋅ d ≈S g ⋅ b.
 Proof.
   apply (mul_cancel_r f).
-  rewrite mul_assoc, H1, <- (mul_assoc a j e),
-    (mul_comm a j), mul_assoc, H3, <- mul_assoc,
-    <- H0, mul_assoc, <- H2, <- mul_assoc.
+  rewrite (mul_assoc a d f), H1, <- (mul_assoc a j e), (mul_comm a j),
+    (mul_assoc j a e), H3, <- (mul_assoc j h c), <- H0,
+    (mul_assoc g i c), <- H2, <- (mul_assoc g b f).
   reflexivity.
 Defined.
 

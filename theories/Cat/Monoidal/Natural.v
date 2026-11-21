@@ -36,7 +36,7 @@ Definition is_lax_monoidal_hom
   : Type
   := (α (𝐈[MC]) ∘ φ₀[L] ≈ φ₀[K]) ∧
       (∀ X Y, α (tensor (HasBinoidal := MC) X Y) ∘ φ₂[L; X; Y] ≈
-        φ₂[K; X; Y] ∘ tensor_map (IM := isMagmoidal MD) (α X) (α Y)).
+        φ₂[K; X; Y] ∘ tensor_map (IM := HasMonoidal_interchange MD) (α X) (α Y)).
 
 (** Naturally equal transformations have the same preservation property. *)
 
@@ -81,10 +81,10 @@ Proof.
   - intros X Y.
     change ((β (tensor (HasBinoidal := MC) X Y) ∘ α (tensor (HasBinoidal := MC) X Y)) ∘
       φ₂[L; X; Y] ≈ φ₂[J; X; Y] ∘
-        tensor_map (IM := isMagmoidal MD) (β X ∘ α X) (β Y ∘ α Y)).
+        tensor_map (IM := HasMonoidal_interchange MD) (β X ∘ α X) (β Y ∘ α Y)).
     rewrite comp_assoc, Hαt, <- comp_assoc, Hβt, comp_assoc.
     apply comp_proper; [reflexivity |]. symmetry.
-    exact (@tensor_map_comp D MD (isMagmoidal MD) _ _ _ _ _ _ (β X) (α X) (β Y) (α Y)).
+    exact (@tensor_map_comp D MD (HasMonoidal_interchange MD) _ _ _ _ _ _ (β X) (α X) (β Y) (α Y)).
 Defined.
 
 (** A chosen natural inverse preserves comparisons by cancellation.
@@ -107,13 +107,13 @@ Proof.
     change (α (tensor (HasBinoidal := MC) X Y) ∘
       ((I (tensor (HasBinoidal := MC) X Y)).1 ∘ φ₂[K; X; Y]) ≈
       α (tensor (HasBinoidal := MC) X Y) ∘ (φ₂[L; X; Y] ∘
-        tensor_map (IM := isMagmoidal MD) (I X).1 (I Y).1)).
+        tensor_map (IM := HasMonoidal_interchange MD) (I X).1 (I Y).1)).
     rewrite <- !comp_assoc, (snd (I (tensor (HasBinoidal := MC) X Y)).2), comp_id_l,
       Ht, comp_assoc.
-    rewrite <- (@tensor_map_comp D MD (isMagmoidal MD) _ _ _ _ _ _
+    rewrite <- (@tensor_map_comp D MD (HasMonoidal_interchange MD) _ _ _ _ _ _
       (α X) (I X).1 (α Y) (I Y).1).
     rewrite (snd (I X).2), (snd (I Y).2),
-      (tensor_map_id (IM := isMagmoidal MD) (K X) (K Y)), comp_id_r.
+      (tensor_map_id (IM := HasMonoidal_interchange MD) (K X) (K Y)), comp_id_r.
     reflexivity.
 Defined.
 

@@ -76,13 +76,13 @@ Definition product_value (a b : bool)
 Definition inverse_value (a : bool)
   : bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
-      (@inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)).
+      (@inv _ _ _ (hasInverse class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)).
 
 Example parent_and_inverse_compute
   : (product_value false false, product_value false true,
      product_value true false, product_value true true,
      (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
-       (@mul_unit _ (hasMonoid (GroupToMonoid class_group))),
+       (@mul_unit _ _ (hasUnit (GroupToMonoid class_group))),
      inverse_value false, inverse_value true)
       = (false, true, true, false, false, false, true).
 Proof. vm_compute. reflexivity. Defined.
@@ -160,18 +160,18 @@ Proof. apply func_proper. exact input_chain. Defined.
 
 Example inverse_unique (x y : BoolCocycleSphereClassS)
     (E : @mul _ (hasMagma class_magma) y x ≈S
-      @mul_unit _ (hasMonoid (GroupToMonoid class_group)))
-  : y ≈S @inv _ (hasGroup class_group) x.
+      @mul_unit _ _ (hasUnit (GroupToMonoid class_group)))
+  : y ≈S @inv _ _ _ (hasInverse class_group) x.
 Proof. exact (@inv_unique class_group x y E). Defined.
 
 Example inverse_involutive (x : BoolCocycleSphereClassS)
-  : @inv _ (hasGroup class_group) (@inv _ (hasGroup class_group) x) ≈S x.
+  : @inv _ _ _ (hasInverse class_group) (@inv _ _ _ (hasInverse class_group) x) ≈S x.
 Proof. exact (@inv_inv class_group x). Defined.
 
 Example inverse_product (x y : BoolCocycleSphereClassS)
-  : @inv _ (hasGroup class_group) (@mul _ (hasMagma class_magma) x y) ≈S
+  : @inv _ _ _ (hasInverse class_group) (@mul _ (hasMagma class_magma) x y) ≈S
       @mul _ (hasMagma class_magma)
-        (@inv _ (hasGroup class_group) y) (@inv _ (hasGroup class_group) x).
+        (@inv _ _ _ (hasInverse class_group) y) (@inv _ _ _ (hasInverse class_group) x).
 Proof. exact (@inv_mul class_group x y). Defined.
 
 (** The chosen left inverse agrees with the independently supplied right
@@ -180,7 +180,7 @@ Proof. exact (@inv_mul class_group x y). Defined.
 (** 选定左逆与独立给定右候选在生成类关系下相等。 *)
 
 Example right_candidate_agrees (x : BoolCocycleSphereClassS)
-  : @inv _ (hasGroup class_group) x ≈S (@SphereKanRightInverse BoolCocycleModel
+  : @inv _ _ _ (hasInverse class_group) x ≈S (@SphereKanRightInverse BoolCocycleModel
       (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) right_choice x).1.
 Proof.
   exact (two_sphere_inverse_candidates_eq BoolCocycleModel

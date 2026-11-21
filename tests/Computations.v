@@ -200,13 +200,13 @@ Definition ProductPremonoidal
 
 Example middle_associator_inverse_computes
   : ((@TensorAssocMIso SetCat _
-      (hasAssoc (hasPremonoidal ProductPremonoidal)) BoolS BoolS).2
+      (PremonoidalCat_associator ProductPremonoidal) BoolS BoolS).2
       BoolS).1 (true, (false, true)) = ((true, false), true).
 Proof. reflexivity. Qed.
 
 Example bundled_unitor_inverse_computes
   : ((@TensorUnitorLIso SetCat _
-      (hasUnitors (hasPremonoidal ProductPremonoidal))).2
+      (PremonoidalCat_unitors ProductPremonoidal)).2
       BoolS).1 false = (tt, false).
 Proof. reflexivity. Qed.
 

@@ -8,44 +8,35 @@ Set Universe Polymorphism.
     Mixins name their exact dependencies. Complete records and forgetful
     maps are generated below from the same component graph. *)
 
-(** * 代数 Mixin 与结构
-
-    Mixin 指明其依赖的具体选择。完整记录与忘却映射由同一份组件图生成。 *)
-
 (** Choose a Type-valued equivalence on the external carrier. *)
-
-(** 在外部载体上选取 Type 值等价关系。 *)
 
 Minks.Mixin HasEquiv@{u e} (A : Type@{u})
   :=
   { equiv : A → A → Type@{e}
   ; equiv_refl : ∀ x, equiv x x
   ; equiv_sym : ∀ x y, equiv x y → equiv y x
-  ; equiv_trans : ∀ x y z, equiv x y → equiv y z → equiv x z
+  ; equiv_trans : ∀ x y z,
+      equiv x y → equiv y z → equiv x z
   }.
 Arguments equiv {_ _} _ _.
 Infix "≈" := equiv (at level 50).
 
 (** Choose a multiplication respectful for the specified equivalence. *)
 
-(** 选取保持指定等价关系的乘法。 *)
-
-Minks.Mixin HasMagma
-  extends HasEquiv
+Minks.Mixin HasMagma (A : Type)
+  extends HasEquiv A
   :=
   { mul : A → A → A
-  ; mul_proper
-    : ∀ x x' y y',
-      equiv x x' → equiv y y' → equiv (mul x y) (mul x' y')
+  ; mul_proper : ∀ x x' y y',
+      equiv x x' → equiv y y'
+        → equiv (mul x y) (mul x' y')
   }.
 Arguments mul {_ _ _} _ _.
 Infix "*" := mul.
 
 (** Choose a point without requiring an equivalence on its carrier. *)
 
-(** 选取一个点，无须给载体指定等价关系。 *)
-
-Minks.Mixin HasPoint@{u} (A : Type@{u})
+Minks.Mixin HasPoint (A : Type)
   :=
   { point : A
   }.
@@ -53,21 +44,17 @@ Arguments point {_ _}.
 
 (** Require associativity of the selected multiplication. *)
 
-(** 要求所选乘法满足结合律。 *)
-
-Minks.Mixin IsSemigroup@{u e}
-  extends HasMagma@{u e}
+Minks.Mixin IsSemigroup (A : Type)
+  extends HasMagma A
   :=
-  { mul_assoc
-    : ∀ x y z, equiv (mul (mul x y) z) (mul x (mul y z))
+  { mul_assoc : ∀ x y z,
+      equiv (mul (mul x y) z) (mul x (mul y z))
   }.
 
 (** Choose a unit for the selected multiplication and witness both unit laws. *)
 
-(** 为选定乘法选取单位元，并提供左右单位律的见证。 *)
-
-Minks.Mixin HasUnit
-  extends HasMagma
+Minks.Mixin HasUnit (A : Type)
+  extends HasMagma A
   :=
   { unit : A
   ; mul_unit_l : ∀ x, equiv (mul unit x) x
@@ -79,38 +66,141 @@ Notation "1" := unit.
 
     Build the pointed and multiplicative branches from the same setoid. *)
 
-(** ** 将 Mixin 打包成结构
-
-    从同一个广集构造带点分支和乘法分支。 *)
-
 Minks.Struct SetC
   with  hasEquiv : HasEquiv.
 
-Minks.Struct Magma extends SetC
+Minks.Struct Magma
+  extends SetC
   with  hasMagma : HasMagma.
 
-Minks.Struct PointedSetC extends SetC
+Minks.Struct PointedSetC
+  extends SetC
   with  hasPoint : HasPoint.
 
-Minks.Struct Semigroup extends Magma
+Minks.Struct Semigroup
+  extends Magma
   with  isSemigroup : IsSemigroup.
 
 Minks.Struct PointedMagma
   extends Magma, PointedSetC.
 
-Minks.Struct UMagma extends Magma
+Minks.Struct UMagma
+  extends Magma
   with  hasUnit : HasUnit.
 
-Minks.Struct Monoid extends Semigroup, UMagma.
-Minks.Inspect Monoid.
+Minks.Struct Monoid
+  extends Semigroup, UMagma
+  exports HasMonoid,
+          IsMonoid [Magma],
+          IsMonoidWithUnit [hasUnit, Magma].
+
+Minks.Inspect IsMonoid.
+Print IsMonoid.
+
+(** Extend a specified magma with associativity and a unit. *)
+
+Check MonoidToIsMonoid
+  : ∀ M : Monoid, IsMonoid (MonoidToMagma M).
+
+Check MonoidOfIsMonoid
+  : ∀ M : Magma, IsMonoid M → Monoid.
+
+Definition relative_mul_assoc (M : Magma) `{I : !IsMonoid M} (x y z : M)
+  : equiv (mul (mul x y) z) (mul x (mul y z))
+  := mul_assoc x y z.
+
+(** The coercion on a packed-base export reads its selected unit. *)
+
+Example packed_monoid_unit (M : Magma) (I : IsMonoid M)
+  : (I : HasUnit M) = IsMonoid_hasUnit I
+  := eq_refl.
+
+Example monoid_of_is_monoid (M : Monoid)
+  : MonoidOfIsMonoid (MonoidToMagma M) (MonoidToIsMonoid M) = M.
+Proof. destruct M. reflexivity. Qed.
+
+(** The packed magma comes first because the unit uses its multiplication. *)
+
+Check MonoidOfIsMonoidWithUnit
+  : ∀ (M : Magma) (U : @HasUnit M (Magma_hasEquiv M) (Magma_hasMagma M)),
+      IsMonoidWithUnit M U → Monoid.
+
+Fail Minks.Struct OverlappingMonoidExport
+  extends Monoid
+  exports OverlappingMonoid [Magma, hasMagma].
+
+Fail Minks.Struct UnrelatedMonoidExport
+  extends Monoid
+  exports UnrelatedMonoid [PointedSetC].
+
+(** ** Groups
+
+    Choose a two-sided inverse for the multiplication and unit supplied
+    by the exported monoid interface. *)
+
+Minks.Mixin HasInverse (A : Type)
+  extends HasMonoid A
+  :=
+  { inv : A → A
+  ; mul_inv_l : ∀ x, equiv (mul (inv x) x) unit
+  ; mul_inv_r : ∀ x, equiv (mul x (inv x)) unit
+  }.
+
+Minks.Struct Group
+  extends Monoid
+  with  hasInverse : HasInverse
+  exports HasGroup,
+          IsGroup [Monoid].
+
+Check GroupOfIsGroup : ∀ M : Monoid, IsGroup M → Group.
+Check GroupOfMonoid : ∀ M : Monoid, HasInverse M → Group.
+
+(** Assemble the group interface from an existing monoid and an inverse. *)
+
+Minks.Struct GroupFromExport
+  extends Monoid
+  with  group : HasGroup.
+
+Example group_export_uses_selected_inverse (M : Monoid) (I : HasInverse M)
+  : HasGroup_hasInverse (GroupFromExport_group (GroupFromExportOfMonoid M I))
+    = I
+  := eq_refl.
+
+(** In any monoid, a left inverse and a right inverse of the same element
+    agree in the specified equivalence. *)
+
+Lemma mul_inv_unique (M : Monoid) (x l r : M)
+    (Hl : equiv (mul l x) unit) (Hr : equiv (mul x r) unit)
+  : equiv l r.
+Proof.
+  eapply equiv_trans.
+  - apply equiv_sym. apply mul_unit_r.
+  - eapply equiv_trans.
+    + apply mul_proper.
+      * apply equiv_refl.
+      * apply equiv_sym. exact Hr.
+    + eapply equiv_trans.
+      * apply equiv_sym. apply mul_assoc.
+      * eapply equiv_trans.
+        -- apply mul_proper.
+           ++ exact Hl.
+           ++ apply equiv_refl.
+        -- apply mul_unit_l.
+Defined.
+
+(** The inherited monoid laws and inverse laws imply involutivity. *)
+
+Lemma inv_inv (G : Group) (x : G)
+  : equiv (inv (inv x)) x.
+Proof.
+  apply (mul_inv_unique G (inv x)).
+  - apply mul_inv_l.
+  - apply mul_inv_l.
+Defined.
 
 (** ** Inherited choices
 
     Both paths use the same stored carrier, setoid and multiplication. *)
-
-(** ** 继承同一份选择
-
-    两条路径读取同一份载体、广集相等及乘法。 *)
 
 Definition pointed_magma_set_coherence (M : PointedMagma)
   : MagmaToSetC (PointedMagmaToMagma M)
@@ -122,9 +212,29 @@ Definition monoid_magma_coherence (M : Monoid)
     = UMagmaToMagma (MonoidToUMagma M)
   := eq_refl.
 
-(** Use the original class method on the selected multiplication. *)
+(** Pack a monoid from either parent, supplying the component that parent
+    lacks. Each forgetful view recovers the supplied parent. *)
 
-(** 直接使用类中的结合律，读取完整结构选定的乘法。 *)
+Example monoid_of_semigroup (S : Semigroup)
+    (U : @HasUnit S (Semigroup_hasEquiv S) (Semigroup_hasMagma S))
+  : MonoidToSemigroup (MonoidOfSemigroup S U) = S.
+Proof. destruct S. reflexivity. Qed.
+
+Example monoid_of_umagma (M : UMagma)
+    (A : @IsSemigroup M (UMagma_hasEquiv M) (UMagma_hasMagma M))
+  : MonoidToUMagma (MonoidOfUMagma M A) = M.
+Proof. destruct M. reflexivity. Qed.
+
+Fail Check MonoidOfMagma.
+
+(** Rocq's coercion through either branch reads this same magma. *)
+
+Example monoid_magma_coercion (M : Monoid)
+  : (M : Magma) = MonoidToMagma M
+    ∧ ((M : UMagma) : Magma) = MonoidToMagma M
+  := conj eq_refl eq_refl.
+
+(** Use the original class method on the selected multiplication. *)
 
 Definition inferred_assoc (M : Monoid) (x y z : M)
   : equiv (mul (mul x y) z) (mul x (mul y z))
@@ -138,8 +248,6 @@ Definition inferred_assoc_uses_fields (M : Monoid) (x y z : M)
 
 (** Use the unit and its law through the same selected mixin. *)
 
-(** 通过同一份选定组件使用单位元及其定律。 *)
-
 Definition inferred_unit_l (M : Monoid) (x : M)
   : equiv (mul unit x) x
   := mul_unit_l x.
@@ -152,14 +260,11 @@ Definition inferred_unit_l_uses_field (M : Monoid) (x : M)
 
 (** A matching type does not identify two independently declared slots. *)
 
-(** 两个组件类型相同，也不会因此被识别为同一份选择。 *)
-
-Minks.Struct TwoPoints extends PointedSetC
+Minks.Struct TwoPoints
+  extends PointedSetC
   with  hasOtherPoint : HasPoint.
 
 (** Two unlabelled point choices do not provide a default instance. *)
-
-(** 同类的两个点不会提供默认基点实例。 *)
 
 Fail Definition ambiguous_point (P : TwoPoints)
   : HasPoint P
@@ -169,10 +274,6 @@ Fail Definition ambiguous_point (P : TwoPoints)
 
     On one boolean setoid, choose two point mixins and check which
     choice each projection reads. *)
-
-(** ** 独立的基点选择
-
-    在同一布尔广集上选取两个基点组件，检查各投影读取哪一份选择。 *)
 
 Section DistinctPoints.
 Context (E : HasEquiv bool)
@@ -196,8 +297,6 @@ End DistinctPoints.
 
 (** Check that the carrier and equivalence witnesses admit either strict
     ordering. The arity here is specific to the experimental generator. *)
-
-(** 检查载体与相等见证可按两种严格次序实例化。这里的宇宙参数位置仅用于实验。 *)
 
 Definition wider_equivalence@{u e r | u < e, e < r}
     (A : Type@{u}) (E : HasEquiv@{u e} A) (M : @HasMagma@{u e} A E)

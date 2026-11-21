@@ -256,8 +256,8 @@ Qed.
 (** 提升后的配对在两个积因子上自然。 *)
 
 Program Definition OperationsTensorN
-  : (tensorF (isMagmoidal (@CartHasMonoidal C HT HP)) ∘F (O ×F O)) ⇒
-      (O ∘F tensorF (isMagmoidal (@CartHasMonoidal C HT HP)))
+  : (tensorF (HasMonoidal_interchange (@CartHasMonoidal C HT HP)) ∘F (O ×F O)) ⇒
+      (O ∘F tensorF (HasMonoidal_interchange (@CartHasMonoidal C HT HP)))
   :=
   {|nt p := lift₂ᵒ[O; (id[fst p × snd p])]
   |}.
@@ -285,7 +285,7 @@ Program Definition OperationsLax
   |}.
 Next Obligation.
   change (fmap O (π2 : Hom (1 × X) X) ∘ lift₂ᵒ[O; (id[1 × X])] ∘
-    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
+    (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP))
       (pureᵒ[O] 1) (id[O X])) ≈ π2).
   rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
@@ -293,7 +293,7 @@ Next Obligation.
 Defined.
 Next Obligation.
   change (fmap O (π1 : Hom (X × 1) X) ∘ lift₂ᵒ[O; (id[X × 1])] ∘
-    (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
+    (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP))
       (id[O X]) (pureᵒ[O] 1)) ≈ π1).
   rewrite cartesian_tensor_map.
   rewrite <- operations_lift_pair.
@@ -302,10 +302,10 @@ Defined.
 Next Obligation.
   change (fmap O (@product_assoc C HP X Y Z).1 ∘
     lift₂ᵒ[O; (id[(X × Y) × Z])] ∘
-      (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
+      (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP))
         lift₂ᵒ[O; (id[X × Y])] (id[O Z])) ≈
     lift₂ᵒ[O; (id[X × (Y × Z)])] ∘
-      (tensor_map (IM := isMagmoidal (@CartHasMonoidal C HT HP))
+      (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP))
         (id[O X]) lift₂ᵒ[O; (id[Y × Z])]) ∘
       (@product_assoc C HP (O X) (O Y) (O Z)).1).
   rewrite !cartesian_tensor_map.

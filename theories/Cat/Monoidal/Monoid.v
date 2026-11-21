@@ -25,12 +25,19 @@ Local Open Scope ob_scope.
 (** 固定载体、单位和乘法上的幺半群定律；此谓词可比较不同呈现，而不必量化
     数据可能不同的完整结构包。 *)
 
-Definition is_monoid_object {C : Cat} (MC : HasMonoidal C)
+Minks.Mixin IsMonoidObj {C : Cat} (MC : HasMonoidal C)
     (A : @Ob C) (e : Hom (𝐈[MC]) A) (m : Hom (A ⊗ A) A)
   : Type
-  := (m ∘ (e ⊗ id) ≈ λ[A]) ∧
-      (m ∘ (id ⊗ e) ≈ ρ[A]) ∧
-      (m ∘ (m ⊗ id) ≈ m ∘ (id ⊗ m) ∘ α[A; A; A]).
+  :=
+  { monoid_object_unit_l : m ∘ (e ⊗ id) ≈ λ[A]
+  ; monoid_object_unit_r : m ∘ (id ⊗ e) ≈ ρ[A]
+  ; monoid_object_assoc
+    : m ∘ (m ⊗ id) ≈ m ∘ (id ⊗ m) ∘ α[A; A; A]
+  }.
+
+Arguments monoid_object_unit_l {_ _ _ _ _} _.
+Arguments monoid_object_unit_r {_ _ _ _ _} _.
+Arguments monoid_object_assoc {_ _ _ _ _} _.
 
 (** A chosen carrier and operations satisfying the monoid diagrams.
     Coercion exposes the carrier object in the ambient category. *)
@@ -42,35 +49,14 @@ Class MonoidObj {C : Cat} (MC : HasMonoidal C)
   { MonoidCarrier :> @Ob C
   ; monoid_object_unit : Hom (𝐈[MC]) MonoidCarrier
   ; monoid_object_mul : Hom (MonoidCarrier ⊗ MonoidCarrier) MonoidCarrier
-  ; monoid_object_unit_l
-    : monoid_object_mul ∘ (monoid_object_unit ⊗ id) ≈
-        λ[MonoidCarrier]
-  ; monoid_object_unit_r
-    : monoid_object_mul ∘ (id ⊗ monoid_object_unit) ≈
-        ρ[MonoidCarrier]
-  ; monoid_object_assoc
-    : monoid_object_mul ∘ (monoid_object_mul ⊗ id) ≈
-        monoid_object_mul ∘ (id ⊗ monoid_object_mul) ∘
-          α[MonoidCarrier; MonoidCarrier; MonoidCarrier]
+  ; isMonoidObj
+    :: IsMonoidObj MC MonoidCarrier monoid_object_unit monoid_object_mul
   }.
 
 Arguments MonoidCarrier {_ _} _.
 Arguments monoid_object_unit {_ _} _.
 Arguments monoid_object_mul {_ _} _.
-Arguments monoid_object_unit_l {_ _} _.
-Arguments monoid_object_unit_r {_ _} _.
-Arguments monoid_object_assoc {_ _} _.
-
-(** Extract the fixed-data law predicate from a chosen monoid object. *)
-
-(** 从选定幺半群对象中提取固定数据上的定律谓词。 *)
-
-Definition monoid_object_laws {C : Cat} {MC : HasMonoidal C}
-    (A : MonoidObj MC)
-  : is_monoid_object MC (MonoidCarrier A)
-      (monoid_object_unit A) (monoid_object_mul A)
-  := (monoid_object_unit_l A,
-      (monoid_object_unit_r A, monoid_object_assoc A)).
+Arguments isMonoidObj {_ _} _.
 
 Notation "'e[' A ']'" := (monoid_object_unit A) : monoidal_scope.
 Notation "'m[' A ']'" := (monoid_object_mul A) : monoidal_scope.

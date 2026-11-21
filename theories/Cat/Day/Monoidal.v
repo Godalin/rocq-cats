@@ -7,6 +7,7 @@ From Cats Require Import
   Cat.Monoidal.Laws.
 From Cats Require Export
   Cat.Day.Semigroupal.
+From Cats Require Export Cat.Monoidal.Monoidal (HasMonoidal_interchange).
 
 Local Open Scope monoidal_scope.
 (** * The Day Monoidal Category *)
@@ -56,7 +57,7 @@ Definition DayMonoidal
 
 Lemma day_monoidal_map {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     (α : F ⇒ F') (β : G ⇒ G')
-  : tensor_map (IM := isMagmoidal DayMonoidal)
+  : tensor_map (IM := HasMonoidal_interchange DayMonoidal)
       (X := F) (X' := F') (Y := G) (Y' := G') α β ≈N
       @DayMapN C T F F' G G' (HD F G) (HD F' G') α β.
 Proof.
@@ -70,7 +71,7 @@ Defined.
 (** 恒等分量比较导出的张量函子与原 Day 张量，保持选定 coend 与结构逆不变。 *)
 
 Definition DayTensorIso
-  : tensorF (isMagmoidal DayMonoidal) ≅N DayTensorF T HD.
+  : tensorF (HasMonoidal_interchange DayMonoidal) ≅N DayTensorF T HD.
 Proof.
   unfold DayMonoidal.
   apply (@bifct_tensor_iso (FctCat C SetCat) (DayTensorF T HD)).
@@ -93,7 +94,7 @@ Section MonoidalBase.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (isMagmoidal MC)) F G).
+      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
 
 (** The inherited pentagon and triangle enable the full Day structure. *)
 
@@ -101,11 +102,12 @@ Context {C : Cat} (MC : HasMonoidal C)
 
 Definition MonoidalDay
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
-  := DayMonoidal (tensorF (isMagmoidal MC)) (𝐈[MC])
-      (TensorAssocIsoN (IM := isMagmoidal MC) (AC := MC))
-      (TensorUnitorLIsoN (IM := isMagmoidal MC) (UC := MC))
-      (TensorUnitorRIsoN (IM := isMagmoidal MC) (UC := MC))
-      (tensor_pentagon (IM := isMagmoidal MC) (AC := MC))
-      (tensor_map_triangle (IM := isMagmoidal MC) (PC := MC)) HD.
+  := DayMonoidal (tensorF (HasMonoidal_interchange MC)) (𝐈[MC])
+      (TensorAssocIsoN (IM := HasMonoidal_interchange MC) (AC := MC))
+      (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
+      (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
+      (tensor_pentagon (IM := HasMonoidal_interchange MC) (AC := MC))
+      (tensor_map_triangle (IM := HasMonoidal_interchange MC)
+        (IP := HasMonoidal_isPremonoidal MC)) HD.
 
 End MonoidalBase.

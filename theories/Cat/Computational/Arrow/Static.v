@@ -246,15 +246,15 @@ Program Definition StaticArrow
   |}.
 Next Obligation.
   change (static_context Z (static_arr A f) ≈
-    static_arr A (tensor_map (IM := isMagmoidal
+    static_arr A (tensor_map (IM := HasMonoidal_interchange
       (@CartHasMonoidal C HT HP)) (id[Z]) f)).
   rewrite cartesian_tensor_map. exact (static_context_arr Z f).
 Defined.
 Next Obligation.
   pose (MC := @CartHasMonoidal C HT HP).
-  change (static_arr A (tensor_map (IM := isMagmoidal MC) h (id[Y]))
+  change (static_arr A (tensor_map (IM := HasMonoidal_interchange MC) h (id[Y]))
     ∘ˢ[A] static_context Z f ≈ static_context W f ∘ˢ[A]
-      static_arr A (tensor_map (IM := isMagmoidal MC) h (id[X]))).
+      static_arr A (tensor_map (IM := HasMonoidal_interchange MC) h (id[X]))).
   unfold MC. rewrite !cartesian_tensor_map.
   rewrite static_comp_pure_l, static_comp_pure_r.
   unfold static_context. rewrite <- !comp_assoc, <- !fmap_comp.

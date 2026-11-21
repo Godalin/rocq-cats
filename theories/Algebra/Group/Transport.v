@@ -41,10 +41,11 @@ Context (f : B →r A) (g : A →r B).
 Program Definition HasGroupTransport
     (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
-  : HasGroup (MonoidTransport A f g Hfg Hgf)
+  : @HasInverse B (Monoid_hasMagma (MonoidTransport A f g Hfg Hgf))
+      (hasUnit (MonoidTransport A f g Hfg Hgf))
   :=
   {|inv x := g ((f x)⁻¹)
-  ; isGroup :=
+  ; isInverse :=
       {|mul_inv_l := _
       ; mul_inv_r := _
       |}

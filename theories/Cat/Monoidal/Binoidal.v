@@ -36,7 +36,7 @@ Local Open Scope ob_scope.
 (** 在具名范畴上选择唯一对象张量及其分别具有函子性的两种作用；两组定律均
     引用恰好这些映射。 *)
 
-Class HasBinoidal (C : Cat)
+Minks.Mixin HasBinoidal (C : Cat)
   :=
   { tensor : C → C → C
     where "X '⊗' Y" := (tensor X Y)
@@ -87,14 +87,9 @@ Notation "f '⊳' Z" := (tensor_r Z f)
 (** 完整双侧张量范畴只保存一次底层范畴，并选择一份扩展；继承实例读取同一
     保存的选择。 *)
 
-Record BinoidalCat
-  := BinoidalCatOfCat
-  { BinoidalCatToCat :> Cat
-  ; hasBinoidal
-    :: HasBinoidal BinoidalCatToCat
-  }.
-
-Arguments BinoidalCatOfCat _ _ : clear implicits.
+Minks.Struct BinoidalCat
+  extends Cat
+  with  hasBinoidal as hasBinoidal : HasBinoidal.
 
 (** ** Laws of the Chosen Actions
 

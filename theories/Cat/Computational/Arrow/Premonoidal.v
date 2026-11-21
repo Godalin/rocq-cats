@@ -41,7 +41,7 @@ Let J
     导入本模块不会选定默认计算结构。 *)
 
 Program Definition ArrowHasAssociator
-  : HasAssoc (ComputationCat A) (ArrowHasBinoidal A)
+  : @HasTensorAssoc (ComputationCat A) (ArrowHasBinoidal A)
   :=
   {|TensorAssocRIso X Y :=
       ({|nt Z := fmap J (@tensor_assoc C _ V X Y Z).1
@@ -49,7 +49,7 @@ Program Definition ArrowHasAssociator
         |}; λ Z,
           let i := @tensor_assoc C _ V X Y Z in
           fct_is_iso J i.1 i.2)
-  ; isAssoc :=
+  ; isTensorAssoc :=
       {|assoc_natural_l Y Z :=
           {|nat_iso_naturality X X' f := arrow_first_assoc A f|}
       ; assoc_natural_m X Z :=
@@ -74,7 +74,7 @@ Defined.
 (** 只提升单位子，不依赖计算结合子；其自然性来自投影定律。 *)
 
 Program Definition ArrowHasUnitors
-  : HasUnitors (ComputationCat A) (ArrowHasBinoidal A)
+  : @HasTensorUnitors (ComputationCat A) (ArrowHasBinoidal A)
   :=
   {|tensor_unit := tensor_unit V
   ; TensorUnitorLIso :=
@@ -89,7 +89,7 @@ Program Definition ArrowHasUnitors
         |}; λ X,
           let i := @tensor_unitor_r C _ V X in
           fct_is_iso J i.1 i.2)
-  ; isUnitors :=
+  ; isTensorUnitors :=
       {|unitor_l_central X := arrow_pure_central A _
       ; unitor_r_central X := arrow_pure_central A _
       |}
@@ -99,30 +99,27 @@ Program Definition ArrowHasUnitors
 
 (** 二者的相容性是值三角形的纯像。 *)
 
-Program Definition ArrowHasPremonoidal
-  : HasPremonoidal (ComputationCat A) (ArrowHasBinoidal A)
+Program Definition ArrowIsPremonoidal
+  : @IsPremonoidal (ComputationCat A) (ArrowHasBinoidal A)
+      ArrowHasAssociator ArrowHasUnitors
   :=
-  {|hasAssoc := ArrowHasAssociator
-  ; hasUnitors := ArrowHasUnitors
-  ; isPremonoidal :=
-      ({|tensor_triangle_coherence := _|}
-        : IsPremonoidal ArrowHasAssociator ArrowHasUnitors)
-  |}.
+  {|tensor_triangle := _|}.
 Next Obligation.
   change (second[A; arr[A; (π2 : Hom (1 × Y) Y)]; X] ∘
     arr[A; (@product_assoc C HP X 1 Y).1] ≈
     first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
   rewrite arrow_second_arr, arrow_first_arr, <- fmap_comp.
   apply fmap_proper.
-  exact (@tensor_triangle C _ V X Y).
+  exact (tensor_triangle (IP := HasMonoidal_isPremonoidal V) X Y).
 Defined.
 
-(** The complete bundle reuses the same binoidal parent. *)
+(** Pack the same tensor, associator and coherent unitors. *)
 
-(** 完整打包复用同一双侧张量父结构。 *)
+(** 打包同一份张量、结合子与相干单位子。 *)
 
 Definition ArrowPremonoidal
   : PremonoidalCat
-  := PremonoidalCatOfBinoidalCat (ArrowBinoidal A) ArrowHasPremonoidal.
+  := PremonoidalCatOfBinoidalCat (ArrowBinoidal A)
+       ArrowHasAssociator ArrowHasUnitors ArrowIsPremonoidal.
 
 End Cartesian.

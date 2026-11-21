@@ -246,7 +246,7 @@ Proof.
     + exact (set_lax_hom_pure L K α Hu).
     + intros X Y.
       transitivity (lax_tensorN K (X,Y) ∘
-        (tensor_map (IM := isMagmoidal SM) (α X) (α Y))).
+        (tensor_map (IM := HasMonoidal_interchange SM) (α X) (α Y))).
       * exact (Ht X Y).
       * apply comp_proper; [reflexivity|].
         exact (@cartesian_tensor_map SC SetCat_HasTerminal

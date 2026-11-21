@@ -98,12 +98,12 @@ Example selected_product (x y : B)
 Proof. reflexivity. Qed.
 
 Example selected_unit
-  : @mul_unit _ (hasMonoid transported_group) =
-      g (@mul_unit _ (hasMonoid A)).
+  : @mul_unit _ _ (hasUnit transported_group) =
+      g (@mul_unit _ _ (hasUnit A)).
 Proof. reflexivity. Qed.
 
 Example selected_inverse (x : B)
-  : @inv _ (hasGroup transported_group) x = g (@inv _ (hasGroup A) (f x)).
+  : @inv _ _ _ (hasInverse transported_group) x = g (@inv _ _ _ (hasInverse A) (f x)).
 Proof. reflexivity. Qed.
 
 Definition forward_product (x y : B)
@@ -111,27 +111,27 @@ Definition forward_product (x y : B)
   := magma_transport_map_mul A f g Hfg x y.
 
 Definition forward_unit
-  : f (@mul_unit _ (hasMonoid transported_group)) ≈S
-      @mul_unit _ (hasMonoid A)
+  : f (@mul_unit _ _ (hasUnit transported_group)) ≈S
+      @mul_unit _ _ (hasUnit A)
   := monoid_transport_map_unit A f g Hfg Hgf.
 
 Definition forward_inverse (x : B)
-  : f (@inv _ (hasGroup transported_group) x) ≈S @inv _ (hasGroup A) (f x)
+  : f (@inv _ _ _ (hasInverse transported_group) x) ≈S @inv _ _ _ (hasInverse A) (f x)
   := group_transport_map_inv A f g Hfg Hgf x.
 
 Definition actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
-      (@inv _ (hasGroup transported_group))
-  := @inv_proper _ _ (@isGroup _ (hasGroup transported_group)).
+      (@inv _ _ _ (hasInverse transported_group))
+  := @inv_proper (GroupToMonoid transported_group) _ (@isInverse _ _ _ (hasInverse transported_group)).
 
 Definition actual_inverse_involution (x : B)
-  : @inv _ (hasGroup transported_group) (@inv _ (hasGroup transported_group) x) ≈S x
+  : @inv _ _ _ (hasInverse transported_group) (@inv _ _ _ (hasInverse transported_group) x) ≈S x
   := @inv_inv transported_group x.
 
 Definition actual_inverse_unique (x y : B)
     (H : @mul _ (hasMagma transported_group) y x ≈S
-      @mul_unit _ (hasMonoid transported_group))
-  : y ≈S @inv _ (hasGroup transported_group) x
+      @mul_unit _ _ (hasUnit transported_group))
+  : y ≈S @inv _ _ _ (hasInverse transported_group) x
   := @inv_unique transported_group x y H.
 
 Fail Definition missing_source_recovery
@@ -244,12 +244,12 @@ Example high_selected_product (x y : B)
 Proof. reflexivity. Qed.
 
 Example high_selected_unit
-  : @mul_unit _ (hasMonoid high_transported_group) =
-      g (@mul_unit _ (hasMonoid A)).
+  : @mul_unit _ _ (hasUnit high_transported_group) =
+      g (@mul_unit _ _ (hasUnit A)).
 Proof. reflexivity. Qed.
 
 Example high_selected_inverse (x : B)
-  : @inv _ (hasGroup high_transported_group) x = g (@inv _ (hasGroup A) (f x)).
+  : @inv _ _ _ (hasInverse high_transported_group) x = g (@inv _ _ _ (hasInverse A) (f x)).
 Proof. reflexivity. Qed.
 
 Definition high_forward_product (x y : B)
@@ -257,27 +257,27 @@ Definition high_forward_product (x y : B)
   := magma_transport_map_mul A f g Hfg x y.
 
 Definition high_forward_unit
-  : f (@mul_unit _ (hasMonoid high_transported_group)) ≈S
-      @mul_unit _ (hasMonoid A)
+  : f (@mul_unit _ _ (hasUnit high_transported_group)) ≈S
+      @mul_unit _ _ (hasUnit A)
   := monoid_transport_map_unit A f g Hfg Hgf.
 
 Definition high_forward_inverse (x : B)
-  : f (@inv _ (hasGroup high_transported_group) x) ≈S @inv _ (hasGroup A) (f x)
+  : f (@inv _ _ _ (hasInverse high_transported_group) x) ≈S @inv _ _ _ (hasInverse A) (f x)
   := group_transport_map_inv A f g Hfg Hgf x.
 
 Definition high_actual_inverse_proper
   : Proper (carrier_equiv B ==> carrier_equiv B)
-      (@inv _ (hasGroup high_transported_group))
-  := @inv_proper _ _ (@isGroup _ (hasGroup high_transported_group)).
+      (@inv _ _ _ (hasInverse high_transported_group))
+  := @inv_proper (GroupToMonoid high_transported_group) _ (@isInverse _ _ _ (hasInverse high_transported_group)).
 
 Definition high_actual_inverse_involution (x : B)
-  : @inv _ (hasGroup high_transported_group) (@inv _ (hasGroup high_transported_group) x) ≈S x
+  : @inv _ _ _ (hasInverse high_transported_group) (@inv _ _ _ (hasInverse high_transported_group) x) ≈S x
   := @inv_inv high_transported_group x.
 
 Definition high_actual_inverse_unique (x y : B)
     (H : @mul _ (hasMagma high_transported_group) y x ≈S
-      @mul_unit _ (hasMonoid high_transported_group))
-  : y ≈S @inv _ (hasGroup high_transported_group) x
+      @mul_unit _ _ (hasUnit high_transported_group))
+  : y ≈S @inv _ _ _ (hasInverse high_transported_group) x
   := @inv_unique high_transported_group x y H.
 
 Fail Definition high_missing_source_recovery

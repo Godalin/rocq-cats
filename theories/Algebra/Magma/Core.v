@@ -27,31 +27,23 @@ Reserved Infix "⋅" (at level 40, left associativity).
 
 (** 给定广集上的选定保相等乘法。 *)
 
-Class HasMagma (S : SetC)
+Minks.Mixin HasMagma (S : SetC)
   :=
   { mul : S → S → S
   ; mul_proper
-    :: Proper (carrier_equiv S ==> carrier_equiv S ==> carrier_equiv S)
-        mul
+    :: Proper ([≈S] ==> [≈S] ==> [≈S]) mul
   }.
 
 (** A complete magma owns its setoid and one multiplication extension. *)
 
 (** 完整原群拥有其广集及一份乘法扩充。 *)
 
-Record Magma@{u p l}
-  := MagmaOfSetC
-  { MagmaToSetC :> SetC@{u p}
-  ; hasMagma :: HasMagma@{l u p} MagmaToSetC
-  }.
+Minks.Struct Magma
+  extends SetC
+  with  hasMagma as hasMagma : HasMagma.
 
-(** The record constructor takes its parent and witness explicitly. *)
-
-(** 记录构造器显式接受父结构及其见证。 *)
-
-Arguments MagmaOfSetC _ _ : clear implicits.
-
-Infix "⋅" := (@mul _ (hasMagma _)) : algebra_scope.
+Infix "⋅" := (@mul _ (hasMagma _))
+: algebra_scope.
 Local Open Scope algebra_scope.
 
 (** Left multiplication is respectful without an associativity or unit
@@ -97,7 +89,7 @@ Notation "'(−⋅' y ')'" := (mul_r_resp y) : algebra_scope.
 (** 左乘也保持固定因子的相等，使用保相等映射的逐点相等，不比较函数记录。 *)
 
 Global Instance mul_l_proper {M : Magma}
-  : Proper (carrier_equiv M ==> carrier_equiv (M →S M))
+  : Proper ([≈S] ==> carrier_equiv (M →S M))
       (λ x : M, (x ⋅−)).
 Proof.
   intros x y H z. cbn. rewrite H. reflexivity.
@@ -108,7 +100,7 @@ Qed.
 (** 右乘逐点保持固定因子的相等。 *)
 
 Global Instance mul_r_proper {M : Magma}
-  : Proper (carrier_equiv M ==> carrier_equiv (M →S M))
+  : Proper ([≈S] ==> carrier_equiv (M →S M))
       (λ y : M, (−⋅ y)).
 Proof.
   intros x y H z. cbn. rewrite H. reflexivity.

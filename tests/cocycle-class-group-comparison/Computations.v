@@ -21,7 +21,7 @@ Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
 
-Local Existing Instance BoolS_IsCommMonoid.
+Local Existing Instance BoolS_IsCommMagma.
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Fail Definition unchosen_group
@@ -60,12 +60,14 @@ Definition class_magma
     完全相同父结构。 *)
 
 Fail Definition unchosen_commutativity
-  : @IsCommMonoid (GroupToMonoid class_group)
+  : @IsCommMagma (GroupToMonoid class_group)
+      (Monoid_hasMagma (GroupToMonoid class_group))
   := _.
 
 Definition class_commutativity
-  : @IsCommMonoid (GroupToMonoid class_group)
-  := cocycle_kan_IsCommMonoid three_choice.
+  : @IsCommMagma (GroupToMonoid class_group)
+      (Monoid_hasMagma (GroupToMonoid class_group))
+  := cocycle_kan_IsCommMagma three_choice.
 
 (** The general comparison consumes the exact generic group multiplication. *)
 
@@ -76,7 +78,7 @@ Example products_agree (x y : BoolCocycleSphereClassS)
 Proof. exact (cocycle_kan_mul_eq three_choice x y). Defined.
 
 Example inverses_agree (x : BoolCocycleSphereClassS)
-  : @inv _ (hasGroup class_group) x ≈S (cocycle_two_sphere_inv (M := BoolS_Group)) x.
+  : @inv _ _ _ (hasInverse class_group) x ≈S (cocycle_two_sphere_inv (M := BoolS_Group)) x.
 Proof. exact (cocycle_kan_left_inverse_eq (M := BoolS_Group) left_choice x). Defined.
 
 (** The existing classification maps now preserve the generic product. *)
@@ -102,7 +104,7 @@ Proof. exact (cocycle_kan_class_mul three_choice a b). Defined.
 Example model_multiplication_commutes (x y : BoolCocycleSphereClassS)
   : @mul _ (hasMagma class_magma) x y ≈S @mul _ (hasMagma class_magma) y x.
 Proof.
-  exact (@mul_comm (GroupToMonoid class_group) class_commutativity x y).
+  exact (@mul_comm class_group (Group_hasMagma class_group) class_commutativity x y).
 Defined.
 
 (** Preserve actual Kan computations while reading their coefficients. *)
@@ -121,7 +123,7 @@ Definition product_values (a b : bool)
 Definition inverse_values (a : bool)
   : bool * bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)
-        (@inv _ (hasGroup class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)),
+        (@inv _ _ _ (hasInverse class_group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a)),
       (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
         (cocycle_two_sphere_inv (M := BoolS_Group) (cocycle_two_sphere_resp (M := BoolS_Monoid) a))).
 

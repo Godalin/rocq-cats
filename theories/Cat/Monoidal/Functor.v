@@ -51,19 +51,19 @@ Record LaxMonoidalFct {C D : Cat}
   (** 张量子保留分量映射及其自然性。 *)
 
   ; lax_tensorN
-    : (tensorF (isMagmoidal MD) ∘F
+    : (tensorF (HasMonoidal_interchange MD) ∘F
         (LaxMonoidalFctToFct ×F LaxMonoidalFctToFct)) ⇒
-      (LaxMonoidalFctToFct ∘F tensorF (isMagmoidal MC))
+      (LaxMonoidalFctToFct ∘F tensorF (HasMonoidal_interchange MC))
 
   (** Left-unit coherence uses the supplied source and target unitors. *)
 
   (** 左单位相干律使用给定的来源及目标单位子。 *)
 
   ; lax_unit_l (X : @Ob C)
-    : fmap LaxMonoidalFctToFct (tensor_unitor_l (HasUnitors := MC) X).1 ∘
+    : fmap LaxMonoidalFctToFct (tensor_unitor_l (HasTensorUnitors := MC) X).1 ∘
         lax_tensorN (𝐈[MC], X) ∘
-        (tensor_map (IM := isMagmoidal MD) lax_unit id) ≈
-        (tensor_unitor_l (HasUnitors := MD)
+        (tensor_map (IM := HasMonoidal_interchange MD) lax_unit id) ≈
+        (tensor_unitor_l (HasTensorUnitors := MD)
           (LaxMonoidalFctToFct X)).1
 
   (** Right-unit coherence uses those same named monoidal structures. *)
@@ -71,10 +71,10 @@ Record LaxMonoidalFct {C D : Cat}
   (** 右单位相干律使用同一对具名幺半结构。 *)
 
   ; lax_unit_r (X : @Ob C)
-    : fmap LaxMonoidalFctToFct (tensor_unitor_r (HasUnitors := MC) X).1 ∘
+    : fmap LaxMonoidalFctToFct (tensor_unitor_r (HasTensorUnitors := MC) X).1 ∘
         lax_tensorN (X, 𝐈[MC]) ∘
-        (tensor_map (IM := isMagmoidal MD) id lax_unit) ≈
-        (tensor_unitor_r (HasUnitors := MD)
+        (tensor_map (IM := HasMonoidal_interchange MD) id lax_unit) ≈
+        (tensor_unitor_r (HasTensorUnitors := MD)
           (LaxMonoidalFctToFct X)).1
 
   (** Associativity coherence retains the selected associators. *)
@@ -82,12 +82,12 @@ Record LaxMonoidalFct {C D : Cat}
   (** 结合相干律保留选定的结合子。 *)
 
   ; lax_assoc (X Y Z : @Ob C)
-    : fmap LaxMonoidalFctToFct (tensor_assoc (HasAssoc := MC) X Y Z).1 ∘
+    : fmap LaxMonoidalFctToFct (tensor_assoc (HasTensorAssoc := MC) X Y Z).1 ∘
         lax_tensorN (tensor (HasBinoidal := MC) X Y, Z) ∘
-        (tensor_map (IM := isMagmoidal MD) (lax_tensorN (X, Y)) id) ≈
+        (tensor_map (IM := HasMonoidal_interchange MD) (lax_tensorN (X, Y)) id) ≈
         lax_tensorN (X, tensor (HasBinoidal := MC) Y Z) ∘
-        (tensor_map (IM := isMagmoidal MD) id (lax_tensorN (Y, Z))) ∘
-        (tensor_assoc (HasAssoc := MD)
+        (tensor_map (IM := HasMonoidal_interchange MD) id (lax_tensorN (Y, Z))) ∘
+        (tensor_assoc (HasTensorAssoc := MD)
           (LaxMonoidalFctToFct X) (LaxMonoidalFctToFct Y)
           (LaxMonoidalFctToFct Z)).1
   }.
@@ -119,8 +119,8 @@ Lemma lax_tensor_natural {C D : Cat}
     {MC : HasMonoidal C} {MD : HasMonoidal D}
     (L : LaxMonoidalFct MC MD)
     {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
-  : φ₂[L; X'; Y'] ∘ (tensor_map (IM := isMagmoidal MD) (fmap L f) (fmap L g)) ≈
-      fmap L (tensor_map (IM := isMagmoidal MC) f g) ∘ φ₂[L; X; Y].
+  : φ₂[L; X'; Y'] ∘ (tensor_map (IM := HasMonoidal_interchange MD) (fmap L f) (fmap L g)) ≈
+      fmap L (tensor_map (IM := HasMonoidal_interchange MC) f g) ∘ φ₂[L; X; Y].
 Proof.
   exact (nat_naturality (lax_tensorN L)
     (X := (X, Y)) (Y := (X', Y')) (f, g)).
@@ -132,7 +132,7 @@ Qed.
 (** 恒等 tensorator 的分量为恒等态射，不要求来源与目标函子记录相等。 *)
 
 Program Definition IdLaxTensorN {C : Cat} (MC : HasMonoidal C)
-  : (tensorF (isMagmoidal MC) ∘F (IdF ×F IdF)) ⇒ (IdF ∘F tensorF (isMagmoidal MC))
+  : (tensorF (HasMonoidal_interchange MC) ∘F (IdF ×F IdF)) ⇒ (IdF ∘F tensorF (HasMonoidal_interchange MC))
   :=
   {|nt p := _
   |}.
@@ -226,7 +226,7 @@ Definition MonoidalUnitIso {C D : Cat}
 
 Definition MonoidalTensorIso {C D : Cat}
     {MC : HasMonoidal C} {MD : HasMonoidal D} (F : MonoidalFct MC MD)
-  : (tensorF (isMagmoidal MD) ∘F (F ×F F)) ≅N (F ∘F tensorF (isMagmoidal MC)).
+  : (tensorF (HasMonoidal_interchange MD) ∘F (F ×F F)) ≅N (F ∘F tensorF (HasMonoidal_interchange MC)).
 Proof.
   exists (lax_tensorN F). intros [X Y].
   exact (monoidal_tensor_iso F X Y).
@@ -239,7 +239,7 @@ Defined.
 
 Definition MonoidalTensorInvN {C D : Cat}
     {MC : HasMonoidal C} {MD : HasMonoidal D} (F : MonoidalFct MC MD)
-  : (F ∘F tensorF (isMagmoidal MC)) ⇒ (tensorF (isMagmoidal MD) ∘F (F ×F F))
+  : (F ∘F tensorF (HasMonoidal_interchange MC)) ⇒ (tensorF (HasMonoidal_interchange MD) ∘F (F ×F F))
   := (MonoidalTensorIso F).1 ^-1N (MonoidalTensorIso F).2.
 
 (** The monoidal identity extends the exact lax identity with identity
