@@ -98,20 +98,20 @@ Definition gluing_change_exp_right (X Y : Gluing F)
 (** 复合解释的混合边界律经原有弱比较分解，不要求 [F] 或 [F'] 保持指数。 *)
 
 Lemma gluing_change_exp_boundary (A B : C)
-  : (α B ^ (@id (K (F A)))) ∘
+  : (α B ^ id[K (F A)]) ∘
       exp_cmp K target (F A) (F B) ∘
       fmap K (exp_cmp F source A B) ≈
-      ((@id (F' (H B))) ^ α A) ∘
+      (id[F' (H B)] ^ α A) ∘
       exp_cmp F' interpretation (H A) (H B) ∘
       fmap F' (exp_cmp H base A B) ∘
       α ((B ^ A)%ob).
 Proof.
-  transitivity ((α B ^ (@id (K (F A)))) ∘
+  transitivity ((α B ^ id[K (F A)]) ∘
     exp_cmp (K ∘F F)
       (preserved_product_comp F K source target) A B).
   - rewrite comp_assoc. apply comp_l. symmetry.
     apply exp_cmp_comp.
-  - transitivity (((@id (F' (H B))) ^ α A) ∘
+  - transitivity ((id[F' (H B)] ^ α A) ∘
       exp_cmp (F' ∘F H)
         (preserved_product_comp H F' base interpretation) A B ∘
       α ((B ^ A)%ob)).
@@ -137,7 +137,7 @@ Lemma gluing_change_exp_result (X Y : Gluing F)
       gluing_change_exp_left X Y.
 Proof.
   pose proof (exp_cmp_natural K target
-    (@id (comma_left_ob X)) (comma_arrow Y)) as N.
+    id[comma_left_ob X] (comma_arrow Y)) as N.
   rewrite (@fct_id D D' K), !exp_dimap_id_r in N.
   unfold gluing_change_exp_tip, gluing_change_exp_left,
     gluing_exp_result.
@@ -157,7 +157,7 @@ Lemma gluing_change_exp_base (X Y : Gluing F)
       gluing_change_exp_right X Y.
 Proof.
   pose proof (exp_cmp_natural K target
-    (comma_arrow X) (@id (F (comma_right_ob Y)))) as N.
+    (comma_arrow X) id[F (comma_right_ob Y)]) as N.
   rewrite (@fct_id D D' K) in N.
   unfold gluing_change_exp_tip, gluing_change_exp_right,
     gluing_exp_base.
@@ -169,15 +169,15 @@ Proof.
   rewrite N.
   rewrite <- !comp_assoc.
   assert (E : exp_map (α (comma_right_ob Y)) ∘
-      ((@id (K (F (comma_right_ob Y)))) ^ fmap K (comma_arrow X)) ≈
-      ((@id (F' (H (comma_right_ob Y)))) ^ fmap K (comma_arrow X)) ∘
-      (α (comma_right_ob Y) ^ (@id (K (F (comma_right_ob X)))))).
+      (id[K (F (comma_right_ob Y))] ^ fmap K (comma_arrow X)) ≈
+      (id[F' (H (comma_right_ob Y))] ^ fmap K (comma_arrow X)) ∘
+      (α (comma_right_ob Y) ^ id[K (F (comma_right_ob X))])).
   { rewrite <- exp_dimap_id_r, <- !exp_dimap_comp.
     rewrite !comp_id_l, !comp_id_r. reflexivity. }
   rewrite E.
   rewrite !comp_assoc.
   rewrite <- (comp_assoc (α (comma_right_ob Y) ^
-    (@id (K (F (comma_right_ob X)))))).
+    id[K (F (comma_right_ob X))])).
   rewrite gluing_change_exp_boundary.
   rewrite <- !comp_assoc, <- exp_dimap_comp,
     comp_id_l, (gluing_change_arrow H K α X).

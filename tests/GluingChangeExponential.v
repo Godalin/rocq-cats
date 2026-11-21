@@ -99,10 +99,10 @@ Definition independent_exp_right
 (** 在不同原生层级比较两个复合解释。 *)
 
 Definition independent_exp_boundary (A B : C)
-  : (α B ^ (@id (K (F A)))) ∘
+  : (α B ^ id[K (F A)]) ∘
       exp_cmp K target (F A) (F B) ∘
       fmap K (exp_cmp F source A B) ≈
-      ((@id (F' (H B))) ^ α A) ∘
+      (id[F' (H B)] ^ α A) ∘
       exp_cmp F' interpretation (H A) (H B) ∘
       fmap F' (exp_cmp H base A B) ∘
       α ((B ^ A)%ob)
@@ -290,10 +290,10 @@ Definition reversed_exp_right
 (** 在不同原生层级比较两个复合解释。 *)
 
 Definition reversed_exp_boundary (A B : C)
-  : (α B ^ (@id (K (F A)))) ∘
+  : (α B ^ id[K (F A)]) ∘
       exp_cmp K target (F A) (F B) ∘
       fmap K (exp_cmp F source A B) ≈
-      ((@id (F' (H B))) ^ α A) ∘
+      (id[F' (H B)] ^ α A) ∘
       exp_cmp F' interpretation (H A) (H B) ∘
       fmap F' (exp_cmp H base A B) ∘
       α ((B ^ A)%ob)
