@@ -22,8 +22,8 @@ Local Open Scope ob_scope.
 
 Section Unit.
 Context {C : Cat}
-  `{BC : !HasBinoidal C} `{IM : !IsMagmoidal BC}
-  `{UC : !HasUnitors C BC}.
+  `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
+  `{UC : !@HasTensorUnitors C BC}.
 
 (** Package the inherited left unitor as a natural transformation. *)
 
@@ -79,15 +79,16 @@ End Unit.
 (** 固定预幺半结构和交换律，以联合张量表述三角形。 *)
 
 Section Triangle.
-Context {C : Cat} `{BC : !HasBinoidal C} `{IM : !IsMagmoidal BC}
-  `{PC : !HasPremonoidal C BC}.
+Context {C : Cat} `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
+  `{AC : !@HasTensorAssoc C BC} `{UC : !@HasTensorUnitors C BC}
+  `{IP : !@IsPremonoidal C BC AC UC}.
 
 (** The inherited triangle expressed with the derived bimap. *)
 
 (** 用导出的二元映射表述继承的三角形。 *)
 
 Lemma tensor_map_triangle (X Y : @Ob C)
-  : (id ⊗ λ[Y]) ∘ α[X; 𝐈[PC]; Y] ≈ ρ[X] ⊗ id.
+  : (id ⊗ λ[Y]) ∘ α[X; 𝐈[UC]; Y] ≈ ρ[X] ⊗ id.
 Proof.
   unfold tensor_map. rewrite tensor_sequence_left, tensor_sequence_right.
   apply tensor_triangle.

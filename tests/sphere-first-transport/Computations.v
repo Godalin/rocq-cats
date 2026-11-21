@@ -20,7 +20,7 @@ Local Open Scope ordinal_scope.
     计算其返回四面体实际消费既有闭包折叠。 *)
 
 Fail Definition unchosen_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_Kan

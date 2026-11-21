@@ -43,21 +43,22 @@ Program Definition BoolS_Magma
 
 Program Definition BoolS_Semigroup
   : Semigroup
-  :=
-  {|SemigroupToMagma := BoolS_Magma
-  ; isSemigroup := {|mul_assoc := _|}
-  |}.
+  := let M := BoolS_Magma in
+     {|SemigroupToSetC := M
+     ; Semigroup_hasMagma := hasMagma M
+     ; isSemigroup := {|mul_assoc := _|}
+     |}.
 Next Obligation. destruct x, y, z; reflexivity. Defined.
 
 (** The xor monoid adds its unit to the selected semigroup. *)
 
 (** 异或幺半群为选定半群增加单位元。 *)
 
-Program Definition BoolS_HasMonoid
-  : HasMonoid BoolS_Semigroup
+Program Definition BoolS_HasUnit
+  : @HasUnit BoolS_Semigroup (Semigroup_hasMagma BoolS_Semigroup)
   :=
   {|mul_unit := false
-  ; isMonoid :=
+  ; isUnit :=
       {|mul_unit_l := _
       ; mul_unit_r := _
       |}
@@ -71,17 +72,17 @@ Next Obligation. destruct x; reflexivity. Defined.
 
 Definition BoolS_Monoid
   : Monoid
-  := MonoidOfSemigroup BoolS_Semigroup BoolS_HasMonoid.
+  := MonoidOfSemigroup BoolS_Semigroup BoolS_HasUnit.
 
 (** Inversion is the identity function, extending the same selected monoid. *)
 
 (** 取逆为恒等函数，扩展同一个选定幺半群。 *)
 
-Program Definition BoolS_HasGroup
-  : HasGroup BoolS_Monoid
+Program Definition BoolS_HasInverse
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   :=
   {|inv x := x
-  ; isGroup :=
+  ; isInverse :=
       {|mul_inv_l := _
       ; mul_inv_r := _
       |}
@@ -95,4 +96,4 @@ Next Obligation. destruct x; reflexivity. Defined.
 
 Definition BoolS_Group
   : Group
-  := GroupOfMonoid BoolS_Monoid BoolS_HasGroup.
+  := GroupOfMonoid BoolS_Monoid BoolS_HasInverse.

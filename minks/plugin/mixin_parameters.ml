@@ -6,24 +6,12 @@ type parameter = {
   binder : local_binder_expr;
 }
 
-type origin = inductive * int
-
 type role =
-  | Mixin
-  | Value of origin * Glob_term.binding_kind
-
-type mixin_signature = {
-  carrier_kind : Glob_term.binding_kind;
-  roles : role list;
-}
-
-type inherited = {
-  parameter : parameter;
-  role : role;
-  shared : bool;
-}
+  | Mixin of Id.t option
+  | Value of Glob_term.binding_kind
 
 type dependency = {
+  key : Id.t option;
   reference : GlobRef.t;
   arguments : Id.t list;
   instance : instance_expr option;
@@ -37,20 +25,31 @@ let save_roles =
   Libobject.declare_object
     (Libobject.superglobal_object_nodischarge "MINKS-PARAMETER-ROLES"
       ~cache:(fun (ind, roles) -> parameter_roles := Indmap_env.add ind roles !parameter_roles)
-      ~subst:(Some (fun (subst, (ind, signature)) ->
-        let subst_ind = Mod_subst.subst_ind subst in
-        let roles = List.map (function
-          | Mixin -> Mixin
-          | Value ((owner, pos), kind) -> Value ((subst_ind owner, pos), kind))
-          signature.roles in
-        subst_ind ind, { signature with roles })))
+      ~subst:(Some (fun (subst, (ind, roles)) -> Mod_subst.subst_ind subst ind, roles)))
+
+type combination = {
+  constructor : GlobRef.t;
+  components : Id.t list;
+}
+
+let combinations = Summary.ref ~name:"minks-combinations" Indmap_env.empty
+
+let save_combination =
+  Libobject.declare_object
+    (Libobject.superglobal_object_nodischarge "MINKS-COMBINATION"
+      ~cache:(fun (ind, shape) -> combinations := Indmap_env.add ind shape !combinations)
+      ~subst:(Some (fun (subst, (ind, shape)) ->
+        Mod_subst.subst_ind subst ind,
+        { shape with constructor = Globnames.subst_global_reference subst shape.constructor })))
 
 let error message = CErrors.user_err (Pp.str message)
 
 let read_parent parent =
   match parent.CAst.v with
-  | CRef (name, instance) -> name, instance
-  | _ -> error "Expected the name of a parent mixin."
+  | CRef (name, instance) -> name, instance, []
+  | CApp ({ CAst.v = CRef (name, instance); _ }, args) -> name, instance, args
+  | CAppExpl _ -> error "Pass ordinary mixin parameters without @ in extends."
+  | _ -> error "Expected a parent mixin applied to its ordinary parameters."
 
 let qualify reference = Libnames.qualid_of_path (Nametab.path_of_global reference)
 
@@ -79,76 +78,6 @@ let instance_syntax (qualities, levels) instance =
   else
     Some (Array.to_list (Array.map (quality_syntax qualities) qs),
           Array.to_list (Array.map (level_syntax levels) us))
-
-let raw_sort instance sort =
-  let print ~universes =
-    Constrextern.extern_sort ~universes ~qualities:true Evd.empty sort
-  in
-  let sort =
-    match instance with
-    | None -> print ~universes:false
-    | Some (qualities, levels) ->
-      let quality, universes = print ~universes:true in
-      let quality = Option.map (function
-        | CRawQuality q -> quality_syntax qualities q
-        | q -> q) quality
-      in
-      let universes = match universes with
-        | Glob_term.UAnonymous _ -> universes
-        | Glob_term.UNamed terms ->
-          let level (u, offset) =
-            match u with
-            | CRawType raw ->
-              (match level_syntax levels raw with
-               | Glob_term.UNamed name -> Some (name, offset)
-               | Glob_term.UAnonymous _ -> None)
-            | _ -> Some (u, offset)
-          in
-          let explicit = List.filter_map level terms in
-          if List.length explicit = List.length terms then Glob_term.UNamed explicit
-          else snd (print ~universes:false)
-      in
-      quality, universes
-  in
-  CSort sort
-
-let carrier_sort instance sort = CAst.make (raw_sort instance sort)
-
-let value_type env instance names ty =
-  let flags = PrintingFlags.make_raw (PrintingFlags.current_ignore_raw ()) in
-  let flags = { flags with detype = {
-    flags.detype with universes = Option.has_some instance
-  } } in
-  let ty = Vars.substl (List.map Constr.mkVar names) ty in
-  let syntax = Constrextern.extern_constr ~flags env (Evd.from_env env) (EConstr.of_constr ty) in
-  match instance with
-  | None -> syntax
-  | Some (qs, us) ->
-    let quality = function CRawQuality q -> quality_syntax qs q | q -> q in
-    let level = function
-      | Glob_term.UNamed (CRawType u) -> level_syntax us u
-      | u -> u in
-    let reference (q, instance) =
-      q, Option.map (fun (qualities, levels) -> List.map quality qualities, List.map level levels)
-        instance in
-    let rec rewrite () expression =
-      let expression =
-        Constrexpr_ops.map_constr_expr_with_binders (fun _ () -> ()) rewrite () expression in
-      CAst.map (function
-        | CRef (q, inst) -> let q, inst = reference (q, inst) in CRef (q, inst)
-        | CAppExpl (head, args) -> CAppExpl (reference head, args)
-        | CProj (explicit, head, args, body) -> CProj (explicit, reference head, args, body)
-        | CSort (q, Glob_term.UNamed universe) ->
-          let levels = List.map (fun (u, offset) ->
-            match level (Glob_term.UNamed u) with
-            | Glob_term.UNamed name -> name, offset
-            | Glob_term.UAnonymous _ ->
-              error "A named universe is required in this inherited value type."
-          ) universe in
-          CSort (Option.map quality q, Glob_term.UNamed levels)
-        | term -> term) expression
-    in
-    rewrite () syntax
 
 let dependency_type ty names =
   let head, operands = Constr.decompose_app_list ty in
@@ -192,146 +121,219 @@ let dependency_parameter reference name instance arguments =
   let ty = CAst.make (CAppExpl ((qualify reference, instance), List.map variable arguments)) in
   parameter name (Generalized (Glob_term.MaxImplicit, true)) ty
 
-let add_dependency env reserved dependencies reference instance arguments =
-  let same d = Environ.QGlobRef.equal env d.reference reference in
-  match List.find_opt same dependencies with
-  | Some d ->
+let binder_name reference reserved key =
+  let base = match key with
+    | Some name -> name
+    | None ->
+      let name = Libnames.qualid_basename (qualify reference) in
+      Id.of_string (String.uncapitalize_ascii (Id.to_string name)) in
+  Namegen.next_ident_away base reserved
+
+let add_dependency env reserved dependencies reference instance arguments key =
+  let same d =
+    Environ.QGlobRef.equal env d.reference reference &&
+    (match d.key, key with Some x, Some y -> Id.equal x y | _ -> true) in
+  match List.filter same dependencies with
+  | [d] ->
     if not (List.equal Id.equal d.arguments arguments) then
       error "Inherited parents select different witnesses for the same mixin.";
     let instance = merge_instance reference d.instance instance in
     let name = d.parameter.name in
     let parameter = dependency_parameter reference name instance arguments in
+    let key = match d.key with Some _ -> d.key | None -> key in
     let updated = List.map (fun item ->
-      if same item then { d with instance; parameter; shared = true } else item
+      if same item then { d with key; instance; parameter; shared = true } else item
     ) dependencies in
     updated, name
-  | None ->
-    let base = Libnames.qualid_basename (qualify reference) in
-    let base = Id.of_string (String.uncapitalize_ascii (Id.to_string base)) in
-    let name = Namegen.next_ident_away base reserved in
+  | [] ->
+    let name = binder_name reference reserved key in
     let parameter = dependency_parameter reference name instance arguments in
-    { reference; arguments; instance; parameter; shared = false } :: dependencies, name
+    { key; reference; arguments; instance; parameter; shared = false } :: dependencies, name
+  | _ -> error "More than one selected component matches an inherited mixin."
 
-let binder_id ann =
-  match Context.binder_name ann with
-  | Name name -> name
-  | Anonymous -> Id.of_string "x"
+let argument_name own term =
+  match term.CAst.v with
+  | CRef (name, None) when Libnames.qualid_is_ident name ->
+    let id = Libnames.qualid_basename name in
+    if Id.Set.mem id own then id
+    else error ("Unknown ordinary mixin parameter: " ^ Id.to_string id ^ ".")
+  | _ -> error "Parent ordinary arguments must name parameters declared on the child."
 
-let inheritance parents =
+let read_arguments own args =
+  List.partition_map (fun (term, explicit) ->
+    let value = argument_name own term in
+    match Option.map (fun arg -> arg.CAst.v) explicit with
+    | None -> Either.Left value
+    | Some (ExplByName key) -> Either.Right (key, value)
+    | Some (ExplByPos _) -> error "Supply an implicit ordinary parameter by name."
+  ) args
+
+let take_argument kind ann positional named =
+  let binder = Context.binder_name ann in
+  let name = match binder with Name id -> Id.to_string id | Anonymous -> "_" in
+  match kind with
+  | Glob_term.Explicit ->
+    (match positional with
+     | value :: rest -> value, rest, named
+     | [] -> error ("Missing explicit ordinary parameter " ^ name ^ " of the parent mixin."))
+  | Glob_term.NonMaxImplicit | Glob_term.MaxImplicit ->
+    (match binder with
+     | Name id ->
+       (match List.assoc_opt id named with
+        | Some value -> value, positional, List.remove_assoc id named
+        | None -> error ("Pass implicit ordinary parameter " ^ name ^ " by name."))
+     | Anonymous -> error "An implicit ordinary parameter used in extends must have a name.")
+
+let expand_combination env reference syntax_instance instance shape names dependencies reserved =
+  let ctor_ty, _ = Typeops.type_of_global_in_context env shape.constructor in
+  let rec skip count ty =
+    if count = 0 then ty else
+    match Constr.kind ty with
+    | Prod (_, _, rest) -> skip (count - 1) rest
+    | _ -> error "Invalid fixed parameters in the exported mixin."
+  in
+  let rec expand dependencies reserved names keys ty =
+    match keys, Constr.kind ty with
+    | key :: keys, Prod (_, ty, rest) ->
+      let component, levels, arguments = dependency_type ty names in
+      let levels = Option.bind instance (fun i -> instance_syntax i levels) in
+      let dependencies, name =
+        add_dependency env reserved dependencies component levels arguments (Some key) in
+      expand dependencies (Id.Set.add name reserved) (name :: names) keys rest
+    | [], _ -> dependencies, reserved, List.rev names
+    | _ -> error "The exported mixin does not match its component metadata."
+  in
+  let ty = skip (List.length names) ctor_ty in
+  let deps, reserved, args = expand dependencies reserved names shape.components ty in
+  let name = binder_name reference reserved None in
+  let value = CAst.make (CAppExpl ((qualify shape.constructor, syntax_instance), List.map variable args)) in
+  let binder = CLocalDef (CAst.make (Name name), None, value, None) in
+  deps, Id.Set.add name reserved, binder
+
+let inheritance own parents =
   let env = Global.env () in
-  let inherit_parent (carrier, dependencies, values, order) (parent, syntax_instance) =
+  let inherit_parent (dependencies, reserved, views) (parent, syntax_instance, args) =
+    let positional, named = read_arguments own args in
     let reference = Nametab.locate parent in
-    let signature =
-      match reference with
-      | GlobRef.IndRef ind ->
-        (match Indmap_env.find_opt ind !parameter_roles with
-         | Some signature -> signature
-         | None -> error "Parent must be declared with Minks.Mixin.")
-      | _ -> error "Parent must be declared with Minks.Mixin."
-    in
+    let ind = match reference with
+      | GlobRef.IndRef ind -> ind
+      | _ -> error "Expected a registered Minks mixin." in
+    let roles = match Indmap_env.find_opt ind !parameter_roles with
+      | Some roles -> roles
+      | None -> error "Expected a registered Minks mixin." in
+    let combination = Indmap_env.find_opt ind !combinations in
     let ty, context = Typeops.type_of_global_in_context env reference in
     let instance = Option.map (fun (qs, us) ->
       if (List.length qs, List.length us) <> UVars.AbstractContext.size context then
         error "Wrong number of universe arguments for the parent mixin.";
       Array.of_list qs, Array.of_list us) syntax_instance
     in
-    let ann, carrier_ty, params =
-      match Constr.kind ty with
-      | Prod (ann, ty, rest) -> ann, ty, rest
-      | _ -> error "A parent mixin must have a carrier parameter."
+    let add dependencies reserved reference instance arguments key =
+      let dependencies, name =
+        add_dependency env reserved dependencies reference instance arguments key in
+      dependencies, Id.Set.add name reserved, name
     in
-    let carrier, carrier_kind =
-      match carrier with
-      | Some carrier -> carrier
-      | None ->
-        let ty = match Constr.kind carrier_ty with
-          | Sort sort -> carrier_sort instance sort
-          | Ind (ind, levels) ->
-            let levels = Option.bind instance (fun i -> instance_syntax i levels) in
-            CAst.make (CRef (qualify (GlobRef.IndRef ind), levels))
-          | _ -> error "The carrier parameter of a parent mixin must be a sort or a complete structure."
-        in
-        let kind = signature.carrier_kind in
-        parameter (binder_id ann) (Default kind) ty, kind
-    in
-    let used order = Id.Set.of_list (carrier.name :: order) in
-    let note name order = if List.exists (Id.equal name) order then order else name :: order in
-    let rec add_parameters dependencies values order names roles rest =
+    let rec add_parameters dependencies reserved names roles rest positional named =
       match roles, Constr.kind rest with
-      | Mixin :: roles, Prod (_, ty, rest) ->
+      | _, LetIn (_, value, _, rest) ->
+        add_parameters dependencies reserved names roles (Vars.subst1 value rest) positional named
+      | Mixin key :: roles, Prod (_, ty, rest) ->
         let dependency, levels, arguments = dependency_type ty names in
         let levels = Option.bind instance (fun i -> instance_syntax i levels) in
-        let dependencies, name =
-          add_dependency env (used order) dependencies dependency levels arguments
-        in
-        add_parameters dependencies values (note name order) (name :: names) roles rest
-      | Value (origin, kind) :: roles, Prod (ann, ty, rest) ->
-        let ty = value_type env instance names ty in
-        let same ((owner, pos), _, _, _) =
-          let other, other_pos = origin in
-          pos = other_pos && Environ.QInd.equal env owner other in
-        let values, name =
-          match List.find_opt same values with
-          | Some (_, _, parameter, _) ->
-            let expected = parameter.binder in
-            let actual = CLocalAssum ([CAst.make (Name parameter.name)], None,
-              Default kind, ty) in
-            if not (Constrexpr_ops.local_binder_eq expected actual) then
-              error "Inherited value parameters have incompatible types.";
-            List.map (fun ((origin, kind, parameter, _) as entry) ->
-              if same entry then origin, kind, parameter, true else entry) values,
-            parameter.name
-          | None ->
-            let name = Namegen.next_ident_away (binder_id ann) (used order) in
-            let parameter = parameter name (Default kind) ty in
-            (origin, kind, parameter, false) :: values, name
-        in
-        add_parameters dependencies values (note name order) (name :: names) roles rest
+        let dependencies, reserved, name = add dependencies reserved dependency levels arguments key in
+        add_parameters dependencies reserved (name :: names) roles rest positional named
+      | Value kind :: roles, Prod (ann, _, rest) ->
+        let name, positional, named = take_argument kind ann positional named in
+        add_parameters dependencies reserved (name :: names) roles rest positional named
       | [], Sort _ ->
-        let dependencies, name = add_dependency env (used order) dependencies
-            reference syntax_instance (List.rev names) in
-        Some (carrier, carrier_kind), dependencies, values, note name order
+        if positional <> [] || named <> [] then
+          error "Unexpected or repeated ordinary argument in extends.";
+        (match combination with
+         | None ->
+           let deps, reserved, _ =
+             add dependencies reserved reference syntax_instance (List.rev names) None in
+           deps, reserved, views
+         | Some shape ->
+           let deps, reserved, view =
+             expand_combination env reference syntax_instance instance shape names dependencies reserved in
+           deps, reserved, view :: views)
       | _ -> error "The parent mixin parameters do not match its Minks declaration."
     in
-    add_parameters dependencies values order [carrier.name] signature.roles params
+    add_parameters dependencies reserved [] roles ty positional named
   in
-  let carrier, dependencies, values, order =
-    List.fold_left inherit_parent (None, [], [], []) parents in
-  let inherited = List.rev_map (fun name ->
-    match List.find_opt (fun (d : dependency) -> Id.equal d.parameter.name name) dependencies with
-    | Some d -> { parameter = d.parameter; role = Mixin; shared = d.shared }
-    | None ->
-      let origin, kind, parameter, shared =
-        List.find (fun (_, _, p, _) -> Id.equal p.name name) values in
-      { parameter; role = Value (origin, kind); shared }) order in
-  let shared, others = List.partition (fun (i : inherited) -> i.shared) inherited in
-  Option.get carrier, shared @ others
+  let dependencies, _, views = List.fold_left inherit_parent ([], own, []) parents in
+  let shared, others = List.partition (fun d -> d.shared) (List.rev dependencies) in
+  shared @ others, List.rev views
 
-let parameter_kinds binders =
+let ordinary_parameters binders =
   List.concat_map (function
-    | CLocalAssum (names, _, Default kind, _) -> List.map (fun _ -> kind) names
+    | CLocalAssum (names, relevance, Default kind, ty) ->
+      List.map (fun name ->
+        (name.CAst.v, (CLocalAssum ([name], relevance, Default kind, ty), Value kind))
+      ) names
     | _ -> error "Mixin value parameters must be ordinary binders."
   ) binders
 
+let order_parameters ordinary inherited =
+  let positions =
+    List.fold_left (fun (pos, indexes) (name, _) ->
+      let indexes = match name with
+        | Name id -> Id.Map.add id pos indexes
+        | Anonymous -> indexes in
+      pos + 1, indexes
+    ) (0, Id.Map.empty) ordinary |> snd
+  in
+  (* Keep the child's ordinary parameter order when inserting witnesses. *)
+  let rec emit_through last index ordinary output =
+    if index > last then index, ordinary, output
+    else match ordinary with
+    | (_, parameter) :: rest -> emit_through last (index + 1) rest (parameter :: output)
+    | [] -> assert false
+  in
+  let _, ordinary, inherited =
+    List.fold_left (fun (index, ordinary, output) dependency ->
+      let last = List.fold_left (fun last name ->
+        match Id.Map.find_opt name positions with None -> last | Some i -> max last i
+      ) (-1) dependency.arguments in
+      let index, ordinary, output = emit_through last index ordinary output in
+      index, ordinary, (dependency.parameter.binder, Mixin dependency.key) :: output
+    ) (0, ordinary, []) inherited in
+  List.rev_append inherited (List.map snd ordinary)
+
 let add_to_declaration parents decl =
   let ((name, (binders, extra), sort, fields), notations) = decl in
-  let own = parameter_kinds binders in
-  if parents = [] then
-    match own with
-    | carrier_kind :: values -> decl, carrier_kind, [], values
-    | [] -> error "A root mixin must declare a carrier parameter."
-  else
-    let (carrier, carrier_kind), inherited = inheritance parents in
-    let binders = carrier.binder :: List.map (fun (i : inherited) -> i.parameter.binder) inherited @ binders in
-    ((name, (binders, extra), sort, fields), notations),
-    carrier_kind, List.map (fun i -> i.role) inherited, own
+  let ordinary = ordinary_parameters binders in
+  let own = List.fold_left (fun set (name, _) ->
+    match name with Name id -> Id.Set.add id set | Anonymous -> set
+  ) Id.Set.empty ordinary in
+  let inherited, views = inheritance own parents in
+  let binders, roles = List.split (order_parameters ordinary inherited) in
+  ((name, (binders @ views, extra), sort, fields), notations), roles
 
-let remember reference carrier_kind inherited added =
+let remember reference roles =
   let ind = match reference with
     | GlobRef.IndRef ind -> ind
     | _ -> error "A mixin must be a record declaration." in
-  let roles = inherited @ List.mapi (fun pos kind -> Value ((ind, pos), kind)) added in
-  Lib.add_leaf (save_roles (ind, { carrier_kind; roles }));
+  Lib.add_leaf (save_roles (ind, roles));
   List.filter_map (fun (pos, role) ->
-    match role with Mixin -> None | Value _ -> Some (pos + 1)
+    match role with Mixin _ -> None | Value _ -> Some pos
   ) (List.mapi (fun pos role -> pos, role) roles)
+
+let () =
+  let open Elpi.API in
+  let open BuiltInPredicate in
+  let module Rocq = Elpi_plugin.Rocq_elpi_HOAS in
+  ignore (BuiltIn.declare ~file_name:"minks.combinations" [
+    BuiltIn.MLCode (Pred ("minks.register-combination",
+      In (Rocq.inductive, "Class",
+      In (Rocq.gref, "Constructor",
+      In (BuiltInData.int, "Parameter count",
+      In (BuiltInData.list BuiltInData.string, "Component keys",
+      Easy "Register an exported class for Mixin inheritance.")))),
+      (fun ind constructor count components ~depth:_ ->
+        let roles = List.init count (fun _ -> Value Glob_term.Explicit) in
+        ignore (remember (GlobRef.IndRef ind) roles);
+        let components = List.map Id.of_string components in
+        Lib.add_leaf (save_combination (ind, { constructor; components })))),
+      BuiltIn.DocAbove)
+  ])

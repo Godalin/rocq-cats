@@ -702,7 +702,7 @@ WitnessClosure 保留；模块路径、Section 名及普通数学叙述不改。
 | `CartesianMonoidal` | `CartMonoidal` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CartesianRightUnitorIso` | `CartRightUnitorIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CartesianRightUnitorN` | `CartRightUnitorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianSymmetricPremonoidal` | `CartSymmetricPremonoidal` | [Cat/Monoidal/CartesianSymmetric.v](../theories/Cat/Monoidal/CartesianSymmetric.v) |
+| `CartesianSymmetricPremonoidal`, `CartSymmetricPremonoidal` | `CartSymPremonoidal` | [Cat/Monoidal/CartesianSymmetric.v](../theories/Cat/Monoidal/CartesianSymmetric.v) |
 | `CtxCat_Cartesian` | `CtxCat_Cart` | [STLC/CCC.v](../theories/STLC/CCC.v) |
 | `CwFBaseF_HasCartesianLift` | `CwFBaseF_HasCartLift` | [DTT/Comprehension.v](../theories/DTT/Comprehension.v) |
 | `FamBaseF_HasCartesianLift` | `FamBaseF_HasCartLift` | [Instance/Set/Fam/Fibration.v](../theories/Instance/Set/Fam/Fibration.v) |
@@ -1005,12 +1005,16 @@ unchanged; no compatibility aliases are introduced.
 | `group_mul_l_solve_η` | `mul_l_solve_η` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
 | `group_mul_r_solve_β` | `mul_r_solve_β` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
 | `group_mul_r_solve_η` | `mul_r_solve_η` | [Algebra/Group/Equation.v](../theories/Algebra/Group/Equation.v) |
-| `IsCommutativeMonoid` | `IsCommMonoid` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
+| `HasMonoid`, `IsMonoid` | `HasUnit`, `IsUnit` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
+| `HasGroup`, `IsGroup` | `HasInverse`, `IsInverse` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `hasMonoid`, `isMonoid`, `hasGroup`, `isGroup` | `hasUnit`, `isUnit`, `hasInverse`, `isInverse` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v), [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
+| `is_monoid_object`, `monoid_object_laws` | `IsMonoidObj`, `isMonoidObj` | [Cat/Monoidal/Monoid.v](../theories/Cat/Monoidal/Monoid.v) |
+| `IsCommutativeMonoid`, `IsCommMonoid` | `IsCommMagma` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
 | `BoolS_IsCommutativeMonoid` | `BoolS_IsCommMonoid` | [Instance/Bool/Commutative.v](../theories/Instance/Bool/Commutative.v) |
 | `BoolCocycleSphereClassS_IsCommutativeMonoid` | `BoolCocycleSphereClassS_IsCommMonoid` | [Instance/Bool/CocycleSphereGroup.v](../theories/Instance/Bool/CocycleSphereGroup.v) |
 | `cocycle_two_sphere_IsCommutativeMonoid` | `cocycle_two_sphere_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v) |
 | `cocycle_kan_IsCommutativeMonoid` | `cocycle_kan_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereKanGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereKanGroup.v) |
-| `MagmaFromExtension` | `MagmaOfSetC` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
+| `MagmaFromExtension` | `MakeMagma` | [Algebra/Magma/Core.v](../theories/Algebra/Magma/Core.v) |
 | `MonoidFromExtension` | `MonoidOfSemigroup` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v) |
 | `GroupFromExtension` | `GroupOfMonoid` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
 | `SemigroupFromProperty` | `SemigroupOfMagma` | [Algebra/Semigroup/Core.v](../theories/Algebra/Semigroup/Core.v) |
@@ -1128,7 +1132,7 @@ introduced; Rocq's `From ... Require` command is unchanged.
 
 | Old / 旧名 | New / 新名 | Source / 源码 |
 | --- | --- | --- |
-| `IsCommutativeMonoid` | `IsCommMonoid` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
+| `IsCommutativeMonoid`, `IsCommMonoid` | `IsCommMagma` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
 | `BoolS_IsCommutativeMonoid` | `BoolS_IsCommMonoid` | [Instance/Bool/Commutative.v](../theories/Instance/Bool/Commutative.v) |
 | `BoolCocycleSphereClassS_IsCommutativeMonoid` | `BoolCocycleSphereClassS_IsCommMonoid` | [Instance/Bool/CocycleSphereGroup.v](../theories/Instance/Bool/CocycleSphereGroup.v) |
 | `cocycle_two_sphere_IsCommutativeMonoid` | `cocycle_two_sphere_IsCommMonoid` | [Instance/Set/Simplicial/Cocycle/SphereGroup.v](../theories/Instance/Set/Simplicial/Cocycle/SphereGroup.v) |
@@ -1181,7 +1185,7 @@ follow-up updates four existing targets in the cumulative map; it stays at
 
 | Previous / 前名 | Current constructor / 当前构造器 | Parent projection / 父投影 |
 | --- | --- | --- |
-| `MagmaOfExt` | `MagmaOfSetC` | `MagmaToSetC` |
+| `MagmaOfExt` | `MakeMagma` | `MagmaToSetC` |
 | `SemigroupOfProperty` | `SemigroupOfMagma` | `SemigroupToMagma` |
 | `MonoidOfExt` | `MonoidOfSemigroup` | `MonoidToSemigroup` |
 | `GroupOfExt` | `GroupOfMonoid` | `GroupToMonoid` |
@@ -2111,13 +2115,13 @@ view recovers ordinary functors. Existing `Fct` fields are unchanged.
 | Fixed-category `BifunctorBinoidal` / 固定范畴呈现 | `BifctHasBinoidal`; `BifctBinoidal` is the complete bundle / 后者为完整打包 |
 | Fixed-category `ArrowBinoidal` / 固定范畴呈现 | `ArrowHasBinoidal`; `ArrowBinoidal` is the complete bundle / 后者为完整打包 |
 
-`BinoidalCatOfCat` is the direct constructor. `hasBinoidal` selects the
+`MakeBinoidalCat` is the direct constructor. `hasBinoidal` selects the
 stored extension; `isBinoidalL` and `isBinoidalR` retain its two
 `IsFct` law groups. Subject-specific `binoidal_*` laws remain derived
 public mathematics, not compatibility projections. The premonoidal record now uses independent associator and unitor
 choices; the monoidal category bundle remains a subsequent bounded migration.
 
-直接构造器为 `BinoidalCatOfCat`，`hasBinoidal` 提供保存的扩展，
+直接构造器为 `MakeBinoidalCat`，`hasBinoidal` 提供保存的扩展，
 `isBinoidalL`、`isBinoidalR` 保留两组 `IsFct` 定律。按主题命名的
 `binoidal_*` 定律作为导出的公共数学保留，不增加兼容投影。预幺半记录现采用独立的结合子及单位子选择；幺半范畴
 完整打包留待后续有界迁移。
@@ -2261,30 +2265,32 @@ second batch has its own validation record above.
 
 ## 预幺半选择及自然同构视图
 
-`PremonoidalCat` now names the complete record; `HasPremonoidal C BC`
-selects compatible associator and unitors on the exact supplied tensor.
-`HasAssoc` and `HasUnitors` are independent choices, with properties
-`IsAssoc` and `IsUnitors`. `IsPremonoidal` is only triangle
+`PremonoidalCat` names the complete record. `HasTensorAssoc` and
+`HasTensorUnitors` are independent choices on the same tensor, with properties
+`IsTensorAssoc` and `IsTensorUnitors`. `IsPremonoidal` gives their triangle
 compatibility. Constructors and stored parent projections supply ordinary
 inheritance conversions without forwarding wrappers.
 
-`PremonoidalCat` 现命名完整记录；`HasPremonoidal C BC` 在给定的同一张量上
-选择相容的结合子及单位子。`HasAssoc`、`HasUnitors` 是独立选择，性质
-分别为 `IsAssoc`、`IsUnitors`；`IsPremonoidal` 只刻画三角形相容性。
+`PremonoidalCat` 命名完整记录。`HasTensorAssoc`、`HasTensorUnitors` 是同一张量上的独立
+选择，性质分别为 `IsTensorAssoc`、`IsTensorUnitors`；`IsPremonoidal` 给出三角形相容性。
 构造器及保存的父投影提供普通继承转换，不增加转发包装。
 
 | Previous identifier / 原标识符 | Current identifier / 当前标识符 |
 | --- | --- |
-| `PremonoidalCat C` | `HasPremonoidal C BC`; complete `PremonoidalCat` owns its parent / 完整记录拥有父结构 |
+| `PremonoidalCat C`, `HasPremonoidal C BC` | `HasTensorAssoc`, `HasTensorUnitors`, `IsPremonoidal` on the same tensor / 同一张量上的三份组件 |
 | `PremonoidalB` | `PremonoidalCatToBinoidalCat` |
-| `MonoidalP` | `MonoidalToHasPremonoidal` with `monoidal_hasBinoidal` / 以同一双侧张量选择为索引 |
-| `SymmetricPremonoidalP` | `SymmetricPremonoidalToHasPremonoidal` with `symmetric_hasBinoidal` / 以同一双侧张量选择为索引 |
+| `MonoidalP` | `MonoidalCatToPremonoidalCat` for the complete structure / 完整结构的视图 |
+| `SymmetricPremonoidalCat C`, `HasSymmetricPremonoidal C` | `HasSymPremonoidal C`; the complete structure is `SymPremonoidalCat` / 完整结构为 `SymPremonoidalCat` |
+| `SymmetricPremonoidalP`, `SymmetricPremonoidalToHasPremonoidal`, `SymmetricPremonoidalCatToPremonoidalCat` | `SymPremonoidalCatToPremonoidalCat` on complete structures / 完整结构上的遗忘视图 |
+| `HasPremonoidalSymmetry` | `HasTensorSym`, `IsSymHexagon`, `IsSymUnit` |
+| `PremonoidalSymmetryIso`, `premonoidal_symmetry`, `premonoidal_symmetry_*` | `TensorSymIso`, `tensor_sym`, `tensor_sym_*` |
+| `ArrowSymmetricPremonoidal`, `hasSymmetricPremonoidal` | `ArrowSymPremonoidal`, `hasSymPremonoidal` |
 | `premonoidal_left_unitor` | `premonoidal_unitor_l` |
 | `premonoidal_right_unitor` | `premonoidal_unitor_r` |
 | `PremonoidalLeftUnitorN` | `(PremonoidalUnitorLIso UC).1` |
 | `PremonoidalContextAssociatorN` | `(PremonoidalAssocRIso X Y).1` |
-| `premonoidal_right_symmetry` | `premonoidal_r_symmetry` |
-| Fixed-category `ArrowPremonoidal` / 固定范畴呈现 | `ArrowHasPremonoidal`; `ArrowPremonoidal` is the complete bundle / 后者为完整打包 |
+| `premonoidal_right_symmetry`, `premonoidal_r_symmetry` | `tensor_r_sym` |
+| Fixed-category `ArrowPremonoidal`, `ArrowHasPremonoidal` / 固定范畴呈现 | `ArrowHasAssociator`, `ArrowHasUnitors`, `ArrowIsPremonoidal` |
 
 `PremonoidalAssocRIso` stores the primary last-variable natural
 isomorphism. `PremonoidalAssocLIso` and `PremonoidalAssocMIso` derive the
@@ -2302,27 +2308,29 @@ constructions close to their theory.
 
 ## Monoidal categories and fixed choices / 幺半范畴与固定选择
 
-`MonoidalCat` is the complete record. Its constructor
-`MonoidalCatOfPremonoidalCat` takes one `PremonoidalCat` and an
-`IsMagmoidal` witness on that parent's tensor actions.
-`HasMonoidal C` selects the same kind of data on a supplied category, and
-`hasMonoidal M` reads those choices from a complete category `M`. Both
-views use the same tensor, unit and coherence witnesses.
+`MagmoidalCat` adds `IsMagmoidal` to `BinoidalCat`, and
+`SemigroupalCat` adds the associator to `MagmoidalCat`.
+`MonoidalCat` merges `SemigroupalCat` and `PremonoidalCat` on the shared
+tensor and associator. Minks generates `MakeMonoidalCat` and the parent
+and ancestor views. The bundled interchange field is `Magmoidal.isMagmoidal`.
 
-`MonoidalCat` 表示完整记录。构造器 `MonoidalCatOfPremonoidalCat`
-接收一个 `PremonoidalCat` 及针对该父结构张量作用的 `IsMagmoidal` 交换律见证。
-`HasMonoidal C` 在给定范畴上选择同类数据。`hasMonoidal M` 读取完整范畴
-`M` 的固定范畴视图，两种视图使用同一份张量、单位及相干性见证。
+`MagmoidalCat` 为 `BinoidalCat` 加上 `IsMagmoidal`。
+`SemigroupalCat` 再加上结合子。`MonoidalCat` 在共享张量及结合子上
+合并 `SemigroupalCat` 与 `PremonoidalCat`。Minks 生成
+`MakeMonoidalCat` 及父结构和祖先视图。打包交换律字段是 `Magmoidal.isMagmoidal`。
 
 | Previous interface / 原接口 | Current interface / 当前接口 |
 | --- | --- |
 | `MonoidalCat C` | `HasMonoidal C` |
-| `MonoidalToHasPremonoidal` | `monoidal_hasPremonoidal` |
+| `MonoidalToHasPremonoidal`, `monoidal_hasPremonoidal`, `HasMonoidalToHasPremonoidal` | `HasMonoidal_associator`, `HasMonoidal_unitors`, `HasMonoidal_isPremonoidal` |
 | `BifunctorMonoidal` on a fixed category / 固定范畴构造 | `BifctHasMonoidal` |
 | `CartMonoidal` on a fixed category / 固定范畴构造 | `CartHasMonoidal` |
 | `binoidal_scope`, `premonoidal_scope` | `monoidal_scope` (`%monoidal`) |
 | `⊗m` | `⊗` in `hom_scope` / `hom_scope` 中的 `⊗` |
-| `IsAssociator`, `HasAssociator`, `isAssociator`, `hasAssociator` | `IsAssoc`, `HasAssoc`, `isAssoc`, `hasAssoc` |
+| `IsAssociator`, `IsAssoc`, `isAssociator`, `isAssoc` | `IsTensorAssoc`, `isTensorAssoc` |
+| `HasAssociator`, `HasAssoc` | `HasTensorAssoc` |
+| `hasAssociator`, `hasAssoc` | The generated `associator` projection of the enclosing structure / 所属结构生成的 `associator` 投影 |
+| `HasUnitors`, `IsUnitors`, `isUnitors` | `HasTensorUnitors`, `IsTensorUnitors`, `isTensorUnitors` |
 | `BifunctorHasAssociator` | `BifctHasAssoc` |
 | `binoidal_tensor`, `binoidal_l`, `binoidal_r` | `tensor`, `tensor_l`, `tensor_r` |
 | `binoidal_l_*`, `binoidal_r_*`, `binoidal_context_eq` | `tensor_l_*`, `tensor_r_*`, `tensor_context_eq` |
@@ -2333,11 +2341,11 @@ views use the same tensor, unit and coherence witnesses.
 | `PremonoidalAssocLIso`, `PremonoidalAssocMIso`, `PremonoidalAssocRIso` | `TensorAssocLIso`, `TensorAssocMIso`, `TensorAssocRIso` |
 | `premonoidal_unitor_l/r`, `premonoidal_unit_l/r_*` | `tensor_unitor_l/r`, `tensor_unitor_l/r_*` |
 | `PremonoidalUnitorLIso`, `PremonoidalUnitorRIso` | `TensorUnitorLIso`, `TensorUnitorRIso` |
-| `premonoidal_compatible_triangle`, `premonoidal_triangle` | `tensor_triangle_coherence`, `tensor_triangle` |
+| `premonoidal_compatible_triangle`, `premonoidal_triangle`, `tensor_triangle_coherence` | `tensor_triangle` |
 | `IsMonoidal`, `monoidal_interchange`, `monoidal_arrow_central` | `IsMagmoidal`, `tensor_interchange`, `tensor_arrow_central` |
-| `monoidal_isMonoidal`, `isMonoidal` | `isMagmoidal`, `monoidalCat_isMagmoidal` |
+| `monoidal_isMonoidal`, `isMonoidal` | `isMagmoidal` |
 | `monoidal_hasInterchange`, `monoidal_isMagmoidal` | `isMagmoidal` |
-| `monoidalCat_hasInterchange` | `monoidalCat_isMagmoidal` |
+| `monoidalCat_hasInterchange`, `monoidalCat_isMagmoidal` | `MonoidalCat_interchange` |
 | `monoidal_associator`, `monoidal_left_unitor`, `monoidal_right_unitor` | `TensorAssocIsoN`, `TensorUnitorLIsoN`, `TensorUnitorRIsoN` |
 | `monoidal_pentagon`, `monoidal_triangle` | `tensor_pentagon`, `tensor_map_triangle` |
 | `bifunctor_monoidal_iso` | `bifct_tensor_iso` |
@@ -2355,7 +2363,7 @@ Monoidal 张量族中的双函子标识符使用 `Bifct` 和 `bifct_`，包括
 | `BifunctorHasAssoc` | `BifctHasAssoc` |
 | `BifunctorHasBinoidal` | `BifctHasBinoidal` |
 | `BifunctorHasMonoidal` | `BifctHasMonoidal` |
-| `BifunctorHasPremonoidal` | `BifctHasPremonoidal` |
+| `BifunctorHasPremonoidal`, `BifctHasPremonoidal` | `BifctHasAssoc`, `BifctHasUnitors`, `BifctIsPremonoidal` |
 | `BifunctorHasUnitors` | `BifctHasUnitors` |
 | `BifunctorMonoidal` | `BifctMonoidal` |
 | `BifunctorTensorInterchange` | `BifctTensorInterchange` |

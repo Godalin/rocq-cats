@@ -119,7 +119,7 @@ Definition lower_product_value (x y : C)
 (** 单位元为原常值球面。 *)
 
 Definition lower_unit_value
-  : @mul_unit _ (hasMonoid lower_group) = two_sphere_base X b
+  : @mul_unit _ _ (hasUnit lower_group) = two_sphere_base X b
   := eq_refl.
 
 (** Inverse is the original actual left-candidate representative. *)
@@ -127,7 +127,7 @@ Definition lower_unit_value
 (** 逆为原实际左候选代表。 *)
 
 Definition lower_inverse_value (x : C)
-  : @inv _ (hasGroup lower_group) x = (@SphereKanLeftInverse X b K x).1
+  : @inv _ _ _ (hasInverse lower_group) x = (@SphereKanLeftInverse X b K x).1
   := eq_refl.
 
 (** The existing map back to generated classes preserves multiplication. *)
@@ -149,7 +149,7 @@ Defined.
 
 Definition lower_unit_comparison
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@mul_unit _ (hasMonoid lower_group)) ≈S two_sphere_base X b.
+      (@mul_unit _ _ (hasUnit lower_group)) ≈S two_sphere_base X b.
 Proof.
   rewrite lower_unit_value.
   exact (two_sphere_cylinder_class_unit X b KR KC).
@@ -161,8 +161,8 @@ Defined.
 
 Definition lower_inverse_comparison (x : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@inv _ (hasGroup lower_group) x) ≈S
-      @inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x.
+      (@inv _ _ _ (hasInverse lower_group) x) ≈S
+      @inv _ _ _ (hasInverse (TwoSphereClassGroup X b H K L)) x.
 Proof.
   rewrite lower_inverse_value.
   exact (two_sphere_cylinder_class_recovery X b KR KC
@@ -193,8 +193,8 @@ Definition lower_target_recovery (x : C)
 Definition lower_inverse_proper (x y : C)
     (E : TwoSphereCylinderHomotopy X b x y)
   : TwoSphereCylinderHomotopy X b
-      (@inv _ (hasGroup lower_group) x) (@inv _ (hasGroup lower_group) y)
-  := @inv_proper _ _ (@isGroup _ (hasGroup lower_group)) x y E.
+      (@inv _ _ _ (hasInverse lower_group) x) (@inv _ _ _ (hasInverse lower_group) y)
+  := @inv_proper (GroupToMonoid lower_group) _ (@isInverse _ _ _ (hasInverse lower_group)) x y E.
 
 (** Generic involution returns an actual full relative cylinder. *)
 
@@ -202,7 +202,7 @@ Definition lower_inverse_proper (x y : C)
 
 Definition lower_involution (x : C)
   : TwoSphereCylinderHomotopy X b
-      (@inv _ (hasGroup lower_group) (@inv _ (hasGroup lower_group) x)) x
+      (@inv _ _ _ (hasInverse lower_group) (@inv _ _ _ (hasInverse lower_group) x)) x
   := @inv_inv lower_group x.
 
 (** Generic associativity is available on the same selected parent. *)
@@ -213,7 +213,7 @@ Definition lower_associativity (x y z : C)
   : TwoSphereCylinderHomotopy X b
       (@mul _ (hasMagma lower_group) (@mul _ (hasMagma lower_group) x y) z)
       (@mul _ (hasMagma lower_group) x (@mul _ (hasMagma lower_group) y z))
-  := @mul_assoc _ (isSemigroup lower_group) x y z.
+  := @mul_assoc _ _ (isSemigroup lower_group) x y z.
 
 (** Algebra and full Kan are still not selected by import. *)
 
@@ -332,7 +332,7 @@ Definition higher_product_value (x y : C)
 (** 单位元为原常值球面。 *)
 
 Definition higher_unit_value
-  : @mul_unit _ (hasMonoid higher_group) = two_sphere_base X b
+  : @mul_unit _ _ (hasUnit higher_group) = two_sphere_base X b
   := eq_refl.
 
 (** Inverse is the original actual left-candidate representative. *)
@@ -340,7 +340,7 @@ Definition higher_unit_value
 (** 逆为原实际左候选代表。 *)
 
 Definition higher_inverse_value (x : C)
-  : @inv _ (hasGroup higher_group) x = (@SphereKanLeftInverse X b K x).1
+  : @inv _ _ _ (hasInverse higher_group) x = (@SphereKanLeftInverse X b K x).1
   := eq_refl.
 
 (** The existing map back to generated classes preserves multiplication. *)
@@ -362,7 +362,7 @@ Defined.
 
 Definition higher_unit_comparison
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@mul_unit _ (hasMonoid higher_group)) ≈S two_sphere_base X b.
+      (@mul_unit _ _ (hasUnit higher_group)) ≈S two_sphere_base X b.
 Proof.
   rewrite higher_unit_value.
   exact (two_sphere_cylinder_class_unit X b KR KC).
@@ -374,8 +374,8 @@ Defined.
 
 Definition higher_inverse_comparison (x : C)
   : two_sphere_class_of_cylinder_resp X b KR KC
-      (@inv _ (hasGroup higher_group) x) ≈S
-      @inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x.
+      (@inv _ _ _ (hasInverse higher_group) x) ≈S
+      @inv _ _ _ (hasInverse (TwoSphereClassGroup X b H K L)) x.
 Proof.
   rewrite higher_inverse_value.
   exact (two_sphere_cylinder_class_recovery X b KR KC
@@ -406,8 +406,8 @@ Definition higher_target_recovery (x : C)
 Definition higher_inverse_proper (x y : C)
     (E : TwoSphereCylinderHomotopy X b x y)
   : TwoSphereCylinderHomotopy X b
-      (@inv _ (hasGroup higher_group) x) (@inv _ (hasGroup higher_group) y)
-  := @inv_proper _ _ (@isGroup _ (hasGroup higher_group)) x y E.
+      (@inv _ _ _ (hasInverse higher_group) x) (@inv _ _ _ (hasInverse higher_group) y)
+  := @inv_proper (GroupToMonoid higher_group) _ (@isInverse _ _ _ (hasInverse higher_group)) x y E.
 
 (** Generic involution returns an actual full relative cylinder. *)
 
@@ -415,7 +415,7 @@ Definition higher_inverse_proper (x y : C)
 
 Definition higher_involution (x : C)
   : TwoSphereCylinderHomotopy X b
-      (@inv _ (hasGroup higher_group) (@inv _ (hasGroup higher_group) x)) x
+      (@inv _ _ _ (hasInverse higher_group) (@inv _ _ _ (hasInverse higher_group) x)) x
   := @inv_inv higher_group x.
 
 (** Generic associativity is available on the same selected parent. *)
@@ -426,7 +426,7 @@ Definition higher_associativity (x y z : C)
   : TwoSphereCylinderHomotopy X b
       (@mul _ (hasMagma higher_group) (@mul _ (hasMagma higher_group) x y) z)
       (@mul _ (hasMagma higher_group) x (@mul _ (hasMagma higher_group) y z))
-  := @mul_assoc _ (isSemigroup higher_group) x y z.
+  := @mul_assoc _ _ (isSemigroup higher_group) x y z.
 
 (** Algebra and full Kan are still not selected by import. *)
 

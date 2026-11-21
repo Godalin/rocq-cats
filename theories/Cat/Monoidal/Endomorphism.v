@@ -87,7 +87,7 @@ Next Obligation. exact (bicat_triangle X0 Y). Qed.
 
 Lemma endomorphism_tensor_map {f f' g g' : Cell1 X X}
     (β : Cell2 g g') (α : Cell2 f f')
-  : tensor_map (IM := isMagmoidal EndoMonoidal)
+  : tensor_map (IM := HasMonoidal_interchange EndoMonoidal)
       (X := g) (X' := g') (Y := f) (Y' := f') β α ≈
       comp2_h β α.
 Proof. apply bifct_sequence. Qed.

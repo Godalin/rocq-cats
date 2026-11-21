@@ -67,7 +67,7 @@ Proof. reflexivity. Qed.
 (** 更强的层只新增单位元和逆的解释。 *)
 
 Example inherited_unit (M : Monoid)
-  : (1 : M) = @mul_unit _ (hasMonoid M).
+  : (1 : M) = @mul_unit _ _ (hasUnit M).
 Proof. reflexivity. Qed.
 
 (** Unit laws infer their selected structure from the expression. *)
@@ -79,11 +79,11 @@ Example inferred_unit_laws (M : Monoid) (x : M)
 Proof. rewrite mul_unit_l, mul_unit_r. reflexivity. Qed.
 
 Example inherited_inverse (G : Group) (x : G)
-  : x⁻¹ = @inv _ (hasGroup G) x.
+  : x⁻¹ = @inv _ _ _ (hasInverse G) x.
 Proof. reflexivity. Qed.
 
 Example inverse_precedence (G : Group) (x y : G)
-  : x ⋅ y⁻¹ = @mul _ (hasMagma G) x (@inv _ (hasGroup G) y).
+  : x ⋅ y⁻¹ = @mul _ (hasMagma G) x (@inv _ _ _ (hasInverse G) y).
 Proof. reflexivity. Qed.
 
 Example explicit_natural_numeral
@@ -103,6 +103,6 @@ Example delimited_group_forms (G : Group) (x y : G)
   : ((x ⋅ y)%alg, ((x ⋅−) y)%alg, ((−⋅ y) x)%alg,
       (1 : G)%alg, (x⁻¹)%alg) =
       (@mul _ (hasMagma G) x y, @mul _ (hasMagma G) x y,
-        @mul _ (hasMagma G) x y, @mul_unit _ (hasMonoid G),
-        @inv _ (hasGroup G) x).
+        @mul _ (hasMagma G) x y, @mul_unit _ _ (hasUnit G),
+        @inv _ _ _ (hasInverse G) x).
 Proof. reflexivity. Qed.

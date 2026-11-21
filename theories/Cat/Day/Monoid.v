@@ -124,7 +124,7 @@ Let SM
 (** 将 lax tensorator 看作 Day 延拓所需的自然二元操作，只需张量映射比较。 *)
 
 Program Definition LaxDayTensorN (L : LaxMonoidalFct MC SM)
-  : DayValuesF L L ⇒ (L ∘F tensorF (isMagmoidal MC))
+  : DayValuesF L L ⇒ (L ∘F tensorF (HasMonoidal_interchange MC))
   :=
   {|nt q := lax_tensorN L q
   |}.
@@ -133,8 +133,8 @@ Next Obligation.
   pose proof (nat_naturality (lax_tensorN L)
     (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) as H.
   change (lax_tensorN L (Y1,Y2) ∘
-    tensor_map (IM := isMagmoidal SM) (fmap L f) (fmap L g) ≈
-    fmap L (fmap (tensorF (isMagmoidal MC)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
+    tensor_map (IM := HasMonoidal_interchange SM) (fmap L f) (fmap L g) ≈
+    fmap L (fmap (tensorF (HasMonoidal_interchange MC)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
       lax_tensorN L (X1,X2)) in H.
   intros [x y]. exact (H (x,y)).
 Qed.
@@ -145,16 +145,16 @@ Qed.
 
 Program Definition DayLaxTensorN
     {F : Fct C (SetCat@{u p _ _ _ _ _})}
-    (β : DayValuesF F F ⇒ (F ∘F tensorF (isMagmoidal MC)))
-  : (tensorF (isMagmoidal SM) ∘F (F ×F F)) ⇒ (F ∘F tensorF (isMagmoidal MC))
+    (β : DayValuesF F F ⇒ (F ∘F tensorF (HasMonoidal_interchange MC)))
+  : (tensorF (HasMonoidal_interchange SM) ∘F (F ×F F)) ⇒ (F ∘F tensorF (HasMonoidal_interchange MC))
   :=
   {|nt q := β q
   |}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
   change (β (Y1,Y2) ∘
-    tensor_map (IM := isMagmoidal SM) (fmap F f) (fmap F g) ≈
-    fmap F (fmap (tensorF (isMagmoidal MC)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
+    tensor_map (IM := HasMonoidal_interchange SM) (fmap F f) (fmap F g) ≈
+    fmap F (fmap (tensorF (HasMonoidal_interchange MC)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
       β (X1,X2)).
   intros [x y]. exact (nat_naturality β (f,g) (x,y)).
 Qed.
@@ -191,16 +191,16 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Let T
   : Fct (C ×C C) C
-  := tensorF (isMagmoidal MC).
+  := tensorF (HasMonoidal_interchange MC).
 Let I
   : @Ob C
   := 𝐈[MC].
 Let L
   : AtLF T I ≅N IdF
-  := TensorUnitorLIsoN (IM := isMagmoidal MC) (UC := MC).
+  := TensorUnitorLIsoN (IM := HasMonoidal_interchange MC) (UC := MC).
 Let R
   : AtRF T I ≅N IdF
-  := TensorUnitorRIsoN (IM := isMagmoidal MC) (UC := MC).
+  := TensorUnitorRIsoN (IM := HasMonoidal_interchange MC) (UC := MC).
 Context `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 Context (F : Fct C (SetCat@{u p _ _ _ _ _}))
     (η : DayUnitF I ⇒ F) (μ : DayF T F F ⇒ F).
@@ -320,10 +320,10 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Let T
   : Fct (C ×C C) C
-  := tensorF (isMagmoidal MC).
+  := tensorF (HasMonoidal_interchange MC).
 Let A
   : Tensor3LF T ≅N Tensor3RF T
-  := TensorAssocIsoN (IM := isMagmoidal MC) (AC := MC).
+  := TensorAssocIsoN (IM := HasMonoidal_interchange MC) (AC := MC).
 Context `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}), HasDay C T F G).
 Context (F : Fct C (SetCat@{u p _ _ _ _ _})) (μ : DayF T F F ⇒ F).
 Let β
@@ -479,7 +479,7 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Let T
   : Fct (C ×C C) C
-  := tensorF (isMagmoidal MC).
+  := tensorF (HasMonoidal_interchange MC).
 Let I
   : @Ob C
   := 𝐈[MC].
@@ -495,11 +495,11 @@ Definition is_day_lax (F : Fct C (SetCat@{u p _ _ _ _ _}))
     (e : F I) (β : DayValuesF F F ⇒ (F ∘F T))
   : Type
   := (∀ X (x : F X),
-        fmap F (tensor_unitor_l (HasUnitors := MC) X).1 (β (I,X) (e,x)) ≈S x) ∧
+        fmap F (tensor_unitor_l (HasTensorUnitors := MC) X).1 (β (I,X) (e,x)) ≈S x) ∧
      (∀ X (x : F X),
-        fmap F (tensor_unitor_r (HasUnitors := MC) X).1 (β (X,I) (x,e)) ≈S x) ∧
+        fmap F (tensor_unitor_r (HasTensorUnitors := MC) X).1 (β (X,I) (x,e)) ≈S x) ∧
      (∀ a b c (x : F a) (y : F b) (z : F c),
-        fmap F (tensor_assoc (HasAssoc := MC) a b c).1
+        fmap F (tensor_assoc (HasTensorAssoc := MC) a b c).1
           (β (T (a,b),c) (β (a,b) (x,y),z)) ≈S
         β (a,T (b,c)) (x,β (b,c) (y,z))).
 
@@ -551,16 +551,16 @@ Lemma day_lax_transport {F : Fct C (SetCat@{u p _ _ _ _ _})}
   : is_day_lax F e' β'.
 Proof.
   destruct H as [Hl [Hr Ha]]. split; [| split].
-  - intros X x. transitivity (fmap F (tensor_unitor_l (HasUnitors := MC) X).1
+  - intros X x. transitivity (fmap F (tensor_unitor_l (HasTensorUnitors := MC) X).1
       (β (I,X) (e,x))); [| exact (Hl X x)].
-    apply (@func_proper _ _ (fmap F (tensor_unitor_l (HasUnitors := MC) X).1)).
+    apply (@func_proper _ _ (fmap F (tensor_unitor_l (HasTensorUnitors := MC) X).1)).
     transitivity (β' (I,X) (e,x)).
     + apply (@func_proper _ _ (β' (I,X))).
       split; [symmetry; exact He | reflexivity].
     + symmetry. exact (Hβ (I,X) (e,x)).
-  - intros X x. transitivity (fmap F (tensor_unitor_r (HasUnitors := MC) X).1
+  - intros X x. transitivity (fmap F (tensor_unitor_r (HasTensorUnitors := MC) X).1
       (β (X,I) (x,e))); [| exact (Hr X x)].
-    apply (@func_proper _ _ (fmap F (tensor_unitor_r (HasUnitors := MC) X).1)).
+    apply (@func_proper _ _ (fmap F (tensor_unitor_r (HasTensorUnitors := MC) X).1)).
     transitivity (β' (X,I) (x,e)).
     + apply (@func_proper _ _ (β' (X,I))).
       split; [reflexivity | symmetry; exact He].
@@ -572,9 +572,9 @@ Proof.
       - apply (@func_proper _ _ (β' (T (a,b),c))).
         split; [symmetry; exact (Hβ (a,b) (x,y)) | reflexivity].
       - symmetry. exact (Hβ (T (a,b),c) (β (a,b) (x,y),z)). }
-    transitivity (fmap F (tensor_assoc (HasAssoc := MC) a b c).1
+    transitivity (fmap F (tensor_assoc (HasTensorAssoc := MC) a b c).1
       (β (T (a,b),c) (β (a,b) (x,y),z))).
-    + exact (@func_proper _ _ (fmap F (tensor_assoc (HasAssoc := MC) a b c).1) _ _ K).
+    + exact (@func_proper _ _ (fmap F (tensor_assoc (HasTensorAssoc := MC) a b c).1) _ _ K).
     + transitivity (β (a,T (b,c)) (x,β (b,c) (y,z)));
         [exact (Ha a b c x y z) |].
       transitivity (β' (a,T (b,c)) (x,β (b,c) (y,z))).
@@ -600,7 +600,7 @@ Section MonoidCharacterization.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (isMagmoidal MC)) F G).
+      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -612,16 +612,17 @@ Let DM
 Local Lemma day_object_tensor_map
     {F F' G G' : Fct C (SetCat@{u p _ _ _ _ _})}
     (α : F ⇒ F') (β : G ⇒ G')
-  : tensor_map (IM := isMagmoidal DM)
+  : tensor_map (IM := HasMonoidal_interchange DM)
       (X := F) (X' := F') (Y := G) (Y' := G') α β ≈N
-      @DayMapN C (tensorF (isMagmoidal MC)) F F' G G' (HD F G) (HD F' G') α β.
+      @DayMapN C (tensorF (HasMonoidal_interchange MC)) F F' G G' (HD F G) (HD F' G') α β.
 Proof.
-  exact (day_monoidal_map (tensorF (isMagmoidal MC)) (𝐈[MC])
-    (TensorAssocIsoN (IM := isMagmoidal MC) (AC := MC))
-    (TensorUnitorLIsoN (IM := isMagmoidal MC) (UC := MC))
-    (TensorUnitorRIsoN (IM := isMagmoidal MC) (UC := MC))
-    (tensor_pentagon (IM := isMagmoidal MC) (AC := MC))
-    (tensor_map_triangle (IM := isMagmoidal MC) (PC := MC)) HD α β).
+  exact (day_monoidal_map (tensorF (HasMonoidal_interchange MC)) (𝐈[MC])
+    (TensorAssocIsoN (IM := HasMonoidal_interchange MC) (AC := MC))
+    (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
+    (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
+    (tensor_pentagon (IM := HasMonoidal_interchange MC) (AC := MC))
+    (tensor_map_triangle (IM := HasMonoidal_interchange MC)
+      (IP := HasMonoidal_isPremonoidal MC)) HD α β).
 Defined.
 
 (** The three monoid diagrams are precisely the lax value equations.
@@ -631,13 +632,13 @@ Defined.
 
 Theorem day_monoid_laws (F : Fct C (SetCat@{u p _ _ _ _ _}))
     (η : DayUnitF (𝐈[MC]) ⇒ F)
-    (μ : DayF (tensorF (isMagmoidal MC)) F F ⇒ F)
-  : is_monoid_object DM F η μ ↔
+    (μ : DayF (tensorF (HasMonoidal_interchange MC)) F F ⇒ F)
+  : IsMonoidObj DM F η μ ↔
       is_day_lax MC F (day_unit_value (𝐈[MC]) F η)
-        (DayRestrictN (tensorF (isMagmoidal MC)) μ).
+        (DayRestrictN (tensorF (HasMonoidal_interchange MC)) μ).
 Proof.
-  unfold is_monoid_object, is_day_lax.
-  split; intros [Hl [Hr Ha]]; (split; [| split]).
+  unfold is_day_lax.
+  split; [intros [Hl Hr Ha]; split; [| split] | intros [Hl [Hr Ha]]; constructor].
   - apply (fst (day_unit_l_law MC HD F η μ)).
     rewrite <- (day_object_tensor_map η (IdN (F := F))). exact Hl.
   - apply (fst (day_unit_r_law MC HD F η μ)).
@@ -671,7 +672,7 @@ Section StructureConversions.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (isMagmoidal MC)) F G).
+      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -684,15 +685,15 @@ Let SM
 (** 延拓 lax 单位和张量子即满足 Day 幺半群图。 *)
 
 Lemma lax_day_monoid_laws (L : LaxMonoidalFct MC SM)
-  : is_monoid_object DM L
+  : IsMonoidObj DM L
       (DayUnitExtendN (𝐈[MC]) L (lax_unit L tt))
-      (DayExtendN (tensorF (isMagmoidal MC)) (LaxDayTensorN MC L)).
+      (DayExtendN (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L)).
 Proof.
   apply (snd (day_monoid_laws MC HD L _ _)).
   refine (day_lax_transport MC (lax_unit L tt) _
     (LaxDayTensorN MC L) _ _ _ (lax_day_coherence MC L)).
   - symmetry. exact (day_unit_value_extend (𝐈[MC]) L (lax_unit L tt)).
-  - symmetry. exact (day_restrict_extend (tensorF (isMagmoidal MC)) (LaxDayTensorN MC L)).
+  - symmetry. exact (day_restrict_extend (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L)).
 Defined.
 
 (** A lax monoidal functor is a monoid for the selected Day structure. *)
@@ -704,11 +705,9 @@ Program Definition LaxDayMonoid (L : LaxMonoidalFct MC SM)
   :=
   {|MonoidCarrier := L
   ; monoid_object_unit := DayUnitExtendN (𝐈[MC]) L (lax_unit L tt)
-  ; monoid_object_mul := DayExtendN (tensorF (isMagmoidal MC)) (LaxDayTensorN MC L)
+  ; monoid_object_mul := DayExtendN (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L)
+  ; isMonoidObj := lax_day_monoid_laws L
   |}.
-Next Obligation. exact (fst (lax_day_monoid_laws L)). Qed.
-Next Obligation. exact (fst (snd (lax_day_monoid_laws L))). Qed.
-Next Obligation. exact (snd (snd (lax_day_monoid_laws L))). Qed.
 
 (** Restrict a Day monoid by Yoneda evaluation and binary generation. *)
 
@@ -718,9 +717,9 @@ Definition DayMonoidLax (M : MonoidObj DM)
   : LaxMonoidalFct MC SM
   := DayOperationLax MC (MonoidCarrier M)
       (day_unit_value (𝐈[MC]) (MonoidCarrier M) (monoid_object_unit M))
-      (DayRestrictN (tensorF (isMagmoidal MC)) (monoid_object_mul M))
+      (DayRestrictN (tensorF (HasMonoidal_interchange MC)) (monoid_object_mul M))
       (fst (day_monoid_laws MC HD (MonoidCarrier M)
-        (monoid_object_unit M) (monoid_object_mul M)) (monoid_object_laws M)).
+        (monoid_object_unit M) (monoid_object_mul M)) (isMonoidObj M)).
 
 (** The Day unit survives restriction followed by extension. *)
 
@@ -742,13 +741,13 @@ Lemma day_monoid_mul_roundtrip (M : MonoidObj DM)
   : monoid_object_mul (LaxDayMonoid (DayMonoidLax M)) ≈N
       monoid_object_mul M.
 Proof.
-  transitivity (DayExtendN (tensorF (isMagmoidal MC))
-    (DayRestrictN (tensorF (isMagmoidal MC)) (monoid_object_mul M))).
-  - apply (day_extend_proper (tensorF (isMagmoidal MC))
+  transitivity (DayExtendN (tensorF (HasMonoidal_interchange MC))
+    (DayRestrictN (tensorF (HasMonoidal_interchange MC)) (monoid_object_mul M))).
+  - apply (day_extend_proper (tensorF (HasMonoidal_interchange MC))
       (F := MonoidCarrier M) (G := MonoidCarrier M)
       (H := MonoidCarrier M) (HD := HD _ _)).
     intros [X Y] [x y]. reflexivity.
-  - exact (day_extend_restrict (tensorF (isMagmoidal MC)) (monoid_object_mul M)).
+  - exact (day_extend_restrict (tensorF (HasMonoidal_interchange MC)) (monoid_object_mul M)).
 Defined.
 
 (** The native lax unit survives extension followed by restriction. *)
@@ -769,7 +768,7 @@ Lemma day_lax_tensor_roundtrip (L : LaxMonoidalFct MC SM)
   : lax_tensorN (DayMonoidLax (LaxDayMonoid L)) ≈N lax_tensorN L.
 Proof.
   intros q xy.
-  exact (day_restrict_extend (tensorF (isMagmoidal MC)) (LaxDayTensorN MC L) q xy).
+  exact (day_restrict_extend (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L) q xy).
 Defined.
 
 End StructureConversions.

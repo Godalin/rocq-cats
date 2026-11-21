@@ -17,15 +17,23 @@ Local Open Scope ob_scope.
 
 (** 交换律使固定张量作用的两种执行次序相等。 *)
 
-Class IsMagmoidal {C : Cat} (BC : HasBinoidal C)
+Minks.Mixin IsMagmoidal (C : Cat)
+  extends HasBinoidal C
   :=
   { tensor_interchange {X X' Y Y' : C}
       (f : Hom X X') (g : Hom Y Y')
     : (f ⊳ Y') ∘ (X ⊲ g) ≈ (X' ⊲ g) ∘ (f ⊳ Y)
   }.
 
-Arguments IsMagmoidal {_} _.
 Arguments tensor_interchange {_ _ _ _ _ _ _} _ _.
+
+(** Add interchange to the tensor actions of one binoidal category. *)
+
+(** 为一个双侧张量范畴的张量作用加入交换律。 *)
+
+Minks.Struct MagmoidalCat
+  extends BinoidalCat
+  with  interchange as isMagmoidal : IsMagmoidal.
 
 (** Tensor two arrows when the chosen actions satisfy interchange. The
     map computes by the left-then-right order of [tensor_sequence]. *)
@@ -34,7 +42,7 @@ Arguments tensor_interchange {_ _ _ _ _ _ _} _ _.
 
 Definition tensor_map {C : Cat}
     `{BC : !HasBinoidal C}
-    `{IM : !IsMagmoidal BC}
+    `{IM : !@IsMagmoidal C BC}
     {X X' Y Y' : C} (f : Hom X X') (g : Hom Y Y')
   : Hom (X ⊗ Y) (X' ⊗ Y')
   := tensor_sequence f g.
@@ -55,7 +63,7 @@ Infix "⊗" := tensor_map
 Section JointFunctoriality.
 Context {C : Cat}
   `{BC : !HasBinoidal C}
-  `{IM : !IsMagmoidal BC}.
+  `{IM : !@IsMagmoidal C BC}.
 
 (** Every arrow is central; interchange equates the two action orders. *)
 
@@ -107,7 +115,7 @@ End JointFunctoriality.
 (** 张量双函子通过计算得到，不另作选择。对投影保留未拆解输入对上的归约。 *)
 
 Program Definition tensorF {C : Cat}
-    `{BC : !HasBinoidal C} `{IM : !IsMagmoidal BC}
+    `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
   : Fct (C ×C C) C
   :=
   {|fobj p := fst p ⊗ snd p

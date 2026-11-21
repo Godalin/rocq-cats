@@ -19,7 +19,7 @@ Section UnchosenExtension.
 Context (SG : Semigroup).
 
 Fail Definition unchosen_monoid_extension
-  : HasMonoid SG
+  : @HasUnit SG (Semigroup_hasMagma SG)
   := ltac:(typeclasses eauto).
 
 End UnchosenExtension.
@@ -33,23 +33,23 @@ End UnchosenExtension.
     两份选择同时存在，打包只读取给定见证。 *)
 
 Section IndependentChoices.
-Context (SG : Semigroup) (H K : HasMonoid SG).
+Context (SG : Semigroup) (H K : @HasUnit SG (Semigroup_hasMagma SG)).
 
 Example first_parent_is_preserved
   : MonoidToSemigroup (MonoidOfSemigroup SG H) = SG.
-Proof. reflexivity. Qed.
+Proof. destruct SG. reflexivity. Qed.
 
 Example first_extension_is_preserved
-  : hasMonoid (MonoidOfSemigroup SG H) = H.
+  : hasUnit (MonoidOfSemigroup SG H) = H.
 Proof. reflexivity. Qed.
 
 Example first_unit_is_selected
-  : @mul_unit _ (hasMonoid (MonoidOfSemigroup SG H)) =
-      @mul_unit SG H.
+  : @mul_unit _ _ (hasUnit (MonoidOfSemigroup SG H)) =
+      @mul_unit SG _ H.
 Proof. reflexivity. Qed.
 
 Example selected_units_are_equivalent
-  : @mul_unit SG H ≈S @mul_unit SG K.
+  : @mul_unit SG _ H ≈S @mul_unit SG _ K.
 Proof.
   exact units_equiv.
 Qed.
@@ -86,10 +86,11 @@ Program Definition ConstantBoolMagma
 
 Program Definition ConstantBoolSemigroup
   : Semigroup
-  :=
-  {|SemigroupToMagma := ConstantBoolMagma
-  ; isSemigroup := {|mul_assoc _ _ _ := true|}
-  |}.
+  := let M := ConstantBoolMagma in
+     {|SemigroupToSetC := M
+     ; Semigroup_hasMagma := hasMagma M
+     ; isSemigroup := {|mul_assoc _ _ _ := true|}
+     |}.
 
 (** Different operations and associativity witnesses on the same carrier
     remain separate computational choices. *)
@@ -105,12 +106,12 @@ Program Definition TrueMultiplication
 
 Definition TrueMagma
   : Magma
-  := MagmaOfSetC IndiscreteBoolS TrueMultiplication.
+  := MakeMagma IndiscreteBoolS TrueMultiplication.
 
 Local Existing Instance TrueMultiplication.
 
 Program Definition OtherAssociativity
-  : IsSemigroup ConstantBoolMagma
+  : @IsSemigroup ConstantBoolMagma (hasMagma ConstantBoolMagma)
   := {|mul_assoc _ _ _ := false|}.
 
 Local Existing Instance OtherAssociativity.
@@ -137,8 +138,8 @@ Example notation_stored_multiplications
 Proof. reflexivity. Qed.
 
 Example stored_associativities_compute
-  : (@mul_assoc _ (isSemigroup ConstantBoolSemigroup) true false true,
-      @mul_assoc _ (isSemigroup OtherSemigroup) true false true) = (true, false).
+  : (@mul_assoc _ _ (isSemigroup ConstantBoolSemigroup) true false true,
+      @mul_assoc _ _ (isSemigroup OtherSemigroup) true false true) = (true, false).
 Proof. reflexivity. Qed.
 
 Example inherited_magma_carrier
@@ -146,21 +147,21 @@ Example inherited_magma_carrier
 Proof. reflexivity. Qed.
 
 Program Definition BoolUnitExtension (e t : bool)
-  : HasMonoid ConstantBoolSemigroup
+  : @HasUnit ConstantBoolSemigroup (Semigroup_hasMagma ConstantBoolSemigroup)
   :=
   {|mul_unit := e
-  ; isMonoid :=
+  ; isUnit :=
       {|mul_unit_l _ := t
       ; mul_unit_r _ := negb t
       |}
   |}.
 
 Definition FalseUnit
-  : HasMonoid ConstantBoolSemigroup
+  : @HasUnit ConstantBoolSemigroup (Semigroup_hasMagma ConstantBoolSemigroup)
   := BoolUnitExtension false false.
 
 Definition TrueUnit
-  : HasMonoid ConstantBoolSemigroup
+  : @HasUnit ConstantBoolSemigroup (Semigroup_hasMagma ConstantBoolSemigroup)
   := BoolUnitExtension true true.
 
 Local Existing Instance FalseUnit.
@@ -175,8 +176,8 @@ Definition SecondMonoid
   := MonoidOfSemigroup ConstantBoolSemigroup TrueUnit.
 
 Example stored_units_compute
-  : (@mul_unit _ (hasMonoid FirstMonoid),
-      @mul_unit _ (hasMonoid SecondMonoid)) = (false, true).
+  : (@mul_unit _ _ (hasUnit FirstMonoid),
+      @mul_unit _ _ (hasUnit SecondMonoid)) = (false, true).
 Proof. reflexivity. Qed.
 
 (** The same numeral reads different units from the explicitly typed bundles. *)
@@ -188,14 +189,14 @@ Example notation_stored_units
 Proof. reflexivity. Qed.
 
 Example stored_left_laws_compute
-  : (@mul_unit_l _ _ (@isMonoid _ (hasMonoid FirstMonoid)) false,
-      @mul_unit_l _ _ (@isMonoid _ (hasMonoid SecondMonoid)) false) =
+  : (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit FirstMonoid)) false,
+      @mul_unit_l _ _ _ (@isUnit _ _ (hasUnit SecondMonoid)) false) =
       (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_right_laws_compute
-  : (@mul_unit_r _ _ (@isMonoid _ (hasMonoid FirstMonoid)) true,
-      @mul_unit_r _ _ (@isMonoid _ (hasMonoid SecondMonoid)) true) =
+  : (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit FirstMonoid)) true,
+      @mul_unit_r _ _ _ (@isUnit _ _ (hasUnit SecondMonoid)) true) =
       (true, false).
 Proof. reflexivity. Qed.
 
@@ -211,8 +212,8 @@ Example category_laws_use_stored_choices
 Proof. reflexivity. Qed.
 
 Fail Definition native_units_equal
-  : @mul_unit _ (hasMonoid FirstMonoid) =
-      @mul_unit _ (hasMonoid SecondMonoid)
+  : @mul_unit _ _ (hasUnit FirstMonoid) =
+      @mul_unit _ _ (hasUnit SecondMonoid)
   := eq_refl.
 
 (** ** Concrete Clients and Independent Sizes
@@ -225,7 +226,7 @@ Fail Definition native_units_equal
     实际模型投影可计算；严格大小检查数学上的独立性，不维护历史宇宙参数位置。 *)
 
 Example xor_unit_computes
-  : @mul_unit _ (hasMonoid BoolS_Monoid) = false.
+  : @mul_unit _ _ (hasUnit BoolS_Monoid) = false.
 Proof. reflexivity. Qed.
 
 Example endomorphism_parent_computes (C : Cat) (X : C)
@@ -233,14 +234,14 @@ Example endomorphism_parent_computes (C : Cat) (X : C)
 Proof. reflexivity. Qed.
 
 Example endomorphism_unit_computes (C : Cat) (X : C)
-  : @mul_unit _ (hasMonoid (EndMonoid C X)) = id[X].
+  : @mul_unit _ _ (hasUnit (EndMonoid C X)) = id[X].
 Proof. reflexivity. Qed.
 
 Section IndependentUniverses.
 Universes u p l.
 Constraint u < p, p < l.
 Context (SA : Semigroup@{u p l}) (SB : Semigroup@{p u l})
-    (HA : HasMonoid SA) (HB : HasMonoid SB).
+    (HA : @HasUnit SA (Semigroup_hasMagma SA)) (HB : @HasUnit SB (Semigroup_hasMagma SB)).
 
 Definition high_equality_monoid
   : Monoid@{u p l}

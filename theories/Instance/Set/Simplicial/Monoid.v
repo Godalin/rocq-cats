@@ -109,7 +109,7 @@ Lemma monoid_nerve_face_middle@{u p +}
       ((b ⋅ a) ∷S []S).
 Proof.
   intros [[] | []]. change ((1 ⋅ b) ⋅ a ≈S b ⋅ a).
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))). reflexivity.
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))). reflexivity.
 Defined.
 
 (** The last face of a pair removes its second arrow. *)
@@ -120,7 +120,7 @@ Lemma monoid_nerve_face_last_pair@{u p +}
     {M : Monoid@{u p _}} (a b : M)
   : d[Nₘ(M); 1%nat; fin_next (fin_next fin_first)] (a ∷S b ∷S []S) ≈S
       (a ∷S []S).
-Proof. intros [[] | []]. change (1 ⋅ a ≈S a). apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))). Defined.
+Proof. intros [[] | []]. change (1 ⋅ a ≈S a). apply (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))). Defined.
 
 (** Degenerating the empty chain gives the identity arrow. *)
 
@@ -140,7 +140,7 @@ Lemma monoid_nerve_degeneracy_first@{u p +}
   : s[Nₘ(M); 1%nat; fin_first] (a ∷S []S) ≈S (1 ∷S a ∷S []S).
 Proof.
   intros [[] | [[] | []]]; [reflexivity |].
-  change (1 ⋅ a ≈S a). apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+  change (1 ⋅ a ≈S a). apply (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))).
 Defined.
 
 (** Repeating the target vertex inserts a unit after a single arrow. *)
@@ -152,7 +152,7 @@ Lemma monoid_nerve_degeneracy_last@{u p +}
   : s[Nₘ(M); 1%nat; fin_next fin_first] (a ∷S []S) ≈S (a ∷S 1 ∷S []S).
 Proof.
   intros [[] | [[] | []]]; [|reflexivity].
-  change (1 ⋅ a ≈S a). apply (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))).
+  change (1 ⋅ a ≈S a). apply (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))).
 Defined.
 
 (** * Comparison with the Diagram Nerve

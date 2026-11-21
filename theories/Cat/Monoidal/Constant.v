@@ -27,14 +27,14 @@ Context {C D : Cat} (MC : HasMonoidal C)
 (** [A] 的乘法就是常值 tensorator；每条来源箭头映为恒等，因而满足自然性。 *)
 
 Program Definition ConstLaxTensorN
-  : (tensorF (isMagmoidal MD) ∘F (ConstF C (MonoidCarrier A) ×F
+  : (tensorF (HasMonoidal_interchange MD) ∘F (ConstF C (MonoidCarrier A) ×F
         ConstF C (MonoidCarrier A))) ⇒
-      (ConstF C (MonoidCarrier A) ∘F tensorF (isMagmoidal MC))
+      (ConstF C (MonoidCarrier A) ∘F tensorF (HasMonoidal_interchange MC))
   :=
   {|nt p := m[A]
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (isFct (tensorF (isMagmoidal MD)))
+  rewrite (@fmap_id _ _ _ _ (isFct (tensorF (HasMonoidal_interchange MD)))
     (MonoidCarrier A, MonoidCarrier A)), comp_id_r, comp_id_l.
   reflexivity.
 Qed.
@@ -51,8 +51,14 @@ Program Definition ConstLaxMonoidalF
   ; lax_unit := e[A]
   ; lax_tensorN := ConstLaxTensorN
   |}.
-Next Obligation. rewrite comp_id_l. apply monoid_object_unit_l. Qed.
-Next Obligation. rewrite comp_id_l. apply monoid_object_unit_r. Qed.
-Next Obligation. rewrite comp_id_l. apply monoid_object_assoc. Qed.
+Next Obligation.
+  rewrite comp_id_l. exact (monoid_object_unit_l (isMonoidObj A)).
+Qed.
+Next Obligation.
+  rewrite comp_id_l. exact (monoid_object_unit_r (isMonoidObj A)).
+Qed.
+Next Obligation.
+  rewrite comp_id_l. exact (monoid_object_assoc (isMonoidObj A)).
+Qed.
 
 End ConstantLax.

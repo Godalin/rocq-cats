@@ -183,8 +183,8 @@ Definition product_cylinder
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W false
-      (backward (@inv _ (hasGroup (G true true false true)) z))
-      (@inv _ (hasGroup (G false false true false)) (backward z))
+      (backward (@inv _ _ _ (hasInverse (G true true false true)) z))
+      (@inv _ _ _ (hasInverse (G false false true false)) (backward z))
   := two_sphere_cylinder_inverse_left_inverse FlipN flip_iso false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false)
@@ -197,8 +197,8 @@ Definition inverse_cylinder
 
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W false
-      (backward (@mul_unit _ (hasMonoid (G true true false true))))
-      (@mul_unit _ (hasMonoid (G false false true false)))
+      (backward (@mul_unit _ _ (hasUnit (G true true false true))))
+      (@mul_unit _ _ (hasUnit (G false false true false)))
   := two_sphere_cylinder_inverse_unit FlipN flip_iso false
       (choices fin_first false) (choices fin_first⁺ true)
       (choices fin_first true) (choices fin_first⁺ false).
@@ -246,10 +246,10 @@ Example base_and_operations_compute
      (forward (backward z)).1, z.1,
      (backward (@mul _ (hasMagma (G true true false true)) z z)).1,
      (@mul _ (hasMagma (G false false true false)) (backward z) (backward z)).1,
-     (backward (@inv _ (hasGroup (G true true false true)) z)).1,
-     (@inv _ (hasGroup (G false false true false)) (backward z)).1,
-     (backward (@mul_unit _ (hasMonoid (G true true false true)))).1,
-     (@mul_unit _ (hasMonoid (G false false true false))).1) =
+     (backward (@inv _ _ _ (hasInverse (G true true false true)) z)).1,
+     (@inv _ _ _ (hasInverse (G false false true false)) (backward z)).1,
+     (backward (@mul_unit _ _ (hasUnit (G true true false true)))).1,
+     (@mul_unit _ _ (hasUnit (G false false true false))).1) =
     (true, false, true, false, false, true, true, false,
      true, false, true, false).
 Proof. vm_compute. reflexivity. Defined.
@@ -331,12 +331,12 @@ Fail Definition product_not_native
       @mul _ (hasMagma (G false false true false)) (backward z) (backward z)
   := ltac:(vm_compute; reflexivity).
 Fail Definition inverse_not_native
-  : backward (@inv _ (hasGroup (G true true false true)) z) =
-      @inv _ (hasGroup (G false false true false)) (backward z)
+  : backward (@inv _ _ _ (hasInverse (G true true false true)) z) =
+      @inv _ _ _ (hasInverse (G false false true false)) (backward z)
   := ltac:(vm_compute; reflexivity).
 Fail Definition unit_not_native
-  : backward (@mul_unit _ (hasMonoid (G true true false true))) =
-      @mul_unit _ (hasMonoid (G false false true false))
+  : backward (@mul_unit _ _ (hasUnit (G true true false true))) =
+      @mul_unit _ _ (hasUnit (G false false true false))
   := ltac:(vm_compute; reflexivity).
 
 (** ** Real Nonzero Cocycle Consumers
@@ -445,8 +445,8 @@ Example nonzero_inverse_map_compute
        (@mul _ (hasMagma GZ) bool_cocycle_sphere bool_cocycle_sphere)),
      value (@mul _ (hasMagma GZ) (model_backward bool_cocycle_sphere)
        (model_backward bool_cocycle_sphere)),
-     value (model_backward (@inv _ (hasGroup GZ) bool_cocycle_sphere)),
-     value (@inv _ (hasGroup GZ) (model_backward bool_cocycle_sphere))) =
+     value (model_backward (@inv _ _ _ (hasInverse GZ) bool_cocycle_sphere)),
+     value (@inv _ _ _ (hasInverse GZ) (model_backward bool_cocycle_sphere))) =
     (true, false, false, true, true).
 Proof. vm_compute. reflexivity. Defined.
 
@@ -479,7 +479,7 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 (** 实际非零逆像仍不能由柱等于单位。 *)
 
 Definition inverse_image_nonzero_not_unit
-  : ¬ ((model_backward bool_cocycle_sphere : CZ) ≈S @mul_unit _ (hasMonoid GZ)).
+  : ¬ ((model_backward bool_cocycle_sphere : CZ) ≈S @mul_unit _ _ (hasUnit GZ)).
 Proof.
   intros E. pose proof (@func_proper CZ BoolS value _ _ E) as H.
   change (true = false) in H. discriminate H.

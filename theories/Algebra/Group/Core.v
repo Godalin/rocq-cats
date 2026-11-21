@@ -12,73 +12,40 @@ Local Open Scope algebra_scope.
 
     群为选定幺半群增加可计算的逆，逆的保相等性与相干性由唯一性导出而不另存。 *)
 
-(** ** Inverses on a Fixed Monoid
+(** A specified operation inverts the selected multiplication and unit. *)
 
-    Fix the multiplication and its chosen unit before specifying inverse
-    candidates. Every law below refers to this exact parent. *)
+(** 指定运算给出选定乘法和单位元上的逆。 *)
 
-(** ** 固定幺半群上的逆
-
-    先固定乘法及其选定单位元，再指定逆候选；以下每条定律均指向恰好该父结构。 *)
-
-Section InverseExtension.
-Context (M : Monoid).
-
-(** A supplied operation is a two-sided inverse for the selected monoid. *)
-
-(** 给定运算是选定幺半群的双侧逆。 *)
-
-Class IsGroup (inv : M → M)
+Minks.Mixin IsInverse (S : SetC) (i : S → S)
+  extends HasUnit S
   :=
-  { mul_inv_l x : inv x ⋅ x ≈S 1
-  ; mul_inv_r x : x ⋅ inv x ≈S 1
+  { mul_inv_l x : mul (i x) x ≈S mul_unit
+  ; mul_inv_r x : mul x (i x) ≈S mul_unit
   }.
 
-(** Choose an inverse on this parent, retaining its Type-valued laws. *)
+(** Choose an inverse and its laws on the same multiplication and unit. *)
 
-(** 在该父结构上选取逆，并保留其 Type 值定律。 *)
+(** 在同一乘法和单位元上选取逆及其定律。 *)
 
-Class HasGroup
+Minks.Mixin HasInverse (S : SetC)
+  extends HasUnit S
   :=
-  { inv : M → M
-
-  (** The laws refer to the stored inverse and the supplied monoid. *)
-
-  (** 定律指向保存的逆及给定幺半群。 *)
-
-  ; isGroup :: IsGroup inv
+  { inv : S → S
+  ; isInverse :: @IsInverse S hasMagma hasUnit inv
   }.
 
-End InverseExtension.
+Arguments mul_inv_l {_ _ _ _ _} x.
+Arguments mul_inv_r {_ _ _ _ _} x.
 
-(** Inverse laws infer their fixed parent and inverse operation. *)
+(** Store one setoid with its multiplication, associativity, unit and inverse. *)
 
-(** 逆元定律推断其固定父结构和逆运算。 *)
+(** 将一份广集及其乘法、结合律、单位元和逆元平铺保存。 *)
 
-Arguments mul_inv_l {M inv IsGroup} x.
-Arguments mul_inv_r {M inv IsGroup} x.
+Minks.Struct Group
+  extends Monoid
+  with  hasInverse as hasInverse : HasInverse.
 
-(** A complete group owns one monoid and one inverse extension. *)
-
-(** 完整群拥有一个幺半群及一份逆扩充。 *)
-
-Record Group@{u p l}
-  := GroupOfMonoid
-  { GroupToMonoid :> Monoid@{u p l}
-  ; hasGroup :: HasGroup GroupToMonoid
-  }.
-
-(** The record constructor takes its parent and witness explicitly. *)
-
-(** 记录构造器显式接受父结构及其见证。 *)
-
-Arguments GroupOfMonoid _ _ : clear implicits.
-
-(** The inverse notation reads the complete group's stored choice. *)
-
-(** 逆记号读取完整群保存的选择。 *)
-
-Notation "x '⁻¹'" := (@inv _ (hasGroup _) x)
+Notation "x '⁻¹'" := (@inv _ _ _ (hasInverse _) x)
   (at level 1)
   : algebra_scope.
 
@@ -88,7 +55,9 @@ Notation "x '⁻¹'" := (@inv _ (hasGroup _) x)
 (** 逆候选映射在指定相等下逐点相等，不等同原生函数或其定律见证。 *)
 
 Lemma inv_candidates_equiv (M : Monoid)
-    (i j : M → M) (Hi : IsGroup M i) (Hj : IsGroup M j)
+    (i j : M → M)
+    (Hi : @IsInverse M (Monoid_hasMagma M) (hasUnit M) i)
+    (Hj : @IsInverse M (Monoid_hasMagma M) (hasUnit M) j)
   : i ≈f j.
 Proof.
   intros x. apply (mul_inv_unique x).
@@ -103,7 +72,7 @@ Qed.
 
 Global Instance inv_proper
     {M : Monoid} {i : M → M}
-    `{Hi : !IsGroup M i}
+    `{Hi : !@IsInverse M (Monoid_hasMagma M) (hasUnit M) i}
   : Proper (carrier_equiv M ==> carrier_equiv M) i.
 Proof.
   intros x y H. apply (mul_inv_unique y).
@@ -117,9 +86,9 @@ Qed.
 (** 左逆仅需指定幺半群上的扩充，就与选定逆相等。 *)
 
 Lemma inv_ext_unique (M : Monoid)
-    (HG : HasGroup M) (x y : M)
+    (HG : @HasInverse M (Monoid_hasMagma M) (hasUnit M)) (x y : M)
     (H : (y ⋅ x) ≈S 1)
-  : y ≈S @inv M HG x.
+  : y ≈S @inv _ _ _ HG x.
 Proof.
   eapply mul_inv_unique; [exact H |].
   rewrite mul_inv_r. reflexivity.
@@ -145,7 +114,7 @@ Context {G : Group}.
 Lemma inv_unique (x y : G) (H : y ⋅ x ≈S 1)
   : y ≈S x⁻¹.
 Proof.
-  exact (inv_ext_unique (GroupToMonoid G) (hasGroup G) x y H).
+  exact (inv_ext_unique (GroupToMonoid G) (hasInverse G) x y H).
 Qed.
 
 (** The unit is its own inverse. *)
@@ -191,7 +160,7 @@ Program Definition inv_resp
   :=
   {|func x := x⁻¹
   ; func_proper :=
-    @inv_proper _ _ (@isGroup _ (hasGroup G))
+    @inv_proper (GroupToMonoid G) _ (@isInverse _ _ _ (hasInverse G))
   |}.
 
 End Group.

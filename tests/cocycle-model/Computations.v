@@ -14,7 +14,7 @@ From Cats Require Import
     不仅是先前独立的 cocycle。 *)
 
 Fail Definition unchosen_boolean_monoid
-  : HasMonoid BoolS_Semigroup
+  : @HasUnit BoolS_Semigroup (Semigroup_hasMagma BoolS_Semigroup)
   := ltac:(typeclasses eauto).
 
 (** A simplicial model alone does not implicitly select Kan fillers. *)

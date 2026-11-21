@@ -18,7 +18,7 @@ Local Open Scope nat_scope.
     保留非平凡链见证时对映射求值。 *)
 
 Fail Definition unchosen_coefficient_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_class_group

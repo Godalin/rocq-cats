@@ -37,10 +37,10 @@ Context (f : B →r A) (g : A →r B).
 
 Program Definition HasMonoidTransport (Hfg : (f ∘r g) ≈f id_resp)
     (Hgf : (g ∘r f) ≈f id_resp)
-  : HasMonoid (SemigroupTransport A f g Hfg)
+  : @HasUnit B (Semigroup_hasMagma (SemigroupTransport A f g Hfg))
   :=
   {|mul_unit := g 1
-  ; isMonoid :=
+  ; isUnit :=
       {|mul_unit_l := _
       ; mul_unit_r := _
       |}

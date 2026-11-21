@@ -16,11 +16,11 @@ Local Open Scope algebra_scope.
     标签，而不比较证明字段。 *)
 
 Fail Definition unchosen_boolean_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_boolean_commutativity
-  : IsCommMonoid BoolS_Monoid
+  : IsCommMagma BoolS_Monoid
   := _.
 
 

@@ -46,9 +46,9 @@ Definition EndofunctorMonoidal (C : Cat)
 
 Theorem monad_monoid_laws {C : Cat} (T : Fct C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
-  : is_monad T η μ ↔ is_monoid_object (EndofunctorMonoidal C) T η μ.
+  : is_monad T η μ ↔ IsMonoidObj (EndofunctorMonoidal C) T η μ.
 Proof.
-  split; intros [Hu [Hv Ha]]; (split; [| split]).
+  split; [intros [Hu [Hv Ha]]; constructor | intros [Hu Hv Ha]; split; [| split]].
   - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ η id).
     intros X.
     change (μ X ∘ (η (T X) ∘ id) ≈ id).
@@ -96,16 +96,8 @@ Program Definition MonadMonoid {C : Cat} (M : Monad C)
   {|MonoidCarrier := M
   ; monoid_object_unit := η[M]
   ; monoid_object_mul := μ[M]
+  ; isMonoidObj := fst (monad_monoid_laws _ _ _) (monad_axioms M)
   |}.
-Next Obligation.
-  exact (fst (fst (monad_monoid_laws _ _ _) (monad_axioms M))).
-Defined.
-Next Obligation.
-  exact (fst (snd (fst (monad_monoid_laws _ _ _) (monad_axioms M)))).
-Defined.
-Next Obligation.
-  exact (snd (snd (fst (monad_monoid_laws _ _ _) (monad_axioms M)))).
-Defined.
 
 (** Recover the ordinary axioms from a monoid, preserving all its data. *)
 
@@ -118,7 +110,7 @@ Program Definition MonoidMonad {C : Cat}
   {|MonadF := MonoidCarrier A
   ; monad_unit := e[A]
   ; monad_mul := m[A]
-  ; monad_axioms := snd (monad_monoid_laws _ _ _) (monoid_object_laws A)
+  ; monad_axioms := snd (monad_monoid_laws _ _ _) (isMonoidObj A)
   |}.
 
 (** The two independently stated preservation predicates coincide on the

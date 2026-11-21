@@ -31,12 +31,9 @@ Reserved Notation "'α⁻¹[' X ';' Y ';' Z ']'"
 
     固定范畴及张量作用。定律只使用给定自然同构，不选择单位或第二份结合子。 *)
 
-Section Characterization.
-Context {C : Cat} `{BC : !HasBinoidal C}
-  (a : ∀ X Y : C,
-    ((X ⊗ Y) ⊗-) ≅N ((X ⊗-) ∘F (Y ⊗-))).
-
-Class IsAssoc
+Minks.Mixin IsTensorAssoc (C : Cat)
+    (a : ∀ X Y : C, ((X ⊗ Y) ⊗-) ≅N ((X ⊗-) ∘F (Y ⊗-)))
+  extends HasBinoidal C
   :=
   { assoc_natural_l (Y Z : C)
     :: IsNatIso ((-⊗ Z) ∘F (-⊗ Y)) (-⊗ (Y ⊗ Z))
@@ -63,21 +60,17 @@ Class IsAssoc
           ((a W (X ⊗ Y)).1 Z ∘ ((a W X).1 Y ⊳ Z))
   }.
 
-End Characterization.
-
-Arguments assoc_natural_l {C BC a IsAssoc} _ _.
-Arguments assoc_natural_m {C BC a IsAssoc} _ _.
-Arguments assoc_central {C BC a IsAssoc} _ _ _.
-Arguments assoc_pentagon {C BC a IsAssoc} _ _ _ _.
+Arguments assoc_natural_l {C hasBinoidal a IsTensorAssoc} _ _.
+Arguments assoc_natural_m {C hasBinoidal a IsTensorAssoc} _ _.
+Arguments assoc_central {C hasBinoidal a IsTensorAssoc} _ _ _.
+Arguments assoc_pentagon {C hasBinoidal a IsTensorAssoc} _ _ _ _.
 
 (** Choose the associator and its characterization on these exact actions. *)
 
 (** 在同一组作用上选择结合子及其刻画。 *)
 
-Section Choice.
-Context (C : Cat) `{BC : !HasBinoidal C}.
-
-Class HasAssoc
+Minks.Mixin HasTensorAssoc (C : Cat)
+  extends HasBinoidal C
   :=
   { TensorAssocRIso (X Y : C)
     : ((X ⊗ Y) ⊗-) ≅N ((X ⊗-) ∘F (Y ⊗-))
@@ -94,15 +87,12 @@ Class HasAssoc
     : ((X ⊗ Y) ⊗ Z) ≅ (X ⊗ (Y ⊗ Z))
     := (α[X; Y; Z]; (TensorAssocRIso X Y).2 Z)
 
-  ; isAssoc :: IsAssoc TensorAssocRIso
+  ; isTensorAssoc :: @IsTensorAssoc C hasBinoidal TensorAssocRIso
   }.
 
-End Choice.
-
-Arguments HasAssoc C BC : clear implicits.
 Arguments TensorAssocRIso {_ _ _} _ _.
 Arguments tensor_assoc {_ _ _} _ _ _.
-Arguments isAssoc {_ _ _}.
+Arguments isTensorAssoc {_ _ _}.
 
 Notation "'α[' X ';' Y ';' Z ']'"
   := (tensor_assoc X Y Z).1
@@ -124,7 +114,7 @@ Notation "'α⁻¹[' X ';' Y ';' Z ']'"
 
 Section Laws.
 Context {C : Cat}
-  `{BC : !HasBinoidal C} `{AC : !HasAssoc C BC}.
+  `{BC : !HasBinoidal C} `{AC : !@HasTensorAssoc C BC}.
 
 (** The first-variable natural isomorphism uses the shared components. *)
 
@@ -205,7 +195,7 @@ End Laws.
 (** 结合子的分别自然性也保持三条态射的有序组合，不要求张量的联合函子性。 *)
 
 Lemma tensor_assoc_sequence_natural {C : Cat}
-    `{BC : !HasBinoidal C} `{AC : !HasAssoc C BC}
+    `{BC : !HasBinoidal C} `{AC : !@HasTensorAssoc C BC}
     {X X' Y Y' Z Z' : @Ob C}
     (f : Hom X X') (g : Hom Y Y') (h : Hom Z Z')
   : α[X'; Y'; Z']

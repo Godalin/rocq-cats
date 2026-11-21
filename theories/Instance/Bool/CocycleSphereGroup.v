@@ -2,7 +2,7 @@ From Cats Require Export
   Instance.Bool.CocycleSphere
   Instance.Set.Simplicial.Cocycle.SphereGroup.
 
-Local Existing Instance BoolS_IsCommMonoid.
+Local Existing Instance BoolS_IsCommMagma.
 Local Open Scope algebra_scope.
 
 (** * The Order-Two Group of Boolean Sphere Classes
@@ -42,9 +42,10 @@ Definition BoolCocycleSphereClassS_Group
 
 (** 交换性针对该群的同一个幺半群父结构。 *)
 
-Definition BoolCocycleSphereClassS_IsCommMonoid
-  : @IsCommMonoid (GroupToMonoid BoolCocycleSphereClassS_Group)
-  := (cocycle_two_sphere_IsCommMonoid (M := BoolS_Monoid)).
+Definition BoolCocycleSphereClassS_IsCommMagma
+  : @IsCommMagma (GroupToMonoid BoolCocycleSphereClassS_Group)
+      (Monoid_hasMagma (GroupToMonoid BoolCocycleSphereClassS_Group))
+  := (cocycle_two_sphere_IsCommMagma (M := BoolS_Monoid)).
 
 (** The inverse coefficient is the original Boolean coefficient. *)
 

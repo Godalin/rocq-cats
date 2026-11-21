@@ -254,7 +254,7 @@ End FaceEquations.
     缺失面索引有限，因此这是透明的五种情形选择。 *)
 
 Section CompletingEquations.
-Context {M : Group} `{HC : !IsCommMonoid M}
+Context {M : Group} `{HC : !IsCommMagma M}
     (t : (@Hom Δ) 2 4 → M).
 (** Retain every equation, including the missing one. *)
 
@@ -368,7 +368,7 @@ End CompletingEquations.
 
 Section ActualFourHorn.
 Universes u p.
-Context {M : Group} `{HC : !IsCommMonoid M}
+Context {M : Group} `{HC : !IsCommMagma M}
     (i : Ordinal 4)
     (h : HornS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 4 i)
     (T : ∀ f : (@Hom Δ) 2 4, f ∈Sv HornSieve 4 i).

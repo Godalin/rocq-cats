@@ -61,7 +61,7 @@ Next Obligation.
                               |}.
   exists (λ i, tt). intros i j a.
   change (1 ⋅ xs⟦i, j⟧⋅ ≈S ys⟦i, j⟧⋅ ⋅ 1).
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))), (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))).
   apply monoid_segment_proper; [exact H | reflexivity | reflexivity].
 Defined.
 Next Obligation.
@@ -69,7 +69,7 @@ Next Obligation.
                       |}.
   exists (λ i, tt). intros i j a.
   change (1 ⋅ xs[f]M⟦i, j⟧⋅ ≈S xs⟦f i, f j⟧⋅ ⋅ 1).
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))).
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))), (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))).
   apply monoid_segment_sub.
   - apply ordinal_fct_monotone.
   - exact (nat_le_to_le a).
@@ -90,7 +90,7 @@ Proof.
   intros [[e H]] i. specialize (H _ _ (ordinal_step i)).
   change (1 ⋅ xs⟦fin_weaken i, fin_next i⟧⋅ ≈S
     ys⟦fin_weaken i, fin_next i⟧⋅ ⋅ 1) in H.
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))), !monoid_segment_step in H.
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))), (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))), !monoid_segment_step in H.
   exact H.
 Defined.
 
@@ -130,7 +130,7 @@ Proof.
   exists (λ i, tt). apply ordinal_naturality_steps. intros i.
   change (1 ⋅ (monoid_vertex_chain F)⟦fin_weaken i, fin_next i⟧⋅ ≈S
     fmap F (ordinal_step i) ⋅ 1).
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))), monoid_segment_step. reflexivity.
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))), (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))), monoid_segment_step. reflexivity.
 Defined.
 
 (** Every diagram arrow is the segment product of its adjacent arrows. *)
@@ -144,7 +144,7 @@ Lemma monoid_vertex_segment@{v q +} {M : Monoid@{v q _}} {n : nat}
 Proof.
   pose proof ((monoid_vertex_reconstruct F).2 i j f) as H.
   change (1 ⋅ (monoid_vertex_chain F)⟦i, j⟧⋅ ≈S fmap F f ⋅ 1) in H.
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))), (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))) in H. exact H.
 Defined.
 
 (** Adjacent-arrow extraction commutes with arbitrary simplex restriction. *)
@@ -167,7 +167,7 @@ Next Obligation.
   intros i. specialize (H _ _ (ordinal_step i)).
   change (1 ⋅ fmap F (ordinal_step i) ≈S
     fmap G (ordinal_step i) ⋅ 1) in H.
-  rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))), (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in H. exact H.
+  rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))), (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))) in H. exact H.
 Defined.
 Next Obligation.
   intros [F]. refine {|lower := _

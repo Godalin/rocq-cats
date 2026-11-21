@@ -135,6 +135,20 @@ Definition monoidal_object_view (x : MC)
   : MonoidalCatToPremonoidalCat MC
   := x.
 
+(** The two generated views recover the same binoidal ancestor. *)
+
+(** 两条生成视图恢复同一双侧张量祖先。 *)
+
+Example monoidal_binoidal_views_agree
+  : MagmoidalCatToBinoidalCat (MonoidalCatToMagmoidalCat MC)
+    = MonoidalCatToBinoidalCat MC
+  := eq_refl.
+
+Example premonoidal_binoidal_view_agrees
+  : PremonoidalCatToBinoidalCat (MonoidalCatToPremonoidalCat MC)
+    = MonoidalCatToBinoidalCat MC
+  := eq_refl.
+
 End ExistingViews.
 
 (** ** Independent Arrow and Equality Sizes

@@ -5,41 +5,38 @@ Local Open Scope algebra_scope.
 
 (** * Commutative Coefficients
 
-    A monoid need not allow its factors to be exchanged. Record that extra
-    law for the already selected multiplication, in its specified equality.
-    A group with this property is an abelian group; no second monoid or
-    group structure is selected here.
+    Commutativity compares products in the specified setoid equality of
+    the chosen magma. Associativity then lets us exchange the middle
+    factors in a product of four coefficients.
 
-    When triangle labels are combined, the middle factors in a product of
-    four coefficients must sometimes exchange places. The interchange law
-    below isolates precisely that use of commutativity. It needs no inverses. *)
+    The middle-factor law is used when combining triangle labels. *)
 
 (** * 交换系数
 
-    幺半群不一定允许交换因子。这里为已经选定的乘法记录这一额外定律，使用
-    其指定相等。具有此性质的群就是交换群；这里不另选第二套幺半群或群结构。
+    交换律使用选定原群的广集相等比较乘积，再借助结合律便可交换四个
+    因子中的中间两项。合并三角形标签时会用到这一交换。 *)
 
-    合并三角形标签时，有时需要交换四个系数中间两个的位置。下方的交换定律
-    单独刻画这一步所需的交换性，不要求存在逆。 *)
-
-Class IsCommMonoid (M : Monoid)
+Minks.Mixin IsCommMagma (S : SetC)
+  extends HasMagma S
   :=
-  { mul_comm (x y : M)
-    : x ⋅ y ≈S y ⋅ x
+  { mul_comm (x y : S)
+    : mul x y ≈S mul y x
   }.
+
+Arguments mul_comm {_ _ _} x y.
 
 (** ** Exchanging the Middle Factors
 
-    Fix the selected monoid [M] and a commutativity witness. Associativity
+    Fix the selected semigroup [M] and a commutativity witness. Associativity
     changes the brackets; commutativity exchanges only the middle pair. *)
 
 (** ** 交换中间两个因子
 
-    固定选定幺半群 [M] 及其交换性见证。结合律改变括号，交换律只交换中间
+    固定选定半群 [M] 及其交换性见证。结合律改变括号，交换律只交换中间
     的一对因子。 *)
 
 Section Interchange.
-Context {M : Monoid} `{HC : !IsCommMonoid M}.
+Context {M : Semigroup} `{HC : !IsCommMagma M}.
 
 (** Multiplying two pairs can be regrouped by their first and second entries. *)
 
@@ -50,7 +47,7 @@ Lemma mul_interchange (a b c d : M)
 Proof.
   rewrite mul_assoc, <- (mul_assoc b c d),
     (mul_comm b c), (mul_assoc c b d),
-    <- mul_assoc.
+    <- (mul_assoc a c (b ⋅ d)).
   reflexivity.
 Defined.
 

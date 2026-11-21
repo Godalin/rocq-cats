@@ -20,7 +20,7 @@ From Cats Require Export
 Definition DaySemigroupal {C : Cat} (T : Fct (C ×C C) C)
     (A : Tensor3LF T ≅N Tensor3RF T) (Hp : is_tensor_pentagon T A)
     `(HD : ∀ F G : Fct C SetCat, HasDay C T F G)
-  : HasAssoc (FctCat C SetCat) (BifctHasBinoidal (DayTensorF T HD))
+  : @HasTensorAssoc (FctCat C SetCat) (BifctHasBinoidal (DayTensorF T HD))
   := BifctHasAssoc (DayTensorF T HD) (DayAssociatorFct T HD A)
       (λ F G H K, day_pentagon T A Hp F G H K).
 
@@ -29,10 +29,10 @@ Definition DaySemigroupal {C : Cat} (T : Fct (C ×C C) C)
 (** 提升具有交换律的固定张量的结合性。 *)
 
 Definition SemigroupalDay {C : Cat}
-    {BC : HasBinoidal C} (IM : IsMagmoidal BC)
-    (AC : HasAssoc C BC)
+    {BC : HasBinoidal C} (IM : @IsMagmoidal C BC)
+    (AC : @HasTensorAssoc C BC)
     (HD : ∀ F G : Fct C SetCat, HasDay C (tensorF IM) F G)
-  : HasAssoc (FctCat C SetCat)
+  : @HasTensorAssoc (FctCat C SetCat)
       (BifctHasBinoidal (DayTensorF (tensorF IM) HD))
   := DaySemigroupal (tensorF IM) (TensorAssocIsoN (IM := IM) (AC := AC))
       (tensor_pentagon (IM := IM) (AC := AC)) HD.

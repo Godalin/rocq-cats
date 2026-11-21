@@ -12,17 +12,10 @@ Set Universe Polymorphism.
     resulting closure operator. A closure sends each element to its least
     closed upper bound. *)
 
-(** * 闭包算子与闭点
-
-    在固定序上追加一个自映射，再为得到的闭包算子追加一个元素。
-    闭包将每个元素送到它的最小闭上界。 *)
-
 (** Specify monotonicity of a supplied endomap. *)
 
-(** 给定自映射的单调性。 *)
-
-Minks.Mixin IsMonotone (f : A → A)
-  extends HasOrder
+Minks.Mixin IsMonotone (A : Type) (f : A → A)
+  extends HasOrder A
   :=
   { monotone_leq : ∀ x y, leq x y → leq (f x) (f y) }.
 
@@ -31,10 +24,8 @@ Print IsMonotone.
 (** A closure uses a monotone map and a poset on the same order. The map
     also satisfies extensivity and idempotence. *)
 
-(** 闭包的单调映射与偏序共享同一份序，映射另外满足扩张性和幂等性。 *)
-
-Minks.Mixin IsClosureOp
-  extends IsPoset, IsMonotone
+Minks.Mixin IsClosureOp (A : Type) (f : A → A)
+  extends IsPoset A, IsMonotone A f
   :=
   { closure_extensive : ∀ x, leq x (f x)
   ; closure_idem : ∀ x, equiv (f (f x)) (f x)
@@ -42,10 +33,8 @@ Minks.Mixin IsClosureOp
 
 (** Extend the inherited map and laws by a supplied fixed point. *)
 
-(** 在继承的映射及定律上追加一个给定的不动点。 *)
-
-Minks.Mixin IsClosedPoint (x : A)
-  extends IsClosureOp
+Minks.Mixin IsClosedPoint (A : Type) (f : A → A) (x : A)
+  extends IsClosureOp A f
   :=
   { closed_point : equiv (f x) x }.
 
@@ -53,10 +42,6 @@ Minks.Mixin IsClosedPoint (x : A)
 
     Fix a closure operator on a poset. Its image is closed, and
     monotonicity bounds that image by every closed upper bound. *)
-
-(** ** 最小闭上界
-
-    固定偏序上的闭包算子。闭包的像是闭点，单调性保证它小于等于每个闭上界。 *)
 
 Section ClosureLaws.
 Context (A : Type) (f : A → A)
@@ -66,8 +51,6 @@ Context (A : Type) (f : A → A)
 
 (** The image of each element is a closed point. *)
 
-(** 每个元素的闭包都是闭点。 *)
-
 Definition closure_closed (x : A)
   : @IsClosedPoint A O E P f M C (f x)
   :=
@@ -75,8 +58,6 @@ Definition closure_closed (x : A)
   |}.
 
 (** Every closed upper bound of an element also bounds its closure. *)
-
-(** 元素的每个闭上界也是其闭包的上界。 *)
 
 Definition closure_least (x y : A)
     `{Y : !@IsClosedPoint A O E P f M C y} (xy : leq x y)
@@ -93,16 +74,10 @@ Print closure_closed.
     In any lattice, joining with a fixed element gives a closure operator.
     Use the selected join and the same order for all its laws. *)
 
-(** ** 与固定元素取并得到闭包
-
-    在任意格上，与固定元素取并给出闭包算子。所有定律使用同一份选定的并和偏序。 *)
-
 Section JoinClosure.
 Context (L : Lattice).
 
 (** Joining with a fixed element is monotone. *)
-
-(** 与固定元素取并是单调的。 *)
 
 Definition join_monotone (a : L)
   : IsMonotone L (fun x => join x a).
@@ -113,8 +88,6 @@ Proof.
 Defined.
 
 (** Joining with the same element is extensive and idempotent. *)
-
-(** 与同一个元素取并满足扩张性和幂等性。 *)
 
 Definition join_closure (a : L)
   : @IsClosureOp L (Lattice_hasOrder L)

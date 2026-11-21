@@ -19,7 +19,7 @@ Section UnchosenExtension.
 Context (M : Monoid).
 
 Fail Definition unchosen_group_extension
-  : HasGroup M
+  : @HasInverse M (Monoid_hasMagma M) (hasUnit M)
   := ltac:(typeclasses eauto).
 
 End UnchosenExtension.
@@ -34,7 +34,7 @@ End UnchosenExtension.
     固定幺半群及带逆律的候选运算；无须选取群扩充即可实际重写。 *)
 
 Section CandidateRespectfulness.
-Context {M : Monoid} {i : M → M} `{Hi : !IsGroup M i}.
+Context {M : Monoid} {i : M → M} `{Hi : !@IsInverse M (Monoid_hasMagma M) (hasUnit M) i}.
 
 (** Candidate inversion rewrites inside multiplication using derived
     respectfulness alone. *)
@@ -76,16 +76,17 @@ Next Obligation. repeat intro; exact true. Defined.
 
 Program Definition TokenSemigroup
   : Semigroup
-  :=
-  {|SemigroupToMagma := TokenMagma
-  ; isSemigroup := {|mul_assoc _ _ _ := true|}
-  |}.
+  := let M := TokenMagma in
+     {|SemigroupToSetC := M
+     ; Semigroup_hasMagma := hasMagma M
+     ; isSemigroup := {|mul_assoc _ _ _ := true|}
+     |}.
 
-Program Definition TokenHasMonoid
-  : HasMonoid TokenSemigroup
+Program Definition TokenHasUnit
+  : @HasUnit TokenSemigroup (Semigroup_hasMagma TokenSemigroup)
   :=
   {|mul_unit := false
-  ; isMonoid :=
+  ; isUnit :=
       {|mul_unit_l _ := true
       ; mul_unit_r _ := true
       |}
@@ -93,24 +94,24 @@ Program Definition TokenHasMonoid
 
 Definition TokenMonoid
   : Monoid
-  := MonoidOfSemigroup TokenSemigroup TokenHasMonoid.
+  := MonoidOfSemigroup TokenSemigroup TokenHasUnit.
 
 Program Definition TokenExtension (e t : bool)
-  : HasGroup TokenMonoid
+  : @HasInverse TokenMonoid (Monoid_hasMagma TokenMonoid) (hasUnit TokenMonoid)
   :=
   {|inv _ := e
-  ; isGroup :=
+  ; isInverse :=
       {|mul_inv_l _ := t
       ; mul_inv_r _ := negb t
       |}
   |}.
 
 Definition FalseExtension
-  : HasGroup TokenMonoid
+  : @HasInverse TokenMonoid (Monoid_hasMagma TokenMonoid) (hasUnit TokenMonoid)
   := TokenExtension false false.
 
 Definition TrueExtension
-  : HasGroup TokenMonoid
+  : @HasInverse TokenMonoid (Monoid_hasMagma TokenMonoid) (hasUnit TokenMonoid)
   := TokenExtension true true.
 
 Local Existing Instance FalseExtension.
@@ -129,16 +130,16 @@ Example stored_parent
 Proof. reflexivity. Qed.
 
 Example stored_extension
-  : hasGroup FirstGroup = FalseExtension.
+  : hasInverse FirstGroup = FalseExtension.
 Proof. reflexivity. Qed.
 
 Example stored_units
-  : (@mul_unit _ (hasMonoid FirstGroup), @mul_unit _ (hasMonoid SecondGroup)) =
+  : (@mul_unit _ _ (hasUnit FirstGroup), @mul_unit _ _ (hasUnit SecondGroup)) =
       (false, false).
 Proof. reflexivity. Qed.
 
 Example stored_inverses
-  : (@inv _ (hasGroup FirstGroup) true, @inv _ (hasGroup SecondGroup) true) =
+  : (@inv _ _ _ (hasInverse FirstGroup) true, @inv _ _ _ (hasInverse SecondGroup) true) =
       (false, true).
 Proof. reflexivity. Qed.
 
@@ -152,13 +153,13 @@ Example notation_stored_inverses
 Proof. reflexivity. Qed.
 
 Example stored_left_tokens
-  : (@mul_inv_l _ _ (@isGroup _ (hasGroup FirstGroup)) true,
-      @mul_inv_l _ _ (@isGroup _ (hasGroup SecondGroup)) true) = (false, true).
+  : (@mul_inv_l _ _ _ _ (@isInverse _ _ _ (hasInverse FirstGroup)) true,
+      @mul_inv_l _ _ _ _ (@isInverse _ _ _ (hasInverse SecondGroup)) true) = (false, true).
 Proof. reflexivity. Qed.
 
 Example stored_right_tokens
-  : (@mul_inv_r _ _ (@isGroup _ (hasGroup FirstGroup)) false,
-      @mul_inv_r _ _ (@isGroup _ (hasGroup SecondGroup)) false) = (true, false).
+  : (@mul_inv_r _ _ _ _ (@isInverse _ _ _ (hasInverse FirstGroup)) false,
+      @mul_inv_r _ _ _ _ (@isInverse _ _ _ (hasInverse SecondGroup)) false) = (true, false).
 Proof. reflexivity. Qed.
 
 (** The actual one-object groupoid keeps the selected inverse and laws. *)
@@ -172,20 +173,20 @@ Example groupoid_inverse_uses_stored_choices
 Proof. reflexivity. Qed.
 
 Example candidate_inverses_agree
-  : @inv _ (hasGroup FirstGroup) ≈f @inv _ (hasGroup SecondGroup).
+  : @inv _ _ _ (hasInverse FirstGroup) ≈f @inv _ _ _ (hasInverse SecondGroup).
 Proof.
   exact (inv_candidates_equiv TokenMonoid _ _
-    (@isGroup TokenMonoid FalseExtension)
-    (@isGroup TokenMonoid TrueExtension)).
+    (@isInverse TokenMonoid _ _ FalseExtension)
+    (@isInverse TokenMonoid _ _ TrueExtension)).
 Qed.
 
 Fail Definition native_inverses_equal
-  : @inv _ (hasGroup FirstGroup) true = @inv _ (hasGroup SecondGroup) true
+  : @inv _ _ _ (hasInverse FirstGroup) true = @inv _ _ _ (hasInverse SecondGroup) true
   := eq_refl.
 
 Fail Definition native_left_tokens_equal
-  : @mul_inv_l _ _ (@isGroup _ (hasGroup FirstGroup)) true =
-      @mul_inv_l _ _ (@isGroup _ (hasGroup SecondGroup)) true
+  : @mul_inv_l _ _ _ _ (@isInverse _ _ _ (hasInverse FirstGroup)) true =
+      @mul_inv_l _ _ _ _ (@isInverse _ _ _ (hasInverse SecondGroup)) true
   := eq_refl.
 
 (** ** Strict Independent Levels
@@ -201,7 +202,7 @@ Section StrictUniverses.
 Universes u p l.
 Constraint u < p, p < l.
 Context (MA : Monoid@{u p l}) (MB : Monoid@{p u l}).
-Context (HA : HasGroup MA) (HB : HasGroup MB).
+Context (HA : @HasInverse MA (Monoid_hasMagma MA) (hasUnit MA)) (HB : @HasInverse MB (Monoid_hasMagma MB) (hasUnit MB)).
 
 Definition low_carrier_group
   : Group@{u p l}

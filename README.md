@@ -19,11 +19,12 @@ The structure design distinguishes `Is*` properties of specified data,
 property-only extension needs no extra choice interface. Each shared ancestor
 is stored once; meaningful multiple parent views must converge by conversion.
 The [complete groupoid](./theories/Cat/Groupoid/Core.v) already owns its category.
-The complete algebra chain `Magma → Semigroup → Monoid → Group` now owns its
-carrier through one immediate parent at each step; categorical hierarchies and
-a genuine multiple-parent diamond remain further work.
+The complete algebra chain `Magma → Semigroup → Monoid → Group` packs one
+setoid and its selected mixins with `Minks.Struct`. The monoidal hierarchy
+uses the same packing to share the tensor and associator between the
+semigroupal and premonoidal views.
 
-Reviewed algebra parent projections use directional names such as
+Generated ancestor views use directional names such as
 `GroupToMonoid`. Multiplication is the single inherited `mul` field; laws
 such as `mul_assoc` and `mul_inv_l/r` follow their subject operation, while
 `inv_inv` describes inversion. The selected multiplicative unit is `mul_unit`.
@@ -36,10 +37,11 @@ respectful sections, the unit and inverse together.
 结构设计区分指定数据的 `Is*` 性质、固定父结构上的 `Has*` 选择及完整打包的
 `Record` 对象；只添加性质时无须额外选择接口。共享祖先只保存一次，有意义的
 多父视图须通过定义相等汇合。[完整群胚](./theories/Cat/Groupoid/Core.v) 已拥有
-其底层范畴；完整代数链 `Magma → Semigroup → Monoid → Group` 现通过每层
-唯一的直接父结构拥有载体，范畴层级及真实多父菱形仍属后续工作。
+其底层范畴。完整代数链 `Magma → Semigroup → Monoid → Group`
+由 `Minks.Struct` 平铺打包一份广集及选定 Mixin。幺半层级用同一机制
+在半群张量与预幺半视图之间共享张量和结合子。
 
-本批代数父投影采用 `GroupToMonoid` 等方向名称。乘法只定义为一个继承的
+生成的祖先视图采用 `GroupToMonoid` 等方向名称。乘法只定义为一个继承的
 `mul` 字段，`mul_assoc`、`mul_inv_l/r` 等定律按其运算命名，`inv_inv`
 则描述取逆；选定乘法单位元命名为 `mul_unit`，不增加逐层转发别名。
 整条代数链共用 `algebra_scope`（`%alg`），记号只在首次引入运算的模块定义，
@@ -432,9 +434,11 @@ and install a `vsrocq-language-server` matching the VsRocq extension version.
 
 Cats depends on the independent [`rocq-minks` package](./minks/README.md).
 A build from the repository root uses the Minks sources in this checkout.
+`Cats.Meta` exports the Minks commands for use throughout the library.
 
 Cats 依赖独立的 [`rocq-minks` 包](./minks/README.md)。
 从仓库根目录构建时，Dune 使用当前检出的 Minks 源码。
+`Cats.Meta` 为库中的理论重导出 Minks 命令。
 
 项目要求 Rocq 9.3 起、Stdlib 9.2 起及 Dune 3.23 起。
 本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq 9.3.0、Stdlib 9.2.0 和

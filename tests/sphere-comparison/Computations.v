@@ -18,7 +18,7 @@ Local Open Scope ordinal_scope.
     比较使用通用四维 horn 填充，不以系数相等代替同伦。 *)
 
 Fail Definition unchosen_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_Kan

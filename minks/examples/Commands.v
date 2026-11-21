@@ -7,16 +7,12 @@ From MinksExamples Require Import Algebra.
     Import a hierarchy from another file, extend one of its records, and
     verify that an incompatible component fails before declaring a record. *)
 
-(** * 公开命令检查
-
-    导入另一文件声明的层级，扩展其中的记录，并验证组件冲突会在声明记录前被拒绝。 *)
-
-Minks.Struct ClientMonoid extends Algebra.Monoid.
+Minks.Struct ClientMonoid
+  extends Algebra.Monoid.
 Check ClientMonoidToMonoid : ClientMonoid → Algebra.Monoid.
+Check (λ M : ClientMonoid, (M : Algebra.Magma)).
 
 (** The generated ancestor view agrees with projection through the parent. *)
-
-(** 生成的祖先视图与经过父结构的投影一致。 *)
 
 Example client_setoid_view (M : ClientMonoid)
   : ClientMonoidToSetC M = MonoidToSetC (ClientMonoidToMonoid M)
@@ -24,25 +20,63 @@ Example client_setoid_view (M : ClientMonoid)
 
 (** The imported record's projection instances are available to clients. *)
 
-(** 导入记录后，调用者可以搜索该记录的投影实例。 *)
-
 Definition imported_assoc (M : Algebra.Monoid) (x y z : M)
   : equiv (mul (mul x y) z) (mul x (mul y z))
   := mul_assoc x y z.
 
+(** Use the exported class as a mixin after importing its declaration.
+    Its body can refer to the assembled class, and its type lists the
+    equivalence, multiplication, associativity and unit separately. *)
+
+Minks.Mixin HasCentralElement (A : Type)
+  extends HasMonoid A, HasMagma A
+  :=
+  { central_element : A
+  ; central_unit :
+      equiv (@unit A _ _ (@HasMonoid_hasUnit A hasMonoid)) unit
+  ; central_comm : ∀ x, equiv (mul central_element x) (mul x central_element)
+  }.
+
+Check @HasCentralElement
+  : ∀ (A : Type) (E : HasEquiv A) (M : @HasMagma A E),
+      @IsSemigroup A E M → @HasUnit A E M → Type.
+
+Minks.Struct MonoidByComponents
+  with  chosenEquiv : HasEquiv,
+        chosenMagma : HasMagma,
+        chosenAssoc : IsSemigroup,
+        chosenUnit : HasUnit,
+        hasMonoid : HasMonoid,
+        central : HasCentralElement.
+
+Example assembled_monoid_uses_existing_fields (M : MonoidByComponents)
+  : MonoidByComponents_hasMonoid M =
+      MakeHasMonoid M (MonoidByComponents_chosenEquiv M)
+        (MonoidByComponents_chosenMagma M) (MonoidByComponents_chosenAssoc M)
+        (MonoidByComponents_chosenUnit M)
+  := eq_refl.
+
+Minks.Struct MonoidFromSemigroup
+  extends Semigroup
+  with  hasMonoid : HasMonoid.
+
+Example assembled_monoid_adds_only_the_unit (S : Semigroup)
+    (U : @HasUnit S (Semigroup_hasEquiv S) (Semigroup_hasMagma S))
+  : HasMonoid_hasUnit
+      (MonoidFromSemigroup_hasMonoid (MonoidFromSemigroupOfSemigroup S U)) = U
+  := eq_refl.
+
 (** Reject a shared multiplication with incompatible selected dependencies. *)
 
-(** 共享乘法的选定依赖若不一致，生成器应拒绝合并。 *)
-
-Minks.Struct OtherMagma extends SetC
+Minks.Struct OtherMagma
+  extends SetC
   with  hasOtherEquiv : HasEquiv [carrier],
         hasMagma : HasMagma [carrier, hasOtherEquiv].
-Fail Minks.Struct ConflictingMagma extends Magma, OtherMagma.
+Fail Minks.Struct ConflictingMagma
+  extends Magma, OtherMagma.
 Fail Check ConflictingMagma.
 
 (** Only Minks declarations supply component metadata. *)
-
-(** 组件元数据来自 Minks 声明。 *)
 
 Class OrdinaryChoice (A : Type)
   :=
@@ -55,34 +89,35 @@ Fail Minks.Struct ExplicitUnregisteredChoice
   with  hasChoice : OrdinaryChoice [carrier].
 Fail Check ExplicitUnregisteredChoice.
 
-Fail Minks.Struct Incomplete extends.
+Fail Minks.Struct Incomplete
+  extends.
 Fail Minks.Inspect bool.
 
 (** Extend independent branches on one selected point and one equivalence. *)
 
-(** 在同一个选定点和同一份相等关系上扩展两条独立分支。 *)
-
 Set Universe Polymorphism.
 
-Minks.Mixin IsNamedPoint (x : A) extends HasEquiv
+Minks.Mixin IsNamedPoint (A : Type) (x : A)
+  extends HasEquiv A
   :=
   { named_point_refl : equiv x x }.
 
-Minks.Mixin IsLeftPoint (y : A) extends HasPoint, IsNamedPoint
+Minks.Mixin IsLeftPoint (A : Type) (x y : A)
+  extends HasPoint A, IsNamedPoint A x
   :=
   { left_point_refl : equiv y y }.
 
-Minks.Mixin IsRightPoint (y : A) extends IsNamedPoint
+Minks.Mixin IsRightPoint (A : Type) (x y : A)
+  extends IsNamedPoint A x
   :=
   { right_point_refl : equiv y y }.
 
-Minks.Mixin IsBothPoints extends IsLeftPoint, IsRightPoint
+Minks.Mixin IsBothPoints (A : Type) (x y z : A)
+  extends IsLeftPoint A x y, IsRightPoint A x z
   :=
   { both_points_refl : equiv x x }.
 
 (** Check the order of the shared and branch-specific parameters. *)
-
-(** 检查共享参数及各分支参数的顺序。 *)
 
 Check @IsBothPoints
   : ∀ (A : Type) (E : HasEquiv A)
@@ -90,21 +125,41 @@ Check @IsBothPoints
       (y : A) (L : @IsLeftPoint A P E x N y)
       (z : A) (R : @IsRightPoint A E x N z), Type.
 
-(** Keep the braces on the carrier and the index through two extensions. *)
+Fail Minks.Mixin MissingParentArgument (A : Type)
+  extends HasEquiv
+  :=
+  { missing_parent_argument : True }.
 
-(** 经过两次扩展后，载体和索引仍保持花括号指定的隐式属性。 *)
+Fail Minks.Mixin ConflictingPoints (A : Type) (x y z : A)
+  extends IsNamedPoint A x, IsRightPoint A y z
+  :=
+  { conflicting_points : True }.
+
+(** Keep the braces on the carrier and the index through two extensions. *)
 
 Minks.Mixin HasSeed {A : Type}
   :=
   { seed : A }.
 
-Minks.Mixin IsSeed {x : A} extends HasSeed
+Minks.Mixin IsSeed {A : Type} {x : A}
+  extends HasSeed (A := A)
   :=
   { seed_eq : seed = x }.
 
-Minks.Mixin IsSeedAt (y : A) extends IsSeed
+Minks.Mixin IsSeedAt {A : Type} {x : A} (y : A)
+  extends IsSeed (A := A) (x := x)
   :=
   { seed_at : x = y }.
+
+Fail Minks.Mixin MissingImplicitParentArgument {A : Type}
+  extends HasSeed
+  :=
+  { missing_implicit_parent_argument : True }.
+
+Fail Minks.Mixin ExplicitParentApplication {A : Type}
+  extends @HasSeed A
+  :=
+  { explicit_parent_application : True }.
 
 Example inherited_implicit_parameters {A : Type} {x : A}
     (S : @HasSeed A) (I : @IsSeed A S x)
@@ -112,9 +167,151 @@ Example inherited_implicit_parameters {A : Type} {x : A}
   : @IsSeedAt A S x I y
   := P.
 
-(** Discover a proper structural view once both records exist. *)
+(** Pass different ordinary parameters to independent parents. *)
 
-(** 两个记录都已声明时发现严格子结构转换。 *)
+Minks.Mixin IndependentChoices (A B : Type)
+  extends HasPoint A, HasEquiv B
+  :=
+  { independent_choice : True }.
+
+Check @IndependentChoices
+  : ∀ (A : Type) (P : HasPoint A) (B : Type) (E : HasEquiv B), Type.
+
+(** Sharing dependent arguments keeps their type before them. *)
+
+Minks.Mixin HasIndexedPair (A : Type) (x y : A)
+  :=
+  { indexed_pair : (A * A)%type := (x, y) }.
+
+Minks.Mixin HasDiagonalPoint (A : Type) (x : A)
+  extends HasIndexedPair A x x
+  :=
+  { diagonal_point : A := x }.
+
+Check @HasDiagonalPoint
+  : ∀ (A : Type) (x : A), HasIndexedPair A x x → Type.
+
+(** Use earlier component fields as ordinary arguments. *)
+
+Minks.Mixin HasFlag
+  :=
+  { flag : bool }.
+
+Minks.Mixin FlagPair (P Q : HasFlag)
+  :=
+  { flag_pair : bool * bool := (@flag P, @flag Q) }.
+
+Minks.Struct OneFlag
+  with  hasFlag : HasFlag,
+        hasPair : FlagPair.
+
+Check OneFlag_hasPair
+  : ∀ F : OneFlag, FlagPair (OneFlag_hasFlag F) (OneFlag_hasFlag F).
+
+Minks.Struct TwoFlags
+  with  leftFlag : HasFlag,
+        rightFlag : HasFlag
+  exports HasTwoFlags,
+          HasRightFlag [leftFlag].
+
+Fail Definition ambiguous_exported_flag (A : Type) (F : HasTwoFlags A)
+  : HasFlag
+  := ltac:(typeclasses eauto).
+
+Fail Check (λ (A : Type) (F : HasTwoFlags A), (F : HasFlag)).
+
+Check @HasRightFlag_rightFlag
+  : ∀ (A : Type) (L : HasFlag), HasRightFlag A L → HasFlag.
+
+Fail Minks.Struct UnknownExportKey
+  extends TwoFlags
+  exports HasUnknownKey [missingFlag].
+
+Fail Minks.Struct AmbiguousFlags
+  extends TwoFlags
+  with  hasPair : FlagPair.
+
+Minks.Struct PairedFlags
+  extends TwoFlags
+  with  hasPair : FlagPair [leftFlag, rightFlag]
+  exports HasPairedFlags.
+
+Check PairedFlags_hasPair
+  : ∀ F : PairedFlags, FlagPair (PairedFlags_leftFlag F) (PairedFlags_rightFlag F).
+
+(** The relative view fixes the same left flag and reads the same right flag. *)
+
+Example paired_flags_to_right_flag (A : Type) (F : HasPairedFlags A)
+  : HasRightFlag_rightFlag (HasPairedFlagsToHasRightFlag F)
+    = HasPairedFlags_rightFlag F
+  := eq_refl.
+
+(** A later export can supply a view as soon as its target is registered. *)
+
+Minks.Struct LeftFlag
+  with  leftFlag : HasFlag
+  exports HasLeftFlag.
+
+Example exported_left_flag_coercion (A : Type) (F : HasLeftFlag A)
+  : (F : HasFlag) = HasLeftFlag_leftFlag F
+  := eq_refl.
+
+Example paired_flags_to_left_flag (A : Type) (F : HasPairedFlags A)
+  : HasLeftFlag_leftFlag (HasPairedFlagsToHasLeftFlag F)
+    = HasPairedFlags_leftFlag F
+  := eq_refl.
+
+Minks.Struct SelectedFlag
+  with  selectedFlag : HasFlag
+  exports HasSelectedFlag.
+
+Fail Check HasPairedFlagsToHasSelectedFlag.
+
+(** Keep distinct fields of the same class throughout expansion. *)
+
+Minks.Mixin HasFlagComparison (A : Type)
+  extends HasTwoFlags A
+  :=
+  { flags_agree :
+      @flag (@HasTwoFlags_leftFlag A hasTwoFlags) =
+      @flag (@HasTwoFlags_rightFlag A hasTwoFlags)
+  }.
+
+Check @HasFlagComparison : ∀ (L R : HasFlag) (A : Type), Type.
+
+Minks.Struct TwoFlagsByExport
+  with  flags : HasTwoFlags.
+
+Example assembled_flags_remain_distinct
+  : @flag (HasTwoFlags_leftFlag
+      (TwoFlagsByExport_flags (MakeTwoFlagsByExport bool {| flag := true |}
+        {| flag := false |}))) = true
+    ∧ @flag (HasTwoFlags_rightFlag
+      (TwoFlagsByExport_flags (MakeTwoFlagsByExport bool {| flag := true |}
+        {| flag := false |}))) = false
+  := conj eq_refl eq_refl.
+
+Minks.Struct OtherTwoFlags
+  with  firstFlag : HasFlag,
+        secondFlag : HasFlag.
+
+Fail Minks.Struct AmbiguousFlagAssembly
+  extends OtherTwoFlags
+  with  flags : HasTwoFlags.
+
+Minks.Struct RightFlagByExport
+  extends OtherTwoFlags
+  with  flags : HasRightFlag [carrier, secondFlag].
+
+Example assembled_flags_respect_explicit_selection (F : RightFlagByExport)
+  : @HasRightFlag_rightFlag F (RightFlagByExport_secondFlag F)
+      (RightFlagByExport_flags F) = RightFlagByExport_firstFlag F
+  := eq_refl.
+
+Minks.Inspect HasRightFlag.
+Minks.Inspect RightFlagByExport.
+
+(** Discover a proper structural view once both records exist. *)
 
 Minks.Struct EarlierPointed
   with  chosenPoint : HasPoint,
@@ -137,4 +334,5 @@ Example later_view_preserves_point (S : LaterPointed)
     = LaterPointed_chosenPoint S
   := eq_refl.
 
+Fail Check (λ S : EarlierPointed, (S : LaterPoint)).
 Fail Check LaterPointToEarlierPointed.

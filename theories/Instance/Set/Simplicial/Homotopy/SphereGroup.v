@@ -96,11 +96,12 @@ Let Q
 Program Definition TwoSphereClassSemigroup
     (H : HasHornFillers X 3 fin_first⁺⁺)
   : Semigroup
-  :=
-  {|SemigroupToMagma := TwoSphereClassMagma X b H
-  ; isSemigroup :=
-      {|mul_assoc := two_sphere_kan_mul_assoc X b H|}
-  |}.
+  := let M := TwoSphereClassMagma X b H in
+     {|SemigroupToSetC := M
+     ; Semigroup_hasMagma := hasMagma M
+     ; isSemigroup :=
+         {|mul_assoc := two_sphere_kan_mul_assoc X b H|}
+     |}.
 
 (** Keep that same semigroup and the actual constant sphere as unit. *)
 
@@ -109,16 +110,18 @@ Program Definition TwoSphereClassSemigroup
 Program Definition TwoSphereClassMonoid
     (H : HasHornFillers X 3 fin_first⁺⁺)
   : Monoid
-  :=
-  {|MonoidToSemigroup := TwoSphereClassSemigroup H
-  ; hasMonoid :=
-      {|mul_unit := two_sphere_base X b
-      ; isMonoid :=
-          {|mul_unit_l := two_sphere_kan_mul_unit_l X b H
-          ; mul_unit_r := two_sphere_kan_mul_unit_r X b H
-          |}
-      |}
-  |}.
+  := let S := TwoSphereClassSemigroup H in
+     {|MonoidToSetC := S
+     ; Monoid_hasMagma := Semigroup_hasMagma S
+     ; Monoid_isSemigroup := isSemigroup S
+     ; hasUnit :=
+         {|mul_unit := two_sphere_base X b
+         ; isUnit :=
+             {|mul_unit_l := two_sphere_kan_mul_unit_l X b H
+             ; mul_unit_r := two_sphere_kan_mul_unit_r X b H
+             |}
+         |}
+     |}.
 
 (** General mul inv uniqueness identifies the two independent
     candidates in generated class equality, not as tetrahedron records. *)
@@ -150,16 +153,19 @@ Program Definition TwoSphereClassGroup
     (K : HasHornFillers X 3 fin_first⁺⁺⁺)
     (L : HasHornFillers X 3 fin_first⁺)
   : Group
-  :=
-  {|GroupToMonoid := TwoSphereClassMonoid H
-  ; hasGroup :=
-      {|inv x := (@SphereKanLeftInverse X b K x).1
-      ; isGroup :=
-          {|mul_inv_l := two_sphere_kan_mul_inverse_l X b H K
-          ; mul_inv_r := _
-          |}
-      |}
-  |}.
+  := let M := TwoSphereClassMonoid H in
+     {|GroupToSetC := M
+     ; Group_hasMagma := Monoid_hasMagma M
+     ; Group_isSemigroup := Monoid_isSemigroup M
+     ; Group_hasUnit := hasUnit M
+     ; hasInverse :=
+         {|inv x := (@SphereKanLeftInverse X b K x).1
+         ; isInverse :=
+             {|mul_inv_l := two_sphere_kan_mul_inverse_l X b H K
+             ; mul_inv_r := _
+             |}
+         |}
+     |}.
 Next Obligation.
   transitivity (two_sphere_kan_mul X b H x
     (@SphereKanRightInverse X b L x).1).
@@ -183,11 +189,11 @@ Lemma two_sphere_class_group_inverse_choice_eq
       @inv_resp (TwoSphereClassGroup H' K' L').
 Proof.
   intros x. refine (@inv_unique (TwoSphereClassGroup H' K' L') x
-    (@inv _ (hasGroup (TwoSphereClassGroup H K L)) x) _).
+    (@inv _ _ _ (hasInverse (TwoSphereClassGroup H K L)) x) _).
   transitivity (two_sphere_kan_mul X b H
-    (@inv _ (hasGroup (TwoSphereClassGroup H K L)) x) x).
+    (@inv _ _ _ (hasInverse (TwoSphereClassGroup H K L)) x) x).
   - exact (two_sphere_kan_composite_choice_eq X b H' H _ x).
-  - exact (@mul_inv_l _ _ (@isGroup _ (hasGroup (TwoSphereClassGroup H K L))) x).
+  - exact (@mul_inv_l _ _ _ _ (@isInverse _ _ _ (hasInverse (TwoSphereClassGroup H K L))) x).
 Defined.
 
 End SphereClassGroup.

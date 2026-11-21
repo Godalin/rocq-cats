@@ -804,15 +804,15 @@ and [unitors](../theories/Cat/Monoidal/Unitor.v) on the same fixed
 associator components and inverses. The general `IsNatIso` property and
 `NatIsoOfComponents` view recover first- and middle-variable natural
 isomorphisms on those same components. The pentagon requires no unit;
-the unitor package requires no associator. Only triangle compatibility is
-added by `IsPremonoidal` when `HasPremonoidal` combines the packages.
+the unitor package requires no associator. `IsPremonoidal` provides the
+triangle compatibility between the two choices.
 
 预幺半迁移在同一固定 `HasBinoidal` 选择上抽出
 [结合子](../theories/Cat/Monoidal/Associator.v)及
 [单位子](../theories/Cat/Monoidal/Unitor.v)。最后变量自然同构固定全部结合子
 分量及逆，一般 `IsNatIso` 性质与 `NatIsoOfComponents` 视图为同一组分量给出
 第一及中间变量自然同构。五边形无需单位，单位子选择无需结合子；
-`HasPremonoidal` 组合两份选择时，`IsPremonoidal` 只增加三角形相容性。
+`IsPremonoidal` 给出两份选择间的三角形相容性。
 
 `PremonoidalCat` is now a complete record with one binoidal parent.
 Its constructor and parent projections provide the inheritance conversions;
@@ -1389,24 +1389,27 @@ as a substitute for these requirements.
 重新核对。接口包括有限积值结构、对称预幺半计算结构、对象上恒等的中心
 嵌入及严格保持性，没有以较弱的第三方 effectful 接口替代这些条件。
 
-[SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v)
-inherits exactly one premonoidal parent. It stores central exchange,
-involution, left-variable naturality, the hexagon and unit compatibility.
+[SymPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v)
+inherits one premonoidal parent through Minks. `HasTensorSym` stores
+central exchange, involution and left-variable naturality. Two further
+mixins relate the same exchange to the associator and unitors by the
+hexagon and unit equations.
 The symmetry isomorphism uses the opposite exchange as its transparent
 inverse; right-variable naturality follows by inverting the first square.
 A derived conjugation law recovers right action from left action.
-[CartesianSymmetricPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
+[CartSymPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
 inherits the existing cartesian monoidal parent's premonoidal structure,
 proving only the new exchange equations from products.
 
-[SymmetricPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v) 恰好
-继承一个预幺半父结构，保存中心交换、对合、左变量自然性、六边形及单位
-相容性。对称同构以反序交换为透明逆；右变量自然性通过对第一个方块取逆
+[SymPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v) 恰好
+通过 Minks 继承一个预幺半父结构。`HasTensorSym` 保存中心交换、
+对合和左变量自然性。六边形和单位相容律分别刻画同一交换与结合子、
+单位子的相容性。对称同构以反序交换为透明逆；右变量自然性通过对第一个方块取逆
 得到。导出的共轭律从左作用恢复右作用。
-[CartesianSymmetricPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
+[CartSymPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
 继承已有笛卡尔幺半父层的预幺半结构，仅从积证明新增交换方程。
 
-[ArrowSymmetricPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
+[ArrowSymPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
 retains exactly `ArrowPremonoidal A`. Exchange is pure product exchange,
 central by `arrow_pure_central`. Its naturality follows from the existing
 right-context definition and involutive pure exchange. Hexagon and unit
@@ -1414,7 +1417,7 @@ coherence are functorial images of the generic cartesian symmetry laws;
 no separate Reader or State coherence proofs are added. Symmetry exchanges
 context positions without exchanging the execution of two effects.
 
-[ArrowSymmetricPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
+[ArrowSymPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
 保留完全相同的 `ArrowPremonoidal A`。交换为纯积交换，其中心性来自
 `arrow_pure_central`；自然性来自已有右上下文定义及纯交换对合律。六边形
 及单位相干性为一般笛卡尔对称定律的函子像，不增加 Reader 或 State 的

@@ -39,7 +39,7 @@ Proof. reflexivity. Qed.
 Definition regular_action_faithful (M : Monoid)
   : is_faithful (RegularActionF M).
 Proof.
-  intros [] [] x y H. specialize (H 1).
-  change (x ⋅ 1 ≈S y ⋅ 1) in H.
+  intros [] [] x y H. specialize (H (1 : M)).
+  change ((x : M) ⋅ 1 ≈S (y : M) ⋅ 1) in H.
   rewrite !mul_unit_r in H. exact H.
 Defined.

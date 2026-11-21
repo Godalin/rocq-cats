@@ -29,7 +29,7 @@ Section Comparison.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (isMagmoidal MC)) F G).
+      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -122,8 +122,8 @@ Proof.
   - intros X x. exact (day_monoid_unit_roundtrip MC HD M X x).
   - change (monoid_object_mul
       (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv tensor_map (IM := isMagmoidal DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := isMagmoidal DM) (MonoidCarrier M) (MonoidCarrier M)).
+      (monoid_object_mul M ∘Nv tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM) (MonoidCarrier M) (MonoidCarrier M)).
     intros X x. exact (day_monoid_mul_roundtrip MC HD M X x).
 Defined.
 
@@ -138,8 +138,8 @@ Proof.
   - intros X x. symmetry. exact (day_monoid_unit_roundtrip MC HD M X x).
   - change (monoid_object_mul M ≈N
       (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        tensor_map (IM := isMagmoidal DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := isMagmoidal DM)
+        tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM)
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
     intros X x. symmetry. exact (day_monoid_mul_roundtrip MC HD M X x).
@@ -203,8 +203,8 @@ Next Obligation.
   - intros Q x. exact (day_monoid_unit_roundtrip MC HD M Q x).
   - change (monoid_object_mul
       (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv tensor_map (IM := isMagmoidal DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := isMagmoidal DM) (MonoidCarrier M) (MonoidCarrier M)).
+      (monoid_object_mul M ∘Nv tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM) (MonoidCarrier M) (MonoidCarrier M)).
     intros Q x. exact (day_monoid_mul_roundtrip MC HD M Q x).
 Defined.
 Next Obligation. intros Q x. reflexivity. Qed.
@@ -223,8 +223,8 @@ Next Obligation.
   - intros Q x. symmetry. exact (day_monoid_unit_roundtrip MC HD M Q x).
   - change (monoid_object_mul M ≈N
       (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        tensor_map (IM := isMagmoidal DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := isMagmoidal DM)
+        tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM)
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
       (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
     intros Q x. symmetry. exact (day_monoid_mul_roundtrip MC HD M Q x).

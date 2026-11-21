@@ -133,7 +133,7 @@ Section MonoidPreservation.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (isMagmoidal MC)) F G).
+      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -147,16 +147,17 @@ Let SM
 
 Local Lemma day_hom_tensor_map {F G : Fct C (SetCat@{u p _ _ _ _ _})}
     (α : F ⇒ G)
-  : tensor_map (IM := isMagmoidal DM)
+  : tensor_map (IM := HasMonoidal_interchange DM)
       (X := F) (X' := G) (Y := F) (Y' := G) α α ≈N
-      @DayMapN C (tensorF (isMagmoidal MC)) F G F G (HD F F) (HD G G) α α.
+      @DayMapN C (tensorF (HasMonoidal_interchange MC)) F G F G (HD F F) (HD G G) α α.
 Proof.
-  exact (day_monoidal_map (tensorF (isMagmoidal MC)) (𝐈[MC])
-    (TensorAssocIsoN (IM := isMagmoidal MC) (AC := MC))
-    (TensorUnitorLIsoN (IM := isMagmoidal MC) (UC := MC))
-    (TensorUnitorRIsoN (IM := isMagmoidal MC) (UC := MC))
-    (tensor_pentagon (IM := isMagmoidal MC) (AC := MC))
-    (tensor_map_triangle (IM := isMagmoidal MC) (PC := MC)) HD α α).
+  exact (day_monoidal_map (tensorF (HasMonoidal_interchange MC)) (𝐈[MC])
+    (TensorAssocIsoN (IM := HasMonoidal_interchange MC) (AC := MC))
+    (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
+    (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
+    (tensor_pentagon (IM := HasMonoidal_interchange MC) (AC := MC))
+    (tensor_map_triangle (IM := HasMonoidal_interchange MC)
+      (IP := HasMonoidal_isPremonoidal MC)) HD α α).
 Defined.
 
 (** A Day monoid homomorphism is exactly a monoidal transformation of the
@@ -174,17 +175,17 @@ Proof.
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_unit M) (monoid_object_unit N) α) Hu).
   - assert (H : (α ∘Nv monoid_object_mul M) ≈N
-      (monoid_object_mul N ∘Nv DayMapN (tensorF (isMagmoidal MC)) α α)).
+      (monoid_object_mul N ∘Nv DayMapN (tensorF (HasMonoidal_interchange MC)) α α)).
     { rewrite <- (day_hom_tensor_map α). exact Hm. }
     intros a b [x y].
-    exact (fst (day_mul_hom_law (tensorF (isMagmoidal MC))
+    exact (fst (day_mul_hom_law (tensorF (HasMonoidal_interchange MC))
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_mul M) (monoid_object_mul N) α) H a b x y).
   - apply (snd (day_unit_hom_law (𝐈[MC])
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_unit M) (monoid_object_unit N) α)).
     exact (Hu tt).
-  - pose proof (snd (day_mul_hom_law (tensorF (isMagmoidal MC))
+  - pose proof (snd (day_mul_hom_law (tensorF (HasMonoidal_interchange MC))
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_mul M) (monoid_object_mul N) α)
       (λ a b x y, Hm a b (x,y))) as H.

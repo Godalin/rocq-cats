@@ -5,23 +5,30 @@ From elpi Require Import elpi.
     Store inheritance by Rocq identity. Each component key names one
     selected mixin and its dependencies within a structure. *)
 
-(** * 结构规格
-
-    用 Rocq 标识保存继承关系。在一个结构内，每个组件键指定一份 Mixin
-    及其依赖。 *)
-
 Elpi Db minks.flat.db lp:{{
   kind component type.
   type slot id -> gref -> list id -> component.
 
   kind mixin-param type.
-  type mixin-carrier mixin-param.
-  type mixin-value mixin-param.
-  type mixin-dependency gref -> list int -> mixin-param.
+  type mixin-val mixin-param.
+  type mixin-dep gref -> list int -> mixin-param.
 
   pred mixin-spec i:gref, o:list gref, o:list mixin-param.
+  pred mixin-combination o:gref, o:list component, o:list component, o:constructor.
   pred spec i:inductive, o:list inductive, o:list component.
-  pred struct-view i:inductive, o:inductive, o:constant.
+  kind view-registration type.
+  type explicit-view, coercion-view, canonical-view,
+    coercion-canonical-view view-registration.
+
+  kind struct-conversion type.
+  type conversion inductive -> inductive -> constant -> view-registration
+    -> struct-conversion.
+
+  pred struct-view i:inductive, o:inductive, o:constant, o:view-registration.
+  pred struct-packer i:inductive, o:constant.
+  pred struct-export i:inductive, o:inductive, o:list id.
+  pred packed-export i:gref, o:inductive, o:list component, o:list component.
+  pred struct-assembly i:inductive, o:constant, o:list id.
   pred flat-layout i:list string, i:option inductive, o:inductive, o:list component,
       o:list (pair id constant).
   pred fixed-carrier i:inductive, o:inductive.
@@ -30,7 +37,7 @@ Elpi Db minks.flat.db lp:{{
 Elpi File minks.spec lp:{{
   pred atom i:argument, o:id.
   atom (str Name) Name :-
-    not (std.mem ["extends", "with", "as", ",", ":", "[", "]"] Name).
+    not (std.mem ["extends", "with", "as", "exports", ",", ":", "[", "]"] Name).
 
   pred ids i:list argument, o:list id, o:list argument.
   ids [A | Rest] [Name | Names] Tail :-
@@ -46,24 +53,37 @@ Elpi File minks.spec lp:{{
   parse-parents Rest [] Rest.
 
   pred mixin-head i:mixin-param, o:gref.
-  mixin-head (mixin-dependency Ref _) Ref.
+  mixin-head (mixin-dep Ref _) Ref.
 
-  pred mixin-arguments i:list mixin-param, i:list component, i:list id, o:list id.
-  mixin-arguments [] _ Keys Keys.
-  mixin-arguments [mixin-carrier | Params] Cs Keys Args :-
-    mixin-arguments Params Cs {std.append Keys ["carrier"]} Args.
-  mixin-arguments [mixin-dependency Ref Positions | Params] Cs Keys Args :-
+  pred mixin-arguments i:list mixin-param, i:list component, i:list (pair id term),
+      i:list id, o:list id.
+  mixin-arguments [] _ _ Keys Keys.
+  mixin-arguments [mixin-val | Params] Cs Fields Keys Args :-
+    std.mem Fields (pr Key _),
+    mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
+  mixin-arguments [mixin-dep Ref Positions | Params] Cs Fields Keys Args :-
     std.map Positions (i\k\ std.nth i Keys k) Deps,
     std.mem Cs (slot Key Ref Deps),
-    mixin-arguments Params Cs {std.append Keys [Key]} Args.
+    mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
 
-  pred infer-mixin-arguments i:id, i:list mixin-param, i:list component, o:list id.
-  infer-mixin-arguments Name Params Cs Args :-
-    std.findall (mixin-arguments Params Cs [] _) Matches,
-    if (Matches = [mixin-arguments _ _ _ Args]) true (
-      if (Matches = [])
-        (coq.error "Missing compatible dependencies for mixin:" Name)
-        (coq.error "Ambiguous dependencies for mixin, give component keys:" Name)).
+  pred match-component i:id, i:gref, i:list id, i:list component,
+      i:list id, o:id.
+  match-component Key Ref Deps Available Used Actual :-
+    if (std.mem Available (slot Key Ref Deps), not (std.mem Used Key))
+      (Actual = Key)
+      (std.mem Available (slot Actual Ref Deps), not (std.mem Used Actual)).
+
+  pred translate-key i:list (pair id id), i:id, o:id.
+  translate-key Mapping Key Actual :- std.mem Mapping (pr Key Actual).
+
+  pred mapped-components i:list component, i:list component,
+      i:list (pair id id), i:list id, o:list id.
+  mapped-components [] _ _ _ [].
+  mapped-components [slot Key Ref Deps | Cs] Available Mapping Used
+      [Actual | Args] :-
+    std.map Deps (translate-key Mapping) ActualDeps,
+    match-component Key Ref ActualDeps Available Used Actual,
+    mapped-components Cs Available [pr Key Actual | Mapping] [Actual | Used] Args.
 
   pred print-mixin i:id, i:list gref, i:list mixin-param.
   print-mixin Name Direct Params :-
@@ -73,9 +93,34 @@ Elpi File minks.spec lp:{{
     coq.say "Direct dependencies:" Parents,
     coq.say "Parameter order:" Params.
 
+  pred print-combination i:gref.
+  print-combination Ref :-
+    if (mixin-combination Ref Fixed Parts _)
+      (std.map Fixed component-key FixedKeys,
+       coq.say "Fixed keys:" ["carrier" | FixedKeys],
+       coq.say "Expanded components:",
+       std.forall Parts (print-slot [] {std.append Fixed Parts} " [instance, Coercion]"))
+      true.
+
+  pred print-packed-export i:gref, i:inductive, i:list component, i:list component.
+  print-packed-export Ref Base Fixed Remaining :-
+    coq.gref->id Ref Name,
+    coq.gref->id (indt Base) BaseName,
+    Title is "Minks relative interface " ^ Name,
+    coq.say Title,
+    coq.say "Packed base:" BaseName,
+    close Base Covered,
+    std.append Covered {std.append Fixed Remaining} Components,
+    if (Fixed = []) true (
+      coq.say "Additional fixed components:",
+      std.forall Fixed (print-slot [] Components " [fixed]")),
+    coq.say "Remaining components:",
+    std.forall Remaining (print-slot [] Components " [instance, Coercion]").
+
   pred carrier-of i:inductive, o:option inductive.
   carrier-of I (some Carrier) :- fixed-carrier I Carrier, !.
-  carrier-of _ none.
+  carrier-of I none :- spec I _ _, !.
+  carrier-of I (some I).
 
   pred shared-carrier i:list inductive, o:option inductive.
   shared-carrier [] none.
@@ -130,4 +175,80 @@ Elpi File minks.spec lp:{{
 
   pred component-key i:component, o:id.
   component-key (slot Key _ _) Key.
+
+  pred parent-sources i:list inductive, i:id, o:list id.
+  parent-sources [] _ [].
+  parent-sources [P | Ps] Key Sources :-
+    close P Cs,
+    parent-sources Ps Key Rest,
+    if (std.mem Cs (slot Key _ _))
+      (coq.gref->id (indt P) Name, Sources = [Name | Rest])
+      (Sources = Rest).
+
+  pred print-slot i:list inductive, i:list component, i:string, i:component.
+  print-slot Parents Cs Registration (slot Key Ref Deps) :-
+    coq.gref->id Ref Mixin,
+    parent-sources Parents Key Sources,
+    DepText is "[" ^ {std.string.concat ", " Deps} ^ "]",
+    if (Sources = []) (Suffix = " (declared here)")
+      (Suffix is " (from " ^ {std.string.concat ", " Sources} ^ ")"),
+    if (auto-instance Cs (slot Key Ref Deps))
+      (Mode = Registration) (Mode = " [explicit]"),
+    Line is "  " ^ Key ^ " : " ^ Mixin ^ " " ^ DepText ^ Suffix ^ Mode,
+    coq.say Line.
+
+  pred registration-label i:view-registration, o:string.
+  registration-label explicit-view "explicit".
+  registration-label coercion-view "Coercion".
+  registration-label canonical-view "Canonical".
+  registration-label coercion-canonical-view "Coercion, Canonical".
+
+  pred print-view i:struct-conversion.
+  print-view (conversion _ _ Ref Registration) :-
+    coq.gref->id (const Ref) Name,
+    registration-label Registration Label,
+    Line is "  " ^ Name ^ " [" ^ Label ^ "]",
+    coq.say Line.
+
+  pred print-packer i:constant.
+  print-packer Ref :-
+    coq.gref->id (const Ref) Name,
+    Line is "  " ^ Name,
+    coq.say Line.
+
+  pred print-export i:(pair inductive (list id)).
+  print-export (pr Export Keys) :-
+    coq.gref->id (indt Export) Name,
+    Line is "  " ^ Name ^ " [" ^ {std.string.concat ", " Keys} ^ "]",
+    coq.say Line.
+
+  pred print-struct i:id, i:list inductive, i:option inductive, i:list component,
+      i:list struct-conversion, i:list constant, i:list (pair inductive (list id)),
+      i:list (pair constant (list id)).
+  print-struct Name Parents Carrier Cs Views Packers Exports Assemblies :-
+    if (Parents = [], Carrier = some Base)
+      (coq.gref->id (indt Base) BaseName, Names = [BaseName])
+      (std.map Parents (p\n\ coq.gref->id (indt p) n) Names),
+    Title is "Minks structure " ^ Name,
+    coq.say Title,
+    if (Names = []) (coq.say "Direct parents: none")
+      (Line is "Direct parents: " ^ {std.string.concat ", " Names},
+       coq.say Line),
+    coq.say "Packed fields:",
+    if (Carrier = some Root)
+      (coq.gref->id (indt Root) RootName, CarrierLine is "  carrier : " ^ RootName)
+      (CarrierLine = "  carrier : Type [Coercion]"),
+    coq.say CarrierLine,
+    std.forall Cs (print-slot Parents Cs " [instance]"),
+    if (Views = []) true (coq.say "Conversions:", std.forall Views print-view),
+    if (Packers = []) true
+      (coq.say "Packing functions:", std.forall Packers print-packer),
+    if (Exports = []) true
+      (coq.say "Relative interfaces:", std.forall Exports print-export),
+    if (Assemblies = []) true (
+      coq.say "Assembled views:",
+      std.forall Assemblies (a\ sigma ref keys label line\
+        a = pr ref keys, coq.gref->id (const ref) label,
+        line is "  " ^ label ^ " [" ^ {std.string.concat ", " keys} ^ "]",
+        coq.say line)).
 }}.

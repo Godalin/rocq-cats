@@ -3,12 +3,8 @@ From Minks Require Import Spec.
 
 (** * Mixin declarations
 
-    A mixin records how a class is indexed by the carrier and previously
-    selected components. The parameter order comes from the Rocq type. *)
-
-(** * Mixin 声明
-
-    Mixin 记录类如何由载体及已选组件索引。参数顺序来自 Rocq 类型。 *)
+    A mixin records ordinary parameters and selected dependencies.
+    The parameter order comes from the Rocq type. *)
 
 Elpi Command minks.mixin.
 Elpi Accumulate Db Header minks.flat.db.
@@ -26,12 +22,14 @@ Elpi Accumulate lp:{{
     N is M + 1.
 
   pred read-dependencies i:term, i:list term, i:int, i:list int, o:list mixin-param.
-  read-dependencies (prod _ _ Body) Vars Pos [Pos | Values] [mixin-value | Params] :- !,
+  read-dependencies (prod _ _ Body) Vars Pos [Pos | Values] [mixin-val | Params] :- !,
     Next is Pos + 1,
     pi x\ read-dependencies (Body x) {std.append Vars [x]} Next Values Params.
+  read-dependencies (let _ _ Value Body) Vars Pos Values Params :- !,
+    read-dependencies (Body Value) Vars Pos Values Params.
   read-dependencies (sort _) _ _ [] [].
   read-dependencies (prod _ Ty Body) Vars Pos Values
-      [mixin-dependency Ref Positions | Params] :-
+      [mixin-dep Ref Positions | Params] :-
     coq.safe-dest-app Ty Head Args,
     coq.env.global Ref Head,
     mixin-spec Ref _ _,
@@ -40,24 +38,30 @@ Elpi Accumulate lp:{{
     pi x\ read-dependencies (Body x) {std.append Vars [x]} Next Values Params.
 
   pred read-mixin i:gref, i:list int, o:list mixin-param.
-  read-mixin Ref Values [mixin-carrier | Params] :-
-    coq.env.typeof Ref (prod _ _ Body),
-    pi a\ read-dependencies (Body a) [a] 1 Values Params.
+  read-mixin Ref Values Params :-
+    coq.env.typeof Ref Ty,
+    read-dependencies Ty [] 0 Values Params.
 
   pred dependency-closure i:list gref, i:list gref, o:list gref.
   dependency-closure [] Seen Seen.
   dependency-closure [Ref | Refs] Seen All :-
     if (std.mem Seen Ref) (dependency-closure Refs Seen All) (
+      if (mixin-combination Ref _ Cs _)
+        (std.fold Cs Seen
+          (c\seen\out\ sigma head\
+            c = slot _ head _, if (std.mem seen head) (out = seen)
+              (out = [head | seen])) Next,
+         dependency-closure Refs Next All) (
       mixin-spec Ref Parents _,
       dependency-closure Parents [Ref | Seen] Next,
-      dependency-closure Refs Next All).
+      dependency-closure Refs Next All)).
 
   pred register-mixin i:gref, i:list gref, i:list int.
   register-mixin Ref Direct Values :-
     coq.gref->id Ref Name,
     if (coq.TC.class? Ref) true (coq.error "Expected a class:" Name),
     std.assert! (read-mixin Ref Values Params)
-      "Expected a carrier and registered mixin parameters",
+      "Expected ordinary parameters and registered mixin dependencies",
     dependency-closure Direct [] Closure,
     std.forall Params
       (p\ sigma d\
@@ -65,13 +69,14 @@ Elpi Accumulate lp:{{
           (if (std.mem Closure d) true
             (coq.error "Parameter is outside the declared dependencies:" d)) true),
     std.forall Closure
-      (d\ if (std.mem Params (mixin-dependency d _)) true
+      (d\ if (std.mem Params (mixin-dep d _)) true
         (coq.error "Declared dependency is absent from the class parameters:" d)),
     if (mixin-spec Ref Other Previous)
       (if (Other = Direct, Previous = Params) true
         (coq.error "Mixin already registered with different dependencies:" Name))
       (coq.elpi.accumulate execution-site "minks.flat.db"
-        (clause _ _ (mixin-spec Ref Direct Params))).
+        (clause _ _ (mixin-spec Ref Direct Params))),
+    print-mixin Name Direct Params.
 
   pred split-values i:list argument, o:list int, o:list argument.
   split-values [int Pos | Args] [Pos | Values] Parents :- !,

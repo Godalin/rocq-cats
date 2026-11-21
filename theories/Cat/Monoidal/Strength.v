@@ -21,28 +21,28 @@ Class HasStrength {C : Cat} (MC : HasMonoidal C) (F : Fct C C)
   (** 二变量自然映射保留左侧通常上下文。 *)
 
   { strengthN
-    : (tensorF (isMagmoidal MC) ∘F (IdF ×F F)) ⇒
-        (F ∘F tensorF (isMagmoidal MC))
+    : (tensorF (HasMonoidal_interchange MC) ∘F (IdF ×F F)) ⇒
+        (F ∘F tensorF (HasMonoidal_interchange MC))
 
   (** Removing a unit context agrees with mapping the left unitor. *)
 
   (** 移去单位上下文，等于映射左单位子。 *)
 
   ; strength_unit (Y : @Ob C)
-    : fmap F (tensor_unitor_l (HasUnitors := MC) Y).1 ∘
+    : fmap F (tensor_unitor_l (HasTensorUnitors := MC) Y).1 ∘
         strengthN (𝐈[MC], Y) ≈
-        (tensor_unitor_l (HasUnitors := MC) (F Y)).1
+        (tensor_unitor_l (HasTensorUnitors := MC) (F Y)).1
 
   (** Nested ordinary contexts are transported coherently with associators. *)
 
   (** 嵌套通常上下文按结合子相干地运输。 *)
 
   ; strength_assoc (X Y Z : @Ob C)
-    : fmap F (tensor_assoc (HasAssoc := MC) X Y Z).1 ∘
+    : fmap F (tensor_assoc (HasTensorAssoc := MC) X Y Z).1 ∘
         strengthN (tensor (HasBinoidal := MC) X Y, Z) ≈
         strengthN (X, tensor (HasBinoidal := MC) Y Z) ∘
-          (tensor_map (IM := isMagmoidal MC) id (strengthN (Y, Z))) ∘
-          (tensor_assoc (HasAssoc := MC) X Y (F Z)).1
+          (tensor_map (IM := HasMonoidal_interchange MC) id (strengthN (Y, Z))) ∘
+          (tensor_assoc (HasTensorAssoc := MC) X Y (F Z)).1
   }.
 
 Arguments strengthN {_ _ _} _.
@@ -59,8 +59,8 @@ Notation "'st[' S ';' X ';' Y ']'" := (strengthN S (X, Y))
 Lemma strength_natural {C : Cat} {MC : HasMonoidal C}
     {F : Fct C C} (S : HasStrength MC F)
     {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
-  : st[S; X'; Y'] ∘ (tensor_map (IM := isMagmoidal MC) f (fmap F g)) ≈
-      fmap F (tensor_map (IM := isMagmoidal MC) f g) ∘ st[S; X; Y].
+  : st[S; X'; Y'] ∘ (tensor_map (IM := HasMonoidal_interchange MC) f (fmap F g)) ≈
+      fmap F (tensor_map (IM := HasMonoidal_interchange MC) f g) ∘ st[S; X; Y].
 Proof.
   exact (nat_naturality (strengthN S) (X := (X, Y)) (Y := (X', Y'))
     (f, g)).

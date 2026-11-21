@@ -144,7 +144,7 @@ Lemma two_sphere_cylinder_map_left_inverse
   : TwoSphereCylinderHomotopy Y (α 0 b)
       (two_sphere_cylinder_map_resp α b KRX KCX KRY KCY
         (@SphereKanLeftInverse X b I x).1)
-      (@inv _ (hasGroup (TwoSphereCylinderGroup Y (α 0 b) KRY KCY H K L))
+      (@inv _ _ _ (hasInverse (TwoSphereCylinderGroup Y (α 0 b) KRY KCY H K L))
         (two_sphere_cylinder_map_resp α b KRX KCX KRY KCY x)).
 Proof.
   exact (@func_proper _ _

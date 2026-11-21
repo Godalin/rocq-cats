@@ -132,7 +132,7 @@ Definition lower_unique
     (x y : TwoSphereClassS X b)
     (E : two_sphere_kan_mul X b H y x ≈S
       (two_sphere_base X b : TwoSphereClassS X b))
-  : y ≈S @inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x
+  : y ≈S @inv _ _ _ (hasInverse (TwoSphereClassGroup X b H K L)) x
   := @inv_unique (TwoSphereClassGroup X b H K L) x y E.
 
 (** The existing Semigroup interface retains independently sized classes. *)
@@ -239,7 +239,7 @@ Definition higher_unique
     (x y : TwoSphereClassS X b)
     (E : two_sphere_kan_mul X b H y x ≈S
       (two_sphere_base X b : TwoSphereClassS X b))
-  : y ≈S @inv _ (hasGroup (TwoSphereClassGroup X b H K L)) x
+  : y ≈S @inv _ _ _ (hasInverse (TwoSphereClassGroup X b H K L)) x
   := @inv_unique (TwoSphereClassGroup X b H K L) x y E.
 
 End StrictSizes.

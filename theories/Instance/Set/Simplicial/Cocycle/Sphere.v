@@ -159,8 +159,8 @@ Proof.
     - apply cocycle_constant_triangle_value. }
   rewrite V0,
     V1,
-    (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))) in E.
+    (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))),
+    (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))) in E.
   transitivity (two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺] w)).
   - symmetry. apply func_proper. exact H2.
   - transitivity (two_cocycle_triangle_value_resp (d[Z; 2; fin_first⁺⁺⁺] w)).
@@ -180,8 +180,8 @@ Definition CocycleTwoSphereHomotopy
 Proof.
   assert (E : cocycle_two_sphere_value_resp y ⋅ 1 ≈S
       1 ⋅ cocycle_two_sphere_value_resp x).
-  { rewrite (@mul_unit_l _ _ (@isMonoid _ (hasMonoid M))),
-    (@mul_unit_r _ _ (@isMonoid _ (hasMonoid M))). symmetry. exact H. }
+  { rewrite (@mul_unit_l _ _ _ (@isUnit _ _ (hasUnit M))),
+    (@mul_unit_r _ _ _ (@isUnit _ _ (hasUnit M))). symmetry. exact H. }
   exists {|lower := TetrahedronTwoCocycle
     (cocycle_two_sphere_value_resp y) 1 1 (cocycle_two_sphere_value_resp x) E
     |}.

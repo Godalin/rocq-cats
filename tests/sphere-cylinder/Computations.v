@@ -19,7 +19,7 @@ Local Open Scope ordinal_scope.
     归一化相等见证，也不丢失空间／时间坐标。 *)
 
 Fail Definition unchosen_coefficient_group
-  : HasGroup BoolS_Monoid
+  : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
 
 Fail Definition unchosen_class_group

@@ -24,15 +24,12 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 
 (** 规范积交换给出显式对称结构；导入本模块不会为 [C] 选定默认结构。 *)
 
-Program Definition CartSymmetricPremonoidal
-  : SymmetricPremonoidalCat C
+Program Definition CartHasTensorSym
+  : @HasTensorSym C CartHasMonoidal
   :=
-  {|symmetric_hasBinoidal := monoidal_hasBinoidal CartHasMonoidal
-  ; SymmetricPremonoidalToHasPremonoidal :=
-      monoidal_hasPremonoidal CartHasMonoidal
-  ; premonoidal_symmetry X Y := ⟨π2, π1⟩
-  ; premonoidal_symmetry_central X Y :=
-      tensor_arrow_central (IM := isMagmoidal CartHasMonoidal) _
+  {|tensor_sym X Y := ⟨π2, π1⟩
+  ; tensor_sym_central X Y :=
+      tensor_arrow_central (IM := HasMonoidal_interchange CartHasMonoidal) _
   |}.
 Next Obligation.
   rewrite product_comp_r, product_β1, product_β2. apply product_pair_η.
@@ -44,6 +41,14 @@ Next Obligation.
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
 Qed.
+(** The cartesian exchange and product associator satisfy the hexagon. *)
+
+(** 笛卡尔交换与积结合子满足六边形。 *)
+
+Program Definition CartIsSymHexagon
+  : @IsSymHexagon C CartHasMonoidal CartHasTensorSym CartHasMonoidal
+  :=
+  {|tensor_sym_hexagon := _|}.
 Next Obligation.
   change ((@product_assoc C HP Y Z X).1 ∘
     (⟨π2, π1⟩ ∘ (@product_assoc C HP X Y Z).1) ≈
@@ -54,6 +59,24 @@ Next Obligation.
     rewrite comp_assoc | rewrite product_β1 | rewrite product_β2 |
     rewrite comp_id_l | rewrite comp_id_r]. reflexivity.
 Qed.
+(** The cartesian exchange interchanges the two unitors. *)
+
+(** 笛卡尔交换互换两个单位子。 *)
+
+Program Definition CartIsSymUnit
+  : @IsSymUnit C CartHasMonoidal CartHasTensorSym CartHasMonoidal
+  :=
+  {|tensor_sym_unit := _|}.
 Next Obligation. apply product_β2. Qed.
+
+(** Pack the exchange with the premonoidal view of the same finite products. *)
+
+(** 将交换与同一份有限积的预幺半视图打包。 *)
+
+Definition CartSymPremonoidal
+  : SymPremonoidalCat
+  := SymPremonoidalCatOfPremonoidalCat
+       (MonoidalCatToPremonoidalCat CartMonoidal)
+       CartHasTensorSym CartIsSymHexagon CartIsSymUnit.
 
 End Cartesian.

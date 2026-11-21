@@ -57,25 +57,25 @@ Definition higher_native_higher_ambient_group
         (two_cocycle_simplex_unit 0)
   := (cocycle_two_sphere_Group (M := N); eq_refl).
 
-Context `{HC : !IsCommMonoid M} `{HD : !IsCommMonoid N}.
+Context `{HC : !IsCommMagma M} `{HD : !IsCommMagma N}.
 
 (** Commutativity keeps the same parent at lower ambient equality. *)
 
 (** 较低环境相等中的交换性保持同一父结构。 *)
 
 Definition lower_ambient_commutativity
-  : @IsCommMonoid
-      (GroupToMonoid lower_native_lower_ambient_group.1)
-  := cocycle_two_sphere_IsCommMonoid.
+  : @IsCommMagma (GroupToMonoid lower_native_lower_ambient_group.1)
+      (Monoid_hasMagma (GroupToMonoid lower_native_lower_ambient_group.1))
+  := cocycle_two_sphere_IsCommMagma.
 
 (** The opposite native profile accepts higher ambient equality too. *)
 
 (** 相反原生配置也接受较高环境相等。 *)
 
 Definition higher_ambient_commutativity
-  : @IsCommMonoid
-      (GroupToMonoid higher_native_higher_ambient_group.1)
-  := cocycle_two_sphere_IsCommMonoid.
+  : @IsCommMagma (GroupToMonoid higher_native_higher_ambient_group.1)
+      (Monoid_hasMagma (GroupToMonoid higher_native_higher_ambient_group.1))
+  := cocycle_two_sphere_IsCommMagma.
 
 End GroupSizes.
 

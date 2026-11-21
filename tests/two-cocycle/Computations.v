@@ -20,7 +20,7 @@ From Cats Require Import
 (** 导入例子不得隐式选定系数幺半群。 *)
 
 Fail Definition unchosen_boolean_monoid
-  : HasMonoid BoolS_Semigroup
+  : @HasUnit BoolS_Semigroup (Semigroup_hasMagma BoolS_Semigroup)
   := ltac:(typeclasses eauto).
 
 Example triangle_label_computes

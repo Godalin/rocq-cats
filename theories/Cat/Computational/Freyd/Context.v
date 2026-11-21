@@ -28,8 +28,8 @@ Let D
   := FreydComputations F.
 Local Existing Instance F.
 Let SP
-  : SymmetricPremonoidalCat D
-  := @hasSymmetricPremonoidal C K F.
+  : HasSymPremonoidal D
+  := @hasSymPremonoidal C K F.
 Local Existing Instance SP.
 
 (** The tensor boundary uses precisely the Freyd structure's chosen path. *)

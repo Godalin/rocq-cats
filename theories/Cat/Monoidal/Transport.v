@@ -58,6 +58,11 @@ Program Definition LaxMonoidObj (A : MonoidObj MC)
   {|MonoidCarrier := L A
   ; monoid_object_unit := lax_monoid_unit A
   ; monoid_object_mul := lax_monoid_mul A
+  ; isMonoidObj :=
+      {|monoid_object_unit_l := _
+      ; monoid_object_unit_r := _
+      ; monoid_object_assoc := _
+      |}
   |}.
 Next Obligation.
   unfold lax_monoid_mul, lax_monoid_unit.
@@ -67,7 +72,7 @@ Next Obligation.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
       (lax_tensor_natural L e[A] id), <- !comp_assoc, <- fmap_comp.
-    rewrite (monoid_object_unit_l A). apply lax_unit_l.
+    rewrite (monoid_object_unit_l (isMonoidObj A)). apply lax_unit_l.
 Qed.
 Next Obligation.
   unfold lax_monoid_mul, lax_monoid_unit.
@@ -77,7 +82,7 @@ Next Obligation.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
       (lax_tensor_natural L id e[A]), <- !comp_assoc, <- fmap_comp.
-    rewrite (monoid_object_unit_r A). apply lax_unit_r.
+    rewrite (monoid_object_unit_r (isMonoidObj A)). apply lax_unit_r.
 Qed.
 Next Obligation.
   unfold lax_monoid_mul.
@@ -88,16 +93,16 @@ Next Obligation.
   - rewrite comp_assoc,
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
       (lax_tensor_natural L m[A] id), <- !comp_assoc, <- fmap_comp.
-    rewrite (monoid_object_assoc A), !(@fmap_comp _ _ _ _ (isFct L)), !comp_assoc.
-    rewrite <- (comp_assoc (fmap L (tensor_assoc (HasAssoc := MC) A A A).1)).
+    rewrite (monoid_object_assoc (isMonoidObj A)), !(@fmap_comp _ _ _ _ (isFct L)), !comp_assoc.
+    rewrite <- (comp_assoc (fmap L (tensor_assoc (HasTensorAssoc := MC) A A A).1)).
     rewrite (lax_assoc L A A A).
     rewrite !comp_assoc.
     rewrite <- (comp_assoc
-      (fmap L (tensor_map (IM := isMagmoidal MC) id m[A]))).
+      (fmap L (tensor_map (IM := HasMonoidal_interchange MC) id m[A]))).
     rewrite <- (lax_tensor_natural L id m[A]).
     rewrite !comp_assoc.
     rewrite <- (comp_assoc
-      (tensor_map (IM := isMagmoidal MD)
+      (tensor_map (IM := HasMonoidal_interchange MD)
         (fmap L (id[A])) (fmap L m[A]))).
     rewrite <- tensor_map_comp, fmap_id, comp_id_l.
     reflexivity.

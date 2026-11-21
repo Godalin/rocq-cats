@@ -14,6 +14,14 @@ Local Open Scope ob_scope.
 
     固定张量的交换律及相干结合子给出联合自然性和五边形，无需单位。 *)
 
+(** Add a chosen associator to the tensor with interchange. *)
+
+(** 为带交换律的张量选取结合子。 *)
+
+Minks.Struct SemigroupalCat
+  extends MagmoidalCat
+  with  associator : HasTensorAssoc.
+
 (** Fix the tensor interchange and a chosen associator. Separate
     naturality and the pentagon give coherence for the joint bifunctor. *)
 
@@ -21,8 +29,8 @@ Local Open Scope ob_scope.
 
 Section Associativity.
 Context {C : Cat}
-  `{BC : !HasBinoidal C} `{IM : !IsMagmoidal BC}
-  `{AC : !HasAssoc C BC}.
+  `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
+  `{AC : !@HasTensorAssoc C BC}.
 
 (** The inherited pentagon expressed with the derived bimap. *)
 
@@ -33,7 +41,8 @@ Lemma tensor_pentagon (W X Y Z : @Ob C)
     ≈ (id ⊗ α[X; Y; Z])
       ∘ (α[W; X ⊗ Y; Z] ∘ (α[W; X; Y] ⊗ id)).
 Proof.
-  unfold tensor_map. rewrite tensor_sequence_left, tensor_sequence_right.
+  unfold tensor_map.
+  rewrite tensor_sequence_left, tensor_sequence_right.
   apply tensor_assoc_pentagon.
 Qed.
 

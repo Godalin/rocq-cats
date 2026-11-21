@@ -38,6 +38,7 @@ From Stdlib Require Export CMorphisms.
 From Stdlib Require Export CEquivalence.
 From Stdlib Require Export Datatypes.
 From Stdlib Require Utf8.
+From Minks Require Export all.
 
 Global Close Scope program_scope.
 Global Set Universe Polymorphism.
