@@ -40,6 +40,7 @@ let () =
     ^ "(** printing ⇒ %\\Rightarrow% #&rArr;# *)\n"
     ^ "(** [⇒] *)\n\n"
     ^ "Definition visible_sample := tt.\n"
+    ^ "Abbreviation visible_alias := visible_sample.\n"
     ^ "Record DocumentedInterface := {\n"
     ^ "  (** FieldCarrier selects the carrier of the interface, retaining its"
     ^ " computational data rather than merely asserting that some carrier"
@@ -52,7 +53,7 @@ let () =
     ^ "  interface_identity : interface_carrier -> interface_carrier\n"
     ^ "}.\n"
     ^ "(* begin hide *)\nDefinition hidden_support := tt.\n(* end hide *)\n"
-    ^ "Example verified_example : visible_sample = tt.\n"
+    ^ "Example verified_example : visible_alias = tt.\n"
     ^ "Proof. reflexivity. (* .unfold .all *) Qed.\n"
   in
   write original source;
@@ -67,11 +68,10 @@ let () =
   List.iter (fun (language, tag, present, absent) ->
     let output = dir ^ "/" ^ tag in
     Unix.mkdir output 0o700;
-    let filtered, messages = filter language source in
+    let filtered, glob, messages = prepare language source metadata in
     if messages <> [] then failwith "unexpected fixture language diagnostics";
-    write (output ^ "/Fixture.v") (printing_preamble ^ filtered);
-    write (output ^ "/Fixture.glob")
-      (glob ~prefix:printing_preamble ~original:source ~filtered metadata);
+    write (output ^ "/Fixture.v") filtered;
+    write (output ^ "/Fixture.glob") glob;
     run "rocq" ["doc"; "--utf8"; "--gallina"; "--no-externals"; "--no-index";
       "--no-lib-name"; "-o"; output ^ "/page.html"; output ^ "/Fixture.v"];
     let page = read (output ^ "/page.html") in
@@ -91,8 +91,9 @@ let () =
        latex, ["* -> <- <-> => <= >= <>"; "{forall}"; "{exists}"; "Π"; "λ"]];
     if not (contains latex "\\Rightarrow") then
       failwith "explicit source printing directive was discarded";
-    if not (contains page "href=\"#interface_carrier\"") then
-      failwith "coqdoc preamble displaced compiled field references";
+    List.iter (fun fragment -> if not (contains page fragment) then
+      failwith ("missing compiled anchor: " ^ fragment))
+      ["href=\"#interface_carrier\""; "id=\"visible_alias\""];
     List.iter (fun token -> if contains latex token then
       failwith ("implicit symbol substitution survived: " ^ token))
       ["\\ensuremath{\\times}"; "\\ensuremath{\\forall}";

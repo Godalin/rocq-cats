@@ -31,11 +31,13 @@ Context (A : Group) {B : SetC}.
 Context (f : B →r A) (g : A →r B).
 
 (** Multiplication and unit are definitionally those of
-    {{ coqref: Cats.Algebra.Monoid.Transport.MonoidTransport }}. The selected
+    %\coqref{Cats.Algebra.Monoid.Transport.MonoidTransport}
+    {%[MonoidTransport]%}%. The selected
     inverse computes as [g ((f x)⁻¹)]. *)
 
 (** 乘法与单位元按定义就是
-    {{ coqref: Cats.Algebra.Monoid.Transport.MonoidTransport }} 中的选择，
+    %\coqref{Cats.Algebra.Monoid.Transport.MonoidTransport}
+    {%[MonoidTransport]%}% 中的选择，
     选定逆计算为 [g ((f x)⁻¹)]。 *)
 
 Program Definition HasGroupTransport
