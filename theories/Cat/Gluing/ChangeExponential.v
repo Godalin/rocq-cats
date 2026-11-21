@@ -138,7 +138,7 @@ Lemma gluing_change_exp_result (X Y : Gluing F)
 Proof.
   pose proof (exp_cmp_natural K target
     id[comma_left_ob X] (comma_arrow Y)) as N.
-  rewrite (@fct_id D D' K), !exp_dimap_id_r in N.
+  rewrite (fmap_id (IsFct := isFct K)), !exp_dimap_id_r in N.
   unfold gluing_change_exp_tip, gluing_change_exp_left,
     gluing_exp_result.
   rewrite comp_assoc, N, <- comp_assoc, <- exp_map_comp,
@@ -158,10 +158,10 @@ Lemma gluing_change_exp_base (X Y : Gluing F)
 Proof.
   pose proof (exp_cmp_natural K target
     (comma_arrow X) id[F (comma_right_ob Y)]) as N.
-  rewrite (@fct_id D D' K) in N.
+  rewrite (fmap_id (IsFct := isFct K)) in N.
   unfold gluing_change_exp_tip, gluing_change_exp_right,
     gluing_exp_base.
-  rewrite (@fct_comp D D' K).
+  rewrite (fmap_comp (IsFct := isFct K)).
   rewrite !comp_assoc.
   rewrite <- (comp_assoc
     (exp_cmp K target
