@@ -2036,11 +2036,11 @@ Prop。原始审计提交 `1d29636` 只修改文档，检查声明／数量覆�
 | [Homotopy](../theories/Cat/Homotopy/Core.v) | `Record` | Diagram and morphism data / 图式及态射数据 |
 | [VtxPresentation](../theories/Instance/Set/Vertex/Category.v) | `Class` | Structured categories and functors / 带结构范畴及函子 |
 | [ContextSystem](../theories/Set/Relation/Compatible.v) | `Class` | Foundations and basic maps / 基础与基本映射 |
-| [Group](../theories/Algebra/Group/Core.v) | `Class` | Set algebra / 集合上的代数 |
-| [Magma](../theories/Algebra/Magma/Core.v) | `Class` | Set algebra / 集合上的代数 |
-| [Monoid](../theories/Algebra/Monoid/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [Group](../theories/Algebra/Group/Core.v) | `Record` | Set algebra / 集合上的代数 |
+| [Magma](../theories/Algebra/Magma/Core.v) | `Record` | Set algebra / 集合上的代数 |
+| [Monoid](../theories/Algebra/Monoid/Core.v) | `Record` | Set algebra / 集合上的代数 |
 | [IsCommMagma](../theories/Algebra/Monoid/Commutative.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
-| [Semigroup](../theories/Algebra/Semigroup/Core.v) | `Class` | Set algebra / 集合上的代数 |
+| [Semigroup](../theories/Algebra/Semigroup/Core.v) | `Record` | Set algebra / 集合上的代数 |
 | [Adj](../theories/Cat/Adjunction.v) | `Class` | Fixed-data laws and relations / 固定数据上的定律及关系 |
 | [ApplicativeAp](../theories/Cat/Applicative/Application.v) | `Class` | Computational structures / 计算结构 |
 | [Applicative](../theories/Cat/Applicative/Core.v) | `Class` | Computational structures / 计算结构 |
