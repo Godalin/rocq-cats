@@ -16,6 +16,16 @@ let record_name (name, universes) =
   ) universes in
   name, universes
 
+(* Record.definition_structure leaves definition locations to its caller. *)
+let dump_mixin { Record.Ast.name; cfs; idbuild } =
+  Dumpglob.dump_definition name false "class";
+  Dumpglob.dump_definition idbuild false "constr";
+  List.iter (fun (field, _, _) ->
+    match field with
+    | Vernacexpr.AssumExpr (name, _, _)
+    | Vernacexpr.DefExpr (name, _, _, _) ->
+      Dumpglob.dump_constraint name false "proj") cfs
+
 let declare_mixin ~atts decl parents =
   let parents = List.map Mixin_parameters.read_parent parents in
   let decl, roles =
@@ -25,6 +35,7 @@ let declare_mixin ~atts decl parents =
   let reference =
     match Vernacentries.preprocess_inductive_decl ~atts kind [decl] with
     | Record { flags; udecl; kind; primitive_proj; records } ->
+      if Dumpglob.dump () then List.iter dump_mixin records;
       (match Record.definition_structure ~flags udecl kind ~primitive_proj records with
        | [reference] -> reference
        | _ -> CErrors.anomaly Pp.(str "Expected exactly one mixin declaration."))

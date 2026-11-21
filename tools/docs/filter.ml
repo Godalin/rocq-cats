@@ -202,13 +202,66 @@ let filter language source =
   loop (blocks source);
   Bytes.to_string out, List.rev !diagnostics
 
-(** Filtering preserves positions; a generated coqdoc preamble shifts all
-    byte ranges uniformly. The generated copy receives its own source digest. *)
+(* Keep these declarations visible in coqdoc's proof-hiding mode. The
+   generated copy uses native show markers around each complete command. *)
 
-(** 过滤保持定位信息；生成的 coqdoc 前言统一平移全部字节范围。
+(* 在 coqdoc 的隐藏证明模式下保留这些声明。生成副本用原生显示标记包围每条完整命令。 *)
+
+let show_declarations source =
+  let length = String.length source in
+  let rec command_end i =
+    if i = length then fail source i "unterminated declaration"
+    else if starts source i "(*" then command_end (comment_end source i)
+    else if source.[i] = '"' then command_end (string_end source i)
+    else if starts source i ".." then command_end (i + 2)
+    else if source.[i] = '.'
+      && (i + 1 = length || space source.[i + 1] || starts source (i + 1) "(*")
+    then i + 1
+    else command_end (i + 1)
+  in
+  let commands = ["Minks.Mixin"; "Minks.Struct"; "Abbreviation"] in
+  let rec scan line_start i edits packed =
+    if i = length then List.rev edits, packed
+    else if starts source i "(*" then scan None (comment_end source i) edits packed
+    else if source.[i] = '"' then scan None (string_end source i) edits packed
+    else if source.[i] = '\n' then scan (Some (i + 1)) (i + 1) edits packed
+    else if space source.[i] then scan line_start (i + 1) edits packed
+    else match line_start with
+    | None -> scan None (i + 1) edits packed
+    | Some opening ->
+      match List.find_opt (fun command ->
+        let next = i + String.length command in
+        next < length && starts source i command && space source.[next]) commands with
+      | None -> scan None (i + 1) edits packed
+      | Some command ->
+          let after = i + String.length command in
+          let ending = command_end after in
+          let packed = if command = "Minks.Struct" then
+            let rec name j = if space source.[j] then name (j + 1) else j in
+            (i, name after) :: packed
+            else packed in
+          let edits = (ending, "\n(* end show *)\n")
+            :: (opening, "(* begin show *)\n") :: edits in
+          scan None ending edits packed
+  in
+  scan (Some 0) 0 [] []
+
+let insert source edits =
+  let result = Buffer.create (String.length source) in
+  let last = List.fold_left (fun last (at, text) ->
+    Buffer.add_substring result source last (at - last);
+    Buffer.add_string result text;
+    at) 0 edits in
+  Buffer.add_substring result source last (String.length source - last);
+  Buffer.contents result
+
+(** Remap compiled byte ranges past the coqdoc preamble and show markers.
+    The generated copy receives its own source digest. *)
+
+(** 根据 coqdoc 前言和显示标记调整编译所得的字节范围。
     生成副本使用自己的源码校验值。 *)
 
-let glob ?(prefix = "") ~original ~filtered contents =
+let glob ?(prefix = "") ?(edits = []) ?(packed = []) ~original ~filtered contents =
   let first = try String.index contents '\n' with Not_found -> String.length contents in
   let header = String.sub contents 0 first in
   let digest s = Digest.to_hex (Digest.string s) in
@@ -245,23 +298,53 @@ let glob ?(prefix = "") ~original ~filtered contents =
   (* Rocq 9.0 元数据中的未声明局部别名没有跳转目标；字段别名指向其声明，
      其余局部变量仍完整显示为文本。 *)
 
-  let shift_range range =
-    let shift n =
-      let n = int_of_string n in
-      string_of_int (if n < 0 then n else n + String.length prefix)
-    in
-    match String.split_on_char ':' range with
-    | [first; last] -> shift first ^ ":" ^ shift last
+  let shift n =
+    let n = int_of_string n in
+    string_of_int (if n < 0 then n else
+      List.fold_left (fun position (at, text) ->
+        if at <= n then position + String.length text else position)
+        (n + String.length prefix) edits)
+  in
+  let range_bounds range = match String.split_on_char ':' range with
+    | [first; last] -> first, last
     | _ -> invalid_arg "unsupported .glob byte range"
   in
-  let shift line = if prefix = "" then line else match words line with
+  let shift_range range =
+    let first, last = range_bounds range in
+    shift first ^ ":" ^ shift last
+  in
+  let shift_line line = match words line with
     | [pos; lib; section; name; kind] when starts pos 0 "R" ->
         String.concat " " ["R" ^ shift_range
           (String.sub pos 1 (String.length pos - 1)); lib; section; name; kind]
     | [kind; range; section; name] ->
-        String.concat " " [kind; shift_range range; section; name]
+        let first, _ = range_bounds range in
+        (match List.assoc_opt (int_of_string first) packed with
+         | None -> String.concat " " [kind; shift_range range; section; name]
+         | Some at ->
+             (* Elpi locates generated members on the entire command. Anchor
+                them on the packed name so each anchor is emitted once. *)
+             let position = shift (string_of_int at) in
+             let range = position ^ ":" ^ position in
+             let declaration = String.concat " " [kind; range; section; name] in
+             let constructor = "Make" ^ name in
+             if kind = "rec" && not (Hashtbl.mem declarations (section, constructor))
+               && starts original at name
+               && (let next = at + String.length name in
+                   space original.[next] || original.[next] = '.') then
+               declaration ^ "\n"
+               ^ String.concat " " ["constr"; range; section; constructor]
+             else declaration)
     | _ -> line
   in
   "DIGEST " ^ digest (prefix ^ filtered) ^ "\n"
-  ^ (List.tl lines |> List.filter_map normalize |> List.map shift
+  ^ (List.tl lines |> List.filter_map normalize |> List.map shift_line
       |> String.concat "\n")
+
+let prepare language source metadata =
+  let filtered, diagnostics = filter language source in
+  let edits, packed = show_declarations source in
+  let filtered = insert filtered edits in
+  let prefix = printing_preamble in
+  prefix ^ filtered, glob ~prefix ~edits ~packed ~original:source ~filtered metadata,
+  diagnostics

@@ -14,13 +14,16 @@ modules under [theories/](../theories/), using one compiled bilingual source tre
 HTML and both PDF modes disable coqdoc's built-in symbol substitutions with
 native `remove printing` directives in generated inputs. Code retains source
 spelling, such as `*`, `->` and `forall`; explicit source printing directives
-remain available. The generated preamble shifts `.glob` byte ranges and updates
-the source digest, preserving declaration links without editing theory sources.
+remain available. Native coqdoc show markers retain `Minks.Mixin`,
+`Minks.Struct` and `Abbreviation` in the reading editions. The exporter
+remaps compiled `.glob` positions and updates the digest for the generated
+copy so links can still reach their declarations.
 
 HTML 与两种 PDF 模式都在生成输入中使用原生 `remove printing` 指令，关闭
 coqdoc 内置符号替换。代码保留 `*`、`->`、`forall` 等源码写法，仍允许源码显式
-指定打印规则。生成的前言同步平移 `.glob` 字节范围并更新源码校验值，保持声明
-链接正确，不修改理论源码。
+指定打印规则。阅读版使用 coqdoc 的原生显示标记保留 `Minks.Mixin`、`Minks.Struct`
+和 `Abbreviation` 声明。导出器同步调整编译所得的 `.glob` 定位并更新副本校验值，
+保留跳转到声明的链接。
 
 Section openings use native bilingual coqdoc headings or introductory prose.
 They identify the local assumptions and the construction or laws that follow;

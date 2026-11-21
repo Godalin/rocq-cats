@@ -162,6 +162,53 @@ let constructor_anchors root output sources =
             ^ html id ^ "</span>") !text) constructors;
     write path !text) sources) ["en"; "zh"]
 
+(* Attributes can make coqdoc print a notation declaration as plain code,
+   even though its uses still link to the declaration recorded in the glob. *)
+
+(* 属性可能使 coqdoc 将记号声明输出为普通代码，但使用处仍链接到 glob 中的声明。 *)
+
+let notation_anchors root output sources =
+  List.iter (fun source ->
+    let notation_targets = read (metadata root source) |> String.split_on_char '\n'
+      |> List.filter_map (fun line ->
+        match String.split_on_char ' ' line with
+        | ["not"; range; "<>"; name] ->
+            (match String.split_on_char ':' range with
+             | [first; _] -> Some (int_of_string first, name)
+             | _ -> None)
+        | _ -> None) in
+    if notation_targets <> [] then begin
+      let original = read source.path in
+      List.iter (fun tag ->
+        let path = output ^ "/" ^ tag ^ "/" ^ source.name ^ ".html" in
+        let text = read path in
+        let ids = attributes "id" text in
+        let text = List.fold_left (fun text (at, name) ->
+          let id = if String.for_all (function
+            | 'a'..'z' | 'A'..'Z' | '0'..'9' | '.' | '_' | '-' | ':'
+            | '<' | '>' | '&' | '\'' | '"' -> true
+            | _ -> false) name
+            then html name else Digest.to_hex (Digest.string name) in
+          if at < 0 || at >= String.length original || original.[at] <> '"'
+            || List.mem id ids then text
+          else
+            let ending = Filter.string_end original at in
+            let spelling = html (String.sub original (at + 1) (ending - at - 2)) in
+            List.fold_left (fun text keyword ->
+              let literal = " \"" ^ spelling ^ "\"" in
+              let token = "<span class=\"id\" title=\"keyword\">" ^ keyword
+                ^ "</span>" ^ literal in
+              let anchor = "<span id=\"" ^ id ^ "\"></span>" in
+              let exact = Str.regexp_string token in
+              match Str.search_forward exact text 0 with
+              | at when (try ignore (Str.search_forward exact text
+                  (at + String.length token)); false with Not_found -> true) ->
+                    Str.substitute_first exact (fun _ -> anchor ^ token) text
+              | _ | exception Not_found -> text)
+              text ["Notation"; "Infix"]) text notation_targets in
+        write path text) ["en"; "zh"]
+    end) sources
+
 (* Check both destination files and fragments, including Unicode symbols. *)
 
 (* 同时检查目标文件及片段，涵盖 Unicode 符号。 *)
@@ -301,14 +348,13 @@ let build root strict format =
     mkdir (inputs ^ "/theories");
     let paths = List.map (fun s ->
       let original = read s.path in
-      let filtered, messages = Filter.filter language original in
+      let filtered, glob, messages =
+        Filter.prepare language original (read (metadata root s)) in
       if tag = "en" then List.iter (fun (m : Filter.diagnostic) ->
         warnings := Printf.sprintf "%s:%d: %s" s.path m.line m.message :: !warnings) messages;
       let path = inputs ^ "/" ^ s.path in
-      write path (Filter.printing_preamble ^ filtered);
-      write (Filename.chop_extension path ^ ".glob")
-        (Filter.glob ~prefix:Filter.printing_preamble ~original ~filtered
-          (read (metadata root s)));
+      write path filtered;
+      write (Filename.chop_extension path ^ ".glob") glob;
       path) sources in
     if format = "pdf" || format = "design" then
       pdf ~design:(format = "design") root output tag paths else begin
@@ -339,6 +385,7 @@ let build root strict format =
   List.iter prerr_endline messages;
   if format = "html" then begin
     constructor_anchors root output sources;
+    notation_anchors root output sources;
     check_links output
   end;
   if format = "design" then

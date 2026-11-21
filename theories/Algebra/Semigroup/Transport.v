@@ -8,13 +8,15 @@ Local Open Scope algebra_scope.
 (** * Transporting Associativity
 
     Associativity transfers to the exact magma from
-    {{ coqref: Cats.Algebra.Magma.Transport.MagmaTransport }}. The one-sided
+    %\coqref{Cats.Algebra.Magma.Transport.MagmaTransport}
+    {%[MagmaTransport]%}%. The one-sided
     recovery equation [f (g a) ≈S a] suffices: nested target products insert
     only this composite inside the source multiplication. *)
 
 (** * 运输结合律
 
-    将结合律运输到 {{ coqref: Cats.Algebra.Magma.Transport.MagmaTransport }}
+    将结合律运输到 %\coqref{Cats.Algebra.Magma.Transport.MagmaTransport}
+    {%[MagmaTransport]%}%
     的同一原群。单侧恢复方程 [f (g a) ≈S a] 已足够：嵌套目标乘积只在来源
     乘法内部插入此复合。 *)
 

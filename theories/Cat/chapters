@@ -6,7 +6,7 @@ Terminal.v
 Product/Core.v
 Homotopy/Core.v
 Exponential/Core.v
-CCC.v
+CCC
 Monoidal
 Applicative
 Monad
