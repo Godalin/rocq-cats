@@ -8,6 +8,7 @@ From Minks Require Import Spec.
 
 Elpi File minks.flat lp:{{
   pred lookup i:id, i:list (pair id term), o:term.
+  lookup Key _ T :- ambient-value Key T, !.
   lookup Key Env T :-
     std.assert! (std.mem Env (pr Key T))
       ("Missing or out-of-order component " ^ Key).
@@ -21,12 +22,23 @@ Elpi File minks.flat lp:{{
     std.map Deps (d\t\ lookup d Env t) Args,
     coq.mk-app Head Args Ty.
 
+  pred field-type i:component, i:list (pair id term), o:term.
+  field-type (slot _ (mixin-kind Ref) Args) Env Ty :- component-type Ref Args Env Ty.
+  field-type (slot _ (native-kind (ref-head Ref)) Args) Env Ty :- component-type Ref Args Env Ty.
+  field-type (slot _ (native-kind sort-head) []) _ (sort (typ U)) :- coq.univ.new U.
+
+  pred projection-id i:id, i:component, o:id.
+  projection-id N (slot _ (native-kind (ref-head Ref)) _) F :- !,
+    coq.gref->id Ref Head, F is N ^ "To" ^ Head.
+  projection-id N C F :- component-key C K, field-name N K F.
+
   pred fields i:id, i:list component, i:list (pair id id),
       i:list (pair id term), o:record-decl.
   fields _ [] _ _ end-record.
-  fields N [slot Key Ref Ds | Cs] Names Env (field [] F Ty Tail) :-
-    if (std.mem Names (pr Key F)) true (field-name N Key F),
-    component-type Ref Ds Env Ty,
+  fields N [C | Cs] Names Env (field [] F Ty Tail) :-
+    component-key C Key,
+    if (std.mem Names (pr Key F)) true (projection-id N C F),
+    field-type C Env Ty,
     pi x\ fields N Cs Names [pr Key x | Env] (Tail x).
 
   pred field-ref i:id, i:option constant, o:(pair id constant).
@@ -37,11 +49,17 @@ Elpi File minks.flat lp:{{
     std.mem Fs (pr Key C),
     coq.env.global (const C) Head.
 
+  pred parent-global i:inductive, i:gref, o:term.
+  parent-global I Ref Applied :-
+    coq.env.indt I tt Arity _ _ _ _,
+    if (parent-inputs I _ Args) true (Args = []),
+    std.length Args Arity, coq.env.global Ref Head, coq.mk-app Head Args Applied.
+
   pred record-fields i:inductive, i:list id, o:list term.
   record-fields I Keys Fields :-
     coq.env.projections I Projections,
     std.map2 Keys Projections field-ref Refs,
-    std.map Keys (k\t\ read-field Refs k t) Fields.
+    std.map Keys (k\t\ sigma c\ std.mem Refs (pr k c), parent-global I (const c) t) Fields.
 
   pred apply-fields i:list term, i:term, o:list term.
   apply-fields [] _ [].
@@ -49,8 +67,8 @@ Elpi File minks.flat lp:{{
     apply-fields Fs X Ts.
 
   pred view-body i:term, i:list term, o:(term -> term).
-  view-body Ctor Fs (x\ app [Ctor | Args x]) :-
-    pi x\ apply-fields Fs x (Args x).
+  view-body Ctor Fs Body :-
+    pi x\ sigma args\ apply-fields Fs x args, coq.mk-app Ctor args (Body x).
 
   pred view-name i:id, i:inductive, o:id.
   view-name Child Ancestor Name :-
@@ -67,17 +85,17 @@ Elpi File minks.flat lp:{{
   pred flat-view-body i:list (pair id constant), i:inductive, i:list component,
       o:(term -> term).
   flat-view-body Fields Target Cs Body :-
-    coq.env.indt Target tt 0 0 _ [K] _,
-    coq.env.global (indc K) Ctor,
+    coq.env.indt Target tt _ _ _ [K] _,
+    parent-global Target (indc K) Ctor,
     std.map Cs component-key Keys,
-    std.map ["carrier" | Keys] (k\t\ read-field Fields k t) Fs,
+    std.map Keys (k\t\ read-field Fields k t) Fs,
     view-body Ctor Fs Body.
 
   pred pack-components i:list component, i:list (pair id term),
       i:(list (pair id term) -> term -> prop), o:term.
   pack-components [] Env Build Term :- Build Env Term.
-  pack-components [slot Key Ref Deps | Cs] Env Build (fun Name Ty Tail) :-
-    component-type Ref Deps Env Ty,
+  pack-components [C | Cs] Env Build (fun Name Ty Tail) :-
+    component-key C Key, field-type C Env Ty,
     coq.id->name Key Name,
     pi x\ pack-components Cs [pr Key x | Env] Build (Tail x).
 
@@ -86,13 +104,12 @@ Elpi File minks.flat lp:{{
   pack-from-parent Child I Cs Parent Pack :-
     coq.gref->id (indt Parent) ParentName,
     Name is Child ^ "Of" ^ ParentName,
-    coq.env.global (indt Parent) ParentTy,
+    parent-global Parent (indt Parent) ParentTy,
     coq.env.indt I tt 0 0 _ [K] _,
     coq.env.global (indc K) Ctor,
     close Parent ParentCs,
     std.map Cs component-key Keys,
-    std.map ParentCs component-key ParentComponentKeys,
-    ParentKeys = ["carrier" | ParentComponentKeys],
+    std.map ParentCs component-key ParentKeys,
     record-fields Parent ParentKeys ParentFields,
     std.filter Cs (c\ not (std.mem ParentCs c)) Missing,
     Term = fun `parent` ParentTy Body,
@@ -101,7 +118,7 @@ Elpi File minks.flat lp:{{
       std.map2 ParentKeys inherited (k\t\b\ b = pr k t) env,
       pack-components Missing env
         (bindings\result\ sigma args\
-          std.map ["carrier" | Keys] (k\t\ lookup k bindings t) args,
+          std.map Keys (k\t\ lookup k bindings t) args,
           coq.mk-app Ctor args result)
         (Body p)),
     std.assert-ok! (coq.typecheck Term Ty) ("Ill-typed packing function " ^ Name),
@@ -119,7 +136,7 @@ Elpi File minks.flat lp:{{
     close Parent ParentCs,
     flat-view-body Fields Parent ParentCs Body,
     declare-view Child ChildTy Parent Body View,
-    if (canonical-parent Cs ParentCs)
+    if (ParentCs = [_ | _], canonical-parent Cs ParentCs)
       (if (std.mem Parents Parent) (Mode = coercion-canonical-view)
         (Mode = canonical-view))
       (if (std.mem Parents Parent) (Mode = coercion-view)
@@ -157,22 +174,22 @@ Elpi File minks.flat lp:{{
     coq.typecheck Term Ty ok,
     @univpoly! => coq.env.add-const Name Term Ty @transparent! View.
 
-  pred discover-views i:inductive, i:option inductive, i:list component,
+  pred discover-views i:inductive, i:list component,
       i:list (pair id constant), i:list struct-conversion,
       o:list struct-conversion.
-  discover-views I Root Cs Fields Declared Views :-
+  discover-views I Cs Fields Declared Views :-
     coq.env.current-path Here,
-    std.findall (flat-layout Here Root _ _ _) Previous,
+    std.findall (flat-layout Here _ _ _) Previous,
     std.map-filter Previous
       (layout\v\ sigma old old-cs old-fields view\
-        layout = flat-layout Here Root old old-cs old-fields,
+        layout = flat-layout Here old old-cs old-fields,
         strict-substructure Cs old-cs,
         inferred-view old old-fields I Cs view,
         v = conversion old I view explicit-view)
       Incoming,
     std.map-filter Previous
       (layout\v\ sigma old old-cs view\
-        layout = flat-layout Here Root old old-cs _,
+        layout = flat-layout Here old old-cs _,
         strict-substructure old-cs Cs,
         not (std.mem Declared (conversion I old _ _)),
         inferred-view I Fields old old-cs view,
@@ -180,17 +197,21 @@ Elpi File minks.flat lp:{{
       Outgoing,
     std.append Outgoing Incoming Views,
     coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (flat-layout Here Root I Cs Fields)).
+      (clause _ _ (flat-layout Here I Cs Fields)).
 
   pred register-field i:list component, i:list (pair id constant), i:bool, i:component.
-  register-field Cs Fs Coerce (slot Key Ref Ds) :-
-    if (auto-instance Cs (slot Key Ref Ds))
+  register-field Cs Fs Coerce (slot Key (mixin-kind Ref) Ds) :-
+    if (auto-instance Cs (slot Key (mixin-kind Ref) Ds))
       (std.mem Fs (pr Key C),
        coq.TC.declare-instance (const C) 1,
        if (Coerce = tt)
          (@global! => @reversible! => coq.coercion.declare (coercion (const C) _ _ _))
          true)
       true.
+
+  register-field _ Fs _ (slot Key (native-kind _) _) :-
+    std.mem Fs (pr Key C),
+    @global! => @reversible! => coq.coercion.declare (coercion (const C) _ _ _).
 
   pred packed-sort i:sort, i:sort, o:sort.
   packed-sort (typ U) (typ V) (typ R) :- !, coq.univ.alg-max U V R.
@@ -206,69 +227,91 @@ Elpi File minks.flat lp:{{
     coq.id->name F Name,
     pi x\ @pi-decl Name Ty x\ field-sorts (Tail x) Next Sort.
 
-  pred packed-carrier i:option inductive, o:term.
-  packed-carrier none (sort (typ U)) :- coq.univ.new U.
-  packed-carrier (some Root) Carrier :- coq.env.global (indt Root) Carrier.
-
-  % Read the carrier instance after field typing has unified its levels.
-  pred carrier-levels i:term, o:list univ.variable.
-  carrier-levels Carrier Levels :-
-    Carrier = pglobal _ _, !,
-    coq.reduction.lazy.whd Carrier (pglobal _ Instance),
+  % Normalize the instance after field typing has unified its levels.
+  pred head-levels i:term, o:list univ.variable.
+  head-levels Ty Levels :-
+    coq.safe-dest-app Ty Head _, Head = pglobal _ _, !,
+    coq.reduction.lazy.whd Head (pglobal _ Instance),
     coq.univ-instance Instance Inherited,
     std.filter Inherited
       (l\ sigma u\ coq.univ.variable u l, not (coq.univ.global? u)) Local,
     std.fold Local [] (l\seen\out\ if (std.mem seen l) (out = seen)
       (out = [l | seen])) Reversed,
     std.rev Reversed Levels.
-  carrier-levels _ [].
+  head-levels _ [].
 
-  pred fixed-record-sort i:term, i:(term -> record-decl), o:sort.
-  fixed-record-sort Carrier Fields Sort :-
-    std.assert-ok! (coq.typecheck-ty Carrier BaseSort) "Ill-typed carrier",
-    pi x\ @pi-decl `carrier` Carrier x\ field-sorts (Fields x) BaseSort Sort.
+  % Keep the levels of native field heads in their original order.
+  pred layout-levels i:list component, i:record-decl, o:list univ.variable.
+  layout-levels [] end-record [].
+  layout-levels [C | Cs] (field _ _ Ty Body) Levels :-
+    if (C = slot _ (native-kind _) _) (head-levels Ty Current) (Current = []),
+    pi x\ layout-levels Cs (Body x) Rest,
+    std.filter Rest (l\ not (std.mem Current l)) New, std.append Current New Levels.
+
+  % Abstract the native head's own telescope, independently of the first use.
+  pred unused-binder i:id, i:list id, o:id.
+  unused-binder Name Used Key :-
+    if (std.mem Used Name)
+      (Next is Name ^ "'", unused-binder Next Used Key) (Key = Name).
+
+  pred base-record i:id, i:native-head, i:term, i:term, i:list id,
+      o:indt-decl, o:list id.
+  base-record N Head T (prod Binder Ty Rest) Rev (parameter Key explicit Ty Tail) Keys :- !,
+    coq.name->id Binder Hint,
+    if (Hint = "_") (Stem = "arg") (Stem = Hint), unused-binder Stem Rev Key,
+    pi x\ @pi-parameter Key Ty x\ sigma app\
+      coq.mk-app T [x] app,
+      base-record N Head app (Rest x) [Key | Rev] (Tail x) Keys.
+  base-record N Head T (sort _) Rev (record N (sort S) Ctor Body) Keys :- !,
+    std.rev Rev Names, std.map Names parameter-key Keys,
+    std.assert-ok! (coq.typecheck-ty T S) "Expected a native type",
+    projection-id N (slot "carrier" (native-kind Head) Keys) Projection,
+    Ctor is "Make" ^ N, Body = field [] Projection T (_\ end-record).
+
+  base-record N Head T Arity Rev Decl Keys :-
+    coq.reduction.lazy.whd Arity Telescope,
+    (Telescope = prod _ _ _ ; Telescope = sort _),
+    base-record N Head T Telescope Rev Decl Keys.
+
+  pred generate-base i:native-head, o:inductive, o:list component.
+  generate-base Head I Cs :- @keep-alg-univs! ==>
+    parent-label (native-parent Head []) Label, Name is Label ^ "Carrier",
+    field-type (slot "carrier" (native-kind Head) []) [] T,
+    std.assert-ok! (coq.typecheck T Arity) "Ill-typed native parent",
+    base-record Name Head T Arity [] Decl Keys,
+    std.assert-ok! (coq.typecheck-indt-decl Decl) ("Ill-typed native base " ^ Name),
+    head-levels T Levels, (@udecl! Levels tt [] tt => coq.env.add-indt Decl I),
+    if (Head = ref-head Ref, coq.arguments.implicit Ref Imps, Imps = [_ | _])
+      (@global! => coq.arguments.set-implicit (indt I) Imps) true,
+    C = slot "carrier" (native-kind Head) Keys, Cs = [C],
+    coq.env.projections I [some P], register-field Cs [pr "carrier" P] ff C.
 
   pred generate i:id, i:list inductive, i:list component, i:list (pair id id),
-      i:option inductive, o:inductive, o:list struct-conversion, o:list constant.
-  generate N Parents Cs Names none I Views Packers :-
-    generate-record N Parents Cs Names none I Views Packers.
-  generate N Parents Cs Names (some Root) I Views Packers :-
-    @keep-alg-univs! =>
-      generate-record N Parents Cs Names (some Root) I Views Packers.
-
-  pred generate-record i:id, i:list inductive, i:list component, i:list (pair id id),
-      i:option inductive, o:inductive, o:list struct-conversion, o:list constant.
-  generate-record N Parents Cs Names Root I Views Packers :-
-    packed-carrier Root Carrier,
-    if (Root = none) (coq.univ.new R, Sort = typ R) true,
-    if (Root = some Base)
-      (coq.gref->id (indt Base) BaseName, F is N ^ "To" ^ BaseName)
-      (field-name N "carrier" F),
-    (pi a\ fields N Cs Names [pr "carrier" a] (Tail a)),
-    Ctor is "Make" ^ N,
-    if (Root = some _) (fixed-record-sort Carrier Tail Sort) true,
-    Decl = record N (sort Sort) Ctor (field [coercion regular] F Carrier Tail),
+      o:inductive, o:list struct-conversion, o:list constant.
+  generate N Parents Cs Names I Views Packers :- @keep-alg-univs! ==>
+    fields N Cs Names [] Body,
+    {{ Set }} = sort Ground, field-sorts Body Ground Sort,
+    Ctor is "Make" ^ N, Decl = record N (sort Sort) Ctor Body,
     std.assert-ok! (coq.typecheck-indt-decl Decl) ("Ill-typed structure " ^ N),
-    carrier-levels Carrier Levels,
+    layout-levels Cs Body Levels,
     (@udecl! Levels tt [] tt => coq.env.add-indt Decl I),
     coq.env.global (indt I) ChildTy,
     coq.env.projections I Projections,
     std.map Cs component-key Keys,
-    std.map2 ["carrier" | Keys] Projections field-ref Fields,
+    std.map2 Keys Projections field-ref Fields,
+    std.forall Cs (register-field Cs Fields ff),
     std.assert! (ancestors Parents [] Reversed) "Could not read the ancestors",
     std.rev Reversed Ancestors,
     std.map Ancestors
       (p\v\ std.assert! (parent-view I ChildTy Fields Cs Parents p v)
         "Could not generate an ancestor view") ParentViews,
-    if (Root = some Base)
-      (Projections = [some Projection | _],
-        BaseViews = [conversion I Base Projection coercion-view])
-      (BaseViews = []),
+    std.map-filter Cs (c\v\ sigma key base proj\
+      c = slot key (native-kind (ref-head (indt base))) _, std.mem Fields (pr key proj),
+      v = conversion I base proj coercion-view) BaseViews,
     std.append ParentViews BaseViews Declared,
-    discover-views I Root Cs Fields Declared OtherViews,
+    discover-views I Cs Fields Declared OtherViews,
     std.append Declared OtherViews Views,
     std.forall ParentViews register-parent-view,
-    std.forall Cs (register-field Cs Fields ff),
     std.filter Ancestors (p\ std.mem Parents p) DirectParents,
     std.map DirectParents (p\f\ pack-from-parent N I Cs p f) Packers.
 }}.

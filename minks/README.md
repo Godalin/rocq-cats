@@ -4,6 +4,9 @@ Minks generates flat, universe-polymorphic Rocq structures from registered
 mixins. The independent Dune package is `rocq-minks`. Import
 [`Minks.all`](theories/all.v) to use its three commands.
 
+The [rule audit](doc/implementation-audit.md) compares the formal specification
+with the generator and its executable examples.
+
 ## Quick start
 
 ```coq
@@ -19,12 +22,13 @@ Minks.Mixin HasSecondPoint (A : Type)
   { second_point : A }.
 
 Minks.Struct Pointed
+  extends Type
   with  hasPoint : HasPoint [carrier].
 
 Minks.Struct TwoPoints
   extends Pointed
   with  hasSecondPoint : HasSecondPoint [carrier, hasPoint]
-  exports HasTwoPoints,
+  exports HasTwoPoints [carrier],
           HasSecondPointOn [hasPoint].
 
 Minks.Inspect TwoPoints.
@@ -51,8 +55,8 @@ Minks.Mixin Name binders
   attributes.
 - **Parent applications.** Each parent must be a registered mixin or a
   relative interface exported with field keys by `Minks.Struct`. Declare
-  the ordinary parameters on the child, then supply every ordinary parent
-  argument using one of those parameter names. Pass explicit arguments by
+  the child's ordinary parameters in its header or the enclosing section.
+  Supply each ordinary parent argument using a visible parameter name. Pass explicit arguments by
   position and implicit ordinary arguments by name,
   as in `Parent (A := A) f`. The child uses the explicitness of its own
   binders at call sites. `extends` accepts these parent applications with
@@ -73,8 +77,8 @@ Minks.Mixin Name binders
   1. Read parents from left to right. For each parent, visit the witness
      parameters in their declared order, then the parent witness itself.
      For a relative parent, visit its remaining components instead.
-  2. Place shared witnesses first. Keep first-encounter order within the
-     shared witnesses and within the remaining witnesses.
+  2. Among witnesses whose witness inputs are ready, emit shared witnesses
+     first. Break ties by first encounter.
   3. Insert each witness once its arguments are in scope. Ordinary
      parameters retain the child's order even when witnesses occur between
      them. Ordinary parameters left over after the last witness follow it.
@@ -84,12 +88,15 @@ Minks.Mixin Name binders
   `HasEquiv@{u e} A`, supplies the levels to use for that parent. Explicit
   instances for a shared witness must agree wherever both paths specify a
   level. Rocq infers the remaining levels and constraints.
-- **Section support is partial.** Rocq generalizes the section variables
-  used by a mixin at `End`. Minks still reports the parameter order from
-  inside the section, and mixins declared there cannot serve as parents
-  after `End`. Ordinary arguments in `extends` must be declared on the
-  child itself. Declare reusable mixins outside sections and write their
-  parameters explicitly.
+- **Sections.** Inside a section, a parent application can name a visible
+  section assumption. At each `End`, Rocq generalizes the assumptions used
+  by the class, including those used by its inherited witness types.
+  They become ordinary parameters before the previous binders, including
+  assumptions whose types are registered mixins. Only the declaration's
+  `extends` clause supplies direct parents. Subsequent applications read
+  the Rocq type and implicit arguments for all ordinary binders. For example, a section `Context {A : Type}` can introduce
+  a parent argument that is later supplied as `(A := B)`. Nested sections
+  discharge one at a time. Importing the module preserves this information.
 - **Output.** A successful declaration prints its direct dependencies and
   the full parameter order. Positions shown in a dependency's argument list
   are zero-based indices into that order.
@@ -98,7 +105,7 @@ Minks.Mixin Name binders
 
 ```text
 Minks.Struct Name
-  [extends Parent, ...]
+  [extends Parent ordinaryArg ..., ...]
   [with key [as projection] : Mixin [argumentKey, ...], ...]
   [exports Interface [parameterKeyOrStructure, ...], ...].
 ```
@@ -110,13 +117,16 @@ square brackets.
 
 #### Fields and dependencies
 
-- **Carrier.** The command declares a flat record with a first field
-  keyed by `carrier`. With no parent, the field is `Name_carrier : Type`
-  and coerces to a type. A native Rocq inductive type can supply that
-  field's type when it is usable as a field type. For a native base
-  `Base` the projection is `NameToBase`, a coercion to `Base`. A Minks
-  parent contributes its carrier type and all its components. All listed
-  parents must agree on the carrier type.
+- **Parent layout.** A registered Minks parent contributes its instantiated
+  fields. The first use of a native head `B` generates a Minks record
+  `BCarrier` in the current module and registers it by Rocq identity.
+  `extends B args` applies that base to the given arguments. Its sole
+  field, `carrier`, contains a native value directly. `extends Type` uses
+  `TypeCarrier`. Later declarations reuse the visible base, which is available
+  to `Minks.Inspect` and explicit parent applications. Two independently
+  imported bases for one native head require a qualified parent choice.
+  Rocq rolls back the generated base if the declaration fails.
+  An empty parent list contributes zero fields.
 - **Component identity.** A `with` entry can name a mixin declared with
   `Minks.Mixin` or a relative interface exported with field keys. A key
   identifies a slot for a direct mixin in the combined hierarchy.
@@ -128,16 +138,17 @@ square brackets.
   `key as projection : Mixin` changes the generated projection name.
   Dependency lists, inheritance, and exports continue to use the key.
 - **Field and constructor order.**
-  1. Start with `carrier`.
-  2. Visit direct Minks parents from left to right. Traverse each parent's
+  1. Visit direct parents from left to right. Traverse each parent's
      flattened fields in order and merge matching keys. Place components
      common to two or more direct parents before the other inherited
      components, keeping their first-encounter order within each group.
-  3. Append any new `with` components in declaration order. `MakeName` takes
-     the carrier and all component fields in this resulting order.
+  2. Append any new `with` components in declaration order. `MakeName` takes
+     these fields in the resulting order.
 - **Argument resolution.** At a `with` entry, the available fields are
-  `carrier`, the inherited fields, and the preceding entries in `with`.
-  A bracketed argument list specifies every argument of the mixin in the
+  the inherited fields, and the preceding entries in `with`.
+  A bracketed argument list can also name a visible section assumption.
+  A name shared by an assumption and a field is ambiguous. Omitted lists
+  search fields only. A bracketed argument list specifies every argument of the mixin in the
   order shown by `Minks.Inspect`, including implicit witnesses. An ordinary
   parameter can use any available field of the right type. A mixin witness
   must also match the registered mixin and the dependency keys selected for
@@ -153,6 +164,26 @@ square brackets.
   carrier, its local universe levels come first in their original order,
   with unified levels listed once. Rocq checks the generated fields and
   infers the remaining universe levels, their order, and constraints.
+
+#### Structures declared in sections
+
+- Define a structure in a Rocq section to make its used assumptions ordinary
+  parameters. Its constructor, projections, forgetful views, packing functions
+  and relative interfaces acquire the inputs they use at each `End`.
+  `Minks.Inspect` reads the ordinary parameters and field arguments from
+  the discharged constructor. In field lists, `param:B` refers to the
+  ordinary binder `B`.
+- In a later section, `extends LabelledPoint D` instantiates a discharged
+  parent at the visible input `D`. List its parameters in Rocq binder order.
+  Direct and transitive parent views use the same substitution. Two paths
+  to the same declared ancestor must agree on its inputs.
+- A field-key export can be reused after discharge. For example,
+  `with chosen : LabelledOn [D, carrier]` takes the new ordinary argument
+  before the original fixed field. In a mixin declaration the corresponding
+  parent application is `extends LabelledOn D A`.
+- The current structure command takes ordinary inputs from enclosing sections.
+  Structure headers with explicit binders and named implicit arguments in
+  structure parent applications remain open parts of the formal specification.
 
 #### Conversions and packing
 
@@ -171,7 +202,7 @@ square brackets.
   explicit choices such as two selected points.
 - **Views inferred from fields.** The command also compares the new
   structure with previously declared structures in the same module.
-  Compatible structures on the same carrier get a named view from the
+  Compatible layouts get a named view from the
   strictly larger component set to the smaller one when the conversion
   typechecks and the name is available. Either structure can have been
   declared first. Such inferred views are explicit.
@@ -190,26 +221,26 @@ square brackets.
 #### Relative interfaces with `exports`
 
 - **Selection.** Each listed interface is generated from the same packed
-  field list, in `exports` declaration order. With no key list, the only
-  fixed parameter is `carrier`. A key list additionally fixes those
-  components and all the dependencies needed to type them. The rule applies
-  to any existing key and to either single or multiple inheritance.
+  field list, in `exports` declaration order. A bare export fixes the keys shared by
+  all direct parents. With one parent it fixes that parent's entire layout;
+  with zero parents it fixes zero keys. Brackets select the given keys and
+  their transitive dependencies. An explicit `[]` fixes zero fields.
   Authors choose the interface name. The fixed selections determine its shape.
-- **Packed base.** A selection can include one Minks structure whose carrier
-  and component keys, mixins, and dependencies match those of the exported
+- **Packed base.** A selection can include one Minks structure whose
+  field keys, mixins, and dependencies match those of the exported
   structure. A declared ancestor or a structurally contained record can
-  serve as this base. Its carrier and fields come from its projections.
+  serve as this base. Its fields come from its projections.
   Field keys can appear before or after the base name. A field key already
   supplied by the base is an error. Dependencies of the additional fixed
-  fields can use any of the base's projections. Two complete bases overlap
-  on the carrier.
+  fields can use any of the base's projections.
 - **Generated class and order.**
   1. Make the fixed fields explicit class parameters. Their order is the
-     packed field order restricted to the fixed keys, with `carrier` first.
-     With a packed base, its record replaces `carrier` as the first
+     packed field order restricted to the fixed keys.
+     With a packed base, its record is the first
      parameter and the fields it supplies are omitted from the parameter
-     list. For example, `IsMonoid [hasUnit, Magma]` takes a `Magma`
-     followed by a unit witness on its multiplication.
+     list. For example, `IsMonoidWithPoint [hasPoint, Magma]` takes a `Magma`
+     followed by its selected point. The remaining fields provide associativity
+     and the two unit laws for that point.
   2. Keep each remaining component as an individual field, in its original
      relative order. The constructor is `MakeInterface` and its arguments
      are the fixed parameters followed by these fields.
@@ -249,7 +280,7 @@ square brackets.
   is available as a named function. Coercion and instance registrations
   can be made explicitly.
 - **Assembly in `with`.** The argument list of `with key : Interface`
-  selects the fixed parameters, starting with `carrier`. With the list
+  selects the fixed parameters in order. With the list
   omitted, Minks looks for a unique fixed selection among available
   fields. It then matches the remaining components in constructor order:
   1. Match the registered mixin and its dependency keys after mapping the
@@ -278,9 +309,8 @@ square brackets.
   declared by Minks.
 - **Mixin output.** The direct dependencies and ordered parameter metadata
   use the same format as the declaration summary.
-- **Structure output.** The summary lists the direct Minks parents, or the
-  native base if there are no Minks parents. It reports the carrier,
-  fields in packed order, selected dependency keys, inherited sources,
+- **Structure output.** The summary lists the resolved parents, including generated native bases.
+  It reports fields in packed order, selected dependency keys, inherited sources,
   and instance status. It also lists conversions and
   their registrations, packing functions, and relative interfaces.
 - **Effect.** The command reads the existing declarations and metadata.
@@ -311,8 +341,9 @@ opam exec --switch=rocq-cats -- dune exec -- vsrocqtop
 
 [`_CoqProject`](_CoqProject) maps the built theories and loads Elpi in the
 editor session. The examples cover dependent components and generated
-views in [Algebra](examples/Algebra.v), [Closure](examples/Closure.v), and
-[Lattice](examples/Lattice.v), with focused tests in
-[Commands](examples/Commands.v) and [Universes](examples/Universes.v).
+views in [Algebra](examples/Algebra.v) (magmas through commutative rings),
+[Closure](examples/Closure.v), and [Lattice](examples/Lattice.v), with focused tests in
+[Commands](examples/Commands.v), [Sections](examples/Sections.v) and
+[Universes](examples/Universes.v).
 Use `Set Printing Universes.` before `Print` to examine inferred
 universe instances and constraints.

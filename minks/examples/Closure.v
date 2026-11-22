@@ -28,7 +28,7 @@ Minks.Mixin IsClosureOp (A : Type) (f : A → A)
   extends IsPoset A, IsMonotone A f
   :=
   { closure_extensive : ∀ x, leq x (f x)
-  ; closure_idem : ∀ x, equiv (f (f x)) (f x)
+  ; closure_idem : ∀ x, f (f x) ≈ f x
   }.
 
 (** Extend the inherited map and laws by a supplied fixed point. *)
@@ -36,7 +36,7 @@ Minks.Mixin IsClosureOp (A : Type) (f : A → A)
 Minks.Mixin IsClosedPoint (A : Type) (f : A → A) (x : A)
   extends IsClosureOp A f
   :=
-  { closed_point : equiv (f x) x }.
+  { closed_point : f x ≈ x }.
 
 (** ** Least closed upper bounds
 
@@ -90,9 +90,7 @@ Defined.
 (** Joining with the same element is extensive and idempotent. *)
 
 Definition join_closure (a : L)
-  : @IsClosureOp L (Lattice_hasOrder L)
-      (Lattice_hasEquiv L) (Lattice_isPoset L)
-      (fun x => join x a) (join_monotone a).
+  : IsClosureOp L (fun x => join x a) (isMonotone := join_monotone a).
 Proof.
   constructor.
   - intro x. apply leq_join_l.

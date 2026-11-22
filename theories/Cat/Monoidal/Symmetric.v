@@ -79,7 +79,7 @@ Minks.Struct SymPremonoidalCat
   with  hasTensorSym : HasTensorSym,
         isSymHexagon : IsSymHexagon,
         isSymUnit : IsSymUnit
-  exports HasSymPremonoidal.
+  exports HasSymPremonoidal [carrier].
 
 Notation "'σₚ[' X ';' Y ']'" := (tensor_sym X Y)
   : monoidal_scope.

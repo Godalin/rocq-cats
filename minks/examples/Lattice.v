@@ -22,9 +22,9 @@ Arguments leq {_ _} _ _.
 Minks.Mixin IsPoset (A : Type)
   extends HasEquiv A, HasOrder A
   :=
-  { leq_of_equiv : ∀ x y, equiv x y → leq x y
+  { leq_of_equiv : ∀ x y, x ≈ y → leq x y
   ; leq_trans : ∀ x y z, leq x y → leq y z → leq x z
-  ; leq_antisym : ∀ x y, leq x y → leq y x → equiv x y
+  ; leq_antisym : ∀ x y, leq x y → leq y x → x ≈ y
   }.
 
 (** Choose greatest lower bounds for the selected order. *)
@@ -139,7 +139,7 @@ Minks.Struct JoinSemilattice
 
 Minks.Struct Lattice
   extends MeetSemilattice, JoinSemilattice
-  exports HasLattice,
+  exports HasLattice [carrier],
           IsLattice [isPoset].
 
 Print HasLattice.
@@ -171,7 +171,7 @@ Minks.Struct CompleteLattice
           CompleteMeetSemilattice
   with    hasBottom : HasBottom,
           hasTop : HasTop
-  exports HasCompleteLattice,
+  exports HasCompleteLattice [carrier],
           IsCompleteLattice [isPoset].
 
 (** ** Deriving binary operations
@@ -181,40 +181,30 @@ Minks.Struct CompleteLattice
 Definition CompleteJoinSemilatticeToJoinSemilattice
     (L : CompleteJoinSemilattice)
   : JoinSemilattice
-  := MakeJoinSemilattice L (CompleteJoinSemilattice_hasEquiv L)
-       (CompleteJoinSemilattice_hasOrder L) (CompleteJoinSemilattice_isPoset L)
-       (@HasJoinOfHasAJoin L (CompleteJoinSemilattice_hasOrder L)
-         (CompleteJoinSemilattice_hasAJoin L)).
+  := JoinSemilatticeOfPoset L (HasJoinOfHasAJoin L).
 
 (** Read the binary meet from the chosen family meet. *)
 
 Definition CompleteMeetSemilatticeToMeetSemilattice
     (L : CompleteMeetSemilattice)
   : MeetSemilattice
-  := MakeMeetSemilattice L (CompleteMeetSemilattice_hasEquiv L)
-       (CompleteMeetSemilattice_hasOrder L) (CompleteMeetSemilattice_isPoset L)
-       (@HasMeetOfHasAMeet L (CompleteMeetSemilattice_hasOrder L)
-         (CompleteMeetSemilattice_hasAMeet L)).
+  := MeetSemilatticeOfPoset L (HasMeetOfHasAMeet L).
 
 (** Combine the two derived binary operations on the shared poset. *)
 
 Definition CompleteLatticeToLattice (L : CompleteLattice)
   : Lattice
-  := MakeLattice L (CompleteLattice_hasEquiv L) (CompleteLattice_hasOrder L)
-       (CompleteLattice_isPoset L)
-       (@HasMeetOfHasAMeet L (CompleteLattice_hasOrder L)
-         (CompleteLattice_hasAMeet L))
-       (@HasJoinOfHasAJoin L (CompleteLattice_hasOrder L)
-         (CompleteLattice_hasAJoin L)).
+  := LatticeOfMeetSemilattice (CompleteMeetSemilatticeToMeetSemilattice L)
+       (HasJoinOfHasAJoin L).
 
 (** Use the derived operations and the same selected bottom and top. *)
 
 Definition CompleteLatticeToBoundedLattice (L : CompleteLattice)
   : BoundedLattice
   := let F := CompleteLatticeToLattice L in
-     MakeBoundedLattice F (Lattice_hasEquiv F) (Lattice_hasOrder F)
-       (Lattice_isPoset F) (Lattice_hasMeet F) (Lattice_hasJoin F)
-       (CompleteLattice_hasBottom L) (CompleteLattice_hasTop L).
+     BoundedLatticeOfLatticeWithBottom
+       (LatticeWithBottomOfLattice F (CompleteLattice_hasBottom L))
+       (CompleteLattice_hasTop L).
 
 (** ** Checking the selected components
 
@@ -262,41 +252,41 @@ Context (L : CompleteLattice).
 
 Definition subset_ajoin (P : L → Type)
   : L
-  := ajoin (I := sigT P) (@projT1 L P).
+  := ajoin (@projT1 _ P).
 
 (** Every member lies below the selected join. *)
 
 Definition leq_subset_ajoin (P : L → Type) (x : L) (p : P x)
   : leq x (subset_ajoin P)
-  := leq_ajoin (@projT1 L P) (@existT L P x p).
+  := leq_ajoin (@projT1 _ P) (existT P x p).
 
 (** Every upper bound lies above the selected join. *)
 
 Definition subset_ajoin_leq (P : L → Type) (b : L)
     (upper : ∀ x, P x → leq x b)
   : leq (subset_ajoin P) b
-  := ajoin_leq (@projT1 L P) b
-       (fun t : sigT P => upper (@projT1 L P t) (@projT2 L P t)).
+  := ajoin_leq (@projT1 _ P) b
+       (fun t : sigT P => upper (projT1 t) (projT2 t)).
 
 (** Select the greatest lower bound of the same kind of subset. *)
 
 Definition subset_ameet (P : L → Type)
   : L
-  := ameet (I := sigT P) (@projT1 L P).
+  := ameet (@projT1 _ P).
 
 (** The selected meet lies below every member. *)
 
 Definition subset_ameet_leq (P : L → Type) (x : L) (p : P x)
   : leq (subset_ameet P) x
-  := ameet_leq (@projT1 L P) (@existT L P x p).
+  := ameet_leq (@projT1 _ P) (existT P x p).
 
 (** Every lower bound lies below the selected meet. *)
 
 Definition leq_subset_ameet (P : L → Type) (b : L)
     (lower : ∀ x, P x → leq b x)
   : leq b (subset_ameet P)
-  := leq_ameet (@projT1 L P) b
-       (fun t : sigT P => lower (@projT1 L P t) (@projT2 L P t)).
+  := leq_ameet (@projT1 _ P) b
+       (fun t : sigT P => lower (projT1 t) (projT2 t)).
 
 End CompleteLatticeSubsets.
 
@@ -310,7 +300,7 @@ Example complete_lattice_order_coherence (L : CompleteLattice)
 (** Empty families recover the selected bounds in the setoid equality. *)
 
 Definition ajoin_empty (L : CompleteLattice)
-  : equiv (ajoin (fun t : Empty_set => match t return L with end)) (bottom : L).
+  : ajoin (fun t : Empty_set => match t return L with end) ≈ bottom.
 Proof.
   apply leq_antisym.
   - apply ajoin_leq. intros k. destruct k.
@@ -318,7 +308,7 @@ Proof.
 Defined.
 
 Definition ameet_empty (L : CompleteLattice)
-  : equiv (ameet (fun t : Empty_set => match t return L with end)) (top : L).
+  : ameet (fun t : Empty_set => match t return L with end) ≈ top.
 Proof.
   apply leq_antisym.
   - apply leq_top.

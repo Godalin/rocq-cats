@@ -44,10 +44,9 @@ let declare_mixin ~atts decl parents =
   let module Elpi = Elpi_plugin.Rocq_elpi_vernacular in
   let module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd in
   let name = Libnames.string_of_path (Nametab.path_of_global reference) in
-  let values = Mixin_parameters.remember reference roles in
-  let args = Cmd.String name :: List.map (fun pos -> Cmd.Int pos) values @
-    List.map (fun (parent, _, _) -> Cmd.String (Libnames.string_of_qualid parent)) parents
-  in
+  let direct = List.map (fun (p, _, _) -> Nametab.locate p) parents in
+  Mixin_parameters.remember reference direct roles;
+  let args = [Cmd.String name] in
   (* The class and the metadata belong to the same vernacular transaction. *)
   let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
   let origin = CAst.make ("minks.declaration", Attributes.VernacFlagEmpty) in

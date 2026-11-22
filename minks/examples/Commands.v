@@ -1,6 +1,8 @@
 From Stdlib Require Import Utf8.
 From Minks Require Import all.
-From MinksExamples Require Import Algebra.
+From MinksExamples Require Import
+  Algebra
+  Sections.
 
 (** * Checks for the public commands
 
@@ -21,31 +23,33 @@ Example client_setoid_view (M : ClientMonoid)
 (** The imported record's projection instances are available to clients. *)
 
 Definition imported_assoc (M : Algebra.Monoid) (x y z : M)
-  : equiv (mul (mul x y) z) (mul x (mul y z))
+  : (x * y) * z ≈ x * (y * z)
   := mul_assoc x y z.
 
 (** Use the exported class as a mixin after importing its declaration.
     Its body can refer to the assembled class, and its type lists the
-    equivalence, multiplication, associativity and unit separately. *)
+    equivalence, multiplication, associativity, point and unit laws separately. *)
 
 Minks.Mixin HasCentralElement (A : Type)
   extends HasMonoid A, HasMagma A
   :=
   { central_element : A
   ; central_unit :
-      equiv (@unit A _ _ (@HasMonoid_hasUnit A hasMonoid)) unit
-  ; central_comm : ∀ x, equiv (mul central_element x) (mul x central_element)
+      @point _ (HasMonoid_hasPoint hasMonoid) ≈ point
+  ; central_comm : ∀ x, central_element * x ≈ x * central_element
   }.
 
 Check @HasCentralElement
   : ∀ (A : Type) (E : HasEquiv A) (M : @HasMagma A E),
-      @IsSemigroup A E M → @HasUnit A E M → Type.
+      @IsSemigroup A E M → ∀ P : HasPoint A, @IsUnitAt A E M P → Type.
 
 Minks.Struct MonoidByComponents
+  extends Type
   with  chosenEquiv : HasEquiv,
         chosenMagma : HasMagma,
         chosenAssoc : IsSemigroup,
-        chosenUnit : HasUnit,
+        chosenPoint : HasPoint,
+        chosenUnitLaw : IsUnitAt,
         hasMonoid : HasMonoid,
         central : HasCentralElement.
 
@@ -53,17 +57,18 @@ Example assembled_monoid_uses_existing_fields (M : MonoidByComponents)
   : MonoidByComponents_hasMonoid M =
       MakeHasMonoid M (MonoidByComponents_chosenEquiv M)
         (MonoidByComponents_chosenMagma M) (MonoidByComponents_chosenAssoc M)
-        (MonoidByComponents_chosenUnit M)
+        (MonoidByComponents_chosenPoint M) (MonoidByComponents_chosenUnitLaw M)
   := eq_refl.
 
 Minks.Struct MonoidFromSemigroup
   extends Semigroup
   with  hasMonoid : HasMonoid.
 
-Example assembled_monoid_adds_only_the_unit (S : Semigroup)
-    (U : @HasUnit S (Semigroup_hasEquiv S) (Semigroup_hasMagma S))
-  : HasMonoid_hasUnit
-      (MonoidFromSemigroup_hasMonoid (MonoidFromSemigroupOfSemigroup S U)) = U
+Example assembled_monoid_adds_unit_data (S : Semigroup)
+    (P : HasPoint S)
+    (U : IsUnitAt S (hasPoint := P))
+  : HasMonoid_isUnitAt
+      (MonoidFromSemigroup_hasMonoid (MonoidFromSemigroupOfSemigroup S P U)) = U
   := eq_refl.
 
 (** Reject a shared multiplication with incompatible selected dependencies. *)
@@ -100,22 +105,22 @@ Set Universe Polymorphism.
 Minks.Mixin IsNamedPoint (A : Type) (x : A)
   extends HasEquiv A
   :=
-  { named_point_refl : equiv x x }.
+  { named_point_refl : x ≈ x }.
 
 Minks.Mixin IsLeftPoint (A : Type) (x y : A)
   extends HasPoint A, IsNamedPoint A x
   :=
-  { left_point_refl : equiv y y }.
+  { left_point_refl : y ≈ y }.
 
 Minks.Mixin IsRightPoint (A : Type) (x y : A)
   extends IsNamedPoint A x
   :=
-  { right_point_refl : equiv y y }.
+  { right_point_refl : y ≈ y }.
 
 Minks.Mixin IsBothPoints (A : Type) (x y z : A)
   extends IsLeftPoint A x y, IsRightPoint A x z
   :=
-  { both_points_refl : equiv x x }.
+  { both_points_refl : x ≈ x }.
 
 (** Check the order of the shared and branch-specific parameters. *)
 
@@ -202,6 +207,7 @@ Minks.Mixin FlagPair (P Q : HasFlag)
   { flag_pair : bool * bool := (@flag P, @flag Q) }.
 
 Minks.Struct OneFlag
+  extends Type
   with  hasFlag : HasFlag,
         hasPair : FlagPair.
 
@@ -209,10 +215,11 @@ Check OneFlag_hasPair
   : ∀ F : OneFlag, FlagPair (OneFlag_hasFlag F) (OneFlag_hasFlag F).
 
 Minks.Struct TwoFlags
+  extends Type
   with  leftFlag : HasFlag,
         rightFlag : HasFlag
   exports HasTwoFlags,
-          HasRightFlag [leftFlag].
+          HasRightFlag [carrier, leftFlag].
 
 Fail Definition ambiguous_exported_flag (A : Type) (F : HasTwoFlags A)
   : HasFlag
@@ -234,7 +241,7 @@ Fail Minks.Struct AmbiguousFlags
 Minks.Struct PairedFlags
   extends TwoFlags
   with  hasPair : FlagPair [leftFlag, rightFlag]
-  exports HasPairedFlags.
+  exports HasPairedFlags [carrier].
 
 Check PairedFlags_hasPair
   : ∀ F : PairedFlags, FlagPair (PairedFlags_leftFlag F) (PairedFlags_rightFlag F).
@@ -249,6 +256,7 @@ Example paired_flags_to_right_flag (A : Type) (F : HasPairedFlags A)
 (** A later export can supply a view as soon as its target is registered. *)
 
 Minks.Struct LeftFlag
+  extends Type
   with  leftFlag : HasFlag
   exports HasLeftFlag.
 
@@ -262,6 +270,7 @@ Example paired_flags_to_left_flag (A : Type) (F : HasPairedFlags A)
   := eq_refl.
 
 Minks.Struct SelectedFlag
+  extends Type
   with  selectedFlag : HasFlag
   exports HasSelectedFlag.
 
@@ -280,6 +289,7 @@ Minks.Mixin HasFlagComparison (A : Type)
 Check @HasFlagComparison : ∀ (L R : HasFlag) (A : Type), Type.
 
 Minks.Struct TwoFlagsByExport
+  extends Type
   with  flags : HasTwoFlags.
 
 Example assembled_flags_remain_distinct
@@ -292,6 +302,7 @@ Example assembled_flags_remain_distinct
   := conj eq_refl eq_refl.
 
 Minks.Struct OtherTwoFlags
+  extends Type
   with  firstFlag : HasFlag,
         secondFlag : HasFlag.
 
@@ -314,10 +325,12 @@ Minks.Inspect RightFlagByExport.
 (** Discover a proper structural view once both records exist. *)
 
 Minks.Struct EarlierPointed
+  extends Type
   with  chosenPoint : HasPoint,
         chosenEquiv : HasEquiv.
 
 Minks.Struct LaterPoint
+  extends Type
   with  chosenPoint : HasPoint.
 
 Example earlier_view_preserves_point (S : EarlierPointed)
@@ -326,6 +339,7 @@ Example earlier_view_preserves_point (S : EarlierPointed)
   := eq_refl.
 
 Minks.Struct LaterPointed
+  extends Type
   with  chosenPoint : HasPoint,
         secondEquiv : HasEquiv.
 
@@ -336,3 +350,20 @@ Example later_view_preserves_point (S : LaterPointed)
 
 Fail Check (λ S : EarlierPointed, (S : LaterPoint)).
 Fail Check LaterPointToEarlierPointed.
+
+(** The imported mixin still exposes the implicit carrier generalized by Rocq. *)
+
+Minks.Mixin ImportedChoice (B : Type) (x : B)
+  extends Sections.HasAgain (A := B) x
+  := { imported_choice : B }.
+
+Section ImportedFamily.
+Context (D : Type).
+Minks.Struct ImportedLabel
+  extends Sections.FurtherLabel D.
+End ImportedFamily.
+
+Example imported_label_view (D : Type) (P : ImportedLabel D)
+  : ImportedLabelToLabelledPoint D P =
+      FurtherLabelToLabelledPoint D (ImportedLabelToFurtherLabel D P)
+  := eq_refl.

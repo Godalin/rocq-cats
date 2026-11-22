@@ -8,7 +8,10 @@
  (package rocq-minks)
  (deps
   Algebra.vo
+  NativeParents.vo
+  Sections.vo
   Closure.vo
   Commands.vo
+  Sharing.vo
   Lattice.vo
   Universes.vo))

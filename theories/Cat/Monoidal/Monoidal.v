@@ -17,4 +17,4 @@ From Cats Require Export
 
 Minks.Struct MonoidalCat
   extends SemigroupalCat, PremonoidalCat
-  exports HasMonoidal.
+  exports HasMonoidal [carrier].

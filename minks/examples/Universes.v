@@ -104,6 +104,26 @@ Record FixedCarrier@{u e}
   ; fixed_equiv : fixed_carrier → fixed_carrier → Type@{e}
   }.
 
+(** A sort parent and a native record request different concrete coercions.
+    Neither ordering can merge the two types under the same field key. *)
+
+Fail Minks.Struct ConflictingNativeCarrier
+  extends Type, FixedCarrier.
+
+Fail Minks.Struct ConflictingSortCarrier
+  extends FixedCarrier, Type.
+
+Record NativeMap
+  :=
+  { run_native_map :> bool → bool }.
+
+Minks.Struct PackedMap
+  extends NativeMap.
+
+Example packed_map_computes (f : NativeMap) (x : bool)
+  : (MakePackedMap f) x = f x
+  := eq_refl.
+
 Minks.Mixin HasFixedPoint (S : FixedCarrier)
   :=
   { fixed_point : S }.

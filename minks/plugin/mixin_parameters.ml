@@ -8,11 +8,13 @@ type parameter = {
 
 type role =
   | Mixin of Id.t option
-  | Value of Glob_term.binding_kind
+  | Value
+
+type selection = Witness of GlobRef.t | Ordinary of constr_expr
 
 type dependency = {
   key : Id.t option;
-  reference : GlobRef.t;
+  selection : selection;
   arguments : Id.t list;
   instance : instance_expr option;
   parameter : parameter;
@@ -23,20 +25,31 @@ let parameter_roles = Summary.ref ~name:"minks-parameter-roles" Indmap_env.empty
 
 let save_roles =
   Libobject.declare_object
-    (Libobject.superglobal_object_nodischarge "MINKS-PARAMETER-ROLES"
-      ~cache:(fun (ind, roles) -> parameter_roles := Indmap_env.add ind roles !parameter_roles)
-      ~subst:(Some (fun (subst, (ind, roles)) -> Mod_subst.subst_ind subst ind, roles)))
+    (Libobject.superglobal_object "MINKS-PARAMETER-ROLES"
+      ~cache:(fun (ind, parents, roles) ->
+        parameter_roles := Indmap_env.add ind (parents, roles) !parameter_roles)
+      ~discharge:(fun (ind, parents, roles) ->
+        let prefix = Global.section_instance (GlobRef.IndRef ind) in
+        Some (ind, parents, Array.fold_left (fun rs _ -> Value :: rs) roles prefix))
+      ~subst:(Some (fun (subst, (ind, parents, roles)) ->
+        Mod_subst.subst_ind subst ind,
+        List.map (Globnames.subst_global_reference subst) parents, roles)))
+
+let value_positions roles =
+  List.filter_map Fun.id (List.mapi (fun i -> function Mixin _ -> None | _ -> Some i) roles)
 
 type combination = {
   constructor : GlobRef.t;
   components : Id.t list;
+  ordinary_fields : Id.Set.t;
 }
 
 let combinations = Summary.ref ~name:"minks-combinations" Indmap_env.empty
 
 let save_combination =
   Libobject.declare_object
-    (Libobject.superglobal_object_nodischarge "MINKS-COMBINATION"
+    (Libobject.superglobal_object "MINKS-COMBINATION"
+      ~discharge:(fun x -> Some x)
       ~cache:(fun (ind, shape) -> combinations := Indmap_env.add ind shape !combinations)
       ~subst:(Some (fun (subst, (ind, shape)) ->
         Mod_subst.subst_ind subst ind,
@@ -90,6 +103,7 @@ let dependency_type ty names =
   let argument operand =
     match Constr.kind operand with
     | Rel i -> List.nth names (i - 1)
+    | Var id -> id
     | _ -> error "Mixin dependencies must use earlier parameters directly."
   in
   reference, instance, List.map argument operands
@@ -131,7 +145,7 @@ let binder_name reference reserved key =
 
 let add_dependency env reserved dependencies reference instance arguments key =
   let same d =
-    Environ.QGlobRef.equal env d.reference reference &&
+    (match d.selection with Witness r -> Environ.QGlobRef.equal env r reference | Ordinary _ -> false) &&
     (match d.key, key with Some x, Some y -> Id.equal x y | _ -> true) in
   match List.filter same dependencies with
   | [d] ->
@@ -148,7 +162,7 @@ let add_dependency env reserved dependencies reference instance arguments key =
   | [] ->
     let name = binder_name reference reserved key in
     let parameter = dependency_parameter reference name instance arguments in
-    { key; reference; arguments; instance; parameter; shared = false } :: dependencies, name
+    { key; selection = Witness reference; arguments; instance; parameter; shared = false } :: dependencies, name
   | _ -> error "More than one selected component matches an inherited mixin."
 
 let argument_name own term =
@@ -184,6 +198,37 @@ let take_argument kind ann positional named =
         | None -> error ("Pass implicit ordinary parameter " ^ name ^ " by name."))
      | Anonymous -> error "An implicit ordinary parameter used in extends must have a name.")
 
+(* A virtual mixin retains the ordinary binders of the exported layout. *)
+let add_ordinary_field instance key ty names reserved dependencies =
+  let ty, arguments = match Constr.kind ty with
+    | Sort (Sorts.Type u) ->
+      let sort = match instance, Univ.Universe.level u with
+        | Some (_, levels), Some level ->
+          (match level_syntax levels level with
+           | Glob_term.UNamed level -> None, Glob_term.UNamed [level, 0]
+           | Glob_term.UAnonymous rigid -> None, Glob_term.UAnonymous rigid)
+        | _ -> Constrexpr_ops.expr_Type_sort in
+      CAst.make (CSort sort), []
+    | _ ->
+      let head, levels, args = dependency_type ty names in
+      let levels = Option.bind instance (fun i -> instance_syntax i levels) in
+      CAst.make (CAppExpl ((qualify head, levels), List.map variable args)), args in
+  let same d = match d.selection, d.key with
+    | Ordinary _, Some k -> Id.equal key k
+    | _ -> false in
+  match List.find_opt same dependencies with
+  | Some d ->
+    (match d.selection with
+     | Ordinary other when Constrexpr_ops.constr_expr_eq ty other ->
+       List.map (fun item -> if same item then { item with shared = true } else item)
+         dependencies, d.parameter.name
+     | _ -> error "Inherited exports disagree on the type of an ordinary field.")
+  | None ->
+    let name = Namegen.next_ident_away key reserved in
+    let parameter = parameter name (Default Glob_term.Explicit) ty in
+    { key = Some key; selection = Ordinary ty; arguments; instance = None;
+      parameter; shared = false } :: dependencies, name
+
 let expand_combination env reference syntax_instance instance shape names dependencies reserved =
   let ctor_ty, _ = Typeops.type_of_global_in_context env shape.constructor in
   let rec skip count ty =
@@ -195,10 +240,13 @@ let expand_combination env reference syntax_instance instance shape names depend
   let rec expand dependencies reserved names keys ty =
     match keys, Constr.kind ty with
     | key :: keys, Prod (_, ty, rest) ->
-      let component, levels, arguments = dependency_type ty names in
-      let levels = Option.bind instance (fun i -> instance_syntax i levels) in
       let dependencies, name =
-        add_dependency env reserved dependencies component levels arguments (Some key) in
+        if Id.Set.mem key shape.ordinary_fields then
+          add_ordinary_field instance key ty names reserved dependencies
+        else
+          let component, levels, arguments = dependency_type ty names in
+          let levels = Option.bind instance (fun i -> instance_syntax i levels) in
+          add_dependency env reserved dependencies component levels arguments (Some key) in
       expand dependencies (Id.Set.add name reserved) (name :: names) keys rest
     | [], _ -> dependencies, reserved, List.rev names
     | _ -> error "The exported mixin does not match its component metadata."
@@ -219,8 +267,9 @@ let inheritance own parents =
       | GlobRef.IndRef ind -> ind
       | _ -> error "Expected a registered Minks mixin." in
     let roles = match Indmap_env.find_opt ind !parameter_roles with
-      | Some roles -> roles
+      | Some (_, roles) -> roles
       | None -> error "Expected a registered Minks mixin." in
+    let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
     let combination = Indmap_env.find_opt ind !combinations in
     let ty, context = Typeops.type_of_global_in_context env reference in
     let instance = Option.map (fun (qs, us) ->
@@ -233,18 +282,22 @@ let inheritance own parents =
         add_dependency env reserved dependencies reference instance arguments key in
       dependencies, Id.Set.add name reserved, name
     in
-    let rec add_parameters dependencies reserved names roles rest positional named =
+    let rec add_parameters dependencies reserved names roles implicits rest positional named =
+      let implicit, remaining = match implicits with
+        | [] -> None, []
+        | implicit :: remaining -> implicit, remaining in
       match roles, Constr.kind rest with
       | _, LetIn (_, value, _, rest) ->
-        add_parameters dependencies reserved names roles (Vars.subst1 value rest) positional named
+        add_parameters dependencies reserved names roles implicits (Vars.subst1 value rest) positional named
       | Mixin key :: roles, Prod (_, ty, rest) ->
         let dependency, levels, arguments = dependency_type ty names in
         let levels = Option.bind instance (fun i -> instance_syntax i levels) in
         let dependencies, reserved, name = add dependencies reserved dependency levels arguments key in
-        add_parameters dependencies reserved (name :: names) roles rest positional named
-      | Value kind :: roles, Prod (ann, _, rest) ->
+        add_parameters dependencies reserved (name :: names) roles remaining rest positional named
+      | Value :: roles, Prod (ann, _, rest) ->
+        let kind = Impargs.binding_kind_of_status implicit in
         let name, positional, named = take_argument kind ann positional named in
-        add_parameters dependencies reserved (name :: names) roles rest positional named
+        add_parameters dependencies reserved (name :: names) roles remaining rest positional named
       | [], Sort _ ->
         if positional <> [] || named <> [] then
           error "Unexpected or repeated ordinary argument in extends.";
@@ -259,17 +312,31 @@ let inheritance own parents =
            deps, reserved, view :: views)
       | _ -> error "The parent mixin parameters do not match its Minks declaration."
     in
-    add_parameters dependencies reserved [] roles ty positional named
+    add_parameters dependencies reserved [] roles implicits ty positional named
   in
   let dependencies, _, views = List.fold_left inherit_parent ([], own, []) parents in
-  let shared, others = List.partition (fun d -> d.shared) (List.rev dependencies) in
-  shared @ others, List.rev views
+  let rec order pending =
+    match pending with
+    | [] -> []
+    | _ ->
+      let ready d = List.for_all (fun arg ->
+        not (List.exists (fun prior -> Id.equal prior.parameter.name arg) pending)
+      ) d.arguments in
+      let next = match List.find_opt (fun d -> d.shared && ready d) pending with
+        | Some d -> d
+        | None -> (match List.find_opt ready pending with
+          | Some d -> d
+          | None -> error "Cyclic inherited mixin dependencies.") in
+      next :: order (List.filter (fun d ->
+        not (Id.equal d.parameter.name next.parameter.name)) pending)
+  in
+  order (List.rev dependencies), List.rev views
 
 let ordinary_parameters binders =
   List.concat_map (function
     | CLocalAssum (names, relevance, Default kind, ty) ->
       List.map (fun name ->
-        (name.CAst.v, (CLocalAssum ([name], relevance, Default kind, ty), Value kind))
+        (name.CAst.v, (CLocalAssum ([name], relevance, Default kind, ty), Value))
       ) names
     | _ -> error "Mixin value parameters must be ordinary binders."
   ) binders
@@ -296,7 +363,8 @@ let order_parameters ordinary inherited =
         match Id.Map.find_opt name positions with None -> last | Some i -> max last i
       ) (-1) dependency.arguments in
       let index, ordinary, output = emit_through last index ordinary output in
-      index, ordinary, (dependency.parameter.binder, Mixin dependency.key) :: output
+      let role = match dependency.selection with Witness _ -> Mixin dependency.key | Ordinary _ -> Value in
+      index, ordinary, (dependency.parameter.binder, role) :: output
     ) (0, ordinary, []) inherited in
   List.rev_append inherited (List.map snd ordinary)
 
@@ -306,34 +374,45 @@ let add_to_declaration parents decl =
   let own = List.fold_left (fun set (name, _) ->
     match name with Name id -> Id.Set.add id set | Anonymous -> set
   ) Id.Set.empty ordinary in
-  let inherited, views = inheritance own parents in
+  let visible = Id.Set.union own (Environ.ids_of_named_context_val
+    (Environ.named_context_val (Global.env ()))) in
+  let inherited, views = inheritance visible parents in
   let binders, roles = List.split (order_parameters ordinary inherited) in
   ((name, (binders @ views, extra), sort, fields), notations), roles
 
-let remember reference roles =
+let remember reference parents roles =
   let ind = match reference with
     | GlobRef.IndRef ind -> ind
     | _ -> error "A mixin must be a record declaration." in
-  Lib.add_leaf (save_roles (ind, roles));
-  List.filter_map (fun (pos, role) ->
-    match role with Mixin _ -> None | Value _ -> Some pos
-  ) (List.mapi (fun pos role -> pos, role) roles)
+  Lib.add_leaf (save_roles (ind, parents, roles))
 
 let () =
   let open Elpi.API in
   let open BuiltInPredicate in
   let module Rocq = Elpi_plugin.Rocq_elpi_HOAS in
   ignore (BuiltIn.declare ~file_name:"minks.combinations" [
+    BuiltIn.MLCode (Pred ("minks.mixin-header",
+      In (Rocq.inductive, "Registered class",
+      Out (BuiltInData.list Rocq.gref, "Direct parents",
+      Out (BuiltInData.list BuiltInData.int, "Ordinary binder positions",
+      Easy "Read the mixin header in the current section context."))),
+      (fun ind _ _ ~depth:_ ->
+        match Indmap_env.find_opt ind !parameter_roles with
+        | None -> raise No_clause
+        | Some (parents, roles) -> (((), Some parents), Some (value_positions roles)))),
+      BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.register-combination",
       In (Rocq.inductive, "Class",
       In (Rocq.gref, "Constructor",
       In (BuiltInData.int, "Parameter count",
       In (BuiltInData.list BuiltInData.string, "Component keys",
-      Easy "Register an exported class for Mixin inheritance.")))),
-      (fun ind constructor count components ~depth:_ ->
-        let roles = List.init count (fun _ -> Value Glob_term.Explicit) in
-        ignore (remember (GlobRef.IndRef ind) roles);
+      In (BuiltInData.list BuiltInData.string, "Ordinary field keys",
+      Easy "Register an exported class for Mixin inheritance."))))),
+      (fun ind constructor count components ordinary ~depth:_ ->
+        let roles = List.init count (fun _ -> Value) in
+        remember (GlobRef.IndRef ind) [] roles;
         let components = List.map Id.of_string components in
-        Lib.add_leaf (save_combination (ind, { constructor; components })))),
+        let ordinary_fields = Id.Set.of_list (List.map Id.of_string ordinary) in
+        Lib.add_leaf (save_combination (ind, { constructor; components; ordinary_fields })))),
       BuiltIn.DocAbove)
   ])
