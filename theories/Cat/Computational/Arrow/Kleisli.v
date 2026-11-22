@@ -55,7 +55,7 @@ Next Obligation.
   transitivity ((st[hasStrength M; Z; Y] ∘ (id ⊗ η[M] Y)) ∘
     (id ⊗ f)).
   - rewrite comp_assoc. apply comp_proper; [reflexivity |].
-    pose proof (@tensor_map_comp C MC (HasMonoidal_interchange MC) Z Z Z X Y (M Y)
+    pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z Z X Y (M Y)
       id id (η[M] Y) f) as H.
     rewrite comp_id_l in H. exact H.
   - rewrite (strongmonad_unit M Z Y). reflexivity.
@@ -69,7 +69,7 @@ Next Obligation.
   transitivity ((st[hasStrength M; Z; W] ∘
     (id ⊗ kleisli_extend M g)) ∘ (id ⊗ f)).
   - rewrite comp_assoc. apply comp_proper; [reflexivity |].
-    pose proof (@tensor_map_comp C MC (HasMonoidal_interchange MC) Z Z Z X (M Y) (M W)
+    pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z Z X (M Y) (M W)
       id id (kleisli_extend M g) f) as H.
     rewrite comp_id_l in H. exact H.
   - rewrite (strength_kleisli M g), !comp_assoc. reflexivity.
@@ -84,16 +84,16 @@ Next Obligation.
     fmap_id, !comp_assoc.
   apply comp_proper; [reflexivity |].
   transitivity ((h ⊗ f)%hom).
-  - pose proof (@tensor_map_comp C MC (HasMonoidal_interchange MC) Z Z W X (M Y) (M Y)
+  - pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z W X (M Y) (M Y)
       h id id f) as H.
     rewrite comp_id_l, comp_id_r in H. symmetry. exact H.
-  - pose proof (@tensor_map_comp C MC (HasMonoidal_interchange MC) Z W W X X (M Y)
+  - pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z W W X X (M Y)
       id h f id) as H.
     rewrite comp_id_l, comp_id_r in H. exact H.
 Defined.
 Next Obligation.
   change ((@Hom C) X (M Y)) in f.
-  change (return[M; λ[Y]] ∘K[M] kleisli_context (𝐈[MC]) f ≈
+  change (return[M; λ[Y]] ∘K[M] kleisli_context 𝐈 f ≈
     f ∘K[M] return[M; λ[X]]).
   rewrite kleisli_comp_pure_l, kleisli_comp_pure_r.
   unfold kleisli_context. rewrite <- comp_assoc,
@@ -109,11 +109,11 @@ Next Obligation.
   rewrite kleisli_comp_pure_l, kleisli_comp_pure_r.
   unfold kleisli_context.
   rewrite <- comp_assoc, (strength_assoc (hasStrength M) Z W Y).
-  pose proof (@tensor_map_comp C MC (HasMonoidal_interchange MC) Z Z Z
+  pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z Z
     (W ⊗ X) (W ⊗ M Y) (M (W ⊗ Y)) id id
     st[hasStrength M; W; Y] (id ⊗ f)) as Ht.
   rewrite comp_id_l in Ht.
-  pose proof (tensor_assoc_sequence_natural (AC := MC) (X := Z) (X' := Z) (Y := W) (Y' := W) (Z := X) (Z' := (M Y))
+  pose proof (tensor_assoc_sequence_natural (X := Z) (X' := Z) (Y := W) (Y' := W) (Z := X) (Z' := (M Y))
     id id f) as Ha.
   rewrite tensor_sequence_id in Ha.
   rewrite Ht, !comp_assoc.

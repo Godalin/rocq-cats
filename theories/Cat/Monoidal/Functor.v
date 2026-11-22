@@ -2,6 +2,7 @@ From Cats Require Export
   Cat.Monoidal.Monoidal.
 
 Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Lax Monoidal Functors
 
@@ -44,7 +45,7 @@ Record LaxMonoidalFct {C D : Cat}
 
   (** 单位比较指向来源单位对象的像。 *)
 
-  ; lax_unit : Hom (𝐈[MD]) (LaxMonoidalFctToFct (𝐈[MC]))
+  ; lax_unit : Hom 𝐈 (LaxMonoidalFctToFct 𝐈)
 
   (** The tensorator retains its component maps and their naturality. *)
 
@@ -60,36 +61,32 @@ Record LaxMonoidalFct {C D : Cat}
   (** 左单位相干律使用给定的来源及目标单位子。 *)
 
   ; lax_unit_l (X : @Ob C)
-    : fmap LaxMonoidalFctToFct (tensor_unitor_l (HasTensorUnitors := MC) X).1 ∘
-        lax_tensorN (𝐈[MC], X) ∘
+    : fmap LaxMonoidalFctToFct λ[X] ∘
+        lax_tensorN (𝐈, X) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) lax_unit id) ≈
-        (tensor_unitor_l (HasTensorUnitors := MD)
-          (LaxMonoidalFctToFct X)).1
+        λ[LaxMonoidalFctToFct X]
 
   (** Right-unit coherence uses those same named monoidal structures. *)
 
   (** 右单位相干律使用同一对具名幺半结构。 *)
 
   ; lax_unit_r (X : @Ob C)
-    : fmap LaxMonoidalFctToFct (tensor_unitor_r (HasTensorUnitors := MC) X).1 ∘
-        lax_tensorN (X, 𝐈[MC]) ∘
+    : fmap LaxMonoidalFctToFct ρ[X] ∘
+        lax_tensorN (X, 𝐈) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) id lax_unit) ≈
-        (tensor_unitor_r (HasTensorUnitors := MD)
-          (LaxMonoidalFctToFct X)).1
+        ρ[LaxMonoidalFctToFct X]
 
   (** Associativity coherence retains the selected associators. *)
 
   (** 结合相干律保留选定的结合子。 *)
 
   ; lax_assoc (X Y Z : @Ob C)
-    : fmap LaxMonoidalFctToFct (tensor_assoc (HasTensorAssoc := MC) X Y Z).1 ∘
-        lax_tensorN (tensor (HasBinoidal := MC) X Y, Z) ∘
+    : fmap LaxMonoidalFctToFct α[X; Y; Z] ∘
+        lax_tensorN (X ⊗ Y, Z) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) (lax_tensorN (X, Y)) id) ≈
-        lax_tensorN (X, tensor (HasBinoidal := MC) Y Z) ∘
+        lax_tensorN (X, Y ⊗ Z) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) id (lax_tensorN (Y, Z))) ∘
-        (tensor_assoc (HasTensorAssoc := MD)
-          (LaxMonoidalFctToFct X) (LaxMonoidalFctToFct Y)
-          (LaxMonoidalFctToFct Z)).1
+        α[LaxMonoidalFctToFct X; LaxMonoidalFctToFct Y; LaxMonoidalFctToFct Z]
   }.
 
 (** The direct constructor keeps the supplied functor, comparisons and
@@ -216,7 +213,7 @@ Arguments monoidal_tensor_iso {_ _ _ _} _ _ _.
 
 Definition MonoidalUnitIso {C D : Cat}
     {MC : HasMonoidal C} {MD : HasMonoidal D} (F : MonoidalFct MC MD)
-  : 𝐈[MD] ≅ F (𝐈[MC])
+  : 𝐈 ≅ F 𝐈
   := (φ₀[F]; monoidal_unit_iso F).
 
 (** The natural isomorphism is a transparent view of the parent's tensorator

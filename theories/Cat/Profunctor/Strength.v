@@ -30,7 +30,7 @@ Local Open Scope ob_scope.
 Definition ProfContext@{u p +} {C : Cat} (MC : HasMonoidal C)
     (P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})) (Z : @Ob C)
   : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
-  := ProfReindex (@TensorAtLF C MC Z) (@TensorAtLF C MC Z) P.
+  := ProfReindex (@TensorAtLF C _ Z) (@TensorAtLF C _ Z) P.
 
 (** ** Chosen Strength on a Supplied Profunctor
 
@@ -73,7 +73,7 @@ Class HasProfStrength
   (** 通过两端指定左单位子移去单位上下文。 *)
 
   ; prof_strength_unit (X Y : @Ob C)
-      : (rmap[P; λ[Y]] ∘r prof_strengthN (𝐈[MC]) (X,Y)) ≈f
+      : (rmap[P; λ[Y]] ∘r prof_strengthN 𝐈 (X,Y)) ≈f
           lmap[P; λ[X]]
 
   (** Nested contexts agree after the supplied associator boundaries;

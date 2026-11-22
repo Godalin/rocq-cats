@@ -3,6 +3,7 @@ From Cats Require Export
   Cat.Monoidal.PremonoidalLaws.
 
 Local Open Scope computation_scope.
+Local Open Scope monoidal_scope.
 
 (** * Premonoidal Computations from Cartesian Arrows
 
@@ -25,6 +26,7 @@ Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 Let V
   : HasMonoidal C
   := CartHasMonoidal.
+Local Existing Instance V.
 
 Let J
   : Fct C (ComputationCat A)
@@ -44,10 +46,10 @@ Program Definition ArrowHasAssociator
   : @HasTensorAssoc (ComputationCat A) (ArrowHasBinoidal A)
   :=
   {|TensorAssocRIso X Y :=
-      ({|nt Z := fmap J (@tensor_assoc C _ V X Y Z).1
+      ({|nt Z := fmap J (@tensor_assoc C _ _ X Y Z).1
         ; nat_naturality Z Z' h := arrow_context_assoc A h
         |}; λ Z,
-          let i := @tensor_assoc C _ V X Y Z in
+          let i := @tensor_assoc C _ _ X Y Z in
           fct_is_iso J i.1 i.2)
   ; isTensorAssoc :=
       {|assoc_natural_l Y Z :=
@@ -65,7 +67,7 @@ Next Obligation.
         first[A; arr[A; (@product_assoc C HP W X Y).1]; Z])).
   rewrite arrow_second_arr, arrow_first_arr, <- !fmap_comp.
   apply fmap_proper.
-  exact (@tensor_assoc_pentagon C _ V W X Y Z).
+  exact (@tensor_assoc_pentagon C _ _ W X Y Z).
 Defined.
 
 (** Lift only the unitors, with no dependence on the computation
@@ -76,18 +78,18 @@ Defined.
 Program Definition ArrowHasUnitors
   : @HasTensorUnitors (ComputationCat A) (ArrowHasBinoidal A)
   :=
-  {|tensor_unit := tensor_unit V
+  {|tensor_unit := (𝐈 : C)
   ; TensorUnitorLIso :=
-      ({|nt X := fmap J (@tensor_unitor_l C _ V X).1
+      ({|nt X := fmap J (@tensor_unitor_l C _ _ X).1
         ; nat_naturality X Y f := arrow_second_projection A f 1
         |}; λ X,
-          let i := @tensor_unitor_l C _ V X in
+          let i := @tensor_unitor_l C _ _ X in
           fct_is_iso J i.1 i.2)
   ; TensorUnitorRIso :=
-      ({|nt X := fmap J (@tensor_unitor_r C _ V X).1
+      ({|nt X := fmap J (@tensor_unitor_r C _ _ X).1
         ; nat_naturality X Y f := arrow_first_projection A f 1
         |}; λ X,
-          let i := @tensor_unitor_r C _ V X in
+          let i := @tensor_unitor_r C _ _ X in
           fct_is_iso J i.1 i.2)
   ; isTensorUnitors :=
       {|unitor_l_central X := arrow_pure_central A _

@@ -30,12 +30,12 @@ Context {C : Cat}
 (** 将继承左单位子打包为自然变换。 *)
 
 Local Program Definition TensorLeftUnitorN
-  : AtLF (tensorF IM) (𝐈[UC]) ⇒ IdF
+  : AtLF (tensorF IM) 𝐈 ⇒ IdF
   :=
   {|nt X := λ[X]
   |}.
 Next Obligation.
-  change (λ[Y] ∘ (id[𝐈[UC]] ⊗ f) ≈ f ∘ λ[X]).
+  change (λ[Y] ∘ (id[𝐈] ⊗ f) ≈ f ∘ λ[X]).
   unfold tensor_map. rewrite tensor_sequence_left.
   apply tensor_unitor_l_natural.
 Qed.
@@ -45,12 +45,12 @@ Qed.
 (** 将继承右单位子打包为自然变换。 *)
 
 Local Program Definition TensorRightUnitorN
-  : AtRF (tensorF IM) (𝐈[UC]) ⇒ IdF
+  : AtRF (tensorF IM) 𝐈 ⇒ IdF
   :=
   {|nt X := ρ[X]
   |}.
 Next Obligation.
-  change (ρ[Y] ∘ (f ⊗ id[𝐈[UC]]) ≈ f ∘ ρ[X]).
+  change (ρ[Y] ∘ (f ⊗ id[𝐈]) ≈ f ∘ ρ[X]).
   unfold tensor_map. rewrite tensor_sequence_right.
   apply tensor_unitor_r_natural.
 Qed.
@@ -60,7 +60,7 @@ Qed.
 (** 左单位自然同构保留其选定逆。 *)
 
 Definition TensorUnitorLIsoN
-  : AtLF (tensorF IM) (𝐈[UC]) ≅N IdF
+  : AtLF (tensorF IM) 𝐈 ≅N IdF
   := (TensorLeftUnitorN; λ X, (tensor_unitor_l X).2).
 
 (** The natural right-unitor isomorphism keeps its selected inverse. *)
@@ -68,7 +68,7 @@ Definition TensorUnitorLIsoN
 (** 右单位自然同构保留其选定逆。 *)
 
 Definition TensorUnitorRIsoN
-  : AtRF (tensorF IM) (𝐈[UC]) ≅N IdF
+  : AtRF (tensorF IM) 𝐈 ≅N IdF
   := (TensorRightUnitorN; λ X, (tensor_unitor_r X).2).
 
 End Unit.
@@ -88,7 +88,7 @@ Context {C : Cat} `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
 (** 用导出的二元映射表述继承的三角形。 *)
 
 Lemma tensor_map_triangle (X Y : @Ob C)
-  : (id ⊗ λ[Y]) ∘ α[X; 𝐈[UC]; Y] ≈ ρ[X] ⊗ id.
+  : (id ⊗ λ[Y]) ∘ α[X; 𝐈; Y] ≈ ρ[X] ⊗ id.
 Proof.
   unfold tensor_map. rewrite tensor_sequence_left, tensor_sequence_right.
   apply tensor_triangle.

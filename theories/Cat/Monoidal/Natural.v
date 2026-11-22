@@ -6,6 +6,7 @@ From Cats Require Export
   Cat.Monoidal.Functor.
 
 Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Monoidal Natural Transformations between Lax Functors *)
 
@@ -34,8 +35,8 @@ Context {C D : Cat}
 Definition is_lax_monoidal_hom
     (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
   : Type
-  := (α (𝐈[MC]) ∘ φ₀[L] ≈ φ₀[K]) ∧
-      (∀ X Y, α (tensor (HasBinoidal := MC) X Y) ∘ φ₂[L; X; Y] ≈
+  := (α 𝐈 ∘ φ₀[L] ≈ φ₀[K]) ∧
+      (∀ X Y, α (X ⊗ Y) ∘ φ₂[L; X; Y] ≈
         φ₂[K; X; Y] ∘ tensor_map (IM := HasMonoidal_interchange MD) (α X) (α Y)).
 
 (** Naturally equal transformations have the same preservation property. *)
@@ -47,11 +48,11 @@ Lemma lax_monoidal_hom_equiv (L K : LaxMonoidalFct MC MD) (α β : L ⇒ K)
   : is_lax_monoidal_hom L K α ↔ is_lax_monoidal_hom L K β.
 Proof.
   split; intros [Hu Ht]; split.
-  - rewrite <- (E (𝐈[MC])). exact Hu.
-  - intros X Y. rewrite <- (E (tensor (HasBinoidal := MC) X Y)), <- (E X), <- (E Y).
+  - rewrite <- (E 𝐈). exact Hu.
+  - intros X Y. rewrite <- (E (X ⊗ Y)), <- (E X), <- (E Y).
     exact (Ht X Y).
-  - rewrite (E (𝐈[MC])). exact Hu.
-  - intros X Y. rewrite (E (tensor (HasBinoidal := MC) X Y)), (E X), (E Y).
+  - rewrite (E 𝐈). exact Hu.
+  - intros X Y. rewrite (E (X ⊗ Y)), (E X), (E Y).
     exact (Ht X Y).
 Defined.
 
@@ -76,15 +77,15 @@ Lemma lax_monoidal_hom_comp (L K J : LaxMonoidalFct MC MD)
   : is_lax_monoidal_hom L J (β ∘Nv α).
 Proof.
   destruct Hα as [Hαu Hαt], Hβ as [Hβu Hβt]. split.
-  - change ((β (𝐈[MC]) ∘ α (𝐈[MC])) ∘ φ₀[L] ≈ φ₀[J]).
+  - change ((β 𝐈 ∘ α 𝐈) ∘ φ₀[L] ≈ φ₀[J]).
     rewrite comp_assoc, Hαu. exact Hβu.
   - intros X Y.
-    change ((β (tensor (HasBinoidal := MC) X Y) ∘ α (tensor (HasBinoidal := MC) X Y)) ∘
+    change ((β (X ⊗ Y) ∘ α (X ⊗ Y)) ∘
       φ₂[L; X; Y] ≈ φ₂[J; X; Y] ∘
         tensor_map (IM := HasMonoidal_interchange MD) (β X ∘ α X) (β Y ∘ α Y)).
     rewrite comp_assoc, Hαt, <- comp_assoc, Hβt, comp_assoc.
     apply comp_proper; [reflexivity |]. symmetry.
-    exact (@tensor_map_comp D MD (HasMonoidal_interchange MD) _ _ _ _ _ _ (β X) (α X) (β Y) (α Y)).
+    exact (@tensor_map_comp D _ (HasMonoidal_interchange MD) _ _ _ _ _ _ (β X) (α X) (β Y) (α Y)).
 Defined.
 
 (** A chosen natural inverse preserves comparisons by cancellation.
@@ -97,20 +98,20 @@ Lemma lax_monoidal_hom_inverse (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
   : is_lax_monoidal_hom K L (α ^-1N I).
 Proof.
   destruct Hα as [Hu Ht]. split.
-  - apply (iso_cancel_l (α (𝐈[MC]); I (𝐈[MC]))).
-    change (α (𝐈[MC]) ∘ ((I (𝐈[MC])).1 ∘ φ₀[K]) ≈
-      α (𝐈[MC]) ∘ φ₀[L]).
-    rewrite <- comp_assoc, (snd (I (𝐈[MC])).2), comp_id_l, Hu.
+  - apply (iso_cancel_l (α 𝐈; I 𝐈)).
+    change (α 𝐈 ∘ ((I 𝐈).1 ∘ φ₀[K]) ≈
+      α 𝐈 ∘ φ₀[L]).
+    rewrite <- comp_assoc, (snd (I 𝐈).2), comp_id_l, Hu.
     reflexivity.
   - intros X Y.
-    apply (iso_cancel_l (α (tensor (HasBinoidal := MC) X Y); I (tensor (HasBinoidal := MC) X Y))).
-    change (α (tensor (HasBinoidal := MC) X Y) ∘
-      ((I (tensor (HasBinoidal := MC) X Y)).1 ∘ φ₂[K; X; Y]) ≈
-      α (tensor (HasBinoidal := MC) X Y) ∘ (φ₂[L; X; Y] ∘
+    apply (iso_cancel_l (α (X ⊗ Y); I (X ⊗ Y))).
+    change (α (X ⊗ Y) ∘
+      ((I (X ⊗ Y)).1 ∘ φ₂[K; X; Y]) ≈
+      α (X ⊗ Y) ∘ (φ₂[L; X; Y] ∘
         tensor_map (IM := HasMonoidal_interchange MD) (I X).1 (I Y).1)).
-    rewrite <- !comp_assoc, (snd (I (tensor (HasBinoidal := MC) X Y)).2), comp_id_l,
+    rewrite <- !comp_assoc, (snd (I (X ⊗ Y)).2), comp_id_l,
       Ht, comp_assoc.
-    rewrite <- (@tensor_map_comp D MD (HasMonoidal_interchange MD) _ _ _ _ _ _
+    rewrite <- (@tensor_map_comp D _ (HasMonoidal_interchange MD) _ _ _ _ _ _
       (α X) (I X).1 (α Y) (I Y).1).
     rewrite (snd (I X).2), (snd (I Y).2),
       (tensor_map_id (IM := HasMonoidal_interchange MD) (K X) (K Y)), comp_id_r.

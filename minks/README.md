@@ -156,10 +156,10 @@ square brackets.
   lists in Rocq. It selects the unique well-typed list. With no match the
   command reports missing arguments, and with several it asks for explicit
   keys.
-- **Instances.** Minks registers a component projection as a typeclass
-  instance with priority 1 when its class occurs under exactly one key in
-  the complete field list. Multiple keys for the same class leave those
-  projections as explicit selections, even when their dependency keys differ.
+- **Instances.** In packed field order, the first projection of each
+  class head is an instance at priority 1. All keys remain accessible by
+  name. For example, if zero precedes one, search for a point selects zero.
+  Field selection during declaration still checks for ambiguity.
 - **Universes.** The packed record is universe-polymorphic. For a native
   carrier, its local universe levels come first in their original order,
   with unified levels listed once. Rocq checks the generated fields and
@@ -197,7 +197,7 @@ square brackets.
   coercion paths to more distant ancestors.
 - **Canonical Structures.** A generated view to a declared Minks ancestor
   is also canonical when every automatically registered component instance
-  of that ancestor remains unambiguous in the new structure. This lets
+  of that ancestor keeps the same default key in the new structure. This lets
   Rocq infer the ancestor from a known projection while preserving
   explicit choices such as two selected points.
 - **Views inferred from fields.** The command also compares the new
@@ -246,19 +246,22 @@ square brackets.
      are the fixed parameters followed by these fields.
   3. Register the record as a Rocq typeclass. Field projections have names
      `Interface_key` and infer the fixed parameters from the instance.
-     When a remaining field's class occurs under only one key in the
-     original structure, its projection is registered as both a
-     typeclass instance and a coercion. A repeated class head leaves
-     those fields available as explicit projections. Rocq checks the
-     resulting coercion paths. Components retain their original types,
-     including Type-valued witnesses.
+     A remaining mixin projection is an instance at priority 2 if its key
+     is the first of that class head in the original packed order. If the
+     first key is fixed, the other keys stay explicit. These projections
+     supply class arguments. Coercions to mixin classes require an explicit
+     registration. Native carrier projections retain their coercion.
 - **Universes.** The interface follows the packed record's universe order
   rule. A native carrier's local levels come first in their original
   order. Rocq infers the remaining levels, their order, and constraints.
 - **Extraction and reassembly.** `NameToInterface` takes a packed `Name`
   and reads its exact fields. `NameOfInterface` takes the fixed parameters
   in class parameter order and then the interface value. It uses both to
-  reconstruct `Name`. These transparent definitions are called explicitly.
+  reconstruct `Name`. Both functions are transparent. Extraction is also
+  an instance at priority 1 when a fixed index reads a field of the source
+  or uses a declared ancestor view. An empty selection and a lone
+  structurally matched, undeclared base leave extraction explicit.
+  Reassembly is an explicit function.
   The resulting field projections reduce to the supplied choices. An
   equality of whole records may need a record case split. With a packed
   base, extraction uses the corresponding structure view and reassembly
@@ -272,16 +275,11 @@ square brackets.
   `laws : IsMonoid M` from them. Fixing the point as well leaves just the
   two law witnesses. Section parameters precede the fixed inputs after
   discharge.
-- **Views between exports.** When a field-key export is declared, Minks
-  compares it with the field-key exports already available, including
-  imported ones. A target with fewer components gets a transparent
-  `SourceToTarget` when its fixed parameters and fields can all be
-  read from the source. Matching uses the registered mixin and its
-  mapped dependencies, with exact keys preferred as in assembly.
-  The match must be unique and the resulting definition must typecheck.
-  Minks makes the source's fixed arguments implicit on the view. The view
-  is available as a named function. Coercion and instance registrations
-  can be made explicitly.
+- **Independent exports.** Declaring an interface registers its class and
+  mixin metadata, its eligible field instances and its own extraction.
+  It generates no maps, instances or coercions between exports, including
+  exports of a parent and child. A client can define a view using named
+  projections and register the desired direction locally.
 - **Assembly in `with`.** The argument list of `with key : Interface`
   selects the fixed parameters in order. With the list
   omitted, Minks looks for a unique fixed selection among available

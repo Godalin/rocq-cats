@@ -36,7 +36,7 @@ Class StrongMonad (C : Cat) (MC : HasMonoidal C)
   ; strongmonad_unit (X Y : @Ob C)
     : st[hasStrength; X; Y] ∘
         (tensor_map (IM := HasMonoidal_interchange MC) id (η[StrongMonadM] Y)) ≈
-        η[StrongMonadM] (tensor (HasBinoidal := MC) X Y)
+        η[StrongMonadM] (X ⊗ Y)
 
   (** Passing through multiplication agrees with passing through both layers. *)
 
@@ -45,7 +45,7 @@ Class StrongMonad (C : Cat) (MC : HasMonoidal C)
   ; strongmonad_mul (X Y : @Ob C)
     : st[hasStrength; X; Y] ∘
         (tensor_map (IM := HasMonoidal_interchange MC) id (μ[StrongMonadM] Y)) ≈
-        μ[StrongMonadM] (tensor (HasBinoidal := MC) X Y) ∘
+        μ[StrongMonadM] (X ⊗ Y) ∘
           fmap StrongMonadM st[hasStrength; X; Y] ∘
           st[hasStrength; X; StrongMonadM Y]
   }.
@@ -146,7 +146,7 @@ Proof.
   transitivity ((st[hasStrength M; X; Z] ∘
     (id ⊗ μ[M] Z)) ∘ (id ⊗ fmap M f)).
   - rewrite comp_assoc,
-      <- (@tensor_map_comp C MC (HasMonoidal_interchange MC) X X X (M Y) (M (M Z)) (M Z)
+      <- (@tensor_map_comp C _ (HasMonoidal_interchange MC) X X X (M Y) (M (M Z)) (M Z)
         id id (μ[M] Z) (fmap M f)), comp_id_l. reflexivity.
   - rewrite (strongmonad_mul M X Z), !comp_assoc,
       (strength_natural (hasStrength M) (id[X]) f),

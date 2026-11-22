@@ -347,18 +347,15 @@ Elpi Accumulate lp:{{
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (struct-spec I Applications Components)),
     std.map Exports
-      (e\v\ sigma label selection keys interface fixed layout\
-        e = pr label selection, export-keys Branches Inherited selection keys, v = pr (pr interface fixed) layout,
+      (e\v\ sigma label selection keys interface fixed\
+        e = pr label selection, export-keys Branches Inherited selection keys, v = pr interface fixed,
         std.assert! (@keep-alg-univs! =>
-          generate-relative Name I Components Views label keys interface fixed layout)
+          generate-relative Name I Components FlatParents Views label keys interface fixed)
           ("Could not generate relative interface " ^ label),
         coq.elpi.accumulate execution-site "minks.flat.db"
           (clause _ _ (struct-export I interface fixed)))
-      Entries,
-    std.map Entries (e\v\ e = pr v _) Exported,
-    std.map-filter Entries (e\l\ e = pr _ (some l)) Layouts,
-    print-struct Applications Name [] FlatParents Components Views Packers Exported Assemblies,
-    discover-export-views Layouts.
+      Exported,
+    print-struct Applications Name [] FlatParents Components Views Packers Exported Assemblies.
   main _ :- usage.
 }}.
 Elpi Accumulate Db minks.flat.db.
@@ -371,15 +368,7 @@ Elpi Accumulate lp:{{
   pred inspect i:id, i:gref.
   inspect Name Ref :-
     mixin-spec Ref Direct Params, !,
-    print-mixin Name Direct Params, print-combination Ref,
-    if (Ref = indt I)
-      (std.findall (struct-view I _ _ explicit-view) Stored,
-       if (Stored = []) true (
-         coq.say "Conversions:",
-         std.forall Stored (v\ sigma target fn\
-           v = struct-view I target fn explicit-view,
-           print-view (conversion I target fn explicit-view))))
-      true.
+    print-mixin Name Direct Params, print-combination Ref.
   inspect Name Ref :-
     if (Ref = indt I, spec I Parents _) true
       (coq.error "Not a Minks structure:" Name),

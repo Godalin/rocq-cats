@@ -18,6 +18,7 @@ From Cats Require Import
 
 Section Cartesian.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
+Local Existing Instance CartHasMonoidal.
 
 (** Canonical product exchange supplies an explicit symmetric structure.
     Importing this module selects no default structure on [C]. *)
@@ -25,7 +26,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 (** 规范积交换给出显式对称结构；导入本模块不会为 [C] 选定默认结构。 *)
 
 Program Definition CartHasTensorSym
-  : @HasTensorSym C CartHasMonoidal
+  : HasTensorSym C
   :=
   {|tensor_sym X Y := ⟨π2, π1⟩
   ; tensor_sym_central X Y :=
@@ -46,7 +47,7 @@ Qed.
 (** 笛卡尔交换与积结合子满足六边形。 *)
 
 Program Definition CartIsSymHexagon
-  : @IsSymHexagon C CartHasMonoidal CartHasTensorSym CartHasMonoidal
+  : @IsSymHexagon C _ CartHasTensorSym _
   :=
   {|tensor_sym_hexagon := _|}.
 Next Obligation.
@@ -64,7 +65,7 @@ Qed.
 (** 笛卡尔交换互换两个单位子。 *)
 
 Program Definition CartIsSymUnit
-  : @IsSymUnit C CartHasMonoidal CartHasTensorSym CartHasMonoidal
+  : @IsSymUnit C _ CartHasTensorSym _
   :=
   {|tensor_sym_unit := _|}.
 Next Obligation. apply product_β2. Qed.

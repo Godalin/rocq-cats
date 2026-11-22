@@ -26,7 +26,7 @@ Local Open Scope ob_scope.
     数据可能不同的完整结构包。 *)
 
 Minks.Mixin IsMonoidObj {C : Cat} (MC : HasMonoidal C)
-    (A : @Ob C) (e : Hom (𝐈[MC]) A) (m : Hom (A ⊗ A) A)
+    (A : @Ob C) (e : Hom 𝐈 A) (m : Hom (A ⊗ A) A)
   : Type
   :=
   { monoid_object_unit_l : m ∘ (e ⊗ id) ≈ λ[A]
@@ -47,7 +47,7 @@ Arguments monoid_object_assoc {_ _ _ _ _} _.
 Class MonoidObj {C : Cat} (MC : HasMonoidal C)
   :=
   { MonoidCarrier :> @Ob C
-  ; monoid_object_unit : Hom (𝐈[MC]) MonoidCarrier
+  ; monoid_object_unit : Hom 𝐈 MonoidCarrier
   ; monoid_object_mul : Hom (MonoidCarrier ⊗ MonoidCarrier) MonoidCarrier
   ; isMonoidObj
     :: IsMonoidObj MC MonoidCarrier monoid_object_unit monoid_object_mul

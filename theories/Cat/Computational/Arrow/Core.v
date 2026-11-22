@@ -79,7 +79,7 @@ Class Arrow
 
   ; arrow_context_unit {X Y : @Ob C}
       (f : Hom (ArrowF X) (ArrowF Y))
-    : fmap ArrowF λ[Y] ∘ arrow_context (𝐈[MC]) f ≈
+    : fmap ArrowF λ[Y] ∘ arrow_context 𝐈 f ≈
         f ∘ fmap ArrowF λ[X]
 
   (** Successive ordinary contexts agree with their tensor after pure

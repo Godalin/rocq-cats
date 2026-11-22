@@ -28,7 +28,7 @@ Minks.Mixin IsPremonoidal (C : Cat)
   extends HasTensorAssoc C, HasTensorUnitors C
   :=
   { tensor_triangle (X Y : C)
-    : (X ⊲ λ[Y]) ∘ α[X; 𝐈[hasTensorUnitors]; Y] ≈ ρ[X] ⊳ Y
+    : (X ⊲ λ[Y]) ∘ α[X; 𝐈; Y] ≈ ρ[X] ⊳ Y
   }.
 
 Arguments tensor_triangle

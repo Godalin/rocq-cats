@@ -9,9 +9,6 @@ From Minks Require Import
     The remaining components become fields of a generated class. *)
 
 Elpi File minks.relative lp:{{
-  kind export-layout type.
-  type exported inductive -> list component -> list component -> constructor
-    -> export-layout.
   pred distinct-selection i:list id.
   distinct-selection [].
   distinct-selection [Key | Keys] :-
@@ -116,7 +113,7 @@ Elpi File minks.relative lp:{{
     if (Base = none) (All = Implicits) (All = [maximal | Implicits]),
     std.forall Refs (r\ sigma key p\
       r = pr key p, relative-projection All p),
-    std.forall Remaining (register-field Cs Refs tt).
+    std.forall Remaining (register-field 2 Cs Refs).
 
   pred from-relative-body i:term, i:term, i:list id, i:list id,
       i:list (pair id constant), i:list term, i:list (pair id term), o:term.
@@ -164,70 +161,10 @@ Elpi File minks.relative lp:{{
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (mixin-combination (indt Export) Fixed Remaining Ctor)).
 
-  pred export-view-term i:inductive, i:list component, i:list component,
-      i:constructor, i:list id, o:term.
-  export-view-term Source Fixed Remaining TargetCtor Selected Term :-
-    coq.env.global (indt Source) SourceTy,
-    coq.env.global (indc TargetCtor) MakeTarget,
-    std.map Fixed component-key FixedKeys,
-    std.map Remaining component-key StoredKeys,
-    coq.env.projections Source Projections,
-    std.map2 StoredKeys Projections field-ref Refs,
-    pack-components Fixed []
-      (env\body\ sigma args source-type result\
-        std.map FixedKeys (k\t\ lookup k env t) args,
-        coq.mk-app SourceTy args source-type,
-        body = fun `source` source-type result,
-        pi source\ sigma all-args fields selected\
-          all-args = {std.append args [source]},
-          std.map Refs (r\f\ sigma key ref head value\
-            r = pr key ref, f = pr key value,
-            coq.env.global (const ref) head, coq.mk-app head all-args value) fields,
-          std.map Selected (k\t\ lookup k {std.append env fields} t) selected,
-          coq.mk-app MakeTarget selected (result source)) Term.
-
-  pred infer-export-view i:export-layout, i:export-layout, o:struct-conversion.
-  infer-export-view (exported Source SF SR _) (exported Target TF TR Ctor)
-      (conversion Source Target View explicit-view) :-
-    SourceCs = {std.append SF SR},
-    TargetCs = {std.append TF TR},
-    std.length TargetCs N,
-    std.length SourceCs M,
-    N < M,
-    not (struct-view Source Target _ _),
-    std.findall (mapped-components TargetCs SourceCs [] [] _) [mapped-components _ _ _ _ Selected],
-    coq.gref->id (indt Source) From,
-    view-name From Target Name,
-    coq.env.current-path Here,
-    std.string.concat "." {std.append Here [Name]} Qualified,
-    coq.locate-all Qualified [],
-    export-view-term Source SF SR Ctor Selected Term,
-    coq.typecheck Term Ty ok,
-    (@univpoly! => coq.env.add-const Name Term Ty @transparent! View),
-    std.map SF (c\k\ k = maximal) Implicits,
-    relative-projection Implicits View,
-    coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (struct-view Source Target View explicit-view)).
-
-  pred remember-export-views i:export-layout, i:list export-layout, o:list export-layout.
-  remember-export-views New Previous [New | Previous] :-
-    std.forall Previous (old\ sigma outgoing incoming\
-      if (infer-export-view New old outgoing) (print-view outgoing) true,
-      if (infer-export-view old New incoming) (print-view incoming) true).
-
-  pred discover-export-views i:list export-layout.
-  discover-export-views [] :- !.
-  discover-export-views Layouts :-
-    std.findall (mixin-combination _ _ _ _) Stored,
-    std.map-filter Stored (m\l\ sigma i fixed remaining ctor\
-      m = mixin-combination (indt i) fixed remaining ctor,
-      not (export-base (indt i) _), l = exported i fixed remaining ctor) Previous,
-    std.fold Layouts Previous remember-export-views _.
-
   pred generate-relative i:id, i:inductive, i:list component,
-      i:list struct-conversion, i:id, i:list id, o:inductive, o:list id,
-      o:option export-layout.
-  generate-relative Child I Cs Views Name Selection Export Parameters Layout :-
+      i:list inductive, i:list struct-conversion, i:id, i:list id,
+      o:inductive, o:list id.
+  generate-relative Child I Cs Parents Views Name Selection Export Parameters :-
     export-selection Cs Selection Base Covered Selected,
     relative-layout Cs Covered Selected Fixed Remaining,
     declare-relative Name Base Covered Cs Fixed Remaining Export Refs,
@@ -240,15 +177,17 @@ Elpi File minks.relative lp:{{
     std.map ConstructorKeys (k\t\ read-field ChildRefs k t) FromChild,
     coq.env.indt Export tt _ _ _ [Ctor] _,
     register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters,
-    if (Base = none) (Layout = some (exported Export Fixed Remaining Ctor))
-      (Layout = none),
     coq.env.global (indc Ctor) MakeExport,
     coq.env.global (indt I) ChildTy,
     (pi x\ sigma bases args\
       relative-source Base Covered Views ChildRefs x bases,
       apply-fields FromChild x args,
       coq.mk-app MakeExport {std.append bases args} (Read x)),
-    declare-view Child ChildTy Export Read _,
+    declare-view Child ChildTy Export Read Extraction,
+    if (Fixed = [_ | _] ; Base = some Ancestor,
+        ancestors Parents [] Ancestors, std.mem Ancestors Ancestor)
+      (coq.TC.declare-instance (const Extraction) 1)
+      true,
     PackName is Child ^ "Of" ^ Name,
     declare-relative-packer PackName Base Covered I Export Fixed FixedKeys Keys Refs.
 }}.

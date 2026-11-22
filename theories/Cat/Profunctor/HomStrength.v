@@ -50,19 +50,19 @@ Program Definition HomProfStrengthN (Z : @Ob C)
   :=
   {|nt XY :=
       {|func h :=
-          {|lower := fmap (@TensorAtLF C MC Z) (lower h)
+          {|lower := fmap (@TensorAtLF C _ Z) (lower h)
           |}
       |}
   |}.
 Next Obligation.
   intros f g E. refine {|lower := _|}.
-  exact (@fmap_proper _ _ _ _ (@isFct C C (@TensorAtLF C MC Z))
+  exact (@fmap_proper _ _ _ _ (@isFct C C (@TensorAtLF C _ Z))
     _ _ (lower f) (lower g) (lower E)).
 Defined.
 Next Obligation.
   intros h. refine {|lower := _|}.
   exact (lower (nat_naturality
-    (HomProfMapN (@TensorAtLF C MC Z)) f h)).
+    (HomProfMapN (@TensorAtLF C _ Z)) f h)).
 Defined.
 
 (** Choose the Hom strength explicitly; importing this module does not
@@ -77,26 +77,26 @@ Program Definition HomProfStrength
   |}.
 Next Obligation.
   intros k. refine {|lower := _|}.
-  change ((id[W ⊗ Y]) ∘ fmap (@TensorAtLF C MC W) (lower k) ∘
+  change ((id[W ⊗ Y]) ∘ fmap (@TensorAtLF C _ W) (lower k) ∘
       (h ⊗ id[X]) ≈
-    (h ⊗ id[Y]) ∘ fmap (@TensorAtLF C MC Z) (lower k) ∘
+    (h ⊗ id[Y]) ∘ fmap (@TensorAtLF C _ Z) (lower k) ∘
       (id[Z ⊗ X])).
   unfold tensor_map. rewrite comp_id_l, comp_id_r, !tensor_sequence_right.
   symmetry. apply tensor_interchange.
 Defined.
 Next Obligation.
   intros k. refine {|lower := _|}.
-  change (λ[Y] ∘ fmap (@TensorAtLF C MC (𝐈[MC])) (lower k) ∘
-      (id[𝐈[MC] ⊗ X]) ≈ (id[Y]) ∘ lower k ∘ λ[X]).
+  change (λ[Y] ∘ fmap (@TensorAtLF C _ 𝐈) (lower k) ∘
+      (id[𝐈 ⊗ X]) ≈ (id[Y]) ∘ lower k ∘ λ[X]).
   rewrite comp_id_l, comp_id_r.
   exact (tensor_unitor_l_natural (lower k)).
 Defined.
 Next Obligation.
   intros k. refine {|lower := _|}.
   change ((id[Z ⊗ (W ⊗ Y)]) ∘
-      fmap (@TensorAtLF C MC Z)
-        (fmap (@TensorAtLF C MC W) (lower k)) ∘ α[Z; W; X] ≈
-    α[Z; W; Y] ∘ fmap (@TensorAtLF C MC (Z ⊗ W)) (lower k) ∘
+      fmap (@TensorAtLF C _ Z)
+        (fmap (@TensorAtLF C _ W) (lower k)) ∘ α[Z; W; X] ≈
+    α[Z; W; Y] ∘ fmap (@TensorAtLF C _ (Z ⊗ W)) (lower k) ∘
       (id[(Z ⊗ W) ⊗ X])).
   rewrite comp_id_l, comp_id_r.
   symmetry. exact (tensor_assoc_natural_r Z W (lower k)).
@@ -108,7 +108,7 @@ Defined.
 
 Lemma hom_prof_strength (Z : @Ob C) {X Y : @Ob C} (h : H (X,Y))
   : lower (pstrength[HomProfStrength; Z] h) ≈
-      fmap (@TensorAtLF C MC Z) (lower h).
+      fmap (@TensorAtLF C _ Z) (lower h).
 Proof. reflexivity. Defined.
 
 End HomStrength.

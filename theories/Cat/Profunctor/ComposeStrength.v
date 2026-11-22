@@ -234,23 +234,23 @@ Defined.
 (** 在各因子中移去单位上下文，并将中间单位子在它们之间粘合；只使用原选定单位边界。 *)
 
 Lemma prof_comp_strength_unit (X Y : @Ob C)
-  : (rmap[Q ∘Pr P; λ[Y]] ∘r prof_comp_strength (𝐈[MC]) X Y) ≈f
+  : (rmap[Q ∘Pr P; λ[Y]] ∘r prof_comp_strength 𝐈 X Y) ≈f
       lmap[Q ∘Pr P; λ[X]].
 Proof.
   apply (@prof_comp_hom_ext C C C Q P X Y
     (@hasProfCompCoend C C C Q P HC X Y)). intros B [x y].
   change (rmap[Q ∘Pr P; λ[Y]]
-    (prof_comp_strength (𝐈[MC]) X Y (ιPr[Q; P; B] (x,y))) ≈S
+    (prof_comp_strength 𝐈 X Y (ιPr[Q; P; B] (x,y))) ≈S
     lmap[Q ∘Pr P; λ[X]] (ιPr[Q; P; B] (x,y))).
   rewrite prof_comp_strength_inject.
   rewrite profunctor_comp_lmap_inject, profunctor_comp_rmap_inject.
-  transitivity (ιPr[Q; P; 𝐈[MC] ⊗ B]
-    (pstrength[SP; 𝐈[MC]] x,lmap[Q; λ[B]] y)).
+  transitivity (ιPr[Q; P; 𝐈 ⊗ B]
+    (pstrength[SP; 𝐈] x,lmap[Q; λ[B]] y)).
   - apply func_proper. split; [reflexivity |].
     exact (prof_strength_unit SQ B Y y).
   - transitivity (ιPr[Q; P; B]
-      (rmap[P; λ[B]] (pstrength[SP; 𝐈[MC]] x),y)).
-    + exact (prof_comp_gluing Q P (λ[B]) (pstrength[SP; 𝐈[MC]] x) y).
+      (rmap[P; λ[B]] (pstrength[SP; 𝐈] x),y)).
+    + exact (prof_comp_gluing Q P (λ[B]) (pstrength[SP; 𝐈] x) y).
     + apply func_proper. split; [| reflexivity].
       exact (prof_strength_unit SP X B x).
 Defined.

@@ -55,11 +55,11 @@ Definition tensor_unitor_r_inv_central `{UC : !@HasTensorUnitors C BC}
 
 Lemma tensor_unitor_l_inv_natural `{UC : !@HasTensorUnitors C BC}
     {X Y : @Ob C} (f : Hom X Y)
-  : λ⁻¹[Y] ∘ f ≈ (𝐈[UC] ⊲ f) ∘ λ⁻¹[X].
+  : λ⁻¹[Y] ∘ f ≈ (𝐈 ⊲ f) ∘ λ⁻¹[X].
 Proof.
   exact (iso_square_inv
     (tensor_unitor_l X) (tensor_unitor_l Y)
-    (𝐈[UC] ⊲ f) f (tensor_unitor_l_natural f)).
+    (𝐈 ⊲ f) f (tensor_unitor_l_natural f)).
 Qed.
 
 (** The inverse right unitor is natural in its variable. *)
@@ -68,11 +68,11 @@ Qed.
 
 Lemma tensor_unitor_r_inv_natural `{UC : !@HasTensorUnitors C BC}
     {X Y : @Ob C} (f : Hom X Y)
-  : ρ⁻¹[Y] ∘ f ≈ (f ⊳ 𝐈[UC]) ∘ ρ⁻¹[X].
+  : ρ⁻¹[Y] ∘ f ≈ (f ⊳ 𝐈) ∘ ρ⁻¹[X].
 Proof.
   exact (iso_square_inv
     (tensor_unitor_r X) (tensor_unitor_r Y)
-    (f ⊳ 𝐈[UC]) f (tensor_unitor_r_natural f)).
+    (f ⊳ 𝐈) f (tensor_unitor_r_natural f)).
 Qed.
 
 (** The inverse associator is natural in the left position. *)

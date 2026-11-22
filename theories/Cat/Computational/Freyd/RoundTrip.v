@@ -99,6 +99,7 @@ Local Existing Instance SP.
 Definition FreydRoundTrip
   : FreydCat C D
   := ArrowFreyd (FreydArrow F).
+Local Existing Instance FreydRoundTrip.
 
 (** The comparison includes the second indexing, acting identically on
     both value objects and computational arrows. *)
@@ -191,9 +192,8 @@ Lemma freyd_round_trip_left {X Y : @Ob C} (Z : @Ob C)
     (f : (@Hom D) X Y)
   : (FreydTensorIso F Z Y).1 ∘
       fmap FreydRoundTripToF
-        (@tensor_l (FreydComputations FreydRoundTrip)
-          (@hasSymPremonoidal _ _ FreydRoundTrip) X Y Z f) ≈
-      (@tensor_l D SP X Y Z f) ∘ (FreydTensorIso F Z X).1.
+        (tensor_l (C := FreydComputations FreydRoundTrip) Z f) ≈
+      (tensor_l (C := D) Z f) ∘ (FreydTensorIso F Z X).1.
 Proof. exact (freyd_context_boundary F Z f). Qed.
 
 (** Pure exchange crosses the same tensor boundaries as every other
@@ -204,7 +204,7 @@ Proof. exact (freyd_context_boundary F Z f). Qed.
 Lemma freyd_exchange_boundary (X Y : @Ob C)
   : (FreydTensorIso F Y X).1 ∘
       fmap (FreydPureF F) (⟨π2, π1⟩ : Hom (X × Y) (Y × X)) ≈
-      (tensor_sym (C := D) (S := SP) X Y) ∘ (FreydTensorIso F X Y).1.
+      (tensor_sym (C := D) X Y) ∘ (FreydTensorIso F X Y).1.
 Proof. exact (@freyd_symmetry C K F X Y). Qed.
 
 (** The right action is also preserved, using exchange and the already
@@ -216,15 +216,14 @@ Lemma freyd_round_trip_right {X Y : @Ob C} (Z : @Ob C)
     (f : (@Hom D) X Y)
   : (FreydTensorIso F Y Z).1 ∘
       fmap FreydRoundTripToF
-        (@tensor_r (FreydComputations FreydRoundTrip)
-          (@hasSymPremonoidal _ _ FreydRoundTrip) X Y Z f) ≈
-      (@tensor_r D SP X Y Z f) ∘ (FreydTensorIso F X Z).1.
+        (tensor_r (C := FreydComputations FreydRoundTrip) Z f) ≈
+      (tensor_r (C := D) Z f) ∘ (FreydTensorIso F X Z).1.
 Proof.
   change ((FreydTensorIso F Y Z).1 ∘
     (fmap (FreydPureF F) (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z)) ∘
       freyd_context F Z f ∘
       fmap (FreydPureF F) (⟨π2, π1⟩ : Hom (X × Z) (Z × X))) ≈
-    (@tensor_r D SP X Y Z f) ∘ (FreydTensorIso F X Z).1).
+    (tensor_r (C := D) Z f) ∘ (FreydTensorIso F X Z).1).
   etransitivity.
   - exact (@comp_square D _ _ _ _ _ _
       (FreydTensorIso F X Z).1 (FreydTensorIso F Z X).1
@@ -232,21 +231,21 @@ Proof.
       (fmap (FreydPureF F) (⟨π2, π1⟩ : Hom (X × Z) (Z × X)))
       (fmap (FreydPureF F) (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z)) ∘
         freyd_context F Z f)
-      (tensor_sym (C := D) (S := SP) X Z)
-      ((tensor_sym (C := D) (S := SP) Z Y) ∘ (@tensor_l D SP X Y Z f))
+      (tensor_sym (C := D) X Z)
+      ((tensor_sym (C := D) Z Y) ∘ (tensor_l (C := D) Z f))
       (freyd_exchange_boundary X Z)
       (@comp_square D _ _ _ _ _ _
         (FreydTensorIso F Z X).1 (FreydTensorIso F Z Y).1
         (FreydTensorIso F Y Z).1
         (freyd_context F Z f)
         (fmap (FreydPureF F) (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z)))
-        (@tensor_l D SP X Y Z f) (tensor_sym (C := D) (S := SP) Z Y)
+        (tensor_l (C := D) Z f) (tensor_sym (C := D) Z Y)
         (freyd_context_boundary F Z f) (freyd_exchange_boundary Z Y))).
   - apply (@comp_proper D); [| reflexivity].
     etransitivity.
-    + exact (@comp_assoc D _ _ _ _ (tensor_sym (C := D) (S := SP) Z Y)
-        (@tensor_l D SP X Y Z f) (tensor_sym (C := D) (S := SP) X Z)).
-    + symmetry. exact (tensor_r_sym (C := D) (S := SP) Z f).
+    + exact (@comp_assoc D _ _ _ _ (tensor_sym (C := D) Z Y)
+        (tensor_l (C := D) Z f) (tensor_sym (C := D) X Z)).
+    + symmetry. exact (tensor_r_sym (C := D) Z f).
 Qed.
 
 (** Left-unit preservation uses the original chosen unit boundary. *)
@@ -255,9 +254,8 @@ Qed.
 
 Lemma freyd_round_trip_unit_l (X : @Ob C)
   : fmap FreydRoundTripToF
-      (@tensor_unitor_l (FreydComputations FreydRoundTrip) _
-        (@hasSymPremonoidal _ _ FreydRoundTrip) X).1 ≈
-      (@tensor_unitor_l D _ SP X).1 ∘
+      (tensor_unitor_l (C := FreydComputations FreydRoundTrip) X).1 ≈
+      (tensor_unitor_l (C := D) X).1 ∘
         (FreydContextBoundary F (@freyd_unit_object C K F) X).1.
 Proof. exact (@freyd_unit_l C K F X). Qed.
 
@@ -267,12 +265,11 @@ Proof. exact (@freyd_unit_l C K F X). Qed.
 
 Lemma freyd_round_trip_unit_r (X : @Ob C)
   : fmap FreydRoundTripToF
-      (@tensor_unitor_r (FreydComputations FreydRoundTrip) _
-        (@hasSymPremonoidal _ _ FreydRoundTrip) X).1 ≈
-      (@tensor_unitor_r D _ SP X).1 ∘
+      (tensor_unitor_r (C := FreydComputations FreydRoundTrip) X).1 ≈
+      (tensor_unitor_r (C := D) X).1 ∘
         @eq_to_hom D _ _
           (eq_trans (@freyd_tensor_objects C K F X (@Term C (@hasValueTerminal C K F)))
-            (f_equal (λ Q, @tensor D SP X Q)
+            (f_equal (λ Q, tensor (C := D) X Q)
               (@freyd_unit_object C K F))).
 Proof. exact (@freyd_unit_r C K F X). Qed.
 
@@ -283,9 +280,8 @@ Proof. exact (@freyd_unit_r C K F X). Qed.
 Lemma freyd_round_trip_assoc (X Y Z : @Ob C)
   : (FreydNestedBoundary F X Y Z).1 ∘
       fmap FreydRoundTripToF
-        (@tensor_assoc (FreydComputations FreydRoundTrip) _
-          (@hasSymPremonoidal _ _ FreydRoundTrip) X Y Z).1 ≈
-      (@tensor_assoc D _ SP X Y Z).1 ∘
+        (tensor_assoc (C := FreydComputations FreydRoundTrip) X Y Z).1 ≈
+      (tensor_assoc (C := D) X Y Z).1 ∘
         (FreydContextBoundary F (@freyd_tensor_objects C K F X Y) Z).1.
 Proof. exact (@freyd_assoc C K F X Y Z). Qed.
 
@@ -296,9 +292,8 @@ Proof. exact (@freyd_assoc C K F X Y Z). Qed.
 Lemma freyd_round_trip_symmetry (X Y : @Ob C)
   : (FreydTensorIso F Y X).1 ∘
       fmap FreydRoundTripToF
-        (tensor_sym (C := FreydComputations FreydRoundTrip)
-          (S := @hasSymPremonoidal _ _ FreydRoundTrip) X Y) ≈
-      (tensor_sym (C := D) (S := SP) X Y) ∘ (FreydTensorIso F X Y).1.
+        (tensor_sym (C := FreydComputations FreydRoundTrip) X Y) ≈
+      (tensor_sym (C := D) X Y) ∘ (FreydTensorIso F X Y).1.
 Proof. exact (@freyd_symmetry C K F X Y). Qed.
 
 End FreydRoundTrip.

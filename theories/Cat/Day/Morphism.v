@@ -151,11 +151,11 @@ Local Lemma day_hom_tensor_map {F G : Fct C (SetCat@{u p _ _ _ _ _})}
       (X := F) (X' := G) (Y := F) (Y' := G) α α ≈N
       @DayMapN C (tensorF (HasMonoidal_interchange MC)) F G F G (HD F F) (HD G G) α α.
 Proof.
-  exact (day_monoidal_map (tensorF (HasMonoidal_interchange MC)) (𝐈[MC])
-    (TensorAssocIsoN (IM := HasMonoidal_interchange MC) (AC := MC))
-    (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
-    (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
-    (tensor_pentagon (IM := HasMonoidal_interchange MC) (AC := MC))
+  exact (day_monoidal_map (tensorF (HasMonoidal_interchange MC)) 𝐈
+    (TensorAssocIsoN (IM := HasMonoidal_interchange MC))
+    (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC))
+    (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC))
+    (tensor_pentagon (IM := HasMonoidal_interchange MC))
     (tensor_map_triangle (IM := HasMonoidal_interchange MC)
       (IP := HasMonoidal_isPremonoidal MC)) HD α α).
 Defined.
@@ -171,7 +171,7 @@ Theorem day_monoid_hom_laws (M N : MonoidObj DM)
       is_lax_monoidal_hom (DayMonoidLax MC HD M) (DayMonoidLax MC HD N) α.
 Proof.
   split; intros [Hu Hm]; split.
-  - intros []. exact (fst (day_unit_hom_law (𝐈[MC])
+  - intros []. exact (fst (day_unit_hom_law 𝐈
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_unit M) (monoid_object_unit N) α) Hu).
   - assert (H : (α ∘Nv monoid_object_mul M) ≈N
@@ -181,7 +181,7 @@ Proof.
     exact (fst (day_mul_hom_law (tensorF (HasMonoidal_interchange MC))
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_mul M) (monoid_object_mul N) α) H a b x y).
-  - apply (snd (day_unit_hom_law (𝐈[MC])
+  - apply (snd (day_unit_hom_law 𝐈
       (MonoidCarrier M) (MonoidCarrier N)
       (monoid_object_unit M) (monoid_object_unit N) α)).
     exact (Hu tt).

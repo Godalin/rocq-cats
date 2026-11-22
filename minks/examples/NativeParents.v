@@ -87,6 +87,10 @@ Minks.Struct InheritedLabelledSort
 Check MakeFixedParentFields : ∀ (t : HasTag) (A : Type), FixedParentFields t A.
 Check MakeAllParentFields : HasTag → Type → AllParentFields.
 
+Fail Definition unindexed_extraction (s : InheritedLabelledSort)
+  : AllParentFields
+  := _.
+
 Minks.Struct Reassembled
   with  whole : WholeLabelledSort.
 Check MakeReassembled : HasTag → Type → Reassembled.

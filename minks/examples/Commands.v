@@ -221,9 +221,13 @@ Minks.Struct TwoFlags
   exports HasTwoFlags,
           HasRightFlag [carrier, leftFlag].
 
-Fail Definition ambiguous_exported_flag (A : Type) (F : HasTwoFlags A)
+Definition default_exported_flag (A : Type) (F : HasTwoFlags A)
   : HasFlag
   := ltac:(typeclasses eauto).
+
+Example default_exported_flag_is_left (A : Type) (F : HasTwoFlags A)
+  : default_exported_flag A F = HasTwoFlags_leftFlag F
+  := eq_refl.
 
 Fail Check (λ (A : Type) (F : HasTwoFlags A), (F : HasFlag)).
 
@@ -246,28 +250,16 @@ Minks.Struct PairedFlags
 Check PairedFlags_hasPair
   : ∀ F : PairedFlags, FlagPair (PairedFlags_leftFlag F) (PairedFlags_rightFlag F).
 
-(** The relative view fixes the same left flag and reads the same right flag. *)
+(** Declaring either endpoint leaves the other export independent. *)
 
-Example paired_flags_to_right_flag (A : Type) (F : HasPairedFlags A)
-  : HasRightFlag_rightFlag (HasPairedFlagsToHasRightFlag F)
-    = HasPairedFlags_rightFlag F
-  := eq_refl.
-
-(** A later export can supply a view as soon as its target is registered. *)
+Fail Check HasPairedFlagsToHasRightFlag.
 
 Minks.Struct LeftFlag
   extends Type
   with  leftFlag : HasFlag
   exports HasLeftFlag.
 
-Example exported_left_flag_coercion (A : Type) (F : HasLeftFlag A)
-  : (F : HasFlag) = HasLeftFlag_leftFlag F
-  := eq_refl.
-
-Example paired_flags_to_left_flag (A : Type) (F : HasPairedFlags A)
-  : HasLeftFlag_leftFlag (HasPairedFlagsToHasLeftFlag F)
-    = HasPairedFlags_leftFlag F
-  := eq_refl.
+Fail Check HasPairedFlagsToHasLeftFlag.
 
 Minks.Struct SelectedFlag
   extends Type
@@ -341,7 +333,17 @@ Example earlier_view_preserves_point (S : EarlierPointed)
 Minks.Struct LaterPointed
   extends Type
   with  chosenPoint : HasPoint,
-        secondEquiv : HasEquiv.
+        secondEquiv : HasEquiv
+  exports EquivOnLaterPoint [LaterPoint].
+
+(** A structurally matched base has an explicit extraction. *)
+
+Check LaterPointedToEquivOnLaterPoint
+  : ∀ S : LaterPointed, EquivOnLaterPoint (LaterPointedToLaterPoint S).
+
+Fail Definition inferred_on_structural_base (S : LaterPointed)
+  : EquivOnLaterPoint (LaterPointedToLaterPoint S)
+  := _.
 
 Example later_view_preserves_point (S : LaterPointed)
   : LaterPoint_chosenPoint (LaterPointedToLaterPoint S)

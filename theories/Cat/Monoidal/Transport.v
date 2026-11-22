@@ -34,7 +34,7 @@ Context {C D : Cat}
 (** 传输后的单位先插入 lax 单位比较。 *)
 
 Definition lax_monoid_unit (A : MonoidObj MC)
-  : Hom (𝐈[MD]) (L A)
+  : Hom 𝐈 (L A)
   := fmap L e[A] ∘ φ₀[L].
 
 (** The transported multiplication combines images before mapping the
@@ -94,7 +94,7 @@ Next Obligation.
       <- (comp_assoc φ₂[L; MonoidCarrier A; MonoidCarrier A]),
       (lax_tensor_natural L m[A] id), <- !comp_assoc, <- fmap_comp.
     rewrite (monoid_object_assoc (isMonoidObj A)), !(@fmap_comp _ _ _ _ (isFct L)), !comp_assoc.
-    rewrite <- (comp_assoc (fmap L (tensor_assoc (HasTensorAssoc := MC) A A A).1)).
+    rewrite <- (comp_assoc (fmap L α[A; A; A])).
     rewrite (lax_assoc L A A A).
     rewrite !comp_assoc.
     rewrite <- (comp_assoc

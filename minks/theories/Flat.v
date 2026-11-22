@@ -205,17 +205,12 @@ Elpi File minks.flat lp:{{
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (flat-layout Here I Cs Fields)).
 
-  pred register-field i:list component, i:list (pair id constant), i:bool, i:component.
-  register-field Cs Fs Coerce (slot Key (mixin-kind Ref) Ds) :-
+  pred register-field i:int, i:list component, i:list (pair id constant), i:component.
+  register-field Priority Cs Fs (slot Key (mixin-kind Ref) Ds) :-
     if (auto-instance Cs (slot Key (mixin-kind Ref) Ds))
-      (std.mem Fs (pr Key C),
-       coq.TC.declare-instance (const C) 1,
-       if (Coerce = tt)
-         (@global! => @reversible! => coq.coercion.declare (coercion (const C) _ _ _))
-         true)
+      (std.mem Fs (pr Key C), coq.TC.declare-instance (const C) Priority)
       true.
-
-  register-field _ Fs _ (slot Key (native-kind _) _) :-
+  register-field _ _ Fs (slot Key (native-kind _) _) :-
     std.mem Fs (pr Key C),
     @global! => @reversible! => coq.coercion.declare (coercion (const C) _ _ _).
 
@@ -290,7 +285,7 @@ Elpi File minks.flat lp:{{
     if (Head = ref-head Ref, coq.arguments.implicit Ref Imps, Imps = [_ | _])
       (@global! => coq.arguments.set-implicit (indt I) Imps) true,
     C = slot "carrier" (native-kind Head) {key-inputs Keys}, Cs = [C],
-    coq.env.projections I [some P], register-field Cs [pr "carrier" P] ff C.
+    coq.env.projections I [some P], register-field 1 Cs [pr "carrier" P] C.
 
   pred generate i:id, i:list inductive, i:list component, i:list (pair id id),
       o:inductive, o:list struct-conversion, o:list constant.
@@ -305,7 +300,7 @@ Elpi File minks.flat lp:{{
     coq.env.projections I Projections,
     std.map Cs component-key Keys,
     std.map2 Keys Projections field-ref Fields,
-    std.forall Cs (register-field Cs Fields ff),
+    std.forall Cs (register-field 1 Cs Fields),
     std.assert! (ancestors Parents [] Reversed) "Could not read the ancestors",
     std.rev Reversed Ancestors,
     std.map Ancestors

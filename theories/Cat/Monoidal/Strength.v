@@ -2,6 +2,7 @@ From Cats Require Export
   Cat.Monoidal.Monoidal.
 
 Local Open Scope monoidal_scope.
+Local Open Scope ob_scope.
 
 (** * Tensorial Strength
 
@@ -29,20 +30,20 @@ Class HasStrength {C : Cat} (MC : HasMonoidal C) (F : Fct C C)
   (** 移去单位上下文，等于映射左单位子。 *)
 
   ; strength_unit (Y : @Ob C)
-    : fmap F (tensor_unitor_l (HasTensorUnitors := MC) Y).1 ∘
-        strengthN (𝐈[MC], Y) ≈
-        (tensor_unitor_l (HasTensorUnitors := MC) (F Y)).1
+    : fmap F λ[Y] ∘
+        strengthN (𝐈, Y) ≈
+        λ[F Y]
 
   (** Nested ordinary contexts are transported coherently with associators. *)
 
   (** 嵌套通常上下文按结合子相干地运输。 *)
 
   ; strength_assoc (X Y Z : @Ob C)
-    : fmap F (tensor_assoc (HasTensorAssoc := MC) X Y Z).1 ∘
-        strengthN (tensor (HasBinoidal := MC) X Y, Z) ≈
-        strengthN (X, tensor (HasBinoidal := MC) Y Z) ∘
+    : fmap F α[X; Y; Z] ∘
+        strengthN (X ⊗ Y, Z) ≈
+        strengthN (X, Y ⊗ Z) ∘
           (tensor_map (IM := HasMonoidal_interchange MC) id (strengthN (Y, Z))) ∘
-          (tensor_assoc (HasTensorAssoc := MC) X Y (F Z)).1
+          α[X; Y; F Z]
   }.
 
 Arguments strengthN {_ _ _} _.

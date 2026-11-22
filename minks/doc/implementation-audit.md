@@ -82,8 +82,8 @@ the supported fragment.
 | Expand-Field, With-Assembly | [Struct.v](../theories/Struct.v), [Spec.v](../theories/Spec.v), [Sharing.v](../examples/Sharing.v) | Both export forms use complete matching followed by filling. The reuse search counts descriptor matches before typechecking the assembled term. It lacks the specified per-leaf whole-term universe check. Whether this changes answers on the supported fragment remains open. |
 | Export-Fix, Export-Common, Export-Form, Export-To, Export-Of | [Relative.v](../theories/Relative.v), [Algebra.v](../examples/Algebra.v), [Sharing.v](../examples/Sharing.v) | Selection closure and transparent extraction and packing work in the examples above. Packed-base exports register the same virtual mixin interface as field-key exports. The regressions extend and assemble `IsMonoid M`, reuse its selected point in `IsMonoidWithPoint`, and reject conflicting base inputs. [Sections.v](../examples/Sections.v) also exercises projections of a parameterized packed base. |
 | Parent-To, Parent-Of, Projection-Name | [Flat.v](../theories/Flat.v), [Struct.v](../theories/Struct.v), [Algebra.v](../examples/Algebra.v) | Declared ancestor maps rebuild selected fields. Direct-parent packers take missing components. A temporary probe gave one reused key two different local aliases. Only the first projection was generated, although Projection-Name requires rejection. |
-| WF-Compare, View-Match, View-Explicit | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Discovery checks strict component inclusion and checks the candidate term with Rocq. Field-key exports use dependency-preserving matches. General inference of a target family's parameter substitution from aligned descriptors is missing. |
-| Coerce-Parent, Inst-Field, Canon-View | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Direct declared parents request coercions. Instance registration tests uniqueness of the class head in the complete layout. Canonical eligibility separately checks preservation of the parent's unique heads. Global inference coherence remains open. |
+| WF-Compare, View-Match, View-Explicit | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Discovery checks strict component inclusion and checks the candidate term with Rocq. Export declarations generate no inter-interface views. General inference of a target family's parameter substitution from aligned descriptors is missing. |
+| Coerce-Parent, Inst-Field, Inst-Export, Canon-View | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Direct declared parents request coercions. Field registration selects the first key for each class head. Canonical views preserve those keys. Anchored exports register an extraction instance. Global inference coherence remains open. |
 | Section-End | [parameter metadata](../plugin/mixin_parameters.ml), [Sections.v](../examples/Sections.v), [Commands.v](../examples/Commands.v) | Nested discharge, import, applied parent views and relative reassembly have executable cases. Preservation for every input used only by hierarchy metadata still needs an argument. |
 
 ## Boundary of Gen-Preserve
@@ -111,3 +111,23 @@ A proof can separate three judgments.
 
 This boundary leaves relative decomposition and Fix-Compose available
 as fieldwise substitution theorems, independently of automatic search.
+
+## Research directions and export registration
+
+A direct translation of checked Minks declarations into Rocq dependent
+records is one candidate semantics for #50. It should account for which
+key each projection selects, including distinct fields of the same type.
+The CwF interpretation in #51 asks how closed sublayouts and relative
+interfaces behave under substitution. The choice of proof method is open.
+[Language specification issue](https://github.com/Godalin/rocq-cats/issues/50) ·
+[Categorical interpretation issue](https://github.com/Godalin/rocq-cats/issues/51)
+
+Each export registers its Rocq class and virtual mixin. Extraction is an
+instance when a fixed field or declared ancestor view identifies the source.
+Remaining mixin fields supply instances for the default keys of the packed
+layout. Reverse packers are explicit. No export-to-export views are generated;
+the proposed Trans command remains unimplemented.
+
+In a local probe, registering assembly of IsGroup from HasInverse alongside
+the generated inverse projection made search revisit the original goal when
+no inverse was available. The same cycle occurred without a canonical packer.

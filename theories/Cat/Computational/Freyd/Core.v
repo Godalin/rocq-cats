@@ -63,19 +63,17 @@ Class FreydCat (C K : Cat)
 
   ; freyd_tensor_objects (X Y : @Ob C)
     : @Prod C hasValueProduct X Y =
-        @tensor FreydComputations
-          hasSymPremonoidal X Y
+        tensor (C := FreydComputations) X Y
   ; freyd_unit_object
     : @Term C hasValueTerminal =
-        tensor_unit hasSymPremonoidal
+        (𝐈 : FreydComputations)
 
   (** Pure maps commute with arbitrary computations in both positions. *)
 
   (** 纯映射在两个位置均与任意计算交换。 *)
 
   ; freyd_pure_central {X Y : @Ob C} (f : Hom X Y)
-    : @is_central FreydComputations
-        hasSymPremonoidal X Y (fmap FreydF f)
+    : is_central (C := FreydComputations) (fmap FreydF f)
 
   (** Preserve each context action across the same object boundaries. *)
 
@@ -84,14 +82,12 @@ Class FreydCat (C K : Cat)
   ; freyd_map_left {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z Y) ∘
         fmap FreydF (id[Z] × f) ≈
-        @tensor_l FreydComputations hasSymPremonoidal
-          X Y Z (fmap FreydF f) ∘
+        tensor_l (C := FreydComputations) Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Z X)
   ; freyd_map_right {X Y : @Ob C} (Z : @Ob C) (f : Hom X Y)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Y Z) ∘
         fmap FreydF (f × id[Z]) ≈
-        @tensor_r FreydComputations hasSymPremonoidal
-          X Y Z (fmap FreydF f) ∘
+        tensor_r (C := FreydComputations) Z (fmap FreydF f) ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects X Z)
 
   (** Preserve the unitors, transporting the tensor and the unit together. *)
@@ -100,20 +96,16 @@ Class FreydCat (C K : Cat)
 
   ; freyd_unit_l (X : @Ob C)
     : fmap FreydF (π2 : Hom (1 × X) X) ≈
-        (@tensor_unitor_l FreydComputations _
-          hasSymPremonoidal X).1 ∘
+        (tensor_unitor_l (C := FreydComputations) X).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects 1 X)
-              (f_equal (λ Q, @tensor FreydComputations
-                hasSymPremonoidal Q X) freyd_unit_object))
+              (f_equal (λ Q, tensor (C := FreydComputations) Q X) freyd_unit_object))
   ; freyd_unit_r (X : @Ob C)
     : fmap FreydF (π1 : Hom (X × 1) X) ≈
-        (@tensor_unitor_r FreydComputations _
-          hasSymPremonoidal X).1 ∘
+        (tensor_unitor_r (C := FreydComputations) X).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects X 1)
-              (f_equal (λ Q, @tensor FreydComputations
-                hasSymPremonoidal X Q) freyd_unit_object))
+              (f_equal (λ Q, tensor (C := FreydComputations) X Q) freyd_unit_object))
 
   (** Both nested tensor boundaries are transported coherently. *)
 
@@ -122,15 +114,12 @@ Class FreydCat (C K : Cat)
   ; freyd_assoc (X Y Z : @Ob C)
     : @eq_to_hom FreydComputations _ _
         (eq_trans (freyd_tensor_objects X (Y × Z)%ob)
-          (f_equal (λ Q, @tensor FreydComputations
-            hasSymPremonoidal X Q) (freyd_tensor_objects Y Z))) ∘
+          (f_equal (λ Q, tensor (C := FreydComputations) X Q) (freyd_tensor_objects Y Z))) ∘
         fmap FreydF (@product_assoc C hasValueProduct X Y Z).1 ≈
-        (@tensor_assoc FreydComputations _
-          hasSymPremonoidal X Y Z).1 ∘
+        (tensor_assoc (C := FreydComputations) X Y Z).1 ∘
           @eq_to_hom FreydComputations _ _
             (eq_trans (freyd_tensor_objects (X × Y)%ob Z)
-              (f_equal (λ Q, @tensor FreydComputations
-                hasSymPremonoidal Q Z) (freyd_tensor_objects X Y)))
+              (f_equal (λ Q, tensor (C := FreydComputations) Q Z) (freyd_tensor_objects X Y)))
 
   (** Preserve symmetry as well as the premonoidal structure. *)
 
@@ -139,8 +128,7 @@ Class FreydCat (C K : Cat)
   ; freyd_symmetry (X Y : @Ob C)
     : @eq_to_hom FreydComputations _ _ (freyd_tensor_objects Y X) ∘
         fmap FreydF (⟨π2, π1⟩ : Hom (X × Y) (Y × X)) ≈
-        tensor_sym (C := FreydComputations)
-          (S := hasSymPremonoidal) X Y ∘
+        tensor_sym (C := FreydComputations) X Y ∘
           @eq_to_hom FreydComputations _ _ (freyd_tensor_objects X Y)
   }.
 

@@ -256,18 +256,27 @@ Elpi File minks.spec lp:{{
     coq.env.typeof (indc K) Ty,
     read-layout Ty Extra [] Cs Params Layout.
 
+  pred print-export-fields i:inductive, i:list component.
+  print-export-fields I Cs :-
+    coq.env.projections I Ps,
+    std.forall2 Cs Ps (c\p\ sigma ref proj db mode\
+      if (c = slot _ (mixin-kind ref) _, p = some proj,
+          coq.TC.db-for ref db, std.mem db (tc-instance (const proj) _))
+        (mode = " [instance]")
+        (if (c = slot _ (native-kind _) _) (mode = " [Coercion]") (mode = " [explicit]")),
+      print-slot [] mode c).
+
   pred print-combination i:gref.
   print-combination Ref :-
     export-base Ref Base, !, mixin-combination Ref Fixed Remaining _,
     coq.gref->id (indt Base) BaseName,
     coq.say "Packed base:" BaseName,
-    close Base Covered,
-    std.append Covered {std.append Fixed Remaining} Components,
+    Ref = indt Export,
     if (Fixed = []) true (
       coq.say "Additional fixed components:",
-      std.forall Fixed (print-slot [] Components " [fixed]")),
+      std.forall Fixed (print-slot [] " [fixed]")),
     coq.say "Remaining components:",
-    std.forall Remaining (print-slot [] Components " [instance, Coercion]").
+    print-export-fields Export Remaining.
 
   print-combination Ref :-
     if (mixin-combination Ref Fixed Parts _)
@@ -277,7 +286,7 @@ Elpi File minks.spec lp:{{
        current-layout I F {std.append Fixed Parts} _ Layout,
        std.drop F Layout Remaining,
        coq.say "Expanded components:",
-       std.forall Remaining (print-slot [] Layout " [instance, Coercion]"))
+       print-export-fields I Remaining)
       true.
 
   pred struct-ancestors i:list struct-parent, o:list inductive.
@@ -327,12 +336,11 @@ Elpi File minks.spec lp:{{
     std.partition Ordered (c\ shared-component c Branches) Shared Rest,
     std.append Shared Rest Cs.
 
-  % Only one slot for a class head may supply an automatic instance.
-  % Different dependencies do not prove that two instance types are disjoint.
+  % Keep the first key for each class head in the complete packed order.
   pred auto-instance i:list component, i:component.
   auto-instance Cs (slot Key (mixin-kind Ref) _) :-
     coq.TC.class? Ref,
-    not (std.exists Cs (c\ c = slot Other (mixin-kind Ref) _, not (Other = Key))).
+    std.filter Cs (c\ c = slot _ (mixin-kind Ref) _) [slot Key _ _ | _].
 
   pred component-key i:component, o:id.
   component-key (slot K _ _) K.
@@ -346,22 +354,20 @@ Elpi File minks.spec lp:{{
       (coq.gref->id (indt P) Name, Sources = [Name | Rest])
       (Sources = Rest).
 
-  pred print-slot i:list inductive, i:list component, i:string, i:component.
-  print-slot Parents Cs Registration (slot Key (mixin-kind Ref) Deps) :-
+  pred print-slot i:list inductive, i:string, i:component.
+  print-slot Parents Mode (slot Key (mixin-kind Ref) Deps) :-
     coq.gref->id Ref Mixin,
     parent-sources Parents Key Sources,
     std.map Deps input-text Labels,
     DepText is "[" ^ {std.string.concat ", " Labels} ^ "]",
     if (Sources = []) (Suffix = " (declared here)")
       (Suffix is " (from " ^ {std.string.concat ", " Sources} ^ ")"),
-    if (auto-instance Cs (slot Key (mixin-kind Ref) Deps))
-      (Mode = Registration) (Mode = " [explicit]"),
     Line is "  " ^ Key ^ " : " ^ Mixin ^ " " ^ DepText ^ Suffix ^ Mode,
     coq.say Line.
 
-  print-slot _ _ _ (slot Key (native-kind Head) Args) :-
+  print-slot _ Mode (slot Key (native-kind Head) Args) :-
     std.map Args input-text Labels, parent-label (native-parent Head Labels) Label,
-    Line is "  " ^ Key ^ " : " ^ Label ^ " [Coercion]", coq.say Line.
+    Line is "  " ^ Key ^ " : " ^ Label ^ Mode, coq.say Line.
 
   pred registration-label i:view-registration, o:string.
   registration-label explicit-view "explicit".
@@ -407,7 +413,10 @@ Elpi File minks.spec lp:{{
       (Line is "Direct parents: " ^ {std.string.concat ", " Names},
        coq.say Line),
     coq.say "Packed fields:",
-    std.forall Cs (print-slot Parents Cs " [instance]"),
+    std.forall Cs (c\ sigma mode\
+      if (c = slot _ (native-kind _) _) (mode = " [Coercion]")
+        (if (auto-instance Cs c) (mode = " [instance]") (mode = " [explicit]")),
+      print-slot Parents mode c),
     if (Views = []) true (coq.say "Conversions:", std.forall Views print-view),
     if (Packers = []) true
       (coq.say "Packing functions:", std.forall Packers print-packer),

@@ -55,7 +55,7 @@ Proof.
   pose (MC := @CartHasMonoidal C TC PC).
   assert (K : g ∘ tensor_map (IM := HasMonoidal_interchange MC) f id ≈
     k ∘ tensor_map (IM := HasMonoidal_interchange MC) id h ∘
-      (tensor_assoc (HasTensorAssoc := MC) X Y Z).1).
+      α[X; Y; Z]).
   { unfold MC. rewrite !cartesian_tensor_map. exact H. }
   pose proof (lax_lift2_assoc L f g h k K) as E.
   rewrite !cartesian_tensor_map in E. exact E.

@@ -65,7 +65,7 @@ Minks.Mixin IsSymUnit (C : Cat)
   extends HasTensorSym C, HasTensorUnitors C
   :=
   { tensor_sym_unit (X : @Ob C)
-    : λ[X] ∘ tensor_sym X (𝐈[hasTensorUnitors]) ≈ ρ[X]
+    : λ[X] ∘ tensor_sym X 𝐈 ≈ ρ[X]
   }.
 
 Arguments tensor_sym_unit {C BC S UC H} _ : rename.

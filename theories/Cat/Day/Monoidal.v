@@ -102,11 +102,11 @@ Context {C : Cat} (MC : HasMonoidal C)
 
 Definition MonoidalDay
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
-  := DayMonoidal (tensorF (HasMonoidal_interchange MC)) (𝐈[MC])
-      (TensorAssocIsoN (IM := HasMonoidal_interchange MC) (AC := MC))
-      (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
-      (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC) (UC := MC))
-      (tensor_pentagon (IM := HasMonoidal_interchange MC) (AC := MC))
+  := DayMonoidal (tensorF (HasMonoidal_interchange MC)) 𝐈
+      (TensorAssocIsoN (IM := HasMonoidal_interchange MC))
+      (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC))
+      (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC))
+      (tensor_pentagon (IM := HasMonoidal_interchange MC))
       (tensor_map_triangle (IM := HasMonoidal_interchange MC)
         (IP := HasMonoidal_isPremonoidal MC)) HD.
 

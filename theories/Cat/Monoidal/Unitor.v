@@ -144,7 +144,7 @@ Definition tensor_unitor_r_central (X : C)
 (** 选定左单位子的自然性。 *)
 
 Lemma tensor_unitor_l_natural {X Y : C} (f : Hom X Y)
-  : λ[Y] ∘ (𝐈[UC] ⊲ f) ≈ f ∘ λ[X].
+  : λ[Y] ∘ (𝐈 ⊲ f) ≈ f ∘ λ[X].
 Proof.
   exact (nat_naturality (TensorUnitorLIso UC).1 f).
 Qed.
@@ -154,7 +154,7 @@ Qed.
 (** 选定右单位子的自然性。 *)
 
 Lemma tensor_unitor_r_natural {X Y : C} (f : Hom X Y)
-  : ρ[Y] ∘ (f ⊳ 𝐈[UC]) ≈ f ∘ ρ[X].
+  : ρ[Y] ∘ (f ⊳ 𝐈) ≈ f ∘ ρ[X].
 Proof.
   exact (nat_naturality (TensorUnitorRIso UC).1 f).
 Qed.
