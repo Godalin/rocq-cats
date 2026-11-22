@@ -136,6 +136,8 @@ square brackets.
   error.
 - **Projections.** The default name is `Name_key`. The form
   `key as projection : Mixin` changes the generated projection name.
+  Repeated entries for a key in one structure must agree on any explicit
+  projection name. A child may give an inherited key a new local name.
   Dependency lists, inheritance, and exports continue to use the key.
 - **Field and constructor order.**
   1. Visit direct parents from left to right. Traverse each parent's

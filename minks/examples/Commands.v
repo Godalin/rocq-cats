@@ -202,6 +202,29 @@ Minks.Mixin HasFlag
   :=
   { flag : bool }.
 
+(** A physical field has one projection name per structure. Repeating that
+    name is allowed, and a child can choose its own name for the same key. *)
+
+Module ProjectionNames.
+Minks.Struct NamedFlag
+  with  chosen as parent_flag : HasFlag.
+
+Minks.Struct RenamedFlag
+  extends NamedFlag
+  with  chosen : HasFlag,
+        chosen as child_flag : HasFlag,
+        chosen as child_flag : HasFlag.
+
+Example inherited_flag (F : RenamedFlag)
+  : child_flag F = parent_flag (RenamedFlagToNamedFlag F)
+  := eq_refl.
+
+Fail Minks.Struct ConflictingNames
+  extends NamedFlag
+  with  chosen as first_flag : HasFlag,
+        chosen as second_flag : HasFlag.
+End ProjectionNames.
+
 Minks.Mixin FlagPair (P Q : HasFlag)
   :=
   { flag_pair : bool * bool := (@flag P, @flag Q) }.

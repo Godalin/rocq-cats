@@ -261,6 +261,13 @@ Elpi Accumulate lp:{{
     with-components Additions Env (next-env\
       resolve-slots N Slots Next next-env Rest MoreNames MoreViews).
 
+  pred check-projection-aliases i:list (pair id id).
+  check-projection-aliases [].
+  check-projection-aliases [pr Key Name | Rest] :-
+    if (std.mem Rest (pr Key Other), not (Other = Name))
+      (coq.error "Conflicting projection names for component" Key ":" Name "and" Other)
+      (check-projection-aliases Rest).
+
   pred assembled-name i:component-view, o:id.
   assembled-name (assembled Name _ _) Name.
 
@@ -331,6 +338,7 @@ Elpi Accumulate lp:{{
     std.map Applications parent-layout Branches, close-parents Branches Inherited,
     with-components Inherited []
       (env\ resolve-slots Name Slots Inherited env Local Selected Assembled),
+    check-projection-aliases Selected,
     merge Local Inherited Components,
     if (Assembled = []) (Names = Selected)
       (std.map Components (avoid-view-name Name Assembled Selected) Names),
