@@ -40,14 +40,14 @@ declarations $D$, hierarchy entries $J$ and registrations $R$:
   d \ \xrightarrow{\ \mathrm{check\ in}\ \mathcal E\ }\ \Sigma
     \ \xrightarrow{\ \mathrm{generate\ in}\ \mathcal E\ }\ (D,J,R).
 \]
-The next declaration is checked in the updated environment.
+An export records a reusable mixin over the completed layout. Its
+declaration leaves the source fields and parents unchanged. The proposed
+\ttt{Minks.Trans} command would read two exports and emit a Rocq function.
 
-\begin{itemize}
-\item Section~\ref{sec:language} gives the syntax and scope of the two commands.
-\item Section~\ref{sec:wf} states the shared well-formedness judgments. Section~\ref{sec:signatures} computes their result for each command.
-\item Section~\ref{sec:generation} derives declarations, views and registrations from that result.
-\item Section~\ref{sec:properties} states the proof obligations. Section~\ref{sec:examples} works through the declarations and their rejection cases.
-\end{itemize}
+Sections~\ref{sec:language}--\ref{sec:generation} give the language,
+well-formedness judgments, signatures and generation rules in that order.
+Sections~\ref{sec:properties} and~\ref{sec:examples} give proof obligations
+and worked examples.
 
 \paragraph{Rule index.}
 {\small\raggedright
@@ -61,7 +61,7 @@ The next declaration is checked in the updated environment.
 \ruse{Export-Common}.\par
 \textit{Generation.} \ruse{Projection-Name}, \ruse{Parent-To}, \ruse{Parent-Of}, \ruse{Export-Form},
 \ruse{Export-To}, \ruse{Export-Of}, \ruse{WF-Compare}, \ruse{View-Match},
-\ruse{View-Explicit}, \ruse{Coerce-Parent}, \ruse{Inst-Field},
+\ruse{View-Explicit}, \ruse{Trans-Export}, \ruse{Coerce-Parent}, \ruse{Inst-Field}, \ruse{Inst-Export},
 \ruse{Canon-View}, \ruse{Section-End}.\par
 \textit{Proof obligations.} \ruse{Gen-Preserve}, \ruse{Fix-Compose}.\par}
 
@@ -101,6 +101,8 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
   \mathit{input} &::=& \mathit{param}\mid\mathit{key}}
 \newcommand{\grammarExport}{%
   \mathit{export} &::=& \mathit{interface}\ \langle\ttt{[}\overline{\mathit{selection}}\ttt{]}\rangle}
+\newcommand{\grammarTrans}{%
+  \mathit{transCmd} &::=& \ttt{Minks.Trans}\ \mathit{source}\ \ttt{to}\ \mathit{target}\ \ttt{.}}
 \newcommand{\grammarSelection}{%
   \mathit{selection} &::=& \mathit{key}\mid\mathit{struct}}
 
@@ -108,6 +110,7 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
 \begin{array}{@{}rcl@{}}
 \grammarMixinDecl\\
 \grammarStructDecl\\
+\grammarTrans\\
 \grammarArg\\
 \grammarMixinParent\\
 \grammarStructParent\\
@@ -204,6 +207,16 @@ Each entry names an interface. A bracketed list selects field keys and
 at most one packed structure to fix. A written \ttt{[]} fixes no fields.
 Omitting the brackets selects the common fields of the direct parents
 (\ruse{Export-Common}).
+
+\paragraph{Conversions between exports.}
+\[
+\begin{array}{@{}rcl@{}}
+\grammarTrans
+\end{array}
+\]
+Both names must resolve to previously registered exports. The command
+requests one direction. Its result may depend on the source witness
+(\ruse{Trans-Export}).
 
 \paragraph{Scope of names.}
 
@@ -716,17 +729,30 @@ may have the same image. A missing binding or a failed premise skips
 this view. A declared parent application supplies its substitution
 directly and uses \ruse{Parent-To}.
 
-\rdefn{View-Explicit}. An inferred structural view is explicit. For an eligible pair in
-  the same module, \ruse{View-Match} determines the target arguments
-  and checks strict layout containment.
-  Either can be declared first. Between field-key exports (including
-  imported ones), the source's fixed and remaining fields together
-  must supply a unique dependency-preserving match for the target's
-  fixed and remaining fields. Use the same original-key preference
-  and extend the map in dependency order. The source must have
-  strictly more components. For both kinds of discovery, a new name
-  must be available and the candidate map must typecheck. This is
-  discovery of named views outside the declared inheritance relation.
+\rdefn{View-Explicit}. For two structure families in the same module,
+\ruse{View-Match} discovers an explicit view when the generated name is
+fresh and the map typechecks. Either family may be declared first.
+
+\paragraph{Requested conversions between exports.}
+\rdefn{Trans-Export}. For a source export $E$ and target export $F$, bind
+the source parameters $\theta$ and a witness $e:E(\theta)$. Read the
+complete source layout from the fixed inputs, their packed-base
+projections and the remaining fields of $e$. Match the complete target
+layout against it using the $\mathsf{reuse}$ search of \ruse{With-Assembly},
+including its original-key preference. Align ordinary environment parameters
+by \ruse{View-Match}'s binding rule. At each complete selection:
+\begin{enumerate}
+\item Form the target inputs $\tau$ from the selected values. For a packed
+base, reuse the source base at the same type and selected components,
+or pack the selected components in the target base's constructor order.
+\item Apply $\ttt{Make}F$ to $\tau$ and the selected remaining witnesses.
+Check the whole term in the source context under \ruse{Univ-Assemble}.
+\end{enumerate}
+Exactly one well-typed binding map and a fresh name yield the transparent
+function $E\ttt{To}F:\prod_\theta\prod_{e:E(\theta)}F(\tau(\theta,e))$.
+Otherwise the command fails. Equal component layouts are eligible,
+including when their fixed inputs differ. The command emits only this
+definition. It adds no hierarchy edge or automatic registration.
 
 \subsection{Registering coercions, instances and canonical views}
 
@@ -743,16 +769,25 @@ registration in the visible environment.
   direct edges supply the implicit path. A field name or position alone
   requests no registration.
 
-\item \rdefn{Inst-Field}. A component projection is registered as a typeclass instance
-  at priority 1 when its class head occurs under exactly one key in
-  the whole complete layout. A remaining-field projection of an export
-  uses the same test on the original complete layout and is then also
-  a coercion. Fixed parameters are supplied as part of the class index.
+\item \rdefn{Inst-Field}. For each mixin class head, select the first
+  key in the complete packed layout. Register its structure projection
+  as an instance at priority 1. In an export, register the projection
+  of that same key at priority 2 if it is a remaining field. When the
+  selected key is fixed, all other keys of that head remain explicit.
+  Mixin projections supply class arguments without adding coercions.
+  Component matching during declaration still checks binding tuples.
+\item \rdefn{Inst-Export}. For each export $E$ of $S$, register the
+existing extraction $s\mapsto S\ttt{To}E(s)$ as a priority-1 instance
+when its fixed indices identify the source binder $s:S$. In the
+generated index tuple $\theta(s)$, a stored projection applied to $s$
+or a declared parent view of $s$ identifies that binder, including a
+chain of such projections. Ambient parameters alone do not. An empty
+tuple thus leaves extraction explicit. This rule adds no coercion;
+reassembly $S\ttt{Of}E$ stays explicit.
 \item \rdefn{Canon-View}. A declared ancestor view is eligible for \ttt{Canonical} when every
-  head having an automatically registered projection in the ancestor
-  remains unique in the child. The rule applies independently of
-  direct-parent coercion eligibility. The \ttt{Of} functions and the
-  extraction and reassembly maps are named, explicit functions.
+  default component key in the ancestor remains the default for its
+  class head in the child. The rule applies independently of
+  direct-parent coercion eligibility.
 \end{itemize}
 
 \subsection{Discharging a Rocq section}
@@ -1172,22 +1207,27 @@ magma and monoid inputs, and $p_M$ is a point on its carrier.
 \]
 Each row generates the class $E(\theta)$ and constructor, the keyed
 virtual mixin $R$ over $\theta$, and the maps $S\ttt{To}E$ and
-$S\ttt{Of}E$ of Section~\ref{sec:relative}. Among the field-key exports,
-$\ttt{HasGroup}(c)\to\ttt{HasMonoid}(c)$ drops $i$.
+$S\ttt{Of}E$ of Section~\ref{sec:relative}. In each row $\theta(s)$
+identifies $s$, so \ruse{Inst-Export} registers the extraction.
+Separate commands can request either forgetting or repacking:
+\begin{verbatim}
+Minks.Trans HasGroup to HasMonoid.
+Minks.Trans IsMonoid to IsMonoidWithPoint.
+\end{verbatim}
+The first drops the inverse witness $i$. For $h:\ttt{IsMonoid}(M)$,
+the second fixes the point $\proj_p(h)$ and retains both law witnesses.
 Including the generated root, among the eleven packed layouts, every strict inclusion already has a
 declared ancestor view. The two group layouts are equal, so neither
 adds a strict-containment view to the other.
 
 \ruse{Coerce-Parent} requests the direct edges and the marked carrier
 projections. For each structure row, \ruse{Inst-Field} selects every
-witness key of unique class head at priority 1. Thus \ttt{TwoPoints}
-registers $e$ and leaves $p,q$ explicit. For the five exports every
-key in $R$ has unique class head in its source layout, so its
-projection is eligible as both instance and coercion.
-\ruse{Canon-View} selects all pairs in $D^+$ except
-$(\ttt{TwoPoints},\ttt{PointedSetC})$: the latter parent registered
-its unique \ttt{HasPoint} projection. Its direct coercion remains
-eligible. Final registration is checked in the visible Rocq environment.
+first witness key of each class head at priority 1. Thus \ttt{TwoPoints}
+registers $e,p$ and leaves $q$ explicit. The default point agrees with
+that of \ttt{PointedSetC}, so their ancestor view is canonical.
+For the five exports each remaining mixin key is first in its source
+layout and its projection is an instance at priority 2.
+Final registration is checked in the visible Rocq environment.
 
 \subsection{Two operations on one setoid: from abelian groups to rings}
 The pointed-magma outline in Figure~\ref{fig:magma} also applies to
