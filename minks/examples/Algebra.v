@@ -564,14 +564,9 @@ End Completion.
 (** Completion on a fixed monoid, a second local prototype. At this point
     the registrations from [Completion] have expired. The [IsGroup] export
     generated [MakeIsGroup] and [GroupOfIsGroup]. This section registers
-    the latter locally through a canonical packer. The assembly instance
-    below is disabled. *)
+    the latter locally through a canonical packer. *)
 
 Section PackedBaseCompletion.
-(* #[local] Instance relative_from_inverse (M : Monoid) `{I : !HasInverse M}
-  : IsGroup M
-  := MakeIsGroup M I. *)
-
 #[local] Canonical group_on_monoid (M : Monoid) `{R : !IsGroup M}
   : Group
   := GroupOfIsGroup M R.
@@ -611,6 +606,30 @@ Definition packed_from_inverse
   : Group
   := let R : IsGroup M := MakeIsGroup M I in (M : Group).
 End WithInverse.
+
+(** With only [M : Monoid], [group_on_monoid] asks for [IsGroup M].
+    Uncomment this section to reproduce the timeout. [relative_from_inverse]
+    asks for [HasInverse M], and the exported projection [IsGroup_hasInverse]
+    asks for [IsGroup M] again. The depth-four trace shows both steps twice. *)
+
+(*
+Section MissingInverse.
+#[local] Instance relative_from_inverse (M : Monoid) `{I : !HasInverse M}
+  : IsGroup M
+  := MakeIsGroup M I.
+
+Context (M : Monoid).
+
+Goal IsGroup M.
+Proof.
+  Set Typeclasses Debug.
+  Fail typeclasses eauto 4.
+  Unset Typeclasses Debug.
+Abort.
+
+Timeout 2 Definition group_without_inverse : Group := M.
+End MissingInverse.
+*)
 End PackedBaseCompletion.
 
 (** The inherited first point is the default. Both keys have projections. *)
