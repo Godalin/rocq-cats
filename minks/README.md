@@ -54,7 +54,7 @@ Minks.Mixin Name binders
   inherited witness. The body uses Rocq class fields and their usual
   attributes.
 - **Parent applications.** Each parent must be a registered mixin or a
-  relative interface exported with field keys by `Minks.Struct`. Declare
+  relative interface exported by `Minks.Struct`. Declare
   the child's ordinary parameters in its header or the enclosing section.
   Supply each ordinary parent argument using a visible parameter name. Pass explicit arguments by
   position and implicit ordinary arguments by name,
@@ -128,7 +128,7 @@ square brackets.
   Rocq rolls back the generated base if the declaration fails.
   An empty parent list contributes zero fields.
 - **Component identity.** A `with` entry can name a mixin declared with
-  `Minks.Mixin` or a relative interface exported with field keys. A key
+  `Minks.Mixin` or an exported relative interface. A key
   identifies a slot for a direct mixin in the combined hierarchy.
   Repeated occurrences of a key merge when the referenced mixin and its
   ordered dependency keys agree. Different keys can store independent
@@ -177,7 +177,7 @@ square brackets.
   parent at the visible input `D`. List its parameters in Rocq binder order.
   Direct and transitive parent views use the same substitution. Two paths
   to the same declared ancestor must agree on its inputs.
-- A field-key export can be reused after discharge. For example,
+- A relative export can be reused after discharge. For example,
   `with chosen : LabelledOn [D, carrier]` takes the new ordinary argument
   before the original fixed field. In a mixin declaration the corresponding
   parent application is `extends LabelledOn D A`.
@@ -263,12 +263,15 @@ square brackets.
   equality of whole records may need a record case split. With a packed
   base, extraction uses the corresponding structure view and reassembly
   starts from that base's projections.
-- **Composition metadata.** For field-key exports, Minks registers the
-  ordered fixed and remaining components of each class. Later
-  `Minks.Mixin` and `Minks.Struct` commands expand the class using that
-  metadata. An ordinary Rocq class
-  declaration does not create this registration. Packed-base exports
-  provide the class and transparent conversion functions.
+- **Composition metadata.** Every export also registers a virtual mixin.
+  With a packed base, its first fixed input is the record itself, followed
+  by any separately fixed components. Both `extends IsMonoid M` and
+  `with laws : IsMonoid [M]` read the carrier, equivalence and operation
+  from that same magma. The former binds the associativity, point and unit
+  witnesses. The latter reuses or stores those witnesses and builds
+  `laws : IsMonoid M` from them. Fixing the point as well leaves just the
+  two law witnesses. Section parameters precede the fixed inputs after
+  discharge.
 - **Views between exports.** When a field-key export is declared, Minks
   compares it with the field-key exports already available, including
   imported ones. A target with fewer components gets a transparent

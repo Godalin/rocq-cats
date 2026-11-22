@@ -165,3 +165,31 @@ Fail Minks.Mixin MissingOrdinaryOperation (A : Type) (E : HasEquiv A)
     (op : @HasMagma A E)
   extends IsDistributive A E op
   := { missing_operation : True }.
+
+(** A packed base can itself have a section parameter. Its carrier and
+    equivalence projections take both the parameter and the packed value. *)
+
+Section LabelledMultiplication.
+Variable B : Type.
+
+Minks.Struct LabelledMagma
+  extends LabelledPoint B
+  with  hasMagma : HasMagma [carrier, hasEquiv]
+  exports MagmaOnLabelled [LabelledPoint].
+End LabelledMultiplication.
+
+Minks.Mixin IsLabelledSemigroup (T : Type) (S : LabelledPoint T)
+  extends MagmaOnLabelled T S
+  := { labelled_assoc : ∀ x y z : S, (x * y) * z ≈ x * (y * z) }.
+
+Section AtLabelledPoint.
+Context (T : Type) (S : LabelledPoint T).
+
+Minks.Struct AtLabel
+  with  chosen : MagmaOnLabelled [T, S].
+End AtLabelledPoint.
+
+Example labelled_op_computes (T : Type) (S : LabelledPoint T)
+    (op : @HasMagma S (LabelledPoint_hasEquiv T S))
+  : MagmaOnLabelled_hasMagma T (AtLabel_chosen T S (MakeAtLabel T S op)) = op
+  := eq_refl.

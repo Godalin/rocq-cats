@@ -13,5 +13,6 @@
   Closure.vo
   Commands.vo
   Sharing.vo
+  Presentations.vo
   Lattice.vo
   Universes.vo))

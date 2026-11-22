@@ -53,6 +53,19 @@ argument identities are themselves being resolved.
   parentless structure has no inherited field to fix.
   [NativeParents.v](../examples/NativeParents.v)
 
+### Expanding an export or listing its components
+
+[Presentations.v](../examples/Presentations.v) compares inheritance through
+`HasMonoid A` with the ordered list `IsSemigroup A, IsUnitAt A`.
+The generated mixin parameter types are convertible at the same universe
+instance. Reversing the list moves the point and its unit laws before
+associativity. The corresponding struct constructors have convertible
+field types in the same order, and reading back the assembled monoid
+computes to the same witnesses. The comparison also checks a relative
+export on a fixed magma against its components on the projected carrier.
+These checks concern the generated interfaces. Each declaration still
+introduces its own Rocq type and records its declared parents.
+
 ## Rule coverage by implementation stage
 
 The table distinguishes executable observations from source inspection.
@@ -66,8 +79,8 @@ the supported fragment.
 | Univ-Inst, Struct-Univ, Univ-Assemble | [parameter construction](../plugin/mixin_parameters.ml), [Flat.v](../theories/Flat.v), [Universes.v](../examples/Universes.v) | Tests exercise open and closed mixin universe binders, shared levels and conflicting instances. The Struct grammar lacks explicit universe binders. See With-Assembly below for branch checking. |
 | Witness-Share, Binder-Order | [parameter construction](../plugin/mixin_parameters.ml), [Sharing.v](../examples/Sharing.v), [Commands.v](../examples/Commands.v) | The order experiment exercises keyed and unkeyed sharing. Among ready witnesses the implementation prioritizes shared entries. Ordinary binders keep their relative order. |
 | Parent-Union, Ancestor-Agree, Struct-Pack | [Spec.v](../theories/Spec.v), [Struct.v](../theories/Struct.v), [Sections.v](../examples/Sections.v) | Parent applications specialize inherited components. Shared ancestor inputs are compared by their keys. Packing partitions inherited fields into shared and remaining lists. Native parents contribute ordinary layout entries. Empty parents contribute zero fields. Matching still compares native heads and argument keys; general conversion of distinct native heads is open. |
-| Expand-Field, With-Assembly | [Struct.v](../theories/Struct.v), [Spec.v](../theories/Spec.v), [Sharing.v](../examples/Sharing.v) | Field-key exports use complete matching followed by filling. The reuse search counts descriptor matches before typechecking the assembled term. It lacks the specified per-leaf whole-term universe check. Whether this changes answers on the supported fragment remains open. |
-| Export-Fix, Export-Common, Export-Form, Export-To, Export-Of | [Relative.v](../theories/Relative.v), [Algebra.v](../examples/Algebra.v), [Sharing.v](../examples/Sharing.v) | Selection closure and transparent extraction and packing work in the examples above. Packed-base exports generate classes and maps but lack virtual-mixin registration. A temporary probe confirmed that a mixin cannot extend the packed-base export `IsMonoid M`. |
+| Expand-Field, With-Assembly | [Struct.v](../theories/Struct.v), [Spec.v](../theories/Spec.v), [Sharing.v](../examples/Sharing.v) | Both export forms use complete matching followed by filling. The reuse search counts descriptor matches before typechecking the assembled term. It lacks the specified per-leaf whole-term universe check. Whether this changes answers on the supported fragment remains open. |
+| Export-Fix, Export-Common, Export-Form, Export-To, Export-Of | [Relative.v](../theories/Relative.v), [Algebra.v](../examples/Algebra.v), [Sharing.v](../examples/Sharing.v) | Selection closure and transparent extraction and packing work in the examples above. Packed-base exports register the same virtual mixin interface as field-key exports. The regressions extend and assemble `IsMonoid M`, reuse its selected point in `IsMonoidWithPoint`, and reject conflicting base inputs. [Sections.v](../examples/Sections.v) also exercises projections of a parameterized packed base. |
 | Parent-To, Parent-Of, Projection-Name | [Flat.v](../theories/Flat.v), [Struct.v](../theories/Struct.v), [Algebra.v](../examples/Algebra.v) | Declared ancestor maps rebuild selected fields. Direct-parent packers take missing components. A temporary probe gave one reused key two different local aliases. Only the first projection was generated, although Projection-Name requires rejection. |
 | WF-Compare, View-Match, View-Explicit | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Discovery checks strict component inclusion and checks the candidate term with Rocq. Field-key exports use dependency-preserving matches. General inference of a target family's parameter substitution from aligned descriptors is missing. |
 | Coerce-Parent, Inst-Field, Canon-View | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Direct declared parents request coercions. Instance registration tests uniqueness of the class head in the complete layout. Canonical eligibility separately checks preservation of the parent's unique heads. Global inference coherence remains open. |

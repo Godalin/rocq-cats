@@ -16,10 +16,16 @@ Elpi File minks.flat lp:{{
   pred field-name i:id, i:id, o:id.
   field-name N Key F :- F is N ^ "_" ^ Key.
 
-  pred component-type i:gref, i:list id, i:list (pair id term), o:term.
+  pred input-term i:list (pair id term), i:input, o:term.
+  input-term Env (key-input Key) T :- lookup Key Env T.
+  input-term Env (projection-input C Args) T :-
+    std.map Args (input-term Env) Terms, coq.env.global (const C) Head,
+    coq.mk-app Head Terms T.
+
+  pred component-type i:gref, i:list input, i:list (pair id term), o:term.
   component-type Ref Deps Env Ty :-
     coq.env.global Ref Head,
-    std.map Deps (d\t\ lookup d Env t) Args,
+    std.map Deps (input-term Env) Args,
     coq.mk-app Head Args Ty.
 
   pred field-type i:component, i:list (pair id term), o:term.
@@ -265,7 +271,7 @@ Elpi File minks.flat lp:{{
   base-record N Head T (sort _) Rev (record N (sort S) Ctor Body) Keys :- !,
     std.rev Rev Names, std.map Names parameter-key Keys,
     std.assert-ok! (coq.typecheck-ty T S) "Expected a native type",
-    projection-id N (slot "carrier" (native-kind Head) Keys) Projection,
+    projection-id N (slot "carrier" (native-kind Head) {key-inputs Keys}) Projection,
     Ctor is "Make" ^ N, Body = field [] Projection T (_\ end-record).
 
   base-record N Head T Arity Rev Decl Keys :-
@@ -283,7 +289,7 @@ Elpi File minks.flat lp:{{
     head-levels T Levels, (@udecl! Levels tt [] tt => coq.env.add-indt Decl I),
     if (Head = ref-head Ref, coq.arguments.implicit Ref Imps, Imps = [_ | _])
       (@global! => coq.arguments.set-implicit (indt I) Imps) true,
-    C = slot "carrier" (native-kind Head) Keys, Cs = [C],
+    C = slot "carrier" (native-kind Head) {key-inputs Keys}, Cs = [C],
     coq.env.projections I [some P], register-field Cs [pr "carrier" P] ff C.
 
   pred generate i:id, i:list inductive, i:list component, i:list (pair id id),

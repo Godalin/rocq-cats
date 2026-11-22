@@ -15,13 +15,17 @@ Elpi Db minks.flat.db lp:{{
   kind field-kind type.
   type mixin-kind gref -> field-kind.
   type native-kind native-head -> field-kind.
-  type slot id -> field-kind -> list id -> component.
+  kind input type.
+  type key-input id -> input.
+  type projection-input constant -> list input -> input.
+  type slot id -> field-kind -> list input -> component.
 
   kind mixin-param type.
   type mixin-val mixin-param.
   kind argument-ref type.
   type position int -> argument-ref.
   type section-ref constant -> argument-ref.
+  type projection-ref constant -> list argument-ref -> argument-ref.
   type mixin-scoped-dep gref -> list argument-ref -> mixin-param.
   type mixin-dep gref -> list int -> mixin-param.
 
@@ -44,13 +48,18 @@ Elpi Db minks.flat.db lp:{{
   pred struct-view i:inductive, o:inductive, o:constant, o:view-registration.
   pred struct-packer i:inductive, o:constant.
   pred struct-export i:inductive, o:inductive, o:list id.
-  pred packed-export i:gref, o:inductive, o:list component, o:list component.
+  pred export-base i:gref, o:inductive.
   pred struct-assembly i:inductive, o:constant, o:list id.
   pred flat-layout i:list string, o:inductive, o:list component,
       o:list (pair id constant).
 }}.
 
 Elpi File minks.spec lp:{{
+  pred projection-app i:term, o:constant, o:list term.
+  projection-app T C Args :-
+    coq.safe-dest-app T Head Args, Args = [_ | _],
+    coq.env.global (const C) Head, coq.env.projection? C _.
+
   pred atom i:argument, o:id.
   atom (str Name) Name :-
     not (std.mem ["extends", "with", "as", "exports", ",", ":", "[", "]"] Name).
@@ -74,6 +83,9 @@ Elpi File minks.spec lp:{{
   argument-ref-of Vars A (position I) :- parameter-index Vars A I, !.
   argument-ref-of _ (global (const C)) (section-ref C) :-
     coq.env.section-variables Cs, std.mem Cs C.
+
+  argument-ref-of Vars T (projection-ref C Refs) :-
+    projection-app T C Args, std.map Args (argument-ref-of Vars) Refs.
 
   pred read-dependencies i:term, i:list term, i:int, i:list int, o:list mixin-param.
   read-dependencies (prod _ _ Body) Vars Pos [Pos | Values] [mixin-val | Params] :- !,
@@ -128,7 +140,17 @@ Elpi File minks.spec lp:{{
       (if (std.mem Fields (pr Name _)) (Key = Name)
         (coq.error "Unknown component input:" Name)).
 
-  pred selected-witness i:list component, i:list (pair id term), i:gref, i:list id, o:id.
+  pred key-inputs i:list id, o:list input.
+  key-inputs Keys Inputs :- std.map Keys (k\r\ r = key-input k) Inputs.
+
+  pred argument-input i:list id, i:argument-ref, o:input.
+  argument-input Keys (position I) (key-input K) :- std.nth I Keys K.
+  argument-input _ (section-ref C) (key-input K) :-
+    coq.gref->id (const C) Name, section-input Name K _.
+  argument-input Keys (projection-ref C Args) (projection-input C Inputs) :-
+    std.map Args (argument-input Keys) Inputs.
+
+  pred selected-witness i:list component, i:list (pair id term), i:gref, i:list input, o:id.
   selected-witness Cs _ Ref Deps Key :- std.mem Cs (slot Key (mixin-kind Ref) Deps).
   selected-witness _ Fields _ _ Key :-
     std.mem Fields (pr Key _), ambient-value Key _.
@@ -140,18 +162,16 @@ Elpi File minks.spec lp:{{
     std.mem Fields (pr Key _),
     mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
   mixin-arguments [mixin-dep Ref Positions | Params] Cs Fields Keys Args :-
-    std.map Positions (i\k\ std.nth i Keys k) Deps,
+    std.map Positions (i\k\ std.nth i Keys k) Names, key-inputs Names Deps,
     selected-witness Cs Fields Ref Deps Key,
     mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
 
   mixin-arguments [mixin-scoped-dep Ref Refs | Params] Cs Fields Keys Args :-
-    std.map Refs (r\key\ sigma i c name\
-      if (r = position i) (std.nth i Keys key)
-        (r = section-ref c, coq.gref->id (const c) name, section-input name key _)) Deps,
+    std.map Refs (argument-input Keys) Deps,
     selected-witness Cs Fields Ref Deps Key,
     mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
 
-  pred match-component i:id, i:field-kind, i:list id, i:list component,
+  pred match-component i:id, i:field-kind, i:list input, i:list component,
       i:list id, o:id.
   match-component Key Kind Deps Available Used Actual :-
     Preferred = slot Key Kind Deps,
@@ -163,13 +183,28 @@ Elpi File minks.spec lp:{{
   translate-key Mapping Key Actual :- std.mem Mapping (pr Key Actual), !.
   translate-key _ Key Key :- ambient-value Key _.
 
+  pred translate-input i:list (pair id id), i:input, o:input.
+  translate-input Mapping (key-input K) (key-input Actual) :- translate-key Mapping K Actual.
+  translate-input Mapping (projection-input C Args) (projection-input C Inputs) :-
+    std.map Args (translate-input Mapping) Inputs.
+
+  pred input-keys i:input, o:list id.
+  input-keys (key-input K) [K].
+  input-keys (projection-input _ Args) Keys :- std.map Args input-keys Lists, std.flatten Lists Keys.
+
+  pred input-text i:input, o:id.
+  input-text (key-input K) K.
+  input-text (projection-input C Args) Text :-
+    coq.gref->id (const C) Name, std.map Args input-text Labels,
+    Text is "(" ^ Name ^ " " ^ {std.string.concat " " Labels} ^ ")".
+
   pred mapped-components i:list component, i:list component,
       i:list (pair id id), i:list id, o:list id.
   mapped-components [] _ _ _ [].
   mapped-components [C | Cs] Available Mapping Used
       [Actual | Args] :-
     C = slot Key Kind Deps,
-    std.map Deps (translate-key Mapping) ActualDeps,
+    std.map Deps (translate-input Mapping) ActualDeps,
     match-component Key Kind ActualDeps Available Used Actual,
     mapped-components Cs Available [pr Key Actual | Mapping] [Actual | Used] Args.
 
@@ -189,6 +224,11 @@ Elpi File minks.spec lp:{{
     coq.env.section-variables Vars, std.mem Vars C,
     coq.gref->id (const C) Name, parameter-key Name Label.
 
+  pred layout-input i:list (pair term id), i:term, o:input.
+  layout-input Inputs T (key-input Key) :- input-label Inputs T Key, !.
+  layout-input Inputs T (projection-input C Args) :-
+    projection-app T C Terms, std.map Terms (layout-input Inputs) Args.
+
   pred read-layout i:term, i:int, i:list (pair term id), i:list component,
       o:list id, o:list component.
   read-layout (prod Name _ Body) N Inputs Cs [Label | Params] Out :-
@@ -200,7 +240,7 @@ Elpi File minks.spec lp:{{
   pred read-slots i:term, i:list (pair term id), i:list component, o:list component.
   read-slots _ _ [] [].
   read-slots (prod _ Ty Body) Inputs [slot Key Kind _ | Cs] [slot Key Kind Args | Rest] :-
-    coq.safe-dest-app Ty _ Terms, std.map Terms (input-label Inputs) Args,
+    coq.safe-dest-app Ty _ Terms, std.map Terms (layout-input Inputs) Args,
     pi x\ read-slots (Body x) [pr x Key | Inputs] Cs Rest.
 
   pred specialize-layout i:term, i:list id, i:list (pair term id),
@@ -218,6 +258,18 @@ Elpi File minks.spec lp:{{
 
   pred print-combination i:gref.
   print-combination Ref :-
+    export-base Ref Base, !, mixin-combination Ref Fixed Remaining _,
+    coq.gref->id (indt Base) BaseName,
+    coq.say "Packed base:" BaseName,
+    close Base Covered,
+    std.append Covered {std.append Fixed Remaining} Components,
+    if (Fixed = []) true (
+      coq.say "Additional fixed components:",
+      std.forall Fixed (print-slot [] Components " [fixed]")),
+    coq.say "Remaining components:",
+    std.forall Remaining (print-slot [] Components " [instance, Coercion]").
+
+  print-combination Ref :-
     if (mixin-combination Ref Fixed Parts _)
       (std.map Fixed component-key FixedKeys,
        coq.say "Fixed keys:" FixedKeys,
@@ -227,21 +279,6 @@ Elpi File minks.spec lp:{{
        coq.say "Expanded components:",
        std.forall Remaining (print-slot [] Layout " [instance, Coercion]"))
       true.
-
-  pred print-packed-export i:gref, i:inductive, i:list component, i:list component.
-  print-packed-export Ref Base Fixed Remaining :-
-    coq.gref->id Ref Name,
-    coq.gref->id (indt Base) BaseName,
-    Title is "Minks relative interface " ^ Name,
-    coq.say Title,
-    coq.say "Packed base:" BaseName,
-    close Base Covered,
-    std.append Covered {std.append Fixed Remaining} Components,
-    if (Fixed = []) true (
-      coq.say "Additional fixed components:",
-      std.forall Fixed (print-slot [] Components " [fixed]")),
-    coq.say "Remaining components:",
-    std.forall Remaining (print-slot [] Components " [instance, Coercion]").
 
   pred struct-ancestors i:list struct-parent, o:list inductive.
   struct-ancestors Ps Is :-
@@ -313,7 +350,8 @@ Elpi File minks.spec lp:{{
   print-slot Parents Cs Registration (slot Key (mixin-kind Ref) Deps) :-
     coq.gref->id Ref Mixin,
     parent-sources Parents Key Sources,
-    DepText is "[" ^ {std.string.concat ", " Deps} ^ "]",
+    std.map Deps input-text Labels,
+    DepText is "[" ^ {std.string.concat ", " Labels} ^ "]",
     if (Sources = []) (Suffix = " (declared here)")
       (Suffix is " (from " ^ {std.string.concat ", " Sources} ^ ")"),
     if (auto-instance Cs (slot Key (mixin-kind Ref) Deps))
@@ -322,7 +360,7 @@ Elpi File minks.spec lp:{{
     coq.say Line.
 
   print-slot _ _ _ (slot Key (native-kind Head) Args) :-
-    parent-label (native-parent Head Args) Label,
+    std.map Args input-text Labels, parent-label (native-parent Head Labels) Label,
     Line is "  " ^ Key ^ " : " ^ Label ^ " [Coercion]", coq.say Line.
 
   pred registration-label i:view-registration, o:string.

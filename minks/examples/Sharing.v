@@ -108,3 +108,71 @@ Example fixed_presentations_agree (F : FixedMultiplication)
 Fail Minks.Struct DuplicateFix
   extends PointedMagma
   exports DuplicatePoint [hasPoint, hasPoint].
+
+(** * Composing relative interfaces over a specified magma
+
+    The operations come from the supplied magma. The point and both
+    law witnesses are the components of its relative monoid interface. *)
+
+Minks.Mixin IsIdempotentMonoid (M : Magma)
+  extends IsMonoid M
+  := { mul_idem : ∀ x : M, x * x ≈ x }.
+
+Check @IsIdempotentMonoid
+  : ∀ (M : Magma), IsSemigroup M → ∀ P : HasPoint M,
+      IsUnitAt M (hasPoint := P) → Type.
+
+(** Both parents select the same magma. Repeating the monoid interface
+    shares its three fields, including the point used by its unit laws. *)
+
+Minks.Mixin IsSingletonMonoid (M : Magma)
+  extends IsIdempotentMonoid M, IsMonoid M
+  := { all_equiv : ∀ x y : M, x ≈ y }.
+
+Check @IsSingletonMonoid
+  : ∀ (M : Magma) (A : IsSemigroup M) (P : HasPoint M)
+      (U : IsUnitAt M (hasPoint := P)), @IsIdempotentMonoid M A P U → Type.
+
+Fail Minks.Mixin DifferentMonoids (M N : Magma)
+  extends IsIdempotentMonoid M, IsMonoid N
+  := { different_monoids : True }.
+
+(** Assemble the two presentations at one magma. The second fixes the
+    first one's point and reuses the same associativity and unit laws. *)
+
+Section AtMagma.
+Context (M : Magma).
+
+Minks.Struct MonoidOnMagma
+  with  laws : IsMonoid [M],
+        pointedLaws : IsMonoidWithPoint [M, hasPoint].
+
+Variable N : Magma.
+Fail Minks.Struct ConflictingBases
+  with  first : IsMonoid [M],
+        second : IsMonoid [N].
+End AtMagma.
+
+Example assembled_monoid_on_magma (M : Magma)
+    (A : IsSemigroup M) (P : HasPoint M) (U : IsUnitAt M (hasPoint := P))
+  : let S := MakeMonoidOnMagma M A P U in
+    MonoidOnMagma_laws M S = MakeIsMonoid M A P U
+    ∧ MonoidOnMagma_pointedLaws M S = MakeIsMonoidWithPoint M P A U
+  := conj eq_refl eq_refl.
+
+(** The discharged fields retain their projection paths when the parent
+    parameter changes name. A further mixin consumes those exact fields. *)
+
+Section InheritedMagma.
+Context (N : Magma).
+
+Minks.Struct IdempotentOnMagma
+  extends MonoidOnMagma N
+  with  idempotent : IsIdempotentMonoid [N, isSemigroup, hasPoint, isUnitAt].
+End InheritedMagma.
+
+Check @IdempotentOnMagmaOfMonoidOnMagma
+  : ∀ (N : Magma) (S : MonoidOnMagma N),
+      @IsIdempotentMonoid N (MonoidOnMagma_isSemigroup N S)
+        (MonoidOnMagma_hasPoint N S) (MonoidOnMagma_isUnitAt N S)
+      → IdempotentOnMagma N.

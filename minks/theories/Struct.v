@@ -131,7 +131,7 @@ Elpi Accumulate lp:{{
 
   pred typecheck-arguments i:gref, i:list (pair id term), i:list id.
   typecheck-arguments Ref Env Deps :-
-    component-type Ref Deps Env Ty,
+    component-type Ref {key-inputs Deps} Env Ty,
     coq.typecheck-ty Ty _ ok.
 
   pred resolve-arguments i:id, i:gref, i:option (list id),
@@ -163,7 +163,7 @@ Elpi Accumulate lp:{{
   add-components [Field | Cs] Available Mapping Used
       Local [Actual | Args] Out :-
     Field = slot Key Kind Deps,
-    std.map Deps (translate-key Mapping) ActualDeps,
+    std.map Deps (translate-input Mapping) ActualDeps,
     std.findall (match-component Key Kind ActualDeps Available Used _) Matches,
     std.map Matches (m\a\ m = match-component _ _ _ _ _ a) Keys,
     if (Keys = [Actual])
@@ -180,8 +180,8 @@ Elpi Accumulate lp:{{
       i:list (pair id id), i:list id.
   explicit-fixed [] [] _ _ _.
   explicit-fixed [C | Cs] [Actual | Args] Available Mapping Used :-
-    C = slot Key Kind Deps, std.map Deps (translate-key Mapping) ActualDeps,
-    std.mem Available (slot Actual Kind ActualDeps),
+    C = slot Key Kind Deps, std.map Deps (translate-input Mapping) ActualDeps,
+    (std.mem Available (slot Actual Kind ActualDeps) ; ambient-value Actual _),
     not (std.mem Used Actual),
     explicit-fixed Cs Args Available [pr Key Actual | Mapping] [Actual | Used].
 
@@ -253,7 +253,7 @@ Elpi Accumulate lp:{{
        projection-name N Key Field Name,
        Views = [assembled Name Ctor Args | MoreViews], Names = MoreNames)
       (resolve-arguments M Ref Selection Params Available Env Deps,
-       Component = slot Key (mixin-kind Ref) Deps, merge [Component] Available Next,
+       Component = slot Key (mixin-kind Ref) {key-inputs Deps}, merge [Component] Available Next,
        if (std.mem Available Component) (Additions = []) (Additions = [Component]),
        Views = MoreViews,
        if (Field = some Name) (Names = [pr Key Name | MoreNames]) (Names = MoreNames)),
@@ -369,9 +369,6 @@ Elpi Accumulate Plugin "minks.combinations".
 Elpi Accumulate File minks.spec.
 Elpi Accumulate lp:{{
   pred inspect i:id, i:gref.
-  inspect _ Ref :-
-    packed-export Ref Base Fixed Remaining, !,
-    print-packed-export Ref Base Fixed Remaining.
   inspect Name Ref :-
     mixin-spec Ref Direct Params, !,
     print-mixin Name Direct Params, print-combination Ref,

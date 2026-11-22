@@ -12,10 +12,18 @@ type role =
 
 type selection = Witness of GlobRef.t | Ordinary of constr_expr
 
+type input =
+  | Binder of Id.t
+  | Project of Constant.t * instance_expr option * input list
+
+let rec input_binders = function
+  | Binder id -> [id]
+  | Project (_, _, args) -> List.concat_map input_binders args
+
 type dependency = {
   key : Id.t option;
   selection : selection;
-  arguments : Id.t list;
+  arguments : input list;
   instance : instance_expr option;
   parameter : parameter;
   shared : bool;
@@ -92,7 +100,13 @@ let instance_syntax (qualities, levels) instance =
     Some (Array.to_list (Array.map (quality_syntax qualities) qs),
           Array.to_list (Array.map (level_syntax levels) us))
 
-let dependency_type ty names =
+let rec input_expr = function
+  | Binder id -> variable id
+  | Project (c, instance, args) ->
+    CAst.make (CAppExpl ((qualify (GlobRef.ConstRef c), instance), List.map input_expr args))
+
+(* Substitution uses binder identities at the leaves of each projection path. *)
+let dependency_type parent_instance ty names =
   let head, operands = Constr.decompose_app_list ty in
   let reference, instance =
     match Constr.kind head with
@@ -100,11 +114,19 @@ let dependency_type ty names =
     | Const (constant, instance) -> GlobRef.ConstRef constant, instance
     | _ -> error "Expected a parent mixin parameter indexed by earlier parameters."
   in
-  let argument operand =
+  let rec argument operand =
     match Constr.kind operand with
-    | Rel i -> List.nth names (i - 1)
-    | Var id -> id
-    | _ -> error "Mixin dependencies must use earlier parameters directly."
+    | Rel i -> Binder (List.nth names (i - 1))
+    | Var id -> Binder id
+    | App (fn, args) ->
+      (match Constr.kind fn with
+       | Const (c, levels) when
+           (try ignore (Structures.Structure.find_from_projection (Global.env ()) c); true
+            with Not_found -> false) ->
+         let levels = Option.bind parent_instance (fun i -> instance_syntax i levels) in
+         Project (c, levels, List.map argument (Array.to_list args))
+       | _ -> error "Expected a record projection in an inherited dependency.")
+    | _ -> error "Expected an earlier parameter or its projection in a mixin dependency."
   in
   reference, instance, List.map argument operands
 
@@ -131,8 +153,16 @@ let merge_instance reference inherited incoming =
     in
     Some (List.map2 quality qs qs', List.map2 level us us')
 
+let rec merge_input left right =
+  match left, right with
+  | Binder x, Binder y when Id.equal x y -> left
+  | Project (c, u, xs), Project (d, v, ys)
+      when Constant.CanOrd.equal c d && List.length xs = List.length ys ->
+    Project (c, merge_instance (GlobRef.ConstRef c) u v, List.map2 merge_input xs ys)
+  | _ -> error "Inherited parents select different witnesses for the same mixin."
+
 let dependency_parameter reference name instance arguments =
-  let ty = CAst.make (CAppExpl ((qualify reference, instance), List.map variable arguments)) in
+  let ty = CAst.make (CAppExpl ((qualify reference, instance), List.map input_expr arguments)) in
   parameter name (Generalized (Glob_term.MaxImplicit, true)) ty
 
 let binder_name reference reserved key =
@@ -149,14 +179,15 @@ let add_dependency env reserved dependencies reference instance arguments key =
     (match d.key, key with Some x, Some y -> Id.equal x y | _ -> true) in
   match List.filter same dependencies with
   | [d] ->
-    if not (List.equal Id.equal d.arguments arguments) then
-      error "Inherited parents select different witnesses for the same mixin.";
+    if List.length d.arguments <> List.length arguments then
+      error "Inherited parents disagree on the arity of a shared mixin.";
+    let arguments = List.map2 merge_input d.arguments arguments in
     let instance = merge_instance reference d.instance instance in
     let name = d.parameter.name in
     let parameter = dependency_parameter reference name instance arguments in
     let key = match d.key with Some _ -> d.key | None -> key in
     let updated = List.map (fun item ->
-      if same item then { d with key; instance; parameter; shared = true } else item
+      if same item then { d with key; instance; parameter; arguments; shared = true } else item
     ) dependencies in
     updated, name
   | [] ->
@@ -210,9 +241,9 @@ let add_ordinary_field instance key ty names reserved dependencies =
         | _ -> Constrexpr_ops.expr_Type_sort in
       CAst.make (CSort sort), []
     | _ ->
-      let head, levels, args = dependency_type ty names in
+      let head, levels, args = dependency_type instance ty names in
       let levels = Option.bind instance (fun i -> instance_syntax i levels) in
-      CAst.make (CAppExpl ((qualify head, levels), List.map variable args)), args in
+      CAst.make (CAppExpl ((qualify head, levels), List.map input_expr args)), args in
   let same d = match d.selection, d.key with
     | Ordinary _, Some k -> Id.equal key k
     | _ -> false in
@@ -244,7 +275,7 @@ let expand_combination env reference syntax_instance instance shape names depend
         if Id.Set.mem key shape.ordinary_fields then
           add_ordinary_field instance key ty names reserved dependencies
         else
-          let component, levels, arguments = dependency_type ty names in
+          let component, levels, arguments = dependency_type instance ty names in
           let levels = Option.bind instance (fun i -> instance_syntax i levels) in
           add_dependency env reserved dependencies component levels arguments (Some key) in
       expand dependencies (Id.Set.add name reserved) (name :: names) keys rest
@@ -290,7 +321,7 @@ let inheritance own parents =
       | _, LetIn (_, value, _, rest) ->
         add_parameters dependencies reserved names roles implicits (Vars.subst1 value rest) positional named
       | Mixin key :: roles, Prod (_, ty, rest) ->
-        let dependency, levels, arguments = dependency_type ty names in
+        let dependency, levels, arguments = dependency_type instance ty names in
         let levels = Option.bind instance (fun i -> instance_syntax i levels) in
         let dependencies, reserved, name = add dependencies reserved dependency levels arguments key in
         add_parameters dependencies reserved (name :: names) roles remaining rest positional named
@@ -304,7 +335,7 @@ let inheritance own parents =
         (match combination with
          | None ->
            let deps, reserved, _ =
-             add dependencies reserved reference syntax_instance (List.rev names) None in
+             add dependencies reserved reference syntax_instance (List.rev_map (fun id -> Binder id) names) None in
            deps, reserved, views
          | Some shape ->
            let deps, reserved, view =
@@ -321,7 +352,7 @@ let inheritance own parents =
     | _ ->
       let ready d = List.for_all (fun arg ->
         not (List.exists (fun prior -> Id.equal prior.parameter.name arg) pending)
-      ) d.arguments in
+      ) (List.concat_map input_binders d.arguments) in
       let next = match List.find_opt (fun d -> d.shared && ready d) pending with
         | Some d -> d
         | None -> (match List.find_opt ready pending with
@@ -361,7 +392,7 @@ let order_parameters ordinary inherited =
     List.fold_left (fun (index, ordinary, output) dependency ->
       let last = List.fold_left (fun last name ->
         match Id.Map.find_opt name positions with None -> last | Some i -> max last i
-      ) (-1) dependency.arguments in
+      ) (-1) (List.concat_map input_binders dependency.arguments) in
       let index, ordinary, output = emit_through last index ordinary output in
       let role = match dependency.selection with Witness _ -> Mixin dependency.key | Ordinary _ -> Value in
       index, ordinary, (dependency.parameter.binder, role) :: output

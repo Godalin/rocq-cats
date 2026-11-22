@@ -46,9 +46,11 @@ Elpi File minks.relative lp:{{
     std.map Covered component-key CoveredKeys,
     std.rev Cs Reverse,
     std.fold Reverse {std.append Keys CoveredKeys} (c\seen\out\
-      sigma key deps\
+      sigma key deps roots\
         c = slot key _ deps,
-        if (std.mem seen key) (std.append deps seen out) (out = seen))
+        if (std.mem seen key)
+          (std.map deps input-keys roots, std.append {std.flatten roots} seen out)
+          (out = seen))
       Closure,
     std.partition Cs (c\ std.mem Closure {component-key c}) AllFixed Remaining,
     std.filter AllFixed (c\ not (std.mem Covered c)) Fixed.
@@ -149,17 +151,18 @@ Elpi File minks.relative lp:{{
 
   pred register-relative i:option inductive, i:inductive, i:constructor,
       i:list component, i:list component, i:list id, o:list id.
-  register-relative none Export Ctor Fixed Remaining FixedKeys FixedKeys :-
-    std.map Remaining component-key RemainingKeys,
-    std.length FixedKeys Arity,
+  register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters :-
+    if (Base = some I)
+      (coq.gref->id (indt I) Name, Parameters = [Name | FixedKeys],
+       coq.elpi.accumulate execution-site "minks.flat.db"
+         (clause _ _ (export-base (indt Export) I)))
+      (Parameters = FixedKeys),
+    std.length Parameters Arity,
+    std.map Remaining component-key Keys,
     std.map-filter Remaining (c\k\ c = slot k (native-kind _) _) Ordinary,
-    minks.register-combination Export (indc Ctor) Arity RemainingKeys Ordinary,
+    minks.register-combination Export (indc Ctor) Arity Keys Ordinary,
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (mixin-combination (indt Export) Fixed Remaining Ctor)).
-  register-relative (some Base) Export _ Fixed Remaining FixedKeys [Name | FixedKeys] :-
-    coq.gref->id (indt Base) Name,
-    coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (packed-export (indt Export) Base Fixed Remaining)).
 
   pred export-view-term i:inductive, i:list component, i:list component,
       i:constructor, i:list id, o:term.
@@ -216,9 +219,9 @@ Elpi File minks.relative lp:{{
   discover-export-views [] :- !.
   discover-export-views Layouts :-
     std.findall (mixin-combination _ _ _ _) Stored,
-    std.map Stored (m\l\ sigma i fixed remaining ctor\
+    std.map-filter Stored (m\l\ sigma i fixed remaining ctor\
       m = mixin-combination (indt i) fixed remaining ctor,
-      l = exported i fixed remaining ctor) Previous,
+      not (export-base (indt i) _), l = exported i fixed remaining ctor) Previous,
     std.fold Layouts Previous remember-export-views _.
 
   pred generate-relative i:id, i:inductive, i:list component,
