@@ -820,7 +820,7 @@ of constructor applications reduce to the supplied values, including
 \label{ex:closure}
 Start with an order on $A$, supply an endomap $f:A\to A$,
 and finally choose $x:A$ at which to require a fixed-point law.
-Here are the three declarations, using Rocq's ASCII arrows.
+The declarations below spell the arrows and equivalence in ASCII.
 \begin{verbatim}
 Minks.Mixin IsMonotone (A : Type) (f : A -> A)
   extends HasOrder A
@@ -875,8 +875,8 @@ independently of $\ell$. The last row uses the monoid export.
  m&\ttt{HasMagma}&(e)&{\cdot},\ \text{respectfulness}\\
  p,q&\ttt{HasPoint}&()&\text{point}\\
  a&\ttt{IsSemigroup}&(e,m)&\text{associativity}\\
- u&\ttt{HasUnit}&(e,m)&1,\ \text{left and right unit laws}\\
- i&\ttt{HasInverse}&(e,m,a,u)&\text{inverse, left and right inverse laws}
+ u&\ttt{IsUnitAt}&(e,m,p)&\text{left and right unit laws for }p\\
+ i&\ttt{HasInverse}&(e,m,a,p,u)&\text{inverse, left and right inverse laws}
 \end{array}
 \]
 \ruse{Mixin-Ext} gives \ttt{HasMagma} the signature $(c,\{e\})$ and
@@ -904,8 +904,8 @@ selects the same inputs: $(c,e)$ is the unique well-typed tuple of
 available fields (\ruse{WF-Omit}).
 
 \paragraph{Extending the hierarchy.}
-An arbitrary point can be supplied on any carrier. A multiplicative
-unit also carries two laws for a specified multiplication.
+A point $p$ can be selected on any carrier. In a pointed magma, the
+witness $u$ says that this same $p$ is a two-sided unit for $m$.
 \begin{verbatim}
 Minks.Struct PointedSetC extends SetC with hasPoint : HasPoint.
 Minks.Struct PointedMagma extends Magma, PointedSetC.
@@ -914,61 +914,80 @@ Minks.Struct TwoPoints extends PointedSetC
 
 Minks.Struct Semigroup extends Magma
   with isSemigroup : IsSemigroup.
-Minks.Struct UMagma extends Magma with hasUnit : HasUnit.
+Minks.Struct UMagma extends PointedMagma
+  with  isUnitAt : IsUnitAt.
 Minks.Struct Monoid
   extends Semigroup, UMagma
   exports HasMonoid [carrier],
           IsMonoid [Magma],
-          IsMonoidWithUnit [hasUnit, Magma].
+          IsMonoidWithPoint [hasPoint, Magma].
 \end{verbatim}
-Figure~\ref{fig:magma} shows both diamonds and their extensions. Each node
-lists its packed keys in constructor order. Write $c$ for the carrier and
+Figure~\ref{fig:magma} shows the algebra hierarchy through rings. The
+structures derived in this subsection list their keys in constructor order. Write $c$ for the carrier and
 $i$ for the inverse witness. In \ttt{TwoPoints}, $p$ and $q$ are independent
 choices of the same type, with $q$ stored under \ttt{hasOtherPoint}.
 The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
-\ttt{hasUnit} and \ttt{hasInverse}, respectively.
+\ttt{isUnitAt} and \ttt{hasInverse}, respectively.
 
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
   bundle/.style={align=center,font=\small,inner sep=2pt},
-  parent/.style={->,>=stealth}]
-  \node[bundle] (group) at (-0.8,4.6)
-    {\ttt{Group}\\$(c,e,m,a,u,i)$};
-  \node[bundle] (assembled) at (2.3,4.6)
-    {\ttt{GroupFromExport}\\$(c,e,m,a,u,i)$};
-  \node[bundle] (monoid) at (0.75,3.45)
-    {\ttt{Monoid}\\$(c,e,m,a,u)$};
-  \node[bundle] (semigroup) at (-0.8,2.3)
+  parent/.style={->,>=stealth},
+  fixed/.style={dashed,rounded corners=5pt,draw=black!70},
+  interface/.style={fill=white,inner xsep=4pt,inner ysep=1pt,
+                    font=\footnotesize\ttfamily}]
+  % Each contour encloses the structures supported by its fixed keys.
+  \foreach \leftx/\bottomy/\rightx/\topy/\exports in {
+    -.9/-2.75/6.65/5.20/{IsGroup},
+    -.38/-2.25/6.15/2.82/{IsMonoidWithPoint, IsAbGroupAt},
+    .15/-1.75/4.05/1.65/{IsMonoid},
+    .60/-1.25/3.62/-.26/{HasMonoid, HasGroup}} {
+    \draw[fixed] (\leftx,\bottomy) rectangle (\rightx,\topy);
+    \node[interface] at ({(\leftx+\rightx)/2},\bottomy) {\exports};
+  }
+  \node[bundle] (commring) at (-1.65,7.4) {\ttt{CommRing}};
+  \node[bundle] (ring) at (-1.65,6.55) {\ttt{Ring}};
+  \node[bundle] (rng) at (-1.65,4.70) {\ttt{Rng}};
+  \node[bundle] (abelian) at (3.1,6.7) {\ttt{AbGroup}};
+  \node[bundle] (group) at (3.1,5.85)
+    {\ttt{Group}\\$(c,e,m,a,p,u,i)$};
+  \node[bundle] (assembled) at (6.55,5.85)
+    {\ttt{GroupFromExport}\\$(c,e,m,a,p,u,i)$};
+  \node[bundle] (monoid) at (2.65,4.70)
+    {\ttt{Monoid}\\$(c,e,m,a,p,u)$};
+  \node[bundle] (semigroup) at (.55,3.5)
     {\ttt{Semigroup}\\$(c,e,m,a)$};
-  \node[bundle] (unital) at (2.3,2.3)
-    {\ttt{UMagma}\\$(c,e,m,u)$};
-  \node[bundle] (pointed) at (5.1,2.3)
+  \node[bundle] (unital) at (4.75,3.5)
+    {\ttt{UMagma}\\$(c,e,m,p,u)$};
+  \node[bundle] (pointed) at (4.25,2.27)
     {\ttt{PointedMagma}\\$(c,e,m,p)$};
-  \node[bundle] (two) at (7.8,2.3)
+  \node[bundle] (two) at (7.95,2.27)
     {\ttt{TwoPoints}\\$(c,e,p,q)$};
-  \node[bundle] (magma) at (2.3,1.15)
+  \node[bundle] (magma) at (2.1,1.19)
     {\ttt{Magma}\\$(c,e,m)$};
-  \node[bundle] (pset) at (6.45,1.15)
+  \node[bundle] (pset) at (5.15,1.19)
     {\ttt{PointedSetC}\\$(c,e,p)$};
-  \node[bundle] (set) at (4.375,0)
+  \node[bundle] (set) at (2.1,.24)
     {\ttt{SetC}\\$(c,e)$};
-  \node[bundle] (base) at (4.375,-1.15)
+  \node[bundle] (base) at (2.1,-.75)
     {\ttt{TypeCarrier}\\$(c)$};
   \foreach \child/\ancestor in {
+    commring/ring,ring/rng,ring/monoid,rng/semigroup,abelian/group,
     group/monoid,assembled/monoid,monoid/semigroup,monoid/unital,
-    semigroup/magma,unital/magma,pointed/magma,pointed/pset,
-    two/pset,magma/set,pset/set}
+    semigroup/magma,unital/pointed,pointed/magma,pointed/pset,
+    two/pset,magma/set,pset/set,set/base}
     \draw[parent] (\child) -- (\ancestor);
-  \draw[parent] (set) -- (base);
 \end{tikzpicture}
-\caption{The algebra structures. Solid arrows project to direct structure
-parents. The generated root projects to \ttt{Type}.}
+\caption{Solid arrows point to declared parents. Each dashed outline
+encloses the structures whose keys are fixed by the exports named on
+its border. For example, \ttt{IsMonoid} fixes the magma, while
+\ttt{IsMonoidWithPoint} also fixes its point.}
 \label{fig:magma}
 \end{figure}
 \paragraph{Constructors and projections.}
-Write $L_S$ for the ordered tuple printed under node $S$ in
-Figure~\ref{fig:magma}. These tuples can be derived successively:
+Write $L_S$ for the ordered keys of structure $S$. For the labelled tuples in
+Figure~\ref{fig:magma}, successive declarations give
 \[
 \begin{aligned}
  (c)&\xrightarrow{+e(c)} (c,e)
@@ -977,8 +996,8 @@ Figure~\ref{fig:magma}. These tuples can be derived successively:
      \xrightarrow{+q(c)}(c,e,p,q),\\
  (c,e,m)\cup(c,e,p)&\longmapsto(c,e,m,p),\\
  (c,e,m)&\xrightarrow{+a(c,e,m)}(c,e,m,a),\\
- (c,e,m)&\xrightarrow{+u(c,e,m)}(c,e,m,u),\\
- (c,e,m,a)\cup(c,e,m,u)&\longmapsto(c,e,m,a,u).
+ (c,e,m,p)&\xrightarrow{+u(c,e,m,p)}(c,e,m,p,u),\\
+ (c,e,m,a)\cup(c,e,m,p,u)&\longmapsto(c,e,m,a,p,u).
 \end{aligned}
 \]
 Each $+$ applies \ruse{WF-Omit} to the displayed argument tuple and
@@ -998,79 +1017,68 @@ A bare export of \ttt{Monoid} fixes $(c,e,m)$, the keys common to
 Writing \ttt{[Magma]} takes one packed input with the same three
 projections. Writing \ttt{[]} fixes none: expansion binds
 $c:\mathsf{Type}$ as an ordinary value, then uses that same $c$
-in the witnesses $e,m,a,u$.
+in the witnesses $e,m,a,p,u$. The carrier-only export \ttt{HasMonoid}
+fixes $c$ and stores these five witnesses.
 
-The carrier-only export \ttt{HasMonoid} stores all four non-carrier
-components. We derive the other two interfaces from the same layout.
-
-\paragraph{Fixing the magma.}
-The layout $A=(c,e,m,a,u)$ follows from \ruse{Parent-Union} and \ruse{Struct-Pack}.
-For $M:\ttt{Magma}$ write $(c_M,e_M,m_M)$ for its projections.
-In particular $m_M$ is the entire \ttt{HasMagma} witness, including
-respectfulness. Write
+\paragraph{Fixing the magma and the point.}
+For $M:\ttt{Magma}$ write $(c_M,e_M,m_M)$ for its projections. The
+remaining fields have types
 \[
- \mathcal A(M)=\ttt{@IsSemigroup}\;c_M\;e_M\;m_M,\qquad
- \mathcal U(M)=\ttt{@HasUnit}\;c_M\;e_M\;m_M .
+\begin{aligned}
+ \mathcal A(M)&=\ttt{@IsSemigroup}\;c_M\;e_M\;m_M,\\
+ \mathcal P(M)&=\ttt{HasPoint}\;c_M,\\
+ \mathcal U(M,p)&=\ttt{@IsUnitAt}\;c_M\;e_M\;m_M\;p.
+\end{aligned}
 \]
-A value of $\mathcal U(M)$ selects the unit element \emph{and} supplies
-its two laws for $m_M$. The following are the two applications of
-\ruse{Export-Fix}. Here $C$ comes from the base, $F$ lists additional fixed keys and $R$ lists the remaining fields.
+The following two applications of \ruse{Export-Fix} show where the
+point is supplied. $C$ lists the packed base's keys, $F$ the additional
+fixed keys, and $R$ the remaining fields in order.
 \[
-\begin{array}{l@{\quad}l@{\quad}l@{\quad}l}
- \text{selection}&C&F&R\\
- \ttt{[Magma]} &(c,e,m)&()&(a,u)\\
- \ttt{[hasUnit, Magma]} &(c,e,m)&(u)&(a)
+\begin{array}{llll}
+ \text{selection}&C&F&R\\ \hline
+ \ttt{[Magma]} &(c,e,m)&()&(a,p,u)\\
+ \ttt{[hasPoint, Magma]} &(c,e,m)&(p)&(a,u)
 \end{array}
 \]
-In the second row, closing $u$ adds only keys already supplied by $M$.
-The parameter for $M$ precedes $U:\mathcal U(M)$ even though
-\ttt{hasUnit} appears first in the source selection. By
-\ruse{Export-Form}, the classes have the following field telescopes
+In the second row the base supplies the carrier on which $p$ depends.
+The base parameter precedes the point even though \ttt{hasPoint}
+appears first in the selection. By \ruse{Export-Form},
 \[
 \begin{aligned}
  \ttt{IsMonoid}(M)
-   &\longmapsto (a:\mathcal A(M),\ u:\mathcal U(M)),\\
- \ttt{IsMonoidWithUnit}(M,U)
-   &\longmapsto (a:\mathcal A(M)).
+   &\longmapsto (a:\mathcal A(M),\ p:\mathcal P(M),\ u:\mathcal U(M,p)),\\
+ \ttt{IsMonoidWithPoint}(M,p)
+   &\longmapsto (a:\mathcal A(M),\ u:\mathcal U(M,p)).
 \end{aligned}
 \]
-For a child mixin with parameter $M:\ttt{Magma}$, the parent
-\ttt{extends IsMonoid M} contributes two witnesses,
-$a:\mathcal A(M)$ and $u:\mathcal U(M)$. For a child structure with
-the same parameter, \ttt{with laws : IsMonoid [M]} reuses or adds
-the same two components by \ruse{With-Assembly}. The assembled
-\ttt{laws} view applies the constructor of \ttt{IsMonoid} to $M,a,u$.
-Fixing $U$ as well leaves only $a$ to inherit or assemble.
+The virtual mixin for the first selection expands to three witnesses
+in that order. With the second selection, assembly takes the point as
+an input and checks the unit laws at that point.
 
 \paragraph{Reading and rebuilding a monoid.}
-Write $B(s)=\ttt{MonoidToMagma}\;s$ and
-$U(s)=\ttt{Monoid\_hasUnit}\;s$. For $s:\ttt{Monoid}$,
-\ruse{Parent-To} gives $B(s)$, and \ruse{Export-To} gives
+Let $s$ be a monoid. Write $B(s)=\ttt{MonoidToMagma}\;s$ and
+$P(s)=\ttt{Monoid\_hasPoint}\;s$. Extraction gives
 \[
 \begin{aligned}
  \ttt{MonoidToIsMonoid}\;s &: \ttt{IsMonoid}(B(s)),\\
- \ttt{MonoidToIsMonoidWithUnit}\;s
-     &: \ttt{IsMonoidWithUnit}(B(s),U(s)).
+ \ttt{MonoidToIsMonoidWithPoint}\;s
+     &: \ttt{IsMonoidWithPoint}(B(s),P(s)).
 \end{aligned}
 \]
-Reassembly takes the appropriate interface witness after its fixed
-arguments. For $i:\ttt{IsMonoid}(M)$ and
-$j:\ttt{IsMonoidWithUnit}(M,U)$ the resulting constructor tuples are
+For $i:\ttt{IsMonoid}(M)$ and $j:\ttt{IsMonoidWithPoint}(M,p)$,
+the respective reassembly functions give the constructor tuples
 \[
- (c_M,e_M,m_M,i.a,i.u)
- \qquad\hbox{and}\qquad
- (c_M,e_M,m_M,j.a,U).
+ (c_M,e_M,m_M,i.a,i.p,i.u) \qquad (c_M,e_M,m_M,j.a,p,j.u).
 \]
-Both multiplication projections reduce to $m_M$, and the second unit
-projection reduces to the supplied $U$ including its law witnesses.
-Reassembling an arbitrary monoid after extraction gives back the
-original record by record elimination.
+In the second tuple the point projection reduces to $p$ and the unit
+laws reduce to $j.u$. Reassembling a monoid after extraction gives back
+the original record by record elimination.
 
 \paragraph{Extending the monoid.}
 The next mixin, \ttt{HasInverse}, takes ordinary
 parameter $A$ and parent \ttt{HasMonoid A}. The carrier-only export is
-a composable mixin, so this parent expands to the four witnesses
-$e,m,a,u$. An inverse law can now mention both the selected
+a composable mixin, so this parent expands to the five witnesses
+$e,m,a,p,u$. An inverse law can now mention both the selected
 multiplication and the selected unit. Two declarations use this interface:
 \begin{verbatim}
 Minks.Struct Group
@@ -1082,19 +1090,20 @@ Minks.Struct GroupFromExport
   extends Monoid
   with  group : HasGroup.
 \end{verbatim}
-The first adds an inverse witness $i(c,e,m,a,u)$ and exports the resulting
-layout. In the second, \ruse{With-Assembly} reuses $e,m,a,u$ from the parent,
+The first adds an inverse witness $i(c,e,m,a,p,u)$ and exports the resulting
+layout. In the second, \ruse{With-Assembly} reuses $e,m,a,p,u$ from the parent,
 adds the missing inverse slot and supplies the named view
-\ttt{GroupFromExport\_group}. Both layouts have six physical fields,
-$(c,e,m,a,u,i)$. Projecting the inverse from the assembled view of a
+\ttt{GroupFromExport\_group}. Both layouts have seven physical fields,
+$(c,e,m,a,p,u,i)$. Projecting the inverse from the assembled view of a
 value built with \ttt{GroupFromExportOfMonoid} reduces to the supplied
 inverse witness.
 
 \paragraph{All parent maps.}
-Let $D$ be the solid child--parent edges of Figure~\ref{fig:magma},
+Restrict Figure~\ref{fig:magma} to the eleven structures labelled
+with key tuples. Let $D$ be the solid edges between them,
 and $D^+$ their nonempty transitive closure. For an ordered key list
 $L$, write $s|_L=(\pi^S_k(s))_{k\in L}$. The complete families of
-declared parent maps for these ten structures are indexed by
+declared parent maps for these structures are indexed by
 \[
 \begin{aligned}
  (S,H)\in D^+:\quad &S\ttt{To}H(s)=\make_H(s|_{L_H}),\\
@@ -1102,25 +1111,62 @@ declared parent maps for these ten structures are indexed by
  &v_k=\begin{cases}\pi^H_k(h)&k\in L_H,\\z_k&k\in L_S\setminus L_H.\end{cases}
 \end{aligned}
 \]
-The missing arguments $\bar z$ follow $L_S$ order. Including the edge to the generated root yields 35
-\ttt{To} maps and 12 \ttt{Of} maps; the native base contributes the
-separate carrier projection. For example, the two packers of
-\ttt{PointedMagma} take $(\ttt{Magma},p)$ or $(\ttt{PointedSetC},m)$.
-Those of \ttt{Monoid} take $(\ttt{Semigroup},u)$ or $(\ttt{UMagma},a)$.
+This subgraph gives 43 \ttt{To} maps and 12 \ttt{Of} maps. The missing arguments $\bar z$ follow $L_S$ order. For example, the two
+packers of \ttt{PointedMagma} take $(\ttt{Magma},p)$ or
+$(\ttt{PointedSetC},m)$. Those of \ttt{Monoid} take
+$(\ttt{Semigroup},p,u)$ or $(\ttt{UMagma},a)$.
 Both composites from \ttt{Monoid} to \ttt{Magma} construct
 $\make_{\ttt{Magma}}(s|_{(c,e,m)})$ on the open input $s$.
 
 \paragraph{Exports and registrations.}
-The five actual exports can likewise be indexed by their fixed argument
+Table~\ref{tab:algebra-exports} reads the outlines of
+Figure~\ref{fig:magma} one export at a time.
+
+\begin{table}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=.52cm,font=\small,>=stealth,
+  entry/.style={anchor=west,font=\small\ttfamily,inner sep=1pt},
+  fixed/.style={densely dashed,rounded corners=2pt}]
+  \node[anchor=west] at (0,0) {Structure};
+  \node[anchor=west] at (2.6,0) {Export};
+  \node[anchor=west] at (6.5,0) {Keys in constructor order};
+  \foreach \source/\row in {Monoid/2,Group/4.7,AbGroup/6.4}
+    \node[entry] (\source) at (0,-\row) {\source};
+  \foreach \interface/\row/\keys in {
+    HasMonoid/1/{c,e,m,a,p,u},
+    IsMonoid/2/{c,e,m,a,p,u},
+    IsMonoidWithPoint/3/{c,e,m,a,p,u},
+    HasGroup/4.2/{c,e,m,a,p,u,i},
+    IsGroup/5.2/{c,e,m,a,p,u,i},
+    IsAbGroupAt/6.4/{c,e,m,a,p,u,i,b}} {
+    \node[entry] (\interface) at (2.6,-\row) {\interface};
+    \foreach \key [count=\column from 0] in \keys
+      \node at ({6.8+.48*\column},-\row) {$\key$};
+  }
+  \foreach \source/\interface in {Monoid/HasMonoid,Monoid/IsMonoid,
+    Monoid/IsMonoidWithPoint,Group/HasGroup,Group/IsGroup,AbGroup/IsAbGroupAt}
+    \draw[->,dashed] (\source.east) -- (\interface.west);
+  % Each interval encloses consecutive fixed keys in its source layout.
+  \foreach \row/\first/\last in {1/0/0,2/0/2,3/0/2,3/4/4,
+    4.2/0/0,5.2/0/5,6.4/0/2,6.4/4/4}
+    \draw[fixed] ({6.8+.48*\first-.19},{-\row-.32})
+       rectangle ({6.8+.48*\last+.19},{-\row+.32});
+\end{tikzpicture}
+\caption{Dashed boxes mark the fixed keys. Read the unboxed keys from
+left to right to obtain the fields of the relative interface.
+In the last row $b$ denotes the commutativity witness.}
+\label{tab:algebra-exports}
+\end{table}
+The five exports of monoids and groups can likewise be indexed by their fixed argument
 tuple $\theta$ and ordered remainder $R$. Here $M$ and $N$ denote packed
-magma and monoid inputs, and $u_M$ is a unit on $M$.
+magma and monoid inputs, and $p_M$ is a point on its carrier.
 \[
 \begin{array}{llll}
  S&E&\theta&R\\ \hline
- \ttt{Monoid}&\ttt{HasMonoid}&c&(e,m,a,u)\\
- &\ttt{IsMonoid}&M&(a,u)\\
- &\ttt{IsMonoidWithUnit}&(M,u_M)&(a)\\
- \ttt{Group}&\ttt{HasGroup}&c&(e,m,a,u,i)\\
+ \ttt{Monoid}&\ttt{HasMonoid}&c&(e,m,a,p,u)\\
+ &\ttt{IsMonoid}&M&(a,p,u)\\
+ &\ttt{IsMonoidWithPoint}&(M,p_M)&(a,u)\\
+ \ttt{Group}&\ttt{HasGroup}&c&(e,m,a,p,u,i)\\
  &\ttt{IsGroup}&N&(i)
 \end{array}
 \]
@@ -1142,6 +1188,34 @@ projection is eligible as both instance and coercion.
 $(\ttt{TwoPoints},\ttt{PointedSetC})$: the latter parent registered
 its unique \ttt{HasPoint} projection. Its direct coercion remains
 eligible. Final registration is checked in the visible Rocq environment.
+
+\subsection{Two operations on one setoid: from abelian groups to rings}
+The pointed-magma outline in Figure~\ref{fig:magma} also applies to
+abelian groups. Their export selects the operation and point directly:
+\begin{verbatim}
+Minks.Struct AbGroup
+  extends Group
+  with  isComm : IsComm
+  exports IsAbGroupAt [hasMagma, hasPoint].
+\end{verbatim}
+Fixing the operation and point also fixes their carrier and equivalence.
+The remaining fields supply associativity, unit laws, inverse data and
+commutativity. In \ttt{Rng} the following \ttt{with} entry applies
+that interface to addition and zero:
+\begin{verbatim}
+additive : IsAbGroupAt [carrier, hasEquiv, hasAdd, hasZero]
+\end{verbatim}
+\ruse{With-Assembly} reuses the four additive witnesses.
+\ttt{RngAddGroup} packs them with the fixed inputs to recover the
+additive abelian group. Multiplication comes from the direct parent
+\ttt{Semigroup}; the distributivity laws relate it to the selected addition.
+
+The two solid paths from \ttt{Ring} to \ttt{Semigroup} select the same
+multiplication by reduction. The \ttt{Monoid} parent supplies its unit
+\ttt{1[R]}, while \ttt{0[R]} selects the additive point.
+\ttt{CommRing} adds commutativity for multiplication. In the boolean
+model \ttt{ModTwo.F2}, exclusive or and conjunction give $1+1=0$
+and $1\cdot1=1$ by reduction.
 
 \subsection{A cartesian functor with fixed endpoints}
 Fix cartesian categories $C,D$. A functor $F:C\to D$ preserves finite
