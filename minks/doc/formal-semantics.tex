@@ -120,8 +120,9 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
 
 \subsection{Parameters, fields and keys}
 
-A parameter is an input bound by the declaration's header $\Delta$ or
-its enclosing Rocq section. Its type may depend on earlier parameters.
+The enclosing Rocq sections and the declaration header $\Delta$ form one
+ordinary parameter environment. A parameter may depend on earlier inputs.
+Only the declaration's \ttt{extends} clause introduces parents.
 A witness is a value of a mixin at particular arguments. A field belongs
 to a value of a class or record, and a projection reads it. In a
 structure, a \emph{key} identifies a field across inheritance, component
@@ -270,18 +271,20 @@ The explicit selection judgment is
       {\Gamma;P;F\vdash_\Phi M[\bar r]\Downarrow M(\bar r)}
  \quad\text{\rdefn{WF-With}} .
 \]
-\rdefn{Args-Infer}. For omission, form the set of field tuples
+\paragraph{Surface shorthand for \ttt{with}.}
+\rdefn{Args-Infer}. An omitted input list expands to a tuple of resolved
+field references. At this entry, form the candidate set
 $D=\{\bar r\in F^n\mid\exists\Phi'.\
 \mathsf{args}_{\Phi\cup\Phi'}(\Gamma,M,\bar r)\}$, where $\Phi'$ is a
 legal local extension.
 \[
  \frac{D=\{\bar r\}}
-      {\Gamma;P;F\vdash_\Phi M[?]\Downarrow M(\bar r)}
+      {\Gamma;P;F\vdash_\Phi M[?]\;\leadsto\;M[\bar r]}
  \quad\text{\rdefn{WF-Omit}} .
 \]
 Uniqueness counts binding tuples. Several universe solutions for the
-same tuple give one candidate. A chosen tuple must still check in the
-completed declaration.
+same tuple give one candidate. Check the expanded application by
+\ruse{WF-With} and in the completed declaration, just as for written inputs.
 
 \subsection{Universe constraints}
 \label{sec:univ}
@@ -669,7 +672,10 @@ binding identity and require compatible universe levels.
        \qquad A_H\hookrightarrow_\Gamma A_S}
       {\Gamma\vdash_\Phi S[\sigma]\preceq H[\tau]} .
 \]
-Strict containment orders layouts up to compatible reordering. A
+This relation depends only on the assembled layouts in $\Gamma$.
+Writing the inputs explicitly or inferring the same references by
+\ruse{WF-Omit} gives the same comparisons. Strict containment orders
+layouts up to compatible reordering. A
 declared parent may have the same layout as its child. Parameter count
 alone determines neither containment nor constructor order.
 
@@ -733,13 +739,18 @@ registration in the visible environment.
 
 \subsection{Discharging a Rocq section}
 
-\rdefn{Section-End}. Visible section assumptions are ordinary inputs.
-Applications inside a section supply the arguments exposed at that point.
+\rdefn{Section-End}. Let $\Delta_s$ be the ordinary inputs discharged at this \ttt{End}.
+Prepend $\Delta_s$ to the exposed parameter telescope, preserving every
+binder's role. Each binder in $\Delta_s$ is ordinary, including a binder
+of registered mixin type. Two such binders of the same type retain their
+identities. The list of direct parents stays the one declared by
+\ttt{extends}. Inside the section, applications use the telescope already
+exposed at that point.
 At each \ttt{End}, generalize both the Rocq declarations and the hierarchy
 information over the assumptions used by either, including their type
 dependencies. A variable used only in a parent application is retained.
 Use Rocq's discharge order, explicitness and treatment of local definitions.
-The new parameters precede the previously exposed ones. Rebind parent
+Subsequent lookup and inspection use the resulting telescope. Rebind parent
 applications, witnesses, field references, views and exports under the
 new signatures, applying generalized references at their newly exposed
 arguments. Keys and sharing are preserved across nested sections.
