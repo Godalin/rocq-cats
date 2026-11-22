@@ -433,9 +433,14 @@ With $\Gamma_P$ the parameter context and $s$ an admissible result sort:
 
 \paragraph{Parents.}
 \rdefn{Parent-Union}. Instantiate each parent's field layout in the
-child's parameter context. A Rocq type $T$ without a registered layout
-denotes a one-field parent with \verb|carrier :> T|. The sort \ttt{Type}
-can itself be a base. An empty parent list contributes an empty layout.
+child's parameter context. Use the registered layout when one exists.
+Otherwise, if the parent expression $T$ checks as a type in that
+context, interpret it by the built-in descriptor
+$\mathsf{HasCarrier}(T)$. Its layout consists of one ordinary field
+$\ttt{carrier}:T$ with a coercion request. The constructor takes a value
+of $T$ directly. This notation is internal and introduces no Rocq wrapper.
+The rule applies also to \ttt{Type} and to applied native types.
+An empty parent list contributes an empty layout.
 
 Merge inherited fields by key. A shared key must have the same kind of
 descriptor, convertible field types and, for mixin fields, the same mixin
@@ -598,7 +603,7 @@ bindings, and each binder's role.
 $\ttt{Make}S$ takes the fields in layout order. Generate a projection
 for each key and register the layout, projection names, dependencies
 and ancestor key maps. For a named native base $B$ the projection is
-$S\ttt{To}B$, and the constructor accepts its value directly.
+$S\ttt{To}B$; for \ttt{Type} it is $S\ttt{\_carrier}$.
 \item \rdefn{Parent-To}. Generate $S\mathbin{\ttt{To}}H$ for every distinct
 declared Minks ancestor $H$, copying its fields in $H$'s constructor
 order. A view of $s:S$ has value
@@ -721,7 +726,11 @@ registration in the visible environment.
 \begin{itemize}
 \item \rdefn{Coerce-Parent}. Register the projections marked \ttt{:>}
   and the declared direct Minks parent views as coercions where Rocq
-  accepts them. Distant declared ancestors have named views and the
+  accepts them. For a native parent, first generate and typecheck the
+  concrete projection, then register it with its actual source and target
+  (\ttt{Sortclass} for \ttt{Type}). Existing coercions out of the
+  native target compose with this edge. Distant declared ancestors have
+  named views and the
   direct edges supply the implicit path. A field name or position alone
   requests no registration.
 
