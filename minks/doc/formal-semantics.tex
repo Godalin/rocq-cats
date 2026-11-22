@@ -176,7 +176,7 @@ its parents, its local components and its relative interfaces, in that order.
 
 A registered structure supplies its fields at the given ordinary
 arguments. A native Rocq type supplies the one-field parent described
-by \ruse{Parent-Union}.
+by \ruse{Native-Base}.
 
 \paragraph{Components (\texttt{with}).}
 
@@ -432,14 +432,23 @@ With $\Gamma_P$ the parameter context and $s$ an admissible result sort:
 \]
 
 \paragraph{Parents.}
-\rdefn{Parent-Union}. Instantiate each parent's field layout in the
-child's parameter context. Use the registered layout when one exists.
-Otherwise, if the parent expression $T$ checks as a type in that
-context, interpret it by the built-in descriptor
-$\mathsf{HasCarrier}(T)$. Its layout consists of one ordinary field
-$\ttt{carrier}:T$ with a coercion request. The constructor takes a value
-of $T$ directly. This notation is internal and introduces no Rocq wrapper.
-The rule applies also to \ttt{Type} and to applied native types.
+\rdefn{Native-Base}. Resolve a registered structure directly. For a
+native type head $B$, reuse the visible base registered for its Rocq
+identity. On first use, generate $B\ttt{Carrier}$ in the current module
+and register it as a Minks structure with no structure parents. Its
+parameter telescope is that of $B$. At parameters $\bar x$ it has one
+ordinary field $\ttt{carrier}:B\,\bar x$. The sort \ttt{Type} uses
+the same rule with an empty telescope and a fresh universe.
+Register the base's projection to the native target as a coercion.
+Base creation and child generation belong to one declaration transaction.
+An occupied generated name or competing visible bases for one head
+require an explicit resolution; a name alone cannot identify a base.
+
+\rdefn{Parent-Union}. Apply the resolved parent to the supplied
+arguments in the child's context and use its instantiated field layout.
+Generation constructs the base record and this application directly.
+A child takes the flattened field values in its constructor and obtains
+the ordinary \ttt{To} and \ttt{Of} maps for its direct parent.
 An empty parent list contributes an empty layout.
 
 Merge inherited fields by key. A shared key must have the same kind of
@@ -885,7 +894,7 @@ respectively. The resulting layout is
 \[
 \begin{array}{llll}
  &\text{field key}&\text{type}&\text{source}\\ \hline
- c&\ttt{carrier} &\mathsf{Type}_{\ell}&\ttt{SetC}\\
+ c&\ttt{carrier} &\mathsf{Type}_{\ell}&\ttt{TypeCarrier}\\
  e&\ttt{hasEquiv}&\ttt{HasEquiv}\;c&\ttt{SetC}\\
  m&\ttt{hasMagma}&\ttt{@HasMagma}\;c\;e&\ttt{Magma}
 \end{array}
@@ -945,16 +954,16 @@ The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
   \node[bundle] (set) at (4.375,0)
     {\ttt{SetC}\\$(c,e)$};
   \node[bundle] (base) at (4.375,-1.15)
-    {native parent \ttt{Type}\\$(c)$};
+    {\ttt{TypeCarrier}\\$(c)$};
   \foreach \child/\ancestor in {
     group/monoid,assembled/monoid,monoid/semigroup,monoid/unital,
     semigroup/magma,unital/magma,pointed/magma,pointed/pset,
     two/pset,magma/set,pset/set}
     \draw[parent] (\child) -- (\ancestor);
-  \draw[parent,dashed] (set) -- (base);
+  \draw[parent] (set) -- (base);
 \end{tikzpicture}
 \caption{The algebra structures. Solid arrows project to direct structure
-parents. The dashed arrow projects to the one-field parent for \ttt{Type}.}
+parents. The generated root projects to \ttt{Type}.}
 \label{fig:magma}
 \end{figure}
 \paragraph{Constructors and projections.}
@@ -1093,8 +1102,8 @@ declared parent maps for these ten structures are indexed by
  &v_k=\begin{cases}\pi^H_k(h)&k\in L_H,\\z_k&k\in L_S\setminus L_H.\end{cases}
 \end{aligned}
 \]
-The missing arguments $\bar z$ follow $L_S$ order. This yields 25
-\ttt{To} maps and 11 \ttt{Of} maps; the native base contributes the
+The missing arguments $\bar z$ follow $L_S$ order. Including the edge to the generated root yields 35
+\ttt{To} maps and 12 \ttt{Of} maps; the native base contributes the
 separate carrier projection. For example, the two packers of
 \ttt{PointedMagma} take $(\ttt{Magma},p)$ or $(\ttt{PointedSetC},m)$.
 Those of \ttt{Monoid} take $(\ttt{Semigroup},u)$ or $(\ttt{UMagma},a)$.
@@ -1119,7 +1128,7 @@ Each row generates the class $E(\theta)$ and constructor, the keyed
 virtual mixin $R$ over $\theta$, and the maps $S\ttt{To}E$ and
 $S\ttt{Of}E$ of Section~\ref{sec:relative}. Among the field-key exports,
 $\ttt{HasGroup}(c)\to\ttt{HasMonoid}(c)$ drops $i$.
-Among the ten packed layouts, every strict inclusion already has a
+Including the generated root, among the eleven packed layouts, every strict inclusion already has a
 declared ancestor view. The two group layouts are equal, so neither
 adds a strict-containment view to the other.
 
@@ -1149,7 +1158,7 @@ Minks.Struct Packed (C D : CartCat)
   with law : CartLaw [C, D, carrier]
   exports CartOn [FctBase].
 \end{verbatim}
-The native parent \ttt{Fct C D} gives \ttt{FctBase} one field at key
+The generated parent \ttt{FctCarrier C D} gives \ttt{FctBase} one field at key
 \ttt{carrier}. Both structures have $\Delta=(C,D:\ttt{CartCat})$.
 Writing $F$ for the value at that key, their layouts at $C,D$ are
 \[
