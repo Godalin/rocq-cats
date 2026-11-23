@@ -17,6 +17,10 @@ Elpi Db minks.flat.db lp:{{
   type native-kind native-head -> field-kind.
   kind input type.
   type key-input id -> input.
+  kind scoped-term type.
+  type scope-arg (term -> scoped-term) -> scoped-term.
+  type scope-body term -> scoped-term.
+  type host-input scoped-term -> list input -> input.
   type projection-input constant -> list input -> input.
   type slot id -> field-kind -> list input -> component.
 
@@ -25,6 +29,7 @@ Elpi Db minks.flat.db lp:{{
   kind argument-ref type.
   type position int -> argument-ref.
   type section-ref constant -> argument-ref.
+  type host-ref scoped-term -> list argument-ref -> argument-ref.
   type projection-ref constant -> list argument-ref -> argument-ref.
   type mixin-scoped-dep gref -> list argument-ref -> mixin-param.
   type mixin-dep gref -> list int -> mixin-param.
@@ -82,10 +87,15 @@ Elpi File minks.spec lp:{{
   pred argument-ref-of i:list term, i:term, o:argument-ref.
   argument-ref-of Vars A (position I) :- parameter-index Vars A I, !.
   argument-ref-of _ (global (const C)) (section-ref C) :-
-    coq.env.section-variables Cs, std.mem Cs C.
+    coq.env.section-variables Cs, std.mem Cs C, !.
 
   argument-ref-of Vars T (projection-ref C Refs) :-
-    projection-app T C Args, std.map Args (argument-ref-of Vars) Refs.
+    projection-app T C Args, !, std.map Args (argument-ref-of Vars) Refs.
+  argument-ref-of Vars T (host-ref Expr Refs) :-
+    std.map Vars (x\p\ sigma i\ parameter-index Vars x i, p = pr x (position i)) Local,
+    coq.env.section-variables Cs,
+    std.map Cs (c\p\ p = pr (global (const c)) (section-ref c)) Ambient,
+    scope-term {std.append {std.rev Local} Ambient} T Expr Refs.
 
   pred read-dependencies i:term, i:list term, i:int, i:list int, o:list mixin-param.
   read-dependencies (prod _ _ Body) Vars Pos [Pos | Values] [mixin-val | Params] :- !,
@@ -149,9 +159,26 @@ Elpi File minks.spec lp:{{
     coq.gref->id (const C) Name, section-input Name K _.
   argument-input Keys (projection-ref C Args) (projection-input C Inputs) :-
     std.map Args (argument-input Keys) Inputs.
+  argument-input Keys (host-ref Expr Refs) (host-input Expr Inputs) :-
+    std.map Refs (argument-input Keys) Inputs.
+
+  pred input-term i:list (pair id term), i:input, o:term.
+  pred component-env o:list (pair id term).
+  component-env [].
+  pred same-input i:list (pair id term), i:input, i:input.
+  same-input _ X X :- !.
+  same-input Fields X Y :-
+    input-keys X Xs, input-keys Y Ys,
+    std.forall Xs (std.mem Ys), std.forall Ys (std.mem Xs),
+    std.forall Xs (k\ (ambient-value k _ ; std.mem Fields (pr k _))),
+    input-term Fields X T, input-term Fields Y U,
+    coq.elaborate-skeleton T _ L ok, coq.elaborate-skeleton U _ R ok,
+    coq.unify-eq L R ok.
 
   pred selected-witness i:list component, i:list (pair id term), i:gref, i:list input, o:id.
-  selected-witness Cs _ Ref Deps Key :- std.mem Cs (slot Key (mixin-kind Ref) Deps).
+  selected-witness Cs Fields Ref Deps Key :-
+    std.mem Cs (slot Key (mixin-kind Ref) Actual),
+    std.forall2 Deps Actual (same-input Fields).
   selected-witness _ Fields _ _ Key :-
     std.mem Fields (pr Key _), ambient-value Key _.
 
@@ -171,13 +198,17 @@ Elpi File minks.spec lp:{{
     selected-witness Cs Fields Ref Deps Key,
     mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
 
+  pred available-component i:list component, o:id, i:field-kind, i:list input.
+  available-component Cs Key Kind Deps :-
+    std.mem Cs (slot Key Kind Actual), component-env Env,
+    std.forall2 Deps Actual (same-input Env).
+
   pred match-component i:id, i:field-kind, i:list input, i:list component,
       i:list id, o:id.
   match-component Key Kind Deps Available Used Actual :-
-    Preferred = slot Key Kind Deps,
-    if (std.mem Available Preferred, not (std.mem Used Key))
+    if (available-component Available Key Kind Deps, not (std.mem Used Key))
       (Actual = Key)
-      (std.mem Available C, C = slot Actual Kind Deps, not (std.mem Used Actual)).
+      (available-component Available Actual Kind Deps, not (std.mem Used Actual)).
 
   pred translate-key i:list (pair id id), i:id, o:id.
   translate-key Mapping Key Actual :- std.mem Mapping (pr Key Actual), !.
@@ -188,15 +219,30 @@ Elpi File minks.spec lp:{{
   translate-input Mapping (projection-input C Args) (projection-input C Inputs) :-
     std.map Args (translate-input Mapping) Inputs.
 
+  translate-input Mapping (host-input Expr Args) (host-input Expr Inputs) :-
+    std.map Args (translate-input Mapping) Inputs.
+
   pred input-keys i:input, o:list id.
   input-keys (key-input K) [K].
   input-keys (projection-input _ Args) Keys :- std.map Args input-keys Lists, std.flatten Lists Keys.
+
+  input-keys (host-input _ Args) Keys :- std.map Args input-keys Lists, std.flatten Lists Keys.
 
   pred input-text i:input, o:id.
   input-text (key-input K) K.
   input-text (projection-input C Args) Text :-
     coq.gref->id (const C) Name, std.map Args input-text Labels,
     Text is "(" ^ Name ^ " " ^ {std.string.concat " " Labels} ^ ")".
+
+  input-text (host-input Expr Args) Text :-
+    std.map Args input-text Labels, print-scoped Expr Labels Body,
+    Text is "(" ^ Body ^ ")".
+
+  pred print-scoped i:scoped-term, i:list id, o:id.
+  print-scoped (scope-body T) [] Text :- @ppall! => coq.term->string T Text.
+  print-scoped (scope-arg Body) [Key | Keys] Text :-
+    rex.replace "^param:" "" Key Label, coq.id->name Label Name,
+    @pi-decl Name (sort prop) x\ print-scoped (Body x) Keys Text.
 
   pred mapped-components i:list component, i:list component,
       i:list (pair id id), i:list id, o:list id.
@@ -224,10 +270,29 @@ Elpi File minks.spec lp:{{
     coq.env.section-variables Vars, std.mem Vars C,
     coq.gref->id (const C) Name, parameter-key Name Label.
 
+  % Abstract exactly the selected inputs that occur in the host term. Rocq
+  % supplies the entire body, including coercions and their implicit inputs.
+  pred scope-term i:list (pair term A), i:term, o:scoped-term, o:list A.
+  scope-term [] T (scope-body Body) [] :- copy T Body.
+  scope-term [pr Var Key | Rest] T Expr Args :-
+    if (pi marker\ sigma body\ ((copy Var marker :- !) => copy T body), occurs marker body)
+      (Expr = scope-arg Body, Args = [Key | More],
+       pi x\ (copy Var x :- !) => scope-term Rest T (Body x) More)
+      (scope-term Rest T Expr Args).
+
+  pred open-scoped i:scoped-term, i:list term, o:term.
+  open-scoped (scope-body T) [] T.
+  open-scoped (scope-arg Body) [Arg | Args] T :- open-scoped (Body Arg) Args T.
+
   pred layout-input i:list (pair term id), i:term, o:input.
   layout-input Inputs T (key-input Key) :- input-label Inputs T Key, !.
   layout-input Inputs T (projection-input C Args) :-
-    projection-app T C Terms, std.map Terms (layout-input Inputs) Args.
+    projection-app T C Terms, !, std.map Terms (layout-input Inputs) Args.
+  layout-input Inputs T (host-input Expr Args) :-
+    coq.env.section-variables Vars,
+    std.map Vars (c\p\ sigma name key\ coq.gref->id (const c) name, parameter-key name key,
+      p = pr (global (const c)) key) Ambient,
+    scope-term {std.append Inputs Ambient} T Expr Keys, key-inputs Keys Args.
 
   pred read-layout i:term, i:int, i:list (pair term id), i:list component,
       o:list id, o:list component.
@@ -242,12 +307,6 @@ Elpi File minks.spec lp:{{
   read-slots (prod _ Ty Body) Inputs [slot Key Kind _ | Cs] [slot Key Kind Args | Rest] :-
     coq.safe-dest-app Ty _ Terms, std.map Terms (layout-input Inputs) Args,
     pi x\ read-slots (Body x) [pr x Key | Inputs] Cs Rest.
-
-  pred specialize-layout i:term, i:list id, i:list (pair term id),
-      i:list component, o:list component.
-  specialize-layout (prod _ _ Body) [Arg | Args] Inputs Cs Out :-
-    pi x\ specialize-layout (Body x) Args [pr x Arg | Inputs] Cs Out.
-  specialize-layout Ty [] Inputs Cs Out :- read-layout Ty 0 Inputs Cs [] Out.
 
   pred current-layout i:inductive, i:int, i:list component, o:list id, o:list component.
   current-layout I Fixed Cs Params Layout :-
@@ -304,12 +363,15 @@ Elpi File minks.spec lp:{{
       ancestors More [P | Seen] Next,
       ancestors Parents Next All).
 
+  pred contains-key i:id, i:list component.
+  contains-key Key Cs :- std.mem Cs (slot Key _ _).
+
   pred merge i:list component, i:list component, o:list component.
   merge [] Cs Cs.
   merge [C | Rest] Cs Out :-
     component-key C Key,
-    if (std.exists Cs (other\ component-key other Key))
-      (if (std.mem Cs C) (Next = Cs)
+    if (contains-key Key Cs)
+      (if (C = slot Key Kind Inputs, available-component Cs Key Kind Inputs) (Next = Cs)
          (coq.error "Incompatible definitions of component" Key))
       (std.append Cs [C] Next),
     merge Rest Next Out.
@@ -319,21 +381,21 @@ Elpi File minks.spec lp:{{
   close I Cs :- struct-spec I _ Cs.
 
   % During one declaration these entries specialize previously discharged parents.
-  pred parent-inputs i:inductive, o:list id, o:list term.
+  pred parent-inputs i:inductive, o:list term.
   pred parent-components i:inductive, o:list component.
 
-  pred shared-component i:component, i:list (list component).
-  shared-component C [Branch | Branches] :-
-    if (std.mem Branch C)
-      (std.exists Branches (b\ std.mem b C))
-      (shared-component C Branches).
+  pred shared-key i:id, i:list (list component).
+  shared-key Key [Branch | Branches] :-
+    if (contains-key Key Branch)
+      (std.exists Branches (contains-key Key))
+      (shared-key Key Branches).
 
   pred parent-layout i:struct-parent, o:list component.
   parent-layout (named-parent I _) Cs :- close I Cs.
   pred close-parents i:list (list component), o:list component.
   close-parents Branches Cs :-
     std.fold Branches [] merge Ordered,
-    std.partition Ordered (c\ shared-component c Branches) Shared Rest,
+    std.partition Ordered (c\ shared-key {component-key c} Branches) Shared Rest,
     std.append Shared Rest Cs.
 
   % Keep the first key for each class head in the complete packed order.
@@ -350,7 +412,7 @@ Elpi File minks.spec lp:{{
   parent-sources [P | Ps] Key Sources :-
     close P Cs,
     parent-sources Ps Key Rest,
-    if (std.mem Cs (slot Key _ _))
+    if (contains-key Key Cs)
       (coq.gref->id (indt P) Name, Sources = [Name | Rest])
       (Sources = Rest).
 

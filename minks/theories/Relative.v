@@ -139,7 +139,7 @@ Elpi File minks.relative lp:{{
       i:list (pair id constant).
   declare-relative-packer Name Base Covered I Export Fixed FixedKeys Keys Refs :-
     coq.env.global (indt Export) Class,
-    coq.env.indt I tt 0 0 _ [K] _, coq.env.global (indc K) Ctor,
+    coq.env.indt I tt _ _ _ [K] _, family-global (indc K) Ctor,
     pack-base Base Covered (args\bindings\t\
       pack-components Fixed bindings
         (env\body\ from-relative-body Class Ctor FixedKeys Keys Refs args env body) t) Term,
@@ -178,7 +178,7 @@ Elpi File minks.relative lp:{{
     coq.env.indt Export tt _ _ _ [Ctor] _,
     register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters,
     coq.env.global (indc Ctor) MakeExport,
-    coq.env.global (indt I) ChildTy,
+    family-global (indt I) ChildTy,
     (pi x\ sigma bases args\
       relative-source Base Covered Views ChildRefs x bases,
       apply-fields FromChild x args,

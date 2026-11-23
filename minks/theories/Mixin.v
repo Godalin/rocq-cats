@@ -11,43 +11,24 @@ Elpi Accumulate Db Header minks.flat.db.
 Elpi Accumulate Plugin "minks.combinations".
 Elpi Accumulate File minks.spec.
 Elpi Accumulate lp:{{
-  pred dependency-closure i:list gref, i:list gref, o:list gref.
-  dependency-closure [] Seen Seen.
-  dependency-closure [Ref | Refs] Seen All :-
-    if (std.mem Seen Ref) (dependency-closure Refs Seen All) (
-      if (mixin-combination Ref _ Cs _)
-        (std.fold Cs Seen
-          (c\seen\out\ sigma head\
-            if (c = slot _ (mixin-kind head) _, not (std.mem seen head))
-              (out = [head | seen]) (out = seen)) Next,
-         dependency-closure Refs Next All) (
-      mixin-spec Ref Parents _,
-      dependency-closure Parents [Ref | Seen] Next,
-      dependency-closure Refs Next All)).
-
-  pred register-mixin i:gref, i:list gref, i:list int.
-  register-mixin Ref Direct Values :-
+  pred register-mixin i:gref, i:list gref, i:list int, i:list gref.
+  register-mixin Ref Direct Values Expected :-
     coq.gref->id Ref Name,
     if (coq.TC.class? Ref) true (coq.error "Expected a class:" Name),
     std.assert! (read-mixin Ref Values Params)
       "Expected ordinary parameters and registered mixin dependencies",
-    dependency-closure Direct [] Closure,
-    std.forall Params
-      (p\ sigma d\
-        if (mixin-head p d)
-          (if (std.mem Closure d) true
-            (coq.error "Parameter is outside the declared dependencies:" d)) true),
-    std.forall Closure
-      (d\ if (std.exists Params (p\ mixin-head p d)) true
-        (coq.error "Declared dependency is absent from the class parameters:" d)),
+    std.map-filter Params mixin-head Actual,
+    if (Actual = Expected) true
+      (coq.error "The generated class has different witness parameters:" Actual Expected),
     print-mixin Name Direct Params.
 
-  main [str Name] :-
+  main [str Name | Witnesses] :-
     attributes Attrs,
     if (std.mem Attrs (attribute "minks.declaration" _)) true
       (coq.error "Use Minks.Mixin to declare and register a mixin."),
     coq.locate Name (indt I),
     minks.mixin-header I Direct Values,
-    register-mixin (indt I) Direct Values.
+    std.map Witnesses (w\r\ sigma n\ w = str n, coq.locate n r) Expected,
+    register-mixin (indt I) Direct Values Expected.
 }}.
 Elpi Accumulate Db minks.flat.db.

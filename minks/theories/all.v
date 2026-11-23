@@ -7,5 +7,4 @@ From Minks Require Import
   Mixin
   Struct.
 
-Elpi Export minks.struct As Minks.Struct.
 Elpi Export minks.inspect As Minks.Inspect.

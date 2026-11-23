@@ -16,11 +16,13 @@ Elpi File minks.flat lp:{{
   pred field-name i:id, i:id, o:id.
   field-name N Key F :- F is N ^ "_" ^ Key.
 
-  pred input-term i:list (pair id term), i:input, o:term.
   input-term Env (key-input Key) T :- lookup Key Env T.
   input-term Env (projection-input C Args) T :-
     std.map Args (input-term Env) Terms, coq.env.global (const C) Head,
     coq.mk-app Head Terms T.
+
+  input-term Env (host-input Expr Inputs) T :-
+    std.map Inputs (input-term Env) Args, open-scoped Expr Args T.
 
   pred component-type i:gref, i:list input, i:list (pair id term), o:term.
   component-type Ref Deps Env Ty :-
@@ -50,15 +52,24 @@ Elpi File minks.flat lp:{{
   pred field-ref i:id, i:option constant, o:(pair id constant).
   field-ref Key (some C) (pr Key C).
 
+  pred active-family o:inductive, o:list term.
+  pred family-global i:gref, o:term.
+  family-global Ref T :-
+    coq.env.global Ref Head,
+    if (active-family I Args,
+        (Ref = indt I ; coq.env.indt I tt _ _ _ [K] _, Ref = indc K ;
+         Ref = const P, coq.env.projections I Ps, std.mem Ps (some P)))
+      (coq.mk-app Head Args T) (T = Head).
+
   pred read-field i:list (pair id constant), i:id, o:term.
   read-field Fs Key Head :-
     std.mem Fs (pr Key C),
-    coq.env.global (const C) Head.
+    family-global (const C) Head.
 
   pred parent-global i:inductive, i:gref, o:term.
   parent-global I Ref Applied :-
     coq.env.indt I tt Arity _ _ _ _,
-    if (parent-inputs I _ Args) true (Args = []),
+    if (parent-inputs I Args) true (Args = []),
     std.length Args Arity, coq.env.global Ref Head, coq.mk-app Head Args Applied.
 
   pred record-fields i:inductive, i:list id, o:list term.
@@ -111,8 +122,8 @@ Elpi File minks.flat lp:{{
     coq.gref->id (indt Parent) ParentName,
     Name is Child ^ "Of" ^ ParentName,
     parent-global Parent (indt Parent) ParentTy,
-    coq.env.indt I tt 0 0 _ [K] _,
-    coq.env.global (indc K) Ctor,
+    coq.env.indt I tt _ _ _ [K] _,
+    family-global (indc K) Ctor,
     close Parent ParentCs,
     std.map Cs component-key Keys,
     std.map ParentCs component-key ParentKeys,
@@ -287,16 +298,35 @@ Elpi File minks.flat lp:{{
     C = slot "carrier" (native-kind Head) {key-inputs Keys}, Cs = [C],
     coq.env.projections I [some P], register-field 1 Cs [pr "carrier" P] C.
 
-  pred generate i:id, i:list inductive, i:list component, i:list (pair id id),
-      o:inductive, o:list struct-conversion, o:list constant.
-  generate N Parents Cs Names I Views Packers :- @keep-alg-univs! ==>
+  pred header o:list (pair id implicit_kind).
+  pred bind-header i:list (pair id implicit_kind), i:indt-decl, o:indt-decl.
+  bind-header [] Decl Bound :- copy-indt-decl Decl Bound.
+  bind-header [pr Name Kind | Rest] Decl (parameter Name Kind Ty Body) :-
+    section-input Name _ Var, coq.typecheck Var Raw ok, copy Raw Ty,
+    pi x\ (copy Var x :- !) => bind-header Rest Decl (Body x).
+
+  pred declare-packed i:id, i:list component, i:list (pair id id),
+      o:inductive, o:list term.
+  declare-packed N Cs Names I Args :- @keep-alg-univs! ==>
     fields N Cs Names [] Body,
     {{ Set }} = sort Ground, field-sorts Body Ground Sort,
     Ctor is "Make" ^ N, Decl = record N (sort Sort) Ctor Body,
-    std.assert-ok! (coq.typecheck-indt-decl Decl) ("Ill-typed structure " ^ N),
+    if (header H) true (H = []),
+    std.map H (p\t\ sigma n\ p = pr n _, section-input n _ t) Args,
+    if (H = []) (Bound = Decl) (bind-header H Decl Bound),
+    std.assert-ok! (coq.typecheck-indt-decl Bound) ("Ill-typed structure " ^ N),
     layout-levels Cs Body Levels,
-    (@udecl! Levels tt [] tt => coq.env.add-indt Decl I),
-    coq.env.global (indt I) ChildTy,
+    (@udecl! Levels tt [] tt => coq.env.add-indt Bound I),
+    if (H = []) true (
+      std.map H (p\k\ p = pr _ k) Kinds,
+      coq.env.projections I Projections,
+      std.forall Projections (p\ sigma ref\ p = some ref,
+        @global! => coq.arguments.set-implicit (const ref) [Kinds])).
+
+  pred generate-views i:id, i:list inductive, i:list component, i:inductive,
+      o:list struct-conversion, o:list constant.
+  generate-views N Parents Cs I Views Packers :-
+    family-global (indt I) ChildTy,
     coq.env.projections I Projections,
     std.map Cs component-key Keys,
     std.map2 Keys Projections field-ref Fields,
@@ -312,7 +342,7 @@ Elpi File minks.flat lp:{{
     std.append ParentViews BaseViews Declared,
     discover-views I Cs Fields Declared OtherViews,
     std.append Declared OtherViews Views,
-    std.forall ParentViews register-parent-view,
+    if (header _) true (std.forall ParentViews register-parent-view),
     std.filter Ancestors (p\ std.mem Parents p) DirectParents,
     std.map DirectParents (p\f\ pack-from-parent N I Cs p f) Packers.
 }}.

@@ -36,6 +36,83 @@ Fail Minks.Mixin KeyedFirst (A : Type)
   extends BothFlags A, HasFlag
   := { keyed_first_law : True }.
 
+(** Repeating the same parent contributes one witness. *)
+
+Minks.Mixin RepeatedPoint (A : Type)
+  extends HasPoint A, HasPoint A, HasPoint A
+  := { repeated_value : A := @point A hasPoint }.
+
+Check @RepeatedPoint : ∀ A : Type, HasPoint A → Type.
+Fail Minks.Mixin IncompatiblePoints (A B : Type)
+  extends HasPoint A, HasPoint B
+  := { unused_points : True }.
+
+(** Two local coercions index the same component in different exports.
+    Rocq checks the shared point by conversion when both are inherited. *)
+
+Module ConvertiblePoints.
+Record Label := { element : Type }.
+
+Definition values (L : Label)
+  := option (element L).
+Definition values_alias
+  := values.
+
+Minks.Struct Chosen (A : Type)
+  with  hasPoint : HasPoint [A].
+
+Minks.Struct FlagOnly
+  with  extra : HasFlag.
+
+Module Left.
+Local Coercion values : Label >-> Sortclass.
+Minks.Struct Choice (L : Label)
+  extends Chosen L
+  exports LeftPoint [].
+
+Minks.Struct FlaggedChoice (L : Label)
+  extends FlagOnly, Chosen L.
+End Left.
+
+Module Right.
+Local Coercion values_alias : Label >-> Sortclass.
+Minks.Struct Choice (L : Label)
+  extends Chosen L
+  exports RightPoint [].
+End Right.
+
+Minks.Mixin SharedPoint (L : Label)
+  extends Left.LeftPoint L, Right.RightPoint L, Left.LeftPoint L
+  :=
+  { left_value : values L := @point _ (Left.LeftPoint_hasPoint L leftPoint)
+  ; right_value : values L := @point _ (Right.RightPoint_hasPoint L rightPoint)
+  }.
+
+Check @SharedPoint : ∀ L, HasPoint (values L) → Type.
+
+Example shared_value (L : Label) (P : HasPoint (values L))
+  : @left_value L P (@Build_SharedPoint L P) =
+    @right_value L P (@Build_SharedPoint L P)
+  := eq_refl.
+
+Fail Minks.Mixin DifferentLabels (L K : Label)
+  extends Left.LeftPoint L, Right.RightPoint K
+  := { unused_labels : True }.
+(** Both parents contribute the point at convertible indices. It precedes
+    the flag from the left parent and is fixed by the bare export. *)
+
+Import Left Right.
+Minks.Struct BothChoices (L : Label)
+  extends Left.FlaggedChoice L, Right.Choice L
+  exports CommonChoice, FixedChoice [hasPoint].
+
+Check @MakeBothChoices : ∀ L, HasPoint (values L) → HasFlag → BothChoices L.
+Check @MakeCommonChoice
+  : ∀ (L : Label) (P : HasPoint (values L)), HasFlag → CommonChoice L P.
+Check @MakeFixedChoice
+  : ∀ (L : Label) (P : HasPoint (values L)), HasFlag → FixedChoice L P.
+End ConvertiblePoints.
+
 (** * Reuse before filling
 
     Either flag can fill the first slot in isolation. The type of the

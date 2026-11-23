@@ -85,44 +85,42 @@ Elpi Accumulate lp:{{
   struct-parents [str "extends" | As] Parents Rest :- !, applications As Parents Rest.
   struct-parents As [] As.
 
-  pred section-name i:term, o:id.
-  section-name (global (const C)) Name :-
-    coq.env.section-variables Vars, std.mem Vars C, coq.gref->id (const C) Name.
+  pred section-argument i:id, o:term.
+  section-argument Name Value :-
+    if (section-input Name _ Value) true
+      (coq.error "Unknown structure parent parameter:" Name).
 
-  % The native view has already undergone all enclosing Section discharges.
+  % The result type of a discharged ancestor view retains the projections
+  % Rocq inserted when checking the original parent application.
   pred ancestor-inputs i:inductive, i:list term, i:inductive,
-      o:(pair inductive (list id)).
-  ancestor-inputs I Args Parent (pr Parent Names) :-
+      o:(pair inductive (list term)).
+  ancestor-inputs I Args Parent (pr Parent Terms) :-
     struct-view I Parent C _, coq.env.global (const C) View,
     coq.mk-app View Args Applied, coq.typecheck Applied (prod _ _ Body) ok,
-    pi child\ sigma head terms\ coq.safe-dest-app (Body child) head terms,
-      std.map terms section-name Names.
+    pi child\ coq.safe-dest-app (Body child) _ Terms.
 
-  pred scope-parents i:list (pair inductive (list id)), i:prop.
+  pred scope-parents i:list (pair inductive (list term)), i:prop.
   scope-parents [] Goal :- Goal.
-  scope-parents [pr I Names | Rest] Goal :-
-    spec I Parents _,
-    coq.env.indt I tt Arity _ _ [K] _,
-       if (std.length Names Arity) true
-         (coq.error "Wrong number of structure parent parameters:" I Names),
-       std.map Names (n\p\ sigma k t\
-         if (section-input n k t) (p = pr k t)
-           (coq.error "Unknown structure parent parameter:" n)) Inputs,
-       std.map Inputs (p\k\ p = pr k _) Keys, std.map Inputs (p\t\ p = pr _ t) Args,
-       if (parent-inputs I Prior _)
-         (if (Keys = Prior) (scope-parents Rest Goal)
-           (coq.error "Incompatible applications of a shared structure parent:" I))
-         (coq.env.global (indt I) Head, coq.mk-app Head Args Ty,
-          std.assert-ok! (coq.typecheck-ty Ty _) "Ill-typed structure parent application",
-          close I Cs, coq.env.typeof (indc K) CtorTy,
-          specialize-layout CtorTy Keys [] Cs Layout,
-          std.map Parents (ancestor-inputs I Args) More,
-          parent-inputs I Keys Args => parent-components I Layout =>
-            scope-parents {std.append More Rest} Goal).
+  scope-parents [pr I Actuals | Rest] Goal :-
+    spec I Parents _, coq.env.indt I tt Arity _ _ [K] _,
+    if (std.length Actuals Arity) true
+      (coq.error "Wrong number of structure parent parameters:" I),
+    coq.env.global (indt I) Head, coq.mk-app Head Actuals Raw,
+    (@keepunivs! => std.assert-ok! (coq.elaborate-skeleton Raw _ Ty)
+       "Ill-typed structure parent application"),
+    coq.safe-dest-app Ty _ Args,
+    if (parent-inputs I Prior)
+      (if (std.forall2 Args Prior (a\b\ coq.unify-eq a b ok)) (scope-parents Rest Goal)
+        (coq.error "Incompatible applications of a shared structure parent:" I))
+      (close I Cs, coq.env.typeof (indc K) CtorTy,
+       coq.subst-prod Args CtorTy FieldsTy, read-slots FieldsTy [] Cs Layout,
+       std.map Parents (ancestor-inputs I Args) More,
+       parent-inputs I Args => parent-components I Layout =>
+         scope-parents {std.append More Rest} Goal).
 
   pred with-components i:list component, i:list (pair id term),
       i:(list (pair id term) -> prop).
-  with-components [] Env Goal :- Goal Env.
+  with-components [] Env Goal :- (component-env Env :- !) => Goal Env.
   with-components [C | Cs] Env Goal :-
     component-key C Key, field-type C Env Ty,
     std.assert-ok! (coq.typecheck-ty Ty _) ("Ill-typed inherited component " ^ Key),
@@ -181,7 +179,7 @@ Elpi Accumulate lp:{{
   explicit-fixed [] [] _ _ _.
   explicit-fixed [C | Cs] [Actual | Args] Available Mapping Used :-
     C = slot Key Kind Deps, std.map Deps (translate-input Mapping) ActualDeps,
-    (std.mem Available (slot Actual Kind ActualDeps) ; ambient-value Actual _),
+    (available-component Available Actual Kind ActualDeps ; ambient-value Actual _),
     not (std.mem Used Actual),
     explicit-fixed Cs Args Available [pr Key Actual | Mapping] [Actual | Used].
 
@@ -285,7 +283,7 @@ Elpi Accumulate lp:{{
   pred declare-assembled i:inductive, i:list (pair id constant), i:component-view,
       o:(pair constant (list id)).
   declare-assembled I Refs (assembled Name Ctor Keys) (pr Ref Keys) :-
-    coq.env.global (indt I) Ty,
+    family-global (indt I) Ty,
     coq.env.global (indc Ctor) Make,
     (pi child\ sigma args\
       std.map Keys (k\t\ if (ambient-value k t) true
@@ -303,11 +301,26 @@ Elpi Accumulate lp:{{
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (struct-view Source Target Ref Mode)).
 
+  pred header-args i:list argument, o:list (pair id implicit_kind), o:list argument.
+  header-args [str "#end" | Args] [] Args :- !.
+  header-args [str K, str Name | Args] [pr Name Kind | H] Rest :-
+    std.mem [pr "explicit" explicit, pr "maximal" maximal, pr "implicit" implicit]
+      (pr K Kind), header-args Args H Rest.
+
+  % Register only after the maps quantify all record indices.
+  main [str "#register", str Name] :- !,
+    coq.locate Name (indt I), spec I Parents _, ancestors Parents [] All,
+    std.forall All (p\ sigma ref mode\ struct-view I p ref mode,
+      register-parent-view (conversion I p ref mode)).
+
+  main [str "#header" | Args] :- !,
+    header-args Args H Rest, header H => main Rest.
   main [A | Args] :-
     if (atom A Name, struct-parents Args Applications Rest,
         parse-components Rest Slots Tail, parse-exports Tail Exports) true usage,
     resolve-bases Applications (parents\
-      std.map parents (a\p\ sigma i args\ a = named-parent i args, p = pr i args) Named,
+      std.map parents (a\p\ sigma i names args\
+        a = named-parent i names, std.map names section-argument args, p = pr i args) Named,
       scope-parents Named (build Name parents Slots Exports)).
 
   pred resolve-bases i:list struct-parent, i:(list struct-parent -> prop).
@@ -329,8 +342,8 @@ Elpi Accumulate lp:{{
   pred export-keys i:list (list component), i:list component, i:option (list id), o:list id.
   export-keys _ _ (some Keys) Keys.
   export-keys Parents Inherited none Keys :-
-    std.filter Inherited (c\ std.forall Parents (p\ std.mem p c)) Common,
-    std.map Common component-key Keys.
+    std.map Inherited component-key Candidates,
+    std.filter Candidates (k\ std.forall Parents (contains-key k)) Keys.
 
   pred build i:id, i:list struct-parent, i:list pending-slot, i:list (pair id (option (list id))).
   build Name Applications Slots Exports :-
@@ -342,7 +355,15 @@ Elpi Accumulate lp:{{
     merge Local Inherited Components,
     if (Assembled = []) (Names = Selected)
       (std.map Components (avoid-view-name Name Assembled Selected) Names),
-    std.assert! (generate Name FlatParents Components Names I Views Packers)
+    declare-packed Name Components Names I Args,
+    active-family I Args =>
+      finish Name Applications Branches Inherited Exports FlatParents Components Assembled I.
+
+  pred finish i:id, i:list struct-parent, i:list (list component), i:list component,
+      i:list (pair id (option (list id))), i:list inductive, i:list component,
+      i:list component-view, i:inductive.
+  finish Name Applications Branches Inherited Exports FlatParents Components Assembled I :-
+    std.assert! (generate-views Name FlatParents Components I Views Packers)
       "Could not generate the structure",
     if (Assembled = []) (Assemblies = []) (
       std.map Components component-key Keys,
@@ -363,7 +384,9 @@ Elpi Accumulate lp:{{
         coq.elpi.accumulate execution-site "minks.flat.db"
           (clause _ _ (struct-export I interface fixed)))
       Exported,
-    print-struct Applications Name [] FlatParents Components Views Packers Exported Assemblies.
+    attributes Attrs,
+    if (std.mem Attrs (attribute "minks.defer-summary" _)) true
+      (print-struct Applications Name [] FlatParents Components Views Packers Exported Assemblies).
   main _ :- usage.
 }}.
 Elpi Accumulate Db minks.flat.db.

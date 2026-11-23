@@ -9,6 +9,66 @@ let any_attribute = Attributes.make_attribute (fun atts -> [], atts)
 
 let mixin_declaration = Procq.Entry.make "minks_declaration"
 
+let struct_declaration = Procq.Entry.make "minks_struct_declaration"
+(* The clause word "exports" remains available as a Rocq identifier. *)
+let parent_input = Procq.Lookahead.(to_entry "minks_parent_input"
+  (lk_ident_except ["exports"]))
+
+let elpi_cmd_arg = Elpi_plugin.Rocq_elpi_arg_syntax.elpi_cmd_arg
+module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd
+
+let run_minks command ~atts args =
+  let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
+  Elpi_plugin.Rocq_elpi_vernacular.Interp.run_program
+    ~loc ["minks"; command] ~atts ~syndata:None args
+
+let parent_tokens (head, args) =
+  let name, ordered = match head with
+    | None -> "Type", []
+    | Some qid ->
+      Libnames.string_of_qualid qid, Mixin_parameters.struct_arguments qid args
+  in
+  Cmd.String name :: List.map (fun id -> Cmd.String (Names.Id.to_string id)) ordered
+
+let declare_struct ~atts (name, binders, parents, tail) =
+  let name = Names.Id.to_string name in
+  let generate prefix atts =
+    let parents = match parents with
+      | None -> []
+      | Some [] -> CErrors.user_err (Pp.str "Expected a parent after extends.")
+      | Some (p :: ps) ->
+        Cmd.String "extends" :: parent_tokens p @
+        List.concat_map (fun p -> Cmd.String "," :: parent_tokens p) ps
+    in
+    run_minks "struct" ~atts (prefix @ (Cmd.String name :: parents @ tail))
+  in
+  match binders with
+  | [] -> generate [] atts
+  | _ ->
+    (* Use Rocq's discharge for the record, views and hierarchy metadata. *)
+    let section = Namegen.next_ident_away_from (Names.Id.of_string "MinksParameters")
+      (fun id -> Nametab.exists_dir (Lib.make_path id)) in
+    let synterp = Vernacstate.Synterp.freeze () in
+    Fun.protect ~finally:(fun () -> Vernacstate.Synterp.unfreeze synterp) (fun () ->
+      Lib.Synterp.open_section section;
+      Lib.Interp.open_section section;
+      let program_mode, poly =
+        Attributes.(parse Notations.(program ++ poly PolyFlags.Assumption)) [] in
+      ComAssumption.do_context ~program_mode ~poly binders;
+      let deferred = CAst.make ("minks.defer-summary", Attributes.VernacFlagEmpty) in
+      let header = Mixin_parameters.ordinary_parameters binders |> List.concat_map
+        (function
+          | Names.Name.Name id, (Constrexpr.CLocalAssum (_, _, Default kind, _), _) ->
+            let kind = match kind with Glob_term.Explicit -> "explicit"
+              | MaxImplicit -> "maximal" | NonMaxImplicit -> "implicit" in
+            [Cmd.String kind; Cmd.String (Names.Id.to_string id)]
+          | _ -> CErrors.user_err (Pp.str "Structure parameters must have names.")) in
+      generate (Cmd.String "#header" :: header @ [Cmd.String "#end"]) (deferred :: atts);
+      Declaremods.Synterp.close_section ();
+      Declaremods.Interp.close_section ());
+    run_minks "struct" ~atts:[] [Cmd.String "#register"; Cmd.String name];
+    run_minks "inspect" ~atts:[] [Cmd.String name]
+
 let record_name (name, universes) =
   let universes = Option.map (fun decl ->
     let open UState in
@@ -28,7 +88,7 @@ let dump_mixin { Record.Ast.name; cfs; idbuild } =
 
 let declare_mixin ~atts decl parents =
   let parents = List.map Mixin_parameters.read_parent parents in
-  let decl, roles =
+  let decl, roles, witnesses =
     Mixin_parameters.add_to_declaration parents decl in
   let kind = Vernacexpr.Class true in
   let open Vernacentries.Preprocessed_Mind_decl in
@@ -41,20 +101,28 @@ let declare_mixin ~atts decl parents =
        | _ -> CErrors.anomaly Pp.(str "Expected exactly one mixin declaration."))
     | Inductive _ -> CErrors.user_err Pp.(str "Expected a mixin with a record body.")
   in
-  let module Elpi = Elpi_plugin.Rocq_elpi_vernacular in
-  let module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd in
   let name = Libnames.string_of_path (Nametab.path_of_global reference) in
   let direct = List.map (fun (p, _, _) -> Nametab.locate p) parents in
   Mixin_parameters.remember reference direct roles;
-  let args = [Cmd.String name] in
+  let args = Cmd.String name :: List.map (fun r ->
+    Cmd.String (Libnames.string_of_path (Nametab.path_of_global r))) witnesses in
   (* The class and the metadata belong to the same vernacular transaction. *)
-  let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
   let origin = CAst.make ("minks.declaration", Attributes.VernacFlagEmpty) in
-  Elpi.Interp.run_program ~loc ["minks"; "mixin"] ~atts:[origin] ~syndata:None args
+  run_minks "mixin" ~atts:[origin] args
 }
 
 GRAMMAR EXTEND Gram
-  GLOBAL: mixin_declaration;
+  GLOBAL: mixin_declaration struct_declaration;
+  struct_declaration:
+    [ [ name = ident; bs = LIST0 closed_binder;
+        ps = OPT [ "extends"; ps = LIST0 struct_parent SEP "," -> { ps } ];
+        rest = LIST0 elpi_cmd_arg -> { name, List.concat bs, ps, rest } ] ];
+  struct_parent:
+    [ [ "Type" -> { None, [] }
+      | qid = qualid; args = LIST0 struct_argument -> { Some qid, args } ] ];
+  struct_argument:
+    [ [ parent_input; id = ident -> { Either.Left id }
+      | "("; formal = ident; ":="; id = ident; ")" -> { Either.Right (formal, id) } ] ];
   mixin_declaration:
     [ [ coercion = OPT ">"; name = ident_decl; parameters = binders;
         parents = OPT [ "extends"; ps = LIST1 [ p = term LEVEL "10" -> { p } ] SEP ","
@@ -82,4 +150,13 @@ VERNAC COMMAND EXTEND MinksMixin CLASSIFIED AS SIDEFF
 | #[ atts = any_attribute ] [ "Minks.Mixin" minks_mixin_decl(declaration) ] ->
   { let decl, parents = declaration in
     declare_mixin ~atts decl parents }
+END
+
+VERNAC ARGUMENT EXTEND minks_struct_decl
+| [ struct_declaration(decl) ] -> { decl }
+END
+
+VERNAC COMMAND EXTEND MinksStruct CLASSIFIED AS SIDEFF
+| #[ atts = any_attribute ] [ "Minks.Struct" minks_struct_decl(declaration) ] ->
+  { declare_struct ~atts declaration }
 END
