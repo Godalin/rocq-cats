@@ -4,6 +4,13 @@ Minks generates flat, universe-polymorphic Rocq structures from registered
 mixins. The independent Dune package is `rocq-minks`. Import
 [`Minks.all`](theories/all.v) to use its three commands.
 
+**Core principle.** The semantic model is the selected components and their
+dependencies in a given parameter context. A mixin adds operations or laws
+over its dependencies. A structure packs the selected components, and an
+export fixes part of that structure and presents the rest as a relative
+interface. Generated Rocq declarations preserve which component supplies
+each dependency.
+
 The [rule audit](doc/implementation-audit.md) compares the formal specification
 with the generator and its executable examples.
 
@@ -62,9 +69,13 @@ Minks.Mixin Name binders
   binders at call sites. `extends` accepts these parent applications with
   optional universe instances. `@Parent` is unsupported.
 - **Inherited witnesses.** Minks inserts the direct and transitive parent
-  witnesses as implicit typeclass parameters. Paths share a witness when
-  the referenced mixin and its selected argument list agree. Incompatible
-  selections for the same mixin produce an error.
+  witnesses as implicit typeclass parameters. Read parents from left to right. Repeating a direct
+  parent and reaching it through several paths both share one compatible
+  witness. Match by mixin and key, then let Rocq check the selected witness
+  at every required application, including indices with transparent aliases.
+  Distinct explicit keys keep distinct witnesses. An unkeyed occurrence
+  with multiple candidates is ambiguous. A unique candidate with an
+  incompatible type rejects the declaration.
 - **Relative parents.** Supply the fixed parameters of an exported class as
   ordinary arguments. Minks visits its remaining fields in constructor
   order and inserts their component witnesses. The selected dependency
@@ -104,7 +115,7 @@ Minks.Mixin Name binders
 ### `Minks.Struct`
 
 ```text
-Minks.Struct Name
+Minks.Struct Name binders
   [extends Parent ordinaryArg ..., ...]
   [with key [as projection] : Mixin [argumentKey, ...], ...]
   [exports Interface [parameterKeyOrStructure, ...], ...].
@@ -167,25 +178,28 @@ square brackets.
   with unified levels listed once. Rocq checks the generated fields and
   infers the remaining universe levels, their order, and constraints.
 
-#### Structures declared in sections
+#### Ordinary parameters in headers and sections
 
-- Define a structure in a Rocq section to make its used assumptions ordinary
-  parameters. Its constructor, projections, forgetful views, packing functions
-  and relative interfaces acquire the inputs they use at each `End`.
+- The header gives the record's full parameter telescope in declaration
+  order. For example, `Minks.Struct Tagged (A : Type)` retains `A`
+  even when every field is independent of it. Parentheses declare explicit
+  inputs and braces declare implicit inputs. Rocq generalizes used enclosing
+  section assumptions before the header. A relative class takes the ambient
+  inputs it uses; packing back into the record takes all its indices.
   `Minks.Inspect` reads the ordinary parameters and field arguments from
   the discharged constructor. In field lists, `param:B` refers to the
   ordinary binder `B`.
 - In a later section, `extends LabelledPoint D` instantiates a discharged
-  parent at the visible input `D`. List its parameters in Rocq binder order.
+  parent at the visible input `D`. Pass explicit parameters by position
+  and implicit ones by name, as in `extends HeaderMap T x (A := X)`.
+  This convention also applies to native parents. Rocq elaborates each parent
+  application, including implicit conversions implemented by functions.
   Direct and transitive parent views use the same substitution. Two paths
   to the same declared ancestor must agree on its inputs.
 - A relative export can be reused after discharge. For example,
   `with chosen : LabelledOn [D, carrier]` takes the new ordinary argument
   before the original fixed field. In a mixin declaration the corresponding
   parent application is `extends LabelledOn D A`.
-- The current structure command takes ordinary inputs from enclosing sections.
-  Structure headers with explicit binders and named implicit arguments in
-  structure parent applications remain open parts of the formal specification.
 
 #### Conversions and packing
 

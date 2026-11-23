@@ -26,11 +26,14 @@
 
 \section{Overview}
 
-A mixin specifies an increment over given data. Its parameters describe
-the inputs and its fields specify the operations, choices or laws to
-supply. A structure packs choices into one record over given parameters.
-A mixin inherits witnesses as parameters. A structure inherits fields
-so that further components can refer to the choices already made.
+\paragraph{Core principle.}
+The semantics of a hierarchy is given by its components and their
+dependencies in the ordinary parameter context. Each dependency identifies
+the selected component it uses. Two components of the same type can have
+distinct keys, as when the additive and multiplicative unit laws select
+different points. A mixin adds operations or laws over inherited witnesses.
+A structure packs the selected components. Inheritance expands parents in
+declaration order and shares compatible occurrences of the same selection.
 
 A declaration $d$ is checked in an environment $\mathcal E$ of Rocq
 declarations and registered Minks signatures. Checking computes a
@@ -40,8 +43,8 @@ declarations $D$, hierarchy entries $J$ and registrations $R$:
   d \ \xrightarrow{\ \mathrm{check\ in}\ \mathcal E\ }\ \Sigma
     \ \xrightarrow{\ \mathrm{generate\ in}\ \mathcal E\ }\ (D,J,R).
 \]
-An export records a reusable mixin over the completed layout. Its
-declaration leaves the source fields and parents unchanged. The proposed
+An export fixes a dependency-closed part of the layout and presents the
+remaining components as a reusable mixin. The proposed
 \ttt{Minks.Trans} command would read two exports and emit a Rocq function.
 
 Sections~\ref{sec:language}--\ref{sec:generation} give the language,
@@ -166,7 +169,11 @@ parent list.
 \end{array}
 \]
 
-The header binds the structure's external parameters. The clauses list
+The header binds the structure's external parameters. Retain every declared
+binder in order with its Rocq binding kind, including an index unused by
+the fields. For example, if no field mentions $A$, declaring
+\ttt{Tagged (A : Type)} still yields \ttt{Tagged : Type} $\to$ \ttt{Type}
+(up to universes). Enclosing section assumptions follow \ruse{Section-End}. The clauses list
 its parents, its local components and its relative interfaces, in that order.
 
 \paragraph{Parents (\texttt{extends}).}
@@ -252,11 +259,20 @@ forms of $\Sigma$.
 \subsection{Parent and component arguments}
 
 \rdefn{WF-Extends}. For a parent $H$ with ordinary telescope $\Delta_H$,
-substitute the supplied arguments into each subsequent parameter type.
-A repeated actual is legal and a closed parent takes the empty substitution.
+check the supplied binders in the child context. For a structure parent,
+elaborate the application with Rocq. The written
+arguments select ordinary binders. Their elaborated values may include
+registered coercions, including ordinary functions. Use the resulting
+Rocq application to instantiate the parent constructor and views. Compare
+repeated applications of one ancestor by Rocq conversion. Field selection
+continues to use component keys.
+Let $\bar x$ be the names supplied in the parent application, including
+named arguments. Write $H\,\bar x\leadsto H[\sigma]$ for its elaboration
+in $\Gamma$. A name can occur twice, and a closed parent takes the empty
+substitution.
 \[
- \frac{H\ \wf\qquad \Gamma\vdash_\Phi\sigma:\Delta_H
-       \qquad\operatorname{im}(\sigma)\subseteq P}
+ \frac{H\ \wf\qquad \bar x\subseteq P\qquad H\,\bar x\leadsto H[\sigma]
+       \qquad\Gamma\vdash_\Phi\sigma:\Delta_H}
       {\Gamma;P\vdash_\Phi H[\sigma]\ \mathsf{parent}}
 \]
 
@@ -379,8 +395,10 @@ For an incoming descriptor $d$, form $C(d)$ from the entries of $T$:
 \end{aligned}
 \]
 Here $\bot$ denotes an absent key. For two witnesses,
-$\mathsf{agree}(t,d)$ requires identical ordered references and
-compatible instances. Merge instances positionwise: a hole takes its
+$\mathsf{agree}(t,d)$ requires compatible instances and Rocq conversion
+of the instantiated witness types in the child context, using the
+selected binder identities. Repeated direct parents and occurrences
+through distinct paths follow this same rule. Merge instances positionwise: a hole takes its
 partner, two holes remain a hole, and two explicit entries must agree.
 An omitted instance supplies holes at all positions. For ordinary
 entries, agreement is the descriptor compatibility of \ruse{Parent-Union}.
@@ -433,7 +451,8 @@ A structure layout $A$ is a telescope over the external parameters $\Delta$. A k
 field $k:T$ records its type and projection annotation. A component
 $k:M(\bar r)$ also records its mixin and ordered argument references.
 Each reference starts at a parameter or a preceding field, possibly
-followed by a registered base projection. These references and the
+used in an elaborated Rocq term. Keep the selected binding identities
+when instantiating a field type. These references and the
 free local references in ordinary field types determine dependencies.
 With $\Gamma_P$ the parameter context and $s$ an admissible result sort:
 \[
@@ -799,6 +818,9 @@ of registered mixin type. Two such binders of the same type retain their
 identities. The list of direct parents stays the one declared by
 \ttt{extends}. Inside the section, applications use the telescope already
 exposed at that point.
+A header binder belongs to the declared record telescope even when unused.
+Relative classes take the ambient inputs their own types use; reassembly
+also quantifies every index needed by its result.
 At each \ttt{End}, generalize both the Rocq declarations and the hierarchy
 information over the assumptions used by either, including their type
 dependencies. A variable used only in a parent application is retained.
