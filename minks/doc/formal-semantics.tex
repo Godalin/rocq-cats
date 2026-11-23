@@ -59,7 +59,7 @@ and worked examples.
 \ruse{Struct-Univ}, \ruse{Univ-Assemble}.\par
 \textit{Mixin signatures.} \ruse{Mixin-Ext}, \ruse{Parent-Scan},
 \ruse{Witness-Share}, \ruse{Binder-Order}, \ruse{Expand-Field}.\par
-\textit{Structure signatures.} \ruse{Parent-Union}, \ruse{Ancestor-Agree},
+\textit{Structure signatures.} \ruse{Parent-Union}, \ruse{Key-Rename}, \ruse{Ancestor-Agree},
 \ruse{Struct-Pack}, \ruse{With-Assembly}, \ruse{Export-Fix},
 \ruse{Export-Common}.\par
 \textit{Generation.} \ruse{Projection-Name}, \ruse{Parent-To}, \ruse{Parent-Of}, \ruse{Export-Form},
@@ -79,7 +79,7 @@ $\Delta$ stands for Rocq parameter binders, $U$ for a universe declaration
 and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
 
 \newcommand{\grammarArg}{%
-  \mathit{arg} &::=& \mathit{param}\mid \ttt{(}\mathit{formal}\ \ttt{:=}\ \mathit{param}\ttt{)}}
+  \mathit{arg} &::=& \mathit{term}\mid \ttt{(}\mathit{formal}\ \ttt{:=}\ \mathit{term}\ttt{)}}
 \newcommand{\grammarMixinDecl}{%
   \mathit{mixinDecl} &::=&
  \ttt{Minks.Mixin}\ \mathit{mixin}\langle U\rangle\ \Delta\
@@ -99,7 +99,12 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
 \newcommand{\grammarComponent}{%
   \mathit{component} &::=& \mathit{key}\ \langle\ttt{as}\ \mathit{proj}\rangle\
  \ttt{:}\ \mathit{mixin}\langle\iota\rangle\
- \langle\ttt{[}\overline{\mathit{input}}\ttt{]}\rangle}
+ \langle\ttt{[}\overline{\mathit{input}}\ttt{]}\rangle\\
+  &&\mid \mathit{key}\ \ttt{as}\ \mathit{newKey}\\
+  &&\mid \langle\ttt{[}\overline{\mathit{key}}\ttt{]}\rangle\
+    \langle\ttt{as}\ \ttt{[}\overline{\mathit{proj}}\ttt{]}\rangle\
+    \ttt{:}\ \mathit{interface}\langle\iota\rangle\
+    \langle\ttt{[}\overline{\mathit{input}}\ttt{]}\rangle}
 \newcommand{\grammarInput}{%
   \mathit{input} &::=& \mathit{param}\mid\mathit{key}}
 \newcommand{\grammarExport}{%
@@ -141,7 +146,7 @@ selection and export. Two choices of the same mixin may have different keys.
 \]
 
 Both commands use this argument form in parent applications. Each actual
-names an ordinary input in scope. Supply explicit formals by position and
+is a Rocq term in the declaration context. Supply explicit formals by position and
 implicit ordinary formals by name. Each argument is checked at the type
 determined by the preceding arguments.
 
@@ -197,9 +202,15 @@ by \ruse{Native-Base}.
 \end{array}
 \]
 
-A component has a key and a mixin. The optional \ttt{as} names its
+A primitive mixin entry introduces one fresh key. The optional \ttt{as} names its
 projection. An explicit list takes parameters or available fields in
 mixin-parameter order. Omitting the brackets requests field inference.
+An entry without a colon renames an available field key for subsequent
+entries, exports and descendants (\ruse{Key-Rename}).
+A relative interface binds its remaining components together. The optional
+lists to the left of the colon give their new keys and projection names in
+export order. Omitting the key list keeps the exported keys. The input list
+on the right selects the fixed part (\ruse{With-Assembly}).
 
 \paragraph{Relative interfaces (\texttt{exports}).}
 
@@ -231,7 +242,7 @@ References resolve in the preceding environment, including visible imports.
 An export may refer to the structure being declared. Required names must
 be fresh and all required Rocq checks must succeed.
 
-Parent arguments name inputs in scope. General terms, the
+Parent arguments may use header binders, section variables and global names. The
 \ttt{@Parent} form and automatic synthesis of mathematical evidence are
 outside this fragment. Host typing and universe checks are premises.
 Hierarchy Builder's factories and builders give a related account of
@@ -259,20 +270,21 @@ forms of $\Sigma$.
 \subsection{Parent and component arguments}
 
 \rdefn{WF-Extends}. For a parent $H$ with ordinary telescope $\Delta_H$,
-check the supplied binders in the child context. For a structure parent,
-elaborate the application with Rocq. The written
-arguments select ordinary binders. Their elaborated values may include
-registered coercions, including ordinary functions. Use the resulting
-Rocq application to instantiate the parent constructor and views. Compare
-repeated applications of one ancestor by Rocq conversion. Field selection
-continues to use component keys.
-Let $\bar x$ be the names supplied in the parent application, including
-named arguments. Write $H\,\bar x\leadsto H[\sigma]$ for its elaboration
-in $\Gamma$. A name can occur twice, and a closed parent takes the empty
-substitution.
+elaborate each ordinary argument in the child context at the type determined
+by the preceding arguments. An argument may be any Rocq term at that type,
+including an application, a projection or a lambda. Rocq resolves its names,
+implicit arguments and coercions. Inherited mixin witnesses are supplied by
+\ruse{Mixin-Ext}. A structure parent uses the resulting substitution in its
+constructor and views. Repeated paths to an ancestor compare by conversion.
+
+Write $\Gamma;P\vdash_\Phi \bar t\leadsto\sigma:\Delta_H$ for this
+dependent argument check in the surrounding environment extended by the
+child's ordinary binders. For mixin parent $i$, extend that environment
+also with the witnesses and local views of parents $1$ through $i-1$.
+Resolve explicit names and implicit instances in this same scope.
+The empty telescope takes the empty substitution.
 \[
- \frac{H\ \wf\qquad \bar x\subseteq P\qquad H\,\bar x\leadsto H[\sigma]
-       \qquad\Gamma\vdash_\Phi\sigma:\Delta_H}
+ \frac{H\ \wf\qquad \Gamma;P\vdash_\Phi \bar t\leadsto\sigma:\Delta_H}
       {\Gamma;P\vdash_\Phi H[\sigma]\ \mathsf{parent}}
 \]
 
@@ -287,7 +299,7 @@ with key $x$, if any. Resolve the name before checking its expected type:
 The union distinguishes parameter and field identities. Zero matches give
 an unknown name and two give an ambiguity. A projection alias does not
 enter $F_x$. This applies to explicit fixed inputs of a virtual mixin
-as well. Parent arguments still use $P$ and omitted lists still use $F$.
+as well. An omitted component input list still searches only $F$.
 
 \rdefn{Args-Check}. Let $\mathsf{args}_\Phi(\Gamma,M,\bar r)$ mean that
 $\bar r$ supplies the normalized telescope $(z_j:T_j)_{j=1}^n$ of $M$
@@ -379,7 +391,8 @@ $\sigma$. For a virtual parent, traverse the remainder by
 \ruse{Expand-Field}, interning each substituted descriptor and binding
 its key to the result before the next step. Save the assembled
 constructor application as a local definition. Both visits share the
-same table across all parents.
+same table across all parents. Each completed parent extends the scope
+for the next one. Later binder ordering preserves these selections.
 
 \paragraph{Identify repeated occurrences.}
 \rdefn{Witness-Share}. A witness descriptor carries a head $M$, an
@@ -483,18 +496,52 @@ A child takes the flattened field values in its constructor and obtains
 the ordinary \ttt{To} and \ttt{Of} maps for its direct parent.
 An empty parent list contributes an empty layout.
 
-Merge inherited fields by key. A shared key must have the same kind of
+Identify images of the same field of a common instantiated ancestor.
+Compatible fields with the same unrenamed key also merge as before.
+An explicit rename alone never identifies two independent fields.
+The map from each parent layout into the union must be injective.
+A shared field must have the same kind of
 descriptor, convertible field types and, for mixin fields, the same mixin
 and ordered references after substitution. Retain the requested coercions
 on the merged projection, subject to Rocq's checks.
 \rdefn{Ancestor-Agree}. Along all declared paths to the same qualified
 ancestor, the instantiated ancestor types must convert and each ancestor
-key must select the same child key. Record one key map per ancestor.
+key must select the same child field. Compose the direct parent maps and
+record one map per ancestor.
 A conflict rejects the declaration, even for an unused ancestor parameter.
 
 \paragraph{Components.}
 
-A direct \ttt{with} entry selects a mixin. A written list supplies its
+\rdefn{Key-Rename}. Each field has one current public key and a set of
+retired keys. Initially this set is empty. The entry $k\ \ttt{as}\ j$
+requires a stored field currently named $k$ and a fresh $j$. Change its
+public key to $j$ and retire $k$. Its position, value and dependencies
+keep their identities. A retired key is unavailable for field lookup,
+fresh declarations and further renames in this structure and its
+descendants. The reservation is local to this inheritance graph.
+
+For each shared field, choose its public key from the direct parents
+that supply it. Prefer parents whose current key results from an explicit
+rename anywhere on that path; among these take the first in declaration
+order. Otherwise take the original key. Combine their name histories,
+retiring every spelling except the selected one. Reject a spelling
+claimed by two distinct fields when at least one claim is a current or
+retired rename. Process local renames after parent union, in source order.
+A parent view continues to use its own public keys via its recorded map.
+
+For example, let \ttt{Rng} rename the multiplicative \ttt{hasMagma}
+inherited from \ttt{Semigroup} to \ttt{hasMul}. Both
+\ttt{extends Rng, Monoid} and \ttt{extends Monoid, Rng} select
+\ttt{hasMul} for that shared operation. Projection to \ttt{Monoid}
+recovers its \ttt{hasMagma}. In a child of \ttt{Rng}, both
+\ttt{with hasMagma : HasMagma} and \ttt{with hasMagma as product}
+fail; \ttt{with hasMul as product} succeeds if \ttt{product} is fresh.
+
+A written \ttt{with} entry $k:M$ requires
+$k\notin\keys(F)\cup R\cup W$, where $R$ contains retired keys and $W$ contains the left-hand keys of earlier
+entries in this declaration. Check this before resolving its inputs and
+then add $k$ to $W$. A projection alias leaves this judgment unchanged.
+A direct entry selects a mixin. A written list supplies its
 full parameter telescope from the child's ordinary inputs and available
 fields. Omission asks for a unique well-typed tuple of available fields.
 An input may repeat at ordinary positions. At a witness position the
@@ -504,7 +551,7 @@ the projection. Dependencies and exports continue to use the original key.
 \rdefn{Struct-Pack}. Among inherited fields whose dependencies are ready,
 prefer keys shared by several direct parents, then first occurrence in
 parent and field order. Process local entries in source order, appending
-a new field or reusing an identical descriptor at its key. Assembly of
+one fresh field for each direct mixin. Assembly of
 an export follows \ruse{With-Assembly}.
 
 A different direct-parent order can change constructor and export
@@ -533,8 +580,7 @@ of the value $x_k$ required at this step:
 For \ttt{Mixin extends}, bind an ordinary value explicitly and a witness
 implicitly. Repeated ordinary keys share a binder when their substituted
 descriptors agree under \ruse{Parent-Union}, and conflict otherwise.
-Witnesses follow \ruse{Witness-Share}. For \ttt{Struct with}, reuse or
-store $x_k$ as a field of the same kind by \ruse{With-Assembly}. Continue
+Witnesses follow \ruse{Witness-Share}. For \ttt{Struct with}, store $x_k$ as a field of the same kind by \ruse{With-Assembly}. Continue
 with $\rho'$. A later witness reads the value through its argument
 reference, including when $k$ is the native parent's \ttt{carrier} key.
 
@@ -546,50 +592,18 @@ compatible unused fields. Distinct interface keys require distinct
 selections. The fixed application must typecheck and its selection
 must be unique.
 
-Let $A$ be the available field layout, $L$ the ordered remaining
-descriptors and $\rho$ the selection already made. Initially $\rho$
-maps the fixed keys to their supplied inputs or base projections.
-For the next descriptor $d$ with key $k$, let $C$ contain the unused
-fields of $A$ with the same kind and compatible type after substitution
-by $\rho$. Witness fields must also agree in head and ordered argument
-references. A field already selected by $\rho$ is used. Set
-\[
- P(d,A,\rho)=
- \begin{cases}
-   \{k\} & k\in C,\\
-   C     & k\notin C .
- \end{cases}
-\]
-Apply this preference at each step, before examining the rest of $L$.
-Write $\rho_i=\rho[k\mapsto i]$. The set of complete selections using
-only existing fields is given by
-\[
- \begin{aligned}
-   \mathsf{reuse}([],A,\rho)&=\{\rho\},\\
-   \mathsf{reuse}(d::L,A,\rho)
-      &=\bigcup_{i\in P(d,A,\rho)}\mathsf{reuse}(L,A,\rho_i).
- \end{aligned}
-\]
-Each branch carries its own universe constraints by \ruse{Univ-Assemble}.
-A leaf contributes only if the full selection typechecks. Count distinct
-binding maps. Accept the sole complete selection, reject two or more,
-and on zero restart from the original $(L,A,\rho)$ with $\mathsf{fill}$:
-\[
-\begin{array}{ll}
- \mathsf{fill}([],A,\rho)=(A,\rho),\\[2pt]
- \mathsf{fill}(d::L,A,\rho)=
- \begin{cases}
- \mathsf{fill}(L,A,\rho_i) & P(d,A,\rho)=\{i\},\\
- \mathsf{fill}(L,A\cdot d[\rho],\rho_k) &
-      P(d,A,\rho)=\varnothing,\ k\text{ fresh},\\
- \mathsf{reject} & \text{otherwise}.
- \end{cases}
-\end{array}
-\]
-Here fresh means absent from $A$ and unused as a selected field.
-Appending stores the substituted descriptor under its original key.
-Each step and the final assembly must typecheck. Only a successful
-assembly contributes its new fields and constraints to the declaration.
+Let $(k_i:d_i)_{i=1}^n$ be the remaining descriptors in export order.
+Without a left-hand key list take $j_i=k_i$. Otherwise require exactly
+$n$ listed keys $j_i$. A projection list must likewise have length $n$.
+Start with the substitution $\rho_0$ from the fixed inputs. For
+$i=1,\ldots,n$, check that $j_i$ is fresh under \ruse{Key-Rename},
+append the field $j_i:d_i[\rho_{i-1}]$, and extend the substitution
+by $k_i\mapsto j_i$. Thus a dependency on an earlier component reads
+the newly stored field, even when another field has the same type.
+Rocq checks the export constructor at the fixed inputs and these $n$
+values in the same universe instance. The resulting layout contains
+exactly $n$ new fields. A scalar binding for an export is ill-formed,
+including when $n=1$. For $n=0$ the batch is empty.
 
 \paragraph{Selecting fixed inputs for a new export.}
 
@@ -647,28 +661,18 @@ and ancestor key maps. For a named native base $B$ the projection is
 $S\ttt{To}B$; for \ttt{Type} it is $S\ttt{\_carrier}$.
 \item \rdefn{Parent-To}. Generate $S\mathbin{\ttt{To}}H$ for every distinct
 declared Minks ancestor $H$, copying its fields in $H$'s constructor
-order. A view of $s:S$ has value
-$\make_H((\proj^S_k(s))_{k\in A_H})$.
+order. With the recorded field map $\mu:H\to S$, a view of $s:S$ has value
+$\make_H((\proj^S_{\mu(k)}(s))_{k\in A_H})$.
 \item \rdefn{Parent-Of}. For each distinct direct Minks parent, generate
 $S\mathbin{\ttt{Of}}H$ taking the parent and the missing fields in child
 order, with dependent arguments typed at the parent's actual projections.
 \end{itemize}
 
 \rdefn{Projection-Name}. An alias belongs to the structure that declares
-it. For a component key $k$ of child $S$, collect the distinct aliases
-requested by direct (physical) \ttt{with} entries for $k$ in $S$:
-\[
- \mathsf{projection}(S,k)=
- \begin{cases}
- S\mathbin{\ttt{\_}}k & \text{no local alias},\\
- p & \text{the sole local alias is }p,\\
- \mathsf{reject} & \text{several local aliases}.
- \end{cases}
-\]
-This also covers a child that reuses an inherited component. Parent
-aliases remain accessible through the respective parent views.
-The assembled-view collision convention below applies to default names;
-all resulting public names must be fresh.
+it. A fresh direct entry $k\ \ttt{as}\ p:M$ in $S$ names its projection $p$.
+Without an alias, its projection is $S\mathbin{\ttt{\_}}k$.
+Parent aliases remain accessible through the respective parent views.
+The same naming rule applies pointwise to a batch. All resulting public names must be fresh.
 
 \subsection{Relative classes and virtual mixins}
 \label{sec:relative}
@@ -683,12 +687,6 @@ projections from the packed base. An empty remainder has no constituents.
 \rdefn{Export-To} extracts the class value from the packed record.
 \rdefn{Export-Of} builds that record from the fixed inputs and class
 value. Both maps are transparent.
-
-For \ttt{with} applied to a virtual mixin, the entry names the transparent
-assembled view. A local \ttt{as} on this entry names the view itself.
-It adds no field for the
-assembled class. If the view name coincides with a default physical
-projection name, that projection takes the suffix \ttt{\_component}.
 
 For a fixed input $\theta:I_K$, the class $\rel_{A,K}(\theta)$ stores
 the remaining fields $R$ in layout order. Extraction and reassembly are
@@ -757,8 +755,9 @@ fresh and the map typechecks. Either family may be declared first.
 the source parameters $\theta$ and a witness $e:E(\theta)$. Read the
 complete source layout from the fixed inputs, their packed-base
 projections and the remaining fields of $e$. Match the complete target
-layout against it using the $\mathsf{reuse}$ search of \ruse{With-Assembly},
-including its original-key preference. Align ordinary environment parameters
+layout against it in target order. At each position consider unused source
+fields with compatible substituted descriptors. Prefer the matching
+original key when available; otherwise explore all eligible fields. Align ordinary environment parameters
 by \ruse{View-Match}'s binding rule. At each complete selection:
 \begin{enumerate}
 \item Form the target inputs $\tau$ from the selected values. For a packed
@@ -999,6 +998,7 @@ The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
     -.9/-2.75/6.65/5.20/{IsGroup},
     -.38/-2.25/6.15/2.82/{IsMonoidWithPoint, IsAbGroupAt},
     .15/-1.75/4.05/1.65/{IsMonoid},
+    .38/-1.50/3.85/.72/{HasAbGroup},
     .60/-1.25/3.62/-.26/{HasMonoid, HasGroup}} {
     \draw[fixed] (\leftx,\bottomy) rectangle (\rightx,\topy);
     \node[interface] at ({(\leftx+\rightx)/2},\bottomy) {\exports};
@@ -1006,6 +1006,7 @@ The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
   \node[bundle] (commring) at (-1.65,7.4) {\ttt{CommRing}};
   \node[bundle] (ring) at (-1.65,6.55) {\ttt{Ring}};
   \node[bundle] (rng) at (-1.65,4.70) {\ttt{Rng}};
+  \node[bundle] (commmagma) at (1.2,6.58) {\ttt{CommMagma}};
   \node[bundle] (abelian) at (3.1,6.7) {\ttt{AbGroup}};
   \node[bundle] (group) at (3.1,5.85)
     {\ttt{Group}\\$(c,e,m,a,p,u,i)$};
@@ -1030,11 +1031,13 @@ The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
   \node[bundle] (base) at (2.1,-.75)
     {\ttt{TypeCarrier}\\$(c)$};
   \foreach \child/\ancestor in {
-    commring/ring,ring/rng,ring/monoid,rng/semigroup,abelian/group,
-    group/monoid,assembled/monoid,monoid/semigroup,monoid/unital,
+    commring/ring,ring/rng,ring/monoid,rng/semigroup,abelian/group,abelian/commmagma,
+    group/monoid,monoid/semigroup,monoid/unital,
     semigroup/magma,unital/pointed,pointed/magma,pointed/pset,
     two/pset,magma/set,pset/set,set/base}
     \draw[parent] (\child) -- (\ancestor);
+  \draw[parent] (assembled.east) -- (9.05,5.85) -- (9.05,-.75) -- (base.east);
+  \draw[parent] (commmagma.south) -- (1.82,3.8) -- (magma.north);
 \end{tikzpicture}
 \caption{Solid arrows point to declared parents. Each dashed outline
 encloses the structures whose keys are fixed by the exports named on
@@ -1144,16 +1147,13 @@ Minks.Struct Group
   exports HasGroup [carrier], IsGroup [Monoid].
 
 Minks.Struct GroupFromExport
-  extends Monoid
-  with  group : HasGroup.
+  extends Type
+  with  : HasGroup.
 \end{verbatim}
 The first adds an inverse witness $i(c,e,m,a,p,u)$ and exports the resulting
-layout. In the second, \ruse{With-Assembly} reuses $e,m,a,p,u$ from the parent,
-adds the missing inverse slot and supplies the named view
-\ttt{GroupFromExport\_group}. Both layouts have seven physical fields,
-$(c,e,m,a,p,u,i)$. Projecting the inverse from the assembled view of a
-value built with \ttt{GroupFromExportOfMonoid} reduces to the supplied
-inverse witness.
+layout. In the second, \ruse{With-Assembly} binds $e,m,a,p,u,i$ at the
+inherited carrier $c$. Both layouts have the constructor order
+$(c,e,m,a,p,u,i)$. The final projection reduces to the supplied inverse.
 
 \paragraph{All parent maps.}
 Restrict Figure~\ref{fig:magma} to the eleven structures labelled
@@ -1168,7 +1168,7 @@ declared parent maps for these structures are indexed by
  &v_k=\begin{cases}\pi^H_k(h)&k\in L_H,\\z_k&k\in L_S\setminus L_H.\end{cases}
 \end{aligned}
 \]
-This subgraph gives 43 \ttt{To} maps and 12 \ttt{Of} maps. The missing arguments $\bar z$ follow $L_S$ order. For example, the two
+The missing arguments $\bar z$ follow $L_S$ order. For example, the two
 packers of \ttt{PointedMagma} take $(\ttt{Magma},p)$ or
 $(\ttt{PointedSetC},m)$. Those of \ttt{Monoid} take
 $(\ttt{Semigroup},p,u)$ or $(\ttt{UMagma},a)$.
@@ -1187,7 +1187,7 @@ Figure~\ref{fig:magma} one export at a time.
   \node[anchor=west] at (0,0) {Structure};
   \node[anchor=west] at (2.6,0) {Export};
   \node[anchor=west] at (6.5,0) {Keys in constructor order};
-  \foreach \source/\row in {Monoid/2,Group/4.7,AbGroup/6.4}
+  \foreach \source/\row in {Monoid/2,Group/4.7,AbGroup/6.9}
     \node[entry] (\source) at (0,-\row) {\source};
   \foreach \interface/\row/\keys in {
     HasMonoid/1/{c,e,m,a,p,u},
@@ -1195,23 +1195,25 @@ Figure~\ref{fig:magma} one export at a time.
     IsMonoidWithPoint/3/{c,e,m,a,p,u},
     HasGroup/4.2/{c,e,m,a,p,u,i},
     IsGroup/5.2/{c,e,m,a,p,u,i},
-    IsAbGroupAt/6.4/{c,e,m,a,p,u,i,b}} {
+    HasAbGroup/6.4/{c,e,m,b,a,p,u,i},
+    IsAbGroupAt/7.4/{c,e,m,b,a,p,u,i}} {
     \node[entry] (\interface) at (2.6,-\row) {\interface};
     \foreach \key [count=\column from 0] in \keys
       \node at ({6.8+.48*\column},-\row) {$\key$};
   }
   \foreach \source/\interface in {Monoid/HasMonoid,Monoid/IsMonoid,
-    Monoid/IsMonoidWithPoint,Group/HasGroup,Group/IsGroup,AbGroup/IsAbGroupAt}
+    Monoid/IsMonoidWithPoint,Group/HasGroup,Group/IsGroup,AbGroup/HasAbGroup,
+    AbGroup/IsAbGroupAt}
     \draw[->,dashed] (\source.east) -- (\interface.west);
   % Each interval encloses consecutive fixed keys in its source layout.
   \foreach \row/\first/\last in {1/0/0,2/0/2,3/0/2,3/4/4,
-    4.2/0/0,5.2/0/5,6.4/0/2,6.4/4/4}
+    4.2/0/0,5.2/0/5,6.4/0/1,7.4/0/2,7.4/5/5}
     \draw[fixed] ({6.8+.48*\first-.19},{-\row-.32})
        rectangle ({6.8+.48*\last+.19},{-\row+.32});
 \end{tikzpicture}
 \caption{Dashed boxes mark the fixed keys. Read the unboxed keys from
 left to right to obtain the fields of the relative interface.
-In the last row $b$ denotes the commutativity witness.}
+In the abelian group rows $b$ denotes the commutativity witness.}
 \label{tab:algebra-exports}
 \end{table}
 The five exports of monoids and groups can likewise be indexed by their fixed argument
@@ -1238,9 +1240,8 @@ Minks.Trans IsMonoid to IsMonoidWithPoint.
 \end{verbatim}
 The first drops the inverse witness $i$. For $h:\ttt{IsMonoid}(M)$,
 the second fixes the point $\proj_p(h)$ and retains both law witnesses.
-Including the generated root, among the eleven packed layouts, every strict inclusion already has a
-declared ancestor view. The two group layouts are equal, so neither
-adds a strict-containment view to the other.
+The two group layouts are equal, so neither qualifies as a strict
+substructure of the other under \ruse{View-Match}.
 
 \ruse{Coerce-Parent} requests the direct edges and the marked carrier
 projections. For each structure row, \ruse{Inst-Field} selects every
@@ -1253,24 +1254,33 @@ Final registration is checked in the visible Rocq environment.
 
 \subsection{Two operations on one setoid: from abelian groups to rings}
 The pointed-magma outline in Figure~\ref{fig:magma} also applies to
-abelian groups. Their export selects the operation and point directly:
+abelian groups. Their two parents share the same magma:
 \begin{verbatim}
 Minks.Struct AbGroup
-  extends Group
-  with  isComm : IsComm
-  exports IsAbGroupAt [hasMagma, hasPoint].
+  extends CommMagma, Group
+  exports HasAbGroup [hasEquiv],
+          IsAbGroupAt [hasMagma, hasPoint].
 \end{verbatim}
-Fixing the operation and point also fixes their carrier and equivalence.
-The remaining fields supply associativity, unit laws, inverse data and
-commutativity. In \ttt{Rng} the following \ttt{with} entry applies
-that interface to addition and zero:
+Over a fixed setoid, \ttt{with : HasAbGroup} binds the six remaining
+components under their exported keys. The second export also fixes the
+operation and its point. A rng binds the first export under additive names:
 \begin{verbatim}
-additive : IsAbGroupAt [carrier, hasEquiv, hasAdd, hasZero]
+Minks.Struct Rng
+  extends Semigroup
+  with  hasMagma as hasMul,
+        [hasAdd, isAddComm, isAddAssoc, hasZero,
+         isAddUnit, hasNeg] : HasAbGroup,
+        isDistrib : IsDistributive
+          [carrier, hasEquiv, hasAdd, hasMul].
+
+Minks.Struct Ring
+  extends Rng, Monoid
+  with  hasPoint as hasOne.
 \end{verbatim}
-\ruse{With-Assembly} reuses the four additive witnesses.
-\ttt{RngAddGroup} packs them with the fixed inputs to recover the
-additive abelian group. Multiplication comes from the direct parent
-\ttt{Semigroup}; the distributivity laws relate it to the selected addition.
+The associativity and commutativity witnesses both use \ttt{hasAdd}.
+The unit laws use that same addition and \ttt{hasZero}. The multiplicative
+operation retains its identity under the new key \ttt{hasMul}.
+\ttt{RngAddGroup} recovers the additive group from these projections.
 
 The two solid paths from \ttt{Ring} to \ttt{Semigroup} select the same
 multiplication by reduction. The \ttt{Monoid} parent supplies its unit
@@ -1358,23 +1368,13 @@ with omitted arguments then has two candidate tuples. Specifying
 $[c,e,m_1]$ resolves it. The two multiplication projections remain
 available as explicit selections.
 
-\paragraph{Complete and partial assembly.}
-Fix a carrier and an equivalence. Suppose the remainder of an interface
-has two keys: $m$ for a multiplication and $a$ for its associativity
-witness. The available multiplications $l,r$ have different keys from
-$m$. Write $a_l,a_r$ for witnesses at $l,r$, also with fresh keys.
-The table lists the complete selections and the resulting decision.
-\[
-\begin{array}{lll}
- \text{available fields}&\mathsf{reuse}&\text{result}\\ \hline
- l,r,a_l     &\{(l,a_l)\}         &\text{reuse both fields}\\
- l,r,a_l,a_r &\{(l,a_l),(r,a_r)\} &\text{reject two complete matches}\\
- l           &\varnothing          &\text{reuse }l,\ \text{append }a(l)\\
- l,r         &\varnothing          &\text{reject ambiguous fill}
-\end{array}
-\]
-In the first row the branch starting with $r$ has no completion, so
-the initial choice between $l$ and $r$ alone cannot decide ambiguity.
+\paragraph{Fresh batch keys.}
+Suppose the remaining fields of an export $E$ are a multiplication $m$
+and its associativity witness $a(m)$. With the fixed inputs in scope,
+\ttt{[add, assoc] : E} appends $\mathit{add}$ followed by
+$\mathit{assoc}(\mathit{add})$. An existing or retired key
+\ttt{add} rejects the declaration. The list \ttt{[add]} is too short,
+and \ttt{[add, add]} repeats the first new key.
 
 \paragraph{Names at the boundary.}
 If two parents call their projection for key \ttt{op} \ttt{leftMul}
@@ -1391,7 +1391,7 @@ one shared witness position, the mixin merge fails. A separate
 failure occurs when otherwise matching descriptors require an
 unsatisfiable host constraint such as $v<v$. Distinct components can
 also yield distinct explicit maps to a smaller interface. If the
-key-preference rules leave two matches for one inferred assembly,
+key-preference rules leave two choices for the fixed inputs of an export,
 inference fails. If two separately registered coercions to the same
 target select different components, their paths require a host
 conversion check. Existence of both typed maps does not imply that

@@ -33,13 +33,9 @@ argument identities are themselves being resolved.
 
 ## Relative interfaces
 
-- **With-Assembly.** In `ReuseRight` there are two possible flags, but
-  only the right flag has a pair indexed by it. Complete reuse selects
-  that flag and pair. In `PreferOriginal` the original key is available.
-  It takes precedence even though another flag could supply a complete
-  reuse. Filling adds a pair indexed by the original flag. Without a
-  pair or a preferred key, `AmbiguousPartial` is rejected. The positive
-  cases check the assembled values by reduction. [Sharing.v](../examples/Sharing.v)
+- **With-Assembly.** The diagonal pair uses the new flag introduced in
+  the same batch even with two older flags in scope. The algebra example
+  checks the analogous dependency on addition in a ring. [Sharing.v](../examples/Sharing.v)
 - **Export-Fix.** Selecting only `hasMagma` fixes the carrier,
   equivalence and multiplication in that order. Packing preserves the
   supplied point. Selecting the packed `Magma` gives a different input
@@ -74,17 +70,21 @@ the supported fragment.
 
 | Rules | Implementation and evidence | Coverage or outstanding obligation |
 | --- | --- | --- |
-| WF-Decl, WF-Extends, Mixin-Ext, Parent-Scan | [Mixin grammar](../plugin/g_minks.mlg), [parameter construction](../plugin/mixin_parameters.ml), [Sections.v](../examples/Sections.v) | Mixin parent applications instantiate ordinary arguments and insert witnesses. [NativeParents.v](../examples/NativeParents.v) checks dependent and unused Struct header indices, named implicit parent arguments, function coercions, and the generated parent and relative maps. |
+| WF-Decl, WF-Extends, Mixin-Ext, Parent-Scan | [Mixin grammar](../plugin/g_minks.mlg), [parameter construction](../plugin/mixin_parameters.ml), [Sections.v](../examples/Sections.v) | Parent applications take Rocq terms. [Sharing.v](../examples/Sharing.v) checks convertible applications in both commands and rejects ill-typed arguments. Mixin inheritance inserts witnesses. [NativeParents.v](../examples/NativeParents.v) checks dependent and unused Struct header indices, named implicit parent arguments, function coercions, and the generated parent and relative maps. |
 | Input-Name, Args-Check, WF-With, Args-Infer, WF-Omit | [Struct.v](../theories/Struct.v), [Sections.v](../examples/Sections.v) | Explicit arguments distinguish ambient inputs from field keys. Omitted tuples are enumerated over fields and checked by Rocq. The completed declaration is checked again. |
-| Univ-Inst, Struct-Univ, Univ-Assemble | [parameter construction](../plugin/mixin_parameters.ml), [Flat.v](../theories/Flat.v), [Universes.v](../examples/Universes.v) | Tests exercise open and closed mixin universe binders, shared levels and conflicting instances. The Struct grammar lacks explicit universe binders. See With-Assembly below for branch checking. |
+| Univ-Inst, Struct-Univ, Univ-Assemble | [parameter construction](../plugin/mixin_parameters.ml), [Flat.v](../theories/Flat.v), [Universes.v](../examples/Universes.v) | Tests exercise open and closed mixin universe binders, shared levels and conflicting instances. Struct headers accept explicit universe binders. |
 | Witness-Share, Binder-Order | [parameter construction](../plugin/mixin_parameters.ml), [Sharing.v](../examples/Sharing.v), [Commands.v](../examples/Commands.v) | The examples cover keyed and unkeyed sharing, repeated direct parents, and inherited exports indexed by convertible functions. Incompatible indices fail even when the body ignores the witnesses. Among ready witnesses the implementation prioritizes shared entries. Ordinary binders keep their relative order. |
 | Parent-Union, Ancestor-Agree, Struct-Pack | [Spec.v](../theories/Spec.v), [Struct.v](../theories/Struct.v), [Sections.v](../examples/Sections.v) | Parent applications specialize inherited components. Rocq conversion checks the elaborated inputs of a shared ancestor. Packing partitions inherited fields into shared and remaining lists. Native parents contribute ordinary layout entries. Empty parents contribute zero fields. Matching still compares native heads and argument keys; general conversion of distinct native heads is open. |
-| Expand-Field, With-Assembly | [Struct.v](../theories/Struct.v), [Spec.v](../theories/Spec.v), [Sharing.v](../examples/Sharing.v) | Both export forms use complete matching followed by filling. The reuse search counts descriptor matches before typechecking the assembled term. It lacks the specified per-leaf whole-term universe check. Whether this changes answers on the supported fragment remains open. |
-| Export-Fix, Export-Common, Export-Form, Export-To, Export-Of | [Relative.v](../theories/Relative.v), [Algebra.v](../examples/Algebra.v), [Sharing.v](../examples/Sharing.v) | Selection closure and transparent extraction and packing work in the examples above. Packed-base exports register the same virtual mixin interface as field-key exports. The regressions extend and assemble `IsMonoid M`, reuse its selected point in `IsMonoidWithPoint`, and reject conflicting base inputs. [Sections.v](../examples/Sections.v) also exercises projections of a parameterized packed base. |
-| Parent-To, Parent-Of, Projection-Name | [Flat.v](../theories/Flat.v), [Struct.v](../theories/Struct.v), [Algebra.v](../examples/Algebra.v) | Declared ancestor maps rebuild selected fields. Direct-parent packers take missing components. [Commands.v](../examples/Commands.v) checks that repeated identical local aliases are accepted, conflicting aliases are rejected, and a child's renamed projection computes to its parent's field. |
+| Expand-Field, With-Assembly | [Struct.v](../theories/Struct.v), [Spec.v](../theories/Spec.v), [Sharing.v](../examples/Sharing.v) | Both export forms bind the remaining fields in order, substitute earlier selections and check the constructor application. Tests cover key and projection arity and duplicate keys. |
+| Export-Fix, Export-Common, Export-Form, Export-To, Export-Of | [Relative.v](../theories/Relative.v), [Algebra.v](../examples/Algebra.v), [Sharing.v](../examples/Sharing.v) | Selection closure and transparent extraction and packing work in the examples above. Packed-base exports register the same virtual mixin interface as field-key exports. The regressions extend and assemble `IsMonoid M`, check its selected point, and reject duplicate batch keys. [Sections.v](../examples/Sections.v) also exercises projections of a parameterized packed base. |
+| Parent-To, Parent-Of, Projection-Name | [Flat.v](../theories/Flat.v), [Struct.v](../theories/Struct.v), [Algebra.v](../examples/Algebra.v) | Declared ancestor maps rebuild selected fields. Direct-parent packers take missing components. [Commands.v](../examples/Commands.v) rejects repeated and inherited keys even with a projection alias, and checks that a fresh key stores a second witness of the same class. |
 | WF-Compare, View-Match, View-Explicit | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Discovery checks strict component inclusion and checks the candidate term with Rocq. Export declarations generate no inter-interface views. General inference of a target family's parameter substitution from aligned descriptors is missing. |
 | Coerce-Parent, Inst-Field, Inst-Export, Canon-View | [Flat.v](../theories/Flat.v), [Relative.v](../theories/Relative.v), [Commands.v](../examples/Commands.v) | Direct declared parents request coercions. Field registration selects the first key for each class head. Canonical views preserve those keys. Anchored exports register an extraction instance. Global inference coherence remains open. |
 | Section-End | [parameter metadata](../plugin/mixin_parameters.ml), [Sections.v](../examples/Sections.v), [Commands.v](../examples/Commands.v) | Nested discharge, import, applied parent views and relative reassembly have executable cases. Preservation for every input used only by hierarchy metadata still needs an argument. |
+
+The `RenamedKeys` module checks both orders of the ring diamond, competing
+explicit renames, a packed-base export after a second rename, retired-key
+rejection and persistence after section discharge. [Algebra.v](../examples/Algebra.v)
 
 ## Planned syntax
 

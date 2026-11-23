@@ -63,9 +63,13 @@ Minks.Mixin Name binders
 - **Parent applications.** Each parent must be a registered mixin or a
   relative interface exported by `Minks.Struct`. Declare
   the child's ordinary parameters in its header or the enclosing section.
-  Supply each ordinary parent argument using a visible parameter name. Pass explicit arguments by
-  position and implicit ordinary arguments by name,
-  as in `Parent (A := A) f`. The child uses the explicitness of its own
+  Supply any Rocq term of the expected type, using header binders, section
+  variables, and witnesses or local views introduced by earlier parents.
+  For example, in `extends HasPoint nat, AtValue point`, the second parent
+  can use the point selected by the first. A later parent cannot supply an
+  earlier argument. Pass explicit arguments by position
+  and implicit ordinary arguments by name, as in
+  `Parent (A := option A) (fun x => x)`. The child uses the explicitness of its own
   binders at call sites. `extends` accepts these parent applications with
   optional universe instances. `@Parent` is unsupported.
 - **Inherited witnesses.** Minks inserts the direct and transitive parent
@@ -108,7 +112,7 @@ Minks.Mixin Name binders
   the Rocq type and implicit arguments for all ordinary binders. For example, a section `Context {A : Type}` can introduce
   a parent argument that is later supplied as `(A := B)`. Nested sections
   discharge one at a time. Importing the module preserves this information.
-- **Output.** A successful declaration prints its direct dependencies and
+- **Output.** Use `Minks.Inspect Name.` to see the direct dependencies and
   the full parameter order. Positions shown in a dependency's argument list
   are zero-based indices into that order.
 
@@ -117,7 +121,7 @@ Minks.Mixin Name binders
 ```text
 Minks.Struct Name binders
   [extends Parent ordinaryArg ..., ...]
-  [with key [as projection] : Mixin [argumentKey, ...], ...]
+  [with entry, ...]
   [exports Interface [parameterKeyOrStructure, ...], ...].
 ```
 
@@ -141,15 +145,20 @@ square brackets.
 - **Component identity.** A `with` entry can name a mixin declared with
   `Minks.Mixin` or an exported relative interface. A key
   identifies a slot for a direct mixin in the combined hierarchy.
-  Repeated occurrences of a key merge when the referenced mixin and its
-  ordered dependency keys agree. Different keys can store independent
-  witnesses of the same mixin. A conflicting definition of one key is an
-  error.
+  Each written key must be fresh among inherited fields, available local
+  fields and earlier entries in the same declaration. Different keys may
+  select independent witnesses of the same class. Parents still share
+  compatible fields by key.
 - **Projections.** The default name is `Name_key`. The form
-  `key as projection : Mixin` changes the generated projection name.
-  Repeated entries for a key in one structure must agree on any explicit
-  projection name. A child may give an inherited key a new local name.
-  Dependency lists, inheritance, and exports continue to use the key.
+  `key as projection : Mixin` names the projection of the new entry.
+  Dependencies, exports and freshness checks use the original key.
+- **Renaming a key.** `old as new` changes the public key of the same field.
+  Later entries, exports and descendants use `new`. The old spelling is
+  reserved on this branch. A parent view still reads the field through
+  its original projection. When parents share a field, an explicitly
+  renamed spelling wins over its original in either parent order. Among
+  competing renamed spellings the first parent wins. All other spellings
+  remain reserved. Unrelated fields cannot claim a renamed or retired key.
 - **Field and constructor order.**
   1. Visit direct parents from left to right. Traverse each parent's
      flattened fields in order and merge matching keys. Place components
@@ -192,12 +201,13 @@ square brackets.
 - In a later section, `extends LabelledPoint D` instantiates a discharged
   parent at the visible input `D`. Pass explicit parameters by position
   and implicit ones by name, as in `extends HeaderMap T x (A := X)`.
-  This convention also applies to native parents. Rocq elaborates each parent
-  application, including implicit conversions implemented by functions.
+  Each argument can be a Rocq term, as in `extends Chosen (values L)`.
+  This convention also applies to native parents. Rocq elaborates the
+  application with the expected argument types and available coercions.
   Direct and transitive parent views use the same substitution. Two paths
   to the same declared ancestor must agree on its inputs.
 - A relative export can be reused after discharge. For example,
-  `with chosen : LabelledOn [D, carrier]` takes the new ordinary argument
+  `with [e, p, label] : LabelledOn [D, carrier]` takes the new ordinary argument
   before the original fixed field. In a mixin declaration the corresponding
   parent application is `extends LabelledOn D A`.
 
@@ -285,10 +295,9 @@ square brackets.
 - **Composition metadata.** Every export also registers a virtual mixin.
   With a packed base, its first fixed input is the record itself, followed
   by any separately fixed components. Both `extends IsMonoid M` and
-  `with laws : IsMonoid [M]` read the carrier, equivalence and operation
+  `with : IsMonoid [M]` read the carrier, equivalence and operation
   from that same magma. The former binds the associativity, point and unit
-  witnesses. The latter reuses or stores those witnesses and builds
-  `laws : IsMonoid M` from them. Fixing the point as well leaves just the
+  witnesses. The latter introduces those three fields in export order. Fixing the point as well leaves just the
   two law witnesses. Section parameters precede the fixed inputs after
   discharge.
 - **Independent exports.** Declaring an interface registers its class and
@@ -296,24 +305,22 @@ square brackets.
   It generates no maps, instances or coercions between exports, including
   exports of a parent and child. A client can define a view using named
   projections and register the desired direction locally.
-- **Assembly in `with`.** The argument list of `with key : Interface`
-  selects the fixed parameters in order. With the list
-  omitted, Minks looks for a unique fixed selection among available
-  fields. It then matches the remaining components in constructor order:
-  1. Match the registered mixin and its dependency keys after mapping the
-     earlier arguments to the selected fields. Prefer a compatible field
-     with the original key. Each component in the interface has a distinct
-     selected field, even when several components have identical types.
-  2. Reuse a unique full match. If none exists, reuse the unique matches
-     encountered in order and append missing fields under their original
-     keys. Ambiguous matches and conflicting keys produce an error.
-  3. Generate a transparent `Name_key` view assembling the class from
-     those fields. `as projection` changes the view name. If it coincides
-     with a default physical projection name, the physical projection
-     gets a `_component` suffix. The view is called explicitly and is
-     not a selectable field key.
-- **Inspection.** `Minks.Inspect Name` lists each interface with the actual
-  fixed key list and each assembled view with its selected keys.
+- **Binding an export in `with`.** The brackets after the interface name
+  supply its fixed inputs in order. Omitting them requests unique inference.
+  The brackets before the colon bind its remaining fields in export order:
+  1. `: E` uses the original exported keys. `[a, b] : E` supplies new keys.
+     Each must be fresh. Every remaining field gets one key, even for a
+     one-field export. An empty export takes an empty list or no list.
+  2. `[a, b] as [p, q] : E` also names the two Rocq projections. Omitting
+     `as` gives `Name_a` and `Name_b`. Both lists have the length of the
+     remainder. A single identifier before the colon is reserved for a
+     primitive mixin.
+  3. Later components of the batch depend on the corresponding new fields.
+     For example, in `Rng` the commutativity witness of `HasAbGroup` uses
+     the new addition even though multiplication has the same type.
+     [Ring example](examples/Algebra.v)
+- **Inspection.** `Minks.Inspect Name` lists its current field keys, retired
+  spellings, parent views and relative interfaces.
   `Minks.Inspect Interface` shows the fixed keys and expanded components
   and generated views for a field-key export, or the packed base and
   its additional fixed and remaining components for a packed-base export.
@@ -324,12 +331,12 @@ square brackets.
 
 - **Input.** Supply the name of a mixin or packed structure previously
   declared by Minks.
-- **Mixin output.** The direct dependencies and ordered parameter metadata
-  use the same format as the declaration summary.
+- **Mixin output.** The command lists direct dependencies and ordered parameter metadata.
 - **Structure output.** The summary lists the resolved parents, including generated native bases.
   It reports fields in packed order, selected dependency keys, inherited sources,
   and instance status. It also lists conversions and
   their registrations, packing functions, and relative interfaces.
+- **Output.** Successful mixin and structure declarations are silent by default.
 - **Effect.** The command reads the existing declarations and metadata.
 
 ## Build and run the examples
