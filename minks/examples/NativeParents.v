@@ -92,7 +92,7 @@ Fail Definition unindexed_extraction (s : InheritedLabelledSort)
   := _.
 
 Minks.Struct Reassembled
-  with  whole : WholeLabelledSort.
+  with  : WholeLabelledSort.
 Check MakeReassembled : HasTag → Type → Reassembled.
 
 Minks.Mixin WithDefault
@@ -252,9 +252,8 @@ Minks.Struct LabelEndo (P : Label)
   extends LabelMap P P.
 Check LabelEndoToMapBetween : ∀ P, LabelEndo P → MapBetween P P.
 
-(** The same coercion indexes a component of a relative export. Both a
-    mixin extending the export and a structure assembling it reuse the
-    original choice. *)
+(** Expanding this relative export in a mixin or a structure preserves
+    the coercion on the index of its choice field. *)
 
 Minks.Mixin HasChoice (A : Type)
   := { choice : A }.
@@ -276,8 +275,7 @@ Check @MakeMarkedChoice
   : ∀ (L : Label) (p : HasChoice L), @MarkChoice L p → MarkedChoice L.
 
 Minks.Struct SameChoice (L : Label)
-  extends LabelChoice L
-  with  view : ChoiceAt [L].
+  with  : ChoiceAt [L].
 Check MakeSameChoice : ∀ L : Label, HasChoice L → SameChoice L.
 
 (** A declared index survives even when no field uses it. *)
@@ -293,3 +291,65 @@ Minks.Struct Indexed {A : Type}
 Fail Minks.Struct IncompatibleIndices (A B : Type)
   extends Indexed (A := A), Phantom B.
 End MapHeaders.
+
+(** Discovery reads the target indices from the aligned component types.
+    The source may bind them in the opposite order. *)
+
+Module IndexedViews.
+Minks.Mixin HasMap (A B : Type)
+  := { chosen_map : A → B }.
+
+Minks.Struct Maps (X Y : Type)
+  with  map : HasMap [X, Y].
+
+Minks.Struct TaggedMaps (B A : Type)
+  with  map : HasMap [A, B],
+        tag : HasTag.
+
+Check TaggedMapsToMaps
+  : ∀ B A, TaggedMaps B A → Maps A B.
+
+Minks.Struct LaterMaps (P Q : Type)
+  with  map : HasMap [P, Q].
+
+Example discovered_map (B A : Type) (m : TaggedMaps B A)
+  : LaterMaps_map A B (TaggedMapsToLaterMaps B A m) = TaggedMaps_map B A m
+  := eq_refl.
+
+Minks.Struct DiagonalMaps (X : Type)
+  with  map : HasMap [X, X].
+Fail Check TaggedMapsToDiagonalMaps.
+
+Minks.Struct PhantomMaps (X Y Unused : Type)
+  with  map : HasMap [X, Y].
+Fail Check TaggedMapsToPhantomMaps.
+End IndexedViews.
+
+(** Both native parents expose the same type by conversion. The child stores
+    one field, including when a packer starts from the other spelling. *)
+
+Module NativeAliases.
+Record Object := MkObject {}.
+Definition ObjectAlias := Object.
+Minks.Struct Objects extends Object.
+Minks.Struct Aliases extends ObjectAlias.
+Minks.Struct Together extends Objects, Aliases.
+Check MakeTogether : Object → Together.
+Example from_alias (x : Aliases)
+  : TogetherToObjects (TogetherOfAliases x) = MakeObjects (AliasesToObjectAlias x)
+  := eq_refl.
+End NativeAliases.
+
+Module MetadataOnly.
+Minks.Struct Phantom (A : Type).
+
+Section Family.
+Context (Index : Type).
+Minks.Struct ViaParent extends Phantom Index.
+Minks.Struct ViaAncestor extends ViaParent.
+End Family.
+
+Check ViaParent : Type → Type.
+Check ViaAncestor : Type → Type.
+Check ViaParentToPhantom : ∀ A, ViaParent A → Phantom A.
+End MetadataOnly.

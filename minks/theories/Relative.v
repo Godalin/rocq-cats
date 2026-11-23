@@ -28,7 +28,7 @@ Elpi File minks.relative lp:{{
       if (coq.locate-all Name [_ | _], coq.locate Name (indt I), spec I _ _) true
         (coq.error "Unknown export parameter key or packed structure:" Name),
       close I Covered,
-      if (std.forall Covered (c\ std.mem Cs c)) true
+      if (std.forall Covered (c\ sigma key field-kind deps\ c = slot key field-kind deps, available-component Cs key field-kind deps)) true
         (coq.error "Export base is not a substructure:" Name),
       Base = some I,
       std.map Covered component-key CoveredKeys,
@@ -50,7 +50,7 @@ Elpi File minks.relative lp:{{
           (out = seen))
       Closure,
     std.partition Cs (c\ std.mem Closure {component-key c}) AllFixed Remaining,
-    std.filter AllFixed (c\ not (std.mem Covered c)) Fixed.
+    std.filter AllFixed (c\ not (contains-key {component-key c} Covered)) Fixed.
 
   % A named packed base supplies one binder and its constituent projections.
   pred base-bindings i:inductive, i:list component, i:term, o:list (pair id term).

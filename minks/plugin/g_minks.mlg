@@ -11,8 +11,11 @@ let mixin_declaration = Procq.Entry.make "minks_declaration"
 
 let struct_declaration = Procq.Entry.make "minks_struct_declaration"
 (* The clause word "exports" remains available as a Rocq identifier. *)
-let parent_input = Procq.Lookahead.(to_entry "minks_parent_input"
-  (lk_ident_except ["exports"]))
+let parent_input = Procq.Entry.of_parser "minks_parent_input"
+  { parser_fun = fun kw stream ->
+    match Gramlib.LStream.peek_nth kw 0 stream with
+    | Some (Tok.IDENT "exports" | Tok.KEYWORD ("exports" | "with" | "," | ".")) -> Error ()
+    | _ -> Ok () }
 
 let elpi_cmd_arg = Elpi_plugin.Rocq_elpi_arg_syntax.elpi_cmd_arg
 module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd
@@ -22,28 +25,47 @@ let run_minks command ~atts args =
   Elpi_plugin.Rocq_elpi_vernacular.Interp.run_program
     ~loc ["minks"; command] ~atts ~syndata:None args
 
-let parent_tokens (head, args) =
-  let name, ordered = match head with
-    | None -> "Type", []
-    | Some qid ->
-      Libnames.string_of_qualid qid, Mixin_parameters.struct_arguments qid args
-  in
-  Cmd.String name :: List.map (fun id -> Cmd.String (Names.Id.to_string id)) ordered
+let parent_argument (head, args) = match head.CAst.v with
+  | Constrexpr.CSort _ when args = [] -> Cmd.Term head
+  | Constrexpr.CRef (name, instance) ->
+    let inputs = Mixin_parameters.struct_arguments name args in
+    Cmd.Term (CAst.make (Constrexpr.CAppExpl ((name, instance), inputs)))
+  | _ -> CErrors.user_err (Pp.str "Expected a structure or native type head.")
 
-let declare_struct ~atts (name, binders, parents, tail) =
-  let name = Names.Id.to_string name in
-  let generate prefix atts =
+let separated separator = function
+  | [] -> []
+  | first :: rest -> first @ List.concat_map (fun item -> separator :: item) rest
+
+let ident_arg id = Cmd.String (Names.Id.to_string id)
+
+let keys_arg keys =
+  [Cmd.String "["] @ separated (Cmd.String ",") (List.map (fun k -> [ident_arg k]) keys)
+  @ [Cmd.String "]"]
+
+let slot_type (head, deps) =
+  let mixin = match head.CAst.v with
+    | Constrexpr.CRef (name, instance) ->
+      Cmd.Term (CAst.make (Constrexpr.CAppExpl ((name, instance), [])))
+    | _ -> CErrors.user_err (Pp.str "Expected a mixin reference.") in
+  [Cmd.String ":"; mixin] @ Option.cata keys_arg [] deps
+
+let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
+  let name = Names.Id.to_string name.CAst.v in
+  let generate prefix =
     let parents = match parents with
       | None -> []
       | Some [] -> CErrors.user_err (Pp.str "Expected a parent after extends.")
       | Some (p :: ps) ->
-        Cmd.String "extends" :: parent_tokens p @
-        List.concat_map (fun p -> Cmd.String "," :: parent_tokens p) ps
+        Cmd.String "extends" :: parent_argument p ::
+        List.concat_map (fun p -> [Cmd.String ","; parent_argument p]) ps
     in
-    run_minks "struct" ~atts (prefix @ (Cmd.String name :: parents @ tail))
+    let components = Option.cata (fun entries ->
+      Cmd.String "with" :: separated (Cmd.String ",") entries
+    ) [] slots in
+    run_minks "struct" ~atts (prefix @ (Cmd.String name :: parents @ components @ tail))
   in
-  match binders with
-  | [] -> generate [] atts
+  match binders, universes with
+  | [], None -> generate []
   | _ ->
     (* Use Rocq's discharge for the record, views and hierarchy metadata. *)
     let section = Namegen.next_ident_away_from (Names.Id.of_string "MinksParameters")
@@ -52,10 +74,22 @@ let declare_struct ~atts (name, binders, parents, tail) =
     Fun.protect ~finally:(fun () -> Vernacstate.Synterp.unfreeze synterp) (fun () ->
       Lib.Synterp.open_section section;
       Lib.Interp.open_section section;
-      let program_mode, poly =
-        Attributes.(parse Notations.(program ++ poly PolyFlags.Assumption)) [] in
-      ComAssumption.do_context ~program_mode ~poly binders;
-      let deferred = CAst.make ("minks.defer-summary", Attributes.VernacFlagEmpty) in
+      (* Rocq discharges section universes in declaration order. The record
+         generator checks the remaining inferred levels and constraints. *)
+      let program_mode = Attributes.parse Attributes.program [] in
+      let poly = PolyFlags.of_univ_poly true in
+      Option.iter (fun u ->
+        let env = Global.env () in
+        let sigma, decl = Constrintern.interp_univ_decl_opt env (Some u) in
+        let sigma, _ = Constrintern.interp_named_context_evars env sigma binders in
+        ignore (Evd.check_univ_decl ~poly sigma decl);
+        DeclareUniv.do_sort ~poly:true u.UState.univdecl_qualities;
+        DeclareUniv.do_universe ~poly:true u.univdecl_instance;
+        DeclareUniv.do_constraint ~poly:true
+          (List.map (fun c -> Constrexpr.ElimCst c) u.univdecl_elim_constraints @
+           List.map (fun c -> Constrexpr.UnivCst c) u.univdecl_univ_constraints)
+      ) universes;
+      if binders <> [] then ComAssumption.do_context ~program_mode ~poly binders;
       let header = Mixin_parameters.ordinary_parameters binders |> List.concat_map
         (function
           | Names.Name.Name id, (Constrexpr.CLocalAssum (_, _, Default kind, _), _) ->
@@ -63,11 +97,15 @@ let declare_struct ~atts (name, binders, parents, tail) =
               | MaxImplicit -> "maximal" | NonMaxImplicit -> "implicit" in
             [Cmd.String kind; Cmd.String (Names.Id.to_string id)]
           | _ -> CErrors.user_err (Pp.str "Structure parameters must have names.")) in
-      generate (Cmd.String "#header" :: header @ [Cmd.String "#end"]) (deferred :: atts);
+      let universe_flags = match universes with
+        | None -> []
+        | Some u -> [Cmd.String "#universes";
+            Cmd.String (string_of_bool u.univdecl_extensible_instance);
+            Cmd.String (string_of_bool u.univdecl_extensible_constraints)] in
+      generate (universe_flags @ (Cmd.String "#header" :: header @ [Cmd.String "#end"]));
       Declaremods.Synterp.close_section ();
       Declaremods.Interp.close_section ());
-    run_minks "struct" ~atts:[] [Cmd.String "#register"; Cmd.String name];
-    run_minks "inspect" ~atts:[] [Cmd.String name]
+    run_minks "struct" ~atts:[] [Cmd.String "#register"; Cmd.String name]
 
 let record_name (name, universes) =
   let universes = Option.map (fun decl ->
@@ -114,15 +152,28 @@ let declare_mixin ~atts decl parents =
 GRAMMAR EXTEND Gram
   GLOBAL: mixin_declaration struct_declaration;
   struct_declaration:
-    [ [ name = ident; bs = LIST0 closed_binder;
+    [ [ name = ident_decl; bs = LIST0 closed_binder;
         ps = OPT [ "extends"; ps = LIST0 struct_parent SEP "," -> { ps } ];
-        rest = LIST0 elpi_cmd_arg -> { name, List.concat bs, ps, rest } ] ];
+        slots = OPT [ "with"; cs = LIST1 struct_slot SEP "," -> { cs } ];
+        rest = LIST0 elpi_cmd_arg -> { name, List.concat bs, ps, slots, rest } ] ];
   struct_parent:
-    [ [ "Type" -> { None, [] }
-      | qid = qualid; args = LIST0 struct_argument -> { Some qid, args } ] ];
+    [ [ head = term LEVEL "0"; args = LIST0 struct_argument -> { head, args } ] ];
+  struct_slot:
+    [ [ key = ident; "as"; f = ident; rhs = OPT slot_rhs ->
+          { [ident_arg key; Cmd.String "as"; ident_arg f] @ Option.cata slot_type [] rhs }
+      | key = ident; rhs = slot_rhs -> { ident_arg key :: slot_type rhs }
+      | ks = slot_keys; ns = OPT [ "as"; ns = slot_keys -> { ns } ]; rhs = slot_rhs ->
+          { keys_arg ks @ Option.cata (fun ns -> Cmd.String "as" :: keys_arg ns) [] ns
+            @ slot_type rhs }
+      | "as"; ns = slot_keys; rhs = slot_rhs ->
+          { Cmd.String "as" :: keys_arg ns @ slot_type rhs }
+      | rhs = slot_rhs -> { slot_type rhs } ] ];
+  slot_keys:
+    [ [ "["; ks = LIST0 ident SEP ","; "]" -> { ks } ] ];
+  slot_rhs:
+    [ [ ":"; head = term LEVEL "0"; deps = OPT slot_keys -> { head, deps } ] ];
   struct_argument:
-    [ [ parent_input; id = ident -> { Either.Left id }
-      | "("; formal = ident; ":="; id = ident; ")" -> { Either.Right (formal, id) } ] ];
+    [ [ parent_input; a = arg -> { a } ] ];
   mixin_declaration:
     [ [ coercion = OPT ">"; name = ident_decl; parameters = binders;
         parents = OPT [ "extends"; ps = LIST1 [ p = term LEVEL "10" -> { p } ] SEP ","

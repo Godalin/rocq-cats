@@ -210,3 +210,26 @@ Minks.Mixin HasFixedLevels (A : Type)
 
 Check HasFixedLevels.
 Fail Check HasFixedLevels@{Set}.
+
+(** Struct headers can name levels even when the ambient option is off. *)
+
+Minks.Struct NamedIndex@{u} (A : Type@{u}).
+Check NamedIndex@{Set} nat.
+Fail Minks.Struct TooFewLevels@{} (A : Type).
+Minks.Struct OpenLevels@{u +} (A : Type@{u}) (B : Type).
+Check OpenLevels@{Set Set} nat nat.
+
+Minks.Struct NamedCarrier@{u}
+  extends Type@{u}.
+
+Minks.Struct NamedEquiv@{e u}
+  extends NamedCarrier@{u}
+  with  hasEquiv : HasEquiv@{u e}.
+
+Definition named_equiv_levels@{u e | u < e}
+    (S : NamedEquiv@{e u})
+  : HasEquiv@{u e} (NamedEquiv_carrier S)
+  := NamedEquiv_hasEquiv S.
+
+Fail Minks.Struct ConflictingParentLevels@{u v | u < v}
+  extends NamedCarrier@{u}, NamedCarrier@{v}.

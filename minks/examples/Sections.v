@@ -126,11 +126,11 @@ Section RelativeFamily.
 Context (D : Type).
 Minks.Struct LabelFromExport
   extends PointedSetC
-  with  chosen : LabelledOn [D, carrier].
+  with  [chosenEquiv, chosenPoint, chosenLabel] : LabelledOn [D, carrier].
 End RelativeFamily.
 
-Check @LabelFromExport_chosen
-  : ∀ D (P : LabelFromExport D), LabelledOn D P.
+Check @LabelFromExport_chosenLabel
+  : ∀ D, LabelFromExport D → HasLabel D.
 
 (** Ordinary section assumptions may also have a registered witness type.
     An explicit input fixes the witness used by each later argument. *)
@@ -186,10 +186,10 @@ Section AtLabelledPoint.
 Context (T : Type) (S : LabelledPoint T).
 
 Minks.Struct AtLabel
-  with  chosen : MagmaOnLabelled [T, S].
+  with  : MagmaOnLabelled [T, S].
 End AtLabelledPoint.
 
 Example labelled_op_computes (T : Type) (S : LabelledPoint T)
     (op : @HasMagma S (LabelledPoint_hasEquiv T S))
-  : MagmaOnLabelled_hasMagma T (AtLabel_chosen T S (MakeAtLabel T S op)) = op
+  : AtLabel_hasMagma T S (MakeAtLabel T S op) = op
   := eq_refl.

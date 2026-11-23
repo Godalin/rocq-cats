@@ -20,7 +20,7 @@ Elpi Accumulate lp:{{
   pred usage.
   usage :-
     coq.error "Usage: Minks.Struct Name [extends Parent arg ..., ...]"
-      "[with key : Mixin [dependency, ...], ...]"
+      "[with key : Mixin | old as new | [keys] : Export, ...]"
       "[exports Interface [key, ...], ...].".
 
   pred parse-deps i:list argument, o:list id, o:list argument.
@@ -28,7 +28,11 @@ Elpi Accumulate lp:{{
   parse-deps [str "[" | Rest] Deps Tail :- ids Rest Deps [str "]" | Tail].
 
   kind pending-slot type.
-  type pending id -> id -> option (list id) -> option id -> pending-slot.
+  type rename id -> id -> pending-slot.
+  kind slot-binder type.
+  type single id -> option id -> slot-binder.
+  type batch option (list id) -> option (list id) -> slot-binder.
+  type pending slot-binder -> term -> option (list id) -> pending-slot.
 
   pred slot-deps i:list argument, o:option (list id), o:list argument.
   slot-deps [str "[" | Rest] (some Keys) Tail :- !,
@@ -36,11 +40,18 @@ Elpi Accumulate lp:{{
   slot-deps Args none Args.
 
   pred parse-slot i:list argument, o:pending-slot, o:list argument.
-  parse-slot [A, str "as", F, str ":", B | Rest]
-      (pending Key M Deps (some Field)) Tail :- !,
-    atom A Key, atom F Field, atom B M, slot-deps Rest Deps Tail.
-  parse-slot [A, str ":", B | Rest] (pending Key M Deps none) Tail :-
-    atom A Key, atom B M, slot-deps Rest Deps Tail.
+  parse-slot [A, str "as", F, str ":", trm M | Rest]
+      (pending (single Key (some Field)) M Deps) Tail :- !,
+    atom A Key, atom F Field, slot-deps Rest Deps Tail.
+  parse-slot [A, str "as", F | Rest] (rename Key Name) Rest :-
+    atom A Key, atom F Name, !.
+  parse-slot [A, str ":", trm M | Rest] (pending (single Key none) M Deps) Tail :-
+    atom A Key, !, slot-deps Rest Deps Tail.
+  parse-slot Args (pending (batch Keys Aliases) M Deps) Tail :-
+    slot-deps Args Keys After,
+    if (After = [str "as" | More])
+      (parse-deps More Names Rhs, Aliases = some Names) (Aliases = none, Rhs = After),
+    Rhs = [str ":", trm M | Rest], slot-deps Rest Deps Tail.
 
   pred parse-slots i:list argument, o:list pending-slot, o:list argument.
   parse-slots Args [Slot | Slots] Rest :-
@@ -63,60 +74,83 @@ Elpi Accumulate lp:{{
   parse-exports [] [].
   parse-exports [str "exports" | Args] Exports :- parse-export-list Args Exports.
 
-  pred resolve-parent i:id, i:list id, o:struct-parent.
-  resolve-parent "Type" [] (native-parent sort-head []) :- !.
-  resolve-parent Name Args Parent :-
-    coq.locate Name Ref,
-    if (Ref = indt I, struct-spec I _ _) (Parent = named-parent I Args)
-      (Parent = native-parent (ref-head Ref) Args).
+  pred argument-label i:term, o:string.
+  argument-label T Label :-
+    coq.term->string T Text,
+    if (coq.env.global _ T ; T = sort _) (Label = Text)
+      (Label is "(" ^ Text ^ ")").
 
-  pred parent-args i:list argument, o:list id, o:list argument.
-  parent-args [A | As] [Name | Names] Tail :- atom A Name, !,
-    parent-args As Names Tail.
-  parent-args As [] As.
+  % The command passes the whole application so Rocq elaborates dependent
+  % arguments, implicit conversions and holes at their expected types.
+  pred resolve-parent i:argument, o:struct-parent, o:term.
+  resolve-parent (trm (sort (typ U))) (native-parent sort-head []) (sort (typ U)) :- !.
+  resolve-parent (trm T) Parent T :-
+    coq.safe-dest-app T Head Args, coq.env.global Ref Head,
+    std.map Args argument-label Labels,
+    if (Ref = indt I, struct-spec I _ _) (Parent = named-parent I Labels)
+      (Parent = native-parent (ref-head Ref) Labels).
 
-  pred applications i:list argument, o:list struct-parent, o:list argument.
-  applications [A | As] [Parent | Parents] Tail :-
-    atom A Name, parent-args As Args Rest, resolve-parent Name Args Parent,
-    if (Rest = [str "," | More]) (applications More Parents Tail)
-      (Parents = [], Rest = Tail).
+  pred applications i:list argument, o:list struct-parent, o:list term, o:list argument.
+  applications [A | Rest] [Parent | Parents] [T | Terms] Tail :-
+    resolve-parent A Parent T,
+    if (Rest = [str "," | More]) (applications More Parents Terms Tail)
+      (Parents = [], Terms = [], Rest = Tail).
 
-  pred struct-parents i:list argument, o:list struct-parent, o:list argument.
-  struct-parents [str "extends" | As] Parents Rest :- !, applications As Parents Rest.
-  struct-parents As [] As.
+  pred struct-parents i:list argument, o:list struct-parent, o:list term, o:list argument.
+  struct-parents [str "extends" | As] Parents Args Rest :- !,
+    applications As Parents Args Rest.
+  struct-parents As [] [] As.
 
-  pred section-argument i:id, o:term.
-  section-argument Name Value :-
-    if (section-input Name _ Value) true
-      (coq.error "Unknown structure parent parameter:" Name).
+  % The wrapper's single field must have exactly the written native type.
+  pred parent-type i:struct-parent, i:term, o:(pair inductive term).
+  parent-type (named-parent I _) T (pr I T) :-
+    coq.safe-dest-app T Head _, (Head = pglobal (indt I) _ ; Head = global (indt I)), !.
+  parent-type (named-parent I _) T (pr I Ty) :-
+    coq.safe-dest-app T _ Args, coq.env.indt I tt _ _ _ [K] _,
+    coq.env.global (indc K) Make, coq.mk-app Make Args Applied,
+    coq.typecheck Applied (prod _ Native Result) ok, coq.unify-eq Native T ok,
+    pi x\ Ty = Result x.
 
-  % The result type of a discharged ancestor view retains the projections
-  % Rocq inserted when checking the original parent application.
-  pred ancestor-inputs i:inductive, i:list term, i:inductive,
-      o:(pair inductive (list term)).
-  ancestor-inputs I Args Parent (pr Parent Terms) :-
+  pred ancestor-type i:inductive, i:term, i:list term, i:inductive, o:(pair inductive term).
+  ancestor-type I Ty Args Parent (pr Parent Result) :-
     struct-view I Parent C _, coq.env.global (const C) View,
-    coq.mk-app View Args Applied, coq.typecheck Applied (prod _ _ Body) ok,
-    pi child\ coq.safe-dest-app (Body child) _ Terms.
+    coq.mk-app View Args Applied, coq.typecheck Applied (prod _ Source Body) ok,
+    coq.unify-eq Ty Source ok, pi x\ Result = Body x.
 
-  pred scope-parents i:list (pair inductive (list term)), i:prop.
+  % A field's global head carries the universe instance of this occurrence.
+  pred scope-head i:id, i:field-kind, i:term, i:prop.
+  scope-head Key Kind Head Goal :-
+    if (selected-head Key Kind Prior)
+      (std.assert-ok! (coq.unify-eq Head Prior) ("Incompatible field instances: " ^ Key), Goal)
+      (selected-head Key Kind Head => Goal).
+
+  pred layout-heads i:term, i:list component, o:list prop.
+  layout-heads _ [] [].
+  layout-heads (prod _ Ty Body) [slot Key Kind _ | Cs] [selected-head Key Kind Head | Hs] :-
+    coq.safe-dest-app Ty Head _, pi x\ layout-heads (Body x) Cs Hs.
+
+  pred with-heads i:list prop, i:prop.
+  with-heads [] Goal :- Goal.
+  with-heads [selected-head Key Kind Head | Hs] Goal :-
+    scope-head Key Kind Head (with-heads Hs Goal).
+
+  pred parent-telescope i:inductive, o:term.
+
+  pred parent-type-in-scope i:inductive, o:term.
+  pred scope-parents i:list (pair inductive term), i:prop.
   scope-parents [] Goal :- Goal.
-  scope-parents [pr I Actuals | Rest] Goal :-
-    spec I Parents _, coq.env.indt I tt Arity _ _ [K] _,
-    if (std.length Actuals Arity) true
-      (coq.error "Wrong number of structure parent parameters:" I),
-    coq.env.global (indt I) Head, coq.mk-app Head Actuals Raw,
-    (@keepunivs! => std.assert-ok! (coq.elaborate-skeleton Raw _ Ty)
-       "Ill-typed structure parent application"),
-    coq.safe-dest-app Ty _ Args,
-    if (parent-inputs I Prior)
-      (if (std.forall2 Args Prior (a\b\ coq.unify-eq a b ok)) (scope-parents Rest Goal)
-        (coq.error "Incompatible applications of a shared structure parent:" I))
-      (close I Cs, coq.env.typeof (indc K) CtorTy,
+  scope-parents [pr I Ty | Rest] Goal :-
+    spec I Parents _, coq.safe-dest-app Ty Head Args,
+    if (parent-type-in-scope I Prior)
+      (std.assert-ok! (coq.unify-eq Ty Prior) "Incompatible applications of a shared parent",
+       scope-parents Rest Goal)
+      (close I Cs, coq.env.indt I tt _ _ _ [K] _,
+       if (Head = pglobal _ U) (@uinstance! U => coq.env.typeof (indc K) CtorTy)
+         (coq.env.typeof (indc K) CtorTy),
        coq.subst-prod Args CtorTy FieldsTy, read-slots FieldsTy [] Cs Layout,
-       std.map Parents (ancestor-inputs I Args) More,
-       parent-inputs I Args => parent-components I Layout =>
-         scope-parents {std.append More Rest} Goal).
+       std.map Parents (ancestor-type I Ty Args) More,
+       parent-type-in-scope I Ty => parent-inputs I Args => parent-components I Layout =>
+         parent-telescope I FieldsTy => scope-parents {std.append More Rest} Goal).
 
   pred with-components i:list component, i:list (pair id term),
       i:(list (pair id term) -> prop).
@@ -127,52 +161,29 @@ Elpi Accumulate lp:{{
     coq.id->name Key Name,
     pi x\ @pi-decl Name Ty x\ with-components Cs [pr Key x | Env] Goal.
 
-  pred typecheck-arguments i:gref, i:list (pair id term), i:list id.
-  typecheck-arguments Ref Env Deps :-
-    component-type Ref {key-inputs Deps} Env Ty,
+  pred typecheck-arguments i:term, i:list (pair id term), i:list id.
+  typecheck-arguments Head Env Deps :-
+    std.map Deps (k\t\ lookup k Env t) Args, coq.mk-app Head Args Ty,
     coq.typecheck-ty Ty _ ok.
 
-  pred resolve-arguments i:id, i:gref, i:option (list id),
+  pred resolve-arguments i:id, i:term, i:option (list id),
       i:list mixin-param, i:list component, i:list (pair id term), o:list id.
-  resolve-arguments M Ref (some Names) Params Available Env Keys :- !,
-    std.map Names (explicit-input Env) Keys,
+  resolve-arguments M Head (some Keys) Params Available Env Keys :- !,
     std.map-filter Keys (k\p\ sigma t\ ambient-value k t, p = pr k t) Inputs,
     if (mixin-arguments Params Available {std.append Inputs Env} [] Keys,
-        typecheck-arguments Ref Env Keys) true
+        typecheck-arguments Head Env Keys) true
       (coq.error "Component keys do not match the mixin parameters:" M).
-  resolve-arguments M Ref none Params Available Env Deps :-
+  resolve-arguments M Head none Params Available Env Deps :-
     std.findall (mixin-arguments Params Available Env [] _) Candidates,
     % Keep candidate typing inside the local universe context and discard
     % its constraints before checking the next candidate.
     std.map-filter Candidates
       (candidate\keys\ candidate = mixin-arguments _ _ _ _ keys,
-        not (not (typecheck-arguments Ref Env keys))) Matches,
+        not (not (typecheck-arguments Head Env keys))) Matches,
     if (Matches = [Deps]) true (
       if (Matches = [])
         (coq.error "Missing compatible arguments for mixin:" M)
         (coq.error "Ambiguous arguments for mixin, give component keys:" M)).
-
-  kind component-view type.
-  type assembled id -> constructor -> list id -> component-view.
-
-  pred add-components i:list component, i:list component,
-      i:list (pair id id), i:list id, o:list component, o:list id, o:list component.
-  add-components [] Available _ _ [] [] Available.
-  add-components [Field | Cs] Available Mapping Used
-      Local [Actual | Args] Out :-
-    Field = slot Key Kind Deps,
-    std.map Deps (translate-input Mapping) ActualDeps,
-    std.findall (match-component Key Kind ActualDeps Available Used _) Matches,
-    std.map Matches (m\a\ m = match-component _ _ _ _ _ a) Keys,
-    if (Keys = [Actual])
-      (Local = New, Next = Available)
-      (if (Keys = [])
-        (Actual = Key,
-         if (std.mem Used Key)
-           (coq.error "An exported component key names a different selection:" Key) true,
-         C = slot Key Kind ActualDeps, Local = [C | New], merge [C] Available Next)
-        (coq.error "Ambiguous component for exported mixin:" Key Keys)),
-    add-components Cs Next [pr Key Actual | Mapping] [Actual | Used] New Args Out.
 
   pred explicit-fixed i:list component, i:list id, i:list component,
       i:list (pair id id), i:list id.
@@ -195,106 +206,186 @@ Elpi Accumulate lp:{{
     mapped-components Fixed Available Mapping [] Args,
     std.append Values Args Keys.
 
-  pred resolve-fixed i:id, i:gref, i:option (list id), i:list id, i:list component,
+  pred resolve-fixed i:id, i:term, i:option (list id), i:list id, i:list component,
       i:list component, i:list (pair id term), o:list id.
-  resolve-fixed M Ref (some Names) Prefix Fixed Available Env Keys :- !,
-    std.map Names (explicit-input Env) Keys,
+  resolve-fixed M Head (some Keys) Prefix Fixed Available Env Keys :- !,
     std.length Prefix N,
     if (std.split-at N Keys Values Args,
         fixed-mapping Prefix Values Mapping,
         explicit-fixed Fixed Args Available Mapping [],
-        typecheck-arguments Ref Env Keys) true
+        typecheck-arguments Head Env Keys) true
       (coq.error "Component keys do not match the fixed export parameters:" M).
-  resolve-fixed M Ref none Prefix Fixed Available Env Keys :-
+  resolve-fixed M Head none Prefix Fixed Available Env Keys :-
     std.findall (infer-fixed Prefix Fixed Available Env _) Candidates,
     std.map-filter Candidates
       (c\a\ c = infer-fixed _ _ _ _ a,
-        not (not (typecheck-arguments Ref Env a))) Matches,
+        not (not (typecheck-arguments Head Env a))) Matches,
     if (Matches = [Keys]) true (
       if (Matches = [])
         (coq.error "Missing compatible arguments for exported mixin:" M)
         (coq.error "Ambiguous fixed parameters for exported mixin, give component keys:" M)).
 
-  pred assemble-components i:list id, i:list id, i:list component,
-      i:list component, o:list component, o:list id, o:list component.
-  assemble-components Fixed ActualFixed Parts Available Local Args Out :-
-    std.map2 Fixed ActualFixed (k\a\p\ p = pr k a) Mapping,
-    std.findall (mapped-components Parts Available Mapping ActualFixed _) Matches,
-    if (Matches = [Match])
-      (Match = mapped-components _ _ _ _ Components, Local = [], Out = Available)
-      (if (Matches = [])
-        (add-components Parts Available Mapping ActualFixed Local Components Out)
-        (coq.error "Ambiguous component selection for exported mixin:" Parts)),
-    std.append ActualFixed Components Args.
+  % A parent keeps the identity of every field that it supplies. Only
+  % unrenamed keys may also share by spelling alone.
+  pred parent-names i:struct-parent, o:list field-name-info.
+  parent-names (named-parent I _) Names :-
+    close I Cs,
+    if (field-names I Stored) true (Stored = []),
+    std.map Cs (c\n\ sigma k history origins\
+      component-key c k,
+      if (std.mem Stored (named-field k history origins)) true
+        (history = [], origins = []),
+      n = named-field k history [pr I k | origins]) Names.
 
-  pred projection-name i:id, i:id, i:option id, o:id.
-  projection-name N Key none Name :- field-name N Key Name.
-  projection-name _ _ (some Name) Name.
+  pred shares i:field-name-info, i:field-name-info.
+  shares (named-field K [] _) (named-field K [] _) :- !.
+  shares (named-field _ _ Left) (named-field _ _ Right) :-
+    std.exists Left (o\ std.mem Right o).
 
-  pred resolve-slots i:id, i:list pending-slot, i:list component,
-      i:list (pair id term), o:list component, o:list (pair id id),
-      o:list component-view.
-  resolve-slots _ [] _ _ [] [] [].
-  resolve-slots N [pending Key M Selection Field | Slots] Available Env
-      Local Names Views :-
-    coq.locate M Ref,
-    if (mixin-spec Ref _ Params) true
-      (coq.error "Component must be a registered Minks mixin:" M),
+  pred connected i:list field-name-info, i:list field-name-info, o:list field-name-info.
+  connected Group Others Out :-
+    std.partition Others (n\ std.exists Group (shares n)) More Rest,
+    if (More = []) (Out = Group)
+      (connected {std.append Group More} Rest Out).
+
+  pred add-distinct i:list A, i:list A, o:list A.
+  add-distinct Xs Acc Result :-
+    std.fold Xs Acc (x\a\b\ if (std.mem a x) (b = a) (b = [x | a])) Result.
+
+  pred merge-names i:list field-name-info, o:list field-name-info.
+  merge-names [] [].
+  merge-names [First | Rest] [named-field Key History Origins | Names] :-
+    connected [First] Rest Group,
+    std.partition [First | Rest] (n\ std.mem Group n) Ordered Others,
+    if (std.mem Ordered (named-field Key [_ | _] _)) true
+      (First = named-field Key _ _),
+    std.fold Ordered [] (n\a\b\ sigma k h\ n = named-field k h _,
+      add-distinct [k | h] a b) Spellings,
+    std.filter Spellings (k\ not (k = Key)) History,
+    std.fold Ordered [] (n\a\b\ sigma os\ n = named-field _ _ os,
+      add-distinct os a b) Origins,
+    merge-names Others Names,
+    std.forall Spellings (k\ require-fresh Names k).
+
+  pred require-fresh i:list field-name-info, i:id.
+  require-fresh Names K :-
+    if (std.mem Names (named-field K _ _) ; std.exists Names
+        (n\ sigma h\ n = named-field _ h _, std.mem h K))
+      (coq.error "Component key is already in use or retired:" K) true.
+
+  pred rename-field i:list field-name-info, i:id, i:id, o:list field-name-info.
+  rename-field [] K _ _ :- coq.error "No current field named" K.
+  rename-field [named-field K H Os | Rest] K J [named-field J [K | H] Os | Rest] :- !.
+  rename-field [F | Fs] K J [F | Rest] :- rename-field Fs K J Rest.
+
+  pred entry-names i:slot-binder, i:term, o:list id, o:list (pair id id).
+  entry-names Binder Head Keys Projections :-
+    coq.env.global Ref Head,
+    if (mixin-combination Ref _ Parts _)
+      (if (Binder = batch Written Aliases) true
+         (coq.error "Use an ordered list of keys to bind an exported mixin:" Ref),
+       std.map Parts component-key Defaults,
+       if (Written = some Ks) (Keys = Ks) (Keys = Defaults),
+       std.assert! (std.length Keys {std.length Defaults}) "Wrong number of export keys",
+       if (Aliases = some Ns)
+         (std.assert! (fixed-mapping Keys Ns Projections) "Wrong number of projection names")
+         (Projections = []))
+      (if (Binder = single K Alias) true (coq.error "A primitive mixin needs one key:" Ref),
+       Keys = [K], if (Alias = some P) (Projections = [pr K P]) (Projections = [])).
+
+  pred introduce-name i:id, i:list field-name-info, o:list field-name-info.
+  introduce-name K Names [named-field K [] [] | Names] :- require-fresh Names K.
+
+  % Before generating dependent types, validate each spelling in its source
+  % scope. Then translate valid references to their final record keys.
+  kind field-entry type.
+  type entry list id -> list (pair id id) -> term -> option (list id)
+    -> list (pair id id) -> field-entry.
+
+  pred final-name i:list field-name-info, i:id, o:id.
+  final-name Names K Key :-
+    std.mem Names (named-field Key H _), (K = Key ; std.mem H K), !.
+
+  pred resolve-spelling i:list field-name-info, i:list field-name-info, i:id, o:id.
+  resolve-spelling Before Final K Actual :-
+    if (std.mem Before (named-field K _ _))
+      (if (section-input K _ _) (coq.error "Both a section parameter and a field have the name:" K)
+         (final-name Final K Actual))
+      (require-fresh Before K,
+       if (section-input K Ambient _) (Actual = Ambient)
+         (coq.error "Unknown component input:" K)).
+
+  pred plan-entries i:list pending-slot, i:list field-name-info,
+      o:list field-name-info, o:list field-entry.
+  plan-entries [] Names Names [].
+  plan-entries [rename K J | Slots] Before Final Entries :-
+    require-fresh Before J, rename-field Before K J After,
+    plan-entries Slots After Final Entries.
+  plan-entries [pending Binder Head Selection | Slots] Before Final
+      [entry Out Aliases Head Deps Preferred | Entries] :-
+    entry-names Binder Head Keys Ps,
+    std.fold Keys Before introduce-name After,
+    plan-entries Slots After Final Entries,
+    % Original-key preference for omitted fixed inputs uses the spellings
+    % visible here, including when a later entry renames one of them.
+    if (Binder = batch _ _, Selection = none)
+      (std.map Before (n\p\ sigma k\ n = named-field k _ _, p = pr k {final-name Final k}) Preferred)
+      (Preferred = []),
+    std.map Keys (final-name Final) Out,
+    std.map Ps (p\q\ sigma k j\ p = pr k j, q = pr {final-name Final k} j) Aliases,
+    if (Selection = some Ks)
+      (std.map Ks (resolve-spelling Before Final) Values, Deps = some Values) (Deps = none).
+
+  pred remap-component i:list (pair id id), i:component, o:component.
+  remap-component Map (slot K Kind Ds) (slot J Kind Args) :-
+    std.mem Map (pr K J), std.map Ds (translate-input Map) Args.
+
+  pred scope-parent-keys i:list inductive, i:list field-name-info, i:prop.
+  scope-parent-keys [] _ Goal :- Goal.
+  scope-parent-keys [I | Is] Names Goal :-
+    close I Cs,
+    std.map Cs (c\p\ sigma k j os\ component-key c k,
+      std.mem Names (named-field j _ os), std.mem os (pr I k), p = pr k j) Map,
+    std.map Map (p\j\ p = pr _ j) Targets,
+    distinct-selection Targets,
+    std.map Cs (remap-component Map) Layout,
+    parent-telescope I Ty, layout-heads Ty Layout Heads,
+    (parent-components I Layout :- !) => with-heads Heads (scope-parent-keys Is Names Goal).
+
+  pred expand-parts i:list component, i:list id, i:list (pair id id), o:list component.
+  expand-parts [] [] _ [].
+  expand-parts [slot K Kind Ds | Cs] [J | Js] Map [slot J Kind Args | Out] :-
+    std.map Ds (translate-input Map) Args,
+    expand-parts Cs Js [pr K J | Map] Out.
+
+  pred resolve-entries i:list field-entry, i:list component, i:list (pair id term),
+      o:list component, o:list prop.
+  resolve-entries [] Cs _ Cs [].
+  resolve-entries [entry Keys _ Head Selection Preferred | Entries] Available Env Out Heads :-
+    coq.env.global Ref Head, coq.gref->id Ref M,
+    if (mixin-spec Ref _ Params) true (coq.error "Unregistered Minks mixin:" M),
     if (mixin-combination Ref RawFixed RawParts Ctor)
       (Ref = indt Interface, std.length RawFixed F,
        current-layout Interface F {std.append RawFixed RawParts} Ordinary Layout,
-       std.split-at F Layout Fixed Parts,
-       std.map Ordinary parameter-key Prefix,
-       resolve-fixed M Ref Selection Prefix Fixed Available Env Deps,
+       std.split-at F Layout Fixed Parts, std.map Ordinary parameter-key Prefix,
+       (source-keys Preferred => resolve-fixed M Head Selection Prefix Fixed Available Env Deps),
        std.map Fixed component-key FixedKeys,
-       assemble-components {std.append Prefix FixedKeys} Deps Parts Available Additions Args Next,
-       projection-name N Key Field Name,
-       Views = [assembled Name Ctor Args | MoreViews], Names = MoreNames)
-      (resolve-arguments M Ref Selection Params Available Env Deps,
-       Component = slot Key (mixin-kind Ref) {key-inputs Deps}, merge [Component] Available Next,
-       if (std.mem Available Component) (Additions = []) (Additions = [Component]),
-       Views = MoreViews,
-       if (Field = some Name) (Names = [pr Key Name | MoreNames]) (Names = MoreNames)),
-    std.append Additions Rest Local,
-    with-components Additions Env (next-env\
-      resolve-slots N Slots Next next-env Rest MoreNames MoreViews).
-
-  pred check-projection-aliases i:list (pair id id).
-  check-projection-aliases [].
-  check-projection-aliases [pr Key Name | Rest] :-
-    if (std.mem Rest (pr Key Other), not (Other = Name))
-      (coq.error "Conflicting projection names for component" Key ":" Name "and" Other)
-      (check-projection-aliases Rest).
-
-  pred assembled-name i:component-view, o:id.
-  assembled-name (assembled Name _ _) Name.
-
-  pred avoid-view-name i:id, i:list component-view, i:list (pair id id),
-      i:component, o:(pair id id).
-  avoid-view-name N Views Names C (pr Key Field) :-
-    component-key C Key,
-    if (std.mem Names (pr Key Selected)) (Option = some Selected) (Option = none),
-    if (Option = some Explicit) (Default = Explicit) (projection-id N C Default),
-    if (std.exists Views (v\ assembled-name v Default))
-      (if (Option = none) (Field is Default ^ "_component")
-        (coq.error "Projection name is also used by an assembled view:" Default))
-      (Field = Default).
-
-  pred declare-assembled i:inductive, i:list (pair id constant), i:component-view,
-      o:(pair constant (list id)).
-  declare-assembled I Refs (assembled Name Ctor Keys) (pr Ref Keys) :-
-    family-global (indt I) Ty,
-    coq.env.global (indc Ctor) Make,
-    (pi child\ sigma args\
-      std.map Keys (k\t\ if (ambient-value k t) true
-        (sigma proj\ read-field Refs k proj, coq.mk-app proj [child] t)) args,
-      coq.mk-app Make args (Body child)),
-    coq.id->name "structure" Binder,
-    Term = fun Binder Ty Body,
-    std.assert-ok! (coq.typecheck Term ViewTy) ("Ill-typed assembled view " ^ Name),
-    (@univpoly! => coq.env.add-const Name Term ViewTy @transparent! Ref),
-    coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (struct-assembly I Ref Keys)).
+       fixed-mapping {std.append Prefix FixedKeys} Deps Mapping,
+       expand-parts Parts Keys Mapping New,
+       if (Head = pglobal _ U) (Make = pglobal (indc Ctor) U) (Make = global (indc Ctor)),
+       coq.typecheck Make Ty ok,
+       std.map Deps (k\t\ lookup k Env t) Values,
+       coq.subst-prod Values Ty FieldsTy, layout-heads FieldsTy New Here,
+       Check = (bs\ sigma fields term\
+         std.map Keys (k\t\ lookup k bs t) fields,
+         coq.mk-app Make {std.append Values fields} term,
+         std.assert-ok! (coq.typecheck term _) "Ill-typed exported field batch"))
+      (Keys = [Key], resolve-arguments M Head Selection Params Available Env Deps,
+       New = [slot Key (mixin-kind Ref) {key-inputs Deps}],
+       Here = [selected-head Key (mixin-kind Ref) Head], Check = (_\ true)),
+    with-heads Here (with-components New Env (bindings\
+      Check bindings, resolve-entries Entries {std.append Available New} bindings Out Later)),
+    std.append Here Later Heads.
 
   pred save-view i:struct-conversion.
   save-view (conversion Source Target Ref Mode) :-
@@ -313,15 +404,21 @@ Elpi Accumulate lp:{{
     std.forall All (p\ sigma ref mode\ struct-view I p ref mode,
       register-parent-view (conversion I p ref mode)).
 
+  main [str "#universes", str Levels, str Constraints | Args] :- !,
+    std.mem [pr "true" tt, pr "false" ff] (pr Levels L),
+    std.mem [pr "true" tt, pr "false" ff] (pr Constraints C),
+    struct-universes L C => main Args.
+
   main [str "#header" | Args] :- !,
     header-args Args H Rest, header H => main Rest.
   main [A | Args] :-
-    if (atom A Name, struct-parents Args Applications Rest,
+    if (atom A Name, struct-parents Args Applications Actuals Rest,
         parse-components Rest Slots Tail, parse-exports Tail Exports) true usage,
     resolve-bases Applications (parents\
-      std.map parents (a\p\ sigma i names args\
-        a = named-parent i names, std.map names section-argument args, p = pr i args) Named,
-      scope-parents Named (build Name parents Slots Exports)).
+      std.assert! (std.map2 parents Actuals parent-type Named) "could not align parent types",
+      minks.section-inputs Actuals Used, std.map Used coq.env.global Inputs,
+      metadata-inputs Inputs =>
+        scope-parents Named (build Name parents Slots Exports)).
 
   pred resolve-bases i:list struct-parent, i:(list struct-parent -> prop).
   resolve-bases [] K :- K [].
@@ -348,45 +445,43 @@ Elpi Accumulate lp:{{
   pred build i:id, i:list struct-parent, i:list pending-slot, i:list (pair id (option (list id))).
   build Name Applications Slots Exports :-
     struct-ancestors Applications FlatParents,
-    std.map Applications parent-layout Branches, close-parents Branches Inherited,
-    with-components Inherited []
-      (env\ resolve-slots Name Slots Inherited env Local Selected Assembled),
-    check-projection-aliases Selected,
-    merge Local Inherited Components,
-    if (Assembled = []) (Names = Selected)
-      (std.map Components (avoid-view-name Name Assembled Selected) Names),
-    declare-packed Name Components Names I Args,
-    active-family I Args =>
-      finish Name Applications Branches Inherited Exports FlatParents Components Assembled I.
+    std.map Applications parent-names ParentNames,
+    merge-names {std.flatten ParentNames} Initial,
+    plan-entries Slots Initial Final Entries,
+    std.forall Exports (e\ sigma ks\
+      if (e = pr _ (some ks)) (std.forall ks (k\
+        if (std.mem Final (named-field k _ _)) true (require-fresh Final k))) true),
+    std.map Entries (e\ps\ e = entry _ ps _ _ _) Aliases,
+    ancestors FlatParents [] All,
+    scope-parent-keys All Final (
+      std.map Applications parent-layout Branches, close-parents Branches Inherited,
+      with-components Inherited [] (env\
+        resolve-entries Entries Inherited env Components Heads),
+      with-heads Heads (
+          declare-packed Name Components {std.flatten Aliases} I Args,
+          coq.elpi.accumulate execution-site "minks.flat.db"
+            (clause _ _ (field-names I Final)),
+          active-family I Args =>
+            finish Name Applications Branches Inherited Exports FlatParents Components I)).
 
   pred finish i:id, i:list struct-parent, i:list (list component), i:list component,
-      i:list (pair id (option (list id))), i:list inductive, i:list component,
-      i:list component-view, i:inductive.
-  finish Name Applications Branches Inherited Exports FlatParents Components Assembled I :-
+      i:list (pair id (option (list id))), i:list inductive, i:list component, i:inductive.
+  finish Name Applications Branches Inherited Exports FlatParents Components I :-
     std.assert! (generate-views Name FlatParents Components I Views Packers)
       "Could not generate the structure",
-    if (Assembled = []) (Assemblies = []) (
-      std.map Components component-key Keys,
-      coq.env.projections I Projections,
-      std.map2 Keys Projections field-ref Refs,
-      std.map Assembled (declare-assembled I Refs) Assemblies),
     std.forall Views save-view,
     std.forall Packers (p\ coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (struct-packer I p))),
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (struct-spec I Applications Components)),
-    std.map Exports
-      (e\v\ sigma label selection keys interface fixed\
-        e = pr label selection, export-keys Branches Inherited selection keys, v = pr interface fixed,
+    std.forall Exports
+      (e\ sigma label selection keys interface fixed\
+        e = pr label selection, export-keys Branches Inherited selection keys,
         std.assert! (@keep-alg-univs! =>
           generate-relative Name I Components FlatParents Views label keys interface fixed)
           ("Could not generate relative interface " ^ label),
         coq.elpi.accumulate execution-site "minks.flat.db"
-          (clause _ _ (struct-export I interface fixed)))
-      Exported,
-    attributes Attrs,
-    if (std.mem Attrs (attribute "minks.defer-summary" _)) true
-      (print-struct Applications Name [] FlatParents Components Views Packers Exported Assemblies).
+          (clause _ _ (struct-export I interface fixed))).
   main _ :- usage.
 }}.
 Elpi Accumulate Db minks.flat.db.
@@ -416,12 +511,10 @@ Elpi Accumulate lp:{{
       (e\v\ sigma interface fixed\
         e = struct-export I interface fixed, v = pr interface fixed)
       Exports,
-    std.findall (struct-assembly I _ _) StoredAssemblies,
-    std.map StoredAssemblies (a\v\ sigma ref keys\
-      a = struct-assembly I ref keys, v = pr ref keys) Assemblies,
     current-layout I 0 Cs Params Layout,
     struct-spec I Declared _,
-    print-struct Declared Name Params Parents Layout Views Packers Exports Assemblies.
+    if (field-names I Ns) (Names = Ns) (Names = []),
+    inspection-names Names => print-struct Declared Name Params Parents Layout Views Packers Exports.
 
   main [str Name] :- !, coq.locate Name Ref, inspect Name Ref.
   main _ :- coq.error "Usage: Minks.Inspect Name.".

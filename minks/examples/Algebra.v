@@ -98,12 +98,6 @@ Minks.Struct Monoid
           IsMonoid [Magma],
           IsMonoidWithPoint [hasPoint, Magma].
 
-Minks.Inspect HasMonoid.
-Print HasMonoid.
-
-Minks.Inspect IsMonoid.
-Print IsMonoid.
-
 (** Extend a specified magma with associativity and a unit. *)
 
 Check MonoidToIsMonoid
@@ -180,14 +174,14 @@ Minks.Struct Group
   exports HasGroup [carrier],
           IsGroup [Monoid].
 
-Check GroupOfIsGroup : ∀ M : Monoid, IsGroup M → Group.
-Check GroupOfMonoid : ∀ M : Monoid, HasInverse M → Group.
+Check GroupOfIsGroup.
+Check GroupOfMonoid.
 
-(** Assemble the group interface from an existing monoid and an inverse. *)
+(** Expand the carrier-relative group interface in constructor order. *)
 
 Minks.Struct GroupFromExport
-  extends Monoid
-  with  group : HasGroup.
+  extends Type
+  with  : HasGroup.
 
 (** ** Rings on one setoid
 
@@ -201,10 +195,30 @@ Minks.Mixin IsComm (A : Type)
   :=
   { mul_comm : ∀ x y, x * y ≈ y * x }.
 
+Minks.Struct CommMagma
+  extends Magma
+  with isComm : IsComm.
+
 Minks.Struct AbGroup
-  extends Group
-  with  isComm : IsComm
-  exports IsAbGroupAt [hasMagma, hasPoint].
+  extends CommMagma, Group
+  exports HasAbGroup [hasEquiv],
+          IsAbGroupAt [hasMagma, hasPoint].
+
+Minks.Inspect AbGroup.
+
+(** Over a setoid, all additive operations and laws come from the export. *)
+
+Module AbelianGroupAssembly.
+Minks.Struct Packed
+  extends SetC
+  with  : HasAbGroup.
+Minks.Inspect HasAbGroup.
+
+Check Packed_hasInverse.
+Fail Minks.Struct SingleBinding
+  extends SetC
+  with  additive : HasAbGroup.
+End AbelianGroupAssembly.
 
 Declare Scope ring_scope.
 
@@ -229,34 +243,33 @@ Minks.Mixin IsDistributive
 
 End Distributivity.
 
+Minks.Inspect IsDistributive.
+
 (** A rng has an additive abelian group and associative multiplication.
     The assembled additive view uses the selected addition and zero. *)
 
 Minks.Struct Rng
   extends Semigroup
-  with  hasAdd : HasMagma,
-        hasZero : HasPoint,
-        isAddAssoc : IsSemigroup [carrier, hasEquiv, hasAdd],
-        isAddUnit : IsUnitAt [carrier, hasEquiv, hasAdd, hasZero],
-        hasNeg : HasInverse,
-        isAddComm : IsComm [carrier, hasEquiv, hasAdd],
-        additive : IsAbGroupAt [carrier, hasEquiv, hasAdd, hasZero],
-        isDistrib : IsDistributive [carrier, hasEquiv, hasAdd, hasMagma].
+  with  hasMagma as hasMul,
+        [hasAdd, isAddComm, isAddAssoc, hasZero,
+          isAddUnit, hasNeg] : HasAbGroup,
+        isDistrib : IsDistributive [carrier, hasEquiv, hasAdd, hasMul].
 
 Definition RngAddGroup (R : Rng)
   : AbGroup
-  := AbGroupOfIsAbGroupAt R (Rng_hasEquiv R) (Rng_hasAdd R)
-       (Rng_hasZero R) (Rng_additive R).
+  := MakeAbGroup R (Rng_hasEquiv R) (Rng_hasAdd R) (Rng_isAddComm R)
+       (Rng_isAddAssoc R) (Rng_hasZero R) (Rng_isAddUnit R) (Rng_hasNeg R).
 
 (** Joining the multiplicative monoid adds its selected one and unit laws.
     A commutative ring also makes this multiplication commutative. *)
 
 Minks.Struct Ring
-  extends Rng, Monoid.
+  extends Rng, Monoid
+  with  hasPoint as hasOne.
 
 Minks.Struct CommRing
   extends Ring
-  with  isMulComm : IsComm [carrier, hasEquiv, hasMagma].
+  with  isMulComm : IsComm [carrier, hasEquiv, hasMul].
 
 (** The index selects both the setoid and the operation. *)
 
@@ -273,6 +286,71 @@ Local Open Scope ring_scope.
 
 Check RngToSemigroup : Rng → Semigroup.
 Fail Check (λ R : Rng, 1[R]).
+
+(** A shared multiplicative field retains its identity through renaming.
+    Its public spelling follows the renamed path in either parent order. *)
+
+Module RenamedKeys.
+Minks.Struct ReversedRing
+  extends Monoid, Rng.
+
+Example reversed_multiplication (R : ReversedRing)
+  : ReversedRing_hasMul R = Monoid_hasMagma (ReversedRingToMonoid R)
+    ∧ ReversedRing_hasMul R = Rng_hasMul (ReversedRingToRng R)
+  := conj eq_refl eq_refl.
+
+Minks.Struct ProductMagma
+  extends Magma
+  with  hasMagma as product.
+Minks.Struct ProductFirst
+  extends ProductMagma, Rng.
+Minks.Struct MulFirst
+  extends Rng, ProductMagma.
+
+Example first_explicit_name (S : ProductFirst) (T : MulFirst)
+  : ProductFirst_product S = Rng_hasMul (ProductFirstToRng S)
+    ∧ MulFirst_hasMul T = ProductMagma_product (MulFirstToProductMagma T)
+  := conj eq_refl eq_refl.
+
+Fail Minks.Struct Reintroduce extends Ring with hasMagma : HasMagma.
+Fail Minks.Struct RenameRetired extends Ring with hasMagma as another.
+Fail Minks.Struct DependOnRetired
+  extends Ring
+  with  law : IsComm [carrier, hasEquiv, hasMagma].
+Fail Minks.Struct FixRetired extends Ring exports Old [hasMagma].
+Fail Minks.Struct LosingName extends MulFirst with product : HasMagma.
+Fail Minks.Struct PrematureName
+  extends Magma
+  with  law : IsComm [carrier, hasEquiv, product], hasMagma as product.
+
+Minks.Struct NamedProduct
+  extends Ring
+  with  hasMul as product
+  exports Relative [Monoid].
+
+Example parent_after_second_rename (S : NamedProduct)
+  : NamedProduct_product S = Monoid_hasMagma (NamedProductToMonoid S)
+  := eq_refl.
+
+Minks.Struct IndependentOperation
+  extends SetC
+  with  hasMagma : HasMagma.
+Fail Minks.Struct UnrelatedOldName
+  extends Rng, IndependentOperation.
+
+Section LocalRename.
+Variable A : Type.
+Minks.Struct SelectedPoint
+  with  chosen : HasPoint [A], chosen as selected.
+End LocalRename.
+
+Minks.Struct NamedPoint (A : Type)
+  extends SelectedPoint A
+  with  selected as pointChoice.
+Fail Minks.Struct ReuseAfterDischarge (A : Type)
+  extends NamedPoint A
+  with  chosen : HasPoint [A].
+End RenamedKeys.
 
 (** *** The ring with two elements
 
@@ -338,8 +416,8 @@ Definition F2
   : CommRing
   := CommRingOfRing
        (RingOfRng
-         (MakeRng bool BoolEquiv times times_assoc add zero
-           add_assoc add_unit Neg add_comm distrib)
+         (MakeRng bool BoolEquiv times times_assoc add add_comm
+           add_assoc zero add_unit Neg distrib)
          one times_unit)
        times_comm.
 
@@ -726,7 +804,9 @@ Example unit_is_inherited_point (M : UMagma)
   := eq_refl.
 
 Example group_export_uses_selected_inverse (M : Monoid) (I : HasInverse M)
-  : HasGroup_hasInverse (GroupFromExport_group (GroupFromExportOfMonoid M I))
+  : GroupFromExport_hasInverse (MakeGroupFromExport M (Monoid_hasEquiv M)
+      (Monoid_hasMagma M) (Monoid_isSemigroup M) (Monoid_hasPoint M)
+      (Monoid_isUnitAt M) I)
     = I
   := eq_refl.
 
@@ -790,7 +870,7 @@ Example ring_zero_is_additive_unit (R : Ring)
   := eq_refl.
 
 Example ring_one_is_multiplicative_unit (R : Ring)
-  : 1[R] = @point _ (Ring_hasPoint R)
+  : 1[R] = @point _ (Ring_hasOne R)
   := eq_refl.
 
 (** ** Independent point choices

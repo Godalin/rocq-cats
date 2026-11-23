@@ -47,7 +47,38 @@ Fail Minks.Mixin IncompatiblePoints (A B : Type)
   extends HasPoint A, HasPoint B
   := { unused_points : True }.
 
-(** Two local coercions index the same component in different exports.
+(** Each parent may use a witness introduced by an earlier parent. *)
+
+Minks.Mixin AtPoint (P : HasPoint nat)
+  := { selected_zero : @point nat P = 0 }.
+
+Minks.Mixin AtValue (n : nat)
+  := { value_zero : n = 0 }.
+
+Minks.Mixin PointLaws
+  extends HasPoint nat, AtPoint hasPoint, AtValue point,
+          AtPoint ltac:(exact hasPoint)
+  := { point_laws : True }.
+
+Check @PointLaws : ∀ P : HasPoint nat,
+  AtPoint P → AtValue (@point nat P) → Prop.
+
+Minks.Mixin OuterPointLaws (outer : HasPoint nat)
+  extends HasPoint nat, AtPoint outer, AtValue (@point nat hasPoint)
+  := { outer_point_laws : True }.
+
+Check @OuterPointLaws : ∀ (inner outer : HasPoint nat),
+  AtPoint outer → AtValue (@point nat inner) → Prop.
+
+Fail Minks.Mixin ForwardPoint
+  extends AtPoint hasPoint, HasPoint nat
+  := { forward_point : True }.
+
+Fail Minks.Mixin ForwardValue
+  extends AtValue point, HasPoint nat
+  := { forward_value : True }.
+
+(** Two convertible applications index the same component in different exports.
     Rocq checks the shared point by conversion when both are inherited. *)
 
 Module ConvertiblePoints.
@@ -65,21 +96,104 @@ Minks.Struct FlagOnly
   with  extra : HasFlag.
 
 Module Left.
-Local Coercion values : Label >-> Sortclass.
 Minks.Struct Choice (L : Label)
-  extends Chosen L
+  extends Chosen (values L)
   exports LeftPoint [].
 
 Minks.Struct FlaggedChoice (L : Label)
-  extends FlagOnly, Chosen L.
+  extends FlagOnly, Chosen (values L).
 End Left.
 
 Module Right.
-Local Coercion values_alias : Label >-> Sortclass.
 Minks.Struct Choice (L : Label)
-  extends Chosen L
+  extends Chosen (values_alias L)
   exports RightPoint [].
 End Right.
+
+Minks.Mixin DirectPoint (L : Label)
+  extends HasPoint (values L), HasPoint (values_alias L)
+  := { direct_value : values L := @point _ hasPoint }.
+
+Check @DirectPoint : ∀ L, HasPoint (values L) → Type.
+Fail Minks.Mixin IllTypedPoint (L : Label)
+  extends HasPoint (Some L)
+  := { bad_value : True }.
+Fail Minks.Struct IllTypedChoice (L : Label)
+  extends Chosen (Some L).
+
+(** A global in an ordinary argument keeps its meaning when an inherited
+    witness would otherwise be given the same name. *)
+
+Module PointIndex.
+Definition hasPoint := bool.
+Minks.Mixin IndexedPoint
+  extends HasPoint hasPoint
+  := { indexed_value : hasPoint := point }.
+Check @IndexedPoint : HasPoint bool → Type.
+End PointIndex.
+
+(** Rocq infers the lambda domain from the preceding named argument.
+    A further child inherits the same function after index substitution. *)
+
+Minks.Mixin HasFixed {A : Type} (f : A → A)
+  := { fixed : A; fixed_law : f fixed = fixed }.
+
+Minks.Mixin OptionFixed (L : Label)
+  extends HasFixed (A := values L) (fun x => x)
+  := { option_fixed_law : True }.
+
+Minks.Mixin NestedFixed (A : Type)
+  extends OptionFixed (Build_Label A)
+  := { nested_fixed_law : True }.
+
+Check @NestedFixed : ∀ A (F : @HasFixed (option A) (fun x => x)),
+  @OptionFixed (Build_Label A) F → Type.
+
+Minks.Struct FixedFunction {A : Type} (f : A → A)
+  with  hasFixed : HasFixed [A, f].
+
+Minks.Struct IdentityFixed (L : Label)
+  extends FixedFunction (A := values L) (fun x => x).
+
+Example fixed_parent (L : Label) (F : IdentityFixed L)
+  : IdentityFixed_hasFixed L F =
+      FixedFunction_hasFixed (fun x : values L => x)
+        (IdentityFixedToFixedFunction L F)
+  := eq_refl.
+
+Section ChosenFunction.
+  Variable A : Type.
+  Minks.Struct IdentityChoice
+    extends Chosen (A → A).
+End ChosenFunction.
+
+Check @MakeIdentityChoice : ∀ A : Type, HasPoint (A → A) → IdentityChoice A.
+
+(** Only the checked term determines the position of a witness. The tactic
+    can inspect a header parameter even when its result is closed. *)
+
+Minks.Mixin ClosedPoint (n : nat)
+  extends HasPoint ltac:(let t := type of n in exact t)
+  := { closed_point : nat := @point nat hasPoint }.
+
+Check @ClosedPoint : HasPoint nat → nat → Type.
+
+Fail Minks.Mixin DistinctTacticPoints
+  extends HasPoint ltac:(exact nat), HasPoint ltac:(exact bool)
+  := { incompatible : True }.
+
+(** A relative parent's assembled view is available at the next parent.
+    The public telescope retains only its selected component. *)
+
+Minks.Mixin AtChoice (L : Label) (c : Left.LeftPoint L)
+  := { chosen_value : values L := @point _ (Left.LeftPoint_hasPoint L c) }.
+
+Minks.Mixin LaterChoice (L : Label)
+  extends Left.LeftPoint L, AtChoice L leftPoint
+  := { later_choice : True }.
+
+Check @LaterChoice : ∀ L (P : HasPoint (values L)),
+  AtChoice L (Left.MakeLeftPoint L P) → Prop.
 
 Minks.Mixin SharedPoint (L : Label)
   extends Left.LeftPoint L, Right.RightPoint L, Left.LeftPoint L
@@ -113,46 +227,25 @@ Check @MakeFixedChoice
   : ∀ (L : Label) (P : HasPoint (values L)), HasFlag → FixedChoice L P.
 End ConvertiblePoints.
 
-(** * Reuse before filling
+(** * Fresh dependent fields from an export
 
-    Either flag can fill the first slot in isolation. The type of the
-    existing pair determines which choice can reuse both slots. *)
+    The pair in the second exported slot depends twice on the flag in
+    the first slot, even when compatible older fields are in scope. *)
 
 Minks.Struct DiagonalFlag
   extends OneFlag
   exports HasDiagonalFlag [carrier].
 
-Minks.Struct ReuseRight
+Minks.Struct ThirdDiagonal
   extends TwoFlags
-  with  diagonal : FlagPair [rightFlag, rightFlag],
-        selected : HasDiagonalFlag.
+  with  [thirdFlag, diagonal] : HasDiagonalFlag.
 
-Example reuse_dependent_pair (F : ReuseRight)
-  : ReuseRight_selected F =
-      MakeHasDiagonalFlag F (ReuseRight_rightFlag F) (ReuseRight_diagonal F)
-  := eq_refl.
+Check ThirdDiagonal_diagonal
+  : ∀ F : ThirdDiagonal, FlagPair (ThirdDiagonal_thirdFlag F) (ThirdDiagonal_thirdFlag F).
 
-(** An exact original key has priority even when the alternative flag
-    would allow complete reuse. Filling adds a pair on the original flag. *)
-
-Minks.Struct PreferOriginal
-  extends Type
-  with  hasFlag : HasFlag,
-        otherFlag : HasFlag,
-        diagonal : FlagPair [otherFlag, otherFlag],
-        selected : HasDiagonalFlag.
-
-Example fill_on_original_key (F : PreferOriginal)
-  : PreferOriginal_selected F =
-      MakeHasDiagonalFlag F (PreferOriginal_hasFlag F) (PreferOriginal_hasPair F)
-  := eq_refl.
-
-(** No complete reuse exists without a pair. Filling would have to
-    choose between two compatible flags at its very first step. *)
-
-Fail Minks.Struct AmbiguousPartial
-  extends TwoFlags
-  with  selected : HasDiagonalFlag.
+Fail Minks.Struct DuplicateDiagonal
+  extends OneFlag
+  with  : HasDiagonalFlag.
 
 (** * Dependency closure of a fixed selection
 
@@ -214,28 +307,26 @@ Fail Minks.Mixin DifferentMonoids (M N : Magma)
   extends IsIdempotentMonoid M, IsMonoid N
   := { different_monoids : True }.
 
-(** Assemble the two presentations at one magma. The second fixes the
-    first one's point and reuses the same associativity and unit laws. *)
+(** Expand the relative monoid interface at the specified magma. *)
 
 Section AtMagma.
 Context (M : Magma).
 
 Minks.Struct MonoidOnMagma
-  with  laws : IsMonoid [M],
-        pointedLaws : IsMonoidWithPoint [M, hasPoint].
+  with  : IsMonoid [M].
 
 Variable N : Magma.
 Fail Minks.Struct ConflictingBases
-  with  first : IsMonoid [M],
-        second : IsMonoid [N].
+  with  : IsMonoid [M],
+        : IsMonoid [N].
 End AtMagma.
 
 Example assembled_monoid_on_magma (M : Magma)
     (A : IsSemigroup M) (P : HasPoint M) (U : IsUnitAt M (hasPoint := P))
   : let S := MakeMonoidOnMagma M A P U in
-    MonoidOnMagma_laws M S = MakeIsMonoid M A P U
-    ∧ MonoidOnMagma_pointedLaws M S = MakeIsMonoidWithPoint M P A U
-  := conj eq_refl eq_refl.
+    MakeIsMonoid M (MonoidOnMagma_isSemigroup M S) (MonoidOnMagma_hasPoint M S)
+      (MonoidOnMagma_isUnitAt M S) = MakeIsMonoid M A P U
+  := eq_refl.
 
 (** The discharged fields retain their projection paths when the parent
     parameter changes name. A further mixin consumes those exact fields. *)

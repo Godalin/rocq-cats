@@ -18,7 +18,7 @@ Minks.Mixin Marked (A : Type)
 
 Minks.Struct Packed
   extends Type
-  with  laws : HasMonoid.
+  with  : HasMonoid.
 End ViaExport.
 
 Module ByParts.
@@ -81,7 +81,10 @@ Fail Check @UnitFirst.Marked A E M S P U.
 
 Example same_monoid_fields
   : let r := ByParts.MakePacked A E M S P U in
-    ViaExport.Packed_laws (ViaExport.MakePacked A E M S P U)
+    let l := ViaExport.MakePacked A E M S P U in
+    MakeHasMonoid A (ViaExport.Packed_hasEquiv l) (ViaExport.Packed_hasMagma l)
+      (ViaExport.Packed_isSemigroup l) (ViaExport.Packed_hasPoint l)
+      (ViaExport.Packed_isUnitAt l)
     = MakeHasMonoid (ByParts.Packed_carrier r)
         (ByParts.Packed_hasEquiv r) (ByParts.Packed_hasMagma r)
         (ByParts.Packed_isSemigroup r) (ByParts.Packed_hasPoint r)
@@ -136,7 +139,9 @@ Example same_mark_over_magma (M : Magma) (P : HasPoint M) (x : M)
 Example same_relative_fields (M : Magma) (S : IsSemigroup M)
     (P : HasPoint M) (U : IsUnitAt M (hasPoint := P))
   : let r := OnCarrier.MakePacked M S P U in
-    MonoidOnMagma_laws M (MakeMonoidOnMagma M S P U)
+    let l := MakeMonoidOnMagma M S P U in
+    MakeIsMonoid M (MonoidOnMagma_isSemigroup M l) (MonoidOnMagma_hasPoint M l)
+      (MonoidOnMagma_isUnitAt M l)
     = MakeIsMonoid M (OnCarrier.Packed_isSemigroup M r)
         (OnCarrier.Packed_hasPoint M r) (OnCarrier.Packed_isUnitAt M r)
   := eq_refl.

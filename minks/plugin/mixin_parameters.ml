@@ -12,20 +12,10 @@ type role =
 
 type selection = Witness of GlobRef.t | Ordinary
 
-type input =
-  | Binder of Id.t
-  | Apply of GlobRef.t * instance_expr option * input list
-  | Term of constr_expr * Id.t list
-
-let rec input_binders = function
-  | Binder id -> [id]
-  | Apply (_, _, args) -> List.concat_map input_binders args
-  | Term (_, ids) -> ids
-
 type dependency = {
   key : Id.t option;
   selection : selection;
-  arguments : input list;
+  arguments : constr_expr list;
   instance : instance_expr option;
   parameter : parameter;
   shared : bool;
@@ -102,14 +92,11 @@ let instance_syntax (qualities, levels) instance =
     Some (Array.to_list (Array.map (quality_syntax qualities) qs),
           Array.to_list (Array.map (level_syntax levels) us))
 
-let rec input_expr = function
-  | Binder id -> variable id
-  | Apply (ref, instance, args) ->
-    CAst.make (CAppExpl ((qualify ref, instance), List.map input_expr args))
-  | Term (expr, _) -> expr
+let application reference instance args =
+  CAst.make (CAppExpl ((qualify reference, instance), args))
 
 (* Retain the terms that Rocq inserted at the selected ordinary inputs. *)
-let dependency_type parent_instance ty names =
+let dependency_type parent_instance ty context inputs =
   let head, operands = Constr.decompose_app_list ty in
   let reference, instance =
     match Constr.kind head with
@@ -119,8 +106,8 @@ let dependency_type parent_instance ty names =
   in
   let rec argument operand =
     match Constr.kind operand with
-    | Rel i -> Binder (List.nth names (i - 1))
-    | Var id -> Binder id
+    | Rel i -> List.nth inputs (i - 1)
+    | Var id -> variable id
     | _ ->
       let fn, args = Constr.decompose_app_list operand in
       let global = match Constr.kind fn with
@@ -131,17 +118,17 @@ let dependency_type parent_instance ty names =
       match global with
       | Some (ref, u) ->
         let levels = Option.bind parent_instance (fun i -> instance_syntax i u) in
-        Apply (ref, levels, List.map argument args)
+        application ref levels (List.map argument args)
       | None ->
-        let value = Vars.substl (List.map Constr.mkVar names) operand in
-        let rec variables acc t = match Constr.kind t with
-          | Var id -> Id.Set.add id acc
-          | _ -> Constr.fold variables acc t in
+        (* Close the inherited term over its native telescope before applying
+           the child's terms. Binders inside the inherited term cannot capture
+           free names in the supplied arguments. *)
+        let closed = Term.it_mkLambda_or_LetIn operand context in
         let env = Global.env () in
         let flags = PrintingFlags.make_raw (PrintingFlags.current ()) in
-        let expr = Constrextern.extern_constr ~flags env (Evd.from_env env)
-          (EConstr.of_constr value) in
-        Term (expr, Id.Set.elements (variables Id.Set.empty value))
+        let fn = Constrextern.extern_constr ~flags env (Evd.from_env env)
+          (EConstr.of_constr closed) in
+        Constrexpr_ops.mkAppC (fn, List.rev inputs)
   in
   reference, instance, List.map argument operands
 
@@ -168,11 +155,8 @@ let merge_instance reference inherited incoming =
     in
     Some (List.map2 quality qs qs', List.map2 level us us')
 
-let dependency_expr reference instance arguments =
-  CAst.make (CAppExpl ((qualify reference, instance), List.map input_expr arguments))
-
 let dependency_parameter reference name instance arguments =
-  let ty = dependency_expr reference instance arguments in
+  let ty = application reference instance arguments in
   parameter name (Generalized (Glob_term.MaxImplicit, true)) ty
 
 let binder_name reference reserved key =
@@ -205,20 +189,11 @@ let add_dependency env reserved dependencies reference instance arguments key =
     { key; selection = Witness reference; arguments; instance; parameter; shared = false } :: dependencies, name
   | _ -> error "More than one selected component matches an inherited mixin."
 
-let argument_name own term =
-  match term.CAst.v with
-  | CRef (name, None) when Libnames.qualid_is_ident name ->
-    let id = Libnames.qualid_basename name in
-    if Id.Set.mem id own then id
-    else error ("Unknown ordinary mixin parameter: " ^ Id.to_string id ^ ".")
-  | _ -> error "Parent ordinary arguments must name parameters declared on the child."
-
-let read_arguments own args =
+let read_arguments args =
   List.partition_map (fun (term, explicit) ->
-    let value = argument_name own term in
     match Option.map (fun arg -> arg.CAst.v) explicit with
-    | None -> Either.Left value
-    | Some (ExplByName key) -> Either.Right (key, value)
+    | None -> Either.Left term
+    | Some (ExplByName key) -> Either.Right (key, term)
     | Some (ExplByPos _) -> error "Supply an implicit ordinary parameter by name."
   ) args
 
@@ -245,16 +220,16 @@ let struct_arguments qid args =
   let env = Global.env () in
   let ty, _ = Typeops.type_of_global_in_context env reference in
   let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
-  let positional, named = List.partition_map Fun.id args in
+  let positional, named = read_arguments args in
   let rec collect env ty statuses positional named =
     match Constr.kind (Reduction.whd_all env ty) with
     | Prod (ann, domain, body) ->
       let status, rest = match statuses with
         | [] -> None, [] | x :: xs -> x, xs in
-      let id, positional, named =
+      let term, positional, named =
         take_argument (Impargs.binding_kind_of_status status) ann positional named in
       let env = Environ.push_rel (Context.Rel.Declaration.LocalAssum (ann, domain)) env in
-      id :: collect env body rest positional named
+      term :: collect env body rest positional named
     | _ ->
       if positional <> [] || named <> [] then error "Unexpected or repeated parent argument.";
       []
@@ -262,7 +237,7 @@ let struct_arguments qid args =
   collect env ty implicits positional named
 
 (* A virtual mixin retains the ordinary binders of the exported layout. *)
-let add_ordinary_field instance key ty names reserved dependencies =
+let add_ordinary_field instance key ty ctx inputs reserved dependencies =
   let ty, arguments = match Constr.kind ty with
     | Sort (Sorts.Type u) ->
       let sort = match instance, Univ.Universe.level u with
@@ -273,9 +248,9 @@ let add_ordinary_field instance key ty names reserved dependencies =
         | _ -> Constrexpr_ops.expr_Type_sort in
       CAst.make (CSort sort), []
     | _ ->
-      let head, levels, args = dependency_type instance ty names in
+      let head, levels, args = dependency_type instance ty ctx inputs in
       let levels = Option.bind instance (fun i -> instance_syntax i levels) in
-      CAst.make (CAppExpl ((qualify head, levels), List.map input_expr args)), args in
+      application head levels args, args in
   let same d = match d.selection, d.key with
     | Ordinary, Some k -> Id.equal key k
     | _ -> false in
@@ -289,33 +264,46 @@ let add_ordinary_field instance key ty names reserved dependencies =
     { key = Some key; selection = Ordinary; arguments; instance = None;
       parameter; shared = false } :: dependencies, name
 
-let expand_combination env reference syntax_instance instance shape names dependencies reserved views =
+(* Rocq's concrete-syntax equality deliberately ignores the payload of
+   tactic terms and holes. Such applications need their own typing check. *)
+let rec needs_elaboration () found expr =
+  found || match expr.CAst.v with
+  | CGenarg _ | CGenargGlob _ | CHole _ | CEvar _ -> true
+  | _ -> Constrexpr_ops.fold_constr_expr_with_binders (fun _ () -> ())
+      needs_elaboration () false expr
+
+let same_application a b =
+  not (needs_elaboration () false a) && Constrexpr_ops.constr_expr_eq a b
+
+let expand_combination env reference syntax_instance instance shape inputs dependencies reserved views =
   let ctor_ty, _ = Typeops.type_of_global_in_context env shape.constructor in
-  let rec skip count ty =
-    if count = 0 then ty else
+  let rec skip count ctx ty =
+    if count = 0 then ctx, ty else
     match Constr.kind ty with
-    | Prod (_, _, rest) -> skip (count - 1) rest
+    | Prod (ann, domain, rest) ->
+      skip (count - 1) (Context.Rel.Declaration.LocalAssum (ann, domain) :: ctx) rest
     | _ -> error "Invalid fixed parameters in the exported mixin."
   in
-  let rec expand dependencies reserved names keys ty =
+  let rec expand dependencies reserved ctx inputs keys ty =
     match keys, Constr.kind ty with
-    | key :: keys, Prod (_, ty, rest) ->
+    | key :: keys, Prod (ann, ty, rest) ->
       let dependencies, name =
         if Id.Set.mem key shape.ordinary_fields then
-          add_ordinary_field instance key ty names reserved dependencies
+          add_ordinary_field instance key ty ctx inputs reserved dependencies
         else
-          let component, levels, arguments = dependency_type instance ty names in
+          let component, levels, arguments = dependency_type instance ty ctx inputs in
           let levels = Option.bind instance (fun i -> instance_syntax i levels) in
           add_dependency env reserved dependencies component levels arguments (Some key) in
-      expand dependencies (Id.Set.add name reserved) (name :: names) keys rest
-    | [], _ -> dependencies, reserved, List.rev names
+      expand dependencies (Id.Set.add name reserved)
+        (Context.Rel.Declaration.LocalAssum (ann, ty) :: ctx) (variable name :: inputs) keys rest
+    | [], _ -> dependencies, reserved, List.rev inputs
     | _ -> error "The exported mixin does not match its component metadata."
   in
-  let ty = skip (List.length names) ctor_ty in
-  let deps, reserved, args = expand dependencies reserved names shape.components ty in
-  let value = CAst.make (CAppExpl ((qualify shape.constructor, syntax_instance), List.map variable args)) in
+  let ctx, ty = skip (List.length inputs) [] ctor_ty in
+  let deps, reserved, args = expand dependencies reserved ctx inputs shape.components ty in
+  let value = application shape.constructor syntax_instance args in
   if List.exists (function
-    | CLocalDef (_, _, previous, _) -> Constrexpr_ops.constr_expr_eq previous value
+    | CLocalDef (_, _, previous, _) -> same_application previous value
     | _ -> false) views then deps, reserved, views
   else
     let name = binder_name reference reserved None in
@@ -327,11 +315,11 @@ let expand_combination env reference syntax_instance instance shape names depend
    each requested type, even if the class body ignores that parent. *)
 let check_parent_uses reserved field_names dependencies uses =
   let declared = List.filter_map (fun d -> match d.selection with
-    | Witness ref -> Some (d.parameter.name, dependency_expr ref d.instance d.arguments)
+    | Witness ref -> Some (d.parameter.name, application ref d.instance d.arguments)
     | Ordinary -> None) dependencies in
   let check (used, known, checks) (name, expected) =
     if List.exists (fun (id, ty) ->
-      Id.equal id name && Constrexpr_ops.constr_expr_eq ty expected) known
+      Id.equal id name && same_application ty expected) known
     then used, known, checks
     else
       let taken id = Id.Set.mem id used ||
@@ -343,10 +331,73 @@ let check_parent_uses reserved field_names dependencies uses =
     (Id.Set.union reserved field_names, declared, []) uses in
   List.rev checks
 
-let inheritance own field_names parents =
+(* The prefix and the public class are elaborated in separate universe
+   contexts. Keep named levels and let Rocq infer fresh, unnamed levels
+   again when it checks the public declaration. *)
+let scoped_term env sigma value =
+  let flags = PrintingFlags.make_raw (PrintingFlags.current ()) in
+  let detype = { flags.detype with universes = true; qualities = true } in
+  let hole = Glob_term.UAnonymous { rigid = UState.UnivFlexible false } in
+  let quality = function CRawQuality (Sorts.Quality.QVar _) -> CQAnon None | q -> q in
+  let level = function Glob_term.UNamed (CRawType _) -> hole | u -> u in
+  let instance = Option.map (fun (qs, us) -> List.map quality qs, List.map level us) in
+  let rec reopen () expr =
+    let expr = Constrexpr_ops.map_constr_expr_with_binders (fun _ () -> ()) reopen () expr in
+    CAst.map (function
+      | CRef (r, u) -> CRef (r, instance u)
+      | CAppExpl ((r, u), args) -> CAppExpl ((r, instance u), args)
+      | CProj (p, (r, u), args, t) -> CProj (p, (r, instance u), args, t)
+      | CArray (u, xs, v, t) -> CArray (instance u, xs, v, t)
+      | CSort (q, Glob_term.UNamed us)
+        when List.exists (function CRawType _, _ -> true | _ -> false) us ->
+        CSort (Option.map quality q, hole)
+      | term -> term) expr in
+  reopen () (Constrextern.extern_constr ~flags:{ flags with detype } env sigma value)
+
+(* Elaborate the ordinary actuals in the prefix of completed parents.
+   The holes for inherited positions provide expected types for dependent
+   arguments. The component table supplies the actual witnesses below. *)
+let scoped_arguments env locals sigma reference instance roles kinds typ positional named =
+  let rec collect ty roles kinds pos named = match roles, Constr.kind ty with
+    | _, LetIn (_, v, _, body) -> collect (Vars.subst1 v body) roles kinds pos named
+    | role :: rest, Prod (ann, _, body) ->
+      let kind, kinds = match kinds with [] -> None, [] | k :: ks -> k, ks in
+      let arg, pos, named = match role with
+        | Mixin _ -> CAst.make (CHole None), pos, named
+        | Value -> take_argument (Impargs.binding_kind_of_status kind) ann pos named in
+      arg :: collect body rest kinds pos named
+    | [], Sort _ when pos = [] && named = [] -> []
+    | _ -> error "Unexpected or repeated ordinary argument in extends." in
+  let args = collect typ roles kinds positional named in
+  let sigma, checked = Constrintern.interp_type_evars env sigma
+    (application reference instance args) in
+  let _, values = EConstr.decompose_app_list sigma checked in
+  List.filter_map Fun.id (List.map2 (fun role value -> match role with
+    | Mixin _ -> None
+    | Value ->
+      if Evarutil.has_undefined_evars sigma value then
+        error "Unresolved ordinary argument in the scope of this parent.";
+      let value = List.fold_left (fun value d -> match d with
+        | Context.Named.Declaration.LocalDef (ann, rhs, _) ->
+          EConstr.Vars.replace_vars sigma [Context.binder_name ann, rhs] value
+        | _ -> value) value locals in
+      Some (scoped_term env sigma value)
+  ) roles values)
+
+let rec reserve_actual_names () names expr =
+  let names = match expr.CAst.v with
+    | CRef (qid, _) | CAppExpl ((qid, _), _) when Libnames.qualid_is_ident qid ->
+      Id.Set.add (Libnames.qualid_basename qid) names
+    | _ -> names in
+  Constrexpr_ops.fold_constr_expr_with_binders (fun _ () -> ())
+    reserve_actual_names () names expr
+
+let inheritance universes ordinary own field_names parents =
   let env = Global.env () in
+  let sigma, _, _ = Constrintern.interp_cumul_univ_decl_opt env universes in
+  let header = List.map (fun (_, (binder, _)) -> binder) ordinary in
   let inherit_parent (dependencies, reserved, views, uses) (parent, syntax_instance, args) =
-    let positional, named = read_arguments own args in
+    let positional, named = read_arguments args in
     let reference = Nametab.locate parent in
     let ind = match reference with
       | GlobRef.IndRef ind -> ind
@@ -357,6 +408,13 @@ let inheritance own field_names parents =
     let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
     let combination = Indmap_env.find_opt ind !combinations in
     let ty, context = Typeops.type_of_global_in_context env reference in
+    let scope = header @ List.rev_map (fun d -> d.parameter.binder) dependencies @
+      List.rev views in
+    let sigma, (_, ((scope_env, locals), _, _)) =
+      Constrintern.interp_named_context_evars env sigma scope in
+    let values = scoped_arguments scope_env locals sigma reference syntax_instance
+      roles implicits ty positional named in
+    let reserved = List.fold_left (reserve_actual_names ()) reserved values in
     let instance = Option.map (fun (qs, us) ->
       if (List.length qs, List.length us) <> UVars.AbstractContext.size context then
         error "Wrong number of universe arguments for the parent mixin.";
@@ -367,59 +425,40 @@ let inheritance own field_names parents =
         add_dependency env reserved dependencies reference instance arguments key in
       dependencies, Id.Set.add name reserved, name
     in
-    let rec add_parameters dependencies reserved names roles implicits rest positional named =
-      let implicit, remaining = match implicits with
-        | [] -> None, []
-        | implicit :: remaining -> implicit, remaining in
+    let rec add_parameters dependencies reserved ctx inputs roles rest values =
       match roles, Constr.kind rest with
       | _, LetIn (_, value, _, rest) ->
-        add_parameters dependencies reserved names roles implicits (Vars.subst1 value rest) positional named
-      | Mixin key :: roles, Prod (_, ty, rest) ->
-        let dependency, levels, arguments = dependency_type instance ty names in
+        add_parameters dependencies reserved ctx inputs roles (Vars.subst1 value rest) values
+      | Mixin key :: roles, Prod (ann, ty, rest) ->
+        let dependency, levels, arguments = dependency_type instance ty ctx inputs in
         let levels = Option.bind instance (fun i -> instance_syntax i levels) in
         let dependencies, reserved, name = add dependencies reserved dependency levels arguments key in
-        add_parameters dependencies reserved (name :: names) roles remaining rest positional named
-      | Value :: roles, Prod (ann, _, rest) ->
-        let kind = Impargs.binding_kind_of_status implicit in
-        let name, positional, named = take_argument kind ann positional named in
-        add_parameters dependencies reserved (name :: names) roles remaining rest positional named
+        add_parameters dependencies reserved (Context.Rel.Declaration.LocalAssum (ann, ty) :: ctx)
+          (variable name :: inputs) roles rest values
+      | Value :: roles, Prod (ann, ty, rest) ->
+        let expr, values = match values with x :: xs -> x, xs | [] -> assert false in
+        add_parameters dependencies reserved (Context.Rel.Declaration.LocalAssum (ann, ty) :: ctx)
+          (expr :: inputs) roles rest values
       | [], Sort _ ->
-        if positional <> [] || named <> [] then
-          error "Unexpected or repeated ordinary argument in extends.";
         (match combination with
          | None ->
-           let arguments = List.rev_map (fun id -> Binder id) names in
+           let arguments = List.rev inputs in
            let deps, reserved, name =
              add dependencies reserved reference syntax_instance arguments None in
-           let expected = dependency_expr reference syntax_instance arguments in
+           let expected = application reference syntax_instance arguments in
            deps, reserved, views, (name, expected) :: uses
          | Some shape ->
            let deps, reserved, views = expand_combination env reference syntax_instance
-             instance shape names dependencies reserved views in
+             instance shape inputs dependencies reserved views in
            deps, reserved, views, uses)
       | _ -> error "The parent mixin parameters do not match its Minks declaration."
     in
-    add_parameters dependencies reserved [] roles implicits ty positional named
+    add_parameters dependencies reserved [] [] roles ty values
   in
   let dependencies, reserved, views, uses =
     List.fold_left inherit_parent ([], own, [], []) parents in
-  let rec order pending =
-    match pending with
-    | [] -> []
-    | _ ->
-      let ready d = List.for_all (fun arg ->
-        not (List.exists (fun prior -> Id.equal prior.parameter.name arg) pending)
-      ) (List.concat_map input_binders d.arguments) in
-      let next = match List.find_opt (fun d -> d.shared && ready d) pending with
-        | Some d -> d
-        | None -> (match List.find_opt ready pending with
-          | Some d -> d
-          | None -> error "Cyclic inherited mixin dependencies.") in
-      next :: order (List.filter (fun d ->
-        not (Id.equal d.parameter.name next.parameter.name)) pending)
-  in
   let checks = check_parent_uses reserved field_names dependencies (List.rev uses) in
-  order (List.rev dependencies), List.rev views @ checks
+  List.rev dependencies, List.rev views @ checks
 
 let ordinary_parameters binders =
   List.concat_map (function
@@ -430,7 +469,40 @@ let ordinary_parameters binders =
     | _ -> error "Mixin value parameters must be ordinary binders."
   ) binders
 
-let order_parameters ordinary inherited =
+(* Elaborate the telescope with all ordinary inputs in scope. Rocq resolves
+   the dependencies inside notations, implicit applications and projections.
+   Only then choose the public order of its binders. *)
+let parameter_references universes ordinary inherited =
+  let env = Global.env () in
+  let sigma, _, _ = Constrintern.interp_cumul_univ_decl_opt env universes in
+  let binders = List.map (fun (_, (binder, _)) -> binder) ordinary @
+    List.map (fun d -> d.parameter.binder) inherited in
+  let sigma, (_, ((env, ctx), _, _)) =
+    Constrintern.interp_named_context_evars env sigma binders in
+  List.fold_left (fun refs d ->
+    let id = Context.Named.Declaration.get_id d in
+    Id.Map.add id (Termops.global_vars_set_of_decl env sigma d) refs
+  ) Id.Map.empty ctx
+
+let order_witnesses references inherited =
+  let rec order pending =
+    match pending with
+    | [] -> []
+    | _ ->
+      let ready d = Id.Set.for_all (fun arg ->
+        not (List.exists (fun prior -> Id.equal prior.parameter.name arg) pending)
+      ) (Id.Map.find d.parameter.name references) in
+      let next = match List.find_opt (fun d -> d.shared && ready d) pending with
+        | Some d -> d
+        | None -> (match List.find_opt ready pending with
+          | Some d -> d
+          | None -> error "Cyclic inherited mixin dependencies.") in
+      next :: order (List.filter (fun d ->
+        not (Id.equal d.parameter.name next.parameter.name)) pending)
+  in
+  order inherited
+
+let order_parameters references ordinary inherited =
   let positions =
     List.fold_left (fun (pos, indexes) (name, _) ->
       let indexes = match name with
@@ -448,9 +520,9 @@ let order_parameters ordinary inherited =
   in
   let _, ordinary, inherited =
     List.fold_left (fun (index, ordinary, output) dependency ->
-      let last = List.fold_left (fun last name ->
+      let last = Id.Set.fold (fun name last ->
         match Id.Map.find_opt name positions with None -> last | Some i -> max last i
-      ) (-1) (List.concat_map input_binders dependency.arguments) in
+      ) (Id.Map.find dependency.parameter.name references) (-1) in
       let index, ordinary, output = emit_through last index ordinary output in
       let role = match dependency.selection with Witness _ -> Mixin dependency.key | Ordinary -> Value in
       index, ordinary, (dependency.parameter.binder, role) :: output
@@ -473,8 +545,12 @@ let add_to_declaration parents decl =
         match field_name.CAst.v with
         | Name id -> Id.Set.add id names | Anonymous -> names) Id.Set.empty entries
     | _ -> assert false in
-  let inherited, views = inheritance visible field_names parents in
-  let binders, roles = List.split (order_parameters ordinary inherited) in
+  let _, (_, universes) = name in
+  let inherited, views = inheritance universes ordinary visible field_names parents in
+  let references = if inherited = [] then Id.Map.empty
+    else parameter_references universes ordinary inherited in
+  let inherited = order_witnesses references inherited in
+  let binders, roles = List.split (order_parameters references ordinary inherited) in
   let witnesses = List.filter_map (fun d -> match d.selection with
     | Witness ref -> Some ref | Ordinary -> None) inherited in
   ((name, (binders @ views, extra), sort, fields), notations), roles, witnesses
@@ -489,7 +565,21 @@ let () =
   let open Elpi.API in
   let open BuiltInPredicate in
   let module Rocq = Elpi_plugin.Rocq_elpi_HOAS in
+  let global ~depth hyps constraints state =
+    let state, context, _, goals =
+      Rocq.get_global_env_current_sigma ~depth hyps constraints state in
+    state, context, constraints, goals in
   ignore (BuiltIn.declare ~file_name:"minks.combinations" [
+    BuiltIn.MLCode (Pred ("minks.section-inputs",
+      CIn (BuiltInData.listC Elpi_plugin.Rocq_elpi_builtins.closed_term, "Parent applications",
+      Out (BuiltInData.list Rocq.gref, "Section variable references",
+      Read (global, "Read the Section dependencies of terms, including global references."))),
+      (fun terms _ ~depth:_ ctx _ state ->
+        let used = List.fold_left (fun ids term -> Id.Set.union ids
+          (Termops.global_vars_set ctx.Rocq.env (Rocq.get_sigma state) term)
+        ) Id.Set.empty terms in
+        (), Some (List.map (fun id -> GlobRef.VarRef id) (Id.Set.elements used)))),
+      BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.mixin-header",
       In (Rocq.inductive, "Registered class",
       Out (BuiltInData.list Rocq.gref, "Direct parents",

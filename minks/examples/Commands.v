@@ -45,31 +45,14 @@ Check @HasCentralElement
 
 Minks.Struct MonoidByComponents
   extends Type
-  with  chosenEquiv : HasEquiv,
-        chosenMagma : HasMagma,
-        chosenAssoc : IsSemigroup,
-        chosenPoint : HasPoint,
-        chosenUnitLaw : IsUnitAt,
-        hasMonoid : HasMonoid,
+  with  [chosenEquiv, chosenMagma, chosenAssoc, chosenPoint, chosenUnitLaw] : HasMonoid,
         central : HasCentralElement.
 
-Example assembled_monoid_uses_existing_fields (M : MonoidByComponents)
-  : MonoidByComponents_hasMonoid M =
-      MakeHasMonoid M (MonoidByComponents_chosenEquiv M)
-        (MonoidByComponents_chosenMagma M) (MonoidByComponents_chosenAssoc M)
-        (MonoidByComponents_chosenPoint M) (MonoidByComponents_chosenUnitLaw M)
-  := eq_refl.
+Check MonoidByComponents_central.
 
-Minks.Struct MonoidFromSemigroup
+Fail Minks.Struct MonoidFromSemigroup
   extends Semigroup
-  with  hasMonoid : HasMonoid.
-
-Example assembled_monoid_adds_unit_data (S : Semigroup)
-    (P : HasPoint S)
-    (U : IsUnitAt S (hasPoint := P))
-  : HasMonoid_isUnitAt
-      (MonoidFromSemigroup_hasMonoid (MonoidFromSemigroupOfSemigroup S P U)) = U
-  := eq_refl.
+  with  : HasMonoid.
 
 (** Reject a shared multiplication with incompatible selected dependencies. *)
 
@@ -202,27 +185,32 @@ Minks.Mixin HasFlag
   :=
   { flag : bool }.
 
-(** A physical field has one projection name per structure. Repeating that
-    name is allowed, and a child can choose its own name for the same key. *)
+(** A local key introduces a new choice, even when its class is inherited.
+    A projection alias leaves the freshness check on the original key. *)
 
 Module ProjectionNames.
 Minks.Struct NamedFlag
   with  chosen as parent_flag : HasFlag.
 
-Minks.Struct RenamedFlag
+Fail Minks.Struct RepeatedParent
   extends NamedFlag
-  with  chosen : HasFlag,
-        chosen as child_flag : HasFlag,
-        chosen as child_flag : HasFlag.
+  with  chosen : HasFlag.
 
-Example inherited_flag (F : RenamedFlag)
-  : child_flag F = parent_flag (RenamedFlagToNamedFlag F)
-  := eq_refl.
-
-Fail Minks.Struct ConflictingNames
+Fail Minks.Struct RenamedParent
   extends NamedFlag
+  with  chosen as child_flag : HasFlag.
+
+Fail Minks.Struct RepeatedLocal
   with  chosen as first_flag : HasFlag,
         chosen as second_flag : HasFlag.
+
+Minks.Struct AnotherFlag
+  extends NamedFlag
+  with  other as second_flag : HasFlag.
+
+Example other_flag_computes (first second : HasFlag)
+  : second_flag (MakeAnotherFlag first second) = second
+  := eq_refl.
 End ProjectionNames.
 
 Minks.Mixin FlagPair (P Q : HasFlag)
@@ -305,15 +293,11 @@ Check @HasFlagComparison : ∀ (L R : HasFlag) (A : Type), Type.
 
 Minks.Struct TwoFlagsByExport
   extends Type
-  with  flags : HasTwoFlags.
+  with  as [left_choice, right_choice] : HasTwoFlags.
 
-Example assembled_flags_remain_distinct
-  : @flag (HasTwoFlags_leftFlag
-      (TwoFlagsByExport_flags (MakeTwoFlagsByExport bool {| flag := true |}
-        {| flag := false |}))) = true
-    ∧ @flag (HasTwoFlags_rightFlag
-      (TwoFlagsByExport_flags (MakeTwoFlagsByExport bool {| flag := true |}
-        {| flag := false |}))) = false
+Example exported_flags_remain_distinct
+  : let F := MakeTwoFlagsByExport bool {| flag := true |} {| flag := false |} in
+    @flag (left_choice F) = true ∧ @flag (right_choice F) = false
   := conj eq_refl eq_refl.
 
 Minks.Struct OtherTwoFlags
@@ -321,17 +305,36 @@ Minks.Struct OtherTwoFlags
   with  firstFlag : HasFlag,
         secondFlag : HasFlag.
 
-Fail Minks.Struct AmbiguousFlagAssembly
+Minks.Struct FourFlags
   extends OtherTwoFlags
-  with  flags : HasTwoFlags.
+  with  : HasTwoFlags.
+
+Fail Minks.Struct DuplicateFlagBinding
+  extends OtherTwoFlags
+  with  [firstFlag, thirdFlag] : HasTwoFlags.
+Fail Minks.Struct ShortFlagBinding
+  extends Type
+  with  [onlyFlag] : HasTwoFlags.
+Fail Minks.Struct ShortFlagAliases
+  extends Type
+  with  [a, b] as [only_projection] : HasTwoFlags.
+
+(** Omitted fixed inputs see the public keys at the entry. A later
+    rename preserves the earlier choice and cannot resolve an ambiguity. *)
+
+Minks.Struct RenameAfterBatch
+  extends TwoFlags
+  with  [extra] : HasRightFlag, leftFlag as originalLeft.
+Fail Minks.Struct PrematurePreference
+  extends OtherTwoFlags
+  with  [extra] : HasRightFlag, firstFlag as leftFlag.
 
 Minks.Struct RightFlagByExport
   extends OtherTwoFlags
-  with  flags : HasRightFlag [carrier, secondFlag].
+  with  [thirdFlag] as [third_choice] : HasRightFlag [carrier, secondFlag].
 
-Example assembled_flags_respect_explicit_selection (F : RightFlagByExport)
-  : @HasRightFlag_rightFlag F (RightFlagByExport_secondFlag F)
-      (RightFlagByExport_flags F) = RightFlagByExport_firstFlag F
+Example selected_third_flag (A : Type) (L R T : HasFlag)
+  : third_choice (MakeRightFlagByExport A L R T) = T
   := eq_refl.
 
 Minks.Inspect HasRightFlag.

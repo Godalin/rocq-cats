@@ -54,7 +54,9 @@ Elpi Db minks.flat.db lp:{{
   pred struct-packer i:inductive, o:constant.
   pred struct-export i:inductive, o:inductive, o:list id.
   pred export-base i:gref, o:inductive.
-  pred struct-assembly i:inductive, o:constant, o:list id.
+  kind field-name-info type.
+  type named-field id -> list id -> list (pair inductive id) -> field-name-info.
+  pred field-names i:inductive, o:list field-name-info.
   pred flat-layout i:list string, o:inductive, o:list component,
       o:list (pair id constant).
 }}.
@@ -141,15 +143,6 @@ Elpi File minks.spec lp:{{
     coq.env.section-variables Vars, std.mem Vars C, coq.gref->id (const C) Name,
     parameter-key Name Key, T = global (const C).
 
-  pred explicit-input i:list (pair id term), i:id, o:id.
-  explicit-input Fields Name Key :-
-    if (section-input Name Ambient _)
-      (if (std.mem Fields (pr Name _))
-        (coq.error "Both a section parameter and a field have the name:" Name)
-        (Key = Ambient))
-      (if (std.mem Fields (pr Name _)) (Key = Name)
-        (coq.error "Unknown component input:" Name)).
-
   pred key-inputs i:list id, o:list input.
   key-inputs Keys Inputs :- std.map Keys (k\r\ r = key-input k) Inputs.
 
@@ -198,16 +191,30 @@ Elpi File minks.spec lp:{{
     selected-witness Cs Fields Ref Deps Key,
     mixin-arguments Params Cs Fields {std.append Keys [Key]} Args.
 
+  pred field-type i:component, i:list (pair id term), o:term.
+
+  pred compatible-field i:list (pair id term), i:field-kind, i:list input,
+      i:field-kind, i:list input.
+  compatible-field Env (mixin-kind Ref) Args (mixin-kind Ref) Other :-
+    std.forall2 Args Other (same-input Env).
+  compatible-field Env (native-kind A) Args (native-kind B) Other :-
+    if (A = B, std.forall2 Args Other (same-input Env)) true (
+      field-type (slot "" (native-kind A) Args) Env Left,
+      field-type (slot "" (native-kind B) Other) Env Right,
+      coq.unify-eq Left Right ok).
+
   pred available-component i:list component, o:id, i:field-kind, i:list input.
   available-component Cs Key Kind Deps :-
-    std.mem Cs (slot Key Kind Actual), component-env Env,
-    std.forall2 Deps Actual (same-input Env).
+    std.mem Cs (slot Key Other Actual), component-env Env,
+    compatible-field Env Kind Deps Other Actual.
 
+  pred source-keys o:list (pair id id).
   pred match-component i:id, i:field-kind, i:list input, i:list component,
       i:list id, o:id.
   match-component Key Kind Deps Available Used Actual :-
-    if (available-component Available Key Kind Deps, not (std.mem Used Key))
-      (Actual = Key)
+    if (source-keys Names, std.mem Names (pr Key Original),
+        available-component Available Original Kind Deps, not (std.mem Used Original))
+      (Actual = Original)
       (available-component Available Actual Kind Deps, not (std.mem Used Actual)).
 
   pred translate-key i:list (pair id id), i:id, o:id.
@@ -407,12 +414,14 @@ Elpi File minks.spec lp:{{
   pred component-key i:component, o:id.
   component-key (slot K _ _) K.
 
+  pred inspection-names o:list field-name-info.
+
   pred parent-sources i:list inductive, i:id, o:list id.
   parent-sources [] _ [].
   parent-sources [P | Ps] Key Sources :-
-    close P Cs,
     parent-sources Ps Key Rest,
-    if (contains-key Key Cs)
+    if (inspection-names Names, std.mem Names (named-field Key _ Origins),
+        std.mem Origins (pr P _))
       (coq.gref->id (indt P) Name, Sources = [Name | Rest])
       (Sources = Rest).
 
@@ -464,9 +473,8 @@ Elpi File minks.spec lp:{{
     coq.gref->id (indt I) Head, std.string.concat " " [Head | Args] Label.
 
   pred print-struct i:list struct-parent, i:id, i:list id, i:list inductive, i:list component,
-      i:list struct-conversion, i:list constant, i:list (pair inductive (list id)),
-      i:list (pair constant (list id)).
-  print-struct Declared Name Params Parents Cs Views Packers Exports Assemblies :-
+      i:list struct-conversion, i:list constant, i:list (pair inductive (list id)).
+  print-struct Declared Name Params Parents Cs Views Packers Exports :-
     std.map Declared parent-label Names,
     Title is "Minks structure " ^ Name,
     coq.say Title,
@@ -475,19 +483,16 @@ Elpi File minks.spec lp:{{
       (Line is "Direct parents: " ^ {std.string.concat ", " Names},
        coq.say Line),
     coq.say "Packed fields:",
-    std.forall Cs (c\ sigma mode\
+    std.forall Cs (c\ sigma mode history\
       if (c = slot _ (native-kind _) _) (mode = " [Coercion]")
         (if (auto-instance Cs c) (mode = " [instance]") (mode = " [explicit]")),
-      print-slot Parents mode c),
+      print-slot Parents mode c,
+      if (inspection-names Ns, std.mem Ns (named-field {component-key c} history _),
+          history = [_ | _])
+        (coq.say "    Retired keys:" history) true),
     if (Views = []) true (coq.say "Conversions:", std.forall Views print-view),
     if (Packers = []) true
       (coq.say "Packing functions:", std.forall Packers print-packer),
     if (Exports = []) true
-      (coq.say "Relative interfaces:", std.forall Exports print-export),
-    if (Assemblies = []) true (
-      coq.say "Assembled views:",
-      std.forall Assemblies (a\ sigma ref keys label line\
-        a = pr ref keys, coq.gref->id (const ref) label,
-        line is "  " ^ label ^ " [" ^ {std.string.concat ", " keys} ^ "]",
-        coq.say line)).
+      (coq.say "Relative interfaces:", std.forall Exports print-export).
 }}.

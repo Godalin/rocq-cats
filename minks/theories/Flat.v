@@ -30,7 +30,10 @@ Elpi File minks.flat lp:{{
     std.map Deps (input-term Env) Args,
     coq.mk-app Head Args Ty.
 
-  pred field-type i:component, i:list (pair id term), o:term.
+  pred selected-head i:id, i:field-kind, o:term.
+  field-type (slot Key Kind Args) Env Ty :-
+    selected-head Key Kind Head, !,
+    std.map Args (input-term Env) Terms, coq.mk-app Head Terms Ty.
   field-type (slot _ (mixin-kind Ref) Args) Env Ty :- component-type Ref Args Env Ty.
   field-type (slot _ (native-kind (ref-head Ref)) Args) Env Ty :- component-type Ref Args Env Ty.
   field-type (slot _ (native-kind sort-head) []) _ (sort (typ U)) :- coq.univ.new U.
@@ -128,7 +131,7 @@ Elpi File minks.flat lp:{{
     std.map Cs component-key Keys,
     std.map ParentCs component-key ParentKeys,
     record-fields Parent ParentKeys ParentFields,
-    std.filter Cs (c\ not (std.mem ParentCs c)) Missing,
+    std.filter Cs (c\ not (contains-key {component-key c} ParentCs)) Missing,
     Term = fun `parent` ParentTy Body,
     (pi p\ sigma inherited env\
       apply-fields ParentFields p inherited,
@@ -168,26 +171,81 @@ Elpi File minks.flat lp:{{
       (coq.CS.declare-instance (const View))
       true.
 
-  pred strict-substructure i:list component, i:list component.
-  strict-substructure Small Large :-
-    std.length Small N,
-    std.length Large M,
-    N < M,
-    std.forall Small (c\ std.mem Large c).
+  % Use rigid symbols for source parameter and field identities. Target
+  % formals are pattern variables shared by all their occurrences. The
+  % resulting substitution is checked on the actual Rocq constructor below.
+  pred with-symbols i:list id, i:list (pair id term), i:(list (pair id term) -> prop).
+  with-symbols [] Env K :- K Env.
+  with-symbols [Key | Keys] Env K :-
+    pi symbol\ with-symbols Keys [pr Key symbol | Env] K.
 
-  pred inferred-view i:inductive, i:list (pair id constant), i:inductive,
-      i:list component, o:constant.
-  inferred-view Source Fields Target TargetCs View :-
+  pred pattern-term i:list (pair id term), i:input, o:term.
+  pattern-term Env (key-input Key) T :-
+    if (std.mem Env (pr Key T)) true (ambient-value Key T).
+  pattern-term Env (projection-input P Inputs) T :-
+    std.map Inputs (pattern-term Env) Args, coq.mk-app (global (const P)) Args T.
+  pattern-term Env (host-input Expr Inputs) T :-
+    std.map Inputs (pattern-term Env) Args, pattern-body Expr Shape,
+    open-scoped Shape Args T.
+
+  % Compare binding positions independently of the fresh universe instances.
+  pred pattern-body i:scoped-term, o:scoped-term.
+  pattern-body (scope-arg Body) (scope-arg Rest) :-
+    pi x\ pattern-body (Body x) (Rest x).
+  pattern-body (scope-body Body) (scope-body T) :-
+    (pi ref u\ copy (pglobal ref u) (global ref) :- !) => copy Body T.
+
+  pred match-descriptor i:list (pair id term), i:list (pair id term),
+      i:list component, i:component.
+  match-descriptor Source Target Cs (slot Key Kind Inputs) :-
+    std.mem Cs (slot Key Other Actual),
+    if (Kind = mixin-kind _) (Kind = Other) (Other = native-kind _),
+    std.map Inputs (pattern-term Target) Patterns,
+    std.map Actual (pattern-term Source) Terms, Patterns = Terms.
+
+  pred view-indices i:inductive, i:list component, i:inductive, i:list component,
+      o:list int.
+  view-indices Source Cs Target Hs Positions :-
+    current-layout Source 0 Cs Names SourceCs,
+    current-layout Target 0 Hs Formals TargetCs,
+    std.map Names parameter-key SourceKeys, std.map Formals parameter-key TargetKeys,
+    std.map Cs component-key Fields,
+    with-symbols {std.append SourceKeys Fields} [] (env\ sigma bindings common target symbols\
+      std.map SourceKeys (k\x\ std.mem env (pr k x)) symbols,
+      std.map TargetKeys (k\p\ sigma x\ p = pr k x) bindings,
+      std.filter env (p\ sigma k\ p = pr k _, std.mem Fields k) common,
+      std.append bindings common target,
+      std.forall TargetCs (match-descriptor env target SourceCs),
+      std.map bindings (p\i\ sigma actual\ p = pr _ actual, not (var actual),
+        parameter-index symbols actual i) Positions).
+
+  pred inferred-body i:term, i:term, i:list term, i:list int,
+      i:list (pair id constant), i:list id, i:constructor, o:term.
+  inferred-body (prod Name Ty Body) Applied Params Positions Fields Keys K
+      (fun Name Ty Rest) :- !,
+    pi x\ inferred-body (Body x) Applied {std.append Params [x]} Positions
+      Fields Keys K (Rest x).
+  inferred-body _ Head Params Positions Fields Keys K (fun `child` Ty Body) :-
+    coq.mk-app Head Params Ty,
+    std.map Positions (i\t\ std.nth i Params t) Actuals,
+    coq.env.global (indc K) Make, coq.mk-app Make Actuals Ctor,
+    std.map Keys (key\p\ sigma c proj\ std.mem Fields (pr key c),
+      coq.env.global (const c) proj, coq.mk-app proj Params p) Projections,
+    view-body Ctor Projections Body.
+
+  pred inferred-view i:inductive, i:list component, i:list (pair id constant),
+      i:inductive, i:list component, o:constant.
+  inferred-view Source Cs Fields Target TargetCs View :-
+    std.length TargetCs N, std.length Cs M, N < M,
+    std.forall TargetCs (c\ contains-key {component-key c} Cs),
     not (struct-view Source Target _ _),
-    coq.gref->id (indt Source) From,
-    view-name From Target Name,
-    coq.env.current-path Here,
-    std.append Here [Name] Path,
-    std.string.concat "." Path Qualified,
-    coq.locate-all Qualified [],
-    coq.env.global (indt Source) SourceTy,
-    flat-view-body Fields Target TargetCs Body,
-    Term = fun `child` SourceTy Body,
+    coq.gref->id (indt Source) From, view-name From Target Name,
+    coq.env.current-path Here, std.append Here [Name] Path,
+    std.string.concat "." Path Qualified, coq.locate-all Qualified [],
+    view-indices Source Cs Target TargetCs Positions,
+    coq.env.indt Target tt _ _ _ [K] _, std.map TargetCs component-key Keys,
+    coq.env.global (indt Source) Head, coq.typecheck Head Arity ok,
+    inferred-body Arity Head [] Positions Fields Keys K Term,
     coq.typecheck Term Ty ok,
     @univpoly! => coq.env.add-const Name Term Ty @transparent! View.
 
@@ -200,16 +258,14 @@ Elpi File minks.flat lp:{{
     std.map-filter Previous
       (layout\v\ sigma old old-cs old-fields view\
         layout = flat-layout Here old old-cs old-fields,
-        strict-substructure Cs old-cs,
-        inferred-view old old-fields I Cs view,
+        inferred-view old old-cs old-fields I Cs view,
         v = conversion old I view explicit-view)
       Incoming,
     std.map-filter Previous
       (layout\v\ sigma old old-cs view\
         layout = flat-layout Here old old-cs _,
-        strict-substructure old-cs Cs,
         not (std.mem Declared (conversion I old _ _)),
-        inferred-view I Fields old old-cs view,
+        inferred-view I Cs Fields old old-cs view,
         v = conversion I old view explicit-view)
       Outgoing,
     std.append Outgoing Incoming Views,
@@ -256,7 +312,9 @@ Elpi File minks.flat lp:{{
   pred layout-levels i:list component, i:record-decl, o:list univ.variable.
   layout-levels [] end-record [].
   layout-levels [C | Cs] (field _ _ Ty Body) Levels :-
-    if (C = slot _ (native-kind _) _) (head-levels Ty Current) (Current = []),
+    if (C = slot _ (native-kind sort-head) [], coq.reduction.lazy.whd Ty (sort (typ U)),
+        not (coq.univ.global? U), coq.univ.variable U L) (Current = [L])
+      (if (C = slot _ (native-kind _) _) (head-levels Ty Current) (Current = [])),
     pi x\ layout-levels Cs (Body x) Rest,
     std.filter Rest (l\ not (std.mem Current l)) New, std.append Current New Levels.
 
@@ -298,6 +356,7 @@ Elpi File minks.flat lp:{{
     C = slot "carrier" (native-kind Head) {key-inputs Keys}, Cs = [C],
     coq.env.projections I [some P], register-field 1 Cs [pr "carrier" P] C.
 
+  pred struct-universes o:bool, o:bool.
   pred header o:list (pair id implicit_kind).
   pred bind-header i:list (pair id implicit_kind), i:indt-decl, o:indt-decl.
   bind-header [] Decl Bound :- copy-indt-decl Decl Bound.
@@ -305,18 +364,28 @@ Elpi File minks.flat lp:{{
     section-input Name _ Var, coq.typecheck Var Raw ok, copy Raw Ty,
     pi x\ (copy Var x :- !) => bind-header Rest Decl (Body x).
 
+  % Rocq discharges variables occurring in an inductive arity or constructor.
+  % Keep dependencies used only by a parent application in the arity as well.
+  pred metadata-inputs o:list term.
+  pred retain-inputs i:list term, i:term, o:term.
+  retain-inputs [] Sort Sort.
+  retain-inputs [X | Xs] Sort (app [fun `_` Ty (_\ Rest), X]) :-
+    coq.typecheck X Ty ok, retain-inputs Xs Sort Rest.
+
   pred declare-packed i:id, i:list component, i:list (pair id id),
       o:inductive, o:list term.
   declare-packed N Cs Names I Args :- @keep-alg-univs! ==>
     fields N Cs Names [] Body,
     {{ Set }} = sort Ground, field-sorts Body Ground Sort,
-    Ctor is "Make" ^ N, Decl = record N (sort Sort) Ctor Body,
+    if (metadata-inputs Inputs) (retain-inputs Inputs (sort Sort) Arity) (Arity = sort Sort),
+    Ctor is "Make" ^ N, Decl = record N Arity Ctor Body,
     if (header H) true (H = []),
     std.map H (p\t\ sigma n\ p = pr n _, section-input n _ t) Args,
     if (H = []) (Bound = Decl) (bind-header H Decl Bound),
     std.assert-ok! (coq.typecheck-indt-decl Bound) ("Ill-typed structure " ^ N),
-    layout-levels Cs Body Levels,
-    (@udecl! Levels tt [] tt => coq.env.add-indt Bound I),
+    if (struct-universes L C)
+      (@udecl! [] L [] C => coq.env.add-indt Bound I)
+      (layout-levels Cs Body Levels, @udecl! Levels tt [] tt => coq.env.add-indt Bound I),
     if (H = []) true (
       std.map H (p\k\ p = pr _ k) Kinds,
       coq.env.projections I Projections,
