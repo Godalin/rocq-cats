@@ -1,8 +1,7 @@
 From Stdlib Require Import Utf8.
 From Minks Require Import all.
-From MinksExamples Require Import
-  Algebra
-  Sharing.
+From MinksExamples Require Import Algebra.
+From MinksTests Require Import Sharing.
 
 Set Universe Polymorphism.
 

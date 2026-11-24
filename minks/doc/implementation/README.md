@@ -30,13 +30,14 @@
 
 ## Check public behavior
 
-Use `Minks.all` in examples. Check that a shared field takes one constructor
+Put usage demonstrations in `examples/` and regression checks in `tests/`.
+Tests may import examples. Use `Minks.all` in both. Check that a shared field takes one constructor
 argument, a qualified parent leaves short names unopened, and an ambiguous
 selection fails. For Coercion, Canonical or instance registrations, check
 the selected witness and projection reduction as well as the map's type.
 
-From `minks/`, build the affected example, e.g.
-`opam exec --switch=rocq-cats -- dune build examples/Modules.vo`.
+From `minks/`, build the affected example or test, e.g.
+`opam exec --switch=rocq-cats -- dune build tests/Modules.vo`.
 Use `opam exec --switch=rocq-cats -- dune runtest` for cross-command changes
 and check an affected Cats consumer when its interface changes. Update the
 [command reference](../../README.md) for public changes and the [audit](audit.md)

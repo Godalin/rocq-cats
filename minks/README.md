@@ -392,7 +392,7 @@ square brackets.
 - **Output.** Successful mixin and structure declarations are silent by default.
 - **Effect.** The command reads the existing declarations and metadata.
 
-## Build and run the examples
+## Build the examples and run the tests
 
 Use Rocq 9.3 or later, Rocq-Elpi 3.5.1 or later, and Dune 3.23 or later.
 The examples use Stdlib 9.2 or later. From this directory, build and test
@@ -407,7 +407,9 @@ The local `dune-workspace` makes `minks/` a build root. The Cats workspace
 can build the same package from the repository root. `dune build @install`
 prepares the package artifacts, and `opam install --switch=rocq-cats .`
 installs the package into the switch when run from this directory. The
-examples are built by `@runtest`.
+examples and regression tests are built by `@runtest`. The private
+`MinksTests` theory in `tests/` can import the demonstrations in
+`MinksExamples` (`examples/`). Neither theory is installed.
 
 For an editor session with an uninstalled local build, launch VsRocq from
 the same workspace root so Dune supplies the local library path.
@@ -418,9 +420,9 @@ opam exec --switch=rocq-cats -- dune exec -- vsrocqtop
 
 [`_CoqProject`](_CoqProject) maps the built theories and loads Elpi in the
 editor session. The examples cover dependent components and generated
-views in [Algebra](examples/Algebra.v) (magmas through commutative rings),
+views in [Algebra](examples/Algebra.v) (magmas through fields),
 [Closure](examples/Closure.v), and [Lattice](examples/Lattice.v), with focused tests in
-[Commands](examples/Commands.v), [Sections](examples/Sections.v) and
-[Universes](examples/Universes.v).
+[Commands](tests/Commands.v), [Sections](tests/Sections.v) and
+[Universes](tests/Universes.v).
 Use `Set Printing Universes.` before `Print` to examine inferred
 universe instances and constraints.

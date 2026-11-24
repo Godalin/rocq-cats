@@ -1,8 +1,7 @@
 From Stdlib Require Import Utf8.
 From Minks Require Import all.
-From MinksExamples Require Import
-  Algebra
-  Commands.
+From MinksExamples Require Import Algebra.
+From MinksTests Require Import Commands.
 
 (** * Witness sharing in parent order
 
