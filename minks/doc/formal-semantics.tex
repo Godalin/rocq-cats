@@ -62,7 +62,7 @@ and worked examples.
 \textit{Mixin signatures.} \ruse{Mixin-Ext}, \ruse{Parent-Scan},
 \ruse{Witness-Share}, \ruse{Binder-Order}, \ruse{Expand-Field}.\par
 \textit{Structure signatures.} \ruse{Key-New}, \ruse{Key-Reuse},
-\ruse{Parent-Union}, \ruse{Key-Rename}, \ruse{Ancestor-Agree},
+\ruse{Parent-Inst}, \ruse{Parent-Union}, \ruse{Key-Rename}, \ruse{Ancestor-Agree},
 \ruse{Struct-Pack}, \ruse{With-Assembly}, \ruse{Export-Fix},
 \ruse{Export-Common}.\par
 \textit{Generation.} \ruse{Projection-Name}, \ruse{Parent-To}, \ruse{Parent-Of}, \ruse{Export-Form},
@@ -487,8 +487,7 @@ rejects the declaration. For example, after registering
 \]
 $(X,Y:\ttt{Type};\varnothing\vdash\ttt{HasPoint}\ X)$ reuses $k$.
 Selecting $Y$, or dropping the unused binder $Y$, requires another key.
-Applying an already checked parent to arguments instantiates its
-signature. It does not redeclare its keys.
+An application of a checked parent uses \ruse{Parent-Inst}.
 
 \paragraph{Which selections form signatures.}
 Fix $\Gamma$, its universe constraints and the registry interpreted
@@ -554,8 +553,15 @@ Base creation and child generation belong to one declaration transaction.
 An occupied generated name or competing visible bases for one head
 require an explicit resolution; a name alone cannot identify a base.
 
-\rdefn{Parent-Union}. Apply the resolved parent to the supplied
-arguments in the child's context and use its instantiated field layout.
+\rdefn{Parent-Inst}. Let $H$ have checked layout $A_H$ over ordinary
+parameters $\Delta_H$. Given $\Gamma\vdash_\Phi\sigma:\Delta_H$, form
+$A_H[\sigma]$ by substituting the actuals into field types and argument
+terms. A reference to an earlier field continues to select the same key.
+In particular, $\keys(A_H[\sigma])=\keys(A_H)$, even when different
+parameters have the same image. The global key registry is unchanged.
+
+\rdefn{Parent-Union}. Use each parent's layout from \ruse{Parent-Inst}
+in the child's context.
 Generation constructs the base record and this application directly.
 A child takes the flattened field values in its constructor and obtains
 the ordinary \ttt{To} and \ttt{Of} maps for its direct parent.
@@ -1432,6 +1438,17 @@ a declared parent. If the target also
 has an ordinary parameter $z$ absent from all descriptors, $B$ has
 no entry for $z$. Discovery skips the view even if only one source
 parameter has the right type. A declared parent can supply $z$.
+
+\paragraph{Two point selections after instantiation.}
+Suppose $\ttt{Parent}(A,B)$ has fields $p:\ttt{HasPoint}\ A$ and
+$q:\ttt{HasPoint}\ B$, and a law $\ell:L(A,p)$ about the first point.
+In $\ttt{Parent}(X,X)$ the three fields have types
+\[
+  p:\ttt{HasPoint}\ X,\qquad q:\ttt{HasPoint}\ X,\qquad \ell:L(X,p).
+\]
+The two point values can be chosen independently. The law still selects
+$p$ by its key, even if a packed value happens to supply the same point
+for $p$ and $q$.
 
 \paragraph{Conflict and ambiguity.}
 Suppose a structure registers $m:\mathit{HasMagma}(c,e_1)$ and
