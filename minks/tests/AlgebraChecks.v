@@ -136,6 +136,65 @@ Check (H : IsMonoidWithPoint M (IsMonoid_hasPoint H)).
 Fail Check (H : IsMonoidWithPoint M P).
 End ChangingFixedInputs.
 
+(** ** Fixing the magma and its point in two steps
+
+    Both paths start at the same packed monoid. The point extracted over
+    its magma indexes the unit laws on the staged path. *)
+
+Section FixCompose.
+Context (M : Monoid).
+
+Example fix_compose_point
+  : IsMonoid_hasPoint (MonoidToIsMonoid M) = Monoid_hasPoint M
+  := eq_refl.
+
+Let staged
+  : IsMonoidWithPoint (MonoidToMagma M) (Monoid_hasPoint M)
+  := fix_unit (MonoidToMagma M) (MonoidToIsMonoid M).
+
+Let direct := MonoidToIsMonoidWithPoint M.
+
+Example fix_compose_assoc
+  : IsMonoidWithPoint_isSemigroup staged = IsMonoidWithPoint_isSemigroup direct
+  := eq_refl.
+
+Example fix_compose_unit
+  : IsMonoidWithPoint_isUnitAt staged = IsMonoidWithPoint_isUnitAt direct
+  := eq_refl.
+
+End FixCompose.
+
+(** The additive and multiplicative monoids of a ring share a carrier.
+    Fixing each point must keep the law for that specific operation. *)
+
+Section RingFixedPoints.
+Context (R : Ring).
+
+Let additive : Monoid := RngAddGroup R.
+Let multiplicative := RingToMonoid R.
+
+Let at_zero
+  : IsMonoidWithPoint (MonoidToMagma additive) (Rng_hasZero R)
+  := fix_unit (MonoidToMagma additive) (MonoidToIsMonoid additive).
+
+Let at_one
+  : IsMonoidWithPoint (MonoidToMagma multiplicative) (Ring_hasOne R)
+  := fix_unit (MonoidToMagma multiplicative) (MonoidToIsMonoid multiplicative).
+
+Example additive_unit_is_stored
+  : IsMonoidWithPoint_isUnitAt at_zero = Rng_isAddUnit R
+  := eq_refl.
+
+Example multiplicative_unit_is_stored
+  : IsMonoidWithPoint_isUnitAt at_one = Ring_isUnitAt R
+  := eq_refl.
+
+Fail Check (at_zero
+  : IsMonoidWithPoint (MonoidToMagma additive) (Ring_hasOne R)).
+Fail Check (at_one
+  : IsMonoidWithPoint (MonoidToMagma multiplicative) (Rng_hasZero R)).
+End RingFixedPoints.
+
 (** Completion on a carrier, a local prototype. Minks already generates
     the packers and extraction used below. Exporting [HasMonoid] supplies
     extraction. This section enables assembly by instance search and a

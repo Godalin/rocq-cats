@@ -27,8 +27,13 @@ dependencies whose argument identities are still being resolved.
   [Sharing.v](../../tests/Sharing.v)
 - **Export-Fix.** Fixing `hasMagma` fixes carrier, equivalence and multiplication
   in order. Fixing packed `Magma` gives a different telescope. Both recover
-  the supplied point by reduction; repeated keys fail. Composition for
-  arbitrary nested closed selections remains open. [Sharing.v](../../tests/Sharing.v)
+  the supplied point by reduction; repeated keys fail. [Sharing.v](../../tests/Sharing.v)
+- **Fix-Compose.** For an arbitrary monoid, fixing its magma and then its
+  selected point gives the same point, associativity witness and unit-law
+  witness by conversion as fixing both directly. On an arbitrary ring, the
+  two staged exports recover the stored additive and multiplicative unit laws;
+  exchanging their point indices fails. The general statement for nested
+  closed selections remains open. [AlgebraChecks.v](../../tests/AlgebraChecks.v)
 - **Export-Common.** The bare export of a `LabelledSort` child fixes both
   inherited fields; `[]` takes both as constructor arguments. A parentless
   structure has no inherited fields to fix. [NativeParents.v](../../tests/NativeParents.v)
