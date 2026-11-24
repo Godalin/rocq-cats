@@ -356,13 +356,14 @@ Elpi File minks.spec lp:{{
     match-component Key Kind ActualDeps Available Used Actual,
     mapped-components Cs Available [pr Key Actual | Mapping] [Actual | Used] Args.
 
-  pred print-mixin i:id, i:list gref, i:list mixin-param.
-  print-mixin Name Direct Params :-
-    Title is "Minks mixin " ^ Name,
-    coq.say Title,
+  pred print-mixin i:id, i:gref, i:list gref, i:list mixin-param.
+  print-mixin Name Ref Direct Params :-
     std.map Direct coq.gref->id Parents,
-    coq.say "Direct dependencies:" Parents,
-    coq.say "Parameter order:" Params.
+    Title is "Minks mixin " ^ Name,
+    Dependencies is "Direct dependencies: [" ^ {std.string.concat ", " Parents} ^ "]",
+    Order is "Parameter order: " ^ {term_to_string Params},
+    combination-lines Ref Extra,
+    coq.say {std.string.concat "\n" [Title, Dependencies, Order | Extra]}.
 
   % Re-read the discharged constructor: Rocq can generalize different
   % section inputs for a component class and its enclosing record.
@@ -414,38 +415,38 @@ Elpi File minks.spec lp:{{
     coq.env.typeof (indc K) Ty,
     read-layout Ty Extra [] Cs Params Layout.
 
-  pred print-export-fields i:inductive, i:list component.
-  print-export-fields I Cs :-
+  pred export-field-lines i:inductive, i:list component, o:list string.
+  export-field-lines I Cs Lines :-
     coq.env.projections I Ps,
-    std.forall2 Cs Ps (c\p\ sigma ref proj db mode\
+    std.map2 Cs Ps (c\p\line\ sigma ref proj db mode\
       if (c = slot _ (mixin-kind ref) _, p = some proj,
           coq.TC.db-for ref db, std.mem db (tc-instance (const proj) _))
         (mode = " [instance]")
         (if (c = slot _ (native-kind _) _) (mode = " [Coercion]") (mode = " [explicit]")),
-      print-slot [] mode c).
+      slot-line [] mode c line) Lines.
 
-  pred print-combination i:gref.
-  print-combination Ref :-
+  pred section-lines i:string, i:list string, o:list string.
+  section-lines _ [] [].
+  section-lines Title [Line | Lines] [Title, Line | Lines].
+
+  pred combination-lines i:gref, o:list string.
+  combination-lines Ref Lines :-
     mixin-combination Ref (some Base) Fixed Remaining _ _, !,
     coq.gref->id (indt Base) BaseName,
-    coq.say "Packed base:" BaseName,
-    Ref = indt Export,
-    if (Fixed = []) true (
-      coq.say "Additional fixed components:",
-      std.forall Fixed (print-slot [] " [fixed]")),
-    coq.say "Remaining components:",
-    print-export-fields Export Remaining.
-
-  print-combination Ref :-
-    if (mixin-combination Ref _ Fixed Parts _ _)
-      (std.map Fixed component-key FixedKeys,
-       coq.say "Fixed keys:" FixedKeys,
-       Ref = indt I, std.length Fixed F,
-       current-layout I F {std.append Fixed Parts} _ Layout,
-       std.drop F Layout Remaining,
-       coq.say "Expanded components:",
-       print-export-fields I Remaining)
-      true.
+    BaseLine is "Packed base: " ^ BaseName,
+    std.map Fixed (slot-line [] " [fixed]") FixedLines,
+    section-lines "Additional fixed components:" FixedLines Additional,
+    Ref = indt Export, export-field-lines Export Remaining Fields,
+    std.append [BaseLine | Additional] ["Remaining components:" | Fields] Lines.
+  combination-lines Ref Lines :-
+    mixin-combination Ref _ Fixed Parts _ _, !,
+    std.map Fixed component-key Keys,
+    FixedLine is "Fixed keys: [" ^ {std.string.concat ", " Keys} ^ "]",
+    Ref = indt I, std.length Fixed F,
+    current-layout I F {std.append Fixed Parts} _ Layout,
+    std.drop F Layout Remaining, export-field-lines I Remaining Fields,
+    Lines = [FixedLine, "Expanded components:" | Fields].
+  combination-lines _ [].
 
   % Account for each metadata row exactly once, in physical field order.
   pred align-field-names i:inductive, i:list component, i:list field-name-info,
@@ -533,20 +534,19 @@ Elpi File minks.spec lp:{{
       (coq.gref->id (indt P) Name, Sources = [Name | Rest])
       (Sources = Rest).
 
-  pred print-slot i:list inductive, i:string, i:component.
-  print-slot Parents Mode (slot Key (mixin-kind Ref) Deps) :-
+  pred slot-line i:list inductive, i:string, i:component, o:string.
+  slot-line Parents Mode (slot Key (mixin-kind Ref) Deps) Line :-
     coq.gref->id Ref Mixin,
     parent-sources Parents Key Sources,
     std.map Deps input-text Labels,
     DepText is "[" ^ {std.string.concat ", " Labels} ^ "]",
     if (Sources = []) (Suffix = " (declared here)")
       (Suffix is " (from " ^ {std.string.concat ", " Sources} ^ ")"),
-    Line is "  " ^ Key ^ " : " ^ Mixin ^ " " ^ DepText ^ Suffix ^ Mode,
-    coq.say Line.
+    Line is "  " ^ Key ^ " : " ^ Mixin ^ " " ^ DepText ^ Suffix ^ Mode.
 
-  print-slot _ Mode (slot Key (native-kind Head) Args) :-
+  slot-line _ Mode (slot Key (native-kind Head) Args) Line :-
     std.map Args input-text Labels, parent-label (native-parent Head Labels) Label,
-    Line is "  " ^ Key ^ " : " ^ Label ^ Mode, coq.say Line.
+    Line is "  " ^ Key ^ " : " ^ Label ^ Mode.
 
   pred registration-label i:view-registration, o:string.
   registration-label explicit-view "explicit".
@@ -554,24 +554,21 @@ Elpi File minks.spec lp:{{
   registration-label canonical-view "Canonical".
   registration-label coercion-canonical-view "Coercion, Canonical".
 
-  pred print-view i:struct-conversion.
-  print-view (conversion _ _ Ref Registration) :-
+  pred view-line i:struct-conversion, o:string.
+  view-line (conversion _ _ Ref Registration) Line :-
     coq.gref->id (const Ref) Name,
     registration-label Registration Label,
-    Line is "  " ^ Name ^ " [" ^ Label ^ "]",
-    coq.say Line.
+    Line is "  " ^ Name ^ " [" ^ Label ^ "]".
 
-  pred print-packer i:constant.
-  print-packer Ref :-
+  pred packer-line i:constant, o:string.
+  packer-line Ref Line :-
     coq.gref->id (const Ref) Name,
-    Line is "  " ^ Name,
-    coq.say Line.
+    Line is "  " ^ Name.
 
-  pred print-export i:(pair inductive (list id)).
-  print-export (pr Export Keys) :-
+  pred export-line i:(pair inductive (list id)), o:string.
+  export-line (pr Export Keys) Line :-
     coq.gref->id (indt Export) Name,
-    Line is "  " ^ Name ^ " [" ^ {std.string.concat ", " Keys} ^ "]",
-    coq.say Line.
+    Line is "  " ^ Name ^ " [" ^ {std.string.concat ", " Keys} ^ "]".
 
   pred parent-label i:struct-parent, o:id.
   parent-label (native-parent sort-head []) "Type".
@@ -585,22 +582,23 @@ Elpi File minks.spec lp:{{
   print-struct Declared Name Params Parents Cs Views Packers Exports :-
     std.map Declared parent-label Names,
     Title is "Minks structure " ^ Name,
-    coq.say Title,
-    if (Params = []) true (coq.say "Parameters:" Params),
-    if (Names = []) (coq.say "Direct parents: none")
-      (Line is "Direct parents: " ^ {std.string.concat ", " Names},
-       coq.say Line),
-    coq.say "Packed fields:",
-    std.forall Cs (c\ sigma mode history\
+    if (Params = []) (Header = [Title])
+      (ParamLine is "Parameters: [" ^ {std.string.concat ", " Params} ^ "]",
+       Header = [Title, ParamLine]),
+    if (Names = []) (ParentLine = "Direct parents: none")
+      (ParentLine is "Direct parents: " ^ {std.string.concat ", " Names}),
+    std.map Cs (c\lines\ sigma mode line history\
       if (c = slot _ (native-kind _) _) (mode = " [Coercion]")
         (if (auto-instance Cs c) (mode = " [instance]") (mode = " [explicit]")),
-      print-slot Parents mode c,
+      slot-line Parents mode c line,
       if (inspection-names Ns, std.mem Ns (named-field {component-key c} history _),
           history = [_ | _])
-        (coq.say "    Retired keys:" history) true),
-    if (Views = []) true (coq.say "Conversions:", std.forall Views print-view),
-    if (Packers = []) true
-      (coq.say "Packing functions:", std.forall Packers print-packer),
-    if (Exports = []) true
-      (coq.say "Relative interfaces:", std.forall Exports print-export).
+        (sigma retired\ retired is "    Retired keys: [" ^ {std.string.concat ", " history} ^ "]",
+         lines = [line, retired]) (lines = [line])) FieldRows,
+    section-lines "Conversions:" {std.map Views view-line} Conversions,
+    section-lines "Packing functions:" {std.map Packers packer-line} Packing,
+    section-lines "Relative interfaces:" {std.map Exports export-line} Interfaces,
+    std.flatten [Header, [ParentLine, "Packed fields:"], {std.flatten FieldRows},
+                 Conversions, Packing, Interfaces] Lines,
+    coq.say {std.string.concat "\n" Lines}.
 }}.

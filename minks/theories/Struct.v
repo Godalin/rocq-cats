@@ -545,7 +545,7 @@ Elpi Accumulate lp:{{
   pred inspect i:id, i:gref.
   inspect Name Ref :-
     mixin-spec Ref Direct Params, !,
-    print-mixin Name Direct Params, print-combination Ref.
+    print-mixin Name Ref Direct Params.
   inspect Name Ref :-
     Ref = indt I, spec I Parents _, !,
     close I Cs, checked-field-names I Cs Names,
