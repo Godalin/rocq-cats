@@ -463,7 +463,17 @@ position. Each recursive call consumes one table entry.
 
 \paragraph{What a key identifies.}
 Write $\mathcal K(k)=(\Gamma;D\vdash T)$ for the global entry of a
-resolved key $k$. Here $\Gamma$ is the full ordered ordinary parameter
+resolved key $k$. For a named component $k=(P,n)$, $P$ is the
+declaring Rocq module and $n$ its local identifier. A bare binding
+first selects the current module's key if declared. Otherwise let $V$ be
+the set of visible keys named $n$ in the declaration scope, including
+those opened by module imports. Select the unique member of $V$, declare
+a local key if $V$ is empty, and reject ambiguity if $|V|>1$.
+Loading a module alone leaves its keys qualified. A qualified binding
+such as \ttt{A.hasEquiv} selects an existing key and introduces its last
+identifier as the local field name. Thus \ttt{B.hasEquiv} can have an
+independent descriptor. Inheritance, field renaming and expansion with
+the original export keys retain the selected identities. Here $\Gamma$ is the full ordered ordinary parameter
 telescope of the declaration, including unused header binders. Section
 inputs follow \ruse{Section-End}. $D$ gives the selected component
 dependencies of the field, identified by key, and $T$ is its checked
