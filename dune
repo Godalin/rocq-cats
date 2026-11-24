@@ -6,9 +6,7 @@
 
 (alias
  (name check-tests)
- (deps
-  (alias_rec tests/all)
-  (alias_rec tests/runtest)))
+ (deps (alias_rec tests/runtest)))
 
 (alias
  (name check-core)

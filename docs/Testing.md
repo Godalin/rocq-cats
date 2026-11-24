@@ -76,17 +76,15 @@ The category/functor/transformation regressions can also be built as
 
 `@check-library` recursively selects `theories/all`; it includes every
 library module without a maintained filename list. `@check-tests` selects
-both `tests/all` and `tests/runtest` recursively, so it includes root-level
-regressions omitted from the older root `runtest` list as well as nested test
-theories. It builds any library dependencies needed by those tests; it does
-not independently require the entire library. Tooling tests under
+`tests/runtest` recursively. Each test directory builds its local `all`
+alias, so new Rocq modules are included automatically. Dune builds the library
+dependencies needed by those tests. Tooling tests under
 `tools/docs` remain covered by the existing `@runtest` CI command.
 Neither alias invokes HTML/PDF exports or installation.
 
 `@check-library` 递归选择 `theories/all`，无须维护文件名清单即可覆盖全部库模块。
-`@check-tests` 递归选择 `tests/all` 及 `tests/runtest`，同时覆盖旧根目录
-`runtest` 清单未列出的根级回归，以及子目录测试理论；它会构建测试实际需要的
-库依赖，但不额外要求整个库。`tools/docs` 下的工具测试仍由现有 CI 的
+`@check-tests` 递归选择 `tests/runtest`。每个测试目录构建本地的 `all` 别名，
+新增的 Rocq 模块会自动纳入检查。Dune 会构建这些测试需要的库依赖。`tools/docs` 下的工具测试仍由现有 CI 的
 `@runtest` 命令覆盖。两个别名均不导出 HTML／PDF，也不执行安装。
 
 The existing `dune build @all @runtest @install` remains a complete

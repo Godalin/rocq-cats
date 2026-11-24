@@ -4,6 +4,4 @@
 
 (alias
  (name runtest)
- (deps CoreInterfaces.vo Interfaces.vo Universes.vo Computations.vo Cones.vo
-       Closure.vo BundledGroupoid.vo BundledCartesian.vo CCCCategory.vo StructureUniverses.vo MonoidExtensions.vo GroupExtensions.vo
-       AlgebraNotation.vo))
+ (deps (alias all)))

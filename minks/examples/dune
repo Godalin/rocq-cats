@@ -6,7 +6,4 @@
 (alias
  (name runtest)
  (package rocq-minks)
- (deps
-  Algebra.vo
-  Closure.vo
-  Lattice.vo))
+ (deps (alias all)))

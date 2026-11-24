@@ -4,4 +4,4 @@
 
 (alias
  (name runtest)
- (deps Universes.vo Computations.vo))
+ (deps (alias all)))
