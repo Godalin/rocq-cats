@@ -4,15 +4,13 @@ Minks generates flat, universe-polymorphic Rocq structures from registered
 mixins. The independent Dune package is `rocq-minks`. Import
 [`Minks.all`](theories/all.v) to use its three commands.
 
-**Core principle.** The semantic model is the selected components and their
-dependencies in a given parameter context. A mixin adds operations or laws
-over its dependencies. A structure packs the selected components, and an
-export fixes part of that structure and presents the rest as a relative
-interface. Generated Rocq declarations preserve which component supplies
-each dependency.
+A mixin adds operations or laws over selected dependencies. A structure
+packs those components in a parameter context. An export fixes part of
+the structure and presents the rest as a relative interface. Generated
+declarations preserve the component selected for each dependency.
 
-The [rule audit](doc/implementation-audit.md) compares the formal specification
-with the generator and its executable examples.
+See the [implementation guide](doc/implementation/README.md) for development
+principles and the [rule audit](doc/implementation/audit.md) for evidence.
 
 ## Quick start
 
