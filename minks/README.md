@@ -141,6 +141,9 @@ square brackets.
   to `Minks.Inspect` and explicit parent applications. Two independently
   imported bases for one native head require a qualified parent choice.
   Rocq rolls back the generated base if the declaration fails.
+  Every registered structure, including a generated base, records one
+  identity entry per field. Inheritance and inspection reject missing or
+  inconsistent entries. An empty structure records an empty table.
   An empty parent list contributes zero fields.
 - **Component identity.** A `with` entry can name a mixin declared with
   `Minks.Mixin` or an exported relative interface. A key
@@ -192,7 +195,8 @@ square brackets.
 - The header gives the record's full parameter telescope in declaration
   order. For example, `Minks.Struct Tagged (A : Type)` retains `A`
   even when every field is independent of it. Parentheses declare explicit
-  inputs and braces declare implicit inputs. Rocq generalizes used enclosing
+  inputs and braces declare implicit inputs. Minks elaborates parent and
+  field applications in this local binder context. Rocq generalizes used enclosing
   section assumptions before the header. A relative class takes the ambient
   inputs it uses; packing back into the record takes all its indices.
   `Minks.Inspect` reads the ordinary parameters and field arguments from
@@ -215,9 +219,17 @@ square brackets.
 
 - **Declared ancestors.** Minks generates a transparent `NameToAncestor`
   for every distinct Minks ancestor, in depth-first order starting with the
-  listed parents. Each function reconstructs the ancestor from the fields
-  already stored in `Name`. The native carrier projection supplies the
-  view to the native base.
+  listed parents. Each function packs the ancestor from the child's stored
+  components. The record also computes each distinct direct parent in an
+  anonymous definition at its declared arguments. This preserves Section
+  dependencies even for an empty parent layout. Only stored components
+  contribute keys and constructor arguments. The native carrier projection
+  supplies the view to the native base. A public ancestor function can use
+  a fresh target universe instance whenever its components typecheck there.
+- **Constructing values.** Use the generated constructor or a direct-parent
+  packing function, such as `MakeMagma` or `SemigroupOfMagma`. In Rocq 9.3,
+  a record literal (`{| ... |}`) is rejected when the record contains an
+  anonymous definition, even if the literal supplies every stored field.
 - **Coercions.** Among the generated ancestor functions, Minks registers
   those to directly listed Minks parents. Rocq can follow the resulting
   coercion paths to more distant ancestors.
@@ -241,8 +253,9 @@ square brackets.
   For a native base,
   `MakeName` already takes the base followed by the required components.
 - **Universe arguments.** Generated conversion and packing functions are
-  universe-polymorphic. Rocq infers their universe parameters, order, and
-  constraints from their checked types and bodies.
+  universe-polymorphic. Rocq infers their universe parameters and constraints
+  from the function types and bodies. A parent conversion can therefore
+  have an independent result level when repacking its components permits it.
 
 #### Relative interfaces with `exports`
 

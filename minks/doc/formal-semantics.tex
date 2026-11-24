@@ -1003,7 +1003,9 @@ The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
     \draw[fixed] (\leftx,\bottomy) rectangle (\rightx,\topy);
     \node[interface] at ({(\leftx+\rightx)/2},\bottomy) {\exports};
   }
-  \node[bundle] (commring) at (-1.65,7.4) {\ttt{CommRing}};
+  \node[bundle] (field) at (-1.65,8.55) {\ttt{Field}};
+  \node[bundle] (commrng) at (-.35,7.15) {\ttt{CommRng}};
+  \node[bundle] (commring) at (-1.65,7.85) {\ttt{CommRing}};
   \node[bundle] (ring) at (-1.65,6.55) {\ttt{Ring}};
   \node[bundle] (rng) at (-1.65,4.70) {\ttt{Rng}};
   \node[bundle] (commmagma) at (1.2,6.58) {\ttt{CommMagma}};
@@ -1031,7 +1033,8 @@ The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
   \node[bundle] (base) at (2.1,-.75)
     {\ttt{TypeCarrier}\\$(c)$};
   \foreach \child/\ancestor in {
-    commring/ring,ring/rng,ring/monoid,rng/semigroup,abelian/group,abelian/commmagma,
+    field/commring,commring/ring,commring/commrng,commrng/rng,commrng/commmagma,
+    ring/rng,ring/monoid,rng/semigroup,abelian/group,abelian/commmagma,
     group/monoid,monoid/semigroup,monoid/unital,
     semigroup/magma,unital/pointed,pointed/magma,pointed/pset,
     two/pset,magma/set,pset/set,set/base}
@@ -1252,7 +1255,7 @@ For the five exports each remaining mixin key is first in its source
 layout and its projection is an instance at priority 2.
 Final registration is checked in the visible Rocq environment.
 
-\subsection{Two operations on one setoid: from abelian groups to rings}
+\subsection{Two operations on one setoid: from abelian groups to fields}
 The pointed-magma outline in Figure~\ref{fig:magma} also applies to
 abelian groups. Their two parents share the same magma:
 \begin{verbatim}
@@ -1285,9 +1288,23 @@ operation retains its identity under the new key \ttt{hasMul}.
 The two solid paths from \ttt{Ring} to \ttt{Semigroup} select the same
 multiplication by reduction. The \ttt{Monoid} parent supplies its unit
 \ttt{1[R]}, while \ttt{0[R]} selects the additive point.
-\ttt{CommRing} adds commutativity for multiplication. In the boolean
-model \ttt{ModTwo.F2}, exclusive or and conjunction give $1+1=0$
-and $1\cdot1=1$ by reduction.
+Multiplicative commutativity already makes sense on a rng:
+\begin{verbatim}
+Minks.Struct CommRng
+  extends Rng, CommMagma
+  with  isComm as isMulComm.
+
+Minks.Struct CommRing
+  extends Ring, CommRng.
+\end{verbatim}
+Both parents of \ttt{CommRing} recover the same rng by reduction.
+A \ttt{Field} adds a witness that $0\approx 1$ implies falsehood
+and, for each $x$ with $\neg(x\approx 0)$, a chosen $r$ with
+$x\cdot r\approx 1$. Commutativity supplies the left inverse law.
+Uniqueness of inverses gives equivalent reciprocals for equivalent
+inputs, even when their nonzero witnesses differ.
+In \ttt{ModTwo.F2}, addition is exclusive or, multiplication is
+conjunction, and the reciprocal of one reduces to one.
 
 \subsection{A cartesian functor with fixed endpoints}
 Fix cartesian categories $C,D$. A functor $F:C\to D$ preserves finite
