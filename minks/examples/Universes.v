@@ -54,7 +54,25 @@ Minks.Mixin HasNamedValues@{u e x y}
   ; named_right : Y
   }.
 
-(** The shared equivalence cannot take two explicitly different levels. *)
+(** Both parents select one equivalence when the universe graph equates its
+    two named witness levels. Applying the class supplies that witness once. *)
+
+Module EqualWitnessLevels.
+Monomorphic Universe u e p x y.
+Monomorphic Constraint e = p.
+
+Minks.Mixin Shared (A : Type@{u}) (X : Type@{x}) (Y : Type@{y})
+  extends HasLeftValue@{u x e} A X, HasRightValue@{u y p} A Y
+  := { shared_value : X }.
+
+Definition with_one_witness (A : Type@{u}) (X : Type@{x}) (Y : Type@{y})
+    (E : HasEquiv@{u e} A)
+    (L : @HasLeftValue@{u x e} A X E) (R : @HasRightValue@{u y p} A Y E)
+  : Type
+  := @Shared A X Y E L R.
+End EqualWitnessLevels.
+
+(** Strictly ordered witness levels cannot be shared. *)
 
 Fail Minks.Mixin ConflictingLevels@{u e p x y | e < p}
     (A : Type@{u}) (X : Type@{x}) (Y : Type@{y})

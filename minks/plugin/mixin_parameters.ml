@@ -164,28 +164,31 @@ let dependency_type parent_instance ty context inputs =
   in
   reference, instance, List.map argument operands
 
-let merge_instance reference inherited incoming =
+(* Keep the written entries for the generated binder. Compare explicit entries
+   in the child's universe graph without adding equalities to make them fit. *)
+let merge_instance env sigma reference inherited incoming =
   match inherited, incoming with
   | None, instance | instance, None -> instance
   | Some (qs, us), Some (qs', us') ->
-    let equal first second =
-      let term args = CAst.make (CRef (qualify reference, Some args)) in
-      Constrexpr_ops.constr_expr_eq (term first) (term second)
-    in
-    let choose anonymous eq first second =
-      if anonymous first then second
-      else if anonymous second || eq first second then first
-      else error "Inherited universe instances disagree for a shared mixin."
-    in
-    let quality =
-      choose (function CQAnon _ -> true | _ -> false)
-        (fun q q' -> equal ([q], []) ([q'], []))
-    in
-    let level =
-      choose (function Glob_term.UAnonymous _ -> true | _ -> false)
-        Constrexpr_ops.univ_level_expr_eq
-    in
-    Some (List.map2 quality qs qs', List.map2 level us us')
+    let resolve sigma instance =
+      let sigma, term = Constrintern.interp_constr_evars env sigma
+          (application reference instance []) in
+      sigma, snd (EConstr.destRef sigma term) in
+    let sigma, left = resolve sigma inherited in
+    let sigma, right = resolve sigma incoming in
+    let entries inst = UVars.Instance.to_array (EConstr.EInstance.kind sigma inst) in
+    let lq, lu = entries left and rq, ru = entries right in
+    let merge hole equal xs ys left right =
+      List.mapi (fun i (x, y) ->
+        if hole x then y
+        else if hole y || equal left.(i) right.(i) then x
+        else error "Inherited universe instances disagree for a shared mixin."
+      ) (List.combine xs ys) in
+    let qualities = merge (function CQAnon _ -> true | _ -> false)
+        (UState.check_eq_quality (Evd.ustate sigma)) qs qs' lq rq in
+    let levels = merge (function Glob_term.UAnonymous _ -> true | _ -> false)
+        (UGraph.check_eq_level (Evd.universes sigma)) us us' lu ru in
+    Some (qualities, levels)
 
 let dependency_parameter reference name instance arguments =
   let ty = application reference instance arguments in
@@ -199,7 +202,7 @@ let binder_name reference reserved key =
       Id.of_string (String.uncapitalize_ascii (Id.to_string name)) in
   Namegen.next_ident_away base reserved
 
-let add_dependency env reserved dependencies reference instance arguments key =
+let add_dependency env sigma reserved dependencies reference instance arguments key =
   let same d =
     (match d.selection with Witness r -> Environ.QGlobRef.equal env r reference | Ordinary -> false) &&
     (match d.key, key with Some x, Some y -> same_selected_key x y | _ -> true) in
@@ -207,7 +210,7 @@ let add_dependency env reserved dependencies reference instance arguments key =
   | [d] ->
     if List.length d.arguments <> List.length arguments then
       error "Inherited parents disagree on the arity of a shared mixin.";
-    let instance = merge_instance reference d.instance instance in
+    let instance = merge_instance env sigma reference d.instance instance in
     let name = d.parameter.name in
     let parameter = dependency_parameter reference name instance d.arguments in
     let key = match d.key with Some _ -> d.key | None -> key in
@@ -307,7 +310,7 @@ let rec needs_elaboration () found expr =
 let same_application a b =
   not (needs_elaboration () false a) && Constrexpr_ops.constr_expr_eq a b
 
-let expand_combination env reference syntax_instance instance (constructor, fields) inputs dependencies reserved views =
+let expand_combination env sigma reference syntax_instance instance (constructor, fields) inputs dependencies reserved views =
   let ctor_ty, _ = Typeops.type_of_global_in_context env constructor in
   let rec skip count ctx ty =
     if count = 0 then ctx, ty else
@@ -326,7 +329,7 @@ let expand_combination env reference syntax_instance instance (constructor, fiel
         else
           let component, levels, arguments = dependency_type instance ty ctx inputs in
           let levels = Option.bind instance (fun i -> instance_syntax i levels) in
-          add_dependency env reserved dependencies component levels arguments (Some key) in
+          add_dependency env sigma reserved dependencies component levels arguments (Some key) in
       expand dependencies (Id.Set.add name reserved)
         (Context.Rel.Declaration.LocalAssum (ann, ty) :: ctx) (variable name :: inputs) keys rest
     | [], (Ind _ | App _) -> dependencies, reserved, List.rev inputs
@@ -447,7 +450,7 @@ let inheritance universes ordinary own field_names parents =
     in
     let add dependencies reserved reference instance arguments key =
       let dependencies, name =
-        add_dependency env reserved dependencies reference instance arguments key in
+        add_dependency env sigma reserved dependencies reference instance arguments key in
       dependencies, Id.Set.add name reserved, name
     in
     let rec add_parameters dependencies reserved ctx inputs roles rest values =
@@ -473,7 +476,7 @@ let inheritance universes ordinary own field_names parents =
            let expected = application reference syntax_instance arguments in
            deps, reserved, views, (name, expected) :: uses
          | Some shape ->
-           let deps, reserved, views = expand_combination env reference syntax_instance
+           let deps, reserved, views = expand_combination env sigma reference syntax_instance
              instance shape inputs dependencies reserved views in
            deps, reserved, views, uses)
       | _ -> error "The parent mixin parameters do not match its Minks declaration."
