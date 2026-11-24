@@ -34,6 +34,8 @@ distinct keys, as when the additive and multiplicative unit laws select
 different points. A mixin adds operations or laws over inherited witnesses.
 A structure packs the selected components. Inheritance expands parents in
 declaration order and shares compatible occurrences of the same selection.
+Section~\ref{sec:key-model} defines the semantic object of a checked
+structure: a finite dependency-closed set of registered component keys.
 
 A declaration $d$ is checked in an environment $\mathcal E$ of Rocq
 declarations and registered Minks signatures. Checking computes a
@@ -59,7 +61,8 @@ and worked examples.
 \ruse{Struct-Univ}, \ruse{Univ-Assemble}.\par
 \textit{Mixin signatures.} \ruse{Mixin-Ext}, \ruse{Parent-Scan},
 \ruse{Witness-Share}, \ruse{Binder-Order}, \ruse{Expand-Field}.\par
-\textit{Structure signatures.} \ruse{Parent-Union}, \ruse{Key-Rename}, \ruse{Ancestor-Agree},
+\textit{Structure signatures.} \ruse{Key-New}, \ruse{Key-Reuse},
+\ruse{Parent-Union}, \ruse{Key-Rename}, \ruse{Ancestor-Agree},
 \ruse{Struct-Pack}, \ruse{With-Assembly}, \ruse{Export-Fix},
 \ruse{Export-Common}.\par
 \textit{Generation.} \ruse{Projection-Name}, \ruse{Parent-To}, \ruse{Parent-Of}, \ruse{Export-Form},
@@ -202,7 +205,8 @@ by \ruse{Native-Base}.
 \end{array}
 \]
 
-A primitive mixin entry introduces one fresh key. The optional \ttt{as} names its
+A primitive mixin entry adds one field to the current layout. Its key
+may already be registered (\ruse{Key-Reuse}). The optional \ttt{as} names its
 projection. An explicit list takes parameters or available fields in
 mixin-parameter order. Omitting the brackets requests field inference.
 An entry without a colon renames an available field key for subsequent
@@ -454,6 +458,68 @@ and references at their final positions. Append saved local definitions
 in parent order for checking the class body. They occupy no argument
 position. Each recursive call consumes one table entry.
 
+\subsection{Component keys and the order on signatures}
+\label{sec:key-model}
+
+\paragraph{What a key identifies.}
+Write $\mathcal K(k)=(\Gamma;D\vdash T)$ for the global entry of a
+resolved key $k$. Here $\Gamma$ is the full ordered ordinary parameter
+telescope of the declaration, including unused header binders. Section
+inputs follow \ruse{Section-End}. $D$ gives the selected component
+dependencies of the field, identified by key, and $T$ is its checked
+field type over those inputs. For a mixin application the descriptor
+retains the mixin and its ordered arguments. A packed value supplies the
+actual field value. Unrelated fields already in the layout do not enter
+$D$.
+
+\rdefn{Key-New}. If $k$ is globally fresh and the descriptor checks
+using registered dependencies, enter it in $\mathcal K$. Commit new
+entries with the declaration. Distinct keys may have identical descriptors.
+
+\rdefn{Key-Reuse}. A subsequent declaration of $k$ must have the same
+judgment. Align ordinary binders in order up to renaming, preserving their
+binding kinds and checking their types by Rocq conversion. Align selected
+dependencies by identity and compare the field descriptors under that
+alignment and the universe rules of Section~\ref{sec:univ}. A mismatch
+rejects the declaration. For example, after registering
+\[
+ k\;\mapsto\;(A,B:\ttt{Type};\varnothing\vdash\ttt{HasPoint}\ A),
+\]
+$(X,Y:\ttt{Type};\varnothing\vdash\ttt{HasPoint}\ X)$ reuses $k$.
+Selecting $Y$, or dropping the unused binder $Y$, requires another key.
+Applying an already checked parent to arguments instantiates its
+signature. It does not redeclare its keys.
+
+\paragraph{Which selections form signatures.}
+Fix $\Gamma$, its universe constraints and the registry interpreted
+in that context. Let $K_\Gamma$ be its component identities. Write $d\preceq_\Gamma k$ when $d=k$ or a chain
+of component dependencies leads from $k$ to $d$. Each new entry depends
+only on earlier entries, so this is a partial order. The semantic domain
+and its order are
+\[
+ \mathcal L_\Gamma
+   =\{S\subseteq K_\Gamma\mid S\text{ finite},\;
+       k\in S,\ d\preceq_\Gamma k\Rightarrow d\in S\}.
+\]
+\[
+ S\le T \iff S\subseteq T,\qquad
+ S\wedge T=S\cap T,\qquad S\vee T=S\cup T.
+\]
+Intersection and union preserve dependency closure. Thus
+$\mathcal L_\Gamma$ is a distributive lattice. Extending the registry
+with fresh keys preserves old selections and their order.
+
+A checked layout denotes its set of component identities. Constructor
+order, projection names and the chosen inheritance paths are information
+about its presentation. Two independently declared structures can denote
+the same element. If $S\subseteq T$, projecting the fields of a packed
+$T$ supplies a packed $S$ whenever both presentations are given. This
+semantic inclusion requires no declared parent edge. Discovery and
+registration of Rocq maps follow Section~\ref{sec:generation}.
+The order compares signatures in a common context. Comparing applied
+families first requires compatible instantiations of their descriptors
+there (\ruse{WF-Compare}).
+
 \subsection{Computing the structure layout}
 
 A structure layout $A$ is a telescope over the external parameters $\Delta$. A keyed
@@ -463,7 +529,9 @@ Each reference starts at a parameter or a preceding field, possibly
 used in an elaborated Rocq term. Keep the selected binding identities
 when instantiating a field type. These references and the
 free local references in ordinary field types determine dependencies.
-With $\Gamma_P$ the parameter context and $s$ an admissible result sort:
+Resolve each newly declared identity by \ruse{Key-New} or
+\ruse{Key-Reuse}. Given these registered descriptors, layout formation
+in parameter context $\Gamma_P$ at an admissible result sort $s$ is:
 \[
  \frac{\Gamma_P\ \wf}{\Gamma_P\vdash_\Phi ()\ \wf}
  \qquad
@@ -478,7 +546,8 @@ native type head $B$, reuse the visible base registered for its Rocq
 identity. On first use, generate $B\ttt{Carrier}$ in the current module
 and register it as a Minks structure with no structure parents. Its
 parameter telescope is that of $B$. At parameters $\bar x$ it has one
-ordinary field $\ttt{carrier}:B\,\bar x$. The sort \ttt{Type} uses
+ordinary field $\ttt{carrier}:B\,\bar x$. Its key belongs to this
+generated base, so distinct native bases can expose the same field spelling. The sort \ttt{Type} uses
 the same rule with an empty telescope and a fresh universe.
 Register the base's projection to the native target as a coercion.
 Base creation and child generation belong to one declaration transaction.
@@ -721,7 +790,8 @@ alone determines neither containment nor constructor order.
 
 \rdefn{View-Match}. Keep the source $S$ at its own ordinary parameters
 $\Delta_S$ and treat the target formals $\Delta_H$ as pattern variables.
-Align descriptors by field key. Compare ordered argument references and
+Align descriptors by component identity, following the recorded identity
+through a public rename. Compare ordered argument references and
 free references in ordinary field types at corresponding positions in
 their resolved syntax, with local binders aligned up to renaming.
 A target parameter paired with a source parameter contributes their
@@ -823,7 +893,8 @@ Use Rocq's discharge order, explicitness and treatment of local definitions.
 Subsequent lookup and inspection use the resulting telescope. Rebind parent
 applications, witnesses, field references, views and exports under the
 new signatures, applying generalized references at their newly exposed
-arguments. Keys and sharing are preserved across nested sections.
+arguments. Keys and sharing are preserved across nested sections. Discharge the
+ordinary telescope in the corresponding registry judgments as well.
 See the \href{https://rocq-prover.org/doc/V9.3.0/refman/language/core/sections.html}{Rocq reference manual on sections}.
 
 \section{Statements for formal proof}
@@ -973,74 +1044,65 @@ Minks.Struct Monoid
           IsMonoid [Magma],
           IsMonoidWithPoint [hasPoint, Magma].
 \end{verbatim}
-Figure~\ref{fig:magma} shows the algebra hierarchy through rings. The
-structures derived in this subsection list their keys in constructor order. Write $c$ for the carrier and
+Figure~\ref{fig:magma} builds the hierarchy from the carrier up to fields.
+Write $c$ for the carrier and
 $i$ for the inverse witness. In \ttt{TwoPoints}, $p$ and $q$ are independent
 choices of the same type, with $q$ stored under \ttt{hasOtherPoint}.
 The keys $p,a,u,i$ stand for \ttt{hasPoint}, \ttt{isSemigroup},
 \ttt{isUnitAt} and \ttt{hasInverse}, respectively.
 
-\begin{figure}[htbp]
+\begin{figure}[p]
 \centering
 \begin{tikzpicture}[
-  bundle/.style={align=center,font=\small,inner sep=2pt},
-  parent/.style={->,>=stealth},
-  fixed/.style={dashed,rounded corners=5pt,draw=black!70},
-  interface/.style={fill=white,inner xsep=4pt,inner ysep=1pt,
-                    font=\footnotesize\ttfamily}]
-  % Each contour encloses the structures supported by its fixed keys.
+  bundle/.style={font=\small\ttfamily,align=center,inner sep=2.5pt},
+  extends/.style={->,>=stealth},
+  fixed/.style={densely dashed,rounded corners=3pt,draw=black!55},
+  interface/.style={font=\footnotesize\ttfamily,fill=white,
+                    anchor=west,inner xsep=3pt,inner ysep=1pt}]
+  % Each lower border names the exports fixing the enclosed keys.
   \foreach \leftx/\bottomy/\rightx/\topy/\exports in {
-    -.9/-2.75/6.65/5.20/{IsGroup},
-    -.38/-2.25/6.15/2.82/{IsMonoidWithPoint, IsAbGroupAt},
-    .15/-1.75/4.05/1.65/{IsMonoid},
-    .38/-1.50/3.85/.72/{HasAbGroup},
-    .60/-1.25/3.62/-.26/{HasMonoid, HasGroup}} {
+    -.22/-2.45/7.55/7.85/{IsGroup},
+    -.02/-1.97/7.33/4.92/{IsMonoidWithPoint, IsAbGroupAt},
+    .18/-1.49/4.62/3.40/{IsMonoid},
+    .38/-1.01/4.42/1.95/{HasAbGroup},
+    .58/-.53/4.22/.52/{HasMonoid, HasGroup}} {
     \draw[fixed] (\leftx,\bottomy) rectangle (\rightx,\topy);
-    \node[interface] at ({(\leftx+\rightx)/2},\bottomy) {\exports};
+    \node[interface] at (.78,\bottomy) {\exports};
   }
-  \node[bundle] (field) at (-1.65,8.55) {\ttt{Field}};
-  \node[bundle] (commrng) at (-.35,7.15) {\ttt{CommRng}};
-  \node[bundle] (commring) at (-1.65,7.85) {\ttt{CommRing}};
-  \node[bundle] (ring) at (-1.65,6.55) {\ttt{Ring}};
-  \node[bundle] (rng) at (-1.65,4.70) {\ttt{Rng}};
-  \node[bundle] (commmagma) at (1.2,6.58) {\ttt{CommMagma}};
-  \node[bundle] (abelian) at (3.1,6.7) {\ttt{AbGroup}};
-  \node[bundle] (group) at (3.1,5.85)
-    {\ttt{Group}\\$(c,e,m,a,p,u,i)$};
-  \node[bundle] (assembled) at (6.55,5.85)
-    {\ttt{GroupFromExport}\\$(c,e,m,a,p,u,i)$};
-  \node[bundle] (monoid) at (2.65,4.70)
-    {\ttt{Monoid}\\$(c,e,m,a,p,u)$};
-  \node[bundle] (semigroup) at (.55,3.5)
-    {\ttt{Semigroup}\\$(c,e,m,a)$};
-  \node[bundle] (unital) at (4.75,3.5)
-    {\ttt{UMagma}\\$(c,e,m,p,u)$};
-  \node[bundle] (pointed) at (4.25,2.27)
-    {\ttt{PointedMagma}\\$(c,e,m,p)$};
-  \node[bundle] (two) at (7.95,2.27)
-    {\ttt{TwoPoints}\\$(c,e,p,q)$};
-  \node[bundle] (magma) at (2.1,1.19)
-    {\ttt{Magma}\\$(c,e,m)$};
-  \node[bundle] (pset) at (5.15,1.19)
-    {\ttt{PointedSetC}\\$(c,e,p)$};
-  \node[bundle] (set) at (2.1,.24)
-    {\ttt{SetC}\\$(c,e)$};
-  \node[bundle] (base) at (2.1,-.75)
-    {\ttt{TypeCarrier}\\$(c)$};
-  \foreach \child/\ancestor in {
-    field/commring,commring/ring,commring/commrng,commrng/rng,commrng/commmagma,
-    ring/rng,ring/monoid,rng/semigroup,abelian/group,abelian/commmagma,
-    group/monoid,monoid/semigroup,monoid/unital,
-    semigroup/magma,unital/pointed,pointed/magma,pointed/pset,
-    two/pset,magma/set,pset/set,set/base}
-    \draw[parent] (\child) -- (\ancestor);
-  \draw[parent] (assembled.east) -- (9.05,5.85) -- (9.05,-.75) -- (base.east);
-  \draw[parent] (commmagma.south) -- (1.82,3.8) -- (magma.north);
+  \newcommand{\packednode}[4]{%
+    \node[bundle] (#1) at #2 {#3\\[-1pt]{\footnotesize $#4$}};}
+  \packednode{base}{(3.25,0)}{TypeCarrier}{(c)}
+  \packednode{set}{(3.25,1.45)}{SetC}{(c,e)}
+  \packednode{assembled}{(9.18,1.45)}{GroupFromExport}{(c,e,m,a,p,u,i)}
+  \packednode{magma}{(3.25,2.90)}{Magma}{(c,e,m)}
+  \packednode{pset}{(6.35,2.90)}{PointedSetC}{(c,e,p)}
+  \packednode{pointed}{(6.00,4.40)}{PointedMagma}{(c,e,m,p)}
+  \packednode{two}{(9.18,4.40)}{TwoPoints}{(c,e,p,q)}
+  \packednode{semigroup}{(3.25,5.90)}{Semigroup}{(c,e,m,a)}
+  \packednode{unital}{(6.00,5.90)}{UMagma}{(c,e,m,p,u)}
+  \packednode{monoid}{(5.60,7.35)}{Monoid}{(c,e,m,a,p,u)}
+  \packednode{group}{(5.05,8.70)}{Group}{(c,e,m,a,p,u,i)}
+  \foreach \name/\x/\y in {
+    CommMagma/.10/8.70,AbGroup/5.05/9.92,Rng/3.25/11.12,
+    CommRng/.10/12.12,Ring/8.10/12.12,CommRing/4.10/13.12,Field/4.10/14.12}
+    \node[bundle] (\name) at (\x,\y) {\name};
+  % Arrows run upwards from each declared parent to its child.
+  \foreach \ancestor/\child in {
+    base/set,base/assembled,set/magma,set/pset,magma/semigroup,magma/pointed,
+    pset/pointed,pset/two,pointed/unital,semigroup/monoid,unital/monoid,
+    monoid/group,magma/CommMagma,semigroup/Rng,monoid/Ring,Rng/Ring,
+    Rng/CommRng,CommMagma/CommRng,group/AbGroup,Ring/CommRing,
+    CommRng/CommRing,CommRing/Field}
+    \draw[extends] (\ancestor) -- (\child);
+  \draw[extends,preaction={draw=white,line width=3pt,-}]
+    (CommMagma) -- (AbGroup);
+  \draw[extends,densely dotted,thick] (AbGroup) --
+    node[right,font=\footnotesize\ttfamily,inner sep=2pt] {HasAbGroup} (Rng);
 \end{tikzpicture}
-\caption{Solid arrows point to declared parents. Each dashed outline
-encloses the structures whose keys are fixed by the exports named on
-its border. For example, \ttt{IsMonoid} fixes the magma, while
-\ttt{IsMonoidWithPoint} also fixes its point.}
+\caption{Read upwards. Solid arrows show declared parents. The dotted
+arrow supplies the additive group of \ttt{Rng} via \ttt{HasAbGroup};
+the view \ttt{RngAddGroup} recovers it. Tuples give constructor order.
+Dashed outlines enclose the structures fixed by the exports on their borders.}
 \label{fig:magma}
 \end{figure}
 \paragraph{Constructors and projections.}
@@ -1154,8 +1216,8 @@ inherited carrier $c$. Both layouts have the constructor order
 $(c,e,m,a,p,u,i)$. The final projection reduces to the supplied inverse.
 
 \paragraph{All parent maps.}
-Restrict Figure~\ref{fig:magma} to the eleven structures labelled
-with key tuples. Let $D$ be the solid edges between them,
+Consider the eleven structures with key tuples in Figure~\ref{fig:magma}.
+Let $D$ contain $(S,H)$ for each arrow from $H$ to $S$ between them,
 and $D^+$ their nonempty transitive closure. For an ordered key list
 $L$, write $s|_L=(\pi^S_k(s))_{k\in L}$. The complete families of
 declared parent maps for these structures are indexed by
@@ -1362,19 +1424,20 @@ $\ttt{PairAt}(x,y)$: the descriptors of \ttt{chosen} disagree.
 Substitution acts on resolved references. The parent view copies the three projections, so its \ttt{chosen}
 and \ttt{mixed} projections reduce to those of the child on an open input.
 
-For discovery, take an independent structure with the layout of
-$\ttt{PairAt}(x,x)$ and one extra key. Matching \ttt{chosen} gives
-$B=\{p\mapsto x,q\mapsto x\}$, and \ttt{mixed} confirms the binding of
-$p$. This yields a view to $\ttt{PairAt}(x,x)$. If the target also
+For discovery, take an independent structure with the same telescope
+$(p,q:\ttt{HasFlag})$, the same three registered keys at the same
+descriptors, and one extra key. Matching \ttt{chosen} aligns both
+parameters. The inclusion gives a view to $\ttt{PairAt}(p,q)$ without
+a declared parent. If the target also
 has an ordinary parameter $z$ absent from all descriptors, $B$ has
 no entry for $z$. Discovery skips the view even if only one source
 parameter has the right type. A declared parent can supply $z$.
 
 \paragraph{Conflict and ambiguity.}
-Suppose one parent supplies $m:\mathit{HasMagma}(c,e_1)$ and
-another supplies $m:\mathit{HasMagma}(c,e_2)$ with $e_1\ne e_2$ as
-keys. The union fails at $m$, even if the equivalence terms happen
-to compute alike. Keeping two keys $m_1,m_2$ on the \emph{same}
+Suppose a structure registers $m:\mathit{HasMagma}(c,e_1)$ and
+another declares $m:\mathit{HasMagma}(c,e_2)$ with $e_1\ne e_2$ as
+keys. \ruse{Key-Reuse} rejects the second declaration even if the
+equivalence terms happen to compute alike. Keeping two keys $m_1,m_2$ on the \emph{same}
 $c,e$ makes both available. A subsequent associativity component
 with omitted arguments then has two candidate tuples. Specifying
 $[c,e,m_1]$ resolves it. The two multiplication projections remain
