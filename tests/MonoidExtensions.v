@@ -76,21 +76,16 @@ Next Obligation. split; repeat intro; exact true. Defined.
 
 Program Definition ConstantBoolMagma
   : Magma
-  :=
-  {|MagmaToSetC := IndiscreteBoolS
-  ; hasMagma :=
-      {|mul _ _ := false
-      ; mul_proper _ _ _ _ _ _ := true
-      |}
-  |}.
+  := MakeMagma IndiscreteBoolS
+    {|mul _ _ := false
+    ; mul_proper _ _ _ _ _ _ := true
+    |}.
 
 Program Definition ConstantBoolSemigroup
   : Semigroup
   := let M := ConstantBoolMagma in
-     {|SemigroupToSetC := M
-     ; Semigroup_hasMagma := hasMagma M
-     ; isSemigroup := {|mul_assoc _ _ _ := true|}
-     |}.
+     SemigroupOfMagma M
+       {|mul_assoc _ _ _ := true|}.
 
 (** Different operations and associativity witnesses on the same carrier
     remain separate computational choices. *)

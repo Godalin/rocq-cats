@@ -570,15 +570,22 @@ let () =
       Rocq.get_global_env_current_sigma ~depth hyps constraints state in
     state, context, constraints, goals in
   ignore (BuiltIn.declare ~file_name:"minks.combinations" [
-    BuiltIn.MLCode (Pred ("minks.section-inputs",
-      CIn (BuiltInData.listC Elpi_plugin.Rocq_elpi_builtins.closed_term, "Parent applications",
-      Out (BuiltInData.list Rocq.gref, "Section variable references",
-      Read (global, "Read the Section dependencies of terms, including global references."))),
-      (fun terms _ ~depth:_ ctx _ state ->
-        let used = List.fold_left (fun ids term -> Id.Set.union ids
-          (Termops.global_vars_set ctx.Rocq.env (Rocq.get_sigma state) term)
-        ) Id.Set.empty terms in
-        (), Some (List.map (fun id -> GlobRef.VarRef id) (Id.Set.elements used)))),
+    BuiltIn.MLCode (Pred ("minks.add-record",
+      CIn (Packed_record.declaration, "Record telescope",
+      Out (Rocq.inductive, "Structure",
+      Full (global, "Declare a Rocq record with stored and computed fields."))),
+      (fun decl _ ~depth:_ _ _ state ->
+        if State.get Elpi_plugin.Rocq_elpi_builtins.tactic_mode state then
+          error "A packed record must be declared by a command.";
+        let ind, uctx = Packed_record.declare decl in
+        Rocq.grab_global_env ~uctx state, ((), Some ind), [])),
+      BuiltIn.DocAbove);
+    BuiltIn.MLCode (Pred ("minks.stored-projections",
+      In (Rocq.inductive, "Structure",
+      Out (BuiltInData.list Rocq.gref, "Component projections",
+      Easy "Read the projections of constructor arguments in declaration order.")),
+      (fun ind _ ~depth:_ ->
+        (), Some (Packed_record.stored_projections ind))),
       BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.mixin-header",
       In (Rocq.inductive, "Registered class",

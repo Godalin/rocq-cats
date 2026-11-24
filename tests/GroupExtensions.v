@@ -68,19 +68,15 @@ Next Obligation. split; repeat intro; exact true. Defined.
 
 Program Definition TokenMagma
   : Magma
-  :=
-  {|MagmaToSetC := TokenS
-  ; hasMagma := {|mul _ _ := false; mul_proper := _|}
-  |}.
+  := MakeMagma TokenS
+    {|mul _ _ := false; mul_proper := _|}.
 Next Obligation. repeat intro; exact true. Defined.
 
 Program Definition TokenSemigroup
   : Semigroup
   := let M := TokenMagma in
-     {|SemigroupToSetC := M
-     ; Semigroup_hasMagma := hasMagma M
-     ; isSemigroup := {|mul_assoc _ _ _ := true|}
-     |}.
+     SemigroupOfMagma M
+       {|mul_assoc _ _ _ := true|}.
 
 Program Definition TokenHasUnit
   : @HasUnit TokenSemigroup (Semigroup_hasMagma TokenSemigroup)

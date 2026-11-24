@@ -97,11 +97,8 @@ Program Definition TwoSphereClassSemigroup
     (H : HasHornFillers X 3 fin_first⁺⁺)
   : Semigroup
   := let M := TwoSphereClassMagma X b H in
-     {|SemigroupToSetC := M
-     ; Semigroup_hasMagma := hasMagma M
-     ; isSemigroup :=
-         {|mul_assoc := two_sphere_kan_mul_assoc X b H|}
-     |}.
+     SemigroupOfMagma M
+       {|mul_assoc := two_sphere_kan_mul_assoc X b H|}.
 
 (** Keep that same semigroup and the actual constant sphere as unit. *)
 
@@ -111,17 +108,13 @@ Program Definition TwoSphereClassMonoid
     (H : HasHornFillers X 3 fin_first⁺⁺)
   : Monoid
   := let S := TwoSphereClassSemigroup H in
-     {|MonoidToSetC := S
-     ; Monoid_hasMagma := Semigroup_hasMagma S
-     ; Monoid_isSemigroup := isSemigroup S
-     ; hasUnit :=
-         {|mul_unit := two_sphere_base X b
-         ; isUnit :=
-             {|mul_unit_l := two_sphere_kan_mul_unit_l X b H
-             ; mul_unit_r := two_sphere_kan_mul_unit_r X b H
-             |}
-         |}
-     |}.
+     MonoidOfSemigroup S
+       {|mul_unit := two_sphere_base X b
+       ; isUnit :=
+           {|mul_unit_l := two_sphere_kan_mul_unit_l X b H
+           ; mul_unit_r := two_sphere_kan_mul_unit_r X b H
+           |}
+       |}.
 
 (** General mul inv uniqueness identifies the two independent
     candidates in generated class equality, not as tetrahedron records. *)
@@ -154,18 +147,13 @@ Program Definition TwoSphereClassGroup
     (L : HasHornFillers X 3 fin_first⁺)
   : Group
   := let M := TwoSphereClassMonoid H in
-     {|GroupToSetC := M
-     ; Group_hasMagma := Monoid_hasMagma M
-     ; Group_isSemigroup := Monoid_isSemigroup M
-     ; Group_hasUnit := hasUnit M
-     ; hasInverse :=
-         {|inv x := (@SphereKanLeftInverse X b K x).1
-         ; isInverse :=
-             {|mul_inv_l := two_sphere_kan_mul_inverse_l X b H K
-             ; mul_inv_r := _
-             |}
-         |}
-     |}.
+     GroupOfMonoid M
+       {|inv x := (@SphereKanLeftInverse X b K x).1
+       ; isInverse :=
+           {|mul_inv_l := two_sphere_kan_mul_inverse_l X b H K
+           ; mul_inv_r := _
+           |}
+       |}.
 Next Obligation.
   transitivity (two_sphere_kan_mul X b H x
     (@SphereKanRightInverse X b L x).1).

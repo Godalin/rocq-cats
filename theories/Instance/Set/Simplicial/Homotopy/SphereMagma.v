@@ -200,13 +200,10 @@ Defined.
 Program Definition TwoSphereClassMagma
     (H : HasHornFillers X 3 fin_first⁺⁺)
   : Magma
-  :=
-  {|MagmaToSetC := TwoSphereClassS X b
-  ; hasMagma :=
-      {|mul := two_sphere_kan_mul H
-      ; mul_proper := two_sphere_kan_mul_proper H
-      |}
-  |}.
+  := MakeMagma (TwoSphereClassS X b)
+    {|mul := two_sphere_kan_mul H
+    ; mul_proper := two_sphere_kan_mul_proper H
+    |}.
 
 (** The two multiplications agree as respectful maps from the
     product setoid. No equality of selections or structure records occurs. *)

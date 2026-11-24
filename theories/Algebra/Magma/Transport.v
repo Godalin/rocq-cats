@@ -38,13 +38,10 @@ Context (f : B →r A) (g : A →r B).
 
 Program Definition MagmaTransport
   : Magma
-  :=
-  {|MagmaToSetC := B
-  ; hasMagma :=
-      {|mul x y := g (f x ⋅ f y)
-      ; mul_proper := _
-      |}
-  |}.
+  := MakeMagma B
+    {|mul x y := g (f x ⋅ f y)
+    ; mul_proper := _
+    |}.
 Next Obligation.
   intros x x' Hx y y' Hy. apply (@func_proper _ _ g).
   apply mul_proper; apply (@func_proper _ _ f); assumption.

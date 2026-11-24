@@ -63,7 +63,8 @@ Elpi File minks.relative lp:{{
   relative-source none _ _ _ _ [].
   relative-source (some Base) Covered Views Refs X [T] :-
     if (std.mem Views (conversion _ Base View _))
-      (coq.env.global (const View) Head, coq.mk-app Head [X] T)
+      (local-header H, header-global (const View) Head,
+       std.map H (b\x\ b = binder _ _ _ x) Args, coq.mk-app Head {std.append Args [X]} T)
       (flat-view-body Refs Base Covered Body, T = Body X).
 
   pred relative-record i:id, i:list component, i:list component,
@@ -96,14 +97,25 @@ Elpi File minks.relative lp:{{
   binder-levels (parameter _ _ Ty _) Levels :- !, head-levels Ty Levels.
   binder-levels _ [].
 
+  % A relative class retains the header binders used by its signature,
+  % including dependencies of the selected binder types.
+  pred used-header i:list header-binder, i:indt-decl, o:list header-binder.
+  used-header [] _ [].
+  used-header [B | H] Decl Out :-
+    B = binder _ _ _ X, used-header H Decl Rest,
+    if (occurs X Decl ; std.exists Rest (b\ sigma ty\ b = binder _ _ ty _, occurs X ty))
+      (Out = [B | Rest]) (Out = Rest).
+
   pred declare-relative i:id, i:option inductive, i:list component,
       i:list component, i:list component, i:list component,
-      o:inductive, o:list (pair id constant).
-  declare-relative Name Base Covered Cs Fixed Remaining Export Refs :-
-    relative-declaration Name Base Covered Fixed Remaining Decl,
+      o:inductive, o:list (pair id constant), o:list term.
+  declare-relative Name Base Covered Cs Fixed Remaining Export Refs Args :-
+    relative-declaration Name Base Covered Fixed Remaining Open,
+    local-header H, used-header H Open Needed, bind-header Needed Open Decl,
+    std.map Needed (b\x\ b = binder _ _ _ x) Args,
     std.assert-ok! (coq.typecheck-indt-decl Decl)
       ("Ill-typed relative interface " ^ Name),
-    binder-levels Decl Levels,
+    header-universes Prefix, merge-levels Prefix {binder-levels Open} Levels,
     (@udecl! Levels tt [] tt => coq.env.add-indt Decl Export),
     coq.TC.declare-class (indt Export),
     coq.env.projections Export Projections,
@@ -111,8 +123,9 @@ Elpi File minks.relative lp:{{
     std.map2 RemainingKeys Projections field-ref Refs,
     std.map Fixed (c\k\ k = maximal) Implicits,
     if (Base = none) (All = Implicits) (All = [maximal | Implicits]),
+    std.append {header-kinds Needed} All Kinds,
     std.forall Refs (r\ sigma key p\
-      r = pr key p, relative-projection All p),
+      r = pr key p, relative-projection Kinds p),
     std.forall Remaining (register-field 2 Cs Refs).
 
   pred from-relative-body i:term, i:term, i:list id, i:list id,
@@ -138,13 +151,12 @@ Elpi File minks.relative lp:{{
       i:inductive, i:inductive, i:list component, i:list id, i:list id,
       i:list (pair id constant).
   declare-relative-packer Name Base Covered I Export Fixed FixedKeys Keys Refs :-
-    coq.env.global (indt Export) Class,
+    family-global (indt Export) Class,
     coq.env.indt I tt _ _ _ [K] _, family-global (indc K) Ctor,
     pack-base Base Covered (args\bindings\t\
       pack-components Fixed bindings
         (env\body\ from-relative-body Class Ctor FixedKeys Keys Refs args env body) t) Term,
-    std.assert-ok! (coq.typecheck Term Ty) ("Ill-typed packing function " ^ Name),
-    @univpoly! => coq.env.add-const Name Term Ty @transparent! _.
+    declare-map Name Term _.
 
   pred register-relative i:option inductive, i:inductive, i:constructor,
       i:list component, i:list component, i:list id, o:list id.
@@ -154,7 +166,7 @@ Elpi File minks.relative lp:{{
        coq.elpi.accumulate execution-site "minks.flat.db"
          (clause _ _ (export-base (indt Export) I)))
       (Parameters = FixedKeys),
-    std.length Parameters Arity,
+    coq.env.indt Export tt Arity _ _ _ _,
     std.map Remaining component-key Keys,
     std.map-filter Remaining (c\k\ c = slot k (native-kind _) _) Ordinary,
     minks.register-combination Export (indc Ctor) Arity Keys Ordinary,
@@ -167,27 +179,27 @@ Elpi File minks.relative lp:{{
   generate-relative Child I Cs Parents Views Name Selection Export Parameters :-
     export-selection Cs Selection Base Covered Selected,
     relative-layout Cs Covered Selected Fixed Remaining,
-    declare-relative Name Base Covered Cs Fixed Remaining Export Refs,
-    std.map Fixed component-key FixedKeys,
-    std.map Remaining component-key RemainingKeys,
-    std.append FixedKeys RemainingKeys ConstructorKeys,
-    std.map Cs component-key Keys,
-    coq.env.projections I ChildProjections,
-    std.map2 Keys ChildProjections field-ref ChildRefs,
-    std.map ConstructorKeys (k\t\ read-field ChildRefs k t) FromChild,
-    coq.env.indt Export tt _ _ _ [Ctor] _,
-    register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters,
-    coq.env.global (indc Ctor) MakeExport,
-    family-global (indt I) ChildTy,
-    (pi x\ sigma bases args\
-      relative-source Base Covered Views ChildRefs x bases,
-      apply-fields FromChild x args,
-      coq.mk-app MakeExport {std.append bases args} (Read x)),
-    declare-view Child ChildTy Export Read Extraction,
-    if (Fixed = [_ | _] ; Base = some Ancestor,
-        ancestors Parents [] Ancestors, std.mem Ancestors Ancestor)
-      (coq.TC.declare-instance (const Extraction) 1)
-      true,
-    PackName is Child ^ "Of" ^ Name,
-    declare-relative-packer PackName Base Covered I Export Fixed FixedKeys Keys Refs.
+    declare-relative Name Base Covered Cs Fixed Remaining Export Refs Args,
+    active-family Export Args => (
+      std.map Fixed component-key FixedKeys,
+      std.map Remaining component-key RemainingKeys,
+      std.append FixedKeys RemainingKeys ConstructorKeys,
+      std.map Cs component-key Keys,
+      stored-fields I Keys ChildRefs,
+      std.map ConstructorKeys (k\t\ read-field ChildRefs k t) FromChild,
+      coq.env.indt Export tt _ _ _ [Ctor] _,
+      register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters,
+      family-global (indc Ctor) MakeExport,
+      family-global (indt I) ChildTy,
+      (pi x\ sigma bases args\
+        relative-source Base Covered Views ChildRefs x bases,
+        apply-fields FromChild x args,
+        coq.mk-app MakeExport {std.append bases args} (Read x)),
+      declare-view Child ChildTy Export Read Extraction,
+      if (Fixed = [_ | _] ; Base = some Ancestor,
+          ancestors Parents [] Ancestors, std.mem Ancestors Ancestor)
+        (coq.TC.declare-instance (const Extraction) 1)
+        true,
+      PackName is Child ^ "Of" ^ Name,
+      declare-relative-packer PackName Base Covered I Export Fixed FixedKeys Keys Refs).
 }}.

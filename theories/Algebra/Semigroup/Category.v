@@ -21,7 +21,5 @@ From Cats Require Import
 Program Definition EndSemigroup (C : Cat) (X : @Ob C)
   : Semigroup
   := let M := EndMagma C X in
-     {|SemigroupToSetC := M
-     ; Semigroup_hasMagma := hasMagma M
-     ; isSemigroup := {|mul_assoc := comp_assoc|}
-     |}.
+     SemigroupOfMagma M
+       {|mul_assoc := comp_assoc|}.

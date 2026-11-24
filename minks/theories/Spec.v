@@ -133,15 +133,22 @@ Elpi File minks.spec lp:{{
   % Ordinary parameter references and field keys occupy disjoint namespaces.
   pred parameter-key i:id, o:id.
   parameter-key Name Key :- Key is "param:" ^ Name.
-  pred section-input i:id, o:id, o:term.
-  section-input Name Key (global (const C)) :-
-    coq.env.section-variables Vars, std.mem Vars C, coq.gref->id (const C) Name,
-    parameter-key Name Key.
+  kind header-binder type.
+  type binder id -> implicit_kind -> term -> term -> header-binder.
+  pred local-header o:list header-binder.
+  local-header [].
+
+  pred ordinary-binding o:id, o:term.
+  ordinary-binding Name Var :-
+    local-header H, std.mem H (binder Name _ _ Var).
+  ordinary-binding Name (global (const C)) :-
+    coq.env.section-variables Vars, std.mem Vars C, coq.gref->id (const C) Name.
+
+  pred ordinary-input i:id, o:id, o:term.
+  ordinary-input Name Key Var :- ordinary-binding Name Var, parameter-key Name Key.
 
   pred ambient-value i:id, o:term.
-  ambient-value Key T :-
-    coq.env.section-variables Vars, std.mem Vars C, coq.gref->id (const C) Name,
-    parameter-key Name Key, T = global (const C).
+  ambient-value Key Var :- ordinary-binding Name Var, parameter-key Name Key.
 
   pred key-inputs i:list id, o:list input.
   key-inputs Keys Inputs :- std.map Keys (k\r\ r = key-input k) Inputs.
@@ -149,7 +156,7 @@ Elpi File minks.spec lp:{{
   pred argument-input i:list id, i:argument-ref, o:input.
   argument-input Keys (position I) (key-input K) :- std.nth I Keys K.
   argument-input _ (section-ref C) (key-input K) :-
-    coq.gref->id (const C) Name, section-input Name K _.
+    coq.gref->id (const C) Name, ordinary-input Name K _.
   argument-input Keys (projection-ref C Args) (projection-input C Inputs) :-
     std.map Args (argument-input Keys) Inputs.
   argument-input Keys (host-ref Expr Refs) (host-input Expr Inputs) :-
@@ -273,9 +280,7 @@ Elpi File minks.spec lp:{{
   % section inputs for a component class and its enclosing record.
   pred input-label i:list (pair term id), i:term, o:id.
   input-label Inputs Arg Label :- std.mem Inputs (pr Arg Label), !.
-  input-label _ (global (const C)) Label :-
-    coq.env.section-variables Vars, std.mem Vars C,
-    coq.gref->id (const C) Name, parameter-key Name Label.
+  input-label _ Var Key :- ordinary-binding Name Var, parameter-key Name Key.
 
   % Abstract exactly the selected inputs that occur in the host term. Rocq
   % supplies the entire body, including coercions and their implicit inputs.
@@ -296,9 +301,8 @@ Elpi File minks.spec lp:{{
   layout-input Inputs T (projection-input C Args) :-
     projection-app T C Terms, !, std.map Terms (layout-input Inputs) Args.
   layout-input Inputs T (host-input Expr Args) :-
-    coq.env.section-variables Vars,
-    std.map Vars (c\p\ sigma name key\ coq.gref->id (const c) name, parameter-key name key,
-      p = pr (global (const c)) key) Ambient,
+    std.findall (ordinary-binding _ _) Bindings,
+    std.map Bindings (b\p\ sigma n x\ b = ordinary-binding n x, p = pr x {parameter-key n}) Ambient,
     scope-term {std.append Inputs Ambient} T Expr Keys, key-inputs Keys Args.
 
   pred read-layout i:term, i:int, i:list (pair term id), i:list component,
@@ -354,6 +358,24 @@ Elpi File minks.spec lp:{{
        coq.say "Expanded components:",
        print-export-fields I Remaining)
       true.
+
+  % Account for each metadata row exactly once, in physical field order.
+  pred align-field-names i:inductive, i:list component, i:list field-name-info,
+      o:list field-name-info.
+  align-field-names _ [] [] [] :- !.
+  align-field-names I [] Extra _ :- coq.error "Unexpected field metadata in" I Extra.
+  align-field-names I [slot Key _ _ | Cs] Rows [Row | Ordered] :-
+    std.partition Rows (r\ r = named-field Key _ _) Matches Rest,
+    if (Matches = [Row]) true
+      (coq.error "Expected exactly one field metadata entry in" I "for key" Key),
+    align-field-names I Cs Rest Ordered.
+
+  pred checked-field-names i:inductive, i:list component, o:list field-name-info.
+  checked-field-names I Cs Names :-
+    std.findall (field-names I _) Tables,
+    if (Tables = [field-names _ Rows]) true
+      (coq.error "Expected exactly one field metadata table for" I),
+    align-field-names I Cs Rows Names.
 
   pred struct-ancestors i:list struct-parent, o:list inductive.
   struct-ancestors Ps Is :-

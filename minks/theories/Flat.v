@@ -55,14 +55,26 @@ Elpi File minks.flat lp:{{
   pred field-ref i:id, i:option constant, o:(pair id constant).
   field-ref Key (some C) (pr Key C).
 
+  % Declarations generated together share the universe prefix of their header.
+  pred header-universes o:list univ.variable.
+  header-universes [].
+
+  pred header-global i:gref, o:term.
+  header-global Ref Head :-
+    header-universes Levels, coq.env.global Ref Fresh,
+    if (Levels = []) (Head = Fresh) (
+      Fresh = pglobal _ Original, coq.univ-instance Original Vars,
+      std.length Levels N, std.drop N Vars Tail,
+      coq.univ-instance Instance {std.append Levels Tail},
+      @uinstance! Instance => coq.env.global Ref Head).
+
   pred active-family o:inductive, o:list term.
   pred family-global i:gref, o:term.
   family-global Ref T :-
-    coq.env.global Ref Head,
     if (active-family I Args,
         (Ref = indt I ; coq.env.indt I tt _ _ _ [K] _, Ref = indc K ;
          Ref = const P, coq.env.projections I Ps, std.mem Ps (some P)))
-      (coq.mk-app Head Args T) (T = Head).
+      (header-global Ref Head, coq.mk-app Head Args T) (coq.env.global Ref T).
 
   pred read-field i:list (pair id constant), i:id, o:term.
   read-field Fs Key Head :-
@@ -75,10 +87,14 @@ Elpi File minks.flat lp:{{
     if (parent-inputs I Args) true (Args = []),
     std.length Args Arity, coq.env.global Ref Head, coq.mk-app Head Args Applied.
 
+  pred stored-fields i:inductive, i:list id, o:list (pair id constant).
+  stored-fields I Keys Refs :-
+    minks.stored-projections I Ps,
+    std.map2 Keys Ps (k\p\r\ sigma c\ p = const c, r = pr k c) Refs.
+
   pred record-fields i:inductive, i:list id, o:list term.
   record-fields I Keys Fields :-
-    coq.env.projections I Projections,
-    std.map2 Keys Projections field-ref Refs,
+    stored-fields I Keys Refs,
     std.map Keys (k\t\ sigma c\ std.mem Refs (pr k c), parent-global I (const c) t) Fields.
 
   pred apply-fields i:list term, i:term, o:list term.
@@ -99,8 +115,7 @@ Elpi File minks.flat lp:{{
   declare-view Child ChildTy Ancestor Body View :-
     Term = fun `child` ChildTy Body,
     view-name Child Ancestor Name,
-    std.assert-ok! (coq.typecheck Term Ty) ("Ill-typed view " ^ Name),
-    @univpoly! => coq.env.add-const Name Term Ty @transparent! View.
+    declare-map Name Term View.
 
   pred flat-view-body i:list (pair id constant), i:inductive, i:list component,
       o:(term -> term).
@@ -141,8 +156,7 @@ Elpi File minks.flat lp:{{
           std.map Keys (k\t\ lookup k bindings t) args,
           coq.mk-app Ctor args result)
         (Body p)),
-    std.assert-ok! (coq.typecheck Term Ty) ("Ill-typed packing function " ^ Name),
-    @univpoly! => coq.env.add-const Name Term Ty @transparent! Pack.
+    declare-map Name Term Pack.
 
   % Canonical inference must preserve the child's explicit mixin choices.
   pred canonical-parent i:list component, i:list component.
@@ -356,49 +370,93 @@ Elpi File minks.flat lp:{{
     C = slot "carrier" (native-kind Head) {key-inputs Keys}, Cs = [C],
     coq.env.projections I [some P], register-field 1 Cs [pr "carrier" P] C.
 
-  pred struct-universes o:bool, o:bool.
-  pred header o:list (pair id implicit_kind).
-  pred bind-header i:list (pair id implicit_kind), i:indt-decl, o:indt-decl.
+  pred struct-universes o:upoly-decl.
+  pred bind-header i:list header-binder, i:indt-decl, o:indt-decl.
   bind-header [] Decl Bound :- copy-indt-decl Decl Bound.
-  bind-header [pr Name Kind | Rest] Decl (parameter Name Kind Ty Body) :-
-    section-input Name _ Var, coq.typecheck Var Raw ok, copy Raw Ty,
-    pi x\ (copy Var x :- !) => bind-header Rest Decl (Body x).
+  bind-header [binder Name Kind Ty Var | H] Decl (parameter Name Kind Domain Tail) :-
+    copy Ty Domain, pi x\ (copy Var x :- !) => bind-header H Decl (Tail x).
 
-  % Rocq discharges variables occurring in an inductive arity or constructor.
-  % Keep dependencies used only by a parent application in the arity as well.
-  pred metadata-inputs o:list term.
-  pred retain-inputs i:list term, i:term, o:term.
-  retain-inputs [] Sort Sort.
-  retain-inputs [X | Xs] Sort (app [fun `_` Ty (_\ Rest), X]) :-
-    coq.typecheck X Ty ok, retain-inputs Xs Sort Rest.
+  pred abstract-term i:list header-binder, i:term, o:term.
+  abstract-term [] T Closed :- copy T Closed.
+  abstract-term [binder Name _ Ty Var | H] T (fun N Domain Tail) :-
+    coq.id->name Name N, copy Ty Domain,
+    pi x\ (copy Var x :- !) => abstract-term H T (Tail x).
 
-  pred declare-packed i:id, i:list component, i:list (pair id id),
+  pred parameter-levels i:list header-binder, o:list univ.variable.
+  parameter-levels H Levels :-
+    abstract-term H {{ Prop }} T, coq.univ.variable.of-term T Set,
+    coq.univ.variable.set.elements Set All,
+    std.filter All (l\ sigma u\ coq.univ.variable u l, not (coq.univ.global? u)) Levels.
+
+  pred merge-levels i:list univ.variable, i:list univ.variable, o:list univ.variable.
+  merge-levels First Rest Levels :-
+    std.filter Rest (l\ not (std.mem First l)) New, std.append First New Levels.
+
+  pred name-products i:list header-binder, i:term, o:term.
+  name-products [] T T.
+  name-products [binder N _ _ _ | H] (prod _ Ty Bo) (prod Name Ty Out) :-
+    coq.id->name N Name, pi x\ name-products H (Bo x) (Out x).
+
+  pred header-kinds i:list header-binder, o:list implicit_kind.
+  header-kinds H Ks :- std.map H (b\k\ b = binder _ k _ _) Ks.
+
+  pred set-header-kinds i:gref, i:list implicit_kind.
+  set-header-kinds _ [] :- !.
+  set-header-kinds Ref Ks :- @global! => coq.arguments.set-implicit Ref [Ks].
+
+  pred declare-map i:id, i:term, o:constant.
+  declare-map Name Term Ref :-
+    local-header H, abstract-term H Term Closed,
+    std.assert-ok! (coq.typecheck Closed Ty) ("Ill-typed map " ^ Name),
+    name-products H Ty NamedTy, header-universes Levels,
+    (@udecl! Levels tt [] tt => coq.env.add-const Name Closed NamedTy @transparent! Ref),
+    set-header-kinds (const Ref) {header-kinds H}.
+
+  % Anonymous definitions retain the declared parent applications at discharge.
+  pred parent-type-in-scope i:inductive, o:term.
+  pred parent-fields i:list inductive, i:list (pair id term), i:term, o:term.
+  parent-fields [] _ Self Self.
+  parent-fields [P | Ps] Env Self (let `_` Ty Value Tail) :-
+    parent-type-in-scope P Ty, coq.safe-dest-app Ty Head Args,
+    coq.env.indt P tt _ _ _ [K] _,
+    if (Head = pglobal _ U) (@uinstance! U => coq.env.global (indc K) Ctor)
+      (coq.env.global (indc K) Ctor),
+    close P Cs, std.map Cs (c\t\ lookup {component-key c} Env t) Values,
+    coq.mk-app Ctor {std.append Args Values} Value,
+    pi x\ parent-fields Ps Env Self (Tail x).
+
+  pred field-telescope i:list inductive, i:list component, i:record-decl,
+      i:list (pair id term), i:term, o:term.
+  field-telescope Ps [] end-record Env Self T :- parent-fields Ps Env Self T.
+  field-telescope Ps [C | Cs] (field _ F Ty Rest) Env Self (prod Name Ty Tail) :-
+    coq.id->name F Name, component-key C Key,
+    pi x\ field-telescope Ps Cs (Rest x) [pr Key x | Env] Self (Tail x).
+
+  pred declare-packed i:id, i:list inductive, i:list component, i:list (pair id id),
       o:inductive, o:list term.
-  declare-packed N Cs Names I Args :- @keep-alg-univs! ==>
+  declare-packed N Parents Cs Names I Args :- @keep-alg-univs! ==>
     fields N Cs Names [] Body,
     {{ Set }} = sort Ground, field-sorts Body Ground Sort,
-    if (metadata-inputs Inputs) (retain-inputs Inputs (sort Sort) Arity) (Arity = sort Sort),
-    Ctor is "Make" ^ N, Decl = record N Arity Ctor Body,
-    if (header H) true (H = []),
-    std.map H (p\t\ sigma n\ p = pr n _, section-input n _ t) Args,
+    Ctor is "Make" ^ N, Decl = inductive N tt (arity (sort Sort)) Constructors,
+    (pi self\ sigma ty\ field-telescope Parents Cs Body [] self ty,
+      Constructors self = [constructor Ctor (arity ty)]),
+    local-header H, std.map H (b\x\ b = binder _ _ _ x) Args,
     if (H = []) (Bound = Decl) (bind-header H Decl Bound),
     std.assert-ok! (coq.typecheck-indt-decl Bound) ("Ill-typed structure " ^ N),
-    if (struct-universes L C)
-      (@udecl! [] L [] C => coq.env.add-indt Bound I)
-      (layout-levels Cs Body Levels, @udecl! Levels tt [] tt => coq.env.add-indt Bound I),
+    if (struct-universes (upoly-decl Vs LV Cs0 LC))
+      (if (LV = tt) (header-universes Ordered) (Ordered = Vs),
+       @udecl! Ordered LV Cs0 LC => minks.add-record Bound I)
+      (layout-levels Cs Body Levels, @udecl! Levels tt [] tt => minks.add-record Bound I),
     if (H = []) true (
-      std.map H (p\k\ p = pr _ k) Kinds,
-      coq.env.projections I Projections,
-      std.forall Projections (p\ sigma ref\ p = some ref,
-        @global! => coq.arguments.set-implicit (const ref) [Kinds])).
+      header-kinds H Kinds,
+      minks.stored-projections I Projections,
+      std.forall Projections (p\ @global! => coq.arguments.set-implicit p [Kinds])).
 
   pred generate-views i:id, i:list inductive, i:list component, i:inductive,
       o:list struct-conversion, o:list constant.
   generate-views N Parents Cs I Views Packers :-
     family-global (indt I) ChildTy,
-    coq.env.projections I Projections,
-    std.map Cs component-key Keys,
-    std.map2 Keys Projections field-ref Fields,
+    std.map Cs component-key Keys, stored-fields I Keys Fields,
     std.forall Cs (register-field 1 Cs Fields),
     std.assert! (ancestors Parents [] Reversed) "Could not read the ancestors",
     std.rev Reversed Ancestors,
@@ -411,7 +469,7 @@ Elpi File minks.flat lp:{{
     std.append ParentViews BaseViews Declared,
     discover-views I Cs Fields Declared OtherViews,
     std.append Declared OtherViews Views,
-    if (header _) true (std.forall ParentViews register-parent-view),
+    std.forall ParentViews register-parent-view,
     std.filter Ancestors (p\ std.mem Parents p) DirectParents,
     std.map DirectParents (p\f\ pack-from-parent N I Cs p f) Packers.
 }}.

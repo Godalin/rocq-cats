@@ -136,7 +136,6 @@ Elpi Accumulate lp:{{
 
   pred parent-telescope i:inductive, o:term.
 
-  pred parent-type-in-scope i:inductive, o:term.
   pred scope-parents i:list (pair inductive term), i:prop.
   scope-parents [] Goal :- Goal.
   scope-parents [pr I Ty | Rest] Goal :-
@@ -229,12 +228,9 @@ Elpi Accumulate lp:{{
   % unrenamed keys may also share by spelling alone.
   pred parent-names i:struct-parent, o:list field-name-info.
   parent-names (named-parent I _) Names :-
-    close I Cs,
-    if (field-names I Stored) true (Stored = []),
-    std.map Cs (c\n\ sigma k history origins\
-      component-key c k,
-      if (std.mem Stored (named-field k history origins)) true
-        (history = [], origins = []),
+    close I Cs, checked-field-names I Cs Stored,
+    std.map Stored (r\n\ sigma k history origins\
+      r = named-field k history origins,
       n = named-field k history [pr I k | origins]) Names.
 
   pred shares i:field-name-info, i:field-name-info.
@@ -309,10 +305,10 @@ Elpi Accumulate lp:{{
   pred resolve-spelling i:list field-name-info, i:list field-name-info, i:id, o:id.
   resolve-spelling Before Final K Actual :-
     if (std.mem Before (named-field K _ _))
-      (if (section-input K _ _) (coq.error "Both a section parameter and a field have the name:" K)
+      (if (ordinary-input K _ _) (coq.error "Both a parameter and a field have the name:" K)
          (final-name Final K Actual))
       (require-fresh Before K,
-       if (section-input K Ambient _) (Actual = Ambient)
+       if (ordinary-input K Ambient _) (Actual = Ambient)
          (coq.error "Unknown component input:" K)).
 
   pred plan-entries i:list pending-slot, i:list field-name-info,
@@ -392,33 +388,31 @@ Elpi Accumulate lp:{{
     coq.elpi.accumulate execution-site "minks.flat.db"
       (clause _ _ (struct-view Source Target Ref Mode)).
 
-  pred header-args i:list argument, o:list (pair id implicit_kind), o:list argument.
-  header-args [str "#end" | Args] [] Args :- !.
-  header-args [str K, str Name | Args] [pr Name Kind | H] Rest :-
-    std.mem [pr "explicit" explicit, pr "maximal" maximal, pr "implicit" implicit]
-      (pr K Kind), header-args Args H Rest.
+  pred scoped-args i:list argument, i:term, o:list argument.
+  scoped-args [] (sort prop) [].
+  scoped-args [str "#term" | Ts] Body [trm T | Out] :- !,
+    Body = let _ _ T Rest,
+    scoped-args Ts (Rest T) Out.
+  scoped-args [A | Ts] T [A | Out] :- scoped-args Ts T Out.
 
-  % Register only after the maps quantify all record indices.
-  main [str "#register", str Name] :- !,
-    coq.locate Name (indt I), spec I Parents _, ancestors Parents [] All,
-    std.forall All (p\ sigma ref mode\ struct-view I p ref mode,
-      register-parent-view (conversion I p ref mode)).
+  pred open-header i:arity, i:list header-binder, i:id, i:list argument.
+  open-header (parameter N Kind Ty Rest) Rev ID Args :- !,
+    coq.id->name N Name,
+    @pi-decl Name Ty x\ open-header (Rest x) [binder N Kind Ty x | Rev] ID Args.
+  open-header (arity Body) Rev ID Args :-
+    std.rev Rev H, scoped-args Args Body Full,
+    struct-universes (upoly-decl Named _ _ _),
+    merge-levels Named {parameter-levels H} Levels,
+    (header-universes Levels :- !) => (local-header H :- !) => main [str ID | Full].
 
-  main [str "#universes", str Levels, str Constraints | Args] :- !,
-    std.mem [pr "true" tt, pr "false" ff] (pr Levels L),
-    std.mem [pr "true" tt, pr "false" ff] (pr Constraints C),
-    struct-universes L C => main Args.
-
-  main [str "#header" | Args] :- !,
-    header-args Args H Rest, header H => main Rest.
+  main [upoly-const-decl ID none Arity UD | Args] :- !,
+    struct-universes UD => open-header Arity [] ID Args.
   main [A | Args] :-
     if (atom A Name, struct-parents Args Applications Actuals Rest,
         parse-components Rest Slots Tail, parse-exports Tail Exports) true usage,
     resolve-bases Applications (parents\
       std.assert! (std.map2 parents Actuals parent-type Named) "could not align parent types",
-      minks.section-inputs Actuals Used, std.map Used coq.env.global Inputs,
-      metadata-inputs Inputs =>
-        scope-parents Named (build Name parents Slots Exports)).
+      scope-parents Named (build Name parents Slots Exports)).
 
   pred resolve-bases i:list struct-parent, i:(list struct-parent -> prop).
   resolve-bases [] K :- K [].
@@ -430,10 +424,13 @@ Elpi Accumulate lp:{{
     if (Known = [native-base _ I]) (Continue I)
       (if (Known = []) (
          generate-base Head I Cs,
+         std.map Cs (c\n\ n = named-field {component-key c} [] []) Names,
+         Metadata = field-names I Names,
          Registration = native-base Head I, Signature = struct-spec I [] Cs,
          coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ Registration),
          coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ Signature),
-         Registration => Signature => Continue I)
+         coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ Metadata),
+         Registration => Signature => Metadata => Continue I)
        (coq.error "Several visible bases for native parent; name the intended structure:" Head)).
 
   pred export-keys i:list (list component), i:list component, i:option (list id), o:list id.
@@ -458,9 +455,11 @@ Elpi Accumulate lp:{{
       with-components Inherited [] (env\
         resolve-entries Entries Inherited env Components Heads),
       with-heads Heads (
-          declare-packed Name Components {std.flatten Aliases} I Args,
+          add-distinct FlatParents [] ParentsRev,
+          declare-packed Name {std.rev ParentsRev} Components {std.flatten Aliases} I Args,
+          align-field-names I Components Final Ordered,
           coq.elpi.accumulate execution-site "minks.flat.db"
-            (clause _ _ (field-names I Final)),
+            (clause _ _ (field-names I Ordered)),
           active-family I Args =>
             finish Name Applications Branches Inherited Exports FlatParents Components I)).
 
@@ -498,7 +497,7 @@ Elpi Accumulate lp:{{
   inspect Name Ref :-
     if (Ref = indt I, spec I Parents _) true
       (coq.error "Not a Minks structure:" Name),
-    close I Cs,
+    close I Cs, checked-field-names I Cs Names,
     std.findall (struct-view I _ _ _) Stored,
     std.map Stored
       (v\out\ sigma target ref mode\
@@ -513,7 +512,6 @@ Elpi Accumulate lp:{{
       Exports,
     current-layout I 0 Cs Params Layout,
     struct-spec I Declared _,
-    if (field-names I Ns) (Names = Ns) (Names = []),
     inspection-names Names => print-struct Declared Name Params Parents Layout Views Packers Exports.
 
   main [str Name] :- !, coq.locate Name Ref, inspect Name Ref.

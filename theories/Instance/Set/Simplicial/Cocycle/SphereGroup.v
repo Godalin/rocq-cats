@@ -113,13 +113,10 @@ Defined.
 
 Program Definition cocycle_two_sphere_Magma
   : Magma
-  :=
-  {|MagmaToSetC := Q
-  ; hasMagma :=
-      {|mul := cocycle_two_sphere_mul
-      ; mul_proper := _
-      |}
-  |}.
+  := MakeMagma Q
+    {|mul := cocycle_two_sphere_mul
+    ; mul_proper := _
+    |}.
 
 (** Associativity follows by decoding, using the coefficient law. *)
 
@@ -141,11 +138,8 @@ Defined.
 Program Definition cocycle_two_sphere_Semigroup
   : Semigroup
   := let M := MakeMagma Q (hasMagma cocycle_two_sphere_Magma) in
-     {|SemigroupToSetC := M
-     ; Semigroup_hasMagma := hasMagma M
-     ; isSemigroup :=
-         {|mul_assoc (x y z : Q) := cocycle_two_sphere_mul_assoc x y z|}
-     |}.
+     SemigroupOfMagma M
+       {|mul_assoc (x y z : Q) := cocycle_two_sphere_mul_assoc x y z|}.
 
 (** The constant sphere is a left unit in generated class equality. *)
 
@@ -194,17 +188,13 @@ Program Definition cocycle_two_sphere_Monoid
   := let S := SemigroupOfMagma
       (MakeMagma Q (hasMagma cocycle_two_sphere_Magma))
       (isSemigroup cocycle_two_sphere_Semigroup) in
-     {|MonoidToSetC := S
-     ; Monoid_hasMagma := Semigroup_hasMagma S
-     ; Monoid_isSemigroup := isSemigroup S
-     ; hasUnit :=
-         {|mul_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
-         ; isUnit :=
-             {|mul_unit_l := cocycle_two_sphere_unit_l
-             ; mul_unit_r := cocycle_two_sphere_unit_r
-             |}
-         |}
-     |}.
+     MonoidOfSemigroup S
+       {|mul_unit := two_sphere_base Z (two_cocycle_simplex_unit 0)
+       ; isUnit :=
+           {|mul_unit_l := cocycle_two_sphere_unit_l
+           ; mul_unit_r := cocycle_two_sphere_unit_r
+           |}
+       |}.
 
 (** ** Actual Fillers and Independence of Their Choice
 
@@ -528,18 +518,13 @@ Program Definition cocycle_two_sphere_Group
         (MakeMagma Q (hasMagma cocycle_two_sphere_Magma))
         (isSemigroup cocycle_two_sphere_Semigroup))
       (hasUnit cocycle_two_sphere_Monoid) in
-     {|GroupToSetC := M
-     ; Group_hasMagma := Monoid_hasMagma M
-     ; Group_isSemigroup := Monoid_isSemigroup M
-     ; Group_hasUnit := hasUnit M
-     ; hasInverse :=
-         {|inv (x : Q) := cocycle_two_sphere_inv x
-         ; isInverse :=
-             {|mul_inv_l (x : Q) := cocycle_two_sphere_inv_l x
-             ; mul_inv_r (x : Q) := cocycle_two_sphere_inv_r x
-             |}
-         |}
-     |}.
+     GroupOfMonoid M
+       {|inv (x : Q) := cocycle_two_sphere_inv x
+       ; isInverse :=
+           {|mul_inv_l (x : Q) := cocycle_two_sphere_inv_l x
+           ; mul_inv_r (x : Q) := cocycle_two_sphere_inv_r x
+           |}
+       |}.
 
 (** Encoding coefficients also preserves their inverses. *)
 

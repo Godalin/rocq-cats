@@ -224,12 +224,26 @@ Minks.Struct NamedCarrier@{u}
 
 Minks.Struct NamedEquiv@{e u}
   extends NamedCarrier@{u}
-  with  hasEquiv : HasEquiv@{u e}.
+  with  hasEquiv : HasEquiv@{u e}
+  exports EquivOnCarrier [NamedCarrier].
 
 Definition named_equiv_levels@{u e | u < e}
     (S : NamedEquiv@{e u})
   : HasEquiv@{u e} (NamedEquiv_carrier S)
   := NamedEquiv_hasEquiv S.
+
+(** The parent view and the relative interface keep the declared level
+    order. The public view can pack the same carrier at a higher level. *)
+
+Definition named_parent_levels@{e u w | u < e, u < w}
+    (S : NamedEquiv@{e u})
+  : NamedCarrier@{w}
+  := NamedEquivToNamedCarrier@{e u w} S.
+
+Definition named_export_levels@{e u | u < e}
+    (S : NamedEquiv@{e u})
+  : EquivOnCarrier@{e u u} (NamedEquivToNamedCarrier@{e u u} S)
+  := NamedEquivToEquivOnCarrier@{e u u} S.
 
 Fail Minks.Struct ConflictingParentLevels@{u v | u < v}
   extends NamedCarrier@{u}, NamedCarrier@{v}.

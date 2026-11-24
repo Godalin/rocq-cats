@@ -43,6 +43,25 @@ Example base_coercion (S : Sorted)
   : ((S : TypeCarrier) : Type) = Sorted_carrier S
   := eq_refl.
 
+(** Inheritance and inspection must reject incomplete field identities.
+    The synthetic signature exists only within its query. *)
+
+Module IncompleteMetadata.
+Record Raw := PackRaw { raw : Type }.
+
+Fail Elpi Query minks.struct lp:{{
+  coq.locate "Raw" (indt I),
+  struct-spec I [] [slot "raw" (native-kind sort-head) []] =>
+    parent-names (named-parent I []) _.
+}}.
+
+Fail Elpi Query minks.inspect lp:{{
+  coq.locate "Raw" (indt I),
+  struct-spec I [] [slot "raw" (native-kind sort-head) []] =>
+    field-names I [] => inspect "Raw" (indt I).
+}}.
+End IncompleteMetadata.
+
 (** A failed declaration rolls back its newly generated base. *)
 
 Record Fresh := MakeFresh {}.
@@ -132,6 +151,7 @@ Minks.Mixin TracksMap
 
 End NativeFamily.
 
+Check MakeEndoMap : ∀ A, MapBetween A A → EndoMap A.
 Minks.Inspect MapBetweenCarrier.
 Check MapBetweenCarrier : Type → Type → Type.
 Check @PackedMapToMapBetweenCarrier
@@ -187,7 +207,7 @@ Context {A : Type} (B : Type) (a : A)
   (f : MapBetween A B) (w : MapsPoint A B a f).
 
 Example same_parent
-  : HeaderMapToPackedMap B a (MakeHeaderMap B a f w)
+  : HeaderMapToPackedMap (A := A) B a (MakeHeaderMap B a f w)
     = SectionMapToPackedMap B a (MakeSectionMap B a f w)
   := eq_refl.
 
@@ -214,6 +234,8 @@ End CompareMaps.
 Section AtTarget.
 Variable T : Type.
 
+Fail Minks.Struct Inherited (T : Type).
+Fail Minks.Struct Inherited (X X : Type).
 Fail Minks.Struct Inherited {X : Type} (x : X)
   extends HeaderMap T x.
 Fail Minks.Struct Inherited {X : Type} (x : X)
@@ -349,6 +371,18 @@ Minks.Struct ViaParent extends Phantom Index.
 Minks.Struct ViaAncestor extends ViaParent.
 End Family.
 
+(** The empty record retains its index through an anonymous parent definition.
+    The public view is a separate function. *)
+
+Elpi Query minks.struct lp:{{
+  coq.locate "ViaParent" (indt I), coq.locate "ViaParentToPhantom" (const P),
+  coq.env.projections I [none], minks.stored-projections I [],
+  not (coq.env.projection? P _).
+}}.
+Minks.Struct Twice (I : Type)
+  extends Phantom I, Phantom I.
+Check MakeTwice : ∀ I, Twice I.
+Check MakeViaParent : ∀ A, ViaParent A.
 Check ViaParent : Type → Type.
 Check ViaAncestor : Type → Type.
 Check ViaParentToPhantom : ∀ A, ViaParent A → Phantom A.

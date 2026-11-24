@@ -51,61 +51,43 @@ let slot_type (head, deps) =
 
 let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
   let name = Names.Id.to_string name.CAst.v in
-  let generate prefix =
-    let parents = match parents with
-      | None -> []
-      | Some [] -> CErrors.user_err (Pp.str "Expected a parent after extends.")
-      | Some (p :: ps) ->
-        Cmd.String "extends" :: parent_argument p ::
-        List.concat_map (fun p -> [Cmd.String ","; parent_argument p]) ps
-    in
-    let components = Option.cata (fun entries ->
-      Cmd.String "with" :: separated (Cmd.String ",") entries
-    ) [] slots in
-    run_minks "struct" ~atts (prefix @ (Cmd.String name :: parents @ components @ tail))
+  let parents = match parents with
+    | None -> []
+    | Some [] -> CErrors.user_err (Pp.str "Expected a parent after extends.")
+    | Some ps -> Cmd.String "extends" :: separated (Cmd.String ",")
+        (List.map (fun p -> [parent_argument p]) ps)
   in
+  let components = Option.cata (fun entries ->
+    Cmd.String "with" :: separated (Cmd.String ",") entries) [] slots in
+  let args = parents @ components @ tail in
   match binders, universes with
-  | [], None -> generate []
+  | [], None -> run_minks "struct" ~atts (Cmd.String name :: args)
   | _ ->
-    (* Use Rocq's discharge for the record, views and hierarchy metadata. *)
-    let section = Namegen.next_ident_away_from (Names.Id.of_string "MinksParameters")
-      (fun id -> Nametab.exists_dir (Lib.make_path id)) in
-    let synterp = Vernacstate.Synterp.freeze () in
-    Fun.protect ~finally:(fun () -> Vernacstate.Synterp.unfreeze synterp) (fun () ->
-      Lib.Synterp.open_section section;
-      Lib.Interp.open_section section;
-      (* Rocq discharges section universes in declaration order. The record
-         generator checks the remaining inferred levels and constraints. *)
-      let program_mode = Attributes.parse Attributes.program [] in
-      let poly = PolyFlags.of_univ_poly true in
-      Option.iter (fun u ->
-        let env = Global.env () in
-        let sigma, decl = Constrintern.interp_univ_decl_opt env (Some u) in
-        let sigma, _ = Constrintern.interp_named_context_evars env sigma binders in
-        ignore (Evd.check_univ_decl ~poly sigma decl);
-        DeclareUniv.do_sort ~poly:true u.UState.univdecl_qualities;
-        DeclareUniv.do_universe ~poly:true u.univdecl_instance;
-        DeclareUniv.do_constraint ~poly:true
-          (List.map (fun c -> Constrexpr.ElimCst c) u.univdecl_elim_constraints @
-           List.map (fun c -> Constrexpr.UnivCst c) u.univdecl_univ_constraints)
-      ) universes;
-      if binders <> [] then ComAssumption.do_context ~program_mode ~poly binders;
-      let header = Mixin_parameters.ordinary_parameters binders |> List.concat_map
-        (function
-          | Names.Name.Name id, (Constrexpr.CLocalAssum (_, _, Default kind, _), _) ->
-            let kind = match kind with Glob_term.Explicit -> "explicit"
-              | MaxImplicit -> "maximal" | NonMaxImplicit -> "implicit" in
-            [Cmd.String kind; Cmd.String (Names.Id.to_string id)]
-          | _ -> CErrors.user_err (Pp.str "Structure parameters must have names.")) in
-      let universe_flags = match universes with
-        | None -> []
-        | Some u -> [Cmd.String "#universes";
-            Cmd.String (string_of_bool u.univdecl_extensible_instance);
-            Cmd.String (string_of_bool u.univdecl_extensible_constraints)] in
-      generate (universe_flags @ (Cmd.String "#header" :: header @ [Cmd.String "#end"]));
-      Declaremods.Synterp.close_section ();
-      Declaremods.Interp.close_section ());
-    run_minks "struct" ~atts:[] [Cmd.String "#register"; Cmd.String name]
+    (* Elaborate the parent applications and mixin heads together, under
+       the actual header and universe declaration. Anonymous lets retain
+       the terms without introducing names visible to later inputs. *)
+    let section_names = Environ.ids_of_named_context_val
+        (Environ.named_context_val (Global.env ())) in
+    let _names = Mixin_parameters.ordinary_parameters binders
+      |> List.fold_left (fun seen -> function
+        | Names.Name.Name id, _ ->
+          if Names.Id.Set.mem id seen then
+            CErrors.user_err Pp.(str "Duplicate structure parameter: " ++ Names.Id.print id);
+          Names.Id.Set.add id seen
+        | _ -> CErrors.user_err (Pp.str "Structure parameters must have names.")
+      ) section_names in
+    let open Constrexpr in
+    let stop = CAst.make (CSort (None, Glob_term.UNamed [CProp, 0])) in
+    let inputs, tokens = List.fold_right (fun arg (body, tokens) -> match arg with
+      | Cmd.Term t ->
+        Constrexpr_ops.mkLetInC (CAst.make Names.Name.Anonymous, t, None, body),
+        Cmd.String "#term" :: tokens
+      | _ -> body, arg :: tokens) args (stop, []) in
+    let poly = CAst.make ("universes", Attributes.VernacFlagList
+        [CAst.make ("polymorphic", Attributes.VernacFlagEmpty)]) in
+    let declaration : Cmd.raw = Cmd.ConstantDecl { name = [name]; atts = [poly];
+      udecl = universes; typ = (binders, Some inputs); body = None; red = None } in
+    run_minks "struct" ~atts (declaration :: tokens)
 
 let record_name (name, universes) =
   let universes = Option.map (fun decl ->

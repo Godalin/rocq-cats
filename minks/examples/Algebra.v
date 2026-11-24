@@ -267,9 +267,18 @@ Minks.Struct Ring
   extends Rng, Monoid
   with  hasPoint as hasOne.
 
+(** Multiplicative commutativity already makes sense without a one. *)
+
+Minks.Struct CommRng
+  extends Rng, CommMagma
+  with  isComm as isMulComm.
+
 Minks.Struct CommRing
-  extends Ring
-  with  isMulComm : IsComm [carrier, hasEquiv, hasMul].
+  extends Ring, CommRng.
+
+Example comm_ring_rng_coherence (R : CommRing)
+  : RingToRng (CommRingToRing R) = CommRngToRng (CommRingToCommRng R)
+  := eq_refl.
 
 (** The index selects both the setoid and the operation. *)
 
@@ -283,6 +292,53 @@ Notation "0[ R ]" := (@point _ (Rng_hasZero R))
   (at level 0)
   : ring_scope.
 Local Open Scope ring_scope.
+
+(** ** Fields
+
+    A field has distinct zero and one and a chosen reciprocal for each
+    element [x] equipped with a proof that [x ≈ 0] implies [False]. *)
+
+Minks.Mixin HasFieldInverse (A : Type) (Z O : HasPoint A)
+  extends HasMagma A
+  :=
+  { zero_ne_one : (@point A Z ≈ @point A O) → False
+  ; recip : ∀ x : A, (x ≈ @point A Z → False) → A
+  ; mul_recip_r : ∀ x nz, x * recip x nz ≈ @point A O
+  }.
+
+(** Commutativity gives the other inverse law. Uniqueness then compares
+    reciprocals at equivalent inputs with independently supplied proofs. *)
+
+Section ReciprocalLaws.
+Context {A : Type} {E : HasEquiv A} {M : @HasMagma A E}
+  {Z O : HasPoint A} {H : @HasFieldInverse A E M Z O}
+  {C : @IsComm A E M}.
+
+Lemma mul_recip_l (x : A) (nz : x ≈ @point A Z → False)
+  : recip x nz * x ≈ @point A O.
+Proof.
+  eapply equiv_trans. apply mul_comm. apply mul_recip_r.
+Qed.
+
+Context {S : @IsSemigroup A E M} {U : @IsUnitAt A E M O}.
+
+Lemma recip_proper (x y : A) (nx : x ≈ @point A Z → False)
+    (ny : y ≈ @point A Z → False) (h : x ≈ y)
+  : recip x nx ≈ recip y ny.
+Proof.
+  apply (@mul_inv_unique A E M S O U x).
+  - apply mul_recip_l.
+  - eapply equiv_trans.
+    + apply mul_proper. exact h. apply equiv_refl.
+    + apply mul_recip_r.
+Qed.
+End ReciprocalLaws.
+
+Minks.Struct Field
+  extends CommRing
+  with  hasFieldInverse
+          : HasFieldInverse
+            [carrier, hasEquiv, hasMul, hasZero, hasOne].
 
 Check RngToSemigroup : Rng → Semigroup.
 Fail Check (λ R : Rng, 1[R]).
@@ -352,7 +408,7 @@ Fail Minks.Struct ReuseAfterDischarge (A : Type)
   with  chosen : HasPoint [A].
 End RenamedKeys.
 
-(** *** The ring with two elements
+(** *** The field with two elements
 
     Exclusive or is addition, conjunction is multiplication, and every
     element is its own additive inverse. All operations compute on booleans. *)
@@ -412,7 +468,7 @@ Lemma distrib
   : IsDistributive bool BoolEquiv add times.
 Proof. constructor; intros [] [] []; reflexivity. Qed.
 
-Definition F2
+Definition F2Ring
   : CommRing
   := CommRingOfRing
        (RingOfRng
@@ -420,6 +476,18 @@ Definition F2
            add_assoc zero add_unit Neg distrib)
          one times_unit)
        times_comm.
+
+Definition F2Inverse
+  : @HasFieldInverse bool BoolEquiv times zero one.
+Proof.
+  refine {| recip := λ x _, x |}.
+  - discriminate.
+  - intros [] nz. reflexivity. destruct (nz eq_refl).
+Defined.
+
+Definition F2
+  : Field
+  := FieldOfCommRing F2Ring F2Inverse.
 
 Definition selected_ring_point (R : Ring)
   : R
@@ -432,6 +500,10 @@ Example default_ring_point (R : Ring)
 Example distinct_constants
   : 0[F2] ≠ 1[F2].
 Proof. discriminate. Qed.
+
+Example reciprocal_of_one (nz : 1[F2] ≈ 0[F2] → False)
+  : recip 1[F2] nz = 1[F2]
+  := eq_refl.
 
 Example one_plus_one
   : 1[F2] +[F2] 1[F2] = 0[F2]

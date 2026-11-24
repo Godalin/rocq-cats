@@ -29,13 +29,10 @@ Program Definition BoolS
 
 Program Definition BoolS_Magma
   : Magma
-  :=
-  {|MagmaToSetC := BoolS
-  ; hasMagma :=
-      {|mul := xorb
-      ; mul_proper := _
-      |}
-  |}.
+  := MakeMagma BoolS
+    {|mul := xorb
+    ; mul_proper := _
+    |}.
 
 (** Associativity extends that same operation to a semigroup. *)
 
@@ -44,10 +41,8 @@ Program Definition BoolS_Magma
 Program Definition BoolS_Semigroup
   : Semigroup
   := let M := BoolS_Magma in
-     {|SemigroupToSetC := M
-     ; Semigroup_hasMagma := hasMagma M
-     ; isSemigroup := {|mul_assoc := _|}
-     |}.
+     SemigroupOfMagma M
+       {|mul_assoc := _|}.
 Next Obligation. destruct x, y, z; reflexivity. Defined.
 
 (** The xor monoid adds its unit to the selected semigroup. *)
