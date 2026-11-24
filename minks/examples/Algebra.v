@@ -358,6 +358,8 @@ Example reversed_multiplication (R : ReversedRing)
 Minks.Struct ProductMagma
   extends Magma
   with  hasMagma as product.
+Minks.Inspect hasMul.
+
 Minks.Struct ProductFirst
   extends ProductMagma, Rng.
 Minks.Struct MulFirst
@@ -391,8 +393,14 @@ Example parent_after_second_rename (S : NamedProduct)
 Minks.Struct IndependentOperation
   extends SetC
   with  hasMagma : HasMagma.
-Fail Minks.Struct UnrelatedOldName
+
+Minks.Struct SharedOperation
   extends Rng, IndependentOperation.
+
+Example independent_multiplication (R : SharedOperation)
+  : Rng_hasMul (SharedOperationToRng R)
+    = IndependentOperation_hasMagma (SharedOperationToIndependentOperation R)
+  := eq_refl.
 
 Section LocalRename.
 Variable A : Type.
@@ -406,6 +414,7 @@ Minks.Struct NamedPoint (A : Type)
 Fail Minks.Struct ReuseAfterDischarge (A : Type)
   extends NamedPoint A
   with  chosen : HasPoint [A].
+Minks.Inspect pointChoice.
 End RenamedKeys.
 
 (** *** The field with two elements

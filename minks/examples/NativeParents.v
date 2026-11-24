@@ -281,7 +281,7 @@ Minks.Mixin HasChoice (A : Type)
   := { choice : A }.
 
 Minks.Struct Chosen (A : Type)
-  with  chosen : HasChoice [A].
+  with  familyChoice : HasChoice [A].
 Minks.Struct LabelChoice (L : Label)
   extends Chosen L
   exports ChoiceAt [].
@@ -292,12 +292,15 @@ Minks.Mixin MarkChoice (L : Label)
 
 Minks.Struct MarkedChoice (L : Label)
   extends LabelChoice L
-  with  mark : MarkChoice [L, chosen].
+  with  mark : MarkChoice [L, familyChoice].
 Check @MakeMarkedChoice
   : ∀ (L : Label) (p : HasChoice L), @MarkChoice L p → MarkedChoice L.
 
-Minks.Struct SameChoice (L : Label)
+Fail Minks.Struct ReuseAtLabel (L : Label)
   with  : ChoiceAt [L].
+
+Minks.Struct SameChoice (L : Label)
+  with  [labelChoice] : ChoiceAt [L].
 Check MakeSameChoice : ∀ L : Label, HasChoice L → SameChoice L.
 
 (** A declared index survives even when no field uses it. *)
@@ -314,8 +317,9 @@ Fail Minks.Struct IncompatibleIndices (A B : Type)
   extends Indexed (A := A), Phantom B.
 End MapHeaders.
 
-(** Discovery reads the target indices from the aligned component types.
-    The source may bind them in the opposite order. *)
+(** Discovery aligns independently declared fields with the same contextual
+    key. A different parameter telescope or a different selection needs a
+    fresh key. *)
 
 Module IndexedViews.
 Minks.Mixin HasMap (A B : Type)
@@ -324,27 +328,39 @@ Minks.Mixin HasMap (A B : Type)
 Minks.Struct Maps (X Y : Type)
   with  map : HasMap [X, Y].
 
-Minks.Struct TaggedMaps (B A : Type)
-  with  map : HasMap [A, B],
-        tag : HasTag.
+Fail Minks.Struct SwappedMaps (B A : Type)
+  with  map : HasMap [A, B].
+Fail Minks.Struct DiagonalMaps (X : Type)
+  with  map : HasMap [X, X].
+Fail Minks.Struct PhantomMaps (X Y Unused : Type)
+  with  map : HasMap [X, Y].
 
-Check TaggedMapsToMaps
-  : ∀ B A, TaggedMaps B A → Maps A B.
+Minks.Struct TaggedMaps (A B : Type)
+  with  map : HasMap [A, B],
+        mapTag : HasTag.
+
+Check TaggedMapsToMaps : ∀ A B, TaggedMaps A B → Maps A B.
 
 Minks.Struct LaterMaps (P Q : Type)
   with  map : HasMap [P, Q].
 
-Example discovered_map (B A : Type) (m : TaggedMaps B A)
-  : LaterMaps_map A B (TaggedMapsToLaterMaps B A m) = TaggedMaps_map B A m
+Example discovered_map (A B : Type) (m : TaggedMaps A B)
+  : LaterMaps_map A B (TaggedMapsToLaterMaps A B m) = TaggedMaps_map A B m
+  := eq_refl.
+(** Independent views follow a renamed identity. A freshly declared key
+    with the same public spelling still denotes its own component. *)
+
+Minks.Struct RenamedMaps (X Y : Type)
+  extends TaggedMaps X Y
+  with  map as otherMap.
+
+Example renamed_view (X Y : Type) (m : RenamedMaps X Y)
+  : LaterMaps_map X Y (RenamedMapsToLaterMaps X Y m) = RenamedMaps_otherMap X Y m
   := eq_refl.
 
-Minks.Struct DiagonalMaps (X : Type)
-  with  map : HasMap [X, X].
-Fail Check TaggedMapsToDiagonalMaps.
-
-Minks.Struct PhantomMaps (X Y Unused : Type)
-  with  map : HasMap [X, Y].
-Fail Check TaggedMapsToPhantomMaps.
+Minks.Struct IndependentMaps (X Y : Type)
+  with  otherMap : HasMap [X, Y].
+Fail Check RenamedMapsToIndependentMaps.
 End IndexedViews.
 
 (** Both native parents expose the same type by conversion. The child stores

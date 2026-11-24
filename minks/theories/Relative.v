@@ -158,21 +158,6 @@ Elpi File minks.relative lp:{{
         (env\body\ from-relative-body Class Ctor FixedKeys Keys Refs args env body) t) Term,
     declare-map Name Term _.
 
-  pred register-relative i:option inductive, i:inductive, i:constructor,
-      i:list component, i:list component, i:list id, o:list id.
-  register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters :-
-    if (Base = some I)
-      (coq.gref->id (indt I) Name, Parameters = [Name | FixedKeys],
-       coq.elpi.accumulate execution-site "minks.flat.db"
-         (clause _ _ (export-base (indt Export) I)))
-      (Parameters = FixedKeys),
-    coq.env.indt Export tt Arity _ _ _ _,
-    std.map Remaining component-key Keys,
-    std.map-filter Remaining (c\k\ c = slot k (native-kind _) _) Ordinary,
-    minks.register-combination Export (indc Ctor) Arity Keys Ordinary,
-    coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (mixin-combination (indt Export) Fixed Remaining Ctor)).
-
   pred generate-relative i:id, i:inductive, i:list component,
       i:list inductive, i:list struct-conversion, i:id, i:list id,
       o:inductive, o:list id.
@@ -188,7 +173,13 @@ Elpi File minks.relative lp:{{
       stored-fields I Keys ChildRefs,
       std.map ConstructorKeys (k\t\ read-field ChildRefs k t) FromChild,
       coq.env.indt Export tt _ _ _ [Ctor] _,
-      register-relative Base Export Ctor Fixed Remaining FixedKeys Parameters,
+      if (Base = some B)
+        (coq.gref->id (indt B) BaseName, Parameters = [BaseName | FixedKeys])
+        (Parameters = FixedKeys),
+      std.map RemainingKeys (k\p\ std.mem ChildRefs (pr k p)) Origins,
+      Layout = relative-interface Base Fixed Remaining Ctor Origins,
+      coq.elpi.accumulate execution-site "minks.flat.db"
+        (clause _ _ (declared (indt Export) (relative Layout))),
       family-global (indc Ctor) MakeExport,
       family-global (indt I) ChildTy,
       (pi x\ sigma bases args\

@@ -225,7 +225,7 @@ Elpi Accumulate lp:{{
         (coq.error "Ambiguous fixed parameters for exported mixin, give component keys:" M)).
 
   % A parent keeps the identity of every field that it supplies. Only
-  % unrenamed keys may also share by spelling alone.
+  % matching native heads also admit their existing conversion check.
   pred parent-names i:struct-parent, o:list field-name-info.
   parent-names (named-parent I _) Names :-
     close I Cs, checked-field-names I Cs Stored,
@@ -233,10 +233,17 @@ Elpi Accumulate lp:{{
       r = named-field k history origins,
       n = named-field k history [pr I k | origins]) Names.
 
+  pred origin-projection i:inductive, i:id, o:gref.
+  origin-projection I K (const P) :-
+    struct-spec I _ Cs, std.map Cs component-key Keys,
+    stored-fields I Keys Fields, std.mem Fields (pr K P).
+
   pred shares i:field-name-info, i:field-name-info.
-  shares (named-field K [] _) (named-field K [] _) :- !.
-  shares (named-field _ _ Left) (named-field _ _ Right) :-
-    std.exists Left (o\ std.mem Right o).
+  shares (named-field K H [pr I A | _]) (named-field J G [pr P B | _]) :-
+    origin-projection I A Left, origin-projection P B Right,
+    if (minks.same-key Left Right) true
+      (K = J, H = [], G = [], struct-spec I _ Cs, struct-spec P _ Ds,
+       std.mem Cs (slot A (native-kind _) _), std.mem Ds (slot B (native-kind _) _)).
 
   pred connected i:list field-name-info, i:list field-name-info, o:list field-name-info.
   connected Group Others Out :-
@@ -277,17 +284,18 @@ Elpi Accumulate lp:{{
   pred entry-names i:slot-binder, i:term, o:list id, o:list (pair id id).
   entry-names Binder Head Keys Projections :-
     coq.env.global Ref Head,
-    if (mixin-combination Ref _ Parts _)
+    if (mixin-combination Ref _ _ Parts _ _)
       (if (Binder = batch Written Aliases) true
          (coq.error "Use an ordered list of keys to bind an exported mixin:" Ref),
        std.map Parts component-key Defaults,
-       if (Written = some Ks) (Keys = Ks) (Keys = Defaults),
+       if (Written = some Ks) (std.map Ks (k\n\ binding-key k n _) Keys) (Keys = Defaults),
        std.assert! (std.length Keys {std.length Defaults}) "Wrong number of export keys",
        if (Aliases = some Ns)
          (std.assert! (fixed-mapping Keys Ns Projections) "Wrong number of projection names")
          (Projections = []))
       (if (Binder = single K Alias) true (coq.error "A primitive mixin needs one key:" Ref),
-       Keys = [K], if (Alias = some P) (Projections = [pr K P]) (Projections = [])).
+       binding-key K Short _, Keys = [Short],
+       if (Alias = some P) (Projections = [pr Short P]) (Projections = [])).
 
   pred introduce-name i:id, i:list field-name-info, o:list field-name-info.
   introduce-name K Names [named-field K [] [] | Names] :- require-fresh Names K.
@@ -360,7 +368,7 @@ Elpi Accumulate lp:{{
   resolve-entries [entry Keys _ Head Selection Preferred | Entries] Available Env Out Heads :-
     coq.env.global Ref Head, coq.gref->id Ref M,
     if (mixin-spec Ref _ Params) true (coq.error "Unregistered Minks mixin:" M),
-    if (mixin-combination Ref RawFixed RawParts Ctor)
+    if (mixin-combination Ref _ RawFixed RawParts Ctor _)
       (Ref = indt Interface, std.length RawFixed F,
        current-layout Interface F {std.append RawFixed RawParts} Ordinary Layout,
        std.split-at F Layout Fixed Parts, std.map Ordinary parameter-key Prefix,
@@ -386,7 +394,7 @@ Elpi Accumulate lp:{{
   pred save-view i:struct-conversion.
   save-view (conversion Source Target Ref Mode) :-
     coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (struct-view Source Target Ref Mode)).
+      (clause _ _ (recorded-view Source Target Ref Mode)).
 
   pred scoped-args i:list argument, i:term, o:list argument.
   scoped-args [] (sort prop) [].
@@ -425,12 +433,13 @@ Elpi Accumulate lp:{{
       (if (Known = []) (
          generate-base Head I Cs,
          std.map Cs (c\n\ n = named-field {component-key c} [] []) Names,
-         Metadata = field-names I Names,
-         Registration = native-base Head I, Signature = struct-spec I [] Cs,
+         std.map Cs component-key Keys, minks.stored-projections I Fields,
+         minks.register-keys I Keys Fields [],
+         Registration = native-base Head I,
+         Signature = declared (indt I) (packed [] Cs Names [] []),
          coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ Registration),
          coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ Signature),
-         coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ Metadata),
-         Registration => Signature => Metadata => Continue I)
+         Registration => Signature => Continue I)
        (coq.error "Several visible bases for native parent; name the intended structure:" Head)).
 
   pred export-keys i:list (list component), i:list component, i:option (list id), o:list id.
@@ -438,6 +447,52 @@ Elpi Accumulate lp:{{
   export-keys Parents Inherited none Keys :-
     std.map Inherited component-key Candidates,
     std.filter Candidates (k\ std.forall Parents (contains-key k)) Keys.
+
+  % Parameters of an inherited structure specialize existing fields. Only
+  % locally written entries introduce or reuse a contextual key declaration.
+  pred key-row i:list (pair id gref), i:field-name-info, i:gref,
+      o:id, o:gref, o:list id.
+  key-row _ (named-field K _ [pr Parent Original | _]) _ K Source [] :- !,
+    origin-projection Parent Original Source.
+  key-row Defaults (named-field K History []) Projection Original Source [Original] :-
+    if (std.rev History [First | _]) (Original = First) (Original = K),
+    if (std.mem Defaults (pr Original Prior)) (Source = Prior) (Source = Projection).
+
+  pred written-origins i:list id, o:list (pair id gref).
+  written-origins Ks Origins :-
+    std.map-filter Ks (k\pair\ sigma n p\ binding-key k n (some p), pair = pr n p) Origins.
+
+  pred default-origins i:pending-slot, o:list (pair id gref).
+  default-origins (pending (batch none _) Head _) Origins :- !,
+    coq.env.global Ref Head, mixin-combination Ref _ _ Parts _ Ps,
+    std.map2 Parts Ps (c\p\pair\ pair = pr {component-key c} (const p)) Origins.
+  default-origins (pending (single K _) _ _) Origins :- !,
+    written-origins [K] Origins.
+  default-origins (pending (batch (some Ks) _) _ _) Origins :- !,
+    written-origins Ks Origins.
+  default-origins _ [].
+
+  pred register-keys i:inductive, i:list pending-slot, i:list field-name-info.
+  register-keys I Slots Names :-
+    std.map Slots default-origins Groups, std.flatten Groups Defaults,
+    minks.stored-projections I Ps,
+    std.map2 Names Ps (n\p\row\ sigma k src declared\ key-row Defaults n p k src declared,
+      row = pr (pr k src) declared) Rows,
+    std.unzip Rows Pairs Locals, std.unzip Pairs Keys Sources,
+    minks.register-keys I Keys Sources {std.flatten Locals},
+    std.forall2 Ps Rows (p\r\ if (r = pr (pr K p) [K])
+      (coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ (visible-key K p)))
+      true).
+
+  % Index each written rename at its declaration, including intermediate
+  % spellings when the same field is renamed twice in this structure.
+  pred register-aliases i:inductive, i:list pending-slot, i:list field-name-info.
+  register-aliases I Slots Names :-
+    std.map-filter Slots (s\a\ s = rename _ a) Aliases,
+    if (Aliases = []) true (
+      std.map Names (n\k\ n = named-field k _ _) Keys, stored-fields I Keys Fields,
+      std.forall Aliases (a\ sigma k p\ final-name Names a k, std.mem Fields (pr k p),
+        coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ (field-alias a p)))).
 
   pred build i:id, i:list struct-parent, i:list pending-slot, i:list (pair id (option (list id))).
   build Name Applications Slots Exports :-
@@ -458,29 +513,26 @@ Elpi Accumulate lp:{{
           add-distinct FlatParents [] ParentsRev,
           declare-packed Name {std.rev ParentsRev} Components {std.flatten Aliases} I Args,
           align-field-names I Components Final Ordered,
-          coq.elpi.accumulate execution-site "minks.flat.db"
-            (clause _ _ (field-names I Ordered)),
+          std.assert! (register-keys I Slots Ordered) "Missing component identity metadata",
+          register-aliases I Slots Ordered,
           active-family I Args =>
-            finish Name Applications Branches Inherited Exports FlatParents Components I)).
+            finish Name Applications Branches Inherited Exports FlatParents Components Ordered I)).
 
   pred finish i:id, i:list struct-parent, i:list (list component), i:list component,
-      i:list (pair id (option (list id))), i:list inductive, i:list component, i:inductive.
-  finish Name Applications Branches Inherited Exports FlatParents Components I :-
+      i:list (pair id (option (list id))), i:list inductive, i:list component, i:list field-name-info, i:inductive.
+  finish Name Applications Branches Inherited Exports FlatParents Components Names I :-
     std.assert! (generate-views Name FlatParents Components I Views Packers)
       "Could not generate the structure",
     std.forall Views save-view,
-    std.forall Packers (p\ coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (struct-packer I p))),
-    coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (struct-spec I Applications Components)),
-    std.forall Exports
-      (e\ sigma label selection keys interface fixed\
+    std.map Exports
+      (e\out\ sigma label selection keys interface fixed\
         e = pr label selection, export-keys Branches Inherited selection keys,
         std.assert! (@keep-alg-univs! =>
           generate-relative Name I Components FlatParents Views label keys interface fixed)
           ("Could not generate relative interface " ^ label),
-        coq.elpi.accumulate execution-site "minks.flat.db"
-          (clause _ _ (struct-export I interface fixed))).
+        out = pr interface fixed) Interfaces,
+    Data = packed Applications Components Names Packers Interfaces,
+    coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ (declared (indt I) Data)).
   main _ :- usage.
 }}.
 Elpi Accumulate Db minks.flat.db.
@@ -495,26 +547,22 @@ Elpi Accumulate lp:{{
     mixin-spec Ref Direct Params, !,
     print-mixin Name Direct Params, print-combination Ref.
   inspect Name Ref :-
-    if (Ref = indt I, spec I Parents _) true
-      (coq.error "Not a Minks structure:" Name),
+    Ref = indt I, spec I Parents _, !,
     close I Cs, checked-field-names I Cs Names,
-    std.findall (struct-view I _ _ _) Stored,
-    std.map Stored
-      (v\out\ sigma target ref mode\
-        v = struct-view I target ref mode, out = conversion I target ref mode)
-      Views,
-    std.findall (struct-packer I _) StoredPackers,
-    std.map StoredPackers (p\ref\ p = struct-packer I ref) Packers,
-    std.findall (struct-export I _ _) StoredExports,
-    std.map StoredExports
-      (e\v\ sigma interface fixed\
-        e = struct-export I interface fixed, v = pr interface fixed)
-      Exports,
+    struct-views I Views,
+    metadata I (packed Declared _ _ Packers Exports),
     current-layout I 0 Cs Params Layout,
-    struct-spec I Declared _,
     inspection-names Names => print-struct Declared Name Params Parents Layout Views Packers Exports.
 
-  main [str Name] :- !, coq.locate Name Ref, inspect Name Ref.
+  main [str Name] :- !,
+    coq.locate-all Name Found,
+    if (std.mem Found (loc-gref Ref), inspect Name Ref) (Declaration = tt) (Declaration = ff),
+    std.findall (field-alias Name _) Matches,
+    std.map Matches (m\r\ sigma p\ m = field-alias _ p, r = const p) Aliases,
+    std.map-filter Found (l\r\ l = loc-gref r) Refs,
+    lookup-key Name _ _ Keys,
+    if (minks.inspect-key Name Keys Aliases Refs) true
+      (std.assert! (Declaration = tt) ("No registered Minks declaration or key named " ^ Name)).
   main _ :- coq.error "Usage: Minks.Inspect Name.".
 }}.
 Elpi Accumulate Db minks.flat.db.

@@ -38,8 +38,10 @@ let separated separator = function
 
 let ident_arg id = Cmd.String (Names.Id.to_string id)
 
-let keys_arg keys =
-  [Cmd.String "["] @ separated (Cmd.String ",") (List.map (fun k -> [ident_arg k]) keys)
+let key_arg qid = Cmd.String (Libnames.string_of_qualid qid)
+
+let bracketed arg keys =
+  [Cmd.String "["] @ separated (Cmd.String ",") (List.map (fun k -> [arg k]) keys)
   @ [Cmd.String "]"]
 
 let slot_type (head, deps) =
@@ -47,7 +49,7 @@ let slot_type (head, deps) =
     | Constrexpr.CRef (name, instance) ->
       Cmd.Term (CAst.make (Constrexpr.CAppExpl ((name, instance), [])))
     | _ -> CErrors.user_err (Pp.str "Expected a mixin reference.") in
-  [Cmd.String ":"; mixin] @ Option.cata keys_arg [] deps
+  [Cmd.String ":"; mixin] @ Option.cata (bracketed ident_arg) [] deps
 
 let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
   let name = Names.Id.to_string name.CAst.v in
@@ -107,7 +109,9 @@ let dump_mixin { Record.Ast.name; cfs; idbuild } =
       Dumpglob.dump_constraint name false "proj") cfs
 
 let declare_mixin ~atts decl parents =
-  let parents = List.map Mixin_parameters.read_parent parents in
+  let parents = List.map (fun p ->
+    let name, levels, args = Mixin_parameters.read_parent p in
+    Nametab.locate name, levels, args) parents in
   let decl, roles, witnesses =
     Mixin_parameters.add_to_declaration parents decl in
   let kind = Vernacexpr.Class true in
@@ -122,10 +126,15 @@ let declare_mixin ~atts decl parents =
     | Inductive _ -> CErrors.user_err Pp.(str "Expected a mixin with a record body.")
   in
   let name = Libnames.string_of_path (Nametab.path_of_global reference) in
-  let direct = List.map (fun (p, _, _) -> Nametab.locate p) parents in
-  Mixin_parameters.remember reference direct roles;
-  let args = Cmd.String name :: List.map (fun r ->
-    Cmd.String (Libnames.string_of_path (Nametab.path_of_global r))) witnesses in
+  let ref_arg r = Cmd.String (Libnames.string_of_path (Nametab.path_of_global r)) in
+  let role_args = function
+    | Mixin_parameters.Value -> [Cmd.String "ordinary"]
+    | Mixin_parameters.Mixin None -> [Cmd.String "witness"]
+    | Mixin_parameters.Mixin (Some key) ->
+      [Cmd.String "selected"; ident_arg key.spelling; ref_arg key.projection] in
+  let args = [Cmd.String name] @ List.concat_map role_args roles @
+    [Cmd.String ":"] @ List.map (fun (p, _, _) -> ref_arg p) parents @
+    [Cmd.String ":"] @ List.map ref_arg witnesses in
   (* The class and the metadata belong to the same vernacular transaction. *)
   let origin = CAst.make ("minks.declaration", Attributes.VernacFlagEmpty) in
   run_minks "mixin" ~atts:[origin] args
@@ -141,19 +150,21 @@ GRAMMAR EXTEND Gram
   struct_parent:
     [ [ head = term LEVEL "0"; args = LIST0 struct_argument -> { head, args } ] ];
   struct_slot:
-    [ [ key = ident; "as"; f = ident; rhs = OPT slot_rhs ->
-          { [ident_arg key; Cmd.String "as"; ident_arg f] @ Option.cata slot_type [] rhs }
-      | key = ident; rhs = slot_rhs -> { ident_arg key :: slot_type rhs }
-      | ks = slot_keys; ns = OPT [ "as"; ns = slot_keys -> { ns } ]; rhs = slot_rhs ->
-          { keys_arg ks @ Option.cata (fun ns -> Cmd.String "as" :: keys_arg ns) [] ns
+    [ [ key = qualid; "as"; f = ident; rhs = OPT slot_rhs ->
+          { [key_arg key; Cmd.String "as"; ident_arg f] @ Option.cata slot_type [] rhs }
+      | key = qualid; rhs = slot_rhs -> { key_arg key :: slot_type rhs }
+      | ks = slot_keys; ns = OPT [ "as"; ns = slot_names -> { ns } ]; rhs = slot_rhs ->
+          { bracketed key_arg ks @ Option.cata (fun ns -> Cmd.String "as" :: bracketed ident_arg ns) [] ns
             @ slot_type rhs }
-      | "as"; ns = slot_keys; rhs = slot_rhs ->
-          { Cmd.String "as" :: keys_arg ns @ slot_type rhs }
+      | "as"; ns = slot_names; rhs = slot_rhs ->
+          { Cmd.String "as" :: bracketed ident_arg ns @ slot_type rhs }
       | rhs = slot_rhs -> { slot_type rhs } ] ];
   slot_keys:
-    [ [ "["; ks = LIST0 ident SEP ","; "]" -> { ks } ] ];
+    [ [ "["; ks = LIST0 qualid SEP ","; "]" -> { ks } ] ];
+  slot_names:
+    [ [ "["; ns = LIST0 ident SEP ","; "]" -> { ns } ] ];
   slot_rhs:
-    [ [ ":"; head = term LEVEL "0"; deps = OPT slot_keys -> { head, deps } ] ];
+    [ [ ":"; head = term LEVEL "0"; deps = OPT slot_names -> { head, deps } ] ];
   struct_argument:
     [ [ parent_input; a = arg -> { a } ] ];
   mixin_declaration:

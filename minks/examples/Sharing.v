@@ -90,7 +90,7 @@ Definition values_alias
   := values.
 
 Minks.Struct Chosen (A : Type)
-  with  hasPoint : HasPoint [A].
+  with  chosenValue : HasPoint [A].
 
 Minks.Struct FlagOnly
   with  extra : HasFlag.
@@ -186,7 +186,7 @@ Fail Minks.Mixin DistinctTacticPoints
     The public telescope retains only its selected component. *)
 
 Minks.Mixin AtChoice (L : Label) (c : Left.LeftPoint L)
-  := { chosen_value : values L := @point _ (Left.LeftPoint_hasPoint L c) }.
+  := { chosen_value : values L := @point _ (Left.LeftPoint_chosenValue L c) }.
 
 Minks.Mixin LaterChoice (L : Label)
   extends Left.LeftPoint L, AtChoice L leftPoint
@@ -198,8 +198,8 @@ Check @LaterChoice : ∀ L (P : HasPoint (values L)),
 Minks.Mixin SharedPoint (L : Label)
   extends Left.LeftPoint L, Right.RightPoint L, Left.LeftPoint L
   :=
-  { left_value : values L := @point _ (Left.LeftPoint_hasPoint L leftPoint)
-  ; right_value : values L := @point _ (Right.RightPoint_hasPoint L rightPoint)
+  { left_value : values L := @point _ (Left.LeftPoint_chosenValue L leftPoint)
+  ; right_value : values L := @point _ (Right.RightPoint_chosenValue L rightPoint)
   }.
 
 Check @SharedPoint : ∀ L, HasPoint (values L) → Type.
@@ -218,7 +218,7 @@ Fail Minks.Mixin DifferentLabels (L K : Label)
 Import Left Right.
 Minks.Struct BothChoices (L : Label)
   extends Left.FlaggedChoice L, Right.Choice L
-  exports CommonChoice, FixedChoice [hasPoint].
+  exports CommonChoice, FixedChoice [chosenValue].
 
 Check @MakeBothChoices : ∀ L, HasPoint (values L) → HasFlag → BothChoices L.
 Check @MakeCommonChoice
@@ -313,19 +313,19 @@ Section AtMagma.
 Context (M : Magma).
 
 Minks.Struct MonoidOnMagma
-  with  : IsMonoid [M].
+  with  [assocAt, pointAt, unitAt] : IsMonoid [M].
 
 Variable N : Magma.
 Fail Minks.Struct ConflictingBases
-  with  : IsMonoid [M],
-        : IsMonoid [N].
+  with  [assocAt, pointAt, unitAt] : IsMonoid [M],
+        [assocAt, pointAt, unitAt] : IsMonoid [N].
 End AtMagma.
 
 Example assembled_monoid_on_magma (M : Magma)
     (A : IsSemigroup M) (P : HasPoint M) (U : IsUnitAt M (hasPoint := P))
   : let S := MakeMonoidOnMagma M A P U in
-    MakeIsMonoid M (MonoidOnMagma_isSemigroup M S) (MonoidOnMagma_hasPoint M S)
-      (MonoidOnMagma_isUnitAt M S) = MakeIsMonoid M A P U
+    MakeIsMonoid M (MonoidOnMagma_assocAt M S) (MonoidOnMagma_pointAt M S)
+      (MonoidOnMagma_unitAt M S) = MakeIsMonoid M A P U
   := eq_refl.
 
 (** The discharged fields retain their projection paths when the parent
@@ -336,11 +336,57 @@ Context (N : Magma).
 
 Minks.Struct IdempotentOnMagma
   extends MonoidOnMagma N
-  with  idempotent : IsIdempotentMonoid [N, isSemigroup, hasPoint, isUnitAt].
+  with  idempotent : IsIdempotentMonoid [N, assocAt, pointAt, unitAt].
 End InheritedMagma.
 
 Check @IdempotentOnMagmaOfMonoidOnMagma
   : ∀ (N : Magma) (S : MonoidOnMagma N),
-      @IsIdempotentMonoid N (MonoidOnMagma_isSemigroup N S)
-        (MonoidOnMagma_hasPoint N S) (MonoidOnMagma_isUnitAt N S)
+      @IsIdempotentMonoid N (MonoidOnMagma_assocAt N S)
+        (MonoidOnMagma_pointAt N S) (MonoidOnMagma_unitAt N S)
       → IdempotentOnMagma N.
+
+(** ** Two point selections at a repeated parent argument
+
+    The path starts at the first selected point. Applying the parent at
+    the same type twice keeps both selections and the path's source. *)
+
+Module PointSelections.
+Minks.Mixin HasBasedPath (A : Type)
+  extends HasPoint A
+  := { endpoint : A; path_from_point : point = endpoint }.
+
+Minks.Struct Parent (A B : Type)
+  with  pointA : HasPoint [A],
+        pointB : HasPoint [B],
+        pathA : HasBasedPath [A, pointA].
+
+Fail Minks.Struct WrongPoint (A B : Type)
+  with  pointA : HasPoint [B].
+Fail Minks.Struct MissingIndex (A : Type)
+  with  pointA : HasPoint [A].
+Fail Minks.Struct WrongBinding {A : Type} (B : Type)
+  with  pointA : HasPoint [A].
+
+Minks.Struct Both (X : Type)
+  extends Parent X X.
+
+Section AtOneType.
+Context (X : Type) (p q : HasPoint X) (h : @HasBasedPath X p).
+
+Example first_point
+  : Both_pointA X (MakeBoth X p q h) = p
+  := eq_refl.
+
+Example second_point
+  : Both_pointB X (MakeBoth X p q h) = q
+  := eq_refl.
+
+Example selected_path
+  : Parent_pathA X X (BothToParent X (MakeBoth X p q h)) = h
+  := eq_refl.
+
+Fail Definition path_at_other_point
+  : @HasBasedPath X q
+  := Both_pathA X (MakeBoth X p q h).
+End AtOneType.
+End PointSelections.

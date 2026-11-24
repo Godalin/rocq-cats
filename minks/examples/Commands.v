@@ -56,13 +56,11 @@ Fail Minks.Struct MonoidFromSemigroup
 
 (** Reject a shared multiplication with incompatible selected dependencies. *)
 
-Minks.Struct OtherMagma
+Fail Minks.Struct OtherMagma
   extends SetC
   with  hasOtherEquiv : HasEquiv [carrier],
         hasMagma : HasMagma [carrier, hasOtherEquiv].
-Fail Minks.Struct ConflictingMagma
-  extends Magma, OtherMagma.
-Fail Check ConflictingMagma.
+Fail Check OtherMagma.
 
 (** Only Minks declarations supply component metadata. *)
 
@@ -184,24 +182,101 @@ Minks.Mixin HasFlag
   :=
   { flag : bool }.
 
+(** A qualified key selects its declaration even when another module
+    uses the same spelling. Exported witnesses retain these identities. *)
+
+Module FlagA.
+Minks.Struct Single with sharedFlag : HasFlag exports SelectedFlag [].
+End FlagA.
+Module FlagB.
+Minks.Struct Single with sharedFlag : HasFlag exports SelectedFlag [].
+End FlagB.
+
+Fail Minks.Inspect sharedFlag.
+Minks.Inspect FlagA.sharedFlag.
+Minks.Inspect FlagB.sharedFlag.
+
+Module ImportedFlags.
+Import FlagA.
+Minks.Struct Copy with sharedFlag : HasFlag.
+Minks.Struct Joined extends Copy, FlagA.Single.
+Check @MakeJoined : HasFlag → Joined.
+Fail Minks.Struct Wrong (A : Type) with sharedFlag : HasPoint [A].
+Import FlagB.
+Minks.Inspect sharedFlag.
+Fail Minks.Struct Ambiguous with sharedFlag : HasFlag.
+Minks.Struct Selected with FlagB.sharedFlag : HasFlag.
+End ImportedFlags.
+
+Module LocalFlag.
+Minks.Struct First with sharedFlag : HasFlag.
+Import FlagA FlagB.
+Minks.Struct Second with sharedFlag : HasFlag.
+Minks.Struct Joined extends First, Second.
+Check @MakeJoined : HasFlag → Joined.
+End LocalFlag.
+
+Minks.Struct FlagCopy with FlagA.sharedFlag as copiedFlag : HasFlag.
+Check copiedFlag : FlagCopy → HasFlag.
+Fail Minks.Struct WrongFlagCopy (A : Type) with FlagA.sharedFlag : HasPoint [A].
+Fail Minks.Struct UnknownFlag with FlagA.unknownFlag : HasFlag.
+
+Minks.Mixin BothModuleFlags
+  extends FlagA.SelectedFlag, FlagB.SelectedFlag
+  := { module_flags : bool * bool :=
+         (@flag (FlagA.SelectedFlag_sharedFlag selectedFlag),
+          @flag (FlagB.SelectedFlag_sharedFlag selectedFlag0)) }.
+Check @BothModuleFlags : HasFlag → HasFlag → Type.
+
+(** A functor application substitutes the class, the component key and
+    the export layout together. Qualified access keeps its names scoped. *)
+
+Module Type FlagIndex.
+  Parameter item : Set.
+End FlagIndex.
+Module FlagFamily (X : FlagIndex).
+  Minks.Mixin HasItem := { item_value : X.item }.
+  Minks.Struct Items with selectedItem : HasItem exports ItemChoice [].
+End FlagFamily.
+Module BoolIndex <: FlagIndex.
+  Definition item := bool.
+End BoolIndex.
+Module BoolItems := FlagFamily BoolIndex.
+Minks.Mixin ReadsItem
+  extends BoolItems.ItemChoice
+  := { read_item : bool := BoolItems.item_value }.
+Minks.Struct CopiedItems with : BoolItems.ItemChoice.
+Minks.Inspect BoolItems.selectedItem.
+Minks.Inspect BoolItems.Items.
+Minks.Struct ExtendedItems
+  extends BoolItems.Items.
+Check @MakeExtendedItems : BoolItems.HasItem → ExtendedItems.
+Minks.Mixin ReadsOrdinaryItem
+  extends BoolItems.HasItem
+  := { ordinary_item : bool := BoolItems.item_value }.
+Check @MakeCopiedItems : BoolItems.HasItem → CopiedItems.
+Fail Check item_value.
+
 (** A local key introduces a new choice, even when its class is inherited.
     A projection alias leaves the freshness check on the original key. *)
 
 Module ProjectionNames.
 Minks.Struct NamedFlag
-  with  chosen as parent_flag : HasFlag.
+  with  chosenFlag as parent_flag : HasFlag.
+
+Minks.Inspect parent_flag.
 
 Fail Minks.Struct RepeatedParent
   extends NamedFlag
-  with  chosen : HasFlag.
+  with  chosenFlag : HasFlag.
 
 Fail Minks.Struct RenamedParent
   extends NamedFlag
-  with  chosen as child_flag : HasFlag.
+  with  chosenFlag as child_flag : HasFlag.
 
 Fail Minks.Struct RepeatedLocal
-  with  chosen as first_flag : HasFlag,
-        chosen as second_flag : HasFlag.
+  with  chosenFlag as first_flag : HasFlag,
+        chosenFlag as second_flag : HasFlag.
 
 Minks.Struct AnotherFlag
   extends NamedFlag
@@ -254,11 +329,24 @@ Fail Minks.Struct AmbiguousFlags
 
 Minks.Struct PairedFlags
   extends TwoFlags
-  with  hasPair : FlagPair [leftFlag, rightFlag]
+  with  flagComparison : FlagPair [leftFlag, rightFlag]
   exports HasPairedFlags [carrier].
 
-Check PairedFlags_hasPair
+Check PairedFlags_flagComparison
   : ∀ F : PairedFlags, FlagPair (PairedFlags_leftFlag F) (PairedFlags_rightFlag F).
+
+(** Reordering the two fields preserves their roles. Swapping the
+    arguments of the previously registered pair changes its selection. *)
+
+Minks.Struct ReorderedPair
+  with  rightFlag : HasFlag,
+        leftFlag : HasFlag,
+        flagComparison : FlagPair [leftFlag, rightFlag].
+
+Fail Minks.Struct ReversedPair
+  with  rightFlag : HasFlag,
+        leftFlag : HasFlag,
+        flagComparison : FlagPair [rightFlag, leftFlag].
 
 (** Declaring either endpoint leaves the other export independent. *)
 
@@ -336,6 +424,9 @@ Example selected_third_flag (A : Type) (L R T : HasFlag)
   : third_choice (MakeRightFlagByExport A L R T) = T
   := eq_refl.
 
+(** Inspect an imported component key and the declarations that use keys. *)
+
+Minks.Inspect hasMagma.
 Minks.Inspect HasRightFlag.
 Minks.Inspect RightFlagByExport.
 

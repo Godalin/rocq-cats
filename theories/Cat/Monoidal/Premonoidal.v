@@ -1,6 +1,7 @@
 From Cats Require Export
   Cat.Monoidal.Associator
-  Cat.Monoidal.Unitor.
+  Cat.Monoidal.Unitor
+  Cat.Monoidal.Semigroupal.
 
 Local Open Scope monoidal_scope.
 

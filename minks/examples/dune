@@ -8,6 +8,7 @@
  (package rocq-minks)
  (deps
   Algebra.vo
+  Modules.vo
   NativeParents.vo
   Sections.vo
   Closure.vo

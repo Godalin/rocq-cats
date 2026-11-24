@@ -126,7 +126,7 @@ Section RelativeFamily.
 Context (D : Type).
 Minks.Struct LabelFromExport
   extends PointedSetC
-  with  [chosenEquiv, chosenPoint, chosenLabel] : LabelledOn [D, carrier].
+  with  [labelEquiv, labelPoint, chosenLabel] : LabelledOn [D, carrier].
 End RelativeFamily.
 
 Check @LabelFromExport_chosenLabel
@@ -139,13 +139,13 @@ Section FixedWitnesses.
 Context (A : Type) (E : HasEquiv A) (M : @HasMagma A E).
 
 Minks.Struct AssocWitness
-  with  law : IsSemigroup [A, E, M].
+  with  assocLaw : IsSemigroup [A, E, M].
 
 End FixedWitnesses.
 
 Minks.Inspect AssocWitness.
 
-Check @AssocWitness_law
+Check @AssocWitness_assocLaw
   : ∀ A (E : HasEquiv A) (M : @HasMagma A E),
     AssocWitness A E M → @IsSemigroup A E M.
 
@@ -174,7 +174,7 @@ Variable B : Type.
 
 Minks.Struct LabelledMagma
   extends LabelledPoint B
-  with  hasMagma : HasMagma [carrier, hasEquiv]
+  with  labelledOp : HasMagma [carrier, hasEquiv]
   exports MagmaOnLabelled [LabelledPoint].
 End LabelledMultiplication.
 
@@ -186,10 +186,10 @@ Section AtLabelledPoint.
 Context (T : Type) (S : LabelledPoint T).
 
 Minks.Struct AtLabel
-  with  : MagmaOnLabelled [T, S].
+  with  [opAtLabel] : MagmaOnLabelled [T, S].
 End AtLabelledPoint.
 
 Example labelled_op_computes (T : Type) (S : LabelledPoint T)
     (op : @HasMagma S (LabelledPoint_hasEquiv T S))
-  : AtLabel_hasMagma T S (MakeAtLabel T S op) = op
+  : AtLabel_opAtLabel T S (MakeAtLabel T S op) = op
   := eq_refl.

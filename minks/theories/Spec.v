@@ -35,13 +35,14 @@ Elpi Db minks.flat.db lp:{{
   type mixin-dep gref -> list int -> mixin-param.
 
   pred mixin-spec i:gref, o:list gref, o:list mixin-param.
-  pred mixin-combination o:gref, o:list component, o:list component, o:constructor.
+  kind minks-export type.
+  type relative-interface option inductive -> list component -> list component ->
+      constructor -> list constant -> minks-export.
   kind struct-parent type.
   type native-parent native-head -> list id -> struct-parent.
   type named-parent inductive -> list id -> struct-parent.
 
   pred native-base i:native-head, o:inductive.
-  pred struct-spec i:inductive, o:list struct-parent, o:list component.
   kind view-registration type.
   type explicit-view, coercion-view, canonical-view,
     coercion-canonical-view view-registration.
@@ -50,13 +51,21 @@ Elpi Db minks.flat.db lp:{{
   type conversion inductive -> inductive -> constant -> view-registration
     -> struct-conversion.
 
-  pred struct-view i:inductive, o:inductive, o:constant, o:view-registration.
-  pred struct-packer i:inductive, o:constant.
-  pred struct-export i:inductive, o:inductive, o:list id.
-  pred export-base i:gref, o:inductive.
   kind field-name-info type.
   type named-field id -> list id -> list (pair inductive id) -> field-name-info.
-  pred field-names i:inductive, o:list field-name-info.
+  kind declaration type.
+  type relative minks-export -> declaration.
+  type packed list struct-parent -> list component -> list field-name-info ->
+      list constant -> list (pair inductive (list id)) -> declaration.
+  typeabbrev role (option (option (pair id gref))).
+  type primitive list gref -> list role -> declaration.
+  pred declared i:gref, o:declaration.
+  pred recorded-view i:inductive, o:inductive, o:constant, o:view-registration.
+  pred visible-key i:id, o:gref.
+  external pred minks.owned-key i:(pair modpath id), o:gref.
+  typeabbrev module-info (pair declaration (list struct-conversion)).
+  external pred minks.local-info i:gref, o:module-info.
+  pred field-alias i:id, o:constant.
   pred flat-layout i:list string, o:inductive, o:list component,
       o:list (pair id constant).
 }}.
@@ -99,6 +108,85 @@ Elpi File minks.spec lp:{{
     std.map Cs (c\p\ p = pr (global (const c)) (section-ref c)) Ambient,
     scope-term {std.append {std.rev Local} Ambient} T Expr Refs.
 
+  % Only regular Elpi clauses hold declaration data. A qualified lookup
+  % reads the same rows in the defining module's scope.
+  pred recorded-views i:inductive, o:list struct-conversion.
+  recorded-views I Views :-
+    std.findall (recorded-view I _ _ _) Rows,
+    std.map Rows (r\v\ sigma t c m\ r = recorded-view I t c m,
+      v = conversion I t c m) Views.
+
+  minks.local-info (indt I) (pr Data Views) :-
+    declared (indt I) Data, recorded-views I Views.
+
+  minks.owned-key (pr MP Key) P :-
+    visible-key Key P, coq.gref->path P {coq.modpath->path MP}.
+
+  % A path still under construction can already contribute visible rows.
+  % Resolve closed paths using Rocq's module names, including module aliases.
+  pred qualified-key i:list string, i:id, o:gref.
+  qualified-key Prefix K P :-
+    std.string.concat "." Prefix Name, coq.locate-all Name Matches,
+    if (std.mem Matches (loc-modpath MP))
+      (if (minks.owned-key (pr MP K) P) true (minks.scoped-key MP K P))
+      (visible-key K P, coq.gref->path P Path, std.appendR _ Prefix Path,
+       coq.env.current-path Here, std.appendR Path _ Here).
+
+  pred lookup-key i:id, o:id, o:list string, o:list gref.
+  lookup-key Name Short Prefix Keys :-
+    rex.split "[.]" Name Parts, std.rev Parts [Short | Rev], std.rev Rev Prefix,
+    if (Prefix = [])
+      (coq.env.current-path Here,
+       if (visible-key Short P, coq.gref->path P Here) (Keys = [P])
+         (std.findall (visible-key Short _) Rows,
+          std.map Rows (r\p\ r = visible-key Short p) Keys))
+      (if (qualified-key Prefix Short P) (Keys = [P]) (Keys = [])).
+
+  pred binding-key i:id, o:id, o:option gref.
+  binding-key Name Short Source :-
+    lookup-key Name Short Prefix Keys,
+    if (Keys = [P]) (Source = some P)
+      (if (Keys = [])
+         (if (Prefix = []) (Source = none) (coq.error "Unknown Minks key:" Name))
+         (coq.error "Ambiguous Minks key; qualify its module:" Short Keys)).
+
+  pred metadata i:inductive, o:declaration.
+  metadata I Data :- declared (indt I) Local, !, Data = Local.
+  metadata I Data :- minks.scoped-info I (pr Data _).
+
+  pred struct-spec i:inductive, o:list struct-parent, o:list component.
+  struct-spec I Parents Cs :- metadata I (packed Parents Cs _ _ _).
+
+  pred struct-views i:inductive, o:list struct-conversion.
+  struct-views I Vs :- declared (indt I) _, !, recorded-views I Vs.
+  struct-views I Vs :- minks.scoped-info I (pr (packed _ _ _ _ _) Vs).
+
+  pred struct-view i:inductive, i:inductive, o:constant, o:view-registration.
+  struct-view I T C M :- struct-views I Views, std.mem Views (conversion I T C M).
+
+  pred mixin-roles i:inductive, o:list gref, o:list role.
+  mixin-roles I Parents Roles :-
+    metadata I (primitive Parents Stored),
+    coq.env.indt I tt N _ _ _ _,
+    Extra is N - {std.length Stored},
+    std.assert! (Extra >= 0) "A registered mixin has fewer parameters than its declared roles",
+    std.map {std.iota Extra} (_\r\ r = none) Prefix, std.append Prefix Stored Roles.
+
+  pred mixin-combination i:gref, o:option inductive, o:list component, o:list component,
+      o:constructor, o:list constant.
+  mixin-combination (indt I) Base Fixed Remaining Ctor Origins :-
+    metadata I (relative Layout),
+    Layout = relative-interface Base Fixed Remaining Ctor Origins.
+
+  pred mixin-header i:inductive, o:list gref, o:list int.
+  mixin-header I [] Values :-
+    mixin-combination (indt I) _ _ _ _ _, !,
+    coq.env.indt I tt N _ _ _ _, std.iota N Values.
+  mixin-header I Parents Values :-
+    mixin-roles I Parents Roles,
+    std.length Roles N, std.zip {std.iota N} Roles Indexed,
+    std.map-filter Indexed (p\i\ p = pr i none) Values.
+
   pred read-dependencies i:term, i:list term, i:int, i:list int, o:list mixin-param.
   read-dependencies (prod _ _ Body) Vars Pos [Pos | Values] [mixin-val | Params] :- !,
     Next is Pos + 1,
@@ -110,7 +198,7 @@ Elpi File minks.spec lp:{{
       [Dep | Params] :-
     coq.safe-dest-app Ty Head Args,
     coq.env.global Ref Head,
-    Ref = indt I, minks.mixin-header I _ _,
+    Ref = indt I, mixin-header I _ _,
     std.map Args (argument-ref-of Vars) Refs,
     if (std.map Refs (r\i\ r = position i) Positions)
       (Dep = mixin-dep Ref Positions) (Dep = mixin-scoped-dep Ref Refs),
@@ -123,7 +211,7 @@ Elpi File minks.spec lp:{{
     read-dependencies Ty [] 0 Values Params.
 
   mixin-spec (indt I) Parents Params :-
-    minks.mixin-header I Parents Values,
+    mixin-header I Parents Values,
     read-mixin (indt I) Values Params.
 
   pred mixin-head i:mixin-param, o:gref.
@@ -338,7 +426,7 @@ Elpi File minks.spec lp:{{
 
   pred print-combination i:gref.
   print-combination Ref :-
-    export-base Ref Base, !, mixin-combination Ref Fixed Remaining _,
+    mixin-combination Ref (some Base) Fixed Remaining _ _, !,
     coq.gref->id (indt Base) BaseName,
     coq.say "Packed base:" BaseName,
     Ref = indt Export,
@@ -349,7 +437,7 @@ Elpi File minks.spec lp:{{
     print-export-fields Export Remaining.
 
   print-combination Ref :-
-    if (mixin-combination Ref Fixed Parts _)
+    if (mixin-combination Ref _ Fixed Parts _ _)
       (std.map Fixed component-key FixedKeys,
        coq.say "Fixed keys:" FixedKeys,
        Ref = indt I, std.length Fixed F,
@@ -372,9 +460,7 @@ Elpi File minks.spec lp:{{
 
   pred checked-field-names i:inductive, i:list component, o:list field-name-info.
   checked-field-names I Cs Names :-
-    std.findall (field-names I _) Tables,
-    if (Tables = [field-names _ Rows]) true
-      (coq.error "Expected exactly one field metadata table for" I),
+    metadata I (packed _ _ Rows _ _),
     align-field-names I Cs Rows Names.
 
   pred struct-ancestors i:list struct-parent, o:list inductive.

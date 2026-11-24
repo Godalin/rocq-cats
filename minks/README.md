@@ -47,6 +47,16 @@ the carrier, while `HasSecondPointOn` fixes the carrier and the first point.
 
 ## Command reference
 
+### Module scope
+
+- `Require A` makes qualified declarations and keys available to
+  `extends`, `with`, and `Minks.Inspect`. A qualified parent contributes
+  its flattened fields and ancestor views. Looking it up preserves the
+  caller's imports.
+- `Import A` opens short names in the current scope. If `B` exports
+  `A`, importing `B` also opens those names. The component identity
+  rules below resolve collisions between imported keys.
+
 ### `Minks.Mixin`
 
 ```text
@@ -146,13 +156,32 @@ square brackets.
   identity entry per field. Inheritance and inspection reject missing or
   inconsistent entries. An empty structure records an empty table.
   An empty parent list contributes zero fields.
-- **Component identity.** A `with` entry can name a mixin declared with
-  `Minks.Mixin` or an exported relative interface. A key
-  identifies a slot for a direct mixin in the combined hierarchy.
-  Each written key must be fresh among inherited fields, available local
-  fields and earlier entries in the same declaration. Different keys may
-  select independent witnesses of the same class. Parents still share
-  compatible fields by key.
+- **Component identity.** A named key belongs to its declaring Rocq module.
+  A bare binding first reuses a key declared in the current module, then
+  looks for a unique visible key of that name. `Import` and `Require
+  Import` open a module's keys; `Require` alone leaves them qualified.
+  If no key is visible, the binding declares one in the current module.
+  Multiple visible origins require qualification. A type mismatch on a
+  selected key is an error. Thus `A.hasEquiv` and `B.hasEquiv` may
+  select independent components.
+  Write `with A.hasEquiv : HasEquiv` to reuse that key explicitly;
+  subsequent selections in the structure use its local spelling `hasEquiv`.
+  Inheritance and expansion with the original export keys preserve identity.
+  The first declaration of a key registers its
+  complete ordinary parameter telescope, its selected field dependencies,
+  and its field type. An independent structure can use the key in the same
+  context. Binder names may change. Parameter order, binding kinds, and
+  dependency keys must agree, and Rocq checks the field types by conversion.
+  Unused header parameters count. Two roles of the same type can use
+  different keys. For example, applying a two-point parent at `X X` keeps
+  both point fields and every law's selection.
+- **Local freshness.** A written key must be fresh among inherited fields,
+  retired names and earlier entries in the current declaration. Applying a
+  parent specializes its existing fields. Writing a new `with` entry,
+  including a batch from an export, checks the key in the current
+  declaration context. Give the batch new keys when that context changes.
+  Rocq finalizes the binding kinds of generalized Section variables at
+  `End`; key registrations are checked again with the discharged telescope.
 - **Projections.** The default name is `Name_key`. The form
   `key as projection : Mixin` names the projection of the new entry.
   Dependencies, exports and freshness checks use the original key.
@@ -343,8 +372,20 @@ square brackets.
 
 ### `Minks.Inspect`
 
-- **Input.** Supply the name of a mixin or packed structure previously
-  declared by Minks.
+- **Input.** Supply a registered mixin, structure, or global component key.
+  When a declaration and a key share a name, both summaries are printed.
+- **Qualified keys.** `Minks.Inspect A.hasEquiv.` selects the key of module
+  `A`. A bare query reports the current module’s key or the matching visible keys
+  together with their origins.
+- **Key output.** `Minks.Inspect hasMagma.` shows the first declaring
+  structure, ordinary parameter telescope, component context, direct
+  dependency keys, and field type used to check reuse.
+- **Aliases and projections.** After `hasMagma as hasMul` in `Rng`,
+  `Minks.Inspect hasMul.` identifies `hasMagma` as the original key
+  and names the structure that introduced the alias. Looking up
+  a stored projection such as `Rng_hasMul` also identifies its key.
+  An alias can have different meanings in independent structures. The
+  command reports every matching identity, with one telescope per key.
 - **Mixin output.** The command lists direct dependencies and ordered parameter metadata.
 - **Structure output.** The summary lists the resolved parents, including generated native bases.
   It reports fields in packed order, selected dependency keys, inherited sources,

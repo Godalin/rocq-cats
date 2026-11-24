@@ -6,14 +6,17 @@ type parameter = {
   binder : local_binder_expr;
 }
 
+type selected_key = { spelling : Id.t; projection : GlobRef.t }
+let same_selected_key x y = Component_keys.same_key x.projection y.projection
+
 type role =
-  | Mixin of Id.t option
+  | Mixin of selected_key option
   | Value
 
 type selection = Witness of GlobRef.t | Ordinary
 
 type dependency = {
-  key : Id.t option;
+  key : selected_key option;
   selection : selection;
   arguments : constr_expr list;
   instance : instance_expr option;
@@ -21,41 +24,70 @@ type dependency = {
   shared : bool;
 }
 
-let parameter_roles = Summary.ref ~name:"minks-parameter-roles" Indmap_env.empty
-
-let save_roles =
-  Libobject.declare_object
-    (Libobject.superglobal_object "MINKS-PARAMETER-ROLES"
-      ~cache:(fun (ind, parents, roles) ->
-        parameter_roles := Indmap_env.add ind (parents, roles) !parameter_roles)
-      ~discharge:(fun (ind, parents, roles) ->
-        let prefix = Global.section_instance (GlobRef.IndRef ind) in
-        Some (ind, parents, Array.fold_left (fun rs _ -> Value :: rs) roles prefix))
-      ~subst:(Some (fun (subst, (ind, parents, roles)) ->
-        Mod_subst.subst_ind subst ind,
-        List.map (Globnames.subst_global_reference subst) parents, roles)))
-
-let value_positions roles =
-  List.filter_map Fun.id (List.mapi (fun i -> function Mixin _ -> None | _ -> Some i) roles)
-
-type combination = {
-  constructor : GlobRef.t;
-  components : Id.t list;
-  ordinary_fields : Id.Set.t;
-}
-
-let combinations = Summary.ref ~name:"minks-combinations" Indmap_env.empty
-
-let save_combination =
-  Libobject.declare_object
-    (Libobject.superglobal_object "MINKS-COMBINATION"
-      ~discharge:(fun x -> Some x)
-      ~cache:(fun (ind, shape) -> combinations := Indmap_env.add ind shape !combinations)
-      ~subst:(Some (fun (subst, (ind, shape)) ->
-        Mod_subst.subst_ind subst ind,
-        { shape with constructor = Globnames.subst_global_reference subst shape.constructor })))
-
 let error message = CErrors.user_err (Pp.str message)
+
+let parent_combinations_pred =
+  Elpi.API.RawData.Constants.declare_global_symbol "minks.parent-combinations"
+
+let local_info_pred =
+  Elpi.API.RawData.Constants.declare_global_symbol "minks.local-info"
+
+let owned_key_pred =
+  Elpi.API.RawData.Constants.declare_global_symbol "minks.owned-key"
+
+let query_metadata predicate conversion input =
+  let open Elpi.API in
+  let module Vernac = Elpi_plugin.Rocq_elpi_vernacular in
+  let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
+  let program = match Vernac.Interp.get_and_compile ~loc ["minks"; "mixin"] with
+    | Some (program, _) -> program
+    | None -> error "Missing Minks mixin program." in
+  let query state =
+    let state = State.set Elpi_plugin.Rocq_elpi_builtins.base state (Some program) in
+    let state, input, goals = conversion.Conversion.embed ~depth:0 state input in
+    let state, output = FlexibleData.Elpi.make ~name:"Result" state in
+    let result = RawData.mkUnifVar output ~args:[] state in
+    state, RawData.mkAppGlobal predicate input [result], goals in
+  match Vernac.Interp.run ~loc program (Vernac.Fun query) with
+  | Execute.Success solution -> Some solution
+  | Execute.Failure -> None
+  | Execute.NoMoreSteps -> error "Elpi step limit reached while reading Minks metadata."
+
+let parent_combinations parents =
+  let open Elpi.API in
+  let open Elpi.Builtin in
+  let reference = Elpi_plugin.Rocq_elpi_HOAS.gref in
+  let solution = match query_metadata parent_combinations_pred (BuiltInData.list reference) parents with
+    | Some solution -> solution
+    | None -> error "Expected a registered Minks mixin." in
+  let fields = BuiltInData.list (pair BuiltInData.string (pair bool reference)) in
+  let shapes = option (pair reference fields) in
+  let roles = BuiltInData.list (option (option (pair BuiltInData.string reference))) in
+  let results = BuiltInData.list (pair roles shapes) in
+  let _, result, _ = results.readback ~depth:0 solution.state
+      (Data.StrMap.find "Result" solution.assignments) in
+  let role = function
+    | None -> Value
+    | Some None -> Mixin None
+    | Some (Some (key, projection)) -> Mixin (Some { spelling = Id.of_string key; projection }) in
+  List.map (fun (rs, shape) -> List.map role rs, shape) result
+
+(* Regular clauses participate in module substitution. Read a closed module
+   in a snapshot so qualified access never opens names in the caller. *)
+let in_module path predicate conversion input ~depth target =
+  let open Elpi.API in
+  (* Open modules already contribute their clauses to the running program.
+     Only finished modules have a separate environment to consult. *)
+  (try ignore (Environ.lookup_module path (Global.env ()))
+   with Not_found -> raise BuiltInPredicate.No_clause);
+  Vernacstate.System.protect (fun () ->
+    Declaremods.Interp.import_module Libobject.unfiltered ~export:Lib.Import path;
+    match query_metadata predicate conversion input with
+    | None -> raise BuiltInPredicate.No_clause
+    | Some solution ->
+      match solution.relocate_assignment_to_runtime ~target ~depth "Result" with
+      | Ok term -> term
+      | Error msg -> error ("Could not read qualified Minks metadata: " ^ msg)) ()
 
 let read_parent parent =
   match parent.CAst.v with
@@ -161,7 +193,7 @@ let dependency_parameter reference name instance arguments =
 
 let binder_name reference reserved key =
   let base = match key with
-    | Some name -> name
+    | Some key -> key.spelling
     | None ->
       let name = Libnames.qualid_basename (qualify reference) in
       Id.of_string (String.uncapitalize_ascii (Id.to_string name)) in
@@ -170,7 +202,7 @@ let binder_name reference reserved key =
 let add_dependency env reserved dependencies reference instance arguments key =
   let same d =
     (match d.selection with Witness r -> Environ.QGlobRef.equal env r reference | Ordinary -> false) &&
-    (match d.key, key with Some x, Some y -> Id.equal x y | _ -> true) in
+    (match d.key, key with Some x, Some y -> same_selected_key x y | _ -> true) in
   match List.filter same dependencies with
   | [d] ->
     if List.length d.arguments <> List.length arguments then
@@ -252,14 +284,14 @@ let add_ordinary_field instance key ty ctx inputs reserved dependencies =
       let levels = Option.bind instance (fun i -> instance_syntax i levels) in
       application head levels args, args in
   let same d = match d.selection, d.key with
-    | Ordinary, Some k -> Id.equal key k
+    | Ordinary, Some k -> same_selected_key key k
     | _ -> false in
   match List.find_opt same dependencies with
   | Some d ->
     List.map (fun item -> if same item then { item with shared = true } else item)
       dependencies, d.parameter.name
   | None ->
-    let name = Namegen.next_ident_away key reserved in
+    let name = Namegen.next_ident_away key.spelling reserved in
     let parameter = parameter name (Default Glob_term.Explicit) ty in
     { key = Some key; selection = Ordinary; arguments; instance = None;
       parameter; shared = false } :: dependencies, name
@@ -275,8 +307,8 @@ let rec needs_elaboration () found expr =
 let same_application a b =
   not (needs_elaboration () false a) && Constrexpr_ops.constr_expr_eq a b
 
-let expand_combination env reference syntax_instance instance shape inputs dependencies reserved views =
-  let ctor_ty, _ = Typeops.type_of_global_in_context env shape.constructor in
+let expand_combination env reference syntax_instance instance (constructor, fields) inputs dependencies reserved views =
+  let ctor_ty, _ = Typeops.type_of_global_in_context env constructor in
   let rec skip count ctx ty =
     if count = 0 then ctx, ty else
     match Constr.kind ty with
@@ -286,9 +318,10 @@ let expand_combination env reference syntax_instance instance shape inputs depen
   in
   let rec expand dependencies reserved ctx inputs keys ty =
     match keys, Constr.kind ty with
-    | key :: keys, Prod (ann, ty, rest) ->
+    | (name, (ordinary, projection)) :: keys, Prod (ann, ty, rest) ->
+      let key = { spelling = Id.of_string name; projection } in
       let dependencies, name =
-        if Id.Set.mem key shape.ordinary_fields then
+        if ordinary then
           add_ordinary_field instance key ty ctx inputs reserved dependencies
         else
           let component, levels, arguments = dependency_type instance ty ctx inputs in
@@ -296,12 +329,12 @@ let expand_combination env reference syntax_instance instance shape inputs depen
           add_dependency env reserved dependencies component levels arguments (Some key) in
       expand dependencies (Id.Set.add name reserved)
         (Context.Rel.Declaration.LocalAssum (ann, ty) :: ctx) (variable name :: inputs) keys rest
-    | [], _ -> dependencies, reserved, List.rev inputs
+    | [], (Ind _ | App _) -> dependencies, reserved, List.rev inputs
     | _ -> error "The exported mixin does not match its component metadata."
   in
   let ctx, ty = skip (List.length inputs) [] ctor_ty in
-  let deps, reserved, args = expand dependencies reserved ctx inputs shape.components ty in
-  let value = application shape.constructor syntax_instance args in
+  let deps, reserved, args = expand dependencies reserved ctx inputs fields ty in
+  let value = application constructor syntax_instance args in
   if List.exists (function
     | CLocalDef (_, _, previous, _) -> same_application previous value
     | _ -> false) views then deps, reserved, views
@@ -396,17 +429,9 @@ let inheritance universes ordinary own field_names parents =
   let env = Global.env () in
   let sigma, _, _ = Constrintern.interp_cumul_univ_decl_opt env universes in
   let header = List.map (fun (_, (binder, _)) -> binder) ordinary in
-  let inherit_parent (dependencies, reserved, views, uses) (parent, syntax_instance, args) =
+  let inherit_parent (dependencies, reserved, views, uses) (reference, syntax_instance, args) (roles, combination) =
     let positional, named = read_arguments args in
-    let reference = Nametab.locate parent in
-    let ind = match reference with
-      | GlobRef.IndRef ind -> ind
-      | _ -> error "Expected a registered Minks mixin." in
-    let roles = match Indmap_env.find_opt ind !parameter_roles with
-      | Some (_, roles) -> roles
-      | None -> error "Expected a registered Minks mixin." in
     let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
-    let combination = Indmap_env.find_opt ind !combinations in
     let ty, context = Typeops.type_of_global_in_context env reference in
     let scope = header @ List.rev_map (fun d -> d.parameter.binder) dependencies @
       List.rev views in
@@ -456,7 +481,11 @@ let inheritance universes ordinary own field_names parents =
     add_parameters dependencies reserved [] [] roles ty values
   in
   let dependencies, reserved, views, uses =
-    List.fold_left inherit_parent ([], own, [], []) parents in
+    match parents with
+    | [] -> [], own, [], []
+    | _ ->
+      let shapes = parent_combinations (List.map (fun (r, _, _) -> r) parents) in
+      List.fold_left2 inherit_parent ([], own, [], []) parents shapes in
   let checks = check_parent_uses reserved field_names dependencies (List.rev uses) in
   List.rev dependencies, List.rev views @ checks
 
@@ -531,12 +560,6 @@ let add_to_declaration parents decl =
     | Witness ref -> Some ref | Ordinary -> None) inherited in
   ((name, (binders @ views, extra), sort, fields), notations), roles, witnesses
 
-let remember reference parents roles =
-  let ind = match reference with
-    | GlobRef.IndRef ind -> ind
-    | _ -> error "A mixin must be a record declaration." in
-  Lib.add_leaf (save_roles (ind, parents, roles))
-
 let () =
   let open Elpi.API in
   let open BuiltInPredicate in
@@ -556,6 +579,30 @@ let () =
         let ind, uctx = Packed_record.declare decl in
         Rocq.grab_global_env ~uctx state, ((), Some ind), [])),
       BuiltIn.DocAbove);
+    BuiltIn.MLCode (Pred ("minks.register-keys",
+      In (Rocq.inductive, "Structure",
+      In (BuiltInData.list BuiltInData.string, "Original field names",
+      In (BuiltInData.list Rocq.gref, "Origin projections",
+      In (BuiltInData.list BuiltInData.string, "Locally declared names",
+      Easy "Check and register component identities in constructor order.")))),
+      (fun ind names sources locals ~depth:_ -> Component_keys.register ind names sources locals)),
+      BuiltIn.DocAbove);
+    BuiltIn.MLCode (Pred ("minks.inspect-key",
+      In (BuiltInData.string, "Registered key name",
+      In (BuiltInData.list Rocq.gref, "Keys visible at the query site",
+      In (BuiltInData.list Rocq.gref, "Projections for matching key aliases",
+      In (BuiltInData.list Rocq.gref, "References resolved by Rocq",
+      Easy "Describe each matching component and how the name selects it.")))),
+      (fun name keys aliases refs ~depth:_ -> match Component_keys.inspect name keys aliases refs with
+        | [] -> raise No_clause
+        | results -> List.iter Feedback.msg_notice results)),
+      BuiltIn.DocAbove);
+    BuiltIn.MLCode (Pred ("minks.same-key",
+      In (Rocq.gref, "Source projection",
+      In (Rocq.gref, "Target projection",
+      Easy "Compare the registered identities of two stored fields.")),
+      (fun p q ~depth:_ -> if not (Component_keys.same_key p q) then raise No_clause)),
+      BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.stored-projections",
       In (Rocq.inductive, "Structure",
       Out (BuiltInData.list Rocq.gref, "Component projections",
@@ -563,28 +610,24 @@ let () =
       (fun ind _ ~depth:_ ->
         (), Some (Packed_record.stored_projections ind))),
       BuiltIn.DocAbove);
-    BuiltIn.MLCode (Pred ("minks.mixin-header",
-      In (Rocq.inductive, "Registered class",
-      Out (BuiltInData.list Rocq.gref, "Direct parents",
-      Out (BuiltInData.list BuiltInData.int, "Ordinary binder positions",
-      Easy "Read the mixin header in the current section context."))),
-      (fun ind _ _ ~depth:_ ->
-        match Indmap_env.find_opt ind !parameter_roles with
-        | None -> raise No_clause
-        | Some (parents, roles) -> (((), Some parents), Some (value_positions roles)))),
+    BuiltIn.MLCode (Pred ("minks.scoped-key",
+      In (Rocq.modpath, "Declaring module", In (BuiltInData.string, "Key",
+      Out (BuiltInData.poly "gref", "Original component projection",
+      Full (global, "Read a component key from a closed module.")))),
+      (fun path key _ ~depth _ _ state ->
+        let target = Option.get (State.get Elpi_plugin.Rocq_elpi_builtins.base state) in
+        let input = Elpi.Builtin.pair Rocq.modpath BuiltInData.string in
+        let data = in_module path owned_key_pred input (path, key) ~depth target in
+        state, ((), Some data), [])),
       BuiltIn.DocAbove);
-    BuiltIn.MLCode (Pred ("minks.register-combination",
-      In (Rocq.inductive, "Class",
-      In (Rocq.gref, "Constructor",
-      In (BuiltInData.int, "Parameter count",
-      In (BuiltInData.list BuiltInData.string, "Component keys",
-      In (BuiltInData.list BuiltInData.string, "Ordinary field keys",
-      Easy "Register an exported class for Mixin inheritance."))))),
-      (fun ind constructor count components ordinary ~depth:_ ->
-        let roles = List.init count (fun _ -> Value) in
-        remember (GlobRef.IndRef ind) [] roles;
-        let components = List.map Id.of_string components in
-        let ordinary_fields = Id.Set.of_list (List.map Id.of_string ordinary) in
-        Lib.add_leaf (save_combination (ind, { constructor; components; ordinary_fields })))),
-      BuiltIn.DocAbove)
+    BuiltIn.MLCode (Pred ("minks.scoped-info",
+      In (Rocq.inductive, "Qualified declaration",
+      Out (BuiltInData.poly "module-info", "Metadata from its defining module",
+      Full (global, "Read a closed module without importing it in the client."))),
+      (fun ind _ ~depth _ _ state ->
+        let target = Option.get (State.get Elpi_plugin.Rocq_elpi_builtins.base state) in
+        let data = in_module (MutInd.modpath (fst ind)) local_info_pred Rocq.gref
+            (GlobRef.IndRef ind) ~depth target in
+        state, ((), Some data), [])),
+      BuiltIn.DocAbove);
   ])

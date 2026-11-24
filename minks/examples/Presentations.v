@@ -120,9 +120,9 @@ Minks.Mixin Marked
   := { mark : A }.
 
 Minks.Struct Packed
-  with  isSemigroup : IsSemigroup [A, E, op],
-        hasPoint : HasPoint [A],
-        isUnitAt : IsUnitAt [A, E, op, hasPoint].
+  with  assocAt : IsSemigroup [A, E, op],
+        pointAt : HasPoint [A],
+        unitAt : IsUnitAt [A, E, op, pointAt].
 End FixedMagma.
 End OnCarrier.
 
@@ -140,8 +140,8 @@ Example same_relative_fields (M : Magma) (S : IsSemigroup M)
     (P : HasPoint M) (U : IsUnitAt M (hasPoint := P))
   : let r := OnCarrier.MakePacked M S P U in
     let l := MakeMonoidOnMagma M S P U in
-    MakeIsMonoid M (MonoidOnMagma_isSemigroup M l) (MonoidOnMagma_hasPoint M l)
-      (MonoidOnMagma_isUnitAt M l)
-    = MakeIsMonoid M (OnCarrier.Packed_isSemigroup M r)
-        (OnCarrier.Packed_hasPoint M r) (OnCarrier.Packed_isUnitAt M r)
+    MakeIsMonoid M (MonoidOnMagma_assocAt M l) (MonoidOnMagma_pointAt M l)
+      (MonoidOnMagma_unitAt M l)
+    = MakeIsMonoid M (OnCarrier.Packed_assocAt M r)
+        (OnCarrier.Packed_pointAt M r) (OnCarrier.Packed_unitAt M r)
   := eq_refl.

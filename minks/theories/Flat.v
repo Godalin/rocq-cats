@@ -210,16 +210,16 @@ Elpi File minks.flat lp:{{
     (pi ref u\ copy (pglobal ref u) (global ref) :- !) => copy Body T.
 
   pred match-descriptor i:list (pair id term), i:list (pair id term),
-      i:list component, i:component.
-  match-descriptor Source Target Cs (slot Key Kind Inputs) :-
+      i:list component, i:component, i:id.
+  match-descriptor Source Target Cs (slot _ Kind Inputs) Key :-
     std.mem Cs (slot Key Other Actual),
     if (Kind = mixin-kind _) (Kind = Other) (Other = native-kind _),
     std.map Inputs (pattern-term Target) Patterns,
     std.map Actual (pattern-term Source) Terms, Patterns = Terms.
 
-  pred view-indices i:inductive, i:list component, i:inductive, i:list component,
+  pred view-indices i:inductive, i:list component, i:inductive, i:list component, i:list id,
       o:list int.
-  view-indices Source Cs Target Hs Positions :-
+  view-indices Source Cs Target Hs Aligned Positions :-
     current-layout Source 0 Cs Names SourceCs,
     current-layout Target 0 Hs Formals TargetCs,
     std.map Names parameter-key SourceKeys, std.map Formals parameter-key TargetKeys,
@@ -227,9 +227,10 @@ Elpi File minks.flat lp:{{
     with-symbols {std.append SourceKeys Fields} [] (env\ sigma bindings common target symbols\
       std.map SourceKeys (k\x\ std.mem env (pr k x)) symbols,
       std.map TargetKeys (k\p\ sigma x\ p = pr k x) bindings,
-      std.filter env (p\ sigma k\ p = pr k _, std.mem Fields k) common,
+      std.map2 TargetCs Aligned (c\k\p\ sigma x\ std.mem env (pr k x),
+        p = pr {component-key c} x) common,
       std.append bindings common target,
-      std.forall TargetCs (match-descriptor env target SourceCs),
+      std.forall2 TargetCs Aligned (match-descriptor env target SourceCs),
       std.map bindings (p\i\ sigma actual\ p = pr _ actual, not (var actual),
         parameter-index symbols actual i) Positions).
 
@@ -251,13 +252,15 @@ Elpi File minks.flat lp:{{
       i:inductive, i:list component, o:constant.
   inferred-view Source Cs Fields Target TargetCs View :-
     std.length TargetCs N, std.length Cs M, N < M,
-    std.forall TargetCs (c\ contains-key {component-key c} Cs),
     not (struct-view Source Target _ _),
     coq.gref->id (indt Source) From, view-name From Target Name,
     coq.env.current-path Here, std.append Here [Name] Path,
     std.string.concat "." Path Qualified, coq.locate-all Qualified [],
-    view-indices Source Cs Target TargetCs Positions,
-    coq.env.indt Target tt _ _ _ [K] _, std.map TargetCs component-key Keys,
+    minks.stored-projections Target Projections,
+    std.map Projections (p\k\ sigma c\ std.mem Fields (pr k c),
+      minks.same-key (const c) p) Keys,
+    view-indices Source Cs Target TargetCs Keys Positions,
+    coq.env.indt Target tt _ _ _ [K] _,
     coq.env.global (indt Source) Head, coq.typecheck Head Arity ok,
     inferred-body Arity Head [] Positions Fields Keys K Term,
     coq.typecheck Term Ty ok,
