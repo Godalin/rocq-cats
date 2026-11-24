@@ -502,33 +502,6 @@ let order_witnesses references inherited =
   in
   order inherited
 
-let order_parameters references ordinary inherited =
-  let positions =
-    List.fold_left (fun (pos, indexes) (name, _) ->
-      let indexes = match name with
-        | Name id -> Id.Map.add id pos indexes
-        | Anonymous -> indexes in
-      pos + 1, indexes
-    ) (0, Id.Map.empty) ordinary |> snd
-  in
-  (* Keep the child's ordinary parameter order when inserting witnesses. *)
-  let rec emit_through last index ordinary output =
-    if index > last then index, ordinary, output
-    else match ordinary with
-    | (_, parameter) :: rest -> emit_through last (index + 1) rest (parameter :: output)
-    | [] -> assert false
-  in
-  let _, ordinary, inherited =
-    List.fold_left (fun (index, ordinary, output) dependency ->
-      let last = Id.Set.fold (fun name last ->
-        match Id.Map.find_opt name positions with None -> last | Some i -> max last i
-      ) (Id.Map.find dependency.parameter.name references) (-1) in
-      let index, ordinary, output = emit_through last index ordinary output in
-      let role = match dependency.selection with Witness _ -> Mixin dependency.key | Ordinary -> Value in
-      index, ordinary, (dependency.parameter.binder, role) :: output
-    ) (0, ordinary, []) inherited in
-  List.rev_append inherited (List.map snd ordinary)
-
 let add_to_declaration parents decl =
   let ((name, (binders, extra), sort, fields), notations) = decl in
   let ordinary = ordinary_parameters binders in
@@ -550,7 +523,10 @@ let add_to_declaration parents decl =
   let references = if inherited = [] then Id.Map.empty
     else parameter_references universes ordinary inherited in
   let inherited = order_witnesses references inherited in
-  let binders, roles = List.split (order_parameters references ordinary inherited) in
+  let parameters = List.map snd ordinary @ List.map (fun d ->
+    let role = match d.selection with Witness _ -> Mixin d.key | Ordinary -> Value in
+    d.parameter.binder, role) inherited in
+  let binders, roles = List.split parameters in
   let witnesses = List.filter_map (fun d -> match d.selection with
     | Witness ref -> Some ref | Ordinary -> None) inherited in
   ((name, (binders @ views, extra), sort, fields), notations), roles, witnesses

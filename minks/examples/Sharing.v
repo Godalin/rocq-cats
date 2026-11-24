@@ -21,14 +21,14 @@ Minks.Mixin PlainFirst (A : Type)
       (@flag hasFlag, @flag (@BothFlags_rightFlag A bothFlags))
   }.
 
-Check @PlainFirst : ∀ (left right : HasFlag) (A : Type), Type.
+Check @PlainFirst : ∀ (A : Type) (left right : HasFlag), Type.
 
 (** The constructor accepts reflexivity for the left flag even when the
     right flag computes to a different boolean. *)
 
 Example plain_shares_only_left (A : Type)
-  : @plain_and_right {| flag := true |} {| flag := false |} A
-      (@Build_PlainFirst {| flag := true |} {| flag := false |} A eq_refl)
+  : @plain_and_right A {| flag := true |} {| flag := false |}
+      (@Build_PlainFirst A {| flag := true |} {| flag := false |} eq_refl)
     = (true, false)
   := eq_refl.
 
@@ -67,7 +67,7 @@ Minks.Mixin OuterPointLaws (outer : HasPoint nat)
   extends HasPoint nat, AtPoint outer, AtValue (@point nat hasPoint)
   := { outer_point_laws : True }.
 
-Check @OuterPointLaws : ∀ (inner outer : HasPoint nat),
+Check @OuterPointLaws : ∀ (outer inner : HasPoint nat),
   AtPoint outer → AtValue (@point nat inner) → Prop.
 
 Fail Minks.Mixin ForwardPoint
@@ -169,14 +169,14 @@ End ChosenFunction.
 
 Check @MakeIdentityChoice : ∀ A : Type, HasPoint (A → A) → IdentityChoice A.
 
-(** Only the checked term determines the position of a witness. The tactic
-    can inspect a header parameter even when its result is closed. *)
+(** The header parameter precedes the witness even when the tactic uses it
+    to produce a closed index. *)
 
 Minks.Mixin ClosedPoint (n : nat)
   extends HasPoint ltac:(let t := type of n in exact t)
   := { closed_point : nat := @point nat hasPoint }.
 
-Check @ClosedPoint : HasPoint nat → nat → Type.
+Check @ClosedPoint : nat → HasPoint nat → Type.
 
 Fail Minks.Mixin DistinctTacticPoints
   extends HasPoint ltac:(exact nat), HasPoint ltac:(exact bool)

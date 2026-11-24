@@ -89,14 +89,15 @@ Minks.Mixin Name binders
   name, such as `hasMonoid` for `HasMonoid`. This local definition uses the
   exported constructor and adds no argument at call sites.
 - **Parameter order.**
-  1. Read parents from left to right. For each parent, visit the witness
-     parameters in their declared order, then the parent witness itself.
-     For a relative parent, visit its remaining components instead.
-  2. Among witnesses whose witness inputs are ready, emit shared witnesses
-     first. Break ties by first encounter.
-  3. Insert each witness once its arguments are in scope. Ordinary
-     parameters retain the child's order even when witnesses occur between
-     them. Ordinary parameters left over after the last witness follow it.
+  1. Emit all binders written in the child's header, in their declared order
+     and with their original explicitness. If a header binder needs a chosen
+     structure, declare that choice earlier in the header or enclosing section.
+  2. Read parents from left to right. For each parent, visit its inherited
+     witnesses and then its own witness. For a relative parent, visit its
+     remaining components instead.
+  3. Append each inherited entry once all its inherited dependencies are
+     in scope. Among ready entries, prefer shared entries and break ties
+     by first encounter.
 - **Universes.** The declaration uses Rocq's universe-polymorphism setting
   and universe syntax. An explicit universe declaration on the child
   fixes its universe parameter order. An explicit parent instance, such as

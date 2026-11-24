@@ -36,9 +36,8 @@ Reserved Notation "'ρ⁻¹[' X ']'"
 
     给定自然同构已包含其逆及自然性；这里只需正向中心性，逆的中心性由此推出。 *)
 
-Minks.Mixin IsTensorUnitors (C : Cat) (I : C)
-    (L : (I ⊗-) ≅N IdF) (R : (-⊗ I) ≅N IdF)
-  extends HasBinoidal C
+Minks.Mixin IsTensorUnitors (C : Cat) {hasBinoidal : HasBinoidal C}
+    (I : C) (L : (I ⊗-) ≅N IdF) (R : (-⊗ I) ≅N IdF)
   :=
   { unitor_l_central (X : C) : is_central (L.1 X)
   ; unitor_r_central (X : C) : is_central (R.1 X)

@@ -37,8 +37,8 @@ Minks.Mixin HasAgain (x : A)
 End Carrier.
 
 Minks.Inspect HasAgain.
-Check @HasAgain : ∀ (A : Type) (P : HasPoint A)
-    (C : @HasChosen A P) (x : A), @HasAtElement A x P C → Type.
+Check @HasAgain : ∀ (A : Type) (x : A) (P : HasPoint A)
+    (C : @HasChosen A P), @HasAtElement A x P C → Type.
 
 Minks.Mixin HasAfter (B : Type) (x : B)
   extends HasAgain (A := B) x

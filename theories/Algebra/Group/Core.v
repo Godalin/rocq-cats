@@ -31,7 +31,7 @@ Minks.Mixin HasInverse (S : SetC)
   extends HasUnit S
   :=
   { inv : S → S
-  ; isInverse :: @IsInverse S hasMagma hasUnit inv
+  ; isInverse :: @IsInverse S inv hasMagma hasUnit
   }.
 
 Arguments mul_inv_l {_ _ _ _ _} x.
@@ -56,8 +56,8 @@ Notation "x '⁻¹'" := (@inv _ _ _ (hasInverse _) x)
 
 Lemma inv_candidates_equiv (M : Monoid)
     (i j : M → M)
-    (Hi : @IsInverse M (Monoid_hasMagma M) (hasUnit M) i)
-    (Hj : @IsInverse M (Monoid_hasMagma M) (hasUnit M) j)
+    (Hi : @IsInverse M i (Monoid_hasMagma M) (hasUnit M))
+    (Hj : @IsInverse M j (Monoid_hasMagma M) (hasUnit M))
   : i ≈f j.
 Proof.
   intros x. apply (mul_inv_unique x).
@@ -72,7 +72,7 @@ Qed.
 
 Global Instance inv_proper
     {M : Monoid} {i : M → M}
-    `{Hi : !@IsInverse M (Monoid_hasMagma M) (hasUnit M) i}
+    `{Hi : !@IsInverse M i (Monoid_hasMagma M) (hasUnit M)}
   : Proper (carrier_equiv M ==> carrier_equiv M) i.
 Proof.
   intros x y H. apply (mul_inv_unique y).

@@ -311,7 +311,7 @@ Minks.Mixin HasFieldInverse (A : Type) (Z O : HasPoint A)
 
 Section ReciprocalLaws.
 Context {A : Type} {E : HasEquiv A} {M : @HasMagma A E}
-  {Z O : HasPoint A} {H : @HasFieldInverse A E M Z O}
+  {Z O : HasPoint A} {H : @HasFieldInverse A Z O E M}
   {C : @IsComm A E M}.
 
 Lemma mul_recip_l (x : A) (nz : x ≈ @point A Z → False)
@@ -338,7 +338,7 @@ Minks.Struct Field
   extends CommRing
   with  hasFieldInverse
           : HasFieldInverse
-            [carrier, hasEquiv, hasMul, hasZero, hasOne].
+            [carrier, hasZero, hasOne, hasEquiv, hasMul].
 
 Check RngToSemigroup : Rng → Semigroup.
 Fail Check (λ R : Rng, 1[R]).
@@ -478,7 +478,7 @@ Definition F2Ring
        times_comm.
 
 Definition F2Inverse
-  : @HasFieldInverse bool BoolEquiv times zero one.
+  : @HasFieldInverse bool zero one BoolEquiv times.
 Proof.
   refine {| recip := λ x _, x |}.
   - discriminate.

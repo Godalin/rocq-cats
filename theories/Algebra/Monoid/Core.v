@@ -33,7 +33,7 @@ Minks.Mixin HasUnit (S : SetC)
   extends HasMagma S
   :=
   { mul_unit : S
-  ; isUnit :: @IsUnit S hasMagma mul_unit
+  ; isUnit :: @IsUnit S mul_unit hasMagma
   }.
 
 Arguments mul_unit_l {_ _ _ _} x.
@@ -57,7 +57,7 @@ Notation "1" := (@mul_unit _ _ (hasUnit _))
     的原生相等。 *)
 
 Lemma units_equiv {S : SetC} `{M : !HasMagma S} {e f : S}
-    `{He : !@IsUnit S M e} `{Hf : !@IsUnit S M f}
+    `{He : !@IsUnit S e M} `{Hf : !@IsUnit S f M}
   : e ≈S f.
 Proof.
   transitivity (mul e f).

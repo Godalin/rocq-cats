@@ -31,24 +31,24 @@ Minks.Mixin HasTwoValues (A X Y : Type)
 
 Definition left_level_smaller@{u e x y | u < e, e < x, x < y}
     (A : Type@{u}) (E : HasEquiv@{u e} A)
-    (X : Type@{x}) (L : @HasLeftValue@{u e x} A E X)
-    (Y : Type@{y}) (R : @HasRightValue@{u e y} A E Y)
+    (X : Type@{x}) (L : @HasLeftValue@{u x e} A X E)
+    (Y : Type@{y}) (R : @HasRightValue@{u y e} A Y E)
   : Prop
-  := @HasTwoValues@{u x y e} A E X L Y R.
+  := @HasTwoValues@{u x y e} A X Y E L R.
 
 Definition right_level_smaller@{u e x y | y < x, x < e, e < u}
     (A : Type@{u}) (E : HasEquiv@{u e} A)
-    (X : Type@{x}) (L : @HasLeftValue@{u e x} A E X)
-    (Y : Type@{y}) (R : @HasRightValue@{u e y} A E Y)
+    (X : Type@{x}) (L : @HasLeftValue@{u x e} A X E)
+    (Y : Type@{y}) (R : @HasRightValue@{u y e} A Y E)
   : Prop
-  := @HasTwoValues@{u x y e} A E X L Y R.
+  := @HasTwoValues@{u x y e} A X Y E L R.
 
 (** Name an inherited parameter universe and keep a single instance
     of the equivalence in both branches. *)
 
 Minks.Mixin HasNamedValues@{u e x y}
     (A : Type@{u}) (X : Type@{x}) (Y : Type@{y})
-  extends HasLeftValue@{u e x} A X, HasRightValue@{u e y} A Y
+  extends HasLeftValue@{u x e} A X, HasRightValue@{u y e} A Y
   :=
   { named_left : X
   ; named_right : Y
@@ -58,7 +58,7 @@ Minks.Mixin HasNamedValues@{u e x y}
 
 Fail Minks.Mixin ConflictingLevels@{u e p x y | e < p}
     (A : Type@{u}) (X : Type@{x}) (Y : Type@{y})
-  extends HasLeftValue@{u e x} A X, HasRightValue@{u p y} A Y
+  extends HasLeftValue@{u x e} A X, HasRightValue@{u y p} A Y
   :=
   { conflicting_left : X
   ; conflicting_right : Y
@@ -182,9 +182,9 @@ Minks.Mixin HasFixedFamilyMember@{u e i | i < u, u < e}
 
 Definition fixed_family_member_levels@{u e i | i < u, u < e}
     (S : FixedCarrier@{u e}) (P : HasFixedPoint S) (F : HasFixedFamily@{u e i} S)
-    (M : @HasFixedFamilyMember@{u e i} S F P)
+    (M : @HasFixedFamilyMember@{u e i} S P F)
   : @fixed_family S F (@fixed_point S P)
-  := @fixed_family_member S F P M.
+  := @fixed_family_member S P F M.
 
 (** A mixin that identifies two carrier levels induces one parameter. *)
 

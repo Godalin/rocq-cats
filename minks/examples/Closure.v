@@ -47,12 +47,12 @@ Section ClosureLaws.
 Context (A : Type) (f : A → A)
   `{O : !HasOrder A}
   `{E : !HasEquiv A} `{P : !@IsPoset A E O}
-  `{M : !@IsMonotone A O f} `{C : !@IsClosureOp A O E P f M}.
+  `{M : !@IsMonotone A f O} `{C : !@IsClosureOp A f O E P M}.
 
 (** The image of each element is a closed point. *)
 
 Definition closure_closed (x : A)
-  : @IsClosedPoint A O E P f M C (f x)
+  : @IsClosedPoint A f (f x) O E P M C
   :=
   {| closed_point := closure_idem x
   |}.
@@ -60,7 +60,7 @@ Definition closure_closed (x : A)
 (** Every closed upper bound of an element also bounds its closure. *)
 
 Definition closure_least (x y : A)
-    `{Y : !@IsClosedPoint A O E P f M C y} (xy : leq x y)
+    `{Y : !@IsClosedPoint A f y O E P M C} (xy : leq x y)
   : leq (f x) y
   := leq_trans (f x) (f y) y (monotone_leq x y xy)
        (leq_of_equiv (f y) y closed_point).

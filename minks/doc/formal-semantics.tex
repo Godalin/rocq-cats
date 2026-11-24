@@ -432,24 +432,20 @@ arguments would leave only one. All later references use the returned
 identity.
 
 \paragraph{Emit binders in scope.}
-\rdefn{Binder-Order}. Let $j$ be the number of header binders already
-emitted, initially zero. Let $U$ be the unprinted entries of $T$.
-An entry is ready when every inherited identity referenced by its type
-or arguments has been emitted. Among ready entries choose the least
+\rdefn{Binder-Order}. Emit the child's header $\Delta$ in declaration
+order in the enclosing context. A header type can use an earlier header
+binder or section assumption. Append the inherited entries of $T$:
+\[
+  \Delta\cdot\mathsf{emit}(T),\qquad
+  \mathsf{emit}(\varnothing)=[],\qquad
+  \mathsf{emit}(U)=[t]\cdot\mathsf{emit}(U\setminus\{t\}).
+\]
+An entry $t$ is ready when every inherited identity referenced by its
+type or arguments has been emitted. Among ready entries choose the least
 lexicographic rank
 \[
   \bigl(\mathbf 1_{\{\mathrm{count}=1\}},\
            \mathrm{first\ occurrence}\bigr).
-\]
-For the chosen entry $t$, let $b$ be the maximum of $j$ and the
-indices of header binders used in its type or argument references.
-With $\Delta_{j:b}=(x_{j+1},\ldots,x_b)$, emit recursively:
-\[
-\begin{aligned}
- \mathsf{emit}(j,\varnothing)&=\Delta_{j:n},\\
- \mathsf{emit}(j,U)&=\Delta_{j:b}\ \cdot\ [t]\ \cdot\
-                         \mathsf{emit}(b,U\setminus\{t\}).
-\end{aligned}
 \]
 A nonempty $U$ with no ready entry fails. Header binders retain their
 flags; ordinary export entries are explicit and witness entries are
@@ -895,28 +891,27 @@ Minks.Mixin IsClosedPoint (A : Type) (f : A -> A) (x : A)
 Write $E,O,P,N$ for the equivalence, order, poset and monotonicity
 witnesses. \ruse{Parent-Scan} visits $(E,O,P)$ then $(O,N)$.
 \ruse{Witness-Share} leaves the first-occurrence list $(E,O,P,N)$
-with counts $(1,2,1,1)$. \ruse{Binder-Order} emits $A$ to type $O$,
-then $O,E,P$. It emits $f$ just before $N$, the first witness that
-uses the map.
+with counts $(1,2,1,1)$. \ruse{Binder-Order} emits the header $(A,f)$, then the
+inherited witnesses $(O,E,P,N)$.
 
 \begin{center}
 \begin{tabular}{@{}clll@{}}
 Position & Binder & Rocq type & Parameter role\\
 \hline
 0 & $A$ & $\mathsf{Type}$ & ordinary\\
-1 & $O$ & $\ttt{HasOrder}\;A$ & witness on $A$\\
-2 & $E$ & $\ttt{HasEquiv}\;A$ & witness on $A$\\
-3 & $P$ & $\ttt{@IsPoset}\;A\;E\;O$ & witness on $A, E, O$\\
-4 & $f$ & $A\to A$ & ordinary\\
-5 & $N$ & $\ttt{@IsMonotone}\;A\;O\;f$ & witness on $A, O, f$
+1 & $f$ & $A\to A$ & ordinary\\
+2 & $O$ & $\ttt{HasOrder}\;A$ & witness on $A$\\
+3 & $E$ & $\ttt{HasEquiv}\;A$ & witness on $A$\\
+4 & $P$ & $\ttt{@IsPoset}\;A\;E\;O$ & witness on $A, E, O$\\
+5 & $N$ & $\ttt{@IsMonotone}\;A\;f\;O$ & witness on $A, f, O$
 \end{tabular}
 \end{center}
-Position 3 uses $E$ before $O$ because \ttt{IsPoset} takes its
+Position 4 uses $E$ before $O$ because \ttt{IsPoset} takes its
 equivalence before its order. The ordinary application is
 \ttt{IsClosureOp A f}. Substituting an independent map $g$ in
-\ttt{@IsClosureOp A O E P g N} fails unless $N$ has the required
-type by conversion. \ttt{IsClosedPoint} then takes the closure witness
-and the point $x$. At $f(x)$ its field follows from idempotence.
+\ttt{@IsClosureOp A g O E P N} fails unless $N$ has the required
+type by conversion. \ttt{IsClosedPoint} takes the header $(A,f,x)$ before its
+inherited witnesses. At $f(x)$ its field follows from idempotence.
 
 \subsection{Deriving the algebra hierarchy through Magma}
 \label{ex:magma}

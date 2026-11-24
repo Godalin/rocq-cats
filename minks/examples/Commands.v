@@ -108,10 +108,9 @@ Minks.Mixin IsBothPoints (A : Type) (x y z : A)
 (** Check the order of the shared and branch-specific parameters. *)
 
 Check @IsBothPoints
-  : ∀ (A : Type) (E : HasEquiv A)
-      (x : A) (N : @IsNamedPoint A E x) (P : HasPoint A)
-      (y : A) (L : @IsLeftPoint A P E x N y)
-      (z : A) (R : @IsRightPoint A E x N z), Type.
+  : ∀ (A : Type) (x y z : A) (E : HasEquiv A)
+      (N : @IsNamedPoint A x E) (P : HasPoint A)
+      (L : @IsLeftPoint A x y P E N) (R : @IsRightPoint A x z E N), Type.
 
 Fail Minks.Mixin MissingParentArgument (A : Type)
   extends HasEquiv
@@ -150,9 +149,9 @@ Fail Minks.Mixin ExplicitParentApplication {A : Type}
   { explicit_parent_application : True }.
 
 Example inherited_implicit_parameters {A : Type} {x : A}
-    (S : @HasSeed A) (I : @IsSeed A S x)
+    (S : @HasSeed A) (I : @IsSeed A x S)
     (y : A) (P : IsSeedAt y)
-  : @IsSeedAt A S x I y
+  : @IsSeedAt A x y S I
   := P.
 
 (** Pass different ordinary parameters to independent parents. *)
@@ -163,7 +162,7 @@ Minks.Mixin IndependentChoices (A B : Type)
   { independent_choice : True }.
 
 Check @IndependentChoices
-  : ∀ (A : Type) (P : HasPoint A) (B : Type) (E : HasEquiv B), Type.
+  : ∀ (A B : Type) (P : HasPoint A) (E : HasEquiv B), Type.
 
 (** Sharing dependent arguments keeps their type before them. *)
 
@@ -289,7 +288,7 @@ Minks.Mixin HasFlagComparison (A : Type)
       @flag (@HasTwoFlags_rightFlag A hasTwoFlags)
   }.
 
-Check @HasFlagComparison : ∀ (L R : HasFlag) (A : Type), Type.
+Check @HasFlagComparison : ∀ (A : Type) (L R : HasFlag), Type.
 
 Minks.Struct TwoFlagsByExport
   extends Type

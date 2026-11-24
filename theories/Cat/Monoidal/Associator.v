@@ -31,9 +31,8 @@ Reserved Notation "'α⁻¹[' X ';' Y ';' Z ']'"
 
     固定范畴及张量作用。定律只使用给定自然同构，不选择单位或第二份结合子。 *)
 
-Minks.Mixin IsTensorAssoc (C : Cat)
+Minks.Mixin IsTensorAssoc (C : Cat) {hasBinoidal : HasBinoidal C}
     (a : ∀ X Y : C, ((X ⊗ Y) ⊗-) ≅N ((X ⊗-) ∘F (Y ⊗-)))
-  extends HasBinoidal C
   :=
   { assoc_natural_l (Y Z : C)
     :: IsNatIso ((-⊗ Z) ∘F (-⊗ Y)) (-⊗ (Y ⊗ Z))

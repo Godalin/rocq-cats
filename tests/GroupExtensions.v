@@ -34,7 +34,7 @@ End UnchosenExtension.
     固定幺半群及带逆律的候选运算；无须选取群扩充即可实际重写。 *)
 
 Section CandidateRespectfulness.
-Context {M : Monoid} {i : M → M} `{Hi : !@IsInverse M (Monoid_hasMagma M) (hasUnit M) i}.
+Context {M : Monoid} {i : M → M} `{Hi : !@IsInverse M i (Monoid_hasMagma M) (hasUnit M)}.
 
 (** Candidate inversion rewrites inside multiplication using derived
     respectfulness alone. *)
