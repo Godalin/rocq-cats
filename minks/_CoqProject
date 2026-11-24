@@ -1,3 +1,4 @@
+-I _build/install/default/lib
 -Q _build/default/theories Minks
 -R _build/default/examples MinksExamples
 -R _build/default/tests MinksTests
