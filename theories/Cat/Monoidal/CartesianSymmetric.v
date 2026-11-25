@@ -70,14 +70,21 @@ Program Definition CartIsSymUnit
   {|tensor_sym_unit := _|}.
 Next Obligation. apply product_β2. Qed.
 
+(** Finite products give a symmetric monoidal tensor with product swap. *)
+
+(** 有限积给出对称幺半张量，其对称子交换两个积投影。 *)
+
+Definition CartSymMonoidal
+  : SymMonoidalCat
+  := SymMonoidalCatOfMonoidalCat CartMonoidal
+       CartHasTensorSym CartIsSymHexagon CartIsSymUnit.
+
 (** Pack the exchange with the premonoidal view of the same finite products. *)
 
 (** 将交换与同一份有限积的预幺半视图打包。 *)
 
 Definition CartSymPremonoidal
   : SymPremonoidalCat
-  := SymPremonoidalCatOfPremonoidalCat
-       (MonoidalCatToPremonoidalCat CartMonoidal)
-       CartHasTensorSym CartIsSymHexagon CartIsSymUnit.
+  := SymMonoidalCatToSymPremonoidalCat CartSymMonoidal.
 
 End Cartesian.

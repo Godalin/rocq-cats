@@ -1,4 +1,5 @@
 From Cats Require Export
+  Cat.Monoidal.Monoidal
   Cat.Monoidal.PremonoidalLaws.
 From Cats Require Import
   Cat.Isomorphism.
@@ -80,6 +81,15 @@ Minks.Struct SymPremonoidalCat
         isSymHexagon : IsSymHexagon,
         isSymUnit : IsSymUnit
   exports HasSymPremonoidal [carrier].
+
+(** Interchange makes the common tensor bifunctorial. The symmetric
+    premonoidal parent supplies the exchange and its coherence laws. *)
+
+(** 交换律使两条分支共享的张量成为双函子；对称预幺半父结构提供对称子及其相干律。 *)
+
+Minks.Struct SymMonoidalCat
+  extends MonoidalCat, SymPremonoidalCat
+  exports HasSymMonoidal [carrier].
 
 Notation "'σₚ[' X ';' Y ']'" := (tensor_sym X Y)
   : monoidal_scope.

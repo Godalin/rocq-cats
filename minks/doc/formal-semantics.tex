@@ -1385,6 +1385,52 @@ inputs, even when their nonzero witnesses differ.
 In \ttt{ModTwo.F2}, addition is exclusive or, multiplication is
 conjunction, and the reciprocal of one reduces to one.
 
+\clearpage
+\subsection{Two branches of the tensor hierarchy}
+A binoidal tensor acts on arrows in each variable separately. Interchange
+says that applying $f$ on the left and $g$ on the right gives the same
+composite in either order. A symmetric premonoidal category already has
+an involutive exchange $X\otimes Y\to Y\otimes X$ compatible with its
+associator and unitors. Adding interchange makes its tensor bifunctorial
+and gives a symmetric monoidal category.
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,
+  bundle/.style={draw,rounded corners=2pt,fill=white,inner sep=4pt,
+    font=\small\ttfamily}, edge/.style={->,>=stealth}]
+  \node[bundle] (cat) at (0,0) {Cat};
+  \node[bundle] (bi) at (0,1) {BinoidalCat};
+  \node[bundle] (mag) at (-2.5,2) {MagmoidalCat};
+  \node[bundle] (sg) at (-2.5,3.4) {SemigroupalCat};
+  \node[bundle] (pre) at (1.65,3.4) {PremonoidalCat};
+  \node[bundle] (mon) at (-1.85,4.9) {MonoidalCat};
+  \node[bundle] (sympre) at (1.85,4.9) {SymPremonoidalCat};
+  \node[bundle] (sym) at (0,6.2) {SymMonoidalCat};
+  \foreach \a/\b in {cat/bi,bi/mag,mag/sg,bi/pre,sg/mon,pre/mon,
+                       pre/sympre,mon/sym,sympre/sym}
+    \draw[edge] (\a) -- (\b);
+\end{tikzpicture}
+
+\small Arrows run from each declared parent to its extension.
+\end{center}
+
+The two joins illustrate component sharing at different depths.
+\ttt{MonoidalCat} inherits the same associator through both parents.
+\ttt{SymMonoidalCat} shares the entire premonoidal signature, including
+the chosen tensor, associator, unitors and triangle witness. Its
+declaration introduces no further component:
+\begin{verbatim}
+Minks.Struct SymMonoidalCat
+  extends MonoidalCat, SymPremonoidalCat
+  exports HasSymMonoidal [carrier].
+\end{verbatim}
+Fixing the underlying category exports all the tensor choices and laws
+as one relative interface. For a category with chosen finite products,
+\ttt{CartSymMonoidal} uses the product tensor and the exchange
+$\langle\pi_2,\pi_1\rangle$. Forgetting interchange recovers its
+symmetric premonoidal view.
+\clearpage
+
 \subsection{A cartesian functor with fixed endpoints}
 Fix cartesian categories $C,D$. A functor $F:C\to D$ preserves finite
 products when it sends the chosen terminal object and binary product
