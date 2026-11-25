@@ -165,14 +165,71 @@ Elpi Accumulate lp:{{
     std.map Deps (k\t\ lookup k Env t) Args, coq.mk-app Head Args Ty,
     coq.typecheck-ty Ty _ ok.
 
-  pred resolve-arguments i:id, i:term, i:option (list id),
+  % Describe the Rocq telescope at the same occurrence used for selection.
+  pred argument-labels i:term, o:list string.
+  argument-labels (prod Name Ty Rest) [Label | Labels] :-
+    coq.name->id Name N, Label is N ^ " : " ^ {coq.term->string Ty},
+    pi x\ @pi-decl Name Ty x\ argument-labels (Rest x) Labels.
+  argument-labels (let _ _ Value Rest) Labels :- argument-labels (Rest Value) Labels.
+  argument-labels (sort _) [].
+
+  pred bracketed-inputs i:list string, o:string.
+  bracketed-inputs Xs S :- S is "[" ^ {std.string.concat ", " Xs} ^ "]".
+
+  % The layout uses final keys. Errors must use the spellings the user can
+  % actually write at this with entry, even if a later entry renames a key.
+  kind entry-scope type.
+  type visible-names list field-name-info -> list field-name-info -> entry-scope.
+  pred entry-spellings i:entry-scope, o:list (pair id id).
+  entry-spellings (visible-names Before Final) Pairs :-
+    std.map Before (n\p\ sigma k\ n = named-field k _ _, p = pr k {final-name Final k}) Pairs.
+  pred input-spelling i:list (pair id id), i:id, o:id.
+  input-spelling Names K S :- std.mem Names (pr S K), !.
+  input-spelling _ K S :- ordinary-input S K _, !.
+  input-spelling _ K K.
+
+  pred scope-parameters o:list id.
+  scope-parameters Params :-
+    std.findall (ordinary-binding _ _) Bindings,
+    std.map Bindings (b\n\ b = ordinary-binding n _) Params.
+
+  pred selection-message i:entry-scope, i:string, i:term, i:list component,
+      i:option (list id), i:list (list id), o:string.
+  selection-message Scope Reason Head Available Selection Matches Message :-
+    coq.env.global Ref Head, coq.gref->id Ref M, coq.typecheck Head Ty ok,
+    argument-labels Ty Expected, entry-spellings Scope Names,
+    Show = (ks\s\ bracketed-inputs {std.map ks (input-spelling Names)} s),
+    std.map Available component-key Fields,
+    scope-parameters Params,
+    Title is Reason ^ M,
+    Order is "Expected arguments (in order): " ^ {bracketed-inputs Expected},
+    Keys is "Available fields: " ^ {Show Fields},
+    Context is "In-scope parameters: " ^ {bracketed-inputs Params},
+    if (Selection = some Given)
+      (Line is "Supplied arguments: " ^ {Show Given},
+       std.length Expected Arity, std.length Given Count,
+       if (Arity = Count) (Details = [Line])
+         (Size is "Expected " ^ (int_to_string Arity)
+            ^ " inputs, got " ^ (int_to_string Count) ^ ".",
+          Details = [Line, Size]))
+      (if (Matches = [First, Second | More])
+        (if (More = []) (Suffix = "") (Suffix = " (additional matches omitted)"),
+         Line is "Matching lists: " ^ {Show First} ^ " or " ^ {Show Second} ^ Suffix,
+         Details = [Line, "Specify the intended list in brackets."])
+        (if (Params = [])
+          (Details = ["Omitted arguments require compatible fields in scope."])
+          (Details = ["Omitted arguments are inferred from fields. Supply in-scope parameters explicitly in brackets."]))),
+    std.string.concat "\n" [Title, Order, Keys, Context | Details] Message.
+
+  pred resolve-arguments i:entry-scope, i:term, i:option (list id),
       i:list mixin-param, i:list component, i:list (pair id term), o:list id.
-  resolve-arguments M Head (some Keys) Params Available Env Keys :- !,
+  resolve-arguments Scope Head (some Keys) Params Available Env Keys :- !,
     std.map-filter Keys (k\p\ sigma t\ ambient-value k t, p = pr k t) Inputs,
     if (mixin-arguments Params Available {std.append Inputs Env} [] Keys,
         typecheck-arguments Head Env Keys) true
-      (coq.error "Component keys do not match the mixin parameters:" M).
-  resolve-arguments M Head none Params Available Env Deps :-
+      (coq.error {selection-message Scope
+          "Component keys do not match the mixin parameters: " Head Available (some Keys) []}).
+  resolve-arguments Scope Head none Params Available Env Deps :-
     std.findall (mixin-arguments Params Available Env [] _) Candidates,
     % Keep candidate typing inside the local universe context and discard
     % its constraints before checking the next candidate.
@@ -181,8 +238,10 @@ Elpi Accumulate lp:{{
         not (not (typecheck-arguments Head Env keys))) Matches,
     if (Matches = [Deps]) true (
       if (Matches = [])
-        (coq.error "Missing compatible arguments for mixin:" M)
-        (coq.error "Ambiguous arguments for mixin, give component keys:" M)).
+        (coq.error {selection-message Scope
+          "Missing compatible arguments for mixin: " Head Available none Matches})
+        (coq.error {selection-message Scope
+          "Ambiguous arguments for mixin: " Head Available none Matches})).
 
   pred explicit-fixed i:list component, i:list id, i:list component,
       i:list (pair id id), i:list id.
@@ -205,24 +264,27 @@ Elpi Accumulate lp:{{
     mapped-components Fixed Available Mapping [] Args,
     std.append Values Args Keys.
 
-  pred resolve-fixed i:id, i:term, i:option (list id), i:list id, i:list component,
+  pred resolve-fixed i:entry-scope, i:term, i:option (list id), i:list id, i:list component,
       i:list component, i:list (pair id term), o:list id.
-  resolve-fixed M Head (some Keys) Prefix Fixed Available Env Keys :- !,
+  resolve-fixed Scope Head (some Keys) Prefix Fixed Available Env Keys :- !,
     std.length Prefix N,
     if (std.split-at N Keys Values Args,
         fixed-mapping Prefix Values Mapping,
         explicit-fixed Fixed Args Available Mapping [],
         typecheck-arguments Head Env Keys) true
-      (coq.error "Component keys do not match the fixed export parameters:" M).
-  resolve-fixed M Head none Prefix Fixed Available Env Keys :-
+      (coq.error {selection-message Scope
+          "Component keys do not match the fixed export parameters: " Head Available (some Keys) []}).
+  resolve-fixed Scope Head none Prefix Fixed Available Env Keys :-
     std.findall (infer-fixed Prefix Fixed Available Env _) Candidates,
     std.map-filter Candidates
       (c\a\ c = infer-fixed _ _ _ _ a,
         not (not (typecheck-arguments Head Env a))) Matches,
     if (Matches = [Keys]) true (
       if (Matches = [])
-        (coq.error "Missing compatible arguments for exported mixin:" M)
-        (coq.error "Ambiguous fixed parameters for exported mixin, give component keys:" M)).
+        (coq.error {selection-message Scope
+          "Missing compatible arguments for exported mixin: " Head Available none Matches})
+        (coq.error {selection-message Scope
+          "Ambiguous fixed parameters for exported mixin: " Head Available none Matches})).
 
   % A parent keeps the identity of every field that it supplies. Only
   % matching native heads also admit their existing conversion check.
@@ -304,7 +366,7 @@ Elpi Accumulate lp:{{
   % scope. Then translate valid references to their final record keys.
   kind field-entry type.
   type entry list id -> list (pair id id) -> term -> option (list id)
-    -> list (pair id id) -> field-entry.
+    -> entry-scope -> field-entry.
 
   pred final-name i:list field-name-info, i:id, o:id.
   final-name Names K Key :-
@@ -317,7 +379,11 @@ Elpi Accumulate lp:{{
          (final-name Final K Actual))
       (require-fresh Before K,
        if (ordinary-input K Ambient _) (Actual = Ambient)
-         (coq.error "Unknown component input:" K)).
+         (std.map Before (n\k\ n = named-field k _ _) Keys,
+          FieldList is "Available fields: " ^ {bracketed-inputs Keys},
+          ParamList is "In-scope parameters: " ^ {bracketed-inputs {scope-parameters} },
+          Title is "Unknown component input: " ^ K,
+          coq.error {std.string.concat "\n" [Title, FieldList, ParamList]})).
 
   pred plan-entries i:list pending-slot, i:list field-name-info,
       o:list field-name-info, o:list field-entry.
@@ -326,15 +392,10 @@ Elpi Accumulate lp:{{
     require-fresh Before J, rename-field Before K J After,
     plan-entries Slots After Final Entries.
   plan-entries [pending Binder Head Selection | Slots] Before Final
-      [entry Out Aliases Head Deps Preferred | Entries] :-
+      [entry Out Aliases Head Deps (visible-names Before Final) | Entries] :-
     entry-names Binder Head Keys Ps,
     std.fold Keys Before introduce-name After,
     plan-entries Slots After Final Entries,
-    % Original-key preference for omitted fixed inputs uses the spellings
-    % visible here, including when a later entry renames one of them.
-    if (Binder = batch _ _, Selection = none)
-      (std.map Before (n\p\ sigma k\ n = named-field k _ _, p = pr k {final-name Final k}) Preferred)
-      (Preferred = []),
     std.map Keys (final-name Final) Out,
     std.map Ps (p\q\ sigma k j\ p = pr k j, q = pr {final-name Final k} j) Aliases,
     if (Selection = some Ks)
@@ -365,14 +426,15 @@ Elpi Accumulate lp:{{
   pred resolve-entries i:list field-entry, i:list component, i:list (pair id term),
       o:list component, o:list prop.
   resolve-entries [] Cs _ Cs [].
-  resolve-entries [entry Keys _ Head Selection Preferred | Entries] Available Env Out Heads :-
+  resolve-entries [entry Keys _ Head Selection Scope | Entries] Available Env Out Heads :-
     coq.env.global Ref Head, coq.gref->id Ref M,
     if (mixin-spec Ref _ Params) true (coq.error "Unregistered Minks mixin:" M),
     if (mixin-combination Ref _ RawFixed RawParts Ctor _)
       (Ref = indt Interface, std.length RawFixed F,
        current-layout Interface F {std.append RawFixed RawParts} Ordinary Layout,
        std.split-at F Layout Fixed Parts, std.map Ordinary parameter-key Prefix,
-       (source-keys Preferred => resolve-fixed M Head Selection Prefix Fixed Available Env Deps),
+       if (Selection = none) (entry-spellings Scope Preferred) (Preferred = []),
+       (source-keys Preferred => resolve-fixed Scope Head Selection Prefix Fixed Available Env Deps),
        std.map Fixed component-key FixedKeys,
        fixed-mapping {std.append Prefix FixedKeys} Deps Mapping,
        expand-parts Parts Keys Mapping New,
@@ -384,7 +446,7 @@ Elpi Accumulate lp:{{
          std.map Keys (k\t\ lookup k bs t) fields,
          coq.mk-app Make {std.append Values fields} term,
          std.assert-ok! (coq.typecheck term _) "Ill-typed exported field batch"))
-      (Keys = [Key], resolve-arguments M Head Selection Params Available Env Deps,
+      (Keys = [Key], resolve-arguments Scope Head Selection Params Available Env Deps,
        New = [slot Key (mixin-kind Ref) {key-inputs Deps}],
        Here = [selected-head Key (mixin-kind Ref) Head], Check = (_\ true)),
     with-heads Here (with-components New Env (bindings\

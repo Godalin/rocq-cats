@@ -24,6 +24,9 @@ dependencies whose argument identities are still being resolved.
 
 - **With-Assembly.** A diagonal pair selects the flag introduced in its batch
   even with two older flags in scope. A ring similarly selects addition.
+  Argument diagnostics distinguish available fields from parameters and show
+  competing selections under the names visible at the entry.
+  [Commands.v](../../tests/Commands.v)
   [Sharing.v](../../tests/Sharing.v)
 - **Export-Fix.** Fixing `hasMagma` fixes carrier, equivalence and multiplication
   in order. Fixing packed `Magma` gives a different telescope. Both recover

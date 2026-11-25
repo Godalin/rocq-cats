@@ -199,7 +199,8 @@ square brackets.
      these fields in the resulting order.
 - **Argument resolution.** At a `with` entry, the available fields are
   the inherited fields, and the preceding entries in `with`.
-  A bracketed argument list can also name a visible section assumption.
+  A bracketed argument list can also name a declaration parameter or a
+  visible section assumption.
   A name shared by an assumption and a field is ambiguous. Omitted lists
   search fields only. A bracketed argument list specifies every argument of the mixin in the
   order shown by `Minks.Inspect`, including implicit witnesses. An ordinary
@@ -207,8 +208,11 @@ square brackets.
   must also match the registered mixin and the dependency keys selected for
   its earlier arguments. With brackets omitted, Minks checks the candidate
   lists in Rocq. It selects the unique well-typed list. With no match the
-  command reports missing arguments, and with several it asks for explicit
-  keys.
+  diagnostic lists the expected Rocq binders in order, the available fields,
+  and the in-scope parameters. With several matches it also shows two
+  well-typed argument lists using the field names visible at that entry.
+  An invalid explicit list is displayed alongside the expected binders.
+  The same diagnostics apply to fixed inputs of exported mixins.
 - **Instances.** In packed field order, the first projection of each
   class head is an instance at priority 1. All keys remain accessible by
   name. For example, if zero precedes one, search for a point selects zero.

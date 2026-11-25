@@ -334,6 +334,32 @@ Fail Minks.Struct AmbiguousFlags
   extends TwoFlags
   with  hasPair : FlagPair.
 
+(** Header parameters can be supplied explicitly. An omitted list searches
+    only fields, even if the header contains parameters of the required type. *)
+
+Fail Minks.Struct MissingPairInputs (P Q : HasFlag)
+  with  selectedPair : FlagPair.
+
+Minks.Struct ExplicitPairInputs (P Q : HasFlag)
+  with  selectedPair : FlagPair [P, Q].
+
+(** When a later entry renames a field, both competing selections in the
+    diagnostic use the spelling available at the ambiguous entry. *)
+
+Elpi Query minks.struct lp:{{
+  coq.locate "FlagPair" Ref, coq.env.global Ref Head,
+  coq.locate "HasFlag" Flag,
+  Left = named-field "leftFlag" [] [], Right = named-field "rightFlag" [] [],
+  Scope = visible-names [Left, Right] [named-field "later" ["leftFlag"] [], Right],
+  Fields = [slot "later" (mixin-kind Flag) [], slot "rightFlag" (mixin-kind Flag) []],
+  selection-message Scope "Ambiguous arguments for mixin: " Head Fields none
+    [["later", "rightFlag"], ["rightFlag", "later"]] Message,
+  rex.split "\n" Message
+    [_, "Expected arguments (in order): [P : HasFlag, Q : HasFlag]",
+     "Available fields: [leftFlag, rightFlag]", _,
+     "Matching lists: [leftFlag, rightFlag] or [rightFlag, leftFlag]", _].
+}}.
+
 Minks.Struct PairedFlags
   extends TwoFlags
   with  flagComparison : FlagPair [leftFlag, rightFlag]
