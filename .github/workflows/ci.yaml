@@ -10,35 +10,35 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-26]
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rocq
-        uses: rocq-community/docker-coq-action@v1
+      - name: Read the locked compiler
+        id: toolchain
+        run: |
+          compiler=$(grep '^ocaml-base-compiler[.]' tools/ci/toolchain.lock)
+          echo "compiler=$compiler" >> "$GITHUB_OUTPUT"
+      - uses: ocaml/setup-ocaml@v3
         with:
-          opam_file: "rocq-cats.opam"
-          custom_image: "rocq/rocq-prover:9.3"
-          export: "OPAMWITHTEST"
-          before_install: |
-            # The image pins an older Stdlib; use the package dependency bound.
-            # 镜像固定了旧 Stdlib；解除固定后按项目依赖下界解析。
-            opam pin remove --no-action --yes dune rocq-stdlib
-            # Resolve the independent Minks package from this checkout.
-            # 从本次检出的源码解析独立 Minks 包。
-            opam pin add --no-action --yes --kind=path rocq-minks "$WORKDIR/minks"
-          before_script: |
-            rocq --version
-            dune --version
-            opam list --installed --columns=name,version rocq-core rocq-stdlib
-          after_script: |
-            startGroup "Validate checkout and bilingual documentation"
-              # The checkout belongs to the runner, not the container user.
-              sudo chown -R "$(id -u):$(id -g)" "$WORKDIR"
-              dune build -j 2 @all @runtest @install
-              dune exec tools/docs/docs.exe -- build --strict
-            endGroup
-        env:
-          OPAMWITHTEST: "true"
-      - name: Restore workspace ownership
-        if: ${{ always() }}
-        run: sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE"
+          ocaml-compiler: ${{ steps.toolchain.outputs.compiler }}
+          opam-pin: false
+          opam-repositories: |
+            rocq-released: https://rocq-prover.org/opam/released
+            default: https://opam.ocaml.org
+          cache-prefix: toolchain-${{ hashFiles('tools/ci/toolchain.lock') }}
+      - name: Install the locked toolchain
+        run: xargs opam install --yes --jobs=2 < tools/ci/toolchain.lock
+      - name: Install and test both packages
+        run: opam install --yes --with-test --jobs=2 ./minks .
+      - name: Verify the installed toolchain
+        run: |
+          sh tools/ci/toolchain.sh > "$RUNNER_TEMP/toolchain.actual"
+          diff -u tools/ci/toolchain.lock "$RUNNER_TEMP/toolchain.actual"
+      - name: Validate checkout and bilingual documentation
+        run: |
+          opam exec -- dune build -j 2 @all @runtest @install
+          opam exec -- dune exec tools/docs/docs.exe -- build --strict

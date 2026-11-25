@@ -413,20 +413,23 @@ Requires Rocq 9.3 or later, Stdlib 9.2 or later and Dune 3.23 or later.
 Use targeted checks during editing. Full repository/package validation is
 `dune build @all @runtest @install`; it is not the default development loop.
 
-Local development uses the `rocq-cats` opam switch with Rocq 9.3.0,
-Stdlib 9.2.0 and Dune 3.23.1. CI checks Rocq 9.3; Rocq 9.0–9.2 are no longer
-supported. [Stdlib 9.2.0 supports Rocq 9.3](https://github.com/rocq-prover/stdlib/releases/tag/V9.2.0);
-the two packages have independent release versions. Package bounds name
-`rocq-core` because the `rocq-prover` metapackage does not follow Rocq's version.
-After creating an OCaml switch (or selecting an existing one), install the
-project tools. The pin command also replaces an existing Rocq 9.2 pin;
-stop builds and language servers before updating a shared switch:
+Local development and both CI jobs (Linux x86-64 and macOS 26 arm64) use
+the OCaml compiler and opam build dependencies in
+[the toolchain lock](tools/ci/toolchain.lock). From the repository root,
+install these versions in the project switch and verify the result.
+Stop builds and language servers before updating a shared switch.
+Rocq and Stdlib have independent release versions; the package bound uses
+`rocq-core` because `rocq-prover` is a metapackage.
 
 ```sh
-opam pin add --switch=rocq-cats --no-action rocq-core 9.3.0
-opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1 rocq-elpi.3.7.0 elpi.4.1.1
+xargs opam install --yes --switch=rocq-cats < tools/ci/toolchain.lock
+sh tools/ci/toolchain.sh --switch=rocq-cats | diff -u tools/ci/toolchain.lock -
 opam exec --switch=rocq-cats -- dune build @check-core
 ```
+
+After a deliberate toolchain upgrade, regenerate the lock with
+`sh tools/ci/toolchain.sh --switch=rocq-cats > tools/ci/toolchain.lock`
+and commit it with the changes that require the upgrade.
 
 Run all project commands through this switch, without changing the global
 opam selection. For VS Code, point `vsrocq.path` at this switch's `vsrocqtop`
@@ -441,12 +444,11 @@ Cats 依赖独立的 [`rocq-minks` 包](./minks/README.md)。
 `Cats.Meta` 为库中的理论重导出 Minks 命令。
 
 项目要求 Rocq 9.3 起、Stdlib 9.2 起及 Dune 3.23 起。
-本地开发使用 `rocq-cats` opam switch，工具版本为 Rocq 9.3.0、Stdlib 9.2.0 和
-Dune 3.23.1；CI 检查 Rocq 9.3，不再支持 Rocq 9.0–9.2。
-[Stdlib 9.2.0 支持 Rocq 9.3](https://github.com/rocq-prover/stdlib/releases/tag/V9.2.0)，
-两包的发布版本相互独立；包依赖以 `rocq-core`
-表达 Rocq 版本下界，因为 `rocq-prover` 是不跟随该版本号的元包。
-上述 pin 命令也会替换已有 Rocq 9.2 固定；修改共享 switch 前先停止构建和语言服务器。
+本地 `rocq-cats` switch 与 Linux x86-64、macOS 26 arm64 两个 CI 任务
+使用[同一份版本清单](tools/ci/toolchain.lock)，涵盖 OCaml 编译器及构建所需的
+opam 依赖。以上命令安装并核对这些版本。升级共享 switch 前先停止构建和语言服务器，
+验证升级后从本地重新生成清单，并随改动一起提交。Rocq 和 Stdlib 的发布版本
+相互独立；项目通过 `rocq-core` 约束版本，`rocq-prover` 是元包。
 所有项目命令均通过上述 switch 运行，无须更改全局 opam 选择。
 VS Code 的 `vsrocq.path` 应指向该 switch
 中的 `vsrocqtop`，并使用与 VsRocq 扩展版本匹配的 `vsrocq-language-server`。
