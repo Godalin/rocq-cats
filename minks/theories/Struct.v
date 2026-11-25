@@ -413,6 +413,10 @@ Elpi Accumulate lp:{{
     merge-levels Named {parameter-levels H} Levels,
     (header-universes Levels :- !) => (local-header H :- !) => main [str ID | Full].
 
+  main [str "#discharged", str Name] :- !,
+    coq.locate Name (indt I), coq.env.current-path Here,
+    flat-layout Here I Cs Fields,
+    find-views I Cs Fields [] Views, std.forall Views save-view.
   main [upoly-const-decl ID none Arity UD | Args] :- !,
     struct-universes UD => open-header Arity [] ID Args.
   main [A | Args] :-

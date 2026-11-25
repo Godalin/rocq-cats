@@ -263,6 +263,7 @@ Elpi File minks.flat lp:{{
     std.length TargetCs N, std.length Cs M, N < M,
     not (struct-view Source Target _ _),
     coq.gref->id (indt Source) From, view-name From Target Name,
+    coq.env.fresh-global-id Name Name,
     coq.env.current-path Here, std.append Here [Name] Path,
     std.string.concat "." Path Qualified, coq.locate-all Qualified [],
     match-layout Source Cs Fields Target TargetCs Keys Indices,
@@ -272,10 +273,10 @@ Elpi File minks.flat lp:{{
     coq.typecheck Term Ty ok,
     @univpoly! => coq.env.add-const Name Term Ty @transparent! View.
 
-  pred discover-views i:inductive, i:list component,
+  pred find-views i:inductive, i:list component,
       i:list (pair id constant), i:list struct-conversion,
       o:list struct-conversion.
-  discover-views I Cs Fields Declared Views :-
+  find-views I Cs Fields Declared Views :-
     coq.env.current-path Here,
     std.findall (flat-layout Here _ _ _) Previous,
     std.map-filter Previous
@@ -291,9 +292,7 @@ Elpi File minks.flat lp:{{
         inferred-view I Cs Fields old old-cs view,
         v = conversion I old view explicit-view)
       Outgoing,
-    std.append Outgoing Incoming Views,
-    coq.elpi.accumulate execution-site "minks.flat.db"
-      (clause _ _ (flat-layout Here I Cs Fields)).
+    std.append Outgoing Incoming Views.
 
   pred register-field i:int, i:list component, i:list (pair id constant), i:component.
   register-field Priority Cs Fs (slot Key (mixin-kind Ref) Ds) :-
@@ -476,7 +475,10 @@ Elpi File minks.flat lp:{{
       c = slot key (native-kind (ref-head (indt base))) _, std.mem Fields (pr key proj),
       v = conversion I base proj coercion-view) BaseViews,
     std.append ParentViews BaseViews Declared,
-    discover-views I Cs Fields Declared OtherViews,
+    find-views I Cs Fields Declared OtherViews,
+    coq.env.current-path Here,
+    coq.elpi.accumulate execution-site "minks.flat.db"
+      (clause _ _ (flat-layout Here I Cs Fields)),
     std.append Declared OtherViews Views,
     std.forall ParentViews register-parent-view,
     std.filter Ancestors (p\ std.mem Parents p) DirectParents,

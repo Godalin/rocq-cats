@@ -25,6 +25,15 @@ let run_minks command ~atts args =
   Elpi_plugin.Rocq_elpi_vernacular.Interp.run_program
     ~loc ["minks"; command] ~atts ~syndata:None args
 
+(* Rocq replays this local object after generalizing the record at End.
+   Elpi then sees the discharged telescope, including newly abstracted indices. *)
+let rediscover_views =
+  let obj = Libobject.local_object "MINKS_DISCHARGED_VIEWS"
+    ~cache:ignore ~discharge:(fun name -> Some name) in
+  Libobject.declare_object { obj with rebuild_function = fun name ->
+    run_minks "struct" ~atts:[] [Cmd.String "#discharged"; Cmd.String name];
+    name }
+
 let parent_argument (head, args) = match head.CAst.v with
   | Constrexpr.CSort _ when args = [] -> Cmd.Term head
   | Constrexpr.CRef (name, instance) ->
@@ -62,7 +71,7 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
   let components = Option.cata (fun entries ->
     Cmd.String "with" :: separated (Cmd.String ",") entries) [] slots in
   let args = parents @ components @ tail in
-  match binders, universes with
+  begin match binders, universes with
   | [], None -> run_minks "struct" ~atts (Cmd.String name :: args)
   | _ ->
     (* Elaborate the parent applications and mixin heads together, under
@@ -90,6 +99,8 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
     let declaration : Cmd.raw = Cmd.ConstantDecl { name = [name]; atts = [poly];
       udecl = universes; typ = (binders, Some inputs); body = None; red = None } in
     run_minks "struct" ~atts (declaration :: tokens)
+  end;
+  if Lib.sections_are_opened () then Lib.add_leaf (rediscover_views name)
 
 let record_name (name, universes) =
   let universes = Option.map (fun decl ->

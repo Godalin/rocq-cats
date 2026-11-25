@@ -271,7 +271,9 @@ square brackets.
   Compatible layouts get a named view from the
   strictly larger component set to the smaller one when the conversion
   typechecks and the name is available. Either structure can have been
-  declared first. Such inferred views are explicit.
+  declared first. At each section `End`, discovery runs again for the
+  structures being generalized, using their new parameter lists. Such
+  inferred views are explicit.
 - **Packing from a parent.** Each directly listed Minks parent gets a
   transparent `NameOfParent`. The function takes the parent first, then
   takes the components missing from that parent in `MakeName` field order.

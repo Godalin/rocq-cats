@@ -143,3 +143,45 @@ Minks.Struct Retry (a b : HasFlag)
   extends Tagged a b
   exports Extra [PairAt].
 Check RetryToExtra : ∀ a b (s : Retry a b), Extra a b (RetryToPairAt a b s).
+
+Module DischargedViews.
+Minks.Mixin Select (A : Type) := { pick : A }.
+Minks.Struct Big (Y : Type) with point : Select [Y], tag : HasFlag.
+
+(** [X] is fixed inside the section. Once abstracted, the target can take
+    the source index, and the new explicit view selects the original field. *)
+
+Section Outer.
+Variable unused : nat.
+Section Inner.
+Variable X : Type.
+Minks.Struct Tiny with point : Select [X].
+Fail Check BigToTiny.
+End Inner.
+Check BigToTiny : ∀ X, Big X → Tiny X.
+End Outer.
+Example selected (X : Type) (b : Big X)
+  : Tiny_point X (BigToTiny X b) = Big_point X b
+  := eq_refl.
+End DischargedViews.
+
+Elpi Query minks.struct lp:{{
+  coq.locate "DischargedViews.Big" (indt Big),
+  coq.locate "DischargedViews.Tiny" (indt Tiny),
+  coq.locate "DischargedViews.BigToTiny" (const View),
+  struct-view Big Tiny View explicit-view.
+}}.
+
+(** A user declaration later in the section keeps its name when Rocq
+    replays library objects during discharge. *)
+
+Module ReservedViewName.
+Minks.Mixin Select (A : Type) := { pick : A }.
+Minks.Struct Big (Y : Type) with point : Select [Y], tag : HasFlag.
+Section S.
+Variable X : Type.
+Minks.Struct Tiny with point : Select [X].
+Definition BigToTiny := true.
+End S.
+Check BigToTiny : bool.
+End ReservedViewName.
