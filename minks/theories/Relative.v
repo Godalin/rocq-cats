@@ -16,26 +16,34 @@ Elpi File minks.relative lp:{{
       (coq.error "Repeated export selection:" Key) true,
     distinct-selection Keys.
 
-  pred export-selection i:list component, i:list id,
-      o:option inductive, o:list component, o:list id.
-  export-selection Cs Selection Base Covered Keys :-
+  % Declared ancestors already have instantiated inputs and child field names.
+  % For an independent base use the same alignment as structural views.
+  pred with-export-base i:inductive, i:list component, i:option inductive,
+      i:(list component -> prop).
+  with-export-base _ _ none K :- K [].
+  with-export-base _ _ (some Base) K :-
+    parent-inputs Base _, !, close Base Covered, K Covered.
+  with-export-base Child Cs (some Base) K :-
+    std.map Cs component-key Names, stored-fields Child Names Fields,
+    struct-spec Base _ TargetCs,
+    if (match-layout Child Cs Fields Base TargetCs Keys Positions) true
+      (coq.error "Export base is not a substructure:" Base),
+    active-family Child Args,
+    std.map Positions (i\t\ std.nth i Args t) Inputs,
+    std.map Keys (k\c\ std.mem Cs c, component-key c k) Covered,
+    parent-inputs Base Inputs => K Covered.
+
+  pred export-selection i:list component, i:list id, o:option inductive, o:list id.
+  export-selection Cs Selection Base Keys :-
     distinct-selection Selection,
     std.map Cs component-key Available,
     std.partition Selection (k\ std.mem Available k) Keys Packed,
-    if (Packed = []) (Base = none, Covered = []) (
+    if (Packed = []) (Base = none) (
       if (Packed = [Name]) true
         (coq.error "Expected at most one packed export base:" Packed),
       if (coq.locate-all Name [_ | _], coq.locate Name (indt I), spec I _ _) true
         (coq.error "Unknown export parameter key or packed structure:" Name),
-      close I Covered,
-      if (std.forall Covered (c\ sigma key field-kind deps\ c = slot key field-kind deps, available-component Cs key field-kind deps)) true
-        (coq.error "Export base is not a substructure:" Name),
-      Base = some I,
-      std.map Covered component-key CoveredKeys,
-      std.forall Keys (k\
-        if (std.mem CoveredKeys k)
-          (coq.error "Export key is already supplied by the packed base:" k)
-          true)).
+      Base = some I).
 
   pred relative-layout i:list component, i:list component, i:list id,
       o:list component, o:list component.
@@ -162,7 +170,17 @@ Elpi File minks.relative lp:{{
       i:list inductive, i:list struct-conversion, i:id, i:list id,
       o:inductive, o:list id.
   generate-relative Child I Cs Parents Views Name Selection Export Parameters :-
-    export-selection Cs Selection Base Covered Selected,
+    export-selection Cs Selection Base Selected,
+    with-export-base I Cs Base (covered\
+      emit-relative Child I Cs Parents Views Name Base covered Selected Export Parameters).
+
+  pred emit-relative i:id, i:inductive, i:list component, i:list inductive,
+      i:list struct-conversion, i:id, i:option inductive, i:list component, i:list id,
+      o:inductive, o:list id.
+  emit-relative Child I Cs Parents Views Name Base Covered Selected Export Parameters :-
+    std.forall Selected (k\
+      if (contains-key k Covered)
+        (coq.error "Export key is already supplied by the packed base:" k) true),
     relative-layout Cs Covered Selected Fixed Remaining,
     declare-relative Name Base Covered Cs Fixed Remaining Export Refs Args,
     active-family Export Args => (

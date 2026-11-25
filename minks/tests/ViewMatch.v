@@ -77,3 +77,30 @@ Example recovered_pair (x y : HasFlag) (s : Tagged x y)
   := eq_refl.
 
 End LargerFirst.
+
+(** A packed export uses the same field identities and index substitution
+    as the view to its independent base, including through a rename. *)
+
+Minks.Struct TaggedAt (a b : HasFlag)
+  extends Tagged b a
+  with  chosen as choice
+  exports ExtraTag [PairAt].
+
+Check TaggedAtToExtraTag : ∀ a b (s : TaggedAt a b),
+  ExtraTag a b (TaggedAtToPairAt a b s).
+
+Example repacked_choice (a b : HasFlag) (base : PairAt b a) (t : ExtraTag a b base)
+  : TaggedAt_choice a b (TaggedAtOfExtraTag a b base t) = PairAt_chosen b a base
+  := eq_refl.
+
+Example extracted_tag (a b : HasFlag) (s : TaggedAt a b)
+  : ExtraTag_tag a b (TaggedAtToExtraTag a b s) = TaggedAt_tag a b s
+  := eq_refl.
+
+Fail Minks.Struct TwiceFixed (a b : HasFlag)
+  extends TaggedAt a b
+  exports Duplicate [PairAt, choice].
+
+Fail Minks.Struct UndeterminedBase (a b : HasFlag)
+  extends Tagged a b
+  exports MissingIndex [Phantom].

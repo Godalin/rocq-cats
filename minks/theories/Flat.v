@@ -234,6 +234,15 @@ Elpi File minks.flat lp:{{
       std.map bindings (p\i\ sigma actual\ p = pr _ actual, not (var actual),
         parameter-index symbols actual i) Positions).
 
+  % Align the target fields by registered identity, then infer its indices.
+  pred match-layout i:inductive, i:list component, i:list (pair id constant),
+      i:inductive, i:list component, o:list id, o:list int.
+  match-layout Source Cs Fields Target TargetCs Keys Positions :-
+    minks.stored-projections Target Projections,
+    std.map Projections (p\k\ sigma c\ std.mem Fields (pr k c),
+      minks.same-key (const c) p) Keys,
+    view-indices Source Cs Target TargetCs Keys Positions.
+
   pred inferred-body i:term, i:term, i:list term, i:list int,
       i:list (pair id constant), i:list id, i:constructor, o:term.
   inferred-body (prod Name Ty Body) Applied Params Positions Fields Keys K
@@ -256,10 +265,7 @@ Elpi File minks.flat lp:{{
     coq.gref->id (indt Source) From, view-name From Target Name,
     coq.env.current-path Here, std.append Here [Name] Path,
     std.string.concat "." Path Qualified, coq.locate-all Qualified [],
-    minks.stored-projections Target Projections,
-    std.map Projections (p\k\ sigma c\ std.mem Fields (pr k c),
-      minks.same-key (const c) p) Keys,
-    view-indices Source Cs Target TargetCs Keys Positions,
+    match-layout Source Cs Fields Target TargetCs Keys Positions,
     coq.env.indt Target tt _ _ _ [K] _,
     coq.env.global (indt Source) Head, coq.typecheck Head Arity ok,
     inferred-body Arity Head [] Positions Fields Keys K Term,

@@ -191,6 +191,14 @@ Module FlagB.
 Minks.Struct Single with sharedFlag : HasFlag exports SelectedFlag [].
 End FlagB.
 
+(** Equal field names and class types in separate modules do not make
+    one module's structure a packed base for the other's export. *)
+
+Fail Minks.Struct WrongBase
+  extends FlagB.Single
+  with  extraFlag : HasFlag
+  exports WrongBaseFields [FlagA.Single].
+
 Fail Minks.Inspect sharedFlag.
 Minks.Inspect FlagA.sharedFlag.
 Minks.Inspect FlagB.sharedFlag.
