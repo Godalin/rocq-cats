@@ -292,7 +292,9 @@ square brackets.
   all direct parents. With one parent it fixes that parent's entire layout;
   with zero parents it fixes zero keys. Brackets select the given keys and
   their transitive dependencies. An explicit `[]` fixes zero fields.
-  At least one component must remain after dependency closure.
+  At least one component must remain after dependency closure. An invalid
+  export rejects the whole `Minks.Struct` command, including earlier
+  exports in the same list.
 - **Packed base.** A selection can include one Minks structure whose
   field keys, mixins, and dependencies match those of the exported
   structure. A declared ancestor or a structurally contained record can

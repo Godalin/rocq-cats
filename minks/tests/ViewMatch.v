@@ -129,3 +129,17 @@ Check ScopedTaggedToPairAt : ∀ x y, ScopedTagged x y → PairAt y x.
 Example scoped_tag_after_end (x y : HasFlag) (s : ScopedTagged x y)
   : ScopedTag_tag x y (ScopedTaggedToScopedTag x y s) = ScopedTagged_tag x y s
   := eq_refl.
+
+(** A later export failure rolls back the structure and its earlier export.
+    The corrected command can reuse all the names. *)
+
+Fail Minks.Struct Retry (a b : HasFlag)
+  extends Tagged a b
+  exports Extra [PairAt], Empty [Retry].
+Fail Check Extra.
+Fail Check Retry.
+Fail Check RetryToPairAt.
+Minks.Struct Retry (a b : HasFlag)
+  extends Tagged a b
+  exports Extra [PairAt].
+Check RetryToExtra : ∀ a b (s : Retry a b), Extra a b (RetryToPairAt a b s).
