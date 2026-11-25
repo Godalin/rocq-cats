@@ -39,7 +39,7 @@ equivalences. Both support self-membership at distinct universe instances.
 
 The current local follow-up also makes `CartFct` and `CCCFct`
 complete records. Their unique parent projections are `CartFctToFct` and
-`CCCFctToCartFct`; `CartFctOfFct` and `CCCFctOfCartFct` are direct
+`CCCFctToCartFct`; `MakeCartFct` and `CCCFctOfCartFct` are direct
 constructors. `CCCFctOfFct` retains the useful fixed-functor preservation
 presentation. `IsCartF` and `IsCCCF` remain classes. `functor_*` and
 `exponential_*` identifier segments now use `fct` and `exp`, with the exact
@@ -47,7 +47,7 @@ map in [the naming guide](./Abbreviations.md). Historical class inventories
 below describe their dated baselines.
 
 当前本地后续还将 `CartFct`、`CCCFct` 改为完整记录。唯一父投影为
-`CartFctToFct`、`CCCFctToCartFct`，直接构造器为 `CartFctOfFct`、
+`CartFctToFct`、`CCCFctToCartFct`，直接构造器为 `MakeCartFct`、
 `CCCFctOfCartFct`；`CCCFctOfFct` 保留有实际用途的固定函子保持性呈现。
 `IsCartF`、`IsCCCF` 仍为类。标识符中的 `functor_*`、`exponential_*`
 词段现统一为 `fct`、`exp`，精确对照见[命名指南](./Abbreviations.md)。

@@ -492,10 +492,10 @@ End DistinctPoints.
 
 Definition wider_equivalence@{u e | u < e}
     (A : Type@{u}) (E : HasEquiv@{u e} A) (M : @HasMagma@{u e} A E)
-  : Magma@{u u e}
+  : Magma@{u e}
   := MakeMagma A E M.
 
 Definition wider_carrier@{u e | e < u}
     (A : Type@{u}) (E : HasEquiv@{u e} A) (M : @HasMagma@{u e} A E)
-  : Magma@{u u e}
+  : Magma@{u e}
   := MakeMagma A E M.

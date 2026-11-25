@@ -100,6 +100,6 @@ Definition VtxNerveCartF
       VtxPresentationCat@{x e o h p l a b _ _ _ _ _ _ _ _ _ _}
       (FctCat (Δ^op) SetCat@{u r _ _ _ _ _})
       VtxPresentationCat_HasTerminal VtxPresentationCat_HasProduct
-  := CartFctOfFct VtxNerveF VtxNerveF_IsCartF.
+  := MakeCartFct VtxNerveF VtxNerveF_IsCartF.
 
 End Cartesian.

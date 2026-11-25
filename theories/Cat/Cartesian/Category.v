@@ -74,15 +74,12 @@ Definition TerminalCart@{o h p l}
 
 Program Definition TerminalCartF@{o h p l +} (C : CartCat@{l o h p l})
   : CartFctS C TerminalCart@{o h p l}
-  :=
-  {|CartFctToFct := ConstF C (C := TerminalCart@{o h p l}) tt
-  ; isCartF :=
+  := MakeCartFct (ConstF C (C := TerminalCart@{o h p l}) tt)
     {|fct_terminal := @terminal_universal TerminalCart@{o h p l}
         (hasTerminal TerminalCart@{o h p l})
     ; fct_product X Y := @product_universal TerminalCart@{o h p l}
         (hasProduct TerminalCart@{o h p l}) tt tt
-    |}
-  |}.
+    |}.
 
 (** Each product projection preserves its component's chosen finite products. *)
 
@@ -90,14 +87,11 @@ Program Definition TerminalCartF@{o h p l +} (C : CartCat@{l o h p l})
 
 Program Definition FstCartF (C D : CartCat)
   : CartFctS (ProdCart C D) C
-  :=
-  {|CartFctToFct := π1F C D
-  ; isCartF :=
+  := MakeCartFct (π1F C D)
     {|fct_terminal := @terminal_universal C (hasTerminal C)
     ; fct_product X Y := @product_universal C (hasProduct C)
         (fst X) (fst Y)
-    |}
-  |}.
+    |}.
 
 (** The second projection uses the same componentwise construction. *)
 
@@ -105,14 +99,11 @@ Program Definition FstCartF (C D : CartCat)
 
 Program Definition SndCartF (C D : CartCat)
   : CartFctS (ProdCart C D) D
-  :=
-  {|CartFctToFct := π2F C D
-  ; isCartF :=
+  := MakeCartFct (π2F C D)
     {|fct_terminal := @terminal_universal D (hasTerminal D)
     ; fct_product X Y := @product_universal D (hasProduct D)
         (snd X) (snd Y)
-    |}
-  |}.
+    |}.
 
 (** Pair preservation witnesses using the general product-cone theorem. *)
 
@@ -121,9 +112,7 @@ Program Definition SndCartF (C D : CartCat)
 Program Definition PairCartF {S C D : CartCat}
     (F : CartFctS S C) (G : CartFctS S D)
   : CartFctS S (ProdCart C D)
-  :=
-  {|CartFctToFct := PairF F G
-  ; isCartF :=
+  := MakeCartFct (PairF F G)
     {|fct_terminal := prod_is_terminal
         (@fct_terminal S C F (hasTerminal S) (hasProduct S)
           (isCartF F))
@@ -134,8 +123,7 @@ Program Definition PairCartF {S C D : CartCat}
           (isCartF F) X Y)
         (@fct_product S D G (hasTerminal S) (hasProduct S)
           (isCartF G) X Y)
-    |}
-  |}.
+    |}.
 
 (** The single-point category is terminal up to natural isomorphism. *)
 
@@ -183,7 +171,7 @@ Defined.
 
 Definition CartCatCartCat
   : CartCat
-  := CartCatOfCat CartCatCat CartCatCat_HasTerminal CartCatCat_HasProduct.
+  := MakeCartCat CartCatCat CartCatCat_HasTerminal CartCatCat_HasProduct.
 
 (** Smaller instances are objects of larger ones. Each right-associated
     annotation uses a fresh universe instance and the object-type coercion. *)

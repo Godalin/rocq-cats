@@ -160,7 +160,7 @@ Program Definition CCCFctOfFct {C D : CCC}
     (F : Fct C D) (HF : @IsCCCF C D F)
   : CCCFct C D
   := CCCFctOfCartFct
-    (CartFctOfFct F (@ccc_isCartF C D F HF)) (@fct_exp C D F HF).
+    (MakeCartFct F (@ccc_isCartF C D F HF)) (@fct_exp C D F HF).
 
 (** The bundled identity uses the existing CCC-preservation theorem. *)
 

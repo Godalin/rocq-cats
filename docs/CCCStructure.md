@@ -34,7 +34,7 @@ complete CCC endpoints, while the underlying functor remains ordinary `Fct`.
 
 `CartFct` and `CCCFct` are complete records with the unique parent chain
 `CCCFctToCartFct` then `CartFctToFct`. The direct constructors
-`CCCFctOfCartFct` and `CartFctOfFct` retain the supplied parent and evidence;
+`CCCFctOfCartFct` and `MakeCartFct` retain the supplied parent and evidence;
 `CCCFctOfFct` exposes fixed-functor preservation evidence as the same bundle.
 `exp_cmp` names the general exponential comparison, and `fct_exp_cmp`
 is its cartesian-functor adapter. Other lowercase
@@ -42,7 +42,7 @@ functor/exponential identifier segments use `fct`/`exp`; module paths and
 `HasExponential` stay unchanged.
 
 `CartFct`、`CCCFct` 为完整记录，唯一父链经 `CCCFctToCartFct`、
-`CartFctToFct`。直接构造器 `CCCFctOfCartFct`、`CartFctOfFct` 保留给定
+`CartFctToFct`。直接构造器 `CCCFctOfCartFct`、`MakeCartFct` 保留给定
 父结构及证据，`CCCFctOfFct` 将固定函子保持性证据呈现为同一结构包。
 `exp_cmp` 命名通用指数比较，`fct_exp_cmp` 为其笛卡尔函子适配，其余小写函子／指数标识符
 词段使用 `fct`／`exp`；模块路径及 `HasExponential` 不变。
@@ -301,14 +301,14 @@ instance reuses the stored cartesian witnesses.
 `CCCFct → CartFct → Fct`；派生实例 `CCCFct_IsCCCF`
 复用保存的笛卡尔见证。
 
-`CartFctOfFct` and `CCCFctOfFct` package
+`MakeCartFct` and `CCCFctOfFct` package
 existing evidence transparently. `IdCartF`, `CompCartF`, `IdCCCF`
 and `CompCCCF` reuse the identity and composition theorems above. Clients can
 write `F X`, `fmap F f` and apply the existing comparison/curry laws directly.
 The fixed-functor interfaces remain available to general theorems and STLC
 clients; constructors do not register chosen model functors globally.
 
-`CartFctOfFct` 及 `CCCFctOfFct` 透明地
+`MakeCartFct` 及 `CCCFctOfFct` 透明地
 打包已有证据。`IdCartF`、`CompCartF`、`IdCCCF`、`CompCCCF` 复用
 上述恒等和复合定理。客户端可直接写 `F X`、`fmap F f` 并应用已有比较／
 柯里化定律。固定函子接口继续服务于一般定理和 STLC 客户端；构造器不会全局

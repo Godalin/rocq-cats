@@ -36,11 +36,9 @@ From Cats Require Import Cat.CCC.Core.
 
 Program Definition CtxCat_Cart@{b e l +} (B : Type@{b})
   : CartCat@{l b b e l}
-  :=
-  {|CartCatToCat := CtxCat@{b e l} B
-  ; hasTerminal := CtxCat_HasTerminal B
-  ; hasProduct := CtxCat_HasProduct B
-  |}.
+  := MakeCartCat (CtxCat@{b e l} B)
+      (CtxCat_HasTerminal B)
+      (CtxCat_HasProduct B).
 
 (** Add the packed function contexts to the same finite-product choices. *)
 

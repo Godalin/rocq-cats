@@ -229,11 +229,7 @@ Program Definition TyCat_HasExponential@{b e l +} (B : Type@{b})
 
 Program Definition TyCat_Cart@{b e l +} (B : Type@{b})
   : CartCat@{l b b e l}
-  :=
-  {|CartCatToCat := TyCat@{b e l} B
-  ; hasTerminal := TyCat_HasTerminal B
-  ; hasProduct := TyCat_HasProduct B
-  |}.
+  := MakeCartCat (TyCat@{b e l} B) (TyCat_HasTerminal B) (TyCat_HasProduct B).
 
 (** The type presentation extends those same products by function types. *)
 

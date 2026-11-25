@@ -27,8 +27,8 @@ Minks.Mixin IsSemigroup (S : SetC)
 
 (** 将一份广集、乘法及结合律见证平铺打包。 *)
 
-Minks.Struct Semigroup
-  extends Magma
+Minks.Struct Semigroup@{u p l}
+  extends Magma@{u p l}
   with  isSemigroup as isSemigroup : IsSemigroup.
 
 (** ** Associative Multiplication

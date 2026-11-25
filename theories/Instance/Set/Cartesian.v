@@ -17,8 +17,4 @@ From Cats Require Import
 
 Program Definition SetCat_Cart
   : CartCat
-  :=
-  {|CartCatToCat := SetCat
-  ; hasTerminal := SetCat_HasTerminal
-  ; hasProduct := SetCat_HasProduct
-  |}.
+  := MakeCartCat SetCat SetCat_HasTerminal SetCat_HasProduct.

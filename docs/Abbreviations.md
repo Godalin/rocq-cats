@@ -146,7 +146,7 @@ renamed bundles and adjunctions have consistent direct clients.
 | `FreeFunctor` | `FreeFct` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
 | `FreeFunctorChoiceN` | `FreeFctChoiceN` | [Cat/FreeObject/Adjunction.v](../theories/Cat/FreeObject/Adjunction.v) |
 | `CartesianFunctor` | `CartFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `CartesianFunctorFromPreservation` | `CartFctOfFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CartesianFunctorFromPreservation` | `MakeCartFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CCCFunctor` | `CCCFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `CCCFunctorFromPreservation` | `CCCFctOfFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `CCCFunctor_IsCCCF` | `CCCFct_IsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
@@ -1550,7 +1550,8 @@ for selected dependencies, fixed-data clients and universe boundaries.
 
 | Previous / 前名 | Current / 当前名 | Source / 源码 |
 | --- | --- | --- |
-| `Build_CartCat` | `CartCatOfCat` | [Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
+| `Build_CartCat` | `MakeCartCat` | [Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
+| `CartCatOfCat` | `MakeCartCat` | [Cartesian/Core.v](../theories/Cat/Cartesian/Core.v) |
 | `Build_CCC` | `CCCOfCartCat` | [CCC/Core.v](../theories/Cat/CCC/Core.v) |
 | `Build_Topos` | `ToposOfCCC` | [Topos/Core.v](../theories/Topos/Core.v) |
 | `Build_ETCS` | `ETCSOfTopos` | [Topos/ETCS.v](../theories/Topos/ETCS.v) |
@@ -1608,7 +1609,7 @@ and `F` suffix. No alternative spelling or extra notation is introduced.
 This local follow-up starts at `8aa3506`. `CartFct` and `CCCFct` are
 complete `Record` objects, with one stored parent each:
 `CCCFctToCartFct :> CartFct` and `CartFctToFct :> Fct`.
-`CartFctOfFct` is now the direct record constructor, replacing the old
+`MakeCartFct` is now the direct record constructor, replacing the old
 preservation adapter. `CCCFctOfCartFct` directly extends a supplied cartesian
 functor; `CCCFctOfFct` packages fixed-functor `IsCCCF` evidence. The two
 presentations share their selected cartesian witnesses by conversion.
@@ -1617,7 +1618,7 @@ structured functors are supplied explicitly, not selected by importing models.
 
 这个本地后续从 `8aa3506` 开始。`CartFct` 与 `CCCFct` 是完整 `Record`
 对象，各保存唯一父结构：`CCCFctToCartFct :> CartFct` 及
-`CartFctToFct :> Fct`。`CartFctOfFct` 现为直接记录构造器，替代旧保持性
+`CartFctToFct :> Fct`。`MakeCartFct` 现为直接记录构造器，替代旧保持性
 适配器；`CCCFctOfCartFct` 直接扩充给定笛卡尔函子，`CCCFctOfFct` 则打包
 固定函子的 `IsCCCF` 证据。两种呈现通过定义相等共享选定笛卡尔见证。
 `IsCartF`、`IsCCCF` 继续作为固定函子上的性质类；完整保结构函子须显式给出，
@@ -1648,7 +1649,8 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `CCCF` | `CCCFctToCartFct` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `cartesian_isCartF` | `isCartF` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `isCartF` | `ccc_isCartF` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `CartFctFromPreservation` | `CartFctOfFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CartFctOfFct` | `MakeCartFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
+| `CartFctFromPreservation` | `MakeCartFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CCCFctFromPreservation` | `CCCFctOfFct` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `boolean_vertex_functor_round_trip` | `boolean_vertex_fct_round_trip` | [theories/Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
 | `bundled_ccc_exponential_inverse_computes` | `bundled_ccc_exp_inverse_computes` | [tests/Computations.v](../tests/Computations.v) |

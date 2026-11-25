@@ -213,10 +213,10 @@ square brackets.
   class head is an instance at priority 1. All keys remain accessible by
   name. For example, if zero precedes one, search for a point selects zero.
   Field selection during declaration still checks for ambiguity.
-- **Universes.** The packed record is universe-polymorphic. For a native
-  carrier, its local universe levels come first in their original order,
-  with unified levels listed once. Rocq checks the generated fields and
-  infers the remaining universe levels, their order, and constraints.
+- **Universes.** Rocq declares a polymorphic record with the assembled
+  fields. A written universe binder fixes the order of its named levels
+  and supplies its constraints to Rocq. Without a binder, the levels,
+  their order and constraints are inferred as for a handwritten record.
 
 #### Ordinary parameters in headers and sections
 
@@ -322,9 +322,9 @@ square brackets.
      first key is fixed, the other keys stay explicit. These projections
      supply class arguments. Coercions to mixin classes require an explicit
      registration. Native carrier projections retain their coercion.
-- **Universes.** The interface follows the packed record's universe order
-  rule. A native carrier's local levels come first in their original
-  order. Rocq infers the remaining levels, their order, and constraints.
+- **Universes.** In a relative interface, the explicit header levels come
+  first, followed by the local levels of its fixed base in their original
+  order, with shared levels counted once. Rocq infers the remaining levels, their order, and constraints.
 - **Extraction and reassembly.** `NameToInterface` takes a packed `Name`
   and reads its exact fields. `NameOfInterface` takes the fixed parameters
   in class parameter order and then the interface value. It uses both to

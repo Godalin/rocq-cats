@@ -38,9 +38,9 @@ Minks.Mixin HasMagma (S : SetC)
 
 (** 完整原群拥有其广集及一份乘法扩充。 *)
 
-Minks.Struct Magma
-  extends SetC
-  with  hasMagma as hasMagma : HasMagma.
+Minks.Struct Magma@{u p l}
+  extends SetC@{u p}
+  with  hasMagma as hasMagma : HasMagma@{l u p}.
 
 Infix "⋅" := (@mul _ (hasMagma _))
 : algebra_scope.

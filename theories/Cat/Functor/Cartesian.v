@@ -30,7 +30,7 @@ Local Open Scope ob_scope.
 (** 将选定终对象与二元积锥保持为具有完整泛性质的锥。
     对象记号使用给定的 [TC]、[PC]，投影的推断使用同一选定积。 *)
 
-Class IsCartF {C D : Cat} (F : Fct C D)
+Minks.Mixin IsCartF {C D : Cat} (F : Fct C D)
     (TC : HasTerminal C) (PC : HasProduct C)
   :=
   { fct_terminal : is_terminal (F 1)
@@ -227,21 +227,14 @@ Qed.
 (** 函子及其对具名来源终对象和积的保持性；不要求目标具有全局选定的积。
     唯一强制转换暴露底层函子，继承的保持性证据可用于上述固定函子定理。 *)
 
-Record CartFct {C D : Cat}
+Minks.Struct CartFct {C D : Cat}
     (TC : HasTerminal C) (PC : HasProduct C)
-  := CartFctOfFct
-  { CartFctToFct :> Fct C D
-  ; isCartF :: IsCartF CartFctToFct TC PC
-  }.
+  extends Fct C D
+  with  isCartF as isCartF : IsCartF [C, D, carrier, TC, PC].
 
 Arguments CartFctToFct {_ _ _ _} _.
 Arguments isCartF {_ _ _ _} _.
-
-(** The direct constructor retains the supplied functor and evidence. *)
-
-(** 直接构造器保留给定函子及证据。 *)
-
-Arguments CartFctOfFct {_ _ _ _} _ _.
+Arguments MakeCartFct {_ _ _ _} _ _.
 
 (** The bundled identity reuses the existing preservation proof. Chosen
     functors are constructed explicitly, not selected by import. *)
@@ -251,7 +244,7 @@ Arguments CartFctOfFct {_ _ _ _} _ _.
 Program Definition IdCartF (C : Cat)
     (TC : HasTerminal C) (PC : HasProduct C)
   : @CartFct C C TC PC
-  := CartFctOfFct IdF (IdF_IsCartF C TC PC).
+  := MakeCartFct IdF (IdF_IsCartF C TC PC).
 
 (** Composition needs only the chosen source structures of its two factors.
     Its preservation evidence is the existing generic composition theorem. *)
@@ -263,6 +256,6 @@ Program Definition CompCartF {C D E : Cat}
     {TD : HasTerminal D} {PD : HasProduct D}
     (G : @CartFct D E TD PD) (F : @CartFct C D TC PC)
   : @CartFct C E TC PC
-  := CartFctOfFct (G ∘F F)
+  := MakeCartFct (G ∘F F)
       (@CompF_IsCartF C D E F G TC PC TD PD
         (isCartF F) (isCartF G)).

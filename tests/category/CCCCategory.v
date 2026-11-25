@@ -109,7 +109,7 @@ Constraint l < m.
 Constraint m < n.
 Constraint n < o.
 Context (C D : CCC@{o h p l l})
-    (F : CCCFct@{o h p l l l o h p l m n} C D).
+    (F : CCCFct@{o h p l l l m n o h p l} C D).
 
 Definition larger_proof_hom
   : (@Hom CCCCat) C D

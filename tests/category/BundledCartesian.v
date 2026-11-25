@@ -111,11 +111,7 @@ Defined.
 Program Definition TokenCCC (b : bool)
   : CCC
   :=
-  {|CCCToCartCat :=
-    {|CartCatToCat := SetCat
-    ; hasTerminal := TokenTerminal b
-    ; hasProduct := SetCat_HasProduct
-    |}
+  {|CCCToCartCat := MakeCartCat SetCat (TokenTerminal b) SetCat_HasProduct
   ; hasExponential := SetCat_HasExponential
   |}.
 

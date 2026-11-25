@@ -292,11 +292,11 @@ Definition low_eq_functors
 Definition high_eq_ccc (HT : HasTerminal C) (HP : HasProduct C)
     (HE : HasExponential HP)
   : CCC@{o h p l l}
-  := CCCOfCartCat (CartCatOfCat C HT HP) HE.
+  := CCCOfCartCat (MakeCartCat C HT HP) HE.
 Definition low_eq_ccc (HT : HasTerminal D) (HP : HasProduct D)
     (HE : HasExponential HP)
   : CCC@{o p h l l}
-  := CCCOfCartCat (CartCatOfCat D HT HP) HE.
+  := CCCOfCartCat (MakeCartCat D HT HP) HE.
 Definition high_eq_cwf
   := CwF C.
 Definition low_eq_cwf
@@ -338,6 +338,18 @@ Definition high_eq_thin
   := ThinBicat C.
 Definition low_eq_thin
   := ThinBicat D.
+(** A CCC can retain terminal evidence above its category law bound. *)
+
+(** CCC 可以保留宇宙严格高于范畴定律界的终对象见证。 *)
+
+Universe t.
+Constraint l < t.
+Example larger_terminal_witness (HT : HasTerminal@{o h p l t} C)
+    (HP : HasProduct C) (HE : HasExponential HP)
+  : Cartesian.Core.hasTerminal
+      (CCCOfCartCat (MakeCartCat C HT HP) HE : CCC@{o h p l t}) = HT
+  := eq_refl.
+
 End CategoryLevels.
 
 (** Transposition must preserve hom/equality levels in either ordering.

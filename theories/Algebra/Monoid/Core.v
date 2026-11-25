@@ -43,8 +43,8 @@ Arguments mul_unit_r {_ _ _ _} x.
 
 (** 在一个广集上平铺保存乘法、结合律和单位元。 *)
 
-Minks.Struct Monoid
-  extends Semigroup
+Minks.Struct Monoid@{u p l}
+  extends Semigroup@{u p l}
   with  hasUnit as hasUnit : HasUnit.
 
 Notation "1" := (@mul_unit _ _ (hasUnit _))

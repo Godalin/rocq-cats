@@ -581,14 +581,15 @@ let () =
       pred minks.owned-key i:(pair modpath id), o:gref.
     |};
     BuiltIn.MLCode (Pred ("minks.add-record",
-      CIn (Packed_record.declaration, "Record telescope",
+      In (BuiltInData.string, "Record name",
+      CIn (Packed_record.telescope, "Field telescope",
       Out (Rocq.inductive, "Structure",
-      Full (global, "Declare a Rocq record with stored and computed fields."))),
-      (fun decl _ ~depth:_ _ _ state ->
+      Full (global, "Declare a Rocq record with stored and computed fields.")))),
+      (fun name telescope _ ~depth:_ _ _ state ->
         if State.get Elpi_plugin.Rocq_elpi_builtins.tactic_mode state then
           error "A packed record must be declared by a command.";
-        let ind, uctx = Packed_record.declare decl in
-        Rocq.grab_global_env ~uctx state, ((), Some ind), [])),
+        let ind = Packed_record.declare ~scoped_term name (Rocq.get_sigma state) telescope in
+        Rocq.grab_global_env ~uctx:Univ.ContextSet.empty state, ((), Some ind), [])),
       BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.register-keys",
       In (Rocq.inductive, "Structure",

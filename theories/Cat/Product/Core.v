@@ -20,7 +20,7 @@ Definition is_product {C : Cat} (X Y P : C)
 
 (** 选定二元积、投影及其泛性质。 *)
 
-Class HasProduct (C : Cat)
+Minks.Mixin HasProduct (C : Cat)
   :=
   { Prod : C → C → C
   ; π1 {X Y : C} : Hom (Prod X Y) X

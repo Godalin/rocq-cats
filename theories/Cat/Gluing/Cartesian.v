@@ -96,11 +96,9 @@ Context (preserves : ∀ A B : @Ob C,
 
 Program Definition Gluing_CartCat
   : CartCat
-  :=
-  {|CartCatToCat := Gluing F
-  ; hasTerminal := Gluing_HasTerminal F
-  ; hasProduct := Gluing_HasProduct F preserves
-  |}.
+  := MakeCartCat (Gluing F)
+      (Gluing_HasTerminal F)
+      (Gluing_HasProduct F preserves).
 
 (** The base projection preserves both selected structures. *)
 

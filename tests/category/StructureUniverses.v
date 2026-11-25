@@ -26,6 +26,29 @@ From Cats Require Import
     构造模块检查不同宇宙实例间的自身成员关系；此处检查实际范畴客户端
     及选定积与逆见证的计算。 *)
 
+(** ** Stored Cartesian Preservation
+
+    Packing retains the supplied witness, and instance search on an
+    abstract bundle selects its projection for the same source choices. *)
+
+(** ** 打包的笛卡尔保持性
+
+    构造器保留给定见证。在抽象结构包上，实例搜索按同一组来源选择
+    取出其保存的投影。 *)
+
+Section StoredPreservation.
+Context {C D : Cat} (TC : HasTerminal C) (PC : HasProduct C).
+
+Example cart_fct_stored_witness (F : Fct C D) (H : IsCartF F TC PC)
+  : isCartF (MakeCartFct F H) = H
+  := eq_refl.
+
+Example cart_fct_inferred_witness (G : @CartFct C D TC PC)
+  : (ltac:(typeclasses eauto) : IsCartF G TC PC) = isCartF G
+  := eq_refl.
+
+End StoredPreservation.
+
 (** ** Cartesian Clients
 
     The stored product choice supplies ordinary pairing and its laws.
@@ -85,13 +108,10 @@ Definition Right
 
 Program Definition Change
   : CartFctS Left Right
-  :=
-  {|CartFctToFct := @IdF Left
-  ; isCartF :=
+  := MakeCartFct (@IdF Left)
     {|fct_terminal := _
     ; fct_product X Y := _
-    |}
-  |}.
+    |}.
 Next Obligation.
   intro X. exists tt. split; [exact I |]. intros f _. exact tt.
 Defined.

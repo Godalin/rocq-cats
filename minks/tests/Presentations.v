@@ -58,9 +58,9 @@ Ltac packed_fields constructor result :=
   | ?fields _ => exact (fields unit)
   end.
 
-Example same_packed_signature@{u v e +}
-  : ltac:(packed_fields @ViaExport.MakePacked@{u v e} ViaExport.Packed@{u v e})
-    = ltac:(packed_fields @ByParts.MakePacked@{u v e} ByParts.Packed@{u v e})
+Example same_packed_signature@{u e +}
+  : ltac:(packed_fields @ViaExport.MakePacked@{u e} ViaExport.Packed@{u e})
+    = ltac:(packed_fields @ByParts.MakePacked@{u e} ByParts.Packed@{u e})
   := eq_refl.
 
 (** Both constructors take the same arguments in the same positions.

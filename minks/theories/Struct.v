@@ -410,8 +410,7 @@ Elpi Accumulate lp:{{
   open-header (arity Body) Rev ID Args :-
     std.rev Rev H, scoped-args Args Body Full,
     struct-universes (upoly-decl Named _ _ _),
-    merge-levels Named {parameter-levels H} Levels,
-    (header-universes Levels :- !) => (local-header H :- !) => main [str ID | Full].
+    (header-universes Named :- !) => (local-header H :- !) => main [str ID | Full].
 
   main [str "#discharged", str Name] :- !,
     coq.locate Name (indt I), coq.env.current-path Here,

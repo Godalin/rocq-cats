@@ -234,10 +234,8 @@ Next Obligation. apply psh_exp_universal. Defined.
 Program Definition Psh_CCC@{o h e l u +} (C : Cat@{o h e l l})
   : CCC
   :=
-  {|CCCToCartCat :=
-    {|CartCatToCat := FctCat (C^op) SetCat@{u u _ _ _ _ _}
-    ; hasTerminal := @FctCat_HasTerminal _ _ SetCat_HasTerminal
-    ; hasProduct := @FctCat_HasProduct _ _ SetCat_HasProduct
-    |}
+  {|CCCToCartCat := MakeCartCat (FctCat (C^op) SetCat@{u u _ _ _ _ _})
+      (@FctCat_HasTerminal _ _ SetCat_HasTerminal)
+      (@FctCat_HasProduct _ _ SetCat_HasProduct)
   ; hasExponential := Psh_HasExponential C
   |}.

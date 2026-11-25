@@ -27,7 +27,7 @@ Definition is_terminal {C : Cat} (T : C)
     其在 [X] 处的箭头，记为 [!]；对象记为 [1]。读取这些箭头直接使用已提供的
     见证，不需要额外的选择原理。 *)
 
-Class HasTerminal (C : Cat)
+Minks.Mixin HasTerminal (C : Cat)
   :=
   (** [Term] selects the terminal object. *)
 

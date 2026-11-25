@@ -23,15 +23,11 @@ From Cats Require Import
 
 Program Definition CodiscreteCart@{o h p l} (X : Type@{o}) (x : X)
   : CartCat@{l o h p l}
-  :=
-  {|CartCatToCat := CodiscreteCat@{o h p l} X
-  ; hasTerminal := {|Term := x|}
-  ; hasProduct :=
-    {|Prod _ _ := x
-    ; π1 _ _ := tt
-    ; π2 _ _ := tt
-    |}
-  |}.
+  := MakeCartCat (CodiscreteCat@{o h p l} X) {|Term := x|}
+      {|Prod _ _ := x
+      ; π1 _ _ := tt
+      ; π2 _ _ := tt
+      |}.
 Next Obligation.
   intro Y. exists tt. split; [exact I |]. intros f _. exact tt.
 Defined.
@@ -47,8 +43,6 @@ Defined.
 
 Program Definition ProdCart (C D : CartCat)
   : CartCat
-  :=
-  {|CartCatToCat := C ×C D
-  ; hasTerminal := ProdCat_HasTerminal (hasTerminal C) (hasTerminal D)
-  ; hasProduct := ProdCat_HasProduct (hasProduct C) (hasProduct D)
-  |}.
+  := MakeCartCat (C ×C D)
+      (ProdCat_HasTerminal (hasTerminal C) (hasTerminal D))
+      (ProdCat_HasProduct (hasProduct C) (hasProduct D)).

@@ -330,16 +330,6 @@ Elpi File minks.flat lp:{{
     std.rev Reversed Levels.
   head-levels _ [].
 
-  % Keep the levels of native field heads in their original order.
-  pred layout-levels i:list component, i:record-decl, o:list univ.variable.
-  layout-levels [] end-record [].
-  layout-levels [C | Cs] (field _ _ Ty Body) Levels :-
-    if (C = slot _ (native-kind sort-head) [], coq.reduction.lazy.whd Ty (sort (typ U)),
-        not (coq.univ.global? U), coq.univ.variable U L) (Current = [L])
-      (if (C = slot _ (native-kind _) _) (head-levels Ty Current) (Current = [])),
-    pi x\ layout-levels Cs (Body x) Rest,
-    std.filter Rest (l\ not (std.mem Current l)) New, std.append Current New Levels.
-
   % Abstract the native head's own telescope, independently of the first use.
   pred unused-binder i:id, i:list id, o:id.
   unused-binder Name Used Key :-
@@ -390,12 +380,6 @@ Elpi File minks.flat lp:{{
     coq.id->name Name N, copy Ty Domain,
     pi x\ (copy Var x :- !) => abstract-term H T (Tail x).
 
-  pred parameter-levels i:list header-binder, o:list univ.variable.
-  parameter-levels H Levels :-
-    abstract-term H {{ Prop }} T, coq.univ.variable.of-term T Set,
-    coq.univ.variable.set.elements Set All,
-    std.filter All (l\ sigma u\ coq.univ.variable u l, not (coq.univ.global? u)) Levels.
-
   pred merge-levels i:list univ.variable, i:list univ.variable, o:list univ.variable.
   merge-levels First Rest Levels :-
     std.filter Rest (l\ not (std.mem First l)) New, std.append First New Levels.
@@ -444,19 +428,13 @@ Elpi File minks.flat lp:{{
       o:inductive, o:list term.
   declare-packed N Parents Cs Names I Args :- @keep-alg-univs! ==>
     fields N Cs Names [] Body,
-    {{ Set }} = sort Ground, field-sorts Body Ground Sort,
-    Ctor is "Make" ^ N, Decl = inductive N tt (arity (sort Sort)) Constructors,
-    (pi self\ sigma ty\ field-telescope Parents Cs Body [] self ty,
-      Constructors self = [constructor Ctor (arity ty)]),
     local-header H, std.map H (b\x\ b = binder _ _ _ x) Args,
-    if (H = []) (Bound = Decl) (bind-header H Decl Bound),
-    std.assert-ok! (coq.typecheck-indt-decl Bound) ("Ill-typed structure " ^ N),
-    if (struct-universes (upoly-decl Vs LV Cs0 LC))
-      (if (LV = tt) (header-universes Ordered) (Ordered = Vs),
-       @udecl! Ordered LV Cs0 LC => minks.add-record Bound I)
-      (layout-levels Cs Body Levels, @udecl! Levels tt [] tt => minks.add-record Bound I),
+    field-telescope Parents Cs Body [] {{ Prop }} Telescope,
+    abstract-term H Telescope Bound,
+    minks.add-record N Bound I,
     if (H = []) true (
-      header-kinds H Kinds,
+      header-kinds H Kinds, coq.env.indt I tt _ _ _ [Ctor] _,
+      set-header-kinds (indc Ctor) Kinds,
       minks.stored-projections I Projections,
       std.forall Projections (p\ @global! => coq.arguments.set-implicit p [Kinds])).
 

@@ -343,9 +343,9 @@ are generalized under \ttt{Set Universe Polymorphism} and fixed under
 \ttt{Unset Universe Polymorphism}.
 
 \rdefn{Struct-Univ}. The packed record and its views are universe-polymorphic.
-With no binder, generalize inferred levels and constraints. For the native
-parent shorthand, take the native type's local levels in declared order,
-unified levels once, followed by the remaining inferred levels.
+Rocq checks the assembled record with the written universe declaration.
+With no binder, its fields determine the generalized levels, their order and
+constraints by the ordinary Rocq record rule.
 \rdefn{Univ-Assemble}. Check all parents, merged fields, shared witnesses
 and result sorts in one compatible universe context. Distinct uses may
 instantiate a polymorphic constant independently. Each selection candidate

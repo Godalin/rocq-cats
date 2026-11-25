@@ -113,8 +113,8 @@ Fail Minks.Mixin ReversedLargeValue@{u e x | x < u} (A : Type@{u}) (X : Type@{x}
 
 (** ** Universe order with an existing carrier record
 
-    Keep the two levels of a native carrier record in their declared order.
-    A new family on that carrier adds its own level after those two. *)
+    Compare the family and carrier levels at strict sizes. Rocq infers
+    the family level first in the complete record. *)
 
 Record FixedCarrier@{u e}
   :=
@@ -161,19 +161,19 @@ Minks.Struct FixedPointFamily
           HasFixedFamilyOnPointed [FixedPointed].
 
 Definition fixed_carrier_levels@{u e i | u < e, e < i}
-    (S : FixedPointFamily@{u e i})
+    (S : FixedPointFamily@{i u e})
   : FixedCarrier@{u e}
   := FixedPointFamilyToFixedCarrier S.
 
 Definition fixed_parent_levels@{u e i | e < u, u < i}
-    (S : FixedPointFamily@{u e i})
+    (S : FixedPointFamily@{i u e})
   : FixedPointed@{u e}
   := FixedPointFamilyToFixedPointed S.
 
 (** The relative interface preserves the independent family level. *)
 
 Definition fixed_export_levels@{u e i | i < u, u < e}
-    (S : FixedPointFamily@{u e i})
+    (S : FixedPointFamily@{i u e})
   : HasFixedFamilyChoice@{u e i}
       (FixedPointFamilyToFixedCarrier S) (FixedPointFamily_hasFixedPoint S)
   := FixedPointFamilyToHasFixedFamilyChoice S.
@@ -181,7 +181,7 @@ Definition fixed_export_levels@{u e i | i < u, u < e}
 (** A packed base preserves its carrier levels and the separate family level. *)
 
 Definition packed_export_levels@{u e i | i < u, u < e}
-    (S : FixedPointFamily@{u e i})
+    (S : FixedPointFamily@{i u e})
   : HasFixedFamilyOnPointed@{u e i} (FixedPointFamilyToFixedPointed S)
   := FixedPointFamilyToHasFixedFamilyOnPointed S.
 
@@ -218,6 +218,70 @@ Definition fixed_shared_level@{u} (S : FixedSameLevel@{u})
   : FixedCarrier@{u u}
   := FixedSameLevelToFixedCarrier S.
 
+(** A native family and a chosen family of witnesses share two lower
+    bounds. Projecting the native family from an unannotated bundle must
+    still accept a strictly larger witness bound. *)
+
+Module IndependentFieldBound.
+
+Record Family@{h p l | h <= l, p <= l}
+  := { index : Type@{h}
+     ; relation : index -> index -> Type@{p}
+     ; fiber : index -> Type@{l} }.
+
+Minks.Mixin HasChoice@{h p l t | h <= l, p <= l, h <= t, p <= t, Set <= t}
+    (A : Family@{h p l})
+  := { choice : index A -> Type@{t} }.
+
+Minks.Struct ChosenFamily
+  extends Family
+  with  chosen : HasChoice.
+
+Definition underlying (F : ChosenFamily)
+  := ChosenFamilyToFamily F.
+
+Example larger_choice_bound@{h p l t | h < p, p < l, l < t}
+    (A : Family@{h p l}) (W : HasChoice@{h p l t} A)
+  : underlying (MakeChosenFamily A W) = A
+  := eq_refl.
+
+(** The same fields in a handwritten record have the same positional
+    universe interface, including the independent witness bound. *)
+
+Record NativeChosenFamily :=
+  { native_base : Family
+  ; native_choice : HasChoice native_base
+  ; _ := MakeFamilyCarrier native_base }.
+
+Definition compare_inferred_bounds@{t h p l | h < p, p < l, l < t}
+    (F : ChosenFamily@{t h p l})
+  : NativeChosenFamily@{t h p l}
+  := Build_NativeChosenFamily (ChosenFamilyToFamily F) (ChosenFamily_chosen F).
+
+Fail Record ConflictingNative@{h p l t | l < h} :=
+  { rejected_base : Family@{h p l}
+  ; rejected_choice : HasChoice@{h p l t} rejected_base }.
+
+Fail Minks.Struct Conflicting@{h p l t | l < h}
+  extends Family@{h p l}
+  with  rejectedChoice : HasChoice@{h p l t}.
+
+(** A closed constraint list is used as written. Omitting [Set <= t]
+    lets Rocq minimize the two bounds in this unannotated client. *)
+
+Minks.Struct ClosedFamily@{h p l t | h <= l, p <= l, h <= t, p <= t}
+  extends Family@{h p l}
+  with  closedChoice : HasChoice@{h p l t}.
+
+Definition closed_underlying (F : ClosedFamily)
+  := ClosedFamilyToFamily F.
+
+Fail Definition closed_larger_bound@{h p l t | h < p, p < l, l < t}
+    (A : Family@{h p l}) (W : HasChoice@{h p l t} A)
+  := closed_underlying (MakeClosedFamily A W).
+
+End IndependentFieldBound.
+
 (** With universe polymorphism disabled, inferred levels are fixed. *)
 
 Unset Universe Polymorphism.
@@ -236,6 +300,15 @@ Check NamedIndex@{Set} nat.
 Fail Minks.Struct TooFewLevels@{} (A : Type).
 Minks.Struct OpenLevels@{u +} (A : Type@{u}) (B : Type).
 Check OpenLevels@{Set Set} nat nat.
+
+(** A constraint written only in the header restricts later applications,
+    even when neither field nor parent imposes it. *)
+
+Record NativeOrdered@{u v | u < v} (A : Type@{u}) (B : Type@{v}) := {}.
+Minks.Struct Ordered@{u v | u < v} (A : Type@{u}) (B : Type@{v}).
+
+Fail Check NativeOrdered@{Set Set}.
+Fail Check Ordered@{Set Set}.
 
 Minks.Struct NamedCarrier@{u}
   extends Type@{u}.

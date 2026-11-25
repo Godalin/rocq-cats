@@ -41,8 +41,8 @@ Arguments mul_inv_r {_ _ _ _ _} x.
 
 (** 将一份广集及其乘法、结合律、单位元和逆元平铺保存。 *)
 
-Minks.Struct Group
-  extends Monoid
+Minks.Struct Group@{u p l}
+  extends Monoid@{u p l}
   with  hasInverse as hasInverse : HasInverse.
 
 Notation "x '⁻¹'" := (@inv _ _ _ (hasInverse _) x)

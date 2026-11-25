@@ -60,7 +60,15 @@ let slot_type (head, deps) =
     | _ -> CErrors.user_err (Pp.str "Expected a mixin reference.") in
   [Cmd.String ":"; mixin] @ Option.cata (bracketed ident_arg) [] deps
 
+let record_name (name, universes) =
+  let universes = Option.map (fun decl ->
+    let open UState in
+    { decl with univdecl_instance = List.map (fun level -> level, None) decl.univdecl_instance }
+  ) universes in
+  name, universes
+
 let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
+  let header = record_name (name, universes), binders in
   let name = Names.Id.to_string name.CAst.v in
   let parents = match parents with
     | None -> []
@@ -71,7 +79,7 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
   let components = Option.cata (fun entries ->
     Cmd.String "with" :: separated (Cmd.String ",") entries) [] slots in
   let args = parents @ components @ tail in
-  begin match binders, universes with
+  let assemble () = match binders, universes with
   | [], None -> run_minks "struct" ~atts (Cmd.String name :: args)
   | _ ->
     (* Elaborate the parent applications and mixin heads together, under
@@ -98,26 +106,9 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
         [CAst.make ("polymorphic", Attributes.VernacFlagEmpty)]) in
     let declaration : Cmd.raw = Cmd.ConstantDecl { name = [name]; atts = [poly];
       udecl = universes; typ = (binders, Some inputs); body = None; red = None } in
-    run_minks "struct" ~atts (declaration :: tokens)
-  end;
+    run_minks "struct" ~atts (declaration :: tokens) in
+  Packed_record.with_header header assemble ();
   if Lib.sections_are_opened () then Lib.add_leaf (rediscover_views name)
-
-let record_name (name, universes) =
-  let universes = Option.map (fun decl ->
-    let open UState in
-    { decl with univdecl_instance = List.map (fun level -> level, None) decl.univdecl_instance }
-  ) universes in
-  name, universes
-
-(* Record.definition_structure leaves definition locations to its caller. *)
-let dump_mixin { Record.Ast.name; cfs; idbuild } =
-  Dumpglob.dump_definition name false "class";
-  Dumpglob.dump_definition idbuild false "constr";
-  List.iter (fun (field, _, _) ->
-    match field with
-    | Vernacexpr.AssumExpr (name, _, _)
-    | Vernacexpr.DefExpr (name, _, _, _) ->
-      Dumpglob.dump_constraint name false "proj") cfs
 
 let declare_mixin ~atts decl parents =
   let parents = List.map (fun p ->
@@ -125,17 +116,8 @@ let declare_mixin ~atts decl parents =
     Nametab.locate name, levels, args) parents in
   let decl, roles, witnesses =
     Mixin_parameters.add_to_declaration parents decl in
-  let kind = Vernacexpr.Class true in
-  let open Vernacentries.Preprocessed_Mind_decl in
-  let reference =
-    match Vernacentries.preprocess_inductive_decl ~atts kind [decl] with
-    | Record { flags; udecl; kind; primitive_proj; records } ->
-      if Dumpglob.dump () then List.iter dump_mixin records;
-      (match Record.definition_structure ~flags udecl kind ~primitive_proj records with
-       | [reference] -> reference
-       | _ -> CErrors.anomaly Pp.(str "Expected exactly one mixin declaration."))
-    | Inductive _ -> CErrors.user_err Pp.(str "Expected a mixin with a record body.")
-  in
+  let reference = Names.GlobRef.IndRef
+      (Packed_record.declare_native ~atts (Vernacexpr.Class true) decl) in
   let name = Libnames.string_of_path (Nametab.path_of_global reference) in
   let ref_arg r = Cmd.String (Libnames.string_of_path (Nametab.path_of_global r)) in
   let role_args = function
