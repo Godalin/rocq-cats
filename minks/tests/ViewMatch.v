@@ -104,3 +104,28 @@ Fail Minks.Struct TwiceFixed (a b : HasFlag)
 Fail Minks.Struct UndeterminedBase (a b : HasFlag)
   extends Tagged a b
   exports MissingIndex [Phantom].
+
+(** Section assumptions and header parameters can determine indices together.
+    Only the header parameters are applied before the section closes. *)
+
+Section ScopedIndices.
+Context (unused : nat) (x : HasFlag).
+
+Minks.Struct ScopedTagged (y : HasFlag)
+  extends Tagged y x
+  exports ScopedTag [PairAt].
+
+Check ScopedTaggedToPairAt : ∀ y, ScopedTagged y → PairAt y x.
+Check ScopedTaggedToScopedTag : ∀ y (s : ScopedTagged y),
+  ScopedTag y (ScopedTaggedToPairAt y s).
+
+Fail Minks.Struct ScopedPhantom (y : HasFlag)
+  extends Tagged y x
+  exports GuessIndex [Phantom].
+End ScopedIndices.
+
+Check ScopedTagged : HasFlag → HasFlag → Type.
+Check ScopedTaggedToPairAt : ∀ x y, ScopedTagged x y → PairAt y x.
+Example scoped_tag_after_end (x y : HasFlag) (s : ScopedTagged x y)
+  : ScopedTag_tag x y (ScopedTaggedToScopedTag x y s) = ScopedTagged_tag x y s
+  := eq_refl.

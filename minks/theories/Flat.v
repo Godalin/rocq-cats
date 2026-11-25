@@ -218,8 +218,8 @@ Elpi File minks.flat lp:{{
     std.map Actual (pattern-term Source) Terms, Patterns = Terms.
 
   pred view-indices i:inductive, i:list component, i:inductive, i:list component, i:list id,
-      o:list int.
-  view-indices Source Cs Target Hs Aligned Positions :-
+      o:list argument-ref.
+  view-indices Source Cs Target Hs Aligned Indices :-
     current-layout Source 0 Cs Names SourceCs,
     current-layout Target 0 Hs Formals TargetCs,
     std.map Names parameter-key SourceKeys, std.map Formals parameter-key TargetKeys,
@@ -232,26 +232,26 @@ Elpi File minks.flat lp:{{
       std.append bindings common target,
       std.forall2 TargetCs Aligned (match-descriptor env target SourceCs),
       std.map bindings (p\i\ sigma actual\ p = pr _ actual, not (var actual),
-        parameter-index symbols actual i) Positions).
+        parameter-ref symbols actual i) Indices).
 
   % Align the target fields by registered identity, then infer its indices.
   pred match-layout i:inductive, i:list component, i:list (pair id constant),
-      i:inductive, i:list component, o:list id, o:list int.
-  match-layout Source Cs Fields Target TargetCs Keys Positions :-
+      i:inductive, i:list component, o:list id, o:list argument-ref.
+  match-layout Source Cs Fields Target TargetCs Keys Indices :-
     minks.stored-projections Target Projections,
     std.map Projections (p\k\ sigma c\ std.mem Fields (pr k c),
       minks.same-key (const c) p) Keys,
-    view-indices Source Cs Target TargetCs Keys Positions.
+    view-indices Source Cs Target TargetCs Keys Indices.
 
-  pred inferred-body i:term, i:term, i:list term, i:list int,
+  pred inferred-body i:term, i:term, i:list term, i:list argument-ref,
       i:list (pair id constant), i:list id, i:constructor, o:term.
-  inferred-body (prod Name Ty Body) Applied Params Positions Fields Keys K
+  inferred-body (prod Name Ty Body) Applied Params Indices Fields Keys K
       (fun Name Ty Rest) :- !,
-    pi x\ inferred-body (Body x) Applied {std.append Params [x]} Positions
+    pi x\ inferred-body (Body x) Applied {std.append Params [x]} Indices
       Fields Keys K (Rest x).
-  inferred-body _ Head Params Positions Fields Keys K (fun `child` Ty Body) :-
+  inferred-body _ Head Params Indices Fields Keys K (fun `child` Ty Body) :-
     coq.mk-app Head Params Ty,
-    std.map Positions (i\t\ std.nth i Params t) Actuals,
+    std.map Indices (parameter-term Params) Actuals,
     coq.env.global (indc K) Make, coq.mk-app Make Actuals Ctor,
     std.map Keys (key\p\ sigma c proj\ std.mem Fields (pr key c),
       coq.env.global (const c) proj, coq.mk-app proj Params p) Projections,
@@ -265,10 +265,10 @@ Elpi File minks.flat lp:{{
     coq.gref->id (indt Source) From, view-name From Target Name,
     coq.env.current-path Here, std.append Here [Name] Path,
     std.string.concat "." Path Qualified, coq.locate-all Qualified [],
-    match-layout Source Cs Fields Target TargetCs Keys Positions,
+    match-layout Source Cs Fields Target TargetCs Keys Indices,
     coq.env.indt Target tt _ _ _ [K] _,
     coq.env.global (indt Source) Head, coq.typecheck Head Arity ok,
-    inferred-body Arity Head [] Positions Fields Keys K Term,
+    inferred-body Arity Head [] Indices Fields Keys K Term,
     coq.typecheck Term Ty ok,
     @univpoly! => coq.env.add-const Name Term Ty @transparent! View.
 

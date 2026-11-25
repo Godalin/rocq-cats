@@ -95,11 +95,18 @@ Elpi File minks.spec lp:{{
     parameter-index Vars X M,
     N is M + 1.
 
-  pred argument-ref-of i:list term, i:term, o:argument-ref.
-  argument-ref-of Vars A (position I) :- parameter-index Vars A I, !.
-  argument-ref-of _ (global (const C)) (section-ref C) :-
-    coq.env.section-variables Cs, std.mem Cs C, !.
+  % A binder inside an open section is referenced directly until discharge.
+  pred parameter-ref i:list term, i:term, o:argument-ref.
+  parameter-ref Vars A (position I) :- parameter-index Vars A I, !.
+  parameter-ref _ (global (const C)) (section-ref C) :-
+    coq.env.section-variables Cs, std.mem Cs C.
 
+  pred parameter-term i:list term, i:argument-ref, o:term.
+  parameter-term Vars (position I) T :- std.nth I Vars T.
+  parameter-term _ (section-ref C) (global (const C)).
+
+  pred argument-ref-of i:list term, i:term, o:argument-ref.
+  argument-ref-of Vars A Ref :- parameter-ref Vars A Ref, !.
   argument-ref-of Vars T (projection-ref C Refs) :-
     projection-app T C Args, !, std.map Args (argument-ref-of Vars) Refs.
   argument-ref-of Vars T (host-ref Expr Refs) :-

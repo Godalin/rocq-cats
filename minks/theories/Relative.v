@@ -26,10 +26,10 @@ Elpi File minks.relative lp:{{
   with-export-base Child Cs (some Base) K :-
     std.map Cs component-key Names, stored-fields Child Names Fields,
     struct-spec Base _ TargetCs,
-    if (match-layout Child Cs Fields Base TargetCs Keys Positions) true
+    if (match-layout Child Cs Fields Base TargetCs Keys Indices) true
       (coq.error "Export base is not a substructure:" Base),
     active-family Child Args,
-    std.map Positions (i\t\ std.nth i Args t) Inputs,
+    std.map Indices (parameter-term Args) Inputs,
     std.map Keys (k\c\ std.mem Cs c, component-key c k) Covered,
     parent-inputs Base Inputs => K Covered.
 
