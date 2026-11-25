@@ -69,12 +69,9 @@ The `RenamedKeys` module checks both orders of the ring diamond, competing
 explicit renames, a packed-base export after a second rename, retired-key
 rejection and persistence after section discharge. [AlgebraChecks.v](../../tests/AlgebraChecks.v)
 
-## Planned syntax
-
-- [ ] Let `extends @Parent A x` supply all ordinary parameters positionally,
-  including implicit ones, in declaration order. With binders
-  `{A : Type} (x : A)` this corresponds to `extends Parent (A := A) x`.
-  Minks supplies any intervening inherited witnesses.
+[Commands.v](../../tests/Commands.v) checks positional `@Parent` applications,
+shared and extra witness positions, explicit and implicit class parameters,
+and Rocq's generalization of a free index in an anonymous instance binder.
 
 ## Proof obligations and research directions
 

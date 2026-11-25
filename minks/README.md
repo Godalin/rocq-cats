@@ -67,7 +67,10 @@ Minks.Mixin Name binders
 - **Declaration.** The command defines a Rocq typeclass and records its
   direct parent mixins, ordinary parameters, and the arguments of each
   inherited witness. The body uses Rocq class fields and their usual
-  attributes.
+  attributes. Both commands accept Rocq's backtick class binders, including
+  implicit braces and explicit parentheses. Rocq names anonymous instances
+  and generalizes eligible free indices. All of these are ordinary header
+  parameters, even when the class itself is a registered mixin.
 - **Parent applications.** Each parent must be a registered mixin or a
   relative interface exported by `Minks.Struct`. Declare
   the child's ordinary parameters in its header or the enclosing section.
@@ -79,7 +82,9 @@ Minks.Mixin Name binders
   and implicit ordinary arguments by name, as in
   `Parent (A := option A) (fun x => x)`. The child uses the explicitness of its own
   binders at call sites. `extends` accepts these parent applications with
-  optional universe instances. `@Parent` is unsupported.
+  optional universe instances. In `extends @Parent A x`, pass every
+  ordinary parameter by position, including implicit ones. Inherited
+  witnesses are still supplied by Minks and take no argument here.
 - **Inherited witnesses.** Minks inserts the direct and transitive parent
   witnesses as implicit typeclass parameters. Read parents from left to right. Repeating a direct
   parent and reaching it through several paths both share one compatible
@@ -141,6 +146,10 @@ square brackets.
 
 #### Fields and dependencies
 
+- **Parent arguments.** Use `extends @Parent A x` to pass all parameters
+  of a packed or native parent positionally, including implicit ones.
+  For example, `@CartFct C D TC PC` supplies both categories followed by
+  the chosen terminal object and binary products of the source.
 - **Parent layout.** A registered Minks parent contributes its instantiated
   fields. The first use of a native head `B` generates a Minks record
   `BCarrier` in the current module and registers it by Rocq identity.

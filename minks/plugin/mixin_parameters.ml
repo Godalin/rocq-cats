@@ -89,11 +89,15 @@ let in_module path predicate conversion input ~depth target =
       | Ok term -> term
       | Error msg -> error ("Could not read qualified Minks metadata: " ^ msg)) ()
 
+type parent_arguments =
+  | Regular of (constr_expr * explicitation CAst.t option) list
+  | Explicit of constr_expr list
+
 let read_parent parent =
   match parent.CAst.v with
-  | CRef (name, instance) -> name, instance, []
-  | CApp ({ CAst.v = CRef (name, instance); _ }, args) -> name, instance, args
-  | CAppExpl _ -> error "Pass ordinary mixin parameters without @ in extends."
+  | CRef (name, instance) -> name, instance, Regular []
+  | CApp ({ CAst.v = CRef (name, instance); _ }, args) -> name, instance, Regular args
+  | CAppExpl ((name, instance), args) -> name, instance, Explicit args
   | _ -> error "Expected a parent mixin applied to its ordinary parameters."
 
 let qualify reference = Libnames.qualid_of_path (Nametab.path_of_global reference)
@@ -224,13 +228,18 @@ let add_dependency env sigma reserved dependencies reference instance arguments 
     { key; selection = Witness reference; arguments; instance; parameter; shared = false } :: dependencies, name
   | _ -> error "More than one selected component matches an inherited mixin."
 
-let read_arguments args =
-  List.partition_map (fun (term, explicit) ->
-    match Option.map (fun arg -> arg.CAst.v) explicit with
-    | None -> Either.Left term
-    | Some (ExplByName key) -> Either.Right (key, term)
-    | Some (ExplByPos _) -> error "Supply an implicit ordinary parameter by name."
-  ) args
+let read_arguments reference = function
+  (* With @ every ordinary slot takes the next positional argument. *)
+  | Explicit args -> args, [], []
+  | Regular args ->
+    let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
+    let positional, named = List.partition_map (fun (term, explicit) ->
+      match Option.map (fun arg -> arg.CAst.v) explicit with
+      | None -> Either.Left term
+      | Some (ExplByName key) -> Either.Right (key, term)
+      | Some (ExplByPos _) -> error "Supply an implicit ordinary parameter by name."
+    ) args in
+    positional, named, implicits
 
 let take_argument kind ann positional named =
   let binder = Context.binder_name ann in
@@ -254,8 +263,7 @@ let struct_arguments qid args =
   let reference = Nametab.global qid in
   let env = Global.env () in
   let ty, _ = Typeops.type_of_global_in_context env reference in
-  let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
-  let positional, named = read_arguments args in
+  let positional, named, implicits = read_arguments reference args in
   let rec collect env ty statuses positional named =
     match Constr.kind (Reduction.whd_all env ty) with
     | Prod (ann, domain, body) ->
@@ -428,13 +436,11 @@ let rec reserve_actual_names () names expr =
   Constrexpr_ops.fold_constr_expr_with_binders (fun _ () -> ())
     reserve_actual_names () names expr
 
-let inheritance universes ordinary own field_names parents =
+let inheritance universes header own field_names parents =
   let env = Global.env () in
   let sigma, _, _ = Constrintern.interp_cumul_univ_decl_opt env universes in
-  let header = List.map (fun (_, (binder, _)) -> binder) ordinary in
   let inherit_parent (dependencies, reserved, views, uses) (reference, syntax_instance, args) (roles, combination) =
-    let positional, named = read_arguments args in
-    let implicits = Impargs.select_stronger_impargs (Impargs.implicits_of_global reference) in
+    let positional, named, implicits = read_arguments reference args in
     let ty, context = Typeops.type_of_global_in_context env reference in
     let scope = header @ List.rev_map (fun d -> d.parameter.binder) dependencies @
       List.rev views in
@@ -492,14 +498,17 @@ let inheritance universes ordinary own field_names parents =
   let checks = check_parent_uses reserved field_names dependencies (List.rev uses) in
   List.rev dependencies, List.rev views @ checks
 
-let ordinary_parameters binders =
-  List.concat_map (function
-    | CLocalAssum (names, relevance, Default kind, ty) ->
-      List.map (fun name ->
-        (name.CAst.v, (CLocalAssum ([name], relevance, Default kind, ty), Value))
-      ) names
-    | _ -> error "Mixin value parameters must be ordinary binders."
-  ) binders
+(* Rocq assigns names to anonymous class binders and can generalize several
+   ordinary parameters from a single binder. Read that telescope for metadata
+   and name reservation; pass the original binders to the native declaration. *)
+let parameter_names universes binders =
+  List.iter (function CLocalAssum _ -> ()
+    | _ -> error "Expected a parameter binder in the declaration header.") binders;
+  let env = Global.env () in
+  let sigma, _, _ = Constrintern.interp_cumul_univ_decl_opt env universes in
+  let _, context = Constrintern.intern_context env ~bound_univs:(Evd.universe_binders sigma)
+      Constrintern.empty_internalization_env binders in
+  List.rev_map (fun (name, _, _, _, _) -> name) context
 
 (* Elaborate the telescope with all ordinary inputs in scope. Rocq resolves
    the dependencies inside notations, implicit applications and projections.
@@ -507,7 +516,7 @@ let ordinary_parameters binders =
 let parameter_references universes ordinary inherited =
   let env = Global.env () in
   let sigma, _, _ = Constrintern.interp_cumul_univ_decl_opt env universes in
-  let binders = List.map (fun (_, (binder, _)) -> binder) ordinary @
+  let binders = ordinary @
     List.map (fun d -> d.parameter.binder) inherited in
   let sigma, (_, ((env, ctx), _, _)) =
     Constrintern.interp_named_context_evars env sigma binders in
@@ -536,8 +545,9 @@ let order_witnesses references inherited =
 
 let add_to_declaration parents decl =
   let ((name, (binders, extra), sort, fields), notations) = decl in
-  let ordinary = ordinary_parameters binders in
-  let own = List.fold_left (fun set (name, _) ->
+  let _, (_, universes) = name in
+  let ordinary = parameter_names universes binders in
+  let own = List.fold_left (fun set name ->
     match name with Name id -> Id.Set.add id set | Anonymous -> set
   ) Id.Set.empty ordinary in
   let visible = Id.Set.union own (Environ.ids_of_named_context_val
@@ -550,18 +560,17 @@ let add_to_declaration parents decl =
         match field_name.CAst.v with
         | Name id -> Id.Set.add id names | Anonymous -> names) Id.Set.empty entries
     | _ -> assert false in
-  let _, (_, universes) = name in
-  let inherited, views = inheritance universes ordinary visible field_names parents in
+  let inherited, views = inheritance universes binders visible field_names parents in
   let references = if inherited = [] then Id.Map.empty
-    else parameter_references universes ordinary inherited in
+    else parameter_references universes binders inherited in
   let inherited = order_witnesses references inherited in
-  let parameters = List.map snd ordinary @ List.map (fun d ->
+  let inherited_binders, inherited_roles = List.split (List.map (fun d ->
     let role = match d.selection with Witness _ -> Mixin d.key | Ordinary -> Value in
-    d.parameter.binder, role) inherited in
-  let binders, roles = List.split parameters in
+    d.parameter.binder, role) inherited) in
+  let roles = List.map (fun _ -> Value) ordinary @ inherited_roles in
   let witnesses = List.filter_map (fun d -> match d.selection with
     | Witness ref -> Some ref | Ordinary -> None) inherited in
-  ((name, (binders @ views, extra), sort, fields), notations), roles, witnesses
+  ((name, (binders @ inherited_binders @ views, extra), sort, fields), notations), roles, witnesses
 
 let () =
   let open Elpi.API in

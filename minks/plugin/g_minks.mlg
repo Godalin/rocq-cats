@@ -35,7 +35,7 @@ let rediscover_views =
     name }
 
 let parent_argument (head, args) = match head.CAst.v with
-  | Constrexpr.CSort _ when args = [] -> Cmd.Term head
+  | Constrexpr.CSort _ when args = Mixin_parameters.Regular [] -> Cmd.Term head
   | Constrexpr.CRef (name, instance) ->
     let inputs = Mixin_parameters.struct_arguments name args in
     Cmd.Term (CAst.make (Constrexpr.CAppExpl ((name, instance), inputs)))
@@ -68,7 +68,8 @@ let record_name (name, universes) =
   name, universes
 
 let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
-  let header = record_name (name, universes), binders in
+  let record_id = record_name (name, universes) in
+  let header = record_id, binders in
   let name = Names.Id.to_string name.CAst.v in
   let parents = match parents with
     | None -> []
@@ -87,9 +88,9 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
        the terms without introducing names visible to later inputs. *)
     let section_names = Environ.ids_of_named_context_val
         (Environ.named_context_val (Global.env ())) in
-    let _names = Mixin_parameters.ordinary_parameters binders
+    let _names = Mixin_parameters.parameter_names (snd record_id) binders
       |> List.fold_left (fun seen -> function
-        | Names.Name.Name id, _ ->
+        | Names.Name.Name id ->
           if Names.Id.Set.mem id seen then
             CErrors.user_err Pp.(str "Duplicate structure parameter: " ++ Names.Id.print id);
           Names.Id.Set.add id seen
@@ -141,7 +142,11 @@ GRAMMAR EXTEND Gram
         slots = OPT [ "with"; cs = LIST1 struct_slot SEP "," -> { cs } ];
         rest = LIST0 elpi_cmd_arg -> { name, List.concat bs, ps, slots, rest } ] ];
   struct_parent:
-    [ [ head = term LEVEL "0"; args = LIST0 struct_argument -> { head, args } ] ];
+    [ [ "@"; head = term LEVEL "0";
+        args = LIST0 [ parent_input; a = term LEVEL "9" -> { a } ] ->
+          { head, Mixin_parameters.Explicit args }
+      | head = term LEVEL "0"; args = LIST0 struct_argument ->
+          { head, Mixin_parameters.Regular args } ] ];
   struct_slot:
     [ [ key = qualid; "as"; f = ident; rhs = OPT slot_rhs ->
           { [key_arg key; Cmd.String "as"; ident_arg f] @ Option.cata slot_type [] rhs }

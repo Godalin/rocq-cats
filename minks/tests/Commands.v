@@ -140,10 +140,17 @@ Fail Minks.Mixin MissingImplicitParentArgument {A : Type}
   :=
   { missing_implicit_parent_argument : True }.
 
-Fail Minks.Mixin ExplicitParentApplication {A : Type}
-  extends @HasSeed A
+Minks.Mixin ExplicitParentApplication {A : Type} (x : A)
+  extends @HasSeed A, @IsSeed A x
   :=
   { explicit_parent_application : True }.
+
+Check @ExplicitParentApplication
+  : ∀ (A : Type) (x : A) (S : @HasSeed A), @IsSeed A x S → Type.
+
+Fail Minks.Mixin ExplicitWitness {A : Type} (x : A) (S : @HasSeed A)
+  extends @IsSeed A x S
+  := { extra_witness : True }.
 
 Example inherited_implicit_parameters {A : Type} {x : A}
     (S : @HasSeed A) (I : @IsSeed A x S)
@@ -518,3 +525,54 @@ Example imported_label_view (D : Type) (P : ImportedLabel D)
   : ImportedLabelToLabelledPoint D P =
       FurtherLabelToLabelledPoint D (ImportedLabelToFurtherLabel D P)
   := eq_refl.
+
+(** Both kinds of class binders remain ordinary inputs. A parent can take a
+    registered mixin as an ordinary argument and also supply inherited witnesses. *)
+
+Module ClassParameters.
+Minks.Mixin Marked (A : Type) := { mark : A }.
+Minks.Mixin Selected {A : Type} `{P : !Marked A}
+  := { uses_selection : mark = @mark A P }.
+
+Minks.Mixin More (A : Type) `(P : !Marked A)
+  extends @Selected A P
+  := { uses_parent : mark = @mark A P }.
+
+Check @More : ∀ (A : Type) (P : Marked A), @Selected A P → Type.
+Check (λ (A : Type) (P : Marked A) (S : @Selected A P) (m : More A P), m)
+  : ∀ A P (S : @Selected A P), @More A P S → @More A P S.
+
+Minks.Struct Choices {A : Type} `{P : !Marked A}
+  with  selected : Selected [A, P].
+Minks.Struct MoreChoices (A : Type) `(P : !Marked A)
+  extends @Choices A P.
+Check @MoreChoicesToChoices : ∀ A P, MoreChoices A P → @Choices A P.
+Example chosen_reduces (A : Type) (P : Marked A) (S : @Selected A P)
+  : @Choices_selected A P (@MoreChoicesToChoices A P (@MakeMoreChoices A P S)) = S
+  := eq_refl.
+
+(** Rocq generalizes the free index and names the anonymous instance. Both
+    ordinary inputs are available when the declaration is used as a parent. *)
+
+Class Indexed (A : Type) := { index_value : A }.
+Generalizable Variables X.
+Minks.Mixin FromClass `{!Indexed X}
+  := { observed : X := index_value }.
+Minks.Mixin FromParent (A : Type) (P : Indexed A)
+  extends @FromClass A P
+  := { observed_again : observed = @index_value A P }.
+Minks.Struct FromClassStruct `{!Indexed X}
+  extends Type.
+Minks.Struct FromClassChild (A : Type) (P : Indexed A)
+  extends @FromClassStruct A P.
+Check @FromClassChildToFromClassStruct
+  : ∀ A P, FromClassChild A P → @FromClassStruct A P.
+Fail Minks.Struct MissingClassArgument (A : Type)
+  extends @FromClassStruct A.
+
+Definition Box {A : Type} (x : A) := A.
+Minks.Struct PackedBox {A : Type} (x : A)
+  extends @Box A x
+  exports BoxContents [].
+Check @MakePackedBox : ∀ A (x : A), Box x → @PackedBox A x.
+End ClassParameters.

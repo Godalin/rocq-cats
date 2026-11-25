@@ -295,7 +295,7 @@ Check @IsIdempotentMonoid
     shares its three fields, including the point used by its unit laws. *)
 
 Minks.Mixin IsSingletonMonoid (M : Magma)
-  extends IsIdempotentMonoid M, IsMonoid M
+  extends IsIdempotentMonoid M, @IsMonoid M
   := { all_equiv : ∀ x y : M, x ≈ y }.
 
 Check @IsSingletonMonoid

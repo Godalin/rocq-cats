@@ -89,7 +89,8 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
  \langle\ttt{extends}\ \overline{\mathit{mixinParent}}\rangle\\
  &&\quad \langle\ttt{:}\ \mathit{sort}\rangle\ \ttt{:=}\ \mathit{body}\ \ttt{.}}
 \newcommand{\grammarMixinParent}{%
-  \mathit{mixinParent} &::=& \mathit{mixin}\langle\iota\rangle\ \overline{\mathit{arg}}}
+  \mathit{mixinParent} &::=& \mathit{mixin}\langle\iota\rangle\ \overline{\mathit{arg}}
+ \mid \ttt{@}\mathit{mixin}\langle\iota\rangle\ \overline{\mathit{term}}}
 \newcommand{\grammarStructDecl}{%
   \mathit{structDecl} &::=&
  \ttt{Minks.Struct}\ \mathit{struct}\langle U\rangle\ \Delta\
@@ -97,8 +98,8 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
  &&\quad \langle\ttt{with}\ \overline{\mathit{component}}\rangle\
  \langle\ttt{exports}\ \overline{\mathit{export}}\rangle\ \ttt{.}}
 \newcommand{\grammarStructParent}{%
-  \mathit{structParent} &::=& \mathit{struct}\langle\iota\rangle\ \overline{\mathit{arg}}
- \mid \mathit{native}\langle\iota\rangle\ \overline{\mathit{arg}}}
+  \mathit{structParent} &::=& \mathit{head}\langle\iota\rangle\ \overline{\mathit{arg}}
+ \mid \ttt{@}\mathit{ref}\langle\iota\rangle\ \overline{\mathit{term}}}
 \newcommand{\grammarComponent}{%
   \mathit{component} &::=& \mathit{key}\ \langle\ttt{as}\ \mathit{proj}\rangle\
  \ttt{:}\ \mathit{mixin}\langle\iota\rangle\
@@ -136,6 +137,9 @@ and $\iota$ for a universe instance. The sort and field body use Rocq syntax.
 
 The enclosing Rocq sections and the declaration header $\Delta$ form one
 ordinary parameter environment. A parameter may depend on earlier inputs.
+Generalized class binders contribute all parameters introduced by Rocq,
+including generalized indices and the instance itself. Their roles are
+ordinary even when the class is a registered mixin.
 Only the declaration's \ttt{extends} clause introduces parents.
 A witness is a value of a mixin at particular arguments. A field belongs
 to a value of a class or record, and a projection reads it. In a
@@ -150,7 +154,9 @@ selection and export. Two choices of the same mixin may have different keys.
 
 Both commands use this argument form in parent applications. Each actual
 is a Rocq term in the declaration context. Supply explicit formals by position and
-implicit ordinary formals by name. Each argument is checked at the type
+implicit ordinary formals by name. With a leading \ttt{@}, supply every
+ordinary formal by position in telescope order. For a mixin, this skips
+the inherited witness positions. Each argument is checked at the type
 determined by the preceding arguments.
 
 \subsection{Mixin declarations}
@@ -192,8 +198,9 @@ its parents, its local components and its relative interfaces, in that order.
 \end{array}
 \]
 
-A registered structure supplies its fields at the given ordinary
-arguments. A native Rocq type supplies the one-field parent described
+The head is a registered structure or a native type; the explicit form
+requires a named reference. A registered structure supplies its fields at
+the given ordinary arguments. A native Rocq type supplies the one-field parent described
 by \ruse{Native-Base}.
 
 \paragraph{Components (\texttt{with}).}
@@ -246,9 +253,8 @@ References resolve in the preceding environment, including visible imports.
 An export may refer to the structure being declared. Required names must
 be fresh and all required Rocq checks must succeed.
 
-Parent arguments may use header binders, section variables and global names. The
-\ttt{@Parent} form and automatic synthesis of mathematical evidence are
-outside this fragment. Host typing and universe checks are premises.
+Parent arguments may use header binders, section variables and global names.
+Automatic synthesis of mathematical evidence is outside this fragment. Host typing and universe checks are premises.
 Hierarchy Builder's factories and builders give a related account of
 packed hierarchies \cite{hb}. Minks specifies how to select witnesses
 by key and how to expose relative interfaces over those selections.

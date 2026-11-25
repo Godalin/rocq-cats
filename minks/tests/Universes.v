@@ -48,7 +48,7 @@ Definition right_level_smaller@{u e x y | y < x, x < e, e < u}
 
 Minks.Mixin HasNamedValues@{u e x y}
     (A : Type@{u}) (X : Type@{x}) (Y : Type@{y})
-  extends HasLeftValue@{u x e} A X, HasRightValue@{u y e} A Y
+  extends @HasLeftValue@{u x e} A X, HasRightValue@{u y e} A Y
   :=
   { named_left : X
   ; named_right : Y
