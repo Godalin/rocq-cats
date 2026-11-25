@@ -1,5 +1,6 @@
 From Cats.STLC Require Import EtaCompletion.
-From CatsTests Require Import STLCConfluence.
+From CatsSTLCTests Require Import
+  STLCConfluence.
 
 (** * Completed Beta/Eta Interfaces and Blocked-Head Computations
 

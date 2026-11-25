@@ -1,5 +1,6 @@
 From Cats.STLC Require Import BetaEtaConfluence.
-From CatsTests Require Import STLCConfluence.
+From CatsSTLCTests Require Import
+  STLCConfluence.
 
 (** * Product Variable Views and Eta Roots
 

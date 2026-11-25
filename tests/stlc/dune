@@ -1,0 +1,7 @@
+(rocq.theory
+ (name CatsSTLCTests)
+ (theories Cats Stdlib))
+
+(alias
+ (name runtest)
+ (deps (alias all)))

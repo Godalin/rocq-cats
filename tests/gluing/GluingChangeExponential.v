@@ -16,8 +16,9 @@ From Cats Require Import
   Instance.Set.Terminal
   Instance.Set.Initial
   Instance.Bool.Group.
-From CatsTests Require Import
-  Gluing
+From CatsGluingTests Require Import
+  Gluing.
+From CatsCategoryTests Require Import
   ProductPreservation.
 
 (** * Actual Gluing Exponential Cospan Transport

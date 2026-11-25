@@ -1,5 +1,6 @@
 From Cats.STLC Require Import BetaEtaConfluence.
-From CatsTests Require Import STLCConfluence.
+From CatsSTLCTests Require Import
+  STLCConfluence.
 
 (** * Eta Diagrams with Independent Path Bounds
 

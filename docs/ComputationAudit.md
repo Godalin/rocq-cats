@@ -3097,7 +3097,7 @@ adaptations are separate from those unchanged commits:
 - [Cocycle completion](../theories/Algebra/Group/Cocycle.v) uses the existing
   magma respectfulness and semigroup associativity names. Its operations,
   hypotheses, construction names and mathematical conclusions are retained.
-- [The new upstream size regression](../tests/cocycle-model/Universes.v)
+- [The new upstream size regression](../tests/cocycle/model/Universes.v)
   changes only two explicit Monoid universe-instance orders to match the
   inherited hierarchy. The carrier/equality profiles remain interchanged,
   law witnesses retain their independent upper bound, and every strict
@@ -3111,7 +3111,7 @@ adaptations are separate from those unchanged commits:
 
 - [Cocycle 补全](../theories/Algebra/Group/Cocycle.v)改用已有原群尊重性及
   半群结合律名称，保留运算、假设、构造名称与数学结论。
-- [新增上游大小回归](../tests/cocycle-model/Universes.v)只调整两处显式
+- [新增上游大小回归](../tests/cocycle/model/Universes.v)只调整两处显式
   Monoid 宇宙实例顺序以匹配继承层级。载体／相等配置仍然交换，定律见证
   保留独立上界，每条严格不等式与测试断言均保留。此适配不新增测试文件或
   别名，也不修改共享测试配置。

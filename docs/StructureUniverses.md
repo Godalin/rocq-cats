@@ -112,12 +112,12 @@ isomorphism theory rather than defining a second equivalence interface.
 
 ## 检查
 
-[StructureUniverses](../tests/StructureUniverses.v) checks ordinary product
+[StructureUniverses](../tests/category/StructureUniverses.v) checks ordinary product
 laws and rewriting, computation with distinct
 terminal/product choices on the same category, a nontrivial groupoid
 self-equivalence and its selected inverse, and both strict orders of hom and
 equality sizes. Products also accept parents with different size profiles.
 
-[StructureUniverses](../tests/StructureUniverses.v) 检查普通积定律与重写、
+[StructureUniverses](../tests/category/StructureUniverses.v) 检查普通积定律与重写、
 同一范畴上不同终对象／积选择的计算、非平凡群胚自等价及其
 选定逆，以及 Hom 与相等大小的两种严格次序。乘积也接受大小配置不同的父结构。

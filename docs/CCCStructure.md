@@ -102,13 +102,13 @@ For each universe profile `o h p l`, `CCCCat` contains CCCs at
 `CCC@{o h p l l}` and itself lives at larger bounds. This is a
 universe-polymorphic family, not a type containing categories from every
 universe. Both strict hom/equality size orders remain supported.
-`tests/CCCCategory.v` exercises categorical notation and composition
+`tests/category/CCCCategory.v` exercises categorical notation and composition
 rewriting, distinct terminal choices over one category, concrete forgetting
 and the larger auxiliary-bound interface.
 
 每个宇宙配置 `o h p l` 下，`CCCCat` 包含 `CCC@{o h p l l}` 的结构包，
 自身位于更大的大小界。这是宇宙多态的一族，不将全部宇宙的范畴放入一个类型。
-Hom／相等大小的两种严格次序均保留。`tests/CCCCategory.v` 检查普通范畴
+Hom／相等大小的两种严格次序均保留。`tests/category/CCCCategory.v` 检查普通范畴
 记号、复合重写、同一范畴上的不同终对象选择、具体忘却计算及较大辅助界接口。
 
 The object-level universe checks

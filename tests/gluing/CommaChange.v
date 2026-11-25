@@ -5,7 +5,7 @@ From Cats Require Import
   Instance.Set.Terminal
   Instance.Bool.Action
   Instance.Bool.Group.
-From CatsTests Require Import
+From CatsGluingTests Require Import
   Gluing.
 
 (** * Change of Comma Diagrams: Interfaces and Computation

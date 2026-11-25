@@ -11,9 +11,9 @@
 (alias
  (name check-core)
  (deps
-  tests/CoreInterfaces.vo
-  tests/AlgebraNotation.vo
-  tests/MonoidExtensions.vo
-  tests/GroupExtensions.vo
-  tests/BundledGroupoid.vo
-  tests/BundledCartesian.vo))
+  tests/category/CoreInterfaces.vo
+  tests/algebra/AlgebraNotation.vo
+  tests/algebra/MonoidExtensions.vo
+  tests/algebra/GroupExtensions.vo
+  tests/category/BundledGroupoid.vo
+  tests/category/BundledCartesian.vo))

@@ -6,7 +6,7 @@ From Cats Require Import
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Bool.Group.
-From CatsTests Require Import
+From CatsGluingTests Require Import
   Gluing
   GluingFibration.
 

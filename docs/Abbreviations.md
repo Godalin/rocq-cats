@@ -387,9 +387,9 @@ families are unchanged.
 
 | Client / 客户端 | Replacements / 替换数 |
 | --- | --- |
-| [tests/cocycle-homotopy/Universes.v](../tests/cocycle-homotopy/Universes.v) | 11 |
-| [tests/sphere-class-map/Computations.v](../tests/sphere-class-map/Computations.v) | 1 |
-| [tests/sphere-class-map/Universes.v](../tests/sphere-class-map/Universes.v) | 8 |
+| [tests/cocycle/homotopy/Universes.v](../tests/cocycle/homotopy/Universes.v) | 11 |
+| [tests/sphere/class-map/Computations.v](../tests/sphere/class-map/Computations.v) | 1 |
+| [tests/sphere/class-map/Universes.v](../tests/sphere/class-map/Universes.v) | 8 |
 | [theories/Cat/Day/Unit.v](../theories/Cat/Day/Unit.v) | 15 |
 | [theories/Cat/Day/Universal.v](../theories/Cat/Day/Universal.v) | 2 |
 | [theories/Instance/Bool/CocycleHomotopy.v](../theories/Instance/Bool/CocycleHomotopy.v) | 3 |
@@ -1436,7 +1436,7 @@ as a local checkpoint; no push or integration handoff is included.
 | `mixed_adjunction_comp` | `mixed_adj_comp` | [tests/Universes.v](../tests/Universes.v) |
 | `mixed_free_adjunction` | `mixed_free_adj` | [tests/Universes.v](../tests/Universes.v) |
 | `preorder_adjunction_correspondence` | `preorder_adj_correspondence` | [Cat/Logic/Adjunction.v](../theories/Cat/Logic/Adjunction.v) |
-| `separated_closure_adjunction` | `separated_closure_adj` | [tests/Closure.v](../tests/Closure.v) |
+| `separated_closure_adjunction` | `separated_closure_adj` | [tests/relations/Closure.v](../tests/relations/Closure.v) |
 | `unadjunct_from_hom` | `unadjunct_of_hom` | [Cat/Adjunction.v](../theories/Cat/Adjunction.v) |
 
 ## LiftT constructor / LiftT 构造器
@@ -1653,14 +1653,14 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `boolean_vertex_functor_round_trip` | `boolean_vertex_fct_round_trip` | [theories/Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
 | `bundled_ccc_exponential_inverse_computes` | `bundled_ccc_exp_inverse_computes` | [tests/Computations.v](../tests/Computations.v) |
 | `bundled_functor_curry` | `bundled_fct_curry` | [tests/Interfaces.v](../tests/Interfaces.v) |
-| `cartesian_exponential_computes` | `cartesian_exp_computes` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `cartesian_exponential_computes` | `cartesian_exp_computes` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
 | `ccc_functor_exponential` | `ccc_fct_exp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `comparison_unit_exponential_law` | `comparison_unit_exp_law` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
-| `composition_empty_exponential_law` | `composition_empty_exp_law` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
-| `composition_readers_exponential_law` | `composition_readers_exp_law` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
+| `comparison_unit_exponential_law` | `comparison_unit_exp_law` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
+| `composition_empty_exponential_law` | `composition_empty_exp_law` | [tests/gluing/ComparisonComposition.v](../tests/gluing/ComparisonComposition.v) |
+| `composition_readers_exponential_law` | `composition_readers_exp_law` | [tests/gluing/ComparisonComposition.v](../tests/gluing/ComparisonComposition.v) |
 | `ctx_exponential` | `ctx_exp` | [theories/STLC/Exponential.v](../theories/STLC/Exponential.v) |
 | `discrete_functor_nat_iso` | `discrete_fct_nat_iso` | [theories/Cat/Diagram/Discrete.v](../theories/Cat/Diagram/Discrete.v) |
-| `empty_constant_exponential_comparison` | `empty_constant_exp_cmp` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `empty_constant_exponential_comparison` | `empty_constant_exp_cmp` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
 | `exponential_adjunct` | `exp_adjunct` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
 | `exponential_app_comp` | `exp_app_comp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
 | `exponential_app_dimap` | `exp_app_dimap` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
@@ -1675,8 +1675,8 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `exponential_comp_id_r` | `exp_comp_id_r` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
 | `exponential_comp_proper` | `exp_comp_proper` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
 | `exponential_comp_sub` | `exp_comp_sub` | [theories/Cat/Exponential/InternalHom.v](../theories/Cat/Exponential/InternalHom.v) |
-| `exponential_comparison_large_equality` | `exp_cmp_large_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
-| `exponential_comparison_small_equality` | `exp_cmp_small_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `exponential_comparison_large_equality` | `exp_cmp_large_equality` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
+| `exponential_comparison_small_equality` | `exp_cmp_small_equality` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
 | `exponential_curry_comp_l` | `exp_curry_comp_l` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
 | `exponential_curry_comp_r` | `exp_curry_comp_r` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
 | `exponential_curry_dimap` | `exp_curry_dimap` | [theories/Cat/Exponential/Functor.v](../theories/Cat/Exponential/Functor.v) |
@@ -1811,9 +1811,9 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `generator_functor` | `generator_fct` | [theories/Cat/Shape/Finite.v](../theories/Cat/Shape/Finite.v) |
 | `gluing_exponential_base` | `gluing_exp_base` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
 | `gluing_exponential_base_eval` | `gluing_exp_base_eval` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
-| `gluing_exponential_large_equality` | `gluing_exp_large_equality` | [tests/GluingExponential.v](../tests/GluingExponential.v) |
+| `gluing_exponential_large_equality` | `gluing_exp_large_equality` | [tests/gluing/GluingExponential.v](../tests/gluing/GluingExponential.v) |
 | `gluing_exponential_result` | `gluing_exp_result` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
-| `gluing_exponential_small_equality` | `gluing_exp_small_equality` | [tests/GluingExponential.v](../tests/GluingExponential.v) |
+| `gluing_exponential_small_equality` | `gluing_exp_small_equality` | [tests/gluing/GluingExponential.v](../tests/gluing/GluingExponential.v) |
 | `gluing_exponential_unique` | `gluing_exp_unique` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
 | `gluing_exponential_universal` | `gluing_exp_universal` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
 | `gluing_exponential_β` | `gluing_exp_β` | [theories/Cat/Gluing/Exponential.v](../theories/Cat/Gluing/Exponential.v) |
@@ -1829,13 +1829,13 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `high_eq_fixed_exponential` | `high_eq_fixed_exp` | [tests/Universes.v](../tests/Universes.v) |
 | `high_eq_lax_monoid_functor` | `high_eq_lax_monoid_fct` | [tests/Universes.v](../tests/Universes.v) |
 | `high_eq_limit_functor` | `high_eq_limit_fct` | [tests/Universes.v](../tests/Universes.v) |
-| `high_eq_nerve_functor` | `high_eq_nerve_fct` | [tests/nerve-functor/Universes.v](../tests/nerve-functor/Universes.v) |
+| `high_eq_nerve_functor` | `high_eq_nerve_fct` | [tests/nerve/functor/Universes.v](../tests/nerve/functor/Universes.v) |
 | `high_eq_vertex_functor_inverse` | `high_eq_vertex_fct_inverse` | [tests/Universes.v](../tests/Universes.v) |
 | `high_eq_vertex_functor_map` | `high_eq_vertex_fct_map` | [tests/Universes.v](../tests/Universes.v) |
 | `id_functor_product_inv` | `id_fct_product_inv` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `independent_exponential_boundary` | `independent_exp_boundary` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
-| `independent_exponential_comp` | `independent_exp_comp` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
-| `independent_exponential_natural` | `independent_exp_natural` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `independent_exponential_boundary` | `independent_exp_boundary` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
+| `independent_exponential_comp` | `independent_exp_comp` | [tests/gluing/ComparisonComposition.v](../tests/gluing/ComparisonComposition.v) |
+| `independent_exponential_natural` | `independent_exp_natural` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
 | `is_exponential` | `is_exp` | [theories/Cat/Exponential/Core.v](../theories/Cat/Exponential/Core.v) |
 | `low_eq_bundled_closed_functor` | `low_eq_bundled_closed_fct` | [tests/Universes.v](../tests/Universes.v) |
 | `low_eq_contravariant_exponential` | `low_eq_contravariant_exp` | [tests/Universes.v](../tests/Universes.v) |
@@ -1851,10 +1851,10 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `low_eq_groupoid_inverse_functor` | `low_eq_groupoid_inverse_fct` | [tests/Universes.v](../tests/Universes.v) |
 | `low_eq_lax_monoid_functor` | `low_eq_lax_monoid_fct` | [tests/Universes.v](../tests/Universes.v) |
 | `low_eq_limit_functor` | `low_eq_limit_fct` | [tests/Universes.v](../tests/Universes.v) |
-| `low_eq_nerve_functor` | `low_eq_nerve_fct` | [tests/nerve-functor/Universes.v](../tests/nerve-functor/Universes.v) |
+| `low_eq_nerve_functor` | `low_eq_nerve_fct` | [tests/nerve/functor/Universes.v](../tests/nerve/functor/Universes.v) |
 | `low_eq_vertex_functor_inverse` | `low_eq_vertex_fct_inverse` | [tests/Universes.v](../tests/Universes.v) |
 | `low_eq_vertex_functor_map` | `low_eq_vertex_fct_map` | [tests/Universes.v](../tests/Universes.v) |
-| `naturality_does_not_imply_exponential_preservation` | `naturality_does_not_imply_exp_preservation` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `naturality_does_not_imply_exponential_preservation` | `naturality_does_not_imply_exp_preservation` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
 | `ordinal_functor_iso_iff` | `ordinal_fct_iso_iff` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
 | `ordinal_functor_monotone` | `ordinal_fct_monotone` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
 | `ordinal_functor_rank_iso` | `ordinal_fct_rank_iso` | [theories/Cat/Shape/Ordinal.v](../theories/Cat/Shape/Ordinal.v) |
@@ -1862,19 +1862,19 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `preserved_exponential_boundary` | `exp_cmp_boundary` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
 | `preserved_exponential_comparison` | `exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
 | `preserved_exponential_comparison_comp` | `exp_cmp_comp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
-| `preserved_exponential_computes` | `preserved_exp_computes` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `preserved_exponential_computes` | `preserved_exp_computes` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
 | `preserved_exponential_natural` | `exp_cmp_natural` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
 | `psh_exponential_unique` | `psh_exp_unique` | [theories/Instance/Set/PresheafExponential.v](../theories/Instance/Set/PresheafExponential.v) |
 | `psh_exponential_universal` | `psh_exp_universal` | [theories/Instance/Set/PresheafExponential.v](../theories/Instance/Set/PresheafExponential.v) |
 | `psh_exponential_β` | `psh_exp_β` | [theories/Instance/Set/PresheafExponential.v](../theories/Instance/Set/PresheafExponential.v) |
-| `reverse_native_nerve_functor` | `reverse_native_nerve_fct` | [tests/nerve-functor/Universes.v](../tests/nerve-functor/Universes.v) |
+| `reverse_native_nerve_functor` | `reverse_native_nerve_fct` | [tests/nerve/functor/Universes.v](../tests/nerve/functor/Universes.v) |
 | `reverse_vertex_functor_inverse` | `reverse_vertex_fct_inverse` | [tests/Universes.v](../tests/Universes.v) |
 | `reverse_vertex_functor_set` | `reverse_vertex_fct_set` | [tests/Universes.v](../tests/Universes.v) |
-| `reversed_exponential_boundary` | `reversed_exp_boundary` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
-| `reversed_exponential_comp` | `reversed_exp_comp` | [tests/ComparisonComposition.v](../tests/ComparisonComposition.v) |
-| `reversed_exponential_natural` | `reversed_exp_natural` | [tests/ComparisonNaturality.v](../tests/ComparisonNaturality.v) |
+| `reversed_exponential_boundary` | `reversed_exp_boundary` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
+| `reversed_exponential_comp` | `reversed_exp_comp` | [tests/gluing/ComparisonComposition.v](../tests/gluing/ComparisonComposition.v) |
+| `reversed_exponential_natural` | `reversed_exp_natural` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
 | `singleton_exponential` | `singleton_exp` | [theories/STLC/Exponential.v](../theories/STLC/Exponential.v) |
-| `terminal_functor_computes` | `terminal_fct_computes` | [tests/StructureUniverses.v](../tests/StructureUniverses.v) |
+| `terminal_functor_computes` | `terminal_fct_computes` | [tests/category/StructureUniverses.v](../tests/category/StructureUniverses.v) |
 | `type_exponential` | `type_exp` | [theories/STLC/TypeCategory.v](../theories/STLC/TypeCategory.v) |
 | `type_functor_exponential_ext` | `type_fct_exp_ext` | [theories/STLC/Free.v](../theories/STLC/Free.v) |
 | `type_interp_exponential_comparison` | `type_interp_exp_cmp` | [theories/STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
@@ -1960,9 +1960,9 @@ The earlier fct/exp table's targets are updated to these final names.
 | `preserved_exp_boundary` | `exp_cmp_boundary` | [theories/Cat/Functor/ComparisonNaturality.v](../theories/Cat/Functor/ComparisonNaturality.v) |
 | `fct_exp_comparison` | `fct_exp_cmp` | [theories/Cat/Functor/ExponentialComparison.v](../theories/Cat/Functor/ExponentialComparison.v) |
 | `fct_exp_comparison_comp` | `fct_exp_cmp_comp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `empty_constant_exp_comparison` | `empty_constant_exp_cmp` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
-| `exp_comparison_large_equality` | `exp_cmp_large_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
-| `exp_comparison_small_equality` | `exp_cmp_small_equality` | [tests/ProductPreservation.v](../tests/ProductPreservation.v) |
+| `empty_constant_exp_comparison` | `empty_constant_exp_cmp` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
+| `exp_comparison_large_equality` | `exp_cmp_large_equality` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
+| `exp_comparison_small_equality` | `exp_cmp_small_equality` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
 | `type_interp_exp_comparison` | `type_interp_exp_cmp` | [theories/STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
 
 The cmp follow-up passes all fifteen concrete affected-module/regression
@@ -2414,7 +2414,7 @@ values. Fixed-category clients such as strength and monoid objects take
 ## Clients added after the packed-hierarchy baseline / 打包层级基线后新增的客户端
 
 `Cat.Exponential.Equalizing`, `Cat.Gluing.ChangeExponential` and
-`tests/GluingChangeExponential.v` use the existing exact mappings above for
+`tests/gluing/GluingChangeExponential.v` use the existing exact mappings above for
 `exp_*`, `exp_cmp*`, `gluing_exp_*`, `is_exp`, `fct_*` and `nat_naturality`.
 Their module paths and the current functor type `Fct` are unchanged. This
 client migration adds no rename family or compatibility alias; the equalizing
@@ -2422,7 +2422,7 @@ tests, transported pullback choices and downstream Topos coequalizers retain
 their original mathematics.
 
 `Cat.Exponential.Equalizing`、`Cat.Gluing.ChangeExponential` 和
-`tests/GluingChangeExponential.v` 按上文既有精确表使用 `exp_*`、`exp_cmp*`、
+`tests/gluing/GluingChangeExponential.v` 按上文既有精确表使用 `exp_*`、`exp_cmp*`、
 `gluing_exp_*`、`is_exp`、`fct_*` 及 `nat_naturality`。模块路径及当前函子类型
 `Fct` 不变；本次客户端迁移不增加改名词族或兼容别名，等化测试、运输拉回选择
 及下游 Topos 余等化子保留原数学。

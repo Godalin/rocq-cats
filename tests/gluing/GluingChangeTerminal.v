@@ -6,9 +6,10 @@ From Cats Require Import
   Instance.Set.Terminal
   Instance.Set.Initial
   Instance.Set.Product.
-From CatsTests Require Import
+From CatsGluingTests Require Import
   Gluing
-  GluingChangeProduct
+  GluingChangeProduct.
+From CatsCategoryTests Require Import
   ProductPreservation.
 
 (** * Local Terminal Boundaries and Finite Products

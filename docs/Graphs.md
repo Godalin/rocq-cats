@@ -125,7 +125,7 @@ the `generated_cone_nat_iso` specialization to finite generators.
 固定顶点分量为 `cone_reindex_iso HF HQ D X`；大小上界及有限生成特化
 `generated_cone_nat_iso` 见 [Limits](./Limits.md)。
 
-The [cone interface regressions](../tests/Cones.v) include a finite free
+The [cone interface regressions](../tests/category/Cones.v) include a finite free
 shape and the nonfree `SquareShape`. For the square, `SquareEvaluation`
 evaluates paths in `UnderlyingGraph SquareShape`. It is full because every
 arrow has a one-edge preimage, and essentially surjective because its object
@@ -133,7 +133,7 @@ map is the identity. The upper/right and left/lower routes remain inequivalent
 free paths, as witnessed by counting the top edge, but their images agree by
 `square_comm`. The cone comparison applies despite this failure of faithfulness.
 
-[锥接口回归](../tests/Cones.v) 包括有限自由形状及非自由的 `SquareShape`。
+[锥接口回归](../tests/category/Cones.v) 包括有限自由形状及非自由的 `SquareShape`。
 方形例子中，`SquareEvaluation` 对 `UnderlyingGraph SquareShape` 上的路径求值。
 每条箭头有单边原像，故它是满的；对象映射为恒等，故它本质满。上边再右边、左边再
 下边这两条自由路径由上边计数区分，仍不等价，但其像由 `square_comm` 相等。

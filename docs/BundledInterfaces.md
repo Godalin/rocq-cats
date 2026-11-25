@@ -362,14 +362,14 @@ the closed sections, unit and inverse. In particular, do not reserve the
 preexisting numeral `1`. A compiled prototype also confirms that Rocq 9.3
 rejects `where` clauses on `Record`/`Class`; reserve syntax and bind it
 after the declaration instead of adding a staging interface or alias.
-The [group-only import regression](../tests/AlgebraNotation.v) checks
+The [group-only import regression](../tests/algebra/AlgebraNotation.v) checks
 all five forms, precedence, explicit delimiters and local scope lifetime.
 
 预留只声明语法，不使运算、作用域解释或实例提前可用。本片只预留共用乘法
 语法；封闭偏应用、单位元及逆使用普通记号声明即可。尤其不预留已有数字 `1`，
 编译原型还确认 Rocq 9.3 拒绝 `Record`／`Class` 上的 `where` 子句；应预留
 语法并在声明后绑定，不为此增加暂存接口或别名。
-[只导入群核心的回归](../tests/AlgebraNotation.v) 检查五类记号、优先级、
+[只导入群核心的回归](../tests/algebra/AlgebraNotation.v) 检查五类记号、优先级、
 显式分隔符与局部作用域的生效范围。
 
 The selected inverse is the single `inv` field. The unit is named
@@ -789,7 +789,7 @@ and retired names; all 34 assumption reports close under the global context.
 A separate Cat audit passes strict hom/equality universe orderings, the four
 canonical object/Hom views, transparent set-model computations and 13 closed
 assumption reports. The ambient-category rejection now lives in
-`tests/CoreInterfaces.v`; temporary audit files stay outside the repository.
+`tests/category/CoreInterfaces.v`; temporary audit files stay outside the repository.
 `git diff --check` passes. No HTML/PDF export or CI claim is included.
 
 验证使用现有 `rocq-cats` switch 中的 Rocq 9.3.0、Stdlib 9.2.0 和
@@ -798,7 +798,7 @@ Dune 3.23.1。在提升映射后续之前，Cat Record／Adj 命名检查点的�
 171 个测试），该轮源码及构建输入未变化。临时审计检查 34 项新名签名及旧名
 退役，34 项假设报告均闭合。独立 Cat 审计通过 Hom／相等见证宇宙的严格
 双向排列、四个规范对象／Hom 视图、集合模型计算透明性及 13 项闭合假设报告。
-环境范畴拒绝回归现位于 `tests/CoreInterfaces.v`；临时审计文件位于仓库外。
+环境范畴拒绝回归现位于 `tests/category/CoreInterfaces.v`；临时审计文件位于仓库外。
 `git diff --check` 通过；未导出 HTML／PDF，也不声称 CI 通过。
 
 ## Native maps across universe lifts / 跨宇宙提升的原生映射
@@ -1149,7 +1149,7 @@ or groupoid structure on an unrelated category.
 即可固定为该包的见证，也可向固定数据理论显式传入所需性质。构造具体包本身
 就是显式选择；仅导入模型不会选取任意 `Gpd` 或无关范畴上的群胚结构。
 
-The [bundled-groupoid regression](../tests/BundledGroupoid.v) covers dependent
+The [bundled-groupoid regression](../tests/category/BundledGroupoid.v) covers dependent
 objects, inherited properties, two choices on one category, transparent
 boolean/opposite/product inverses, existing CCC/monoidal sort chains and both
 strict hom/equality universe orders. The remaining algebra, cartesian/CCC,
@@ -1158,7 +1158,7 @@ inventories below describe their respective baselines. At its `76642d4`
 baseline this slice adds one class to 116 interfaces, making 117. Including
 the subsequently integrated `ElementMap` record, the rebased tree has 118.
 
-[群胚打包回归](../tests/BundledGroupoid.v) 覆盖依赖对象、继承性质、同一范畴
+[群胚打包回归](../tests/category/BundledGroupoid.v) 覆盖依赖对象、继承性质、同一范畴
 的两份选择、透明的布尔／反群胚／乘积逆、已有 CCC／幺半类型链，以及 Hom 与
 相等见证宇宙的两种严格次序。剩余代数、笛卡尔／CCC、拓扑斯及幺半层级留在
 后续有界批次。下方注明日期的清单对应各自基线；本片在 `76642d4` 的 116 个

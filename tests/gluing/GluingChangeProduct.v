@@ -7,7 +7,8 @@ From Cats Require Import
   Instance.Set.Terminal
   Instance.Set.Product
   Instance.Bool.Group.
-From CatsTests Require Import Gluing.
+From CatsGluingTests Require Import
+  Gluing.
 
 (** * Gluing Model Change Preserving Binary Products
 

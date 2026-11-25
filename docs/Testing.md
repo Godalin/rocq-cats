@@ -54,8 +54,21 @@ opam exec --switch=rocq-cats -- dune build @check-library
 opam exec --switch=rocq-cats -- dune build @check-tests
 
 # One regression family / 一个回归词族
-opam exec --switch=rocq-cats -- dune build @tests/horn-attachment/runtest
+opam exec --switch=rocq-cats -- dune build @tests/sphere/runtest
+
+# One cylinder construction / 单个柱构造
+opam exec --switch=rocq-cats -- dune build @tests/sphere/cylinder/iso/runtest
 ```
+
+The root `tests/` theory contains the cross-library `Interfaces`,
+`Computations` and `Universes` suites. Focused regressions live in directories
+such as `tests/algebra`, `tests/category`, `tests/gluing`, `tests/dtt`,
+`tests/relations` and `tests/stlc`. Families such as `tests/sphere` group
+suites by construction. Dune selects descendant `runtest` aliases recursively.
+
+主 `tests/` 理论保留跨库的接口、计算及宇宙检查。按主题组织的回归放在子目录中，
+例如 `tests/algebra` 和 `tests/category`。像 `tests/sphere` 这样的专题再按具体
+构造细分。Dune 会递归选取目录内的 `runtest` 入口。
 
 `@check-core` contains `CoreInterfaces`, `AlgebraNotation`,
 `MonoidExtensions`, `GroupExtensions`, `BundledGroupoid` and
@@ -64,14 +77,14 @@ selected category/algebra interfaces and their actual clients; it is not a
 universal substitute for selecting tests. Add the relevant module or test
 family for products, monads, Topos, DTT, STLC or simplicial constructions.
 The category/functor/transformation regressions can also be built as
-`tests/CoreInterfaces.vo`; it does not import the broad `Interfaces` suite.
+`tests/category/CoreInterfaces.vo`; it does not import the broad `Interfaces` suite.
 
 `@check-core` 包含 `CoreInterfaces`、`AlgebraNotation`、
 `MonoidExtensions`、`GroupExtensions`、`BundledGroupoid` 和
 `BundledCartesian`，
 覆盖选定范畴／代数接口及其实际客户端，不是通用的测试选择替代品。
 修改积、Monad、Topos、DTT、STLC 或单纯集构造时，另选相关模块或测试词族。
-基础范畴／函子／自然变换回归也可单独构建 `tests/CoreInterfaces.vo`，不导入广泛的
+基础范畴／函子／自然变换回归也可单独构建 `tests/category/CoreInterfaces.vo`，不导入广泛的
 `Interfaces` 测试集合。
 
 `@check-library` recursively selects `theories/all`; it includes every

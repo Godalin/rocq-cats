@@ -7,7 +7,7 @@ From Cats Require Import
   Cat.Pullback
   Instance.Set.Core
   Instance.Set.Pullback.
-From CatsTests Require Import
+From CatsGluingTests Require Import
   Gluing.
 
 (** * Pointwise Pullback Interfaces and Computation

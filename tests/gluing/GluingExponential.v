@@ -12,8 +12,9 @@ From Cats Require Import
   Instance.Set.Product
   Instance.Set.Exponential
   Instance.Set.Pullback.
-From CatsTests Require Import
-  Gluing
+From CatsGluingTests Require Import
+  Gluing.
+From CatsCategoryTests Require Import
   ProductPreservation.
 
 (** * Gluing Exponential Interfaces and Computational Witnesses
