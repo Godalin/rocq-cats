@@ -26,6 +26,6 @@
  (description "Generate flat universe-polymorphic structure hierarchies with Rocq-Elpi.")
  (depends
   (rocq-core (>= 9.3))
-  (rocq-elpi (>= 3.5.1))
-  (elpi (and (>= 3.7.1) (< 4.0~)))
+  (rocq-elpi (>= 3.7.0))
+  (elpi (and (>= 4.1.1) (< 5.0~)))
   (rocq-stdlib (and (>= 9.2) :with-test))))

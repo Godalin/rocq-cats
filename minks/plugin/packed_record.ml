@@ -9,6 +9,7 @@ let declaration = ContextualConversion.{
   ty = Conversion.TyName "indt-decl";
   pp_doc = (fun fmt () -> Format.pp_print_string fmt "Record telescope");
   pp = (fun fmt _ -> Format.pp_print_string fmt "Record telescope");
+  constants = [];
   readback = Rocq.lp2inductive_entry;
   embed = (fun ~depth:_ _ _ _ _ -> invalid_arg "input-only record declaration");
 }

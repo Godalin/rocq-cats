@@ -398,8 +398,8 @@ square brackets.
 
 ## Build the examples and run the tests
 
-The project switch uses Rocq 9.3, Rocq-Elpi 3.5.1, Elpi 3.7.3 and Dune
-3.23.1. The OCaml plugin uses the Elpi 3.x conversion API. The examples
+The project switch uses Rocq 9.3, Rocq-Elpi 3.7.0, Elpi 4.1.1 and Dune
+3.23.1. The OCaml plugin uses the Elpi 4.x conversion API. The examples
 use Stdlib 9.2 or later. From this directory, build and test with the project
 switch.
 

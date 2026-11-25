@@ -12,8 +12,8 @@ bug-reports: "https://github.com/Godalin/rocq-cats/issues/48"
 depends: [
   "dune" {>= "3.23"}
   "rocq-core" {>= "9.3"}
-  "rocq-elpi" {>= "3.5.1"}
-  "elpi" {>= "3.7.1" & < "4.0~"}
+  "rocq-elpi" {>= "3.7.0"}
+  "elpi" {>= "4.1.1" & < "5.0~"}
   "rocq-stdlib" {>= "9.2" & with-test}
   "odoc" {with-doc}
 ]

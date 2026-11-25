@@ -424,7 +424,7 @@ stop builds and language servers before updating a shared switch:
 
 ```sh
 opam pin add --switch=rocq-cats --no-action rocq-core 9.3.0
-opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1 rocq-elpi.3.5.1
+opam install --switch=rocq-cats rocq-core.9.3.0 rocq-stdlib.9.2.0 dune.3.23.1 rocq-elpi.3.7.0 elpi.4.1.1
 opam exec --switch=rocq-cats -- dune build @check-core
 ```
 

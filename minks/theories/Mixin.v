@@ -13,9 +13,6 @@ Elpi Accumulate File minks.spec.
 Elpi Accumulate lp:{{
   % The vernacular elaborator only needs the constructor and each remaining
   % field's key and binder role, in the order of the exported layout.
-  typeabbrev export-field (pair id (pair bool gref)).
-  external pred minks.parent-combinations i:list gref,
-      o:list (pair (list role) (option (pair gref (list export-field)))).
   minks.parent-combinations Parents Shapes :-
     std.map Parents (p\out\ sigma i ctor parts fields origins roles shape\
       p = indt i, out = pr roles shape,

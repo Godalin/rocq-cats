@@ -62,9 +62,7 @@ Elpi Db minks.flat.db lp:{{
   pred declared i:gref, o:declaration.
   pred recorded-view i:inductive, o:inductive, o:constant, o:view-registration.
   pred visible-key i:id, o:gref.
-  external pred minks.owned-key i:(pair modpath id), o:gref.
   typeabbrev module-info (pair declaration (list struct-conversion)).
-  external pred minks.local-info i:gref, o:module-info.
   pred field-alias i:id, o:constant.
   pred flat-layout i:list string, o:inductive, o:list component,
       o:list (pair id constant).

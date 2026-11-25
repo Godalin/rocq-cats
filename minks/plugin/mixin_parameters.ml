@@ -572,6 +572,14 @@ let () =
       Rocq.get_global_env_current_sigma ~depth hyps constraints state in
     state, context, constraints, goals in
   ignore (BuiltIn.declare ~file_name:"minks.combinations" [
+    BuiltIn.MLConstants [parent_combinations_pred; local_info_pred; owned_key_pred];
+    BuiltIn.LPCode {|
+      typeabbrev export-field (pair id (pair bool gref)).
+      pred minks.parent-combinations i:list gref,
+          o:list (pair (list role) (option (pair gref (list export-field)))).
+      pred minks.local-info i:gref, o:module-info.
+      pred minks.owned-key i:(pair modpath id), o:gref.
+    |};
     BuiltIn.MLCode (Pred ("minks.add-record",
       CIn (Packed_record.declaration, "Record telescope",
       Out (Rocq.inductive, "Structure",
