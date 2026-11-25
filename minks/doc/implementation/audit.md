@@ -35,7 +35,7 @@ dependencies whose argument identities are still being resolved.
   exchanging their point indices fails. The general statement for nested
   closed selections remains open. [AlgebraChecks.v](../../tests/AlgebraChecks.v)
 - **Export-Common.** The bare export of a `LabelledSort` child fixes both
-  inherited fields; `[]` takes both as constructor arguments. A parentless
+  inherited fields and fails because none remain; `[]` takes both as constructor arguments. A parentless
   structure has no inherited fields to fix. [NativeParents.v](../../tests/NativeParents.v)
 - **Expansion.** At the same universe instance, `HasMonoid A` and the ordered
   parents `IsSemigroup A, IsUnitAt A` give convertible mixin parameter types.

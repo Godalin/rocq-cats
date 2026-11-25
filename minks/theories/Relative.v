@@ -182,6 +182,7 @@ Elpi File minks.relative lp:{{
       if (contains-key k Covered)
         (coq.error "Export key is already supplied by the packed base:" k) true),
     relative-layout Cs Covered Selected Fixed Remaining,
+    if (Remaining = []) (coq.error "No components remain to export:" Name) true,
     declare-relative Name Base Covered Cs Fixed Remaining Export Refs Args,
     active-family Export Args => (
       std.map Fixed component-key FixedKeys,

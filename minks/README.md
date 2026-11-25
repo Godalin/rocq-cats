@@ -292,7 +292,7 @@ square brackets.
   all direct parents. With one parent it fixes that parent's entire layout;
   with zero parents it fixes zero keys. Brackets select the given keys and
   their transitive dependencies. An explicit `[]` fixes zero fields.
-  Authors choose the interface name. The fixed selections determine its shape.
+  At least one component must remain after dependency closure.
 - **Packed base.** A selection can include one Minks structure whose
   field keys, mixins, and dependencies match those of the exported
   structure. A declared ancestor or a structurally contained record can
@@ -351,7 +351,7 @@ square brackets.
   The brackets before the colon bind its remaining fields in export order:
   1. `: E` uses the original exported keys. `[a, b] : E` supplies new keys.
      Each must be fresh. Every remaining field gets one key, even for a
-     one-field export. An empty export takes an empty list or no list.
+     one-field export.
   2. `[a, b] as [p, q] : E` also names the two Rocq projections. Omitting
      `as` gives `Name_a` and `Name_b`. Both lists have the length of the
      remainder. A single identifier before the colon is reserved for a

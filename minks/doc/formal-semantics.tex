@@ -684,7 +684,7 @@ the newly stored field, even when another field has the same type.
 Rocq checks the export constructor at the fixed inputs and these $n$
 values in the same universe instance. The resulting layout contains
 exactly $n$ new fields. A scalar binding for an export is ill-formed,
-including when $n=1$. For $n=0$ the batch is empty.
+including when $n=1$.
 
 \paragraph{Selecting fixed inputs for a new export.}
 
@@ -718,7 +718,7 @@ $Q=K_{\rm default}$). With $\cl_A$ denoting dependency closure, define
 \[
  K=\cl_A(C\cup Q),\qquad F_K=K\setminus C,\qquad R=\keys(A)\setminus K.
 \]
-All sublists retain layout order. The fixed telescope $I_K$ starts with
+Require $R\ne\varnothing$ for each export. All sublists retain layout order. The fixed telescope $I_K$ starts with
 the base $b:H$, when present, then the fields in $F_K$ at their substituted
 types. For $\theta:I_K$, $\operatorname{fix}(\theta)_k$ reads either a
 base projection or a separate fixed input. The signature retains the
@@ -764,7 +764,7 @@ fields in layout order at their substituted types. Its constructor is
 $\ttt{Make}E$. The same name is registered as a \emph{virtual mixin}:
 its constituents are precisely those remaining fields, with their keys
 and dependencies. Fixed choices are supplied by the inputs, including
-projections from the packed base. An empty remainder has no constituents.
+projections from the packed base.
 \rdefn{Export-To} extracts the class value from the packed record.
 \rdefn{Export-Of} builds that record from the fixed inputs and class
 value. Both maps are transparent.
@@ -936,7 +936,7 @@ of constructor applications reduce to the supplied values, including
       \]
       State whole-record inverse laws under
       the appropriate record elimination or eta principles.
-\item \rdefn{Fix-Compose}. For closed $K\subseteq L$, fixing $K$ and
+\item \rdefn{Fix-Compose}. For closed $K\subseteq L\subsetneq\keys(A)$, fixing $K$ and
       then $L\setminus K$ agrees with fixing $L$ directly. For every
       remaining type $T$, under compatible choices and presentations,
       \[

@@ -101,9 +101,22 @@ Check MakeWholeLabelledSort : HasTag → Type → WholeLabelledSort.
 
 Minks.Struct InheritedLabelledSort
   extends LabelledSort
-  exports FixedParentFields, AllParentFields [].
+  exports AllParentFields [].
 
-Check MakeFixedParentFields : ∀ (t : HasTag) (A : Type), FixedParentFields t A.
+(** Every spelling of a fully fixed selection is rejected. *)
+
+Fail Minks.Struct NoInheritedRemainder
+  extends LabelledSort
+  exports FixedParentFields.
+Fail Minks.Struct NoSelectedRemainder
+  extends LabelledSort
+  exports FixedBoth [label, carrier].
+Fail Minks.Struct NoSelfRemainder (unused : Type)
+  extends LabelledSort
+  exports FixedSelf [NoSelfRemainder].
+Fail Check NoSelfRemainder.
+Fail Minks.Struct NoEmptyRemainder exports EmptyFields [].
+
 Check MakeAllParentFields : HasTag → Type → AllParentFields.
 
 Fail Definition unindexed_extraction (s : InheritedLabelledSort)

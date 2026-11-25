@@ -524,13 +524,16 @@ Elpi Accumulate lp:{{
     std.assert! (generate-views Name FlatParents Components I Views Packers)
       "Could not generate the structure",
     std.forall Views save-view,
-    std.map Exports
-      (e\out\ sigma label selection keys interface fixed\
-        e = pr label selection, export-keys Branches Inherited selection keys,
-        std.assert! (@keep-alg-univs! =>
-          generate-relative Name I Components FlatParents Views label keys interface fixed)
-          ("Could not generate relative interface " ^ label),
-        out = pr interface fixed) Interfaces,
+    % Check exports in the context of the completed record and its actual inputs.
+    active-family I Args,
+    (struct-spec I Applications Components => parent-inputs I Args =>
+      std.map Exports
+        (e\out\ sigma label selection keys interface fixed\
+          e = pr label selection, export-keys Branches Inherited selection keys,
+          std.assert! (@keep-alg-univs! =>
+            generate-relative Name I Components FlatParents Views label keys interface fixed)
+            ("Could not generate relative interface " ^ label),
+          out = pr interface fixed) Interfaces),
     Data = packed Applications Components Names Packers Interfaces,
     coq.elpi.accumulate execution-site "minks.flat.db" (clause _ _ (declared (indt I) Data)).
   main _ :- usage.
