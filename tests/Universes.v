@@ -458,7 +458,7 @@ Definition low_eq_double_curry (A B Y Z : @Ob D)
   := exp_curry_twice_β f.
 
 Context (F : Fct C D) (G : Fct D C)
-    (HF : @IsCCCF C D F) (HG : @IsCCCF D C G).
+    `{HF : !IsCCCF F} `{HG : !IsCCCF G}.
 
 (** CCC-preservation composition permits different hom/equality orderings
     in its intermediate category. *)
@@ -467,7 +467,7 @@ Context (F : Fct C D) (G : Fct D C)
 
 Definition mixed_levels_closed_composite
   : @IsCCCF C C (G ∘F F)
-  := CompF_IsCCCF F G HF HG.
+  := CompF_IsCCCF F G.
 
 (** Bundling and composing preserve both strict hom/equality orderings. *)
 

@@ -34,7 +34,7 @@ Local Open Scope ob_scope.
 (** 指数比较的可逆性使用给定的有限积保持性见证。 *)
 
 Minks.Mixin PreservesExp {C D : CCC} (F : Fct C D)
-  extends IsCartF (C := C) (D := D) F (hasTerminal C) (hasProduct C)
+  extends @IsCartF C D F (hasTerminal C) (hasProduct C)
   :=
   { fct_exp (X Y : C)
     : is_iso (@fct_exp_cmp C D F
@@ -48,7 +48,7 @@ Minks.Mixin PreservesExp {C D : CCC} (F : Fct C D)
 (** 打包函子及其两份保持性见证。固定底层函子即得相对接口 [IsCCCF]。 *)
 
 Minks.Struct CCCFct (C D : CCC)
-  extends CartFct (C := C) (D := D) (hasTerminal C) (hasProduct C)
+  extends @CartFct C D (hasTerminal C) (hasProduct C)
   with  preservesExp : PreservesExp [C, D, carrier, isCartF]
   exports IsCCCF [carrier].
 
@@ -94,9 +94,7 @@ Defined.
 
 Section ClosedFunctorComposition.
 Context {C D E : CCC} (F : Fct C D) (G : Fct D E)
-    (HF : @IsCCCF C D F) (HG : @IsCCCF D E G).
-Local Existing Instance HF.
-Local Existing Instance HG.
+    `{HF : !IsCCCF F} `{HG : !IsCCCF G}.
 
 (** The canonical comparison of a composite is the composite of the
     canonical comparisons, under specified hom equality. *)
@@ -151,5 +149,4 @@ Program Definition CompCCCF {C D E : CCC}
     (G : CCCFct D E) (F : CCCFct C D)
   : CCCFct C E
   := CCCFctOfIsCCCF (G ∘F F)
-      (CompF_IsCCCF F G
-        (CCCFctToIsCCCF F) (CCCFctToIsCCCF G)).
+      (CompF_IsCCCF F G).

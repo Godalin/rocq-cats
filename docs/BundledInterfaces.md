@@ -928,16 +928,13 @@ existing construction. They do not import the CCC theory.
 `CCCCat` uses complete bundles as objects and CCC-preserving functors as
 arrows. Its hom-setoid retains natural-isomorphism witnesses and ignores
 native equality of preservation fields. `CCCForgetF` maps into `CatCat`
-and is faithful; `CCCCatHom` reuses `CatCatHom` for independent larger
-auxiliary proof bounds without changing maps or computational preservation
-witnesses. This is an actual client of the packed architecture; the general
+and is faithful. This is an actual client of the packed architecture; the general
 architecture remains here and the mathematical construction is described in
 [the CCC guide](./CCCStructure.md#ccc-modules-and-the-category-of-cccs).
 
 `CCCCat` 的对象为完整结构包，态射为保持 CCC 结构的函子。Hom 广集保留
 自然同构见证，不要求保持性字段原生相等。`CCCForgetF` 忘却到 `CatCat`
-且忠实；`CCCCatHom` 复用 `CatCatHom`，容纳独立的较大辅助证明界，
-不改变映射或保持性的计算见证。这是打包架构的实际客户端；通用架构仍在本指南，
+且忠实。这是打包架构的实际客户端；通用架构仍在本指南，
 数学构造则在 [CCC 指南](./CCCStructure.md#ccc-modules-and-the-category-of-cccs)。
 
 ## Groupoid Record follow-up

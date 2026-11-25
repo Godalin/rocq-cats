@@ -1592,13 +1592,13 @@ names remain; the comparison is a transparent view of the existing
 公开名称；比较是已有 `preserved_exponential_comparison` 构造的透明视图。
 
 New declarations in `Cat.CCC.Category` are `CCCFctEq`,
-`CCCFctEq_Equivalence`, `CCCFctS`, `CCCCat`, `CCCForgetF`,
-`ccc_forget_faithful` and `CCCCatHom`. `CCCCat` concatenates `CCC` and
+`CCCFctEq_Equivalence`, `CCCFctS`, `CCCCat`, `CCCForgetF` and
+`ccc_forget_faithful`. `CCCCat` concatenates `CCC` and
 `Cat` (four leading Cs); the forgetful functor uses the subject prefix
 and `F` suffix. No alternative spelling or extra notation is introduced.
 
 `Cat.CCC.Category` 新增 `CCCFctEq`、`CCCFctEq_Equivalence`、`CCCFctS`、
-`CCCCat`、`CCCForgetF`、`ccc_forget_faithful`、`CCCCatHom`。
+`CCCCat`、`CCCForgetF`、`ccc_forget_faithful`。
 `CCCCat` 由 `CCC` 与 `Cat` 组合，开头为四个 C；忘却函子采用主体前缀及
 `F` 后缀。不引入其他拼写或额外记号。
 

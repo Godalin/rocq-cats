@@ -31,7 +31,7 @@ Local Open Scope ob_scope.
     对象记号使用给定的 [TC]、[PC]，投影的推断使用同一选定积。 *)
 
 Minks.Mixin IsCartF {C D : Cat} (F : Fct C D)
-    (TC : HasTerminal C) (PC : HasProduct C)
+    `(TC : !HasTerminal C) `(PC : !HasProduct C)
   :=
   { fct_terminal : is_terminal (F 1)
   ; fct_product X Y : is_product (F X) (F Y)
@@ -228,7 +228,7 @@ Qed.
     唯一强制转换暴露底层函子，继承的保持性证据可用于上述固定函子定理。 *)
 
 Minks.Struct CartFct {C D : Cat}
-    (TC : HasTerminal C) (PC : HasProduct C)
+    `(TC : !HasTerminal C) `(PC : !HasProduct C)
   extends Fct C D
   with  isCartF as isCartF : IsCartF [C, D, carrier, TC, PC].
 
@@ -241,7 +241,7 @@ Arguments MakeCartFct {_ _ _ _} _ _.
 
 (** 打包的恒等函子复用已有保持性证明；选定函子显式构造，不在导入时选取。 *)
 
-Program Definition IdCartF (C : Cat)
+Canonical IdCartF (C : Cat)
     (TC : HasTerminal C) (PC : HasProduct C)
   : @CartFct C C TC PC
   := MakeCartFct IdF (IdF_IsCartF C TC PC).
@@ -251,7 +251,7 @@ Program Definition IdCartF (C : Cat)
 
 (** 复合只需要两个因子的选定来源结构，保持性证据复用已有通用复合定理。 *)
 
-Program Definition CompCartF {C D E : Cat}
+Canonical CompCartF {C D E : Cat}
     {TC : HasTerminal C} {PC : HasProduct C}
     {TD : HasTerminal D} {PD : HasProduct D}
     (G : @CartFct D E TD PD) (F : @CartFct C D TC PC)

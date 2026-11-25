@@ -46,7 +46,7 @@ Defined.
 
 (** Hom 广集保留完整函子及其选定证据。 *)
 
-Canonical Structure CCCFctS (C D : CCC)
+Canonical CCCFctS (C D : CCC)
   : SetC
   :=
   {|carrier := CCCFct C D
@@ -59,10 +59,10 @@ Canonical Structure CCCFctS (C D : CCC)
 
 (** 范畴律复用已有函子单位及结合比较，不要求对象映射或证明字段相等。 *)
 
-Program Canonical CCCCat@{o h p l +}
+Program Canonical CCCCat
   : Cat
   :=
-  {|Ob := CCC@{o h p l l}
+  {|Ob := CCC
   ; HomSet := CCCFctS
   ; id := IdCCCF
   ; comp _ _ _ := CompCCCF
@@ -111,24 +111,3 @@ Next Obligation. reflexivity. Defined.
 Lemma ccc_forget_faithful
   : is_faithful CCCForgetF.
 Proof. intros C D F G H. exact H. Defined.
-
-(** Repackage a CCC functor at the hom-set's common proof bounds. Reuse
-    [CatCatHom] for its ordinary functor, retaining the product witnesses
-    and exponential inverses. Auxiliary proof bounds may be larger than
-    the categories' law bounds; no resizing or equality of records is used. *)
-
-(** 在 Hom 的共同证明界上重新组装 CCC 函子，普通函子复用 [CatCatHom]，
-    保留积见证及指数的逆。辅助证明界可以高于范畴定律界，不使用大小重设，
-    也不要求记录相等。 *)
-
-Program Definition CCCCatHom@{o h p l m n +}
-    {C D : CCC@{o h p l l}}
-    (F : CCCFct@{l m n o h p l l o h p l} C D)
-  : (@Hom CCCCat) C D
-  := MakeCCCFct (CatCatHom (F : Fct C D))
-      {|fct_terminal := @fct_terminal C D F
-          (hasTerminal C) (hasProduct C) (isCartF (CCCFctToCartFct F))
-      ; fct_product := @fct_product C D F
-          (hasTerminal C) (hasProduct C) (isCartF (CCCFctToCartFct F))
-      |}
-    {|fct_exp := fct_exp (PreservesExp := CCCFct_preservesExp F)|}.

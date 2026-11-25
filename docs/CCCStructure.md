@@ -82,14 +82,10 @@ No native equality of object maps, functors or law records is required.
 `CCCForgetF : Fct CCCCat CatCat` keeps the underlying category and functor.
 It is faithful for the specified natural-isomorphism equality. Both its
 respectfulness and `ccc_forget_faithful` retain the comparison components
-and their selected inverses transparently. `CCCCatHom` reuses `CatCatHom`
-to admit existing CCC functors with larger auxiliary proof bounds, keeping
-object/arrow maps, product witnesses and exponential inverses.
+and their selected inverses transparently.
 
 `CCCForgetF : Fct CCCCat CatCat` 保留底层范畴及函子，对指定的自然同构
 相等忠实。其保相等性及 `ccc_forget_faithful` 透明保留比较分量及选定逆。
-`CCCCatHom` 复用 `CatCatHom`，将辅助证明界较大的已有 CCC 函子装入 Hom，
-保留对象／箭头映射、积见证及指数逆。
 
 For each universe profile `o h p l`, `CCCCat` contains CCCs at
 `CCC@{o h p l l}` and itself lives at larger bounds. This is a
@@ -97,12 +93,12 @@ universe-polymorphic family, not a type containing categories from every
 universe. Both strict hom/equality size orders remain supported.
 `tests/category/CCCCategory.v` exercises categorical notation and composition
 rewriting, distinct terminal choices over one category, concrete forgetting
-and the larger auxiliary-bound interface.
+and the underlying functor at strictly larger auxiliary proof bounds.
 
 每个宇宙配置 `o h p l` 下，`CCCCat` 包含 `CCC@{o h p l l}` 的结构包，
 自身位于更大的大小界。这是宇宙多态的一族，不将全部宇宙的范畴放入一个类型。
 Hom／相等大小的两种严格次序均保留。`tests/category/CCCCategory.v` 检查普通范畴
-记号、复合重写、同一范畴上的不同终对象选择、具体忘却计算及较大辅助界接口。
+记号、复合重写、同一范畴上的不同终对象选择、具体忘却计算，以及辅助证明界严格较大时的底层函子。
 
 The object-level universe checks
 `Check CatCat : CatCat : CatCat : CatCat` and

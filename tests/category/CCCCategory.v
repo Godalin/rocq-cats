@@ -91,14 +91,13 @@ End ChangedChoices.
 
 (** ** Larger Auxiliary Proof Bounds
 
-    Keep object, hom and equality sizes distinct. A functor whose auxiliary
-    proof bounds exceed the category laws still enters the common hom-set
-    through its transparent view, retaining its selected exponential inverse. *)
+    The underlying functor retains both auxiliary proof levels of a CCC
+    functor even when they strictly exceed the category law level. *)
 
 (** ** 更大的辅助证明界
 
-    保持对象、Hom 及相等大小分离。辅助证明界高于范畴定律界的函子仍能通过
-    透明视图进入共同 Hom，保留其选定的指数逆。 *)
+    当 CCC 函子的两个辅助证明层级严格高于范畴定律层级时，底层函子保留这
+    两个层级。 *)
 
 Section ProofBounds.
 Universes o h p l m n.
@@ -111,13 +110,8 @@ Constraint n < o.
 Context (C D : CCC@{o h p l l})
     (F : CCCFct@{l m n o h p l l o h p l} C D).
 
-Definition larger_proof_hom
-  : (@Hom CCCCat) C D
-  := CCCCatHom F.
-
-Example larger_proof_inverse_kept (X Y : C)
-  : (fct_exp (PreservesExp := CCCFct_preservesExp larger_proof_hom) X Y).1
-      = (fct_exp (PreservesExp := CCCFct_preservesExp F) X Y).1.
-Proof. reflexivity. Qed.
+Definition larger_proof_underlying
+  : Fct@{o h p l m n o h p l} C D
+  := F.
 
 End ProofBounds.
