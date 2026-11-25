@@ -16,20 +16,6 @@ From Cats Require Import
 
 (** 为一个选定笛卡尔结构增加相对于其自身积的指数。父结构作为唯一底层视图，不重复选取终对象或积。 *)
 
-Record CCC
-  := CCCOfCartCat
-
-  (** The unique underlying view shares the selected finite products
-      with every weaker client. *)
-
-  (** 唯一底层视图与所有较弱的客户端共享选定有限积。 *)
-
-  { CCCToCartCat :> CartCat
-
-  (** Exponentials use exactly the inherited choice of binary products. *)
-
-  (** 指数恰好使用继承的二元积选择。 *)
-
-  ; hasExponential
-    :: HasExponential (hasProduct CCCToCartCat)
-  }.
+Minks.Struct CCC@{o h p l t}
+  extends CartCat@{t o h p l}
+  with  hasExponential as hasExponential : HasExponential.

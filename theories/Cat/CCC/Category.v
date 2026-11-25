@@ -123,14 +123,12 @@ Proof. intros C D F G H. exact H. Defined.
 
 Program Definition CCCCatHom@{o h p l m n +}
     {C D : CCC@{o h p l l}}
-    (F : CCCFct@{o h p l l l m n o h p l} C D)
+    (F : CCCFct@{l m n o h p l l o h p l} C D)
   : (@Hom CCCCat) C D
-  :=
-  {|CCCFctToCartFct := MakeCartFct (CatCatHom (F : Fct C D))
+  := MakeCCCFct (CatCatHom (F : Fct C D))
       {|fct_terminal := @fct_terminal C D F
           (hasTerminal C) (hasProduct C) (isCartF (CCCFctToCartFct F))
       ; fct_product := @fct_product C D F
           (hasTerminal C) (hasProduct C) (isCartF (CCCFctToCartFct F))
       |}
-  ; ccc_fct_exp := ccc_fct_exp F
-  |}.
+    {|fct_exp := fct_exp (PreservesExp := CCCFct_preservesExp F)|}.

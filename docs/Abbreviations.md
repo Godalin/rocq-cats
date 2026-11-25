@@ -148,8 +148,8 @@ renamed bundles and adjunctions have consistent direct clients.
 | `CartesianFunctor` | `CartFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CartesianFunctorFromPreservation` | `MakeCartFct` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CCCFunctor` | `CCCFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `CCCFunctorFromPreservation` | `CCCFctOfFct` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
-| `CCCFunctor_IsCCCF` | `CCCFct_IsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFunctorFromPreservation` | `CCCFctOfIsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFunctor_IsCCCF` | `CCCFctToIsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `LaxMonoidalFunctor` | `LaxMonoidalFct` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
 | `IdF_LaxMonoidalFunctor` | `IdLaxMonoidalF` | [Cat/Monoidal/Functor.v](../theories/Cat/Monoidal/Functor.v) |
 | `ConstF_LaxMonoidalFunctor` | `ConstLaxMonoidalF` | [Cat/Monoidal/Constant.v](../theories/Cat/Monoidal/Constant.v) |
@@ -178,7 +178,7 @@ renamed bundles and adjunctions have consistent direct clients.
 | `IdCartesianF` | `IdCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CompCartesianF` | `CompCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `cartesian_isCartesianF` | `isCartF` | [Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `isCartesianF` | `ccc_isCartF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `isCartesianF` | `IsCCCF_isCartF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `TypeInterpretF_IsCartesianF` | `TypeInterpretF_IsCartF` | [STLC/TypeInterpretation.v](../theories/STLC/TypeInterpretation.v) |
 | `VertexNerveF_IsCartesianF` | `VtxNerveF_IsCartF` | [Instance/Set/Simplicial/Vertex/Cartesian.v](../theories/Instance/Set/Simplicial/Vertex/Cartesian.v) |
 | `ExponentialF_IsCartesianF` | `ExpF_IsCartF` | [Cat/Limit/Exponential.v](../theories/Cat/Limit/Exponential.v) |
@@ -1607,19 +1607,18 @@ and `F` suffix. No alternative spelling or extra notation is introduced.
 ## 笛卡尔／CCC 函子记录及 fct/exp 名称
 
 This local follow-up starts at `8aa3506`. `CartFct` and `CCCFct` are
-complete `Record` objects, with one stored parent each:
-`CCCFctToCartFct :> CartFct` and `CartFctToFct :> Fct`.
+complete records. Their primary parent views are `CCCFctToCartFct` and
+`CartFctToFct`.
 `MakeCartFct` is now the direct record constructor, replacing the old
 preservation adapter. `CCCFctOfCartFct` directly extends a supplied cartesian
-functor; `CCCFctOfFct` packages fixed-functor `IsCCCF` evidence. The two
+functor; `CCCFctOfIsCCCF` packages fixed-functor `IsCCCF` evidence. The two
 presentations share their selected cartesian witnesses by conversion.
 `IsCartF` and `IsCCCF` remain fixed-functor property classes. Complete
 structured functors are supplied explicitly, not selected by importing models.
 
 这个本地后续从 `8aa3506` 开始。`CartFct` 与 `CCCFct` 是完整 `Record`
-对象，各保存唯一父结构：`CCCFctToCartFct :> CartFct` 及
-`CartFctToFct :> Fct`。`MakeCartFct` 现为直接记录构造器，替代旧保持性
-适配器；`CCCFctOfCartFct` 直接扩充给定笛卡尔函子，`CCCFctOfFct` 则打包
+对象，通过 `CCCFctToCartFct` 及 `CartFctToFct` 得到各自的父结构。`MakeCartFct` 现为直接记录构造器，替代旧保持性
+适配器；`CCCFctOfCartFct` 直接扩充给定笛卡尔函子，`CCCFctOfIsCCCF` 则打包
 固定函子的 `IsCCCF` 证据。两种呈现通过定义相等共享选定笛卡尔见证。
 `IsCartF`、`IsCCCF` 继续作为固定函子上的性质类；完整保结构函子须显式给出，
 不由模型导入自动选取。
@@ -1648,15 +1647,19 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `CartF` | `CartFctToFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CCCF` | `CCCFctToCartFct` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `cartesian_isCartF` | `isCartF` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `isCartF` | `ccc_isCartF` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `isCartF` | `IsCCCF_isCartF` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `CartFctOfFct` | `MakeCartFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
 | `CartFctFromPreservation` | `MakeCartFct` | [theories/Cat/Functor/Cartesian.v](../theories/Cat/Functor/Cartesian.v) |
-| `CCCFctFromPreservation` | `CCCFctOfFct` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFctOfFct` | `CCCFctOfIsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFct_IsCCCF` | `CCCFctToIsCCCF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `ccc_isCartF` | `IsCCCF_isCartF` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `ccc_fct_exp` | `fct_exp` | [Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `CCCFctFromPreservation` | `CCCFctOfIsCCCF` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `boolean_vertex_functor_round_trip` | `boolean_vertex_fct_round_trip` | [theories/Instance/Bool/Nerve.v](../theories/Instance/Bool/Nerve.v) |
 | `bundled_ccc_exponential_inverse_computes` | `bundled_ccc_exp_inverse_computes` | [tests/Computations.v](../tests/Computations.v) |
 | `bundled_functor_curry` | `bundled_fct_curry` | [tests/Interfaces.v](../tests/Interfaces.v) |
 | `cartesian_exponential_computes` | `cartesian_exp_computes` | [tests/category/ProductPreservation.v](../tests/category/ProductPreservation.v) |
-| `ccc_functor_exponential` | `ccc_fct_exp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
+| `ccc_functor_exponential` | `fct_exp` | [theories/Cat/CCC/Functor.v](../theories/Cat/CCC/Functor.v) |
 | `comparison_unit_exponential_law` | `comparison_unit_exp_law` | [tests/gluing/ComparisonNaturality.v](../tests/gluing/ComparisonNaturality.v) |
 | `composition_empty_exponential_law` | `composition_empty_exp_law` | [tests/gluing/ComparisonComposition.v](../tests/gluing/ComparisonComposition.v) |
 | `composition_readers_exponential_law` | `composition_readers_exp_law` | [tests/gluing/ComparisonComposition.v](../tests/gluing/ComparisonComposition.v) |

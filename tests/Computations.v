@@ -239,8 +239,7 @@ Example bundled_ccc_product_inverse_computes
 Proof. reflexivity. Qed.
 
 Example bundled_ccc_exp_inverse_computes
-  : (@fct_exp SetCat_CCC SetCat_CCC CompositeCCC
-      (CCCFct_IsCCCF CompositeCCC) BoolS BoolS).1 id_resp true = true.
+  : (fct_exp (PreservesExp := CCCFct_preservesExp CompositeCCC) BoolS BoolS).1 id_resp true = true.
 Proof. reflexivity. Qed.
 End BundledCCCComputations.
 

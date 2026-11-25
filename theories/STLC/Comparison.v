@@ -112,7 +112,7 @@ Local Instance target_HasExponential
   := hasExponential C.
 Local Instance source_IsCartF
   : IsCartF F source_HasTerminal source_HasProduct
-  := @ccc_isCartF (TyCat_CCC B) C F HF.
+  := IsCCCF_isCartF HF.
 
 
 
@@ -128,13 +128,13 @@ Fixpoint type_compare (A : Ty B)
   | ty_base b => β b
   | ty_unit => terminal_unique (@terminal_universal C (hasTerminal C))
       (@fct_terminal (TyCat@{b e l} B) C F (TyCat_HasTerminal B)
-        (TyCat_HasProduct B) (@ccc_isCartF (TyCat_CCC B) C F HF))
+        (TyCat_HasProduct B) (IsCCCF_isCartF HF))
   | ty_prod A U => iso_trans (product_iso (type_compare A) (type_compare U))
       (iso_symm (fct_product_iso F A U))
   | ty_arr A U => iso_trans
       (exp_iso (type_compare A) (type_compare U))
       (iso_symm (existT _ (fct_exp_cmp F A U)
-        (@fct_exp (TyCat_CCC B) C F HF A U)))
+        (fct_exp (PreservesExp := IsCCCF_preservesExp HF) A U)))
   end.
 
 (** The product component is the canonical inverse comparison after the
@@ -184,10 +184,10 @@ Lemma type_compare_function (A U : Ty B)
       (exp_iso (type_compare A) (type_compare U)).1.
 Proof.
   change (fct_exp_cmp F A U ∘
-    ((@fct_exp (TyCat_CCC B) C F HF A U).1 ∘
+    ((fct_exp (PreservesExp := IsCCCF_preservesExp HF) A U).1 ∘
       (exp_iso (type_compare A) (type_compare U)).1) ≈
     (exp_iso (type_compare A) (type_compare U)).1).
-  rewrite <- comp_assoc, (snd (@fct_exp (TyCat_CCC B) C F HF A U).2),
+  rewrite <- comp_assoc, (snd (fct_exp (PreservesExp := IsCCCF_preservesExp HF) A U).2),
     comp_id_l. reflexivity.
 Qed.
 
@@ -205,7 +205,7 @@ Proof.
   rewrite <- (@fct_eval (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B) (TyCat_HasExponential B)
     (hasProduct C) (hasExponential C)
-    (@ccc_isCartF (TyCat_CCC B) C F HF) A U), comp_assoc, <- cross_comp,
+    (IsCCCF_isCartF HF) A U), comp_assoc, <- cross_comp,
     type_compare_function, comp_id_l.
   apply exp_iso_eval.
 Qed.
@@ -224,7 +224,7 @@ Lemma type_compare_curry {Z A U : Ty B} {X : @Ob C}
         (TyCat_HasExponential B) A U Z f) ∘ z.
 Proof.
   apply (iso_mono (fct_exp_cmp F A U)
-    (@fct_exp (TyCat_CCC B) C F HF A U)).
+    (fct_exp (PreservesExp := IsCCCF_preservesExp HF) A U)).
   rewrite <- !comp_assoc, type_compare_function, fct_curry.
   change (( (type_compare U).1 ^ (type_compare A).2.1)%hom ∘ (ƛ g) ≈
     curry (C := C) (fmap F f ∘ fct_product_inv F Z A) ∘ z).
@@ -282,7 +282,7 @@ Proof.
   induction t; intros Z X η ρ z H; cbn [tm_eval syntax_eval].
   - apply H.
   - destruct (@fct_terminal (TyCat@{b e l} B) C F (TyCat_HasTerminal B)
-      (TyCat_HasProduct B) (@ccc_isCartF (TyCat_CCC B) C F HF) X)
+      (TyCat_HasProduct B) (IsCCCF_isCartF HF) X)
       as [h [_ Hu]].
     transitivity h; [apply Hu | symmetry; apply Hu]; constructor.
   - rewrite type_compare_product, comp_assoc.
@@ -294,7 +294,7 @@ Proof.
       (fmap F (syntax_eval t2 η)) z), <- comp_assoc.
     rewrite <- (@fct_pair (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B) (hasProduct C)
-      (@ccc_isCartF (TyCat_CCC B) C F HF) A U Z
+      (IsCCCF_isCartF HF) A U Z
       (syntax_eval t1 η) (syntax_eval t2 η)).
     reflexivity.
   - rewrite <- comp_assoc, <- type_compare_π1, comp_assoc,
@@ -319,7 +319,7 @@ Proof.
         (ty_arr A U) A Z (syntax_eval t1 η) (syntax_eval t2 η))).
     rewrite (@fct_pair (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B) (hasProduct C)
-      (@ccc_isCartF (TyCat_CCC B) C F HF) (ty_arr A U) A Z
+      (IsCCCF_isCartF HF) (ty_arr A U) A Z
       (syntax_eval t1 η) (syntax_eval t2 η)).
     rewrite !comp_assoc.
     reflexivity.

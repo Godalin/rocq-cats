@@ -110,10 +110,8 @@ Defined.
 
 Program Definition TokenCCC (b : bool)
   : CCC
-  :=
-  {|CCCToCartCat := MakeCartCat SetCat (TokenTerminal b) SetCat_HasProduct
-  ; hasExponential := SetCat_HasExponential
-  |}.
+  := MakeCCC SetCat (TokenTerminal b) SetCat_HasProduct
+      SetCat_HasExponential.
 
 Example false_terminal_computes
   : @term (TokenCCC false) (hasTerminal (TokenCCC false)) UnitS tt = false.

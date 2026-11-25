@@ -71,10 +71,8 @@ Program Definition Gluing_HasExponential
 
 Program Definition Gluing_CCC `{TC : !HasTerminal C}
   : CCC
-  :=
-  {|CCCToCartCat := Gluing_CartCat F preserves
-  ; hasExponential := Gluing_HasExponential
-  |}.
+  := CCCOfCartCat (Gluing_CartCat F preserves)
+      Gluing_HasExponential.
 
 End ChosenGluingExps.
 

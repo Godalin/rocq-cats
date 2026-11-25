@@ -475,10 +475,10 @@ Definition mixed_levels_closed_composite
 
 Definition high_eq_bundled_closed_fct
   : CCCFct C D
-  := CCCFctOfFct F HF.
+  := CCCFctOfIsCCCF F HF.
 Definition low_eq_bundled_closed_fct
   : CCCFct D C
-  := CCCFctOfFct G HG.
+  := CCCFctOfIsCCCF G HG.
 Definition mixed_levels_bundled_closed_composite
   : CCCFct C C
   := CompCCCF low_eq_bundled_closed_fct high_eq_bundled_closed_fct.
@@ -1566,10 +1566,10 @@ Definition low_eq_stlc_interpretation
 
 Definition high_eq_bundled_type_interpretation
   : CCCFct (TyCat_CCC B) C
-  := CCCFctOfFct (C := TyCat_CCC B) (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
+  := CCCFctOfIsCCCF (C := TyCat_CCC B) (TypeInterpretF I) (TypeInterpretF_IsCCCF I).
 Definition low_eq_bundled_type_interpretation
   : CCCFct (TyCat_CCC B) D
-  := CCCFctOfFct (C := TyCat_CCC B) (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
+  := CCCFctOfIsCCCF (C := TyCat_CCC B) (TypeInterpretF J) (TypeInterpretF_IsCCCF J).
 
 Context (F : Fct (TyCat@{b e l} B) C)
     (HF : @IsCCCF (TyCat_CCC B) C F).

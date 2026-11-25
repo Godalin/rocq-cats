@@ -18,32 +18,25 @@ Hom 广集计算、极限保持性、笛卡尔闭函子复合及内部复合。
 唯一底层视图链为 `CCC → CartCat → Cat`。各个定理在可行时仍使用
 更弱的假设；抽取父结构不为它们增加前提。
 
-`CartCat`, `CCC`, `Topos` and `ETCS` are complete records, each storing
-one immediate parent. `CCC` stores `CCCToCartCat :> CartCat` and
-`hasExponential : HasExponential (hasProduct CCCToCartCat)`.
-Its underlying category comes from that parent, and no second terminal,
-product or category is stored. Generic theorems continue to use their
-fixed-category `Has*` assumptions. `IsCCCF` and `CCCFct` take the selected
-complete CCC endpoints, while the underlying functor remains ordinary `Fct`.
+Minks packs the underlying category, terminal object, products and
+exponentials in `CCC`. The exponential mixin depends on the stored products.
+`CCCToCartCat` recovers the cartesian parent from the same selections.
 
-`CartCat`、`CCC`、`Topos`、`ETCS` 均为完整记录，各只保存一个直接父结构。
-`CCC` 保存 `CCCToCartCat :> CartCat` 及绑定该父结构积选择的指数；
-底层范畴也来自同一父结构，不重复保存终对象、积或范畴。
-一般定理继续使用固定范畴上的 `Has*` 假设。`IsCCCF` 与 `CCCFct` 接收
-选定的完整 CCC 两端，底层函子仍为普通 `Fct`。
+`CCC` 平铺保存底层范畴、终对象、积与指数。指数 Mixin 依赖保存的积，
+`CCCToCartCat` 从同一组选择还原笛卡尔父结构。
 
-`CartFct` and `CCCFct` are complete records with the unique parent chain
-`CCCFctToCartFct` then `CartFctToFct`. The direct constructors
-`CCCFctOfCartFct` and `MakeCartFct` retain the supplied parent and evidence;
-`CCCFctOfFct` exposes fixed-functor preservation evidence as the same bundle.
+`CCCFct` extends `CartFct` with `PreservesExp`, the invertibility of the
+exponential comparison for the stored cartesian witness. Fixing its functor
+exports `IsCCCF`. The generated `CCCFctToIsCCCF` and `CCCFctOfIsCCCF`
+extract and reassemble that interface.
 `exp_cmp` names the general exponential comparison, and `fct_exp_cmp`
 is its cartesian-functor adapter. Other lowercase
 functor/exponential identifier segments use `fct`/`exp`; module paths and
 `HasExponential` stay unchanged.
 
-`CartFct`、`CCCFct` 为完整记录，唯一父链经 `CCCFctToCartFct`、
-`CartFctToFct`。直接构造器 `CCCFctOfCartFct`、`MakeCartFct` 保留给定
-父结构及证据，`CCCFctOfFct` 将固定函子保持性证据呈现为同一结构包。
+`CCCFct` 在 `CartFct` 上增加 `PreservesExp`，即相对于保存的笛卡尔见证的
+指数比较可逆性。固定底层函子后导出 `IsCCCF`。生成的 `CCCFctToIsCCCF`
+与 `CCCFctOfIsCCCF` 提取、重新打包这份接口。
 `exp_cmp` 命名通用指数比较，`fct_exp_cmp` 为其笛卡尔函子适配，其余小写函子／指数标识符
 词段使用 `fct`／`exp`；模块路径及 `HasExponential` 不变。
 
@@ -291,24 +284,24 @@ proofs remain explicitly enabled.
 structures. No chosen target products are needed until an operation uses them.
 [CCCFct](../theories/Cat/CCC/Functor.v) adds invertibility of the canonical
 exponential comparison to that same cartesian bundle. Its unique coercion chain
-is `CCCFct → CartFct → Fct`; the derived `CCCFct_IsCCCF`
+is `CCCFct → CartFct → Fct`; the derived `CCCFctToIsCCCF`
 instance reuses the stored cartesian witnesses.
 
 [CartFct](../theories/Cat/Functor/Cartesian.v) 保存一个底层 `Fct`
 及其相对于具名来源终对象和积结构的 `IsCartF` 证据；仅在运算实际需要时
 才引入目标选定积。[CCCFct](../theories/Cat/CCC/Functor.v) 在同一个
 笛卡尔包上增加规范指数比较的可逆性。唯一强制转换链为
-`CCCFct → CartFct → Fct`；派生实例 `CCCFct_IsCCCF`
+`CCCFct → CartFct → Fct`；派生实例 `CCCFctToIsCCCF`
 复用保存的笛卡尔见证。
 
-`MakeCartFct` and `CCCFctOfFct` package
+`MakeCartFct` and `CCCFctOfIsCCCF` package
 existing evidence transparently. `IdCartF`, `CompCartF`, `IdCCCF`
 and `CompCCCF` reuse the identity and composition theorems above. Clients can
 write `F X`, `fmap F f` and apply the existing comparison/curry laws directly.
 The fixed-functor interfaces remain available to general theorems and STLC
 clients; constructors do not register chosen model functors globally.
 
-`MakeCartFct` 及 `CCCFctOfFct` 透明地
+`MakeCartFct` 及 `CCCFctOfIsCCCF` 透明地
 打包已有证据。`IdCartF`、`CompCartF`、`IdCCCF`、`CompCCCF` 复用
 上述恒等和复合定理。客户端可直接写 `F X`、`fmap F f` 并应用已有比较／
 柯里化定律。固定函子接口继续服务于一般定理和 STLC 客户端；构造器不会全局

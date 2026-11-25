@@ -39,8 +39,8 @@ equivalences. Both support self-membership at distinct universe instances.
 
 The current local follow-up also makes `CartFct` and `CCCFct`
 complete records. Their unique parent projections are `CartFctToFct` and
-`CCCFctToCartFct`; `MakeCartFct` and `CCCFctOfCartFct` are direct
-constructors. `CCCFctOfFct` retains the useful fixed-functor preservation
+`CCCFctToCartFct`; `MakeCartFct` and `MakeCCCFct` are direct
+constructors. `CCCFctOfIsCCCF` retains the useful fixed-functor preservation
 presentation. `IsCartF` and `IsCCCF` remain classes. `functor_*` and
 `exponential_*` identifier segments now use `fct` and `exp`, with the exact
 map in [the naming guide](./Abbreviations.md). Historical class inventories
@@ -48,7 +48,7 @@ below describe their dated baselines.
 
 当前本地后续还将 `CartFct`、`CCCFct` 改为完整记录。唯一父投影为
 `CartFctToFct`、`CCCFctToCartFct`，直接构造器为 `MakeCartFct`、
-`CCCFctOfCartFct`；`CCCFctOfFct` 保留有实际用途的固定函子保持性呈现。
+`MakeCCCFct`；`CCCFctOfIsCCCF` 保留有实际用途的固定函子保持性呈现。
 `IsCartF`、`IsCCCF` 仍为类。标识符中的 `functor_*`、`exponential_*`
 词段现统一为 `fct`、`exp`，精确对照见[命名指南](./Abbreviations.md)。
 下方历史类清单仍描述其注明日期的基线。
@@ -1419,8 +1419,8 @@ PDF 留待下一集成批次统一导出。以上为本地验证结果，不代�
 
 The user-approved follow-up from `ca985e0` replaces parameterized complete
 classes by records. `CartCat` owns `CartCatToCat :> Cat` and its selected
-terminal object and products. `CCC` owns only `CCCToCartCat :> CartCat`
-and exponentials for that parent's products. `Topos` adds pullbacks and a
+terminal object and products. `CCC` stores these same components together with exponentials
+for its stored products. `CCCToCartCat` rebuilds the cartesian parent. `Topos` adds pullbacks and a
 classifier relative to the inherited terminal; `ETCS` adds its existing
 initial object, well-pointedness, split epimorphisms and NNO relative to
 that same terminal. The single chain is
@@ -1428,8 +1428,8 @@ that same terminal. The single chain is
 There is no carrier-equality field, duplicate selection or ancestor bypass.
 
 用户批准的 `ca985e0` 后续将参数化完整类改为记录。`CartCat` 保存
-`CartCatToCat :> Cat` 及其选定终对象和积；`CCC` 只保存
-`CCCToCartCat :> CartCat` 及相对于父结构积的指数。`Topos` 增加拉回及
+`CartCatToCat :> Cat` 及其选定终对象和积。`CCC` 平铺保存这些组件及其相对于选定积的指数，
+由 `CCCToCartCat` 还原笛卡尔父结构。`Topos` 增加拉回及
 相对于继承终对象的分类子；`ETCS` 沿用同一终对象，增加已有始对象、良点性、
 满态射分裂及自然数对象。唯一链为
 `ETCS → Topos → CCC → CartCat → Cat → Type`，

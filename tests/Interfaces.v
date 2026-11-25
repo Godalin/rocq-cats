@@ -231,6 +231,19 @@ End BundledCartesianInference.
 Section BundledCCCInference.
 Context {C D : CCC} (F : CCCFct C D).
 
+(** Packing a fixed functor preserves both of the supplied witnesses
+    by conversion, including the dependency between them. *)
+
+(** 打包固定函子时，两份给定见证及其依赖关系均按定义保留。 *)
+
+Example packed_ccc_cart_witness (G : Fct C D) (H : @IsCCCF C D G)
+  : isCartF (CCCFctToCartFct (CCCFctOfIsCCCF G H)) = IsCCCF_isCartF H
+  := eq_refl.
+
+Example packed_ccc_exp_witness (G : Fct C D) (H : @IsCCCF C D G)
+  : CCCFct_preservesExp (CCCFctOfIsCCCF G H) = IsCCCF_preservesExp H
+  := eq_refl.
+
 Definition inferred_ccc_preservation
   : @IsCCCF C D F
   := ltac:(typeclasses eauto).

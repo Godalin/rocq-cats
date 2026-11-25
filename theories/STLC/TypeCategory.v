@@ -237,7 +237,5 @@ Program Definition TyCat_Cart@{b e l +} (B : Type@{b})
 
 Program Definition TyCat_CCC@{b e l +} (B : Type@{b})
   : CCC@{b b e l l}
-  :=
-  {|CCCToCartCat := TyCat_Cart B
-  ; hasExponential := TyCat_HasExponential B
-  |}.
+  := CCCOfCartCat (TyCat_Cart B)
+      (TyCat_HasExponential B).

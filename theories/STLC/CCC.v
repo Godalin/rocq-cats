@@ -46,7 +46,5 @@ Program Definition CtxCat_Cart@{b e l +} (B : Type@{b})
 
 Program Definition CtxCat_CCC@{b e l +} (B : Type@{b})
   : CCC@{b b e l l}
-  :=
-  {|CCCToCartCat := CtxCat_Cart B
-  ; hasExponential := CtxCat_HasExponential B
-  |}.
+  := CCCOfCartCat (CtxCat_Cart B)
+      (CtxCat_HasExponential B).

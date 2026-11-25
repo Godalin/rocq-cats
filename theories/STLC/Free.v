@@ -89,7 +89,7 @@ Local Instance target_HasExponential
   := hasExponential C.
 Local Instance source_IsCartF
   : IsCartF F source_HasTerminal source_HasProduct
-  := @ccc_isCartF (TyCat_CCC B) C F HF.
+  := IsCCCF_isCartF HF.
 
 
 (** Naturality at both projections determines a transformation on products. *)
@@ -101,7 +101,7 @@ Lemma type_natural_product (α : TypeInterpretF I ⇒ F) (X Y : Ty B)
 Proof.
   apply (product_cone_ext (@fct_product (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B)
-    (@ccc_isCartF (TyCat_CCC B) C F HF) X Y)).
+    (IsCCCF_isCartF HF) X Y)).
   - rewrite <- (nat_naturality α (@Cats.Cat.Product.Core.π1
       (TyCat@{b e l} B) (TyCat_HasProduct B) X Y)).
     rewrite <- comp_assoc, (fst (fct_product_inv_β F X Y)),
@@ -150,9 +150,9 @@ Proof.
   pose proof (@fct_eval (TyCat@{b e l} B) C F
     (TyCat_HasTerminal B) (TyCat_HasProduct B) (TyCat_HasExponential B)
     (hasProduct C) (hasExponential C)
-    (@ccc_isCartF (TyCat_CCC B) C F HF) A U) as Ev.
+    (IsCCCF_isCartF HF) A U) as Ev.
   apply (iso_mono (fct_exp_cmp F A U)
-    (@fct_exp (TyCat_CCC B) C F HF A U)).
+    (fct_exp (PreservesExp := IsCCCF_preservesExp HF) A U)).
   apply (exp_ext_iso (type_compare F I β A)).
   transitivity ((eval ∘ (fct_exp_cmp F A U × id)) ∘
     (f × (type_compare F I β A).1)).
@@ -201,7 +201,7 @@ Proof.
   - exact (Hbase b0).
   - destruct (@fct_terminal (TyCat@{b e l} B) C F
       (TyCat_HasTerminal B) (TyCat_HasProduct B)
-      (@ccc_isCartF (TyCat_CCC B) C F HF) (TyI I ty_unit)) as [h [_ Hu]].
+      (IsCCCF_isCartF HF) (TyI I ty_unit)) as [h [_ Hu]].
     transitivity h; [apply Hu | symmetry; apply Hu]; constructor.
   - change (α (ty_prod A U) ≈ (type_compare F I β (ty_prod A U)).1).
     rewrite type_natural_product, type_compare_product.

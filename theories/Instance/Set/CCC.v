@@ -17,7 +17,5 @@ From Cats Require Import
 
 Program Definition SetCat_CCC
   : CCC
-  :=
-  {|CCCToCartCat := SetCat_Cart
-  ; hasExponential := SetCat_HasExponential
-  |}.
+  := CCCOfCartCat SetCat_Cart
+      SetCat_HasExponential.

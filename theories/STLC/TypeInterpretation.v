@@ -264,7 +264,8 @@ Qed.
 Program Definition TypeInterpretF_IsCCCF
   : @IsCCCF (TyCat_CCC B) C F
   :=
-  {|ccc_isCartF := TypeInterpretF_IsCartF I
+  {|IsCCCF_isCartF := TypeInterpretF_IsCartF I
+  ; IsCCCF_preservesExp := {|fct_exp := _|}
   |}.
 Next Obligation.
   exists id. split; unfold is_linv_of, is_rinv_of;

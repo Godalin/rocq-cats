@@ -21,14 +21,16 @@ Definition is_exp {C : Cat} `{HP : !HasProduct C}
 
 (** 相对于选定积的指数对象、求值及其泛性质。 *)
 
-Class HasExponential {C : Cat} (HP : HasProduct C)
+Minks.Mixin HasExponential {C : Cat}
+  extends HasProduct C
   :=
   { exp : C → C → C
   ; eval {X Y : C} : Hom (exp Y X × X) Y
-
-  ; exp_universal {X Y : C} : is_exp X Y (exp Y X) eval
+  ; exp_universal {X Y : C}
+    : is_exp X Y (exp Y X) eval
   }.
 
+Arguments HasExponential {_} _.
 Arguments exp_universal {_ _ _ _ _} _ _.
 
 Notation "X '^' Y" := (exp X Y)

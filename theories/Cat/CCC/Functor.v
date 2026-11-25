@@ -28,20 +28,39 @@ Local Open Scope hom_scope.
 Local Open Scope cat_scope.
 Local Open Scope ob_scope.
 
-(** A CCC functor preserves finite products and has invertible exponential
-    comparisons. All structures are named and explicitly supplied. *)
+(** Invertibility of the exponential comparison uses the specified
+    finite-product preservation witness. *)
 
-(** CCC 函子保持有限积，并具有可逆的指数比较；所有结构具名且显式提供。 *)
+(** 指数比较的可逆性使用给定的有限积保持性见证。 *)
 
-Class IsCCCF {C D : CCC} (F : Fct C D)
+Minks.Mixin PreservesExp {C D : CCC} (F : Fct C D)
+  extends IsCartF (C := C) (D := D) F (hasTerminal C) (hasProduct C)
   :=
-  { ccc_isCartF :: IsCartF F (hasTerminal C) (hasProduct C)
-  ; fct_exp X Y
+  { fct_exp (X Y : C)
     : is_iso (@fct_exp_cmp C D F
-        (hasTerminal C) (hasProduct C)
-        (hasExponential C)
-        (hasProduct D) (hasExponential D) ccc_isCartF X Y)
+        (hasTerminal C) (hasProduct C) (hasExponential C)
+        (hasProduct D) (hasExponential D) _ X Y)
   }.
+
+(** Pack the functor with its two preservation witnesses. Fixing the
+    underlying functor gives the relative interface [IsCCCF]. *)
+
+(** 打包函子及其两份保持性见证。固定底层函子即得相对接口 [IsCCCF]。 *)
+
+Minks.Struct CCCFct (C D : CCC)
+  extends CartFct (C := C) (D := D) (hasTerminal C) (hasProduct C)
+  with  preservesExp : PreservesExp [C, D, carrier, isCartF]
+  exports IsCCCF [carrier].
+
+Arguments IsCCCF {_ _} _.
+Arguments IsCCCF_isCartF {_ _ _} _.
+Arguments IsCCCF_preservesExp {_ _ _} _.
+Arguments MakeCCCFct {_ _} _ _ _.
+Arguments CCCFctOfCartFct {_ _} _ _.
+Arguments CCCFctToCartFct {_ _} _.
+Arguments CCCFct_preservesExp {_ _} _.
+Arguments CCCFctToIsCCCF {_ _} _.
+Arguments CCCFctOfIsCCCF {C D} _ _.
 
 (** Identity functors are cartesian closed relative to the same choices. *)
 
@@ -50,7 +69,8 @@ Class IsCCCF {C D : CCC} (F : Fct C D)
 Program Definition IdF_IsCCCF (C : CCC)
   : @IsCCCF C C (@IdF C)
   :=
-  {|ccc_isCartF := IdF_IsCartF C (hasTerminal C) (hasProduct C)
+  {|IsCCCF_isCartF := IdF_IsCartF C (hasTerminal C) (hasProduct C)
+  ; IsCCCF_preservesExp := {|fct_exp := _|}
   |}.
 Next Obligation.
   assert (H : fct_exp_cmp (@IdF C)
@@ -97,14 +117,15 @@ Proof. apply exp_cmp_comp. Qed.
 Program Definition CompF_IsCCCF
   : @IsCCCF C E (G ∘F F)
   :=
-  {|ccc_isCartF := CompF_IsCartF F G
+  {|IsCCCF_isCartF := CompF_IsCartF F G
+  ; IsCCCF_preservesExp := {|fct_exp := _|}
   |}.
 Next Obligation.
   refine (is_iso_equiv (symmetry (fct_exp_cmp_comp X Y)) _).
   apply is_iso_comp.
   - apply (@fct_is_iso D E G).
-    exact (@fct_exp C D F HF X Y).
-  - exact (@fct_exp D E G HG (F X) (F Y)).
+    exact (fct_exp (PreservesExp := IsCCCF_preservesExp HF) X Y).
+  - exact (fct_exp (PreservesExp := IsCCCF_preservesExp HG) (F X) (F Y)).
 Defined.
 
 End ClosedFunctorComposition.
@@ -113,62 +134,13 @@ End ClosedFunctorComposition.
 
 (** ** 打包的笛卡尔闭函子 *)
 
-(** A CCC functor extends one cartesian functor with invertibility of the
-    canonical exponential comparison. The coercion chain passes through
-    [CartFct] to [Fct], storing neither a second functor nor
-    another choice of cartesian preservation witnesses. *)
-
-(** CCC 函子为一个笛卡尔函子增加规范指数比较的可逆性；强制转换经
-    [CartFct] 到达 [Fct]，不另存函子或另一份笛卡尔保持性见证。 *)
-
-Record CCCFct (C D : CCC)
-  := CCCFctOfCartFct
-  { CCCFctToCartFct :> @CartFct C D
-      (hasTerminal C) (hasProduct C)
-  ; ccc_fct_exp (X Y : @Ob C)
-    : is_iso (@fct_exp_cmp C D CCCFctToCartFct
-        (hasTerminal C) (hasProduct C) (hasExponential C)
-        (hasProduct D) (hasExponential D)
-        (isCartF CCCFctToCartFct) X Y)
-  }.
-
-Arguments CCCFctOfCartFct {_ _} _ _.
-Arguments CCCFctToCartFct {_ _} _.
-Arguments ccc_fct_exp {_ _} _ _ _.
-
-(** Recover the fixed-functor presentation from the stored data. This
-    generic inherited instance needs an explicit bundled functor; it does
-    not choose a concrete model. Cartesian evidence is shared definitionally. *)
-
-(** 从保存的数据恢复固定函子呈现。这个通用继承实例需要显式的打包函子，
-    不选取具体模型；笛卡尔证据在定义上共享。 *)
-
-Program Instance CCCFct_IsCCCF {C D : CCC}
-    (F : CCCFct C D)
-  : @IsCCCF C D F
-  :=
-  {|ccc_isCartF := isCartF (CCCFctToCartFct F)
-  ; fct_exp := ccc_fct_exp F
-  |}.
-
-(** Bundle existing CCC-preservation evidence without changing the
-    underlying functor, its product mediators or its exponential inverses. *)
-
-(** 打包已有 CCC 保持性证据，不改变底层函子、积中介或指数比较的逆。 *)
-
-Program Definition CCCFctOfFct {C D : CCC}
-    (F : Fct C D) (HF : @IsCCCF C D F)
-  : CCCFct C D
-  := CCCFctOfCartFct
-    (MakeCartFct F (@ccc_isCartF C D F HF)) (@fct_exp C D F HF).
-
 (** The bundled identity uses the existing CCC-preservation theorem. *)
 
 (** 打包的恒等函子使用已有 CCC 保持性定理。 *)
 
 Program Definition IdCCCF (C : CCC)
   : CCCFct C C
-  := CCCFctOfFct IdF (IdF_IsCCCF C).
+  := CCCFctOfIsCCCF IdF (IdF_IsCCCF C).
 
 (** Compose bundled CCC functors using the established comparison and
     preservation proofs; the underlying functor is ordinary composition. *)
@@ -178,6 +150,6 @@ Program Definition IdCCCF (C : CCC)
 Program Definition CompCCCF {C D E : CCC}
     (G : CCCFct D E) (F : CCCFct C D)
   : CCCFct C E
-  := CCCFctOfFct (G ∘F F)
+  := CCCFctOfIsCCCF (G ∘F F)
       (CompF_IsCCCF F G
-        (CCCFct_IsCCCF F) (CCCFct_IsCCCF G)).
+        (CCCFctToIsCCCF F) (CCCFctToIsCCCF G)).
