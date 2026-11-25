@@ -312,11 +312,11 @@ Elpi File minks.flat lp:{{
     coq.id->name F Name,
     pi x\ @pi-decl Name Ty x\ field-sorts (Tail x) Next Sort.
 
-  % Normalize the instance after field typing has unified its levels.
+  % Read the unified instance without unfolding a transparent native head.
   pred head-levels i:term, o:list univ.variable.
   head-levels Ty Levels :-
     coq.safe-dest-app Ty Head _, Head = pglobal _ _, !,
-    coq.reduction.lazy.whd Head (pglobal _ Instance),
+    (@redflags! coq.redflags.nored => coq.reduction.lazy.whd Head (pglobal _ Instance)),
     coq.univ-instance Instance Inherited,
     std.filter Inherited
       (l\ sigma u\ coq.univ.variable u l, not (coq.univ.global? u)) Local,

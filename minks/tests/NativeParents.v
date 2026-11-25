@@ -378,6 +378,27 @@ Example from_alias (x : Aliases)
   := eq_refl.
 End NativeAliases.
 
+(** A polymorphic alias with a binder keeps its native head when Minks
+    reads its universes. Both parent paths store the same indexed box. *)
+
+Module NativeFamilyAlias.
+Record Box (A : Type) := MakeBox { value : A }.
+Definition BoxAlias (A : Type) := Box A.
+
+Minks.Struct Boxes (A : Type) extends Box A.
+Minks.Struct Aliases (A : Type) extends BoxAlias A.
+Minks.Struct Together (A : Type) extends Boxes A, Aliases A.
+
+Check MakeTogether : ∀ A : Type, Box A → Together A.
+
+Example from_alias (A : Type) (x : Aliases A)
+  : TogetherToBoxes A (TogetherOfAliases A x)
+    = MakeBoxes A (AliasesToBoxAlias A x)
+  := eq_refl.
+
+Fail Minks.Struct Different (A B : Type) extends Boxes A, Aliases B.
+End NativeFamilyAlias.
+
 Module MetadataOnly.
 Minks.Struct Phantom (A : Type).
 
