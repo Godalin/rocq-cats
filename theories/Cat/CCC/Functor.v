@@ -34,12 +34,10 @@ Local Open Scope ob_scope.
 (** 指数比较的可逆性使用给定的有限积保持性见证。 *)
 
 Minks.Mixin PreservesExp {C D : CCC} (F : Fct C D)
-  extends @IsCartF C D F (hasTerminal C) (hasProduct C)
+  extends @IsCartF C D F _ _
   :=
   { fct_exp (X Y : C)
-    : is_iso (@fct_exp_cmp C D F
-        (hasTerminal C) (hasProduct C) (hasExponential C)
-        (hasProduct D) (hasExponential D) _ X Y)
+    : is_iso (fct_exp_cmp F (PD := hasProduct D) X Y)
   }.
 
 (** Pack the functor with its two preservation witnesses. Fixing the
@@ -48,8 +46,9 @@ Minks.Mixin PreservesExp {C D : CCC} (F : Fct C D)
 (** 打包函子及其两份保持性见证。固定底层函子即得相对接口 [IsCCCF]。 *)
 
 Minks.Struct CCCFct (C D : CCC)
-  extends @CartFct C D (hasTerminal C) (hasProduct C)
-  with  preservesExp : PreservesExp [C, D, carrier, isCartF]
+  extends @CartFct C D _ _
+  with  preservesExp
+        : PreservesExp [C, D, carrier, isCartF]
   exports IsCCCF [carrier].
 
 Arguments IsCCCF {_ _} _.
@@ -60,7 +59,7 @@ Arguments CCCFctOfCartFct {_ _} _ _.
 Arguments CCCFctToCartFct {_ _} _.
 Arguments CCCFct_preservesExp {_ _} _.
 Arguments CCCFctToIsCCCF {_ _} _.
-Arguments CCCFctOfIsCCCF {C D} _ _.
+Arguments CCCFctOfIsCCCF {_ _} _ _.
 
 (** Identity functors are cartesian closed relative to the same choices. *)
 
@@ -69,23 +68,15 @@ Arguments CCCFctOfIsCCCF {C D} _ _.
 Program Definition IdF_IsCCCF (C : CCC)
   : @IsCCCF C C (@IdF C)
   :=
-  {|IsCCCF_isCartF := IdF_IsCartF C (hasTerminal C) (hasProduct C)
+  {|IsCCCF_isCartF := IdF_IsCartF C _ _
   ; IsCCCF_preservesExp := {|fct_exp := _|}
   |}.
 Next Obligation.
-  assert (H : fct_exp_cmp (@IdF C)
-    (TC := hasTerminal C) (PC := hasProduct C)
-    (EC := hasExponential C) (PD := hasProduct C)
-    (ED := hasExponential C)
-    (HF := IdF_IsCartF C (hasTerminal C) (hasProduct C))
-    X Y ≈ id).
-  { pose proof (id_fct_product_inv C (hasTerminal C) (hasProduct C)
-      (Y ^ X) X) as HP.
-    unfold fct_product_inv in HP.
-    unfold fct_exp_cmp, exp_cmp.
-    rewrite HP, comp_id_r. apply exp_curry_eval. }
-  exists id. split; unfold is_linv_of, is_rinv_of;
-    [rewrite comp_id_l | rewrite comp_id_r]; exact H.
+  refine (is_iso_equiv (f := id) _ iso_refl.2).
+  symmetry. unfold fct_exp_cmp, exp_cmp.
+  pose proof (id_fct_product_inv C _ _ (Y ^ X) X) as HP.
+  unfold fct_product_inv in HP.
+  rewrite HP, comp_id_r. apply exp_curry_eval.
 Defined.
 
 (** ** Composition of Cartesian Closed Functors *)
@@ -136,7 +127,7 @@ End ClosedFunctorComposition.
 
 (** 打包的恒等函子使用已有 CCC 保持性定理。 *)
 
-Program Definition IdCCCF (C : CCC)
+Canonical IdCCCF (C : CCC)
   : CCCFct C C
   := CCCFctOfIsCCCF IdF (IdF_IsCCCF C).
 
@@ -145,8 +136,7 @@ Program Definition IdCCCF (C : CCC)
 
 (** 用已确立的比较及保持性证明复合打包 CCC 函子；底层函子仍为普通复合。 *)
 
-Program Definition CompCCCF {C D E : CCC}
+Canonical CompCCCF {C D E : CCC}
     (G : CCCFct D E) (F : CCCFct C D)
   : CCCFct C E
-  := CCCFctOfIsCCCF (G ∘F F)
-      (CompF_IsCCCF F G).
+  := CCCFctOfIsCCCF (G ∘F F) (CompF_IsCCCF F G).
