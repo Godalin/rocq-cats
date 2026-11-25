@@ -135,7 +135,7 @@ Definition CartHasMonoidal
 
 (** 导出的张量作用与选定积的二元映射相等。 *)
 
-Lemma cartesian_tensor_map {X X' Y Y' : @Ob C}
+Lemma cartesian_tensor_map {X X' Y Y' : C}
     (f : Hom X X') (g : Hom Y Y')
   : tensor_map (IM := HasMonoidal_interchange CartHasMonoidal) f g ≈ f × g.
 Proof. apply bifct_sequence. Qed.

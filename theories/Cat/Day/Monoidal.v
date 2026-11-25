@@ -3,8 +3,7 @@ From Cats Require Import
   Cat.Functor.Core
   Cat.Natural
   Cat.Monoidal.Bifct
-  Instance.Set.Core
-  Cat.Monoidal.Laws.
+  Instance.Set.Core.
 From Cats Require Export
   Cat.Day.Semigroupal.
 From Cats Require Export Cat.Monoidal.Monoidal (HasMonoidal_interchange).

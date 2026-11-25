@@ -1100,7 +1100,7 @@ The general [inverse-square lemma](../theories/Cat/Isomorphism.v) inverts
 the vertical isomorphisms of any commuting square using specified hom
 equality. [Centrality of an inverse](../theories/Cat/Monoidal/Center.v)
 uses that lemma with the fixed-context functors. The
-[premonoidal inverse laws](../theories/Cat/Monoidal/PremonoidalLaws.v) derive all
+[associator](../theories/Cat/Monoidal/Associator.v) and [unitor inverse laws](../theories/Cat/Monoidal/Unitor.v) derive all
 three inverse centrality witnesses and all five inverse naturality
 squares. Forward and inverse maps are projections of the same selected
 isomorphisms; inverse centrality/naturality are not duplicate class fields.
@@ -1110,7 +1110,7 @@ of each structural map; object tensor and contexts retain binoidal notation.
 一般[逆方块引理](../theories/Cat/Isomorphism.v) 使用指定 Hom 相等，对任意
 交换方块的竖直同构取逆。[逆的中心性](../theories/Cat/Monoidal/Center.v)
 将该引理应用于固定上下文函子。
-[预幺半逆向定律](../theories/Cat/Monoidal/PremonoidalLaws.v) 导出全部三种逆中心性
+[结合子](../theories/Cat/Monoidal/Associator.v)和[单位子逆向定律](../theories/Cat/Monoidal/Unitor.v) 导出全部三种逆中心性
 见证及五个逆自然性方块。正逆映射都是同一选定同构的投影；逆中心性／自然性
 不作为重复类字段保存。公开 `premonoidal_scope` 记号提供单位对象及每种
 结构映射的两个方向；对象张量及上下文沿用双侧张量记号。
@@ -1191,7 +1191,7 @@ from the same parent.
 Two proofs use weaker hypotheses than monoidal structure:
 [central_sequence_comp](../theories/Cat/Monoidal/Center.v) needs centrality
 only of the crossing arrow, and
-[premonoidal_assoc_sequence_natural](../theories/Cat/Monoidal/PremonoidalLaws.v)
+[tensor_assoc_sequence_natural](../theories/Cat/Monoidal/Associator.v)
 uses only separate premonoidal naturality. The monoidal tensor functor
 and joint associator naturality reuse these proofs. Derived natural
 isomorphisms retain the original inverse components rather than storing
@@ -1200,7 +1200,7 @@ new choices.
 两项证明使用比幺半结构更弱的前提：
 [central_sequence_comp](../theories/Cat/Monoidal/Center.v) 只要求需要交换的
 那条态射的中心性；
-[premonoidal_assoc_sequence_natural](../theories/Cat/Monoidal/PremonoidalLaws.v)
+[tensor_assoc_sequence_natural](../theories/Cat/Monoidal/Associator.v)
 只使用预幺半的分别自然性。幺半张量函子及结合子的联合自然性复用这些证明。
 导出自然同构保留原逆分量，不保存新的选择。
 
@@ -1529,7 +1529,7 @@ changes object representatives along chosen isomorphisms and supplies a
 natural isomorphism to the original functor. Its boundary-naturality lemma
 uses the weakest sufficient assumptions: a natural incoming boundary and
 an invertible outgoing one. General
-[tensor transport](../theories/Cat/Monoidal/BinoidalTransport.v) uses context
+[tensor transport](../theories/Cat/Monoidal/Center.v) uses context
 functors and centrality of transported identities. Premonoidal associators
 and the left unitor now expose the natural transformations used by this
 argument. Equality isomorphisms, commuting-square composition and the
@@ -1538,7 +1538,7 @@ general category theories.
 
 可复用的[函子运输](../theories/Cat/Functor/Transport.v)沿选定同构改变对象
 代表，并提供到原函子的自然同构。其边界自然性引理只使用充分的最弱条件：
-入边界自然，出边界可逆。一般[张量运输](../theories/Cat/Monoidal/BinoidalTransport.v)
+入边界自然，出边界可逆。一般[张量运输](../theories/Cat/Monoidal/Center.v)
 使用上下文函子及运输恒等的中心性。预幺半结合子及左单位子现在暴露此论证
 需要的自然变换。相等同构、交换方块复合及诱导分解的自然同构比较均放在
 相应一般范畴理论中。

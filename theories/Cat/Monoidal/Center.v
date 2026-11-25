@@ -16,7 +16,10 @@ Local Open Scope monoidal_scope.
     中心态射可在张量的任意一侧与另一任意态射交换执行次序。这是指定态射的
     额外证据，不是任意计算之间的交换律。 *)
 
-Definition is_central {C : Cat} `{BC : !HasBinoidal C}
+Section CentralLaws.
+Context {C : Cat} `{BC : !HasBinoidal C}.
+
+Definition is_central
     {X Y : C} (f : Hom X Y)
   := ∀ Z W (g : Hom Z W),
     (f ⊳ W) ∘ (X ⊲ g) ≈ (Y ⊲ g) ∘ (f ⊳ Z) ∧
@@ -30,9 +33,6 @@ Definition is_central {C : Cat} `{BC : !HasBinoidal C}
 (** ** 中心态射与中心
 
     固定双侧张量范畴，导出中心态射的闭包与取逆定律，再构造具有继承作用的中心范畴。 *)
-
-Section CentralLaws.
-Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** Centrality is invariant under specified hom equality. *)
 
@@ -51,7 +51,7 @@ Qed.
 (** 同一运输给出双向保相等性。 *)
 
 Global Instance is_central_proper {X Y : C}
-  : Proper (HomEq ==> iffT) (@is_central C BC X Y).
+  : Proper (HomEq ==> iffT) (@is_central X Y).
 Proof.
   intros f g H. split; intros Hf.
   - exact (central_equiv H Hf).
@@ -136,7 +136,19 @@ Lemma central_sequence_r {X Y Z W : C}
   : tensor_sequence f g ≈ (f ⊳ W) ∘ (X ⊲ g).
 Proof. exact (snd (Hg X Y f)). Qed.
 
-End CentralLaws.
+(** Changing the fixed context along an equality is natural in an arbitrary
+    computation, by centrality of the transported identity. *)
+
+(** 沿相等改变固定上下文时，对任意计算自然；这来自运输恒等的中心性。 *)
+
+Lemma tensor_context_eq {Z W : C} (p : Z = W)
+    {X Y : C} (f : Hom X Y)
+  : eq_to_hom (f_equal (λ Q, Q ⊗ Y) p) ∘ (Z ⊲ f) ≈
+      (W ⊲ f) ∘ eq_to_hom (f_equal (λ Q, Q ⊗ X) p).
+Proof.
+  pose proof (fst (eq_to_hom_central p X Y f)) as H.
+  rewrite !tensor_r_eq_to_hom in H. exact H.
+Qed.
 
 (** Ordered tensoring preserves composition when the later left arrow
     exchanges with the earlier right arrow. No other centrality is needed. *)
@@ -144,9 +156,8 @@ End CentralLaws.
 (** 后执行的左态射可与先执行的右态射交换时，有序张量保持复合；不需其他
     中心性条件。 *)
 
-Lemma central_sequence_comp {C : Cat}
-    `{BC : !HasBinoidal C}
-    {X X' X'' Y Y' Y'' : @Ob C}
+Lemma central_sequence_comp
+    {X X' X'' Y Y' Y'' : C}
     (f' : Hom X' X'') (f : Hom X X')
     (g' : Hom Y' Y'') (g : Hom Y Y')
     (Hf' : is_central f')
@@ -158,3 +169,5 @@ Proof.
   rewrite <- (comp_assoc (X'' ⊲ g) (f' ⊳ Y) (f ⊳ Y)),
     <- (fst (Hf' Y Y' g)), comp_assoc. reflexivity.
 Qed.
+
+End CentralLaws.

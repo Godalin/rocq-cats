@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Computational.Freyd.Core
-  Cat.Monoidal.BinoidalTransport
+  Cat.Monoidal.Center
   Cat.Functor.Transport.
 From Cats Require Import
   Cat.Terminal

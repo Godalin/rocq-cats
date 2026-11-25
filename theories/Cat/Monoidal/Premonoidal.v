@@ -32,8 +32,7 @@ Minks.Mixin IsPremonoidal (C : Cat)
     : (X ⊲ λ[Y]) ∘ α[X; 𝐈; Y] ≈ ρ[X] ⊳ Y
   }.
 
-Arguments tensor_triangle
-  {C BC AC UC IP} _ _ : rename.
+Arguments tensor_triangle {_ _ _ _ _} _ _.
 
 (** Add the associator and its coherent unitors to one binoidal tensor. *)
 

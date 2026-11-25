@@ -1,6 +1,5 @@
 From Cats Require Export
-  Cat.Monoidal.Monoidal
-  Cat.Monoidal.PremonoidalLaws.
+  Cat.Monoidal.Monoidal.
 From Cats Require Import
   Cat.Isomorphism.
 
@@ -22,11 +21,11 @@ Local Open Scope ob_scope.
 Minks.Mixin HasTensorSym (C : Cat)
   extends HasBinoidal C
   :=
-  { tensor_sym (X Y : @Ob C)
+  { tensor_sym (X Y : C)
     : Hom (X ⊗ Y) (Y ⊗ X)
-  ; tensor_sym_central (X Y : @Ob C)
+  ; tensor_sym_central (X Y : C)
     : is_central (tensor_sym X Y)
-  ; tensor_sym_involutive (X Y : @Ob C)
+  ; tensor_sym_involutive (X Y : C)
     : tensor_sym Y X
       ∘ tensor_sym X Y ≈ id
 
@@ -34,13 +33,13 @@ Minks.Mixin HasTensorSym (C : Cat)
 
   (** 保存左位置自然性；右位置自然性随后导出。 *)
 
-  ; tensor_sym_natural_l {X X' : @Ob C}
-      (Y : @Ob C) (f : Hom X X')
+  ; tensor_sym_natural_l {X X' : C}
+      (Y : C) (f : Hom X X')
     : tensor_sym X' Y ∘ (f ⊳ Y) ≈
         (Y ⊲ f) ∘ tensor_sym X Y
   }.
 
-Arguments tensor_sym {C BC S} _ _ : rename.
+Arguments tensor_sym {_ _ _} _ _.
 
 (** The selected exchange agrees with the selected associator. *)
 
@@ -49,14 +48,14 @@ Arguments tensor_sym {C BC S} _ _ : rename.
 Minks.Mixin IsSymHexagon (C : Cat)
   extends HasTensorSym C, HasTensorAssoc C
   :=
-  { tensor_sym_hexagon (X Y Z : @Ob C)
+  { tensor_sym_hexagon (X Y Z : C)
     : α[Y; Z; X] ∘
         (tensor_sym X (Y ⊗ Z) ∘ α[X; Y; Z]) ≈
         (Y ⊲ tensor_sym X Z) ∘
           (α[Y; X; Z] ∘ (tensor_sym X Y ⊳ Z))
   }.
 
-Arguments tensor_sym_hexagon {C BC S AC H} _ _ _ : rename.
+Arguments tensor_sym_hexagon {_ _ _ _ _} _ _ _.
 
 (** The selected exchange agrees with the two selected unitors. *)
 
@@ -65,11 +64,11 @@ Arguments tensor_sym_hexagon {C BC S AC H} _ _ _ : rename.
 Minks.Mixin IsSymUnit (C : Cat)
   extends HasTensorSym C, HasTensorUnitors C
   :=
-  { tensor_sym_unit (X : @Ob C)
+  { tensor_sym_unit (X : C)
     : λ[X] ∘ tensor_sym X 𝐈 ≈ ρ[X]
   }.
 
-Arguments tensor_sym_unit {C BC S UC H} _ : rename.
+Arguments tensor_sym_unit {_ _ _ _ _} _.
 
 (** Extend one premonoidal category by its chosen symmetric exchange. *)
 
@@ -111,7 +110,7 @@ Context {C : Cat} `{BC : !HasBinoidal C}
 
 (** 交换的选定逆就是反序交换。 *)
 
-Definition TensorSymIso (X Y : @Ob C)
+Definition TensorSymIso (X Y : C)
   : (X ⊗ Y) ≅ (Y ⊗ X)
   := (σₚ[X; Y]; (σₚ[Y; X];
     (tensor_sym_involutive X Y,
@@ -121,8 +120,8 @@ Definition TensorSymIso (X Y : @Ob C)
 
 (** 对左变量方块取逆，得到右变量自然性。 *)
 
-Lemma tensor_sym_natural_r {Y Y' : @Ob C}
-    (X : @Ob C) (g : Hom Y Y')
+Lemma tensor_sym_natural_r {Y Y' : C}
+    (X : C) (g : Hom Y Y')
   : σₚ[X; Y'] ∘ (X ⊲ g) ≈ (g ⊳ X) ∘ σₚ[X; Y].
 Proof.
   exact (iso_square_inv (TensorSymIso Y X)
@@ -134,8 +133,8 @@ Qed.
 
 (** 沿交换共轭，从左作用恢复右作用。 *)
 
-Lemma tensor_r_sym {X Y : @Ob C}
-    (Z : @Ob C) (f : Hom X Y)
+Lemma tensor_r_sym {X Y : C}
+    (Z : C) (f : Hom X Y)
   : f ⊳ Z ≈ σₚ[Z; Y] ∘ ((Z ⊲ f) ∘ σₚ[X; Z]).
 Proof.
   apply (iso_cancel_l (TensorSymIso Y Z)).

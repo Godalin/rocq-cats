@@ -23,7 +23,7 @@ Context {C D : Cat}
 
 (** 先组合两个像，再作用运算的像。 *)
 
-Definition lax_lift2 {X Y Z : @Ob C}
+Definition lax_lift2 {X Y Z : C}
     (f : Hom (X ⊗ Y) Z)
   : Hom (L X ⊗ L Y) (L Z)
   := fmap L f ∘ φ₂[L; X; Y].
@@ -32,7 +32,7 @@ Definition lax_lift2 {X Y Z : @Ob C}
 
 (** 提升保持运算的指定相等。 *)
 
-Global Instance lax_lift2_proper {X Y Z : @Ob C}
+Global Instance lax_lift2_proper {X Y Z : C}
   : Proper (HomEq ==> HomEq) (@lax_lift2 X Y Z).
 Proof. intros f g H. unfold lax_lift2. rewrite H. reflexivity. Qed.
 
@@ -40,7 +40,7 @@ Proof. intros f g H. unfold lax_lift2. rewrite H. reflexivity. Qed.
 
 (** 在提升后的运算之后作用通常映射，满足函子性。 *)
 
-Lemma lax_lift2_post {X Y Z W : @Ob C}
+Lemma lax_lift2_post {X Y Z W : C}
     (f : Hom (X ⊗ Y) Z) (g : Hom Z W)
   : fmap L g ∘ lax_lift2 f ≈ lax_lift2 (g ∘ f).
 Proof. unfold lax_lift2. rewrite <- comp_assoc, <- fmap_comp. reflexivity. Qed.
@@ -49,7 +49,7 @@ Proof. unfold lax_lift2. rewrite <- comp_assoc, <- fmap_comp. reflexivity. Qed.
 
 (** 自然性将两个输入上的通常映射移入提升。 *)
 
-Lemma lax_lift2_pre {X Y X' Y' Z : @Ob C}
+Lemma lax_lift2_pre {X Y X' Y' Z : C}
     (f : Hom (X' ⊗ Y') Z)
     (g : Hom X X') (h : Hom Y Y')
   : lax_lift2 f ∘ (tensor_map (IM := HasMonoidal_interchange MD) (fmap L g) (fmap L h)) ≈
@@ -63,7 +63,7 @@ Qed.
 
 (** 可以在左输入中代入提升后的运算。 *)
 
-Lemma lax_lift2_left {X Y Z U V : @Ob C}
+Lemma lax_lift2_left {X Y Z U V : C}
     (f : Hom (X ⊗ Y) U)
     (g : Hom (U ⊗ Z) V)
   : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id) ≈
@@ -82,7 +82,7 @@ Qed.
 
 (** 右输入中的对应代入保持原有次序。 *)
 
-Lemma lax_lift2_right {X Y Z U V : @Ob C}
+Lemma lax_lift2_right {X Y Z U V : C}
     (f : Hom (Y ⊗ Z) U)
     (g : Hom (X ⊗ U) V)
   : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 f)) ≈
@@ -102,7 +102,7 @@ Qed.
 
 (** 提升保持任意二元结合图，两侧使用选定结合子；各运算可以具有不同类型。 *)
 
-Lemma lax_lift2_assoc {X Y Z U V T : @Ob C}
+Lemma lax_lift2_assoc {X Y Z U V T : C}
     (f : Hom (X ⊗ Y) U)
     (g : Hom (U ⊗ Z) T)
     (h : Hom (Y ⊗ Z) V)

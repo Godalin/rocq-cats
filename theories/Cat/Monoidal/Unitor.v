@@ -1,6 +1,8 @@
 From Cats Require Export
   Cat.Monoidal.Center
   Cat.NaturalLaws.
+From Cats Require Import
+  Cat.Isomorphism.
 
 Local Open Scope monoidal_scope.
 Local Open Scope ob_scope.
@@ -36,15 +38,18 @@ Reserved Notation "'ρ⁻¹[' X ']'"
 
     给定自然同构已包含其逆及自然性；这里只需正向中心性，逆的中心性由此推出。 *)
 
-Minks.Mixin IsTensorUnitors (C : Cat) {hasBinoidal : HasBinoidal C}
+Minks.Mixin IsTensorUnitors {C : Cat}
+    `{hasBinoidal : HasBinoidal C}
     (I : C) (L : (I ⊗-) ≅N IdF) (R : (-⊗ I) ≅N IdF)
   :=
-  { unitor_l_central (X : C) : is_central (L.1 X)
-  ; unitor_r_central (X : C) : is_central (R.1 X)
+  { unitor_l_central (X : C)
+    : is_central (L.1 X)
+  ; unitor_r_central (X : C)
+    : is_central (R.1 X)
   }.
 
-Arguments unitor_l_central {C hasBinoidal I L R IsTensorUnitors} _.
-Arguments unitor_r_central {C hasBinoidal I L R IsTensorUnitors} _.
+Arguments unitor_l_central {_ _ _ _ _ _} _.
+Arguments unitor_r_central {_ _ _ _ _ _} _.
 
 (** Choose one shared unit and the two natural isomorphisms. *)
 
@@ -81,7 +86,7 @@ Minks.Mixin HasTensorUnitors (C : Cat)
     : (X ⊗ 𝐈) ≅ X
     := (ρ[X]; TensorUnitorRIso.2 X)
   ; isTensorUnitors
-    :: @IsTensorUnitors C hasBinoidal 𝐈 TensorUnitorLIso TensorUnitorRIso
+    :: IsTensorUnitors 𝐈 TensorUnitorLIso TensorUnitorRIso
   }.
 
 Arguments tensor_unit {_ _} _.
@@ -120,7 +125,8 @@ Notation "'ρ⁻¹[' X ']'" := (tensor_unitor_r X).2.1
     固定单位子，不假设结合性；分量中心性及自然性直接读取保存的证据。 *)
 
 Section Laws.
-Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !@HasTensorUnitors C BC}.
+Context {C : Cat} `{BC : !HasBinoidal C}
+  `{UC : !@HasTensorUnitors C BC}.
 
 (** The left unitor is central. *)
 
@@ -156,6 +162,48 @@ Lemma tensor_unitor_r_natural {X Y : C} (f : Hom X Y)
   : ρ[Y] ∘ (f ⊳ 𝐈) ≈ f ∘ ρ[X].
 Proof.
   exact (nat_naturality (TensorUnitorRIso UC).1 f).
+Qed.
+
+(** The inverse left unitor is central. *)
+
+(** 逆左单位子是中心态射。 *)
+
+Definition tensor_unitor_l_inv_central (X : C)
+  : is_central λ⁻¹[X]
+  := central_inv (tensor_unitor_l X)
+      (tensor_unitor_l_central X).
+
+(** The inverse right unitor is central. *)
+
+(** 逆右单位子是中心态射。 *)
+
+Definition tensor_unitor_r_inv_central (X : C)
+  : is_central ρ⁻¹[X]
+  := central_inv (tensor_unitor_r X)
+      (tensor_unitor_r_central X).
+
+(** The inverse left unitor is natural in its variable. *)
+
+(** 逆左单位子在其变量上自然。 *)
+
+Lemma tensor_unitor_l_inv_natural {X Y : C} (f : Hom X Y)
+  : λ⁻¹[Y] ∘ f ≈ (𝐈 ⊲ f) ∘ λ⁻¹[X].
+Proof.
+  exact (iso_square_inv
+    (tensor_unitor_l X) (tensor_unitor_l Y)
+    (𝐈 ⊲ f) f (tensor_unitor_l_natural f)).
+Qed.
+
+(** The inverse right unitor is natural in its variable. *)
+
+(** 逆右单位子在其变量上自然。 *)
+
+Lemma tensor_unitor_r_inv_natural {X Y : C} (f : Hom X Y)
+  : ρ⁻¹[Y] ∘ f ≈ (f ⊳ 𝐈) ∘ ρ⁻¹[X].
+Proof.
+  exact (iso_square_inv
+    (tensor_unitor_r X) (tensor_unitor_r Y)
+    (f ⊳ 𝐈) f (tensor_unitor_r_natural f)).
 Qed.
 
 End Laws.

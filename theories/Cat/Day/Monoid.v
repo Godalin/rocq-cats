@@ -13,8 +13,7 @@ From Cats Require Import
   Instance.Set.Yoneda
   Instance.Set.Terminal
   Instance.Set.Product
-  Instance.Set.Representable
-  Cat.Monoidal.Laws.
+  Instance.Set.Representable.
 From Cats Require Export
   Cat.Day.Monoidal
   Cat.Monoidal.Monoid.

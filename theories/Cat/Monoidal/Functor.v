@@ -60,7 +60,7 @@ Record LaxMonoidalFct {C D : Cat}
 
   (** 左单位相干律使用给定的来源及目标单位子。 *)
 
-  ; lax_unit_l (X : @Ob C)
+  ; lax_unit_l (X : C)
     : fmap LaxMonoidalFctToFct λ[X] ∘
         lax_tensorN (𝐈, X) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) lax_unit id) ≈
@@ -70,7 +70,7 @@ Record LaxMonoidalFct {C D : Cat}
 
   (** 右单位相干律使用同一对具名幺半结构。 *)
 
-  ; lax_unit_r (X : @Ob C)
+  ; lax_unit_r (X : C)
     : fmap LaxMonoidalFctToFct ρ[X] ∘
         lax_tensorN (X, 𝐈) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) id lax_unit) ≈
@@ -80,7 +80,7 @@ Record LaxMonoidalFct {C D : Cat}
 
   (** 结合相干律保留选定的结合子。 *)
 
-  ; lax_assoc (X Y Z : @Ob C)
+  ; lax_assoc (X Y Z : C)
     : fmap LaxMonoidalFctToFct α[X; Y; Z] ∘
         lax_tensorN (X ⊗ Y, Z) ∘
         (tensor_map (IM := HasMonoidal_interchange MD) (lax_tensorN (X, Y)) id) ≈
@@ -115,7 +115,7 @@ Notation "'φ₂[' L ';' X ';' Y ']'" := (lax_tensorN L (X, Y))
 Lemma lax_tensor_natural {C D : Cat}
     {MC : HasMonoidal C} {MD : HasMonoidal D}
     (L : LaxMonoidalFct MC MD)
-    {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
+    {X X' Y Y' : C} (f : Hom X X') (g : Hom Y Y')
   : φ₂[L; X'; Y'] ∘ (tensor_map (IM := HasMonoidal_interchange MD) (fmap L f) (fmap L g)) ≈
       fmap L (tensor_map (IM := HasMonoidal_interchange MC) f g) ∘ φ₂[L; X; Y].
 Proof.
@@ -198,7 +198,7 @@ Record MonoidalFct {C D : Cat}
 
   (** 张量子之逆保留 Type 值互逆方程；其自然性由父结构的自然变换推出。 *)
 
-  ; monoidal_tensor_iso (X Y : @Ob C)
+  ; monoidal_tensor_iso (X Y : C)
     : is_iso φ₂[MonoidalFctToLaxMonoidalFct; X; Y]
   }.
 

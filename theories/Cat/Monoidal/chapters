@@ -1,14 +1,11 @@
 Binoidal.v
 Center.v
-BinoidalTransport.v
 Magmoidal.v
 Associator.v
 Semigroupal.v
 Unitor.v
 Premonoidal.v
-PremonoidalLaws.v
 Monoidal.v
-Laws.v
 Bifct.v
 Strength.v
 Monoid.v

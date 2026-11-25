@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Computational.Arrow.Binoidal
-  Cat.Monoidal.PremonoidalLaws.
+  Cat.Monoidal.Premonoidal.
 
 Local Open Scope computation_scope.
 Local Open Scope monoidal_scope.
@@ -112,7 +112,7 @@ Next Obligation.
     first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
   rewrite arrow_second_arr, arrow_first_arr, <- fmap_comp.
   apply fmap_proper.
-  exact (tensor_triangle (IP := HasMonoidal_isPremonoidal V) X Y).
+  exact (tensor_triangle (IsPremonoidal := HasMonoidal_isPremonoidal V) X Y).
 Defined.
 
 (** Pack the same tensor, associator and coherent unitors. *)

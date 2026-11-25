@@ -100,7 +100,7 @@ Minks.Struct BinoidalCat
 
     固定具名范畴及其选定张量作用，从两份给定函子律组提供按数学主题命名的定律。 *)
 
-Section ActionLaws.
+Section TensorActions.
 Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** Each context action respects hom equality. *)
@@ -165,8 +165,6 @@ Proof.
   exact (fmap_comp (IsFct := isBinoidalR Z) g f).
 Qed.
 
-End ActionLaws.
-
 (** ** Fixed-Context Functors
 
     Fix a binoidal structure on the named category. Bundle left and right
@@ -175,9 +173,6 @@ End ActionLaws.
 (** ** 固定上下文函子
 
     固定具名范畴上的双侧张量结构，将左右上下文作用打包为函子，并导出恒等与复合定律。 *)
-
-Section ContextFunctors.
-Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** Tensor with a fixed object on the left. Its object map is derived
     from the same selected tensor, not stored as another choice. *)
@@ -193,16 +188,32 @@ Definition TensorAtLF (Z : C)
 
 (** 在右侧张量一个固定对象。 *)
 
-Definition TensorAtRF (Z : @Ob C)
+Definition TensorAtRF (Z : C)
   : Fct C C
   := MakeFct (λ X, X ⊗ Z)
     (λ X Y, @tensor_r C BC X Y Z) (isBinoidalR Z).
+
+(** Each context functor preserves transported identities. *)
+
+(** 每个上下文函子保持运输后的恒等态射。 *)
+
+Lemma tensor_l_eq_to_hom (Z : C) {X Y : C} (p : X = Y)
+  : Z ⊲ eq_to_hom p ≈ eq_to_hom (f_equal (λ Q, Z ⊗ Q) p).
+Proof. exact (fmap_eq_to_hom (TensorAtLF Z) p). Qed.
+
+(** The same statement holds for a context on the right. *)
+
+(** 对右侧上下文有同样的结论。 *)
+
+Lemma tensor_r_eq_to_hom (Z : C) {X Y : C} (p : X = Y)
+  : eq_to_hom p ⊳ Z ≈ eq_to_hom (f_equal (λ Q, Q ⊗ Z) p).
+Proof. exact (fmap_eq_to_hom (TensorAtRF Z) p). Qed.
 
 (** Run the left factor before the right factor on separate inputs. *)
 
 (** 在分开的输入上先运行左因子，再运行右因子。 *)
 
-Definition tensor_sequence {X Y Z W : @Ob C}
+Definition tensor_sequence {X Y Z W : C}
     (f : Hom X Y) (g : Hom Z W)
   : Hom (X ⊗ Z) (Y ⊗ W)
   := (Y ⊲ g) ∘ (f ⊳ Z).
@@ -211,21 +222,12 @@ Definition tensor_sequence {X Y Z W : @Ob C}
 
 (** 有序组合保持两个计算相等。 *)
 
-Global Instance tensor_sequence_proper {X Y Z W : @Ob C}
+Global Instance tensor_sequence_proper {X Y Z W : C}
   : Proper (HomEq ==> HomEq ==> HomEq) (@tensor_sequence X Y Z W).
 Proof.
   intros f f' Hf g g' Hg. unfold tensor_sequence.
   rewrite Hf, Hg. reflexivity.
 Qed.
-
-End ContextFunctors.
-
-Notation "'(' Z '⊗-)'" := (TensorAtLF Z)
-  (at level 0, format "( Z  ⊗-)")
-  : monoidal_scope.
-Notation "'(-⊗' Z ')'" := (TensorAtRF Z)
-  (at level 0, format "(-⊗  Z )")
-  : monoidal_scope.
 
 (** ** Sequencing with Identities
 
@@ -236,9 +238,6 @@ Notation "'(-⊗' Z ')'" := (TensorAtRF Z)
 
     固定分别作用后，与恒等态射张量得到相应的作用。两个恒等态射的张量
     仍为恒等态射。 *)
-
-Section SequenceIdentities.
-Context {C : Cat} `{BC : !HasBinoidal C}.
 
 (** Tensoring identities uses only the two separate functor laws. *)
 
@@ -275,4 +274,11 @@ Proof.
   apply comp_id_l.
 Qed.
 
-End SequenceIdentities.
+End TensorActions.
+
+Notation "'(' Z '⊗-)'" := (TensorAtLF Z)
+  (at level 0, format "( Z  ⊗-)")
+  : monoidal_scope.
+Notation "'(-⊗' Z ')'" := (TensorAtRF Z)
+  (at level 0, format "(-⊗  Z )")
+  : monoidal_scope.

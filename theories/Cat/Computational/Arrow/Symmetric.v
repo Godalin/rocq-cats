@@ -56,7 +56,7 @@ Next Obligation.
   rewrite arrow_second_arr, arrow_first_arr, <- !fmap_comp.
   apply fmap_proper.
   exact (tensor_sym_hexagon
-    (H := @CartIsSymHexagon C HT HP) X Y Z).
+    (IsSymHexagon := CartIsSymHexagon) X Y Z).
 Defined.
 (** The pure functor also preserves the exchange equation for unitors. *)
 
@@ -72,7 +72,7 @@ Next Obligation.
     arr[A; (π1 : Hom (X × 1) X)]).
   rewrite <- fmap_comp. apply fmap_proper.
   exact (tensor_sym_unit
-    (H := @CartIsSymUnit C HT HP) X).
+    (IsSymUnit := CartIsSymUnit) X).
 Defined.
 
 (** Add pure exchange to the existing premonoidal computation category. *)

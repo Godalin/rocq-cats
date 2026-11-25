@@ -29,7 +29,7 @@ Class HasStrength {C : Cat} (MC : HasMonoidal C) (F : Fct C C)
 
   (** 移去单位上下文，等于映射左单位子。 *)
 
-  ; strength_unit (Y : @Ob C)
+  ; strength_unit (Y : C)
     : fmap F λ[Y] ∘
         strengthN (𝐈, Y) ≈
         λ[F Y]
@@ -38,7 +38,7 @@ Class HasStrength {C : Cat} (MC : HasMonoidal C) (F : Fct C C)
 
   (** 嵌套通常上下文按结合子相干地运输。 *)
 
-  ; strength_assoc (X Y Z : @Ob C)
+  ; strength_assoc (X Y Z : C)
     : fmap F α[X; Y; Z] ∘
         strengthN (X ⊗ Y, Z) ≈
         strengthN (X, Y ⊗ Z) ∘
@@ -59,7 +59,7 @@ Notation "'st[' S ';' X ';' Y ']'" := (strengthN S (X, Y))
 
 Lemma strength_natural {C : Cat} {MC : HasMonoidal C}
     {F : Fct C C} (S : HasStrength MC F)
-    {X X' Y Y' : @Ob C} (f : Hom X X') (g : Hom Y Y')
+    {X X' Y Y' : C} (f : Hom X X') (g : Hom Y Y')
   : st[S; X'; Y'] ∘ (tensor_map (IM := HasMonoidal_interchange MC) f (fmap F g)) ≈
       fmap F (tensor_map (IM := HasMonoidal_interchange MC) f g) ∘ st[S; X; Y].
 Proof.

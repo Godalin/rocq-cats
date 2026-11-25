@@ -2427,7 +2427,7 @@ other natural-isomorphism views with exactly the stored inverses.
 [HasTensorUnitors](../theories/Cat/Monoidal/Unitor.v) independently chooses
 one unit and two central natural isomorphisms. `IsPremonoidal`
 gives triangle compatibility for these two choices on the same tensor. Inverse centrality and naturality
-remain [derived laws](../theories/Cat/Monoidal/PremonoidalLaws.v), with only the
+remain derived laws, with only the
 relevant associator or unitor assumption.
 
 `Reserved Notation` fixes grammar before the fields. Field-local `where`
@@ -2445,7 +2445,7 @@ selects an explicit unit package; `𝐈` infers the selected package.
 五边形。`TensorAssocLIso`、`TensorAssocMIso` 保留原逆，给出另两种
 自然同构视图。[HasTensorUnitors](../theories/Cat/Monoidal/Unitor.v) 独立选择唯一
 单位及两个中心自然同构。`IsPremonoidal` 给出同一张量上的两份选择的三角形相容性。逆的中心性和自然性仍为
-[导出定律](../theories/Cat/Monoidal/PremonoidalLaws.v)，只要求对应的结合子或单位子选择。
+导出定律，只要求对应的结合子或单位子选择。
 
 `Reserved Notation` 在字段前固定语法，字段局部 `where` 使后续字段可以使用
 `𝐈`、结合子及单位子记号；Rocq 9.3 不导出这些解释，因此声明后的公开
@@ -2479,8 +2479,8 @@ records validation and remaining computational-category work.
 
 The tensor family lives under [Cat/Monoidal](../theories/Cat/Monoidal)
 following [issue #46](https://github.com/Godalin/rocq-cats/issues/46).
-Its core interfaces share this directory. `Bifct.v` contains
-the triple tensor functors and assembles the separate actions, structural
+Its core interfaces share this directory. `Semigroupal.v` defines the two
+triple tensor functors and the joint associator. `Bifct.v` assembles the separate actions, structural
 choices, and complete categories from the same supplied bifunctor.
 
 [Binoidal](../theories/Cat/Monoidal/Binoidal.v) supplies
@@ -2490,7 +2490,8 @@ and their ordered composition `tensor_sequence`.
 actions and derives `f ⊗ g` in `hom_scope` and the bifunctor `tensorF`.
 The action and coherence notation stays in `monoidal_scope`.
 
-核心接口位于同一目录。`Bifct.v` 定义三重张量函子，并从同一给定双函子
+核心接口位于同一目录。`Semigroupal.v` 定义两种三重张量函子及联合结合子。
+`Bifct.v` 从同一给定双函子
 装配分别张量作用、结构选择及完整范畴。
 
 [Binoidal](../theories/Cat/Monoidal/Binoidal.v) 提供
@@ -2663,12 +2664,12 @@ records validation and the remaining reverse translation/round trips.
 representatives along chosen isomorphisms, with a transparent natural
 isomorphism to the original functor. Its shared boundary-naturality lemma
 requires only a natural incoming boundary and an invertible outgoing one.
-[Tensor-boundary laws](../theories/Cat/Monoidal/BinoidalTransport.v) reuse the
+[Tensor-boundary laws](../theories/Cat/Monoidal/Center.v) reuse the
 existing context functors and centrality of transported identities.
 
 [TransportF](../theories/Cat/Functor/Transport.v) 沿选定同构改变函子的对象
 代表，并以透明自然同构与原函子比较。共享的边界自然性引理只要求入边界
-自然、出边界可逆。[张量边界定律](../theories/Cat/Monoidal/BinoidalTransport.v)
+自然、出边界可逆。[张量边界定律](../theories/Cat/Monoidal/Center.v)
 复用已有上下文函子及运输恒等的中心性。
 
 [FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v) reconstructs a

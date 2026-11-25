@@ -21,7 +21,7 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 (** 强度之后丢弃通常上下文，保留带效应输入。这来自到终上下文的自然性及强度
     单位律，不假定函子保持积。 *)
 
-Lemma cartesian_strength_projection (X Y : @Ob C)
+Lemma cartesian_strength_projection (X Y : C)
   : fmap F (π2 : Hom (X × Y) Y) ∘ st[S; X; Y] ≈ π2.
 Proof.
   pose proof (strength_natural S (! : Hom X 1) (id[Y])) as H.

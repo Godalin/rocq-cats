@@ -7,8 +7,7 @@ From Cats Require Import
   Instance.Set.Product
   Instance.Set.Terminal
   Cat.Monoidal.Bifct
-  Cat.Monoidal.Cartesian
-  Cat.Monoidal.Laws.
+  Cat.Monoidal.Cartesian.
 From Cats Require Export
   Cat.Day.Monoid
   Cat.Monoidal.Natural.

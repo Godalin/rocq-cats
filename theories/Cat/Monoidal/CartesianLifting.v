@@ -30,7 +30,7 @@ Context {C D : Cat}
 
 (** 关于两个范畴中通常积映射的自然性。 *)
 
-Lemma cartesian_lift2_pre {X Y X' Y' Z : @Ob C}
+Lemma cartesian_lift2_pre {X Y X' Y' Z : C}
     (f : Hom (X' × Y') Z) (g : Hom X X') (h : Hom Y Y')
   : lift₂[L; f] ∘ (@cross D PD _ _ _ _ (fmap L g) (fmap L h))
     ≈ lift₂[L; f ∘ (@cross C PC _ _ _ _ g h)].
@@ -43,7 +43,7 @@ Qed.
 
 (** 积的结合图通过同一个 lax 结构提升。 *)
 
-Lemma cartesian_lift2_assoc {X Y Z U V T : @Ob C}
+Lemma cartesian_lift2_assoc {X Y Z U V T : C}
     (f : Hom (X × Y) U) (g : Hom (U × Z) T)
     (h : Hom (Y × Z) V) (k : Hom (X × V) T)
     (H : g ∘ (@cross C PC _ _ _ _ f id) ≈
