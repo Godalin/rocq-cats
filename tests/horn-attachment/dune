@@ -1,7 +1,0 @@
-(rocq.theory
- (name CatsHornAttachmentTests)
- (theories Cats Stdlib))
-
-(alias
- (name runtest)
- (deps (alias all)))

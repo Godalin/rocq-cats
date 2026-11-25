@@ -1,5 +1,5 @@
 From Cats.STLC Require Import EtaHead.
-From CatsSTLCTests Require Import
+From CatsTests.stlc Require Import
   STLCConfluence.
 
 (** * Head Strategy Interfaces and Product Eta Residuals

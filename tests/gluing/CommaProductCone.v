@@ -6,7 +6,7 @@ From Cats Require Import
   Instance.Set.Initial
   Instance.Set.Product
   Instance.Set.Terminal.
-From CatsGluingTests Require Import
+From CatsTests.gluing Require Import
   Gluing.
 
 (** * Supplied Comma Products and Their Images

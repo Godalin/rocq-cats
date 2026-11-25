@@ -7,7 +7,7 @@ From Cats Require Import
   Cat.CCC.Functor
   Cat.CCC.Category
   Instance.Set.Core.
-From CatsCategoryTests Require Import
+From CatsTests.category Require Import
   BundledCartesian.
 
 (** * The Category of CCC Bundles

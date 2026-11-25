@@ -1,7 +1,0 @@
-(rocq.theory
- (name CatsBasedSphereHomotopyTests)
- (theories Cats Stdlib))
-
-(alias
- (name runtest)
- (deps (alias all)))

@@ -388,8 +388,8 @@ families are unchanged.
 | Client / 客户端 | Replacements / 替换数 |
 | --- | --- |
 | [tests/cocycle/homotopy/Universes.v](../tests/cocycle/homotopy/Universes.v) | 11 |
-| [tests/sphere/class-map/Computations.v](../tests/sphere/class-map/Computations.v) | 1 |
-| [tests/sphere/class-map/Universes.v](../tests/sphere/class-map/Universes.v) | 8 |
+| [tests/sphere/class_map/Computations.v](../tests/sphere/class_map/Computations.v) | 1 |
+| [tests/sphere/class_map/Universes.v](../tests/sphere/class_map/Universes.v) | 8 |
 | [theories/Cat/Day/Unit.v](../theories/Cat/Day/Unit.v) | 15 |
 | [theories/Cat/Day/Universal.v](../theories/Cat/Day/Universal.v) | 2 |
 | [theories/Instance/Bool/CocycleHomotopy.v](../theories/Instance/Bool/CocycleHomotopy.v) | 3 |

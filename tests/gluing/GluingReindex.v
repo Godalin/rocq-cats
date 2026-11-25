@@ -5,7 +5,7 @@ From Cats Require Import
   Instance.Set.Pullback
   Instance.Set.Terminal
   Instance.Bool.Action.
-From CatsGluingTests Require Import
+From CatsTests.gluing Require Import
   Gluing
   GluingFibration.
 

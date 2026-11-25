@@ -3,12 +3,5 @@
 -Q _build/default/minks/theories Minks
 -Q _build/default/minks/examples MinksExamples
 -Q _build/default/minks/tests MinksTests
--Q _build/default/tests/algebra CatsAlgebraTests
--Q _build/default/tests/algebra/abelian-coefficients CatsAbelianCoefficientTests
--Q _build/default/tests/algebra/transport CatsAlgebraTransportTests
--Q _build/default/tests/category CatsCategoryTests
--Q _build/default/tests/dtt CatsDTTTests
--Q _build/default/tests/gluing CatsGluingTests
--Q _build/default/tests/relations CatsRelationTests
--Q _build/default/tests/stlc CatsSTLCTests
+-Q _build/default/tests CatsTests
 -arg "-require-import-from elpi elpi"

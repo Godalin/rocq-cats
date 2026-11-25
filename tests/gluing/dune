@@ -1,7 +1,0 @@
-(rocq.theory
- (name CatsGluingTests)
- (theories Cats Stdlib CatsCategoryTests))
-
-(alias
- (name runtest)
- (deps (alias all)))

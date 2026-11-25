@@ -11,7 +11,7 @@ From Cats Require Import
   Instance.Set.Product
   Instance.Set.Kripke
   Instance.Set.PresheafExponential.
-From CatsGluingTests Require Import
+From CatsTests.gluing Require Import
   Gluing.
 
 (** * Presheaf Exponential Sizes and Original Function Values

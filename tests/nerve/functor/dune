@@ -1,7 +1,0 @@
-(rocq.theory
- (name CatsNerveFunctorTests)
- (theories Cats Stdlib))
-
-(alias
- (name runtest)
- (deps (alias all)))

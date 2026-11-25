@@ -54,21 +54,24 @@ opam exec --switch=rocq-cats -- dune build @check-library
 opam exec --switch=rocq-cats -- dune build @check-tests
 
 # One regression family / 一个回归词族
-opam exec --switch=rocq-cats -- dune build @tests/sphere/runtest
+opam exec --switch=rocq-cats -- dune build @tests/sphere/all
 
 # One cylinder construction / 单个柱构造
-opam exec --switch=rocq-cats -- dune build @tests/sphere/cylinder/iso/runtest
+opam exec --switch=rocq-cats -- dune build @tests/sphere/cylinder/iso/all
 ```
 
 The root `tests/` theory contains the cross-library `Interfaces`,
 `Computations` and `Universes` suites. Focused regressions live in directories
 such as `tests/algebra`, `tests/category`, `tests/gluing`, `tests/dtt`,
 `tests/relations` and `tests/stlc`. Families such as `tests/sphere` group
-suites by construction. Dune selects descendant `runtest` aliases recursively.
+suites by construction. One `tests/dune` covers all subdirectories. Module paths follow the directories,
+e.g. `CatsTests.category.ProductPreservation`. Use Rocq identifiers for directory
+names and underscores between words.
 
 主 `tests/` 理论保留跨库的接口、计算及宇宙检查。按主题组织的回归放在子目录中，
 例如 `tests/algebra` 和 `tests/category`。像 `tests/sphere` 这样的专题再按具体
-构造细分。Dune 会递归选取目录内的 `runtest` 入口。
+构造细分。整个目录树共用一个 `tests/dune`。模块路径与子目录一致，例如
+`CatsTests.category.ProductPreservation`。目录名使用合法的 Rocq 标识符，多词用下划线连接。
 
 `@check-core` contains `CoreInterfaces`, `AlgebraNotation`,
 `MonoidExtensions`, `GroupExtensions`, `BundledGroupoid` and
@@ -89,14 +92,13 @@ The category/functor/transformation regressions can also be built as
 
 `@check-library` recursively selects `theories/all`; it includes every
 library module without a maintained filename list. `@check-tests` selects
-`tests/runtest` recursively. Each test directory builds its local `all`
-alias, so new Rocq modules are included automatically. Dune builds the library
+`tests/runtest`, which builds `all` recursively across the test tree. Dune builds the library
 dependencies needed by those tests. Tooling tests under
 `tools/docs` remain covered by the existing `@runtest` CI command.
 Neither alias invokes HTML/PDF exports or installation.
 
 `@check-library` 递归选择 `theories/all`，无须维护文件名清单即可覆盖全部库模块。
-`@check-tests` 递归选择 `tests/runtest`。每个测试目录构建本地的 `all` 别名，
+`@check-tests` 选择 `tests/runtest`，由它递归构建测试目录树中的 `all` 别名，
 新增的 Rocq 模块会自动纳入检查。Dune 会构建这些测试需要的库依赖。`tools/docs` 下的工具测试仍由现有 CI 的
 `@runtest` 命令覆盖。两个别名均不导出 HTML／PDF，也不执行安装。
 

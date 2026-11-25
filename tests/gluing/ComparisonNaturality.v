@@ -13,10 +13,10 @@ From Cats Require Import
   Instance.Set.Terminal
   Instance.Set.Initial
   Instance.Bool.Group.
-From CatsGluingTests Require Import
+From CatsTests.gluing Require Import
   Gluing
   GluingChangeProduct.
-From CatsCategoryTests Require Import
+From CatsTests.category Require Import
   ProductPreservation.
 
 (** * Weak Comparison Naturality

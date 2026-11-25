@@ -4,7 +4,7 @@ From Cats Require Import
   Instance.Set.Core
   Instance.Set.Pullback
   Instance.Bool.Action.
-From CatsGluingTests Require Import
+From CatsTests.gluing Require Import
   Gluing.
 
 (** * Gluing Fibration Interfaces and Computation
