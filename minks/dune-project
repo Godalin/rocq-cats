@@ -27,4 +27,5 @@
  (depends
   (rocq-core (>= 9.3))
   (rocq-elpi (>= 3.5.1))
+  (elpi (and (>= 3.7.1) (< 4.0~)))
   (rocq-stdlib (and (>= 9.2) :with-test))))

@@ -398,9 +398,10 @@ square brackets.
 
 ## Build the examples and run the tests
 
-Use Rocq 9.3 or later, Rocq-Elpi 3.5.1 or later, and Dune 3.23 or later.
-The examples use Stdlib 9.2 or later. From this directory, build and test
-with the project switch.
+The project switch uses Rocq 9.3, Rocq-Elpi 3.5.1, Elpi 3.7.3 and Dune
+3.23.1. The OCaml plugin uses the Elpi 3.x conversion API. The examples
+use Stdlib 9.2 or later. From this directory, build and test with the project
+switch.
 
 ```sh
 opam exec --switch=rocq-cats -- dune build
