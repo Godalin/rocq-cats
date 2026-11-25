@@ -1,7 +1,7 @@
 From Cats Require Import
   Algebra.Group.Category
   Algebra.Group.Transport
-  Instance.Bool.Group.
+  Instance.Bool.Commutative.
 
 Local Open Scope algebra_scope.
 
@@ -217,3 +217,20 @@ Example low_equality_view
 Proof. reflexivity. Qed.
 
 End StrictUniverses.
+
+(** ** Abelian Group Views
+
+    Both paths retain the same monoid, including its law witnesses.
+    The Boolean model keeps its computation through the packed operations. *)
+
+(** ** 阿贝尔群的父结构
+
+    两条路径保留同一幺半群及其定律见证。布尔模型的打包运算仍可直接计算。 *)
+
+Example ab_group_shared_monoid (A : AbGroup)
+  : GroupToMonoid (AbGroupToGroup A) = CommMonoidToMonoid (AbGroupToCommMonoid A)
+  := eq_refl.
+
+Example bool_ab_group_product_inverse
+  : ((true : BoolS_AbGroup) ⋅ true)⁻¹ = false
+  := eq_refl.

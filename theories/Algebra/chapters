@@ -3,8 +3,10 @@ Magma/Transport.v
 Semigroup/Core.v
 Semigroup/Transport.v
 Monoid/Core.v
+Monoid/Commutative.v
 Monoid/Transport.v
 Group/Core.v
+Group/Abelian.v
 Group/Transport.v
 Magma/Category.v
 Semigroup/Category.v

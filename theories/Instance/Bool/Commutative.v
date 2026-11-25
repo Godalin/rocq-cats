@@ -1,5 +1,5 @@
 From Cats Require Export
-  Algebra.Monoid.Commutative
+  Algebra.Group.Abelian
   Instance.Bool.Group.
 
 (** * Boolean Commutative Coefficients
@@ -24,3 +24,11 @@ Program Definition BoolS_IsCommMagma
   {|mul_comm x y := _
   |}.
 Next Obligation. destruct x, y; reflexivity. Defined.
+
+(** Boolean xor as an abelian group, using its selected identity inverse. *)
+
+(** 布尔异或构成阿贝尔群，沿用已选定的恒等逆运算。 *)
+
+Definition BoolS_AbGroup
+  : AbGroup
+  := AbGroupOfGroup BoolS_Group BoolS_IsCommMagma.

@@ -25,6 +25,14 @@ Minks.Mixin IsCommMagma (S : SetC)
 
 Arguments mul_comm {_ _ _} x y.
 
+(** A commutative monoid equips its own multiplication with commutativity. *)
+
+(** 交换幺半群为其选定的乘法配备交换律。 *)
+
+Minks.Struct CommMonoid
+  extends Monoid
+  with  isCommMagma : IsCommMagma.
+
 (** ** Exchanging the Middle Factors
 
     Fix the selected semigroup [M] and a commutativity witness. Associativity
