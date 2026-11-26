@@ -1296,11 +1296,11 @@ Definition low_eq_display_recovery
 Definition high_eq_display_model_terms (HT : HasTerminal C)
     (Γ : @Ob C) (A : P Γ)
   : SetC@{p p}
-  := Tm (TyTmF (@DisplayCwF C P HD HT)) Γ A.
+  := Tm (@DisplayCwF C P HD HT) Γ A.
 Definition low_eq_display_model_terms (HT : HasTerminal D)
     (Γ : @Ob D) (A : Q Γ)
   : SetC@{p h}
-  := Tm (TyTmF (@DisplayCwF D Q HE HT)) Γ A.
+  := Tm (@DisplayCwF D Q HE HT) Γ A.
 End ContextUniversalLevels.
 
 (** Comprehension over type elements keeps large type carriers/equalities
@@ -1341,11 +1341,11 @@ Definition low_eq_comprehension_display
 Definition high_eq_comprehension_terms (HT : HasTerminal C)
     (Γ : @Ob C) (A : P Γ)
   : SetC@{p p}
-  := Tm (TyTmF (@ComprehensionCwF C P K HT)) Γ A.
+  := Tm (@ComprehensionCwF C P K HT) Γ A.
 Definition low_eq_comprehension_terms (HT : HasTerminal D)
     (Γ : @Ob D) (A : Q Γ)
   : SetC@{p h}
-  := Tm (TyTmF (@ComprehensionCwF D Q L HT)) Γ A.
+  := Tm (@ComprehensionCwF D Q L HT) Γ A.
 Definition high_eq_elements_criterion
   : HasDisplay C P ↔ Comprehension (ElementsBaseF P)
   := display_iff_elements_comprehension P.
@@ -2241,7 +2241,7 @@ Definition high_eq_interpreted_display
 Definition high_eq_interpreted_terms (HT : HasTerminal C)
     (Γ : @Ob C) (X : A Γ)
   : SetC@{p p}
-  := Tm (TyTmF (@InterpretedCwF C E A P T S β π Hπ HS HT)) Γ X.
+  := Tm (@InterpretedCwF C E A P T S β π Hπ HS HT) Γ X.
 Definition high_eq_interpreted_comparison
   : @DisplayElementsF C A high_eq_interpreted_display ≅N (T ∘F S)
   := interpreted_display_iso A S β π Hπ HS.
@@ -2258,7 +2258,7 @@ Definition low_eq_interpreted_display
 Definition low_eq_interpreted_terms (HT : HasTerminal D)
     (Γ : @Ob D) (X : A' Γ)
   : SetC@{p h}
-  := Tm (TyTmF (@InterpretedCwF D E' A' P' T' S' β' π' Hπ' HS' HT)) Γ X.
+  := Tm (@InterpretedCwF D E' A' P' T' S' β' π' Hπ' HS' HT) Γ X.
 Definition low_eq_interpreted_comparison
   : @DisplayElementsF D A' low_eq_interpreted_display ≅N (T' ∘F S')
   := interpreted_display_iso A' S' β' π' Hπ' HS'.

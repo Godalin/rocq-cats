@@ -235,7 +235,7 @@ Definition is_context_extension {Γ : @Ob C} (A : Ty T Γ) (E : @Ob C)
 
 (** 选择上下文扩张、投影、泛项及其泛性质。 *)
 
-Class HasContextExtension
+Minks.Mixin HasContextExtension
   :=
   { Ext {Γ : @Ob C} (A : Ty T Γ) : @Ob C
   ; context_proj {Γ : @Ob C} (A : Ty T Γ) : Hom (Ext A) Γ
@@ -362,18 +362,19 @@ Notation "Γ '▹[' T ']' A" := (Ext T (Γ := Γ) A)
 Notation "'⟨' σ ';' t '⟩[' T ',' A ']'" := (context_pair T A σ t)
   (at level 0, format "⟨ σ ;  t ⟩[ T ,  A ]") : cat_scope.
 
-(** Like [CCC] and [ETCS], an enabled bundle supplies its substructures.
-    Concrete CwF models still have to be enabled explicitly. Coercion exposes
-    the type-and-term functor without selecting a model. *)
+(** A complete CwF stores one type-and-term functor and its selected context
+    extensions, together with an independently selected terminal context.
+    The generated underlying view exposes that same functor. Models remain
+    explicitly selected values. *)
 
-(** 与 [CCC]、[ETCS] 一样，启用组合结构后可使用其子结构；具体带族范畴模型仍须
-    显式启用。强制转换暴露类型与项函子，不会自动选取模型。 *)
+(** 完整带族范畴保存一个类型—项函子及其选定上下文扩张，并独立选取终上下文；
+    生成的底层视图暴露同一函子，模型仍须显式选择。 *)
 
-Class CwF (C : Cat)
-  :=
-  { hasTerminal :: HasTerminal C
-  ; TyTmF :> Fct (C^op) FamCat
-  ; hasContextExtension :: HasContextExtension TyTmF
-  }.
+Minks.Struct CwF (C : Cat)
+  extends Fct (C^op) FamCat
+  with  hasTerminal as hasTerminal : HasTerminal [C],
+        hasContextExtension as hasContextExtension
+          : HasContextExtension [C, carrier].
 
-Arguments TyTmF {_} _.
+Arguments hasTerminal {_} _.
+Arguments hasContextExtension {_} _.
