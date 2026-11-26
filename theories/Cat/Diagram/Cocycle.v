@@ -82,7 +82,8 @@ Arguments two_cocycle_triangle {_ _} _ {_ _ _} _ _.
 (** 将底层标签函数作用于可复合的一对箭头；端点由两条箭头推断。 *)
 
 Notation "c '⟦' f ',' g '⟧₂'" := (c _ _ _ f g)
-  (at level 1, format "c ⟦ f ,  g ⟧₂") : cat_scope.
+  (at level 1, left associativity, format "c ⟦ f ,  g ⟧₂")
+  : cat_scope.
 
 (** ** Equality and Constant Labels
 

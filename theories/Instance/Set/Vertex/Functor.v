@@ -101,7 +101,7 @@ Defined.
 
 (** 恒等函子保持指定运输，无需选取新数据。 *)
 
-Program Canonical VtxIdF {X : SetC} {C : Cat}
+Program Definition VtxIdF {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : T →ᵥ T
   := MakeVtxFct IdF
@@ -116,7 +116,7 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 
 (** 复合结合普通函子及其保相等对象映射；运输律由原来的两条运输律导出。 *)
 
-Program Canonical VtxCompF {X Y Z : SetC} {C D E : Cat}
+Program Definition VtxCompF {X Y Z : SetC} {C D E : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
   : T →ᵥ V

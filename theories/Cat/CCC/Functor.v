@@ -127,7 +127,7 @@ End ClosedFunctorComposition.
 
 (** 打包的恒等函子使用已有 CCC 保持性定理。 *)
 
-Canonical IdCCCF (C : CCC)
+Definition IdCCCF (C : CCC)
   : CCCFct C C
   := CCCFctOfIsCCCF IdF (IdF_IsCCCF C).
 
@@ -136,7 +136,7 @@ Canonical IdCCCF (C : CCC)
 
 (** 用已确立的比较及保持性证明复合打包 CCC 函子；底层函子仍为普通复合。 *)
 
-Canonical CompCCCF {C D E : CCC}
+Definition CompCCCF {C D E : CCC}
     (G : CCCFct D E) (F : CCCFct C D)
   : CCCFct C E
   := CCCFctOfIsCCCF (G ∘F F) (CompF_IsCCCF F G).
