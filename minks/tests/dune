@@ -13,4 +13,4 @@
  (modules glob_test)
  (package rocq-minks)
  (action
-  (run %{test} %{dep:Glob.v} %{dep:Glob.glob})))
+  (run %{test} %{dep:Glob.v} %{dep:Glob.glob} %{dep:ViewMatch.glob})))

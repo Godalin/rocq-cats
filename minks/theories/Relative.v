@@ -124,7 +124,7 @@ Elpi File minks.relative lp:{{
     std.assert-ok! (coq.typecheck-indt-decl Decl)
       ("Ill-typed relative interface " ^ Name),
     header-universes Prefix, merge-levels Prefix {binder-levels Open} Levels,
-    (@udecl! Levels tt [] tt => coq.env.add-indt Decl Export),
+    (@udecl! Levels tt [] tt => add-generated-record Decl Export),
     coq.TC.declare-class (indt Export),
     coq.env.projections Export Projections,
     std.map Remaining component-key RemainingKeys,

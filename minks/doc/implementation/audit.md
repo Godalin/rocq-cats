@@ -116,13 +116,15 @@ import and after re-export.
 
 ## Source declaration metadata
 
-Native record generation emits glob declarations for every named stored
-projection, including inherited components, projection aliases and native
-parent views. Authored names keep their source locations. A generated name
-without a location uses the record name's range, or the current command's
-range when the record name is also generated. Several declarations may
-share that range. This fallback changes only glob output, not the record
-syntax or generated terms. Export tools own any presentation remapping.
-[Glob.v](../../tests/Glob.v) checks inherited, relative and native projection
-computations; [glob_test.ml](../../tests/glob_test.ml) checks the raw
-declarations, their uniqueness and their byte ranges without an export filter.
+Each generated declaration has its own glob entry. Written mixin fields and
+constructors keep their identifier ranges. Generated projections, constructors,
+ancestor views, packers, relative interfaces and native bases use the name of
+the structure whose command created them. Inferred views discovered at Section
+discharge use the originating declaration's position. Rocq-Elpi emits record
+and projection entries for auxiliary records. Minks supplies their constructor
+entry from the registered inductive. The exporter shifts byte positions when
+inserting coqdoc markup. HTML retains each named destination. For PDF,
+references to declarations sharing a position use coqdoc's first destination
+there. The original glob files retain the individual names.
+[Glob.v](../../tests/Glob.v) checks projection computations and
+[glob_test.ml](../../tests/glob_test.ml) checks raw declarations and their origins.

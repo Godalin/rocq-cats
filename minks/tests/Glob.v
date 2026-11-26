@@ -9,7 +9,7 @@ Minks.Mixin HasGlobValue (A : Type)
   { glob_value : A }.
 
 Minks.Mixin HasGlobFlag
-  :=
+  := NewGlobFlag
   { glob_flag : bool }.
 
 (** Generated and aliased projections have declaration metadata even when

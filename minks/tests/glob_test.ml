@@ -4,46 +4,52 @@ let read path =
   Fun.protect ~finally:(fun () -> close_in input)
     (fun () -> really_input_string input (in_channel_length input))
 
-let () =
-  let source = read Sys.argv.(1) in
-  let declarations = read Sys.argv.(2) |> String.split_on_char '\n'
+let declarations path =
+  read path |> String.split_on_char '\n'
     |> List.filter_map (fun line ->
       match String.split_on_char ' ' line with
-      | [kind; range; "<>"; name] ->
+      | [kind; range; scope; name] ->
           (match String.split_on_char ':' range with
           | [first; last] ->
-              Some (kind, name, int_of_string first, int_of_string last)
+              Some (scope, kind, name, int_of_string first, int_of_string last)
           | _ -> None)
-      | _ -> None) in
-  let require kind name =
-    match List.filter (fun (k, n, _, _) -> k = kind && n = name) declarations with
-    | [(_, _, first, last)] when first >= 0 && first <= last
-                                && last < String.length source ->
-        first, last
-    | [] -> failwith ("Missing raw glob declaration: " ^ name)
-    | _ -> failwith ("Duplicate or invalid raw glob declaration: " ^ name) in
+      | _ -> None)
+
+let require entries scope kind name =
+  match List.filter (fun (s, k, n, _, _) -> s = scope && k = kind && n = name) entries with
+  | [(_, _, _, first, last)] when first >= 0 && first <= last ->
+      first, last
+  | [] -> failwith ("Missing raw glob declaration: " ^ name)
+  | _ -> failwith ("Duplicate or invalid raw glob declaration: " ^ name)
+
+let () =
+  let views = require (declarations Sys.argv.(3)) "DischargedViews" in
+  if views "def" "BigToTiny" <> views "rec" "Tiny" then
+    failwith "View discovered at End lost its structure declaration";
+  let source = read Sys.argv.(1) in
+  let require = require (declarations Sys.argv.(2)) "<>" in
   let at_name name range =
     let first, last = range in
     if String.sub source first (last - first + 1) <> name then
       failwith ("Authored glob location changed: " ^ name) in
   List.iter (fun (kind, name) -> at_name name (require kind name))
     ["class", "HasGlobValue"; "proj", "glob_value";
-     "class", "HasGlobFlag"; "proj", "glob_flag";
+     "class", "HasGlobFlag"; "constr", "NewGlobFlag"; "proj", "glob_flag";
      "rec", "GlobParent"; "rec", "GlobChild"; "rec", "GlobNative"];
-  List.iter (fun (owner, names) ->
+  List.iter (fun (owner, members) ->
     let position = require "rec" owner in
-    List.iter (fun name ->
-      if require "proj" name <> position then
-        failwith ("Generated projection lost its record location: " ^ name)) names)
-    ["GlobParent", ["GlobParent_carrier"; "chosenGlobPoint"];
-     "GlobChild", ["GlobChild_carrier"; "GlobChild_globPoint"; "GlobChild_childPoint"];
-     "GlobNative", ["GlobNativeToNativeGlob"; "GlobNative_globTag"]];
-  List.iter (fun (kind, name) -> ignore (require kind name))
-    ["constr", "MakeGlobParent"; "constr", "MakeGlobChild";
-     "rec", "TypeCarrier";
-     "proj", "TypeCarrier_carrier";
-     "rec", "NativeGlobCarrier";
-     "proj", "NativeGlobCarrierToNativeGlob";
-     "def", "GlobChildToGlobParent";
-     "rec", "GlobOn"; "proj", "GlobOn_childPoint"];
+    List.iter (fun (tag, name) ->
+      if require tag name <> position then
+        failwith ("Wrong generating command for " ^ name)) members)
+    ["GlobParent", ["rec", "TypeCarrier"; "constr", "MakeTypeCarrier";
+       "proj", "TypeCarrier_carrier"; "constr", "MakeGlobParent";
+       "proj", "GlobParent_carrier"; "proj", "chosenGlobPoint"];
+     "GlobChild", ["constr", "MakeGlobChild"; "proj", "GlobChild_carrier";
+       "proj", "GlobChild_globPoint"; "proj", "GlobChild_childPoint";
+       "def", "GlobChildToGlobParent"; "def", "GlobChildOfGlobParent";
+       "rec", "GlobOn"; "constr", "MakeGlobOn"; "proj", "GlobOn_childPoint";
+       "def", "GlobChildToGlobOn"; "def", "GlobChildOfGlobOn"];
+     "GlobNative", ["rec", "NativeGlobCarrier"; "constr", "MakeNativeGlobCarrier";
+       "proj", "NativeGlobCarrierToNativeGlob"; "proj", "GlobNativeToNativeGlob";
+       "proj", "GlobNative_globTag"]];
   print_endline "Minks raw glob declarations and source locations passed."

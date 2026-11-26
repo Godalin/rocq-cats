@@ -20,8 +20,10 @@ let parent_input = Procq.Entry.of_parser "minks_parent_input"
 let elpi_cmd_arg = Elpi_plugin.Rocq_elpi_arg_syntax.elpi_cmd_arg
 module Cmd = Elpi_plugin.Rocq_elpi_arg_HOAS.Cmd
 
-let run_minks command ~atts args =
-  let loc = Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
+let run_minks ?loc command ~atts args =
+  let loc = match loc with
+    | Some loc -> loc
+    | None -> Option.default (Loc.make_loc (0, 0)) (Loc.get_current_command_loc ()) in
   Elpi_plugin.Rocq_elpi_vernacular.Interp.run_program
     ~loc ["minks"; command] ~atts ~syndata:None args
 
@@ -30,9 +32,9 @@ let run_minks command ~atts args =
 let rediscover_views =
   let obj = Libobject.local_object "MINKS_DISCHARGED_VIEWS"
     ~cache:ignore ~discharge:(fun name -> Some name) in
-  Libobject.declare_object { obj with rebuild_function = fun name ->
-    run_minks "struct" ~atts:[] [Cmd.String "#discharged"; Cmd.String name];
-    name }
+  Libobject.declare_object { obj with rebuild_function = fun ((name, loc) as origin) ->
+    run_minks ?loc "struct" ~atts:[] [Cmd.String "#discharged"; Cmd.String name];
+    origin }
 
 let parent_argument (head, args) = match head.CAst.v with
   | Constrexpr.CSort _ when args = Mixin_parameters.Regular [] -> Cmd.Term head
@@ -70,6 +72,7 @@ let record_name (name, universes) =
 let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
   let record_id = record_name (name, universes) in
   let header = record_id, binders in
+  let loc = name.CAst.loc in
   let name = Names.Id.to_string name.CAst.v in
   let parents = match parents with
     | None -> []
@@ -81,7 +84,7 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
     Cmd.String "with" :: separated (Cmd.String ",") entries) [] slots in
   let args = parents @ components @ tail in
   let assemble () = match binders, universes with
-  | [], None -> run_minks "struct" ~atts (Cmd.String name :: args)
+  | [], None -> run_minks ?loc "struct" ~atts (Cmd.String name :: args)
   | _ ->
     (* Elaborate the parent applications and mixin heads together, under
        the actual header and universe declaration. Anonymous lets retain
@@ -107,9 +110,9 @@ let declare_struct ~atts ((name, universes), binders, parents, slots, tail) =
         [CAst.make ("polymorphic", Attributes.VernacFlagEmpty)]) in
     let declaration : Cmd.raw = Cmd.ConstantDecl { name = [name]; atts = [poly];
       udecl = universes; typ = (binders, Some inputs); body = None; red = None } in
-    run_minks "struct" ~atts (declaration :: tokens) in
+    run_minks ?loc "struct" ~atts (declaration :: tokens) in
   Packed_record.with_header header assemble ();
-  if Lib.sections_are_opened () then Lib.add_leaf (rediscover_views name)
+  if Lib.sections_are_opened () then Lib.add_leaf (rediscover_views (name, loc))
 
 let declare_mixin ~atts decl parents =
   let parents = List.map (fun p ->

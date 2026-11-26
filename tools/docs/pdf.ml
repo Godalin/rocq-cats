@@ -83,6 +83,37 @@ let titled title kind block =
   ^ "\\renewcommand{\\catsCodeTitle}{" ^ title ^ "}\n"
   ^ "\\renewcommand{\\catsCodeKind}{" ^ kind ^ "}\n" ^ block ^ "\n"
 
+(* coqdoc's LaTeX backend uses the first declaration at a source position.
+   Redirect references to that destination in the combined --glob-from input.
+   coqdoc still renders the source spelling and the reference's original kind. *)
+let link_glob files =
+  let aliases = Hashtbl.create 64 in
+  let index glob =
+    match String.split_on_char '\n' glob with
+    | _digest :: file :: lines when String.starts_with ~prefix:"F" file ->
+        let library = String.sub file 1 (String.length file - 1) in
+        let first = Hashtbl.create 64 in
+        List.iter (fun line -> match String.split_on_char ' ' line with
+          | [_; range; scope; name] when range <> "" && range.[0] <> '-' ->
+              (match Hashtbl.find_opt first range with
+               | None -> Hashtbl.add first range (scope, name)
+               | Some target when name <> "<>" && target <> (scope, name) ->
+                   Hashtbl.replace aliases (library, scope, name) target
+               | Some _ -> ())
+          | _ -> ()) lines;
+        file :: lines
+    | _ -> invalid_arg "expected single-module coqdoc metadata"
+  in
+  let modules = List.map index files in
+  let redirect line = match String.split_on_char ' ' line with
+    | [pos; library; scope; name; kind] when String.starts_with ~prefix:"R" pos ->
+        (match Hashtbl.find_opt aliases (library, scope, name) with
+         | Some (scope, name) -> String.concat " " [pos; library; scope; name; kind]
+         | None -> line)
+    | _ -> line
+  in
+  String.concat "\n" ("DIGEST NO" :: List.concat_map (List.map redirect) modules)
+
 (* Only included declarations are valid local destinations in an excerpt. *)
 
 let targets body =

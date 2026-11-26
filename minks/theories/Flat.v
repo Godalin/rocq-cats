@@ -355,6 +355,10 @@ Elpi File minks.flat lp:{{
     (Telescope = prod _ _ _ ; Telescope = sort _),
     base-record N Head T Telescope Rev Decl Keys.
 
+  pred add-generated-record i:indt-decl, o:inductive.
+  add-generated-record Decl I :-
+    coq.env.add-indt Decl I, minks.glob-record-constructor I.
+
   pred generate-base i:native-head, o:inductive, o:list component.
   generate-base Head I Cs :- @keep-alg-univs! ==>
     parent-label (native-parent Head []) Label, Name is Label ^ "Carrier",
@@ -362,7 +366,7 @@ Elpi File minks.flat lp:{{
     std.assert-ok! (coq.typecheck T Arity) "Ill-typed native parent",
     base-record Name Head T Arity [] Decl Keys,
     std.assert-ok! (coq.typecheck-indt-decl Decl) ("Ill-typed native base " ^ Name),
-    head-levels T Levels, (@udecl! Levels tt [] tt => coq.env.add-indt Decl I),
+    head-levels T Levels, (@udecl! Levels tt [] tt => add-generated-record Decl I),
     if (Head = ref-head Ref, coq.arguments.implicit Ref Imps, Imps = [_ | _])
       (@global! => coq.arguments.set-implicit (indt I) Imps) true,
     C = slot "carrier" (native-kind Head) {key-inputs Keys}, Cs = [C],

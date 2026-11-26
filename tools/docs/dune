@@ -39,4 +39,6 @@
   (run %{test}
    %{dep:../../tests/documentation/MinksExport.v}
    %{dep:../../tests/documentation/MinksExport.glob}
-   %{dep:../../theories/Cat/Natural.v})))
+   %{dep:../../theories/Cat/Natural.v}
+   %{dep:../../tests/documentation/MinksExportUse.v}
+   %{dep:../../tests/documentation/MinksExportUse.glob})))

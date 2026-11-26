@@ -207,31 +207,27 @@ let show_declarations source =
     else command_end (i + 1)
   in
   let commands = ["Minks.Mixin"; "Minks.Struct"; "Abbreviation"] in
-  let rec scan line_start i edits packed =
-    if i = length then List.rev edits, packed
-    else if starts source i "(*" then scan None (comment_end source i) edits packed
-    else if source.[i] = '"' then scan None (string_end source i) edits packed
-    else if source.[i] = '\n' then scan (Some (i + 1)) (i + 1) edits packed
-    else if space source.[i] then scan line_start (i + 1) edits packed
+  let rec scan line_start i edits =
+    if i = length then List.rev edits
+    else if starts source i "(*" then scan None (comment_end source i) edits
+    else if source.[i] = '"' then scan None (string_end source i) edits
+    else if source.[i] = '\n' then scan (Some (i + 1)) (i + 1) edits
+    else if space source.[i] then scan line_start (i + 1) edits
     else match line_start with
-    | None -> scan None (i + 1) edits packed
+    | None -> scan None (i + 1) edits
     | Some opening ->
       match List.find_opt (fun command ->
         let next = i + String.length command in
         next < length && starts source i command && space source.[next]) commands with
-      | None -> scan None (i + 1) edits packed
+      | None -> scan None (i + 1) edits
       | Some command ->
           let after = i + String.length command in
           let ending = command_end after in
-          let packed = if command = "Minks.Struct" then
-            let rec name j = if space source.[j] then name (j + 1) else j in
-            (i, name after) :: packed
-            else packed in
           let edits = (ending, "\n(* end show *)\n")
             :: (opening, "(* begin show *)\n") :: edits in
-          scan None ending edits packed
+          scan None ending edits
   in
-  scan (Some 0) 0 [] []
+  scan (Some 0) 0 []
 
 let insert source edits =
   let result = Buffer.create (String.length source) in
@@ -245,7 +241,7 @@ let insert source edits =
 (** Remap compiled byte ranges past the coqdoc preamble and show markers.
     The generated copy receives its own source digest. *)
 
-let glob ?(prefix = "") ?(edits = []) ?(packed = []) ~original ~filtered contents =
+let glob ?(prefix = "") ?(edits = []) ~original ~filtered contents =
   let first = try String.index contents '\n' with Not_found -> String.length contents in
   let header = String.sub contents 0 first in
   let digest s = Digest.to_hex (Digest.string s) in
@@ -299,23 +295,7 @@ let glob ?(prefix = "") ?(edits = []) ?(packed = []) ~original ~filtered content
         String.concat " " ["R" ^ shift_range
           (String.sub pos 1 (String.length pos - 1)); lib; section; name; kind]
     | [kind; range; section; name] ->
-        let first, _ = range_bounds range in
-        (match List.assoc_opt (int_of_string first) packed with
-         | None -> String.concat " " [kind; shift_range range; section; name]
-         | Some at ->
-             (* Elpi locates generated members on the entire command. Anchor
-                them on the packed name so each anchor is emitted once. *)
-             let position = shift (string_of_int at) in
-             let range = position ^ ":" ^ position in
-             let declaration = String.concat " " [kind; range; section; name] in
-             let constructor = "Make" ^ name in
-             if kind = "rec" && not (Hashtbl.mem declarations (section, constructor))
-               && starts original at name
-               && (let next = at + String.length name in
-                   space original.[next] || original.[next] = '.') then
-               declaration ^ "\n"
-               ^ String.concat " " ["constr"; range; section; constructor]
-             else declaration)
+        String.concat " " [kind; shift_range range; section; name]
     | _ -> line
   in
   "DIGEST " ^ digest (prefix ^ filtered) ^ "\n"
@@ -324,8 +304,8 @@ let glob ?(prefix = "") ?(edits = []) ?(packed = []) ~original ~filtered content
 
 let prepare language source metadata =
   let filtered, diagnostics = filter language source in
-  let edits, packed = show_declarations source in
+  let edits = show_declarations source in
   let filtered = insert filtered edits in
   let prefix = printing_preamble in
-  prefix ^ filtered, glob ~prefix ~edits ~packed ~original:source ~filtered metadata,
+  prefix ^ filtered, glob ~prefix ~edits ~original:source ~filtered metadata,
   diagnostics

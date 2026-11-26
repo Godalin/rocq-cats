@@ -600,6 +600,21 @@ let () =
         let ind = Packed_record.declare ~scoped_term name (Rocq.get_sigma state) telescope in
         Rocq.grab_global_env ~uctx:Univ.ContextSet.empty state, ((), Some ind), [])),
       BuiltIn.DocAbove);
+    (* Rocq-Elpi 3.7 emits a record and its projections in add-indt, but
+       omits its constructor. Use the registered name and invocation site. *)
+    BuiltIn.MLCode (Pred ("minks.glob-record-constructor",
+      In (Rocq.inductive, "Record",
+      Full (global, "Emit the constructor declaration of an Elpi-created record.")),
+      (fun ind ~depth:_ _ _ state ->
+        if Dumpglob.dump () then begin
+          let _, body = Inductive.lookup_mind_specif (Global.env ()) ind in
+          let loc = State.get Elpi_plugin.Rocq_elpi_builtins_synterp.invocation_site_loc state
+            |> Elpi_plugin.Rocq_elpi_utils.to_coq_loc in
+          Array.iter (fun id -> Dumpglob.dump_definition (CAst.make ~loc id) false "constr")
+            body.Declarations.mind_consnames
+        end;
+        state, (), [])),
+      BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.register-keys",
       In (Rocq.inductive, "Structure",
       In (BuiltInData.list BuiltInData.string, "Original field names",

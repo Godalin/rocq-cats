@@ -238,7 +238,10 @@ let check_links output =
 let pdf ?(design = false) root output tag paths =
   let dir = output ^ "/" ^ tag in
   mkdir dir;
-  run "rocq" (["doc"; "--latex"; "--utf8"; "--body-only"; "--gallina";
+  let glob = output ^ "/.inputs/" ^ tag ^ "/pdf.glob" in
+  write glob (Pdf.link_glob (List.map (fun path ->
+    read (Filename.chop_extension path ^ ".glob")) paths));
+  run "rocq" (["doc"; "--latex"; "--glob-from"; glob; "--utf8"; "--body-only"; "--gallina";
     "--no-index"; "--no-lib-name";
     "-R"; output ^ "/.inputs/" ^ tag ^ "/theories"; "Cats";
     "-d"; dir; "-o"; dir ^ "/body.tex"] @ paths);

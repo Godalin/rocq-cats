@@ -183,10 +183,24 @@ let () =
        "href=\"CatsTests.documentation.MinksExport.html#MakeExportPointed\"";
        "href=\"CatsTests.documentation.MinksExport.html#export_point\"";
        "selected_point"];
-    run "rocq" ["doc"; "--latex"; "--utf8"; "--gallina";
+    let client, client_glob, _ = prepare language
+      (read Sys.argv.(4)) (read Sys.argv.(5)) in
+    let use = output ^ "/MinksExportUse.v" and combined = output ^ "/pdf.glob" in
+    write use client;
+    write combined (Docs_pdf.Pdf.link_glob [client_glob; glob]);
+    run "rocq" ["doc"; "--latex"; "--glob-from"; combined; "--utf8"; "--gallina";
       "--body-only"; "--no-index"; "-R"; output; "CatsTests.documentation";
-      "-o"; output ^ "/page.tex"; input];
+      "-o"; output ^ "/page.tex"; input; use];
     let latex = read (output ^ "/page.tex") in
+    let definition = Str.regexp "\\\\coqdef{\\([^}]*\\)}{ExportPointed}{" in
+    ignore (Str.search_forward definition latex 0);
+    let target = Str.matched_group 1 latex in
+    List.iter (fun (kind, name) ->
+      let link = "\\coqref{" ^ target ^ "}{\\coqdoc" ^ kind ^ "{" ^ name ^ "}}" in
+      if not (contains latex link) then
+        failwith ("PDF reference did not link to Minks.Struct ExportPointed: " ^ name))
+      ["constructor", "MakeExportPointed"; "definition", "ExportPointedToExportPointOn";
+       "class", "ExportPointOn"];
     List.iter (fun token -> if not (contains latex token) then
       failwith ("missing Minks LaTeX declaration: " ^ token))
       ["HasExportPoint"; "ExportPointed"; "exports"; "ExportPointOn"])
