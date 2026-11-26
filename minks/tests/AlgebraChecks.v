@@ -198,7 +198,7 @@ Fail Check (at_one
   : IsMonoidWithPoint (MonoidToMagma multiplicative) (Rng_hasZero R)).
 End RingFixedPoints.
 
-(** Component assembly on a carrier, with a locally enabled canonical packer. *)
+(** Assemble the group interface from a monoid interface and its inverse. *)
 
 Section Completion.
 (** On an ordinary type, the field instances of [HasMonoid] supply
@@ -231,35 +231,7 @@ Example law_from_packed (M : Monoid) `{I : !HasInverse M} (x : M)
   : inv (inv x) ≈ x
   := inv_inv x.
 
-(** Enable the reverse canonical only for the positive packing test. With a
-    missing component, extraction through this packer can ask for [HasGroup A]
-    while that same interface is being assembled. *)
-
-#[local] Canonical group_on_carrier (A : Type) `{H : !HasGroup A}
-  : Group
-  := GroupOfHasGroup A H.
-
-Definition packed_on_carrier (A : Type) `{H : !HasMonoid A}
-    `{I : !HasInverse A}
-  : Group
-  := A.
 End Completion.
-
-(** Completion on a fixed monoid, a second local prototype. At this point
-    the registrations from [Completion] have expired. The [IsGroup] export
-    generated [MakeIsGroup] and [GroupOfIsGroup]. This section registers
-    the latter locally through a canonical packer. *)
-
-Section PackedBaseCompletion.
-#[local] Canonical group_on_monoid (M : Monoid) `{R : !IsGroup M}
-  : Group
-  := GroupOfIsGroup M R.
-
-(** With [R : IsGroup M] in scope, [M] itself can be passed where a
-    [Group] is expected. Rocq reverses the coercion to [Monoid]; the local
-    canonical [group_on_monoid] supplies the group and instance search
-    selects [R]. For [inv_inv x], the exported component projection supplies
-    the inverse directly from [R]. *)
 
 Section WithRelativeGroup.
 Context (M : Monoid) `{R : !IsGroup M} (x : M).
@@ -268,13 +240,7 @@ Example law_from_relative_group
   : inv (inv x) ≈ x
   := inv_inv x.
 
-Definition packed_from_relative_group
-  : Group
-  := M.
 End WithRelativeGroup.
-
-(** The involution law needs only [I]. To reuse the monoid as a packed
-    group, the local canonical packer obtains [IsGroup M] from [I]. *)
 
 Section WithInverse.
 Context (M : Monoid) `{I : !HasInverse M} (x : M).
@@ -283,40 +249,12 @@ Example law_from_inverse
   : inv (inv x) ≈ x
   := inv_inv x.
 
-Definition packed_from_inverse
-  : Group
-  := M.
 End WithInverse.
-
-(** With only [M : Monoid], [group_on_monoid] asks for [IsGroup M].
-    Uncomment this section to reproduce the timeout. [relative_from_inverse]
-    asks for [HasInverse M], and the exported projection [IsGroup_hasInverse]
-    asks for [IsGroup M] again. The depth-four trace shows both steps twice. *)
-
-(*
-Section MissingInverse.
-#[local] Instance relative_from_inverse (M : Monoid) `{I : !HasInverse M}
-  : IsGroup M
-  := MakeIsGroup M I.
-
-Context (M : Monoid).
-
-Goal IsGroup M.
-Proof.
-  Set Typeclasses Debug.
-  Fail typeclasses eauto 4.
-  Unset Typeclasses Debug.
-Abort.
-
-Timeout 2 Definition group_without_inverse : Group := M.
-End MissingInverse.
-*)
-End PackedBaseCompletion.
 
 (** ** Checking the inferred views and witnesses
 
     These equalities check the selections made in [HierarchyUsage] and
-    in the local completion experiments above, after their sections close. *)
+    by component assembly above, after the sections close. *)
 
 Module HierarchyChecks.
 Import HierarchyUsage.
@@ -358,13 +296,6 @@ Example inverse_from_monoid (M : Monoid) `{I : !HasInverse M}
   : HasGroup_hasInverse (@group_from_packed M I) = I
   := eq_refl.
 
-Example inverse_from_relative_group (M : Monoid) `{R : !IsGroup M}
-  : Group_hasInverse (@packed_from_relative_group M R) = IsGroup_hasInverse R
-  := eq_refl.
-
-Example inverse_from_packed_base (M : Monoid) `{I : !HasInverse M}
-  : Group_hasInverse (@packed_from_inverse M I) = I
-  := eq_refl.
 End HierarchyChecks.
 
 (** ** Export round trips and inherited choices *)

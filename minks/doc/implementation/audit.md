@@ -110,11 +110,8 @@ witnesses for the same pair of inputs exercise backtracking to a common pair
 and rejection when their admissible pairs are disjoint. The monoidal consumer checks that a
 symmetric interface supplies the exact choices used by the monoid category.
 Each cut forbids a projection immediately followed by its own constructor.
-
-Separate local experiments add a direct restriction or a reverse canonical
-packer. Such hints can introduce other cycles. For example, a canonical
-packer from a bare carrier can use extraction to request its own interface
-again. The generated cuts govern component assembly only.
+The local restriction instance in the overlap test illustrates how adding a
+direct interface-to-interface hint can introduce a separate search cycle.
 
 Mixin headers, packed layouts, relative interfaces and opened key names use
 regular Elpi clauses. Inheritance, assembly and inspection share declaration

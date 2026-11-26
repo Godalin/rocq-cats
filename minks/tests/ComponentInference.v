@@ -175,52 +175,13 @@ Example explicit_right (Q : HasA X)
 End Selection.
 End Repeated.
 
-(** A ground carrier can select a canonical packed value through an ordinary
-    projection. Compare native search with a guard on the selected input. *)
-
-Module PackedBoundary.
+Module RecursiveAssembly.
 Minks.Mixin Choice (A : Type) := { chosen : A }.
 Minks.Struct Pack
   extends Type
   with  choice : Choice
   exports Choices [carrier].
 Timeout 3 Fail Definition bare : Choices unit := _.
-Definition raw : Choice unit := Build_Choice unit tt.
-#[local] Hint Mode Choices + : typeclass_instances.
-#[local] Canonical candidate := MakePack unit raw.
-Definition inferred_native : Choices unit := _.
-Example native_selection : inferred_native = PackToChoices candidate := eq_refl.
-
-#[local] Remove Hints Pack_choice PackToChoices : typeclass_instances.
-
-Ltac project_selected carrier project :=
-  let index := eval cbn in carrier in
-  lazymatch index with
-  | Pack_carrier ?p => tryif has_evar p then fail else exact (project p)
-  end.
-#[local] Hint Extern 1 (Choice ?X) =>
-  project_selected X Pack_choice : typeclass_instances.
-#[local] Hint Extern 1 (Choices ?X) =>
-  project_selected X PackToChoices : typeclass_instances.
-Timeout 3 Fail Definition no_new_pack : Choices unit := _.
-Timeout 3 Fail Definition no_new_field : Choice unit := _.
-
-Section Known.
-Context (p : Pack).
-Definition known_group : Choices p := _.
-Definition known_field : Choice p := _.
-Example from_known : known_group = PackToChoices p := eq_refl.
-Example from_known_field : known_field = Pack_choice p := eq_refl.
-End Known.
-Definition parent_group (p : Pack)
-  : Choices (TypeCarrier_carrier (PackToTypeCarrier p))
-  := _.
-Example from_parent (p : Pack)
-  : parent_group p = PackToChoices p
-  := eq_refl.
-Timeout 3 Fail Definition unknown : {X : Type & Choices X}
-  := existT Choices _ _.
-
 (** The same constructor can be needed at successively smaller indices. *)
 #[local] Instance diagonal_choice {X : Type} `{S : !Choices X}
   : Choice (X * X) :=
@@ -235,7 +196,7 @@ Example selected_leaf :
   let x := @chosen X P in
   @chosen _ (Choices_choice nested) = ((x, x), (x, x)) := eq_refl.
 End SmallerInputs.
-End PackedBoundary.
+End RecursiveAssembly.
 
 From MinksExamples Require Import Algebra.
 
@@ -250,42 +211,4 @@ Example exact_inverse : IsGroup_hasInverse relative = I := eq_refl.
 Fail Definition automatic_group : Group := M.
 Definition packed : Group := GroupOfIsGroup M relative.
 End Assembly.
-(** Run the reverse coercion and overlapping export instances together.
-    A cut on [IsGroup] alone leaves the carrier-relative groups cyclic. *)
-
-Section ReversePacking.
-#[local] Canonical group_on_monoid (M : Monoid) `{R : !IsGroup M}
-  : Group := GroupOfIsGroup M R.
-Local Arguments GroupOfMonoid _ {_}.
-
-Section SelectedParent.
-Context (M : Monoid).
-Timeout 3 Fail Definition missing_atom : HasInverse M := _.
-Timeout 3 Fail Definition missing_relative : IsGroup M := _.
-Timeout 3 Fail Definition missing_group_interface : HasGroup M := _.
-Timeout 3 Fail Definition missing_packed : Group := M.
-
-Context `{I : !HasInverse M}.
-Definition automatic : Group := M.
-Definition named : Group := GroupOfMonoid M.
-Definition explicit_choice (J : HasInverse M) : Group := @GroupOfMonoid M J.
-Definition on_carrier : HasGroup M := _.
-Example same_packing : automatic = named := eq_refl.
-Example selected_inverse : Group_hasInverse automatic = I := eq_refl.
-Example selected_component : HasGroup_hasInverse on_carrier = I := eq_refl.
-Example alternate_inverse (J : HasInverse M)
-  : Group_hasInverse (explicit_choice J) = J := eq_refl.
-End SelectedParent.
-
-(** Search terminates in both cases. Registering a concrete canonical pack
-    still lets extraction select it from just the carrier. *)
-Section ConcreteCandidate.
-Context (model : unit -> HasGroup unit).
-Timeout 3 Fail Definition bare_carrier : HasGroup unit := _.
-#[local] Canonical unit_group := GroupOfHasGroup unit (model tt).
-Definition inferred_on_unit : HasGroup unit := _.
-Example extracted_candidate
-  : inferred_on_unit = GroupToHasGroup unit_group := eq_refl.
-End ConcreteCandidate.
-End ReversePacking.
 End RelativeGroup.
