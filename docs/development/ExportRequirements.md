@@ -166,7 +166,7 @@ Defined.
 ```
 
 See the [native annotation documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)
-and `NatIso_is_iso` in [Natural.v](../../theories/Cat/Natural.v).
+and `nat_iso_is_iso` in [Natural.v](../../theories/Cat/Natural.v).
 
 ## Readability and verification
 

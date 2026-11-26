@@ -25,6 +25,12 @@ let run program args =
   | _ -> failwith (program ^ " failed in documentation integration test")
 
 let () =
+  let source = read Sys.argv.(3) in
+  let proof = Docs_pdf.Preview.proof_input ~kind:"Definition" ~ending:"Defined."
+    ~name:"nat_iso_is_iso" source in
+  if List.length (Str.split_delim (Str.regexp_string "(* .unfold .all *)") proof)
+    <> 3 then
+    failwith "current preview proof lost its two focused-state annotations";
   let dir = Filename.temp_file "rocq_docs_" "" in
   Sys.remove dir; Unix.mkdir dir 0o700;
   let original = dir ^ "/Fixture.v" in
@@ -154,4 +160,35 @@ let () =
       failwith "specimen declaration destinations were not retained")
     [En, "en", "English tutorial heading", "中文教程标题";
      Zh, "zh", "中文教程标题", "English tutorial heading"];
-  print_endline "Documentation export: language separation, proof hiding and shared LaTeX passed."
+  let source = read Sys.argv.(1) and metadata = read Sys.argv.(2) in
+  List.iter (fun (language, tag) ->
+    let output = dir ^ "/minks-" ^ tag in
+    Unix.mkdir output 0o700;
+    let filtered, glob, messages = prepare language source metadata in
+    if messages <> [] then failwith "unexpected Minks fixture diagnostics";
+    let input = output ^ "/MinksExport.v" in
+    write input filtered;
+    write (output ^ "/MinksExport.glob") glob;
+    run "rocq" ["doc"; "--utf8"; "--gallina"; "--no-externals";
+      "--no-index"; "--no-lib-name"; "-R"; output; "CatsTests.documentation";
+      "-o"; output ^ "/page.html"; input];
+    let page = read (output ^ "/page.html") in
+    List.iter (fun token -> if not (contains page token) then
+      failwith ("missing compiled Minks declaration or reference: " ^ token))
+      ["Minks"; "Mixin"; "Struct"; "exports";
+       "id=\"HasExportPoint\""; "id=\"export_point\"";
+       "id=\"ExportPointed\""; "id=\"MakeExportPointed\"";
+       "id=\"ExportPointedToTypeCarrier\""; "id=\"ExportPointOn\"";
+       "href=\"CatsTests.documentation.MinksExport.html#ExportPointed\"";
+       "href=\"CatsTests.documentation.MinksExport.html#MakeExportPointed\"";
+       "href=\"CatsTests.documentation.MinksExport.html#export_point\"";
+       "selected_point"];
+    run "rocq" ["doc"; "--latex"; "--utf8"; "--gallina";
+      "--body-only"; "--no-index"; "-R"; output; "CatsTests.documentation";
+      "-o"; output ^ "/page.tex"; input];
+    let latex = read (output ^ "/page.tex") in
+    List.iter (fun token -> if not (contains latex token) then
+      failwith ("missing Minks LaTeX declaration: " ^ token))
+      ["HasExportPoint"; "ExportPointed"; "exports"; "ExportPointOn"])
+    [En, "en"; Zh, "zh"];
+  print_endline "Documentation export: bilingual native output, compiled Minks declarations and current preview input passed."

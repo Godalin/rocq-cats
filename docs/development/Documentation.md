@@ -33,7 +33,8 @@ dune exec tools/docs/docs.exe -- pdf --strict
 
 The PDFs are `_build/docs-pdf/en/rocq-cats-en.pdf` and
 `_build/docs-pdf/zh/rocq-cats-zh.pdf`. All theory modules are discovered
-and ordered automatically. Each export first runs `dune build @all`, and never
+and ordered automatically. Each export first runs
+`dune build -j2 @check-library`, without running the Cats test suite, and never
 edits tracked Rocq sources. Use the project opam switch locally:
 
 ```sh
@@ -55,6 +56,21 @@ OCaml 5.3.0, Dune 3.23.1, TeX Live 2025.
 The exporter and its compiled-source regression use `rocq compile` and
 `rocq doc`, available since Rocq 9.0; legacy `coqc`/`coqdoc` executable aliases
 are not required.
+
+For exporter changes, run the focused regressions without exporting the library:
+
+```sh
+opam exec --switch=rocq-cats -- dune build -j2 @tools/docs/runtest
+```
+
+The compiled [Minks fixture](../../tests/documentation/MinksExport.v), in
+`CatsTests.documentation.MinksExport`, checks selected-point computation.
+The exporter regression processes its real source and globalization metadata
+through both language filters and native coqdoc HTML/LaTeX. It checks visible
+Minks commands, generated constructor, parent-view and relative-interface
+anchors, and references from actual clients. It also extracts the current
+preview proof and checks its two focus annotations. These checks do not run
+XeLaTeX or Alectryon.
 
 Both PDF modes normalize coqdoc's native blank-row and indentation markers
 before layout and shared code-frame decoration, following the
@@ -84,7 +100,7 @@ stay linked. The optional native-proof styling is isolated in
 Alectryon installation or proof-style assets.
 
 Only `design` invokes **Alectryon 2.0.0 with the VsRocq driver**, processing the
-original context and proof of `NatIso_is_iso` from
+original context and proof of `nat_iso_is_iso` from
 [Natural.v](../../theories/Cat/Natural.v). Native LaTeX replaces that declaration's
 code block at its original position; other proofs use ordinary coqdoc hiding.
 Native focus-bullet annotations show only each branch's current goal, following

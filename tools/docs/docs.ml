@@ -245,7 +245,7 @@ let pdf ?(design = false) root output tag paths =
   let zh = tag = "zh" in
   let body = Pdf.compact (read (dir ^ "/body.tex")) in
   let body = if design then Pdf.decorate
-    ~proof_anchor:"Cats.Cat.Natural.NatIso is iso" body else Pdf.decorate body in
+    ~proof_anchor:"Cats.Cat.Natural.nat iso is iso" body else Pdf.decorate body in
   write (dir ^ "/body.tex") body;
   if design then begin
     write (dir ^ "/targets.tex") (Pdf.targets body);
@@ -305,7 +305,7 @@ let build root strict format =
   let paths = source_files "theories"
     |> preferences "docs/chapters" in
   let sources = List.map (fun path -> { path; name = module_name path }) paths in
-  run "dune" ["build"; "@all"];
+  run "dune" ["build"; "-j2"; "@check-library"];
   let sources = reading_order root sources in
   let sources = if format = "design" then
     let names = Preview.modules (List.map (fun s -> s.name) sources) in
@@ -318,7 +318,7 @@ let build root strict format =
   if format = "design" then begin
     let input = output ^ "/proof-input.tex" in
     write input (Preview.proof_input ~kind:"Definition" ~ending:"Defined."
-      ~name:"NatIso_is_iso" (read "theories/Cat/Natural.v"));
+      ~name:"nat_iso_is_iso" (read "theories/Cat/Natural.v"));
     let local = root ^ "/_build/docs-alectryon/bin/alectryon" in
     let program = if Sys.file_exists local then local else "alectryon" in
     run ~log:(output ^ "/alectryon.log") program
