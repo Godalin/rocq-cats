@@ -12,6 +12,9 @@ the OCaml compiler and opam build dependencies in
 [the toolchain lock](../../tools/ci/toolchain.lock). From the repository root,
 install these versions in the project switch and verify the result.
 Stop builds and language servers before updating a shared switch.
+The inventory disables opam's terminal colors and omits the Linux-only
+`conf-linux-libc-dev` system-header probe, so the same lock can be compared
+on Linux and macOS. Compiler, Rocq and OCaml library versions remain exact.
 Rocq and Stdlib have independent release versions; the package bound uses
 `rocq-core` because `rocq-prover` is a metapackage.
 

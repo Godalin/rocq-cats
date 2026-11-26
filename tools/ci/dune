@@ -1,0 +1,4 @@
+(rule
+ (alias runtest)
+ (deps test-toolchain.sh toolchain.sh)
+ (action (run sh %{dep:test-toolchain.sh} %{dep:toolchain.sh})))
