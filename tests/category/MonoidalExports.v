@@ -1,6 +1,7 @@
 From Cats Require Import
   Cat.Monoidal.Functor
-  Cat.Monoidal.Monoid.
+  Cat.Monoidal.Monoid
+  Cat.Monoidal.Symmetric.
 
 (** * Fixed-category monoidal interface
 
@@ -58,3 +59,32 @@ Example second_mul
   : m[MakeMonoidObj A Q] = @monoid_obj_mul _ _ A Q
   := eq_refl.
 End MonoidChoices.
+
+(** The exported constructor assembles the five selected components. *)
+
+(** 导出接口的构造器组装选定的五个组件。 *)
+
+Section ComponentAssembly.
+Context (C : Cat) `{B : !HasBinoidal C} `{A : !HasTensorAssoc C}
+  `{I : !IsMagmoidal C} `{U : !HasTensorUnitors C}.
+Timeout 3 Fail Definition missing_triangle : HasMonoidal C := _.
+Context `{P : !IsPremonoidal C}.
+Definition assembled_from_components : HasMonoidal C := _.
+Example selected_components
+  : assembled_from_components = MakeHasMonoidal C B A I U P
+  := eq_refl.
+End ComponentAssembly.
+
+(** A supplied symmetric structure determines the monoidal structure
+    used by the category of monoid objects. *)
+
+(** 给定的对称幺半结构确定构造幺半对象范畴所用的幺半结构。 *)
+
+Section SymmetricMonoids.
+Context (C : Cat) `{S : !HasSymMonoidal C}.
+Definition monoids : Cat := MonoidCat C.
+Example symmetric_selection : (_ : HasMonoidal C) =
+    MakeHasMonoidal C (HasSymMonoidal_hasBinoidal S) (HasSymMonoidal_associator S)
+      (HasSymMonoidal_interchange S) (HasSymMonoidal_unitors S)
+      (HasSymMonoidal_isPremonoidal S) := eq_refl.
+End SymmetricMonoids.

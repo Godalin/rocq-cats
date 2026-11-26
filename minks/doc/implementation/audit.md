@@ -62,7 +62,7 @@ dependencies whose argument identities are still being resolved.
 | Export-Fix, Export-Common, Export-Form, Export-To, Export-Of | [Relative.v](../../theories/Relative.v), [Algebra.v](../../examples/Algebra.v), [Sharing.v](../../tests/Sharing.v) | Selection closure and transparent extraction and packing work in the examples above. Packed-base exports register the same virtual mixin interface as field-key exports. The regressions extend and assemble `IsMonoid M`, check its selected point, and reject duplicate batch keys. [Sections.v](../../tests/Sections.v) also exercises projections of a parameterized packed base. [ViewMatch.v](../../tests/ViewMatch.v) checks an independent packed base with permuted indices and a renamed field. [Commands.v](../../tests/Commands.v) rejects distinct module keys with identical names and types. |
 | Parent-To, Parent-Of, Projection-Name | [Flat.v](../../theories/Flat.v), [Struct.v](../../theories/Struct.v), [Algebra.v](../../examples/Algebra.v) | Declared ancestor maps rebuild selected fields. Direct-parent packers take missing components. [Commands.v](../../tests/Commands.v) rejects repeated and inherited keys even with a projection alias, and checks that a fresh key stores a second witness of the same class. |
 | WF-Compare, View-Match, View-Explicit | [Flat.v](../../theories/Flat.v), [Relative.v](../../theories/Relative.v), [Commands.v](../../tests/Commands.v) | Discovery checks strict component inclusion and checks the candidate term with Rocq. Export declarations generate no inter-interface views. Target indices are inferred from aligned descriptors. [ViewMatch.v](../../tests/ViewMatch.v) checks both declaration orders for an independent three-key layout, reordered indices after parent instantiation, and a missing target index. A packed export and its view also mix a section assumption with a header parameter and drop the unused section assumption at discharge. The resulting views reduce to the original projections. The same test checks discovery after nested discharge, preservation of an occupied view name, and retry after a later export rejects the command. |
-| Coerce-Parent, Inst-Field, Inst-Export, Canon-View | [Flat.v](../../theories/Flat.v), [Relative.v](../../theories/Relative.v), [Commands.v](../../tests/Commands.v) | Direct declared parents request coercions. Field registration selects the first key for each class head. Canonical views preserve those keys. Anchored exports register an extraction instance. Global inference coherence remains open. |
+| Coerce-Parent, Inst-Field, Inst-Export, Inst-Assemble, Canon-View | [Flat.v](../../theories/Flat.v), [Relative.v](../../theories/Relative.v), [Commands.v](../../tests/Commands.v) | Direct declared parents request coercions. Field registration selects the first key for each class head. Canonical views preserve those keys. Anchored exports register an extraction instance. [ComponentInference.v](../../tests/ComponentInference.v) checks assembly from default component keys and cuts on the reverse projection path. Global inference coherence remains open. |
 | Section-End | [mixin parameter roles](../../theories/Spec.v), [Sections.v](../../tests/Sections.v), [Commands.v](../../tests/Commands.v) | Nested discharge, import, applied parent views and relative reassembly have executable cases. Preservation for every input used only by hierarchy metadata still needs an argument. |
 
 The `RenamedKeys` module checks both orders of the ring diamond, competing
@@ -102,9 +102,19 @@ view identifying the source enables an extraction instance. Remaining mixin
 fields provide instances for default keys. Reverse packers stay explicit.
 Export-to-export views and the proposed Trans command are unimplemented.
 
-In a local probe, registering assembly of `IsGroup` from `HasInverse`
-alongside the inverse projection made search revisit the original goal when
-no inverse was available, even without a canonical packer.
+[ComponentInference.v](../../tests/ComponentInference.v) checks generated
+constructor instances and their search cuts for [#54](https://github.com/Godalin/rocq-cats/issues/54).
+It covers overlapping exports, dependent fields, missing components, repeated
+keys and recursion at smaller indices. Two exports with independently chosen
+witnesses for the same pair of inputs exercise backtracking to a common pair
+and rejection when their admissible pairs are disjoint. The monoidal consumer checks that a
+symmetric interface supplies the exact choices used by the monoid category.
+Each cut forbids a projection immediately followed by its own constructor.
+
+Separate local experiments add a direct restriction or a reverse canonical
+packer. Such hints can introduce other cycles. For example, a canonical
+packer from a bare carrier can use extraction to request its own interface
+again. The generated cuts govern component assembly only.
 
 Mixin headers, packed layouts, relative interfaces and opened key names use
 regular Elpi clauses. Inheritance, assembly and inspection share declaration

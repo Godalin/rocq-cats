@@ -350,6 +350,14 @@ square brackets.
   equality of whole records may need a record case split. With a packed
   base, extraction uses the corresponding structure view and reassembly
   starts from that base's projections.
+- **Assembly from components.** If every remaining field is the default
+  instance key for its class head in the complete layout, the interface
+  constructor is an instance at priority 3. Rocq searches for each field
+  at its declared type, including dependencies on preceding witnesses.
+  For example, an available `HasABC X` can supply the two components of
+  `HasAB X`. A projection immediately followed by its own interface
+  constructor is cut from search. An export with a nondefault key or a
+  native remaining field uses its explicit constructor.
 - **Composition metadata.** Every export also registers a virtual mixin.
   With a packed base, its first fixed input is the record itself, followed
   by any separately fixed components. Both `extends IsMonoid M` and
@@ -359,7 +367,7 @@ square brackets.
   two law witnesses. Section parameters precede the fixed inputs after
   discharge.
 - **Independent exports.** Declaring an interface registers its class and
-  mixin metadata, its eligible field instances and its own extraction.
+  mixin metadata and its eligible projection, assembly and extraction instances.
   It generates no maps, instances or coercions between exports, including
   exports of a parent and child. A client can define a view using named
   projections and register the desired direction locally.

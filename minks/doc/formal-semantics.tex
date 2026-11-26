@@ -67,7 +67,7 @@ and worked examples.
 \ruse{Export-Common}.\par
 \textit{Generation.} \ruse{Projection-Name}, \ruse{Parent-To}, \ruse{Parent-Of}, \ruse{Export-Form},
 \ruse{Export-To}, \ruse{Export-Of}, \ruse{WF-Compare}, \ruse{View-Match},
-\ruse{View-Explicit}, \ruse{Trans-Export}, \ruse{Coerce-Parent}, \ruse{Inst-Field}, \ruse{Inst-Export},
+\ruse{View-Explicit}, \ruse{Trans-Export}, \ruse{Coerce-Parent}, \ruse{Inst-Field}, \ruse{Inst-Export}, \ruse{Inst-Assemble},
 \ruse{Canon-View}, \ruse{Section-End}.\par
 \textit{Proof obligations.} \ruse{Gen-Preserve}, \ruse{Fix-Compose}.\par}
 
@@ -890,6 +890,12 @@ or a declared parent view of $s$ identifies that binder, including a
 chain of such projections. Ambient parameters alone do not. An empty
 tuple thus leaves extraction explicit. This rule adds no coercion;
 reassembly $S\ttt{Of}E$ stays explicit.
+\item \rdefn{Inst-Assemble}. If every remaining key of $E$ is selected by
+  \ruse{Inst-Field}, register its constructor $\make_E$ as a priority-3
+  instance. Each argument keeps its dependent field type. For each
+  remaining projection $p$, cut any search path ending in $p,\make_E$.
+  An available interface can thus supply components of another export
+  without a registration between the two classes.
 \item \rdefn{Canon-View}. A declared ancestor view is eligible for \ttt{Canonical} when every
   default component key in the ancestor remains the default for its
   class head in the child. The rule applies independently of

@@ -192,6 +192,11 @@ Elpi File minks.relative lp:{{
       stored-fields I Keys ChildRefs,
       std.map ConstructorKeys (k\t\ read-field ChildRefs k t) FromChild,
       coq.env.indt Export tt _ _ _ [Ctor] _,
+      if (std.forall Remaining (auto-instance Cs))
+        (std.map Refs (r\p\ sigma c\ r = pr _ c, p = const c) Projections,
+         minks.cut-assembly Projections (indc Ctor),
+         coq.TC.declare-instance (indc Ctor) 3)
+        true,
       if (Base = some B)
         (coq.gref->id (indt B) BaseName, Parameters = [BaseName | FixedKeys])
         (Parameters = FixedKeys),

@@ -497,9 +497,21 @@ Minks.Struct LaterPointed
 Check LaterPointedToEquivOnLaterPoint
   : ∀ S : LaterPointed, EquivOnLaterPoint (LaterPointedToLaterPoint S).
 
-Fail Definition inferred_on_structural_base (S : LaterPointed)
+Definition inferred_on_structural_base (S : LaterPointed)
   : EquivOnLaterPoint (LaterPointedToLaterPoint S)
   := _.
+Example assembled_equiv (S : LaterPointed)
+  : EquivOnLaterPoint_secondEquiv (inferred_on_structural_base S)
+    = LaterPointed_secondEquiv S
+  := eq_refl.
+
+Section ExplicitExtraction.
+#[local] Remove Hints MakeEquivOnLaterPoint : typeclass_instances.
+Fail Definition extracted_on_structural_base (S : LaterPointed)
+  : EquivOnLaterPoint (LaterPointedToLaterPoint S)
+  := _.
+
+End ExplicitExtraction.
 
 Example later_view_preserves_point (S : LaterPointed)
   : LaterPoint_chosenPoint (LaterPointedToLaterPoint S)

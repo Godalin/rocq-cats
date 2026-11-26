@@ -115,7 +115,10 @@ Example selected_inverse
 
 Fail Check (G : HasInverse A).
 Fail Check HasGroupToHasMonoid.
-Fail Definition implicit_monoid_interface : HasMonoid A := _.
+Definition implicit_monoid_interface : HasMonoid A := _.
+Example same_magma
+  : HasMonoid_hasMagma implicit_monoid_interface = HasGroup_hasMagma G
+  := eq_refl.
 End BetweenExports.
 
 (** The proposed [Minks.Trans IsMonoid to IsMonoidWithPoint] would
@@ -195,21 +198,9 @@ Fail Check (at_one
   : IsMonoidWithPoint (MonoidToMagma multiplicative) (Rng_hasZero R)).
 End RingFixedPoints.
 
-(** Completion on a carrier, a local prototype. Minks already generates
-    the packers and extraction used below. Exporting [HasMonoid] supplies
-    extraction. This section enables assembly by instance search and a
-    canonical packed [Group]. *)
+(** Component assembly on a carrier, with a locally enabled canonical packer. *)
 
 Section Completion.
-#[local] Instance group_from_inverse {A : Type}
-    `{H : !HasMonoid A} `{I : !HasInverse A}
-  : HasGroup A
-  := GroupToHasGroup (GroupOfMonoid (MonoidOfHasMonoid A H) I).
-
-#[local] Canonical group_on_carrier (A : Type) `{H : !HasGroup A}
-  : Group
-  := GroupOfHasGroup A H.
-
 (** On an ordinary type, the field instances of [HasMonoid] supply
     [mul_unit_l]. Building [HasGroup A] also requires an inverse for
     that monoid. With [I], [inv_inv x] uses the inverse mixin directly. *)
@@ -218,7 +209,7 @@ Example unit_from_interface (A : Type) `{H : !HasMonoid A} (x : A)
   : point * x ≈ x
   := mul_unit_l x.
 
-Fail Definition missing_inverse (A : Type) `{H : !HasMonoid A}
+Timeout 3 Fail Definition missing_inverse (A : Type) `{H : !HasMonoid A}
   : HasGroup A
   := ltac:(typeclasses eauto).
 
@@ -232,18 +223,21 @@ Example law_from_interface (A : Type) `{H : !HasMonoid A}
   : inv (inv x) ≈ x
   := inv_inv x.
 
-(** On a packed monoid, the generated [MonoidToHasMonoid] instance supplies
-    the monoid argument of [group_from_inverse]. Supplying its carrier and
-    inverse pins the local assembly to this monoid. *)
-
 Definition group_from_packed (M : Monoid) `{I : !HasInverse M}
   : HasGroup M
-  := @group_from_inverse M _ I.
+  := _.
 
 Example law_from_packed (M : Monoid) `{I : !HasInverse M} (x : M)
   : inv (inv x) ≈ x
   := inv_inv x.
-(** Reversing the carrier coercion exercises the local canonical packer. *)
+
+(** Enable the reverse canonical only for the positive packing test. With a
+    missing component, extraction through this packer can ask for [HasGroup A]
+    while that same interface is being assembled. *)
+
+#[local] Canonical group_on_carrier (A : Type) `{H : !HasGroup A}
+  : Group
+  := GroupOfHasGroup A H.
 
 Definition packed_on_carrier (A : Type) `{H : !HasMonoid A}
     `{I : !HasInverse A}
@@ -280,8 +274,7 @@ Definition packed_from_relative_group
 End WithRelativeGroup.
 
 (** The involution law needs only [I]. To reuse the monoid as a packed
-    group, the canonical packer also needs [IsGroup M]. Supply that
-    witness for this particular monoid after checking the law. *)
+    group, the local canonical packer obtains [IsGroup M] from [I]. *)
 
 Section WithInverse.
 Context (M : Monoid) `{I : !HasInverse M} (x : M).
@@ -290,11 +283,9 @@ Example law_from_inverse
   : inv (inv x) ≈ x
   := inv_inv x.
 
-Fail Definition group_without_relative_witness : Group := M.
-
 Definition packed_from_inverse
   : Group
-  := let R : IsGroup M := MakeIsGroup M I in (M : Group).
+  := M.
 End WithInverse.
 
 (** With only [M : Monoid], [group_on_monoid] asks for [IsGroup M].

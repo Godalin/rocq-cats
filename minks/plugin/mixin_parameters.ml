@@ -615,6 +615,18 @@ let () =
         end;
         state, (), [])),
       BuiltIn.DocAbove);
+    BuiltIn.MLCode (Pred ("minks.cut-assembly",
+      In (BuiltInData.list Rocq.gref, "Component projections",
+      In (Rocq.gref, "Interface constructor",
+      Easy "Cut a projection followed immediately by its own constructor.")),
+      (fun projections ctor ~depth:_ ->
+        let open Hints in
+        let atom reference = PathAtom (PathHints [reference]) in
+        let alternatives = List.fold_left (fun path p -> PathOr (path, atom p))
+          PathEmpty projections in
+        let path = PathSeq (PathStar (PathAtom PathAny), PathSeq (alternatives, atom ctor)) in
+        add_hints ~locality:Export [Class_tactics.typeclasses_db] (HintsCutEntry path))),
+      BuiltIn.DocAbove);
     BuiltIn.MLCode (Pred ("minks.register-keys",
       In (Rocq.inductive, "Structure",
       In (BuiltInData.list BuiltInData.string, "Original field names",
