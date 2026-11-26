@@ -8,6 +8,15 @@ cone. [Diagrams](../../theories/Cat/Diagram/Core.v) · [Limits](../../theories/C
 
 ## Building limits
 
+`HasPullback C` and `HasInitial C` are Minks mixins on a supplied category
+`C`, which is ordinary fixed data. Pullbacks retain their chosen vertex,
+projections and Type-valued universal mediators. The initial-object mixin
+stores exactly one `HasTerminal (C^op)` choice; the initial arrows and laws
+continue to be the terminal theory on the opposite category. Neither mixin
+selects a model globally. They can be used as components in a Minks bundle
+without repeating those choices or their universal-property proofs.
+[Pullbacks](../../theories/Cat/Pullback.v) · [Terminal and initial objects](../../theories/Cat/Terminal.v)
+
 - Empty, discrete pair, cospan and parallel-arrow diagrams recover terminal
   objects, binary products, pullbacks and equalizers. Use the correspondence
   for the relevant shape to transfer the universal property.
