@@ -38,10 +38,11 @@ Definition TerminalObjectsF
 
 Program Definition EndpointVertexF (b : bool)
   : TerminalObjectsF →ᵥ ArrowObjectsF
-  :=
-  {|vertex_fct := ConstF (VtxCat TerminalObjectsF)
-      (C := VtxCat ArrowObjectsF) b
-  |}.
+  := MakeVtxFct (ConstF (VtxCat TerminalObjectsF)
+      (C := VtxCat ArrowObjectsF) b)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros x y p. reflexivity. Defined.
 Next Obligation. exact tt. Defined.
 

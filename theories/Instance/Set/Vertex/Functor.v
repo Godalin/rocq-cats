@@ -17,28 +17,58 @@ From Cats Require Import
     对象呈现之间的态射是普通函子，要求对象映射保持对象广集的相等，箭头映射
     保持其指定运输。其比较从带标签图式继承运输方块，不比较证明字段的相等。 *)
 
-(** Expose one underlying functor. Object respectfulness retains equality
-    witnesses; the transport law compares arrows in the target hom-setoid. *)
+(** Fix an ordinary functor between the induced categories. Its object
+    respectfulness concerns the label setoids, beyond the ordinary hom laws.
+    Retain those equality witnesses and compare transported arrows in the
+    target hom-setoid. *)
 
-(** 暴露唯一底层函子。对象保相等性保留相等见证；运输律在目标 Hom 广集中比较箭头。 *)
+(** 固定诱导范畴之间的普通函子。对象保相等性涉及标签广集，而不仅是普通
+    Hom 定律；保留这些相等见证，并在目标 Hom 广集中比较运输箭头。 *)
 
-Record VtxFct {X Y : SetC} {C D : Cat}
+Minks.Mixin IsVtxFct {X Y : SetC} {C D : Cat}
     (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
+    (F : Fct (VtxCat T) (VtxCat U))
   :=
-  { vertex_fct :> Fct (VtxCat T) (VtxCat U)
-  ; vertex_fct_ob_proper
-    :: Proper (carrier_equiv X ==> carrier_equiv Y) vertex_fct
+  { vertex_fct_ob_proper
+    :: Proper (carrier_equiv X ==> carrier_equiv Y) F
   ; vertex_fct_transport {x y : X} (p : x ≈S y)
-    : fmap vertex_fct T⟦p⟧Ob ≈
-        U⟦vertex_fct_ob_proper x y p⟧Ob
+    : fmap F T⟦p⟧Ob ≈ U⟦vertex_fct_ob_proper x y p⟧Ob
   }.
 
-Arguments vertex_fct {_ _ _ _ _ _} _.
-Arguments vertex_fct_ob_proper {_ _ _ _ _ _} _ _ _ _.
-Arguments vertex_fct_transport {_ _ _ _ _ _} _ {_ _} _.
+Arguments vertex_fct_ob_proper {_ _ _ _ _ _ _} _ _ _ _.
+Arguments vertex_fct_transport {_ _ _ _ _ _ _} _ {x y} _.
+
+(** A vertex functor retains one underlying functor and its fixed-data
+    transport witness. Minks generates the unique [VtxFctToFct] view and
+    [MakeVtxFct] packer. A bundle's field calls use its stored [isVtxFct]
+    witness, keeping independently supplied witnesses separate. *)
+
+(** 顶点函子保留唯一底层函子及其固定数据的运输见证；Minks 生成唯一
+    [VtxFctToFct] 视图及 [MakeVtxFct] 构造器。包的字段调用使用自身保存的
+    [isVtxFct] 见证，使独立给定的见证保持分离。 *)
+
+Minks.Struct VtxFct {X Y : SetC} {C D : Cat}
+    (T : Fct (EqGpd X) C) (U : Fct (EqGpd Y) D)
+  extends Fct (VtxCat T) (VtxCat U)
+  with  isVtxFct as isVtxFct : IsVtxFct [X, Y, C, D, T, U, carrier].
+
+Arguments VtxFctToFct {_ _ _ _ _ _} _.
+Arguments isVtxFct {_ _ _ _ _ _} _.
+Arguments MakeVtxFct {_ _ _ _ _ _} _ _.
 
 Notation "T '→ᵥ' U" := (VtxFct T U)
   (at level 99, right associativity) : type_scope.
+
+(** The bundled object map respects label equality through its stored
+    witness, including when another witness has the same underlying functor. *)
+
+(** 打包对象映射通过自身保存的见证保持标签相等；即使另一份见证具有相同的
+    底层函子，也使用这一份选择。 *)
+
+#[export] Instance VtxFct_Proper {X Y : SetC} {C D : Cat}
+    {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
+  : Proper (carrier_equiv X ==> carrier_equiv Y) F
+  := vertex_fct_ob_proper (isVtxFct F).
 
 (** The respectful object-map view is explicit, so the functor remains
     the unique coercion and no competing function path is introduced. *)
@@ -50,7 +80,7 @@ Program Definition vertex_fct_ob_resp {X Y : SetC} {C D : Cat}
   : X →r Y
   :=
   {|func := F
-  ; func_proper := vertex_fct_ob_proper F
+  ; func_proper := vertex_fct_ob_proper (isVtxFct F)
   |}.
 
 (** The transport equation holds for every parallel target witness. *)
@@ -62,8 +92,8 @@ Lemma vertex_fct_transport_witness {X Y : SetC} {C D : Cat}
     {x y : X} (p : x ≈S y) (q : (F x : Y) ≈S F y)
   : fmap F T⟦p⟧Ob ≈ U⟦q⟧Ob.
 Proof.
-  transitivity U⟦vertex_fct_ob_proper F x y p⟧Ob.
-  - exact (vertex_fct_transport F p).
+  transitivity U⟦vertex_fct_ob_proper (isVtxFct F) x y p⟧Ob.
+  - exact (vertex_fct_transport (isVtxFct F) p).
   - apply vertex_transport_witness_independent.
 Defined.
 
@@ -74,9 +104,10 @@ Defined.
 Program Canonical VtxIdF {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : T →ᵥ T
-  :=
-  {|vertex_fct := IdF
-  |}.
+  := MakeVtxFct IdF
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros x y p. exact p. Defined.
 Next Obligation. apply vertex_transport_witness_independent. Defined.
 
@@ -89,16 +120,18 @@ Program Canonical VtxCompF {X Y Z : SetC} {C D E : Cat}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D}
     {V : Fct (EqGpd Z) E} (G : U →ᵥ V) (F : T →ᵥ U)
   : T →ᵥ V
-  :=
-  {|vertex_fct := G ∘F F
-  |}.
+  := MakeVtxFct (G ∘F F)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation.
   intros x y p.
-  exact (vertex_fct_ob_proper G _ _ (vertex_fct_ob_proper F x y p)).
+  exact (vertex_fct_ob_proper (isVtxFct G) _ _
+    (vertex_fct_ob_proper (isVtxFct F) x y p)).
 Defined.
 Next Obligation.
-  transitivity (fmap G U⟦vertex_fct_ob_proper F x y p⟧Ob).
-  - apply fmap_proper. exact (vertex_fct_transport F p).
+  transitivity (fmap G U⟦vertex_fct_ob_proper (isVtxFct F) x y p⟧Ob).
+  - apply fmap_proper. exact (vertex_fct_transport (isVtxFct F) p).
   - apply vertex_fct_transport_witness.
 Defined.
 
@@ -169,11 +202,11 @@ Program Definition vertex_diagram_postcomp_resp {X Y : SetC} {C D : Cat}
   |}.
 Next Obligation.
   intros P Q [e H].
-  exists (λ j, vertex_fct_ob_proper F _ _ (e j)).
+  exists (λ j, vertex_fct_ob_proper (isVtxFct F) _ _ (e j)).
   intros i j f.
-  change (U⟦vertex_fct_ob_proper F _ _ (e j)⟧Ob ∘
+  change (U⟦vertex_fct_ob_proper (isVtxFct F) _ _ (e j)⟧Ob ∘
       fmap F (fmap P f) ≈
-    fmap F (fmap Q f) ∘ U⟦vertex_fct_ob_proper F _ _ (e i)⟧Ob).
+    fmap F (fmap Q f) ∘ U⟦vertex_fct_ob_proper (isVtxFct F) _ _ (e i)⟧Ob).
   rewrite <- !vertex_fct_transport, <- !fmap_comp.
   apply fmap_proper. exact (H i j f).
 Defined.

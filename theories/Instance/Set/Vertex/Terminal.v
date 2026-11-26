@@ -50,10 +50,11 @@ Universes x e o h p l a b.
 Program Definition VtxTerminalF {X : SetC} {C : Cat}
     (T : Fct (EqGpd X) C)
   : T →ᵥ VtxTerminalObjF@{x e o h p l a b}
-  :=
-  {|vertex_fct := ConstF (VtxCat T)
-      (C := VtxCat VtxTerminalObjF@{x e o h p l a b}) tt
-  |}.
+  := MakeVtxFct (ConstF (VtxCat T)
+      (C := VtxCat VtxTerminalObjF@{x e o h p l a b}) tt)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros x y p. exact tt. Defined.
 Next Obligation. exact tt. Defined.
 

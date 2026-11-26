@@ -192,10 +192,11 @@ Next Obligation. exact tt. Qed.
 
 Program Definition ConstantVtxF (b : bool)
   : BooleanLabels →ᵥ BooleanLabels
-  :=
-  {|vertex_fct := ConstF (VtxCat BooleanLabels)
-      (C := VtxCat BooleanLabels) b
-  |}.
+  := MakeVtxFct (ConstF (VtxCat BooleanLabels)
+      (C := VtxCat BooleanLabels) b)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros; reflexivity. Defined.
 
 (** *** 2. Ordinary natural isomorphism forgets the label difference

@@ -1538,7 +1538,7 @@ in `Cat.CCC.Functor`; the new `isCartF` field belongs to `CartFct` instead.
 | `type_interp_exponential_comparison` | `type_interp_exp_cmp` | [theories/STLC/TypeInterpretation.v](../../theories/STLC/TypeInterpretation.v) |
 | `unchosen_set_cartesian_functor` | `unchosen_set_cartesian_fct` | [tests/Interfaces.v](../../tests/Interfaces.v) |
 | `unchosen_set_ccc_functor` | `unchosen_set_ccc_fct` | [tests/Interfaces.v](../../tests/Interfaces.v) |
-| `vertex_functor` | `vertex_fct` | [theories/Instance/Set/Vertex/Functor.v](../../theories/Instance/Set/Vertex/Functor.v) |
+| `vertex_functor` | `VtxFctToFct` | [theories/Instance/Set/Vertex/Functor.v](../../theories/Instance/Set/Vertex/Functor.v) |
 | `vertex_functor_iso` | `vertex_fct_iso` | [theories/Instance/Set/Vertex/Functor.v](../../theories/Instance/Set/Vertex/Functor.v) |
 | `vertex_functor_ob_proper` | `vertex_fct_ob_proper` | [theories/Instance/Set/Vertex/Functor.v](../../theories/Instance/Set/Vertex/Functor.v) |
 | `vertex_functor_ob_resp` | `vertex_fct_ob_resp` | [theories/Instance/Set/Vertex/Functor.v](../../theories/Instance/Set/Vertex/Functor.v) |
@@ -1966,3 +1966,13 @@ No compatibility aliases are retained.
 | --- | --- | --- |
 | `Build_StrongProf` | `MakeStrongProf` | [StrengthNatural.v](../../theories/Cat/Profunctor/StrengthNatural.v) |
 | `StrongProfF` | `StrongProfToFct` | [StrengthNatural.v](../../theories/Cat/Profunctor/StrengthNatural.v) |
+
+## Vertex-functor package
+
+The Minks migration replaces the intermediate `vertex_fct` projection by
+`VtxFctToFct` in [Vertex.Functor](../../theories/Instance/Set/Vertex/Functor.v).
+`MakeVtxFct` takes the original native functor and its fixed-functor
+`IsVtxFct` witness. `isVtxFct` extracts that same stored witness.
+`vertex_fct_ob_proper` and `vertex_fct_transport` now take this witness
+explicitly; they remain the only definitions of the two laws. No old
+projection or constructor alias is retained.

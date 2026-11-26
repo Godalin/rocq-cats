@@ -86,8 +86,8 @@ Proof.
   assert (d : ∀ i, (PrismDiagramF α P θ i : Y) ≈S
     PrismDiagramF α Q θ i).
   { intros i. cbn. destruct (θ i) as [[] | [[] | []]]; cbn.
-    - exact (vertex_fct_ob_proper F _ _ (e i)).
-    - exact (vertex_fct_ob_proper G _ _ (e i)). }
+    - exact (vertex_fct_ob_proper (isVtxFct F) _ _ (e i)).
+    - exact (vertex_fct_ob_proper (isVtxFct G) _ _ (e i)). }
   exists d.
   intros i j a.
   exact (vertex_prism_square (e i) (e j) (fmap P a) (fmap Q a)

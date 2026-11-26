@@ -53,10 +53,11 @@ Context {X : SetC} {Y : SetC} {C : Cat} {D : Cat}
 
 Program Definition VtxFstF
   : VtxProductObjF T U →ᵥ T
-  :=
-  {|vertex_fct := π1F (VtxCat T) (VtxCat U) ∘F
-      InducedProductF X Y T U
-  |}.
+  := MakeVtxFct (π1F (VtxCat T) (VtxCat U) ∘F
+      InducedProductF X Y T U)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact p. Defined.
 Next Obligation. apply vertex_transport_witness_independent. Defined.
 
@@ -66,10 +67,11 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 
 Program Definition VtxSndF
   : VtxProductObjF T U →ᵥ U
-  :=
-  {|vertex_fct := π2F (VtxCat T) (VtxCat U) ∘F
-      InducedProductF X Y T U
-  |}.
+  := MakeVtxFct (π2F (VtxCat T) (VtxCat U) ∘F
+      InducedProductF X Y T U)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros [x y] [x' y'] [p q]. exact q. Defined.
 Next Obligation. apply vertex_transport_witness_independent. Defined.
 
@@ -80,11 +82,14 @@ Next Obligation. apply vertex_transport_witness_independent. Defined.
 Program Definition VtxPairF {Z : SetC} {E : Cat}
     {V : Fct (EqGpd Z) E} (F : V →ᵥ T) (G : V →ᵥ U)
   : V →ᵥ VtxProductObjF T U
-  :=
-  {|vertex_fct := InducedProductInvF X Y T U ∘F PairF F G
-  |}.
+  := MakeVtxFct (InducedProductInvF X Y T U ∘F PairF F G)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation.
-  intros x y p. split; apply vertex_fct_ob_proper; exact p.
+  intros x y p. split.
+  - exact (vertex_fct_ob_proper (isVtxFct F) x y p).
+  - exact (vertex_fct_ob_proper (isVtxFct G) x y p).
 Defined.
 Next Obligation. split; apply vertex_fct_transport_witness. Defined.
 
@@ -135,8 +140,8 @@ Proof.
   - intros F.
     assert (e : ∀ i, ((fst (F i), snd (F i)) : X ×S Y) ≈S F i).
     { intros i. destruct (F i). split; reflexivity. }
-    pose (e1 := λ i, vertex_fct_ob_proper VtxFstF _ _ (e i)).
-    pose (e2 := λ i, vertex_fct_ob_proper VtxSndF _ _ (e i)).
+    pose (e1 := λ i, vertex_fct_ob_proper (isVtxFct VtxFstF) _ _ (e i)).
+    pose (e2 := λ i, vertex_fct_ob_proper (isVtxFct VtxSndF) _ _ (e i)).
     exists e. intros i j f. split.
     + change (T⟦e1 j⟧Ob ∘ fst (fmap F f) ≈
         fst (fmap F f) ∘ T⟦e1 i⟧Ob).

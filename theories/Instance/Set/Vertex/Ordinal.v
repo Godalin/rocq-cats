@@ -50,11 +50,12 @@ Next Obligation. exact tt. Defined.
 Program Definition OrdinalVtxPointF (n : nat) (i : Ordinal n)
   : VtxTerminalObjF@{Set Set Set Set Set Set Set Set} →ᵥ
       OrdinalObjF n
-  :=
-  {|vertex_fct := ConstF
+  := MakeVtxFct (ConstF
       (VtxCat VtxTerminalObjF@{Set Set Set Set Set Set Set Set})
-      (C := VtxCat (OrdinalObjF n)) i
-  |}.
+      (C := VtxCat (OrdinalObjF n)) i)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. intros x y p. reflexivity. Defined.
 Next Obligation. exact tt. Defined.
 
@@ -149,9 +150,10 @@ Defined.
 Program Definition OrdinalVtxMapF {m n : nat}
     (θ : Fct [Ord m] [Ord n])
   : OrdinalObjF m →ᵥ OrdinalObjF n
-  :=
-  {|vertex_fct := OrdinalVtxInvF n ∘F θ ∘F OrdinalVtxF m
-  |}.
+  := MakeVtxFct (OrdinalVtxInvF n ∘F θ ∘F OrdinalVtxF m)
+    {|vertex_fct_ob_proper := _
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. exact tt. Defined.
 
 (** Naturally isomorphic ordinal maps give the prescribed vertex
