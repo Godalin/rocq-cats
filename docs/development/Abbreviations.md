@@ -445,9 +445,9 @@ mapping rows resolve to existing source files and current names, and
 `git diff --check` passed. These are temporary checks, with no new permanent
 tests or HTML/PDF export. The user authorized freezing this validated batch
 for integration; its source branch must remain unchanged during acceptance.
-This is L2 breaking public-name migration, requiring affected-session
-preservation/pause confirmations before integration and synchronization with
-validation afterward.
+This batch was classified as an L2 breaking public-name migration under the
+protocol then in force. Current notification rules are in the
+[parallel development guide](ParallelDevelopment.md#4-notifications-and-synchronization).
 
 ## Batch 4: Clos, Exp, Cart and Prof
 
@@ -737,10 +737,8 @@ modules passed three retired-ETCS `Fail Require` probes and direct imports of
 the new modules; the install manifest contains no old paths. Current sources
 and docs contain no retired ETCS imports or local links. Whitespace checks
 passed. These are temporary audits; no new permanent tests or HTML/PDF export.
-The user approved freezing this validated batch for submission. This is an
-L2 breaking public-name migration; before integration, the designated
-integrator coordinates preserved pauses with affected consumers, then renewed
-validation and synchronization. Further work awaits user instructions.
+The user approved freezing this validated batch for submission. The batch was classified as an
+L2 breaking public-name migration under the protocol then in force.
 
 ### Upstream client compatibility
 

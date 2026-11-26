@@ -313,23 +313,17 @@ See the [documentation index](docs/README.md) for the theory guides and developm
   commits must remain available; recorded SHAs alone do not preserve them.
   Check worktree attachments and preserve reusable worktrees/build caches;
   retain branches whenever their status is uncertain.
-- Route by semantic effect and reviewed import/API dependencies: L0 to the origin,
-  L1 also to affected consumers, L2 to all active workers for foundational/global
-  changes. The worker reports impact; the integrator confirms it. Breaking is
-  independent of scope: affected workers confirm preserved pauses before
-  integration, then synchronization and validation before related edits resume.
-- Synchronize at safe checkpoints after preserving local/user work. Ask for
-  confirmation only when a pause or synchronization requires it; silence is not
-  completion. Before changing a shared toolchain, obtain explicit confirmation
-  that every affected session has stopped using it. Pause/sync confirmations need
-  only state the completed action; add details for blockers or uncertainty, not
-  repeated branch/ref inventories. Ordinary notices need no acknowledgment;
-  do not reply merely to acknowledge a confirmation. Coalesce related updates
-  into the sender's own pending message when supported. Skip routine progress/
-  build/standby notices and statuses superseded by confirmed results. Do not
-  repeat validation or reread confirmed sessions for the same action; check only
-  unresolved or conflicting facts. Preserve integration result replies. Failed
-  communication pauses the affected task/handoff until contact resumes.
+- While the integrator validates a frozen submission, other workers continue in
+  their own worktrees, including during breaking API changes. After integration,
+  send the result once per recipient according to the reviewed impact. L0 covers
+  the submitting worker, L1 also covers affected consumers, and L2 covers all
+  active workers. Include the integrated SHA, affected interface and action.
+- Integration notices are one-way. Affected workers preserve local work at a
+  safe checkpoint, synchronize and validate before continuing dependent edits.
+  Reply only for a blocker or a decision requiring coordination. A failed
+  handoff pauses the work that depends on it.
+- Before changing a shared toolchain, wait for explicit confirmation from each
+  affected session that it has stopped using it.
 
 ## Learnings
 

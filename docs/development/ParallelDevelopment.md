@@ -37,11 +37,11 @@ Use an ordinary message containing three things:
 3. **Impact:** affected interfaces/consumers, whether the change is breaking,
    and who may need to synchronize. State uncertainty when impact is unclear.
 
-<!-- Restart numbering for the Chinese translation. -->
-
 A stable part of a larger task may integrate independently. Its submitted SHA
 need not contain the latest `typeprop`; the integrator handles that rebase.
-Keep the source branch at the reported SHA while it is being processed. If it
+Keep the source branch at the reported SHA while it is being processed.
+Other workers continue working in their own worktrees, including during
+breaking API migrations. If it
 needs further edits, agree with the integrator before replacing the request,
 then send the new SHA and validation. No separate proposal, event number or
 fixed schema is required.
@@ -81,19 +81,16 @@ does not require removing worktrees or clearing their reusable build caches.
    `rocq-cats` switch. Apply the existing mathematical and source coqdoc
    requirements, checking `Print Assumptions` when appropriate. Keep build
    outputs separate per worktree; do not modify shared toolchains.
-4. For breaking changes, first ask affected workers to preserve work and pause;
-   wait for their explicit confirmation. Before advancing, confirm the candidate
+4. Before advancing, confirm the candidate
    and `typeprop` still match the validated SHAs and the integration checkout is
    clean. Fast-forward one branch at a time with `git merge --ff-only <sha>`;
    allow no merge commits or rewriting of `typeprop`. If the baseline advances,
    the integrator rebases again in its worktree and renews validation. Any other
    candidate SHA change also requires renewed validation.
-5. Verify the resulting Git ref, reply to the origin and notify affected workers.
+5. Verify the resulting Git ref and send the scoped result described below.
    Failure before advancement leaves `typeprop` unchanged. If notification or
    push fails after advancement, inspect refs before retrying; do not integrate
    the same change twice or claim remote publication without verifying it.
-
-<!-- Restart numbering for the Chinese translation. -->
 
 Integration acceptance requires the library to build successfully with the
 project toolchain: `opam exec --switch=rocq-cats -- dune build @check-library`,
@@ -117,24 +114,21 @@ notification scope. A changed file count or directory alone cannot determine it.
 | L1 Targeted | Origin and affected consumers | Shared API or dependency used by particular tasks |
 | L2 Global | All active workers | Foundational contracts, global notation/instances, toolchain or workflow |
 
-A notification gives the integrated SHA, relevant change and required action.
-Ordinary notices need no acknowledgment. Breaking is independent of scope:
-affected workers preserve and pause before integration, then synchronize,
-validate and confirm before resuming related edits. A nonbreaking notice allows
-synchronization at a safe checkpoint before using the new contract.
+After the fast-forward, the integrator sends the integrated SHA, the affected
+interface and any required action once to each recipient. The result sent to
+the submitting worker also serves as its notice. Include the source SHA when
+the submission was rebased.
 
-Request confirmation only for required pause/sync actions. Before changing a
-shared toolchain, every affected session explicitly confirms it has stopped
-using it; delivery or silence is insufficient. A confirmation needs only the
-completed action, such as “Stopped using the shared switch”; add details only
-for blockers or uncertainty. Preserve work locally without repeating branch/ref
-inventories. Do not reply merely to acknowledge a confirmation; integration
-result replies remain required.
+Recipients do not acknowledge receipt. For a breaking API change, each
+affected worker preserves local work at a safe checkpoint, synchronizes with
+the integrated revision and validates its affected consumers before resuming
+dependent edits. For a compatible change, synchronize before using the new
+interface. Reply only if a conflict, failed check or coordination decision
+blocks progress.
 
-Combine related updates in your own pending message when supported. Skip routine
-progress/build/standby notices and statuses superseded by confirmed results.
-Do not repeat validation or reread confirmed sessions for the same action;
-consult context or Git only for unresolved or conflicting facts.
+Changing a shared toolchain requires an explicit stop confirmation from each
+affected session before the change begins. For example, “Stopped using the
+shared switch” is sufficient.
 
 ## 5. Problems and recovery
 
