@@ -40,28 +40,34 @@ Definition ContextType {C : Cat} (T : Fct (C^op) FamCat)
 Section ContextMaps.
 Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 
-(** A commuting square between context-extension projections. *)
+(** Regard a context projection as an object of the ordinary arrow category.
+    The chosen extension and projection are the ones supplied by [HC]. *)
 
-(** 上下文扩张投影之间的交换方形。 *)
+(** 将上下文投影视为普通箭头范畴的对象，扩张与投影均取自给定的 [HC]。 *)
 
-Record ContextMap (X Y : ContextType T)
+Definition ContextProjectionArrow (X : ContextType T)
+  : ArrowOb C
   :=
-  { context_map_base : Hom X.1 Y.1
-  ; context_map_ext : Hom (X.1 ▹[T] X.2) (Y.1 ▹[T] Y.2)
-  ; context_map_comm : context_proj T Y.2 ∘ context_map_ext ≈
-      context_map_base ∘ context_proj T X.2
-  }.
+  {|arrow_dom := X.1 ▹[T] X.2
+  ; arrow_cod := X.1
+  ; arrow_map := context_proj T X.2
+  |}.
 
-Arguments context_map_base {_ _} _.
-Arguments context_map_ext {_ _} _.
-Arguments context_map_comm {_ _} _.
+(** A context map stores one ordinary commuting square. Its generated view
+    exposes the original maps and Type-valued commutativity witness. *)
+
+(** 上下文映射只保存一个普通交换方形，生成的底层视图暴露原映射与 Type 值
+    交换性见证。 *)
+
+Minks.Struct ContextMap (X Y : ContextType T)
+  extends @ArrowHom C (ContextProjectionArrow X) (ContextProjectionArrow Y).
 
 (** Compare the base and extension arrows of context maps. *)
 
 (** 比较上下文映射的基底箭头与扩张箭头。 *)
 
 Definition ContextMapEq {X Y : ContextType T} (f g : ContextMap X Y)
-  := context_map_base f ≈ context_map_base g ∧ context_map_ext f ≈ context_map_ext g.
+  := arrow_bottom f ≈ arrow_bottom g ∧ arrow_top f ≈ arrow_top g.
 
 (** [ContextMapEq] is an equivalence relation. *)
 
@@ -74,43 +80,28 @@ Proof.
   - intros f. split; reflexivity.
   - intros f g [Hb He]. split; symmetry; assumption.
   - intros f g h [Hb He] [Kb Ke]. split.
-    + transitivity (context_map_base g); assumption.
-    + transitivity (context_map_ext g); assumption.
+    + transitivity (arrow_bottom g); assumption.
+    + transitivity (arrow_top g); assumption.
 Defined.
 
 (** The identity square between a context extension and itself. *)
 
 (** 上下文扩张到自身的恒等方形。 *)
 
-Program Definition context_map_id (X : ContextType T)
+Definition context_map_id (X : ContextType T)
   : ContextMap X X
-  :=
-  {|context_map_base := id
-  ; context_map_ext := id
-  |}.
-Next Obligation. rewrite comp_id_r, comp_id_l. reflexivity. Defined.
+  := MakeContextMap X X (arrow_id (ContextProjectionArrow X)).
 
-(** Compose the base and extension sides of context maps. *)
+(** Compose the stored squares using ordinary arrow composition. *)
 
-(** 复合上下文映射的基底侧边与扩张侧边。 *)
+(** 用普通箭头复合来复合所保存的方形。 *)
 
-Program Definition context_map_comp {X Y Z : ContextType T}
+Definition context_map_comp {X Y Z : ContextType T}
     (g : ContextMap Y Z) (f : ContextMap X Y)
   : ContextMap X Z
-  :=
-  {|context_map_base := context_map_base g ∘ context_map_base f
-  ; context_map_ext := context_map_ext g ∘ context_map_ext f
-  |}.
-Next Obligation.
-  rewrite <- comp_assoc, (context_map_comm g), comp_assoc, (context_map_comm f),
-    <- comp_assoc. reflexivity.
-Defined.
+  := MakeContextMap X Z (arrow_comp g f).
 
 End ContextMaps.
-
-Arguments context_map_base {_ _ _ _ _} _.
-Arguments context_map_ext {_ _ _ _ _} _.
-Arguments context_map_comm {_ _ _ _ _} _.
 
 Notation "g '∘Ctx[' T ']' f" := (context_map_comp T g f)
   (at level 40, left associativity, format "g  ∘Ctx[ T ]  f") : cat_scope.
@@ -159,7 +150,7 @@ Program Definition CwFBaseF
   : Fct ContextTypeCat C
   :=
   {|fobj X := X.1
-  ; fmap X Y := context_map_base
+  ; fmap X Y := arrow_bottom
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -178,7 +169,7 @@ Program Definition CwFExtF
   : Fct ContextTypeCat C
   :=
   {|fobj X := X.1 ▹[T] X.2
-  ; fmap X Y := context_map_ext
+  ; fmap X Y := arrow_top
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -199,7 +190,7 @@ Program Definition CwFProjectionN
   :=
   {|nt X := context_proj T X.2
   |}.
-Next Obligation. apply context_map_comm. Qed.
+Next Obligation. exact (arrow_comm f). Qed.
 
 End ContextCategory.
 
@@ -236,10 +227,10 @@ Context {C : Cat} (T : Fct (C^op) FamCat) `{HC : !HasContextExtension T}.
 Program Definition context_type_reindex (Y : ContextType T) {Γ : @Ob C}
     (σ : Hom Γ Y.1)
   : ContextMap T Y[σ]Ctx[T] Y
-  :=
-  {|context_map_base := σ
-  ; context_map_ext := σ^+[T, Y.2]
-  |}.
+  := MakeContextMap T _ _
+    {|arrow_bottom := σ
+    ; arrow_top := σ^+[T, Y.2]
+    |}.
 Next Obligation. apply context_lift_proj. Defined.
 
 (** A pullback display square is cartesian in the total category. *)
@@ -248,29 +239,31 @@ Next Obligation. apply context_lift_proj. Defined.
 
 Definition context_map_pullback_cartesian {X Y : ContextType T}
     (f : ContextMap T X Y)
-    (HP : is_pullback (context_map_base f) (context_proj T Y.2)
-      (X.1 ▹[T] X.2) (context_proj T X.2) (context_map_ext f))
+    (HP : is_pullback (arrow_bottom f) (context_proj T Y.2)
+      (X.1 ▹[T] X.2) (context_proj T X.2) (arrow_top f))
   : f ⦂ Cart(CwFBaseF T).
 Proof.
   intros Z g u H.
-  assert (Hcone : context_map_base f ∘ (u ∘ context_proj T Z.2) ≈
-      context_proj T Y.2 ∘ context_map_ext g).
-  { rewrite <- comp_assoc, H. symmetry. apply context_map_comm. }
-  destruct (snd HP (Z.1 ▹[T] Z.2) (u ∘ context_proj T Z.2) (context_map_ext g) Hcone)
+  assert (Hcone : arrow_bottom f ∘ (u ∘ context_proj T Z.2) ≈
+      context_proj T Y.2 ∘ arrow_top g).
+  { rewrite <- comp_assoc, H. symmetry. exact (arrow_comm g). }
+  destruct (snd HP (Z.1 ▹[T] Z.2) (u ∘ context_proj T Z.2) (arrow_top g) Hcone)
     as [h [[Hbase Hext] Hunique]].
-  pose (k := ({|context_map_base := u
-              ; context_map_ext := h
-              ; context_map_comm := Hbase
-              |}
-    : ContextMap T Z X)).
+  pose (k := (ltac:(
+    refine (MakeContextMap T Z X _);
+    unshelve refine {|arrow_top := _
+                    ; arrow_bottom := _
+                    ; arrow_comm := _
+                    |};
+    [exact h | exact u | exact Hbase]) : ContextMap T Z X)).
   exists k. refine {|this := _
                    ; that := _
                    |}.
   - split; [reflexivity | split; assumption].
   - intros l [Hlbase [_ Hlext]]. split; [exact Hlbase |].
     apply Hunique. split.
-    + transitivity (context_map_base l ∘ context_proj T Z.2).
-      * apply context_map_comm.
+    + transitivity (arrow_bottom l ∘ context_proj T Z.2).
+      * exact (arrow_comm l).
       * rewrite Hlbase. reflexivity.
     + exact Hlext.
 Defined.
@@ -306,7 +299,7 @@ Next Obligation. apply context_type_reindex_cartesian. Defined.
 Definition cwf_comprehension_universal
   : is_comprehension (CwFProjectionN T).
 Proof.
-  intros X Y f Hf. pose (σ := context_map_base f).
+  intros X Y f Hf. pose (σ := arrow_bottom f).
   assert (H : fmap (CwFBaseF T) (context_type_reindex Y σ) ∘ id ≈ fmap (CwFBaseF T) f).
   { apply comp_id_r. }
   pose (k := cartesian_factor (context_type_reindex_cartesian Y σ) f id H).
@@ -315,11 +308,11 @@ Proof.
     exists id. split; apply comp_id_l. }
   pose proof (cartesian_factor_base (context_type_reindex_cartesian Y σ) f id H) as Hbase.
   pose proof (cartesian_factor_comp (context_type_reindex_cartesian Y σ) f id H) as Hcomp.
-  change (context_map_base k ≈ id) in Hbase.
+  change (arrow_bottom k ≈ id) in Hbase.
   eapply (pullback_iso (C := C) (p1 := context_proj T Y.2[σ]Ty[T])
     (p2 := σ^+[T, Y.2]) (fmap (CwFExtF T) k) (fct_is_iso (CwFExtF T) k Hiso)).
-  - transitivity (context_map_base k ∘ context_proj T X.2).
-    + exact (context_map_comm k).
+  - transitivity (arrow_bottom k ∘ context_proj T X.2).
+    + exact (arrow_comm k).
     + rewrite Hbase, comp_id_l. reflexivity.
   - exact (snd Hcomp).
   - apply context_lift_pullback.
@@ -345,8 +338,8 @@ Program Definition CwFComprehension
 Theorem context_map_cartesian_iff_pullback {X Y : ContextType T}
     (f : ContextMap T X Y)
   : f ⦂ Cart(CwFBaseF T) ↔
-    is_pullback (context_map_base f) (context_proj T Y.2)
-      (X.1 ▹[T] X.2) (context_proj T X.2) (context_map_ext f).
+    is_pullback (arrow_bottom f) (context_proj T Y.2)
+      (X.1 ▹[T] X.2) (context_proj T X.2) (arrow_top f).
 Proof.
   split.
   - exact (cwf_comprehension_universal X Y f).
@@ -383,11 +376,7 @@ Definition CwFComprehensionF
 Program Definition context_map_from_arrow {X Y : ContextType T}
     (f : Hom (CwFComprehensionF X) (CwFComprehensionF Y))
   : ContextMap T X Y
-  :=
-  {|context_map_base := arrow_bottom f
-  ; context_map_ext := arrow_top f
-  ; context_map_comm := arrow_comm f
-  |}.
+  := MakeContextMap T X Y f.
 
 (** The CwF comprehension embedding into the arrow category is fully faithful. *)
 

@@ -40,6 +40,26 @@ Terms correspond to sections of the chosen projections. Comprehension
 packages those display maps and their behavior under substitution.
 [Pullbacks](../../theories/DTT/Context/Pullback.v) · [Sections](../../theories/DTT/Context/Section.v) · [Comprehension](../../theories/DTT/Comprehension.v)
 
+## Context maps as ordinary squares
+
+`ContextProjectionArrow T X` presents the chosen extension projection as
+an ordinary arrow. The Minks structure `ContextMap T X Y` stores one
+`ArrowHom` between those projections; coercion exposes that same square.
+Use `MakeContextMap T X Y square` to supply it. Its maps and witness are
+read through `arrow_bottom`, `arrow_top` and `arrow_comm`; the former
+`context_map_base`, `context_map_ext` and `context_map_comm` fields are
+retired rather than duplicated.
+
+Identity and composition wrap the existing `arrow_id` and `arrow_comp`.
+`ContextMapEq` keeps the specified base-first, extension-second equality,
+so commutativity witnesses are retained as data without being compared.
+The base and extension functors, cartesian criterion, comprehension
+embedding and canonical element interpretation use this same stored
+square. No general pullback choice or terminal context is required.
+
+[Context-map interface](../../theories/DTT/Comprehension.v) ·
+[Interface regressions](../../tests/dtt/ContextMapMinks.v)
+
 ## Models and size
 
 The setoid model starts with a setoid of type codes and a coherent family
