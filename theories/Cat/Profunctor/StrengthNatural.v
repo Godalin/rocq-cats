@@ -130,23 +130,23 @@ Defined.
 End Preservation.
 
 (** A strong profunctor owns its one underlying mixed-variance functor
-    and its strength relative to the named monoidal structure. *)
+    and its strength relative to the named monoidal structure. Minks supplies
+    [MakeStrongProf] and the unique native view [StrongProfToFct]. The
+    [hasProfStrength] projection exposes that same stored choice to instance
+    search; importing the module selects no strength for an arbitrary functor. *)
 
-(** 强 profunctor 保存唯一底层混合变元函子，以及相对于具名幺半结构的强度。 *)
+(** 强 profunctor 保存唯一底层混合变元函子，以及相对于具名幺半结构的强度。
+    Minks 提供 [MakeStrongProf] 及唯一原生视图 [StrongProfToFct]。
+    [hasProfStrength] 投影向实例搜索暴露同一存储选择；导入模块不为任意函子
+    选取强度。 *)
 
-Class StrongProf@{u p +} {C : Cat} (MC : HasMonoidal C)
-  :=
-  { StrongProfF :> Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
+Minks.Struct StrongProf@{u p +} {C : Cat} (MC : HasMonoidal C)
+  extends Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})
+  with hasProfStrength as hasProfStrength
+    : HasProfStrength [C, MC, carrier].
 
-  (** The same stored strength supports instance search; no new choice
-      is derived from the underlying functor or selected by import. *)
-
-  (** 同一存储强度支持实例搜索；不从底层函子另推导选择，也不由导入选取。 *)
-
-  ; hasProfStrength :: HasProfStrength MC StrongProfF
-  }.
-
-Arguments StrongProfF {_ _} _.
+Arguments MakeStrongProf {_ _} _ _.
+Arguments StrongProfToFct {_ _} _.
 Arguments hasProfStrength {_ _} _.
 
 (** ** The Strong Profunctor Category
@@ -223,7 +223,7 @@ Defined.
 Program Definition StrongProfForgetF
   : Fct StrongProfCat (ProfCat C C)
   :=
-  {|fobj := StrongProfF
+  {|fobj := StrongProfToFct
   ; fmap P Q α := α.1
   ; isFct :=
       {|fmap_proper := _

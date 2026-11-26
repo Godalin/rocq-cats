@@ -25,7 +25,7 @@ Local Open Scope prof_scope.
 
 (** 带两个通常平衡律的尊重三段操作；定律保留独立于值大小的 Type 值见证。 *)
 
-Record ProfunctorTripleCowedge@{u p +} {C D E B : Cat}
+Minks.Mixin ProfunctorTripleCowedge@{u p +} {C D E B : Cat}
     (R : Fct ((E^op) ×C B) (SetCat@{u p _ _ _ _ _}))
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))

@@ -1953,3 +1953,16 @@ original projections.
 | `@eval X Y` | `eval[X,Y]` |
 | `@×[f,g]` | `Pb[f,g]` |
 | `@pb1 f g`, `@pb2 f g` | `pb1[f,g]`, `pb2[f,g]` |
+
+## Strong profunctor Minks bundle
+
+The Prof migration replaces the complete `StrongProf` class with its Minks
+bundle and keeps ordinary `Prof` as the existing mixed-variance functor view.
+The fixed-data `HasProfStrength`, `HasProfComp` and `ProfunctorTripleCowedge`
+interfaces are Minks mixins. Module paths and their operations/laws are unchanged.
+No compatibility aliases are retained.
+
+| Previous identifier | Current identifier | Source |
+| --- | --- | --- |
+| `Build_StrongProf` | `MakeStrongProf` | [StrengthNatural.v](../../theories/Cat/Profunctor/StrengthNatural.v) |
+| `StrongProfF` | `StrongProfToFct` | [StrengthNatural.v](../../theories/Cat/Profunctor/StrengthNatural.v) |

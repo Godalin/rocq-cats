@@ -111,7 +111,7 @@ End Boundaries.
 
 (** 只选择由这些外部边界索引的 coend；这是额外选定数据，不是全局余完备或完整自索引假设。 *)
 
-Class HasProfComp@{u p +} (C D E : Cat)
+Minks.Mixin HasProfComp@{u p +} (C D E : Cat)
     (Q : Fct ((D^op) ×C E) (SetCat@{u p _ _ _ _ _}))
     (P : Fct ((C^op) ×C D) (SetCat@{u p _ _ _ _ _}))
   :=

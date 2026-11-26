@@ -109,3 +109,21 @@ End PackedUse.
   of objects may be strictly above or below the bound carried by `HasMonoidal`;
   both applications must elaborate. Use the existing test targets and stop the
   migration when the interfaces and their consumers pass the agreed checks. [Universe regressions](../../tests/Universes.v) · [Development checks](Testing.md)
+
+## Profunctors and selected strength
+
+Ordinary `Prof C D` remains the existing mixed-variance `Fct`; it adds no
+second functor record or laws. `HasProfStrength` is a Minks mixin on a supplied
+functor and the selected monoidal structure. `StrongProf` extends that native
+functor with this same strength component. `MakeStrongProf P S` stores `P`
+and `S`; its generated `StrongProfToFct` view and `hasProfStrength` projection
+recover those supplied values. Use the constructor rather than a record literal.
+
+`HasProfComp` selects only the indicated family of kernel coends. The fixed-data
+`ProfunctorTripleCowedge` mixin stores the original three-stage legs and balance
+laws. Their migrations add no global choice, existence principle or size order.
+Hom and composition strengths still use their supplied choices. Strong subset
+morphisms retain Type-valued preservation witnesses, while equality and rewriting
+compare the underlying natural transformations. The focused
+[Prof regression](../../tests/profunctor/Minks.v) checks selected components,
+actual Proper rewriting and transparent special-coend computations.
