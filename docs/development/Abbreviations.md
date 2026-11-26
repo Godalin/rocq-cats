@@ -1989,3 +1989,16 @@ mixin. The component projection and action field provide the callable
 coercion path without a forwarding wrapper. The ambient category remains
 explicit. The old `vertex_labels` projection and `Build_VtxPresentation`
 constructor are removed.
+
+## Two-horn presentation package
+
+The Minks migration of
+[Vertex.Filling](../../theories/Instance/Set/Simplicial/Vertex/Filling.v)
+replaces `Build_Horn2Presentation` by `MakeHorn2Presentation`.
+`HasHorn2Presentation T h` stores the three vertices, local horn and its
+realization witness for the supplied entire horn `h`. The complete
+`Horn2Presentation T h` stores this component once; `hasHorn2Presentation`
+recovers it. The original five `horn2_*` fields belong to the component,
+with the generated component projection providing their package view.
+Reconstruction and actual filling retain their original three missing-face
+cases and selected witnesses. No old constructor alias is retained.

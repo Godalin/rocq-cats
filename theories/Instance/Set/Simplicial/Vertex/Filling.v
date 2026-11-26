@@ -26,7 +26,7 @@ Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 (** 局部呈现保留三个选定顶点及局部 horn；其每个局部填充实现为原整个 horn
     映射的填充。 *)
 
-Record Horn2Presentation {i : Ordinal 2}
+Minks.Mixin HasHorn2Presentation {i : Ordinal 2}
     (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i)
   :=
   { horn2_vertex0 : X
@@ -38,6 +38,20 @@ Record Horn2Presentation {i : Ordinal 2}
     : is_horn2_filler horn2_local q →
       is_horn_filler h (△₂[T; horn2_vertex0; horn2_vertex1; horn2_vertex2] q)
   }.
+
+(** The complete package keeps the chosen vertices, local horn and
+    realization witness in one component over the given entire horn.
+    Reading a package uses its stored component, not another selected
+    presentation of the same horn. *)
+
+(** 完整包将选定顶点、局部 horn 及实现见证保存在给定整个 horn 上的同一组件中。
+    读取一个包使用其保存的组件，而不是同一 horn 上另一个选定呈现。 *)
+
+Minks.Struct Horn2Presentation {i : Ordinal 2}
+    (h : HornS (Nᵥ(T) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) 2 i)
+  with  hasHorn2Presentation as hasHorn2Presentation : HasHorn2Presentation [i, h].
+
+Coercion hasHorn2Presentation : Horn2Presentation >-> HasHorn2Presentation.
 
 Arguments horn2_vertex0 {i h} _.
 Arguments horn2_vertex1 {i h} _.
@@ -67,12 +81,13 @@ Proof.
     { apply simplex_eq_of_rank. intros [[] | []]. reflexivity. }
     pose (e := fst (vertex_nerve_zero_eq_iff _ _)
       (horn_face_overlap Jf Jh h _ _ E)).
-    unshelve refine ({|horn2_vertex0 := lower f fin_first
-            ; horn2_vertex1 := lower f (fin_next fin_first)
-            ; horn2_vertex2 := lower k (fin_next fin_first)
-            ; horn2_local := _
-            ; horn2_presentation := _
-            |} : Horn2Presentation (i := fin_first) h).
+    unshelve refine (MakeHorn2Presentation _
+      {|horn2_vertex0 := lower f fin_first
+      ; horn2_vertex1 := lower f (fin_next fin_first)
+      ; horn2_vertex2 := lower k (fin_next fin_first)
+      ; horn2_local := _
+      ; horn2_presentation := _
+      |} : Horn2Presentation (i := fin_first) h).
     1: exact (fmap (lower f) (ordinal_step fin_first),
       T⟦e; fmap (lower k) (ordinal_step fin_first);
         reflexivity (lower k (fin_next fin_first) : X)⟧Ar).
@@ -106,12 +121,13 @@ Proof.
     { apply simplex_eq_of_rank. intros [[] | []]. reflexivity. }
     pose (e := fst (vertex_nerve_zero_eq_iff _ _)
       (horn_face_overlap Jf Jg h _ _ E)).
-    unshelve refine ({|horn2_vertex0 := lower f fin_first
-            ; horn2_vertex1 := lower f (fin_next fin_first)
-            ; horn2_vertex2 := lower g (fin_next fin_first)
-            ; horn2_local := _
-            ; horn2_presentation := _
-            |} : Horn2Presentation (i := fin_next fin_first) h).
+    unshelve refine (MakeHorn2Presentation _
+      {|horn2_vertex0 := lower f fin_first
+      ; horn2_vertex1 := lower f (fin_next fin_first)
+      ; horn2_vertex2 := lower g (fin_next fin_first)
+      ; horn2_local := _
+      ; horn2_presentation := _
+      |} : Horn2Presentation (i := fin_next fin_first) h).
     1: exact (fmap (lower f) (ordinal_step fin_first),
       T⟦e; fmap (lower g) (ordinal_step fin_first);
         reflexivity (lower g (fin_next fin_first) : X)⟧Ar).
@@ -146,12 +162,13 @@ Proof.
     { apply simplex_eq_of_rank. intros [[] | []]. reflexivity. }
     pose (e := fst (vertex_nerve_zero_eq_iff _ _)
       (horn_face_overlap Jg Jh h _ _ E)).
-    unshelve refine ({|horn2_vertex0 := lower k fin_first
-            ; horn2_vertex1 := lower g fin_first
-            ; horn2_vertex2 := lower g (fin_next fin_first)
-            ; horn2_local := _
-            ; horn2_presentation := _
-            |} : Horn2Presentation (i := fin_next (fin_next fin_first)) h).
+    unshelve refine (MakeHorn2Presentation _
+      {|horn2_vertex0 := lower k fin_first
+      ; horn2_vertex1 := lower g fin_first
+      ; horn2_vertex2 := lower g (fin_next fin_first)
+      ; horn2_local := _
+      ; horn2_presentation := _
+      |} : Horn2Presentation (i := fin_next (fin_next fin_first)) h).
     1: exact (fmap (lower g) (ordinal_step fin_first),
       T⟦reflexivity (lower k fin_first : X);
         fmap (lower k) (ordinal_step fin_first); e⟧Ar).
