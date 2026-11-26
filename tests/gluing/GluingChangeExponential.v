@@ -669,7 +669,11 @@ Example exp_change_comparison_proper
       gluing_change_exp_right IdF IdF ExpChangeSwapN
         (λ A B, product_universal) ExpChangeProbe ExpChangeProbe
         exp_change_identity_family.
-Proof. apply func_proper. intros b [n t]. exact (eq_refl, true). Defined.
+Proof.
+  assert (H : exp_change_function_family ≈S exp_change_identity_family).
+  { intros b [n t]. exact (eq_refl, true). }
+  rewrite H. reflexivity.
+Qed.
 
 End ReaderBoundary.
 

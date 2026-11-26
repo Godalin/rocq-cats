@@ -10,7 +10,9 @@ From Cats Require Export
     and compares its side maps in their specified equalities.
 
     Endpoint and ambient categories retain independent object, hom and
-    equality levels. No limit, preservation or choice is assumed. *)
+    equality levels. Functor laws use each supplied functor's stored
+    witness, rather than a second choice on the same underlying maps.
+    No limit, preservation or choice is assumed. *)
 
 (** * 逗号图式的变化
 
@@ -18,7 +20,8 @@ From Cats Require Export
     右边界从映射后的目标出发；二者都不必可逆。构造复用原逗号范畴，并按
     指定相等比较侧边映射。
 
-    端点及共同目标范畴的对象、Hom 与相等层级独立；不要求极限、保持性或选择。 *)
+    端点及共同目标范畴的对象、Hom 与相等层级独立；函子律使用各个给定函子
+    保存的见证，而不在同一底层映射上另选见证。不要求极限、保持性或选择。 *)
 
 (** ** Mapping a Comma Arrow
 
@@ -68,10 +71,10 @@ Next Obligation.
     β (comma_right_ob Y) ∘ fmap K (comma_arrow Y) ∘
     α (comma_left_ob Y) ∘ fmap F' (fmap L (comma_left h))).
   rewrite (comp_assoc (β (comma_right_ob Y))).
-  rewrite <- (@fmap_comp _ _ _ _ (@isFct C C' K) _ _ _
+  rewrite <- (fmap_comp (IsFct := isFct K)
     (fmap G (comma_right h)) (comma_arrow X)).
   rewrite (comma_comm h).
-  rewrite (@fmap_comp _ _ _ _ (@isFct C C' K) _ _ _
+  rewrite (fmap_comp (IsFct := isFct K)
     (comma_arrow Y) (fmap F (comma_left h))).
   rewrite !(@comp_assoc C'), (nat_naturality α (comma_left h)).
   reflexivity.
@@ -196,7 +199,7 @@ Program Definition CommaChangeEqN (Hα : α ≈N α') (Hβ : β ≈N β')
              |}
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (@isFct B' C' G')), (@fmap_id _ _ _ _ (@isFct A' C' F')),
+  rewrite (fmap_id (IsFct := isFct G')), (fmap_id (IsFct := isFct F')),
     comp_id_l, comp_id_r.
   exact (comma_change_equiv_arrow Hα Hβ X).
 Defined.
@@ -217,7 +220,7 @@ Program Definition comma_change_equiv_inverse
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (@isFct B' C' G')), (@fmap_id _ _ _ _ (@isFct A' C' F')),
+  rewrite (fmap_id (IsFct := isFct G')), (fmap_id (IsFct := isFct F')),
     comp_id_l, comp_id_r.
   symmetry. exact (comma_change_equiv_arrow Hα Hβ X).
 Defined.
@@ -296,7 +299,7 @@ Program Definition CommaChangeIdN
              |}
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (@isFct B C G)), (@fmap_id _ _ _ _ (@isFct A C F)).
+  rewrite (fmap_id (IsFct := isFct G)), (fmap_id (IsFct := isFct F)).
   cbn. rewrite !comp_id_l, !comp_id_r. reflexivity.
 Defined.
 Next Obligation.
@@ -315,7 +318,7 @@ Program Definition comma_change_id_inverse (X : F ↓C G)
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (@isFct B C G)), (@fmap_id _ _ _ _ (@isFct A C F)).
+  rewrite (fmap_id (IsFct := isFct G)), (fmap_id (IsFct := isFct F)).
   cbn. rewrite !comp_id_l, !comp_id_r. reflexivity.
 Defined.
 
@@ -373,9 +376,9 @@ Next Obligation.
     (fmap K' (fmap F' (fmap L f)) ∘ α' (L X)) ≈
     fmap K' (fmap K (fmap F f)) ∘ (fmap K' (α X) ∘ α' (L X))).
   rewrite <- (comp_assoc (fmap K' (α Y))).
-  rewrite <- (@fmap_comp _ _ _ _ (@isFct C' C'' K') _ _ _
+  rewrite <- (fmap_comp (IsFct := isFct K')
     (α Y) (fmap F' (fmap L f))), (nat_naturality α f).
-  rewrite (@fmap_comp _ _ _ _ (@isFct C' C'' K') _ _ _
+  rewrite (fmap_comp (IsFct := isFct K')
     (fmap K (fmap F f)) (α X)), (@comp_assoc C'').
   reflexivity.
 Qed.
@@ -392,9 +395,9 @@ Program Definition CommaChangeCompRightN
   |}.
 Next Obligation.
   rewrite (comp_assoc (β' (R Y))).
-  rewrite <- (@fmap_comp _ _ _ _ (@isFct C' C'' K') _ _ _
+  rewrite <- (fmap_comp (IsFct := isFct K')
     (β Y) (fmap K (fmap G f))), (nat_naturality β f).
-  rewrite (@fmap_comp _ _ _ _ (@isFct C' C'' K') _ _ _
+  rewrite (fmap_comp (IsFct := isFct K')
     (fmap G' (fmap R f)) (β X)).
   change (β' (R Y) ∘ (fmap K' (fmap G' (fmap R f)) ∘ fmap K' (β X)) ≈
     fmap G'' (fmap R' (fmap R f)) ∘ (β' (R X) ∘ fmap K' (β X))).
@@ -414,10 +417,10 @@ Definition comma_change_comp_arrow (X : F ↓C G)
       CommaChangeCompLeftN CommaChangeCompRightN X).
 Proof.
   cbn.
-  rewrite (@fmap_comp _ _ _ _ (@isFct C' C'' K') _ _ _
+  rewrite (fmap_comp (IsFct := isFct K')
     (β (comma_right_ob X) ∘ fmap K (comma_arrow X))
     (α (comma_left_ob X))).
-  rewrite (@fmap_comp _ _ _ _ (@isFct C' C'' K') _ _ _
+  rewrite (fmap_comp (IsFct := isFct K')
     (β (comma_right_ob X)) (fmap K (comma_arrow X))).
   rewrite !(@comp_assoc C''). reflexivity.
 Defined.
@@ -436,7 +439,7 @@ Program Definition CommaChangeCompN
              |}
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (@isFct B'' C'' G'')), (@fmap_id _ _ _ _ (@isFct A'' C'' F'')),
+  rewrite (fmap_id (IsFct := isFct G'')), (fmap_id (IsFct := isFct F'')),
     comp_id_l, comp_id_r.
   exact (comma_change_comp_arrow X).
 Defined.
@@ -458,7 +461,7 @@ Program Definition comma_change_comp_inverse (X : F ↓C G)
   ; comma_right := id
   |}.
 Next Obligation.
-  rewrite (@fmap_id _ _ _ _ (@isFct B'' C'' G'')), (@fmap_id _ _ _ _ (@isFct A'' C'' F'')),
+  rewrite (fmap_id (IsFct := isFct G'')), (fmap_id (IsFct := isFct F'')),
     comp_id_l, comp_id_r.
   symmetry. exact (comma_change_comp_arrow X).
 Defined.

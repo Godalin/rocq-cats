@@ -119,7 +119,18 @@ Definition reversed_changed_cartesian
 
 End ReversedTerminalChange.
 
-(** Importing the result does not automatically select terminal objects. *)
+(** The standard setoid terminal choice is inferred without enabling a
+    Gluing terminal choice or any preservation witness. *)
+
+Definition default_change_set_terminal
+  : HasTerminal SetCat
+  := ltac:(typeclasses eauto).
+
+Example default_change_set_terminal_choice
+  : default_change_set_terminal = SetCat_HasTerminal.
+Proof. reflexivity. Qed.
+
+(** Importing the result does not select a Gluing terminal object. *)
 
 Fail Definition automatic_changed_terminal
   : HasTerminal (Gluing (ConstF SetCat TaggedGluingS))

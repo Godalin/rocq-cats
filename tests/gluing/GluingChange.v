@@ -370,7 +370,7 @@ Proof. reflexivity. Defined.
 
 Example tagged_change_respects
   : fmap TaggedChangeF tagged_gluing_toggle ≈ fmap TaggedChangeF id.
-Proof. apply fmap_proper. exact tagged_gluing_toggle_equal. Defined.
+Proof. rewrite tagged_gluing_toggle_equal. reflexivity. Qed.
 
 (** The change still retains the native tag-changing side function. *)
 
