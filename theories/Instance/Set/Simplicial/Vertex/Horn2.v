@@ -122,7 +122,7 @@ Definition is_horn2_filler {C : Cat} {A B D : @Ob C} {i : Ordinal 2}
 
 (** 选定局部填充保留三角形及其限制见证；结构不额外存储唯一性或函子性选择。 *)
 
-Class HasHorn2Fillers (C : Cat) (i : Ordinal 2)
+Minks.Mixin HasHorn2Fillers (C : Cat) (i : Ordinal 2)
   :=
   { horn2_fill {A B D : @Ob C} (h : Horn2S C A B D i)
     : ∃ q : TriangleS C A B D, is_horn2_filler h q

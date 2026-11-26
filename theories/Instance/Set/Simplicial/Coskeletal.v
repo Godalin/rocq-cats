@@ -63,7 +63,7 @@ Definition boundary_filler_faces_iff@{u p +}
 (** 将每个唯一边界纤维保留在原生值大小；匹配对象可以更大，只有后续同构才使用
     共同提升。 *)
 
-Class IsCoskeletal@{u p +}
+Minks.Mixin IsCoskeletal@{u p +}
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (k : nat)
   :=
   { coskeletal_boundary_universal (n : nat) (b : BoundaryS X (S (k + n)))
