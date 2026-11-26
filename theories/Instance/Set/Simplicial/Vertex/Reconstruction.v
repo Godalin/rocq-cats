@@ -279,10 +279,10 @@ Next Obligation. exact (nerve_map_arrow_comp g f). Defined.
 
 Program Definition VtxNerveInvF
   : T →ᵥ U
-  :=
-  {|vertex_fct := NerveMapF
-  ; vertex_fct_ob_proper := @func_proper _ _ nerve_map_ob_resp
-  |}.
+  := MakeVtxFct NerveMapF
+    {|vertex_fct_ob_proper := @func_proper _ _ nerve_map_ob_resp
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. exact (nerve_map_transport p). Defined.
 
 (** Reconstructing a simplicial map recovers its action in every degree. *)

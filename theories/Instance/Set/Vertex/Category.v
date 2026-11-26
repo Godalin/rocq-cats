@@ -107,22 +107,22 @@ Program Definition VtxPresentationMap@{x e o h p l a b +}
     {T : Fct (EqGpd X) C} {U : Fct (EqGpd Y) D} (F : T →ᵥ U)
   : VtxPresentationOf@{x e o h p l a b _ _ _} T →ᵥ
       VtxPresentationOf@{x e o h p l a b _ _ _} U
-  :=
-  {|vertex_fct :=
-      {|fobj i := F i
-      ; fmap i j f := fmap F f
-      ; isFct :=
-          {|fmap_proper i j f g H :=
-              @fmap_proper _ _ _ _ (isFct F) i j f g H
-          ; fmap_id := _
-          ; fmap_comp := _
-          |}
-      |}
-  ; vertex_fct_ob_proper := vertex_fct_ob_proper F
-  |}.
+  := MakeVtxFct
+    {|fobj i := F i
+    ; fmap i j f := fmap F f
+    ; isFct :=
+        {|fmap_proper i j f g H :=
+            @fmap_proper _ _ _ _ (isFct F) i j f g H
+        ; fmap_id := _
+        ; fmap_comp := _
+        |}
+    |}
+    {|vertex_fct_ob_proper := vertex_fct_ob_proper (isVtxFct F)
+    ; vertex_fct_transport := _
+    |}.
 Next Obligation. exact (@fmap_id _ _ _ _ (isFct F) X0). Defined.
 Next Obligation. exact (@fmap_comp _ _ _ _ (isFct F) X0 Y0 Z f g). Defined.
-Next Obligation. exact (vertex_fct_transport F p). Defined.
+Next Obligation. exact (vertex_fct_transport (isVtxFct F) p). Defined.
 
 (** Repackaging preserves prescribed-component comparisons, including
     their Type-valued label witnesses. *)
