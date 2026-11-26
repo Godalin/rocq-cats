@@ -51,7 +51,7 @@ Definition gluing_change_terminal_arrow
 Proof.
   etransitivity; [apply gluing_change_arrow |].
   change (α T ∘ fmap K (id[F T]) ≈ α T).
-  rewrite (@fmap_id _ _ _ _ (@isFct D D' K)), comp_id_r. reflexivity.
+  rewrite (fmap_id (IsFct := isFct K)), comp_id_r. reflexivity.
 Defined.
 
 (** The forward comparison uses the boundary and an identity base map. *)

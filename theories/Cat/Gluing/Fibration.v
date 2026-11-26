@@ -93,11 +93,11 @@ Proof.
         (fmap (GluingDiagramF F) g) (fmap F u) Himage)).
       split.
       - change (fmap F (comma_right k) ≈ fmap F u).
-        exact (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ Hbase).
+        exact (fmap_proper (IsFct := isFct F) _ _ Hbase).
       - change (fmap (GluingDiagramF F) f ∘
           fmap (GluingDiagramF F) k ≈ fmap (GluingDiagramF F) g).
         rewrite <- fmap_comp.
-        exact (@fmap_proper _ _ _ _ (isFct (GluingDiagramF F)) _ _ _ _ Hcomp). }
+        exact (fmap_proper (IsFct := isFct (GluingDiagramF F)) _ _ Hcomp). }
     exact (fst Hk, Hbase).
 Defined.
 
@@ -138,7 +138,7 @@ Proof.
       * symmetry. exact (comma_comm h).
       * transitivity (fmap F id ∘ q1).
         -- apply comp_proper.
-           ++ exact (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ Hb).
+           ++ exact (fmap_proper (IsFct := isFct F) _ _ Hb).
            ++ reflexivity.
         -- transitivity (id ∘ q1).
            ++ apply comp_proper; [apply fmap_id | reflexivity].

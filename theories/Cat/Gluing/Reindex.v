@@ -226,7 +226,7 @@ Qed.
 
 Definition GluingFiberReindexEqN {A B : C} {f g : Hom A B} (H : f ≈ g)
   : GluingFiberReindexF f ⇒ GluingFiberReindexF g
-  := SliceReindexEqN (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H).
+  := SliceReindexEqN (fmap_proper (IsFct := isFct F) _ _ H).
 
 (** This comparison is a natural isomorphism, not equality of functors. *)
 
@@ -236,7 +236,7 @@ Definition gluing_fiber_reindex_equiv_iso {A B : C} {f g : Hom A B}
     (H : f ≈ g)
   : GluingFiberReindexF f ≅N GluingFiberReindexF g
   := (GluingFiberReindexEqN H;
-      slice_reindex_equiv_iso (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H)).
+      slice_reindex_equiv_iso (fmap_proper (IsFct := isFct F) _ _ H)).
 
 (** First compare identity reindexing in [D], then change its base arrow
     along the inverse identity law of [F]. *)
@@ -245,7 +245,7 @@ Definition gluing_fiber_reindex_equiv_iso {A B : C} {f g : Hom A B}
 
 Definition GluingFiberReindexIdN (A : C)
   : (@IdF (GluingFiber F A)) ⇒ GluingFiberReindexF (id[A])
-  := SliceReindexEqN (symmetry (@fmap_id _ _ _ _ (@isFct C D F) A)) ∘Nv
+  := SliceReindexEqN (symmetry (fmap_id (IsFct := isFct F) (X := A))) ∘Nv
       SliceReindexIdN (F A).
 
 (** The identity comparison retains the existing transparent inverse. *)
@@ -261,16 +261,19 @@ Proof.
 Defined.
 
 (** The composite comparison includes the functor-composition boundary
-    [fmap F f ∘ fmap F g ≈ fmap F (f ∘ g)]. *)
+    [fmap F f ∘ fmap F g ≈ fmap F (f ∘ g)]. The boundary uses the
+    law witness stored by [F], including when another witness on the
+    same maps is in scope. *)
 
 (** 复合比较包含函子复合边界
-    [fmap F f ∘ fmap F g ≈ fmap F (f ∘ g)]。 *)
+    [fmap F f ∘ fmap F g ≈ fmap F (f ∘ g)]。边界使用 [F] 保存的定律
+    见证，即使作用域内还有同一映射上的另一份见证。 *)
 
 Definition GluingFiberReindexCompN {A B E : C} (f : Hom B E)
     (g : Hom A B)
   : (GluingFiberReindexF g ∘F GluingFiberReindexF f)
       ⇒ GluingFiberReindexF (f ∘ g)
-  := SliceReindexEqN (symmetry (@fmap_comp _ _ _ _ (@isFct C D F) _ _ _ f g)) ∘Nv
+  := SliceReindexEqN (symmetry (fmap_comp (IsFct := isFct F) f g)) ∘Nv
       SliceReindexCompN (fmap F f) (fmap F g).
 
 (** Its two factors are the existing slice isomorphisms. *)
@@ -307,7 +310,7 @@ Definition gluing_fiber_reindex_equiv_β2 {A B : C} {f g : Hom A B}
   : pb2 (fmap F g) (slice_arrow R) ∘
       slice_map (GluingFiberReindexEqN H R) ≈
     pb2 (fmap F f) (slice_arrow R)
-  := slice_reindex_equiv_β2 (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H) R.
+  := slice_reindex_equiv_β2 (fmap_proper (IsFct := isFct F) _ _ H) R.
 
 (** Identity comparison followed by its lifting projection is identity. *)
 
@@ -318,7 +321,7 @@ Definition gluing_fiber_reindex_id_β2 (A : C) (R : GluingFiber F A)
       slice_map (GluingFiberReindexIdN A R) ≈ id.
 Proof.
   change (pb2 (fmap F (id[A])) (slice_arrow R) ∘
-    (slice_map (slice_reindex_equiv (symmetry (@fmap_id _ _ _ _ (@isFct C D F) A)) R)
+    (slice_map (slice_reindex_equiv (symmetry (fmap_id (IsFct := isFct F) (X := A))) R)
       ∘ slice_map (slice_reindex_id R)) ≈ id).
   rewrite <- comp_assoc, slice_reindex_equiv_β2.
   apply slice_reindex_lift_β2.
@@ -338,7 +341,7 @@ Definition gluing_fiber_reindex_comp_β2 {A B E : C} (f : Hom B E)
 Proof.
   change (pb2 (fmap F (f ∘ g)) (slice_arrow R) ∘
     (slice_map (slice_reindex_equiv
-      (symmetry (@fmap_comp _ _ _ _ (@isFct C D F) _ _ _ f g)) R) ∘
+      (symmetry (fmap_comp (IsFct := isFct F) f g)) R) ∘
       slice_map (slice_reindex_comp (fmap F f) (fmap F g) R)) ≈
     pb2 (fmap F f) (slice_arrow R) ∘
       pb2 (fmap F g) (slice_arrow (GluingFiberReindexF f R))).
@@ -363,8 +366,8 @@ Definition gluing_fiber_reindex_equiv_witness_independent {A B : C}
     {f g : Hom A B} (H K : f ≈ g)
   : GluingFiberReindexEqN H ≈N GluingFiberReindexEqN K
   := slice_reindex_equiv_witness_independent
-      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H)
-      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ K).
+      (fmap_proper (IsFct := isFct F) _ _ H)
+      (fmap_proper (IsFct := isFct F) _ _ K).
 
 (** A reflexive base comparison acts as identity in natural equality. *)
 
@@ -373,7 +376,7 @@ Definition gluing_fiber_reindex_equiv_witness_independent {A B : C}
 Definition gluing_fiber_reindex_equiv_id {A B : C} {f : Hom A B}
     (H : f ≈ f)
   : GluingFiberReindexEqN H ≈N IdN
-  := slice_reindex_equiv_id (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H).
+  := slice_reindex_equiv_id (fmap_proper (IsFct := isFct F) _ _ H).
 
 (** Base-comparison composition is coherent without equating witnesses. *)
 
@@ -384,9 +387,9 @@ Definition gluing_fiber_reindex_equiv_comp {A B : C}
   : GluingFiberReindexEqN L ≈N
       (GluingFiberReindexEqN K ∘Nv GluingFiberReindexEqN H)
   := slice_reindex_equiv_comp
-      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ H)
-      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ K)
-      (@fmap_proper _ _ _ _ (@isFct C D F) _ _ _ _ L).
+      (fmap_proper (IsFct := isFct F) _ _ H)
+      (fmap_proper (IsFct := isFct F) _ _ K)
+      (fmap_proper (IsFct := isFct F) _ _ L).
 
 (** Composition comparison respects specified equality of both base maps.
     The supplied composite boundary may be any witness of the same equation. *)
