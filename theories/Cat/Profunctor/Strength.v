@@ -48,7 +48,7 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Context (P : Fct ((C^op) ×C C) (SetCat@{u p _ _ _ _ _})).
 
-Class HasProfStrength
+Minks.Mixin HasProfStrength
   :=
   (** Naturality in input and output is stored once, as an ordinary
       transformation; the underlying profunctor is the supplied parameter. *)

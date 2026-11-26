@@ -144,14 +144,12 @@ Context {C : Cat} (MC : HasMonoidal C).
 
 (** 打包原复合函子及其已验收强度。 *)
 
-Program Definition StrongProfComp (Q P : StrongProf MC)
+Definition StrongProfComp (Q P : StrongProf MC)
     `{HC : !HasProfComp C C C Q P}
   : StrongProf MC
-  :=
-  {|StrongProfF := @ProfComp C C C Q P HC
-  ; hasProfStrength := @ProfCompStrength C MC Q P
-      (hasProfStrength Q) (hasProfStrength P) HC
-  |}.
+  := MakeStrongProf (@ProfComp C C C Q P HC)
+      (@ProfCompStrength C MC Q P
+        (hasProfStrength Q) (hasProfStrength P) HC).
 
 (** Retain the original natural input map and only add its preservation
     witness. Source and target composition choices are independent. *)
