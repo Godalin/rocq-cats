@@ -116,12 +116,14 @@ Definition is_horn_filler@{u p +}
 
 (** Chosen filling at dimension n retains the filler and its equation.
     No uniqueness is assumed. At dimension zero this selects a vertex;
-    the Kan filling structure below quantifies only positive dimensions. *)
+    the Kan filling structure below quantifies only positive dimensions.
+    This fixed-input Minks mixin keeps each selected horn independent. *)
 
 (** n 维选定填充保留填充及其方程，不预先要求唯一性。零维时这要求选取顶点；
-    后续 Kan 填充结构只量化正维度。 *)
+    后续 Kan 填充结构只量化正维度。这个固定输入的 Minks Mixin 保持各个
+    horn 的选择相互独立。 *)
 
-Class HasHornFillers@{u p +}
+Minks.Mixin HasHornFillers@{u p +}
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
     (n : nat) (i : Ordinal n)
   :=
@@ -131,12 +133,15 @@ Class HasHornFillers@{u p +}
 
 (** Chosen Kan filling supplies every positive-dimensional horn filler.
     These are retained choices, not mere existence. The choices need not
-    be respectful or functorial, and no choice axiom is used. *)
+    be respectful or functorial, and no choice axiom is used. The indexed
+    family stays a field; its members do not replace an independently
+    supplied selection for a fixed horn. *)
 
 (** 选定 Kan 填充提供全部正维 horn 的填充。这是保留的选择数据，不仅是存在性；
-    不要求选择保持相等或具有函子性，也不使用选择公理。 *)
+    不要求选择保持相等或具有函子性，也不使用选择公理。带索引族保留为字段；
+    它的成员不替代针对固定 horn 独立给定的选择。 *)
 
-Class HasKanFillers@{u p +}
+Minks.Mixin HasKanFillers@{u p +}
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
   :=
   { hasHornFillers (n : nat) (i : Ordinal (S n))
