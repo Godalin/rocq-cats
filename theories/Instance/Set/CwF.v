@@ -141,10 +141,6 @@ Defined.
 
 Program Definition SetCwF
   : CwF SetCat
-  :=
-  {|hasTerminal := SetCat_HasTerminal
-  ; TyTmF := CodeTyTmF
-  ; hasContextExtension := CodeExtensions
-  |}.
+  := MakeCwF SetCat CodeTyTmF SetCat_HasTerminal CodeExtensions.
 
 End CodeFamilies.

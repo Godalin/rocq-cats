@@ -72,7 +72,7 @@ Notation "e '[' σ ']EqF[' P ']'" := (type_eq_sub P σ e)
 
 (** 带相干类型转换和替换拉回的选定显示投影。 *)
 
-Class HasDisplay (C : Cat) (P : Fct (C^op) SetCat)
+Minks.Mixin HasDisplay (C : Cat) (P : Fct (C^op) SetCat)
   :=
   { Display {Γ : @Ob C} (A : P Γ) : @Ob C
   ; display_proj {Γ : @Ob C} (A : P Γ) : Hom (Display A) Γ

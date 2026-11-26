@@ -7,6 +7,25 @@ terms, coherently with identity, composition and substitution. An arbitrary
 fiber isomorphism does not establish that specified equality.
 [Families and slices](FamiliesAndSlices.md) · [CwF core](../../theories/DTT/CwF.v)
 
+## Interface components
+
+`HasContextExtension`, `HasDisplay` and `HasContextRepresentation` are
+Minks mixins over their specified presheaves. Their existing operations,
+Type-valued universal witnesses and laws are defined once. None selects a
+model merely by import.
+
+`CwF C` is a Minks structure with the family-valued presheaf as its primary
+underlying view. `MakeCwF C T HT HC` stores exactly that functor, its
+`HasContextExtension T` witness and an independently supplied
+`HasTerminal C`. Generated projections provide the two stored choices;
+ordinary coercion supplies `T` when a functor is expected. The complete
+object is not a class to be searched for, and the former `TyTmF` record
+field is replaced by that underlying view. Fixed-presheaf theorems continue
+to require only their relevant mixins.
+
+[Hierarchy development](../development/HierarchyDevelopment.md) ·
+[Minks interface regressions](../../tests/dtt/MinksInterfaces.v)
+
 ## Extending a context
 
 For a context Γ and a type A over it, choose an extension, its projection to Γ,

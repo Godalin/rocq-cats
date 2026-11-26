@@ -268,11 +268,7 @@ Proof. reflexivity. Defined.
 
 Program Definition DisplayCwF `{HT : !HasTerminal C}
   : CwF C
-  :=
-  {|hasTerminal := HT
-  ; TyTmF := DisplayTyTmF P
-  ; hasContextExtension := Display_HasContextExtension
-  |}.
+  := MakeCwF C (DisplayTyTmF P) HT Display_HasContextExtension.
 
 End DisplayRepresentation.
 

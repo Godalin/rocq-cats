@@ -170,7 +170,7 @@ Definition context_extension_of_representation {Γ : @Ob C} (A : Ty T Γ)
 
 (** 为每个上下文类型选择表示对象及自然表示。 *)
 
-Class HasContextRepresentation
+Minks.Mixin HasContextRepresentation
   :=
   { ContextRep {Γ : @Ob C} (A : Ty T Γ) : @Ob C
   ; context_representation {Γ : @Ob C} (A : Ty T Γ)
@@ -225,11 +225,7 @@ Defined.
 Program Definition RepresentedCwF `{HT : !HasTerminal C}
     `{HR : !HasContextRepresentation}
   : CwF C
-  :=
-  {|hasTerminal := HT
-  ; TyTmF := T
-  ; hasContextExtension := ContextRepresentation_HasContextExtension
-  |}.
+  := MakeCwF C T HT ContextRepresentation_HasContextExtension.
 
 (** ** Recovering the Original Context Extension
 
