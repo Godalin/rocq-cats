@@ -20,11 +20,13 @@ Definition is_pullback {C : Cat} {X Y Z : C} (f : Hom X Z) (g : Hom Y Z)
       ∀ Q, ∀ q1 : Hom Q X, ∀ q2 : Hom Q Y, f ∘ q1 ≈ g ∘ q2
       → ∃ h, is_unique (λ h, p1 ∘ h ≈ q1 ∧ p2 ∘ h ≈ q2) h.
 
-(** Chosen pullbacks for cospans, with both projections and universality. *)
+(** Chosen pullbacks for cospans, with both projections and universality.
+    The category is fixed data; this mixin stores the selected pullbacks. *)
 
-(** 为余跨度选择拉回、两个投影与泛性质。 *)
+(** 为余跨度选择拉回、两个投影与泛性质。
+    范畴是固定数据；此混入保存选定的拉回。 *)
 
-Class HasPullback (C : Cat)
+Minks.Mixin HasPullback (C : Cat)
   :=
   { Pb {X Y Z : C} : Hom X Z → Hom Y Z → C
   ; pb1 {X Y Z : C} (f : Hom X Z) (g : Hom Y Z) : Hom (Pb f g) X

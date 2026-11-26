@@ -181,11 +181,13 @@ Hint Resolve term_η : cat.
 (** ** 始对象 *)
 
 (** A chosen initial object, expressed by terminality in the opposite
-    category. *)
+    category. This mixin stores that same terminal choice, without choosing
+    another object or rebuilding the dual universal property. *)
 
-(** 通过反范畴的终性表示的选定始对象。 *)
+(** 通过反范畴的终性表示的选定始对象。此混入保存同一终对象选择，
+    不另选对象或重建对偶泛性质。 *)
 
-Class HasInitial (C : Cat)
+Minks.Mixin HasInitial (C : Cat)
   :=
   { hasOpTerminal :: HasTerminal (C^op)
   }.
