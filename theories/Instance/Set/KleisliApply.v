@@ -13,8 +13,6 @@ Import Cats.Cat.Core Cats.Cat.Product.Core.
 
 Local Open Scope computation_scope.
 Local Open Scope monad_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Dynamic Evaluation of Kleisli Computations
 
@@ -85,8 +83,7 @@ Next Obligation.
     + apply (@func_proper
         (M (HomSet (C := KleisliCat M) Y Z ×S Y)) (M Z)
         (kleisli_extend M (kleisli_apply Y Z)) _ _). symmetry.
-      change (strengthN (hasStrength M)
-        (HomSet (C := KleisliCat M) Y Z, Y) (f,g x) ≈S
+      change (strengthN (HomSet (C := KleisliCat M) Y Z, Y) (f,g x) ≈S
         fmap M ⟨const_resp Y f, id⟩ (g x)).
       apply set_strength_value.
 Defined.

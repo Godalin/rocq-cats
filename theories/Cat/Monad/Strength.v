@@ -27,14 +27,14 @@ Class StrongMonad (C : Cat) (MC : HasMonoidal C)
 
   (** 强度是该 Monad 函子上额外选定的结构。 *)
 
-  ; hasStrength :: HasStrength MC StrongMonadM
+  ; hasStrength :: HasStrength StrongMonadM
 
   (** A pure effectful input gives the pure tensor pair. *)
 
   (** 纯的带效应输入给出纯张量配对。 *)
 
   ; strongmonad_unit (X Y : @Ob C)
-    : st[hasStrength; X; Y] ∘
+    : st[X; Y] ∘
         (tensor_map (IM := HasMonoidal_interchange MC) id (η[StrongMonadM] Y)) ≈
         η[StrongMonadM] (X ⊗ Y)
 
@@ -43,11 +43,11 @@ Class StrongMonad (C : Cat) (MC : HasMonoidal C)
   (** 穿过乘法，等于依次穿过两层。 *)
 
   ; strongmonad_mul (X Y : @Ob C)
-    : st[hasStrength; X; Y] ∘
+    : st[X; Y] ∘
         (tensor_map (IM := HasMonoidal_interchange MC) id (μ[StrongMonadM] Y)) ≈
         μ[StrongMonadM] (X ⊗ Y) ∘
-          fmap StrongMonadM st[hasStrength; X; Y] ∘
-          st[hasStrength; X; StrongMonadM Y]
+          fmap StrongMonadM st[X; Y] ∘
+          st[X; StrongMonadM Y]
   }.
 
 Arguments StrongMonadM {_ _} _.
@@ -73,7 +73,7 @@ Context {C : Cat} `{MC : !HasMonoidal C} (M : StrongMonad C MC).
 
 Definition strong_extend {X Y Z : @Ob C} (f : Hom (X ⊗ Y) (M Z))
   : Hom (X ⊗ M Y) (M Z)
-  := kleisli_extend M f ∘ st[hasStrength M; X; Y].
+  := kleisli_extend M f ∘ st[X; Y].
 
 (** Contextual extension preserves the specified arrow equality. *)
 
@@ -100,7 +100,7 @@ Qed.
 
 Lemma strong_extend_return {X Y Z : @Ob C} (f : Hom (X ⊗ Y) Z)
   : strong_extend (η[M] Z ∘ f) ≈
-      fmap M f ∘ st[hasStrength M; X; Y].
+      fmap M f ∘ st[X; Y].
 Proof.
   unfold strong_extend. rewrite kleisli_extend_pre, kleisli_extend_unit,
     comp_id_l. reflexivity.
@@ -127,7 +127,7 @@ Lemma strong_extend_pre {X X' Y Y' Z : @Ob C}
       strong_extend (f ∘ (g ⊗ h)).
 Proof.
   unfold strong_extend. rewrite comp_assoc,
-    (strength_natural (hasStrength M) g h), <- comp_assoc,
+    (strength_natural g h), <- comp_assoc,
     <- kleisli_extend_pre. reflexivity.
 Qed.
 
@@ -137,20 +137,20 @@ Qed.
 (** 强度也与 Kleisli 扩张交换；此可复用相容性用于嵌套上下文计算。 *)
 
 Lemma strength_kleisli {X Y Z : @Ob C} (f : Hom Y (M Z))
-  : st[hasStrength M; X; Z] ∘ (id ⊗ kleisli_extend M f) ≈
+  : st[X; Z] ∘ (id ⊗ kleisli_extend M f) ≈
       kleisli_extend M
-        (st[hasStrength M; X; Z] ∘ (id ⊗ f)) ∘
-          st[hasStrength M; X; Y].
+        (st[X; Z] ∘ (id ⊗ f)) ∘
+          st[X; Y].
 Proof.
   unfold kleisli_extend.
-  transitivity ((st[hasStrength M; X; Z] ∘
+  transitivity ((st[X; Z] ∘
     (id ⊗ μ[M] Z)) ∘ (id ⊗ fmap M f)).
   - rewrite comp_assoc,
       <- (@tensor_map_comp C _ (HasMonoidal_interchange MC) X X X (M Y) (M (M Z)) (M Z)
         id id (μ[M] Z) (fmap M f)), comp_id_l. reflexivity.
   - rewrite (strongmonad_mul M X Z), !comp_assoc,
-      (strength_natural (hasStrength M) (id[X]) f),
-      (@fmap_comp _ _ _ _ (@isFct C C M) _ _ _ st[hasStrength M; X; Z]
+      (strength_natural (id[X]) f),
+      (@fmap_comp _ _ _ _ (@isFct C C M) _ _ _ st[X; Z]
         (tensor_map (IM := HasMonoidal_interchange MC) id f)), <- !comp_assoc. reflexivity.
 Qed.
 
@@ -166,19 +166,18 @@ Lemma strong_extend_assoc {X Y Z U V : @Ob C}
 Proof.
   unfold strong_extend.
   transitivity (kleisli_extend M g ∘
-    (st[hasStrength M; X; U] ∘ (id ⊗ kleisli_extend M f)) ∘
-    (id ⊗ st[hasStrength M; Y; Z]) ∘ α[X; Y; M Z]).
+    (st[X; U] ∘ (id ⊗ kleisli_extend M f)) ∘
+    (id ⊗ st[Y; Z]) ∘ α[X; Y; M Z]).
   - assert (K : ((id[X]) ⊗ (kleisli_extend M f ∘
-        st[hasStrength M; Y; Z])) ≈
+        st[Y; Z])) ≈
         (id ⊗ kleisli_extend M f) ∘
-          (id ⊗ st[hasStrength M; Y; Z])).
+          (id ⊗ st[Y; Z])).
     { rewrite <- tensor_map_comp, comp_id_l. reflexivity. }
     rewrite K, !comp_assoc. reflexivity.
   - rewrite (strength_kleisli f), <- !comp_assoc,
       <- (kleisli_extend_assoc M
-        (st[hasStrength M; X; U] ∘ (id ⊗ f)) g), !comp_assoc,
-      <- (comp_assoc st[hasStrength M; X; Y ⊗ Z]
-        (id ⊗ st[hasStrength M; Y; Z]) α[X; Y; M Z]),
+        (st[X; U] ∘ (id ⊗ f)) g), !comp_assoc,
+      <- (comp_assoc _ _ α[X; Y; M Z]),
       <- (strength_assoc (hasStrength M) X Y Z),
       <- !comp_assoc, <- kleisli_extend_pre, !comp_assoc. reflexivity.
 Qed.

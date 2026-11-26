@@ -228,7 +228,6 @@ Notation "G '^K' F" := (KripkeFunctionF F G)
 
 Section KripkeCurrying.
 Context {C : Cat} (F G H : Fct (C^op) SetCat).
-Local Existing Instance SetCat_HasProduct.
 
 (** A map on pairs produces a coherent function at every parameter value.
     Future parameters are obtained by reindexing that fixed value. *)

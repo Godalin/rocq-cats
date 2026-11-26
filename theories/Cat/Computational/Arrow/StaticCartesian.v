@@ -22,7 +22,7 @@ Local Open Scope computation_scope.
 
 Section StaticCartesian.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (A : Applicative C HT HP).
+    `{HE : !HasExponential HP} (A : Applicative C).
 
 (** The derived static first operation maps the ordinary right-context
     extension. Its conjugating exchanges are pure, so no effects are reordered. *)

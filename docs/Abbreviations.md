@@ -695,14 +695,14 @@ WitnessClosure 保留；模块路径、Section 名及普通数学叙述不改。
 | --- | --- | --- |
 | `ArrowCodF_HasCartesianLift` | `ArrowCodF_HasCartLift` | [Cat/Arrow/Fibration.v](../theories/Cat/Arrow/Fibration.v) |
 | `CartesianAssociatorN` | `CartAssociatorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianLeftUnitorIso` | `CartLeftUnitorIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianLeftUnitorN` | `CartLeftUnitorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianLeftUnitorIso`, `CartLeftUnitorIso` | `CartUnitorLIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianLeftUnitorN`, `CartLeftUnitorN` | `CartUnitorLN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CartesianLift` | `CartLift` | [Cat/Fibration.v](../theories/Cat/Fibration.v) |
 | `CartesianMonoid` | `CartMonoid` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CartesianMonoidal` | `CartMonoidal` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianRightUnitorIso` | `CartRightUnitorIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianRightUnitorN` | `CartRightUnitorN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
-| `CartesianSymmetricPremonoidal`, `CartSymmetricPremonoidal` | `CartSymPremonoidal` | [Cat/Monoidal/CartesianSymmetric.v](../theories/Cat/Monoidal/CartesianSymmetric.v) |
+| `CartesianRightUnitorIso`, `CartRightUnitorIso` | `CartUnitorRIso` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianRightUnitorN`, `CartRightUnitorN` | `CartUnitorRN` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
+| `CartesianSymmetricPremonoidal`, `CartSymmetricPremonoidal` | `CartSymPremonoidal` | [Cat/Monoidal/Cartesian.v](../theories/Cat/Monoidal/Cartesian.v) |
 | `CtxCat_Cartesian` | `CtxCat_Cart` | [STLC/CCC.v](../theories/STLC/CCC.v) |
 | `CwFBaseF_HasCartesianLift` | `CwFBaseF_HasCartLift` | [DTT/Comprehension.v](../theories/DTT/Comprehension.v) |
 | `FamBaseF_HasCartesianLift` | `FamBaseF_HasCartLift` | [Instance/Set/Fam/Fibration.v](../theories/Instance/Set/Fam/Fibration.v) |
@@ -1009,6 +1009,8 @@ unchanged; no compatibility aliases are introduced.
 | `HasGroup`, `IsGroup` | `HasInverse`, `IsInverse` | [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
 | `hasMonoid`, `isMonoid`, `hasGroup`, `isGroup` | `hasUnit`, `isUnit`, `hasInverse`, `isInverse` | [Algebra/Monoid/Core.v](../theories/Algebra/Monoid/Core.v), [Algebra/Group/Core.v](../theories/Algebra/Group/Core.v) |
 | `is_monoid_object`, `monoid_object_laws` | `IsMonoidObj`, `isMonoidObj` | [Cat/Monoidal/Monoid.v](../theories/Cat/Monoidal/Monoid.v) |
+| `monoid_object_unit`, `monoid_object_mul` | `monoid_obj_unit`, `monoid_obj_mul` | [Cat/Monoidal/Monoid.v](../theories/Cat/Monoidal/Monoid.v) |
+| `monoid_object_unit_l`, `monoid_object_unit_r`, `monoid_object_assoc` | `monoid_obj_unit_l`, `monoid_obj_unit_r`, `monoid_obj_assoc` | [Cat/Monoidal/Monoid.v](../theories/Cat/Monoidal/Monoid.v) |
 | `IsCommutativeMonoid`, `IsCommMonoid` | `IsCommMagma` | [Algebra/Monoid/Commutative.v](../theories/Algebra/Monoid/Commutative.v) |
 | `BoolS_IsCommutativeMonoid` | `BoolS_IsCommMonoid` | [Instance/Bool/Commutative.v](../theories/Instance/Bool/Commutative.v) |
 | `BoolCocycleSphereClassS_IsCommutativeMonoid` | `BoolCocycleSphereClassS_IsCommMonoid` | [Instance/Bool/CocycleSphereGroup.v](../theories/Instance/Bool/CocycleSphereGroup.v) |
@@ -1985,36 +1987,23 @@ cmp 后续通过全部十五个具体受影响模块／回归目标。十一份 
 
 ## Lax monoidal functor record / Lax 幺半函子记录
 
-This uncommitted bounded follow-up starts at `728ab7c`.
-`LaxMonoidalFct` now uses `Record` and the direct constructor
-`LaxMonoidalFctOfFct`. Its single stored functor is exposed through
-`LaxMonoidalFctToFct :> Fct`. The existing unit comparison, natural tensorator
-and left-unit, right-unit and associativity laws are retained once; no
-staging data record or additional property/choice layer is introduced.
-The identity and constant constructions use value names rather than the old
-class-style suffix. Concrete `ReaderLax`, `MonadLax` and Day/Arrow clients
-retain their data. At that checkpoint, `Applicative` and the monoidal
-category hierarchy remained for later bounded migrations; the subsequent
-Applicative record migration is documented below. Module paths and
-comparison notation are unchanged.
-Earlier target columns are updated to the final identifiers below.
+`HasLaxMonoidalF F` gives a fixed functor its unit comparison,
+natural tensorator and three coherence laws. `MakeLaxMonoidalFct F`
+packs this choice. The bundle exposes its underlying functor through
+`LaxMonoidalFctToFct` and its chosen comparisons through `hasLaxMonoidalF`.
 
-这个未提交的有界后续从 `728ab7c` 开始。`LaxMonoidalFct` 现使用 `Record`，
-直接构造器为 `LaxMonoidalFctOfFct`，通过 `LaxMonoidalFctToFct :> Fct`
-暴露唯一保存的函子。单位比较、自然张量子及左右单位／结合相干律各保留一份，
-不增加分阶段数据记录或性质／选择层。恒等及常值构造采用值名称，替代旧类式
-后缀；具体 `ReaderLax`、`MonadLax`、Day／Arrow 客户端保留原有数据。
-该检查点尚未迁移 `Applicative` 及幺半范畴层级；后续 Applicative 记录迁移
-见下文。模块路径与比较记号不变。
-早前表格的目标列同步为以下最终标识符。
+`HasLaxMonoidalF F` 为固定函子选定单位比较、自然张量子和三条相干律。
+`MakeLaxMonoidalFct F` 打包这份选择。`LaxMonoidalFctToFct` 给出底层函子，
+`hasLaxMonoidalF` 给出包中选定的 lax 结构。
 
 | Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
 | --- | --- | --- |
+| `LaxMonoidalFctOfFct` | `MakeLaxMonoidalFct` | [Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v) |
 | `LaxMonoidalF` | `LaxMonoidalFctToFct` | [Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v) |
 | `IdF_LaxMonoidalFct` | `IdLaxMonoidalF` | [Cat.Monoidal.Functor](../theories/Cat/Monoidal/Functor.v) |
 | `ConstF_LaxMonoidalFct` | `ConstLaxMonoidalF` | [Cat.Monoidal.Constant](../theories/Cat/Monoidal/Constant.v) |
 
-All twenty direct-interface and representative module/regression targets
+At the pre-Minks record migration, all twenty direct-interface and representative module/regression targets
 pass with the project switch (Rocq 9.3.0, Stdlib 9.2.0, Dune 3.23.1).
 Eleven public types are alpha-equivalent after the reviewed renames, and
 all eleven universe profiles are identical. The generated self-argument
@@ -2029,7 +2018,7 @@ noninvertible constant comparisons and transported operations. Temporary
 audits are not added as redundant permanent tests. No full-library/test,
 export, install, commit or push is included in this task checkpoint.
 
-使用项目 switch（Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1）通过全部二十个
+在迁移至 Minks 之前的记录版本，使用项目 switch 通过了全部二十个
 直接接口及代表性模块／回归目标。重命名后十一个公开类型按绑定变量换名等价，
 十一个宇宙配置完全一致。自动生成的自身参数名由 `LaxMonoidalFct` 变为 `l`，
 不添加兼容名称。核心证明未变，其余九份 Rocq 文件均为精确标识符替换。
@@ -2054,7 +2043,7 @@ alias is introduced. Tensorial strength is a different notion.
 
 | Public name / 公共名称 | Role / 作用 |
 | --- | --- |
-| `MonoidalFctOfLaxMonoidalFct` | Direct constructor / 直接构造器 |
+| `MonoidalFctOfLaxMonoidalFct` | Pack invertibility over a lax functor / 在 lax 函子上打包可逆性 |
 | `MonoidalFctToLaxMonoidalFct` | Unique parent projection / 唯一父投影 |
 | `monoidal_unit_iso`, `monoidal_tensor_iso` | Inverse witnesses for the parent's comparisons / 父结构比较的逆见证 |
 | `MonoidalUnitIso`, `MonoidalTensorIso` | Transparent isomorphism views / 透明同构视图 |
@@ -2064,13 +2053,13 @@ alias is introduced. Tensorial strength is a different notion.
 ## Applicative record / Applicative 记录
 
 `Applicative` is a complete record extending one cartesian
-`LaxMonoidalFct`. Its direct constructor is `ApplicativeOfLaxMonoidalFct`;
+`LaxMonoidalFct`. Its parent packing function is `ApplicativeOfLaxMonoidalFct`;
 the natural pure map and both compatibility laws remain on that exact
 parent. The `ReaderA`, `MonadA`, `ArrowA`, `SetLaxA` and `OperationsA`
 clients migrate together. Module paths and operation notation stay unchanged;
 no compatibility projection or record-parent instance is added.
 
-`Applicative` 现为扩展唯一笛卡尔 `LaxMonoidalFct` 的完整记录，直接构造器为
+`Applicative` 现为扩展唯一笛卡尔 `LaxMonoidalFct` 的完整记录，父结构打包函数为
 `ApplicativeOfLaxMonoidalFct`；自然纯值映射及两条相容律仍基于该父结构。
 `ReaderA`、`MonadA`、`ArrowA`、`SetLaxA`、`OperationsA` 同步迁移。
 模块路径与运算记号不变，不增加兼容投影或记录父结构实例。
@@ -2078,6 +2067,8 @@ no compatibility projection or record-parent instance is added.
 | Previous identifier / 原标识符 | Current identifier / 当前标识符 | Source / 源码 |
 | --- | --- | --- |
 | `ApplicativeLax` | `ApplicativeToLaxMonoidalFct` | [Cat.Applicative.Core](../theories/Cat/Applicative/Core.v) |
+| `OpsF` | `ApplicativeOpsToFct` | [Cat.Applicative.Operations](../theories/Cat/Applicative/Operations.v) |
+| `ApF` | `ApplicativeApToFct` | [Cat.Applicative.Application](../theories/Cat/Applicative/Application.v) |
 
 The Applicative record checkpoint passes all thirty-five direct and
 representative targets with the project switch (Rocq 9.3.0, Stdlib 9.2.0,
@@ -2346,6 +2337,7 @@ and ancestor views. The bundled interchange field is `Magmoidal.isMagmoidal`.
 | `PremonoidalAssocLIso`, `PremonoidalAssocMIso`, `PremonoidalAssocRIso` | `TensorAssocLIso`, `TensorAssocMIso`, `TensorAssocRIso` |
 | `premonoidal_unitor_l/r`, `premonoidal_unit_l/r_*` | `tensor_unitor_l/r`, `tensor_unitor_l/r_*` |
 | `PremonoidalUnitorLIso`, `PremonoidalUnitorRIso` | `TensorUnitorLIso`, `TensorUnitorRIso` |
+| `EndoLeftUnitorN`, `EndoRightUnitorN` | `EndoUnitorLN`, `EndoUnitorRN` |
 | `premonoidal_compatible_triangle`, `premonoidal_triangle`, `tensor_triangle_coherence` | `tensor_triangle` |
 | `IsMonoidal`, `monoidal_interchange`, `monoidal_arrow_central` | `IsMagmoidal`, `tensor_interchange`, `tensor_arrow_central` |
 | `monoidal_isMonoidal`, `isMonoidal` | `isMagmoidal` |
@@ -2368,7 +2360,8 @@ Monoidal 张量族中的双函子标识符使用 `Bifct` 和 `bifct_`，包括
 | `BifunctorHasAssoc` | `BifctHasAssoc` |
 | `BifunctorHasBinoidal` | `BifctHasBinoidal` |
 | `BifunctorHasMonoidal` | `BifctHasMonoidal` |
-| `BifunctorHasPremonoidal`, `BifctHasPremonoidal` | `BifctHasAssoc`, `BifctHasUnitors`, `BifctIsPremonoidal` |
+| `BifunctorHasPremonoidal`, `BifctHasPremonoidal` | `BifctHasAssoc`, `BifctHasUnitors` |
+| `BifctIsPremonoidal` | Triangle supplied directly in `BifctMonoidal` / 在 `BifctMonoidal` 中直接提供三角形律 |
 | `BifunctorHasUnitors` | `BifctHasUnitors` |
 | `BifunctorMonoidal` | `BifctMonoidal` |
 | `BifunctorTensorInterchange` | `BifctTensorInterchange` |

@@ -38,12 +38,7 @@ Program Definition Tensor3RF {C : Cat} (T : Fct (C ×C C) C)
   : Fct ((C ×C C) ×C C) C
   :=
   {|fobj p := T (fst (fst p), T (snd (fst p), snd p))
-  ; fmap p q f := fmap T
-      (X := (fst (fst p), T (snd (fst p), snd p)))
-      (Y := (fst (fst q), T (snd (fst q), snd q)))
-      (fst (fst f), fmap T
-        (X := (snd (fst p), snd p)) (Y := (snd (fst q), snd q))
-        (snd (fst f), snd f))
+  ; fmap p q f := fmap T ((fst (fst f), fmap T ((snd (fst f), snd f) : _)) : _)
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -53,24 +48,18 @@ Program Definition Tensor3RF {C : Cat} (T : Fct (C ×C C) C)
 Next Obligation.
   intros [[f g] h] [[f' g'] h'] [[Hf Hg] Hh]. cbn.
   apply fmap_proper. split; [exact Hf |].
-  apply (fmap_proper (IsFct := isFct T)). split; assumption.
+  cbn. apply fmap_proper. split; assumption.
 Qed.
 Next Obligation.
-  transitivity (fmap T
-    (X := (fst (fst X), T (snd (fst X), snd X)))
-    (Y := (fst (fst X), T (snd (fst X), snd X))) (id, id)).
-  - apply fmap_proper. split; [reflexivity |].
-    exact (fmap_id (IsFct := isFct T) (X := (snd (fst X), snd X))).
-  - exact (fmap_id (IsFct := isFct T)
-      (X := (fst (fst X), T (snd (fst X), snd X)))).
+  destruct X as [[x y] z].
+  etransitivity; [| apply fmap_id].
+  apply fmap_proper. split; [reflexivity |].
+  exact (fmap_id (obj := T)).
 Qed.
 Next Obligation.
   etransitivity; [| apply fmap_comp].
   apply fmap_proper. split; [reflexivity |].
-  exact (fmap_comp (IsFct := isFct T)
-    (X := (snd (fst X), snd X)) (Y := (snd (fst Y), snd Y))
-    (Z := (snd (fst Z), snd Z))
-    (snd (fst f), snd f) (snd (fst g), snd g)).
+  exact (fmap_comp (obj := T) _ _).
 Qed.
 
 (** Display the two bracketings when the object argument is a triple.
@@ -102,28 +91,18 @@ Context {C : Cat}
   `{BC : !HasBinoidal C} `{IM : !@IsMagmoidal C BC}
   `{AC : !@HasTensorAssoc C BC}.
 
-(** Package derived joint naturality with the inherited associator. *)
+(** The joint associator uses separate naturality and keeps the chosen inverses. *)
 
-(** 将导出的联合自然性与继承结合子打包。 *)
+(** 联合结合子由分别自然性得到，并沿用选定的分量逆。 *)
 
-Local Program Definition TensorAssociatorN
-  : Tensor3LF (tensorF IM) ⇒ Tensor3RF (tensorF IM)
-  :=
-  {|nt p := α[fst (fst p); snd (fst p); snd p]
-  |}.
+Program Definition TensorAssocIsoN
+  : Tensor3LF tensorF ≅N Tensor3RF tensorF
+  := ({|nt p := α[fst (fst p); snd (fst p); snd p]|};
+      λ p, (tensor_assoc (fst (fst p)) (snd (fst p)) (snd p)).2).
 Next Obligation.
   destruct X as [[x y] z], Y as [[x' y'] z'], f as [[f g] h].
   apply tensor_assoc_sequence_natural.
 Qed.
-
-(** The natural isomorphism retains the same component inverses. *)
-
-(** 自然同构保留相同的分量逆。 *)
-
-Definition TensorAssocIsoN
-  : Tensor3LF (tensorF IM) ≅N Tensor3RF (tensorF IM)
-  := (TensorAssociatorN;
-      λ p, (tensor_assoc (fst (fst p)) (snd (fst p)) (snd p)).2).
 
 (** The inherited pentagon expressed with the derived bimap. *)
 

@@ -77,8 +77,8 @@ Local Ltac normalize_pairing :=
 (** tensorator 打包自然的有序配对。 *)
 
 Program Definition MonadTensorN
-  : (tensorF (HasMonoidal_interchange (@CartHasMonoidal C HT HP)) ∘F (M ×F M)) ⇒
-      (M ∘F tensorF (HasMonoidal_interchange (@CartHasMonoidal C HT HP)))
+  : (tensorF (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP)) ∘F (M ×F M)) ⇒
+      (M ∘F tensorF (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP)))
   :=
   {|nt p := @monad_pair (fst p) (snd p)
   |}.
@@ -95,13 +95,12 @@ Qed.
 (** 终对象处的 Monad 返回及有序配对组成 lax 幺半自函子，证明保留求值次序。 *)
 
 Program Definition MonadLax
-  : LaxMonoidalFct (@CartHasMonoidal C HT HP)
+  : @LaxMonoidalFct _ _ (@CartHasMonoidal C HT HP)
       (@CartHasMonoidal C HT HP)
-  :=
-  {|LaxMonoidalFctToFct := M
-  ; lax_unit := monad_return M (id[1])
-  ; lax_tensorN := MonadTensorN
-  |}.
+  := MakeLaxMonoidalFct M
+    {|lax_unit := monad_return M (id[1])
+    ; lax_tensorN := MonadTensorN
+    |}.
 Next Obligation.
   change (fmap M (π2 : Hom (1 × X) X) ∘ monad_pair ∘
     (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP))
@@ -149,11 +148,10 @@ Local Transparent monad_pair.
 (** 诱导的 Applicative 保留原函子及返回运算。 *)
 
 Program Definition MonadA
-  : Applicative C HT HP
-  :=
-  {|ApplicativeToLaxMonoidalFct := MonadLax
-  ; applicative_pure := η[M]
-  |}.
+  : Applicative C
+  := ApplicativeOfLaxMonoidalFct MonadLax
+    {|applicative_pure := η[M]
+    |}.
 Next Obligation. symmetry. apply monad_return_id. Qed.
 Next Obligation.
   change (η[M] (X × Y)%ob ≈ monad_pair ∘ (η[M] X × η[M] Y)).

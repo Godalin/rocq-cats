@@ -6,7 +6,7 @@ From Cats Require Import
   Cat.Functor.FullyFaithful
   Cat.Adjunction
   Cat.Isomorphism
-  Instance.Set.StrengthConstruction
+  Instance.Set.Strength
   Instance.Set.Arrow
   Instance.Set.Core
   Instance.Set.Terminal
@@ -20,8 +20,6 @@ Import Cats.Cat.Core Cats.Cat.Product.Core.
 Local Open Scope computation_scope.
 Local Open Scope monad_scope.
 Local Open Scope monoidal_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Dynamic Arrow Reconstruction through Kleisli Computations
 

@@ -26,7 +26,7 @@ Context {C : Cat} `{MC : !HasMonoidal C} (M : StrongMonad C MC).
 
 Definition kleisli_context {X Y : @Ob C} (Z : @Ob C) (f : Hom X (M Y))
   : Hom (Z ⊗ X) (M (Z ⊗ Y))
-  := st[hasStrength M; Z; Y] ∘ (id ⊗ f).
+  := st[Z; Y] ∘ (id ⊗ f).
 
 (** Specified equality of computations is preserved. *)
 
@@ -52,7 +52,7 @@ Program Definition KleisliArrow
 Next Obligation.
   change (kleisli_context Z (return[M; f]) ≈ return[M; id ⊗ f]).
   unfold kleisli_context, monad_return.
-  transitivity ((st[hasStrength M; Z; Y] ∘ (id ⊗ η[M] Y)) ∘
+  transitivity ((st[Z; Y] ∘ (id ⊗ η[M] Y)) ∘
     (id ⊗ f)).
   - rewrite comp_assoc. apply comp_proper; [reflexivity |].
     pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z Z X Y (M Y)
@@ -66,7 +66,7 @@ Next Obligation.
   change (kleisli_context Z (g ∘K[M] f) ≈
     kleisli_context Z g ∘K[M] kleisli_context Z f).
   unfold kleisli_context, kleisli_comp.
-  transitivity ((st[hasStrength M; Z; W] ∘
+  transitivity ((st[Z; W] ∘
     (id ⊗ kleisli_extend M g)) ∘ (id ⊗ f)).
   - rewrite comp_assoc. apply comp_proper; [reflexivity |].
     pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z Z X (M Y) (M W)
@@ -80,7 +80,7 @@ Next Obligation.
     kleisli_context W f ∘K[M] return[M; h ⊗ id]).
   rewrite kleisli_comp_pure_l, kleisli_comp_pure_r.
   unfold kleisli_context.
-  rewrite <- comp_assoc, <- (strength_natural (hasStrength M) h (id[Y])),
+  rewrite <- comp_assoc, <- (strength_natural h (id[Y])),
     fmap_id, !comp_assoc.
   apply comp_proper; [reflexivity |].
   transitivity ((h ⊗ f)%hom).
@@ -111,7 +111,7 @@ Next Obligation.
   rewrite <- comp_assoc, (strength_assoc (hasStrength M) Z W Y).
   pose proof (@tensor_map_comp C _ (HasMonoidal_interchange MC) Z Z Z
     (W ⊗ X) (W ⊗ M Y) (M (W ⊗ Y)) id id
-    st[hasStrength M; W; Y] (id ⊗ f)) as Ht.
+    st[W; Y] (id ⊗ f)) as Ht.
   rewrite comp_id_l in Ht.
   pose proof (tensor_assoc_sequence_natural (X := Z) (X' := Z) (Y := W) (Y' := W) (Z := X) (Z' := (M Y))
     id id f) as Ha.

@@ -9,7 +9,6 @@ From Cats Require Import
   Instance.Set.Product.
 
 Local Open Scope nat_scope.
-Local Existing Instance SetCat_HasProduct.
 
 (** * The Vertex Nerve Preserves Products
 

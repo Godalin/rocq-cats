@@ -149,17 +149,9 @@ Definition reversed_exp_boundary (X Y : C)
 
 End ReversedNaturality.
 
-(** Importing comparison equations does not choose a product model. *)
+(** Respectful-function exponentials require a separate choice. *)
 
-(** 导入比较方程不会选择积模型。 *)
-
-Fail Definition automatic_naturality_products
-  : HasProduct SetCat
-  := ltac:(typeclasses eauto).
-
-(** Nor does it automatically enable the respectful-function exponentials. *)
-
-(** 也不会自动启用保相等函数指数。 *)
+(** 保相等函数指数须另外选定。 *)
 
 Fail Definition automatic_naturality_exponentials
   : @HasExponential SetCat SetCat_HasProduct
@@ -167,21 +159,18 @@ Fail Definition automatic_naturality_exponentials
 
 (** ** Computation and Noninvertible Boundaries
 
-    Choose only setoid products and exponentials locally. The source
+    Use the standard setoid products and locally chosen exponentials. The source
     argument changes from a tagged setoid to Boolean. The result action
     changes an ignored tag, retaining an actual computational difference. *)
 
 (** ** 计算与不可逆边界
 
-    只局部选择广集积和指数。来源参数从标签广集变为布尔，结果作用改变被
+    使用标准广集积和局部选定的指数。来源参数从标签广集变为布尔，结果作用改变被
     忽略的标签，同时保留实际计算差异。 *)
 
 Section ConcreteNaturality.
-Local Instance naturality_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 Local Instance naturality_exponentials
-  : HasExponential naturality_products
+  : HasExponential SetCat_HasProduct
   := SetCat_HasExponential.
 
 (** A Boolean argument determines the ignored tag of a fixed-number value. *)

@@ -60,8 +60,6 @@ Section Parameters.
 Universes u p.
 Context (A : Fct (Δ^op) SetCat@{u p _ _ _ _ _}).
 
-Local Existing Instance SetCat_HasProduct.
-
 (** The parameter object is an actual product presheaf. *)
 
 (** 参数对象是实际的积预层。 *)

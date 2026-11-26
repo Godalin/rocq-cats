@@ -333,13 +333,13 @@ No permanent tests or shared environment changes were added.
 strength extension to named finite products. Its endpoints expose those
 products directly, and its equations cover equality, context substitution,
 pure substitution, return, ordinary mapping and associative sequencing.
-[Cartesian strength projection](../theories/Cat/Monoidal/CartesianStrength.v)
+[Cartesian strength projection](../theories/Cat/Monoidal/Cartesian.v)
 uses only strength naturality and its unit law to discard an ordinary
 context without changing the effectful input.
 
 [上下文绑定](../theories/Cat/Monad/Context.v) 将一般强度扩张特化到具名有限积，
 端点直接暴露这些积。方程覆盖相等、上下文代入、纯值代入、返回、通常映射及
-顺序组合的结合律。[笛卡尔强度投影](../theories/Cat/Monoidal/CartesianStrength.v)
+顺序组合的结合律。[笛卡尔强度投影](../theories/Cat/Monoidal/Cartesian.v)
 仅用强度自然性及其单位律，证明丢弃通常上下文不改变带效应输入。
 
 [MonadA](../theories/Cat/Monad/Applicative.v) takes a `StrongMonad` over the
@@ -1225,7 +1225,7 @@ favor of the inherited projections.
 `MonoidalBinoidal`、`MonoidalPremonoidal` 已删除，由继承投影替代。
 
 Cartesian and endomorphism comparison laws adapt weaker clients using
-specified equality. [CartesianLifting](../theories/Cat/Monoidal/CartesianLifting.v)
+specified equality. [Cartesian binary lifting](../theories/Cat/Monoidal/Cartesian.v)
 transports generic lax lifting results without adding pure maps,
 exponentials or strength. Applicative, Monad, strength and Arrow clients
 use these comparisons; tensorator natural transformations have the same
@@ -1237,7 +1237,7 @@ batch supplies their premonoidal structure; symmetric/Freyd structure and
 translations remain open.
 
 笛卡尔及自同态比较定律使用指定相等适配较弱客户端。
-[CartesianLifting](../theories/Cat/Monoidal/CartesianLifting.v) 运输一般
+[笛卡尔二元提升](../theories/Cat/Monoidal/Cartesian.v) 运输一般
 lax 提升结果，不增加纯值映射、指数或强度。Applicative、Monad、强度及
 Arrow 客户端使用这些比较；tensorator 自然变换的两端使用同一导出张量函子。
 Monad–幺半群函子保持底层态射，运输其 Type 值保持性见证。在该阶段，计算
@@ -1397,7 +1397,7 @@ hexagon and unit equations.
 The symmetry isomorphism uses the opposite exchange as its transparent
 inverse; right-variable naturality follows by inverting the first square.
 A derived conjugation law recovers right action from left action.
-[CartSymPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
+[CartSymPremonoidal](../theories/Cat/Monoidal/Cartesian.v)
 inherits the existing cartesian monoidal parent's premonoidal structure,
 proving only the new exchange equations from products.
 
@@ -1406,7 +1406,7 @@ proving only the new exchange equations from products.
 对合和左变量自然性。六边形和单位相容律分别刻画同一交换与结合子、
 单位子的相容性。对称同构以反序交换为透明逆；右变量自然性通过对第一个方块取逆
 得到。导出的共轭律从左作用恢复右作用。
-[CartSymPremonoidal](../theories/Cat/Monoidal/CartesianSymmetric.v)
+[CartSymPremonoidal](../theories/Cat/Monoidal/Cartesian.v)
 继承已有笛卡尔幺半父层的预幺半结构，仅从积证明新增交换方程。
 
 [ArrowSymPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
@@ -2777,7 +2777,7 @@ Continue the authorized serial #35 task on `monoidal-cat-view` from
 uses inverse transposition and counit multiplication to preserve composition.
 Its Type-valued full-faithfulness witness keeps transposes as preimages;
 it does not assert essential surjectivity onto an arbitrary adjunction
-target. [Explicit setoid strength](../theories/Instance/Set/StrengthConstruction.v)
+target. [Explicit setoid strength](../theories/Instance/Set/Strength.v)
 maps pairing with an ordinary fixed value through any endofunctor. Functor
 laws give naturality/coherence, while unit and multiplication naturality
 give an explicit strong view of any supplied setoid Monad. Neither import
@@ -2787,7 +2787,7 @@ registers a chosen model; no new interface or axiom is introduced.
 为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
 [一般 Kleisli 比较](../theories/Cat/Monad/KleisliComparison.v)使用逆转置及
 余单位乘法保持复合，Type 值全忠实见证保留转置作为原像；不宣称对任意伴随
-目标本质满。[显式广集强度](../theories/Instance/Set/StrengthConstruction.v)
+目标本质满。[显式广集强度](../theories/Instance/Set/Strength.v)
 通过任意自函子映射与通常固定值的配对。函子律给出自然性／相干，单位与乘法
 自然性为任意所给广集 Monad 提供显式强视图。导入均不注册选定模型，没有
 增加接口或公理。

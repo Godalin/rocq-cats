@@ -30,12 +30,13 @@ From Cats Require Import
 (** 具体幺半群乘法及伴随诱导的 Monad 运算须能穿过一般幺半接口计算。 *)
 
 Module MonoidalComputations.
+Local Open Scope monoidal_scope.
 
 Definition BoolObject
   := SetMonoidObj BoolS_Monoid.
 
-Example monoid_object_mul_computes
-  : monoid_object_mul BoolObject (true, false) = true.
+Example monoid_obj_mul_computes
+  : m[BoolObject] (true, false) = true.
 Proof. reflexivity. Qed.
 
 Definition IdentityOfAdj
@@ -81,7 +82,8 @@ Definition BoolObject
   := SetMonoidObj BoolS_Monoid.
 
 Definition BoolConstantLax
-  := ConstLaxMonoidalF SetCartMonoidal BoolObject.
+  : LaxMonoidalFct SetCat SetCat
+  := ConstLaxMonoidalF BoolObject.
 
 Definition BoolConstantImage
   := LaxMonoidObj BoolConstantLax BoolObject.
@@ -117,11 +119,11 @@ Proof.
 Qed.
 
 Example transported_constant_unit_computes
-  : monoid_object_unit BoolConstantImage tt = false.
+  : e[BoolConstantImage] tt = false.
 Proof. reflexivity. Qed.
 
 Example transported_constant_mul_computes
-  : monoid_object_mul BoolConstantImage (true, true) = false.
+  : m[BoolConstantImage] (true, true) = false.
 Proof. reflexivity. Qed.
 
 End LaxMonoidalComputations.
@@ -134,7 +136,7 @@ End LaxMonoidalComputations.
 Module MonoidalFctComputations.
 
 Definition SetIdentity
-  := IdMonoidalF SetCartMonoidal.
+  := IdMonoidalF (MC := SetCartMonoidal).
 
 Example monoidal_identity_fmap_computes
   : fmap SetIdentity (@Cats.Cat.Core.id SetCat BoolS) true = true.

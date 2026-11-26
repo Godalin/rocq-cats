@@ -809,21 +809,22 @@ uniqueness, and respectfulness follow from the property. This covers
 [natural-numbers objects](./theories/Topos/Nat.v), and
 [subobject classifiers](./theories/Topos/Sub.v).
 
-Import the setoid structures that are needed and enable chosen structures explicitly:
+Loading the setoid terminal or product module registers its standard instance.
+Other choices, such as pullbacks, can be enabled locally.
+
+加载广集终对象或积模块即可使用相应的标准实例。拉回等其他选择可在局部启用。
 
 ```coq
 From Cats Require Import Instance.Set.Core.
 From Cats Require Import Instance.Set.Product Instance.Set.Pullback.
 
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasPullback.
 ```
 
 The complete cartesian closed model is an explicit record. Pass it to clients
-that take a CCC; importing it does not enable SetCat choices globally.
+that take a CCC.
 
-完整笛卡尔闭模型是显式记录，传给接收 CCC 的客户端；导入不会全局启用
-SetCat 的选择。
+完整笛卡尔闭模型是显式记录，传给接收 CCC 的客户端。
 
 ```coq
 From Cats Require Import

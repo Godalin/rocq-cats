@@ -443,7 +443,6 @@ Fail Definition automatic_exp_change_products
     变化为恒等函子。三个比较逆及一个拉回始终作为显式数据给出。 *)
 
 Section ReaderBoundary.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 Local Existing Instance SetCat_HasPullback.
 
@@ -822,7 +821,6 @@ End ReaderBoundary.
     不声称粘合变化本身不能保持指数。 *)
 
 Section EmptyCospanComparison.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 
 (** A fixed identity gluing object keeps both exponential endpoints concrete. *)

@@ -178,10 +178,6 @@ Fail Definition no_automatic_Kan
   : HasKanFillers triangle_product
   := _.
 
-Fail Definition no_automatic_products
-  : HasProduct SetCat
-  := _.
-
 (** ** Both Coordinates are Necessary
 
     On the same staircase, repeated spatial or temporal coordinates

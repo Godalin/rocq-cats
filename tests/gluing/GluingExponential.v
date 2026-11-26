@@ -111,17 +111,16 @@ End SmallEquality.
 
 (** ** Transparent Computation with Nontrivial Setoid Equality
 
-    Explicitly enable the setoid model's products, exponentials and
+    Use the setoid model's standard products and explicitly enable exponentials and
     pullbacks only here. Reuse the tagged setoid from the gluing tests:
     equality ignores tags and retains a Boolean witness. *)
 
 (** ** 非平凡广集相等下的透明计算
 
-    仅在此显式启用广集模型的积、指数和拉回。复用粘合测试中的带标签广集：
+    使用广集的标准积，并在此启用指数和拉回。复用粘合测试中的带标签广集：
     相等忽略标签，并保留一个布尔见证。 *)
 
 Section SetoidExponentials.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 Local Existing Instance SetCat_HasPullback.
 

@@ -14,8 +14,6 @@ Local Open Scope computation_scope.
 Local Open Scope monad_scope.
 Local Open Scope monoidal_scope.
 Local Open Scope applicative_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Applicative Compatibility of Dynamic Reconstruction
 

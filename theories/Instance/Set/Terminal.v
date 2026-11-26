@@ -25,7 +25,7 @@ Defined.
 
 (** 选择单元素广集作为终对象。 *)
 
-Program Definition SetCat_HasTerminal
+Global Program Instance SetCat_HasTerminal
   : HasTerminal SetCat
   :=
   {|Term := UnitS

@@ -123,19 +123,19 @@ Local Existing Instance SM.
 
 (** 将 lax tensorator 看作 Day 延拓所需的自然二元操作，只需张量映射比较。 *)
 
-Program Definition LaxDayTensorN (L : LaxMonoidalFct MC SM)
-  : DayValuesF L L ⇒ (L ∘F tensorF (HasMonoidal_interchange MC))
+Program Definition LaxDayTensorN (L : @LaxMonoidalFct _ _ MC SM)
+  : DayValuesF L L ⇒ (L ∘F tensorF (C := C))
   :=
-  {|nt q := lax_tensorN L q
+  {|nt q := lax_tensorN (hasLaxMonoidalF L) q
   |}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
-  pose proof (nat_naturality (lax_tensorN L)
+  pose proof (nat_naturality (lax_tensorN (hasLaxMonoidalF L))
     (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) as H.
-  change (lax_tensorN L (Y1,Y2) ∘
+  change (φ₂[L; Y1; Y2] ∘
     tensor_map (IM := HasMonoidal_interchange SM) (fmap L f) (fmap L g) ≈
-    fmap L (fmap (tensorF (HasMonoidal_interchange MC)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
-      lax_tensorN L (X1,X2)) in H.
+    fmap L (fmap (tensorF (C := C)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
+      φ₂[L; X1; X2]) in H.
   intros [x y]. exact (H (x,y)).
 Qed.
 
@@ -145,8 +145,8 @@ Qed.
 
 Program Definition DayLaxTensorN
     {F : Fct C (SetCat@{u p _ _ _ _ _})}
-    (β : DayValuesF F F ⇒ (F ∘F tensorF (HasMonoidal_interchange MC)))
-  : (tensorF (HasMonoidal_interchange SM) ∘F (F ×F F)) ⇒ (F ∘F tensorF (HasMonoidal_interchange MC))
+    (β : DayValuesF F F ⇒ (F ∘F tensorF (C := C)))
+  : (tensorF ∘F (F ×F F)) ⇒ (F ∘F tensorF (C := C))
   :=
   {|nt q := β q
   |}.
@@ -154,7 +154,7 @@ Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g].
   change (β (Y1,Y2) ∘
     tensor_map (IM := HasMonoidal_interchange SM) (fmap F f) (fmap F g) ≈
-    fmap F (fmap (tensorF (HasMonoidal_interchange MC)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
+    fmap F (fmap (tensorF (C := C)) (X := (X1,X2)) (Y := (Y1,Y2)) (f,g)) ∘
       β (X1,X2)).
   intros [x y]. exact (nat_naturality β (f,g) (x,y)).
 Qed.
@@ -191,7 +191,7 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Let T
   : Fct (C ×C C) C
-  := tensorF (HasMonoidal_interchange MC).
+  := tensorF (C := C).
 Let I
   : @Ob C
   := 𝐈.
@@ -320,7 +320,7 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Let T
   : Fct (C ×C C) C
-  := tensorF (HasMonoidal_interchange MC).
+  := tensorF (C := C).
 Let A
   : Tensor3LF T ≅N Tensor3RF T
   := TensorAssocIsoN (IM := HasMonoidal_interchange MC).
@@ -479,7 +479,7 @@ Universes u p.
 Context {C : Cat} (MC : HasMonoidal C).
 Let T
   : Fct (C ×C C) C
-  := tensorF (HasMonoidal_interchange MC).
+  := tensorF (C := C).
 Let I
   : @Ob C
   := 𝐈.
@@ -507,13 +507,13 @@ Definition is_day_lax (F : Fct C (SetCat@{u p _ _ _ _ _}))
 
 (** 对原生 lax 函子求值即得逐点方程。 *)
 
-Lemma lax_day_coherence (L : LaxMonoidalFct MC SM)
-  : is_day_lax L (lax_unit L tt) (LaxDayTensorN MC L).
+Lemma lax_day_coherence (L : @LaxMonoidalFct _ _ MC SM)
+  : is_day_lax L (φ₀[L] tt) (LaxDayTensorN MC L).
 Proof.
   split; [| split].
-  - intros X x. exact (lax_unit_l L X (tt,x)).
-  - intros X x. exact (lax_unit_r L X (x,tt)).
-  - intros a b c x y z. exact (lax_assoc L a b c ((x,y),z)).
+  - intros X x. exact (lax_unit_l (hasLaxMonoidalF L) X (tt,x)).
+  - intros X x. exact (lax_unit_r (hasLaxMonoidalF L) X (x,tt)).
+  - intros a b c x y z. exact (lax_assoc (hasLaxMonoidalF L) a b c ((x,y),z)).
 Defined.
 
 (** Recover the existing complete lax interface from those same operations. *)
@@ -524,12 +524,11 @@ Program Definition DayOperationLax
     (F : Fct C (SetCat@{u p _ _ _ _ _}))
     (e : F I) (β : DayValuesF F F ⇒ (F ∘F T))
     (H : is_day_lax F e β)
-  : LaxMonoidalFct MC SM
-  :=
-  {|LaxMonoidalFctToFct := F
-  ; lax_unit := DayLaxUnit MC e
-  ; lax_tensorN := DayLaxTensorN MC β
-  |}.
+  : @LaxMonoidalFct _ _ MC SM
+  := MakeLaxMonoidalFct F
+    {|lax_unit := DayLaxUnit MC e
+    ; lax_tensorN := DayLaxTensorN MC β
+    |}.
 Next Obligation.
   intros [t x]. destruct t. exact (fst H X x).
 Qed.
@@ -600,7 +599,7 @@ Section MonoidCharacterization.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
+      HasDay C (tensorF (C := C)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -614,9 +613,9 @@ Local Lemma day_object_tensor_map
     (α : F ⇒ F') (β : G ⇒ G')
   : tensor_map (IM := HasMonoidal_interchange DM)
       (X := F) (X' := F') (Y := G) (Y' := G') α β ≈N
-      @DayMapN C (tensorF (HasMonoidal_interchange MC)) F F' G G' (HD F G) (HD F' G') α β.
+      @DayMapN C (tensorF (C := C)) F F' G G' (HD F G) (HD F' G') α β.
 Proof.
-  exact (day_monoidal_map (tensorF (HasMonoidal_interchange MC)) 𝐈
+  exact (day_monoidal_map (tensorF (C := C)) 𝐈
     (TensorAssocIsoN (IM := HasMonoidal_interchange MC))
     (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC))
     (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC))
@@ -632,10 +631,10 @@ Defined.
 
 Theorem day_monoid_laws (F : Fct C (SetCat@{u p _ _ _ _ _}))
     (η : DayUnitF 𝐈 ⇒ F)
-    (μ : DayF (tensorF (HasMonoidal_interchange MC)) F F ⇒ F)
-  : IsMonoidObj DM F η μ ↔
+    (μ : DayF (tensorF (C := C)) F F ⇒ F)
+  : IsMonoidObj (MC := DM) F η μ ↔
       is_day_lax MC F (day_unit_value 𝐈 F η)
-        (DayRestrictN (tensorF (HasMonoidal_interchange MC)) μ).
+        (DayRestrictN (tensorF (C := C)) μ).
 Proof.
   unfold is_day_lax.
   split; [intros [Hl Hr Ha]; split; [| split] | intros [Hl [Hr Ha]]; constructor].
@@ -672,7 +671,7 @@ Section StructureConversions.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
+      HasDay C (tensorF (C := C)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -684,91 +683,87 @@ Let SM
 
 (** 延拓 lax 单位和张量子即满足 Day 幺半群图。 *)
 
-Lemma lax_day_monoid_laws (L : LaxMonoidalFct MC SM)
-  : IsMonoidObj DM L
-      (DayUnitExtendN 𝐈 L (lax_unit L tt))
-      (DayExtendN (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L)).
+Lemma lax_day_monoid_laws (L : @LaxMonoidalFct _ _ MC SM)
+  : IsMonoidObj (MC := DM) L
+      (DayUnitExtendN 𝐈 L (φ₀[L] tt))
+      (DayExtendN (tensorF (C := C)) (LaxDayTensorN MC L)).
 Proof.
   apply (snd (day_monoid_laws MC HD L _ _)).
-  refine (day_lax_transport MC (lax_unit L tt) _
+  refine (day_lax_transport MC (φ₀[L] tt) _
     (LaxDayTensorN MC L) _ _ _ (lax_day_coherence MC L)).
-  - symmetry. exact (day_unit_value_extend 𝐈 L (lax_unit L tt)).
-  - symmetry. exact (day_restrict_extend (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L)).
+  - symmetry. exact (day_unit_value_extend 𝐈 L (φ₀[L] tt)).
+  - symmetry. exact (day_restrict_extend (tensorF (C := C)) (LaxDayTensorN MC L)).
 Defined.
 
 (** A lax monoidal functor is a monoid for the selected Day structure. *)
 
 (** Lax monoidal 函子构成选定 Day 结构下的幺半群。 *)
 
-Program Definition LaxDayMonoid (L : LaxMonoidalFct MC SM)
-  : MonoidObj DM
-  :=
-  {|MonoidCarrier := L
-  ; monoid_object_unit := DayUnitExtendN 𝐈 L (lax_unit L tt)
-  ; monoid_object_mul := DayExtendN (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L)
-  ; isMonoidObj := lax_day_monoid_laws L
-  |}.
+Program Definition LaxDayMonoid (L : @LaxMonoidalFct _ _ MC SM)
+  : @MonoidObj _ DM
+  := MakeMonoidObj L
+    {|monoid_obj_unit := DayUnitExtendN 𝐈 L (φ₀[L] tt)
+    ; monoid_obj_mul := DayExtendN (tensorF (C := C)) (LaxDayTensorN MC L)
+    ; isMonoidObj := lax_day_monoid_laws L
+    |}.
 
 (** Restrict a Day monoid by Yoneda evaluation and binary generation. *)
 
 (** 通过 Yoneda 求值与二元生成，限制 Day 幺半群。 *)
 
-Definition DayMonoidLax (M : MonoidObj DM)
-  : LaxMonoidalFct MC SM
-  := DayOperationLax MC (MonoidCarrier M)
-      (day_unit_value 𝐈 (MonoidCarrier M) (monoid_object_unit M))
-      (DayRestrictN (tensorF (HasMonoidal_interchange MC)) (monoid_object_mul M))
-      (fst (day_monoid_laws MC HD (MonoidCarrier M)
-        (monoid_object_unit M) (monoid_object_mul M)) (isMonoidObj M)).
+Definition DayMonoidLax (M : @MonoidObj _ DM)
+  : @LaxMonoidalFct _ _ MC SM
+  := DayOperationLax MC _
+      (day_unit_value 𝐈 _ e[M])
+      (DayRestrictN (tensorF (C := C)) m[M])
+      (fst (day_monoid_laws MC HD _ e[M] m[M]) (isMonoidObj M)).
 
 (** The Day unit survives restriction followed by extension. *)
 
 (** Day 单位在先限制后延拓的往返中保持不变。 *)
 
-Lemma day_monoid_unit_roundtrip (M : MonoidObj DM)
-  : monoid_object_unit (LaxDayMonoid (DayMonoidLax M)) ≈N
-      monoid_object_unit M.
+Lemma day_monoid_unit_roundtrip (M : @MonoidObj _ DM)
+  : e[LaxDayMonoid (DayMonoidLax M)] ≈N
+      e[M].
 Proof.
-  exact (day_unit_extend_value 𝐈 (MonoidCarrier M)
-    (monoid_object_unit M)).
+  exact (day_unit_extend_value 𝐈 _ e[M]).
 Defined.
 
 (** The Day multiplication survives the same round trip. *)
 
 (** Day 乘法在相同往返中保持不变。 *)
 
-Lemma day_monoid_mul_roundtrip (M : MonoidObj DM)
-  : monoid_object_mul (LaxDayMonoid (DayMonoidLax M)) ≈N
-      monoid_object_mul M.
+Lemma day_monoid_mul_roundtrip (M : @MonoidObj _ DM)
+  : m[LaxDayMonoid (DayMonoidLax M)] ≈N
+      m[M].
 Proof.
-  transitivity (DayExtendN (tensorF (HasMonoidal_interchange MC))
-    (DayRestrictN (tensorF (HasMonoidal_interchange MC)) (monoid_object_mul M))).
-  - apply (day_extend_proper (tensorF (HasMonoidal_interchange MC))
-      (F := MonoidCarrier M) (G := MonoidCarrier M)
-      (H := MonoidCarrier M) (HD := HD _ _)).
+  transitivity (DayExtendN (tensorF (C := C))
+    (DayRestrictN (tensorF (C := C)) m[M])).
+  - apply (day_extend_proper (tensorF (C := C))
+      (F := (M : Ob _)) (G := (M : Ob _)) (H := (M : Ob _)) (HD := HD _ _)).
     intros [X Y] [x y]. reflexivity.
-  - exact (day_extend_restrict (tensorF (HasMonoidal_interchange MC)) (monoid_object_mul M)).
+  - exact (day_extend_restrict (tensorF (C := C)) m[M]).
 Defined.
 
 (** The native lax unit survives extension followed by restriction. *)
 
 (** 原生 lax 单位在先延拓后限制的往返中保持不变。 *)
 
-Lemma day_lax_unit_roundtrip (L : LaxMonoidalFct MC SM)
-  : lax_unit (DayMonoidLax (LaxDayMonoid L)) ≈ lax_unit L.
+Lemma day_lax_unit_roundtrip (L : @LaxMonoidalFct _ _ MC SM)
+  : φ₀[DayMonoidLax (LaxDayMonoid L)] ≈ φ₀[L].
 Proof.
-  intros []. exact (day_unit_value_extend 𝐈 L (lax_unit L tt)).
+  intros []. exact (day_unit_value_extend 𝐈 L (φ₀[L] tt)).
 Defined.
 
 (** The native tensorator survives that round trip in natural equality. *)
 
 (** 原生张量子在该往返中按自然相等保持不变。 *)
 
-Lemma day_lax_tensor_roundtrip (L : LaxMonoidalFct MC SM)
-  : lax_tensorN (DayMonoidLax (LaxDayMonoid L)) ≈N lax_tensorN L.
+Lemma day_lax_tensor_roundtrip (L : @LaxMonoidalFct _ _ MC SM)
+  : lax_tensorN (hasLaxMonoidalF (DayMonoidLax (LaxDayMonoid L))) ≈N lax_tensorN (hasLaxMonoidalF L).
 Proof.
   intros q xy.
-  exact (day_restrict_extend (tensorF (HasMonoidal_interchange MC)) (LaxDayTensorN MC L) q xy).
+  exact (day_restrict_extend (tensorF (C := C)) (LaxDayTensorN MC L) q xy).
 Defined.
 
 End StructureConversions.

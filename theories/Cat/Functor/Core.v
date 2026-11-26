@@ -190,7 +190,7 @@ Program Definition AtRF
   : Fct C E
   :=
   {|fobj c := F (c, d)
-  ; fmap X Y f := fmap F (X := (X, d)) (Y := (Y, d)) (f, id)
+  ; fmap X Y f := fmap F ((f, id[d]) : _)
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -217,7 +217,7 @@ Program Definition AtLF
   : Fct D E
   :=
   {|fobj d := F (c, d)
-  ; fmap X Y f := fmap F (X := (c, X)) (Y := (c, Y)) (id, f)
+  ; fmap X Y f := fmap F ((id[c], f) : _)
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _

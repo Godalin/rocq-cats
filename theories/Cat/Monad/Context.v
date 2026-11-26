@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Monad.Strength
-  Cat.Monoidal.CartesianStrength.
+  Cat.Monoidal.Cartesian.
 From Cats Require Import
   Cat.Product.Transport.
 
@@ -54,7 +54,7 @@ Qed.
 
 Lemma context_extend_return {W X Y : @Ob C} (k : Hom (W × X) Y)
   : context_extend (η[M] Y ∘ k) ≈
-      fmap M k ∘ st[hasStrength M; W; X].
+      fmap M k ∘ st[W; X].
 Proof. exact (strong_extend_return M k). Qed.
 
 (** Result mapping commutes with cartesian extension. *)
@@ -259,8 +259,7 @@ Lemma context_bind_discard {W X Y : @Ob C}
 Proof.
   unfold context_bind, context_extend, strong_extend.
   rewrite kleisli_extend_pre,
-    (comp_assoc (kleisli_extend M k) (fmap M π2)
-      st[hasStrength M; W; X]),
+    (comp_assoc (kleisli_extend M k) _ _),
     (cartesian_strength_projection (hasStrength M) W X),
     comp_assoc, product_β2. reflexivity.
 Qed.
@@ -273,20 +272,20 @@ Qed.
 Lemma context_bind_pair {W V X : @Ob C}
     (u : Hom W (M X)) (σ : Hom W V)
   : context_bind u (return[M; ⟨σ ∘ π1, π2⟩]) ≈
-      st[hasStrength M; V; X] ∘ ⟨σ, u⟩.
+      st[V; X] ∘ ⟨σ, u⟩.
 Proof.
   unfold context_bind, monad_return. rewrite context_extend_return.
   transitivity ((fmap M (σ × id[X]) ∘
-    st[hasStrength M; W; X]) ∘ ⟨id, u⟩).
+    st[W; X]) ∘ ⟨id, u⟩).
   - apply comp_proper; [| reflexivity].
     apply comp_proper; [| reflexivity].
     apply fmap_proper. rewrite cross_η, comp_id_l. reflexivity.
-  - pose proof (strength_natural (hasStrength M) σ (id[X])) as H.
+  - pose proof (strength_natural σ (id[X])) as H.
     rewrite !cartesian_tensor_map in H.
     rewrite <- H, fmap_id, comp_assoc.
-    change (st[hasStrength M; V; X] ∘
+    change (st[V; X] ∘
       ((σ × id[M X]) ∘ ⟨id, u⟩) ≈
-      st[hasStrength M; V; X] ∘ ⟨σ, u⟩).
+      st[V; X] ∘ ⟨σ, u⟩).
     rewrite product_comp_l, comp_id_r, comp_id_l. reflexivity.
 Qed.
 

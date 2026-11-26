@@ -14,8 +14,6 @@ Import Cats.Cat.Core Cats.Cat.Product.Core.
 
 Local Open Scope computation_scope.
 Local Open Scope monad_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Recovering a Monad from Its Kleisli ArrowApply
 

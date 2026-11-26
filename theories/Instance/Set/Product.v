@@ -26,7 +26,7 @@ Infix "×S" := ProdS
 
 (** 从泛性质提取可计算中介，构造选定积；相等使用逐点指定相等。 *)
 
-Program Definition SetCat_HasProduct
+Global Program Instance SetCat_HasProduct
   : HasProduct SetCat
   :=
   {|Prod := ProdS

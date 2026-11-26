@@ -182,20 +182,17 @@ Fail Definition automatic_changed_gluing_products
 
 (** ** A Compatible Noninvertible Collapse
 
-    Choose setoid products locally. Both model-change functors are
+    Use the standard setoid products. Both model-change functors are
     identity, and the new interpretation is constant unit. Compatibility
     collapses each setoid to unit; binary-product preservation survives
     although the component at the tagged setoid is not invertible. *)
 
 (** ** 相容而不可逆的塌缩
 
-    局部选择广集积。两个模型变化函子均为恒等，新解释常值取单位。相容性
+    使用标准广集积。两个模型变化函子均为恒等，新解释常值取单位。相容性
     将每个广集塌缩到单位；标签广集处的分量不可逆，但二元积仍得到保持。 *)
 
 Section UnitCollapse.
-Local Instance binary_set_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 
 (** The constant-unit interpretation preserves each binary cone. *)
 
@@ -276,7 +273,7 @@ Definition unit_changed_product (X Y : Gluing (@IdF SetCat))
 (** 可选的较强输入显式命名其来源选择。 *)
 
 Program Definition unit_interpretation_cartesian
-  : IsCartF (ConstF SetCat UnitS) SetCat_HasTerminal binary_set_products
+  : IsCartF (ConstF SetCat UnitS) SetCat_HasTerminal SetCat_HasProduct
   :=
   {|fct_terminal := @terminal_universal SetCat SetCat_HasTerminal
   ; fct_product := unit_model_product
@@ -450,9 +447,6 @@ End UnitCollapse.
     具有不同布尔锥腿的锥无法分解。不需要选定目标积。 *)
 
 Section NonproductBase.
-Local Instance counter_set_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 Local Instance counter_source_products
   : HasProduct (Gluing (@IdF SetCat))
   := Gluing_HasProduct IdF (λ A B, product_universal).

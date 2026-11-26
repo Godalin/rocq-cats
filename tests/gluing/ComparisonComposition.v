@@ -179,17 +179,9 @@ Definition reversed_exp_comp (X Y : C)
 
 End ReversedComposition.
 
-(** Importing composition laws does not choose setoid products. *)
+(** Function exponentials require a separate choice. *)
 
-(** 导入复合定律不会选择广集积。 *)
-
-Fail Definition automatic_composition_products
-  : HasProduct SetCat
-  := ltac:(typeclasses eauto).
-
-(** Nor are function exponentials automatically enabled. *)
-
-(** 也不会自动启用函数指数。 *)
+(** 函数指数须另外选定。 *)
 
 Fail Definition automatic_composition_exponentials
   : @HasExponential SetCat SetCat_HasProduct
@@ -197,21 +189,18 @@ Fail Definition automatic_composition_exponentials
 
 (** ** Two Reader Environments
 
-    Select only setoid products and exponentials locally. Reuse the
+    Use the standard setoid products and locally chosen exponentials. Reuse the
     general right-adjoint preservation theorem for exponentiation, rather
     than another pointwise product universal-property proof. *)
 
 (** ** 两个 Reader 环境
 
-    只局部选择广集积和指数；复用取指数的一般右伴随保持定理，不另证逐点积
+    使用标准广集积和局部选定的指数；复用取指数的一般右伴随保持定理，不另证逐点积
     泛性质。 *)
 
 Section ReaderComposition.
-Local Instance composition_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 Local Instance composition_exponentials
-  : HasExponential composition_products
+  : HasExponential SetCat_HasProduct
   := SetCat_HasExponential.
 
 (** Each stage reads one Boolean environment. *)
@@ -437,7 +426,6 @@ End ReaderComposition.
     依然适用。 *)
 
 Section EmptyComposition.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 
 (** Directly supplied preservation witnesses need not be equal records. *)

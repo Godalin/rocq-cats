@@ -38,51 +38,31 @@ Context {C : Cat}
 Section Unit.
 Context `{UC : !@HasTensorUnitors C BC}.
 
-(** Package the inherited left unitor as a natural transformation. *)
+(** The joint left unitor retains its selected component inverses. *)
 
-(** 将继承左单位子打包为自然变换。 *)
+(** 联合左单位子沿用选定的分量逆。 *)
 
-Local Program Definition TensorLeftUnitorN
-  : AtLF (tensorF IM) 𝐈 ⇒ IdF
-  :=
-  {|nt X := λ[X]
-  |}.
+Program Definition TensorUnitorLIsoN
+  : AtLF tensorF 𝐈 ≅N IdF
+  := ({|nt X := λ[X]|}; λ X, (tensor_unitor_l X).2).
 Next Obligation.
   change (λ[Y] ∘ (id[𝐈] ⊗ f) ≈ f ∘ λ[X]).
   unfold tensor_map. rewrite tensor_sequence_left.
   apply tensor_unitor_l_natural.
 Qed.
 
-(** Package the inherited right unitor as a natural transformation. *)
+(** The joint right unitor retains its selected component inverses. *)
 
-(** 将继承右单位子打包为自然变换。 *)
+(** 联合右单位子沿用选定的分量逆。 *)
 
-Local Program Definition TensorRightUnitorN
-  : AtRF (tensorF IM) 𝐈 ⇒ IdF
-  :=
-  {|nt X := ρ[X]
-  |}.
+Program Definition TensorUnitorRIsoN
+  : AtRF tensorF 𝐈 ≅N IdF
+  := ({|nt X := ρ[X]|}; λ X, (tensor_unitor_r X).2).
 Next Obligation.
   change (ρ[Y] ∘ (f ⊗ id[𝐈]) ≈ f ∘ ρ[X]).
   unfold tensor_map. rewrite tensor_sequence_right.
   apply tensor_unitor_r_natural.
 Qed.
-
-(** The natural left-unitor isomorphism keeps its selected inverse. *)
-
-(** 左单位自然同构保留其选定逆。 *)
-
-Definition TensorUnitorLIsoN
-  : AtLF (tensorF IM) 𝐈 ≅N IdF
-  := (TensorLeftUnitorN; λ X, (tensor_unitor_l X).2).
-
-(** The natural right-unitor isomorphism keeps its selected inverse. *)
-
-(** 右单位自然同构保留其选定逆。 *)
-
-Definition TensorUnitorRIsoN
-  : AtRF (tensorF IM) 𝐈 ≅N IdF
-  := (TensorRightUnitorN; λ X, (tensor_unitor_r X).2).
 
 End Unit.
 

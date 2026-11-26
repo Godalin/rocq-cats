@@ -109,9 +109,7 @@ Context {C : Cat} `{BC : !HasBinoidal C}.
 
 Global Instance tensor_l_proper {X Y : C} (Z : C)
   : Proper (HomEq ==> HomEq) (@tensor_l C BC X Y Z).
-Proof.
-  exact (fmap_proper (IsFct := isBinoidalL Z)).
-Qed.
+Proof. exact fmap_proper. Qed.
 
 (** The right-context action has the same respectfulness interface. *)
 
@@ -119,9 +117,7 @@ Qed.
 
 Global Instance tensor_r_proper {X Y : C} (Z : C)
   : Proper (HomEq ==> HomEq) (@tensor_r C BC X Y Z).
-Proof.
-  exact (fmap_proper (IsFct := isBinoidalR Z)).
-Qed.
+Proof. exact fmap_proper. Qed.
 
 (** Left context preserves identities. *)
 
@@ -129,9 +125,7 @@ Qed.
 
 Lemma tensor_l_id (Z X : C)
   : Z ⊲ id[X] ≈ id.
-Proof.
-  exact (fmap_id (IsFct := isBinoidalL Z) (X := X)).
-Qed.
+Proof. exact fmap_id. Qed.
 
 (** Right context preserves identities. *)
 
@@ -139,9 +133,7 @@ Qed.
 
 Lemma tensor_r_id (Z X : C)
   : id[X] ⊳ Z ≈ id.
-Proof.
-  exact (fmap_id (IsFct := isBinoidalR Z) (X := X)).
-Qed.
+Proof. exact (fmap_id (X := X)). Qed.
 
 (** Left context preserves composition. *)
 
@@ -150,9 +142,7 @@ Qed.
 Lemma tensor_l_comp {X Y W : C} (Z : C)
     (g : Hom Y W) (f : Hom X Y)
   : Z ⊲ (g ∘ f) ≈ (Z ⊲ g) ∘ (Z ⊲ f).
-Proof.
-  exact (fmap_comp (IsFct := isBinoidalL Z) g f).
-Qed.
+Proof. exact (fmap_comp g f). Qed.
 
 (** Right context preserves composition. *)
 
@@ -161,9 +151,7 @@ Qed.
 Lemma tensor_r_comp {X Y W : C} (Z : C)
     (g : Hom Y W) (f : Hom X Y)
   : (g ∘ f) ⊳ Z ≈ (g ⊳ Z) ∘ (f ⊳ Z).
-Proof.
-  exact (fmap_comp (IsFct := isBinoidalR Z) g f).
-Qed.
+Proof. exact (fmap_comp g f). Qed.
 
 (** ** Fixed-Context Functors
 

@@ -20,14 +20,15 @@ Local Open Scope applicative_scope.
     固定的通常函数及参数是拉入该上下文的全局值。不假定任意函子具有强度。 *)
 
 Section Application.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (A : Applicative C HT HP).
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  `{HE : !HasExponential HP} (A : Applicative C).
 
 (** Apply an effectful internal function to an effectful argument. *)
 
 (** 将带效应的内部函数应用于带效应的参数。 *)
 
-Definition applicative_ap {X Y : @Ob C}
+Definition applicative_ap {X Y : C}
   : Hom (A (Y ^ X) × A X) (A Y)
   := lift₂[A; (eval (X := X) (Y := Y))].
 
@@ -35,7 +36,7 @@ Definition applicative_ap {X Y : @Ob C}
 
 (** 两个输入位于同一上下文中的应用。 *)
 
-Definition applicative_apply {W X Y : @Ob C}
+Definition applicative_apply {W X Y : C}
     (u : Hom W (A (Y ^ X))) (v : Hom W (A X))
   : Hom W (A Y)
   := applicative_ap ∘ ⟨u, v⟩.
@@ -45,9 +46,12 @@ End Application.
 Arguments applicative_ap {_ _ _ _} _ {_ _}.
 Arguments applicative_apply {_ _ _ _} _ {_ _ _} _ _.
 
-Notation "'ap[' A ']'" := (applicative_ap A) : applicative_scope.
+Notation "'ap[' A ']'" := (applicative_ap A)
+  (at level 0)
+  : applicative_scope.
 Notation "u '⋆[' A ']' v" := (applicative_apply A u v)
-  (at level 40, left associativity) : applicative_scope.
+  (at level 40, left associativity)
+  : applicative_scope.
 
 (** ** Application Laws
 
@@ -59,14 +63,15 @@ Notation "u '⋆[' A ']' v" := (applicative_apply A u v)
     固定选定有限积与指数上的 Applicative，在任意共同上下文中导出经典应用方程。 *)
 
 Section Laws.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (A : Applicative C HT HP).
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  `{HE : !HasExponential HP} (A : Applicative C).
 
 (** Application is respectful in both contextual inputs. *)
 
 (** 应用对两个上下文输入均保持相等。 *)
 
-Global Instance applicative_apply_proper {W X Y : @Ob C}
+Global Instance applicative_apply_proper {W X Y : C}
   : Proper (HomEq ==> HomEq ==> HomEq)
       (@applicative_apply C HT HP HE A W X Y).
 Proof. intros u u' H v v' K. unfold applicative_apply. rewrite H, K. reflexivity. Qed.
@@ -75,7 +80,7 @@ Proof. intros u u' H v v' K. unfold applicative_apply. rewrite H, K. reflexivity
 
 (** 应用与共同上下文的变换交换。 *)
 
-Lemma applicative_apply_comp {W V X Y : @Ob C}
+Lemma applicative_apply_comp {W V X Y : C}
     (u : Hom W (A (Y ^ X))) (v : Hom W (A X)) (σ : Hom V W)
   : (u ⋆[A] v) ∘ σ ≈ (u ∘ σ) ⋆[A] (v ∘ σ).
 Proof. unfold applicative_apply. rewrite comp_assoc, product_comp_r. reflexivity. Qed.
@@ -84,15 +89,17 @@ Proof. unfold applicative_apply. rewrite comp_assoc, product_comp_r. reflexivity
 
 (** 同态律：两个纯值的应用，就是通常应用的纯值。 *)
 
-Lemma applicative_homomorphism {W X Y : @Ob C}
+Lemma applicative_homomorphism {W X Y : C}
     (f : Hom W (Y ^ X)) (x : Hom W X)
   : pure[A; f] ⋆[A] pure[A; x] ≈ pure[A; app f x].
 Proof.
-  unfold applicative_apply, applicative_ap, applicative_pure_value.
-  transitivity ((lift₂[A; (eval (X := X) (Y := Y))] ∘
-    (pure[A] (Y ^ X) × pure[A] X)) ∘ ⟨f, x⟩).
+  unfold applicative_apply, applicative_ap,
+    applicative_pure_value.
+  transitivity ((lift₂[A; (eval (X := X) (Y := Y))]
+    ∘ (pure[A] (Y ^ X) × pure[A] X)) ∘ ⟨f, x⟩).
   - rewrite !comp_assoc,
-      (product_comp_l f x (pure[A] (Y ^ X)) (pure[A] X)). reflexivity.
+      (product_comp_l f x (pure[A] (Y ^ X)) (pure[A] X)).
+    reflexivity.
   - rewrite (applicative_lift2_pure A (eval (X := X) (Y := Y))).
     unfold app. apply comp_assoc.
 Qed.
@@ -101,10 +108,9 @@ Qed.
 
 (** 应用固定纯函数，与通常函子作用相同。 *)
 
-Lemma applicative_pure_map {W X Y : @Ob C}
+Lemma applicative_pure_map {W X Y : C}
     (f : Hom X Y) (u : Hom W (A X))
-  : pure[A; (ƛ (f ∘ π2) : Hom 1 (Y ^ X)) ∘ !] ⋆[A] u ≈
-      fmap A f ∘ u.
+  : pure[A; (ƛ (f ∘ π2) : Hom 1 (Y ^ X)) ∘ !] ⋆[A] u ≈ fmap A f ∘ u.
 Proof.
   unfold applicative_apply, applicative_ap, applicative_pure_value.
   transitivity ((lift₂[A; (eval (X := X) (Y := Y))] ∘
@@ -123,7 +129,7 @@ Qed.
 
 (** 恒等律：纯内部恒等函数保持每个带效应值。 *)
 
-Lemma applicative_identity {W X : @Ob C} (u : Hom W (A X))
+Lemma applicative_identity {W X : C} (u : Hom W (A X))
   : pure[A; (idᴱ[X] : Hom W (X ^ X))] ⋆[A] u ≈ u.
 Proof.
   pose proof (applicative_pure_map (id[X]) u) as H.
@@ -139,7 +145,7 @@ Qed.
 
 (** 交换律：固定纯参数的应用，可通过对带效应函数映射该参数处的求值获得。 *)
 
-Lemma applicative_interchange_map {W X Y : @Ob C}
+Lemma applicative_interchange_map {W X Y : C}
     (u : Hom W (A (Y ^ X))) (y : Hom 1 X)
   : u ⋆[A] pure[A; y ∘ !] ≈ fmap A (app id (y ∘ !)) ∘ u.
 Proof.
@@ -165,10 +171,10 @@ Qed.
 
 (** 经典交换方程将通常求值映射命名为纯函数，结果中使用应用运算。 *)
 
-Lemma applicative_interchange {W X Y : @Ob C}
+Lemma applicative_interchange {W X Y : C}
     (u : Hom W (A (Y ^ X))) (y : Hom 1 X)
-  : u ⋆[A] pure[A; y ∘ !] ≈
-      pure[A; (ƛ (app id (y ∘ !) ∘ π2) : Hom 1 (Y ^ (Y ^ X))) ∘ !]
+  : u ⋆[A] pure[A; y ∘ !]
+    ≈ pure[A; (ƛ (app id (y ∘ !) ∘ π2) : Hom 1 (Y ^ (Y ^ X))) ∘ !]
         ⋆[A] u.
 Proof.
   rewrite applicative_interchange_map, applicative_pure_map. reflexivity.
@@ -179,10 +185,10 @@ Qed.
 
 (** 对带效应函数输入映射通常函数，可以吸收到提升后的求值中。 *)
 
-Lemma applicative_apply_fmap {W X Y Z : @Ob C}
+Lemma applicative_apply_fmap {W X Y Z : C}
     (f : Hom X (Z ^ Y)) (u : Hom W (A X)) (v : Hom W (A Y))
-  : (fmap A f ∘ u) ⋆[A] v ≈
-      lift₂[A; (eval (X := Y) (Y := Z)) ∘ (f × id)] ∘ ⟨u, v⟩.
+  : (fmap A f ∘ u) ⋆[A] v
+    ≈ lift₂[A; (eval (X := Y) (Y := Z)) ∘ (f × id)] ∘ ⟨u, v⟩.
 Proof.
   unfold applicative_apply, applicative_ap.
   transitivity ((lift₂[A; (eval (X := Y) (Y := Z))] ∘
@@ -200,11 +206,10 @@ Qed.
 
 (** 未柯里化的复合方程是提升后的求值图，直接来自一般 lax 结合图保持性。 *)
 
-Lemma applicative_composition_eval {W X Y Z : @Ob C}
+Lemma applicative_composition_eval {W X Y Z : C}
     (u : Hom W (A (Z ^ Y))) (v : Hom W (A (Y ^ X)))
     (w : Hom W (A X))
-  : (lift₂[A; internal_comp X Y Z] ∘ ⟨u, v⟩) ⋆[A] w ≈
-      u ⋆[A] (v ⋆[A] w).
+  : (lift₂[A; internal_comp X Y Z] ∘ ⟨u, v⟩) ⋆[A] w ≈ u ⋆[A] (v ⋆[A] w).
 Proof.
   unfold applicative_apply, applicative_ap.
   transitivity ((lift₂[A; (eval (X := X) (Y := Z))] ∘
@@ -232,7 +237,7 @@ Qed.
 
 (** 复合律：纯柯里化复合函数连续应用三次，等于两次连续的带效应应用。 *)
 
-Lemma applicative_composition {W X Y Z : @Ob C}
+Lemma applicative_composition {W X Y Z : C}
     (u : Hom W (A (Z ^ Y))) (v : Hom W (A (Y ^ X)))
     (w : Hom W (A X))
   : ((pure[A; (ƛ ((ƛ (internal_comp X Y Z)) ∘ π2)

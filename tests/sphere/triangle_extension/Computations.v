@@ -11,7 +11,6 @@ From Stdlib Require Import
 Import Cats.Cat.Core.
 Local Open Scope nat_scope.
 Local Open Scope ordinal_scope.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Actual Ordered Edges in a Representable Triangle
 

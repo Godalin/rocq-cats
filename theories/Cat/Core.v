@@ -448,13 +448,6 @@ Definition comp_post {C : Cat} {X Y Z : C}
 Arguments comp_pre {_ _ _ _} _ _ /.
 Arguments comp_post {_ _ _ _} _ _ /.
 
-Notation "f ^*" := (comp_pre f)
-  (at level 1)
-  : hom_scope.
-Notation "f _*" := (comp_post f)
-  (at level 1)
-  : hom_scope.
-
 (** Postcomposition by a fixed [f : Hom Y Z], bundled as a respectful
     map [HomSet X Y →r HomSet X Z]. Its preservation proof comes from
     [comp_proper]. This exposes the set-level action of any category's
@@ -468,7 +461,7 @@ Program Canonical comp_l_resp {C : Cat} {X Y Z : C}
     {f : Hom Y Z}
   : HomSet X Y →r HomSet X Z
   :=
-  {|func := f _*
+  {|func := comp_post f
   |}.
 
 (** Precomposition by a fixed [f : Hom X Y], as a respectful map
@@ -483,11 +476,18 @@ Program Canonical comp_r_resp {C : Cat} {X Y Z : C}
     {f : Hom X Y}
   : HomSet Y Z →r HomSet X Z
   :=
-  {|func := f ^*
+  {|func := comp_pre f
   |}.
 Next Obligation.
   intros g1 g2 Hg. unfold comp_pre. rewrite Hg. reflexivity.
 Qed.
+
+Notation "f ^*" := (comp_r_resp (f := f))
+  (at level 1)
+  : hom_scope.
+Notation "f _*" := (comp_l_resp (f := f))
+  (at level 1)
+  : hom_scope.
 
 
 
@@ -587,6 +587,20 @@ Next Obligation. destruct f, g, h. simpl. split; apply comp_assoc. Qed.
 Infix "×C" := ProdCat
   (at level 41)
   : cat_scope.
+
+(** View a pair of arrows as a product-category arrow with paired endpoints.
+    The source is a product of hom types so the components determine the endpoints. *)
+
+(** 将一对态射视为乘积范畴中的态射，源和目标分别由两个分量的端点配成。
+    此转换的来源限于两个态射类型的乘积。 *)
+
+Definition prod_cat_hom {C D : Cat} {X X' : C} {Y Y' : D}
+    (p : Hom X X' * Hom Y Y')
+  : Hom[C ×C D] (X, Y) (X', Y')
+  := p.
+
+#[warnings="-uniform-inheritance"]
+Coercion prod_cat_hom : prod >-> Hom.
 
 
 

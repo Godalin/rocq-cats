@@ -2143,11 +2143,11 @@ Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
 
 Definition low_eq_monoid_category
   : Cat@{_ _ e _ _}
-  := MonoidCat MC0.
+  := MonoidCat C0.
 
 Definition high_eq_monoid_category
   : Cat@{_ _ p _ _}
-  := MonoidCat MC1.
+  := MonoidCat C1.
 
 Definition low_eq_monad_category
   : Cat@{_ _ e _ _}
@@ -2162,13 +2162,33 @@ Definition high_eq_monad_category
 (** 对应也可在两种严格宇宙次序下实例化。 *)
 
 Definition low_eq_monad_monoid_equiv
-  : low_eq_monad_category ≃C MonoidCat (EndofunctorMonoidal C0)
+  : low_eq_monad_category ≃C (@MonoidCat _ (EndofunctorMonoidal C0))
   := monad_monoid_equiv C0.
 
 Definition high_eq_monad_monoid_equiv
-  : high_eq_monad_category ≃C MonoidCat (EndofunctorMonoidal C1)
+  : high_eq_monad_category ≃C (@MonoidCat _ (EndofunctorMonoidal C1))
   := monad_monoid_equiv C1.
 End MonoidalLevels.
+
+(** Monoid objects can live strictly below or above the bound of the
+    chosen monoidal structure on the same category. *)
+
+(** 同一范畴上，幺半群对象的宇宙可以严格低于或高于选定幺半结构的界。 *)
+
+Section MonoidObjectLevels.
+Universes lo chosen hi.
+Constraint lo < chosen.
+Constraint chosen < hi.
+Context (C : Cat) `{MC : !HasMonoidal@{_ _ _ _ chosen _ _ _} C}.
+
+Definition monoid_objects_below_choice
+  : Cat@{lo _ _ _ _}
+  := MonoidCat C.
+
+Definition monoid_objects_above_choice
+  : Cat@{hi _ _ _ _}
+  := MonoidCat C.
+End MonoidObjectLevels.
 
 From Cats Require Import
   Cat.Comma.Arrow
@@ -2257,8 +2277,8 @@ Constraint e < h.
 Constraint h < p.
 Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
     (MC0 : HasMonoidal C0) (MC1 : HasMonoidal C1)
-    (L01 : LaxMonoidalFct MC0 MC1)
-    (L10 : LaxMonoidalFct MC1 MC0).
+    (L01 : LaxMonoidalFct C0 C1)
+    (L10 : LaxMonoidalFct C1 C0).
 
 (** Coercion recovers the underlying functor at either native equality size. *)
 
@@ -2273,26 +2293,26 @@ Definition high_eq_lax_underlying
   := L01.
 
 Definition low_eq_lax_monoid_fct
-  : Fct (MonoidCat MC1) (MonoidCat MC0)
+  : Fct (MonoidCat C1) (MonoidCat C0)
   := LaxMonoidF L10.
 
 Definition high_eq_lax_monoid_fct
-  : Fct (MonoidCat MC0) (MonoidCat MC1)
+  : Fct (MonoidCat C0) (MonoidCat C1)
   := LaxMonoidF L01.
 
-Definition low_eq_lax_monoid_map {A B : MonoidObj MC1}
-    (f g : (@Hom (MonoidCat MC1)) A B)
+Definition low_eq_lax_monoid_map {A B : MonoidObj C1}
+    (f g : (@Hom (MonoidCat C1)) A B)
   : Type@{e}
   := fmap low_eq_lax_monoid_fct f ≈ fmap low_eq_lax_monoid_fct g.
 
-Definition high_eq_lax_monoid_map {A B : MonoidObj MC0}
-    (f g : (@Hom (MonoidCat MC0)) A B)
+Definition high_eq_lax_monoid_map {A B : MonoidObj C0}
+    (f g : (@Hom (MonoidCat C0)) A B)
   : Type@{p}
   := fmap high_eq_lax_monoid_fct f ≈ fmap high_eq_lax_monoid_fct g.
 
-Definition mixed_constant_lax (A : MonoidObj MC0)
-  : LaxMonoidalFct MC1 MC0
-  := ConstLaxMonoidalF MC1 A.
+Definition mixed_constant_lax (A : MonoidObj C0)
+  : LaxMonoidalFct C1 C0
+  := ConstLaxMonoidalF A.
 End LaxMonoidalLevels.
 
 (** Restriction compares bases naturally while retaining independent hom

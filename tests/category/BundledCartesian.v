@@ -16,13 +16,13 @@ From Cats Require Import
 (** * Explicit Structured Categories
 
     Complete bundles expose one category and its selected constructions.
-    Imports must not select a model, and bundles over the same category
-    must retain their own computational witnesses. *)
+    Setoids have standard terminal and product instances. Bundles over the
+    same category retain their own computational witnesses. *)
 
 (** * 显式的带结构范畴
 
-    完整结构包暴露唯一范畴及其选定构造。导入不得默认选择模型，
-    同一范畴上的不同结构包必须保留各自的计算见证。 *)
+    完整结构包暴露唯一范畴及其选定构造。广集具有标准终对象和积实例。
+    同一范畴上的不同结构包保留各自的计算见证。 *)
 
 Fail Definition unchosen_cartesian_category
   : CartCat
@@ -36,12 +36,19 @@ Fail Definition unchosen_topos
 Fail Definition unchosen_etcs
   : ETCS
   := ltac:(typeclasses eauto).
-Fail Definition unchosen_set_terminal
+Definition inferred_set_terminal
   : HasTerminal SetCat
   := ltac:(typeclasses eauto).
-Fail Definition unchosen_set_products
+Definition inferred_set_products
   : HasProduct SetCat
   := ltac:(typeclasses eauto).
+Example inferred_set_terminal_is_standard
+  : inferred_set_terminal = SetCat_HasTerminal
+  := eq_refl.
+Example inferred_set_products_are_standard
+  : inferred_set_products = SetCat_HasProduct
+  := eq_refl.
+
 Fail Definition unchosen_set_exponentials
   : HasExponential SetCat_HasProduct
   := ltac:(typeclasses eauto).

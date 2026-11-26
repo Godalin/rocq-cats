@@ -57,9 +57,9 @@ Defined.
     配对定律。 *)
 
 Program Definition ArrowGlobalTensorN
-  : (tensorF (HasMonoidal_interchange (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct))
+  : (tensorF (IM := HasMonoidal_interchange (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct))
       ∘F (ArrowGlobalF ×F ArrowGlobalF)) ⇒
-      (ArrowGlobalF ∘F tensorF (HasMonoidal_interchange (@CartHasMonoidal C HT HP)))
+      (ArrowGlobalF ∘F tensorF (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP)))
   := {|nt XY := arrow_global_pair (fst XY) (snd XY)|}.
 Next Obligation.
   destruct X as [X1 X2], Y as [Y1 Y2], f as [f g]. intros [u v].
@@ -94,11 +94,12 @@ Next Obligation. intros x y H. reflexivity. Defined.
     不假设这些 Hom 广集可在值范畴内部表示。 *)
 
 Program Definition ArrowGlobalLax
-  : LaxMonoidalFct (@CartHasMonoidal C HT HP)
+  : @LaxMonoidalFct _ _ (@CartHasMonoidal C HT HP)
       (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)
-  := {|LaxMonoidalFctToFct := ArrowGlobalF
-     ; lax_unit := arrow_global_unit
-     ; lax_tensorN := ArrowGlobalTensorN|}.
+  := MakeLaxMonoidalFct ArrowGlobalF
+    {|lax_unit := arrow_global_unit
+    ; lax_tensorN := ArrowGlobalTensorN
+    |}.
 Next Obligation.
   intros [u f].
   change (arr[A; (π2 : Hom (1 × X) X)] ∘ ((id[A 1]) &&&[A] f) ≈ f).

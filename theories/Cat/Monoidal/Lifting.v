@@ -16,8 +16,8 @@ Local Open Scope ob_scope.
 
 Section Lifting.
 Context {C D : Cat}
-    {MC : HasMonoidal C} {MD : HasMonoidal D}
-    (L : LaxMonoidalFct MC MD).
+  `{MC : !HasMonoidal C} `{MD : !HasMonoidal D}
+  (L : LaxMonoidalFct C D).
 
 (** Combine two images, then apply the image of the operation. *)
 
@@ -34,7 +34,10 @@ Definition lax_lift2 {X Y Z : C}
 
 Global Instance lax_lift2_proper {X Y Z : C}
   : Proper (HomEq ==> HomEq) (@lax_lift2 X Y Z).
-Proof. intros f g H. unfold lax_lift2. rewrite H. reflexivity. Qed.
+Proof.
+  intros f g H. unfold lax_lift2.
+  rewrite H. reflexivity.
+Qed.
 
 (** Applying an ordinary map after a lifted operation is functorial. *)
 
@@ -52,10 +55,11 @@ Proof. unfold lax_lift2. rewrite <- comp_assoc, <- fmap_comp. reflexivity. Qed.
 Lemma lax_lift2_pre {X Y X' Y' Z : C}
     (f : Hom (X' ⊗ Y') Z)
     (g : Hom X X') (h : Hom Y Y')
-  : lax_lift2 f ∘ (tensor_map (IM := HasMonoidal_interchange MD) (fmap L g) (fmap L h)) ≈
-      lax_lift2 (f ∘ (tensor_map (IM := HasMonoidal_interchange MC) g h)).
+  : lax_lift2 f ∘ (fmap L g ⊗ fmap L h)
+    ≈ lax_lift2 (f ∘ (g ⊗ h)).
 Proof.
-  unfold lax_lift2. rewrite comp_assoc, (lax_tensor_natural L g h),
+  unfold lax_lift2.
+  rewrite comp_assoc, (lax_tensor_natural L g h),
     <- comp_assoc, <- fmap_comp. reflexivity.
 Qed.
 
@@ -66,16 +70,15 @@ Qed.
 Lemma lax_lift2_left {X Y Z U V : C}
     (f : Hom (X ⊗ Y) U)
     (g : Hom (U ⊗ Z) V)
-  : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id) ≈
-      lax_lift2 (g ∘ (tensor_map (IM := HasMonoidal_interchange MC) f id)) ∘
-        (tensor_map (IM := HasMonoidal_interchange MD) φ₂[L; X; Y] id).
+  : lax_lift2 g ∘ (lax_lift2 f ⊗ id)
+    ≈ lax_lift2 (g ∘ (f ⊗ id)) ∘ (φ₂[L; X; Y] ⊗ id).
 Proof.
-  assert (H : tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id ≈
-      (tensor_map (IM := HasMonoidal_interchange MD) (fmap L f) (fmap L (id[Z]))) ∘
-        (tensor_map (IM := HasMonoidal_interchange MD) φ₂[L; X; Y] id)).
+  assert (H : lax_lift2 f ⊗ id
+    ≈ (fmap L f ⊗ fmap L (id[Z])) ∘ (φ₂[L; X; Y] ⊗ id)).
   { rewrite fmap_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
-  rewrite H, <- comp_assoc, (lax_lift2_pre g f id). reflexivity.
+  rewrite H, <- comp_assoc, (lax_lift2_pre g f id).
+  reflexivity.
 Qed.
 
 (** The corresponding substitution in the right input keeps its order. *)
@@ -85,16 +88,15 @@ Qed.
 Lemma lax_lift2_right {X Y Z U V : C}
     (f : Hom (Y ⊗ Z) U)
     (g : Hom (X ⊗ U) V)
-  : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 f)) ≈
-      lax_lift2 (g ∘ (tensor_map (IM := HasMonoidal_interchange MC) id f)) ∘
-        (tensor_map (IM := HasMonoidal_interchange MD) id φ₂[L; Y; Z]).
+  : lax_lift2 g ∘ (id ⊗ lax_lift2 f)
+    ≈ lax_lift2 (g ∘ (id ⊗ f)) ∘ (id ⊗ φ₂[L; Y; Z]).
 Proof.
-  assert (H : tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 f) ≈
-      (tensor_map (IM := HasMonoidal_interchange MD) (fmap L (id[X])) (fmap L f)) ∘
-        (tensor_map (IM := HasMonoidal_interchange MD) id φ₂[L; Y; Z])).
+  assert (H : id ⊗ lax_lift2 f
+    ≈ (fmap L (id[X]) ⊗ fmap L f) ∘ (id ⊗ φ₂[L; Y; Z])).
   { rewrite fmap_id, <- tensor_map_comp, comp_id_l.
     reflexivity. }
-  rewrite H, <- comp_assoc, (lax_lift2_pre g id f). reflexivity.
+  rewrite H, <- comp_assoc, (lax_lift2_pre g id f).
+  reflexivity.
 Qed.
 
 (** Lifting preserves any binary associativity diagram, with the chosen
@@ -103,21 +105,17 @@ Qed.
 (** 提升保持任意二元结合图，两侧使用选定结合子；各运算可以具有不同类型。 *)
 
 Lemma lax_lift2_assoc {X Y Z U V T : C}
-    (f : Hom (X ⊗ Y) U)
-    (g : Hom (U ⊗ Z) T)
-    (h : Hom (Y ⊗ Z) V)
-    (k : Hom (X ⊗ V) T)
-    (H : g ∘ (tensor_map (IM := HasMonoidal_interchange MC) f id) ≈
-      k ∘ tensor_map (IM := HasMonoidal_interchange MC) id h ∘
-        α[X; Y; Z])
-  : lax_lift2 g ∘ (tensor_map (IM := HasMonoidal_interchange MD) (lax_lift2 f) id) ≈
-      lax_lift2 k ∘ (tensor_map (IM := HasMonoidal_interchange MD) id (lax_lift2 h)) ∘
-        α[L X; L Y; L Z].
+    (f : Hom (X ⊗ Y) U) (g : Hom (U ⊗ Z) T)
+    (h : Hom (Y ⊗ Z) V) (k : Hom (X ⊗ V) T)
+    (H : g ∘ (f ⊗ id) ≈ k ∘ (id ⊗ h) ∘ α[X; Y; Z])
+  : lax_lift2 g ∘ (lax_lift2 f ⊗ id)
+    ≈ lax_lift2 k ∘ (id ⊗ lax_lift2 h) ∘ α[L X; L Y; L Z].
 Proof.
   rewrite lax_lift2_left, lax_lift2_right.
   unfold lax_lift2. rewrite H, fmap_comp.
   rewrite !comp_assoc. apply comp_proper; [reflexivity |].
-  rewrite <- !comp_assoc. exact (lax_assoc L X Y Z).
+  rewrite <- !comp_assoc.
+  exact (lax_assoc (hasLaxMonoidalF L) X Y Z).
 Qed.
 
 End Lifting.

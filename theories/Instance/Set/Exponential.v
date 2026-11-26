@@ -43,8 +43,6 @@ Next Obligation.
   apply func_proper. split; [exact Hz | reflexivity].
 Defined.
 
-Local Existing Instance SetCat_HasProduct.
-
 (** Choose respectful-function setoids as exponential objects. *)
 
 (** 选择保相等函数广集作为指数对象。 *)

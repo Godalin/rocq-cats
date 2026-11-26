@@ -122,10 +122,6 @@ Fail Definition no_automatic_Kan
   : HasKanFillers (SimplicialParameterF (Δ[2]) 2)
   := _.
 
-Fail Definition no_automatic_products
-  : HasProduct SetCat
-  := _.
-
 Definition final_coordinate_data (r : Ordinal 2) (i : Ordinal 5)
     (z : Ordinal 8)
   : nat * nat

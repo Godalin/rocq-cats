@@ -319,12 +319,6 @@ End TaggedTerminal.
     [K] 不保持广集终对象，但Gluing变化保持全部有限积。 *)
 
 Section EmptyFiniteProducts.
-Local Instance terminal_set_terminal
-  : HasTerminal SetCat
-  := SetCat_HasTerminal.
-Local Instance terminal_set_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 
 (** Identity empty maps supply the compatible local boundary. *)
 
@@ -395,9 +389,6 @@ End EmptyFiniteProducts.
     但单位处的边界没有逆；来源粘合终对象的像不接受来自目标单位粘合的映射。 *)
 
 Section MissingTerminalBoundary.
-Local Instance counter_terminal_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 
 (** Empty-to-unit components define an actual compatible natural boundary. *)
 

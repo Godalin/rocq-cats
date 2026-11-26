@@ -47,7 +47,7 @@ Lemma kleisli_arrow_second {X Y : @Ob C} (f : Hom X (M Y)) (Z : @Ob C)
   : second[KleisliArrow M; f; Z] ≈
       bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]].
 Proof.
-  change (st[hasStrength M; Z; Y] ∘
+  change (st[Z; Y] ∘
     (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP)) (id[Z]) f) ≈
     bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]).
   rewrite cartesian_tensor_map, context_bind_pair, cross_η, comp_id_l.

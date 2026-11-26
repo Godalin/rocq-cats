@@ -317,7 +317,7 @@ Proof. exact (@bifct_sequence K AssemblyTensorF Q Q' P P' β α). Defined.
     不要求函子定律记录相等。 *)
 
 Program Definition ProfTensorN
-  : tensorF (HasMonoidal_interchange ProfMonoidal) ⇒ ProfCompF C C C HC
+  : tensorF (IM := HasMonoidal_interchange ProfMonoidal) ⇒ ProfCompF C C C HC
   :=
   {|nt p := _
   |}.
@@ -333,7 +333,7 @@ Defined.
 (** 比较及其逆在每个选定复合上计算为恒等变换，保留全部选定 coend。 *)
 
 Definition ProfTensorIso
-  : tensorF (HasMonoidal_interchange ProfMonoidal) ≅N ProfCompF C C C HC.
+  : tensorF (IM := HasMonoidal_interchange ProfMonoidal) ≅N ProfCompF C C C HC.
 Proof.
   exists ProfTensorN. intros [Q P].
   exists IdN. split; intros [X V] v; reflexivity.

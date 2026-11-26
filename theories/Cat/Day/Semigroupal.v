@@ -31,8 +31,8 @@ Definition DaySemigroupal {C : Cat} (T : Fct (C ×C C) C)
 Definition SemigroupalDay {C : Cat}
     {BC : HasBinoidal C} (IM : @IsMagmoidal C BC)
     (AC : @HasTensorAssoc C BC)
-    (HD : ∀ F G : Fct C SetCat, HasDay C (tensorF IM) F G)
+    (HD : ∀ F G : Fct C SetCat, HasDay C tensorF F G)
   : @HasTensorAssoc (FctCat C SetCat)
-      (BifctHasBinoidal (DayTensorF (tensorF IM) HD))
-  := DaySemigroupal (tensorF IM) (TensorAssocIsoN (IM := IM) (AC := AC))
+      (BifctHasBinoidal (DayTensorF tensorF HD))
+  := DaySemigroupal tensorF (TensorAssocIsoN (IM := IM) (AC := AC))
       (tensor_pentagon (IM := IM) (AC := AC)) HD.

@@ -39,14 +39,12 @@ Context {C : Cat} (T : Fct (C ×C C) C).
 
 (** 复用同一对象张量，每次固定一侧恒等态射。 *)
 
-Program Definition BifctHasBinoidal
+#[local] Program Instance BifctHasBinoidal
   : HasBinoidal C
   :=
   {|tensor X Y := T (X, Y)
-  ; tensor_l X Y Z f
-    := fmap T (X := (Z, X)) (Y := (Z, Y)) (id, f)
-  ; tensor_r X Y Z f
-    := fmap T (X := (X, Z)) (Y := (Y, Z)) (f, id)
+  ; tensor_l X Y Z f := fmap T ((id[Z], f) : _)
+  ; tensor_r X Y Z f := fmap T ((f, id[Z]) : _)
   ; isBinoidalL Z :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -62,9 +60,7 @@ Next Obligation.
   intros f g H. apply fmap_proper.
   split; [reflexivity | exact H].
 Qed.
-Next Obligation.
-  exact (fmap_id (IsFct := isFct T) (X := (Z, X))).
-Qed.
+Next Obligation. exact (fmap_id (obj := T)). Qed.
 Next Obligation.
   rewrite <- fmap_comp. apply fmap_proper.
   split; [symmetry; apply comp_id_l | reflexivity].
@@ -72,9 +68,7 @@ Qed.
 Next Obligation.
   intros f g H. apply fmap_proper. split; [exact H | reflexivity].
 Qed.
-Next Obligation.
-  exact (fmap_id (IsFct := isFct T) (X := (X, Z))).
-Qed.
+Next Obligation. exact (fmap_id (obj := T)). Qed.
 Next Obligation.
   rewrite <- fmap_comp. apply fmap_proper.
   split; [reflexivity | symmetry; apply comp_id_l].
@@ -93,20 +87,16 @@ Definition BifctBinoidal
 (** 仅由双函子性，两种执行次序相等。 *)
 
 Definition bifct_arrow_central {X Y : C} (f : Hom X Y)
-  : @is_central C BifctHasBinoidal X Y f.
+  : is_central f.
 Proof.
   intros Z W g. split.
-  - change (fmap T (X := (X, W)) (Y := (Y, W)) (f, id) ∘
-      fmap T (X := (X, Z)) (Y := (X, W)) (id, g) ≈
-      fmap T (X := (Y, Z)) (Y := (Y, W)) (id, g) ∘
-      fmap T (X := (X, Z)) (Y := (Y, Z)) (f, id)).
+  - change (fmap T (f, id[W]) ∘ fmap T (id[X], g)
+      ≈ fmap T (id[Y], g) ∘ fmap T (f, id[Z])).
     rewrite <- !fmap_comp.
     apply fmap_proper. split; rewrite comp_id_l, comp_id_r;
       reflexivity.
-  - change (fmap T (X := (W, X)) (Y := (W, Y)) (id, f) ∘
-      fmap T (X := (Z, X)) (Y := (W, X)) (g, id) ≈
-      fmap T (X := (Z, Y)) (Y := (W, Y)) (g, id) ∘
-      fmap T (X := (Z, X)) (Y := (Z, Y)) (id, f)).
+  - change (fmap T (id[W], f) ∘ fmap T (g, id[X])
+      ≈ fmap T (g, id[Y]) ∘ fmap T (id[Z], f)).
     rewrite <- !fmap_comp.
     apply fmap_proper. split; rewrite comp_id_l, comp_id_r;
       reflexivity.
@@ -119,12 +109,10 @@ Qed.
 
 Lemma bifct_sequence {X X' Y Y' : C}
     (f : Hom X X') (g : Hom Y Y')
-  : @tensor_sequence C BifctHasBinoidal X X' Y Y' f g ≈
-      fmap T (X := (X, Y)) (Y := (X', Y')) (f, g).
+  : tensor_sequence f g ≈ fmap T (f, g).
 Proof.
-  change (fmap T (X := (X', Y)) (Y := (X', Y')) (id, g) ∘
-    fmap T (X := (X, Y)) (Y := (X', Y)) (f, id) ≈
-    fmap T (X := (X, Y)) (Y := (X', Y')) (f, g)).
+  change (fmap T (id[X'], g) ∘ fmap T (f, id[Y])
+    ≈ fmap T (f, g)).
   rewrite <- fmap_comp. apply fmap_proper.
   split; [apply comp_id_l | apply comp_id_r].
 Qed.
@@ -143,8 +131,8 @@ Qed.
 
 (** 交换律见证属于从 [T] 提取的张量作用。 *)
 
-Definition BifctTensorInterchange
-  : @IsMagmoidal C BifctHasBinoidal
+Global Instance BifctTensorInterchange
+  : IsMagmoidal C
   :=
   {|tensor_interchange X X' Y Y' f g :=
       fst (bifct_arrow_central f Y Y' g)
@@ -164,7 +152,7 @@ Definition BifctMagmoidal
 (** 用恒等分量比较重建张量函子与给定函子，不要求其记录相等。 *)
 
 Program Definition BifctTensorN
-  : tensorF BifctTensorInterchange ⇒ T
+  : tensorF ⇒ T
   :=
   {|nt p := _
   |}.
@@ -179,7 +167,7 @@ Qed.
 (** 对每个对象对，两个比较方向都计算为恒等。 *)
 
 Definition bifct_tensor_iso
-  : tensorF BifctTensorInterchange ≅N T.
+  : tensorF ≅N T.
 Proof.
   exists BifctTensorN. intros [X Y].
   exists id. split; apply comp_id_l.
@@ -204,36 +192,35 @@ Context (A : Tensor3LF T ≅N Tensor3RF T)
 (** 最后变量族保存原映射及逆，其他方向约束同一组分量。 *)
 
 Program Definition BifctHasAssoc
-  : @HasTensorAssoc C BifctHasBinoidal
+  : HasTensorAssoc C
   :=
   {|TensorAssocRIso X Y :=
       ({|nt Z := A.1 ((X, Y), Z)|}; λ Z, A.2 ((X, Y), Z))
   ; isTensorAssoc :=
-      {|assoc_natural_l Y Z := {|nat_iso_naturality X X' f := _|}
-      ; assoc_natural_m X Z := {|nat_iso_naturality Y Y' g := _|}
+      {|assoc_natural_l Y Z :=
+        {|nat_iso_naturality X X' f := _|}
+      ; assoc_natural_m X Z :=
+        {|nat_iso_naturality Y Y' g := _|}
       ; assoc_central X Y Z := bifct_arrow_central _
       ; assoc_pentagon := Hp
       |}
   |}.
 Next Obligation.
-  pose proof (nat_naturality A.1
-    (X := ((X, Y), X0)) (Y := ((X, Y), Y0)) ((id, id), f)) as H.
+  pose proof (nat_naturality A.1 (@id (C ×C C) (X, Y), f)) as H.
   cbn in H. etransitivity; [| exact H].
   apply comp_proper; [reflexivity |].
   apply fmap_proper. split;
-    [symmetry; exact (@fmap_id _ _ _ _ (isFct T) (X, Y)) | reflexivity].
+    [symmetry; exact (fmap_id (obj := T)) | reflexivity].
 Qed.
 Next Obligation.
-  pose proof (nat_naturality A.1
-    (X := ((X, Y), Z)) (Y := ((X', Y), Z)) ((f, id), id)) as H.
+  pose proof (nat_naturality A.1 (prod_cat_hom (f, id[Y]), id[Z])) as H.
   cbn in H. etransitivity; [exact H |].
   apply comp_proper; [| reflexivity].
   apply fmap_proper. split;
-    [reflexivity | exact (@fmap_id _ _ _ _ (isFct T) (Y, Z))].
+    [reflexivity | exact (fmap_id (obj := T))].
 Qed.
 Next Obligation.
-  exact (nat_naturality A.1
-    (X := ((X, Y), Z)) (Y := ((X, Y'), Z)) ((id, g), id)).
+  exact (nat_naturality A.1 (prod_cat_hom (id[X], g), id[Z])).
 Qed.
 
 (** Add the chosen associator to the magmoidal tensor. *)
@@ -268,76 +255,60 @@ End Associativity.
     的逆见证。 *)
 
 Section Unit.
-Context (I : C) (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
+Context (I : C)
+  (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF).
 
 (** No associativity or coherence with an associator is needed here. *)
 
 (** 此处无需结合性或与结合子的相干性。 *)
 
 Program Definition BifctHasUnitors
-  : @HasTensorUnitors C BifctHasBinoidal
+  : HasTensorUnitors C
   :=
   {|tensor_unit := I
-  ; TensorUnitorLIso :=
-      ({|nt X := L.1 X|}; L.2)
-  ; TensorUnitorRIso :=
-      ({|nt X := R.1 X|}; R.2)
+  ; TensorUnitorLIso
+    := ({|nt X := L.1 X|}; L.2)
+  ; TensorUnitorRIso
+    := ({|nt X := R.1 X|}; R.2)
   ; isTensorUnitors :=
-      {|unitor_l_central X := bifct_arrow_central _
-      ; unitor_r_central X := bifct_arrow_central _
-      |}
+    {|unitor_l_central X := bifct_arrow_central _
+    ; unitor_r_central X := bifct_arrow_central _
+    |}
   |}.
 Next Obligation. exact (nat_naturality L.1 f). Qed.
 Next Obligation. exact (nat_naturality R.1 f). Qed.
 
 End Unit.
 
-(** ** Compatible Choices
+(** ** Assembly from a Tensor Bifunctor
 
-    The independently built choices share exactly [BifctHasBinoidal]. Only their
-    triangle remains when constructing the premonoidal extension. *)
+    Existing models may supply one bifunctor and natural structural
+    isomorphisms. This constructor obtains interchange and associativity
+    in the semigroupal parent, then adds the supplied unitors and triangle. *)
 
-(** ** 相容选择
+(** ** 从张量双函子装配
 
-    独立构造的选择共享恰好同一 [BifctHasBinoidal]；构造预幺半扩展时只剩三角形条件。 *)
+    已有模型可以提供一个双函子及自然结构同构。本构造在半群张量父结构中
+    提取交换律和结合子，再加入给定单位子及三角形。 *)
 
 Section Compatibility.
 Context (I : C) (A : Tensor3LF T ≅N Tensor3RF T)
     (L : AtLF T I ≅N IdF) (R : AtRF T I ≅N IdF)
     (Hp : is_tensor_pentagon T A)
     (Ht : ∀ X Y : C,
-      fmap (AtLF T X) (L.1 Y) ∘ A.1 ((X, I), Y) ≈ fmap (AtRF T Y) (R.1 X)).
-
-(** Check the triangle on the associator and unitors extracted from [T]. *)
-
-(** 检查从 [T] 提取的结合子和单位子的三角形。 *)
-
-Program Definition BifctIsPremonoidal
-  : @IsPremonoidal C BifctHasBinoidal (BifctHasAssoc A Hp) (BifctHasUnitors I L R)
-  :=
-  {|tensor_triangle := _|}.
-Next Obligation. exact (Ht X Y). Qed.
-
-(** * Assembly from a Tensor Bifunctor
-
-    Existing models may supply one bifunctor and natural structural
-    isomorphisms. This constructor obtains interchange and associativity
-    in the semigroupal parent, then adds the supplied unitors and triangle. *)
-
-(** * 从张量双函子装配
-
-    已有模型可以提供一个双函子及自然结构同构。本构造在半群张量父结构中
-    提取交换律和结合子，再加入给定单位子及三角形。 *)
+      fmap (AtLF T X) (L.1 Y) ∘ A.1 ((X, I), Y)
+        ≈ fmap (AtRF T Y) (R.1 X)).
 
 (** Retain every supplied object and structural inverse. Only derived
     action laws, centrality and separate naturality are reconstructed. *)
 
 (** 保留给定的全部对象与结构逆；仅重建导出的作用定律、中心性及分别自然性。 *)
 
-Definition BifctMonoidal
+Program Definition BifctMonoidal
   : MonoidalCat
   := MonoidalCatOfSemigroupalCat (BifctSemigroupal A Hp)
-       (BifctHasUnitors I L R) BifctIsPremonoidal.
+    (BifctHasUnitors I L R) {|tensor_triangle := _|}.
+Next Obligation. exact (Ht X Y). Qed.
 
 (** Read the same structure on the original fixed category. *)
 

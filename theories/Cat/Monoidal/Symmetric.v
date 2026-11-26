@@ -90,7 +90,8 @@ Minks.Struct SymMonoidalCat
   extends MonoidalCat, SymPremonoidalCat
   exports HasSymMonoidal [carrier].
 
-Notation "'σₚ[' X ';' Y ']'" := (tensor_sym X Y)
+Notation "'σₚ[' X ';' Y ']'"
+  := (tensor_sym X Y)
   : monoidal_scope.
 
 (** ** Derived Symmetry Laws

@@ -33,7 +33,6 @@ From Cats Require Import
     这个方向比较相等项的含义，尚未证明每个项与计算所得正规形 βη 相等，
     也没有证明每条有向归约序列终止。 *)
 
-Local Existing Instance SetCat_HasProduct.
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.

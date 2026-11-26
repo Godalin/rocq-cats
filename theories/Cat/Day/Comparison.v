@@ -10,6 +10,8 @@ From Cats Require Import
 From Cats Require Export
   Cat.Day.Morphism.
 
+Local Open Scope monoidal_scope.
+
 (** * The Day Monoid and Lax Functor Equivalence *)
 
 (** * Day 幺半群与 Lax 函子的等价 *)
@@ -29,7 +31,7 @@ Section Comparison.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
+      HasDay C (tensorF (C := C)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -42,7 +44,7 @@ Let SM
 (** 将 lax 函子及其幺半变换延拓为 Day 幺半群。 *)
 
 Program Definition LaxDayMonoidF
-  : Fct (LaxMonoidalFctCat MC SM) (MonoidCat DM)
+  : Fct (LaxMonoidalFctCat C SetCat) (@MonoidCat _ DM)
   :=
   {|fobj := LaxDayMonoid MC HD
   ; fmap L K α := (α.1; fst (lax_day_monoid_hom MC HD L K α.1) α.2)
@@ -61,7 +63,7 @@ Next Obligation. intros Q x. reflexivity. Qed.
 (** 将 Day 幺半群及同态限制为原生 lax 呈现。 *)
 
 Program Definition DayMonoidLaxF
-  : Fct (MonoidCat DM) (LaxMonoidalFctCat MC SM)
+  : Fct (@MonoidCat _ DM) (LaxMonoidalFctCat C SetCat)
   :=
   {|fobj := DayMonoidLax MC HD
   ; fmap M N α := (α.1; fst (day_monoid_hom_laws MC HD M N α.1) α.2)
@@ -90,7 +92,7 @@ Next Obligation. intros Q x. reflexivity. Qed.
 
 (** Lax 往返比较保持单位与张量子。 *)
 
-Lemma day_lax_roundtrip_hom (L : LaxMonoidalFct MC SM)
+Lemma day_lax_roundtrip_hom (L : @LaxMonoidalFct _ _ MC SM)
   : is_lax_monoidal_hom (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) L IdN.
 Proof.
   split.
@@ -102,7 +104,7 @@ Defined.
 
 (** 对其逆复用一般的指定逆保持性定理。 *)
 
-Lemma day_lax_roundtrip_inv_hom (L : LaxMonoidalFct MC SM)
+Lemma day_lax_roundtrip_inv_hom (L : @LaxMonoidalFct _ _ MC SM)
   : is_lax_monoidal_hom L (DayMonoidLax MC HD (LaxDayMonoid MC HD L)) IdN.
 Proof.
   exact (lax_monoidal_hom_inverse
@@ -115,15 +117,14 @@ Defined.
 
 (** Day 往返按指定相等保持两项运算。 *)
 
-Lemma day_monoid_roundtrip_hom (M : MonoidObj DM)
+Lemma day_monoid_roundtrip_hom (M : @MonoidObj _ DM)
   : is_monoid_hom (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) M IdN.
 Proof.
   split.
   - intros X x. exact (day_monoid_unit_roundtrip MC HD M X x).
-  - change (monoid_object_mul
-      (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM) (MonoidCarrier M) (MonoidCarrier M)).
+  - change (m[LaxDayMonoid MC HD (DayMonoidLax MC HD M)] ≈N
+      (m[M] ∘Nv tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
+    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM) M M).
     intros X x. exact (day_monoid_mul_roundtrip MC HD M X x).
 Defined.
 
@@ -131,17 +132,17 @@ Defined.
 
 (** 反向恒等分量使用相同的往返方程。 *)
 
-Lemma day_monoid_roundtrip_inv_hom (M : MonoidObj DM)
+Lemma day_monoid_roundtrip_inv_hom (M : @MonoidObj _ DM)
   : is_monoid_hom M (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) IdN.
 Proof.
   split.
   - intros X x. symmetry. exact (day_monoid_unit_roundtrip MC HD M X x).
-  - change (monoid_object_mul M ≈N
-      (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
+  - change (m[M] ≈N
+      (m[LaxDayMonoid MC HD (DayMonoidLax MC HD M)] ∘Nv
         tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
     rewrite (tensor_map_id (IM := HasMonoidal_interchange DM)
-      (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
-      (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
+      (LaxDayMonoid MC HD (DayMonoidLax MC HD M))
+      (LaxDayMonoid MC HD (DayMonoidLax MC HD M))).
     intros X x. symmetry. exact (day_monoid_mul_roundtrip MC HD M X x).
 Defined.
 
@@ -161,7 +162,7 @@ Defined.
 (** Lax 往返与恒等之间具有自然比较。 *)
 
 Program Definition DayLaxRoundtripN
-  : (DayMonoidLaxF ∘F LaxDayMonoidF) ⇒ (@IdF (LaxMonoidalFctCat MC SM))
+  : (DayMonoidLaxF ∘F LaxDayMonoidF) ⇒ IdF
   :=
   {|nt L := (IdN; day_lax_roundtrip_hom L)
   |}.
@@ -172,7 +173,7 @@ Next Obligation. intros Q x. reflexivity. Qed.
 (** 其反向比较保持相同恒等分量。 *)
 
 Program Definition DayLaxRoundtripInvN
-  : (@IdF (LaxMonoidalFctCat MC SM)) ⇒ (DayMonoidLaxF ∘F LaxDayMonoidF)
+  : IdF ⇒ (DayMonoidLaxF ∘F LaxDayMonoidF)
   :=
   {|nt L := (IdN; day_lax_roundtrip_inv_hom L)
   |}.
@@ -183,7 +184,7 @@ Next Obligation. intros Q x. reflexivity. Qed.
 (** 由底层恒等律，两个选定比较互逆。 *)
 
 Definition day_lax_roundtrip_iso
-  : (DayMonoidLaxF ∘F LaxDayMonoidF) ≅N (@IdF (LaxMonoidalFctCat MC SM)).
+  : (DayMonoidLaxF ∘F LaxDayMonoidF) ≅N IdF.
 Proof.
   exists DayLaxRoundtripN. intros L.
   exists (DayLaxRoundtripInvN L). split; intros X x; reflexivity.
@@ -194,19 +195,10 @@ Defined.
 (** Day 幺半群往返与恒等之间具有自然比较。 *)
 
 Program Definition DayMonoidRoundtripN
-  : (LaxDayMonoidF ∘F DayMonoidLaxF) ⇒ (@IdF (MonoidCat DM))
+  : (LaxDayMonoidF ∘F DayMonoidLaxF) ⇒ IdF
   :=
-  {|nt M := _
+  {|nt M := (IdN; day_monoid_roundtrip_hom M)
   |}.
-Next Obligation.
-  refine (IdN; _). split.
-  - intros Q x. exact (day_monoid_unit_roundtrip MC HD M Q x).
-  - change (monoid_object_mul
-      (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ≈N
-      (monoid_object_mul M ∘Nv tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM) (MonoidCarrier M) (MonoidCarrier M)).
-    intros Q x. exact (day_monoid_mul_roundtrip MC HD M Q x).
-Defined.
 Next Obligation. intros Q x. reflexivity. Qed.
 
 (** The reverse comparison preserves the same chosen Day operations. *)
@@ -214,21 +206,10 @@ Next Obligation. intros Q x. reflexivity. Qed.
 (** 反向比较保持相同选定 Day 运算。 *)
 
 Program Definition DayMonoidRoundtripInvN
-  : (@IdF (MonoidCat DM)) ⇒ (LaxDayMonoidF ∘F DayMonoidLaxF)
+  : IdF ⇒ (LaxDayMonoidF ∘F DayMonoidLaxF)
   :=
-  {|nt M := _
+  {|nt M := (IdN; day_monoid_roundtrip_inv_hom M)
   |}.
-Next Obligation.
-  refine (IdN; _). split.
-  - intros Q x. symmetry. exact (day_monoid_unit_roundtrip MC HD M Q x).
-  - change (monoid_object_mul M ≈N
-      (monoid_object_mul (LaxDayMonoid MC HD (DayMonoidLax MC HD M)) ∘Nv
-        tensor_map (IM := HasMonoidal_interchange DM) IdN IdN)).
-    rewrite (tensor_map_id (IM := HasMonoidal_interchange DM)
-      (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))
-      (MonoidCarrier (LaxDayMonoid MC HD (DayMonoidLax MC HD M)))).
-    intros Q x. symmetry. exact (day_monoid_mul_roundtrip MC HD M Q x).
-Defined.
 Next Obligation. intros Q x. reflexivity. Qed.
 
 (** The Day monoid comparison is a natural isomorphism, not record equality. *)
@@ -236,7 +217,7 @@ Next Obligation. intros Q x. reflexivity. Qed.
 (** Day 幺半群比较是自然同构，不是记录相等。 *)
 
 Definition day_monoid_roundtrip_iso
-  : (LaxDayMonoidF ∘F DayMonoidLaxF) ≅N (@IdF (MonoidCat DM)).
+  : (LaxDayMonoidF ∘F DayMonoidLaxF) ≅N IdF.
 Proof.
   exists DayMonoidRoundtripN. intros M.
   exists (DayMonoidRoundtripInvN M). split; intros X x; reflexivity.
@@ -249,7 +230,7 @@ Defined.
     范畴等价。 *)
 
 Definition day_lax_monoid_equiv
-  : LaxMonoidalFctCat MC SM ≃C MonoidCat DM
+  : LaxMonoidalFctCat C SetCat ≃C (@MonoidCat _ DM)
   := (LaxDayMonoidF; (DayMonoidLaxF;
       (day_lax_roundtrip_iso,day_monoid_roundtrip_iso))).
 
@@ -257,7 +238,7 @@ Definition day_lax_monoid_equiv
 
 (** 选定单位与余单位满足正向比较三角形。 *)
 
-Lemma day_comparison_triangle_lax (L : LaxMonoidalFct MC SM)
+Lemma day_comparison_triangle_lax (L : @LaxMonoidalFct _ _ MC SM)
   : DayMonoidRoundtripN (LaxDayMonoidF L) ∘
       fmap LaxDayMonoidF (DayLaxRoundtripInvN L) ≈ id.
 Proof. intros X x. change (x ≈S x). reflexivity. Defined.
@@ -266,7 +247,7 @@ Proof. intros X x. change (x ≈S x). reflexivity. Defined.
 
 (** 反向三角形同样只比较底层变换。 *)
 
-Lemma day_comparison_triangle_monoid (M : MonoidObj DM)
+Lemma day_comparison_triangle_monoid (M : @MonoidObj _ DM)
   : fmap DayMonoidLaxF (DayMonoidRoundtripN M) ∘
       DayLaxRoundtripInvN (DayMonoidLaxF M) ≈ id.
 Proof. intros X x. change (x ≈S x). reflexivity. Defined.

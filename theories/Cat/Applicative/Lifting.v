@@ -18,24 +18,25 @@ Local Open Scope applicative_scope.
     不要求指数或强度。 *)
 
 Section Lifting.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Applicative C HT HP).
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  (A : Applicative C).
 
 (** Combine two contextual computations with an ordinary binary operation. *)
 
 (** 用通常二元运算组合两个上下文计算。 *)
 
-Definition applicative_combine {W X Y Z : @Ob C}
+Definition applicative_combine {W X Y Z : C}
     (h : Hom (X × Y) Z) (u : Hom W (A X)) (v : Hom W (A Y))
   : Hom W (A Z)
-  := @Cats.Cat.Core.comp C W (@Prod C HP (A X) (A Y)) (A Z)
-    lift₂[A; h] ⟨u, v⟩.
+  := @Cats.Cat.Core.comp C W (A X × A Y)%ob (A Z) lift₂[A; h] ⟨u, v⟩.
 
 End Lifting.
 
-Notation "'lift₂[' A ';' h ';' u ';' v ']'" :=
-  (applicative_combine A h u v) : applicative_scope.
-Local Open Scope applicative_scope.
+Notation "'lift₂[' A ';' h ';' u ';' v ']'"
+  := (applicative_combine A h u v)
+  (at level 0)
+  : applicative_scope.
 
 (** ** Contextual Lifting Laws
 
@@ -47,8 +48,9 @@ Local Open Scope applicative_scope.
     固定 Applicative 及其选定有限积，从 lax 提升导出共同上下文替换、纯输入及结合律。 *)
 
 Section Laws.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Applicative C HT HP).
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  (A : Applicative C).
 
 Local Opaque lax_lift2.
 
@@ -56,7 +58,7 @@ Local Opaque lax_lift2.
 
 (** 运算和两个计算均保持指定相等。 *)
 
-Global Instance applicative_combine_proper {W X Y Z : @Ob C}
+Global Instance applicative_combine_proper {W X Y Z : C}
   : Proper (HomEq ==> HomEq ==> HomEq ==> HomEq)
       (@applicative_combine C HT HP A W X Y Z).
 Proof.
@@ -68,7 +70,7 @@ Qed.
 
 (** 上下文替换作用于两个输入。 *)
 
-Lemma applicative_combine_sub {W V X Y Z : @Ob C}
+Lemma applicative_combine_sub {W V X Y Z : C}
     (h : Hom (X × Y) Z) (u : Hom W (A X)) (v : Hom W (A Y))
     (σ : Hom V W)
   : lift₂[A; h; u; v] ∘ σ ≈ lift₂[A; h; u ∘ σ; v ∘ σ].
@@ -80,7 +82,7 @@ Qed.
 
 (** 结果上的通常映射可吸收到二元运算中。 *)
 
-Lemma applicative_combine_post {W X Y Z T : @Ob C}
+Lemma applicative_combine_post {W X Y Z T : C}
     (h : Hom (X × Y) Z) (k : Hom Z T)
     (u : Hom W (A X)) (v : Hom W (A Y))
   : fmap A k ∘ lift₂[A; h; u; v] ≈ lift₂[A; k ∘ h; u; v].
@@ -93,11 +95,10 @@ Qed.
 
 (** 两个输入上的通常映射可被吸收，且不改变输入次序。 *)
 
-Lemma applicative_combine_pre {W X Y X' Y' Z : @Ob C}
+Lemma applicative_combine_pre {W X Y X' Y' Z : C}
     (h : Hom (X' × Y') Z) (f : Hom X X') (g : Hom Y Y')
     (u : Hom W (A X)) (v : Hom W (A Y))
-  : lift₂[A; h; fmap A f ∘ u; fmap A g ∘ v] ≈
-      lift₂[A; h ∘ (f × g); u; v].
+  : lift₂[A; h; fmap A f ∘ u; fmap A g ∘ v] ≈ lift₂[A; h ∘ (f × g); u; v].
 Proof.
   unfold applicative_combine.
   rewrite <- product_comp_l, <- comp_assoc.
@@ -108,7 +109,7 @@ Qed.
 
 (** 组合纯输入，得到原运算结果的纯值。 *)
 
-Lemma applicative_combine_pure {W X Y Z : @Ob C}
+Lemma applicative_combine_pure {W X Y Z : C}
     (h : Hom (X × Y) Z) (u : Hom W X) (v : Hom W Y)
   : lift₂[A; h; pure[A; u]; pure[A; v]] ≈ pure[A; h ∘ ⟨u, v⟩].
 Proof.
@@ -121,7 +122,7 @@ Qed.
 
 (** 全局纯第一输入归约为通常部分求值。 *)
 
-Lemma applicative_combine_pure_l {X Y Z : @Ob C}
+Lemma applicative_combine_pure_l {X Y Z : C}
     (h : Hom (X × Y) Z) (x : Hom 1 X) (g : Hom Y Z)
     (H : h ∘ (x × id) ≈ g ∘ π2) (v : Hom 1 (A Y))
   : lift₂[A; h; pure[A; x]; v] ≈ fmap A g ∘ v.
@@ -139,7 +140,7 @@ Qed.
 
 (** 全局纯第二输入同样归约为后求值。 *)
 
-Lemma applicative_combine_pure_r {X Y Z : @Ob C}
+Lemma applicative_combine_pure_r {X Y Z : C}
     (h : Hom (X × Y) Z) (y : Hom 1 Y) (g : Hom X Z)
     (H : h ∘ (id × y) ≈ g ∘ π1) (u : Hom 1 (A X))
   : lift₂[A; h; u; pure[A; y]] ≈ fmap A g ∘ u.
@@ -157,14 +158,12 @@ Qed.
 
 (** 每个通常结合图均提升为上下文计算的结合图。 *)
 
-Lemma applicative_combine_assoc {W X Y Z U V T : @Ob C}
+Lemma applicative_combine_assoc {W X Y Z U V T : C}
     (f : Hom (X × Y) U) (g : Hom (U × Z) T)
     (h : Hom (Y × Z) V) (k : Hom (X × V) T)
-    (H : g ∘ (f × id) ≈ k ∘ (id × h) ∘
-      (@product_assoc C HP X Y Z).1)
+    (H : g ∘ (f × id) ≈ k ∘ (id × h) ∘ product_assoc.1)
     (u : Hom W (A X)) (v : Hom W (A Y)) (w : Hom W (A Z))
-  : lift₂[A; g; lift₂[A; f; u; v]; w] ≈
-      lift₂[A; k; u; lift₂[A; h; v; w]].
+  : lift₂[A; g; lift₂[A; f; u; v]; w] ≈ lift₂[A; k; u; lift₂[A; h; v; w]].
 Proof.
   unfold applicative_combine.
   transitivity ((lift₂[A; g] ∘ (lift₂[A; f] × id)) ∘ ⟨⟨u, v⟩, w⟩).

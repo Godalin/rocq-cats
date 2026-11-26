@@ -30,7 +30,7 @@ Program Definition ℎ1F {C : Cat} (X : C)
   : Fct C SetCat
   :=
   {|fobj := ℎ1 X
-  ; fmap Y Y' (f : Hom Y Y') := f _*
+  ; fmap Y Y' f := f _*
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -53,7 +53,7 @@ Program Definition ℎ2F {C : Cat} (X : C)
   : Fct (op C) SetCat
   :=
   {|fobj := ℎ2 X
-  ; fmap Y Y' (f : (@Hom C) Y' Y) := f ^*
+  ; fmap Y Y' (f : Hom[C] Y' Y) := f ^*
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
@@ -88,7 +88,7 @@ Next Obligation. intros Y. exists id_resp. split; intros h; reflexivity. Defined
 Program Definition nt_comp_pre {C : Cat} {X Y : @Ob C} (f : Hom X Y)
   : Hom(Y,-) ⇒ Hom(X,-)
   :=
-  {|nt Z := comp_r_resp (f := f) (Z := Z)
+  {|nt Z := f ^*
   |}.
 Next Obligation. intros h. simpl. apply comp_assoc. Qed.
 
@@ -129,7 +129,7 @@ Proof. intros W h. simpl. symmetry. apply comp_assoc. Qed.
 Program Definition nt_comp_post {C : Cat} {X Y : @Ob C} (f : Hom X Y)
   : Hom(-,X) ⇒ Hom(-,Y)
   :=
-  {|nt Z := comp_l_resp (C := C) (f := f) (X := Z)
+  {|nt Z := f _*
   |}.
 Next Obligation. intros h. simpl. symmetry. apply comp_assoc. Qed.
 

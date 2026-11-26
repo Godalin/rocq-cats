@@ -101,17 +101,16 @@ End SmallEquality.
 
 (** ** Explicit Setoid Choices and Native Computation
 
-    Enable products and exponentials locally. Identity comparisons compute
+    Use standard products and enable exponentials locally. Identity comparisons compute
     without evaluating universal-property proofs. The old cartesian API
     continues to use the very same product mediator. *)
 
 (** ** 显式广集选择与原生计算
 
-    局部启用积和指数。恒等比较的计算无需对泛性质证明求值；原有笛卡尔接口
+    使用标准积，局部启用指数。恒等比较的计算无需对泛性质证明求值；原有笛卡尔接口
     继续使用完全相同的积中介。 *)
 
 Section SetoidComparisons.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 
 (** The weak inverse product comparison computes both input components. *)

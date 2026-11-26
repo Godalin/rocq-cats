@@ -11,8 +11,6 @@ From Cats.Set Require Import
 Import Cats.Cat.Core Cats.Cat.Product.Core.
 
 Local Open Scope computation_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Naming Input-Indexed Computations
 
@@ -79,7 +77,7 @@ Qed.
 Lemma arrow_dynamic_name_post {X Y Z : SetC@{u p}}
     (f : Hom (A X) (A Y)) (k : Hom (A Y) (A Z))
   : arrow_dynamic_name (k ∘ f) ≈f
-      (comp_l_resp (f := k) ∘r arrow_dynamic_name f).
+      (k _* ∘r arrow_dynamic_name f).
 Proof. intros x. apply comp_assoc. Qed.
 
 (** Package naming as a native Hom-setoid map. Its two setoids may have
@@ -129,9 +127,9 @@ Proof.
       (f ∘ arr[A; const_resp UnitS x])).
   pose proof (iso_square_inv
     (arr[A; (π2 : UnitS ×S X →r X)];
-      fct_is_iso A _ (CartLeftUnitorIso.2 X))
+      fct_is_iso A _ (CartUnitorLIso.2 X))
     (arr[A; (π2 : UnitS ×S Y →r Y)];
-      fct_is_iso A _ (CartLeftUnitorIso.2 Y))
+      fct_is_iso A _ (CartUnitorLIso.2 Y))
     (second[A; f; UnitS]) f (arrow_context_unit A f)) as Hu.
   change (arr[A; (⟨!,id⟩ : Y →r UnitS ×S Y)] ∘ f ≈
     second[A; f; UnitS] ∘ arr[A; (⟨!,id⟩ : X →r UnitS ×S X)]) in Hu.
@@ -173,10 +171,10 @@ Context {K : Cat@{o u p _ _}} (AA : ArrowApply K).
 Lemma arrow_apply_pair_post {X Y Z : SetC@{u p}}
     (k : Hom (AA (X ×S Y)) (AA Z))
   : apply[AA; Y; Z] ∘ arr[AA;
-      (comp_l_resp (f := k) ∘r arrow_apply_pair AA X Y) × id_resp] ≈ k.
+      (k _* ∘r arrow_apply_pair AA X Y) × id_resp] ≈ k.
 Proof.
   transitivity ((apply[AA; Y; Z] ∘
-    arr[AA; comp_l_resp (f := k) × id_resp]) ∘
+    arr[AA; k _* × id_resp]) ∘
       arr[AA; arrow_apply_pair AA X Y × id_resp]).
   - rewrite comp_assoc, <- fmap_comp. apply comp_proper;
       [reflexivity |]. apply fmap_proper. intros [x y].
@@ -219,7 +217,7 @@ Proof.
   pose (q := (π1 : (X ×S UnitS) →r X)).
   pose (k := f ∘ arr[AA; q]).
   transitivity ((apply[AA; UnitS; Y] ∘ arr[AA;
-    (comp_l_resp (f := k) ∘r arrow_apply_pair AA X UnitS) × id_resp]) ∘
+    (k _* ∘r arrow_apply_pair AA X UnitS) × id_resp]) ∘
       arr[AA; j]).
   - unfold arrow_dynamic_eval.
     rewrite comp_assoc, <- fmap_comp. apply comp_proper;

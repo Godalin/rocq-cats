@@ -53,8 +53,6 @@ From Cats Require Import
     此解释只提供值。反射、实化与求值是额外构造；仅由此定义不能推出正规化
     定理或任何有向归约结论。 *)
 
-Local Existing Instance SetCat_HasProduct.
-
 (** Type-recursive semantic presheaves. Arrow values reuse the generic
     function presheaf, including all its coherence witnesses. *)
 

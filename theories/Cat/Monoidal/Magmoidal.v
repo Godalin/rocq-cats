@@ -132,5 +132,3 @@ Next Obligation.
 Qed.
 Next Obligation. apply tensor_map_id. Qed.
 Next Obligation. apply tensor_map_comp. Qed.
-
-Arguments tensorF {_ _} _.

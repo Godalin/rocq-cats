@@ -23,15 +23,16 @@ Local Open Scope applicative_scope.
 (** 首先固定二元积、指数、自函子及应用运算，恢复二元提升；此处不假设纯值映射或终对象。 *)
 
 Section RawApplication.
-Context {C : Cat} `{HP : !HasProduct C} `{HE : !HasExponential HP}
-    (F : Fct C C)
-    (a : ∀ {X Y : @Ob C}, Hom (F (Y ^ X) × F X) (F Y)).
+Context {C : Cat}
+  `{HP : !HasProduct C} `{HE : !HasExponential HP}
+  (F : Fct C C)
+  (a : ∀ {X Y : C}, Hom (F (Y ^ X) × F X) (F Y)).
 
 (** Lift a binary arrow by mapping its transpose and then applying. *)
 
 (** 映射二元箭头的转置，再应用，从而提升该箭头。 *)
 
-Definition application_lift {X Y Z : @Ob C} (f : Hom (X × Y) Z)
+Definition application_lift {X Y Z : C} (f : Hom (X × Y) Z)
   : Hom (F X × F Y) (F Z)
   := @a Y Z ∘ (fmap F (ƛ f) × id).
 
@@ -39,7 +40,7 @@ Definition application_lift {X Y Z : @Ob C} (f : Hom (X × Y) Z)
 
 (** 恢复保持二元箭头的指定相等。 *)
 
-Global Instance application_lift_proper {X Y Z : @Ob C}
+Global Instance application_lift_proper {X Y Z : C}
   : Proper (HomEq ==> HomEq) (@application_lift X Y Z).
 Proof. intros f g H. unfold application_lift. rewrite H. reflexivity. Qed.
 
@@ -47,7 +48,7 @@ Proof. intros f g H. unfold application_lift. rewrite H. reflexivity. Qed.
 
 (** 恢复求值的提升即恢复应用，无须对 [a] 作任何定律假设。 *)
 
-Lemma application_lift_eval (X Y : @Ob C)
+Lemma application_lift_eval (X Y : C)
   : application_lift (eval (X := X) (Y := Y)) ≈ @a X Y.
 Proof.
   unfold application_lift.
@@ -67,14 +68,15 @@ End RawApplication.
     固定选定有限积、指数及相干二元运算呈现，构造应用并恢复原提升。 *)
 
 Section OperationApplication.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (O : ApplicativeOps C HT HP).
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  `{HE : !HasExponential HP} (O : ApplicativeOps C).
 
 (** An operational presentation applies by lifting evaluation. *)
 
 (** 运算式呈现通过提升求值来应用。 *)
 
-Definition operations_ap {X Y : @Ob C}
+Definition operations_ap {X Y : C}
   : Hom (O (Y ^ X) × O X) (O Y)
   := lift₂ᵒ[O; (eval (X := X) (Y := Y))].
 
@@ -83,11 +85,11 @@ Definition operations_ap {X Y : @Ob C}
 
 (** 输入代入及指数 β 律从应用恢复每个二元提升，不要求良点性或强度。 *)
 
-Lemma operations_lift_from_ap {X Y Z : @Ob C} (f : Hom (X × Y) Z)
+Lemma operations_lift_from_ap {X Y Z : C} (f : Hom (X × Y) Z)
   : lift₂ᵒ[O; f] ≈ application_lift O (@operations_ap) f.
 Proof.
   unfold application_lift, operations_ap.
-  pose proof (ops_pre (IsApplicativeOps := operations_laws O)
+  pose proof (ops_pre (IsApplicativeOps := operations_laws (hasApplicativeOps O))
     (eval (X := Y) (Y := Z)) (ƛ f) id) as H.
   change (lift₂ᵒ[O; (eval (X := Y) (Y := Z))] ∘
     (fmap O (ƛ f) × fmap O (id[Y])) ≈ lift₂ᵒ[O; uncurry (ƛ f)]) in H.
@@ -103,95 +105,101 @@ End OperationApplication.
 (** 纯值与应用数据，附带恢复后提升的相干性。唯一底层视图为函子，不存储
     tensorator 或二元提升；条件恰为 [IsApplicativeOps] 中列出的定律。 *)
 
-Class ApplicativeAp (C : Cat) (HT : HasTerminal C) (HP : HasProduct C)
-    (HE : HasExponential HP)
+Minks.Mixin HasApplicativeAp {C : Cat}
+    `{HT : !HasTerminal C} `{HP : !HasProduct C} `{HE : !HasExponential HP}
+    (F : Fct C C)
   :=
-  (** The only coercion exposes the underlying endofunctor. *)
-
-  (** 唯一强制转换暴露底层自函子。 *)
-
-  { ApF :> Fct C C
-
   (** Pure embedding commutes with every ordinary arrow. *)
 
   (** 纯值嵌入与每条通常箭头交换。 *)
 
-  ; application_pure : IdF ⇒ ApF
+  { application_pure : IdF ⇒ F
 
   (** Application combines an effectful internal function and argument. *)
 
   (** 应用组合带效应的内部函数及参数。 *)
 
-  ; application_ap {X Y : @Ob C}
-      : Hom (@Prod C HP (ApF (@exp C HP HE Y X)) (ApF X)) (ApF Y)
+  ; application_ap {X Y : C}
+    : Hom (F (Y ^ X) × F X) (F Y)
 
   (** Currying and application reconstruct a coherent binary lifting. *)
 
   (** 柯里化及应用恢复相干的二元提升。 *)
 
   ; application_laws
-      :: IsApplicativeOps HT HP ApF application_pure
-        (@application_lift C HP HE ApF (@application_ap))
+    :: IsApplicativeOps F application_pure
+      (@application_lift C HP HE F (@application_ap))
   }.
 
-Arguments ApF {_ _ _ _} _.
-Arguments application_pure {_ _ _ _} _.
-Arguments application_ap {_ _ _ _} _ {_ _}.
-Arguments application_laws {_ _ _ _} _.
+Minks.Struct ApplicativeAp (C : Cat)
+    `{HT : !HasTerminal C} `{HP : !HasProduct C} `{HE : !HasExponential HP}
+  extends Fct C C
+  with  hasApplicativeAp as hasApplicativeAp
+    : HasApplicativeAp [C, HT, HP, HE, carrier].
 
-Notation "'pureᵃ[' P ']'" := (application_pure P) : applicative_scope.
-Notation "'apᵃ[' P ']'" := (application_ap P) : applicative_scope.
+Arguments MakeApplicativeAp {_ _ _ _} _ _.
+Arguments hasApplicativeAp {_ _ _ _} _.
+Arguments application_pure {_ _ _ _ _} _.
+Arguments application_ap {_ _ _ _ _} _ {_ _}.
+Arguments application_laws {_ _ _ _ _} _.
+
+Notation "'pureᵃ[' P ']'" := (application_pure (hasApplicativeAp P))
+  (at level 0)
+  : applicative_scope.
+Notation "'apᵃ[' P ']'" := (application_ap (hasApplicativeAp P))
+  (at level 0)
+  : applicative_scope.
+
+(** ** Conversions and round trips over fixed finite products and exponentials *)
+
+(** ** 固定有限积和指数上的呈现转换及往返 *)
+
+Section Presentations.
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  `{HE : !HasExponential HP}.
 
 (** Read binary operations from a coherent application presentation. *)
 
 (** 从相干应用呈现读取二元运算。 *)
 
-Program Definition ApplicationOperations {C : Cat}
-    {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
-    (P : ApplicativeAp C HT HP HE)
-  : ApplicativeOps C HT HP
-  :=
-  {|OpsF := P
-  ; operations_pure := pureᵃ[P]
-  ; operations_lift := @application_lift C HP HE P (@application_ap _ _ _ _ P)
-  ; operations_laws := application_laws P
-  |}.
+Program Definition ApplicationOperations (P : ApplicativeAp C)
+  : ApplicativeOps C
+  := MakeApplicativeOps P
+    {|operations_pure := pureᵃ[P]
+    ; operations_lift X Y Z f := application_lift P (fun X Y => apᵃ[P]) f
+    ; operations_laws := application_laws (hasApplicativeAp P)
+    |}.
 
 (** Read application from binary operations, transporting their laws along
     the proved arrow equality rather than requiring record equality. *)
 
 (** 从二元运算读取应用；沿已证态射相等运输定律，不要求记录相等。 *)
 
-Program Definition OperationsApplication {C : Cat}
-    {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
-    (O : ApplicativeOps C HT HP)
-  : ApplicativeAp C HT HP HE
-  :=
-  {|ApF := O
-  ; application_pure := pureᵒ[O]
-  ; application_ap := @operations_ap C HT HP HE O
-  ; application_laws := applicative_ops_transport (operations_laws O)
-      (@operations_lift_from_ap C HT HP HE O)
-  |}.
+Program Definition OperationsApplication (O : ApplicativeOps C)
+  : ApplicativeAp C
+  := MakeApplicativeAp O
+    {|application_pure := pureᵒ[O]
+    ; application_ap X Y := operations_ap O
+    ; application_laws := applicative_ops_transport
+        (operations_laws (hasApplicativeOps O))
+        (fun X Y Z f => operations_lift_from_ap O f)
+    |}.
 
 (** Construct a structural Applicative from coherent pure/application data. *)
 
 (** 从相干纯值／应用数据构造结构式 Applicative。 *)
 
-Definition ApplicationA {C : Cat}
-    {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
-    (P : ApplicativeAp C HT HP HE)
-  : Applicative C HT HP
+Definition ApplicationA (P : ApplicativeAp C)
+  : Applicative C
   := OperationsA (ApplicationOperations P).
 
 (** Expose a structural Applicative as coherent pure/application operations. *)
 
 (** 将结构式 Applicative 暴露为相干纯值／应用运算。 *)
 
-Definition ApplicativeApplication {C : Cat}
-    {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
-    (A : Applicative C HT HP)
-  : ApplicativeAp C HT HP HE
+Definition ApplicativeApplication (A : Applicative C)
+  : ApplicativeAp C
   := OperationsApplication (ApplicativeOperations A).
 
 (** ** Application Round Trips
@@ -203,25 +211,21 @@ Definition ApplicativeApplication {C : Cat}
 
     固定同一有限积与指数选择，在指定 Hom 相等下比较应用与结构式呈现。 *)
 
-Section Roundtrips.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP}.
-
 (** Application to binary operations and back preserves application. *)
 
 (** 应用转为二元运算再返回，保持应用。 *)
 
-Lemma application_roundtrip_ap (P : ApplicativeAp C HT HP HE) (X Y : @Ob C)
-  : apᵃ[OperationsApplication (ApplicationOperations P)] ≈
-      (apᵃ[P] : Hom (P (Y ^ X) × P X) (P Y)).
+Lemma application_roundtrip_ap (P : ApplicativeAp C) (X Y : C)
+  : apᵃ[OperationsApplication (ApplicationOperations P)]
+    ≈ (apᵃ[P] : Hom (P (Y ^ X) × P X) (P Y)).
 Proof. apply application_lift_eval. Qed.
 
 (** The application-operation round trip retains pure by computation. *)
 
 (** 应用运算往返通过计算保留纯值。 *)
 
-Lemma application_roundtrip_pure (P : ApplicativeAp C HT HP HE)
-    (X : @Ob C)
+Lemma application_roundtrip_pure (P : ApplicativeAp C)
+    (X : C)
   : pureᵃ[OperationsApplication (ApplicationOperations P)] X ≈ pureᵃ[P] X.
 Proof. reflexivity. Qed.
 
@@ -229,18 +233,17 @@ Proof. reflexivity. Qed.
 
 (** 二元运算转为应用再返回，保持每个二元箭头。 *)
 
-Lemma application_roundtrip_lift (O : ApplicativeOps C HT HP)
-    {X Y Z : @Ob C} (f : Hom (X × Y) Z)
-  : lift₂ᵒ[ApplicationOperations (OperationsApplication O); f] ≈
-      lift₂ᵒ[O; f].
+Lemma application_roundtrip_lift (O : ApplicativeOps C)
+    {X Y Z : C} (f : Hom (X × Y) Z)
+  : lift₂ᵒ[ApplicationOperations (OperationsApplication O); f] ≈ lift₂ᵒ[O; f].
 Proof. symmetry. exact (operations_lift_from_ap O f). Qed.
 
 (** The structural reconstruction preserves the supplied application. *)
 
 (** 结构重建保持给定应用。 *)
 
-Lemma application_reconstruction_ap (P : ApplicativeAp C HT HP HE)
-    (X Y : @Ob C)
+Lemma application_reconstruction_ap (P : ApplicativeAp C)
+    (X Y : C)
   : (ap[ApplicationA P] : Hom (P (Y ^ X) × P X) (P Y)) ≈ apᵃ[P].
 Proof.
   transitivity (lift₂ᵒ[ApplicationOperations P; (eval (X := X) (Y := Y))]).
@@ -256,8 +259,8 @@ Qed.
 (** 比较也在每个共同上下文中保持应用。重写此相等及纯值保持，即可运输
     已对 [ApplicationA P] 证明的四条经典定律。 *)
 
-Lemma application_reconstruction_apply (P : ApplicativeAp C HT HP HE)
-    {W X Y : @Ob C} (u : Hom W (P (Y ^ X))) (v : Hom W (P X))
+Lemma application_reconstruction_apply (P : ApplicativeAp C)
+    {W X Y : C} (u : Hom W (P (Y ^ X))) (v : Hom W (P X))
   : u ⋆[ApplicationA P] v ≈ apᵃ[P] ∘ ⟨u, v⟩.
 Proof.
   unfold applicative_apply.
@@ -268,8 +271,8 @@ Qed.
 
 (** 结构重建保留给定纯值分量。 *)
 
-Lemma application_reconstruction_pure (P : ApplicativeAp C HT HP HE)
-    (X : @Ob C)
+Lemma application_reconstruction_pure (P : ApplicativeAp C)
+    (X : C)
   : pure[ApplicationA P] X ≈ pureᵃ[P] X.
 Proof. reflexivity. Qed.
 
@@ -277,8 +280,8 @@ Proof. reflexivity. Qed.
 
 (** 每个重建后的结构式二元运算均与原运算一致。 *)
 
-Lemma applicative_application_roundtrip_lift (A : Applicative C HT HP)
-    {X Y Z : @Ob C} (f : Hom (X × Y) Z)
+Lemma applicative_application_roundtrip_lift (A : Applicative C)
+    {X Y Z : C} (f : Hom (X × Y) Z)
   : lift₂[ApplicationA (ApplicativeApplication A); f] ≈ lift₂[A; f].
 Proof.
   transitivity (lift₂ᵒ[ApplicationOperations (ApplicativeApplication A); f]).
@@ -291,10 +294,10 @@ Qed.
 
 (** 结构／应用往返保持闭应用。 *)
 
-Lemma applicative_application_roundtrip_ap (A : Applicative C HT HP)
-    (X Y : @Ob C)
-  : ap[ApplicationA (ApplicativeApplication A)] ≈
-      (ap[A] : Hom (A (Y ^ X) × A X) (A Y)).
+Lemma applicative_application_roundtrip_ap (A : Applicative C)
+    (X Y : C)
+  : ap[ApplicationA (ApplicativeApplication A)]
+    ≈ (ap[A] : Hom (A (Y ^ X) × A X) (A Y)).
 Proof.
   exact (applicative_application_roundtrip_lift A
     (eval (X := X) (Y := Y))).
@@ -304,8 +307,8 @@ Qed.
 
 (** 结构／应用往返保留纯值分量。 *)
 
-Lemma applicative_application_roundtrip_pure (A : Applicative C HT HP)
-    (X : @Ob C)
+Lemma applicative_application_roundtrip_pure (A : Applicative C)
+    (X : C)
   : pure[ApplicationA (ApplicativeApplication A)] X ≈ pure[A] X.
 Proof. reflexivity. Qed.
 
@@ -313,24 +316,23 @@ Proof. reflexivity. Qed.
 
 (** tensorator 通过态射相等恢复，不要求函子原生相等。 *)
 
-Lemma applicative_application_roundtrip_tensor (A : Applicative C HT HP)
-    (X Y : @Ob C)
+Lemma applicative_application_roundtrip_tensor (A : Applicative C)
+    (X Y : C)
   : φ₂[ApplicationA (ApplicativeApplication A); X; Y] ≈ φ₂[A; X; Y].
 Proof.
   change (lift₂ᵒ[ApplicationOperations (ApplicativeApplication A);
     (id[X × Y])] ≈ φ₂[A; X; Y]).
   rewrite (application_roundtrip_lift (ApplicativeOperations A)
     (id[X × Y])).
-  unfold operations_lift, ApplicativeOperations, lax_lift2.
-  rewrite fmap_id, comp_id_l. reflexivity.
+  exact (applicative_roundtrip_tensor A X Y).
 Qed.
 
 (** The unit comparison is recovered by the original pure-unit law. *)
 
 (** 单位比较由原纯值单位律恢复。 *)
 
-Lemma applicative_application_roundtrip_unit (A : Applicative C HT HP)
+Lemma applicative_application_roundtrip_unit (A : Applicative C)
   : φ₀[ApplicationA (ApplicativeApplication A)] ≈ φ₀[A].
-Proof. exact (applicative_pure_unit A). Qed.
+Proof. exact (applicative_pure_unit (hasApplicative A)). Qed.
 
-End Roundtrips.
+End Presentations.

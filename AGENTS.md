@@ -35,7 +35,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   laws in auxiliary universes. Check inferred types at distinct levels.
 - Separate candidate universal properties (`is_*`) from chosen structures
   (`Has*`); use the weakest sufficient assumptions. Chosen model structures
-  must be explicitly enabled, not registered globally by import.
+  are explicitly enabled unless designated as defaults. The standard terminal
+  object and binary products of SetCat are global instances in their own modules.
 - Follow [issue #42](https://github.com/Godalin/rocq-cats/issues/42): use
   `Class` for properties of specified data and chosen extensions over fixed
   parents; use `Record` for first-class complete mathematical objects. Keep

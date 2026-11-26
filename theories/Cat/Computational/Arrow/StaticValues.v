@@ -24,7 +24,7 @@ Local Open Scope computation_scope.
 
 Section Values.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (A : Applicative C HT HP).
+    `{HE : !HasExponential HP} (A : Applicative C).
 
 (** Evaluate the effectful internal function at the terminal argument. *)
 

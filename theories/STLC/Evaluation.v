@@ -31,8 +31,6 @@ From Cats Require Import
     求值沿输入项递归构造为自然变换，因此保相等性质与世界相容性本就是求值的
     一部分。抽象复用相容的 Kripke 柯里化，不保存缺乏约束的未来求值族。 *)
 
-Local Existing Instance SetCat_HasProduct.
-Local Existing Instance SetCat_HasTerminal.
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.

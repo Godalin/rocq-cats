@@ -16,8 +16,6 @@ Local Open Scope computation_scope.
 Local Open Scope monad_scope.
 Local Open Scope monoidal_scope.
 Local Open Scope applicative_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Direct and Kleisli-Derived Applicatives
 
@@ -136,7 +134,7 @@ Lemma kleisli_recovered_applicative_hom
       (KleisliRecoveryN M).
 Proof.
   apply (fst (applicative_hom_equiv _ _ _ _ kleisli_applicative_triangle)).
-  exact (applicative_hom_comp _ _ _ _ _ kleisli_applicative_hom
+  exact (applicative_hom_comp _ _ kleisli_applicative_hom
     (dynamic_applicative_hom (KleisliArrowApply M))).
 Qed.
 

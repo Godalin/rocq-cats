@@ -16,18 +16,14 @@ From Cats Require Import
 
     The existing natural comparisons transport the pointwise universal
     properties. The resulting bundle retains the original nerve functor;
-    all chosen model structures require explicit enabling. *)
+    the vertex presentation and simplicial choices are supplied separately. *)
 
 (** * 笛卡尔顶点 nerve 函子
 
-    已有自然比较运输点态泛性质。所得打包保留原 nerve 函子；全部选定模型
-    结构均要求显式启用。 *)
+    已有自然比较运输点态泛性质。所得打包保留原 nerve 函子；顶点呈现和单纯集合上的结构均单独选定。 *)
 
 Section Cartesian.
 Universes u r x e o h p l a b.
-
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** The image of the chosen terminal presentation is terminal by its
     existing comparison with the constant singleton diagram. *)

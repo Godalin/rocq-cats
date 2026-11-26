@@ -143,12 +143,6 @@ Next Obligation. intros x y [h token]. exact (h, token). Defined.
     只在此测试节启用终对象与积选择。粘合积复用恒等函子保持的积锥。 *)
 
 Section SetoidGluing.
-Local Instance set_terminal
-  : HasTerminal SetCat
-  := SetCat_HasTerminal.
-Local Instance set_product
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 
 (** Select the constructed gluing products locally. *)
 

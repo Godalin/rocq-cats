@@ -78,9 +78,9 @@ Defined.
 (** 逐点配对就是 Reader 的自然 tensorator。 *)
 
 Program Definition ReaderTensorN@{r e u p +} (R : SetC@{r e})
-  : (tensorF (HasMonoidal_interchange SetCartMonoidal) ∘F
+  : (tensorF (IM := HasMonoidal_interchange SetCartMonoidal) ∘F
       (ReaderF@{r e u p _ _ _ _ _ _ _} R ×F ReaderF R)) ⇒
-      (ReaderF R ∘F tensorF (HasMonoidal_interchange SetCartMonoidal))
+      (ReaderF R ∘F tensorF (IM := HasMonoidal_interchange SetCartMonoidal))
   :=
   {|nt p := reader_pair R (fst p) (snd p)
   |}.
@@ -94,14 +94,12 @@ Qed.
 (** Reader 的 lax 结构使用已有笛卡尔幺半模型。 *)
 
 Program Definition ReaderLax@{r e u p +} (R : SetC@{r e})
-  : LaxMonoidalFct (C := SetCat@{u p _ _ _ _ _})
-      (D := SetCat@{u p _ _ _ _ _})
+  : @LaxMonoidalFct SetCat@{u p _ _ _ _ _} SetCat@{u p _ _ _ _ _}
       SetCartMonoidal SetCartMonoidal
-  :=
-  {|LaxMonoidalFctToFct := ReaderF R
-  ; lax_unit := reader_pure R UnitS
-  ; lax_tensorN := ReaderTensorN R
-  |}.
+  := MakeLaxMonoidalFct (ReaderF R)
+    {|lax_unit := reader_pure R UnitS
+    ; lax_tensorN := ReaderTensorN R
+    |}.
 Next Obligation.
   intros [[] f] r. reflexivity.
 Defined.
@@ -131,11 +129,10 @@ Next Obligation. intros x r. reflexivity. Qed.
     环境的所在层级。 *)
 
 Program Definition ReaderA@{r e u p +} (R : SetC@{r e})
-  : Applicative (SetCat@{u p _ _ _ _ _})
+  : @Applicative (SetCat@{u p _ _ _ _ _})
       SetCat_HasTerminal SetCat_HasProduct
-  :=
-  {|ApplicativeToLaxMonoidalFct := ReaderLax R
-  ; applicative_pure := ReaderPureN R
-  |}.
+  := ApplicativeOfLaxMonoidalFct (ReaderLax R)
+    {|applicative_pure := ReaderPureN R
+    |}.
 Next Obligation. intros [] r. reflexivity. Defined.
 Next Obligation. intros [x y] r. split; reflexivity. Defined.

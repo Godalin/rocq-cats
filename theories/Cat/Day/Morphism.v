@@ -132,7 +132,7 @@ Section MonoidPreservation.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     `(HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
+      HasDay C (tensorF (C := C)) F G).
 Let DM
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
   := MonoidalDay MC HD.
@@ -148,9 +148,9 @@ Local Lemma day_hom_tensor_map {F G : Fct C (SetCat@{u p _ _ _ _ _})}
     (α : F ⇒ G)
   : tensor_map (IM := HasMonoidal_interchange DM)
       (X := F) (X' := G) (Y := F) (Y' := G) α α ≈N
-      @DayMapN C (tensorF (HasMonoidal_interchange MC)) F G F G (HD F F) (HD G G) α α.
+      @DayMapN C (tensorF (C := C)) F G F G (HD F F) (HD G G) α α.
 Proof.
-  exact (day_monoidal_map (tensorF (HasMonoidal_interchange MC)) 𝐈
+  exact (day_monoidal_map (tensorF (C := C)) 𝐈
     (TensorAssocIsoN (IM := HasMonoidal_interchange MC))
     (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC))
     (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC))
@@ -164,29 +164,23 @@ Defined.
 
 (** Day 幺半群同态恰好是限制所得 lax 函子之间的幺半变换；运输而不识别见证。 *)
 
-Theorem day_monoid_hom_laws (M N : MonoidObj DM)
-    (α : MonoidCarrier M ⇒ MonoidCarrier N)
+Theorem day_monoid_hom_laws (M N : @MonoidObj _ DM)
+    (α : Hom M N)
   : is_monoid_hom M N α ↔
       is_lax_monoidal_hom (DayMonoidLax MC HD M) (DayMonoidLax MC HD N) α.
 Proof.
   split; intros [Hu Hm]; split.
-  - intros []. exact (fst (day_unit_hom_law 𝐈
-      (MonoidCarrier M) (MonoidCarrier N)
-      (monoid_object_unit M) (monoid_object_unit N) α) Hu).
-  - assert (H : (α ∘Nv monoid_object_mul M) ≈N
-      (monoid_object_mul N ∘Nv DayMapN (tensorF (HasMonoidal_interchange MC)) α α)).
+  - intros []. exact (fst (day_unit_hom_law 𝐈 _ _ e[M] e[N] α) Hu).
+  - assert (H : (α ∘Nv m[M]) ≈N
+      (m[N] ∘Nv DayMapN (tensorF (C := C)) α α)).
     { rewrite <- (day_hom_tensor_map α). exact Hm. }
     intros a b [x y].
-    exact (fst (day_mul_hom_law (tensorF (HasMonoidal_interchange MC))
-      (MonoidCarrier M) (MonoidCarrier N)
-      (monoid_object_mul M) (monoid_object_mul N) α) H a b x y).
-  - apply (snd (day_unit_hom_law 𝐈
-      (MonoidCarrier M) (MonoidCarrier N)
-      (monoid_object_unit M) (monoid_object_unit N) α)).
+    exact (fst (day_mul_hom_law (tensorF (C := C))
+      _ _ m[M] m[N] α) H a b x y).
+  - apply (snd (day_unit_hom_law 𝐈 _ _ e[M] e[N] α)).
     exact (Hu tt).
-  - pose proof (snd (day_mul_hom_law (tensorF (HasMonoidal_interchange MC))
-      (MonoidCarrier M) (MonoidCarrier N)
-      (monoid_object_mul M) (monoid_object_mul N) α)
+  - pose proof (snd (day_mul_hom_law (tensorF (C := C))
+      _ _ m[M] m[N] α)
       (λ a b x y, Hm a b (x,y))) as H.
     rewrite <- (day_hom_tensor_map α) in H. exact H.
 Defined.
@@ -195,7 +189,7 @@ Defined.
 
 (** Lax 运算往返运输相同的保持性交换图。 *)
 
-Lemma day_lax_hom_roundtrip (L K : LaxMonoidalFct MC SM) (α : L ⇒ K)
+Lemma day_lax_hom_roundtrip (L K : @LaxMonoidalFct _ _ MC SM) (α : L ⇒ K)
   : is_lax_monoidal_hom
       (DayMonoidLax MC HD (LaxDayMonoid MC HD L))
       (DayMonoidLax MC HD (LaxDayMonoid MC HD K)) α ↔
@@ -221,7 +215,7 @@ Defined.
 
 (** 反之，幺半变换在原底层自然变换上延拓为 Day 幺半群同态。 *)
 
-Theorem lax_day_monoid_hom (L K : LaxMonoidalFct MC SM) (α : L ⇒ K)
+Theorem lax_day_monoid_hom (L K : @LaxMonoidalFct _ _ MC SM) (α : L ⇒ K)
   : is_lax_monoidal_hom L K α ↔
       is_monoid_hom (LaxDayMonoid MC HD L) (LaxDayMonoid MC HD K) α.
 Proof.

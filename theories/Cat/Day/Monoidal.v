@@ -70,7 +70,7 @@ Defined.
 (** 恒等分量比较导出的张量函子与原 Day 张量，保持选定 coend 与结构逆不变。 *)
 
 Definition DayTensorIso
-  : tensorF (HasMonoidal_interchange DayMonoidal) ≅N DayTensorF T HD.
+  : tensorF (IM := HasMonoidal_interchange DayMonoidal) ≅N DayTensorF T HD.
 Proof.
   unfold DayMonoidal.
   apply (@bifct_tensor_iso (FctCat C SetCat) (DayTensorF T HD)).
@@ -93,7 +93,7 @@ Section MonoidalBase.
 Universes u p.
 Context {C : Cat} (MC : HasMonoidal C)
     (HD : ∀ F G : Fct C (SetCat@{u p _ _ _ _ _}),
-      HasDay C (tensorF (HasMonoidal_interchange MC)) F G).
+      HasDay C (tensorF (C := C)) F G).
 
 (** The inherited pentagon and triangle enable the full Day structure. *)
 
@@ -101,7 +101,7 @@ Context {C : Cat} (MC : HasMonoidal C)
 
 Definition MonoidalDay
   : HasMonoidal (FctCat C (SetCat@{u p _ _ _ _ _}))
-  := DayMonoidal (tensorF (HasMonoidal_interchange MC)) 𝐈
+  := DayMonoidal (tensorF (C := C)) 𝐈
       (TensorAssocIsoN (IM := HasMonoidal_interchange MC))
       (TensorUnitorLIsoN (IM := HasMonoidal_interchange MC))
       (TensorUnitorRIsoN (IM := HasMonoidal_interchange MC))

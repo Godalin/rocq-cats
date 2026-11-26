@@ -146,13 +146,9 @@ Definition higher_sphere_reverse (x y : TwoSphereS X b)
 
 End higherSizes.
 
-(** Importing the parameter theory does not select model products. *)
+(** Products of simplicial sets require their own model choice. *)
 
-(** 导入参数理论不选定模型的积结构。 *)
-
-Fail Definition unchosen_set_product
-  : HasProduct SetCat
-  := _.
+(** 单纯集合的积结构须单独选定。 *)
 
 Fail Definition unchosen_simplicial_product
   : HasProduct (SimplicialCat : Cat)

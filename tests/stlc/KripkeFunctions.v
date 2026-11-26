@@ -35,7 +35,6 @@ Constraint l < v.
 Context (C : Cat@{b b r l l}).
 Context (F G H : Fct (C^op) SetCat@{b p _ _ _ _ _}).
 Context (X : @Ob C).
-Local Existing Instance SetCat_HasProduct.
 
 (** Function values store world-respectfulness witnesses above their own
     pointwise equality. A smaller equality level must remain usable. *)
@@ -114,18 +113,17 @@ Local Open Scope stlc_tm_scope.
 
 (** ** Currying over Syntax Presheaves
 
-    Fix a signature, types [A] and [U], and a context [Γ]. Enable the
-    chosen setoid product and check captured normal values and currying
+    Fix a signature, types [A] and [U], and a context [Γ]. Use the standard
+    setoid product and check captured normal values and currying
     directly in syntax presheaves. *)
 
 (** ** 语法预层上的柯里化
 
-    固定签名、类型 [A]、[U] 和上下文 [Γ]，启用选定广集积，直接在语法预层
+    固定签名、类型 [A]、[U] 和上下文 [Γ]，使用标准广集积，直接在语法预层
     中检查捕获的正规值与柯里化。 *)
 
 Section SyntaxComputations.
 Context {B : Type} (A U : Ty B) (Γ : Ctx B).
-Local Existing Instance SetCat_HasProduct.
 
 (** Currying the first projection yields a constant semantic function,
     whose captured normal form is renamed in each future context. *)

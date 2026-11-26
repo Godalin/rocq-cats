@@ -36,10 +36,8 @@ Universe u.
 Let C
   : Cat
   := SetCat@{u u _ _ _ _ _}.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
-Context (B : Applicative C SetCat_HasTerminal SetCat_HasProduct).
+Context (B : Applicative C).
 
 (** Recover Applicative values from the static Arrow of the original
     Applicative, with all model choices explicit. *)
@@ -47,7 +45,7 @@ Context (B : Applicative C SetCat_HasTerminal SetCat_HasProduct).
 (** 从原 Applicative 的静态 Arrow 回收 Applicative 值，全部模型选择显式给出。 *)
 
 Definition StaticRecoveredA
-  : Applicative C SetCat_HasTerminal SetCat_HasProduct
+  : Applicative C
   := ArrowA (StaticCat B) (StaticArrow B).
 
 (** First evaluate the outer global element, then map terminal-argument

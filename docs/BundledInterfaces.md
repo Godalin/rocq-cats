@@ -53,26 +53,29 @@ below describe their dated baselines.
 词段现统一为 `fct`、`exp`，精确对照见[命名指南](./Abbreviations.md)。
 下方历史类清单仍描述其注明日期的基线。
 
-The uncommitted lax-monoidal follow-up starts at `728ab7c`.
-`LaxMonoidalFct` is now a complete record with the unique
-`LaxMonoidalFctToFct :> Fct` parent and direct `LaxMonoidalFctOfFct`
-constructor. Unit comparison, natural tensorator and all three coherence
-laws stay defined on that same parent. `IdLaxMonoidalF` and
-`ConstLaxMonoidalF` are explicitly selected constructions. There is no
-extra `Data`/`Is`/`Has` layer or additional instance for the record parent.
-`Applicative`, the monoidal category hierarchy and their choices retain
-this checkpoint's existing presentations; only direct clients are updated.
+`HasLaxMonoidalF F` gives a fixed functor its unit comparison,
+natural tensorator and three coherence laws. `MakeLaxMonoidalFct F`
+packs this choice. The bundle exposes its underlying functor through
+`LaxMonoidalFctToFct` and its chosen comparisons through `hasLaxMonoidalF`.
 
-未提交的 lax 幺半后续从 `728ab7c` 开始。`LaxMonoidalFct` 现为完整记录，
-具有唯一父视图 `LaxMonoidalFctToFct :> Fct` 及直接构造器
-`LaxMonoidalFctOfFct`。单位比较、自然张量子及三条相干律仍定义在同一个
-父函子上；`IdLaxMonoidalF`、`ConstLaxMonoidalF` 为须显式选择的构造。
-不增加 `Data`／`Is`／`Has` 层，也不为记录值父结构增加实例。
-`Applicative`、幺半范畴层级及其选择保留本检查点的已有呈现，仅更新直接客户端。
+`HasLaxMonoidalF F` 为固定函子选定单位比较、自然张量子和三条相干律。
+`MakeLaxMonoidalFct F` 打包这份选择。`LaxMonoidalFctToFct` 给出底层函子，
+`hasLaxMonoidalF` 给出包中选定的 lax 结构。
+
+For a monoidal category `C`, `IsMonoidObj A e m` states the laws of
+given maps. `HasMonoidObj A` chooses the maps and their laws on `A`.
+`MakeMonoidObj A H` packages that choice as a `MonoidObj C`.
+Use `M` directly as its underlying object. The notations `e[M]` and `m[M]` give
+the unit and multiplication selected in `M`.
+
+给定范畴 `C` 的幺半结构，`IsMonoidObj A e m` 表达给定运算的定律，
+`HasMonoidObj A` 在 `A` 上选定运算和定律。`MakeMonoidObj A H`
+将这份选择打包为 `MonoidObj C`。可直接用 `M` 表示底层对象，
+用 `e[M]` 和 `m[M]` 表示其中选定的单位和乘法。
 
 `MonoidalFct` now extends that same `LaxMonoidalFct` through the unique
-`MonoidalFctToLaxMonoidalFct` projection and direct
-`MonoidalFctOfLaxMonoidalFct` constructor. In this library, an unqualified
+`MonoidalFctToLaxMonoidalFct` projection and the
+`MonoidalFctOfLaxMonoidalFct` packing function. In this library, an unqualified
 monoidal functor means a strong monoidal functor: its stored unit and tensor
 comparisons are invertible. Only Type-valued inverse witnesses are added;
 forward maps and coherence stay in the lax parent. `MonoidalUnitIso` and
@@ -81,7 +84,7 @@ derives inverse naturality through the general natural-isomorphism theory.
 `IdMonoidalF` extends the exact lax identity and is explicitly selected.
 Tensorial strength remains a separate notion.
 
-`MonoidalFct` 现通过唯一投影 `MonoidalFctToLaxMonoidalFct` 和直接构造器
+`MonoidalFct` 现通过唯一投影 `MonoidalFctToLaxMonoidalFct` 和打包函数
 `MonoidalFctOfLaxMonoidalFct` 扩展同一个 `LaxMonoidalFct`。本库中不加限定的
 幺半函子指 strong monoidal functor：保存的单位及张量比较均可逆。
 新增的仅为 Type 值逆见证，正向映射及相干律保留在 lax 父结构中。
@@ -89,24 +92,19 @@ Tensorial strength remains a separate notion.
 通过一般自然同构理论导出逆自然性。`IdMonoidalF` 扩展原有 lax 恒等构造，
 仍须显式选择。张量强度保持为不同概念。
 
-`Applicative` is now a complete record with the direct constructor
-`ApplicativeOfLaxMonoidalFct`. Its only parent projection is
-`ApplicativeToLaxMonoidalFct :> LaxMonoidalFct`, using the supplied terminal
-and product choices through `CartHasMonoidal`. The parent retains the functor,
-unit, tensorator and lax coherence; the extension retains the natural pure
-map and its unit/product compatibility. No strong-monoidal condition or
-extra functor copy is introduced. Reader, Monad, Arrow, native lax and
-operation-reconstruction clients use the same stored parents. Alternate
-`ApplicativeOps` and `ApplicativeAp` presentations keep their existing
-interfaces in this bounded migration.
+`Applicative C` extends the cartesian lax endofunctor. Its `HasApplicative`
+mixin chooses a natural pure map compatible with that parent's unit and
+tensorator. `ApplicativeOfLaxMonoidalFct L H` packs the selected lax functor
+and its pure structure. The binary lifting and closed application
+presentations, `ApplicativeOps` and `ApplicativeAp`, each extend an
+endofunctor directly and use the fixed-operation laws of `IsApplicativeOps`.
+Separately, `HasStrength F` selects a tensorial strength on a fixed endofunctor.
 
-`Applicative` 现为完整记录，直接构造器为 `ApplicativeOfLaxMonoidalFct`。
-唯一父投影 `ApplicativeToLaxMonoidalFct :> LaxMonoidalFct` 通过
-`CartHasMonoidal` 使用给定的终对象及积选择。父结构保留函子、单位、张量子及
-lax 相干律；扩展层保留自然纯值映射及其单位／积相容律，不增加 strong
-幺半要求或另一份函子。Reader、Monad、Arrow、原生 lax 及运算重建客户端
-沿用相同的父结构。本次有界迁移保留 `ApplicativeOps`、`ApplicativeAp`
-两种替代呈现的已有接口。
+`Applicative C` 继承笛卡尔 lax 自函子，`HasApplicative` 选定与该父结构的
+单位比较和张量子相容的自然纯值映射。`ApplicativeOfLaxMonoidalFct L H`
+打包选定的 lax 函子和纯值结构。二元提升呈现 `ApplicativeOps` 和闭应用呈现
+`ApplicativeAp` 都直接扩展自函子，并使用固定运算上的 `IsApplicativeOps` 定律。
+`HasStrength F` 则在固定自函子上独立选定张量强度。
 
 The binoidal migration starts the monoidal category hierarchy at its
 weakest layer. [IsFct](../theories/Cat/Functor/Core.v) groups respectfulness,
@@ -2527,16 +2525,17 @@ Minks 生成两条父视图，并为共享祖先生成唯一的 `MonoidalCatToBi
 complete category from a bifunctor and structural natural isomorphisms.
 `BifctHasMonoidal` exposes the same choices on the supplied category.
 `CartMonoidal` uses the first construction to own the parent and
-`CartHasMonoidal` reads the resulting fixed-category choices. The
+`CartHasMonoidal` supplies `HasMonoidal C` by instance search when the
+terminal object and binary products are already selected on `C`. The
 reconstructed tensor is compared to the supplied functor by a natural
 isomorphism with identity components.
 
 [BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) 从双函子和结构自然
 同构装配完整范畴。`BifctHasMonoidal` 在给定范畴上提供同一份选择。
-`CartMonoidal` 使用完整构造保存父结构，`CartHasMonoidal` 读取其固定范畴
-选择。重建的张量通过以恒等箭头为分量的自然同构与给定函子比较。
+`CartMonoidal` 使用完整构造保存父结构，已有终对象和二元积选择时，
+类型类搜索通过 `CartHasMonoidal` 得到 `HasMonoidal C`。重建的张量通过以恒等箭头为分量的自然同构与给定函子比较。
 
-[Cartesian lifting](../theories/Cat/Monoidal/CartesianLifting.v) retains
+[Cartesian lifting](../theories/Cat/Monoidal/Cartesian.v) retains
 ordinary product notation in weaker lax clients. Applicative, strength,
 Monad and Arrow specializations use the product/horizontal-composition
 comparison laws. Monad–monoid functors retain the same underlying natural
@@ -2545,7 +2544,7 @@ The computational Arrow interchange assumptions come from the same
 fixed-category structure. The [computation audit](./ComputationAudit.md#monoidal-parent-migration)
 records validation and the remaining Arrow/Freyd work.
 
-[笛卡尔提升](../theories/Cat/Monoidal/CartesianLifting.v) 让较弱 lax 客户端
+[笛卡尔提升](../theories/Cat/Monoidal/Cartesian.v) 让较弱 lax 客户端
 继续使用通常积记号。Applicative、强度、Monad 及 Arrow 特化使用积／水平复合
 比较定律。Monad–幺半群函子保留同一底层自然变换，显式运输保持性见证。
 计算 Arrow 的交换前提来自同一固定范畴结构。
@@ -2607,7 +2606,7 @@ right action follow from this mixin. `IsSymHexagon` relates the exchange
 to the associator. `IsSymUnit` relates it to the unitors. The triangle
 between the associator and unitors is inherited with the premonoidal
 parent. Minks exports `HasSymPremonoidal` on a fixed category for Freyd
-computations. [Cartesian values](../theories/Cat/Monoidal/CartesianSymmetric.v)
+computations. [Cartesian values](../theories/Cat/Monoidal/Cartesian.v)
 and [computational Arrows](../theories/Cat/Computational/Arrow/Symmetric.v)
 supply all three mixins on their existing premonoidal choices.
 
@@ -2617,7 +2616,7 @@ supply all three mixins on their existing premonoidal choices.
 `IsSymHexagon` 刻画交换与结合子的相容性，`IsSymUnit` 刻画交换与单位子的
 相容性。结合子与单位子之间的三角形由预幺半父结构提供。
 Minks 导出固定范畴上的 `HasSymPremonoidal`，供 Freyd 计算使用。
-[笛卡尔值](../theories/Cat/Monoidal/CartesianSymmetric.v)和
+[笛卡尔值](../theories/Cat/Monoidal/Cartesian.v)和
 [计算 Arrow](../theories/Cat/Computational/Arrow/Symmetric.v)在已有预幺半
 选择上提供这三个 Mixin。
 
@@ -3149,7 +3148,7 @@ transposes Kleisli arrows of an induced Monad into the adjunction target.
 Its full-faithfulness witness keeps transposes as explicit preimages.
 This general theorem requires no strength or finite products and does
 not select target object representatives.
-[SetStrength](../theories/Instance/Set/StrengthConstruction.v) explicitly
+[SetStrength](../theories/Instance/Set/Strength.v) explicitly
 supplies coherent tensorial strength for a setoid endofunctor, using its
 arrow action on pairing with a fixed ordinary value. `SetStrongM` keeps
 the supplied Monad as its unique parent; compatibility follows from
@@ -3161,7 +3160,7 @@ interfaces; dynamic Arrow reconstruction will use these foundations.
 [AdjKleisliF](../theories/Cat/Monad/KleisliComparison.v)将诱导 Monad
 的 Kleisli 箭头逆转置到伴随目标；全忠实见证保留转置作为显式原像。此一般
 定理不需要强度或有限积，也不选择目标对象代表。
-[SetStrength](../theories/Instance/Set/StrengthConstruction.v)通过函子对
+[SetStrength](../theories/Instance/Set/Strength.v)通过函子对
 固定通常值配对的箭头作用，显式提供广集自函子的相干张量强度。`SetStrongM`
 保留所给 Monad 为唯一父结构，相容性来自单位及乘法自然性，载体／相等层级
 保持独立。这些是构造，不是新类或全局启用的模型实例。清单现覆盖 356 个

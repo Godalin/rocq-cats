@@ -22,7 +22,8 @@ Local Open Scope applicative_scope.
     可逆比较将同样的定律传递给其选定逆。 *)
 
 Section Comparisons.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 
 (** Laws on a supplied natural transformation; no new underlying functor
     or equality of law records is selected. Pairing retains its order. *)
@@ -30,17 +31,17 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}.
 (** 所给自然变换上的定律；不另选底层函子，也不比较定律记录相等。
     配对保留原顺序。 *)
 
-Definition is_applicative_hom (A B : Applicative C HT HP) (α : A ⇒ B)
+Definition is_applicative_hom (A B : Applicative C) (α : A ⇒ B)
   : Type
-  := (∀ X, α X ∘ pure[A] X ≈ pure[B] X) ∧
-      (∀ X Y, α (X × Y)%ob ∘ φ₂[A; X; Y] ≈
-        φ₂[B; X; Y] ∘ (α X × α Y)).
+  := (∀ X, α X ∘ pure[A] X ≈ pure[B] X)
+      ∧ (∀ X Y, α (X × Y)%ob ∘ φ₂[A; X; Y]
+        ≈ φ₂[B; X; Y] ∘ (α X × α Y)).
 
 (** Componentwise equal comparisons preserve the same operations. *)
 
 (** 分量相等的比较保持同样的运算。 *)
 
-Lemma applicative_hom_equiv (A B : Applicative C HT HP) (α β : A ⇒ B)
+Lemma applicative_hom_equiv (A B : Applicative C) (α β : A ⇒ B)
     (E : α ≈N β)
   : is_applicative_hom A B α ↔ is_applicative_hom A B β.
 Proof.
@@ -57,7 +58,7 @@ Qed.
 
 (** 恒等是保持运算的比较。 *)
 
-Lemma applicative_hom_id (A : Applicative C HT HP)
+Lemma applicative_hom_id (A : Applicative C)
   : is_applicative_hom A A IdN.
 Proof.
   split; intros; cbn; rewrite ?cross_id, ?comp_id_l, ?comp_id_r;
@@ -68,9 +69,10 @@ Qed.
 
 (** 复合比较保持纯值与有序配对。 *)
 
-Lemma applicative_hom_comp (A B D : Applicative C HT HP)
+Lemma applicative_hom_comp {A B D : Applicative C}
     (β : B ⇒ D) (α : A ⇒ B)
-    (Hβ : is_applicative_hom B D β) (Hα : is_applicative_hom A B α)
+    (Hβ : is_applicative_hom B D β)
+    (Hα : is_applicative_hom A B α)
   : is_applicative_hom A D (β ∘Nv α).
 Proof.
   destruct Hα as [Hαu Hαp], Hβ as [Hβu Hβp]. split.
@@ -88,7 +90,7 @@ Qed.
 
 (** 纯值保持性已经蕴含 lax 单位比较的保持性。 *)
 
-Lemma applicative_hom_unit (A B : Applicative C HT HP) (α : A ⇒ B)
+Lemma applicative_hom_unit (A B : Applicative C) (α : A ⇒ B)
     (Hα : is_applicative_hom A B α)
   : α 1 ∘ φ₀[A] ≈ φ₀[B].
 Proof.
@@ -99,9 +101,9 @@ Qed.
 
 (** 自然性与配对保持性推出每个二元提升的保持律。 *)
 
-Lemma applicative_hom_lift2 (A B : Applicative C HT HP) (α : A ⇒ B)
+Lemma applicative_hom_lift2 (A B : Applicative C) (α : A ⇒ B)
     (Hα : is_applicative_hom A B α)
-    {X Y Z : @Ob C} (h : Hom (X × Y) Z)
+    {X Y Z : C} (h : Hom (X × Y) Z)
   : α Z ∘ lift₂[A; h] ≈ lift₂[B; h] ∘ (α X × α Y).
 Proof.
   unfold lax_lift2. rewrite <- comp_assoc, (nat_naturality α h),
@@ -112,8 +114,8 @@ Qed.
 
 (** 纯值保持性在每个共同通常上下文中成立。 *)
 
-Lemma applicative_hom_pure_value (A B : Applicative C HT HP) (α : A ⇒ B)
-    (Hα : is_applicative_hom A B α) {W X : @Ob C} (x : Hom W X)
+Lemma applicative_hom_pure_value (A B : Applicative C) (α : A ⇒ B)
+    (Hα : is_applicative_hom A B α) {W X : C} (x : Hom W X)
   : α X ∘ pure[A; x] ≈ pure[B; x].
 Proof.
   unfold applicative_pure_value. rewrite <- comp_assoc, (fst Hα X).
@@ -124,12 +126,11 @@ Qed.
 
 (** 提升运算在每个共同输入上下文中得到保持。 *)
 
-Lemma applicative_hom_lift2_context (A B : Applicative C HT HP)
+Lemma applicative_hom_lift2_context (A B : Applicative C)
     (α : A ⇒ B) (Hα : is_applicative_hom A B α)
-    {W X Y Z : @Ob C} (h : Hom (X × Y) Z)
+    {W X Y Z : C} (h : Hom (X × Y) Z)
     (f : Hom W (A X)) (g : Hom W (A Y))
-  : α Z ∘ (lift₂[A; h] ∘ ⟨f, g⟩) ≈
-      lift₂[B; h] ∘ ⟨α X ∘ f, α Y ∘ g⟩.
+  : α Z ∘ (lift₂[A; h] ∘ ⟨f, g⟩) ≈ lift₂[B; h] ∘ ⟨α X ∘ f, α Y ∘ g⟩.
 Proof.
   rewrite <- comp_assoc, (applicative_hom_lift2 A B α Hα h), comp_assoc.
   apply comp_proper; [reflexivity|].
@@ -141,7 +142,7 @@ Qed.
 
 (** 保持运算的自然同构的选定逆，通过消去及同样的互逆律也保持运算。 *)
 
-Lemma applicative_hom_inverse (A B : Applicative C HT HP) (α : A ⇒ B)
+Lemma applicative_hom_inverse (A B : Applicative C) (α : A ⇒ B)
     (Hα : is_applicative_hom A B α) (I : α ⦂ A ≅N B)
   : is_applicative_hom B A (α ^-1N I).
 Proof.
@@ -172,15 +173,16 @@ End Comparisons.
     给出其比较。 *)
 
 Section Application.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP}.
+Context {C : Cat}
+  `{HT : !HasTerminal C} `{HP : !HasProduct C}
+  `{HE : !HasExponential HP}.
 
 (** Preserve effectful application without additional strength assumptions. *)
 
 (** 保持带效应应用，不另加强度假设。 *)
 
-Lemma applicative_hom_ap (A B : Applicative C HT HP) (α : A ⇒ B)
-    (Hα : is_applicative_hom A B α) (X Y : @Ob C)
+Lemma applicative_hom_ap (A B : Applicative C) (α : A ⇒ B)
+    (Hα : is_applicative_hom A B α) (X Y : C)
   : α Y ∘ ap[A] ≈ ap[B] ∘ (α (Y ^ X)%ob × α X).
 Proof. exact (applicative_hom_lift2 A B α Hα eval). Qed.
 
@@ -188,9 +190,9 @@ Proof. exact (applicative_hom_lift2 A B α Hα eval). Qed.
 
 (** 保持任意共同上下文中两个计算的应用。 *)
 
-Lemma applicative_hom_apply (A B : Applicative C HT HP) (α : A ⇒ B)
+Lemma applicative_hom_apply (A B : Applicative C) (α : A ⇒ B)
     (Hα : is_applicative_hom A B α)
-    {W X Y : @Ob C} (f : Hom W (A (Y ^ X))) (x : Hom W (A X))
+    {W X Y : C} (f : Hom W (A (Y ^ X))) (x : Hom W (A X))
   : α Y ∘ (f ⋆[A] x) ≈ (α (Y ^ X)%ob ∘ f) ⋆[B] (α X ∘ x).
 Proof. exact (applicative_hom_lift2_context A B α Hα eval f x). Qed.
 

@@ -11,8 +11,6 @@ From Cats.Set Require Import
 
 Local Open Scope monoidal_scope.
 Local Open Scope applicative_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Pure Values from Native Setoid Lax Functors *)
 
@@ -114,7 +112,7 @@ Universes u p.
 Let SM
   : HasMonoidal (SetCat@{u p _ _ _ _ _})
   := SetCartMonoidal.
-Context (L : LaxMonoidalFct SM SM).
+Context (L : @LaxMonoidalFct _ _ SM SM).
 
 (** The lax unit determines pure values without selecting a strength. *)
 
@@ -122,15 +120,15 @@ Context (L : LaxMonoidalFct SM SM).
 
 Definition SetLaxPureN
   : (@IdF (SetCat@{u p _ _ _ _ _})) ⇒ L
-  := SetPureN L (lax_unit L tt).
+  := SetPureN L (φ₀[L] tt).
 
 (** The recovered terminal component is the original lax unit map. *)
 
 (** 恢复所得终分量是原 lax 单位映射。 *)
 
 Lemma set_lax_pure_unit
-  : SetLaxPureN UnitS ≈ lax_unit L.
-Proof. intros []. exact (set_pure_unit L (lax_unit L tt) tt). Defined.
+  : SetLaxPureN UnitS ≈ φ₀[L].
+Proof. intros []. exact (set_pure_unit L (φ₀[L] tt) tt). Defined.
 
 (** The original tensorator combines recovered pure values into their pair.
     Only its naturality and the original left unit equation are used. *)
@@ -139,26 +137,26 @@ Proof. intros []. exact (set_pure_unit L (lax_unit L tt) tt). Defined.
 
 Lemma set_lax_pure_product (X Y : SetC@{u p})
   : SetLaxPureN (X ×S Y) ≈
-      lax_tensorN L (X,Y) ∘ (SetLaxPureN X × SetLaxPureN Y).
+      φ₂[L; X; Y] ∘ (SetLaxPureN X × SetLaxPureN Y).
 Proof.
   intros [x y].
-  change (fmap L (const_resp UnitS (x,y)) (lax_unit L tt) ≈S
-    lax_tensorN L (X,Y)
-      (fmap L (const_resp UnitS x) (lax_unit L tt),
-       fmap L (const_resp UnitS y) (lax_unit L tt))).
-  pose proof (lax_unit_l L UnitS (tt,lax_unit L tt)) as Hu.
+  change (fmap L (const_resp UnitS (x,y)) (φ₀[L] tt) ≈S
+    φ₂[L; X; Y]
+      (fmap L (const_resp UnitS x) (φ₀[L] tt),
+       fmap L (const_resp UnitS y) (φ₀[L] tt))).
+  pose proof (lax_unit_l (hasLaxMonoidalF L) UnitS (tt,φ₀[L] tt)) as Hu.
   change (fmap L (π2 : UnitS ×S UnitS →r UnitS)
-    (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt)) ≈S
-      lax_unit L tt) in Hu.
+    (φ₂[L; UnitS; UnitS] (φ₀[L] tt,φ₀[L] tt)) ≈S
+      φ₀[L] tt) in Hu.
   transitivity (fmap L (const_resp UnitS (x,y))
     (fmap L (π2 : UnitS ×S UnitS →r UnitS)
-      (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt)))).
+      (φ₂[L; UnitS; UnitS] (φ₀[L] tt,φ₀[L] tt)))).
   - apply func_proper. symmetry. exact Hu.
   - transitivity (fmap L (const_resp UnitS x × const_resp UnitS y)
-      (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt))).
+      (φ₂[L; UnitS; UnitS] (φ₀[L] tt,φ₀[L] tt))).
     + transitivity (fmap L (const_resp UnitS (x,y) ∘r
         (π2 : UnitS ×S UnitS →r UnitS))
-        (lax_tensorN L (UnitS,UnitS) (lax_unit L tt,lax_unit L tt))).
+        (φ₂[L; UnitS; UnitS] (φ₀[L] tt,φ₀[L] tt))).
       * symmetry. exact (@fmap_comp _ _ _ _ (@isFct SetCat SetCat L) _ _ _ _ _ _).
       * apply (@fmap_proper _ _ _ _ (@isFct SetCat SetCat L) _ _).
         intros [[] []]. split; reflexivity.
@@ -167,7 +165,7 @@ Proof.
         (const_resp UnitS y)) as H.
       unfold SM, SetCartMonoidal in H.
       rewrite !cartesian_tensor_map in H.
-      exact (H (lax_unit L tt,lax_unit L tt)).
+      exact (H (φ₀[L] tt,φ₀[L] tt)).
 Defined.
 
 (** Explicitly choose the native Applicative. The parent is exactly [L];
@@ -177,13 +175,11 @@ Defined.
 
 Program Definition SetLaxA
   : Applicative (SetCat@{u p _ _ _ _ _})
-      SetCat_HasTerminal SetCat_HasProduct
-  :=
-  {|ApplicativeToLaxMonoidalFct := L
-  ; applicative_pure := SetLaxPureN
-  ; applicative_pure_unit := set_lax_pure_unit
-  ; applicative_pure_product := set_lax_pure_product
-  |}.
+  := ApplicativeOfLaxMonoidalFct L
+    {|applicative_pure := SetLaxPureN
+    ; applicative_pure_unit := set_lax_pure_unit
+    ; applicative_pure_product := set_lax_pure_product
+    |}.
 
 End Lax.
 
@@ -211,15 +207,15 @@ Let SM
 
 (** 单位保持性已经逐点决定纯值保持性。 *)
 
-Lemma set_lax_hom_pure (L K : LaxMonoidalFct SM SM) (α : L ⇒ K)
-    (Hu : α UnitS ∘ lax_unit L ≈ lax_unit K)
+Lemma set_lax_hom_pure (L K : @LaxMonoidalFct _ _ SM SM) (α : L ⇒ K)
+    (Hu : α UnitS ∘ φ₀[L] ≈ φ₀[K])
   : ∀ X, α X ∘ pure[SetLaxA L] X ≈ pure[SetLaxA K] X.
 Proof.
   intros X x.
-  change (α X (fmap L (const_resp UnitS x) (lax_unit L tt)) ≈S
-    fmap K (const_resp UnitS x) (lax_unit K tt)).
-  transitivity (fmap K (const_resp UnitS x) (α UnitS (lax_unit L tt))).
-  - exact (nat_naturality α (const_resp UnitS x) (lax_unit L tt)).
+  change (α X (fmap L (const_resp UnitS x) (φ₀[L] tt)) ≈S
+    fmap K (const_resp UnitS x) (φ₀[K] tt)).
+  transitivity (fmap K (const_resp UnitS x) (α UnitS (φ₀[L] tt))).
+  - exact (nat_naturality α (const_resp UnitS x) (φ₀[L] tt)).
   - apply func_proper. exact (Hu tt).
 Defined.
 
@@ -228,7 +224,7 @@ Defined.
 
 (** 对这些显式原生提升，已有 Applicative 与幺半保持律等价；张量作用经积映射律比较。 *)
 
-Lemma set_lax_applicative_hom (L K : LaxMonoidalFct SM SM) (α : L ⇒ K)
+Lemma set_lax_applicative_hom (L K : @LaxMonoidalFct _ _ SM SM) (α : L ⇒ K)
   : is_applicative_hom (SetLaxA L) (SetLaxA K) α ↔
       is_lax_monoidal_hom L K α.
 Proof.
@@ -236,7 +232,7 @@ Proof.
   - intros H. split.
     + exact (applicative_hom_unit (SetLaxA L) (SetLaxA K) α H).
     + intros X Y.
-      transitivity (lax_tensorN K (X,Y) ∘
+      transitivity (φ₂[K; X; Y] ∘
         (@cross SC SetCat_HasProduct _ _ _ _ (α X) (α Y))).
       * exact (snd H X Y).
       * apply comp_proper; [reflexivity|]. symmetry.
@@ -245,7 +241,7 @@ Proof.
   - intros [Hu Ht]. split.
     + exact (set_lax_hom_pure L K α Hu).
     + intros X Y.
-      transitivity (lax_tensorN K (X,Y) ∘
+      transitivity (φ₂[K; X; Y] ∘
         (tensor_map (IM := HasMonoidal_interchange SM) (α X) (α Y))).
       * exact (Ht X Y).
       * apply comp_proper; [reflexivity|].
@@ -260,11 +256,11 @@ Defined.
     这里只需终纯值定律。 *)
 
 Lemma set_applicative_pure_roundtrip
-    (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
+    (A : Applicative SC)
   : pure[A] ≈N pure[SetLaxA A].
 Proof.
-  exact (set_pure_unique A (lax_unit A tt) (pure[A])
-    (applicative_pure_unit A tt)).
+  exact (set_pure_unique A (φ₀[A] tt) (pure[A])
+    (applicative_pure_unit (hasApplicative A) tt)).
 Defined.
 
 (** For any supplied native Applicatives, pure preservation adds no further
@@ -274,7 +270,7 @@ Defined.
     增加额外限制。 *)
 
 Lemma set_applicative_hom_lax
-    (A B : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
+    (A B : Applicative SC)
     (α : A ⇒ B)
   : is_applicative_hom A B α ↔ is_lax_monoidal_hom A B α.
 Proof.
@@ -305,7 +301,7 @@ Defined.
 (** 恒等分量保持恢复所得及原有运算。 *)
 
 Lemma set_applicative_roundtrip_hom
-    (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
+    (A : Applicative SC)
   : is_applicative_hom (SetLaxA A) A IdN.
 Proof.
   split.
@@ -318,7 +314,7 @@ Defined.
 (** 反向恒等比较复用一般的指定逆保持性。 *)
 
 Lemma set_applicative_roundtrip_inv_hom
-    (A : Applicative SC SetCat_HasTerminal SetCat_HasProduct)
+    (A : Applicative SC)
   : is_applicative_hom A (SetLaxA A) IdN.
 Proof.
   exact (applicative_hom_inverse (SetLaxA A) A IdN

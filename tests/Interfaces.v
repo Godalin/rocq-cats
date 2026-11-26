@@ -29,9 +29,9 @@ Fail Definition unchosen_vertex_coskeletal
   := ltac:(typeclasses eauto).
 End VertexCoskeletalChoice.
 
-(** Importing concrete models alone must not silently choose structures. *)
+(** Coproducts, equalizers, coequalizers and pushouts require explicit choices. *)
 
-(** 仅导入具体模型不得隐式选择结构。 *)
+(** 余积、等化子、余等化子和推出须显式选定。 *)
 
 Fail Definition unchosen_set_coproducts
   : HasCoproduct SetCat
@@ -74,21 +74,22 @@ Fail Definition arbitrary_candidate_unique (c : Hom Y Ω) : c ≈ χ m :=
 End Classifier.
 
 From Cats Require Import
+  Cat.Monoidal.Cartesian
   Instance.Set.Monoid.
 
-(** Importing a cartesian model must not choose a default monoidal structure. *)
+(** The standard terminal object and products induce the cartesian tensor on setoids. *)
 
-(** 导入笛卡尔模型不得自动选定默认幺半结构。 *)
+(** 标准终对象和积在广集上诱导笛卡尔张量。 *)
 
-Fail Definition unchosen_set_monoidal
+Definition inferred_set_monoidal
   : HasMonoidal SetCat
   := ltac:(typeclasses eauto).
 
-(** The weaker tensor choices also require explicit selection. *)
+(** The same tensor supplies the underlying binoidal actions. *)
 
-(** 较弱的张量选择同样须显式提供。 *)
+(** 同一张量也给出底层双张量作用。 *)
 
-Fail Definition unchosen_set_binoidal
+Definition inferred_set_binoidal
   : HasBinoidal SetCat
   := ltac:(typeclasses eauto).
 
@@ -136,7 +137,7 @@ From Cats Require Import
     显式选择。 *)
 
 Fail Definition unchosen_set_lax_monoidal
-  : LaxMonoidalFct SetCartMonoidal SetCartMonoidal
+  : @LaxMonoidalFct _ _ SetCartMonoidal SetCartMonoidal
   := ltac:(typeclasses eauto).
 
 (** Adding invertible comparisons must not choose a monoidal functor. *)
@@ -144,7 +145,7 @@ Fail Definition unchosen_set_lax_monoidal
 (** 增加比较的可逆性不得自动选取幺半函子。 *)
 
 Fail Definition unchosen_set_monoidal_fct
-  : MonoidalFct SetCartMonoidal SetCartMonoidal
+  : @MonoidalFct _ _ SetCartMonoidal SetCartMonoidal
   := ltac:(typeclasses eauto).
 
 From Cats Require Import
@@ -155,7 +156,7 @@ From Cats Require Import
 (** 导入理论不得为模型自动选定 Applicative。 *)
 
 Fail Definition unchosen_set_applicative
-  : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
+  : @Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
   := ltac:(typeclasses eauto).
 
 From Cats Require Import

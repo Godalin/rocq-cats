@@ -173,19 +173,16 @@ Fail Definition automatic_comma_products
 
 (** ** A Noncanonical Structural Arrow
 
-    Choose setoid products locally. The supplied comma cone flips both
+    Use the standard setoid products. The supplied comma cone flips both
     ignored Boolean tags in its structural arrow. Its projections retain
     distinct Boolean square tokens; no native record equality is needed. *)
 
 (** ** 非规范结构箭头
 
-    局部选择广集积。给定逗号锥的结构箭头翻转两个被忽略的布尔标签；两个
+    使用标准广集积。给定逗号锥的结构箭头翻转两个被忽略的布尔标签；两个
     投影保留不同的布尔方形标记，不要求记录原生相等。 *)
 
 Section TaggedCone.
-Local Instance cone_set_products
-  : HasProduct SetCat
-  := SetCat_HasProduct.
 
 (** Keep a supplied structure that changes both ignored tags. *)
 

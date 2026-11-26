@@ -70,11 +70,10 @@ Qed.
     载体／相等层级与选定所在广集层级对应。 *)
 
 Program Definition ArrowA
-  : Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
-  :=
-  {|ApplicativeToLaxMonoidalFct := ArrowGlobalLax A
-  ; applicative_pure := ArrowValuePureN
-  |}.
+  : @Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
+  := ApplicativeOfLaxMonoidalFct (ArrowGlobalLax A)
+    {|applicative_pure := ArrowValuePureN
+    |}.
 Next Obligation.
   intros x. change (arr[A; const_resp UnitS x] ≈ id[A UnitS]).
   transitivity (arr[A; (id_resp (X := UnitS))]).

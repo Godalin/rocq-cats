@@ -55,7 +55,6 @@ Constraint h <= u.
 Constraint e <= u.
 Context (C : Cat@{o h e l l}).
 Context (A B : Fct (C^op) SetCat@{u u _ _ _ _ _}).
-Local Existing Instance SetCat_HasProduct.
 
 (** Package the existing respectful evaluation as a component arrow. *)
 

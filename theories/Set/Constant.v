@@ -23,6 +23,14 @@ Program Definition const_resp (X : SetC) {Y : SetC} (y : Y)
   |}.
 Next Obligation. intros x x' H. reflexivity. Defined.
 
+(** [const[X] y] is the map on [X] with constant value [y]. *)
+
+(** [const[X] y] 是定义在 [X] 上、取常值 [y] 的映射。 *)
+
+Notation "'const[' X ']'" := (const_resp X)
+  (at level 0, format "const[ X ]")
+  : set_scope.
+
 (** Changing the constant respects target equality pointwise. *)
 
 (** 改变常值时，逐点保持目标相等。 *)

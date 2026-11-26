@@ -196,9 +196,9 @@ Defined.
 (** 状态强度在上下文及结果上均自然。 *)
 
 Program Definition StateStrengthN@{r e u p +} (R : SetC@{r e})
-  : (tensorF (HasMonoidal_interchange SetCartMonoidal) ∘F
+  : (tensorF (IM := HasMonoidal_interchange SetCartMonoidal) ∘F
       (IdF ×F StateF@{r e u p _ _ _ _} R)) ⇒
-      (StateF R ∘F tensorF (HasMonoidal_interchange SetCartMonoidal))
+      (StateF R ∘F tensorF (IM := HasMonoidal_interchange SetCartMonoidal))
   :=
   {|nt p := state_strength R (fst p) (snd p)
   |}.
@@ -248,7 +248,7 @@ Defined.
 (** 通过一般转换导出带定律的状态 Applicative；先运行左状态转移，再运行右侧。 *)
 
 Definition StateA@{r e u p +} (R : SetC@{r e})
-  : Applicative (SetCat@{u p _ _ _ _ _})
+  : @Applicative (SetCat@{u p _ _ _ _ _})
       SetCat_HasTerminal SetCat_HasProduct
   := MonadA (StateStrongM R).
 

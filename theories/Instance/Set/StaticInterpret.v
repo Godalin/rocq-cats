@@ -32,8 +32,6 @@ Universe u.
 Let C
   : Cat
   := SetCat@{u u _ _ _ _ _}.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 Local Existing Instance SetCat_HasExponential.
 Context (K : Cat)
     (A : Arrow C K

@@ -207,7 +207,7 @@ End UniversalCriterion.
 
 Section StaticModel.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (B : Applicative C HT HP).
+    `{HE : !HasExponential HP} (B : Applicative C).
 
 (** For the actual static Arrow, interpretation is exactly the existing
     terminal-input value map. Only ordinary exponential diagrams are

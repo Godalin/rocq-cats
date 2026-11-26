@@ -28,13 +28,13 @@ Local Open Scope monoidal_scope.
 
 Definition BicatMonad (B : Bicat) (X : ObB B)
   : Type
-  := MonoidObj (EndoMonoidal B X).
+  := MonoidObj (@HomCat B X X).
 
 (** Composition is the tensor of endofunctors; the identity is its unit. *)
 
 (** 复合是自函子的张量，恒等函子是其单位。 *)
 
-Definition EndofunctorMonoidal (C : Cat)
+Global Instance EndofunctorMonoidal (C : Cat)
   : HasMonoidal (FctCat C C)
   := EndoMonoidal CatBicat C.
 
@@ -46,9 +46,10 @@ Definition EndofunctorMonoidal (C : Cat)
 
 Theorem monad_monoid_laws {C : Cat} (T : Fct C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
-  : is_monad T η μ ↔ IsMonoidObj (EndofunctorMonoidal C) T η μ.
+  : is_monad T η μ ↔ IsMonoidObj T η μ.
 Proof.
-  split; [intros [Hu [Hv Ha]]; constructor | intros [Hu Hv Ha]; split; [| split]].
+  split; [intros [Hu [Hv Ha]]; constructor
+    | intros [Hu Hv Ha]; split; [| split]].
   - rewrite (@endomorphism_tensor_map CatBicat C _ _ _ _ η id).
     intros X.
     change (μ X ∘ (η (T X) ∘ id) ≈ id).
@@ -91,26 +92,25 @@ Defined.
 (** 复用固定数据上的定理，将普通 Monad 看作幺半群对象。 *)
 
 Program Definition MonadMonoid {C : Cat} (M : Monad C)
-  : MonoidObj (EndofunctorMonoidal C)
-  :=
-  {|MonoidCarrier := M
-  ; monoid_object_unit := η[M]
-  ; monoid_object_mul := μ[M]
-  ; isMonoidObj := fst (monad_monoid_laws _ _ _) (monad_axioms M)
-  |}.
+  : MonoidObj _
+  := MakeMonoidObj M
+    {|monoid_obj_unit := η[M]
+    ; monoid_obj_mul := μ[M]
+    ; isMonoidObj := fst (monad_monoid_laws _ _ _) (monad_axioms M)
+    |}.
 
 (** Recover the ordinary axioms from a monoid, preserving all its data. *)
 
 (** 从幺半群对象恢复通常公理，保持全部数据。 *)
 
-Program Definition MonoidMonad {C : Cat}
-    (A : MonoidObj (EndofunctorMonoidal C))
+Program Definition MonoidMonad {C : Cat} (A : MonoidObj _)
   : Monad C
   :=
-  {|MonadF := MonoidCarrier A
+  {|MonadF := (A : Ob _)
   ; monad_unit := e[A]
   ; monad_mul := m[A]
-  ; monad_axioms := snd (monad_monoid_laws _ _ _) (isMonoidObj A)
+  ; monad_axioms :=
+    snd (monad_monoid_laws _ _ _) (isMonoidObj A)
   |}.
 
 (** The two independently stated preservation predicates coincide on the
@@ -120,7 +120,8 @@ Program Definition MonoidMonad {C : Cat}
 
 Theorem monad_monoid_hom {C : Cat} (M N : Monad C)
     (α : M ⇒ N)
-  : is_monad_hom M N α ↔ is_monoid_hom (MonadMonoid M) (MonadMonoid N) α.
+  : is_monad_hom M N α
+    ↔ is_monoid_hom (MonadMonoid M) (MonadMonoid N) α.
 Proof.
   split; intros [Hu Hm]; split.
   - exact Hu.
@@ -135,15 +136,15 @@ Defined.
 (** 结构转换在底层自然变换上取恒等作用。 *)
 
 Program Definition MonadMonoidF (C : Cat)
-  : Fct (MonadCat C) (MonoidCat (EndofunctorMonoidal C))
+  : Fct (MonadCat C) (@MonoidCat _ _)
   :=
   {|fobj := MonadMonoid
   ; fmap M N α := (α.1; fst (monad_monoid_hom M N α.1) α.2)
   ; isFct :=
-      {|fmap_proper := _
-      ; fmap_id := _
-      ; fmap_comp := _
-      |}
+    {|fmap_proper := _
+    ; fmap_id := _
+    ; fmap_comp := _
+    |}
   |}.
 Next Obligation. intros α β E. exact E. Qed.
 Next Obligation. reflexivity. Qed.
@@ -154,16 +155,16 @@ Next Obligation. reflexivity. Qed.
 (** 恢复普通 Monad 及底层相同的同态。 *)
 
 Program Definition MonoidMonadF (C : Cat)
-  : Fct (MonoidCat (EndofunctorMonoidal C)) (MonadCat C)
+  : Fct (@MonoidCat _ _) (MonadCat C)
   :=
   {|fobj := MonoidMonad
-  ; fmap A B α := (α.1;
-      snd (monad_monoid_hom (MonoidMonad A) (MonoidMonad B) α.1) α.2)
+  ; fmap A B α := (α.1; snd (monad_monoid_hom
+    (MonoidMonad A) (MonoidMonad B) α.1) α.2)
   ; isFct :=
-      {|fmap_proper := _
-      ; fmap_id := _
-      ; fmap_comp := _
-      |}
+    {|fmap_proper := _
+    ; fmap_id := _
+    ; fmap_comp := _
+    |}
   |}.
 Next Obligation. intros α β E. exact E. Qed.
 Next Obligation. reflexivity. Qed.
@@ -175,7 +176,8 @@ Next Obligation. reflexivity. Qed.
 (** Monad 往返比较的分量为恒等态射：运算的计算保持不变，定律见证则可以不同。 *)
 
 Program Definition MonadMonoidRoundtripN (C : Cat)
-  : (MonoidMonadF C ∘F MonadMonoidF C) ⇒ (@IdF (MonadCat C))
+  : MonoidMonadF C ∘F MonadMonoidF C
+    ⇒ @IdF (MonadCat C)
   :=
   {|nt M := monad_hom_id M
   |}.
@@ -189,10 +191,11 @@ Qed.
 (** Monad 往返自然同构于恒等函子；这给出结构比较，不使用记录原生相等。 *)
 
 Definition monad_monoid_roundtrip_iso (C : Cat)
-  : (MonoidMonadF C ∘F MonadMonoidF C) ≅N (@IdF (MonadCat C)).
+  : MonoidMonadF C ∘F MonadMonoidF C ≅N @IdF (MonadCat C).
 Proof.
   exists (MonadMonoidRoundtripN C). intros M.
-  exists (monad_hom_id M). split; intros X; apply comp_id_l.
+  exists (monad_hom_id M).
+  split; intros X; apply comp_id_l.
 Defined.
 
 (** The monoid round trip also preserves carrier and operations, with
@@ -201,13 +204,14 @@ Defined.
 (** 幺半群往返也保持载体及运算，其自然比较由恒等同态组成。 *)
 
 Program Definition MonoidMonadRoundtripN (C : Cat)
-  : (MonadMonoidF C ∘F MonoidMonadF C) ⇒
-      (@IdF (MonoidCat (EndofunctorMonoidal C)))
+  : MonadMonoidF C ∘F MonoidMonadF C
+    ⇒ @IdF (@MonoidCat _ _)
   :=
   {|nt A := monoid_hom_id A
   |}.
 Next Obligation.
-  intros Z. cbn. rewrite comp_id_l, comp_id_r. reflexivity.
+  intros Z. cbn. rewrite comp_id_l, comp_id_r.
+  reflexivity.
 Qed.
 
 (** The monoid round trip is naturally isomorphic to the identity. *)
@@ -215,11 +219,12 @@ Qed.
 (** 幺半群往返自然同构于恒等函子。 *)
 
 Definition monoid_monad_roundtrip_iso (C : Cat)
-  : (MonadMonoidF C ∘F MonoidMonadF C) ≅N
-      (@IdF (MonoidCat (EndofunctorMonoidal C))).
+  : MonadMonoidF C ∘F MonoidMonadF C
+    ≅N @IdF (@MonoidCat _ _).
 Proof.
   exists (MonoidMonadRoundtripN C). intros A.
-  exists (monoid_hom_id A). split; intros X; apply comp_id_l.
+  exists (monoid_hom_id A).
+  split; intros X; apply comp_id_l.
 Defined.
 
 (** Ordinary monads are equivalent to monoid objects in the endofunctor
@@ -228,6 +233,7 @@ Defined.
 (** 普通 Monad 在对象及固定基底态射层面等价于自函子幺半范畴中的幺半群对象。 *)
 
 Definition monad_monoid_equiv (C : Cat)
-  : MonadCat C ≃C MonoidCat (EndofunctorMonoidal C)
+  : MonadCat C ≃C (@MonoidCat _ _)
   := (MonadMonoidF C; (MonoidMonadF C;
-      (monad_monoid_roundtrip_iso C, monoid_monad_roundtrip_iso C))).
+      (monad_monoid_roundtrip_iso C,
+        monoid_monad_roundtrip_iso C))).

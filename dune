@@ -1,3 +1,7 @@
+; Build local experiments only when explicitly targeted.
+; 本地实验仅在显式指定目标时构建。
+(vendored_dirs experiments)
+
 ; Explicit validation scopes; see docs/Testing.md.
 ; 验证范围见 docs/Testing.md；库入口不包含 Rocq 回归理论。
 (alias

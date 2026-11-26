@@ -1,6 +1,6 @@
 From Cats Require Export
   Cat.Computational.Arrow.Premonoidal
-  Cat.Monoidal.CartesianSymmetric.
+  Cat.Monoidal.Cartesian.
 
 Local Open Scope computation_scope.
 

@@ -32,8 +32,6 @@ From Cats Require Import
     语法弱化、新变量的保持与自然性。全部比较使用语义广集关系，包括函数
     类型处的比较。 *)
 
-Local Existing Instance SetCat_HasProduct.
-Local Existing Instance SetCat_HasTerminal.
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.

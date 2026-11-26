@@ -33,23 +33,26 @@ Context {C D : Cat}
 (** 已有数据上的 Type 值交换图，不要求定律记录相等。 *)
 
 Definition is_lax_monoidal_hom
-    (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
+    (L K : LaxMonoidalFct C D) (α : L ⇒ K)
   : Type
-  := (α 𝐈 ∘ φ₀[L] ≈ φ₀[K]) ∧
-      (∀ X Y, α (X ⊗ Y) ∘ φ₂[L; X; Y] ≈
-        φ₂[K; X; Y] ∘ tensor_map (IM := HasMonoidal_interchange MD) (α X) (α Y)).
+  := (α 𝐈 ∘ φ₀[L] ≈ φ₀[K])
+      ∧ (∀ X Y, α (X ⊗ Y) ∘ φ₂[L; X; Y]
+        ≈ φ₂[K; X; Y] ∘ (α X ⊗ α Y)).
 
 (** Naturally equal transformations have the same preservation property. *)
 
 (** 自然相等的变换具有相同保持性。 *)
 
-Lemma lax_monoidal_hom_equiv (L K : LaxMonoidalFct MC MD) (α β : L ⇒ K)
-    (E : α ≈N β)
-  : is_lax_monoidal_hom L K α ↔ is_lax_monoidal_hom L K β.
+Lemma lax_monoidal_hom_equiv
+    (L K : LaxMonoidalFct C D)
+    (α β : L ⇒ K) (E : α ≈N β)
+  : is_lax_monoidal_hom L K α
+    ↔ is_lax_monoidal_hom L K β.
 Proof.
   split; intros [Hu Ht]; split.
   - rewrite <- (E 𝐈). exact Hu.
-  - intros X Y. rewrite <- (E (X ⊗ Y)), <- (E X), <- (E Y).
+  - intros X Y.
+    rewrite <- (E (X ⊗ Y)), <- (E X), <- (E Y).
     exact (Ht X Y).
   - rewrite (E 𝐈). exact Hu.
   - intros X Y. rewrite (E (X ⊗ Y)), (E X), (E Y).
@@ -60,10 +63,12 @@ Defined.
 
 (** 恒等变换保持选定比较。 *)
 
-Lemma lax_monoidal_hom_id (L : LaxMonoidalFct MC MD)
+Lemma lax_monoidal_hom_id
+    (L : LaxMonoidalFct C D)
   : is_lax_monoidal_hom L L IdN.
 Proof.
-  split; cbn; intros; rewrite ?tensor_map_id, ?comp_id_l, ?comp_id_r;
+  split; cbn; intros;
+    rewrite ?tensor_map_id, ?comp_id_l, ?comp_id_r;
     reflexivity.
 Defined.
 
@@ -71,9 +76,11 @@ Defined.
 
 (** 由张量函子性，竖直复合保持两项比较。 *)
 
-Lemma lax_monoidal_hom_comp (L K J : LaxMonoidalFct MC MD)
+Lemma lax_monoidal_hom_comp
+    {L K J : LaxMonoidalFct C D}
     (β : K ⇒ J) (α : L ⇒ K)
-    (Hβ : is_lax_monoidal_hom K J β) (Hα : is_lax_monoidal_hom L K α)
+    (Hβ : is_lax_monoidal_hom K J β)
+    (Hα : is_lax_monoidal_hom L K α)
   : is_lax_monoidal_hom L J (β ∘Nv α).
 Proof.
   destruct Hα as [Hαu Hαt], Hβ as [Hβu Hβt]. split.
@@ -82,10 +89,10 @@ Proof.
   - intros X Y.
     change ((β (X ⊗ Y) ∘ α (X ⊗ Y)) ∘
       φ₂[L; X; Y] ≈ φ₂[J; X; Y] ∘
-        tensor_map (IM := HasMonoidal_interchange MD) (β X ∘ α X) (β Y ∘ α Y)).
+        ((β X ∘ α X) ⊗ (β Y ∘ α Y))).
     rewrite comp_assoc, Hαt, <- comp_assoc, Hβt, comp_assoc.
     apply comp_proper; [reflexivity |]. symmetry.
-    exact (@tensor_map_comp D _ (HasMonoidal_interchange MD) _ _ _ _ _ _ (β X) (α X) (β Y) (α Y)).
+    apply tensor_map_comp.
 Defined.
 
 (** A chosen natural inverse preserves comparisons by cancellation.
@@ -93,7 +100,8 @@ Defined.
 
 (** 指定自然逆通过消去保持比较；可逆性只用于本引理，不用于态射定义。 *)
 
-Lemma lax_monoidal_hom_inverse (L K : LaxMonoidalFct MC MD) (α : L ⇒ K)
+Lemma lax_monoidal_hom_inverse
+    (L K : LaxMonoidalFct C D) (α : L ⇒ K)
     (Hα : is_lax_monoidal_hom L K α) (I : α ⦂ L ≅N K)
   : is_lax_monoidal_hom K L (α ^-1N I).
 Proof.
@@ -108,13 +116,12 @@ Proof.
     change (α (X ⊗ Y) ∘
       ((I (X ⊗ Y)).1 ∘ φ₂[K; X; Y]) ≈
       α (X ⊗ Y) ∘ (φ₂[L; X; Y] ∘
-        tensor_map (IM := HasMonoidal_interchange MD) (I X).1 (I Y).1)).
+        ((I X).1 ⊗ (I Y).1))).
     rewrite <- !comp_assoc, (snd (I (X ⊗ Y)).2), comp_id_l,
       Ht, comp_assoc.
-    rewrite <- (@tensor_map_comp D _ (HasMonoidal_interchange MD) _ _ _ _ _ _
-      (α X) (I X).1 (α Y) (I Y).1).
+    rewrite <- (tensor_map_comp (α X) (I X).1 (α Y) (I Y).1).
     rewrite (snd (I X).2), (snd (I Y).2),
-      (tensor_map_id (IM := HasMonoidal_interchange MD) (K X) (K Y)), comp_id_r.
+      (tensor_map_id (K X) (K Y)), comp_id_r.
     reflexivity.
 Defined.
 
@@ -132,21 +139,23 @@ End Preservation.
     忘却函子保留该项原数据。 *)
 
 Section Categories.
-Context {C D : Cat} (MC : HasMonoidal C) (MD : HasMonoidal D).
+Context {C D : Cat}
+  `{MC : HasMonoidal C} `{MD : HasMonoidal D}.
 
 (** The subset hom-set retains Type-valued law witnesses. *)
 
 (** 子集 Hom 广集保留 Type 值定律见证。 *)
 
-Definition LaxMonoidalHomS (L K : LaxMonoidalFct MC MD)
+Definition LaxMonoidalHomS (L K : LaxMonoidalFct C D)
   : SetC
-  := SubsetS (@HomSet (FctCat C D) L K) (is_lax_monoidal_hom L K).
+  := SubsetS (@HomSet (FctCat C D) L K)
+      (is_lax_monoidal_hom L K).
 
 (** Lift identity without changing its underlying transformation. *)
 
 (** 提升恒等，不改变其底层变换。 *)
 
-Definition lax_monoidal_id (L : LaxMonoidalFct MC MD)
+Definition lax_monoidal_id (L : LaxMonoidalFct C D)
   : LaxMonoidalHomS L L
   := (IdN; lax_monoidal_hom_id L).
 
@@ -154,20 +163,23 @@ Definition lax_monoidal_id (L : LaxMonoidalFct MC MD)
 
 (** 提升竖直复合，保留两个原始见证。 *)
 
-Definition lax_monoidal_comp {L K J : LaxMonoidalFct MC MD}
+Definition lax_monoidal_comp {L K J : LaxMonoidalFct C D}
     (β : LaxMonoidalHomS K J) (α : LaxMonoidalHomS L K)
   : LaxMonoidalHomS L J
-  := (β.1 ∘Nv α.1; lax_monoidal_hom_comp L K J β.1 α.1 β.2 α.2).
+  := (β.1 ∘Nv α.1; lax_monoidal_hom_comp β.1 α.1 β.2 α.2).
+
+End Categories.
 
 (** Lax monoidal functors and monoidal natural transformations form a
     category, without equality of structures or preservation proofs. *)
 
 (** Lax 幺半函子与幺半自然变换组成范畴，无需结构或保持性证明相等。 *)
 
-Program Definition LaxMonoidalFctCat
+Program Definition LaxMonoidalFctCat (C D : Cat)
+    `{MC : !HasMonoidal C} `{MD : !HasMonoidal D}
   : Cat
   :=
-  {|Ob := LaxMonoidalFct MC MD
+  {|Ob := LaxMonoidalFct C D
   ; HomSet := LaxMonoidalHomS
   ; id := lax_monoidal_id
   ; comp _ _ _ := lax_monoidal_comp
@@ -187,8 +199,9 @@ Qed.
 
 (** 忘却比较及其保持性证明，保留所给底层函子和自然变换。 *)
 
-Program Definition LaxMonoidalForgetF
-  : Fct LaxMonoidalFctCat (FctCat C D)
+Program Definition LaxMonoidalForgetF {C D : Cat}
+    `{MC : !HasMonoidal C} `{MD : !HasMonoidal D}
+  : Fct (LaxMonoidalFctCat C D) (FctCat C D)
   :=
   {|fobj := LaxMonoidalFctToFct
   ; fmap L K α := α.1
@@ -206,8 +219,7 @@ Next Obligation. reflexivity. Qed.
 
 (** 忠实性使用继承的相等，不使用证明无关性。 *)
 
-Lemma lax_monoidal_forget_faithful
-  : is_faithful LaxMonoidalForgetF.
+Lemma lax_monoidal_forget_faithful {C D : Cat}
+    `{MC : !HasMonoidal C} `{MD : !HasMonoidal D}
+  : is_faithful (LaxMonoidalForgetF (C := C) (D := D)).
 Proof. intros L K α β E. exact E. Defined.
-
-End Categories.

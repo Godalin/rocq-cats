@@ -9,8 +9,6 @@ From Cats.Set Require Import
 Import Cats.Cat.Core Cats.Cat.Product.Core.
 
 Local Open Scope computation_scope.
-Local Existing Instance SetCat_HasTerminal.
-Local Existing Instance SetCat_HasProduct.
 
 (** * Pure Names for Dynamic Application
 
@@ -175,7 +173,7 @@ Lemma arrow_apply_const_post {X Y Z : SetC@{u p}}
 Proof.
   unfold arrow_apply_const.
   transitivity ((apply[AA; X; Z] ∘
-    arr[AA; comp_l_resp (f := h) × id_resp]) ∘
+    arr[AA; h _* × id_resp]) ∘
       arr[AA; ⟨const_resp X f, id⟩]).
   - rewrite comp_assoc, <- fmap_comp. apply comp_proper;
       [reflexivity |]. apply fmap_proper. intros x.

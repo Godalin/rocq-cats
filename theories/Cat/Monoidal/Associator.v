@@ -259,12 +259,12 @@ Lemma tensor_assoc_sequence_natural
 Proof.
   unfold tensor_sequence.
   rewrite tensor_r_comp, tensor_l_comp, <- !comp_assoc.
-  rewrite (@tensor_assoc_natural_r Z Z' X' Y' h).
+  rewrite (tensor_assoc_natural_r X' Y' h).
   rewrite !comp_assoc. apply comp_proper; [reflexivity |].
   rewrite <- comp_assoc,
-    (@tensor_assoc_natural_m Y Y' X' Z g), comp_assoc.
+    (tensor_assoc_natural_m X' Z g), comp_assoc.
   apply comp_proper; [reflexivity |].
-  exact (@tensor_assoc_natural_l X X' Y Z f).
+  exact (tensor_assoc_natural_l Y Z f).
 Qed.
 
 End Laws.

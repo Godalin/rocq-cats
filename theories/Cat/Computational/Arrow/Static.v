@@ -29,7 +29,7 @@ Local Open Scope computation_scope.
 
 Definition static_arr {C : Cat}
     {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
-    (A : Applicative C HT HP) {X Y : @Ob C} (f : Hom X Y)
+    (A : Applicative C) {X Y : @Ob C} (f : Hom X Y)
   : Hom 1 (A (Y ^ X)%ob)
   := pure[A; exp_name f].
 
@@ -39,7 +39,7 @@ Definition static_arr {C : Cat}
 
 Definition static_comp {C : Cat}
     {HT : HasTerminal C} {HP : HasProduct C} {HE : HasExponential HP}
-    (A : Applicative C HT HP) {X Y Z : @Ob C}
+    (A : Applicative C) {X Y Z : @Ob C}
     (g : Hom 1 (A (Z ^ Y)%ob)) (f : Hom 1 (A (Y ^ X)%ob))
   : Hom 1 (A (Z ^ X)%ob)
   := lift₂[A; internal_then X Y Z; f; g].
@@ -58,7 +58,7 @@ Notation "g '∘ˢ[' A ']' f" := (static_comp A g f)
 
 Section Static.
 Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    `{HE : !HasExponential HP} (A : Applicative C HT HP).
+    `{HE : !HasExponential HP} (A : Applicative C).
 
 (** Pure lifting respects the specified base equality. *)
 

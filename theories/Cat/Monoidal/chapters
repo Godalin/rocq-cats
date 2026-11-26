@@ -14,9 +14,6 @@ Natural.v
 Lifting.v
 Constant.v
 Transport.v
-Cartesian.v
-CartesianLifting.v
-CartesianStrength.v
 Symmetric.v
-CartesianSymmetric.v
+Cartesian.v
 Endomorphism.v
