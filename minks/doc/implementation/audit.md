@@ -113,3 +113,16 @@ Qualified lookup reads that data in a protected Rocq state. OCaml checks
 contextual key descriptors by conversion and on Section discharge.
 [Modules.v](../../tests/Modules.v) checks a qualified diamond before
 import and after re-export.
+
+## Source declaration metadata
+
+Native record generation emits glob declarations for every named stored
+projection, including inherited components, projection aliases and native
+parent views. Authored names keep their source locations. A generated name
+without a location uses the record name's range, or the current command's
+range when the record name is also generated. Several declarations may
+share that range. This fallback changes only glob output, not the record
+syntax or generated terms. Export tools own any presentation remapping.
+[Glob.v](../../tests/Glob.v) checks inherited, relative and native projection
+computations; [glob_test.ml](../../tests/glob_test.ml) checks the raw
+declarations, their uniqueness and their byte ranges without an export filter.

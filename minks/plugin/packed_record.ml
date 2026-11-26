@@ -27,11 +27,20 @@ let declare_native ~atts kind decl =
   match Vernacentries.preprocess_inductive_decl ~atts kind [decl] with
   | Record { flags; udecl; kind; primitive_proj; records } ->
     if Dumpglob.dump () then List.iter (fun {Record.Ast.name; idbuild; cfs} ->
-      Dumpglob.dump_definition name false tag;
-      Dumpglob.dump_definition idbuild false "constr";
+      (* Generated fields have no written identifier location. Locate only
+         their glob entries on the record name, or the command for a fully
+         generated base. Keep authored field locations and the AST intact. *)
+      let fallback = match name.CAst.loc with
+        | Some _ as loc -> loc
+        | None -> Loc.get_current_command_loc () in
+      let located node = match node.CAst.loc with
+        | Some _ -> node
+        | None -> CAst.make ?loc:fallback node.CAst.v in
+      Dumpglob.dump_definition (located name) false tag;
+      Dumpglob.dump_definition (located idbuild) false "constr";
       List.iter (fun (field, _, _) -> match field with
         | AssumExpr (n, _, _) | DefExpr (n, _, _, _) ->
-          Dumpglob.dump_constraint n false "proj") cfs) records;
+          Dumpglob.dump_constraint (located n) false "proj") cfs) records;
     (match Record.definition_structure ~flags udecl kind ~primitive_proj records with
      | [GlobRef.IndRef i] -> i
      | _ -> CErrors.anomaly Pp.(str "Expected one record declaration."))

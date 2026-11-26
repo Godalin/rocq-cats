@@ -7,3 +7,10 @@
  (name runtest)
  (package rocq-minks)
  (deps (alias all)))
+
+(test
+ (name glob_test)
+ (modules glob_test)
+ (package rocq-minks)
+ (action
+  (run %{test} %{dep:Glob.v} %{dep:Glob.glob})))
