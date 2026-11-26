@@ -37,7 +37,7 @@ Import Cats.Cat.Exponential.Core.
 
 Section ToposCoequalizers.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HX : !HasExponential HP}.
 Let EQ
   : HasEqualizer C
@@ -213,7 +213,7 @@ End ToposCoequalizers.
 
 Section ToposFiniteColimits.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HX : !HasExponential HP}.
 
 (** The general coproduct/coequalizer construction gives chosen pushouts. *)

@@ -32,7 +32,7 @@ From Cats Require Import
 
 Section Factorization.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT}.
+    `{HSC : !HasSubObjClassifier HT}.
 
 (** A characteristic arrow is true on a generalized element exactly when
     that element factors through the displayed monomorphism. *)
@@ -84,7 +84,7 @@ End Factorization.
 (** 分类从终对象出发、两个分量均为真的单态射；此构造不需要选定拉回。 *)
 
 Definition Conj {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HSC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
   : Hom (Ω × Ω) Ω
   := χ (Mono_term ⟨truth, truth⟩).
 
@@ -93,7 +93,7 @@ Definition Conj {C : Cat} `{HT : !HasTerminal C}
 (** 将分类对象的合取作用于同一上下文上的一对谓词。 *)
 
 Definition conjunction {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HSC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     {X : @Ob C} (f g : Hom X Ω)
   : Hom X Ω
   := Conj ∘ ⟨f, g⟩.
@@ -114,7 +114,7 @@ Infix "∧Ω" := conjunction
 
 Section Conjunction.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}.
+    `{HSC : !HasSubObjClassifier HT} `{HP : !HasProduct C}.
 
 (** Equivalent predicates give equivalent conjunctions. *)
 
@@ -169,7 +169,7 @@ End Conjunction.
 
 Section Intersection.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HSC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HPb : !HasPullback C}.
 
 (** The intersection is classified by the conjunction of its two

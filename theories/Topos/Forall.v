@@ -29,7 +29,7 @@ From Cats Require Import
 (** 使用选定积及指数，给出约束对象上恒真谓词的名称。 *)
 
 Definition ForallTruth {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} (A : C)
   : Hom 1 (Ω ^ A)
   := ƛ (truth ∘ !).
@@ -39,7 +39,7 @@ Definition ForallTruth {C : Cat} `{HT : !HasTerminal C}
 (** 分类该全局名称，得到全称量词箭头。 *)
 
 Definition Forall {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} (A : C)
   : Hom (Ω ^ A) Ω
   := χ (Mono_term (ForallTruth A)).
@@ -49,7 +49,7 @@ Definition Forall {C : Cat} `{HT : !HasTerminal C}
 (** 对积上下文上谓词的第二因子作全称量化。 *)
 
 Definition forall_predicate {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} (A : C) {X : C} (f : Hom (X × A) Ω)
   : Hom X Ω
   := Forall A ∘ (ƛ f).
@@ -70,7 +70,7 @@ Notation "'∀Ω[' A ']' f" := (forall_predicate A f)
 
 Section Forall.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}.
 
 (** Quantification respects the predicate's specified equality. *)
@@ -144,7 +144,7 @@ End Forall.
 
 Section ForallOrder.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** Projection substitution classifies the product with the bound object,

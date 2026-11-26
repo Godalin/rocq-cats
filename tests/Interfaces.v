@@ -55,7 +55,7 @@ Fail Definition mediator_without_commutativity : Hom P (Pb f g) :=
 End Pullback.
 
 Section Classifier.
-Context {C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjClassifier C HT}.
+Context {C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjClassifier HT}.
 Context {X Y : @Ob C} (m : X ↣ Y).
 
 (** The selected square is not evidence that an arbitrary candidate classifies m. *)

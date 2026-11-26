@@ -29,7 +29,7 @@ From Cats Require Import
 (** 蕴含保留选定真逆像之间的分解因子。 *)
 
 Definition predicate_le {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     {X : @Ob C} (f g : Hom X Ω)
   : Type
   := ClassifiedSub f ≲Sub ClassifiedSub g.
@@ -50,7 +50,7 @@ Infix "⊢Ω" := predicate_le
 
 Section Entailment.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}.
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}.
 
 (** Reuse the general inverse-image preorder construction with the
     transparent subobject preorder. Clients enable this value explicitly. *)
@@ -191,7 +191,7 @@ End Entailment.
 
 Section ConjunctionOrder.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C}.
 
 (** A predicate entails a conjunction exactly when it entails both

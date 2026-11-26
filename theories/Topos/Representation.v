@@ -36,7 +36,7 @@ From Cats Require Import
 
 Section ClassifyingInverseImages.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} `{HPb : !HasPullback C}.
+    `{HSC : !HasSubObjClassifier HT} `{HPb : !HasPullback C}.
 
 (** The subobject classified by [f] is the selected inverse image of truth. *)
 
@@ -103,7 +103,7 @@ End ClassifyingInverseImages.
 Section SubobjectRepresentations.
 Universe u p.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HSC : !HasSubObjClassifier C HT} `{HPb : !HasPullback C}.
+    `{HSC : !HasSubObjClassifier HT} `{HPb : !HasPullback C}.
 
 (** Every subobject is a unique substitution of truth. The unique mediator
     is its already chosen characteristic arrow. *)

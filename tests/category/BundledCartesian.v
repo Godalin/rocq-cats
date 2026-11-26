@@ -63,10 +63,10 @@ Definition inherited_curry {X Y Z : C} (f : Hom (Z × X) Y)
   : Hom Z (Y ^ X)
   := ƛ f.
 Definition inherited_classifier
-  : HasSubObjClassifier C (hasTerminal C)
+  : HasSubObjClassifier (hasTerminal C)
   := ltac:(typeclasses eauto).
 Definition inherited_natural_numbers
-  : HasNaturalNumbersObj C (hasTerminal C)
+  : HasNaturalNumbersObj (hasTerminal C)
   := ltac:(typeclasses eauto).
 
 End InheritedOperations.

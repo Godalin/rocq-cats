@@ -24,7 +24,7 @@ From Cats Require Import
 
 Section PredicateReindexComparisons.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}.
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}.
 
 (** Equal context arrows give equal substituted classifier arrows. *)
 

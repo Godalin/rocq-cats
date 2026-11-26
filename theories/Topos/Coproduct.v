@@ -37,7 +37,7 @@ Import Cats.Cat.Exponential.Core.
 
 Section ToposCoproducts.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HX : !HasExponential HP}.
 Let EQ
   : HasEqualizer C
@@ -513,7 +513,7 @@ End ToposCoproducts.
 
 Section ToposFiniteCoproducts.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HX : !HasExponential HP}.
 
 (** Explicitly select all colimits of a finite discrete shape. The empty

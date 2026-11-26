@@ -30,7 +30,7 @@ From Cats Require Import
 
 Section ForallAdjunction.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** The chosen projection quantifier is monotone by the existing theorem.
