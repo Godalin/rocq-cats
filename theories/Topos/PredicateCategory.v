@@ -23,7 +23,7 @@ From Cats Require Import
 
 Section PredicateCategories.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}.
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}.
 
 (** Predicates on a fixed context form the existing thin preorder model.
     Its identity and composition retain the transparent original factors. *)

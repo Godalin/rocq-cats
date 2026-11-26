@@ -23,7 +23,7 @@ From Cats Require Import
 
 Section ImplicationLaws.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasEqualizer C}.
 
 (** Exchange two antecedents using commutativity of their conjunction.

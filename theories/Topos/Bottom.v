@@ -28,7 +28,7 @@ From Cats Require Import
 (** 假是对真值变量作全称量化得到的结果。 *)
 
 Definition Bottom {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}
   : Hom 1 Ω
   := ∀Ω[Ω] (π2 : Hom (1 × Ω) Ω).
@@ -38,7 +38,7 @@ Definition Bottom {C : Cat} `{HT : !HasTerminal C}
 (** 将同一全局假箭头代入任意上下文。 *)
 
 Definition bottom {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP} {X : C}
   : Hom X Ω
   := Bottom ∘ !.
@@ -58,7 +58,7 @@ Notation "'⊥Ω'" := bottom : hom_scope.
 
 Section Bottom.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasExponential HP}.
 
 (** Substitution preserves the constantly false predicate. *)
@@ -99,7 +99,7 @@ End Bottom.
 
 Section BottomOrder.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** False entails any predicate by universal instantiation. *)

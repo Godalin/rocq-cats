@@ -19,28 +19,12 @@ From Cats Require Import
     分类子使用父结构选定的终对象；良点性、选择和自然数是额外结构，
     并非初等拓扑斯的要求。 *)
 
-Record Topos
-  := ToposOfCCC
+(** Store each chosen component once. Pullbacks together with the inherited
+    products give finite limits; classification uses the inherited terminal. *)
 
-  (** Share the selected finite products and exponentials through one
-      immediate parent, without choosing any of them again. *)
+(** 每项选定成分只保存一次。拉回与继承的积给出有限极限；分类使用继承的终对象。 *)
 
-  (** 通过唯一直接父结构共享选定的有限积和指数，不重复作出选择。 *)
-
-  { ToposToCCC :> CCC
-
-  (** Together with the inherited finite products, pullbacks provide
-      finite limits. *)
-
-  (** 拉回与继承的有限积共同给出有限极限。 *)
-
-  ; hasPullback :: HasPullback ToposToCCC
-
-  (** Classify subobjects relative to that same terminal choice. *)
-
-  (** 相对于同一终对象选择分类子对象。 *)
-
-  ; hasSubObjClassifier
-    :: HasSubObjClassifier ToposToCCC
-        (hasTerminal ToposToCCC)
-  }.
+Minks.Struct Topos
+  extends CCC
+  with  hasPullback as hasPullback : HasPullback,
+        hasSubObjClassifier as hasSubObjClassifier : HasSubObjClassifier.

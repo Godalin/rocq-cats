@@ -85,8 +85,10 @@ as objects, preserving functors as arrows and natural-isomorphism equality;
 
 ### Topos and ETCS
 
-`Topos` stores one chosen `CCC` with pullbacks and a subobject classifier.
-Its classifier uses the inherited terminal object. Import `Cats.Topos.Core`
+`Topos` is a Minks structure extending `CCC` by pullbacks and a subobject
+classifier. Its flat component storage retains each choice once; generated
+parent views reconstruct the same cartesian closed choices. The classifier
+uses the inherited terminal component. Import `Cats.Topos.Core`
 for elementary topos theory without well-pointedness, choice or a
 natural-numbers object. Import `Cats.Topos.Sub` directly for the classifier
 interface and its existing proofs. Optional natural-numbers structures live
@@ -162,8 +164,13 @@ common upper bounds using implication. Its transparent introductions and
 least-upper-bound correspondence retain entailment factors; substitution,
 monotonicity and the join laws reuse the same chosen data.
 
-`ETCS` extends its stored `Topos` with well-pointedness, split epimorphisms and a
-natural-numbers object, retaining the existing chosen initial-object field.
+`ETCS` is a Minks structure extending `Topos` with well-pointedness, split
+epimorphisms and a natural-numbers object, retaining the existing chosen
+initial-object field. `ToposOfCCC` and `ETCSOfTopos` are generated packers
+from the supplied parent; neither stores a second category or repeats its
+choices. The terminal-dependent mixins are `HasSubObjClassifier HT`,
+`HasNaturalNumbersObj HT` and `IsWellPointed HT`: the category is inferred
+from the selected terminal component `HT`.
 The single parent chain is `ETCS → Topos → CCC → CartCat → Cat`;
 terminal-dependent fields all use that same inherited choice. The optional
 [initial-object theorem](../../theories/Topos/Initial.v) now derives an initial

@@ -29,7 +29,7 @@ From Cats Require Import
 
 Section ToposInitial.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** False remains true after substitution when it was true in the

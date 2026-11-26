@@ -31,7 +31,7 @@ Import Cats.Cat.Exponential.Core.
 
 Section ToposImages.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasExponential HP}.
 
 (** Evaluate the variable predicate on the supplied arrow's values. *)

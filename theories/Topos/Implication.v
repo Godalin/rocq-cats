@@ -31,7 +31,7 @@ From Cats Require Import
 (** 分类合取与第一投影的选定等化子包含，使用具名选择，不要求选定拉回。 *)
 
 Definition Imp {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasEqualizer C}
   : Hom (Ω × Ω) Ω
   := χ (EqualizerMono (equalizer_universal (f := Conj) (g := π1))).
@@ -41,7 +41,7 @@ Definition Imp {C : Cat} `{HT : !HasTerminal C}
 (** 将蕴含箭头作用于同一上下文上的谓词。 *)
 
 Definition implication {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasEqualizer C} {X : C} (f g : Hom X Ω)
   : Hom X Ω
   := Imp ∘ ⟨f, g⟩.
@@ -62,7 +62,7 @@ Infix "⇒Ω" := implication
 
 Section Implication.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasEqualizer C}.
 
 (** Implication respects both predicates' specified equality. *)
@@ -116,7 +116,7 @@ End Implication.
 
 Section ImplicationOrder.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HE : !HasEqualizer C}.
 
 (** Entailment under a conjunct is entailment after restricting both

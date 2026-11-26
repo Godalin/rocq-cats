@@ -33,7 +33,7 @@ From Cats Require Import
 (** 在扩张上下文中，共同上界蕴含变量上界；所有操作使用给定积／等化子数据。 *)
 
 Definition disjunction_body {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HE : !HasEqualizer C} {X : C} (f g : Hom X Ω)
   : Hom (X × Ω) Ω
   := (((f ∘ π1) ⇒Ω π2) ∧Ω ((g ∘ π1) ⇒Ω π2)) ⇒Ω π2.
@@ -43,7 +43,7 @@ Definition disjunction_body {C : Cat} `{HT : !HasTerminal C}
 (** 对分类对象的两个投影，量化其变量上界。 *)
 
 Definition Disj {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HX : !HasExponential HP} `{HE : !HasEqualizer C}
   : Hom (Ω × Ω) Ω
   := ∀Ω[Ω] (disjunction_body (π1 : Hom (Ω × Ω) Ω) π2).
@@ -53,7 +53,7 @@ Definition Disj {C : Cat} `{HT : !HasTerminal C}
 (** 将同一析取箭头作用于一对谓词。 *)
 
 Definition disjunction {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HX : !HasExponential HP} `{HE : !HasEqualizer C}
     {X : C} (f g : Hom X Ω)
   : Hom X Ω
@@ -75,7 +75,7 @@ Infix "∨Ω" := disjunction
 
 Section Disjunction.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{HP : !HasProduct C}
+    `{HC : !HasSubObjClassifier HT} `{HP : !HasProduct C}
     `{HX : !HasExponential HP} `{HE : !HasEqualizer C}.
 
 (** The body respects both predicates before quantification. *)
@@ -162,7 +162,7 @@ End Disjunction.
 
 Section DisjunctionOrder.
 Context {C : Cat} `{HT : !HasTerminal C}
-    `{HC : !HasSubObjClassifier C HT} `{PB : !HasPullback C}
+    `{HC : !HasSubObjClassifier HT} `{PB : !HasPullback C}
     `{HP : !HasProduct C} `{HX : !HasExponential HP}
     `{HE : !HasEqualizer C}.
 
