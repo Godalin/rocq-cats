@@ -1,5 +1,6 @@
 From Cats Require Import
   Cat.Core
+  Cat.Arrow.Core
   Cat.Functor.Core
   Cat.Isomorphism
   Cat.Natural
@@ -53,10 +54,11 @@ Program Definition ContextElementsF
   :=
   {|fobj X := X
   ; fmap X Y f :=
-      {|context_map_base := element_map_base P f
-      ; context_map_ext := display_element_map P f
-      ; context_map_comm := display_element_map_proj P f
-      |}
+      MakeContextMap T X Y
+        {|arrow_bottom := element_map_base P f
+        ; arrow_top := display_element_map P f
+        ; arrow_comm := display_element_map_proj P f
+        |}
   ; isFct :=
       {|fmap_proper := _
       ; fmap_id := _
