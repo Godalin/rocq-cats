@@ -19,34 +19,35 @@ From Cats Require Import
     其相等保留分量为指定运输的自然同构。原生标签及 Hom 大小相互独立；
     辅助界 [l]、[a] 和 [b] 分别存储范畴与作用定律，不识别载体与相等宇宙。 *)
 
-Class VtxPresentation@{x e o h p l a b}
+(** A fixed label setoid can carry different ambient categories and
+    coherent actions. This component stores each category and action once;
+    it never replaces the label equality or selects a global model. *)
+
+(** 固定标签广集可以带有不同的环境范畴及相干作用。这个组件将每个范畴及作用
+    各保存一次，不替换标签相等，也不全局选定模型。 *)
+
+Minks.Mixin HasVtxAction@{x e o h p l a b} (X : SetC@{x e})
   :=
-  (** Labels carry their specified Type-valued equality. *)
-
-  (** 标签带有指定的 Type 值相等。 *)
-
-  { vertex_labels : SetC@{x e}
-  (** The ambient category retains independent object, hom and hom-equality
-      sizes. Its laws are bounded separately by [l]. *)
-
-  (** 环境范畴保留独立的对象、Hom 及 Hom 相等大小，其定律另以 [l] 为界。 *)
-
-  ; vertex_ambient : Cat@{o h p l l}
-  (** The unique coercion exposes the coherent object-action functor.
-      Parallel label-equality witnesses act by equal transport arrows.
-      Its respectfulness and composition-law bounds [a] and [b] are
-      independent of the ambient category-law bound [l]. *)
-
-  (** 唯一强制转换暴露相干对象作用函子；平行标签相等见证作用为相等运输箭头。
-      其保相等与复合定律界 [a] 和 [b] 独立于环境范畴定律界 [l]。 *)
-
+  { vertex_ambient : Cat@{o h p l l}
   ; vertex_action :> Fct@{x e Set e a b o h p l}
-      (EqGpd@{x e e} vertex_labels) vertex_ambient
+      (EqGpd@{x e e} X) vertex_ambient
   }.
 
-Arguments vertex_labels _ : clear implicits.
-Arguments vertex_ambient _ : clear implicits.
-Arguments vertex_action _ : clear implicits.
+Arguments vertex_ambient {_} _.
+Arguments vertex_action {_} _.
+
+(** The complete presentation reuses its native label setoid. Its callable
+    view is the stored action through [hasVtxAction]; the ambient category
+    remains explicit, avoiding a second competing object-type view. *)
+
+(** 完整呈现复用原生标签广集；可调用视图通过 [hasVtxAction] 读取保存的作用。
+    环境范畴保持显式，避免引入第二条相互竞争的对象类型视图。 *)
+
+Minks.Struct VtxPresentation@{x e o h p l a b}
+  extends SetC@{x e}
+  with  hasVtxAction as hasVtxAction : HasVtxAction@{x e o h p l a b}.
+
+Coercion hasVtxAction : VtxPresentation >-> HasVtxAction.
 
 (** Bundle an existing action by copying its maps and checking its laws
     pointwise at the common bound. Input law universes stay independent. *)
@@ -58,20 +59,19 @@ Program Definition VtxPresentationOf@{x e o h p l a b q c d}
     {X : SetC@{x e}} {C : Cat@{o h p l l}}
     (T : Fct@{x e Set q c d o h p l} (EqGpd@{x e q} X) C)
   : VtxPresentation@{x e o h p l a b}
-  :=
-  {|vertex_labels := X
-  ; vertex_ambient := C
-  ; vertex_action :=
-      {|fobj i := T i
-      ; fmap i j f := fmap T f
-      ; isFct :=
-          {|fmap_proper i j f g H :=
-              @fmap_proper _ _ _ _ (isFct T) i j f g H
-          ; fmap_id := _
-          ; fmap_comp := _
-          |}
-      |}
-  |}.
+  := MakeVtxPresentation X
+    {|vertex_ambient := C
+    ; vertex_action :=
+        {|fobj i := T i
+        ; fmap i j f := fmap T f
+        ; isFct :=
+            {|fmap_proper i j f g H :=
+                @fmap_proper _ _ _ _ (isFct T) i j f g H
+            ; fmap_id := _
+            ; fmap_comp := _
+            |}
+        |}
+    |}.
 Next Obligation. exact (@fmap_id _ _ _ _ (isFct T) X0). Qed.
 Next Obligation. exact (@fmap_comp _ _ _ _ (isFct T) X0 Y Z f g). Qed.
 

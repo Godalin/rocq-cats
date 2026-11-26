@@ -23,11 +23,10 @@ Universes x e o h p l a b.
 Program Definition VtxPresentationProduct
     (P Q : VtxPresentation@{x e o h p l a b})
   : VtxPresentation@{x e o h p l a b}
-  :=
-  {|vertex_labels := vertex_labels P ×S vertex_labels Q
-  ; vertex_ambient := vertex_ambient P ×C vertex_ambient Q
-  ; vertex_action := VtxProductObjF P Q
-  |}.
+  := MakeVtxPresentation (P ×S Q)
+    {|vertex_ambient := vertex_ambient P ×C vertex_ambient Q
+    ; vertex_action := VtxProductObjF P Q
+    |}.
 
 (** The diagram correspondence supplies both projections and uniqueness
     for presentation maps; the maps themselves retain transport. *)
@@ -73,11 +72,10 @@ Program Definition VtxPresentationCat_HasProduct
 
 Program Definition VtxPresentationTerminal
   : VtxPresentation@{x e o h p l a b}
-  :=
-  {|vertex_labels := UnitS@{x e}
-  ; vertex_ambient := CodiscreteCat@{o h p l} unit
-  ; vertex_action := VtxTerminalObjF@{x e o h p l a b}
-  |}.
+  := MakeVtxPresentation UnitS@{x e}
+    {|vertex_ambient := CodiscreteCat@{o h p l} unit
+    ; vertex_action := VtxTerminalObjF@{x e o h p l a b}
+    |}.
 
 (** The existing unique terminal map proves terminality of the bundle. *)
 

@@ -1976,3 +1976,16 @@ The Minks migration replaces the intermediate `vertex_fct` projection by
 `vertex_fct_ob_proper` and `vertex_fct_transport` now take this witness
 explicitly; they remain the only definitions of the two laws. No old
 projection or constructor alias is retained.
+
+## Vertex-presentation package
+
+The Minks migration replaces `vertex_labels` by the generated
+`VtxPresentationToSetC` view in
+[Vertex.Category](../../theories/Instance/Set/Vertex/Category.v).
+`MakeVtxPresentation` takes the original label setoid and one `HasVtxAction`
+component. `hasVtxAction` is the stored component projection; the existing
+`vertex_ambient` and `vertex_action` fields now belong to that fixed-label
+mixin. The component projection and action field provide the callable
+coercion path without a forwarding wrapper. The ambient category remains
+explicit. The old `vertex_labels` projection and `Build_VtxPresentation`
+constructor are removed.
