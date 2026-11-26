@@ -10,10 +10,6 @@ Local Open Scope ordinal_scope.
     Keep strict independent sizes and arbitrary actual cylinders. Initial
     gluing needs no Kan choice; the final extension client supplies all nine. *)
 
-(** * 较低相等界
-
-    保留严格独立大小与任意实际柱；初始粘合无须Kan，末尾延拓客户端显式给出九选择。 *)
-
 Section lower_sizes.
 Universes l u p.
 Constraint l < u, u < p.
@@ -103,10 +99,6 @@ End lower_sizes.
 
     Keep strict independent sizes and arbitrary actual cylinders. Initial
     gluing needs no Kan choice; the final extension client supplies all nine. *)
-
-(** * 较高相等界
-
-    保留严格独立大小与任意实际柱；初始粘合无须Kan，末尾延拓客户端显式给出九选择。 *)
 
 Section higher_sizes.
 Universes l u p.

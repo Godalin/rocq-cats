@@ -12,12 +12,6 @@ Local Open Scope ordinal_scope.
     Then compute both bracketings of the actual selected multiplication
     and consume the general law on the previously selected class magma. *)
 
-(** * 实际重括号与类结合律
-
-    粘合由系数构造的合成四面体，用已集成 Kan 模型填充其实际四维 horn，并
-    检查全部五个面。随后计算实际选定乘法的两种括号方式，在此前选定类原群上
-    消费一般结合律。 *)
-
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
@@ -25,8 +19,6 @@ Fail Definition unchosen_Kan
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** Proving associativity does not register stronger selected structures. *)
-
-(** 证明结合律不会注册更强的选定结构。 *)
 
 Fail Definition unchosen_semigroup
   : HasMagma BoolCocycleSphereClassS
@@ -37,8 +29,6 @@ Fail Definition unchosen_group
   := _.
 
 (** Three true-labelled inputs have false-labelled intermediate products. *)
-
-(** 三个 true 标签输入具有 false 标签中间乘积。 *)
 
 Definition first_composite
   := (CocycleTwoSphereMul (M := BoolS_Monoid)) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
@@ -55,8 +45,6 @@ Definition left_composite
 
 (** Retain the actual horn and its selected four-simplex filler. *)
 
-(** 保留实际 horn 及其选定四维单形填充。 *)
-
 Definition assoc_horn
   := SphereAssociativityHornN BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       first_composite second_composite left_composite.
@@ -65,8 +53,6 @@ Definition assoc_filler
   := horn_fill assoc_horn.
 
 (** Exercise both the supplied-filler and minimal chosen interfaces. *)
-
-(** 同时消费给定填充及最小选定接口。 *)
 
 Definition given_rebracketing
   := SphereCompositeReassociateOfFiller BoolCocycleModel
@@ -78,8 +64,6 @@ Definition chosen_rebracketing
       first_composite second_composite left_composite.
 
 (** Inspect the four triangular faces of a tetrahedron. *)
-
-(** 检查四面体的四个三角形面。 *)
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
@@ -102,8 +86,6 @@ Example actual_horn_computes
 Proof. vm_compute. reflexivity. Defined.
 
 (** Keep the actual selected multiplication for both bracketings. *)
-
-(** 两种括号方式都保留实际选定乘法。 *)
 
 Definition three_choice
   : HasHornFillers BoolCocycleModel 3 fin_first⁺⁺
@@ -135,8 +117,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** Compare unrelated supplied composites through the actual horn proof. *)
 
-(** 经实际 horn 证明比较无关构造的给定合成。 *)
-
 Example supplied_outputs_associate
   : (cocycle_two_sphere_mul (M := BoolS_Monoid)
         (cocycle_two_sphere_mul (M := BoolS_Monoid) (cocycle_two_sphere_resp (M := BoolS_Monoid) true)
@@ -154,8 +134,6 @@ Proof.
 Defined.
 
 (** Use exactly the existing selected magma, without choosing a semigroup. *)
-
-(** 使用完全相同的既有选定原群，不选择半群。 *)
 
 Definition class_magma
   : Magma

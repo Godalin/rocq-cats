@@ -4,7 +4,7 @@ This is the authoritative home for export conventions shared by websites,
 HTML reference pages, PDF reading editions and books, in both languages.
 Add or revise future presentation requirements here in the same change as
 their implementation. Keep commands, dependencies and implementation status
-in the [documentation guide](./Documentation.md), linking to these requirements
+in the [documentation guide](Documentation.md), linking to these requirements
 instead of maintaining competing rules. A requirement does not by itself
 claim that every backend already implements it.
 
@@ -166,7 +166,7 @@ Defined.
 ```
 
 See the [native annotation documentation](https://github.com/cpitclaudel/alectryon#controlling-output-in-literate-documents)
-and `NatIso_is_iso` in [Natural.v](../theories/Cat/Natural.v).
+and `NatIso_is_iso` in [Natural.v](../../theories/Cat/Natural.v).
 
 ## Readability and verification
 

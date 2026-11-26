@@ -16,12 +16,6 @@ Local Open Scope nat_scope.
     and at least one, respectively; each retains a further Boolean witness.
     Their maps agree on the overlap, but return native-distinct tags. *)
 
-(** * 保留代表的真实交叠
-
-    值是附带布尔标签的自然数，指定相等只比较数值。两个区域分别覆盖不大于一
-    和不小于一的数，并各保留额外的布尔隶属见证。两映射在交上相容，却返回
-    原生不同的标签。 *)
-
 Program Definition TaggedS
   : SetC
   :=
@@ -92,8 +86,6 @@ Definition right_value (n : nat) (H : 1 <= n) (tag witness : bool)
 
 (** Actual descent computes different values on the two sides. *)
 
-(** 实际下降在两侧计算不同值。 *)
-
 Example nonconstant_gluing
   : (glued 0 (left_value 0 (ltac:(lia)) true false),
      glued 0 (right_value 3 (ltac:(lia)) false true)) =
@@ -102,8 +94,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** Equal underlying values with different branches and witnesses may
     compute native-distinct representatives. *)
-
-(** 底层相等的值带不同分支与见证时，可以计算原生不同的代表。 *)
 
 Example overlap_outputs
   : (glued 0 (left_value 1 (ltac:(lia)) true false),
@@ -129,8 +119,6 @@ Definition actual_pushout
 
 (** Membership witnesses remain available even though equality ignores them. *)
 
-(** 即使相等忽略隶属见证，这些见证仍可计算读取。 *)
-
 Definition retained_witness
     (x : RegionPsh (RegionUnion LeftRegion RightRegion) 0)
   : bool
@@ -150,11 +138,6 @@ Fail Definition outputs_are_native_equal
 
     The two constant Boolean maps disagree at the actual overlap value one.
     Their two recovery equations would force false and true to be equal. *)
-
-(** ** 不相容映射没有中介
-
-    两个布尔常值映射在实际交叠值一处不同；若两条恢复方程同时成立，就会强迫
-    false 与 true 相等。 *)
 
 Definition B
   : Fct (Δ^op) SetCat

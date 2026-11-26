@@ -2,8 +2,6 @@ From Cats.STLC Require Import NormalEta.
 
 (** * Long Normal Form Interface Regressions *)
 
-(** * 长正规形接口回归检查 *)
-
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_ren_scope.
@@ -14,19 +12,12 @@ Local Open Scope stlc_tm_scope.
     Fix a signature, context, type and neutral term with [b < e].
     Check that eta correctness accepts the larger evidence universe. *)
 
-(** ** 高于语法层级的 η 正确性
-
-    固定签名、上下文、类型和中性项，并取 [b < e]，检查 η 正确性接受较大的
-    证据宇宙。 *)
-
 Section LargerEvidence.
 Universes b e.
 Constraint b < e.
 Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B) (n : Ne Γ A).
 
 (** Eta correctness accepts evidence strictly above the syntax level. *)
-
-(** η 正确性允许见证严格高于语法层级。 *)
 
 Definition separated_eta_correctness
   : TmEq@{b e _} (embed_ne n) (embed_nf (eta_expand_ne n))
@@ -39,18 +30,11 @@ End LargerEvidence.
     Keep the same syntactic inputs but choose evidence at [b] itself.
     Check that eta correctness needs no strict universe increase. *)
 
-(** ** 语法层级处的 η 正确性
-
-    仍固定同类语法输入，但将证据取在 [b] 本身，检查 η 正确性无须严格提升
-    宇宙。 *)
-
 Section SameLevel.
 Universe b.
 Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B) (n : Ne Γ A).
 
 (** No strict inequality of evidence levels is required. *)
-
-(** 见证层级也无须严格高于语法。 *)
 
 Definition same_level_eta_correctness
   : TmEq@{b b _} (embed_ne n) (embed_nf (eta_expand_ne n))
@@ -63,17 +47,10 @@ End SameLevel.
     Fix arbitrary base labels [p] and [q] and a context [Γ]. Check
     type-directed expansion and its behavior under binders and renaming. *)
 
-(** ** 可执行的 η 展开
-
-    固定任意基标签 [p]、[q] 与上下文 [Γ]，检查类型导向展开及其在绑定与
-    重命名下的计算。 *)
-
 Section Computations.
 Context {B : Type} (p q : B) (Γ : Ctx B).
 
 (** Function expansion binds a fresh base argument and weakens its head. *)
-
-(** 函数展开绑定新基类型实参，并弱化其头部。 *)
 
 Example base_function_expansion (f : Ne Γ (ty_base p ⇒ ty_base q))
   : eta_expand_ne f = nf_lam
@@ -81,8 +58,6 @@ Example base_function_expansion (f : Ne Γ (ty_base p ⇒ ty_base q))
 Proof. reflexivity. Qed.
 
 (** A product-domain argument is a long pair, including canonical unit. *)
-
-(** 积定义域的实参为长配对，其中单位分量取规范单位项。 *)
 
 Example product_domain_expansion
     (f : Ne Γ ((ty_base p × ⊤) ⇒ ty_base q))
@@ -94,8 +69,6 @@ Proof. reflexivity. Qed.
 (** A function-domain argument itself introduces a second binder; the
     first argument variable is weakened under that binder. *)
 
-(** 函数定义域的实参自身引入第二个绑定；第一个实参变量在此绑定下弱化。 *)
-
 Example function_domain_expansion
     (f : Ne Γ ((ty_base p ⇒ ty_base q) ⇒ ty_base q))
   : eta_expand_ne f = nf_lam
@@ -106,8 +79,6 @@ Example function_domain_expansion
 Proof. reflexivity. Qed.
 
 (** Unit eta erases blocked syntax, while product eta keeps its projections. *)
-
-(** 单位 η 忘却被阻塞语法，积 η 则保留两个投影。 *)
 
 Example canonical_unit_expansion (n : Ne Γ ⊤)
   : eta_expand_ne n = nf_unit.
@@ -121,9 +92,6 @@ Proof. reflexivity. Qed.
 (** Renaming may duplicate positions: these are arbitrary renamings, not
     just order-preserving context embeddings. The bound variable remains
     newest while both older variables are identified. *)
-
-(** 重命名允许复制位置：这里使用任意重命名，不只保序上下文嵌入。绑定变量
-    保持最新位置，两个较旧变量则被识别。 *)
 
 Definition merge_base_variables
   : Ren (Γ ▻ ty_base p) (Γ ▻ ty_base p ▻ ty_base p)
@@ -146,8 +114,6 @@ Proof. reflexivity. Qed.
 
 (** Expansion after variable identification agrees strictly with renaming
     the expanded form; arbitrary label equality is never decided. *)
-
-(** 识别变量后再展开，与重命名已展开的正规形严格相同，从未判定任意标签相等。 *)
 
 Example expansion_after_identification
   : eta_expand_ne

@@ -1,8 +1,6 @@
 (* Partial editorial preferences keep unlisted modules discoverable.
    A directory entry also selects all its descendants. *)
 
-(* 局部阅读偏好保留未列模块的自动发现；目录条目同时选择其后代模块。 *)
-
 let entries text =
   String.split_on_char '\n' text |> List.map String.trim
   |> List.filter (fun line -> line <> "" && line.[0] <> '#')
@@ -27,8 +25,6 @@ let prefer entries paths =
 
 (* Imports come from Rocq's compiled metadata, not a source-text heuristic. *)
 
-(* 导入关系来自 Rocq 的编译元数据，不从源码文本猜测。 *)
-
 let imports text =
   String.split_on_char '\n' text |> List.filter_map (fun line ->
     match String.split_on_char ' ' line |> List.filter ((<>) "") with
@@ -39,8 +35,6 @@ let imports text =
 
 (* Every dependency precedes its client. DFS expands prerequisites of a
    preferred module before choosing a lower-priority, independent module. *)
-
-(* 所有依赖均先于使用者；深度优先遍历先补齐偏好模块的依赖，再选择低优先级模块。 *)
 
 let arrange ~dependencies paths =
   let states = Hashtbl.create (List.length paths) in

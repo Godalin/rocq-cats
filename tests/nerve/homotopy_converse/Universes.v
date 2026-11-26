@@ -10,11 +10,6 @@ From Cats Require Import
     arbitrary homotopies in both strict orders of the common value sizes,
     including both round trips and respect for homotopy-map equality. *)
 
-(** * 在独立大小下恢复自然变换
-
-    源与目标具有相反的原生载体／相等大小配置。在共同值大小的两种严格次序下
-    检查任意同伦，包括两个往返律及对同伦映射相等的保持。 *)
-
 Section Levels.
 Universes e h o l u p.
 Constraint e < h.
@@ -39,8 +34,6 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
 
 (** Value equality below the carrier still recovers an ordinary transformation. *)
 
-(** 值相等低于载体时，仍恢复普通自然变换。 *)
-
 Definition low_value_recovery
   : F ⇒ G
   := VtxNerveInvHomotopyN H.
@@ -62,8 +55,6 @@ Definition low_value_recovery_proper
 
 (** The opposite strict order also supports recovery and its full round trip. *)
 
-(** 相反的严格次序也支持恢复及完整往返律。 *)
-
 Definition high_value_recovery
   : F ⇒ G
   := VtxNerveInvHomotopyN L.
@@ -80,8 +71,6 @@ Proof.
 Defined.
 
 (** Transformation equality is native and independent of the raised values. *)
-
-(** 自然变换相等是原生相等，与提升后的值大小独立。 *)
 
 Definition low_value_transformation_roundtrip
   : VtxNerveInvHomotopyN

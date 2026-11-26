@@ -10,11 +10,6 @@ Local Open Scope algebra_scope.
     An inverse choice extends one exact monoid. Repacking must preserve its
     multiplication, unit, inverse and Type-valued law witnesses together. *)
 
-(** * 固定父结构的群扩充
-
-    逆的选择扩充恰好一个幺半群；重新包装须一同保留其乘法、单位元、逆与
-    Type 值定律见证。 *)
-
 Section UnchosenExtension.
 Context (M : Monoid).
 
@@ -29,17 +24,11 @@ End UnchosenExtension.
     Fix a monoid and a candidate operation with its inverse laws. Actual
     rewriting derives respectfulness without selecting a group extension. *)
 
-(** ** 给定逆运算的保相等性
-
-    固定幺半群及带逆律的候选运算；无须选取群扩充即可实际重写。 *)
-
 Section CandidateRespectfulness.
 Context {M : Monoid} {i : M → M} `{Hi : !@IsInverse M i (Monoid_hasMagma M) (hasUnit M)}.
 
 (** Candidate inversion rewrites inside multiplication using derived
     respectfulness alone. *)
-
-(** 候选逆仅使用导出的保相等性，即可在乘法内部重写。 *)
 
 Example candidate_inverse_rewriting (x y z : M) (H : x ≈S y)
   : i x ⋅ z ≈S i y ⋅ z.
@@ -52,11 +41,6 @@ End CandidateRespectfulness.
     The indiscrete bool-valued equality permits distinct native inverse
     operations and law tokens on the same monoid. Algebraic equivalence
     does not identify these computational selections. *)
-
-(** ** 竞争选择与可观察的定律见证
-
-    bool 值全关系相等允许同一幺半群具有原生不同的逆运算及定律标记；代数等价
-    不等同这些计算选择。 *)
 
 Program Definition TokenS
   : SetC
@@ -142,8 +126,6 @@ Proof. reflexivity. Qed.
 (** Shared notation keeps the explicitly typed group's inverse even when
     another extension on the same parent is available to instance search. *)
 
-(** 同一父结构上的另一扩充可被实例搜索找到时，共用记号仍保留显式指定群的逆。 *)
-
 Example notation_stored_inverses
   : ((true : FirstGroup)⁻¹, (true : SecondGroup)⁻¹) = (false, true).
 Proof. reflexivity. Qed.
@@ -159,8 +141,6 @@ Example stored_right_tokens
 Proof. reflexivity. Qed.
 
 (** The actual one-object groupoid keeps the selected inverse and laws. *)
-
-(** 实际单对象群胚保留选定的逆及定律。 *)
 
 Example groupoid_inverse_uses_stored_choices
   : let i := @gpd_iso (MonoidCat FirstGroup)
@@ -190,10 +170,6 @@ Fail Definition native_left_tokens_equal
     Both carrier/equality orders and a larger law bound remain available;
     coercion to the parent recovers exactly its supplied setoid. *)
 
-(** ** 严格独立层级
-
-    载体／相等两种次序及更大的定律上界均可使用；父结构转换恢复恰好给定广集。 *)
-
 Section StrictUniverses.
 Universes u p l.
 Constraint u < p, p < l.
@@ -222,10 +198,6 @@ End StrictUniverses.
 
     Both paths retain the same monoid, including its law witnesses.
     The Boolean model keeps its computation through the packed operations. *)
-
-(** ** 阿贝尔群的父结构
-
-    两条路径保留同一幺半群及其定律见证。布尔模型的打包运算仍可直接计算。 *)
 
 Example ab_group_shared_monoid (A : AbGroup)
   : GroupToMonoid (AbGroupToGroup A) = CommMonoidToMonoid (AbGroupToCommMonoid A)

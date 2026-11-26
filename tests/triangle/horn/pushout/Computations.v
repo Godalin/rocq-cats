@@ -16,11 +16,6 @@ Local Open Scope ordinal_scope.
     The extension uses the actual geometric square, not an identity
     attachment, and reads both new-cell and old-region values. *)
 
-(** * 每个具体步骤保留其新增单形
-
-    布尔相等见证使原生不同的填充选择可见。延拓使用实际几何方形而非恒等附着，
-    同时读取新增单形与旧区域取值。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -76,8 +71,6 @@ Definition parameters
 (** All twenty-seven actual attachment squares compute both independent
     selected new-cell values. *)
 
-(** 全部二十七个实际附着方形计算两份独立的选定新增单形值。 *)
-
 Example all_new_choices_compute
   : map (λ r, map (λ s, (new_value r s false, new_value r s true)) steps)
       parameters = repeat (repeat (false, true) 9) 3.
@@ -101,8 +94,6 @@ Defined.
 
 (** The chosen new cell does not replace the actual old-domain value. *)
 
-(** 所选新增单形不替换实际旧域取值。 *)
-
 Example all_old_values_compute
   : map (λ r, map (λ s, (extension r s false).1 2
       (TriangleHornStageInclusionN r s 2 (old_point r s))) steps) parameters
@@ -110,8 +101,6 @@ Example all_old_values_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** Recovery of an actual degree-five factor traverses the new cell image. *)
-
-(** 实际五维因子的恢复经过新增单形像。 *)
 
 Definition repeated_factor (s : Ordinal 8)
   : (@Hom Δ) 5 (S (simplex_triangle_horn_face_dim s))
@@ -153,11 +142,6 @@ Fail Definition geometry_selects_all_pushouts
     choice supplies exactly the horn requested by each concrete step.
     Old recovery holds on the full stage, not only on vertices. *)
 
-(** ** 真正的布尔 cocycle Kan 客户端
-
-    沿空间投影限制非零三角形，得到实际旧阶段映射。已集成的全维 cocycle Kan
-    选择只提供每个具体步骤请求的 horn；旧域恢复在整个阶段成立，而非仅在顶点。 *)
-
 Program Definition spatial_projection
   : TriangleHornAmbient ⇒ (Δ[2] : Fct (Δ^op) SetCat)
   :=
@@ -195,8 +179,6 @@ Defined.
 
 (** The actual Kan extension preserves the true coefficient on an old
     two-simplex, using the full prescribed map rather than a unit value. *)
-
-(** 实际 Kan 延拓保持旧二维单形上的真系数，使用完整给定映射而非单位值。 *)
 
 Example actual_nonzero_old_value_computes
   : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))

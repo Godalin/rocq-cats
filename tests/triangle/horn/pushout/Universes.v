@@ -6,18 +6,11 @@ Local Open Scope ordinal_scope.
 
 (** * Concrete Attachments at Strict Value Bounds *)
 
-(** * 严格取值界下的具体附着 *)
-
 (** ** Lower Equality
 
     Fix a missing parameter face and an arbitrary step. Geometry needs
     no target choice; extension consumes only this step's selected horn.
     Carrier and specified-equality levels are strictly different. *)
-
-(** ** 较低相等层级
-
-    固定参数缺面与任意一步；几何无需目标选择，延拓只消费该步的选定 horn。
-    载体与指定相等层级严格不同。 *)
 
 Section lowerSizes.
 Universes l u p.
@@ -95,11 +88,6 @@ End lowerSizes.
     Fix a missing parameter face and an arbitrary step. Geometry needs
     no target choice; extension consumes only this step's selected horn.
     Carrier and specified-equality levels are strictly different. *)
-
-(** ** 较高相等层级
-
-    固定参数缺面与任意一步；几何无需目标选择，延拓只消费该步的选定 horn。
-    载体与指定相等层级严格不同。 *)
 
 Section higherSizes.
 Universes l u p.

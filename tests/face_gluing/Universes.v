@@ -9,17 +9,11 @@ Local Open Scope ordinal_scope.
     Matching witnesses may be larger than both value universes. None of
     the gluing operations below requires a Kan selection. *)
 
-(** * 独立的值、相等与成员大小
-
-    匹配成员见证可以大于值的两个宇宙；下列粘合均不要求 Kan 选择。 *)
-
 Section StrictSizes.
 Universes l u p r.
 Constraint l < u, u < p, p < r.
 
 (** Lower equality, with large Type-valued membership. *)
-
-(** 较低相等层级与较大的 Type 值成员关系。 *)
 
 Definition lower_matching
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (n : nat)
@@ -35,8 +29,6 @@ Definition lower_matching
 
 (** Higher equality with the same independent membership size. *)
 
-(** 较高相等层级与相同的独立成员大小。 *)
-
 Definition higher_matching
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (n : nat)
     (P : Ordinal (S (S n)) → Type@{r})
@@ -50,8 +42,6 @@ Definition higher_matching
   := CofaceFacesMatching X n P a H.
 
 (** Actual horns at both equality levels. *)
-
-(** 两种相等层级下的实际 horn。 *)
 
 Definition lower_horn
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (n : nat)
@@ -69,8 +59,6 @@ Definition higher_horn
 
 (** The supplied simplex really fills each whole descended horn. *)
 
-(** 给定单形确实填充每个完整的下降 horn。 *)
-
 Definition lower_filler
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (n : nat)
     (i : Ordinal (S (S n))) (z : X (S (S n)))
@@ -84,8 +72,6 @@ Definition higher_filler
   := symmetry (horn_faces_of_simplex X n i z).
 
 (** Boundary gluing retains its actual restriction equations at both sizes. *)
-
-(** 两种大小下的边界粘合均保留实际限制方程。 *)
 
 Definition lower_boundary
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (n : nat)

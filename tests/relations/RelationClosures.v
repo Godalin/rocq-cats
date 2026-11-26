@@ -7,11 +7,6 @@ From Cats.Set Require Import Generated.
     data carried through the generic closure laws and the legacy interface.
     They do not require equality between different derivations. *)
 
-(** * 关系闭包接口回归检查
-
-    这些检查分离载体、边与路径的宇宙，再观察通过一般闭包律及旧接口传递的
-    数据；不要求不同推导相等。 *)
-
 Local Open Scope relation_scope.
 Local Open Scope set_scope.
 
@@ -22,8 +17,6 @@ Context (A : Type@{a}) (R : A → A → Type@{r}).
 
 (** The chosen endomorphisms retain a witness bound strictly above the
     carrier. In particular, their packaging must not identify these levels. *)
-
-(** 选定自映射保留严格高于载体的见证界，特别是封装不能识别这两个层级。 *)
 
 Definition large_witness_path_closure
   : Clos (@subrelation@{a r r} A)
@@ -48,9 +41,6 @@ Context (A : Type@{a}) (R : A → A → Type@{r}).
 (** Symmetry needs no carrier-sized witness, whereas paths may retain
     intermediate elements in a third, larger universe. *)
 
-(** 对称性不需要与载体同样大的见证；路径则可在第三个更大的宇宙内保留中间
-    元素。 *)
-
 Definition small_witness_symmetric_closure
   : Clos (@subrelation@{a r r} A)
   := SymClosOp A.
@@ -70,8 +60,6 @@ Section WitnessComputations.
 (** A relation whose witnesses are observable natural numbers. Composition
     adds the numbers, and the empty path contributes zero. *)
 
-(** 关系见证是可观察的自然数；复合将数相加，空路径贡献零。 *)
-
 Definition WeightedRelation (_ _ : bool)
   : Type
   := nat.
@@ -84,8 +72,6 @@ Local Program Instance weighted_relation_PreOrder
   |}.
 
 (** Fold oriented paths without discarding either orientation's payload. *)
-
-(** 折叠带方向的路径，不丢弃任一方向携带的数据。 *)
 
 Definition path_weight {x y : bool} (p : WeightedRelation^±* x y)
   : nat
@@ -100,8 +86,6 @@ Definition weighted_path
 
 (** Generic inflation and flattening must compute through the explicitly
     chosen inclusion preorder and the composite closure construction. *)
-
-(** 一般嵌入与压平须通过显式选定的包含预序及复合闭包构造进行计算。 *)
 
 Example equivalence_inflation_computes
   : path_weight
@@ -119,8 +103,6 @@ Proof. reflexivity. Qed.
 
 (** Comparing with the existing derivation-tree interface also preserves
     the payload through both transparent witness transformations. *)
-
-(** 与既有推导树接口的比较，也通过两个透明见证转换保留携带的数据。 *)
 
 Example legacy_comparison_computes
   : path_weight

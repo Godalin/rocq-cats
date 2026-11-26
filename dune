@@ -1,9 +1,7 @@
 ; Build local experiments only when explicitly targeted.
-; 本地实验仅在显式指定目标时构建。
 (vendored_dirs experiments)
 
-; Explicit validation scopes; see docs/Testing.md.
-; 验证范围见 docs/Testing.md；库入口不包含 Rocq 回归理论。
+; Explicit validation scopes; see docs/development/Testing.md.
 (alias
  (name check-library)
  (deps (alias_rec theories/all)))
@@ -11,13 +9,3 @@
 (alias
  (name check-tests)
  (deps (alias tests/runtest)))
-
-(alias
- (name check-core)
- (deps
-  tests/category/CoreInterfaces.vo
-  tests/algebra/AlgebraNotation.vo
-  tests/algebra/MonoidExtensions.vo
-  tests/algebra/GroupExtensions.vo
-  tests/category/BundledGroupoid.vo
-  tests/category/BundledCartesian.vo))

@@ -13,11 +13,6 @@ Local Open Scope ordinal_scope.
     maps and independently enabled cylinder presentations. VM computes the
     values while concrete clients consume actual equality cylinders. *)
 
-(** * 相同代表与实际相等见证
-
-    原生不同的三角形及边界见证经过两份比较映射与独立启用呈现后仍保留。
-    VM检查取值，实际客户端则消费真正的相等柱。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -131,11 +126,6 @@ Definition representative_round_trip_is_native (a : TwoSphereS W false)
     coefficient isomorphism. This classifies this model's cylinder equality;
     no general π₂ or weak-equivalence identification follows. *)
 
-(** ** 既有系数分类器的实际消费
-
-    复合通用呈现比较与既有布尔系数同构，分类此模型的柱相等；不推出一般π₂
-    或弱等价识别。 *)
-
 Local Opaque two_sphere_cylinder_class_iso cocycle_two_sphere_class_iso.
 
 Definition Z
@@ -181,10 +171,6 @@ Defined.
 
     Explicitly enable the easy Boolean-witness Kan model only in this
     section; import must still not select a group or raw equivalence. *)
-
-(** ** 完整Kan不选择新呈现的代数
-
-    仅在本节显式启用布尔见证Kan模型；导入仍不应选择群或原始关系的等价结构。 *)
 
 Section ExplicitKan.
 

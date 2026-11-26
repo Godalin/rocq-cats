@@ -15,11 +15,6 @@ Local Open Scope ordinal_scope.
     independently return false or true. Commuting squares must therefore
     use generated equality, not native equality or identical choices. *)
 
-(** * 映射无需保持选定填充
-
-    此常值单纯广集的每个相等都具有布尔见证。取反更换原生表示，选择可以独立
-    返回假或真。因此交换方块必须使用生成相等，不能使用原生相等或相同选择。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -35,8 +30,6 @@ Defined.
 
 (** A constant simplicial object retains those representations in every degree. *)
 
-(** 常值单纯对象在每一维保留这些表示。 *)
-
 Definition WitnessX
   : Fct (Δ^op) SetCat
   := ConstF (Δ^op) WitnessS.
@@ -50,8 +43,6 @@ Next Obligation. intros x y E. exact E. Defined.
 
 (** The same negation in each degree is a natural transformation. *)
 
-(** 每一维的同一个取反给出自然变换。 *)
-
 Program Definition FlipN
   : WitnessX ⇒ WitnessX
   :=
@@ -61,16 +52,12 @@ Next Obligation. intros x. exact true. Defined.
 
 (** Retain its actual inverse map; inverse laws use the Boolean relation. *)
 
-(** 保留其实际逆映射；互逆定律使用布尔关系。 *)
-
 Definition flip_NatIso
   : FlipN ⦂ WitnessX ≅N WitnessX.
 Proof. intros n. exists flip_resp. split; intros x; exact true. Defined.
 
 (** Every prescribed Boolean is a filler in the specified relation.
     These choices are data, not globally registered model instances. *)
-
-(** 按指定关系，每个给定布尔值都是填充。这些选择是数据，不全局注册模型实例。 *)
 
 Program Definition WitnessHornFillers (n : nat) (i : Ordinal n) (v : bool)
   : HasHornFillers WitnessX n i
@@ -117,8 +104,6 @@ Definition true_right
 
 (** The existing hierarchy still needs explicit selection. *)
 
-(** 既有层级仍须显式选择。 *)
-
 Fail Definition unchosen_group
   : HasMagma (TwoSphereClassS WitnessX true)
   := _.
@@ -144,8 +129,6 @@ Definition base_equality
   := false.
 
 (** Both sides differ as native values; the new laws compare their classes. *)
-
-(** 两侧具有不同原生值；新定律比较其类。 *)
 
 Example mapped_operations_compute
   : ((two_sphere_class_map_resp FlipN false
@@ -184,8 +167,6 @@ Proof. vm_compute. reflexivity. Defined.
 (** These clients consume the actual comparison derivations rather than
     substituting native equations between the computed representatives. *)
 
-(** 这些客户端消费实际比较推导，不以计算后代表之间的原生方程替代。 *)
-
 Definition mapped_product
   := two_sphere_class_map_mul FlipN false false_product false_product
       sphere_at_false sphere_at_false.
@@ -212,8 +193,6 @@ Definition corrected_inverse_product
 (** The existing inverse is exactly its actual left candidate.
     This uses the law directly on the inherited group operation. *)
 
-(** 既有群逆就是其实际左候选；直接在继承群运算上消费定律。 *)
-
 Example group_inverse_natural (x : TwoSphereClassS WitnessX false)
   : two_sphere_class_map_resp FlipN false
       (@inv _ _ _ (hasInverse (witness_group false)) x) ≈S
@@ -225,8 +204,6 @@ Proof.
 Defined.
 
 (** The base correction is computationally present in the existing inverse. *)
-
-(** 既有逆中实际保留可计算的基点校正。 *)
 
 Example corrected_inverse_computes
   : ((two_sphere_class_inverse_resp FlipN flip_NatIso false
@@ -243,11 +220,6 @@ Proof. vm_compute. reflexivity. Defined.
     Also preserve computations in the nontrivial Boolean coefficient
     model. Here class equality distinguishes the true and false spheres;
     the identity map retains all four actual chosen Kan products. *)
-
-(** ** 实际 Cocycle Kan 填充
-
-    同时保留非平凡布尔系数模型中的计算。在此类相等区分真、假球面；恒等映射
-    保留全部四个实际选定 Kan 乘积。 *)
 
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 

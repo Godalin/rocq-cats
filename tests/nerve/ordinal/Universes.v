@@ -11,20 +11,10 @@ From Cats Require Import
     Native finite ordinals are small. Their raised vertex nerves and
     standard simplices support both strict value carrier/equality orders. *)
 
-(** * 序数比较的独立值大小
-
-    原生有限序数为小数据；其提升后的顶点 nerve 与标准单形支持两种严格的
-    值载体／相等大小次序。 *)
-
 (** ** Equality below the Value Carrier
 
     Fix value sizes [p < u]. Check the ordinal comparison isomorphism,
     its forward map and naturality in the represented ordinal at these sizes. *)
-
-(** ** 相等低于值载体
-
-    固定值大小 [p < u]，在此配置下检查序数比较同构、前向映射及其对所表序数
-    的自然性。 *)
 
 Section LowEquality.
 Universes p u.
@@ -53,11 +43,6 @@ End LowEquality.
 
     Now fix [u < p]. Check the same comparison, its inverse and the two
     interval endpoint equations without coupling the two value sizes. *)
-
-(** ** 相等高于值载体
-
-    现在固定 [u < p]，检查同一比较、其逆及两个区间端点方程，而不耦合两个
-    值大小。 *)
 
 Section HighEquality.
 Universes u p.

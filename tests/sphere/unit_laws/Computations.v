@@ -12,11 +12,6 @@ Local Open Scope ordinal_scope.
     actual Kan filler output; the four class laws are consumed on the
     explicitly selected magma without assuming associativity. *)
 
-(** * 实际单位与逆候选的计算
-
-    检查退化单位四面体及已集成逆候选填充。类乘法仍计算实际 Kan 填充的输出；
-    在显式选定原群上消费四条类定律，不假设结合律。 *)
-
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
@@ -24,8 +19,6 @@ Fail Definition unchosen_Kan
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** Full Kan enabling does not select either algebraic structure. *)
-
-(** 启用完整 Kan 不会选择任何一个代数结构。 *)
 
 Fail Definition unchosen_magma
   : HasMagma BoolCocycleSphereClassS
@@ -36,8 +29,6 @@ Fail Definition unchosen_group
   := _.
 
 (** Explicit multiplication and independent inverse-candidate choices. *)
-
-(** 显式乘法及独立逆候选选择。 *)
 
 Definition three_choice
   : HasHornFillers BoolCocycleModel 3 fin_first⁺⁺
@@ -58,8 +49,6 @@ Definition class_magma
 
 (** Retain both actual inverse candidates and their tetrahedra. *)
 
-(** 保留两个实际逆候选及其四面体。 *)
-
 Definition left_candidate
   := @SphereKanLeftInverse BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       left_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
@@ -69,8 +58,6 @@ Definition right_candidate
       right_choice (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 (** Read every triangular face in its fixed order. *)
-
-(** 按固定次序读取全部三角形面。 *)
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
@@ -92,8 +79,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** Compute through the selected magma, retaining the Kan multiplication. *)
 
-(** 通过选定原群计算，保留 Kan 乘法。 *)
-
 Definition product_value (x y : BoolCocycleSphereClassS)
   : bool
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (@mul _ (hasMagma class_magma) x y).
@@ -109,8 +94,6 @@ Example products_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** The generic class laws apply to the very same chosen multiplication. *)
-
-(** 一般类定律适用于完全相同的选定乘法。 *)
 
 Example left_unit_client
   : @mul _ (hasMagma class_magma) (two_sphere_base BoolCocycleModel

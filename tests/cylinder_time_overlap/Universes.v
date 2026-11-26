@@ -11,10 +11,6 @@ Local Open Scope ordinal_scope.
     Source and target are arbitrary. Only endpoint compatibility is supplied;
     no Kan choice or equality of law witnesses enters the equivalence. *)
 
-(** * 较小相等界
-
-    源和目标任意，只给定端点相容；等价不使用 Kan 选择，也不等同定律见证。 *)
-
 Section lower_sizes.
 Universes l u p.
 Constraint l < u, u < p.
@@ -47,10 +43,6 @@ End lower_sizes.
     Source and target are arbitrary. Only endpoint compatibility is supplied;
     no Kan choice or equality of law witnesses enters the equivalence. *)
 
-(** * 较大相等界
-
-    源和目标任意，只给定端点相容；等价不使用 Kan 选择，也不等同定律见证。 *)
-
 Section higher_sizes.
 Universes l u p.
 Constraint l < u, u < p.
@@ -82,10 +74,6 @@ End higher_sizes.
 
     Endpoint matching discharges the existing all-factor input. The
     nine-step extension still requires its nine explicit choices. *)
-
-(** * 实际初始域消费者
-
-    端点相容满足已有全部共同因子输入；九步延拓仍须显式给出九份选择。 *)
 
 Section InitialRegion.
 Universes l u p.

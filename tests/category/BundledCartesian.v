@@ -19,11 +19,6 @@ From Cats Require Import
     Setoids have standard terminal and product instances. Bundles over the
     same category retain their own computational witnesses. *)
 
-(** * 显式的带结构范畴
-
-    完整结构包暴露唯一范畴及其选定构造。广集具有标准终对象和积实例。
-    同一范畴上的不同结构包保留各自的计算见证。 *)
-
 Fail Definition unchosen_cartesian_category
   : CartCat
   := ltac:(typeclasses eauto).
@@ -58,10 +53,6 @@ Fail Definition unchosen_set_exponentials
     A supplied ETCS bundle must support ordinary mathematical notation and
     weaker chosen-structure interfaces through its single parent chain. *)
 
-(** ** 继承运算
-
-    给定 ETCS 结构包须通过唯一父链支持普通数学记号及较弱的选择结构接口。 *)
-
 Section InheritedOperations.
 Context (C : ETCS).
 
@@ -85,11 +76,6 @@ End InheritedOperations.
     The indiscrete Boolean setoid is terminal. Two valid terminal choices
     select different literal constant maps, while sharing SetCat, products
     and exponentials. Reading a bundle must retain that distinction. *)
-
-(** ** 同一范畴上的不同选择
-
-    非离散布尔广集是终对象。两份合法终对象选择给出不同的字面常值映射，
-    但共享 SetCat、积及指数。读取结构包必须保留这种区别。 *)
 
 Module SeparateChoices.
 

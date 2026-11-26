@@ -18,8 +18,6 @@ From Cats Require Import
 (** Canonical comparison and both representation squares keep strict native
     Hom orders and two independent target carrier/equality orders. *)
 
-(** 规范比较及双表示方块保留严格原生 Hom 次序和两种独立目标载体／相等次序。 *)
-
 Section CanonicalPairNaturalLevels.
 Universes o h p a b c d l v q.
 Constraint Set < h.

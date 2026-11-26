@@ -6,8 +6,6 @@ From Cats Require Import
 
 (** * Independent Carrier and Equality Sizes for Homotopies *)
 
-(** * 同伦的独立载体及相等大小 *)
-
 Section LowNativeEquality.
 Universes e h o l.
 Constraint e < h.
@@ -20,8 +18,6 @@ Context (I : Interval C) (X Y Z : @Ob C)
     (f : Hom X Y) (g : Hom Y Z).
 
 (** The equality of witnesses stays below the native map carrier. *)
-
-(** 见证相等保持低于原生映射载体。 *)
 
 Definition low_native_constant
   : f ∼[I] f
@@ -49,8 +45,6 @@ Context (I : Interval C) (X Y : @Ob C) (f : Hom X Y).
 
 (** Reversing the native order does not change the interface. *)
 
-(** 反转原生大小次序不改变接口。 *)
-
 Definition high_native_constant
   : f ∼[I] f
   := ConstantHomotopy I f.
@@ -68,8 +62,6 @@ Context (X Y Z : Fct (Δ^op) SetCat@{u r _ _ _ _ _})
     (f g : X ⇒ Y) (a b : Y ⇒ Z) (H : f ∼Δ g) (K : a ∼Δ b).
 
 (** Value equality need not contain the value carrier. *)
-
-(** 值相等无需包含值载体。 *)
 
 Definition low_value_constant
   : f ∼Δ f
@@ -99,8 +91,6 @@ Constraint u < r.
 Context (X Y : Fct (Δ^op) SetCat@{u r _ _ _ _ _}) (f : X ⇒ Y).
 
 (** The opposite strict value-size order supports the same constructions. *)
-
-(** 相反的严格值大小次序支持相同构造。 *)
 
 Definition high_value_constant
   : f ∼Δ f

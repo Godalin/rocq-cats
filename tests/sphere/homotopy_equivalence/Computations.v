@@ -15,11 +15,6 @@ Local Open Scope ordinal_scope.
     homotopy below contracts their composites. Its two base trajectories
     and the resulting correction witnesses remain distinct data. *)
 
-(** * 实际同伦逆无需原生互逆
-
-    在布尔载体上取反与恒等并不原生互逆。在布尔值指定相等中，下方实际随时间
-    变化的同伦收缩其复合；两个基点轨迹及所得校正见证仍为不同数据。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -90,8 +85,6 @@ Definition right_trajectory
 
 (** No comparison structure is selected by import or by defining the maps. *)
 
-(** 导入或定义映射都不选择比较结构。 *)
-
 Fail Definition unchosen_comparison
   : HasHornFillers WitnessX 4 fin_first⁺
   := _.
@@ -160,8 +153,6 @@ Fail Definition unchosen_full_Kan
 (** Both laws use real homotopy comparison chains despite unequal native
     roundtrip values. Reflection also consumes an actual elementary step. *)
 
-(** 原生往返值不同，但两律消费实际同伦比较链。反映性也消费实际初等步骤。 *)
-
 Definition witness_left
   : reverse_resp (two_sphere_class_map_resp FlipN false source_sphere)
       ≈S source_sphere
@@ -206,11 +197,6 @@ Proof. vm_compute. reflexivity. Defined.
     isomorphism to actual identity homotopies, with the existing Kan
     model enabled explicitly. No class Group is needed. *)
 
-(** ** 非平凡实际 Kan 模型
-
-    布尔 cocycle 类仍可区分。显式启用既有 Kan 模型后，将一般同构应用于实际
-    恒等同伦；无需类群结构。 *)
-
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Program Definition bool_identity_homotopy
@@ -250,8 +236,6 @@ Definition nontrivial_right_roundtrip
 
 (** Equality reflection preserves the proved non-null class, independently
     of coefficient evaluation in the generic comparison proof. *)
-
-(** 相等反映保持已证明非零的类，一般比较证明并不依赖系数求值。 *)
 
 Example non_null_image
   : ¬ (two_sphere_class_map_resp (IdN : BoolCocycleModel ⇒ BoolCocycleModel)

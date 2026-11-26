@@ -27,21 +27,11 @@ From CatsTests.category Require Import
     use a nonidentity Reader boundary, explicit comparison inverses and
     one particular setoid pullback to inspect the transported data. *)
 
-(** * 实际粘合指数余跨度运输
-
-    按两个严格次序分离全部四个范畴的边界；随后用非恒等 Reader 边界、
-    显式比较逆和一个特定广集拉回检查运输后的数据。 *)
-
 (** ** Increasing Category Bounds
 
     Supply independent object, hom, equality and auxiliary law levels.
     Inverse and image-pullback hypotheses are introduced only after
     constructing the maps and their naturality squares. *)
-
-(** ** 递增的范畴界
-
-    分别给出独立对象、Hom、相等及辅助律层级；在构造映射及其自然性方形
-    之后才引入逆及像拉回假设。 *)
 
 Section IndependentExpPullback.
 Universes o0 h0 e0 l0 o1 h1 e1 l1 o2 h2 e2 l2 o3 h3 e3 l3.
@@ -70,16 +60,12 @@ Context (X Y : Gluing F).
 
 (** The three maps keep their different endpoints. *)
 
-(** 三个映射保持各自不同的端点。 *)
-
 Definition independent_exp_left
   : Hom (K ((comma_left_ob Y ^ comma_left_ob X)%ob))
       (K (comma_left_ob Y) ^ K (comma_left_ob X))
   := gluing_change_exp_left K target X Y.
 
 (** The tip comparison changes the interpretation's result. *)
-
-(** 共同目标比较改变解释的结果。 *)
 
 Definition independent_exp_tip
   : Hom (K ((F (comma_right_ob Y) ^ comma_left_ob X)%ob))
@@ -88,16 +74,12 @@ Definition independent_exp_tip
 
 (** The right endpoint is the new base exponential's interpretation. *)
 
-(** 右端点是新基指数的解释。 *)
-
 Definition independent_exp_right
   : Hom (K (F ((comma_right_ob Y ^ comma_right_ob X)%ob)))
       (F' ((H (comma_right_ob Y) ^ H (comma_right_ob X))%ob))
   := gluing_change_exp_right H K α base X Y.
 
 (** Both composite interpretations are compared at distinct native levels. *)
-
-(** 在不同原生层级比较两个复合解释。 *)
 
 Definition independent_exp_boundary (A B : C)
   : (α B ^ id[K (F A)]) ∘
@@ -111,8 +93,6 @@ Definition independent_exp_boundary (A B : C)
 
 (** The actual result square needs no inverse. *)
 
-(** 实际结果方形不需要逆。 *)
-
 Definition independent_exp_result
   : gluing_change_exp_tip H K α target X Y ∘
       fmap K (gluing_exp_result F X Y) ≈
@@ -123,8 +103,6 @@ Definition independent_exp_result
 
 (** The base square also holds before invertibility hypotheses. *)
 
-(** 基方形也在可逆假设之前成立。 *)
-
 Definition independent_exp_base
   : gluing_change_exp_tip H K α target X Y ∘
       fmap K (gluing_exp_base F source X Y) ≈
@@ -134,8 +112,6 @@ Definition independent_exp_base
   := gluing_change_exp_base H K α source interpretation base target X Y.
 
 (** Naturality extends along the existing cospan paths. *)
-
-(** 自然性沿既有余跨度路径延拓。 *)
 
 Definition independent_exp_cospan
   : (K ∘F ⟨gluing_exp_result F X Y →←
@@ -157,23 +133,17 @@ Context (targetExp : is_iso (exp_cmp K target
 
 (** The right inverse retains the mapped base inverse. *)
 
-(** 右逆保留基逆的像。 *)
-
 Definition independent_exp_right_iso
   : is_iso (gluing_change_exp_right H K α base X Y)
   := gluing_change_exp_right_iso H K α base X Y boundaryExp baseExp.
 
 (** The tip inverse retains the result boundary's inverse. *)
 
-(** 共同目标逆保留结果边界的逆。 *)
-
 Definition independent_exp_tip_iso
   : is_iso (gluing_change_exp_tip H K α target X Y)
   := gluing_change_exp_tip_iso H K α target X Y boundaryY targetExp.
 
 (** The three local witnesses assemble a diagram isomorphism. *)
-
-(** 三个局部见证组成图式同构。 *)
 
 Definition independent_exp_cospan_iso
   : independent_exp_cospan ⦂ _ ≅N _
@@ -190,8 +160,6 @@ Context (image : is_pullback
 
 (** Only this image cone must be a pullback; no global selection occurs. *)
 
-(** 只有此像锥须为拉回，不作全局选择。 *)
-
 Definition independent_exp_pullback
   : is_pullback (gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
@@ -204,8 +172,6 @@ Definition independent_exp_pullback
 
 (** The existing target theorem supplies evaluation and its universal
     property, without equating the two base exponential presentations. *)
-
-(** 既有目标定理给出求值及泛性质，不识别两种基指数表示。 *)
 
 Definition independent_exp_candidate
   : ∃ ev : (@Hom (Gluing F'))
@@ -228,11 +194,6 @@ End IndependentExpPullback.
     Supply independent object, hom, equality and auxiliary law levels.
     Inverse and image-pullback hypotheses are introduced only after
     constructing the maps and their naturality squares. *)
-
-(** ** 反向的范畴界
-
-    分别给出独立对象、Hom、相等及辅助律层级；在构造映射及其自然性方形
-    之后才引入逆及像拉回假设。 *)
 
 Section ReversedExpPullback.
 Universes o0 h0 e0 l0 o1 h1 e1 l1 o2 h2 e2 l2 o3 h3 e3 l3.
@@ -261,16 +222,12 @@ Context (X Y : Gluing F).
 
 (** The three maps keep their different endpoints. *)
 
-(** 三个映射保持各自不同的端点。 *)
-
 Definition reversed_exp_left
   : Hom (K ((comma_left_ob Y ^ comma_left_ob X)%ob))
       (K (comma_left_ob Y) ^ K (comma_left_ob X))
   := gluing_change_exp_left K target X Y.
 
 (** The tip comparison changes the interpretation's result. *)
-
-(** 共同目标比较改变解释的结果。 *)
 
 Definition reversed_exp_tip
   : Hom (K ((F (comma_right_ob Y) ^ comma_left_ob X)%ob))
@@ -279,16 +236,12 @@ Definition reversed_exp_tip
 
 (** The right endpoint is the new base exponential's interpretation. *)
 
-(** 右端点是新基指数的解释。 *)
-
 Definition reversed_exp_right
   : Hom (K (F ((comma_right_ob Y ^ comma_right_ob X)%ob)))
       (F' ((H (comma_right_ob Y) ^ H (comma_right_ob X))%ob))
   := gluing_change_exp_right H K α base X Y.
 
 (** Both composite interpretations are compared at distinct native levels. *)
-
-(** 在不同原生层级比较两个复合解释。 *)
 
 Definition reversed_exp_boundary (A B : C)
   : (α B ^ id[K (F A)]) ∘
@@ -302,8 +255,6 @@ Definition reversed_exp_boundary (A B : C)
 
 (** The actual result square needs no inverse. *)
 
-(** 实际结果方形不需要逆。 *)
-
 Definition reversed_exp_result
   : gluing_change_exp_tip H K α target X Y ∘
       fmap K (gluing_exp_result F X Y) ≈
@@ -314,8 +265,6 @@ Definition reversed_exp_result
 
 (** The base square also holds before invertibility hypotheses. *)
 
-(** 基方形也在可逆假设之前成立。 *)
-
 Definition reversed_exp_base
   : gluing_change_exp_tip H K α target X Y ∘
       fmap K (gluing_exp_base F source X Y) ≈
@@ -325,8 +274,6 @@ Definition reversed_exp_base
   := gluing_change_exp_base H K α source interpretation base target X Y.
 
 (** Naturality extends along the existing cospan paths. *)
-
-(** 自然性沿既有余跨度路径延拓。 *)
 
 Definition reversed_exp_cospan
   : (K ∘F ⟨gluing_exp_result F X Y →←
@@ -348,23 +295,17 @@ Context (targetExp : is_iso (exp_cmp K target
 
 (** The right inverse retains the mapped base inverse. *)
 
-(** 右逆保留基逆的像。 *)
-
 Definition reversed_exp_right_iso
   : is_iso (gluing_change_exp_right H K α base X Y)
   := gluing_change_exp_right_iso H K α base X Y boundaryExp baseExp.
 
 (** The tip inverse retains the result boundary's inverse. *)
 
-(** 共同目标逆保留结果边界的逆。 *)
-
 Definition reversed_exp_tip_iso
   : is_iso (gluing_change_exp_tip H K α target X Y)
   := gluing_change_exp_tip_iso H K α target X Y boundaryY targetExp.
 
 (** The three local witnesses assemble a diagram isomorphism. *)
-
-(** 三个局部见证组成图式同构。 *)
 
 Definition reversed_exp_cospan_iso
   : reversed_exp_cospan ⦂ _ ≅N _
@@ -381,8 +322,6 @@ Context (image : is_pullback
 
 (** Only this image cone must be a pullback; no global selection occurs. *)
 
-(** 只有此像锥须为拉回，不作全局选择。 *)
-
 Definition reversed_exp_pullback
   : is_pullback (gluing_exp_result F'
         (GluingChangeF H K α X) (GluingChangeF H K α Y))
@@ -395,8 +334,6 @@ Definition reversed_exp_pullback
 
 (** The existing target theorem supplies evaluation and its universal
     property, without equating the two base exponential presentations. *)
-
-(** 既有目标定理给出求值及泛性质，不识别两种基指数表示。 *)
 
 Definition reversed_exp_candidate
   : ∃ ev : (@Hom (Gluing F'))
@@ -416,15 +353,11 @@ End ReversedExpPullback.
 
 (** The theory does not enable a global pullback model. *)
 
-(** 此理论不启用全局拉回模型。 *)
-
 Fail Definition automatic_exp_change_pullbacks
   : HasPullback SetCat
   := ltac:(typeclasses eauto).
 
 (** Nor does it enable the target Gluing product choice. *)
-
-(** 也不启用目标粘合积选择。 *)
 
 Fail Definition automatic_exp_change_products
   : HasProduct (Gluing (@IdF SetCat))
@@ -437,26 +370,17 @@ Fail Definition automatic_exp_change_products
     and target changes are identity functors. All three comparison
     inverses and the one pullback remain explicit data. *)
 
-(** ** 非恒等 Reader 边界
-
-    局部启用广集结构。两侧解释都读取布尔环境，边界将环境反转；基与目标
-    变化为恒等函子。三个比较逆及一个拉回始终作为显式数据给出。 *)
-
 Section ReaderBoundary.
 Local Existing Instance SetCat_HasExponential.
 Local Existing Instance SetCat_HasPullback.
 
 (** The interpretation is the existing exponential functor. *)
 
-(** 解释为已有的取指数函子。 *)
-
 Definition ExpChangeReaderF
   : Fct SetCat SetCat
   := (-^ BoolS).
 
 (** Reuse right-adjoint product preservation rather than a new proof. *)
-
-(** 复用右伴随保持积，不另作证明。 *)
 
 Definition exp_change_reader_products (A B : SetC)
   : is_product (ExpChangeReaderF A) (ExpChangeReaderF B)
@@ -466,8 +390,6 @@ Definition exp_change_reader_products (A B : SetC)
 
 (** Reverse the environment without changing the value setoid. Its
     respectful action retains the input Type-valued witness at that index. *)
-
-(** 反转环境但不改变值广集；保相等作用保留该索引处的输入 Type 值见证。 *)
 
 Program Definition ExpChangeSwapN
   : (@CompF SetCat SetCat SetCat IdF ExpChangeReaderF) ⇒
@@ -486,8 +408,6 @@ Next Obligation. intros g b. reflexivity. Defined.
 
 (** The same reversal is an inverse at each object. *)
 
-(** 相同反转给出每个对象处的逆。 *)
-
 Definition exp_change_swap_iso (X : SetC)
   : is_iso (ExpChangeSwapN X).
 Proof.
@@ -498,16 +418,12 @@ Defined.
 (** Identity comparisons have transparent identity inverse maps for these
     concrete choices; no general model instance is registered. *)
 
-(** 对这些具体选择，恒等比较具有透明的恒等逆映射；不注册一般模型实例。 *)
-
 Definition exp_change_identity_comparison (A B : SetC)
   : is_iso (exp_cmp (@IdF SetCat)
       (λ A B, product_universal) A B).
 Proof. exists id. split; intros f a; reflexivity. Defined.
 
 (** The structure reads the environment into an observable ignored tag. *)
-
-(** 结构将环境读入可观察的被忽略标签。 *)
 
 Program Definition exp_change_reader_structure
   : TaggedGluingS →r ExpChangeReaderF TaggedGluingS
@@ -521,8 +437,6 @@ Program Definition exp_change_reader_structure
 
 (** Keep the original tagged object and the actual structure map. *)
 
-(** 保留原标签对象及实际结构映射。 *)
-
 Program Definition ExpChangeProbe
   : Gluing ExpChangeReaderF
   :=
@@ -533,8 +447,6 @@ Program Definition ExpChangeProbe
 
 (** Select just the old cospan's pullback, not a Gluing exponential family. *)
 
-(** 只选择旧余跨度的拉回，不选择粘合指数族。 *)
-
 Definition ExpChangeSourcePb
   : SetC
   := Pb (gluing_exp_result ExpChangeReaderF ExpChangeProbe ExpChangeProbe)
@@ -543,23 +455,17 @@ Definition ExpChangeSourcePb
 
 (** The first leg keeps the original function. *)
 
-(** 第一锥腿保留原函数。 *)
-
 Definition exp_change_source_p
   : ExpChangeSourcePb →r (TaggedGluingS →S TaggedGluingS)
   := pb1 _ _.
 
 (** The second leg is the original reader of base functions. *)
 
-(** 第二锥腿为原有读取基函数的 Reader。 *)
-
 Definition exp_change_source_q
   : ExpChangeSourcePb →r ExpChangeReaderF (TaggedGluingS →S TaggedGluingS)
   := pb2 _ _.
 
 (** For identity [K], its particular image pullback is the supplied one. *)
-
-(** 对恒等 [K]，其特定像拉回就是给定拉回。 *)
 
 Definition exp_change_image_pullback
   : is_pullback
@@ -574,8 +480,6 @@ Definition exp_change_image_pullback
 
 (** The right comparison uses the saved boundary and base-comparison inverses. *)
 
-(** 右比较使用保存的边界逆及基比较逆。 *)
-
 Definition exp_change_right_inverse
   : is_iso (gluing_change_exp_right IdF IdF ExpChangeSwapN
       (λ A B, product_universal) ExpChangeProbe ExpChangeProbe)
@@ -585,8 +489,6 @@ Definition exp_change_right_inverse
       (exp_change_identity_comparison TaggedGluingS TaggedGluingS).
 
 (** The common target comparison uses a different exponential endpoint. *)
-
-(** 共同目标比较使用不同的指数端点。 *)
 
 Definition exp_change_tip_inverse
   : is_iso (gluing_change_exp_tip IdF IdF ExpChangeSwapN
@@ -598,8 +500,6 @@ Definition exp_change_tip_inverse
         (ExpChangeReaderF TaggedGluingS)).
 
 (** Transport the particular pullback using the actual cospan transformation. *)
-
-(** 用实际余跨度自然变换运输此特定拉回。 *)
 
 Definition exp_change_transported_pullback
   : is_pullback
@@ -625,8 +525,6 @@ Definition exp_change_transported_pullback
 
 (** An environment-dependent family exposes the right comparison's action. *)
 
-(** 依赖环境的族显露右比较的作用。 *)
-
 Program Definition exp_change_function_family
   : ExpChangeReaderF (TaggedGluingS →S TaggedGluingS)
   :=
@@ -639,8 +537,6 @@ Program Definition exp_change_function_family
 
 (** Constant identity functions give a point of the old pullback. *)
 
-(** 常恒等函数给出旧拉回的一个点。 *)
-
 Program Definition exp_change_identity_family
   : ExpChangeReaderF (TaggedGluingS →S TaggedGluingS)
   :=
@@ -650,15 +546,11 @@ Program Definition exp_change_identity_family
 
 (** The point stores a genuine Type-valued commuting witness. *)
 
-(** 此点保存真正的 Type 值交换见证。 *)
-
 Definition ExpChangePoint
   : ExpChangeSourcePb
   := (id_resp; (exp_change_identity_family; λ x b, (eq_refl, false))).
 
 (** A constant point supplies a small external test cone. *)
-
-(** 常值点给出小型外部测试锥。 *)
 
 Program Definition exp_change_point_map
   : UnitS →r ExpChangeSourcePb
@@ -669,8 +561,6 @@ Next Obligation. intros x y H. split; reflexivity. Defined.
 
 (** The transported cone's commutativity comes from its supplied pullback,
     without comparing commuting-square witnesses. *)
-
-(** 运输后锥的交换性来自其给定拉回，不比较交换方形见证。 *)
 
 Definition exp_change_test_cone_comm
   : gluing_exp_result ExpChangeReaderF
@@ -693,8 +583,6 @@ Defined.
 
 (** This is the transported universal mediator, not a hand-built point map. *)
 
-(** 这是运输后的泛中介，而非手工构造的点映射。 *)
-
 Definition exp_change_transported_mediator
   : UnitS →r ExpChangeSourcePb
   := (snd exp_change_transported_pullback UnitS
@@ -708,16 +596,12 @@ Definition exp_change_transported_mediator
 
 (** The left comparison retains the function data. *)
 
-(** 左比较保留函数数据。 *)
-
 Example exp_change_left_computes
   : gluing_change_exp_left IdF (λ A B, product_universal)
       ExpChangeProbe ExpChangeProbe id_resp (3%nat, false) = (3%nat, false).
 Proof. reflexivity. Defined.
 
 (** The right comparison reverses the represented family environment. *)
-
-(** 右比较反转所表示函数族的环境。 *)
 
 Example exp_change_right_computes
   : gluing_change_exp_right IdF IdF ExpChangeSwapN
@@ -727,16 +611,12 @@ Proof. reflexivity. Defined.
 
 (** Its supplied inverse keeps the same transparent reversal operation. *)
 
-(** 所给的逆保留相同的透明反转操作。 *)
-
 Example exp_change_right_inverse_computes
   : exp_change_right_inverse.1 exp_change_function_family
       false (3%nat, false) = (3%nat, true).
 Proof. reflexivity. Defined.
 
 (** The common-target comparison changes the result reader at each input. *)
-
-(** 共同目标比较在每个输入处改变结果 Reader。 *)
 
 Example exp_change_tip_computes
   : gluing_change_exp_tip IdF IdF ExpChangeSwapN
@@ -746,16 +626,12 @@ Proof. reflexivity. Defined.
 
 (** Its inverse also computes without evaluating inverse-law tokens. *)
 
-(** 其逆同样无需对互逆律标记求值即可计算。 *)
-
 Example exp_change_tip_inverse_computes
   : exp_change_tip_inverse.1 exp_change_reader_structure
       (3%nat, false) false = (3%nat, true).
 Proof. reflexivity. Defined.
 
 (** The actual changed structure includes the same observable reversal. *)
-
-(** 实际变化后结构包含同样可观察的反转。 *)
 
 Example exp_change_actual_structure_computes
   : comma_arrow (GluingChangeF IdF IdF ExpChangeSwapN ExpChangeProbe)
@@ -764,15 +640,11 @@ Proof. reflexivity. Defined.
 
 (** Both coordinates of the transported universal mediator compute. *)
 
-(** 运输后的泛中介的两个坐标均可计算。 *)
-
 Example exp_change_mediator_left_computes
   : (exp_change_transported_mediator tt).1 (3%nat, false) = (3%nat, false).
 Proof. reflexivity. Defined.
 
 (** The second coordinate recovers the reader of base functions. *)
-
-(** 第二坐标恢复读取基函数的 Reader。 *)
 
 Example exp_change_mediator_right_computes
   : (exp_change_transported_mediator tt).2.1 true (3%nat, false) =
@@ -780,8 +652,6 @@ Example exp_change_mediator_right_computes
 Proof. reflexivity. Defined.
 
 (** The boundary's respectful map transports an actual Boolean witness. *)
-
-(** 边界的保相等映射运输实际布尔见证。 *)
 
 Example exp_change_boundary_token_computes
   : snd (@func_proper _ _ (ExpChangeSwapN TaggedGluingS)
@@ -791,8 +661,6 @@ Example exp_change_boundary_token_computes
 Proof. reflexivity. Defined.
 
 (** Right comparison respects distinct native family representatives. *)
-
-(** 右比较保持不同原生函数族代表之间的相等。 *)
 
 Example exp_change_comparison_proper
   : gluing_change_exp_right IdF IdF ExpChangeSwapN
@@ -814,18 +682,10 @@ End ReaderBoundary.
     the transport theorem; it does not assert failure of exponential
     preservation by the Gluing change itself. *)
 
-(** ** 二元积及可逆边界仍不足够
-
-    常空目标函子保持二元积，其到常空解释的边界为自然同构，实际余跨度
-    自然变换也存在。但左指数比较仍不可逆。此例区分运输定理的各项输入，
-    不声称粘合变化本身不能保持指数。 *)
-
 Section EmptyCospanComparison.
 Local Existing Instance SetCat_HasExponential.
 
 (** A fixed identity gluing object keeps both exponential endpoints concrete. *)
-
-(** 固定恒等粘合对象使两个指数端点保持具体。 *)
 
 Program Definition ExpEmptyProbe
   : Gluing (@IdF SetCat)
@@ -837,8 +697,6 @@ Program Definition ExpEmptyProbe
 
 (** Both sides of the boundary are the empty constant functor. *)
 
-(** 边界两侧都为常空函子。 *)
-
 Program Definition ExpEmptyBoundaryN
   : (@CompF SetCat SetCat SetCat (ConstF SetCat EmptyS) IdF) ⇒
       (@CompF SetCat SetCat SetCat (ConstF SetCat EmptyS) IdF)
@@ -849,15 +707,11 @@ Program Definition ExpEmptyBoundaryN
 
 (** This boundary has explicit identity inverse components. *)
 
-(** 此边界具有显式恒等逆分量。 *)
-
 Definition exp_empty_boundary_iso
   : ExpEmptyBoundaryN ⦂ _ ≅N _
   := λ X, (@iso_refl SetCat EmptyS).2.
 
 (** The cospan transformation needs no exponential inverses. *)
-
-(** 余跨度自然变换不需要指数的逆。 *)
 
 Definition ExpEmptyCospanN
   : @Nat CospanShape SetCat
@@ -884,16 +738,12 @@ Definition ExpEmptyCospanN
 (** The existing empty-comparison counterexample applies to the actual
     left component, despite all the binary-product hypotheses above. *)
 
-(** 尽管上述二元积假设全部成立，既有常空比较反例仍适用于实际左分量。 *)
-
 Definition exp_empty_left_not_iso
   : is_iso (gluing_change_exp_left (ConstF SetCat EmptyS)
       empty_constant_preserves_products ExpEmptyProbe ExpEmptyProbe) → Empty_set
   := empty_constant_comparison_not_iso.
 
 (** Hence the induced cospan transformation is not a natural isomorphism. *)
-
-(** 因而诱导的余跨度变换不是自然同构。 *)
 
 Definition exp_empty_cospan_not_iso
     (H : ExpEmptyCospanN ⦂ _ ≅N _)

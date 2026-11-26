@@ -13,12 +13,6 @@ Local Open Scope ordinal_scope.
     generated chain contains equality, homotopy, symmetry and transitivity;
     computing its returned tetrahedron exercises the existing closure fold. *)
 
-(** * 实际运输与一条生成链
-
-    用已证明的四维 horn 比较，得到通用选定乘积与系数直接乘积之间的输入同伦。
-    两个新运输均消费实际布尔 Kan 填充。有限生成链包含相等、同伦、对称与传递，
-    计算其返回四面体实际消费既有闭包折叠。 *)
-
 Fail Definition unchosen_group
   : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
@@ -36,8 +30,6 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 (** The two input representatives have coefficient true, but come from
     different constructions. Their boundary witnesses are retained. *)
 
-(** 两个输入代表的系数为 true，但来自不同构造；保留其边界见证。 *)
-
 Definition selected_input
   := SphereKanComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
       (cocycle_two_sphere_resp (M := BoolS_Monoid) false) (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
@@ -47,8 +39,6 @@ Definition direct_input
       (cocycle_two_sphere_resp (M := BoolS_Monoid) false) (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 (** The input homotopy is an actual tetrahedron from the earlier comparison. *)
-
-(** 输入同伦是先前比较给出的实际四面体。 *)
 
 Definition input_homotopy
   : TwoSphereHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
@@ -60,14 +50,10 @@ Definition input_homotopy
 
 (** Compose the first representative with the true-labelled sphere. *)
 
-(** 将第一个代表与 true 标签球面合成。 *)
-
 Definition initial_composite
   := (CocycleTwoSphereMul (M := BoolS_Monoid)) selected_input.1 (cocycle_two_sphere_resp (M := BoolS_Monoid) true).
 
 (** Transport forward, then back, retaining the same output representative. *)
-
-(** 正向运输再反向返回，保留相同输出代表。 *)
 
 Definition forward_composite
   := SphereCompositeFirstHomotopy BoolCocycleModel
@@ -78,8 +64,6 @@ Definition backward_composite
       (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_homotopy forward_composite.
 
 (** Keep an explicit generated derivation; it is not replaced by reflexivity. *)
-
-(** 保留显式生成推导，不用自反性替换该推导。 *)
 
 Definition input_chain
   : (selected_input.1 : BoolCocycleSphereClassS) ≈S direct_input
@@ -95,8 +79,6 @@ Definition input_chain
 
 (** Fold the whole chain into a new actual composite tetrahedron. *)
 
-(** 把整条链折叠为新的实际合成四面体。 *)
-
 Definition chain_composite
   := fst (two_sphere_composite_first_class BoolCocycleModel
       (two_cocycle_simplex_unit (M := BoolS_Monoid) 0) input_chain
@@ -105,8 +87,6 @@ Definition chain_composite
       initial_composite.
 
 (** Read all triangle faces, including nonconstant input and context faces. *)
-
-(** 读取全部三角形面，包括非常值的输入及上下文面。 *)
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
@@ -125,15 +105,11 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** A three-horn choice is explicit data, not a new registered instance. *)
 
-(** 三维 horn 选择为显式数据，不注册新实例。 *)
-
 Definition three_choice
   : HasHornFillers BoolCocycleModel 3 fin_first⁺⁺
   := _.
 
 (** The partial class operation retains the selected product computation. *)
-
-(** 类上偏运算保留选定乘积的计算。 *)
 
 Definition partial_value (a b : bool)
   : bool
@@ -149,8 +125,6 @@ Example partial_operation_computes
 Proof. vm_compute. reflexivity. Defined.
 
 (** Consume the actual class-map Proper field on the full generated chain. *)
-
-(** 用实际类映射的 Proper 字段消费完整生成链。 *)
 
 Example partial_preserves_chain
   : two_sphere_kan_composite_first_resp BoolCocycleModel

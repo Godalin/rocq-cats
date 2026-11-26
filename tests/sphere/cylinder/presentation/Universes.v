@@ -13,18 +13,10 @@ Local Opaque TwoSphereCylinderEquivalence TwoSphereClassCylinder
     Both native carrier/equality orders are strict. Each comparison is also
     tested with either strict order of its final upward lift bounds. *)
 
-(** * 独立原生界与共同界
-
-    两种原生载体／相等次序均严格，并对每种比较检查最终向上提升界的两种严格次序。 *)
-
 (** ** Lower Native Equality
 
     Fix unrelated representative/equality sizes and independently supplied
     presentation choices; no full Kan or selected algebra is available. *)
-
-(** ** 较小原生相等
-
-    固定独立代表／相等大小及各自给定的呈现选择，不提供完整Kan或选定代数。 *)
 
 Section Lower.
 Universes l u p v q.
@@ -86,14 +78,10 @@ Definition lower_map
 
 (** Retain the whole pointwise naturality interface at these strict sizes. *)
 
-(** 在这些严格大小处保留完整的逐点自然性接口。 *)
-
 Definition lower_natural
   := two_sphere_cylinder_map_natural α b KR KC LR LC.
 
 (** The naturality component is an actual cylinder on the image triangle. *)
-
-(** 自然性分量是像三角形上的实际柱。 *)
 
 Local Transparent two_sphere_cylinder_map_resp.
 
@@ -125,10 +113,6 @@ End Lower.
 
     Fix unrelated representative/equality sizes and independently supplied
     presentation choices; no full Kan or selected algebra is available. *)
-
-(** ** 较大原生相等
-
-    固定独立代表／相等大小及各自给定的呈现选择，不提供完整Kan或选定代数。 *)
 
 Section Higher.
 Universes l u p v q.
@@ -190,14 +174,10 @@ Definition higher_map
 
 (** Retain the whole pointwise naturality interface at these strict sizes. *)
 
-(** 在这些严格大小处保留完整的逐点自然性接口。 *)
-
 Definition higher_natural
   := two_sphere_cylinder_map_natural α b KR KC LR LC.
 
 (** The naturality component is an actual cylinder on the image triangle. *)
-
-(** 自然性分量是像三角形上的实际柱。 *)
 
 Local Transparent two_sphere_cylinder_map_resp.
 

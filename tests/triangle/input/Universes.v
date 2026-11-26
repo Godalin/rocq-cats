@@ -7,18 +7,11 @@ Local Open Scope ordinal_scope.
 
 (** * Independent Sizes for Initial-Region Gluing *)
 
-(** * 初始域粘合的独立大小 *)
-
 (** ** Lower Equality Bounds
 
     Fix strictly distinct value and equality sizes, actual boundary and
     edge maps, and only their stated overlap equations. No Kan choices
     enter gluing; the final client separately supplies nine step choices. *)
-
-(** ** 较小相等见证
-
-    固定严格不同的取值与相等大小、实际边界及边映射和所述交叠方程。粘合无需
-    Kan 选择；最后的客户端另行给定九份步骤选择。 *)
 
 Section lower_sizes.
 Universes l u p.
@@ -80,11 +73,6 @@ End lower_sizes.
     Fix strictly distinct value and equality sizes, actual boundary and
     edge maps, and only their stated overlap equations. No Kan choices
     enter gluing; the final client separately supplies nine step choices. *)
-
-(** ** 较大相等见证
-
-    固定严格不同的取值与相等大小、实际边界及边映射和所述交叠方程。粘合无需
-    Kan 选择；最后的客户端另行给定九份步骤选择。 *)
 
 Section higher_sizes.
 Universes l u p.

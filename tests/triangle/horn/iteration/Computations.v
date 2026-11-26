@@ -16,11 +16,6 @@ Local Open Scope ordinal_scope.
     In this setoid recovery uses its specified relation, so recovering an
     old map must not be silently strengthened to native value equality. *)
 
-(** * 具有不同选择的实际九步计算
-
-    布尔相等见证允许独立选取单形值。此广集的恢复使用指定关系，因此不能将
-    恢复旧映射悄悄加强为原生取值相等。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -89,8 +84,6 @@ Defined.
 (** Final-stage conversion may change a membership witness. Native
     values can differ in this example even though recovery is valid. *)
 
-(** 最终阶段转换可改变隶属见证；本例的原生取值可以不同，但恢复定律仍成立。 *)
-
 Example specified_recovery_is_not_native
   : map (λ r, ((old_map r) 2 (old_point r),
       (extension r false).1 2 (old_point r).1)) parameters =
@@ -146,11 +139,6 @@ Fail Definition iteration_selects_all_pushouts
     Kan model. Recovery retains the nonzero old two-simplex; the client
     uses the general law, without replacing the computed extension. *)
 
-(** ** 真正非零 cocycle 客户端
-
-    九份真实 horn 选择均来自显式布尔 Kan 模型。恢复保留非零旧二维单形；
-    客户端使用一般定律，不替换计算得到的延拓。 *)
-
 Program Definition spatial_projection
   : TriangleHornAmbient ⇒ (Δ[2] : Fct (Δ^op) SetCat)
   :=
@@ -185,8 +173,6 @@ Defined.
 
 (** First evaluate recovery on an abstract map; specializing this client
     afterward retains the actual computed nine-step extension. *)
-
-(** 先在抽象映射上对恢复求值，随后特化此客户端，保留实际计算的九步延拓。 *)
 
 Definition nonzero_recovery_from (b : TriangleHornAmbient ⇒ BoolCocycleModel)
     (E : (b ∘Nv RegionInclusionN (TriangleHornRegion fin_first 0)) ≈N

@@ -1,17 +1,12 @@
 (* PDF presentation changes apply only after coqdoc has processed the shared,
    compiled sources; source positions and mathematical declarations stay intact. *)
 
-(* PDF 排版调整仅作用于 coqdoc 处理共享编译源码后的结果，不改变源码位置或数学声明。 *)
-
 let compact body =
   let indentation = Str.regexp "^\\\\coqdocindent{[0-9.]+em}$" in
   let is_indent line = line = "\\coqdocnoindent"
     || Str.string_match indentation line 0 in
   (* Coqdoc emits an empty row as an indentation prefix followed by eol,
      as well as using emptyline. Keep the prefix of each nonempty row. *)
-
-  (* coqdoc 既用 emptyline，也用缩进前缀与 eol 表示空行。
-     压缩时保留每个非空行的缩进前缀。 *)
 
   let rec code seen gap indent acc = function
     | [] -> List.rev acc
@@ -50,8 +45,6 @@ let symbols body =
       if not (Uchar.utf_decode_is_valid d) then invalid_arg "invalid UTF-8 in LaTeX";
       let u = Uchar.to_int (Uchar.utf_decode_uchar d) in
       (* CJK text and punctuation use CTeX's selected Fandol fonts. *)
-
-      (* 中日韩文字及标点使用 CTeX 选定的 Fandol 字体。 *)
 
       if u > 127 && not (Docs_filter.Filter.cjk u)
         && not (u >= 0x3000 && u <= 0x303f)
@@ -92,8 +85,6 @@ let titled title kind block =
 
 (* Only included declarations are valid local destinations in an excerpt. *)
 
-(* 选段中只有实际纳入的声明才是有效的本地链接目标。 *)
-
 let targets body =
   let pattern = Str.regexp "\\\\coqdef{\\([^}]*\\)}" in
   let rec loop offset =
@@ -108,9 +99,6 @@ let targets body =
 
 (* Preserve all prose and declarations, decorating only complete code blocks.
    An optional selected proof is rendered in place by Alectryon. *)
-
-(* 保留全部正文与声明，只为完整代码块添加样式。
-   可选的指定证明在原位置由 Alectryon 渲染。 *)
 
 let decorate ?proof_anchor source =
   let opening = "\\begin{coqdoccode}" and closing = "\\end{coqdoccode}" in
@@ -157,8 +145,6 @@ let decorate ?proof_anchor source =
 
 let document ?(restrict_references = false) template =
   (* titlesec must precede hyperref so section bookmarks keep their anchors. *)
-
-  (* titlesec 必须先于 hyperref 加载，保证节书签保留正确的锚点。 *)
 
   let template = Str.global_substitute
     (Str.regexp_string "\\usepackage{hyperref}")

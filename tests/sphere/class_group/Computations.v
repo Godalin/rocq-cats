@@ -13,11 +13,6 @@ Local Open Scope algebra_scope.
     inversion is the actual left-candidate sphere. Generic inverse theory
     is exercised on a full generated chain from an actual four-horn. *)
 
-(** * 实际群计算与通用逆理论
-
-    从实际布尔 Kan 填充显式选择群；父结构的乘法、单位保留计算，逆为实际左候选
-    球面。在来自实际四维 horn 的完整生成链上消费通用逆理论。 *)
-
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
@@ -26,15 +21,11 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** Even full Kan enabling leaves every algebraic model explicitly chosen. *)
 
-(** 即使启用完整 Kan，每个代数模型仍须显式选择。 *)
-
 Fail Definition unchosen_class_magma
   : HasMagma BoolCocycleSphereClassS
   := _.
 
 (** Multiplication and inverse fillers remain separately supplied data. *)
-
-(** 乘法与逆填充保持为分别给定的数据。 *)
 
 Definition three_choice
   : HasHornFillers BoolCocycleModel 3 fin_first⁺⁺
@@ -56,16 +47,12 @@ Definition class_group
 
 (** Read the parent's exact selected magma without another choice. *)
 
-(** 读取父结构中完全相同的选定原群，不另作选择。 *)
-
 Definition class_magma
   : Magma
   := SemigroupToMagma (MonoidToSemigroup (GroupToMonoid class_group)).
 
 (** Compute multiplication through the inherited parent and inversion
     through the group interface, without coefficient-operation replacements. *)
-
-(** 经继承父结构计算乘法，经群接口计算逆，不替换为系数运算。 *)
 
 Definition product_value (a b : bool)
   : bool
@@ -89,8 +76,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** The selected inverse remains the actual left-candidate triangle. *)
 
-(** 选定逆保留实际左候选三角形。 *)
-
 Example candidate_computes
   : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
         (d[BoolCocycleModel; 2; fin_first]
@@ -113,8 +98,6 @@ Example candidate_computes
 Proof. vm_compute. reflexivity. Defined.
 
 (** Use an actual comparison homotopy as a nonconstant input generator. *)
-
-(** 用实际比较同伦作为非常值输入生成元。 *)
 
 Definition selected_input
   := SphereKanComposite BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
@@ -146,8 +129,6 @@ Definition input_chain
 
 (** Generic inversion respects that entire generated derivation. *)
 
-(** 通用群逆保持这条完整生成推导。 *)
-
 Example inverse_preserves_chain
   : @inv_resp class_group selected_input.1 ≈S
       @inv_resp class_group direct_input.
@@ -155,8 +136,6 @@ Proof. apply func_proper. exact input_chain. Defined.
 
 (** Existing group uniqueness and involution work without sphere-specific
     replacements for their algebraic proofs. *)
-
-(** 既有群唯一性及对合律直接适用，不用球面专用证明替代其代数证明。 *)
 
 Example inverse_unique (x y : BoolCocycleSphereClassS)
     (E : @mul _ (hasMagma class_magma) y x ≈S
@@ -176,8 +155,6 @@ Proof. exact (@inv_mul class_group x y). Defined.
 
 (** The chosen left inverse agrees with the independently supplied right
     candidate in the generated class relation. *)
-
-(** 选定左逆与独立给定右候选在生成类关系下相等。 *)
 
 Example right_candidate_agrees (x : BoolCocycleSphereClassS)
   : @inv _ _ _ (hasInverse class_group) x ≈S (@SphereKanRightInverse BoolCocycleModel

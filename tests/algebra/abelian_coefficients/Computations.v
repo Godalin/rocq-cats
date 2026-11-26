@@ -9,10 +9,6 @@ Local Open Scope algebra_scope.
     Importing coefficients must not make their chosen structures automatic.
     After local enabling, solution projections should compute actual bits. *)
 
-(** * 显式选定的布尔系数
-
-    导入系数不得自动选取其结构。局部启用后，解的投影应计算出实际布尔位。 *)
-
 Fail Definition unchosen_boolean_group
   : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := ltac:(typeclasses eauto).
@@ -25,10 +21,6 @@ Fail Definition unchosen_boolean_commutativity
 
     Enable the existing xor group and its commutativity witness locally,
     checking that both refer to the same underlying multiplication. *)
-
-(** ** 计算选定解
-
-    局部启用已有异或群及其交换性见证，检查两者使用同一底层乘法。 *)
 
 Section BooleanComputations.
 Local Existing Instance BoolS_IsCommMagma.
@@ -51,8 +43,6 @@ Proof. reflexivity. Qed.
 
 (** The group and commutativity witnesses infer coherently without a second
     explicitly enabled monoid instance. *)
-
-(** 群和交换性见证能够相干推断，无须再显式启用第二个幺半群实例。 *)
 
 Definition boolean_interchange (a b c d : BoolS)
   : @mul _ (hasMagma BoolS_Monoid)

@@ -16,11 +16,6 @@ Local Open Scope ordinal_scope.
     triangle over time, while its base trajectory is constant in the
     specified relation. No native equality of endpoints is assumed. *)
 
-(** * 指定相等中的单条常值轨迹
-
-    下方来源及目标保留不同布尔表示与布尔相等见证。同伦实际随时间更换三角形，
-    同时基点轨迹按指定关系为常值。不预设端点的原生相等。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -36,8 +31,6 @@ Defined.
 
 (** A constant simplicial object retains those representations in every degree. *)
 
-(** 常值单纯对象在每一维保留这些表示。 *)
-
 Definition WitnessX
   : Fct (Δ^op) SetCat
   := ConstF (Δ^op) WitnessS.
@@ -50,8 +43,6 @@ Program Definition flip_resp
 Next Obligation. intros x y E. exact E. Defined.
 
 (** The same negation in each degree is a natural transformation. *)
-
-(** 每一维的同一个取反给出自然变换。 *)
 
 Program Definition FlipN
   : WitnessX ⇒ WitnessX
@@ -104,8 +95,6 @@ Definition true_cylinder
 
 (** Distinct trajectory witnesses retain the same actual cylinder map. *)
 
-(** 不同轨迹见证保留同一实际柱映射。 *)
-
 Example trajectory_and_endpoints_compute
   : ((IdN : WitnessX ⇒ WitnessX) 0 false, FlipN 0 (false : WitnessX 0),
      homotopy_map moving_homotopy 1
@@ -127,8 +116,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** Reuse the legacy one-reduced API with its actual original endpoints. *)
 
-(** 按其实际原端点复用旧 one-reduced 接口。 *)
-
 Definition legacy_cylinder
   := OneReducedSphereCylinder WitnessX true (λ z, false)
       moving_homotopy false source_sphere.
@@ -142,8 +129,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** This concrete regression checks definitional preservation of map
     values. Mathematical comparison still uses specified equality. *)
-
-(** 此具体回归检查映射值的定义相同；数学比较仍使用指定相等。 *)
 
 Example legacy_map_agrees (n : nat)
     (z : SimplicialCylinderF (Δ[2]) n)
@@ -161,8 +146,6 @@ Definition derived_final_base
 
 (** Only the target comparison choices are selected; no three-dimensional
     fillers or algebraic model follows from importing this theory. *)
-
-(** 只选择目标比较；导入此理论不产生三维填充或代数模型。 *)
 
 Program Definition WitnessHornFillers (n : nat) (i : Ordinal n) (v : bool)
   : HasHornFillers WitnessX n i
@@ -204,11 +187,6 @@ Definition different_image_classes
     the one-reduced edge law. A constant homotopy still has the required
     constant trajectory, and its restricted cylinder needs no Kan data. *)
 
-(** ** 具有真正非常值边的目标
-
-    标准区间具有不同顶点，不满足 one-reduced 边定律。恒定同伦仍具有所需
-    常值轨迹，限制柱无需 Kan 数据。 *)
-
 Definition interval_model
   : Fct (Δ^op) SetCat
   := Δ[1].
@@ -240,9 +218,6 @@ Proof. vm_compute. reflexivity. Defined.
 (** The moving point homotopy supplies the generic interval edge. Its
     terminal endpoint differs from that of the proposed constant edge;
     the explicit trajectory hypothesis therefore cannot be omitted. *)
-
-(** 移动点同伦提供区间的泛边，其终止端点不同于所提常值边的终点。因此不能
-    省略显式轨迹假设。 *)
 
 Example moving_point_trace_not_constant
   : ¬ (homotopy_map SimplicialPointHomotopy 1

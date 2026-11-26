@@ -12,27 +12,16 @@ Local Open Scope algebra_scope.
     one three-horn choice; inverse comparison only a group and its own
     left-candidate choice. Common isomorphism bounds are raised separately. *)
 
-(** * 独立的系数、单形与共同同构大小
-
-    检查相反系数载体／相等次序及较低／较高环境相等。乘积比较只需幺半群和
-    自身三维选择，逆比较只需群及自身左候选选择；共同同构界分别向上提升。 *)
-
 (** ** Strictly Separated Bounds
 
     Fix seven increasing levels; native sizes lie below the simplex sizes
     and both common lift bounds. No equality of these bounds is permitted. *)
-
-(** ** 严格分离的界
-
-    固定七个递增层级，原生大小低于单形大小及两个共同提升界，不允许等同这些界。 *)
 
 Section StrictSizes.
 Universes e h l u p v q.
 Constraint e < h, h < l, l < u, u < p, p < v, v < q.
 
 (** Product comparison needs no group, commutativity or four-horn choice. *)
-
-(** 乘积比较不需群、交换性或四维选择。 *)
 
 Definition lower_product
     (M : Monoid@{h e _})
@@ -46,8 +35,6 @@ Definition lower_product
   := cocycle_kan_mul_eq H x y.
 
 (** Decoding preserves the actual product at the native coefficient sizes. *)
-
-(** 读取在原生系数大小下保持实际乘积。 *)
 
 Definition lower_decode
     (M : Monoid@{h e _})
@@ -64,8 +51,6 @@ Definition lower_decode
 
 (** Encoding preserves the product without any four-horn selection. *)
 
-(** 编码保持乘积，不需任何四维选择。 *)
-
 Definition lower_encode
     (M : Monoid@{h e _})
     (H : HasHornFillers
@@ -77,8 +62,6 @@ Definition lower_encode
   := cocycle_kan_class_mul H a b.
 
 (** Inverse comparison needs only its own three-horn selection. *)
-
-(** 逆比较仅需自身三维选择。 *)
 
 Definition lower_inverse
     (M : Group@{h e _})
@@ -95,8 +78,6 @@ Definition lower_inverse
 
 (** The actual inverse decodes at independent coefficient sizes. *)
 
-(** 实际逆在独立系数大小下读取。 *)
-
 Definition lower_inverse_value
     (M : Group@{h e _})
     (K : HasHornFillers
@@ -111,8 +92,6 @@ Definition lower_inverse_value
 
 (** Raw model commutativity needs no group or four-horn choice. *)
 
-(** 模型原始交换律不需群或四维选择。 *)
-
 Definition lower_commutative_product
     (M : Monoid@{h e _})
     `{HC : !IsCommMagma M}
@@ -126,8 +105,6 @@ Definition lower_commutative_product
   := cocycle_kan_mul_comm H x y.
 
 (** The property refers to exactly the generic selected class monoid. *)
-
-(** 性质恰针对通用选定类幺半群。 *)
 
 Definition lower_commutative_monoid
     (M : Monoid@{h e _})
@@ -146,8 +123,6 @@ Definition lower_commutative_monoid
 
 (** Reuse the existing isomorphism at independent common upward bounds. *)
 
-(** 在独立共同向上界复用既有同构。 *)
-
 Definition lower_common_iso
     (M : Monoid@{h e _})
   : LiftS@{_ _ v q} (TwoSphereClassS
@@ -157,8 +132,6 @@ Definition lower_common_iso
   := cocycle_two_sphere_class_iso.
 
 (** Product comparison needs no group, commutativity or four-horn choice. *)
-
-(** 乘积比较不需群、交换性或四维选择。 *)
 
 Definition higher_product
     (M : Monoid@{e h _})
@@ -172,8 +145,6 @@ Definition higher_product
   := cocycle_kan_mul_eq H x y.
 
 (** Decoding preserves the actual product at the native coefficient sizes. *)
-
-(** 读取在原生系数大小下保持实际乘积。 *)
 
 Definition higher_decode
     (M : Monoid@{e h _})
@@ -190,8 +161,6 @@ Definition higher_decode
 
 (** Encoding preserves the product without any four-horn selection. *)
 
-(** 编码保持乘积，不需任何四维选择。 *)
-
 Definition higher_encode
     (M : Monoid@{e h _})
     (H : HasHornFillers
@@ -203,8 +172,6 @@ Definition higher_encode
   := cocycle_kan_class_mul H a b.
 
 (** Inverse comparison needs only its own three-horn selection. *)
-
-(** 逆比较仅需自身三维选择。 *)
 
 Definition higher_inverse
     (M : Group@{e h _})
@@ -221,8 +188,6 @@ Definition higher_inverse
 
 (** The actual inverse decodes at independent coefficient sizes. *)
 
-(** 实际逆在独立系数大小下读取。 *)
-
 Definition higher_inverse_value
     (M : Group@{e h _})
     (K : HasHornFillers
@@ -237,8 +202,6 @@ Definition higher_inverse_value
 
 (** Raw model commutativity needs no group or four-horn choice. *)
 
-(** 模型原始交换律不需群或四维选择。 *)
-
 Definition higher_commutative_product
     (M : Monoid@{e h _})
     `{HC : !IsCommMagma M}
@@ -252,8 +215,6 @@ Definition higher_commutative_product
   := cocycle_kan_mul_comm H x y.
 
 (** The property refers to exactly the generic selected class monoid. *)
-
-(** 性质恰针对通用选定类幺半群。 *)
 
 Definition higher_commutative_monoid
     (M : Monoid@{e h _})
@@ -271,8 +232,6 @@ Definition higher_commutative_monoid
   := cocycle_kan_IsCommMagma H.
 
 (** Reuse the existing isomorphism at independent common upward bounds. *)
-
-(** 在独立共同向上界复用既有同构。 *)
 
 Definition higher_common_iso
     (M : Monoid@{e h _})

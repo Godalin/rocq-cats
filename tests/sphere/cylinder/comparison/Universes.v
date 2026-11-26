@@ -12,18 +12,10 @@ Local Opaque TwoSphereCylinderEquivalence TwoSphereElementaryForwardCylinder
     Test both strict carrier/equality orders. No complete Kan structure,
     multiplication or automatically selected cylinder equivalence is given. *)
 
-(** * 独立大小处的显式选择
-
-    检查载体／相等的两种严格次序，不给定完整Kan、乘法或自动柱等价结构。 *)
-
 (** ** Lower Equality Bounds
 
     Keep all choices explicit and check both directions, actual endpoints
     and a boundary restriction with independently supplied time. *)
-
-(** ** 较小相等界
-
-    保留显式选择，检查两个方向、实际端点和独立时间处的边界限制。 *)
 
 Section Lower.
 Universes l u p.
@@ -85,10 +77,6 @@ End Lower.
     Keep all choices explicit and check both directions, actual endpoints
     and a boundary restriction with independently supplied time. *)
 
-(** ** 较大相等界
-
-    保留显式选择，检查两个方向、实际端点和独立时间处的边界限制。 *)
-
 Section Higher.
 Universes l u p.
 Constraint l < u, u < p.
@@ -148,10 +136,6 @@ End Higher.
 
     A supplied full Kan witness can furnish the stated families, but it
     does not register the new cylinder equivalence automatically. *)
-
-(** ** 完整Kan仍须显式启用
-
-    给定完整Kan见证可提供所列选择族，但不会自动注册新的柱等价结构。 *)
 
 Section FullKanClient.
 Universes u p.

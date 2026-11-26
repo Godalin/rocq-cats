@@ -1,5 +1,4 @@
 % JuliaMono Nerd Font must be installed; CTeX supplies Chinese glyphs.
-% 需安装 JuliaMono Nerd Font；中文字形由 CTeX 提供。
 \documentclass[UTF8,fontset=fandol,scheme=plain,11pt,oneside]{ctexrep}
 \usepackage[a4paper,margin=25mm,headheight=15pt]{geometry}
 \usepackage{fontspec}
@@ -14,7 +13,6 @@
 \usepackage{hyperref}
 \usepackage{bookmark}
 % The upstream style gates PDF links on pdfTeX only; XeTeX also emits PDF.
-% 上游样式仅按 pdfTeX 开启 PDF 链接；XeTeX 同样输出 PDF。
 \usepackage{ifpdf}
 \let\catsIfPDF\ifpdf
 \let\ifpdf\iftrue
@@ -49,7 +47,6 @@
 \renewcommand{\coqdocemptyline}{\par\smallskip}
 \renewcommand{\coqdoceol}{\par}
 % Coqdoc represents each source space as .5em; use the code font's space.
-% coqdoc 用 .5em 表示每个源码空格；原生缩进改用代码字体的实际空格宽度。
 \ExplSyntaxOn
 \renewcommand{\coqdocindent}[1]{%
   \noindent\kern\coqdocbaseindent\noindent\kern

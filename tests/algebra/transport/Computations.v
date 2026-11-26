@@ -14,19 +14,11 @@ Local Open Scope algebra_scope.
     transports xor to xnor and sends the source unit [false] to [true]. The
     inverse equations hold in specified equality, not native pair equality. *)
 
-(** * 改变代表和单位元的运输
-
-    目标代表带一个无关的自然数标签，相等还保留独立布尔见证。双向都取布尔非，
-    就把异或运输为同或，并将来源单位 [false] 送到 [true]。逆方程在指定相等
-    下成立，不是原生序对相等。 *)
-
 Definition tagged_equiv (x y : bool * nat)
   : Type
   := ((fst x = fst y) * bool)%type.
 
 (** The equality laws preserve data; no proof irrelevance is assumed. *)
-
-(** 相等定律保留数据，不假定证明无关性。 *)
 
 Program Definition TaggedS
   : SetC
@@ -43,8 +35,6 @@ Defined.
 
 (** Forward transport forgets the tag and negates the Boolean. *)
 
-(** 正向运输忘记标签并取布尔非。 *)
-
 Program Definition to_bool
   : TaggedS →r BoolS
   :=
@@ -53,8 +43,6 @@ Program Definition to_bool
 Next Obligation. intros x y [H flag]. now rewrite H. Defined.
 
 (** Returning chooses tag zero, so it cannot be a native inverse. *)
-
-(** 返回时选择标签零，因此不可能成为原生逆。 *)
 
 Program Definition from_bool
   : BoolS →r TaggedS
@@ -65,23 +53,17 @@ Program Definition from_bool
 
 (** Source recovery is native Boolean involution. *)
 
-(** 来源恢复是原生布尔对合。 *)
-
 Definition source_recovery
   : (to_bool ∘r from_bool) ≈f id_resp.
 Proof. intros []; reflexivity. Defined.
 
 (** Target recovery uses specified equality and retains a witness flag. *)
 
-(** 目标恢复使用指定相等，并保留见证标记。 *)
-
 Definition target_recovery
   : (from_bool ∘r to_bool) ≈f id_resp.
 Proof. intros [[] n]; exact (eq_refl, true). Defined.
 
 (** Explicitly select the transported group; no instance is exported. *)
-
-(** 显式选取运输群，不导出实例。 *)
 
 Definition TaggedGroup
   : Group
@@ -90,8 +72,6 @@ Definition TaggedGroup
 
 (** Computing all four products checks the transported operation, not just
     a proof of an inherited law. The payload is chosen by the return map. *)
-
-(** 计算四个乘积，检查实际运输运算而非继承定律的证明；载荷由返回映射选择。 *)
 
 Example product_table
   : (@mul _ (hasMagma TaggedGroup) (false, 4) (false, 7),
@@ -103,8 +83,6 @@ Proof. vm_compute. reflexivity. Qed.
 
 (** The transported unit and both inverses are actual returned values. *)
 
-(** 运输单位元及两个逆元都是实际返回值。 *)
-
 Example unit_inverse_values
   : (@mul_unit _ _ (hasUnit TaggedGroup),
      @inv _ _ _ (hasInverse TaggedGroup) (false, 19),
@@ -115,8 +93,6 @@ Proof. vm_compute. reflexivity. Qed.
 (** Target recovery does not preserve the original tag; the specified
     equality still holds with its explicitly retained Boolean witness. *)
 
-(** 目标恢复不保留原标签，但指定相等仍成立，并带有显式保留的布尔见证。 *)
-
 Example recovery_value_and_witness
   : (from_bool (to_bool (false, 17)), snd (target_recovery (false, 17))) =
     ((false, 0), true).
@@ -124,8 +100,6 @@ Proof. vm_compute. reflexivity. Qed.
 
 (** The selected product and unit remain definitionally those of the
     transported parent monoid all the way through the group bundle. *)
-
-(** 穿过群包后，选定乘积和单位仍按定义是运输父幺半群的选择。 *)
 
 Example actual_parent
   : GroupToMonoid TaggedGroup = MonoidTransport BoolS_Group to_bool from_bool
@@ -135,8 +109,6 @@ Proof. reflexivity. Qed.
 (** Existing inverse Proper transports a genuine non-native equality,
     ignoring both different tags and different equality-witness flags. *)
 
-(** 既有逆 Proper 运输真实的非原生相等，容许不同标签及不同相等见证标记。 *)
-
 Definition inverse_proper_client
   : @inv _ _ _ (hasInverse TaggedGroup) (false, 5) ≈S
       @inv _ _ _ (hasInverse TaggedGroup) (false, 81)
@@ -145,15 +117,11 @@ Definition inverse_proper_client
 
 (** Generic involution recovers the target element in specified equality. *)
 
-(** 通用对合律在指定相等下恢复目标元素。 *)
-
 Definition involution_client (x : TaggedS)
   : @inv _ _ _ (hasInverse TaggedGroup) (@inv _ _ _ (hasInverse TaggedGroup) x) ≈S x
   := @inv_inv TaggedGroup x.
 
 (** Inverse uniqueness uses the exact inherited monoid and its laws. *)
-
-(** 逆唯一性使用原样继承的幺半群及其定律。 *)
 
 Definition uniqueness_client (x y : TaggedS)
     (H : @mul _ (hasMagma TaggedGroup) y x ≈S
@@ -163,8 +131,6 @@ Definition uniqueness_client (x y : TaggedS)
 
 (** Generic inversion of a product applies without another inverse proof. *)
 
-(** 通用乘积取逆律直接适用，不需要另一套逆证明。 *)
-
 Definition product_inverse_client (x y : TaggedS)
   : @inv _ _ _ (hasInverse TaggedGroup) (@mul _ (hasMagma TaggedGroup) x y) ≈S
       @mul _ (hasMagma TaggedGroup)
@@ -172,8 +138,6 @@ Definition product_inverse_client (x y : TaggedS)
   := @inv_mul TaggedGroup x y.
 
 (** The three forward comparison equations apply to the very same group. *)
-
-(** 三个正向比较方程适用于完全相同的群。 *)
 
 Definition product_comparison_client (x y : TaggedS)
   : to_bool (@mul _ (hasMagma TaggedGroup) x y) ≈S
@@ -183,8 +147,6 @@ Definition product_comparison_client (x y : TaggedS)
 
 (** Unit comparison reads the original source unit. *)
 
-(** 单位比较读出原来源单位。 *)
-
 Definition unit_comparison_client
   : to_bool (@mul_unit _ _ (hasUnit TaggedGroup)) ≈S
       @mul_unit _ _ (hasUnit BoolS_Group)
@@ -193,8 +155,6 @@ Definition unit_comparison_client
 
 (** Inverse comparison reads the original source inverse. *)
 
-(** 逆比较读出原来源逆。 *)
-
 Definition inverse_comparison_client (x : TaggedS)
   : to_bool (@inv _ _ _ (hasInverse TaggedGroup) x) ≈S
       @inv _ _ _ (hasInverse BoolS_Group) (to_bool x)
@@ -202,8 +162,6 @@ Definition inverse_comparison_client (x : TaggedS)
       source_recovery target_recovery x.
 
 (** Native equality is intentionally too strong for recovery and unit laws. *)
-
-(** 恢复及单位律有意不满足更强的原生相等。 *)
 
 Fail Definition native_recovery
   : from_bool (to_bool (false, 17)) = (false, 17)
@@ -217,8 +175,6 @@ Fail Definition no_implicit_model : @HasInverse BoolS_Monoid (Monoid_hasMagma Bo
 (** Native pairs support the same one-sided associative transport, even
     though target recovery and a unit for all tags are impossible. *)
 
-(** 原生序对仍支持同一单侧结合运输，尽管目标恢复及适用全部标签的单位不可能。 *)
-
 Program Definition NativeTaggedS
   : SetC
   :=
@@ -229,8 +185,6 @@ Program Definition NativeTaggedS
 
 (** Both maps preserve native equality, independently of any inverse law. *)
 
-(** 两映射保持原生相等，与任何逆律无关。 *)
-
 Program Definition native_to_bool
   : NativeTaggedS →r BoolS
   :=
@@ -238,8 +192,6 @@ Program Definition native_to_bool
   |}.
 
 (** The native return still chooses zero. *)
-
-(** 原生返回仍选择零。 *)
 
 Program Definition native_from_bool
   : BoolS →r NativeTaggedS
@@ -249,15 +201,11 @@ Program Definition native_from_bool
 
 (** Only source recovery is available. *)
 
-(** 仅来源恢复成立。 *)
-
 Definition native_source_recovery
   : (native_to_bool ∘r native_from_bool) ≈f id_resp.
 Proof. intros []; reflexivity. Defined.
 
 (** The one-sided interface really constructs a semigroup in this example. *)
-
-(** 单侧接口确实为此例构造半群。 *)
 
 Definition NativeTaggedSemigroup
   : Semigroup
@@ -265,8 +213,6 @@ Definition NativeTaggedSemigroup
       native_source_recovery.
 
 (** The required law follows from that actual semigroup. *)
-
-(** 所需定律来自该实际半群。 *)
 
 Definition native_associativity_client (x y z : NativeTaggedS)
   : @mul _ (hasMagma NativeTaggedSemigroup)
@@ -278,16 +224,11 @@ Definition native_associativity_client (x y z : NativeTaggedS)
 (** Every possible left factor produces tag zero, so no left unit can
     recover the element with tag one. This is a genuine missing hypothesis. *)
 
-(** 任意左因子都产生标签零，因此不存在能恢复标签一元素的左单位；这是真正
-    缺失的前提。 *)
-
 Example no_native_left_unit (e : NativeTaggedS)
   : @mul _ (hasMagma NativeTaggedSemigroup) e (false, 1%nat) ≠ (false, 1%nat).
 Proof. intros H. pose proof (f_equal snd H) as K. discriminate K. Qed.
 
 (** The omitted target recovery cannot be supplied by native reflexivity. *)
-
-(** 缺失的目标恢复不能由原生自反性补上。 *)
 
 Fail Definition native_target_recovery
   : (native_from_bool ∘r native_to_bool) ≈f id_resp

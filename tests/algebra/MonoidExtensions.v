@@ -11,10 +11,6 @@ Local Open Scope algebra_scope.
     Complete objects own their carrier. Extensions remain indexed by one
     selected parent; importing a model must not select an extension. *)
 
-(** * 完整幺半群与固定父结构选择
-
-    完整对象拥有其载体；扩充仍以一个选定父结构索引，导入模型不应选择扩充。 *)
-
 Section UnchosenExtension.
 Context (SG : Semigroup).
 
@@ -27,10 +23,6 @@ End UnchosenExtension.
 (** ** Two Extensions of One Parent
 
     Both choices stay available; packing reads the supplied evidence. *)
-
-(** ** 同一父结构的两份扩充
-
-    两份选择同时存在，打包只读取给定见证。 *)
 
 Section IndependentChoices.
 Context (SG : Semigroup) (H K : @HasUnit SG (Semigroup_hasMagma SG)).
@@ -61,11 +53,6 @@ End IndependentChoices.
     Bool-valued indiscrete equality permits different native units and law
     tokens. Competing local instances must not replace stored selections. *)
 
-(** ** 不同计算选择
-
-    bool 值全关系相等允许原生不同的单位及定律标记；竞争局部实例不能替换保存
-    的选择。 *)
-
 Program Definition IndiscreteBoolS
   : SetC
   :=
@@ -89,8 +76,6 @@ Program Definition ConstantBoolSemigroup
 
 (** Different operations and associativity witnesses on the same carrier
     remain separate computational choices. *)
-
-(** 同一载体上的不同运算与结合律见证仍是分离的计算选择。 *)
 
 Program Definition TrueMultiplication
   : HasMagma IndiscreteBoolS
@@ -122,8 +107,6 @@ Proof. reflexivity. Qed.
 
 (** Shared notation follows the typed magma, including both respectful
     sections, even with another multiplication on the same setoid. *)
-
-(** 同一广集存在另一份乘法时，共用记号及两种保相等偏应用均读取指定原群。 *)
 
 Example notation_stored_multiplications
   : ((false : ConstantBoolMagma) ⋅ false,
@@ -177,8 +160,6 @@ Proof. reflexivity. Qed.
 
 (** The same numeral reads different units from the explicitly typed bundles. *)
 
-(** 同一数字记号从显式指定的结构包读取不同的单位元。 *)
-
 Example notation_stored_units
   : ((1 : FirstMonoid), (1 : SecondMonoid)) = (false, true).
 Proof. reflexivity. Qed.
@@ -197,8 +178,6 @@ Proof. reflexivity. Qed.
 
 (** The actual category constructor reads these same stored law tokens. *)
 
-(** 实际范畴构造器读取同一批保存的定律标记。 *)
-
 Example category_laws_use_stored_choices
   : (@comp_id_l (MonoidCat FirstMonoid) tt tt false,
       @comp_id_r (MonoidCat FirstMonoid) tt tt false,
@@ -215,10 +194,6 @@ Fail Definition native_units_equal
 
     Actual model projections compute. Strict sizes concern mathematical
     independence, not historical universe-argument positions. *)
-
-(** ** 具体客户端与独立大小
-
-    实际模型投影可计算；严格大小检查数学上的独立性，不维护历史宇宙参数位置。 *)
 
 Example xor_unit_computes
   : @mul_unit _ _ (hasUnit BoolS_Monoid) = false.

@@ -5,8 +5,6 @@ From Cats Require Import
 
 (** * Universe Regressions for Normalization Soundness *)
 
-(** * 正规化可靠性的宇宙回归检查 *)
-
 Local Open Scope stlc_ty_scope.
 Local Open Scope stlc_ctx_scope.
 Local Open Scope stlc_tm_scope.
@@ -15,11 +13,6 @@ Local Open Scope stlc_tm_scope.
 
     Fix [B], [Γ] and [A] at [b < r < s < l]. Check soundness and the
     two-way characterization with evidence at [b], then idempotence. *)
-
-(** ** 较小等式证据下的可靠性
-
-    在 [b < r < s < l] 处固定 [B]、[Γ]、[A]，检查证据位于 [b] 时的可靠性
-    与双向刻画，再检查幂等性。 *)
 
 Section SmallerEvidence.
 Universes b r s l.
@@ -31,8 +24,6 @@ Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B).
 (** Fix the semantic instance hidden by normalization's syntax result.
     Long universe instances are confined to these boundary regressions. *)
 
-(** 固定正规化语法结果中不可见的语义实例。长宇宙实例只用于这些边界回归。 *)
-
 Let normalize (t : Tm Γ A)
   : Nf Γ A
   := nf@{b r s l
@@ -41,8 +32,6 @@ Let normalize (t : Tm Γ A)
 (** Soundness constructs evidence at the signature bound, strictly below
     semantic values and world laws. *)
 
-(** 可靠性在签名界限处构造证据，严格低于语义值与世界定律。 *)
-
 Definition smaller_evidence_soundness (t : Tm Γ A)
   : TmEq@{b b _} t (embed_nf (normalize t))
   := nf_sound t.
@@ -50,15 +39,11 @@ Definition smaller_evidence_soundness (t : Tm Γ A)
 (** Both directions of the Type-valued characterization use these exact
     bounds, including the direction that constructs equational evidence. *)
 
-(** Type 值刻画的两个方向都使用这些指定界限，包括构造等式证据的方向。 *)
-
 Definition smaller_evidence_characterization (t u : Tm Γ A)
   : TmEq@{b b _} t u ↔ normalize t = normalize u
   := tm_eq_nf t u.
 
 (** The idempotence law preserves the same chosen semantic instance. *)
-
-(** 幂等律保留同一个选定语义实例。 *)
 
 Definition separated_idempotence (t : Tm Γ A)
   : normalize (embed_nf (normalize t)) = normalize t
@@ -71,11 +56,6 @@ End SmallerEvidence.
     Fix [B], [Γ] and [A] at [b < r < l < s < e]. Check soundness and
     both characterization maps with evidence above semantic values. *)
 
-(** ** 较大证据下的可靠性
-
-    在 [b < r < l < s < e] 处固定 [B]、[Γ]、[A]，检查等式证据高于语义值时
-    的可靠性与双向刻画映射。 *)
-
 Section LargerEvidenceAndSmallerWorldLaws.
 Universes b r l s e.
 Constraint b < r.
@@ -87,9 +67,6 @@ Context (B : Type@{b}) (Γ : Ctx B) (A : Ty B).
 (** Here world laws lie below semantic values, and equational evidence
     lies strictly above both. The logical relation uses an auxiliary
     bound; it must not collapse any of these named levels. *)
-
-(** 此处世界定律低于语义值，等式证据又严格高于二者。逻辑关系使用辅助界限，
-    不得合并这些命名层级。 *)
 
 Let normalize (t : Tm Γ A)
   : Nf Γ A

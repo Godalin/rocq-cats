@@ -14,10 +14,6 @@ From Cats Require Import
     Check dependent objects, inherited inverses and the unique category view.
     Merely importing a concrete model must not choose an unrelated structure. *)
 
-(** * 群胚打包接口
-
-    检查依赖对象、继承的逆及唯一范畴视图；仅导入具体模型不得替无关范畴选择结构。 *)
-
 Fail Definition unchosen_groupoid_bundle
   : Gpd
   := ltac:(typeclasses eauto).
@@ -30,10 +26,6 @@ Fail Definition unchosen_set_groupoid
 
     A groupoid value supplies its own object type and inverse witnesses;
     no separately enabled property instance is needed. *)
-
-(** ** 继承的逆见证
-
-    群胚值提供自己的对象类型与逆见证，无须另行启用性质实例。 *)
 
 Section BundledInverses.
 Context (G : Gpd) {X Y : G}.
@@ -57,17 +49,11 @@ End BundledInverses.
     Packaging either supplied property must keep exactly its own inverse
     computation. No equality of the two property records is assumed. *)
 
-(** ** 同一范畴上的独立选择
-
-    打包任一给定性质时须恰好保留其自己的逆计算，不假定两份性质记录相等。 *)
-
 Section IndependentChoices.
 Context (C : Cat) (H K : IsGpd C) {X Y : C} (f : Hom X Y).
 
 (** The constructor preserves both its category and its supplied property
     by conversion, independently of other witnesses on that category. *)
-
-(** 构造器按定义保留底层范畴及给定性质，不受同一范畴上其他见证的影响。 *)
 
 Example first_parent_is_selected
   : GpdToCat (GpdOfCat C H) = C.
@@ -94,10 +80,6 @@ End IndependentChoices.
     Reusing opposite/product constructors must retain the transparent xor
     inverses; equality-groupoid objects remain the original setoid elements. *)
 
-(** ** 具体逆计算
-
-    复用反范畴／乘积构造须保持透明的异或群逆；相等群胚的对象仍是原广集元素。 *)
-
 Example bool_inverse_computes
   : @gpd_inv BoolGpd _ tt tt bool_loop = true.
 Proof. reflexivity. Qed.
@@ -120,10 +102,6 @@ Definition equality_groupoid_object (X : SetC) (x : X)
     Cartesian closed and monoidal structures reach their objects through
     their existing unique category chains; no additional sort edge is needed. *)
 
-(** ** 已有范畴视图
-
-    笛卡尔闭及幺半结构经已有唯一范畴链到达对象类型，无须额外类型转换边。 *)
-
 Section ExistingViews.
 Context (C : CCC) (MC : MonoidalCat).
 
@@ -136,8 +114,6 @@ Definition monoidal_object_view (x : MC)
   := x.
 
 (** The two generated views recover the same binoidal ancestor. *)
-
-(** 两条生成视图恢复同一双侧张量祖先。 *)
 
 Example monoidal_binoidal_views_agree
   : MagmoidalCatToBinoidalCat (MonoidalCatToMagmoidalCat MC)
@@ -155,10 +131,6 @@ End ExistingViews.
 
     Keep both strict size orders and larger law universes while packaging
     groupoids and their product. Their objects still inhabit the original sort. *)
-
-(** ** 独立的箭头与相等大小
-
-    打包群胚及其乘积时保留两种严格大小次序与更大的定律宇宙，对象仍属于原类型。 *)
 
 Section IndependentUniverses.
 Universes o h p l.

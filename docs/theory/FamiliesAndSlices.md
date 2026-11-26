@@ -9,13 +9,13 @@ FamSCat X ≃C (SetCat /C X).
 
 ## The two categories
 
-[Slice](../theories/Cat/Slice/Core.v) is defined for any category `C`. An object
+[Slice](../../theories/Cat/Slice/Core.v) is defined for any category `C`. An object
 of `C /C X` is an arrow `p : E → X`. A morphism from `p` to `q : D → X`
 consists of `h : E → D` and a witness `q ∘ h ≈ p`. Morphism equivalence uses
 the original `HomEq` on `h`, without comparing the triangle witnesses.
 `SliceDomF` forgets the projection to `X`.
 
-[FamFixed](../theories/Instance/Set/Fam/Fixed.v) defines `FamSCat X`. Its
+[FamFixed](../../theories/Instance/Set/Fam/Fixed.v) defines `FamSCat X`. Its
 objects are the existing coherent families `FamS X`. A map `A →Fam B` is
 a family of respectful maps `φ_x : A x →r B x` commuting with transport.
 The relation `φ ≈Fam ψ` compares their values pointwise. `FamFixedF X`
@@ -24,7 +24,7 @@ identity base map. `FamReindexF f` extends substitution to these fiberwise maps.
 
 ## The equivalence
 
-[FamSlice](../theories/Instance/Set/Fam/Slice.v) provides both functors:
+[FamSlice](../../theories/Instance/Set/Fam/Slice.v) provides both functors:
 
 - `FamSumF X` sends `A` to its total-space projection `SigS X A → X`, and
   sends `φ` to `(x,a) ↦ (x,φ_x a)`. Its map on total spaces reuses the
@@ -48,9 +48,9 @@ Both round trips have specified natural isomorphisms:
 `fam_slice_equiv X` bundles these functors and comparisons. No equality of
 family records, functions, or witness data is required.
 
-## Independent fiber lifting / 独立纤维提升
+## Independent fiber lifting
 
-[FamLift](../theories/Instance/Set/Fam/Lift.v) raises a coherent family's
+[FamLift](../../theories/Instance/Set/Fam/Lift.v) raises a coherent family's
 fiber carriers and equality witnesses independently, keeping its supplied
 base setoid. Transport and fiber maps reuse `LiftS` and `lift_resp`.
 The source fiber map's auxiliary carrier bound stays independent of the
@@ -63,14 +63,6 @@ and their equality witnesses, with transparent fiber maps and coherence.
 by identity components with transparent inverses. This comparison concerns
 the base functors; it gives no resizing or equivalence of whole universe-sized
 family categories. Chosen model structures are not registered.
-
-族纤维提升保持给定基底广集，独立提升纤维载体及相等见证，运输和纤维映射复用
-已有广集提升。来源纤维映射的辅助载体界与目标界独立，支持基底／纤维相等大小
-的两种次序；包装要求来源层级不高于对应目标界。
-
-族提升函子保留基底映射及其相等见证，纤维映射和相干性透明。基底忘却函子
-通过恒等分量及透明逆作自然同构比较；这只比较基底函子，不提供大小重设或
-整个不同大小族范畴的等价，也不注册选定模型结构。
 
 ## Sizes and substitution
 
@@ -88,13 +80,13 @@ category's morphism equivalence.
 
 Substitution uses the existing total-space pullback: apply
 `fam_reindex_pullback (FixedFamC A) f` from
-[FamReindex](../theories/Instance/Set/Fam/Reindex.v). Its square has vertices
+[FamReindex](../../theories/Instance/Set/Fam/Reindex.v). Its square has vertices
 `SigS X A[f]S`, `SigS Y A`, `X`, and `Y`, and its universal mediator is already
 available. This requires no new choice of pullbacks.
 
 ## Slices and the codomain lifts
 
-[Slice.Arrow](../theories/Cat/Slice/Arrow.v) provides the faithful functor
+[Slice.Arrow](../../theories/Cat/Slice/Arrow.v) provides the faithful functor
 `SliceArrowF C X : Fct (C /C X) (Arr C)`.
 Its object action `A^Arr` retains the domain, base X and projection of A.
 `slice_to_square h` has top edge `slice_map h` and bottom edge id.
@@ -108,7 +100,7 @@ Square equality is written `f ≈Arr g` and compares both edges.
 With the same explicitly enabled `HasPullback C`, the source of
 `slice_reindex_square f A` computes both as `(A[f]C)^Arr` and as `A^Arr[f]Arr`.
 This is the existing `arrow_reindex` from
-[Arrow.Fibration](../theories/Cat/Arrow/Fibration.v), so the square is cartesian
+[Arrow.Fibration](../../theories/Cat/Arrow/Fibration.v), so the square is cartesian
 for the codomain functor. No equality of objects or extra pullback choice is added.
 
 The natural transformation `SliceReindexSquareN f` collects these squares:
@@ -139,7 +131,7 @@ slice and are preserved by `SliceArrowF`; the slice coherence diagrams below
 remain valid after applying that functor.
 
 The bridge preserves independent hom-carrier/equality levels. Six definitions
-in the existing [universe regressions](../tests/Universes.v) check faithfulness,
+in the existing [universe regressions](../../tests/Universes.v) check faithfulness,
 the natural reindexing squares and the composition-factor comparison in both
 size orderings. A temporary Boolean setoid instance checks actual computation
 of all three factors, nontrivial triangle witnesses, vertical squares whose
@@ -151,7 +143,7 @@ the compiled sources; no new permanent example module is added.
 
 ## Natural substitution comparisons
 
-[Slice.Reindex](../theories/Cat/Slice/Reindex.v) constructs `SliceReindexF f`
+[Slice.Reindex](../../theories/Cat/Slice/Reindex.v) constructs `SliceReindexF f`
 for any category with explicitly enabled chosen pullbacks. Write `A[f]C`
 for its object action. Morphisms are universal mediators; `pb_β1`, `pb_β2`
 and uniqueness prove their functoriality and independence from triangle
@@ -166,7 +158,7 @@ uses the existing pullback-pasting property. Their family counterparts are
 The identity comparison points from the identity functor to reindexing;
 the composition comparison points from iterated reindexing to the composite.
 
-[FamSliceReindex](../theories/Instance/Set/Fam/SliceReindex.v) uses the existing
+[FamSliceReindex](../../theories/Instance/Set/Fam/SliceReindex.v) uses the existing
 family pullback and `slice_reindex_lift_iso` to construct
 `fam_sum_reindex_nat_iso f`:
 
@@ -184,7 +176,7 @@ Both equations use the slice's underlying-map equivalence.
 
 The chosen `SetCat_HasPullback` explicitly keeps carrier and equality levels
 separate, with the same `p <= u` bound. The regression check in
-[Universes](../tests/Universes.v) includes `p < u` for this instance and the
+[Universes](../../tests/Universes.v) includes `p < u` for this instance and the
 natural sum comparison. Inverse mediators and the identity/pasting universal
 properties remain transparent.
 

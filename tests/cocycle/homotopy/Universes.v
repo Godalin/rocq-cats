@@ -15,11 +15,6 @@ Local Open Scope nat_scope.
     orders. The generated map witnesses are not forced into either native
     coefficient equality or the original simplex equality bound. *)
 
-(** * 独立大小中的映射不变量
-
-    检查相反的严格系数配置及两种环境相等次序。生成映射见证不被迫进入原生
-    系数相等界或原有单形相等界。 *)
-
 Section CoefficientSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
@@ -27,8 +22,6 @@ Context (M : Monoid@{h e _}) (N : Monoid@{e h _}).
 
 (** The lower native / lower ambient evaluation
     retains the whole generated map relation. *)
-
-(** 此原生与环境大小配置的求值保留完整生成映射关系。 *)
 
 Definition lower_native_lower_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
@@ -39,8 +32,6 @@ Definition lower_native_lower_ambient_evaluation
 (** The lower native / higher ambient evaluation
     retains the whole generated map relation. *)
 
-(** 此原生与环境大小配置的求值保留完整生成映射关系。 *)
-
 Definition lower_native_higher_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     (x : TwoSphereS X b)
@@ -50,8 +41,6 @@ Definition lower_native_higher_ambient_evaluation
 (** The higher native / lower ambient evaluation
     retains the whole generated map relation. *)
 
-(** 此原生与环境大小配置的求值保留完整生成映射关系。 *)
-
 Definition higher_native_lower_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     (x : TwoSphereS X b)
@@ -60,8 +49,6 @@ Definition higher_native_lower_ambient_evaluation
 
 (** The higher native / higher ambient evaluation
     retains the whole generated map relation. *)
-
-(** 此原生与环境大小配置的求值保留完整生成映射关系。 *)
 
 Definition higher_native_higher_ambient_evaluation
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
@@ -76,17 +63,11 @@ End CoefficientSizes.
     These probes use arbitrary targets and an explicit edge law, without
     coefficient structures or Kan choices. *)
 
-(** ** 不依赖模型的显式边约化
-
-    以下检查使用任意目标及显式边定律，不带系数结构或 Kan 选择。 *)
-
 Section GenericSizes.
 Universes l u p.
 Constraint l < u, u < p.
 
 (** The lower ambient equality admits the actual restricted cylinder. *)
-
-(** 此环境相等界接受实际限制柱。 *)
 
 Definition lower_equality_restricted_cylinder
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (c : Y 0)
@@ -99,8 +80,6 @@ Definition lower_equality_restricted_cylinder
   := OneReducedSphereCylinder Y c E1 H b x.
 
 (** The higher ambient equality admits the actual restricted cylinder. *)
-
-(** 此环境相等界接受实际限制柱。 *)
 
 Definition higher_equality_restricted_cylinder
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (c : Y 0)
@@ -119,10 +98,6 @@ End GenericSizes.
     Ordinary category Hom equality remains smaller than its carrier;
     both ambient equality orders retain the stronger map obstruction. *)
 
-(** ** 原生 Hom 大小不相等的范畴
-
-    普通范畴 Hom 相等保持小于其载体；两种环境相等次序都保留更强映射障碍。 *)
-
 Section NerveSizes.
 Universes e h o l u p.
 Constraint e < h, h < o, o < l, l < u, u < p.
@@ -130,8 +105,6 @@ Context (A : SetC@{o e}) (C : Cat@{o h e l l})
     (T : Fct (EqGpd A) C).
 
 (** The lower ambient equality admits the obstruction for arbitrary maps. *)
-
-(** 此环境相等界接受任意映射的障碍。 *)
 
 Definition lower_equality_nerve_obstruction
     (f : (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) ⇒
@@ -141,8 +114,6 @@ Definition lower_equality_nerve_obstruction
   := bool_cocycle_no_nerve_forward_homotopy T f g.
 
 (** The higher ambient equality admits the obstruction for arbitrary maps. *)
-
-(** 此环境相等界接受任意映射的障碍。 *)
 
 Definition higher_equality_nerve_obstruction
     (f : (Z²(BoolS_Monoid) : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ⇒

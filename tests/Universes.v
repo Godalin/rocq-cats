@@ -141,9 +141,6 @@ From Cats Require Import
     chosen equalizers need [p ≤ u], while generated coequalizers need [u ≤ p].
     These bounds belong to these models, not the abstract interfaces. *)
 
-(** 具体广集模型在可行时保持层级独立。选定等化子需要 [p ≤ u]，生成余等化子
-    需要 [u ≤ p]；这些界属于当前模型，而非抽象接口。 *)
-
 Section ConcreteSetModelLevels.
 Universes u p s.
 Constraint Set < u.
@@ -189,8 +186,6 @@ Context (J : Cat@{u u s _ _}) (G : Graph@{u u s}).
 (** Large relation witnesses in the shape do not enlarge the indexing
     carrier required by either model. *)
 
-(** 形状中的大关系见证不会增大两种模型所需的索引载体。 *)
-
 Definition high_eq_set_diagram_colimits
   : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) J
   := SetCat_HasColimitsOfShape J.
@@ -209,8 +204,6 @@ Context (K : Cat@{s s s _ _}) (HK : HasFiniteHomCover K)
 
 (** Finite covers and generators bypass the larger raw shape carriers. *)
 
-(** 有限覆盖及生成元允许绕过形状原始载体的更大层级。 *)
-
 Definition high_eq_set_finite_colimits
   : HasColimitsOfShape (SetCat@{u p _ _ _ _ _}) K
   := @SetCat_FiniteColimits K HK.
@@ -226,8 +219,6 @@ Definition low_eq_set_generated_limits
 End ConcreteSetModelLevels.
 
 (** Basic sets and their category accept both carrier/equality orderings. *)
-
-(** 基础广集及其范畴接受载体与相等见证的两种大小排列。 *)
 
 Section SetLevels.
 Universe u p.
@@ -261,8 +252,6 @@ End SetLevels.
 
 (** Guard against identifying morphism and equivalence-witness universes
     when a construction instantiates a bare [Cat]. Test both orderings. *)
-
-(** 构造实例化一般 [Cat] 时，不得等同态射与相等见证宇宙；两种排列均需检查。 *)
 
 Section CategoryLevels.
 Universe o h p l.
@@ -340,8 +329,6 @@ Definition low_eq_thin
   := ThinBicat D.
 (** A CCC can retain terminal evidence above its category law bound. *)
 
-(** CCC 可以保留宇宙严格高于范畴定律界的终对象见证。 *)
-
 Universe t.
 Constraint l < t.
 Example larger_terminal_witness (HT : HasTerminal@{o h p l t} C)
@@ -354,8 +341,6 @@ End CategoryLevels.
 
 (** Transposition must preserve hom/equality levels in either ordering.
     The ambient set category for the correspondence must not identify them. *)
-
-(** 转置必须保留 Hom 与相等层级的两种排列，所用环境集合范畴不得将它们等同。 *)
 
 Section ExponentialLevels.
 Universe o h p l.
@@ -414,8 +399,6 @@ Definition low_eq_fixed_exp (X : @Ob D)
   := exp_fixed_nat_iso X.
 (** Structural isomorphisms keep the two hom/equality orderings distinct. *)
 
-(** 结构同构保持两种 Hom／相等层级排列的分离。 *)
-
 Definition high_eq_exp_laws (X Y Z : @Ob C)
   : (((X × Y) ^ Z) ≅ ((X ^ Z) × (Y ^ Z))) ∧
       (((Y ^ X) ^ Z) ≅ (Y ^ (X × Z))) ∧ ((Y ^ 1) ≅ Y) ∧ ((1 ^ X) ≅ 1)
@@ -447,8 +430,6 @@ Definition low_eq_iterated_hom (X Y Z W : @Ob D)
 
 (** Public notation survives section closure and imports. *)
 
-(** 公共记号在节结束并导入后仍然可用。 *)
-
 Definition high_eq_internal_unit (X Y Z : @Ob C) (f : Hom Z (Y ^ X))
   : idᴱ[Y] ∘ᴱ f ≈ f
   := exp_comp_id_l f.
@@ -463,15 +444,11 @@ Context (F : Fct C D) (G : Fct D C)
 (** CCC-preservation composition permits different hom/equality orderings
     in its intermediate category. *)
 
-(** CCC 保持性的复合允许中间范畴具有不同的 Hom／相等层级排列。 *)
-
 Definition mixed_levels_closed_composite
   : @IsCCCF C C (G ∘F F)
   := CompF_IsCCCF F G.
 
 (** Bundling and composing preserve both strict hom/equality orderings. *)
-
-(** 打包及复合保持 Hom／相等层级的两种严格排列。 *)
 
 Definition high_eq_bundled_closed_fct
   : CCCFct C D
@@ -494,8 +471,6 @@ Context (J : Cat@{s s s _ _}).
 
 (** Limit preservation does not impose an indexing bound on the shape. *)
 
-(** 极限保持性不对形状施加索引大小界。 *)
-
 Definition high_eq_exp_limit (A : @Ob C)
     (K : Fct J C) (L : @Ob C) (κ : L ⇒Δ K) (H : is_limit κ)
   : is_limit (MapCone (-^ A) κ)
@@ -509,8 +484,6 @@ End ExponentialLevels.
 (** An adjunction can relate categories whose two hom levels are reversed.
     Its natural hom isomorphism uses a larger ambient set category, with
     either ordering of carrier and equality-witness levels. *)
-
-(** 伴随可关联 Hom 两个层级顺序相反的范畴；自然 Hom 同构使用更大的环境集合范畴，并接受载体与相等见证的两种排列。 *)
 
 Section AdjunctionLevels.
 Universe o h p n e l.
@@ -541,8 +514,6 @@ End AdjunctionLevels.
 
 (** Large diagram shapes may raise cone and law levels, without identifying
     the target category's native hom and equality-witness levels. *)
-
-(** 大图式形状可提高锥与定律的层级，但不得等同目标范畴原生的 Hom 及相等见证层级。 *)
 
 Section LimitLevels.
 Universe o h p n l.
@@ -580,8 +551,6 @@ End LimitLevels.
 
 (** Duality and colimit adjunctions preserve independent target hom/equality
     levels, even when the diagram objects live at a higher level. *)
-
-(** 即使图式对象处于更高层级，对偶与余极限伴随仍保持目标 Hom 及相等层级独立。 *)
 
 Section ColimitLevels.
 Universe o h p n l.
@@ -623,8 +592,6 @@ End ColimitLevels.
 
 (** Named dual structures and both shape conversions preserve independent
     hom-carrier and equality-witness levels. *)
-
-(** 命名对偶结构及双向形状转换保持 Hom 载体与相等见证层级独立。 *)
 
 Section NamedColimitLevels.
 Universes o h p l.
@@ -678,8 +645,6 @@ Definition low_eq_named_colimits_recovery
 (** Both finite-colimit basis conversions retain independent hom/equality
     levels, in either size ordering. *)
 
-(** 两种有限余极限基础的双向转换保持 Hom／相等层级独立，兼容两种大小顺序。 *)
-
 Definition high_eq_finite_colimit_bases
   : (HasInitial C ∧ HasPushout C)
       ↔ (HasInitial C ∧ HasCoproduct C ∧ HasCoequalizer C)
@@ -694,8 +659,6 @@ End NamedColimitLevels.
 
 (** Shape changes may reverse the shape hom/equality ordering and lower its
     object level. Neither ordering of the target's native hom levels changes. *)
-
-(** 形状变换可反转形状的 Hom 与相等大小顺序并降低对象层级，目标范畴原生两种 Hom 层级的排列均不改变。 *)
 
 Section ReindexedLimitLevels.
 Universe o h p n m l.
@@ -739,8 +702,6 @@ Definition low_eq_reindexed_limit
 (** Cone comparisons share ambient bounds without identifying either shape's
     native levels; the ambient carrier/equality ordering can also vary. *)
 
-(** 锥比较共享环境上界而不合并两侧形状的原生层级；环境载体与相等的大小顺序也可变化。 *)
-
 Universes a b.
 Constraint l < a.
 Constraint a < b.
@@ -765,8 +726,6 @@ Definition low_eq_restricted_limit (HL : HasLimit D K')
 (** Both directions of colimit shape transfer retain the target's independent
     hom/equality levels. *)
 
-(** 余极限形状传递的两个方向保留目标独立的 Hom／相等层级。 *)
-
 Definition high_eq_colimit_shape_transfer
     (HC : HasColimit C K) (HR : HasColimit C (K ∘F Q))
   : HasColimit C K ∧ HasColimit C (K ∘F Q)
@@ -783,9 +742,6 @@ End ReindexedLimitLevels.
 
 (** Finite covers do not identify the shape's object, hom or equality levels
     with those of the target category, in either hom/equality ordering. *)
-
-(** 有限覆盖不合并形状与目标范畴的对象、Hom 或相等层级；两种 Hom 与相等大小排列
-    均须保持独立。 *)
 
 Section FiniteShapeLevels.
 Universe o h p n m l.
@@ -836,8 +792,6 @@ Definition low_eq_pullback_finite_limits
 (** Opposite finite witnesses and both bases supply colimits without
     identifying shape or target universes. *)
 
-(** 反有限见证与两套基础给出余极限，而不合并形状或目标宇宙。 *)
-
 Context `{HIC : !HasInitial C} `{HID : !HasInitial D}.
 Context `{HCC : !HasCoproduct C} `{HCD : !HasCoproduct D}.
 Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
@@ -860,8 +814,6 @@ End FiniteShapeLevels.
 (** Graph edges retain independent carrier and equality levels. Paths must
     contain intermediate vertices; their generated equality also contains
     the original edge witnesses. Raising carriers does not force witnesses up. *)
-
-(** 图的边载体与相等层级独立；路径包含中间顶点，其生成相等也包含原边见证。提高载体不得强制提高见证。 *)
 
 Section GraphLevels.
 Universe o e p n l.
@@ -924,8 +876,6 @@ Definition low_eq_sigma_edge_products
 (** Opposite graph colimits need only vertex and generator-source coproducts,
     while preserving either ordering of target hom and equality levels. *)
 
-(** 反图余极限仅需顶点与生成边源对象余积，并保持目标 Hom 与相等的两种大小顺序。 *)
-
 Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
 Context `{HCO : !HasColimitsOfShape C (DiscreteCat (@Vtx G))}.
 Context `{HCG : !HasColimitsOfShape C (DiscreteCat (GraphEdges (G^opG)))}.
@@ -945,8 +895,6 @@ End GraphLevels.
 
 (** Shape comparisons and their diagonal adjunctions must work in either
     ordering of the target category's native hom and equality levels. *)
-
-(** 形状比较及其对角伴随必须适用于目标范畴原生 Hom 与相等层级的两种排列。 *)
 
 Section ShapedLimitLevels.
 Universe o h p l.
@@ -1018,8 +966,6 @@ End ShapedLimitLevels.
 (** The two product indices can be larger than the target homs. The general
     equalizer formula must preserve both native hom/equality orderings. *)
 
-(** 两个积索引的大小可以超过目标 Hom；一般等化子公式必须保留 Hom 与相等的两种大小排列。 *)
-
 Section ProductEqualizerConstructionLevels.
 Universe o h p n l.
 Constraint Set < h.
@@ -1045,8 +991,6 @@ Definition low_eq_product_equalizer_limit (K : Fct J D)
 (** The dual constructor needs only its two discrete coproduct choices;
     these large indices do not constrain the target hom/equality order. *)
 
-(** 对偶构造仅需两个离散余积选择；这些大索引不约束目标 Hom／相等的大小顺序。 *)
-
 Context `{HQC : !HasCoequalizer C} `{HQD : !HasCoequalizer D}.
 Context `{HCO : !HasColimitsOfShape C (DiscreteCat (@Ob J))}.
 Context `{HCA : !HasColimitsOfShape C (DiscreteCat (ArrowOb (J^op)))}.
@@ -1065,8 +1009,6 @@ End ProductEqualizerConstructionLevels.
 
 (** Small index categories do not identify the target category's native
     hom and equality-witness levels, including diagrams with relations. *)
-
-(** 小索引范畴不得等同目标范畴原生 Hom 与相等层级，包括带关系的图式。 *)
 
 Section SmallShapeLevels.
 Universe o h p l.
@@ -1109,8 +1051,6 @@ End SmallShapeLevels.
 (** The same hom-category must retain distinct 1-cell, 2-cell and
     2-cell-equivalence levels through the bicategory projections. *)
 
-(** 同一 Hom 范畴必须通过双范畴投影保留独立的一胞、二胞及二胞相等层级。 *)
-
 Section BicategoryLevels.
 Universe o h t p a b l.
 Constraint o < h.
@@ -1134,8 +1074,6 @@ End BicategoryLevels.
 
 (** Representability and the Yoneda isomorphism retain both hom/equality
     orderings; the isomorphism uses a large enough ambient set category. *)
-
-(** 可表性与 Yoneda 同构保留 Hom 与相等的两种排列；同构使用足够大的环境集合范畴。 *)
 
 Section RepresentableLevels.
 Universe o h p l.
@@ -1162,8 +1100,6 @@ End RepresentableLevels.
 
 (** The chosen pullback instance formerly collapsed these two levels. *)
 
-(** 选定拉回实例曾错误合并这两个层级。 *)
-
 Section SetoidPullbackLevels.
 Universe u p.
 Constraint p < u.
@@ -1179,8 +1115,6 @@ End SetoidPullbackLevels.
 
 (** Codes can be larger than contexts. Decoded fibers determine the two
     context levels, which remain independent in either ordering. *)
-
-(** 代码可大于上下文；解码纤维决定两个上下文层级，它们在两种排列下都保持独立。 *)
 
 Section CodeModelLevels.
 Universe u p c q l.
@@ -1205,8 +1139,6 @@ Definition reverse_code_model
 End CodeModelLevels.
 
 (** Representation must not identify hom, term or equality-witness levels. *)
-
-(** 表示不得等同 Hom、项或相等见证层级。 *)
 
 Section ContextRepresentationLevels.
 Universe o h p a b c d l.
@@ -1307,9 +1239,6 @@ End ContextRepresentationLevels.
     larger hom-equality witnesses. Fix small type presheaves and independent
     hom/equality levels, with a still larger category-law bound. *)
 
-(** 即使截面载体包含更大的 Hom 相等见证，泛配对仍可恢复扩张。固定小类型预层
-    及独立 Hom／相等层级，范畴定律的上界仍可更大。 *)
-
 Section ContextUniversalLevels.
 Universe o h p l.
 Constraint Set < h.
@@ -1378,9 +1307,6 @@ End ContextUniversalLevels.
     independent of base homs and of the recovered term bounds. Both orders
     also check the total-space natural isomorphism. *)
 
-(** 类型元素上的理解结构保持较大的类型载体／相等层级独立于基底 Hom 及恢复项
-    的大小界；两种排列同时检查全空间自然同构。 *)
-
 Section ComprehensionElementLevels.
 Universe o h p l a b.
 Constraint Set < h.
@@ -1437,9 +1363,6 @@ End ComprehensionElementLevels.
 (** Raw syntax accepts arbitrary signature levels. An inferred extra universe
     on variable markers must not restrict rename/substitution clients. *)
 
-(** 原始语法允许任意签名层级；变量标记上多余的推断宇宙不得限制重命名或替换的
-    使用者。 *)
-
 Section STLCSyntaxLevels.
 Universe b.
 Context (B : Type@{b}) (Γ Δ : Ctx B) (A : STLC.Syntax.Ty B).
@@ -1456,8 +1379,6 @@ End STLCSyntaxLevels.
 
 (** Beta/eta witnesses can live strictly above the raw syntax. These interfaces
     must preserve that level when packaging sets and respectful operations. *)
-
-(** βη 见证可严格高于原始语法；打包广集与保相等操作时必须保持该层级。 *)
 
 Section STLCEqualityLevels.
 Universe b e.
@@ -1486,9 +1407,6 @@ End STLCEqualityLevels.
 (** Contexts, beta/eta witnesses and category laws admit three strictly
     increasing levels. Chosen terminal/product/CCC structures and context
     packing isomorphisms preserve them. *)
-
-(** 上下文、βη 见证及范畴律允许三个严格递增的层级，选定终对象、积、CCC 及
-    上下文打包同构保持这些层级。 *)
 
 Section STLCCategoryLevels.
 Universe b e l.
@@ -1523,9 +1441,6 @@ Definition separated_stlc_completeness (Γ : Ctx B) (A : STLC.Syntax.Ty B)
 (** Inhabitation uses the same separated model bounds and retains a chosen
     morphism for every model, with both directions living in [Type]. *)
 
-(** 可居留性使用相同的分离模型大小界，并为每个模型保留选定态射；
-    两个方向都位于 [Type] 中。 *)
-
 Definition separated_stlc_inhabitation (Γ : Ctx B) (A : STLC.Syntax.Ty B)
   : STLC.Syntax.Tm Γ A ↔
       ∀ (C : CCC@{b b e l l}) (I : B → @Ob C),
@@ -1539,8 +1454,6 @@ End STLCCategoryLevels.
 
 (** Semantic interpretation preserves separated syntax levels and permits
     either ordering of target hom carriers and equality witnesses. *)
-
-(** 语义解释保持语法层级分离，并允许目标 Hom 载体与相等见证的两种大小排列。 *)
 
 Section STLCInterpretationLevels.
 Universes b e l o h p a.
@@ -1561,8 +1474,6 @@ Definition low_eq_stlc_interpretation
 
 (** Existing interpretation preservation packages without changing its
     syntax levels or requiring migration of the fixed-functor clients. *)
-
-(** 已有解释保持性可直接打包，不改变语法层级，也不要求迁移固定函子客户端。 *)
 
 Definition high_eq_bundled_type_interpretation
   : CCCFct (TyCat_CCC B) C
@@ -1589,8 +1500,6 @@ End STLCInterpretationLevels.
 
 (** Groupoid inverses, opposition, products and functor categories preserve
     either ordering of hom carriers and equality witnesses. *)
-
-(** 群胚取逆、反范畴、积与函子范畴保持 Hom 载体与相等见证的两种大小排列。 *)
 
 Section GroupoidLevels.
 Universes o h p l.
@@ -1625,8 +1534,6 @@ End GroupoidLevels.
 (** Setoid elements and their equality witnesses remain independent in the
     equality groupoid; its equality between parallel arrows is small. *)
 
-(** 相等群胚保持广集元素与其相等见证的大小独立，平行箭头间的相等使用小类型。 *)
-
 Section EqualityGroupoidLevels.
 Universes u p l.
 Constraint u < p.
@@ -1648,9 +1555,6 @@ End EqualityGroupoidLevels.
 
 (** Delooping and the regular action preserve independent carrier and
     equality-witness sizes, in both orders. Law bounds are auxiliary. *)
-
-(** 单对象群胚与正则作用保持载体与相等见证两种次序下的大小独立，定律上界
-    使用辅助宇宙。 *)
 
 Section GroupDeloopingLevels.
 Universes u p l.
@@ -1704,9 +1608,6 @@ End GroupDeloopingLevels.
 (** Family-action equivalence allows base carrier and equality levels above
     both fiber levels, in either ordering. Auxiliary law bounds remain large. *)
 
-(** 族与作用的等价允许基底载体及相等层级高于两个纤维层级，并允许各自大小
-    次序互换；定律上界保持在更大的辅助宇宙中。 *)
-
 Section FamilyActionLevels.
 Universes u p b e l.
 Constraint u < p.
@@ -1735,8 +1636,6 @@ End FamilyActionLevels.
 (** The action-slice specialization retains the family-slice size bound,
     while admitting a strictly smaller base-equality universe. *)
 
-(** 作用与切片的特化保留族与切片的大小条件，并允许基底相等宇宙严格较小。 *)
-
 Section ActionSliceLevels.
 Universes u p.
 Constraint p < u.
@@ -1751,16 +1650,12 @@ End ActionSliceLevels.
 (** Interpreting finite ordinals in the category of categories does not raise
     the simplex category's object, arrow, equality or law universes. *)
 
-(** 在范畴之范畴中解释有限序数，不提升单纯范畴的对象、箭头、相等或定律宇宙。 *)
-
 Definition small_simplex_category
   : Cat@{Set Set Set Set Set}
   := SimplexCat.
 
 (** Standard simplices and their Yoneda correspondence admit either ordering
     of the carrier and equality levels of the simplicial set's values. *)
-
-(** 标准单形及其 Yoneda 对应允许单纯集合值的载体与相等层级采用任一大小次序。 *)
 
 Section SimplicialLevels.
 Universes u p.
@@ -1787,8 +1682,6 @@ Definition low_eq_simplex_yoneda (n : nat)
 (** Standard-simplex comparisons retain both orderings after passing through
     the general category-probe construction. *)
 
-(** 标准单形比较经过一般范畴探测构造后，仍保留两种大小次序。 *)
-
 Definition high_eq_standard_nerve (n : nat)
   : (Δ[n] : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) ≅N N≅([Ord n])
   := standard_nerve_iso n.
@@ -1801,9 +1694,6 @@ End SimplicialLevels.
 (** Small ordinal probes accept larger categories with independent object,
     arrow and equality sizes. Value equality need not dominate object size,
     and can also be raised above the value carrier. *)
-
-(** 小序数探测接受对象、箭头及相等大小独立的较大范畴；值相等不必高于对象大小，
-    也可以提升到值载体之上。 *)
 
 Section NerveLevels.
 Universes e h o l u p.
@@ -1826,9 +1716,6 @@ End NerveLevels.
 (** Native monoid nerves retain either ordering of carrier and equality
     levels. Their diagram comparisons raise both sides explicitly, with
     either ordering also permitted at the common ambient sizes. *)
-
-(** 原生幺半群 nerve 保留载体与相等层级的两种次序；图式比较显式提升两侧，
-    共同环境大小也允许两种次序。 *)
 
 Section MonoidNerveLevels.
 Universes u p c e.
@@ -1858,9 +1745,6 @@ End MonoidNerveLevels.
     In particular, value equality need not dominate the vertex carrier.
     Both orderings also survive the forgetful diagram comparison. *)
 
-(** 顶点标签与环境 Hom 保留独立的载体和相等大小；特别地，值相等不必高于顶点
-    载体。两种大小次序在忘却到图式 nerve 的比较中同样保留。 *)
-
 Section VertexNerveLevels.
 Universes e h o l u p v q.
 Constraint e < h.
@@ -1877,8 +1761,6 @@ Context (X : SetC@{o e}) (Y : SetC@{e o})
 (** Transport-preserving functors keep hom-comparison sizes independent
     of stored functor laws, even when source and target sizes are exchanged. *)
 
-(** 保运输函子使态射比较大小独立于所保存的函子定律；交换源与目标大小后亦如此。 *)
-
 Definition forward_vertex_fct_set
   : SetC@{l o}
   := VtxFctS T S.
@@ -1889,8 +1771,6 @@ Definition reverse_vertex_fct_set
 
 (** The nerve map admits common value equality strictly below or above
     its value carrier, with independent native source and target homs. *)
-
-(** nerve 映射允许共同值相等严格低于或高于值载体，且原生源与目标 Hom 大小独立。 *)
 
 Definition low_eq_vertex_fct_map
   : VtxFctS T S →r Nat_SetS
@@ -1904,8 +1784,6 @@ Definition high_eq_vertex_fct_map
 
 (** Reconstruction returns to the native hom-setoid even when the nerve
     equality universe lies below or above its carrier universe. *)
-
-(** 无论 nerve 相等宇宙低于或高于载体宇宙，重构均返回原生态射广集。 *)
 
 Definition low_eq_vertex_fct_inverse
   : Nat_SetS (Nᵥ(T) : Fct (Δ^op) SetCat@{u o _ _ _ _ _}) (Nᵥ(S)) →r
@@ -1924,8 +1802,6 @@ Definition reverse_vertex_fct_inverse
 
 (** The hom isomorphism uses ordinary common lifts, with common equality
     below or above the common carrier, without resizing native sizes. *)
-
-(** 态射同构使用通常的共同提升，共同相等可低于或高于共同载体，不调整原生大小。 *)
 
 Definition low_eq_vertex_hom_isomorphism
   : LiftS@{_ _ v p} (VtxFctS T S) ≅[SetCat]
@@ -1958,8 +1834,6 @@ Definition high_eq_vertex_diagram_comparison
 (** Chain data need not carry the larger diagram-law universe. Equality
     remains independent of the native vertex and arrow carriers. *)
 
-(** 链数据不必携带较大的图式定律宇宙；相等仍独立于原生顶点及箭头载体。 *)
-
 Definition low_eq_vertex_chains (n : nat)
   : SetC@{o e}
   := VtxChainS T n.
@@ -1969,8 +1843,6 @@ Definition high_eq_vertex_chains (n : nat)
   := VtxChainS S n.
 
 (** The spine isomorphism also admits both orderings of value sizes. *)
-
-(** 脊同构同样允许值大小的两种次序。 *)
 
 Definition low_eq_vertex_spine (n : nat)
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) n ≅[SetCat]
@@ -1985,8 +1857,6 @@ Definition high_eq_vertex_spine (n : nat)
 (** Arbitrary category nerves admit unique boundary filling at both strict
     universe orders, without assuming either category is a groupoid. *)
 
-(** 任意范畴 nerve 在两种严格宇宙次序下均具有唯一边界填充，无需群胚假设。 *)
-
 Definition low_eq_vertex_coskeletal
   : (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) ⦂ Cosk[2%nat]
   := vertex_IsCoskeletal T.
@@ -1997,8 +1867,6 @@ Definition high_eq_vertex_coskeletal
 
 (** Local horn isomorphisms retain native hom and equality sizes. Their
     realized fillers also admit either ordering of the ambient value sizes. *)
-
-(** 局部 horn 同构保留原生 Hom 及相等大小；实现填充也允许环境值大小的两种次序。 *)
 
 Context `{HC : !IsGpd C} `{HD : !IsGpd D}.
 
@@ -2025,8 +1893,6 @@ Definition high_eq_local_horn (A B E : Y)
 (** Actual horn maps admit the selected groupoid fillings at either
     ordering of carrier and equality sizes. *)
 
-(** 两种载体与相等大小次序下，实际 horn 映射均容许选定群胚填充。 *)
-
 Definition low_eq_actual_horn (i : Ordinal 2%nat)
   : HasHornFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _}) 2%nat i
   := vertex_gpd_horn2_HasFillers T (HC := VtxCat_IsGpd T) i.
@@ -2037,8 +1903,6 @@ Definition high_eq_actual_horn (i : Ordinal 2%nat)
 
 (** The all-dimensional Kan structures retain both strict orderings of
     value carrier and equality universes. *)
-
-(** 全维 Kan 结构保留值载体与相等宇宙的两种严格次序。 *)
 
 Definition low_eq_vertex_kan
   : HasKanFillers (Nᵥ(T) : Fct (Δ^op) SetCat@{u h _ _ _ _ _})
@@ -2052,8 +1916,6 @@ End VertexNerveLevels.
 
 (** Boundary and horn carriers retain factorization witnesses, while their
     specified equality may lie strictly below or above the value carrier. *)
-
-(** 边界与 horn 载体保留分解见证，而指定相等可以严格低于或高于值载体。 *)
 
 Section SimplicialBoundaryLevels.
 Universes e u p.
@@ -2084,8 +1946,6 @@ End SimplicialBoundaryLevels.
 (** Matching isomorphisms lift their native data into common sizes while
     allowing either ordering of the presheaf's own value sizes. *)
 
-(** 匹配同构将原生数据提升到共同大小，同时允许预层自身值大小的两种次序。 *)
-
 Section SimplicialMatchingLevels.
 Universes e u p v q.
 Constraint e < u.
@@ -2108,8 +1968,6 @@ Definition high_eq_matching (n : nat) (i : Ordinal (S n))
 (** Boundary restriction becomes an isomorphism only after the ordinary
     inclusion into common sizes; coskeletal filling itself stays native. *)
 
-(** 边界限制经通常嵌入进入共同大小后成为同构；余骨架填充本身保留原生大小。 *)
-
 Context `{HX : !IsCoskeletal X 2%nat} `{HY : !IsCoskeletal Y 2%nat}.
 
 Definition low_eq_coskeletal_boundary (n : nat)
@@ -2129,9 +1987,6 @@ From Cats Require Import
 (** Monoid and monad hom equalities retain either ordering of the native
     morphism and equality levels. Stored law witnesses may enlarge the
     hom carrier, but must not force its equality level upward. *)
-
-(** 幺半群及 Monad 的 Hom 相等保留原生态射与相等层级的两种次序。保存定律
-    见证可以增大 Hom 载体，但不能迫使其相等层级上升。 *)
 
 Section MonoidalLevels.
 Universes o e h p.
@@ -2159,8 +2014,6 @@ Definition high_eq_monad_category
 
 (** The correspondence also instantiates at both strict universe orders. *)
 
-(** 对应也可在两种严格宇宙次序下实例化。 *)
-
 Definition low_eq_monad_monoid_equiv
   : low_eq_monad_category ≃C (@MonoidCat _ (EndofunctorMonoidal C0))
   := monad_monoid_equiv C0.
@@ -2172,8 +2025,6 @@ End MonoidalLevels.
 
 (** Monoid objects can live strictly below or above the bound of the
     chosen monoidal structure on the same category. *)
-
-(** 同一范畴上，幺半群对象的宇宙可以严格低于或高于选定幺半结构的界。 *)
 
 Section MonoidObjectLevels.
 Universes lo chosen hi.
@@ -2197,8 +2048,6 @@ From Cats Require Import
 
 (** Square witnesses may live above side-map equalities; neither comma
     equality nor the free-object adjunction identifies native hom sizes. *)
-
-(** 方形见证可以高于侧边相等；逗号相等及自由对象伴随均不等同原生 Hom 大小。 *)
 
 Section CommaFreeLevels.
 Universes o e h p.
@@ -2229,8 +2078,6 @@ From Cats Require Import
 (** Pointwise representation lifts each native hom family independently.
     Source hom equality and representing hom equality are strictly different. *)
 
-(** 逐点表示独立提升各原生 Hom 族；源 Hom 相等与表示 Hom 相等严格不同。 *)
-
 Section FreeRepresentationLevels.
 Universes o e h p v q.
 Constraint o < e.
@@ -2247,8 +2094,6 @@ Definition mixed_free_representation
   := universal_arrow_representation U (free_universal U X).
 
 (** A second model separates the native hom carriers as well. *)
-
-(** 第二个模型也使原生 Hom 载体处于不同层级。 *)
 
 Context (E : Cat@{o p h _ _}) (V : Fct E C)
     `{HV : !HasFreeObj V}.
@@ -2267,9 +2112,6 @@ From Cats Require Import
     equalities have opposite strict size orders relative to their carriers.
     The target equality must retain its own size after mapping monoids. *)
 
-(** Lax 传输在 Hom 相等与载体具有相反严格大小次序的范畴之间双向成立；
-    映射幺半群后，目标相等须保留自身大小。 *)
-
 Section LaxMonoidalLevels.
 Universes o e h p.
 Constraint o < e.
@@ -2281,8 +2123,6 @@ Context (C0 : Cat@{o h e _ _}) (C1 : Cat@{o h p _ _})
     (L10 : LaxMonoidalFct C1 C0).
 
 (** Coercion recovers the underlying functor at either native equality size. *)
-
-(** 强制转换在两种原生相等大小下均恢复底层函子。 *)
 
 Definition low_eq_lax_underlying
   : Fct C1 C0
@@ -2318,9 +2158,6 @@ End LaxMonoidalLevels.
 (** Restriction compares bases naturally while retaining independent hom
     and equality levels in the base and in both interpreting categories.
     Auxiliary law bounds stay strictly above those levels. *)
-
-(** 限制通过自然同构比较基底，并保留基底与两个解释范畴各自独立的 Hom／
-    相等层级；定律辅助上界严格高于这些层级。 *)
 
 Section RestrictionLevels.
 Universes o h p a b l.
@@ -2379,9 +2216,6 @@ From Cats Require Import
     categories with independently larger hom/equality levels. Recovery keeps
     the original base hom bounds for terms in both strict size orders. *)
 
-(** 类型元素可大于基底定律，并解释到 Hom／相等层级独立且更大的范畴中；
-    两种严格大小次序下，恢复项仍保持原基底 Hom 大小界。 *)
-
 Section InterpretedElementLevels.
 Universes o h p l a b.
 Constraint Set < h.
@@ -2434,9 +2268,6 @@ End InterpretedElementLevels.
     above context homs. Fix the input FamCat universes explicitly, and check
     the context-display and comprehension clients in both strict orders. *)
 
-(** 一般配对律必须保留严格高于上下文 Hom 的独立类型／项大小。显式固定输入
-    FamCat 宇宙，并在两种严格次序下检查上下文显示及理解结构客户端。 *)
-
 Section GeneralPairingLevels.
 Universes o h p a b c d l.
 Constraint Set < h.
@@ -2478,8 +2309,6 @@ From Cats Require Import
 
 (** Context interpretation retains independent type/term levels, with
     recovered section carriers below the law bound in both strict orders. *)
-
-(** 上下文解释保留独立类型／项层级；两种严格次序下，恢复截面载体均低于律上界。 *)
 
 Section ContextElementLevels.
 Universes o h p a b c d l.
@@ -2548,9 +2377,6 @@ End ContextElementLevels.
 (** Inverse comparison laws retain explicitly larger original FamCat
     carrier/equality inputs in both hom orders, without a terminal choice. *)
 
-(** 逆向比较律在两种 Hom 次序下保留显式较大的原 FamCat 载体／相等输入，
-    无需终上下文选择。 *)
-
 Section ContextElementInverseLevels.
 Universes o h p a b c d l.
 Constraint Set < h.
@@ -2585,9 +2411,6 @@ From Cats Require Import
 (** Fiber lifting retains independent base, fiber and raised levels in both
     orders. Its source map bound can also exceed the target carrier bound;
     the explicit wrappers reject downward carrier or equality resizing. *)
-
-(** 纤维提升在两种次序下保留独立的基底、纤维和目标层级；来源映射上界也可
-    严格高于目标载体界，显式包装拒绝载体或相等的向下降界。 *)
 
 Section IndependentFiberLift.
 Universes u p a b c d l o.
@@ -2672,9 +2495,6 @@ From Cats Require Import
 (** The original and recovered type-and-term functors compare after raising
     only their fibers. Fix the original type bases strictly above the common
     fiber bounds, in both hom orders, with independent auxiliary law bounds. *)
-
-(** 原类型—项函子与恢复函子仅提升纤维后即可比较。在两种 Hom 次序下，
-    显式固定原类型基底严格高于共同纤维界，并保留独立辅助律上界。 *)
 
 Section RaisedFibersBelowTypes.
 Universes o h p a b c d e f l.
@@ -2766,8 +2586,6 @@ From Cats Require Import
 (** The section/pairing laws retain fixed original type and term bounds
     above both context hom levels, in both orders. *)
 
-(** 截面／配对律在两种次序下，保留显式高于上下文 Hom 两层级的原类型及项大小界。 *)
-
 Section ContextSectionPairingLevels.
 Universes o h p a b c d l.
 Constraint Set < h.
@@ -2797,8 +2615,6 @@ From Cats Require Import
 
 (** Canonical pairing and generic-term comparisons retain fixed original
     type/term bounds strictly above both context hom levels, in both orders. *)
-
-(** 规范配对及泛项比较在两序中，保留显式高于上下文 Hom 两层级的原类型／项界。 *)
 
 Section CanonicalPairingLevels.
 Universes o h p a b c d l.
@@ -2839,8 +2655,6 @@ End CanonicalPairingLevels.
 (** Derived context operations preserve fixed type sizes above both hom
     levels, in both orders, with independent bounds for the laws. *)
 
-(** 恢复后的上下文操作在两序中保留高于 Hom 两层级的固定类型界，律使用独立辅助界。 *)
-
 Section DisplayContextActionLevels.
 Universes o h p a b l.
 Constraint Set < h.
@@ -2872,8 +2686,6 @@ End DisplayContextActionLevels.
 (** Type carrier and equality bounds may also lie above the auxiliary
     bounds of the base-category laws. Keep the same recovered term bounds. *)
 
-(** 类型载体和相等界也可高于基底范畴定律的辅助界；恢复项仍保留原大小界。 *)
-
 Section DisplayContextActionLargeTypeLevels.
 Universes o h p a b l.
 Constraint Set < h.
@@ -2904,8 +2716,6 @@ End DisplayContextActionLargeTypeLevels.
 
 (** Canonical context operations retain fixed original type/term sizes
     above both hom levels. Recovered terms keep their original hom bounds. *)
-
-(** 规范上下文操作保留高于两个 Hom 层级的固定原类型／项大小，恢复项仍保持原 Hom 界。 *)
 
 Section CanonicalContextActionLevels.
 Universes o h p a b c d l.
@@ -2942,8 +2752,6 @@ End CanonicalContextActionLevels.
 (** Original type and term bounds may independently exceed the auxiliary
     bounds of the base-category laws in both hom orders. *)
 
-(** 两种 Hom 次序下，原类型与项的界可独立高于基底范畴定律的辅助界。 *)
-
 Section CanonicalContextActionLargeInputLevels.
 Universes o h p a b c d l.
 Constraint Set < h.
@@ -2979,8 +2787,6 @@ End CanonicalContextActionLargeInputLevels.
 (** Canonical cone transport and factor comparison retain fixed original
     type/term sizes above both hom levels. *)
 
-(** 规范锥运输与分解比较保留高于两个 Hom 层级的固定原类型／项大小。 *)
-
 Section CanonicalPullbackFactorLevels.
 Universes o h p a b c d l.
 Constraint Set < h.
@@ -3007,8 +2813,6 @@ End CanonicalPullbackFactorLevels.
 
 (** Original type and term bounds may independently exceed the auxiliary
     bounds of the base-category laws in both hom orders. *)
-
-(** 两种 Hom 次序下，原类型与项的界可独立高于基底范畴定律的辅助界。 *)
 
 Section CanonicalPullbackFactorLargeInputLevels.
 Universes o h p a b c d l.

@@ -11,11 +11,6 @@ Local Open Scope algebra_scope.
     Once enabled locally, multiplication must compute xor and an actual
     retained composition tetrahedron must compute all four face labels. *)
 
-(** * 显式选择与几何计算
-
-    导入新群构造不得启用系数群、类幺半群／群或 Kan 结构。局部启用后，
-    乘法须计算异或，实际保留合成四面体须计算全部四个面标签。 *)
-
 Fail Definition unchosen_coefficient_group
   : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
@@ -32,8 +27,6 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** The bundled multiplication computes xor on any two Boolean labels. *)
 
-(** 打包乘法在任意两个布尔标签上计算异或。 *)
-
 Example class_product_computes (a b : bool)
   : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
       ((@cocycle_two_sphere_class_resp BoolS_Monoid a : BoolCocycleSphereClassS_Group) ⋅
@@ -42,8 +35,6 @@ Proof. reflexivity. Defined.
 
 (** The bundled inverse is computational, with no opaque inverse choice. *)
 
-(** 打包逆可计算，不带不透明的逆选择。 *)
-
 Example class_inverse_computes (a : bool)
   : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid))
       ((@cocycle_two_sphere_class_resp BoolS_Monoid a : BoolCocycleSphereClassS_Group)⁻¹) = a.
@@ -51,16 +42,12 @@ Proof. reflexivity. Defined.
 
 (** The actual constant sphere is the bundled unit. *)
 
-(** 实际常值球面就是打包单位。 *)
-
 Example class_unit_computes
   : (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) (1 : BoolCocycleSphereClassS_Group) = false.
 Proof. reflexivity. Defined.
 
 (** The square tetrahedron retains one constant face, the product face,
     and both nonzero input faces in the expected orientation. *)
-
-(** 平方四面体按预期定向保留一个常值面、乘积面及两个非零输入面。 *)
 
 Example square_faces_compute
   : (two_cocycle_triangle_value_resp (M := BoolS_Monoid)
@@ -76,8 +63,6 @@ Proof. reflexivity. Defined.
 
 (** Apply the general independence theorem to the previously constructed
     full Kan choice, not just to our explicit tetrahedron. *)
-
-(** 将一般选择无关定理用于先前构造的完整 Kan 选择，而非仅用于显式四面体。 *)
 
 Example chosen_Kan_product_class
   : (cocycle_two_sphere_face

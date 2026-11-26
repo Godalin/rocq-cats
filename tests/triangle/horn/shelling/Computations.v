@@ -11,8 +11,6 @@ Local Open Scope ordinal_scope.
 
 (** * All Three Nine-Step Orders and High-Degree Horn Factors *)
 
-(** * 三个九步次序及高维 horn 因子 *)
-
 Definition nine_results {A : Type} (f : Ordinal 8 → A)
   : A * A * A * A * A * A * A * A * A
   := (f fin_first, f fin_first⁺, f fin_first⁺⁺, f fin_first⁺⁺⁺,
@@ -76,8 +74,6 @@ Definition six_ranks {m : nat} (f : (@Hom Δ) 5 m)
 
 (** Actual data of the reflected horn, never equality of its law fields. *)
 
-(** 反映所得 horn 的实际数据，不比较定律字段相等。 *)
-
 Example all_twenty_seven_horn_recoveries_compute
   : ∀ r s, six_ranks
       (δ[simplex_triangle_horn_face_dim s; (recovered_horn r s).1.1] ∘
@@ -90,8 +86,6 @@ Defined.
 
 (** The final factor reconstructs both coordinates of every original
     maximal staircase, including on degenerate degree-eight inputs. *)
-
-(** 最终因子重构每个原始最大阶梯的双坐标，包括八维退化输入。 *)
 
 Definition repeated_four
   : (@Hom Δ) 8 4
@@ -145,8 +139,6 @@ Defined.
 
 (** A maximal four-simplex cannot simply be attached first: another
     facet, retained by that proposed horn, is still absent from the base. *)
-
-(** 不能直接从最大四单形开始附着：该候选 horn 的另一个保留面仍不属于初始域。 *)
 
 Definition maximal_cell_cannot_start
   : ¬ is_triangle_horn_stage (fin_first⁺ : Ordinal 2) 0%nat

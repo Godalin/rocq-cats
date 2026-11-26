@@ -4,6 +4,8 @@ A constructive category theory learning library. Follow [issue #1](https://githu
 prefer small reusable components, readable mathematics, and incremental changes.
 CCC/STLC, ETCS, and dependent type theory are independent directions.
 
+See the [documentation index](docs/README.md) for the theory guides and development standards.
+
 ## Mathematical design
 
 - For each new construction, check whether a reusable general theory applies.
@@ -37,12 +39,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   (`Has*`); use the weakest sufficient assumptions. Chosen model structures
   are explicitly enabled unless designated as defaults. The standard terminal
   object and binary products of SetCat are global instances in their own modules.
-- Follow [issue #42](https://github.com/Godalin/rocq-cats/issues/42): use
-  `Class` for properties of specified data and chosen extensions over fixed
-  parents; use `Record` for first-class complete mathematical objects. Keep
-  operations and laws defined once, without a staging `*Data` record, and
-  expose other presentations through transparent views. Existing interfaces
-  migrate in bounded steps; an `Is`/`Has` split is not a compulsory template.
+- Use Minks for all new and migrated Cats mathematical structures. Declare
+  chosen data and laws with `Minks.Mixin` and complete objects with
+  `Minks.Struct`. Keep operations and laws defined once. An `Is*`/`Has*` split
+  is useful when data and properties have separate clients.
 - Before a stable release, prefer a clean mathematical interface to historical
   source compatibility. Migrate actual clients together and remove obsolete
   compatibility layers; do not retain old signatures, constructors, implicit
@@ -53,52 +53,23 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 
 ## Structural hierarchies
 
-- Name complete mathematical structures directly, as in `Monoid`, `Group`,
-  `CartCat`, `MonoidalCat` and `CCC`. Keep `Has*` for the existence and
-  selection of the corresponding constructions on supplied data:
-  `HasProduct C` provides a chosen product for every pair of objects.
-  These interfaces retain Type-valued computational witnesses.
-- Complete structures are moving to bundles that own one underlying carrier
-  or category. `Gpd` stores `GpdToCat :> Cat`; `Cat` exposes `Ob :> Type`.
-  Migrate the remaining parameterized hierarchies in bounded steps; do not
-  duplicate a carrier or category during that migration. Fixed-data `Has*`
-  choices and `Is*` properties keep their named ambient parameters.
-- Store each immediate parent once. When it is the unique underlying view,
-  declare it with `:>`. Prefer directional `SourceToTarget` names for
-  reviewed parent projections, as in `GroupToMonoid` or `SemigroupToMagma`;
-  migrate existing names in bounded steps rather than adding aliases.
-  Reach weaker structures through that parent; add no direct bypass to an
-  ancestor and do not duplicate inherited operations or universal choices.
-  Meaningful multiple parent views are allowed: derive them from shared data
-  and verify converging ancestor paths by conversion, including actual Rocq
-  coercion behavior. Do not add duplicate selections to create a diamond.
-- Within one inheritance chain, use structure constructors and existing
-  parent projections directly as conversions. Do not add forwarding
-  conversion functions or additional coercions that merely reapply them.
-  Write manual conversions only across distinct inheritance paths when the
-  existing constructor/projection chain does not provide the required map.
-- If the parent view must also support instance search, register the same
-  projection with `#[export] Existing Instance monoidal_hasPremonoidal`; `:>` alone does not
-  register an inherited instance. Record-valued parents are not classes;
-  their chosen `Has*` fields supply inherited instances directly.
-  Supplementary chosen structures/properties
-  use named `has*`/`is*` fields and `::`.
-- Tie dependent constructions to those same inherited choices. For example,
-  a CCC's exponentials use its cartesian parent's selected products.
-  Bundle-derived operations pass their stored evidence explicitly when
-  other instances can share a definitionally equal carrier or category.
-  General theorems retain the weakest sufficient hypotheses.
-- Select one primary view per interface; keep other presentations explicit.
-  A CwF's primary view is its type-and-term functor. Functors keep their
-  object-map coercion and use `fmap` for arrows.
-- Extract intermediate structures with reusable operations/laws and actual
-  clients. Deliver hierarchy changes and global renames in bounded,
-  coordinated steps, updating models, clients and bilingual documentation
-  together without unnecessary compatibility aliases.
+- Follow the [mathematical interface guide](docs/development/HierarchyDevelopment.md)
+  for Minks components and relative exports, shared parents, implicit class
+  binders, coercions, selected instances and migration checks.
+- Complete bundles share one underlying carrier or category. Reuse generated
+  parent views and tie dependent choices to the same components. For example,
+  CCC exponentials use the products selected by the cartesian parent.
+- Give each interface a primary view. A CwF exposes its type-and-term functor;
+  a functor acts on objects by coercion and on arrows by `fmap`.
 
 ## Code and naming
 
-- Write source documentation in coqdoc syntax: `(** ... *)`, `[term]` for
+- Write documentation and comments in English throughout the repository, including
+  tests, build configuration and tools. Write bilingual coqdoc for the Cats
+  library under `theories/`, which supplies the English and Chinese reading editions.
+  Minks follows its own English-language [contributor guide](minks/AGENTS.md).
+
+- Under `theories/`, write source documentation in coqdoc syntax: `(** ... *)`, `[term]` for
   code, and coqdoc headings, lists and blocks rather than Markdown. In every
   documentation item use separate comment blocks, English first and Chinese
   second. Document each definition and public lemma where practical,
@@ -106,31 +77,13 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   laws concise. Leave a blank line after every source comment before the
   following declaration or text, and between a record field and the next
   documentation block.
-- Introduce every `Section` with a bilingual coqdoc title or opening prose,
-  following the [section-opening requirements](docs/ExportRequirements.md#section-openings).
+- Under `theories/`, introduce every `Section` with a bilingual coqdoc title or opening prose,
+  following the [section-opening requirements](docs/development/ExportRequirements.md#section-openings).
   Explain its local assumptions and the theory developed next; do not rely on
   the Rocq section name to separate it from preceding code in reading editions.
-- Put each required module on its own line; in grouped `Require Import` or
-  `Require Export`, place the module list below the command. Keep lines near
-  80 characters where practical. Wrap long declarations by parameter groups,
-  indenting continued parameters four spaces. In declaration headers, always
-  start the result-type `:` and definition-body `:=` on separate new lines,
-  each indented two spaces, even for short declarations. Start the body on
-  the same line immediately after `:=`, except that a record body beginning
-  with `{ ... }` or `{| ... |}` starts on the next line.
-  For `{| ... |}` literals, place the first field immediately after `{|`;
-  align each following `;` and the closing `|}` with the opening `{`.
-  In `Inductive` and `CoInductive` declarations with an initial constructor
-  bar, write `:=| Constructor`: no space before that first `|`, one space
-  after it. Use ordinary `| Constructor` syntax for subsequent branches,
-  aligning their bars with the first bar in the source.
-- Follow the reviewed [source layout](docs/CodeStyle.md). Group declaration
-  parameters by mathematical role rather than filling lines to 80 columns:
-  ordinary parameter continuations use four spaces, `Context` groups two.
-  Nest proofs by two spaces; keep short related tactics together and split
-  longer terms or new proof phases. Multi-line proofs close with `Qed.` or
-  `Defined.` on their own line. Preserve reviewed local layout and avoid
-  unrelated reformatting while changing mathematical code.
+- Follow the [source layout guide](docs/development/CodeStyle.md) for imports, binder
+  groups, equation and proof line breaks, notation, and record layout.
+  Preserve the hand-reviewed formatting of the surrounding source.
 - Follow nearby notation, universe polymorphism, and typeclass conventions.
   Prefer existing public mathematical notation throughout declarations,
   construction bodies and proofs; use underlying names and explicit arguments
@@ -142,23 +95,10 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   rather than using alternative long-arrow Unicode characters. Distinct
   symbols may express distinct meanings, such as `↣` for monomorphisms.
   Use `∏`/`∐` for indexed products/coproducts; reserve `Π` for Pi-types.
-- Use brackets for important explicit arguments of mathematical notation.
-  Keep `@` for Rocq's native explicit application. In term notation, put
-  explicit `(at level …)` and the final `: scope` on separate lines with
-  two spaces of indentation. Wrap long modifiers after commas, and long
-  interpretations before `:=`. Follow the examples and exceptions in
-  [the notation layout guide](docs/CodeStyle.md#notation-and-records--记号及记录).
-- Keep mathematical clients concise. First try implicit inference for parents,
-  structures, instances, elements and types; expose inferable theorem parameters
-  as implicit. Add explicit arguments or type annotations only where inference
-  fails or a particular choice must be distinguished. Do not introduce local
-  forwarding `Let` bindings for operations or laws that can be used directly.
-- Use `rewrite` with public algebra laws in ordinary equational proofs, as in
-  `rewrite mul_assoc, mul_unit_l`. Check `Proper` instances with actual setoid
-  rewriting through operations and their clients, rather than only applying
-  preservation lemmas or checking instance search. Where direct primitive
-  applications are needed to preserve transparent Type-valued witness
-  computations, keep them and verify those computations explicitly.
+- Follow the [interface guide](docs/development/HierarchyDevelopment.md) for concise
+  theorem applications and proofs using public laws. Check `Proper` through
+  an actual setoid rewrite. When a Type-valued witness needs direct primitive
+  applications for reduction, verify that computation in a consumer.
 - For the multiplicative algebra chain, declare each notation once in the
   Core module that introduces its operation, share `algebra_scope` (`%alg`),
   and inherit declarations through `Require Export`. Child layers add only
@@ -166,28 +106,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   modules. Open the scope locally in each client. `Reserved Notation` /
   `Reserved Infix` fix grammar before interpretation when declaration order
   or shared syntax warrants it; they neither bind an operation nor export
-  or open a scope. Do not reserve common numerals merely for uniformity.
-  Rocq 9.3 accepts `where` immediately after a `Record`/`Class` field;
-  this interpretation is local to subsequent fields. A `where` clause after
-  the whole record/class is rejected. Bind public notation after the
-  declaration as well, preserving explicitly selected evidence.
-  Follow nearby hand-formatted notation: keep short interpretations after
-  `:=` on the same line, put a field `where`/`and` scope on the next line
-  indented two spaces further, and wrap long reserved declarations before
-  their precedence/modifier list. Apply the same layout consistently within
-  each notation family.
-- Fixed-data category extensions take a named category parameter; complete
-  bundles expose their stored category through one underlying view. Declare
-  chosen dependencies by name; use named `!Has*` constraints in clients. Primary
-  parents follow the structural-hierarchy rules; supplementary inherited
-  structures use `has*`/`is*` fields and `::`.
-- Expose a unique underlying function, functor or carrier with `:>` and use
-  that coercion in clients. Keep competing views explicit; avoid ambiguous
-  coercion paths. `::` registers inherited instances, not coercions.
-- Prefer `Canonical Structure` or `Program Canonical` for canonical record
-  values whose projections support parameter inference. Define interfaces
-  with `Record`/`Class`; keep registrations unambiguous and retain explicit
-  enabling of chosen model structures.
+  or open a scope. Keep numeral grammar unchanged and follow the
+  [field notation rules](docs/development/CodeStyle.md#notation-and-records).
 - Use `Program Definition`/`Program Instance`/`Program Canonical` with named
   record fields for data, then explicit `Next Obligation` proofs. For
   single-field wrappers, prefer a short named constructor such as `Lift x`.
@@ -202,7 +122,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   If dependent conversion or guardedness needs a proof body, record the
   dependency beside the proof and check a representative consumer.
   Keep the parent structure transparent when its operations compute.
-  See [Proof transparency](docs/CodeStyle.md#proof-transparency--证明透明性).
+  See [Proof transparency](docs/development/CodeStyle.md#proof-transparency).
   Never finish with `Admitted`, `Admit Obligations`, or new axioms.
   Make any additional assumptions explicit.
 - Structures/constructions use capitalized names; helpers use `snake_case`.
@@ -217,8 +137,8 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `Gen` for `Generator`/`Generators`, `Obj` for `Object`/`Objects`,
   and `Vtx` for `Vertex`, retaining kind suffixes such as `S` for setoids.
   Maintain the exact public rename map and pending families in
-  [the abbreviation guide](docs/Abbreviations.md),
-  updating bilingual docs and clients with each batch. Keep module paths
+  [the abbreviation guide](docs/development/Abbreviations.md),
+  updating source coqdoc, English guides and clients with each batch. Keep module paths
   and descriptive helper names unless individually reviewed.
 - Use `Clos` for generic closures and raw generated relations, with `*ClosOp`
   for packaged relation-closure operators. Use `Exp` for named exponential
@@ -271,11 +191,11 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 ## Organization and workflow
 
 - For website and book export work, follow
-  [the export requirements](docs/ExportRequirements.md). Keep future export
+  [the export requirements](docs/development/ExportRequirements.md). Keep future export
   presentation conventions in that file; use the documentation guide for
   commands, dependencies and implementation status.
 - For mathematical illustrations, follow the
-  [PDF diagram requirements](docs/ExportRequirements.md#learning-paths-and-mathematical-diagrams):
+  [PDF diagram requirements](docs/development/ExportRequirements.md#learning-paths-and-mathematical-diagrams):
   use native TikZ-cd in coqdoc; defer webpage diagrams unless explicitly requested.
 - Foundational sets and respectful maps belong under `Set/`, without category
   dependencies. Abstract interfaces and general constructions belong with their
@@ -296,11 +216,9 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   `opam exec --switch=rocq-cats -- <command>`. Check tool resolution and versions
   before diagnosing failures. Do not change global shell settings or upgrade
   shared environments without explicit authorization.
-- Follow [development checks](docs/Testing.md). During editing, build changed
-  modules, representative consumers and relevant regression targets. Do not
-  require full-library/test/install/export checks after routine edits, local
-  proof changes or formatting. `@check-core` is an optional foundational
-  regression set, not a replacement for selecting tests by semantic impact.
+- Follow [development checks](docs/development/Testing.md). Run the Cats regression
+  suite with `@check-tests`, or build an individual test file's `.vo` target
+  when checking a specific change. Build affected library modules and consumers.
 - Stable task checkpoints normally require affected theory/test targets, not
   an automatic full build before every local commit. For broad foundational/API
   changes, settle interfaces, names and formatting before one full library
@@ -335,7 +253,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   it tells the worker to pause and explains the blocker. If delivery fails, the
   worker preserves its checkpoint and pauses rather than integrating itself.
 - This section states mandatory rules; the Rocq-Cats-specific experimental
-  [parallel development protocol](docs/ParallelDevelopment.md) specifies their
+  [parallel development protocol](docs/development/ParallelDevelopment.md) specifies their
   execution and recovery, subordinate to these rules. Defer reusable skill
   extraction until the concrete protocol has been tested.
 - Keep `typeprop` as the integration branch. Start each bounded task from the
@@ -365,7 +283,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   API or design changes to the worker. Do not create merge commits or rewrite
   `typeprop`. Any worker-owned published history rewrite still requires
   coordination and `--force-with-lease`; avoid repeated cherry-picks.
-- Write bilingual documentation with the code. Integration acceptance requires
+- Update source coqdoc with the code. Integration acceptance requires
   a successful `@check-library` build and relevant regressions with the project
   toolchain at the exact candidate SHA. Full tests remain in CI. HTML/PDF
   exports are separate documentation tasks, performed when requested; they are
@@ -416,7 +334,7 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
 ## Learnings
 
 - Name concrete Applicative values with an `A` suffix, such as `ReaderA`.
-  Keep `Applicative` as the interface class name; underlying functor values
+  Use `Applicative` for the packed structure and `HasApplicative` for its mixin; underlying functor values
   retain the `F` suffix.
 - Name concrete model modules after the model, such as `Instance/Set/Reader.v`.
   Keep shared interface theory in its theory modules, such as `Cat/Applicative/`.
@@ -444,10 +362,6 @@ CCC/STLC, ETCS, and dependent type theory are independent directions.
   as in `Computational.Arrow.Core` and `Cartesian`. Introduce products,
   exchange, projection and duplication only at the layer that uses them;
   carrying a tensor context does not require symmetry or effect interchange.
-- Put fixed context parameters before the morphism in respectful operations,
-  as in `arrow_context A Z f`. This exposes an ordinary partial application
-  for `Proper`; a dependent context argument after the morphism can make
-  rewriting search for unsupported `forall_relation` instances.
 - Reconstructing a tensor bifunctor from separate actions recovers a supplied
   bimap up to `HomEq`, not generally by conversion. Use comparisons such as
   `cartesian_tensor_map` or `endomorphism_tensor_map` before specializing

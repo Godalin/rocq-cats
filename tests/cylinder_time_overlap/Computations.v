@@ -15,10 +15,6 @@ Local Open Scope ordinal_scope.
     Enumerate every ordered pair. The local omitted position is not the
     common vertex; applying its zero-dimensional coface recovers it. *)
 
-(** * 实际局部及全局交点
-
-    枚举全部有序对；局部省略位置不是交点，需先应用其零维余面。 *)
-
 Definition distinct_pairs
   : list (∃ j k : Ordinal 2, ¬ j = k).
 Proof.
@@ -112,10 +108,6 @@ Defined.
     Endpoint laws have independent Boolean witnesses. Forward/backward
     transport must preserve their Type-valued relation, not native equality. *)
 
-(** ** 带原生不同取值的指定相等
-
-    端点定律具有独立布尔见证；双向运输保持 Type 值关系，不强加原生相等。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -179,10 +171,6 @@ Fail Definition automatic_kan
 
     Constant maps at distinct triangle vertices give a genuine counterexample
     to unconditional factor compatibility. *)
-
-(** ** 实际端点映射不相容
-
-    取值于三角形不同顶点的常值映射，给出无条件因子相容的真实反例。 *)
 
 Program Definition bad_time (j : Ordinal 2)
   : SimplicialCylinderF (Δ[2]) ⇒ (Δ[2])

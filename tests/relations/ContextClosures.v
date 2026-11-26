@@ -2,8 +2,6 @@ From Cats.Set.Relation Require Import Congruence.
 
 (** * Indexed Context Closure Regressions *)
 
-(** * 带索引上下文闭包的回归检查 *)
-
 Local Open Scope relation_scope.
 
 Section IndependentLevels.
@@ -18,8 +16,6 @@ Context (R : RelationFamily@{i a r _} A).
 (** Carrier, operation and witness levels must stay distinct when the
     generated closures are packaged as endomorphisms of relation families. *)
 
-(** 将生成闭包封装为关系族的自映射时，载体、操作与见证层级须保持不同。 *)
-
 Definition separated_compatible_closure
   : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
   := CompatibleClosOp K.
@@ -30,8 +26,6 @@ Definition separated_congruence_closure
 
 (** The equivalence instance must apply to the original carrier level,
     rather than silently lifting the carrier to the edge-witness level. *)
-
-(** 等价实例必须适用于原载体层级，不能隐含地将载体提升到边见证层级。 *)
 
 Definition separated_generated_equivalence (j : I)
   : Equivalence (EquivClosOp@{a r _} (A j) (R j))
@@ -62,8 +56,6 @@ Context (I : Type@{i}) (A : I → Type@{a}).
 (** Pointwise paths store no index, so their witness bound need not
     contain the index universe. Context iteration has a different bound. *)
 
-(** 逐点路径不保存索引，因此见证界不必容纳索引宇宙；上下文迭代的界则不同。 *)
-
 Definition large_index_pointwise_closure
   : Clos (λ R S : RelationFamily@{i a r _} A, R ⊆ᵢ S)
   := FamilyEquivClosOp A.
@@ -83,8 +75,6 @@ Context (R : RelationFamily@{i a r _} A).
 (** The raw context construction can use small generators and retain
     contexts in a separately chosen, larger witness universe. *)
 
-(** 原始上下文构造可以使用小生成元，并在另选的更大见证宇宙中保存上下文。 *)
-
 Definition small_generator_context_closure
   : RelationFamily@{i a p _} A
   := ContextClos K R.
@@ -95,8 +85,6 @@ Section IndexedComputations.
 
 (** The two fibers have different carriers. Pairing changes the index,
     and its label stores the argument that remains fixed. *)
-
-(** 两个纤维具有不同载体。配对改变索引，其标签保存不变的另一参数。 *)
 
 Inductive ValueSort
   : Type
@@ -125,8 +113,6 @@ Program Definition PairContexts
 (** Only the scalar fiber has generators. Each edge increments a number
     and stores a natural-number payload, independent of that endpoint. *)
 
-(** 只有标量纤维具有生成元。每条边增加一个数，并保存独立于端点的自然数数据。 *)
-
 Inductive Increment
   : RelationFamily Values
   :=| increment (n w : nat) : Increment scalar n (S n).
@@ -136,8 +122,6 @@ Definition increment_weight {i} {x y : Values i} (p : Increment i x y)
   := match p with increment _ w => w end.
 
 (** A compatible equivalence target observes the sum of edge payloads. *)
-
-(** 一个相容等价目标观察边数据之和。 *)
 
 Definition WeightRelation (i : ValueSort) (_ _ : Values i)
   : Type
@@ -169,8 +153,6 @@ Definition zigzag_weight {i} {x y : Values i}
 (** A reverse scalar edge lifts to a reverse tuple edge. The interchange
     witness must compute across the change of carrier. *)
 
-(** 一条反向标量边提升为反向元组边；交换见证须跨载体变化进行计算。 *)
-
 Example indexed_interchange_computes
   : zigzag_weight
       (compatible_equivalence_interchange PairContexts Increment
@@ -183,8 +165,6 @@ Proof. reflexivity. Qed.
 
 (** Replace the two arguments separately, then concatenate. This obtains
     binary congruence from operations with exactly one varying input. *)
-
-(** 分别替换两个参数，再连接推导；这从恰有一个变化输入的操作得到二元合同。 *)
 
 Definition both_pair_arguments
   : EquationalClos PairContexts Increment tuple (0, 0) (1, 1)
@@ -202,8 +182,6 @@ Proof. reflexivity. Qed.
 
 (** Folding the reverse comparison retains the same observable payload,
     without asserting an inverse equation on the derivation itself. *)
-
-(** 折叠反向比较后保留同样的可观察数据，不为推导本身断言互逆方程。 *)
 
 Example joint_paths_roundtrip_computes
   : equational_closure_preserves PairContexts weight_relation_compatible

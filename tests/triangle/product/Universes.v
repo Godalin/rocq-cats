@@ -7,16 +7,10 @@ Local Open Scope ordinal_scope.
 
 (** * Triangle Product Covers at Independent Value Sizes *)
 
-(** * 独立取值大小下的三角积覆盖 *)
-
 (** ** Lower Equality
 
     No Kan selection, extension map or chosen target algebra is available.
     The cover and compatibility clients use the original product presheaf. *)
-
-(** ** 较低相等层级
-
-    不提供 Kan 选择、延拓映射或选定目标代数；覆盖与相容性客户端使用原积预层。 *)
 
 Section lowerSizes.
 Universes l u p.
@@ -53,10 +47,6 @@ End lowerSizes.
 
     No Kan selection, extension map or chosen target algebra is available.
     The cover and compatibility clients use the original product presheaf. *)
-
-(** ** 较高相等层级
-
-    不提供 Kan 选择、延拓映射或选定目标代数；覆盖与相容性客户端使用原积预层。 *)
 
 Section higherSizes.
 Universes l u p.

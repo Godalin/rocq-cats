@@ -6,18 +6,11 @@ Local Open Scope ordinal_scope.
 
 (** * Independent Value and Equality Bounds *)
 
-(** * 独立的取值和相等界 *)
-
 (** ** Lower Equality Witnesses
 
     Fix strictly distinct bounds with smaller equality witnesses.
     Only the nine actual step choices are provided, without full Kan
     or equations between the selecting operations. *)
-
-(** ** 较小的相等见证
-
-    固定严格不同的大小，只给定九份实际步骤选择，不要求完整 Kan 或选择操作
-    之间的方程。 *)
 
 Section lower_sizes.
 Universes l u p.
@@ -65,11 +58,6 @@ End lower_sizes.
     Fix strictly distinct bounds with larger equality witnesses.
     Only the nine actual step choices are provided, without full Kan
     or equations between the selecting operations. *)
-
-(** ** 较大的相等见证
-
-    固定严格不同的大小，只给定九份实际步骤选择，不要求完整 Kan 或选择操作
-    之间的方程。 *)
 
 Section higher_sizes.
 Universes l u p.

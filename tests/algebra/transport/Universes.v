@@ -9,26 +9,15 @@ Local Open Scope algebra_scope.
     independent source/target law bounds. No historical argument order is
     required; each source is a complete mathematical object. *)
 
-(** * 严格独立大小下的运输
-
-    检查各层最弱输入、实际父结构转换及独立的来源／目标定律界。不维护历史参数
-    次序，每个来源都是完整数学对象。 *)
-
 (** ** LowHigh: Native Carrier and Equality Levels
 
     Separate all four native levels and both auxiliary law bounds. *)
-
-(** ** LowHigh：原生载体与相等层级
-
-    分离全部四个原生层级及两个定律辅助界。 *)
 
 Section LowHigh.
 Universes l0 l1 l2 l3 lawlo lawhi.
 Constraint l0 < l1, l1 < l2, l2 < l3, l3 < lawlo, lawlo < lawhi.
 
 (** Raw multiplication needs only a magma and two respectful maps. *)
-
-(** 原始乘法只需原群及两个保相等映射。 *)
 
 Definition raw_magma (A : Magma@{l0 l3 lawlo})
     (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
@@ -42,8 +31,6 @@ Proof. reflexivity. Qed.
 
 (** Associativity needs just source recovery, without unit or inverse. *)
 
-(** 结合律只需来源恢复，不要求单位元或逆。 *)
-
 Definition one_sided_semigroup (A : Semigroup@{l0 l3 lawlo})
     (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
     (Hfg : (f ∘r g) ≈f id_resp)
@@ -51,8 +38,6 @@ Definition one_sided_semigroup (A : Semigroup@{l0 l3 lawlo})
   := SemigroupTransport A f g Hfg.
 
 (** A unit needs target recovery too, but no inverse operation. *)
-
-(** 单位元还需目标恢复，但不要求逆运算。 *)
 
 Definition two_sided_monoid (A : Monoid@{l0 l3 lawlo})
     (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
@@ -63,10 +48,6 @@ Definition two_sided_monoid (A : Monoid@{l0 l3 lawlo})
 (** ** Selected Group Parents and Operations
 
     The full chain shares its transported multiplication and unit. *)
-
-(** ** 选定群父结构与运算
-
-    完整链共享运输后的乘法与单位。 *)
 
 Section GroupClients.
 Context (A : Group@{l0 l3 lawhi}) (B : SetC@{l2 l1}).
@@ -150,8 +131,6 @@ End GroupClients.
 
 (** The target law bound may also be larger than the source bound. *)
 
-(** 目标定律界也可以大于来源界。 *)
-
 Definition larger_target_law_bound (A : Group@{l0 l3 lawlo})
     (B : SetC@{l2 l1}) (f : B →r A) (g : A →r B)
     (Hfg : (f ∘r g) ≈f id_resp) (Hgf : (g ∘r f) ≈f id_resp)
@@ -164,17 +143,11 @@ End LowHigh.
 
     Separate all four native levels and both auxiliary law bounds. *)
 
-(** ** HighLow：原生载体与相等层级
-
-    分离全部四个原生层级及两个定律辅助界。 *)
-
 Section HighLow.
 Universes l0 l1 l2 l3 lawlo lawhi.
 Constraint l0 < l1, l1 < l2, l2 < l3, l3 < lawlo, lawlo < lawhi.
 
 (** Raw multiplication needs only a magma and two respectful maps. *)
-
-(** 原始乘法只需原群及两个保相等映射。 *)
 
 Definition high_raw_magma (A : Magma@{l3 l0 lawlo})
     (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
@@ -188,8 +161,6 @@ Proof. reflexivity. Qed.
 
 (** Associativity needs just source recovery, without unit or inverse. *)
 
-(** 结合律只需来源恢复，不要求单位元或逆。 *)
-
 Definition high_one_sided_semigroup (A : Semigroup@{l3 l0 lawlo})
     (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
     (Hfg : (f ∘r g) ≈f id_resp)
@@ -197,8 +168,6 @@ Definition high_one_sided_semigroup (A : Semigroup@{l3 l0 lawlo})
   := SemigroupTransport A f g Hfg.
 
 (** A unit needs target recovery too, but no inverse operation. *)
-
-(** 单位元还需目标恢复，但不要求逆运算。 *)
 
 Definition high_two_sided_monoid (A : Monoid@{l3 l0 lawlo})
     (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)
@@ -209,10 +178,6 @@ Definition high_two_sided_monoid (A : Monoid@{l3 l0 lawlo})
 (** ** Selected Group Parents and Operations
 
     The full chain shares its transported multiplication and unit. *)
-
-(** ** 选定群父结构与运算
-
-    完整链共享运输后的乘法与单位。 *)
 
 Section GroupClients.
 Context (A : Group@{l3 l0 lawhi}) (B : SetC@{l1 l2}).
@@ -295,8 +260,6 @@ Fail Definition high_no_automatic_target_multiplication
 End GroupClients.
 
 (** The target law bound may also be larger than the source bound. *)
-
-(** 目标定律界也可以大于来源界。 *)
 
 Definition high_larger_target_law_bound (A : Group@{l3 l0 lawlo})
     (B : SetC@{l1 l2}) (f : B →r A) (g : A →r B)

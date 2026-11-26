@@ -1,11 +1,12 @@
 # Monad Applicative and Arrow audit
 
-# Monad、Applicative 与 Arrow 审计
+Historical audit. Names, implementation choices and validation results below refer
+to their recorded revisions. For current authoring rules, see the
+[mathematical interface guide](../development/HierarchyDevelopment.md).
+
 
 Source-pinned evidence below retains its historical identifiers. See the
-[abbreviation map](./Abbreviations.md) for their current public names.
-
-下方固定版本的证据保留历史标识符；当前公共名称见[缩写对照](./Abbreviations.md)。
+[abbreviation map](../development/Abbreviations.md) for their current public names.
 
 [Issue #35](https://github.com/Godalin/rocq-cats/issues/35) starts with a
 source-level prior-art audit. The first implementation slice is **lax monoidal
@@ -14,14 +15,7 @@ an existing mathematical result, with an existing Lean formalization; its
 purpose here is integration with the library's Type-valued setoid equality
 and independent universes. No formalization-priority claim is made.
 
-[#35](https://github.com/Godalin/rocq-cats/issues/35) 首先要求审计已有形式化成果。
-首个实现切片为 **lax monoidal 函子对幺半群对象及同态的传输**（B、G 里程碑）。
-这是已有数学结果，Lean 也已有形式化；本库的任务是将其接入 Type 值广集相等
-及独立宇宙层级。这里不主张形式化优先性。
-
 ## Revisions and evidence
-
-## 版本及证据
 
 Sources were read on 2026-11-09 at the following fixed revisions. The audit
 checks declarations and proof bodies, not just module names or explanatory
@@ -29,25 +23,18 @@ comments. Third-party projects were not compiled and their transitive axioms
 were not kernel-audited. “Not established” below describes the checked source,
 not a claim that no such theorem exists anywhere in the project.
 
-以下固定版本的源码于 2026-11-09 阅读，检查范围包括声明与证明体，而不只看模块名
-或说明文字。未编译第三方项目，也未对其传递依赖作内核公理审计。下文“未确立”
-限定于检查到的源码，不声称整个项目不存在相关定理。
-
-| Project / 项目 | Revision / 版本 |
+| Project | Revision |
 | --- | --- |
 | [jwiegley/category-theory][w] | `99869fd8d9117e900dea862d8612033848aa01dd` |
 | [Lean mathlib4][m] | `9bac2d0692944a775113f7c130fd5e5b4608a854` |
 | [Lean core][l] (mathlib's pinned toolchain) | `b35cb10cf2ced51a2fd1880cfdbf75c71ab7a35a` (`v4.36.0-rc2`) |
 | [agda/agda-categories][a] | `ade267a5a02688fb97ec9d6e03ab6192be94439e` |
 | [UniMath/UniMath][u] | `7a4b03cce49449f45ce0d4285615165172f50546` |
-| Rocq-Cats integration baseline / 集成基线 | `8ae7cbd9f09c1738e9e30f4c637004552338036d` |
+| Rocq-Cats integration baseline | `8ae7cbd9f09c1738e9e30f4c637004552338036d` |
 
 The tables retain the issue's eight evidence columns. Equational laws of
 operations are distinguished from preservation/reflection of a typed
 syntactic equational theory.
-
-下表保留 issue 要求的八项证据栏。运算等式定律与有类型语法等式理论的
-保持／反映定理分别记录。
 
 | Project/commit | Directly checked module/theorem | Laws included | Categorical characterization | Structural conversions | Equational theory results | Extra axioms/size constraints | Missing lemmas or compatibility boundary |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -69,13 +56,7 @@ coherence packaging, and a Freyd interface weaker than its classical name.
 None of these establishes a new theorem merely by being absent from one
 checked module.
 
-关键兼容边界涉及实质内容：无定律的运算实例、lax 接口额外要求可逆、未关联
-传入运算的结构谓词、Day 相干性封装尚未完成，以及弱于经典定义的 Freyd 接口。
-某项结果未出现在被检查模块中，本身并不能证明其新颖性。
-
 ## Paper coverage and local reuse
-
-## 论文覆盖及本库复用
 
 The paper snapshot is [arXiv:1406.4823v1][paper], submitted 2014-05-29.
 Its TeX source directly supplies the statements labelled `thm:monoid`
@@ -84,26 +65,19 @@ This audit does not establish that all numbering and hypotheses coincide
 with the 2017 journal version. The paper's associator orientation must also
 be translated to this library's chosen orientation.
 
-论文快照为 2014-05-29 提交的 [arXiv:1406.4823v1][paper]。其 TeX 源码可直接核查
-`thm:monoid`（issue 所称定理 8.1）与 `thm:Cayley`（issue 所称定理 2.9）。
-本次审计不主张全部编号与假设均与 2017 年期刊版一致；论文结合子的方向也须
-转换为本库所选方向。
-
-| Paper statement / 论文陈述 | Assumptions / 假设 | Local theorem or prerequisite / 本库定理或前置 | Checked third-party evidence / 已核查第三方证据 | Verification gap / 待验证边界 |
+| Paper statement | Assumptions | Local theorem or prerequisite | Checked third-party evidence | Verification gap |
 | --- | --- | --- | --- | --- |
-| Lax functors preserve monoids (`thm:monoid`) | Two monoidal categories; unit comparison, natural tensorator, three coherences | [LaxMonoidObject, lax_monoid_hom and LaxMonoidF](../theories/Cat/Monoidal/Transport.v) reuse [MonoidObject and MonoidCat](../theories/Cat/Monoidal/Monoid.v) | mathlib `monObjObj`, `mapMon`, `mapMonCompIso` | Object and homomorphism transport implemented; identity/composition comparison of transport in the lax functor remains separate work. No closedness, strength, symmetry or coends required |
-| Generalized Cayley (`thm:Cayley`) | A monoid whose carrier is exponentiable for the required tensor order; a chosen right internal hom is sufficient | General monoidal closed structure still needed; [CCC internal hom](../theories/Cat/Exponential/InternalHom.v) is a cartesian client | Wiegley's `Construction/Cayley.v` is category-level, not this statement | Endomorphism monoid; monoid homomorphism `rep`; ambient retraction `abs ∘ rep ≈ id`; do not claim `abs` preserves multiplication |
-| Free monoid objects | Suitable countable coproducts, tensor preservation and explicit size/coherence data | Reuse [colimit theory](../theories/Cat/Colimit/Core.v) and [free-object interface](../theories/Cat/FreeObject/Core.v) where applicable | Not audited as an exact theorem in this slice | Specify sufficient existence assumptions before construction; neither a free monoidal category nor a free monad is this theorem |
-| Monad as a monoid | Endofunctor category under composition | Already proved: [monad_monoid_laws and monad_monoid_equiv](../theories/Cat/Monad/Monoid.v); [is_monad](../theories/Cat/Monad/Core.v) already exists | Wiegley and UniMath have relevant developments | Reuse the existing presentation; no second Monad definition |
+| Lax functors preserve monoids (`thm:monoid`) | Two monoidal categories; unit comparison, natural tensorator, three coherences | [LaxMonoidObject, lax_monoid_hom and LaxMonoidF](../../theories/Cat/Monoidal/Transport.v) reuse [MonoidObject and MonoidCat](../../theories/Cat/Monoidal/Monoid.v) | mathlib `monObjObj`, `mapMon`, `mapMonCompIso` | Object and homomorphism transport implemented; identity/composition comparison of transport in the lax functor remains separate work. No closedness, strength, symmetry or coends required |
+| Generalized Cayley (`thm:Cayley`) | A monoid whose carrier is exponentiable for the required tensor order; a chosen right internal hom is sufficient | General monoidal closed structure still needed; [CCC internal hom](../../theories/Cat/Exponential/InternalHom.v) is a cartesian client | Wiegley's `Construction/Cayley.v` is category-level, not this statement | Endomorphism monoid; monoid homomorphism `rep`; ambient retraction `abs ∘ rep ≈ id`; do not claim `abs` preserves multiplication |
+| Free monoid objects | Suitable countable coproducts, tensor preservation and explicit size/coherence data | Reuse [colimit theory](../../theories/Cat/Colimit/Core.v) and [free-object interface](../../theories/Cat/FreeObject/Core.v) where applicable | Not audited as an exact theorem in this slice | Specify sufficient existence assumptions before construction; neither a free monoidal category nor a free monad is this theorem |
+| Monad as a monoid | Endofunctor category under composition | Already proved: [monad_monoid_laws and monad_monoid_equiv](../../theories/Cat/Monad/Monoid.v); [is_monad](../../theories/Cat/Monad/Core.v) already exists | Wiegley and UniMath have relevant developments | Reuse the existing presentation; no second Monad definition |
 | Applicative as a Day monoid | Correct Day tensor, unit, coherence and size/existence conditions; strength when required | Direct lax/operation interfaces precede any new coend theory | Wiegley's Day ingredients; mathlib's selected Kan-extension formulation | Build the actual correspondence and law preservation; a module named Day is insufficient |
-| Arrow as a strong profunctor monoid | Strong profunctors, chosen composition/coends, unit and associativity coherence | No computational Arrow interface in this baseline; [Cat/Arrow](../theories/Cat/Arrow/Core.v) is the ordinary arrow category | Wiegley's profunctor composition and weakened Freyd presentation | Strong promonads, full Arrow/Freyd correspondence and exact typed equational statements remain |
+| Arrow as a strong profunctor monoid | Strong profunctors, chosen composition/coends, unit and associativity coherence | No computational Arrow interface in this baseline; [Cat/Arrow](../../theories/Cat/Arrow/Core.v) is the ordinary arrow category | Wiegley's profunctor composition and weakened Freyd presentation | Strong promonads, full Arrow/Freyd correspondence and exact typed equational statements remain |
 
 ## Lawful Applicative slice
 
-## 带定律的 Applicative 切片
-
 The serial continuation after `1495819` adds
-[Applicative](../theories/Cat/Applicative/Core.v) over a named category,
+[Applicative](../../theories/Cat/Applicative/Core.v) over a named category,
 terminal object and binary products. It stores one cartesian lax monoidal
 endofunctor and a natural pure map. Its two additional laws identify the pure
 terminal component with the lax unit and identify the pure product component
@@ -111,14 +85,6 @@ with tensorial combination of pure components. Thus the pure map is monoidal.
 No exponential structure is required by this interface. The unique coercion
 chain is `Applicative → LaxMonoidalFct → Fct → object function`;
 arrow maps retain `fmap`, and concrete choices remain explicit.
-
-`1495819` 之后的串行后续工作增加
-[Applicative](../theories/Cat/Applicative/Core.v)，依赖具名范畴、终对象及二元积。
-它保存一个笛卡尔 lax 幺半自函子及自然纯值映射。两条新增定律分别将纯终值分量
-与 lax 单位关联，将纯积分量与两个纯分量的张量组合关联，因此纯值映射是幺半的。
-基础接口不要求指数结构。唯一强制转换链为
-`Applicative → LaxMonoidalFct → Fct → object function`；
-态射映射保留 `fmap`，具体选择继续显式启用。
 
 The current record migration exposes the direct
 `ApplicativeOfLaxMonoidalFct` constructor and the unique
@@ -128,26 +94,15 @@ recovers pure values only in the native setoid model; the general category
 interface retains its supplied natural pure map. The complete record is
 not a typeclass and importing it does not select a concrete Applicative.
 
-当前记录迁移提供直接构造器 `ApplicativeOfLaxMonoidalFct` 及唯一父投影
-`ApplicativeToLaxMonoidalFct`，将选定 lax 函子、纯值映射及相容律保存在一起。
-`SetLaxA` 仍只在原生广集模型中恢复纯值；一般范畴接口保留给定的自然纯值映射。
-完整记录不再是类型类，导入不会自动选定具体 Applicative。
-
-[Binary lifting](../theories/Cat/Monoidal/Lifting.v) is first developed for
+[Binary lifting](../../theories/Cat/Monoidal/Lifting.v) is first developed for
 arbitrary lax monoidal functors and operations. Naturality, unary-map
 substitution and preservation of general associativity diagrams do not use
 pure values or exponentials. This supplies the reusable argument behind
 Applicative composition. The shared
-[internal composition evaluation lemma](../theories/Cat/Exponential/InternalHom.v)
+[internal composition evaluation lemma](../../theories/Cat/Exponential/InternalHom.v)
 comes from the existing exponential beta law and product associator.
 
-[二元提升](../theories/Cat/Monoidal/Lifting.v) 首先针对任意 lax 幺半函子及运算
-发展。自然性、一元映射代入及一般结合图的保持均不使用纯值或指数，提供了
-Applicative 复合律背后的通用论证。共享的
-[内部复合求值引理](../theories/Cat/Exponential/InternalHom.v) 来自已有指数 β 律
-及积结合子。
-
-With chosen exponentials, [application](../theories/Cat/Applicative/Closed.v)
+With chosen exponentials, [application](../../theories/Cat/Applicative/Closed.v)
 is lifted evaluation. The proved classical laws are identity, homomorphism,
 interchange and composition, including the curried pure composition followed
 by three applications. All allow a shared arbitrary context. Homomorphism
@@ -156,24 +111,13 @@ mapping law and the pure argument in interchange are fixed global values
 pulled back into the context. The equations use designated hom equality and
 retain Type-valued witnesses; they do not equate functor or law records.
 
-选定指数后，[应用](../theories/Cat/Applicative/Closed.v) 定义为提升后的求值。
-已证明恒等、同态、交换和复合四条经典定律；复合律包含纯柯里化复合函数之后
-连续三次应用的完整形式。全部允许任意共同上下文。同态律允许两个纯输入均随
-上下文变化；映射律中的纯函数及交换律中的纯参数是拉入上下文的固定全局值。
-等式使用指定 Hom 相等并保留 Type 值见证，不比较函子或定律记录的原生相等。
-
-The explicitly selected [ReaderA](../theories/Instance/Set/Reader.v)
+The explicitly selected [ReaderA](../../theories/Instance/Set/Reader.v)
 uses respectful maps, constant functions and pointwise pairing. Postcomposition
 reuses the foundational composition laws. Its environment equality level is
 separate, and a small environment permits the ambient carrier universe to be
 strictly larger than the equality universe. Temporary checks instantiate the
 abstract interface and application at both strict hom/equality universe
 orders and check transparent Reader pure/map/pair/application computation.
-
-显式选择的 [ReaderA](../theories/Instance/Set/Reader.v) 使用保相等映射、
-常值函数及逐点配对，后合成复用基础复合定律。环境相等层级单独保留，小环境
-允许所在广集载体宇宙严格大于相等宇宙。临时检查在 Hom／相等宇宙的两种严格
-次序下实例化抽象接口及应用，并检查 Reader 纯值、映射、配对及应用的透明计算。
 
 This is a sufficient lawful Applicative presentation, not a claim that an
 arbitrary cartesian lax endofunctor determines a natural pure map. The reverse
@@ -182,11 +126,6 @@ strength and its compatibility laws, Monad conversion and computational Arrow
 are delivered in the later slices below. The Reader model does not impose
 size bounds on the abstract interface. No general coend or Day convolution
 construction is introduced by this slice.
-
-这是一种充分的带定律 Applicative 呈现，不主张任意笛卡尔 lax 自函子都确定
-自然纯值映射。下文给出从相干运算接口的反向构造；张量强度及其相容律、Monad
-转换和计算 Arrow 在下方的后续切片交付。Reader 模型的大小界不施加给抽象接口。
-此切片不引入一般余端或 Day 卷积构造。
 
 The existing `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1) passed
 `dune build @all @runtest @install`. Twenty-nine temporary assumption checks
@@ -197,18 +136,9 @@ links and anchors in 525 pages. New interface explanations were inspected in
 both languages. No permanent test source or shared test alias was added;
 batch PDF export remains with the integration session.
 
-已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）通过
-`dune build @all @runtest @install`。提升、纯值／应用定律、内部复合、Reader
-模型及其计算的 29 项临时公理检查均报告 `Closed under the global context`。
-严格双语 HTML 为每种语言导出 260 个模块，并检查 525 页的链接及锚点。
-新增接口说明已在两种语言中核查。没有新增永久测试源码或共享测试别名，
-批次 PDF 导出仍由集成会话负责。
-
 ## Coherent operation presentations and reconstruction
 
-## 相干运算呈现及重建
-
-[ApplicativeOps](../theories/Cat/Applicative/Operations.v) independently
+[ApplicativeOps](../../theories/Cat/Applicative/Operations.v) independently
 stores an endofunctor, a natural pure map and a binary lifting operation.
 Its fixed-data law class `IsApplicativeOps` requires respectfulness, result
 and input substitution, preservation of pure pairs, left/right terminal
@@ -218,15 +148,8 @@ No exponentials are required. The lifted identity on a product reconstructs
 the tensorator; the pure terminal component reconstructs the unit comparison.
 `OperationsA` proves the lax and pure compatibility laws from these operations.
 
-[ApplicativeOps](../theories/Cat/Applicative/Operations.v) 独立保存自函子、
-自然纯值映射及二元提升运算。固定数据定律类 `IsApplicativeOps` 要求保相等性、
-结果及输入代入、纯配对保持、左右终单位律，以及具有不同中间类型的结合图保持。
-所有方程都是态射方程，不只对全局值成立；不要求指数对象。积上恒等的提升恢复
-tensorator，纯终分量恢复单位比较；`OperationsA` 从这些运算证明 lax 定律及
-纯值相容律。
-
 With chosen exponentials,
-[ApplicativeAp](../theories/Cat/Applicative/Application.v) stores only the
+[ApplicativeAp](../../theories/Cat/Applicative/Application.v) stores only the
 endofunctor, natural pure map and application family. Currying, functorial
 mapping and application reconstruct binary lifting. Its laws explicitly
 require this reconstructed lifting to satisfy `IsApplicativeOps`.
@@ -235,13 +158,6 @@ lifting evaluation exposes application, and input substitution plus the
 exponential beta law recover every original binary operation. A general
 pointwise transport lemma transfers the fixed-data operation laws; it does
 not equate functions or proof fields.
-
-选定指数后，[ApplicativeAp](../theories/Cat/Applicative/Application.v)
-只保存自函子、自然纯值映射及应用族。柯里化、函子映射及应用恢复二元提升；
-定律显式要求恢复的提升满足 `IsApplicativeOps`，再由 `ApplicationA` 重建
-结构式 Applicative。反向则通过提升求值暴露应用，输入代入及指数 β 律恢复
-每个原二元运算。通用逐点运输引理运输固定数据上的运算定律，不比较函数或
-证明字段的原生相等。
 
 All conversions retain the underlying functor by computation and preserve
 pure, binary lifting, application, tensorator and unit as applicable, using
@@ -255,13 +171,6 @@ foundation, strong-monad conversion and computational Arrow are described
 below.
 No Day convolution or extra model construction is introduced.
 
-全部转换通过计算保留底层函子，并按适用情形使用指定 Hom 相等保持纯值、二元
-提升、应用、tensorator 及单位。应用保持也对任意共同上下文成立，重写该比较及
-纯值保持即可从 `ApplicationA` 运输四条经典定律。这是相干运算呈现：不主张仅
-四条全局值方程就在任意 CCC 中提供全部自然性及相干数据。这些具体转换不额外
-要求张量强度；一般张量强度基础、强 Monad 的顺序转换及计算 Arrow 见下文。
-没有引入 Day 卷积或额外模型构造。
-
 Validation uses the existing `rocq-cats` switch. Full-library build, tests
 and installation passed. Temporary checks cover both strict hom/equality
 universe orders, rewriting under the bundled operation, absence of implicitly
@@ -274,35 +183,18 @@ checked links and anchors in 529 pages. Both languages of the new interface
 explanations were inspected. The checks do not add permanent test sources or
 shared test aliases. Batch PDF export remains with the integration session.
 
-验证使用已有 `rocq-cats` switch，全库构建、测试和安装通过。临时检查覆盖
-Hom／相等宇宙的两种严格次序、打包运算内部的重写、模型实例未被隐式选定、
-抽象 CCC 上四条经运输的经典定律，以及经转换后的十项 Reader 透明计算。
-包括前一提升／应用切片在内，77 项临时 `Print Assumptions` 均报告
-`Closed under the global context`。严格双语 HTML 为每种语言导出 262 个模块，
-并检查 529 页的链接及锚点；新增接口说明已在两种语言中核查。检查没有新增永久
-测试源码或共享测试别名，批次 PDF 导出仍由集成会话负责。
-
 ## Tensorial-strength foundation
 
-## 张量强度基础
-
-[HasStrength](../theories/Cat/Monoidal/Strength.v) chooses a natural map
+[HasStrength](../../theories/Cat/Monoidal/Strength.v) chooses a natural map
 carrying an ordinary left tensor context through an effectful right input,
 with unit and associator coherence. Its base is a named monoidal structure,
 not necessarily cartesian. It is distinct from an invertible tensorator.
-[StrongMonad](../theories/Cat/Monad/Strength.v) retains the existing ordinary
+[StrongMonad](../../theories/Cat/Monad/Strength.v) retains the existing ordinary
 Monad as its unique underlying view and adds this chosen strength together
 with compatibility with monad unit and multiplication. No commutativity,
 closedness or implicit model selection is required.
 
-[HasStrength](../theories/Cat/Monoidal/Strength.v) 选取自然映射，将左侧通常
-张量上下文穿过右侧带效应输入，满足单位及结合子相干律。基底是具名幺半结构，
-不必是笛卡尔结构；它不同于可逆 tensorator。
-[StrongMonad](../theories/Cat/Monad/Strength.v) 保留已有普通 Monad 为唯一
-底层视图，增加此选定强度及其与 Monad 单位、乘法的相容性。不要求交换性、
-闭结构或隐式选定模型。
-
-[Kleisli extension](../theories/Cat/Monad/Extension.v) and its unit,
+[Kleisli extension](../../theories/Cat/Monad/Extension.v) and its unit,
 substitution and associativity laws reuse the existing Monad operations.
 Contextual extension in the strength module then transports an ordinary
 tensor context through an effectful argument. Its associativity theorem
@@ -310,39 +202,23 @@ reassociates nested contexts and keeps effect order. This foundation is
 independently reusable; the finite-product Applicative conversion below is
 derived from these laws, rather than assumed as an extra field here.
 
-[Kleisli 扩张](../theories/Cat/Monad/Extension.v) 及其单位、代入和结合律
-复用已有 Monad 运算。强度模块中的上下文扩张继而将通常张量上下文穿过带效应
-参数；其结合律重排嵌套上下文括号，保留效应次序。此基础可独立复用；下文
-有限积上的 Applicative 转换由这些定律导出，并未作为额外字段假定。
-
 The initial foundation slice passed the full build/test/install targets
 with the existing `rocq-cats` switch. Temporary checks instantiated both
 strict hom/equality universe orders and all 18 initial foundation assumption
 checks were closed under the global context.
 No permanent tests or shared environment changes were added.
 
-初始基础切片在已有 `rocq-cats` switch 下通过全库构建、测试和安装。临时检查
-实例化了 Hom／相等宇宙的两种严格次序，最初 18 项基础公理检查均无额外假设。没有新增永久测试或改动
-共享环境。
-
 ## Strong Monad to ordered Applicative
 
-## 强 Monad 到有序 Applicative
-
-[Contextual binding](../theories/Cat/Monad/Context.v) specializes the general
+[Contextual binding](../../theories/Cat/Monad/Context.v) specializes the general
 strength extension to named finite products. Its endpoints expose those
 products directly, and its equations cover equality, context substitution,
 pure substitution, return, ordinary mapping and associative sequencing.
-[Cartesian strength projection](../theories/Cat/Monoidal/Cartesian.v)
+[Cartesian strength projection](../../theories/Cat/Monoidal/Cartesian.v)
 uses only strength naturality and its unit law to discard an ordinary
 context without changing the effectful input.
 
-[上下文绑定](../theories/Cat/Monad/Context.v) 将一般强度扩张特化到具名有限积，
-端点直接暴露这些积。方程覆盖相等、上下文代入、纯值代入、返回、通常映射及
-顺序组合的结合律。[笛卡尔强度投影](../theories/Cat/Monoidal/Cartesian.v)
-仅用强度自然性及其单位律，证明丢弃通常上下文不改变带效应输入。
-
-[MonadA](../theories/Cat/Monad/Applicative.v) takes a `StrongMonad` over the
+[MonadA](../../theories/Cat/Monad/Applicative.v) takes a `StrongMonad` over the
 cartesian monoidal structure determined by the named terminal object and
 products. It retains the underlying functor by computation and uses the
 original monad unit as its natural pure map. Binary combination binds the
@@ -355,15 +231,7 @@ functor, commutativity, exponential objects or invertible tensorator is
 assumed. With chosen exponentials, the existing application construction
 and four classical laws apply directly to `MonadA`.
 
-[MonadA](../theories/Cat/Monad/Applicative.v) 输入具名终对象及积所确定的笛卡尔
-幺半结构上的 `StrongMonad`，通过计算保留底层函子，以原 Monad 单位作为自然
-纯值映射。二元组合先绑定左计算，再绑定右计算，最后返回配对。自然性、左右
-单位律、结合律及纯积相容律均由绑定定律证明。上下文配对方程 `monad_pair_pre`
-在证明中保持存于通常上下文的计算抽象，全部临时证明不透明性均已恢复。不假定
-任意函子具有强度，不要求交换性、指数对象或可逆 tensorator。选定指数后，已有
-应用构造及四条经典定律可直接用于 `MonadA`。
-
-The explicit [State model](../theories/Instance/Set/State.v) supplies the
+The explicit [State model](../../theories/Instance/Set/State.v) supplies the
 ordinary `StateM`, coherent `StateStrength` and `StateStrongM`; `StateA`
 is derived solely by the general conversion. No second set of model-specific
 Applicative laws is proved. State and ambient equality/carrier levels remain
@@ -371,12 +239,6 @@ separate, subject to the actual function-space/product size bounds.
 Explicit ambient universe parameters prevent the natural transformations
 from unnecessarily identifying the ambient carrier and equality levels.
 Importing the model does not select a monad, strength or Applicative instance.
-
-显式[状态模型](../theories/Instance/Set/State.v) 提供普通 `StateM`、相干
-`StateStrength` 及 `StateStrongM`；`StateA` 完全由一般转换导出，没有重复证明
-模型专用的 Applicative 定律。状态及所在广集的载体／相等层级保持独立，保留
-函数空间／积所需的真实大小界。显式所在宇宙参数避免自然变换的类型推断无谓地
-合并所在载体及相等层级。导入模型不会自动选择 Monad、强度或 Applicative 实例。
 
 Temporary checks instantiate the abstract conversion and its application
 at both strict hom/equality universe orders, compare underlying functors by
@@ -392,40 +254,20 @@ added. The ordinary Kleisli category is delivered in the next slice below;
 the strong-Monad Arrow comparison is delivered below. Freyd and
 Day/profunctor characterizations remain separate work.
 
-临时检查在 Hom／相等宇宙的两种严格次序下实例化抽象转换及其应用，以恒等
-自然同构比较底层函子，并在状态载体／相等的两种严格次序及更大的所在载体下
-检查模型。七项布尔状态透明计算覆盖纯值、映射、两种配对顺序、重复状态转移、
-应用及应用接口往返。先翻转再读取，与先读取再翻转返回不同布尔值，检验了指定
-次序。包括前一 Applicative 切片在内，148 项临时公理检查均无额外假设。没有新增
-永久测试或共享测试别名。普通 Kleisli 范畴在下方的下一切片交付；计算
-Arrow 及其强 Monad 比较见下文；Freyd 及 Day／profunctor 刻画仍为后续工作。
-
 The final phase passed `dune build @all @runtest @install` using the existing
 `rocq-cats` switch (Rocq/Stdlib 9.2.0, Dune 3.23.1). Strict bilingual HTML
 export generated 269 modules per language and checked links and anchors in
 543 pages; the new explanations were inspected in both languages. Batch PDF
 export remains with the integration session.
 
-最终阶段在已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）下通过
-`dune build @all @runtest @install`。严格双语 HTML 为每种语言导出 269 个模块，
-检查 543 页的链接及锚点；新增说明已在两种语言中核查。批次 PDF 仍由集成会话
-统一导出。
-
 ## Ordinary Kleisli category
 
-## 普通 Kleisli 范畴
-
-[KleisliCat](../theories/Cat/Monad/Kleisli.v) takes only the existing
+[KleisliCat](../../theories/Cat/Monad/Kleisli.v) takes only the existing
 `Monad C`. It keeps the objects of `C`, reuses `HomSet X (M Y)` with its
 specified Type-valued equality, chooses the monad unit as identity and
 composes by Kleisli extension. Respectfulness, both unit laws and
 associativity reuse the existing extension theory. No strength, products,
 terminal object, exponentials or commutativity are needed.
-
-[KleisliCat](../theories/Cat/Monad/Kleisli.v) 只输入已有 `Monad C`，保留 `C`
-的对象，复用 `HomSet X (M Y)` 及其指定 Type 值相等，以 Monad 单位为恒等，
-用 Kleisli 扩张复合。保相等性、左右单位律及结合律复用已有扩张理论；不要求
-强度、积、终对象、指数或交换性。
 
 `KleisliPureF` sends ordinary arrows to pure computations and keeps objects
 unchanged; it is not asserted faithful. `KleisliExtendF` sends objects to
@@ -438,13 +280,6 @@ The public `g ∘K[M] f` notation names the same composition as the category;
 pure-input and pure-output equations recover ordinary substitution and
 result mapping.
 
-`KleisliPureF` 将通常箭头送为纯计算，对象不变，不断言它忠实。
-`KleisliExtendF` 将对象送为 Monad 像，将计算送为其扩张。两者的复合通过
-分量为恒等的 `KleisliCompositeIso` 与原自函子比较；这里只比较自函子，不等同
-函数或定律记录。此初始比较只涉及自函子；完整 Monad 恢复见下文。
-公开记号 `g ∘K[M] f` 就是此范畴
-的复合；纯输入和纯输出方程分别恢复通常代入和结果映射。
-
 Temporary checks cover both strict hom/equality universe orders with
 arbitrary ordinary monads, inherited equality in both directions, rewriting
 through composition, both functors and their natural isomorphism. Six
@@ -456,26 +291,14 @@ unavailable. No permanent tests or model-specific category proofs were
 added. Computational Arrow and its strength operations are delivered below;
 Freyd remains later work.
 
-临时检查对任意普通 Monad 覆盖 Hom／相等宇宙的两种严格次序、双向继承相等、
-复合重写、两个函子及其自然同构。六项透明状态计算检验顺序组合、重复转移、
-纯输入／输出及函子扩张；本切片 34 项公理检查均无额外假设。抽象检查仅导入
-Kleisli 模块，并确认强度接口不可用。没有新增永久测试或模型专用的范畴证明。
-计算 Arrow 及其强度运算见下文，Freyd 仍为后续工作。
-
 This slice passed full-library build/tests/install with the same `rocq-cats`
 switch. Strict bilingual HTML generated 270 modules per language and checked
 545 pages; the new module's explanations and public constructions were
 inspected in both languages. Batch PDF export remains with integration.
 
-本切片使用同一 `rocq-cats` switch 通过全库构建、测试及安装；严格双语 HTML
-为每种语言导出 270 个模块，检查 545 页，并核查两种语言中新模块的说明及公开
-构造。批次 PDF 仍由集成会话统一导出。
-
 ## Kleisli adjunction and recovery of the Monad
 
-## Kleisli 伴随及 Monad 的恢复
-
-[KleisliAdjunction](../theories/Cat/Monad/KleisliAdjunction.v) reuses the
+[KleisliAdjunction](../../theories/Cat/Monad/KleisliAdjunction.v) reuses the
 general `AdjunctionFromHom` construction with identity respectful maps:
 the two hom-sets are the very same base hom-set. Their inverse equations
 are reflexivity, source naturality is pure substitution, and target
@@ -484,13 +307,6 @@ preserve the underlying computation. The unit is the original Monad unit;
 the counit at `X` is the base identity on `M X`, viewed as a Kleisli arrow
 from `M X` to `X`. Both triangle laws are inherited from the general
 adjunction theory. Only an ordinary Monad is supplied.
-
-[KleisliAdjunction](../theories/Cat/Monad/KleisliAdjunction.v) 以恒等保相等
-映射复用一般 `AdjunctionFromHom` 构造：两侧 Hom 广集就是同一个基底 Hom
-广集。互逆方程由自反性给出，来源自然性为纯值代入，目标自然性为 Kleisli
-复合。正逆转置保留底层计算。单位为原 Monad 单位；`X` 处余单位为 `M X`
-上的基底恒等，视为从 `M X` 到 `X` 的 Kleisli 箭头。两条三角律均继承自一般
-伴随理论；输入只需普通 Monad。
 
 `KleisliMonad` uses the existing `AdjunctionMonad`, without a second proof
 of its Monad laws. Its unit agrees with the original unit by computation;
@@ -503,13 +319,6 @@ morphisms; `KleisliMonadIso` is their actual isomorphism in the existing
 functor functions, category records or law witnesses. It does not assert
 an equivalence between all adjunctions and all Monads.
 
-`KleisliMonad` 使用已有 `AdjunctionMonad`，不重新证明其 Monad 定律。单位通过
-计算与原单位一致，乘法使用原函子保持恒等的定律，在指定 Hom 相等下与原乘法
-一致。此前分量为恒等的函子同构及其逆均保持单位和乘法；`KleisliMonadTo` 与
-`KleisliMonadFrom` 将其打包为固定基底 Monad 态射，`KleisliMonadIso` 是它们在
-已有 `MonadCat C` 中的实际同构。这比较完整 Monad 结构，不要求函子函数、
-范畴记录或定律见证相等，也不断言全部伴随与全部 Monad 之间的等价。
-
 Temporary checks cover both strict hom/equality universe orders and a
 case with objects strictly larger than both, the recovery isomorphism,
 operation rewriting, preservation by both Monad morphisms and transpose
@@ -520,27 +329,15 @@ import only this module and confirm that strength and product interfaces
 are unavailable. No permanent tests or concrete model proofs were added;
 computational Arrow is delivered below and Freyd remains separate work.
 
-临时检查覆盖 Hom／相等宇宙的两种严格次序、对象严格大于两者的情形、恢复
-同构、运算重写、双向 Monad 态射的保持性及转置重写。六项透明状态计算覆盖
-恢复后的返回、映射、乘法、余单位及正反比较映射。本切片 52 项公理检查均无
-额外假设；抽象检查仅导入本模块，并确认强度及积接口不可用。没有新增永久
-测试或具体模型证明；计算 Arrow 见下文，Freyd 仍为后续工作。
-
 This slice passed full-library build/tests/install with `rocq-cats`
 (Rocq/Stdlib 9.2, Dune 3.23.1). Strict bilingual HTML generated 271 modules
 per language and checked links and anchors in 547 pages; the new module's
 explanations were inspected in both languages. Batch PDF export remains
 with integration.
 
-本切片使用 `rocq-cats`（Rocq／Stdlib 9.2、Dune 3.23.1）通过全库构建、测试
-及安装；严格双语 HTML 为每种语言导出 271 个模块，检查 547 页的链接及锚点，
-并核查两种语言中新模块的说明。批次 PDF 仍由集成会话统一导出。
-
 ## Arrow foundation over a monoidal base
 
-## 幺半基底上的 Arrow 基础
-
-[Arrow](../theories/Cat/Computational/Arrow/Core.v) now takes a named
+[Arrow](../../theories/Cat/Computational/Arrow/Core.v) now takes a named
 monoidal base and a computation category, with a pure-arrow functor as
 its unique underlying view. Its left-context action preserves pure maps
 and composition, is natural in the ordinary context, and satisfies unit
@@ -549,25 +346,13 @@ interchange of two effects. Computations live between images of the pure
 functor; the existing `InducedCat` gives a presentation indexed by base
 objects, and `ContextF` packages the action at a fixed context as a functor.
 
-[Arrow](../theories/Cat/Computational/Arrow/Core.v) 输入具名幺半基底及计算范畴，
-以纯箭头函子为唯一底层视图。左上下文作用保持纯映射及复合，在通常上下文中
-自然，满足单位及结合子相干。不假定积、对称性或两个效应的交换律。计算位于
-纯函子像之间；已有 `InducedCat` 给出以基底对象索引的呈现，`ContextF` 将固定
-上下文的作用打包为函子。
-
-[PureArrow](../theories/Cat/Computational/Arrow/Pure.v) uses ordinary left
-tensoring. [KleisliArrow](../theories/Cat/Computational/Arrow/Kleisli.v)
+[PureArrow](../../theories/Cat/Computational/Arrow/Pure.v) uses ordinary left
+tensoring. [KleisliArrow](../../theories/Cat/Computational/Arrow/Kleisli.v)
 uses the chosen tensorial strength of an ordinary strong Monad, retaining
 its existing Kleisli category and pure functor. These are explicit models.
 The construction reuses strength compatibility and coherence rather than
 proving laws separately in each concrete model. The Haskell-style cartesian
 operations and ordered Applicative comparison are delivered below.
-
-[PureArrow](../theories/Cat/Computational/Arrow/Pure.v) 使用通常左张量；
-[KleisliArrow](../theories/Cat/Computational/Arrow/Kleisli.v) 使用普通强 Monad
-的选定张量强度，保留已有 Kleisli 范畴及纯函子。两者都是显式模型。构造复用
-强度相容性及相干性，不为每个具体模型重复证明定律。Haskell 风格笛卡尔运算
-及有序 Applicative 比较见下文。
 
 The independent foundation passed full-library build/tests/install with
 the existing `rocq-cats` switch. All 26 temporary assumption checks are
@@ -576,15 +361,9 @@ orders, independent base/computation sizes and the fixed-context functor;
 importing the foundation alone supplies no product interface. No permanent
 tests were added.
 
-独立基础在已有 `rocq-cats` switch 下通过全库构建、测试及安装。26 项临时公理
-检查均无额外假设；覆盖 Hom／相等的两种严格次序、基底与计算范畴的独立大小
-及固定上下文函子。仅导入此基础不提供积接口，没有新增永久测试。
-
 ## Cartesian Arrow operations and ordered comparison
 
-## 笛卡尔 Arrow 运算及有序比较
-
-[Cartesian Arrow operations](../theories/Cat/Computational/Arrow/Cartesian.v)
+[Cartesian Arrow operations](../../theories/Cat/Computational/Arrow/Cartesian.v)
 specialize the monoidal action to the named finite-product structure.
 `second` is that existing action; `first` is derived by pure exchanges.
 The pure identity/composition laws and the five classical `first` laws
@@ -597,15 +376,7 @@ and fanout use context action and pure duplication; no joint bifunctoriality
 or interchange of two effects is asserted. `Proper` supports rewriting all
 these operations in the designated computation equality.
 
-[笛卡尔 Arrow 运算](../theories/Cat/Computational/Arrow/Cartesian.v) 将幺半
-作用特化到具名有限积结构；`second` 就是已有作用，`first` 通过纯交换导出。
-纯恒等／复合定律及五条经典 `first` 定律（纯箭头、顺序组合、投影、上下文
-自然性及结合律）均已证明，对应官方文档的七条基本定律。特别地，投影由幺半
-单位相干及到终上下文的自然性导出，不是新公理。有序分开组合及扇出使用上下文
-作用及纯复制，不断言联合双函子性或两个效应的交换；`Proper` 支持按指定计算
-相等重写这些运算。
-
-[The comparison](../theories/Cat/Computational/Arrow/Applicative.v) uses
+[The comparison](../../theories/Cat/Computational/Arrow/Applicative.v) uses
 one chosen strong Monad. It rewrites Kleisli `first` and `second` by
 contextual binding, proves split equals the previous `monad_pair` after
 the two input computations, and proves fanout equals Applicative pairing
@@ -617,15 +388,7 @@ existing sequencing simplifier now live in `Cat.Monad.Context`; the old
 Applicative proof uses the same simplifier without changing its operations.
 All proof-only opacity is local and restored.
 
-[比较模块](../theories/Cat/Computational/Arrow/Applicative.v) 使用同一个选定
-强 Monad，将 Kleisli 的 `first`／`second` 改写为上下文绑定，证明分开组合等于
-此前的 `monad_pair` 在两个输入计算之后作用，并证明任意共同通常上下文中的
-扇出等于 Applicative 配对。特化为计算值输入后，恰好恢复 `MonadA` 的 tensorator；
-纯提升使用同一返回。这里只比较这些构造，不把任意 Arrow 转为 Applicative。
-两条可复用绑定方程及已有顺序化简策略现归于 `Cat.Monad.Context`；旧 Applicative
-证明使用同一策略，运算保持不变。全部证明专用不透明性均为局部且已恢复。
-
-The explicit [StateArrow](../theories/Instance/Set/State.v) reuses
+The explicit [StateArrow](../../theories/Instance/Set/State.v) reuses
 `StateStrongM` and the general Kleisli construction, with no model-specific
 Arrow law proofs or global chosen-instance registration. Temporary checks
 cover both strict base/computation hom-equality orders, both strict state
@@ -639,30 +402,13 @@ shared simplifier. No permanent tests or shared test aliases were added.
 Freyd, static Arrow, ArrowApply/Choice/Loop and Day/profunctor results remain
 outside this slice; batch PDF export remains with integration.
 
-显式 [StateArrow](../theories/Instance/Set/State.v) 复用 `StateStrongM` 及一般
-Kleisli 构造，没有模型专用 Arrow 定律证明或全局选定实例注册。临时检查覆盖
-基底／计算 Hom 相等的两种严格次序、状态载体／相等的两种严格次序、全部七条
-基本定律、运算重写及比较。八项透明状态计算检验纯值、first、second、分开
-组合、扇出、反向输入次序、重复转移及嵌套上下文重排。68 项笛卡尔／模型公理
-检查与 26 项幺半基础检查均无额外假设；抽出共享化简策略后，原 148 项
-Applicative 检查也全部重跑通过。没有新增永久测试或共享测试别名。Freyd、
-静态 Arrow、ArrowApply／Choice／Loop 及 Day／profunctor 结果不在本切片范围内；
-批次 PDF 仍由集成会话统一导出。
-
 The final phase passed `dune build @all @runtest @install` with the existing
 `rocq-cats` switch (Rocq/Stdlib 9.2, Dune 3.23.1). Strict bilingual HTML
 export generated 276 modules per language and checked links and anchors in
 557 pages; the new monoidal/cartesian/comparison explanations and State
 model were inspected in both languages.
 
-最终阶段在已有 `rocq-cats` switch（Rocq／Stdlib 9.2、Dune 3.23.1）下通过
-`dune build @all @runtest @install`；严格双语 HTML 为每种语言生成 276 个模块，
-检查 557 页的链接及锚点，并核查两种语言中新增的幺半／笛卡尔／比较说明及
-状态模型。
-
 ## First implementation boundary
-
-## 首个实现边界
 
 1. Bundle a functor and its lax structure between two specified monoidal
    structures. Retain a unit map and a natural tensorator with
@@ -679,52 +425,26 @@ model were inspected in both languages.
    pairing comparison above are implemented. Freyd, static-arrow and deeper
    representation results remain open in #35.
 
-1. 打包指定幺半结构之间的函子及其 lax 结构：单位映射、自然 tensorator、
-   结合律和两条单位律。不要求可逆、张量强度或闭／笛卡尔基底。
-2. 通用地证明一次幺半群传输：`e' = F(e) ∘ φ₀`、`m' = F(m) ∘ φ₂`；
-   用 `fmap F` 映射同态，并封装为已有幺半群对象范畴之间的函子。
-3. 检查真正不可逆的 lax 结构、独立的 Hom／相等宇宙次序，以及基础公理。
-   区分临时检查与保留的接口回归。
-4. 上述带定律 Applicative、相干运算比较、张量强度、强 Monad 有序转换、计算
-   Arrow 及其有序配对比较已实现。Freyd、静态 Arrow 及更深表示结果仍为 #35
-   的待办。
-
 The implemented interface is
-[LaxMonoidalFct MC MD](../theories/Cat/Monoidal/Functor.v), bundling
+[LaxMonoidalFct MC MD](../../theories/Cat/Monoidal/Functor.v), bundling
 the underlying functor through `LaxMonoidalFctToFct :> Fct C D`. Clients use
 `L X` and `fmap L f`; comparison notation is `φ₀[L]` and `φ₂[L; X; Y]`
 in `monoidal_scope`.
-[ConstLaxMonoidalF](../theories/Cat/Monoidal/Constant.v) supplies
+[ConstLaxMonoidalF](../../theories/Cat/Monoidal/Constant.v) supplies
 a general constant example from any target monoid. Chosen identity and
 constant structures are definitions that clients select explicitly.
-[LaxMonoidF](../theories/Cat/Monoidal/Transport.v) maps the existing monoid
+[LaxMonoidF](../../theories/Cat/Monoidal/Transport.v) maps the existing monoid
 category by `fmap L`, retaining designated equality and Type-valued witnesses.
 This induced functor remains a derived construction, rather than a second
 coercion from the lax structure. The broader interface survey is recorded in
-[BundledInterfaces.md](./BundledInterfaces.md).
-
-已实现的接口为
-[LaxMonoidalFct MC MD](../theories/Cat/Monoidal/Functor.v)，
-用 `LaxMonoidalFctToFct :> Fct C D` 打包底层函子，客户端使用 `L X`、`fmap L f`。
-`monoidal_scope` 中的比较记号为 `φ₀[L]`、`φ₂[L; X; Y]`。
-[ConstLaxMonoidalF](../theories/Cat/Monoidal/Constant.v) 从任意目标
-幺半群给出通用常值实例。恒等及常值结构均为须由客户端显式选择的定义。
-[LaxMonoidF](../theories/Cat/Monoidal/Transport.v) 用 `fmap L` 映射已有幺半群
-对象范畴，保留指定相等及 Type 值见证。诱导函子仍为派生构造，不作为 lax
-结构的第二条强制转换。全库接口调查记录在
-[BundledInterfaces.md](./BundledInterfaces.md)。
+[BundledInterfaces.md](BundledInterfaces.md).
 
 The local record follow-up from `728ab7c` preserves these computational
 choices through the direct `LaxMonoidalFctOfFct` constructor. Unit and
 tensorator projections recover the exact supplied data. The identity unit
 and tensorator compute on setoids; the existing Boolean constant examples
 still demonstrate noninvertible comparisons. See the
-[current record/naming checkpoint](./Abbreviations.md#lax-monoidal-functor-record--lax-幺半函子记录).
-
-从 `728ab7c` 开始的本地记录后续通过直接构造器 `LaxMonoidalFctOfFct`
-保留这些计算选择。单位及张量子投影恢复精确的给定数据；恒等单位比较及张量子
-可在广集上计算，已有布尔常值例子仍检验不可逆比较。详见
-[当前记录／命名检查点](./Abbreviations.md#lax-monoidal-functor-record--lax-幺半函子记录)。
+[current record/naming checkpoint](../development/Abbreviations.md#lax-monoidal-functor-record).
 
 The strong extension `MonoidalFct` keeps its exact lax parent and adds
 Type-valued inverses. `MonoidalTensorInvN` uses the general `InvN`
@@ -737,25 +457,12 @@ universes; all twelve assumption reports are closed. All twenty affected
 and representative targets pass with Rocq 9.3.0, Stdlib 9.2.0 and Dune
 3.23.1. This bounded checkpoint does not include a full-library build.
 
-强版本 `MonoidalFct` 保留原有 lax 父结构，只增加 Type 值逆见证。
-`MonoidalTensorInvN` 使用一般的 `InvN` 构造，由其导出逆自然性。
-`Computations.v` 保留的恒等回归通过归约检查继承的 `fmap`、逆单位比较，
-以及正向和逆向张量子。另以临时审计检查构造器保留、互逆方程、自然性，
-以及对象宇宙高于定律宇宙时 Hom／相等的两种严格次序；十二项假设报告均闭合。
-使用 Rocq 9.3.0、Stdlib 9.2.0、Dune 3.23.1 通过全部二十个受影响及代表性
-目标。本次有界检查点不包含全库构建。
-
 Retained regressions check that the Boolean-xor constant functor's unit
 and tensor comparisons are not invertible, that transported operations
 compute, and that transport works in both directions between categories
 with `e < h < p` hom/equality levels. See
-[Computations.v](../tests/Computations.v) and
-[Universes.v](../tests/Universes.v).
-
-保留的回归检查布尔异或常函子的单位比较与 tensorator 均不可逆、传输运算可
-直接计算，以及在满足 `e < h < p` 的 Hom／相等层级范畴间双向传输。见
-[Computations.v](../tests/Computations.v) 及
-[Universes.v](../tests/Universes.v)。
+[Computations.v](../../tests/Computations.v) and
+[Universes.v](../../tests/Universes.v).
 
 [w]: https://github.com/jwiegley/category-theory/tree/99869fd8d9117e900dea862d8612033848aa01dd
 [w-app]: https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Theory/Coq/Applicative.v
@@ -796,10 +503,8 @@ with `e < h < p` hom/equality levels. See
 
 ## Independent associator and unitor choices
 
-## 独立的结合子及单位子选择
-
-The premonoidal migration extracts [associators](../theories/Cat/Monoidal/Associator.v)
-and [unitors](../theories/Cat/Monoidal/Unitor.v) on the same fixed
+The premonoidal migration extracts [associators](../../theories/Cat/Monoidal/Associator.v)
+and [unitors](../../theories/Cat/Monoidal/Unitor.v) on the same fixed
 `HasBinoidal` choice. A last-variable natural isomorphism fixes all
 associator components and inverses. The general `IsNatIso` property and
 `NatIsoOfComponents` view recover first- and middle-variable natural
@@ -807,28 +512,14 @@ isomorphisms on those same components. The pentagon requires no unit;
 the unitor package requires no associator. `IsPremonoidal` provides the
 triangle compatibility between the two choices.
 
-预幺半迁移在同一固定 `HasBinoidal` 选择上抽出
-[结合子](../theories/Cat/Monoidal/Associator.v)及
-[单位子](../theories/Cat/Monoidal/Unitor.v)。最后变量自然同构固定全部结合子
-分量及逆，一般 `IsNatIso` 性质与 `NatIsoOfComponents` 视图为同一组分量给出
-第一及中间变量自然同构。五边形无需单位，单位子选择无需结合子；
-`IsPremonoidal` 给出两份选择间的三角形相容性。
-
 `PremonoidalCat` is now a complete record with one binoidal parent.
 Its constructor and parent projections provide the inheritance conversions;
 no forwarding conversion function or extra coercion is introduced.
-[Bifunctor assembly](../theories/Cat/Monoidal/Bifct.v) and
-[Arrow computations](../theories/Cat/Computational/Arrow/Premonoidal.v)
+[Bifunctor assembly](../../theories/Cat/Monoidal/Bifct.v) and
+[Arrow computations](../../theories/Cat/Computational/Arrow/Premonoidal.v)
 construct the two packages independently and combine their original
 selected maps. Monoidal and symmetric clients retain their parameterized
 interfaces while selecting one tensor and its indexed extension.
-
-`PremonoidalCat` 现为拥有唯一双侧张量父结构的完整记录；其构造器及父投影已
-提供继承转换，不增加转发转换函数或额外强制转换。
-[双函子装配](../theories/Cat/Monoidal/Bifct.v)及
-[Arrow 计算](../theories/Cat/Computational/Arrow/Premonoidal.v)独立构造两份选择，
-再组合原有选定映射。幺半及对称客户端暂保留参数化接口，保存一份张量及以它为
-索引的扩展。
 
 The retained interface checks reject automatic selection of unitors from
 an associator alone, or an associator from unitors alone. Concrete Boolean
@@ -841,13 +532,6 @@ new builders and Freyd context unit/associativity clients. Native equality
 appears only in temporary conversion checks and concrete regression values;
 the mathematical interfaces continue to use specified Hom equality.
 
-保留的接口检查拒绝从单独结合子自动选出单位子，或从单独单位子自动选出结合子。
-具体布尔回归通过反身性计算中间变量逆及打包单位子的逆。临时审计检查三种结合子
-视图的转换一致性、实际范畴及实例强制转换、同一范畴上显式选择的隔离，以及
-`h < p < l < o` 下两种 Hom／相等大小次序。全部 23 项假设报告均闭合，覆盖
-新增装配及 Freyd 上下文单位／结合性客户端。原生相等只用于临时转换检查及
-具体回归值；数学接口仍使用指定 Hom 相等。
-
 The stable checkpoint builds all 617 library modules and
 `tests/Interfaces.vo`, `tests/Computations.vo`, `tests/Universes.vo` with
 Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1 in the `rocq-cats` switch.
@@ -858,21 +542,12 @@ benchmark. Sources remain unchanged during validation. No HTML/PDF export,
 install check or full test alias is included. The audit is temporary;
 interface and computation regressions remain in the repository.
 
-稳定检查点使用 `rocq-cats` switch 中的 Rocq 9.3.0、Stdlib 9.2.0 及
-Dune 3.23.1，通过全部 617 个库模块及 `tests/Interfaces.vo`、
-`tests/Computations.vo`、`tests/Universes.vo`。本 worktree 中上述
-`dune build -j2` 增量命令耗时 340.141 秒，复用了已有依赖缓存，不是干净构建
-基准；验证期间源码未改变。不包含 HTML／PDF 导出、安装检查或完整测试别名。
-审计为临时检查，接口及计算回归保留在仓库内。
-
 ## Binoidal record and fixed-map laws
-
-## 双侧张量记录与固定映射定律
 
 The binoidal checkpoint separated the complete `BinoidalCat` record
 from the chosen `HasBinoidal C` extension. Left and right actions share one
 object tensor. Each has an `IsFct` witness on its fixed maps, reusing
-[Cat.Functor.Core](../theories/Cat/Functor/Core.v). `MakeFct` supplies the
+[Cat.Functor.Core](../../theories/Cat/Functor/Core.v). `MakeFct` supplies the
 ordinary context functors transparently. Respectfulness remains required:
 identity and composition preservation do not by themselves ensure that an
 operation descends to the specified hom equality.
@@ -887,17 +562,6 @@ function equality or proof irrelevance is added to the binoidal interface.
 The retained Boolean computations distinguish the two actions using a
 nonidentity map; import regression checks keep model selection explicit.
 
-双侧张量检查点将完整 `BinoidalCat` 记录与选定扩展 `HasBinoidal C` 分离。
-左右作用共享唯一对象张量，各自通过 [Cat.Functor.Core](../theories/Cat/Functor/Core.v)
-为固定映射提供 `IsFct` 见证；`MakeFct` 透明地给出普通上下文函子。
-保相等性仍是必要条件：仅保持恒等和复合，并不能保证运算良定义于指定 Hom 相等。
-
-`BifctHasBinoidal`、`ArrowHasBinoidal` 保留原有映射及证明，按上下文两侧
-分组，完整打包保存同一范畴和证据。当时参数化预幺半层通过
-`PremonoidalToHasBinoidal` 及透明的 `PremonoidalToBinoidalCat` 视图读取同一
-选择；随后预幺半迁移用保存的父投影替代该过渡视图。双侧张量接口不增加交换律、对称、单位元、结合子、函数相等或证明无关性。
-保留的布尔计算通过非恒等映射区分两种作用，导入回归保持模型选择显式。
-
 The binoidal checkpoint built all 613 library modules and the three
 representative regression targets. Twenty temporary assumption reports are
 closed, including strict size, conversion, same-category choice isolation
@@ -909,16 +573,7 @@ statement-timing audit, that explicit application takes about 0.002 seconds.
 The theorem's assumptions, conclusion and computational constructions stay
 the same; no opacity is introduced.
 
-双侧张量检查点通过全部 613 个库模块及三个代表性回归目标。二十项临时假设报告
-均闭合，覆盖严格大小、转换、同一范畴上的选择隔离及可计算映射，不使用额外
-全局假设。`day_monoid_mul_roundtrip` 在应用 `day_extend_proper` 时固定张量、
-参与函子及原有 Day 选择，避免反推重建打包时展开大结构。临时逐语句计时中，
-该显式应用约耗时 0.002 秒。定理的假设、结论及可计算构造保持不变，不引入
-不透明性。
-
 ## Proof transparency in the functor and tensor migration
-
-## 函子与张量迁移中的证明透明性
 
 The [#47 audit](https://github.com/Godalin/rocq-cats/issues/47) closes
 proof-only respectfulness, functoriality, naturality, and coherence with
@@ -929,20 +584,10 @@ naturality obligations use `Qed`. The temporary constructor and
 semigroupal probes check definitional equality of data projections,
 instance search, independent universes and assumptions.
 
-[#47 审查](https://github.com/Godalin/rocq-cats/issues/47) 将纯保相等性、
-函子律、自然性及相干性证明用 `Qed` 收尾。外层构造仍暴露映射及结构投影。
-例如，`BifctTensorN` 和 `DayAssociatorFctN` 的分量构造义务用
-`Defined`，自然性义务用 `Qed`。临时的构造器和半群范畴检查覆盖数据投影
-的定义相等、实例搜索、独立宇宙及假设。
-
-The identity law of [`FctPsh`](../theories/Instance/Set/Functor.v)
+The identity law of [`FctPsh`](../../theories/Instance/Set/Functor.v)
 is a computational exception. Its lifted natural isomorphism has an inverse
 component that `nerve_identity_inverse_computes` projects and reduces.
 The probe-presheaf comparison obligations retain `Defined`.
-
-[`FctPsh`](../theories/Instance/Set/Functor.v) 的恒等律属于计算例外。
-`nerve_identity_inverse_computes` 要投影并归约其中提升后的自然同构的逆分量。
-探测预层的比较义务保留 `Defined`。
 
 With Rocq 9.3.0, Stdlib 9.2.0 and Dune 3.23.1, we compiled each module
 three times in each of two temporary source snapshots, alternating the
@@ -953,13 +598,7 @@ its dependencies already built. Other compilation was running, so
 elapsed time is excluded from the comparison. These measurements cover
 selected modules with warm dependencies.
 
-工具链为 Rocq 9.3.0、Stdlib 9.2.0 和 Dune 3.23.1。两个临时源码副本均已
-移除 `IdF`、`CompF` 的 canonical 注册。Dune 先构建依赖，再交替对每个
-版本的各模块重编三次。下表为依赖已构建时单个模块的编译器 CPU 时间中位数，
-单位为秒。测量期间还有其他构建，故比较仅使用 CPU 时间；结果覆盖依赖已缓存
-的代表性模块。
-
-| Module / 模块 | Before / 修改前 | After / 修改后 |
+| Module | Before | After |
 | --- | ---: | ---: |
 | `Cat.Functor.Product` | 1.57 | 1.54 |
 | `Cat.Day.Universal` | 11.33 | 10.90 |
@@ -971,60 +610,33 @@ obligation opaque. The latter blocked reduction of its projection to a
 numeral. Providing the data explicitly recovered the reduction. The
 library uses explicit endings for the reviewed obligations.
 
-临时 `Program` 示例在 `Local Unset Transparent Obligations` 下自动求解
-一项定律和一项数据义务，两者都变成不透明常量。数据投影因此无法归约到预期
-数值，显式提供数据后恢复归约。本库逐条显式指定本批义务的收尾方式。
-
 ## Two-sided context and centrality prerequisite
-
-## 双侧上下文与中心性前置基础
 
 The user-approved serial slice starts from `751de86` on `monoidal-cat-view`.
 The existing generic Arrow has a left-context action over a named monoidal
 base; that alone does not specify a right-context action. This slice
-extracts [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v): one object tensor
+extracts [BinoidalCat](../../theories/Cat/Monoidal/Binoidal.v): one object tensor
 and two separately functorial arrow actions, without units, associators,
 symmetry or effect interchange. Derived fixed-context functors share that
 same object tensor. Public `binoidal_scope` notation writes the tensor as
 `X ⊗ Y`, left context as `Z ⊲ f`, and right context as `f ⊳ Z`.
 
-用户授权的串行批次从 `monoidal-cat-view` 上的 `751de86` 开始。现有一般
-Arrow 在具名幺半基底上具有左上下文作用，但这本身尚未指定右上下文作用。
-本批抽出 [BinoidalCat](../theories/Cat/Monoidal/Binoidal.v)：唯一对象张量与两种
-分别具有函子性的态射作用，不要求单位元、结合子、对称性或效应交换律。
-导出的固定上下文函子共享同一对象张量。公开 `binoidal_scope` 中，张量写作
-`X ⊗ Y`，左上下文写作 `Z ⊲ f`，右上下文写作 `f ⊳ Z`。
-
-[Centrality](../theories/Cat/Monoidal/Center.v) is a Type-valued predicate
+[Centrality](../../theories/Cat/Monoidal/Center.v) is a Type-valued predicate
 on an arrow: it supplies exchange with every partner, in either tensor
 position. Specified-equal arrows share centrality, and central arrows are
 closed under identity and composition. Ordered sequencing agrees with the
 opposite execution order when either factor is central. There is no
 principle asserting this for two arbitrary effects.
 
-[中心性](../theories/Cat/Monoidal/Center.v) 是态射上的 Type 值谓词，在两个
-张量位置都给出与任意另一态射交换的见证。指定相等的态射共享中心性，中心
-态射在恒等与复合下封闭。任一因子为中心态射时，有序组合与相反执行次序
-相等；没有断言两个任意效应都可如此交换。
-
 [MonoidalBinoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Binoidal.v) explicitly adapts
 an existing monoidal tensor, with all arrows central by bifunctoriality.
 It is not another coercion or globally chosen parent of MonoidalCat.
-[ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) reuses
+[ArrowBinoidal](../../theories/Cat/Computational/Arrow/Binoidal.v) reuses
 `ComputationCat A`, the selected value products and existing `first`/`second`
 operations. `ArrowPureF` is identity on the shared value-object type and
 reuses the original pure-arrow action. Both old context-naturality laws
 prove that every pure arrow is central. Generic ordered sequencing agrees
 with the existing Arrow split. No concrete model laws are reproved.
-
-[MonoidalBinoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Binoidal.v) 显式适配已有幺半张量，
-由双函子性证明全部态射为中心态射；它不是 MonoidalCat 的另一强制转换或
-全局选定父结构。
-[ArrowBinoidal](../theories/Cat/Computational/Arrow/Binoidal.v) 复用
-`ComputationCat A`、选定值积及已有 `first`／`second` 运算。`ArrowPureF`
-在共享值对象类型上为恒等，并复用原纯态射作用。已有两种上下文自然性律证明
-每个纯态射都是中心态射；一般有序组合与原 Arrow split 一致。不重复证明
-具体模型的定律。
 
 The adapter fixes the value-category product explicitly even though value
 and computation objects have the same type. Right-context action currently
@@ -1038,14 +650,6 @@ The pinned [Wiegley binoidal interface](https://github.com/jwiegley/category-the
 was rechecked alongside the cached premonoidal/Freyd sources; the existing
 prior-art and compatibility boundaries above still apply.
 
-尽管值对象和计算对象具有同一类型，适配器仍显式固定值范畴的积选择。右上下文
-作用目前使用已有笛卡尔交换。一般双侧张量基础不要求对称性，但在更弱基底上
-将只有单侧作用的一般 Arrow 扩展为双侧，需要额外数据或相干交换结构。
-在此前置阶段，完整预幺半结构同构与相干、对称结构及完整 Freyd 刻画仍为
-后续任务。下一个批次补齐一般预幺半层。
-固定版本的 [Wiegley 双侧张量接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Binoidal.v)
-已与缓存的预幺半／Freyd 源码一起复核，上述既有先例与相容边界继续适用。
-
 Validation used the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
 passed. All 73 temporary `Print Assumptions` checks reported
@@ -1057,31 +661,16 @@ that changing state before reading differs from reading before changing,
 and that the changing computation is not central. These are temporary
 checks, with no permanent test or shared test configuration changes.
 
-验证使用已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过。73 项临时
-`Print Assumptions` 检查均报告 `Closed under the global context`，覆盖
-Hom／相等的两种严格宇宙次序、值／计算 Hom 相等的独立大小、中心性重写、
-显式模型选择、State 载体／相等的两种次序，以及具体纯映射／上下文／组合
-归约。State 示例证明先改变状态再读取与先读取再改变不同，且改变状态的计算
-不是中心态射。这些均为临时检查，没有新增永久测试或修改共享测试配置。
-
 Strict bilingual HTML generated 287 modules per language and checked
 links/anchors in 579 pages. All four new interface/adapter pages were
 inspected in both languages. Batch PDF export and updating `typeprop`
 remain with the integration session. The delivered foundation is ready
 for independent integration before further premonoidal/Freyd work.
 
-严格双语 HTML 每种语言生成 287 个模块，检查 579 页的链接／锚点；四个新增
-接口／适配器页面均核对英中文。批次 PDF 导出及 `typeprop` 更新仍由集成会话
-负责。本基础已可独立集成，无须等待后续预幺半／Freyd 工作。
-
-
 ## Premonoidal structure prerequisite
 
-## 预幺半结构前置基础
-
 This user-approved serial slice starts from `3fc3ffb` on `monoidal-cat-view`.
-[PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) inherits one binoidal
+[PremonoidalCat](../../theories/Cat/Monoidal/Premonoidal.v) inherits one binoidal
 structure through `PremonoidalB :> BinoidalCat C`, with the same projection
 registered for instance search. It adds a chosen unit, central associator
 and unitors, their separate naturality, and pentagon/triangle coherence.
@@ -1089,31 +678,16 @@ Carrier, hom and equality sizes remain independent; all equality and
 centrality witnesses remain Type-valued. No structural operations or
 underlying category are selected a second time.
 
-用户授权的本串行批次从 `monoidal-cat-view` 上的 `3fc3ffb` 开始。
-[PremonoidalCat](../theories/Cat/Monoidal/Premonoidal.v) 通过
-`PremonoidalB :> BinoidalCat C` 继承唯一双侧张量结构，同一投影注册为继承
-实例。新增选定单位对象、中心结合子与单位子、它们的分别自然性，以及五边形／
-三角形相干。载体、Hom 与相等大小保持独立；所有相等及中心性见证保持为
-Type 值。不再次选取结构运算或底层范畴。
-
-The general [inverse-square lemma](../theories/Cat/Isomorphism.v) inverts
+The general [inverse-square lemma](../../theories/Cat/Isomorphism.v) inverts
 the vertical isomorphisms of any commuting square using specified hom
-equality. [Centrality of an inverse](../theories/Cat/Monoidal/Center.v)
+equality. [Centrality of an inverse](../../theories/Cat/Monoidal/Center.v)
 uses that lemma with the fixed-context functors. The
-[associator](../theories/Cat/Monoidal/Associator.v) and [unitor inverse laws](../theories/Cat/Monoidal/Unitor.v) derive all
+[associator](../../theories/Cat/Monoidal/Associator.v) and [unitor inverse laws](../../theories/Cat/Monoidal/Unitor.v) derive all
 three inverse centrality witnesses and all five inverse naturality
 squares. Forward and inverse maps are projections of the same selected
 isomorphisms; inverse centrality/naturality are not duplicate class fields.
 Public `premonoidal_scope` notation exposes the unit and both directions
 of each structural map; object tensor and contexts retain binoidal notation.
-
-一般[逆方块引理](../theories/Cat/Isomorphism.v) 使用指定 Hom 相等，对任意
-交换方块的竖直同构取逆。[逆的中心性](../theories/Cat/Monoidal/Center.v)
-将该引理应用于固定上下文函子。
-[结合子](../theories/Cat/Monoidal/Associator.v)和[单位子逆向定律](../theories/Cat/Monoidal/Unitor.v) 导出全部三种逆中心性
-见证及五个逆自然性方块。正逆映射都是同一选定同构的投影；逆中心性／自然性
-不作为重复类字段保存。公开 `premonoidal_scope` 记号提供单位对象及每种
-结构映射的两个方向；对象张量及上下文沿用双侧张量记号。
 
 [MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) is an explicit
 client of the new layer. It reuses `MonoidalBinoidal`, the original unit,
@@ -1125,13 +699,6 @@ bifunctor from interchange is a later bounded task. Constructing the
 computational Arrow premonoidal structure, symmetric/Freyd interfaces and
 the full characterization also remain open. No concrete model laws are
 reproved here.
-
-[MonoidalPremonoidal](https://github.com/Godalin/rocq-cats/blob/0a41be9/theories/Cat/Monoidal/Premonoidal.v) 是新层的显式
-客户端，复用 `MonoidalBinoidal`、原单位对象、结合子／单位子及其逆分量。
-分别自然性特化已有联合自然性，相干性复用原定律。原 `MonoidalCat` 接口及
-全部具体模型构造维持已有形式。迁移其父结构并由交换律导出双函子属于后续
-有限任务。构造计算 Arrow 的预幺半结构、对称／Freyd 接口及完整刻画仍待
-完成。本批没有重新证明具体模型定律。
 
 Validation uses the existing `rocq-cats` switch: Rocq/Stdlib 9.2.0,
 OCaml 5.3.0 and Dune 3.23.1. Full `dune build @all @runtest @install`
@@ -1145,15 +712,6 @@ isomorphism. The prior State order counterexample and its noncentral
 effect remain valid. These checks are temporary; no permanent tests or
 shared test configuration were changed.
 
-验证使用已有 `rocq-cats` switch：Rocq／Stdlib 9.2.0、OCaml 5.3.0 及
-Dune 3.23.1。全库 `dune build @all @runtest @install` 通过。63 项新增
-临时 `Print Assumptions` 探针及重跑的 73 项双侧张量／Arrow 探针均报告
-`Closed under the global context`。新增探针检查继承转换／实例链、Hom 与
-相等的两种严格宇宙次序、同范畴上的多个显式结构、没有全局选定模型、
-正逆结合子／单位子的透明归约，以及非恒等同构的逆中心性。原 State 次序
-反例及其非中心效应继续成立。这些检查均为临时检查，没有新增永久测试或
-修改共享测试配置。
-
 Strict bilingual HTML generated 290 modules per language and checked
 links/anchors in 585 pages. All three new pages were inspected in both
 languages, together with the added general-lemma anchors. The structural
@@ -1161,18 +719,10 @@ inventory covers all 91 interfaces exactly once (64 classes, 27 records).
 Batch PDF export and `typeprop` integration remain with the integration
 session; this foundation can be integrated independently.
 
-严格双语 HTML 每种语言生成 290 个模块，检查 585 页的链接／锚点。三个新增
-页面均抽查英中文正文，同时检查新增一般引理的锚点。结构清单恰好覆盖全部
-91 个接口各一次（64 个类、27 个记录）。批次 PDF 导出与 `typeprop` 集成
-仍由集成会话负责；本基础可独立集成。
-
-
 ## Monoidal parent migration
 
-## 幺半父结构迁移
-
 This user-authorized serial slice starts from `0a41be9` on
-`monoidal-cat-view`. [MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) now
+`monoidal-cat-view`. [MonoidalCat](../../theories/Cat/Monoidal/Monoidal.v) now
 inherits one `PremonoidalCat C` through `MonoidalP :>`, exported as the
 inherited instance. A single interchange equation supplies centrality
 for every arrow; the other centrality square is obtained by swapping
@@ -1181,32 +731,18 @@ removed. The derived tensor functor sequences the inherited actions,
 while unit, associator/unitors, inverse components and coherence come
 from the same parent.
 
-本用户授权的串行批次从 `monoidal-cat-view` 上的 `0a41be9` 开始。
-[MonoidalCat](../theories/Cat/Monoidal/Monoidal.v) 现在通过 `MonoidalP :>` 继承
-唯一 `PremonoidalCat C`，并导出同一父实例。一条交换方程给出每条态射的
-中心性；另一中心性方块通过交换参数得到。不再保存张量双函子，也不保留
-直达范畴的旁路。导出张量函子顺序组合继承作用；单位、结合子／单位子、
-逆分量及相干性均来自同一父结构。
-
 Two proofs use weaker hypotheses than monoidal structure:
-[central_sequence_comp](../theories/Cat/Monoidal/Center.v) needs centrality
+[central_sequence_comp](../../theories/Cat/Monoidal/Center.v) needs centrality
 only of the crossing arrow, and
-[tensor_assoc_sequence_natural](../theories/Cat/Monoidal/Associator.v)
+[tensor_assoc_sequence_natural](../../theories/Cat/Monoidal/Associator.v)
 uses only separate premonoidal naturality. The monoidal tensor functor
 and joint associator naturality reuse these proofs. Derived natural
 isomorphisms retain the original inverse components rather than storing
 new choices.
 
-两项证明使用比幺半结构更弱的前提：
-[central_sequence_comp](../theories/Cat/Monoidal/Center.v) 只要求需要交换的
-那条态射的中心性；
-[tensor_assoc_sequence_natural](../theories/Cat/Monoidal/Associator.v)
-只使用预幺半的分别自然性。幺半张量函子及结合子的联合自然性复用这些证明。
-导出自然同构保留原逆分量，不保存新的选择。
-
-[BifctBinoidal](../theories/Cat/Monoidal/Bifct.v) extracts separate
+[BifctBinoidal](../../theories/Cat/Monoidal/Bifct.v) extracts separate
 actions from any tensor bifunctor. The
-[BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) assembly constructor
+[BifctMonoidal](../../theories/Cat/Monoidal/Bifct.v) assembly constructor
 then reuses supplied natural structural isomorphisms and two coherence
 proofs. It supplies a natural isomorphism between its derived tensor and
 the original bifunctor, with identity components. The two concrete model
@@ -1216,16 +752,8 @@ functor/law records. The transitional `MonoidalBinoidal` and
 `MonoidalPremonoidal` adapters from earlier milestones are removed in
 favor of the inherited projections.
 
-[BifctBinoidal](../theories/Cat/Monoidal/Bifct.v) 从任意张量双函子
-抽出分别作用；
-[BifctMonoidal](../theories/Cat/Monoidal/Bifct.v) 装配器再复用给定
-自然结构同构及两个相干证明，并通过恒等分量给出导出张量与原双函子的自然
-同构。两个具体模型族（笛卡尔及双范畴自同态，包括自函子）复用此构造器，
-没有分阶段数据记录或函子／定律记录的相等。先前批次中的过渡适配器
-`MonoidalBinoidal`、`MonoidalPremonoidal` 已删除，由继承投影替代。
-
 Cartesian and endomorphism comparison laws adapt weaker clients using
-specified equality. [Cartesian binary lifting](../theories/Cat/Monoidal/Cartesian.v)
+specified equality. [Cartesian binary lifting](../../theories/Cat/Monoidal/Cartesian.v)
 transports generic lax lifting results without adding pure maps,
 exponentials or strength. Applicative, Monad, strength and Arrow clients
 use these comparisons; tensorator natural transformations have the same
@@ -1235,15 +763,6 @@ At this milestone computational Arrows had only their binoidal structure;
 no interchange for arbitrary State effects was inferred. The following
 batch supplies their premonoidal structure; symmetric/Freyd structure and
 translations remain open.
-
-笛卡尔及自同态比较定律使用指定相等适配较弱客户端。
-[笛卡尔二元提升](../theories/Cat/Monoidal/Cartesian.v) 运输一般
-lax 提升结果，不增加纯值映射、指数或强度。Applicative、Monad、强度及
-Arrow 客户端使用这些比较；tensorator 自然变换的两端使用同一导出张量函子。
-Monad–幺半群函子保持底层态射，运输其 Type 值保持性见证。在该阶段，计算
-Arrow 仍只具有已构造的双侧张量结构，不由此推出任意 State 效应的交换律。
-下一批补充其预幺半结构；对称／Freyd 结构及其翻译仍待完成。
-
 
 Validation used the existing `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
@@ -1258,15 +777,6 @@ unchanged State order counterexample. No permanent tests or shared test
 configuration were changed. The existing `AGENTS.md` learning section now
 records the comparison and tensorator-endpoint discipline.
 
-验证使用已有 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过，包括未修改
-的接口、宇宙及计算测试。全部 212 项临时 `Print Assumptions` 检查均无额外
-全局假设：新增幺半父层检查 76 项，适配后的预幺半／双侧张量检查 136 项。
-覆盖 Hom／相等的两种严格宇宙次序、完整继承转换／实例链、已有幺半结构
-重建与张量自然同构比较、显式模型选择、张量／结构／逆的透明归约，以及
-原有 State 次序反例。没有新增永久测试或修改共享测试配置。已有
-`AGENTS.md` 的经验部分补充了比较定律与 tensorator 端点选择规范。
-
 Strict bilingual HTML generated 291 modules per language and checked
 links/anchors in 587 pages. The monoidal core, all three new modules and
 the added premonoidal sequence law were inspected in both languages.
@@ -1274,28 +784,15 @@ The inventory still covers all 91 interfaces exactly once (64 classes,
 27 records), with all 29 `Has*` classes retained. Batch PDF export and
 `typeprop` integration remain with the integration session.
 
-严格双语 HTML 每种语言生成 291 个模块，检查 587 页的链接／锚点。幺半核心、
-全部三个新增模块及新增预幺半有序组合定律均抽查英中文。清单仍恰好覆盖全部
-91 个接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。批次 PDF
-导出及 `typeprop` 集成仍由集成会话负责。
-
 ## Computational Arrow premonoidal structure
 
-## 计算 Arrow 的预幺半结构
-
 This user-authorized serial batch starts from `1b341ec` on
-`monoidal-cat-view`. [ArrowPremonoidal](../theories/Cat/Computational/Arrow/Premonoidal.v)
+`monoidal-cat-view`. [ArrowPremonoidal](../../theories/Cat/Computational/Arrow/Premonoidal.v)
 constructs a `PremonoidalCat (ComputationCat A)` for a computational Arrow
 over the cartesian monoidal structure supplied by named terminal and
 product choices. Its parent is exactly the existing `ArrowBinoidal A`:
 the object tensor, equality and both context operations are inherited,
 without new choices or a direct ancestor bypass.
-
-本用户授权的串行批次从 `monoidal-cat-view` 上的 `1b341ec` 开始。
-[ArrowPremonoidal](../theories/Cat/Computational/Arrow/Premonoidal.v)
-为具名终对象及积选择给出的笛卡尔幺半结构上的计算 Arrow，构造
-`PremonoidalCat (ComputationCat A)`。父结构恰好为已有 `ArrowBinoidal A`：
-对象张量、相等及两种上下文运算全部继承，不增加选择或直达祖先的旁路。
 
 The associator and both unitors, including their inverse maps, are pure
 images of the same selected value isomorphisms through `ArrowPureF A`.
@@ -1303,22 +800,13 @@ The existing `fct_is_iso` theorem supplies the inverse equations;
 `arrow_pure_central` supplies all three centrality witnesses. Unit
 naturality reuses the two projection laws. The associator's left/right
 naturality reuses `arrow_first_assoc` and `arrow_context_assoc`; the new
-[arrow_middle_assoc](../theories/Cat/Computational/Arrow/Cartesian.v)
+[arrow_middle_assoc](../../theories/Cat/Computational/Arrow/Cartesian.v)
 proves middle naturality from nested left contexts and ordinary context
 exchange. It never exchanges two effectful computations. Pentagon and
 triangle are the functorial images of existing value coherence, without
 reproving product coherence or individual model laws. All inverse
 centrality and naturality laws then follow from the general premonoidal
 theory, with no duplicate structure fields.
-
-结合子及两个单位子，包括其逆映射，均为同一选定值同构沿 `ArrowPureF A`
-的纯像。已有 `fct_is_iso` 定理提供互逆方程，`arrow_pure_central`
-提供三种中心性见证。单位子自然性复用两个投影律；结合子左右自然性复用
-`arrow_first_assoc` 及 `arrow_context_assoc`。新增
-[arrow_middle_assoc](../theories/Cat/Computational/Arrow/Cartesian.v)
-从嵌套左上下文及通常上下文交换证明中间自然性，不交换两个带效应计算。
-五边形及三角形来自已有值相干性的函子像，不重复证明积相干性或各个模型
-的定律。全部逆向中心性及自然性随后由一般预幺半理论导出，不增加重复字段。
 
 The construction is explicitly selected and requires neither exponentials
 nor commutativity. It applies directly to the existing pure and strong
@@ -1328,12 +816,6 @@ Arrow–Freyd equivalence; those are subsequent tasks. In particular,
 the unchanged Boolean-state toggle/read example still distinguishes
 execution order and supplies a noncentral computation in this very
 premonoidal structure.
-
-本构造必须显式选择，不要求指数对象或交换性，可直接应用于已有纯计算及强
-Monad／Kleisli Arrow 模型，包括 State。本批没有为一般非笛卡尔情形提供
-右作用，也没有构造对称／Freyd 接口或 Arrow–Freyd 等价；这些属于后续任务。
-尤其是原有布尔状态切换／读取示例，在这个预幺半结构中仍能区分执行次序，
-并提供非中心计算。
 
 Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
@@ -1347,14 +829,6 @@ and noncentrality counterexamples. Concrete clients specify the computation
 category explicitly where value and computation objects share a type;
 object arguments alone do not determine the ambient hom-set.
 
-验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过，全部
-79 项临时 `Print Assumptions` 检查均无额外全局假设。覆盖 Hom／相等的
-两种严格宇宙次序、值与计算对象及 Hom 宇宙的分别定级、完全相同的继承父层
-及实例搜索、结合子正逆两个方向的纯保持性、状态载体／相等的两种严格次序、
-结构映射／逆的透明计算，以及原有可观察次序与非中心性反例。当值与计算对象
-共享类型时，具体客户端显式指定计算范畴；仅凭对象参数不能确定所在 Hom 集。
-
 Strict bilingual HTML generated 292 modules per language and checked
 589 pages. The new module, middle-context lemma, both language texts and
 public symbol anchors were inspected. The inventory still covers all
@@ -1364,15 +838,7 @@ configuration were added or changed. This task-branch foundation is ready
 for independent integration; `typeprop` and batch PDF export remain with
 the integration session.
 
-严格双语 HTML 每种语言生成 292 个模块，检查 589 页。抽查新增模块、
-中间上下文引理、两种语言正文及公开符号锚点。清单仍恰好覆盖全部 91 个类／
-记录接口各一次（64 个类、27 个记录），保留全部 29 个 `Has*` 类。没有新增
-永久测试或修改共享测试配置。本任务分支基础已可独立集成；`typeprop` 及
-批次 PDF 导出仍由集成会话负责。
-
 ## Symmetric contexts and Freyd foundation
-
-## 对称上下文与 Freyd 基础
 
 This user-authorized serial batch starts from `4098284` on
 `monoidal-cat-view`. The classical conditions were rechecked against
@@ -1383,13 +849,7 @@ computations, a central identity-on-objects inclusion and strict
 preservation. It does not use the weaker third-party effectful interface
 as a substitute for these requirements.
 
-本用户授权的串行批次从 `monoidal-cat-view` 上的 `4098284` 开始。经典
-条件与 [Jacobs–Heunen–Hasuo 定义 6.2–6.4](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/35C603B99F43CBD8109C97FA51BDAB23/S0956796809007308a.pdf/categorical_semantics_for_arrows.pdf)
-及 [Selinger 第 2.1 节](https://www.mscs.dal.ca/~selinger/papers/control.pdf)
-重新核对。接口包括有限积值结构、对称预幺半计算结构、对象上恒等的中心
-嵌入及严格保持性，没有以较弱的第三方 effectful 接口替代这些条件。
-
-[SymPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v)
+[SymPremonoidalCat](../../theories/Cat/Monoidal/Symmetric.v)
 inherits one premonoidal parent through Minks. `HasTensorSym` stores
 central exchange, involution and left-variable naturality. Two further
 mixins relate the same exchange to the associator and unitors by the
@@ -1397,19 +857,11 @@ hexagon and unit equations.
 The symmetry isomorphism uses the opposite exchange as its transparent
 inverse; right-variable naturality follows by inverting the first square.
 A derived conjugation law recovers right action from left action.
-[CartSymPremonoidal](../theories/Cat/Monoidal/Cartesian.v)
+[CartSymPremonoidal](../../theories/Cat/Monoidal/Cartesian.v)
 inherits the existing cartesian monoidal parent's premonoidal structure,
 proving only the new exchange equations from products.
 
-[SymPremonoidalCat](../theories/Cat/Monoidal/Symmetric.v) 恰好
-通过 Minks 继承一个预幺半父结构。`HasTensorSym` 保存中心交换、
-对合和左变量自然性。六边形和单位相容律分别刻画同一交换与结合子、
-单位子的相容性。对称同构以反序交换为透明逆；右变量自然性通过对第一个方块取逆
-得到。导出的共轭律从左作用恢复右作用。
-[CartSymPremonoidal](../theories/Cat/Monoidal/Cartesian.v)
-继承已有笛卡尔幺半父层的预幺半结构，仅从积证明新增交换方程。
-
-[ArrowSymPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
+[ArrowSymPremonoidal](../../theories/Cat/Computational/Arrow/Symmetric.v)
 retains exactly `ArrowPremonoidal A`. Exchange is pure product exchange,
 central by `arrow_pure_central`. Its naturality follows from the existing
 right-context definition and involutive pure exchange. Hexagon and unit
@@ -1417,30 +869,18 @@ coherence are functorial images of the generic cartesian symmetry laws;
 no separate Reader or State coherence proofs are added. Symmetry exchanges
 context positions without exchanging the execution of two effects.
 
-[ArrowSymPremonoidal](../theories/Cat/Computational/Arrow/Symmetric.v)
-保留完全相同的 `ArrowPremonoidal A`。交换为纯积交换，其中心性来自
-`arrow_pure_central`；自然性来自已有右上下文定义及纯交换对合律。六边形
-及单位相干性为一般笛卡尔对称定律的函子像，不增加 Reader 或 State 的
-独立相干证明。对称性交换上下文位置，不交换两个效应的执行次序。
+[ArrowSymPremonoidal](../../theories/Cat/Computational/Arrow/Symmetric.v)
 
-[FreydCat](../theories/Cat/Computational/Freyd/Core.v) bundles the pure
+[FreydCat](../../theories/Cat/Computational/Freyd/Core.v) bundles the pure
 ambient functor with chosen cartesian values and symmetric premonoidal
 computations. Its actual computation category is the existing induced
 category indexed by value objects. `FreydPureF` therefore has identity
 object map by construction; arbitrary unused ambient objects are not
 claimed to belong to this Freyd category. The reusable
-[InducedF](../theories/Cat/Induced.v) supplies this factorization and now
+[InducedF](../../theories/Cat/Induced.v) supplies this factorization and now
 also supplies the existing `ArrowPureF`, keeping its arrow/object maps.
 No equality of object-map functions or bijection of ambient object types
 is required.
-
-[FreydCat](../theories/Cat/Computational/Freyd/Core.v) 将纯环境函子与
-选定笛卡尔值结构、对称预幺半计算结构打包。实际计算范畴为按值对象索引的
-已有诱导范畴，因此 `FreydPureF` 的对象映射按构造为恒等；不主张任意未
-使用的环境对象都属于这个 Freyd 范畴。可复用
-[InducedF](../theories/Cat/Induced.v) 提供此分解，现在也提供已有
-`ArrowPureF`，保留其态射／对象映射。无需对象映射函数的相等或环境对象
-类型之间的双射。
 
 Strict object preservation retains explicit tensor/unit equality
 witnesses. The existing `eq_to_hom` operation supplies every boundary
@@ -1448,18 +888,10 @@ transport. Context preservation, both unitors, both nested associator
 boundaries and symmetry use those same witnesses coherently, and every
 arrow equation uses specified Hom equality. There is no UIP, function
 extensionality, proof irrelevance or identification of law records.
-[ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) reuses the
+[ArrowFreyd](../../theories/Cat/Computational/Arrow/Freyd.v) reuses the
 same pure functor, finite-product choices and symmetric computation
 parent. All its object equalities are reflexive, so boundary transports
 compute to identities; preservation reuses the existing Arrow laws.
-
-严格对象保持性保留显式张量／单位相等见证。已有 `eq_to_hom` 运算提供每个
-边界运输。上下文保持性、两个单位子、结合子的两个嵌套边界及对称性相干地
-使用同一批见证，所有态射方程均使用指定 Hom 相等。没有使用 UIP、函数
-外延性、证明无关性或定律记录的相等。
-[ArrowFreyd](../theories/Cat/Computational/Arrow/Freyd.v) 复用同一纯
-函子、有限积选择及对称计算父层。其全部对象相等均自反，因此边界运输计算
-为恒等；保持性复用已有 Arrow 定律。
 
 This delivers the symmetric/Freyd interfaces and the forward
 computational Arrow-to-Freyd construction. Reverse translation, explicit
@@ -1467,11 +899,6 @@ round-trip comparisons and their precise categorical equivalence level
 remain open. No full Arrow/Freyd correspondence, ordinary-arrow-category
 change, closed Freyd/ArrowApply result or general noncartesian right
 action is claimed. All model structures remain explicitly selected.
-
-本批交付对称／Freyd 接口及计算 Arrow 到 Freyd 的正向构造。逆向翻译、
-显式往返比较及其精确范畴等价层级仍待完成。不主张完整 Arrow／Freyd
-对应，不修改通常箭头范畴，也不提供闭 Freyd／ArrowApply 结果或一般非
-笛卡尔右作用。所有模型结构仍须显式选择。
 
 Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
@@ -1486,15 +913,6 @@ unchanged State order/noncentrality counterexamples. Imports do not select
 a default symmetric or Freyd model. No permanent tests or shared test
 configuration were changed.
 
-验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过；全部
-169 项临时公理检查均无额外全局假设，其中新增对称／Freyd 检查 90 项，
-提取 `InducedF` 后重跑预幺半检查 79 项。覆盖 Hom／相等的两种严格宇宙
-次序、值／计算对象及 Hom 广集的分别定级、状态载体／相等的两种严格次序、
-继承转换／实例、对象上恒等的嵌入、完全共享的结构选择、交换／逆／边界的
-透明计算、结构保持性，以及原有 State 次序／非中心性反例。导入不选定
-默认对称或 Freyd 模型。没有修改永久测试或共享测试配置。
-
 Strict bilingual HTML generated 297 modules per language and checked
 599 pages. All five new module texts, interface-field anchors and the
 shared `InducedF` documentation were inspected in both languages. The
@@ -1505,61 +923,36 @@ consistent boundary witnesses. This foundation is ready for independent
 integration before the reverse translation; `typeprop` and batch PDFs
 remain with integration.
 
-严格双语 HTML 每种语言生成 297 个模块，检查 599 页。英中文均抽查全部
-五个新增模块正文、接口字段锚点及共享 `InducedF` 文档。清单恰好覆盖全部
-93 个接口各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。已有
-`AGENTS.md` 经验部分记录对象索引嵌入、显式环境范畴推断及一致的边界见证。
-本基础已可在逆向翻译前独立集成；`typeprop` 及批次 PDF 仍由集成方负责。
-
 ## Freyd reconstruction and round trips
-
-## Freyd 重建及往返
 
 This slice continues the symmetric/Freyd foundation on `monoidal-cat-view`
 from `af3d0fe`. It delivers the reverse translation and explicit round-trip
 comparisons deferred by that slice. Ordinary arrow categories, self
 enrichment and concrete model definitions are unchanged.
 
-本批从 `monoidal-cat-view` 的 `af3d0fe` 继续对称／Freyd 基础，交付前批
-待完成的逆向翻译及显式往返比较。通常箭头范畴、自富集及具体模型定义保持
-原样。
-
-The reusable [functor transport](../theories/Cat/Functor/Transport.v)
+The reusable [functor transport](../../theories/Cat/Functor/Transport.v)
 changes object representatives along chosen isomorphisms and supplies a
 natural isomorphism to the original functor. Its boundary-naturality lemma
 uses the weakest sufficient assumptions: a natural incoming boundary and
 an invertible outgoing one. General
-[tensor transport](../theories/Cat/Monoidal/Center.v) uses context
+[tensor transport](../../theories/Cat/Monoidal/Center.v) uses context
 functors and centrality of transported identities. Premonoidal associators
 and the left unitor now expose the natural transformations used by this
 argument. Equality isomorphisms, commuting-square composition and the
 natural-isomorphism comparison for induced factorization live with their
 general category theories.
 
-可复用的[函子运输](../theories/Cat/Functor/Transport.v)沿选定同构改变对象
-代表，并提供到原函子的自然同构。其边界自然性引理只使用充分的最弱条件：
-入边界自然，出边界可逆。一般[张量运输](../theories/Cat/Monoidal/Center.v)
-使用上下文函子及运输恒等的中心性。预幺半结合子及左单位子现在暴露此论证
-需要的自然变换。相等同构、交换方块复合及诱导分解的自然同构比较均放在
-相应一般范畴理论中。
-
-[Freyd contexts](../theories/Cat/Computational/Freyd/Context.v) conjugate
+[Freyd contexts](../../theories/Cat/Computational/Freyd/Context.v) conjugate
 the original left action by exactly the tensor boundaries supplied by the
 Freyd structure. Fixed and nested boundaries form natural transformations
 and natural isomorphisms. Naturality across these boundaries derives the
 value-unit and value-associativity equations without identifying equality
-witnesses. [FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v)
+witnesses. [FreydArrow](../../theories/Cat/Computational/Freyd/Arrow.v)
 therefore reconstructs the computational Arrow from the same selected
 cartesian values and pure inclusion. Computational witnesses, conjugating
 inverse maps and model reductions remain transparent.
 
-[Freyd 上下文](../theories/Cat/Computational/Freyd/Context.v)恰好沿 Freyd
-结构给定的张量边界对原左作用共轭。固定及嵌套边界组成自然变换和自然同构。
-跨这些边界的自然性导出值单位及值结合方程，无需识别相等见证。因此
-[FreydArrow](../theories/Cat/Computational/Freyd/Arrow.v)从同一组选定
-笛卡尔值及纯嵌入重建计算 Arrow。计算见证、共轭逆映射及模型归约保持透明。
-
-The [round-trip module](../theories/Cat/Computational/Freyd/RoundTrip.v)
+The [round-trip module](../../theories/Cat/Computational/Freyd/RoundTrip.v)
 compares Arrow pure maps and contexts in specified Hom equality and the
 pure functors by natural isomorphism. On the Freyd side it supplies an
 actual categorical equivalence in the existing `CatCat` interface between
@@ -1570,12 +963,6 @@ original selected boundaries. The right-action comparison composes the
 exchange and left-action boundary squares; it assumes no effect
 interchange.
 
-[往返模块](../theories/Cat/Computational/Freyd/RoundTrip.v)在指定 Hom
-相等下比较 Arrow 的纯映射及上下文，以自然同构比较纯函子。Freyd 方向在
-已有 `CatCat` 接口中，给出原有与返回的值索引计算范畴之间的实际范畴等价。
-纯嵌入自然同构，比较跨原有选定边界保持左右作用、两个单位子、结合子及
-对称性。右作用比较复合交换与左作用边界方块，不假设效应交换律。
-
 These are comparisons of supplied structures at the actual computation
 categories. They do not assert an equivalence with unused ambient objects,
 native equality of functor/law records, an equivalence of 2-categories of
@@ -1583,11 +970,6 @@ structured functors, or soundness/completeness for an Arrow syntax. Closed
 Freyd/ArrowApply and the separate static-Arrow characterization remain
 future work. No extra axiom, UIP, proof irrelevance or function
 extensionality is introduced. Model choices remain explicit.
-
-这些比较涉及实际计算范畴上的给定结构，不主张与未使用环境对象的等价、
-函子／定律记录的原生相等、带结构函子二范畴的等价，或 Arrow 语法的可靠性／
-完备性。闭 Freyd／ArrowApply 及独立的静态 Arrow 刻画仍属后续工作。没有
-增加公理、UIP、证明无关性或函数外延性；模型选择仍须显式提供。
 
 Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
@@ -1601,15 +983,6 @@ sequencing still computes different results in the two execution orders;
 the original noncentrality and order counterexamples were rerun. No
 permanent tests or shared test configuration were changed.
 
-验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）。全库 `dune build @all @runtest @install` 通过。全部
-278 项临时 `Print Assumptions` 均无额外全局假设：此前 169 项检查、51 项
-一般构造／定律及 58 项新增宇宙／具体探针。新增探针覆盖 Hom／相等的两种
-严格宇宙次序、值／计算范畴分别定级、状态载体／相等的两种严格次序、返回的
-纯映射／上下文运算、比较逆分量及两个等价函子。返回的 State 顺序组合仍按
-两种执行次序算出不同结果；原有非中心性及次序反例也重新验证。没有修改
-永久测试或共享测试配置。
-
 Strict bilingual HTML generated 302 modules per language and checked
 609 pages. Both languages were inspected for the five new modules and
 five extended foundational modules, including public anchors. The
@@ -1619,18 +992,10 @@ explicit category arguments and transport of naturality across coherent
 boundaries. This task branch is ready for integration; `typeprop` and
 batch PDF exports remain with the integration session.
 
-严格双语 HTML 每种语言生成 302 个模块，检查 609 页。英中文均抽查五个
-新增模块、五个扩展基础模块的正文及公共锚点。清单恰好覆盖全部 93 个接口
-各一次（66 个类、27 个记录），保留全部 29 个 `Has*` 类。已有 `AGENTS.md`
-经验部分记录显式范畴参数及跨相干边界的自然性运输。本任务分支已可交付
-集成；`typeprop` 及批次 PDF 导出仍由集成会话负责。
-
 ## Static Arrow construction
 
-## 静态 Arrow 构造
-
 This slice continues E of #35 from `b86fee1` on `monoidal-cat-view`.
-[StaticCat and StaticArrow](../theories/Cat/Computational/Arrow/Static.v)
+[StaticCat and StaticArrow](../../theories/Cat/Computational/Arrow/Static.v)
 construct static computations from the existing Applicative on a category
 with selected terminal object, products and exponentials. The hom-set from
 one value object to another is the base hom-set of global elements of the
@@ -1639,29 +1004,15 @@ Type-valued equality is reused directly. Effects are combined before the
 resulting function receives its value argument; the value argument cannot
 select a different effectful computation.
 
-本批从 `monoidal-cat-view` 的 `b86fee1` 继续 #35 的 E 阶段。
-[StaticCat 与 StaticArrow](../theories/Cat/Computational/Arrow/Static.v)
-从具有选定终对象、积及指数的范畴上的已有 Applicative 构造静态计算。两个
-值对象间的 Hom 广集，是其内部函数对象的 Applicative 像的全局元素所组成
-的基底 Hom 广集，直接复用指定 Type 值相等。效应在所得函数收到值参数之前
-组合，值参数不能选取另一个带效应计算。
-
 The construction first extracts two general components.
-[Exponential context theory](../theories/Cat/Exponential/Context.v) names
+[Exponential context theory](../../theories/Cat/Exponential/Context.v) names
 ordinary functions, presents the existing internal composition in execution
 order, and derives internal product-context diagrams by evaluation and
-exponential extensionality. [Contextual binary lifting](../theories/Cat/Applicative/Lifting.v)
+exponential extensionality. [Contextual binary lifting](../../theories/Cat/Applicative/Lifting.v)
 specializes the existing lax postcomposition, input naturality, pure-input
 and associativity laws by pairing contextual inputs. Its incoming product
 boundaries are pinned to the same chosen products. Temporary proof opacity
 is restored before exposing clients; computational maps stay transparent.
-
-构造先提取两个一般组件。[指数上下文理论](../theories/Cat/Exponential/Context.v)
-命名通常函数，按执行次序呈现已有内部复合，并通过求值及指数外延性导出内部
-积上下文图。[上下文二元提升](../theories/Cat/Applicative/Lifting.v)通过配对
-上下文输入，特化已有 lax 后合成、输入自然性、纯输入及结合定律。输入积边界
-固定为同一组选定积。证明中的临时不透明性在暴露客户端前恢复，计算映射保持
-透明。
 
 Static composition lifts internal sequencing with the first computation
 before the second. Pure inclusion names the base arrow and applies pure;
@@ -1675,16 +1026,8 @@ equivalence theorem for a typed static-arrow calculus. ArrowApply, the
 static/dynamic syntax comparison and Day/strong-profunctor results remain
 open.
 
-静态复合提升内部顺序组合，先运行第一个计算，再运行第二个。纯嵌入先命名
-基底态射再作用纯值；上下文扩展通过同一 Applicative 映射通常内部上下文
-函数。完整计算 Arrow 定律来自这些一般图。不假设强度、Monad、交换
-tensorator、良点性或函数／定律记录的原生相等。已有 Freyd 构造及往返比较
-可直接使用该 Arrow。本批交付结构式静态表示，不主张带类型静态 Arrow
-演算的完备性或等价。ArrowApply、静态／动态语法比较及 Day／强余函子结果
-仍待完成。
-
 The new strict-level probes exposed an existing restriction in
-[Reader](../theories/Instance/Set/Reader.v): its helpers and upper packaging
+[Reader](../../theories/Instance/Set/Reader.v): its helpers and upper packaging
 had identified the environment's universes with ambient ones, despite the
 underlying `ReaderF` keeping them independent. Separate helper parameters
 and explicit levels on the tensorator, pure transformation, lax structure
@@ -1694,14 +1037,6 @@ orders, with ambient carrier strictly above ambient equality, independently
 of the static closed client. Concrete static Reader/State probes use the
 existing closed setoid model's common ambient carrier/equality level;
 no resizing or stronger closed-setoid model is claimed.
-
-新的严格层级探针暴露了[Reader](../theories/Instance/Set/Reader.v) 的已有
-限制：辅助函数与上层包装合并了环境和所在宇宙，尽管底层 `ReaderF` 保持
-它们独立。分开辅助参数，并在 tensorator、纯自然变换、lax 结构及
-`ReaderA` 中显式指定层级，修复这一限制。Reader 运算及见证保持原样。严格
-探针现分别检查环境载体／相等的两种次序，并使所在载体严格高于所在相等，
-独立于静态闭客户端。具体静态 Reader／State 探针使用已有闭广集模型共同的
-所在载体／相等层级，不主张 resizing 或更强的闭广集模型。
 
 Validation used the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1). Full `dune build @all @runtest @install`
@@ -1714,14 +1049,6 @@ pure/context/first computations, noncommuting State execution orders and
 Freyd round-trip computations and comparison inverses. No permanent tests
 or shared test configuration were changed.
 
-验证使用未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）。Reader 修复后，全库 `dune build @all @runtest @install`
-通过。251 项临时公理检查均无额外全局假设：91 项静态／一般构造及客户端
-检查、12 项 Reader 签名检查，以及重跑的 148 项 Applicative／强 Monad
-检查。覆盖 Hom／相等的两种严格次序、对象严格高于两者、独立环境与所在
-层级、显式模型启用、纯／上下文／first 计算、不交换的 State 执行次序，
-以及 Freyd 往返计算和比较逆映射。没有修改永久测试或共享测试配置。
-
 Strict bilingual HTML generated 305 modules per language and checked
 615 pages. The three new modules and the updated Reader documentation
 were inspected in both languages, including public anchors. The complete
@@ -1731,16 +1058,7 @@ chosen product boundaries for contextual lifting proofs. The branch is
 ready for integration; `typeprop` and batch PDF export remain with the
 integration session.
 
-严格双语 HTML 每种语言生成 305 个模块，检查 615 页。英中文均抽查三个
-新模块及 Reader 更新的正文和公共锚点。完整清单仍恰好覆盖 93 个接口各一次
-（66 个类、27 个记录）及全部 29 个 `Has*` 类。已有 `AGENTS.md` 经验部分
-现记录上下文提升证明的选定积边界。本分支已可交付集成；`typeprop` 及批次
-PDF 仍由集成会话负责。
-
-
 ## Section openings after the integrated baseline
-
-## 集成基线后的 Section 引言
 
 The task branch was rebased onto integrated baseline
 `fee98fcff6c656d4dae26425401db7a2bc403b9b`; the static construction is now
@@ -1750,12 +1068,6 @@ spacing rule. All task-modified source Sections now have an adjacent
 bilingual mathematical opening. Twenty missing openings were added, and
 seven existing entrance descriptions were clarified. Removing comments
 leaves every source token unchanged in this documentation batch.
-
-任务分支已重基到集成基线 `fee98fcff6c656d4dae26425401db7a2bc403b9b`；
-静态构造现为 `a167f6c`（原 `a454875`）。唯一冲突位于 `AGENTS.md`，保留
-上游 Section 要求及原有字段／注释空行规则。本任务修改过的源码 Section
-现均有相邻的双语数学引言，补齐二十处缺项，并澄清七处已有入口说明。本次
-文档批次删除注释后，所有源码词元均与提交前相同。
 
 With the unchanged `rocq-cats` switch, full `dune build @all @runtest
 @install` passed. All 251 static/Reader/Applicative temporary assumption
@@ -1767,20 +1079,10 @@ once (68 classes, 29 records), retaining 29 `Has*` classes. No permanent
 tests, shared environment or integration branch were changed. Batch PDF
 exports remain with the integration session.
 
-在未修改的 `rocq-cats` switch 中，全库 `dune build @all @runtest @install`
-通过，251 项静态／Reader／Applicative 临时公理检查重跑通过。严格双语 HTML
-每种语言生成 329 个模块，检查 663 页，54 个修改的英中注释块均核对已进入
-对应语言的输出。声明清单补入上游四个接口，现恰好覆盖全部 97 项声明各
-一次（68 个类、29 个记录），保留 29 个 `Has*` 类。没有修改永久测试、共享
-环境或集成分支；批次 PDF 仍由集成会话导出。
-
-
 ## Static values and ordered Applicative operations
 
-## 静态值与有序 Applicative 运算
-
 Following the Section documentation commit `d3798ae`, this phase adds
-[StaticValues](../theories/Cat/Computational/Arrow/StaticValues.v) on the
+[StaticValues](../../theories/Cat/Computational/Arrow/StaticValues.v) on the
 same integrated baseline `fee98fcff6c656d4dae26425401db7a2bc403b9b`.
 Transparent evaluation and abstraction compare terminal-input static
 computations with global Applicative values; the underlying maps also
@@ -1789,28 +1091,15 @@ respectfulness and equality reflection use only the original hom equality.
 The comparison reuses the exponential-unit isomorphism, without equality
 of function/law records or a well-pointedness assumption.
 
-继 Section 文档提交 `d3798ae` 后，本阶段在同一集成基线
-`fee98fcff6c656d4dae26425401db7a2bc403b9b` 上增加
-[StaticValues](../theories/Cat/Computational/Arrow/StaticValues.v)。透明求值
-与抽象比较终输入静态计算和全局 Applicative 值，其底层映射也与每个外部
-上下文替换交换。两条互逆定律、尊重性及相等反映只使用原有 Hom 相等。比较
-复用指数单位同构，不要求函数／定律记录相等或良点性。
-
 Pure values, ordinary result mapping and ordered application are preserved
 and reflected. Arbitrary binary lifting is represented by a static
 composition which first abstracts the left value, then composes with the
 function produced from the right value. This retains the left-before-right
 effect order. Three ordinary diagrams were extracted to
-[exponential context theory](../theories/Cat/Exponential/Context.v): terminal
+[exponential context theory](../../theories/Cat/Exponential/Context.v): terminal
 evaluation of names and sequencing, and binary application. The binary
 diagram needs no terminal object or effect structure. All lifting proofs
 reuse the general shared-context Applicative laws.
-
-纯值、通常结果映射及有序应用均得到保持与反映。任意二元提升可表示为静态
-复合：先抽象左值，再与从右值产生的函数复合，保持从左到右的效应次序。
-三个通常图提取到[指数上下文理论](../theories/Cat/Exponential/Context.v)：
-命名与顺序组合的终求值，以及二元应用。二元图不要求终对象或效应结构。
-所有提升证明复用一般共同上下文 Applicative 定律。
 
 The unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
 Dune 3.23.1) passed full `dune build @all @runtest @install`. All 91 new
@@ -1824,15 +1113,6 @@ and ordered binary State outputs `(false, true)` versus reversed
 successful rebase checks (91 static, 278 Freyd, 148 Applicative/strong Monad,
 12 Reader signatures); no permanent tests were added.
 
-未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune
-3.23.1）通过全库 `dune build @all @runtest @install`。91 项新增临时公理
-检查均无额外全局假设：20 项公共定义／定律、51 项签名分别实例化到 Hom／
-相等的两种严格次序及对象严格高于两者的情形，以及 20 项具体定义和归约。
-具体检查覆盖显式模型启用、Reader 计算、State 的两个互逆归约、纯值及状态
-保持，以及同一初始状态下顺序二元 State 输出 `(false, true)`、反序输出
-`(false, false)`。这些补充已通过的 529 项重基检查（91 项静态、278 项 Freyd、
-148 项 Applicative／强 Monad、12 项 Reader 签名）；没有新增永久测试。
-
 Strict bilingual HTML generated 330 modules per language and checked
 665 pages. All 78 English/Chinese comment blocks and all public anchors
 in the two affected modules were checked in their language's output.
@@ -1844,21 +1124,11 @@ syntax preservation/reflection, and static/dynamic representation conditions
 remain future work; this phase proves operations on actual arrows rather
 than a syntactic equational equivalence.
 
-严格双语 HTML 每种语言生成 330 个模块，检查 665 页。两个受影响模块的
-全部 78 个英中注释块及全部公共锚点均核对已进入对应语言输出。清单恰好覆盖
-全部 97 个接口各一次（68 个类、29 个记录），保留全部 29 个 `Has*` 类。
-最新获取的集成基线仍为 `fee98fc`，只更新任务分支，批次 PDF 仍由集成方导出。
-与导出的 Arrow fanout 直接比较、带类型语法保持／反映、静态／动态表示条件
-留作后续。本阶段证明实际态射上的运算，不主张语法方程等价。
-
-
 ## Static cartesian operation comparisons
-
-## 静态笛卡尔运算比较
 
 On task branch `monoidal-cat-view`, following `1f2450c` and based on the
 unchanged integrated baseline `fee98fcff6c656d4dae26425401db7a2bc403b9b`,
-[StaticCartesian](../theories/Cat/Computational/Arrow/StaticCartesian.v)
+[StaticCartesian](../../theories/Cat/Computational/Arrow/StaticCartesian.v)
 compares actual derived first, ordered split and fanout with Applicative
 lifting. For every ordinary input object, fanout lifts the existing inverse
 product-exponential comparison. Split precomposes the two internal
@@ -1866,26 +1136,14 @@ functions with their respective input projections. Right context is
 conjugated from the original left context by pure exchange, without
 selecting another action.
 
-任务分支 `monoidal-cat-view` 在 `1f2450c` 之后，基于未变的集成基线
-`fee98fcff6c656d4dae26425401db7a2bc403b9b`，增加
-[StaticCartesian](../theories/Cat/Computational/Arrow/StaticCartesian.v)，
-比较实际导出的 first、有序 split 和 fanout 与 Applicative 提升。对每个
-通常输入对象，fanout 提升已有积指数比较的逆；split 按各自输入投影预合成
-两个内部函数。右上下文通过纯交换共轭原左上下文得到，不另选第二个作用。
-
 The ordinary diagrams are reusable in
-[exponential context theory](../theories/Cat/Exponential/Context.v).
-[Exponential laws](../theories/Cat/Exponential/Laws.v) now expose contextual
+[exponential context theory](../../theories/Cat/Exponential/Context.v).
+[Exponential laws](../../theories/Cat/Exponential/Laws.v) now expose contextual
 application of the product comparison and its coherence with terminal
 argument evaluation. These reuse the existing inverse transpose formula,
 not a second universal-property proof. Products and exponentials suffice
 for the context diagrams; terminal evaluation additionally uses the chosen
 terminal object. Applicative lifting uses the existing contextual laws.
-
-通常图位于可复用的[指数上下文理论](../theories/Cat/Exponential/Context.v)。
-[指数定律](../theories/Cat/Exponential/Laws.v)增加积比较的上下文应用及其与
-终参数求值的相干，复用已有逆转置公式，不重复证明泛性质。上下文图只要求
-积与指数，终参数求值另用选定终对象；Applicative 提升使用已有上下文定律。
 
 At terminal input, the transparent value comparison preserves ordered
 pairing and every binary lifting expressed as fanout followed by a pure
@@ -1894,11 +1152,6 @@ comparisons use HomEq and retain left-before-right effects, without
 commutativity, strength or Monad assumptions. The work remains categorical
 semantics; following the user's priority, typed syntax is deferred until
 the semantic structures and their correspondence conditions are established.
-
-在终输入处，透明值比较保持有序配对及由 fanout 后接纯二元运算表示的任意
-二元提升，其逆反映同一批运算。所有比较使用 HomEq，保留从左到右的效应，
-不假设交换性、强度或 Monad。本轮继续范畴语义；按用户确定的优先级，带
-类型语法等语义结构及其对应条件建立后再讨论。
 
 The unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0,
 Dune 3.23.1) passed full `dune build @all @runtest @install`. All 284
@@ -1913,16 +1166,6 @@ Reader evaluation and a binary operation discarding its left result while
 retaining that computation's observable state effect. No permanent tests
 or shared test configuration changed.
 
-未修改的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune
-3.23.1）通过全库 `dune build @all @runtest @install`。284 项临时公理检查
-均无额外全局假设：102 项新增检查、91 项已有值比较检查及 91 项静态 Arrow／
-Freyd 客户端检查。新增批次覆盖全部 13 项公共定义／定律、52 项严格签名
-（Hom／相等两种次序，且对象严格低于或高于两者）、四项 Reader／State
-环境层级签名及 33 项具体构造／归约。具体检查包括实际 first／split／
-fanout、State 执行次序差异、值比较的两个方向、Reader 求值，以及丢弃左
-结果的二元运算仍保留其计算的可观察状态效应。没有修改永久测试或共享测试
-配置。
-
 Strict bilingual HTML generated 331 modules per language and checked
 667 pages. All 104 bilingual comment blocks and 98 public anchors in the
 three affected modules were checked against their generated language
@@ -1933,17 +1176,7 @@ toolchain and batch PDF export remain with integration. The remaining
 semantic work concerns reconstruction and precise static/dynamic or
 ArrowApply conditions, without treating syntax as the next required phase.
 
-严格双语 HTML 每种语言生成 331 个模块，检查 667 页。三个受影响模块的
-全部 104 个英中注释块及 98 个公共锚点均对照对应语言输出核验，包括 Unicode
-名称的生成锚点。清单仍恰好覆盖全部 97 个类／记录声明各一次，包括全部
-29 个 `Has*` 类。只更新本任务分支；`typeprop`、共享工具链及批次 PDF
-仍由集成会话管理。剩余语义工作涉及重建及精确的静态／动态或 ArrowApply
-条件，不将语法视为下一必经阶段。
-
-
 ## Revalidation on the advanced integration baseline
-
-## 在前进后的集成基线上复验
 
 The final handoff check found that local `typeprop` had advanced to
 `89580d6ee75110d30fc4a82d6c60fb44f28aabc1`, while the fetched remote still
@@ -1952,12 +1185,6 @@ local integrated baseline. The fanout mathematics is now `3c971d7`
 (formerly `bc077f1`); all three affected theory modules are byte-identical
 to their pre-rebase versions. This updates the preceding handoff baseline
 without extending the mathematical scope or changing the integration branch.
-
-最终交接检查发现本地 `typeprop` 已推进到
-`89580d6ee75110d30fc4a82d6c60fb44f28aabc1`，获取的远端当时仍为 `fee98fc`。
-任务分支已无冲突重基到这个本地集成基线。fanout 数学提交现为 `3c971d7`
-（原 `bc077f1`），三个受影响理论模块与重基前逐字节一致。本条更新上一轮
-交接基线，不扩大数学范围，也不修改集成分支。
 
 On `89580d6`, full `dune build @all @runtest @install` and all 284 temporary
 assumption checks were rerun successfully (102 new interfaces/clients,
@@ -1968,17 +1195,7 @@ and 98 public anchors were checked again; the exact inventory remains
 97 interfaces. The unchanged project switch and explicit model selection
 were retained. Batch PDFs remain with integration; syntax remains deferred.
 
-在 `89580d6` 上，全库 `dune build @all @runtest @install` 及全部 284 项
-临时公理检查均重跑通过（102 项新增接口／客户端、91 项值比较、91 项静态
-Arrow／Freyd 检查）。严格双语 HTML 现每种语言覆盖 336 个模块、检查 677 页，
-包含集成新增的五个模块。同样的 104 个英中注释块及 98 个公共锚点再次核验，
-精确清单仍为 97 个接口。保留未改动的项目 switch 及显式模型选择。批次 PDF
-仍由集成方导出，语法仍暂缓。
-
-
 ## Global-computation foundations
-
-## 全局计算基础
 
 Following `4cd858a`, the #35 task independently adds the general ordered
 pairing laws, the terminal-input Hom lax functor and constant respectful
@@ -1987,11 +1204,6 @@ composes the three associativity naturality squares. Neither a monad nor
 closedness nor interchange of two effects is required. The result lands
 in setoids, keeping the computation category's native hom/equality levels;
 it is not automatically an endofunctor on an arbitrary value category.
-
-继 `4cd858a` 后，#35 任务独立添加一般有序配对定律、终输入 Hom lax 函子
-及常值保相等映射。已有 Hom 函子提供函子性，`comp_square` 复合三个结合
-自然性方块。不要求 Monad、闭性或两个效应交换。结果落在广集范畴，保留计算
-范畴原生 Hom／相等层级，一般不会自动成为任意值范畴上的自函子。
 
 Targeted Global/Constant builds passed in the unchanged `rocq-cats` switch.
 All 22 temporary assumption checks are closed under the global context:
@@ -2003,37 +1215,19 @@ was changed. Setoid-base Applicative packaging and static reconstruction
 are the dependent next slice of this same authorized task; syntax stays
 paused until the semantic development is established.
 
-在未改动的 `rocq-cats` switch 中，Global／Constant 定向构建通过。22 项
-临时公理检查均无额外全局假设：全部 16 个公共声明及六项独立宇宙探针，
-将两个范畴的 Hom／相等层级按两种严格次序分离，也分离常值映射的来源及
-目标层级。现有 339 个模块、原有 97 个接口。没有修改永久测试或共享工具链。
-广集基底的 Applicative 打包及静态重建是同一已授权任务的后续依赖切片；语法
-等语义建立后再讨论。
-
-
 ## Arrow values and static Applicative recovery
-
-## Arrow 值与静态 Applicative 回收
 
 This slice continues on `monoidal-cat-view` from the validated integrated
 baseline `89580d6ee75110d30fc4a82d6c60fb44f28aabc1`. The reusable
 terminal-input Hom/lax foundation was delivered independently in
 [078ba8f](https://github.com/Godalin/rocq-cats/commit/078ba8fe97f04fdc885579b3a44bd3a4af32e465).
-[The setoid adapter](../theories/Instance/Set/Arrow.v) supplies `ArrowA`
+[The setoid adapter](../../theories/Instance/Set/Arrow.v) supplies `ArrowA`
 using that same lax structure and pure constant arrows. Computation hom
 carrier/equality levels match the ambient setoid levels; computation
 objects retain an independent universe. No Monad, strength or exponentials
 are required by this adapter. Imports enable no chosen model structure.
 
-本切片在 `monoidal-cat-view` 上继续，已验证的集成基线为
-`89580d6ee75110d30fc4a82d6c60fb44f28aabc1`。可复用的终输入 Hom／lax
-基础已在 [078ba8f](https://github.com/Godalin/rocq-cats/commit/078ba8fe97f04fdc885579b3a44bd3a4af32e465)
-独立交付。[广集适配器](../theories/Instance/Set/Arrow.v)复用同一 lax
-结构，以纯常值箭头提供 `ArrowA`。计算 Hom 的载体／相等层级对应所在广集
-层级，计算对象保留独立宇宙。适配器不要求 Monad、强度或指数，导入不启用
-选定模型结构。
-
-[Static recovery](../theories/Instance/Set/StaticArrow.v) works in the
+[Static recovery](../../theories/Instance/Set/StaticArrow.v) works in the
 existing closed setoid model at a common carrier/equality level. It reuses
 two exponential-unit isomorphisms to compare the recovered and original
 Applicatives by a transparent natural isomorphism. Both transformations
@@ -2043,13 +1237,6 @@ on that model, without equating functor or law records. It does not
 reconstruct arbitrary dynamic Arrows. General static/dynamic reconstruction
 conditions and the ArrowApply/Monad relationship remain subsequent semantic
 work; typed syntax stays deferred.
-
-[静态回收](../theories/Instance/Set/StaticArrow.v)使用载体／相等处于同一
-层级的已有闭广集模型，复用两个指数单位同构，以透明自然同构比较回收与原有
-Applicative。两个变换均保持纯值、有序配对及每个通常二元提升。这给出该模型
-上的 Applicative 经静态 Arrow 再回到 Applicative 的往返，不要求函子或定律
-记录相等，也不重建任意动态 Arrow。一般静态／动态重建条件及 ArrowApply／
-Monad 关系仍为后续语义工作；带类型语法继续暂缓。
 
 Full-library `dune build @all @runtest @install` passed with the unchanged
 `rocq-cats` switch: Rocq/Stdlib 9.2.0, OCaml 5.3.0 and Dune 3.23.1.
@@ -2065,15 +1252,6 @@ Reader recovery. Model-import probes also check explicit structure enabling.
 The earlier 22 foundation checks overlap this comprehensive batch and are
 not counted as additional distinct checks.
 
-在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。95 项
-综合临时公理检查均无额外全局假设：五个新模块的全部 33 个公共声明、26 项
-宇宙探针及 36 项具体构造／归约。探针分离两个抽象范畴的 Hom／相等层级，
-改变广集适配器的载体／相等次序及计算对象层级，并在已有闭模型界限下分离
-Reader／State 环境大小。具体检查覆盖纯值、两条互逆方程、配对、二元提升、
-通常 State Arrow 的值、从左到右的 State 效应及 Reader 回收。模型导入探针
-也检查选定结构须显式启用。先前 22 项基础检查与本综合批次重叠，不重复计数。
-
 Strict bilingual HTML generated 341 modules per language and checked local
 links and anchors in all 687 pages. All 76 bilingual documentation blocks
 and 66 public declaration anchors across the five new modules were checked
@@ -2085,17 +1263,7 @@ proof technique. No permanent tests, shared test aliases, shared toolchain
 or `typeprop` updates were introduced. Batch PDF export remains with the
 integration session.
 
-严格双语 HTML 每种语言生成 341 个模块，全部 687 页的本地链接及锚点检查
-通过。五个新模块的全部 76 段双语文档及 66 个公共声明锚点均在对应阅读版
-核对。清单仍为 97 个接口（68 个类、29 个记录），其中 29 个 `Has*` 类。
-抽象的逐点互逆引理避免归约整个大型提升计算，计算映射保持透明；现有
-`AGENTS.md` 学习条目记录此证明技巧。没有新增永久测试、共享测试别名、
-共享工具链变更或 `typeprop` 更新；批次 PDF 仍由集成会话导出。
-
-
 ## Inferred universe instances in computational models
-
-## 计算模型中由推断确定的宇宙实例
 
 Following the user's readability request, the Reader tensorator, State
 multiplication/strength transformations and setoid Arrow adapter omit
@@ -2106,12 +1274,6 @@ computational Arrow theory already uses inferred instances. The remaining
 model annotations preserve independent environment, ambient carrier and
 equality levels, or state the existing closed-model common-level bound.
 No mathematical interface, operation or universe binder order is changed.
-
-按用户的可读性要求，Reader tensorator、State 乘法／强度变换及广集 Arrow
-适配器省略七处重复宇宙实例。每处仍固定一次必要的大小边界，其余出现由函子
-复合、积函子及自然变换端点推断。一般 Monad、Applicative 和计算 Arrow
-理论原已使用推断实例。模型中保留的标注保护环境、所在载体及相等层级的独立性，
-或表达已有闭模型的共用层级界限。数学接口、运算及宇宙绑定次序均未改变。
 
 The unchanged `rocq-cats` switch passed full-library
 `dune build @all @runtest @install`. Twenty-eight temporary probes check all
@@ -2127,20 +1289,7 @@ bilingual HTML again covers 341 modules per language and 687 checked pages.
 No permanent test, interface, chosen instance, shared toolchain or
 integration-branch update was added.
 
-未改动的 `rocq-cats` switch 通过全库
-`dune build @all @runtest @install`。28 项临时探针检查全部 Reader／State
-函子、自然变换及选定计算结构：环境载体／相等按两种严格次序排列，并低于
-独立的所在层级。另重跑既有 95 项 Arrow 值／静态回收检查，包括四种独立
-适配器层级次序及透明 Reader／State 计算。全部 123 项公理报告均无额外全局
-假设。针对已提交 Reader 源码的独立临时探针确认，函数广集的大小界限原已
-存在，并非此次简化引入。严格双语 HTML 再次覆盖每种语言 341 个模块及
-687 页链接检查。没有新增永久测试、接口、选定实例、共享工具链或集成分支
-更新。
-
-
 ## Global-computation context foundation
-
-## 全局计算上下文基础
 
 The static-interpretation slice rebases `monoidal-cat-view` onto
 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`. The rebase has no conflicts;
@@ -2149,13 +1298,7 @@ universe/semantic checks passed with the unchanged `rocq-cats` switch.
 The rebased task head before new mathematics is `c434d44`; original
 `0683f04` is retained in the earlier historical delivery records.
 
-静态解释切片将 `monoidal-cat-view` 重基到
-`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`，没有冲突；在未改动的
-`rocq-cats` switch 中，全库／测试／安装与既有 123 项临时宇宙／语义检查
-通过。新增数学内容前的重基任务头为 `c434d44`，原 `0683f04` 保留在此前
-历史交付记录中。
-
-[GlobalContext](../theories/Cat/Computational/Arrow/GlobalContext.v)
+[GlobalContext](../../theories/Cat/Computational/Arrow/GlobalContext.v)
 attaches a terminal-input computation to an unchanged ordinary input.
 Its substitution, ordered-pairing and nested-context laws require only
 selected finite products and the existing Arrow laws. Effects are neither
@@ -2166,24 +1309,16 @@ passed temporary assumption inspection (16 reports, all closed under the
 global context). The targeted module build passed. No permanent test,
 shared toolchain change or integration-branch update was introduced.
 
-[GlobalContext](../theories/Cat/Computational/Arrow/GlobalContext.v)
-将终输入计算附在不变的普通输入旁。其替换、有序配对及嵌套上下文律仅要求
-选定有限积及已有 Arrow 定律，不复制或交换效应。此可独立复用基础不增加
-接口或模型选择，并保留独立范畴大小。全部十个公共声明及六项严格独立范畴
-探针通过临时公理检查（16 项报告，均无额外全局假设）；模块定向构建通过。
-没有新增永久测试、共享工具链变更或集成分支更新。
-
+[GlobalContext](../../theories/Cat/Computational/Arrow/GlobalContext.v)
 
 ## Static interpretation into the original Arrow
 
-## 解释静态计算回原 Arrow
-
 This authorized slice continues on `monoidal-cat-view` after rebasing onto
 `typeprop@c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`. The independently
-reusable [global-context foundation](../theories/Cat/Computational/Arrow/GlobalContext.v)
+reusable [global-context foundation](../../theories/Cat/Computational/Arrow/GlobalContext.v)
 was pushed first in
 [82e8efc](https://github.com/Godalin/rocq-cats/commit/82e8efca787a37e0626020fce7685c1dd30d548e).
-[StaticEvaluation](../theories/Cat/Computational/Arrow/StaticEvaluation.v)
+[StaticEvaluation](../../theories/Cat/Computational/Arrow/StaticEvaluation.v)
 adds exponentials only for ordinary internal-function evaluation. It
 interprets a terminal-input internal function alongside its argument,
 using the original Arrow's context action. Pure names, ordered internal
@@ -2191,16 +1326,7 @@ composition and context extension preserve the specified computation
 Hom equality. No Monad, strength, effect interchange or representation
 as a value-category endofunctor is assumed by this generic theory.
 
-本授权切片在 `monoidal-cat-view` 上重基到
-`typeprop@c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` 后继续。
-可独立复用的[全局上下文基础](../theories/Cat/Computational/Arrow/GlobalContext.v)
-已先在 [82e8efc](https://github.com/Godalin/rocq-cats/commit/82e8efca787a37e0626020fce7685c1dd30d548e)
-推送。[StaticEvaluation](../theories/Cat/Computational/Arrow/StaticEvaluation.v)
-仅为通常内部函数求值加入指数，使用原 Arrow 上下文作用，将终输入内部函数
-与其参数一起解释。纯命名、有序内部复合及上下文扩展均保持指定计算 Hom
-相等。一般理论不假设 Monad、强度、效应交换或值范畴自函子表示。
-
-[StaticInterpret](../theories/Instance/Set/StaticInterpret.v) packages the
+[StaticInterpret](../../theories/Instance/Set/StaticInterpret.v) packages the
 comparison as `StaticInterpretF`, from the static category of the Arrow's
 extracted Applicative into the original computation category. Its object
 map is the original pure object map; no object-map injectivity or unused
@@ -2208,12 +1334,6 @@ ambient-object representation is assumed. The existing closed setoid
 model requires a common carrier/equality level matched by the computation
 hom-setoids. Computation-object size remains independent. This boundary
 is fixed once, with repeated universe instances inferred.
-
-[StaticInterpret](../theories/Instance/Set/StaticInterpret.v)将比较打包为
-`StaticInterpretF`：从 Arrow 抽取的 Applicative 的静态范畴，进入原计算
-范畴。对象映射为原纯对象映射，不要求其单射，也不假设表示环境中未用的
-对象。已有闭广集模型要求共用的载体／相等层级，计算 Hom 广集与之匹配；
-计算对象大小仍独立。此边界只固定一次，重复宇宙实例交由推断。
 
 `StaticInterpretPureIso` compares the interpreted static pure inclusion
 with the original pure functor by identity components and explicit
@@ -2223,12 +1343,6 @@ transparent. This is an interpretation and operation-preservation result;
 fullness, faithfulness, inverse reconstruction, ArrowApply/Monad and typed
 syntax are not supplied by this slice. No new interface or chosen model
 instance is introduced.
-
-`StaticInterpretPureIso` 以恒等分量及显式恒等逆，将解释后的静态纯嵌入与
-原纯函子自然比较。解释保持复合及同一组选定左上下文。全部计算映射及逆
-见证保持透明。本批给出解释及运算保持结果；满性、忠实性、逆向重建、
-ArrowApply／Monad 与带类型语法不在本切片中。没有新增接口或选定模型实例。
-
 
 Full-library `dune build @all @runtest @install` passed with the unchanged
 `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1).
@@ -2248,18 +1362,6 @@ transparent. Import probes confirm model choices require explicit enabling.
 The earlier 123 checks passed again after rebase. The earlier 16 foundation
 reports overlap this new 82-report batch and are not added again.
 
-在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。82 项
-临时公理报告均无额外全局假设：24 个公共声明、38 项严格宇宙探针及 20 项
-具体构造／结果检查。探针按两种 Hom／相等次序分离两个抽象范畴，在广集
-解释器中保留更小或更大的计算对象宇宙，并在闭模型界限下分离 Reader／State
-环境层级。State 计算区分先切换再读取与相反次序，也检查上下文、纯值及纯
-比较；Reader 的值与上下文透明计算。后一个上下文检查在临时源码中先用
-`vm_compute` 求出结果，再比较所得小值，避免关闭通常等式时重新检查展开的
-大量结构证明。库中映射保持透明。导入探针确认选定模型仍须显式启用。此前
-123 项检查也在重基后复验通过。先前 16 项基础报告与本批 82 项重叠，不重复
-计数。
-
 Strict bilingual HTML generated 344 modules per language and checked all
 693 pages. All 54 bilingual documentation blocks and 48 public declaration
 anchors in the three new modules were checked in their reading editions.
@@ -2268,44 +1370,23 @@ The inventory remains 97 interfaces (68 classes, 29 records), including
 was added. Only this task branch was changed; `typeprop` remains owned by
 integration. Batch PDF export remains with the integration session.
 
-严格双语 HTML 每种语言生成 344 个模块，全部 693 页检查通过。三个新模块的
-54 段双语说明及 48 个公共声明锚点均在对应阅读版逐项核对。清单仍为 97 个
-接口（68 个类、29 个记录），其中 29 个 `Has*` 类。没有新增永久测试、共享
-测试别名或工具链变更。只修改本任务分支；`typeprop` 仍由集成会话管理。
-批次 PDF 仍由集成会话导出。
-
-
 ## Fully faithful inverse foundation for static reconstruction
-
-## 静态重建使用的完全忠实逆基础
 
 This slice continues on `monoidal-cat-view` from `4d517d5`, with integrated
 baseline `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` unchanged.
-[Functor.FullyFaithful](../theories/Cat/Functor/FullyFaithful.v) constructs
+[Functor.FullyFaithful](../../theories/Cat/Functor/FullyFaithful.v) constructs
 a transparent inverse to a fully faithful functor restricted to its indexed
 image objects. Type-valued fullness supplies preimages; faithfulness proves
 respectfulness and the inverse laws. The two composites have natural
 isomorphisms with identity components. No ambient object representatives or
 additional choice principle are required.
 
-本切片在 `monoidal-cat-view` 上从 `4d517d5` 继续，集成基线仍为
-`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
-[Functor.FullyFaithful](../theories/Cat/Functor/FullyFaithful.v)在完全忠实
-函子的索引像对象上构造透明逆。Type 值满性提供原像，忠实性证明尊重性及
-互逆律，两个复合由恒等分量的自然同构比较。不要求环境对象代表或额外选择
-原理。
-
-[Setoid isomorphisms](../theories/Instance/Set/Isomorphism.v) now also
+[Setoid isomorphisms](../../theories/Instance/Set/Isomorphism.v) now also
 construct an inverse from supplied Type-valued unique fibers. This uses
 specified setoid equality. A native Hom isomorphism in one `SetCat` has a
 common ambient bound, so the general inverse functor directly uses fullness
 rather than identifying two categories' native hom universes. This
 strict-probe finding is recorded in the existing `AGENTS.md` learnings.
-
-[广集同构](../theories/Instance/Set/Isomorphism.v)另提供从已给 Type 值唯一
-纤维构造逆的通用引理，使用指定广集相等。一个 `SetCat` 中的原生 Hom 同构
-具有共同环境界，因此一般逆函子直接使用满性，避免合并两个范畴的原生 Hom
-宇宙。严格探针发现的这一限制已记录到现有 `AGENTS.md` 学习条目。
 
 Targeted builds passed in the unchanged `rocq-cats` switch. All 30 temporary
 assumption reports are closed under the global context: ten public
@@ -2315,21 +1396,12 @@ orders are separated, while the setoid lemma uses its stated common bound.
 This independently reusable prerequisite adds no interface, chosen model,
 permanent test or shared toolchain change. `typeprop` was not changed.
 
-在未改动的 `rocq-cats` switch 中，定向构建通过。30 项临时公理报告均无额外
-全局假设：十个公共构造／定律、十八项严格独立范畴探针及两项广集所在载体／
-相等次序探针。两个范畴的 Hom／相等按两种次序分离；广集引理使用已声明的
-共同界。此可独立复用前置基础不增加接口、选定模型、永久测试或共享工具链
-变更，没有修改 `typeprop`。
-
-
 ## Static representation and inverse reconstruction
-
-## 静态表示与逆向重建
 
 This slice continues on `monoidal-cat-view` from the independently delivered
 [fully faithful inverse foundation](https://github.com/Godalin/rocq-cats/commit/482cfa7235149bec40b2b51a4bc452fcf678390b),
 with integrated baseline `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` unchanged.
-[The general criterion](../theories/Cat/Computational/Arrow/StaticRepresentation.v)
+[The general criterion](../../theories/Cat/Computational/Arrow/StaticRepresentation.v)
 requires invertibility of the actual global-function evaluation Hom maps,
 retaining Type-valued inverse witnesses and independent value/computation
 category sizes. Existing setoid inverse/fiber lemmas establish equivalence
@@ -2340,17 +1412,7 @@ products and exponentials, the criterion follows from the existing
 terminal-input value/function inverse. No setoid-base or well-pointedness
 assumption is required for this general example.
 
-本切片在 `monoidal-cat-view` 上，从已独立交付的
-[完全忠实逆基础](https://github.com/Godalin/rocq-cats/commit/482cfa7235149bec40b2b51a4bc452fcf678390b)
-继续，集成基线仍为 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
-[一般条件](../theories/Cat/Computational/Arrow/StaticRepresentation.v)要求
-实际全局函数求值 Hom 映射可逆，保留 Type 值逆见证及独立值／计算范畴大小。
-已有广集逆／纤维引理给出与原生 Hom 相等下所供唯一表示的等价。逆保持纯
-命名、执行次序复合及原上下文作用。任意选定有限积与指数上，由 Applicative
-生成的静态 Arrow 均通过已有终输入值／函数逆满足该条件。此一般实例不要求
-广集基底或良点性。
-
-[The setoid client](../theories/Instance/Set/StaticRepresentation.v)
+[The setoid client](../../theories/Instance/Set/StaticRepresentation.v)
 proves equivalence with full faithfulness of the existing static interpreter
 by composing its Hom map with the existing exponential-unit isomorphism.
 It reuses the native Hom-isomorphism criterion at the stated common closed-
@@ -2362,14 +1424,6 @@ objects. Pure and context preservation are explicit; composition is
 preserved by the functors. All computational maps and inverse witnesses
 remain transparent. The computation-object universe remains independent
 of its hom-setoids. No new interface or chosen model instance is added.
-
-[广集客户端](../theories/Instance/Set/StaticRepresentation.v)将其 Hom 映射
-与已有指数单位同构复合，证明该条件等价于已有静态解释器的完全忠实性；在
-声明的共同闭模型载体／相等界下复用原生 Hom 同构条件。一般完全忠实逆提供
-`StaticReifyF`、恒等分量的单位／余单位比较及实际 `CatCat` 中的
-`StaticRepresentationEq`。目标是值索引计算范畴，不为环境中未用对象选取
-代表。显式证明纯箭头及上下文保持性，复合由函子保持。全部计算映射与逆
-见证透明，计算对象宇宙仍独立于其 Hom 广集。没有新增接口或选定模型实例。
 
 Full-library `dune build @all @runtest @install` passed with the unchanged
 `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1).
@@ -2383,14 +1437,6 @@ computation-object levels both below and above the setoid client's common
 bound. The earlier 30 foundation reports overlap this batch and are not
 added again.
 
-在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。212 项
-临时公理报告均无额外全局假设：基础与客户端共 39 个新公共声明、112 项严格
-宇宙探针、61 项具体构造／结果检查。112 项探针包括 20 项基础检查、60 项
-一般条件检查、28 项原生客户端检查及四项 Reader／State 环境检查。在一般
-理论中分离原生 Hom／相等次序，并在广集客户端共同界之上与之下保留计算对象
-层级。此前 30 项基础报告与本批重叠，不重复计数。
-
 The concrete batch includes 18 VM reductions through transparent recovery,
 interpretation, context and equivalence components. State examples use the
 static Arrow generated by `StateA`, with an effectful internal function
@@ -2399,12 +1445,6 @@ state Arrow is static. Reader examples also recover values and context.
 Temporary sources evaluate large constructions first and compare the
 resulting small values. No temporary check is installed as a permanent
 test or shared test alias, and no new axiom is introduced.
-
-具体批次包含 18 项经过透明恢复、解释、上下文及等价分量的 VM 求值。State
-实例使用 `StateA` 生成的静态 Arrow，其中效应内部函数切换布尔状态；不假设
-通常动态状态 Arrow 是静态的。Reader 实例也恢复值与上下文。临时源码先求值
-大型构造，再比较所得小值。临时检查没有安装为永久测试或共享测试别名，也
-没有引入新公理。
 
 Strict bilingual HTML generated 347 modules per language and checked all
 699 pages. The four reviewed modules contain 94 bilingual documentation
@@ -2418,36 +1458,18 @@ this slice claims a conditional category equivalence with explicit
 operation preservation, not a blanket equivalence of computational
 structure records.
 
-严格双语 HTML 每种语言生成 347 个模块，全部 699 页检查通过。四个复核模块
-包含 94 段双语说明及 82 个公共声明锚点，均在对应阅读版逐项核对；计数包含
-两个已有广集同构声明。清单仍为 97 个接口（68 个类、29 个记录），其中 29 个
-`Has*` 类。只修改本任务分支，没有修改 `typeprop` 或共享工具链。批次 PDF
-仍由集成会话导出。ArrowApply／Monad 与带类型语法仍属后续工作；本批交付
-具有显式运算保持性的条件范畴等价，不宣称计算结构记录的无条件等价。
-
-
 ## Pointwise strength foundation for ArrowApply
-
-## ArrowApply 的逐点强度基础
 
 This independently reusable prerequisite continues on `monoidal-cat-view`
 from `57f7fa1`, with integrated baseline
 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` unchanged.
-[Setoid strength](../theories/Instance/Set/Strength.v) proves that every
+[Setoid strength](../../theories/Instance/Set/Strength.v) proves that every
 supplied cartesian tensorial strength pairs a fixed ordinary context value
 with the functor's result. Naturality and the unit equation suffice; the
 proof uses no Monad or exponential, and compares values in specified
 setoid equality. Any two supplied strengths consequently have equal
 components, without equality of structure or law records. This will allow
 Kleisli dynamic application to use an arbitrary supplied strong Monad.
-
-此可独立复用前置基础在 `monoidal-cat-view` 上从 `57f7fa1` 继续，集成基线仍为
-`c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`。
-[广集强度](../theories/Instance/Set/Strength.v)证明任意给定笛卡尔张量强度
-逐点等于通过函子作用将固定通常上下文值配到结果旁边。自然性及单位方程已
-足够，不要求 Monad 或指数，使用指定广集相等。因此任意两个给定强度具有
-相等的分量，无须等同结构或定律记录。该结论使 Kleisli 动态应用能复用任意
-所给强 Monad。
 
 The targeted module build passed with the unchanged `rocq-cats` switch
 (Rocq/Stdlib 9.2.0, Dune 3.23.1). All six temporary assumption reports are
@@ -2456,15 +1478,7 @@ with ambient carrier/equality universes strictly separated in both orders.
 No interface, chosen model, permanent test or shared toolchain was added.
 `typeprop` was not changed; full-batch validation follows with its clients.
 
-在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）中，定向
-模块构建通过。六项临时公理报告均无额外全局假设：两个公共引理及四项严格
-探针，按两种次序分离所在载体／相等宇宙。没有新增接口、选定模型、永久测试
-或共享工具链，没有修改 `typeprop`；客户端完成后再进行整批验证。
-
-
 ## Lawful ArrowApply and Kleisli dynamic application
-
-## 带定律的 ArrowApply 与 Kleisli 动态应用
 
 This finite slice continues on `monoidal-cat-view` from `57f7fa1`.
 The independently reusable pointwise-strength prerequisite was delivered
@@ -2472,7 +1486,7 @@ first in [740e1c2](https://github.com/Godalin/rocq-cats/commit/740e1c2).
 Initial validation used integrated baseline
 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`; the synchronized handoff is
 recorded below.
-[ArrowApply](../theories/Cat/Computational/Arrow/Apply.v) extends one
+[ArrowApply](../../theories/Cat/Computational/Arrow/Apply.v) extends one
 cartesian Arrow over the setoid base with dynamic application of an input
 computation value. Its three laws are the pure-pairing, input-substitution
 and postcomposition equations in
@@ -2480,17 +1494,6 @@ and postcomposition equations in
 after using the existing equation for `first` on pure arrows. This is a
 certified interface, with Type-valued native Hom equality and all laws
 supplied, rather than an operation class with unenforced laws.
-
-本有限切片在 `monoidal-cat-view` 上从 `57f7fa1` 继续，可独立复用的逐点强度
-基础已先在 [740e1c2](https://github.com/Godalin/rocq-cats/commit/740e1c2) 交付。
-初始验证使用集成基线 `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`；
-同步后的交接记录见下文。
-[ArrowApply](../theories/Cat/Computational/Arrow/Apply.v)扩充一个广集基底上
-的笛卡尔 Arrow，动态应用输入中提供的计算值。三条定律为
-[Control.Arrow](https://downloads.haskell.org/ghc/9.6.7.20250131/docs/libraries/base-4.18.3.0/Control-Arrow.html)
-的纯配对、输入代入及后合成方程，使用已有纯箭头 `first` 方程展开。本接口
-实际提供全部定律见证，使用 Type 值原生 Hom 相等，不是只有操作而未验证
-定律的类。
 
 The sole immediate parent is `ArrowApplyA :> Arrow`. Its pure functor and
 object-map coercions are inherited through that parent, while morphism
@@ -2502,35 +1505,20 @@ only the class laws and ordinary Arrow equations; it assumes no
 faithfulness of pure inclusion or pointwise extensionality of computation
 arrows.
 
-唯一直接父结构为 `ArrowApplyA :> Arrow`，经该父结构继承纯函子与对象映射
-强制转换，态射映射保留 `fmap`。不重复继承运算、上下文选择或直达祖先的
-强制转换。固定计算应用、其尊重性、后合成律及恒等／值恢复均单独导出。
-值恢复证明仅使用类定律及通常 Arrow 方程，不假设纯嵌入忠实，也不假设计算
-箭头的逐点外延性。
-
 The interface explicitly matches computation hom carrier/equality levels
 with its ambient setoids; its computation-object size is independent.
 No selected exponential is needed. This is a native setoid presentation,
 not a construction of internal computation-hom objects in every CCC.
-[Kleisli dynamic application](../theories/Instance/Set/KleisliApply.v)
+[Kleisli dynamic application](../../theories/Instance/Set/KleisliApply.v)
 uses respectful evaluation with the exact existing Arrow of an arbitrary
 supplied strong Monad. Its input-substitution proof reuses pointwise
 strength and ordinary Kleisli extension, so it works with that supplied
 strength rather than replacing it by a concrete implementation. For
 native Kleisli homs to be input objects, this client uses the stated common
 carrier/equality bound. The underlying ordinary Monad is unchanged.
-[StateArrowApply](../theories/Instance/Set/State.v) is the explicit model
+[StateArrowApply](../../theories/Instance/Set/State.v) is the explicit model
 value, retaining independent state carrier/equality levels below that
 bound. All computation data remain transparent.
-
-接口显式将计算 Hom 载体／相等层级对应到所在广集，计算对象大小独立，不要求
-选定指数。这是原生广集呈现，不是在每个 CCC 中构造内部计算 Hom 对象。
-[Kleisli 动态应用](../theories/Instance/Set/KleisliApply.v)使用保相等求值，
-保留任意所给强 Monad 恰好已有的 Arrow。其输入代入证明复用逐点强度及通常
-Kleisli 扩张，适用于原选定强度，不将它替换为具体实现。为使原生 Kleisli Hom
-可以作为输入对象，此客户端使用已声明的共同载体／相等界，底层普通 Monad
-保持不变。[StateArrowApply](../theories/Instance/Set/State.v)是显式模型值，
-其状态载体／相等层级仍在该界下独立。全部计算数据保持透明。
 
 Full-library `dune build @all @runtest @install` passed with the unchanged
 `rocq-cats` switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1).
@@ -2544,14 +1532,6 @@ the strength foundation's ambient levels, and separate state carrier and
 equality levels below the native model bound. The earlier six foundation
 reports overlap this batch and are not added again.
 
-在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、
-Dune 3.23.1）中，全库 `dune build @all @runtest @install` 通过。139 项
-临时公理报告均无额外全局假设：18 个新公共接口／构造／定律（包含类字段）、
-66 项严格宇宙及强制转换探针、三个原生模型签名、52 项具体构造／结果检查。
-严格探针在 Hom／相等两种次序下保留比它们更小或更大的计算对象宇宙，检查
-完整 Arrow／函子／对象映射转换链，分离强度基础所在层级，并在原生模型界下
-分离状态载体与相等层级。此前六项基础报告与本批重叠，不重复计数。
-
 The concrete batch includes 18 VM reductions after importing the public
 modules. State examples dynamically choose between reading and toggling
 then reading, based on a runtime ordinary input. Separate results check
@@ -2562,12 +1542,6 @@ resulting small values. Import probes confirm that products, Monad,
 strength and ArrowApply models require explicit selection. No temporary
 check was installed as a permanent test or shared test alias; no new axiom
 or shared toolchain change was introduced.
-
-具体批次在导入公开模块后完成 18 项 VM 求值。状态例子根据运行时通常输入，
-动态选择读取或先切换再读取；分别核对输入计算代入与输出后合成、固定应用、
-恒等、纯配对及继承视图。临时源码先求值大型透明构造，再比较所得小值。
-导入探针确认积、Monad、强度及 ArrowApply 模型仍须显式选择。临时检查没有
-安装为永久测试或共享测试别名，也没有新公理或共享工具链变更。
 
 Strict bilingual HTML generated 350 modules per language and checked all
 705 pages. The four reviewed modules have 72 bilingual documentation
@@ -2582,18 +1556,7 @@ ArrowApply, dynamic representation comparisons and typed syntax remain
 subsequent work; no equivalence of all computational structure records
 is claimed here.
 
-严格双语 HTML 每种语言生成 350 个模块，全部 705 页检查通过。四个复核模块的
-72 段双语说明及 62 个公共声明锚点均在对应阅读版逐项核对，计数包含已有状态
-模型声明。清单恰好覆盖全部 98 个接口各一次（69 个类、29 个记录），原有
-29 个 `Has*` 类不变。只修改本任务分支，`typeprop` 仍由集成会话管理，批次
-PDF 仍由集成方统一导出。本批交付已声明基底上的强 Monad 到 ArrowApply
-方向；从 ArrowApply 回收 Monad、动态表示比较及带类型语法仍属后续工作，
-此处不宣称全部计算结构记录的等价。
-
-
 ## ArrowApply handoff on the updated integration baseline
-
-## ArrowApply 在更新集成基线上的交接
 
 Before handoff, `typeprop` advanced to
 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`, adding prism reconstruction
@@ -2604,12 +1567,6 @@ without conflicts. All 41 task commits retain their original contents in
 and the previous static-reconstruction handoff `57f7fa1` is now `3d1f6c5`.
 The new mathematical-illustration instructions were read; this batch adds
 no mathematical diagram.
-
-交接前，`typeprop` 推进到 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`，
-增加棱柱重建与单纯理论阅读路径。任务分支无冲突重基到该版本，`git range-diff`
-确认全部 41 个任务提交均保留原内容。动态应用实现 `a1e26d6` 现为 `416bde1`，
-独立强度基础 `740e1c2` 现为 `884f957`，此前静态重建交接 `57f7fa1` 现为
-`3d1f6c5`。已读取新增数学插图规范；本批未新增数学图。
 
 Full-library `@all @runtest @install` passed again on that baseline in the
 unchanged project switch. All 139 reports and 18 concrete VM reductions
@@ -2624,23 +1581,12 @@ checked again. The exact inventory remains 98 interfaces (69 classes,
 shared environment changed during synchronization; only the task branch
 was rebased. Batch PDF export remains with integration.
 
-在未改动的项目 switch 中，该基线上的全库 `@all @runtest @install` 再次通过。
-上述 139 项报告及 18 项具体 VM 求值均再次通过；导入探针现显式运行类型类
-搜索，确认选定积、Monad、强度及 ArrowApply 实例在选择前不可用。此次报告
-替代重基前的检查，不累加计数。严格双语 HTML 现覆盖每种语言 351 个模块、
-全部 707 页；四个复核模块的同样 72 段双语说明与 62 个公共声明锚点再次核对。
-精确清单仍为 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类。
-同步没有改变源数学或共享环境，只重基本任务分支；批次 PDF 仍由集成方导出。
-
-
 ## Dynamic Hom correspondence foundation
-
-## 动态 Hom 对应基础
 
 This independently reusable prerequisite continues on `monoidal-cat-view`
 from `7df4d2f`, with integrated baseline
 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978` unchanged.
-[Dynamic computations](../theories/Cat/Computational/Arrow/Dynamic.v)
+[Dynamic computations](../../theories/Cat/Computational/Arrow/Dynamic.v)
 name an arrow by pure substitution of each ordinary input. Naming,
 respectfulness and both naturality equations require only an ordinary
 cartesian Arrow. Dynamic evaluation adds ArrowApply and applies the
@@ -2649,14 +1595,6 @@ reconstruction laws follow from the existing application equations,
 without assuming pointwise extensionality or pure-inclusion faithfulness.
 Both native Hom-setoid maps are transparent and retain their distinct
 native sizes; the eventual adjunction supplies any ambient lifting.
-
-此可独立复用基础在 `monoidal-cat-view` 上从 `7df4d2f` 继续，集成基线仍为
-`15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
-[动态计算](../theories/Cat/Computational/Arrow/Dynamic.v)以每个通常输入的
-纯代入命名箭头；命名、尊重性及两个自然性方程仅要求通常笛卡尔 Arrow。
-动态求值增加 ArrowApply，将选出的终输入计算应用于单元素。两个重建律由
-已有应用方程推出，不假设逐点外延性或纯嵌入忠实。两个原生 Hom 广集映射
-透明并保留各自不同原生大小；所需环境提升留给后续伴随。
 
 The targeted module build passed with the unchanged `rocq-cats` switch
 (Rocq/Stdlib 9.2.0, Dune 3.23.1). All 55 temporary assumption reports are
@@ -2667,21 +1605,12 @@ chosen model, permanent test or shared toolchain was added. `typeprop`
 was not changed. The following Monad construction will reuse the existing
 Hom-adjunction and adjunction-to-Monad theories.
 
-在未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、Dune 3.23.1）中，定向
-模块构建通过。55 项临时公理报告均无额外全局假设：11 个公共构造／定律和
-44 项严格宇宙探针；按两种次序分离 Hom／相等大小，并将计算对象大小置于
-它们之上或之下。没有新增接口、选定模型、永久测试或共享工具链，没有修改
-`typeprop`。后续 Monad 构造将复用已有 Hom 伴随及伴随到 Monad 理论。
-
-
 ## Dynamic Arrow adjunction and Monad recovery
-
-## 动态 Arrow 伴随及 Monad 回收
 
 This finite phase continues from the independently delivered dynamic Hom
 foundation `557b048` on `monoidal-cat-view`, with integration baseline
 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978` unchanged.
-[ArrowApplyAdjunction](../theories/Cat/Computational/Arrow/Monad.v) reuses
+[ArrowApplyAdjunction](../../theories/Cat/Computational/Arrow/Monad.v) reuses
 `AdjunctionFromHom` with the pure indexed inclusion and the covariant
 Hom functor at terminal input. The two supplied maps are the existing
 transparent dynamic naming and evaluation. Ambient Hom lifting remains
@@ -2692,16 +1621,7 @@ by an identity-component natural isomorphism. The unit agrees with the
 existing pure global value; multiplication and extension are dynamic
 composition. No Monad axiom is reproved for a concrete model.
 
-此有限阶段在 `monoidal-cat-view` 上从已独立交付的动态 Hom 基础 `557b048`
-继续，集成基线仍为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
-[ArrowApplyAdjunction](../theories/Cat/Computational/Arrow/Monad.v)以纯索引
-包含及终端输入处的协变 Hom 函子复用 `AdjunctionFromHom`。两个映射就是已有
-透明动态命名及求值；环境 Hom 提升仍封装在一般伴随构造中，计算对象、原生
-Hom 载体与相等层级保持独立。`ArrowMonad` 复用 `AdjunctionMonad`，以恒等
-分量自然同构将底层函子与 `ArrowGlobalF` 比较。单位与已有纯全局值一致，
-乘法及扩张由动态复合给出，不为具体模型重新证明 Monad 公理。
-
-[KleisliRecoveryIso](../theories/Instance/Set/KleisliRecovery.v) recovers
+[KleisliRecoveryIso](../../theories/Instance/Set/KleisliRecovery.v) recovers
 the original supplied Monad from its `KleisliArrowApply`. Evaluation at
 the singleton and constant computation give transparent inverse natural
 transformations. Both preserve unit and multiplication, including the
@@ -2714,15 +1634,6 @@ effect commutation, equality of functions/law fields or new assumption
 is introduced. This proves the Monad round trip for a supplied Kleisli
 model; arbitrary ArrowApply reconstruction, compatibility with every
 additional computational structure and typed syntax remain subsequent work.
-
-[KleisliRecoveryIso](../theories/Instance/Set/KleisliRecovery.v)从所给 Monad
-的 `KleisliArrowApply` 回收原 Monad。在单元素处求值与常值计算给出透明互逆
-自然变换；双向保持单位和乘法，乘法律包含所需水平复合，因此是已有
-`MonadCat` 中实际互逆态射。另有比较保持续延扩张及效应次序。此原生 Kleisli
-客户端使用已声明的共同载体／相等界，状态载体／相等仍可在其下独立。
-没有引入指数、效应交换、函数／定律字段相等或新假设。这证明所给 Kleisli
-模型的 Monad 往返；任意 ArrowApply 的重建、全部附加计算结构相容性与带类型
-语法仍属后续工作。
 
 Full-library `@all @runtest @install` passed in the unchanged `rocq-cats`
 switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1). All 215 temporary
@@ -2742,18 +1653,6 @@ expanding the entire derived structure during component type inference;
 all maps and the final checks remain transparent. All checks are temporary;
 no redundant permanent tests or shared test configuration were added.
 
-未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
-中，全库 `@all @runtest @install` 通过。215 项临时公理报告均无额外全局
-假设：35 个公共构造／定律、124 项大小探针及 56 项具体模型辅助／结果。
-探针覆盖两种严格原生 Hom／相等次序、计算对象大小位于两者之上或之下、共同
-原生 Kleisli 界，以及该界下两种严格状态载体／相等次序。仅导入后的类型类
-搜索确认选定积、Monad 与 ArrowApply 仍需显式选择。215 项包含此前 55 项
-基础报告，不另行累加。24 项布尔状态 VM 求值全部通过，覆盖返回、将更新
-状态传给内部计算的嵌套压平、续延选择及次序、双向回收映射和互逆律、底层
-函子比较，以及 Monad 同构的双向映射。具体表达式通过抽象值层 join 辅助
-组装，避免分量类型推断展开整个派生结构；全部映射及最终检查均保持透明。
-检查均为临时文件，没有增加冗余永久测试或共享测试配置。
-
 Strict bilingual HTML covers 354 modules per language and all 713 checked
 pages. The three reviewed modules' 78 language-specific documentation
 blocks and 70 public declaration anchors were checked individually in the
@@ -2761,36 +1660,19 @@ corresponding reading editions. The inventory remains exactly 98 interfaces
 (69 classes, 29 records), including all 29 `Has*` classes. Only the task
 branch is changed; batch PDF export and `typeprop` remain with integration.
 
-严格双语 HTML 覆盖每种语言 354 个模块，全部 713 页检查通过。三个复核模块
-的 78 段对应语言说明及 70 个公共声明锚点均在相应阅读版逐项核对。清单仍为
-恰好 98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类。仅修改任务
-分支，批次 PDF 及 `typeprop` 仍由集成会话管理。
-
-
 ## General foundations for dynamic reconstruction
-
-## 动态重建的一般基础
 
 Continue the authorized serial #35 task on `monoidal-cat-view` from
 `874ed08`, with integration baseline `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`.
-[The general Kleisli comparison](../theories/Cat/Monad/KleisliComparison.v)
+[The general Kleisli comparison](../../theories/Cat/Monad/KleisliComparison.v)
 uses inverse transposition and counit multiplication to preserve composition.
 Its Type-valued full-faithfulness witness keeps transposes as preimages;
 it does not assert essential surjectivity onto an arbitrary adjunction
-target. [Explicit setoid strength](../theories/Instance/Set/Strength.v)
+target. [Explicit setoid strength](../../theories/Instance/Set/Strength.v)
 maps pairing with an ordinary fixed value through any endofunctor. Functor
 laws give naturality/coherence, while unit and multiplication naturality
 give an explicit strong view of any supplied setoid Monad. Neither import
 registers a chosen model; no new interface or axiom is introduced.
-
-在 `monoidal-cat-view` 上从 `874ed08` 继续用户授权的 #35 串行任务，集成基线
-为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
-[一般 Kleisli 比较](../theories/Cat/Monad/KleisliComparison.v)使用逆转置及
-余单位乘法保持复合，Type 值全忠实见证保留转置作为原像；不宣称对任意伴随
-目标本质满。[显式广集强度](../theories/Instance/Set/Strength.v)
-通过任意自函子映射与通常固定值的配对。函子律给出自然性／相干，单位与乘法
-自然性为任意所给广集 Monad 提供显式强视图。导入均不注册选定模型，没有
-增加接口或公理。
 
 The two foundations are delivered independently before the reconstruction
 client. Full-library `@all @runtest @install` passed with the unchanged
@@ -2803,22 +1685,12 @@ tests, shared test configuration, `typeprop` or shared environment changed.
 Full reading-edition validation is deferred to the completed finite phase;
 batch PDF export remains with integration.
 
-两项基础在重建客户端前独立交付。未改动的 `rocq-cats` switch（Rocq／Stdlib
-9.2.0、Dune 3.23.1）中，全库 `@all @runtest @install` 通过。27 项临时
-公理报告均无额外全局假设：7 个公共构造／定律和 20 项严格宇宙探针，覆盖
-四种独立范畴大小次序及两种严格广集载体／相等次序。仅导入探针确认强度及
-强 Monad 选择仍需显式给出。没有修改永久测试、共享测试配置、`typeprop`
-或共享环境。完整阅读版验证留给有限阶段完成后，批次 PDF 仍由集成方导出。
-
-
 ## Native dynamic Arrow reconstruction
-
-## 原生动态 Arrow 重建
 
 This finite phase continues on `monoidal-cat-view` from the independently
 pushed comparison/strength foundation `84fb5c9`, retaining integration
 baseline `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`.
-[DynamicRecovery](../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+[DynamicRecovery](../../theories/Cat/Computational/Arrow/DynamicRecovery.v)
 reuses `SetStrongM` to give the exact existing `ArrowMonad` canonical
 strength. Its reconstructed Arrow reuses `KleisliArrow`. Evaluation is
 `AdjunctionKleisliF` specialized to `ArrowApplyAdjunction`; naming inherits
@@ -2830,19 +1702,9 @@ representatives for all ambient computation objects or assume pure-arrow
 faithfulness. The original native Hom/equality levels and computation-object
 size remain independent throughout this comparison.
 
-此有限阶段在 `monoidal-cat-view` 上从已独立推送的比较／强度基础 `84fb5c9`
-继续，集成基线仍为 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`。
-[DynamicRecovery](../theories/Cat/Computational/Arrow/DynamicRecovery.v)
-复用 `SetStrongM`，为恰好已有 `ArrowMonad` 赋予规范强度，重建的 Arrow 复用
-`KleisliArrow`。求值是 `AdjunctionKleisliF` 在 `ArrowApplyAdjunction` 的
-专门化，命名从 `FullyFaithfulInverseF` 继承函子律。两个显式自然同构给出
-重建 Kleisli 范畴与原值索引计算范畴之间的等价；对象映射在这些索引上恒等。
-不为全部环境计算对象选择代表，也不假设纯箭头忠实。整个比较保留独立原生
-Hom／相等层级及计算对象大小。
-
 Both directions preserve the Arrow interface's pure lifting, sequential
 composition and ordinary left-context action. The context argument first
-extracts [arrow_dynamic_name_context](../theories/Cat/Computational/Arrow/Dynamic.v)
+extracts [arrow_dynamic_name_context](../../theories/Cat/Computational/Arrow/Dynamic.v)
 under only an ordinary Arrow. It reuses the existing inverse-isomorphism
 square theorem and context naturality, rather than requiring dynamic
 application or a Monad for the pointwise formula. At the stated common
@@ -2856,17 +1718,6 @@ native dynamic Arrow reconstruction slice. Compatibility of the different
 derived Applicative conversions remains subsequent semantic work; typed
 syntax, Day convolution and profunctor presentations are not part of it.
 
-双向保持 Arrow 接口的纯提升、顺序复合及通常左上下文作用。上下文证明先在
-仅有通常 Arrow 的假设下提取
-[arrow_dynamic_name_context](../theories/Cat/Computational/Arrow/Dynamic.v)，
-复用已有逆同构方块定理和上下文自然性，不为逐点公式要求动态应用或 Monad。
-在所声明的共同原生载体／相等界上，`ArrowKleisliApply` 复用同一个强 Monad
-上的已有 Kleisli 应用。应用比较通过命名映射原计算值，逆比较通过求值映射
-重建计算值，两条方程使用原 Hom 相等。未引入指数选择、效应交换、函数／
-证明记录相等或新公理。此原生动态 Arrow 重建切片至此完成。不同派生
-Applicative 转换的相容性仍属后续语义工作，带类型语法、Day 卷积及 profunctor
-呈现不在此范围。
-
 Full-library `@all @runtest @install` passed with the unchanged `rocq-cats`
 switch (Rocq/Stdlib 9.2.0, OCaml 5.3.0, Dune 3.23.1). All 225 temporary
 assumption reports are closed: 25 public constructions/laws, 122 strict
@@ -2879,14 +1730,6 @@ ambient bound. The weaker context law is also checked with ordinary
 Kleisli Arrows. Import-only searches confirm that strength, strong Monad,
 products and Monad choices remain explicit.
 
-未改动的 `rocq-cats` switch（Rocq／Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
-中，全库 `@all @runtest @install` 通过。225 项临时公理报告均无额外全局
-假设：25 个公共构造／定律、122 项严格大小探针及 78 项具体模型辅助／结果，
-包含此前独立报告的 27 项基础检查。探针覆盖四种独立范畴层级次序、两种原生
-载体／相等次序、计算对象大小位于两者之上或之下、两种原生应用对象大小次序，
-及共同环境界下两种严格状态载体／相等次序。较弱上下文律也以通常 Kleisli
-Arrow 检查。仅导入后的搜索确认强度、强 Monad、积及 Monad 选择仍需显式给出。
-
 All 28 transparent Boolean-state VM reductions pass: both functors and
 round trips, pure lifting, sequencing in two distinguishable orders,
 context in both comparison directions, dynamically supplied application,
@@ -2896,12 +1739,6 @@ helpers fix the operation boundaries before concrete specialization;
 all final computations remain transparent. Checks are temporary; no
 permanent test or shared test configuration is changed.
 
-28 项透明布尔状态 VM 求值全部通过：双向函子及往返、纯提升、两种可区分
-次序的顺序组合、双向上下文比较、动态提供的应用、两个自然同构的分量及逆
-分量，以及原 Monad 与回收 Monad 的规范强度。抽象值层辅助在具体专门化前
-固定运算边界，最终计算全部透明。检查均为临时文件，不修改永久测试或共享
-测试配置。
-
 Strict bilingual HTML covers 357 modules per language and all 719 checked
 pages. The four reviewed modules' 86 documentation blocks and 72 public
 declaration anchors were checked individually in the corresponding
@@ -2910,15 +1747,7 @@ reading editions. The complete inventory covers exactly 98 interfaces
 or duplicate declarations. Only this task branch changed; `typeprop`,
 shared toolchain settings and batch PDF exports remain with integration.
 
-严格双语 HTML 覆盖每种语言 357 个模块，全部 719 页检查通过。四个复核模块
-的 86 段说明及 72 个公共声明锚点均在对应阅读版逐项核对。完整清单恰好覆盖
-98 个接口（69 个类、29 个记录），包括全部 29 个 `Has*` 类，无遗漏或重复。
-仅修改本任务分支，`typeprop`、共享工具链设置及批次 PDF 导出仍由集成方管理。
-
-
 ## Dynamic reconstruction handoff on the updated baseline
-
-## 更新基线上的动态重建交接
 
 Before handoff, integration advanced to
 `5631b64a7ad8e854638cd116169ca6ef5ceee761`. The task branch rebased without
@@ -2928,12 +1757,6 @@ dynamic reconstruction `5fb79f5` is now `4a378ac`, the earlier Monad
 recovery `874ed08` is now `e133b8d`, and dynamic Hom foundation `557b048`
 is now `1ddbc48`. The current integrated instructions were read. No
 mathematical diagram was introduced by this slice.
-
-交接前集成推进到 `5631b64a7ad8e854638cd116169ca6ef5ceee761`。任务分支
-无 Git 冲突重基，`git range-diff` 确认全部 46 个任务提交内容保留。独立比较／
-强度基础 `84fb5c9` 现为 `2c4565f`，动态重建 `5fb79f5` 现为 `4a378ac`，
-此前 Monad 回收 `874ed08` 现为 `e133b8d`，动态 Hom 基础 `557b048` 现为
-`1ddbc48`。已阅读当前集成规范，本切片没有新增数学图。
 
 Three upstream additions had proof references to algebra names moved by
 the task's previously authorized hierarchy refactor. The commutative
@@ -2945,13 +1768,6 @@ reference updates. These are adaptations of the earlier rename to new
 clients: upstream operations, public declarations, mathematical conditions
 and test assertions are retained, with no compatibility aliases or new
 regression files. No shared test configuration is changed.
-
-三个上游新增模块的证明仍引用本任务此前已授权层级重构中迁移的代数名称。
-交换系数、群方程及 cocycle 模块现引用 `semigroup_assoc`、
-`magma_mul_proper`，群方程定律及双语图标签使用 `magma_mul_l_resp`／
-`magma_mul_r_resp`。上游新增系数宇宙回归同步了相同的两处映射引用。
-这是将此前重命名适配到新客户端：保留上游运算、公共声明、数学条件及测试
-断言，不加兼容别名或新回归文件，也不修改共享测试配置。
 
 Full-library `@all @runtest @install` passed on the new baseline with the
 unchanged toolchain. The preceding 225 assumption reports and 28 transparent
@@ -2966,17 +1782,7 @@ again. The inventory covers all 100 interfaces exactly once (70 classes,
 the new upstream batch. Only the task branch is updated; integration
 retains `typeprop` and batch PDF export.
 
-在未改动工具链中，新基线上的全库 `@all @runtest @install` 通过。上述
-225 项公理报告及 28 项透明 VM 求值再次通过，适配的上游客户端另有 31 项
-报告也无额外全局假设，最终一轮合计 256 项。这些替代旧基线检查，不累加。
-严格双语 HTML 现覆盖每种语言 363 个模块，全部 731 页检查通过；相同四个
-任务模块的 86 段对应语言说明及 72 个公共锚点再次逐项核对。清单恰好覆盖全部
-100 个接口各一次（70 个类、30 个记录），包括全部 29 个 `Has*` 类；两个新增
-接口来自上游新批次。仅更新任务分支，`typeprop` 和批次 PDF 仍由集成方管理。
-
 ## Direct Applicative compatibility
-
-## 直接 Applicative 相容性
 
 This finite #35 slice continues the authorized serial task on
 `monoidal-cat-view`, from `c0e6fb1` on integrated baseline
@@ -2984,12 +1790,7 @@ This finite #35 slice continues the authorized serial task on
 Applicative comparison in E. Day convolution, profunctor/end/coend theory and
 free constructions are subsequent phases; no typed calculus is introduced.
 
-本次 #35 有限切片从集成基线 `5631b64a7ad8e854638cd116169ca6ef5ceee761`
-上的 `c0e6fb1` 继续已授权的 `monoidal-cat-view` 串行任务，补齐 E 中尚缺的
-直接 Applicative 比较。Day 卷积、profunctor／end／coend 理论及自由构造
-属于后续阶段；本批不引入有类型演算。
-
-[Applicative morphisms](../theories/Cat/Applicative/Morphism.v) are Type-valued
+[Applicative morphisms](../../theories/Cat/Applicative/Morphism.v) are Type-valued
 pure/pairing preservation laws on supplied natural transformations. The
 shared theory proves stability under designated equality, identity, composition
 and the same chosen natural inverse. It derives lax-unit, arbitrary binary
@@ -2997,30 +1798,17 @@ lifting and contextual pure preservation; selected exponentials add application
 preservation. The abstract theory uses named terminal/product choices and
 independent category sizes, with no extra strength or function-equality axioms.
 
-[Applicative 态射](../theories/Cat/Applicative/Morphism.v)是所给自然变换上的
-Type 值纯值／配对保持律。共用理论证明其在指定相等、恒等、复合及同一个
-选定自然逆下稳定，导出 lax 单位、任意二元提升及上下文纯值保持性；选定
-指数后另得应用保持性。抽象理论使用具名终对象／积选择及独立范畴大小，
-不添加强度或函数相等公理。
-
-[Dynamic comparison](../theories/Cat/Computational/Arrow/DynamicApplicative.v)
+[Dynamic comparison](../../theories/Cat/Computational/Arrow/DynamicApplicative.v)
 reuses pure, composition and context preservation to compare first, split and
 fanout with the recovered Kleisli Arrow. The weaker terminal-input naming law
-in [Dynamic](../theories/Cat/Computational/Arrow/Dynamic.v) needs only an
+in [Dynamic](../../theories/Cat/Computational/Arrow/Dynamic.v) needs only an
 ordinary Arrow. Combined with the existing general Kleisli fanout comparison,
 it proves the two Applicatives' pairing comparison. The existing identity
 natural isomorphism preserves all operations in both directions. Computation
 object, native carrier and equality levels remain independent. This part needs
 neither exponentials nor the common native size bound used by application models.
 
-[动态比较](../theories/Cat/Computational/Arrow/DynamicApplicative.v)复用纯值、
-复合及上下文保持性，将 first、split、fanout 与回收 Kleisli Arrow 比较。
-[Dynamic](../theories/Cat/Computational/Arrow/Dynamic.v)中较弱的终输入命名律
-只需要通常 Arrow。结合已有一般 Kleisli fanout 比较，得到两个 Applicative
-的配对比较。已有恒等自然同构双向保持全部运算，计算对象、原生载体与相等
-层级保持独立。本部分既不需要指数，也不需要应用模型使用的共同原生大小界。
-
-[Native Kleisli compatibility](../theories/Instance/Set/KleisliApplicative.v)
+[Native Kleisli compatibility](../../theories/Instance/Set/KleisliApplicative.v)
 retains the existing native recovery model's common carrier/equality bound.
 It repackages the original evaluation/constant components on the actual
 Applicative functors and reuses their naturality and inverses, rather than
@@ -3028,25 +1816,14 @@ requiring definitional equality of functor law records. It preserves the
 original supplied strength and ordered pairing. Both comparison triangles
 commute with Monad recovery. Composing the comparisons proves forward and
 inverse Applicative preservation for the recovered Monad with canonical
-strength. [Static recovery](../theories/Instance/Set/StaticArrow.v) exposes its
+strength. [Static recovery](../../theories/Instance/Set/StaticArrow.v) exposes its
 previously proved comparisons through the shared preservation predicate.
-
-[原生 Kleisli 相容性](../theories/Instance/Set/KleisliApplicative.v)保留已有
-原生回收模型的共同载体／相等界，将原求值／常值分量重新打包到实际 Applicative
-函子上，复用其自然性及逆，不要求函子定律记录定义相等。它保留原所给强度
-及有序配对，两个比较三角与 Monad 回收交换。复合比较后，证明带规范强度的
-回收 Monad 双向保持 Applicative。[静态回收](../theories/Instance/Set/StaticArrow.v)
-通过共用保持性谓词暴露此前已证的比较。
 
 Proofs first compare explicitly typed abstract computation values, cancel
 identity comparison maps at the morphism level, then instantiate the values.
 This avoids expanding computations stored in lifted products during conversion.
 Proof-only opacity for pairing/fanout is local and restored before clients;
 all comparison maps retain transparent computational bodies.
-
-证明先比较具有明确类型的抽象计算值，在态射层消去恒等比较映射，再代入值，
-避免转换检查展开存于提升积中的计算。配对／fanout 的证明期不透明性仅局部
-使用，暴露客户端前恢复；全部比较映射保留透明计算体。
 
 Validation with the unchanged `rocq-cats` switch (Rocq/Stdlib 9.2.0,
 OCaml 5.3.0, Dune 3.23.1): full-library `@all @runtest @install` passes.
@@ -3062,16 +1839,6 @@ triangles. No permanent tests, shared test configuration, environment changes
 or concrete model-law proofs are added. Strict bilingual HTML covers 366 modules per language and 737 checked pages;
 batch PDF export remains with integration.
 
-使用原有 `rocq-cats` switch（Rocq/Stdlib 9.2.0、OCaml 5.3.0、Dune 3.23.1）
-验证：全库 `@all @runtest @install` 通过。全部 **205 项临时公理报告**均无
-额外假设，其中 124 项为公共／严格大小及应用检查，81 项为具体模型辅助项／
-结果。大小检查覆盖 Hom／相等严格双序、对象位于其上／下、独立动态计算大小，
-以及共同原生界下 State 载体／相等的严格双序。仅导入检查不选择默认 Monad、
-强度或 Applicative。**30 项透明布尔状态归约**覆盖纯值、结果映射、可区分的
-两种效应次序下的有序配对、二元提升、应用、双向比较、往返及比较三角。
-未新增永久测试、共享测试配置、环境修改或具体模型定律证明。严格双语 HTML
-覆盖每种语言 366 个模块，检查 737 页；批次 PDF 仍由集成方导出。
-
 The agreed completion boundary now includes direct definitions/models,
 monoid-object characterizations and coherent connections, followed by the
 general free-monoid construction and justified free Monad/Applicative/Arrow
@@ -3079,14 +1846,7 @@ instances with universal interpretation and uniqueness. Each specialization
 must prove its size/existence/preservation hypotheses. Typed language syntax
 and optional Cayley representations are outside that boundary.
 
-已定完结范围包含直接定义／模型、幺半群对象刻画与相干连接，再完成一般自由
-幺半群构造，以及具有泛解释与唯一性的自由 Monad／Applicative／Arrow 实例。
-每个特化均须证明其大小／存在性／保持性假设。有类型语言语法及可选 Cayley
-表示不属于该范围。
-
 ### Direct-comparison handoff on the updated baseline
-
-### 更新基线上的直接比较交接
 
 Before handoff, `typeprop` advanced by two upstream commits to
 `8db08e33d0e859c9a62980a2c313b4fb00398607`. The task's 48 commits rebase
@@ -3094,27 +1854,15 @@ without conflicts; `git range-diff` confirms identical contents, including
 implementation `8351ed5` becoming `89a6bee`. The following synchronization
 adaptations are separate from those unchanged commits:
 
-- [Cocycle completion](../theories/Algebra/Group/Cocycle.v) uses the existing
+- [Cocycle completion](../../theories/Algebra/Group/Cocycle.v) uses the existing
   magma respectfulness and semigroup associativity names. Its operations,
   hypotheses, construction names and mathematical conclusions are retained.
-- [The new upstream size regression](../tests/cocycle/model/Universes.v)
+- [The new upstream size regression](../../tests/cocycle/model/Universes.v)
   changes only two explicit Monoid universe-instance orders to match the
   inherited hierarchy. The carrier/equality profiles remain interchanged,
   law witnesses retain their independent upper bound, and every strict
   inequality and test assertion is retained. No test file or alias is added
   by this adaptation, and shared test configuration is untouched.
-
-交接前 `typeprop` 经两个上游提交推进至
-`8db08e33d0e859c9a62980a2c313b4fb00398607`。48 个任务提交无冲突重基，
-`git range-diff` 确认内容不变，其中实现提交 `8351ed5` 变为 `89a6bee`。
-下述同步适配独立于这些内容不变的提交：
-
-- [Cocycle 补全](../theories/Algebra/Group/Cocycle.v)改用已有原群尊重性及
-  半群结合律名称，保留运算、假设、构造名称与数学结论。
-- [新增上游大小回归](../tests/cocycle/model/Universes.v)只调整两处显式
-  Monoid 宇宙实例顺序以匹配继承层级。载体／相等配置仍然交换，定律见证
-  保留独立上界，每条严格不等式与测试断言均保留。此适配不新增测试文件或
-  别名，也不修改共享测试配置。
 
 The final local validation on this baseline includes full-library
 `@all @runtest @install`, the same 30 transparent State reductions and all
@@ -3128,50 +1876,26 @@ The exact inventory remains 100 interfaces (70 classes, 30 records), including
 all 29 `Has*` classes. Batch PDF export remains with integration. These final
 checks replace the earlier-baseline counts; they are not cumulative totals.
 
-此基线上的最终本地验证包括全库 `@all @runtest @install`、同样的 30 项
-透明 State 归约，以及全部 245 项无额外假设的临时公理报告：124 项一般／
-严格大小检查、81 项具体模型辅助项／结果、40 项新增上游 cocycle 补全与
-单纯模型模块的公共声明。严格双语 HTML 覆盖每种语言 370 个模块，检查
-745 页。在五个受影响比较／回收模块中，全部 126 个语言专属文档块及
-110 个声明锚点均与渲染页核对。精确清单仍为 100 个接口（70 个类、30 个
-记录），包含全部 29 个 `Has*` 类。批次 PDF 仍由集成方导出。这些最终检查
-替换较早基线的计数，不与之前计数累加。
-
 ### Universal end/coend interfaces
 
-### end／coend 泛性质接口
-
-[Wedges](../theories/Cat/End/Wedge.v) retain diagonal legs and their
+[Wedges](../../theories/Cat/End/Wedge.v) retain diagonal legs and their
 Type-valued commuting equations. A wedge is the special dinatural family
 needed here; this does not introduce composition of arbitrary dinatural
-transformations. [Ends](../theories/Cat/End/Core.v) separate the candidate
+transformations. [Ends](../../theories/Cat/End/Core.v) separate the candidate
 universal property from a selected apex and wedge. Mediators are transparent;
 their computation, uniqueness and natural-transformation action use the
 specified hom equality. Object comparison reuses terminal-object uniqueness
 in the wedge category, including the projection equation of that comparison.
 
-[楔](../theories/Cat/End/Wedge.v)保留对角腿及 Type 值交换方程。楔是此处所需的
-特殊双自然族，不引入任意双自然变换的复合。[End](../theories/Cat/End/Core.v)
-将候选泛性质与选定顶点及楔分开。中介透明，其计算、唯一性及自然变换作用均
-使用指定 Hom 相等。对象比较复用楔范畴中的终对象唯一性，并给出该比较的
-投影方程。
-
-[Cowedges](../theories/Cat/Coend/Wedge.v) and
-[coends](../theories/Cat/Coend/Core.v) store only the corresponding opposite
-wedge and end. [The domain adapter](../theories/Cat/Functor/OppositeProduct.v)
+[Cowedges](../../theories/Cat/Coend/Wedge.v) and
+[coends](../../theories/Cat/Coend/Core.v) store only the corresponding opposite
+wedge and end. [The domain adapter](../../theories/Cat/Functor/OppositeProduct.v)
 compares a product of opposite categories with the opposite product. Reversing
 a mixed-variance bifunctor changes its index category to the opposite category;
 it does not swap the object pair. Injection, descent and comparison laws are
 wrappers around the end theory. Natural isomorphisms retain computed inverse
 maps on both ends and coends. No equality of category records, component
 functions or retained law witnesses is required.
-
-[余楔](../theories/Cat/Coend/Wedge.v)与
-[coend](../theories/Cat/Coend/Core.v)仅存储对应的反楔和反 end。
-[定义域适配](../theories/Cat/Functor/OppositeProduct.v)将反范畴的积比较到积的
-反范畴。反转混合变元双函子使指标范畴取反，不交换对象对。注入、下降及比较
-定律包装原来的 end 理论。自然同构在 end 和 coend 上均保留计算得到的逆映射，
-不要求范畴记录、分量函数或保留的定律见证相等。
 
 This is an existence-conditional foundation. It asserts neither that every
 category has these objects nor that object-indexed constructions fit into one
@@ -3183,12 +1907,6 @@ for subsequent batches. In particular, the full category of setoids at one
 fixed carrier/equality size is not thereby a small indexing category for
 coends in that same category.
 
-这批基础以存在性为条件，既不声称所有范畴都具有这些对象，也不声称任意按对象
-索引的构造都能容纳于同一个固定宇宙。抽象接口保留独立的对象、Hom 载体和
-Hom 相等层级；定律见证可需单独上界。积／等化子与广集模型、Day 和 profunctor
-复合的大小／存在条件，以及后续幺半群和自由构造留待后续批次。特别是，固定
-载体／相等大小的全体广集范畴并不会因此成为该范畴中 coend 的小指标范畴。
-
 Prior art includes Wiegley's pinned
 [wedge interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Wedge.v),
 [end interface](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/End.v)
@@ -3197,53 +1915,32 @@ The present implementation follows the library's existing cone/terminal
 interfaces and reuses its general opposite and natural-transformation theory.
 It does not claim the mathematical construction as new.
 
-已有工作包括 Wiegley 固定版本的
-[楔接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Wedge.v)、
-[end 接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/End.v)
-及[反 end 形式的 coend 接口](https://github.com/jwiegley/category-theory/blob/99869fd8d9117e900dea862d8612033848aa01dd/Structure/Coend.v)。
-此实现沿用本库已有的锥／终对象接口，复用一般反范畴及自然变换理论，不将该
-数学构造宣称为新结果。
-
 ### End/coend existence from selected products and equalizers
 
-### 从选定积和等化子得到 end／coend 的存在性
-
-[Constrained-family factorization](../theories/Cat/Product/Equalizer.v)
+[Constrained-family factorization](../../theories/Cat/Product/Equalizer.v)
 extracts the common argument used by ordinary limits and ends: a family
 determines a product arrow, and an equalizing product arrow factors uniquely
 through a candidate equalizer. The existing
-[limit construction](../theories/Cat/Limit/Construction.v) now reuses this
+[limit construction](../../theories/Cat/Limit/Construction.v) now reuses this
 lemma without changing its public statements or selected objects.
 
-[受约束族的分解](../theories/Cat/Product/Equalizer.v)提取普通极限和 end 的
-共同论证：箭头族确定指向积的箭头，满足等化条件的积箭头经过候选等化子唯一
-分解。已有[极限构造](../theories/Cat/Limit/Construction.v)改用此引理，
-不改变公共陈述或选定对象。
-
-The [end construction](../theories/Cat/End/Construction.v) requires only
+The [end construction](../../theories/Cat/End/Construction.v) requires only
 the product of diagonal values, the product of one off-diagonal value per
 arrow, and an equalizer of the resulting two constraint maps. Arrow indices
 retain endpoints and a morphism, without storing hom-equality witnesses.
 `ProductsEqualizerEndOf` accepts that one candidate equalizer; the convenience
 constructor additionally accepts chosen equalizers. Neither requires limits
 of unrelated diagrams. The
-[coend construction](../theories/Cat/Coend/Construction.v) adapts selected
+[coend construction](../../theories/Cat/Coend/Construction.v) adapts selected
 coproducts to opposite products and reuses the same end construction, including
 its universal mediator and uniqueness proof. It does not build a second
 universal-property proof or compare duplicate constructions.
 
-[End 构造](../theories/Cat/End/Construction.v)只需对角值的积、按每条箭头
-索引的非对角值的积，以及两条约束映射的等化子。箭头指标保留端点与态射，
-不存储 Hom 相等见证。`ProductsEqualizerEndOf` 接受这一个候选等化子；
-便捷构造另接受选定等化子。两者都不要求无关图式的极限。
-[Coend 构造](../theories/Cat/Coend/Construction.v)将选定余积适配为反积，
-复用同一个 end 构造及其泛中介与唯一性证明，不另建泛性质证明或比较重复构造。
-
-The explicit [setoid end model](../theories/Instance/Set/End.v) reuses
+The explicit [setoid end model](../../theories/Instance/Set/End.v) reuses
 dependent products and equalizers. Sufficient bounds for this construction
 are that the index category's object and hom-carrier levels fit its target
 equality level, which in turn fits the target carrier level. The explicit
-[setoid coend model](../theories/Instance/Set/Coend.v) reuses indexed sums
+[setoid coend model](../../theories/Instance/Set/Coend.v) reuses indexed sums
 and generated coequalizer equality. Here the index object and hom-carrier
 levels fit the target carrier level, which fits the target equality level;
 generated equality may retain intermediate representatives. In both models
@@ -3252,30 +1949,15 @@ sufficient conditions for the particular models, without a resizing axiom
 or a claim of optimal necessity. Importing either module does not register
 a global choice.
 
-显式[广集 end 模型](../theories/Instance/Set/End.v)复用依赖积和等化子。
-此构造的充分大小条件是：指标范畴的对象和 Hom 载体层级容纳于目标相等层级，
-后者又容纳于目标载体层级。显式
-[广集 coend 模型](../theories/Instance/Set/Coend.v)复用指标和及生成的
-余等化子相等。这里指标对象和 Hom 载体层级容纳于目标载体层级，后者容纳于
-目标相等层级；生成相等可能保留中间代表。两个模型均保持指标范畴的 Hom 相等
-层级独立。这些是特定模型的充分条件，不使用大小重设公理，也不宣称是最优
-必要条件。导入任一模块都不注册全局选择。
-
 This batch supplies the promised existence foundation. It does not assert
 that a full fixed-size setoid category can index coends in itself. Day and
 strong-profunctor constructions must state their own actual size and
 existence conditions. Their monoid characterizations, coherent comparisons
 and suitably conditional free constructions remain subsequent work.
 
-本批交付所需的存在性基础，不声称固定大小的全体广集范畴可以为自身的 coend
-提供指标。Day 与强 profunctor 构造须说明各自实际的大小和存在条件。
-其幺半群刻画、相干比较及有适当条件的自由构造仍留待后续工作。
-
 ### Covariant Day convolution and its natural universal correspondence
 
-### 协变 Day 卷积及其自然泛对应
-
-The [Day kernel and output functor](../theories/Cat/Day/Core.v) reuse Hom,
+The [Day kernel and output functor](../../theories/Cat/Day/Core.v) reuse Hom,
 explicit universe lifting, pointwise products and the integrated coend
 theory. The kernel pairs a Hom weight from the binary result to the output
 with the two input values. Only a binary functor is needed here; a monoidal
@@ -3284,13 +1966,7 @@ Neither tensorial strength nor invertible comparison maps are assumed.
 `HasDay` selects only this family's particular pointwise coends, keeping
 the existence condition explicit.
 
-[Day 核与输出函子](../theories/Cat/Day/Core.v)复用 Hom、显式宇宙提升、
-逐点积和已集成的 coend 理论。核将从二元结果到输出的 Hom 权重与两个输入值
-配对。这里仅需二元函子；稍后构造相干性时，由幺半范畴提供其张量双函子。
-不假定张量强度或可逆比较。`HasDay` 仅选择这一族特定的逐点 coend，
-保留显式存在条件。
-
-[Input maps](../theories/Cat/Day/Map.v) act independently on the value
+[Input maps](../../theories/Cat/Day/Map.v) act independently on the value
 coordinates and commute with postcomposition in the output coordinate.
 They preserve the specified natural-transformation equality, identities
 and composition. A uniformly supplied family of choices assembles these
@@ -3298,12 +1974,7 @@ maps into `DayTensorF`, a bifunctor on the functor category. This is not yet
 a monoidal structure: unitors, the associator and their coherent laws are
 separate subsequent obligations.
 
-[输入映射](../theories/Cat/Day/Map.v)独立作用于值坐标，并与输出坐标的后合成
-交换；它们保持指定自然变换相等、恒等及复合。统一提供选择族后，这些映射
-组成函子范畴上的双函子 `DayTensorF`。此时尚未得到幺半结构：单位子、结合子
-及其相干定律仍须在后续单独证明。
-
-The [universal correspondence](../theories/Cat/Day/Universal.v) treats
+The [universal correspondence](../../theories/Cat/Day/Universal.v) treats
 weighted value pairs as generators. Changing their indices uses the coend's
 gluing equation; changing their output postcomposes their weight. A natural
 binary operation extends by evaluating the operation and applying the
@@ -3313,13 +1984,7 @@ hold in the specified natural-transformation equality, and an extension is
 unique with its prescribed restriction. All maps and witnesses remain
 transparent; no equality of functions or law fields is used.
 
-[泛对应](../theories/Cat/Day/Universal.v)将加权值对作为生成元。改变其指标
-使用 coend 的粘合方程，改变输出则后合成权重。自然二元操作的延拓先求值
-该操作，再将输出函子作用于权重。反过来，从卷积出发的自然变换可限制到
-具有恒等权重的生成元。两个往返均在指定自然变换相等下成立，指定限制唯一
-确定延拓。所有映射与见证透明，不使用函数或定律字段的原生相等。
-
-The [explicit setoid model](../theories/Instance/Set/Day.v) reuses the
+The [explicit setoid model](../../theories/Instance/Set/Day.v) reuses the
 integrated setoid coend model. Sufficient bounds are `o,h ≤ u ≤ p` and
 `e ≤ p`, where `o,h,e` are base object, hom-carrier and hom-equality levels
 and `u,p` are target carrier/equality levels. The Hom weight explains the
@@ -3332,29 +1997,14 @@ check both object/hom orders, equality levels below or above the carrier,
 and conditional abstract choices with objects larger than the output levels.
 No resizing or globally registered model choice is introduced.
 
-[显式广集模型](../theories/Instance/Set/Day.v)复用已集成的广集 coend 模型。
-充分界为 `o,h ≤ u ≤ p` 及 `e ≤ p`，其中 `o,h,e` 是基范畴对象、Hom 载体与
-Hom 相等层级，`u,p` 是目标载体与相等层级。Hom 权重导致额外的相等层级界。
-这些是本模型的充分条件，不声称任意固定大小的全体广集范畴都可在自身中取
-Day 卷积。结构与自然变换边界显式固定目标宇宙：仅通过编译仍可能无意中
-将原生与环境大小合并。严格探查检查对象／Hom 两种次序、低于或高于载体的
-相等层级，以及对象大于输出层级的条件式抽象选择。不引入大小重设或全局
-注册的模型选择。
-
 The monoidal coherence, Day-monoid/lax-monoidal correspondence and its
 operation-preserving connections remain open. Strong profunctors must carry
 their own coherent context action; that strength is not supplied by this
 Day construction. The final required free constructions remain later work.
 
-幺半相干性、Day 幺半群／lax 幺半对应及保持运算的连接仍待完成。强 profunctor
-须另带自身的相干上下文作用；此 Day 构造并不提供该强度。最终要求的自由构造
-仍属后续工作。
-
 ### Representable Day units and natural unit isomorphisms
 
-### 可表 Day 单位及自然单位同构
-
-The [unit construction](../theories/Cat/Day/Unit.v) uses the explicitly
+The [unit construction](../../theories/Cat/Day/Unit.v) uses the explicitly
 raised covariant representable at a proposed unit object. Its left unitor
 needs only a binary functor and an invertible natural left unit map;
 the right construction needs the corresponding right unit map. They do
@@ -3362,11 +2012,6 @@ not require an associator, symmetry, cartesian products in the base,
 strength or preservation properties of the input functor. Their existence
 conditions remain exactly the selected convolutions involving this
 representable and the input functor.
-
-[单位构造](../theories/Cat/Day/Unit.v)使用候选单位对象处显式提升的协变可表
-函子。左单位子只需二元函子及可逆的自然左单位映射；右侧构造需要对应的
-右单位映射。它们不要求结合子、对称性、基范畴的笛卡尔积、强度，或输入
-函子的保持性质。存在条件仍仅为涉及此可表函子与输入函子的选定卷积。
 
 Both forward transformations reuse the natural Day extension. Their
 inverses insert the identity representable arrow with the supplied base
@@ -3376,12 +2021,7 @@ universal-property construction or equality between law witnesses is used.
 The construction retains transparent inverse maps and their computation
 equations on arbitrary weighted generators.
 
-两个正向自然变换均复用自然 Day 延拓。其逆插入可表恒等箭头，以给定的
-基单位子为权重。两条互逆方程由基逆律、Day 生成元计算及 coend 粘合得到。
-不另建商对象或泛性质构造，也不比较定律见证相等。构造保留透明逆映射，
-并给出任意加权生成元上的计算方程。
-
-The general [generator-map law](../theories/Cat/Day/Universal.v) exposes
+The general [generator-map law](../../theories/Cat/Day/Universal.v) exposes
 how a convolution map changes both values while retaining the weight.
 It supplies naturality of these unitors in the input functor. Naturality
 of their inverses reuses the existing inverse-square theorem. With a
@@ -3389,12 +2029,6 @@ uniform explicit family of convolution choices, the unitors assemble
 into natural isomorphisms on the functor category itself, ready for the
 existing bifunctor-based monoidal constructor. The original monoidal
 tensor and its selected unit maps instantiate these interfaces directly.
-
-一般[生成元映射定律](../theories/Cat/Day/Universal.v)暴露卷积映射如何在
-保留权重的同时改变两个值，用于证明单位子关于输入函子的自然性。逆的
-自然性复用已有逆方块定理。统一显式提供卷积选择族后，单位子组装为函子
-范畴本身上的自然同构，可供已有的双函子式幺半构造使用。原幺半张量及其
-选定单位映射可直接实例化这些接口。
 
 Ambient carrier and equality levels stay fixed independently, with the
 same Hom-weight and coend size conditions as the preceding Day model.
@@ -3405,17 +2039,9 @@ This establishes the unit part, not the associator, triangle or pentagon.
 Their coherence, the Day-monoid/lax-monoidal characterization, strong
 profunctors and the required free constructions remain subsequent work.
 
-环境载体与相等层级保持独立固定，沿用前批 Day 模型的 Hom 权重和 coend
-大小条件。单个单位定律只假定相关函子处的 coend；仅在函子范畴打包时才
-需要统一选择族。导入模块不注册选定结构。本批完成单位部分，尚未建立
-结合子、三角形或五边形。相干性、Day 幺半群／lax 幺半刻画、强 profunctor
-及要求的自由构造仍是后续工作。
-
 ### Products preserve specified setoid coends
 
-### 积保持指定的广集 coend
-
-The [product/coend construction](../theories/Instance/Set/CoendProduct.v)
+The [product/coend construction](../../theories/Instance/Set/CoendProduct.v)
 assumes only a selected coend of a setoid-valued bifunctor and a fixed
 setoid parameter. A respectful family of cowedges descends separately at
 each parameter. Respectfulness of the resulting map in both coordinates
@@ -3423,12 +2049,6 @@ follows from the original coend's uniqueness and respectful mediator.
 Paired injections jointly distinguish outgoing maps, giving computation,
 uniqueness and invariance under pointwise equality of the input family.
 Neither function equality nor equality of respectfulness witnesses is used.
-
-[积／coend 构造](../theories/Instance/Set/CoendProduct.v)只假定广集值双函子
-的一个选定 coend 和固定广集参数。保持相等的余楔族分别在每个参数处下降；
-所得映射在两个坐标方向上的保相等由原 coend 的唯一性及保相等中介导出。
-配对注入联合地区分出射映射，从而给出计算、唯一性和输入族逐点相等下的
-不变性。不使用函数相等，也不比较保相等见证。
 
 Applying that one parameterized construction to a product cowedge shows
 that taking a fixed right product preserves the specified coend. A fixed
@@ -3439,11 +2059,6 @@ universal object uniqueness supplies a canonical comparison isomorphism
 with a transparent inverse and injection/reinsertion equations. The
 comparison does not identify the selected objects or their law records.
 
-将同一个带参数构造用于积余楔，得到固定右积保持指定 coend；固定左积在
-交换坐标后复用同一个中介。两个选定构造都须显式启用，不全局注册实例。
-若积核另有选定 coend，泛对象唯一性给出典范比较同构，保留透明逆以及
-注入／重新插入方程。比较不认同选定对象或其定律记录。
-
 Carrier and equality universes remain independent. The abstract result
 requires no ordering between them because it uses parameterized descent,
 not an internal function object. Existence is still explicit: it does not
@@ -3453,39 +2068,22 @@ arrows below the target carrier, and carrier below equality; the index
 hom-equality level remains independent. No resizing or fixed-size full
 setoid self-indexing assertion is introduced.
 
-载体与相等宇宙保持独立。抽象结果通过带参数下降而非内部函数对象实现，
-不要求这两个层级之间的次序。存在性仍是显式条件，并未构造每个双函子的
-coend。实例化已有生成广集模型时，沿用其充分界：指标对象及箭头不高于
-目标载体，载体不高于相等；指标 Hom 相等层级仍独立。不引入大小重设，
-也不声称固定大小的完整广集范畴可对自身取 coend。
-
 This is a prerequisite for descending through the inner coend of a nested
 Day convolution while retaining its other values and weights as parameters.
 It adds no Day associator or triangle/pentagon theorem. Those dependent
 constructions follow after this foundation integrates; the agreed monoid
 characterizations, strong profunctors and free constructions remain open.
 
-这为嵌套 Day 卷积中的内层 coend 下降提供前置基础，使其余值和权重可作为
-参数保留。本批不增加 Day 结合子或三角形／五边形定理；这些依赖构造须在
-本基础集成后继续。已约定的幺半群刻画、强 profunctor 及自由构造仍待完成。
-
 ### Natural Day associativity from the specified four convolution families
 
-### 由指定四族卷积得到自然 Day 结合性
-
-[Parameterized extension](../theories/Cat/Day/Parameter.v) keeps a fixed
+[Parameterized extension](../../theories/Cat/Day/Parameter.v) keeps a fixed
 setoid value outside a Day convolution. Slicing a parameterized natural
 binary operation gives the existing ordinary Day extension; respectful
 product/coend descent reassembles the slices. Computation, uniqueness and
 parameter/output comparison laws follow from the same universal property.
 There is no internal function object and no new carrier/equality ordering.
 
-[带参数延拓](../theories/Cat/Day/Parameter.v)使固定广集值保持在 Day 卷积外部。
-切片带参数自然二元操作后得到已有的普通 Day 延拓；保相等的积／coend 下降
-再将切片重组。计算、唯一性及参数／输出比较定律来自同一个泛性质。
-不引入内部函数对象或新的载体／相等大小次序。
-
-[Nested extension](../theories/Cat/Day/Iterated.v) then treats either
+[Nested extension](../../theories/Cat/Day/Iterated.v) then treats either
 bracketing of three inputs. The inner pair extends with the remaining
 value as a parameter; the outer pair uses ordinary Day extension. Ordered
 weight computation and gluing show that every doubly weighted generator
@@ -3494,13 +2092,7 @@ natural transformations are determined on identity triples. Left and
 right output bracketings use the same triple-indexed source, retaining
 all three inputs in their original order.
 
-[嵌套延拓](../theories/Cat/Day/Iterated.v)随后处理三输入的两种括号。将其余值
-作为参数延拓内层对，再用普通 Day 延拓处理外层对。有序权重计算和粘合表明，
-每个双重加权生成元都是恒等三重值在输出作用下的像。因此，自然变换由其在
-恒等三重值上的作用决定。左右输出括号使用同一个三重指标来源，保留三个
-输入的原顺序。
-
-The [Day associator](../theories/Cat/Day/Associator.v) needs only a binary
+The [Day associator](../../theories/Cat/Day/Associator.v) needs only a binary
 functor and its supplied natural associativity isomorphism. Transport the
 right ternary generator by the inverse base map, then extend it through
 the left nesting. The reverse extension uses the forward base map. Joint
@@ -3509,12 +2101,6 @@ is natural in the output and in all three input functors. Inverse input
 naturality reuses the general inverse-square theorem. Uniform explicit
 convolution choices package these maps as a natural isomorphism between
 the tensor bracketings on the functor category.
-
-[Day 结合子](../theories/Cat/Day/Associator.v)只需二元函子及给定的自然结合
-同构。用基逆映射运输右三元生成元，再沿左嵌套延拓；反向延拓使用基正向
-映射。联合区分性将两条互逆律归约到基逆律。两映射关于输出及三个输入函子
-都自然；逆输入自然性复用一般逆方块定理。统一显式卷积选择后，这些映射
-打包为函子范畴上两种张量括号之间的自然同构。
 
 Individual associators require only the two inner and two outer selected
 convolutions. Their ambient carrier/equality levels and the Hom-weight
@@ -3525,37 +2111,21 @@ is used. A general first-coordinate product-parameter transformation
 reuses the existing second-coordinate naturality through an explicitly
 flipped diagram and has the right nested extension as a client.
 
-单个结合子只要求两个内层及两个外层选定卷积。环境载体／相等层级和 Hom
-权重界与原 Day 构造相同；实际生成模型沿用原充分大小条件。不使用单位、
-对称、强度、函子记录相等或额外公理。一般的第一坐标积参数自然变换通过
-显式翻转图式复用已有第二坐标自然性，右嵌套延拓是其实际客户端。
-
 This establishes natural associativity and its transparent inverse, not
 the triangle or pentagon. Those require the corresponding base coherence
 and separate proofs before a complete Day monoidal structure is claimed.
 The Day-monoid/lax correspondence, strong profunctors, coherent connections
 and conditional free constructions remain subsequent work.
 
-本批建立自然结合性及其透明逆，尚未建立三角形或五边形。后两者需要相应
-基相干条件及独立证明，完成后才能声称完整 Day 幺半结构。Day 幺半群／lax
-对应、强 profunctor、相干连接及条件式自由构造仍待后续工作。
-
 ### Coherent Day convolution and the explicit monoidal assembly
 
-### 相干 Day 卷积与显式幺半装配
-
-[Day coherence](../theories/Cat/Day/Coherence.v) separates the two coherence
+[Day coherence](../../theories/Cat/Day/Coherence.v) separates the two coherence
 assumptions. The triangle uses just the base triangle, the supplied natural
 unit/associativity isomorphisms and the five selected convolutions in its
 source, intermediate objects and target. The base equation says that left
 unit insertion followed by inverse associativity equals right unit insertion
 in the other coordinate. Ternary generator distinction lifts that equation
 to the two Day routes. No base pentagon is needed by this theorem.
-
-[Day 相干性](../theories/Cat/Day/Coherence.v)分开使用两个相干条件。三角形只需
-基三角形、给定的自然单位／结合同构，以及其来源、中间对象和目标中的五个
-选定卷积。基方程表示：左单位插入再经过逆结合子，等于另一坐标中的右单位
-插入。三元生成元区分性将此方程提升为 Day 两路相等；此定理不需要基五边形。
 
 The pentagon requires the base pentagon and the twelve selected binary
 convolutions used by the five bracketings of four inputs. A fourth-input
@@ -3567,13 +2137,7 @@ map, these weights satisfy the inverse base pentagon. Inverse uniqueness
 derives that equation from the forward base pentagon without equating law
 witnesses. This theorem needs no unit, symmetry or strength.
 
-五边形需要基五边形及四输入五种括号所用的十二个选定二元卷积。四输入区分
-引理复用三元区分性和带参数 coend 下降，只选择完全左结合来源中的三个卷积。
-在恒等四重值上，两路变成相同的最终生成元，但结果权重不同。由于 Day
-结合性使用基逆映射，权重满足基逆五边形。逆的唯一性由正向基五边形导出
-这一方程，不识别定律见证。此定理不需要单位、对称或强度。
-
-[Day monoidal assembly](../theories/Cat/Day/Monoidal.v) takes a coherent
+[Day monoidal assembly](../../theories/Cat/Day/Monoidal.v) takes a coherent
 binary functor with unit and uniform explicit convolution choices. It reuses
 `BifctMonoidal`, the original `DayTensorF`, representable `DayUnitF`,
 unitors and associator with their transparent inverses. Tensor interchange
@@ -3583,13 +2147,6 @@ derived tensor functor with the original one, without equality of functor
 records. `MonoidalDay` also starts directly from a supplied monoidal category,
 reusing its existing bimap pentagon and triangle. Importing these modules
 registers no global convolution choices.
-
-[Day 幺半装配](../theories/Cat/Day/Monoidal.v)以带单位的相干二元函子及统一显式
-卷积选择为输入，复用 `BifctMonoidal`、原 `DayTensorF`、可表 `DayUnitF`、
-单位子和结合子及其透明逆。张量交换律来自双函子；重建张量作用在自然相等下
-等于给定 Day 作用。恒等分量比较导出的张量函子与原函子，不要求函子记录
-相等。`MonoidalDay` 还可直接从给定幺半范畴出发，复用已有二元映射的
-五边形与三角形。导入这些模块不会注册全局卷积选择。
 
 All ambient carrier/equality and base Hom-weight bounds remain those of the
 original Day construction. Conditional coend choices add no extra ordering
@@ -3601,26 +2158,14 @@ self-indexing, resizing, internal function objects or new axioms is added.
 Pointwise coherence boundaries let concrete clients supply large
 representatives without unfolding their stored computations during inference.
 
-环境载体／相等与基 Hom 权重界仍沿用原 Day 构造。条件式 coend 选择不增加
-环境载体与相等层级之间的次序。已有生成广集模型保留充分界：基对象与 Hom
-载体不超过输出载体，输出载体不超过输出相等，基 Hom 相等不超过输出相等。
-不声称固定大小的全广集自索引，也不增加 resizing、内部函数对象或新公理。
-逐点相干边界允许具体客户端代入较大的代表，避免推断时展开其所存计算。
-
 This completes the Day tensor/unit/associativity coherence layer under its
 stated hypotheses. The Day-monoid/lax correspondence, strong profunctors,
 coherent computational connections and conditional free constructions remain
 subsequent work; they are not implied by this monoidal assembly alone.
 
-在所述假设下，本批完成 Day 张量／单位／结合性的相干层。Day 幺半群／lax
-对应、强 profunctor、相干计算结构连接及条件式自由构造仍是后续工作，不能
-仅由本幺半装配直接推得。
-
 ### Day monoids and native lax monoidal operations
 
-### Day 幺半群与原生 lax 幺半运算
-
-[Day monoid characterization](../theories/Cat/Day/Monoid.v) starts from a
+[Day monoid characterization](../../theories/Cat/Day/Monoid.v) starts from a
 supplied monoidal base and explicit uniform Day convolution choices. The
 value target uses the existing selected terminal object and products on
 setoids. Lifted covariant Yoneda, via the existing opposite-presheaf proof,
@@ -3628,12 +2173,6 @@ identifies a map from the representable Day unit with a value at the base
 unit. The existing Day restriction/extension correspondence identifies a
 multiplication with its natural binary operation. No new universal property
 is rebuilt in a concrete model.
-
-[Day 幺半群刻画](../theories/Cat/Day/Monoid.v)以给定幺半基及显式统一 Day 卷积
-选择为输入。值目标使用已有广集终对象与积选择。提升协变 Yoneda 经已有的
-反范畴预层证明，将可表 Day 单位的出射映射与基单位处的值对应起来。已有
-Day 限制／延拓对应将乘法与其自然二元操作对应起来，不在具体模型中重建
-泛性质。
 
 `day_monoid_laws` equates the three fixed-data Day monoid diagrams with the
 native lax unit and associativity equations. The unit equations use the
@@ -3643,12 +2182,6 @@ map is compared with the universal Day action in natural equality. The
 predicate `is_day_lax` compares fixed operations; the complete structure
 remains the existing `LaxMonoidalFct`, with no staging data record.
 
-`day_monoid_laws` 将固定数据上的三个 Day 幺半群图与原生 lax 单位／结合
-方程对应。单位方程使用透明的 Day 逆单位子；乘法方程使用三元生成元区分性
-及逆结合性。重建 Day 张量映射按自然相等与泛 Day 作用比较。谓词
-`is_day_lax` 只比较固定运算，完整结构仍使用已有 `LaxMonoidalFct`，不另设
-数据阶段记录。
-
 `LaxDayMonoid` and `DayMonoidLax` construct both structures with exactly the
 same underlying functor. Both units and both binary operations survive the
 round trips in designated equality, without identifying law or functor
@@ -3657,12 +2190,6 @@ lax-functor preservation of monoid objects remains available separately;
 applying it to the base unit monoid alone would produce an object at that
 unit, not this monoid in the functor category.
 
-`LaxDayMonoid` 与 `DayMonoidLax` 双向构造结构，保持完全相同的底层函子。
-两侧的单位和二元运算均在往返后按指定相等保持，不识别定律或函子记录。
-全部中介与转换数据保持透明。一般 lax 函子保持幺半群对象的定理继续独立
-可用；仅将其作用于基单位幺半群会得到该单位处的对象，并不能直接给出这里
-函子范畴中的幺半群。
-
 Ambient carrier and equality universes stay independent, with the original
 Day weight bounds and explicit existence input. Conditional choices add no
 ordering between those ambient levels. The generated model retains its
@@ -3670,24 +2197,14 @@ sufficient bounds `o,h ≤ u ≤ p` and `e ≤ p`; no resizing or fixed-size ful
 setoid self-indexing is asserted. Importing this optional module enables no
 global selected structure and changes no coercion or notation.
 
-环境载体与相等宇宙保持独立，沿用原 Day 权重界和显式存在输入。条件式选择
-不增加两环境层级的次序。生成模型保留充分界 `o,h ≤ u ≤ p` 及 `e ≤ p`，
-不声称 resizing 或固定大小的全广集自索引。导入此可选模块不启用全局选定
-结构，也不改变强制转换或记号。
-
 This bounded stage proves the object/operation correspondence. Packaging
 monoidal natural transformations and the resulting categorical comparison,
 the connection with the direct Applicative interface, strong profunctors and
 conditional free constructions remain separate subsequent stages.
 
-本有界阶段证明对象／运算对应。幺半自然变换及所得范畴比较的打包、与直接
-Applicative 接口的连接、强 profunctor 和条件式自由构造仍待后续独立阶段。
-
 ### Monoidal natural transformations as an independent prerequisite
 
-### 作为独立前置的幺半自然变换
-
-[Monoidal natural transformations](../theories/Cat/Monoidal/Natural.v)
+[Monoidal natural transformations](../../theories/Cat/Monoidal/Natural.v)
 compare lax monoidal functors at fixed named source and target structures.
 `is_lax_monoidal_hom` retains Type-valued unit and tensor preservation on a
 supplied natural transformation. Equality is the existing natural equality;
@@ -3696,12 +2213,6 @@ stable under equal transformations, identity and vertical composition. A
 specified natural inverse preserves the same comparisons by cancellation;
 ordinary morphisms need not be invertible.
 
-[幺半自然变换](../theories/Cat/Monoidal/Natural.v)比较固定具名来源／目标幺半
-结构上的 lax 幺半函子。`is_lax_monoidal_hom` 在给定自然变换上保留 Type 值
-单位／张量保持性。相等使用已有自然相等，不比较函子或保持性记录。保持性对
-相等变换、恒等和竖直复合稳定；指定自然逆通过消去也保持相同比较，不要求
-普通态射可逆。
-
 `LaxMonoidalFctCat` uses the existing subset-setoid construction for its
 hom-sets. It stores the transformation and its preservation witnesses while
 comparing only the transformation. `LaxMonoidalForgetF` retains the exact
@@ -3709,12 +2220,7 @@ underlying functors and transformations and is faithful by that equality.
 Source and target object, Hom and equality levels remain independent; law
 universes supply the needed bounds separately.
 
-`LaxMonoidalFctCat` 以已有子集广集构造 Hom 广集，保存自然变换与保持性见证，
-但只比较变换。`LaxMonoidalForgetF` 保留原底层函子和变换，其忠实性直接来自
-该相等。来源和目标的对象、Hom、相等层级保持独立，所需定律界由辅助宇宙
-分别提供。
-
-The existing [monoid transport](../theories/Cat/Monoidal/Transport.v) is an
+The existing [monoid transport](../../theories/Cat/Monoidal/Transport.v) is an
 actual general client. A monoidal transformation induces monoid
 homomorphisms between the transported monoids. These components form
 `LaxMonoidN`, natural in source monoid homomorphisms, without re-proving
@@ -3723,35 +2229,19 @@ specified equality; `LaxMonoidTransportF` packages this variation into a
 functor to the category of monoid-transport functors. No strength, symmetry,
 cartesian structure, coends or chosen model is required by the general result.
 
-已有[幺半群传输](../theories/Cat/Monoidal/Transport.v)是实际的一般客户端。
-幺半变换在传输后的幺半群之间诱导同态；其分量组成关于来源幺半群同态自然的
-`LaxMonoidN`，不重证传输后的幺半群定律。恒等及竖直复合按指定相等保持；
-`LaxMonoidTransportF` 将此变化打包为到幺半群传输函子范畴的函子。一般结果
-不需要强度、对称、笛卡尔结构、coend 或选定模型。
-
 This independent prerequisite does not yet package the Day/lax morphism
 comparison or its categorical equivalence. Those dependent constructions and
 the direct Applicative connection remain subsequent stages. Existing lax
 functor, monoid and Day interfaces and their selected structures are unchanged.
 
-本独立前置尚未打包 Day／lax 态射比较或其范畴等价；这些依赖构造及直接
-Applicative 连接仍待后续。已有 lax 函子、幺半群、Day 接口及其选择保持不变。
-
 ### Day monoids and lax functors on morphisms and categories
 
-### 态射与范畴层面的 Day 幺半群／lax 函子对应
-
-[Day morphisms](../theories/Cat/Day/Morphism.v) first compares preservation
+[Day morphisms](../../theories/Cat/Day/Morphism.v) first compares preservation
 on candidate operations. Lifted Yoneda detects a unit square at the identity
 value, with no convolution assumption. The multiplication square is detected
 on ordinary pairs using the existing Day restriction/extension inverse laws.
 Only the two endpoint convolutions are selected by this binary result; no
 unit, associativity or coherence is assumed at this step.
-
-[Day 态射](../theories/Cat/Day/Morphism.v)先比较候选运算的保持性。提升 Yoneda
-在恒等值处检测单位方块，不需要卷积假设。乘法方块通过已有 Day 限制／延拓
-互逆律在通常值对上检测。二元结果只选择两个端点卷积，此步骤不假定单位、
-结合性或相干性。
 
 For a supplied monoidal base and the same uniform Day choices as before,
 `day_monoid_hom_laws` identifies monoid homomorphisms with monoidal natural
@@ -3760,12 +2250,7 @@ the converse presentation, reusing the existing operation round trips.
 The reconstructed tensor action is compared with `DayMapN` in natural
 equality, without identifying tensor-functor or preservation records.
 
-对于给定幺半基及前述相同的统一 Day 选择，`day_monoid_hom_laws` 将幺半群
-同态与限制所得 lax 函子的幺半自然变换对应。`lax_day_monoid_hom` 复用已有
-运算往返，给出反方向的呈现。重建张量作用按自然相等与 `DayMapN` 比较，
-不识别张量函子或保持性记录。
-
-[The categorical comparison](../theories/Cat/Day/Comparison.v) extends the
+[The categorical comparison](../../theories/Cat/Day/Comparison.v) extends the
 two existing object conversions to `LaxDayMonoidF` and `DayMonoidLaxF`.
 Their arrow actions retain exactly the supplied underlying natural
 transformation and transfer only its preservation witnesses. The unit and
@@ -3776,13 +2261,6 @@ uses the independently established general inverse-preservation theorem.
 `CatCat`. The chosen unit and counit also satisfy both comparison triangles.
 There is no equality of functor, monoid or law records.
 
-[范畴比较](../theories/Cat/Day/Comparison.v)将两个已有对象转换扩展为
-`LaxDayMonoidF` 和 `DayMonoidLaxF`。箭头作用保留给定的原底层自然变换，
-只运输保持性见证。单位和乘法往返使恒等分量成为同态，进而在两侧装配自然
-同构；lax 逆复用已独立建立的一般逆保持性定理。`day_lax_monoid_equiv` 在
-已有 `CatCat` 中打包所得等价，选定单位／余单位还满足两个比较三角形。
-不要求函子、幺半群或定律记录相等。
-
 All comparisons retain the original explicit Day existence input and
 independent ambient carrier/equality levels. The actual generated model
 still uses `o,h ≤ u ≤ p`, `e ≤ p`; conditional choices do not impose an
@@ -3791,35 +2269,19 @@ setoid category. The optional modules add no chosen structure, global
 instance, coercion, notation or axiom. Pointwise operation boundaries keep
 type inference from normalizing unrelated stored law witnesses.
 
-全部比较保留原显式 Day 存在输入和独立环境载体／相等层级。实际生成模型仍
-使用 `o,h ≤ u ≤ p`、`e ≤ p`；条件式选择不增加环境层级次序，也不要求全
-广集范畴自索引。可选模块不增加选定结构、全局实例、强制转换、记号或公理。
-逐点运算边界避免类型推断归约无关的所存定律见证。
-
 This completes the Day-monoid/native-lax categorical correspondence under
 its stated choices. The link to the direct Applicative interface, strong
 profunctors, coherent computational connections and justified conditional
 free constructions remain subsequent stages of the broader semantic line.
 
-在所述选择下，本阶段完成 Day 幺半群／原生 lax 的范畴对应。与直接
-Applicative 接口的连接、强 profunctor、相干计算结构连接及具有充分条件的
-自由构造，仍是整条语义路线的后续阶段。
-
 ### Native setoid pure as a prerequisite for the Applicative–Day connection
 
-### Applicative–Day 连接的原生广集纯值前置
-
-[Native lax Applicatives](../theories/Instance/Set/LaxApplicative.v) recover
+[Native lax Applicatives](../../theories/Instance/Set/LaxApplicative.v) recover
 pure values from the unit of a cartesian lax setoid endofunctor. First,
 `SetPureN` maps any specified singleton value along constant respectful maps.
 Functor composition proves naturality; naturality at constants proves that
 any other supplied pure transformation with the same singleton value agrees
 in designated natural equality. This first result does not use lax data.
-
-[原生 lax Applicative](../theories/Instance/Set/LaxApplicative.v)从笛卡尔 lax
-广集自函子的单位恢复纯值。首先，`SetPureN` 沿常值保相等映射映射指定单元素值。
-函子复合给出自然性；常值处的自然性证明，任意单元素值相同的所给纯值变换，
-均按指定自然相等与它一致。此首个结果不使用 lax 数据。
 
 `SetLaxA` takes exactly the supplied lax structure as its parent. Its pure
 unit law follows from functor identity, and pure pairing uses only tensorator
@@ -3828,11 +2290,6 @@ coend is assumed. The existing Applicative laws therefore apply directly,
 including contextual binary lifting and application when exponentials are
 separately available. Neither ambient carrier/equality universe is ordered
 against the other by this construction.
-
-`SetLaxA` 的父结构恰为所给 lax 结构。纯单位律来自函子恒等律，纯配对只用
-张量子自然性及左 lax 单位方程。不选择强度，也不假定 coend。已有 Applicative
-定律因而直接适用，包括上下文二元提升，以及另有指数时的应用。此构造不在
-所在载体／相等宇宙之间添加次序要求。
 
 Unit-preserving natural transformations preserve the recovered pure values.
 `set_lax_applicative_hom` identifies the existing Applicative and monoidal
@@ -3844,12 +2301,6 @@ components preserve both directions' operations. The inverse comparison
 reuses general Applicative inverse preservation. No equality of structures,
 functions or law records is required.
 
-保持单位的自然变换保持恢复所得纯值。`set_lax_applicative_hom` 对这些显式提升
-识别已有 Applicative 与幺半保持谓词；`set_applicative_hom_lax` 对任意所给
-原生 Applicative 给出相同识别。二元保持性复用派生张量作用与积映射的已有比较。
-`set_applicative_pure_roundtrip` 恢复原纯值，恒等分量在两个方向保持运算；逆比较
-复用一般 Applicative 逆保持性。不要求结构、函数或定律记录相等。
-
 This independently reusable prerequisite is specific to the native setoid
 category. An arbitrary categorical lax endofunctor is not silently given a
 pure map. The dependent Day connection still requires explicit convolution
@@ -3858,16 +2309,9 @@ new global model choice is claimed. Its packaging is a subsequent bounded
 stage after this prerequisite's integration; strong profunctors and free
 constructions remain outside this batch.
 
-此独立可复用前置专用于原生广集范畴，不为任意范畴的 lax 自函子自动添加纯值。
-依赖的 Day 连接仍须显式选择卷积，不声称固定大小全广集自索引 coend、resizing
-原则或新的全局模型选择。该连接在此前置集成后另作有界打包；强 profunctor
-及自由构造不混入本批。
-
 ### Direct Applicatives and Day operations on native setoids
 
-### 原生广集上的直接 Applicative 与 Day 运算
-
-[The direct connection](../theories/Instance/Set/DayApplicative.v) reuses the
+[The direct connection](../../theories/Instance/Set/DayApplicative.v) reuses the
 integrated native pure reconstruction and Day/lax correspondence. Its weak
 operation interfaces first extend the inherited lax unit by lifted Yoneda
 and the tensorator by the Day universal correspondence. Constants in the
@@ -3875,12 +2319,6 @@ representable unit compute to the original pure values; weighted binary
 generators compute to the original binary lifting. Unit preservation needs
 no convolution choice. Binary preservation needs only the two endpoint
 self-convolutions, without uniform choices or a Day monoidal assembly.
-
-[直接连接](../theories/Instance/Set/DayApplicative.v)复用已集成的原生纯值恢复及
-Day／lax 对应。弱运算接口先由提升 Yoneda 延拓继承 lax 单位，由 Day 泛对应
-延拓张量子。可表单位中的常值计算为原纯值，加权二元生成元计算为原二元提升。
-单位保持性不需卷积选择；二元保持性只需两个端点的自身卷积，不需统一选择
-或装配 Day 幺半结构。
 
 Under explicit uniform choices, `ApplicativeDayMonoid` and `DayMonoidA`
 retain the underlying functor and reuse the existing structure conversions.
@@ -3891,12 +2329,6 @@ liftings and native application survive the round trip; Day unit and
 multiplication use their already proved round trips. Identity comparisons
 preserve operations in both directions, reusing the existing inverse laws.
 No duplicate structure laws, equality of records or proof fields are added.
-
-显式统一选择下，`ApplicativeDayMonoid` 与 `DayMonoidA` 保留底层函子，复用
-已有结构转换。两个同态定理在同一自然变换上精确识别既有保持谓词。纯值恢复
-使用单元素唯一性及已验收 lax 单位往返；张量子、全部二元提升和原生应用在
-往返中保持不变。Day 单位／乘法直接使用已有往返。恒等比较在两方向保持运算，
-复用已有逆律，不另加结构律证明、记录或证明字段相等。
 
 The native specialization has an explicit common ambient carrier/equality
 bound. Existing Day kernels lift Hom weights to their value levels. Native
@@ -3910,38 +2342,20 @@ small-base Day model cannot be invoked on this full native category: its
 object-index size exceeds the common bound. Uniform convolution existence
 therefore remains explicit input and is not claimed by this module.
 
-原生特化显式使用共同环境载体／相等界。已有 Day 核将 Hom 权重提升至其值层级；
-原生保相等函数载体与逐点相等见证涉及两个环境层级，故这些接口用于完整原生
-自函子时要求共同界。此处明确限定适用范围，不暗中识别原生 Applicative 理论
-的独立层级。经提升值或相对呈现支持不同层级，需要另行构造。尤其不能在此
-完整原生范畴上调用已有小基生成 Day 模型：其对象指标大小超过共同界。因此，
-统一卷积存在性仍是显式输入，本模块不声称提供该存在性。
-
 This bounded bridge is an object/operation/morphism correspondence under
 those hypotheses. It does not add an Applicative category or claim a new
 categorical equivalence of bundled Applicatives. Strong profunctors,
 coherent further connections and justified free constructions remain open.
 
-本有界连接是在上述前提下的对象／运算／态射对应；不新增 Applicative 范畴，
-也不声称新的打包 Applicative 范畴等价。强 profunctor、后续相干连接及具有
-充分条件的自由构造继续开放。
-
 ### The ordinary profunctor prerequisite
 
-### 通常 Profunctor 前置
-
-[The ordinary interface](../theories/Cat/Profunctor/Core.v) uses exactly the
+[The ordinary interface](../../theories/Cat/Profunctor/Core.v) uses exactly the
 existing mixed-variance functor bundle. `Profunctor` names a setoid-valued
 functor contravariant in its input and covariant in its output; its existing
 object-map coercion and `fmap` remain available. No duplicate structure/data
 record or extra homomorphism predicate is stored. `ProfunctorCat` is the
 existing functor category, with natural transformations and their specified
 pointwise equality. Neither an end nor a coend is required for these types.
-
-[通常接口](../theories/Cat/Profunctor/Core.v)恰好使用已有混合变元函子打包。
-`Profunctor` 命名输入反变、输出协变的广集值函子，已有对象映射强制转换及
-`fmap` 继续可用。不另存重复结构／数据记录或同态谓词。`ProfunctorCat` 就是
-已有函子范畴，使用自然变换及其指定逐点相等；这些类型不要求 end 或 coend。
 
 The shared scoped notation `dimap`, `lmap`, `rmap` reads existing functor
 maps as two-sided preprocessing/postprocessing and their one-sided actions.
@@ -3951,11 +2365,6 @@ supplies interchange and the two decompositions of `dimap`. Input and output
 category object/Hom/equality levels are independent of one another and of
 the value carrier/equality bounds, with no order between the two value levels.
 
-共享作用域记号 `dimap`、`lmap`、`rmap` 将已有函子映射读作双侧预处理／
-后处理及其单侧作用。函子律给出恒等、复合及尊重性；单侧自然比较复用积坐标
-限制，其自然性给出交换律及 `dimap` 的两个分解。输入、输出范畴的对象／Hom／
-相等层级彼此独立，也独立于值载体／相等界，不增加两个值层级间的次序。
-
 `ProfunctorReindex` precomposes opposite/product functors. Transformations
 and specified inverse witnesses are right-whiskered by the existing theory.
 `ProfunctorReindexF` restricts the existing horizontal-composition functor;
@@ -3964,12 +2373,7 @@ comparison is deliberately not record equality: an identity functor map
 may change representatives while satisfying the specified equality law.
 Ordinary naturality already gives the profunctor transformation equation.
 
-`ProfunctorReindex` 对反函子／积函子预合成，变换及指定逆见证使用已有理论的
-右须化。`ProfunctorReindexF` 限制已有水平复合函子，其箭头作用按自然相等与
-右须化一致。此比较不要求记录相等：函子恒等映射可以改变代表而仍满足指定
-相等律。通常自然性已给出 profunctor 变换方程。
-
-[The Hom client](../theories/Cat/Profunctor/Hom.v) lifts the existing `HomF`
+[The Hom client](../../theories/Cat/Profunctor/Hom.v) lifts the existing `HomF`
 with independently declared carrier/equality bounds. It then reindexes to
 `Hom (F X) (G Y)` for two functors with a common target, using that target's
 original composition. The bounds must contain the actual Hom carrier and
@@ -3977,39 +2381,21 @@ Hom equality levels; no bound on indexing objects, ambient equality/carrier
 identification, global choice or resizing is asserted. This interface is
 intended for the later computation-Hom client without assuming strength.
 
-[Hom 客户端](../theories/Cat/Profunctor/Hom.v)以独立声明的载体／相等界提升
-已有 `HomF`，再对两个同目标函子重索引为 `Hom (F X) (G Y)`，使用原目标复合。
-大小界须容纳真实 Hom 载体及其相等层级，不要求指标对象界，不识别环境相等／
-载体，也不声称全局选择或 resizing。此接口供后续计算 Hom 客户端使用，
-目前不假定强度。
-
 This independent prerequisite does not compose profunctors or provide
 monoidal strength, promonads or the Arrow monoid characterization. Those
 clients follow after this foundation is integrated, with their own actual
 coend/existence/strength hypotheses. Conditional free constructions remain
 later work in the agreed semantic endpoint.
 
-此独立前置不复合 profunctor，不提供幺半强度、promonad 或 Arrow 幺半群刻画。
-这些客户端在基础集成后开展，并各自说明实际 coend／存在／强度前提。
-约定语义终点中的条件式自由构造仍属后续工作。
-
 ### Left-context profunctor strength
 
-### 左上下文 Profunctor 强度
-
-[The strength interface](../theories/Cat/Profunctor/Strength.v) adds chosen
+[The strength interface](../../theories/Cat/Profunctor/Strength.v) adds chosen
 left-context action to a supplied profunctor over a named monoidal category.
 For each context, it stores an ordinary natural transformation into
 `ProfunctorContext`, which reuses the existing reindexing along the same
 `BinoidalLF` at both ends. Naturality in input and output is inherited
 from that transformation, rather than stored again as separate laws.
 The derived `pstrength` notation is confined to `profunctor_scope`.
-
-[强度接口](../theories/Cat/Profunctor/Strength.v)在具名幺半范畴上，为给定
-profunctor 添加选定左上下文作用。每个上下文存储一个到 `ProfunctorContext`
-的通常自然变换；该目标复用沿两端同一 `BinoidalLF` 的已有重索引。
-输入及输出自然性从此变换继承，不另存一套定律。导出 `pstrength` 记号
-局限在 `profunctor_scope` 中。
 
 Changing the context satisfies a dinaturality equation: ordinary substitution
 can act at either end of the computation. It does not require the context
@@ -4020,14 +2406,9 @@ the existing computational Arrow context. It does not assume symmetry,
 cartesian products or effect interchange, and it does not choose a strength
 from an arbitrary ordinary profunctor.
 
-改变上下文时满足双自然性方程：通常代入可在计算任一端作用，不要求上下文
-映射可逆。单位及结合方程使用原幺半边界与指定相等，不要求对象、函数或定律
-记录的原生相等。这个左上下文约定与既有计算 Arrow 上下文一致，不要求
-对称性、笛卡尔积或效应交换，也不替任意通常 profunctor 自动选择强度。
-
-[The Hom client](../theories/Cat/Profunctor/HomStrength.v) explicitly selects
+[The Hom client](../../theories/Cat/Profunctor/HomStrength.v) explicitly selects
 the original fixed-context functor's arrow map as Hom strength.
-`HomProfunctorMapN`, added to the [Hom module](../theories/Cat/Profunctor/Hom.v),
+`HomProfunctorMapN`, added to the [Hom module](../../theories/Cat/Profunctor/Hom.v),
 first makes any supplied functor's lifted Hom map a natural transformation.
 The strength reuses this naturality; coherence reuses monoidal interchange
 and the existing left-unitor/associator naturality. Its lifted respectful
@@ -4037,28 +2418,14 @@ equality levels must fit their respective value bounds; object indices
 need not fit either bound. These are explicit constructions, with no chosen
 model instance registered by importing either module.
 
-[Hom 客户端](../theories/Cat/Profunctor/HomStrength.v)显式选择原固定上下文函子的
-箭头映射作为 Hom 强度。[Hom 模块](../theories/Cat/Profunctor/Hom.v)新增
-`HomProfunctorMapN`，先将任意给定函子的提升 Hom 映射组成自然变换。
-强度复用该自然性，相干性复用幺半交换律及已有左单位子／结合子自然性。
-其提升尊重分量保持值／相等界和上下文函子辅助定律界独立；只要求实际 Hom
-载体及相等层级分别容纳于对应值界，对象指标不必容纳其中。这些构造必须
-显式选择，导入任一模块均不注册选定模型实例。
-
 Neither module assumes or constructs a coend. Composition of profunctors,
 strength on that composition, strong promonads and the Arrow-monoid comparison
 remain subsequent stages, with their actual existence and size assumptions.
 The general conditional free constructions also remain open.
 
-两个模块均不假设或构造 coend。Profunctor 复合、复合上的强度、强 promonad
-及 Arrow 幺半群比较仍为后续阶段，须保留实际存在和大小条件；一般条件式
-自由构造也仍未完成。
-
 ### Ordinary profunctor composition through specified coends
 
-### 通过指定 coend 复合通常 Profunctor
-
-[Composition](../theories/Cat/Profunctor/Compose.v) takes a profunctor `P`
+[Composition](../../theories/Cat/Profunctor/Compose.v) takes a profunctor `P`
 from `C` to `D`, followed by `Q` from `D` to `E`. The composite is written
 `Q ∘Pr P` in `profunctor_scope`. Its kernel at outer boundaries `X,Z` has
 values `P(X,B)` paired with `Q(A,Z)` at the middle indices `A,B`.
@@ -4066,23 +2433,13 @@ The value-pair order is always the execution order: `P` first, then `Q`.
 Existing one-sided restrictions, whiskering and pointwise setoid products
 supply the kernel and its outer-boundary natural transformations.
 
-[复合](../theories/Cat/Profunctor/Compose.v)先取从 `C` 到 `D` 的 profunctor
-`P`，再取从 `D` 到 `E` 的 `Q`，在 `profunctor_scope` 中写作 `Q ∘Pr P`。
-固定外部边界 `X,Z` 后，核在中间指标 `A,B` 处的值为 `P(X,B)` 与 `Q(A,Z)`
-之对。值对顺序始终对应执行顺序：先 `P` 再 `Q`。已有单侧限制、须化与逐点
-广集积提供核及其外部边界自然变换。
-
 `HasProfunctorComp` chooses coends only for this kernel family. The resulting
 mixed-variance functor uses existing coend maps and their equality, identity
 and composition laws. Carrier and equality value levels remain independent;
 there is no implicit size order or completeness assumption. No strength is
 needed to compose ordinary profunctors.
 
-`HasProfunctorComp` 只为此核族选择 coend，得到的混合变元函子使用已有 coend
-映射及其相等、恒等和复合定律。值载体与相等层级保持独立，不隐含大小次序或
-余完备性假设。复合通常 profunctor 不需要强度。
-
-[Generators and descent](../theories/Cat/Profunctor/ComposeUniversal.v) retain
+[Generators and descent](../../theories/Cat/Profunctor/ComposeUniversal.v) retain
 the original diagonal coend injections. Intermediate arrows move from the
 output action on `P` to the input action on `Q` by the original cowedge
 law; identity actions are removed using the existing functor laws.
@@ -4092,13 +2449,7 @@ only its two endpoint coends; the full composite's dimap specializes that
 same equation. These wrappers keep the original transparent universal maps
 and specified equality, with no separate quotient or dual construction.
 
-[生成元与下降](../theories/Cat/Profunctor/ComposeUniversal.v)保留原对角 coend
-注入。中间箭头由原余楔定律在 `P` 的输出作用与 `Q` 的输入作用间移动，恒等
-作用由已有函子律移去。固定边界的注入、粘合、下降、计算、唯一性与重新插入
-只要求一个选定 coend；外部边界映射只要求两个端点的 coend，完整复合的
-`dimap` 特化同一方程。这些包装保留原透明泛映射及指定相等，不另建商或对偶构造。
-
-[The explicit setoid model](../theories/Instance/Set/ProfunctorComp.v) reuses
+[The explicit setoid model](../../theories/Instance/Set/ProfunctorComp.v) reuses
 `SetCat_Coend`. Its sufficient bounds concern the middle category alone:
 its object and Hom-carrier levels fit the value carrier, which fits the
 value-equality level. The middle Hom-equality level remains independent;
@@ -4107,35 +2458,19 @@ fit those value bounds. The model is explicitly enabled and does not assert
 fixed-size full-setoid self-indexing or resizing. Its sufficient bounds are
 not extra requirements on a separately supplied abstract coend.
 
-[显式广集模型](../theories/Instance/Set/ProfunctorComp.v)复用 `SetCat_Coend`。
-其充分界只针对中间范畴：对象及 Hom 载体层级容纳于值载体，后者容纳于值相等
-层级。中间 Hom 相等层级保持独立，因为本核不携带 Hom 权重。来源及目标范畴
-不必容纳于这些值界。模型须显式启用，不宣称固定大小全广集自索引或 resizing；
-这些充分界不是另行给定抽象 coend 的额外要求。
-
 Composition on input transformations, associators/unitors and their coherence,
 strength on the composite, strong promonads/Arrow monoids and the conditional
 free constructions remain subsequent independent stages.
 
-输入变换上的复合、结合子／单位子及相干性、复合上的强度、强 promonad／Arrow
-幺半群与条件式自由构造仍为后续独立阶段。
-
 ### Input transformations and the profunctor composition bifunctor
 
-### 输入变换与 Profunctor 复合双函子
-
-[Natural maps](../theories/Cat/Profunctor/ComposeMap.v) transform the two
+[Natural maps](../../theories/Cat/Profunctor/ComposeMap.v) transform the two
 kernel value coordinates by the supplied ordinary natural transformations.
 Their order is `P` then `Q`, while the composite and bifunctor arguments are
 written `Q` after `P`. The original naturality equations give the commuting
 square with outer boundary changes. The induced transformation of composites
 uses the existing coend map, its specified equality, and its identity and
 composition laws; no second universal-property argument is introduced.
-
-[自然映射](../theories/Cat/Profunctor/ComposeMap.v)用给定的通常自然变换改变核的
-两个值坐标，顺序为先 `P` 再 `Q`，而复合及双函子变元按 `Q` 在 `P` 之后书写。
-原自然性方程给出与外部边界改变的交换方块。诱导复合变换复用已有 coend
-映射、指定相等及恒等／复合定律，不另写第二份泛性质论证。
 
 A transformation between two composites requires only those two endpoint
 composition choices. Its chosen inverse is obtained by the same construction
@@ -4145,11 +2480,6 @@ descent require only the two individual kernel coends. These interfaces do
 not need a uniform family of choices or any size order between the value
 carrier and equality levels, or between those levels and category indices.
 
-两个复合之间的变换只要求这两个端点的复合选择。其选定逆是同一构造作用于
-给定输入逆变换，两条互逆定律使用 `NatEq`。固定外部边界的生成元计算及下降
-相容性只需两个单独的核 coend。这些接口不要求统一选择族，也不要求值载体
-与相等层级间、或这些层级与范畴指标间存在大小次序。
-
 `ProfunctorCompF` packages the bifunctor on the existing profunctor categories
 only after receiving a choice for every input pair explicitly. No global
 instance chooses such a family. The explicit setoid existence model keeps
@@ -4158,27 +2488,14 @@ fixed-size full-setoid self-indexing. Associators/unitors, their coherence,
 composite strength, strong promonad–Arrow comparisons and conditional free
 constructions remain separate subsequent stages.
 
-`ProfunctorCompF` 显式接收每个输入对的选择之后，才在已有 profunctor 范畴上
-打包双函子；没有全局实例选择该族。显式广集存在模型保留原来中间范畴的大小
-界，双函子不宣称固定大小全广集自索引存在。结合子／单位子及其相干、复合
-强度、强 promonad–Arrow 比较及条件自由构造仍为后续独立阶段。
-
-
 ### The co-Yoneda prerequisite for Hom composition units
 
-### Hom 复合单位的 co-Yoneda 前置
-
-[Co-Yoneda](../theories/Cat/Coend/Yoneda.v) treats any covariant setoid-valued
+[Co-Yoneda](../../theories/Cat/Coend/Yoneda.v) treats any covariant setoid-valued
 functor. Its kernel pairs a covariant value with a raised contravariant Hom
 weight. Evaluation on the original value at the target is a universal
 cowedge: every balanced operation factors uniquely through its component at
 the identity. The proof uses the original cowedge equation and functor laws,
 with Type-valued uniqueness and the existing opposite-end coend interface.
-
-[Co-Yoneda](../theories/Cat/Coend/Yoneda.v)处理任意协变广集值函子。其核将协变值
-与提升的反变 Hom 权重配对。到目标处原值的求值是泛余楔：每个平衡操作通过其
-恒等处分量唯一分解。证明使用原余楔方程和函子律，以及 Type 值唯一性和已有
-反 end 的 coend 接口。
 
 `CoyonedaCoend` explicitly enables only this particular coend on that original
 value; import installs no chosen instance. Object indices need not fit the
@@ -4191,12 +2508,6 @@ representable construction does not invoke
 the general setoid coend model, its index-size sufficient conditions, resizing
 or fixed-size full-setoid self-indexing.
 
-`CoyonedaCoend` 只在该原值上显式启用这一特殊 coend；导入不安装选定实例。
-对象指标不必容纳于值界，载体／相等值界间不要求大小次序。真实 Hom 载体和相等
-层级须分别容纳于对应值界。核读取给定函子的操作并保留其独立辅助定律界，按坐标
-复用原函子律及 Hom 复合律。这一直接可表构造不调用一般广集 coend 模型、其指标
-大小充分条件、resizing 或固定大小全广集自索引原则。
-
 With any independently supplied coend of the same kernel, the original
 coend mediator evaluates generators and identity insertion gives its inverse.
 Both complete inverse laws use specified equality. Comparisons commute with
@@ -4205,27 +2516,14 @@ only their two endpoint coends. Hom-composition unitors, associators and
 coherence, composite strength and the later strong-promonad/Arrow/free
 constructions remain dependent stages; this module does not claim them.
 
-对独立给定的同核 coend，原 coend 中介求值生成元，恒等插入给出其逆。两条完整
-逆律使用指定相等。比较与输入自然变换及目标对象改变交换，只需对应两个端点
-的 coend。Hom 复合单位子、结合子及相干、复合强度和后续强 promonad／Arrow／
-自由构造仍为依赖阶段，本模块未声称完成这些构造。
-
-
 ### The left Hom unit for profunctor composition
 
-### Profunctor 复合的左 Hom 单位
-
-[The left unit](../theories/Cat/Profunctor/LeftUnit.v) composes a profunctor
+[The left unit](../../theories/Cat/Profunctor/LeftUnit.v) composes a profunctor
 from C to D with the raised Hom profunctor of D. Its actual composition
 kernel is naturally isomorphic to the covariant co-Yoneda kernel of the
 output fibre. The comparison retains the value and represented arrow,
 rewrapping lifts at their respective bounds and removing Hom's identity
 postcomposition in specified equality. It identifies no functor records.
-
-[左单位](../theories/Cat/Profunctor/LeftUnit.v)将从 C 到 D 的 profunctor 与
-D 的提升 Hom profunctor 复合。其实际复合核与输出单侧函子的协变 co-Yoneda
-核自然同构。比较保留值和所表示箭头，按各自大小界重新包装提升，并在指定相等
-下消去 Hom 的恒等后合成，不等同函子记录。
 
 The co-Yoneda mediator and uniqueness witness directly give the Hom kernel's
 universal evaluation cowedge. `ProfunctorLeftUnitComp` explicitly selects
@@ -4233,11 +2531,6 @@ this composition on the original P values. Only D's Hom carrier and equality
 must fit the corresponding independent value bounds; no object-index bound,
 order between the value bounds or general setoid coend model is required.
 Import does not choose a model globally.
-
-co-Yoneda 中介及唯一性见证直接给出 Hom 核的泛求值余楔。
-`ProfunctorLeftUnitComp` 在原 P 值上显式选择此复合。只需 D 的 Hom 载体和相等
-分别容纳于独立的对应值界，不要求对象指标界、两个值界间的次序或一般广集
-coend 模型。导入不全局选择模型。
 
 For any independently supplied fixed-boundary coend, evaluation and identity
 insertion are transparent inverses on the whole coend. A supplied composition
@@ -4248,28 +2541,15 @@ isomorphism-square theorem. The right Hom unit still requires the opposite
 and index/factor reorientation stage; associativity, coherence, composite
 strength and the strong-promonad/Arrow/free constructions remain later work.
 
-对独立给定的固定边界 coend，求值与恒等插入是整个 coend 上的透明逆。给定复合
-族后，它们组成自然单位子及其逆。求值也与 P 的自然变换交换，其固定边界方块
-只需两个单独的 coend；逆方块继承一般同构方块定理。右 Hom 单位仍需反范畴和
-指标／因子重排阶段；结合、相干、复合强度和强 promonad／Arrow／自由构造仍待
-后续工作。
-
-
 ### Reversing end/coend indices without reversing values
 
-### 反转 end/coend 指标而保持值域
-
-[The index adapter](../theories/Cat/Functor/IndexReversal.v) exchanges the
+[The index adapter](../../theories/Cat/Functor/IndexReversal.v) exchanges the
 mixed-variance coordinates and views the index as its opposite, retaining the
 codomain. It reuses product projection/pairing and the double-opposite
 adapter; transformations retain their direction, components and computed
 inverses. It differs from `BifunctorOpF`, which reverses the codomain too.
 
-[指标适配](../theories/Cat/Functor/IndexReversal.v)交换混合变元坐标，将指标视作
-反范畴，同时保持值域。它复用积投影／配对及双重反范畴适配；自然变换保留方向、
-分量和计算得到的逆。这不同于也反转值域的 `BifunctorOpF`。
-
-[The end wrappers](../theories/Cat/End/IndexReversal.v) retain each wedge's
+[The end wrappers](../../theories/Cat/End/IndexReversal.v) retain each wedge's
 apex and exact legs, reading its commuting equation in reverse. The existing
 universal end witness receives the backward or forward test-wedge wrapper;
 no new existence or uniqueness proof is required. `EndIndexOp` and
@@ -4277,12 +2557,7 @@ no new existence or uniqueness proof is required. `EndIndexOp` and
 function. Their mediator laws use the original mediator on the wrapped test
 wedge, without equating records or law witnesses.
 
-[End 包装](../theories/Cat/End/IndexReversal.v)保留各楔的顶点和原腿，反向读取其
-交换方程。原泛 end 见证接受反向或正向测试楔包装，不需要新的存在或唯一性证明。
-`EndIndexOp` 与 `EndIndexUnop` 显式保留选定顶点及同一分解函数。中介定律将
-原中介用于包装的测试楔，不等同记录或定律见证。
-
-[The coend wrappers](../theories/Cat/Coend/IndexReversal.v) read those same
+[The coend wrappers](../../theories/Cat/Coend/IndexReversal.v) read those same
 end witnesses in the opposite codomain, rebundling the stored wedge
 presentation rather than identifying the functor records. Both directions
 retain the supplied apex, injections and descent function. No second dual
@@ -4290,27 +2565,15 @@ universal-property proof, global instance, choice or notation is introduced.
 The constructions impose no new object, Hom or value-size ordering. Existing
 co-Yoneda or generated setoid models still require their own actual bounds.
 
-[Coend 包装](../theories/Cat/Coend/IndexReversal.v)在反值域中读取同一 end 见证，
-重包装存储的楔表示而不等同函子记录。两个方向均保留给定顶点、注入及下降函数，
-不引入第二份对偶泛性质证明、全局实例、选择或记号。构造不增加对象、Hom 或值界
-的排序；已有 co-Yoneda 或生成广集模型仍须满足各自真实大小条件。
-
 This independently reusable prerequisite supports the planned right Hom unit:
 apply the covariant co-Yoneda theory on the opposite category, then explicitly
 reorient indices and exchange the value/Hom factors with their lift wrappers.
 That dependent unit, its natural comparisons and later associativity,
 coherence, composite strength and free constructions are not claimed here.
 
-这一独立可复用前置支持计划中的右 Hom 单位：在反范畴上应用协变 co-Yoneda，
-再显式重定向指标，并交换值／Hom 因子及其提升包装。这里不声称已交付该依赖
-单位、其自然比较或后续结合、相干、复合强度及自由构造。
-
-
 ### The right Hom unit from opposite co-Yoneda
 
-### 从反范畴上的 co-Yoneda 得到右 Hom 单位
-
-[The right unit](../theories/Cat/Profunctor/RightUnit.v) places the raised
+[The right unit](../../theories/Cat/Profunctor/RightUnit.v) places the raised
 Hom profunctor of C before P from C to D. Reverse the original composition
 kernel's index, then exchange its Hom/value factors and rewrap the represented
 arrow's lift. This gives a natural isomorphism to the existing covariant
@@ -4319,21 +2582,11 @@ The original mediator and uniqueness witness apply there; index-unop reads
 them back on the original kernel. No contravariant co-Yoneda or dual universal
 property is proved independently.
 
-[右单位](../theories/Cat/Profunctor/RightUnit.v)在从 C 到 D 的 P 之前放置 C 的
-提升 Hom profunctor。反转原复合核的指标，再交换 Hom／值因子并重新包装所表示
-箭头的提升，即得到与 C 的反范畴上 P 的逆变单侧函子之协变 co-Yoneda 核的自然
-同构。在那里应用原中介及唯一性见证，再由指标反向包装读回原核。不独立证明
-逆变 co-Yoneda 或对偶泛性质。
-
 `ProfunctorRightUnitComp` explicitly chooses this special composition on the
 original P values. The actual requirements are C Hom carrier ≤ value carrier
 and C Hom equality ≤ value equality, without ordering the two value bounds.
 No object-index bound or bound on D's Hom/equality is added; import selects
 no composition model globally.
-
-`ProfunctorRightUnitComp` 在原 P 值上显式选择这一特殊复合。真实条件为 C 的
-Hom 载体及 Hom 相等分别容纳于对应值界，不要求两个值界之间的次序，也不增加
-对象指标界或 D 的 Hom／相等界。导入不选择全局复合模型。
 
 For any supplied single kernel coend, its original mediator evaluates an
 input arrow by preprocessing, and its original injection inserts the identity.
@@ -4343,36 +2596,19 @@ naturality uses the existing Hom and single-coordinate action laws; input
 naturality at one boundary needs only the two endpoint coends. Its inverse
 square is the existing general inverse-isomorphism-square theorem.
 
-对任意给定的单个核 coend，原中介以预处理求值输入箭头，原注入插入恒等；两者
-是整个 coend 上的透明逆。给定复合族后组成自然右单位子及其计算逆。外部边界
-自然性使用已有 Hom 和单坐标作用定律；一个边界处的输入自然性只需两端 coend，
-其逆方块就是已有一般逆同构方块定理。
-
 Both Hom units are now available under their respective actual bounds and
 supplied choices. Associativity, triangle/pentagon coherence, composite
 strength and the strong-promonad/Arrow/free constructions remain separate
 stages; these units alone do not assert a monoidal profunctor category.
 
-两个 Hom 单位现已分别在各自真实大小界和给定选择下提供。结合、三角形／五边形
-相干、复合强度和 strong-promonad／Arrow／自由构造仍为独立阶段；仅有这些单位
-不声称已给出幺半 profunctor 范畴。
-
-
 ### Endoprofunctor composition as a monoidal category
 
-### 自 Profunctor 复合作为幺半范畴
-
-[The monoidal assembly](../theories/Cat/Profunctor/Monoidal.v) retains the
+[The monoidal assembly](../../theories/Cat/Profunctor/Monoidal.v) retains the
 existing composition bifunctor's objects, input maps and functor laws, with its
 usual order: the left factor follows the right
 factor, while generated pairs retain execution order. Fix a uniform family of
 chosen kernel coends. The tensor uses those same choices, and its associator
 is the inverse of the previously constructed ordered reassociation.
-
-[幺半装配](../theories/Cat/Profunctor/Monoidal.v)保留已有复合双函子的对象、输入
-映射及函子律，并使用其通常次序：
-左因子在右因子之后作用，生成对仍保持执行次序。固定统一选定核 coend 族后，
-张量使用同一批选择，其结合子为已有有序重结合的逆。
 
 The inverse input square supplies natural associativity. The accepted
 pentagon is reversed by the general `iso_pentagon_inv`; the existing
@@ -4381,11 +2617,6 @@ inverse input maps. The Hom units retain their original identity-insertion
 inverses. Moving the old associator across the accepted triangle gives the
 triangle for the inverse associator. `BifctMonoidal` supplies interchange
 and the remaining separate naturality, without re-proving coend universality.
-
-逆输入方块给出自然结合性。一般 `iso_pentagon_inv` 反转已验收的五边形，已有
-复合映射保相等律比较其须化逆与原生逆输入映射。Hom 单位保留原恒等插入逆；
-将原结合子移过已验收三角形，得到逆结合子的三角形。`BifctMonoidal` 提供
-交换律及其余分别自然性，不重复证明 coend 泛性质。
 
 Associativity and its pentagon need no Hom-unit bounds. Full assembly requires
 the base Hom carrier and equality to fit the corresponding independent value
@@ -4396,35 +2627,19 @@ coends. The reconstructed tensor map agrees with the supplied composition map
 by natural equality, and identity components give their tensor-functor
 comparison. No equality of functor records or law witnesses is required.
 
-结合性及其五边形不需要 Hom 单位大小界。完整装配要求基 Hom 载体与相等分别
-容纳于对应独立值界，不增加对象指标界或两个值界间的次序。统一复合存在性仍为
-显式输入；导入不选择全局模型，也不声称固定大小全广集自索引 coend。重建张量
-映射在自然相等下等于给定复合映射，恒等分量给出张量函子比较；不要求函子记录
-或定律见证相等。
-
 This packages ordinary endoprofunctor composition. Composite strength, its
 coherent compatibility, the strong-promonad/Arrow characterization and
 conditional free constructions remain separate stages.
 
-这里打包的是普通自 Profunctor 复合。复合强度及其相干相容、强 promonad／Arrow
-刻画和有充分条件的自由构造仍为独立阶段。
-
 ### Strength on a supplied profunctor composite
 
-### 给定 Profunctor 复合上的强度
-
-[Composite strength](../theories/Cat/Profunctor/ComposeStrength.v) applies the
+[Composite strength](../../theories/Cat/Profunctor/ComposeStrength.v) applies the
 two supplied strengths to a generating pair, then inserts at the intermediate
 object extended by the same left context. Single-sided naturality is derived
 from the original strength transformation. It turns the balance equation into
 original coend gluing, so the existing balanced-cowedge constructor and
 transparent mediator supply descent and its generating equation. The original
 coend extensionality gives uniqueness on the entire coend.
-
-[复合强度](../theories/Cat/Profunctor/ComposeStrength.v)将两个给定强度施加于
-生成对，再在被同一左上下文扩展的中间对象处注入。单侧自然性从原强度自然变换
-导出，将平衡方程转为原 coend 粘合。因此已有平衡余楔构造子及透明中介提供下降
-和生成元计算律；原 coend 外延性给出整个 coend 上的唯一性。
 
 Balanced legs need only the target kernel coend. Descent and its uniqueness
 need that target and the original source kernel coend, with independent
@@ -4434,12 +2649,6 @@ naturality follows on generators. Context dinaturality, including
 noninvertible substitutions, and the unit/associativity strength equations
 move the middle context map, unitor or associator between factors by gluing.
 No separate universal-property proof is introduced.
-
-平衡腿只需目标核 coend。下降及其唯一性需要此目标与原来源核 coend，两处可以
-独立选择。打包自然变换与 `ProfCompStrength` 只使用这两个固定 profunctor 的
-给定复合族。端点自然性在生成元上成立；上下文双自然性（包括不可逆代入）及
-单位／结合强度方程通过粘合，在因子之间移动中间上下文映射、单位子或结合子。
-不另证明泛性质。
 
 The base is monoidal; symmetry, cartesian operations and tensor preservation
 of coends are unnecessary. Value carrier/equality levels remain independent;
@@ -4452,29 +2661,15 @@ and the composition unitors/associator, the strong-profunctor monoidal
 packaging, strong-promonad/Arrow comparison and conditional free constructions
 remain subsequent stages.
 
-基范畴只需幺半结构，无须对称性、笛卡尔运算或张量保持 coend。值载体与相等层级
-保持独立，抽象构造不增加对象指标界或 Hom 大小界。存在性仍须显式给定：生成
-广集模型保留其真实大小条件，特殊 Hom coend 则可由 co-Yoneda 直接提供。导入
-不选择全局强度／coend 模型，也不声称固定大小全 SetCat 自索引 coend。保持强度
-的输入映射及复合单位子／结合子的相容性、强 Profunctor 幺半打包、强 promonad／
-Arrow 比较和条件自由构造仍为后续阶段。
-
 ### Strength-preserving transformations and their category
 
-### 保持强度的变换及其范畴
-
-[Strength-preserving natural transformations](../theories/Cat/Profunctor/StrengthNatural.v)
+[Strength-preserving natural transformations](../../theories/Cat/Profunctor/StrengthNatural.v)
 commute with extending both profunctor ends by the same left context. The
 Type-valued predicate is placed on the original transformation, whose endpoint
 naturality is already supplied. Natural equality transports preservation;
 identity and vertical composition preserve it. A specified natural inverse
 preserves strength by the existing `iso_square_inv` on each context square,
 without a new naturality or inverse-universality argument.
-
-[保持强度的自然变换](../theories/Cat/Profunctor/StrengthNatural.v)与在 profunctor
-两端扩展同一左上下文交换。Type 值谓词施加于原变换，其端点自然性已有给定。
-自然相等运输保持性，恒等及竖直复合保持该性质。指定自然逆的保持性由各上下文
-方块上的原 `iso_square_inv` 提供，不另证明自然性或逆的泛性质。
 
 `StrongProf` stores one underlying functor and one strength relative to the
 named ambient monoidal structure. The functor is the sole coercion view;
@@ -4484,11 +2679,6 @@ preservation witnesses. Its faithful forgetful functor keeps the original
 functor and component maps, and `StrongProfIso` lifts a supplied natural
 isomorphism with exactly its chosen forward and inverse maps.
 
-`StrongProf` 相对于具名环境幺半结构存储一个底层函子及一个强度。函子是唯一
-强制转换视图，`hasProfStrength` 暴露同一份存储见证。`StrongProfCat` 的 Hom
-广集是原自然变换的子集，相等不比较保持性见证。忠实忘却函子保留原函子及分量
-映射，`StrongProfIso` 用给定自然同构的同一选定正向与逆向映射提升该同构。
-
 This category requires no coends, symmetry, cartesian operations or bounds on
 base objects/Homs relative to value universes. Carrier and equality bounds
 remain independent. It does not yet lift profunctor composition to a strong
@@ -4496,16 +2686,9 @@ bifunctor or establish strength compatibility of its unitors/associator.
 Those constructions, strong monoidal packaging, the strong-promonad/Arrow
 comparison and conditional free constructions remain dependent stages.
 
-此范畴不要求 coend、对称性、笛卡尔运算或基对象／Hom 相对于值宇宙的大小界。
-载体及相等大小界保持独立。目前尚未将 profunctor 复合提升为强双函子，也未
-建立复合单位子／结合子的强度相容性；这些构造、强幺半打包、强 promonad／Arrow
-比较及条件自由构造仍为依赖阶段。
-
 ### Strong composition maps and bifunctor
 
-### 强复合映射及双函子
-
-[Strong composition](../theories/Cat/Profunctor/StrongCompose.v) lifts the
+[Strong composition](../../theories/Cat/Profunctor/StrongCompose.v) lifts the
 original coend input map when both transformations preserve their supplied
 strengths. At a fixed context and outer boundary, the square needs only four
 individual coends: input and output choices before and after context extension.
@@ -4513,23 +2696,12 @@ On generators it is exactly the pair of input preservation equations; original
 coend extensionality extends it to the full source coend. No tensor preservation
 of coends, symmetry, cartesian operation or additional base-size bound is used.
 
-[强复合](../theories/Cat/Profunctor/StrongCompose.v)在两个变换保持给定强度时，
-提升原 coend 输入映射。固定上下文和外部边界处的方块，只需要上下文扩展前后
-输入和输出的四个单独 coend 选择。在生成元上，方块恰为两个输入保持性方程；
-原 coend 外延性将其延拓到整个来源 coend。不使用张量保持 coend、对称性、
-笛卡尔运算或额外的基范畴大小界。
-
 Two supplied composition families suffice for `StrongProfCompMap` and
 `StrongProfCompIso`. The latter lifts the original chosen coend isomorphism
 with its original inverse. `StrongProfComp` stores that same composite functor
 and its strength; subset arrow equality compares only underlying natural
 transformations. The new respectfulness law therefore ignores preservation
 witnesses while retaining them as Type-valued data.
-
-给定两个复合族即足以构造 `StrongProfCompMap` 与 `StrongProfCompIso`。后者用
-原逆提升原选定 coend 同构。`StrongProfComp` 存储同一复合函子及其强度；子集
-态射相等只比较底层自然变换。因此新的尊重性律不比较保持性见证，同时仍将见证
-保留为 Type 值数据。
 
 `StrongProfCompF` requires uniform composition choices only for pairs of
 strong profunctors. It reuses the old map identity/composition laws, with the
@@ -4540,9 +2712,3 @@ construction does not assert fixed-size full-SetCat self-indexed existence.
 Strength compatibility of the unitors and associator, strong monoidal
 packaging, the strong-promonad/Arrow comparison and conditional free
 constructions remain subsequent stages.
-
-`StrongProfCompF` 只要求为强 profunctor 对给出统一复合选择。它复用原映射的
-恒等及复合律，保留通常的左在右之后次序；忘却其态射，在指定自然相等下得到
-原输入映射。载体及相等层级保持独立。导入模块不选择全局 coend 模型，构造
-也不声称固定大小全 SetCat 自索引存在性。单位子及结合子的强度相容性、强
-幺半打包、强 promonad／Arrow 比较和条件自由构造仍为后续阶段。

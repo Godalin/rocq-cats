@@ -16,11 +16,6 @@ Local Open Scope nat_scope.
     a transformation between constant functors from the terminal
     presentation. The bridge retains this actual directed edge. *)
 
-(** * 不可逆自然变换给出可计算同伦
-
-    步行箭头有两个不相等的对象，其生成箭头给出从终呈现出发的常值函子之间的
-    自然变换。此桥梁保留这条实际有向边。 *)
-
 Program Definition ArrowObjectsF
   : Fct (EqGpd BoolS) ArrowShape
   :=
@@ -74,8 +69,6 @@ Definition ArrowHomotopy
 (** A constant input edge and the generic time edge evaluate the stored
     witness, including its two distinct endpoint labels. *)
 
-(** 常值输入边与泛时间边对所存见证求值，并保留两个不同的端点标签。 *)
-
 Definition terminal_edge
   : TerminalNerve 1
   := ⟨ConstF [Ord 1] (C := VtxCat TerminalObjectsF) tt⟩ᵥ.
@@ -102,8 +95,6 @@ Proof. intros [g H]. destruct g. Qed.
 
 (** Evaluate both endpoint restrictions of the actual stored map. *)
 
-(** 对实际所存映射的两个端点限制作求值。 *)
-
 Example initial_restriction_computes
   : lower (homotopy_map ArrowHomotopy 1
       (SimplicialEndpointN TerminalNerve false 1 terminal_edge))
@@ -118,8 +109,6 @@ Proof. reflexivity. Qed.
 
 (** These two maps are homotopic while retaining unequal vertex images. *)
 
-(** 这两个映射具有同伦，同时仍保留不相等的顶点像。 *)
-
 Example nerve_endpoints_remain_distinct
   : ¬ ((VtxNerveN (EndpointVertexF false) : TerminalNerve ⇒ ArrowNerve)
       ≈N VtxNerveN (EndpointVertexF true)).
@@ -132,8 +121,6 @@ Qed.
 
 (** A non-thin target detects the actual component arrow as well. In the
     xor monoid the nonidentity central loop defines a self-transformation. *)
-
-(** 非薄目标还可检验实际分量箭头。异或幺半群的非恒等中心环路定义一个自变换。 *)
 
 
 Definition BooleanObjectsF

@@ -17,10 +17,6 @@ Local Open Scope ordinal_scope.
     Projection onto the actual triangle parameter supplies an extension.
     Its two consecutive edges compose to the long edge without Kan. *)
 
-(** * 可表三角形中的实际有序边
-
-    向实际三角参数的投影给出延拓；两条相继边无需 Kan 即复合为长边。 *)
-
 Definition P
   : Fct (Δ^op) SetCat
   := Δ[0].
@@ -64,11 +60,6 @@ Proof. vm_compute. reflexivity. Defined.
     Boolean witnesses compare native-distinct data. Start from the
     already integrated elementary construction, retaining its reversed
     direction; a separately supplied triangle then reverses that cylinder. *)
-
-(** ** 带独立见证的实际相对延拓
-
-    布尔见证比较原生不同的数据。从已集成的初等构造出发，保留其反向方向；
-    再用另行给定的三角形反转该柱。 *)
 
 Program Definition WitnessS
   : SetC
@@ -211,11 +202,6 @@ Fail Definition no_directed_equivalence
     In the interval, retaining edge 01 and making 02 constant at zero
     would require a monotone triangle with vertex values (0,1,0).
     This is impossible. The extension input cannot be dropped. *)
-
-(** ** 并非每对边都有三角延拓
-
-    在区间中，保留边 01 并使边 02 常为零，会要求一个顶点值为 (0,1,0) 的
-    保序三角形，这是不可能的。因此不能删去延拓输入。 *)
 
 Definition interval_first
   : SimplicialCylinderF P ⇒ Δ[1]

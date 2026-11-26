@@ -10,8 +10,6 @@ Local Open Scope nat_scope.
 
 (** * Computing with Time and Endpoint Restrictions *)
 
-(** * 时间及端点限制的计算 *)
-
 Definition SmallInterval
   : Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}
   := Δ[1].
@@ -27,16 +25,12 @@ Definition PointPath
 
 (** The stored witness retains the whole nonconstant time edge. *)
 
-(** 存储的见证保留整条非常值时间边。 *)
-
 Example interval_path_computes
   : fin_rank (lower (homotopy_map PointPath 1
       (tt, simplex_generic 1)) (fin_next fin_first)) = 1.
 Proof. reflexivity. Qed.
 
 (** Its first restriction chooses vertex zero. *)
-
-(** 第一个限制选取顶点零。 *)
 
 Example initial_endpoint_computes
   : fin_rank (lower ((homotopy_map PointPath ∘Nv
@@ -45,16 +39,12 @@ Proof. reflexivity. Qed.
 
 (** Its second restriction chooses vertex one. *)
 
-(** 第二个限制选取顶点一。 *)
-
 Example final_endpoint_computes
   : fin_rank (lower ((homotopy_map PointPath ∘Nv
       SimplicialEndpointN SmallPoint true) 0 tt) fin_first) = 1.
 Proof. reflexivity. Qed.
 
 (** A constant homotopy keeps its source simplex at every time. *)
-
-(** 恒定同伦在每个时间保留其源单形。 *)
 
 Example constant_homotopy_computes
   : let H := SimplicialConstantHomotopy (@IdN _ _ SmallInterval) in
@@ -65,8 +55,6 @@ Proof. reflexivity. Qed.
 
 (** Precomposition retains the stored time coordinate. *)
 
-(** 预复合保留存储的时间坐标。 *)
-
 Example precomposition_computes
   : let H := SimplicialPreHomotopy PointPath (@IdN _ _ SmallPoint) in
     fin_rank (lower (homotopy_map H 1 (tt, simplex_generic 1))
@@ -75,8 +63,6 @@ Proof. reflexivity. Qed.
 
 (** Postcomposition uses the original underlying witness map. *)
 
-(** 后复合使用原有底层见证映射。 *)
-
 Example postcomposition_computes
   : let H := SimplicialPostHomotopy (@IdN _ _ SmallInterval) PointPath in
     fin_rank (lower (homotopy_map H 1 (tt, simplex_generic 1))
@@ -84,8 +70,6 @@ Example postcomposition_computes
 Proof. reflexivity. Qed.
 
 (** Horizontal composition supplies the same time to the second homotopy. *)
-
-(** 水平复合将同一个时间提供给第二个同伦。 *)
 
 Example horizontal_composition_computes
   : let K := SimplicialIntervalHomotopy SmallInterval in
@@ -96,8 +80,6 @@ Example horizontal_composition_computes
 Proof. reflexivity. Qed.
 
 (** A nontrivial homotopy coexists with distinct boundary maps. *)
-
-(** 非平凡同伦与不同边界映射同时存在。 *)
 
 Example homotopic_points_are_not_equal
   : ¬ ((SimplicialIntervalPointN false : SmallPoint ⇒ SmallInterval) ≈N

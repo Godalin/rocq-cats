@@ -6,8 +6,6 @@ From Cats Require Import
 
 (** * Relation Sum Interface Regressions *)
 
-(** * 关系和接口的回归检查 *)
-
 Local Open Scope relation_scope.
 Local Open Scope cat_scope.
 
@@ -18,8 +16,6 @@ Constraint s < a.
 Context (A : Type@{a}) (R : A → A → Type@{r}) (S : A → A → Type@{s}).
 
 (** Small and differently sized summands do not enlarge to the carrier. *)
-
-(** 较小且大小不同的加数不必提升到载体层级。 *)
 
 Definition small_relation_sum
   : A → A → Type@{s}
@@ -38,15 +34,11 @@ Context (R S : RelationFamily@{i a r _} A).
 
 (** Distribution preserves the separated levels of indexed contexts. *)
 
-(** 分配保持带索引上下文的各分离层级。 *)
-
 Definition separated_context_sum
   : (R ⊕ᵢ S)^C[K] ≈ᵢ (R^C[K] ⊕ᵢ S^C[K])
   := context_closure_sum K R S.
 
 (** The categorical coproduct interface accepts these same objects. *)
-
-(** 范畴余积接口接受这些相同对象。 *)
 
 Definition separated_relation_coproduct
   : @is_coproduct (RelationFamilyCat A) R S (R ⊕ᵢ S)
@@ -60,8 +52,6 @@ Section Computations.
 
 (** These two rule families carry different data, retained by coproduct
     elimination through the categorical interface. *)
-
-(** 两个规则族携带不同数据；经范畴接口作余积消去时仍保留这些数据。 *)
 
 Definition NumberRule (_ : unit) (_ _ : bool)
   : Type
@@ -81,8 +71,6 @@ Proof. reflexivity. Qed.
 
 (** Importing relation paths and category notation together is supported.
     Moving a tag outside a context also retains the labeled operation. *)
-
-(** 可同时导入关系路径与范畴记法。将标签移到上下文外，也保留带标签的操作。 *)
 
 Program Definition BooleanContexts
   : ContextSystem (λ _ : unit, bool)

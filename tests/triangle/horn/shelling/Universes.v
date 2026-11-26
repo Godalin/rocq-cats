@@ -6,18 +6,11 @@ Local Open Scope ordinal_scope.
 
 (** * Actual Horn Membership at Independent Value Sizes *)
 
-(** * 独立取值大小下的实际 horn 隶属 *)
-
 (** ** Lower Equality
 
     Turn the raw intersection factor into an actual horn element at
     strict carrier/equality sizes, and read one back. Arbitrary operators
     and region witnesses are opaque context; no Kan structure is given. *)
-
-(** ** 较低相等层级
-
-    在严格载体／相等大小下，将原始交叠分解构成实际 horn 元素，并反向读取。
-    任意算子与区域见证作为不透明上下文，不提供 Kan 结构。 *)
 
 Section lowerSizes.
 Universes l u p.
@@ -65,11 +58,6 @@ End lowerSizes.
     Turn the raw intersection factor into an actual horn element at
     strict carrier/equality sizes, and read one back. Arbitrary operators
     and region witnesses are opaque context; no Kan structure is given. *)
-
-(** ** 较高相等层级
-
-    在严格载体／相等大小下，将原始交叠分解构成实际 horn 元素，并反向读取。
-    任意算子与区域见证作为不透明上下文，不提供 Kan 结构。 *)
 
 Section higherSizes.
 Universes l u p.

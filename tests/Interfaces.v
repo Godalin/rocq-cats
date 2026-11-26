@@ -19,8 +19,6 @@ From Cats Require Import
 
 (** Coskeletal vertex-nerve structures also require explicit enabling. *)
 
-(** 顶点 nerve 的余骨架结构同样需要显式启用。 *)
-
 Section VertexCoskeletalChoice.
 Context {X : SetC} {C : Cat} (T : Fct (EqGpd X) C).
 
@@ -30,8 +28,6 @@ Fail Definition unchosen_vertex_coskeletal
 End VertexCoskeletalChoice.
 
 (** Coproducts, equalizers, coequalizers and pushouts require explicit choices. *)
-
-(** 余积、等化子、余等化子和推出须显式选定。 *)
 
 Fail Definition unchosen_set_coproducts
   : HasCoproduct SetCat
@@ -53,8 +49,6 @@ Context (p1 : Hom P X) (p2 : Hom P Y).
 
 (** A pair of legs alone must not supply a mediator for a noncommuting cone. *)
 
-(** 仅有两条锥腿不足以为不交换的锥提供中介。 *)
-
 Fail Definition mediator_without_commutativity : Hom P (Pb f g) :=
   @pb C HP X Y Z f g P p1 p2.
 
@@ -65,8 +59,6 @@ Context {C : Cat} `{HT : !HasTerminal C} `{HC : !HasSubObjClassifier C HT}.
 Context {X Y : @Ob C} (m : X ↣ Y).
 
 (** The selected square is not evidence that an arbitrary candidate classifies m. *)
-
-(** 选定方形不能证明任意候选都分类给定单态射。 *)
 
 Fail Definition arbitrary_candidate_unique (c : Hom Y Ω) : c ≈ χ m :=
   that (classifier_char_unique (m := m)) c (this (classifier_char_unique (m := m))).
@@ -79,15 +71,11 @@ From Cats Require Import
 
 (** The standard terminal object and products induce the cartesian tensor on setoids. *)
 
-(** 标准终对象和积在广集上诱导笛卡尔张量。 *)
-
 Definition inferred_set_monoidal
   : HasMonoidal SetCat
   := ltac:(typeclasses eauto).
 
 (** The same tensor supplies the underlying binoidal actions. *)
-
-(** 同一张量也给出底层双张量作用。 *)
 
 Definition inferred_set_binoidal
   : HasBinoidal SetCat
@@ -101,10 +89,6 @@ From Cats Require Import
     A fixed tensor may have only an associator or only unitors. Inheriting
     one package must not select the other or a complete extension. *)
 
-(** ** 独立的预幺半选择
-
-    固定张量可以只具有结合子或单位子；继承一份选择不得选定另一份或完整扩展。 *)
-
 Section AssociatorChoice.
 Context {C : Cat} `{BC : !HasBinoidal C} `{AC : !@HasTensorAssoc C BC}.
 
@@ -115,8 +99,6 @@ Fail Definition unchosen_unitors
 End AssociatorChoice.
 
 (** Unit choices alone likewise select no associator. *)
-
-(** 同样，单独的单位选择不选定结合子。 *)
 
 Section UnitorChoice.
 Context {C : Cat} `{BC : !HasBinoidal C} `{UC : !@HasTensorUnitors C BC}.
@@ -133,16 +115,11 @@ From Cats Require Import
 (** Bundling the underlying functor must not register a chosen lax structure
     for the concrete model. Clients choose identity or constant explicitly. *)
 
-(** 打包底层函子不得为具体模型注册选定 lax 结构；恒等及常值结构由客户端
-    显式选择。 *)
-
 Fail Definition unchosen_set_lax_monoidal
   : @LaxMonoidalFct _ _ SetCartMonoidal SetCartMonoidal
   := ltac:(typeclasses eauto).
 
 (** Adding invertible comparisons must not choose a monoidal functor. *)
-
-(** 增加比较的可逆性不得自动选取幺半函子。 *)
 
 Fail Definition unchosen_set_monoidal_fct
   : @MonoidalFct _ _ SetCartMonoidal SetCartMonoidal
@@ -152,8 +129,6 @@ From Cats Require Import
   Cat.Applicative.Core.
 
 (** Importing the theory must not select an Applicative on the model. *)
-
-(** 导入理论不得为模型自动选定 Applicative。 *)
 
 Fail Definition unchosen_set_applicative
   : @Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
@@ -167,8 +142,6 @@ From Cats Require Import
 
 (** Canonical projections infer the specified set equality from the carrier
     types, without an explicit set annotation or comparison of law fields. *)
-
-(** 典范投影从载体类型推断指定广集相等，无须显式标注广集或比较定律字段。 *)
 
 Definition inferred_family_map_equality {X : SetC} {A B : FamS X}
     (f g : A →Fam B)
@@ -186,8 +159,6 @@ From Cats Require Import
 
 (** The general theorem does not install a chosen free-object structure. *)
 
-(** 一般定理不自动注册选定自由对象结构。 *)
-
 Fail Definition unchosen_free_objects
   : HasFreeObj (@IdF SetCat)
   := ltac:(typeclasses eauto).
@@ -202,8 +173,6 @@ From Cats Require Import
 (** Bundled preservation does not select concrete cartesian or CCC functors
     merely by import. *)
 
-(** 导入打包保持性接口不会自动选定具体笛卡尔或 CCC 函子。 *)
-
 Fail Definition unchosen_set_cartesian_fct
   : @CartFct SetCat SetCat SetCat_HasTerminal SetCat_HasProduct
   := ltac:(typeclasses eauto).
@@ -212,8 +181,6 @@ Fail Definition unchosen_set_ccc_fct
   := ltac:(typeclasses eauto).
 
 (** Cartesian inheritance needs no chosen structures in the target. *)
-
-(** 笛卡尔保持性的继承不需要目标中的选定结构。 *)
 
 Section BundledCartesianInference.
 Context {C D : Cat} {TC : HasTerminal C} {PC : HasProduct C}
@@ -227,15 +194,11 @@ End BundledCartesianInference.
 (** A supplied CCC bundle supports both inherited interfaces and the
     existing curry theorem through its single functor coercion chain. *)
 
-(** 给定 CCC 包通过单一函子强制转换链，支持两个继承接口及已有柯里化定理。 *)
-
 Section BundledCCCInference.
 Context {C D : CCC} (F : CCCFct C D).
 
 (** Packing a fixed functor preserves both of the supplied witnesses
     by conversion, including the dependency between them. *)
-
-(** 打包固定函子时，两份给定见证及其依赖关系均按定义保留。 *)
 
 Example packed_ccc_cart_witness (G : Fct C D) (H : @IsCCCF C D G)
   : isCartF (CCCFctToCartFct (CCCFctOfIsCCCF G H)) = IsCCCF_isCartF H

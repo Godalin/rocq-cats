@@ -16,19 +16,10 @@ From CatsTests.gluing Require Import
     the selected product. Its mediator and a change with an empty incoming
     boundary still compute without inspecting square witnesses. *)
 
-(** * 给定逗号积及其像
-
-    相反严格配置分离全部六个范畴边界。给定标签锥的结构计算不同于选定积，
-    但其中介及入边界为空的变化仍无需检查方形见证即可计算。 *)
-
 (** ** Independent Native Bounds
 
     Supply arbitrary cones and only their endpoint/image properties.
     Neither terminal nor globally chosen product structures are assumed. *)
-
-(** ** 独立原生边界
-
-    给出任意锥及其端点／像性质，不假设终对象或全局选定积结构。 *)
 
 Section IndependentProductCone.
 Universes o0 h0 e0 l0 o1 h1 e1 l1 o2 h2 e2 l2
@@ -55,8 +46,6 @@ Context {X Y P : @Ob (F ↓C G)} (p : Hom P X) (q : Hom P Y).
 
 (** The supplied candidate accepts the original native levels. *)
 
-(** 给定候选接受原有原生层级。 *)
-
 Definition independent_comma_product_cone
     (left : is_product (comma_left_ob X) (comma_left_ob Y)
       (comma_left_ob P) (comma_left p) (comma_left q))
@@ -69,8 +58,6 @@ Definition independent_comma_product_cone
   := comma_product_cone F G p q left right image.
 
 (** The image criterion retains all six category boundaries. *)
-
-(** 像判据保留全部六个范畴边界。 *)
 
 Definition independent_comma_change_product_cone
     (left : is_product (L (comma_left_ob X)) (L (comma_left_ob Y))
@@ -97,10 +84,6 @@ End IndependentProductCone.
     Supply arbitrary cones and only their endpoint/image properties.
     Neither terminal nor globally chosen product structures are assumed. *)
 
-(** ** 反向原生边界
-
-    给出任意锥及其端点／像性质，不假设终对象或全局选定积结构。 *)
-
 Section ReversedProductCone.
 Universes o0 h0 e0 l0 o1 h1 e1 l1 o2 h2 e2 l2
   o3 h3 e3 l3 o4 h4 e4 l4 o5 h5 e5 l5.
@@ -126,8 +109,6 @@ Context {X Y P : @Ob (F ↓C G)} (p : Hom P X) (q : Hom P Y).
 
 (** The supplied candidate accepts the original native levels. *)
 
-(** 给定候选接受原有原生层级。 *)
-
 Definition reversed_comma_product_cone
     (left : is_product (comma_left_ob X) (comma_left_ob Y)
       (comma_left_ob P) (comma_left p) (comma_left q))
@@ -140,8 +121,6 @@ Definition reversed_comma_product_cone
   := comma_product_cone F G p q left right image.
 
 (** The image criterion retains all six category boundaries. *)
-
-(** 像判据保留全部六个范畴边界。 *)
 
 Definition reversed_comma_change_product_cone
     (left : is_product (L (comma_left_ob X)) (L (comma_left_ob Y))
@@ -165,8 +144,6 @@ End ReversedProductCone.
 
 (** Importing candidate theorems does not select comma products. *)
 
-(** 导入候选定理不会选取逗号积。 *)
-
 Fail Definition automatic_comma_products
   : HasProduct ((@IdF SetCat) ↓C IdF)
   := ltac:(typeclasses eauto).
@@ -177,16 +154,9 @@ Fail Definition automatic_comma_products
     ignored Boolean tags in its structural arrow. Its projections retain
     distinct Boolean square tokens; no native record equality is needed. *)
 
-(** ** 非规范结构箭头
-
-    使用标准广集积。给定逗号锥的结构箭头翻转两个被忽略的布尔标签；两个
-    投影保留不同的布尔方形标记，不要求记录原生相等。 *)
-
 Section TaggedCone.
 
 (** Keep a supplied structure that changes both ignored tags. *)
-
-(** 保留改变两个被忽略标签的给定结构。 *)
 
 Program Definition SuppliedTaggedProduct
   : (@IdF SetCat) ↓C IdF
@@ -198,8 +168,6 @@ Program Definition SuppliedTaggedProduct
 
 (** The first projection carries a true commutativity token. *)
 
-(** 第一投影携带真的交换性标记。 *)
-
 Program Definition supplied_tagged_π1
   : Hom SuppliedTaggedProduct TaggedGluingObj
   :=
@@ -209,8 +177,6 @@ Program Definition supplied_tagged_π1
 Next Obligation. intros [[n b] [m c]]. exact (eq_refl, true). Defined.
 
 (** The second projection independently carries a false token. *)
-
-(** 第二投影独立携带假的标记。 *)
 
 Program Definition supplied_tagged_π2
   : Hom SuppliedTaggedProduct TaggedGluingObj
@@ -222,8 +188,6 @@ Next Obligation. intros [[n b] [m c]]. exact (eq_refl, false). Defined.
 
 (** Only endpoint products and the identity image property are used. *)
 
-(** 只使用端点积和恒等函子的像性质。 *)
-
 Definition supplied_tagged_product
   : @is_product ((@IdF SetCat) ↓C IdF)
       TaggedGluingObj TaggedGluingObj SuppliedTaggedProduct
@@ -233,15 +197,11 @@ Definition supplied_tagged_product
 
 (** The new mediator pairs the actual endpoint inputs. *)
 
-(** 新中介对实际端点输入配对。 *)
-
 Definition supplied_tagged_pair
   : Hom TaggedGluingObj SuppliedTaggedProduct
   := (supplied_tagged_product TaggedGluingObj tagged_gluing_toggle id).1.
 
 (** The supplied structural computation is retained verbatim. *)
-
-(** 给定结构的计算逐字保留。 *)
 
 Example supplied_structure_computes
   : comma_arrow SuppliedTaggedProduct ((3, false), (4, true)) =
@@ -250,8 +210,6 @@ Proof. reflexivity. Defined.
 
 (** Computing the left mediator does not inspect the arbitrary square. *)
 
-(** 计算左中介不检查任意方形。 *)
-
 Example supplied_left_mediator_computes
   : comma_left supplied_tagged_pair (3, false) =
       ((3, true), (3, false)).
@@ -259,16 +217,12 @@ Proof. reflexivity. Defined.
 
 (** The right mediator likewise retains the supplied input tag. *)
 
-(** 右中介同样保留给定输入标签。 *)
-
 Example supplied_right_mediator_computes
   : comma_right supplied_tagged_pair (4, true) =
       ((4, false), (4, true)).
 Proof. reflexivity. Defined.
 
 (** Both stored square witnesses are observable Type-valued data. *)
-
-(** 两个保存的方形见证均为可观察的 Type 值数据。 *)
 
 Example supplied_square_tokens_compute
   : (snd (comma_comm supplied_tagged_π1 ((3, false), (4, true))),
@@ -278,8 +232,6 @@ Proof. reflexivity. Defined.
 
 (** The mediator respects the designated equality on the input square,
     despite the native difference in Boolean tags. *)
-
-(** 中介保持输入方形的指定相等，尽管布尔标签原生不同。 *)
 
 Example supplied_pair_respects
   : supplied_tagged_pair ≈
@@ -297,14 +249,7 @@ Defined.
     The target right functor is still identity and preserves the supplied
     cone. The incoming boundary has no inverse, but products survive. *)
 
-(** ** 不可逆的入边界
-
-    将左恒等解释改为空的常解释。目标右函子仍为恒等并保持给定锥；入边界
-    没有逆，但积仍得到保持。 *)
-
 (** The empty source supplies the boundary without a global choice. *)
-
-(** 空源提供此边界，无须全局选择。 *)
 
 Program Definition EmptyIncomingN
   : (@CompF SetCat SetCat SetCat
@@ -319,15 +264,11 @@ Next Obligation. intros x. destruct x. Defined.
 
 (** Its component at unit cannot have an inverse into the empty setoid. *)
 
-(** 单位处的分量不可能有取值于空广集的逆。 *)
-
 Definition empty_incoming_not_iso
   : is_iso (EmptyIncomingN UnitS) → Empty_set.
 Proof. intro H. exact (H.1 tt). Defined.
 
 (** Reuse the general image-cone criterion with this noninvertible input. *)
-
-(** 在此不可逆输入下复用一般像锥判据。 *)
 
 Definition empty_changed_product
   : @is_product ((ConstF SetCat EmptyS) ↓C (@IdF SetCat))
@@ -347,8 +288,6 @@ Definition empty_changed_product
 
 (** The changed mediator still pairs both mapped side arrows. *)
 
-(** 变化后中介仍对两条映射后的侧边配对。 *)
-
 Example empty_changed_mediator_computes
   : comma_left (empty_changed_product _
       (fmap (CommaChangeF IdF IdF IdF EmptyIncomingN
@@ -359,8 +298,6 @@ Example empty_changed_mediator_computes
 Proof. reflexivity. Defined.
 
 (** The changed right mediator keeps the independent right input value. *)
-
-(** 变化后右中介保留独立的右侧输入值。 *)
 
 Example empty_changed_right_mediator_computes
   : comma_right (empty_changed_product _

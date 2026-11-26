@@ -13,18 +13,10 @@ Local Opaque TwoSphereClassCylinder TwoSphereCylinderEquivalence
     Test the corrected inverse and its weakest complete interfaces at
     both native size orders and both common upward-lift orders. *)
 
-(** * 独立原生界及共同提升界
-
-    在两种原生大小次序及两种共同向上提升次序处，检查校正逆及其最弱完整接口。 *)
-
 (** ** Lower Equality Bound
 
     Fix a natural isomorphism with independent explicit presentations.
     No selected algebra or full Kan structure is initially supplied. *)
-
-(** ** 较低相等界
-
-    固定自然同构及独立显式呈现，初始不提供选定代数或完整 Kan 结构。 *)
 
 Section Lower.
 Universes l u p v q.
@@ -46,16 +38,12 @@ Context (KCY : ∀ s, HasHornFillers Y
 
 (** The inverse is respectful for actual-cylinder equality. *)
 
-(** 逆保持实际柱相等。 *)
-
 Definition lower_inverse
   : TwoSphereCylinderS Y (α 0 b) KRY KCY →r
       TwoSphereCylinderS X b KRX KCX
   := two_sphere_cylinder_inverse_resp α A b KRX KCX KRY KCY.
 
 (** Retain complete round-trip and unit interfaces without added algebra. *)
-
-(** 保留完整往返及单位接口，不增加代数。 *)
 
 Definition lower_left
   := two_sphere_cylinder_inverse_l α A b KRX KCX KRY KCY.
@@ -68,8 +56,6 @@ Definition lower_unit
 
 (** Only X missing-face-two comparison is required for products. *)
 
-(** 乘积只要求 X 缺第二面比较。 *)
-
 Definition lower_minimal_product
     `{HX2 : !HasHornFillers X 4 fin_first⁺⁺}
     (H : HasHornFillers Y 3 fin_first⁺⁺)
@@ -77,8 +63,6 @@ Definition lower_minimal_product
   := two_sphere_cylinder_inverse_mul α A b KRX KCX KRY KCY H K x y.
 
 (** No Y product, right candidate or Group is used to map its left candidate. *)
-
-(** 映射 Y 左候选不使用其乘法、右候选或群。 *)
 
 Definition lower_minimal_inverse
     `{HX2 : !HasHornFillers X 4 fin_first⁺⁺}
@@ -92,8 +76,6 @@ Definition lower_minimal_inverse
       KRX KCX KRY KCY I H K L x.
 
 (** Both final size orders contain the original native equality witnesses. *)
-
-(** 两种最终大小次序均容纳原生相等见证。 *)
 
 Definition lower_higher_final_iso
   : LiftS@{_ _ v q} (TwoSphereCylinderS X b KRX KCX)
@@ -109,8 +91,6 @@ Definition lower_lower_final_iso
 
 (** The isomorphism does not select either Group or full Kan choices. *)
 
-(** 此同构不选择任一群或完整 Kan 选择。 *)
-
 Fail Definition lower_no_X_group : HasMagma (TwoSphereCylinderS X b KRX KCX)
   := ltac:(typeclasses eauto).
 Fail Definition lower_no_Y_group
@@ -125,10 +105,6 @@ End Lower.
 
     Fix a natural isomorphism with independent explicit presentations.
     No selected algebra or full Kan structure is initially supplied. *)
-
-(** ** 较高相等界
-
-    固定自然同构及独立显式呈现，初始不提供选定代数或完整 Kan 结构。 *)
 
 Section Higher.
 Universes l u p v q.
@@ -150,16 +126,12 @@ Context (KCY : ∀ s, HasHornFillers Y
 
 (** The inverse is respectful for actual-cylinder equality. *)
 
-(** 逆保持实际柱相等。 *)
-
 Definition higher_inverse
   : TwoSphereCylinderS Y (α 0 b) KRY KCY →r
       TwoSphereCylinderS X b KRX KCX
   := two_sphere_cylinder_inverse_resp α A b KRX KCX KRY KCY.
 
 (** Retain complete round-trip and unit interfaces without added algebra. *)
-
-(** 保留完整往返及单位接口，不增加代数。 *)
 
 Definition higher_left
   := two_sphere_cylinder_inverse_l α A b KRX KCX KRY KCY.
@@ -172,8 +144,6 @@ Definition higher_unit
 
 (** Only X missing-face-two comparison is required for products. *)
 
-(** 乘积只要求 X 缺第二面比较。 *)
-
 Definition higher_minimal_product
     `{HX2 : !HasHornFillers X 4 fin_first⁺⁺}
     (H : HasHornFillers Y 3 fin_first⁺⁺)
@@ -181,8 +151,6 @@ Definition higher_minimal_product
   := two_sphere_cylinder_inverse_mul α A b KRX KCX KRY KCY H K x y.
 
 (** No Y product, right candidate or Group is used to map its left candidate. *)
-
-(** 映射 Y 左候选不使用其乘法、右候选或群。 *)
 
 Definition higher_minimal_inverse
     `{HX2 : !HasHornFillers X 4 fin_first⁺⁺}
@@ -197,8 +165,6 @@ Definition higher_minimal_inverse
 
 (** Both final size orders contain the original native equality witnesses. *)
 
-(** 两种最终大小次序均容纳原生相等见证。 *)
-
 Definition higher_higher_final_iso
   : LiftS@{_ _ v q} (TwoSphereCylinderS X b KRX KCX)
       ≅[SetCat@{v q _ _ _ _ _}]
@@ -212,8 +178,6 @@ Definition higher_lower_final_iso
   := two_sphere_cylinder_iso α A b KRX KCX KRY KCY.
 
 (** The isomorphism does not select either Group or full Kan choices. *)
-
-(** 此同构不选择任一群或完整 Kan 选择。 *)
 
 Fail Definition higher_no_X_group : HasMagma (TwoSphereCylinderS X b KRX KCX)
   := ltac:(typeclasses eauto).

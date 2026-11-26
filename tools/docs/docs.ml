@@ -52,8 +52,6 @@ type source = { path : string; name : string }
 
 (* Local lists only express preferences; unlisted sources remain included. *)
 
-(* 局部清单只表达阅读偏好，未列出的源码仍自动纳入。 *)
-
 let preferences file paths =
   Order.prefer (Order.entries (read file)) paths
 
@@ -138,9 +136,6 @@ let decode s =
    anchors. Add an anchor at that visible constructor, using glob references
    to distinguish constructors from ordinary identifiers. *)
 
-(* Rocq 9.0 有时把具名记录构造器显示为无锚点变量；根据 glob 引用识别构造器，
-   在其实际显示位置补锚点，不将普通标识符当作构造器。 *)
-
 let constructor_anchors root output sources =
   let constructors = Hashtbl.create 16 in
   List.iter (fun source ->
@@ -164,8 +159,6 @@ let constructor_anchors root output sources =
 
 (* Attributes can make coqdoc print a notation declaration as plain code,
    even though its uses still link to the declaration recorded in the glob. *)
-
-(* 属性可能使 coqdoc 将记号声明输出为普通代码，但使用处仍链接到 glob 中的声明。 *)
 
 let notation_anchors root output sources =
   List.iter (fun source ->
@@ -210,8 +203,6 @@ let notation_anchors root output sources =
     end) sources
 
 (* Check both destination files and fragments, including Unicode symbols. *)
-
-(* 同时检查目标文件及片段，涵盖 Unicode 符号。 *)
 
 let check_links output =
   let pages = files output |> List.filter (suffix ".html") in

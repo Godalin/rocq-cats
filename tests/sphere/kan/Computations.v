@@ -13,12 +13,6 @@ Local Open Scope ordinal_scope.
     These concrete checks do not prove choice independence for arbitrary
     Kan objects. *)
 
-(** * 消费既有完整布尔 Kan 选择
-
-    通用构造必须使用实际给定的 Kan 填充。其布尔系数计算为异或及逆，完整
-    见证四面体的四个面也必须按声明定向计算。这些具体检查不证明任意 Kan
-    对象的选择独立性。 *)
-
 Fail Definition unchosen_group
   : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
@@ -35,8 +29,6 @@ Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 (** Read the coefficient from the generic selected composite sphere. *)
 
-(** 从通用选定合成球面读取系数。 *)
-
 Definition selected_product_value (a b : bool)
   : bool
   := (cocycle_two_sphere_value_resp (M := BoolS_Monoid))
@@ -45,8 +37,6 @@ Definition selected_product_value (a b : bool)
 
 (** All four products compute using the actual full Kan selection. *)
 
-(** 全部四个乘积使用实际完整 Kan 选择计算。 *)
-
 Example products_compute
   : (selected_product_value false false, selected_product_value false true,
      selected_product_value true false, selected_product_value true true)
@@ -54,8 +44,6 @@ Example products_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** Read both independent inverse candidates. *)
-
-(** 读取两个独立逆候选。 *)
 
 Definition selected_inverse_values (a : bool)
   : bool * bool
@@ -68,16 +56,12 @@ Definition selected_inverse_values (a : bool)
 
 (** Both candidates compute the expected Boolean inverse. *)
 
-(** 两个候选均计算出预期布尔逆。 *)
-
 Example inverses_compute
   : (selected_inverse_values false, selected_inverse_values true)
       = ((false, false), (true, true)).
 Proof. vm_compute. reflexivity. Defined.
 
 (** Read all four actual faces, rather than only their stored equations. *)
-
-(** 读取全部四个实际面，而非仅检查其保存方程。 *)
 
 Definition face_values (w : BoolCocycleModel 3)
   : bool * bool * bool * bool
@@ -87,8 +71,6 @@ Definition face_values (w : BoolCocycleModel 3)
       (two_cocycle_triangle_value_resp (M := BoolS_Monoid)) (d[BoolCocycleModel; 2; fin_first⁺⁺⁺] w)).
 
 (** Product and both inverse witnesses have the declared face roles. *)
-
-(** 乘积与两个逆见证均具有声明的面角色。 *)
 
 Example retained_tetrahedra_compute
   : (face_values

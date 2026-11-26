@@ -14,11 +14,6 @@ Local Open Scope ordinal_scope.
     records may differ, but the computed mediator recovers both in the
     specified operator equality. *)
 
-(** * 实际共享面中介
-
-    在五维输入中重复每个空间顶点。两个因子记录可以不同，计算所得中介按
-    指定算子相等同时恢复二者。 *)
-
 Definition repeated_shape
   : (@Hom Δ) 5 2
   := σ[2; fin_first] ∘
@@ -82,11 +77,6 @@ Definition right_recovery (i : Ordinal 1)
     The first/last pieces meet at positions zero and three. Use a real
     high-degree factor through that edge, then transport supplied Boolean
     equality witnesses through the actual middle value. *)
-
-(** ** 首尾交叠与不同取值见证
-
-    首尾两块在位置零与三处相交。使用经过此边的实际高维因子，再经过实际
-    中间值运输给定布尔相等见证。 *)
 
 Definition edge_time
   : (@Hom Δ) 5 1%nat
@@ -175,11 +165,6 @@ Proof. vm_compute. reflexivity. Defined.
     The two constant factors below have equal spatial images but opposite
     time images. Omitting the time equation would incorrectly identify them. *)
 
-(** ** 仅空间坐标不能描述交叠
-
-    下方两个常值因子的空间像相等，时间像却相反。省略时间方程会错误地识别
-    它们。 *)
-
 Definition left_point
   : (@Hom Δ) 0%nat 3
   := ConstF [Ord 0] (C := [Ord 3]) fin_first⁺.
@@ -211,8 +196,6 @@ Defined.
 
 (** Time equality alone is insufficient as well. *)
 
-(** 仅时间相等也不足够。 *)
-
 Definition only_time_agrees
   : SimplexPrismTimeF fin_first ∘ right_point ≈
       SimplexPrismTimeF fin_first⁺ ∘ left_point.
@@ -232,11 +215,6 @@ Defined.
     Read the two necessary equations from the actual product cylinder.
     Also consume the optional criterion in a nontrivial cocycle target,
     without enabling Kan fillers. *)
-
-(** ** 实际柱值的相容性
-
-    从实际积柱读取两条必要方程；另在非平凡 cocycle 目标消费可选相容条件，
-    不启用 Kan 填充。 *)
 
 Definition triangle_cylinder
   : Fct (Δ^op) SetCat

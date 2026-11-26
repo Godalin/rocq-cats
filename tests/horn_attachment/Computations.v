@@ -17,11 +17,6 @@ Local Open Scope ordinal_scope.
     map negating the Boolean. The two coordinate projections give
     distinct total maps that agree on the entire old region. *)
 
-(** * 实际推出与独立新块选择
-
-    沿对角附着布尔方块，跨度另一条映射为布尔否定。两个坐标投影给出不同的
-    总映射，却在整个旧区域相等。 *)
-
 Program Definition flip
   : BoolS →r BoolS
   :=
@@ -66,10 +61,6 @@ Definition second_target
 
     The generated setoid pushout is selected only in this section. Its
     actual disjoint-sum representatives remain computational. *)
-
-(** ** 局部使用既有选定推出
-
-    只在本节选取生成广集推出，实际不交和代表仍保持可计算。 *)
 
 Section ConcretePushout.
 Local Existing Instance SetCat_HasPushout.
@@ -116,11 +107,6 @@ End ConcretePushout.
     The identity pushout is a genuine attachment square. A constant
     simplicial setoid with Boolean equality witnesses exposes that
     filling choices and old-region values need not be natively equal. *)
-
-(** ** 带原生不同选择的实际 horn 附着
-
-    恒等推出是实际附着方形。相等见证为布尔值的常单纯广集使填充选择与旧区域值
-    不必原生相等这一点可见。 *)
 
 Program Definition WitnessS
   : SetC
@@ -206,10 +192,6 @@ Fail Definition no_other_horn_selected
 
     Only dimension three, missing face two is used. The chosen model is
     passed explicitly and does not become an instance by import. *)
-
-(** ** 消费实际 Cocycle Kan 模型中的一份选择
-
-    只使用三维缺第二面的填充；显式传入选定模型，不通过导入成为实例。 *)
 
 
 Definition coefficient_tetrahedron

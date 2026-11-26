@@ -14,8 +14,6 @@ From Cats Require Import
 (** Lifted representations keep both native Hom orders and two strict
     target carrier/equality orders, with independently large input fibers. *)
 
-(** 提升表示保留两种原生 Hom 次序及两种严格目标载体／相等次序，输入纤维独立增大。 *)
-
 Section LiftedContextRepresentationLevels.
 Universes o h p a b c d l v q.
 Constraint Set < h.

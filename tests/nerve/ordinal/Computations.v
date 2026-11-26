@@ -14,10 +14,6 @@ Local Open Scope nat_scope.
     Both directions retain positions and actual ordinal arrows. Face maps
     skip the chosen position, and the two interval endpoints stay distinct. *)
 
-(** * 穿过序数比较进行计算
-
-    双向均保留位置与实际序数箭头；面映射跳过选定位置，两个区间端点仍不同。 *)
-
 Definition ordinal_triangle
   : (Nᵥ(OrdinalObjF 2) :
       Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 2
@@ -37,8 +33,6 @@ Proof. reflexivity. Qed.
 
 (** The middle face of a triangle is the edge from zero to two. *)
 
-(** 三角形的中间面为从零到二的边。 *)
-
 Definition ordinal_middle_face
   : (Nᵥ(OrdinalObjF 2) :
       Fct (Δ^op) SetCat@{Set Set _ _ _ _ _}) 1
@@ -55,8 +49,6 @@ Example face_final_vertex_computes
 Proof. reflexivity. Qed.
 
 (** Points from the terminal presentation evaluate to the chosen positions. *)
-
-(** 从终呈现出发的点求值为选定位置。 *)
 
 Definition terminal_vertex
   : (Nᵥ(VtxTerminalObjF@{Set Set Set Set Set Set Set Set}) :

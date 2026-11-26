@@ -13,11 +13,6 @@ Local Open Scope ordinal_scope.
     source/target group products and inverses can have native-distinct
     outputs; the new laws must still provide actual relative cylinders. *)
 
-(** * 原生不同顶点与独立见证
-
-    在常值见证广集中，false 与 true 可由任一布尔见证相等。基点运输保留三角形；
-    独立选定的来源／目标群乘积与逆可有原生不同输出，新定律仍须提供实际相对柱。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -28,15 +23,11 @@ Next Obligation. split; red; intros; exact true. Defined.
 
 (** Retain the witness setoid in every degree. *)
 
-(** 在每一维保留该见证广集。 *)
-
 Definition W
   : Fct (Δ^op) SetCat
   := ConstF (Δ^op) WitnessS.
 
 (** The original input retains its boundary witnesses. *)
-
-(** 原输入保留自己的边界见证。 *)
 
 Definition x
   : TwoSphereS W false
@@ -44,15 +35,11 @@ Definition x
 
 (** A second native-distinct input has different witnesses. *)
 
-(** 第二个原生不同输入具有不同见证。 *)
-
 Definition y
   : TwoSphereS W false
   := (true; λ i, false).
 
 (** Constant prescribed fillers are genuine choices, not unique or Proper. *)
-
-(** 指定常值填充是真实选择，不要求唯一或 Proper。 *)
 
 Program Definition one_choice (n : nat) (i : Ordinal n) (v : bool)
   : HasHornFillers W n i
@@ -63,8 +50,6 @@ Next Obligation. intros m z. exact true. Defined.
 
 (** Independent presentation families need not be carried to each other. *)
 
-(** 独立呈现族不要求经映射对应。 *)
-
 Definition choices (r : Ordinal 2) (v : bool) (s : Ordinal 8)
   : HasHornFillers W (S (simplex_triangle_horn_face_dim s))
       (simplex_triangle_horn_missing r s)
@@ -72,23 +57,17 @@ Definition choices (r : Ordinal 2) (v : bool) (s : Ordinal 8)
 
 (** Supply only the four-dimensional choices used by the actual groups. *)
 
-(** 只提供实际群使用的四维选择。 *)
-
 Local Definition four2
   : HasHornFillers W 4 fin_first⁺⁺
   := one_choice _ _ false.
 
 (** Associativity retains its own choice. *)
 
-(** 结合律保留自己的选择。 *)
-
 Local Definition four3
   : HasHornFillers W 4 fin_first⁺⁺⁺
   := one_choice _ _ true.
 
 (** Input descent retains its other choice. *)
-
-(** 输入下降保留另一选择。 *)
 
 Local Definition four4
   : HasHornFillers W 4 fin_first⁺⁺⁺⁺
@@ -100,16 +79,12 @@ Local Existing Instance four4.
 
 (** The basepoint and the presentation choices are independent parameters. *)
 
-(** 基点和呈现选择是独立参数。 *)
-
 Definition Q (b r c : bool)
   : SetC
   := TwoSphereCylinderS W b (choices fin_first r) (choices fin_first⁺ c).
 
 (** Product and left candidate use the supplied value; the right candidate
     is independently false. No chosen model is registered. *)
-
-(** 乘积和左候选使用给定值，右候选独立为 false；不注册选定模型。 *)
 
 Definition G (b r c v : bool)
   : Group
@@ -118,8 +93,6 @@ Definition G (b r c v : bool)
 
 (** Transport changes the vertex and the presentation, not the triangle. *)
 
-(** 运输改变顶点与呈现，不改变三角形。 *)
-
 Definition moved (E : @carrier_equiv WitnessS false true)
   : Q false false true →r Q true true false
   := two_sphere_cylinder_change_base_resp W
@@ -127,8 +100,6 @@ Definition moved (E : @carrier_equiv WitnessS false true)
       (choices fin_first true) (choices fin_first⁺ false) E.
 
 (** The actual source and target groups retain different selections. *)
-
-(** 实际来源及目标群保留不同选择。 *)
 
 Definition product_cylinder
   : TwoSphereCylinderHomotopy W true
@@ -140,8 +111,6 @@ Definition product_cylinder
       (one_choice _ _ false) (one_choice _ _ true) x y.
 
 (** Left inverse preservation uses those same selected group operations. *)
-
-(** 左逆保持使用完全相同的选定群运算。 *)
 
 Definition inverse_cylinder
   : TwoSphereCylinderHomotopy W true
@@ -155,8 +124,6 @@ Definition inverse_cylinder
 
 (** Units use the native-distinct specified equal vertices. *)
 
-(** 单位使用原生不同但指定相等的顶点。 *)
-
 Definition unit_cylinder
   : TwoSphereCylinderHomotopy W true
       (moved true (@mul_unit _ _ (hasUnit (G false false true false))))
@@ -167,8 +134,6 @@ Definition unit_cylinder
 
 (** Equality witnesses remain different boolean data. *)
 
-(** 相等见证保持为不同布尔数据。 *)
-
 Definition witness_cylinder
   := @two_sphere_cylinder_change_base_witness W
       (choices fin_first false) (choices fin_first⁺ true)
@@ -176,15 +141,11 @@ Definition witness_cylinder
 
 (** Identity uses its original presentation. *)
 
-(** 恒等使用原呈现。 *)
-
 Definition identity_cylinder
   := two_sphere_cylinder_change_base_id W
       (choices fin_first false) (choices fin_first⁺ true) false y.
 
 (** Two transports retain an independent intermediate presentation. *)
-
-(** 两次运输保留独立中间呈现。 *)
 
 Definition composition_cylinder
   := @two_sphere_cylinder_change_base_comp W
@@ -195,15 +156,11 @@ Definition composition_cylinder
 
 (** Map an actual input cylinder using the new respectful map. *)
 
-(** 用新保相等映射映射一份实际输入柱。 *)
-
 Definition mapped_input_cylinder
   := @func_proper _ _ (moved false) x y
       (TwoSphereConstantCylinder W false x y true).
 
 (** The old generic composite isomorphism supplies both directions. *)
-
-(** 原通用复合同构提供两个方向。 *)
 
 Definition comparison
   := @two_sphere_cylinder_change_base_iso W
@@ -211,8 +168,6 @@ Definition comparison
       (choices fin_first true) (choices fin_first⁺ false) false true true.
 
 (** Evaluate retained triangles and the actual distinct endpoints of product/inverse/unit preservation. *)
-
-(** 求值保留三角形及乘积／逆／单位保持的实际不同端点。 *)
 
 Example transport_and_operations_compute
   : ((moved true y).1, (moved false y).1,
@@ -226,8 +181,6 @@ Example transport_and_operations_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** Both directions use precisely the raw base-change representative. *)
-
-(** 两个方向恰好使用原始换基代表。 *)
 
 Example comparison_directions_compute
   : ((lower (comparison.1 {|lower := x|})).1,
@@ -246,8 +199,6 @@ Definition backward_is_same_map (a : Q true true false)
 
 (** A boundary shape is independent of its varying time coordinate. *)
 
-(** 边界形状独立于其变化的时间坐标。 *)
-
 Definition boundary_space
   : (∂Δ[2]) 5
   := {|lower := (δ[1; fin_first⁺] ∘
@@ -258,8 +209,6 @@ Definition boundary_space
 
 (** Time varies through a separate simplex operator. *)
 
-(** 时间通过另一个单形算子变化。 *)
-
 Definition varying_time
   : (Δ[1]) 5
   := {|lower := SimplexPrismTimeF (fin_first⁺ : Ordinal 4)|}.
@@ -267,8 +216,6 @@ Definition varying_time
 Local Opaque TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 
 (** Every new pointwise law retains the complete relative boundary. *)
-
-(** 每项新逐点定律都保留完整相对边界。 *)
 
 Definition all_seven_full_boundaries
   := (product_cylinder.2 5 boundary_space varying_time,
@@ -282,8 +229,6 @@ Definition all_seven_full_boundaries
 Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 
 (** Actual-cylinder equations do not imply native endpoint equality. *)
-
-(** 实际柱方程不蕴含原生端点相等。 *)
 
 Fail Definition product_not_native
   : moved true (@mul _ (hasMagma (G false false true false)) x y) =
@@ -304,11 +249,6 @@ Fail Definition unit_not_native
     transport still consumes the new construction, preserves the nonzero
     sphere and supplies actual cylinders for the same group operations. *)
 
-(** ** 实际非零 Cocycle 球面
-
-    复用真实 Kan 选择与系数读取。自反基点运输仍消费新构造，保留非零球面，
-    并为同一群运算提供实际柱。 *)
-
 Local Existing Instance BoolCocycleModel_HasKanFillers.
 
 Definition Z
@@ -317,23 +257,17 @@ Definition Z
 
 (** Keep the original unit basepoint. *)
 
-(** 保持原单位基点。 *)
-
 Definition b
   : Z 0
   := (two_cocycle_simplex_unit (M := BoolS_Monoid)) 0.
 
 (** Select the actual model's presentation fillers explicitly. *)
 
-(** 显式选择实际模型的呈现填充。 *)
-
 Definition cocycle_choices (r : Ordinal 2) (s : Ordinal 8)
   := @hasHornFillers Z BoolCocycleModel_HasKanFillers
       (simplex_triangle_horn_face_dim s) (simplex_triangle_horn_missing r s).
 
 (** The target equality remains actual full relative cylinders. *)
-
-(** 目标相等仍为实际完整相对柱。 *)
 
 Definition CZ
   : SetC
@@ -342,15 +276,11 @@ Definition CZ
 
 (** Supply the actual product choice. *)
 
-(** 提供实际乘法选择。 *)
-
 Definition product_choice
   : HasHornFillers Z 3 fin_first⁺⁺
   := _.
 
 (** Supply the actual left-candidate choice separately. *)
-
-(** 单独提供实际左候选选择。 *)
 
 Definition left_choice
   : HasHornFillers Z 3 fin_first⁺⁺⁺
@@ -358,15 +288,11 @@ Definition left_choice
 
 (** The right choice remains a separate argument. *)
 
-(** 右选择保持为单独参数。 *)
-
 Definition right_choice
   : HasHornFillers Z 3 fin_first⁺
   := _.
 
 (** Choose the exact same original cylinder group. *)
-
-(** 选择完全相同的原柱群。 *)
 
 Definition GZ
   : Group
@@ -374,8 +300,6 @@ Definition GZ
       (cocycle_choices fin_first⁺) product_choice left_choice right_choice.
 
 (** Reflexive transport uses the new cylinder base map. *)
-
-(** 自反运输使用新的柱基点映射。 *)
 
 Definition model_mapped
   : CZ →r CZ
@@ -386,8 +310,6 @@ Definition model_mapped
 (** Decode through the original class comparison, retaining the new map's
     actual output rather than replacing its selected operation. *)
 
-(** 经原类比较读取，保留新映射的实际输出，不替换选定运算。 *)
-
 Definition value
   : CZ →r BoolS
   := (cocycle_two_sphere_class_value_resp (M := BoolS_Monoid)) ∘r
@@ -395,8 +317,6 @@ Definition value
         (cocycle_choices fin_first⁺).
 
 (** Nonzero transport and its inverse have the expected coefficients. *)
-
-(** 非零运输及其逆具有预期系数。 *)
 
 Example nonzero_transport_compute
   : (value (model_mapped bool_cocycle_sphere),
@@ -406,8 +326,6 @@ Example nonzero_transport_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** The new inverse law is an actual cocycle cylinder. *)
-
-(** 新逆定律是实际 cocycle 柱。 *)
 
 Definition cocycle_inverse_cylinder
   := two_sphere_cylinder_change_base_left_inverse Z
@@ -425,8 +343,6 @@ Local Transparent TwoSphereClassCylinder TwoSphereCylinderEquivalence.
 
 (** The transported actual nonzero sphere is still not the unit. *)
 
-(** 运输后的实际非零球面仍不等于单位。 *)
-
 Definition transported_nonzero_not_unit
   : ¬ ((model_mapped bool_cocycle_sphere : CZ) ≈S @mul_unit _ _ (hasUnit GZ)).
 Proof.
@@ -435,8 +351,6 @@ Proof.
 Defined.
 
 (** Full Kan still does not enable a group or raw cylinder equivalence. *)
-
-(** 完整 Kan 仍不启用群或原始柱等价。 *)
 
 Fail Definition full_Kan_no_group : HasMagma CZ := ltac:(typeclasses eauto).
 Fail Definition full_Kan_no_raw_equivalence

@@ -13,11 +13,6 @@ Local Open Scope ordinal_scope.
     equality/boundary witnesses. Test every closure constructor and compute
     the actual resulting map, without identifying any witness records. *)
 
-(** * 折叠实际生成链
-
-    原生不同的布尔表示保留独立布尔相等／边界见证。检查全部闭包构造器并计算
-    实际输出映射，不识别见证记录。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -130,10 +125,6 @@ Fail Definition computed_recovery_is_not_native
 
     The old forward descent produces its actual three-step derivation.
     Fold that very chain back, using explicitly supplied Kan choices. *)
-
-(** ** 实际非零cocycle链
-
-    已有正向下降给出实际三步推导；用显式Kan选择将该链本身折叠回来。 *)
 
 Local Opaque TwoSphereClassCylinder two_sphere_cylinder_class
   two_sphere_cylinder_class_iff.

@@ -12,8 +12,6 @@ From Cats Require Import
 (** Substitution-term pair comparisons keep both Hom orders and fixed
     original type/term bounds above the base-law auxiliary universe. *)
 
-(** 替换—项配对比较保留两种 Hom 次序，固定原类型／项大小高于基底律辅助层级。 *)
-
 Section CanonicalSubstitutionPairLevels.
 Universes o h p a b c d l.
 Constraint Set < h.

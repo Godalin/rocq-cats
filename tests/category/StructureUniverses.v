@@ -21,20 +21,10 @@ From Cats Require Import
     Exercise categorical clients and computation of selected product and
     inverse witnesses here. *)
 
-(** * 结构范畴的宇宙
-
-    构造模块检查不同宇宙实例间的自身成员关系；此处检查实际范畴客户端
-    及选定积与逆见证的计算。 *)
-
 (** ** Stored Cartesian Preservation
 
     Packing retains the supplied witness, and instance search on an
     abstract bundle selects its projection for the same source choices. *)
-
-(** ** 打包的笛卡尔保持性
-
-    构造器保留给定见证。在抽象结构包上，实例搜索按同一组来源选择
-    取出其保存的投影。 *)
 
 Section StoredPreservation.
 Context {C D : Cat} (TC : HasTerminal C) (PC : HasProduct C).
@@ -53,10 +43,6 @@ End StoredPreservation.
 
     The stored product choice supplies ordinary pairing and its laws.
     The ambient category is explicit because the objects are bundles. *)
-
-(** ** 笛卡尔客户端
-
-    保存的积选择提供普通配对及其定律。对象本身为结构包，故显式指定环境范畴。 *)
 
 Section CartesianClients.
 Context (S C D : @Ob CartCatCartCat)
@@ -91,11 +77,6 @@ End CartesianClients.
 
     Two codiscrete bundles share a category but choose different terminal
     and product objects. Pairing must keep each component's choice. *)
-
-(** ** 保存的选择与计算
-
-    两个余离散结构包共享范畴，但选定不同终对象及积对象。
-    配对必须分别保留各分量的选择。 *)
 
 Module CartesianComputation.
 Definition Left
@@ -156,11 +137,6 @@ End CartesianComputation.
     A nontrivial object swap in a codiscrete groupoid is an arrow of the
     groupoid universe. Its chosen quasi-inverse must remain executable. *)
 
-(** ** 等价及其选定逆
-
-    余离散群胚的非平凡对象交换给出群胚宇宙中的态射，
-    其选定拟逆必须仍可执行。 *)
-
 Module GroupoidComputation.
 Definition Two
   : Gpd
@@ -210,11 +186,6 @@ End GroupoidComputation.
 
     Both strict orders between hom carriers and equality witnesses are
     accepted; law bounds are larger and object bounds remain independent. *)
-
-(** ** 独立大小
-
-    同时接受 Hom 载体及相等见证的两种严格大小次序，
-    定律界更大，对象界保持独立。 *)
 
 Section IndependentSizes.
 Universes o h p l.

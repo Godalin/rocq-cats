@@ -4,16 +4,10 @@ From Cats Require Import
 
 (** * Independent Object, Arrow and Equality Sizes *)
 
-(** * 独立的对象、箭头与相等大小 *)
-
 (** ** Chains with larger equality witnesses
 
     Keep all four sizes strictly distinct. The only selections are the
     explicit edge extensions; their functions have no Proper hypothesis. *)
-
-(** ** 较大相等见证下的链
-
-    保持四种大小严格不同，唯一的选择是显式边延拓，不要求其函数 Proper。 *)
 
 Section largeEquality.
 Universes o h p l.
@@ -49,10 +43,6 @@ End largeEquality.
 
     Keep all four sizes strictly distinct. The only selections are the
     explicit edge extensions; their functions have no Proper hypothesis. *)
-
-(** ** 较小相等见证下的链
-
-    保持四种大小严格不同，唯一的选择是显式边延拓，不要求其函数 Proper。 *)
 
 Section smallEquality.
 Universes o h p l.

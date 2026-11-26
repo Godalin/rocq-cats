@@ -6,8 +6,6 @@ type kind = English | Chinese | Neutral | Mixed
 (** Disable built-in symbol substitutions using native coqdoc directives.
     Explicit printing directives in the source remain available. *)
 
-(** 使用原生 coqdoc 指令关闭内置符号替换，仍允许源码显式指定打印规则。 *)
-
 let printing_preamble =
   ["*"; "|"; "->"; "->~"; "->~~"; "<-"; "<->"; "=>"; "<="; ">=";
    "<>"; "~"; "/\\"; "\\/"; "|-"; "forall"; "exists"; "Π"; "λ"]
@@ -33,8 +31,6 @@ let fail s pos message =
   invalid_arg (Printf.sprintf "line %d: %s" (line_at s pos) message)
 
 (* Rocq strings escape quotes by doubling them, including inside comments. *)
-
-(* Rocq 字符串通过双写引号转义，注释内部亦如此。 *)
 
 let string_end s first =
   let rec loop i =
@@ -82,9 +78,6 @@ let blank out first last =
     Bare padding inside a declaration becomes visible indentation in coqdoc;
     native comment delimiters let coqdoc skip that padding instead. *)
 
-(** 将隐藏正文保留为普通注释，保持全部字节位置。声明内部的纯空白填充会被
-    coqdoc 输出为可见缩进；保留原生注释定界符使其直接跳过这些填充。 *)
-
 let suppress out b =
   blank out b.first b.last;
   Bytes.blit_string "(*" 0 out b.first 2;
@@ -96,8 +89,6 @@ let cjk u =
   || (u >= 0x20000 && u <= 0x323af)
 
 (* Language detection ignores coqdoc code, math and raw-output islands. *)
-
-(* 语言检测忽略 coqdoc 的代码、数学及原始输出区域。 *)
 
 let classify s first last =
   let en = ref false and zh = ref false in
@@ -161,8 +152,6 @@ let marker s b =
 
 (** Keep every non-documentation byte at its original position. *)
 
-(** 将每个非文档字节保留在原位置。 *)
-
 let filter language source =
   let out = Bytes.of_string source in
   let diagnostics = ref [] in
@@ -204,8 +193,6 @@ let filter language source =
 
 (* Keep these declarations visible in coqdoc's proof-hiding mode. The
    generated copy uses native show markers around each complete command. *)
-
-(* 在 coqdoc 的隐藏证明模式下保留这些声明。生成副本用原生显示标记包围每条完整命令。 *)
 
 let show_declarations source =
   let length = String.length source in
@@ -258,9 +245,6 @@ let insert source edits =
 (** Remap compiled byte ranges past the coqdoc preamble and show markers.
     The generated copy receives its own source digest. *)
 
-(** 根据 coqdoc 前言和显示标记调整编译所得的字节范围。
-    生成副本使用自己的源码校验值。 *)
-
 let glob ?(prefix = "") ?(edits = []) ?(packed = []) ~original ~filtered contents =
   let first = try String.index contents '\n' with Not_found -> String.length contents in
   let header = String.sub contents 0 first in
@@ -294,9 +278,6 @@ let glob ?(prefix = "") ?(edits = []) ?(packed = []) ~original ~filtered content
   in
   (* Undeclared local aliases in Rocq 9.0 metadata have no link target.
      Resolve field aliases to their declaration; other locals remain text. *)
-
-  (* Rocq 9.0 元数据中的未声明局部别名没有跳转目标；字段别名指向其声明，
-     其余局部变量仍完整显示为文本。 *)
 
   let shift n =
     let n = int_of_string n in

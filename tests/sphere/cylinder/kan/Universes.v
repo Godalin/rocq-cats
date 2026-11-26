@@ -12,10 +12,6 @@ Local Opaque sphere_triangle_extension_recovery SphereTriangleInputN
     Keep strict independent sizes. Recovery assumes only an actual map and
     its equation; construction supplies precisely the nine stated choices. *)
 
-(** * 较小相等界
-
-    保留严格独立大小；恢复仅要求实际映射及其方程，构造只给定所列九份选择。 *)
-
 Section lower_sizes.
 Universes l u p.
 Constraint l < u, u < p.
@@ -27,8 +23,6 @@ Context (E : cylinder_time_endpoint_matching r H).
 
 (** Keep recovery as a function of the actual map and its restriction
     equation; the selected constructor below consumes that function. *)
-
-(** 将恢复保持为实际映射及其限制方程的函数；下方选定构造消费该函数。 *)
 
 Definition lower_recovery
   := sphere_triangle_extension_recovery X b r H R E.
@@ -101,10 +95,6 @@ End lower_sizes.
     Keep strict independent sizes. Recovery assumes only an actual map and
     its equation; construction supplies precisely the nine stated choices. *)
 
-(** * 较大相等界
-
-    保留严格独立大小；恢复仅要求实际映射及其方程，构造只给定所列九份选择。 *)
-
 Section higher_sizes.
 Universes l u p.
 Constraint l < u, u < p.
@@ -116,8 +106,6 @@ Context (E : cylinder_time_endpoint_matching r H).
 
 (** Keep recovery as a function of the actual map and its restriction
     equation; the selected constructor below consumes that function. *)
-
-(** 将恢复保持为实际映射及其限制方程的函数；下方选定构造消费该函数。 *)
 
 Definition higher_recovery
   := sphere_triangle_extension_recovery X b r H R E.

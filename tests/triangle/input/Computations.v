@@ -16,11 +16,6 @@ Local Open Scope ordinal_scope.
     triangle, which has not been supplied any Kan structure. A second
     model retains different native values on equal overlap points. *)
 
-(** * 无需 Kan 选择的实际初始映射
-
-    时间投影不是常值，即使目标为未给定 Kan 结构的标准三角形仍可定义。
-    第二个模型在相等的交叠点上保留不同原生值。 *)
-
 Program Definition boundary_time
   : SimplicialParameterF (∂Δ[2]) 2 ⇒ (Δ[2])
   :=
@@ -144,10 +139,6 @@ Defined.
     The specified equality has Boolean witnesses and relates all values.
     Gluing must preserve that relation without imposing native equality. *)
 
-(** ** 原生取值与独立定律见证
-
-    指定相等具有布尔见证，关联全部取值。粘合须保持该关系，不强加原生相等。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -245,11 +236,6 @@ Fail Definition automatic_pushout
     In native Boolean equality, all retained edges have value true while
     the omitted entry is false. Incompatible retained boundary data are
     genuinely rejected, rather than being hidden in a gluing assumption. *)
-
-(** ** 缺失项不受约束
-
-    对原生布尔相等，保留边全部取真而缺失项取假。不相容保留边界数据确实
-    不可接受，不会藏在粘合假设中。 *)
 
 Program Definition DiscreteS
   : SetC

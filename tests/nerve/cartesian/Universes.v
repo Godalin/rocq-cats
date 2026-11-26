@@ -11,8 +11,6 @@ From Cats Require Import
 
 (** * Independent Sizes for Chosen Finite Products *)
 
-(** * 选定有限积的独立大小 *)
-
 Section Levels.
 Universes e h o l u q.
 Constraint e < h.
@@ -22,8 +20,6 @@ Constraint l < u.
 Constraint u < q.
 
 (** The native arrow carrier is strictly above its equality witnesses. *)
-
-(** 原生箭头载体严格高于其相等见证。 *)
 
 Definition Presentations
   : Cat
@@ -39,8 +35,6 @@ Definition NativeTerminal
 
 (** The common value equality is below the category-law bound and carrier. *)
 
-(** 共同值相等低于范畴定律界及载体。 *)
-
 Definition low_eq_cartesian
   : @CartFct Presentations
       (FctCat (Δ^op) SetCat@{u o _ _ _ _ _}) NativeTerminal NativeProducts
@@ -48,16 +42,12 @@ Definition low_eq_cartesian
 
 (** The same source also permits value equality above its carrier. *)
 
-(** 同一源也允许值相等高于其载体。 *)
-
 Definition high_eq_cartesian
   : @CartFct Presentations
       (FctCat (Δ^op) SetCat@{u q _ _ _ _ _}) NativeTerminal NativeProducts
   := VtxNerveCartF.
 
 (** Reverse the native label and arrow carrier/equality profiles. *)
-
-(** 反转原生标签及箭头的载体／相等配置。 *)
 
 Definition ReversePresentations
   : Cat
@@ -78,8 +68,6 @@ Definition reverse_native_cartesian
 
 (** The general pointwise structures retain both strict value-size orders. *)
 
-(** 通用点态结构保留两种严格值大小次序。 *)
-
 Definition low_eq_pointwise_products
   : HasProduct (FctCat (Δ^op) SetCat@{u o _ _ _ _ _})
   := @FctCat_HasProduct _ _ SetCat_HasProduct.
@@ -97,8 +85,6 @@ Definition high_eq_pointwise_terminal
   := @FctCat_HasTerminal _ _ SetCat_HasTerminal.
 
 (** A probe larger than both value sizes does not resize pointwise values. *)
-
-(** 大于两个值大小的探测范畴不要求调整点态值的大小。 *)
 
 Context (J : Cat@{q q q q q}).
 

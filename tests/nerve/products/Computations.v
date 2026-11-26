@@ -14,21 +14,12 @@ Local Open Scope nat_scope.
     the lifted nerve comparison. These equations check actual computation,
     rather than only the round-trip equivalences. *)
 
-(** * 透明的积与终比较
-
-    不同布尔边须穿过提升后的 nerve 比较，在配对及投影后保留。
-    这些方程检查实际计算，而不仅是往返等价。 *)
-
 (** The xor monoid supplies a singleton presentation with distinct loops. *)
-
-(** 异或幺半群提供具有不同环路的单元素呈现。 *)
 
 Definition BooleanPresentation
   := MonoidObjF BoolS_Monoid.
 
 (** Pairing retains both distinct boolean components. *)
-
-(** 配对保留两个不同的布尔分量。 *)
 
 Example product_pair_computes
   : let t := BooleanPresentation in
@@ -39,8 +30,6 @@ Proof. reflexivity. Qed.
 
 (** Projecting a product edge computes both component arrows. *)
 
-(** 投影积边计算出两个分量箭头。 *)
-
 Example product_split_computes
   : let t := BooleanPresentation in
     let z := △₁[VtxProductObjF t t; (tt, tt); (tt, tt)] (true, false) in
@@ -50,8 +39,6 @@ Example product_split_computes
 Proof. reflexivity. Qed.
 
 (** The inverse terminal comparison has a computable singleton edge. *)
-
-(** 终比较的逆具有可计算的单元素边。 *)
 
 Example terminal_inverse_computes
   : fmap (lower ((vertex_nerve_terminal_iso.2 1).1 tt))

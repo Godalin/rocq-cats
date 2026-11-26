@@ -13,11 +13,6 @@ Local Open Scope ordinal_scope.
     constant fillers let the whole nine-step construction compute while
     keeping native choice data visible. No choice equations are assumed. *)
 
-(** * 实际九步选择给出实际柱映射
-
-    原生不同取值具有布尔相等见证。显式常值填充使整个九步构造可计算，并保留
-    原生选择数据的差异；不假定选择之间有方程。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -172,11 +167,6 @@ Fail Definition no_automatic_directed_equivalence
     Consume the explicit cocycle choices themselves. Specialize endpoint
     recovery only after checking it for an abstract map, avoiding expansion
     of the whole nine-step term during type checking. *)
-
-(** ** 实际非零Kan消费者
-
-    消费显式cocycle选择本身。先对抽象映射检查端点恢复，再作特化，避免类型检查
-    展开整个九步项。 *)
 
 Local Opaque SphereRelativeTriangleExtension SphereCylinderReverse
   SphereCylinderComposite.

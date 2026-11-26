@@ -6,16 +6,10 @@ Local Open Scope ordinal_scope.
 
 (** * Independent Sizes for Constructive Attachments *)
 
-(** * 构造性附着的独立大小 *)
-
 (** ** Lower Abstract Hom Equality
 
     Keep object, arrow, equality and law sizes separate. Neither chosen
     pushouts nor respectful extension operations are assumed. *)
-
-(** ** 较低抽象 Hom 相等
-
-    保持对象、箭头、相等及定律大小独立，不假设选定推出或保相等的延拓操作。 *)
 
 Section lowCategory.
 Universes o h e l.
@@ -40,10 +34,6 @@ End lowCategory.
     Keep object, arrow, equality and law sizes separate. Neither chosen
     pushouts nor respectful extension operations are assumed. *)
 
-(** ** 较高抽象 Hom 相等
-
-    保持对象、箭头、相等及定律大小独立，不假设选定推出或保相等的延拓操作。 *)
-
 Section highCategory.
 Universes o h e l.
 Constraint o < h, h < e, e < l.
@@ -66,10 +56,6 @@ End highCategory.
 
     Supply one horn choice and a candidate attachment pushout at strict
     value sizes. No whole Kan structure or global model is available. *)
-
-(** ** 较低单纯相等
-
-    在严格取值大小下给定一份 horn 选择和候选附着推出，不提供完整 Kan 或全局模型。 *)
 
 Section lowerHorn.
 Universes l u p.
@@ -110,10 +96,6 @@ End lowerHorn.
 
     Supply one horn choice and a candidate attachment pushout at strict
     value sizes. No whole Kan structure or global model is available. *)
-
-(** ** 较高单纯相等
-
-    在严格取值大小下给定一份 horn 选择和候选附着推出，不提供完整 Kan 或全局模型。 *)
 
 Section higherHorn.
 Universes l u p.

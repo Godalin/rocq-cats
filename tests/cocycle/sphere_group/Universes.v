@@ -7,19 +7,12 @@ From Cats Require Import
     the ambient simplex sizes. The generated class witnesses may live at
     larger bounds; no resizing axiom or equality of bounds is required. *)
 
-(** * 严格不同大小下的群构造
-
-    系数载体与相等大小保持独立，环境单形大小也保持独立。生成类见证可以处于
-    更高的界；不要求重设大小公理或大小界的相等。 *)
-
 Section GroupSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
 Context (M : Group@{h e _}) (N : Group@{e h _}).
 
 (** Lower native and lower ambient equality. *)
-
-(** 较低原生相等与较低环境相等。 *)
 
 Definition lower_native_lower_ambient_group
   : ∃ G : Group, (G : SetC) =
@@ -29,8 +22,6 @@ Definition lower_native_lower_ambient_group
 
 (** Lower native and higher ambient equality. *)
 
-(** 较低原生相等与较高环境相等。 *)
-
 Definition lower_native_higher_ambient_group
   : ∃ G : Group, (G : SetC) =
       TwoSphereClassS (Z²(M) : Fct (Δ^op) SetCat@{u p _ _ _ _ _})
@@ -39,8 +30,6 @@ Definition lower_native_higher_ambient_group
 
 (** Higher native and lower ambient equality. *)
 
-(** 较高原生相等与较低环境相等。 *)
-
 Definition higher_native_lower_ambient_group
   : ∃ G : Group, (G : SetC) =
       TwoSphereClassS (Z²(N) : Fct (Δ^op) SetCat@{u l _ _ _ _ _})
@@ -48,8 +37,6 @@ Definition higher_native_lower_ambient_group
   := (cocycle_two_sphere_Group (M := N); eq_refl).
 
 (** Higher native and higher ambient equality. *)
-
-(** 较高原生相等与较高环境相等。 *)
 
 Definition higher_native_higher_ambient_group
   : ∃ G : Group, (G : SetC) =
@@ -61,16 +48,12 @@ Context `{HC : !IsCommMagma M} `{HD : !IsCommMagma N}.
 
 (** Commutativity keeps the same parent at lower ambient equality. *)
 
-(** 较低环境相等中的交换性保持同一父结构。 *)
-
 Definition lower_ambient_commutativity
   : @IsCommMagma (GroupToMonoid lower_native_lower_ambient_group.1)
       (Monoid_hasMagma (GroupToMonoid lower_native_lower_ambient_group.1))
   := cocycle_two_sphere_IsCommMagma.
 
 (** The opposite native profile accepts higher ambient equality too. *)
-
-(** 相反原生配置也接受较高环境相等。 *)
 
 Definition higher_ambient_commutativity
   : @IsCommMagma (GroupToMonoid higher_native_higher_ambient_group.1)
@@ -84,18 +67,12 @@ End GroupSizes.
     The actual tetrahedron and its sphere-class comparison must also
     accept the two opposite strict ambient equality profiles. *)
 
-(** ** 独立大小中的几何见证
-
-    实际四面体及其球面类比较，也须接受两种相反的严格环境相等配置。 *)
-
 Section FillerSizes.
 Universes e h l u p.
 Constraint e < h, h < l, l < u, u < p.
 Context (M : Monoid@{h e _}).
 
 (** Lower ambient equality with retained simplex data. *)
-
-(** 较低环境相等，保留单形数据。 *)
 
 Definition lower_ambient_composite
     (x y : TwoSphereClassS
@@ -105,8 +82,6 @@ Definition lower_ambient_composite
   := CocycleTwoSphereMul x y.
 
 (** Higher ambient equality with the same construction. *)
-
-(** 较高环境相等，使用同一构造。 *)
 
 Definition higher_ambient_composite
     (x y : TwoSphereClassS

@@ -18,11 +18,6 @@ Local Open Scope ordinal_scope.
     count the three top-dimensional pieces. Restriction may change the
     pivot, while the same interleaving formula remains natural. *)
 
-(** * 实际阶梯与退化输入
-
-    计算所选枢轴及整个因子，不只计算三块最高维单形的数目。限制可能改变枢轴，
-    但同一交织公式仍保持自然性。 *)
-
 Definition staircase_factor (i : Ordinal 2)
   := SimplexPrismFactor σ[2; i] (two_sphere_prism_time i).
 
@@ -41,8 +36,6 @@ Example three_actual_staircases_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** A six-position spatial simplex repeats all three spatial vertices. *)
-
-(** 六位置空间单形重复全部三个空间顶点。 *)
 
 Definition repeated_space
   : (@Hom Δ) 5 2
@@ -100,8 +93,6 @@ Proof. vm_compute. reflexivity. Defined.
 (** Both coordinate equations and factor uniqueness consume the actual
     existential witnesses, including the five-dimensional input. *)
 
-(** 两个坐标方程及因子唯一性消费实际存在见证，包括五维输入。 *)
-
 Definition repeated_space_equation
   := fst repeated_factor.2.2.
 
@@ -121,8 +112,6 @@ Definition restricted_factor_equation
 (** A supplied last-staircase factor overlaps the automatically selected
     first staircase. Uniqueness compares factors, not their pivots. *)
 
-(** 给定末阶梯因子与自动选取的首阶梯交叠。唯一性比较因子，不比较枢轴。 *)
-
 Definition overlapping_factor_unique
   := simplex_prism_factor_unique (fin_first⁺⁺ : Ordinal 2)
       (σ[2; fin_first⁺⁺] ∘ last_point)
@@ -130,8 +119,6 @@ Definition overlapping_factor_unique
       (reflexivity _) (reflexivity _).
 
 (** The empty maximum and zero-dimensional spatial cylinder both compute. *)
-
-(** 空族最大值及零维空间柱均可计算。 *)
 
 Example empty_maximum_computes
   : fin_rank (finite_ordinal_max 0
@@ -151,11 +138,6 @@ Proof. vm_compute. reflexivity. Defined.
     The actual product cylinder supplies a map without any Kan data.
     The existing nonzero Boolean sphere supplies an actual relative
     cylinder; its evaluation theorem likewise requires no fillers. *)
-
-(** ** 确定映射及既有相对柱
-
-    实际积柱无需 Kan 数据就提供映射。既有非零布尔球面提供实际相对柱，
-    对它的求值定理同样不要求填充。 *)
 
 Definition triangle_cylinder
   : Fct (Δ^op) SetCat

@@ -6,16 +6,10 @@ Local Open Scope ordinal_scope.
 
 (** * Strict Sizes for Conditional Triangle Extensions *)
 
-(** * 条件三角延拓的严格大小 *)
-
 (** ** Lower Equality Bounds
 
     Fix independent sizes and arbitrary sources/targets, with no Kan or
     algebra choices. The actual extension remains an explicit input. *)
-
-(** ** 较低相等界
-
-    固定独立大小及任意源／目标，无 Kan 或代数选择；实际延拓保持为显式输入。 *)
 
 Section lowerSizes.
 Universes l u p.
@@ -82,10 +76,6 @@ End lowerSizes.
     Fix independent sizes and arbitrary sources/targets, with no Kan or
     algebra choices. The actual extension remains an explicit input. *)
 
-(** ** 较高相等界
-
-    固定独立大小及任意源／目标，无 Kan 或代数选择；实际延拓保持为显式输入。 *)
-
 Section higherSizes.
 Universes l u p.
 Constraint l < u, u < p.
@@ -147,8 +137,6 @@ Definition higher_sphere_reverse (x y : TwoSphereS X b)
 End higherSizes.
 
 (** Products of simplicial sets require their own model choice. *)
-
-(** 单纯集合的积结构须单独选定。 *)
 
 Fail Definition unchosen_simplicial_product
   : HasProduct (SimplicialCat : Cat)

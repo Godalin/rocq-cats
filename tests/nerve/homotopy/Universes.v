@@ -13,13 +13,6 @@ From Cats Require Import
     Source and target use opposite native carrier/equality profiles.
     The common simplicial values are checked in both strict size orders. *)
 
-(** * nerve 同伦桥梁的独立大小
-
-    在下述层级链下固定标签广集 [X]、[Y]，范畴 [C]、[D] 及对象作用 [T]、[U]。
-    对函子 [F]、[G] 和逐点相等的自然变换 [α]、[β]，在共同值大小下检查棱柱、
-    同伦、端点及恒等比较接口。
-    源与目标使用相反的原生载体／相等配置，共同单纯值检查两种严格大小次序。 *)
-
 Section Levels.
 Universes e h o l u p.
 Constraint e < h.
@@ -35,15 +28,11 @@ Context (X : SetC@{o e}) (Y : SetC@{h o})
 
 (** The generic construction keeps native hom sizes independent. *)
 
-(** 通用构造保持原生 Hom 大小独立。 *)
-
 Definition native_prism
   : Fct (VtxCat T ×C [Ord 1]) (VtxCat U)
   := NatPrismF α.
 
 (** Value equality can lie strictly below the value carrier. *)
-
-(** 值相等可严格低于值载体。 *)
 
 Definition low_value_nerve_homotopy
   : SimplicialHomotopy
@@ -63,8 +52,6 @@ Definition low_value_nerve_endpoint
 
 (** Value equality can instead lie strictly above the value carrier. *)
 
-(** 值相等也可严格高于值载体。 *)
-
 Definition high_value_nerve_homotopy
   : SimplicialHomotopy
       (VtxNerveN F :
@@ -78,8 +65,6 @@ Definition high_value_nerve_endpoint
   := vertex_nerve_homotopy_1 α.
 
 (** Identity comparison uses the equality of stored maps, not proof fields. *)
-
-(** 恒等比较使用所存映射的相等，不比较证明字段。 *)
 
 Definition low_value_nerve_identity
   : HomotopyEq

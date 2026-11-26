@@ -13,11 +13,6 @@ Local Open Scope ordinal_scope.
     reflexivity. The resulting cylinder must still compute without
     normalizing equality witnesses or losing its spatial/time coordinates. *)
 
-(** * 从四面体生成元构造的柱
-
-    下方类相等是保留四面体的一步，而非原生自反性。所得柱仍须可计算，无须
-    归一化相等见证，也不丢失空间／时间坐标。 *)
-
 Fail Definition unchosen_coefficient_group
   : @HasInverse BoolS_Monoid (Monoid_hasMagma BoolS_Monoid) (hasUnit BoolS_Monoid)
   := _.
@@ -33,16 +28,12 @@ Fail Definition unchosen_Kan
 
 (** Freely label a retained representative at the model's native sizes. *)
 
-(** 在模型原生大小中为保留代表自由标记。 *)
-
 Definition label_sphere (a : bool)
   : BoolCocycleSphereClassS
   := (cocycle_two_sphere_class_resp (M := BoolS_Monoid)) a.
 
 (** An actual elementary tetrahedron gives the class witness supplied to
     the reverse cylinder comparison. *)
-
-(** 实际初等四面体给出传入反向柱比较的类见证。 *)
 
 Definition label_cylinder (a : bool)
   : TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
@@ -53,8 +44,6 @@ Definition label_cylinder (a : bool)
 
 (** Every time operator computes the same triangle coefficient. *)
 
-(** 每个时间算子都计算出同一个三角形系数。 *)
-
 Example cylinder_value_computes (a : bool) (t : (@Hom Δ) 2 1%nat)
   : (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
       (two_sphere_cylinder_eval BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
@@ -63,8 +52,6 @@ Proof. reflexivity. Defined.
 
 (** Read a face of one of the three actual prism tetrahedra. *)
 
-(** 读取三个实际棱柱四面体之一的一个面。 *)
-
 Definition prism_face_value (a : bool) (i : Ordinal 2) (j : Ordinal 3)
   : bool
   := (two_cocycle_triangle_value_resp (M := BoolS_Monoid))
@@ -72,9 +59,6 @@ Definition prism_face_value (a : bool) (i : Ordinal 2) (j : Ordinal 3)
 
 (** All twelve coefficients compute with the expected staircase orientation.
     This checks the actual maps, not only the proved face equations. *)
-
-(** 全部十二个系数按预期阶梯定向计算。这检查实际映射，而非仅检查已证明的
-    面方程。 *)
 
 Example prism_faces_compute (a : bool)
   : ((prism_face_value a fin_first fin_first,

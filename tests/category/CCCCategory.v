@@ -16,20 +16,10 @@ From CatsTests.category Require Import
     structured functors. Two bundles over the same category retain different
     choices while admitting an actual structured arrow between them. *)
 
-(** * CCC 结构包的范畴
-
-    检查普通范畴记号、广集重写及保结构函子的忘却。同一范畴上的两个结构包
-    保留不同选择，同时具有实际的保结构连接态射。 *)
-
 (** ** Ordinary Categorical Clients
 
     Fix three objects of CCCCat and arrows between them. The canonical
     category must infer the intended homs and rewriting through composition. *)
-
-(** ** 普通范畴客户端
-
-    固定 CCCCat 的三个对象及其间态射，规范范畴须能推断对应 Hom，
-    并支持穿过复合的重写。 *)
 
 Section CategoricalClients.
 Context (C D E : @Ob CCCCat) (F F' : Hom C D) (G : Hom D E).
@@ -52,11 +42,6 @@ End CategoricalClients.
     Reuse the two terminal-map witnesses from BundledCartesian. Products
     and exponentials agree definitionally, so the existing identity
     preservation fields give a CCC arrow without equating the bundles. *)
-
-(** ** 不同选择及具体计算
-
-    复用 BundledCartesian 的两份终箭头见证。积与指数按定义一致，
-    因而已有恒等保持性字段给出 CCC 态射，无需识别两个结构包。 *)
 
 Module ChangedChoices.
 Import SeparateChoices.
@@ -93,11 +78,6 @@ End ChangedChoices.
 
     The underlying functor retains both auxiliary proof levels of a CCC
     functor even when they strictly exceed the category law level. *)
-
-(** ** 更大的辅助证明界
-
-    当 CCC 函子的两个辅助证明层级严格高于范畴定律层级时，底层函子保留这
-    两个层级。 *)
 
 Section ProofBounds.
 Universes o h p l m n.

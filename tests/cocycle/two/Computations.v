@@ -9,15 +9,7 @@ From Cats Require Import
     short edges still have label [false]. These tests inspect computations,
     rather than proving general equations already in the theory modules. *)
 
-(** * 一个非零三角形标签
-
-    在有序三角形 [Ord 2] 中只标记从零到二的长边，余边界便将三角形标为
-    [true]，含恒等短边的三角形仍标为 [false]。这些测试检查计算见证，不重复
-    理论模块已有的一般方程。 *)
-
 (** Importing the example must not implicitly select its coefficient monoid. *)
-
-(** 导入例子不得隐式选定系数幺半群。 *)
 
 Fail Definition unchosen_boolean_monoid
   : @HasUnit BoolS_Semigroup (Semigroup_hasMagma BoolS_Semigroup)

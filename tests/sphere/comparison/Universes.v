@@ -10,18 +10,11 @@ Local Open Scope ordinal_scope.
     elementary homotopy needs only a four-horn choice. The two three-horn
     choices are independent parameters, with no equality or Proper field. *)
 
-(** * 独立大小下的最小比较选择
-
-    在较低、较高相等大小比较实际四面体。初等同伦只要求四维 horn 选择；
-    两个三维 horn 选择是独立参数，没有相等或 Proper 字段。 *)
-
 Section StrictSizes.
 Universes l u p.
 Constraint l < u, u < p.
 
 (** The actual comparison horn requires no filler choice. *)
-
-(** 实际比较 horn 不要求填充选择。 *)
 
 Definition lower_horn
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
@@ -40,8 +33,6 @@ Definition higher_horn
   := SphereCompositeComparisonHornN X b H K.
 
 (** A supplied actual filler suffices, without selecting any fillers. *)
-
-(** 给定实际填充即已足够，无需选取任何填充。 *)
 
 Definition lower_given_filler
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
@@ -63,8 +54,6 @@ Definition higher_given_filler
 
 (** Select only the required missing-face-two four-horn fillers. *)
 
-(** 只选择所需的四维缺失面二填充。 *)
-
 Definition lower_selected
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     `{HX : !HasHornFillers X 4 fin_first⁺⁺}
@@ -85,8 +74,6 @@ Definition higher_selected
 
 (** Independent three-horn choices and specified-equal inputs give equal
     output classes, without assuming a three-horn class is registered. *)
-
-(** 独立三维 horn 选择与指定相等输入给出相等输出类，无须注册三维 horn 类。 *)
 
 Definition lower_choices
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)

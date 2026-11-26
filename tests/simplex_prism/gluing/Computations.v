@@ -14,11 +14,6 @@ Local Open Scope ordinal_scope.
     adjacent witnesses are supplied directly, without a prior cylinder
     map, Kan structure, or coefficient classification. *)
 
-(** * 粘合原生不同的值与见证
-
-    布尔相等见证认同原生不同的值。直接给定两个相邻见证，无预先已有的柱
-    映射、Kan 结构或系数分类。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -70,8 +65,6 @@ Definition first_position
 (** The pivot changes on restriction; the actual map remains natural in
     specified equality, without native equality of the chosen values. *)
 
-(** 限制会改变枢轴；实际映射按指定相等仍自然，不要求所选值原生相等。 *)
-
 Example high_degenerate_values_compute
   : (glued 5 ({|lower := repeated_space|}, {|lower := repeated_time|}),
      glued 0 ({|lower := repeated_space ∘ first_position|},
@@ -117,8 +110,6 @@ Fail Definition restriction_is_native_equality
 (** An all-one time coordinate uses default pivot zero. Another valid
     pivot may compute a native-distinct but specified-equal value. *)
 
-(** 时间恒为一时使用默认枢轴零；另一有效枢轴可算出原生不同但指定相等的值。 *)
-
 Definition all_one_space
   : (@Hom Δ) 0%nat 2
   := ConstF [Ord 0] (C := [Ord 2]) fin_first⁺⁺.
@@ -160,10 +151,6 @@ Proof. vm_compute. reflexivity. Defined.
     The target itself is the product presheaf. Glue its generator values
     and inspect both coordinates of a genuine degree-five datum. *)
 
-(** ** 重构实际积
-
-    目标本身是积预层。粘合其生成元值，并检查真实五维数据的两个坐标。 *)
-
 Definition Q
   : Fct (Δ^op) SetCat
   := SimplicialCylinderF (Δ[2]).
@@ -197,8 +184,6 @@ Definition product_reconstructed
 
 (** A zero-dimensional spatial source has just one staircase. *)
 
-(** 零维空间来源只有一块阶梯。 *)
-
 Definition Q0
   : Fct (Δ^op) SetCat
   := SimplicialCylinderF (Δ[0]).
@@ -222,11 +207,6 @@ Proof. vm_compute. reflexivity. Defined.
     Supply the three degeneracies of the nonzero triangle. The existing
     face/degeneracy laws supply the two equations, so gluing uses no filler.
     Inspect the actual face coefficients, not equality proof fields. *)
-
-(** ** 无 Kan 的实际非零 Cocycle 数据
-
-    给定非零三角形的三个退化；由既有面／退化律提供两个方程，粘合不使用
-    填充。检查实际面系数，不检查相等证明字段。 *)
 
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
@@ -279,10 +259,6 @@ Proof. vm_compute. reflexivity. Defined.
     A constant native-equality target makes the missing condition visible.
     Values false,false,true satisfy the first equation but cannot extend. *)
 
-(** ** 一个相邻方程不能提供另一个
-
-    取原生相等的常目标使遗漏条件可见。假、假、真满足第一个方程，却不能延拓。 *)
-
 Definition B
   : Fct (Δ^op) SetCat
   := ConstF (Δ^op) BoolS.
@@ -305,8 +281,6 @@ Proof.
 Defined.
 
 (** The symmetric counterexample retains only the second equation. *)
-
-(** 对称反例只保留第二个方程。 *)
 
 Definition incomplete_first_values (i : Ordinal 2)
   : B 3

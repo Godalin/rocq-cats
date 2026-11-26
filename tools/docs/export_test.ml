@@ -100,8 +100,6 @@ let () =
        "\\ensuremath{\\rightarrow}"; "\\ensuremath{\\Rightarrow}"];
     (* Suppressed field prose must not turn into wide blank indentation. *)
 
-    (* 被隐藏的字段正文不得变成很宽的空白缩进。 *)
-
     let indentation = Str.regexp "\\\\coqdocindent{\\([0-9.]+\\)em}" in
     let rec check_indentation offset =
       match Str.search_forward indentation latex offset with

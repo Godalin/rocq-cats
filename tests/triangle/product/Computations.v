@@ -8,8 +8,6 @@ Local Open Scope ordinal_scope.
 
 (** * Actual Staircases, Degenerate Inputs and Shared Facets *)
 
-(** * 实际阶梯、退化输入及共享面 *)
-
 Definition six_results {A : Type} (f : Ordinal 5 → A)
   : A * A * A * A * A * A
   := (f fin_first, f fin_first⁺, f fin_first⁺⁺,
@@ -63,11 +61,6 @@ Proof. vm_compute. reflexivity. Defined.
     The input factors have different operator presentations. Both
     coordinates are supplied, and the constructed mediator is computed
     on a degree-five input, not only on the facet's three-simplex. *)
-
-(** ** 实际共享面中介
-
-    输入因子使用不同算子表达，提供两个坐标方程。计算中介作用于五维输入，
-    不仅检查该面的三单形。 *)
 
 Definition repeated_shared
   : (@Hom Δ) 5 3
@@ -134,10 +127,6 @@ Defined.
     Evaluate the identity map through the cover and recover both actual
     degree-eight coordinates. No Kan or extension witness is available. *)
 
-(** ** 实际积预层客户端
-
-    通过覆盖求值恒等映射并恢复两个实际八维坐标；不提供 Kan 或延拓见证。 *)
-
 Definition triangle_product
   : Fct (Δ^op) SetCat
   := SimplicialParameterF (Δ[2]) 2.
@@ -183,11 +172,6 @@ Fail Definition no_automatic_Kan
     On the same staircase, repeated spatial or temporal coordinates
     alone do not determine a position. These are actual point operators,
     not missing-argument failures. *)
-
-(** ** 两个坐标都必要
-
-    同一阶梯中，单独的重复空间或时间坐标不能确定位置。下述使用实际点算子，
-    不以缺少参数导致的失败代替反例。 *)
 
 Program Definition grid_point (j : Ordinal 4)
   : (@Hom Δ) 0%nat 4

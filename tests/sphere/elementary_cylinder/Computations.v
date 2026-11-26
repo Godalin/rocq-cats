@@ -14,11 +14,6 @@ Local Open Scope ordinal_scope.
     The endpoint triangles, tetrahedra and law witnesses may be native
     distinct. No native equality of those representatives is assumed. *)
 
-(** * 无 Kan 选择时的方向与实际数据
-
-    使用相等见证为布尔值的常单纯广集。端点三角形、四面体和定律见证可以原生
-    不同；不预设这些代表的原生相等。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -70,8 +65,6 @@ Definition native_faces (w : W 3)
 
 (** Specified side equations do not force native-constant side values. *)
 
-(** 指定侧面方程不迫使侧面值原生为常值。 *)
-
 Example native_face_values_keep_the_tetrahedron
   : (native_faces (simplex_prism_eval K fin_first),
      native_faces (simplex_prism_eval K fin_first⁺),
@@ -113,8 +106,6 @@ Fail Definition specified_tetrahedra_are_native_equal
 (** Inspect the full relative law at an actual degree-five boundary
     datum and a separately varying time operator. *)
 
-(** 在实际五维边界数据及独立变化的时间算子处检验完整相对定律。 *)
-
 Definition edge_space
   : (@Hom Δ) 5 1%nat
   := SimplexPrismTimeF (fin_first⁺⁺ : Ordinal 4).
@@ -155,11 +146,6 @@ Fail Definition unproved_cylinder_equivalence
     Supply the existing elementary cocycle witness itself. The new
     constructor uses its data, without the specialized coefficient
     cylinder theorem or a selected Kan structure. *)
-
-(** ** 真实的非零 Cocycle 四面体
-
-    给定已有初等 cocycle 见证本身；新构造使用其数据，不使用系数特有的柱定理
-    或选定 Kan 结构。 *)
 
 
 Definition coefficient_elementary

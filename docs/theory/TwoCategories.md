@@ -5,7 +5,7 @@ It retains all 2-cells and specifies their composition and coherence explicitly.
 
 ## The interface
 
-[Bicategory.v](../theories/Cat/Bicategory/Core.v) defines a single class `Bicat`,
+[Bicategory.v](../../theories/Cat/Bicategory/Core.v) defines a single class `Bicat`,
 containing objects, hom-categories, composition, and coherence:
 
 | Level | Data | Comparison |
@@ -52,7 +52,7 @@ or two-dimensional composition. See the reference manual's
 `Cat@{o h p +}` now leaves morphisms in `Type@{h}` and their equivalence
 witnesses in `Type@{p}`, with larger auxiliary universes for law witnesses.
 The homs are now bundled as `HomSet X Y : SetC@{h p}`; `Hom` and `HomEq`
-are derived. See [the foundational set layer](./FoundationalSets.md).
+are derived. See [the foundational set layer](FoundationalSets.md).
 The inferred signature on Rocq 9.0.1 is `Cat@{o h p l q}`, with
 `h <= q`, `p <= q`, and `q <= l` (and their redundant consequences).
 There is no required inequality between `h` and `p`. `Fct`, `ProdCat`
@@ -80,7 +80,7 @@ the four cell levels. The `CatBicat` signature likewise no longer equates
 its 1-cell, 2-cell and equality universes. Its category-object universe
 still lies strictly above the sizes of the represented categories.
 
-[The universe regression check](../tests/Universes.v) instantiates identity
+[The universe regression check](../../tests/Universes.v) instantiates identity
 functors, product categories, functor categories, and the thin construction
 with both `h < p` and `p < h`. The thin model has distinct 1-cell, 2-cell and
 2-cell-equality levels `Set < h < p`; bicategory projections are also checked
@@ -89,7 +89,7 @@ No resizing axiom or universe containing itself is used.
 
 ## Strictness relative to a 1-cell setoid
 
-[Strict.v](../theories/Cat/Bicategory/Strict.v) defines `IsStrictTwoCat K R cmp`
+[Strict.v](../../theories/Cat/Bicategory/Strict.v) defines `IsStrictTwoCat K R cmp`
 for a bicategory `K`, a specified `Type`-valued relation `R` on parallel
 1-cells, and comparison 2-cells `cmp p : f ⇒₂ g` for `p : f ≈₁[R X Y] g`.
 The class requires:
@@ -160,7 +160,7 @@ No replacement by the former native-object-equality `FunctorEq` is made here.
 
 ## A locally thin strict model from any category
 
-[Thin.v](../theories/Cat/Bicategory/Thin.v) constructs `ThinBicat C` for any
+[Thin.v](../../theories/Cat/Bicategory/Thin.v) constructs `ThinBicat C` for any
 ordinary category `C`:
 
 | Level | Data |
@@ -200,7 +200,7 @@ noninvertible.
 
 ## Categories, functors, and natural transformations
 
-[Natural.v](../theories/Cat/Natural.v) provides horizontal composition `β ∘Nh α`
+[Natural.v](../../theories/Cat/Natural.v) provides horizontal composition `β ∘Nh α`
 and proves the two component formulas equivalent by naturality:
 
 ```text
@@ -211,7 +211,7 @@ It proves interchange and packages composition as `CompNF`, a functor on the
 two functor categories. Horizontal composition also preserves natural
 isomorphisms, with computational inverse witnesses.
 
-[Cat.v](../theories/Cat/Bicategory/Cat.v) instantiates `Bicat` with `Cat`,
+[Cat.v](../../theories/Cat/Bicategory/Cat.v) instantiates `Bicat` with `Cat`,
 `FctCat C D`, `IdF`, and `CompNF`. The same structure supplies the canonical identity-
 component associators and unitors and proves all coherence laws. All natural
 transformations are 2-cells, including noninvertible ones; parallel 2-cells
@@ -230,7 +230,7 @@ explicit extensionality result would need a separate investigation.
 
 ## The one-dimensional shadow
 
-[Homotopy.v](../theories/Cat/Bicategory/Homotopy.v) defines
+[Homotopy.v](../../theories/Cat/Bicategory/Homotopy.v) defines
 `BicatHomotopyCat K`. Its objects and arrows are the 0-cells and 1-cells of
 `K`; arrow equivalence is isomorphism in the corresponding hom-category.
 Horizontal composition preserves this relation because `comp1F` preserves
@@ -244,14 +244,14 @@ act as identities on categories and functors, and
 isomorphisms for their composites. Their comparison requires no equality of
 the full category records.
 
-Thus the existing [CatCat.v](../theories/Cat/CatCat.v) has precisely the
+Thus the existing [CatCat.v](../../theories/Cat/CatCat.v) has precisely the
 intended equality of the general shadow. Its object isomorphisms are
 equivalences with chosen quasi-inverses. All noninvertible natural
 transformations remain accessible in `CatBicat`.
 
 ## An additive example with noninvertible 2-cells
 
-[Instance/Nat/TwoCat.v](../theories/Instance/Nat/TwoCat.v) has one 0-cell, one
+[Instance/Nat/TwoCat.v](../../theories/Instance/Nat/TwoCat.v) has one 0-cell, one
 1-cell, and natural numbers as 2-cells. Both compositions add natural numbers;
 commutativity gives interchange. The theorem `nat_2cell_not_iso` shows that
 positive 2-cells are not invertible, so the example does not restrict its

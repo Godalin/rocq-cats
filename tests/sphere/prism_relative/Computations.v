@@ -14,11 +14,6 @@ Local Open Scope ordinal_scope.
     can therefore obey the six side equations without being literally
     the base value. No filling or algebra structure is chosen. *)
 
-(** * 使用原生不同数据的实际相对重构
-
-    下方相等见证为布尔数据。因此，原生不同的值可以满足六个侧面方程，
-    而不必字面等于基值。不选择填充或代数结构。 *)
-
 Definition side_ranks (j : Ordinal 2) (k : Ordinal 1)
   : nat * nat
   := (fin_rank (fst (simplex_triangle_prism_side j k)),
@@ -112,8 +107,6 @@ Fail Definition boundary_is_native_constant
 (** A genuine degree-five boundary datum uses a nonconstant time
     coordinate. The same-factor boundary theorem covers it directly. *)
 
-(** 真实五维边界数据使用非常值时间坐标；同因子的边界定理直接涵盖它。 *)
-
 Definition edge_space
   : (@Hom Δ) 5 1%nat
   := SimplexPrismTimeF (fin_first⁺⁺ : Ordinal 4).
@@ -142,10 +135,6 @@ Proof. vm_compute. reflexivity. Defined.
 
     Reconstruct an existing constant relative cylinder. Endpoints retain
     their nonzero coefficient while every side coefficient is zero. *)
-
-(** ** 无 Kan 选择的非零 Cocycle 柱
-
-    重构已有常值相对柱；端点保留非零系数，而所有侧面系数为零。 *)
 
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
@@ -204,11 +193,6 @@ Definition coefficient_roundtrip
     The time projection into the representable interval is an actual
     cylinder map, but is not constant on the boundary. No fixed-endpoint
     claim is made for this counterexample. *)
-
-(** ** 边界常值是实质性的额外条件
-
-    投向可表区间的时间投影是实际柱映射，但在边界上不是常值。
-    此反例不声称具有固定端点。 *)
 
 Definition I
   : Fct (Δ^op) SetCat

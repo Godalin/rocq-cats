@@ -18,11 +18,6 @@ Local Open Scope ordinal_scope.
     the old function to positive inputs. This makes traversal order and
     the actual retained choices visible in ordinary computations. *)
 
-(** * 九条实际后继边
-
-    每条边是既有自然数后继映射，而非恒等。一次延拓在零处加入所选取值，并把
-    原函数移到正输入；普通计算因此能看见行进顺序和实际保留的选择。 *)
-
 Program Definition SuccessorChain (n : nat)
   : Chain SetCat n
   :=
@@ -63,8 +58,6 @@ Definition nine_extension (b : nat)
 (** Later zero values appear first, and the old function survives after
     all nine nonidentity edges. *)
 
-(** 较晚加入的零值位于前面，原函数在九条非恒等边之后仍然保留。 *)
-
 Example nine_steps_compute
   : map (nine_extension 100).1 ([0;1;2;3;4;5;6;7;8;9;10;11]) =
       [108;107;106;105;104;103;102;101;100;1000;1001;1002].
@@ -72,15 +65,11 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** Independently selected new values remain computationally distinct. *)
 
-(** 独立选择的新增取值仍在计算上不同。 *)
-
 Example different_choices_compute
   : ((nine_extension 200).1 0, (nine_extension 200).1 9) = (208,1000).
 Proof. vm_compute. reflexivity. Defined.
 
 (** An interior interval visits only its three stored edges. *)
-
-(** 内部区间只经过其中存储的三条边。 *)
 
 Definition interior_extension
   := chain_extension_target (SuccessorChain 9) NatS (edge_extensions 9 100)
@@ -92,8 +81,6 @@ Example interior_steps_compute
 Proof. vm_compute. reflexivity. Defined.
 
 (** The empty interval keeps the original values and uses no edge. *)
-
-(** 空区间保持原有取值，不使用边。 *)
 
 Definition empty_extension
   := chain_extension_target (SuccessorChain 0) NatS (edge_extensions 0 100)
@@ -114,10 +101,6 @@ Fail Definition choices_are_native_equal
 
     The constant-zero edge identifies two old inputs. Extending the
     identity would have to recover both, an actual contradiction. *)
-
-(** ** 不可延拓的边
-
-    常零边等同两个原输入，若能延拓恒等映射则必须同时恢复它们，产生实际矛盾。 *)
 
 Program Definition collapse_resp
   : NatS →r NatS

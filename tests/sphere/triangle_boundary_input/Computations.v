@@ -14,10 +14,6 @@ Local Open Scope hom_scope.
     Boolean witnesses relate all values, without making them natively
     equal. Maps may vary with time; no Kan selection is supplied. *)
 
-(** * 带原生不同端点与定律的实际柱
-
-    布尔见证关联全部取值，但不使它们原生相等；映射可随时间变化，不给定Kan选择。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -203,11 +199,6 @@ Fail Definition no_reverse_from_initial_data
     Use a time-independent cylinder on the true cocycle sphere. The
     initial map keeps that sphere on the retained time edges and the
     actual basepoint on the whole spatial boundary; no Kan is consumed. *)
-
-(** ** 保留真实非零球面
-
-    使用真系数球面的时间无关柱。初始映射在保留时间边上保持该球面，整个空间
-    边界则取实际基点；不消费Kan选择。 *)
 
 
 Definition nonzero_cylinder

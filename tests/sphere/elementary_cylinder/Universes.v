@@ -6,18 +6,11 @@ Local Open Scope ordinal_scope.
 
 (** * Strict Universes for the Elementary Cylinder *)
 
-(** * 初等柱的严格宇宙 *)
-
 (** ** Lower Equality Bounds Without Choices
 
     Keep carrier and equality sizes distinct. A supplied elementary
     tetrahedron determines the actual cylinder in the reversed endpoint
     order; neither horn selection nor algebra structure is available. *)
-
-(** ** 较低相等界与无选择构造
-
-    保持载体、相等大小不同。给定初等四面体确定实际柱，端点顺序反转；
-    不提供 horn 选择或代数结构。 *)
 
 Section lowerSizes.
 Universes l u p.
@@ -66,11 +59,6 @@ End lowerSizes.
     Keep carrier and equality sizes distinct. A supplied elementary
     tetrahedron determines the actual cylinder in the reversed endpoint
     order; neither horn selection nor algebra structure is available. *)
-
-(** ** 较高相等界与无选择构造
-
-    保持载体、相等大小不同。给定初等四面体确定实际柱，端点顺序反转；
-    不提供 horn 选择或代数结构。 *)
 
 Section higherSizes.
 Universes l u p.

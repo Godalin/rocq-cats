@@ -10,18 +10,9 @@ Local Open Scope ordinal_scope.
     base correction is supplied as additional data; the trajectory edge
     determines both. Only class comparison requires target horn choices. *)
 
-(** * 独立大小与单条轨迹假设
-
-    检查两种严格单形载体／相等次序。不额外给出两个端点基点校正；轨迹边
-    确定二者。只有类比较要求目标 horn 选择。 *)
-
 (** ** Strict Profiles
 
     Fix three strictly increasing bounds with no source Kan or algebra. *)
-
-(** ** 严格配置
-
-    固定三个严格递增界，不提供来源 Kan 或代数。 *)
 
 Section StrictSizes.
 Universes l u p.
@@ -29,16 +20,12 @@ Constraint l < u, u < p.
 
 (** The zero-dimensional constant law uses specified equality. *)
 
-(** 零维常值定律使用指定相等。 *)
-
 Definition lower_constant_zero
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
   : simplex_constant X b 0 ≈S b
   := simplex_constant_zero X b.
 
 (** No edge-uniqueness law or filling choice is assumed. *)
-
-(** 不假设边唯一律或填充选择。 *)
 
 Definition lower_trace
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (f g : X ⇒ Y)
@@ -52,8 +39,6 @@ Definition lower_trace
 
 (** Both image-base equations are derived at these same bounds. *)
 
-(** 两个像基点方程均在同样的界处导出。 *)
-
 Definition lower_base
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (f g : X ⇒ Y)
     (H : SimplicialHomotopy f g) (b : X 0) (c : Y 0)
@@ -64,8 +49,6 @@ Definition lower_base
   := sphere_homotopy_base H b c E t.
 
 (** The whole relative cylinder is constructed without any Kan choice. *)
-
-(** 构造完整相对柱无需任何 Kan 选择。 *)
 
 Definition lower_cylinder
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (f g : X ⇒ Y)
@@ -82,8 +65,6 @@ Definition lower_cylinder
 
 (** Only the target's two four-dimensional comparison choices are used. *)
 
-(** 仅使用目标的两项四维比较选择。 *)
-
 Definition lower_class_maps
     (X Y : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (f g : X ⇒ Y)
     (H : SimplicialHomotopy f g) (b : X 0) (c : Y 0)
@@ -99,16 +80,12 @@ Definition lower_class_maps
 
 (** The zero-dimensional constant law uses specified equality. *)
 
-(** 零维常值定律使用指定相等。 *)
-
 Definition higher_constant_zero
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
   : simplex_constant X b 0 ≈S b
   := simplex_constant_zero X b.
 
 (** No edge-uniqueness law or filling choice is assumed. *)
-
-(** 不假设边唯一律或填充选择。 *)
 
 Definition higher_trace
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (f g : X ⇒ Y)
@@ -122,8 +99,6 @@ Definition higher_trace
 
 (** Both image-base equations are derived at these same bounds. *)
 
-(** 两个像基点方程均在同样的界处导出。 *)
-
 Definition higher_base
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (f g : X ⇒ Y)
     (H : SimplicialHomotopy f g) (b : X 0) (c : Y 0)
@@ -134,8 +109,6 @@ Definition higher_base
   := sphere_homotopy_base H b c E t.
 
 (** The whole relative cylinder is constructed without any Kan choice. *)
-
-(** 构造完整相对柱无需任何 Kan 选择。 *)
 
 Definition higher_cylinder
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (f g : X ⇒ Y)
@@ -151,8 +124,6 @@ Definition higher_cylinder
   := SphereBasedHomotopyCylinder H b c E x.
 
 (** Only the target's two four-dimensional comparison choices are used. *)
-
-(** 仅使用目标的两项四维比较选择。 *)
 
 Definition higher_class_maps
     (X Y : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (f g : X ⇒ Y)

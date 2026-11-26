@@ -14,11 +14,6 @@ Local Open Scope ordinal_scope.
     from a constant relative cylinder. Inspect both comparison fillers,
     rather than replacing their chosen data by coefficient operations. *)
 
-(** * 布尔 Cocycle 模型中的实际柱下降
-
-    保留常值相对柱的两个实际对角三角形及三个棱柱四面体。检查两份比较填充，
-    不将其选定数据替换为系数运算。 *)
-
 Fail Definition unchosen_Kan
   : HasKanFillers BoolCocycleModel
   := _.
@@ -82,8 +77,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** Descent can be consumed by the already defined coefficient invariant. *)
 
-(** 已有系数不变量可以消费下降结果。 *)
-
 Definition actual_class_chain
   : bool_cocycle_sphere ≈S bool_cocycle_sphere
   := two_sphere_cylinder_class BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
@@ -96,9 +89,6 @@ Definition decoded_class_chain
 (** The generic theorem alone transfers the existing non-null class result
     to exclusion of a full relative cylinder. No model-specific cylinder
     classification is used in this client. *)
-
-(** 仅用通用定理，将既有非零类结论转为排除完整相对柱；此客户端不使用模型
-    特定的柱分类。 *)
 
 Example no_relative_contraction
   : ¬ TwoSphereCylinderHomotopy BoolCocycleModel (two_cocycle_simplex_unit (M := BoolS_Monoid) 0)
@@ -116,11 +106,6 @@ Defined.
     representations; their specified equality retains Boolean witnesses.
     Only the two required four-horn choices will be enabled. *)
 
-(** ** 布尔值相等下的非恒定时间映射
-
-    时间实际更换三角形的值；端点具有不同原生表示，指定相等保留布尔见证。
-    只启用所需两项四维 horn 选择。 *)
-
 Program Definition WitnessS
   : SetC
   :=
@@ -136,8 +121,6 @@ Defined.
 
 (** A constant simplicial object retains those representations in every degree. *)
 
-(** 常值单纯对象在每一维保留这些表示。 *)
-
 Definition WitnessX
   : Fct (Δ^op) SetCat
   := ConstF (Δ^op) WitnessS.
@@ -145,9 +128,6 @@ Definition WitnessX
 (** Sample the second position whenever it is present. No compatibility
     with restriction is claimed in native equality; naturality below uses
     exactly the specified target relation. *)
-
-(** 若存在第二个位置则取该位置。不声称取样与限制按原生相等相容；下方自然性
-    准确使用指定目标关系。 *)
 
 Definition sample_position (n : nat)
   : Ordinal n
@@ -190,8 +170,6 @@ Defined.
 
 (** Each choice retains an actual filler and its full horn equation. *)
 
-(** 每份选择保留实际填充及其完整 horn 方程。 *)
-
 Program Definition WitnessHornFillers (n : nat) (i : Ordinal n) (v : bool)
   : HasHornFillers WitnessX n i
   :=
@@ -225,8 +203,6 @@ Fail Definition unchosen_class_group
 
 (** The time-dependent diagonal values remain visible through the subset. *)
 
-(** 随时间变化的对角值经子集仍保持可见。 *)
-
 Example changing_cylinder_computes
   : (initial_sphere.1,
      (TwoSphereCylinderDiagonal WitnessX false changing_cylinder
@@ -241,8 +217,6 @@ Proof. vm_compute. reflexivity. Defined.
 
 (** The new chain connects distinct native endpoint representatives using
     the actual full relative cylinder and both comparison choices. *)
-
-(** 新链使用实际完整相对柱及两份比较选择，连接不同原生端点表示。 *)
 
 Definition different_representatives_class
   : (initial_sphere : TwoSphereClassS WitnessX false) ≈S final_sphere
@@ -266,9 +240,6 @@ Proof. vm_compute. reflexivity. Defined.
 (** Count only retained elementary generators in this concrete generated
     derivation. The whole cylinder uses all three steps, not a shortcut
     through the native endpoint relation. *)
-
-(** 只数这份具体生成推导中保留的初等生成元。完整柱使用全部三个步骤，不沿
-    端点原生关系取捷径。 *)
 
 Fixpoint elementary_steps {x y : TwoSphereS WitnessX false}
     (E : (x : TwoSphereClassS WitnessX false) ≈S y)

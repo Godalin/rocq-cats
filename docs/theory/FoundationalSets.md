@@ -14,10 +14,10 @@ Meta → Set.Core → Set.Morphism → Cat.Core → Instance.Set.Core
 
 | Module | Responsibility |
 | --- | --- |
-| [Set/Core.v](../theories/Set/Core.v) | `SetC`, carrier, designated equality, equivalence laws, `≈S` and `[≈S]` |
-| [Set/Morphism.v](../theories/Set/Morphism.v) | Respectful maps, pointwise equality, function sets, identities, composition and their laws |
-| [Cat/Core.v](../theories/Cat/Core.v) | Categories with native hom-sets, hom composition and its respectful maps |
-| [Instance/Set/Core.v](../theories/Instance/Set/Core.v) | The concrete category `SetCat` |
+| [Set/Core.v](../../theories/Set/Core.v) | `SetC`, carrier, designated equality, equivalence laws, `≈S` and `[≈S]` |
+| [Set/Morphism.v](../../theories/Set/Morphism.v) | Respectful maps, pointwise equality, function sets, identities, composition and their laws |
+| [Cat/Core.v](../../theories/Cat/Core.v) | Categories with native hom-sets, hom composition and its respectful maps |
+| [Instance/Set/Core.v](../../theories/Instance/Set/Core.v) | The concrete category `SetCat` |
 
 Neither foundational set module imports categories. `Cat.Core` exports the
 set API. `Instance.Set.Core` depends only on `Cat.Core`, and clients import
@@ -46,12 +46,6 @@ such as `Proper (≈[X,Y] ==> ≈[X,Y])`, `≈[X,Y]` denotes the fixed-endpoint
 `HomEq` relation. Arrow equations can be written `f ≈ g` and print with
 their endpoints as `f ≈ g ⦂ Hom(X,Y)`. Negated equality prints as
 `f ≉ g ⦂ Hom(X,Y)`.
-
-用 `Hom[C] X Y` 指定底层范畴，用 `id[X]` 指定恒等态射的对象。
-`≈[X,Y]` 是固定端点的 `HomEq` 关系，用于
-`Proper (≈[X,Y] ==> ≈[X,Y])` 等关系参数。源码中的箭头等式可写作
-`f ≈ g`，目标显示端点为 `f ≈ g ⦂ Hom(X,Y)`，否定显示为
-`f ≉ g ⦂ Hom(X,Y)`。
 
 Composition remains a dependent binary operation with `Proper`, so universal
 properties and their `is_*`/`Has*` separation keep the same mathematical shape.
@@ -112,7 +106,7 @@ isomorphisms remain separate mathematical obligations in
 
 ## Validation
 
-[Universes.v](../tests/Universes.v) retains both carrier/equality orderings
+[Universes.v](../../tests/Universes.v) retains both carrier/equality orderings
 for basic sets, `SetCat`, hom-sets, functor categories and thin bicategories;
 it checks distinct bicategory cell levels in both 2-cell/equality orderings,
 and the fixed-size family–slice equivalence with `p < u`.

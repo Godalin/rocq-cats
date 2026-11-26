@@ -24,19 +24,10 @@ From CatsTests.category Require Import
     composition computes at two distinct Boolean environments. An empty
     constant functor keeps its noninvertible exponential comparison. *)
 
-(** * 比较映射的弱复合
-
-    三个独立范畴配置检查弱假设；Reader 复合在两个不同布尔环境处计算。
-    常空函子仍具有不可逆指数比较。 *)
-
 (** ** Increasing Category Bounds
 
     Keep all native object, hom, equality and auxiliary law levels
     separate; introduce choices only when a comparison uses them. *)
-
-(** ** 递增的范畴界
-
-    分离所有原生对象、Hom、相等及辅助律层级，只在比较需要时引入选择。 *)
 
 Section IndependentComposition.
 Universes oc hc ec lc od hd ed ld oe he ee le.
@@ -51,8 +42,6 @@ Context (preservesF : ∀ X Y : C,
 
 (** Candidate preservation does not choose target products. *)
 
-(** 候选保持性不选择目标积。 *)
-
 Definition independent_product_cone {X Y P : C}
     {p : Hom P X} {q : Hom P Y} (HP : is_product X Y P p q)
   : is_product (F X) (F Y) (F P) (fmap F p) (fmap F q)
@@ -63,8 +52,6 @@ Context (preservesG : ∀ X Y : D,
     is_product (G X) (G Y) (G ((X × Y)%ob)) (fmap G π1) (fmap G π2)).
 
 (** The composite candidate still needs no target product choice. *)
-
-(** 复合候选仍不需要目标积选择。 *)
 
 Definition independent_product_comp (X Y : C)
   : is_product ((G ∘F F) X) ((G ∘F F) Y)
@@ -80,8 +67,6 @@ Context (preservesGF : ∀ X Y : C,
 
 (** An independently supplied composite witness is permitted. *)
 
-(** 允许独立指定复合见证。 *)
-
 Definition independent_product_inv_comp (X Y : C)
   : preserved_product_inv (G ∘F F) preservesGF X Y ≈
       fmap G (preserved_product_inv F preservesF X Y) ∘
@@ -92,8 +77,6 @@ Context {EC : HasExponential PC} {ED : HasExponential PD}.
 Context {EE : HasExponential PE}.
 
 (** Exponential composition requires neither terminal nor inverse data. *)
-
-(** 指数复合不需要终对象或逆数据。 *)
 
 Definition independent_exp_comp (X Y : C)
   : exp_cmp (G ∘F F) preservesGF X Y ≈
@@ -109,10 +92,6 @@ End IndependentComposition.
     Keep all native object, hom, equality and auxiliary law levels
     separate; introduce choices only when a comparison uses them. *)
 
-(** ** 反向的范畴界
-
-    分离所有原生对象、Hom、相等及辅助律层级，只在比较需要时引入选择。 *)
-
 Section ReversedComposition.
 Universes oc hc ec lc od hd ed ld oe he ee le.
 Constraint ee < he, he < oe, oe < le, le < ed.
@@ -126,8 +105,6 @@ Context (preservesF : ∀ X Y : C,
 
 (** Candidate preservation does not choose target products. *)
 
-(** 候选保持性不选择目标积。 *)
-
 Definition reversed_product_cone {X Y P : C}
     {p : Hom P X} {q : Hom P Y} (HP : is_product X Y P p q)
   : is_product (F X) (F Y) (F P) (fmap F p) (fmap F q)
@@ -138,8 +115,6 @@ Context (preservesG : ∀ X Y : D,
     is_product (G X) (G Y) (G ((X × Y)%ob)) (fmap G π1) (fmap G π2)).
 
 (** The composite candidate still needs no target product choice. *)
-
-(** 复合候选仍不需要目标积选择。 *)
 
 Definition reversed_product_comp (X Y : C)
   : is_product ((G ∘F F) X) ((G ∘F F) Y)
@@ -155,8 +130,6 @@ Context (preservesGF : ∀ X Y : C,
 
 (** An independently supplied composite witness is permitted. *)
 
-(** 允许独立指定复合见证。 *)
-
 Definition reversed_product_inv_comp (X Y : C)
   : preserved_product_inv (G ∘F F) preservesGF X Y ≈
       fmap G (preserved_product_inv F preservesF X Y) ∘
@@ -167,8 +140,6 @@ Context {EC : HasExponential PC} {ED : HasExponential PD}.
 Context {EE : HasExponential PE}.
 
 (** Exponential composition requires neither terminal nor inverse data. *)
-
-(** 指数复合不需要终对象或逆数据。 *)
 
 Definition reversed_exp_comp (X Y : C)
   : exp_cmp (G ∘F F) preservesGF X Y ≈
@@ -181,8 +152,6 @@ End ReversedComposition.
 
 (** Function exponentials require a separate choice. *)
 
-(** 函数指数须另外选定。 *)
-
 Fail Definition automatic_composition_exponentials
   : @HasExponential SetCat SetCat_HasProduct
   := ltac:(typeclasses eauto).
@@ -193,11 +162,6 @@ Fail Definition automatic_composition_exponentials
     general right-adjoint preservation theorem for exponentiation, rather
     than another pointwise product universal-property proof. *)
 
-(** ** 两个 Reader 环境
-
-    使用标准广集积和局部选定的指数；复用取指数的一般右伴随保持定理，不另证逐点积
-    泛性质。 *)
-
 Section ReaderComposition.
 Local Instance composition_exponentials
   : HasExponential SetCat_HasProduct
@@ -205,15 +169,11 @@ Local Instance composition_exponentials
 
 (** Each stage reads one Boolean environment. *)
 
-(** 每个阶段读取一个布尔环境。 *)
-
 Definition CompositionReaderF
   : Fct SetCat SetCat
   := (-^ BoolS).
 
 (** Product preservation is inherited from the product-exponential adjunction. *)
-
-(** 积保持性继承自积与指数伴随。 *)
 
 Definition composition_reader_products (X Y : SetC)
   : is_product (CompositionReaderF X) (CompositionReaderF Y)
@@ -222,8 +182,6 @@ Definition composition_reader_products (X Y : SetC)
   := exp_preserves_product BoolS product_universal.
 
 (** Compose the supplied cones, without a CCC-functor input. *)
-
-(** 复合给定锥，不输入 CCC 函子性质。 *)
 
 Definition composition_readers_products (X Y : SetC)
   : is_product (CompositionReaderF (CompositionReaderF X))
@@ -235,8 +193,6 @@ Definition composition_readers_products (X Y : SetC)
       composition_reader_products composition_reader_products X Y.
 
 (** The product equation uses the constructed composite witness. *)
-
-(** 积方程使用构造出的复合见证。 *)
 
 Definition composition_readers_product_law (X Y : SetC)
   : preserved_product_inv
@@ -250,8 +206,6 @@ Definition composition_readers_product_law (X Y : SetC)
       composition_readers_products X Y.
 
 (** Exponential factorization uses the same supplied comparisons. *)
-
-(** 指数分解使用相同的指定比较。 *)
 
 Definition composition_readers_exp_law (X Y : SetC)
   : exp_cmp
@@ -267,8 +221,6 @@ Definition composition_readers_exp_law (X Y : SetC)
 
 (** A genuinely environment-dependent family returns a tagged value. *)
 
-(** 实际依赖环境的族返回带标签的值。 *)
-
 Program Definition composition_reader_functions
   : BoolS →r (BoolS →S (TaggedGluingS →S TaggedGluingS))
   :=
@@ -280,8 +232,6 @@ Next Obligation. intros b c H [n t]. exact (eq_refl, true). Defined.
 Next Obligation. intros b c H inner [n t]. exact (eq_refl, false). Defined.
 
 (** Its two environments also provide a nonconstant argument family. *)
-
-(** 两个环境也给出非常值参数族。 *)
 
 Program Definition composition_reader_argument
   : BoolS →r (BoolS →S TaggedGluingS)
@@ -295,8 +245,6 @@ Program Definition composition_reader_argument
 
 (** The direct comparison retains both environment positions. *)
 
-(** 直接比较保留两个环境的位置。 *)
-
 Example composition_reader_direct_computes
   : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
@@ -305,8 +253,6 @@ Example composition_reader_direct_computes
 Proof. reflexivity. Defined.
 
 (** Factoring the comparison computes the same result at those positions. *)
-
-(** 比较的分解在这些位置计算出相同结果。 *)
 
 Example composition_reader_factored_computes
   : (exp_cmp CompositionReaderF
@@ -320,8 +266,6 @@ Proof. reflexivity. Defined.
 
 (** Both computations genuinely depend on the supplied environment family. *)
 
-(** 两种计算实际依赖给定的环境族。 *)
-
 Program Definition composition_reader_constant_argument
   : BoolS →r (BoolS →S TaggedGluingS)
   :=
@@ -334,8 +278,6 @@ Program Definition composition_reader_constant_argument
 
 (** Changing the argument exposes the two environment effects. *)
 
-(** 改变参数会显露两个环境的作用。 *)
-
 Example composition_reader_environment_computes
   : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
@@ -344,8 +286,6 @@ Example composition_reader_environment_computes
 Proof. reflexivity. Defined.
 
 (** Pairing through the composite retains its original universal mediator. *)
-
-(** 经复合配对时保留原来的泛中介。 *)
 
 Example composition_reader_product_computes
   : preserved_product_inv
@@ -356,8 +296,6 @@ Example composition_reader_product_computes
 Proof. reflexivity. Defined.
 
 (** The factored inverse product map has the same native data computation. *)
-
-(** 分解后的逆积映射具有相同的原生数据计算。 *)
 
 Example composition_reader_product_factored_computes
   : (fmap CompositionReaderF
@@ -370,8 +308,6 @@ Example composition_reader_product_factored_computes
 Proof. reflexivity. Defined.
 
 (** The constant identity family has different native tags. *)
-
-(** 常恒等族具有不同的原生标签。 *)
 
 Program Definition composition_reader_identity_functions
   : BoolS →r (BoolS →S (TaggedGluingS →S TaggedGluingS))
@@ -386,8 +322,6 @@ Program Definition composition_reader_identity_functions
 (** The composite comparison respects Type-valued function equality,
     without identifying its function or law records. *)
 
-(** 复合比较保持 Type 值函数相等，不识别函数或定律记录。 *)
-
 Example composition_reader_function_equality
   : exp_cmp
       (CompositionReaderF ∘F CompositionReaderF) composition_readers_products
@@ -400,8 +334,6 @@ Proof.
 Defined.
 
 (** Specified equality retains observable differences of representatives. *)
-
-(** 指定相等仍保留代表可观察的差异。 *)
 
 Example composition_reader_distinct_tags_compute
   : exp_cmp
@@ -419,18 +351,10 @@ End ReaderComposition.
     Composition still applies although terminal and exponential
     preservation are both impossible for this functor. *)
 
-(** ** 独立复合见证及不可逆比较
-
-    在恒等之后使用常空函子，直接指定复合见证，而不使用
-    [preserved_product_comp]。尽管此函子不可能保持终对象及指数，复合律
-    依然适用。 *)
-
 Section EmptyComposition.
 Local Existing Instance SetCat_HasExponential.
 
 (** Directly supplied preservation witnesses need not be equal records. *)
-
-(** 直接指定的保持见证不必是相等记录。 *)
 
 Definition composition_empty_product_law (X Y : SetC)
   : preserved_product_inv (ConstF SetCat EmptyS ∘F (@IdF SetCat))
@@ -444,8 +368,6 @@ Definition composition_empty_product_law (X Y : SetC)
       empty_constant_preserves_products X Y.
 
 (** No inverse exponential comparison enters the composition theorem. *)
-
-(** 指数比较的逆不进入复合定理。 *)
 
 Definition composition_empty_exp_law (X Y : SetC)
   : exp_cmp
@@ -462,8 +384,6 @@ Definition composition_empty_exp_law (X Y : SetC)
 
 (** An inverse would construct an element of the empty carrier. *)
 
-(** 逆将构造出空载体的元素。 *)
-
 Definition composition_comparison_not_iso
   : is_iso (exp_cmp
       (ConstF SetCat EmptyS ∘F (@IdF SetCat))
@@ -471,8 +391,6 @@ Definition composition_comparison_not_iso
   := empty_constant_comparison_not_iso.
 
 (** Binary-product composition also supplies no terminal preservation. *)
-
-(** 二元积复合也不给出终对象保持性。 *)
 
 Definition composition_not_terminal
   : is_terminal ((ConstF SetCat EmptyS ∘F (@IdF SetCat)) UnitS) → Empty_set

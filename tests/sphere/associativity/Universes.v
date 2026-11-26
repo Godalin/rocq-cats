@@ -10,27 +10,16 @@ Local Open Scope ordinal_scope.
     dimension-four missing face three; class comparison adds only missing
     face two. Multiplication choices remain independent explicit data. *)
 
-(** * 独立大小与结合律的最小选择
-
-    给定实际填充无需选择；重括号仅选择四维缺第三面，类比较只另加缺第二面。
-    乘法选择保持为独立显式数据。 *)
-
 (** ** Strict Levels
 
     Fix strictly increasing levels, probing simplex equality both below
     and above the carrier. The laws must retain those independent sizes. *)
-
-(** ** 严格层级
-
-    固定严格递增层级，分别检查低于及高于载体的单形相等；定律须保留独立大小。 *)
 
 Section StrictSizes.
 Universes l u p.
 Constraint l < u, u < p.
 
 (** Read a supplied filler without any chosen structure. *)
-
-(** 无需选定结构即可读取给定填充。 *)
 
 Definition lower_given
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
@@ -44,8 +33,6 @@ Definition lower_given
 
 (** Rebracketing needs only missing-face-three four-horns. *)
 
-(** 重括号仅需四维缺第三面的 horn。 *)
-
 Definition lower_rebracket
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     `{HX3 : !HasHornFillers X 4 fin_first⁺⁺⁺}
@@ -57,8 +44,6 @@ Definition lower_rebracket
   := SphereCompositeReassociate X b A B C.
 
 (** Compare arbitrary supplied composites without a three-horn selection. *)
-
-(** 比较任意给定合成，不需三维 horn 选择。 *)
 
 Definition lower_comparison
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
@@ -74,8 +59,6 @@ Definition lower_comparison
 
 (** The selected associativity law uses no missing-face-four selection. *)
 
-(** 选定结合律不需缺第四面的选择。 *)
-
 Definition lower_selected
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
     `{HX2 : !HasHornFillers X 4 fin_first⁺⁺}
@@ -87,8 +70,6 @@ Definition lower_selected
 
 (** Four independent multiplication choices are covered by the supplied
     composite theorem, without identifying their choices or witnesses. *)
-
-(** 给定合成定理涵盖四个独立乘法选择，不等同选择或见证。 *)
 
 Definition lower_independent
     (X : Fct (Δ^op) SetCat@{u l _ _ _ _ _}) (b : X 0)
@@ -108,8 +89,6 @@ Defined.
 
 (** Read a supplied filler without any chosen structure. *)
 
-(** 无需选定结构即可读取给定填充。 *)
-
 Definition higher_given
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     (x y z s t l : TwoSphereS X b)
@@ -122,8 +101,6 @@ Definition higher_given
 
 (** Rebracketing needs only missing-face-three four-horns. *)
 
-(** 重括号仅需四维缺第三面的 horn。 *)
-
 Definition higher_rebracket
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     `{HX3 : !HasHornFillers X 4 fin_first⁺⁺⁺}
@@ -135,8 +112,6 @@ Definition higher_rebracket
   := SphereCompositeReassociate X b A B C.
 
 (** Compare arbitrary supplied composites without a three-horn selection. *)
-
-(** 比较任意给定合成，不需三维 horn 选择。 *)
 
 Definition higher_comparison
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
@@ -152,8 +127,6 @@ Definition higher_comparison
 
 (** The selected associativity law uses no missing-face-four selection. *)
 
-(** 选定结合律不需缺第四面的选择。 *)
-
 Definition higher_selected
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
     `{HX2 : !HasHornFillers X 4 fin_first⁺⁺}
@@ -165,8 +138,6 @@ Definition higher_selected
 
 (** Four independent multiplication choices are covered by the supplied
     composite theorem, without identifying their choices or witnesses. *)
-
-(** 给定合成定理涵盖四个独立乘法选择，不等同选择或见证。 *)
 
 Definition higher_independent
     (X : Fct (Δ^op) SetCat@{u p _ _ _ _ _}) (b : X 0)
