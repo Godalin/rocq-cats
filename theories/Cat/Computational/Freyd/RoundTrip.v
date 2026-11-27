@@ -25,15 +25,15 @@ Local Open Scope computation_scope.
 (** 首先固定具有选定笛卡尔值的计算 Arrow，比较经 Freyd 往返后的纯函子与上下文作用。 *)
 
 Section ArrowRoundTrip.
-Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartHasMonoidal C HT HP)).
+Context {C K : Cat} `{HC : !HasCartesian C}
+  (A : @Arrow C K CartHasMonoidal).
 
 (** Returning through Freyd reindexes the same computation hom-sets. *)
 
 (** 经 Freyd 返回时重索引同一计算 Hom 广集。 *)
 
 Definition ArrowFreydRoundTrip
-  : Arrow C (ComputationCat A) (@CartHasMonoidal C HT HP)
+  : Arrow C (ComputationCat A)
   := FreydArrow (ArrowFreyd A).
 
 (** Pure maps are unchanged on every hom-set. *)
@@ -98,7 +98,8 @@ Local Existing Instance SP.
 
 Definition FreydRoundTrip
   : FreydCat C D
-  := ArrowFreyd (FreydArrow F).
+  := ArrowFreyd (HC := MakeHasCartesian C hasValueTerminal hasValueProduct)
+       (FreydArrow F).
 Local Existing Instance FreydRoundTrip.
 
 (** The comparison includes the second indexing, acting identically on

@@ -18,9 +18,9 @@ Local Open Scope computation_scope.
     给出严格保持性。全部对象边界均为自反相等，故其运输计算为恒等。这是
     正向构造，不主张往返定律或范畴等价。 *)
 
-Section Cartesian.
-Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartHasMonoidal C HT HP)).
+Section FreydConstruction.
+Context {C K : Cat} `{HC : !HasCartesian C}
+  (A : @Arrow C K CartHasMonoidal).
 
 (** Retain the original pure functor and all existing structure choices.
     Pure, Reader-like and stateful models share this one construction. *)
@@ -31,8 +31,8 @@ Program Definition ArrowFreyd
   : FreydCat C K
   :=
   {|FreydF := A
-  ; hasValueTerminal := HT
-  ; hasValueProduct := HP
+  ; hasValueTerminal := HasCartesian_hasTerminal HC
+  ; hasValueProduct := HasCartesian_hasProduct HC
   ; hasSymPremonoidal :=
       SymPremonoidalCatToHasSymPremonoidal
         (ArrowSymPremonoidal A)
@@ -43,14 +43,14 @@ Program Definition ArrowFreyd
 Next Obligation.
   change (id ∘ arr[A; id[Z] × f] ≈ second[A; arr[A; f]; Z] ∘ id).
   rewrite comp_id_l, comp_id_r. symmetry. apply arrow_second_arr.
-Defined.
+Qed.
 Next Obligation.
   change (id ∘ arr[A; f × id[Z]] ≈ first[A; arr[A; f]; Z] ∘ id).
   rewrite comp_id_l, comp_id_r. symmetry. apply arrow_first_arr.
-Defined.
-Next Obligation. symmetry. apply comp_id_r. Defined.
-Next Obligation. symmetry. apply comp_id_r. Defined.
-Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
-Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Defined.
+Qed.
+Next Obligation. symmetry. apply comp_id_r. Qed.
+Next Obligation. symmetry. apply comp_id_r. Qed.
+Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Qed.
+Next Obligation. rewrite comp_id_l, comp_id_r. reflexivity. Qed.
 
-End Cartesian.
+End FreydConstruction.

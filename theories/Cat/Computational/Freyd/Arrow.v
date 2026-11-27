@@ -32,26 +32,25 @@ Let D
 (** 重建作用为沿选定张量边界的共轭，其见证及反向边界映射保持透明。 *)
 
 Program Definition FreydArrow
-  : Arrow C D (@CartHasMonoidal C (@hasValueTerminal C K F) (@hasValueProduct C K F))
-  :=
-  {|ArrowF := FreydPureF F
-  ; arrow_context X Y Z f := freyd_context F Z f
-  ; arrow_context_proper X Y Z :=
-      @fmap_proper _ _ _ _ (@isFct D D (FreydContextF F Z)) X Y
-  ; arrow_context_comp X Y W Z g f :=
-      @fmap_comp _ _ _ _ (@isFct D D (FreydContextF F Z)) X Y W g f
-  |}.
+  : Arrow C D
+  := MakeArrow (FreydPureF F)
+    {|arrow_context X Y Z f := freyd_context F Z f
+    ; arrow_context_proper X Y Z :=
+        @fmap_proper _ _ _ _ (@isFct D D (FreydContextF F Z)) X Y
+    ; arrow_context_comp X Y W Z g f :=
+        @fmap_comp _ _ _ _ (@isFct D D (FreydContextF F Z)) X Y W g f
+    |}.
 Next Obligation.
   etransitivity; [exact (freyd_context_pure F Z f) |].
   pose proof (@cartesian_tensor_map C (@hasValueTerminal C K F) (@hasValueProduct C K F)
     Z Z X Y (id[Z]) f) as H. symmetry in H.
   exact (@fmap_proper _ _ _ _ (@isFct C K F) _ _ _ _ H).
-Defined.
+Qed.
 Next Obligation.
   pose proof (freyd_context_natural F f h) as H.
   rewrite <- !cartesian_tensor_map in H. exact H.
-Defined.
-Next Obligation. exact (freyd_context_unit F f). Defined.
-Next Obligation. exact (freyd_context_assoc F Z W f). Defined.
+Qed.
+Next Obligation. exact (freyd_context_unit F f). Qed.
+Next Obligation. exact (freyd_context_assoc F Z W f). Qed.
 
 End Reconstruction.

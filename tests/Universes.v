@@ -2015,11 +2015,11 @@ Definition high_eq_monad_category
 (** The correspondence also instantiates at both strict universe orders. *)
 
 Definition low_eq_monad_monoid_equiv
-  : low_eq_monad_category ≃C (@MonoidCat _ (EndofunctorMonoidal C0))
+  : low_eq_monad_category ≃C (@MonoidCat _ (EndofctMonoidal C0))
   := monad_monoid_equiv C0.
 
 Definition high_eq_monad_monoid_equiv
-  : high_eq_monad_category ≃C (@MonoidCat _ (EndofunctorMonoidal C1))
+  : high_eq_monad_category ≃C (@MonoidCat _ (EndofctMonoidal C1))
   := monad_monoid_equiv C1.
 End MonoidalLevels.
 

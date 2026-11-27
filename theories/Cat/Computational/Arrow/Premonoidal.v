@@ -19,14 +19,9 @@ Local Open Scope monoidal_scope.
     分别自然性来自 Arrow 定律，相干性是值相干性的纯像。本构造要求具名的
     终对象与积选择，不要求指数对象或效应交换律。 *)
 
-Section Cartesian.
-Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartHasMonoidal C HT HP)).
-
-Let V
-  : HasMonoidal C
-  := CartHasMonoidal.
-Local Existing Instance V.
+Section PremonoidalComputations.
+Context {C K : Cat} `{HC : !HasCartesian C}
+  (A : @Arrow C K CartHasMonoidal).
 
 Let J
   : Fct C (ComputationCat A)
@@ -46,10 +41,10 @@ Program Definition ArrowHasAssociator
   : @HasTensorAssoc (ComputationCat A) (ArrowHasBinoidal A)
   :=
   {|TensorAssocRIso X Y :=
-      ({|nt Z := fmap J (@tensor_assoc C _ _ X Y Z).1
+      ({|nt Z := fmap J (tensor_assoc (C := C) X Y Z).1
         ; nat_naturality Z Z' h := arrow_context_assoc A h
         |}; λ Z,
-          let i := @tensor_assoc C _ _ X Y Z in
+          let i := tensor_assoc (C := C) X Y Z in
           fct_is_iso J i.1 i.2)
   ; isTensorAssoc :=
       {|assoc_natural_l Y Z :=
@@ -60,15 +55,15 @@ Program Definition ArrowHasAssociator
       |}
   |}.
 Next Obligation.
-  change (arr[A; (@product_assoc C HP W X (Y × Z)).1] ∘
-    arr[A; (@product_assoc C HP (W × X) Y Z).1] ≈
-    second[A; arr[A; (@product_assoc C HP X Y Z).1]; W] ∘
-      (arr[A; (@product_assoc C HP W (X × Y) Z).1] ∘
-        first[A; arr[A; (@product_assoc C HP W X Y).1]; Z])).
+  change (arr[A; (@product_assoc C _ W X (Y × Z)).1]
+    ∘ arr[A; (@product_assoc C _ (W × X) Y Z).1]
+    ≈ second[A; arr[A; (@product_assoc C _ X Y Z).1]; W]
+      ∘ (arr[A; (@product_assoc C _ W (X × Y) Z).1]
+        ∘ first[A; arr[A; (@product_assoc C _ W X Y).1]; Z])).
   rewrite arrow_second_arr, arrow_first_arr, <- !fmap_comp.
   apply fmap_proper.
   exact (@tensor_assoc_pentagon C _ _ W X Y Z).
-Defined.
+Qed.
 
 (** Lift only the unitors, with no dependence on the computation
     associator. Their naturality follows from the projection laws. *)
@@ -80,16 +75,16 @@ Program Definition ArrowHasUnitors
   :=
   {|tensor_unit := (𝐈 : C)
   ; TensorUnitorLIso :=
-      ({|nt X := fmap J (@tensor_unitor_l C _ _ X).1
+      ({|nt X := fmap J (tensor_unitor_l (C := C) X).1
         ; nat_naturality X Y f := arrow_second_projection A f 1
         |}; λ X,
-          let i := @tensor_unitor_l C _ _ X in
+          let i := tensor_unitor_l (C := C) X in
           fct_is_iso J i.1 i.2)
   ; TensorUnitorRIso :=
-      ({|nt X := fmap J (@tensor_unitor_r C _ _ X).1
+      ({|nt X := fmap J (tensor_unitor_r (C := C) X).1
         ; nat_naturality X Y f := arrow_first_projection A f 1
         |}; λ X,
-          let i := @tensor_unitor_r C _ _ X in
+          let i := tensor_unitor_r (C := C) X in
           fct_is_iso J i.1 i.2)
   ; isTensorUnitors :=
       {|unitor_l_central X := arrow_pure_central A _
@@ -107,13 +102,13 @@ Program Definition ArrowIsPremonoidal
   :=
   {|tensor_triangle := _|}.
 Next Obligation.
-  change (second[A; arr[A; (π2 : Hom (1 × Y) Y)]; X] ∘
-    arr[A; (@product_assoc C HP X 1 Y).1] ≈
-    first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
+  change (second[A; arr[A; (π2 : Hom (1 × Y) Y)]; X]
+    ∘ arr[A; (@product_assoc C _ X 1 Y).1]
+    ≈ first[A; arr[A; (π1 : Hom (X × 1) X)]; Y]).
   rewrite arrow_second_arr, arrow_first_arr, <- fmap_comp.
   apply fmap_proper.
-  exact (tensor_triangle (IsPremonoidal := HasMonoidal_isPremonoidal V) X Y).
-Defined.
+  exact (tensor_triangle X Y).
+Qed.
 
 (** Pack the same tensor, associator and coherent unitors. *)
 
@@ -124,4 +119,4 @@ Definition ArrowPremonoidal
   := PremonoidalCatOfBinoidalCat (ArrowBinoidal A)
        ArrowHasAssociator ArrowHasUnitors ArrowIsPremonoidal.
 
-End Cartesian.
+End PremonoidalComputations.

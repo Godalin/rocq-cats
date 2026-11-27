@@ -38,7 +38,7 @@ Lemma set_strength_value `{S : !HasStrength F}
     (X Y : SetC) (x : X) (v : F Y)
   : st[X; Y] (x,v) ≈S fmap F ⟨const[Y] x, id⟩ v.
 Proof.
-  pose proof (strength_natural
+  pose proof (strength_natural (F := F)
     (const[UnitS] x) (id[Y])) as H.
   rewrite !cartesian_tensor_map, fmap_id in H.
   pose proof (H (tt,v)) as Hv.
@@ -185,17 +185,17 @@ Context (M : Monad (SetCat@{u p _ _ _ _ _})).
 (** 赋予所给 Monad 规范广集强度；两张相容图由自然性推出，不要求交换性或指数。 *)
 
 Program Definition SetStrongM
-  : StrongMonad SetCat SetCartMonoidal
-  :=
-  {|StrongMonadM := M
-  ; hasStrength := SetStrength M
-  |}.
+  : StrongMonad SetCat
+  := StrongMonadOfMonad M (SetStrength M)
+    {|strongmonad_unit := _
+    ; strongmonad_mul := _
+    |}.
 Next Obligation.
   intros [x y].
   change (fmap M ⟨const[Y] x, id⟩ (η[M] Y y) ≈S
     η[M] (X ×S Y) (x,y)).
   symmetry. exact (nat_naturality (η[M]) ⟨const[Y] x, id⟩ y).
-Defined.
+Qed.
 
 Next Obligation.
   intros [x v].
@@ -213,6 +213,6 @@ Next Obligation.
     { intros w. reflexivity. }
     pose proof (fmap_proper (obj := M) _ _ H v) as E.
     rewrite fmap_comp in E. exact E.
-Defined.
+Qed.
 
 End Monads.

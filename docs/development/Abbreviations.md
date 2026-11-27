@@ -154,9 +154,9 @@ renamed bundles and adjunctions have consistent direct clients.
 | `CompAdjunction` | `CompAdj` | [Cat/Adjunction.v](../../theories/Cat/Adjunction.v) |
 | `AdjunctionMonad` | `AdjMonad` | [Cat/Monad/Adjunction.v](../../theories/Cat/Monad/Adjunction.v) |
 | `AdjunctionMonadMul` | `AdjMonadMul` | [Cat/Monad/Adjunction.v](../../theories/Cat/Monad/Adjunction.v) |
-| `AdjunctionKleisliF` | `AdjKleisliF` | [Cat/Monad/KleisliComparison.v](../../theories/Cat/Monad/KleisliComparison.v) |
-| `KleisliAdjunction` | `KleisliAdj` | [Cat/Monad/KleisliAdjunction.v](../../theories/Cat/Monad/KleisliAdjunction.v) |
-| `ArrowApplyAdjunction` | `ArrowApplyAdj` | [Cat/Computational/Arrow/Monad.v](../../theories/Cat/Computational/Arrow/Monad.v) |
+| `AdjunctionKleisliF` | `AdjKleisliF` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
+| `KleisliAdjunction` | `KleisliAdj` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
+| `ArrowApplyAdjunction` | `ArrowApplyAdj` | [Cat/Computational/Arrow/Dynamic.v](../../theories/Cat/Computational/Arrow/Dynamic.v) |
 | `FreeAdjunction` | `FreeAdj` | [Cat/FreeObject/Adjunction.v](../../theories/Cat/FreeObject/Adjunction.v) |
 | `CofreeAdjunction` | `CofreeAdj` | [Cat/FreeObject/Adjunction.v](../../theories/Cat/FreeObject/Adjunction.v) |
 | `AdjunctionFreeObjects` | `AdjFreeObj` | [Cat/FreeObject/Adjunction.v](../../theories/Cat/FreeObject/Adjunction.v) |
@@ -1121,8 +1121,8 @@ as a local checkpoint; no push or integration handoff is included.
 | `adjunction_free_roundtrip_iso` | `adj_free_roundtrip_iso` | [Cat/FreeObject/Adjunction.v](../../theories/Cat/FreeObject/Adjunction.v) |
 | `adjunction_hom_iso` | `adj_hom_iso` | [Instance/Set/Adjunction.v](../../theories/Instance/Set/Adjunction.v) |
 | `adjunction_hom_nat_iso` | `adj_hom_nat_iso` | [Instance/Set/Adjunction.v](../../theories/Instance/Set/Adjunction.v) |
-| `adjunction_kleisli_fully_faithful` | `adj_kleisli_fully_faithful` | [Cat/Monad/KleisliComparison.v](../../theories/Cat/Monad/KleisliComparison.v) |
-| `adjunction_kleisli_unadjunct_comp` | `adj_kleisli_unadjunct_comp` | [Cat/Monad/KleisliComparison.v](../../theories/Cat/Monad/KleisliComparison.v) |
+| `adjunction_kleisli_fully_faithful` | `adj_kleisli_fully_faithful` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
+| `adjunction_kleisli_unadjunct_comp` | `adj_kleisli_unadjunct_comp` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
 | `adjunction_monad_mul` | `adj_monad_mul` | [Cat/Monad/Adjunction.v](../../theories/Cat/Monad/Adjunction.v) |
 | `adjunction_β` | `adj_β` | [Cat/Adjunction.v](../../theories/Cat/Adjunction.v) |
 | `adjunction_η` | `adj_η` | [Cat/Adjunction.v](../../theories/Cat/Adjunction.v) |
@@ -1134,10 +1134,10 @@ as a local checkpoint; no push or integration handoff is included.
 | `high_eq_colimit_adjunction` | `high_eq_colimit_adj` | [tests/Universes.v](../../tests/Universes.v) |
 | `high_eq_exponential_adjunction` | `high_eq_exp_adj` | [tests/Universes.v](../../tests/Universes.v) |
 | `high_eq_limit_adjunction` | `high_eq_limit_adj` | [tests/Universes.v](../../tests/Universes.v) |
-| `kleisli_adjunction_counit` | `kleisli_adj_counit` | [Cat/Monad/KleisliAdjunction.v](../../theories/Cat/Monad/KleisliAdjunction.v) |
-| `kleisli_adjunction_triangle_l` | `kleisli_adj_triangle_l` | [Cat/Monad/KleisliAdjunction.v](../../theories/Cat/Monad/KleisliAdjunction.v) |
-| `kleisli_adjunction_triangle_r` | `kleisli_adj_triangle_r` | [Cat/Monad/KleisliAdjunction.v](../../theories/Cat/Monad/KleisliAdjunction.v) |
-| `kleisli_adjunction_unit` | `kleisli_adj_unit` | [Cat/Monad/KleisliAdjunction.v](../../theories/Cat/Monad/KleisliAdjunction.v) |
+| `kleisli_adjunction_counit` | `kleisli_adj_counit` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
+| `kleisli_adjunction_triangle_l` | `kleisli_adj_triangle_l` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
+| `kleisli_adjunction_triangle_r` | `kleisli_adj_triangle_r` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
+| `kleisli_adjunction_unit` | `kleisli_adj_unit` | [Cat/Monad/Kleisli.v](../../theories/Cat/Monad/Kleisli.v) |
 | `low_eq_adjunction_hom` | `low_eq_adj_hom` | [tests/Universes.v](../../tests/Universes.v) |
 | `low_eq_colimit_adjunction` | `low_eq_colimit_adj` | [tests/Universes.v](../../tests/Universes.v) |
 | `low_eq_exponential_adjunction` | `low_eq_exp_adj` | [tests/Universes.v](../../tests/Universes.v) |
@@ -1763,8 +1763,9 @@ work follows the separate user-authorized bundled-interface migration.
   groupoid and its naming follow-up have separate review records above.
   Repository-wide `Reserved Notation` work remains separate.
 - Keep the natural-number setoid `NatS`; a natural-transformation setoid
-  cannot be renamed to it. Keep `EndofunctorMonoidal` distinct from
-  `EndoMonoidal`. The two existing `MonoidCat` declarations remain in their
+  cannot be renamed to it.
+- `EndofunctorMonoidal` was renamed to `EndofctMonoidal` for endofunctor
+  composition. The general bicategory instance is `EndoMonoidal`. The two existing `MonoidCat` declarations remain in their
   respective namespaces.
 - Preserve Type-valued equality/witnesses, universes, transparent computations,
   mathematical statements, canonical/typeclass registrations and explicit

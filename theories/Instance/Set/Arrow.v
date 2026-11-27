@@ -2,6 +2,7 @@ From Cats Require Export
   Cat.Applicative.Core
   Cat.Computational.Arrow.Global.
 From Cats Require Import
+  Instance.Set.Cartesian
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product.
@@ -29,8 +30,7 @@ Local Open Scope applicative_scope.
 Section SetBase.
 Universes o u p.
 Context (K : Cat@{o u p _ _})
-    (A : Arrow (SetCat@{u p _ _ _ _ _}) K
-      (@CartHasMonoidal SetCat SetCat_HasTerminal SetCat_HasProduct)).
+    (A : Arrow (SetCat@{u p _ _ _ _ _}) K).
 
 (** Embed a setoid value as the pure constant computation from the
     singleton. Respectfulness compares constants pointwise. *)
@@ -59,7 +59,9 @@ Next Obligation.
   intros x.
   change (arr[A; const_resp UnitS (f x)] ≈
     arr[A; f] ∘ arr[A; const_resp UnitS x]).
-  rewrite <- fmap_comp. apply fmap_proper. intros z. reflexivity.
+  etransitivity; [| exact (fmap_comp (IsFct := isFct A)
+    f (const_resp UnitS x))].
+  apply fmap_proper. intros z. reflexivity.
 Qed.
 
 (** The generic global-computation lax functor is an endofunctor here.
@@ -71,7 +73,8 @@ Qed.
 
 Program Definition ArrowA
   : @Applicative SetCat SetCat_HasTerminal SetCat_HasProduct
-  := ApplicativeOfLaxMonoidalFct (ArrowGlobalLax A)
+  := ApplicativeOfLaxMonoidalFct
+    (ArrowGlobalLax (HC := CartCatToHasCartesian SetCat_Cart) A)
     {|applicative_pure := ArrowValuePureN
     |}.
 Next Obligation.
@@ -83,7 +86,9 @@ Defined.
 Next Obligation.
   intros [x y]. change (arr[A; const_resp UnitS (x,y)] ≈
     arr[A; const_resp UnitS x] &&&[A] arr[A; const_resp UnitS y]).
-  rewrite arrow_fanout_pure. apply fmap_proper. intros z.
+  etransitivity; [| symmetry; exact (arrow_fanout_pure
+    (HC := CartCatToHasCartesian SetCat_Cart) A (const_resp UnitS x) (const_resp UnitS y))].
+  apply fmap_proper. intros z.
   split; reflexivity.
 Defined.
 

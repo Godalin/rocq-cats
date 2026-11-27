@@ -17,9 +17,9 @@ Local Open Scope computation_scope.
     完整预幺半范畴所需的结合子与单位子相干性仍为独立层次。不主张任意效应
     之间可交换。 *)
 
-Section Cartesian.
-Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (A : Arrow C K (@CartHasMonoidal C HT HP)).
+Section BinoidalComputations.
+Context {C K : Cat} `{HC : !HasCartesian C}
+  (A : @Arrow C K CartHasMonoidal).
 
 (** The computation objects are the value objects themselves, so the
     underlying tensor needs no equality or transport of object maps. *)
@@ -29,7 +29,7 @@ Context {C K : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
 Program Definition ArrowHasBinoidal
   : HasBinoidal (ComputationCat A)
   :=
-  {|tensor X Y := @Prod C HP X Y
+  {|tensor X Y := @Prod C _ X Y
   ; tensor_l X Y Z f := second[A; f; Z]
   ; tensor_r X Y Z f := first[A; f; Z]
   ; isBinoidalL Z :=
@@ -39,14 +39,14 @@ Program Definition ArrowHasBinoidal
       {|fmap_proper X Y := arrow_first_proper A Z
       |}
   |}.
-Next Obligation. exact (@fmap_id _ _ _ _ (isFct (ContextF A Z)) X). Defined.
-Next Obligation. exact (arrow_second_comp A f g Z). Defined.
+Next Obligation. exact (fmap_id (IsFct := isFct (ContextF A Z)) (X := X)). Qed.
+Next Obligation. exact (arrow_second_comp A f g Z). Qed.
 Next Obligation.
   change (first[A; id[A X]; Z] ≈ id).
   rewrite <- (arrow_arr_id A X), arrow_first_arr,
     cross_id, fmap_id. reflexivity.
-Defined.
-Next Obligation. exact (arrow_first_comp A f g Z). Defined.
+Qed.
+Next Obligation. exact (arrow_first_comp A f g Z). Qed.
 
 (** Bundle the computation category and the same chosen context actions. *)
 
@@ -71,27 +71,27 @@ Definition ArrowPureF
 
 (** 纯映射在两个张量位置都与任意计算交换，证明复用已有两种上下文自然性律。 *)
 
-Definition arrow_pure_central {X Y : @Ob C} (f : Hom X Y)
+Lemma arrow_pure_central {X Y : C} (f : Hom X Y)
   : @is_central (ComputationCat A) ArrowHasBinoidal X Y (arr[A; f]).
 Proof.
   intros Z W g. split.
-  - change (first[A; arr[A; f]; W] ∘ second[A; g; X] ≈
-      second[A; g; Y] ∘ first[A; arr[A; f]; Z]).
+  - change (first[A; arr[A; f]; W] ∘ second[A; g; X]
+      ≈ second[A; g; Y] ∘ first[A; arr[A; f]; Z]).
     rewrite !arrow_first_arr. exact (arrow_second_natural A g f).
-  - change (second[A; arr[A; f]; W] ∘ first[A; g; X] ≈
-      first[A; g; Y] ∘ second[A; arr[A; f]; Z]).
+  - change (second[A; arr[A; f]; W] ∘ first[A; g; X]
+      ≈ first[A; g; Y] ∘ second[A; arr[A; f]; Z]).
     rewrite !arrow_second_arr. exact (arrow_first_natural A g f).
-Defined.
+Qed.
 
 (** Generic left-before-right sequencing is exactly the existing Arrow
     split, in the specified computation equality. *)
 
 (** 一般先左后右组合在指定计算相等下恰好是已有 Arrow split。 *)
 
-Lemma arrow_binoidal_sequence {X Y Z W : @Ob C}
+Lemma arrow_binoidal_sequence {X Y Z W : C}
     (f : Hom (A X) (A Y)) (g : Hom (A Z) (A W))
   : @tensor_sequence (ComputationCat A) ArrowHasBinoidal X Y Z W f g
-      ≈ f ***[A] g.
+    ≈ f ***[A] g.
 Proof. reflexivity. Qed.
 
-End Cartesian.
+End BinoidalComputations.

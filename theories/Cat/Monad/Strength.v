@@ -3,7 +3,7 @@ From Cats Require Export
   Cat.Monoidal.Strength.
 
 Local Open Scope monoidal_scope.
-Local Open Scope monad_scope.
+Local Open Scope monad_fct_scope.
 Local Open Scope ob_scope.
 
 (** * Strong Monads
@@ -15,45 +15,39 @@ Local Open Scope ob_scope.
 
     底层普通 Monad 保持不变。选定张量强度必须保持其单位和乘法，不要求交换性。 *)
 
-Class StrongMonad (C : Cat) (MC : HasMonoidal C)
+Minks.Mixin IsStrongMonad {C : Cat}
+    `{MC : !HasMonoidal C} (T : Fct C C)
+  extends @HasMonad C T, @HasStrength C MC T
   :=
-  (** The unique coercion exposes the existing ordinary monad. *)
-
-  (** 唯一强制转换暴露已有普通 Monad。 *)
-
-  { StrongMonadM :> Monad C
-
-  (** Strength is additional chosen structure on that monad's functor. *)
-
-  (** 强度是该 Monad 函子上额外选定的结构。 *)
-
-  ; hasStrength :: HasStrength StrongMonadM
-
-  (** A pure effectful input gives the pure tensor pair. *)
-
-  (** 纯的带效应输入给出纯张量配对。 *)
-
-  ; strongmonad_unit (X Y : @Ob C)
-    : st[X; Y] ∘
-        (tensor_map (IM := HasMonoidal_interchange MC) id (η[StrongMonadM] Y)) ≈
-        η[StrongMonadM] (X ⊗ Y)
-
-  (** Passing through multiplication agrees with passing through both layers. *)
-
-  (** 穿过乘法，等于依次穿过两层。 *)
-
-  ; strongmonad_mul (X Y : @Ob C)
-    : st[X; Y] ∘
-        (tensor_map (IM := HasMonoidal_interchange MC) id (μ[StrongMonadM] Y)) ≈
-        μ[StrongMonadM] (X ⊗ Y) ∘
-          fmap StrongMonadM st[X; Y] ∘
-          st[X; StrongMonadM Y]
+  { strongmonad_unit (X Y : C)
+    : st[X; Y] ∘ (id ⊗ η[T] Y)
+      ≈ η[T] (X ⊗ Y)
+  ; strongmonad_mul (X Y : C)
+    : st[X; Y] ∘ (id ⊗ μ[T] Y)
+      ≈ μ[T] (X ⊗ Y) ∘ fmap T st[X; Y] ∘ st[X; T Y]
   }.
 
-Arguments StrongMonadM {_ _} _.
+Local Close Scope monad_fct_scope.
+Local Open Scope monad_scope.
+
+(** Extend the same monad with a strength compatible with its operations. *)
+
+(** 在同一个 Monad 上选取与其运算相容的强度。 *)
+
+Minks.Struct StrongMonad (C : Cat)
+    `{MC : !HasMonoidal C}
+  extends Monad C
+  with  hasStrength as hasStrength
+        : HasStrength [C, MC, carrier],
+        isStrongMonad
+        : IsStrongMonad
+          [C, MC, carrier, hasMonad, hasStrength].
+
+Arguments StrongMonadOfMonad {_ _} _ _ _.
+Arguments StrongMonadToMonad {_ _} _.
 Arguments hasStrength {_ _} _.
-Arguments strongmonad_unit {_ _} _ _ _.
-Arguments strongmonad_mul {_ _} _ _ _.
+Arguments strongmonad_unit {_ _} _ {_ _ _} _ _.
+Arguments strongmonad_mul {_ _} _ {_ _ _} _ _.
 
 (** ** Extending with Tensorial Strength
 
@@ -64,14 +58,16 @@ Arguments strongmonad_mul {_ _} _ _ _.
 
     固定选定幺半结构上的 StrongMonad，从其强度与乘法导出上下文扩张及顺序组合定律。 *)
 
-Section Extension.
-Context {C : Cat} `{MC : !HasMonoidal C} (M : StrongMonad C MC).
+Section StrongExtension.
+Context {C : Cat}
+  `{MC : !HasMonoidal C} (M : StrongMonad C).
 
 (** Extend an effectful arrow while retaining an ordinary tensor context. *)
 
 (** 保留通常张量上下文，扩张带效应箭头。 *)
 
-Definition strong_extend {X Y Z : @Ob C} (f : Hom (X ⊗ Y) (M Z))
+Definition strong_extend {X Y Z : C}
+    (f : Hom (X ⊗ Y) (M Z))
   : Hom (X ⊗ M Y) (M Z)
   := kleisli_extend M f ∘ st[X; Y].
 
@@ -79,18 +75,23 @@ Definition strong_extend {X Y Z : @Ob C} (f : Hom (X ⊗ Y) (M Z))
 
 (** 上下文扩张保持指定态射相等。 *)
 
-Global Instance strong_extend_proper {X Y Z : @Ob C}
+Global Instance strong_extend_proper {X Y Z : C}
   : Proper (HomEq ==> HomEq) (@strong_extend X Y Z).
-Proof. intros f g H. unfold strong_extend. rewrite H. reflexivity. Qed.
+Proof.
+  intros f g H. unfold strong_extend.
+  rewrite H. reflexivity.
+Qed.
 
 (** Pure inputs cancel extension, leaving the original contextual arrow. *)
 
 (** 纯输入消去扩张，留下原上下文箭头。 *)
 
-Lemma strong_extend_pure {X Y Z : @Ob C} (f : Hom (X ⊗ Y) (M Z))
+Lemma strong_extend_pure {X Y Z : C}
+    (f : Hom (X ⊗ Y) (M Z))
   : strong_extend f ∘ (id ⊗ η[M] Y) ≈ f.
 Proof.
-  unfold strong_extend. rewrite comp_assoc, (strongmonad_unit M X Y).
+  unfold strong_extend.
+  rewrite comp_assoc, (strongmonad_unit M X Y).
   apply kleisli_extend_pure.
 Qed.
 
@@ -98,33 +99,41 @@ Qed.
 
 (** 纯输出运算可在强度之后映射。 *)
 
-Lemma strong_extend_return {X Y Z : @Ob C} (f : Hom (X ⊗ Y) Z)
-  : strong_extend (η[M] Z ∘ f) ≈
-      fmap M f ∘ st[X; Y].
+Lemma strong_extend_return {X Y Z : C}
+    (f : Hom (X ⊗ Y) Z)
+  : strong_extend (η[M] Z ∘ f)
+    ≈ fmap M f ∘ st[X; Y].
 Proof.
-  unfold strong_extend. rewrite kleisli_extend_pre, kleisli_extend_unit,
-    comp_id_l. reflexivity.
+  unfold strong_extend.
+  rewrite kleisli_extend_pre,
+    kleisli_extend_unit,
+    comp_id_l.
+  reflexivity.
 Qed.
 
 (** Ordinary result mapping commutes with contextual extension. *)
 
 (** 通常结果映射与上下文扩张交换。 *)
 
-Lemma strong_extend_post {X Y Z W : @Ob C}
+Lemma strong_extend_post {X Y Z W : C}
     (f : Hom (X ⊗ Y) (M Z)) (g : Hom Z W)
-  : fmap M g ∘ strong_extend f ≈ strong_extend (fmap M g ∘ f).
+  : fmap M g ∘ strong_extend f
+    ≈ strong_extend (fmap M g ∘ f).
 Proof.
-  unfold strong_extend. rewrite <- comp_assoc, kleisli_extend_post. reflexivity.
+  unfold strong_extend.
+  rewrite <- comp_assoc, kleisli_extend_post.
+  reflexivity.
 Qed.
 
 (** Ordinary substitution in both tensor factors commutes with extension. *)
 
 (** 两个张量因子中的通常代入与扩张交换。 *)
 
-Lemma strong_extend_pre {X X' Y Y' Z : @Ob C}
-    (f : Hom (X' ⊗ Y') (M Z)) (g : Hom X X') (h : Hom Y Y')
-  : strong_extend f ∘ (g ⊗ fmap M h) ≈
-      strong_extend (f ∘ (g ⊗ h)).
+Lemma strong_extend_pre {X X' Y Y' Z : C}
+    (f : Hom (X' ⊗ Y') (M Z))
+    (g : Hom X X') (h : Hom Y Y')
+  : strong_extend f ∘ (g ⊗ fmap M h)
+    ≈ strong_extend (f ∘ (g ⊗ h)).
 Proof.
   unfold strong_extend. rewrite comp_assoc,
     (strength_natural g h), <- comp_assoc,
@@ -136,22 +145,20 @@ Qed.
 
 (** 强度也与 Kleisli 扩张交换；此可复用相容性用于嵌套上下文计算。 *)
 
-Lemma strength_kleisli {X Y Z : @Ob C} (f : Hom Y (M Z))
-  : st[X; Z] ∘ (id ⊗ kleisli_extend M f) ≈
-      kleisli_extend M
-        (st[X; Z] ∘ (id ⊗ f)) ∘
-          st[X; Y].
+Lemma strength_kleisli {X Y Z : C}
+    (f : Hom Y (M Z))
+  : st[X; Z] ∘ (id ⊗ kleisli_extend M f)
+    ≈ kleisli_extend M (st[X; Z] ∘ (id ⊗ f))
+      ∘ st[X; Y].
 Proof.
   unfold kleisli_extend.
-  transitivity ((st[X; Z] ∘
-    (id ⊗ μ[M] Z)) ∘ (id ⊗ fmap M f)).
+  transitivity ((st[X; Z] ∘ (id ⊗ μ[M] Z)) ∘ (id ⊗ fmap M f)).
   - rewrite comp_assoc,
-      <- (@tensor_map_comp C _ (HasMonoidal_interchange MC) X X X (M Y) (M (M Z)) (M Z)
-        id id (μ[M] Z) (fmap M f)), comp_id_l. reflexivity.
+      <- (tensor_map_comp (id[X]) id (μ[M] Z) (fmap M f)), comp_id_l.
+    reflexivity.
   - rewrite (strongmonad_mul M X Z), !comp_assoc,
       (strength_natural (id[X]) f),
-      (@fmap_comp _ _ _ _ (@isFct C C M) _ _ _ st[X; Z]
-        (tensor_map (IM := HasMonoidal_interchange MC) id f)), <- !comp_assoc. reflexivity.
+      (fmap_comp st[X; Z] (id[X] ⊗ f)), <- !comp_assoc. reflexivity.
 Qed.
 
 (** Nested contexts compose by the chosen associator. Effects keep their
@@ -159,19 +166,18 @@ Qed.
 
 (** 嵌套上下文按选定结合子复合。效应保留原次序；这不是两个效应的交换律。 *)
 
-Lemma strong_extend_assoc {X Y Z U V : @Ob C}
-    (f : Hom (Y ⊗ Z) (M U)) (g : Hom (X ⊗ U) (M V))
-  : strong_extend g ∘ (id ⊗ strong_extend f) ∘ α[X; Y; M Z] ≈
-      strong_extend (strong_extend g ∘ (id ⊗ f) ∘ α[X; Y; Z]).
+Lemma strong_extend_assoc {X Y Z U V : C}
+    (f : Hom (Y ⊗ Z) (M U))
+    (g : Hom (X ⊗ U) (M V))
+  : strong_extend g ∘ (id ⊗ strong_extend f) ∘ α[X; Y; M Z]
+    ≈ strong_extend (strong_extend g ∘ (id ⊗ f) ∘ α[X; Y; Z]).
 Proof.
   unfold strong_extend.
-  transitivity (kleisli_extend M g ∘
-    (st[X; U] ∘ (id ⊗ kleisli_extend M f)) ∘
-    (id ⊗ st[Y; Z]) ∘ α[X; Y; M Z]).
-  - assert (K : ((id[X]) ⊗ (kleisli_extend M f ∘
-        st[Y; Z])) ≈
-        (id ⊗ kleisli_extend M f) ∘
-          (id ⊗ st[Y; Z])).
+  transitivity (kleisli_extend M g
+    ∘ (st[X; U] ∘ (id ⊗ kleisli_extend M f))
+    ∘ (id ⊗ st[Y; Z]) ∘ α[X; Y; M Z]).
+  - assert (K : ((id[X]) ⊗ (kleisli_extend M f ∘ st[Y; Z]))
+      ≈ (id ⊗ kleisli_extend M f) ∘ (id ⊗ st[Y; Z])).
     { rewrite <- tensor_map_comp, comp_id_l. reflexivity. }
     rewrite K, !comp_assoc. reflexivity.
   - rewrite (strength_kleisli f), <- !comp_assoc,
@@ -182,4 +188,4 @@ Proof.
       <- !comp_assoc, <- kleisli_extend_pre, !comp_assoc. reflexivity.
 Qed.
 
-End Extension.
+End StrongExtension.

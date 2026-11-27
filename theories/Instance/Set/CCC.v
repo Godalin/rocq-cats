@@ -19,3 +19,10 @@ Program Definition SetCat_CCC
   : CCC
   := CCCOfCartCat SetCat_Cart
       SetCat_HasExponential.
+
+(** The fixed-category interface selects the same terminal object, products
+    and exponentials as the bundled setoid model. *)
+
+(** 固定范畴接口沿用广集模型选定的终对象、积和指数。 *)
+
+Definition SetCat_HasCC : HasCC SetCat := CCCToHasCC SetCat_CCC.

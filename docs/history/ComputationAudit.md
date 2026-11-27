@@ -298,7 +298,7 @@ inspected in both languages. Batch PDF export remains with integration.
 
 ## Kleisli adjunction and recovery of the Monad
 
-[KleisliAdjunction](../../theories/Cat/Monad/KleisliAdjunction.v) reuses the
+[KleisliAdj](../../theories/Cat/Monad/Kleisli.v) reuses the
 general `AdjunctionFromHom` construction with identity respectful maps:
 the two hom-sets are the very same base hom-set. Their inverse equations
 are reflexivity, source naturality is pure substitution, and target
@@ -1082,7 +1082,7 @@ exports remain with the integration session.
 ## Static values and ordered Applicative operations
 
 Following the Section documentation commit `d3798ae`, this phase adds
-[StaticValues](../../theories/Cat/Computational/Arrow/StaticValues.v) on the
+[Static values](../../theories/Cat/Computational/Arrow/Static.v) on the
 same integrated baseline `fee98fcff6c656d4dae26425401db7a2bc403b9b`.
 Transparent evaluation and abstraction compare terminal-input static
 computations with global Applicative values; the underlying maps also
@@ -1128,7 +1128,7 @@ than a syntactic equational equivalence.
 
 On task branch `monoidal-cat-view`, following `1f2450c` and based on the
 unchanged integrated baseline `fee98fcff6c656d4dae26425401db7a2bc403b9b`,
-[StaticCartesian](../../theories/Cat/Computational/Arrow/StaticCartesian.v)
+[Static cartesian operations](../../theories/Cat/Computational/Arrow/Static.v)
 compares actual derived first, ordered split and fanout with Applicative
 lifting. For every ordinary input object, fanout lifts the existing inverse
 product-exponential comparison. Split precomposes the two internal
@@ -1298,7 +1298,7 @@ universe/semantic checks passed with the unchanged `rocq-cats` switch.
 The rebased task head before new mathematics is `c434d44`; original
 `0683f04` is retained in the earlier historical delivery records.
 
-[GlobalContext](../../theories/Cat/Computational/Arrow/GlobalContext.v)
+[Global contexts](../../theories/Cat/Computational/Arrow/Global.v)
 attaches a terminal-input computation to an unchanged ordinary input.
 Its substitution, ordered-pairing and nested-context laws require only
 selected finite products and the existing Arrow laws. Effects are neither
@@ -1309,16 +1309,16 @@ passed temporary assumption inspection (16 reports, all closed under the
 global context). The targeted module build passed. No permanent test,
 shared toolchain change or integration-branch update was introduced.
 
-[GlobalContext](../../theories/Cat/Computational/Arrow/GlobalContext.v)
+[Global contexts](../../theories/Cat/Computational/Arrow/Global.v)
 
 ## Static interpretation into the original Arrow
 
 This authorized slice continues on `monoidal-cat-view` after rebasing onto
 `typeprop@c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90`. The independently
-reusable [global-context foundation](../../theories/Cat/Computational/Arrow/GlobalContext.v)
+reusable [global-context foundation](../../theories/Cat/Computational/Arrow/Global.v)
 was pushed first in
 [82e8efc](https://github.com/Godalin/rocq-cats/commit/82e8efca787a37e0626020fce7685c1dd30d548e).
-[StaticEvaluation](../../theories/Cat/Computational/Arrow/StaticEvaluation.v)
+[Static evaluation](../../theories/Cat/Computational/Arrow/Static.v)
 adds exponentials only for ordinary internal-function evaluation. It
 interprets a terminal-input internal function alongside its argument,
 using the original Arrow's context action. Pure names, ordered internal
@@ -1401,7 +1401,7 @@ permanent test or shared toolchain change. `typeprop` was not changed.
 This slice continues on `monoidal-cat-view` from the independently delivered
 [fully faithful inverse foundation](https://github.com/Godalin/rocq-cats/commit/482cfa7235149bec40b2b51a4bc452fcf678390b),
 with integrated baseline `c1af57cf89da5fb696a4aad6fa3a40eda6bd7a90` unchanged.
-[The general criterion](../../theories/Cat/Computational/Arrow/StaticRepresentation.v)
+[The general criterion](../../theories/Cat/Computational/Arrow/Static.v)
 requires invertibility of the actual global-function evaluation Hom maps,
 retaining Type-valued inverse witnesses and independent value/computation
 category sizes. Existing setoid inverse/fiber lemmas establish equivalence
@@ -1610,7 +1610,7 @@ Hom-adjunction and adjunction-to-Monad theories.
 This finite phase continues from the independently delivered dynamic Hom
 foundation `557b048` on `monoidal-cat-view`, with integration baseline
 `15a7ccf05eeee9d2c8d1691d3b47468e121c7978` unchanged.
-[ArrowApplyAdjunction](../../theories/Cat/Computational/Arrow/Monad.v) reuses
+[ArrowApplyAdjunction](../../theories/Cat/Computational/Arrow/Dynamic.v) reuses
 `AdjunctionFromHom` with the pure indexed inclusion and the covariant
 Hom functor at terminal input. The two supplied maps are the existing
 transparent dynamic naming and evaluation. Ambient Hom lifting remains
@@ -1664,7 +1664,7 @@ branch is changed; batch PDF export and `typeprop` remain with integration.
 
 Continue the authorized serial #35 task on `monoidal-cat-view` from
 `874ed08`, with integration baseline `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`.
-[The general Kleisli comparison](../../theories/Cat/Monad/KleisliComparison.v)
+[The general Kleisli comparison](../../theories/Cat/Monad/Kleisli.v)
 uses inverse transposition and counit multiplication to preserve composition.
 Its Type-valued full-faithfulness witness keeps transposes as preimages;
 it does not assert essential surjectivity onto an arbitrary adjunction
@@ -1690,7 +1690,7 @@ batch PDF export remains with integration.
 This finite phase continues on `monoidal-cat-view` from the independently
 pushed comparison/strength foundation `84fb5c9`, retaining integration
 baseline `15a7ccf05eeee9d2c8d1691d3b47468e121c7978`.
-[DynamicRecovery](../../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+[Dynamic recovery](../../theories/Cat/Computational/Arrow/Dynamic.v)
 reuses `SetStrongM` to give the exact existing `ArrowMonad` canonical
 strength. Its reconstructed Arrow reuses `KleisliArrow`. Evaluation is
 `AdjunctionKleisliF` specialized to `ArrowApplyAdjunction`; naming inherits
@@ -1798,7 +1798,7 @@ lifting and contextual pure preservation; selected exponentials add application
 preservation. The abstract theory uses named terminal/product choices and
 independent category sizes, with no extra strength or function-equality axioms.
 
-[Dynamic comparison](../../theories/Cat/Computational/Arrow/DynamicApplicative.v)
+[Dynamic comparison](../../theories/Cat/Computational/Arrow/Dynamic.v)
 reuses pure, composition and context preservation to compare first, split and
 fanout with the recovered Kleisli Arrow. The weaker terminal-input naming law
 in [Dynamic](../../theories/Cat/Computational/Arrow/Dynamic.v) needs only an

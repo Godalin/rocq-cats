@@ -21,8 +21,7 @@ Local Open Scope applicative_scope.
     这里只比较这些构造，不是将任意 Arrow 转为 Applicative。 *)
 
 Section Comparison.
-Context {C : Cat} `{HT : !HasTerminal C} `{HP : !HasProduct C}
-    (M : StrongMonad C (@CartHasMonoidal C HT HP)).
+Context {C : Cat} `{HC : !HasCartesian C} (M : @StrongMonad C CartHasMonoidal).
 
 (** Proofs use the contextual equations; computation is restored below. *)
 
@@ -34,7 +33,7 @@ Local Opaque context_bind monad_return.
 
 (** 纯箭头函子使用原 Monad 返回。 *)
 
-Lemma kleisli_arrow_arr {X Y : @Ob C} (f : Hom X Y)
+Lemma kleisli_arrow_arr {X Y : C} (f : Hom X Y)
   : arr[KleisliArrow M; f] ≈ return[M; f].
 Proof. reflexivity. Qed.
 
@@ -43,14 +42,15 @@ Proof. reflexivity. Qed.
 
 (** 对第二个因子的作用绑定其计算，再将保留的通常第一因子与计算值一同返回。 *)
 
-Lemma kleisli_arrow_second {X Y : @Ob C} (f : Hom X (M Y)) (Z : @Ob C)
-  : second[KleisliArrow M; f; Z] ≈
-      bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]].
+Lemma kleisli_arrow_second {X Y : C}
+    (f : Hom X (M Y)) (Z : C)
+  : second[KleisliArrow M; f; Z]
+    ≈ bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]].
 Proof.
-  change (st[Z; Y] ∘
-    (tensor_map (IM := HasMonoidal_interchange (@CartHasMonoidal C HT HP)) (id[Z]) f) ≈
-    bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]).
-  rewrite cartesian_tensor_map, context_bind_pair, cross_η, comp_id_l.
+  change (st[Z; Y] ∘ (tensor_map id[Z] f)
+    ≈ bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]).
+  rewrite cartesian_tensor_map, context_bind_pair,
+    cross_η, comp_id_l.
   reflexivity.
 Qed.
 
@@ -58,15 +58,16 @@ Qed.
 
 (** 对第一个因子的作用保留通常第二因子。 *)
 
-Lemma kleisli_arrow_first {X Y : @Ob C} (f : Hom X (M Y)) (Z : @Ob C)
-  : first[KleisliArrow M; f; Z] ≈
-      bind[M; f ∘ π1; return[M; ⟨π2, π2 ∘ π1⟩]].
+Lemma kleisli_arrow_first {X Y : C}
+    (f : Hom X (M Y)) (Z : C)
+  : first[KleisliArrow M; f; Z]
+    ≈ bind[M; f ∘ π1; return[M; ⟨π2, π2 ∘ π1⟩]].
 Proof.
   unfold arrow_first. rewrite kleisli_arrow_second.
-  change ((return[M; (⟨π2, π1⟩ : Hom (Z × Y) (Y × Z))] ∘K[M]
-    bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]) ∘K[M]
-      return[M; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))] ≈
-      bind[M; f ∘ π1; return[M; ⟨π2, π2 ∘ π1⟩]]).
+  change ((return[M; ⟨π2, π1⟩]
+    ∘K[M] bind[M; f ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]])
+      ∘K[M] return[M; (⟨π2, π1⟩ : Hom (X × Z) (Z × X))]
+    ≈ bind[M; f ∘ π1; return[M; ⟨π2, π2 ∘ π1⟩]]).
   rewrite kleisli_comp_pure_l, kleisli_comp_pure_r.
   monad_context_simpl M. reflexivity.
 Qed.
@@ -76,15 +77,16 @@ Qed.
 
 (** 有序分开组合恰为已有 Monad 配对，在两个通常输入计算之后作用。 *)
 
-Lemma kleisli_arrow_split {X Y X' Y' : @Ob C}
+Lemma kleisli_arrow_split {X Y X' Y' : C}
     (f : Hom X (M Y)) (g : Hom X' (M Y'))
   : (f ***[KleisliArrow M] g) ≈ monad_pair M ∘ (f × g).
 Proof.
-  unfold arrow_split. rewrite kleisli_arrow_first, kleisli_arrow_second.
+  unfold arrow_split.
+  rewrite kleisli_arrow_first, kleisli_arrow_second.
   change (kleisli_extend M
-    (bind[M; g ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]]) ∘
-      bind[M; f ∘ π1; return[M; ⟨π2, π2 ∘ π1⟩]] ≈
-      monad_pair M ∘ (f × g)).
+    (bind[M; g ∘ π2; return[M; ⟨π1 ∘ π1, π2⟩]])
+      ∘ bind[M; f ∘ π1; return[M; ⟨π2, π2 ∘ π1⟩]]
+    ≈ monad_pair M ∘ (f × g)).
   rewrite <- context_bind_discard, monad_pair_pre.
   monad_context_simpl M. reflexivity.
 Qed.
@@ -93,16 +95,18 @@ Qed.
 
 (** 在任意共同通常上下文中，扇出与 Applicative 配对一致。 *)
 
-Lemma kleisli_arrow_fanout {W X Y : @Ob C}
+Lemma kleisli_arrow_fanout {W X Y : C}
     (f : Hom W (M X)) (g : Hom W (M Y))
   : (f &&&[KleisliArrow M] g) ≈ monad_pair M ∘ ⟨f, g⟩.
 Proof.
   unfold arrow_fanout.
-  change ((f ***[KleisliArrow M] g) ∘K[M] return[M; ⟨id, id⟩] ≈
-    monad_pair M ∘ ⟨f, g⟩).
-  rewrite kleisli_comp_pure_r, kleisli_arrow_split, comp_assoc.
+  change ((f ***[KleisliArrow M] g)
+    ∘K[M] return[M; ⟨id, id⟩]
+    ≈ monad_pair M ∘ ⟨f, g⟩).
+  rewrite kleisli_comp_pure_r,
+    kleisli_arrow_split, comp_assoc.
   apply comp_proper; [reflexivity |].
-  pose proof (@product_comp_l C HP W W (M X) (M Y) W id id f g) as H.
+  pose proof (product_comp_l id[W] id[W] f g) as H.
   rewrite !comp_id_r in H. exact H.
 Qed.
 
@@ -111,9 +115,9 @@ Qed.
 
 (** 将分开组合特化到两个计算值输入，恢复已有带定律 Applicative 的 tensorator。 *)
 
-Lemma kleisli_arrow_applicative_pair (X Y : @Ob C)
-  : (id[M X]) ***[KleisliArrow M] (id[M Y]) ≈
-      φ₂[MonadA M; X; Y].
+Lemma kleisli_arrow_applicative_pair (X Y : C)
+  : id[M X] ***[KleisliArrow M] id[M Y]
+    ≈ φ₂[MonadA M; X; Y].
 Proof.
   rewrite kleisli_arrow_split, cross_id, comp_id_r. reflexivity.
 Qed.

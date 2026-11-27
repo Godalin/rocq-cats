@@ -30,7 +30,7 @@ Local Open Scope monad_scope.
 
 Section Kleisli.
 Universe u.
-Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
+Context (M : StrongMonad (SetCat@{u u _ _ _ _ _})).
 
 (** Run a supplied Kleisli arrow without adding another effect. Its result
     already lies in the original Monad. *)
@@ -45,7 +45,7 @@ Program Definition kleisli_apply (X Y : SetC@{u u})
 Next Obligation.
   intros [f x] [g y] [Hf Hx].
   transitivity (g x); [exact (Hf x) | apply func_proper; exact Hx].
-Defined.
+Qed.
 
 (** Dynamic application extends the exact existing Kleisli Arrow. The
     chosen strength is not replaced by a particular model implementation. *)
@@ -54,16 +54,14 @@ Defined.
 
 Program Definition KleisliArrowApply
   : ArrowApply (KleisliCat M)
-  :=
-  {|ArrowApplyA := KleisliArrow M
-  ; arrow_apply X Y := kleisli_apply X Y
-  |}.
+  := ArrowApplyOfArrow (KleisliArrow M)
+    {|arrow_apply X Y := kleisli_apply X Y|}.
 Next Obligation.
   change (kleisli_apply Y (X ×S Y) ∘K[M]
     return[M; arrow_apply_pair (KleisliArrow M) X Y × id_resp] ≈
     η[M] (X ×S Y)).
   rewrite kleisli_comp_pure_r. intros [x y]. reflexivity.
-Defined.
+Qed.
 Next Obligation.
   change (kleisli_apply X Z ∘K[M]
     return[M; comp_r_resp (C := KleisliCat M) (f := g) × id_resp] ≈
@@ -86,13 +84,13 @@ Next Obligation.
       change (strengthN (HomSet (C := KleisliCat M) Y Z, Y) (f,g x) ≈S
         fmap M ⟨const_resp Y f, id⟩ (g x)).
       apply set_strength_value.
-Defined.
+Qed.
 Next Obligation.
   change (kleisli_apply X Z ∘K[M]
     return[M; comp_l_resp (C := KleisliCat M) (f := h) × id_resp] ≈
     h ∘K[M] kleisli_apply X Y).
   rewrite kleisli_comp_pure_r. intros [f x]. reflexivity.
-Defined.
+Qed.
 
 (** The public application notation is the supplied computation itself
     at the given input. All computational data remain transparent. *)

@@ -1,9 +1,10 @@
 From Cats Require Export
-  Cat.Computational.Arrow.DynamicApplicative
+  Cat.Computational.Arrow.Dynamic
   Instance.Set.KleisliRecovery.
 From Cats Require Import
   Cat.Computational.Arrow.Applicative
   Instance.Set.Arrow
+  Instance.Set.Cartesian
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
@@ -36,7 +37,7 @@ Local Open Scope applicative_scope.
 
 Section Comparison.
 Universe u.
-Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
+Context (M : StrongMonad (SetCat@{u u _ _ _ _ _})).
 
 (** Reuse the Monad recovery components and their naturality. Repackage
     them on the actual global-computation functor; functor law records
@@ -85,8 +86,8 @@ Proof.
       SetCat_HasProduct (KleisliArrow M) UnitS X Y f g tt ≈S
       @monad_pair SetCat SetCat_HasTerminal SetCat_HasProduct M X Y
         (f tt,g tt)).
-    exact (@kleisli_arrow_fanout SetCat SetCat_HasTerminal
-      SetCat_HasProduct M UnitS X Y f g tt).
+    exact (@kleisli_arrow_fanout SetCat (CartCatToHasCartesian SetCat_Cart)
+      M UnitS X Y f g tt).
 Qed.
 
 (** The existing constant-computation inverse preserves the operations

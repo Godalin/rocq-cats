@@ -1,12 +1,12 @@
 From Cats Require Export
-  Cat.Computational.Arrow.StaticEvaluation
+  Cat.Computational.Arrow.Static
   Instance.Set.Arrow.
 From Cats Require Import
-  Cat.Computational.Arrow.Static
   Cat.Natural
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
+  Instance.Set.CCC
   Instance.Set.Exponential.
 Import Cats.Cat.Exponential.Core.
 Local Open Scope computation_scope.
@@ -32,10 +32,9 @@ Universe u.
 Let C
   : Cat
   := SetCat@{u u _ _ _ _ _}.
-Local Existing Instance SetCat_HasExponential.
+Local Existing Instance SetCat_HasCC.
 Context (K : Cat)
-    (A : Arrow C K
-      (@CartHasMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
+    (A : Arrow C K).
 
 (** Evaluate the outer singleton argument, then reuse generic global-
     function interpretation. *)
@@ -54,7 +53,7 @@ Definition static_interpret {X Y : @Ob C}
 Global Instance static_interpret_proper {X Y : @Ob C}
   : Proper (HomEq ==> HomEq) (@static_interpret X Y).
 Proof.
-  intros f g H. apply arrow_static_eval_proper. exact (H tt).
+  intros f g H. exact (arrow_static_eval_proper A (f tt) (g tt) (H tt)).
 Qed.
 
 (** Interpreting a static pure arrow gives the original pure inclusion. *)
@@ -86,7 +85,7 @@ Proof.
   change (arrow_static_eval A
     (arr[A; internal_then X Y Z] ∘ (f tt &&&[A] g tt)) ≈
       arrow_static_eval A (g tt) ∘ arrow_static_eval A (f tt)).
-  apply arrow_static_eval_comp.
+  exact (arrow_static_eval_comp (C := C) A (f tt) (g tt)).
 Qed.
 
 (** Interpretation preserves the same selected left-context action. *)
@@ -101,7 +100,7 @@ Proof.
   change (arrow_static_eval A
     (arr[A; internal_context W X Y] ∘ f tt) ≈
       context[A; W; arrow_static_eval A (f tt)]).
-  apply arrow_static_eval_context.
+  exact (arrow_static_eval_context (C := C) A W (f tt)).
 Qed.
 
 (** The comparison functor uses the original pure object map. Its laws come
@@ -109,39 +108,33 @@ Qed.
 
 (** 比较函子使用原纯对象映射，定律来自前述一般保持性结果。 *)
 
-Program Definition StaticInterpretF
-  : Fct (StaticCat (ArrowA K A)) K
-  :=
-  {|fobj := A
-  ; fmap X Y f := static_interpret f
-  ; isFct :=
-      {|fmap_proper X Y := static_interpret_proper
-      ; fmap_id := _
-      ; fmap_comp := _
-      |}
-  |}.
-Next Obligation.
-  change (static_interpret
-    (static_arr (ArrowA K A) (id_resp (X := X))) ≈ id[A X]).
-  rewrite static_interpret_arr. exact (@fmap_id _ _ _ _ (@isFct C K A) X).
-Qed.
-Next Obligation. exact (static_interpret_comp f g). Qed.
+Definition StaticInterpretF : Fct (StaticCat (ArrowA K A)) K.
+Proof.
+  refine (@MakeFct (StaticCat (ArrowA K A)) K (λ X, A X)
+    (@static_interpret) _).
+  constructor.
+  - exact (@static_interpret_proper).
+  - intro X. change (static_interpret
+      (static_arr (ArrowA K A) (id_resp (X := X))) ≈ id[A X]).
+    rewrite static_interpret_arr. exact (@fmap_id _ _ _ _ (@isFct C K A) X).
+  - intros X Y Z f g. exact (static_interpret_comp f g).
+Defined.
 
 (** Interpreting the static pure inclusion compares naturally with the
     original pure functor, using identity components. *)
 
 (** 解释静态纯嵌入，以恒等分量自然比较原来的纯函子。 *)
 
-Program Definition StaticInterpretPureN
-  : (StaticInterpretF ∘F StaticPureF (ArrowA K A)) ⇒ A
-  :=
-  {|nt X := id
-  |}.
-Next Obligation.
+Definition StaticInterpretPureN
+  : (StaticInterpretF ∘F StaticPureF (ArrowA K A)) ⇒ A.
+Proof.
+  refine (@NatOfComponents _ _ (StaticInterpretF ∘F StaticPureF (ArrowA K A)) A
+    (λ X, id[A X]) _).
+  intros X Y f.
   change (id ∘ static_interpret (static_arr (ArrowA K A) f) ≈
     arr[A; f] ∘ id).
   rewrite comp_id_l, comp_id_r. apply static_interpret_arr.
-Qed.
+Defined.
 
 (** Identity inverse components give the pure-inclusion natural isomorphism. *)
 

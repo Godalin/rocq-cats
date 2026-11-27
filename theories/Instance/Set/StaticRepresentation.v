@@ -1,13 +1,13 @@
 From Cats Require Export
-  Cat.Computational.Arrow.StaticRepresentation
+  Cat.Computational.Arrow.Static
   Instance.Set.StaticInterpret.
 From Cats Require Import
   Cat.Functor.FullyFaithful
-  Cat.Computational.Arrow.Static
   Cat.Induced
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
+  Instance.Set.CCC
   Instance.Set.Exponential
   Instance.Set.Hom
   Cat.Exponential.Laws
@@ -36,10 +36,9 @@ Universe u.
 Let C
   : Cat
   := SetCat@{u u _ _ _ _ _}.
-Local Existing Instance SetCat_HasExponential.
+Local Existing Instance SetCat_HasCC.
 Context (K : Cat)
-    (A : Arrow C K
-      (@CartHasMonoidal C SetCat_HasTerminal SetCat_HasProduct)).
+    (A : Arrow C K).
 
 (** Compose singleton evaluation with the supplied static evaluation
     isomorphism. *)

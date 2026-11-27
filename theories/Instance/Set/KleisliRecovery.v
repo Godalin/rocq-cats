@@ -1,5 +1,5 @@
 From Cats Require Export
-  Cat.Computational.Arrow.Monad
+  Cat.Computational.Arrow.Dynamic
   Cat.Monad.Category
   Instance.Set.KleisliApply.
 From Cats Require Import
@@ -31,7 +31,7 @@ Local Open Scope monad_scope.
 
 Section Recovery.
 Universe u.
-Context (M : StrongMonad (SetCat@{u u _ _ _ _ _}) SetCartMonoidal).
+Context (M : StrongMonad (SetCat@{u u _ _ _ _ _})).
 
 (** Recover a Monad from the existing Kleisli ArrowApply, using the general
     dynamic adjunction construction. *)

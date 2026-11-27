@@ -36,13 +36,13 @@ Class IsStrictTwoCat (K : Bicat)
   ; cell1_eq_to_cell2_comp X Y (f g h : Cell1 X Y)
       (p : f ≈₁[Cell1Eq X Y] g) (q : g ≈₁[Cell1Eq X Y] h)
       (r : f ≈₁[Cell1Eq X Y] h)
-      : cell1_eq_to_cell2 X Y f h r ≈₂
-          (cell1_eq_to_cell2 X Y g h q ∘₂ cell1_eq_to_cell2 X Y f g p)
+      : cell1_eq_to_cell2 X Y f h r
+        ≈₂ cell1_eq_to_cell2 X Y g h q ∘₂ cell1_eq_to_cell2 X Y f g p
   ; cell1_eq_to_cell2_hcomp X Y Z (g g' : Cell1 Y Z) (f f' : Cell1 X Y)
       (p : g ≈₁[Cell1Eq Y Z] g') (q : f ≈₁[Cell1Eq X Y] f')
       (r : (g ∘₁ f) ≈₁[Cell1Eq X Z] (g' ∘₁ f'))
-      : cell1_eq_to_cell2 X Z (g ∘₁ f) (g' ∘₁ f') r ≈₂
-          (cell1_eq_to_cell2 Y Z g g' p ⋆ cell1_eq_to_cell2 X Y f f' q)
+      : cell1_eq_to_cell2 X Z (g ∘₁ f) (g' ∘₁ f') r
+        ≈₂ cell1_eq_to_cell2 Y Z g g' p ⋆ cell1_eq_to_cell2 X Y f f' q
   ; comp1_id_l X Y (f : Cell1 X Y) : (𝟙₁ Y ∘₁ f) ≈₁[Cell1Eq X Y] f
   ; comp1_id_r X Y (f : Cell1 X Y) : (f ∘₁ 𝟙₁ X) ≈₁[Cell1Eq X Y] f
   ; comp1_assoc W X Y Z (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
@@ -52,8 +52,8 @@ Class IsStrictTwoCat (K : Bicat)
   ; right_unitor_strict X Y (f : Cell1 X Y)
       : right_unitor f ≈₂ cell1_eq_to_cell2 X Y _ _ (comp1_id_r X Y f)
   ; associator_strict W X Y Z (h : Cell1 Y Z) (g : Cell1 X Y) (f : Cell1 W X)
-      : associator h g f ≈₂
-          cell1_eq_to_cell2 W Z _ _ (comp1_assoc W X Y Z h g f)
+      : associator h g f
+        ≈₂ cell1_eq_to_cell2 W Z _ _ (comp1_assoc W X Y Z h g f)
   }.
 
 (** ** Transport in a Strict Two-Category
@@ -200,13 +200,13 @@ Qed.
 Theorem cell2_transport_comp_v {X Y} {f f' g g' h h' : Cell1 X Y}
     (p : f ≈₁[R X Y] f') (q : g ≈₁[R X Y] g') (r : h ≈₁[R X Y] h')
     (β : g ⇒₂ h) (α : f ⇒₂ g)
-  : (β ∘₂ α)⟦p, r⟧₂ ≈₂ (β⟦q, r⟧₂ ∘₂ α⟦p, q⟧₂).
+  : (β ∘₂ α)⟦p, r⟧₂ ≈₂ β⟦q, r⟧₂ ∘₂ α⟦p, q⟧₂.
 Proof.
   unfold cell2_transport. symmetry. rewrite !comp2_v_assoc.
   rewrite <- (comp2_v_assoc (cmp X Y g' g (symmetry q)) (cmp X Y g g' q)
     (α ∘₂ cmp X Y f' f (symmetry p))).
   pose proof (fst (cell1_eq_to_cell2_iso q).2) as Hq.
-  change ((cmp X Y g' g (symmetry q) ∘₂ cmp X Y g g' q) ≈₂ 𝟙₂ g) in Hq.
+  change (cmp X Y g' g (symmetry q) ∘₂ cmp X Y g g' q ≈₂ 𝟙₂ g) in Hq.
   rewrite Hq, comp2_v_id_l. reflexivity.
 Qed.
 
@@ -220,8 +220,8 @@ Theorem cell2_transport_comp_h {X Y Z}
     (q0 : g0 ≈₁[R Y Z] g0') (q1 : g1 ≈₁[R Y Z] g1')
     (β : g0 ⇒₂ g1) (α : f0 ⇒₂ f1)
   : (β ⋆ α)⟦comp1_proper X Y Z _ _ q0 _ _ p0,
-      comp1_proper X Y Z _ _ q1 _ _ p1⟧₂ ≈₂
-      (β⟦q0, q1⟧₂ ⋆ α⟦p0, p1⟧₂).
+      comp1_proper X Y Z _ _ q1 _ _ p1⟧₂
+    ≈₂ β⟦q0, q1⟧₂ ⋆ α⟦p0, p1⟧₂.
 Proof.
   unfold cell2_transport.
   transitivity ((cmp Y Z g1 g1' q1 ⋆ cmp X Y f1 f1' p1) ∘₂

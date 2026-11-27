@@ -155,19 +155,22 @@ Next Obligation. intros k r. split; reflexivity. Qed.
 
 Program Definition StateM@{r e u p +} (R : SetC@{r e})
   : Monad (SetCat@{u p _ _ _ _ _})
-  :=
-  {|MonadF := StateF R
-  ; monad_unit := StatePureN R
-  ; monad_mul := StateJoinN R
-  |}.
+  := MakeMonad (StateF R)
+    {|monad_unit := StatePureN R
+    ; monad_mul := StateJoinN R
+    ; isMonad :=
+        {|monad_unit_l_component := _
+        ; monad_unit_r_component := _
+        ; monad_assoc_component := _
+        |}
+    |}.
+Next Obligation. intros k r. reflexivity. Qed.
 Next Obligation.
-  split; [intros X k r | split; intros X k r].
-  - cbn. destruct (k r). split; reflexivity.
-  - change (R →r (X ×S R)) in k.
-    change (@carrier_equiv (X ×S R) (fst (k r), snd (k r)) (k r)).
-    destruct (k r). split; reflexivity.
-  - reflexivity.
-Defined.
+  intros k r. change (R →r (X ×S R)) in k.
+  change (@carrier_equiv (X ×S R) (fst (k r), snd (k r)) (k r)).
+  destruct (k r). split; reflexivity.
+Qed.
+Next Obligation. intros k r. reflexivity. Qed.
 
 (** Carry an ordinary context value through a stateful computation. *)
 
@@ -230,17 +233,17 @@ Defined.
 (** 返回及压平保持此选定状态强度。 *)
 
 Program Definition StateStrongM@{r e u p +} (R : SetC@{r e})
-  : StrongMonad (SetCat@{u p _ _ _ _ _}) SetCartMonoidal
-  :=
-  {|StrongMonadM := StateM R
-  ; hasStrength := StateStrength R
-  |}.
+  : StrongMonad (SetCat@{u p _ _ _ _ _})
+  := StrongMonadOfMonad (StateM R) (StateStrength R)
+    {|strongmonad_unit := _
+    ; strongmonad_mul := _
+    |}.
 Next Obligation.
   intros [x y] r. cbn. split; [split; reflexivity | reflexivity].
-Defined.
+Qed.
 Next Obligation.
   intros [x k] r. cbn. split; [split; reflexivity | reflexivity].
-Defined.
+Qed.
 
 (** Derive the lawful state Applicative using the general conversion.
     This sequences the left state transition before the right. *)
@@ -259,7 +262,6 @@ Definition StateA@{r e u p +} (R : SetC@{r e})
 
 Definition StateArrow@{r e u p +} (R : SetC@{r e})
   : Arrow (SetCat@{u p _ _ _ _ _}) (KleisliCat (StateM R))
-      SetCartMonoidal
   := KleisliArrow (StateStrongM R).
 
 

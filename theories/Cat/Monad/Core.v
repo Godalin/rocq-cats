@@ -26,61 +26,78 @@ From Cats Require Export
 (** 固定数据上的通常公理。三条定律的见证均保留在 [Type] 中，自然性由 [η]
     和 [μ] 提供。 *)
 
-Definition is_monad {C : Cat} (T : Fct C C)
+Minks.Mixin IsMonad {C : Cat} (T : Fct C C)
     (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
-  : Type
-  := (∀ X, μ X ∘ η (T X) ≈ id) ∧
-      (∀ X, μ X ∘ fmap T (η X) ≈ id) ∧
-      (∀ X, μ X ∘ μ (T X) ≈ μ X ∘ fmap T (μ X)).
-
-(** A chosen ordinary monad, with its familiar axiomatic presentation.
-    Computational data and their laws are bundled in one class. *)
-
-(** 以通常公理呈现的选定普通 Monad；计算数据及其定律打包在同一个类中。 *)
-
-Class Monad (C : Cat)
   :=
-  { MonadF :> Fct C C
-  ; monad_unit : IdF ⇒ MonadF
-  ; monad_mul : MonadF ∘F MonadF ⇒ MonadF
-  ; monad_axioms : is_monad MonadF monad_unit monad_mul
+  { monad_unit_l_component (X : C)
+    : μ X ∘ η (T X) ≈ id
+  ; monad_unit_r_component (X : C)
+    : μ X ∘ fmap T (η X) ≈ id
+  ; monad_assoc_component (X : C)
+    : μ X ∘ μ (T X) ≈ μ X ∘ fmap T (μ X)
   }.
 
-Arguments MonadF {_} _.
-Arguments monad_unit {_} _.
-Arguments monad_mul {_} _.
-Arguments monad_axioms {_} _.
+Arguments monad_unit_l_component {_} _ {_ _ _} _.
+Arguments monad_unit_r_component {_} _ {_ _ _} _.
+Arguments monad_assoc_component {_} _ {_ _ _} _.
+
+(** Choose the unit and multiplication on a fixed endofunctor. *)
+
+(** 在固定的自函子上选取单位和乘法。 *)
+
+Minks.Mixin HasMonad {C : Cat} (T : Fct C C)
+  :=
+  { monad_unit : IdF ⇒ T
+  ; monad_mul : T ∘F T ⇒ T
+  ; isMonad
+    :: IsMonad T monad_unit monad_mul
+  }.
+
+Arguments monad_unit {_} _ {_}.
+Arguments monad_mul {_} _ {_}.
+Arguments isMonad {_} _ {_}.
+
+(** On a fixed endofunctor, the monad operations use the local [HasMonad]
+    instance. *)
+
+(** 在固定的自函子上，Monad 运算使用上下文中的 [HasMonad] 实例。 *)
+
+Declare Scope monad_fct_scope.
+Delimit Scope monad_fct_scope with monad_fct.
+Notation "'η[' T ']'" := (monad_unit T)
+  (at level 0, format "η[ T ]")
+  : monad_fct_scope.
+Notation "'μ[' T ']'" := (monad_mul T)
+  (at level 0, format "μ[ T ]")
+  : monad_fct_scope.
+
+(** Bundle the endofunctor with its chosen monad structure. *)
+
+(** 将自函子与其选定的 Monad 结构打包。 *)
+
+Minks.Struct Monad (C : Cat)
+  extends Fct C C
+  with  hasMonad as hasMonad
+        : HasMonad [C, carrier].
+
+Arguments MakeMonad {_} _ _.
+Arguments MonadToFct {_} _.
+Arguments hasMonad {_} _.
 
 Declare Scope monad_scope.
 Delimit Scope monad_scope with monad.
-Notation "'T[' M ']'" := (MonadF M) : monad_scope.
-Notation "'η[' M ']'" := (monad_unit M) : monad_scope.
-Notation "'μ[' M ']'" := (monad_mul M) : monad_scope.
+Notation "'T[' M ']'" := (MonadToFct M)
+  (at level 0, format "T[ M ]")
+  : monad_scope.
+Notation "'η[' M ']'"
+  := (@monad_unit _ _ (hasMonad M))
+  (at level 0, format "η[ M ]")
+  : monad_scope.
+Notation "'μ[' M ']'"
+  := (@monad_mul _ _ (hasMonad M))
+  (at level 0, format "μ[ M ]")
+  : monad_scope.
 Local Open Scope monad_scope.
-
-(** The first unit equation evaluates the unit at [T X]. *)
-
-(** 第一条单位方程在 [T X] 处计算单位。 *)
-
-Lemma monad_unit_l_component {C : Cat} (M : Monad C) (X : @Ob C)
-  : μ[M] X ∘ η[M] (T[M] X) ≈ id.
-Proof. exact (fst (monad_axioms M) X). Qed.
-
-(** The second unit equation applies the endofunctor to the unit. *)
-
-(** 第二条单位方程将自函子作用于单位。 *)
-
-Lemma monad_unit_r_component {C : Cat} (M : Monad C) (X : @Ob C)
-  : μ[M] X ∘ fmap T[M] (η[M] X) ≈ id.
-Proof. exact (fst (snd (monad_axioms M)) X). Qed.
-
-(** Associativity compares the two iterated multiplications. *)
-
-(** 结合律比较两种迭代乘法。 *)
-
-Lemma monad_assoc_component {C : Cat} (M : Monad C) (X : @Ob C)
-  : μ[M] X ∘ μ[M] (T[M] X) ≈ μ[M] X ∘ fmap T[M] (μ[M] X).
-Proof. exact (snd (snd (monad_axioms M)) X). Qed.
 
 (** The canonical left unitor aligns the source functors. Its components
     are identity arrows, so this is precisely the first component law. *)
@@ -105,27 +122,10 @@ Proof. exact (monad_unit_r_component M). Qed.
 (** 规范结合子对齐不同加括号方式的复合；比较使用 [NatEq]，不用函子原生相等。 *)
 
 Lemma monad_assoc {C : Cat} (M : Monad C)
-  : (μ[M] ∘Nv (μ[M] ∘Nr T[M])) ≈N
-      (μ[M] ∘Nv (T[M] ∘Nl μ[M]) ∘Nv
-        (CompF_assoc T[M] T[M] T[M]).1).
+  : (μ[M] ∘Nv (μ[M] ∘Nr T[M]))
+    ≈N (μ[M] ∘Nv (T[M] ∘Nl μ[M])
+      ∘Nv (CompF_assoc T[M] T[M] T[M]).1).
 Proof.
-  intros X. cbn. rewrite comp_id_r. exact (monad_assoc_component M X).
+  intros X. cbn. rewrite comp_id_r.
+  exact (monad_assoc_component M X).
 Qed.
-
-(** Construct directly from the three ordinary laws. The underlying
-    endofunctor, unit and multiplication remain computationally unchanged. *)
-
-(** 由三条通常定律直接构造 Monad；底层自函子、单位和乘法的计算行为保持不变。 *)
-
-Program Definition MonadFromComponents {C : Cat} (T : Fct C C)
-    (η : IdF ⇒ T) (μ : T ∘F T ⇒ T)
-    (Hu : ∀ X, μ X ∘ η (T X) ≈ id)
-    (Hv : ∀ X, μ X ∘ fmap T (η X) ≈ id)
-    (Ha : ∀ X, μ X ∘ μ (T X) ≈ μ X ∘ fmap T (μ X))
-  : Monad C
-  :=
-  {|MonadF := T
-  ; monad_unit := η
-  ; monad_mul := μ
-  ; monad_axioms := (Hu, (Hv, Ha))
-  |}.

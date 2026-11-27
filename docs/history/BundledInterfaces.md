@@ -1182,7 +1182,8 @@ flowchart LR
   ApplicativeOps -->|OpsF| Fct
   ApplicativeAp -->|ApF| Fct
   ArrowApply -->|ArrowApplyA| Arrow
-  Arrow -->|ArrowF| Fct
+  Arrow -->|ArrowToFct| Fct
+  Arrow -->|hasArrow| HasArrow
   CwF -->|TyTmF| Fct
   Fct -->|F0| ObjectMap
 ```
@@ -1276,7 +1277,7 @@ assumption results above belong to their stated stages.
 | [CommaHom](../../theories/Cat/Comma/Core.v) | `Record` | Diagram and morphism data |
 | [Comprehension](../../theories/Cat/Comprehension.v) | `Record` | Dependent semantics |
 | [ArrowApply](../../theories/Cat/Computational/Arrow/Apply.v) | `Class` | Computational structures |
-| [Arrow](../../theories/Cat/Computational/Arrow/Core.v) | `Class` | Computational structures |
+| [Arrow](../../theories/Cat/Computational/Arrow/Core.v) | `Minks.Struct` | Pure functor with its chosen `HasArrow` context action |
 | [HasCoproduct](../../theories/Cat/Coproduct/Core.v) | `Class` | Chosen construction |
 | [Cat](../../theories/Cat/Core.v) | `Class` | Foundations and basic maps |
 | [Cocone](../../theories/Cat/Diagram/Dual.v) | `Record` | Diagram and morphism data |
@@ -1713,7 +1714,7 @@ records validation and the remaining syntax/representation comparisons.
 
 ## Static values and Applicative operations
 
-[StaticValues](../../theories/Cat/Computational/Arrow/StaticValues.v) compares
+[Static values](../../theories/Cat/Computational/Arrow/Static.v) compares
 terminal-input static computations with global Applicative values. Evaluation
 and abstraction are transparent, respect the original hom equality, and are
 mutually inverse in every external context. They commute with substitution.
@@ -1738,7 +1739,7 @@ the categorical semantics and its correspondences are established.
 
 ## Static Arrow fanout and binary lifting
 
-[StaticCartesian](../../theories/Cat/Computational/Arrow/StaticCartesian.v)
+[Static cartesian operations](../../theories/Cat/Computational/Arrow/Static.v)
 compares the actual derived `first`, ordered `split` and `fanout` operations
 with Applicative lifting. The internal function pairing is the existing
 inverse product-exponential comparison, not another selected product or
@@ -1747,7 +1748,7 @@ independently proved universal property. Ordinary
 comparison before introducing effects. Right context is derived by pure
 exchange from the original left context; no second action is selected.
 
-[StaticCartesian](../../theories/Cat/Computational/Arrow/StaticCartesian.v)
+[Static cartesian operations](../../theories/Cat/Computational/Arrow/Static.v)
 
 At terminal input, evaluation preserves ordered Applicative pairing and
 pure postcomposition recovers every binary lifting. The inverse value map
@@ -1808,10 +1809,10 @@ Syntax remains deferred until the semantic development is established.
 
 ## Static interpretation into the original Arrow
 
-[Global contexts](../../theories/Cat/Computational/Arrow/GlobalContext.v)
+[Global contexts](../../theories/Cat/Computational/Arrow/Global.v)
 attach a terminal-input computation to an ordinary input. Pure
 substitution, ordered pairing and nested context require only selected
-finite products. [Static evaluation](../../theories/Cat/Computational/Arrow/StaticEvaluation.v)
+finite products. [Static evaluation](../../theories/Cat/Computational/Arrow/Static.v)
 adds selected exponentials and interprets a global internal function by
 pure evaluation after that attachment. Pure names, ordered composition
 and left context are preserved in the computation category's Hom equality.
@@ -1832,7 +1833,7 @@ contained 97 interfaces over 344 modules; syntax stays deferred.
 
 ## Static representations and inverse reconstruction
 
-[StaticRepresentation](../../theories/Cat/Computational/Arrow/StaticRepresentation.v)
+[Static representation](../../theories/Cat/Computational/Arrow/Static.v)
 states `is_static_arrow` as invertibility of the specified global-function
 evaluation maps. It is equivalent to supplied Type-valued unique fibers,
 using native computation equality. The transparent inverse preserves pure
@@ -1841,7 +1842,7 @@ Applicative-generated static Arrow satisfies this criterion over any base
 with the selected finite products and exponentials. The proof reuses the
 existing terminal-input value/function inverse, without well-pointedness.
 
-[StaticRepresentation](../../theories/Cat/Computational/Arrow/StaticRepresentation.v)
+[Static representation](../../theories/Cat/Computational/Arrow/Static.v)
 
 [The setoid reconstruction](../../theories/Instance/Set/StaticRepresentation.v)
 identifies the criterion with full faithfulness of the existing interpreter
@@ -1907,7 +1908,7 @@ records validation and exact boundaries.
 [Dynamic naming and evaluation](../../theories/Cat/Computational/Arrow/Dynamic.v)
 provide inverse respectful Hom maps. Naming uses only the ordinary Arrow;
 its inverse uses ArrowApply. The
-[dynamic adjunction](../../theories/Cat/Computational/Arrow/Monad.v) reuses
+[dynamic adjunction](../../theories/Cat/Computational/Arrow/Dynamic.v) reuses
 `AdjFromHom`, with the pure indexed inclusion on the left and the
 covariant Hom functor at terminal input on the right. `ArrowMonad` then
 reuses `AdjMonad`, retaining a natural isomorphism to the existing
@@ -1934,7 +1935,7 @@ records the finite phase's validation and precise scope.
 
 ## Kleisli comparison and explicit setoid strength foundations
 
-[AdjKleisliF](../../theories/Cat/Monad/KleisliComparison.v) inverse-
+[AdjKleisliF](../../theories/Cat/Monad/Kleisli.v) inverse-
 transposes Kleisli arrows of an induced Monad into the adjunction target.
 Its full-faithfulness witness keeps transposes as explicit preimages.
 This general theorem requires no strength or finite products and does
@@ -1950,7 +1951,7 @@ interfaces; dynamic Arrow reconstruction will use these foundations.
 
 ## Reconstructing native dynamic Arrows
 
-[DynamicRecovery](../../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+[Dynamic recovery](../../theories/Cat/Computational/Arrow/Dynamic.v)
 explicitly gives the recovered Monad canonical strength and reuses the
 existing Kleisli Arrow. Dynamic evaluation specializes the general
 adjunction comparison; naming inherits its laws from the full-faithful
@@ -1959,7 +1960,7 @@ natural isomorphisms compare both composites with identity. This gives
 the equivalence with the indexed computation category, without choosing
 representatives for unrelated objects of the ambient category.
 
-[DynamicRecovery](../../theories/Cat/Computational/Arrow/DynamicRecovery.v)
+[Dynamic recovery](../../theories/Cat/Computational/Arrow/Dynamic.v)
 
 Both directions preserve pure arrows, sequential composition and ordinary
 left context. The context proof first extracts a weaker
@@ -2008,7 +2009,7 @@ Identity, vertical composition and a chosen natural-isomorphism inverse retain
 these laws. This is fixed-data theory; it adds no class, record, coercion path
 or chosen model instance.
 
-[Dynamic compatibility](../../theories/Cat/Computational/Arrow/DynamicApplicative.v)
+[Dynamic compatibility](../../theories/Cat/Computational/Arrow/Dynamic.v)
 uses the existing naming functor, pure/context preservation and general
 Kleisli fanout law. The recovered Monad's Applicative and the Arrow's own
 Applicative have an operation-preserving natural isomorphism in both

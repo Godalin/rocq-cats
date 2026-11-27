@@ -1,11 +1,9 @@
 Core.v
 Extension.v
-Kleisli.v
 Strength.v
 Context.v
 Applicative.v
 Category.v
 Monoid.v
 Adjunction.v
-KleisliAdjunction.v
-KleisliComparison.v
+Kleisli.v

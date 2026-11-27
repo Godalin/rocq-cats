@@ -2,13 +2,14 @@ From Cats Require Export
   Instance.Set.Arrow.
 From Cats Require Import
   Cat.Applicative.Morphism
-  Cat.Computational.Arrow.StaticCartesian
+  Cat.Computational.Arrow.Static
   Cat.Exponential.Laws
   Cat.Isomorphism
   Cat.Natural
   Instance.Set.Core
   Instance.Set.Terminal
   Instance.Set.Product
+  Instance.Set.CCC
   Instance.Set.Exponential.
 From Cats.Set Require Import
   Constant.
@@ -36,7 +37,7 @@ Universe u.
 Let C
   : Cat
   := SetCat@{u u _ _ _ _ _}.
-Local Existing Instance SetCat_HasExponential.
+Local Existing Instance SetCat_HasCC.
 Context (B : Applicative C).
 
 (** Recover Applicative values from the static Arrow of the original

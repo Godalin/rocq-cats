@@ -24,16 +24,18 @@ Context {C : Cat}.
 
 (** 乘法保持性使用水平复合，而非范畴积；这里只处理固定基底态射。 *)
 
-Definition is_monad_hom (M N : Monad C) (α : M ⇒ N)
+Definition is_monad_hom (M N : Monad C)
+    (α : M ⇒ N)
   : Type
-  := (α ∘Nv η[M]) ≈N η[N] ∧
-      (α ∘Nv μ[M]) ≈N (μ[N] ∘Nv (α ∘Nh α)).
+  := (α ∘Nv η[M]) ≈N η[N]
+    ∧ (α ∘Nv μ[M]) ≈N (μ[N] ∘Nv (α ∘Nh α)).
 
 (** Equal natural transformations satisfy the same preservation laws. *)
 
 (** 相等自然变换满足相同的保持定律。 *)
 
-Lemma monad_hom_equiv (M N : Monad C) (α β : M ⇒ N)
+Lemma monad_hom_equiv (M N : Monad C)
+    (α β : M ⇒ N)
     (E : α ≈N β)
   : is_monad_hom M N α ↔ is_monad_hom M N β.
 Proof.
@@ -50,7 +52,7 @@ Qed.
 
 Definition MonadHomS (M N : Monad C)
   : SetC
-  := SubsetS (@HomSet (FctCat C C) M N) (is_monad_hom M N).
+  := SubsetS (HomSet (C := FctCat C C) M N) (is_monad_hom M N).
 
 (** The identity transformation preserves the operations. *)
 
@@ -77,17 +79,20 @@ Proof.
   cbn. split; intros X.
   - change ((β X ∘ α X) ∘ η[M] X ≈ η[P] X).
     rewrite comp_assoc, (Hαu X). exact (Hβu X).
-  - change ((β X ∘ α X) ∘ μ[M] X ≈
-      μ[P] X ∘ ((β ∘Nv α) ∘Nh (β ∘Nv α)) X).
+  - change ((β X ∘ α X) ∘ μ[M] X
+      ≈ μ[P] X ∘ ((β ∘Nv α) ∘Nh (β ∘Nv α)) X).
     rewrite (nat_hcomp_interchange β α β α X).
-    change ((β X ∘ α X) ∘ μ[M] X ≈
-      μ[P] X ∘ ((β ∘Nh β) X ∘ (α ∘Nh α) X)).
+    change ((β X ∘ α X) ∘ μ[M] X
+      ≈ μ[P] X ∘ ((β ∘Nh β) X ∘ (α ∘Nh α) X)).
     transitivity (β X ∘ (μ[N] X ∘ (α ∘Nh α) X)).
-    + rewrite comp_assoc. apply comp_proper; [reflexivity | exact (Hαm X)].
+    + rewrite comp_assoc. apply comp_proper;
+        [reflexivity | exact (Hαm X)].
     + transitivity ((β X ∘ μ[N] X) ∘ (α ∘Nh α) X).
       * symmetry. apply comp_assoc.
-      * transitivity ((μ[P] X ∘ (β ∘Nh β) X) ∘ (α ∘Nh α) X).
-        -- apply comp_proper; [exact (Hβm X) | reflexivity].
+      * transitivity ((μ[P] X ∘ (β ∘Nh β) X)
+          ∘ (α ∘Nh α) X).
+        -- apply comp_proper;
+            [exact (Hβm X) | reflexivity].
         -- apply comp_assoc.
 Defined.
 
@@ -107,18 +112,24 @@ Program Definition MonadCat (C : Cat)
   |}.
 Next Obligation.
   intros [β Hβ] [β' Hβ'] Eβ [α Hα] [α' Hα'] Eα.
-  exact (@comp_proper (FctCat C C) _ _ _ β β' Eβ α α' Eα).
+  exact (comp_proper (c := FctCat C C) β β' Eβ α α' Eα).
 Defined.
-Next Obligation. exact (@comp_id_r (FctCat C C) _ _ f.1). Defined.
-Next Obligation. exact (@comp_id_l (FctCat C C) _ _ f.1). Defined.
-Next Obligation. exact (@comp_assoc (FctCat C C) _ _ _ _ f.1 g.1 h.1). Defined.
+Next Obligation.
+  exact (comp_id_r (c := FctCat C C) f.1).
+Defined.
+Next Obligation.
+  exact (comp_id_l (c := FctCat C C) f.1).
+Defined.
+Next Obligation.
+  exact (comp_assoc (c := FctCat C C) f.1 g.1 h.1).
+Defined.
 
 (** A monad morphism preserves its unit. *)
 
 (** Monad 态射保持单位。 *)
 
 Lemma monad_hom_unit {C : Cat} {M N : Monad C}
-    (α : (@Hom (MonadCat C)) M N)
+    (α : Hom[MonadCat C] M N)
   : (α.1 ∘Nv η[M]) ≈N η[N].
 Proof. exact (fst α.2). Qed.
 
@@ -127,6 +138,6 @@ Proof. exact (fst α.2). Qed.
 (** Monad 态射保持乘法。 *)
 
 Lemma monad_hom_mul {C : Cat} {M N : Monad C}
-    (α : (@Hom (MonadCat C)) M N)
+    (α : Hom[MonadCat C] M N)
   : (α.1 ∘Nv μ[M]) ≈N (μ[N] ∘Nv (α.1 ∘Nh α.1)).
 Proof. exact (snd α.2). Qed.

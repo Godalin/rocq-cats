@@ -17,8 +17,10 @@ Local Open Scope monad_scope.
     底层自函子先作用左伴随，再作用右伴随。单位取已有伴随单位，乘法是余单位的
     双侧须化。Monad 定律由自然性及两条三角形方程导出，不增加假设。 *)
 
-Section AdjMonad.
-Context {C D : Cat} {F : Fct C D} {U : Fct D C} (A : F ⊣ U).
+Section InducedMonad.
+Context {C D : Cat}
+  {F : Fct C D} {U : Fct D C}
+  (A : F ⊣ U).
 
 (** Reindex the whiskered counit to the ordinary composite source.
     Source and target functors have the same actions here; the naturality
@@ -45,31 +47,39 @@ Qed.
 
 Program Definition AdjMonad
   : Monad C
-  := MonadFromComponents (U ∘F F) (adj_unit A)
-      AdjMonadMul _ _ _.
-Next Obligation. exact (adj_triangle_r A (F X)). Defined.
+  := MakeMonad (U ∘F F)
+    {|monad_unit := adj_unit A
+    ; monad_mul := AdjMonadMul
+    ; isMonad :=
+        {|monad_unit_l_component := _
+        ; monad_unit_r_component := _
+        ; monad_assoc_component := _
+        |}
+    |}.
+Next Obligation. exact (adj_triangle_r A (F X)). Qed.
 Next Obligation.
-  change (fmap U (adj_counit A (F X)) ∘
-    fmap U (fmap F (adj_unit A X)) ≈ id).
+  change (fmap U (adj_counit A (F X))
+      ∘ fmap U (fmap F (adj_unit A X))
+    ≈ id).
   rewrite <- fmap_comp, (adj_triangle_l A X).
   apply fmap_id.
-Defined.
+Qed.
 Next Obligation.
-  change (fmap U (adj_counit A (F X)) ∘
-    fmap U (adj_counit A (F (U (F X)))) ≈
-    fmap U (adj_counit A (F X)) ∘
-      fmap U (fmap F (fmap U (adj_counit A (F X))))).
+  change (fmap U (adj_counit A (F X))
+      ∘ fmap U (adj_counit A (F (U (F X))))
+    ≈ fmap U (adj_counit A (F X))
+      ∘ fmap U (fmap F (fmap U (adj_counit A (F X))))).
   rewrite <- !fmap_comp. apply fmap_proper.
   symmetry. exact (nat_naturality (adj_counit A)
     (adj_counit A (F X))).
-Defined.
+Qed.
 
 (** The multiplication computes to the image of a counit component. *)
 
 (** 乘法计算为余单位分量的像。 *)
 
-Lemma adj_monad_mul (X : @Ob C)
+Lemma adj_monad_mul (X : C)
   : μ[AdjMonad] X ≈ fmap U (adj_counit A (F X)).
 Proof. reflexivity. Qed.
 
-End AdjMonad.
+End InducedMonad.
