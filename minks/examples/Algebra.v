@@ -258,7 +258,8 @@ Definition RngAddGroup (R : Rng)
 
 Minks.Struct Ring
   extends Rng, Monoid
-  with  hasPoint as hasOne.
+  with  hasPoint as hasOne
+  exports IsRingOps [hasMul, hasAdd].
 
 (** Multiplicative commutativity already makes sense without a one. *)
 
