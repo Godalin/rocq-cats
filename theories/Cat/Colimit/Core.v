@@ -16,11 +16,12 @@ From Cats Require Import
 
 (** 余极限性质直接取底层反锥的原极限性质。 *)
 
-Definition is_colimit {J C : Cat} {D : Fct J C} {L : @Ob C}
-    (κ : D ⇒∇ L)
-  := is_limit (op_cone κ).
+Definition is_colimit {J C : Cat}
+    {D : Fct J C} {L : C} (κ : D ⇒∇ L)
+  := (op_cone κ) ⦂ Lim(D^opF).
 
-Notation "κ '⦂' 'Colim(' D ')'" := (@is_colimit _ _ D _ κ)
+Notation "κ '⦂' 'Colim(' D ')'"
+  := (is_colimit (D := D) κ)
   (at level 1, no associativity)
   : cat_scope.
 
@@ -29,9 +30,10 @@ Notation "κ '⦂' 'Colim(' D ')'" := (@is_colimit _ _ D _ κ)
 
 (** 用 [C] 中的箭头展开同一个泛性质，不另存泛性质或比较构造。 *)
 
-Definition colimit_universal_iff {J C : Cat} {D : Fct J C}
-    {L : @Ob C} (κ : D ⇒∇ L)
-  : is_colimit κ ↔
+Definition colimit_universal_iff
+    {J C : Cat} {D : Fct J C}
+    {L : C} (κ : D ⇒∇ L)
+  : κ ⦂ Colim(D) ↔
       ∀ X (μ : D ⇒∇ X), ∃ h : Hom L X,
         is_unique (λ h, h ∘Cocone κ ≈N μ) h.
 Proof.
@@ -44,9 +46,9 @@ Defined.
 
 (** 极限锥的反余锥保留同一份中介数据。 *)
 
-Theorem limit_iff_op_colimit {J C : Cat} {D : Fct J C} {L : @Ob C}
-    (κ : L ⇒Δ D)
-  : is_limit κ ↔ is_colimit (ConeOp κ).
+Theorem limit_iff_op_colimit {J C : Cat}
+    {D : Fct J C} {L : C} (κ : L ⇒Δ D)
+  : κ ⦂ Lim(D) ↔ (ConeOp κ) ⦂ Colim(D^opF).
 Proof.
   split; intros H X μ.
   - exact (H X (ConeUnop {|op_cone := μ|})).
@@ -57,7 +59,8 @@ Defined.
 
 (** 选定余极限只包含原来的选定反范畴极限。 *)
 
-Class HasColimit (C : Cat) {J : Cat} (D : Fct J C)
+Minks.Mixin HasColimit (C : Cat) {J : Cat}
+    (D : Fct J C)
   :=
   { hasOpLimit :: HasLimit (C^op) (D^opF)
   }.
@@ -66,62 +69,68 @@ Class HasColimit (C : Cat) {J : Cat} (D : Fct J C)
 
 (** 将给定的反范畴极限通过余极限接口启用。 *)
 
-Program Definition OpLimitColimit {J C : Cat} {D : Fct J C}
-    `{HL : !HasLimit (C^op) (D^opF)}
+Program Definition OpLimitColimit {J C : Cat}
+    {D : Fct J C} `{HL : !HasLimit (C^op) (D^opF)}
   : HasColimit C D
   :=
   {|hasOpLimit := HL
   |}.
 
+(** Fix a diagram and its chosen colimit. Read its apex, injections and mediator
+    from the opposite limit. *)
+
+(** 固定图式及其选定余极限，从反范畴的极限取出顶点、注入和中介。 *)
+
+Section ChosenColimitOperations.
+Context {J C : Cat} {D : Fct J C}
+  `{HC : !HasColimit C D}.
+
 (** The selected colimit object is the selected opposite limit object. *)
 
 (** 选定余极限对象就是选定反范畴极限对象。 *)
 
-Definition Colim {J C : Cat} (D : Fct J C) `{HC : !HasColimit C D}
-  : @Ob C
-  := lim (D^opF).
-
-Arguments Colim {_ _} _ {_}.
-Notation "'colim' D" := (Colim D)
-  (at level 35)
-  : ob_scope.
+Definition Colim
+  : C
+  := lim D^opF.
 
 (** The injections are the original opposite-limit cone legs. *)
 
 (** 注入就是原来的反范畴极限锥腿。 *)
 
-Definition colimit_cocone {J C : Cat} (D : Fct J C)
-    `{HC : !HasColimit C D}
-  : D ⇒∇ colim D
+Definition colimit_cocone
+  : D ⇒∇ Colim
   :=
   {|op_cone := πlim[D^opF]
   |}.
-
-Arguments colimit_cocone {_ _} _ {_}.
-Notation "'ιcolim[' D ']'" := (colimit_cocone D)
-  (at level 0, format "ιcolim[ D ]")
-  : hom_scope.
 
 (** Universality is inherited without rebuilding mediator witnesses. *)
 
 (** 泛性质直接继承，不重建中介见证。 *)
 
-Definition colimit_universal {J C : Cat} (D : Fct J C)
-    `{HC : !HasColimit C D}
-  : is_colimit ιcolim[D]
+Definition colimit_universal
+  : colimit_cocone ⦂ Colim(D)
   := limit_universal (D^opF).
-
-Arguments colimit_universal {_ _} _ {_} _ _.
 
 (** Descending is lifting into the selected opposite limit. *)
 
 (** 下降映射就是指向选定反范畴极限的提升映射。 *)
 
-Definition colimit_desc {J C : Cat} {D : Fct J C}
-    `{HC : !HasColimit C D} {X} (κ : D ⇒∇ X)
-  : Hom (colim D) X
+Definition colimit_desc {X} (κ : D ⇒∇ X)
+  : Hom Colim X
   := lim⟨op_cone κ⟩.
 
+End ChosenColimitOperations.
+
+Arguments Colim {_ _} _ {_}.
+Arguments colimit_cocone {_ _} _ {_}.
+Arguments colimit_universal {_ _} _ {_} _ _.
+
+Notation "'colim' D" := (Colim D)
+  (at level 35)
+  : ob_scope.
+Notation "'ιcolim[' D ']'" := (colimit_cocone D)
+  (at level 0, format "ιcolim[ D ]")
+  : hom_scope.
 Notation "'colim⟨' κ '⟩'" := (colimit_desc κ)
   (at level 0, format "colim⟨ κ ⟩")
   : hom_scope.
@@ -137,7 +146,8 @@ Notation "'colim⟨' κ '⟩'" := (colimit_desc κ)
     固定 [C] 中具有选定余极限的图式 [D]，由泛性质导出下降映射的唯一性、计算、保相等性及复合定律。 *)
 
 Section ChosenColimit.
-Context {J C : Cat} {D : Fct J C} `{HC : !HasColimit C D}.
+Context {J C : Cat} {D : Fct J C}
+  `{HC : !HasColimit C D}.
 
 (** Mediator uniqueness is inherited from the opposite limit. *)
 
@@ -162,7 +172,7 @@ Proof. exact (limit_β (op_cone κ)). Qed.
 Theorem colimit_η {X} (f : Hom (colim D) X)
   : colim⟨f ∘Cocone ιcolim[D]⟩ ≈ f.
 Proof.
-  exact (@limit_η (J^op) (C^op) (D^opF) (@hasOpLimit C J D HC) X f).
+  exact (limit_η (D := D^opF) f).
 Qed.
 
 (** Descending respects equality by the existing lift preservation law. *)
@@ -171,11 +181,10 @@ Qed.
 
 Global Instance colimit_desc_proper {X}
   : Proper ((λ κ μ : D ⇒∇ X, κ ≈N μ) ==> ≈[colim D, X])
-      (@colimit_desc J C D HC X).
+      (colimit_desc (D := D) (X := X)).
 Proof.
   intros κ μ H.
-  exact (@limit_lift_proper (J^op) (C^op) (D^opF) _ X
-    (op_cone κ) (op_cone μ) H).
+  exact (limit_lift_proper (D := D^opF) (op_cone κ) (op_cone μ) H).
 Qed.
 
 (** Postcomposition is the original precomposition law read in [C]. *)
@@ -193,9 +202,12 @@ End ChosenColimit.
 
 (** 始对象刻画就是反锥范畴中原来的终对象刻画。 *)
 
-Theorem colimit_iff_initial {J C : Cat} {D : Fct J C} {L : @Ob C}
-    (κ : D ⇒∇ L)
-  : is_colimit κ ↔ @is_initial (CoconeCat D) (L; op_cone κ).
+Section ColimitCharacterization.
+Context {J C : Cat} {D : Fct J C}.
+
+Theorem colimit_iff_initial {L : C} (κ : D ⇒∇ L)
+  : κ ⦂ Colim(D)
+    ↔ is_initial (C := CoconeCat D) (L; op_cone κ).
 Proof. exact (limit_iff_terminal (op_cone κ)). Defined.
 
 (** Object uniqueness reuses opposite-limit uniqueness, with the inverse
@@ -203,9 +215,9 @@ Proof. exact (limit_iff_terminal (op_cone κ)). Defined.
 
 (** 对象唯一性复用反范畴极限唯一性，并将互逆定律读回原范畴。 *)
 
-Definition colimit_unique {J C : Cat} {D : Fct J C} {L M : @Ob C}
+Definition colimit_unique {L M : C}
     {κ : D ⇒∇ L} {μ : D ⇒∇ M}
-    (Hκ : is_colimit κ) (Hμ : is_colimit μ)
+    (Hκ : κ ⦂ Colim(D)) (Hμ : μ ⦂ Colim(D))
   : L ≅[C] M.
 Proof.
   pose (i := limit_unique Hμ Hκ).
@@ -213,27 +225,18 @@ Proof.
     [exact (snd i.2.2) | exact (fst i.2.2)].
 Defined.
 
+End ColimitCharacterization.
+
 (** All selected colimits of a shape are the original selected limits of
     the opposite shape in the opposite category. *)
 
 (** 某形状的全部选定余极限直接取反范畴中反形状的原选定极限结构。 *)
 
-Class HasColimitsOfShape (C J : Cat)
+Minks.Mixin HasColimitsOfShape (C J : Cat)
   :=
-  { hasOpLimits :: HasLimitsOfShape (C^op) (J^op)
+  { hasOpLimits
+    :: HasLimitsOfShape (C^op) (J^op)
   }.
-
-(** Select an individual colimit from the inherited opposite-shape limits.
-    This instance requires an explicitly enabled shape structure. *)
-
-(** 从继承的反形状极限选取单个余极限；该实例要求显式启用形状结构。 *)
-
-Global Program Instance hasColimit {J C : Cat}
-    `{HC : !HasColimitsOfShape C J} (D : Fct J C)
-  : HasColimit C D
-  :=
-  {|hasOpLimit := hasLimit (D^opF)
-  |}.
 
 (** ** The Colimit Functor
 
@@ -248,6 +251,17 @@ Global Program Instance hasColimit {J C : Cat}
 Section ColimitFunctor.
 Context {J C : Cat} `{HC : !HasColimitsOfShape C J}.
 
+(** Select an individual colimit from the inherited opposite-shape limits.
+    This instance requires an explicitly enabled shape structure. *)
+
+(** 从继承的反形状极限选取单个余极限；该实例要求显式启用形状结构。 *)
+
+Global Program Instance hasColimit (D : Fct J C)
+  : HasColimit C D
+  :=
+  {|hasOpLimit := hasLimit (D^opF)
+  |}.
+
 (** The colimit functor is the opposite of the original limit functor after
     [OpFctCatF]. Endpoint adapters only remove double-opposite categories. *)
 
@@ -255,8 +269,8 @@ Context {J C : Cat} `{HC : !HasColimitsOfShape C J}.
 
 Definition ColimF
   : Fct (FctCat J C) C
-  := FromDoubleOpF ∘F
-      ((@LimF (J^op) (C^op) _ ∘F OpFctCatF)^opF ∘F ToDoubleOpF).
+  := FromDoubleOpF
+      ∘F ((LimF ∘F OpFctCatF)^opF ∘F ToDoubleOpF).
 
 (** The induced map is the morphism action of that same dual functor. *)
 
@@ -270,8 +284,10 @@ Definition colimit_map {D E : Fct J C} (α : D ⇒ E)
 
 (** 注入方程就是反范畴中极限映射的投影方程。 *)
 
-Lemma colimit_map_β {D E : Fct J C} (α : D ⇒ E) (j : @Ob J)
-  : colimit_map α ∘ ιcolim[D] j ≈ ιcolim[E] j ∘ α j.
+Lemma colimit_map_β {D E : Fct J C}
+    (α : D ⇒ E) (j : J)
+  : colimit_map α ∘ ιcolim[D] j
+    ≈ ιcolim[E] j ∘ α j.
 Proof. exact (limit_map_β (α^opN) j). Qed.
 
 (** The inherited functor action respects natural-transformation equality. *)
@@ -279,8 +295,8 @@ Proof. exact (limit_map_β (α^opN) j). Qed.
 (** 继承的函子作用保持自然变换相等。 *)
 
 Global Instance colimit_map_proper {D E : Fct J C}
-  : Proper (NatEq ==> ≈[colim D, colim E]) (@colimit_map D E).
-Proof. exact (@fmap_proper _ _ _ _ (@isFct (FctCat J C) C ColimF) D E). Qed.
+  : Proper (NatEq ==> ≈[colim D, colim E]) colimit_map.
+Proof. exact (fmap_proper (obj := ColimF)). Qed.
 
 (** The identity law is inherited from the composite opposite functor. *)
 
@@ -288,7 +304,7 @@ Proof. exact (@fmap_proper _ _ _ _ (@isFct (FctCat J C) C ColimF) D E). Qed.
 
 Lemma colimit_map_id {D : Fct J C}
   : colimit_map (IdN (F := D)) ≈ id.
-Proof. exact (@fmap_id _ _ _ _ (@isFct (FctCat J C) C ColimF) D). Qed.
+Proof. exact (fmap_id (obj := ColimF)). Qed.
 
 (** Composition is inherited from the composite opposite functor. *)
 
@@ -296,16 +312,19 @@ Proof. exact (@fmap_id _ _ _ _ (@isFct (FctCat J C) C ColimF) D). Qed.
 
 Lemma colimit_map_comp {D E K : Fct J C}
     (β : E ⇒ K) (α : D ⇒ E)
-  : colimit_map (β ∘Nv α) ≈ colimit_map β ∘ colimit_map α.
-Proof. exact (@fmap_comp _ _ _ _ (@isFct (FctCat J C) C ColimF) D E K β α). Qed.
+  : colimit_map (β ∘Nv α)
+    ≈ colimit_map β ∘ colimit_map α.
+Proof. exact (fmap_comp (obj := ColimF) β α). Qed.
 
 (** Transformation compatibility is the original limit lift-map law. *)
 
 (** 与图式自然变换的相容性就是原来的极限提升映射定律。 *)
 
-Lemma colimit_desc_map {D E : Fct J C} (α : D ⇒ E) {X}
-    (κ : E ⇒∇ X)
-  : colim⟨ κ ∘∇ α ⟩ ≈ colim⟨ κ ⟩ ∘ colimit_map α.
-Proof. exact (limit_lift_map (α^opN) (op_cone κ)). Qed.
+Lemma colimit_desc_map {D E : Fct J C}
+    (α : D ⇒ E) {X} (κ : E ⇒∇ X)
+  : colim⟨κ ∘∇ α⟩ ≈ colim⟨κ⟩ ∘ colimit_map α.
+Proof.
+  exact (limit_lift_map (α^opN) (op_cone κ)).
+Qed.
 
 End ColimitFunctor.
