@@ -2,5 +2,6 @@
 _build
 _opam
 *.install
-experiments
 *.synctex.gz
+experiments
+minks-seminar
